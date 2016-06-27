@@ -1,0 +1,152 @@
+﻿
+#contenu p.titre
+{
+color:#5C7378;
+width:94%;
+margin:1em auto 1em auto;
+}
+
+#res_recherche
+{
+width:94%;
+margin:0 auto 0 auto;
+}
+
+#res_recherche h2 
+{
+
+	font-size:1.2em;
+	font-weight:bold;
+}
+
+#res_recherche h2 em
+{
+
+
+font-style:italic;
+}
+
+#res_recherche strong
+{
+
+
+font-weight:bold;
+}
+
+ul#menu_tri
+{
+	float:left;
+	display:inline;
+	margin:1em 0;
+}
+
+	ul#menu_tri li
+	{
+
+	}
+
+	ul#menu_tri li#ici
+	{
+		background:#ff3;
+	}
+	
+	ul#menu_tri li a
+	{	padding:0.4em 1em;
+		width:7em;
+		display:block;
+	}
+	
+#res_recherche table
+{
+	width:100%;
+	border-collapse:collapse;
+}	
+
+#res_recherche tr
+{
+
+}
+
+#res_recherche tr.ancien
+{
+background-color:#f2f2f2;
+}
+
+#res_recherche tr.auj
+{
+background-color:#fff;
+}
+
+#res_recherche tr.futur
+{
+background-color:#fff;
+}
+
+#res_recherche tr td
+{
+border-top:1px dotted gray;
+padding:0 0.2em 2em 0.2em;
+line-height:1.2em;
+}
+
+#res_recherche tr td h3
+{
+font-weight:bold;
+font-size:1.1em;
+}
+
+#res_recherche tr td p
+{
+
+}
+
+#res_recherche tr td p.description
+{
+margin:0.4em 0;
+font-size:0.9em;
+}
+
+#nb_resultats
+{
+color:#5C7378;
+}
+
+
+ul#menu_periode
+{
+
+}
+
+ul#menu_periode li
+{
+
+	width:10em;
+	display:block;
+	margin:0.4em 0;
+}
+
+ul#menu_periode li a
+{
+	width:10em;
+	display:block;
+	padding:0.4em 1em;
+}
+
+
+ul#menu_periode li.tous
+{
+}
+
+ul#menu_periode li.ancien
+{
+	background-color:#f2f2f2;
+}
+
+ul#menu_periode li.futur
+{
+	background-color:#fff;
+}
+ul#menu_periode li.ici
+{
+	background:#ff3;
+}

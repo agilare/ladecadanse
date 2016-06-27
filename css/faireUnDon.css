@@ -1,0 +1,65 @@
+#contenu
+{
+	color:#5E5E5F;
+	line-height:1.4em;
+}
+
+
+#contenu .rubrique 
+{
+	margin:1em auto 0em auto;
+	width:94%;
+	background:#fefefe;
+
+}
+
+#contenu .rubrique dt
+{
+	font-size:1em;
+	font-weight:bold;
+	margin:1.4em 0 0.4em 0.4em;
+}
+
+#contenu .rubrique dd
+{
+	margin:0.4em 0 0.4em 1.4em;
+}
+
+#contenu .rubrique h3
+{
+	font-size:1.2em;
+	font-weight:bold;
+	margin:1em 0 0.4em 0em;
+
+}
+
+
+#contenu .rubrique h4
+{
+	font-size:1em;
+	font-weight:bold;
+	margin:1em 0 0.4em 0.6em;
+
+}
+
+
+#contenu p
+{
+
+	margin:0em 1em 1em 1em;
+}
+
+#contenu ul
+{
+	color:#5E5E5F;
+	margin:0.6em 0 0 3em;
+	list-style-type: disc;
+}
+
+#contenu ul li
+{
+	padding:0.2em 0em;
+}
+
+
+

@@ -1,0 +1,22 @@
+form#ajouter_editer label
+{
+	width:12em;
+	/* border:1px solid red; */
+}
+
+form#ajouter_editer ul.radio
+{
+	margin:0;
+	/* border:1px solid black; */
+}
+
+form#ajouter_editer ul.radio li
+{
+	text-align:left;
+	display:inline;
+	vertical-align: middle;
+	padding: 0em 1em 0em 0em;
+	margin-top:0.5em;
+	margin-bottom:0.5em;
+	/* border:1px solid black; */
+}

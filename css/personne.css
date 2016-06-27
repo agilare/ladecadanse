@@ -1,0 +1,401 @@
+ul#menu_principal
+{ 
+
+padding: 0.4em;
+width:96%;
+margin:1em auto 0 auto;
+background:#f0f0f0;
+}
+
+ul#menu_principal li
+{
+display:inline;
+padding:0.4em 0.4em;
+}
+
+ul#menu_principal li.ici
+{
+background-color:yellow;
+}
+
+ul#menu_principal li a
+{
+padding:0.4em 0;
+}
+
+ul#menu_principal li a img
+{
+vertical-align:bottom;
+margin: 0 3px 0 0;
+}
+
+
+ul#menu_elements
+{
+float:right;
+}
+
+ul#menu_ajouts
+{
+width:96%;
+margin:1em auto 2em auto;
+background:#f0f0f0;
+ padding: 0.4em;
+}
+
+ul#menu_ajouts li
+{
+display:inline;
+padding:0.4em 0.4em;
+}
+
+ul#menu_ajouts li a
+{
+padding:0.4em 0;
+}
+
+ul#menu_ajouts li a img
+{
+vertical-align:bottom;
+margin: 0 3px 0 0;
+}
+
+ul#menu_ajouts li.ici
+{
+background-color:yellow;
+}
+
+
+
+p {
+width:94%;
+margin:2em auto 0 auto;
+}
+
+
+#menu_affichage
+{
+margin:1em 1em 0em 1em;
+background:yellow;
+}
+
+
+#menu_affichage ul
+{
+
+display:inline;
+}
+
+#menu_affichage ul li
+{
+
+display:inline;
+}
+
+ul.menu_sections
+{
+margin:0 0 0 1em;
+display:inline;
+background:#fff;
+}
+
+ul.menu_sections li
+{
+display:inline;
+
+}
+
+ul#menu_nb_res
+{
+font-size:0.95em;
+width:96%;
+margin:15px auto 5px auto;
+}
+
+ul#menu_nb_res li
+{
+	float:left;
+	text-align:center;
+	width:2em;
+	margin:0 1em 0 0em;
+	display:block;
+}
+
+ul#menu_nb_res li.ici
+{
+border:1px solid #aeaeae;
+}
+
+table#ajouts
+{
+	width:96%;
+	margin:0em auto 0em auto;
+	border-collapse:collapse;
+	border:1px solid #aeaeae;
+	background:#fefefe;
+}
+
+table#ajouts tr th
+{
+	text-align:center;
+	font-weight:bold;
+	background:#eaeaea;
+	padding:0.4em 0.2em;
+	font-size: 0.85em;
+}
+
+table#ajouts tr th.ici
+{
+background:#fafafa;
+}
+
+table#ajouts tr td
+{
+	text-align:center;
+	vertical-align:middle;
+	font-size:0.85em;
+	padding:0.4em 0.2em;
+}
+
+table#ajouts tr.impair
+{
+background-color:#f0f0ff;
+
+}
+
+
+
+
+
+
+#actions
+{
+color:#5C7392;
+
+}
+
+#actions h2
+{
+font-weight:bold;
+font-size:1.1em;
+padding:0.2em;
+}
+
+#actions ul
+{
+
+}
+
+#actions ul li
+{
+margin:0.4em;
+
+}
+
+
+#profile
+{
+
+margin:1em 0 0 0;
+padding:0.2em;
+color:#5C7392;
+}
+
+#profile h2
+{
+font-weight:bold;
+font-size:1.1em;
+margin: 0 0 0.6em;
+}
+
+#profile table
+{
+font-size:0.8em;
+border-collapse:collapse;
+}
+
+
+
+#profile table th
+{
+font-weight:bold;
+text-align:left;
+}
+
+.personne #profile th
+{
+	padding:0.4em 0.1em;
+}
+
+table#favoris_evenements
+{
+	margin:1em auto;
+	width:96%;
+	border-collapse:collapse;
+	color:#5C7378;
+	background-color:#fefefe;
+	border:1px solid #5C7378;
+}
+
+#favoris_evenements tr.ancien
+{
+	background-color:#F0f0f0;
+}
+
+#favoris_evenements tr th
+{
+
+	text-align:left;
+/* 	border:1px solid #5C7378; */
+	background-color:#e0e0e0;
+}
+
+
+#favoris_evenements tr td
+{
+	text-align:left;
+	padding:0.2em;
+	vertical-align:top;
+	border-top:1px dotted #5C7378;
+}
+
+#favoris_evenements tr td img
+{
+
+
+}
+
+#favoris_evenements td h3
+{
+font-weight:bold;
+
+}
+
+#favoris_evenements td.mois
+{
+	font-weight:bold;
+	border:none;
+}
+
+#favoris_evenements p
+{
+line-height:1.4em;
+}
+
+#favoris_evenements td.flyer
+{
+width:50px;
+
+}
+
+#favoris_evenements td p.description
+{
+height:4em;
+margin:0;
+}
+
+#favoris_evenements td p.pratique
+{
+font-size:0.95em;
+
+}
+
+#favoris_evenements td.lieu_actions_evenement ul
+{
+
+
+}
+
+#favoris_evenements td.lieu_actions_evenement ul li
+{
+	display:inline;
+
+}
+
+
+table#favoris_lieux
+{
+	margin:0 auto;
+	width:96%;
+	border-collapse:collapse;
+	color:#5C7378;
+	background:#F7F7F5;
+	border:1px solid #5C7378;
+}
+
+#favoris_lieux tr.ici
+{
+	background-color:#FFFF33;
+}
+
+#favoris_lieux tr th
+{
+
+	text-align:left;
+/* 	border:1px solid #5C7378; */
+	background-color:#e0e0e0;
+}
+
+
+#favoris_lieux tr td
+{
+	text-align:left;
+	padding:0.2em;
+	vertical-align:top;
+	border-top:1px dotted #5C7378;
+}
+
+#favoris_lieux tr td img
+{
+
+
+}
+
+
+
+#favoris_lieux td h3
+{
+font-weight:bold;
+
+}
+
+#favoris_lieux td.mois
+{
+	font-weight:bold;
+	border:none;
+}
+
+#favoris_lieux p
+{
+line-height:1.4em;
+}
+
+#favoris_lieux td.flyer
+{
+width:50px;
+
+}
+
+#favoris_lieux td p.adresse
+{
+height:5em;
+margin:0;
+}
+
+#favoris_lieux td p.pratique
+{
+font-size:0.95em;
+
+}
+
+#favoris_lieux td.lieu_actions_evenement ul
+{
+
+
+}
+
+#favoris_lieux td.lieu_actions_evenement ul li
+{
+	display:inline;
+
+}

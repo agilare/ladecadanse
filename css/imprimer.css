@@ -1,0 +1,385 @@
+body
+{
+	background-color:#fff;
+	color:#000;
+	font-family:Helvetica, Arial, serif;
+	font-size:11pt;
+}
+
+#bouton_imprimer
+{
+display:none;
+}
+
+a:link, a:visited {
+	color: #000;
+	font-weight:bold;
+	background:transparent;
+	text-decoration:none;
+}
+img {
+	margin:0;
+	padding:0;
+	border:none;
+}
+
+.spacer {
+	clear: both;
+}
+
+ul
+{
+list-style:none;
+margin:0;
+padding:0;
+}
+
+li, ol
+{
+list-style:none;
+margin:0;
+}
+
+#global
+{
+	width:100%;
+	height:100%;
+	margin: 0 0 0 0;
+	padding: 0 0 0 0;
+	background-color: #fff;
+}
+
+#conteneur
+{
+
+text-align:left;
+}
+
+#menu {
+	display:none;
+}
+
+#entete {
+	display:none;
+}
+
+#colonne_gauche {
+	display:none;
+}
+#colonne_droite{
+	display:none;
+}
+
+#entete_contenu h2
+{
+
+}
+
+#entete_contenu #menu_actions
+{
+display:none;
+}
+
+#pied
+{
+display:none;
+}
+
+.entete_contenu_menu
+{
+display:none;
+}
+/* FIN global */
+
+/* DEB index */
+.evenement .titre .left
+{
+	float:left;
+text-align:left;
+width:48%;
+margin:0;
+
+/* background-color:lime; */
+}
+
+
+.evenement .titre .right
+{
+float:right;
+text-align:right;
+width:46%;
+margin:0;
+
+/* background-color:lime; */
+}
+
+.evenement
+{
+border:1px dotted #aeaeae;
+color:#000;
+margin: 12pt 0;
+}
+
+.evenement .flyer
+{
+/* width:60px;
+height:80px; */
+background-color:#eaeaea;
+float:left;
+}
+
+.evenement .pratique .edition
+{
+display:none;
+}
+
+
+.pratique{
+/* border:1px solid red; */
+
+	}
+.pratique .left
+{
+float:left;
+width:46%;margin:0;
+/* background-color:yellow; */
+text-align:left;
+}
+
+.pratique .right
+{
+float:right;margin:0;
+	width:46%;
+	/* background-color:yellow; */
+	text-align:right;
+}
+
+.evenement .edition
+{
+	display:none;
+	}
+
+/* FIN index */
+
+/* DEB agenda */
+#entete_contenu ul
+{
+display:none;
+}
+
+.edition .menu_actions
+{
+display:none;
+}
+
+ul.menu_actions
+{
+display:none;
+}
+
+
+.evenement h2
+{color:#000;
+font-size:10pt;
+}
+
+.evenement .description
+{
+font-size:10pt;
+}
+
+
+.evenement .pratique
+{
+font-size:10pt;
+}
+
+.evenement .pratique .left
+{
+float:left;
+text-align:left;
+}
+.evenement .pratique .right
+{
+float:right;
+text-align:right;
+/* background-color:yellow; */
+}
+
+
+.menu_date .menu_ascenseur
+{
+display:none;
+}
+
+h3 {
+border-bottom:1px solid #0a0a0a;
+}
+
+h4 {
+font-size:10pt;
+}
+
+/* mode condense */
+table#evenements_s
+{
+	border:2px solid gray;
+	border-collapse:collapse;
+}
+
+#evenements_s tr
+{
+	background:#F9F9F9;
+}
+
+
+#evenements_s tr th
+{
+	font-size:15pt;
+	color:#5C7378;
+	border-top:2px solid #aeaeae;
+	margin:0.4em 0em 0.2em 0em;
+	padding:0 0 0 0.2em;
+	font-variant:small-caps;
+	letter-spacing:0.05em;
+	text-align:left;
+}
+
+#evenements_s tr td
+{
+padding:0.1em 0.1em 0.1em 0.1em;
+text-align:left;
+border-bottom:dotted 1px gray;
+vertical-align:top;
+}
+
+#evenements_s tr td h2
+{
+margin:0.2em;
+font-size:12pt;
+font-weight:bold;
+}
+td.action
+{
+display:none;
+}
+
+/* FIN agenda */
+
+/* DEB evenement */
+#evenement .titre .left
+{
+font-size:20pt;
+}
+
+#evenement .titre .right h3
+{
+border:none;
+}
+
+
+#evenement #pratique .left, .right
+{
+margin:20pt 0;
+}
+
+#evenement #auteur
+{
+display:none;
+}
+
+#ajouter_commentaire
+{
+display:none;
+}
+
+#commentaires blockquote
+{
+border:1px dotted #aeaeae;
+}
+
+#commentaires .apres_evenement
+{
+border-bottom:1px solid #aeaeae;
+}
+
+#commentaires #connexion
+{
+display:none;
+}
+/* FIN evenement */
+
+/* DEB lieux */
+#dernieres_descriptions .vignette .icone
+{
+	height : 100px;
+	background : #EDEDED;
+float:left;
+width:100px;
+}
+#dernieres_descriptions .vignette .continuer
+{
+display:none;
+}
+
+#dernieres_descriptions .vignette .apercu
+{
+	height:10em;
+	color:#5C7378;
+	text-align:left;
+	padding:2px 2px 2px 2px;
+	line-height:1.2em;
+	margin-left:100px;
+}
+	
+/* FIN lieux */
+
+/* DEB lieu */
+
+.menu_actions_lieu
+{
+display:none;
+}
+
+#fiche .section
+{
+float:right;
+}
+
+#fiche #descriptions
+{
+width:60%;
+}
+
+#menu_descriptions .ici
+{
+text-decoration:underline;
+}
+
+#prochains_evenements .mois
+{
+font-size:12pt;
+font-weight:bold;
+}
+
+#menu_genre td
+{
+display:none;
+}
+
+#menu_genre .ici
+{
+
+}
+
+#menu_complement .rss
+{
+display:none;
+}
+
+
+.lieu_actions_evenement
+{
+display:none;
+}
+/* FIN lieu */

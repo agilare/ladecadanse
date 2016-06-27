@@ -1,0 +1,560 @@
+
+#entete #titre_site {
+    height: 35px;
+    overflow: hidden;
+    width: 117px;
+}
+
+	#entete_contenu_navigation a
+	{
+		padding:0.6em 0.8em;
+	}
+
+
+#conteneur > #colonne_gauche, #conteneur .colonne
+{
+	float:none;
+}
+
+#menu ul li
+{
+	float:left;
+	/* border-right: 1px solid #808080; */
+	border-right:none;
+}
+
+#menu ul li a
+{
+	height:1.1em;
+	padding: 0.5em 0.5em;
+	font-size: 1.05em; /* iphone <5 */
+}
+
+#menu ul li#bouton_agenda a
+{
+
+	padding: 0.5em 0.7em;
+}
+
+
+#entete_haut #menu_pratique {
+    font-size: 0.9em;
+	margin-right: 1.1em;
+}
+	
+	#entete_haut #menu_pratique ul li
+	{
+		display:block;
+		padding:0.8em 0.1em 0.8em 0.1em;
+	}
+
+	#entete_haut #menu_pratique ul li a
+	{
+		padding:0.8em 0.4em 0.8em 0.1em;
+	}
+
+
+
+#menu li#bouton_calendrier
+{
+	display:inline-block;
+
+
+}
+
+
+
+#menu li#bouton_calendrier a
+{
+	padding-left:10px;
+	padding-right:10px;
+}
+
+#menu ul li.btn_recherche {
+display:none;
+}
+
+#menu ul li.form_recherche {
+ 
+	  border-right: 1px solid #808080;
+}
+
+#menu ul li.form_recherche
+{
+	display:none;
+}
+
+
+#navigation_calendrier
+{
+	float:none;
+	display:none;
+	background:#eee;
+	margin-bottom:20px;
+}
+
+#menu_calendrier #aujourdhui, #menu_calendrier #demain, #menu_calendrier #cette_semaine
+{
+	display:none;
+}
+
+#dernieres
+{
+	float:left;
+}
+
+table#calendrier tr.semaine td a, table#calendrier tr#mois th a, table#calendrier tr#jours th {
+	padding:0.4em;
+}
+
+table#calendrier tr#mois th a
+{
+	display:inline-block;
+}
+
+
+.msg_ok, .msg_erreur, .msg_info, .msg_email {
+    background-position: 5px 50%;
+    padding: 1em 0 1em 2em;
+}
+
+
+
+
+
+
+/****/
+#btn_menu_pratique
+{
+margin:0.4em;
+padding:0.6em 1em;
+}
+
+#menu_pratique
+{
+	display:none;
+	width:130px;
+
+}
+
+#btn_calendrier
+{
+display:inline-block;
+}
+
+
+#entete_haut {
+	margin-top:0.6em;
+    background-color: #FACA1A;
+    float: right;
+	  text-align: right;
+}
+
+.clear_mobile
+{
+clear:both;
+}
+
+.desktop
+{
+	display:none !important;
+}
+
+#btn_listelieux, #btn_listeorganisateurs
+{
+	
+	width:94%;
+	
+	margin:1em auto;
+	
+}
+#btn_listelieux button, #btn_listeorganisateurs button
+{
+	
+padding:0.4em;
+	
+}
+
+
+#btn_listelieux img
+{
+	vertical-align: bottom;
+}
+/* index */
+
+#entete_contenu ul.entete_contenu_menu li.format_imprimable {
+display:none;
+}
+
+#entete_contenu
+{
+	float:none;
+	height:auto;
+}
+
+#entete_contenu h2 small
+{
+	display: block;
+}
+
+.rappel_date
+{
+	margin: 0em 0 0em;
+	color: #888;
+	font-size: 1em;
+}
+
+/* evenement*/
+#evenement .titre
+{
+	padding:0.3em 0 0.5em 0;
+}
+
+#evenement .titre .left {
+padding:0 0 0 1%;
+}
+
+
+#evenement #complement, #evenement #complement #flyer
+{
+	width:120px;
+	overflow:hidden;
+}
+
+#evenement #complement #flyer a img
+{
+	width: 120px;
+}
+
+
+
+
+#evenement #description
+{
+	margin-left:120px;
+	font-size:0.9em;
+}
+
+ul.menu_actions_evenement li.format_imprimable, #entete_contenu ul li.format_imprimable
+{
+	display:none;
+}
+
+a.url, #evenement #pratique .lien_ext
+{
+    word-wrap: break-word;
+}
+
+#evenement #pratique table.right tr td
+{
+    word-wrap: break-word;
+}
+
+#commentaires #connexion form 
+{
+    padding:10px 5px;
+    height:auto;
+}
+
+#commentaires #connexion form input.text
+{
+
+}
+
+	#connexion form p.se-connecter
+	{
+		text-align:right;
+		margin-top: 0.8em;
+	}
+
+#commentaires #connexion form input.submit
+{
+
+}
+
+#commentaires #connexion form label
+{
+    width:100px;
+    margin:5px 0 0 5px;
+    text-align:left;
+}
+
+#commentaires #connexion #inscription
+{
+     width:50%;
+     padding:5px;
+	 
+}
+
+form#ajouter_editer #commentaire
+{
+	
+	width:100%;
+}
+
+
+
+#entete_contenu h2
+{
+		width:50%;
+		font-size: 1.2em;
+}
+
+/* agenda */
+#entete_contenu ul {
+	width:49%;
+}
+
+#pied
+{
+	padding: 0;
+	margin:0;
+}
+
+/* login */
+
+form#ajouter_editer label#login_pseudo, form#ajouter_editer label#login_motdepasse, form#ajouter_editer p.oubli
+{
+	width:auto;
+	width: 10em;
+}
+
+
+/* contact */
+
+form#ajouter_editer label#label_nom, form#ajouter_editer label#label_affiliation, form#ajouter_editer label#label_email, form#ajouter_editer label#label_sujet, form#ajouter_editer label#label_contenu
+{
+	width:auto;
+	margin-left:0;
+	width: 6em;
+}
+
+.contacteznous form#ajouter_editer textarea#message
+{
+width:280px;
+}
+
+form#ajouter_editer .guideChamp {
+    font-size: 0.95em;
+    font-style: italic;
+    line-height: 1.2em;
+    margin: 0;
+    padding: 0.2em 0 0.2em 2em;
+}
+
+/* lieux */
+
+#dernieres_descriptions .vignette .apercu
+{
+	height:10em;
+	overflow:hidden;
+}
+
+/* lieu */
+
+#prochains_evenements table
+{
+border:none;
+}
+
+#prochains_evenements table td p.description
+{
+	font-size:0.9em;
+}
+
+#prochains_evenements table td h3 {
+    line-height: 1.2em;
+    margin-bottom: 0.2em;
+}
+
+
+#prochains_evenements table tr td.dtstart {
+text-overflow:ellipsis;
+width:1em;
+}
+
+#prochains_evenements ul#menu_genre li {
+
+    padding: 0.4em 0.25em 0.4em 0.35em;
+	float:left;
+	font-size:0.95em;
+	
+}
+
+
+#fiche #pratique ul li {
+line-height:1.1em;
+margin:0.4em 0;
+font-size:0.9em;
+}
+
+#fiche #pratique ul li.sitelieu {
+
+    width: 100px;
+}
+
+#fiche #medias {
+
+    width: 140px;
+	
+}
+
+#fiche #medias #photo img {
+
+    max-width:100%;
+    height:auto;
+	
+}
+
+
+#fiche #pratique ul {
+    max-width: 30%;
+}
+
+/* menu_lieux */
+
+#menu_lieux ul#tranches li a
+{
+	width:100px;
+	padding: 2px 0;
+
+}
+
+#menu_lieux ul#selon li a {
+
+    height: 1em;
+    padding: 0.4em 0;
+    width: 90px;
+	
+}
+
+#menu_lieux table tr td a {
+padding:1em 0 1em 5px;
+}
+
+
+ul#menu_descriptions li.ici a, ul#menu_descriptions li a
+{
+	float:none;
+	line-height:1.6em;
+}
+
+/* email_evenement */
+
+.email_evenement form#ajouter_editer label {
+float:none;
+}
+
+.email_evenement form#ajouter_editer #email_destinataire, .email_evenement form#ajouter_editer #message
+{
+	margin:0.6em 0 0 0.4em;
+}
+
+/* inscription */
+
+.inscription form#ajouter_editer label
+{
+    float: none;
+	display:block;
+	text-align:left;
+}
+
+.inscription form#ajouter_editer input
+{
+	margin:0 0 0 0.4em;
+}
+.inscription .guide_champ, .inscription .guide_groupe
+{
+	margin:0 0 0 0.4em;
+	font-style:italic;
+	font-size:0.9em;
+}
+
+.inscription .affiliation
+{
+	padding:2em;
+}
+
+.inscription form#ajouter_editer .entreLabels
+{
+	padding:0;
+}
+
+.inscription form#ajouter_editer select, .ajouterPersonne form#ajouter_editer select
+{
+	width:200px;
+}
+
+
+.inscription form#ajouter_editer .msg {
+margin-left:0;
+}
+
+/* formulaires */
+
+form#ajouter_editer textarea {
+
+
+    width: 280px;
+	
+	}
+	
+	
+form#ajouter_editer select#idLieu
+{
+    width: 200px;
+}
+
+form#ajouter_editer #adresse, form#ajouter_editer #urlLieu, form#ajouter_editer  #horaire_complement,form#ajouter_editer  #prelocations, form#ajouter_editer #titre, form#ajouter_editer #ref
+{
+    width: 280px;
+}
+
+
+form#ajouter_editer label {
+    display: inline-block;
+    margin: 0 0.2em 0.2em 0;
+    padding: 0 0 0 0;
+    text-align: right;
+    width: auto;
+}
+
+form#ajouter_editer label.continu
+{
+	display:inline;
+}
+
+
+form#ajouter_editer .supImg
+{
+margin-left: 50px;
+}
+
+/* personne */
+
+.personne #actions 
+{
+	float:left;
+}
+
+
+ul#menu_ajouts li {
+    display: block;
+}
+
+.signaler-erreur form#ajouter_editer ul.radio_vert
+{
+	margin:0;
+}
+
+.signaler-erreur form#ajouter_editer label
+{
+	display: inline;
+	text-align: left;
+}
+
+form#ajouter_editer p.memoriser label, form#ajouter_editer p.mdp_oublie
+{
+	padding:0;
+}
+

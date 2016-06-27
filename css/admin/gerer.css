@@ -1,0 +1,502 @@
+#menu_affichage
+{
+margin:1em 1em 0em 1em;
+background:yellow;
+}
+
+
+#menu_affichage ul
+{
+
+display:inline;
+}
+
+#menu_affichage ul li
+{
+
+display:inline;
+}
+
+ul.menu_sections
+{
+margin:0 0 0 1em;
+display:inline;
+background:#fff;
+}
+
+ul.menu_sections li
+{
+display:inline;
+
+}
+
+ul.menu_nb_res
+{
+	font-size:0.95em;
+	width:94%;
+	margin:0 auto 0.2em auto;
+}
+
+ul.menu_nb_res li
+{
+	display:inline-block;
+	text-align:center;
+	margin: 0 0.4em 0 0;
+	padding: 0.4em;
+
+}
+
+ul.menu_nb_res li.ici
+{
+	border:1px solid #aeaeae;
+}
+
+ul.menu_filtre
+{
+font-size:1.1em;
+width:94%;
+margin:1em auto 1.4em auto;
+}
+
+ul.menu_filtre li
+{
+float:left;
+text-align:center;
+padding: 0.2em 0.4em;
+margin:0 1em 0 0em;
+display:block;
+}
+
+ul.menu_filtre li.ici
+{
+border:1px solid #aeaeae;
+}
+
+table#ajouts
+{
+	width:94%;
+	margin:0em auto;
+
+	border-collapse:collapse;
+	border:1px solid #aeaeae;
+	background:#fefefe;
+	line-height:1.2em;
+}
+
+table#ajouts tr th
+{
+text-align:center;
+font-weight:bold;
+background:#eaeaea;
+padding:0.4em 0.2em;
+}
+
+table#ajouts tr th.ici
+{
+	background:#fafafa;
+}
+
+table#ajouts tr td
+{
+text-align:left;
+vertical-align:middle;
+font-size:0.85em;
+padding:0.4em 0.2em;
+}
+
+table#ajouts tr.impair
+{
+background-color:#f0f0ff;
+
+}
+
+
+#ajouter_editer
+{
+	margin: 1em 0em 1em 1em;
+	 background:#fafafa;
+	 padding:0.2em;
+ 	color:#505a5a;
+ font-size:1em;
+ line-height: 1.3em;
+/*  border:1px solid lime; */
+}
+
+	#ajouter_editer fieldset
+	{
+		margin-top:5px;
+		margin-left:0.1em;
+		background-color:#f2f2f2;
+		padding:1em 0 1em 0.4em;
+		/*  border:1px solid aqua; */
+	}
+
+		#ajouter_editer fieldset legend
+		{
+			font-weight:bold;
+			padding-left:0.8em;
+		}
+
+	#ajouter_editer p
+	{
+		width:100%;
+		padding:0.6em 0;
+	/* 	 border: 1px solid black;   */
+	}
+
+
+
+#ajouter_editer label 
+{ 
+	/* vertical-align: middle; */
+	text-align: right;
+	width: 10em;
+	margin:0.3em 0.3em 0 0;
+	padding: 0 0 0 0.4em;
+	/* border: blue dashed 1px; */ 
+}
+
+	#ajouter_editer label.continu
+	{
+		float:none;
+		margin: 3px 3px 0 0;
+	}
+
+#ajouter_editer input
+{
+	border:1px solid #aeaeae;
+	padding:0.2em 0.3em;
+
+}
+
+#ajouter_editer textarea
+{
+	border:1px solid #aeaeae;
+	padding:0.1em 0.2em;
+}
+
+#ajouter_editer select
+{
+	border:1px solid #aeaeae;
+	padding:0.1em 0.1em 0.1em 0.1em;
+	font-family:Verdana, Helvetica, sans;
+}
+
+#ajouter_editer optgroup
+{
+	font-family:Verdana, Helvetica, sans;
+}
+
+#ajouter_editer input:focus
+{
+background-color:#ffc; 
+/* border:2px solid #59787A; */
+}
+
+
+#ajouter_editer select:focus
+{
+background-color:#ffc; 
+/* border:2px solid #59787A; */
+}
+
+
+
+
+#ajouter_editer  ul.radio
+{
+
+	vertical-align:middle;
+	display:inline;
+	/* border:1px solid red; */
+}
+
+#ajouter_editer ul.radio li
+{
+	text-align:left;
+	display:inline;
+	vertical-align: middle;
+	padding: 0em 0.4em;
+	margin-top:0em;
+	margin-bottom:0.5em;
+	border:none;
+	/* border:1px solid black; */
+}
+
+#ajouter_editer  ul.radio li label
+{
+	
+	float:none;
+	margin:0;
+	padding-left:0.2em;
+}
+
+#ajouter_editer ul.radio li input.radio_horiz
+{
+vertical-align:middle;
+
+border:none;
+}
+
+
+#ajouter_editer  ul.radio_vert
+{
+
+	margin-left:10em;
+	vertical-align:middle;
+}
+
+#ajouter_editer ul.radio_vert li
+{
+	text-align:left;
+	vertical-align: middle;
+	padding: 0em 1em 0em 1em;
+	margin-top:0em;
+	margin-bottom:0.5em;
+	border:none;
+}
+
+#ajouter_editer  ul.radio_vert li label
+{
+	
+	float:none;
+	margin:0;
+	padding-left:0.2em;
+}
+
+#ajouter_editer ul.radio_vert li input
+{
+vertical-align:middle;
+
+border:none;
+}
+
+
+
+#ajouter_editer ul.checkbox
+{
+	vertical-align:middle;
+	width:150px;
+	padding-left:23px;
+	/* border: 1px solid green; */
+}
+
+#ajouter_editer  ul li.checkbox
+{
+text-align:right;
+	vertical-align: middle;
+	padding: 0em 1em 0em 1em;
+	/* border:1px solid black;  */
+}
+
+#ajouter_editer  ul li label.checkbox
+{
+	width:100px;
+	vertical-align:middle;
+	float:none;
+/* 	border:1px solid blue; */
+}
+
+#ajouter_editer  ul li input {
+
+}
+
+#ajouter_editer h2
+{
+	font-size:1.1em;
+}
+
+#ajouter_editer  table
+{
+	font-size: 0.9em;
+}
+
+
+#ajouter_editer label h2
+{
+	/*border:1px solid red; */
+}
+
+#ajouter_editer .clearfix
+{
+/*border-top: 1px solid #CCC;*/
+}
+
+#ajouter_editer  .entreLabels
+{
+	width: 140px;
+	margin:0 3px 0 0;
+	padding-left:11em;
+	/* border: blue dashed 1px; */
+
+
+}
+
+#ajouter_editer .guideForm
+{
+	font-style: italic;
+	color: gray;
+	font-size:1em;
+	padding-left:1em;
+	margin:5px 0px 3px 0px;
+}
+
+#ajouter_editer .guideChamp
+{
+	font-style: italic;
+	margin:0.2em 0 0.3em 0;
+	font-size:0.85em;
+	padding:0em 0 0.2em 13em;
+	line-height:1.2em;
+	/* border:1px solid red; */
+}
+
+#ajouter_editer  p.enteteForm
+{
+	width:5em;
+	color: #EFF0E3;
+	background-color:#aeaeae;
+}
+
+#ajouter_editer p.piedForm
+{
+	width:94%;
+	text-align:right;
+	background-color:#d0d0d0;
+	margin:0.1em 0em 0em 0em;
+	padding:0.4em 3%;
+	border-left:1px solid lightgray;
+}
+
+#ajouter_editer input.submit
+{
+	background-color:#F9F9F9;
+	font-weight:bold;
+	border:1px solid black;
+	padding:0.3em 0.4em;
+}
+
+#ajouter_editer .checkbox
+{
+vertical-align: middle;
+border: none;
+}
+
+#ajouter_editer .fichier
+{
+border: 1px solid gray;
+
+}
+
+#ajouter_editer .msg {
+	font-size:0.95em;
+	margin-left: 11em;
+	padding:0.2em;
+	background:yellow;
+}
+
+#ajouter_editer label.probleme
+{
+text-align:right;
+background-image: url(../images/interface/icons/exclamation.png);
+background-repeat: no-repeat;
+background-position: 3px 0px;
+
+}
+
+#ajouter_editer .complete
+{
+background-image: url(../images/interface/icons/tick.png);
+background-repeat: no-repeat;
+background-position: 3px 0px;
+
+}
+
+	#ajouter_editer .supImg
+	{
+	font-size:0.8em;
+	margin-top:5px;
+	margin-left:150px;
+	}
+
+		form .supImg img 
+		{
+			border:1px solid gray;
+		}
+
+/* Evenements */
+#ajouter_editer #evenements
+{
+float:left;
+margin:0em 0em 0em 1em;
+width:80%;
+border:1px solid gray;
+}
+
+#ajouter_editer #evenements h1
+{
+background:orange;
+}
+
+#ajouter_editer #evenements h2
+{
+color:gray;
+}
+/*Fin evenements  */
+
+#ajouter_editer strong
+{
+font-weight:bold;
+}
+
+#ajouter_editer table.fichiers_associes
+{
+font-size:1em;
+background:white;
+}
+
+#ajouter_editer table.fichiers_associes th
+{
+font-weight:bold;
+text-align:center;
+background:#e0e0e0;
+}
+
+#ajouter_editer table.fichiers_associes td
+{
+vertical-align:middle;
+padding:0.1em;
+border-top:dotted 1px #eaeaea;
+}
+
+.menu_wikicode
+{
+padding-left:13em;
+}
+
+.menu_wikicode input
+{
+width:68px;
+font-weight:bold;
+font-family:Georgia;
+}
+
+/* #ajouter_editer #bouton_ajouter_champ
+{
+text-align:right;
+background-image: url(../images/interface/icons/add.png);
+background-repeat: no-repeat;
+background-position: 52% 2px;
+
+} */
+
+#gerer-even-pagination
+{
+   margin: 0 auto;
+    width: 96%;
+}
+
+#gerer-even-pagination .pagination
+{
+	float:left;
+}

@@ -1,0 +1,138 @@
+
+#entete_contenu h1
+{
+font-size:1.4em;
+}
+
+
+#breves
+{
+	width:96%;
+	margin:0.6em auto 1em auto;
+	color: #59787A;
+}
+
+#breves h3
+{
+	margin:1em 0em 0.4em 0em;
+	font-size:1.4em;
+	color:#5C7378;
+	background:#fafafa;
+	
+}
+
+#breves .titre
+{
+	font-size:1em;
+	font-weight:bold;
+	margin:0;
+}
+
+#breves p
+{
+margin:0;
+}
+
+#breves h4
+{
+	margin:2em 0em 0.4em 0em;
+font-size:1.2em;
+background:#eaeaea;
+}
+
+#breves h5
+{
+font-size:1.2em;
+margin:0.8em 0 0.2em 0;
+font-weight:bold;
+}
+
+
+#breves .breve_contenu
+{
+background-color:#f9f9f9;
+line-height:1.2em;
+}
+
+
+#breves .breve_contenu .auteur
+{
+margin:1em 0;
+font-style:italic;
+
+}
+
+
+#breves .image
+{
+float:right;
+width:100px;
+height:140px;
+}
+/* Fin breves */
+
+/* Deb menu_mois */
+
+#colonne_droite h2
+{
+font-size:1.2em;
+color:#aeaeae;
+
+}
+
+
+ul#menu_breves
+{
+display:block;
+
+}
+
+ul#menu_breves li
+{
+margin:0.4em 0 0 0;
+text-align:left;
+display:block;
+
+}
+
+ul#menu_breves li.annee
+{
+margin:1em 0 0 0;
+font-weight:bold;
+color:#808080;
+}
+ul#menu_breves li.ici
+{
+border-left:gray solid 2px;
+}
+
+
+
+
+ul#menu_actif
+{
+display:block;
+font-size:1.2em;
+}
+
+ul#menu_actif li
+{
+margin:0.4em 0 0 0;
+text-align:left;
+display:block;
+width:150px;
+}
+
+ul#menu_actif li a
+{
+display:block;
+width:150px;
+}
+
+ul#menu_actif li.ici
+{
+background-color:yellow;
+}
+
+
+

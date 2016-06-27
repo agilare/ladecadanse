@@ -1,0 +1,486 @@
+	#dernieres
+{
+	margin-top:1.2em;
+	font-size:0.95em;
+	color:#5a7175;
+	background:#ffffff;
+}
+
+#dernieres h2
+{
+padding:0.2em 0;
+
+font-size:1em;
+font-weight:bold;
+line-height:1.2em;
+margin:0em 0 0.4em 0.4em;
+}
+
+
+#derniers_evenements
+{
+font-size:0.9em;
+background:#fafafa;
+margin:0.2em 0 1em 0;
+
+}
+
+#derniers_evenements h3
+{
+	padding:0.2em 0;
+	font-size:1.2em;
+	background:#eaeaea;
+	
+}
+
+.dernier_evenement
+{
+	border-bottom:1px dotted gray;
+	margin:0.5em 0;
+	padding:0 0 0.4em 0;
+	line-height:1.3em;
+}
+
+.dernier_evenement .flyer 
+{
+	background:#f0f0f0;
+	float:left;
+	width:60px;
+	height:80px;
+	overflow:hidden;
+	margin-right:3px;
+}
+
+.dernier_evenement h4
+{
+	font-size:1em;
+	font-weight:bold;
+	line-height:1.2em;
+	padding:0 0.1em 0.4em 0.1em;
+}
+.dernier_evenement h5
+{
+	font-weight:bold;
+	font-size:0.9em;
+
+	padding:0 0.1em 0.4em 0.1em;
+}
+
+
+
+#breves
+{
+	border-left:1px solid #aeaeae;
+	color:#5C7378;
+	background:#fff;
+	font-size:0.85em;
+}
+
+#breves h2
+{
+	padding:0.2em 0.1em 0.1em 0.1em;
+	font-size:1.4em;
+	font-weight:bold;
+	color:#5C7378;
+	background-color:#eaeaea;
+	height:1.3em;
+
+}
+
+#breves h2 img
+{
+	float:right;
+	margin:0.1em 0.2em;
+}
+
+#breves p
+{
+}
+
+#breves h3.jour
+{
+	font-size:1em;
+	border-top:1px dotted #aeaeae;
+	padding:0.4em 0.1em;
+}
+
+#breves .breve_contenu
+{
+	background:#fefefe;
+	margin:0 0 0.8em 0;
+	padding:0.2em 0.2em;
+}
+
+#breves .breve_contenu p
+{
+line-height:1.4em;
+
+}
+
+#breves .breve_contenu h4
+{
+	font-size:1.05em;
+	font-weight:bold;
+	margin:0.2em 0.1em;
+	line-height:1.4em;
+}
+
+
+#breves .breve_contenu .auteur
+{
+	margin:0.4em 0 0 0;
+	font-style:italic;
+	text-align:left;
+}
+
+#breves .image img
+{
+	float:right;
+}
+
+#breves #toutes_les_breves
+{
+	border-top:1px dotted #aeaeae;
+	border-bottom:1px solid #aeaeae;
+	padding:0.2em 0.1em;
+}
+
+/* Fin breves */
+
+
+#partenaires
+{
+	margin:1em 0em 0em 0em;	
+	color:#5C7378;
+	font-size:1em;
+	border:1px solid #5C7378;
+	background:#FEFEFE;
+	line-height:1.2em;
+}
+
+	#partenaires h2
+	{
+		padding:0.2em 0.1em;
+		font-size:1.4em;
+		font-weight:bold;
+		color:#5C7378;
+		background-color:#EAEAEA;
+		height:1.4em;
+	}
+
+
+	#partenaires ul
+	{
+	
+	}
+
+	#partenaires ul li
+	{
+	margin:0.4em 0.2em;
+	}
+
+#ailleurs
+{
+	margin:1em 0em 0em 0em;	
+	color:#5C7378;
+	font-size:1em;
+	border:1px solid #5C7378;
+	background:#FEFEFE;
+	line-height:1.2em;
+}
+
+	#ailleurs h2
+	{
+		padding:0.2em 0.1em;
+		font-size:1.4em;
+		font-weight:bold;
+		color:#5C7378;
+		background-color:#EAEAEA;
+		height:1.4em;
+	}
+
+	#ailleurs ul
+	{
+	margin:0;
+	padding:0;
+	}
+
+	#ailleurs ul li
+	{
+	margin:0.4em 0.2em;
+	}
+	/* Fin Colonne gauche */
+
+
+#prochains_evenements
+{
+	width:94%;
+	margin: 1em auto 0 auto;
+}
+
+	#prochains_evenements .genre
+	{
+		background:#f8f8f8;
+		/* border:1px #aeaeae solid; */
+		margin: 0 0 2em 0;
+	}
+	
+	#prochains_evenements .genre .genre-titre
+	{
+		border-top:solid 1px #aeaeae;		
+	}
+	
+	#prochains_evenements .genre .genre-jump
+	{
+		
+		margin:0.2em 0.2em;
+		float: right;
+		padding: 0.4em 0.8em;
+		background:#f0f0f0;
+		border-radius: 3px;
+	}	
+
+	#prochains_evenements .genre .genre-jump:hover
+	{
+		background:#ddd;
+	}	
+
+	#prochains_evenements h3
+	{
+		float: left;
+		padding:0.4em 1%;
+		color:#777;
+		font-size:1.25em;
+		font-weight:bold;
+
+	}
+	
+	#prochains_evenements h4
+	{
+		color:#777;
+		font-size:1em;
+		margin:0;
+	}
+
+
+.evenement
+{
+	color:#59787A;
+	margin: 0.6em 0 1.4em;
+	border-top:1px dotted gray;
+	width:100%;
+}
+
+.evenement .flyer
+{
+	float:left;
+	width:100px;
+	height:140px;
+	background:#efefef;
+	overflow:hidden;
+	margin-top:6px;
+}
+
+.evenement .titre
+{
+	padding: 0.4em 0 0.1em;
+	font-size:1em;
+	font-weight:bold;
+	line-height:1.2em;
+
+	-width:90%;
+/*
+border-bottom:1px solid black;
+*/
+}
+
+	.evenement .titre .left
+	{
+		float:left;
+		line-height: 1.25em;
+		width:58%;
+		text-align:left;
+		margin:0;
+		padding-left:0.1em;
+/*
+		background-color:yellow;
+*/
+		
+	}
+
+	.evenement .titre .right
+	{
+		float:right;
+		width:40%;
+		padding:0;
+		padding:0 0.2em 0 0 ;		
+		text-align:right;
+line-height: 1.25em;		
+/*
+	background-color:aqua;
+*/
+	}
+.evenement .titre #titre, #nom_lieu
+{
+display:block;
+background-color:#FDD017;
+}
+
+
+.evenement .description
+{
+	/*float:left;*/
+	min-height:72px;
+	padding:0.4em 0 0.4em 0.5em;
+	margin:0;
+	/*width:85%;*/
+
+	color:#3e5355;
+	font-size:0.9em;
+
+
+/*
+	background-color:red;
+*/
+
+
+
+	background-color:#F9F9F9;
+
+	line-height:1.4em;
+	overflow:hidden;
+	
+}
+
+.evenement .description h2
+{
+font-size:1em;
+font-weight:bold;
+}
+
+.evenement .liens
+{
+
+}
+
+.evenement .adresse
+{
+ background:#E6EDF7;
+
+}
+
+.evenement .pratique
+{
+ 	background:#E6EDF7; 
+	font-size:0.8em;
+	border:1px solid #eaeaea;
+	padding:0.4em 0.2em;
+	line-height: 1.3em;
+}
+
+.evenement .pratique .left
+{
+	float:left;
+	padding:0 0 0 0.2em;
+	width:59%;
+	text-align:left;
+}
+
+.evenement .pratique .right
+{
+	float:right;
+	width:39%;
+	padding:0 0.2em 0 0;
+	text-align:right;
+}
+
+.evenement .edition
+{
+	text-align:right;
+	margin-top: 0.6em;
+	font-size: 0.9em;
+}
+
+
+.evenement .edition .nb_commentaires
+{
+	padding:0em 0.4em;
+	font-size:0.85em;
+	float:left;
+	font-weight:bold;
+}
+
+ul.menu_actions
+{
+	text-align:right;
+	display:inline;
+}
+
+ul.menu_actions li
+{
+	display:inline;
+	margin: 0 0.2em;
+
+}
+
+
+
+
+
+
+
+#prochains_evenements table
+{
+width:95%;
+margin:0em auto 0em auto;
+color:#5C7378;
+background:#F7F7F5;
+border:1px solid #5C7378;
+border-collapse:collapse;
+}
+
+#prochains_evenements table th
+{
+
+text-align:left;
+border:1px solid #5C7378;
+background:#dadada;
+}
+
+
+#prochains_evenements table td
+{
+text-align:left;
+padding:0.2em;
+vertical-align:top;
+border-top:1px dashed #5C7378;
+}
+
+.lien_lieu
+{
+float:right;
+}
+
+
+#fetes_s
+{
+width:95%;
+}
+
+#fetes_s .evenement
+{
+
+}
+
+#fete_s .evenement .flyer
+{
+width:80px;
+height:120px;
+}
+
+.rappel_date
+{
+	margin: -1.2em 0 1.2em;
+	color: #888;
+	font-size: 1em;
+}

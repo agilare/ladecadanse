@@ -1,0 +1,642 @@
+#entete_contenu
+{
+	min-height:50px;
+	padding:0.1em 1% 0.1em 1%;
+	margin-bottom:1em;
+}
+
+#entete_contenu h2
+{
+	width:58%;
+	font-size:1.6em;
+	line-height:1.2em;
+	vertical-align:middle;
+}
+
+#entete_contenu p
+{
+	float:left;
+}
+
+
+#entete_contenu img
+{
+	float:right;
+}
+
+#titre_contenu
+{
+	margin:1em 3em 0em 3em;
+}
+
+ul.menu_actions
+{
+ font-size: 0.9em;
+    margin: 0 auto 0.3em;
+    text-align: right;
+    width: 94%;
+
+}
+
+ul.menu_actions li
+{
+	display:inline;
+	padding:0.2em 0.2em;
+}
+
+
+.embleme {
+float:right;
+	margin: 0px 0px 0px 0px;
+}
+
+ul.menu_actions_lieu
+{
+ font-size: 0.9em;
+    margin: 0 auto 0.3em;
+    text-align: right;
+    width: 94%;
+
+}
+
+
+ul.menu_actions_lieu li {
+    display: inline;
+    margin: 0 0.2em;
+}
+
+
+
+/* FICHE */
+#fiche
+{
+	width:94%;
+	margin: 0em auto 0.4em auto;
+	max-width:60em;
+	min-width:25em;
+	color:#5C7378;
+	background-color: #F7F7F5;
+}
+
+.vide
+{
+	min-height:300px;
+}
+
+	#fiche #pratique
+	{
+		background-color: #F7CF45;
+		color:#2C2328;
+	}
+
+		#fiche #pratique ul
+		{
+			padding:2px 2px 2px 2px;
+			border-bottom: 1px dashed Gray;
+			padding: 0.3em 0.4em;			
+			
+		}
+
+			#fiche #pratique ul li
+			{
+				margin: 0.4em 0;
+			}
+
+			#fiche #pratique ul li#lieux_lies
+			{
+				background:#FFDF5A;
+			}
+
+
+		#fiche #pratique .liste
+		{
+			font-size:0.8em;
+			color: #59787A;
+			background: #F9F9F9;
+		}
+
+			#fiche #pratique .liste ul
+			{
+				padding:10px 5px 10px 5px;
+				list-style:none;
+			}
+
+			#fiche #pratique .liste li
+			{
+				list-style:none;
+				margin:2px 0px 2px 0px;
+			}
+
+
+			#fiche #pratique ul li ul.salles
+			{
+				display:inline;
+				border-bottom: none;
+				
+			}
+
+			#fiche #pratique ul li ul.salles li
+			{
+			display:inline;
+			margin:0 0.8em 0 0;
+
+			}
+
+
+	#fiche #descriptions
+	{
+
+		max-width:372px;
+	}
+
+
+	ul#menu_descriptions
+	{
+
+		display:block;
+		margin:1.2em auto 1em auto;
+		max-width:372px;
+		font-size:1.1em;
+		color:#5C7378;
+		border-bottom:1px dotted #5C7378;
+
+	}
+
+	ul#menu_descriptions li
+	{
+
+			display:block;
+
+			padding:0 0.4em;
+			/* border:1px solid red; */
+	}
+
+
+		ul#menu_descriptions li a
+		{
+			width:40%;
+			height:2em;
+		}
+
+		ul#menu_descriptions li.ici a
+		{
+
+			color:#5e5e5e;
+			font-weight:800;
+			background-color:#F7F7F5;
+			padding:0.1em 0.4em 0.4em 0.4em;
+			border-top:1px dotted #5C7378;
+			border-left:1px dotted #5C7378;
+			border-right:1px dotted #5C7378;
+		}
+
+
+	#fiche #descriptions
+	{
+
+		max-width:372px;
+	}
+
+		#fiche #descriptions .description
+		{
+			background-color: #F7F7F5;
+			color: #59787A;
+			padding:5px 0.4em 5px 0.4em;
+			line-height:1.3em;
+		}
+
+		#fiche  #descriptions .description p
+		{
+			color: #5C7378;
+			margin:0em 1em 1em 0.4em;
+		}
+
+		#fiche  #descriptions .description a
+		{
+			color: blue;
+		}
+
+		#fiche #descriptions  .description h1
+		{
+			text-align:left;
+			font-size: 1.2em;
+		}
+
+		#fiche #descriptions  .description h2
+		{
+			font-size: 1em;
+		}
+
+		#fiche #descriptions  .description pre
+		{
+			font-size:1em;
+		}
+
+		#fiche #descriptions .description .auteur
+		{
+			height:4em;
+			vertical-align:middle;
+			font-size: 1em;
+			color: Gray;
+			background: #F0F0FA;
+			padding:2px 10px 2px 0;
+			margin:0;
+		}
+
+		#fiche #descriptions .description .auteur .left
+		{
+
+			float : left;
+			text-align : left;
+			vertical-align:middle;
+			width : 59%;
+		}
+
+		#fiche #descriptions .description .auteur .right
+		{
+
+			float : right;
+			text-align : right;
+			vertical-align:middle;
+			width : 49%;
+		}
+
+#fiche p a:visited
+{
+	font-family : Verdana, Geneva, Arial, Helvetica, sans-serif;
+	color: #6E9CCF;
+}
+
+#fiche #medias
+{
+	float:right;
+	background-color:#eaeaea;
+	margin:0px 0px 0px 5px;
+	width:200px;
+	height:300px;
+	color:#5C7378;
+}
+
+#fiche #medias #photo
+{
+min-height:200px;
+}
+
+#fiche #medias .section
+{
+	border:1px solid #aeaeae;
+	margin:1em 0;
+}
+
+#fiche #medias .section h3
+{
+	font-size:1em;
+	font-weight:bold;
+	background:#fafafa;
+}
+
+.icone
+{
+	width : 100px;
+	height : 100px;
+	background : #EDEDED;
+}
+
+/* Galerie d'images */
+#galerie
+{
+	width:90%;
+	background:#aeaeae;
+	margin:1em 1em 1em 2em;
+}
+
+#photo2
+{
+	margin:2px 2px 2px 0px;
+}
+
+.galerie
+{
+margin:0 2px 0 2px;
+}
+
+
+
+
+
+
+ul#menu_complement
+{
+
+	display:block;
+	margin:1em auto 1em auto;
+	width:94%;
+	height:1.4em;
+	font-size:1.2em;
+color:#5C7378;
+	border-bottom:1px dotted #5C7378;
+		text-align:center;
+
+}
+
+ul#menu_complement li
+{
+		float:left;
+		display:block;
+		text-align:center;
+		padding:0 0.4em;
+		/* border:1px solid red; */
+}
+
+
+	ul#menu_complement li a
+	{
+		width:40%;
+		height:2em;
+	}
+
+	ul#menu_complement li.ici a
+	{
+
+		color:#5e5e5e;
+		font-weight:800;
+	}
+
+
+ul#menu_complement .rss
+{
+	width:30%;
+	text-align:right;
+	float:right;
+}
+
+
+
+
+
+/* Prochains evenements */
+#prochains_evenements
+{
+	margin:0em auto 2em auto;
+	width:94%;
+	color:#5C7378;
+
+}
+
+#prochains_evenements ul#menu_genre
+{
+	margin:0 0 0em 0em;
+	/height:0.8em;
+	/padding:0.6em 0;
+}
+
+	#prochains_evenements ul#menu_genre li
+	{
+		display:inline;
+		margin:0;
+		padding:0.2em 1em 0.4em 1em;
+	}
+
+	#prochains_evenements #menu_genre  li.ici
+	{
+		background-color:#F7F7F5;
+	}
+
+	#prochains_evenements #menu_genre  li.rien
+	{
+		display:inline;
+		margin:0px 0px 2px 0px;
+		color:lightgray;
+	}
+
+#prochains_evenements table
+{
+	margin-top:0;
+	width:100%;
+	border-collapse:collapse;
+	color:#5C7378;
+	background:#F7F7F5;
+line-height:1.3em;
+}
+
+#prochains_evenements table tr.ici
+{
+	background-color:#ff3;
+}
+
+#prochains_evenements table tr th
+{
+
+	text-align:left;
+	background-color:#e0e0e0;
+}
+
+
+#prochains_evenements table tr td
+{
+	text-align:left;
+	padding:0.4em;
+	vertical-align:top;
+	border-top:1px dotted #5C7378;
+}
+
+#prochains_evenements table tr td img
+{
+
+
+}
+
+
+
+#prochains_evenements table td h3
+{
+font-weight:bold;
+
+}
+
+#prochains_evenements table td.mois
+{
+	font-weight:bold;
+	border:none;
+	padding: 0.5em 0.3em;
+	font-size: 1.1em;
+	line-height: 1.3em;
+}
+
+
+#prochains_evenements table td.flyer
+{
+width:50px;
+height:80px;
+overflow:hidden;
+
+}
+
+#prochains_evenements table td p.description {
+    font-size: 0.95em;
+}
+
+#prochains_evenements table td p.pratique {
+
+    font-size: 0.8em;
+    margin-top: 0.5em;
+    padding: 0.2em;
+}
+
+#prochains_evenements table td.lieu_actions_evenement ul
+{
+
+
+}
+
+#prochains_evenements table td.lieu_actions_evenement ul li
+{
+	display:inline;
+
+}
+
+
+
+#commentaires h3, h4
+{
+	margin: 1.4em 1em 0.6em 1em;
+	border-top:1px dotted #5C7378;
+	font-size:1em;
+	color:#5C7378;
+}
+
+#commentaires h5
+{
+	margin: 2em 0em 0.6em 0em;
+	font-size:1.2em;
+}
+
+#commentaires .apres_evenement
+{
+	margin: 1.4em 1em 0.6em 1em;
+}
+
+#commentaires blockquote
+{
+	width:94%;
+	margin: 1em auto 1em auto;
+	padding:0.2em 0.2em;
+	background:#fafafa;
+	border:1px solid #eaeaea;
+	line-height:1.2em;
+}
+
+
+#commentaires blockquote strong
+{
+	font-weight:bold;
+}
+
+#commentaires blockquote h2
+{
+	font-weight:bold;
+	font-size:1.2em;
+}
+
+
+#commentaires blockquote .date
+{
+
+}
+
+
+#commentaires blockquote .commentaire_de
+{
+	background:#eaeaea;
+	height:1.4em;
+	padding:0.2em;
+}
+
+#commentaires blockquote .commentaire_de .left
+{
+	float:left;
+
+}
+
+#commentaires blockquote .commentaire_de .right
+{
+	float:right;
+
+}
+
+
+	/*Ajouter commentaire */
+	form#ajouter_editer
+	{
+		width:94%;
+		margin:0 auto 0 auto;
+		/* border:1px solid blue; */
+
+	}
+
+	 form#ajouter_editer label
+	{
+		float:left;
+		text-align:right;
+		width:10em;
+	}
+
+	form#ajouter_editer #commentaire
+	{
+		float:right;
+		margin:0;
+		padding:0.2em;
+		border:1px solid #aeaeae;
+		font-size:1.1em;
+		margin:0;
+		width:400px;
+	}
+
+
+
+	form#ajouter_editer #pied_form
+	{
+		background-color:#eaeaea;
+		height:2em;
+		text-align:right;
+		margin:0.2em 0;
+		padding:0.5em 0.4em;
+	}
+
+	form#ajouter_editer #pied_form .submit
+	{
+		background-color:#fafafa;
+		border:#909090 2px solid;
+	}
+
+.menu_wikicode
+{
+padding-left:13em;
+text-align:right;
+}
+
+.menu_wikicode input
+{
+
+width:55px;
+font-weight:bold;
+font-family:Georgia;
+border:1px solid gray;
+}
+
+#statut_lieux
+{
+
+margin:1em 0 1em 0;
+padding:0 0.2em;
+}
+
+
+.voir_lieux
+{
+	text-align:left;
+	padding:0 0px 0 0;
+	background-image:url(../images/interface/icons/building_go.png);
+	background-repeat:no-repeat;
+	background-position: 85% 50%;
+}

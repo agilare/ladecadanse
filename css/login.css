@@ -1,0 +1,33 @@
+form#ajouter_editer label
+{
+	width:20em;
+}
+
+form#ajouter_editer p.memoriser
+{
+
+}
+
+form#ajouter_editer p.memoriser label, form#ajouter_editer p.mdp_oublie
+{
+	width:21em;
+	padding-left:10em;
+	font-size:0.85em;
+}
+
+ form#ajouter_editer p.mdp_oublie
+ {
+	 padding-left:21em;
+ }
+
+form#ajouter_editer p.memoriser input
+{
+	border:none;
+}
+
+form#ajouter_editer a.oubli
+{
+	margin-left:22em;
+	font-size:0.85em;
+
+}

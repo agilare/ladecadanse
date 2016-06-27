@@ -1,0 +1,210 @@
+p
+{
+	margin: 10px 0 10px 0;
+}
+
+#tableaux
+{
+	width:94%;
+	margin:0 auto;
+	line-height: 1.2em;
+}
+
+#contenu h3
+{
+	font-size:1.3em;
+	font-weight:bold;
+	margin:1em 0 0.4em 0;
+	color: #5c7378;
+}
+
+#contenu h4
+{
+	font-size:1.2em;
+	font-weight:bold;
+	margin:1em 0 0.4em 0;
+	border-bottom:1px solid #aeaeae;
+	color: #5c7378;
+}
+
+#contenu h5
+{
+	font-size:1em;
+	font-weight:bold;
+	margin:1em 0 0.4em 0;
+	color: #5c7378;
+}
+
+
+ul#menu_panneaux
+{
+	margin:0 0 0 1em;
+	display:inline;
+	background:#efefef;
+}
+
+ul#menu_panneaux li
+{
+	display:inline;
+	padding:0em 1em;
+}
+
+#tableaux table
+{
+	border:1px solid #aeaeae;
+	width:100%;
+
+}
+
+#tableaux table tr th
+{
+	font-weight:bold;
+	background-color:#eaeaea;
+	padding: 0.4em 0.2em;
+}
+
+
+#tableaux table tr.impair
+{
+background-color:#f0f0ff;
+}
+
+#tableaux table tr td
+{
+	padding: 0.4em 0.2em;
+}
+
+
+#tableaux table.verticale
+{
+
+}
+
+
+#frequentation
+{
+float:left;
+width:50%;
+
+background:#efefef;
+}
+
+#ajouts
+{
+float:left;
+width:50%;
+
+background:#efefef;
+}
+
+#cache
+{
+float:left;
+width:50%;
+
+background:#efefef;
+}
+
+#bd
+{
+float:left;
+width:50%;
+
+background:#efefef;
+}
+
+
+#actions h1
+{
+font-size:1.2em;
+background:orange;
+}
+
+#actions ul
+{
+margin:0;
+background:#fff;
+}
+
+#actions ul li
+{
+margin:0.4em 0.4em 0.4em 2em;
+
+}
+
+
+table.graph_horiz
+{
+background-image:url(../images/interface/fond.png);
+background-repeat: repeat-x;
+background-position: left bottom;
+height:150px;
+font-size:0.8em;
+
+}
+
+table.graph_horiz td
+{
+	padding:0;
+	border-top: 1px solid #e5e5e5;
+	text-align:center;
+
+}
+
+table.graph_horiz td.valeur
+{
+/* 	background-image: url(../images/interface/ligne_vert.gif);
+	background-repeat: repeat-y;
+	background-position: left bottom; */
+	border-bottom: 1px solid #e5e5e5;
+	height:150px;
+	padding:0;
+	background-color:transparent;
+	vertical-align:bottom
+}
+
+table.graph_horiz td.valeur img
+{
+display:block;
+}
+
+
+
+
+table.graph_vert
+{
+background-image:url(../images/interface/fond.png);
+background-repeat: repeat-x;
+background-position: left top;
+width:33em;
+
+}
+
+table.graph_vert td.valeur
+{
+	background-image: url(../images/interface/ligne.gif);
+	background-repeat: repeat-x;
+	background-position: left top;
+	border-left: 1px solid #e5e5e5;
+	border-right: 1px solid #e5e5e5;
+	width:400px;
+	padding:0;
+	border-bottom:none;
+	background-color:transparent;
+	
+}
+
+table.graph_vert td
+{
+	padding: 4px 6px;
+	border-bottom: 1px solid #e5e5e5;
+	border-left: 1px solid #e5e5e5;
+}
+
+table.graph_vert td.valeur img
+{
+vertical-align:middle;
+margin:5px 5px 5px 0px;
+}
+
+

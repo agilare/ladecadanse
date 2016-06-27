@@ -1,0 +1,423 @@
+#global
+{
+	min-width:540px;
+}
+
+#conteneur
+{
+	padding-left: 180px;
+	padding-right: 180px;
+}
+
+#contenu
+{
+	width:100%;
+	min-width:400px;
+
+}
+
+#colonne_gauche
+{
+	width:180px;
+	margin-left:-100%;
+	left:180px;
+}
+
+#conteneur > #colonne_gauche
+{
+	left:-180px;
+
+}
+
+#colonne_droite
+{
+	width:180px;
+	margin-right:-180px;
+}
+
+
+#entete #titre_site
+{
+	height:35px;
+	width:19%;
+
+}
+
+/* HAUT */
+#entete_haut
+{
+	height:35px;
+	width:80%;
+}
+
+	#entete_haut #menu_pratique
+	{
+		float:right;
+		width:76%;
+		height:1.4em;
+
+	}
+
+		#entete_haut #menu_pratique ul
+		{
+			text-align:center;
+		}
+
+#entete_haut #soutien {
+	display:none;
+}	
+	
+#menu
+{
+	height:2.4em;
+}
+
+	#menu ul li
+	{
+		float:left;
+	}
+
+	#menu ul li a
+	{
+		width:140px; /* 140 */
+		height:1em;
+	}
+	
+	#menu ul li.form_recherche
+	{
+		float:right;
+	}
+	#menu ul li.btn_recherche
+	{
+		display:none;
+	}	
+
+
+
+	#menu ul li#bouton_agenda a
+	{
+		width:180px;
+
+	}
+
+	/* pas joli le fond blanc à cet endroit */
+	#menu ul li#bouton_agenda.ici a
+	{
+		background: none;
+	}	
+	
+	form.recherche
+	{
+		text-align:right;
+	}
+	
+#navigation_calendrier
+{
+    background: none repeat scroll 0 0 #eaeaea;
+    border-radius: 0 0 10px;
+}
+
+
+table#calendrier tr#mois th
+{
+	font-size: 0.9em;
+    padding: 0.4em 0.2em;
+}
+
+table#calendrier tr#jours th {
+    padding: 0.2em 0;
+}
+
+/*
+.evenement .description {
+
+    float: left;
+    width: 85%;
+}
+*/
+#btn_menu_pratique
+{
+display:none;
+}
+
+#btn_calendrier
+{
+display:none;
+}
+
+#pied
+{
+ height: 3em;
+}
+
+#pied ul.menu_pied li
+{
+float: left;
+}
+
+.clear_mobile
+{
+display:none;
+}
+
+
+/* evenement */
+
+#evenement .titre
+{
+
+	min-height: 6em;
+}
+
+#evenement .titre .right
+{
+	min-height: 6em;
+}
+
+#complement
+{
+	width:160px;
+}
+
+#complement #flyer
+{
+	width:160px;
+}
+
+#evenement #description
+{
+	margin-left: 160px;
+	font-size: 0.98em;
+}
+
+/* agenda */
+
+#evenements .evenement .description
+{
+	height:130px;
+}
+
+/* lieux */
+#dernieres_descriptions {
+
+    height: 100em;
+}
+
+#dernieres_descriptions .vignette
+{
+	float:left;
+	width:48%;
+}
+
+#dernieres_descriptions .vignette .apercu
+{
+	height:10em;
+
+}
+
+#commentaires #connexion form 
+{
+    padding:10px 5px;
+    height:auto;
+}
+
+#commentaires #connexion form input.text
+{
+    width:100px;
+}
+
+#commentaires #connexion form label
+{
+    width:90px;
+    margin:5px 0 0 5px;
+    text-align:left;
+}
+
+#commentaires #connexion #inscription
+{
+     width:50%;
+     padding:5px;
+}
+
+/* lieu */
+
+#btn_listelieux
+{
+	display:none;
+}
+
+#fiche #medias
+{
+	min-height: 300px;
+}
+
+
+#prochains_evenements ul#menu_genre {
+    height: 1.4em;
+}
+
+#prochains_evenements {
+    /*width: auto;*/
+}
+
+#prochains_evenements table td p.description
+{
+  height: 4em;
+}
+
+/* menu_lieux */
+
+#menu_lieux
+{	
+	width:180px;
+}
+
+	#menu_lieux ul#selon
+	{	
+		
+		width:180px;
+	}
+
+	#menu_lieux ul#tranches
+	{
+		width:180px;
+	}
+	
+	#menu_lieux form
+	{
+		width:180px;		
+	}
+
+	#menu_lieux form select
+	{
+		width:150px;
+	}
+	
+#menu_lieux ul#tranches {
+
+    width: 200px;
+}	
+	
+#menu_lieux table tr td a
+{
+
+	width:143px;
+	
+}
+
+/* organisateurs */
+
+#dernieres_descriptions
+{
+
+	height:100em;
+}
+
+#dernieres_descriptions .vignette
+{
+	float:left;
+	width:45%;
+
+}
+
+/* fiche */
+
+#fiche {
+
+/*     min-height: 400px; */
+	min-width: 25em;
+}
+
+
+ul#menu_descriptions
+{
+   height: 1.4em;
+   text-align: center;
+}
+
+	ul#menu_descriptions li
+	{
+			float:left;
+	}
+	
+/* recherche */
+
+
+#res_recherche tr td p.description 
+{
+min-height:4.5em;
+
+}
+
+#res_recherche ul#menu_periode li {
+	float:left;
+}
+
+#res_recherche ul#menu_tri li {
+    display: block;
+    float: left;
+    height: 2em;
+    text-align: center;
+}
+
+/* evenement.inc */
+
+.evenement .description {
+
+}
+
+/* formulaires */
+
+form#ajouter_editer  ul.radio
+{
+
+	margin-left:9.5em;
+
+}
+
+form#ajouter_editer ul.radio li
+{
+	padding:0 1em;
+}
+
+form#ajouter_editer label 
+{ 
+	/* vertical-align: middle; */
+	float: left;
+}
+form#ajouter_editer .description
+{
+margin-left:10.5em;
+width:400px;
+}
+
+form#ajouter_editer #titre
+{
+width:400px;
+}
+
+
+form#ajouter_editer table.fichiers_associes {
+
+    margin-left: 11.5em;
+	
+}
+
+form#ajouter_editer textarea, form#ajouter_editer #ref  {
+
+
+    width: 400px;
+	
+	}
+	
+/* personne */
+
+.personne #actions
+{
+	margin:4em 0 0 0;
+}
+
+.only-mobile
+{
+	display:none;
+}

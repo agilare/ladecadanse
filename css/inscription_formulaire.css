@@ -1,0 +1,51 @@
+form#ajouter_editer label
+{
+	width:13em;
+}
+
+.guide_champ
+{
+	margin:0 1em 0 16em;
+	font-size:0.85em;
+	line-height:1.2em;
+	/* border:1px solid black; */
+	padding:0 0 1em 0em;
+}
+
+.guide_groupe
+{
+/* border:1px solid red; */
+margin:0 0 1em 16em;
+width:20em;
+}
+
+
+.guide_affiliation
+{
+	margin:0 1em 0 2em;
+	line-height:1.1em;
+	font-size:0.9em;
+	padding:0 0 1em 0em;
+}
+
+form#ajouter_editer input.radio
+{
+border:none;
+}
+
+.affiliation
+{
+	padding:0 0 0 13em;
+
+	/* border:1px solid red; */
+}
+
+form#ajouter_editer .affiliation label.affil
+{
+	margin:0;
+	padding:0;
+	/* width:8em; */
+	height:1.4em;
+	padding:0.2em 0;
+
+}
