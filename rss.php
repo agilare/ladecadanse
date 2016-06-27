@@ -14,6 +14,7 @@ if (isset($_GET['type']))
 	$get['type'] =  verif_get($_GET['type'], "enum", 1, $tab_types);
 }
 
+$get['id'] = '';
 if (isset($_GET['id']))
 {
 	$get['id'] =  verif_get($_GET['id'], "int", 1);
