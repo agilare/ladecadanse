@@ -159,8 +159,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' && empty($_POST
 			// COPIE pour admin
 			$headers = array ('From' => $from,
 			'To' => $glo_email_admin,
-			'Subject' => "Nouvelle demande de mdp");		
-			$mail = $smtp->send($glo_email_admin, $headers, $idPersonne.", ".$email);					
+			'Subject' => $subject);		
+			$mail = $smtp->send($glo_email_admin, $headers, $idPersonne.", ".$email."\n\n----\n\n".$contenu_message);					
 			
 
 		}
