@@ -70,7 +70,7 @@ $tab_deter = $connector->fetchArray($req_deter);
 
 if ($connector->getNumRows($req_deter) == 0)
 {
-	$determinant_lieu = " : ";
+	$determinant_lieu = " -";
 }
 else
 {
@@ -99,7 +99,7 @@ if (in_array($even->getValue('quartier'), $glo_tab_quartiers_hors_geneve))
 $nom_page = "evenement";
 $page_titre = $even->getValue('titre')." ".$determinant_lieu.$even->getValue('nomLieu').$even_salle." (".$page_titre_region.") le ".date_fr($even->getValue('dateEvenement'), "annee", "", "", false);
 $page_description = $even->getValue('titre')." ".$determinant_lieu.$even->getValue('nomLieu').
-" (".$even->getValue('quartier')."), Genève le ".date_fr($even->getValue('dateEvenement'), "annee", "", "", false)." ".
+" (".$even->getValue('quartier')."), ".$page_titre_region." le ".date_fr($even->getValue('dateEvenement'), "annee", "", "", false)." ".
 afficher_debut_fin($even->getValue('horaire_debut'), $even->getValue('horaire_fin'),$even->getValue('dateEvenement'));
 $extra_css = array("element_login");
 include("includes/header.inc.php");

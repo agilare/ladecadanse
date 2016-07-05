@@ -74,7 +74,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' && empty($_POST
 		$email = '';
 		$email_envoi = '';
 		
-		//trouver user selon pseudo ou email
+		//trouver user selon pseudo
 		$sql_pseudo = "SELECT idPersonne, email FROM personne WHERE pseudo='".$connector->sanitize($champs['pseudo_email'])."'";
 		//echo $sql;
 		$res_personne_pseudo = $connector->query($sql_pseudo);
@@ -89,10 +89,11 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' && empty($_POST
 		}
 		
 		
-		//trouver user selon pseudo ou email
+		//trouver user selon email
 		$sql_email = "SELECT idPersonne, email FROM personne WHERE email='".$connector->sanitize($champs['pseudo_email'])."'";
-		//echo $sql;
+		
 		$res_personne_email = $connector->query($sql_email);
+
 		if ($connector->getNumRows($res_personne_email) > 0)
 		{	
 
@@ -162,10 +163,15 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' && empty($_POST
 			'Subject' => $subject);		
 			$mail = $smtp->send($glo_email_admin, $headers, $idPersonne.", ".$email."\n\n----\n\n".$contenu_message);					
 			
+			msgOk("Un email a été envoyé à ".$email_envoi." qui contient un lien vous permettant de modifier votre mot de passe.");	
 
 		}
+		else
+		{
+			msgErreur("L'email/identifiant que vous avez saisi pour votre demande n'est pas enregistré sur La décadanse");	
+			
+		}
 
-		msgOk("Un email a été envoyé à ".$email_envoi." qui contient un lien vous permettant de modifier votre mot de passe.");	
 
 
 		$termine = true;
