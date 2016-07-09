@@ -1,7 +1,7 @@
 <?php 
 
 //if (0) {
-$tab_pages_mobiles = array('index', 'evenement', 'agenda', 'apropos', 'login', 'contacteznous', 'liens', 'lieux', 'lieu', 'organisateurs', 'organisateur', '404', 'recherche','annonce_erreur', 'action_favori', 'inscription','ajouterEvenement','copierEvenement','email_evenement','ajouterLieu','ajouterOrganisateur', 'supprimer', 'ajouterSalle', 'ajouterDescription','personne', 'ajouterPersonne', 'annoncerEvenement', 'motdepasse_demande', 'motdepasse_reset');
+$tab_pages_mobiles = array('index', 'evenement', 'agenda', 'apropos', 'login', 'contacteznous', 'liens', 'lieux', 'lieu', 'organisateurs', 'organisateur', '404', 'recherche','annonce_erreur', 'action_favori', 'inscription','ajouterEvenement','copierEvenement','email_evenement','ajouterLieu','ajouterOrganisateur', 'supprimer', 'ajouterSalle', 'ajouterDescription','personne', 'ajouterPersonne', 'annoncerEvenement', 'motdepasse_demande', 'motdepasse_reset', 'faireUnDon');
 if (in_array($nom_page, $tab_pages_mobiles)) { ?>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <?php } ?>
