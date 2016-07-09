@@ -34,7 +34,7 @@ require_once($rep_librairies.'Validateur.php');
 $page_titre = "gérer les événements";
 $page_description = "Gestion des événements ajoutés";
 $nom_page = "gererEvenements";
-$extra_css = array("formulaires", "admin/gerer", "chosen.min");
+$extra_css = array("formulaires", "gerer", "chosen.min");
 $extra_js = array("zebra_datepicker", "chosen.jquery.min", "jquery.shiftcheckbox");
 require_once('header.inc.php');
 

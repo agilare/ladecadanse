@@ -1,4 +1,3 @@
-<? /**/ ?>
 <?php
 require_once("Edition.class.php");
 require_once("Validateur.php");

@@ -1,4 +1,3 @@
-<? /**/ ?>
 <?php
 /**
  * Permet d'ajouter une commentaire sur un lieu de la base

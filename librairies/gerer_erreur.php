@@ -1,4 +1,3 @@
-<? /**/ ?>
 <?php
 // La fonction de gestion des erreurs
 function gerer_erreur($errno , $errstr , $errfile , $errline)

@@ -1,4 +1,3 @@
-<? /**/ ?>
 <?php
 /**
  * Donne diverses méthodes de vérification pour des données avant de les insérer dans 

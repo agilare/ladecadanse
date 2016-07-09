@@ -1,4 +1,3 @@
-<? /**/ ?>
 <?php
 /**
  * Traite des images envoyées par upload via un champ 'file' de formulaire et 

@@ -1,4 +1,3 @@
-<? /**/ ?>
 <?php
 /**
  * Tableau listant tous les groupes, lien pour les éditer

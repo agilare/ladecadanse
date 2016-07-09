@@ -1,4 +1,3 @@
-<? /**/ ?>
 <?php
 /**
  * Page de calcul et affichage des statistiques sur les visites

@@ -1,4 +1,3 @@
-<? /**/ ?>
 <?php
 if (is_file("config/reglages.php"))
 {

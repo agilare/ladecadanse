@@ -1,4 +1,3 @@
-<? /**/ ?>
 <?php
 /**
  * Lance la session et vérifie le login du visiteur

@@ -1,4 +1,3 @@
-<? /**/ ?>
 <?php
 /**
  * Permet d'ajouter une description sur un lieu de la base

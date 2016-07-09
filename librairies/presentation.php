@@ -1,4 +1,3 @@
-<? /**/ ?>
 <?php
 /**
  * Boite ? outils de fonctions

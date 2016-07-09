@@ -1,4 +1,3 @@
-<? /**/ ?>
 <?php
  /**
    * Convertit une date au format MySQL au format franÃ§ais

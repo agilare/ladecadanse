@@ -1,4 +1,3 @@
-<? /**/ ?>
 <?php
 /**
  * Accomplis la déconnexion en detruisant la session et redirige vers la page d'accueil
