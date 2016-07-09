@@ -70,7 +70,7 @@ $tab_deter = $connector->fetchArray($req_deter);
 
 if ($connector->getNumRows($req_deter) == 0)
 {
-	$determinant_lieu = " -";
+	$determinant_lieu = " - ";
 }
 else
 {

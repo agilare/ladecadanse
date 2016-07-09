@@ -1,8 +1,8 @@
 <?php
 $tab_pages_dc = array("/agenda.php", "/evenement.php");
 
-//preg_match("/^\/.*\/(.*)\.php$/", $_SERVER['PHP_SELF'], $matches);
-preg_match("/^\/(.*)\.php$/", $_SERVER['PHP_SELF'], $matches);
+preg_match(PREG_PATTERN_NOMPAGE, $_SERVER['PHP_SELF'], $matches);
+
 $nom_page = $matches[1];
 
 /* GENRE */

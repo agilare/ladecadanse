@@ -18,7 +18,7 @@ preg_match(PREG_PATTERN_NOMPAGE, $_SERVER['PHP_SELF'], $matches);
 $nom_page = $matches[1];
 $pages_orga = array("ajouterEvenement", "ajouterLieu", "ajouterPersonne", 'inscription');
 
-$pages_jquery = array("ajouterEvenement", "ajouterLieu", "inscription", "admin/gererEvenements", "ajouterPersonne", "ajouterDescription");
+$pages_jquery = array("ajouterEvenement", "ajouterLieu", "inscription", "gererEvenements", "ajouterPersonne", "ajouterDescription");
 
 
 if (in_array($nom_page, $pages_jquery))
