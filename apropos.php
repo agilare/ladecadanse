@@ -25,14 +25,13 @@ include("includes/header.inc.php");
 
 		<h3>Description</h3>
 <p>
- La décadanse est un agenda culturel pour Genève et sa région, présentant une sélection d'événements nous paraissant intéressants, et donnant la possibilité aux organisateurs d'ajouter leurs propres événements.
+La décadanse est un agenda de sorties créé en 2003 pour Genève et ses environs. Le site est composé d'une sélection d'événements culturels accessibles, ouverts et intéressants. Les acteurs culturels (organisateurs, gérants, artistes et al.) ont la possibilité après inscription d'ajouter gratuitement leurs propres événements.</p>
+<p>Pour faire figurer un événement sur le site, l'inscription n'est pas obligatoire, même si elle encouragée s'il y en a un certain nombre à ajouter; il est en effet aussi possible de les annoncer en nous envoyant un message. Cela est résumé dans <a href="annoncerEvenement.php">cette page</a>.</p>
 <p>
-La majeur partie du site est composée d'un agenda permettant de naviguer dans les événements passés ou futurs. Chacun de ceux-ci a sa fiche détaillée avec la possibilité donnée aux personnes inscrites d'y laisser un commentaire. Une rubrique lieu répertorie des endroits où se déroulent des événements, et sont dans le meilleure des cas accompagnés de photos et descriptifs.
+Les rubriques <a href="lieux.php">Lieux</a> et <a href="organisateurs.php">Organisateurs</a> répertorient ces acteurs, avec pour chacun une fiche, si possible accompagné d'un descriptif et de photos.</p>
 <p>
-Le site est mis à jour quotidiennement par le webmaster, les rédacteurs et les contributeurs. Ces derniers sont la plupart du temps des organisateurs de soirées, s'occupant de lieux et/ou faisant partie de collectifs. 
-
-
-	</div>
+Le site est mis à jour quotidiennement par le webmaster et les contributeurs.</p>
+</div>
 	<!-- Fin  -->
 
 	<div class="rubrique">
@@ -41,7 +40,7 @@ Le site est mis à jour quotidiennement par le webmaster, les rédacteurs et les
 		<dt>Webmaster</dt>
 		<dd>
 			<dd>Michel <a href="http://www.profession-web.ch/candidat/37/gaudry_michel/">
-  <img src="http://www.profession-web.ch/img/liens/pw_link4.gif">
+  <img src="http://www.profession-web.ch/img/liens/pw_link4.gif" alt="Mon profil">
 </a></li>
 		</dd>
 
