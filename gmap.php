@@ -120,7 +120,7 @@ function initMap() {
 	<link rel="stylesheet" href="<?php echo $url_site ?>css/reset.css" type="text/css" media="screen" />
 	<link rel="stylesheet" href="<?php echo $url_site ?>css/global.css" type="text/css" media="screen" />
 	<link rel="stylesheet" href="<?php echo $url_site ?>css/gmaps.css" type="text/css" media="screen" />
-
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 
   </head>
   <body>
