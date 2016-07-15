@@ -14,8 +14,12 @@ if (isset($extra_js) && is_array($extra_js))
 }
 
 preg_match(PREG_PATTERN_NOMPAGE, $_SERVER['PHP_SELF'], $matches);
-$tab_nom_page = explode("/", $matches[1]);
-$nom_page = end($tab_nom_page);
+$nom_page = 'index';
+if (!empty( $matches[1] ))
+{
+	$tab_nom_page = explode("/", $matches[1]);
+	$nom_page = end($tab_nom_page);
+}
 
 $pages_orga = array("ajouterEvenement", "ajouterLieu", "ajouterPersonne", 'inscription');
 
