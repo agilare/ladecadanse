@@ -128,7 +128,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' && empty($_POST
 
 			$contenu_message = "Bonjour,\n\n";
 			$contenu_message .= "Un visiteur de La décadanse, probablement vous, a fait une demande pour obtenir un nouveau mot de passe. Veuillez cliquer sur ce lien :\n\n";
-			$contenu_message .= $url_domaine.$url_site."motdepasse_reset.php?token=".$token;
+			$contenu_message .= $url_site."motdepasse_reset.php?token=".$token;
 			$contenu_message .= "\n\n";
 			$contenu_message .= "qui vous permettra de choisir un nouveau mot de passe durant 24h (avant expiration)";
 			$contenu_message .= "\n";

@@ -374,10 +374,10 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 				$contenu_message .= "\n";
 				$contenu_message .= "Mot de passe : ".$pass_email;
 				$contenu_message .= "\n\n";
-				$contenu_message .= "Pour vous connecter : ".$url_domaine.$url_site."login.php";
+				$contenu_message .= "Pour vous connecter : ".$url_site."login.php";
 				$contenu_message .= "\n\n";
 				$contenu_message .= "Vous pouvez compléter votre profil sur votre page de membre : ";
-				$contenu_message .= $url_domaine.$url_site."personne.php?idP=".$req_id;
+				$contenu_message .= $url_site."personne.php?idP=".$req_id;
 				$contenu_message .= "\n\n";
 				$contenu_message .= "Bonne visite";
 				$contenu_message .= "\n\n";
@@ -420,7 +420,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 				$contenu_message .= "Identifiant : ".$tab_pers['pseudo'];
 				$contenu_message .= "\nE-mail : ".$tab_pers['email'];
 				$contenu_message .= "\n\n";
-				$contenu_message .= "Tableau de bord Admin : ".$url_domaine.$url_admin;
+				$contenu_message .= "Tableau de bord Admin : ".$url_admin;
 				
 
 

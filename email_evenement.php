@@ -119,7 +119,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 		{
 			$contenu_message .= $tab_even['titre']."\n\n";
 			$contenu_message .= ucfirst(html_entity_decode(date_fr($tab_even['dateEvenement'], "annee", "", "", false)))."\n\n";
-			$contenu_message .= $url_domaine.$url_site.'evenement.php?idE='.$get['idE']."\n\n";
+			$contenu_message .= $url_site.'evenement.php?idE='.$get['idE']."\n\n";
 
 			$contenu_message .= $tab_even['nomLieu']."\n";
 			$contenu_message .= $tab_even['adresse']." - ".$tab_even['quartier']."\n\n";

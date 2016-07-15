@@ -4,7 +4,6 @@
 }
 
 
-$url_site = $url_domaine.$url_site;
 
 $tab_types = array("breves", "evenements_auj", "lieu_evenements", "evenement_commentaires", "lieux_descriptions", 'organisateur_evenements', 'evenements_ajoutes');
 $get['type'] = "breves";

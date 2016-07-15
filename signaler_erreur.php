@@ -115,7 +115,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
         $subject = "[La décadanse] Rapport d'erreur sur un événement";
 		$contenu_message = "Type : ".$tab_type_erreur[$champs['type_erreur']];
 		$contenu_message .= "\n\n";
-		$contenu_message .= "Événement : ".$url_domaine.$url_site."evenement.php?idE=".$champs['idEvenement'];
+		$contenu_message .= "Événement : ".$url_site."evenement.php?idE=".$champs['idEvenement'];
 		$contenu_message .= "\n\n";
 		$contenu_message .= "Description : ".$champs['message']."\n\n";
 

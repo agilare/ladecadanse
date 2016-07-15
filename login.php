@@ -86,7 +86,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 		}
 		
 		if (strstr($origine, "inscription.php") || strstr($origine, "motdepasse_reset.php") || strstr($origine, "login.php"))
-			$origine = $url_domaine.$url_site;
+			$origine = $url_site;
 		
 
 
