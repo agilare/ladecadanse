@@ -26,7 +26,7 @@ $rep_csv = $rep_absolu."images/csv/"; //fichiers csv upload
 $rep_cache = $rep_absolu."cache/";
 
 // URL
-$url_site = $url_domaine."/";
+
 $url_images = $url_site."images/";
 $url_fichiers = $url_site."fichiers/";
 $url_fichiers_even = $url_fichiers."evenements/";
