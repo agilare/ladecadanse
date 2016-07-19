@@ -19,7 +19,7 @@ $videur = new Sentry();
 
 if (!$videur->checkGroup(1))
 	header("Location: ".$url_site."index.php"); die();
-}
+
 
 require_once($rep_librairies.'Validator.php');
 require_once($rep_librairies.'usine.php');
