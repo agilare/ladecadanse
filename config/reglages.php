@@ -180,8 +180,3 @@ else
 require_once($rep_librairies.'usine.php');
 require_once($rep_librairies.'dates.php');
 require_once($rep_librairies.'presentation.php');
-
-/*
-require_once($rep_librairies.'gerer_erreur.php');
-set_error_handler('gerer_erreur');
-*/
