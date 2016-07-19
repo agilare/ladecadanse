@@ -62,7 +62,7 @@ $tab_type_erreur = array(
 require_once($rep_librairies.'Validateur.php');
 $verif = new Validateur();
 
-$champs = array("type_erreur" => '', 'message' => '', 'name' => '');
+$champs = array("type_erreur" => '', 'message' => '', 'name' => '', 'email' => '');
 $action_terminee = false;
 
 if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
@@ -94,6 +94,9 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 	{
 		$verif->setErreur("type_erreur", "Veuillez choisir un type d'erreur");
 	}
+        
+	$verif->valider($champs['email'], "email", "email", 4, 80, 0);
+        
 	
 	if (empty($champs['name']))
 	{
@@ -103,16 +106,20 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 	 */
 	if ($verif->nbErreurs() === 0)
 	{
-        require_once "Mail.php";
+            require_once "Mail.php";
 		
 		$from = '"La décadanse" <'.$glo_email_support.'>';
 		if (isset($_SESSION['user']))
 		{
 			$from = '"'.$_SESSION['user'].'" <'.$_SESSION['Semail'].'>';
 		}
+                elseif (!empty($champs['email']))
+                {
+                    $from = '"'.$champs['email'].'" <'.$champs['email'].'>';    
+                }
 		
 		$to = '"La décadanse" <'.$glo_email_support.'>';
-        $subject = "[La décadanse] Rapport d'erreur sur un événement";
+                $subject = "[La décadanse] Rapport d'erreur sur un événement";
 		$contenu_message = "Type : ".$tab_type_erreur[$champs['type_erreur']];
 		$contenu_message .= "\n\n";
 		$contenu_message .= "Événement : ".$url_site."evenement.php?idE=".$champs['idEvenement'];
@@ -249,6 +256,26 @@ echo $verif->getHtmlErreur("type_erreur");
 </textarea>
 <?php echo $verif->getHtmlErreur("message"); ?>
 </p>
+
+<?php
+// email, utile si visiteur non logué
+if (!isset($_SESSION['user']))
+{
+?>                                                    
+    <p>
+    <label for="email" id="label_email">Votre e-mail</label>
+    <input name="email" id="email" type="text" size="40" value="<?php echo securise_string($champs['email']) ?>"  />
+    <?php echo $verif->getErreur("email"); ?>
+    </p>
+<?php
+}
+ else {
+?>
+    <input name="email" id="email" type="hidden" value=""  />
+
+<?php    
+}
+?>
 
 <div class="mr_as">
 <label for="mr_as">
