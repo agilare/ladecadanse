@@ -119,7 +119,7 @@ if ($url_suiv != "")
 		
 	?>
 	<a href="<?php echo $url_images_organisateurs.$organisateur->getValue('logo').'?'.filemtime($rep_images_organisateurs.$organisateur->getValue('logo')) ?>" class="magnific-popup">
-		<img src="<?php echo $url_images_organisateurs."s_".$organisateur->getValue('logo')."?".filemtime($rep_images_organisateurs."s_".$organisateur->getValue('logo')); ?>" alt="Logo"  />
+		<img src="<?php echo $url_images_organisateurs."s_".$organisateur->getValue('logo')."?".filemtime($rep_images_organisateurs."s_".$organisateur->getValue('logo')); ?>" alt="Logo" height="60"  />
 	</a>
 	<?php 	
 		
