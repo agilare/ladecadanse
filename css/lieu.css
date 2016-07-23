@@ -417,8 +417,10 @@ ul#menu_complement .rss
 #prochains_evenements ul#menu_genre
 {
 	margin:0 0 0em 0em;
+        /*
 	/height:0.8em;
 	/padding:0.6em 0;
+        */
 }
 
 	#prochains_evenements ul#menu_genre li

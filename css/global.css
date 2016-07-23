@@ -143,12 +143,12 @@ background-color:#FACA1A;
 }
  */
 
-/* IE7 */
+/* IE7 
 #conteneur > #colonne_gauche
 {
-margin-left: expression(document.all.contenu.offsetWidth * -1); /* Fix for IE7 */
+margin-left: expression(document.all.contenu.offsetWidth * -1); Fix for IE7
 }
-
+*/
 
 #colonne_droite
 {

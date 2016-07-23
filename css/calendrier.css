@@ -105,13 +105,13 @@ table#calendrier tr.semaine td
 	vertical-align:middle;
 }
 
+/*
 table#calendrier tr.semaine_ici td
 {
-
-/border-top:3px solid #6a6a6a;
-/border-bottom:3px solid #6a6a6a;
+    /border-top:3px solid #6a6a6a;
+    /border-bottom:3px solid #6a6a6a;
 }
-
+*/
 
 table#calendrier tr.semaine td a
 {
