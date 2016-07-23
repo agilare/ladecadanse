@@ -48,7 +48,8 @@ class Sentry extends SystemComponent {
 
 			if (!$this->checkRemembered($_COOKIE['ladecadanse_remember']))
 			{
-				trigger_error("Cookie ladecadanse_remember reçu non trouvé dans la base de données", E_USER_NOTICE);
+                            
+                            //trigger_error("Cookie ladecadanse_remember reçu non trouvé dans la base de données", E_USER_NOTICE);
 			}
 		}
 
