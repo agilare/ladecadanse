@@ -5,8 +5,8 @@ if (is_file("config/reglages.php")) {
 require_once($rep_librairies . "Sentry.php");
 $videur = new Sentry();
 
-$nom_page = "apropos";
-$page_titre = "Ligne éditoriale";
+$nom_page = "charte-editoriale";
+$page_titre = "Charte éditoriale";
 $page_description = "";
 include("includes/header.inc.php");
 ?>
