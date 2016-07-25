@@ -25,11 +25,10 @@ include("includes/header.inc.php");
 
 		<h3>Description</h3>
 <p>
-La décadanse est un agenda de sorties créé en 2003 pour Genève et ses environs. Le site se compose d'une sélection d'événements culturels si possible ouverts, accessibles et intéressants.</p>
-<p>Les acteurs culturels (organisateurs, gérants, artistes et al.) ont la possibilité d'ajouter gratuitement leurs propres événements.<br>
-Pour faire figurer un événement sur le site, l'inscription n'est pas obligatoire, même si elle encouragée s'il y en a un certain nombre à ajouter; il est en effet aussi possible de les annoncer en nous envoyant un message. Cela est résumé dans <a href="annoncerEvenement.php">cette page</a>.</p>
+La décadanse est un agenda de sorties créé en 2003 pour Genève et ses environs. Le site est composé d'une sélection d'événements culturels accessibles, ouverts et intéressants. Les acteurs culturels (organisateurs, gérants, artistes et al.) ont la possibilité après inscription d'ajouter gratuitement leurs propres événements.</p>
+<p>Pour faire figurer un événement sur le site, l'inscription n'est pas obligatoire, même si elle encouragée s'il y en a un certain nombre à ajouter; il est en effet aussi possible de les annoncer en nous envoyant un message. Cela est résumé dans <a href="annoncerEvenement.php">cette page</a>.</p>
 <p>
-Les rubriques <a href="lieux.php">Lieux</a> et <a href="organisateurs.php">Organisateurs</a> répertorient ces acteurs, avec pour chacun une fiche, si possible accompagnée d'un descriptif et de photos.</p>
+Les rubriques <a href="lieux.php">Lieux</a> et <a href="organisateurs.php">Organisateurs</a> répertorient ces acteurs, avec pour chacun une fiche, si possible accompagné d'un descriptif et de photos.</p>
 <p>
 Le site est mis à jour quotidiennement par le webmaster et les contributeurs.</p>
 </div>
