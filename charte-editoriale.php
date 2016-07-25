@@ -16,14 +16,14 @@ include("includes/header.inc.php");
 <div id="contenu" class="colonne">
 
     <div id="entete_contenu">
-        <h2>Ligne éditoriale</h2>
+        <h2>Charte éditoriale</h2>
         <div class="spacer"></div>
     </div>
 
     <div class="rubrique">
 
         <h3><a id="Gnralits_0"></a>Généralités</h3>
-        <p>La décadanse est un agenda culturel pour la région de Genève composé d’une sélection d’événements. Ceux-ci, ainsi que les lieux et organisateurs publiés sur le site doivent correspondre à certains critères qui définissent notre ligne éditoriale.</p>
+        <p>La décadanse est un agenda culturel pour la région de Genève composé d’une sélection d’événements. Ceux-ci, ainsi que les lieux et organisateurs publiés sur le site doivent correspondre à certains critères qui définissent notre charte éditoriale.</p>
         <p>À l’heure actuelle, la zone couverte par La décadanse est le canton de Genève, une partie proche du canton de Vaud (jusqu’à Nyon) ainsi que la France voisine.</p>
         <p>Nous souhaitons promouvoir en particulier les acteurs de la culture alternative, les organisateurs disposant de moyens modestes, désintéressés, jouant un rôle social et culturel. En revanche nous laissons à d’autres agendas le soin de diffuser les événements plus conventionnels et/ou à but plus commercial.</p>
         <p>Les points énumérés ci-dessous définissent les critères permettant de se rapprocher de cet objectif.</p>
