@@ -173,7 +173,7 @@ class Sentry extends SystemComponent {
 
 				// exception pour admin
 				if ($this->userdata['groupe'] == 1)
-					$goodRedirect = "https://ladecadanse.darksite.ch/admin/index.php";
+					$goodRedirect = "admin/index.php";
 				
 				//echo $this->userdata['mot_de_passe'];
 				
