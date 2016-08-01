@@ -1066,6 +1066,7 @@ if ($verif->nbErreurs() > 0)
 <li style="margin:6px 2px;">L’agenda de La décadanse englobe le <strong>canton de Genève et ses environs</strong></li>
 <li style="margin:6px 2px;">Veuillez svp vérifier au préalable que votre événement n’est pas déjà présent dans l’<a href="agenda.php">agenda</a></li>
 <li style="margin:6px 2px;">La catégorie <em>Fêtes</em> inclut les soirées, les concerts, etc.</li>
+<li style="margin:6px 2px;">Veillez svp à ce que l'événement respecte notre <b><a href="charte-editoriale.php">charte&nbsp;éditoriale</a></b></li>
 
 </ul>
 <h2 style="margin:20px 0 5px 0;">L’événement</h2>

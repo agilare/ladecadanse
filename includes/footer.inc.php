@@ -19,6 +19,9 @@
         
             <li><a href="<?php echo $url_site.$lien; ?>" title="<?php echo $nom; ?>" <?php echo $ici; ?>><?php echo $nom; ?></a></li>
         <?php } ?>
+            
+            
+		<li><a href="<?php echo $url_site ?>charte-editoriale.php">Charte éditoriale</a></li>
 		<li><a href="<?php echo $url_site ?>liens.php">Liens</a></li>
 	<li>
 	<form class="recherche" action="<?php echo $url_site ?>recherche.php" method="get">

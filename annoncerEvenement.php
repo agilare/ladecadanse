@@ -27,7 +27,7 @@ include("includes/header.inc.php");
 	<ul >
 	<li>
 	<h3>vous avez des événements à&nbsp;ajouter régulièrement</h3>
-	<p>Le mieux est de&nbsp;<a href="<?php echo $url_site; ?>inscription.php" title="S'inscrire pour devenir membre"><strong>s'inscrire</strong></a>, ce qui vous permettra aussitôt de :</p>
+	<p>Le mieux est de&nbsp;<a href="<?php echo $url_site; ?>inscription.php" title="S'inscrire pour devenir membre"><strong>s'inscrire</strong></a>, ce qui vous permettra aussitôt de&nbsp;:</p>
 	<ul style="list-style-type:circle">
 	<li>créer et modifier vos événements;</li>
 	<li>ajouter une présentation de votre lieu s'il est enregistré sur le site;</li>
@@ -72,6 +72,7 @@ document.write("<a href='mailto:"+link+"?subject=[La décadanse] Événement à 
 </ul>
 
 <p>Tout cela est <b>gratuit</b>, mais vous pouvez nous soutenir <a href="faireUnDon.php">en faisant un don</a></p>
+<p>Veillez également à ce que vos événements respectent notre <b><a href="charte-editoriale.php">charte éditoriale</a></b>.</p>
  
 	</div>
 	<!-- Fin  -->

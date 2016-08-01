@@ -328,7 +328,7 @@ foreach ($glo_menu_pratique as $nom => $lien)
 	if ($nom == "Faire un don")
 		 $menu_pratique_li = ' style="background: #ffdf3f;border-radius: 0 0 3px 3px;padding:2px 0;" ';
 	
-    $ici = '';
+        $ici = '';
 	if (strstr($_SERVER['PHP_SELF'], $lien) )
 	{
 		$ici = " class=\"ici\"";
@@ -344,16 +344,17 @@ $ici = '';
 if (!isset($_SESSION['SidPersonne']))
 {
 	
-	if ( strstr($_SERVER['PHP_SELF'], "annoncerEvenement.php"))
+	if ( strstr($_SERVER['PHP_SELF'], "annoncerEvenement.php") )
 	{
-		$ici = " class=\"ici\"";
+		$ici = ' ici ';
 	}
 	
 
 ?>	
 
 	
-    <li <?php echo $ici; ?> ><a href="<?php echo $url_site; ?>annoncerEvenement.php"  >Annoncer un événement</a></li>
+    <li class="<?php echo $ici; ?>" ><a href="<?php echo $url_site; ?>annoncerEvenement.php"  >Annoncer un événement</a></li>
+    <li class="<?php echo $ici; ?> only-mobile" ><a href="<?php echo $url_site; ?>charte-editoriale.php">Charte éditoriale</a></li>
 
 
 <?php

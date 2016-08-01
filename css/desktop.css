@@ -419,5 +419,5 @@ form#ajouter_editer textarea, form#ajouter_editer #ref  {
 
 .only-mobile
 {
-	display:none;
+	display:none !important;
 }
