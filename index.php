@@ -35,7 +35,7 @@ else
 	<div id="entete_contenu">
 	<div style="display:none">
 	<?php 
-	printr($_COOKIE);
+	//printr($_COOKIE);
 	?></div>
 		<h2 style="font-size: 1.7em;width:80%">Aujourd’hui <small style="color: #888;font-size: 0.75em;"><?php echo ucfirst(date_fr($get['auj'])); ?></small></h2>
 
@@ -457,17 +457,14 @@ while($tab_commentaires = $connector->fetchArray($req_commentaires))
 
 
 <?php
-//if ($videur->checkGroup(8) && !isset($_COOKIE['msg_orga'])) // isset($_GET['debug']) && 
-if (0)
+if ($videur->checkGroup(1) && !isset($_COOKIE['msg_orga_charte'])) // isset($_GET['debug']) && 
 {
 ?>
 <div id="dernieres" style="position:relative;padding:0.6em 0.2em;margin:1em 0;background:#ff5">
-<h2 style="padding:0; margin:0.1em 0 0.4em 0.1em;font-size:1.4em">Questionnaire</h2>
-<a style="position:absolute;right:0;top:0;padding:5px" href="#" onclick="SetCookie('msg_orga', 1, 60, '');this.parentNode.style.display = 'none';return false;"><img src="<?php echo $url_site ?>images/interface/icons/cross.png" alt="Fermer" width="16" height="16"></a>
+<h2 style="padding:0; margin:0.1em 0 0.4em 0.1em;font-size:1.3em">Charte&nbsp;éditoriale</h2>
+<a style="position:absolute;right:0;top:0;padding:5px" href="#" onclick="SetCookie('msg_orga_charte', 1);this.parentNode.style.display = 'none';return false;"><img src="<?php echo $url_site ?>images/interface/icons/cross.png" alt="Fermer" width="16" height="16"></a>
 <p style="line-height:17px">
-Nous travaillons actuellement à une <strong>nouvelle version du site</strong>.</p>
-<p style="line-height:17px">
-Vos réponses à ce petit <a href="https://goo.gl/forms/G3jTYDIyhu" class="continuer" target="_blank"><b>questionnaire</b></a> nous aidera à comprendre votre manière de l'utiliser aujourd'hui et vos souhaits afin de l'améliorer.</p>
+La décadanse dispose désormais d'une <b><a href="charte-editoriale.php">charte&nbsp;éditoriale</a></b> qui défini le concept du site et le type d'événements, lieux et organisateurs acceptés. </p>
 
 </div>
 <?php

@@ -504,6 +504,8 @@ if ($verif->nbErreurs() > 0)
 
 <form method="post" id="ajouter_editer" action="<?php echo $_SERVER['PHP_SELF']."?action=".$act; ?>" onsubmit="return validerAjouterPersonne();">
 
+    <p>Avant de vous inscrire en tant que Organisateur, veillez svp à ce que les événements que vous souhaitez ajouter respectent notre <b><a href="charte-editoriale.php">charte&nbsp;éditoriale</a></b>.</p>
+
 <p>* indique un champ obligatoire</p>
 
 <fieldset>
