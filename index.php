@@ -457,7 +457,7 @@ while($tab_commentaires = $connector->fetchArray($req_commentaires))
 
 
 <?php
-if ($videur->checkGroup(1) && !isset($_COOKIE['msg_orga_charte'])) // isset($_GET['debug']) && 
+if ($videur->checkGroup(8) && !isset($_COOKIE['msg_orga_charte'])) // isset($_GET['debug']) && 
 {
 ?>
 <div id="dernieres" style="position:relative;padding:0.6em 0.2em;margin:1em 0;background:#ff5">
