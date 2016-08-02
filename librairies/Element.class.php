@@ -34,6 +34,8 @@ class Element
 		$this->connector = $connector;
 	}
 
+ 
+        
 	function setId($id)
 	{
 		$this->id = $id;
@@ -151,5 +153,3 @@ class Element
 	}
 
 }
-
-?>

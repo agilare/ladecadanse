@@ -25,7 +25,7 @@ require_once($rep_librairies.'Validateur.php');
 $nom_page = "motdepasse_reset";
 $page_titre = "Réinitialisation du mot de passe";
 $page_description = "";
-$extra_css = array("formulaires");
+$extra_css = ["formulaires"];
 include("includes/header.inc.php");
 
 
@@ -43,10 +43,10 @@ else
 
 $verif = new Validateur();
 
-$champs = array("idPersonne" => '',
+$champs = ["idPersonne" => '',
 "motdepasse" => '',
 "motdepasse2" => ''
-);
+];
 
 $action_terminee = false;
 ?>
@@ -97,7 +97,7 @@ if ($connector->getNumRows($req_temp) == 1)
 			// retrouver user dans personne à partir de la demande
 			$sql_auth = "SELECT pseudo, idPersonne FROM personne WHERE ";
 			
-			$tab_auth_where = array();	
+			$tab_auth_where = [];	
 	
 			$tab_auth_where[] = " email='".$connector->sanitize($tab_temp['email'])."' ";
 			// si le demandeur a choisi un compte parmi plusieurs qui ont son email : et l'id du compte correspondant
@@ -200,7 +200,7 @@ if ($connector->getNumRows($req_temp) == 1)
 	} // if POST != ""
 
 	// si l'email avait été fourni, retrouve le(s) compte(s) associé(s)
-	$tab_comptes = array();
+	$tab_comptes = [];
 	
 	if (empty($tab_temp['idPersonne']) && !empty($tab_temp['email']))
 	{

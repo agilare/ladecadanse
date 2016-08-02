@@ -7,11 +7,6 @@ error_reporting(E_ALL & ~E_DEPRECATED);
 //error_reporting(E_ALL);
 ini_set('display_errors', '0');
 
-// $upload_tmp_dir = "/tmp/PHP/uploadtemp"; // prod
-// $session_savepath = "/tmp/PHP/sessiondata"; // prod
-$upload_tmp_dir = ""; 
-$session_savepath = "";
-
 // $glo_email_admin = "michel@ladecadanse.ch"; // prod
 // $glo_email_info = "info@ladecadanse.ch"; // prod
 // $glo_email_support = "info@ladecadanse.ch"; // prod
@@ -33,6 +28,8 @@ $rep_absolu = "";
 // URL
 // $url_domaine = "http://ladecadanse.darksite.ch"; // prod
 $url_domaine = "";
+$url_site = $url_domaine."";
+
 
 // pour récupérer le nom du script courant (sans path ni extension)
 // define("PREG_PATTERN_NOMPAGE", "/^\/(.+)\.php$/"); // prod : ladecadanse.darksite.ch

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Lance la session et vérifie le login du visiteur
  *
@@ -9,24 +10,20 @@
  * @author     Michel Gaudry <michel@ladecadanse.ch>
  * @see        SystemComponent.php
  */
-
 require_once("Element.class.php");
 
-class Evenement extends Element {
+class Evenement extends Element
+{
 
-
- /**
- 	 * Démarre la session et inclut un en-tête interdisant de stocker le mot
-	 * de passe dans le cache de l'utilisateur
-   * @access public
-   */
-	function Evenement()
-	{
-		global $connector;
-		$this->table = "evenement";$this->connector = $connector;
-	}
-
+    /**
+     * Démarre la session et inclut un en-tête interdisant de stocker le mot
+     * de passe dans le cache de l'utilisateur
+     * @access public
+     */
+    function Evenement() {
+        global $connector;
+        $this->table = "evenement";
+        $this->connector = $connector;
+    }
 
 }
-
-?>
