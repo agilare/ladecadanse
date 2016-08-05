@@ -39,13 +39,14 @@ include("includes/header.inc.php");
         <h5><a id="Cin_20"></a>Ciné</h5>
         <p>Cette rubrique se concentre sur les projections des cinémas indépendants ou apparentés; par conséquent les multiplexes (qui ont largement de quoi communiquer) n’y figurent pas. Il se peut que, ponctuellement, la qualité du film ou la particularité de l’événement prime sur cette règle.</p>
         <h5><a id="Divers_23"></a>Divers</h5>
-        <p>Ici apparaissent les événements ne trouvant pas leur place dans les autres rubriques et qui peuvent être peu ou pas artistiques tels que conférences, débats, cours/ateliers (à condition que ces derniers soient gratuits ou à prix modique), balades culturelles, brocantes, etc. qui ont un intérêt culturel et/ou social</p>
+        <p>Ici apparaissent les événements ne trouvant pas leur place dans les autres rubriques et qui peuvent être peu ou pas artistiques tels que conférences, débats, ateliers/ cours (à condition que ceux-ci soient gratuits ou à prix modique), balades culturelles, brocantes, etc. qui ont un intérêt culturel et/ou social</p>
         <h4><a id="Ralit_26"></a>Réalité</h4>
         <p>Les événements doivent êtres dans le réel, c'est-à-dire dans un lieu défini, avec un début et une fin, où des personnes se rencontrent vraiment; l’agenda ne peut donc contenir d’annonces d’actualité, de campagnes sur le web, d’émissions (radio, TV, web), etc.</p>
         <h4><a id="Types_non_admis_30"></a>Types d'événements non admis</h4>
         <ul>
             <li>religion, croyance, esotérisme, paranormal, médecine parallèle</li>
             <li>conférences/salons professionnels</li>
+            <li>cours, stages complets et dispendieux</li>
             <li>commercial (par ex. présentations de produits ou entreprises, annonces de type publicitaire, achat/vente, brunchs, apéros, happy hours, dégustations, etc.)</li>
             <li>développement personnel</li>
             <li>manifestations sportives</li>
