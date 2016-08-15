@@ -362,10 +362,12 @@ float:left;
 
 ul.menu_action
 {	float:left;	
-  height:1.6em;
+    height:1.6em;
+   margin-top: 0.3em;
 
-  display:inline;
+    display:inline;
 }
+
 ul.menu_action li
 {
 
@@ -373,6 +375,11 @@ ul.menu_action li
     display:inline;
     margin:0 0.8em 0 0em;
     /* border:1px solid red; */
+}
+
+ul.menu_action li img
+{
+    vertical-align: middle;
 }
 
 

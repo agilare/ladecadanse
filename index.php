@@ -334,9 +334,9 @@ title="Voir la fiche complète de l\'événement">'.securise_string($tab_even['t
 			if ($nb_comm > 1)
 				$pluriel = "s";
 
-			$commentaires = '<span class="nb_commentaires">
+			$commentaires = '<span class="nb_commentaires">'.$icone['commentaire'].'
 			<a href="'.$url_site.'evenement.php?idE='.$tab_even['idEvenement'].'#commentaires"
-			title="Voir le'.$pluriel.' '.$nb_comm.' commentaires">'.$icone['commentaire'].$nb_comm.' commentaire'.$pluriel.'</a>';
+			title="Voir le'.$pluriel.' '.$nb_comm.' commentaires">'.$nb_comm.' commentaire'.$pluriel.'</a>';
 			$commentaires .= '</span>';
 		}
 
@@ -462,7 +462,7 @@ if ($videur->checkGroup(8) && !isset($_COOKIE['msg_orga_charte'])) // isset($_GE
 ?>
 <div id="dernieres" style="position:relative;padding:0.6em 0.2em;margin:1em 0;background:#ff5">
 <h2 style="padding:0; margin:0.1em 0 0.4em 0.1em;font-size:1.3em">Charte&nbsp;éditoriale</h2>
-<a style="position:absolute;right:0;top:0;padding:5px" href="#" onclick="SetCookie('msg_orga_charte', 1);this.parentNode.style.display = 'none';return false;"><img src="<?php echo $url_site ?>images/interface/icons/cross.png" alt="Fermer" width="16" height="16"></a>
+<a style="position:absolute;right:0;top:0;padding:5px" href="#" onclick="SetCookie('msg_orga_charte', 1, 180);this.parentNode.style.display = 'none';return false;"><img src="<?php echo $url_site ?>images/interface/icons/cross.png" alt="Fermer" width="16" height="16"></a>
 <p style="line-height:17px">
 La décadanse dispose désormais d'une <b><a href="charte-editoriale.php">charte&nbsp;éditoriale</a></b> qui défini le concept du site et le type d'événements, lieux et organisateurs acceptés. </p>
 
