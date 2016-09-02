@@ -138,7 +138,7 @@ if (!empty($_GET['tri_agenda']))
 	else
 	{	
 
-		trigger_error("GET tri_agenda non valable : ".$_GET['tri_agenda'], E_USER_WARNING);
+		//trigger_error("GET tri_agenda non valable : ".$_GET['tri_agenda'], E_USER_WARNING);
 		exit;
 	}
 }

@@ -47,7 +47,7 @@ if (!empty($_GET['courant']))
 	}
 	else
 	{
-		trigger_error("date non valable", E_USER_WARNING);
+		//trigger_error("date non valable", E_USER_WARNING);
 		exit;
 	}
 }
@@ -79,7 +79,7 @@ if (mb_strstr($_SERVER['PHP_SELF'], "evenement.php") && isset($_GET['idE']))
 	}
 	else
 	{
-		trigger_error("idE non valable", E_USER_WARNING);
+		//trigger_error("idE non valable", E_USER_WARNING);
 		exit;
 	}
 }
@@ -93,7 +93,7 @@ if (!empty($_GET['sem']))
 	}
 	else
 	{
-		trigger_error("sem non valable", E_USER_WARNING);
+		//trigger_error("sem non valable", E_USER_WARNING);
 		exit;
 	}
 }
@@ -113,7 +113,7 @@ if (!empty($_GET['mode']))
 	}
 	else
 	{
-		trigger_error("sem non valable", E_USER_WARNING);
+		//trigger_error("sem non valable", E_USER_WARNING);
 		exit;
 	}
 }
@@ -132,7 +132,7 @@ if (!empty($_GET['tri_agenda']))
 	}
 	else
 	{
-		trigger_error("tri_agenda non valable", E_USER_WARNING);
+		//trigger_error("tri_agenda non valable", E_USER_WARNING);
 		exit;
 	}
 }
