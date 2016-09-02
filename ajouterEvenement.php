@@ -523,7 +523,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 /*  				if (!empty($lieu))
 					@unlink($cache_lieu.$lieu.".php");	 */
 
-				unset($_POST);
+				
 /*				foreach ($champs as $c)
 				{
 					$champs[$c] = "";
@@ -906,7 +906,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 			$evenement['flyer'] = $tab_fly['flyer'];
 		}
 
-		
+		unset($_POST); // ?
 		header("Location: evenement.php?idE=".$req_id); die();
 
 
@@ -924,6 +924,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 		}
 
 	} //if erreur == 0
+        
+        
 
 } // if POST != ""
 
