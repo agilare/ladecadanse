@@ -487,6 +487,10 @@ ul#menu_complement .rss
 	line-height: 1.3em;
 }
 
+#prochains_evenements table td h3 a:visited {
+    color:#105199; /*  #104d91*/   
+}
+
 #prochains_evenements table td.mois
 {
 	font-weight:bold;

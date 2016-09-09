@@ -104,6 +104,10 @@ font-size:0.85em;
 padding:0.4em 0.2em;
 }
 
+table#ajouts td a.titre:visited {
+    color:#105199; /*  #104d91*/   
+}
+
 table#ajouts tr.impair
 {
 background-color:#f0f0ff;

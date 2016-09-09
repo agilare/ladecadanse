@@ -208,3 +208,6 @@ margin:5px 5px 5px 0px;
 }
 
 
+#derniers_evenements_ajoutes a.titre:visited {
+    color:#105199; /*  #104d91*/   
+}

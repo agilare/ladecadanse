@@ -151,9 +151,9 @@ while($tab_pers = $connector->fetchArray($req_get))
 
 
 <h3 style="padding:0.4em 0">Événements ajoutés ces 3 derniers jours</h3>
-<table summary="Derniers événements ajoutés">
+<table summary="Derniers événements ajoutés" id="derniers_evenements_ajoutes">
 <tr>
-<th colspan="2">Date d'ajout</th>
+<th colspan="2">Ajouté</th>
 <th>Titre</th>
 <th>Lieu</th>
 <th>Date</th>
@@ -200,7 +200,7 @@ while($tab_even = $connector->fetchArray($req_getEvenement))
 	$datetime_dateajout = date_iso2app($tab_even['dateAjout']);
 	$tab_datetime_dateajout = explode(" ", $datetime_dateajout);
 	echo "<td>".$tab_datetime_dateajout[1]."</td><td>".$tab_datetime_dateajout[0]."</td>
-	<td><a href=\"".$url_site."evenement.php?idE=".$tab_even['idEvenement']."\" title=\"Voir la fiche de l'événement\">".securise_string($tab_even['titre'])."</a></td>
+	<td><a href=\"".$url_site."evenement.php?idE=".$tab_even['idEvenement']."\" title=\"Voir la fiche de l'événement\" class='titre'>".securise_string($tab_even['titre'])."</a></td>
 	<td>".$nomLieu."</td>
 	<td>".date_iso2app($tab_even['dateEvenement'])."</td>
 	<td>";
@@ -232,7 +232,7 @@ while($tab_even = $connector->fetchArray($req_getEvenement))
 </table>
 <p><a href="gererEvenements.php">Gérer les événements</a></p>
 
-<? /*
+<?php if (0) { ?>
 <h3>Dernières événements modifiés</h3>
 
 <table summary="Derniers événements modifiés">
@@ -317,7 +317,7 @@ while($tab_even = $connector->fetchArray($req_getEvenement))
 
 ?>
 </table>
-*/ ?>
+<?php } // if (0) ?>
 
 <h3 style="padding:0.4em 0">Derniers commentaires</h3>
 <table class="ajouts" summary="Derniers commentaires ajoutés">

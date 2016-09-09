@@ -418,7 +418,7 @@ if ($get['mode'] == "condense")
 
 			?>
 			<tr>
-				<td><h2><?php echo $titre ?></h2>
+				<td><h2 class="titre"><?php echo $titre ?></h2>
 					<p><?php echo $description; ?></p>
 				</td>
 				<td><h2><?php echo $infosLieu ?></h2><p><?php echo $listeLieu['adresse'] ?></p></td>

@@ -896,7 +896,7 @@ while ($tab_even = $connector->fetchArray($req_evenement))
 	echo "
 	<td>".date_iso2app($tab_even['dateEvenement'])."</td>
 	<td>".ucfirst($glo_tab_genre[$tab_even['genre']])."</td>
-	<td><a href=\"".$url_site."evenement.php?idE=".$tab_even['idEvenement']."\" title=\"Voir la fiche de l'événement\">".securise_string($tab_even['titre'])."</a></td>
+	<td><a href=\"".$url_site."evenement.php?idE=".$tab_even['idEvenement']."\" title=\"Voir la fiche de l'événement\" class='titre'>".securise_string($tab_even['titre'])."</a></td>
 	<td>".$nomLieu."</td>
 	<td>";
 

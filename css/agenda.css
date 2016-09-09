@@ -246,6 +246,8 @@ ul#calendrier_menu
 
 }
 
+
+
 .evenement .titre .right {
     float : right;
     text-align : right;
@@ -275,6 +277,9 @@ ul#calendrier_menu
 
 }
 
+.evenement .titre .left a:visited {
+ color:#105199; /*  #104d91*/   
+}
 
 .evenement .description
 {
@@ -495,6 +500,10 @@ table#evenements_s
 {
     margin:0.2em;
     font-weight:bold;font-size:1.1em;
+}
+
+#evenements_s tr td h2.titre a:visited {
+    color:#105199; /*  #104d91*/   
 }
 
 #evenements_s tr td.action

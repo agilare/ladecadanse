@@ -58,6 +58,11 @@ margin:0.2em 0 1em 0;
 	line-height:1.2em;
 	padding:0 0.1em 0.4em 0.1em;
 }
+
+.dernier_evenement h4 a:visited {
+    color:#105199; /*  #104d91*/   
+}
+
 .dernier_evenement h5
 {
 	font-weight:bold;
@@ -307,6 +312,11 @@ border-bottom:1px solid black;
 */
 		
 	}
+        
+        .evenement .titre .left a:visited {
+        color:#105199; /*  #104d91*/   
+       }       
+        
 
 	.evenement .titre .right
 	{
@@ -315,7 +325,7 @@ border-bottom:1px solid black;
 		padding:0;
 		padding:0 0.2em 0 0 ;		
 		text-align:right;
-line-height: 1.25em;		
+                line-height: 1.25em;		
 /*
 	background-color:aqua;
 */
