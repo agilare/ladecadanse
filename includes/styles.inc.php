@@ -39,7 +39,7 @@ if (isset($extra_css) && is_array($extra_css))
 	foreach ($extra_css as $import)
 	{
 ?>
-<link rel="stylesheet" type="text/css" href="<?php echo $url_site ?>css/<?php echo $import ?>.css?update" media="screen" title="Normal" />
+<link rel="stylesheet" type="text/css" href="<?php echo $url_site ?>css/<?php echo $import ?>.css?update2" media="screen" title="Normal" />
 <?php
 	}
 }
