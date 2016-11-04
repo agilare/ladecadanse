@@ -505,4 +505,32 @@ REGEX;
     },
     $input);
 }
-?>
+
+
+function get_adresse($region, $localite, $quartier, $adr)
+{
+    $adresse = '';
+    
+   if (!empty($adr))
+        $adresse .= $adr;
+    
+    if (!empty($quartier))
+        $adresse .= " (".$quartier.") ";
+    
+    if (!empty($localite))
+        $adresse .= " - ".$localite;
+
+    /*
+    if ($region == 'ge')
+        $adresse .= " - Genève";
+    */
+    if ($region == 'vd')
+        $adresse .= " - Vaud"; 
+    
+    
+    if ($region == 'rf')
+        $adresse .= " - France";     
+    
+    return $adresse;
+    
+}

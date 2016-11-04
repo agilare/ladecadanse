@@ -103,7 +103,7 @@ else if ($get['type'] == "evenements_auj")
 	 titre, idPersonne, dateEvenement, URL1, ref, flyer, description, horaire_debut, horaire_fin, horaire_complement,
 	 prix, prelocations, dateAjout, date_derniere_modif
 	 FROM evenement
-	 WHERE dateEvenement='".$glo_auj_6h."' AND statut!='inactif'
+	 WHERE dateEvenement='".$glo_auj_6h."' AND statut!='inactif' AND region='".$connector->sanitize($_SESSION['region'])."'
 	 ORDER BY CASE `genre`
        WHEN 'fête' THEN 1
        WHEN 'cinéma' THEN 2
@@ -318,7 +318,7 @@ else if ($get['type'] == "lieux_descriptions")
 
 	$der_dateAjout = time();
 
-	$req = $connector->query("SELECT * FROM descriptionlieu WHERE type='description' ORDER BY dateAjout DESC");
+	$req = $connector->query("SELECT * FROM descriptionlieu, lieu WHERE descriptionlieu.idLieu=lieu.idLieu AND type='description' AND region='".$connector->sanitize($_SESSION['region'])."' ORDER BY dateAjout DESC");
 
 
 	while($tab = $connector->fetchArray($req))

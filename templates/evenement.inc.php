@@ -1,10 +1,10 @@
-<? /**/ ?>
 <?php
 //Affichage du lieu selon son existence ou non dans la base
 if ($evenement['idLieu'] != 0)
 {	
 	$listeLieu = $connector->fetchArray(
-	$connector->query("SELECT nom, adresse, quartier, URL FROM lieu WHERE idlieu='".$evenement['idLieu']."'"));
+	$connector->query("SELECT nom, adresse, quartier, localite.localite AS localite, region, URL, lat, lng FROM lieu, localite 
+		WHERE localite_id=localite.id AND idlieu='".$evenement['idLieu']."'"));
 	
 	$nom_lieu = "<a href=\"".$url_site."lieu.php?idL=".$evenement['idLieu']."\" title=\"Voir la fiche du lieu : ".securise_string($listeLieu['nom'])."\" >".htmlspecialchars($listeLieu['nom'])."</a>";
 
@@ -27,7 +27,12 @@ else
 	$nom_lieu = $listeLieu['nom'] =  htmlspecialchars($evenement['nomLieu']);
 	$listeLieu['adresse'] = htmlspecialchars($evenement['adresse']);
 	$listeLieu['quartier'] = htmlspecialchars($evenement['quartier']);
+        
+ 
+        $listeLieu['localite'] = securise_string($evenement['localite']);        
+        
 }
+		$adresse = htmlspecialchars(get_adresse(null, $listeLieu['localite'], $listeLieu['quartier'], $listeLieu['adresse']));
 
 //printr($evenement);
 
@@ -141,16 +146,7 @@ echo "</div>\n"; */
 
 echo "
 <div class=\"pratique\">\n
-<span class=\"left\">".securise_string($evenement['adresse']);
-
-if (!empty($evenement['quartier']))
-{
-	echo " (".securise_string($evenement['quartier']).")";
-}
-
-
-
-echo "</span>";
+<span class=\"left\">".$adresse."</span>";
 
 
 

@@ -313,7 +313,7 @@ if (isset($get['idO']) && $form->getValeur('photo') != '' && $form->getErreur("p
 
 //menu d'actions (activation et suppression)  pour l'auteur > 6 ou l'admin
 if (($get['action'] == 'editer' || $get['action'] == 'update') &&
-((estAuteur($_SESSION['SidPersonne'], $get['idO'], "organisateur") && $_SESSION['Sgroupe'] < 6) || $_SESSION['Sgroupe'] < 2))
+((estAuteur($_SESSION['SidPersonne'], $get['idO'], "organisateur") && $_SESSION['Sgroupe'] < 6) || $_SESSION['Sgroupe'] <= 4))
 {
 ?>
 
@@ -330,7 +330,7 @@ foreach ($statuts_lieu as $s)
 	{
 		$coche = 'checked="checked"';
 	}
-	echo '<li class="listehoriz"><input type="radio" name="statut" value="'.$s.'" '.$coche.' id="genre_'.$s.'" title="statut de l\'événement" class="radio_horiz" /><label class="continu" for="genre_'.$s.'">'.$s.'</label></li>';
+	echo '<li class="listehoriz"><input type="radio" name="statut" value="'.$s.'" '.$coche.' id="genre_'.$s.'"  class="radio_horiz" /><label class="continu" for="genre_'.$s.'">'.$s.'</label></li>';
 }
 ?>
 </ul>

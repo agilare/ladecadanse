@@ -1,8 +1,7 @@
 <?php
-if (is_file("config/reglages.php"))
-{
-	require_once("config/reglages.php");
-}
+
+require_once("config/reglages.php");
+
 
 require_once($rep_librairies."Sentry.php");
 $videur = new Sentry();
@@ -37,7 +36,7 @@ else
 	<?php 
 	//printr($_COOKIE);
 	?></div>
-		<h2 style="font-size: 1.7em;width:80%">Aujourd’hui <small style="color: #888;font-size: 0.75em;"><?php echo ucfirst(date_fr($get['auj'])); ?></small></h2>
+            <h2 style="font-size: 1.7em;width:80%">Aujourd’hui<sup><?php echo $glo_regions[$_SESSION['region']]; ?></sup> <small style="color: #888;font-size: 0.75em;"><?php echo ucfirst(date_fr($get['auj'])); ?></small></h2>
 
 		<ul class="entete_contenu_menu"  style="width:20%;margin-top:0.8em;">
 <!--			<li>Aller à :</li>
@@ -72,11 +71,11 @@ else
 $tab_auj = explode("-", $get['auj']);
 $auj2 = date("Y-m-d", mktime(0, 0, 0, $tab_auj[1], $tab_auj[2], $tab_auj[0]));
 
-$req_even = $connector->query("SELECT idEvenement, genre, idLieu, idSalle, nomLieu, adresse, quartier, urlLieu, statut,
+$req_even = $connector->query("SELECT idEvenement, genre, idLieu, idSalle, nomLieu, adresse, quartier, localite.localite AS localite, urlLieu, statut,
  titre, idPersonne, dateEvenement, URL1, ref, flyer, image, description, horaire_debut, horaire_fin,
  horaire_complement, prix, prelocations
- FROM evenement
- WHERE dateEvenement LIKE '".$auj2."%' AND statut!='inactif'
+ FROM evenement, localite
+ WHERE evenement.localite_id=localite.id AND dateEvenement LIKE '".$auj2."%' AND statut!='inactif' AND region='".$_SESSION['region']."'  
  ORDER BY CASE `genre`
         WHEN 'fête' THEN 1
         WHEN 'cinéma' THEN 2
@@ -91,7 +90,7 @@ $nb_evenements = $connector->getNumRows($req_even);
 
 if ($nb_evenements == 0)
 {
-  	echo msgInfo("Pas d'événement prévu aujourd'hui");
+  	echo msgInfo("Pas d’événement prévu aujourd’hui");
 }
 
 
@@ -152,15 +151,15 @@ while ($tab_even = $connector->fetchArray($req_even))
 	if ($tab_even['idLieu'] != 0)
 	{
 		$listeLieu = $connector->fetchArray(
-		$connector->query("SELECT nom, adresse, quartier, URL FROM lieu WHERE idlieu='".$tab_even['idLieu']."'"));
+		$connector->query("SELECT nom, adresse, quartier, localite.localite AS localite, URL FROM lieu, localite WHERE lieu.localite_id=localite.id AND idlieu='".$tab_even['idLieu']."'"));
 
 		$infosLieu = "<a href=\"".$url_site."lieu.php?idL=".$tab_even['idLieu']."\" title=\"Voir la fiche du lieu : ".htmlspecialchars($listeLieu['nom'])."\" >".htmlspecialchars($listeLieu['nom'])."</a>";
 
 		if ($tab_even['idSalle'])
 		{
-					$req_salle = $connector->query("SELECT nom FROM salle WHERE idSalle='".$tab_even['idSalle']."'");
-					$tab_salle = $connector->fetchArray($req_salle);
-					$infosLieu .= " - ".$tab_salle['nom'];
+                    $req_salle = $connector->query("SELECT nom FROM salle WHERE idSalle='".$tab_even['idSalle']."'");
+                    $tab_salle = $connector->fetchArray($req_salle);
+                    $infosLieu .= " - ".$tab_salle['nom'];
 		}
 	}
 	else
@@ -169,17 +168,23 @@ while ($tab_even = $connector->fetchArray($req_even))
 		$listeLieu['nom'] = htmlspecialchars($tab_even['nomLieu']);
 		$infosLieu = htmlspecialchars($tab_even['nomLieu']);
 		$listeLieu['adresse'] = htmlspecialchars($tab_even['adresse']);
-		$listeLieu['quartier'] = "";
+		$listeLieu['quartier'] = htmlspecialchars($tab_even['quartier']);
+		$listeLieu['localite'] = htmlspecialchars($tab_even['localite']);
+		
+                
 	}
 	
-	
-		if ($i > 1 && ($i % 2 != 0))
-		{
-		?>
-			<p class="rappel_date">Aujourd’hui, <?php echo mb_strtolower($genre_fr); // ",".date_fr($get['auj']); ?></p>
 
-		<?php	
-		}
+        
+        $even_adresse = get_adresse(null, $listeLieu['localite'], $listeLieu['quartier'], $listeLieu['adresse']);
+        
+        if ($i > 1 && ($i % 2 != 0))
+        {
+        ?>
+                <p class="rappel_date">Aujourd’hui, <?php echo mb_strtolower($genre_fr); // ",".date_fr($get['auj']); ?></p>
+
+        <?php	
+        }
 ?>
 
 	<div class="evenement">
@@ -262,17 +267,9 @@ title="Voir la fiche complète de l\'événement">'.securise_string($tab_even['t
 	echo "<div class=\"spacer\"></div>";
 	echo "<div class=\"pratique\">\n";
 
-	echo "<span class=\"left\">".htmlspecialchars($listeLieu['adresse']);
+	echo "<span class=\"left\">".htmlspecialchars($even_adresse);
 
-	if (!empty($listeLieu['quartier']))
-	{
-		echo " (".htmlspecialchars($listeLieu['quartier']).")";
-	}
-	else if (!empty($tab_even['quartier']))
-	{
-		echo " (".htmlspecialchars($tab_even['quartier']).")";
-	}
-
+        
 	echo "</span><span class=\"right\">".afficher_debut_fin($tab_even['horaire_debut'], $tab_even['horaire_fin'], $tab_even['dateEvenement']);
 	if (!empty($tab_even['prix']))
 	{
@@ -485,7 +482,7 @@ La décadanse dispose désormais d'une <b><a href="charte-editoriale.php">charte
 <?php
 $req_dern_even = $connector->query("
 SELECT idEvenement, titre, dateEvenement, dateAjout, nomLieu, idLieu, idSalle, flyer, image, statut
-FROM evenement WHERE statut!='inactif' ORDER BY dateAjout DESC LIMIT 0, 6
+FROM evenement WHERE region='".securise_string($_SESSION['region'])."' AND statut!='inactif' ORDER BY dateAjout DESC LIMIT 0, 6
 ");
 
 $date_ajout_courante = "";

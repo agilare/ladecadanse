@@ -27,7 +27,7 @@ class Sentry extends SystemComponent {
 	   */
 	function Sentry()
 	{
-		session_start();
+		
 
 		if (!isset($_SESSION['logged']))
 		{
@@ -52,7 +52,7 @@ class Sentry extends SystemComponent {
                             //trigger_error("Cookie ladecadanse_remember reçu non trouvé dans la base de données", E_USER_NOTICE);
 			}
 		}
-
+                
 		//header("Cache-control: private");
 	}
 

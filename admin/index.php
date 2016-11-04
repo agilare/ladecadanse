@@ -26,14 +26,12 @@ else
 require_once($rep_librairies."Sentry.php");
 $videur = new Sentry();
 
-if (!$videur->checkGroup(1))
+if (!$videur->checkGroup(4))
 {
 	header("Location: ".$url_site."login.php"); die();
 }
 
 require_once($rep_librairies.'Validateur.php');
-//require_once('searchEngines.php');
-
 
 $nom_page = "index";
 $page_titre = "administration";
@@ -80,6 +78,7 @@ $troisJoursAvant = date("Y-m-d H:i:s", time() - (3*86400));
 
 ?>
 
+ 
 <div id="entete_contenu">
 	<h2>Tableau de bord</h2>
 	<div class="spacer"></div>
@@ -87,9 +86,10 @@ $troisJoursAvant = date("Y-m-d H:i:s", time() - (3*86400));
 
 
 
-
 <div id="tableaux">
 
+<?php if ($_SESSION['Sgroupe'] < 4) { ?>  
+    
 <h3 style="padding:0.4em 0">Inscriptions de ces 3 derniers jours</h3>
 <table summary="Dernières inscriptions">
 <tr>
@@ -147,21 +147,102 @@ while($tab_pers = $connector->fetchArray($req_get))
 }
 ?>
 </table>
-<p><a href="gerer.php?element=personne">Gérer les personnes</a></p>
 
 
-<h3 style="padding:0.4em 0">Événements ajoutés ces 3 derniers jours</h3>
-<table summary="Derniers événements ajoutés" id="derniers_evenements_ajoutes">
+
+<h3 style="padding:0.4em 0">Derniers commentaires</h3>
+<table class="ajouts" summary="Derniers commentaires ajoutés">
 <tr>
-<th colspan="2">Ajouté</th>
-<th>Titre</th>
-<th>Lieu</th>
-<th>Date</th>
-<th>Horaire</th>
+<th colspan="2">Date d'ajout</th>
+<th>Contenu</th>
+<th>Élément</th>
+<th>Type</th>
 <th>Statut</th>
 <th>par</th>
 <th>&nbsp;</th>
 </tr>
+<?php
+$th_comm = array("contenu" => "Commentaire", "idEvenement" => "Événement", "element" => "Élément", "statut" => "Statut", "dateAjout" => "Date d'ajout", "heure" => "Heure");
+
+$req_comm = $connector->query("
+SELECT idCommentaire, id, idPersonne, contenu, statut, element, dateAjout
+FROM commentaire WHERE dateAjout >= DATE_SUB(CURDATE(), INTERVAL 3 DAY) 
+ORDER BY dateAjout DESC, idCommentaire DESC LIMIT 0, 10");
+
+$pair = 0;
+
+while($tab_comm = $connector->fetchArray($req_comm))
+{
+
+	if ($pair % 2 == 0)
+	{
+		echo "<tr>";
+	}
+	else
+	{
+		echo "<tr class=\"impair\">";
+	}
+	$datetime_dateajout = date_iso2app($tab_comm['dateAjout']);
+	$tab_datetime_dateajout = explode(" ", $datetime_dateajout);
+	echo "<td>".$tab_datetime_dateajout[1]."</td><td>".$tab_datetime_dateajout[0]."</td>";
+	echo "<td class='small'>".mb_substr(securise_string($tab_comm['contenu']), 0, 50)."</td>";
+
+	$req_even = $connector->query("SELECT titre FROM evenement WHERE idEvenement=".$tab_comm['id']);
+	$tab_even = $connector->fetchArray($req_even);
+
+	if ($tab_comm['element'] == 'evenement')
+	{
+
+		$req_even = $connector->query("SELECT titre FROM evenement WHERE idEvenement=".$tab_comm['id']);
+		$tab_even = $connector->fetchArray($req_even);
+		echo "<td><a href=\"".$url_site."evenement.php?idE=".$tab_comm['id']."\" title=\"Voir l'événement\">".$tab_even['titre']."</a></td>";
+
+	}
+	else if ($tab_comm['element'] == 'lieu')
+	{
+		$req_even = $connector->query("SELECT nom FROM lieu WHERE idLieu=".$tab_comm['id']);
+		$tab_even = $connector->fetchArray($req_even);
+		echo "<td><a href=\"".$url_site."lieu.php?idL=".$tab_comm['id']."\" title=\"Voir le lieu\">".$tab_even['nom']."</a></td>";
+
+	}
+
+	echo "<td>".$tab_comm['element']."</td>";
+	echo "<td>".$tab_icones_statut[$tab_comm['statut']]."</td>";
+
+	$nom_auteur = "<i>Ancien membre</i>";
+
+	if ($tab_auteur = $connector->fetchArray($connector->query("SELECT pseudo FROM personne WHERE idPersonne=".$tab_comm['idPersonne'])))
+	{
+		$nom_auteur = "<a href=\"".$url_site."personne.php?idP=".$tab_comm['idPersonne']."\"
+		title=\"Voir le profile de la personne\">".securise_string($tab_auteur['pseudo'])."</a>";
+	}
+	echo "<td>".$nom_auteur."</td>";
+
+	//Edition pour l'admin ou l'auteur
+	if ($_SESSION['Sgroupe'] <= 4)
+	{
+		echo "<td><a href=\"".$url_site."ajouterCommentaire.php?action=editer&amp;idC=".$tab_comm['idCommentaire']."\" title=\"Éditer la brêve\">".$iconeEditer."</a></td>";
+	}
+
+	echo "</tr>";
+
+	$pair++;
+}
+?>
+</table>
+
+
+<?php } ?>
+
+<?php if ($_SESSION['Sgroupe'] < 4) { ?>  
+<p><a href="gerer.php?element=personne">Gérer les personnes</a></p>
+<?php } ?>
+               
+    <h3><?php echo $glo_regions[$_SESSION['region']]; ?></h3>
+
+    
+<h4 style="padding:0.4em 0">Événements ajoutés ces 3 derniers jours</h4>
+
 <?php
 
 $troisJoursAvant = date("Y-m-d H:i:s", time() - (3*86400));
@@ -170,10 +251,37 @@ $troisJoursAvant = date("Y-m-d H:i:s", time() - (3*86400));
 * classés par date d'ajout
 */
 
-$req_getEvenement = $connector->query("SELECT idEvenement, idLieu, idPersonne, titre,
+if ($_SESSION['Sgroupe'] != 1)
+    $region_admin = $_SESSION['region'];
+    
+$sql_region = '';
+if (!empty($region_admin))
+    $sql_region = " AND region='".$connector->sanitize($region_admin)."'";
+    
+$sql_even = "SELECT idEvenement, idLieu, idPersonne, titre,
  dateEvenement, horaire_debut, horaire_fin, genre, nomLieu, adresse, statut, flyer, dateAjout
- FROM evenement WHERE dateAjout >= DATE_SUB(CURDATE(), INTERVAL 3 DAY)
- ORDER BY dateAjout DESC, idEvenement DESC");
+ FROM evenement WHERE dateAjout >= DATE_SUB(CURDATE(), INTERVAL 3 DAY) ".$sql_region."
+ ORDER BY dateAjout DESC, idEvenement DESC";
+
+//echo $sql_even;
+
+$req_getEvenement = $connector->query($sql_even);
+
+if ($connector->getNumRows($req_getEvenement) > 0)
+{
+?>
+    <table summary="Derniers événements ajoutés" id="derniers_evenements_ajoutes">
+    <tr>
+    <th colspan="2">Ajouté</th>
+    <th>Titre</th>
+    <th>Lieu</th>
+    <th>Date</th>
+    <th>Horaire</th>
+    <th>Statut</th>
+    <th>par</th>
+    <th>&nbsp;</th>
+    </tr>
+<?php
 
 $pair = 0;
 while($tab_even = $connector->fetchArray($req_getEvenement))
@@ -219,7 +327,7 @@ while($tab_even = $connector->fetchArray($req_getEvenement))
 	}
 	echo "<td>".$nom_auteur."</td>";
 
-	if ($_SESSION['Sgroupe'] < 2)
+	if ($_SESSION['Sgroupe'] <= 4)
 	{
 		echo "<td><a href=\"".$url_site."ajouterEvenement.php?action=editer&amp;idE=".$tab_even['idEvenement']."\" title=\"Éditer l'événement\">".$iconeEditer."</a></td>";
 	}
@@ -230,10 +338,13 @@ while($tab_even = $connector->fetchArray($req_getEvenement))
 
 ?>
 </table>
+<?php } else { ?>
+Rien
+<?php } ?>
 <p><a href="gererEvenements.php">Gérer les événements</a></p>
 
 <?php if (0) { ?>
-<h3>Dernières événements modifiés</h3>
+<h3>Derniers événements modifiés</h3>
 
 <table summary="Derniers événements modifiés">
 <tr>
@@ -306,7 +417,7 @@ while($tab_even = $connector->fetchArray($req_getEvenement))
 	}
 	echo "<td>".$nom_auteur."</td>";
 
-	if ($_SESSION['Sgroupe'] < 2)
+	if ($_SESSION['Sgroupe'] <= 4)
 	{
 		echo "<td><a href=\"".$url_site."ajouterEvenement.php?action=editer&amp;idE=".$tab_even['idEvenement']."\" title=\"Éditer l'événement\">".$iconeEditer."</a></td>";
 	}
@@ -319,87 +430,9 @@ while($tab_even = $connector->fetchArray($req_getEvenement))
 </table>
 <?php } // if (0) ?>
 
-<h3 style="padding:0.4em 0">Derniers commentaires</h3>
-<table class="ajouts" summary="Derniers commentaires ajoutés">
-<tr>
-<th colspan="2">Date d'ajout</th>
-<th>Contenu</th>
-<th>Élément</th>
-<th>Type</th>
-<th>Statut</th>
-<th>par</th>
-<th>&nbsp;</th>
-</tr>
-<?php
-$th_comm = array("contenu" => "Commentaire", "idEvenement" => "Événement", "element" => "Élément", "statut" => "Statut", "dateAjout" => "Date d'ajout", "heure" => "Heure");
 
-$req_comm = $connector->query("
-SELECT idCommentaire, id, idPersonne, contenu, statut, element, dateAjout
-FROM commentaire
-ORDER BY dateAjout DESC, idCommentaire DESC LIMIT 0, 10");
 
-$pair = 0;
 
-while($tab_comm = $connector->fetchArray($req_comm))
-{
-
-	if ($pair % 2 == 0)
-	{
-		echo "<tr>";
-	}
-	else
-	{
-		echo "<tr class=\"impair\">";
-	}
-	$datetime_dateajout = date_iso2app($tab_comm['dateAjout']);
-	$tab_datetime_dateajout = explode(" ", $datetime_dateajout);
-	echo "<td>".$tab_datetime_dateajout[1]."</td><td>".$tab_datetime_dateajout[0]."</td>";
-	echo "<td class='small'>".mb_substr(securise_string($tab_comm['contenu']), 0, 50)."</td>";
-
-	$req_even = $connector->query("SELECT titre FROM evenement WHERE idEvenement=".$tab_comm['id']);
-	$tab_even = $connector->fetchArray($req_even);
-
-	if ($tab_comm['element'] == 'evenement')
-	{
-
-		$req_even = $connector->query("SELECT titre FROM evenement WHERE idEvenement=".$tab_comm['id']);
-		$tab_even = $connector->fetchArray($req_even);
-		echo "<td><a href=\"".$url_site."evenement.php?idE=".$tab_comm['id']."\" title=\"Voir l'événement\">".$tab_even['titre']."</a></td>";
-
-	}
-	else if ($tab_comm['element'] == 'lieu')
-	{
-		$req_even = $connector->query("SELECT nom FROM lieu WHERE idLieu=".$tab_comm['id']);
-		$tab_even = $connector->fetchArray($req_even);
-		echo "<td><a href=\"".$url_site."lieu.php?idL=".$tab_comm['id']."\" title=\"Voir le lieu\">".$tab_even['nom']."</a></td>";
-
-	}
-
-	echo "<td>".$tab_comm['element']."</td>";
-	echo "<td>".$tab_icones_statut[$tab_comm['statut']]."</td>";
-
-	$nom_auteur = "<i>Ancien membre</i>";
-
-	if ($tab_auteur = $connector->fetchArray($connector->query("SELECT pseudo FROM personne WHERE idPersonne=".$tab_comm['idPersonne'])))
-	{
-		$nom_auteur = "<a href=\"".$url_site."personne.php?idP=".$tab_comm['idPersonne']."\"
-		title=\"Voir le profile de la personne\">".securise_string($tab_auteur['pseudo'])."</a>";
-	}
-	echo "<td>".$nom_auteur."</td>";
-
-	//Edition pour l'admin ou l'auteur
-	if ($_SESSION['Sgroupe'] < 2)
-	{
-		echo "<td><a href=\"".$url_site."ajouterCommentaire.php?action=editer&amp;idC=".$tab_comm['idCommentaire']."\" title=\"Éditer la brêve\">".$iconeEditer."</a></td>";
-	}
-
-	echo "</tr>";
-
-	$pair++;
-}
-?>
-
-</table>
 <h3 style="padding:0.4em 0">Derniers évenements mis en favoris</h3>
 
 <table class="ajouts" summary="Derniers favoris ajoutés">
@@ -413,8 +446,8 @@ $th_comm = array("titre" => "Titre", "pseudo" => "Pseudo", "date_ajout" => "Ajou
 
 $req_fav_even = $connector->query("
 SELECT evenement_favori.idEvenement, evenement_favori.date_ajout AS date_ajout, titre, evenement_favori.idPersonne AS idPersonne
-FROM evenement_favori, evenement
-WHERE evenement_favori.idEvenement=evenement.idEvenement
+FROM evenement_favori, evenement 
+WHERE evenement_favori.idEvenement=evenement.idEvenement AND date_ajout >= DATE_SUB(CURDATE(), INTERVAL 3 DAY) ".$sql_region."
 ORDER BY date_ajout DESC LIMIT 0, 20");
 
 $pair = 0;
@@ -583,7 +616,7 @@ while($tab_lieux = $connector->fetchArray($req_getLieu))
 	}
 	echo "<td>".$nom_auteur."</td>";
 	//Edition pour l'admin ou l'auteur
-	if ($_SESSION['Sgroupe'] < 2)
+	if ($_SESSION['Sgroupe'] <= 4)
 	{
 		echo '<td><a href="'.$url_site.'ajouterLieu.php?action=editer&amp;idL='.$tab_lieux['idLieu'].'" title="Éditer le lieu">'.$iconeEditer.'</a></td>';
 	}
@@ -645,7 +678,7 @@ while($tab = $connector->fetchArray($req))
 	}
 	echo "<td>".$nom_auteur."</td>";
 	//Edition pour l'admin ou l'auteur
-	if ($_SESSION['Sgroupe'] < 2)
+	if ($_SESSION['Sgroupe'] <= 4)
 	{
 		echo '<td><a href="'.$url_site.'ajouterOrganisateur.php?action=editer&amp;idO='.$tab['idOrganisateur'].'" title="Éditer ">'.$iconeEditer.'</a></td>';
 	}
@@ -656,7 +689,7 @@ while($tab = $connector->fetchArray($req))
 ?>
 </table>
 */ ?>
-
+<?php if ($_SESSION['Sgroupe'] < 4) { ?> 
 <h3 style="padding:0.2em">Derniers textes ajoutés</h3>
 
 <table summary="Derniers textes ajoutés">
@@ -670,8 +703,12 @@ while($tab = $connector->fetchArray($req))
 </tr>
 
 <?php
-$req_getDes = $connector->query("SELECT idLieu, idPersonne, dateAjout, contenu, type
-FROM descriptionlieu ORDER BY dateAjout DESC LIMIT 0, 3");
+
+$sql_req = "SELECT descriptionlieu.idLieu AS idLieu, descriptionlieu.idPersonne, descriptionlieu.dateAjout, contenu, type
+FROM descriptionlieu, lieu WHERE descriptionlieu.idLieu=lieu.idLieu ".$sql_region." AND descriptionlieu.dateAjout >= DATE_SUB(CURDATE(), INTERVAL 3 DAY)  ORDER BY descriptionlieu.dateAjout DESC";
+
+//echo $sql_req;
+$req_getDes = $connector->query($sql_req);
 
 while ($tab_desc = $connector->fetchArray($req_getDes))
 {
@@ -712,7 +749,7 @@ while ($tab_desc = $connector->fetchArray($req_getDes))
 	}
 	echo "<td>".$tab_desc['type']."</td>";
 	echo "<td>".$nom_auteur."</td>";
-	if ( $_SESSION['Sgroupe'] < 2)
+	if ( $_SESSION['Sgroupe'] <= 4)
 	{
 		echo "<td><a href=\"".$url_site."ajouterDescription.php?action=editer&amp;idL=".$tab_desc['idLieu']."&amp;idP=".$tab_desc['idPersonne']."&type=".$tab_desc['type']."\" title=\"Éditer le lieu\">".$iconeEditer."</a></td>";
 	}
@@ -724,51 +761,8 @@ while ($tab_desc = $connector->fetchArray($req_getDes))
 ?>
 </table>
 
-<?php if (0) { ?>
-<h4>Base de données</h4>
-<h5>Tables</h5>
-<table summary="Informations sur les tables de la base de données">
-<tr><th>Nom</th><th>Lignes</th><th>Taille</th><th>Incr</th><th>m-à-j</th></tr>
-
-<?php
-$req_show = $connector->query("SHOW TABLE STATUS FROM ladecadanse");
-
-$pair = 0;
-while ($tab_show = $connector->fetchArray($req_show))
-{
-
-if ($pair % 2 == 0)
-	{
-		echo "<tr>";
-	}
-	else
-	{
-		echo "<tr class=\"impair\">";
-	}
-
-	echo "
-	<td>".$tab_show['Name']."</td>
-	<td>".$tab_show['Rows']."</td>
-	<td>".formatbytes($tab_show['Data_length'])."</td>
-	<td>".$tab_show['Auto_increment']."</td>";
-	echo "<td>";
-	if (!empty($tab_show['Update_time']))
-	{
-		echo date_iso2app($tab_show['Update_time']);
-	}
-	echo "</td></tr>";
-	$pair++;
-}
-?>
-</table>
-
-<form action="<?php echo $url_site ?>admin/optimiserTables.php" method="post">
-
-<fieldset>
-<input type="submit" value="Optimiser les tables" />
-</fieldset>
-</form>
 <?php } ?>
+
 
 </div>
 <!-- fin tableaux -->

@@ -627,7 +627,7 @@ if (((estAuteur($_SESSION['SidPersonne'], $get['idE'], "evenement") && $_SESSION
 		{
 
 			$lieu = $tab_lieu;
-			include("templates/lieu.inc.php");
+			//include("templates/lieu.inc.php");
 
 			// if (!empty($affEven['idLieu'])) {
 				// $lieu = $affEven['idLieu'];
@@ -691,6 +691,7 @@ if (((estAuteur($_SESSION['SidPersonne'], $get['idE'], "evenement") && $_SESSION
 	}
 	else if ($get['type'] == "organisateur")
 	{
+            
 		$req = $connector->query("SELECT idOrganisateur, nom, presentation FROM organisateur WHERE idOrganisateur=".$get['id']);
 
 		if ($organisateur = $connector->fetchArray($req))

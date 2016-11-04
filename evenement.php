@@ -38,6 +38,8 @@ $even->load();
 
 $even_status = '';
 
+//printr($even->getValues());
+
 // si idE ne correspond à aucune entrée dans la table
 if (!$even->getValues() || $even->getValue('statut') == 'inactif')
 {
@@ -92,14 +94,15 @@ if ($even->getValue('idSalle') != 0)
 }
 
 
-$page_titre_region = "Genève";
-if (in_array($even->getValue('quartier'), $glo_tab_quartiers_hors_geneve))
-	$page_titre_region = $even->getValue('quartier');
+
+
+$page_titre_localite = " – ";
+
 
 $nom_page = "evenement";
-$page_titre = $even->getValue('titre')." ".$determinant_lieu.$even->getValue('nomLieu').$even_salle." (".$page_titre_region.") le ".date_fr($even->getValue('dateEvenement'), "annee", "", "", false);
+$page_titre = $even->getValue('titre')." ".$determinant_lieu.$even->getValue('nomLieu').$even_salle.get_adresse($even->getValue('region'), $even->getValue('localite_id'), $even->getValue('quartier'), $even->getValue('adresse'))." le ".date_fr($even->getValue('dateEvenement'), "annee", "", "", false);
 $page_description = $even->getValue('titre')." ".$determinant_lieu.$even->getValue('nomLieu').
-" (".$even->getValue('quartier')."), ".$page_titre_region." le ".date_fr($even->getValue('dateEvenement'), "annee", "", "", false)." ".
+" le ".date_fr($even->getValue('dateEvenement'), "annee", "", "", false)." ".
 afficher_debut_fin($even->getValue('horaire_debut'), $even->getValue('horaire_fin'),$even->getValue('dateEvenement'));
 $extra_css = array("element_login");
 include("includes/header.inc.php");
@@ -117,6 +120,7 @@ if ($connector->getNumRows($req_even) > 0)
 	 SELECT idEvenement, titre FROM evenement
 	 WHERE  dateEvenement='".$even->getValue('dateEvenement')."'
 	 AND statut!='inactif' 
+         AND region='".$even->getValue('region')."'
 	 ORDER BY dateEvenement, 
          CASE `genre`
          WHEN 'fête' THEN 1
@@ -305,34 +309,35 @@ iCalendar</a></li>
 
 	if ($even->getValue('idLieu') != 0)
 	{
-		$req_lieu = $connector->query("SELECT nom, adresse, quartier, URL, lat, lng FROM lieu
-		WHERE idlieu='".$even->getValue('idLieu')."'");
+		$req_lieu = $connector->query("SELECT nom, adresse, quartier, localite.localite AS localite, region, URL, lat, lng FROM lieu, localite 
+		WHERE localite_id=localite.id AND idlieu='".$even->getValue('idLieu')."'");
 		$listeLieu = $connector->fetchArray($req_lieu);
 		$lieu = "<a href=\"".$url_site."lieu.php?idLieu=".$even->getValue('idLieu')."\" title=\"Voir la fiche du lieu : ".securise_string($listeLieu['nom'])."\">".securise_string($listeLieu['nom'])."</a>";
+                
 		$nom_lieu = '<a href="'.$url_site.'lieu.php?idL='.$even->getValue('idLieu').'" title="Voir la fiche du lieu : " >
 		'.$even->getValue('nomLieu').'</a>';
 
-
-
-/* 		if ($listeLieu['lat'] != 0.000000 && $listeLieu['lng'] != 0.000000)
-		{
-			$lien_gmaps = lien_popup($url_site.'gmap.php?idL='.$even->getValue('idLieu'), 'Localisation', 600, 400, ' Plan');
-			$lien_gmaps = "<li>".$icone['plan'].$lien_gmaps."</li>";
-		}
- */
-
-
+ 
 	}
 	else
 	{
 		$listeLieu['nom'] = securise_string($even->getValue('nomLieu'));
 		$lieu = securise_string($even->getValue('nomLieu'));
-		$listeLieu['adresse'] = securise_string($even->getValue('adresse'));
-		$listeLieu['quartier'] = securise_string($even->getValue('quartier'));
+		$listeLieu['adresse'] = securise_string($even->getValue('adresse'));               
+                $listeLieu['quartier'] = securise_string($even->getValue('quartier')); 
+                
+		$req_localite = $connector->query("SELECT  localite FROM localite 
+		WHERE  id='".$even->getValue('localite_id')."'");
+		$tab_localite = $connector->fetchArray($req_localite);                
+                
+                $listeLieu['localite'] = securise_string($tab_localite[0]);
+                
 		$listeLieu['URL'] = securise_string($even->getValue('urlLieu'));
 
 		$nom_lieu = $lieu;
 	}
+       
+		$adresse = htmlspecialchars(get_adresse(null, $listeLieu['localite'], $listeLieu['quartier'], $listeLieu['adresse']));
 
 
 ?>
@@ -353,7 +358,7 @@ iCalendar</a></li>
 					<ul>
 						<li class="adr">
 						
-						<?php echo $listeLieu['adresse'] ?> - <?php echo $listeLieu['quartier'] ?></li>
+						<?php echo $adresse ?></li>
 
 						<?php
 						echo $lien_gmaps;

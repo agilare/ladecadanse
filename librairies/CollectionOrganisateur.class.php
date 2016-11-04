@@ -84,10 +84,14 @@ class CollectionOrganisateur extends Collection {
 		return true;
 	}
 
-	function loadFiches()
+	function loadFiches($region = null)
 	{
 
-		$req = $this->connector->query("SELECT * FROM organisateur WHERE statut='actif' ORDER BY date_ajout DESC LIMIT 8");
+                $sql_region = '';
+                if (!empty($region))
+                    $sql_region = "and organisateur.region='$region' ";            
+            
+		$req = $this->connector->query("SELECT * FROM organisateur WHERE statut='actif' ".$sql_region."  ORDER BY date_ajout DESC LIMIT 8");
 
 
 		if ($this->connector->getNumRows($req) == 0)

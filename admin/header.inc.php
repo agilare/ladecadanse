@@ -265,7 +265,7 @@ else
 	<li><a href="<?php echo $url_site; ?>logout.php" title="Fermer la session">Sortir</a></li>
     
     <?php
-	if ($_SESSION['Sgroupe'] == 1)
+	if ($_SESSION['Sgroupe'] <= 4)
 	{
 			echo '<li class=\"ici\"><a href="'.$url_site.'admin/index.php" title="Administration" >Admin</a></li>';
 	}

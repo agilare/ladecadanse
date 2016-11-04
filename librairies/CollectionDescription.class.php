@@ -84,16 +84,22 @@ class CollectionDescription extends Collection {
 		return true;
 	}
 
-	function loadFiches($type = '')
+	function loadFiches($type = '', $region = null)
 	{
 		if ($type != '')
 		{
 			$type = " AND descriptionlieu.type='".$type."'";
 		}
+                
+                $sql_region = '';
+                if (!empty($region))
+                    $sql_region = "and lieu.region='$region' ";
+                
+              
 		$req = $this->connector->query("SELECT lieu.idLieu, lieu.nom, pseudo, contenu,
 		descriptionlieu.dateAjout, photo1, groupe, personne.nom as nomAuteur, prenom, descriptionlieu.date_derniere_modif AS date_derniere_modif
 		FROM descriptionlieu, lieu, personne WHERE descriptionlieu.idPersonne=personne.idPersonne AND
-		descriptionlieu.idLieu=lieu.idLieu".$type." AND lieu.actif=1 AND lieu.statut='actif' ORDER BY descriptionlieu.dateAjout DESC LIMIT 6");
+		descriptionlieu.idLieu=lieu.idLieu".$type." AND lieu.actif=1 AND lieu.statut='actif' ".$sql_region." ORDER BY descriptionlieu.dateAjout DESC LIMIT 6");
 
 
 		if ($this->connector->getNumRows($req) == 0)

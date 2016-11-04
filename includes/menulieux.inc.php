@@ -97,12 +97,17 @@ $aff_menulieux .= '
 <ul id="selon">
 	<li';
 	if ($get['vue'] == "az") { $aff_menulieux .= " class=\"ici\""; }
-	$aff_menulieux .= '><a href="'.$_SERVER['PHP_SELF'].'?statut='.$get['statut'].'&amp;vue=az'.$url_idLieu.'" title="Liste alphabétique">A-Z</a></li><li';
+	$aff_menulieux .= '><a href="'.$_SERVER['PHP_SELF'].'?'.$url_query_region_et.'statut='.$get['statut'].'&amp;vue=az'.$url_idLieu.'" title="Liste alphabétique">A-Z</a></li><li';
 	if ($get['vue'] == "genre") { $aff_menulieux .= " class=\"ici\""; }
-	$aff_menulieux .= '><a href="'.$_SERVER['PHP_SELF'].'?statut='.$get['statut'].'&amp;vue=genre'.$url_idLieu.'" title="Liste par genre">Genre</a></li>';
+	$aff_menulieux .= '><a href="'.$_SERVER['PHP_SELF'].'?'.$url_query_region_et.'statut='.$get['statut'].'&amp;vue=genre'.$url_idLieu.'" title="Liste par genre">Genre</a></li>';
+        
+    if ($_SESSION['region'] == 'ge')
+    {
 	$aff_menulieux .= '<li';
 	if ($get['vue'] == "quartier") { $aff_menulieux .= " class=\"ici\""; }
-	$aff_menulieux .= '><a href="'.$_SERVER['PHP_SELF'].'?statut='.$get['statut'].'&amp;vue=quartier'.$url_idLieu.'" title="Liste par quartier">Quartier</a></li>
+	$aff_menulieux .= '><a href="'.$_SERVER['PHP_SELF'].'?'.$url_query_region_et.'statut='.$get['statut'].'&amp;vue=quartier'.$url_idLieu.'" title="Liste par quartier">Quartier</a></li>';
+    }        
+        $aff_menulieux .= ' 
 </ul>
 		<div class="spacer"><!-- --></div>';
 
@@ -114,13 +119,13 @@ $aff_menulieux .= '
 				<ul id="tranches">
 				<li';
 				if ($get['tranche'] == "ak") { $aff_menulieux .= " class=\"ici\""; }
-				$aff_menulieux .= '><a href="'.$_SERVER['PHP_SELF'].'?statut='.$get['statut'].'&amp;vue=az'.$url_idLieu.'&amp;tranche=ak" title="Liste alphabétique">a-k</a></li>
+				$aff_menulieux .= '><a href="'.$_SERVER['PHP_SELF'].'?'.$url_query_region_et.'statut='.$get['statut'].'&amp;vue=az'.$url_idLieu.'&amp;tranche=ak" title="Liste alphabétique">a-k</a></li>
 				<li';
 				if ($get['tranche'] == "lz") { $aff_menulieux .= " class=\"ici\""; }
-				$aff_menulieux .= '><a href="'.$_SERVER['PHP_SELF'].'?statut='.$get['statut'].'&amp;vue=az'. $url_idLieu.'&amp;tranche=lz" title="Liste alphabétique">l-z</a></li>
+				$aff_menulieux .= '><a href="'.$_SERVER['PHP_SELF'].'?'.$url_query_region_et.'statut='.$get['statut'].'&amp;vue=az'. $url_idLieu.'&amp;tranche=lz" title="Liste alphabétique">l-z</a></li>
 				<li';
 				if ($get['tranche'] == "tout") { $aff_menulieux .= " class=\"ici\""; }
-				$aff_menulieux .= '><a href="'.$_SERVER['PHP_SELF'].'?statut='.$get['statut'].'&amp;vue=az'.$url_idLieu.'&amp;tranche=tout" title="Liste alphabétique">tout</a></li>
+				$aff_menulieux .= '><a href="'.$_SERVER['PHP_SELF'].'?'.$url_query_region_et.'statut='.$get['statut'].'&amp;vue=az'.$url_idLieu.'&amp;tranche=tout" title="Liste alphabétique">tout</a></li>
 				</ul>';
 
 				$sql_vue = "AND TRIM(LEADING 'l\'' FROM (TRIM(LEADING 'les ' FROM (TRIM(LEADING 'la ' FROM (TRIM(LEADING 'le ' FROM LOWER(nom)))))))) >=  LOWER('".$de."%')";
@@ -225,7 +230,7 @@ $aff_menulieux .= '
 $sql_menu_lieux = "
 SELECT idLieu, nom
 FROM lieu
-WHERE statut='".$get['statut']."'".$sql_vue."
+WHERE statut='".$get['statut']."' AND region='".$connector->sanitize($_SESSION['region'])."' ".$sql_vue."
 ORDER BY TRIM(LEADING 'l\'' FROM (TRIM(LEADING 'les ' FROM (TRIM(LEADING 'la ' FROM (TRIM(LEADING 'le ' FROM lower(nom)))))))) COLLATE utf8_general_ci";
 
 $req_lieux = $connector->query($sql_menu_lieux);

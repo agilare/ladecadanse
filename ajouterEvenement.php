@@ -70,7 +70,7 @@ if (isset($_GET['idO']))
 
 <?php 
 $isadmin = false;
-if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] == 1 ) { $isadmin = true; }
+if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 4 ) { $isadmin = true; }
 ?>
 
 
@@ -109,7 +109,7 @@ if ($get['action'] != "ajouter" && $get['action'] != "insert")
 $verif = new Validateur();
 
 $champs = array("statut" => "", "genre" => "", "titre" => "", "dateEvenement" => "", "idLieu" => "",
- "idSalle" => "", "nomLieu" => "", "adresse" => "", "quartier" => "", "urlLieu" => "", 'organisateurs' => '', "description" => "", "ref" => "",
+ "idSalle" => "", "nomLieu" => "", "adresse" => "", "quartier" => "",  "localite_id" => "", "region" => "", "urlLieu" => "", 'organisateurs' => '', "description" => "", "ref" => "",
   "horaire_debut" => "", "horaire_fin" => "", "horaire_complement" => "", "prix" => "", "prelocations" => "");
 
 $fichiers = array('flyer' => '', 'image' => '');
@@ -205,10 +205,9 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 		$verif->setErreur("adresse", "L'adresse est obligatoire");
 	}
 
-	$verif->valider($champs['quartier'], "quartier", "texte", 2, 100, 0);
-	if (empty($champs['lien']) && !empty($champs['nomLieu']) && empty($champs['quartier']))
+	if (empty($champs['lien']) && !empty($champs['nomLieu']) && empty($champs['localite_id']))
 	{
-		$verif->setErreur("quartier", "Le quartier est obligatoire");
+		$verif->setErreur("localite_id", "La localité est obligatoire");
 	}
 
 
@@ -417,18 +416,56 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 			$champs['organisateurs'] = array_unique($champs['organisateurs']);
 		}
 		
+
 		// pour remplir les champs nomLieu, adresse, etc. de la table evenement
 		if (!empty($champs['idLieu']))
 		{
-			$sql_lieu = "SELECT nom, adresse, quartier, URL FROM lieu WHERE idLieu=".$connector->sanitize($champs['idLieu']);
+			$sql_lieu = "SELECT nom, adresse, quartier, localite_id, region, URL FROM lieu WHERE idLieu=".$connector->sanitize($champs['idLieu']);
 			$req_lieu = $connector->query($sql_lieu);
 			$tab_lieu = $connector->fetchArray($req_lieu);
 			$champs['nomLieu'] = $tab_lieu['nom'];
 			$champs['adresse'] = $tab_lieu['adresse'];
 			$champs['quartier'] = $tab_lieu['quartier'];
+			$champs['localite_id'] = $tab_lieu['localite_id'];
+			$champs['region'] = $tab_lieu['region'];
 			$champs['urlLieu'] = $tab_lieu['URL'];
 		}
+                elseif (!empty($champs['localite_id']))
+                {    
+                    $loc_qua = explode("-", $champs['localite_id']);
+                    if (count($loc_qua) > 1)
+                    {
+                        $champs['localite_id'] =  $loc_qua[0];
+                        $champs['quartier'] = $loc_qua[1];
+                        $champs['region'] = 'ge';
+                    }
+                    else
+                    {
+                        $champs['quartier'] = ''; 
 
+                        if ($champs['localite_id'] == 'vd' || $champs['localite_id'] == 'rf' || $champs['localite_id'] == 'hs')
+                        {
+                            $champs['region'] = $champs['localite_id'];
+                            $champs['localite_id'] = 1;
+                        }
+                        elseif ($champs['localite_id'] == 529 )
+                        {
+                            $champs['region'] = 'ge';
+                                               
+
+                        }   
+                        else
+                        {
+                            $sql_lieu = "SELECT canton FROM localite WHERE id=".$connector->sanitize($champs['localite_id']);
+                            $req_lieu = $connector->query($sql_lieu);
+                            $tab_lieu = $connector->fetchArray($req_lieu);    
+                            $champs['region'] = $tab_lieu['canton'];
+                        }
+                    }
+                    
+               
+                    
+                }
 
 
 		/*
@@ -961,7 +998,7 @@ if ($get['action'] == 'editer' && isset($get['idE']))
 	if ($_SESSION['Sgroupe'] <= 10)
 	{
 		$req_even = $connector->query("SELECT idLieu, idSalle, idPersonne, statut, titre, genre,
-		dateEvenement, nomLieu, adresse, urlLieu, quartier, description, flyer, image, prix, horaire_debut, horaire_fin, horaire_complement, URL1,
+		dateEvenement, nomLieu, adresse, urlLieu, quartier, localite_id, region, description, flyer, image, prix, horaire_debut, horaire_fin, horaire_complement, URL1,
 		ref, prelocations FROM evenement WHERE idEvenement =".$get['idE']);
 
 		if ($affEven = $connector->fetchArray($req_even))
@@ -1293,62 +1330,93 @@ echo $verif->getHtmlErreur("doublonLieux");
 </p>
 
 <p>
-<label for="quartier">Quartier</label>
-<select name="quartier" id="quartier" class="chosen-select" data-placeholder="Choisir...">
-<option></option>
+<label for="localite">Localité/quartier</label>
+<select name="localite_id" id="localite" class="chosen-select" style="max-width:300px;">
 <?php
-$m = 1;
-//sort($quartiers);
-echo "<optgroup label=\"Genève\">";
-while ($glo_tab_quartiers[$m] != "communes")
+echo "<option value=\"0\">&nbsp;</option>";
+$req = $connector->query("
+SELECT id, localite, canton FROM localite WHERE id!=1 AND canton='ge' ORDER BY canton, localite "
+ );
+
+
+
+$select_canton = '';
+while ($tab = $connector->fetchArray($req))
 {
-      echo "<option ";
+    
+    if ($tab['canton'] != $select_canton)
+    {       
+        if (!empty($select_canton))
+            echo "</optgroup>"; 
+        
+        echo "<optgroup label=''>"; // ".$glo_regions[strtolower($tab['canton'])]."
+    }
+    
+    
 
-	  if ($glo_tab_quartiers[$m] == $champs['quartier'] && $champs['idLieu'] == 0)
-	  {
-		echo "selected=\"selected\"";
-	  }
-	  echo " value=\"".$glo_tab_quartiers[$m]."\">".$glo_tab_quartiers[$m]."</option>";
-	$m++;
+    
+	echo "<option ";
+	
+	if (($champs['localite_id'] == $tab['id'] && empty($champs['quartier'])) || ((isset($_POST['localite_id']) && $tab['id'] == $_POST['localite_id'])))
+	{
+		echo 'selected="selected" ';
+	}	
+	
+	echo "value=\"".$tab['id']."\">".$tab['localite']."</option>";
+
+    // Genève quartiers    
+    if ($tab['id'] == 44)
+    {
+        foreach ($glo_tab_quartiers2['ge'] as $no => $quartier)
+       {  
+               echo "<option ";
+
+               if ($champs['localite_id']."-".$champs['quartier'] == '44-'.$quartier)
+               {
+                       echo 'selected="selected" ';
+               }	
+
+               echo " value=\"44-".$quartier."\">Genève - ".$quartier."</option>";
+
+       }       
+
+    }        
+        
+     $select_canton = $tab['canton'];
 }
-echo "</optgroup>
-<optgroup label=\"Communes\">";
-$m++;
-while ($glo_tab_quartiers[$m] != "ailleurs")
-{
-
-      echo "<option ";
-
-	  if ($glo_tab_quartiers[$m] == $champs['quartier'] && $champs['idLieu'] == 0)
-	  {
-	echo "selected=\"selected\"";
-	  }
-	  echo " value=\"".$glo_tab_quartiers[$m]."\">".$glo_tab_quartiers[$m]."</option>";
-	$m++;
-}
-
-echo "</optgroup>
-<optgroup label=\"Ailleurs\">";
-$m++;
-while ($m < sizeof($glo_tab_quartiers))
-{
-      echo "<option ";
-
-	  if ($glo_tab_quartiers[$m] ==  $champs['quartier']  && $champs['idLieu'] == 0)
-	  {
-		echo "selected=\"selected\"";
-	  }
-	  echo " value=\"".$glo_tab_quartiers[$m]."\">".$glo_tab_quartiers[$m]."</option>";
-	$m++;
-}
-echo "</optgroup>";
-
 ?>
+    <optgroup label="Ailleurs">    
+<?php
+    foreach ($glo_tab_ailleurs as $id => $nom)
+   {  
+           echo "<option ";
+
+           if (($champs['region'] == $id && $champs['localite_id'] != 529) 
+                   || ( $id == 529 && $champs['localite_id'] == 529)
+                           || ((isset($_POST['localite_id']) && $id == $_POST['localite_id']))
+                  ) // $form->getValeur('quartier') 
+           {
+                   echo ' selected="selected" ';
+           }	
+
+           echo " value=\"".$id."\">".$nom."</option>";
+
+   }  
+?>
+    
+
+   
+    </optgroup>    
+    
+
 </select>
 <?php
-echo $verif->getHtmlErreur('quartier');
+echo $verif->getHtmlErreur("localite_id");
+
 ?>
 </p>
+
+
 <p>
 <label for="urlLieu">URL</label>
 <input type="text" name="urlLieu" id="urlLieu" size="50" maxlength="80" title="URL du lieu" value="<?php if (empty($champs['idLieu'])) { echo securise_string($champs['urlLieu']); } ?>" onfocus="this.className='focus';" onblur="this.className='normal';" />
@@ -1666,7 +1734,7 @@ WHERE evenement_fichierrecu.idEvenement=".$get['idE']." AND type='document' AND
 </fieldset>
 
 
-<?php if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] > 1 ) { ?>
+<?php if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] > 4 ) { ?>
 <?php
 
 if (($get['action'] == "editer" || $get['action'] == "update") && isset($get['idE']))

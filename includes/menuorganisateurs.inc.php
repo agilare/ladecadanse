@@ -109,13 +109,13 @@ $aff_menulieux .= '
 				<ul id="tranches">
 				<li';
 				if ($get['tranche'] == "ak") { $aff_menulieux .= " class=\"ici\""; }
-				$aff_menulieux .= '><a href="'.$_SERVER['PHP_SELF'].'?statut='.$get['statut'].'&amp;vue=az'.$url_idOrganisateur.'&amp;tranche=ak" title="Liste alphabétique">a-k</a></li>
+				$aff_menulieux .= '><a href="'.$_SERVER['PHP_SELF'].'?'.$url_query_region_et.'statut='.$get['statut'].'&amp;vue=az'.$url_idOrganisateur.'&amp;tranche=ak" title="Liste alphabétique">a-k</a></li>
 				<li';
 				if ($get['tranche'] == "lz") { $aff_menulieux .= " class=\"ici\""; }
-				$aff_menulieux .= '><a href="'.$_SERVER['PHP_SELF'].'?statut='.$get['statut'].'&amp;vue=az'. $url_idOrganisateur.'&amp;tranche=lz" title="Liste alphabétique">l-z</a></li>
+				$aff_menulieux .= '><a href="'.$_SERVER['PHP_SELF'].'?'.$url_query_region_et.'statut='.$get['statut'].'&amp;vue=az'. $url_idOrganisateur.'&amp;tranche=lz" title="Liste alphabétique">l-z</a></li>
 				<li';
 				if ($get['tranche'] == "tout") { $aff_menulieux .= " class=\"ici\""; }
-				$aff_menulieux .= '><a href="'.$_SERVER['PHP_SELF'].'?statut='.$get['statut'].'&amp;vue=az'.$url_idOrganisateur.'&amp;tranche=tout" title="Liste alphabétique">tout</a></li>
+				$aff_menulieux .= '><a href="'.$_SERVER['PHP_SELF'].'?'.$url_query_region_et.'statut='.$get['statut'].'&amp;vue=az'.$url_idOrganisateur.'&amp;tranche=tout" title="Liste alphabétique">tout</a></li>
 				</ul>';
 
 				$sql_vue = "AND TRIM(LEADING 'l\'' FROM (TRIM(LEADING 'les ' FROM (TRIM(LEADING 'la ' FROM (TRIM(LEADING 'le ' FROM LOWER(nom)))))))) >=  LOWER('".$de."%')";
@@ -169,7 +169,7 @@ $aff_menulieux .= '
 $sql_menu = "
 SELECT idOrganisateur, nom, presentation
 FROM organisateur
-WHERE statut='".$get['statut']."'".$sql_vue."
+WHERE statut='".$get['statut']."' ".$sql_vue."
 ORDER BY TRIM(LEADING 'l\'' FROM (TRIM(LEADING 'les ' FROM (TRIM(LEADING 'la ' FROM (TRIM(LEADING 'le ' FROM lower(nom)))))))) COLLATE utf8_general_ci";
 
 $req = $connector->query($sql_menu);

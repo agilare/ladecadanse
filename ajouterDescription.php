@@ -88,7 +88,7 @@ elseif (isset($_SESSION['SidPersonne']))
 */
 if ($get['action'] != "ajouter" && $get['action'] != "insert")
 {
-	if ($_SESSION['SidPersonne'] != $get['idP'] && $_SESSION['Sgroupe'] > 2)
+	if ($_SESSION['SidPersonne'] != $get['idP'] && $_SESSION['Sgroupe'] > 4)
 	{
 		msgErreur("Vous n'avez pas les droits pour éditer cette description");
 		exit;
@@ -344,7 +344,7 @@ else
 if ($get['action'] == 'editer' && isset($get['idL']) && isset($get['idP']))
 {
 
-	if ($_SESSION['SidPersonne'] == $get['idP'] || $_SESSION['Sgroupe'] < 2)
+	if ($_SESSION['SidPersonne'] == $get['idP'] || $_SESSION['Sgroupe'] <= 4)
 	{
 		$sql = "SELECT idPersonne, idLieu, contenu, type
 		FROM descriptionlieu WHERE idLieu =".$get['idL']." AND idPersonne=".$get['idP']." AND type='".$get['type']."'";
@@ -360,7 +360,7 @@ if ($get['action'] == 'editer' && isset($get['idL']) && isset($get['idP']))
 
 		@mysqli_free_result($req_desc);
 		
-		if ($_SESSION['Sgroupe'] < 2) 
+		if ($_SESSION['Sgroupe'] <= 4) 
 		{
 			echo '<ul class="entete_contenu_menu">';
 			echo "<li class=\"action_supprimer\">

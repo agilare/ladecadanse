@@ -53,78 +53,78 @@ require_once($rep_librairies.'ImageDriver2.php');
       $this->fichiers = $fichiers;
 
       $this->erreurs = array_merge($champs, $fichiers);
-		$this->erreurs['nom_existant'] = '';
-		$this->erreurs['doublon_organisateur'] = '';
+        $this->erreurs['nom_existant'] = '';
+        $this->erreurs['doublon_organisateur'] = '';
     }
 
     function traitement($post, $files)
     {
-		parent::traitement($post, $files);
+        parent::traitement($post, $files);
 
-		unset($this->valeurs['document_description']);
-		unset($this->valeurs['organisateurs']);
-		$this->id = $post['idLieu'];
+        unset($this->valeurs['document_description']);
+        unset($this->valeurs['organisateurs']);
+        $this->id = $post['idLieu'];
 
-		if (isset($post['document_description']))
-			$this->document_description = $post['docuàment_description'];
-		
-		if (isset($post['organisateurs']))
-			$this->organisateurs = $post['organisateurs'];
-		
-		
-		$this->valeurs['categorie'] = $post['categorie'];
-		//TEST
-		//echo "post:";
-		//printr($post);
-		//
-		if (isset($post['logo_existant']))
-		{
-			$this->valeurs['logo'] = $post['logo_existant'];
-		}
-		else 
-		{
-			$this->valeurs['logo'] = '';
-		}
+        if (isset($post['document_description']))
+                $this->document_description = $post['docuàment_description'];
 
-		if (isset($post['photo1_existant']))
-		{
-			$this->valeurs['photo1'] = $post['photo1_existant'];
-		}
-		else 
-		{
-			$this->valeurs['photo1'] = '';
-		}
-
-		if (isset($post['supprimer']))
-		{
-			$this->supprimer = $post['supprimer'];
-		}
+        if (isset($post['organisateurs']))
+                $this->organisateurs = $post['organisateurs'];
 
 
-		if (isset($post['supprimer_document']))
-		{
-			$this->supprimer_document = $post['supprimer_document'];
-		}
+        $this->valeurs['categorie'] = $post['categorie'];
+        //TEST
+        //echo "post:";
+        //printr($post);
+        //
+        if (isset($post['logo_existant']))
+        {
+                $this->valeurs['logo'] = $post['logo_existant'];
+        }
+        else 
+        {
+                $this->valeurs['logo'] = '';
+        }
 
-		if (isset($post['supprimer_galerie']))
-		{
-			$this->supprimer_galerie = $post['supprimer_galerie'];
-		}
+        if (isset($post['photo1_existant']))
+        {
+                $this->valeurs['photo1'] = $post['photo1_existant'];
+        }
+        else 
+        {
+                $this->valeurs['photo1'] = '';
+        }
+
+        if (isset($post['supprimer']))
+        {
+                $this->supprimer = $post['supprimer'];
+        }
+
+
+        if (isset($post['supprimer_document']))
+        {
+                $this->supprimer_document = $post['supprimer_document'];
+        }
+
+        if (isset($post['supprimer_galerie']))
+        {
+                $this->supprimer_galerie = $post['supprimer_galerie'];
+        }
 
 //		echo "Réc:";
 //		printr($this->valeurs);
 /*		echo "réc.";
-		echo "fichiers:";
-		printr($this->fichiers);*/
-		if ($this->verification())
-		{
-			$this->enregistrer();
-			return true;
-		}
-		else
-		{
-			return false;
-		}
+        echo "fichiers:";
+        printr($this->fichiers);*/
+        if ($this->verification())
+        {
+                $this->enregistrer();
+                return true;
+        }
+        else
+        {
+                return false;
+        }
 
 
     }
@@ -136,20 +136,18 @@ require_once($rep_librairies.'ImageDriver2.php');
     function verification()
     {
     	global $glo_tab_quartiers;
+    	global $glo_regions;
     	global $glo_categories_lieux;
-		global $mimes_images_acceptes;
-		global $mimes_documents_acceptes;
+        global $mimes_images_acceptes;
+        global $mimes_documents_acceptes;
 
     	$verif = new Validateur();
 
 		$verif->valider($this->valeurs['nom'], "nom", "texte", 1, 60, 1);
 		$verif->valider($this->valeurs['determinant'], "determinant", "texte", 1, 30, 0);
 		$verif->valider($this->valeurs['adresse'], "adresse", "texte", 1, 80, 1);
-		$verif->valider($this->valeurs['quartier'], "quartier", "texte", 1, 80, 1);
-		if (!in_array($this->valeurs['quartier'], $glo_tab_quartiers))
-		{
-			$verif->setErreur("quartier", "Ce quartier n'est pas valable");
-		}
+		$verif->valider($this->valeurs['localite_id'], "localite_id", "texte", 1, 80, 1);
+
 		$verif->valider($this->valeurs['acces_tpg'], "acces_tpg", "texte", 2, 80, 0);
 		$verif->valider($this->valeurs['horaire_general'], "horaire_general", "texte", 2, 200, 0);
 		$verif->valider($this->valeurs['horaire_evenement'], "horaire_evenement", "texte", 2, 80, 0);
@@ -245,18 +243,43 @@ require_once($rep_librairies.'ImageDriver2.php');
 
     function enregistrer()
     {
-    	global $rep_images_lieux;
+                global $rep_images_lieux;
 		global $rep_templates;
 		global $rep_fichiers_lieu;
 		global $rep_images_lieux_galeries;
 		global $url_site;
+		global $glo_tab_quartiers2;
 
 		$lieu = new Lieu();
 		$lieu->setValues($this->valeurs);
 
 		$lieu->setValue('idpersonne', $_SESSION['SidPersonne']);
 
-		
+                $loc_qua = explode("-", $this->valeurs['localite_id']);
+		if (count($loc_qua) > 1)
+                {
+                    $lieu->setValue('localite_id', $loc_qua[0]);
+                    $lieu->setValue('quartier', $loc_qua[1]);
+                }
+                else
+                {
+                    $lieu->setValue('quartier', ''); 
+                    
+                    if ($this->valeurs['localite_id'] == 'vd' || $this->valeurs['localite_id'] == 'rf' || $this->valeurs['localite_id'] == 'hs')
+                    {
+                        $lieu->setValue('region', $this->valeurs['localite_id']);
+                        $lieu->setValue('localite_id', 1); // autre
+                    }
+                    elseif ($this->valeurs['localite_id'] == 529 ) // Nyon
+                    {
+                        $lieu->setValue('region', 'ge');
+                        $lieu->setValue('localite_id', 529);                       
+                        
+                    }    
+                }
+                
+                $lieu->setValue('idpersonne', $_SESSION['SidPersonne']);
+                
 		
 		if (count($this->valeurs['categorie']) > 0)
 		{

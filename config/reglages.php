@@ -84,8 +84,18 @@ $glo_tab_quartiers = array("geneve", "Acacias", "Champel", "Charmilles", "Centre
  "Dardagny", "Genthod", "Gy", "Hermance", "Jussy", "Laconnex", "Lancy", "Le Grand-Saconnex", "Meinier", "Meyrin", "Onex", "Perly-Certoux",
  "Plan-les-Ouates", "Pregny-Chambésy", "Presinge", "Puplinge", "Russin", "Satigny", "Soral", "Thônex", "Troinex", "Vandoeuvre",
  "Vernier","Versoix", "Veyrier", "ailleurs", "Nyon", "Vaud", "France", "autre");
+
+
+$glo_tab_quartiers2 = 
+        [
+            "ge" =>
+            ["Champel", "Charmilles", "Centre", "Cornavin", "Eaux-Vives", "Grottes","Jonction","Nations","Pâquis", "Petit-Saconnex","Plainpalais", "Saint-Gervais", "Saint-Jean", "Servette"]
+            
+        ];
  
 $glo_tab_quartiers_hors_geneve = array("Nyon", "Vaud", "France", "autre");
+$glo_tab_ailleurs = [529 => "Nyon", "vd" => "Vaud", "rf" => "France", "hs" => "Autre"];
+
 
 $actions = array("ajouter", "insert", "update", "editer");
 
@@ -159,6 +169,9 @@ array('123456',
 'abc123'
 ); 
 
+$glo_regions = array("ge" => "Genève", "vd" => "Vaud", "fr" => "Fribourg", "rf" => "France", "hs" => "Autre");
+
+
 require_once('visuel.php');
 
 $glo_auj = date("Y-m-d");
@@ -180,3 +193,31 @@ else
 require_once($rep_librairies.'usine.php');
 require_once($rep_librairies.'dates.php');
 require_once($rep_librairies.'presentation.php');
+
+session_start();
+
+//printr($_SESSION);
+if (empty($_SESSION['region']))
+    $_SESSION['region'] = 'ge';
+
+$get['region'] = filter_input(INPUT_GET, "region", FILTER_SANITIZE_STRING);
+
+if (array_key_exists($get['region'], $glo_regions))
+    $_SESSION['region'] = $get['region'];
+
+//echo "session : ".$_SESSION['region'];
+
+
+ 
+$url_query_region = '';
+$url_query_region_et = '';
+$url_query_region_1er = '';
+$get['region'] = '';
+if ($_SESSION['region'] != 'ge')
+{
+    $url_query_region = 'region='.$_SESSION['region'];    
+    $url_query_region_et = 'region='.$_SESSION['region']."&amp;";    
+    $url_query_region_1er = '?region='.$_SESSION['region'];
+    $get['region'] = $_SESSION['region'];
+   
+}

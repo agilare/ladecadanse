@@ -68,17 +68,31 @@ $lieu = new Lieu();
 $lieu->setId($get['idL']);
 $lieu->load();
 
+if ($lieu->getValue('statut') == 'inactif' && !((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 6)))
+{
+    header("HTTP/1.1 404 Not Found");
+    echo file_get_contents("404.php");
+    exit;
+}        
+
+
+
 //printr($lieu->getValues());
 
-$page_titre = $lieu->getValue('nom')." (".$lieu->getValue('quartier').")";
-$tab_ext = array("Nyon", "Vaud", "France", "autre");
-if (!in_array($lieu->getValue('quartier'), $tab_ext))
-{
-	$page_titre .= " - Genève";
-}
+$sql_lieu_localite = "
+SELECT *
+FROM localite
+WHERE id='".$lieu->getValue('localite_id')."'";
 
-$page_description = $lieu->getValue('nom')." - ".$lieu->getValue('adresse')." (".$lieu->getValue('quartier').")";
-$page_description .= " : accès, horaires, description, photos et prochains événements";
+$req_lieu_localite = $connector->query($sql_lieu_localite);
+
+$lieu_localite = $connector->fetchAssoc($req_lieu_localite);
+
+$page_titre = $lieu->getValue('nom').get_adresse($lieu->getValue('region'), $lieu_localite['localite'], $lieu->getValue('quartier'), '' );
+
+
+$page_description = $page_titre." : accès, horaires, description, photos et prochains événements";
+
 
 $extra_css = array("menu_lieux", "element_login");
 include("includes/header.inc.php");
@@ -350,8 +364,11 @@ if ($lieu->getValue('logo'))
 
 		<?php
 		$categories = str_replace(",", ", ", $lieu->getValue('categorie'));
-		$adresse = $lieu->getValue('adresse').' - '.$lieu->getValue('quartier');
 
+
+                $adresse = get_adresse($lieu->getValue('region'), $lieu_localite['localite'], $lieu->getValue('quartier'), $lieu->getValue('adresse') );
+                              
+                
 		$carte = '';
 		if ($lieu->getValue('lat') != 0.000000 && $lieu->getValue('lng') != 0.000000)
 		{
@@ -445,7 +462,7 @@ if ($lieu->getValue('logo'))
 
 			<ul>
 				<li><?php echo $categories; ?></li>
-				<li class="adr"><?php echo $adresse ?></li>
+                                <li class="adr"><?php echo $adresse ?></li>
 				<?php echo $salles; ?>
 				<?php echo $carte; ?>
         <span class="latitude">
@@ -547,7 +564,7 @@ if ($nb_pres > 0)
 			}
 
 			$editer = '';
-			if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] == 1)
+			if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 4)
 			|| (isset($_SESSION['SidPersonne'])) && $_SESSION['SidPersonne'] == $des->getValue('idPersonne'))
 			{
 

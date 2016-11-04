@@ -449,7 +449,7 @@ if ($nb_pres > 0)
 			}
 
 			$editer = '';
-			if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] == 1)
+			if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 4)
 			|| (isset($_SESSION['SidPersonne'])) && $_SESSION['SidPersonne'] == $des->getValue('idPersonne'))
 			{
 

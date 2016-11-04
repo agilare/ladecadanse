@@ -150,7 +150,7 @@ else if ($get['action'] == 'ajouter' || $get['action'] == 'insert')
 */
 if ($get['action'] != "ajouter" && $get['action'] != "insert")
 {
-	if ($_SESSION['SidPersonne'] != $get['idP'] && $_SESSION['Sgroupe'] > 2)
+	if ($_SESSION['SidPersonne'] != $get['idP'] && $_SESSION['Sgroupe'] > 4)
 	{
 		msgErreur("Vous n'avez pas les droits pour éditer cette commentaire");
 		exit;
@@ -369,7 +369,7 @@ else
 if ($get['action'] == 'editer' && isset($get['idC']))
 {
 
-	if ($_SESSION['SidPersonne'] == $get['idP'] || $_SESSION['Sgroupe'] < 2)
+	if ($_SESSION['SidPersonne'] == $get['idP'] || $_SESSION['Sgroupe'] <= 4)
 	{
 		echo '<ul class="entete_contenu_menu">';
 		echo "<li class=\"action_supprimer\">";

@@ -143,7 +143,7 @@ if (!empty($get['mots']))
 
 	$sql_select = "SELECT SQL_CALC_FOUND_ROWS idEvenement, idPersonne, titre, idLieu, idSalle, nomLieu, description, genre, dateEvenement,
 	flyer, prix, horaire_debut, horaire_complement, dateAjout
-	FROM evenement WHERE statut='actif' AND ";
+	FROM evenement WHERE statut='actif' AND region='".$connector->sanitize($_SESSION['region'])."' AND ";
 
 	$sql_select .= "( ";
 
@@ -287,11 +287,11 @@ if (!empty($get['mots']))
 		<?php
 		$get['mots'] = urlencode($get['mots']);
 		?>
-		<li class="futur<?php if ($get['periode'] == "futur") { echo " ici"; } ?>"><? echo "<a href=\"".basename(__FILE__)."?".arguments_URI($get, "periode")."&amp;periode=futur\" title=\"\">Futurs</a></li>";?>
+		<li class="futur<?php if ($get['periode'] == "futur") { echo " ici"; } ?>"><?php echo "<a href=\"".basename(__FILE__)."?".arguments_URI($get, "periode")."&amp;periode=futur\" title=\"\">Futurs</a></li>";?>
 
 
-		<li class="ancien<?php if ($get['periode'] == "ancien") { echo " ici"; } ?>"><? echo "<a href=\"".basename(__FILE__)."?".arguments_URI($get, "periode")."&amp;periode=ancien\" title=\"\">Anciens</a></li>";?>
-		<li class="tous<?php if ($get['periode'] == "tous") { echo " ici"; } ?>"><? echo "<a href=\"".basename(__FILE__)."?".arguments_URI($get, "periode")."&amp;periode=tous\" title=\"\">Tous</a></li>"; ?>
+		<li class="ancien<?php if ($get['periode'] == "ancien") { echo " ici"; } ?>"><?php echo "<a href=\"".basename(__FILE__)."?".arguments_URI($get, "periode")."&amp;periode=ancien\" title=\"\">Anciens</a></li>";?>
+		<li class="tous<?php if ($get['periode'] == "tous") { echo " ici"; } ?>"><?php echo "<a href=\"".basename(__FILE__)."?".arguments_URI($get, "periode")."&amp;periode=tous\" title=\"\">Tous</a></li>"; ?>
 		<div class="spacer"></div>
 		</ul>
 	

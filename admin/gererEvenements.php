@@ -24,7 +24,7 @@ else
 require_once($rep_librairies."Sentry.php");
 $videur = new Sentry();
 
-if (!$videur->checkGroup(1))
+if (!$videur->checkGroup(4))
 {
 	header("Location: ".$url_site."login.php"); die();
 }
@@ -42,6 +42,10 @@ $tab_listes = array("evenement" => "Événements",  "breve" => "Brèves", "lieu"
 $tab_nblignes = array(100, 250, 500);
 
 $get = array();
+
+
+if ($_SESSION['Sgroupe'] != 1)
+    $region_admin = $_SESSION['region'];
 
 if (!empty($_GET['element']))
 {
@@ -101,7 +105,7 @@ if (!empty($_GET['nblignes']))
 
 $where = "";
 
-if  ((!empty($_GET['filtre_genre']) && $_GET['filtre_genre'] != 'tous') || !empty($_GET['terme']))
+if  ((!empty($_GET['filtre_genre']) && $_GET['filtre_genre'] != 'tous') || !empty($_GET['terme']) || !empty($region_admin))
 {
 	$where = " WHERE ";
 }
@@ -136,6 +140,21 @@ $verif = new Validateur();
 header("Cache-Control: max-age=60, must-revalidate");
 header_html("La décadanse : fréquentation du site", $indexMotsClef, $indexCssScreen, $indexCssPrint);
  */
+
+
+    
+$sql_region = '';
+$titre_region = '';
+if (!empty($region_admin))
+{
+    	if (!empty($_GET['terme']) || !empty($_GET['filtre_genre']))
+		$where .= " AND ";
+        
+        $where .=  " region='".$connector->sanitize($region_admin)."' ";
+        
+        $titre_region = " - ".$glo_regions[$_SESSION['region']];
+}
+    
 ?>
 
 
@@ -144,9 +163,14 @@ header_html("La décadanse : fréquentation du site", $indexMotsClef, $indexCssS
 <div id="contenu" class="colonne">
 
 	<div id="entete_contenu">
-		<h2>Gérer les événements</h2>
+		<h2>Gérer les événements <?php echo $titre_region ?></h2>
+
 	</div>
 
+            
+
+    
+    
 	<div class="spacer"></div>
 
 <?php
@@ -750,7 +774,10 @@ if ($verif->nbErreurs() > 0)
 /*
  * AFFICHAGE DE LA TABLE ET SON MENU DE NAVIGATION
  */
-$req_nbeven = $connector->query("SELECT COUNT(*) AS nbeven FROM evenement ".$where);
+
+$sql_nbeven = "SELECT COUNT(*) AS nbeven FROM evenement ".$where;
+
+$req_nbeven = $connector->query($sql_nbeven);
 $tab_nbeven = $connector->fetchArray($req_nbeven);
 $tot_elements = $tab_nbeven['nbeven'];
 
@@ -759,14 +786,17 @@ if ($get['page'] > $total_page_max)
 	$get['page'] = $total_page_max;
  
  
- 
+$sql_page = $get['page'];
+if ($get['page'] < 1)
+    $sql_page = 1;
+
 $sql_evenement = "
 SELECT idEvenement, idLieu, idPersonne, statut, idPersonne, genre, titre, dateEvenement, horaire_debut, horaire_fin, nomLieu, flyer, dateAjout,
  date_derniere_modif
 FROM evenement ".$where."
-ORDER BY ".$get['tri_gerer']." ".$get['ordre']." LIMIT ".($get['page'] - 1) * $get['nblignes'].",".$get['nblignes'];
+ORDER BY ".$get['tri_gerer']." ".$get['ordre']." LIMIT ".($sql_page - 1) * $get['nblignes'].",".$get['nblignes'];
 
-
+//echo $sql_evenement;
 $req_evenement = $connector->query($sql_evenement);
 
 
@@ -914,7 +944,7 @@ while ($tab_even = $connector->fetchArray($req_evenement))
 	*/
 	echo '<td>'.date_iso2app($tab_even['dateAjout']).'</td><td style="text-align:center">'.$tab_icones_statut[$tab_even['statut']].'</td>';
 
-	if ($_SESSION['Sgroupe'] < 2)
+	if ($_SESSION['Sgroupe'] <= 4)
 	{
 		echo '<td style="text-align:center"><a href="'.$url_site.'ajouterEvenement.php?action=editer&idE='.$tab_even['idEvenement'].'" title="Éditer l\'événement">'.$iconeEditer.'</a></td>';
 	}

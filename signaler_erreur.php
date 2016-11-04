@@ -192,8 +192,8 @@ echo '</div>';
 if (isset($get['idE']))
 {
 	$req_getEven = $connector->query("SELECT idEvenement, idLieu, idSalle, idPersonne, titre, genre, dateEvenement,
-	 nomLieu, adresse, quartier, urlLieu, description, flyer, prix, horaire_debut,horaire_fin, horaire_complement, URL1, ref, prelocations, statut
-	  FROM evenement WHERE idEvenement =".$get['idE']);
+	 nomLieu, adresse, quartier, urlLieu, description, flyer, prix, horaire_debut,horaire_fin, horaire_complement, URL1, ref, prelocations, statut, localite 
+	  FROM evenement, localite WHERE evenement.localite_id=localite.id AND idEvenement =".$get['idE']);
 
 	if ($affEven = $connector->fetchArray($req_getEven))
 	{

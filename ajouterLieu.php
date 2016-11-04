@@ -79,7 +79,7 @@ if ($get['action'] != "ajouter" && $get['action'] != "insert")
 }
 
 
-$champs = array('idpersonne' => '', 'statut' => '', 'nom' => '', 'determinant' => '', 'adresse' => '', 'quartier' => '', 'horaire_general' => '',
+$champs = array('idpersonne' => '', 'statut' => '', 'nom' => '', 'determinant' => '', 'adresse' => '', 'localite_id' => '', 'region' => '', 'horaire_general' => '',
  'horaire_evenement' => '', 'entree' => '', 'organisateurs' => '', 'categorie' => '', 'telephone' => '', 'URL' => '',
  'email' => '', 'acces_tpg' => '',  "dateAjout" => "");
 $fichiers = array('logo' => '', 'photo1' => '', 'image_galerie' => '');
@@ -204,7 +204,95 @@ echo $form->getHtmlErreur("adresse");
 </p>
 
 <p>
-<label for="quartier">Quartier*</label>
+<label for="localite">Localité/quartier</label>
+<select name="localite_id" id="localite" class="chosen-select" style="max-width:300px;" required>
+<?php
+echo "<option value=\"0\">&nbsp;</option>";
+$req = $connector->query("
+SELECT id, localite, canton FROM localite WHERE id!=1 AND canton='ge' ORDER BY canton, localite "
+ );
+
+
+
+$select_canton = '';
+while ($tab = $connector->fetchArray($req))
+{
+    
+    if ($tab['canton'] != $select_canton)
+    {       
+        if (!empty($select_canton))
+            echo "</optgroup>"; 
+        
+        echo "<optgroup label=''>"; // ".$glo_regions[strtolower($tab['canton'])]."
+    }
+    
+    
+
+    
+	echo "<option ";
+	
+	if (($form->getValeur('localite_id') == $tab['id'] && empty($form->getValeur('quartier'))) || ((isset($_POST['localite_id']) && $tab['id'] == $_POST['localite_id'])))
+	{
+		echo 'selected="selected" ';
+	}	
+	
+	echo "value=\"".$tab['id']."\">".$tab['localite']."</option>";
+
+    // Genève quartiers    
+    if ($tab['id'] == 44)
+    {
+        foreach ($glo_tab_quartiers2['ge'] as $no => $quartier)
+       {  
+               echo "<option ";
+
+               if ($form->getValeur('localite_id')."-".$form->getValeur('quartier') == '44-'.$quartier)
+               {
+                       echo 'selected="selected" ';
+               }	
+
+               echo " value=\"44-".$quartier."\">Genève - ".$quartier."</option>";
+
+       }       
+
+    }        
+        
+     $select_canton = $tab['canton'];
+}
+?>
+    <optgroup label="Ailleurs">    
+<?php
+    foreach ($glo_tab_ailleurs as $id => $nom)
+   {  
+           echo "<option ";
+
+           if (($form->getValeur('region') == $id && $form->getValeur('localite_id') != 529) 
+                   || ( $id == 529 && $form->getValeur('localite_id') == 529)
+                           || ((isset($_POST['localite_id']) && $id == $_POST['localite_id']))
+                  ) // $form->getValeur('quartier') 
+           {
+                   echo ' selected="selected" ';
+           }	
+
+           echo " value=\"".$id."\">".$nom."</option>";
+
+   }  
+?>
+    
+
+   
+    </optgroup>    
+    
+
+</select>
+<?php
+echo $form->getHtmlErreur("localite_id");
+?>
+</p>
+
+
+<?php if (0) { //$form->getValeur('region') == 'ge') { ?>
+<p>
+<label for="quartier">Quartier</label>
 <select name="quartier" id="quartier" class="chosen-select" style="max-width:300px;" required>
 <?php
 $m = 1;
@@ -249,18 +337,11 @@ echo "</optgroup>";
 echo $form->getHtmlErreur("quartier");
 ?>
 </p>
-
-<!-- Accès tpg (textarea) -->
-<?php if (0) { ?>
-<p>
-<label for="acces_tpg">Accès TPG</label>
-<input type="text" name="acces_tpg" id="acces_tpg" size="50" maxlength="60" tabindex="5" title=""
- value="<?php echo $form->getValeur('acces_tpg') ?>" />
-<?php
-echo $form->getHtmlErreur("acces_tpg");
-?>
-</p>
 <?php } ?>
+
+
+
+
 
 <!-- Horaire général(textarea) -->
 <p>
@@ -591,7 +672,7 @@ WHERE lieu_fichierrecu.idLieu=".$get['idL']." AND type='image' AND fichierrecu.i
 
 //menu d'actions (activation et suppression)  pour l'auteur > 6 ou l'admin
 if (($get['action'] == 'editer' || $get['action'] == 'update') &&
-((estAuteur($_SESSION['SidPersonne'], $get['idL'], "lieu") && $_SESSION['Sgroupe'] < 6) || $_SESSION['Sgroupe'] < 2))
+((estAuteur($_SESSION['SidPersonne'], $get['idL'], "lieu") && $_SESSION['Sgroupe'] < 6) || $_SESSION['Sgroupe'] <= 4))
 {
 ?>
 

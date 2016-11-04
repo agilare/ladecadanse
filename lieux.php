@@ -26,7 +26,7 @@ if (isset($_GET['idL']))
 
 $fiches = new CollectionDescription();
 
-$fiches->loadFiches('description');
+$fiches->loadFiches('description', $_SESSION['region']);
 
 
 $pair = 0;
@@ -141,7 +141,7 @@ include("includes/navigation_calendrier.inc.php");
 	<?php
 	$req_lieux_recents = $connector->query("
 	SELECT idLieu, nom, adresse, quartier, dateAjout 
-	FROM lieu ORDER BY dateAjout DESC LIMIT 8");
+	FROM lieu WHERE region='".$connector->sanitize($_SESSION['region'])."' ORDER BY dateAjout DESC LIMIT 8");
 
 	// Création de la section si il y a moins un lieu
 	if ($connector->getNumRows($req_lieux_recents) > 0)

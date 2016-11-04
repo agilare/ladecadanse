@@ -1,7 +1,7 @@
 <?php
 if (is_file("config/reglages.php"))
 {
-	require_once("config/reglages.php");
+        require_once("config/reglages.php");
 }
 
 require_once($rep_librairies."Sentry.php");
@@ -258,17 +258,20 @@ else
 	$get['page'] = 1;
 }
 
+$sql_region = " region='".$connector->sanitize($_SESSION['region'])."' ";
+
+
 $get['nblignes'] = 40;
 
 $limite = " LIMIT ".($get['page'] - 1) * $get['nblignes'].",".$get['nblignes'];
 
-$sql_even = "SELECT idEvenement, idLieu, idSalle, statut, genre, nomLieu, adresse, quartier,
+$sql_even = "SELECT idEvenement, idLieu, idSalle, statut, genre, nomLieu, adresse, quartier, localite.localite AS localite,
  titre, idPersonne, dateEvenement, URL1, flyer, image, description, horaire_complement, horaire_debut, horaire_fin, prix, prelocations
- FROM evenement
- WHERE ".$sql_genre." dateEvenement ".$sql_date_evenement." AND statut!='inactif'
+ FROM evenement, localite
+ WHERE evenement.localite_id=localite.id AND ".$sql_genre." dateEvenement ".$sql_date_evenement." AND statut!='inactif' AND ".$sql_region." 
  ORDER BY ".$sql_tri_agenda;
 
-//echo $sql_even;
+echo $sql_even;
  
 $req_nb = $connector->query($sql_even);
 $total_even = $connector->getNumRows($req_nb);
@@ -281,8 +284,8 @@ $sql_even = $sql_even.$limite;
 $req_even = $connector->query($sql_even);
 $nb_evenements = $connector->getNumRows($req_even);
 
-$lien_condense = '<a href="'.basename(__FILE__).'?mode=condense&amp;courant='.$get['courant'].'&amp;sem='.$get['sem'].'&amp;genre='.$get['genre'].'&amp;tri_agenda='.$get['tri_agenda'].'" title="Vue condensée" '.$vue_condense_ici.' style="border-radius:0 3px 3px 0;">';
-$lien_etendu = '<a href="'.basename(__FILE__).'?mode=etendu&amp;courant='.$get['courant'].'&amp;sem='.$get['sem'].'&amp;genre='.$get['genre'].'&amp;tri_agenda='.$get['tri_agenda'].'" title="Vue étendue" '.$vue_etendu_ici.'  style="border-radius:3px 0 0 3px;">';
+$lien_condense = '<a href="'.basename(__FILE__).'?'.$url_query_region_et.'mode=condense&amp;courant='.$get['courant'].'&amp;sem='.$get['sem'].'&amp;genre='.$get['genre'].'&amp;tri_agenda='.$get['tri_agenda'].'" title="Vue condensée" '.$vue_condense_ici.' style="border-radius:0 3px 3px 0;">';
+$lien_etendu = '<a href="'.basename(__FILE__).'?'.$url_query_region_et.'mode=etendu&amp;courant='.$get['courant'].'&amp;sem='.$get['sem'].'&amp;genre='.$get['genre'].'&amp;tri_agenda='.$get['tri_agenda'].'" title="Vue étendue" '.$vue_etendu_ici.'  style="border-radius:3px 0 0 3px;">';
 $lien_imprimer = '<a href="'.basename(__FILE__).'?'.arguments_URI($get).'&amp;style=imprimer" title="Format imprimable">';
 ?>
 
@@ -368,7 +371,7 @@ if ($get['mode'] == "condense")
 			if ($tab_even['idLieu'] != 0)
 			{
 				$listeLieu = $connector->fetchArray(
-				$connector->query("SELECT nom, adresse, quartier, URL FROM lieu WHERE idlieu='".$tab_even['idLieu']."'"));
+				$connector->query("SELECT nom, adresse, quartier, localite, URL FROM lieu WHERE idlieu='".$tab_even['idLieu']."'"));
 
 				$infosLieu = "<a href=\"".$url_site."lieu.php?idL=".$tab_even['idLieu']."\" title=\"Voir la fiche du lieu : ".htmlspecialchars($listeLieu['nom'])."\" >".htmlspecialchars($listeLieu['nom'])."</a>";
 				if ($tab_even['idSalle'])
@@ -383,8 +386,13 @@ if ($get['mode'] == "condense")
 				$listeLieu['nom'] = htmlspecialchars($tab_even['nomLieu']);
 				$infosLieu = htmlspecialchars($tab_even['nomLieu']);
 				$listeLieu['adresse'] = htmlspecialchars($tab_even['adresse']);
-				$listeLieu['quartier'] = ""	;
+				$listeLieu['quartier'] = htmlspecialchars($tab_even['quartier']);
+				$listeLieu['localite'] = htmlspecialchars($tab_even['localite']);
 			}
+                        
+                        $even_localite = '';
+                        if (!empty($listeLieu['localite']))
+                            $even_localite = " – ".$listeLieu['localite'];
 
 			$maxChar = trouveMaxChar($tab_even['description'], 25, 3);
 			$titre_url = "<a href=\"".$url_site."evenement.php?idE=".$tab_even['idEvenement']."\" title=\"\" >".securise_string($tab_even['titre'])."</a>";
@@ -421,7 +429,7 @@ if ($get['mode'] == "condense")
 				<td><h2 class="titre"><?php echo $titre ?></h2>
 					<p><?php echo $description; ?></p>
 				</td>
-				<td><h2><?php echo $infosLieu ?></h2><p><?php echo $listeLieu['adresse'] ?></p></td>
+				<td><h2><?php echo $infosLieu ?></h2><p><?php echo $listeLieu['adresse'] ?><?php echo $even_localite; ?></p></td>
 				<td><?php echo $horaire; ?></td>
 				<?php echo $td_actions ?>
 			</tr>
@@ -448,7 +456,7 @@ else
 		$sql_dateEven = "
 		SELECT DISTINCT dateEvenement
 	 FROM evenement
-	 WHERE ".$sql_genre." dateEvenement ".$sql_date_evenement." AND statut!='inactif'
+	 WHERE ".$sql_genre." dateEvenement ".$sql_date_evenement." AND statut!='inactif' AND ".$sql_region." 
 	 ORDER BY dateEvenement ASC";
 
 /*
@@ -599,8 +607,7 @@ else
 		//Affichage du lieu selon son existence ou non dans la base
 		if (!empty($listeEven['idLieu']))
 		{
-			$listeLieu = $connector->fetchArray($connector->query("SELECT nom, adresse, quartier, URL
-			FROM lieu WHERE idlieu='".$listeEven['idLieu']."'"));
+			$listeLieu = $connector->fetchArray($connector->query("SELECT nom, adresse, quartier, localite.localite AS localite, URL FROM lieu, localite WHERE lieu.localite_id=localite.id AND idlieu='".$listeEven['idLieu']."'"));
 
 			$infosLieu = "<a href=\"".$url_site."lieu.php?idL=".$listeEven['idLieu']."\" title=\"Voir la fiche du lieu : ".htmlspecialchars($listeLieu['nom'])."\" >".htmlspecialchars($listeLieu['nom'])."</a>";
 			if ($listeEven['idSalle'])
@@ -618,9 +625,13 @@ else
 			$infosLieu = htmlspecialchars($listeEven['nomLieu']);
 			$listeLieu['adresse'] = htmlspecialchars($listeEven['adresse']);
 			$listeLieu['quartier'] = htmlspecialchars($listeEven['quartier']);
+			$listeLieu['localite'] = htmlspecialchars($listeEven['localite']);
 
 		}
 
+                        
+           
+                
 
 		$maxChar = trouveMaxChar($listeEven['description'], 70, 8);
 
@@ -661,12 +672,8 @@ else
 			$description = textToHtml($listeEven['description']);
 		}
 
-		$adresse = htmlspecialchars($listeLieu['adresse']);
-		if (!empty($listeLieu['quartier'])) {
-			$adresse .=  " (".htmlspecialchars($listeLieu['quartier']).")";
-		}
+		$adresse = htmlspecialchars(get_adresse(null, $listeLieu['localite'], $listeLieu['quartier'], $listeLieu['adresse']));
 		
-	
 		$horaire = afficher_debut_fin($listeEven['horaire_debut'], $listeEven['horaire_fin'], $listeEven['dateEvenement']);
 
 		// TODO : marche pas, à corriger (voir valeurs d'even sans début ou fin)
@@ -920,7 +927,7 @@ if ($get['tri_agenda'] == "dateAjout") $tri_ajout = "ici";
 				echo " class=\"ici\"";
 			}
 			echo ">
-			<a href=\"".$url_site."agenda.php?courant=".$get['courant']."&amp;sem=".$get['sem']."&amp;tri_agenda=".$get['tri_agenda']."&amp;mode=".$get['mode']."&zone=".$get['zone']."&moment=".$get['moment']."\" title=\"Tous les genres d'événements\">Tout</a></li>";
+			<a href=\"".$url_site."agenda.php?".$url_query_region_et."courant=".$get['courant']."&amp;sem=".$get['sem']."&amp;tri_agenda=".$get['tri_agenda']."&amp;mode=".$get['mode']."&zone=".$get['zone']."&moment=".$get['moment']."\" title=\"Tous les genres d'événements\">Tout</a></li>";
 		
 		foreach ($glo_tab_genre as $na => $la)
 		{
@@ -931,7 +938,7 @@ if ($get['tri_agenda'] == "dateAjout") $tri_ajout = "ici";
 			}
 
 			echo ">
-			<a href=\"".$url_site."agenda.php?genre=".$na."&amp;courant=".$get['courant']."&amp;sem=".$get['sem']."&amp;tri_agenda=".$get['tri_agenda']."&amp;mode=".$get['mode']."&zone=".$get['zone']."&moment=".$get['moment']."\" title=\"".$la."\">".ucfirst($la)."</a></li>";
+			<a href=\"".$url_site."agenda.php?".$url_query_region_et."genre=".$na."&amp;courant=".$get['courant']."&amp;sem=".$get['sem']."&amp;tri_agenda=".$get['tri_agenda']."&amp;mode=".$get['mode']."&zone=".$get['zone']."&moment=".$get['moment']."\" title=\"".$la."\">".ucfirst($la)."</a></li>";
 		}
 
 	?>

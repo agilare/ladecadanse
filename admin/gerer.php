@@ -24,7 +24,7 @@ else
 require_once($rep_librairies."Sentry.php");
 $videur = new Sentry();
 
-if (!$videur->checkGroup(1))
+if (!$videur->checkGroup(4))
 {
 	header("Location: ".$url_site."login.php"); die();
 }
@@ -36,6 +36,8 @@ $page_titre = "gérer";
 $page_description = "Gestion des éléments ajoutés";
 $nom_page = "gerer";
 require_once('header.inc.php');
+
+
 
 $tab_listes = array("evenement" => "Événements",  "breve" => "Brèves", "lieu" => "Lieux", "organisateur" => "Organisateurs", "description" => "Descriptions", "commentaire" => "Commentaires", "personne" => "Personnes");
 
@@ -107,7 +109,22 @@ if (!empty($_GET['terme']))
 }
 
 
+if ($_SESSION['Sgroupe'] != 1)
+    $sql_where_region = " WHERE region='".$connector->sanitize($_SESSION['region'])."' ";
 
+if ($_SESSION['Sgroupe'] != 1 && in_array($get['element'], ['lieu']))
+    $region_admin = $_SESSION['region'];
+
+$sql_region = '';
+$titre_region = '';
+if (!empty($region_admin))
+{
+    $sql_where_region = " WHERE region='".$connector->sanitize($_SESSION['region'])."' ";
+
+        
+        $titre_region = " - ".$glo_regions[$_SESSION['region']];
+}
+  
 /*
 
 header("Cache-Control: max-age=60, must-revalidate");
@@ -121,7 +138,7 @@ header_html("La décadanse : fréquentation du site", $indexMotsClef, $indexCssS
 <div id="contenu" class="colonne">
 
 	<div id="entete_contenu">
-		<h2>Gérer les <?php echo $tab_listes[$get['element']] ?></h2>
+		<h2>Gérer les <?php echo $tab_listes[$get['element']].$titre_region; ?></h2>
 	</div>
 
 	<div class="spacer"></div>
@@ -231,7 +248,7 @@ if ($get['element'] == "evenement")
 		echo "
 		<td>".date_iso2app($tab_even['dateAjout'])."</td><td>".$tab_icones_statut[$tab_even['statut']]."</td>";
 
-		if ($_SESSION['Sgroupe'] < 2)
+		if ($_SESSION['Sgroupe'] <= 4)
 		{
 			echo "<td><a href=\"".$url_site."ajouterEvenement.php?action=editer&idE=".$tab_even['idEvenement']."\" title=\"Éditer l'événement\">".$iconeEditer."</a></td>";
 		}
@@ -359,7 +376,7 @@ echo '<div class="spacer"></div>';
 		}
 		echo "</td>";
 
-		if ($_SESSION['Sgroupe'] < 2)
+		if ($_SESSION['Sgroupe'] <= 4)
 		{
 			echo "<td><a href=\"".$url_site."ajouterDescription.php?action=editer&idL=".$tab_desc['idLieu']."&idP=".$tab_desc['idPersonne']."\" title=\"Éditer le lieu\">".$iconeEditer."</a></td>";
 		}
@@ -377,9 +394,12 @@ echo '<div class="spacer"></div>';
 else if ($get['element'] == "lieu")
 {
 
+
+
 	$req_lieux = $connector->query("
 	SELECT idLieu, idPersonne, nom, quartier, categorie, URL, statut, dateAjout, date_derniere_modif
 	FROM lieu
+        ".$sql_where_region."  
 	ORDER BY ".$get['tri_gerer']." ".$get['ordre']."
 	LIMIT ".($get['page'] - 1) * $get['nblignes'].",".$get['nblignes']);
 
@@ -448,7 +468,7 @@ echo '<div class="spacer"></div>';
 
 		echo "
 		<td>".$tab_lieux['idLieu']."</td>
-		<td><a href=\"".$url_site."lieu.php?id=".$tab_lieux['idLieu']."\" title=\"Voir la fiche du lieu :".securise_string($tab_lieux['nom'])."\">".securise_string($tab_lieux['nom'])."</a></td>
+		<td><a href=\"".$url_site."lieu.php?idL=".$tab_lieux['idLieu']."\" title=\"Voir la fiche du lieu :".securise_string($tab_lieux['nom'])."\">".securise_string($tab_lieux['nom'])."</a></td>
 		<td class=\"tdleft\"><ul>";
 
 		$listeCat = explode(",", $tab_lieux['categorie']);
@@ -478,7 +498,7 @@ echo '<div class="spacer"></div>';
 		<td>".$tab_icones_statut[$tab_lieux['statut']]."</td>";
 
 		//Edition pour l'admin ou l'auteur
-		if ($_SESSION['Sgroupe'] < 2)
+		if ($_SESSION['Sgroupe'] <= 4)
 		{
 			echo "<td><a href=\"".$url_site."ajouterLieu.php?action=editer&idL=".$tab_lieux['idLieu']."\" title=\"Éditer le lieu\">".$iconeEditer."</a></td>";
 		}
@@ -583,7 +603,7 @@ echo '<div class="spacer"></div>';
 		<td>".$tab_icones_statut[$tab['statut']]."</td>";
 
 		//Edition pour l'admin ou l'auteur
-		if ($_SESSION['Sgroupe'] < 2)
+		if ($_SESSION['Sgroupe'] <= 4)
 		{
 			echo "<td><a href=\"".$url_site."ajouterOrganisateur.php?action=editer&idO=".$tab['idOrganisateur']."\" title=\"Éditer\">".$iconeEditer."</a></td>";
 		}
@@ -715,6 +735,7 @@ else if ($get['element'] == "commentaire")
 {
 	$req_comm = $connector->query("SELECT idCommentaire, id, idPersonne, contenu, statut, element, dateAjout, date_derniere_modif
 	FROM commentaire
+                ".$sql_where_region." 
 	ORDER BY ".$get['tri_gerer']." ".$get['ordre']."
 	LIMIT ".($get['page'] - 1) * $get['nblignes'].",".$get['nblignes']);
 
@@ -814,7 +835,7 @@ echo '<div class="spacer"></div>';
 		}
 		echo "</td>";
 		//Edition pour l'admin ou l'auteur
-		if ($_SESSION['Sgroupe'] < 2)
+		if ($_SESSION['Sgroupe'] <= 4)
 		{
 			echo "<td><a href=\"".$url_site."ajouterCommentaire.php?action=editer&idC=".$tab_comm['idCommentaire']."\">".$iconeEditer."</a></td>";
 		}

@@ -71,8 +71,8 @@ exit;
 
 if ($even->getValue('idLieu') != 0)
 {
-	$req_lieu = $connector->query("SELECT nom, adresse, quartier, URL, lat, lng FROM lieu
-	WHERE idlieu='".$even->getValue('idLieu')."'");
+	$req_lieu = $connector->query("SELECT nom, adresse, quartier, localite, region, URL, lat, lng FROM lieu, localite
+	WHERE lieu.localite_id=localite.id AND idlieu='".$even->getValue('idLieu')."'");
 	$listeLieu = $connector->fetchArray($req_lieu);
 	$lieu = securise_string($listeLieu['nom']);
 
@@ -83,6 +83,11 @@ else
 	$lieu = securise_string($even->getValue('nomLieu'));
 	$listeLieu['adresse'] = securise_string($even->getValue('adresse'));
 	$listeLieu['quartier'] = securise_string($even->getValue('quartier'));
+        $req_localite = $connector->query("SELECT  localite FROM localite 
+        WHERE  id='".$even->getValue('localite_id')."'");
+        $tab_localite = $connector->fetchArray($req_localite);                
+
+        $listeLieu['localite'] = securise_string($tab_localite[0]);
 	$listeLieu['URL'] = securise_string($even->getValue('urlLieu'));
 
 	$nom_lieu = $lieu;
@@ -97,8 +102,8 @@ if ($even->getValue('description') != '')
 
 
 $filename = "evenement.ics";
-$address = $listeLieu['nom']." - ".$listeLieu['adresse']." (".$listeLieu['quartier'].")";
 
+$address = get_adresse(null, $listeLieu['localite'], $listeLieu['quartier'], $listeLieu['adresse']);
 
 $dateend = '';
 if ($even->getValue('horaire_fin') != "0000-00-00 00:00:00")

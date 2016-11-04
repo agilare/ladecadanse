@@ -183,13 +183,8 @@ if ($nom_page == "agenda" && isset($page_titre))
 }
 
 
-
 ?>
-<?php if (0) { ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
-<?php } ?>
 <!doctype html>
 <html lang="fr">
 <head>
@@ -230,11 +225,11 @@ $tab_de = $connector->fetchArray($req_de);
 	<?php
 	if ($nom_page != "index")
 	{
-		echo $page_titre." – La décadanse";
+		echo $page_titre." — La décadanse";
 	}
 	else
 	{
-		echo "La décadanse – ".$page_titre;
+		echo "La décadanse — ".$page_titre;
 	}
 	?>
 	</title>
@@ -307,9 +302,9 @@ echo '<a id="bouton_imprimer" title="Imprimer la page" href="javascript:window.p
 <div id="global">
 <a name="haut" id="haut"></a>
 <div id="entete">
-
+   
 <div id="titre_site">
-<h1><a href="<?php echo $url_site ?>" title="Retour à la page d'accueil"><img src="<?php echo $url_images."interface/logo_titre.jpg" ?>" alt="La décadanse"  width="180" height="35" /></a></h1>
+<h1><a href="<?php echo $url_site.$url_query_region_1er ?>" title="Retour à la page d'accueil"><img src="<?php echo $url_images."interface/logo_titre.jpg" ?>" alt="La décadanse"  width="180" height="35" /></a></h1>
 </div>
 
 
@@ -406,17 +401,15 @@ else
 	<li><a href="<?php echo $url_site; ?>logout.php" title="Fermer la session">Sortir</a></li>
     
     <?php
-	if ($_SESSION['Sgroupe'] == 1)
+	if ($_SESSION['Sgroupe'] <= 4)
 	{
-			echo '<li><a href="'.$url_site.'admin/index.php" title="Administration" >Admin</a></li>';
+            echo '<li><a href="'.$url_site.'admin/index.php" title="Administration" >Admin</a></li>';
 	}
 }
-
-
 ?>
 	</ul>
 
-	</div>
+    </div>
 
 </div>
 <!-- Fin entete_haut -->
@@ -453,7 +446,7 @@ foreach ($menu_principal as $nom => $lien)
     ?>
 		id="bouton_agenda">
         <?php
-		echo "<a href=\"".$url_site.$lien."?courant=".$get['courant']."&amp;sem=".$get['sem']."&amp;tri_agenda=".$get['tri_agenda']."&amp;mode=".$get['mode']."\">".$nom."</a>"; 
+		echo "<a href=\"".$url_site.$lien."?courant=".$get['courant']."&amp;sem=".$get['sem']."&amp;tri_agenda=".$get['tri_agenda']."&amp;mode=".$get['mode'].$url_query_region_et."\">".$nom."</a>"; 
         ?>
 		</li>
 		<li id="bouton_calendrier">
@@ -467,12 +460,32 @@ foreach ($menu_principal as $nom => $lien)
 	{
        
         ?>
-		><a href="<?php echo $url_site.$lien; ?>"><?php echo $nom; ?></a></li>
+		><a href="<?php echo $url_site.$lien."?".$url_query_region; ?>"><?php echo $nom; ?></a></li>
         <?php
 	}
 }
 
 ?>	
+
+<li style="float:right">
+    <form action="index.php" method="get" >
+        <select name="region" onchange="this.form.submit()">
+    <?php
+    foreach ($glo_regions as $code => $nom)
+    {
+        if ($code == 'ge' || $code == 'vd')
+        {
+        $selected = '';
+        if ($code == $_SESSION['region'])
+            $selected = ' selected';
+        ?>
+    <option value="<?php echo $code; ?>" <?php echo $selected; ?>><?php echo $nom; ?></option>
+        <?php
+        }
+    }
+    ?>
+</select></form>
+</li>
 	<li class="btn_recherche">
 	<a href="#">&nbsp;</a>
 	</li>

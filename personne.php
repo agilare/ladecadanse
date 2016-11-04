@@ -317,7 +317,7 @@ if ($get['elements'] == "evenement")
 			echo "
 			<td>".date_iso2app($tab_even['dateEvenement'])."</td>";
 
-			if ($_SESSION['Sgroupe'] < 2)
+			if ($_SESSION['Sgroupe'] <= 4)
 			{
 				echo "<td><a href=\"".$url_site."ajouterEvenement.php?action=editer&idE=".$tab_even['idEvenement']."\" title=\"Éditer l'événement\">".$iconeEditer."</a></td>";
 			}
@@ -345,8 +345,8 @@ if ($get['elements'] == "evenement")
 } // if type_elements
 else if ($get['elements'] == "lieu")
 {
-	$sql_favoris = "SELECT lieu.idLieu AS idLieu, lieu.idPersonne, nom, categorie, adresse, quartier, logo, photo1, dateAjout
-	 FROM lieu, lieu_favori WHERE lieu_favori.idPersonne=".$get['idP']."
+	$sql_favoris = "SELECT lieu.idLieu AS idLieu, lieu.idPersonne, nom, categorie, adresse, quartier, localite, region, logo, photo1, dateAjout
+	 FROM lieu, lieu_favori, localite WHERE localite.id=lieu.localite_id AND lieu_favori.idPersonne=".$get['idP']."
 	 AND lieu_favori.idLieu=lieu.idLieu
 	 ORDER BY dateAjout LIMIT ".($get['page'] - 1) * $get['nblignes'].",".$get['nblignes'];
 
@@ -414,7 +414,7 @@ else if ($get['elements'] == "lieu")
 
 			<td><a href=\"".$url_site."lieu.php?idL=".$tab_lieu['idLieu']."\" title=\"Voir la fiche du lieu :".securise_string($tab_lieu['nom'])."\">".securise_string($tab_lieu['nom'])."</a></td>
 			";
-			echo "<td><p class=\"adresse\">".$tab_lieu['adresse']." ".$tab_lieu['quartier']."</p></td>";
+			echo "<td><p class=\"adresse\">".get_adresse($tab_lieu['region'], $tab_lieu['localite'], $tab_lieu['quartier'], $tab_lieu['adresse'] )."</p></td>";
 			echo "
 
 			<td class=\"tdleft\"><ul>";
@@ -544,7 +544,7 @@ else if ($get['type_elements'] == 'participations')
 			echo "
 			<td>".date_iso2app($tab_even['dateEvenement'])."</td>";
 
-			if ($_SESSION['SidPersonne'] == $tab_even['idPersonne'] || $_SESSION['Sgroupe'] < 2)
+			if ($_SESSION['SidPersonne'] == $tab_even['idPersonne'] || $_SESSION['Sgroupe'] <= 4)
 			{
 				echo "<td><a href=\"".$url_site."ajouterEvenement.php?action=editer&idE=".$tab_even['idEvenement']."\" title=\"Éditer l'événement\">".$iconeEditer."</a></td>";
 			}
@@ -768,7 +768,7 @@ else
 				echo "
 				<td>".mb_substr(date_iso2app($tab_even['dateAjout']), 9)."</td><td>".$tab_icones_statut[$tab_even['statut']]."</td>";
 
-				if ($_SESSION['SidPersonne'] == $detailsPersonne['idPersonne'] || $_SESSION['Sgroupe'] < 2)
+				if ($_SESSION['SidPersonne'] == $detailsPersonne['idPersonne'] || $_SESSION['Sgroupe'] <= 4)
 				{
 					echo "<td><a href=\"".$url_site."ajouterEvenement.php?action=editer&idE=".$tab_even['idEvenement']."\" title=\"Éditer l'événement\">".$iconeEditer."</a></td>";
 				}
@@ -873,7 +873,7 @@ else
 				echo "<td class=\"tdleft\" style=\"width:150px\">".textToHtml(securise_string($tab_desc['contenu']))."</td>";
 				echo '<td>'.$tab_desc['type'].'</td>';
 				echo "<td>".mb_substr(date_iso2app($tab_desc['dateAjout']), 8)."</td>";
-				if ($_SESSION['SidPersonne'] == $detailsPersonne['idPersonne'] || $_SESSION['Sgroupe'] < 2)
+				if ($_SESSION['SidPersonne'] == $detailsPersonne['idPersonne'] || $_SESSION['Sgroupe'] <= 4)
 				{
 					echo "<td><a href=\"".$url_site."ajouterDescription.php?action=editer&idL=".$tab_desc['idLieu']."&idP=".$tab_desc['idPersonne']."&type=".$tab_desc['type']."\" title=\"Éditer le lieu\">".$iconeEditer."</a></td>";
 				}
@@ -991,7 +991,7 @@ else
 			<td>".$tabDes['COUNT(*)']."</td>
 			<td>".date_iso2app($dateAjout)."</td>";
 			//Edition pour l'admin ou l'auteur
-			if ($_SESSION['SidPersonne'] == $detailsPersonne['idPersonne'] || $_SESSION['Sgroupe'] < 2)
+			if ($_SESSION['SidPersonne'] == $detailsPersonne['idPersonne'] || $_SESSION['Sgroupe'] <= 4)
 			{
 				echo "<td><a href=\"".$url_site."ajouterLieu.php?action=editer&idL=".$idLieu."\" title=\"Éditer le lieu\">".$iconeEditer."</a></td>";
 			}
@@ -1089,7 +1089,7 @@ else if ($get['elements'] == "organisateur")
 			echo "
 			<td>".date_iso2app($tab['date_ajout'])."</td>";
 			//Edition pour l'admin ou l'auteur
-			if ($_SESSION['SidPersonne'] == $detailsPersonne['idPersonne'] || $_SESSION['Sgroupe'] < 2)
+			if ($_SESSION['SidPersonne'] == $detailsPersonne['idPersonne'] || $_SESSION['Sgroupe'] <= 4)
 			{
 				echo "<td><a href=\"".$url_site."ajouterOrganisateur.php?action=editer&idO=".$tab['idOrganisateur']."\" title=\"Éditer le lieu\">".$iconeEditer."</a></td>";
 			}
@@ -1320,7 +1320,7 @@ if ($connector->getNumRows($req_comm) > 0)
 
 		//echo "<td>".$tab_dateAjout[1]."</td>";
 		//Edition pour l'admin ou l'auteur
-		if ($_SESSION['Sgroupe'] < 2)
+		if ($_SESSION['Sgroupe'] <= 4)
 		{
 			echo "<td><a href=\"".$url_site."ajouterCommentaire.php?action=editer&idC=".$tab_comm['idCommentaire']."\" title=\"Éditer la brève\">".$iconeEditer."</a></td>";
 		}

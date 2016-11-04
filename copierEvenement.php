@@ -172,7 +172,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 		 * Récupération des infos de l'événement à copier
 		 */
 		$tab_champs = $connector->fetchAssoc(($connector->query("
-SELECT idLieu, idSalle, genre, flyer, dateEvenement, image, titre, nomLieu, adresse, quartier, urlLieu, description, ref, prix,
+SELECT idLieu, idSalle, genre, flyer, dateEvenement, image, titre, nomLieu, adresse, quartier, localite_id, region, urlLieu, description, ref, prix,
  horaire_debut, horaire_fin, horaire_complement, prelocations
 FROM evenement WHERE idEvenement=".$get['idE'])));
 
@@ -454,8 +454,8 @@ if (empty($_POST['jour2']))
 if (isset($get['idE']))
 {
 		$req_getEven = $connector->query("SELECT idEvenement, idLieu, idSalle, idPersonne, titre, genre, dateEvenement,
-		 nomLieu, adresse, quartier, urlLieu, description, flyer, prix, horaire_debut,horaire_fin, horaire_complement, URL1, ref, prelocations,statut
-		  FROM evenement WHERE idEvenement =".$get['idE']);
+		 nomLieu, adresse, quartier, localite, region, urlLieu, description, flyer, prix, horaire_debut,horaire_fin, horaire_complement, URL1, ref, prelocations,statut
+		  FROM evenement, localite WHERE evenement.localite_id=localite.id AND idEvenement =".$get['idE']);
 
 		if ($affEven = $connector->fetchArray($req_getEven))
 		{
