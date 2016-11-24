@@ -298,7 +298,7 @@ $lien_imprimer = '<a href="'.basename(__FILE__).'?'.arguments_URI($get).'&amp;st
 
 		<h2 style="font-size:1.6em">Agenda</h2>	
                 
-                <?php if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 0) { ?>
+                <?php if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 1) { ?>
                 <ul class="menu_region"><?php 
                     foreach ($glo_regions as $n => $v)
                     {
