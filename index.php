@@ -32,22 +32,34 @@ else
 <div id="contenu" class="colonne">
 
 	<div id="entete_contenu">
-	<div style="display:none">
-	<?php 
-	//printr($_COOKIE);
-	?></div>
-            <h2 style="font-size: 1.7em;width:80%">Aujourd’hui<sup><?php echo $glo_regions[$_SESSION['region']]; ?></sup> <small style="color: #888;font-size: 0.75em;"><?php echo ucfirst(date_fr($get['auj'])); ?></small></h2>
 
-		<ul class="entete_contenu_menu"  style="width:20%;margin-top:0.8em;">
-<!--			<li>Aller à :</li>
-			<li><a href="#cinema">ciné</a></li>
-			<li><a href="#theatre">théâtre</a></li>
-			<li><a href="#expos">expos</a></li>
-			<li><a href="#divers">divers</a></li> -->
-			<li><a href="<?php echo $url_site ?>rss.php?type=evenements_auj" title="Flux RSS des événements du jour">
-			<i class="fa fa-rss fa-lg" style="color:#f5b045"></i></a></li>
-		</ul>
-		<div class="spacer"></div>	
+            <h2 class="accueil">Aujourd’hui <a href="<?php echo $url_site ?>rss.php?type=evenements_auj" title="Flux RSS des événements du jour" style="font-size:12px;vertical-align: top;">
+			<i class="fa fa-rss fa-lg" style="color:#f5b045"></i></a></h2>
+ <?php if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 0) { ?>    
+            <ul class="menu_region"><?php 
+                foreach ($glo_regions as $n => $v)
+                {
+                    if ($n == 'ge' || $n == 'vd')
+                    {
+                        if ($n == 'vd')
+                        {
+                            $v = 'Lausanne';
+                        }                        
+                        
+                    $ici = '';
+                    if ($n == $_SESSION['region'])
+                        $ici = ' class="ici" ';
+                ?><li><a href="?region=<?php echo $n; ?>" <?php echo $ici; ?>><?php echo $v; ?></a></li><?php
+                    }
+                }
+                ?></ul>
+            
+            <?php } ?>
+
+		<div class="spacer"></div>
+                
+           <h2><small><?php echo ucfirst(date_fr($get['auj'])); ?></small></h2>                
+                
 	</div>
 
 	<div class="spacer"><!-- --></div>
@@ -454,14 +466,14 @@ while($tab_commentaires = $connector->fetchArray($req_commentaires))
 
 
 <?php
-if ($videur->checkGroup(8) && !isset($_COOKIE['msg_orga_charte'])) // isset($_GET['debug']) && 
+if (0) //($videur->checkGroup(8) && !isset($_COOKIE['msg_orga_benevole'])) // isset($_GET['debug']) && 
 {
 ?>
 <div id="dernieres" style="position:relative;padding:0.6em 0.2em;margin:1em 0;background:#ff5">
-<h2 style="padding:0; margin:0.1em 0 0.4em 0.1em;font-size:1.3em">Charte&nbsp;éditoriale</h2>
-<a style="position:absolute;right:0;top:0;padding:5px" href="#" onclick="SetCookie('msg_orga_charte', 1, 180);this.parentNode.style.display = 'none';return false;"><img src="<?php echo $url_site ?>images/interface/icons/cross.png" alt="Fermer" width="16" height="16"></a>
+<h2 style="padding:0; margin:0.1em 0 0.4em 0.1em;font-size:1.3em">Bénévoles</h2>
+<a style="position:absolute;right:0;top:0;padding:5px" href="#" onclick="SetCookie('msg_orga_benevole', 1, 180);this.parentNode.style.display = 'none';return false;"><img src="<?php echo $url_site ?>images/interface/icons/cross.png" alt="Fermer" width="16" height="16"></a>
 <p style="line-height:17px">
-La décadanse dispose désormais d'une <b><a href="charte-editoriale.php">charte&nbsp;éditoriale</a></b> qui défini le concept du site et le type d'événements, lieux et organisateurs acceptés. </p>
+ </p>
 
 </div>
 <?php

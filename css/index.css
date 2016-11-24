@@ -1,4 +1,15 @@
-	#dernieres
+#entete_contenu h2
+{
+   font-size: 1.7em;width:65% 
+}
+
+#entete_contenu h2 small
+{
+    font-size: .8em;
+   color: #888;
+}
+
+#dernieres
 {
 	margin-top:1.2em;
 	font-size:0.95em;

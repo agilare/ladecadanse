@@ -192,9 +192,19 @@ display:none;
 	height:auto;
 }
 
+#entete_contenu h2.accueil
+{
+    
+    width:45%;
+    font-size:1.3em;
+}
+
 #entete_contenu h2 small
 {
-	display: block;
+        display: block;
+ 
+    font-size: .8em;
+
 }
 
 .rappel_date

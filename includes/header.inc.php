@@ -467,6 +467,7 @@ foreach ($menu_principal as $nom => $lien)
 
 ?>	
 
+<?php if (0) { ?>
 <li style="float:right">
     <form action="index.php" method="get" >
         <select name="region" onchange="this.form.submit()">
@@ -485,6 +486,7 @@ foreach ($menu_principal as $nom => $lien)
     }
     ?>
 </select></form>
+<?php } ?>
 </li>
 	<li class="btn_recherche">
 	<a href="#">&nbsp;</a>

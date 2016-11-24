@@ -68,7 +68,7 @@ class Sentry extends SystemComponent {
 		$ses_id = session_id();
 
 		$sql_user = "
-		SELECT idPersonne, pseudo, mot_de_passe, cookie, session, ip, groupe, nom, prenom, email, gds
+		SELECT idPersonne, pseudo, mot_de_passe, cookie, session, ip, groupe, nom, prenom, region, email, gds
 		FROM personne WHERE
 		pseudo = '".$connector->sanitize($_SESSION['user'])."'
 				AND groupe = '".$connector->sanitize($_SESSION['Sgroupe'])."'
@@ -159,7 +159,7 @@ class Sentry extends SystemComponent {
 		{
 			
 			$sql = "
-			SELECT idPersonne, pseudo, mot_de_passe, cookie, session, ip, groupe, nom, prenom, email, gds
+			SELECT idPersonne, pseudo, mot_de_passe, cookie, session, ip, groupe, nom, prenom, region, email, gds
 			FROM personne
 			WHERE pseudo = '".$connector->sanitize($user)."' AND groupe <= ".$group." AND statut='actif'";
 		
@@ -251,7 +251,7 @@ class Sentry extends SystemComponent {
 			AND cookie='".$connector->sanitize($cookie['cookie'])."'
 			 AND statut='actif'"; */
 			 
-			$sql_getUser = "SELECT idPersonne, pseudo, mot_de_passe, cookie, session, ip, groupe, nom, prenom, email, gds
+			$sql_getUser = "SELECT idPersonne, pseudo, mot_de_passe, cookie, session, ip, groupe, nom, prenom, region, email, gds
 						FROM personne
 						WHERE cookie='".$connector->sanitize($cookie)."'
 						 AND statut='actif'"; 			 
@@ -302,6 +302,7 @@ class Sentry extends SystemComponent {
 		$_SESSION["Snom"] = $this->userdata["nom"];
 		$_SESSION["Sprenom"] = $this->userdata["prenom"];
 		$_SESSION['Semail'] = $this->userdata['email'];
+		$_SESSION['Sregion'] = $this->userdata['region'];
 		$_SESSION['Saffiliation_lieu'] = $tab_affiliation['idAffiliation'];
 		
 		

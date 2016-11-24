@@ -29,6 +29,9 @@ if (!$videur->checkGroup(4))
 	header("Location: ".$url_site."login.php"); die();
 }
 
+
+
+
 require_once($rep_librairies.'Validateur.php');
 require_once($rep_librairies.'usine.php');
 
@@ -109,20 +112,21 @@ if (!empty($_GET['terme']))
 }
 
 
-if ($_SESSION['Sgroupe'] != 1)
-    $sql_where_region = " WHERE region='".$connector->sanitize($_SESSION['region'])."' ";
+$_SESSION['region_admin'] = '';
+if ($_SESSION['Sgroupe'] >= 4 && !empty($_SESSION['Sregion']) && in_array($get['element'], ['lieu']))
+{ 
+    $_SESSION['region_admin'] = $_SESSION['Sregion'];
+}
 
-if ($_SESSION['Sgroupe'] != 1 && in_array($get['element'], ['lieu']))
-    $region_admin = $_SESSION['region'];
 
-$sql_region = '';
+$sql_where_region = '';
 $titre_region = '';
-if (!empty($region_admin))
+if (!empty($_SESSION['region_admin']))
 {
-    $sql_where_region = " WHERE region='".$connector->sanitize($_SESSION['region'])."' ";
+    $sql_where_region = " WHERE region='".$connector->sanitize($_SESSION['region_admin'])."' ";
 
         
-        $titre_region = " - ".$glo_regions[$_SESSION['region']];
+        $titre_region = " - ".$glo_regions[$_SESSION['region_admin']];
 }
   
 /*

@@ -1,3 +1,8 @@
+#entete_contenu h2 {
+
+    width: 55%;
+}
+
 #dernieres_descriptions
 {
 	padding:0 0em;
@@ -74,7 +79,7 @@ color:#4a4a4a;
 }
 
 
-/*Panneau Derniers lieux ajoutés */
+/*Panneau Derniers lieux ajoutÃ©s */
 #derniers_lieux
 {
 background-color:#ffffff;

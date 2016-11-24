@@ -78,7 +78,7 @@ $statuts_lieu = array('actif',  'ancien', 'inactif');
 $statuts_breve = array('actif', 'inactif');
 $glo_statuts_personne = array('demande', 'actif', 'inactif');
 
-$glo_tab_quartiers = array("geneve", "Acacias", "Champel", "Charmilles", "Centre", "Cornavin",  "Eaux-Vives", "Grottes","Jonction","Nations","Pâquis", "Petit-Saconnex","Plainpalais", "Saint-Gervais", "Saint-Jean", "Servette",
+$glo_tab_quartiers = array("geneve", "Champel", "Charmilles", "Centre", "Cornavin", "Grottes", "Jonction","Nations","Pâquis", "Plainpalais", "Saint-Gervais", "Saint-Jean", "Servette",
  "communes", "Aire-la-Ville", "Anières", "Avully", "Avusy", "Bardonnex", "Bellevue", "Bernex", "Carouge", "Cartigny", "Céligny",
  "Chancy", "Chêne-Bougeries", "Chêne-Bourg", "Choulex", "Collex-Bossy", "Collonge-Bellerive", "Cologny", "Confignon", "Corsier",
  "Dardagny", "Genthod", "Gy", "Hermance", "Jussy", "Laconnex", "Lancy", "Le Grand-Saconnex", "Meinier", "Meyrin", "Onex", "Perly-Certoux",
@@ -200,11 +200,20 @@ session_start();
 if (empty($_SESSION['region']))
     $_SESSION['region'] = 'ge';
 
+if (!empty($_COOKIE['ladecadanse_region']))
+{
+    $_SESSION['region'] = $_COOKIE['ladecadanse_region'];
+}
+    
+
 $get['region'] = filter_input(INPUT_GET, "region", FILTER_SANITIZE_STRING);
 
 if (array_key_exists($get['region'], $glo_regions))
+{        
     $_SESSION['region'] = $get['region'];
-
+    setcookie("ladecadanse_region", $get['region'], time() + 36000, '');  /* , 'ladecadanse.darksite.ch' */    
+    
+}
 //echo "session : ".$_SESSION['region'];
 
 

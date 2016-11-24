@@ -81,12 +81,23 @@ $icone['tar'] = "<img src=\"".$IMGicones."page_white_zip.png\" alt=\"\" />";
 
 $icones_fichiers = array("text" => "text.png");
 
+/*
 $tab_icones_statut = array("actif" => "<img src=\"".$IMGicones."bullet_green.png\" title=\"publié\" alt=\"\" />",
 "inactif" => "<img src=\"".$IMGicones."bullet_yellow.png\" title=\"dépublié\" />",
 "annule" => "<img src=\"".$IMGicones."bullet_white.png\" title=\"annulé\" />",
 "complet" => "<img src=\"".$IMGicones."bullet_red.png\" title=\"complet\" />",
 "ancien" => "<img src=\"".$IMGicones."bullet_white.png\" title=\"ancien\" />"
 );
+
+ */
+
+$tab_icones_statut = array("actif" => "<div style='display:inline-block;background:green;width:12px;height:12px;border-radius:50%' title='Publié'>&nbsp;</div>",
+"inactif" => "<div style='display:inline-block;background:red;width:12px;height:12px;border-radius:50%' title='Dépublié'>&nbsp;</div>",
+"annule" => "<div style='display:inline-block;background:orange;width:12px;height:12px;border-radius:50%' title='Annulé'>&nbsp;</div>",
+"complet" => "<div style='display:inline-block;background:orange;width:12px;height:12px;border-radius:50%' title='Complet'>&nbsp;</div>",
+"ancien" => "<div style='display:inline-block;background:white;width:12px;height:12px;border-radius:50%' title='Ancien'>&nbsp;</div>"
+);
+
 //CSS
 $indexCssScreen = array("decad");
 $indexCssPrint = array("imprimer");

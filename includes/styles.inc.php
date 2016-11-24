@@ -12,6 +12,8 @@ html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abb
 <!--<link rel="stylesheet" type="text/css" href="<?php echo $url_site ?>css/reset.css" title="Reset" />-->
 
 
+
+
 <?php
 if (isset($_GET['style']) && $_GET['style'] == "imprimer")
 {

@@ -514,10 +514,10 @@ function get_adresse($region, $localite, $quartier, $adr)
    if (!empty($adr))
         $adresse .= $adr;
     
-    if (!empty($quartier))
+    if (!empty($quartier) && $quartier != 'autre')
         $adresse .= " (".$quartier.") ";
     
-    if (!empty($localite))
+    if (!empty($localite) && $localite != 'Autre' && $localite != $quartier)
         $adresse .= " - ".$localite;
 
     /*

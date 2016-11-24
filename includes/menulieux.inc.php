@@ -99,14 +99,10 @@ $aff_menulieux .= '
 	if ($get['vue'] == "az") { $aff_menulieux .= " class=\"ici\""; }
 	$aff_menulieux .= '><a href="'.$_SERVER['PHP_SELF'].'?'.$url_query_region_et.'statut='.$get['statut'].'&amp;vue=az'.$url_idLieu.'" title="Liste alphabétique">A-Z</a></li><li';
 	if ($get['vue'] == "genre") { $aff_menulieux .= " class=\"ici\""; }
-	$aff_menulieux .= '><a href="'.$_SERVER['PHP_SELF'].'?'.$url_query_region_et.'statut='.$get['statut'].'&amp;vue=genre'.$url_idLieu.'" title="Liste par genre">Genre</a></li>';
+	$aff_menulieux .= '><a href="'.$_SERVER['PHP_SELF'].'?'.$url_query_region_et.'statut='.$get['statut'].'&amp;vue=genre'.$url_idLieu.'" title="Liste par genre">Type</a></li>';
         
-    if ($_SESSION['region'] == 'ge')
-    {
-	$aff_menulieux .= '<li';
-	if ($get['vue'] == "quartier") { $aff_menulieux .= " class=\"ici\""; }
-	$aff_menulieux .= '><a href="'.$_SERVER['PHP_SELF'].'?'.$url_query_region_et.'statut='.$get['statut'].'&amp;vue=quartier'.$url_idLieu.'" title="Liste par quartier">Quartier</a></li>';
-    }        
+
+           
         $aff_menulieux .= ' 
 </ul>
 		<div class="spacer"><!-- --></div>';
@@ -162,57 +158,6 @@ $aff_menulieux .= '
 				$sql_vue .= "AND categorie LIKE '%".$get['tranche']."%'";
 
 			}
-			else if ($get['vue'] == "quartier")
-			{
-				
-				$tab_quart = array("geneve" => "Genève", "communes" => "Communes", "ailleurs" => "Ailleurs");
-				$aff_menulieux .= "
-				<form action=\"".$_SERVER['PHP_SELF']."\" method=\"get\">
-				<fieldset>
-				<input type=\"hidden\" name=\"vue\" value=\"quartier\" />
-				<input type=\"hidden\" name=\"idL\" value=\"".$get['idL']."\" />
-				<input type=\"hidden\" name=\"statut\" value=\"".$get['statut']."\" />
-				<select name=\"tranche\" onChange=\"javascript:this.form.submit();\">";
-
-				$premier_optgroupe = 0;
-
-				foreach ($glo_tab_quartiers as $q)
-				{
-					if ($q == "geneve" || $q == "communes" || $q == "ailleurs")
-					{
-						if ($premier_optgroupe != 0)
-						{
-							$aff_menulieux .= "</optgroup>";
-						}
-
-						$aff_menulieux .= "<optgroup label=\"".$tab_quart[$q]."\">";
-						$premier_optgroupe = 1;
-					}
-					else
-					{
-						$sql_nb_lieux = "SELECT COUNT(*) AS nblieux FROM lieu WHERE statut='".$get['statut']."' AND quartier='".$q."'";
-						$req_nb_lieux = $connector->query($sql_nb_lieux);
-						$tab_nb_lieux = $connector->fetchArray($req_nb_lieux);
-
-						if ($tab_nb_lieux['nblieux'] > 0)
-						{
-							$aff_menulieux .= "<option value=\"".$q."\"";
-
-							if ($q == $get['tranche'])
-							{
-								$aff_menulieux .= " selected=\"selected\"";
-							}
-
-							$aff_menulieux .= ">".$q." (".$tab_nb_lieux['nblieux'].")</option>\n";
-						}
-					}
-				}
-				$aff_menulieux .= "</optgroup></select><input class=\"submit\" type=\"submit\" value=\"ok\" size=\"1\" />
-				</fieldset></form>";
-
-				$sql_vue .= "AND quartier='".urldecode($get['tranche'])."'";
-
-			}
 
 	$aff_menulieux .= '<div class="spacer"><!-- --></div>';
 	$aff_menulieux .= '<table summary="Menu des lieux"><tr><th><img src="'.$IMGicones.'building.png" alt="Lieu"  />';
@@ -230,7 +175,7 @@ $aff_menulieux .= '
 $sql_menu_lieux = "
 SELECT idLieu, nom
 FROM lieu
-WHERE statut='".$get['statut']."' AND region='".$connector->sanitize($_SESSION['region'])."' ".$sql_vue."
+WHERE statut='".$get['statut']."'  ".$sql_vue."
 ORDER BY TRIM(LEADING 'l\'' FROM (TRIM(LEADING 'les ' FROM (TRIM(LEADING 'la ' FROM (TRIM(LEADING 'le ' FROM lower(nom)))))))) COLLATE utf8_general_ci";
 
 $req_lieux = $connector->query($sql_menu_lieux);

@@ -31,6 +31,12 @@ if (!$videur->checkGroup(4))
 	header("Location: ".$url_site."login.php"); die();
 }
 
+$_SESSION['region_admin'] = '';
+if ($_SESSION['Sgroupe'] >= 4 && !empty($_SESSION['Sregion']))
+{ 
+    $_SESSION['region_admin'] = $_SESSION['Sregion'];
+}
+
 require_once($rep_librairies.'Validateur.php');
 
 $nom_page = "index";
@@ -238,8 +244,9 @@ while($tab_comm = $connector->fetchArray($req_comm))
 <p><a href="gerer.php?element=personne">Gérer les personnes</a></p>
 <?php } ?>
                
-    <h3><?php echo $glo_regions[$_SESSION['region']]; ?></h3>
-
+<?php if (!empty($_SESSION['region_admin'])) { ?>
+    <h3><?php echo $glo_regions[$_SESSION['region_admin']]; ?></h3>
+<?php } ?>
     
 <h4 style="padding:0.4em 0">Événements ajoutés ces 3 derniers jours</h4>
 
@@ -251,12 +258,10 @@ $troisJoursAvant = date("Y-m-d H:i:s", time() - (3*86400));
 * classés par date d'ajout
 */
 
-if ($_SESSION['Sgroupe'] != 1)
-    $region_admin = $_SESSION['region'];
     
 $sql_region = '';
-if (!empty($region_admin))
-    $sql_region = " AND region='".$connector->sanitize($region_admin)."'";
+if (!empty( $_SESSION['region_admin']))
+    $sql_region = " AND region='".$connector->sanitize( $_SESSION['region_admin'])."'";
     
 $sql_even = "SELECT idEvenement, idLieu, idPersonne, titre,
  dateEvenement, horaire_debut, horaire_fin, genre, nomLieu, adresse, statut, flyer, dateAjout
@@ -272,12 +277,14 @@ if ($connector->getNumRows($req_getEvenement) > 0)
 ?>
     <table summary="Derniers événements ajoutés" id="derniers_evenements_ajoutes">
     <tr>
-    <th colspan="2">Ajouté</th>
+
     <th>Titre</th>
     <th>Lieu</th>
     <th>Date</th>
+    <th>Catégorie</th>
     <th>Horaire</th>
     <th>Statut</th>
+    <th>Ajouté</th>
     <th>par</th>
     <th>&nbsp;</th>
     </tr>
@@ -305,19 +312,24 @@ while($tab_even = $connector->fetchArray($req_getEvenement))
 		echo "<tr class=\"impair\">";
 	}
 
-	$datetime_dateajout = date_iso2app($tab_even['dateAjout']);
-	$tab_datetime_dateajout = explode(" ", $datetime_dateajout);
-	echo "<td>".$tab_datetime_dateajout[1]."</td><td>".$tab_datetime_dateajout[0]."</td>
-	<td><a href=\"".$url_site."evenement.php?idE=".$tab_even['idEvenement']."\" title=\"Voir la fiche de l'événement\" class='titre'>".securise_string($tab_even['titre'])."</a></td>
+
+	echo "<td><a href=\"".$url_site."evenement.php?idE=".$tab_even['idEvenement']."\" title=\"Voir la fiche de l'événement\" class='titre'>".securise_string($tab_even['titre'])."</a></td>
 	<td>".$nomLieu."</td>
-	<td>".date_iso2app($tab_even['dateEvenement'])."</td>
-	<td>";
+	<td>".date_iso2app($tab_even['dateEvenement'])."</td>";
+        
+        echo "<td>".ucfirst($glo_tab_genre[$tab_even['genre']])."</td>";	
+        
+        echo "<td>";
 
 	echo afficher_debut_fin($tab_even['horaire_debut'], $tab_even['horaire_fin'], $tab_even['dateEvenement']);
 	
 	echo "</td>
 	<td>".$tab_icones_statut[$tab_even['statut']]."</td>";
 
+	$datetime_dateajout = date_iso2app($tab_even['dateAjout']);
+	$tab_datetime_dateajout = explode(" ", $datetime_dateajout);
+	echo "<td>".$tab_datetime_dateajout[1]." ".$tab_datetime_dateajout[0]."</td>";       
+        
 	$nom_auteur = "<i>Ancien membre</i>";
 
 	if ($tab_auteur = $connector->fetchArray($connector->query("SELECT pseudo FROM personne WHERE idPersonne=".$tab_even['idPersonne'])))
