@@ -83,8 +83,7 @@ else
 	$lieu = securise_string($even->getValue('nomLieu'));
 	$listeLieu['adresse'] = securise_string($even->getValue('adresse'));
 	$listeLieu['quartier'] = securise_string($even->getValue('quartier'));
-        $req_localite = $connector->query("SELECT  localite FROM localite 
-        WHERE  id='".$even->getValue('localite_id')."'");
+        $req_localite = $connector->query("SELECT  localite FROM localite WHERE  id='".$even->getValue('localite_id')."'");
         $tab_localite = $connector->fetchArray($req_localite);                
 
         $listeLieu['localite'] = securise_string($tab_localite[0]);

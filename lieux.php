@@ -159,8 +159,8 @@ include("includes/navigation_calendrier.inc.php");
 
 	<?php
 	$req_lieux_recents = $connector->query("
-	SELECT idLieu, nom, adresse, quartier, dateAjout 
-	FROM lieu WHERE region='".$connector->sanitize($_SESSION['region'])."' ORDER BY dateAjout DESC LIMIT 8");
+	SELECT idLieu, nom, adresse, quartier, localite, dateAjout
+	FROM lieu, localite WHERE lieu.localite_id=localite.id AND region='".$connector->sanitize($_SESSION['region'])."' ORDER BY dateAjout DESC LIMIT 8");
 
 	// Création de la section si il y a moins un lieu
 	if ($connector->getNumRows($req_lieux_recents) > 0)
@@ -171,7 +171,10 @@ include("includes/navigation_calendrier.inc.php");
 		//printr($tab_lieux_recents);
 		?>
 		<h3><a href="<?php echo $url_site; ?>lieu.php?idL=<?php echo $tab_lieux_recents['idLieu']; ?>" title="Voir la fiche du lieu" ><?php echo $tab_lieux_recents['nom']; ?></a></h3>
-		<p><?php echo $tab_lieux_recents['adresse']; ?> (<?php echo $tab_lieux_recents['quartier']; ?>)</p>
+		
+		<p><?php 
+                
+                echo htmlspecialchars(get_adresse( '', $tab_lieux_recents['localite'], $tab_lieux_recents['quartier'], $tab_lieux_recents['adresse'])); ?></p>
 		<?php
 		}
 	}

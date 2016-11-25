@@ -94,13 +94,14 @@ if ($even->getValue('idSalle') != 0)
 }
 
 
-
+$req_localite = $connector->query("SELECT localite FROM localite WHERE  id='".$even->getValue('localite_id')."'");
+$tab_localite = $connector->fetchArray($req_localite);     
 
 $page_titre_localite = " – ";
 
 
 $nom_page = "evenement";
-$page_titre = $even->getValue('titre')." ".$determinant_lieu.$even->getValue('nomLieu').$even_salle.", ".get_adresse($even->getValue('region'), $even->getValue('localite_id'), $even->getValue('quartier'), $even->getValue('adresse'))." le ".date_fr($even->getValue('dateEvenement'), "annee", "", "", false);
+$page_titre = $even->getValue('titre')." ".$determinant_lieu.$even->getValue('nomLieu').$even_salle.", ".get_adresse($even->getValue('region'), $tab_localite['localite'], $even->getValue('quartier'), $even->getValue('adresse'))."; le ".date_fr($even->getValue('dateEvenement'), "annee", "", "", false);
 $page_description = $even->getValue('titre')." ".$determinant_lieu.$even->getValue('nomLieu').
 " le ".date_fr($even->getValue('dateEvenement'), "annee", "", "", false)." ".
 afficher_debut_fin($even->getValue('horaire_debut'), $even->getValue('horaire_fin'),$even->getValue('dateEvenement'));
