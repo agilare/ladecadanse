@@ -1328,11 +1328,12 @@ echo $verif->getHtmlErreur("adresse");
 echo $verif->getHtmlErreur("doublonLieux");
 ?>
 </p>
-
 <p>
 <label for="localite">Localité/quartier</label>
 <select name="localite_id" id="localite" class="chosen-select" style="max-width:300px;">
 <?php
+
+
 echo "<option value=\"0\">&nbsp;</option>";
 $req = $connector->query("
 SELECT id, localite, canton FROM localite WHERE id!=1 AND canton='ge' ORDER BY canton, localite "
@@ -1367,11 +1368,16 @@ while ($tab = $connector->fetchArray($req))
     // Genève quartiers    
     if ($tab['id'] == 44)
     {
+        $champs_quartier = '';
+        $loc_qua = explode("-", $champs['localite_id']);
+        if (!empty($loc_qua[1]))
+           $champs_quartier = $loc_qua[1];
+        
         foreach ($glo_tab_quartiers2['ge'] as $no => $quartier)
        {  
                echo "<option ";
 
-               if (empty($champs['idLieu']) && $champs['localite_id']."-".$champs['quartier'] == '44-'.$quartier)
+               if (empty($champs['idLieu']) && $champs_quartier == $quartier)
                {
                        echo 'selected="selected" ';
                }	
