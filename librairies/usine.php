@@ -520,10 +520,10 @@ function get_adresse($region, $localite, $quartier, $adr)
     if (!empty($localite) && $localite != 'Autre' && $localite != $quartier)
         $adresse .= " - ".$localite;
 
-    /*
-    if ($region == 'ge')
+    
+    if ($localite != 'Genève' && $region == 'ge')
         $adresse .= " - Genève";
-    */
+    
     if ($region == 'vd')
         $adresse .= " - Vaud"; 
     

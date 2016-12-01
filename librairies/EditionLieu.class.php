@@ -265,7 +265,7 @@ require_once($rep_librairies.'ImageDriver2.php');
                 {
                     $lieu->setValue('quartier', ''); 
                     
-                    if ($this->valeurs['localite_id'] == 'vd' || $this->valeurs['localite_id'] == 'rf' || $this->valeurs['localite_id'] == 'hs')
+                    if ($this->valeurs['localite_id'] == 'rf' || $this->valeurs['localite_id'] == 'hs')
                     {
                         $lieu->setValue('region', $this->valeurs['localite_id']);
                         $lieu->setValue('localite_id', 1); // autre
@@ -275,7 +275,16 @@ require_once($rep_librairies.'ImageDriver2.php');
                         $lieu->setValue('region', 'ge');
                         $lieu->setValue('localite_id', 529);                       
                         
-                    }    
+                    } 
+                    else
+                    {
+                            $sql_lieu = "SELECT canton FROM localite WHERE id=".$this->connector->sanitize($this->valeurs['localite_id']);
+                            $req_lieu = $this->connector->query($sql_lieu);
+                            $tab_lieu = $this->connector->fetchArray($req_lieu);    
+                            $champs['region'] = $tab_lieu['canton'];                        
+                        
+                            $lieu->setValue('region', $tab_lieu['canton']);
+                    }
                 }
                 
                 $lieu->setValue('idpersonne', $_SESSION['SidPersonne']);
