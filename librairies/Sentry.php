@@ -101,9 +101,10 @@ class Sentry extends SystemComponent {
 		}
 		else
 		{
-			unset($this->userdata);
+			
 			$message = "Erreur de session (requete) : ".$_SESSION['user'].", ip:".$_SESSION['ip'].", sid:".session_id().", session db:".$this->userdata['session'];
 			trigger_error($message, E_USER_ERROR);
+                        unset($this->userdata);
 			return false;
 		} //if num rows
 

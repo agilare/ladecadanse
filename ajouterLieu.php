@@ -208,8 +208,16 @@ echo $form->getHtmlErreur("adresse");
 <select name="localite_id" id="localite" class="chosen-select" style="max-width:300px;" required>
 <?php
 echo "<option value=\"0\">&nbsp;</option>";
+
+$sql_prov = '';
+if ($_SESSION['Sgroupe'] > 4)
+{ 
+    $sql_prov = " AND canton='ge' ";     
+}
+
+
 $req = $connector->query("
-SELECT id, localite, canton FROM localite WHERE id!=1 AND canton='ge' ORDER BY canton, localite "
+SELECT id, localite, canton FROM localite WHERE id!=1 ".$sql_prov." ORDER BY canton, localite "
  );
 
 
@@ -241,16 +249,27 @@ while ($tab = $connector->fetchArray($req))
     // Genève quartiers    
     if ($tab['id'] == 44)
     {
+        
+       // si erreur formulaire
+        $champs_quartier = '';
+        $loc_qua = explode("_", $form->getValeur('localite_id'));
+        if (!empty($loc_qua[1]))
+           $champs_quartier = $loc_qua[1];
+        
+        // si chargement even existant
+        if (!empty($form->getValeur('quartier')))
+            $champs_quartier = $form->getValeur('quartier');        
+        
         foreach ($glo_tab_quartiers2['ge'] as $no => $quartier)
        {  
                echo "<option ";
 
-               if ($form->getValeur('localite_id')."-".$form->getValeur('quartier') == '44-'.$quartier)
+               if ($champs_quartier == $quartier)
                {
                        echo 'selected="selected" ';
                }	
 
-               echo " value=\"44-".$quartier."\">Genève - ".$quartier."</option>";
+               echo " value=\"44_".$quartier."\">Genève - ".$quartier."</option>";
 
        }       
 
@@ -265,9 +284,7 @@ while ($tab = $connector->fetchArray($req))
    {  
            echo "<option ";
 
-           if (($form->getValeur('region') == $id && $form->getValeur('localite_id') != 529) 
-                   || ( $id == 529 && $form->getValeur('localite_id') == 529)
-                           || ((isset($_POST['localite_id']) && $id == $_POST['localite_id']))
+           if (($form->getValeur('region') == $id) || ((isset($_POST['localite_id']) && $id == $_POST['localite_id']))
                   ) // $form->getValeur('quartier') 
            {
                    echo ' selected="selected" ';

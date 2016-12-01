@@ -446,7 +446,7 @@ foreach ($menu_principal as $nom => $lien)
     ?>
 		id="bouton_agenda">
         <?php
-		echo "<a href=\"".$url_site.$lien."?courant=".$get['courant']."&amp;sem=".$get['sem']."&amp;tri_agenda=".$get['tri_agenda']."&amp;mode=".$get['mode'].$url_query_region_et."\">".$nom."</a>"; 
+		echo "<a href=\"".$url_site.$lien."?".$url_query_region_et."courant=".$get['courant']."&amp;sem=".$get['sem']."&amp;tri_agenda=".$get['tri_agenda']."&amp;mode=".$get['mode']."\">".$nom."</a>"; 
         ?>
 		</li>
 		<li id="bouton_calendrier">

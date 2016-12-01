@@ -58,7 +58,7 @@ else
 
 		<div class="spacer"></div>
                 
-           <h2><small><?php echo ucfirst(date_fr($get['auj'])); ?></small></h2>                
+           <h2 style="width:65%;font-size: 1.4em"><small><?php echo ucfirst(date_fr($get['auj'])); ?></small></h2>                
                 
 	</div>
 
@@ -87,7 +87,7 @@ $req_even = $connector->query("SELECT idEvenement, genre, idLieu, idSalle, nomLi
  titre, idPersonne, dateEvenement, URL1, ref, flyer, image, description, horaire_debut, horaire_fin,
  horaire_complement, prix, prelocations
  FROM evenement, localite
- WHERE evenement.localite_id=localite.id AND dateEvenement LIKE '".$auj2."%' AND statut!='inactif' AND region='".$_SESSION['region']."'  
+ WHERE evenement.localite_id=localite.id AND dateEvenement LIKE '".$auj2."%' AND statut!='inactif' AND region IN ('".$connector->sanitize($_SESSION['region'])."', 'rf', 'hs')   
  ORDER BY CASE `genre`
         WHEN 'fête' THEN 1
         WHEN 'cinéma' THEN 2
@@ -494,7 +494,7 @@ if (0) //($videur->checkGroup(8) && !isset($_COOKIE['msg_orga_benevole'])) // is
 <?php
 $req_dern_even = $connector->query("
 SELECT idEvenement, titre, dateEvenement, dateAjout, nomLieu, idLieu, idSalle, flyer, image, statut
-FROM evenement WHERE region='".securise_string($_SESSION['region'])."' AND statut!='inactif' ORDER BY dateAjout DESC LIMIT 0, 6
+FROM evenement WHERE region IN ('".$connector->sanitize($_SESSION['region'])."', 'rf', 'hs') AND statut!='inactif' ORDER BY dateAjout DESC LIMIT 0, 6
 ");
 
 $date_ajout_courante = "";

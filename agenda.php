@@ -258,7 +258,7 @@ else
 	$get['page'] = 1;
 }
 
-$sql_region = " region='".$connector->sanitize($_SESSION['region'])."' ";
+$sql_region = " region IN ('".$connector->sanitize($_SESSION['region'])."', 'rf', 'hs') ";
 
 
 $get['nblignes'] = 40;
@@ -302,7 +302,7 @@ $lien_imprimer = '<a href="'.basename(__FILE__).'?'.arguments_URI($get).'&amp;st
                 <ul class="menu_region"><?php 
                     foreach ($glo_regions as $n => $v)
                     {
-                        if ($n == 'ge' || $n == 'vd')
+                        if ($n == 'ge' || $n == 'vd' ) //|| $n == 'fr'
                         {
                             if ($n == 'vd')
                             {
@@ -321,7 +321,7 @@ $lien_imprimer = '<a href="'.basename(__FILE__).'?'.arguments_URI($get).'&amp;st
                 <div class="spacer"></div>
                 <div style="margin-top:1em;">
                
-                <h3 style="color: #888;font-size: 1.2em;margin-top: 0.2em;"><?php echo $entete_contenu ?></h3> 
+                <h3 style="color: #888;font-size: 1.1em;line-height: 1.3em;margin-top: 0.2em;width:46%"><?php echo $entete_contenu ?></h3> 
                 
                 		<ul class="entete_contenu_navigation ">
 
@@ -331,8 +331,9 @@ $lien_imprimer = '<a href="'.basename(__FILE__).'?'.arguments_URI($get).'&amp;st
 			
 
                 <li><?php echo $lien_precedent.$lien_suivant; ?></li></ul>
+                <div class="spacer"></div>
                 </div>
-        <div class="spacer"></div>              
+                      
                 
 	</div>
 	<!-- Fin entete_contenu -->

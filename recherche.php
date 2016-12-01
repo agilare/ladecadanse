@@ -143,7 +143,7 @@ if (!empty($get['mots']))
 
 	$sql_select = "SELECT SQL_CALC_FOUND_ROWS idEvenement, idPersonne, titre, idLieu, idSalle, nomLieu, description, genre, dateEvenement,
 	flyer, prix, horaire_debut, horaire_complement, dateAjout
-	FROM evenement WHERE statut='actif' AND region='".$connector->sanitize($_SESSION['region'])."' AND ";
+	FROM evenement WHERE statut='actif' AND region IN ('".$connector->sanitize($_SESSION['region'])."', 'rf', 'hs') AND ";
 
 	$sql_select .= "( ";
 

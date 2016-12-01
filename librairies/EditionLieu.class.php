@@ -255,7 +255,7 @@ require_once($rep_librairies.'ImageDriver2.php');
 
 		$lieu->setValue('idpersonne', $_SESSION['SidPersonne']);
 
-                $loc_qua = explode("-", $this->valeurs['localite_id']);
+                $loc_qua = explode("_", $this->valeurs['localite_id']);
 		if (count($loc_qua) > 1)
                 {
                     $lieu->setValue('localite_id', $loc_qua[0]);

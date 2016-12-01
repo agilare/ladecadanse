@@ -59,8 +59,7 @@
 
 	#menu_lieux ul#selon li
 	{
-		display:block;
-		float:left;
+		display:inline-block;
 		text-align:center;
 		padding:0.4em 0;
 	}
@@ -92,8 +91,8 @@
 
 		#menu_lieux ul#tranches li
 		{	
-			display:block;
-			float:left;
+			display:inline-block;
+	
 			text-align:center;
 		}
 

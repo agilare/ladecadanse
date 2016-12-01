@@ -306,8 +306,8 @@ form#ajouter_editer #commentaire
 
 #entete_contenu h2
 {
-		width:50%;
-		font-size: 1.2em;
+    width:48%;
+    font-size: 1.2em;
 }
 
 /* agenda */
@@ -425,7 +425,7 @@ font-size:0.9em;
 
 #menu_lieux ul#tranches li a
 {
-	width:100px;
+	/*width:100px;*/
 	padding: 2px 0;
 
 }
@@ -568,3 +568,7 @@ form#ajouter_editer p.memoriser label, form#ajouter_editer p.mdp_oublie
 	padding:0;
 }
 
+#menu_lieux ul
+{
+    width: 100%;
+}

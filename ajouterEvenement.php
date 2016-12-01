@@ -432,7 +432,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 		}
                 elseif (!empty($champs['localite_id']))
                 {    
-                    $loc_qua = explode("-", $champs['localite_id']);
+                    $loc_qua = explode("_", $champs['localite_id']);
                     if (count($loc_qua) > 1)
                     {
                         $champs['localite_id'] =  $loc_qua[0];
@@ -1326,6 +1326,9 @@ echo $verif->getHtmlErreur("adresseIdentique");
 <?php
 echo $verif->getHtmlErreur("adresse");
 echo $verif->getHtmlErreur("doublonLieux");
+
+
+//echo "localite_id : ".$champs['localite_id'].", quartier : ".$champs['quartier'];
 ?>
 </p>
 <p>
@@ -1333,10 +1336,15 @@ echo $verif->getHtmlErreur("doublonLieux");
 <select name="localite_id" id="localite" class="chosen-select" style="max-width:300px;">
 <?php
 
+$sql_prov = '';
+if ($_SESSION['Sgroupe'] > 4)
+{ 
+    $sql_prov = " AND canton='ge' ";     
+}
 
 echo "<option value=\"0\">&nbsp;</option>";
 $req = $connector->query("
-SELECT id, localite, canton FROM localite WHERE id!=1 AND canton='ge' ORDER BY canton, localite "
+SELECT id, localite, canton FROM localite WHERE id!=1 ".$sql_prov." ORDER BY canton, localite "
  );
 
 
@@ -1350,7 +1358,7 @@ while ($tab = $connector->fetchArray($req))
         if (!empty($select_canton))
             echo "</optgroup>"; 
         
-        echo "<optgroup label=''>"; // ".$glo_regions[strtolower($tab['canton'])]."
+        echo "<optgroup label='".$tab['canton']."'>"; // ".$glo_regions[strtolower($tab['canton'])]."
     }
     
     
@@ -1368,10 +1376,15 @@ while ($tab = $connector->fetchArray($req))
     // Genève quartiers    
     if ($tab['id'] == 44)
     {
+        // si erreur formulaire
         $champs_quartier = '';
-        $loc_qua = explode("-", $champs['localite_id']);
+        $loc_qua = explode("_", $champs['localite_id']);
         if (!empty($loc_qua[1]))
            $champs_quartier = $loc_qua[1];
+        
+        // si chargement even existant
+        if (!empty($champs['quartier']))
+            $champs_quartier = $champs['quartier'];
         
         foreach ($glo_tab_quartiers2['ge'] as $no => $quartier)
        {  
@@ -1382,7 +1395,7 @@ while ($tab = $connector->fetchArray($req))
                        echo 'selected="selected" ';
                }	
 
-               echo " value=\"44-".$quartier."\">Genève - ".$quartier."</option>";
+               echo " value=\"44_".$quartier."\">Genève - ".$quartier."</option>";
 
        }       
 
@@ -1397,10 +1410,7 @@ while ($tab = $connector->fetchArray($req))
    {  
            echo "<option ";
 
-           if (empty($champs['idLieu']) && ($champs['region'] == $id && $champs['localite_id'] != 529) 
-                   || ( $id == 529 && $champs['localite_id'] == 529)
-                           || ((isset($_POST['localite_id']) && $id == $_POST['localite_id']))
-                  ) // $form->getValeur('quartier') 
+           if (empty($champs['idLieu']) && ($champs['region'] == $id) || ((isset($_POST['localite_id']) && $id == $_POST['localite_id']))) // $form->getValeur('quartier') 
            {
                    echo ' selected="selected" ';
            }	

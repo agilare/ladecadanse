@@ -89,12 +89,12 @@ $glo_tab_quartiers = array("geneve", "Champel", "Charmilles", "Centre", "Cornavi
 $glo_tab_quartiers2 = 
         [
             "ge" =>
-            ["Champel", "Charmilles", "Centre", "Cornavin", "Eaux-Vives", "Grottes","Jonction","Nations","Pâquis", "Petit-Saconnex","Plainpalais", "Saint-Gervais", "Saint-Jean", "Servette"]
+            ["Champel", "Charmilles", "Centre", "Cornavin", "Grottes","Jonction", "Nations", "Pâquis", "Petit-Saconnex", "Saint-Gervais", "Saint-Jean", "Servette"]
             
         ];
  
 $glo_tab_quartiers_hors_geneve = array("Nyon", "Vaud", "France", "autre");
-$glo_tab_ailleurs = [529 => "Nyon", "vd" => "Vaud", "rf" => "France", "hs" => "Autre"];
+$glo_tab_ailleurs = ["rf" => "France", "hs" => "Autre"];
 
 
 $actions = array("ajouter", "insert", "update", "editer");

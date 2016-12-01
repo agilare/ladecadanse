@@ -104,8 +104,8 @@ $aff_menulieux .= '
 
            
         $aff_menulieux .= ' 
-</ul>
-		<div class="spacer"><!-- --></div>';
+<div class="spacer"><!-- --></div></ul>
+		';
 
 			$sql_vue = "";
 
@@ -122,7 +122,7 @@ $aff_menulieux .= '
 				<li';
 				if ($get['tranche'] == "tout") { $aff_menulieux .= " class=\"ici\""; }
 				$aff_menulieux .= '><a href="'.$_SERVER['PHP_SELF'].'?'.$url_query_region_et.'statut='.$get['statut'].'&amp;vue=az'.$url_idLieu.'&amp;tranche=tout" title="Liste alphabétique">tout</a></li>
-				</ul>';
+				<div class="spacer"><!-- --></div></ul>';
 
 				$sql_vue = "AND TRIM(LEADING 'l\'' FROM (TRIM(LEADING 'les ' FROM (TRIM(LEADING 'la ' FROM (TRIM(LEADING 'le ' FROM LOWER(nom)))))))) >=  LOWER('".$de."%')";
 
@@ -169,13 +169,13 @@ $aff_menulieux .= '
 
 /*
 * Requète SQL vers table 'lieu' selon choix de listage (AK ou LZ) et pour les lieux
-* actif ou non
+* actif ou non 
 */
 
 $sql_menu_lieux = "
 SELECT idLieu, nom
 FROM lieu
-WHERE statut='".$get['statut']."'  ".$sql_vue." AND region='".$connector->sanitize($_SESSION['region'])."' 
+WHERE statut='".$get['statut']."'  ".$sql_vue." AND region IN ('".$connector->sanitize($_SESSION['region'])."', 'rf', 'hs')  
 ORDER BY TRIM(LEADING 'l\'' FROM (TRIM(LEADING 'les ' FROM (TRIM(LEADING 'la ' FROM (TRIM(LEADING 'le ' FROM lower(nom)))))))) COLLATE utf8_general_ci";
 
 $req_lieux = $connector->query($sql_menu_lieux);
