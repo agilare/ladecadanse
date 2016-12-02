@@ -35,7 +35,7 @@ else
 
             <h2 class="accueil">Aujourd’hui <a href="<?php echo $url_site ?>rss.php?type=evenements_auj" title="Flux RSS des événements du jour" style="font-size:12px;vertical-align: top;">
 			<i class="fa fa-rss fa-lg" style="color:#f5b045"></i></a></h2>
- <?php if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 1) { ?>    
+ <?php if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 4) { ?>    
             <ul class="menu_region"><?php 
                 foreach ($glo_regions as $n => $v)
                 {

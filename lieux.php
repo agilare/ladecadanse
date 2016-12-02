@@ -42,7 +42,7 @@ $pair = 0;
 
     <div id="entete_contenu">
         <h2 style="font-size:1.6em; width: 40%;">Lieux</h2>	
-         <?php if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 1) { ?>
+         <?php if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 4) { ?>
             <ul class="menu_region"><?php 
                 foreach ($glo_regions as $n => $v)
                 {
