@@ -179,7 +179,15 @@ if ($nom_page == "agenda" && isset($page_titre))
 		$page_titre .= " ".$get['genre']." du ".date_fr($get['courant'], "annee", "", "", false);
 	}
 
-	$page_titre .= " à Genève";
+        if ($_SESSION['region'] == 'vd')
+        {
+            $page_titre .= " à Lausanne";   
+        }
+        else
+        {
+            $page_titre .= " à Genève";
+        }
+	
 }
 
 

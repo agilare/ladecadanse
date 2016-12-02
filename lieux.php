@@ -8,7 +8,16 @@ $videur = new Sentry();
 
 require_once($rep_librairies.'CollectionDescription.class.php');
 
-$page_titre = "Lieux de sorties à Genève : bistrots, salles, bars, restaurants, cinémas,
+if ($_SESSION['region'] == 'vd')
+ {
+     $page_titre_region = " à Lausanne";   
+ }
+ else
+ {
+     $page_titre_region = " à Genève";
+ }
+
+$page_titre = "Lieux de sorties ".$page_titre_region." : bistrots, salles, bars, restaurants, cinémas,
  théâtres, galeries, boutiques, musées, ...";
 $page_description = "Dernières descriptions de lieux à Genève";
 $extra_css = array("menu_lieux");
