@@ -318,7 +318,7 @@ else if ($get['type'] == "lieux_descriptions")
 
 	$der_dateAjout = time();
 
-	$req = $connector->query("SELECT * FROM descriptionlieu, lieu WHERE descriptionlieu.idLieu=lieu.idLieu AND type='description' AND region='".$connector->sanitize($_SESSION['region'])."' ORDER BY dateAjout DESC");
+	$req = $connector->query("SELECT * FROM descriptionlieu, lieu WHERE descriptionlieu.idLieu=lieu.idLieu AND type='description' AND region='".$connector->sanitize($_SESSION['region'])."' ORDER BY descriptionlieu.dateAjout DESC");
 
 
 	while($tab = $connector->fetchArray($req))
