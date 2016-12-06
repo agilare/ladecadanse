@@ -71,8 +71,8 @@ require_once($rep_librairies.'ImageDriver2.php');
         if (isset($post['organisateurs']))
                 $this->organisateurs = $post['organisateurs'];
 
-
-        $this->valeurs['categorie'] = $post['categorie'];
+        if (!empty($post['categorie']))
+            $this->valeurs['categorie'] = $post['categorie'];
         //TEST
         //echo "post:";
         //printr($post);
@@ -160,17 +160,20 @@ require_once($rep_librairies.'ImageDriver2.php');
 		/*
 		 * Catégorie (salle, cinéma, bistrot, etc.)
 		 */
-		if ($this->valeurs['categorie'] != '')
+		if (!empty($this->valeurs['categorie']))
 		{
-			foreach($this->valeurs['categorie'] as $cat)
-			{
-				if (!array_key_exists($cat, $glo_categories_lieux))
-				{
-					$verif->setErreur('categorie', "La catégorie ".$cat." n'est pas valable");
-				}
-			}
-
+                    foreach($this->valeurs['categorie'] as $cat)
+                    {
+                        if (!array_key_exists($cat, $glo_categories_lieux))
+                        {
+                                $verif->setErreur('categorie', "La catégorie ".$cat." n'est pas valable");
+                        }
+                    }
 		}
+                else
+                {
+                    $verif->setErreur('categorie', "Veuillez choisir au moins une catégorie");
+                }
 
 		$verif->validerFichier($this->fichiers['logo'], "logo", $mimes_images_acceptes, 0);
 		$verif->validerFichier($this->fichiers['photo1'], "photo1", $mimes_images_acceptes, 0);
