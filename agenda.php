@@ -298,26 +298,7 @@ $lien_imprimer = '<a href="'.basename(__FILE__).'?'.arguments_URI($get).'&amp;st
 
 		<h2 style="font-size:1.6em">Agenda</h2>	
                 
-                <?php if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 4) { ?>
-                <ul class="menu_region"><?php 
-                    foreach ($glo_regions as $n => $v)
-                    {
-                        if ($n == 'ge' || $n == 'vd' ) //|| $n == 'fr'
-                        {
-                            if ($n == 'vd')
-                            {
-                                $v = 'Lausanne';
-                            }                            
-                            
-                        $ici = '';
-                        if ($n == $_SESSION['region'])
-                            $ici = ' class="ici" ';
-                    ?><li><a href="?region=<?php echo $n; ?>" <?php echo $ici; ?>><?php echo $v; ?></a></li><?php
-                        }
-                    }
-                    ?></ul>
-		
-                <?php } ?>
+                    <?php getMenuRegions($glo_regions); ?>
                 <div class="spacer"></div>
                 <div style="margin-top:1em;">
                

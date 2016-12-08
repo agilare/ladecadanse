@@ -534,3 +534,35 @@ function get_adresse($region, $localite, $quartier, $adr)
     return $adresse;
     
 }
+
+function getMenuRegions($glo_regions)
+{
+    
+   
+$html = '';
+ob_start();
+if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 4)
+    {    
+?>
+            <ul class="menu_region">
+                    <?php 
+                foreach ($glo_regions as $n => $v)
+                {
+                    if ($n == 'ge' || $n == 'vd' ) //|| $n == 'fr'
+                    {
+                        if ($n == 'vd')
+                        {
+                            $v = 'Lausanne';
+                        }                        
+                        
+                    $ici = '';
+                    if ($n == $_SESSION['region'])
+                        $ici = ' class="ici" ';
+                ?><li><a href="?region=<?php echo $n; ?>" <?php echo $ici; ?>><?php echo $v; ?></a></li><?php
+                    }
+                }
+                ?></ul>
+   <?php         
+ } 
+ return ob_get_contents();
+}

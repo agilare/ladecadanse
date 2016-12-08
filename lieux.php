@@ -51,25 +51,7 @@ $pair = 0;
 
     <div id="entete_contenu">
         <h2 style="font-size:1.6em; width: 40%;">Lieux</h2>	
-         <?php if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 4) { ?>
-            <ul class="menu_region"><?php 
-                foreach ($glo_regions as $n => $v)
-                {
-
-                    if ($n == 'ge' || $n == 'vd')
-                    {
-                        if ($n == 'vd')
-                       {
-                           $v = 'Lausanne';
-                       }                       
-                        
-                    $ici = '';
-                    if ($n == $_SESSION['region'])
-                        $ici = ' class="ici" ';
-                ?><li><a href="?region=<?php echo $n; ?>" <?php echo $ici; ?>><?php echo $v; ?></a></li><?php
-                    }
-                }
-                ?></ul><?php } ?><div class="spacer"></div><p class="mobile" id="btn_listelieux">
+  <?php getMenuRegions($glo_regions); ?><div class="spacer"></div><p class="mobile" id="btn_listelieux">
 	<button href="#"><i class="fa fa-list fa-lg"></i>&nbsp;Liste des lieux</button>
 </p>
     <div style="margin-top:1em;">

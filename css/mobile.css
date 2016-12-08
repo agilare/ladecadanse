@@ -207,6 +207,17 @@ display:none;
 
 }
 
+#entete_contenu, #prochains_evenements, #evenements, #dernieres_descriptions, div#fiche 
+{
+    width: 96%;
+}
+
+form#ajouter_editer 
+{
+    margin-left: 0.1em;
+    margin-right: 0.1em;
+}
+
 .rappel_date
 {
 	margin: 0em 0 0em;
