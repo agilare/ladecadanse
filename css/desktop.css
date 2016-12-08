@@ -421,3 +421,9 @@ form#ajouter_editer textarea, form#ajouter_editer #ref  {
 {
     display:none !important;
 }
+
+#entete_contenu .menu_region
+{
+    
+    font-size: 1.25em;
+}

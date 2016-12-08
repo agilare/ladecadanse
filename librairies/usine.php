@@ -543,18 +543,7 @@ $html = '';
 ob_start();
 if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 4)
     {    
-    
-    print($record->city->name . "\n"); // 'Minneapolis'
-
-    print($record->postal->code . "\n"); // '55455'
-
-    print($record->location->latitude . "\n"); // 44.9733
-    print($record->location->longitude . "\n"); // -93.2323
-    print($record->mostSpecificSubdivision->name . "\n"); // 'Minnesota'
-    print($record->mostSpecificSubdivision->isoCode . "\n"); // 'MN'  
-    print($record->country->name . "\n"); // 'United States'
-
- 
+   
     
 ?>
             <ul class="menu_region">

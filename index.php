@@ -47,7 +47,7 @@ else
 
 	<div class="spacer"><!-- --></div>
 	<?php
-	if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 4)
+	if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 4 && !empty($user_region_detected))
     {    
 		echo "<p style='margin-left:1.4em;'>";
 		print($record->postal->code." ");print($record->city->name . "<br>");
