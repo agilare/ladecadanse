@@ -178,6 +178,8 @@ $glo_auj = date("Y-m-d");
 $auj = date("Y-m-d");
 $glo_auj_6h = date("Y-m-d", time() - 14400);
 
+require 'vendor/autoload.php';
+
 if (is_file($rep_librairies.'DbConnector.php'))
 {
 	require_once($rep_librairies.'DbConnector.php');
@@ -195,6 +197,28 @@ require_once($rep_librairies.'dates.php');
 require_once($rep_librairies.'presentation.php');
 
 session_start();
+
+use GeoIp2\Database\Reader;
+
+$remote_addr = filter_input(INPUT_SERVER, 'REMOTE_ADDR', FILTER_SANITIZE_STRING);
+
+$record = null;
+if (strlen($remote_addr) > 5)
+{
+    
+// This creates the Reader object, which should be reused across
+// lookups.
+$reader = new Reader($rep_geolite2_db);
+
+// Replace "city" with the appropriate method for your database, e.g.,
+// "country".
+$record = $reader->city();
+
+
+
+
+}
+
 
 //printr($_SESSION);
 if (empty($_SESSION['region']))
