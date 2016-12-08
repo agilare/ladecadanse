@@ -212,10 +212,11 @@ if (strlen($remote_addr) > 5)
 }
 
 
-//printr($_SESSION);
+// par défaut
 if (empty($_SESSION['region']))
     $_SESSION['region'] = 'ge';
 
+// à l'aide du cookie ou de l'IP
 if (!empty($_COOKIE['ladecadanse_region']))
 {
     $_SESSION['region'] = $_COOKIE['ladecadanse_region'];
