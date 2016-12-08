@@ -202,21 +202,13 @@ use GeoIp2\Database\Reader;
 
 $remote_addr = filter_input(INPUT_SERVER, 'REMOTE_ADDR', FILTER_SANITIZE_STRING);
 
-$record = null;
+$user_region_detected = null;
 if (strlen($remote_addr) > 5)
-{
-    
-// This creates the Reader object, which should be reused across
-// lookups.
-$reader = new Reader($rep_geolite2_db);
+{   
+    $reader = new Reader($rep_geolite2_db);
 
-// Replace "city" with the appropriate method for your database, e.g.,
-// "country".
-$record = $reader->city();
-
-
-
-
+    $record = $reader->city($remote_addr);
+    $user_region_detected = $record->mostSpecificSubdivision->isoCode;
 }
 
 
@@ -228,7 +220,10 @@ if (!empty($_COOKIE['ladecadanse_region']))
 {
     $_SESSION['region'] = $_COOKIE['ladecadanse_region'];
 }
-    
+elseif ($user_region_detected == 'VD')
+{
+    $_SESSION['region'] = strtolower($user_region_detected);
+}    
 
 $get['region'] = filter_input(INPUT_GET, "region", FILTER_SANITIZE_STRING);
 
