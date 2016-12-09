@@ -555,8 +555,12 @@ if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 4)
                         if ($n == 'vd')
                         {
                             $v = 'Lausanne';
-                        }                        
+                        }  
                         
+                        if ($n == 'fr')
+                        {
+                            $v = 'Fr';
+                        }                          
                     $ici = '';
                     if ($n == $_SESSION['region'])
                         $ici = ' class="ici" ';
