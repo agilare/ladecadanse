@@ -700,7 +700,7 @@ table tr td.small
 #entete_contenu .menu_region
 {
     float:right;
-
+    margin-top: -0.2em;
     font-size:1.1em;
  text-align: right;
     width: auto;
