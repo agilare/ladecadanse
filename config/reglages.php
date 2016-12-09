@@ -178,7 +178,7 @@ $glo_auj = date("Y-m-d");
 $auj = date("Y-m-d");
 $glo_auj_6h = date("Y-m-d", time() - 14400);
 
-require 'vendor/autoload.php';
+require $rep_absolu.'vendor/autoload.php';
 
 if (is_file($rep_librairies.'DbConnector.php'))
 {
