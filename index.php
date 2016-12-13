@@ -46,17 +46,7 @@ else
 	</div>
 
 	<div class="spacer"><!-- --></div>
-	<?php
-	if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 4 && !empty($user_region_detected))
-    {    
-		echo "<p style='margin-left:1.4em;'>";
-		print($record->postal->code." ");print($record->city->name . "<br>");
-		print($record->mostSpecificSubdivision->name . "\n"); // 'Minnesota'
-		print($record->mostSpecificSubdivision->isoCode . "<br>"); // 'MN'  
-		print($record->country->name . "\n"); // 'United States'
-		echo "</p>";	
-	}	
-	?>
+
 	<div id="prochains_evenements" >
 
 

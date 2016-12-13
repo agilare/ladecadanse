@@ -221,10 +221,12 @@ if (!empty($_COOKIE['ladecadanse_region']))
 {
     $_SESSION['region'] = $_COOKIE['ladecadanse_region'];
 }
+/*
 elseif ($user_region_detected == 'VD')
 {
     $_SESSION['region'] = strtolower($user_region_detected);
-}    
+} 
+ */   
 
 $get['region'] = filter_input(INPUT_GET, "region", FILTER_SANITIZE_STRING);
 
