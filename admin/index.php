@@ -717,7 +717,7 @@ while($tab = $connector->fetchArray($req))
 <?php
 
 $sql_req = "SELECT descriptionlieu.idLieu AS idLieu, descriptionlieu.idPersonne, descriptionlieu.dateAjout, contenu, type
-FROM descriptionlieu, lieu WHERE descriptionlieu.idLieu=lieu.idLieu ".$sql_region." AND descriptionlieu.dateAjout >= DATE_SUB(CURDATE(), INTERVAL 3 DAY)  ORDER BY descriptionlieu.dateAjout DESC";
+FROM descriptionlieu, lieu WHERE descriptionlieu.idLieu=lieu.idLieu ".$sql_region."  ORDER BY descriptionlieu.dateAjout DESC LIMIT 5";
 
 //echo $sql_req;
 $req_getDes = $connector->query($sql_req);
