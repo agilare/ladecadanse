@@ -211,7 +211,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 	 */
 	if ($champs['groupe'] == 12 && (!empty($champs['affiliation']) || !empty($champs['lieu'])))
 	{
-		$verif->setErreur("affiliation", "Le choix d'une affiliation est réservéee aux organisateurs");
+		$verif->setErreur("affiliation", "Le choix d'une affiliation est réservéee aux acteurs culturels");
 	}
 
 	//TEST
@@ -450,7 +450,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 				
 				$compte_organisateur = "";
 				if (isset($champs['organisateurs']) && count($champs['organisateurs']) > 0)
-					$compte_organisateur = " en tant qu'organisateur";
+					$compte_organisateur = " en tant qu'acteur culturel";
 				
 				msgOk("<strong>Votre compte".$compte_organisateur." a été créé</strong>; vous pouvez maintenant vous <a href=\"".$url_site."login.php\">connecter</a> avec l'identifiant et le mot de passe que vous venez de saisir.
 				<br />Un e-mail de confirmation récapitulant vos données d'accès vous a été envoyé à l'adresse : ".$tab_pers['email']);
@@ -568,7 +568,7 @@ echo $verif->getHtmlErreur("email_identique");?>
 		</li>
 
 		<li class="listehoriz" style="float: left;display:block;">
-			<label for="inscription_organisateur" style="float:left"><strong>Organisateur</strong><br>Mêmes droits qu'un membre + possibilité d'ajouter des événements
+			<label for="inscription_organisateur" style="float:left"><strong>Acteur culturel</strong><br>Mêmes droits qu'un membre + possibilité d'ajouter des événements
 			</label><input type="radio" name="groupe" id="inscription_organisateur" value="8" 
 			<?php if ($champs['groupe'] == 8) { echo ' checked'; } ?>
 			 />
@@ -582,7 +582,7 @@ echo $verif->getHtmlErreur("email_identique");?>
 	<fieldset class="affiliation" id="inscription_references" >
 
 		<legend>Affiliation</legend>
-		<div class="guide_affiliation">Si vous avez choisi <em>Organisateur</em>, veuillez indiquer à quel groupe, assoc, etc. existant vous appartenez.</div>
+		<div class="guide_affiliation">Si vous avez choisi <em>Acteur culturel</em>, veuillez indiquer à quel groupe, assoc, etc. existant vous appartenez.</div>
 
 
 
