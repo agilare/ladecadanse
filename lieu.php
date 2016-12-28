@@ -842,7 +842,7 @@ title="Flux RSS des prochains événements"><i class="fa fa-rss fa-lg" style="co
 	
 		<tr class="<?php if ($date_debut == $even->getValue('dateEvenement')) { echo "ici"; } ?> vevent">
 
-			<td class="dtstart" title="<?php echo $even->getValue('dateEvenement').$vcard_starttime; ?>"><?php echo date2nomJour($even->getValue('dateEvenement')); echo mb_substr($even->getValue('horaire_debut'), 11, 5) ?>
+			<td class="dtstart" title="<?php echo $even->getValue('dateEvenement').$vcard_starttime; ?>"><?php echo date2nomJour($even->getValue('dateEvenement')); ?>
 			
 			
 			</td>
