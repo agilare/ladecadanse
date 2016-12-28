@@ -783,14 +783,17 @@ else
 			
 
 		}
-		
+                $vcard_starttime = '';
+                if (mb_substr($listeEven['horaire_debut'], 11, 5) != '06:00')
+                    $vcard_starttime = "T".mb_substr($listeEven['horaire_debut'], 11, 5).":00";	
+                
 		$ajouter_calendrier = '<li>'.$icone['ajouter_calendrier'].'</li>';
 
 ?>
 
 		<div class="evenement vevent">
 			<div class="dtstart">
-			<span class="value-title" title="<?php echo $listeEven['dateEvenement']; ?>T<?php echo $listeEven['dateEvenement']; ?>:00"></span>
+			<span class="value-title" title="<?php echo $listeEven['dateEvenement'].$vcard_starttime; ?>"></span>
 			
 			</div>		
 			<div class="titre">

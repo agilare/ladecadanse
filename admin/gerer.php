@@ -947,7 +947,7 @@ echo '<div class="spacer"></div>';
 		$nom_groupe = $tab_pers['groupe'];
 		if ($nom_groupe == 8)
 		{
-			$nom_groupe = 'Organisateur';
+			$nom_groupe = 'Acteur culturel';
 		}
 		else if ($nom_groupe == 12)
 		{
@@ -957,7 +957,11 @@ echo '<div class="spacer"></div>';
 		{
 			$nom_groupe = "Rédacteur";
 		}	
-		
+		else if ($nom_groupe == 4)
+		{
+			$nom_groupe = "Admin";
+		}	
+				
 		
 		echo "<tr";
 

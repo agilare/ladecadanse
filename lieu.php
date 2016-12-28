@@ -834,19 +834,21 @@ title="Flux RSS des prochains événements"><i class="fa fa-rss fa-lg" style="co
 			$salle = $tab_salle['nom'];
 		}
 
-
-
+                $vcard_starttime = '';
+                if (mb_substr($even->getValue('horaire_debut'), 11, 5) != '06:00')
+                    $vcard_starttime = "T".mb_substr($even->getValue('horaire_debut'), 11, 5).":00";
+                
 	?>
 	
 		<tr class="<?php if ($date_debut == $even->getValue('dateEvenement')) { echo "ici"; } ?> vevent">
 
-			<td class="dtstart"><?php echo date2nomJour($even->getValue('dateEvenement')) ?>
-			<span class="value-title" title="<?php echo $even->getValue('dateEvenement'); ?>T<?php echo mb_substr($even->getValue('horaire_debut'), 11, 5); ?>:00"></span>
+			<td class="dtstart" title="<?php echo $even->getValue('dateEvenement').$vcard_starttime; ?>"><?php echo date2nomJour($even->getValue('dateEvenement')); echo mb_substr($even->getValue('horaire_debut'), 11, 5) ?>
+			
 			
 			</td>
  
-			<td class="dtstart"><?php echo date2jour($even->getValue('dateEvenement'));  ?>
-			<span class="value-title" title="<?php echo $even->getValue('dateEvenement'); ?>T<?php echo mb_substr($even->getValue('horaire_debut'), 11, 5); ?>-<?php echo mb_substr($even->getValue('horaire_fin'), 11,5); ?>"></span>
+			<td><?php echo date2jour($even->getValue('dateEvenement'));  ?>
+
 			</td>
 
 			<td class="flyer photo">
