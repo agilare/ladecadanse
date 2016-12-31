@@ -115,11 +115,32 @@ if ($lieu->getValue('logo') !='')
 	"<img src=\"".$IMGlieux."s_".$lieu->getValue('logo')."?".filemtime($rep_images_lieux."s_".$lieu->getValue('logo'))."\" alt=\"Logo\" />");
 }
  */
-$lieu_ancien = '';
+$lieu_status = '';
 if ($lieu->getValue('statut') == 'ancien')
 {
-	$lieu_ancien = '<div class="spacer"><!-- --></div>
+	$lieu_status = '<div class="spacer"><!-- --></div>
 <p class="info">Ce lieu n\'existe plus</p>';
+}
+elseif ($lieu->getValue('statut') == 'inactif')
+{
+	// le staff, ainsi que l'auteur et les personnes liées par organisateur peuvent voir l'even dépublié
+	if (
+	isset($_SESSION['Sgroupe']) && 	
+	(
+	$_SESSION['Sgroupe'] <= 6	
+	)
+		
+	)
+	{
+            $lieu_status = '<div class="spacer"><!-- --></div>
+<p class="info">Inactif</p>';
+	}
+	else
+	{
+            header("HTTP/1.1 404 Not Found");
+            echo file_get_contents("404.php");
+            exit;
+	}
 }
 
 $menu_actions = '';
@@ -218,7 +239,7 @@ if ($lieu->getValue('logo'))
 		$h2_style = "width:48%";
 	?>
 	<h2 class="fn org" style="<?php echo $h2_style; ?>"><?php echo $lieu->getHtmlValue('nom'); ?></h2>
-<?php	echo $lieu_ancien ?>
+<?php	echo $lieu_status ?>
 	<div class="spacer"></div>
 	</div>
 

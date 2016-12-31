@@ -38,26 +38,11 @@ Le site est mis à jour quotidiennement par le webmaster et les contributeurs.</
 	<div class="rubrique">
 	<h3>Staff</h3>
 	<dl>
-		<dt>Webmaster</dt>
-		<dd>
-			<dd>Michel <a href="http://www.profession-web.ch/candidat/37/gaudry_michel/">
-  <img src="http://www.profession-web.ch/img/liens/pw_link4.gif" alt="Mon profil">
-</a></li>
-		</dd>
+		<dt>Webmasters</dt>
 
-	
-<?php
-/*
-	$sql = "SELECT pseudo FROM personne WHERE statut='actif' AND groupe=6 ";
-
-	$req = $connector->query($sql);
-
-	while ($tab = $connector->fetchArray($req))
-	{
-		echo '<dd>'.$tab['pseudo'].'</dd>';
-	}
-	*/
-?>
+			<dd>Michel</dd>
+			<dd>Ruffola</dd>
+			<dd>Guanac</dd>
 	
 		<dt>Participer</dt>
 			<ul>
@@ -65,10 +50,10 @@ Le site est mis à jour quotidiennement par le webmaster et les contributeurs.</
 		<li>ou écrivez-nous via le <a href="<?php echo $url_site ?>contacteznous.php">formulaire de contact</a>.</li>
 		<li>ou <a href="<?php echo $url_site ?>faireUnDon.php">faites un don</a>.</li>
 			</ul>
-	<h3>Divers</h3>
-		<dt>Merci à</dt>
-			<dd><a href="https://www.darksite.ch/" title="Darksite, portail culturel et indépendant">Darksite</a> : hébergement</dd>
-		</ul>
+	<h3>Hébergement</h3>
+
+			<dd><a href="https://www.darksite.ch/" >Darksite</a> : portail culturel et indépendant</dd>
+	
 	</dl>
 	
 	</div>

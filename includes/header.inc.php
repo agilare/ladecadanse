@@ -379,7 +379,7 @@ if (!isset($_SESSION['SidPersonne']))
 	?>
     
     <li <?php echo $ici; ?>><a href="<?php echo $url_site; ?>inscription.php" title="Créer un compte"><strong>Inscription</strong></a></li>
-<li <?php echo $ici_login; ?>><a href="<?php echo $url_site; ?>login.php" title="Se connecter au site">Connexion</a></li>
+<li <?php echo $ici_login; ?> rel="nofollow"><a href="<?php echo $url_site; ?>login.php" title="Se connecter au site">Connexion</a></li>
 
 <?php
 }
