@@ -246,7 +246,7 @@ require_once($rep_librairies.'ImageDriver2.php');
 
     function enregistrer()
     {
-                global $rep_images_lieux;
+        global $rep_images_lieux;
 		global $rep_templates;
 		global $rep_fichiers_lieu;
 		global $rep_images_lieux_galeries;
@@ -258,39 +258,41 @@ require_once($rep_librairies.'ImageDriver2.php');
 
 		$lieu->setValue('idpersonne', $_SESSION['SidPersonne']);
 
-                $loc_qua = explode("_", $this->valeurs['localite_id']);
-		if (count($loc_qua) > 1)
-                {
-                    $lieu->setValue('localite_id', $loc_qua[0]);
-                    $lieu->setValue('quartier', $loc_qua[1]);
-                }
-                else
-                {
-                    $lieu->setValue('quartier', ''); 
-                    
-                    if ($this->valeurs['localite_id'] == 'rf' || $this->valeurs['localite_id'] == 'hs')
-                    {
-                        $lieu->setValue('region', $this->valeurs['localite_id']);
-                        $lieu->setValue('localite_id', 1); // autre
-                    }
-                    elseif ($this->valeurs['localite_id'] == 529 ) // Nyon
-                    {
-                        $lieu->setValue('region', 'ge');
-                        $lieu->setValue('localite_id', 529);                       
-                        
-                    } 
-                    else
-                    {
-                            $sql_lieu = "SELECT canton FROM localite WHERE id=".$this->connector->sanitize($this->valeurs['localite_id']);
-                            $req_lieu = $this->connector->query($sql_lieu);
-                            $tab_lieu = $this->connector->fetchArray($req_lieu);    
-                            $champs['region'] = $tab_lieu['canton'];                        
-                        
-                            $lieu->setValue('region', $tab_lieu['canton']);
-                    }
-                }
-                
-                $lieu->setValue('idpersonne', $_SESSION['SidPersonne']);
+        $loc_qua = explode("_", $this->valeurs['localite_id']);
+        
+        if (count($loc_qua) > 1)
+        {
+            $lieu->setValue('localite_id', $loc_qua[0]);
+            $lieu->setValue('quartier', $loc_qua[1]);
+            $lieu->setValue('region', 'ge');
+        }
+        else
+        {
+            $lieu->setValue('quartier', ''); 
+
+            if ($this->valeurs['localite_id'] == 'rf' || $this->valeurs['localite_id'] == 'hs')
+            {
+                $lieu->setValue('region', $this->valeurs['localite_id']);
+                $lieu->setValue('localite_id', 1); // autre
+            }
+            elseif ($this->valeurs['localite_id'] == 529 ) // Nyon
+            {
+                $lieu->setValue('region', 'ge');
+                $lieu->setValue('localite_id', 529);                       
+
+            } 
+            else
+            {
+                    $sql_lieu = "SELECT canton FROM localite WHERE id=".$this->connector->sanitize($this->valeurs['localite_id']);
+                    $req_lieu = $this->connector->query($sql_lieu);
+                    $tab_lieu = $this->connector->fetchArray($req_lieu);    
+                    $champs['region'] = $tab_lieu['canton'];                        
+
+                    $lieu->setValue('region', $tab_lieu['canton']);
+            }
+        }
+
+        $lieu->setValue('idpersonne', $_SESSION['SidPersonne']);
                 
 		
 		if (count($this->valeurs['categorie']) > 0)
