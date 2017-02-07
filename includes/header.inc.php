@@ -290,10 +290,26 @@ $tab_de = $connector->fetchArray($req_de);
 	<link rel="shortcut icon" href="<?php echo $url_images ?>interface/favicone.gif" />
     
     
- <!--[if lt IE 9]>
-<script src="https://css3-mediaqueries-js.googlecode.com/svn/trunk/css3-mediaqueries.js"></script>
-<![endif]-->    
-    
+    <!--[if lt IE 9]>
+   <script src="https://css3-mediaqueries-js.googlecode.com/svn/trunk/css3-mediaqueries.js"></script>
+   <![endif]-->    
+
+    <!-- Piwik -->
+    <script type="text/javascript">
+      var _paq = _paq || [];
+      // tracker methods like "setCustomDimension" should be called before "trackPageView"
+      _paq.push(['trackPageView']);
+      _paq.push(['enableLinkTracking']);
+      (function() {
+        var u="//ladecadanse.darksite.ch/piwik/";
+        _paq.push(['setTrackerUrl', u+'piwik.php']);
+        _paq.push(['setSiteId', '1']);
+        var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+        g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+      })();
+    </script>
+    <!-- End Piwik Code --> 
+ 
 </head>
 
 <body>
