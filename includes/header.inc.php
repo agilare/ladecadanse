@@ -196,8 +196,6 @@ if ($nom_page == "agenda" && isset($page_titre))
 <!doctype html>
 <html lang="fr">
 <head>
-	<meta http-equiv="Content-language" content="fr" />
-	<!--<meta http-equiv="Content-type" content="text/html; charset=iso-8859-1" />-->
 	    <meta charset="utf-8" />
 	<?php
 	/* les robots doivent ignorer les événements passés */

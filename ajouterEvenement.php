@@ -1358,7 +1358,7 @@ while ($tab = $connector->fetchArray($req))
         if (!empty($select_canton))
             echo "</optgroup>"; 
         
-        echo "<optgroup label='".$tab['canton']."'>"; // ".$glo_regions[strtolower($tab['canton'])]."
+        echo "<optgroup label='".strtoupper($tab['canton'])."'>"; // ".$glo_regions[strtolower($tab['canton'])]."
     }
     
     
