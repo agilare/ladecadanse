@@ -6,14 +6,10 @@ require_once("config/reglages.php");
 require_once($rep_librairies."Sentry.php");
 $videur = new Sentry();
 
-
+$page_titre_region = 'Genève';
 if ($_SESSION['region'] == 'vd')
 {
-    $page_titre_region .= "Lausanne";   
-}
-else
-{
-    $page_titre_region .= "Genève";
+    $page_titre_region = "Lausanne";   
 }
 
 $nom_page = "index";
@@ -75,11 +71,15 @@ else
 $tab_auj = explode("-", $get['auj']);
 $auj2 = date("Y-m-d", mktime(0, 0, 0, $tab_auj[1], $tab_auj[2], $tab_auj[0]));
 
+$sql_rf = "";
+if ($_SESSION['region'] == 'ge')
+    $sql_rf = " 'rf', ";
+ 
 $req_even = $connector->query("SELECT idEvenement, genre, idLieu, idSalle, nomLieu, adresse, quartier, localite.localite AS localite, urlLieu, statut,
  titre, idPersonne, dateEvenement, URL1, ref, flyer, image, description, horaire_debut, horaire_fin,
  horaire_complement, prix, prelocations
  FROM evenement, localite
- WHERE evenement.localite_id=localite.id AND dateEvenement LIKE '".$auj2."%' AND statut!='inactif' AND region IN ('".$connector->sanitize($_SESSION['region'])."', 'rf', 'hs')   
+ WHERE evenement.localite_id=localite.id AND dateEvenement LIKE '".$auj2."%' AND statut!='inactif' AND region IN ('".$connector->sanitize($_SESSION['region'])."', ".$sql_rf." 'hs')   
  ORDER BY CASE `genre`
         WHEN 'fête' THEN 1
         WHEN 'cinéma' THEN 2
@@ -184,8 +184,11 @@ while ($tab_even = $connector->fetchArray($req_even))
         
         if ($i > 1 && ($i % 2 != 0))
         {
+            $region = $glo_regions[$_SESSION['region']];
+            if ($_SESSION['region'] == 'vd')
+                $region = "Lausanne";
         ?>
-                <p class="rappel_date">Aujourd’hui, <?php echo mb_strtolower($genre_fr); // ",".date_fr($get['auj']); ?></p>
+                <p class="rappel_date"><?php echo $region; ?>, aujourd’hui, <?php echo mb_strtolower($genre_fr); // ",".date_fr($get['auj']); ?></p>
 
         <?php	
         }
@@ -484,9 +487,13 @@ if (0) //($videur->checkGroup(8) && !isset($_COOKIE['msg_orga_benevole'])) // is
 
 
 <?php
+$sql_rf = "";
+if ($_SESSION['region'] == 'ge')
+    $sql_rf = " 'rf', ";
+
 $req_dern_even = $connector->query("
 SELECT idEvenement, titre, dateEvenement, dateAjout, nomLieu, idLieu, idSalle, flyer, image, statut
-FROM evenement WHERE region IN ('".$connector->sanitize($_SESSION['region'])."', 'rf', 'hs') AND statut!='inactif' ORDER BY dateAjout DESC LIMIT 0, 6
+FROM evenement WHERE region IN ('".$connector->sanitize($_SESSION['region'])."', ".$sql_rf." 'hs') AND statut!='inactif' ORDER BY dateAjout DESC LIMIT 0, 6
 ");
 
 $date_ajout_courante = "";

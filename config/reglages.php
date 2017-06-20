@@ -198,18 +198,18 @@ require_once($rep_librairies.'presentation.php');
 
 session_start();
 
-use GeoIp2\Database\Reader;
+//use GeoIp2\Database\Reader;
 
 $remote_addr = filter_input(INPUT_SERVER, 'REMOTE_ADDR', FILTER_SANITIZE_STRING);
 
-$user_region_detected = null;
-if (strlen($remote_addr) > 5)
-{   
-    $reader = new Reader($rep_geolite2_db);
-
-    $record = $reader->city($remote_addr);
-    $user_region_detected = $record->mostSpecificSubdivision->isoCode;
-}
+//$user_region_detected = null;
+//if (strlen($remote_addr) > 5)
+//{   
+//    $reader = new Reader($rep_geolite2_db);
+//
+//    $record = $reader->city($remote_addr);
+//    $user_region_detected = $record->mostSpecificSubdivision->isoCode;
+//}
 
 
 // par défaut

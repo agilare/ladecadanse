@@ -411,10 +411,12 @@ iCalendar</a></li>
 						if ($imgInfo[0] >= 140) { /* $imgLien .= "width=\"160\" "; */  $img_width = 160; }
 						/* $imgLien .= " alt=\"Flyer\" />";
 						echo lien_popup($IMGeven.$even->getValue('flyer')."?".filemtime($rep_images_even.$even->getValue('flyer')), "Flyer", $imgInfo[0]+20, $imgInfo[1]+20, $imgLien); */
+                        
+                        $file_time = @filemtime($rep_images_even.$even->getValue('flyer'));
 						?>
-							<a href="<?php echo $IMGeven.$even->getValue('flyer')."?".filemtime($rep_images_even.$even->getValue('flyer')) ?>" class="magnific-popup">
+							<a href="<?php echo $IMGeven.$even->getValue('flyer')."?".$file_time ?>" class="magnific-popup">
 							
-								<img src="<?php echo $IMGeven.$even->getValue('flyer')."?".filemtime($rep_images_even.$even->getValue('flyer')) ?>" alt="Flyer de cet événement" width="<?php echo $img_width; ?>" />
+								<img src="<?php echo $IMGeven.$even->getValue('flyer')."?".$file_time ?>" alt="Flyer de cet événement" width="<?php echo $img_width; ?>" />
 							</a>						
 						
 						<?php

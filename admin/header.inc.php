@@ -4,7 +4,6 @@ $tab_pages_dc = array("/agenda.php", "/evenement.php");
 preg_match(PREG_PATTERN_NOMPAGE, $_SERVER['PHP_SELF'], $matches);
 $tab_nom_page = explode("/", $matches[1]);
 $nom_page = end($tab_nom_page);
-
 /* GENRE */
 $get['genre'] = "";
 if (!empty($_GET['genre']))
@@ -350,7 +349,5 @@ foreach ($menu_principal as $nom => $lien)
 <div class="spacer"><!-- --></div>
 
 <!-- Début Conteneur -->
-<div id="conteneur" style="padding-left:5px">
-
-
+<div id="conteneur" style="padding-left:5px">kokoko
 

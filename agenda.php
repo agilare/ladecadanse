@@ -258,12 +258,17 @@ else
 	$get['page'] = 1;
 }
 
-$sql_region = " region IN ('".$connector->sanitize($_SESSION['region'])."', 'rf', 'hs') ";
+$sql_rf = "";
+if ($_SESSION['region'] == 'ge')
+    $sql_rf = " 'rf', ";
+
+$sql_region = " region IN ('".$connector->sanitize($_SESSION['region'])."', ".$sql_rf." 'hs') ";
 
 
 $get['nblignes'] = 40;
 
 $limite = " LIMIT ".($get['page'] - 1) * $get['nblignes'].",".$get['nblignes'];
+
 
 $sql_even = "SELECT idEvenement, idLieu, idSalle, statut, genre, nomLieu, adresse, quartier, localite.localite AS localite,
  titre, idPersonne, dateEvenement, URL1, flyer, image, description, horaire_complement, horaire_debut, horaire_fin, prix, prelocations
@@ -608,7 +613,11 @@ else
 		if ($i != 0 && ($i % 2 != 0 && $get['sem'] == 0) ||
 		($get['sem'] == 1 && $nb_even_jour % 2 == 0 && $dateCourante == $listeEven['dateEvenement']))
 		{
-			echo "<h5>".ucfirst(date_fr($dateCourante));
+            $region = $glo_regions[$_SESSION['region']];
+            if ($_SESSION['region'] == 'vd')
+                $region = "Lausanne";
+            
+			echo "<h5>".$region.", ".date_fr($dateCourante);
 			echo "</h5><div class=\"spacer\"></div>";
 		}
 

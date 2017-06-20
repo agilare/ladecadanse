@@ -171,11 +171,14 @@ $aff_menulieux .= '
 * Requète SQL vers table 'lieu' selon choix de listage (AK ou LZ) et pour les lieux
 * actif ou non 
 */
+$sql_rf = "";
+if ($_SESSION['region'] == 'ge')
+    $sql_rf = " 'rf', ";
 
 $sql_menu_lieux = "
 SELECT idLieu, nom
 FROM lieu
-WHERE statut='".$get['statut']."'  ".$sql_vue." AND region IN ('".$connector->sanitize($_SESSION['region'])."', 'rf', 'hs')  
+WHERE statut='".$get['statut']."'  ".$sql_vue." AND region IN ('".$connector->sanitize($_SESSION['region'])."', ".$sql_rf." 'hs')  
 ORDER BY TRIM(LEADING 'l\'' FROM (TRIM(LEADING 'les ' FROM (TRIM(LEADING 'la ' FROM (TRIM(LEADING 'le ' FROM lower(nom)))))))) COLLATE utf8_general_ci";
 
 $req_lieux = $connector->query($sql_menu_lieux);
