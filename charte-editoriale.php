@@ -30,7 +30,7 @@ include("includes/header.inc.php");
         <p>Les points énumérés ci-dessous définissent les critères permettant de se rapprocher de cet objectif.</p>
         <h3>Les événements</h3>
         <h4>Situation</h4>
-         <p>À l’heure actuelle, la zone couverte par La décadanse est le canton de Genève, une partie proche du canton de Vaud (jusqu’à Nyon) ainsi que la France voisine.</p>
+         <p>À l’heure actuelle, les zone couvertes par La décadanse sont les régions genevoises et lausannoises.</p>
 
         <h4>Catégories</h4>
         <p>Les événements sont répartis en 5 catégories, dont voici des précisions pour 3 d’entre elles&nbsp;:</p>
