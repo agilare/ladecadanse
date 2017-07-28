@@ -2,3 +2,4 @@ config/params.php
 dploy.yaml
 /nbproject/
 /images/
+/vendor/
