@@ -41,7 +41,7 @@ else
             <h2 class="accueil">Aujourd’hui <a href="<?php echo $url_site ?>rss.php?type=evenements_auj" title="Flux RSS des événements du jour" style="font-size:12px;vertical-align: top;">
 			<i class="fa fa-rss fa-lg" style="color:#f5b045"></i></a></h2>
                         
-                        <?php getMenuRegions($glo_regions); ?>
+                        <?php getMenuRegions($glo_regions, $get); ?>
  
 
 		<div class="spacer"></div>

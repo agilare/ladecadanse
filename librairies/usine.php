@@ -535,7 +535,7 @@ function get_adresse($region, $localite, $quartier, $adr)
     
 }
 
-function getMenuRegions($glo_regions)
+function getMenuRegions($glo_regions, $get)
 {
     
    
@@ -561,7 +561,7 @@ function getMenuRegions($glo_regions)
             $ici = '';
             if ($n == $_SESSION['region'])
                 $ici = ' class="ici" ';
-        ?><li><a href="?region=<?php echo $n; ?>" <?php echo $ici; ?>><?php echo $v; ?></a></li><?php
+        ?><li><a href="?region=<?php echo $n; ?>&<?php echo arguments_URI($get, 'region'); ?>" <?php echo $ici; ?>><?php echo $v; ?></a></li><?php
             }
         }
         ?></ul>

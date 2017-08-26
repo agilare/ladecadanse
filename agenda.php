@@ -303,7 +303,7 @@ $lien_imprimer = '<a href="'.basename(__FILE__).'?'.arguments_URI($get).'&amp;st
 
 		<h2 style="font-size:1.6em">Agenda</h2>	
                 
-                    <?php getMenuRegions($glo_regions); ?>
+                    <?php getMenuRegions($glo_regions, $get); ?>
                 <div class="spacer"></div>
                 <div style="margin-top:1em;">
                

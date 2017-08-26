@@ -349,5 +349,5 @@ foreach ($menu_principal as $nom => $lien)
 <div class="spacer"><!-- --></div>
 
 <!-- Début Conteneur -->
-<div id="conteneur" style="padding-left:5px">kokoko
+<div id="conteneur" style="padding-left:5px">
 

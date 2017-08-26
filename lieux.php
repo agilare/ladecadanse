@@ -51,7 +51,7 @@ $pair = 0;
 
     <div id="entete_contenu">
         <h2 style="font-size:1.6em; width: 40%;">Lieux</h2>	
-  <?php getMenuRegions($glo_regions); ?><div class="spacer"></div><p class="mobile" id="btn_listelieux">
+  <?php getMenuRegions($glo_regions, $get); ?><div class="spacer"></div><p class="mobile" id="btn_listelieux">
 	<button href="#"><i class="fa fa-list fa-lg"></i>&nbsp;Liste des lieux</button>
 </p>
     <div style="margin-top:1em;">
