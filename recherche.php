@@ -35,7 +35,7 @@ if (isset($_GET['page']))
 	$get['page'] =  verif_get($_GET['page'], "int", 1);
 }
 
-$get['periode'] = "tous";
+$get['periode'] = "futur";
 if (isset($_GET['periode']))
 {
 	$get['periode'] =  verif_get($_GET['periode'], "enum", 1, $tab_periodes);
