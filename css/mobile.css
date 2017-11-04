@@ -583,3 +583,14 @@ form#ajouter_editer p.memoriser label, form#ajouter_editer p.mdp_oublie
 {
     width: 100%;
 }
+
+#entete_contenu .menu_region
+{
+    margin-top:0;
+    font-size: .9em;
+}
+
+#entete_contenu .menu_region li a
+{
+    padding: .5em .2em;
+}

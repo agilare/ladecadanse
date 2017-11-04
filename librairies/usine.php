@@ -541,27 +541,35 @@ function getMenuRegions($glo_regions, $get)
    
     $html = '';
     ob_start();
-    //if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 4) 
+    //
 ?>
     <ul class="menu_region">
-            <?php 
+        <?php 
+        $class_region = 'ge';
         foreach ($glo_regions as $n => $v)
         {
-            if ($n == 'ge' || $n == 'vd' ) //|| $n == 'fr'
+            if ($n == 'ge' || $n == 'vd' || $n == 'fr') //
             {
                 if ($n == 'vd')
                 {
                     $v = 'Lausanne';
+                    $class_region = 'vd';
                 }  
 
                 if ($n == 'fr')
                 {
-                    $v = 'Fr';
-                }                          
-            $ici = '';
-            if ($n == $_SESSION['region'])
-                $ici = ' class="ici" ';
-        ?><li><a href="?region=<?php echo $n; ?>&<?php echo arguments_URI($get, 'region'); ?>" <?php echo $ici; ?>><?php echo $v; ?></a></li><?php
+                    if (!(isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 4))
+                        continue;
+                        
+                    $v = 'Fribourg';
+                    $class_region = 'fr';
+                } 
+                
+                $ici = '';
+                if ($n == $_SESSION['region'])
+                    $ici = ' ici';
+                
+                ?><li><a href="?region=<?php echo $n; ?>&<?php echo arguments_URI($get, 'region'); ?>" class="<?php echo $class_region; ?><?php echo $ici; ?>"><?php echo $v; ?></a></li><?php
             }
         }
         ?></ul>
