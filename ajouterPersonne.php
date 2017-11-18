@@ -174,7 +174,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 	{
 		if ($get['action'] == "update" && (!empty($champs['newPass']) || !empty($champs['newPass2'])))
 		{
-			$verif->valider($champs['motdepasse'], "motdepasse", "texte", 4, 10, 1);
+			$verif->valider($champs['motdepasse'], "motdepasse", "texte", 4, 12, 1);
 		}
 
 		if ($get['action'] == "update" && !empty($champs['motdepasse']) && (empty($champs['newPass']) || empty($champs['newPass2'])))
