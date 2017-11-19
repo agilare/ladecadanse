@@ -1102,7 +1102,7 @@ if ($verif->nbErreurs() > 0)
 <form method="post" id="ajouter_editer" enctype="multipart/form-data" action="<?php echo basename(__FILE__)."?action=".$act ?>">
 <h2>Avant de commencer</h2>
 <ul style="list-style-type:disc;margin:10px;padding-left:10px;line-height:1.2em">
-<li style="margin:6px 2px;">L’agenda de La décadanse englobe le <strong>canton de Genève et ses environs</strong></li>
+<li style="margin:6px 2px;">L’agenda de La décadanse englobe <strong>Genève, Lausanne et leurs environs</strong></li>
 <li style="margin:6px 2px;">Veuillez svp vérifier au préalable que votre événement n’est pas déjà présent dans l’<a href="agenda.php">agenda</a></li>
 <li style="margin:6px 2px;">La catégorie <em>Fêtes</em> inclut les soirées, les concerts, etc.</li>
 <li style="margin:6px 2px;">Veillez svp à ce que l'événement respecte notre <b><a href="charte-editoriale.php">charte&nbsp;éditoriale</a></b></li>
