@@ -61,7 +61,7 @@ include("includes/header.inc.php");
       link += (key.charAt(ltr))
     }
   }
-document.write("<a href='mailto:"+link+"?subject=[La décadanse] Événement à annoncer&body=Titre:%0D%0ALieu et adresse:%0D%0ADate et horaires:%0D%0ADescription:%0D%0AOrganisateurs:%0D%0APrix:%0D%0APrélocations:%0D%0A%0D%0AAffiche ou photo ci-joint (format JPG, PNG ou GIF; maximum 2 Mo):%0D%0A'>"+link+"</a>")
+document.write("<a href='mailto:"+link+"?subject=[La décadanse] Événement à annoncer&body=Titre:%0D%0ALieu et adresse:%0D%0ADate et horaires:%0D%0ADescription:%0D%0APrix:%0D%0APrélocations:%0D%0A%0D%0AAffiche ou photo ci-joint au *format JPG, PNG ou GIF*; maximum 2 Mo :%0D%0A'>"+link+"</a>")
 }
 //-->
 </script><noscript>Sorry, you need Javascript on to email me.</noscript>
