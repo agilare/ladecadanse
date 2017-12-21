@@ -134,10 +134,7 @@ function is_ani($filename)
    * @param string $typeIMG (breves, evenements, lieux) Genre d'utilisation de l'image
    * @param int $maxWidth Largeur maximale voulue pour l'image réduite
    * @param int $maxHeight Hauteur maximale voulue pour l'image réduite
-   * @param int $maxWidth_s Largeur maximale voulue pour l'image mini
-   * @param int $maxWidth_s Hauteur maximale voulue pour l'image mini
    * @param string $selon ('', w, h) Pour imposer la largeur ou la hauteur de l'image réduite selon $maxWidth ou $maxHeigth
-   * @param string $selon_s ('', w, h) Pour imposer la largeur ou la hauteur de l'image mini selon $maxWidth ou $maxHeigth
    * @return string $msgErreur Messag s'il y a eu une erreur
    * @see        ajouterBreve.php, ajouterEvenement.php, ajouterLieu.php
    */
