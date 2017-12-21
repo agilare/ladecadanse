@@ -12,7 +12,7 @@ require_once($rep_librairies."CollectionEvenement.class.php");
 
 
 $page_titre = "Agenda";
-$page_description = "Événements culturels et festifs à Genève et Lausanne : concerts, soirées, films, théâtre, expos...";
+$page_description = "Événements culturels et festifs à Genève, Lausanne et Fribourg : concerts, soirées, films, théâtre, expos...";
 include("includes/header.inc.php");
 
 
@@ -616,6 +616,8 @@ else
             $region = $glo_regions[$_SESSION['region']];
             if ($_SESSION['region'] == 'vd')
                 $region = "Lausanne";
+            if ($_SESSION['region'] == 'fr')
+                $region = "Fribourg";            
             
 			echo "<h5>".$region.", ".date_fr($dateCourante);
 			echo "</h5><div class=\"spacer\"></div>";

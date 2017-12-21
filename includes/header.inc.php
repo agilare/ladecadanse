@@ -183,6 +183,10 @@ if ($nom_page == "agenda" && isset($page_titre))
         {
             $page_titre .= " à Lausanne";   
         }
+        elseif ($_SESSION['region'] == 'fr')
+        {
+            $page_titre .= " à Fribourg";   
+        }            
         else
         {
             $page_titre .= " à Genève";

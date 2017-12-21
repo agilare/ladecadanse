@@ -12,6 +12,10 @@ if ($_SESSION['region'] == 'vd')
  {
      $page_titre_region = " à Lausanne";   
  }
+ elseif ($_SESSION['region'] == 'fr')
+ {
+     $page_titre_region = " à Fribourg";   
+ }
  else
  {
      $page_titre_region = " à Genève";
