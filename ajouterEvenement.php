@@ -1224,7 +1224,7 @@ echo $verif->getHtmlErreur('dateEvenement');
 <fieldset>
 <legend>Lieu*</legend>
 <p>
-<label for="idLieu">Enregistré sur La&nbsp;décadanse</label>
+<label for="idLieu">Dans la liste</label>
 <select name="idLieu" id="idLieu" class="chosen-select" title="Un lieu dans base de données de La décadanse" onfocus="this.className='focus';" style="max-width:300px">
 <?php
 
@@ -1295,7 +1295,7 @@ echo $verif->getHtmlErreur("dejaPresent");
 ?>
 </p>
 
-<p class="entreLabels" style="width:auto;font-size: 0.9em;"><strong>Si pas dans la liste ci-dessus :</strong></p>
+<p class="entreLabels" style="width:auto;font-size: 1em;"><strong>Sinon :</strong></p>
 <div class="spacer"></div>
 
 <p>
