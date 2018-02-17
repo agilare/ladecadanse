@@ -380,10 +380,8 @@ iCalendar</a></li>
 						?>" title="Voir le site web du lieu" onclick="window.open(this.href,'_blank');return false;"><?php echo $listeLieu['URL'] ?></a></li>
 						<?php
 						}
-
-
 						?>
-
+                        <?php if ($even->getValue('idLieu') == 13) { // exception pour le Rez ?><a href="http://www.ptrnet.ch" onclick="window.open(this.href,'_blank');return false;">ptrnet.ch</a><?php } ?>                        
 					</ul>
 				</div>
 			<div class="spacer"></div>

@@ -496,13 +496,17 @@ if ($lieu->getValue('logo'))
 				
 				<li><?php echo textToHtml($lieu->getValue('horaire_general')); ?></li>
 
-				<li class="sitelieu"><a class="url" href="<?php echo $URL; ?>" title="Voir le site web du lieu" onclick="window.open(this.href,'_blank');return false;">
-				<?php echo $lieu->getValue('URL'); ?></a></li>
+				<li class="sitelieu"><a class="url" href="<?php echo $URL; ?>" title="Voir le site web du lieu" onclick="window.open(this.href,'_blank');return false;"><?php echo $lieu->getValue('URL'); ?></a><?php if ($lieu->getId() == 13) { // exception pour le Rez ?><a href="http://www.ptrnet.ch" onclick="window.open(this.href,'_blank');return false;">ptrnet.ch</a><?php } ?></li>
+                				
+
+        
+                
 				<?php echo $organisateurs; ?>
 	</ul>
 
 </div>
 <!-- Fin pratique -->
+
 
 <div class="spacer only-mobile"></div>
 
