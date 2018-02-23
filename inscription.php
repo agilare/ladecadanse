@@ -517,6 +517,7 @@ if ($verif->nbErreurs() > 0)
 
 <input type="text" name="utilisateur" id="utilisateur" size="25" maxlength="80"
 value="<?php echo htmlspecialchars($champs['utilisateur']) ?>" />
+<div class="guide_champ">&#9888; C'est avec lui que vous vous connecterez au site, pas l'email ci-dessous</div>
 <?php
 echo $verif->getHtmlErreur('utilisateur');
 echo $verif->getHtmlErreur("utilisateur_existant");

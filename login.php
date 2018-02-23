@@ -169,12 +169,10 @@ else
 <legend class="btn_toggle">Authentification</legend>
 <p>
 <label for="pseudo" id="login_pseudo">Identifiant</label>
-<input type="text" name="pseudo" id="pseudo" value="<?php echo htmlspecialchars($champs['pseudo']) ?>" size="15" title="Veuillez entrer votre identifiant" />
+<input type="text" name="pseudo" id="pseudo" value="<?php echo htmlspecialchars($champs['pseudo']) ?>" size="15" title="Veuillez entrer votre identifiant" /><div style="margin: 0 1em 1em 26em;font-size: 0.8em;line-height: 1.1em;padding: 0;">Celui que vous avez choisi à l'inscription</div>
 <?php
 echo $verif->getHtmlErreur("pseudo");
 ?>
-</p>
-<p>
 <label for="motdepasse" id="login_motdepasse">Mot de Passe</label>
 <input type="password" name="motdepasse" id="motdepasse" value="" size="15" title="Veuillez entrer votre mot de passe" />
 <?php
