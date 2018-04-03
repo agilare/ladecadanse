@@ -204,7 +204,7 @@ if (!empty($get['mots']))
 
 	if ($nb_even == 0)
 	{
-	  	msgInfo("Pas d'événement trouvé pour <em>".$mots."</em>");
+	  	msgInfo("Pas d'événement trouvé pour <em>".securise_string($mots)."</em>");
 	}
 	else
 	{
