@@ -381,7 +381,10 @@ iCalendar</a></li>
 						<?php
 						}
 						?>
-                        <?php if ($even->getValue('idLieu') == 13) { // exception pour le Rez ?><a href="http://www.ptrnet.ch" onclick="window.open(this.href,'_blank');return false;">ptrnet.ch</a><?php } ?>                        
+                        <?php if ($even->getValue('idLieu') == 13) { // exception pour le Rez ?>
+                        <a href="http://kalvingrad.com" onclick="window.open(this.href,'_blank');return false;">kalvingrad.com</a><br>
+                        <a href="http://www.ptrnet.ch" onclick="window.open(this.href,'_blank');return false;">ptrnet.ch</a>
+                            <?php } ?>                        
 					</ul>
 				</div>
 			<div class="spacer"></div>
