@@ -107,8 +107,8 @@ else
 {
 
 	if (!empty($get['msg']) && $get['msg'] == "faux")
-	{
-		$verif->setErreur("connexion", "Les valeurs de connexion que vous avez entrées sont fausses.");
+	{      
+		$verif->setErreur("connexion", "Votre identifiant et/ou votre mot de passe ne sont pas corrects. Veuillez également vérifier que vous avez bien saisi votre <b>identifiant</b> (celui que vous avez choisi à l'inscription), qui est distinct de l'email");
 	}
 
 }
