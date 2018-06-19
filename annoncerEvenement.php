@@ -40,7 +40,7 @@ include("includes/header.inc.php");
 
 	
 <h3>vous voulez juste annoncer un&nbsp;événement</h3>
-<p>Vous pouvez alors nous envoyer les infos : 
+<p>Vous pouvez alors nous envoyer les infos via  
 <script type="text/javascript" language="javascript">
 <!--
 // Email obfuscator script 2.1 by Tim Williams, University of Arizona
@@ -61,12 +61,11 @@ include("includes/header.inc.php");
       link += (key.charAt(ltr))
     }
   }
-document.write("<a href='mailto:"+link+"?subject=[La décadanse] Événement à annoncer&body=Titre:%0D%0ALieu et adresse:%0D%0ADate et horaires:%0D%0ADescription:%0D%0APrix:%0D%0APrélocations:%0D%0A%0D%0AAffiche ou photo ci-joint au *format JPG, PNG ou GIF*; maximum 2 Mo :%0D%0A'>"+link+"</a>")
+document.write("<a href='mailto:"+link+"?subject=[La décadanse] Événement à annoncer&body=Titre:%0D%0ALieu et adresse:%0D%0ADate et horaires:%0D%0ADescription:%0D%0APrix:%0D%0APrélocations:%0D%0A%0D%0AAffiche ou photo ci-joint au *format JPG, PNG ou GIF*; (pas de PDF) maximum 2 Mo :%0D%0A'>"+link+"</a>")
 }
 //-->
-</script><noscript>Sorry, you need Javascript on to email me.</noscript>
-<br>
-(veuillez vérifier svp au préalable qu'il n'est pas déjà présent dans l'<a href="agenda.php">agenda</a>)
+</script><noscript>Sorry, you need Javascript on to email me.</noscript>, on s'occupera de l'ajouter dans les prochains jours.<br>
+Veuillez vérifier svp au préalable que l'événement n'est pas déjà présent dans l'<a href="agenda.php">agenda</a>
 </p>
 </li>
 </ul>
