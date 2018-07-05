@@ -47,7 +47,7 @@ if (!isset($_COOKIE['msg_orga_benevole'])) // isset($_GET['debug']) &&
 <div style="position:relative;padding:0.7em 0.5em;margin:0em 0;background:#fff3cd;color:#856404">
 <h2 style="padding:0; margin:0.1em 0 0.4em 0.1em;font-size:1.3em;color:#856404">Contribuer à La décadanse</h2>
 <a style="position:absolute;right:0;top:0;padding:5px;font-size: 1rem;font-weight: 700;color:#856404" href="#" onclick="SetCookie('msg_orga_benevole', 1, 180);this.parentNode.style.display = 'none';return false;">&times;</a>
-<p style="line-height:18px">La décadanse a actuellement besoin d’aide (bénévole) afin de maintenir son agenda complet. Si ça vous intéresse de participer <a href="contacteznous.php">envoyez nous un ptit message</a></p>
+<p style="line-height:18px">La décadanse a actuellement besoin d’aide (bénévole) afin de maintenir son agenda complet. Si ça vous intéresse de participer <a href="contacteznous.php">envoyez-nous un ptit message</a></p>
 
 </div>
 <?php
