@@ -40,6 +40,20 @@ else
 <!-- Début Contenu -->
 <div id="contenu" class="colonne">
 
+<?php
+if (!isset($_COOKIE['msg_orga_benevole'])) // isset($_GET['debug']) && 
+{
+?>
+<div style="position:relative;padding:0.7em 0.5em;margin:0em 0;background:#fff3cd;color:#856404">
+<h2 style="padding:0; margin:0.1em 0 0.4em 0.1em;font-size:1.3em;color:#856404">Contribuer à La décadanse</h2>
+<a style="position:absolute;right:0;top:0;padding:5px;font-size: 1rem;font-weight: 700;color:#856404" href="#" onclick="SetCookie('msg_orga_benevole', 1, 180);this.parentNode.style.display = 'none';return false;">&times;</a>
+<p style="line-height:18px">La décadanse a actuellement besoin d’aide (bénévole) afin de maintenir son agenda complet. Si ça vous intéresse de participer <a href="contacteznous.php">envoyez nous un ptit message</a></p>
+
+</div>
+<?php
+}
+?>    
+    
 	<div id="entete_contenu">
 
             <h2 class="accueil">Aujourd’hui <a href="<?php echo $url_site ?>rss.php?type=evenements_auj" title="Flux RSS des événements du jour" style="font-size:12px;vertical-align: top;">
@@ -464,20 +478,7 @@ while($tab_commentaires = $connector->fetchArray($req_commentaires))
 <div id="colonne_droite" class="colonne">
 
 
-<?php
-if (0) //($videur->checkGroup(8) && !isset($_COOKIE['msg_orga_benevole'])) // isset($_GET['debug']) && 
-{
-?>
-<div id="dernieres" style="position:relative;padding:0.6em 0.2em;margin:1em 0;background:#ff5">
-<h2 style="padding:0; margin:0.1em 0 0.4em 0.1em;font-size:1.3em">Bénévoles</h2>
-<a style="position:absolute;right:0;top:0;padding:5px" href="#" onclick="SetCookie('msg_orga_benevole', 1, 180);this.parentNode.style.display = 'none';return false;"><img src="<?php echo $url_site ?>images/interface/icons/cross.png" alt="Fermer" width="16" height="16"></a>
-<p style="line-height:17px">
- </p>
 
-</div>
-<?php
-}
-?>
 
 
 
