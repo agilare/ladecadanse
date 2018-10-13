@@ -549,7 +549,7 @@ iCalendar</a></li>
 							$url_org = 'http://'.$tab['URL'];
 						}
 				
-						echo '<li><a href="'.$url_site.'organisateur.php?idO='.$tab['idOrganisateur'].'" title="Voir la fiche de l\'organisateur">'.$tab['nom'].'</a>';
+						echo '<li><strong><a href="'.$url_site.'organisateur.php?idO='.$tab['idOrganisateur'].'" title="Voir la fiche de l\'organisateur">'.$tab['nom'].'</strong></a>';
 						if ( $tab['URL'] != '')
 						{
                             
