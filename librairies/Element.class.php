@@ -28,7 +28,7 @@ class Element
 	 * de passe dans le cache de l'utilisateur
    * @access public
    */
-	function Element()
+	function __construct()
 	{
 		global $connector;
 		$this->connector = $connector;

@@ -27,7 +27,7 @@ require_once("Validateur.php");
     var $connector;
 
 
-    function Edition($nom, $champs, $fichiers)
+    function __construct($nom, $champs, $fichiers)
     {
 		global $connector;
 

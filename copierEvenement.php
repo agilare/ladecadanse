@@ -134,8 +134,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 	 */
 
 	//conversion des 2 dates en formats Unix et Y-m-d, -1 pour laisser php appliquer l'horaire d'hiver
-	$dateEUnix = mktime(0, 0, 0, $mois, $jour, $annee, -1);
-	$dateEUnix2 = mktime(0, 0, 0, $mois2, $jour2, $annee2, -1);
+	$dateEUnix = mktime(0, 0, 0, $mois, $jour, $annee);
+	$dateEUnix2 = mktime(0, 0, 0, $mois2, $jour2, $annee2);
 	$dateEvenement = date('Y-m-d', $dateEUnix);
 	$dateEvenement2 = date('Y-m-d', $dateEUnix2);
 	$date_auj = date('Y-m-d');
@@ -501,7 +501,7 @@ if (!empty($erreurs))
 //directement le jour suivant
 if ($get['action'] != "coller")
 {
-	$lendemain = explode("-", date('Y-m-d', mktime(0, 0, 0, $mois, $jour, $annee, -1) + 86400));
+	$lendemain = explode("-", date('Y-m-d', mktime(0, 0, 0, $mois, $jour, $annee) + 86400));
 	$jour = $lendemain[2];
 	$mois = $lendemain[1];
 	$annee = $lendemain[0];

@@ -26,7 +26,7 @@ class CollectionDescription extends Collection {
 	 * de passe dans le cache de l'utilisateur
    * @access public
    */
-	function CollectionDescription()
+	function __construct()
 	{
 		global $connector;
 		$this->connector = $connector;

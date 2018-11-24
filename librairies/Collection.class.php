@@ -27,7 +27,7 @@ class Collection {
 	 * de passe dans le cache de l'utilisateur
    * @access public
    */
-	function Collection()
+	function __construct()
 	{
 		global $connector;
 		$this->connector = $connector;

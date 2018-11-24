@@ -38,7 +38,7 @@ require_once($rep_librairies.'ImageDriver2.php');
     var $connector;
 	var $fonctions;
 
-    function EditionOrganisateur($nom, $champs, $fichiers)
+    function __construct($nom, $champs, $fichiers)
     {
 		global $connector;
 

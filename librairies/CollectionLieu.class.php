@@ -24,7 +24,7 @@ class CollectionLieu extends Collection {
      * de passe dans le cache de l'utilisateur
      * @access public
      */
-    function CollectionLieu($connector) {
+    function __construct($connector) {
         $this->connector = $connector;
     }
 

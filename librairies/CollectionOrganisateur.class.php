@@ -26,7 +26,7 @@ class CollectionOrganisateur extends Collection {
 	 * de passe dans le cache de l'utilisateur
    * @access public
    */
-	function CollectionOrganisateur()
+	function __construct()
 	{
 		global $connector;
 		$this->connector = $connector;

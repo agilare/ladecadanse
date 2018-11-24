@@ -20,7 +20,7 @@ class Commentaire extends Element {
 	 * de passe dans le cache de l'utilisateur
    * @access public
    */
-	function Commentaire()
+	function __construct()
 	{
 		$this->table = "commentaire";
 	}

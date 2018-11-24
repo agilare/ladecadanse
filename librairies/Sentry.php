@@ -25,7 +25,7 @@ class Sentry extends SystemComponent {
 		 * de passe dans le cache de l'utilisateur
 	   * @access public
 	   */
-	function Sentry()
+	function __construct()
 	{
 		
 

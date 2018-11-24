@@ -18,7 +18,7 @@ class CollectionEvenement extends Collection {
  /**
    * @access public
    */
-	function CollectionEvenement($connector)
+	function __construct($connector)
 	{
 
 		$this->connector = $connector;

@@ -17,9 +17,9 @@ class Lieu extends Element
  /**
    * @access public
    */
-	function Lieu()
+	function __construct()
 	{
-		parent::Element();
+		parent::__construct();
 
 		$this->table = "lieu";
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * Lance la session et vérifie le login du visiteur
+ * Lance la session et vÃ©rifie le login du visiteur
  *
  *
  * PHP versions 4 and 5
@@ -17,11 +17,11 @@ class Description extends Element {
 
 
  /**
- 	 * Démarre la session et inclut un en-tête interdisant de stocker le mot
+ 	 * DÃ©marre la session et inclut un en-tÃªte interdisant de stocker le mot
 	 * de passe dans le cache de l'utilisateur
    * @access public
    */
-	function Description()
+	function __construct()
 	{
 		$this->table = 'descriptionlieu';
 		$this->nom = 'description';

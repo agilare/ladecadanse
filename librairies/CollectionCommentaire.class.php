@@ -19,7 +19,7 @@ class CollectionCommentaire extends Collection
  /**
    * @access public
    */
-	function CollectionCommentaire()
+	function __construct()
 	{
 		global $connector;
 		$this->connector = $connector;

@@ -20,7 +20,7 @@ class Evenement extends Element
      * de passe dans le cache de l'utilisateur
      * @access public
      */
-    function Evenement() {
+    function __construct() {
         global $connector;
         $this->table = "evenement";
         $this->connector = $connector;

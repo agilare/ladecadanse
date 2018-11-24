@@ -17,12 +17,10 @@ class Organisateur extends Element
  /**
    * @access public
    */
-	function Organisateur()
+	function __construct()
 	{
-		parent::Element();
-
+        parent::__construct();
 		$this->table = "organisateur";
-
 	}
 
 

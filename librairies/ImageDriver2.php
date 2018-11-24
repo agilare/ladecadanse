@@ -49,7 +49,7 @@ var $erreur;
 * @access public
 * @see config/reglages.php
 */
-function ImageDriver2($IMGtype)
+function __construct($IMGtype)
 {
 	global $rep_images;
 	$this->IMGracine = $rep_images;

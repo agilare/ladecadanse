@@ -46,7 +46,7 @@ var $IMGlieux;
 * @access public
 * @see config/reglages.php
 */
-function ImageDriver()
+function __construct()
 {
 	global $rep_images;
 	$this->IMGracine = $rep_images;
