@@ -1335,19 +1335,10 @@ echo $verif->getHtmlErreur("doublonLieux");
 <label for="localite">Localité/quartier</label>
 <select name="localite_id" id="localite" class="chosen-select" style="max-width:300px;">
 <?php
-
-$sql_prov = '';
-if ($_SESSION['Sgroupe'] > 4)
-{ 
-    $sql_prov = " AND canton='ge' ";     
-}
-
 echo "<option value=\"0\">&nbsp;</option>";
 $req = $connector->query("
 SELECT id, localite, canton FROM localite WHERE id!=1 ".$sql_prov." ORDER BY canton, localite "
  );
-
-
 
 $select_canton = '';
 while ($tab = $connector->fetchArray($req))
