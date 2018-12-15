@@ -44,12 +44,19 @@ include("includes/header.inc.php");
         <p>Les événements doivent êtres dans le réel, c'est-à-dire dans un lieu défini, avec un début et une fin, où des personnes se rencontrent vraiment; l’agenda ne peut donc contenir d’annonces d’actualité, de campagnes sur le web, d’émissions (radio, TV, web), etc.</p>
         <h4><a id="Types_non_admis_30"></a>Types d'événements non admis</h4>
         <ul>
-            <li>religion, croyance, esotérisme, paranormal, médecine parallèle</li>
+            <li>religion, croyance, esotérisme, paranormal</li>
+            <li>médecine parallèle</li>
             <li>conférences/salons professionnels</li>
             <li>cours, stages complets et dispendieux</li>
             <li>commercial (par ex. présentations de produits ou entreprises, annonces de type publicitaire, achat/vente, brunchs, apéros, happy hours, dégustations, etc.)</li>
             <li>développement personnel</li>
             <li>manifestations sportives</li>
+        </ul>
+        <p>Les contenus (textes, images) suivants ne sont pas admis :</p>
+        <ul>
+            <li>sexisme</li>
+            <li>discrimination</li>
+            <li>nationalisme</li>
         </ul>
         <h4><a id="Prix_38"></a>Prix</h4>
         <p>La décadanse propose des événements la plupart du temps abordables financièrement que ce soit pour le prix d’entrée, les consommations ou d’autres dépenses.</p>
@@ -64,7 +71,7 @@ include("includes/header.inc.php");
         <h3><a id="LES_LIEUX_53"></a>Les lieux</h3>
         <p>Les lieux ayant une vocation commerciale trop prononcée ne sont pas souhaités (night-clubs, casinos, cabarets, multiplexes…). Pour pouvoir figurer dans la rubrique <a href="lieux.php">Lieux</a>, des événements doivent être organisés régulièrement et ceux-ci doivent suivre les critères déjà présentés ci-dessus.
             Nous apprécions les lieux avec une programmation de qualité, un esprit désintéressé, se rapprochant de l’autogestion et avec un certain degré d’éthique.</p>
-        <p>Août 2016</p>
+        <p>Août 2016, mis à jour en décembre 2018</p>
 
     </div>
     <!-- Fin  -->

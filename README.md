@@ -13,4 +13,4 @@ La majeur partie du site est composée d'un agenda permettant de naviguer dans l
 4. dans config/params.php saisir le path et url du site ainsi que les données de connexion à la base de données
 5. afin de gérer le site, créer user *admin* (groupe 1) dans la table 'personne' à la main avec pour le mot de passe : sha1($gds.sha1($pass)) (à faire par ex. en PHP CLI)
 
-Testé avec Apache 2.4, PHP 5.6, MariaDB 10
+Testé avec Apache 2.4, PHP 7.0, MariaDB 10
