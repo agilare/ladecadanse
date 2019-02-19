@@ -417,6 +417,8 @@ title="Voir la fiche complète de l\'événement">'.securise_string($tab_even['t
 
 <h2>Partenaires</h2>
 <ul style="padding-left:5px">
+    <li style="margin:2px 0;float:left;"><a href="https://epic-magazine.ch/" onclick="window.open(this.href,'_blank');return false;"><img src="images/interface/EPIC_noir.png" alt="EPIC Magazine" width="150" style="border:1px solid #eaeaea" /></a></li>
+
 <li style="margin:2px 0;float:left;"><a href="http://www.radiovostok.ch" onclick="window.open(this.href,'_blank');return false;"><img src="images/interface/radio_vostok.png" alt="Radio Vostok" width="150" height="59" style="border:1px solid #eaeaea" /></a></li>
 
 <li style="margin:2px 0;float:left;">
