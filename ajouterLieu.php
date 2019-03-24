@@ -210,9 +210,9 @@ echo $form->getHtmlErreur("adresse");
 echo "<option value=\"0\">&nbsp;</option>";
 
 $sql_prov = '';
-if ($_SESSION['Sgroupe'] > 4)
+if ($get['action'] == 'ajouter' || $get['action'] == 'insert') 
 { 
-    $sql_prov = " AND canton='ge' ";     
+    $sql_prov = " AND canton != 'fr' ";     
 }
 
 

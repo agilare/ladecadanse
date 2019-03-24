@@ -1243,10 +1243,20 @@ if (($get['action'] == 'ajouter' || $get['action'] == 'insert') && !empty($get['
 
 }
 
+
+$sql_lieu_excl_fr = '';
+$sql_localite_excl_fr = '';
+if ($get['action'] == 'ajouter' || $get['action'] == 'insert') 
+{
+    $sql_lieu_excl_fr = " AND region != 'fr' ";
+    $sql_localite_excl_fr = " AND canton != 'fr' ";
+}    
+    
+
 //Menu des lieux actifs de la base
 echo "<option value=\"0\">&nbsp;</option>";
 $req_lieux = $connector->query("
-SELECT idLieu, nom FROM lieu WHERE statut='actif' ORDER BY TRIM(LEADING 'L\'' FROM (TRIM(LEADING 'Les ' FROM (TRIM(LEADING 'La ' FROM (TRIM(LEADING 'Le ' FROM nom))))))) COLLATE utf8_general_ci"
+SELECT idLieu, nom FROM lieu WHERE statut='actif' ".$sql_lieu_excl_fr." ORDER BY TRIM(LEADING 'L\'' FROM (TRIM(LEADING 'Les ' FROM (TRIM(LEADING 'La ' FROM (TRIM(LEADING 'Le ' FROM nom))))))) COLLATE utf8_general_ci"
  );
 
 
@@ -1337,7 +1347,7 @@ echo $verif->getHtmlErreur("doublonLieux");
 <?php
 echo "<option value=\"0\">&nbsp;</option>";
 $req = $connector->query("
-SELECT id, localite, canton FROM localite WHERE id!=1 ".$sql_prov." ORDER BY canton, localite "
+SELECT id, localite, canton FROM localite WHERE id!=1 $sql_localite_excl_fr ".$sql_prov." ORDER BY canton, localite "
  );
 
 $select_canton = '';

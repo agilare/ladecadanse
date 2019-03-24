@@ -548,7 +548,7 @@ function getMenuRegions($glo_regions, $get)
         $class_region = 'ge';
         foreach ($glo_regions as $n => $v)
         {
-            if ($n == 'ge' || $n == 'vd' || $n == 'fr') //
+            if ($n == 'ge' || $n == 'vd' ) //|| $n == 'fr'
             {
                 if ($n == 'vd')
                 {
