@@ -18,7 +18,7 @@ elseif ($_SESSION['region'] == 'fr')
 
 $nom_page = "index";
 $page_titre = " agenda de sorties à ".$page_titre_region." : concerts, soirées, films, théâtre, expos, bars, cinémas";
-$page_description = "Programme des prochains événements festifs et culturels à Genève, Lausanne et Fribourg : fêtes, concerts et soirées, cinéma,
+$page_description = "Programme des prochains événements festifs et culturels à Genève et Lausanne : fêtes, concerts et soirées, cinéma,
 théâtre, expositions, vernissages, conférences, lieux culturels et alternatifs";
 
 include("includes/header.inc.php");

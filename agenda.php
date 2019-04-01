@@ -12,7 +12,7 @@ require_once($rep_librairies."CollectionEvenement.class.php");
 
 
 $page_titre = "Agenda";
-$page_description = "Événements culturels et festifs à Genève, Lausanne et Fribourg : concerts, soirées, films, théâtre, expos...";
+$page_description = "Événements culturels et festifs à Genève et Lausanne : concerts, soirées, films, théâtre, expos...";
 include("includes/header.inc.php");
 
 
