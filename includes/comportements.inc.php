@@ -24,6 +24,7 @@ if (!empty( $matches[1] ))
 $pages_orga = array("ajouterEvenement", "ajouterLieu", "ajouterPersonne", 'inscription');
 
 $pages_jquery = array("ajouterEvenement", "ajouterLieu", "inscription", "gererEvenements", "ajouterPersonne", "ajouterDescription");
+$pages_tinymce = ["ajouterDescription"];
 
 
 if (in_array($nom_page, $pages_jquery))
@@ -268,7 +269,22 @@ $(document).ready(function()
 <?php
 }
 ?>
-
-
-
-
+<?php if (in_array($nom_page, $pages_tinymce)) { ?>
+<script src="https://cloud.tinymce.com/5/tinymce.min.js?apiKey=7g39i0lvspz7m6s04eo2hvjji73rjk8tf0b62fkl7dn7p5bw"></script>
+<script>
+tinymce.init({
+  selector: 'textarea.tinymce',
+  height: 500,
+  menubar: false,
+  plugins: [
+    'autolink lists link charmap',
+    'searchreplace visualblocks code',
+    'paste code help wordcount'
+  ],
+  toolbar: 'bold italic | bullist numlist | link | undo redo | visualblocks removeformat',
+  content_css: [
+    '//fonts.googleapis.com/css?family=Lato:300,300i,400,400i',
+    '//www.tiny.cloud/css/codepen.min.css'
+  ]
+});</script>
+<?php } ?>

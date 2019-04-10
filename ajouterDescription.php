@@ -149,7 +149,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 
 	$verif->valider($champs['idLieu'], "idLieu", "texte", 1, 60, 1);
 
-	$verif->valider($champs['contenu'], "contenu", "texte", 50, 10000, 1);
+	$verif->valider($champs['contenu'], "contenu", "texte", 30, 100000, 1);
 	/*
 	 * Nom du lieu obligatoire et vê³©f si le lieu dê´©gné¡°ar idL existe bien dans la table lieu
 	 */
@@ -252,7 +252,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 			$champs['date_derniere_modif'] = date("Y-m-d H:i:s");
 
 			$sql_update = "UPDATE descriptionlieu SET
-			contenu='".$connector->sanitize(nl2br($champs['contenu']))."', date_derniere_modif='".$champs['date_derniere_modif']."'
+			contenu='".$connector->sanitize($champs['contenu'])."', date_derniere_modif='".$champs['date_derniere_modif']."'
 			WHERE idPersonne=".$get['idP']." AND idLieu=".$get['idL'];
 
 			//TEST
@@ -398,24 +398,23 @@ if ($get['type'] == 'presentation')
 <p>* indique un champ obligatoire</p>
 
 <fieldset>
-<legend>Description</legend>
 <!-- Select liste des lieux -->
 
 <input type="hidden" name="type" value="<?php echo $get['type']; ?>" />
-<p>
-<label for="idLieu">Lieu* :</label>
+
+
 <?php
 if (($get['action'] == 'editer' || $get['action'] == 'update') && isset($get['idL']))
 {
 
 	echo "<input type=\"hidden\" name=\"idLieu\" value=\"".$get['idL']."\" />
 	<input type=\"hidden\" name=\"idP\" value=\"".$get['idP']."\" />";
-	echo securise_string($detailsLieu['nom']);
+	//echo securise_string($detailsLieu['nom']);
 }
 else
 {
 
-	echo "<select name=\"idLieu\" id=\"idLieu\"  class=\"chosen-select\" title=\"Choisissez le lieu que vous voulez décrire\" style=\"max-width:300px;\">
+	echo "<p><label for=\"idLieu\" style=\"text-align:left;float:none;\">Lieu* :</label><select name=\"idLieu\" id=\"idLieu\"  class=\"chosen-select\" title=\"Choisissez le lieu que vous voulez décrire\" style=\"max-width:300px;\">
 	<option value=\"0\"></option>";
 	$req_lieux = $connector->query("SELECT idLieu, nom FROM lieu WHERE actif=1 AND statut='actif' ORDER BY nom");
 
@@ -428,28 +427,19 @@ else
 		}
 		echo " value=\"".$lieuTrouve['idLieu']."\">".$lieuTrouve['nom']."</option>";
 	}
-}
-?>
-</select>
-<?php
+    ?>
+    </select></p>
+    <?php
 echo $verif->getErreur('idLieu');
 echo $verif->getHtmlErreur('doublon');
 echo $verif->getErreur('nom');
-?>
-</p>
 
+}
+?>
 <!-- Description Texte -->
 <p>
-<label for="contenu">La description* :</label>
-
-<textarea style="float:left" name="contenu" cols="45" rows="16">
-<?php
-   
-        $desc = strip_tags($champs['contenu']);
-
-echo $desc;
-?>
-</textarea>
+<label for="contenu" style="display:block;text-align:left;float:none;">La description* :</label>
+<textarea style="float:left" id="contenu" name="contenu" cols="45" rows="16" class="tinymce"><?php echo $champs['contenu']; ?></textarea>
 <?php
 echo $verif->getHtmlErreur('contenu');
 ?>

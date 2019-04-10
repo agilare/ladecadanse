@@ -311,7 +311,6 @@ $tab_de = $connector->fetchArray($req_de);
       })();
     </script>
     <!-- End Piwik Code --> 
- 
 </head>
 
 <body>

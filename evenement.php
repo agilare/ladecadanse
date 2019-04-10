@@ -670,7 +670,7 @@ Signaler une erreur
 				
 				
 					
-			if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 1)
+			if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 4)
 			{
 			?>
 				<a href="personne.php?idP=<?php echo $even->getValue('idPersonne')?>"><?php echo $signature_auteur; ?></a>
