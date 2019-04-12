@@ -275,30 +275,32 @@ if (!empty($get['mots']))
 		$pluriel = " ";
 		if ($nb_even > 1)
 		{
-		$pluriel = "s ";
+            $pluriel = "s ";
 		}
 		
 ?><h3 style="margin:1em auto;width:94%;font-size:1.1em;"><?php echo $nb_even." événement".$pluriel."  trouvé".$pluriel; ?> pour <em><?php echo securise_string($mots) ?></em></h3>
+
+    <?php } ?>
+
 		<div id="res_recherche">
 
 
 
 		<ul id="menu_periode">
-		<?php
-		$get['mots'] = urlencode($get['mots']);
-		?>
-		<li class="futur<?php if ($get['periode'] == "futur") { echo " ici"; } ?>"><?php echo "<a href=\"".basename(__FILE__)."?".arguments_URI($get, "periode")."&amp;periode=futur\" title=\"\">Futurs</a></li>";?>
+            <?php
+            $get['mots'] = urlencode($get['mots']);
+            ?>
+            <li class="futur<?php if ($get['periode'] == "futur") { echo " ici"; } ?>"><?php echo "<a href=\"".basename(__FILE__)."?".arguments_URI($get, "periode")."&amp;periode=futur\" title=\"\">Futurs</a></li>";?>
 
 
-		<li class="ancien<?php if ($get['periode'] == "ancien") { echo " ici"; } ?>"><?php echo "<a href=\"".basename(__FILE__)."?".arguments_URI($get, "periode")."&amp;periode=ancien\" title=\"\">Anciens</a></li>";?>
-		<li class="tous<?php if ($get['periode'] == "tous") { echo " ici"; } ?>"><?php echo "<a href=\"".basename(__FILE__)."?".arguments_URI($get, "periode")."&amp;periode=tous\" title=\"\">Tous</a></li>"; ?>
-		<div class="spacer"></div>
+            <li class="ancien<?php if ($get['periode'] == "ancien") { echo " ici"; } ?>"><?php echo "<a href=\"".basename(__FILE__)."?".arguments_URI($get, "periode")."&amp;periode=ancien\" title=\"\">Anciens</a></li>";?>
+            <li class="tous<?php if ($get['periode'] == "tous") { echo " ici"; } ?>"><?php echo "<a href=\"".basename(__FILE__)."?".arguments_URI($get, "periode")."&amp;periode=tous\" title=\"\">Tous</a></li>"; ?>
+            <div class="spacer"></div>
 		</ul>
-	
-		
-		
-
-
+    <?php 
+	if ($nb_even > 0)
+	{            
+    ?>  
 		<ul id="menu_tri">
 
 		<li><div style="padding: 0.4em 1em;">Trier par :</div></li>
@@ -566,9 +568,9 @@ if (!empty($get['mots']))
 
 		echo "</table>";
 		echo getPaginationString($get['page'], $nb_even, $limite, 1, basename(__FILE__), "?".arguments_URI($get, "page")."&amp;page=");
-
-		echo "</div>"; //res_recherche
 	} //if evenement trouvé
+		echo "</div>"; //res_recherche
+
 
 
 }
