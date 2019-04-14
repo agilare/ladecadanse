@@ -1217,6 +1217,11 @@ echo $verif->getHtmlErreur('dateEvenement');
 </div>
 <div id="calendarDiv"></div>
 
+<?php if (in_array($get['action'], ["ajouter", "insert"])) { ?>
+<div class="guideChamp">Si l'événement se répète sur plusieurs dates, vous pouvez l'ajouter à d'autres dates avec le bouton <b>Copier</b>, à la page suivante</div>
+    <div class="spacer"></div>
+<?php } ?>
+
 </fieldset>
 
 <!-- LE LIEU DE L'EVENEMENT -->
