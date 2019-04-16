@@ -1371,51 +1371,16 @@ include("includes/navigation_calendrier.inc.php");
 
 	<!-- Deb actions -->
 	<div id="actions">
-
+		<?php		
+		if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 1))
+		{ ?>
 		<h2>Ajouter :</h2>
 		<ul>
-		<?php
+		<?php		
+		echo '<li><a href="'.$url_site.'ajouterPersonne.php?action=ajouter"><img src="images/interface/icons/user_add.png" alt="" style="vertical-align:bottom" />une personne</a></li>'; ?>
 
-		if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 6)
-		{
-		?>
-		<li><a href="<?php echo $url_site ?>ajouterLieu.php?action=ajouter"><img src="images/interface/icons/building_add.png" alt="" />un lieu</a></li>
-		<?php
-		}
-
-		if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 6)
-		{
-		?>
-		<li><a href="<?php echo $url_site ?>ajouterOrganisateur.php?action=ajouter"><img src="images/interface/icons/add.png" alt="" style="vertical-align:bottom" />un organisateur</a></li>
-
-		<?php
-		}
-		if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 6)
-		{
-		?>
-
-		<li><a href="<?php echo $url_site ?>ajouterSalle.php?action=ajouter"><img src="images/interface/icons/building_add.png" alt="" style="vertical-align:bottom" />une salle à un lieu</a></li>
-		<?php
-		}
-		if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 8)
-		{
-		?>
-		<li><a href="<?php echo $url_site ?>ajouterDescription.php?type=presentation&amp;action=ajouter"><img src="images/interface/icons/page_white_add.png" alt="" style="vertical-align:bottom" />une présentation</a></li>
-		<?php
-		}
-		if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 6)
-		{
-		?>
-		<li><a href="<?php echo $url_site ?>ajouterDescription.php?type=description&amp;action=ajouter"><img src="images/interface/icons/page_white_add.png" alt="" style="vertical-align:bottom" />une description</a></li>
-		<?php
-		}
-		if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 1))
-		{
-		echo '<li><a href="'.$url_site.'ajouterPersonne.php?action=ajouter"><img src="images/interface/icons/user_add.png" alt="" style="vertical-align:bottom" />une personne</a></li>';
-		}
-		?>
 		</ul>
-
+		<?php } ?>
 	</div>
 	<!-- Fin actions -->
 <?php

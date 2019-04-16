@@ -52,7 +52,7 @@ $pair = 0;
 
 <!-- Début Contenu -->
 <div id="contenu" class="colonne">
-
+<a href="<?php echo $url_site ?>ajouterLieu.php?action=ajouter"><img src="images/interface/icons/building_add.png" alt="" />un lieu</a>
     <div id="entete_contenu">
         <h2 style="font-size:1.6em; width: 40%;">Lieux</h2>	
   <?php getMenuRegions($glo_regions, $get); ?><div class="spacer"></div><p class="mobile" id="btn_listelieux">

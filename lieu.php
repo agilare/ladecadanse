@@ -641,7 +641,9 @@ if ($nb_pres > 0)
 		echo "<a href=\"".$url_site."ajouterDescription.php?idL=".$get['idL']."&amp;type=description\">".$icone['ajouter_texte']." Ajouter une description (avis)</a>";
 	}
 
-	if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 8 && est_organisateur_lieu($_SESSION['SidPersonne'], $get['idL']) && $nb_pres == 0)
+	if (isset($_SESSION['Sgroupe']) &&
+            ($_SESSION['Sgroupe'] <= 4  || $_SESSION['Sgroupe'] == 8 && est_organisateur_lieu($_SESSION['SidPersonne'], $get['idL']))
+            && $nb_pres == 0)
 	{
 		echo "<a href=\"".$url_site."ajouterDescription.php?idL=".$get['idL']."&amp;type=presentation\">".$icone['ajouter_texte']." Ajouter une présentation</a>";
 	}
