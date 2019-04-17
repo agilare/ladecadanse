@@ -40,8 +40,6 @@ $page_titre = "ajouter/éditer un lieu";
 $page_description = "ajouter/éditer un lieu";
 $extra_css = array("formulaires", "ajouterLieu_formulaire", "lieu_inc", "chosen.min");
 $extra_js = array("zebra_datepicker", "chosen.jquery.min", "jquery.shiftcheckbox");
-include("includes/header.inc.php");
-
 
 /*
 * action choisie, ID si édition, val pour (dés)activer l'événement
@@ -60,12 +58,6 @@ if (isset($_GET['idL']))
 	$get['idL'] = verif_get($_GET['idL'], "int", 1);
 }
 
-?>
-
-<!-- Debut Contenu -->
-<div id="contenu" class="colonne">
-
-<?php
 /* VERIFICATION POUR MODIFICATION
 * Si ce n'est pas un ajout et que la personne n'est pas l'auteur ni admin ou 'auteur'
 */
@@ -98,8 +90,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] == 'ok')
 {
 	if ($form->traitement($_POST, $_FILES))
 	{
-		$message_ok = messageOk($form->getMessage());
-		$afficher_form = false;
+		$_SESSION['lieu_flash_msg']  = $form->getMessage();
+        header("Location: lieu.php?idL=".$form->id); die();
 	}
 }
 else if ($get['action'] == 'editer')
@@ -143,8 +135,11 @@ else
 	$act = 'ajouter';
 	$titre_form = "Ajouter";
 }
+
+include("includes/header.inc.php");
 ?>
 
+<div id="contenu" class="colonne">
 
 <div id="entete_contenu">
 <h2><?php echo $titre_form; ?> un lieu</h2>

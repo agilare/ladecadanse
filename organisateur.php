@@ -104,9 +104,15 @@ if ($url_suiv != "")
 <div id="contenu" class="colonne">
 
 	<p id="btn_listelieux" class="mobile" style="display:none" >
-	<button href="#"><i class="fa fa-list fa-lg"></i>&nbsp;Liste des organisateurs</button>
+        <button href="#"><i class="fa fa-list fa-lg"></i>&nbsp;Liste des organisateurs</button>
 	</p>
-	
+    <?php
+    if (!empty($_SESSION['organisateur_flash_msg']))
+    {
+        msgOk($_SESSION['organisateur_flash_msg']);
+        unset($_SESSION['organisateur_flash_msg']);
+    }
+    ?>   	
 
 	<div id="entete_contenu">
 

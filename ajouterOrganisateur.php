@@ -25,7 +25,7 @@ require_once($rep_librairies."EditionOrganisateur.class.php");
 $page_titre = "ajouter/éditer un organisateur";
 $page_description = "ajouter/éditer un organisateur";
 $extra_css = array("formulaires", "ajouterOrganisateur_formulaire", "organisateur_inc");
-include("includes/header.inc.php");
+
 
 
 /*
@@ -45,12 +45,6 @@ if (isset($_GET['idO']))
 	$get['idO'] = (int)$_GET['idO'];
 }
 
-?>
-
-<!-- Debut Contenu -->
-<div id="contenu" class="colonne">
-
-<?php
 /* VERIFICATION POUR MODIFICATION
 * Si ce n'est pas un ajout et que la personne n'est pas l'auteur ni admin ou 'auteur'
 */
@@ -82,8 +76,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] == 'ok')
 {
 	if ($form->traitement($_POST, $_FILES))
 	{
-		$message_ok = messageOk($form->getMessage());
-		$afficher_form = false;
+		$_SESSION['organisateur_flash_msg'] = $form->getMessage();
+        header("Location: organisateur.php?idO=".$form->id); die();
 	}
 }
 else if ($get['action'] == 'editer')
@@ -127,20 +121,17 @@ else
 	$act = 'ajouter';
 	$titre_form = "Ajouter";
 }
+
+include("includes/header.inc.php");
 ?>
 
-
+<div id="contenu" class="colonne">
 <div id="entete_contenu">
 <h2><?php echo $titre_form; ?> un organisateur</h2>
 <?php echo $titre_actions; ?>
 <div class="spacer"></div>
 </div>
-
-
-
 <?php
-echo $message_ok;
-
 if ($afficher_form)
 {
 

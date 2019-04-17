@@ -209,8 +209,8 @@ require_once($rep_librairies.'ImageDriver2.php');
 			* Insertion réussie, message OK, aperçu, et RAZ des champs
 			*/
 			if ($organisateur->insert())
-			{	$req_id = $this->connector->getInsertId();
-				$this->message = 'Organisateur <a href="'.$url_site.'organisateur.php?idO='.$req_id.'">'.$this->valeurs['nom'].'</a> ajouté';
+			{	$this->id = $this->connector->getInsertId();
+				$this->message = 'Organisateur ajouté';
 			}
 			else
 			{
@@ -295,7 +295,7 @@ require_once($rep_librairies.'ImageDriver2.php');
 
 			if ($organisateur->update())
 			{
-				$this->message = 'Organisateur <a href="'.$url_site.'organisateur.php?idO='.$organisateur->getId().'">'.$this->valeurs['nom'].'</a> modifié';
+				$this->message = 'Organisateur modifié';
 				$action_terminee = true;
 			}
 			else

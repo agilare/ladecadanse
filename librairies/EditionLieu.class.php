@@ -325,8 +325,8 @@ require_once($rep_librairies.'ImageDriver2.php');
 			*/
 			if ($lieu->insert())
 			{
-				$req_id = $this->connector->getInsertId();
-				$this->message = '<a href="'.$url_site.'lieu.php?idL='.$req_id.'">Lieu</a> ajouté';
+				$this->id = $this->connector->getInsertId();
+				$this->message = 'Lieu ajouté';
 			}
 			else
 			{
@@ -443,7 +443,7 @@ require_once($rep_librairies.'ImageDriver2.php');
 
 			if ($lieu->update())
 			{
-				$this->message = '<a href="'.$url_site.'lieu.php?idL='.$lieu->getId().'">Lieu</a> modifié';
+				$this->message = 'Lieu modifié';
 				$action_terminee = true;
 			}
 			else
