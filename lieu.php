@@ -218,6 +218,14 @@ if ($lieu->getValue('photo1') != '')
 	<button href="#"><i class="fa fa-list fa-lg"></i>&nbsp;Liste des lieux</button>
 	</p>
 	
+    <?php
+    if (!empty($_SESSION['lieu_flash_msg']))
+    {
+        msgOk($_SESSION['lieu_flash_msg']);
+        unset($_SESSION['lieu_flash_msg']);
+    }
+    ?>    
+    
 	<div class="vcard">
 	<div id="entete_contenu">
 	

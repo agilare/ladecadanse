@@ -25,15 +25,11 @@ if (!$videur->checkGroup(8))
 $cache_lieux = $rep_cache."lieux/";
 header("Cache-Control: max-age=30, must-revalidate");
 
-
 $page_titre = "ajouter/éditer une description de lieu";
 $page_description = "ajouter/éditer une description de lieu";
 $nom_page = "ajouterDescription";
 $extra_css = array("formulaires", "description", "chosen.min");
 $extra_js = array( "zebra_datepicker", "chosen.jquery.min", "jquery.shiftcheckbox");
-include("includes/header.inc.php");
-
-
 
 /*
 * action choisie, idL et idP si édition
@@ -70,18 +66,6 @@ elseif (isset($_SESSION['SidPersonne']))
 {
 	$get['idP'] = $_SESSION['SidPersonne'];
 }
-
-
-
-?>
-
-
-
-<!-- D?t Contenu -->
-<div id="contenu" class="colonne">
-
-
-<?php
 
 /* VERIFICATION POUR MODIFICATION
 * Si ce n'est pas un ajout et que la personne, n'est pas l'auteur de la desc ni admin -> exit
@@ -126,10 +110,6 @@ $action_terminee = false;
 
 if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 {
-
-	/*
-	 * Copie des champs envoyê³ par POST
-	 */
 	foreach ($champs as $c => $v)
 	{
 		if (get_magic_quotes_gpc())
@@ -176,17 +156,12 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 		}
 	}
 
-	/*
-	 * Pas d'erreur, donc ajout ou update executés
-	 */
 	if ($verif->nbErreurs() === 0)
 	{
 		//creation/nettoyage des valeurs à insérer dans la table
 		$pers = $_SESSION['SidPersonne'];
 		$champs['type'] = $get['type'];
-		/*
-		* Insertion dans la base : INSERT
-		*/
+
 		if ($get['action'] == 'insert')
 		{
 
@@ -213,27 +188,12 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 			if ($connector->query($sql_insert))
 			{
 
-				msgOk("Description du <a href=\"".$url_site."lieu.php?idL=".securise_string($champs['idLieu'])."\" title=\"Voir la fiche du lieu\">".$iconeVoirFiche." lieu ".securise_string($champs['idLieu'])."</a> ajoutée");
-
+                $_SESSION['lieu_flash_msg'] = ucfirst($get['type'])." ajoutée";
+                
 				$descriptionlieu = $champs;
 				$descriptionlieu['auteur'] = $get['idP'];
 				$descriptionlieu['date_derniere_modif'] = date("Y-m-d H:i:s");
-				//include("templates/descriptionlieu.inc.php");
 
-				/*
-				 * Suppression des caches
-				 * - le lieu de la description
-				 * - la page Lieux
-				 */
-/* 				@unlink($cache_lieu);
-				if ($rc = opendir($cache_lieux))
-				{
-					while ($fichierLieux = readdir($rc))
-					{
-						@unlink($cache_lieux.$fichierLieux);
-					}
-					closedir($rc);
-				} //si le lieu est l'un des dernier ajoutés ou si son nom est changé (menu lieux) */
 
 				$action_terminee = true;
 			}
@@ -241,14 +201,9 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 			{
 				msgErreur("La requête INSERT dans descriptionlieu a échoué");
 			}
-
-		/*
-		* Insertion dans la base : UPDATE
-		*/
 		}
 		elseif ($get['action'] == 'update')
 		{
-
 			$champs['date_derniere_modif'] = date("Y-m-d H:i:s");
 
 			$sql_update = "UPDATE descriptionlieu SET
@@ -264,30 +219,9 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 			//message résultat et réinit de l'action
 			if ($req_update)
 			{
-
-				msgOk("Description du <a href=\"".$url_site."lieu.php?idL=".securise_string($champs['idLieu'])."\"
-				title=\"Voir la fiche du lieu\">lieu</a> modifiée");
-
+                $_SESSION['lieu_flash_msg'] = $get['type']." modifiée";
 				$descriptionlieu = $champs;
 				$descriptionlieu['auteur'] = $get['idP'];
-				//include("templates/descriptionlieu.inc.php");
-
-
-				/*
-				 * Suppression des caches
-				 * - le lieu de la description
-				 * - la page Lieux
-				 */
-/* 				@unlink($cache_lieu);
-				if ($rc = opendir($cache_lieux))
-				{
-					while ($fichierLieux = readdir($rc))
-					{
-						@unlink($cache_lieux.$fichierLieux);
-					}
-					closedir($rc);
-				} //si le lieu est l'un des dernier ajoutés ou si son nom est changé (menu lieux)
-				 */
 				$get['action'] = 'editer';
 				$action_terminee = true;
 			}
@@ -297,12 +231,21 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 			}
 
 		} //if action
-
+        
+        header("Location: lieu.php?idL=".$champs['idLieu']); die();
 
 	} // if erreurs == 0
-
-
 } // if POST != ""
+
+include("includes/header.inc.php");   
+?>
+
+
+<div id="contenu" class="colonne">   
+
+<?php
+
+ 
 
 if (!$action_terminee)
 {
@@ -372,18 +315,12 @@ if ($get['action'] == 'editer' && isset($get['idL']) && isset($get['idP']))
 
 echo '<div class="spacer"></div></div>';
 
-
-
 if ($verif->nbErreurs() > 0)
 {
 	msgErreur("Il y a ".$verif->nbErreurs()." erreur(s).");
 	//print_r($verif->getErreurs());
 }
-
-
 ?>
-
-
 
 <!-- FORMULAIRE POUR UNE DESCRIPTION -->
 <form method="post" id="ajouter_editer" enctype="multipart/form-data" action="<?php echo basename(__FILE__)."?action=".$act; ?>" onsubmit="return validerAjouterDescription()">
