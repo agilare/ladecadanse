@@ -1,16 +1,4 @@
 <?php
-/**
- * Page de calcul et affichage des statistiques sur les visites
- * Pour l'admin
- *
- * @category affichage
- * @author     Michel Gaudry <michel@ladecadanse.ch>
- * @todo 	Optimiser la requête $req_statVis :
-		//WHERE eevirra LIKE '%".strrev($dateCourante)."');
-		//BETWEEN '".$dateCourante." 00:00:00' AND '".$dateCourante." 23:59:59"
-		Tenir compte des moteurs de recherche d'images
- */
-
 if (is_file("../config/reglages.php"))
 {
 	require_once("../config/reglages.php");
@@ -39,16 +27,15 @@ $extra_js = array("zebra_datepicker", "chosen.jquery.min", "jquery.shiftcheckbox
 require_once('header.inc.php');
 
 $tab_listes = array("evenement" => "Événements",  "breve" => "Brèves", "lieu" => "Lieux", "description" => "Descriptions", "commentaire" => "Commentaires", "personne" => "Personnes");
-$tab_nblignes = array(100, 250, 500);
+$tab_nblignes = [100, 250, 500];
 
-$get = array();
+$get = [];
 
 $_SESSION['region_admin'] = '';
 if ($_SESSION['Sgroupe'] >= 4 && !empty($_SESSION['Sregion']))
 { 
     $_SESSION['region_admin'] = $_SESSION['Sregion'];
 }
-
 
 $get['element'] = "evenement";
 
@@ -58,13 +45,10 @@ if (isset($_GET['page']))
 	$get['page'] = verif_get($_GET['page'], "int", 1);
 }
 
-$tab_tris = array("dateAjout", "date_derniere_modif", "statut", "date_debut", "date_fin", "id", "titre", "nom", "prenom", "groupe", "pseudo", "genre");
-
 $get['tri_gerer'] = "dateAjout";
 if (isset($_GET['tri_gerer']))
 {
-	$get['tri_gerer'] = verif_get($_GET['tri_gerer'], "enum", 1, $tab_tris);
-
+	$get['tri_gerer'] = verif_get($_GET['tri_gerer'], "enum", 1, ["dateAjout", "date_derniere_modif", "statut", "date_debut","id", "titre", "genre"]);
 }
 
 $tab_ordre = array("asc", "desc");
@@ -123,11 +107,11 @@ $sql_region = '';
 $titre_region = '';
 if (!empty($_SESSION['region_admin']))
 {
-    	if (!empty($_GET['terme']) || !empty($_GET['filtre_genre']))
+    	if ((!empty($_GET['filtre_genre']) && $_GET['filtre_genre'] != 'tous') || !empty($_GET['terme']))
 		$where .= " AND ";
         
         $where .=  " region='".$connector->sanitize($_SESSION['region_admin'])."' ";
-        
+      
         $titre_region = " - ".$glo_regions[$_SESSION['region_admin']];
 }   
 ?>
@@ -139,10 +123,9 @@ if (!empty($_SESSION['region_admin']))
 
 	<div id="entete_contenu">
 		<h2>Gérer les événements <?php echo $titre_region ?></h2>
-
+        <div class="spacer"></div>
 	</div>
-
-	<div class="spacer"></div>
+	
 <?php
 
 require_once($rep_librairies.'ImageDriver2.php');
@@ -823,7 +806,7 @@ $req_evenement = $connector->query($sql_evenement);
 <?php
 if ($get['filtre_genre'] == 'tous') { echo 'class="ici"'; }
 
-echo '><a href="'.$url_admin.'gererEvenements.php?'.arguments_URI($get, "filtre_genre").'&filtre_genre=tous">Tous</a></li>';
+echo '><a href="?'.arguments_URI($get, "filtre_genre").'&filtre_genre=tous">Tous</a></li>';
 
 foreach ($glo_tab_genre as $ng => $nl)
 {
@@ -833,13 +816,11 @@ foreach ($glo_tab_genre as $ng => $nl)
         if ($ng == 'cinéma')
             $nom = 'ciné';
 
-	echo '><a href="'.$url_admin.'gererEvenements.php?'.arguments_URI($get, "filtre_genre").'&filtre_genre='.$ng.'">'.ucfirst($nom).'</a></li>';
+	echo '><a href="?'.arguments_URI($get, "filtre_genre").'&filtre_genre='.$ng.'">'.ucfirst($nom).'</a></li>';
 }
 echo '</ul>';
-
-
 ?>
-<div class="spacer"></div>
+    <div class="spacer"></div>
 	<form method="get" action="" id="ajouter_editer" style="margin:0;">
 	
 		<input type="hidden" name="filtre_genre" value="<?php echo $get['filtre_genre']; ?>" />
@@ -906,7 +887,7 @@ foreach ($th_evenements as $att => $th)
 			echo "<th>";
 		}
 
-		echo "<a href=\"".$_SERVER['PHP_SELF']."?".arguments_URI($get, "ordre")."&ordre=".$ordre_inverse."\">".$th."</a></th>";
+		echo "<a href=\"?".arguments_URI($get, "ordre")."&ordre=".$ordre_inverse."\">".$th."</a></th>";
 	}
 }
 

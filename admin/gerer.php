@@ -1,16 +1,4 @@
 <?php
-/**
- * Page de calcul et affichage des statistiques sur les visites
- * Pour l'admin
- *
- * @category affichage
- * @author     Michel Gaudry <michel@ladecadanse.ch>
- * @todo 	Optimiser la requête $req_statVis :
-		//WHERE eevirra LIKE '%".strrev($dateCourante)."');
-		//BETWEEN '".$dateCourante." 00:00:00' AND '".$dateCourante." 23:59:59"
-		Tenir compte des moteurs de recherche d'images
- */
-
 if (is_file("../config/reglages.php"))
 {
 	require_once("../config/reglages.php");
@@ -29,9 +17,6 @@ if (!$videur->checkGroup(4))
 	header("Location: ".$url_site."login.php"); die();
 }
 
-
-
-
 require_once($rep_librairies.'Validateur.php');
 require_once($rep_librairies.'usine.php');
 
@@ -39,8 +24,6 @@ $page_titre = "gérer";
 $page_description = "Gestion des éléments ajoutés";
 $nom_page = "gerer";
 require_once('header.inc.php');
-
-
 
 $tab_listes = array("evenement" => "Événements",  "breve" => "Brèves", "lieu" => "Lieux", "organisateur" => "Organisateurs", "description" => "Descriptions", "commentaire" => "Commentaires", "personne" => "Personnes");
 
