@@ -285,7 +285,7 @@ if ($organisateur->getValue('photo') != '')
 ?>
 	<div id="descriptions">
 		<div class="description">
-			<p><?php echo textToHtml($organisateur->getHtmlValue('presentation')); ?></p>
+            <p><?php echo $organisateur->getValue('presentation'); ?></p>
 		</div>
 	</div>
 	<!-- Fin presentations -->

@@ -23,8 +23,8 @@ if (!empty( $matches[1] ))
 
 $pages_orga = array("ajouterEvenement", "ajouterLieu", "ajouterPersonne", 'inscription');
 
-$pages_jquery = array("ajouterEvenement", "ajouterLieu", "inscription", "gererEvenements", "ajouterPersonne", "ajouterDescription");
-$pages_tinymce = ["ajouterDescription"];
+$pages_jquery = array("ajouterEvenement", "ajouterLieu", "inscription", "gererEvenements", "ajouterPersonne", "ajouterDescription", "ajouterOrganisateur");
+$pages_tinymce = ["ajouterDescription", "ajouterOrganisateur"];
 
 
 if (in_array($nom_page, $pages_jquery))
@@ -281,7 +281,7 @@ tinymce.init({
     'searchreplace visualblocks code',
     'paste code help wordcount'
   ],
-  toolbar: 'bold italic | bullist numlist | link | undo redo | visualblocks removeformat',
+  toolbar: 'bold italic link | h4 bullist numlist blockquote | undo redo | visualblocks removeformat code',
   content_css: [
     '//fonts.googleapis.com/css?family=Lato:300,300i,400,400i',
     '//www.tiny.cloud/css/codepen.min.css'

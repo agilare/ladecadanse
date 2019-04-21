@@ -200,8 +200,8 @@ echo $form->getHtmlErreur("email");
 ?>
 </p>
 <p>
-<label for="presentation">Présentation :</label>
-<textarea name="presentation" id="presentation" rows="16" cols="50">
+    <label for="presentation">Présentation :</label><br><br>
+<textarea name="presentation" id="presentation" class="tinymce" rows="16" cols="50">
 <?php echo $form->getValeur('presentation') ?></textarea>
 <?php
 echo $form->getHtmlErreur("presentation");

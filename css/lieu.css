@@ -217,11 +217,6 @@ ul.menu_actions_lieu li
 			margin:0em 1em 1em 0.4em;
 		}
 
-		#fiche  #descriptions .description a
-		{
-			color: blue;
-		}
-
 		#fiche #descriptions  .description h1
 		{
 			text-align:left;
@@ -237,7 +232,22 @@ ul.menu_actions_lieu li
 		{
 			font-size:1em;
 		}
-
+        
+		#fiche #descriptions .description h4
+		{
+			font-size: 1.05em;
+            font-weight:bold;
+            margin:0;
+                border:none
+		}
+        
+		#fiche #descriptions .description blockquote
+		{
+            margin-left:0.5em;
+            font-style: italic;
+            border-left: 1px solid #bbb;
+		}
+        
 		#fiche #descriptions .description .auteur
 		{
 			height:4em;
@@ -250,6 +260,7 @@ ul.menu_actions_lieu li
 			font-style:italic;
 		}
 
+        
 		#fiche #descriptions .description .auteur .left
 		{
 
