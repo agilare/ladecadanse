@@ -158,7 +158,7 @@ if (!empty($_GET['nblignes']))
 	$get['nblignes'] = verif_get($_GET['nblignes'], "int", 1);
 }
 
-if ($_SESSION['SidPersonne'] != $get['idP'] && $_SESSION['Sgroupe'] > 1 )
+if ($_SESSION['SidPersonne'] != $get['idP'] && $_SESSION['Sgroupe'] > 4 )
 {
 	msgErreur("Vous ne pouvez accédez à cette page");
 	exit;
@@ -186,23 +186,54 @@ $detailsAff = $connector->fetchArray($req_affPers);
 <div id="contenu" class="colonne personne">
 
 	<div id="entete_contenu">
-		<h2>Page de <em><?php echo $detailsPersonne['pseudo'] ?></em></h2>
+		<h2>Profil</h2>
 		<div class="spacer"></div>
 	</div>
 
 	<div class="spacer"></div>
 
+	<!-- Deb profile -->
+	<div id="profile" style="padding: 0.4em;width: 96%;margin: 1em auto 0 auto;">
+        
+		<table>
+            <tr><th>Identifiant</th><td><?php echo securise_string($detailsPersonne['pseudo']) ?></td></tr>
+            <tr><th>E-mail</th><td><?php echo securise_string($detailsPersonne['email']) ?></td></tr>
+            <tr><th>Affiliations</th><td>
+            <?php
+            //si l'affiliation est un lieu, crée un lien vers ce lieu
+            if ($connector->getNumRows($req_affPers) > 0)
+            {
+                echo "<a href=\"".$url_site."lieu.php?idL=".securise_string($detailsAff['idLieu'])."\"
+                title=\"Voir la fiche du lieu : ".securise_string($detailsAff['idLieu'])."\" >
+                ".securise_string($detailsAff['nom'])."</a>";
+            }
+            else
+            {
+                echo securise_string($detailsPersonne['affiliation']);
+            }
+            echo '<br />';
+            $sql = "SELECT * FROM personne_organisateur, organisateur WHERE personne_organisateur.idOrganisateur=organisateur.idOrganisateur AND personne_organisateur.idPersonne=".$get['idP'];
+            $req = $connector->query($sql);
+            while ($tab = $connector->fetchArray($req))
+            {
+                echo '<a href="'.$url_site.'organisateur.php?idO='.$tab['idOrganisateur'].'">'.$tab['nom'].'</a><br />';
+            }
+            ?>
+
+                </td></tr>
+        </table>
+        <?php if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 1)) { ?>
+        <a href="/ajouterPersonne.php?idP=<?php echo $get['idP'] ?>&action=editer"><img src="images/interface/icons/user_edit.png" alt="" />Modifier</a><?php } ?>
+    </div> <!-- Fin profile -->    
+    
+    
 	<ul id="menu_principal">
-
-	<li <?php if ($get['type_elements'] == "ajouts") { echo ' class="ici" '; } ?>>
-	<a href="<?php echo $url_site ?>personne.php?idP=<?php echo $get['idP'] ?>&type_elements=ajouts">
-	<?php echo $icone['ajouts']."Éléments ajoutés" ?></a></li>
-
-
-	<li <?php if ($get['type_elements'] == "favoris") { echo ' class="ici" '; } ?>>
-	<a href="<?php echo $url_site ?>personne.php?idP=<?php echo $get['idP'] ?>&type_elements=favoris">
-	<?php echo $icone['favori']."Favoris" ?></a></li>
-
+        <li <?php if ($get['type_elements'] == "ajouts") { echo ' class="ici" '; } ?>>
+        <a href="<?php echo $url_site ?>personne.php?idP=<?php echo $get['idP'] ?>&type_elements=ajouts">
+        <?php echo $icone['ajouts']."Éléments ajoutés" ?></a></li>
+        <li <?php if ($get['type_elements'] == "favoris") { echo ' class="ici" '; } ?>>
+        <a href="<?php echo $url_site ?>personne.php?idP=<?php echo $get['idP'] ?>&type_elements=favoris">
+        <?php echo $icone['favori']."Favoris" ?></a></li>
 	</ul>
 
 <?php
@@ -1363,100 +1394,7 @@ include("includes/navigation_calendrier.inc.php");
 <!-- Fin Colonnegauche -->
 
 
-<div id="colonne_droite" class="colonne personne">
-<?php
-		if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 10)
-		{
-		?>
-
-	<!-- Deb actions -->
-	<div id="actions">
-		<?php		
-		if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 1))
-		{ ?>
-		<h2>Ajouter :</h2>
-		<ul>
-		<?php		
-		echo '<li><a href="'.$url_site.'ajouterPersonne.php?action=ajouter"><img src="images/interface/icons/user_add.png" alt="" style="vertical-align:bottom" />une personne</a></li>'; ?>
-
-		</ul>
-		<?php } ?>
-	</div>
-	<!-- Fin actions -->
-<?php
-}
-?>
-
-	<!-- Deb profile -->
-	<div id="profile">
-
-		<h2>Votre profil</h2>
-
-		<table>
-<?php
-/** DETAILS PERSONNE */
-
-
-//ID, Groupe, actif : seulement visibles par l'admin
-/*
-if ($_SESSION['Sgroupe'] <= 1) {
-
-	echo "<tr><th>ID</th><td>".$detailsPersonne['idPersonne']."</td></tr>
-	<tr><th>Groupe</th><td>".$detailsPersonne['groupe']."</td></tr>
-	<tr><th>Actif</th><td>";
-
-	if ($detailsPersonne['actif']) {
-		echo $iconeActive;
-	} else {
-		echo $iconeDesactive;
-	}
-	echo "</td>";
-} // if groupe
-*/
-
-echo "<tr><th>Pseudo</th><td>".securise_string($detailsPersonne['pseudo'])."</td></tr>
-<tr><th>E-mail</th><td>".securise_string($detailsPersonne['email'])."</td></tr>
-
-<tr><th>Affiliation</th><td>";
-
-//si l'affiliation est un lieu, crée un lien vers ce lieu
-if ($connector->getNumRows($req_affPers) > 0)
-{
-	echo "<a href=\"".$url_site."lieu.php?idL=".securise_string($detailsAff['idLieu'])."\"
-	title=\"Voir la fiche du lieu : ".securise_string($detailsAff['idLieu'])."\" >
-	".securise_string($detailsAff['nom'])."</a>";
-}
-else
-{
-	echo securise_string($detailsPersonne['affiliation']);
-}
-echo '<br />';
-$sql = "SELECT * FROM personne_organisateur, organisateur WHERE personne_organisateur.idOrganisateur=organisateur.idOrganisateur AND personne_organisateur.idPersonne=".$get['idP'];
-$req = $connector->query($sql);
-while ($tab = $connector->fetchArray($req))
-{
-	echo '<a href="'.$url_site.'organisateur.php?idO='.$tab['idOrganisateur'].'" title="">'.$tab['nom'].'</a><br />';
-
-}
-
-echo "</td></tr>
-<tr><th>Adresse</th><td>".securise_string($detailsPersonne['adresse'])."</td></tr>
-<tr><th>Téléphone</th><td>".$detailsPersonne['telephone']."</td></tr>
-<tr><th>Site web</th><td><a href=\"http://".$detailsPersonne['URL']."\" title=\"Aller sur son site web\">".$detailsPersonne['URL']."</a></td></tr>";
-
-@mysqli_free_result($req_personne);
-
-
-?>
-
-
-</table>
-
-<a href="<?php echo $url_site ?>ajouterPersonne.php?idP=<?php echo $get['idP'] ?>&action=editer">
-<img src="images/interface/icons/user_edit.png" alt="" />Modifier</a>
-</div>
-	<!-- Fin profile -->
-</div>
+<div id="colonne_droite" class="colonne personne"></div>
 <!-- Fin colonne_droite -->
 
 

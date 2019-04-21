@@ -84,7 +84,6 @@ $troisJoursAvant = date("Y-m-d H:i:s", time() - (3*86400));
 
 ?>
 
- 
 <div id="entete_contenu">
 	<h2>Tableau de bord</h2>
 	<div class="spacer"></div>

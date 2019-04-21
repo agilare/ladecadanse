@@ -46,6 +46,11 @@
 
 	</ul>
 
-
+    <?php if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 1)) { ?>
+    <h2>Ajouter :</h2>
+    <ul>
+        <li><a href="/ajouterPersonne.php?action=ajouter"><img src="/images/interface/icons/user_add.png" alt="" style="vertical-align:bottom" />une personne</a></li>
+    </ul>
+    <?php } ?>
 </div>
 <!-- Fin gestion -->
