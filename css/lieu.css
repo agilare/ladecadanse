@@ -237,7 +237,7 @@ ul.menu_actions_lieu li
 		{
 			font-size: 1.05em;
             font-weight:bold;
-            margin:0;
+            margin:0.4em;
                 border:none
 		}
         
@@ -568,13 +568,6 @@ background-color:transparent;
 font-size: 0.95em;
 }
 
-#commentaires h3, h4
-{
-	margin: 1.4em 1em 0.6em 1em;
-	border-top:1px dotted #5C7378;
-	font-size:1em;
-	color:#5C7378;
-}
 
 #commentaires h5
 {
