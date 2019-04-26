@@ -36,26 +36,6 @@ else
 	exit;
 }
 
-
-/* if (isset($_GET['liste']))
-{
-	if (array_key_exists($_GET['liste'], $tab_elements))
-	{
-		$get['liste'] = $_GET['liste'];
-	}
-	else
-	{
-		msgErreur("Liste non valable");
-		exit;
-	}
-}
-else
-{
-	$get['liste'] = "elements";
-}
- */
-
-
 if (isset($_GET['type_elements']))
 {
 
@@ -203,9 +183,7 @@ $detailsAff = $connector->fetchArray($req_affPers);
             //si l'affiliation est un lieu, crée un lien vers ce lieu
             if ($connector->getNumRows($req_affPers) > 0)
             {
-                echo "<a href=\"".$url_site."lieu.php?idL=".securise_string($detailsAff['idLieu'])."\"
-                title=\"Voir la fiche du lieu : ".securise_string($detailsAff['idLieu'])."\" >
-                ".securise_string($detailsAff['nom'])."</a>";
+                echo "<a href=\"lieu.php?idL=".securise_string($detailsAff['idLieu'])."\" title=\"Voir la fiche du lieu : ".securise_string($detailsAff['idLieu'])."\" >".securise_string($detailsAff['nom'])."</a>";
             }
             else
             {
@@ -216,13 +194,13 @@ $detailsAff = $connector->fetchArray($req_affPers);
             $req = $connector->query($sql);
             while ($tab = $connector->fetchArray($req))
             {
-                echo '<a href="'.$url_site.'organisateur.php?idO='.$tab['idOrganisateur'].'">'.$tab['nom'].'</a><br />';
+                echo '<a href="organisateur.php?idO='.$tab['idOrganisateur'].'">'.$tab['nom'].'</a><br />';
             }
             ?>
 
                 </td></tr>
         </table>
-        <?php if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 1)) { ?>
+        <?php if ((isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 1)) || $_SESSION['SidPersonne'] == $get['idP']) { ?>
         <a href="/ajouterPersonne.php?idP=<?php echo $get['idP'] ?>&action=editer"><img src="images/interface/icons/user_edit.png" alt="" />Modifier</a><?php } ?>
     </div> <!-- Fin profile -->    
     
