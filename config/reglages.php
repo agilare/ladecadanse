@@ -15,7 +15,7 @@ $rep_images_lieux = $rep_images."lieux/";
 $rep_images_lieux_galeries = $rep_images_lieux."galeries/";
 $rep_images_organisateurs = $rep_images."organisateurs/";
 
-$rep_fichiers =  $rep_absolu."fichiers/";
+$rep_fichiers =  $rep_absolu."web/uploads/fichiers/";
 $rep_fichiers_even = $rep_fichiers."evenements/";
 $rep_fichiers_lieu = $rep_fichiers."lieux/";
 
@@ -28,7 +28,7 @@ $rep_cache = $rep_absolu."cache/";
 // URL
 
 $url_images = $url_site."images/";
-$url_fichiers = $url_site."fichiers/";
+$url_fichiers = $url_site."web/uploads/fichiers/";
 $url_fichiers_even = $url_fichiers."evenements/";
 $url_fichiers_lieu = $url_fichiers."lieux/";
 $url_images_lieu_galeries = $url_images."lieux/galeries/";
