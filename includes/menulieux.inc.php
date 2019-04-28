@@ -90,11 +90,20 @@ if (isset($get['idL']))
 	$url_idLieu = "&amp;idL=".$get['idL'];
 }
 
-$aff_menulieux = '<div id="menu_lieux">';
+$aff_menulieux = '<div id="menu_lieux"><ul class="selon">
+	<li';
+	if ($get['statut'] == "actif") { $aff_menulieux .= " class=\"ici\""; }
+	$aff_menulieux .= '><a href="'.$_SERVER['PHP_SELF'].'?'.$url_query_region_et.'statut=actif&amp;vue=az'.$url_idLieu.'">Actuels</a></li><li';
+	if ($get['statut'] == "ancien") { $aff_menulieux .= " class=\"ici\""; }
+	$aff_menulieux .= '><a href="'.$_SERVER['PHP_SELF'].'?'.$url_query_region_et.'statut=ancien&amp;vue=az'.$url_idLieu.'" >Anciens</a></li>';
 
-
+           
+    $aff_menulieux .= ' 
+<div class="spacer"><!-- --></div></ul>
+    ';    
+    
 $aff_menulieux .= '
-<ul id="selon">
+<ul class="selon">
 	<li';
 	if ($get['vue'] == "az") { $aff_menulieux .= " class=\"ici\""; }
 	$aff_menulieux .= '><a href="'.$_SERVER['PHP_SELF'].'?'.$url_query_region_et.'statut='.$get['statut'].'&amp;vue=az'.$url_idLieu.'" title="Liste alphabétique">A-Z</a></li><li';
@@ -135,7 +144,7 @@ $aff_menulieux .= '
 			{
 				$aff_menulieux .= "
 				<form action=\"".$_SERVER['PHP_SELF']."\" method=\"get\">
-				<fieldset>
+				
 				<input type=\"hidden\" name=\"vue\" value=\"genre\" />
 				<input type=\"hidden\" name=\"idL\" value=\"".$get['idL']."\" />
 				<input type=\"hidden\" name=\"statut\" value=\"".$get['statut']."\" />
@@ -153,7 +162,7 @@ $aff_menulieux .= '
 				}
 				$aff_menulieux .= "</select><input class=\"submit\" type=\"submit\" value=\"ok\" size=\"1\" />
 
-				</fieldset></form>";
+				</form>";
 
 				$sql_vue .= "AND categorie LIKE '%".$get['tranche']."%'";
 

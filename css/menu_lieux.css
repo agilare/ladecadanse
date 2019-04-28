@@ -47,7 +47,7 @@
 	
 	
 
-	#menu_lieux ul#selon
+	#menu_lieux ul.selon
 	{	
 		float:left;
 		height:2em;
@@ -58,24 +58,24 @@
 	}
 
 
-	#menu_lieux ul#selon li
+	#menu_lieux ul.selon li
 	{
+        width:50%;
 		display:inline-block;
 		text-align:center;
 		padding:0.4em 0;
 	}
 
-	#menu_lieux ul#selon li a
+	#menu_lieux ul.selon li a
 	{
 		display:block;
-		width:60px;
 		height:1.4em;
 
 	}
 
 
 
-	#menu_lieux ul#selon li.ici a
+	#menu_lieux ul.selon li.ici a
 	{	
 		font-weight:bold;
 	}
@@ -117,7 +117,7 @@
 	
 	#menu_lieux form
 	{
-		margin-top:0.4em;
+		margin-top:0;
 	}
 
 	#menu_lieux form select

@@ -441,12 +441,16 @@ font-size:0.9em;
 
 }
 
-#menu_lieux ul#selon li a {
+#menu_lieux ul.selon li a {
 
     height: 1em;
     padding: 0.4em 0;
     width: 90px;
 	
+}
+
+#menu_lieux table {
+    width: 100%;
 }
 
 #menu_lieux table tr td a {
