@@ -42,7 +42,7 @@ $pair = 0;
 
 
 	<div id="entete_contenu">
-		<h2  style="font-size:1.6em; width: 30%;">Organisateurs</h2><a href="<?php echo $url_site ?>ajouterOrganisateur.php?action=ajouter" style="float: right;padding: 5px 1px;"><img src="images/interface/icons/add.png" alt="" style="vertical-align:bottom" /> Ajouter un organisateur</a>
+		<h2  style="font-size:1.6em; width: 30%;">Organisateurs</h2><?php if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 6) { ?><a href="ajouterOrganisateur.php?action=ajouter" style="float: right;padding: 5px 1px;"><img src="images/interface/icons/add.png" alt="" style="vertical-align:bottom" /> Ajouter un organisateur</a><?php } ?>
 		<div class="clear_mobile"></div>
 	</div>
 
