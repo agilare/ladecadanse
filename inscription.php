@@ -511,23 +511,17 @@ if ($verif->nbErreurs() > 0)
 <fieldset>
 <legend>Avec :</legend>
 
-<!-- Pseudo* (text) -->
 <p>
 <label for="utilisateur">Identifiant*</label>
 
-<input type="text" name="utilisateur" id="utilisateur" size="25" maxlength="80"
-value="<?php echo htmlspecialchars($champs['utilisateur']) ?>" />
-<div class="guide_champ">&#9888; C'est avec lui que vous vous connecterez au site, pas l'email ci-dessous</div>
+<input type="text" name="utilisateur" id="utilisateur" size="25" maxlength="80" value="<?php echo htmlspecialchars($champs['utilisateur']) ?>" />
+<div class="guide_champ">&#9888; C'est avec celui-ci que vous vous connecterez au site, pas l'email ci-dessous</div>
 <?php
 echo $verif->getHtmlErreur('utilisateur');
 echo $verif->getHtmlErreur("utilisateur_existant");
 ?>
-</p>
-<!--<div class="guide_champ">Utilisé pour vous connecter</div>-->
 
 
-
-<!-- Nouveau mot de passe* en cas de mise à jour -->
 <p>
 <label for="motdepasse">Mot de passe*</label>
 <input type="password" name="motdepasse" id="motdepasse" size="16" maxlength="20" value="" />
@@ -560,19 +554,14 @@ echo $verif->getHtmlErreur("email_identique");?>
 	<ul class="radio">
 		<li class="listehoriz" style="float: left;display:block;">
 			<label for="membre" style="float:left"><strong>Membre</strong><br>
-			Pour écrire des commentaires et garder en favori des lieux et des événements
-			
-			</label><input type="radio" name="groupe" id="membre" value="12" 
+			Pour écrire des commentaires et garder en favori des lieux et des événements</label>&nbsp;<input type="radio" name="groupe" id="membre" value="12" 
 			<?php if ($champs['groupe'] == 12) { echo ' checked'; } ?>
 			/>
 	
 		</li>
 
 		<li class="listehoriz" style="float: left;display:block;">
-			<label for="inscription_organisateur" style="float:left"><strong>Acteur culturel</strong><br>Mêmes droits qu'un membre + possibilité d'ajouter des événements
-			</label><input type="radio" name="groupe" id="inscription_organisateur" value="8" 
-			<?php if ($champs['groupe'] == 8) { echo ' checked'; } ?>
-			 />
+			<label for="inscription_organisateur" style="float:left"><strong>Acteur culturel</strong><br>Mêmes droits qu'un membre + possibilité d'ajouter des événements</label>&nbsp;<input type="radio" name="groupe" id="inscription_organisateur" value="8" <?php if ($champs['groupe'] == 8) { echo ' checked'; } ?> />
 		</li>
 	</ul>
 <div class="spacer"></div>

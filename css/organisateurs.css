@@ -4,6 +4,7 @@
 	width:94%;
 	margin:0 auto 0 auto;
 	background-color:#fdfdfd;
+    list-style-type: none;
 
 }
 
@@ -72,7 +73,7 @@ color:#4a4a4a;
 color:red;
 }
 
-/*Panneau Derniers lieux ajoutés */
+/*Panneau Derniers lieux ajoutÃ©s */
 #derniers_lieux
 {
 background-color:#ffffff;

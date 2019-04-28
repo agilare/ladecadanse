@@ -192,7 +192,7 @@ echo $form->getHtmlErreur("determinant");
 <!-- Adresse (text) -->
 <p>
 <label for="adresse">Adresse*</label>
-<input type="text" name="adresse" id="adresse" size="60" maxlength="80" title="Veuillez indiquer le numéro et la rue" value="<?php echo $form->getValeur('adresse') ?>" required />
+<input type="text" name="adresse" id="adresse" size="40" maxlength="80" title="Veuillez indiquer le numéro et la rue" value="<?php echo $form->getValeur('adresse') ?>" required />
 <?php
 echo $form->getHtmlErreur("adresse");
 ?>
@@ -401,7 +401,7 @@ echo $form->getHtmlErreur("telephone");
 <!-- URL (text) -->
 <p>
 <label for="URL">Site web</label>
-<input type="text" name="URL" id="URL" size="60 maxlength="80" tabindex="7" title="Page web du lieu"
+<input type="text" name="URL" id="URL" size="40" maxlength="80" tabindex="7" title="Page web du lieu"
 value="<?php echo $form->getValeur('URL') ?>"  onblur="validerURL('URL', 'false');" />
 <?php
 echo $form->getHtmlErreur("URL");
@@ -481,7 +481,7 @@ while ($tab = $connector->fetchArray($req))
 <!-- Catégorie (checkbox) -->
 <fieldset>
 <legend>Catégorie(s)</legend>
-<ul class="checkbox">
+<ul class="checkbox" style="list-style-type: none">
 <?php
 	foreach ($glo_categories_lieux as $cat => $cat_nom)
 	{

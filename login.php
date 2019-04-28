@@ -129,7 +129,7 @@ include("includes/header.inc.php");
 <div id="contenu" class="colonne">
 
 <div id="entete_contenu">
-<h2>Connexion à La décadanse</h2>
+<h2>Connexion</h2>
 	<div class="spacer"></div>
 </div>
 
@@ -176,17 +176,13 @@ echo $verif->getHtmlErreur("pseudo");
 <label for="motdepasse" id="login_motdepasse">Mot de Passe</label>
 <input type="password" name="motdepasse" id="motdepasse" value="" size="15" title="Veuillez entrer votre mot de passe" />
 <?php
-
 echo $verif->getHtmlErreur("motdepasse");
 ?>
-</p>
+
 
 <p class="memoriser" id="login_memoriser">
 <label for="memoriser">Se souvenir de moi</label>
 <input type="checkbox" name="memoriser" id="memoriser" value="1" title="" />
-<?php
-//echo $verif->getHtmlErreur("memoriser");
-?>
 </p>
 
 <!--<p style="width:50%;margin-left:10em;">Mot de passe oublié ? <a href="contacteznous.php" >Contactez-nous</a> en nous indiquant si possible votre <b>identifiant</b></p>-->

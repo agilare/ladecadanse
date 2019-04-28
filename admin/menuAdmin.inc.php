@@ -8,9 +8,9 @@
 <!-- Deb gestion -->
 <div id="gestion">
 
-	<h2 style="font-weight:bold;margin:0.4em 0;">Gérer :</h2>
+	<h2>Gérer :</h2>
 
-	<ul>
+	<ul style="list-style-type:none">
 		<li><a href="<?php echo $url_admin ?>gererEvenements.php">
 		<img src="<?php echo $IMGicones ?>calendar.png" alt="" />les événements</a>
 		</li>
