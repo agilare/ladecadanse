@@ -41,7 +41,7 @@ else
 <div id="contenu" class="colonne">
 
 <?php
-if (1) // (!isset($_COOKIE['msg_orga_benevole'])) // isset($_GET['debug']) && 
+if (0) // (!isset($_COOKIE['msg_orga_benevole'])) // isset($_GET['debug']) && 
 {
 ?>
 <div style="position:relative;padding:0.7em 0.5em;margin:0em 0;background:#fff3cd;color:#856404">
