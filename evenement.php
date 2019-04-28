@@ -357,7 +357,7 @@ iCalendar</a></li>
 
 					}
 					?></h4>
-					<ul>
+					<ul style="list-style-type: none;">
 						<li class="adr">
 						
 						<?php echo $adresse ?></li>

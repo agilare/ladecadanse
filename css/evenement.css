@@ -7,6 +7,7 @@
 #entete_contenu ul#menu_actions
 {
 	float:right;
+    list-style-type: none;
 }
 
 #entete_contenu ul#menu_actions li
@@ -154,7 +155,9 @@ min-height:200px;
 
 	#complement ul
 	{
-
+        list-style-type: none;
+        padding:0;
+        margin:0;
 	}
 
 	#complement ul li
@@ -230,7 +233,7 @@ min-height:200px;
 
 
 	#pratique ul
-	{
+	{list-style-type: none;
 	}
 
 	#pratique ul li

@@ -7,11 +7,8 @@
 
 #entete_contenu h2
 {
-
-		float:none;
+	float:none;
 	line-height:1.2em;
-	padding:0px 0;
-	/*  background:lime;  */
 }
 
 
@@ -80,23 +77,14 @@ ul.menu_actions_lieu li
 		margin:0 0.2em;
 }
 
-
-
-/* FICHE */
 #fiche
 {
 	width:94%;
 	margin: 0em auto 0.4em auto;
 	max-width:60em;
-	/*min-width:25em;*/
 	min-height:320px;
 	color:#5C7378;
 	background-color: #F7F7F5;
-}
-
-.vide
-{
-	min-height:300px;
 }
 
 	#fiche #pratique
@@ -108,10 +96,10 @@ ul.menu_actions_lieu li
 
 		#fiche #pratique ul
 		{
-			padding:0.3em 0.4em;
-			
+			list-style-type: none;
+            padding:0.2em;
 		}
-
+            
 			#fiche #pratique ul li
 			{
 				margin:0.4em 0;
@@ -156,7 +144,6 @@ ul.menu_actions_lieu li
 
 	ul#menu_descriptions
 	{
-
 		display:block;
 		margin:1.2em 0 0.8em 0;
 		max-width:372px;
@@ -164,7 +151,7 @@ ul.menu_actions_lieu li
 		font-size:1em;
 		color:#5C7378;
 		border-bottom:1px dotted #5C7378;
-			text-align:center;
+		text-align:center;
 
 	}
 
@@ -174,9 +161,7 @@ ul.menu_actions_lieu li
 			display:block;
 			text-align:center;
 			padding:0 0.4em;
-			/* border:1px solid red; */
 	}
-
 
 		ul#menu_descriptions li a
 		{
@@ -186,7 +171,6 @@ ul.menu_actions_lieu li
 
 		ul#menu_descriptions li.ici a
 		{
-
 			color:#5e5e5e;
 			font-weight:800;
 			background-color:#F7F7F5;
@@ -265,9 +249,7 @@ ul.menu_actions_lieu li
 		{
 
 			float : left;
-			text-align : left;
 			vertical-align:middle;
-			/* width : 59%; */
 		}
 
 		#fiche #descriptions .description .auteur .right
@@ -279,16 +261,9 @@ ul.menu_actions_lieu li
 			width : 49%;
 		}
 
-#fiche p a:visited
-{
-	font-family : Verdana, Geneva, Arial, Helvetica, sans-serif;
-	color: #6E9CCF;
-}
-
 #fiche #medias
 {
 	float:right;
-/* 	background-color:#eaeaea; */
 	margin:0px 0px 0px 5px;
 	width:200px;
 	color:#5C7378;
@@ -304,9 +279,7 @@ ul.menu_actions_lieu li
 
 #fiche #medias .section
 {
-/* 	border:1px solid #aeaeae; */
 	margin:1em 0;
-/* 	padding: 0.4em */
 }
 
 #fiche #medias .section h3

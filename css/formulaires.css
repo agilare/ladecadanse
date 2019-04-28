@@ -6,7 +6,6 @@ form#ajouter_editer
  	color:#505a5a;
  font-size:1em;
  line-height: 1.3em;
-/*  border:1px solid lime; */
 }
 
 	form#ajouter_editer fieldset
@@ -15,7 +14,6 @@ form#ajouter_editer
 		margin-left:0.1em;
 		background-color:#f2f2f2;
 		padding:1em 0 1em 0.4em;
-		/*  border:1px solid aqua; */
 	}
 
 		form#ajouter_editer fieldset legend
@@ -27,8 +25,7 @@ form#ajouter_editer
 	form#ajouter_editer p
 	{
 		width:100%;
-		padding:0.6em 0;
-	/* 	 border: 1px solid black;   */
+		padding: 0;
 	}
 
 
@@ -138,7 +135,7 @@ border:none;
 
 form#ajouter_editer  ul.radio_vert
 {
-
+    list-style-type: none;
 	margin-left:10em;
 	vertical-align:middle;
 }

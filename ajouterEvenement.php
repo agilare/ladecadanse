@@ -1319,7 +1319,7 @@ $tab_nomLieu_label = array("for" => "nomLieu");
 echo form_label($tab_nomLieu_label, "Nom du lieu");
 echo $verif->getHtmlErreur("nomLieuIdentique");
 
-$tab_nomLieu = array("type" => "text", "name" => "nomLieu", "id" => "nomLieu", "size" => "40",
+$tab_nomLieu = array("type" => "text", "name" => "nomLieu", "id" => "nomLieu", "size" => "35",
  "maxlength" => "60", "value" => "",
  "onfocus" => "this.className='focus';", "onblur" => "this.className='normal';");
 if (empty($champs['idLieu']))
@@ -1337,7 +1337,7 @@ echo $verif->getHtmlErreur("nomLieu");
 echo $verif->getHtmlErreur("adresseIdentique");
 ?>
 
-<input type="text" name="adresse" id="adresse" size="60" maxlength="100" title="rue, no" value="<?php if (empty($champs['idLieu'])) { echo securise_string($champs['adresse']); } ?>" onfocus="this.className='focus';" onblur="this.className='normal';" />
+<input type="text" name="adresse" id="adresse" size="50" maxlength="100" title="rue, no" value="<?php if (empty($champs['idLieu'])) { echo securise_string($champs['adresse']); } ?>" onfocus="this.className='focus';" onblur="this.className='normal';" />
 <?php
 echo $verif->getHtmlErreur("adresse");
 echo $verif->getHtmlErreur("doublonLieux");
@@ -1587,7 +1587,7 @@ echo $verif->getHtmlErreur('horaire_fin');
 
 <div>
 <label for="horaire_complement">Complément</label>
-<input type="text" name="horaire_complement" id="horaire_complement" size="60" maxlength="100" title="Précisions" value="<?php echo securise_string($champs['horaire_complement']) ?>" />
+<input type="text" name="horaire_complement" id="horaire_complement" size="40" maxlength="100" value="<?php echo securise_string($champs['horaire_complement']) ?>" />
 <?php
 echo $verif->getHtmlErreur('horaire_complement');
 ?>
@@ -1611,7 +1611,7 @@ echo $verif->getHtmlErreur('prix');
 <div class="guideChamp">Vous pouvez mettre seulement <strong>0</strong> si l'entrée est libre.</div>
 <div>
 <label for="prelocations">Prélocations</label>
-<input type="text" name="prelocations" id="prelocations" size="60" maxlength="150" title="pour acheter les billets" value="<?php echo securise_string($champs['prelocations']) ?>" />
+<input type="text" name="prelocations" id="prelocations" size="50" maxlength="150" title="pour acheter les billets" value="<?php echo securise_string($champs['prelocations']) ?>" />
 
 <?php
 echo $verif->getHtmlErreur('prelocations');

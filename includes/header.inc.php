@@ -228,8 +228,7 @@ $tab_de = $connector->fetchArray($req_de);
 	?>
 		<meta name="robots" content="noindex, nofollow" />	
 <?php } ?>
-	<title>
-	<?php
+	<title><?php
 	if ($nom_page != "index")
 	{
 		echo $page_titre." — La décadanse";
@@ -286,7 +285,7 @@ $tab_de = $connector->fetchArray($req_de);
 	<?php
 	}
 	?>
-	<link rel="shortcut icon" href="<?php echo $url_images ?>interface/favicone.gif" />	
+	<link rel="shortcut icon" href="web/images//favicon.png" />	
     <link rel="apple-touch-icon" href="web/images/apple-icon.png" />    
     <link rel="apple-touch-icon" sizes="57x57" href="web/images/apple-icon-57x57.png" />       
     <link rel="apple-touch-icon" sizes="76x76" href="web/images/apple-icon-76x76.png" />     
@@ -322,175 +321,156 @@ echo '<a id="bouton_imprimer" title="Imprimer la page" href="javascript:window.p
 }
 ?>
 
-
-
 <div id="global">
 <a name="haut" id="haut"></a>
+
 <div id="entete">
    
-<div id="titre_site">
-<h1><a href="<?php echo $url_site.$url_query_region_1er ?>" title="Retour à la page d'accueil"><img src="<?php echo $url_images."interface/logo_titre.jpg" ?>" alt="La décadanse"  width="180" height="35" /></a></h1>
-</div>
-
-
-<div id="entete_haut">
-
-	<a id="btn_menu_pratique" href="#">Menu</a>
-	<div id="menu_pratique">
-	<ul>
-<?php
-//echo $_SERVER['PHP_SELF'];
-
-foreach ($glo_menu_pratique as $nom => $lien)
-{
-	
-	$menu_pratique_li = '';
-	if ($nom == "Faire un don")
-		 $menu_pratique_li = ' style="background: #ffdf3f;border-radius: 0 0 3px 3px;padding:2px 0;" ';
-	
-        $ici = '';
-	if (strstr($_SERVER['PHP_SELF'], $lien) )
-	{
-		$ici = " class=\"ici\"";
-	}
-    ?>
-	<li <?php echo $ici; ?> <?php echo $menu_pratique_li; ?>><a href="<?php echo $url_site.$lien; ?>" <?php echo $ici; ?>><?php echo $nom; ?></a></li>
-    
-   
-<?php
-}
-
-$ici = '';
-if (!isset($_SESSION['SidPersonne']))
-{
-	
-	if ( strstr($_SERVER['PHP_SELF'], "annoncerEvenement.php") )
-	{
-		$ici = ' ici ';
-	}
-	
-
-?>	
-
-	
-    <li class="<?php echo $ici; ?>" ><a href="<?php echo $url_site; ?>annoncerEvenement.php"  >Annoncer un événement</a></li>
-    <li class="<?php echo $ici; ?> only-mobile" ><a href="<?php echo $url_site; ?>charte-editoriale.php">Charte éditoriale</a></li>
-
-
-<?php
-}
-
-if (!isset($_SESSION['SidPersonne']))
-{
-    $ici = '';
-    $ici_login = '';
-	if (strstr($_SERVER['PHP_SELF'], "login.php") )
-	{
-		$ici_login = " class=\"ici\"";
-	}
-	
-	if ( strstr($_SERVER['PHP_SELF'], "inscription.php"))
-	{
-		$ici = " class=\"ici\"";
-	}
-	?>
-    
-    <li <?php echo $ici; ?>><a href="<?php echo $url_site; ?>inscription.php" title="Créer un compte"><strong>Inscription</strong></a></li>
-<li <?php echo $ici_login; ?> rel="nofollow"><a href="<?php echo $url_site; ?>login.php" title="Se connecter au site">Connexion</a></li>
-
-<?php
-}
-else
-{
-	if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 10))
-	{
-		$ici = '';
-		if (strstr($_SERVER['PHP_SELF'], "ajouterEvenement.php") )
-		{
-			$ici = " class=\"ici\"";
-		}
-        ?>
-  
-        <li <?php echo $ici; ?>><a href="<?php echo $url_site; ?>ajouterEvenement.php?action=ajouter">Ajouter un événement</a></li>
-        
-        <?php
-	}
-	
-    $ici = '';
-	if (strstr($_SERVER['PHP_SELF'], "personne.php") )
-	{
-		$ici = " class=\"ici\"";
-	}
-    ?>
-   <li <?php echo $ici; ?>><a href="<?php $url_site; ?>personne.php?idP=<?php echo $_SESSION['SidPersonne']; ?>"><?php echo $_SESSION['user']; ?></a></li>
-	<li><a href="<?php echo $url_site; ?>logout.php" title="Fermer la session">Sortir</a></li>
-    
-    <?php
-	if ($_SESSION['Sgroupe'] <= 4)
-	{
-            echo '<li><a href="'.$url_site.'admin/index.php" title="Administration" >Admin</a></li>';
-	}
-}
-?>
-	</ul>
-
+    <div id="titre_site">
+        <a href="<?php echo $url_site.$url_query_region_1er ?>"><img src="/images/interface/logo_titre.jpg" alt="La décadanse" width="180" height="35" /></a>
     </div>
 
-</div>
-<!-- Fin entete_haut -->
+    <div id="entete_haut">
+        <a id="btn_menu_pratique" href="#">Menu</a>
+        <div id="menu_pratique">
+        <ul>
+        <?php
+        foreach ($glo_menu_pratique as $nom => $lien)
+        {	
+            $menu_pratique_li = '';
+            if ($nom == "Faire un don")
+                 $menu_pratique_li = ' style="background: #ffdf3f;border-radius: 0 0 3px 3px;padding:2px 0;" ';
+
+                $ici = '';
+            if (strstr($_SERVER['PHP_SELF'], $lien) )
+            {
+                $ici = " class=\"ici\"";
+            }
+            ?>
+            <li <?php echo $ici; ?> <?php echo $menu_pratique_li; ?>><a href="<?php echo $url_site.$lien; ?>" <?php echo $ici; ?>><?php echo $nom; ?></a></li>
+            <?php
+            }
+
+            $ici = '';
+            if (!isset($_SESSION['SidPersonne']))
+            {
+
+                if ( strstr($_SERVER['PHP_SELF'], "annoncerEvenement.php") )
+                {
+                    $ici = ' ici ';
+                }
+
+
+            ?>	
+
+
+            <li class="<?php echo $ici; ?>" ><a href="<?php echo $url_site; ?>annoncerEvenement.php"  >Annoncer un événement</a></li>
+            <li class="<?php echo $ici; ?> only-mobile" ><a href="<?php echo $url_site; ?>charte-editoriale.php">Charte éditoriale</a></li>
+               
+        <?php
+        }
+
+        if (!isset($_SESSION['SidPersonne']))
+        {
+            $ici = '';
+            $ici_login = '';
+            if (strstr($_SERVER['PHP_SELF'], "login.php") )
+            {
+                $ici_login = " class=\"ici\"";
+            }
+
+            if ( strstr($_SERVER['PHP_SELF'], "inscription.php"))
+            {
+                $ici = " class=\"ici\"";
+            }
+            ?>
+
+            <li <?php echo $ici; ?>><a href="<?php echo $url_site; ?>inscription.php" title="Créer un compte"><strong>Inscription</strong></a></li>
+        <li <?php echo $ici_login; ?> rel="nofollow"><a href="<?php echo $url_site; ?>login.php" title="Se connecter au site">Connexion</a></li>
+
+        <?php
+        }
+        else
+        {
+            if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 10))
+            {
+                $ici = '';
+                if (strstr($_SERVER['PHP_SELF'], "ajouterEvenement.php") )
+                {
+                    $ici = " class=\"ici\"";
+                }
+                ?>
+
+                <li <?php echo $ici; ?>><a href="<?php echo $url_site; ?>ajouterEvenement.php?action=ajouter">Ajouter un événement</a></li>
+
+                <?php
+            }
+
+            $ici = '';
+            if (strstr($_SERVER['PHP_SELF'], "personne.php") )
+            {
+                $ici = " class=\"ici\"";
+            }
+            ?>
+           <li <?php echo $ici; ?>><a href="<?php $url_site; ?>personne.php?idP=<?php echo $_SESSION['SidPersonne']; ?>"><?php echo $_SESSION['user']; ?></a></li>
+            <li><a href="<?php echo $url_site; ?>logout.php" title="Fermer la session">Sortir</a></li>
+
+            <?php
+            if ($_SESSION['Sgroupe'] <= 4)
+            {
+                    echo '<li><a href="'.$url_site.'admin/index.php" title="Administration" >Admin</a></li>';
+            }
+        }
+        ?>
+            </ul>
+    </div>
+</div> <!-- Fin entete_haut -->
 
 <div class="spacer"><!-- --></div>
 
-<!-- Debut Menu -->
 <div id="menu">
 <ul>
-<?php
+    <?php
 
-$menu_principal = array("Agenda" => "agenda.php",  "Lieux" => "lieux.php", "Organisateurs" => "organisateurs.php");
+    $menu_principal = array("Agenda" => "agenda.php",  "Lieux" => "lieux.php", "Organisateurs" => "organisateurs.php");
 
-
-
-foreach ($menu_principal as $nom => $lien)
-{
-    $ici = '';
-	if (strstr($_SERVER['PHP_SELF'], $lien) 
-	|| ($lien == "lieux.php" && strstr($_SERVER['PHP_SELF'], "lieu.php"))
-	|| ($lien == "organisateurs.php" && strstr($_SERVER['PHP_SELF'], "organisateur.php"))
-	|| ($lien == "agenda.php" && strstr($_SERVER['PHP_SELF'], "agenda.php"))
-	)
-	{
-		$ici = ' class="ici" ';
-	}
-?>
-    
-    <li <?php  echo $ici; ?>
-    
-  <?php  
-	if ($nom == "Agenda")
-	{
+    foreach ($menu_principal as $nom => $lien)
+    {
+        $ici = '';
+        if (strstr($_SERVER['PHP_SELF'], $lien) 
+        || ($lien == "lieux.php" && strstr($_SERVER['PHP_SELF'], "lieu.php"))
+        || ($lien == "organisateurs.php" && strstr($_SERVER['PHP_SELF'], "organisateur.php"))
+        || ($lien == "agenda.php" && strstr($_SERVER['PHP_SELF'], "agenda.php"))
+        )
+        {
+            $ici = ' class="ici" ';
+        }
     ?>
-		id="bouton_agenda">
-        <?php
-		echo "<a href=\"".$url_site.$lien."?".$url_query_region_et."courant=".$get['courant']."&amp;sem=".$get['sem']."&amp;tri_agenda=".$get['tri_agenda']."&amp;mode=".$get['mode']."\">".$nom."</a>"; 
-        ?>
-		</li>
-		<li id="bouton_calendrier">
-		<a href="#" id="btn_calendrier" class="mobile"><img src="<?php echo $IMGicones ?>calendar_view_week.png" alt="Calendrier" width="16" height="16" /></a>
-		</li>
-		
-	
-<?php
-	}
-	else
-	{
-       
-        ?>
-		><a href="<?php echo $url_site.$lien."?".$url_query_region; ?>"><?php echo $nom; ?></a></li>
-        <?php
-	}
-}
 
-?>	
+        <li <?php  echo $ici; ?>
+
+      <?php  
+        if ($nom == "Agenda")
+        {
+        ?>
+            id="bouton_agenda">
+            <?php
+            echo "<a href=\"".$url_site.$lien."?".$url_query_region_et."courant=".$get['courant']."&amp;sem=".$get['sem']."&amp;tri_agenda=".$get['tri_agenda']."&amp;mode=".$get['mode']."\">".$nom."</a>"; 
+            ?>
+            </li>
+            <li id="bouton_calendrier">
+            <a href="#" id="btn_calendrier" class="mobile"><img src="<?php echo $IMGicones ?>calendar_view_week.png" alt="Calendrier" width="16" height="16" /></a>
+            </li>
+    <?php
+        }
+        else
+        {
+        ?>
+        ><a href="<?php echo $url_site.$lien."?".$url_query_region; ?>"><?php echo $nom; ?></a></li>
+        <?php
+        }
+    }
+    ?>	
 
 <?php if (0) { ?>
 <li style="float:right">

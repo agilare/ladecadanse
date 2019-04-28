@@ -55,19 +55,11 @@ if (0) // (!isset($_COOKIE['msg_orga_benevole'])) // isset($_GET['debug']) &&
 ?>    
     
 	<div id="entete_contenu">
-
-            <h2 class="accueil">Aujourd’hui <a href="<?php echo $url_site ?>rss.php?type=evenements_auj" title="Flux RSS des événements du jour" style="font-size:12px;vertical-align: top;">
-			<i class="fa fa-rss fa-lg" style="color:#f5b045"></i></a></h2>
-                        
-                        <?php getMenuRegions($glo_regions, $get); ?>
- 
-
-		<div class="spacer"></div>
-                
-           <h2 style="width:65%;font-size: 1.4em"><small><?php echo ucfirst(date_fr($get['auj'])); ?></small></h2>                
-                
+        <h2 class="accueil" style="margin: 0;">Aujourd’hui <a href="<?php echo $url_site ?>rss.php?type=evenements_auj" title="Flux RSS des événements du jour" style="font-size:12px;vertical-align: top;"><i class="fa fa-rss fa-lg" style="color:#f5b045"></i></a></h2>
+        <?php getMenuRegions($glo_regions, $get); ?>
+        <div class="spacer"></div>           
+        <h2 style="width:65%;font-size: 1.4em;margin-top: 0;"><small><?php echo ucfirst(date_fr($get['auj'])); ?></small></h2>                             
 	</div>
-
 	<div class="spacer"><!-- --></div>
 
 	<div id="prochains_evenements" >

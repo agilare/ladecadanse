@@ -164,7 +164,7 @@ echo $form->getHtmlErreur("nom_existant");
 <!-- Adresse (text) -->
 <p>
 <label for="adresse">Adresse :</label>
-<input type="text" name="adresse" id="adresse" size="60" maxlength="80" value="<?php echo $form->getValeur('adresse') ?>" />
+<input type="text" name="adresse" id="adresse" size="50" maxlength="80" value="<?php echo $form->getValeur('adresse') ?>" />
 <?php
 echo $form->getHtmlErreur("adresse");
 ?>
@@ -184,7 +184,7 @@ echo $form->getHtmlErreur("telephone");
 <!-- URL (text) -->
 <p>
 <label for="URL">Site web :</label>
-<input type="text" name="URL" id="URL" size="60" maxlength="80"
+<input type="text" name="URL" id="URL" size="50" maxlength="80"
 value="<?php echo $form->getValeur('URL') ?>"  onblur="validerURL('URL', 'false');" />
 <?php
 echo $form->getHtmlErreur("URL");

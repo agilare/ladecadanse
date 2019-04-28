@@ -35,7 +35,7 @@ ul.menu_actions
     margin: 0 auto 0.3em;
     text-align: right;
     width: 94%;
-
+    list-style-type: none;
 }
 
 ul.menu_actions li
@@ -94,7 +94,7 @@ ul.menu_actions_lieu li {
 			padding:2px 2px 2px 2px;
 			border-bottom: 1px dashed Gray;
 			padding: 0.3em 0.4em;			
-			
+			list-style-type: none;
 		}
 
 			#fiche #pratique ul li
@@ -351,6 +351,7 @@ ul#menu_complement
 color:#5C7378;
 	border-bottom:1px dotted #5C7378;
 		text-align:center;
+        padding:0;
 
 }
 

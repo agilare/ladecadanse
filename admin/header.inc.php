@@ -202,7 +202,7 @@ if ($nom_page == "agenda" && isset($page_titre))
 <div id="entete">
 
 <div id="titre_site">
-<h1><a href="<?php echo $url_site ?>" title="Retour à la page d'accueil"><img src="<?php echo $url_images."interface/logo_titre.jpg" ?>" alt="La décadanse"  width="180" height="35" /></a></h1>
+<a href="<?php echo $url_site ?>"><img src="<?php echo $url_site ?>images/interface/logo_titre.jpg" alt="La décadanse"  width="180" height="35" /></a>
 </div>
 
 
@@ -330,11 +330,10 @@ foreach ($menu_principal as $nom => $lien)
 
 ?>
 	<li class="form_recherche">
-	<form class="recherche" action="<?php echo $url_site ?>recherche.php" method="get" enctype="application/x-www-form-urlencoded">
-	<fieldset>
-	<input type="text" class="mots" name="mots" size="22" maxlength="50" value="Rechercher un événement" onfocus="if(this.value=='Rechercher un événement') this.value=''" onblur="if(this.value=='') this.value='Rechercher un événement'" /><input type="submit" class="submit" name="formulaire" value="" />
-	</fieldset>
-	</form>
+        <form class="recherche" action="<?php echo $url_site ?>recherche.php" method="get" enctype="application/x-www-form-urlencoded">
+        <input type="text" class="mots" name="mots" size="22" maxlength="50" value="Rechercher un événement" onfocus="if(this.value=='Rechercher un événement') this.value=''" onblur="if(this.value=='') this.value='Rechercher un événement'" /><input type="submit" class="submit" name="formulaire" value="" />
+
+        </form>
 	</li>
 
 	</ul>

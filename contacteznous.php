@@ -258,7 +258,7 @@ document.write("<a href='mailto:"+link+"'>"+link+"</a>")
 
 <p>
 <label for="sujet" id="label_sujet">Sujet* </label>
-<input name="sujet" id="sujet" type="text" size="64" maxlength="100" title="sujet" tabindex="4" value="<?php echo securise_string($champs['sujet']) ?>" />
+<input name="sujet" id="sujet" type="text" size="40" maxlength="100"  tabindex="4" value="<?php echo securise_string($champs['sujet']) ?>" />
 <?php echo $verif->getErreur("sujet"); ?>
 </p>
 

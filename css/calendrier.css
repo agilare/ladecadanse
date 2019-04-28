@@ -184,6 +184,7 @@ table#calendrier td.auj
 
 ul#menu_calendrier
 {
+    list-style-type: none;
 	margin:1em 0;
 	padding:0 0 0 1em;
 	float:left;
@@ -195,26 +196,6 @@ ul#menu_calendrier li
 	margin:0.4em 0;
 	padding:0.2em 0 0.2em 18px;
 }
-/*
-ul#menu_calendrier li#aujourdhui
-{
-		background-image:url(../images/interface/icons/calendar_view_day.png);
-		background-repeat:no-repeat;
-
-}
-
-ul#menu_calendrier li#demain
-{
-	background-image:url(../images/interface/icons/calendar_view_day.png);
-	background-repeat:no-repeat;
-}
-
-ul#menu_calendrier li#cette_semaine
-{
-	background-image:url(../images/interface/icons/calendar_view_week.png);
-	background-repeat:no-repeat;
-}
-*/
 
 ul#menu_calendrier li form input
 {
