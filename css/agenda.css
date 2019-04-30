@@ -17,8 +17,10 @@
 {
     float:right;
     width:35%;
+    margin:0.1em 0;
     text-align:right;
     display:inline;
+    padding-left: 0;
 }
 
 #entete_contenu ul li
@@ -40,6 +42,26 @@
     border:1px solid #aeaeae;
 }
 
+.queries
+{
+    float:right;
+    margin: 1em 1.1em 0 0;
+}
+
+.queries select
+{
+    border: 1px solid gray;
+font-size: 1em;
+padding: 0.2em 0.2em;
+border-radius:2px;
+}
+
+div.pagination
+{
+    float:left;
+    margin-right:0 !important;
+}
+
 ul#calendrier_menu
 {
 
@@ -50,36 +72,6 @@ ul#calendrier_menu
     list-style:none;
     font-size:1.2em;
     /* border:1px solid red; */
-}
-
-#mode
-{
-    float:right;
-    width:15em;
-    height:1.2em;
-    background:#fefefe;
-}
-
-#mode h1
-{
-    float:left;
-    font-size:1em
-}
-#mode ul
-{
-    display:inline;
-}
-
-#mode ul li
-{
-    padding:0.2em 0.6em;
-    display:inline;
-}
-
-#mode ul li.ici
-{
-    padding:0.2em 0.6em;
-
 }
 
 /* Evenements */
@@ -344,12 +336,6 @@ ul#calendrier_menu
     font-size:0.9em;
 }
 
-/* .evenement .edition .nb_commentaires
-{
-padding:0em 0.4em 0 1.5em;
-float:left;
-} */
-
 ul.menu_action
 {	float:left;	
     height:1.6em;
@@ -520,9 +506,10 @@ table#evenements_s
 
 #selection ul.menu_selection
 {
-    margin:0.4em 0em 1.4em 0.4em;
-    padding-top:0.4em;
+    margin:0.4em 0 1.4em 0.4em;
+    padding:0.4em 0 0 0;
     border-top:dotted 1px #aeaeae;
+    list-style-type: none;
 
 }
 

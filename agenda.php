@@ -56,102 +56,6 @@ else
 	$sql_date_evenement = "LIKE '".$get['courant']."%'";
 }
 
-if ($get['moment'] == "journee")
-{//06:00:00 -> 17:59:59
-	$sql_date_evenement .= " AND TIME_TO_SEC(SUBSTRING(horaire_debut, 9, 8)) > 21600 AND TIME_TO_SEC(SUBSTRING(horaire_debut, 9, 8)) < 64800 ";
-}
-else if ($get['moment'] == "soir")
-{
-	$sql_date_evenement .= " AND TIME_TO_SEC(SUBSTRING(horaire_debut, 9, 8)) >= '64799' AND TIME_TO_SEC(SUBSTRING(horaire_debut, 9, 8)) <  86399 ";
-	//18:00:00 -> 23:59:59
-}
-else if ($get['moment'] == "nuit")
-{
-	$sql_date_evenement .= " AND TIME_TO_SEC(SUBSTRING(horaire_debut, 9, 8)) >= 0 AND TIME_TO_SEC(SUBSTRING(horaire_debut, 9, 8)) < 21600";
-}
-
-$tab_zones = array("ville", "communes", "exterieur", "tout");
-
-if (isset($_GET['zone']))
-{
-
-	$get['zone'] = verif_get($_GET['zone'], "enum", 1, $tab_zones);
-
-	if ($get['zone'] == "ville")
-	{
-		$sql_date_evenement .= " AND quartier IN (";
-
-		foreach ($glo_tab_quartiers as $q)
-		{
-			if ($q == "communes")
-			{
-				break;
-			}
-			else
-			{
-				$sql_date_evenement .= "'".$q."', ";
-			}
-		}
-		$sql_date_evenement = mb_substr($sql_date_evenement, 0 , -2).") ";
-
-	}
-	else if ($get['zone'] == "communes")
-	{
-		$sql_date_evenement .= " AND quartier IN (";
-
-		$zone = "";
-
-		foreach ($glo_tab_quartiers as $q)
-		{
-			if ($q != "communes" && empty($zone))
-			{
-				continue;
-			}
-			else if ($q == "communes")
-			{
-				$zone = "communes";
-			}
-			else if ($q == "ailleurs")
-			{
-				break;
-			}
-			else if ($zone == "communes" )
-			{
-				$sql_date_evenement .= "'".$q."', ";
-			}
-
-		}
-
-		$sql_date_evenement = mb_substr($sql_date_evenement, 0 , -2).") ";
-	}
-	else if ($get['zone'] == "exterieur")
-	{
-		$sql_date_evenement .= " AND quartier IN (";
-		$zone = "";
-
-		foreach ($glo_tab_quartiers as $q)
-		{
-			if ($q != "ailleurs" && empty($zone))
-			{
-				continue;
-			}
-			else if ($q == "ailleurs")
-			{
-				$zone = "ailleurs";
-			}
-			else if ($zone == "ailleurs" && $q != "autre")
-			{
-				$sql_date_evenement .= "'".$q."', ";
-			}
-		}
-		$sql_date_evenement = mb_substr($sql_date_evenement, 0 , -2).") ";
-	}
-}
-else
-{
-	$get['zone'] = "tout";
-}
-
 if ($get['genre'] == '')
 {
 	$genre_titre = 'Tout';
@@ -191,10 +95,10 @@ else if ($get['sem'] == 1)
 		
 	$entete_contenu .= date_fr($lundim[0], "non", "non", "non")." au ".date_fr($lundim[1], "annee", "non", "non");
 	$precedent = date("Y-m-d", mktime(0, 0, 0, (int)$mois_courant  ,(int)($jour_courant - 7), $annee_courant));
-	$lien_precedent = "<a href=\"".$url_site."agenda.php?mode=".$get['mode']."&amp;courant=".$precedent."&amp;sem=1&amp;genre=".$get['genre']."\" style=\"border-radius:3px 0 0 3px;\">".$iconePrecedent."</a>";
+	$lien_precedent = "<a href=\"".$url_site."agenda.php?courant=".$precedent."&amp;sem=1&amp;genre=".$get['genre']."\" style=\"border-radius:3px 0 0 3px;\">".$iconePrecedent."</a>";
 
 	$suivant = date("Y-m-d", mktime(0, 0, 0, (int)$mois_courant  , $jour_courant + 7, $annee_courant));
-	$lien_suivant = "<a href=\"".$url_site."agenda.php?mode=".$get['mode']."&amp;courant=".$suivant."&amp;sem=1&amp;genre=".$get['genre']."\" style=\"border-radius:0 3px 3px 0;\">".$iconeSuivant."</a>";
+	$lien_suivant = "<a href=\"".$url_site."agenda.php?courant=".$suivant."&amp;sem=1&amp;genre=".$get['genre']."\" style=\"border-radius:0 3px 3px 0;\">".$iconeSuivant."</a>";
 
 }
 
@@ -239,7 +143,7 @@ if ($_SESSION['region'] == 'ge')
 $sql_region = " region IN ('".$connector->sanitize($_SESSION['region'])."', ".$sql_rf." 'hs') ";
 
 
-$get['nblignes'] = 50;
+$get['nblignes'] = 5;
 
 $limite = " LIMIT ".($get['page'] - 1) * $get['nblignes'].",".$get['nblignes'];
 
@@ -287,16 +191,57 @@ if ($get['sem'])
 	<div id="entete_contenu">
 		<h2>Agenda</h2><?php getMenuRegions($glo_regions, $get); ?>
         <div class="spacer"></div>
-        <div style="margin-top:1em;">
-        <h3 style="color: #888;font-size: 1.1em;line-height: 1.3em;margin-top: 0.2em;width:46%"><?php echo $entete_contenu ?></h3> 
-            <ul class="entete_contenu_navigation ">
+        <div style="margin-top: 0.6em;">
+            <h3 style="color: #888;font-size: 1.2em;line-height: 1.3em;margin-top: 0.6em;width:54%"><?php echo $entete_contenu ?></h3> 
+            <ul class="entete_contenu_navigation" style="width:45%;margin-top: 0.5em;">
                 <li><?php echo $lien_precedent.$lien_suivant; ?></li>
             </ul>
             <div class="spacer"></div>
         </div>          
 	</div>	<!-- entete_contenu -->
-	<div class="spacer"></div>   
+	<div class="spacer"></div>
+    <div>
 	<?php echo getPaginationString($get['page'], $total_even, $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?".arguments_URI($get, "page")."&page=");?>
+        <form action="" method="get" class="queries">
+            <div style="display:inline-block;margin-top:0.2em">
+                <label for="select_genre">Filtre</label>
+                <select name="genre" id="select_genre" onChange="javascript:this.form.submit();">
+                    <option value=""></option>
+                    <?php
+                    foreach ($glo_tab_genre as $na => $la)
+                    {
+                        echo "<option value=".$na;
+                        if ($na == $get['genre'])
+                        {
+                            echo " selected";
+                        }
+
+                        echo ">".ucfirst($la)."</option>";
+                    }
+                    ?>
+                </select>
+            </div>
+            <div style="display:inline-block;margin-top:0.2em">
+                <?php
+                foreach ($get as $nom => $valeur)
+                {
+                    if ($nom != "tri_agenda" && $nom != "genre")
+                    {
+                    ?>
+                    <input type="hidden" name="<?php echo $nom;?>" value="<?php echo $valeur;?>" />
+                    <?php
+                    }
+                }            
+                ?>
+                <label for="select_order">Trier par</label>
+                <select name="tri_agenda" id="select_order" onChange="javascript:this.form.submit();">
+                    <option value="dateAjout" <?php if ($get['tri_agenda'] == 'dateAjout') { ?>selected<?php } ?>>date d’ajout</option>
+                    <option value="horaire_debut" <?php if ($get['tri_agenda'] == 'horaire_debut') { ?>selected<?php } ?>>heure de début</option>
+                </select>
+            </div>
+        </form>
+        <div class="spacer"></div>
+        </div>
     <?php
 
 	if ($nb_evenements == 0)
@@ -649,73 +594,6 @@ if ($get['tri_agenda'] == "dateAjout") $tri_ajout = "ici";
 <div id="colonne_droite" class="colonne">
 
 	<div id="selection">
-		<ul class="menu_selection" id="menu_genre">
-
-        <?php
-			echo "<li style=\"font-weight:bold\"";
-			if ($get['genre'] == "tout" || $get['genre'] == "")
-			{
-				echo " class=\"ici\"";
-			}
-			echo ">
-			<a href=\"".$url_site."agenda.php?".$url_query_region_et."courant=".$get['courant']."&amp;sem=".$get['sem']."&amp;tri_agenda=".$get['tri_agenda']."&amp;mode=".$get['mode']."&zone=".$get['zone']."&moment=".$get['moment']."\" title=\"Tous les genres d'événements\">Tout</a></li>";
-		
-		foreach ($glo_tab_genre as $na => $la)
-		{
-			echo "<li";
-			if ($na == $get['genre'])
-			{
-				echo " class=\"ici\"";
-			}
-
-			echo ">
-			<a href=\"".$url_site."agenda.php?".$url_query_region_et."genre=".$na."&amp;courant=".$get['courant']."&amp;sem=".$get['sem']."&amp;tri_agenda=".$get['tri_agenda']."&amp;mode=".$get['mode']."&zone=".$get['zone']."&moment=".$get['moment']."\" title=\"".$la."\">".ucfirst($la)."</a></li>";
-		}
-
-	?>
-		</ul>
-		
-		<ul class="menu_selection">
-			<li<?php if ($get['moment'] == "tout") echo " class=\"ici\" style=\"font-weight:bold\"" ?>>
-			<a href="<?php echo $url_site ?>agenda.php?<?php echo arguments_URI($get, "moment") ?>&amp;moment=tout">Tout</a>
-			</li>
-			<li<?php if ($get['moment'] == "journee") echo " class=\"ici\"" ?>>
-			<a href="<?php echo $url_site ?>agenda.php?<?php echo arguments_URI($get, "moment") ?>&amp;moment=journee">Journée</a>
-			</li>
-			<li<?php if ($get['moment'] == "soir") echo " class=\"ici\"" ?>>
-			<a href="<?php echo $url_site ?>agenda.php?<?php echo arguments_URI($get, "moment") ?>&amp;moment=soir">Soir</a>
-			</li>
-			<li<?php if ($get['moment'] == "nuit") echo " class=\"ici\"" ?>>
-			<a href="<?php echo $url_site ?>agenda.php?<?php echo arguments_URI($get, "moment") ?>&amp;moment=nuit">Nuit</a>
-			</li>
-		</ul>
-        
-		<ul class="menu_selection">
-			<li<?php if ($get['zone'] == "tout") echo " class=\"ici\" style=\"font-weight:bold\"" ?>>
-			<a href="<?php echo $url_site ?>agenda.php?<?php echo arguments_URI($get, "zone") ?>&amp;zone=tout">Tout</a>
-			</li>
-			<li<?php if ($get['zone'] == "ville") echo " class=\"ici\"" ?>>
-			<a href="<?php echo $url_site ?>agenda.php?<?php echo arguments_URI($get, "zone") ?>&amp;zone=ville">Ville</a>
-			</li>
-			<li<?php if ($get['zone'] == "communes") echo " class=\"ici\"" ?>>
-			<a href="<?php echo $url_site ?>agenda.php?<?php echo arguments_URI($get, "zone") ?>&amp;zone=communes">Communes</a>
-			</li>
-			<li<?php if ($get['zone'] == "exterieur") echo " class=\"ici\"" ?>>
-			<a href="<?php echo $url_site ?>agenda.php?<?php echo arguments_URI($get, "zone") ?>&amp;zone=exterieur">Extérieur</a>
-			</li>
-		</ul>
-		
-		<h2>Trier par</h2>
-		<ul class="menu_selection">
-			<li class="<?php echo $tri_ajout; ?> tri_ajout">
-			<a href="<?php echo $url_site ?>agenda.php?<?php echo arguments_URI($get, "tri_agenda") ?>&amp;tri_agenda=dateAjout">Date d’ajout</a>
-			</li>
-			<li class="<?php if ($get['tri_agenda'] == "horaire_debut") echo "ici" ?> tri_heure">
-			<a href="<?php echo $url_site ?>agenda.php?<?php echo arguments_URI($get, "tri_agenda") ?>&amp;tri_agenda=horaire_debut">Heure de début</a>
-			</li>
-		</ul>		
-		
-		
 		<?php
 		$liste = '';
 		if ($get['sem'] == 1 && $nb_evenements > 1)
