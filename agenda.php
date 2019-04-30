@@ -143,7 +143,7 @@ if ($_SESSION['region'] == 'ge')
 $sql_region = " region IN ('".$connector->sanitize($_SESSION['region'])."', ".$sql_rf." 'hs') ";
 
 
-$get['nblignes'] = 5;
+$get['nblignes'] = 50;
 
 $limite = " LIMIT ".($get['page'] - 1) * $get['nblignes'].",".$get['nblignes'];
 
@@ -204,9 +204,9 @@ if ($get['sem'])
 	<?php echo getPaginationString($get['page'], $total_even, $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?".arguments_URI($get, "page")."&page=");?>
         <form action="" method="get" class="queries">
             <div style="display:inline-block;margin-top:0.2em">
-                <label for="select_genre">Filtre</label>
+                
                 <select name="genre" id="select_genre" onChange="javascript:this.form.submit();">
-                    <option value=""></option>
+                    <option value="">Filtre</option>
                     <?php
                     foreach ($glo_tab_genre as $na => $la)
                     {
@@ -233,7 +233,7 @@ if ($get['sem'])
                     }
                 }            
                 ?>
-                <label for="select_order">Trier par</label>
+                <label for="select_order">Tri</label>
                 <select name="tri_agenda" id="select_order" onChange="javascript:this.form.submit();">
                     <option value="dateAjout" <?php if ($get['tri_agenda'] == 'dateAjout') { ?>selected<?php } ?>>date d’ajout</option>
                     <option value="horaire_debut" <?php if ($get['tri_agenda'] == 'horaire_debut') { ?>selected<?php } ?>>heure de début</option>

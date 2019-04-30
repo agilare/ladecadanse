@@ -45,15 +45,15 @@
 .queries
 {
     float:right;
-    margin: 1em 1.1em 0 0;
+    margin: .7em 1.1em 0 0;
 }
 
 .queries select
 {
     border: 1px solid gray;
-font-size: 1em;
-padding: 0.2em 0.2em;
-border-radius:2px;
+    font-size: 1em;
+    padding: 0.2em 0.2em;
+    border-radius:2px;
 }
 
 div.pagination
