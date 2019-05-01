@@ -519,13 +519,7 @@ if ($get['sem'])
 			<div class="spacer"></div>
 			<div class="edition">
                 <ul class="menu_action">
-                <?php
-                echo $commentaires;
-                //echo $participants;
-                echo $actions;
-                //echo $ajouter_calendrier;
-                ?>
-                </ul>
+                    <li><a href="signaler_erreur.php?idE=<?php echo $listeEven['idEvenement']; ?>" class="signaler"  title="Signaler une erreur"><i class="fa fa-flag-o fa-lg"></i></a></li><li><a href="evenement_ics.php?idE=<?php echo $listeEven['idEvenement']; ?>" class="ical" title="Exporter au format iCalendar dans votre agenda"><i class="fa fa-calendar-plus-o fa-lg"></i></a></li><?php echo $commentaires; echo $actions;//echo $ajouter_calendrier;?></ul>
 			
                 <?php
                 if (isset($_SESSION['Sgroupe'])
