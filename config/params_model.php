@@ -21,6 +21,8 @@ $glo_email_host = "";
 $glo_email_username = "";
 $glo_email_password = "";
 
+$glo_masterkey = 'yourmasterkeyofyourchoice';
+
 // path
 //$rep_absolu = "/home/www/darksite.ch/ladecadanse/"; // prod
 $rep_absolu = "";

