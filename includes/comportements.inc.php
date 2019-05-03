@@ -23,14 +23,15 @@ if (!empty( $matches[1] ))
 
 $pages_orga = array("ajouterEvenement", "ajouterLieu", "ajouterPersonne", 'inscription');
 
-$pages_jquery = array("ajouterEvenement", "ajouterLieu", "inscription", "gererEvenements", "ajouterPersonne", "ajouterDescription", "ajouterOrganisateur");
+$pages_formulaires = array("ajouterEvenement", "ajouterLieu", "inscription", "gererEvenements", "ajouterPersonne", "ajouterDescription", "ajouterOrganisateur");
 $pages_tinymce = ["ajouterDescription", "ajouterOrganisateur"];
-
-
-if (in_array($nom_page, $pages_jquery))
-{
 ?>
 <script type="text/javascript">
+<?php
+if (in_array($nom_page, $pages_formulaires))
+{
+?>
+
 $(document).ready(function() {
 
 	//console.log('ready');
@@ -65,13 +66,9 @@ $(document).ready(function() {
 	//jQuery("#inscription_organisateur").click( function() {console.log("ok");$('#inscription_references').toggle();return false;} );
 	
  });
-</script>
 <?php
 }
-else
-{
 ?>
-<script type="text/javascript">
 
 function SetCookie(name, value, days, path)
 {
@@ -177,30 +174,7 @@ $(document).ready(function()
 	}); 
 	
 	jQuery("#btn_calendrier").click( function() {$('#navigation_calendrier').toggle();return false;} );
-	
-	
-	/*
-	$("#btn_calendrier").on('click', function (e)
-	{
-		e.preventDefault();
-		
-		
 
-		if(!$('#navigation_calendrier').is(':visible'))
-		{
-			$("#navigation_calendrier").fadeIn(vitesse_fondu);
-			//$("#main_menu").toggle(vitesse_fondu);
-
-		}
-		else
-		{
-			$("#navigation_calendrier").fadeOut(vitesse_fondu);
-			//$("#main_menu").toggle(vitesse_fondu);		
-		}	
-		
-		
-	});	
-*/
 	$("#btn_listelieux").on('click', function (e)
 	{
 		e.preventDefault();
@@ -266,9 +240,6 @@ $(document).ready(function()
 	});
  });
 </script>
-<?php
-}
-?>
 <?php if (in_array($nom_page, $pages_tinymce)) { ?>
 <script src="https://cloud.tinymce.com/5/tinymce.min.js?apiKey=7g39i0lvspz7m6s04eo2hvjji73rjk8tf0b62fkl7dn7p5bw"></script>
 <script>

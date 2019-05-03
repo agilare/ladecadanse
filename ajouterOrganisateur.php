@@ -25,7 +25,7 @@ require_once($rep_librairies."EditionOrganisateur.class.php");
 $page_titre = "ajouter/éditer un organisateur";
 $page_description = "ajouter/éditer un organisateur";
 $extra_css = array("formulaires", "ajouterOrganisateur_formulaire", "organisateur_inc");
-
+$extra_js = array("zebra_datepicker", "chosen.jquery.min", "jquery.shiftcheckbox");
 
 
 /*
