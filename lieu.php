@@ -1079,29 +1079,7 @@ else if ($get['complement'] == 'commentaires')
 
 
 <div id="colonne_gauche" class="colonne">
-
-
-
-<?php
-
-include("includes/navigation_calendrier.inc.php");
-
-echo '<p id="statut_lieux" class="voir_lieux">';
-if ($get['statut'] == 'ancien')
-{
-	echo '<a href="'.basename(__FILE__).'?'.arguments_URI($get, "statut").'&amp;statut=actif">Voir les lieux actifs</a>';
-}
-
-if ($get['statut'] == 'actif')
-{
-	echo '<a href="'.basename(__FILE__).'?'.arguments_URI($get, "statut").'&amp;statut=ancien">Voir les lieux anciens</a>';
-}
-
-echo '</p>';
-
-
- ?>
-
+    <?php include("includes/navigation_calendrier.inc.php");?>
 </div>
 <!-- Fin Colonnegauche -->
 

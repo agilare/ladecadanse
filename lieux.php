@@ -177,9 +177,7 @@ include("includes/navigation_calendrier.inc.php");
 <!-- Fin Colonnegauche -->
 
 <div id="colonne_droite" class="colonne">
-
-<?php include("includes/menulieux.inc.php");echo $aff_menulieux; ?>
-
+    <?php include("includes/menulieux.inc.php");echo $aff_menulieux; ?>
 </div>
 <!-- Fin colonne_droite -->
 
