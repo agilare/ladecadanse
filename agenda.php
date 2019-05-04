@@ -522,7 +522,7 @@ if ($get['sem'])
                 while ($tab = $connector->fetchArray($req_event_orga))
                 {
                     $org_url = $tab['URL'];
-                    $org_url_nom = preg_replace("(^https?://)", "", $tab['URL']);
+                    $org_url_nom = rtrim(preg_replace("(^https?://)", "", $tab['URL']), "/");
                     if (!preg_match("/^https?:\/\//", $tab['URL']))
                     {
                         $org_url = 'http://'.$tab['URL'];
