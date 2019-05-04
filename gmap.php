@@ -64,12 +64,9 @@ $info_lieu = "<div style='width:200px'>".$illustration."<div class=details><p cl
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=latin1"/>
-    <title><?php echo $page_titre ?></title>
-    <!--<script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAG-ck6Fuoq0SY-KLet7TuJBSmMl_j_m3i5qUsS9HDusFzfphmARSfXhQU23wz2ESm5vkdEFug_jntfw"
-      type="text/javascript"></script>-->
-	  
+    <title><?php echo $page_titre ?></title>  
    <script async defer
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB7tYPq8JwEOK_xXEzswUjD9CyW7VklWwM&callback=initMap">
+      src="https://maps.googleapis.com/maps/api/js?key=<?php echo GOOGLE_API_KEY; ?>&callback=initMap">
     </script>
     <script type="text/javascript">
 /*     function load() {
