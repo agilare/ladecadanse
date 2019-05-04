@@ -64,7 +64,6 @@ $icone['plan'] = '<img src="'.$IMGicones.'map.png" alt="Plan" width="16" height=
 $icone['drapeau'] = '<img src="'.$IMGicones.'flag_yellow.png" alt="" width="16" height="16" />';
 $icone['ajouter_texte'] = '<img src="'.$IMGicones.'pencil.png" alt="Ajouter texte" width="16" height="16" />';
 $icone['organisateur'] = '<img src="'.$IMGicones.'group.png" alt="" />';
-$icone['ajouter_calendrier'] = '<img src="'.$IMGicones.'calendar_add.png" alt="" />';
 $icone['url_externe'] = '<img src="'.$IMGicones.'house_go.png" alt="Lien externe" />';
 
 $icone['jpg'] = "<img src=\"".$IMGicones."page_white_picture.png\" alt=\"\" />";

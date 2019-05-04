@@ -281,7 +281,23 @@ ul#calendrier_menu
     margin-top:0.7em;
     margin-bottom:0.2em;
 }
+.evenement .description .event_orga
+{
+    list-style-type:none;
+    margin:0;
+    padding:0.1em;
+    position:absolute;
+    bottom:0
+}
 
+.event_orga li
+{
+    margin: 0.3em 0.1em 0.1em 0.1em;
+    padding:0.2em;
+    display:inline-block;
+    background:#efefef;
+    border-radius:3px;    
+}
 
 .evenement .pratique
 {

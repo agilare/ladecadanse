@@ -417,6 +417,14 @@ if ($get['sem'])
 		{
 			$description = textToHtml($listeEven['description']);
 		}
+        
+        $sql_event_orga = "SELECT organisateur.idOrganisateur, nom, URL
+        FROM organisateur, evenement_organisateur
+        WHERE evenement_organisateur.idEvenement=".$listeEven['idEvenement']." AND
+         organisateur.idOrganisateur=evenement_organisateur.idOrganisateur
+         ORDER BY nom DESC";
+
+        $req_event_orga = $connector->query($sql_event_orga);        
 
 		$adresse = htmlspecialchars(get_adresse(null, $listeLieu['localite'], $listeLieu['quartier'], $listeLieu['adresse']));
 		
@@ -495,10 +503,8 @@ if ($get['sem'])
         $vcard_starttime = '';
         if (mb_substr($listeEven['horaire_debut'], 11, 5) != '06:00')
             $vcard_starttime = "T".mb_substr($listeEven['horaire_debut'], 11, 5).":00";	
+        ?>
                 
-		$ajouter_calendrier = '<li>'.$icone['ajouter_calendrier'].'</li>';
-?>
-
 		<div class="evenement vevent">
 			<div class="dtstart">
                 <span class="value-title" title="<?php echo $listeEven['dateEvenement'].$vcard_starttime; ?>"></span>	
@@ -508,18 +514,34 @@ if ($get['sem'])
                 <div class="spacer"></div>
 			</div>
 			<div class="spacer"></div>
-                <div class="flyer photo"><?php echo $lien_flyer; ?>
-			</div>
-			<div class="description"><?php echo $description;?></div>
-			
-			<div class="pratique"><span class="left"><?php echo $adresse; ?></span><span class="right"><?php echo $horaire; ?></span>
+            <div class="flyer photo"><?php echo $lien_flyer; ?></div>
+			<div class="description" style="position:relative">
+                <?php echo $description;?>
+                <ul class="event_orga">
+                <?php
+                while ($tab = $connector->fetchArray($req_event_orga))
+                {
+                    $org_url = $tab['URL'];
+                    $org_url_nom = preg_replace("(^https?://)", "", $tab['URL']);
+                    if (!preg_match("/^https?:\/\//", $tab['URL']))
+                    {
+                        $org_url = 'http://'.$tab['URL'];
+                    }                    
+                    
+                ?>
+                    <li><a href="organisateur.php?idO=<?php echo $tab['idOrganisateur']; ?>" title="Voir la fiche de l'organisateur"><?php echo $tab['nom']; ?></a> <a href="<?php echo $org_url; ?>" title="Site web de l'organisateur" class="lien_ext" target="_blank"><?php echo $org_url_nom; ?></a></li>                
+                <?php
+                }             
+                ?>
+                </ul>        
+            </div>
+			<div class="pratique" style="margin-top:0;border-top:1px solid #e0e0e0"><span class="left"><?php echo $adresse; ?></span><span class="right"><?php echo $horaire; ?></span>
 				<div class="spacer"></div>
-			</div>
-			<!-- fin pratique -->
+			</div> <!-- fin pratique -->
 			<div class="spacer"></div>
 			<div class="edition">
                 <ul class="menu_action">
-                    <li><a href="signaler_erreur.php?idE=<?php echo $listeEven['idEvenement']; ?>" class="signaler"  title="Signaler une erreur"><i class="fa fa-flag-o fa-lg"></i></a></li><li><a href="evenement_ics.php?idE=<?php echo $listeEven['idEvenement']; ?>" class="ical" title="Exporter au format iCalendar dans votre agenda"><i class="fa fa-calendar-plus-o fa-lg"></i></a></li><?php echo $commentaires; echo $actions;//echo $ajouter_calendrier;?></ul>
+                    <li><a href="signaler_erreur.php?idE=<?php echo $listeEven['idEvenement']; ?>" class="signaler"  title="Signaler une erreur"><i class="fa fa-flag-o fa-lg"></i></a></li><li><a href="evenement_ics.php?idE=<?php echo $listeEven['idEvenement']; ?>" class="ical" title="Exporter au format iCalendar dans votre agenda"><i class="fa fa-calendar-plus-o fa-lg"></i></a></li><?php echo $commentaires; echo $actions;?></ul>
 			
                 <?php
                 if (isset($_SESSION['Sgroupe'])
