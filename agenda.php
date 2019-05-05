@@ -514,28 +514,30 @@ if ($get['sem'])
                 <div class="spacer"></div>
 			</div>
 			<div class="spacer"></div>
+            <div class="event-contenu">
             <div class="flyer photo"><?php echo $lien_flyer; ?></div>
-			<div class="description" style="position:relative">
-                <?php echo $description;?>
-                <ul class="event_orga">
-                <?php
-                while ($tab = $connector->fetchArray($req_event_orga))
-                {
-                    $org_url = $tab['URL'];
-                    $org_url_nom = rtrim(preg_replace("(^https?://)", "", $tab['URL']), "/");
-                    if (!preg_match("/^https?:\/\//", $tab['URL']))
+                <div class="description" style="position:relative">
+                    <?php echo $description;?>
+                    <ul class="event_orga">
+                    <?php
+                    while ($tab = $connector->fetchArray($req_event_orga))
                     {
-                        $org_url = 'http://'.$tab['URL'];
-                    }                    
-                    
-                ?>
-                    <li><a href="organisateur.php?idO=<?php echo $tab['idOrganisateur']; ?>" title="Voir la fiche de l'organisateur"><?php echo $tab['nom']; ?></a> <a href="<?php echo $org_url; ?>" title="Site web de l'organisateur" class="lien_ext" target="_blank"><?php echo $org_url_nom; ?></a></li>                
-                <?php
-                }             
-                ?>
-                </ul>        
+                        $org_url = $tab['URL'];
+                        $org_url_nom = rtrim(preg_replace("(^https?://)", "", $tab['URL']), "/");
+                        if (!preg_match("/^https?:\/\//", $tab['URL']))
+                        {
+                            $org_url = 'http://'.$tab['URL'];
+                        }                    
+
+                    ?>
+                        <li><a href="organisateur.php?idO=<?php echo $tab['idOrganisateur']; ?>" title="Voir la fiche de l'organisateur"><?php echo $tab['nom']; ?></a> <a href="<?php echo $org_url; ?>" title="Site web de l'organisateur" class="lien_ext" target="_blank"><?php echo $org_url_nom; ?></a></li>                
+                    <?php
+                    }             
+                    ?>
+                    </ul>        
+                </div>
             </div>
-			<div class="pratique" style="margin-top:0;border-top:1px solid #e0e0e0"><span class="left"><?php echo $adresse; ?></span><span class="right"><?php echo $horaire; ?></span>
+			<div class="pratique"><span class="left"><?php echo $adresse; ?></span><span class="right"><?php echo $horaire; ?></span>
 				<div class="spacer"></div>
 			</div> <!-- fin pratique -->
 			<div class="spacer"></div>

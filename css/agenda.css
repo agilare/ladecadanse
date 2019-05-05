@@ -258,51 +258,56 @@ ul#calendrier_menu
  color:#105199; /*  #104d91*/   
 }
 
-.evenement .description
+.evenement .event-contenu
 {
-    margin:0 0 0 101px;
-    padding: 1px 0 0.2em 5px;
-    color: #3E5355;
-    background:  #F9F9F9;
-    line-height:1.4em;
-    font-size:0.9em;
-    min-height: 150px;
+    background: #f2f2f2;
 }
 
-.evenement .description a
-{
-    color:#115BCC;
-}
+    .evenement .description
+    {
+        margin:0 0 0 101px;
+        padding: 1px 0 0.2em 5px;
+        color: #3E5355;
+        background:  #F9F9F9;
+        line-height:1.4em;
+        font-size:0.9em;
+        min-height: 150px;
+    }
 
-.evenement .description h2
-{
-    font-size:1em;
-    font-weight:bold;
-    margin-top:0.7em;
-    margin-bottom:0.2em;
-}
-.evenement .description .event_orga
-{
-    list-style-type:none;
-    margin:0;
-    padding:0.1em;
-    position:absolute;
-    bottom:0
-}
+    .evenement .description a
+    {
+        color:#115BCC;
+    }
 
-.event_orga li
-{
-    margin: 0.3em 0.1em 0.1em 0.1em;
-    padding:0.2em;
-    display:inline-block;
-    background:#efefef;
-    border-radius:3px;    
-}
+    .evenement .description h2
+    {
+        font-size:1em;
+        font-weight:bold;
+        margin-top:0.7em;
+        margin-bottom:0.2em;
+    }
+    .evenement .description .event_orga
+    {
+        list-style-type:none;
+        margin:0;
+        padding:0.1em;
+        position:relative;
+        bottom:0
+    }
+
+    .event_orga li
+    {
+        margin: 0.3em 0.1em 0.1em 0.1em;
+        padding:0.2em;
+        display:inline-block;
+        background:#efefef;
+        border-radius:3px;    
+    }
 
 .evenement .pratique
 {
     background-color:#EFEFEF;
-
+    border-top:1px solid #e0e0e0;
     font-size:0.8em;
     padding:2px 5px;
     line-height:1.2em;
