@@ -65,6 +65,7 @@ $icone['drapeau'] = '<img src="'.$IMGicones.'flag_yellow.png" alt="" width="16" 
 $icone['ajouter_texte'] = '<img src="'.$IMGicones.'pencil.png" alt="Ajouter texte" width="16" height="16" />';
 $icone['organisateur'] = '<img src="'.$IMGicones.'group.png" alt="" />';
 $icone['url_externe'] = '<img src="'.$IMGicones.'house_go.png" alt="Lien externe" />';
+$icone['popup'] = '<img src="'.$IMGinterface.'lien_ext.gif" alt="Nouvel onglet" style="opacity: 0.5" />';
 
 $icone['jpg'] = "<img src=\"".$IMGicones."page_white_picture.png\" alt=\"\" />";
 $icone['jpeg'] = "<img src=\"".$IMGicones."page_white_picture.png\" alt=\"\" />";

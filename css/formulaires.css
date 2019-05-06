@@ -375,11 +375,44 @@ font-weight:bold;
 font-family:Georgia;
 }
 
-/* form#ajouter_editer #bouton_ajouter_champ
+.table
 {
-text-align:right;
-background-image: url(../images/interface/icons/add.png);
-background-repeat: no-repeat;
-background-position: 52% 2px;
+    margin-top: 0;
+    width: 95%;
+    border-collapse: collapse;
+    color: #5C7378;
+    background: #F7F7F5;   
+}
 
-} */
+.table tr{
+    border-bottom : 1px solid #5C7378;
+}
+
+.table th
+{
+    font-weight: bold;
+    padding: 0.5em ;
+}
+
+.table td
+{
+   
+    padding: 0.5em;
+    font-size: 1em;
+    line-height: 1.3em;
+}
+
+
+.msg_ok_copy
+{
+	width:90%;
+	margin:2em auto;
+	padding:1em 0% 1em 6%;
+	border-top:1px solid green;
+	border-bottom:1px solid green;
+	background-color: #dbe1db;
+	background-image:url(../images/interface/icons/tick.png);
+	background-repeat:no-repeat;
+	background-position: 15px 17px;
+	line-height:1.3em;    
+}

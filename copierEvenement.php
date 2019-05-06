@@ -55,7 +55,7 @@ else
 }
 
 
-$req_lieu = $connector->query("SELECT idLieu FROM evenement WHERE idEvenement=".$get['idE']);
+$req_lieu = $connector->query("SELECT idLieu, dateEvenement FROM evenement WHERE idEvenement=".$get['idE']);
 $tab_lieu = $connector->fetchArray($req_lieu);
 
 
@@ -178,50 +178,22 @@ FROM evenement WHERE idEvenement=".$get['idE'])));
 
 		$tab_champs['idPersonne'] = $_SESSION['SidPersonne'];
 
+        $hor_debfin = afficher_debut_fin($tab_champs['horaire_debut'], $tab_champs['horaire_fin'], $tab_champs['dateEvenement']);
+        
 		$flyer = "";
 
 		//Initialisation de la date à incrémenter avec la date de début
 		$dateIncrUnix = $dateEUnix;
 		$dateIncrUnixOld = $dateIncrUnix;
 		
-		$_SESSION['copierEvenement_flash_msg'] = '<p style="margin:4px 0">L\'événement <em>'.securise_string($tab_champs['titre']).'</em> a été copié vers :</p>';
+		$_SESSION['copierEvenement_flash_msg']['msg'] = '<p style="margin:4px 0">L\'événement <a href="evenement.php?idE='.$get['idE'].'"><strong>'.securise_string($tab_champs['titre']).'</strong> du '.date_fr($tab_lieu['dateEvenement']).'</a> a été copié vers les dates suivantes :</p>';
+        $_SESSION['copierEvenement_flash_msg']['table'] = '';
+        
 		/*
 		 * Collage de l'événement entre la date de début et la date de fin
 		 */
 		while ($dateIncrUnix <= $dateEUnix2)
 		{
-			/*
-			*Si l'événement se situe dans un lieu de la base ce jour et du même genre :
-			* Un avertissement est émit, on passe au jour suivant et la suite du code est sautée
-			*/
-			/*
-$sql ="
-SELECT titre, idLieu, idSalle, nomLieu, adresse, dateEvenement
-FROM evenement
-WHERE dateEvenement='".date('Y-m-d', $dateIncrUnix)."'
-AND genre='".$tab_champs['genre']."' AND (idLieu=".$tab_champs['idLieu']." AND idSalle=".$tab_champs['idSalle'].")";
-
-			$req_getAutresEven = $connector->query($sql);
-
-			if ($tab_champs['idLieu'] != 0 && $detailsAutreEven = $connector->fetchArray($req_getAutresEven))
-			{
-
-				msgErreur("L'événement <i>".securise_string($detailsAutreEven['titre'])."</i> a déjà lieu dans le même endroit le ".date_fr($detailsAutreEven['dateEvenement']));
-
-				$dateIncrUnixOld = $dateIncrUnix;
-				$dateIncrUnix += 86400;
-
-				// si la date ne passe pas au jour suivant, du au changement à l'heure d'hiver, on avance d'une heure
-				if (date('Y-m-d', $dateIncrUnixOld) == date('Y-m-d', $dateIncrUnix))
-				{
-					$dateIncrUnix += 3600;
-				}
-
-				continue;
-
-			}
-			*/
-
 			/*
 			 *S'il y a un flyer création du nom de sa copie avec
 			* l'ID du prochain événement inséré, la date courante et le suffixe
@@ -308,12 +280,13 @@ AND genre='".$tab_champs['genre']."' AND (idLieu=".$tab_champs['idLieu']." AND i
 	
 				$edition = " <a href=\"".$url_site."ajouterEvenement.php?action=editer&idE=".$nouv_id."\" title=\"Éditer l'événement\">".$iconeEditer."</a>";
 				
-
-				$_SESSION['copierEvenement_flash_msg'] .= '<p style="margin:4px 0"><a href="'.$url_site.'evenement.php?idE='.$nouv_id.'">'.securise_string($tab_champs['titre']).' le '.date_fr(date('Y-m-d', $dateIncrUnix)).'</a> <a class="action_editer" href="'.$url_site.'ajouterEvenement.php?action=editer&idE='.$nouv_id.'" title="Modifier cet événement">Modifier</a></p>';
-				
-				//$jour = $mois = $annee = $jour2 = $mois2 = $annee2 = '';
-				//msgOk($message_ok);
-
+                $hor_compl = '';
+                if (!empty($tab_champs['horaire_complement']))
+                    $hor_compl = "<br>".$tab_champs['horaire_complement'];
+                
+//<td><a href="'.$url_site.'evenement.php?idE='.$nouv_id.'">'.securise_string($tab_champs['titre']).'</a></td>
+				$_SESSION['copierEvenement_flash_msg']['table'] .= '<tr><td><a href="evenement.php?idE='.$nouv_id.'">'.date_fr(date('Y-m-d', $dateIncrUnix)).'</a></td><td>'.$hor_debfin.$hor_compl.'</td><td><a class="action_editer" href="'.$url_site.'ajouterEvenement.php?action=editer&idE='.$nouv_id.'" title="Modifier cet événement" target="_blank" >Modifier '.$icone['popup'].'</a></td><td></tr>';
+//<a href="ajax.php?action=delete&entity=event&id='.$nouv_id.'" class="action_supprimer">Supprimer</td>
 				if (!empty($tab_champs['flyer']))
 				{
 					$src = $rep_images.$flyer_orig;
@@ -429,16 +402,28 @@ include("includes/header.inc.php");
 
 <!-- Deb Contenu -->
 <div id="contenu" class="colonne">
+    
 <div id="entete_contenu"><h2>Copier un événement</h2><div class="spacer"></div></div>
 
+<div style="width:94%;margin:0 auto">
 <?php
 if (!empty($_SESSION['copierEvenement_flash_msg']))
 {
-	msgOk($_SESSION['copierEvenement_flash_msg']);
+    ?>
+    
+    <div class="msg_ok_copy">
+    <?php echo $_SESSION['copierEvenement_flash_msg']['msg']; ?>
+    <table class="table">
+        <thead><tr><th>Date</th><th>Horaire</th><th></th></tr></thead>
+        <tbody><?php echo $_SESSION['copierEvenement_flash_msg']['table']; ?></tbody>
+    </table>
+    </div>
+    
+	<?php
 	unset($_SESSION['copierEvenement_flash_msg']);
 }
 ?>
-
+</div>
 <?php
 
 
@@ -494,7 +479,7 @@ if (!empty($erreurs))
 
 ?>
 
-<form method="post" id="ajouter_editer" enctype="multipart/form-data" action="<?php echo basename(__FILE__)."?action=coller&amp;idE=".$get['idE']; ?>" onsubmit="return validerCopierEvenement()">
+<form method="post" id="ajouter_editer" enctype="multipart/form-data" action="<?php echo basename(__FILE__)."?action=coller&amp;idE=".$get['idE']; ?>">
 <?php
 
 //si c'es la date d'origine de l'événement qui doit être affichée avant traitement du formulaire, on montre

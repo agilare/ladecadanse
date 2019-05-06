@@ -5,7 +5,7 @@ date_default_timezone_set('Europe/Berlin');
 
 require_once('params.php');
  
-$CONF_maxfilesize = 2097152; // 2 Mo
+$CONF_maxfilesize = 3145728; // octets, = 3 Mo
 
 $rep_images = $rep_absolu."images/";
 $rep_images_breves = $rep_images."breves/";
@@ -62,7 +62,7 @@ $glo_mimes_images_acceptees = array("image/jpeg", "image/pjpeg", "image/gif", "i
 $mime_extension = array("image/jpeg" => "jpg");
 
 $glo_moisF = array("Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre");
-$glo_annee_max = 2020;
+$glo_annee_max = 2022;
 
 //mots clef pour le header html
 $indexMotsClef = array("soirées","soirée","soir","nuit","fête","party","parties","genève","geneve","sortir","sorties",
