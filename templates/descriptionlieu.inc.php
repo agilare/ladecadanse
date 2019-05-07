@@ -21,7 +21,7 @@
 		</span>
 		<span class="right action_editer">
 		<a href="<?php echo $url_site ?>ajouterDescription.php?action=editer&amp;idL=<?php echo $descriptionlieu['idLieu'] ?>&amp;idP=<?php echo $descriptionlieu['auteur'] ?>">
-		Éditer</a>
+		Modifier</a>
 		</span>
 		
 	</div>

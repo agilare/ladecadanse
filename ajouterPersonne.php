@@ -567,7 +567,7 @@ if ($get['action'] == 'editer' && isset($get['idP']))
 if ($get['action'] == 'editer' || $get['action'] == 'update')
 {
 	$act = "update&amp;idP=".$get['idP'];
-	echo "<h2>Éditer un compte</h2>";
+	echo "<h2>Modifier un compte</h2>";
 }
 else
 {

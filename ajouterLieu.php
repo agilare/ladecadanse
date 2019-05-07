@@ -109,7 +109,7 @@ $titre_actions = '';
 if (($get['action'] == 'editer' || $get['action'] == 'update'))
 {
 	$act = "editer&amp;idL=".$get['idL'];
-	$titre_form = "Éditer";
+	$titre_form = "Modifier";
 	$nom_submit = "Modifier";
 
 	if (estAuteur($_SESSION["SidPersonne"], $get['idL'], "lieu") || $_SESSION['Sgroupe'] < 7)

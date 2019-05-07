@@ -189,7 +189,7 @@ if ($get['element'] == "evenement")
 		}
 	}
 
-	echo "<th>Éditer</th><th>-</th></tr>";
+	echo "<th>Modifier</th><th>-</th></tr>";
 
 	$pair = 0;
 
@@ -653,7 +653,7 @@ echo '<div class="spacer"></div>';
 		}
 	}
 
-	echo "<th>Éditer</th><th>-</th></tr>";
+	echo "<th>Modifier</th><th>-</th></tr>";
 
 	echo "</tr>";
 

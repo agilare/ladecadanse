@@ -172,7 +172,18 @@ $(document).ready(function()
 			}	
 		
 	}); 
-	
+
+	$(".btn_event_del").on('click', function (e)
+	{
+		e.preventDefault();
+        var event_id = $(this).data('id')
+        $.get( "event.php?action=delete&id=" + event_id, function( data ) {
+            $( "#btn_event_del_" + event_id).closest( "tr" ).fadeOut( "slow" );
+        });
+						
+	});         
+    
+
 	jQuery("#btn_calendrier").click( function() {$('#navigation_calendrier').toggle();return false;} );
 
 	$("#btn_listelieux").on('click', function (e)

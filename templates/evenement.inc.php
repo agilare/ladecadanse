@@ -177,9 +177,9 @@ if (
 	echo '<div class="edition">';
 	echo '<ul class="menu_actions">';
 	echo "<li class=\"action_copier\"><a href=\"".$url_site."copierEvenement.php?idE=".$evenement['idEvenement']."\" 
-	title=\"Copier l'événement\">Copier</a></li>";
+	title=\"Copier l'événement\">Copier vers d'autres dates</a></li>";
 	echo "<li class=\"action_editer\"><a href=\"".$url_site."ajouterEvenement.php?action=editer&amp;idE=".$evenement['idEvenement']."\" 
-	title=\"Éditer l'événement\">Éditer</a></li>";
+	title=\"Modifier l'événement\">Modifier</a></li>";
 	echo '</ul>';
 	echo '</div>';
 }

@@ -20,7 +20,7 @@ if ($descriptionlieu['date_derniere_modif'] != "0000-00-00 00:00:00")
 		<span class="left"><?php echo $ajoute; ?><br /><?php echo $dern_modif; ?></span>
 		<span class="right action_editer">
 		<a href="<?php echo $url_site ?>ajouterDescription.php?action=editer&amp;idL=<?php echo $descriptionlieu['idLieu'] ?>&amp;idP=<?php echo $descriptionlieu['auteur'] ?>">
-		Éditer</a>
+		Modifier</a>
 		</span>
 		
 	</div>

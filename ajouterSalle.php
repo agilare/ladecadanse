@@ -28,8 +28,8 @@ $cache_lieux = $rep_cache."lieux/";
 header("Cache-Control: max-age=30, must-revalidate");
 
 
-$page_titre = "ajouter/éditer une salle";
-$page_description = "ajouter/éditer une salle";
+$page_titre = "ajouter/modifier une salle";
+$page_description = "ajouter/modifier une salle";
 $extra_css = array("formulaires", "description");
 include("includes/header.inc.php");
 
@@ -230,7 +230,7 @@ if ($get['action'] == 'editer' || $get['action'] == 'update')
  	$detailsLieu = $connector->fetchArray($req_lieu);
 
 	echo '
-	<h2>Éditer</h2>';
+	<h2>Modifier</h2>';
 
 
 }

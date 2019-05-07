@@ -558,10 +558,10 @@ if ($get['sem'])
                 ?>
                 <ul class="menu_edition">
                     <li class="action_copier">
-                    <a href="<?php echo $url_site; ?>copierEvenement.php?idE=<?php echo $listeEven['idEvenement']; ?>" title="Copier l'événement">Copier</a>
+                    <a href="<?php echo $url_site; ?>copierEvenement.php?idE=<?php echo $listeEven['idEvenement']; ?>" title="Copier l'événement">Copier vers d'autres dates</a>
                     </li>	
                     <li class="action_editer">
-                    <a href="<?php echo $url_site; ?>ajouterEvenement.php?idE=<?php echo $listeEven['idEvenement']; ?>&amp;action=editer" title="Éditer l'événement">Éditer</a>
+                    <a href="<?php echo $url_site; ?>ajouterEvenement.php?idE=<?php echo $listeEven['idEvenement']; ?>&amp;action=editer" title="Éditer l'événement">Modifier</a>
                     </li>
                 </ul>
                 <?php

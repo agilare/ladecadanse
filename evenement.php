@@ -235,13 +235,11 @@ if (!empty($_SESSION['ajouterEvenement_flash_msg']))
 
 		if ($nb_favori == 0)
 		{
-			echo '<li><a href="'.$url_site.'action_favori.php?action=ajouter&amp;element=evenement&amp;idE='.$get['idE'].'"
-		title="Ajouter à vos favoris">'.$icone['ajouter_favori'].'Ajouter aux favoris</a></li>';
+			echo '<li><a href="'.$url_site.'action_favori.php?action=ajouter&amp;element=evenement&amp;idE='.$get['idE'].'">'.$icone['ajouter_favori'].'Favoris</a></li>';
 		}
 		else
 		{
-			echo '<li><a href="'.$url_site.'action_favori.php?action=supprimer&amp;element=evenement&amp;idE='.$get['idE'].'"
-		title="Ajouter à vos favoris">'.$icone['supprimer_favori'].'Retirer des favoris</a></li>';
+			echo '<li><a href="'.$url_site.'action_favori.php?action=supprimer&amp;element=evenement&amp;idE='.$get['idE'].'">'.$icone['supprimer_favori'].'Favoris</a></li>';
 		}
 	}
 
@@ -255,7 +253,7 @@ if (!empty($_SESSION['ajouterEvenement_flash_msg']))
 		{
 		
 		?>
-			<li><a href="<?php echo $url_site ?>copierEvenement.php?idE=<?php echo $get['idE'] ?>" title="Copier cet événement"><?php echo $iconeCopier ?>Copier</a></li>
+			<li><a href="<?php echo $url_site ?>copierEvenement.php?idE=<?php echo $get['idE'] ?>" title="Copier cet événement"><?php echo $iconeCopier ?>Copier vers d'autres dates</a></li>
 		<?php
 		}
 		if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 6)
@@ -266,7 +264,7 @@ if (!empty($_SESSION['ajouterEvenement_flash_msg']))
 		)
 		{
 		?>
-			<li><a href="<?php echo $url_site ?>ajouterEvenement.php?action=editer&amp;idE=<?php echo $get['idE'] ?>" title="Éditer cet événement"><?php echo $iconeEditer ?>Éditer</a></li>
+			<li><a href="<?php echo $url_site ?>ajouterEvenement.php?action=editer&amp;idE=<?php echo $get['idE'] ?>"><?php echo $iconeEditer ?>Modifier</a></li>
 		<?php
 		}
 		?>
@@ -275,7 +273,7 @@ if (!empty($_SESSION['ajouterEvenement_flash_msg']))
 			<!--<li><a href="annuler.php?idE=<?php //$get['idE'] ?>" title="Annuler cet événement"><img src="images/interface/icons/page_delete.png" />Annuler</a></li> -->
 	
 			<li><a href="<?php echo $url_site."evenement_ics.php?idE=".$get['idE'] ?>" title="Exporter au format iCalendar dans votre agenda"><i class="fa fa-calendar-plus-o fa-lg"></i>
-iCalendar</a></li>			
+iCal</a></li>			
 			
 			
 		</ul>

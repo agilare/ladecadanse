@@ -95,7 +95,7 @@ $titre_actions = '';
 if (($get['action'] == 'editer' || $get['action'] == 'update'))
 {
 	$act = "editer&amp;idO=".$get['idO'];
-	$titre_form = "Éditer";
+	$titre_form = "Modifier";
 	$nom_submit = "Modifier";
 
 	if (estAuteur($_SESSION["SidPersonne"], $get['idO'], "organisateur") || $_SESSION['Sgroupe'] <= 8)

@@ -1054,7 +1054,7 @@ if ($get['action'] == 'editer' && isset($get['idE']))
 		}
 
 		    $aff_actions .= "<li class=\"action_copier\">
-			<a href=\"".$url_site."copierEvenement.php?idE=".$get['idE']."\" title=\"Copier l'événement vers une autre date\">Copier</a></li>";
+			<a href=\"".$url_site."copierEvenement.php?idE=".$get['idE']."\" title=\"Copier l'événement vers une autre date\">Copier vers d'autres dates</a></li>";
 			
 		
 		$aff_actions .= "</ul>";
@@ -1070,7 +1070,7 @@ if ($get['action'] == 'editer' && isset($get['idE']))
 	 */
 	if ($get['action'] == 'update' || $get['action'] == 'editer')
 	{
-$aff_titre .= '<h2>Éditer <a style="font-size:0.7em" href="'.$url_site.'evenement.php?idE='.$get['idE'].'" title="Fiche de l\'événement" >'.$champs['titre'].'</a></h2>';
+$aff_titre .= '<h2>Modifier <a style="font-size:0.7em" href="'.$url_site.'evenement.php?idE='.$get['idE'].'" title="Fiche de l\'événement" >'.$champs['titre'].'</a></h2>';
 		$act = "update&amp;idE=".$get['idE'];
 	}
 	else

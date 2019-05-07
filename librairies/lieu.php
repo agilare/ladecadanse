@@ -130,7 +130,7 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 10))
 $action_editer = '';
 if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 6))
 {
-	$action_editer = '<li class="action_editer"><a href="'.$url_site.'ajouterLieu.php?action=editer&amp;idL='.$get['idL'].'" title="Éditer ce lieu">Éditer</a></li>';
+	$action_editer = '<li class="action_editer"><a href="'.$url_site.'ajouterLieu.php?action=editer&amp;idL='.$get['idL'].'" title="Éditer ce lieu">Modifier</a></li>';
 }
 
 $lien_prec = '';
@@ -454,7 +454,7 @@ if ($nb_pres > 0)
 			{
 
 				$editer = '<span class="right">';
-				$editer .= '<a href="'.$url_site.'ajouterDescription.php?action=editer&amp;type='.$get['type_description'].'&amp;idL='.$get['idL'].'&amp;idP='.$des->getValue('idPersonne').'">'.$iconeEditer.'Éditer</a>';
+				$editer .= '<a href="'.$url_site.'ajouterDescription.php?action=editer&amp;type='.$get['type_description'].'&amp;idL='.$get['idL'].'&amp;idP='.$des->getValue('idPersonne').'">'.$iconeEditer.' Modifier</a>';
 				$editer .= '</span>';
 			}
 

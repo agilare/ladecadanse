@@ -25,8 +25,8 @@ if (!$videur->checkGroup(8))
 $cache_lieux = $rep_cache."lieux/";
 header("Cache-Control: max-age=30, must-revalidate");
 
-$page_titre = "ajouter/éditer une description de lieu";
-$page_description = "ajouter/éditer une description de lieu";
+$page_titre = "ajouter/modifier une description de lieu";
+$page_description = "ajouter/modifier une description de lieu";
 $nom_page = "ajouterDescription";
 $extra_css = array("formulaires", "description", "chosen.min");
 $extra_js = array( "zebra_datepicker", "chosen.jquery.min", "jquery.shiftcheckbox");
@@ -266,7 +266,7 @@ if ($get['action'] == 'editer' || $get['action'] == 'update')
  	$detailsLieu = $connector->fetchArray($req_lieu);
 
 	echo '
-	<h2>Éditer la '.$get['type'].' sur
+	<h2>Modifier la '.$get['type'].' sur
 <a href="'.$url_site.'lieu.php?idL='.$get['idL'].'" title="Fiche du lieu '.securise_string($detailsLieu['nom']).'">'.securise_string($detailsLieu['nom']).'</a></h2>';
 
 

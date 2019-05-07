@@ -36,13 +36,10 @@ color:#5C7378;
 	color:#5C7378;
 }
 
-
-
 evenements ul.menu_ascenseur
 {
-float:right;
-display:inline;
-/* border:#eaeaea 1px solid; */
+    float:right;
+    display:inline;
 }
 
 #evenements ul.menu_ascenseur li
@@ -91,10 +88,10 @@ margin:0.2em 0;
 
 .evenement .description h2
 {
-font-size:1em;
-font-weight:bold;
-margin-top:0.7em;
-margin-bottom:0.2em;
+    font-size:1em;
+    font-weight:bold;
+    margin-top:0.7em;
+    margin-bottom:0.2em;
 }
 
 .evenement .titre
@@ -120,31 +117,23 @@ margin-bottom:0.2em;
 	float : right;
 	text-align : right;
 	width : 41%;
-margin:0;
-	/* background: yellow; */
+    margin:0;
 	padding: 0px 0em 0px 0px;
 	font-weight : bold;
 }
 
 .evenement .titre #titre, #nom_lieu
 {
-display:block;
-background-color:#FDD017;
+    display:block;
+    background-color:#FDD017;
 }
 
-
-
-.evenement .titre a:active {
-
-color:#5C7378;
-margin:0;
-/*#42454D*/
-}
-
-.evenement .titre a:hover {
+.evenement .titre a:active
+{
+    color:#5C7378;
+    margin:0;
 
 }
-
 
 .evenement .description
 {
@@ -164,20 +153,20 @@ margin:0;
 
 .evenement .description h2
 {
-font-size:1em;
-font-weight:bold;
-margin-top:0.7em;
-margin-bottom:0.2em;
+    font-size:1em;
+    font-weight:bold;
+    margin-top:0.7em;
+    margin-bottom:0.2em;
 }
 
 
 .evenement .pratique
-{padding:0 0 0 102px;
- background-color:#EFEFEF;
-	
+{
+    padding:0 0 0 102px;
+    background-color:#EFEFEF;	
 	font-size:0.8em;
-		padding:0;
-		line-height:1.2em;
+    padding:0;
+    line-height:1.2em;
 }
 
 .evenement .pratique .left
@@ -201,6 +190,7 @@ margin-bottom:0.2em;
 {
 	float : left;
 	width : 100px;
+    min-height: 150px;
 	background : #f2f2f2;
 	padding: 1px 1px 0px 1px;
 	margin:0% 0% 0% 0%;
@@ -219,16 +209,13 @@ margin-bottom:0.2em;
 }
 
 ul.menu_actions
-{	float:right;	
-height:1.6em;
-	
+{	
+    float:right;	
+    height:1.6em;	
 	display:inline;
 }
 ul.menu_actions li
 {
-
-
 	display:inline;
 	margin:0 0.8em 0 0em;
-	/* border:1px solid red; */
 }

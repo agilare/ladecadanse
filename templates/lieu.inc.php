@@ -233,7 +233,7 @@ $req_docu = $connector->query($sql_docu);
 					{
 					?>
 					<span class="right">
-					<a href="<?php echo $url_site ?>ajouterDescription.php?action=editer&amp;idL=<?php echo $lieu['idLieu'] ?>&amp;idP=<?php echo $tab_des['auteur'] ?>"><?php echo $iconeEditer ?>Éditer</a></span>
+					<a href="<?php echo $url_site ?>ajouterDescription.php?action=editer&amp;idL=<?php echo $lieu['idLieu'] ?>&amp;idP=<?php echo $tab_des['auteur'] ?>"><?php echo $iconeEditer ?>Modifier</a></span>
 					<?php
 					}
 					?>
