@@ -8,40 +8,28 @@ if ($evenement['idLieu'] != 0)
 	
 	$nom_lieu = "<a href=\"".$url_site."lieu.php?idL=".$evenement['idLieu']."\" title=\"Voir la fiche du lieu : ".securise_string($listeLieu['nom'])."\" >".htmlspecialchars($listeLieu['nom'])."</a>";
 
-
 	if ($evenement['idSalle'] != 0)
 	{
 		$req_salle = $connector->query("SELECT nom, emplacement FROM salle
 		WHERE idSalle='".$evenement['idSalle']."'");
 		$tab_salle = $connector->fetchArray($req_salle);
 		$nom_lieu .=  " - ".$tab_salle['nom'];
-
 	}
-
-
-	
-	
 }
 else 
 {
 	$nom_lieu = $listeLieu['nom'] =  htmlspecialchars($evenement['nomLieu']);
 	$listeLieu['adresse'] = htmlspecialchars($evenement['adresse']);
 	$listeLieu['quartier'] = htmlspecialchars($evenement['quartier']);
-        
- 
-        $listeLieu['localite'] = securise_string($evenement['localite']);        
-        
+    $listeLieu['localite'] = securise_string($evenement['localite']);              
 }
-		$adresse = htmlspecialchars(get_adresse(null, $listeLieu['localite'], $listeLieu['quartier'], $listeLieu['adresse']));
 
-//printr($evenement);
+$adresse = htmlspecialchars(get_adresse(null, $listeLieu['localite'], $listeLieu['quartier'], $listeLieu['adresse']));
 
 echo '<div id="evenements">';
-
 echo "<p><a href=\"".$url_site."agenda.php?courant=".$evenement['dateEvenement']."\" title=\"Agenda\">".ucfirst(date_fr($evenement['dateEvenement'], "annee"))."</a></p>";
 ?>
 <div class="evenement">
-
 
 <div class="titre">
 	<span class="left">
@@ -56,7 +44,7 @@ echo "<p><a href=\"".$url_site."agenda.php?courant=".$evenement['dateEvenement']
 	?>
 	</span>
 	<span class="right"><?php echo $nom_lieu ?></span>
-			<div class="spacer"></div>	
+	<div class="spacer"></div>	
 </div>
 <!-- fin titre -->
 
@@ -106,85 +94,17 @@ else
 
 echo "</div>
 <div class=\"spacer\"></div>\n";
-
-/* echo "<div class=\"url_infos\">";
-
-$tab_ref = explode(";", $evenement['ref']);
-echo "<ul>";
-foreach ($tab_ref as $r)
-{
-	$r = trim($r);
-	if (mb_substr($r, 0, 3) == "www")
-	{
-		$r = "http://".$r;
-	//echo "ok";
-	}
-	
-	if (preg_match('#^(http\\:\\/\\/)[a-z0-9_-]+\.([a-z0-9_-]+\.)?[a-zA-Z]{2,3}#i', $r))
-	{
-		echo "<li><a href=\"".$r."\" title=\"Aller vers ".$r."\">";
-		if (preg_match('/^http:\/\/www/', $r))
-		{
-			echo mb_substr($r, 7);
-		} 
-		else
-		{
-			echo $r;
-		}
-		echo "</a></li>";
-	}
-	else
-	{
-		echo "<li>".$r."</li>";
-	}
-}
-echo "</ul>";
-	
-
-echo "</div>\n"; */
-
-
 echo "
 <div class=\"pratique\">\n
 <span class=\"left\">".$adresse."</span>";
-
-
-
 echo "
 <span class=\"right\">".afficher_debut_fin($evenement['horaire_debut'], $evenement['horaire_fin'], $evenement['dateEvenement'])." ".securise_string($evenement['horaire_complement'])
 ." ".securise_string($evenement['prix']);
 ?>
-
-
-
 </span>
 <div class="spacer"></div>
 </div>
 <!-- fin pratique -->
-
-
-
-<?php
-if (
-(isset($_SESSION['Sgroupe']) &&
-	($_SESSION['Sgroupe'] <= 6 || $_SESSION['SidPersonne'] == $evenement['idPersonne']))
-	
-|| (isset($_SESSION['Saffiliation_lieu']) && !empty($evenement['idLieu']) && $evenement['idLieu'] == $_SESSION['Saffiliation_lieu'])
-
-	
-	)
-{
-	echo '<div class="edition">';
-	echo '<ul class="menu_actions">';
-	echo "<li class=\"action_copier\"><a href=\"".$url_site."copierEvenement.php?idE=".$evenement['idEvenement']."\" 
-	title=\"Copier l'événement\">Copier vers d'autres dates</a></li>";
-	echo "<li class=\"action_editer\"><a href=\"".$url_site."ajouterEvenement.php?action=editer&amp;idE=".$evenement['idEvenement']."\" 
-	title=\"Modifier l'événement\">Modifier</a></li>";
-	echo '</ul>';
-	echo '</div>';
-}
-?>
-
 
 </div>
 </div>

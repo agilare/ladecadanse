@@ -94,40 +94,24 @@ $annee2 = '';
 
 $tab_champs = array();
 
-if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
+if (!empty($_POST['submit']))
 {
+        $date_from = filter_input(INPUT_POST, 'from', FILTER_SANITIZE_STRING);
+        $date_to = filter_input(INPUT_POST, 'to', FILTER_SANITIZE_STRING);
 
-	//la seconde date vaut la première si collage vers seulement un seul jour
-	$jour2 = $jour = $_POST['jour'];
-	$mois2 = $mois = $_POST['mois'];
-	$annee2 = $annee = $_POST['annee'];
+        $date_from_parts = explode(".", $date_from);
+        $date_to_parts = explode(".", $date_to);
 
-	//si une 2e date à été sélectionnée, c'est la fin de la tranche de collage
-	if (!empty($_POST['jour2']))
-	{
-		$jour2 = $_POST['jour2'];
-	}
-	if (!empty($_POST['mois2']))
-	{
-		$mois2 = $_POST['mois2'];
-	}
-	if (!empty($_POST['annee2']))
-	{
-		$annee2 = $_POST['annee2'];
-	}
-
-
-
-	//si les magic quotes sont activés, retrait des slashes
-	if (get_magic_quotes_gpc())
-	{
-		$jour = stripslashes($jour);
-		$mois = stripslashes($mois);
-		$annee = stripslashes($annee);
-		$jour2 = stripslashes($jour2);
-		$mois2 = stripslashes($mois2);
-		$annee2 = stripslashes($annee2);
-	}
+		$jour2 = $jour = stripslashes($date_from_parts[0]);
+		$mois2 = $mois = stripslashes($date_from_parts[1]);
+		$annee2 = $annee = stripslashes($date_from_parts[2]);
+       
+        if (!empty($date_to))
+        {
+            $jour2 = stripslashes($date_to_parts[0]);
+            $mois2 = stripslashes($date_to_parts[1]);
+            $annee2 = stripslashes($date_to_parts[2]);
+        }
 
 	/*
 	 * VERIFICATION DES CHAMPS ENVOYES par POST
@@ -154,23 +138,18 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 		$verif->setErreur("dateEvenement", "La première date doit être avant la deuxième");
 	}
 
-	//Vérifie que la date de fin existe bien et qu'elle dans le futur
+	// vérifie que la date de fin existe bien et qu'elle dans le futur
 	if (!checkdate($mois2, $jour2, $annee2))
 	{
-		$verif->setErreur("dateEvenement2", "Cette date n'existe pas");
+		$verif->setErreur("dateEvenement", "La date de fin n'existe pas");
 	}
 	elseif ($date_auj  > $dateEvenement2)
 	{
-		$verif->setErreur("dateEvenement2", "L'événement doit être dans le futur");
+		$verif->setErreur("dateEvenement", "La date de fin doit être dans le futur");
 	}
-
-
-
+    
 	if ($verif->nbErreurs() === 0)
 	{
-		/*
-		 * Récupération des infos de l'événement à copier
-		 */
 		$tab_champs = $connector->fetchAssoc(($connector->query("
 SELECT idLieu, idSalle, genre, flyer, dateEvenement, image, titre, nomLieu, adresse, quartier, localite_id, region, urlLieu, description, ref, prix,
  horaire_debut, horaire_fin, horaire_complement, prelocations
@@ -254,10 +233,6 @@ FROM evenement WHERE idEvenement=".$get['idE'])));
 			$sql_insert_valeurs = mb_substr($sql_insert_valeurs, 0, -2);
 
 			$sql_insert =  "INSERT INTO evenement (".$sql_insert_attributs.") VALUES (".$sql_insert_valeurs.")";
-			//TEST
-			//echo "<p>".$sql_insert."</p>";
-			//
-
 
 /* 			//FAIRE BOUCLE DE DATE1 A DATE2
 			$sql_inserer = "INSERT INTO evenement (idLieu, idPersonne, genre, titre, dateEvenement,
@@ -349,10 +324,7 @@ FROM evenement WHERE idEvenement=".$get['idE'])));
 					$req_insert_fichier = $connector->query($sql_insert_fichier);
 				}
 
-
-				$req_orga = $connector->query("
-		SELECT idOrganisateur
-		FROM evenement_organisateur WHERE idEvenement=".$get['idE']);
+				$req_orga = $connector->query("SELECT idOrganisateur FROM evenement_organisateur WHERE idEvenement=".$get['idE']);
 
 				while ($tab = $connector->fetchArray($req_orga))
 				{
@@ -360,22 +332,11 @@ FROM evenement WHERE idEvenement=".$get['idE'])));
 					(idEvenement, idOrganisateur) VALUES (".$nouv_id.", ".$tab['idOrganisateur'].")";
 					$connector->query($sql);
 				}
-				
-				
-				
-
 			}
 			else
 			{
-
 				msgErreur("La requête INSERT dans 'evenement' pour le ".date_fr(date('Y-m-d', $dateIncrUnix))." a échoué");
-
 			}
-
-
-
-
-
 
 			//copie de la date courante, passage au jour suivant, et saut d'une heure en cas de passage à l'heure d'hiver
 			$dateIncrUnixOld = $dateIncrUnix;
@@ -385,25 +346,18 @@ FROM evenement WHERE idEvenement=".$get['idE'])));
 			{
 				$dateIncrUnix += 3600;
 			}
-
-
 		} //while date
-
-		
+	
 		header("Location: copierEvenement.php?idE=".$get['idE']); die();
-
 	} //if nberreur = 0
-
 } // if POST != ""
 
 include("includes/header.inc.php");
-
 ?>
 
-<!-- Deb Contenu -->
 <div id="contenu" class="colonne">
     
-<div id="entete_contenu"><h2>Copier un événement</h2><div class="spacer"></div></div>
+<div id="entete_contenu" ><h2 style="width:100%">Copier un événement</h2><div class="spacer"></div></div>
 
 <div style="width:94%;margin:0 auto">
 <?php
@@ -414,7 +368,7 @@ if (!empty($_SESSION['copierEvenement_flash_msg']))
     <div class="msg_ok_copy">
     <?php echo $_SESSION['copierEvenement_flash_msg']['msg']; ?>
     <table class="table">
-        <thead><tr><th>Date</th><th>Horaire</th><th></th></tr></thead>
+        <thead><tr><th>Date</th><th>Horaire</th><th colspan="2"></th></tr></thead>
         <tbody><?php echo $_SESSION['copierEvenement_flash_msg']['table']; ?></tbody>
     </table>
     </div>
@@ -432,7 +386,7 @@ if (empty($_POST['jour2']))
 	$jour2 = $mois2 = $annee2 = '';
 }
 
-
+$date_du = '';
 /*
  * Récupérations des détails de l'événement à copier, affichage dans une boîte
  */
@@ -448,14 +402,11 @@ if (isset($get['idE']))
 			if ($get['action'] != "coller")
 			{
 				$tab = explode("-", $affEven['dateEvenement']);
-				$annee = $tab[0];
-				$mois = $tab[1];
-				$jour = $tab[2];
+				//$date_du = $tab[2].".".$tab[1].".".$tab[0];
+				$date_du = date('d.m.Y', mktime(0, 0, 0, $tab[1], $tab[2], $tab[0]) + 86400);
 			}
 
 			$evenement = $affEven;
-
-
 
 			//echo date_fr($affEven['dateEvenement']);
 			include("templates/evenement.inc.php");
@@ -464,161 +415,25 @@ if (isset($get['idE']))
 		{
 			msgErreur("Aucun événement n'est associé à ".$get['idE']);
 			exit;
-		} // if fetchArray
-
+		}
 } // if isset idE
-
-
-
-
-//affichage du nombre d'erreurs rencontrées après l'envoi du formulaire
-if (!empty($erreurs))
-{
-	msgErreur("Il y a ".count($erreurs)." erreur(s)");
-}
-
 ?>
 
-<form method="post" id="ajouter_editer" enctype="multipart/form-data" action="<?php echo basename(__FILE__)."?action=coller&amp;idE=".$get['idE']; ?>">
-<?php
-
-//si c'es la date d'origine de l'événement qui doit être affichée avant traitement du formulaire, on montre
-//directement le jour suivant
-if ($get['action'] != "coller")
-{
-	$lendemain = explode("-", date('Y-m-d', mktime(0, 0, 0, $mois, $jour, $annee) + 86400));
-	$jour = $lendemain[2];
-	$mois = $lendemain[1];
-	$annee = $lendemain[0];
-}
-?>
-
-<fieldset style="width: 100%;">
-<legend>Coller</legend>
-<p>
-<label for="jour">du : </label>
-<select name="jour" id="jour" title="Sélectionnez le jour">
-<?php
-for ($j = 1; $j < 32; $j++)
-{
-	echo "<option ";
-	if ($j == $jour)
-	{
-		echo "selected=\"selected\"";
-	}
-	echo " value=\"".$j."\">".$j."</option>";
-}
-?>
-</select>
-<label for="mois1" class="continu">&nbsp;</label>
-<select name="mois" id="mois1" title="Sélectionnez le mois">
-<?php
-for ($m=0; $m<12; $m++)
-{
-    echo "<option ";
-	if (($m + 1) == $mois)
-	{
-		echo "selected=\"selected\"";
-	}
-	echo " value=\"".($m + 1)."\">".$glo_moisF[$m]."</option>";
-}
-
-?>
-</select>
-<label for="annee" class="continu">&nbsp;</label>
-<select name="annee" id="annee" title="Sélectionnez l'année">
-<?php
-for ($a = date("Y"); $a < $glo_annee_max; $a++)
-{
-	echo "<option ";
-
-	if ($a == $annee)
-	{
-		echo "selected=\"selected\"";
-	}
-    echo " value=\"".$a."\">".$a."</option>";
-}
-?>
-</select>
-<?php
-echo $verif->getHtmlErreur('dateEvenement');
-?>
-</p>
-
-<p>
-<label for="jour2">au : </label>
-<select name="jour2" id="jour2" title="Sélectionnez le jour de fin">
-<?php
-
-echo "<option selected=\"selected\" value=\"\"><!-- --></option>";
-
-for ($j=1; $j<32; $j++)
-{
-	echo "<option ";
-	if ($jour2 == $j)
-	{
-		echo "selected=\"selected\"";
-	}
-    echo " value=\"".$j."\">".$j."</option>";
-}
-?>
-</select>
-<label for="mois2" class="continu">&nbsp;</label>
-<select name="mois2" id="mois2" title="Sélectionnez le mois de fin">
-<?php
-echo "<option selected=\"selected\" value=\"\"><!-- --></option>";
-
-for ($m=0; $m<12; $m++)
-{
-    echo "<option ";
-	if (($m + 1) == $mois2)
-	{
-		echo "selected=\"selected\"";
-	}
-	echo " value=\"".($m + 1)."\">".$glo_moisF[$m]."</option>";
-}
-?>
-</select>
-<label for="annee2" class="continu">&nbsp;</label>
-<select name="annee2" id="annee2" title="Sélectionnez l'année de fin">
-<?php
-
-echo "<option selected=\"selected\" value=\"\"><!-- --></option>";
-
-for ($a=date("Y"); $a<$glo_annee_max; $a++) {
-
-	echo "<option ";
-
-	if ($annee2 == $a) {
-		echo "selected=\"selected\"";
-	}
-    echo " value=\"".$a."\">".$a."</option>";
-}
-?>
-</select>
-<?php
-echo $verif->getHtmlErreur('dateEvenement');
-?>
-</p>
-
-<div class="guideChamp">Laissez cette ligne inchangée si vous ne collez l'événement que vers un seul jour.</div>
-<div class="spacer"></div>
-</fieldset>
-
-<p class="piedForm">
-<input type="hidden" name="formulaire" value="ok" />
-<input type="submit" value="Valider" class="submit" />
-</p>
+<form method="post" id="ajouter_editer" style="width: 94%;margin: 0em auto 0em auto;background:#efefef;padding: 1em 0;border-radius: 4px;" enctype="multipart/form-data" action="<?php echo basename(__FILE__)."?action=coller&amp;idE=".$get['idE']; ?>">
+    <label for="from" style="float:none">Du </label><input type="text" name="from" size="8" id="date-from" class="datepicker_from" placeholder="jj.mm.aaaa" required value="<?php echo $date_du; ?>"> 
+    <span style="position:relative"><label for="date-to" style="float:none">au </label><input type="text" name="to" size="8" id="date-to" class="datepicker_to" placeholder="jj.mm.aaaa"></span>
+        &nbsp;<input id="coller" name="submit" type="submit" class="submit" value="Coller" style="width: 80px;margin-left: 0.6em;">
+        <div style="margin: 15px 0 0px 30px;font-style: italic;color: #999;">Laissez la 2<sup>e</sup> date vide si vous ne collez l'événement que vers un seul jour.</div>
+    <?php
+    echo $verif->getHtmlErreur('dateEvenement');
+    ?>
 </form>
 
+</div> <!-- fin contenu -->
 
-</div>
-<!-- fin contenu -->
 <div id="colonne_gauche" class="colonne">
-
-<?php include("includes/navigation_calendrier.inc.php"); ?>
+    <?php include("includes/navigation_calendrier.inc.php"); ?>
 </div>
-<!-- Fin Colonne gauche -->
 
 <?php
 include("includes/footer.inc.php");

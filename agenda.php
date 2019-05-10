@@ -558,7 +558,7 @@ if ($get['sem'])
                 ?>
                 <ul class="menu_edition">
                     <li class="action_copier">
-                    <a href="<?php echo $url_site; ?>copierEvenement.php?idE=<?php echo $listeEven['idEvenement']; ?>" title="Copier l'événement">Copier vers d'autres dates</a>
+                        <a href="<?php echo $url_site; ?>copierEvenement.php?idE=<?php echo $listeEven['idEvenement']; ?>" title="Copier l'événement">Copier<span class="desktop"> vers d'autres dates</span></a>
                     </li>	
                     <li class="action_editer">
                     <a href="<?php echo $url_site; ?>ajouterEvenement.php?idE=<?php echo $listeEven['idEvenement']; ?>&amp;action=editer" title="Éditer l'événement">Modifier</a>

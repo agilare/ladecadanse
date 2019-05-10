@@ -592,3 +592,10 @@ form#ajouter_editer p.memoriser label, form#ajouter_editer p.mdp_oublie
 {
     width: 100%;
 }
+
+#coller
+{
+   margin-left: 1.5em !important;
+   margin-top: 1em !important;   
+}
+

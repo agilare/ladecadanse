@@ -1,5 +1,5 @@
-<script type="text/javascript" src="<?php echo $url_site; ?>js/jquery-1.10.2.js"></script>
 <script src="<?php echo $url_site; ?>librairies/magnific-popup/jquery.magnific-popup.js"></script>
+<script src="<?php echo $url_site; ?>librairies/zebra_datepicker/zebra_datepicker.min.js"></script>
 <?php
 if (isset($extra_js) && is_array($extra_js))
 {
@@ -23,7 +23,7 @@ if (!empty( $matches[1] ))
 
 $pages_orga = array("ajouterEvenement", "ajouterLieu", "ajouterPersonne", 'inscription');
 
-$pages_formulaires = array("ajouterEvenement", "ajouterLieu", "inscription", "gererEvenements", "ajouterPersonne", "ajouterDescription", "ajouterOrganisateur");
+$pages_formulaires = array("ajouterEvenement", "copierEvenement", "ajouterLieu", "inscription", "gererEvenements", "ajouterPersonne", "ajouterDescription", "ajouterOrganisateur");
 $pages_tinymce = ["ajouterDescription", "ajouterOrganisateur"];
 ?>
 <script type="text/javascript">
@@ -45,9 +45,31 @@ $(document).ready(function() {
 	  months : ['Janvier', 'F&eacute;vrier', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Ao&ucirc;t', 'Septembre', 'Octobre', 'Novembre', 'D&eacute;cembre'],
 	  show_clear_date : true,
 	  lang_clear_date : "Effacer",
-	  show_select_today : "Aujourd'hui"
+	  show_select_today : "Aujourd’hui"
 	});
-	
+
+	$('input.datepicker_from').Zebra_DatePicker({
+      direction: true,
+      pair: $('input.datepicker_to'),
+	  format: 'd.m.Y',
+	  zero_pad: true,
+	  days : ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'],
+	  months : ['Janvier', 'F&eacute;vrier', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Ao&ucirc;t', 'Septembre', 'Octobre', 'Novembre', 'D&eacute;cembre'],
+	  show_clear_date : true,
+	  lang_clear_date : "Effacer",
+	  show_select_today : "Aujourd’hui"
+	});
+
+	$('input.datepicker_to').Zebra_DatePicker({
+	  direction: 1,
+	  format: 'd.m.Y',
+	  zero_pad: true,
+	  days : ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'],
+	  months : ['Janvier', 'F&eacute;vrier', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Ao&ucirc;t', 'Septembre', 'Octobre', 'Novembre', 'D&eacute;cembre'],
+	  show_clear_date : true,
+	  lang_clear_date : "Effacer",
+	  show_select_today : "Aujourd’hui"
+	});        
 	
 	$(".chosen-select").chosen({allow_single_deselect: true, no_results_text: "Aucun &eacute;l&eacute;ment correspondant n'a &eacute;t&eacute; trouv&eacute;"})
 
@@ -62,9 +84,6 @@ $(document).ready(function() {
 		ignoreClick      : 'a'
 
 	});
-	
-	//jQuery("#inscription_organisateur").click( function() {console.log("ok");$('#inscription_references').toggle();return false;} );
-	
  });
 <?php
 }
@@ -249,7 +268,7 @@ $(document).ready(function()
 		$(".element_toggle").toggle();
 		//return false;
 	});
- });
+});    
 </script>
 <?php if (in_array($nom_page, $pages_tinymce)) { ?>
 <script src="https://cloud.tinymce.com/5/tinymce.min.js?apiKey=7g39i0lvspz7m6s04eo2hvjji73rjk8tf0b62fkl7dn7p5bw"></script>

@@ -30,7 +30,7 @@ require_once($rep_librairies.'Validateur.php');
 $page_titre = "ajouter/modifier un événement";
 $page_description = "Formulaire d'ajout/modification d'un événement dans l'agenda";
 $extra_css = array("formulaires", "evenement_inc", "ajouterEvenement_formulaire", "default", "chosen.min");
-$extra_js = array("zebra_datepicker", "chosen.jquery.min", "jquery.shiftcheckbox");
+$extra_js = array("chosen.jquery.min", "jquery.shiftcheckbox");
 
 
 /*
