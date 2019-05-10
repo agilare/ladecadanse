@@ -663,7 +663,7 @@ elseif (!empty($_POST['formulaire']))
 				$imD2 = new ImageDriver2("evenement");
 				$erreur_image = array();
 				$erreur_image[] = $imD2->processImage($_FILES['flyer'], $champs['flyer'], 400, 400);
-				$erreur_image[] = $imD2->processImage($_FILES['flyer'], "s_".$champs['flyer'], 100, 160, 0, 1);
+				$erreur_image[] = $imD2->processImage($_FILES['flyer'], "s_".$champs['flyer'], 120, 190, 0, 1);
 				$erreur_image[] = $imD2->processImage($_FILES['flyer'], "t_".$champs['flyer'], 60, 80, 0, 1);
 				if (!empty($erreur_image))
 				{
@@ -705,7 +705,7 @@ elseif (!empty($_POST['formulaire']))
 				$imD2 = new ImageDriver2("evenement");
 				$erreur_image = array();
 				$erreur_image[] = $imD2->processImage($_FILES['image'], $champs['image'], 400, 400);
-				$erreur_image[] = $imD2->processImage($_FILES['image'], "s_".$champs['image'], 100, 160, 0, 1);
+				$erreur_image[] = $imD2->processImage($_FILES['image'], "s_".$champs['image'], 120, 190, 0, 1);
 				if (!empty($erreur_image))
 				{
 					//printr($erreur_image);

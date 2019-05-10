@@ -83,10 +83,12 @@ if ($get['sem'] == 0)
 		$entete_contenu = ucfirst($entete_contenu);
 	
 	$precedent = date("Y-m-d", mktime(0, 0, 0, (int)$mois_courant, $jour_courant - 1, $annee_courant));
-	$lien_precedent = "<a href=\"".$url_site."agenda.php?".arguments_URI($get)."&amp;courant=".$precedent."\" style=\"border-radius:3px 0 0 3px;\">".$iconePrecedent."</a>";
+	$lien_precedent = "<a href=\"".$url_site."agenda.php?".arguments_URI($get)."&amp;courant=".$precedent."\" style=\"border-radius:3px 0 0 3px;\">".$iconePrecedent."&nbsp;</a>";
 	$suivant = date("Y-m-d", mktime(0, 0, 0, (int)$mois_courant, $jour_courant + 1, $annee_courant));
 
-	$lien_suivant = "<a href=\"".$url_site."agenda.php?".arguments_URI($get)."&amp;courant=".$suivant."\" style=\"border-radius:0 3px 3px 0;\">".$iconeSuivant."</a>";
+    
+    $suivant_nomjour_parts = explode(" ", date_fr($suivant, "tout", "non", ""));
+	$lien_suivant = "<a href=\"".$url_site."agenda.php?".arguments_URI($get)."&amp;courant=".$suivant."\" style=\"border-radius:0 3px 3px 0;background:#e4e4e4\" title=\"".$suivant_nomjour_parts[1]."\">".ucfirst($suivant_nomjour_parts[0])."<span class=desktop> ".$suivant_nomjour_parts[1]."</span>"."&nbsp;".$iconeSuivant."</a>";
 }
 else if ($get['sem'] == 1)
 {
@@ -95,7 +97,7 @@ else if ($get['sem'] == 1)
 		
 	$entete_contenu .= date_fr($lundim[0], "non", "non", "non")." au ".date_fr($lundim[1], "annee", "non", "non");
 	$precedent = date("Y-m-d", mktime(0, 0, 0, (int)$mois_courant  ,(int)($jour_courant - 7), $annee_courant));
-	$lien_precedent = "<a href=\"".$url_site."agenda.php?courant=".$precedent."&amp;sem=1&amp;genre=".$get['genre']."\" style=\"border-radius:3px 0 0 3px;\">".$iconePrecedent."</a>";
+	$lien_precedent = "<a href=\"".$url_site."agenda.php?courant=".$precedent."&amp;sem=1&amp;genre=".$get['genre']."\" style=\"border-radius:3px 0 0 3px;background:#e4e4e4\">".$iconePrecedent."</a>";
 
 	$suivant = date("Y-m-d", mktime(0, 0, 0, (int)$mois_courant  , $jour_courant + 7, $annee_courant));
 	$lien_suivant = "<a href=\"".$url_site."agenda.php?courant=".$suivant."&amp;sem=1&amp;genre=".$get['genre']."\" style=\"border-radius:0 3px 3px 0;\">".$iconeSuivant."</a>";
@@ -192,7 +194,7 @@ if ($get['sem'])
 		<h2>Agenda</h2><?php getMenuRegions($glo_regions, $get); ?>
         <div class="spacer"></div>
         <div style="margin-top: 0.6em;">
-            <h3 style="color: #888;font-size: 1.2em;line-height: 1.3em;margin-top: 0.6em;width:54%"><?php echo $entete_contenu ?></h3> 
+            <h3><?php echo $entete_contenu ?></h3> 
             <ul class="entete_contenu_navigation" style="width:45%;margin-top: 0.5em;">
                 <li><?php echo $lien_precedent.$lien_suivant; ?></li>
             </ul>
@@ -398,12 +400,12 @@ if ($get['sem'])
 		if (!empty($listeEven['flyer']))
 		{
 			$imgInfo = @getimagesize($rep_images.$listeEven['flyer']);
-			$lien_flyer = '<a href="'.$IMGeven.$listeEven['flyer']."?".@filemtime($rep_images_even.$listeEven['flyer']).'" class="magnific-popup"><img src="'.$IMGeven."s_".$listeEven['flyer']."?".@filemtime($rep_images_even.$listeEven['flyer']).'"  alt="Flyer" /></a>';			
+			$lien_flyer = '<a href="'.$IMGeven.$listeEven['flyer']."?".@filemtime($rep_images_even.$listeEven['flyer']).'" class="magnific-popup"><img src="'.$IMGeven."s_".$listeEven['flyer']."?".@filemtime($rep_images_even.$listeEven['flyer']).'"  alt="Flyer" width="100" /></a>';			
 		}
 		else if ($listeEven['image'] != '')
 		{	
 			$imgInfo = @getimagesize($rep_images.$listeEven['image']);
-			$lien_flyer = '<a href="'.$IMGeven.$listeEven['image']."?".@filemtime($rep_images_even.$listeEven['image']).'" class="magnific-popup"><img src="'.$IMGeven."s_".$listeEven['image']."?".@filemtime($rep_images_even.$listeEven['image']).'"  alt="Photo" /></a>';					
+			$lien_flyer = '<a href="'.$IMGeven.$listeEven['image']."?".@filemtime($rep_images_even.$listeEven['image']).'" class="magnific-popup"><img src="'.$IMGeven."s_".$listeEven['image']."?".@filemtime($rep_images_even.$listeEven['image']).'" alt="Photo" width="100" /></a>';					
 		}
 
 		if (mb_strlen($listeEven['description']) > $maxChar)

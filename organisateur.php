@@ -478,7 +478,7 @@ if ($evenements->getNbElements() > 0)
 
 			?>
 			<a href="<?php echo $IMGeven.$even->getValue('flyer').'?'. @filemtime($rep_images_even.$even->getValue('flyer')) ?>" class="magnific-popup">
-				<img src="<?php echo $IMGeven."t_".$even->getValue('flyer')."?". @filemtime($rep_images_even."t_".$even->getValue('flyer')); ?>" alt="Flyer"  />
+				<img src="<?php echo $IMGeven."t_".$even->getValue('flyer')."?". @filemtime($rep_images_even."t_".$even->getValue('flyer')); ?>" alt="Flyer" width="60" />
 			</a>			
 			
 			<?php

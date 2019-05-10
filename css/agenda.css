@@ -6,11 +6,20 @@
 #entete_contenu h2
 {
     min-height:1.2em;
-    font-size:1.4em;
+    font-size:1.5em;
     float:left;
     display:inline;
     width:55%;
     line-height:1.2em;
+}
+
+#entete_contenu h3
+{
+    color: #888;
+    font-size: 1.3em;
+    line-height: 1.3em;
+    margin-top: 0.6em;
+    width:54%
 }
 
 #entete_contenu ul
@@ -32,7 +41,7 @@
 
 #entete_contenu ul li img
 {
-    vertical-align:bottom;
+    vertical-align:top;
 }
 
 

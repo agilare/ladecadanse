@@ -201,10 +201,13 @@ display:none;
 
 #entete_contenu h2 small
 {
-        display: block;
- 
+    display: block;
     font-size: .8em;
+}
 
+#entete_contenu h3
+{
+    font-size:1.15em
 }
 
 #entete_contenu, #prochains_evenements, #evenements, #dernieres_descriptions, div#fiche 

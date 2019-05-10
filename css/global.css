@@ -373,7 +373,7 @@ sup {
 
 	.entete_contenu_navigation a
 	{
-		padding:0.4em 0.6em;
+		padding:0.4em;
 		background:#f0f0f0;
 		display:inline-block;
 	}
@@ -566,6 +566,7 @@ table tr td.small
 {
     float:right;
     margin-top: -0.2em;
+    padding:0;
     font-size: 1.1em;
     text-align: right;
     width: auto;

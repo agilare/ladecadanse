@@ -814,7 +814,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 			$imD2 = new ImageDriver2("evenement");
 			$erreur_image = array();
 			$erreur_image[] = $imD2->processImage($_FILES['flyer'], $champs['flyer'], 600, 600);
-			$erreur_image[] = $imD2->processImage($_FILES['flyer'], "s_".$champs['flyer'], 100, 160, 0, 0);
+			$erreur_image[] = $imD2->processImage($_FILES['flyer'], "s_".$champs['flyer'], 120, 190, 0, 0);
 			$erreur_image[] = $imD2->processImage($_FILES['flyer'], "t_".$champs['flyer'], 60, 80, 0, 0);
 			if (!empty($erreur_image))
 			{
@@ -1210,7 +1210,7 @@ echo $verif->getHtmlErreur("genre");
 <div>
 <label for="dateEvenement"><?php if ($isadmin) { ?>Date*<?php } ?></label>
 
-<input type="text" name="dateEvenement" id="dateEvenement" size="12" value="<?php echo securise_string($champs['dateEvenement']); ?>" class="datepicker" placeholder="jj.mm.aaaa" required />
+<input type="text" name="dateEvenement" id="dateEvenement" size="8" value="<?php echo securise_string($champs['dateEvenement']); ?>" class="datepicker" placeholder="jj.mm.aaaa" required />
 <?php
 echo $verif->getHtmlErreur('dateEvenement');
 ?>

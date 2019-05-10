@@ -295,7 +295,7 @@ if ($get['elements'] == "evenement")
 				$imgInfo = @getimagesize($rep_images_even.$tab_even['flyer']);
 				echo lien_popup($IMGeven.$tab_even['flyer']."?".@filemtime($rep_images_even.$tab_even['flyer']),
 				"Flyer", $imgInfo[0]+20,$imgInfo[1]+20,
-				'<img src="'.$IMGeven.'t_'.$tab_even['flyer'].'" alt="Flyer" />'
+				'<img src="'.$IMGeven.'t_'.$tab_even['flyer'].'" alt="Flyer" width="60" />'
 				);
 			}
 			echo '</td>';
@@ -522,7 +522,7 @@ else if ($get['type_elements'] == 'participations')
 				$imgInfo = @getimagesize($rep_images_even.$tab_even['flyer']);
 				echo lien_popup($IMGeven.$tab_even['flyer']."?".@filemtime($rep_images_even.$tab_even['flyer']),
 				"Flyer", $imgInfo[0]+20,$imgInfo[1]+20,
-				'<img src="'.$IMGeven.'t_'.$tab_even['flyer'].'" alt="Flyer" />'
+				'<img src="'.$IMGeven.'t_'.$tab_even['flyer'].'" alt="Flyer" width="60" />'
 				);
 			}
 			echo '</td>';
