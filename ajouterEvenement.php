@@ -533,7 +533,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 			{
 
 				$req_id = $connector->getInsertId();
-				$_SESSION['ajouterEvenement_flash_msg'] = "L'événement a été créé";				
+				$_SESSION['ajouterEvenement_flash_msg'] = "L'événement a été créé. <a href='agenda.php?courant=".$champs['dateEvenement']."#event-".$req_id."'>Voir dans l'agenda</a>";				
 				
 /* 				msgOk("Événement \"".securise_string($champs['titre'])."\" ajouté");
 
@@ -772,7 +772,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 				$req_id = $get['idE'];
 
 				//msgOk("Événement modifié");
-				$_SESSION['ajouterEvenement_flash_msg'] = "L'événement a été modifié";
+				$_SESSION['ajouterEvenement_flash_msg'] = "L'événement a été modifié. <a href='agenda.php?courant=".$champs['dateEvenement']."#event-".$req_id."'>Voir dans l'agenda</a>";
 
 
 

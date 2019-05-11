@@ -507,7 +507,7 @@ if ($get['sem'])
             $vcard_starttime = "T".mb_substr($listeEven['horaire_debut'], 11, 5).":00";	
         ?>
                 
-		<div class="evenement vevent">
+		<div id="event-<?php echo $listeEven['idEvenement']; ?>" class="evenement vevent">
 			<div class="dtstart">
                 <span class="value-title" title="<?php echo $listeEven['dateEvenement'].$vcard_starttime; ?>"></span>	
 			</div>		
