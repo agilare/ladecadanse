@@ -630,3 +630,11 @@ table tr td.small
 {
    background: #f0f0f0; 
 }
+
+#entete_contenu .menu_region li .events-nb
+{
+   border-radius:4px;
+   background:#f5f5f5;
+   padding:0.2em;
+   font-size:0.8em
+}
