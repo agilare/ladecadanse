@@ -424,7 +424,16 @@ form#ajouter_editer textarea, form#ajouter_editer #ref  {
 
 #entete_contenu .menu_region
 {
-    
     font-size: 1.25em;
+}
 
+#entete_contenu .menu_region li a
+{
+    padding: .5em;  
+}
+
+#entete_contenu .menu_region li .events-nb
+{
+   padding:0.2em 0.2em;
+   font-size:0.8em
 }

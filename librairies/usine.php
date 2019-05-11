@@ -575,7 +575,7 @@ function getMenuRegions($glo_regions, $get, $event_nb = [])
                     $nb = $event_nb[$n]['nb'];
                 }
                 
-                ?><li><a href="?region=<?php echo $n; ?>&<?php echo arguments_URI($get, 'region'); ?>" class="<?php echo $class_region; ?><?php echo $ici; ?>"><?php echo $v; ?>&nbsp; <?php if (PREVIEW && $nb !== '') { ?><span class="events-nb"><?php echo $nb; ?></span><?php } ?></a></li><?php
+                ?><li><a href="?region=<?php echo $n; ?>&<?php echo arguments_URI($get, 'region'); ?>" class="<?php echo $class_region; ?><?php echo $ici; ?>"><?php echo $v; ?>&nbsp;<?php if (PREVIEW && $nb !== '') { ?><span class="events-nb"><?php echo $nb; ?></span><?php } ?></a></li><?php
             }
         }
         ?></ul>
