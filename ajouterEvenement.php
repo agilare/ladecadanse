@@ -121,7 +121,7 @@ $action_terminee = false;
 
 if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 {
-
+    //printr($_POST);exit;
 	/*
 	 * Copie des champs envoyés par POST
 	 */
@@ -1054,7 +1054,7 @@ if ($get['action'] == 'editer' && isset($get['idE']))
 		}
 
 		    $aff_actions .= "<li class=\"action_copier\">
-			<a href=\"".$url_site."copierEvenement.php?idE=".$get['idE']."\" title=\"Copier l'événement vers une autre date\">Copier vers d'autres dates</a></li>";
+			<a href=\"".$url_site."copierEvenement.php?idE=".$get['idE']."\" title=\"Copier l'événement vers une autre date\">Copier</a></li>";
 			
 		
 		$aff_actions .= "</ul>";
@@ -1070,7 +1070,7 @@ if ($get['action'] == 'editer' && isset($get['idE']))
 	 */
 	if ($get['action'] == 'update' || $get['action'] == 'editer')
 	{
-$aff_titre .= '<h2>Modifier <a style="font-size:0.7em" href="'.$url_site.'evenement.php?idE='.$get['idE'].'" title="Fiche de l\'événement" >'.$champs['titre'].'</a></h2>';
+$aff_titre .= '<h2>Modifier <a style="font-size:0.8em" href="'.$url_site.'evenement.php?idE='.$get['idE'].'" title="Fiche de l\'événement" >'.$champs['titre'].'</a></h2>';
 		$act = "update&amp;idE=".$get['idE'];
 	}
 	else
@@ -1099,12 +1099,10 @@ if ($verif->nbErreurs() > 0)
 
 
 <!-- FORMULAIRE POUR UN EVENEMENT -->
-<form method="post" id="ajouter_editer" enctype="multipart/form-data" action="<?php echo basename(__FILE__)."?action=".$act ?>">
+<form method="post" id="ajouter_editer" class="submit-freeze-wait" enctype="multipart/form-data" action="<?php echo basename(__FILE__)."?action=".$act ?>">
 <h2>Avant de commencer</h2>
 <ul style="list-style-type:disc;margin:10px;padding-left:10px;line-height:1.2em">
-<li style="margin:6px 2px;">L’agenda de La décadanse englobe <strong>Genève, Lausanne et leurs environs</strong></li>
 <li style="margin:6px 2px;">Veuillez svp vérifier au préalable que votre événement n’est pas déjà présent dans l’<a href="agenda.php">agenda</a></li>
-<li style="margin:6px 2px;">La catégorie <em>Fêtes</em> inclut les soirées, les concerts, etc.</li>
 <li style="margin:6px 2px;">Veillez svp à ce que l'événement respecte notre <b><a href="charte-editoriale.php">charte&nbsp;éditoriale</a></b></li>
 
 </ul>
@@ -1199,21 +1197,20 @@ foreach ($glo_tab_genre as $k => $v)
 }
 ?>
 </ul>
+<div class="guideChamp"><i>Fêtes</i> inclut les soirées, les concerts, etc.</div>
 <?php
 echo $verif->getHtmlErreur("genre");
 ?>
 </fieldset>
 
 <fieldset>
-<legend><?php if (!$isadmin) { ?>Date*<?php } ?></legend>
+<legend>Date & horaire</legend>
 
 <div>
-<label for="dateEvenement"><?php if ($isadmin) { ?>Date*<?php } ?></label>
-
-<input type="text" name="dateEvenement" id="dateEvenement" size="8" value="<?php echo securise_string($champs['dateEvenement']); ?>" class="datepicker" placeholder="jj.mm.aaaa" required />
-<?php
-echo $verif->getHtmlErreur('dateEvenement');
-?>
+    <label for="dateEvenement">Date*</label><input type="text" name="dateEvenement" id="dateEvenement" size="8" value="<?php echo securise_string($champs['dateEvenement']); ?>" class="datepicker" placeholder="jj.mm.aaaa" required />
+    <?php
+    echo $verif->getHtmlErreur('dateEvenement');
+    ?>
 </div>
 <div id="calendarDiv"></div>
 
@@ -1221,7 +1218,33 @@ echo $verif->getHtmlErreur('dateEvenement');
 <div class="guideChamp">Si l'événement se répète sur plusieurs dates, vous pouvez l'ajouter à d'autres dates avec le bouton <b>Copier</b>, à la page suivante</div>
     <div class="spacer"></div>
 <?php } ?>
+    <!-- HORAIRE -->
 
+<p>
+    <label for="horaire_debut">Début</label>
+    <input type="time" name="horaire_debut" id="horaire_debut" size="5" value="<?php echo securise_string($champs['horaire_debut']) ?>" />
+
+    <label for="horaire_fin" class="continu">Fin</label>
+    <input type="time" name="horaire_fin" id="horaire_fin" size="5" value="<?php echo securise_string($champs['horaire_fin']) ?>" />&nbsp;<span class="tooltip">ℹ️<span class="tooltiptext">Jusqu'à 06:00, le début sera considéré faisant partie du jour de l’événement</span></span> 
+
+    <?php
+    echo $verif->getHtmlErreur('horaire_debut');
+    echo $verif->getHtmlErreur('horaire_fin');
+    ?>
+</p>
+
+
+<div>
+<label for="horaire_complement">Complément</label>
+<input type="text" name="horaire_complement" id="horaire_complement" size="40" maxlength="100" value="<?php echo securise_string($champs['horaire_complement']) ?>" />
+<?php
+echo $verif->getHtmlErreur('horaire_complement');
+?>
+</div>
+<p>
+<?php
+echo $verif->getHtmlErreur('horaire');
+?></p>
 </fieldset>
 
 <!-- LE LIEU DE L'EVENEMENT -->
@@ -1440,8 +1463,8 @@ echo $verif->getHtmlErreur("localite_id");
 
 
 <p>
-<label for="urlLieu">URL</label>
-<input type="text" name="urlLieu" id="urlLieu" size="50" maxlength="80" title="URL du lieu" value="<?php if (empty($champs['idLieu'])) { echo securise_string($champs['urlLieu']); } ?>" onfocus="this.className='focus';" onblur="this.className='normal';" />
+<label for="urlLieu">Site web</label>
+<input type="text" name="urlLieu" id="urlLieu" size="45" maxlength="80" title="URL du lieu" value="<?php if (empty($champs['idLieu'])) { echo securise_string($champs['urlLieu']); } ?>" onfocus="this.className='focus';" onblur="this.className='normal';" />
 <?php
 echo $verif->getHtmlErreur("urlLieu");
 ?>
@@ -1451,7 +1474,7 @@ echo $verif->getHtmlErreur("urlLieu");
 
 <!-- CHAMPS POUR L'EVENEMENT -->
 <fieldset>
-<legend>L'événement</legend>
+<legend>L’événement</legend>
 
 <p>
 <label for="titre">Titre*</label>
@@ -1468,7 +1491,7 @@ echo $verif->getHtmlErreur("titre");
 $id_textarea = "description";
 ?>
 
-<textarea name="description" id="description" cols="45" rows="20" title="description de l'événement">
+<textarea name="description" id="description" cols="50" rows="20">
 <?php echo securise_string($champs['description']) ?></textarea>
 <?php
 echo $verif->getHtmlErreur('description');
@@ -1480,11 +1503,10 @@ echo $verif->getHtmlErreur('description');
 <fieldset id="references">
 <legend>Références</legend>
 <p>
-<label for="ref">Nom ou URL</label>
-<input type="text" name="ref" id="ref" title="Organisateur, site web de l'événement, contact..." value="
-<?php echo securise_string($champs['ref']); ?>" />
+<label for="ref">Sites web</label>
+<input type="text" name="ref" id="ref" title="Organisateur, site web de l'événement, contact..." value="<?php echo securise_string($champs['ref']); ?>" placeholder="ur1;url2; etc." />
 </p>
-<div class="guideChamp">Indiquez ici les sites web de l'événement ou des organisateurs. Séparer chaque élément par un point-virgule.</div>
+<div class="guideChamp">Site de l’événement, page Facebook, organisateur (s'il n'est pas présent ci-dessous), etc. Séparer chaque élément par un point-virgule.</div>
 
 <div class="spacer"></div>
 
@@ -1503,172 +1525,102 @@ WHERE evenement_organisateur.idEvenement=".$get['idE']." AND
 
 	if ($connector->getNumRows($req))
 	{
-		//echo "<table class=\"fichiers_associes\"><tr><th>nom</th><th>".$iconeSupprimer."</th></tr>";
 		while ($tab = $connector->fetchArray($req))
 		{
 			$tab_organisateurs_even[] = $tab['idOrganisateur'];
-/* 			echo "<tr><td><a href=\"".$url_site."organisateur.php?idO=".$tab['idOrganisateur']."\">"
-			.$tab['nom']."</a>
-			</td>
-			<td><input type=\"checkbox\" name=\"sup_organisateur[]\" value=\"".$tab['idOrganisateur']."\" /></td></tr>"; */
 		}
-		//echo "</table>";
 	}
 
 }
 ?><?php
 echo $verif->getHtmlErreur("doublon_organisateur");
-
 ?>
 <p>
-<div style="display:none">
-<?php //print_r($_POST); ?>
-</div>
-<label for="organisateurs">Organisateur(s)</label>
-<select name="organisateurs[]" id="organisateurs" data-placeholder="Choisissez un ou plusieurs organisateurs" class="chosen-select" multiple title="Un organisateur dans base de données de La décadanse" style="max-width:350px;">
-<?php
+    <label for="organisateurs">Organisateur(s) de l’événement</label>
+    <select name="organisateurs[]" id="organisateurs" data-placeholder="Choisissez un ou plusieurs organisateurs" class="chosen-select" multiple style="max-width:350px;">
+    <?php
+    echo "<option value=\"0\">&nbsp;</option>";
+    $req = $connector->query("
+    SELECT idOrganisateur, nom FROM organisateur WHERE statut='actif' ORDER BY TRIM(LEADING 'L\'' FROM (TRIM(LEADING 'Les ' FROM (TRIM(LEADING 'La ' FROM (TRIM(LEADING 'Le ' FROM nom))))))) COLLATE utf8_general_ci"
+     );
 
-/*
- * Si l'ajout d'événement se fait depuis une page 'lieu', le formulaire est
- * pré-complété pour l'horaire et le prix
- */
-
-//Menu des lieux actifs de la base
-echo "<option value=\"0\">&nbsp;</option>";
-$req = $connector->query("
-SELECT idOrganisateur, nom FROM organisateur WHERE statut='actif' ORDER BY TRIM(LEADING 'L\'' FROM (TRIM(LEADING 'Les ' FROM (TRIM(LEADING 'La ' FROM (TRIM(LEADING 'Le ' FROM nom))))))) COLLATE utf8_general_ci"
- );
-
-
-while ($tab = $connector->fetchArray($req))
-{
-
-	echo "<option ";
-	/* if (($get['action'] == 'ajouter' || $get['action'] == 'insert') && !empty($get['idO']) && $get['idO'] == $tab['idOrganisateur'])
-	{
-		echo 'selected="selected" ';
-
-	} */
-
-	if ((isset($_POST['organisateurs']) && in_array($tab['idOrganisateur'], $_POST['organisateurs'])) || in_array($tab['idOrganisateur'], $tab_organisateurs_even))
-	{
-		echo 'selected="selected" ';
-
-	}
-
-	echo "value=\"".$tab['idOrganisateur']."\">".$tab['nom']."</option>";
-}
-?>
-</select>
-<div class="guideChamp">L'événement s'affichera dans les pages des <a href="organisateurs.php">organisateurs</a> sélectionnés ici</div>
-
-<!--<div class="guideChamp" style="font-size:0.9em"><span style="background:yellow">Nouveau :</span> tapez le nom d'un organisateur dans le champ libre et accédez y plus rapidement</div>-->
+    while ($tab = $connector->fetchArray($req))
+    {
+        echo "<option ";
+        if ((isset($_POST['organisateurs']) && in_array($tab['idOrganisateur'], $_POST['organisateurs'])) || in_array($tab['idOrganisateur'], $tab_organisateurs_even))
+        {
+            echo 'selected="selected" ';
+        }
+        echo "value=\"".$tab['idOrganisateur']."\">".$tab['nom']."</option>";
+    }
+    ?>
+    </select>
+<div class="guideChamp">L’événement figurera dans la page de ces <a href="organisateurs.php" target="_blank">organisateurs</a>. Si vous souhaitez que votre organisation soit listée, <a href="contacteznous.php" target='_blank'>demandez-nous</a></div>
 </p>
-<!--<span id="bouton_ajouter_champ" class="guideChamp"><a href="javascript:ajouter_select_orga()">Ajouter un autre organisateur</a></span>-->
-</fieldset>
-
-<!-- HORAIRE -->
-<fieldset>
-<legend>Horaire*</legend>
-<div>
-<label for="horaire_debut">Début</label>
-<input type="text" name="horaire_debut" id="horaire_debut" size="5" maxlength="5" title="Début" value="<?php echo securise_string($champs['horaire_debut']) ?>"  placeholder="hh:mm" />
-
-<label for="horaire_fin" class="continu">Fin</label>
-<input type="text" name="horaire_fin" id="horaire_fin" size="5" maxlength="5" title="Fin" value="<?php echo securise_string($champs['horaire_fin']) ?>" placeholder="hh:mm" />
-<?php
-echo $verif->getHtmlErreur('horaire_debut');
-echo $verif->getHtmlErreur('horaire_fin');
-?>
-</div>
-<div class="guideChamp">Jusqu'à 06:00, le début sera considéré faisant partie du jour de l’événement</div>
-
-
-
-<div>
-<label for="horaire_complement">Complément</label>
-<input type="text" name="horaire_complement" id="horaire_complement" size="40" maxlength="100" value="<?php echo securise_string($champs['horaire_complement']) ?>" />
-<?php
-echo $verif->getHtmlErreur('horaire_complement');
-?>
-</div>
-<p>
-<?php
-echo $verif->getHtmlErreur('horaire');
-?></p>
 </fieldset>
 
 <fieldset>
 <legend>Entrée</legend>
 <!-- PRIX ET PRELOCS -->
-<div>
-<label for="prix">Prix</label>
-<input type="text" name="prix" id="prix" size="50" maxlength="100" title="Tarifs d'entréee" value="<?php echo securise_string($champs['prix']) ?>" />
-<?php
-echo $verif->getHtmlErreur('prix');
-?>
-</div>
-<div class="guideChamp">Vous pouvez mettre seulement <strong>0</strong> si l'entrée est libre.</div>
-<div>
-<label for="prelocations">Prélocations</label>
-<input type="text" name="prelocations" id="prelocations" size="50" maxlength="150" title="pour acheter les billets" value="<?php echo securise_string($champs['prelocations']) ?>" />
+    <div>
+    <label for="prix">Prix</label>
+    <input type="text" name="prix" id="prix" size="50" maxlength="100" value="<?php echo securise_string($champs['prix']) ?>" />
+    <?php
+    echo $verif->getHtmlErreur('prix');
+    ?>
+    </div>
+    <div class="guideChamp">Vous pouvez mettre seulement <strong>0</strong> si l'entrée est libre.</div>
+    <div>
+    <label for="prelocations">Prélocations</label>
+    <input type="text" name="prelocations" id="prelocations" size="50" maxlength="150" value="<?php echo securise_string($champs['prelocations']) ?>" />
 
-<?php
-echo $verif->getHtmlErreur('prelocations');
-?>
+    <?php
+    echo $verif->getHtmlErreur('prelocations');
+    ?>
 
-</div>
+    </div>
 </fieldset>
 
 
 <fieldset>
-<legend>Images</legend>
-<div style="margin-left: 0.8em;">Formats JPEG, PNG ou GIF; max. 2 Mo</div>
+    <legend>Images</legend>
+    <div style="margin-left: 0.8em;font-weight: bold">Formats JPEG, PNG ou GIF; max. 2 Mo</div>
+    <p>
+        <label for="flyer">Affiche/flyer</label>
+        <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo $CONF_maxfilesize ?>" /> <!-- 2 Mo -->
+        <input type="file" name="flyer" id="flyer" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif" title="Choisissez une image pour illustrer l'événement" class="fichier" />
+
+    <?php
+    echo $verif->getHtmlErreur("flyer");
+
+    //affichage du flyer precedent, et du bouton pour supprimer
+    if (isset($get['idE']) && !empty($champs['flyer']) && !$verif->getErreur($champs['flyer']))
+    {
+        $imgInfo = getimagesize($rep_images_even.$champs['flyer']);
+        ?>
+        <div class="supImg">
+            <a href="<?php echo $IMGeven.$champs['flyer'].'?'.filemtime($rep_images_even.$champs['flyer']) ?>" class="magnific-popup" target="_blank"><img src="<?php echo $IMGeven."s_".$champs['flyer'].'?'.filemtime($rep_images_even.$champs['flyer']) ?>" alt="Flyer" /></a>
+            <div><label for="sup_flyer" class="continu">Supprimer</label><input type="checkbox" name="sup_flyer" id="sup_flyer" value="flyer" class="checkbox"
+
+            <?php
+            if (!empty($supprimer['flyer']) && $verif->nbErreurs() > 0)
+            {
+                echo 'checked="checked"' ;
+            }
+            ?>
+            /></div>
+        </div>
+    <?php
+    }
+    ?>
+    </p>
+
+    <div class="spacer"></div>
 <p>
-<label for="flyer">Affiche/flyer</label>
-<input type="hidden" name="MAX_FILE_SIZE" value="<?php echo $CONF_maxfilesize ?>" /> <!-- 2 Mo -->
-<input type="file" name="flyer" id="flyer" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif" title="Choisissez une image pour illustrer l'événement" class="fichier" />
-</p>
-
-<div class="spacer"></div>
-<?php
-echo $verif->getHtmlErreur("flyer");
-
-
-//affichage du flyer precedent, et du bouton pour supprimer
-if (isset($get['idE']) && !empty($champs['flyer']) && !$verif->getErreur($champs['flyer']))
-{
-	$imgInfo = getimagesize($rep_images_even.$champs['flyer']);
-	?>
-	<div class="supImg">
-	<?php
-	
-/* 	echo lien_popup($IMGeven.$champs['flyer'].'?'.filemtime($rep_images_even.$champs['flyer']),
-	"Flyer", $imgInfo[0]+20, $imgInfo[1]+20,
-	'<img src="'.$IMGeven."s_".$champs['flyer'].'?'.filemtime($rep_images_even."s_".$champs['flyer']).'" alt="flyer pour'.securise_string($champs['titre']).'" />'); */
-	?>
-	
-	<a href="<?php echo $IMGeven.$champs['flyer'].'?'.filemtime($rep_images_even.$champs['flyer']) ?>" class="magnific-popup" target="_blank"><img src="<?php echo $IMGeven."s_".$champs['flyer'].'?'.filemtime($rep_images_even.$champs['flyer']) ?>" alt="Flyer" /></a>
-	
-	<?php
-	?>
-	<div><label for="sup_flyer" class="continu">Supprimer</label><input type="checkbox" name="sup_flyer" id="sup_flyer" value="flyer" class="checkbox"
-
-	<?php
-	if (!empty($supprimer['flyer']) && $verif->nbErreurs() > 0)
-	{
-		echo 'checked="checked"' ;
-	}
-	?>
-	/></div></div>
-<?php
-}
-?>
-
-<p>
-<label for="image">Photo (des artistes, de leurs œuvres, du lieu, etc.; apparaît sous le flyer, ou à sa place s’il n’y a pas de flyer)</label>
-<input type="hidden" name="MAX_FILE_SIZE" value="<?php echo $CONF_maxfilesize ?>" /> <!-- 2 Mo -->
-<input type="file" name="image" id="image" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif" title="Choisissez une image pour illustrer l'ê·©nement" class="fichier" />
+    <label for="image">Photo</label>
+    <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo $CONF_maxfilesize ?>" /> <!-- 2 Mo -->
+    <input type="file" name="image" id="image" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif" title="Choisissez une image pour illustrer l'ê·©nement" class="fichier" />
+    <div class="guideChamp">Photo des artistes, de leurs œuvres, du lieu, etc.; s’affiche à la place du flyer s'il n’y a pas de flyer, sinon en dessous de celui-ci</div>
 </p>
 <div class="spacer"></div>
 <?php
@@ -1700,57 +1652,6 @@ if (isset($get['idE']) && !empty($champs['image']) && !$verif->getErreur('image'
 	echo "/></div></div>";
 }
 ?>
-
-<?php if (0) { ?>
-<p>
-<label for="document">Document</label>
-<input type="hidden" name="MAX_FILE_SIZE" value="<?php echo $CONF_maxfilesize ?>" />
-<input type="file" name="document" id="document" size="25"
-accept="<?php echo implode(", ", $glo_mimes_documents_acceptes) ?>"
-title="Choisissez une image pour illustrer l'événement" class="fichier" />
-</p>
-<div class="guideChamp">JPEG, PNG, GIF, PDF, DOC; max. 2 Mo</div>
-
-
-<p>
-<label for="document_description">Nom du document</label>
-<input type="text" name="document_description" id="document_description" value="<?php echo securise_string($champs['document_description']) ?>" />
-<?php
-echo $verif->getHtmlErreur('document_description');
-?>
-</p>
-
-<div class="spacer"></div>
-<?php
-echo $verif->getHtmlErreur("document");
-
-if ($get['action'] == "editer")
-{
-
-	$sql_docu = "SELECT fichierrecu.idFichierrecu AS idFichierrecu, description, mime, extension, dateAjout
-FROM fichierrecu, evenement_fichierrecu
-WHERE evenement_fichierrecu.idEvenement=".$get['idE']." AND type='document' AND
- fichierrecu.idFichierrecu=evenement_fichierrecu.idFichierrecu
- ORDER BY dateAjout DESC";
-
- $req_docu = $connector->query($sql_docu);
-
-	if ($connector->getNumRows($req_docu))
-	{
-		echo "<table class=\"fichiers_associes\"><tr><th>Nom</th><th>Ajouté le</th><th>".$iconeSupprimer."</th></tr>";
-		while ($tab_docu = $connector->fetchArray($req_docu))
-		{
-			$nom_fichier = $tab_docu['idFichierrecu'].".".$tab_docu['extension'];
-			echo "<tr><td><a href=\"".$url_fichiers_even.$nom_fichier."\">"
-			.$tab_docu['description']."</a></td><td>".date_iso2app($tab_docu['dateAjout'])."</td>
-			<td><input type=\"checkbox\" name=\"sup_document[]\" value=\"".$tab_docu['idFichierrecu'].".".$tab_docu['extension']."\" /></td></tr>";
-		}
-		echo "</table>";
-	}
-
-}
-?>
-<?php } ?>
 
 
 </fieldset>
@@ -1803,8 +1704,8 @@ else
 ?>
 
 <p class="piedForm">
-<input type="hidden" name="formulaire" value="ok" />
-<input type="submit" value="Enregistrer" class="submit" />
+    <input type="hidden" name="formulaire" value="ok" />
+    <input type="submit" name="submit" value="Enregistrer" class="submit" />
 </p>
 
 </form>

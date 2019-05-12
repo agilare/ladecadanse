@@ -34,9 +34,6 @@ if (in_array($nom_page, $pages_formulaires))
 
 $(document).ready(function() {
 
-	//console.log('ready');
-    // assuming the controls you want to attach the plugin to 
-    // have the "datepicker" class set
 	$('input.datepicker').Zebra_DatePicker({
 	  direction: true,
 	  format: 'd.m.Y',
@@ -45,7 +42,8 @@ $(document).ready(function() {
 	  months : ['Janvier', 'F&eacute;vrier', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Ao&ucirc;t', 'Septembre', 'Octobre', 'Novembre', 'D&eacute;cembre'],
 	  show_clear_date : true,
 	  lang_clear_date : "Effacer",
-	  show_select_today : "Aujourd’hui"
+	  show_select_today : "Aujourd’hui",
+      readonly_element : false
 	});
 
 	$('input.datepicker_from').Zebra_DatePicker({
@@ -57,7 +55,8 @@ $(document).ready(function() {
 	  months : ['Janvier', 'F&eacute;vrier', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Ao&ucirc;t', 'Septembre', 'Octobre', 'Novembre', 'D&eacute;cembre'],
 	  show_clear_date : true,
 	  lang_clear_date : "Effacer",
-	  show_select_today : "Aujourd’hui"
+	  show_select_today : "Aujourd’hui",
+      readonly_element : false
 	});
 
 	$('input.datepicker_to').Zebra_DatePicker({
@@ -68,7 +67,8 @@ $(document).ready(function() {
 	  months : ['Janvier', 'F&eacute;vrier', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Ao&ucirc;t', 'Septembre', 'Octobre', 'Novembre', 'D&eacute;cembre'],
 	  show_clear_date : true,
 	  lang_clear_date : "Effacer",
-	  show_select_today : "Aujourd’hui"
+	  show_select_today : "Aujourd’hui",
+      readonly_element : false
 	});        
 	
 	$(".chosen-select").chosen({allow_single_deselect: true, no_results_text: "Aucun &eacute;l&eacute;ment correspondant n'a &eacute;t&eacute; trouv&eacute;"})
@@ -268,6 +268,15 @@ $(document).ready(function()
 		$(".element_toggle").toggle();
 		//return false;
 	});
+    
+    $('form.submit-freeze-wait').submit(function()
+    {
+       $("input[type='submit']", this)
+         .val("Envoi...")
+         .attr('disabled', 'disabled');
+
+       return true;
+     });
 });    
 </script>
 <?php if (in_array($nom_page, $pages_tinymce)) { ?>

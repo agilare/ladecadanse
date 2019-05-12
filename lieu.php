@@ -1033,7 +1033,7 @@ else if ($get['complement'] == 'commentaires')
 	if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 12 ))
 	{
 	?>
-		<form method="post" id="ajouter_editer" action="ajouterCommentaire.php?action=insert&amp;element=lieu&amp;id=<?php echo $get['idL'] ?>">
+		<form method="post" id="ajouter_editer"  class="submit-freeze-wait" action="ajouterCommentaire.php?action=insert&amp;element=lieu&amp;id=<?php echo $get['idL'] ?>">
 
 			<p>
 				<label for="contenu">Votre commentaire</label>

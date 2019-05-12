@@ -165,7 +165,7 @@ if ($get['element'] == "evenement")
 	$th_evenements = array("dateEvenement" => "Date", "titre" => "Titre", "idLieu" => "Lieu", "flyer" => "Flyer",
 	"dateAjout" => "Créé", "date_derniere_modif" => "Modifié", "statut" => "Statut");
 
-	echo "<form method=\"post\" id=\"formGererEvenements\" action=\"editerEvenements.php\">";
+	echo "<form method=\"post\" id=\"formGererEvenements\" class='submit-freeze-wait' action=\"editerEvenements.php\">";
 	echo "<table id=\"ajouts\"><tr>";
 
 	foreach ($th_evenements as $att => $th)

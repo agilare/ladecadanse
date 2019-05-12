@@ -371,13 +371,8 @@ min-height:4.5em;
 form#ajouter_editer  ul.radio
 {
 
-	margin-left:9.5em;
+	margin: .4em 0 .4em 9.5em;
 
-}
-
-form#ajouter_editer ul.radio li
-{
-	padding:0 1em;
 }
 
 form#ajouter_editer label 
@@ -387,28 +382,25 @@ form#ajouter_editer label
 }
 form#ajouter_editer .description
 {
-margin-left:10.5em;
-width:400px;
+    margin-left:10.5em;
+    width:400px;
 }
 
 form#ajouter_editer #titre
 {
-width:400px;
+    width:445px;
 }
 
 
-form#ajouter_editer table.fichiers_associes {
-
+form#ajouter_editer table.fichiers_associes
+{
     margin-left: 11.5em;
-	
 }
 
-form#ajouter_editer textarea, form#ajouter_editer #ref  {
-
-
-    width: 400px;
-	
-	}
+form#ajouter_editer textarea, form#ajouter_editer #ref
+{
+    width: 445px;	
+}
 	
 /* personne */
 

@@ -307,17 +307,15 @@ function notEmpty($theInput, $nom)
 	*/
 	function validerFichier($filename, $nom, $mimes_acceptes, $obligatoire)
 	{
-
-		//print_r($filename);
 		if ($obligatoire && empty($filename['name']))
 		{
 			$this->erreurs[$nom] = "Ce champ est obligatoire";
 		}
 		else if (!empty($filename['name']))
 		{
-		    if (!in_array($filename['type'], $mimes_acceptes))
+		    if (!empty($filename['type']) && !in_array($filename['type'], $mimes_acceptes))
 			{
-				$this->erreurs[$nom] = "Ce format de fichier n'est pas accepté";
+				$this->erreurs[$nom] = "Ce format de fichier (".pathinfo($filename['name'], PATHINFO_EXTENSION).") n'est pas accepté";
 				return false;
 		    }
 
@@ -331,7 +329,7 @@ function notEmpty($theInput, $nom)
 				{
 
 		  			case 1: // UPLOAD_ERR_INI_SIZE
-		  				$this->erreurs[$nom] = "Le fichier dépasse la limite autorisée par le serveur";
+		  				$this->erreurs[$nom] = "Le fichier dépasse la taille autorisée (2 Mo)";
 		  				return false;
 		  				break;
 

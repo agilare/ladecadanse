@@ -866,7 +866,7 @@ echo '<div class="spacer"></div>';
 $th_evenements = array("titre" => "Titre", "idLieu" => "Lieu", "dateEvenement" => "Date", "genre" => "Catégorie", "horaire" => "Horaire", "statut" => "Statut",
 "dateAjout" => "Ajouté");
 
-echo "<form method=\"post\" id=\"formGererEvenements\" enctype=\"multipart/form-data\" action=\"".$url_admin."gererEvenements.php\">";
+echo "<form method=\"post\" id=\"formGererEvenements\" class='submit-freeze-wait' enctype=\"multipart/form-data\" action=\"".$url_admin."gererEvenements.php\">";
 
 echo "<table id=\"ajouts\" ><tr>";
 
