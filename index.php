@@ -252,7 +252,7 @@ if (0) // (!isset($_COOKIE['msg_orga_benevole'])) // isset($_GET['debug']) &&
             <div class="spacer"></div>
                 <div class="pratique">
 
-                <span class="left"><?php echo htmlspecialchars($even_adresse); ?></span><span class="right"><?php afficher_debut_fin($tab_even['horaire_debut'], $tab_even['horaire_fin'], $tab_even['dateEvenement']);
+                <span class="left"><?php echo htmlspecialchars($even_adresse); ?></span><span class="right"><?php echo afficher_debut_fin($tab_even['horaire_debut'], $tab_even['horaire_fin'], $tab_even['dateEvenement']);
                 if (!empty($tab_even['prix']))
                 {
                     if (!empty($tab_even['horaire_debut']) || !empty($tab_even['horaire_fin']))
