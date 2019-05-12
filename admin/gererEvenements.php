@@ -23,7 +23,7 @@ $page_titre = "gérer les événements";
 $page_description = "Gestion des événements ajoutés";
 $nom_page = "gererEvenements";
 $extra_css = array("formulaires", "gerer", "chosen.min");
-$extra_js = array("zebra_datepicker", "chosen.jquery.min", "jquery.shiftcheckbox");
+$extra_js = array("zebra_datepicker", "jquery.shiftcheckbox");
 require_once('header.inc.php');
 
 $tab_listes = array("evenement" => "Événements",  "breve" => "Brèves", "lieu" => "Lieux", "description" => "Descriptions", "commentaire" => "Commentaires", "personne" => "Personnes");

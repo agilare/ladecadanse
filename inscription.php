@@ -73,8 +73,8 @@ $cache_lieux = $rep_cache."lieux/"; */
 $page_titre = "Inscription";
 $page_description = "Création d'une compte sur La décadanse";
 $nom_page = "ajouterPersonne";
-$extra_css = array("formulaires", "inscription_formulaire", "chosen.min");
-$extra_js = array("zebra_datepicker", "chosen.jquery.min", "jquery.shiftcheckbox");
+$extra_css = array("formulaires", "inscription_formulaire");
+$extra_js = array("zebra_datepicker", "jquery.shiftcheckbox");
 include("includes/header.inc.php");
 ?>
 
@@ -573,7 +573,7 @@ echo $verif->getHtmlErreur("email_identique");?>
             <select name="lieu" id="lieu" class="chosen-select" data-placeholder="Choisir..."  style="max-width:350px">
             <?php
 
-            echo "<option value=\"0\"></option>";
+            echo "<option value=\"\"></option>";
             $req_lieux = $connector->query("
             SELECT idLieu, nom FROM lieu WHERE actif=1 AND statut='actif' ORDER BY TRIM(LEADING 'L\'' FROM (TRIM(LEADING 'Les '
             FROM (TRIM(LEADING 'La ' FROM (TRIM(LEADING 'Le ' FROM nom))))))) COLLATE utf8_general_ci"
@@ -598,7 +598,7 @@ echo $verif->getHtmlErreur("email_identique");?>
 
 		<p>
 		<label class="affil">Organisateur&nbsp;</label>
-		<select name="organisateurs[]" id="organisateurs" class="chosen-select" title="Un organisateur dans base de données de La décadanse" style="max-width:350px"  data-placeholder="Choisir...">
+		<select name="organisateurs[]" id="organisateurs" class="chosen-select" title="Un organisateur dans base de données de La décadanse" style="max-width:350px" data-placeholder="Choisir...">
 		<?php
 		echo "<option value=\"0\"></option>";
 		$req = $connector->query("

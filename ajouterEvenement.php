@@ -29,8 +29,8 @@ require_once($rep_librairies.'Validateur.php');
 
 $page_titre = "ajouter/modifier un événement";
 $page_description = "Formulaire d'ajout/modification d'un événement dans l'agenda";
-$extra_css = array("formulaires", "evenement_inc", "ajouterEvenement_formulaire", "default", "chosen.min");
-$extra_js = array("chosen.jquery.min", "jquery.shiftcheckbox");
+$extra_css = array("formulaires", "evenement_inc", "ajouterEvenement_formulaire", "default");
+$extra_js = array("jquery.shiftcheckbox");
 
 
 /*
@@ -1253,7 +1253,7 @@ echo $verif->getHtmlErreur('horaire');
 <legend>Lieu*</legend>
 <p>
 <label for="idLieu">Dans la liste</label>
-<select name="idLieu" id="idLieu" class="chosen-select" title="Un lieu dans base de données de La décadanse" onfocus="this.className='focus';" style="max-width:300px">
+<select name="idLieu" id="idLieu" class="chosen-select" title="Un lieu dans base de données de La décadanse" onfocus="this.className='focus';" style="max-width:300px"  data-placeholder="Tapez le nom du lieu">
 <?php
 
 /*
@@ -1282,7 +1282,7 @@ if ($get['action'] == 'ajouter' || $get['action'] == 'insert')
     
 
 //Menu des lieux actifs de la base
-echo "<option value=\"0\">&nbsp;</option>";
+echo "<option value=\"\"></option>";
 $req_lieux = $connector->query("
 SELECT idLieu, nom FROM lieu WHERE statut='actif' ".$sql_lieu_excl_fr." ORDER BY TRIM(LEADING 'L\'' FROM (TRIM(LEADING 'Les ' FROM (TRIM(LEADING 'La ' FROM (TRIM(LEADING 'Le ' FROM nom))))))) COLLATE utf8_general_ci"
  );
@@ -1321,8 +1321,6 @@ while ($lieuTrouve = $connector->fetchArray($req_lieux))
 		echo " style=\"font-style:italic;color:#444;\" value=".$lieuTrouve['idLieu']."_".$tab_salle['idSalle'].">".$nom_lieu."&nbsp;– ".$tab_salle['nom']."</option>";
 
 	}
-
-
 }
 ?>
 </select>

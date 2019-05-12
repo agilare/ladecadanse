@@ -28,8 +28,8 @@ header("Cache-Control: max-age=30, must-revalidate");
 $page_titre = "ajouter/modifier une description de lieu";
 $page_description = "ajouter/modifier une description de lieu";
 $nom_page = "ajouterDescription";
-$extra_css = array("formulaires", "description", "chosen.min");
-$extra_js = array( "zebra_datepicker", "chosen.jquery.min", "jquery.shiftcheckbox");
+$extra_css = array("formulaires", "description");
+$extra_js = array( "zebra_datepicker", "jquery.shiftcheckbox");
 
 /*
 * action choisie, idL et idP si édition
@@ -352,7 +352,7 @@ else
 {
 
 	echo "<p><label for=\"idLieu\" style=\"text-align:left;float:none;\">Lieu* :</label><select name=\"idLieu\" id=\"idLieu\"  class=\"chosen-select\" title=\"Choisissez le lieu que vous voulez décrire\" style=\"max-width:300px;\">
-	<option value=\"0\"></option>";
+	<option value=\"\"></option>";
 	$req_lieux = $connector->query("SELECT idLieu, nom FROM lieu WHERE actif=1 AND statut='actif' ORDER BY nom");
 
 	while ($lieuTrouve = $connector->fetchArray($req_lieux))

@@ -38,8 +38,8 @@ $cache_index = $rep_cache."index/"; */
 
 $page_titre = "ajouter/éditer un lieu";
 $page_description = "ajouter/éditer un lieu";
-$extra_css = array("formulaires", "ajouterLieu_formulaire", "lieu_inc", "chosen.min");
-$extra_js = array("zebra_datepicker", "chosen.jquery.min", "jquery.shiftcheckbox");
+$extra_css = array("formulaires", "ajouterLieu_formulaire", "lieu_inc");
+$extra_js = array("zebra_datepicker", "jquery.shiftcheckbox");
 
 /*
 * action choisie, ID si édition, val pour (dés)activer l'événement
@@ -202,7 +202,7 @@ echo $form->getHtmlErreur("adresse");
 <label for="localite">Localité/quartier</label>
 <select name="localite_id" id="localite" class="chosen-select" style="max-width:300px;" required>
 <?php
-echo "<option value=\"0\">&nbsp;</option>";
+echo "<option value=\"\"></option>";
 
 $sql_prov = '';
 if ($get['action'] == 'ajouter' || $get['action'] == 'insert') 

@@ -1,5 +1,6 @@
 <script src="<?php echo $url_site; ?>librairies/magnific-popup/jquery.magnific-popup.js"></script>
 <script src="<?php echo $url_site; ?>librairies/zebra_datepicker/zebra_datepicker.min.js"></script>
+<script src="<?php echo $url_site; ?>librairies/chosen/chosen.jquery.min.js"></script>
 <?php
 if (isset($extra_js) && is_array($extra_js))
 {
@@ -71,7 +72,12 @@ $(document).ready(function() {
       readonly_element : false
 	});        
 	
-	$(".chosen-select").chosen({allow_single_deselect: true, no_results_text: "Aucun &eacute;l&eacute;ment correspondant n'a &eacute;t&eacute; trouv&eacute;"})
+	$(".chosen-select").chosen({
+        allow_single_deselect: true, 
+        no_results_text: "Aucun &eacute;l&eacute;ment correspondant n'a &eacute;t&eacute; trouv&eacute;",
+        include_group_label_in_selected: true,
+        search_contains : true
+    })
 
 	
 	$('.shiftcheckbox').shiftcheckbox({

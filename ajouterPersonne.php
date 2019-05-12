@@ -77,8 +77,8 @@ $cache_lieux = $rep_cache."lieux/"; */
 $page_titre = $get['action']." d'une personne";
 $page_description = "Formulaire d'ajout/edition d'un membre";
 $nom_page = "ajouterPersonne";
-$extra_css = array("formulaires", "ajouterPersonne_formulaire", "chosen.min");
-$extra_js = array("zebra_datepicker", "chosen.jquery.min", "jquery.shiftcheckbox");
+$extra_css = array("formulaires", "ajouterPersonne_formulaire");
+$extra_js = array("zebra_datepicker", "jquery.shiftcheckbox");
 include("includes/header.inc.php");
 ?>
 
