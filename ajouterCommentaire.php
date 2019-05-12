@@ -393,7 +393,7 @@ if ($get['action'] == 'editer' && isset($get['idC']))
 
 ?>
 
-<div class="spacer></div>
+<div class="spacer"></div>
 <?php
 
 
@@ -408,7 +408,7 @@ if ($verif->nbErreurs() > 0)
 
 
 <!-- FORMULAIRE POUR UNE commentaire -->
-<form method="post" id="ajouter_editer" action="<?php echo basename(__FILE__)."?action=".$act; ?>" onsubmit="return validerAjouterDescription()">
+<form method="post" id="ajouter_editer" class="submit-freeze-wait" action="<?php echo basename(__FILE__)."?action=".$act; ?>" onsubmit="return validerAjouterDescription()">
 
 <fieldset>
 <!-- Description Texte -->

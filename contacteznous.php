@@ -216,7 +216,7 @@ document.write("<a href='mailto:"+link+"'>"+link+"</a>")
 </div>
 <?php if (1) { ?>
 <h3>Formulaire</h3>
-<form method="post" id="ajouter_editer" enctype="multipart/form-data" action="<?php echo basename(__FILE__) ?>">
+<form method="post" id="ajouter_editer"  class="submit-freeze-wait" enctype="multipart/form-data" action="<?php echo basename(__FILE__) ?>">
 <p>* indique un champ obligatoire</p>
 <span class="mr_as">
 	<label for="mr_as">Ne pas remplir ce champ</label><input name="as_nom" id="as_nom" type="text">

@@ -158,7 +158,7 @@ if ($afficher_form)
 
 <!-- FORMULAIRE POUR UN LIEU -->
 
-<form  method="post" enctype="multipart/form-data" id="ajouter_editer" action="<?php echo basename(__FILE__)."?action=".$act; ?>" onsubmit="return validerAjouterLieu()">
+<form  method="post" enctype="multipart/form-data" id="ajouter_editer" class="submit-freeze-wait" action="<?php echo basename(__FILE__)."?action=".$act; ?>">
 
 <p>* indique un champ obligatoire</p>
 

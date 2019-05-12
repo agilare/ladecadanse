@@ -267,6 +267,10 @@ form#ajouter_editer input.submit
 	background-color:#f9f9f9;
 	font-weight:bold;
 	border:1px solid black;
+}
+
+form#ajouter_editer .submit-big
+{
     padding: 0.5em 0.7em;
     font-size: 1.1em;
 }
