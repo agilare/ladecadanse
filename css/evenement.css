@@ -1,8 +1,24 @@
 #entete_contenu h2
 {
 	float:left;
+    width: 50%;
 	font-size:1.15em;
 }
+
+.entete_contenu_navigation
+{
+	font-size:.8em;
+}
+
+.event-navig-link
+{
+    display:inline-block;
+    width:100px;
+    text-overflow:ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
 
 #entete_contenu ul#menu_actions
 {
@@ -37,9 +53,7 @@ ul.menu_actions_evenement li
 	width:94%;
 	padding :0px;
 	margin:0.4em auto 1em auto;
-
 	background-color: #f4f4f4;
-
 }
 
 #evenement p
@@ -50,12 +64,11 @@ ul.menu_actions_evenement li
 .titre
 {
 	padding:0.3em 0.1em 0.5em 0.1em;
-
 	background-color:#F7CF45;
 }
 
-.titre .left {
-
+.titre .left
+{
 	float : left;
 	text-align : left;
 	width : 49%;
@@ -65,10 +78,10 @@ ul.menu_actions_evenement li
 	padding:0.2em 0px 0px 1%;
 	font-weight: bold;
 	line-height:1.3em;
-
 }
 
-.titre .right {
+.titre .right
+{
 	float : right;
 	text-align : right;
 	width : 48.5%;
@@ -85,6 +98,7 @@ ul.menu_actions_evenement li
 {
 	font-size:1.4em;
 }
+
 .titre .right h4
 {
 	border:none;
@@ -103,14 +117,12 @@ ul.menu_actions_evenement li
 	color:#115BCA;
 	background: transparent;
 	text-decoration:none;
-
 }
 
 #flyer
 {
-width:130px;
-min-height:200px;
-
+    width:130px;
+    min-height:200px;
 }
 
 #ancien
@@ -129,8 +141,6 @@ min-height:200px;
 	line-height:1.4em;
 }
 
-
-
 	#desciption a
 	{
 		color:#115BCC;
@@ -148,11 +158,9 @@ min-height:200px;
 {
 	float:left;
 	width:130px;
-	/*background-color:#F0F0F0;*/
-	min-height:10em;
-	/* border:1px solid red; */
-}
 
+	min-height:10em;
+}
 
 	#complement ul
 	{
@@ -173,7 +181,6 @@ min-height:200px;
 
 	#complement #photo
 	{
-
 		text-align:center;
 	}
 
@@ -182,8 +189,7 @@ min-height:200px;
 	{
 		width:100%;
 		font-size:0.8em;
-		background:#ffffff;
-
+		background:#fff;
 	}
 
 	#complement table th
@@ -200,8 +206,6 @@ min-height:200px;
 		vertical-align:top;
 	}
 
-
-
 #pratique
 {
 	font-size: 0.9em;
@@ -216,9 +220,7 @@ min-height:200px;
 		float : left;
 		text-align : left;
 		width : 39%;
-
 		padding: 0.4em 0px 0.4em 1%;
-		/* border:1px solid red; */
 	}
 
 	#pratique .right {
@@ -234,7 +236,8 @@ min-height:200px;
 
 
 	#pratique ul
-	{list-style-type: none;
+	{
+        list-style-type: none;
 	}
 
 	#pratique ul li
@@ -242,12 +245,10 @@ min-height:200px;
 		line-height:1.3em;
 	}
 
-
 	#pratique table.right
 	{
 		text-align:left;
-		table-layout: fixed; 
-	
+		table-layout: fixed; 	
 	}
 
 	#pratique table.right tr
@@ -259,20 +260,18 @@ min-height:200px;
 	{
 		width:25px;
        padding:5px 0 0px 0;
- text-align: center;	
- vertical-align:top;
+        text-align: center;	
+        vertical-align:top;
  }
 
-    	#pratique table.right tr td
+    #pratique table.right tr td
 	{
 		vertical-align:top;
          padding:5px 0 0px 0;
  	}
-
     
 #auteur
 {
-
 	font-style:italic;
 	text-align:right;
 	font-size: 0.8em;
@@ -292,8 +291,6 @@ min-height:200px;
 	text-align:left;
 
 }
-
-
 
 /* Deb COMMENTAIRES  */
 #commentaires
@@ -355,8 +352,7 @@ min-height:200px;
 		width:94%;
 		margin: 1em auto 2em auto;
 		padding:0.2em 0.2em;
-		line-height:1.3em;
-		
+		line-height:1.3em;		
 	}
 
 
@@ -368,8 +364,7 @@ min-height:200px;
 	#commentaires h2
 	{
 		font-weight:bold;
-		font-size:1.2em;
-		
+		font-size:1.2em;	
 	}
 
 
@@ -389,23 +384,18 @@ min-height:200px;
 	#commentaires .commentaire_de .left
 	{
 		float:left;
-
 	}
 
 	#commentaires .commentaire_de .right
 	{
 		float:right;
-
 	}
-
 
 	/*Ajouter commentaire */
 	form#ajouter_editer
 	{
 		width:94%;
 		margin:0 auto 0 auto;
-		/* border:1px solid blue; */
-
 	}
 
 	 form#ajouter_editer label
@@ -425,8 +415,6 @@ min-height:200px;
 		margin:0;
 		width:380px;
 	}
-
-
 
 	form#ajouter_editer #pied_form
 	{
@@ -452,10 +440,6 @@ min-height:200px;
         border-radius: 2px;
     }
 
-
-
-
-
 ul#menu_actions
 {
 	margin: 0 0 0 4em;
@@ -468,7 +452,6 @@ ul#menu_actions
 	display:inline;
 	list-style: none;
 }
-
 
 #en_relation
 {
@@ -496,25 +479,21 @@ ul#menu_actions
 		height:80px;
 	}
 
-
-
 #auj
 {
-background:white;
+    background:white;
 }
 
 #cette_sem
 {
-background:white;
+    background:white;
 }
 
 .deb_sem
 {
-border-left:black 1px solid;
+    border-left:black 1px solid;
 }
 /* Fin calendrier horizontal */
-
-
 
 .selection
 {
@@ -523,7 +502,6 @@ border-left:black 1px solid;
 }
 
 /* Selection */
-
 
 .selection h3
 {
@@ -535,13 +513,11 @@ border-left:black 1px solid;
 .selection ul
 {
 	margin:0;
-
 }
 
 .selection ul li
 {
 	margin:0em 0.2em 0em 0.2em;
-
 }
 
 .selection ul li.ici
@@ -552,12 +528,10 @@ border-left:black 1px solid;
 .selection p
 {
 	margin:0em 0.2em 0em 0.2em;
-
 }
 
 .selection ul li.descendre
 {
-
 	padding:0.1em 0em 0.1em 16px;
 	background-image:url(../images/interface/icons/bullet_arrow_bottom.png);
 	background-repeat:no-repeat;

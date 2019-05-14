@@ -23,8 +23,8 @@ $iconeRSS = "<img src=\"".$IMGicones."feed.png\" alt=\"RSS\" width=\"16\" height
 $iconeHoraire = "<img src=\"".$IMGicones."time.png\" alt=\"horaire\" title=\"horaire\" width=\"16\" height=\"16\" />";
 $iconeEntree = "<img src=\"".$IMGicones."money.png\" alt=\"Entrée\" title=\"Entrée\" width=\"16\" height=\"16\"/>";
 $iconePrelocations = "<img src=\"".$IMGicones."ticket.gif\" alt=\"Prélocations, réservation\" title=\"Prélocations, réservations\" />";
-$iconePrecedent = "<img src=\"".$IMGicones."resultset_previous.png\" alt=\"Précédent\" title=\"\" width=\"16\" height=\"16\" />";
-$iconeSuivant = "<img src=\"".$IMGicones."resultset_next.png\" alt=\"Suivant\" title=\"\" width=\"16\" height=\"16\"/>";
+$iconePrecedent = "<img src=\"".$IMGicones."resultset_previous.png\" alt=\"Précédent\" width=\"16\" height=\"16\" />";
+$iconeSuivant = "<img src=\"".$IMGicones."resultset_next.png\" alt=\"Suivant\" width=\"16\" height=\"16\"/>";
 $iconeImprimer = "<img src=\"".$IMGicones."printer.png\" alt=\"Imprimer\" width=\"16\" height=\"16\"/>";
 $icone['connexion'] = "<img src=\"".$IMGicones."user_go.png\" alt=\"Connexion\" width=\"16\" height=\"16\" />";
 $icone['information'] = "<img src=\"".$IMGicones."information.png\" alt=\"\" />";
