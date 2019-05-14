@@ -187,6 +187,7 @@ echo $verif->getHtmlErreur("motdepasse");
 
 <!--<p style="width:50%;margin-left:10em;">Mot de passe oublié ? <a href="contacteznous.php" >Contactez-nous</a> en nous indiquant si possible votre <b>identifiant</b></p>-->
 <p class="mdp_oublie"><a href="motdepasse_demande.php" >Mot de passe oublié ?</a></p>
+<p class="mdp_oublie"><a href="inscription.php" >Pas de compte ?</a></p>
 
 <p class="piedForm">
 <input type="hidden" id="origine" name="origine" value="<?php echo $champs['origine'] ?>" />

@@ -52,11 +52,11 @@ float:right;
 
 ul.menu_actions_lieu
 {
- font-size: 0.9em;
+    font-size: 0.9em;
     margin: 0 auto 0.3em;
+    padding: 0;
     text-align: right;
     width: 94%;
-
 }
 
 
@@ -154,7 +154,7 @@ ul.menu_actions_lieu li {
 	{
 
 		display:block;
-		margin:1.2em auto 1em auto;
+        padding:0;
 		max-width:372px;
 		font-size:1.1em;
 		color:#5C7378;
@@ -164,13 +164,15 @@ ul.menu_actions_lieu li {
 
 	ul#menu_descriptions li
 	{
-
 			display:block;
-
 			padding:0 0.4em;
-			/* border:1px solid red; */
-	}
 
+	}
+    
+	ul#menu_descriptions li h3
+	{
+        font-size: 1.1em;
+	}
 
 		ul#menu_descriptions li a
 		{
@@ -507,8 +509,7 @@ overflow:hidden;
 
 #prochains_evenements table td.lieu_actions_evenement ul
 {
-
-
+    padding: 0;
 }
 
 #prochains_evenements table td.lieu_actions_evenement ul li

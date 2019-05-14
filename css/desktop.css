@@ -223,7 +223,8 @@ display:none;
 
 #commentaires #connexion form input.text
 {
-    width:100px;
+    width:80px;
+    height:17px;
 }
 
 #commentaires #connexion form label
@@ -252,7 +253,9 @@ display:none;
 }
 
 
-#prochains_evenements ul#menu_genre {
+#prochains_evenements ul#menu_genre
+{
+    padding: 0;
     height: 1.4em;
 }
 
@@ -331,6 +334,7 @@ display:none;
 
 ul#menu_descriptions
 {
+    padding: 0 0 0.3em 0;
    height: 1.4em;
    text-align: center;
 }

@@ -350,24 +350,22 @@ min-height:200px;
 		margin: 1.4em 1em 0.6em 1em;
 	}
 
-	#commentaires blockquote
+	#commentaires
 	{
 		width:94%;
 		margin: 1em auto 2em auto;
 		padding:0.2em 0.2em;
-		background:#fafafa;
-		border:1px solid #eaeaea;
 		line-height:1.3em;
 		
 	}
 
 
-	#commentaires blockquote strong
+	#commentaires  strong
 	{
 		font-weight:bold;
 	}
 
-	#commentaires blockquote h2
+	#commentaires h2
 	{
 		font-weight:bold;
 		font-size:1.2em;
@@ -375,26 +373,26 @@ min-height:200px;
 	}
 
 
-	#commentaires blockquote .date
+	#commentaires  .date
 	{
 
 	}
 
 
-	#commentaires blockquote .commentaire_de
+	#commentaires .commentaire_de
 	{
 		background:#eaeaea;
 		height:1.4em;
 		padding:0.2em;margin:0 0 0.8em 0;
 	}
 
-	#commentaires blockquote .commentaire_de .left
+	#commentaires .commentaire_de .left
 	{
 		float:left;
 
 	}
 
-	#commentaires blockquote .commentaire_de .right
+	#commentaires .commentaire_de .right
 	{
 		float:right;
 
@@ -446,6 +444,13 @@ min-height:200px;
 	}
 
 
+    #commentaires #connexion form input.text
+    {
+        width:100px;
+        height:17px;
+        margin-top:2px;
+        border-radius: 2px;
+    }
 
 
 

@@ -793,26 +793,14 @@ Signaler une erreur
 
 
 <?php
-		/**
-* Récolte de toutes les infos de l'événement par son ID
-*/
 $req_comm = $connector->query("SELECT idPersonne, idCommentaire, contenu, dateAjout FROM commentaire
 WHERE id=".$get['idE']." AND element='evenement' AND statut='actif' ORDER BY dateAjout ASC");
 
 $nb_comm = $connector->getNumRows($req_comm);
 ?>
-
-
 	<div id="commentaires">
 
-		<h5><span id="left">Commentaires (<?php echo $nb_comm ?>)</span>
-
-	<a href="<?php echo $url_site ?>rss.php?type=evenement_commentaires&amp;id=<?php echo $get['idE'] ?>" title="Flux RSS des prochains événements">
-	<i class="fa fa-rss fa-lg" style="color:#f5b045"></i>
-	</a>
-	</h5>
-
-
+		<h5><span id="left">Commentaires (<?php echo $nb_comm ?>)</span></h5>
 		<div class="spacer"><!-- --></div>
 <?php
 
@@ -842,24 +830,16 @@ while ($liste_comm = $connector->fetchArray($req_comm))
 		}
 	}
 
-
 	?>
-
-	<blockquote>
-		<div class="commentaire_de">
-
-		 <?php echo "<span class=\"left\">".signature_auteur($liste_comm['idPersonne'])."</span>";
-
-		 echo "<span class=\"right\">".date_fr($liste_comm['dateAjout'], "annee")." ";
-		 echo mb_substr($liste_comm['dateAjout'], 11, -3); ?>
-		 </span>
-		 </div> <!-- fin commentaire_de -->
-		<div class="spacer"><!-- --></div>
-		<p><?php echo textToHtml(htmlspecialchars($liste_comm['contenu'])) ?></p>
-
-	</blockquote>
-	<!-- Fin commentaire -->
-
+        
+    <div class="commentaire_de">
+     <?php echo "<span class=\"left\">".signature_auteur($liste_comm['idPersonne'])."</span>";
+     echo "<span class=\"right\">".date_fr($liste_comm['dateAjout'], "annee")." ";
+     echo mb_substr($liste_comm['dateAjout'], 11, -3); ?>
+     </span>
+     </div> <!-- fin commentaire_de -->
+    <div class="spacer"><!-- --></div>
+    <p><?php echo textToHtml(htmlspecialchars($liste_comm['contenu'])) ?></p>
 <?php
 }
 
@@ -868,13 +848,12 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 12 ))
 ?>
 
 <form method="post" id="ajouter_editer" action="ajouterCommentaire.php?action=insert&amp;&amp;element=evenement&amp;id=<?php echo $get['idE'] ?>">
-
-
+    
 	<p>
 		<label for="contenu">Votre commentaire</label>
-	<?php
-	$id_textarea = "commentaire";
-	?>
+        <?php
+        $id_textarea = "commentaire";
+        ?>
 		<textarea  id="commentaire" name="contenu" cols="45" rows="4"></textarea>
 	</p>
 
@@ -893,38 +872,30 @@ else
 {
 ?>
 
-<div id="connexion">
-<form action="login.php" method="post">
-<fieldset id="champs">
-<legend>Connexion</legend>
-<p>
-<label for="pseudo">Identifiant</label>
-<input class="text" type="text" name="pseudo" id="pseudo" value="" size="12" />
-</p>
-<p>
-<label for="motdepasse">Mot de Passe</label>
-<input class="text" type="password" name="motdepasse" id="motdepasse" value="" size="12" />
-</p>
-<div class="clear_mobile"></div>
-<p class="se-connecter" >
-<input type="hidden" name="formulaire" value="ok" />
-<input type="submit" name="Submit" value="Se connecter" class="submit" /></p>
-</fieldset>
-
-<a href="<?php $url_site ?>inscription.php" title="Formulaire d'inscription">Pas de compte ?</a>
-
+<div id="connexion" style="width:auto;border-radius:3px">
+<form action="login.php" method="post" style="width:auto;border-radius:3px">
+    <p>Veuillez-vous connecter afin de publier un commentaire :</p>
+    <fieldset id="champs">
+        <legend>Connexion</legend>
+        <p>
+            <label for="pseudo" >Identifiant</label>
+            <input class="text" type="text" name="pseudo" id="pseudo" value="" size="12" />
+        </p>
+        <p>
+            <label for="motdepasse">Mot de passe</label>
+            <input class="text" type="password" name="motdepasse" id="motdepasse" value="" size="12" />
+        </p>
+        <div class="clear_mobile"></div>
+        <p class="se-connecter" >
+            <input type="hidden" name="formulaire" value="ok" />
+            <input type="submit" name="Submit" value="Se connecter" class="submit" style="margin-top:2px;" />
+        </p>
+    </fieldset>
+    <a href="<?php $url_site ?>inscription.php" style='margin-left: 5px;'>Pas de compte ?</a>
 </form>
-
-
-
 </div>
-
-
 <?php
-
-
 }
-
 ?>
 
 

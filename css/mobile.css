@@ -118,16 +118,13 @@ table#calendrier tr#mois th a
     padding: 1em 0 1em 2em;
 }
 
-
-
-
-
-
 /****/
 #btn_menu_pratique
 {
-margin:0.4em;
-padding:0.6em 1em;
+    display:inline-block;
+    margin-top:-.1em;
+    padding:0 0.4em;
+    font-size:1.4em;
 }
 
 #menu_pratique
@@ -284,9 +281,10 @@ a.url, #evenement #pratique .lien_ext
     height:auto;
 }
 
-#commentaires #connexion form input.text
+#commentaires #connexion form p
 {
-
+    display:block;
+    clear:both;
 }
 
 	#connexion form p.se-connecter

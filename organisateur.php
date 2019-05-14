@@ -275,11 +275,8 @@ if ($organisateur->getValue('photo') != '')
 ?>
 
 <ul id="menu_descriptions">
-<li class="ici">
-<a href="<?php echo basename(__FILE__); ?>?idO=<?php echo $get['idO'] ?>">L'organisateur se présente</a>
-    </li>
-
-  </ul>
+<li class="ici"><h3><a href="<?php echo basename(__FILE__); ?>?idO=<?php echo $get['idO'] ?>">L'organisateur se présente</a></h3></li>
+</ul>
 <?php
 	}
 ?>

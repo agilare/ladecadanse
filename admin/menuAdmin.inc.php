@@ -8,47 +8,37 @@
 <!-- Deb gestion -->
 <div id="gestion">
 
-	<h2>Gérer :</h2>
+	<h2 style="font-size:0.95em;margin-top:1em;color:#5c7378">Gérer :</h2>
 
 	<ul style="list-style-type:none">
-		<li><a href="<?php echo $url_admin ?>gererEvenements.php">
-		<img src="<?php echo $IMGicones ?>calendar.png" alt="" />les événements</a>
-		</li>
-                
-                <?php if ($_SESSION['Sgroupe'] == 1) { ?>   
 		<li>
-		<img src="<?php echo $IMGicones ?>comment.png" alt="" /><a href="<?php echo $url_admin ?>gerer.php?element=commentaire">les commentaires</a>
-                </li>
-                
-                <?php } ?>
-                
-		<?php /*
+            <a href="<?php echo $url_admin ?>gererEvenements.php"><img src="<?php echo $IMGicones ?>calendar.png" alt="" />les événements</a>
+		</li>                
 		<li>
-		<img src="<?php echo $IMGicones ?>newspaper.png" alt="" /><a href="<?php echo $url_admin ?>gerer.php?element=breve">les br?ves</a>
-		</li>*/ ?>
-		<li>
-		<img src="<?php echo $IMGicones ?>building.png" alt="" /><a href="<?php echo $url_admin ?>gerer.php?element=lieu">les lieux</a>
+            <a href="<?php echo $url_admin ?>gerer.php?element=lieu"><img src="<?php echo $IMGicones ?>building.png" alt="" />les lieux</a>
 		</li>
 		<li>
-		<img src="<?php echo $IMGicones ?>group.png" alt="" /><a href="<?php echo $url_admin ?>gerer.php?element=organisateur">les organisateurs</a>
+            <a href="<?php echo $url_admin ?>gerer.php?element=organisateur"><img src="<?php echo $IMGicones ?>group.png" alt="" />les organisateurs</a>
 		</li>
                 
-                <?php if ($_SESSION['Sgroupe'] == 1) { ?>                
+        <?php if ($_SESSION['Sgroupe'] == 1) { ?>                
 		<li>
-		<img src="<?php echo $IMGicones ?>page_white.png" alt="" /><a href="<?php echo $url_admin ?>gerer.php?element=description">les descriptions</a>
-		</li>
-                
-                
+            <a href="<?php echo $url_admin ?>gerer.php?element=description"><img src="<?php echo $IMGicones ?>page_white.png" alt="" />les descriptions</a>
+		</li>                       
 		<li>
-		<img src="<?php echo $IMGicones ?>user.png" alt="" /><a href="<?php echo $url_admin ?>gerer.php?element=personne">les personnes</a>
+            <a href="<?php echo $url_admin ?>gerer.php?element=personne"><img src="<?php echo $IMGicones ?>user.png" alt="" />les personnes</a>
 		</li>
-                <?php } ?>
-
+        <?php } ?>
+        <?php if ($_SESSION['Sgroupe'] == 1) { ?>   
+		<li>
+            <a href="<?php echo $url_admin ?>gerer.php?element=commentaire"><img src="<?php echo $IMGicones ?>comment.png" alt="" />les commentaires</a>
+        </li>        
+        <?php } ?>
 	</ul>
 
     <?php if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 1)) { ?>
-    <h2>Ajouter :</h2>
-    <ul>
+    <h2 style="font-size:0.95em;margin-top:1em;color:#5c7378">Ajouter :</h2>
+    <ul  style="list-style-type:none">
         <li><a href="/ajouterPersonne.php?action=ajouter"><img src="/images/interface/icons/user_add.png" alt="" style="vertical-align:bottom" />une personne</a></li>
     </ul>
     <?php } ?>

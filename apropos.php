@@ -41,8 +41,8 @@ Le site est mis à jour quotidiennement par le webmaster et les contributeurs.</
 		<dt>Webmasters</dt>
 
 			<dd>Michel</dd>
-			<dd>Ruffola</dd>
-			<dd>Guanac</dd>
+			<dd>Sabrina</dd>
+			<dd>Anne</dd>
 	
 		<dt>Participer</dt>
 			<ul>

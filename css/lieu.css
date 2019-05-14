@@ -64,6 +64,7 @@ float:right;
 ul.menu_actions_lieu
 {
 	margin:0 auto 0 auto;
+    padding: 0;
 	width:94%;
 	text-align:right;
 	font-size:0.9em;
@@ -514,9 +515,8 @@ overflow:hidden;
 
 #prochains_evenements table tr.ici td p.pratique
 {
-	/* background-color:#FFDD44; */
 	background-color:transparent;
-font-weight:bold;
+    font-weight:bold;
 }
 
 #prochains_evenements table tr.ici td.flyer
@@ -527,8 +527,7 @@ background-color:transparent;
 
 #prochains_evenements table td.lieu_actions_evenement ul
 {
-
-
+    padding: 0;
 }
 
 #prochains_evenements table td.lieu_actions_evenement ul li

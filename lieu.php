@@ -555,7 +555,7 @@ if ($nb_desc)
 ?>
 
     <li <?php if ($get['type_description'] == 'description') { echo ' class="ici"'; }?>>
-    <a href="<?php echo basename(__FILE__)."?".arguments_URI($get, 'type_descrition') ?>&amp;type_description=description">Description</a>
+    <h3><a href="<?php echo basename(__FILE__)."?".arguments_URI($get, 'type_descrition') ?>&amp;type_description=description">Description</a></h3>
     </li>
  <?php
 
@@ -566,7 +566,7 @@ if ($nb_pres > 0)
 
 ?>
     <li <?php if ($get['type_description'] == 'presentation') { echo ' class="ici"'; }?>>
-<a href="<?php echo basename(__FILE__)."?".arguments_URI($get, 'type_description') ?>&amp;type_description=presentation">Le lieu se présente</a>
+        <h3><a href="<?php echo basename(__FILE__)."?".arguments_URI($get, 'type_description') ?>&amp;type_description=presentation">Le lieu se présente</a></h3>
     </li>
  <?php
 
