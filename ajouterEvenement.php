@@ -1331,143 +1331,131 @@ echo $verif->getHtmlErreur("dejaPresent");
 ?>
 </p>
 
-<p class="entreLabels" style="width:auto;font-size: 1em;"><strong>Sinon :</strong></p>
-<div class="spacer"></div>
+    <p class="entreLabels" style="width:auto;font-size: 1em;"><strong>Sinon :</strong></p>
+    <div class="spacer"></div>
+    <div style="margin-left:4.5em">
+        <p>
+        <?php
+        $tab_nomLieu_label = array("for" => "nomLieu");
+        echo form_label($tab_nomLieu_label, "Nom du lieu");
+        echo $verif->getHtmlErreur("nomLieuIdentique");
 
-<p>
-<?php
-$tab_nomLieu_label = array("for" => "nomLieu");
-echo form_label($tab_nomLieu_label, "Nom du lieu");
-echo $verif->getHtmlErreur("nomLieuIdentique");
+        $tab_nomLieu = array("type" => "text", "name" => "nomLieu", "id" => "nomLieu", "size" => "35",
+         "maxlength" => "60", "value" => "",
+         "onfocus" => "this.className='focus';", "onblur" => "this.className='normal';");
+        if (empty($champs['idLieu']))
+        {
+            $tab_nomLieu['value'] = securise_string($champs['nomLieu']);
+        }
+        echo form_input($tab_nomLieu);
+        echo $verif->getHtmlErreur("nomLieu");
+        ?>
+        </p>
 
-$tab_nomLieu = array("type" => "text", "name" => "nomLieu", "id" => "nomLieu", "size" => "35",
- "maxlength" => "60", "value" => "",
- "onfocus" => "this.className='focus';", "onblur" => "this.className='normal';");
-if (empty($champs['idLieu']))
-{
-	$tab_nomLieu['value'] = securise_string($champs['nomLieu']);
-}
-echo form_input($tab_nomLieu);
-echo $verif->getHtmlErreur("nomLieu");
-?>
-</p>
+        <p>
+        <label for="adresse">Adresse</label>
+        <?php
+        echo $verif->getHtmlErreur("adresseIdentique");
+        ?>
 
-<p>
-<label for="adresse">Adresse</label>
-<?php
-echo $verif->getHtmlErreur("adresseIdentique");
-?>
-
-<input type="text" name="adresse" id="adresse" size="50" maxlength="100" title="rue, no" value="<?php if (empty($champs['idLieu'])) { echo securise_string($champs['adresse']); } ?>" onfocus="this.className='focus';" onblur="this.className='normal';" />
-<?php
-echo $verif->getHtmlErreur("adresse");
-echo $verif->getHtmlErreur("doublonLieux");
-
-
-//echo "localite_id : ".$champs['localite_id'].", quartier : ".$champs['quartier'];
-?>
-</p>
-<p>
-<label for="localite">Localité/quartier</label>
-<select name="localite_id" id="localite" class="chosen-select" style="max-width:300px;">
-<?php
-echo "<option value=\"0\">&nbsp;</option>";
-$req = $connector->query("
-SELECT id, localite, canton FROM localite WHERE id!=1 $sql_localite_excl_fr ".$sql_prov." ORDER BY canton, localite "
- );
-
-$select_canton = '';
-while ($tab = $connector->fetchArray($req))
-{
-    
-    if ($tab['canton'] != $select_canton)
-    {       
-        if (!empty($select_canton))
-            echo "</optgroup>"; 
-        
-        echo "<optgroup label='".strtoupper($tab['canton'])."'>"; // ".$glo_regions[strtolower($tab['canton'])]."
-    }
-    
-    
-
-    
-	echo "<option ";
-
-	if (empty($champs['idLieu']) && ($champs['localite_id'] == $tab['id'] && empty($champs['quartier'])) || ((isset($_POST['localite_id']) && $tab['id'] == $_POST['localite_id'])))
-	{
-		echo 'selected="selected" ';
-	}	
-	
-	echo "value=\"".$tab['id']."\">".$tab['localite']."</option>";
-
-    // Genève quartiers    
-    if ($tab['id'] == 44)
-    {
-        // si erreur formulaire
-        $champs_quartier = '';
-        $loc_qua = explode("_", $champs['localite_id']);
-        if (!empty($loc_qua[1]))
-           $champs_quartier = $loc_qua[1];
-        
-        // si chargement even existant
-        if (!empty($champs['quartier']))
-            $champs_quartier = $champs['quartier'];
-        
-        foreach ($glo_tab_quartiers2['ge'] as $no => $quartier)
-       {  
-               echo "<option ";
-
-               if (empty($champs['idLieu']) && $champs_quartier == $quartier)
-               {
-                       echo 'selected="selected" ';
-               }	
-
-               echo " value=\"44_".$quartier."\">Genève - ".$quartier."</option>";
-
-       }       
-
-    }        
-        
-     $select_canton = $tab['canton'];
-}
-?>
-    <optgroup label="Ailleurs">    
-<?php
-    foreach ($glo_tab_ailleurs as $id => $nom)
-   {  
-           echo "<option ";
-
-           if (empty($champs['idLieu']) && ($champs['region'] == $id) || ((isset($_POST['localite_id']) && $id == $_POST['localite_id']))) // $form->getValeur('quartier') 
-           {
-                   echo ' selected="selected" ';
-           }	
-
-           echo " value=\"".$id."\">".$nom."</option>";
-
-   }  
-?>
-    
-
-   
-    </optgroup>    
-    
-
-</select>
-<?php
-echo $verif->getHtmlErreur("localite_id");
-
-?>
-</p>
+        <input type="text" name="adresse" id="adresse" size="40" maxlength="100" title="rue, no" value="<?php if (empty($champs['idLieu'])) { echo securise_string($champs['adresse']); } ?>" onfocus="this.className='focus';" onblur="this.className='normal';" />
+        <?php
+        echo $verif->getHtmlErreur("adresse");
+        echo $verif->getHtmlErreur("doublonLieux");
 
 
-<p>
-<label for="urlLieu">Site web</label>
-<input type="text" name="urlLieu" id="urlLieu" size="45" maxlength="80" title="URL du lieu" value="<?php if (empty($champs['idLieu'])) { echo securise_string($champs['urlLieu']); } ?>" onfocus="this.className='focus';" onblur="this.className='normal';" />
-<?php
-echo $verif->getHtmlErreur("urlLieu");
-?>
-</p>
+        //echo "localite_id : ".$champs['localite_id'].", quartier : ".$champs['quartier'];
+        ?>
+        </p>
+        <p>
+        <label for="localite">Localité/quartier</label>&nbsp;<select name="localite_id" id="localite" class="chosen-select" style="max-width:300px;">
+        <?php
+        echo "<option value=\"0\">&nbsp;</option>";
+        $req = $connector->query("
+        SELECT id, localite, canton FROM localite WHERE id!=1 $sql_localite_excl_fr ".$sql_prov." ORDER BY canton, localite "
+         );
 
+        $select_canton = '';
+        while ($tab = $connector->fetchArray($req))
+        {
+
+            if ($tab['canton'] != $select_canton)
+            {       
+                if (!empty($select_canton))
+                    echo "</optgroup>"; 
+
+                echo "<optgroup label='".strtoupper($tab['canton'])."'>"; // ".$glo_regions[strtolower($tab['canton'])]."
+            }
+            echo "<option ";
+
+            if (empty($champs['idLieu']) && ($champs['localite_id'] == $tab['id'] && empty($champs['quartier'])) || ((isset($_POST['localite_id']) && $tab['id'] == $_POST['localite_id'])))
+            {
+                echo 'selected="selected" ';
+            }	
+
+            echo "value=\"".$tab['id']."\">".$tab['localite']."</option>";
+
+            // Genève quartiers    
+            if ($tab['id'] == 44)
+            {
+                // si erreur formulaire
+                $champs_quartier = '';
+                $loc_qua = explode("_", $champs['localite_id']);
+                if (!empty($loc_qua[1]))
+                   $champs_quartier = $loc_qua[1];
+
+                // si chargement even existant
+                if (!empty($champs['quartier']))
+                    $champs_quartier = $champs['quartier'];
+
+                foreach ($glo_tab_quartiers2['ge'] as $no => $quartier)
+               {  
+                       echo "<option ";
+
+                       if (empty($champs['idLieu']) && $champs_quartier == $quartier)
+                       {
+                               echo 'selected="selected" ';
+                       }	
+
+                       echo " value=\"44_".$quartier."\">Genève - ".$quartier."</option>";
+
+               }       
+
+            }        
+
+             $select_canton = $tab['canton'];
+        }
+        ?>
+            <optgroup label="Ailleurs">    
+        <?php
+            foreach ($glo_tab_ailleurs as $id => $nom)
+           {  
+                   echo "<option ";
+
+                   if (empty($champs['idLieu']) && ($champs['region'] == $id) || ((isset($_POST['localite_id']) && $id == $_POST['localite_id']))) // $form->getValeur('quartier') 
+                   {
+                           echo ' selected="selected" ';
+                   }	
+
+                   echo " value=\"".$id."\">".$nom."</option>";
+
+           }  
+        ?>
+            </optgroup>    
+        </select>
+        <?php
+        echo $verif->getHtmlErreur("localite_id");
+        ?>
+        </p>
+
+        <p>
+        <label for="urlLieu">Site web</label>
+        <input type="text" name="urlLieu" id="urlLieu" size="40" maxlength="80" title="URL du lieu" value="<?php if (empty($champs['idLieu'])) { echo securise_string($champs['urlLieu']); } ?>" onfocus="this.className='focus';" onblur="this.className='normal';" />
+        <?php
+        echo $verif->getHtmlErreur("urlLieu");
+        ?>
+        </p>
+    </div>
 </fieldset>
 
 <!-- CHAMPS POUR L'EVENEMENT -->

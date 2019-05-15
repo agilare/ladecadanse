@@ -90,7 +90,7 @@ $(document).ready(function() {
 		ignoreClick      : 'a'
 
 	});
- });
+      });
 <?php
 }
 ?>

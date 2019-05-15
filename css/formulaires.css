@@ -215,11 +215,7 @@ form#ajouter_editer .clearfix
 form#ajouter_editer  .entreLabels
 {
 	width: 140px;
-	margin:0 3px 0 0;
-	padding-left:11em;
-	/* border: blue dashed 1px; */
-
-
+	margin:0 3px 0 9.5em;
 }
 
 .Zebra_DatePicker .dp_daypicker td.weekend

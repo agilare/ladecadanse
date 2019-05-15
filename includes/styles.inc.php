@@ -17,8 +17,6 @@ else
 <link rel="stylesheet" type="text/css" href="<?php echo $url_site ?>css/diggstyle.css" media="screen" />
 <link rel="stylesheet" type="text/css" href="<?php echo $url_site ?>librairies/chosen/chosen.css" media="screen" />
 
-
-
 <?php
 }
 
