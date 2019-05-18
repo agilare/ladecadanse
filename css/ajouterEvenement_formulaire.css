@@ -9,3 +9,9 @@ p.action_ajouter
 {
     border:none;
 }
+
+
+#prix-precisions
+{
+    display:none;
+}

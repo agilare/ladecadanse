@@ -150,7 +150,7 @@ $get['nblignes'] = 50;
 $limite = " LIMIT ".($get['page'] - 1) * $get['nblignes'].",".$get['nblignes'];
 
 $sql_even = "SELECT idEvenement, idLieu, idSalle, statut, genre, nomLieu, adresse, quartier, localite.localite AS localite,
- titre, idPersonne, dateEvenement, URL1, flyer, image, description, horaire_complement, horaire_debut, horaire_fin, prix, prelocations
+ titre, idPersonne, dateEvenement, URL1, flyer, image, description, horaire_complement, horaire_debut, horaire_fin, price_type, prix, prelocations
  FROM evenement, localite
  WHERE evenement.localite_id=localite.id AND ".$sql_genre." dateEvenement ".$sql_date_evenement." AND statut!='inactif' AND ".$sql_region." 
  ORDER BY ".$sql_tri_agenda;
@@ -441,7 +441,12 @@ if ($get['sem'])
 		{
 			$horaire .= htmlspecialchars($listeEven['horaire_complement']);
 		}
-
+        
+        if (!empty($listeEven['price_type']) && in_array($listeEven['price_type'], ['gratis', 'asyouwish']))
+        { 
+            $horaire .= " ".$price_types[$listeEven['price_type']];
+        }        
+        
         if (!empty($listeEven['prix']))
         {
             if (!empty($listeEven['horaire_debut']) || !empty($listeEven['horaire_fin']) || !empty($listeEven['horaire_complement']))
@@ -451,7 +456,7 @@ if ($get['sem'])
             $horaire .= htmlspecialchars($listeEven['prix']);		
         }
 
-
+        
 		$sql_dateEven = "
 		SELECT idCommentaire
 		 FROM commentaire

@@ -170,6 +170,7 @@ array('123456',
 ); 
 
 $glo_regions = array("ge" => "Genève", "vd" => "Vaud", "fr" => "Fribourg", "rf" => "France", "hs" => "Autre");
+$price_types = ['unknown' => 'inconnu', 'gratis' => 'entrée libre', 'asyouwish' => 'prix libre', 'chargeable' => 'payant'];
 
 
 require_once('visuel.php');

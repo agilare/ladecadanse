@@ -275,6 +275,18 @@ $(document).ready(function()
 		//return false;
 	});
     
+    //$("#prix-precisions").hide();   
+    $(".precisions").change(function() {
+        if(this.checked && (this.value == 'asyouwish' || this.value == 'chargeable')) {
+           $("#prix-precisions").show();
+        }
+        else
+        {
+            $("#prix-precisions").hide();
+            $("#prix-precisions #prix, #prix-precisions #prelocations").val('');
+        }
+});
+    
     $('form.submit-freeze-wait').submit(function()
     {
        $("input[type='submit']", this)
