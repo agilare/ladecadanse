@@ -374,14 +374,12 @@ min-height:4.5em;
 
 form#ajouter_editer  ul.radio
 {
-
-	margin-left:9.5em;
-
+	margin-left:7em;
 }
 
 form#ajouter_editer ul.radio li
 {
-	padding:0 1em;
+
 }
 
 form#ajouter_editer label 

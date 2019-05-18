@@ -1,5 +1,6 @@
 <script src="<?php echo $url_site; ?>librairies/magnific-popup/jquery.magnific-popup.js"></script>
 <script src="<?php echo $url_site; ?>librairies/zebra_datepicker/zebra_datepicker.min.js"></script>
+<script src="<?php echo $url_site; ?>librairies/chosen/chosen.jquery.min.js"></script>
 <?php
 if (isset($extra_js) && is_array($extra_js))
 {
@@ -34,9 +35,6 @@ if (in_array($nom_page, $pages_formulaires))
 
 $(document).ready(function() {
 
-	//console.log('ready');
-    // assuming the controls you want to attach the plugin to 
-    // have the "datepicker" class set
 	$('input.datepicker').Zebra_DatePicker({
 	  direction: true,
 	  format: 'd.m.Y',
@@ -57,7 +55,8 @@ $(document).ready(function() {
 	  months : ['Janvier', 'F&eacute;vrier', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Ao&ucirc;t', 'Septembre', 'Octobre', 'Novembre', 'D&eacute;cembre'],
 	  show_clear_date : true,
 	  lang_clear_date : "Effacer",
-	  show_select_today : "Aujourd’hui"
+	  show_select_today : "Aujourd’hui",
+      readonly_element : false
 	});
 
 	$('input.datepicker_to').Zebra_DatePicker({
@@ -68,10 +67,16 @@ $(document).ready(function() {
 	  months : ['Janvier', 'F&eacute;vrier', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Ao&ucirc;t', 'Septembre', 'Octobre', 'Novembre', 'D&eacute;cembre'],
 	  show_clear_date : true,
 	  lang_clear_date : "Effacer",
-	  show_select_today : "Aujourd’hui"
+	  show_select_today : "Aujourd’hui",
+      readonly_element : false
 	});        
 	
-	$(".chosen-select").chosen({allow_single_deselect: true, no_results_text: "Aucun &eacute;l&eacute;ment correspondant n'a &eacute;t&eacute; trouv&eacute;"})
+	$(".chosen-select").chosen({
+        allow_single_deselect: true, 
+        no_results_text: "Aucun &eacute;l&eacute;ment correspondant n'a &eacute;t&eacute; trouv&eacute;",
+        include_group_label_in_selected: true,
+        search_contains : true
+    })
 
 	
 	$('.shiftcheckbox').shiftcheckbox({
@@ -84,7 +89,7 @@ $(document).ready(function() {
 		ignoreClick      : 'a'
 
 	});
- });
+      });
 <?php
 }
 ?>
@@ -268,6 +273,32 @@ $(document).ready(function()
 		$(".element_toggle").toggle();
 		//return false;
 	});
+    
+    //$("#prix-precisions").hide();   
+    $(".precisions").change(function() {
+        if(this.checked && (this.value == 'asyouwish' || this.value == 'chargeable')) {
+           $("#prix-precisions").show();
+           
+  
+               $("#prix-precisions #prix").focus();
+           
+        }
+        else
+        {
+            $("#prix-precisions").hide();
+            $("#prix-precisions #prix, #prix-precisions #prelocations").val('');
+            this.focus();
+        }
+});
+    
+    $('form.submit-freeze-wait').submit(function()
+    {
+       $("input[type='submit']", this)
+         .val("Envoi...")
+         .attr('disabled', 'disabled');
+
+       return true;
+     });
 });    
 </script>
 <?php if (in_array($nom_page, $pages_tinymce)) { ?>
@@ -289,5 +320,3 @@ tinymce.init({
   ]
 });</script>
 <?php } ?>
-<!-- Place this tag in your head or just before your close body tag. -->
-<script async defer src="https://buttons.github.io/buttons.js"></script>

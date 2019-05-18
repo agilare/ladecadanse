@@ -32,12 +32,10 @@ form#ajouter_editer
 
 form#ajouter_editer label 
 { 
-	/* vertical-align: middle; */
 	text-align: right;
-	width: 10em;
+	width: 8em;
 	margin:0.3em 0.3em 0 0;
 	padding: 0 0 0 0.4em;
-	/* border: blue dashed 1px; */ 
 }
 
 	form#ajouter_editer label.continu
@@ -71,7 +69,6 @@ form#ajouter_editer select
 {
 	border:1px solid #aeaeae;
 	padding:0.3em 0.3em;
-
 	font-family:Verdana, Helvetica, sans;
 	border-radius: 2px;
 }
@@ -83,26 +80,19 @@ form#ajouter_editer optgroup
 
 form#ajouter_editer input:focus
 {
-background-color:#ffc; 
-/* border:2px solid #59787A; */
+    background-color:#ffc; 
 }
-
 
 form#ajouter_editer select:focus
 {
-background-color:#ffc; 
-/* border:2px solid #59787A; */
+    background-color:#ffc; 
 }
-
-
-
 
 form#ajouter_editer  ul.radio
 {
-
+    padding:0;
 	vertical-align:middle;
 	display:inline;
-	/* border:1px solid red; */
 }
 
 form#ajouter_editer ul.radio li
@@ -110,16 +100,19 @@ form#ajouter_editer ul.radio li
 	text-align:left;
 	display:inline;
 	vertical-align: middle;
-	padding: 0em 0.4em;
-	margin-top:0em;
-	margin-bottom:0.5em;
+	padding: 0.4em;
+    margin:0 0.3em 0.5em 0.3em;
 	border:none;
-	/* border:1px solid black; */
 }
 
-form#ajouter_editer  ul.radio li label
+form#ajouter_editer ul.radio li:hover
 {
-	
+    border-radius:4px;
+    background: #e9e9e9;
+}
+
+form#ajouter_editer ul.radio li label
+{
 	float:none;
 	margin:0;
 	padding-left:0.2em;
@@ -127,9 +120,8 @@ form#ajouter_editer  ul.radio li label
 
 form#ajouter_editer ul.radio li input.radio_horiz
 {
-vertical-align:middle;
-
-border:none;
+    vertical-align:middle;
+    border:none;
 }
 
 
@@ -152,7 +144,6 @@ form#ajouter_editer ul.radio_vert li
 
 form#ajouter_editer  ul.radio_vert li label
 {
-	
 	float:none;
 	margin:0;
 	padding-left:0.2em;
@@ -160,27 +151,22 @@ form#ajouter_editer  ul.radio_vert li label
 
 form#ajouter_editer ul.radio_vert li input
 {
-vertical-align:middle;
-
-border:none;
+    vertical-align:middle;
+    border:none;
 }
-
-
 
 form#ajouter_editer ul.checkbox
 {
 	vertical-align:middle;
 	width:150px;
 	padding-left:23px;
-	/* border: 1px solid green; */
 }
 
 form#ajouter_editer  ul li.checkbox
 {
-text-align:right;
+    text-align:right;
 	vertical-align: middle;
 	padding: 0em 1em 0em 1em;
-	/* border:1px solid black;  */
 }
 
 form#ajouter_editer  ul li label.checkbox
@@ -188,7 +174,6 @@ form#ajouter_editer  ul li label.checkbox
 	width:100px;
 	vertical-align:middle;
 	float:none;
-/* 	border:1px solid blue; */
 }
 
 form#ajouter_editer  ul li input {
@@ -208,21 +193,22 @@ form#ajouter_editer  table
 
 form#ajouter_editer label h2
 {
-	/*border:1px solid red; */
+    
 }
 
 form#ajouter_editer .clearfix
 {
-/*border-top: 1px solid #CCC;*/
+
 }
 
 form#ajouter_editer  .entreLabels
 {
 	width: 140px;
-	margin:0 3px 0 0;
-	padding-left:11em;
-	/* border: blue dashed 1px; */
+	margin:0 3px 0 9.5em;
+}
 
+.Zebra_DatePicker .dp_daypicker td.weekend
+{
 
 }
 
@@ -240,9 +226,8 @@ form#ajouter_editer .guideChamp
 	font-style: italic;
 	margin:0.4em 0 0.8em 0;
 	font-size:0.85em;
-	padding:0em 0 0.2em 13em;
+	padding:0em 0 0.2em 120px;
 	line-height:1.2em;
-	/* border:1px solid red; */
 }
 
 form#ajouter_editer  p.enteteForm
@@ -257,29 +242,33 @@ form#ajouter_editer p.piedForm
 	width:94%;
 	text-align:right;
 	background-color:#d0d0d0;
-	margin:0.1em 0em 0em 0em;
+	margin:0.1em 0 0 0;
 	padding:0.4em 3%;
 	border-left:1px solid lightgray;
 }
 
 form#ajouter_editer input.submit
 {
-	background-color:#F9F9F9;
+	background-color:#f9f9f9;
 	font-weight:bold;
 	border:1px solid black;
-	padding:0.3em 0.4em;
+}
+
+form#ajouter_editer .submit-big
+{
+    padding: 0.5em 0.7em;
+    font-size: 1.1em;
 }
 
 form#ajouter_editer .checkbox
 {
-vertical-align: middle;
-border: none;
+    vertical-align: middle;
+    border: none;
 }
 
 form#ajouter_editer .fichier
 {
-border: 1px solid gray;
-
+    border: 1px solid gray;
 }
 
 form#ajouter_editer .msg {
@@ -291,56 +280,55 @@ form#ajouter_editer .msg {
 
 form#ajouter_editer label.probleme
 {
-text-align:right;
-background-image: url(../images/interface/icons/exclamation.png);
-background-repeat: no-repeat;
-background-position: 3px 0px;
-
+    text-align:right;
+    background-image: url(../images/interface/icons/exclamation.png);
+    background-repeat: no-repeat;
+    background-position: 3px 0px;
 }
 
 form#ajouter_editer .complete
 {
-background-image: url(../images/interface/icons/tick.png);
-background-repeat: no-repeat;
-background-position: 3px 0px;
-
+    background-image: url(../images/interface/icons/tick.png);
+    background-repeat: no-repeat;
+    background-position: 3px 0px;
 }
 
 	form#ajouter_editer .supImg
 	{
-	font-size:0.8em;
-	margin-top:5px;
-	margin-left:150px;
+        font-size:0.8em;
+        margin-top:5px;
+        margin-left:115px;
 	}
 
 		form .supImg img 
 		{
 			border:1px solid gray;
+            border-radius:3px;
 		}
 
 /* Evenements */
 form#ajouter_editer #evenements
 {
-float:left;
-margin:0em 0em 0em 1em;
-width:80%;
-border:1px solid gray;
+    float:left;
+    margin:0em 0em 0em 1em;
+    width:80%;
+    border:1px solid gray;
 }
 
 form#ajouter_editer #evenements h1
 {
-background:orange;
+    background:orange;
 }
 
 form#ajouter_editer #evenements h2
 {
-color:gray;
+    color:gray;
 }
 /*Fin evenements  */
 
 form#ajouter_editer strong
 {
-font-weight:bold;
+    font-weight:bold;
 }
 
 form#ajouter_editer table.fichiers_associes

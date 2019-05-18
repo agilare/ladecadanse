@@ -77,8 +77,8 @@ $cache_lieux = $rep_cache."lieux/"; */
 $page_titre = $get['action']." d'une personne";
 $page_description = "Formulaire d'ajout/edition d'un membre";
 $nom_page = "ajouterPersonne";
-$extra_css = array("formulaires", "ajouterPersonne_formulaire", "chosen.min");
-$extra_js = array("zebra_datepicker", "chosen.jquery.min", "jquery.shiftcheckbox");
+$extra_css = array("formulaires", "ajouterPersonne_formulaire");
+$extra_js = array("zebra_datepicker", "jquery.shiftcheckbox");
 include("includes/header.inc.php");
 ?>
 
@@ -587,7 +587,7 @@ if ($verif->nbErreurs() > 0)
 
 <!-- FORMULAIRE -->
 
-<form method="post" id="ajouter_editer" enctype="multipart/form-data" action="<?php echo basename(__FILE__)."?action=".$act; ?>" onsubmit="return validerAjouterPersonne();">
+<form method="post" id="ajouter_editer" enctype="multipart/form-data" class="submit-freeze-wait" action="<?php echo basename(__FILE__)."?action=".$act; ?>" >
 
 <p>* indique un champ obligatoire</p>
 

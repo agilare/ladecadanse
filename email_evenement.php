@@ -255,7 +255,7 @@ if ($verif->nbErreurs() > 0)
 
 
 <!-- FORMULAIRE POUR UNE commentaire -->
-<form method="post" id="ajouter_editer" action="<?php echo basename(__FILE__)."?idE=".$get['idE']; ?>" onsubmit="return validerAjouterDescription()">
+<form method="post" id="ajouter_editer"  class="submit-freeze-wait" action="<?php echo basename(__FILE__)."?idE=".$get['idE']; ?>" onsubmit="return validerAjouterDescription()">
 
 <fieldset style="width: 100%;">
 <!-- Description Texte -->

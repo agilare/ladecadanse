@@ -15,8 +15,7 @@ else
 <link rel="stylesheet" type="text/css" href="<?php echo $url_site ?>css/calendrier.css" media="screen" />
 <link rel="stylesheet" type="text/css" href="<?php echo $url_site ?>css/<?php echo $nom_page; ?>.css" media="screen"  />
 <link rel="stylesheet" type="text/css" href="<?php echo $url_site ?>css/diggstyle.css" media="screen" />
-
-
+<link rel="stylesheet" type="text/css" href="<?php echo $url_site ?>librairies/chosen/chosen.css" media="screen" />
 
 <?php
 }

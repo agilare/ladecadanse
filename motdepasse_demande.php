@@ -199,7 +199,7 @@ if ($verif->nbErreurs() > 0)
 ?>
 
 
-<form id="ajouter_editer" action="" method="post">
+<form id="ajouter_editer" class="submit-freeze-wait" action="" method="post">
 <span class="mr_as">
 		<label for="mr_as">Ne pas remplir ce champ</label><input type="text" id="as_nom" name="as_nom">
 	</span>

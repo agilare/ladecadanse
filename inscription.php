@@ -73,8 +73,8 @@ $cache_lieux = $rep_cache."lieux/"; */
 $page_titre = "Inscription";
 $page_description = "Création d'une compte sur La décadanse";
 $nom_page = "ajouterPersonne";
-$extra_css = array("formulaires", "inscription_formulaire", "chosen.min");
-$extra_js = array("zebra_datepicker", "chosen.jquery.min", "jquery.shiftcheckbox");
+$extra_css = array("formulaires", "inscription_formulaire");
+$extra_js = array("zebra_datepicker", "jquery.shiftcheckbox");
 include("includes/header.inc.php");
 ?>
 
@@ -502,7 +502,7 @@ if ($verif->nbErreurs() > 0)
 
 <!-- FORMULAIRE -->
 
-<form method="post" id="ajouter_editer" action="<?php echo $_SERVER['PHP_SELF']."?action=".$act; ?>" onsubmit="return validerAjouterPersonne();">
+<form method="post" id="ajouter_editer" class="submit-freeze-wait" action="<?php echo $_SERVER['PHP_SELF']."?action=".$act; ?>" onsubmit="return validerAjouterPersonne();">
 
     <p>Avant de vous inscrire en tant que Organisateur, veillez svp à ce que les événements que vous souhaitez ajouter respectent notre <b><a href="charte-editoriale.php">charte&nbsp;éditoriale</a></b>.</p>
 
@@ -551,54 +551,46 @@ echo $verif->getHtmlErreur("email_identique");?>
 <fieldset>
 
 	<legend>En tant que*</legend>
-	<ul class="radio">
-		<li class="listehoriz" style="float: left;display:block;">
+	<ul class="radio" style="margin:0;font-size:0.85em"><li class="listehoriz" style="float: left;display:inline-block;min-height:7em">
 			<label for="membre" style="float:left"><strong>Membre</strong><br>
 			Pour écrire des commentaires et garder en favori des lieux et des événements</label>&nbsp;<input type="radio" name="groupe" id="membre" value="12" 
-			<?php if ($champs['groupe'] == 12) { echo ' checked'; } ?>
-			/>
-	
-		</li>
-
-		<li class="listehoriz" style="float: left;display:block;">
+			<?php if ($champs['groupe'] == 12) { echo ' checked'; } ?> />
+		</li><li class="listehoriz" style="float: left;display:inline-block;min-height:7em">
 			<label for="inscription_organisateur" style="float:left"><strong>Acteur culturel</strong><br>Mêmes droits qu'un membre + possibilité d'ajouter des événements</label>&nbsp;<input type="radio" name="groupe" id="inscription_organisateur" value="8" <?php if ($champs['groupe'] == 8) { echo ' checked'; } ?> />
 		</li>
+        <div class="spacer"></div>
 	</ul>
-<div class="spacer"></div>
+    <div class="spacer"></div>
 	<?php echo $verif->getHtmlErreur("groupe");?>
 
-	
 	<!-- Affiliation (text) -->
 	<fieldset class="affiliation" id="inscription_references" >
 
 		<legend>Affiliation</legend>
 		<div class="guide_affiliation">Si vous avez choisi <em>Acteur culturel</em>, veuillez indiquer à quel groupe, assoc, etc. existant vous appartenez.</div>
-
-
-
 		<p>
-		<label for="lieu" class="affil">Lieu&nbsp;</label>
-		<select name="lieu" id="lieu" class="chosen-select" data-placeholder="Choisir..."  style="max-width:350px">
-		<?php
+            <label for="lieu" class="affil">Lieu&nbsp;</label>
+            <select name="lieu" id="lieu" class="chosen-select" data-placeholder="Choisir..."  style="max-width:350px">
+            <?php
 
-		echo "<option value=\"0\"></option>";
-		$req_lieux = $connector->query("
-		SELECT idLieu, nom FROM lieu WHERE actif=1 AND statut='actif' ORDER BY TRIM(LEADING 'L\'' FROM (TRIM(LEADING 'Les '
-		FROM (TRIM(LEADING 'La ' FROM (TRIM(LEADING 'Le ' FROM nom))))))) COLLATE utf8_general_ci"
-		 );
-		while ($lieuTrouve = $connector->fetchArray($req_lieux))
-		{
-			echo "<option ";
-			if ($lieuTrouve['idLieu'] == $champs['lieu'])
-			{
-				echo "selected=\"selected\" ";
-			}
-			echo "value=\"".$lieuTrouve['idLieu']."\">".$lieuTrouve['nom']."</option>";
+            echo "<option value=\"\"></option>";
+            $req_lieux = $connector->query("
+            SELECT idLieu, nom FROM lieu WHERE actif=1 AND statut='actif' ORDER BY TRIM(LEADING 'L\'' FROM (TRIM(LEADING 'Les '
+            FROM (TRIM(LEADING 'La ' FROM (TRIM(LEADING 'Le ' FROM nom))))))) COLLATE utf8_general_ci"
+             );
+            while ($lieuTrouve = $connector->fetchArray($req_lieux))
+            {
+                echo "<option ";
+                if ($lieuTrouve['idLieu'] == $champs['lieu'])
+                {
+                    echo "selected=\"selected\" ";
+                }
+                echo "value=\"".$lieuTrouve['idLieu']."\">".$lieuTrouve['nom']."</option>";
 
-		}
-		?>
+            }
+            ?>
 
-		</select>
+            </select>
 		</p>
 		
 		<p class="entreLabels"><strong>ou</strong></p>
@@ -606,7 +598,7 @@ echo $verif->getHtmlErreur("email_identique");?>
 
 		<p>
 		<label class="affil">Organisateur&nbsp;</label>
-		<select name="organisateurs[]" id="organisateurs" class="chosen-select" title="Un organisateur dans base de données de La décadanse" style="max-width:350px"  data-placeholder="Choisir...">
+		<select name="organisateurs[]" id="organisateurs" class="chosen-select" title="Un organisateur dans base de données de La décadanse" style="max-width:350px" data-placeholder="Choisir...">
 		<?php
 		echo "<option value=\"0\"></option>";
 		$req = $connector->query("

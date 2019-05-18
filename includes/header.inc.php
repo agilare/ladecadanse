@@ -280,7 +280,7 @@ $tab_de = $connector->fetchArray($req_de);
 	else if ($nom_page == "lieux")
 	{
 	?>
-		<link rel="alternate" type="application/rss+xml" title="Commentaires de cette événement" href="<?php echo $url_site.'rss.php?type=lieux_descriptions'; ?>" />
+		<link rel="alternate" type="application/rss+xml" href="<?php echo $url_site.'rss.php?type=lieux_descriptions'; ?>" />
 
 	<?php
 	}
@@ -290,10 +290,6 @@ $tab_de = $connector->fetchArray($req_de);
     <link rel="apple-touch-icon" sizes="57x57" href="web/images/apple-icon-57x57.png" />       
     <link rel="apple-touch-icon" sizes="76x76" href="web/images/apple-icon-76x76.png" />     
     <link rel="apple-touch-icon" sizes="152x152" href="web/images/apple-icon-152x152.png" />  
-    
-    <!--[if lt IE 9]>
-   <script src="https://css3-mediaqueries-js.googlecode.com/svn/trunk/css3-mediaqueries.js"></script>
-   <![endif]-->    
 
     <!-- Piwik -->
     <script type="text/javascript">
@@ -311,10 +307,6 @@ $tab_de = $connector->fetchArray($req_de);
     </script>
     <!-- End Piwik Code --> 
 <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>    
-<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-    
 </head>
 
 <body>
@@ -339,7 +331,7 @@ echo '<a id="bouton_imprimer" title="Imprimer la page" href="javascript:window.p
         <a id="btn_menu_pratique" href="#" title="Menu"><i class="fa fa-bars" aria-hidden="true"></i></a>
         <div id="menu_pratique">
         <ul>
-            <li><a class="github-button" href="https://github.com/agilare/ladecadanse/subscription" aria-label="Watch agilare/ladecadanse on GitHub">Watch</a></li>
+            <!-- <li><a class="github-button" href="https://github.com/agilare/ladecadanse/subscription" aria-label="Watch agilare/ladecadanse on GitHub">Watch</a></li> -->
         <?php
         foreach ($glo_menu_pratique as $nom => $lien)
         {	
