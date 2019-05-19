@@ -202,7 +202,17 @@ $(document).ready(function()
 		e.preventDefault();
         var event_id = $(this).data('id')
         $.get( "event.php?action=delete&id=" + event_id, function( data ) {
-            $( "#btn_event_del_" + event_id).closest( "tr" ).fadeOut( "slow" );
+            $( "#btn_event_del_" + event_id).closest( "tr" ).fadeOut( "fast" );
+        });
+						
+	});         
+
+    $(".btn_event_unpublish").on('click', function (e)
+	{
+		e.preventDefault();
+        var event_id = $(this).data('id')
+        $.get( "event.php?action=unpublish&id=" + event_id, function( data ) {
+            $( "#btn_event_unpublish_" + event_id).closest( ".evenement" ).fadeOut();
         });
 						
 	});         

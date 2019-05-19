@@ -461,7 +461,7 @@ if ($evenements->getNbElements() > 0)
 		}
 		
 	?>
-	<tr <?php if ($date_debut == $even->getValue('dateEvenement')) { echo "class=\"ici\""; } ?>>
+	<tr <?php if ($date_debut == $even->getValue('dateEvenement')) { echo "class=\"ici\""; } ?> class="evenement">
 
 		<td><?php echo date2nomJour($even->getValue('dateEvenement')) ?></td>
 
@@ -529,6 +529,7 @@ if ($evenements->getNbElements() > 0)
 
 			<li ><a href="<?php echo $url_site ?>copierEvenement.php?idE=<?php echo $even->getValue('idEvenement') ?>" title="Copier cet événement"><?php echo $iconeCopier ?></a></li>
 			<li ><a href="<?php echo $url_site ?>ajouterEvenement.php?action=editer&amp;idE=<?php echo $even->getValue('idEvenement') ?>" title="Éditer cet événement"><?php echo $iconeEditer ?></a></li>
+            <li class=""><a href="#" id="btn_event_unpublish_<?php echo $even->getValue('idEvenement'); ?>" class="btn_event_unpublish" data-id="<?php echo $even->getValue('idEvenement') ?>"><?php echo $icone['depublier']; ?></a></li>                 
 		</ul>
 		<?php
 		}

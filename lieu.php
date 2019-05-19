@@ -875,7 +875,7 @@ title="Flux RSS des prochains événements"><i class="fa fa-rss fa-lg" style="co
                 
 	?>
 	
-		<tr class="<?php if ($date_debut == $even->getValue('dateEvenement')) { echo "ici"; } ?> vevent">
+		<tr class="<?php if ($date_debut == $even->getValue('dateEvenement')) { echo "ici"; } ?> vevent evenement">
 
 			<td class="dtstart"><?php echo date2nomJour($even->getValue('dateEvenement')); ?>
 			
@@ -962,6 +962,7 @@ title="Flux RSS des prochains événements"><i class="fa fa-rss fa-lg" style="co
 
 				<li><a href="<?php echo $url_site ?>copierEvenement.php?idE=<?php echo $even->getValue('idEvenement') ?>" title="Copier cet événement"><?php echo $iconeCopier ?></a></li>
 				<li><a href="<?php echo $url_site ?>ajouterEvenement.php?action=editer&amp;idE=<?php echo $even->getValue('idEvenement') ?>" title="Éditer cet événement"><?php echo $iconeEditer ?></a></li>
+                <li class=""><a href="#" id="btn_event_unpublish_<?php echo $even->getValue('idEvenement'); ?>" class="btn_event_unpublish" data-id="<?php echo $even->getValue('idEvenement') ?>"><?php echo $icone['depublier']; ?></a></li>                   
 			</ul>
 			<?php
 			}

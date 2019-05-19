@@ -305,6 +305,7 @@ if (0) //(!isset($_COOKIE['msg_orga_benevole'])) // isset($_GET['debug']) &&
                 echo '<ul class="menu_actions">';
                 echo "<li class=\"action_copier\"><a href=\"".$url_site."copierEvenement.php?idE=".$tab_even['idEvenement']."\" title=\"Copier l'événement\">Copier vers d'autres dates</a></li>";
                 echo "<li class=\"action_editer\"><a href=\"".$url_site."ajouterEvenement.php?action=editer&amp;idE=".$tab_even['idEvenement']."\" title=\"Modifier l'événement\">Modifier</a></li>";
+                echo '<li class="action_depublier"><a href="#" id="btn_event_unpublish_'.$tab_even['idEvenement'].'" class="btn_event_unpublish" data-id='.$tab_even['idEvenement'].'>Dépublier</a></li>';
                 echo '</ul>';
 
             }

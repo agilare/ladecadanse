@@ -472,7 +472,7 @@ sup {
 
 .action_ajouter
 {
-	padding:5px 0em 5px 16px;
+	padding:5px 0 5px 18px;
 	background-image:url(../images/interface/icons/page_white_add.png);
 	background-repeat:no-repeat;
 	background-position: 0 50%;
@@ -480,15 +480,23 @@ sup {
 
 .action_supprimer
 {
-	padding:5px  1em 5px 16px;
+	padding:5px 0 5px 18px;
 	background-image:url(../images/interface/icons/delete.png);
 	background-repeat:no-repeat;
 	background-position: 0% 70%;
 }
 
+.action_depublier
+{
+	padding:5px 0 5px 18px;
+	background-image:url(../images/interface/icons/calendar_delete.png);
+	background-repeat:no-repeat;
+	background-position: 0% 30%;
+}
+
 .action_copier
 {
-	padding:5px 0em 5px 16px;
+	padding:5px 0 5px 18px;
 	background-image:url(../images/interface/icons/page_white_copy.png);
 	background-repeat:no-repeat;
 	background-position: 0% 30%;
@@ -497,7 +505,7 @@ sup {
 .action_editer
 {
 
-	padding:5px 0em 5px 16px;
+	padding:5px 0em 5px 18px;
 	background-image:url(../images/interface/icons/page_white_edit.png);
 	background-repeat:no-repeat;
 	background-position: 0% 30%;

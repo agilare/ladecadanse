@@ -570,6 +570,7 @@ if ($get['sem'])
                     <li class="action_editer">
                     <a href="<?php echo $url_site; ?>ajouterEvenement.php?idE=<?php echo $listeEven['idEvenement']; ?>&amp;action=editer" title="Éditer l'événement">Modifier</a>
                     </li>
+                    <li class="action_depublier"><a href="#" id="btn_event_unpublish_<?php echo $listeEven['idEvenement']; ?>" class="btn_event_unpublish" data-id="<?php echo $listeEven['idEvenement']; ?>">Dépublier</a></li>                    
                 </ul>
                 <?php
                 }

@@ -507,9 +507,16 @@ overflow:hidden;
     padding: 0.2em;
 }
 
+
+#prochains_evenements table td.lieu_actions_evenement
+{
+    width:60px
+}
+
 #prochains_evenements table td.lieu_actions_evenement ul
 {
     padding: 0;
+    margin:0;
 }
 
 #prochains_evenements table td.lieu_actions_evenement ul li

@@ -56,3 +56,31 @@ if ($get['action'] == 'delete' && !empty($get['id']))
 		}
 
 }
+
+if ($get['action'] == 'unpublish' && !empty($get['id']))
+{
+        $req_im = $connector->query("SELECT titre, flyer, image, idLieu, genre, dateEvenement
+        FROM evenement WHERE idEvenement=".$get['id']);
+
+        $val_even = $connector->fetchArray($req_im);
+    
+    	if (!empty($val_even) && ((estAuteur($_SESSION['SidPersonne'], $get['id'], 'evenement') && $_SESSION['Sgroupe'] <= 8) || $_SESSION['Sgroupe'] < 2))
+		{
+			if ($connector->query("UPDATE evenement SET statut='inactif' WHERE idEvenement=".$get['id']))
+			{
+				header('HTTP/1.1 200 OK');
+                echo 1;
+			}
+			else
+			{
+				header('HTTP/1.1 304 Not Modified');
+                echo 0;
+			}
+		}
+		else
+		{
+			header('HTTP/1.1 403 Forbidden');
+            echo 0;
+		}
+
+}

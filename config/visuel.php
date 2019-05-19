@@ -66,6 +66,7 @@ $icone['ajouter_texte'] = '<img src="'.$IMGicones.'pencil.png" alt="Ajouter text
 $icone['organisateur'] = '<img src="'.$IMGicones.'group.png" alt="" />';
 $icone['url_externe'] = '<img src="'.$IMGicones.'house_go.png" alt="Lien externe" />';
 $icone['popup'] = '<img src="'.$IMGinterface.'lien_ext.gif" alt="Nouvel onglet" />';
+$icone['depublier'] = '<img src="'.$IMGicones.'calendar_delete.png" alt="Dépublier" />';
 
 $icone['jpg'] = "<img src=\"".$IMGicones."page_white_picture.png\" alt=\"\" />";
 $icone['jpeg'] = "<img src=\"".$IMGicones."page_white_picture.png\" alt=\"\" />";
