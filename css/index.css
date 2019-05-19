@@ -218,37 +218,43 @@ border-bottom:1px solid black;
 	background-color:aqua;
 */
 	}
-.evenement .titre #titre, #nom_lieu
-{
-display:block;
-background-color:#FDD017;
-}
+    
+    .evenement .titre #titre, #nom_lieu
+    {
+    display:block;
+    background-color:#FDD017;
+    }
 
 
-.evenement .description
-{
-	/*float:left;*/
-	min-height:72px;
-	padding:0.4em 0 0.4em 0.5em;
-	margin:0;
-	/*width:85%;*/
+    .evenement .description
+    {
+        min-height:72px;
+        padding:0.4em 0 0.4em 0.5em;
+        margin:0;
+        color:#3e5355;
+        font-size:0.9em;
+        background-color:#F9F9F9;
+        line-height:1.4em;
+        overflow:hidden;
+    }
 
-	color:#3e5355;
-	font-size:0.9em;
+    .evenement .description .event_orga
+    {
+        list-style-type:none;
+        margin:0;
+        padding:0.1em;
+        position:relative;
+        bottom:0
+    }
 
-
-/*
-	background-color:red;
-*/
-
-
-
-	background-color:#F9F9F9;
-
-	line-height:1.4em;
-	overflow:hidden;
-	
-}
+    .event_orga li
+    {
+        margin: 0.3em 0.1em 0.1em 0.1em;
+        padding:0.2em;
+        display:inline-block;
+        background:#efefef;
+        border-radius:3px;    
+    }
 
 .evenement .description h2
 {
@@ -292,14 +298,6 @@ font-weight:bold;
 	text-align:right;
 }
 
-.evenement .edition
-{
-	text-align:right;
-	margin-top: 0.6em;
-	font-size: 0.9em;
-}
-
-
 .evenement .edition .nb_commentaires
 {
 	padding:0em 0.2em;
@@ -312,33 +310,78 @@ font-weight:bold;
     vertical-align: middle;
 }
 
-ul.menu_actions
+.evenement .edition
 {
-	text-align:right;
-	display:inline;
+    height:1.6em;
+    font-size:0.9em;
 }
 
-ul.menu_actions li
-{
-	display:inline;
-	margin: 0 0.2em;
+ul.menu_action
+{	float:left;	
+    height:1.6em;
+    margin:.3em 0 0 0;
+    padding: 0;
+    display:inline;
+}
 
+ul.menu_action li
+{
+    height:1.6em;
+    display:inline;
+    margin:.8em .3em;
+}
+
+ul.menu_action li a
+{
+   padding:.3em;
+}
+
+ul.menu_action li a.signaler, ul.menu_action li a.ical
+{
+   color:#e0e0e0;
+}
+
+ul.menu_action li a.signaler:hover, ul.menu_action li a.signaler:active,
+ul.menu_action li a.ical:hover, ul.menu_action li a.ical:active
+{
+   color:#1569C7;
 }
 
 
+ul.menu_action li img
+{
+    vertical-align: middle;
+}
 
+ul.menu_edition
+{
+    float:right;
+    height:1.6em;
+    text-align:right;
+    padding:0.4em 0;
+    margin:0;
+}
 
+ul.menu_edition li
+{
+    height:1.6em;
+    display:inline;
+    margin:0 0.2em;
+}
 
-
+ul.menu_edition li img
+{
+    vertical-align: middle;
+}
 
 #prochains_evenements table
 {
-width:95%;
-margin:0em auto 0em auto;
-color:#5C7378;
-background:#F7F7F5;
-border:1px solid #5C7378;
-border-collapse:collapse;
+    width:95%;
+    margin:0em auto 0em auto;
+    color:#5C7378;
+    background:#F7F7F5;
+    border:1px solid #5C7378;
+    border-collapse:collapse;
 }
 
 #prochains_evenements table th

@@ -26,6 +26,10 @@ define("GOOGLE_API_KEY", '');
 
 define("PREVIEW", true);
 
+define("HOME_TMP_BANNER_ENABLED", false);
+define("HOME_TMP_BANNER_TITLE", "");
+define("HOME_TMP_BANNER_CONTENT", "");
+
 // path
 //$rep_absolu = "/home/www/darksite.ch/ladecadanse/"; // prod
 $rep_absolu = "";

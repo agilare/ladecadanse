@@ -1,4 +1,6 @@
 <?php
+header('X-Content-Type-Options "nosniff"');
+header('X-Frame-Options: "ALLOW-FROM https://epic-magazine.ch/"');
 // configurer si néc. début de header.inc.php et comportements.inc.php
 # Added by PorCus comme un goret 
 date_default_timezone_set('Europe/Berlin');

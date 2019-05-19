@@ -66,16 +66,14 @@ $event_count['vd'] = $connector->fetchAll($req_even_vd_nb)[0];
 ?>
 
 <div id="contenu" class="colonne">
-
 <?php
-if (0) //(!isset($_COOKIE['msg_orga_benevole'])) // isset($_GET['debug']) && 
+if (HOME_TMP_BANNER_ENABLED)
 {
 ?>
     <div style="position:relative;padding:0.7em 0.5em;margin:0em 0;background:#fff3cd;color:#856404">
-        <h2 style="padding:0; margin:0.1em 0 0.4em 0.1em;font-size:1.3em;color:#856404">Développer La décadanse</h2>
+        <h2 style="padding:0; margin:0.1em 0 0.4em 0.1em;font-size:1.3em;color:#856404"><?php echo HOME_TMP_BANNER_TITLE; ?></h2>
         <a style="position:absolute;right:0;top:0;padding:5px;font-size: 1rem;font-weight: 700;color:#856404" href="#" onclick="SetCookie('msg_orga_benevole', 1, 180);this.parentNode.style.display = 'none';return false;">&times;</a>
-        <p style="line-height:18px">Je recherche actuellement des <strong>programmeur-euse-s</strong> (bénévoles) afin de m'aider à améliorer La décadanse : design, fonctionnalités, modernisation. <a href="https://github.com/agilare/ladecadanse/"><i class="fa fa-github" aria-hidden="true"></i> GitHub</a>
-            <br>Si ça vous intéresse envoyez-moi un ptit message : <a href="mailto:michel@ladecadanse.ch">michel@ladecadanse.ch</a></p>
+        <p style="line-height:18px"><?php echo HOME_TMP_BANNER_CONTENT; ?></p>
     </div>
 <?php
 }
@@ -171,6 +169,14 @@ if (0) //(!isset($_COOKIE['msg_orga_benevole'])) // isset($_GET['debug']) &&
             $listeLieu['quartier'] = htmlspecialchars($tab_even['quartier']);
             $listeLieu['localite'] = htmlspecialchars($tab_even['localite']);
         }
+        
+        $sql_event_orga = "SELECT organisateur.idOrganisateur, nom, URL
+        FROM organisateur, evenement_organisateur
+        WHERE evenement_organisateur.idEvenement=".$tab_even['idEvenement']." AND
+         organisateur.idOrganisateur=evenement_organisateur.idOrganisateur
+         ORDER BY nom DESC";
+
+        $req_event_orga = $connector->query($sql_event_orga);         
 
         $even_adresse = get_adresse(null, $listeLieu['localite'], $listeLieu['quartier'], $listeLieu['adresse']);
 
@@ -233,20 +239,32 @@ if (0) //(!isset($_COOKIE['msg_orga_benevole'])) // isset($_GET['debug']) &&
             //reduction de la description pour la caser dans la boite "desc"
             if (mb_strlen($tab_even['description']) > $maxChar)
             {
-
                 $continuer = " <a class=\"continuer\" href=\"".$url_site."evenement.php?idE=".$tab_even['idEvenement']."\" title=\"Voir la fiche complète de l'événement\"> Lire la suite</a>";
-
                 echo texteHtmlReduit(textToHtml(htmlspecialchars($tab_even['description'])),$maxChar, $continuer);
-                //echo TronqueHtml(textToHtml(htmlspecialchars($tab_even['description'])), $maxChar, ' ', ' ...');
-
-        /* echo $continuer; */
-                //echo texteHtmlReduit(htmlspecialchars($tab_even['description']), $maxChar);
             }
             else
             {
                 echo textToHtml(htmlspecialchars($tab_even['description']));
             }
             ?>
+            <ul class="event_orga">
+            <?php
+            while ($tab = $connector->fetchArray($req_event_orga))
+            {
+                $org_url = $tab['URL'];
+                $org_url_nom = rtrim(preg_replace("(^https?://)", "", $tab['URL']), "/");
+                if (!preg_match("/^https?:\/\//", $tab['URL']))
+                {
+                    $org_url = 'http://'.$tab['URL'];
+                }                    
+
+            ?>
+                <li><a href="organisateur.php?idO=<?php echo $tab['idOrganisateur']; ?>" title="Voir la fiche de l'organisateur"><?php echo $tab['nom']; ?></a> <a href="<?php echo $org_url; ?>" title="Site web de l'organisateur" class="lien_ext" target="_blank"><?php echo $org_url_nom; ?></a></li>                
+            <?php
+            }             
+            ?>
+            </ul>                 
+                
             </div>
 
             <div class="spacer"></div>
@@ -270,7 +288,12 @@ if (0) //(!isset($_COOKIE['msg_orga_benevole'])) // isset($_GET['debug']) &&
             </div> <!-- fin pratique -->
 
             <div class="edition">
-            <?php
+                
+                <ul class="menu_action">
+                    <li><a href="signaler_erreur.php?idE=<?php echo $tab_even['idEvenement']; ?>" class="signaler"  title="Signaler une erreur"><i class="fa fa-flag-o fa-lg"></i></a></li><li><a href="evenement_ics.php?idE=<?php echo $tab_even['idEvenement']; ?>" class="ical" title="Exporter au format iCalendar dans votre agenda"><i class="fa fa-calendar-plus-o fa-lg"></i></a></li>
+                </ul>                
+                
+                <?php
                 $sql = "
                 SELECT idCommentaire
                  FROM commentaire
@@ -294,6 +317,8 @@ if (0) //(!isset($_COOKIE['msg_orga_benevole'])) // isset($_GET['debug']) &&
 
                 echo $commentaires;
 
+                
+                
             //Peut ètre édité par les 'auteurs' sinon par le propre publicateur de cet événement
             if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 6
             || $_SESSION['SidPersonne'] == $tab_even['idPersonne'])
@@ -302,10 +327,15 @@ if (0) //(!isset($_COOKIE['msg_orga_benevole'])) // isset($_GET['debug']) &&
             || isset($_SESSION['SidPersonne']) && $tab_even['idLieu'] != 0 && est_organisateur_lieu($_SESSION['SidPersonne'], $tab_even['idLieu'])	
             )
             {
-                echo '<ul class="menu_actions">';
+                
+                ?>
+
+                <ul class="menu_edition">
+                <?php
                 echo "<li class=\"action_copier\"><a href=\"".$url_site."copierEvenement.php?idE=".$tab_even['idEvenement']."\" title=\"Copier l'événement\">Copier vers d'autres dates</a></li>";
                 echo "<li class=\"action_editer\"><a href=\"".$url_site."ajouterEvenement.php?action=editer&amp;idE=".$tab_even['idEvenement']."\" title=\"Modifier l'événement\">Modifier</a></li>";
                 echo '<li class="action_depublier"><a href="#" id="btn_event_unpublish_'.$tab_even['idEvenement'].'" class="btn_event_unpublish" data-id='.$tab_even['idEvenement'].'>Dépublier</a></li>';
+                echo '<li class=""><a href="personne.php?idP='.$tab_even['idPersonne'].'">'.$icone['personne'].'</a></li>';
                 echo '</ul>';
 
             }
