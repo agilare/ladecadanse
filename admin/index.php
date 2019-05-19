@@ -700,6 +700,7 @@ while($tab = $connector->fetchArray($req))
 ?>
 </table>
 */ ?>
+
 <?php if ($_SESSION['Sgroupe'] < 4) { ?> 
 <h3 style="padding:0.2em">Derniers textes ajoutés</h3>
 
@@ -774,6 +775,47 @@ while ($tab_desc = $connector->fetchArray($req_getDes))
 
 <?php } ?>
 
+
+<?php if ($_SESSION['Sgroupe'] < 4) { ?> 
+
+<h3 style="padding:0.2em">Top des événements ajoutés en favoris durant les 12 derniers mois</h3>
+
+<table>
+    
+    <tr>
+        <th>Titre</th>
+        <th>Nb</th>
+    </tr>
+
+    <?php
+
+    $sql_req = "SELECT evenement.idEvenement AS idE, evenement.titre AS titre, count(evenement.idevenement) as nb FROM evenement_favori, evenement WHERE evenement.idevenement=evenement_favori.idEvenement and evenement_favori.date_ajout >= DATE_SUB(CURDATE(), INTERVAL 365 DAY) group by evenement.idEvenement order by nb DESC LIMIT 0, 20 ";
+
+    //echo $sql_req;
+    $req_getDes = $connector->query($sql_req);
+
+    while ($tab_desc = $connector->fetchArray($req_getDes))
+    {
+        if ($pair % 2 == 0)
+        {
+            echo "<tr>";
+        }
+        else
+        {
+            echo "<tr class=\"impair\">";
+        }
+
+        echo "<td><a href=../evenement.php?idE=".$tab_desc['idE'].">".$tab_desc['titre']."</a></td>";
+        echo "<td>".$tab_desc['nb']."</td>";
+        echo "</tr>";
+
+        $pair++;
+    }
+
+    ?>
+</table>
+
+<?php } ?>
 
 </div>
 <!-- fin tableaux -->

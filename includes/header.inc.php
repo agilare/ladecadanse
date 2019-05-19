@@ -338,7 +338,7 @@ echo '<a id="bouton_imprimer" title="Imprimer la page" href="javascript:window.p
         {	
             $menu_pratique_li = '';
             if ($nom == "Faire un don")
-                 $menu_pratique_li = ' style="background: #ffdf3f;border-radius: 0 0 3px 3px;padding:2px 0;" ';
+                 $menu_pratique_li = ' style="background: #ffe771;border-radius: 0 0 3px 3px;padding:2px 0;" ';
 
                 $ici = '';
             if (strstr($_SERVER['PHP_SELF'], $lien) )
