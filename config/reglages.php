@@ -257,5 +257,5 @@ if ($_SESSION['region'] != 'ge')
    
 }
 
-$logger = new Logger("logs/");
+$logger = new Logger($rep_absolu."logs/");
 

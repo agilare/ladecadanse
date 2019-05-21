@@ -122,7 +122,7 @@ class Logger {
 		}
         
 		# Ajout de la date et de l'heure au début de la ligne
-        $row = date('Y-d-m H:i:s').' '.$row;
+        $row = date('Y-m-d H:i:s').' '.$row;
 		
 		# Ajout du retour chariot de fin de ligne si il n'y en a pas
 		if( !preg_match('#\n$#',$row) ){
