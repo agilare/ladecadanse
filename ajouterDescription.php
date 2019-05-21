@@ -223,6 +223,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 				$descriptionlieu = $champs;
 				$descriptionlieu['auteur'] = $get['idP'];
 				$get['action'] = 'editer';
+                $logger->log('global', 'activity', "ajouterDescription add/edit de idL ".$get['idL']." par user ".$get['idP'], Logger::GRAN_YEAR); 
 				$action_terminee = true;
 			}
 			else

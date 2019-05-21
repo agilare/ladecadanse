@@ -199,7 +199,8 @@ if (!empty($get['mots']))
 		$nb_even = $connector->getNumRows($req_even);
 	}
 
-
+    $logger->log('global', 'activity', "recherche de ".$get['mots']." avec ".$nb_even." événements trouvés", Logger::GRAN_YEAR);  
+    
 	$idE_trouves = "";
 
 	if ($nb_even == 0)

@@ -156,15 +156,10 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' && empty($_POST
 			{				
 				echo("<p>Erreur : " . $mail->getMessage() . "</p>");
 			}
-			
-			// COPIE pour admin
-			$headers = array ('From' => $from,
-			'To' => $glo_email_admin,
-			'Subject' => $subject);		
-			$mail = $smtp->send($glo_email_admin, $headers, $idPersonne.", ".$email."\n\n----\n\n".$contenu_message);					
-			
+
 			msgOk("Un email a été envoyé à ".$email_envoi." qui contient un lien vous permettant de modifier votre mot de passe.");	
 
+            $logger->log('global', 'activity', "motdepasse_demande de ".$to." ".$url_site."personne.php?idP=".$idPersonne, Logger::GRAN_YEAR);
 		}
 		else
 		{

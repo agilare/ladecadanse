@@ -187,15 +187,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 			msgErreur('L\'envoi a echoué');
 			echo("<p>" . $mail->getMessage() . "</p>");
 		}
-
-		// COPIE pour admin
-		$headers = array (
-		"Content-Type" => "text/plain; charset=\"UTF-8\"",
-		'From' => $from,
-		'To' => $glo_email_info,
-		'Subject' => "[COPIE] ".$subject);		
-		$mail = $smtp->send($glo_email_info, $headers, $contenu_message);		
 		
+        $logger->log('global', 'activity', "email_evenement idE ".$get['idE']." from  $from to $to", Logger::GRAN_YEAR);
 		unset($_POST);
 
 		$action_terminee = true;

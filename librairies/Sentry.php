@@ -127,7 +127,7 @@ class Sentry extends SystemComponent {
 
 		/* Appel de l'instance de la classe d'accès à la BD*/
 		global $connector;
-		global $glo_masterkey;
+        global $logger;
 
 
 		require_once('Validateur.php');
@@ -184,7 +184,7 @@ class Sentry extends SystemComponent {
 				{
 
 					$this->_setSession($this->userdata, $memoriser);
-
+                    $logger->log('global', 'activity', "Login de ".$user, Logger::GRAN_YEAR);
 					if ($goodRedirect)
 					{
 						// redirectione vers l'URL $index.

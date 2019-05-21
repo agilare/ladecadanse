@@ -397,57 +397,6 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 
 				$mail = $smtp->send($to, $headers, $contenu_message);
 
-				// HACK : pear http://forum.revive-adserver.com/topic/1597-non-static-method-peariserror-should-not-be-called-statically/
-				//if (PEAR::isError($mail)){
-/* 				if ((new PEAR)->isError($mail))
-				{	
-					msgErreur('L\'envoi a echoué, veuillez contacter le webmaster');
-					echo("<p>" . $mail->getMessage() . "</p>");
-				}  */
-				
-
-				//email			
-				
-				// Mail de notification à l'admin
-
-
-		
-				/*
-				$to = '"'."La décadanse".'" <'.$glo_email_info.'>';
-				$subject = "[La décadanse] Nouvelle inscription d'un ".$type_compte;
-				$contenu_message = "Une nouvelle inscription sur La décadanse";
-				$contenu_message .= "\n\n";
-				$contenu_message .= "Identifiant : ".$tab_pers['pseudo'];
-				$contenu_message .= "\nE-mail : ".$tab_pers['email'];
-				$contenu_message .= "\n\n";
-				$contenu_message .= "Tableau de bord Admin : ".$url_admin;
-				
-
-
-
-				$headers = array (
-				"Content-Type" => "text/plain; charset=\"UTF-8\"",				
-				'From' => $from,
-				'To' => $to,
-				'Subject' => $subject);
-				
-				$smtp = Mail::factory('smtp',
-				array (
-				'host' => $glo_email_host,
-				'auth' => true,
-				'username' => $glo_email_username,
-				'password' => $glo_email_password));
-
-				$mail = $smtp->send($to, $headers, $contenu_message);
-
-				// HACK : pear http://forum.revive-adserver.com/topic/1597-non-static-method-peariserror-should-not-be-called-statically/
-				//if (PEAR::isError($mail)){
-				if ((new PEAR)->isError($mail))
-				{
-					echo("<p>" . $mail->getMessage() . "</p>");
-				}
-				*/
-				
 				$compte_organisateur = "";
 				if (isset($champs['organisateurs']) && count($champs['organisateurs']) > 0)
 					$compte_organisateur = " en tant qu'acteur culturel";
@@ -455,6 +404,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 				msgOk("<strong>Votre compte".$compte_organisateur." a été créé</strong>; vous pouvez maintenant vous <a href=\"".$url_site."login.php\">connecter</a> avec l'identifiant et le mot de passe que vous venez de saisir.
 				<br />Un e-mail de confirmation récapitulant vos données d'accès vous a été envoyé à l'adresse : ".$tab_pers['email']);
 
+                $logger->log('global', 'activity', "inscription de ".$tab_pers['pseudo']." (".$tab_pers['email'].") ".$url_site."personne.php?idP=".$req_id, Logger::GRAN_YEAR);
 			}
 			
 			

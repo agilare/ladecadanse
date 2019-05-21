@@ -119,6 +119,8 @@ if ($get['element'] == 'evenement')
 			msgErreur("La requête UPDATE a échoué");
 		}
 
+        $logger->log('global', 'activity', "action_favori ".$get['action']." sur idE ".$get['idE']." par user ".$_SESSION['SidPersonne'], Logger::GRAN_YEAR);         
+        
 	} //if action
 
 }
@@ -175,7 +177,8 @@ else if ($get['element'] == 'lieu')
 		}
 
 	} //if action
-
+   
+    $logger->log('global', 'activity', "action_favori ".$get['action']." sur idL ".$get['idL']." par user ".$_SESSION['SidPersonne'], Logger::GRAN_YEAR);  
 
 }
 

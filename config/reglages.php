@@ -198,6 +198,7 @@ else
 require_once($rep_librairies.'usine.php');
 require_once($rep_librairies.'dates.php');
 require_once($rep_librairies.'presentation.php');
+require_once($rep_librairies.'Logger.php');
 
 session_start();
 
@@ -255,3 +256,6 @@ if ($_SESSION['region'] != 'ge')
     $get['region'] = $_SESSION['region'];
    
 }
+
+$logger = new Logger("logs/");
+

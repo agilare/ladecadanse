@@ -16,7 +16,7 @@ $videur = new Sentry();
 
 $videur->logout();
 // destruction des caractéristiques de la session en cours.
+$logger->log('global', 'activity', "Logout de ".$_SESSION['user'], Logger::GRAN_YEAR);
 
 header("Location: ".$url_site."index.php");
 exit();
-?>
