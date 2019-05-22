@@ -154,7 +154,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 		{
 			
 				msgOk('Erreur envoyée au webmaster. Merci de l\'avoir signalée');
-                $logger->log('global', 'activity', "signaler_erreur de ".$from." ".$url_site."evenement.php?idE=".$champs['idEvenement'], Logger::GRAN_YEAR);
+                $logger->log('global', 'activity', "[signaler_erreur] by ".$from." for ".$url_site."evenement.php?idE=".$champs['idEvenement'], Logger::GRAN_YEAR);
               
                 
 				$action_terminee = true;

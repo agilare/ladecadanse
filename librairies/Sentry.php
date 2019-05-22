@@ -184,7 +184,8 @@ class Sentry extends SystemComponent {
 				{
 
 					$this->_setSession($this->userdata, $memoriser);
-                    $logger->log('global', 'activity', "Login de ".$user, Logger::GRAN_YEAR);
+                    $logger->log('global', 'activity', "[Sentry] login of ".$_SESSION["user"], Logger::GRAN_YEAR);
+
 					if ($goodRedirect)
 					{
 						// redirectione vers l'URL $index.
@@ -240,6 +241,7 @@ class Sentry extends SystemComponent {
 	function checkRemembered($cookie)
 	{
 		global $connector;
+        global $logger;
 		//	if (!$username || !$cookie)
 		//	{
 		//		return false;
@@ -267,6 +269,7 @@ class Sentry extends SystemComponent {
 			$this->userdata = $connector->fetchArray($getUser);
 
 			$this->_setSession($this->userdata, true, true);
+            $logger->log('global', 'activity', "[Sentry] remembered access of ".$_SESSION["user"]." (".$_SESSION['Semail'].")", Logger::GRAN_YEAR);
 			return true;
 		}
 		else

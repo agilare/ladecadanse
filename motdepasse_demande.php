@@ -159,7 +159,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' && empty($_POST
 
 			msgOk("Un email a été envoyé à ".$email_envoi." qui contient un lien vous permettant de modifier votre mot de passe.");	
 
-            $logger->log('global', 'activity', "motdepasse_demande de ".$to." ".$url_site."personne.php?idP=".$idPersonne, Logger::GRAN_YEAR);
+            $logger->log('global', 'activity', "[motdepasse_demande] request by ".$to." ".$url_site."personne.php?idP=".$idPersonne, Logger::GRAN_YEAR);
 		}
 		else
 		{

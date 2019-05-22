@@ -404,7 +404,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 				msgOk("<strong>Votre compte".$compte_organisateur." a été créé</strong>; vous pouvez maintenant vous <a href=\"".$url_site."login.php\">connecter</a> avec l'identifiant et le mot de passe que vous venez de saisir.
 				<br />Un e-mail de confirmation récapitulant vos données d'accès vous a été envoyé à l'adresse : ".$tab_pers['email']);
 
-                $logger->log('global', 'activity', "inscription de ".$tab_pers['pseudo']." (".$tab_pers['email'].") ".$url_site."personne.php?idP=".$req_id, Logger::GRAN_YEAR);
+                $logger->log('global', 'activity', "[inscription] by ".$tab_pers['pseudo']." (".$tab_pers['email'].") in group ".$tab_pers['groupe']." ".$url_site."personne.php?idP=".$req_id, Logger::GRAN_YEAR);
 			}
 			
 			

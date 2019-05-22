@@ -193,7 +193,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 				$descriptionlieu = $champs;
 				$descriptionlieu['auteur'] = $get['idP'];
 				$descriptionlieu['date_derniere_modif'] = date("Y-m-d H:i:s");
-
+                $logger->log('global', 'activity', "[ajouterDescription] insert of ".$get['type']." for idL ".$get['idL']." by user ".$_SESSION['user'], Logger::GRAN_YEAR); 
 
 				$action_terminee = true;
 			}
@@ -223,7 +223,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 				$descriptionlieu = $champs;
 				$descriptionlieu['auteur'] = $get['idP'];
 				$get['action'] = 'editer';
-                $logger->log('global', 'activity', "ajouterDescription add/edit de idL ".$get['idL']." par user ".$get['idP'], Logger::GRAN_YEAR); 
+                $logger->log('global', 'activity', "[ajouterDescription] update of ".$get['type']." for idL ".$get['idL']." by user ".$_SESSION['user'], Logger::GRAN_YEAR); 
 				$action_terminee = true;
 			}
 			else

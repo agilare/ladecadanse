@@ -212,20 +212,17 @@ if (!empty($_SESSION['ajouterEvenement_flash_msg']))
 		if ($url_prec != "")
 		{
 			echo '<a href="'.$url_prec.'" style="border-radius:3px 0 0 3px;" title="'.str_replace('"', '', $titre_prec).'">'.$iconePrecedent;
-	
-            if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 6))
-            {
-                echo '&nbsp;<span class="event-navig-link">'.$titre_prec.'</span>';
-            }
+	          
+            echo '&nbsp;<span class="event-navig-link">'.$titre_prec.'</span>';
+            
             echo '</a>';
 		}
 		if ($url_suiv != "")
 		{
 			echo '<a href="'.$url_suiv.'" style="border-radius:0 3px 3px 0;margin-left:1px" title="'.str_replace('"', '', $titre_suiv).'">';
-            if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 6))
-            {
-                echo '<span class="event-navig-link">'.$titre_suiv.'</span>&nbsp;';
-            }
+            
+            echo '<span class="event-navig-link">'.$titre_suiv.'</span>&nbsp;';
+            
             echo $iconeSuivant.'</a>';            
 		}
 

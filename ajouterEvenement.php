@@ -907,7 +907,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 		}
 
 		unset($_POST); // ?
-        $logger->log('global', 'activity', "ajouterEvenement add/edit de ".$champs['titre']." ".$url_site."evenement.php?idE=".$evenement['idEvenement'], Logger::GRAN_YEAR);                
+        $logger->log('global', 'activity', "[ajouterEvenement] ".$get['action']." of \"".$champs['titre']."\" in ".$champs['nomLieu']." ".$url_site."evenement.php?idE=".$evenement['idEvenement'], Logger::GRAN_YEAR);                
 
 		header("Location: evenement.php?idE=".$req_id); die();
 

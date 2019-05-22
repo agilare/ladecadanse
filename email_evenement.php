@@ -188,7 +188,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 			echo("<p>" . $mail->getMessage() . "</p>");
 		}
 		
-        $logger->log('global', 'activity', "email_evenement idE ".$get['idE']." from  $from to $to", Logger::GRAN_YEAR);
+        $logger->log('global', 'activity', "[email_evenement] event ".$tab_even['titre']." (idE ".$get['idE'].") sent from $from to $to", Logger::GRAN_YEAR);
 		unset($_POST);
 
 		$action_terminee = true;

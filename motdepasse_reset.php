@@ -166,11 +166,6 @@ if ($connector->getNumRows($req_temp) == 1)
 		 */
 		if ($verif->nbErreurs() === 0)
 		{
-
-
-	 
-
-	
 			$champs['gds'] = mb_substr(sha1(uniqid(rand(), true)), 0, 5);
 			$champs['motdepasse'] = sha1($champs['gds'].sha1($champs['motdepasse']));
 
@@ -187,7 +182,7 @@ if ($connector->getNumRows($req_temp) == 1)
 			if ($connector->query($sql_update) && $connector->query($sql_delete))
 			{
 				msgOk("Le mot de passe a été mis à jour, vous pouvez maintenant vous <a href='login.php'>connecter</a> avec votre identifiant et ce nouveau mot de passe");
-                $logger->log('global', 'activity', "motdepasse_reset réussi de user ".$idPersonne, Logger::GRAN_YEAR);                
+                $logger->log('global', 'activity', "[motdepasse_reset] success by user idP ".$idPersonne, Logger::GRAN_YEAR);                
 			}
 			else
 			{

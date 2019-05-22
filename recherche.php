@@ -47,7 +47,7 @@ if (isset($_GET['mots']))
 	$get['mots'] = verif_get($_GET['mots'], "string", 1);
 }
 
-
+$mots_brut = $get['mots'];
 
 $limite = 10;
 
@@ -199,7 +199,8 @@ if (!empty($get['mots']))
 		$nb_even = $connector->getNumRows($req_even);
 	}
 
-    $logger->log('global', 'activity', "recherche de ".$get['mots']." avec ".$nb_even." événements trouvés", Logger::GRAN_YEAR);  
+    if ($get['page'] == 1)
+        $logger->log('global', 'activity', "[recherche] \"".$mots_brut."\" with ".$nb_even." events found", Logger::GRAN_YEAR);  
     
 	$idE_trouves = "";
 
