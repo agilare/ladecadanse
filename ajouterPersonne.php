@@ -474,7 +474,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 					
 					
 					msgOk("Votre profil a été modifié");
-
+                    $logger->log('global', 'activity', "[ajouterPersonne] user ".$_SESSION["user"]. " updated his profile", Logger::GRAN_YEAR);
 					/*
 					if ($rc = opendir($cache_index))
 					{

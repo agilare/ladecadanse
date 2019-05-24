@@ -199,6 +199,8 @@ class Sentry extends SystemComponent {
 				}
 				else
 				{
+                    $logger->log('global', 'activity', "[Sentry] login failed, wrong password by user ".$this->userdata['pseudo'], Logger::GRAN_YEAR);
+
 					unset($this->userdata);
 
 					if ($badRedirect)
@@ -211,6 +213,8 @@ class Sentry extends SystemComponent {
 			}
 			else
 			{
+                $logger->log('global', 'activity', "[Sentry] login failed, user ".$user." not found", Logger::GRAN_YEAR);
+
 				unset($this->userdata);
 
 				if ($badRedirect)

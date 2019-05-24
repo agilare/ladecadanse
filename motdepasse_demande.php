@@ -163,8 +163,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' && empty($_POST
 		}
 		else
 		{
-			msgErreur("L'email/identifiant que vous avez saisi pour votre demande n'est pas enregistré sur La décadanse");	
-			
+            $logger->log('global', 'activity', "[motdepasse_demande] request failed for pseudo/email ".$champs['pseudo_email'], Logger::GRAN_YEAR);
+			msgErreur("L'email/identifiant que vous avez saisi pour votre demande n'est pas enregistré sur La décadanse");				
 		}
 
 

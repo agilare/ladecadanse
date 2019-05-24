@@ -66,7 +66,7 @@ include("includes/header.inc.php");
 <div id="contenu" class="colonne">
 	<div id="entete_contenu">
 		<h2>Rechercher un événement</h2>
-				<div class="spacer"></div>
+			<div class="spacer"></div>
 	</div>
 
 <?php
