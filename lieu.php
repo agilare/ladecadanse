@@ -171,9 +171,9 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 10))
 }
 
 $action_editer = '';
-if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 6))
+if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 6 || est_affilie_lieu($_SESSION['SidPersonne'], $get['idL']) || est_organisateur_lieu($_SESSION['SidPersonne'], $get['idL'])))
 {
-	$action_editer = '<li class="action_editer"><a href="'.$url_site.'ajouterLieu.php?action=editer&amp;idL='.$get['idL'].'" title="Éditer ce lieu">Modifier ce lieu</a></li>';
+	$action_editer = '<li class="action_editer"><a href="'.$url_site.'ajouterLieu.php?action=editer&amp;idL='.$get['idL'].'">Modifier ce lieu</a></li>';
 }
 
 $lien_prec = '';
@@ -278,7 +278,12 @@ if ($lieu->getValue('logo'))
 			?>
 			<a href="<?php echo $IMGlieux.$lieu->getValue('photo1').'?'.filemtime($rep_images_lieux.$lieu->getValue('photo1')); ?>" class="gallery-item"><img src="<?php echo $IMGlieux."s_".$lieu->getValue('photo1').'?'.filemtime($rep_images_lieux.$lieu->getValue('photo1')); ?>" alt="Photo du lieu"></a>			
 			<?php } ?>
-			<?php echo (!$photo_principale)?'<p style="font-size:0.9em;padding:2em 0.5em;line-height:1.2em">Vous gérez ce lieu ? <a href="contacteznous.php">Envoyez-nous</a> une photo pour l\'afficher ici.</p>':""; ?>
+            <?php 
+            if (empty($_SESSION['Sgroupe']))
+            { 
+            ?>            
+			<?php echo (!$photo_principale)?'<p style="font-size:0.9em;padding:2em 0.5em;line-height:1.2em">Vous gérez ce lieu ? <a href="/inscription.php">Inscrivez-vous</a> pour pouvoir ajouter ou modifier les informations et des photos</p>':""; ?>
+            <?php } ?>
 			</div>
 			<div class="spacer"><!-- --></div>
 

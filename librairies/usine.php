@@ -395,19 +395,39 @@ function est_organisateur_evenement($idP, $idE)
 	}
 
 }
-	function creer_nom_fichier($id, $type ='', $date_time = '', $nom_original)
+
+function est_affilie_lieu(int $idP, int $idL)
+{
+	global $connector;
+
+    $req_affPers = $connector->query("SELECT lieu.idLieu, lieu.nom
+    FROM affiliation INNER JOIN lieu ON affiliation.idAffiliation=lieu.idLieu
+     WHERE affiliation.idPersonne=".$idP." AND affiliation.genre='lieu' AND affiliation.idAffiliation=".$idL);
+
+	if ($connector->getNumRows($req_affPers) > 0)
 	{
-		$suffixe = mb_strrchr($nom_original, '.');
-
-		$date = '';
-		if ($date_time != '')
-		{
-			$dateAjoutTab = explode(" ", $date_time);
-			$date = $dateAjoutTab[0];
-		}
-
-		return $id."_".$type.$date.$suffixe;
+		return true;
 	}
+	else
+	{
+		return false;
+	}
+
+}
+
+function creer_nom_fichier($id, $type ='', $date_time = '', $nom_original)
+{
+    $suffixe = mb_strrchr($nom_original, '.');
+
+    $date = '';
+    if ($date_time != '')
+    {
+        $dateAjoutTab = explode(" ", $date_time);
+        $date = $dateAjoutTab[0];
+    }
+
+    return $id."_".$type.$date.$suffixe;
+}
 
 
 /* crée lien html pour urls (http, www et email) mais pas si elles sont déjà dans un <a> */

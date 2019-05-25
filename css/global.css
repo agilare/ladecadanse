@@ -43,6 +43,10 @@ input[type="submit"]
 	cursor:pointer;
 }
 
+input.read-only, input.read-only:hover, form#ajouter_editer input.read-only:focus {
+  background-color: #ddd;
+}
+
 sup {
     vertical-align: super;
     font-size: smaller;

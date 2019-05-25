@@ -1482,74 +1482,74 @@ echo $verif->getHtmlErreur('prelocations');
 
 
 <fieldset>
-<legend>Images</legend>
+    <legend>Images</legend>
     <div style="margin-left: 0.8em;font-weight: bold">Formats JPEG, PNG ou GIF; max. 2 Mo</div>
-<p>
-<label for="flyer">Affiche/flyer</label>
-<input type="hidden" name="MAX_FILE_SIZE" value="<?php echo $CONF_maxfilesize ?>" /> <!-- 2 Mo -->
-<input type="file" name="flyer" id="flyer" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif" title="Choisissez une image pour illustrer l'événement" class="fichier" />
+    <p>
+    <label for="flyer">Affiche/flyer</label>
+    <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo $CONF_maxfilesize ?>" /> <!-- 2 Mo -->
+    <input type="file" name="flyer" id="flyer" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif" title="Choisissez une image pour illustrer l'événement" class="fichier" />
 
-<?php
-echo $verif->getHtmlErreur("flyer");
+    <?php
+    echo $verif->getHtmlErreur("flyer");
 
-//affichage du flyer precedent, et du bouton pour supprimer
-if (isset($get['idE']) && !empty($champs['flyer']) && !$verif->getErreur($champs['flyer']))
-{
-	$imgInfo = getimagesize($rep_images_even.$champs['flyer']);
-	?>
-	<div class="supImg">
-	<a href="<?php echo $IMGeven.$champs['flyer'].'?'.filemtime($rep_images_even.$champs['flyer']) ?>" class="magnific-popup" target="_blank"><img src="<?php echo $IMGeven."s_".$champs['flyer'].'?'.filemtime($rep_images_even.$champs['flyer']) ?>" alt="Flyer" /></a>
-	<div><label for="sup_flyer" class="continu">Supprimer</label><input type="checkbox" name="sup_flyer" id="sup_flyer" value="flyer" class="checkbox"
+    //affichage du flyer precedent, et du bouton pour supprimer
+    if (isset($get['idE']) && !empty($champs['flyer']) && !$verif->getErreur($champs['flyer']))
+    {
+        $imgInfo = getimagesize($rep_images_even.$champs['flyer']);
+        ?>
+        <div class="supImg">
+        <a href="<?php echo $IMGeven.$champs['flyer'].'?'.filemtime($rep_images_even.$champs['flyer']) ?>" class="magnific-popup" target="_blank"><img src="<?php echo $IMGeven."s_".$champs['flyer'].'?'.filemtime($rep_images_even.$champs['flyer']) ?>" alt="Flyer" /></a>
+        <div><label for="sup_flyer" class="continu">Supprimer</label><input type="checkbox" name="sup_flyer" id="sup_flyer" value="flyer" class="checkbox"
 
-	<?php
-	if (!empty($supprimer['flyer']) && $verif->nbErreurs() > 0)
-	{
-		echo 'checked="checked"' ;
-	}
-	?>
-            /></div>
-        </div>
-<?php
-}
-?>
+        <?php
+        if (!empty($supprimer['flyer']) && $verif->nbErreurs() > 0)
+        {
+            echo 'checked="checked"' ;
+        }
+        ?>
+                /></div>
+            </div>
+    <?php
+    }
+    ?>
+        </p>
+
+        <div class="spacer"></div>
+    <p>
+        <label for="image"><span class="tooltip">Photo<span class="tooltiptext"> S’affiche à la place du flyer s’il n’y a pas de flyer, sinon en dessous de celui-ci</span></span></label>
+    <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo $CONF_maxfilesize ?>" /> <!-- 2 Mo -->
+    <input type="file" name="image" id="image" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif" title="Choisissez une image pour illustrer l'ê·©nement" class="fichier" />
+        <div class="guideChamp">Photo des artistes, de leurs œuvres, du lieu, etc.</div>
     </p>
-
     <div class="spacer"></div>
-<p>
-    <label for="image"><span class="tooltip">Photo<span class="tooltiptext"> S’affiche à la place du flyer s’il n’y a pas de flyer, sinon en dessous de celui-ci</span></span></label>
-<input type="hidden" name="MAX_FILE_SIZE" value="<?php echo $CONF_maxfilesize ?>" /> <!-- 2 Mo -->
-<input type="file" name="image" id="image" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif" title="Choisissez une image pour illustrer l'ê·©nement" class="fichier" />
-    <div class="guideChamp">Photo des artistes, de leurs œuvres, du lieu, etc.</div>
-</p>
-<div class="spacer"></div>
-<?php
-echo $verif->getHtmlErreur("image");
+    <?php
+    echo $verif->getHtmlErreur("image");
 
-//affichage de l'image et du bouton pour supprimer
-if (isset($get['idE']) && !empty($champs['image']) && !$verif->getErreur('image'))
-{
-	$imgInfo = @getimagesize($rep_images_even.$champs['image']);
-	echo "<div class=\"supImg\">";
-/* 	echo lien_popup($IMGeven.$champs['image']."?".filemtime($rep_images_even.$champs['image']), "Image", $imgInfo[0]+20, $imgInfo[1]+20,
-	"<img src=\"".$IMGeven."s_".$champs['image']."?".filemtime($rep_images_even.$champs['image'])."\"  alt=\"image pour ".securise_string($champs['titre'])."\" />"
-	); */
-	?>
-	
-	
-	<a href="<?php echo $IMGeven.$champs['image'].'?'.filemtime($rep_images_even.$champs['image']) ?>" class="magnific-popup"  target="_blank"><img src="<?php echo $IMGeven."s_".$champs['image'].'?'.filemtime($rep_images_even.$champs['image']) ?>" alt="Photo" /></a>
-	
-	
-	
-	<?php
-	echo "<div><label for=\"sup_image\" class=\"continu\">Supprimer</label><input type=\"checkbox\" name=\"sup_image\" id=\"sup_image\" value=\"image\" class=\"checkbox\" ";
+    //affichage de l'image et du bouton pour supprimer
+    if (isset($get['idE']) && !empty($champs['image']) && !$verif->getErreur('image'))
+    {
+        $imgInfo = @getimagesize($rep_images_even.$champs['image']);
+        echo "<div class=\"supImg\">";
+    /* 	echo lien_popup($IMGeven.$champs['image']."?".filemtime($rep_images_even.$champs['image']), "Image", $imgInfo[0]+20, $imgInfo[1]+20,
+        "<img src=\"".$IMGeven."s_".$champs['image']."?".filemtime($rep_images_even.$champs['image'])."\"  alt=\"image pour ".securise_string($champs['titre'])."\" />"
+        ); */
+        ?>
 
-	if (!empty($supprimer['image']) && $verif->nbErreurs() == 0)
-	{
-		echo 'checked="checked" ';
-	}
-	echo "/></div></div>";
-}
-?>
+
+        <a href="<?php echo $IMGeven.$champs['image'].'?'.filemtime($rep_images_even.$champs['image']) ?>" class="magnific-popup"  target="_blank"><img src="<?php echo $IMGeven."s_".$champs['image'].'?'.filemtime($rep_images_even.$champs['image']) ?>" alt="Photo" /></a>
+
+
+
+        <?php
+        echo "<div><label for=\"sup_image\" class=\"continu\">Supprimer</label><input type=\"checkbox\" name=\"sup_image\" id=\"sup_image\" value=\"image\" class=\"checkbox\" ";
+
+        if (!empty($supprimer['image']) && $verif->nbErreurs() == 0)
+        {
+            echo 'checked="checked" ';
+        }
+        echo "/></div></div>";
+    }
+    ?>
 
 
 </fieldset>
