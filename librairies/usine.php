@@ -335,7 +335,7 @@ function alpha_numeric ( $str )
 }
 
 
-function est_membre_organisateur($idP, $idO)
+function est_membre_organisateur($idP, $idO): bool
 {
 	global $connector;
 
@@ -354,7 +354,7 @@ function est_membre_organisateur($idP, $idO)
 
 }
 
-function est_organisateur_lieu($idP, $idL)
+function est_organisateur_lieu($idP, $idL): bool
 {
 	global $connector;
 
@@ -375,7 +375,7 @@ function est_organisateur_lieu($idP, $idL)
 
 }
 
-function est_organisateur_evenement($idP, $idE)
+function est_organisateur_evenement($idP, $idE): bool
 {
 	global $connector;
 
@@ -396,7 +396,7 @@ function est_organisateur_evenement($idP, $idE)
 
 }
 
-function est_affilie_lieu(int $idP, int $idL)
+function est_affilie_lieu(int $idP, int $idL): bool
 {
 	global $connector;
 
