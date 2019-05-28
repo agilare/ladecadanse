@@ -445,7 +445,7 @@ if ($lieu->getValue('logo'))
             <li>
                 <a href="#" class="dropdown" data-target="plan">'.$icone['plan'].' Voir sur le plan <i class="fa fa-caret-down" aria-hidden="true"></i>
 </a>
-                <div id="plan" style="display:none"><div id="map" style="width: 60%; height: 300px; margin:5px;"></div></div>
+                
             </li>';
 		}
 
@@ -544,7 +544,7 @@ if ($lieu->getValue('logo'))
 				<li class="sitelieu"><a class="url" href="<?php echo $URL; ?>" title="Voir le site web du lieu" onclick="window.open(this.href,'_blank');return false;"><?php echo $lieu->getValue('URL'); ?></a> <?php if ($lieu->getId() == 13) { // exception pour le Rez ?><a href="http://kalvingrad.com" onclick="window.open(this.href,'_blank');return false;">kalvingrad.com</a><br><a href="http://www.ptrnet.ch" onclick="window.open(this.href,'_blank');return false;">ptrnet.ch</a><?php } ?></li>
 				<?php echo $organisateurs; ?>
             </ul>
-
+            <div id="plan" style="display:none"><div id="map"></div></div>
         </div><!-- Fin pratique -->
 
 

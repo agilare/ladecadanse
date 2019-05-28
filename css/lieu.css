@@ -154,6 +154,13 @@ ul.menu_actions_lieu li
                 height:80px;
             }
 
+			#fiche #map
+			{
+				width: 60%;
+				height: 300px;
+				margin:5px;
+			}
+
 	ul#menu_descriptions
 	{
 		display:block;

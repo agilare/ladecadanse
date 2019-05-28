@@ -448,6 +448,11 @@ font-size:0.9em;
     max-width: 60%;
 }
 
+#fiche #map
+{
+	width: 95%;
+}
+
 /* menu_lieux */
 
 #menu_lieux ul#tranches li a
