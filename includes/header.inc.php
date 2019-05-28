@@ -306,7 +306,10 @@ $tab_de = $connector->fetchArray($req_de);
       })();
     </script>
     <!-- End Piwik Code --> 
-<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>    
+<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>  
+   <script async defer
+      src="https://maps.googleapis.com/maps/api/js?key=<?php echo GOOGLE_API_KEY; ?>&callback=initMap">
+    </script>
 </head>
 
 <body>

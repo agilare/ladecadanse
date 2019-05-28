@@ -210,7 +210,7 @@ $(document).ready(function()
     $(".btn_event_unpublish").on('click', function (e)
 	{
 		e.preventDefault();
-        var event_id = $(this).data('id')
+        var event_id = $(this).data('id');
         $.get( "event.php?action=unpublish&id=" + event_id, function( data ) {
             $( "#btn_event_unpublish_" + event_id).closest( ".evenement" ).fadeOut();
         });
@@ -219,6 +219,9 @@ $(document).ready(function()
     
 
 	jQuery("#btn_calendrier").click( function() {$('#navigation_calendrier').toggle();return false;} );
+	jQuery(".dropdown").click( function() {
+        $("#" + $(this).data('target')).toggle();return false;
+    } );
 
 	$("#btn_listelieux").on('click', function (e)
 	{

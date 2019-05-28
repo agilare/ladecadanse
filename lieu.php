@@ -208,8 +208,46 @@ if ($lieu->getValue('photo1') != '')
 
 
 }
-?>
 
+$illustration = "";
+
+if (!empty($lieu->getValue('logo')))
+{
+	$illustration = "<img src=".$IMGlieux."s_".$lieu->getValue('logo')." style=float:left;margin-right:0.2em />";
+}
+else if (!empty($lieu->getValue('photo1')))
+{
+	$illustration = "<img src=".$IMGlieux."s_".$lieu->getValue('photo1')." height=80 style=float:left;margin-right:0.2em />";
+}
+
+$info_lieu = "<div style='width:200px'>".$illustration."<div class=details><p class=adresse><strong>".securise_string($lieu->getValue('nom'))."</strong></p><p class=adresse>".securise_string($lieu->getValue('adresse'))."</p><p class=adresse>".$lieu->getValue('quartier')."</p></div></div>";
+?>
+<script>
+var map;
+function initMap() {
+	
+	var myLatLng = {lat: <?php echo $lieu->getValue('lat') ?>, lng: <?php echo $lieu->getValue('lng') ?>};
+
+	map = new google.maps.Map(document.getElementById('map'), {
+		center: myLatLng,
+		zoom: 14
+	});
+
+	var marker = new google.maps.Marker({
+		position: myLatLng,
+		map: map
+	});
+
+	var infowindow = new google.maps.InfoWindow({
+		content: "<?php echo $info_lieu; ?>"
+	});
+
+	marker.addListener('click', function() {
+		infowindow.open(map, marker);
+	});
+  
+}
+</script>
 
 <!-- Début Contenu -->
 <div id="contenu" class="colonne">
@@ -398,17 +436,17 @@ if ($lieu->getValue('logo'))
 
 		<?php
 		$categories = str_replace(",", ", ", $lieu->getValue('categorie'));
-
-
-                $adresse = get_adresse($lieu->getValue('region'), $lieu_localite['localite'], $lieu->getValue('quartier'), $lieu->getValue('adresse') );
-                              
-                
+        $adresse = get_adresse($lieu->getValue('region'), $lieu_localite['localite'], $lieu->getValue('quartier'), $lieu->getValue('adresse') );
+              
 		$carte = '';
 		if ($lieu->getValue('lat') != 0.000000 && $lieu->getValue('lng') != 0.000000)
 		{
-			$carte = '<li>';
-			$carte .= lien_popup($url_site.'gmap.php?idL='.$get['idL'], 'Localisation', 600, 400, $icone['plan'].'Plan');
-			$carte .= '</li>';
+            $carte = '
+            <li>
+                <a href="#" class="dropdown" data-target="plan">'.$icone['plan'].' Voir sur le plan <i class="fa fa-caret-down" aria-hidden="true"></i>
+</a>
+                <div id="plan" style="display:none"><div id="map" style="width: 60%; height: 300px; margin:5px;"></div></div>
+            </li>';
 		}
 
 		$acces_tpg = '';
@@ -488,37 +526,26 @@ if ($lieu->getValue('logo'))
 			$organisateurs .= '</ul></li>';
 
 		}
-
-
 		?>
-		<!-- Deb pratique -->
-		<div id="pratique">
 
+		<div id="pratique">
 			<ul>
 				<li><?php echo $categories; ?></li>
-                                <li class="adr"><?php echo $adresse ?></li>
-				<?php echo $salles; ?>
+                <li class="adr"><?php echo $adresse ?></li>				
 				<?php echo $carte; ?>
-        <span class="latitude">
-           <span class="value-title" title="<?php echo $lieu->getValue('lat'); ?>"></span>
-        </span>
-        <span class="longitude">
-           <span class="value-title" title="<?php echo $lieu->getValue('lng'); ?>"></span>
-        </span>				
-				
-				
+                <?php echo $salles; ?>
+                <span class="latitude">
+                   <span class="value-title" title="<?php echo $lieu->getValue('lat'); ?>"></span>
+                </span>
+                <span class="longitude">
+                   <span class="value-title" title="<?php echo $lieu->getValue('lng'); ?>"></span>
+                </span>				
 				<li><?php echo textToHtml($lieu->getValue('horaire_general')); ?></li>
-
 				<li class="sitelieu"><a class="url" href="<?php echo $URL; ?>" title="Voir le site web du lieu" onclick="window.open(this.href,'_blank');return false;"><?php echo $lieu->getValue('URL'); ?></a> <?php if ($lieu->getId() == 13) { // exception pour le Rez ?><a href="http://kalvingrad.com" onclick="window.open(this.href,'_blank');return false;">kalvingrad.com</a><br><a href="http://www.ptrnet.ch" onclick="window.open(this.href,'_blank');return false;">ptrnet.ch</a><?php } ?></li>
-                				
-
-        
-                
 				<?php echo $organisateurs; ?>
-	</ul>
+            </ul>
 
-</div>
-<!-- Fin pratique -->
+        </div><!-- Fin pratique -->
 
 
 <div class="spacer only-mobile"></div>
@@ -582,13 +609,10 @@ if ($nb_pres > 0)
 	}
 ?>
 <div id="descriptions">
-<?php
-		$auteurs_de_desc = array();
-
+    <?php
+	$auteurs_de_desc = array();
 	if ($descriptions->loadByType($get['idL'], $get['type_description']))
 	{
-
-
 		/**
 		* Liste les descriptions du lieu
 		*/
@@ -603,26 +627,24 @@ if ($nb_pres > 0)
 
 			$editer = '';
 			if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 4)
-			|| (isset($_SESSION['SidPersonne'])) && $_SESSION['SidPersonne'] == $des->getValue('idPersonne'))
+			|| (isset($_SESSION['Sgroupe']) && $get['type_description'] == 'description' && $_SESSION['Sgroupe'] <= 6 && (isset($_SESSION['SidPersonne'])) && $_SESSION['SidPersonne'] == $des->getValue('idPersonne'))
+			|| (isset($_SESSION['Sgroupe']) && $get['type_description'] == 'presentation' && ($_SESSION['Sgroupe'] <= 6 || ($_SESSION['Sgroupe'] <= 8 && (est_organisateur_lieu($_SESSION['SidPersonne'], $get['idL']) || est_affilie_lieu($_SESSION['SidPersonne'], $get['idL'])))))
+                    )
 			{
-
 				$editer = '<span class="right">';
 				$editer .= '<a href="'.$url_site.'ajouterDescription.php?action=editer&amp;type='.$get['type_description'].'&amp;idL='.$get['idL'].'&amp;idP='.$des->getValue('idPersonne').'">'.$iconeEditer.'Modifier</a>';
 				$editer .= '</span>';
 				
 				if ($_SESSION['SidPersonne'] == $des->getValue('idPersonne'))
-					$auteurs_de_desc[] = $des->getValue('idPersonne');
-				
+					$auteurs_de_desc[] = $des->getValue('idPersonne');				
 			}
-
 		 ?>
 
 		<div class="description">
 			<?php
             if (datetime_iso2time($des->getValue('date_derniere_modif')) > datetime_iso2time("2009-10-12 12:00:00"))
             {
-                echo $des->getValue('contenu');
-                
+                echo $des->getValue('contenu');             
             }
             else
             {
@@ -645,20 +667,19 @@ if ($nb_pres > 0)
 
 	<?php
 		}
-
 	}
 
 	// un rédacteur qui n'a pas déjà écrit une description
 	if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 6 && !in_array($_SESSION['SidPersonne'], $auteurs_de_desc))
 	{
-		echo "<a href=\"".$url_site."ajouterDescription.php?idL=".$get['idL']."&amp;type=description\">".$icone['ajouter_texte']." Ajouter une description (avis)</a>";
+		echo "<a href=\"".$url_site."ajouterDescription.php?idL=".$get['idL']."&amp;type=description\">".$icone['ajouter_texte']." Ajouter une description (avis)</a><br>";
 	}
 
 	if (isset($_SESSION['Sgroupe']) &&
-            ($_SESSION['Sgroupe'] <= 4  || $_SESSION['Sgroupe'] == 8 && est_organisateur_lieu($_SESSION['SidPersonne'], $get['idL']))
+            ($_SESSION['Sgroupe'] <= 6 || ($_SESSION['Sgroupe'] == 8 && (est_affilie_lieu($_SESSION['SidPersonne'], $get['idL']) || est_organisateur_lieu($_SESSION['SidPersonne'], $get['idL']))))
             && $nb_pres == 0)
 	{
-		echo "<a href=\"".$url_site."ajouterDescription.php?idL=".$get['idL']."&amp;type=presentation\">".$icone['ajouter_texte']." Ajouter une présentation</a>";
+		echo "<a href=\"ajouterDescription.php?idL=".$get['idL']."&amp;type=presentation\">".$icone['ajouter_texte']." Ajouter une présentation</a>";
 	}
 	?>
 

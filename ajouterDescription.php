@@ -25,8 +25,8 @@ if (!$videur->checkGroup(8))
 $cache_lieux = $rep_cache."lieux/";
 header("Cache-Control: max-age=30, must-revalidate");
 
-$page_titre = "ajouter/modifier une description de lieu";
-$page_description = "ajouter/modifier une description de lieu";
+$page_titre = "ajouter/modifier une description/présentation de lieu";
+$page_description = "ajouter/modifier une description/présentation  de lieu";
 $nom_page = "ajouterDescription";
 $extra_css = array("formulaires", "description");
 $extra_js = array( "zebra_datepicker", "jquery.shiftcheckbox");
@@ -70,34 +70,26 @@ elseif (isset($_SESSION['SidPersonne']))
 /* VERIFICATION POUR MODIFICATION
 * Si ce n'est pas un ajout et que la personne, n'est pas l'auteur de la desc ni admin -> exit
 */
-if ($get['action'] != "ajouter" && $get['action'] != "insert")
-{
-	if ($_SESSION['SidPersonne'] != $get['idP'] && $_SESSION['Sgroupe'] > 4)
-	{
-		msgErreur("Vous n'avez pas les droits pour éditer cette description");
-		exit;
-	}
-}
 
 if ($get['type'] == 'description' && $_SESSION['Sgroupe'] > 6)
 {
-	msgErreur("Vous n'avez pas les droits pour éditer cette description");
+	msgErreur("Vous n'avez pas les droits pour ajouter/éditer cette description");
 	exit;
 
 }
 else if ($get['type'] == 'presentation' && $_SESSION['Sgroupe'] > 8)
 {
-	msgErreur("Vous n'avez pas les droits pour éditer cette présentation");
+	msgErreur("Vous n'avez pas les droits pour ajouter/éditer cette présentation");
 	exit;
 
 }
 
-if ($get['type'] == 'presentation' && $_SESSION['Sgroupe'] == 8 && ($get['idL'] && !est_organisateur_lieu($_SESSION['SidPersonne'], $get['idL']))) 
+if ($get['type'] == 'presentation' && $_SESSION['Sgroupe'] == 8 && ($get['idL'] && !(est_organisateur_lieu($_SESSION['SidPersonne'], $get['idL']) || est_affilie_lieu($_SESSION['SidPersonne'], $get['idL'])))) 
 {
-	msgErreur("Vous n'avez pas les droits pour éditer cette présentation");
+	msgErreur("Vous n'avez pas les droits pour ajouter/éditer cette présentation");
 	exit;
-
 }
+
 /*
 * TRAITEMENT DU FORMULAIRE (EDITION OU AJOUT)
 */
@@ -267,8 +259,7 @@ if ($get['action'] == 'editer' || $get['action'] == 'update')
  	$detailsLieu = $connector->fetchArray($req_lieu);
 
 	echo '
-	<h2>Modifier la '.$get['type'].' sur
-<a href="'.$url_site.'lieu.php?idL='.$get['idL'].'" title="Fiche du lieu '.securise_string($detailsLieu['nom']).'">'.securise_string($detailsLieu['nom']).'</a></h2>';
+	<h2>Modifier la '.$get['type'].' sur <a href="'.$url_site.'lieu.php?idL='.$get['idL'].'" title="Fiche du lieu '.securise_string($detailsLieu['nom']).'">'.securise_string($detailsLieu['nom']).'</a></h2>';
 
 
 }

@@ -431,16 +431,21 @@ font-size:0.9em;
 	
 }
 
+#fiche #medias #photo {
+    min-width:150px;
+    min-height:150px;
+}
+    
 #fiche #medias #photo img {
 
     max-width:100%;
     height:auto;
-	
+
 }
 
 
 #fiche #pratique ul {
-    max-width: 30%;
+    max-width: 60%;
 }
 
 /* menu_lieux */
