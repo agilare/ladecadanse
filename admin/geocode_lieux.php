@@ -20,13 +20,17 @@ if (!$videur->checkGroup(1))
 require_once($rep_librairies.'Validateur.php');
 
 define("MAPS_HOST", "maps.google.ch");
-define("KEY", "ABQIAAAAG-ck6Fuoq0SY-KLet7TuJBSmMl_j_m3i5qUsS9HDusFzfphmARSfXhQU23wz2ESm5vkdEFug_jntfw");
 
+$from = filter_input(INPUT_GET, 'from', FILTER_SANITIZE_NUMBER_INT);
+$to = filter_input(INPUT_GET, 'to', FILTER_SANITIZE_NUMBER_INT);
 
+if (empty($to) || empty($from))
+    die("from and to required");
 
 // Select all the rows in the markers table
-mysqli_query("SET character_set_results = 'utf8'");
-$query = "SELECT * FROM lieu WHERE statut='actif' and lat='' and lng =''";
+$query = "SELECT nom, adresse, idLieu, localite FROM lieu "
+        . "INNER JOIN localite ON lieu.localite_id= localite.id "
+        . "WHERE statut='actif' and lat='' and lng ='' and idLieu BETWEEN $from AND $to";
 $result = $connector->query($query);
 if (!$result) {
   die("Invalid query: " . mysqli_error());
@@ -34,55 +38,54 @@ if (!$result) {
 
 // Initialize delay in geocode speed
 $delay = 0;
-$base_url = "http://" . MAPS_HOST . "/maps/geo?output=csv&key=" . KEY;
-
+$base_url = "https://maps.googleapis.com/maps/api/geocode/json?key=" . GOOGLE_API_KEY;
+?>
+<h1>Geocoding</h1>
+<?php
 // Iterate through the rows, geocoding each address
-while ($row = @mysqli_fetch_assoc($result)) {
+while ($row = $connector->fetchArray($result)) {
+    
   $geocode_pending = true;
 
   while ($geocode_pending) {
-    $address = $row["adresse"]." GenÃ¨ve";
-	echo '<p><strong>'.$row['nom']."</strong> : ".$address."</p>";
+    $address = $row["adresse"]." ".$row["localite"];
+	echo '<h2>'.$row['nom']."</h2><p>".$address."</p>";
     $id = $row["idLieu"];
-    $request_url = $base_url . "&q=" . urlencode($address);
-    $csv = file_get_contents($request_url) or die("url not loading");
+    $request_url = $base_url . "&address=" . urlencode($address);
+    $json = file_get_contents($request_url) or die("url not loading");
 
-    $csvSplit = mb_split(",", $csv);
-    $status = $csvSplit[0];
-    $lat = $csvSplit[2];
-    $lng = $csvSplit[3];
-    if (strcmp($status, "200") == 0) {
-      // successful geocode
-      $geocode_pending = false;
-      $lat = $csvSplit[2];
-      $lng = $csvSplit[3];
+    $json2 = json_decode($json, true);
+ 
+    if (strcmp($json2['status'], "OK") == 0)
+    {
+        $latlng = $json2['results'][0]['geometry']['location'];
+        // successful geocode
+        $geocode_pending = false;
 
-      $query = sprintf("UPDATE lieu " .
-             " SET lat = '%s', lng = '%s' " .
-             " WHERE idLieu = %s LIMIT 1;",
-             $connector->sanitize($lat),
-             $connector->sanitize($lng),
-             $connector->sanitize($id));
+        $query = sprintf("UPDATE lieu " .
+               " SET lat = '%s', lng = '%s' " .
+               " WHERE idLieu = %s LIMIT 1;",
+               $connector->sanitize($latlng['lat']),
+               $connector->sanitize($latlng['lng']),
+               $connector->sanitize($id));
+        echo $query."<br><br>";
+        $update_result = $connector->query($query);
 
-     $update_result = $connector->query($query);
-	 //$update_result = 1;
-	  echo $query."<br><br>";
-      if (!$update_result) {
-        die("Invalid query: " . mysqli_error());
-      }
-    } else if (strcmp($status, "620") == 0) {
-      // sent geocodes too fast
-      $delay += 100000;
-    } else {
+        if (!$update_result) {
+          die("Invalid query: " . mysqli_error());
+        }
+    } 
+    else
+    {
       // failure to geocode
       $geocode_pending = false;
-      echo "Address " . $address . " failed to geocoded. ";
-      echo "Received status " . $status . "
+      echo "Address " . $address . " failed to geocode. ";
+      echo "Received status " . $json2['status'] . "
 \n";
     }
     usleep($delay);
   }
 }
-
-echo '<a href="'.$url_admin.'maintenance.php">Retour à Maintenance</a>';
 ?>
+
+<a href="index.php">Retour à l'Admin</a>
