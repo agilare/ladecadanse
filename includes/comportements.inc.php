@@ -134,6 +134,15 @@ function setupDesktop()
 	$("#colonne_gauche").prepend($("#navigation_calendrier"));
 }
 
+function showhide(show, hide)
+{
+   $(".type-" + show).fadeIn(100);
+   $(".btn-" + show).addClass("ici");
+   $(".type-" + hide).fadeOut(100);
+   $(".btn-" + hide).removeClass("ici");
+   
+}
+
 $(document).ready(function()
 {
 	var vitesse_fondu = 400;
@@ -303,6 +312,8 @@ $(document).ready(function()
             this.focus();
         }
 });
+
+
     
     $('form.submit-freeze-wait').submit(function()
     {

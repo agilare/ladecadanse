@@ -104,26 +104,6 @@ else
 	$get['sem'] = 0;
 }
 
-
-/* MODES */
-$tab_modes = array("etendu", "condense");
-if (!empty($_GET['mode']))
-{
-	if (in_array($_GET['mode'], $tab_modes))
-	{
-		$get['mode'] = $_GET['mode'];
-	}
-	else
-	{
-		//trigger_error("mode non valable", E_USER_WARNING);
-		exit;
-	}
-}
-else
-{
-	$get['mode'] = "etendu";
-}
-
 /* TRI */
 $tab_tri_agenda = array("dateAjout", "horaire_debut");
 if (!empty($_GET['tri_agenda']))
@@ -277,13 +257,6 @@ $tab_de = $connector->fetchArray($req_de);
 
 	<?php
 	}
-	else if ($nom_page == "lieux")
-	{
-	?>
-		<link rel="alternate" type="application/rss+xml" href="<?php echo $url_site.'rss.php?type=lieux_descriptions'; ?>" />
-
-	<?php
-	}
 	?>
 	<link rel="shortcut icon" href="web/images//favicon.png" />	
     <link rel="apple-touch-icon" href="web/images/apple-icon.png" />    
@@ -306,7 +279,7 @@ $tab_de = $connector->fetchArray($req_de);
       })();
     </script>
     <!-- End Piwik Code --> 
-<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>  
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>  
    <script async defer
       src="https://maps.googleapis.com/maps/api/js?key=<?php echo GOOGLE_API_KEY; ?>&callback=initMap">
     </script>
@@ -457,7 +430,7 @@ echo '<a id="bouton_imprimer" title="Imprimer la page" href="javascript:window.p
         ?>
             id="bouton_agenda">
             <?php
-            echo "<a href=\"".$url_site.$lien."?".$url_query_region_et."courant=".$get['courant']."&amp;sem=".$get['sem']."&amp;tri_agenda=".$get['tri_agenda']."&amp;mode=".$get['mode']."\">".$nom."</a>"; 
+            echo "<a href=\"".$url_site.$lien."?".$url_query_region_et."courant=".$get['courant']."&amp;sem=".$get['sem']."&amp;tri_agenda=".$get['tri_agenda']."\">".$nom."</a>"; 
             ?>
             </li>
             <li id="bouton_calendrier">

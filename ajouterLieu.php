@@ -331,9 +331,8 @@ echo $form->getHtmlErreur("quartier");
 </p>
 <?php } ?>
     <p>
-        <label for="horaire_general"><span class="tooltip">Horaire habituel<span class="tooltiptext">Jours et heures d’ouverture habituels</span></span></label>
-        <textarea name="horaire_general" id="horaire_general" cols="25" rows="3" tabindex="4" title="Quels sont les horaires typiques d'une soirée ?">
-        <?php echo $form->getValeur('horaire_general') ?></textarea>
+        <label for="horaire_general">Jours et heures d’ouverture habituels</label>
+        <textarea name="horaire_general" id="horaire_general" cols="25" rows="3" tabindex="4" title="Quels sont les horaires typiques d'une soirée ?"><?php echo $form->getValeur('horaire_general') ?></textarea>
         <?php
         echo $form->getHtmlErreur("horaire_general");
         ?>

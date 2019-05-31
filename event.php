@@ -64,7 +64,14 @@ if ($get['action'] == 'unpublish' && !empty($get['id']))
 
         $val_even = $connector->fetchArray($req_im);
     
-    	if (!empty($val_even) && ((estAuteur($_SESSION['SidPersonne'], $get['id'], 'evenement') && $_SESSION['Sgroupe'] <= 8) || $_SESSION['Sgroupe'] < 2))
+    	if (!empty($val_even) && 
+                (
+	 		(isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 6
+			|| $_SESSION['SidPersonne'] == $even->getValue('idPersonne'))
+			)
+			||  (isset($_SESSION['Saffiliation_lieu']) && !empty($val_even['idLieu']) && $val_even['idLieu'] == $_SESSION['Saffiliation_lieu'])
+			 || isset($_SESSION['SidPersonne']) && est_organisateur_evenement($_SESSION['SidPersonne'], $get['id'])
+			 || isset($_SESSION['SidPersonne']) && est_organisateur_lieu($_SESSION['SidPersonne'], $val_even['idLieu'])	))
 		{
 			if ($connector->query("UPDATE evenement SET statut='inactif' WHERE idEvenement=".$get['id']))
 			{

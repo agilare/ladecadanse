@@ -348,6 +348,12 @@ FROM evenement WHERE idEvenement=".$get['idE'])));
 			}
 		} //while date
 	
+        $date2 = '';
+        if (!empty($dateEvenement2))
+            $date2 = ' - '.$dateEvenement2;
+        
+        $logger->log('global', 'activity', "[copierEvenement] event \"".$tab_champs['titre']."\" of ".$tab_champs['dateEvenement']." copied to ".$dateEvenement.$date2, Logger::GRAN_YEAR); 
+        
 		header("Location: copierEvenement.php?idE=".$get['idE']); die();
 	} //if nberreur = 0
 } // if POST != ""

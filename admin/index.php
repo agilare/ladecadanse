@@ -41,8 +41,9 @@ require_once($rep_librairies.'Validateur.php');
 
 $nom_page = "index";
 $page_titre = "administration";
-$page_description = "Tableau d'administration du site";
+$page_description = "Tableau de bord";
 $extra_css = array("admin");
+$extra_js = array( "zebra_datepicker", "jquery.shiftcheckbox");
 require_once('header.inc.php');
 ?>
 

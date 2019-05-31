@@ -200,7 +200,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 
 			$sql_update = "UPDATE descriptionlieu SET
 			contenu='".$connector->sanitize($champs['contenu'])."', date_derniere_modif='".$champs['date_derniere_modif']."'
-			WHERE idPersonne=".$get['idP']." AND idLieu=".$get['idL'];
+			WHERE idPersonne=".$get['idP']." AND idLieu=".$get['idL']." AND type='".$champs['type']."'";
 
 			//TEST
 			//echo "<p>".$sql_update."</p>";
@@ -278,31 +278,28 @@ else
 */
 if ($get['action'] == 'editer' && isset($get['idL']) && isset($get['idP']))
 {
+    $sql = "SELECT idPersonne, idLieu, contenu, type
+    FROM descriptionlieu WHERE idLieu =".$get['idL']." AND idPersonne=".$get['idP']." AND type='".$get['type']."'";
+    $req_desc = $connector->query($sql);
 
-	if ($_SESSION['SidPersonne'] == $get['idP'] || $_SESSION['Sgroupe'] <= 4)
-	{
-		$sql = "SELECT idPersonne, idLieu, contenu, type
-		FROM descriptionlieu WHERE idLieu =".$get['idL']." AND idPersonne=".$get['idP']." AND type='".$get['type']."'";
-		$req_desc = $connector->query($sql);
+    if ($tabDesc = $connector->fetchArray($req_desc))
+    {
+            foreach($tabDesc as $c => $v)
+            {
+                $champs[$c] = $v;
+            }
+    }
 
-		if ($tabDesc = $connector->fetchArray($req_desc))
-		{
-				foreach($tabDesc as $c => $v)
-				{
-					$champs[$c] = $v;
-				}
-		}
+    @mysqli_free_result($req_desc);
 
-		@mysqli_free_result($req_desc);
-		
-		if ($_SESSION['Sgroupe'] <= 4) 
-		{
-			echo '<ul class="entete_contenu_menu">';
-			echo "<li class=\"action_supprimer\">
-			<a href=\"".$url_site."supprimer.php?type=descriptionlieu&id=".$get['idL']."&idP=".$get['idP']."\" title=\"Supprimer la description\">Supprimer</a></li>";
-			echo "</ul>";
-		}
-	}
+    if ($_SESSION['Sgroupe'] <= 4) 
+    {
+        echo '<ul class="entete_contenu_menu">';
+        echo "<li class=\"action_supprimer\">
+        <a href=\"".$url_site."supprimer.php?type=descriptionlieu&id=".$get['idL']."&idP=".$get['idP']."\">Supprimer</a></li>";
+        echo "</ul>";
+    }
+	
 } // if GET action
 
 echo '<div class="spacer"></div></div>';

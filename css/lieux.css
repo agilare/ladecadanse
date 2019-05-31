@@ -9,7 +9,7 @@
 	width:94%;
 	margin:0 auto 0 auto;
 	background-color:#fdfdfd;
-
+    list-style-type: none;
 }
 
 #dernieres_descriptions .vignette
@@ -19,14 +19,7 @@
 	border: 1px solid gray;
 	line-height:1.3em;
 	color:#5C7378;
-	
-	min-height: 250px;
-	display: -moz-inline-stack;
-	display: inline-block;
-	zoom: 1;
-	*display: inline;
-	_height: 250px;	
-	
+	min-height: 250px;	
 }
 
 #dernieres_descriptions .vignette h3

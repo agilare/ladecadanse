@@ -159,10 +159,8 @@ clear:both;
 
 #btn_listelieux, #btn_listeorganisateurs
 {
-	
-	width:94%;
-	
-	margin:1em auto;
+	width:94%;	
+	margin:1em 0;
 	
 }
 #btn_listelieux button, #btn_listeorganisateurs button
@@ -478,6 +476,11 @@ font-size:0.9em;
 padding:1em 0 1em 5px;
 }
 
+ul#menu_descriptions
+{
+    margin-top:0;
+    padding: 0 0 0.6em 0;
+}
 
 ul#menu_descriptions li.ici a, ul#menu_descriptions li a
 {

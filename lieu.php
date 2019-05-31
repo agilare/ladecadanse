@@ -547,11 +547,11 @@ if ($lieu->getValue('logo'))
             <div id="plan" style="display:none"><div id="map"></div></div>
         </div><!-- Fin pratique -->
 
-
-<div class="spacer only-mobile"></div>
+        <div class="spacer only-mobile"></div>
 
 <?php
 $descriptions = new CollectionDescription();
+$type2hide = ['description' => ' style="display:none"', 'presentation' => ' style="display:none"'];
 
 $nb_desc = 0;
 $nb_pres = 0;
@@ -570,35 +570,35 @@ $nb_pres = 0;
 $nb_desc = $descriptions->getNumRows($get['idL'], 'description');
 $nb_pres = $descriptions->getNumRows($get['idL'], 'presentation');
 
-if ($get['type_description'] == '')
-{
 	if ($nb_desc > 0)
 	{
 		$get['type_description'] = 'description';
+        $type2hide['description'] = '';
 	}
 	else if ($nb_desc == 0 && $nb_pres > 0)
 	{
 		$get['type_description'] = 'presentation';
+        $type2hide['presentation'] = '';
 	}
-}
+
 
 if ($nb_desc)
 {
 ?>
 
-    <li <?php if ($get['type_description'] == 'description') { echo ' class="ici"'; }?>>
-    <h3><a href="<?php echo basename(__FILE__)."?".arguments_URI($get, 'type_descrition') ?>&amp;type_description=description">Description</a></h3>
+    <li class="btn-description <?php if ($get['type_description'] == 'description') { echo 'ici'; }?>">
+    <h3><a href="#description" onclick="showhide('description', 'presentation');">Description</a></h3>
     </li>
  <?php
-
+    
  }
 
 if ($nb_pres > 0)
 {
 
 ?>
-    <li <?php if ($get['type_description'] == 'presentation') { echo ' class="ici"'; }?>>
-        <h3><a href="<?php echo basename(__FILE__)."?".arguments_URI($get, 'type_description') ?>&amp;type_description=presentation">Le lieu se présente</a></h3>
+    <li class="btn-presentation <?php if ($get['type_description'] == 'presentation') { echo 'ici'; }?>">
+        <h3><a href="#presentation" onclick="showhide('presentation', 'description');">Le lieu se présente</a></h3>
     </li>
  <?php
 
@@ -609,66 +609,78 @@ if ($nb_pres > 0)
 	}
 ?>
 <div id="descriptions">
+    
+    
     <?php
-	$auteurs_de_desc = array();
-	if ($descriptions->loadByType($get['idL'], $get['type_description']))
-	{
-		/**
-		* Liste les descriptions du lieu
-		*/
-		foreach ($descriptions->getElements() as $id => $des)
-		{
-			$dern_modif = '';
-			if ($des->getValue('date_derniere_modif') != "0000-00-00 00:00:00" && $des->getValue('date_derniere_modif') != $des->getValue('dateAjout'))
-			{
-
-				$dern_modif = ", modifié le ".date_fr($des->getValue('date_derniere_modif'), 'annee', '', 'non');
-			}
-
-			$editer = '';
-			if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 4)
-			|| (isset($_SESSION['Sgroupe']) && $get['type_description'] == 'description' && $_SESSION['Sgroupe'] <= 6 && (isset($_SESSION['SidPersonne'])) && $_SESSION['SidPersonne'] == $des->getValue('idPersonne'))
-			|| (isset($_SESSION['Sgroupe']) && $get['type_description'] == 'presentation' && ($_SESSION['Sgroupe'] <= 6 || ($_SESSION['Sgroupe'] <= 8 && (est_organisateur_lieu($_SESSION['SidPersonne'], $get['idL']) || est_affilie_lieu($_SESSION['SidPersonne'], $get['idL'])))))
-                    )
-			{
-				$editer = '<span class="right">';
-				$editer .= '<a href="'.$url_site.'ajouterDescription.php?action=editer&amp;type='.$get['type_description'].'&amp;idL='.$get['idL'].'&amp;idP='.$des->getValue('idPersonne').'">'.$iconeEditer.'Modifier</a>';
-				$editer .= '</span>';
-				
-				if ($_SESSION['SidPersonne'] == $des->getValue('idPersonne'))
-					$auteurs_de_desc[] = $des->getValue('idPersonne');				
-			}
-		 ?>
-
-		<div class="description">
-			<?php
-            if (datetime_iso2time($des->getValue('date_derniere_modif')) > datetime_iso2time("2009-10-12 12:00:00"))
+    
+    $types_desc = ['description', 'presentation'];
+    foreach ($types_desc as $type)
+    {
+        $descriptions = new CollectionDescription();
+        ?>
+    <div class="type-<?php echo $type; ?>" <?php echo $type2hide[$type]; ?>>
+        <?php
+        $auteurs_de_desc = array();
+        if ($descriptions->loadByType($get['idL'], $type))
+        {
+            foreach ($descriptions->getElements() as $id => $des)
             {
-                echo $des->getValue('contenu');             
+                $dern_modif = '';
+                if ($des->getValue('date_derniere_modif') != "0000-00-00 00:00:00" && $des->getValue('date_derniere_modif') != $des->getValue('dateAjout'))
+                {
+
+                    $dern_modif = ", modifié le ".date_fr($des->getValue('date_derniere_modif'), 'annee', '', 'non');
+                }
+
+                $editer = '';
+                if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 4)
+                || (isset($_SESSION['Sgroupe']) && $type == 'description' && $_SESSION['Sgroupe'] <= 6 && (isset($_SESSION['SidPersonne'])) && $_SESSION['SidPersonne'] == $des->getValue('idPersonne'))
+                || (isset($_SESSION['Sgroupe']) && $type == 'presentation' && ($_SESSION['Sgroupe'] <= 6 || ($_SESSION['Sgroupe'] <= 8 && (est_organisateur_lieu($_SESSION['SidPersonne'], $get['idL']) || est_affilie_lieu($_SESSION['SidPersonne'], $get['idL'])))))
+                        )
+                {
+                    $editer = '<span class="right">';
+                    $editer .= '<a href="'.$url_site.'ajouterDescription.php?action=editer&amp;type='.$type.'&amp;idL='.$get['idL'].'&amp;idP='.$des->getValue('idPersonne').'">'.$iconeEditer.'Modifier</a>';
+                    $editer .= '</span>';
+
+                    if ($_SESSION['SidPersonne'] == $des->getValue('idPersonne'))
+                        $auteurs_de_desc[] = $des->getValue('idPersonne');				
+                }
+             ?>
+
+            <div class="description">
+                <?php
+                if (datetime_iso2time($des->getValue('date_derniere_modif')) > datetime_iso2time("2009-10-12 12:00:00"))
+                {
+                    echo $des->getValue('contenu');             
+                }
+                else
+                {
+                    echo "<p>".textToHtml($des->getHtmlValue('contenu'))."</p>";
+                }
+                ?>
+                <p><?php 
+                    if ($type == 'description')
+                    {
+                        echo signature_auteur($des->getValue('idPersonne'));
+                    }	
+                    ?></p>
+
+                <div class="auteur">
+                    <span class="left"><?php echo ucfirst(date_fr($des->getValue('dateAjout'), 'annee','', 'non')) ?><?php echo $dern_modif; ?></span><?php echo $editer;?>
+                </div>
+                <div class="spacer"><!-- --></div>
+            </div>
+            <!-- Fin description -->
+
+        <?php
             }
-            else
-            {
-            echo "<p>".textToHtml($des->getHtmlValue('contenu'))."</p>";
-            }
-            ?>
-			<p><?php 
-				if ($get['type_description'] == 'description')
-				{
-					echo signature_auteur($des->getValue('idPersonne'));
-				}	
-				?></p>
-
-			<div class="auteur">
-				<span class="left"><?php echo ucfirst(date_fr($des->getValue('dateAjout'), 'annee','', 'non')) ?><?php echo $dern_modif; ?></span><?php echo $editer;?>
-			</div>
-			<div class="spacer"><!-- --></div>
-		</div>
-		<!-- Fin description -->
-
-	<?php
-		}
-	}
-
+        }
+    ?>
+            </div>
+            <?php
+        
+                    }
+    
 	// un rédacteur qui n'a pas déjà écrit une description
 	if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 6 && !in_array($_SESSION['SidPersonne'], $auteurs_de_desc))
 	{

@@ -101,26 +101,6 @@ else
 	$get['sem'] = 0;
 }
 
-
-/* MODES */
-$tab_modes = array("etendu", "condense");
-if (!empty($_GET['mode']))
-{
-	if (in_array($_GET['mode'], $tab_modes))
-	{
-		$get['mode'] = $_GET['mode'];
-	}
-	else
-	{
-		//trigger_error("sem non valable", E_USER_WARNING);
-		exit;
-	}
-}
-else
-{
-	$get['mode'] = "etendu";
-}
-
 /* TRI */
 $tab_tri_agenda = array("dateAjout", "horaire_debut");
 if (!empty($_GET['tri_agenda']))
@@ -190,9 +170,16 @@ if ($nom_page == "agenda" && isset($page_titre))
 
 	include("../includes/styles.inc.php");
 	?>
-
+	<link rel="shortcut icon" href="web/images//favicon.png" />	
+    <link rel="apple-touch-icon" href="web/images/apple-icon.png" />    
+    <link rel="apple-touch-icon" sizes="57x57" href="web/images/apple-icon-57x57.png" />       
+    <link rel="apple-touch-icon" sizes="76x76" href="web/images/apple-icon-76x76.png" />     
+    <link rel="apple-touch-icon" sizes="152x152" href="web/images/apple-icon-152x152.png" />  
 	<link rel="shortcut icon" href="<?php echo $url_images ?>interface/favicone.gif" />
-       
+     <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>  
+   <script async defer
+      src="https://maps.googleapis.com/maps/api/js?key=<?php echo GOOGLE_API_KEY; ?>&callback=initMap">
+    </script>      
 </head>
 
 <body>
@@ -311,7 +298,7 @@ foreach ($menu_principal as $nom => $lien)
     ?>
 		id="bouton_agenda">
         <?php
-		echo "<a href=\"".$url_site.$lien."?courant=".$get['courant']."&amp;sem=".$get['sem']."&amp;tri_agenda=".$get['tri_agenda']."&amp;mode=".$get['mode']."\">".$nom."</a></li>"; 
+		echo "<a href=\"".$url_site.$lien."?courant=".$get['courant']."&amp;sem=".$get['sem']."&amp;tri_agenda=".$get['tri_agenda']."\">".$nom."</a></li>"; 
         ?>
 		<li>
 <?php

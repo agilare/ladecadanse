@@ -171,7 +171,7 @@ ul.menu_actions_lieu li
 		color:#5C7378;
 		border-bottom:1px dotted #5C7378;
 		text-align:center;
-
+        padding: 0;
 	}
 
 	ul#menu_descriptions li
