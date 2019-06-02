@@ -338,7 +338,7 @@ if ($evenements->getNbElements() > 0)
 
 		$sql_nb_even = "SELECT evenement.idEvenement
 		 FROM evenement, evenement_organisateur
-		 WHERE evenement.idEvenement=evenement_organisateur.idEvenement AND idOrganisateur=".$get['idO']." AND dateEvenement >= '".$date_debut."' AND statut!='inactif'".$genre;
+		 WHERE evenement.idEvenement=evenement_organisateur.idEvenement AND idOrganisateur=".$get['idO']." AND dateEvenement >= '".$date_debut."' AND statut NOT IN ('inactif', 'propose') ".$genre;
 
 
 		$req_nb_even = $connector->query($sql_nb_even);

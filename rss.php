@@ -103,7 +103,7 @@ else if ($get['type'] == "evenements_auj")
 	 titre, idPersonne, dateEvenement, URL1, ref, flyer, description, horaire_debut, horaire_fin, horaire_complement,
 	 prix, prelocations, dateAjout, date_derniere_modif
 	 FROM evenement
-	 WHERE dateEvenement='".$glo_auj_6h."' AND statut!='inactif' AND region IN ('".$connector->sanitize($_SESSION['region'])."', 'rf', 'hs')
+	 WHERE dateEvenement='".$glo_auj_6h."' AND statut NOT IN ('inactif', 'propose') AND region IN ('".$connector->sanitize($_SESSION['region'])."', 'rf', 'hs')
 	 ORDER BY CASE `genre`
        WHEN 'fête' THEN 1
        WHEN 'cinéma' THEN 2
@@ -203,7 +203,7 @@ else if ($get['type'] == "lieu_evenements")
 
 	$req_even = $connector->query("SELECT idEvenement, idPersonne, idSalle, genre, titre, dateEvenement,
 		 nomLieu, description, flyer, horaire_debut, horaire_fin, horaire_complement, prix, dateAjout
-		 FROM evenement WHERE idLieu=".$get['id']." AND dateEvenement >= '".$auj."' AND statut!='inactif' ORDER BY dateAjout DESC");
+		 FROM evenement WHERE idLieu=".$get['id']." AND dateEvenement >= '".$auj."' AND statut NOT IN ('inactif', 'propose') ORDER BY dateAjout DESC");
 
 	$items = "";
 	$css = "<style> .flyer { float:left; } h1, h2, h3, h4, p { margin: 1em 0.1em 0.6em 0.1em} .desc { margin: 0.4em 0.1em } .clean {clear:both;}</style>";
@@ -364,7 +364,7 @@ else if ($get['type'] == "organisateur_evenements")
 
 	$req_even = $connector->query("SELECT evenement.idEvenement AS idEvenement, idPersonne, idLieu, nomLieu, adresse, quartier, idSalle, genre, titre, dateEvenement,
 		 nomLieu, description, flyer, horaire_debut, horaire_fin, horaire_complement, prix, dateAjout
-		 FROM evenement, evenement_organisateur WHERE evenement.idEvenement=evenement_organisateur.idEvenement AND idOrganisateur=".$get['id']." AND dateEvenement >= '".$auj."' AND statut!='inactif' ORDER BY dateAjout DESC");
+		 FROM evenement, evenement_organisateur WHERE evenement.idEvenement=evenement_organisateur.idEvenement AND idOrganisateur=".$get['id']." AND dateEvenement >= '".$auj."' AND statut NOT IN ('inactif', 'propose') ORDER BY dateAjout DESC");
 
 	$items = "";
 	$css = "<style> .flyer { float:left; } h1, h2, h3, h4, p { margin: 1em 0.1em 0.6em 0.1em} .desc { margin: 0.4em 0.1em } .clean {clear:both;}</style>";
@@ -447,7 +447,7 @@ else if ($get['type'] == "evenements_ajoutes")
 
 	$req_even = $connector->query("SELECT idEvenement, idPersonne, idSalle, genre, titre, dateEvenement,
 		 idLieu, nomLieu, adresse, quartier, description, flyer, image, horaire_debut, horaire_fin, horaire_complement, prix, dateAjout
-		 FROM evenement WHERE statut!='inactif' ORDER BY dateAjout DESC LIMIT 0, 20");
+		 FROM evenement WHERE statut NOT IN ('inactif', 'propose') ORDER BY dateAjout DESC LIMIT 0, 20");
 
 	$items = "";
 	$css = "<style> .flyer { float:left; } h1, h2, h3, h4, p { margin: 1em 0.1em 0.6em 0.1em} .desc { margin: 0.4em 0.1em } .clean {clear:both;}</style>";

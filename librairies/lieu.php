@@ -579,7 +579,7 @@ if ($get['complement'] == 'evenements')
 
 			$sql_nb_even = "SELECT idEvenement
 			 FROM evenement
-			 WHERE idLieu=".$get['idL']." AND dateEvenement >= '".$date_debut."' AND statut!='inactif'".$genre;
+			 WHERE idLieu=".$get['idL']." AND dateEvenement >= '".$date_debut."' AND statut NOT IN ('inactif', 'propose') ".$genre;
 
 
 			$req_nb_even = $connector->query($sql_nb_even);

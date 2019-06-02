@@ -404,3 +404,10 @@ font-family:Georgia;
 	background-position: 15px 17px;
 	line-height:1.3em;    
 }
+
+.readonly
+{
+    background: #eee;
+    border: 1px solid #aaa;
+    color: #555;
+}

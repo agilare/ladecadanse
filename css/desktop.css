@@ -387,15 +387,16 @@ form#ajouter_editer label
 	/* vertical-align: middle; */
 	float: left;
 }
+
 form#ajouter_editer .description
 {
-margin-left:10.5em;
-width:400px;
+    margin-left:10.5em;
+    width:430px;
 }
 
 form#ajouter_editer #titre
 {
-width:400px;
+    width:430px;
 }
 
 
@@ -405,12 +406,10 @@ form#ajouter_editer table.fichiers_associes {
 	
 }
 
-form#ajouter_editer textarea, form#ajouter_editer #ref  {
-
-
-    width: 400px;
-	
-	}
+form#ajouter_editer textarea, form#ajouter_editer #ref 
+{
+    width:430px;
+}
 	
 /* personne */
 

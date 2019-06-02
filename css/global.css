@@ -53,6 +53,11 @@ sup {
 	line-height:0;
 } 
 
+table
+{
+    border-collapse: collapse;
+}
+
 .spacer
 {
 	clear:both;
@@ -690,3 +695,24 @@ table tr td.small
   visibility: visible;
   opacity: 1;
 } 
+
+.even-statut-badge
+{
+    padding:0.2em 0.2em;
+    background:lightblue;
+    color:#4c4c4c;
+    border-radius:6px   
+}
+
+.even-statut-badge.inactif
+{
+    color:#fff;
+    background:red;
+}
+
+.even-statut-badge.propose
+{
+
+    background:lightblue;
+
+}

@@ -44,7 +44,7 @@ $req_even = $connector->query("SELECT idEvenement, genre, idLieu, idSalle, nomLi
  titre, idPersonne, dateEvenement, URL1, ref, flyer, image, description, horaire_debut, horaire_fin,
  horaire_complement, prix, prelocations
  FROM evenement, localite
- WHERE evenement.localite_id=localite.id AND dateEvenement LIKE '".$auj2."%' AND statut!='inactif' AND region IN ('".$connector->sanitize($_SESSION['region'])."', ".$sql_rf." 'hs')   
+ WHERE evenement.localite_id=localite.id AND dateEvenement LIKE '".$auj2."%' AND statut NOT IN ('inactif', 'propose') AND region IN ('".$connector->sanitize($_SESSION['region'])."', ".$sql_rf." 'hs')   
  ORDER BY CASE `genre`
         WHEN 'fête' THEN 1
         WHEN 'cinéma' THEN 2
@@ -57,11 +57,11 @@ $nb_evenements = $connector->getNumRows($req_even);
 $event_count = ['ge' => $connector->getNumRows($req_even), 'vd' => 0];
 $req_even_ge_nb = $connector->query("SELECT COUNT(idEvenement) AS nb
  FROM evenement, localite
- WHERE evenement.localite_id=localite.id AND dateEvenement LIKE '".$auj2."%' AND statut!='inactif' AND region IN ('ge', 'rf', 'hs')");
+ WHERE evenement.localite_id=localite.id AND dateEvenement LIKE '".$auj2."%' AND statut NOT IN ('inactif', 'propose') AND region IN ('ge', 'rf', 'hs')");
 $event_count['ge'] = $connector->fetchAll($req_even_ge_nb)[0];
 $req_even_vd_nb = $connector->query("SELECT COUNT(idEvenement) AS nb
  FROM evenement, localite
- WHERE evenement.localite_id=localite.id AND dateEvenement LIKE '".$auj2."%' AND statut!='inactif' AND region IN ('vd', 'hs')");
+ WHERE evenement.localite_id=localite.id AND dateEvenement LIKE '".$auj2."%' AND statut NOT IN ('inactif', 'propose') AND region IN ('vd', 'hs')");
 $event_count['vd'] = $connector->fetchAll($req_even_vd_nb)[0];
 ?>
 
@@ -77,7 +77,15 @@ if (HOME_TMP_BANNER_ENABLED)
     </div>
 <?php
 }
-?>    
+?> 
+    
+    <?php
+    if (!empty($_SESSION['ajouterEvenement_flash_msg']))
+    {
+        msgOk($_SESSION['ajouterEvenement_flash_msg']);
+        unset($_SESSION['ajouterEvenement_flash_msg']);
+    }
+    ?>    
     
 	<div id="entete_contenu">
         <h2 class="accueil" style="margin: 0;">Aujourd’hui <a href="<?php echo $url_site ?>rss.php?type=evenements_auj" title="Flux RSS des événements du jour" style="font-size:12px;vertical-align: top;" class="desktop"><i class="fa fa-rss fa-lg" style="color:#f5b045"></i></a></h2>
@@ -436,7 +444,7 @@ if ($genre_courant != '')
 
     $req_dern_even = $connector->query("
     SELECT idEvenement, titre, dateEvenement, dateAjout, nomLieu, idLieu, idSalle, flyer, image, statut
-    FROM evenement WHERE region IN ('".$connector->sanitize($_SESSION['region'])."', ".$sql_rf." 'hs') AND statut!='inactif' ORDER BY dateAjout DESC LIMIT 0, 6
+    FROM evenement WHERE region IN ('".$connector->sanitize($_SESSION['region'])."', ".$sql_rf." 'hs') AND statut NOT IN ('inactif', 'propose') ORDER BY dateAjout DESC LIMIT 0, 6
     ");
 
     $date_ajout_courante = "";

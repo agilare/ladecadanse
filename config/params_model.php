@@ -1,10 +1,10 @@
 <?php
 // à renommer en params.php pour faire fonctionner l'appli
+define("ENV", "dev");
 
 define("MODE_DEBUG", FALSE);
  
-error_reporting(E_ALL & ~E_DEPRECATED);
-//error_reporting(E_ALL);
+error_reporting(E_ALL);
 ini_set('display_errors', '0');
 
 // $glo_email_admin = "michel@ladecadanse.ch"; // prod

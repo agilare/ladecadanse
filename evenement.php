@@ -41,7 +41,7 @@ $even_status = '';
 //printr($even->getValues());
 
 // si idE ne correspond à aucune entrée dans la table
-if (!$even->getValues() || $even->getValue('statut') == 'inactif')
+if (!$even->getValues() || in_array($even->getValue('statut'), ['inactif', 'propose']) )
 {
 
 	// le staff, ainsi que l'auteur et les personnes liées par organisateur peuvent voir l'even dépublié
@@ -57,7 +57,7 @@ if (!$even->getValues() || $even->getValue('statut') == 'inactif')
 		
 	)
 	{
-		$even_status = ' [dépublié]';
+		$even_status = " <span class='even-statut-badge ".$even->getValue('statut')."'>".$statuts_evenement[$even->getValue('statut')]."</span>";
 	}
 	else
 	{
@@ -120,7 +120,7 @@ if ($connector->getNumRows($req_even) > 0)
 	$sql_even = "
 	 SELECT idEvenement, titre FROM evenement
 	 WHERE  dateEvenement='".$even->getValue('dateEvenement')."'
-	 AND statut!='inactif' 
+	 AND statut NOT IN ('inactif', 'propose')
          AND region='".$even->getValue('region')."'
 	 ORDER BY dateEvenement, 
          CASE `genre`
@@ -969,7 +969,7 @@ $sql_even = "SELECT idEvenement, idLieu, nomLieu, adresse, urlLieu,
  FROM evenement
  WHERE genre='".$even->getValue('genre')."' AND
  dateEvenement='".$even->getValue('dateEvenement')."'
- AND statut!='inactif'
+ AND statut NOT IN ('inactif', 'propose')
  ORDER BY dateAjout";
 
 $req_even = $connector->query($sql_even);

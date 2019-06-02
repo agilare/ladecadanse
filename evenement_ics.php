@@ -60,7 +60,7 @@ $even->setId($get['idE']);
 $even->load();
 
 // si idE ne correspond ࡡucune entrꥠdans la table
-if (!$even->getValues() || $even->getValue('statut') == 'inactif')
+if (!$even->getValues() || in_array($even->getValue('statut'), ['propose', 'inactif']))
 {
 
 header("HTTP/1.1 404 Not Found");

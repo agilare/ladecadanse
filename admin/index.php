@@ -324,13 +324,13 @@ while($tab_even = $connector->fetchArray($req_getEvenement))
 	echo afficher_debut_fin($tab_even['horaire_debut'], $tab_even['horaire_fin'], $tab_even['dateEvenement']);
 	
 	echo "</td>
-	<td>".$tab_icones_statut[$tab_even['statut']]."</td>";
+	<td style='text-align: center;'>".$tab_icones_statut[$tab_even['statut']]."</td>";
 
 	$datetime_dateajout = date_iso2app($tab_even['dateAjout']);
 	$tab_datetime_dateajout = explode(" ", $datetime_dateajout);
 	echo "<td>".$tab_datetime_dateajout[1]." ".$tab_datetime_dateajout[0]."</td>";       
         
-	$nom_auteur = "<i>Ancien membre</i>";
+	$nom_auteur = "-";
 
 	if ($tab_auteur = $connector->fetchArray($connector->query("SELECT pseudo FROM personne WHERE idPersonne=".$tab_even['idPersonne'])))
 	{

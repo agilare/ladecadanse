@@ -7,16 +7,21 @@ if (is_file("config/reglages.php"))
 require_once($rep_librairies."Sentry.php");
 $videur = new Sentry();
 
-if (!$videur->checkGroup(10))
-{
-	header("Location: login.php"); die();
-}
 require_once($rep_librairies.'ImageDriver.php');
 require_once($rep_librairies.'ImageDriver2.php');
 require_once($rep_librairies.'Validateur.php');
 
-$page_titre = "ajouter/modifier un événement";
-$page_description = "Formulaire d'ajout/modification d'un événement dans l'agenda";
+
+    
+$page_titre = "Proposer un événement";
+$page_description = "Proposer un événement pour l'agenda";
+
+if (isset($_SESSION['Sgroupe']))
+{
+    $page_titre = "ajouter/modifier un événement";
+    $page_description = "Formulaire d'ajout/modification d'un événement dans l'agenda";    
+}
+
 $extra_css = array("formulaires", "evenement_inc", "ajouterEvenement_formulaire", "default");
 $extra_js = array("chosen.jquery.min", "jquery.shiftcheckbox");
 
@@ -50,9 +55,6 @@ if (isset($_GET['idO']))
 	$get['idO'] = verif_get($_GET['idO'], "int", 1);
 }
 
-$isadmin = false;
-if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 4 ) { $isadmin = true; }
-
 
 /* VERIFICATION POUR MODIFICATION
 * Si c'est une modification et que la personne n'est pas l'auteur, ni du staff, ni lié au lieu de l'événement, ni lié par l'organisateur : stop
@@ -60,13 +62,13 @@ if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 4 ) { $isadmin = true
 if ($get['action'] != "ajouter" && $get['action'] != "insert")
 {
 
-	$req_lieu = $connector->query("SELECT idLieu FROM evenement WHERE idEvenement=".$get['idE']);
-	$tab_lieu = $connector->fetchArray($req_lieu);
+	$req_even_cur = $connector->query("SELECT idLieu, statut FROM evenement WHERE idEvenement=".$get['idE']);
+	$tab_even_cur = $connector->fetchArray($req_even_cur);
 
 	if (estAuteur($_SESSION['SidPersonne'], $get['idE'], "evenement") || $_SESSION['Sgroupe'] <= 6
-	 || (isset($_SESSION['Saffiliation_lieu']) && isset($tab_lieu['idLieu']) && $tab_lieu['idLieu'] == $_SESSION['Saffiliation_lieu'])
+	 || (isset($_SESSION['Saffiliation_lieu']) && isset($tab_even_cur['idLieu']) && $tab_even_cur['idLieu'] == $_SESSION['Saffiliation_lieu'])
 	|| est_organisateur_evenement($_SESSION['SidPersonne'], $get['idE'])
-	|| (isset($tab_lieu['idLieu']) && est_organisateur_lieu($_SESSION['SidPersonne'], $tab_lieu['idLieu']))
+	|| (isset($tab_even_cur['idLieu']) && est_organisateur_lieu($_SESSION['SidPersonne'], $tab_even_cur['idLieu']))
 	 )
 	{
 	}
@@ -80,7 +82,7 @@ if ($get['action'] != "ajouter" && $get['action'] != "insert")
 $verif = new Validateur();
 $champs = array("statut" => "", "genre" => "", "titre" => "", "dateEvenement" => "", "idLieu" => "",
  "idSalle" => "", "nomLieu" => "", "adresse" => "", "quartier" => "",  "localite_id" => "", "region" => "", "urlLieu" => "", 'organisateurs' => '', "description" => "", "ref" => "",
-  "horaire_debut" => "", "horaire_fin" => "", "horaire_complement" => "", "price_type" => "", "prix" => "", "prelocations" => "");
+  "horaire_debut" => "", "horaire_fin" => "", "horaire_complement" => "", "price_type" => "", "prix" => "", "prelocations" => "", "user_email" => "", "remarque" => "");
 $fichiers = array('flyer' => '', 'image' => '');
 $supprimer = array();
 $action_terminee = false;
@@ -127,11 +129,6 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 		$supprimer['image'] = $_POST['sup_image'];
 	}
 
-/* 	if (isset($_POST['sup_document']))
-	{
-		$supprimer['document'] = $_POST['sup_document'];
-	} */
-
 	/*
 	 * VERIFICATION DES CHAMPS ENVOYES par POST
 	 */
@@ -161,6 +158,11 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 	{
 		$champs['idSalle'] = 0;
 	}
+    
+	if ($champs['idLieu'] != '' && (!preg_match("/^[0-9]+$/", $champs['idLieu']) && !preg_match("/^[0-9]+_[0-9]+$/", $champs['idLieu'])))
+	{
+        $verif->setErreur("idLieu", "La valeur du lieu n'est pas au bon format");
+	}    
 
 	$verif->valider($champs['adresse'], "adresse", "texte", 2, 100, 0);
 	if (empty($champs['lien']) && !empty($champs['nomLieu']) && empty($champs['adresse']))
@@ -198,42 +200,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 		}		
 	}
 
-
-
-
-
 	$verif->valider($champs['description'], "description", "texte", 4, 10000, 0);
-
-	
-/* 	if ($get['action'] == "editer" || $get['action'] == 'update')
-	{
-		$sql = "
-		SELECT nom, organisateur.idOrganisateur AS idO 
-		FROM evenement_organisateur, organisateur 
-		WHERE organisateur.idOrganisateur=evenement_organisateur.idOrganisateur
-		AND idEvenement=".$get['idE'];
-		
-		$req = $connector->query($sql);
-		
-		//echo $sql;
-		while ($tab = $connector->fetchArray($req))
-		{
-			if (in_array($tab['idO'], $champs['organisateurs']))
-			{
-					
-				$verif->setErreur('doublon_organisateur', '<em>'.$tab['nom'].'</em> est déjà choisi comme organisateur');
-			}
-		}	
-	} */
-	
-	
-	/*
-	 * 1ère URL, au bon format
-	 */
-/* 	$verif->valider($champs['URL1'], "URL1", "texte", 5, 100, 0);
-	$verif->valider($champs['URL2'], "URL2", "texte", 5, 100, 0); */
-
-
 	$verif->validerFichier($fichiers['flyer'], "flyer", $glo_mimes_images_acceptees, 0);
 	$verif->validerFichier($fichiers['image'], "image", $glo_mimes_images_acceptees, 0);
 
@@ -259,51 +226,15 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 	$verif->valider($champs['prix'], "prix", "texte", 1, 100, 0);
 	$verif->valider($champs['prelocations'], "prelocations", "texte", 1, 100, 0);
 
-	//$verif->validerFichier($fichiers['document'], "document", $glo_mimes_documents_acceptes, 0);
-
 	$doc_desc_oblig = 0;
+    
+    if (!isset($_SESSION['Sgroupe']))
+    {
+        $verif->valider($champs['user_email'], "email", "email", 4, 250, 1);
+        $verif->valider($champs['description'], "description", "texte", 4, 10000, 0);        
+    }
 
-	if (!empty($fichiers['document']['name']))
-	{
-		$doc_desc_oblig = 1;
-	}
-	
-	//$verif->valider($champs['document_description'], "document_description", "texte", 2, 35, $doc_desc_oblig);
-
-
-	/*
-	 * En cas d'ajout, vérification si l'événement n'existe pas déjà dans les événements à venir et de la même
-	 * catégorie
-	 */
-	 
-	 /*
-	if ($get['action'] == 'insert')
-	{
-		$sql_getEven = "
-		SELECT titre, idLieu, idSalle, nomLieu, adresse, dateEvenement
-		FROM evenement
-		WHERE dateEvenement='".$connector->sanitize($date_iso)."'
-		AND genre='".$connector->sanitize($champs['genre'])."' AND statut='actif'";
-
-		$req_getEven = $connector->query($sql_getEven);
-
-		while($tab = $connector->fetchArray($req_getEven))
-		{
-			//printr($tab);
-			if (($tab['idLieu'] != 0 && $champs['idSalle'] == 0 && $champs['idLieu'] == $tab['idLieu']) )
-			{
-				$verif->setErreur('dejaPresent', "L'événement \"".$tab['titre']."\" a déjà lieu à cette endroit");
-			}
-			if ($champs['idSalle'] != 0 && $tab['idSalle'] == $champs['idSalle'])
-			{
-				$verif->setErreur('dejaPresent', "L'événement \"".$tab['titre']."\" a déjà lieu dans cette salle");
-			}
-		}
-
-	} //action == insert
-	*/
-
-	//printr($verif->getErreurs());
+    
 	/*
 	 * PAS D'ERREUR, donc ajout ou update executés
 	 */
@@ -311,7 +242,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 	{
 		//creation/nettoyage des valeurs à insérer dans la table
 
-		$champs['idPersonne'] = $_SESSION['SidPersonne'];
+		$champs['idPersonne'] = $_SESSION['SidPersonne'] ?? 0;
 		$champs['dateEvenement'] = date_app2iso($champs['dateEvenement']);
 
 		$descriptionOrig = $champs['description'];
@@ -354,7 +285,6 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 		if (!empty($champs['horaire_fin']))
 		{
 			$tab_horaire_fin = explode(":", $champs['horaire_fin']);
-			//print_r($tab_horaire_debut);
 			$sec_horaire_fin = $tab_horaire_fin[0] * 3600 + $tab_horaire_fin[1] * 60;
 			//TEST
 			//echo "sec_H:".$sec_horaire_debut;
@@ -373,10 +303,10 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 			$champs['horaire_fin'] = $lendemain_evenement." 06:00:01";
 		}
 
-		//dedoublonne la liste des orgas
+		//dedoublonne la liste des orgas et nettoye avec string -> int
 		if (isset($_POST['organisateurs']) && is_array($_POST['organisateurs']) && count($champs['organisateurs']) > 0)
 		{
-			$champs['organisateurs'] = array_unique($champs['organisateurs']);
+			$champs['organisateurs'] = array_map('intval', array_unique($champs['organisateurs']));
 		}
 		
 
@@ -393,43 +323,42 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 			$champs['region'] = $tab_lieu['region'];
 			$champs['urlLieu'] = $tab_lieu['URL'];
 		}
-                elseif (!empty($champs['localite_id']))
-                {    
-                    $loc_qua = explode("_", $champs['localite_id']);
-                    if (count($loc_qua) > 1)
-                    {
-                        $champs['localite_id'] =  $loc_qua[0];
-                        $champs['quartier'] = $loc_qua[1];
-                        $champs['region'] = 'ge';
-                    }
-                    else
-                    {
-                        $champs['quartier'] = ''; 
+        elseif (!empty($champs['localite_id']))
+        {    
+            $loc_qua = explode("_", $champs['localite_id']);
+            if (count($loc_qua) > 1)
+            {
+                $champs['localite_id'] =  $loc_qua[0];
+                $champs['quartier'] = $loc_qua[1];
+                $champs['region'] = 'ge';
+            }
+            else
+            {
+                $champs['quartier'] = ''; 
 
-                        if ($champs['localite_id'] == 'vd' || $champs['localite_id'] == 'rf' || $champs['localite_id'] == 'hs')
-                        {
-                            $champs['region'] = $champs['localite_id'];
-                            $champs['localite_id'] = 1;
-                        }
-                        elseif ($champs['localite_id'] == 529 )
-                        {
-                            $champs['region'] = 'ge';
-                                               
-
-                        }   
-                        else
-                        {
-                            $sql_lieu = "SELECT canton FROM localite WHERE id=".$connector->sanitize($champs['localite_id']);
-                            $req_lieu = $connector->query($sql_lieu);
-                            $tab_lieu = $connector->fetchArray($req_lieu);    
-                            $champs['region'] = $tab_lieu['canton'];
-                        }
-                    }
-                    
-               
-                    
+                if ($champs['localite_id'] == 'vd' || $champs['localite_id'] == 'rf' || $champs['localite_id'] == 'hs')
+                {
+                    $champs['region'] = $champs['localite_id'];
+                    $champs['localite_id'] = 1;
                 }
-
+                elseif ($champs['localite_id'] == 529 )
+                {
+                    $champs['region'] = 'ge';
+                }   
+                else
+                {
+                    $sql_lieu = "SELECT canton FROM localite WHERE id=".$connector->sanitize($champs['localite_id']);
+                    $req_lieu = $connector->query($sql_lieu);
+                    $tab_lieu = $connector->fetchArray($req_lieu);    
+                    $champs['region'] = $tab_lieu['canton'];
+                }
+            }  
+        }
+        
+        if (!isset($_SESSION['Sgroupe']))
+        {
+            $champs['statut'] = 'propose';
+        }        
 
 		/*
 		 * Préparation du nom du flyer et de l'image, par ex 3047_2006-02-20.jpg
@@ -496,50 +425,19 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 			{
 
 				$req_id = $connector->getInsertId();
-				$_SESSION['ajouterEvenement_flash_msg'] = "L'événement a été créé. <a href='agenda.php?courant=".$champs['dateEvenement']."#event-".$req_id."'>Voir dans l'agenda</a>";				
+                
+				$_SESSION['ajouterEvenement_flash_msg'] = "L'événement a été créé. <a href='agenda.php?courant=".$champs['dateEvenement']."#event-".$req_id."'>Voir dans l'agenda</a>";	
+                
+                if (!isset($_SESSION['Sgroupe']))
+                {
+                    $_SESSION['ajouterEvenement_flash_msg'] = "Merci pour votre proposition. Nous allons l'examiner et vous aurez une réponse dès qu'elle sera traitée";	
+                }      
 				
-/* 				msgOk("Événement \"".securise_string($champs['titre'])."\" ajouté");
-
-				if (!empty($champs['idLieu']))
-				{
-					echo '<p class="action_ajouter">
-					<a href="ajouterEvenement.php?idL='.$champs['idLieu'].'" title="Ajouter événement">
-					Ajouter un nouvel événement</a> dans le même lieu ?</p>';
-				} */
-
-				/*
-				* Suppression de tous les cache index, pour que l'heure de l'update soit mise à jour
-				*/
-/* 				if ($rc = opendir($cache_index)) {
-					while ($fichierIndex = readdir($rc)) {
-						@unlink($cache_index.$fichierIndex);
-					}
-					closedir($rc);
-				} */
-
-				/*
-				* Suppression du cache lieu de l'événement, ce qui force à un nouveau chargement de la fiche du lieu
-				*/
-/*  				if (!empty($lieu))
-					@unlink($cache_lieu.$lieu.".php");	 */
-
-				
-/*				foreach ($champs as $c)
-				{
-					$champs[$c] = "";
-				}*/
-
 				$action_terminee = true;
 
 			} else {
-
 				msgErreur("La requête INSERT dans 'evenement' a échoué");
-
 			}
-
-		/*
-		* Mise à jour de la base : UPDATE
-		*/
 		}
 		elseif ($get['action'] == 'update')
 		{
@@ -563,19 +461,12 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 							unlink($rep_images.$affFly['flyer']);
 							unlink($rep_images."s_".$affFly['flyer']);
 							unlink($rep_images."t_".$affFly['flyer']);
-							//TEST
-							//echo "<div class=\"msg\">Ancien flyer ".$affFly['flyer']." supprimé</div>";
-							//
 					}
-
-
 				}
 				else
 				{
 					msgErreur("La requête SELECT flyer a échoué");
-				}
-
-			
+				}	
 			}
 			
 			//si le champ "supprimer le flyer" est coché sans qu'un nouveau flyer soit remplacant
@@ -595,9 +486,6 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 						unlink($rep_images.$affFly['flyer']);
 						unlink($rep_images."s_".$affFly['flyer']);
 						unlink($rep_images."t_".$affFly['flyer']);
-						//TEST
-						//echo "<div class=\"msg\">Ancien flyer ".$affFly['flyer']." supprimé</div>";
-						//
 					}
 				}
 				else
@@ -625,8 +513,6 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 					{
 							unlink($rep_images.$affImg['image']);
 							unlink($rep_images."s_".$affImg['image']);
-							//TEST
-							//echo "<div class=\"msg\">Ancienne image ".$affImg['image']." supprimée</div>";
 					}
 				}
 				else
@@ -651,9 +537,6 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 					{
 						unlink($rep_images.$affimage['image']);
 						unlink($rep_images."s_".$affimage['image']);
-						//TEST
-						//echo "<div class=\"msg\">Ancien image ".$affimage['image']." supprimée</div>";
-						//
 					}
 				}
 				else
@@ -668,9 +551,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 				foreach ($supprimer['document'] as $nom_fichier)
 				{
 					$idF = reverse_mb_strrchr($nom_fichier, '.');
-					//TEST
-					//echo $idF;
-					//
+
 					$connector->query("DELETE FROM evenement_fichierrecu WHERE idEvenement=".$get['idE']." AND idFichierrecu=".$idF);
 
 					$req_nbf = $connector->query("SELECT COUNT(*) AS nb FROM evenement_fichierrecu WHERE idFichierrecu=".$idF);
@@ -681,7 +562,6 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 						$connector->query("DELETE FROM fichierrecu WHERE idFichierrecu=".$idF);
 						unlink($rep_fichiers_even.$nom_fichier);
 					}
-
 				}
 			}
 
@@ -700,10 +580,6 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 			$sql_update .= $sql_flyer.$sql_image."
 			WHERE idEvenement=".$get['idE'];
 
-			//TEST
-			//echo "<p>".$sql_update."</p>";
-			//
-
 			$req_update = $connector->query($sql_update);
 
 			/*
@@ -715,48 +591,58 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 				$lienLieu = '';
 				if (!empty($lieu))
 					$lienLieu = " au <a href=\"".$url_site."lieu.php?idLieu=".$lieu."\"> lieu ".$lieu."</a>";
-					
-/* 			if (!empty($supprimer['organisateur']))
-			{
-				foreach ($supprimer['organisateur'] as $o)
-				{
-					$sql = "DELETE FROM evenement_organisateur WHERE idEvenement=".$get['idE']." AND idOrganisateur=".$o;
-					//echo $sql;
-					$req = $connector->query($sql);
-					//echo $connector->getNumRows($req);
-				}
-			} */
 		
 				$sql = "DELETE FROM evenement_organisateur WHERE idEvenement=".$get['idE'];
 				$req = $connector->query($sql);			
-
-
-
 				$req_id = $get['idE'];
 
-				//msgOk("Événement modifié");
-				$_SESSION['ajouterEvenement_flash_msg'] = "L'événement a été modifié. <a href='agenda.php?courant=".$champs['dateEvenement']."#event-".$req_id."'>Voir dans l'agenda</a>";
+				$_SESSION['ajouterEvenement_flash_msg'] = "L'événement a été modifié.<br><a href='agenda.php?courant=".$champs['dateEvenement']."#event-".$req_id."'>Voir dans l'agenda</a>";
+                
+                // acceptation d'un even
+                if ($tab_even_cur['statut'] == 'propose')
+                {                 
+                    if ($champs['statut'] == 'actif')
+                    {
+                        $subject = "Votre événement \"".$champs['titre']."\" sur La décadanse";
+                        $contenu_message = "Bonjour,\n\n";
+                        $contenu_message .= "Merci de nous avoir proposé un événement, nous venons de le publier";
+                        $contenu_message .= "\n\n";
+                        $contenu_message .= $url_site."evenement.php?idE=".$req_id;
+                        $contenu_message .= "\n\n";
+                        $contenu_message .= "La décadanse";                        
+                    }
+                    else if ($champs['statut'] == 'inactif')
+                    {
+                        // refus...
+                    }
+                    
+                    if (ENV == 'prod')
+                    {
+                        require_once "Mail.php";
+                        $from = '"'."La décadanse".'" <'.$glo_email_info.'>';
+                        $to = $champs['user_email'];    
 
 
+                        $headers = array (
+                        "Content-Type" => "text/plain; charset=\"UTF-8\"",
+                        'From' => $from,
+                        'To' => $to,
+                        'Subject' => $subject);                    
+                        $smtp = Mail::factory('smtp',
+                        array ('host' => $glo_email_host,
+                        'auth' => true,
+                        'username' => $glo_email_username,
+                        'password' => $glo_email_password));
 
-				/*
-				* Suppression des caches
-				* -  si l'événement a lieu dans un lieu présent dans la base
-				* - de la fiche de l'événement en question
-				* - de tous les index
-				*/
-/*  				if (!empty($lieu))
-					@unlink($cache_lieu.$lieu.".php");
-
-				@unlink($cache_even.$get['idE'].".php");
-
-				if ($rc = opendir($cache_index)) {
-					while ($fichierIndex = readdir($rc)) {
-						@unlink($cache_index.$fichierIndex);
-					}
-					closedir($rc);
-				}	 */
-
+                        $mail = $smtp->send($to, $headers, $contenu_message);  
+                    }
+                    else
+                    {
+                        $_SESSION['ajouterEvenement_flash_msg'] .= "<br><pre>".$subject."</pre>"; 
+                        $_SESSION['ajouterEvenement_flash_msg'] .= "<br><pre>".$contenu_message."</pre>"; 
+                    }
+                }
+                    
 				$get['action'] = 'editer';
 
 				$action_terminee = true;
@@ -783,8 +669,9 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 			{
 				print_r($erreur_image);
 			}
-						if (!empty($msg2))
-			$champs['flyer'] = '';
+			
+            if (!empty($msg2))
+                $champs['flyer'] = '';
 		}
 
 		if (!empty($fichiers['image']['name']))
@@ -797,67 +684,6 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 			}
 			$champs['image'] = '';
 		}
-		
-
-		if (!empty($fichiers['document']['name']))
-		{
-
-
-			$sql_insert_attributs .= "dateAjout";
-			$sql_insert_valeurs .= "'".date("Y-m-d H:i:s")."'";
-
-			if ($get['action'] == "insert")
-			{
-				$id_element = $connector->getInsertId();
-			}
-			else
-			{
-				$id_element = $get['idE'];
-			}
-
-			$extension = mb_strrchr($fichiers['document']['name'], '.');
-
-			$sql_insert =
-			"INSERT INTO fichierrecu (idElement, type_element, description, mime, extension, type, dateAjout)
-			VALUES ('".$id_element."', 'evenement',
-			'".$connector->sanitize($champs['document_description'])."',
-			'".$connector->sanitize($fichiers['document']['type'])."',
-			'".$connector->sanitize(mb_substr($extension, 1))."', 'document', '".date("Y-m-d H:i:s")."')";
-
-			//TEST
-			//echo "<p>".$sql_insert."</p>";
-			//
-
- 			if ($connector->query($sql_insert))
-			{
-				//echo "fichier inseré";
-			}
-
-			$id_nouveau_fichier = $connector->getInsertId();
-
-			$sql_ins_ef = "INSERT INTO evenement_fichierrecu (idEvenement, idFichierrecu)
-			VALUES ('".$id_element."', '".$id_nouveau_fichier."')";
-
-			//TEST
-			//echo "<p>".$sql_ins_ef."</p>";
-			//
-
-			if ($connector->query($sql_ins_ef))
-			{
-
-			}
-
-			$champs['document'] = $id_nouveau_fichier.$extension;
-			//TEST
-			//echo "Transfert de ".$fichiers['document']['tmp_name']." vers ".$rep_fichiers_even.$champs['document'];
-			//
-			if ($copie_fichier = move_uploaded_file($fichiers['document']['tmp_name'], $rep_fichiers_even.$champs['document']))
-			{
-				//TEST
-				//echo $champs['document']." transféré";
-				//
-			}
-		}
 
 		if (isset($_POST['organisateurs']) && is_array($champs['organisateurs']))
 		{
@@ -865,13 +691,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 			{
 				if ($idOrg != 0)
 				{
-				$sql = "INSERT INTO evenement_organisateur (idEvenement, idOrganisateur) VALUES (".$req_id.", ".$idOrg.")";
-				//echo $sql;
-				
-					if ($connector->query($sql))
-					{
-						
-					}
+                    $sql = "INSERT INTO evenement_organisateur (idEvenement, idOrganisateur) VALUES (".$req_id.", ".$idOrg.")";				
+					$connector->query($sql);	
 				}
 			}
 		}
@@ -909,8 +730,14 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 		unset($_POST); // ?
         $logger->log('global', 'activity', "[ajouterEvenement] ".$get['action']." of \"".$champs['titre']."\" in ".$champs['nomLieu']." ".$url_site."evenement.php?idE=".$evenement['idEvenement'], Logger::GRAN_YEAR);                
 
-		header("Location: evenement.php?idE=".$req_id); die();
-
+        if (isset($_SESSION['Sgroupe']))
+        {
+            header("Location: evenement.php?idE=".$req_id); die();
+        }
+        else
+        {
+            header("Location: index.php"); die();    
+        }
 
 	/*
 	 * En cas d'erreur, réinitialisation des images pour qu'elles se réaffichent dans le formulaire
@@ -931,7 +758,6 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 include("includes/header.inc.php");
 ?>
 
-<!-- D Contenu -->
 <div id="contenu" class="colonne ajouterEvenement">
 
 <?php
@@ -955,7 +781,7 @@ if (!$action_terminee)
         if ($_SESSION['Sgroupe'] <= 10)
         {
             $req_even = $connector->query("SELECT idLieu, idSalle, idPersonne, statut, titre, genre,
-            dateEvenement, nomLieu, adresse, urlLieu, quartier, localite_id, region, description, flyer, image, prix, price_type, horaire_debut, horaire_fin, horaire_complement, URL1, ref, prelocations FROM evenement WHERE idEvenement =".$get['idE']);
+            dateEvenement, nomLieu, adresse, urlLieu, quartier, localite_id, region, description, flyer, image, prix, price_type, horaire_debut, horaire_fin, horaire_complement, URL1, ref, prelocations, remarque, user_email FROM evenement WHERE idEvenement =".$get['idE']);
 
             if ($affEven = $connector->fetchArray($req_even))
             {
@@ -998,7 +824,6 @@ if (!$action_terminee)
             //Menu d'actions
             if ($_SESSION['Sgroupe'] <= 1)
             {
-
                 $aff_actions .= "<li class=\"action_supprimer\">
                 <a href=\"".$url_site."supprimer.php?action=confirmation&amp;type=evenement&amp;id=".$get['idE']."\" title=\"Supprimer l'événement\" onclick=\"return confirm('Voulez-vous vraiment supprimer cet événement ?');\">
                 Supprimer</a>
@@ -1019,20 +844,19 @@ if (!$action_terminee)
 	 */
 	if ($get['action'] == 'update' || $get['action'] == 'editer')
 	{
-$aff_titre .= '<h2>Modifier <a style="font-size:0.7em" href="'.$url_site.'evenement.php?idE='.$get['idE'].'" title="Fiche de l\'événement" >'.$champs['titre'].'</a></h2>';
+        $aff_titre .= '<h2>Modifier <a style="font-size:0.7em" href="'.$url_site.'evenement.php?idE='.$get['idE'].'" title="Fiche de l\'événement" >'.$champs['titre'].'</a></h2>';
 		$act = "update&amp;idE=".$get['idE'];
 	}
 	else
 	{
-		$aff_titre .= '<h2>Ajouter un événement</h2>';
+        $aff_titre .= !isset($_SESSION['Sgroupe']) ? '<h2>Proposer un événement</h2>':'<h2>Ajouter un événement</h2>';
 		$act = 'insert';
 	}
 
-echo $aff_titre.$aff_actions;
-
+    echo $aff_titre.$aff_actions;
 ?>
 
-<div class="spacer"></div>
+    <div class="spacer"></div>
 </div>
 
 <?php
@@ -1041,519 +865,522 @@ if ($verif->nbErreurs() > 0)
 	msgErreur("Il y a ".$verif->nbErreurs()." erreur(s).");
 	//print_r($verif->getErreurs());
 }
-
 ?>
-
 
 <form method="post" id="ajouter_editer" class="submit-freeze-wait" enctype="multipart/form-data" action="<?php echo basename(__FILE__)."?action=".$act ?>">
-<h2>Avant de commencer veillez svp à ce que votre événement :</h2>
-<ul style="line-height:1.2em">
-    <li style="margin:6px 2px;">n’est pas déjà présent dans l’<a href="agenda.php" target="_blank">agenda</a></li>
-    <li style="margin:6px 2px;">respecte notre <b><a href="charte-editoriale.php" target="_blank">charte&nbsp;éditoriale</a></b></li>
-</ul>
-<h2 style="margin:20px 0 5px 0;">L’événement</h2>
-<p style="margin:5px 0;">* indique un champ obligatoire</p>
+    <h2>Avant de commencer veillez svp à ce que votre événement :</h2>
+    <ul style="line-height:1.2em">
+        <li style="margin:6px 2px;">n’est pas déjà présent dans l’<a href="agenda.php" target="_blank">agenda</a></li>
+        <li style="margin:6px 2px;">respecte notre <b><a href="charte-editoriale.php" target="_blank">charte&nbsp;éditoriale</a></b></li>
+    </ul>
+    <h2 style="margin:20px 0 5px 0;">L’événement</h2>
+    <p style="margin:5px 0;">* indique un champ obligatoire</p>
 
-<?php if ($get['action'] == "editer" || $get['action'] == "update")
-{?>
-<p class="piedForm">
-<input type="hidden" name="formulaire" value="ok" />
-<input type="submit" value="Enregistrer" class="submit submit-big" />
-</p>
-<?php } ?>
-
-
-<?php
-echo $verif->getHtmlErreur('titreIdentique');
-?>
-
-<fieldset>
-<legend>Catégorie*</legend>
-
-<ul class="radio" style="font-size: 1.15em;">
-<?php
-foreach ($glo_tab_genre as $k => $v)
-{
-	$coche = '';
-	if (strcmp($k, $champs['genre']) == 0)
-	{
-		$coche = 'checked="checked"';
-	}
-	
-	$required = '';
-	if ($k === 'fête')
-    {
-		$required = ' required';
-        $v = '<span class="tooltip">fêtes<span class="tooltiptext">Inclut les soirées, les concerts, etc.</span></span>';
-    }
-	echo '<li class="listehoriz"><input type="radio" name="genre" value="'.$k.'" '.$coche.' id="genre_'.$k.'"  class="radio_horiz" '.$required.' /><label class="continu" for="genre_'.$k.'">'.$v.'</label></li>';
-	
-}
-?>
-</ul>
-<?php
-echo $verif->getHtmlErreur("genre");
-?>
-</fieldset>
-
-<fieldset>
-<legend>Date & horaire</legend>
-
-<div>
-    <label for="dateEvenement">Date*</label><input type="text" name="dateEvenement" id="dateEvenement" size="8" value="<?php echo securise_string($champs['dateEvenement']); ?>" class="datepicker" placeholder="jj.mm.aaaa" required />
-<?php
-echo $verif->getHtmlErreur('dateEvenement');
-?>
-</div>
-<div id="calendarDiv"></div>
-
-<?php if (in_array($get['action'], ["ajouter", "insert"])) { ?>
-<div class="guideChamp">Si l’événement se répète sur plusieurs dates, vous pouvez l’ajouter à d'autres dates avec le bouton <b>Copier</b>, à la page suivante</div>
-    <div class="spacer"></div>
-<?php } ?>
-    <!-- HORAIRE -->
-
-    <p>
-        <label for="horaire_debut"><span class="tooltip">Début<span class="tooltiptext">Jusqu’à 06:00, le début sera considéré faisant partie du jour de l’événement</span></span> </label>
-        <input type="time" name="horaire_debut" id="horaire_debut" size="5" value="<?php echo securise_string($champs['horaire_debut']) ?>" />
-
-        <label for="horaire_fin" class="continu">Fin</label>
-        <input type="time" name="horaire_fin" id="horaire_fin" size="5" value="<?php echo securise_string($champs['horaire_fin']) ?>" />
-
-        <?php
-        echo $verif->getHtmlErreur('horaire_debut');
-        echo $verif->getHtmlErreur('horaire_fin');
-        ?>
+    <?php if ($get['action'] == "editer" || $get['action'] == "update")
+    {?>
+    <p class="piedForm">
+    <input type="hidden" name="formulaire" value="ok" />
+    <input type="submit" value="Enregistrer" class="submit submit-big" />
     </p>
+    <?php } ?>
 
-    <div>
-    <label for="horaire_complement">Complément</label>
-    <input type="text" name="horaire_complement" id="horaire_complement" size="40" maxlength="100" value="<?php echo securise_string($champs['horaire_complement']) ?>" />
-    <?php
-    echo $verif->getHtmlErreur('horaire_complement');
-    ?>
-    </div>
-    <p>
-    <?php
-    echo $verif->getHtmlErreur('horaire');
-    ?></p>
-</fieldset>
+    <fieldset>
+        <legend>Catégorie*</legend>
 
-<fieldset>
-    <legend>Lieu*</legend>
-    <p>
-    <label for="idLieu">Dans la liste</label>
-    <select name="idLieu" id="idLieu" class="chosen-select" title="Un lieu dans base de données de La décadanse" onfocus="this.className='focus';" style="max-width:300px"  data-placeholder="Tapez le nom du lieu">
-    <?php
-
-    /*
-     * Si l'ajout d'événement se fait depuis une page 'lieu', le formulaire est
-     * pré-complété pour l'horaire et le prix
-     */
-    if (($get['action'] == 'ajouter' || $get['action'] == 'insert') && !empty($get['idL']))
-    {
-        $champs['idLieu'] = $get['idL'];
-        $lieuTrouve = $connector->fetchArray($connector->query("SELECT horaire_evenement, entree FROM lieu WHERE idLieu=".$get['idL']));
-
-        //$champs['horaire_debut'] = $lieuTrouve['horaire_ev'];
-        $champs['horaire_complement'] = $lieuTrouve['horaire_evenement'];
-        $champs['prix'] = $lieuTrouve['entree'];
-
-    }
-
-
-    $sql_lieu_excl_fr = '';
-    $sql_localite_excl_fr = '';
-    if ($get['action'] == 'ajouter' || $get['action'] == 'insert') 
-    {
-        $sql_lieu_excl_fr = " AND region != 'fr' ";
-        $sql_localite_excl_fr = " AND canton != 'fr' ";
-    }    
-
-
-    //Menu des lieux actifs de la base
-    echo "<option value=\"\"></option>";
-    $req_lieux = $connector->query("
-    SELECT idLieu, nom FROM lieu WHERE statut='actif' ".$sql_lieu_excl_fr." ORDER BY TRIM(LEADING 'L\'' FROM (TRIM(LEADING 'Les ' FROM (TRIM(LEADING 'La ' FROM (TRIM(LEADING 'Le ' FROM nom))))))) COLLATE utf8_general_ci"
-     );
-
-
-    while ($lieuTrouve = $connector->fetchArray($req_lieux))
-    {
-        echo "<option ";
-
-        $nom_lieu = $lieuTrouve['nom'];
-        if (preg_match("/^(Le |La |Les |L')(.*)/", $lieuTrouve['nom'], $matches))
+        <ul class="radio" style="font-size: 1.15em;">
+        <?php
+        foreach ($glo_tab_genre as $k => $v)
         {
-            $nom_lieu = $matches[2].', '.$matches[1];
+            $coche = '';
+            if (strcmp($k, $champs['genre']) == 0)
+            {
+                $coche = 'checked="checked"';
+            }
+
+            $required = '';
+            if ($k === 'fête')
+            {
+                $required = ' required';
+                $v = '<span class="tooltip">fêtes<span class="tooltiptext">Inclut les soirées, les concerts, etc.</span></span>';
+            }
+            echo '<li class="listehoriz"><input type="radio" name="genre" value="'.$k.'" '.$coche.' id="genre_'.$k.'"  class="radio_horiz" '.$required.' /><label class="continu" for="genre_'.$k.'">'.$v.'</label></li>';
+
+        }
+        ?>
+        </ul>
+        <?php
+        echo $verif->getHtmlErreur("genre");
+        ?>
+    </fieldset>
+
+    <fieldset>
+        <legend>Date & horaire</legend>
+
+        <div>
+            <label for="dateEvenement">Date*</label><input type="text" name="dateEvenement" id="dateEvenement" size="9" value="<?php echo securise_string($champs['dateEvenement']); ?>" class="datepicker" placeholder="jj.mm.aaaa" required />
+        <?php
+        echo $verif->getHtmlErreur('dateEvenement');
+        ?>
+        </div>
+        <div id="calendarDiv"></div>
+
+        <?php if (in_array($get['action'], ["ajouter", "insert"])) { ?>
+        
+        <div class="guideChamp">
+            <?php if (isset($_SESSION['Sgroupe'])) { ?>
+            Si l’événement se répète sur plusieurs dates, vous pouvez l’ajouter à d'autres dates avec le bouton <b>Copier</b>, à la page suivante
+            <?php } else { ?>
+            Si l’événement se répète sur plusieurs dates, merci de nous indiquer précisément les jours et horaires dans le <a href="#remarque">champ Remarque</a> ci-dessous.
+            <?php } ?>
+        </div>
+            <div class="spacer"></div>
+        <?php } ?>
+
+        <p>
+            <label for="horaire_debut"><span class="tooltip">Début<span class="tooltiptext">Jusqu’à 06:00, le début sera considéré faisant partie du jour de l’événement</span></span> </label>
+            <input type="time" name="horaire_debut" id="horaire_debut" size="5" value="<?php echo securise_string($champs['horaire_debut']) ?>" />
+
+            <label for="horaire_fin" class="continu">Fin</label>
+            <input type="time" name="horaire_fin" id="horaire_fin" size="5" value="<?php echo securise_string($champs['horaire_fin']) ?>" />
+
+            <?php
+            echo $verif->getHtmlErreur('horaire_debut');
+            echo $verif->getHtmlErreur('horaire_fin');
+            ?>
+        </p>
+
+        <div>
+            <label for="horaire_complement">Complément</label>
+            <input type="text" name="horaire_complement" id="horaire_complement" size="40" maxlength="100" value="<?php echo securise_string($champs['horaire_complement']) ?>" />
+            <?php
+            echo $verif->getHtmlErreur('horaire_complement');
+            ?>
+        </div>
+        <p>
+        <?php
+        echo $verif->getHtmlErreur('horaire');
+        ?></p>
+    </fieldset>
+
+    <fieldset>
+        <legend>Lieu*</legend>
+        <p>
+        <label for="idLieu">Dans la liste</label>
+        <select name="idLieu" id="idLieu" class="chosen-select" title="Un lieu dans base de données de La décadanse" onfocus="this.className='focus';" style="max-width:300px"  data-placeholder="Tapez le nom du lieu">
+        <?php
+
+        /*
+         * Si l'ajout d'événement se fait depuis une page 'lieu', le formulaire est
+         * pré-complété pour l'horaire et le prix
+         */
+        if (($get['action'] == 'ajouter' || $get['action'] == 'insert') && !empty($get['idL']))
+        {
+            $champs['idLieu'] = $get['idL'];
+            $lieuTrouve = $connector->fetchArray($connector->query("SELECT horaire_evenement, entree FROM lieu WHERE idLieu=".$get['idL']));
+
+            //$champs['horaire_debut'] = $lieuTrouve['horaire_ev'];
+            $champs['horaire_complement'] = $lieuTrouve['horaire_evenement'];
+            $champs['prix'] = $lieuTrouve['entree'];
 
         }
 
-        if ($lieuTrouve['idLieu'] == $champs['idLieu'])
+
+        $sql_lieu_excl_fr = '';
+        $sql_localite_excl_fr = '';
+        if ($get['action'] == 'ajouter' || $get['action'] == 'insert') 
         {
-            echo "selected=\"selected\" ";
-        }
+            $sql_lieu_excl_fr = " AND region != 'fr' ";
+            $sql_localite_excl_fr = " AND canton != 'fr' ";
+        }    
 
-        echo "value=\"".$lieuTrouve['idLieu']."\">".$nom_lieu."</option>";
+
+        //Menu des lieux actifs de la base
+        echo "<option value=\"\"></option>";
+        $req_lieux = $connector->query("
+        SELECT idLieu, nom FROM lieu WHERE statut='actif' ".$sql_lieu_excl_fr." ORDER BY TRIM(LEADING 'L\'' FROM (TRIM(LEADING 'Les ' FROM (TRIM(LEADING 'La ' FROM (TRIM(LEADING 'Le ' FROM nom))))))) COLLATE utf8_general_ci"
+         );
 
 
-        $sql_salle = "select * from salle where idLieu=".$lieuTrouve['idLieu'];
-        $req_salle = $connector->query($sql_salle);
-        while ($tab_salle = $connector->fetchArray($req_salle))
-
+        while ($lieuTrouve = $connector->fetchArray($req_lieux))
         {
             echo "<option ";
-            if ($champs['idSalle'] != 0 && $tab_salle['idSalle'] == $champs['idSalle'])
+
+            $nom_lieu = $lieuTrouve['nom'];
+            if (preg_match("/^(Le |La |Les |L')(.*)/", $lieuTrouve['nom'], $matches))
+            {
+                $nom_lieu = $matches[2].', '.$matches[1];
+
+            }
+
+            if ($lieuTrouve['idLieu'] == $champs['idLieu'])
             {
                 echo "selected=\"selected\" ";
             }
-            echo " style=\"font-style:italic;color:#444;\" value=".$lieuTrouve['idLieu']."_".$tab_salle['idSalle'].">".$nom_lieu."&nbsp;– ".$tab_salle['nom']."</option>";
 
+            echo "value=\"".$lieuTrouve['idLieu']."\">".$nom_lieu."</option>";
+
+
+            $sql_salle = "select * from salle where idLieu=".$lieuTrouve['idLieu'];
+            $req_salle = $connector->query($sql_salle);
+            while ($tab_salle = $connector->fetchArray($req_salle))
+
+            {
+                echo "<option ";
+                if ($champs['idSalle'] != 0 && $tab_salle['idSalle'] == $champs['idSalle'])
+                {
+                    echo "selected=\"selected\" ";
+                }
+                echo " style=\"font-style:italic;color:#444;\" value=".$lieuTrouve['idLieu']."_".$tab_salle['idSalle'].">".$nom_lieu."&nbsp;– ".$tab_salle['nom']."</option>";
+
+            }
         }
-    }
-    ?>
-    </select>
-    <!--<div class="guideChamp" style="font-size:0.9em"><span style="background:yellow">Nouveau :</span> tapez le nom du lieu dans le champ libre et accédez y plus rapidement</div>-->
-    <?php
-    echo $verif->getHtmlErreur("idLieu");
-    echo $verif->getHtmlErreur("dejaPresent");
-    ?>
-    </p>
-
-    <p class="entreLabels" style="width:auto;font-size: 1em;"><strong>Sinon :</strong></p>
-    <div class="spacer"></div>
-    <div style="margin-left:4.5em">
-    <p>
-    <?php
-    $tab_nomLieu_label = array("for" => "nomLieu");
-    echo form_label($tab_nomLieu_label, "Nom du lieu");
-    echo $verif->getHtmlErreur("nomLieuIdentique");
-
-    $tab_nomLieu = array("type" => "text", "name" => "nomLieu", "id" => "nomLieu", "size" => "35",
-     "maxlength" => "60", "value" => "",
-     "onfocus" => "this.className='focus';", "onblur" => "this.className='normal';");
-    if (empty($champs['idLieu']))
-    {
-        $tab_nomLieu['value'] = securise_string($champs['nomLieu']);
-    }
-    echo form_input($tab_nomLieu);
-    echo $verif->getHtmlErreur("nomLieu");
-    ?>
-    </p>
-
-    <p>
-        <label for="adresse">Adresse</label>
-        <?php
-        echo $verif->getHtmlErreur("adresseIdentique");
         ?>
+        </select>
+        <!--<div class="guideChamp" style="font-size:0.9em"><span style="background:yellow">Nouveau :</span> tapez le nom du lieu dans le champ libre et accédez y plus rapidement</div>-->
+        <?php
+        echo $verif->getHtmlErreur("idLieu");
+        echo $verif->getHtmlErreur("dejaPresent");
+        ?>
+        </p>
 
-        <input type="text" name="adresse" id="adresse" size="40" maxlength="100" title="rue, no" value="<?php if (empty($champs['idLieu'])) { echo securise_string($champs['adresse']); } ?>" onfocus="this.className='focus';" onblur="this.className='normal';" />
-    <?php
-    echo $verif->getHtmlErreur("adresse");
-    echo $verif->getHtmlErreur("doublonLieux");
+        <p class="entreLabels" style="width:auto;font-size: 1em;"><strong>Sinon :</strong></p>
+        <div class="spacer"></div>
+        <div style="margin-left:4.5em">
+        <p>
+        <?php
+        $tab_nomLieu_label = array("for" => "nomLieu");
+        echo form_label($tab_nomLieu_label, "Nom du lieu");
+        echo $verif->getHtmlErreur("nomLieuIdentique");
 
-
-    //echo "localite_id : ".$champs['localite_id'].", quartier : ".$champs['quartier'];
-    ?>
-    </p>
-    <p>
-        <label for="localite">Localité/quartier</label>&nbsp;<select name="localite_id" id="localite" class="chosen-select" style="max-width:300px;">
-    <?php
-    echo "<option value=\"0\">&nbsp;</option>";
-    $req = $connector->query("
-    SELECT id, localite, canton FROM localite WHERE id!=1 $sql_localite_excl_fr ".$sql_prov." ORDER BY canton, localite "
-     );
-
-    $select_canton = '';
-    while ($tab = $connector->fetchArray($req))
-    {
-
-        if ($tab['canton'] != $select_canton)
-        {       
-            if (!empty($select_canton))
-                echo "</optgroup>"; 
-
-            echo "<optgroup label='".strtoupper($tab['canton'])."'>"; // ".$glo_regions[strtolower($tab['canton'])]."
+        $tab_nomLieu = array("type" => "text", "name" => "nomLieu", "id" => "nomLieu", "size" => "35",
+         "maxlength" => "60", "value" => "",
+         "onfocus" => "this.className='focus';", "onblur" => "this.className='normal';");
+        if (empty($champs['idLieu']))
+        {
+            $tab_nomLieu['value'] = securise_string($champs['nomLieu']);
         }
-        echo "<option ";
+        echo form_input($tab_nomLieu);
+        echo $verif->getHtmlErreur("nomLieu");
+        ?>
+        </p>
 
-        if (empty($champs['idLieu']) && ($champs['localite_id'] == $tab['id'] && empty($champs['quartier'])) || ((isset($_POST['localite_id']) && $tab['id'] == $_POST['localite_id'])))
+        <p>
+            <label for="adresse">Adresse</label>
+            <?php
+            echo $verif->getHtmlErreur("adresseIdentique");
+            ?>
+
+            <input type="text" name="adresse" id="adresse" size="40" maxlength="100" title="rue, no" value="<?php if (empty($champs['idLieu'])) { echo securise_string($champs['adresse']); } ?>" onfocus="this.className='focus';" onblur="this.className='normal';" />
+        <?php
+        echo $verif->getHtmlErreur("adresse");
+        echo $verif->getHtmlErreur("doublonLieux");
+
+
+        //echo "localite_id : ".$champs['localite_id'].", quartier : ".$champs['quartier'];
+        ?>
+        </p>
+        <p>
+            <label for="localite">Localité/quartier</label>&nbsp;<select name="localite_id" id="localite" class="chosen-select" style="max-width:300px;">
+        <?php
+        echo "<option value=\"0\">&nbsp;</option>";
+        $req = $connector->query("
+        SELECT id, localite, canton FROM localite WHERE id!=1 $sql_localite_excl_fr ".$sql_prov." ORDER BY canton, localite "
+         );
+
+        $select_canton = '';
+        while ($tab = $connector->fetchArray($req))
         {
-            echo 'selected="selected" ';
-        }	
 
-        echo "value=\"".$tab['id']."\">".$tab['localite']."</option>";
+            if ($tab['canton'] != $select_canton)
+            {       
+                if (!empty($select_canton))
+                    echo "</optgroup>"; 
 
-        // Genève quartiers    
-        if ($tab['id'] == 44)
-        {
-            // si erreur formulaire
-            $champs_quartier = '';
-            $loc_qua = explode("_", $champs['localite_id']);
-            if (!empty($loc_qua[1]))
-               $champs_quartier = $loc_qua[1];
+                echo "<optgroup label='".strtoupper($tab['canton'])."'>"; // ".$glo_regions[strtolower($tab['canton'])]."
+            }
+            echo "<option ";
 
-            // si chargement even existant
-            if (!empty($champs['quartier']))
-                $champs_quartier = $champs['quartier'];
+            if (empty($champs['idLieu']) && ($champs['localite_id'] == $tab['id'] && empty($champs['quartier'])) || ((isset($_POST['localite_id']) && $tab['id'] == $_POST['localite_id'])))
+            {
+                echo 'selected="selected" ';
+            }	
 
-            foreach ($glo_tab_quartiers2['ge'] as $no => $quartier)
+            echo "value=\"".$tab['id']."\">".$tab['localite']."</option>";
+
+            // Genève quartiers    
+            if ($tab['id'] == 44)
+            {
+                // si erreur formulaire
+                $champs_quartier = '';
+                $loc_qua = explode("_", $champs['localite_id']);
+                if (!empty($loc_qua[1]))
+                   $champs_quartier = $loc_qua[1];
+
+                // si chargement even existant
+                if (!empty($champs['quartier']))
+                    $champs_quartier = $champs['quartier'];
+
+                foreach ($glo_tab_quartiers2['ge'] as $no => $quartier)
+               {  
+                       echo "<option ";
+
+                       if (empty($champs['idLieu']) && $champs_quartier == $quartier)
+                       {
+                               echo 'selected="selected" ';
+                       }	
+
+                       echo " value=\"44_".$quartier."\">Genève - ".$quartier."</option>";
+
+               }       
+
+            }        
+
+             $select_canton = $tab['canton'];
+        }
+        ?>
+            <optgroup label="Ailleurs">    
+        <?php
+            foreach ($glo_tab_ailleurs as $id => $nom)
            {  
                    echo "<option ";
 
-                   if (empty($champs['idLieu']) && $champs_quartier == $quartier)
+                   if (empty($champs['idLieu']) && ($champs['region'] == $id) || ((isset($_POST['localite_id']) && $id == $_POST['localite_id']))) // $form->getValeur('quartier') 
                    {
-                           echo 'selected="selected" ';
+                           echo ' selected="selected" ';
                    }	
 
-                   echo " value=\"44_".$quartier."\">Genève - ".$quartier."</option>";
+                   echo " value=\"".$id."\">".$nom."</option>";
 
-           }       
-
-        }        
-
-         $select_canton = $tab['canton'];
-    }
-    ?>
-        <optgroup label="Ailleurs">    
-    <?php
-        foreach ($glo_tab_ailleurs as $id => $nom)
-       {  
-               echo "<option ";
-
-               if (empty($champs['idLieu']) && ($champs['region'] == $id) || ((isset($_POST['localite_id']) && $id == $_POST['localite_id']))) // $form->getValeur('quartier') 
-               {
-                       echo ' selected="selected" ';
-               }	
-
-               echo " value=\"".$id."\">".$nom."</option>";
-
-       }  
-    ?>
-        </optgroup>    
-    </select>
-    <?php
-    echo $verif->getHtmlErreur("localite_id");
-    ?>
-    </p>
-
-    <p>
-        <label for="urlLieu">Site web</label>
-        <input type="text" name="urlLieu" id="urlLieu" size="40" maxlength="80" title="URL du lieu" value="<?php if (empty($champs['idLieu'])) { echo securise_string($champs['urlLieu']); } ?>" onfocus="this.className='focus';" onblur="this.className='normal';" />
-    <?php
-    echo $verif->getHtmlErreur("urlLieu");
-    ?>
-    </p>
-    </div>
-</fieldset>
-
-<!-- CHAMPS POUR L'EVENEMENT -->
-<fieldset>
-<legend>L’événement</legend>
-
-<p>
-<label for="titre">Titre*</label>
-<input type="text" name="titre" id="titre" maxlength="80" title="titre de l'événement" value="<?php echo securise_string($champs['titre']) ?>" required />
-<?php
-echo $verif->getHtmlErreur("titre");
-?>
-</p>
-<!-- DESCRIPTION -->
-
-<p>
-<label for="description">Description</label>
-<?php
-$id_textarea = "description";
-?>
-
-<textarea name="description" id="description" cols="50" rows="20">
-<?php echo securise_string($champs['description']) ?></textarea>
-<?php
-echo $verif->getHtmlErreur('description');
-?>
-</p>
-</fieldset>
-
-
-<fieldset id="references">
-<legend>Références</legend>
-<p>
-<label for="ref">Sites web</label>
-<input type="text" name="ref" id="ref" title="Organisateur, site web de l'événement, contact..." value="<?php echo securise_string($champs['ref']); ?>" placeholder="ur1;url2; etc." />
-</p>
-<div class="guideChamp">Site de l’événement, page Facebook, organisateur (s'il n'est pas présent ci-dessous), etc. Séparer chaque élément par un point-virgule.</div>
-
-<div class="spacer"></div>
-
-<?php
-$tab_organisateurs_even = array();
-if ($get['action'] == "editer" || $get['action'] == "update")
-{
-
-	$sql = "SELECT organisateur.idOrganisateur, nom
-FROM organisateur, evenement_organisateur
-WHERE evenement_organisateur.idEvenement=".$get['idE']." AND
- organisateur.idOrganisateur=evenement_organisateur.idOrganisateur
- ORDER BY date_ajout DESC";
-
- $req = $connector->query($sql);
-
-	if ($connector->getNumRows($req))
-	{
-		while ($tab = $connector->fetchArray($req))
-		{
-			$tab_organisateurs_even[] = $tab['idOrganisateur'];
-		}
-	}
-
-}
-?><?php
-echo $verif->getHtmlErreur("doublon_organisateur");
-?>
-<p>
-    <label for="organisateurs">Organisateur(s) de l’événement</label>
-    <select name="organisateurs[]" id="organisateurs" data-placeholder="Tapez les noms des organisateurs" class="chosen-select" multiple style="max-width:350px;">
-<?php
-echo "<option value=\"0\">&nbsp;</option>";
-$req = $connector->query("
-SELECT idOrganisateur, nom FROM organisateur WHERE statut='actif' ORDER BY TRIM(LEADING 'L\'' FROM (TRIM(LEADING 'Les ' FROM (TRIM(LEADING 'La ' FROM (TRIM(LEADING 'Le ' FROM nom))))))) COLLATE utf8_general_ci"
- );
-
-while ($tab = $connector->fetchArray($req))
-{
-	echo "<option ";
-	if ((isset($_POST['organisateurs']) && in_array($tab['idOrganisateur'], $_POST['organisateurs'])) || in_array($tab['idOrganisateur'], $tab_organisateurs_even))
-	{
-		echo 'selected="selected" ';
-	}
-	echo "value=\"".$tab['idOrganisateur']."\">".$tab['nom']."</option>";
-}
-?>
-</select>
-<div class="guideChamp">L’événement figurera dans la page de ces <a href="organisateurs.php" target="_blank">organisateurs</a>. Si vous souhaitez que votre organisation soit listée, <a href="contacteznous.php" target='_blank'>demandez-nous</a></div>
-</p>
-</fieldset>
-
-<fieldset>
-    <legend>Entrée</legend>
-
-
-<?php if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] < 6 ) { ?>
-<?php
-$price_types = ['unknown' => 'inconnu', 'gratis' => 'entrée libre', 'asyouwish' => 'prix libre', 'chargeable' => 'payant'];
-?>
-    <ul class="radio" style="list-style-type: none">
-        <?php foreach ($price_types as $pt => $label)
-        {
-            ?>
-        <li><label class="listehoriz" style="float: none"><input class="precisions" type="radio" name="price_type" value="<?php echo $pt; ?>" <?php 
-        if ($pt == $champs['price_type'] || 
-                ($pt == 'gratis' && !empty($champs['prix']) && strstr($champs['prix'], 'entrée libre')) || 
-                ($pt == 'asyouwish' && !empty($champs['prix']) && strstr($champs['prix'], 'prix libre'))) { ?> checked <?php } ?>> <?php echo $label ?></label></li>
-<?php
-        }
-?>
-    </ul>
-<?php } ?>
-
-    <div id="prix-precisions" <?php 
-    if ($_SESSION['Sgroupe'] >= 6  || ($get['action'] == "editer" || $get['action'] == "update") 
-            && (!empty($champs['prix']) || (!empty($champs['price_type']) && ($champs['price_type'] == 'asyouwish' || $champs['price_type'] == 'chargeable') ))
-            ) { ?> style="display:block" <?php } ?>>
-<p>
-<label for="prix">Prix</label>
-            <input type="text" name="prix" id="prix" size="50" maxlength="100" value="<?php echo securise_string($champs['prix']) ?>" />
-<?php
-echo $verif->getHtmlErreur('prix');
-?>
-        </p>    
-        <?php if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] > 6 ) { ?>
-<div class="guideChamp">Vous pouvez mettre seulement <strong>0</strong> si l'entrée est libre.</div>
-        <?php } ?>   
-        <p>
-<label for="prelocations">Prélocations</label>
-            <input type="text" name="prelocations" id="prelocations" size="50" maxlength="150" value="<?php echo securise_string($champs['prelocations']) ?>" />
-<?php
-echo $verif->getHtmlErreur('prelocations');
-?>
-        </p>
-</div>
-</fieldset>
-
-
-<fieldset>
-    <legend>Images</legend>
-    <div style="margin-left: 0.8em;font-weight: bold">Formats JPEG, PNG ou GIF; max. 2 Mo</div>
-    <p>
-    <label for="flyer">Affiche/flyer</label>
-    <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo $CONF_maxfilesize ?>" /> <!-- 2 Mo -->
-    <input type="file" name="flyer" id="flyer" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif" title="Choisissez une image pour illustrer l'événement" class="fichier" />
-
-    <?php
-    echo $verif->getHtmlErreur("flyer");
-
-    //affichage du flyer precedent, et du bouton pour supprimer
-    if (isset($get['idE']) && !empty($champs['flyer']) && !$verif->getErreur($champs['flyer']))
-    {
-        $imgInfo = getimagesize($rep_images_even.$champs['flyer']);
+           }  
         ?>
-        <div class="supImg">
-        <a href="<?php echo $IMGeven.$champs['flyer'].'?'.filemtime($rep_images_even.$champs['flyer']) ?>" class="magnific-popup" target="_blank"><img src="<?php echo $IMGeven."s_".$champs['flyer'].'?'.filemtime($rep_images_even.$champs['flyer']) ?>" alt="Flyer" /></a>
-        <div><label for="sup_flyer" class="continu">Supprimer</label><input type="checkbox" name="sup_flyer" id="sup_flyer" value="flyer" class="checkbox"
-
+            </optgroup>    
+        </select>
         <?php
-        if (!empty($supprimer['flyer']) && $verif->nbErreurs() > 0)
-        {
-            echo 'checked="checked"' ;
-        }
+        echo $verif->getHtmlErreur("localite_id");
         ?>
-                /></div>
-            </div>
-    <?php
-    }
-    ?>
         </p>
+
+        <p>
+            <label for="urlLieu">Site web</label>
+            <input type="text" name="urlLieu" id="urlLieu" size="40" maxlength="80" title="URL du lieu" value="<?php if (empty($champs['idLieu'])) { echo securise_string($champs['urlLieu']); } ?>" onfocus="this.className='focus';" onblur="this.className='normal';" />
+        <?php
+        echo $verif->getHtmlErreur("urlLieu");
+        ?>
+        </p>
+        </div>
+    </fieldset>
+    
+    <fieldset>
+        <legend>L’événement</legend>
+
+        <p>
+        <label for="titre">Titre*</label>
+        <input type="text" name="titre" id="titre" maxlength="80" value="<?php echo securise_string($champs['titre']) ?>" required />
+        <?php
+        echo $verif->getHtmlErreur("titre");
+        ?>
+        </p>
+
+        <p>
+        <label for="description">Description</label>
+        <?php
+        $id_textarea = "description";
+        ?>
+
+        <textarea name="description" id="description" rows="20"><?php echo securise_string($champs['description']) ?></textarea>
+        <?php
+        echo $verif->getHtmlErreur('description');
+        ?>
+        </p>
+    </fieldset>
+
+    <fieldset id="references">
+        <legend>Références</legend>
+        <p>
+            <label for="ref">Sites web</label>
+            <input type="text" name="ref" id="ref" value="<?php echo securise_string($champs['ref']); ?>" placeholder="URL1;URL2; etc." />
+        </p>
+        <div class="guideChamp">Site de l’événement, de l’organisateur (s’il n’est pas présent ci-dessous), de la page Facebook... Séparer chaque élément par un point-virgule.</div>
 
         <div class="spacer"></div>
-    <p>
-        <label for="image"><span class="tooltip">Photo<span class="tooltiptext"> S’affiche à la place du flyer s’il n’y a pas de flyer, sinon en dessous de celui-ci</span></span></label>
-    <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo $CONF_maxfilesize ?>" /> <!-- 2 Mo -->
-    <input type="file" name="image" id="image" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif" title="Choisissez une image pour illustrer l'ê·©nement" class="fichier" />
-        <div class="guideChamp">Photo des artistes, de leurs œuvres, du lieu, etc.</div>
-    </p>
-    <div class="spacer"></div>
-    <?php
-    echo $verif->getHtmlErreur("image");
 
-    //affichage de l'image et du bouton pour supprimer
-    if (isset($get['idE']) && !empty($champs['image']) && !$verif->getErreur('image'))
-    {
-        $imgInfo = @getimagesize($rep_images_even.$champs['image']);
-        echo "<div class=\"supImg\">";
-    /* 	echo lien_popup($IMGeven.$champs['image']."?".filemtime($rep_images_even.$champs['image']), "Image", $imgInfo[0]+20, $imgInfo[1]+20,
-        "<img src=\"".$IMGeven."s_".$champs['image']."?".filemtime($rep_images_even.$champs['image'])."\"  alt=\"image pour ".securise_string($champs['titre'])."\" />"
-        ); */
+        <?php
+        $tab_organisateurs_even = array();
+        if ($get['action'] == "editer" || $get['action'] == "update")
+        {
+
+            $sql = "SELECT organisateur.idOrganisateur, nom
+        FROM organisateur, evenement_organisateur
+        WHERE evenement_organisateur.idEvenement=".$get['idE']." AND
+         organisateur.idOrganisateur=evenement_organisateur.idOrganisateur
+         ORDER BY date_ajout DESC";
+
+         $req = $connector->query($sql);
+
+            if ($connector->getNumRows($req))
+            {
+                while ($tab = $connector->fetchArray($req))
+                {
+                    $tab_organisateurs_even[] = $tab['idOrganisateur'];
+                }
+            }
+
+        }
+        ?><?php
+        echo $verif->getHtmlErreur("doublon_organisateur");
+        ?>
+        <p>
+            <label for="organisateurs">Organisateur(s) de l’événement</label>
+            <select name="organisateurs[]" id="organisateurs" data-placeholder="Tapez les noms des organisateurs" class="chosen-select" multiple style="max-width:350px;">
+        <?php
+        echo "<option value=\"0\">&nbsp;</option>";
+        $req = $connector->query("
+        SELECT idOrganisateur, nom FROM organisateur WHERE statut='actif' ORDER BY TRIM(LEADING 'L\'' FROM (TRIM(LEADING 'Les ' FROM (TRIM(LEADING 'La ' FROM (TRIM(LEADING 'Le ' FROM nom))))))) COLLATE utf8_general_ci"
+         );
+
+        while ($tab = $connector->fetchArray($req))
+        {
+            echo "<option ";
+            if ((isset($_POST['organisateurs']) && in_array($tab['idOrganisateur'], $_POST['organisateurs'])) || in_array($tab['idOrganisateur'], $tab_organisateurs_even))
+            {
+                echo 'selected="selected" ';
+            }
+            echo "value=\"".$tab['idOrganisateur']."\">".$tab['nom']."</option>";
+        }
+        ?>
+        </select>
+        <div class="guideChamp">L’événement figurera dans la page de ces <a href="organisateurs.php" target="_blank">organisateurs</a>. Si vous souhaitez que votre organisation soit listée, <a href="contacteznous.php" target='_blank'>demandez-nous</a></div>
+        </p>
+    </fieldset>
+
+    <fieldset>
+        <legend>Entrée</legend>
+        <?php if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] < 6)) { ?>
+        <?php
+        $price_types = ['unknown' => 'inconnu', 'gratis' => 'entrée libre', 'asyouwish' => 'prix libre', 'chargeable' => 'payant'];
+        ?>
+            <ul class="radio" style="list-style-type: none">
+                <?php foreach ($price_types as $pt => $label)
+                {
+                    ?>
+                <li><label class="listehoriz" style="float: none"><input class="precisions" type="radio" name="price_type" value="<?php echo $pt; ?>" <?php 
+                if ($pt == $champs['price_type'] || 
+                        ($pt == 'gratis' && !empty($champs['prix']) && strstr($champs['prix'], 'entrée libre')) || 
+                        ($pt == 'asyouwish' && !empty($champs['prix']) && strstr($champs['prix'], 'prix libre'))) { ?> checked <?php } ?>> <?php echo $label ?></label></li>
+        <?php
+                }
+        ?>
+            </ul>
+<?php } ?>
+
+        <div id="prix-precisions" <?php 
+        if (!isset($_SESSION['Sgroupe']) || (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] >= 6)  || ($get['action'] == "editer" || $get['action'] == "update") 
+                && (!empty($champs['prix']) || (!empty($champs['price_type']) && ($champs['price_type'] == 'asyouwish' || $champs['price_type'] == 'chargeable') ))
+                ) { ?> style="display:block" <?php } ?>>
+            <p>
+                <label for="prix">Prix</label>
+                            <input type="text" name="prix" id="prix" size="50" maxlength="100" value="<?php echo securise_string($champs['prix']) ?>" />
+                <?php
+                echo $verif->getHtmlErreur('prix');
+                ?>
+            </p>    
+            <?php if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] > 6 ) { ?>
+            <div class="guideChamp">Vous pouvez mettre seulement <strong>0</strong> si l'entrée est libre.</div>
+            <?php } ?>   
+            <p>
+                <label for="prelocations">Prélocations</label>
+                            <input type="text" name="prelocations" id="prelocations" size="50" maxlength="150" value="<?php echo securise_string($champs['prelocations']) ?>" />
+                <?php
+                echo $verif->getHtmlErreur('prelocations');
+                ?>
+            </p>
+        </div>
+    </fieldset>
+
+    <fieldset>
+        <legend>Images</legend>
+        <div style="margin-left: 0.8em;font-weight: bold">Formats JPEG, PNG ou GIF; max. 2 Mo</div>
+        <p>
+        <label for="flyer">Affiche/flyer</label>
+        <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo $CONF_maxfilesize ?>" /> <!-- 2 Mo -->
+        <input type="file" name="flyer" id="flyer" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif" title="Choisissez une image pour illustrer l'événement" class="fichier" />
+
+        <?php
+        echo $verif->getHtmlErreur("flyer");
+
+        //affichage du flyer precedent, et du bouton pour supprimer
+        if (isset($get['idE']) && !empty($champs['flyer']) && !$verif->getErreur($champs['flyer']))
+        {
+            $imgInfo = getimagesize($rep_images_even.$champs['flyer']);
+            ?>
+            <div class="supImg">
+            <a href="<?php echo $IMGeven.$champs['flyer'].'?'.filemtime($rep_images_even.$champs['flyer']) ?>" class="magnific-popup" target="_blank"><img src="<?php echo $IMGeven."s_".$champs['flyer'].'?'.filemtime($rep_images_even.$champs['flyer']) ?>" alt="Flyer" /></a>
+            <div><label for="sup_flyer" class="continu">Supprimer</label><input type="checkbox" name="sup_flyer" id="sup_flyer" value="flyer" class="checkbox"
+
+            <?php
+            if (!empty($supprimer['flyer']) && $verif->nbErreurs() > 0)
+            {
+                echo 'checked="checked"' ;
+            }
+            ?>
+                    /></div>
+                </div>
+        <?php
+        }
+        ?>
+            </p>
+
+            <div class="spacer"></div>
+        <p>
+            <label for="image"><span class="tooltip">Photo<span class="tooltiptext"> S’affiche à la place du flyer s’il n’y a pas de flyer, sinon en dessous de celui-ci</span></span></label>
+        <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo $CONF_maxfilesize ?>" /> <!-- 2 Mo -->
+        <input type="file" name="image" id="image" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif" title="Choisissez une image pour illustrer l'ê·©nement" class="fichier" />
+            <div class="guideChamp">Photo des artistes, de leurs œuvres, du lieu, etc.</div>
+        </p>
+        <div class="spacer"></div>
+        <?php
+        echo $verif->getHtmlErreur("image");
+
+        //affichage de l'image et du bouton pour supprimer
+        if (isset($get['idE']) && !empty($champs['image']) && !$verif->getErreur('image'))
+        {
+            $imgInfo = @getimagesize($rep_images_even.$champs['image']);
+            echo "<div class=\"supImg\">";
+        /* 	echo lien_popup($IMGeven.$champs['image']."?".filemtime($rep_images_even.$champs['image']), "Image", $imgInfo[0]+20, $imgInfo[1]+20,
+            "<img src=\"".$IMGeven."s_".$champs['image']."?".filemtime($rep_images_even.$champs['image'])."\"  alt=\"image pour ".securise_string($champs['titre'])."\" />"
+            ); */
+            ?>
+
+
+            <a href="<?php echo $IMGeven.$champs['image'].'?'.filemtime($rep_images_even.$champs['image']) ?>" class="magnific-popup"  target="_blank"><img src="<?php echo $IMGeven."s_".$champs['image'].'?'.filemtime($rep_images_even.$champs['image']) ?>" alt="Photo" /></a>
+
+
+
+            <?php
+            echo "<div><label for=\"sup_image\" class=\"continu\">Supprimer</label><input type=\"checkbox\" name=\"sup_image\" id=\"sup_image\" value=\"image\" class=\"checkbox\" ";
+
+            if (!empty($supprimer['image']) && $verif->nbErreurs() == 0)
+            {
+                echo 'checked="checked" ';
+            }
+            echo "/></div></div>";
+        }
+        
         ?>
 
 
-        <a href="<?php echo $IMGeven.$champs['image'].'?'.filemtime($rep_images_even.$champs['image']) ?>" class="magnific-popup"  target="_blank"><img src="<?php echo $IMGeven."s_".$champs['image'].'?'.filemtime($rep_images_even.$champs['image']) ?>" alt="Photo" /></a>
-
-
-
-        <?php
-        echo "<div><label for=\"sup_image\" class=\"continu\">Supprimer</label><input type=\"checkbox\" name=\"sup_image\" id=\"sup_image\" value=\"image\" class=\"checkbox\" ";
-
-        if (!empty($supprimer['image']) && $verif->nbErreurs() == 0)
-        {
-            echo 'checked="checked" ';
-        }
-        echo "/></div></div>";
-    }
-    ?>
-
-
-</fieldset>
-
+    </fieldset><?php  ?>
+    
+    <?php
+    
+    if (!isset($_SESSION['Sgroupe']) || !empty($champs['user_email'])) { ?>
+    <fieldset>
+        <p><label for="remarque">Remarque</label><textarea name="remarque" id="remarque" cols="20" rows="6" <?php echo (isset($_SESSION['Sgroupe']) && !empty($champs['user_email'])) ? 'readonly class="readonly" ': ''; ?>><?php echo securise_string($champs['remarque']) ?></textarea></p>
+        <p><label for="user_email">Votre email*</label><input type="email" id="user_email" name="user_email" value="<?php echo securise_string($champs['user_email']) ?>" required size="25" <?php echo (isset($_SESSION['Sgroupe']) && !empty($champs['user_email'])) ? 'readonly class="readonly" ': ''; ?> maxlength="80"></p>
+    </fieldset>
+    <?php } else if (!empty($champs['user_email'])) {  ?>
+    
+    <?php } ?>
 <?php
 if (($get['action'] == "editer" || $get['action'] == "update") && isset($get['idE']))
 {
@@ -1564,16 +1391,21 @@ if (($get['action'] == "editer" || $get['action'] == "update") && isset($get['id
 <ul class="radio">
 <?php
 
-$statuts = array('actif' => '<strong>publié</strong> (visible sur le site)',  'complet' => '<strong>complet</strong> (visible sur le site mais marqué comme étant complet)', 'annule' => '<strong>annulé</strong> (visible sur le site mais marqué comme étant annulé)', 'inactif' => '<strong>dépublié</strong> (non visible sur le site)');
+$statuts = array('propose' => '<strong>proposé</strong> (non visible sur le site)', 'actif' => '<strong>publié</strong> (visible sur le site)',  'complet' => '<strong>complet</strong> (visible sur le site mais marqué comme étant complet)', 'annule' => '<strong>annulé</strong> (visible sur le site mais marqué comme étant annulé)', 'inactif' => '<strong>dépublié</strong> (non visible sur le site)');
 foreach ($statuts as $s => $n)
 {
+    if ($s === 'propose' && ($_SESSION['Sgroupe'] > 6 || (!empty($champs['user_email']) && $champs['statut'] != 'propose')))
+        continue;
+    
 	$coche = '';
 	if (strcmp($s, $champs['statut']) == 0)
 	{
 		$coche = 'checked="checked"';
 	}
 	echo '<li style="display:block">
-	<input type="radio" name="statut" value="'.$s.'" '.$coche.' id="statut_'.$s.'" title="statut de l\'événement" class="radio_horiz" />
+	<input type="radio" name="statut" value="'.$s.'" '.$coche.' id="statut_'.$s.'" title="statut de l\'événement" class="radio_horiz"
+';
+echo '/>
 	<label class="continu" for="statut_'.$s.'">'.$n.'</label></li>';
 }
 ?>

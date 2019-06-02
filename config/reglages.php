@@ -75,7 +75,7 @@ $glo_categories_lieux = array('bistrot' => 'bistrot', 'salle' => 'salle', 'resta
 
 $glo_tab_genre = array("fête" => "fêtes", "cinéma" => "ciné", "théâtre" => "théâtre", "expos" => "expos", "divers" => "divers");
 
-$statuts_evenement = array('actif', 'complet', 'annule', 'inactif');
+$statuts_evenement = array('propose' => 'Proposé', 'actif' => 'Proposé', 'complet' => 'Complet', 'annule' => 'Annulé', 'inactif' => 'Dépublié');
 $statuts_lieu = array('actif',  'ancien', 'inactif');
 $statuts_breve = array('actif', 'inactif');
 $glo_statuts_personne = array('demande', 'actif', 'inactif');

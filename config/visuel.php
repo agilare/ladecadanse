@@ -95,8 +95,9 @@ $tab_icones_statut = array("actif" => "<img src=\"".$IMGicones."bullet_green.png
 $tab_icones_statut = array("actif" => "<div style='display:inline-block;background:green;width:12px;height:12px;border-radius:50%' title='Publié'>&nbsp;</div>",
 "inactif" => "<div style='display:inline-block;background:red;width:12px;height:12px;border-radius:50%' title='Dépublié'>&nbsp;</div>",
 "annule" => "<div style='display:inline-block;background:orange;width:12px;height:12px;border-radius:50%' title='Annulé'>&nbsp;</div>",
-"complet" => "<div style='display:inline-block;background:orange;width:12px;height:12px;border-radius:50%' title='Complet'>&nbsp;</div>",
-"ancien" => "<div style='display:inline-block;background:white;width:12px;height:12px;border-radius:50%' title='Ancien'>&nbsp;</div>"
+"complet" => "<div style='display:inline-block;background:darkorange;width:12px;height:12px;border-radius:50%' title='Complet'>&nbsp;</div>",
+"ancien" => "<div style='display:inline-block;background:lightgray;width:12px;height:12px;border-radius:50%' title='Ancien'>&nbsp;</div>",
+"propose" => "<div style='display:inline-block;background:lightblue;width:12px;height:12px;border-radius:50%' title='Proposé'>&nbsp;</div>"
 );
 
 //CSS

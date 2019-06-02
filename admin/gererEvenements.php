@@ -970,14 +970,14 @@ echo $verif->getErreur("evenements");
 <!--
 <ul class="radio">
 <?php
-foreach ($statuts_evenement as $s)
+foreach ($statuts_evenement as $s => $v)
 {
 	$coche = '';
 	if (strcmp($s,$champs['statut']) == 0)
 	{
 		$coche = 'checked="1"';
 	}
-	echo '<li class="listehoriz"><input type="radio" name="statut" value="'.$s.'" '.$coche.' id="genre_'.$s.'" title="statut de l\'événement" class="radio_horiz" /><label class="continu" for="genre_'.$s.'">'.$s.'</label></li>';
+	echo '<li class="listehoriz"><input type="radio" name="statut" value="'.$s.'" '.$coche.' id="genre_'.$s.'" title="statut de l\'événement" class="radio_horiz" /><label class="continu" for="genre_'.$s.'">'.$v.'</label></li>';
 }
 ?>
 </ul>
