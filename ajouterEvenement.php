@@ -458,9 +458,9 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 					//si  un ancien flyer a été effectivement trouvé suppression des fichiers
 					if (!empty($affFly['flyer']))
 					{
-							unlink($rep_images.$affFly['flyer']);
-							unlink($rep_images."s_".$affFly['flyer']);
-							unlink($rep_images."t_".$affFly['flyer']);
+                        unlink($rep_images.$affFly['flyer']);
+                        unlink($rep_images."s_".$affFly['flyer']);
+                        unlink($rep_images."t_".$affFly['flyer']);
 					}
 				}
 				else
@@ -1301,40 +1301,37 @@ if ($verif->nbErreurs() > 0)
         <legend>Images</legend>
         <div style="margin-left: 0.8em;font-weight: bold">Formats JPEG, PNG ou GIF; max. 2 Mo</div>
         <p>
-        <label for="flyer">Affiche/flyer</label>
-        <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo $CONF_maxfilesize ?>" /> <!-- 2 Mo -->
-        <input type="file" name="flyer" id="flyer" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif" title="Choisissez une image pour illustrer l'événement" class="fichier" />
-
-        <?php
-        echo $verif->getHtmlErreur("flyer");
-
-        //affichage du flyer precedent, et du bouton pour supprimer
-        if (isset($get['idE']) && !empty($champs['flyer']) && !$verif->getErreur($champs['flyer']))
-        {
-            $imgInfo = getimagesize($rep_images_even.$champs['flyer']);
-            ?>
-            <div class="supImg">
-            <a href="<?php echo $IMGeven.$champs['flyer'].'?'.filemtime($rep_images_even.$champs['flyer']) ?>" class="magnific-popup" target="_blank"><img src="<?php echo $IMGeven."s_".$champs['flyer'].'?'.filemtime($rep_images_even.$champs['flyer']) ?>" alt="Flyer" /></a>
-            <div><label for="sup_flyer" class="continu">Supprimer</label><input type="checkbox" name="sup_flyer" id="sup_flyer" value="flyer" class="checkbox"
-
+            <label for="flyer">Affiche/flyer</label>
+            <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo $CONF_maxfilesize ?>" /> <!-- 2 Mo -->
+            <input type="file" name="flyer" id="flyer" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif" class="fichier" />
             <?php
-            if (!empty($supprimer['flyer']) && $verif->nbErreurs() > 0)
-            {
-                echo 'checked="checked"' ;
-            }
-            ?>
-                    /></div>
-                </div>
-        <?php
-        }
-        ?>
-            </p>
+            echo $verif->getHtmlErreur("flyer");
 
+            //affichage du flyer precedent, et du bouton pour supprimer
+            if (isset($get['idE']) && !empty($champs['flyer']) && !$verif->getErreur($champs['flyer']))
+            {
+                $imgInfo = getimagesize($rep_images_even.$champs['flyer']);
+                ?>
+                <div class="supImg">
+                    <a href="<?php echo $IMGeven.$champs['flyer'].'?'.filemtime($rep_images_even.$champs['flyer']) ?>" class="magnific-popup" target="_blank"><img src="<?php echo $IMGeven."s_".$champs['flyer'].'?'.filemtime($rep_images_even.$champs['flyer']) ?>" alt="Flyer" /></a>
+                <div><label for="sup_flyer" class="continu">Supprimer</label><input type="checkbox" name="sup_flyer" id="sup_flyer" value="flyer" class="checkbox"
+                <?php
+                if (!empty($supprimer['flyer']) && $verif->nbErreurs() > 0)
+                {
+                    echo 'checked="checked"' ;
+                }
+                ?>
+                        /></div>
+                </div>
+            <?php
+            }
+        ?>
+        </p>
             <div class="spacer"></div>
         <p>
             <label for="image"><span class="tooltip">Photo<span class="tooltiptext"> S’affiche à la place du flyer s’il n’y a pas de flyer, sinon en dessous de celui-ci</span></span></label>
-        <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo $CONF_maxfilesize ?>" /> <!-- 2 Mo -->
-        <input type="file" name="image" id="image" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif" title="Choisissez une image pour illustrer l'ê·©nement" class="fichier" />
+            <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo $CONF_maxfilesize ?>" /> <!-- 2 Mo -->
+            <input type="file" name="image" id="image" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif" class="fichier" />
             <div class="guideChamp">Photo des artistes, de leurs œuvres, du lieu, etc.</div>
         </p>
         <div class="spacer"></div>
@@ -1346,17 +1343,9 @@ if ($verif->nbErreurs() > 0)
         {
             $imgInfo = @getimagesize($rep_images_even.$champs['image']);
             echo "<div class=\"supImg\">";
-        /* 	echo lien_popup($IMGeven.$champs['image']."?".filemtime($rep_images_even.$champs['image']), "Image", $imgInfo[0]+20, $imgInfo[1]+20,
-            "<img src=\"".$IMGeven."s_".$champs['image']."?".filemtime($rep_images_even.$champs['image'])."\"  alt=\"image pour ".securise_string($champs['titre'])."\" />"
-            ); */
             ?>
-
-
             <a href="<?php echo $IMGeven.$champs['image'].'?'.filemtime($rep_images_even.$champs['image']) ?>" class="magnific-popup"  target="_blank"><img src="<?php echo $IMGeven."s_".$champs['image'].'?'.filemtime($rep_images_even.$champs['image']) ?>" alt="Photo" /></a>
-
-
-
-            <?php
+           <?php
             echo "<div><label for=\"sup_image\" class=\"continu\">Supprimer</label><input type=\"checkbox\" name=\"sup_image\" id=\"sup_image\" value=\"image\" class=\"checkbox\" ";
 
             if (!empty($supprimer['image']) && $verif->nbErreurs() == 0)
@@ -1364,15 +1353,11 @@ if ($verif->nbErreurs() > 0)
                 echo 'checked="checked" ';
             }
             echo "/></div></div>";
-        }
-        
+        }       
         ?>
-
-
     </fieldset><?php  ?>
     
-    <?php
-    
+    <?php    
     if (!isset($_SESSION['Sgroupe']) || !empty($champs['user_email'])) { ?>
     <fieldset>
         <p><label for="remarque">Remarque</label><textarea name="remarque" id="remarque" cols="20" rows="6" <?php echo (isset($_SESSION['Sgroupe']) && !empty($champs['user_email'])) ? 'readonly class="readonly" ': ''; ?>><?php echo securise_string($champs['remarque']) ?></textarea></p>
@@ -1387,45 +1372,45 @@ if (($get['action'] == "editer" || $get['action'] == "update") && isset($get['id
 ?>
 
 <fieldset>
-<legend>Statut de l’événement</legend>
-<ul class="radio">
-<?php
+    <legend>Statut de l’événement</legend>
+    <ul class="radio">
+    <?php
 
-$statuts = array('propose' => '<strong>proposé</strong> (non visible sur le site)', 'actif' => '<strong>publié</strong> (visible sur le site)',  'complet' => '<strong>complet</strong> (visible sur le site mais marqué comme étant complet)', 'annule' => '<strong>annulé</strong> (visible sur le site mais marqué comme étant annulé)', 'inactif' => '<strong>dépublié</strong> (non visible sur le site)');
-foreach ($statuts as $s => $n)
-{
-    if ($s === 'propose' && ($_SESSION['Sgroupe'] > 6 || (!empty($champs['user_email']) && $champs['statut'] != 'propose')))
-        continue;
-    
-	$coche = '';
-	if (strcmp($s, $champs['statut']) == 0)
-	{
-		$coche = 'checked="checked"';
-	}
-	echo '<li style="display:block">
-	<input type="radio" name="statut" value="'.$s.'" '.$coche.' id="statut_'.$s.'" title="statut de l\'événement" class="radio_horiz"
-';
-echo '/>
-	<label class="continu" for="statut_'.$s.'">'.$n.'</label></li>';
-}
-?>
-</ul>
-<?php
-echo $verif->getHtmlErreur("statut");
-?>
+    $statuts = array('propose' => '<strong>proposé</strong> (non visible sur le site)', 'actif' => '<strong>publié</strong> (visible sur le site)',  'complet' => '<strong>complet</strong> (visible sur le site mais marqué comme étant complet)', 'annule' => '<strong>annulé</strong> (visible sur le site mais marqué comme étant annulé)', 'inactif' => '<strong>dépublié</strong> (non visible sur le site)');
+    foreach ($statuts as $s => $n)
+    {
+        if ($s === 'propose' && ($_SESSION['Sgroupe'] > 6 || (!empty($champs['user_email']) && $champs['statut'] != 'propose')))
+            continue;
+
+        $coche = '';
+        if (strcmp($s, $champs['statut']) == 0)
+        {
+            $coche = 'checked="checked"';
+        }
+        echo '<li style="display:block">
+        <input type="radio" name="statut" value="'.$s.'" '.$coche.' id="statut_'.$s.'" title="statut de l\'événement" class="radio_horiz"
+    ';
+    echo '/>
+        <label class="continu" for="statut_'.$s.'">'.$n.'</label></li>';
+    }
+    ?>
+    </ul>
+    <?php
+    echo $verif->getHtmlErreur("statut");
+    ?>
 </fieldset>
 <?php
 }
 else
 {
 ?>
-<input type="hidden" name="statut" value="actif" id="statut_actif" title="statut" />
+        <input type="hidden" name="statut" value="actif" id="statut_actif" title="statut" />
 <?php
 }
 ?>
 
 <p class="piedForm">
-<input type="hidden" name="formulaire" value="ok" />
+    <input type="hidden" name="formulaire" value="ok" />
     <input type="submit" name="submit" value="Enregistrer" class="submit submit-big" />
 </p>
 
