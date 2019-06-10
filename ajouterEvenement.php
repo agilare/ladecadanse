@@ -114,7 +114,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 //        if ($recaptcha->score <= 0.5) {
 //            $verif->setErreur("global", "Le système de sécurité soupconne que vous êtes un robot, merci de réessayer; le cas échéant, contactez-nous");  
 //        }
-        $logger->log('global', 'activity', "[ajouterEvenement] recaptcha score ".$recaptcha->score.", response : ".$recaptcha, Logger::GRAN_YEAR);  
+        $logger->log('global', 'activity', "[ajouterEvenement] recaptcha score ".$recaptcha->score.", response : ".json_encode($recaptcha), Logger::GRAN_YEAR);  
     }
     
 	
