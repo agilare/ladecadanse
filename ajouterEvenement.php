@@ -111,9 +111,10 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
         // Make and decode POST request:
         $recaptcha = file_get_contents($recaptcha_url . '?secret=' . GOOGLE_RECAPTCHA_API_KEY_SERVER . '&response=' . $recaptcha_response);
         $recaptcha = json_decode($recaptcha);
-        if ($recaptcha->score <= 0.5) {
-            $verif->setErreur("global", "Le système de sécurité soupconne que vous êtes un robot, merci de réessayer; le cas échéant, contactez-nous");  
-        }
+//        if ($recaptcha->score <= 0.5) {
+//            $verif->setErreur("global", "Le système de sécurité soupconne que vous êtes un robot, merci de réessayer; le cas échéant, contactez-nous");  
+//        }
+        $logger->log('global', 'activity', "[ajouterEvenement] recaptcha score ".$recaptcha->score.", response : ".$recaptcha, Logger::GRAN_YEAR);  
     }
     
 	
