@@ -212,7 +212,7 @@ echo $form->getHtmlErreur("presentation");
 
 <fieldset>
 <legend>Images</legend>
-<input type="hidden" name="MAX_FILE_SIZE" value="2097152" /> <!-- 2 Mo -->
+<input type="hidden" name="<?php echo UPLOAD_MAX_FILESIZE ?>" value="2097152" /> <!-- 2 Mo -->
 <div class="guideForm">Formats JPEG, PNG ou GIF, max. 2 Mo</div>
 <!-- Logo (file) -->
 <p>

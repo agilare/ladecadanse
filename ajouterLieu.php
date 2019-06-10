@@ -481,7 +481,7 @@ echo $form->getHtmlErreur("quartier");
 
     <fieldset>
         <legend>Images</legend>
-        <input type="hidden" name="MAX_FILE_SIZE" value="<?php $CONF_maxfilesize ?>" /> 
+        <input type="hidden" name="MAX_FILE_SIZE" value="<?php UPLOAD_MAX_FILESIZE ?>" /> 
         <div style="margin-left: 0.8em;font-weight: bold">Formats JPEG, PNG ou GIF; max. 2 Mo</div>
 
         <p>
@@ -595,7 +595,6 @@ echo $form->getHtmlErreur("quartier");
         ?>            
         <p>
             <label for="image_galerie">Galerie</label>
-            <input type="hidden" name="MAX_FILE_SIZE" value="<?php $CONF_maxfilesize ?>" />
             <input type="file" name="image_galerie" id="image_galerie" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif"  class="fichier" />
         </p>
         <div class="spacer"></div>

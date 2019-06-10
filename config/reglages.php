@@ -7,7 +7,12 @@ date_default_timezone_set('Europe/Berlin');
 
 require_once('params.php');
  
-$CONF_maxfilesize = 3145728; // octets, = 3 Mo
+define("UPLOAD_MAX_FILESIZE", 3145728); // octets, = 3 Mo
+define("POST_MAX_SIZE", 6291456);
+
+ini_set('post_max_size', POST_MAX_SIZE);
+ini_set('upload_max_filesize', UPLOAD_MAX_FILESIZE);
+ini_set('max_file_uploads', 3);
 
 $rep_images = $rep_absolu."images/";
 $rep_images_breves = $rep_images."breves/";

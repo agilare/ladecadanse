@@ -141,6 +141,13 @@ class ImageDriver2 extends SystemComponent {
       */
    function processImage($imageSource, $imageCreated, $maxWidth = 0, $maxHeigth = 0, $selon = '', $rognage = 0)
    {
+       if (empty($imageSource['tmp_name']) || $imageSource['size'] == 0)
+       {
+           return false;
+       }
+       
+
+       
        $slash = "";
        if ($this->IMGtype != "evenement" && $this->IMGtype != "")
            $slash = "/";
@@ -149,13 +156,15 @@ class ImageDriver2 extends SystemComponent {
        $cheminImage = $this->IMGracine.$this->IMGtype.$slash.$imageCreated;
 
        $imgInfo = getimagesize($imageSource['tmp_name']);
+       $mime_type = mime_content_type($imageSource['tmp_name']);
+       
        //TEST
        // echo "tmp_name :".$imageSource['tmp_name']."<br>";
        // echo "<br>chem. image :".$cheminImage;
        // printr($imgInfo);
 
        //
-       if ($imgInfo['mime'] == "image/jpeg")
+       if ($mime_type == "image/jpeg")
        {
            $img = ImageCreateFromJpeg($imageSource['tmp_name']);
 
@@ -167,13 +176,13 @@ class ImageDriver2 extends SystemComponent {
                return false;
            }
        }
-       elseif ($imgInfo['mime'] == "image/gif")
+       elseif ($mime_type == "image/gif")
        {
            $img = ImageCreateFromGif($imageSource['tmp_name']);
            $originaltransparentcolor = imagecolortransparent($img);
 
        }
-       elseif ($imgInfo['mime'] == "image/png")
+       elseif ($mime_type == "image/png")
        {
            $img = ImageCreateFrompng($imageSource['tmp_name']);
        }
@@ -298,7 +307,7 @@ class ImageDriver2 extends SystemComponent {
 
        $messageErreur = "Échec dans la création des images";
 
-       if ($imgInfo['mime'] == "image/jpeg")
+       if ($mime_type == "image/jpeg")
        {
            if (!imagejpeg($img2, $cheminImage, 80))
            {
@@ -307,7 +316,7 @@ class ImageDriver2 extends SystemComponent {
            }
            return true;
        }
-       elseif ($imgInfo['mime'] == "image/gif")
+       elseif ($mime_type == "image/gif")
        {
            if (!imagegif($img2, $cheminImage))
            {
@@ -316,7 +325,7 @@ class ImageDriver2 extends SystemComponent {
            }
            return true;
        }
-       elseif ($imgInfo['mime'] == "image/png")
+       elseif ($mime_type == "image/png")
        {
            if (!imagepng($img2, $cheminImage))
            {

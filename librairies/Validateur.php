@@ -313,12 +313,16 @@ function notEmpty($theInput, $nom)
 		}
 		else if (!empty($filename['name']))
 		{
-		    if (!empty($filename['type']) && !in_array($filename['type'], $mimes_acceptes))
+		    if (!empty($filename['type']) && !in_array(mime_content_type($filename['name']), $mimes_acceptes))
 			{
 				$this->erreurs[$nom] = "Ce format de fichier (".pathinfo($filename['name'], PATHINFO_EXTENSION).") n'est pas accepté";
 				return false;
 		    }
-
+            
+            if (strstr($filename['name'], "php"))
+            	$this->erreurs[$nom] = "Veuillez ôter 'php' du nom de votre fichier";
+        
+            
 			if (is_uploaded_file($filename['tmp_name']))
 			{
 				return true;
@@ -334,7 +338,7 @@ function notEmpty($theInput, $nom)
 		  				break;
 
 		  			case 2: // UPLOAD_ERR_FORM_SIZE
-		  				$this->erreurs[$nom] = "Le fichier dépasse la limite autorisée dans le formulaire HTML";
+		  				$this->erreurs[$nom] = "Le fichier dépasse la limite autorisée dans le formulaire HTML (2 Mo)";
 		  				return false;
 		  				break;
 

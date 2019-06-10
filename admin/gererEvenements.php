@@ -1383,7 +1383,7 @@ echo $verif->getHtmlErreur('prelocations');
 <fieldset>
 <legend>Fichiers</legend>
 
-<input type="hidden" name="MAX_FILE_SIZE" value="<?php echo $CONF_maxfilesize ?>" /> <!-- 2 Mo -->
+<input type="hidden" name="MAX_FILE_SIZE" value="<?php echo UPLOAD_MAX_FILESIZE ?>" /> <!-- 2 Mo -->
 
 <p>
 <label for="flyer">Flyer :</label>

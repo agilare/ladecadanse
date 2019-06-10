@@ -128,7 +128,14 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 	{
 		$supprimer['image'] = $_POST['sup_image'];
 	}
+    
+	if (!empty($_POST['name_as']))
+	{
+		$verif->setErreur("name_as", "Veuillez laisser ce champ vide");
+	}
 
+
+    
 	/*
 	 * VERIFICATION DES CHAMPS ENVOYES par POST
 	 */
@@ -201,9 +208,17 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 	}
 
 	$verif->valider($champs['description'], "description", "texte", 4, 10000, 0);
-	$verif->validerFichier($fichiers['flyer'], "flyer", $glo_mimes_images_acceptees, 0);
-	$verif->validerFichier($fichiers['image'], "image", $glo_mimes_images_acceptees, 0);
-
+	
+    if ($_SERVER["CONTENT_LENGTH"] > POST_MAX_SIZE) 
+    {
+        $verif->setErreur('image', "Le poids des fichiers envoyés dépasse la limite autorisée");    
+    }  
+    else
+    {
+        $verif->validerFichier($fichiers['flyer'], "flyer", $glo_mimes_images_acceptees, 0);
+        $verif->validerFichier($fichiers['image'], "image", $glo_mimes_images_acceptees, 0);
+    }
+    
 	if (empty($champs['horaire_debut']) && empty($champs['horaire_complement']))
 	{
 		$verif->setErreur("horaire", "Veuillez indiquer l'horaire");
@@ -234,7 +249,6 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
         $verif->valider($champs['description'], "description", "texte", 4, 10000, 0);        
     }
 
-    
 	/*
 	 * PAS D'ERREUR, donc ajout ou update executés
 	 */
@@ -431,6 +445,38 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
                 if (!isset($_SESSION['Sgroupe']))
                 {
                     $_SESSION['ajouterEvenement_flash_msg'] = "Merci pour votre proposition. Nous allons l'examiner et vous aurez une réponse dès qu'elle sera traitée";	
+                    $subject = "Nouvelle proposition d'événement : \"".$champs['titre']."\"";
+                    $contenu_message = "\n\n";
+                    $contenu_message .= $url_site."evenement.php?idE=".$req_id;
+                    $contenu_message .= "\n\n";
+                    
+                    if (ENV == 'prod')
+                    {
+                        
+                        require_once "Mail.php";
+                        $from = '"'."La décadanse".'" <'.$glo_email_info.'>';
+                        $to = $from;    
+
+
+                        $headers = array (
+                        "Content-Type" => "text/plain; charset=\"UTF-8\"",
+                        'From' => $from,
+                        'To' => $to,
+                        'Subject' => $subject);                    
+                        $smtp = Mail::factory('smtp',
+                        array ('host' => $glo_email_host,
+                        'auth' => true,
+                        'username' => $glo_email_username,
+                        'password' => $glo_email_password));
+
+                        $mail = $smtp->send($to, $headers, $contenu_message);  
+                    }
+                    else
+                    {
+                        $_SESSION['ajouterEvenement_flash_msg'] .= "<br><pre>".$subject."</pre>"; 
+                        $_SESSION['ajouterEvenement_flash_msg'] .= "<br><pre>".$contenu_message."</pre>"; 
+                    }                    
+                    
                 }      
 				
 				$action_terminee = true;
@@ -1302,7 +1348,7 @@ if ($verif->nbErreurs() > 0)
         <div style="margin-left: 0.8em;font-weight: bold">Formats JPEG, PNG ou GIF; max. 2 Mo</div>
         <p>
             <label for="flyer">Affiche/flyer</label>
-            <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo $CONF_maxfilesize ?>" /> <!-- 2 Mo -->
+            <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo UPLOAD_MAX_FILESIZE ?>" /> <!-- 2 Mo -->
             <input type="file" name="flyer" id="flyer" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif" class="fichier" />
             <?php
             echo $verif->getHtmlErreur("flyer");
@@ -1330,7 +1376,7 @@ if ($verif->nbErreurs() > 0)
             <div class="spacer"></div>
         <p>
             <label for="image"><span class="tooltip">Photo<span class="tooltiptext"> S’affiche à la place du flyer s’il n’y a pas de flyer, sinon en dessous de celui-ci</span></span></label>
-            <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo $CONF_maxfilesize ?>" /> <!-- 2 Mo -->
+            <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo UPLOAD_MAX_FILESIZE ?>" /> <!-- 2 Mo -->
             <input type="file" name="image" id="image" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif" class="fichier" />
             <div class="guideChamp">Photo des artistes, de leurs œuvres, du lieu, etc.</div>
         </p>
@@ -1411,7 +1457,8 @@ else
 
 <p class="piedForm">
     <input type="hidden" name="formulaire" value="ok" />
-    <input type="submit" name="submit" value="Enregistrer" class="submit submit-big" />
+    <input type="text" name="name_as" value="" class="name_as" id="name_as" /><?php echo $verif->getHtmlErreur('name_as'); ?>
+    <input type="submit" name="submit" value="<?php echo (!isset($_SESSION['Sgroupe']))?"Envoyer":"Enregistrer"; ?>" class="submit submit-big" />
 </p>
 
 </form>
