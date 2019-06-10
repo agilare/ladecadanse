@@ -23,6 +23,8 @@ $glo_email_password = "";
 
 define("MASTER_KEY", '');
 define("GOOGLE_API_KEY", '');
+define("GOOGLE_RECAPTCHA_API_KEY_CLIENT", '');
+define("GOOGLE_RECAPTCHA_API_KEY_SERVER", '');
 
 define("PREVIEW", true);
 

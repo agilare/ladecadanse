@@ -1,19 +1,14 @@
 <script src="<?php echo $url_site; ?>librairies/magnific-popup/jquery.magnific-popup.js"></script>
 <script src="<?php echo $url_site; ?>librairies/zebra_datepicker/zebra_datepicker.min.js"></script>
 <script src="<?php echo $url_site; ?>librairies/chosen/chosen.jquery.min.js"></script>
-<script src="https://www.google.com/recaptcha/api.js?render=6Ler76cUAAAAABk2TgWd-35xmUSoG7hYJkTdMJST"></script>
 
 <?php
 if (isset($extra_js) && is_array($extra_js))
 {
-
 	foreach ($extra_js as $src)
 	{
-		echo '<script type="text/javascript" src="'.$url_site.'js/'.$src.'.js"></script>';
-		
-		
+		echo '<script type="text/javascript" src="'.$url_site.'js/'.$src.'.js"></script>';	
 	}
-
 }
 
 preg_match(PREG_PATTERN_NOMPAGE, $_SERVER['PHP_SELF'], $matches);
@@ -29,6 +24,19 @@ $pages_orga = array("ajouterEvenement", "ajouterLieu", "ajouterPersonne", 'inscr
 $pages_formulaires = array("ajouterEvenement", "copierEvenement", "ajouterLieu", "inscription", "gererEvenements", "ajouterPersonne", "ajouterDescription", "ajouterOrganisateur");
 $pages_tinymce = ["ajouterDescription", "ajouterOrganisateur"];
 ?>
+
+<?php if ($nom_page == "ajouterEvenement" && !isset($_SESSION['Sgroupe'])) { ?>
+    <script src="https://www.google.com/recaptcha/api.js?render=<?php echo GOOGLE_RECAPTCHA_API_KEY_CLIENT; ?>"></script>
+    <script>
+        grecaptcha.ready(function () {
+            grecaptcha.execute('<?php echo GOOGLE_RECAPTCHA_API_KEY_CLIENT ?>', { action: 'propose_event' }).then(function (token) {
+                var recaptchaResponse = document.getElementById('g-recaptcha-response');
+                recaptchaResponse.value = token;
+            });
+        });
+    </script> 
+<?php } ?>
+
 <script type="text/javascript">
 <?php
 if (in_array($nom_page, $pages_formulaires))

@@ -264,3 +264,4 @@ if ($_SESSION['region'] != 'ge')
 
 $logger = new Logger($rep_absolu."logs/");
 
+$recaptcha_url = 'https://www.google.com/recaptcha/api/siteverify';

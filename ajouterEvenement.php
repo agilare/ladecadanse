@@ -86,7 +86,6 @@ $champs = array("statut" => "", "genre" => "", "titre" => "", "dateEvenement" =>
 $fichiers = array('flyer' => '', 'image' => '');
 $supprimer = array();
 $action_terminee = false;
-//printr($_POST);
 
 if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 {
@@ -105,6 +104,18 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 			}
 		}
 	}
+    
+    if (!isset($_SESSION['Sgroupe']))
+    {
+        $recaptcha_response = filter_input(INPUT_POST, 'g-recaptcha-response', FILTER_SANITIZE_STRING);    
+        // Make and decode POST request:
+        $recaptcha = file_get_contents($recaptcha_url . '?secret=' . GOOGLE_RECAPTCHA_API_KEY_SERVER . '&response=' . $recaptcha_response);
+        $recaptcha = json_decode($recaptcha);
+        if ($recaptcha->score <= 0.5) {
+            $verif->setErreur("global", "Le système de sécurité soupconne que vous êtes un robot, merci de réessayer; le cas échéant, contactez-nous");  
+        }
+    }
+    
 	
 	if (isset($_POST['organisateurs']))
 		$champs['organisateurs'] = $_POST['organisateurs'];
@@ -909,6 +920,10 @@ if (!$action_terminee)
 if ($verif->nbErreurs() > 0)
 {
 	msgErreur("Il y a ".$verif->nbErreurs()." erreur(s).");
+    if (!empty($verif->getHtmlErreur("global")))
+    {
+        echo $verif->getHtmlErreur("global");
+    }
 	//print_r($verif->getErreurs());
 }
 ?>
@@ -1458,6 +1473,7 @@ else
 <p class="piedForm">
     <input type="hidden" name="formulaire" value="ok" />
     <input type="text" name="name_as" value="" class="name_as" id="name_as" /><?php echo $verif->getHtmlErreur('name_as'); ?>
+    <input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response">
     <input type="submit" name="submit" value="<?php echo (!isset($_SESSION['Sgroupe']))?"Envoyer":"Enregistrer"; ?>" class="submit submit-big" />
 </p>
 
