@@ -215,18 +215,17 @@ ul.menu_actions_lieu li
 		}
 
 		#fiche  #descriptions .description p
-		{
-		
+		{		
 			margin:0em 1em 1em 0.4em;
 		}
 
-		#fiche #descriptions  .description h1
+		#fiche #descriptions .description h1
 		{
 			text-align:left;
 			font-size: 1.2em;
 		}
 
-		#fiche #descriptions  .description h2
+		#fiche #descriptions .description h2
 		{
 			font-size: 1em;
 		}

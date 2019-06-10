@@ -209,6 +209,12 @@ display:none;
     width: 96%;
 }
 
+#entete_contenu img.logo
+{
+    width: 40%;
+    height: 100%;
+}
+
 #contenu .queries
 {
     float: left;

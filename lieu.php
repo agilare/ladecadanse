@@ -213,11 +213,11 @@ $illustration = "";
 
 if (!empty($lieu->getValue('logo')))
 {
-	$illustration = "<img src=".$IMGlieux."s_".$lieu->getValue('logo')." style=float:left;margin-right:0.2em />";
+	$illustration = "<img src=".$IMGlieux."s_".$lieu->getValue('logo')." style='float:left;margin-right:0.2em' class='logo'  />";
 }
 else if (!empty($lieu->getValue('photo1')))
 {
-	$illustration = "<img src=".$IMGlieux."s_".$lieu->getValue('photo1')." height=80 style=float:left;margin-right:0.2em />";
+	$illustration = "<img src=".$IMGlieux."s_".$lieu->getValue('photo1')." height=80 style='float:left;margin-right:0.2em' />";
 }
 
 $info_lieu = "<div style='width:200px'>".$illustration."<div class=details><p class=adresse><strong>".securise_string($lieu->getValue('nom'))."</strong></p><p class=adresse>".securise_string($lieu->getValue('adresse'))."</p><p class=adresse>".$lieu->getValue('quartier')."</p></div></div>";
@@ -273,7 +273,7 @@ if ($lieu->getValue('logo'))
 {
 ?>
 <a href="<?php echo $IMGlieux.$lieu->getValue('logo').'?'.filemtime($rep_images_lieux.$lieu->getValue('logo')) ?>" class="magnific-popup">
-	<img src="<?php echo $IMGlieux."s_".$lieu->getValue('logo')."?".filemtime($rep_images_lieux."s_".$lieu->getValue('logo')); ?>" alt="Logo"  />
+	<img src="<?php echo $IMGlieux."s_".$lieu->getValue('logo')."?".filemtime($rep_images_lieux."s_".$lieu->getValue('logo')); ?>" alt="Logo" class="logo" />
 </a>
 <?php 
 }

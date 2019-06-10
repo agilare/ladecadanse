@@ -213,11 +213,6 @@ ul.menu_actions_lieu li {
 			margin:0em 1em 1em 0.4em;
 		}
 
-		#fiche  #descriptions .description a
-		{
-			color: blue;
-		}
-
 		#fiche #descriptions  .description h1
 		{
 			text-align:left;
@@ -234,7 +229,7 @@ ul.menu_actions_lieu li {
 			font-size: 1.05em;
             font-weight:bold;
             margin:0;
-                border:none
+            border:none
 		}
         
 		#fiche #descriptions blockquote
@@ -383,7 +378,7 @@ ul#menu_complement li
 
 ul#menu_complement .rss
 {
-	width:30%;
+	width:10%;
 	text-align:right;
 	float:right;
 }
@@ -403,11 +398,8 @@ ul#menu_complement .rss
 
 #prochains_evenements ul#menu_genre
 {
-	margin:0 0 0em 0em;
-        /*
-	/height:0.8em;
-	/padding:0.6em 0;
-        */
+	margin:0;
+    padding: 0;
 }
 
 	#prochains_evenements ul#menu_genre li

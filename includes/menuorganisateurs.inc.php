@@ -1,8 +1,5 @@
 <?php
-
-
 $categoriesVal = array("bistrot", "cinéma", "restaurant", "salle", "galerie", "théâtre", "boutique", "musée", "autre");
-
 
 $de = "0";
 $vers = "l";
@@ -59,14 +56,6 @@ if (isset($_GET['tranche']))
 			$vers = "z";
 		}
 	}
-	else if ($get['vue'] == "genre")
-	{
-	}
-	else if ($get['vue'] == "quartier")
-	{
-
-	}
-
 }
 else
 {
@@ -90,17 +79,6 @@ if (isset($get['idO']))
 
 $aff_menulieux = '<div id="menu_lieux">';
 
-/*
-$aff_menulieux .= '
-<ul id="selon">
-	<li';
-	if ($get['vue'] == "az") { $aff_menulieux .= " class=\"ici\""; }
-	$aff_menulieux .= '><a href="'.$_SERVER['PHP_SELF'].'?statut='.$get['statut'].'&amp;vue=az'.$url_idOrganisateur.'" title="Liste alphabétique">A-Z</a></li><li';
-	//if ($get['vue'] == "genre") { $aff_menulieux .= " class=\"ici\""; }
-	//$aff_menulieux .= '><a href="'.$_SERVER['PHP_SELF'].'?statut='.$get['statut'].'&amp;vue=genre'.$url_idOrganisateur.'" title="Liste par genre">genre</a></li>';
-//$aff_menulieux .= '</ul>
-		<div class="spacer"><!-- --></div>';
-*/
 			$sql_vue = "";
 
 			if ($get['vue'] == "az")
@@ -159,7 +137,7 @@ $aff_menulieux .= '
 
 		$aff_menulieux .= '</th>
 		<th>&nbsp;</th>
-		<th><img src="'.$IMGicones .'calendar.png" title="Nombre d\'événements agendés" alt="icone des événements" /></th></tr>';
+		<th><img src="'.$IMGicones .'calendar.png" alt="Nombre d\'événements agendés" /></th></tr>';
 
 /*
 * Requète SQL vers table 'lieu' selon choix de listage (AK ou LZ) et pour les lieux
@@ -247,9 +225,6 @@ while (list ($id, $nom, $presentation) = mysqli_fetch_row($req))
 	<td class=\"nb_even_lieu\">".$nb_aff."</td>
 	</tr>";
 
-
-
-
 	$prec = "organisateur.php?vue=".$get['vue']."&amp;idO=".$id.$url_tranche."";
 
 	if ($id_passe && $url_suiv == "" && $id != $get['idO'])
@@ -262,56 +237,9 @@ while (list ($id, $nom, $presentation) = mysqli_fetch_row($req))
 	$pair++;
 
 }
-
-/* $aff_menulieux .= $url_prec." ".$url_suiv;
-$aff_menulieux .= count($tab_noms_low); */
-/*
-$nomDuLieu = "";
-while ($tab_lieux = $connector->fetchArray($req_lieux))
-{
-
-	$nb_evenements = 0;
-	$aumoins1des = "";
-    $req_des = $connector->query("SELECT idLieu FROM descriptionlieu WHERE idLieu=".$tab_lieux['idLieu']);
-
-	$nomDuLieu = securise_string($tab_lieux['nom']);
-
-	// Précision pour dire si le lieu a une ou plusieurs descriptions
-    if ($connector->getNumRows($req_des) > 0)
-	{
-       $aumoins1des = "*";
-    }
-
-	$sql_even = "SELECT titre FROM evenement WHERE idLieu=".$tab_lieux['idLieu']." AND dateEvenement > '".date("Y-m-d")."'";
-
-	//echo $sql_even;
-
-    $req_even = $connector->query($sql_even);
-	// Précision pour dire si le lieu a une ou plusieurs descriptions
-
-    $nb_evenements = $connector->getNumRows($req_even);
-
-
-	echo "<tr ";
-	if ($pair % 2 != 0)
-	{
-		echo "class=\"impair\"";
-	}
-	echo "><td><a href=\"lieu.php?idL=".$tab_lieux['idLieu']."\">".$nomDuLieu."</a></td><td>".$aumoins1des."</td><td>".$nb_evenements."</td>
-	</tr>";
-
-
-
-
-	$pair++;
-
-	}  */
 	$aff_menulieux .= "
 	<tr><td></td></tr>
 		</table>
-
-
 	</div>";
-
 ?>
 <!-- Fin menu_lieux -->

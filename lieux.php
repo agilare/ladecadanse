@@ -54,9 +54,11 @@ $pair = 0;
 <div id="contenu" class="colonne">
     
     <div id="entete_contenu">
-        <h2 style="font-size:1.6em; width: 15%;">Lieux</h2> <?php if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 6) { ?><a href="ajouterLieu.php?action=ajouter" style="float: left;padding: 5px 1px;"><img src="images/interface/icons/building_add.png" alt=""  /> Ajouter un lieu</a><?php } ?><?php getMenuRegions($glo_regions, $get); ?><div class="spacer"></div><p class="mobile" id="btn_listelieux">
-        <button href="#"><i class="fa fa-list fa-lg"></i>&nbsp;Liste des lieux</button>
-    </p>
+        <h2 style="font-size:1.6em; width: 15%;">Lieux</h2> <?php if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 6) { ?><a href="ajouterLieu.php?action=ajouter" style="float: left;padding: 5px 1px;"><img src="images/interface/icons/building_add.png" alt=""  /> Ajouter un lieu</a><?php } ?><?php getMenuRegions($glo_regions, $get); ?>
+        <div class="spacer"></div>
+        <p class="mobile" id="btn_listelieux">
+            <button href="#"><i class="fa fa-list fa-lg"></i>&nbsp;Liste des lieux</button>
+        </p>
         <div style="margin-top:1em;">
             <h3 style="color: #888;font-size: 1.2em;margin-top: 0.2em;">Dernières descriptions <a href="<?php echo $url_site ?>rss.php?type=lieux_descriptions" title="Flux RSS des dernières descriptions de lieux" style="font-size:0.8em;"><i class="fa fa-rss fa-lg" style="color:#f5b045"></i></a></h3>
         </div>
@@ -85,21 +87,8 @@ $pair = 0;
 	$maxChar = trouveMaxChar($fiche->getValue('contenu'), 36, 7);
 	$tailleCont = mb_strlen($fiche->getValue('contenu'));
 
-	$apercu = '';
-    
+    $apercu = $fiche->getValue('contenu'); 
 
-    if (datetime_iso2time($fiche->getValue('date_derniere_modif')) > datetime_iso2time("2009-10-12 12:00:00"))
-    {
-        $apercu = $fiche->getValue('contenu'); 
-        
-    }
-    else
-    {
-        $apercu = textToHtml($fiche->getHtmlValue('contenu'));
-    }
-    
-    
-    
 	if ($tailleCont > $maxChar)
 	{
 		//$apercu = html_substr($apercu, $maxChar, 2);

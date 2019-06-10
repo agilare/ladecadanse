@@ -260,25 +260,6 @@ $(document).ready(function()
 		
 	});	
 	
-	$("#btn_listeorganisateurs").on('click', function (e)
-	{
-		e.preventDefault();
-
-		if(!$('#menu_lieux').is(':visible'))
-		{
-			$("#menu_lieux").fadeIn(vitesse_fondu);
-			//$("#main_menu").toggle(vitesse_fondu);
-
-		}
-		else
-		{
-			$("#menu_lieux").fadeOut(vitesse_fondu);
-			//$("#main_menu").toggle(vitesse_fondu);		
-		}	
-		
-	});		
-	
-	
 	$('.magnific-popup').magnificPopup({
 		type: 'image',
 		tClose: 'Fermer (Esc)', // Alt text on close button
