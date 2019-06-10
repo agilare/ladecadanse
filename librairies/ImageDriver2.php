@@ -156,7 +156,7 @@ class ImageDriver2 extends SystemComponent {
        $cheminImage = $this->IMGracine.$this->IMGtype.$slash.$imageCreated;
 
        $imgInfo = getimagesize($imageSource['tmp_name']);
-       $mime_type = mime_content_type($imageSource['tmp_name']);
+       $mime_type = $imgInfo['mime'];
        
        //TEST
        // echo "tmp_name :".$imageSource['tmp_name']."<br>";
