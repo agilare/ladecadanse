@@ -457,8 +457,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
                 if (!isset($_SESSION['Sgroupe']))
                 {
                     $_SESSION['ajouterEvenement_flash_msg'] = "Merci pour votre proposition. Nous allons l'examiner et vous aurez une réponse dès qu'elle sera traitée";	
-                    $subject = "Nouvelle proposition d'événement : \"".$champs['titre']."\"";
-                    $contenu_message = "\n\n";
+                    $subject = "[La décadanse] Nouvelle proposition d'événement : \"".$champs['titre']."\"";
+                    $contenu_message = "Merci de vérifier cet événement et l'accepter (statut : publié) ou le refuser (status : dépublié) : \n\n";
                     $contenu_message .= $url_site."evenement.php?idE=".$req_id;
                     $contenu_message .= "\n\n";
                     
@@ -653,8 +653,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 				$sql = "DELETE FROM evenement_organisateur WHERE idEvenement=".$get['idE'];
 				$req = $connector->query($sql);			
 				$req_id = $get['idE'];
-
-				$_SESSION['ajouterEvenement_flash_msg'] = "L'événement a été modifié.<br><a href='agenda.php?courant=".$champs['dateEvenement']."#event-".$req_id."'>Voir dans l'agenda</a>";
+                
+                $confirmation_flash_msg = '';
                 
                 // acceptation d'un even
                 if ($tab_even_cur['statut'] == 'propose')
@@ -667,12 +667,15 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
                         $contenu_message .= "\n\n";
                         $contenu_message .= $url_site."evenement.php?idE=".$req_id;
                         $contenu_message .= "\n\n";
-                        $contenu_message .= "La décadanse";                        
+                        $contenu_message .= "La décadanse"; 
+                        
+                        $confirmation_flash_msg = " Un email de confirmation a été envoyé à ".$champs['user_email'];
                     }
                     else if ($champs['statut'] == 'inactif')
                     {
                         // refus...
                     }
+     
                     
                     if (ENV == 'prod')
                     {
@@ -692,14 +695,18 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
                         'username' => $glo_email_username,
                         'password' => $glo_email_password));
 
-                        $mail = $smtp->send($to, $headers, $contenu_message);  
+                        $mail = $smtp->send($to, $headers, $contenu_message);
+                        
+                        
                     }
                     else
                     {
                         $_SESSION['ajouterEvenement_flash_msg'] .= "<br><pre>".$subject."</pre>"; 
                         $_SESSION['ajouterEvenement_flash_msg'] .= "<br><pre>".$contenu_message."</pre>"; 
                     }
-                }
+                }                    
+
+                $_SESSION['ajouterEvenement_flash_msg'] = "L'événement a été modifié.$confirmation_flash_msg<br><a href='agenda.php?courant=".$champs['dateEvenement']."#event-".$req_id."'>Voir dans l'agenda</a>";    
                     
 				$get['action'] = 'editer';
 
