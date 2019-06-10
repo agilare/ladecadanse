@@ -1,4 +1,20 @@
 {
+    "name": "ladecadanse/ladecadanse",
+    "description":"Agenda culturel local",
+    "type": "project",
+    "readme": "README.md",
+    "authors": [
+        {
+            "name": "Michel Gaudry",
+            "email": "michel@ladecadanse.ch",
+            "role": "Developer"
+        }
+    ],     
     "require": {
-    }
+        "php" : "7.0.*"
+    },
+    "support": {
+        "email": "michel@ladecadanse.ch",
+        "source": "https://github.com/agilare/ladecadanse.git"
+    }     
 }
