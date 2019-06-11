@@ -1,4 +1,11 @@
-﻿
+h3.res
+{
+    margin: 1em auto;
+    width: 94%;
+    font-size: 1em;
+    color:#5C7378;
+}
+
 #contenu p.titre
 {
 color:#5C7378;
@@ -8,8 +15,8 @@ margin:1em auto 1em auto;
 
 #res_recherche
 {
-width:94%;
-margin:0 auto 0 auto;
+    width:94%;
+    margin:0 auto 0 auto;
 }
 
 #res_recherche h2 
@@ -36,23 +43,24 @@ font-weight:bold;
 ul#menu_tri
 {
 	float:left;
-	display:inline;
 	margin:1em 0;
+    padding:0;
+    list-style-type: none;
 }
 
 	ul#menu_tri li
 	{
-
 	}
 
-	ul#menu_tri li#ici
+	ul#menu_tri li#ici a
 	{
 		background:#ff3;
 	}
 	
 	ul#menu_tri li a
-	{	padding:0.4em 1em;
-		width:7em;
+	{	
+        padding:0.2em 0.4em;
+        margin:0 0.2em;
 		display:block;
 	}
 	
@@ -84,9 +92,10 @@ background-color:#fff;
 
 #res_recherche tr td
 {
-border-top:1px dotted gray;
-padding:0.4em 0.2em 2em 0.2em;
-line-height:1.2em;
+    vertical-align: top;
+    border-top:1px dotted gray;
+    padding:0.4em 0.2em 2em 0.2em;
+    line-height:1.2em;
 }
 
 #res_recherche tr td h3
@@ -102,8 +111,8 @@ font-size:1.1em;
 
 #res_recherche tr td p.description
 {
-margin:0.4em 0;
-font-size:0.9em;
+    margin:0.4em 0;
+    font-size:0.9em;
 }
 
 #nb_resultats
@@ -114,20 +123,17 @@ color:#5C7378;
 
 ul#menu_periode
 {
-
+    padding:0;
 }
 
 ul#menu_periode li
 {
-
-	width:10em;
 	display:block;
 	margin:0.4em 0;
 }
 
 ul#menu_periode li a
 {
-	width:10em;
 	display:block;
 	padding:0.4em 1em;
 }
@@ -146,7 +152,8 @@ ul#menu_periode li.futur
 {
 	background-color:#fff;
 }
-ul#menu_periode li.ici
+
+ul#menu_periode li.ici a
 {
 	background:#ff3;
 }

@@ -468,20 +468,18 @@ echo '<a id="bouton_imprimer" title="Imprimer la page" href="javascript:window.p
 </select></form>
 <?php } ?>
 </li>
-	<li class="btn_recherche">
-	<a href="#">&nbsp;</a>
-	</li>
 	<li class="form_recherche">
-	<form class="recherche" action="<?php echo $url_site ?>recherche.php" method="get" enctype="application/x-www-form-urlencoded">
-	
-	<input type="text" class="mots" name="mots" size="22" maxlength="50" placeholder="Rechercher un événement" title="Rechercher un événement" onfocus="if(this.value=='Rechercher un événement') this.value=''" onblur="if(this.value=='') this.value='Rechercher un événement'" /><input type="submit" class="submit" name="formulaire" value=" " />
-
-	</form>
+        <a href="#" id="btn_search"><i class="fa fa-search" aria-hidden="true"></i></a>
+        <form class="recherche" action="recherche.php" method="get" enctype="application/x-www-form-urlencoded">
+            <input type="text" class="mots" name="mots" size="22" maxlength="100" placeholder="Rechercher un événement" /><input type="submit" class="submit" name="formulaire" value=" " />
+        </form>
 	</li>
 
 	</ul>
 	<div class="clear_mobile"></div>
-
+    <form class="recherche_mobile" action="recherche.php" method="get" enctype="application/x-www-form-urlencoded">
+        <input type="text" class="mots" name="mots" size="40" maxlength="100" placeholder="Rechercher un événement" /><input type="submit" class="submit" name="formulaire" value="OK" />
+    </form>
 </div>
 <!-- Fin Menu-->
 

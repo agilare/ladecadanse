@@ -87,7 +87,7 @@
 	{
 		float:right;
 	}
-	#menu ul li.btn_recherche
+	#menu ul li #btn_search
 	{
 		display:none;
 	}	

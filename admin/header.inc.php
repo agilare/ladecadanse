@@ -318,7 +318,7 @@ foreach ($menu_principal as $nom => $lien)
 ?>
 	<li class="form_recherche">
         <form class="recherche" action="<?php echo $url_site ?>recherche.php" method="get" enctype="application/x-www-form-urlencoded">
-        <input type="text" class="mots" name="mots" size="22" maxlength="50" value="Rechercher un événement" onfocus="if(this.value=='Rechercher un événement') this.value=''" onblur="if(this.value=='') this.value='Rechercher un événement'" /><input type="submit" class="submit" name="formulaire" value="" />
+        <input type="text" class="mots" name="mots" size="22" maxlength="50" placeholder="Rechercher un événement" /><input type="submit" class="submit" name="formulaire" value="" />
 
         </form>
 	</li>

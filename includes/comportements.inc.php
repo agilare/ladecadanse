@@ -314,6 +314,13 @@ $(document).ready(function()
 
        return true;
      });
+     
+ 	$("#btn_search").on('click', function (e)
+	{	
+		$(".recherche_mobile").toggle(400);
+		//return false;
+	});     
+     
 });    
 </script>
 <?php if (in_array($nom_page, $pages_tinymce)) { ?>

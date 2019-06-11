@@ -26,8 +26,8 @@
 #menu ul li a
 {
 	height:1.1em;
-	padding: 0.5em 0.5em;
-	font-size: 1.05em; /* iphone <5 */
+	padding: 0.5em 0.3em;
+	font-size: 1.03em; /* iphone <5 */
 }
 
 #menu ul li#bouton_agenda a
@@ -53,16 +53,10 @@
 		padding:0.8em 0.4em 0.8em 0.1em;
 	}
 
-
-
 #menu li#bouton_calendrier
 {
 	display:inline-block;
-
-
 }
-
-
 
 #menu li#bouton_calendrier a
 {
@@ -71,19 +65,50 @@
 }
 
 #menu ul li.btn_recherche {
-display:none;
+
 }
 
 #menu ul li.form_recherche {
  
-	  border-right: 1px solid #808080;
+	  border-right: none;
+      float: right;
 }
 
-#menu ul li.form_recherche
+#menu ul li.form_recherche .recherche
 {
 	display:none;
 }
 
+.recherche_mobile
+{
+    display:none;
+    margin:0.6em;
+    font-size:0.9em;
+}
+
+.recherche_mobile .mots
+{
+    border: solid 1px #888;   
+    height:1.5em;
+}
+
+.recherche_mobile .submit
+{
+    padding:0.2em;
+    background:#aaa;
+    border: solid 1px #888;
+    height: 1.73em;
+}
+
+ul#menu_periode li
+{
+    display: inline-block;
+}
+
+ul#menu_tri li
+{
+    display: inline-block;
+}
 
 #navigation_calendrier
 {

@@ -55,7 +55,7 @@ $limite = 10;
 //header("Cache-Control: max-age=30, must-revalidate");
 $nom_page = "recherche";
 $page_titre = "recherche dans l'agenda des événements";
-$page_description = "Rechercher un événement culturel à Genève";
+$page_description = "Rechercher un événement culturel à Genève et Lausanne";
 include("includes/header.inc.php");
 
 ?>
@@ -65,8 +65,8 @@ include("includes/header.inc.php");
 <!-- D?t Contenu -->
 <div id="contenu" class="colonne">
 	<div id="entete_contenu">
-		<h2>Rechercher un événement</h2>
-			<div class="spacer"></div>
+		<h2 style="width:90%">Rechercher un événement</h2>
+		<div class="spacer"></div>
 	</div>
 
 <?php
@@ -280,7 +280,7 @@ if (!empty($get['mots']))
             $pluriel = "s ";
 		}
 		
-?><h3 style="margin:1em auto;width:94%;font-size:1.1em;"><?php echo $nb_even." événement".$pluriel."  trouvé".$pluriel; ?> pour <em><?php echo securise_string($mots) ?></em></h3>
+?><h3 class="res"><?php echo $nb_even." événement".$pluriel."  trouvé".$pluriel; ?> pour <em><?php echo securise_string($mots) ?></em></h3>
 
     <?php } ?>
 
@@ -303,9 +303,8 @@ if (!empty($get['mots']))
 	if ($nb_even > 0)
 	{            
     ?>  
+        <div style="padding: 0.4em 0;">Trier par :</div>
 		<ul id="menu_tri">
-
-		<li><div style="padding: 0.4em 1em;">Trier par :</div></li>
 		<?php
 
 		foreach ($tab_menu_tri as $tri => $nom_tri)
@@ -314,11 +313,11 @@ if (!empty($get['mots']))
 
 			if ($get['tri'] == $tri)
 			{
-				echo " id=\"ici\"><a href=\"".basename(__FILE__)."?".arguments_URI($get, "tri")."&amp;tri=".$tri."\" title=\"Trier par ".$nom_tri."\">".$nom_tri."</a>";
+				echo " id=\"ici\"><a href=\"".basename(__FILE__)."?".arguments_URI($get, "tri")."&amp;tri=".$tri."\" title=\"Trier par ".$nom_tri."\">".ucfirst($nom_tri)."</a>";
 			}
 			else
 			{
-				echo "><a href=\"".basename(__FILE__)."?".arguments_URI($get, "tri")."&amp;tri=".$tri."\" title=\"Trier par ".$nom_tri."\">".$nom_tri."</a>";
+				echo "><a href=\"".basename(__FILE__)."?".arguments_URI($get, "tri")."&amp;tri=".$tri."\" title=\"Trier par ".$nom_tri."\">".ucfirst($nom_tri)."</a>";
 			}
 			echo "&nbsp;</li>";
 		}
@@ -439,7 +438,7 @@ if (!empty($get['mots']))
 								echo "<p>".$infosLieu."</p>";
 							?>
 							</td>
-							<td><?php echo date_iso2app($tab_even['dateEvenement']) ?></td>
+							<td><a href="agenda.php?courant=<?php echo $tab_even['dateEvenement']; ?>"><?php echo date_iso2app($tab_even['dateEvenement']) ?></a></td>
 							<td><?php echo $glo_tab_genre[$tab_even['genre']] ?></td>
 
 							<?php if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 1) { ?>
@@ -539,8 +538,7 @@ if (!empty($get['mots']))
 							echo "<p>".$infosLieu."</p>";
 							?>
 					</td>
-
-					<td><?php echo date_iso2app($tab_even['dateEvenement']) ?></td>
+					<td><a href="agenda.php?courant=<?php echo $tab_even['dateEvenement']; ?>"><?php echo date_iso2app($tab_even['dateEvenement']) ?></a></td>
 					<td><?php echo $tab_even['genre'] ?></td>
 					<td>
 					<?php

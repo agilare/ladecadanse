@@ -717,3 +717,8 @@ table tr td.small
     background:lightblue;
 
 }
+
+.recherche_mobile
+{
+    display:none;
+}
