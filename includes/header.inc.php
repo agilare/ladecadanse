@@ -478,7 +478,7 @@ echo '<a id="bouton_imprimer" title="Imprimer la page" href="javascript:window.p
 	</ul>
 	<div class="clear_mobile"></div>
     <form class="recherche_mobile" action="recherche.php" method="get" enctype="application/x-www-form-urlencoded">
-        <input type="text" class="mots" name="mots" size="40" maxlength="100" placeholder="Rechercher un événement" /><input type="submit" class="submit" name="formulaire" value="OK" />
+        <input type="text" class="mots" name="mots" size="35" maxlength="100" placeholder="Rechercher un événement" /><input type="submit" class="submit" name="formulaire" value="OK" />
     </form>
 </div>
 <!-- Fin Menu-->

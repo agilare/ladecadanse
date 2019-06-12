@@ -92,7 +92,10 @@
 		display:none;
 	}	
 
-
+.rechercher #entete_contenu h2
+{
+    width:65%;
+}
 
 	#menu ul li#bouton_agenda a
 	{

@@ -63,9 +63,9 @@ include("includes/header.inc.php");
 
 
 <!-- D?t Contenu -->
-<div id="contenu" class="colonne">
+<div id="contenu" class="colonne rechercher">
 	<div id="entete_contenu">
-		<h2 style="width:90%">Rechercher un événement</h2>
+        <h2>Rechercher un événement</h2><?php getMenuRegions($glo_regions, $get); ?>
 		<div class="spacer"></div>
 	</div>
 
