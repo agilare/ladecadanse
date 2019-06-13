@@ -370,10 +370,44 @@ iCal</a></li>
 					<ul style="list-style-type: none;">
 						<li class="adr">
 						
-						<?php echo $adresse ?></li>
-
+						<?php echo $adresse ?></li>                                          
 						<?php
-						echo $lien_gmaps;
+                        if (!empty($listeLieu['lat']) && !empty($listeLieu['lng']))
+                        {
+                        ?> 
+                        <script>
+                        var map;
+                        function initMap() {
+
+                            var myLatLng = {lat: <?php echo $listeLieu['lat'] ?>, lng: <?php echo $listeLieu['lng'] ?>};
+
+                            map = new google.maps.Map(document.getElementById('map'), {
+                                center: myLatLng,
+                                zoom: 14
+                            });
+
+                            var marker = new google.maps.Marker({
+                                position: myLatLng,
+                                map: map
+                            });
+
+                            var infowindow = new google.maps.InfoWindow({
+                                content: "<?php echo $listeLieu['nom'] ?>"
+                            });
+
+                            marker.addListener('click', function() {
+                                infowindow.open(map, marker);
+                            });
+
+                        }
+                        </script>                            
+                        
+                        
+                            <li>
+                                <a href="#" class="dropdown" data-target="plan"><?php echo $icone['plan']; ?> Voir sur le plan <i class="fa fa-caret-down" aria-hidden="true"></i></a>
+                            </li>
+                    <?php
+                        }                      						
 						if (!empty($listeLieu['URL']))
 						{?>
 						<li><a class="url" href="<?php
@@ -398,6 +432,7 @@ iCal</a></li>
 					</ul>
 				</div>
 			<div class="spacer"></div>
+            <div id="plan" style="display:none"><div id="map"></div></div>
 			</div>
 			<!-- Fin titre -->
 

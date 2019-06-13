@@ -119,6 +119,13 @@ ul.menu_actions_evenement li
 	text-decoration:none;
 }
 
+#map
+{
+    width: auto;
+    height: 300px;
+    margin:5px;
+}
+
 #flyer
 {
     width:130px;

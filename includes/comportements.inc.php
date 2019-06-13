@@ -323,6 +323,7 @@ $(document).ready(function()
      
 });    
 </script>
+
 <?php if (in_array($nom_page, $pages_tinymce)) { ?>
 <script src="https://cloud.tinymce.com/5/tinymce.min.js?apiKey=7g39i0lvspz7m6s04eo2hvjji73rjk8tf0b62fkl7dn7p5bw"></script>
 <script>
