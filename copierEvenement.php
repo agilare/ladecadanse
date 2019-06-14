@@ -426,8 +426,8 @@ if (isset($get['idE']))
 ?>
 
 <form method="post" id="ajouter_editer" style="width: 94%;margin: 0em auto 0em auto;background:#efefef;padding: 1em 0;border-radius: 4px;" enctype="multipart/form-data" action="<?php echo basename(__FILE__)."?action=coller&amp;idE=".$get['idE']; ?>">
-    <label for="from" style="float:none">Du </label><input type="text" name="from" size="8" id="date-from" class="datepicker_from" placeholder="jj.mm.aaaa" required value="<?php echo $date_du; ?>"> 
-    <span style="position:relative"><label for="date-to" style="float:none">au </label><input type="text" name="to" size="8" id="date-to" class="datepicker_to" placeholder="jj.mm.aaaa"></span>
+    <label for="from" style="float:none">Du </label><input type="text" name="from" size="9" id="date-from" class="datepicker_from" placeholder="jj.mm.aaaa" required value="<?php echo $date_du; ?>"> 
+    <span style="position:relative"><label for="date-to" style="float:none">au </label><input type="text" name="to" size="9" id="date-to" class="datepicker_to" placeholder="jj.mm.aaaa"></span>
         &nbsp;<input id="coller" name="submit" type="submit" class="submit" value="Coller" style="width: 80px;margin-left: 0.6em;">
         <div style="margin: 15px 0 0px 30px;font-style: italic;color: #999;">Laissez la 2<sup>e</sup> date vide si vous ne collez l'événement que vers un seul jour.</div>
     <?php

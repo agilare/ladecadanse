@@ -139,8 +139,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 	}
 
 
-	$verif->valider($champs['motdepasse'], "motdepasse", "texte", 6, 18, 1);
-	$verif->valider($champs['motdepasse2'], "motdepasse2", "texte", 6, 18, 1);
+	$verif->valider($champs['motdepasse'], "motdepasse", "texte", 8, 30, 1);
+	$verif->valider($champs['motdepasse2'], "motdepasse2", "texte", 8, 30, 1);
 
 
 	if (!empty($champs['motdepasse']) || !empty($champs['motdepasse2']))
@@ -454,7 +454,7 @@ if ($verif->nbErreurs() > 0)
 
 <form method="post" id="ajouter_editer" class="submit-freeze-wait" action="<?php echo $_SERVER['PHP_SELF']."?action=".$act; ?>" onsubmit="return validerAjouterPersonne();">
 
-    <p>Avant de vous inscrire en tant que Organisateur, veillez svp à ce que les événements que vous souhaitez ajouter respectent notre <b><a href="charte-editoriale.php">charte&nbsp;éditoriale</a></b>.</p>
+    <p>Avant de vous inscrire en tant qu'Organisateur, veillez svp à ce que les événements que vous souhaitez ajouter respectent notre <b><a href="charte-editoriale.php">charte&nbsp;éditoriale</a></b>.</p>
 
 <p>* indique un champ obligatoire</p>
 
@@ -464,7 +464,7 @@ if ($verif->nbErreurs() > 0)
 <p>
 <label for="utilisateur">Identifiant*</label>
 
-<input type="text" name="utilisateur" id="utilisateur" size="25" maxlength="80" value="<?php echo htmlspecialchars($champs['utilisateur']) ?>" />
+<input type="text" name="utilisateur" id="utilisateur" size="40" maxlength="80" value="<?php echo htmlspecialchars($champs['utilisateur']) ?>" />
 <div class="guide_champ">&#9888; C'est avec celui-ci que vous vous connecterez au site, pas l'email ci-dessous</div>
 <?php
 echo $verif->getHtmlErreur('utilisateur');
@@ -474,23 +474,23 @@ echo $verif->getHtmlErreur("utilisateur_existant");
 
 <p>
 <label for="motdepasse">Mot de passe*</label>
-<input type="password" name="motdepasse" id="motdepasse" size="16" maxlength="20" value="" />
+<input type="password" name="motdepasse" id="motdepasse" size="20" maxlength="30" value="" />
 <?php echo $verif->getHtmlErreur("motdepasse");?>
 </p>
 
 <!-- Nouveau mot de passe* à confirmation en cas de mise à jour -->
 <p>
 <label for="motdepasse2">Confirmer le mot de passe*</label>
-<input type="password" name="motdepasse2" id="motdepasse2" size="16" maxlength="20" value="" />
+<input type="password" name="motdepasse2" id="motdepasse2" size="20" maxlength="30" value="" />
 <?php echo $verif->getHtmlErreur("motdepasse2");?>
 </p>
-<div class="guide_champ">Le mot de passe doit faire au minimum 6 caractères et comporter au moins un chiffre</div>
+<div class="guide_champ">Le mot de passe doit faire au minimum 8 caractères et comporter au moins un chiffre</div>
 <?php echo $verif->getHtmlErreur("motdepasse_inegaux");?>
 
 <!-- Email* (text) -->
 <p>
 <label for="email">E-mail*</label>
-<input type="text" name="email" id="email" size="30" maxlength="80" value="<?php echo htmlspecialchars($champs['email']) ?>" onblur="validerEmail('email', true);"/>
+<input type="email" name="email" id="email" size="35" maxlength="80" value="<?php echo htmlspecialchars($champs['email']) ?>" onblur="validerEmail('email', true);"/>
 <?php echo $verif->getHtmlErreur("email");
 echo $verif->getHtmlErreur("email_identique");?>
 </p>
@@ -517,10 +517,10 @@ echo $verif->getHtmlErreur("email_identique");?>
 	<fieldset class="affiliation" id="inscription_references" >
 
 		<legend>Affiliation</legend>
-		<div class="guide_affiliation">Si vous avez choisi <em>Acteur culturel</em>, veuillez indiquer à quel groupe, assoc, etc. existant vous appartenez.</div>
+        <div class="guide_affiliation">Si vous avez choisi <b>Acteur culturel</b>, merci d'indiquer à quel association, collectif, lieu, etc. vous appartenez.<br>Ainsi, une fois votre compte créé, vous pourrez modifier les informations du <a href="lieux.php" target="_blank">Lieu</a> et/ou <a href="organisateurs.php" target="_blank">Organisateur</a> sur La décadanse (données pratiques, images, présentations)</div>
 		<p>
             <label for="lieu" class="affil">Lieu&nbsp;</label>
-            <select name="lieu" id="lieu" class="chosen-select" data-placeholder="Choisir..."  style="max-width:350px">
+            <select name="lieu" id="lieu" class="chosen-select" data-placeholder="Tapez le nom..."  style="max-width:350px">
             <?php
 
             echo "<option value=\"\"></option>";
@@ -542,13 +542,10 @@ echo $verif->getHtmlErreur("email_identique");?>
 
             </select>
 		</p>
-		
-		<p class="entreLabels"><strong>ou</strong></p>
 		<div class="spacer"></div>
-
 		<p>
 		<label class="affil">Organisateur&nbsp;</label>
-		<select name="organisateurs[]" id="organisateurs" class="chosen-select" title="Un organisateur dans base de données de La décadanse" style="max-width:350px" data-placeholder="Choisir...">
+		<select name="organisateurs[]" id="organisateurs" class="chosen-select" title="Un organisateur dans base de données de La décadanse" style="max-width:350px" data-placeholder="Tapez le nom...">
 		<?php
 		echo "<option value=\"0\"></option>";
 		$req = $connector->query("
@@ -567,7 +564,7 @@ echo $verif->getHtmlErreur("email_identique");?>
 
 <?php echo $verif->getHtmlErreur("doublon_organisateur"); ?>
 		
-		<p class="entreLabels"><strong>ou</strong></p>
+		<p class="entreLabels"><strong>sinon</strong></p>
 		<div class="spacer"></div>
 
 
