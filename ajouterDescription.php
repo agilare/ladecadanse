@@ -375,7 +375,7 @@ echo $verif->getHtmlErreur('contenu');
 
 <p class="piedForm">
 <input type="hidden" name="formulaire" value="ok" />
-<input type="submit" value="Enregistrer" class="submit" />
+<input type="submit" value="Enregistrer" class="submit submit-big" />
 </p>
 
 

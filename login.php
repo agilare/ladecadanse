@@ -192,7 +192,7 @@ echo $verif->getHtmlErreur("motdepasse");
 <p class="piedForm">
 <input type="hidden" id="origine" name="origine" value="<?php echo $champs['origine'] ?>" />
 <input type="hidden" name="formulaire" value="ok" />
-<input type="submit" name="Submit" value="Se connecter" class="submit" />
+<input type="submit" name="Submit" value="Se connecter" class="submit submit-big" />
 </p>
 
 </fieldset>

@@ -7,13 +7,20 @@
 
 .entete_contenu_navigation
 {
-	font-size:.8em;
+	font-size:.75em;
+    margin-top: -0.2em;
 }
+
+.entete_contenu_navigation img
+{
+    vertical-align: bottom;    
+}
+
 
 .event-navig-link
 {
     display:inline-block;
-    width:100px;
+    width:110px;
     text-overflow:ellipsis;
     overflow: hidden;
     white-space: nowrap;

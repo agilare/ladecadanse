@@ -597,7 +597,7 @@ echo $verif->getHtmlErreur("email_identique");?>
 
 <p class="piedForm">
 <input type="hidden" name="formulaire" value="ok" />
-<input type="submit" value="S'inscrire" class="submit" />
+<input type="submit" value="S'inscrire" class="submit submit-big" />
 </p>
 
 </form>

@@ -198,10 +198,6 @@ if (!empty($_SESSION['ajouterEvenement_flash_msg']))
 		{
 			echo ' class="ancien"';
 		}
-        if (!(isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 6))
-        {
-            echo ' style="width:70%"';
-        }
  ?>>
  
  <span class="category"><?php echo ucfirst(nom_genre($even->getValue('genre'))); ?></span>, <?php echo '<a href="'.$url_site.'agenda.php?courant='.$even->getValue('dateEvenement').'">'.date_fr($even->getValue('dateEvenement'), "annee").'</a>';
@@ -227,7 +223,7 @@ if (!empty($_SESSION['ajouterEvenement_flash_msg']))
 		}
 
 		?>	
-		<div class="spacer"></div>
+            <div class="spacer"></div>
 		</div>
 		<div class="spacer"></div>
 	</div>
@@ -730,24 +726,29 @@ Signaler une erreur
 			</div>
 
 		</div>
-		<div style="  color: #5c7378;
-    margin: 0em auto 0;
-    vertical-align: middle;
-    width: 94%;">
-		<div class="entete_contenu_navigation only-mobile">
-		<?php
-		if ($url_prec != "")
-		{
-			echo '<a href="'.$url_prec.'" style="border-radius:3px 0 0 3px;" title="'.str_replace('"', '', $titre_prec).'">'.$iconePrecedent.'</a>';
-		}
-		if ($url_suiv != "")
-		{
-			echo '<a href="'.$url_suiv.'" style="border-radius:0 3px 3px 0;" title="'.str_replace('"', '', $titre_suiv).'">'.$iconeSuivant.'</a>';
-		}
+		<div style="color: #5c7378;    margin: 0em auto 0;    vertical-align: middle;width: 94%;">
+            <div class="entete_contenu_navigation only-mobile" >
+            <?php
+            if ($url_prec != "")
+            {
+                echo '<a href="'.$url_prec.'" style="border-radius:3px 0 0 3px;" title="'.str_replace('"', '', $titre_prec).'">'.$iconePrecedent;
 
-		?>	
-		<div class="spacer"></div>
-		</div>		
+                echo '&nbsp;<span class="event-navig-link" style="width:110px">'.$titre_prec.'</span>';
+
+                echo '</a>';
+            }
+            if ($url_suiv != "")
+            {
+                echo '<a href="'.$url_suiv.'" style="border-radius:0 3px 3px 0;margin-left:1px" title="'.str_replace('"', '', $titre_suiv).'">';
+
+                echo '<span class="event-navig-link" style="width:110px">'.$titre_suiv.'</span>&nbsp;';
+
+                echo $iconeSuivant.'</a>';            
+            }
+
+            ?>	
+                <div class="spacer"></div>
+            </div>            
 		</div>
 		
 		<!-- Fin Evenement -->

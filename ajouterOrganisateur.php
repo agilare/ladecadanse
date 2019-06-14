@@ -344,7 +344,7 @@ else
 
 <p class="piedForm">
 <input type="hidden" name="formulaire" value="ok" />
-<input type="submit" value="Enregistrer" tabindex="20" title="Enregistrer le lieu" class="submit" />
+<input type="submit" value="Enregistrer" tabindex="20" class="submit submit-big" />
 </p>
 </form>
 
