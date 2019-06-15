@@ -435,7 +435,12 @@ if ($lieu->getValue('logo'))
 		<!-- Fin medias -->
 
 		<?php
-		$categories = str_replace(",", ", ", $lieu->getValue('categorie'));
+        $tab_categories = explode(",", str_replace(" ", "", $lieu->getValue('categorie')));
+        foreach ($tab_categories as &$c)
+        {
+            $c = $glo_categories_lieux[$c];
+        }
+        
         $adresse = get_adresse($lieu->getValue('region'), $lieu_localite['localite'], $lieu->getValue('quartier'), $lieu->getValue('adresse') );
               
 		$carte = '';
@@ -530,7 +535,7 @@ if ($lieu->getValue('logo'))
 
 		<div id="pratique">
 			<ul>
-				<li><?php echo $categories; ?></li>
+				<li><?php echo implode(", ", $tab_categories); ?></li>
                 <li class="adr"><?php echo $adresse ?></li>				
 				<?php echo $carte; ?>
                 <?php echo $salles; ?>

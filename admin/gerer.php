@@ -49,7 +49,7 @@ else
 }
 
 
-$get['page'] = "1";
+$get['page'] = 1;
 if (isset($_GET['page']))
 {
 	$get['page'] = verif_get($_GET['page'], "int", 1);
@@ -131,155 +131,8 @@ header_html("La décadanse : fréquentation du site", $indexMotsClef, $indexCssS
 	<div class="spacer"></div>
 
 <?php
-// EVENEMENTS ANNONCES
-
-
-if ($get['element'] == "evenement")
+if ($get['element'] == "description")
 {
-	$sql_evenement = "
-	SELECT idEvenement, idLieu, idPersonne, statut, idPersonne, genre, titre, dateEvenement, nomLieu, flyer, dateAjout, date_derniere_modif
-	FROM evenement
-	ORDER BY ".$get['tri_gerer']." ".$get['ordre']." LIMIT ".($get['page'] - 1) * $get['nblignes'].",".$get['nblignes'];
-
-
-	$req_evenement = $connector->query($sql_evenement);
-
-	$req_nbeven = $connector->query("SELECT COUNT(*) AS nbeven FROM evenement");
-	$tab_nbeven = $connector->fetchArray($req_nbeven);
-	$tot_elements = $tab_nbeven['nbeven'];
-
-	echo getPaginationString($get['page'], $tot_elements, $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?&element=".$get['element']."&tri_gerer=".$get['tri_gerer']."&ordre=".$get['ordre']."&nblignes=".$get['nblignes']."&page=");
-
-	echo '<ul class="menu_nb_res">';
-	foreach ($tab_nblignes as $nbl)
-	{
-		echo '<li ';
-		if ($get['nblignes'] == $nbl) { echo 'class="ici"'; }
-
-		echo '><a href="gerer.php?'.arguments_URI($get, "nblignes").'&nblignes='.$nbl.'">'.$nbl.'</a></li>';
-	}
-	echo '</ul>';
-
-	echo '<div class="spacer"></div>';
-
-	$th_evenements = array("dateEvenement" => "Date", "titre" => "Titre", "idLieu" => "Lieu", "flyer" => "Flyer",
-	"dateAjout" => "Créé", "date_derniere_modif" => "Modifié", "statut" => "Statut");
-
-	echo "<form method=\"post\" id=\"formGererEvenements\" class='submit-freeze-wait' action=\"editerEvenements.php\">";
-	echo "<table id=\"ajouts\"><tr>";
-
-	foreach ($th_evenements as $att => $th)
-	{
-		if ($att == "idLieu" || $att == "flyer")
-		{
-			echo "<th>".$th."</th>";
-		}
-		else
-		{
-			if ($att == $get['tri_gerer'])
-			{
-				echo "<th>".$icone[$get['ordre']];
-			}
-			else
-			{
-				echo "<th>";
-			}
-
-			echo "<a href=\"".$_SERVER['PHP_SELF']."?".arguments_URI($get, "ordre")."&ordre=".$ordre_inverse."\">".$th."</a></th>";
-		}
-	}
-
-	echo "<th>Modifier</th><th>-</th></tr>";
-
-	$pair = 0;
-
-	while ($tab_even = $connector->fetchArray($req_evenement))
-	{
-
-		$nomLieu = securise_string($tab_even['nomLieu']);
-
-		if ($tab_even['idLieu'] != 0)
-		{
-			$req_lieu = $connector->query("SELECT nom FROM lieu WHERE idLieu=".$tab_even['idLieu']);
-			$tabLieu = $connector->fetchArray($req_lieu);
-			$nomLieu = "<a href=\"".$url_admin."lieu.php?idL=".$tab_even['idLieu']."\" title=\"Voir la fiche du lieu : ".securise_string($tabLieu['nom'])." \">".securise_string($tabLieu['nom'])."</a>";
-		}
-
-
-		if ($pair % 2 == 0)
-		{
-			echo "<tr>";
-		}
-		else
-		{
-			echo "<tr class=\"impair\" >";
-		}
-
-		echo "
-		<td>".date_iso2app($tab_even['dateEvenement'])."</td>
-		<td><a href=\"".$url_site."evenement.php?idE=".$tab_even['idEvenement']."\" title=\"Voir la fiche de l'événement\">".securise_string($tab_even['titre'])."</a></td>
-		<td>".$nomLieu."</td>
-		<td>";
-		if (!empty($tab_even['flyer']))
-		{
-			$imgInfo = @getimagesize($rep_images_even.$tab_even['flyer']);
-			echo lien_popup($IMGeven.$tab_even['flyer'], "Flyer", $imgInfo[0]+20, $imgInfo[1]+20, $iconeImage);
-		}
-		echo "</td>";
-				echo "<td>";
-		if ($tab_even['date_derniere_modif'] != "0000-00-00 00:00:00")
-		{
-			echo date_iso2app($tab_even['date_derniere_modif']);
-		}
-		echo "</td>";
-		echo "
-		<td>".date_iso2app($tab_even['dateAjout'])."</td><td>".$tab_icones_statut[$tab_even['statut']]."</td>";
-
-		if ($_SESSION['Sgroupe'] <= 4)
-		{
-			echo "<td><a href=\"".$url_site."ajouterEvenement.php?action=editer&idE=".$tab_even['idEvenement']."\" title=\"Éditer l'événement\">".$iconeEditer."</a></td>";
-		}
-		echo '<td><input type="checkbox" name="evenements[]" value="'.$tab_even['idEvenement'].'" /></td></tr>';
-
-		$pair++;
-
-	} // fin while
-
-
-	echo "</table>";
-	?>
-
-<fieldset>
-<legend>Genre</legend>
-<ul class="radio">
-<?php
-foreach ($genres as $g)
-{
-	$coche = '';
-	if (strcmp($g, $champs['genre']) == 0)
-	{
-		$coche = 'checked="1"';
-	}
-	echo '<li class="listehoriz"><input type="radio" name="genre" value="'.$g.'" '.$coche.' id="genre_'.$g.'" title="Ã À quelle catégorie appartient l\'Ã©vÃ©nement ?" class="radio_horiz" /><label class="continu" for="genre_'.$g.'">'.$g.'</label></li>';
-}
-?>
-</ul>
-
-
-<?php
-echo $verif->getErreur("genre");
-?>
-</fieldset>
-
-
-<?php
-	echo "</form>";
-
-
-}
-else if ($get['element'] == "description")
-{
-
 	$req_des = $connector->query("
 	SELECT idLieu, idPersonne, dateAjout, contenu, date_derniere_modif
 	FROM descriptionlieu
@@ -380,9 +233,6 @@ echo '<div class="spacer"></div>';
 }
 else if ($get['element'] == "lieu")
 {
-
-
-
 	$req_lieux = $connector->query("
 	SELECT idLieu, idPersonne, nom, quartier, categorie, URL, statut, dateAjout, date_derniere_modif
 	FROM lieu
@@ -502,12 +352,10 @@ echo '<div class="spacer"></div>';
 }
 else if ($get['element'] == "organisateur")
 {
-
 	if ($get['tri_gerer'] == 'dateAjout')
 	{
 		$get['tri_gerer'] = 'date_ajout';
 	}
-
 
 	$req_lieux = $connector->query("
 	SELECT *
@@ -599,124 +447,7 @@ echo '<div class="spacer"></div>';
 		$pair++;
 
 	}
-
 	echo "</table>";
-
-
-}
-else if ($get['element'] == "breve")
-{
-
-	$req_breves = $connector->query("
-	SELECT idBreve, titre, contenu, img_breve, date_debut, date_fin, dateAjout, date_derniere_modif, statut
-	FROM breve
-	ORDER BY ".$get['tri_gerer']." ".$get['ordre']." LIMIT ".($get['page'] - 1) * $get['nblignes'].",".$get['nblignes']);
-
-	$req_count = $connector->query("SELECT COUNT(*) AS total FROM breve");
-	$tab_count = $connector->fetchArray($req_count);
-	$tot_elements = $tab_count['total'];
-
-	echo getPaginationString($get['page'], $tot_elements, $get['nblignes'], 1, $_SERVER['PHP_SELF'],
-	"?element=".$get['element']."&tri_gerer=".$get['tri_gerer']."&ordre=".$get['ordre']."&nblignes=".$get['nblignes']."&page=");
-
-	echo '<ul class="menu_nb_res">';
-	foreach ($tab_nblignes as $nbl)
-	{
-		echo '<li ';
-		if ($get['nblignes'] == $nbl) { echo 'class="ici"'; }
-
-		echo '><a href="'.$url_admin.'gerer.php?'.arguments_URI($get, "nblignes").'&nblignes='.$nbl.'">'.$nbl.'</a></li>';
-	}
-	echo '</ul>';
-echo '<div class="spacer"></div>';
-	echo "<table id=\"ajouts\"><tr>";
-	$th_breves = array("idBreve" => "ID",  "titre" => "Titre", "img_breve" => "Image", "date_debut" => "Début",
-	"date_fin" => "Fin", "dateAjout" => "Créé", "date_derniere_modif" => "Modifié", "statut" => "statut");
-
-	foreach ($th_breves as $att => $th)
-	{
-		if ($att == "img_breve")
-		{
-			echo "<th>".$th."</th>";
-		}
-		else
-		{
-			if ($att == $get['tri_gerer'])
-			{
-				echo "<th class=\"ici\">".$icone[$get['ordre']];
-			}
-			else
-			{
-				echo "<th>";
-			}
-			echo "<a href=\"".$_SERVER['PHP_SELF']."?element=".$get['element']."&page=".$get['page']."&tri_gerer=".$att."&ordre=".$ordre_inverse."&nblignes=".$get['nblignes']."\">".$th."</a></th>";
-		}
-	}
-
-	echo "<th>Modifier</th><th>-</th></tr>";
-
-	echo "</tr>";
-
-	$pair = 0;
-
-	while($tab_breve = $connector->fetchArray($req_breves))
-	{
-
-		echo "<tr";
-		if ($pair % 2 != 0) { echo ' class="impair"';}
-
-		echo ">";
-
-
-		echo "
-		<td>".$tab_breve['idBreve']."</td>
-		<td>".securise_string($tab_breve['titre'])."</td>
-
-		<td>";
-		if (!empty($tab_breve['img_breve']))
-		{
-			$imgInfo = @getimagesize($rep_images_breves.$tab_breve['img_breve']);
-			echo lien_popup($IMGbreves.$tab_breve['img_breve'], "image", $imgInfo[0]+20, $imgInfo[1]+20, $iconeImage);
-		}
-		echo "</td>";
-
-		echo "<td>";
-		if ($tab_breve['date_debut'] != "0000-00-00")
-		{
-			echo date_iso2app($tab_breve['date_debut']);
-		}
-		echo "</td>";
-
-		echo "<td>";
-		if ($tab_breve['date_fin'] != "0000-00-00")
-		{
-			echo date_iso2app($tab_breve['date_fin']);
-		}
-		echo "</td>";
-
-		echo "<td>".date_iso2app($tab_breve['dateAjout'])."</td>";
-
-		echo "<td>";
-		if ($tab_breve['date_derniere_modif'] != "0000-00-00 00:00:00")
-		{
-			echo date_iso2app($tab_breve['date_derniere_modif']);
-		}
-		echo "</td>
-		<td>".$tab_icones_statut[$tab_breve['statut']]."</td>";
-
-		//Edition pour l'admin ou l'auteur
-		if ( $_SESSION['Sgroupe'] < 2)
-		{
-			echo "<td><a href=\"".$url_site."ajouterBreve.php?action=editer&idB=".$tab_breve['idBreve']."\" title=\"Éditer la brêve\">".$iconeEditer."</a></td>";
-		}
-
-		echo "</tr>";
-
-		$pair++;
-	}
-
-	echo "</table>";
-
 }
 else if ($get['element'] == "commentaire")
 {
@@ -846,16 +577,12 @@ else if ($get['element'] == "personne")
 	FROM personne
 	".$sql_terme."
 	ORDER BY ".$get['tri_gerer']." ".$get['ordre'];
-	
+
 	$req_pers_total = $connector->query($sql_pers);
 	$num_pers_total = $connector->getNumRows($req_pers_total);
-	
 
-	
-	
-	
 	$pers_total_page_max = ceil($num_pers_total / $get['nblignes']);
-	if ($get['page'] > $pers_total_page_max)
+	if ($pers_total_page_max > 0 && $get['page'] > $pers_total_page_max)
 		$get['page'] = $pers_total_page_max;
 	
 /* 	echo "<p>num_pers_total : $num_pers_total";
@@ -863,7 +590,7 @@ else if ($get['element'] == "personne")
 	
 	$sql_pers .= " LIMIT ".($get['page'] - 1) * $get['nblignes'].",".$get['nblignes'];
 
-	//echo $sql_pers;
+echo $sql_pers;
 	
 	$req_pers = $connector->query($sql_pers);
 

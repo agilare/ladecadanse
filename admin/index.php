@@ -1,18 +1,4 @@
 <?php
-/**
- * Page de calcul et affichage des statistiques sur les visites
- * Pour l'admin
- *
- * @category affichage
- * @author     Michel Gaudry <michel@ladecadanse.ch>
- * @todo 	Optimiser la requête $req_statVis :
-		//WHERE eevirra LIKE '%".strrev($dateCourante)."');
-		//BETWEEN '".$dateCourante." 00:00:00' AND '".$dateCourante." 23:59:59"
-		Tenir compte des moteurs de recherche d'images
-
-		webservice vers http://www.user-agents.org/allagents.xml
- */
-
 if (is_file("../config/reglages.php"))
 {
 	require_once("../config/reglages.php");
@@ -51,33 +37,6 @@ require_once('header.inc.php');
 <div id="contenu" class="colonne">
 
 <?php
-//printr($_COOKIE);
-/*
- *  Liste des IP et useragents à ne pas compter dans le total des visites
- * Ce sont des robots, etc.
- */
- /*
-$robotsMoteurs = array();
-if (!$fp = fopen("robots_moteurs.txt","r"))
-{
-	echo "Echec de l'ouverture du fichier";
-	exit;
-}
-else
-{
-	while(!feof($fp))
-	{
-	// On récupère une ligne
-		$Ligne = fgets($fp, 255);
-
-	// On affiche la ligne
-
-		$robotsMoteurs[] = trim($Ligne);
-
-	}
-	fclose($fp); // On ferme le fichier
-}
-*/
 //les dates au delà de 2 jours sont dispo pour être archivées
 define("JOUR_LIM", 2);
 
@@ -90,8 +49,6 @@ $troisJoursAvant = date("Y-m-d H:i:s", time() - (3*86400));
 	<div class="spacer"></div>
 </div>
 
-
-
 <div id="tableaux">
 
 <?php if ($_SESSION['Sgroupe'] < 4) { ?>  
@@ -99,12 +56,12 @@ $troisJoursAvant = date("Y-m-d H:i:s", time() - (3*86400));
 <h3 style="padding:0.4em 0">Inscriptions de ces 3 derniers jours</h3>
 <table summary="Dernières inscriptions">
 <tr>
-<th colspan="2">Date</th>
-<th>Identifiant</th>
-<th>E-mail</th>
-<th>Groupe</th>
-<th>Affiliation</th>
-<th>&nbsp;</th>
+    <th colspan="2">Date</th>
+    <th>Identifiant</th>
+    <th>E-mail</th>
+    <th>Groupe</th>
+    <th>Affiliation</th>
+    <th>&nbsp;</th>
 </tr>
 <?php
 
@@ -120,9 +77,6 @@ $req_get = $connector->query("SELECT idPersonne, pseudo, groupe, affiliation, em
 $pair = 0;
 while($tab_pers = $connector->fetchArray($req_get))
 {
-
-
-
 	if ($pair % 2 == 0)
 	{
 		echo "<tr>";
@@ -131,7 +85,6 @@ while($tab_pers = $connector->fetchArray($req_get))
 	{
 		echo "<tr class=\"impair\">";
 	}
-	
 
 	$datetime_dateajout = date_iso2app($tab_pers['dateAjout']);
 	$tab_datetime_dateajout = explode(" ", $datetime_dateajout);
@@ -154,18 +107,16 @@ while($tab_pers = $connector->fetchArray($req_get))
 ?>
 </table>
 
-
-
 <h3 style="padding:0.4em 0">Derniers commentaires</h3>
 <table class="ajouts" summary="Derniers commentaires ajoutés">
 <tr>
-<th colspan="2">Date d'ajout</th>
-<th>Contenu</th>
-<th>Élément</th>
-<th>Type</th>
-<th>Statut</th>
-<th>par</th>
-<th>&nbsp;</th>
+    <th colspan="2">Date d'ajout</th>
+    <th>Contenu</th>
+    <th>Élément</th>
+    <th>Type</th>
+    <th>Statut</th>
+    <th>par</th>
+    <th>&nbsp;</th>
 </tr>
 <?php
 $th_comm = array("contenu" => "Commentaire", "idEvenement" => "Événement", "element" => "Élément", "statut" => "Statut", "dateAjout" => "Date d'ajout", "heure" => "Heure");
@@ -277,16 +228,15 @@ if ($connector->getNumRows($req_getEvenement) > 0)
 ?>
     <table summary="Derniers événements ajoutés" id="derniers_evenements_ajoutes">
     <tr>
-
-    <th>Titre</th>
-    <th>Lieu</th>
-    <th>Date</th>
-    <th>Catégorie</th>
-    <th>Horaire</th>
-    <th>Statut</th>
-    <th>Ajouté</th>
-    <th>par</th>
-    <th>&nbsp;</th>
+        <th>Titre</th>
+        <th>Lieu</th>
+        <th>Date</th>
+        <th>Catégorie</th>
+        <th>Horaire</th>
+        <th>Statut</th>
+        <th>Ajouté</th>
+        <th>par</th>
+        <th>&nbsp;</th>
     </tr>
 <?php
 
@@ -442,16 +392,13 @@ while($tab_even = $connector->fetchArray($req_getEvenement))
 </table>
 <?php } // if (0) ?>
 
-
-
-
 <h3 style="padding:0.4em 0">Derniers évenements mis en favoris</h3>
 
 <table class="ajouts" summary="Derniers favoris ajoutés">
 <tr>
-<th>Événement</th>
-<th>Personne</th>
-<th>&nbsp;</th>
+    <th>Événement</th>
+    <th>Personne</th>
+    <th>&nbsp;</th>
 </tr>
 <?php
 $th_comm = array("titre" => "Titre", "pseudo" => "Pseudo", "date_ajout" => "Ajouté");
@@ -476,12 +423,8 @@ while($tab = $connector->fetchArray($req_fav_even))
 		echo "<tr class=\"impair\">";
 	}
 
-
-
-
 	echo "<td><a href=\"".$url_site."evenement.php?idE=".$tab['idEvenement']."\"
 	title=\"Voir l'événement\">".securise_string($tab['titre'])."</a></td>";
-
 
 	$nom_auteur = "<i>Ancien membre</i>";
 
@@ -499,220 +442,17 @@ while($tab = $connector->fetchArray($req_fav_even))
 ?>
 
 </table>
-
-<?php /*
-<h5>Brèves</h5>
-	<table summary="Dernières brèves ajoutés">
-	<tr>
-	<th colspan="2">Date d'ajout</th><th>Titre</th><th>Image</th><th>Début</th><th>Fin</th><th>par</th><th>&nbsp;</th>
-	</tr>
-<?php
-
-$req_getBreve = $connector->query("SELECT idBreve, titre, contenu, img_breve, idPersonne, date_debut, date_fin,
- dateAjout FROM breve ORDER BY dateAjout DESC LIMIT 0, 10");
-
-
-while($tab_breve = $connector->fetchArray($req_getBreve))
-{
-	if ($pair % 2 == 0)
-	{
-		echo "<tr>";
-	}
-	else
-	{
-		echo "<tr class=\"impair\">";
-	}
-
-
-	$datetime_dateajout = date_iso2app($tab_breve['dateAjout']);
-	$tab_datetime_dateajout = explode(" ", $datetime_dateajout);
-	echo "<td>".$tab_datetime_dateajout[1]."</td><td>".$tab_datetime_dateajout[0]."</td>";
-	echo "<td>".securise_string($tab_breve['titre'])."</td>";
-	echo "<td>";
-	if (!empty($tab_breve['img_breve']))
-	{
-		$imgInfo = @getimagesize($rep_images_breves.$tab_breve['img_breve']);
-		echo lien_popup($IMGbreves.$tab_breve['img_breve'], "image de la brève", $imgInfo[0]+20, $imgInfo[1]+20, $iconeImage);
-	}
-	echo "</td>";
-
-	echo "<td>";
-	if ($tab_breve['date_debut'] != "0000-00-00")
-	{
-		echo date_iso2app($tab_breve['date_debut']);
-	}
-	echo "</td>";
-	echo "<td>";
-	if ($tab_breve['date_fin'] != "0000-00-00")
-	{
-		echo date_iso2app($tab_breve['date_fin']);
-	}
-	echo "</td>";
-	$nom_auteur = "<i>Ancien membre</i>";
-
-	if ($tab_auteur = $connector->fetchArray($connector->query("SELECT pseudo FROM personne WHERE idPersonne=".$tab_breve['idPersonne'])))
-	{
-		$nom_auteur = "<a href=\"".$url_site."personne.php?idP=".$tab_comm['idPersonne']."\"
-		title=\"Voir le profile de la personne\">".securise_string($tab_auteur['pseudo'])."</a>";
-	}
-	echo "<td>".$nom_auteur."</td>";
-	//Edition pour l'admin ou l'auteur
-	if ($_SESSION['Sgroupe'] < 2)
-	{
-		echo "<td><a href=\"".$url_site."ajouterBreve.php?action=editer&amp;idB=".$tab_breve['idBreve']."\" title=\"Éditer la brêve\">".$iconeEditer."</a></td>";
-	}
-
-	echo "</tr>";
-
-	$pair++;
-}
-
-
-
-?>
-
-</table>
-*/?>
-
-
-<?php
-
-/* <h5>Lieux</h5>
-<table summary="Derniers lieux ajoutés">
-<tr>
-<th colspan="2">Ajouté le</th>
-<th>Nom</th>
-<th>Descriptions</th>
-<th>par</th>
-<th>&nbsp;</th>
-</tr>
-
-LIEUX
-* classés par date d'ajout
-
-
-$req_getLieu = $connector->query("SELECT idLieu, idPersonne, nom, adresse, quartier,
- horaire_general, entree, categorie, URL, email, dateAjout FROM lieu ORDER BY dateAjout DESC LIMIT 0, 3");
-
-while($tab_lieux = $connector->fetchArray($req_getLieu))
-{
-	$req_nbDes = $connector->query("SELECT COUNT(*) FROM descriptionlieu WHERE idLieu=".$tab_lieux['idLieu']);
-	$tabDes = $connector->fetchArray($req_nbDes);
-
-	if ($pair % 2 == 0)
-	{
-		echo "<tr>";
-	}
-	else
-	{
-		echo "<tr class=\"impair\">";
-	}
-
-	$datetime_dateajout = date_iso2app($tab_lieux['dateAjout']);
-	$tab_datetime_dateajout = explode(" ", $datetime_dateajout);
-	echo "<td>".$tab_datetime_dateajout[1]."</td><td>".$tab_datetime_dateajout[0]."</td>";
-
-	echo "
-	<td><a href=\"".$url_site."lieu.php?id=".$tab_lieux['idLieu']."\"
-	title=\"Voir la fiche du lieu :".securise_string($tab_lieux['nom'])."\">".securise_string($tab_lieux['nom'])."</a></td>";
-
-	echo "
-	<td>".$tabDes['COUNT(*)']."</td>";
-
-	$nom_auteur = "<i>Ancien membre</i>";
-
-	if ($tab_auteur = $connector->fetchArray($connector->query("SELECT pseudo FROM personne WHERE idPersonne=".$tab_lieux['idPersonne'])))
-	{
-		$nom_auteur = "<a href=\"".$url_site."personne.php?idP=".$tab_lieux['idPersonne']."\"
-		title=\"Voir le profile de la personne\">".securise_string($tab_auteur['pseudo'])."</a>";
-	}
-	echo "<td>".$nom_auteur."</td>";
-	//Edition pour l'admin ou l'auteur
-	if ($_SESSION['Sgroupe'] <= 4)
-	{
-		echo '<td><a href="'.$url_site.'ajouterLieu.php?action=editer&amp;idL='.$tab_lieux['idLieu'].'" title="Éditer le lieu">'.$iconeEditer.'</a></td>';
-	}
-	echo "</tr>";
-
-	$pair++;
-}
-
-?>
-</table>
-<br />
-<form action="<?php echo $url_admin ?>geocode_lieux.php">
-<input type="submit" value="Lancer un géocodage des lieux" />
-</form>
-
-*/ ?>
-
-<?php /*
-<h5>Organisateurs</h5>
-<table summary="Derniers organisateurs ajoutés">
-<tr>
-<th colspan="2">Ajouté le</th>
-<th>Nom</th>
-<th>par</th>
-<th>&nbsp;</th>
-</tr>
-
-<?php
-
-
-$req = $connector->query("SELECT * FROM organisateur ORDER BY date_ajout DESC LIMIT 0, 3");
-
-while($tab = $connector->fetchArray($req))
-{
-
-	if ($pair % 2 == 0)
-	{
-		echo "<tr>";
-	}
-	else
-	{
-		echo "<tr class=\"impair\">";
-	}
-
-	$datetime_dateajout = date_iso2app($tab['date_ajout']);
-	$tab_datetime_dateajout = explode(" ", $datetime_dateajout);
-	echo "<td>".$tab_datetime_dateajout[1]."</td><td>".$tab_datetime_dateajout[0]."</td>";
-
-	echo "
-	<td><a href=\"".$url_site."organisateur.php?idO=".$tab['idOrganisateur']."\"
-	title=\"Voir la fiche :".securise_string($tab['nom'])."\">".securise_string($tab['nom'])."</a></td>";
-
-	$nom_auteur = "<i>Ancien membre</i>";
-
-	if ($tab_auteur = $connector->fetchArray($connector->query("SELECT pseudo FROM personne WHERE idPersonne=".$tab['idPersonne'])))
-	{
-		$nom_auteur = "<a href=\"".$url_site."personne.php?idP=".$tab['idPersonne']."\"
-		title=\"Voir le profil de la personne\">".securise_string($tab_auteur['pseudo'])."</a>";
-	}
-	echo "<td>".$nom_auteur."</td>";
-	//Edition pour l'admin ou l'auteur
-	if ($_SESSION['Sgroupe'] <= 4)
-	{
-		echo '<td><a href="'.$url_site.'ajouterOrganisateur.php?action=editer&amp;idO='.$tab['idOrganisateur'].'" title="Éditer ">'.$iconeEditer.'</a></td>';
-	}
-	echo "</tr>";
-
-	$pair++;
-}
-?>
-</table>
-*/ ?>
-
 <?php if ($_SESSION['Sgroupe'] < 4) { ?> 
 <h3 style="padding:0.2em">Derniers textes ajoutés</h3>
 
 <table summary="Derniers textes ajoutés">
 <tr>
-<th colspan="2">Ajouté le</th>
-<th>Lieu</th>
-<th>Contenu</th>
-<th>Type</th>
-<th>par</th>
-<th>&nbsp;</th>
+    <th colspan="2">Ajouté le</th>
+    <th>Lieu</th>
+    <th>Contenu</th>
+    <th>Type</th>
+    <th>par</th>
+    <th>&nbsp;</th>
 </tr>
 
 <?php
@@ -752,7 +492,7 @@ while ($tab_desc = $connector->fetchArray($req_getDes))
 	{
 		$tab_desc['contenu'] = mb_substr($tab_desc['contenu'], 0, 200)." [...]";
 	}
-	echo "<td class=\"tdleft small\">".textToHtml(securise_string($tab_desc['contenu']))."</td>";
+	echo "<td class=\"tdleft small\">".html_substr($tab_desc['contenu'])."</td>";
 	$nom_auteur = "<i>Ancien membre</i>";
 
 	if ($tab_auteur = $connector->fetchArray($connector->query("SELECT pseudo FROM personne WHERE idPersonne=".$tab_desc['idPersonne'])))
@@ -776,60 +516,9 @@ while ($tab_desc = $connector->fetchArray($req_getDes))
 
 <?php } ?>
 
+</div><!-- fin tableaux -->
 
-<?php if ($_SESSION['Sgroupe'] < 4) { ?> 
-
-<h3 style="padding:0.2em">Top des événements ajoutés en favoris durant les 12 derniers mois</h3>
-
-<table>
-    
-    <tr>
-        <th>Titre</th>
-        <th>Nb</th>
-    </tr>
-
-    <?php
-
-    $sql_req = "SELECT evenement.idEvenement AS idE, evenement.titre AS titre, count(evenement.idevenement) as nb FROM evenement_favori, evenement WHERE evenement.idevenement=evenement_favori.idEvenement and evenement_favori.date_ajout >= DATE_SUB(CURDATE(), INTERVAL 365 DAY) group by evenement.idEvenement order by nb DESC LIMIT 0, 20 ";
-
-    //echo $sql_req;
-    $req_getDes = $connector->query($sql_req);
-
-    while ($tab_desc = $connector->fetchArray($req_getDes))
-    {
-        if ($pair % 2 == 0)
-        {
-            echo "<tr>";
-        }
-        else
-        {
-            echo "<tr class=\"impair\">";
-        }
-
-        echo "<td><a href=../evenement.php?idE=".$tab_desc['idE'].">".$tab_desc['titre']."</a></td>";
-        echo "<td>".$tab_desc['nb']."</td>";
-        echo "</tr>";
-
-        $pair++;
-    }
-
-    ?>
-</table>
-
-<?php } ?>
-
-</div>
-<!-- fin tableaux -->
-
-
-
-
-
-</div>
-<!-- fin contenu -->
-
-
-
+</div><!-- fin contenu -->
 
 <div id="colonne_droite" class="colonne">
 <?php
