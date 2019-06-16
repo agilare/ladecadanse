@@ -135,13 +135,12 @@ if (HOME_TMP_BANNER_ENABLED)
                 <div class="genre-titre">
                     <h3 id="<?php echo mb_strtolower(replace_accents($genre_fr)); ?>"><?php echo $genre_fr; ?></h3>
 
-                    <?php if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 1 && $tab_even['genre'] != 'divers') { ?>
+                    <?php if ($tab_even['genre'] != 'divers') { ?>
                     <a class="genre-jump" href="#<?php echo $proch; ?>"><i class="fa fa-long-arrow-down"></i></a>
                     <?php } else { ?>
                     <span style="float: right;margin: 0.2em;padding: 0.4em 0.8em;">&nbsp;</span>
                     <?php } ?>	
-
-                    <?php if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 1 && $tab_even['genre'] != 'fête') { ?>
+                    <?php if ($tab_even['genre'] != 'fête') { ?>
                     <a class="genre-jump" href="#<?php echo $genre_prec; ?>"><i class="fa fa-long-arrow-up"></i></a>
                     <?php } ?>
 
@@ -224,15 +223,12 @@ if (HOME_TMP_BANNER_ENABLED)
             {
                 $imgInfo = @getimagesize($rep_images.$tab_even['flyer']);
                 ?>
-
                 <a href="<?php echo $IMGeven.$tab_even['flyer']; ?>" class="magnific-popup"><img src="<?php echo $IMGeven."s_".$tab_even['flyer']; ?>" alt="Flyer" width="100" /></a>
-
                 <?php
             }
             else if (!empty($tab_even['image']))
             {
                 $imgInfo = @getimagesize($rep_images.$tab_even['image']);
-
                 ?>
 
                 <a href="<?php echo $IMGeven.$tab_even['image']; ?>" class="magnific-popup"><img src="<?php echo $IMGeven."s_".$tab_even['image']; ?>" alt="Photo" width="100" /></a>
@@ -265,7 +261,6 @@ if (HOME_TMP_BANNER_ENABLED)
                 {
                     $org_url = 'http://'.$tab['URL'];
                 }                    
-
             ?>
                 <li><a href="organisateur.php?idO=<?php echo $tab['idOrganisateur']; ?>" title="Voir la fiche de l'organisateur"><?php echo $tab['nom']; ?></a> <a href="<?php echo $org_url; ?>" title="Site web de l'organisateur" class="lien_ext" target="_blank"><?php echo $org_url_nom; ?></a></li>                
             <?php
@@ -276,8 +271,7 @@ if (HOME_TMP_BANNER_ENABLED)
             </div>
 
             <div class="spacer"></div>
-                <div class="pratique">
-
+            <div class="pratique">
                 <span class="left"><?php echo htmlspecialchars($even_adresse); ?></span><span class="right"><?php echo afficher_debut_fin($tab_even['horaire_debut'], $tab_even['horaire_fin'], $tab_even['dateEvenement']);
                 if (!empty($tab_even['prix']))
                 {
@@ -286,13 +280,11 @@ if (HOME_TMP_BANNER_ENABLED)
                         echo ", ";
                     }
                     echo htmlspecialchars($tab_even['prix']);
-
                 }
                 ?>
 
                 </span>
                 <div class="spacer"></div>
-
             </div> <!-- fin pratique -->
 
             <div class="edition">
