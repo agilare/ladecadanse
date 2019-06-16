@@ -175,7 +175,7 @@ if ($get['sem'])
     $sql_dateEven = "
     SELECT DISTINCT dateEvenement
     FROM evenement
-    WHERE ".$sql_genre." dateEvenement ".$sql_date_evenement." AND NOT IN ('inactif', 'propose') AND ".$sql_region." 
+    WHERE ".$sql_genre." dateEvenement ".$sql_date_evenement." AND statut NOT IN ('inactif', 'propose') AND ".$sql_region." 
     ORDER BY dateEvenement ASC";
 
     $req_dateEven = $connector->query($sql_dateEven);
