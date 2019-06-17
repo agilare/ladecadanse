@@ -278,7 +278,7 @@ if (!empty($_SESSION['ajouterEvenement_flash_msg']))
 		?>
 
 
-			<!--<li><a href="annuler.php?idE=<?php //$get['idE'] ?>" title="Annuler cet événement"><img src="images/interface/icons/page_delete.png" />Annuler</a></li> -->
+			<!--<li><a href="annuler.php?idE=<?php //$get['idE'] ?>" title="Annuler cet événement"><img src="web/interface/icons/page_delete.png" />Annuler</a></li> -->
 	
 			<li><a href="<?php echo $url_site."evenement_ics.php?idE=".$get['idE'] ?>" title="Exporter au format iCalendar dans votre agenda"><i class="fa fa-calendar-plus-o fa-lg"></i>
 iCal</a></li>			

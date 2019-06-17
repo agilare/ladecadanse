@@ -74,6 +74,10 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 		$verif->setErreur("memoriser", "Valeur fausse");
 	}
 
+	if (!empty($_POST['login_as']))
+	{
+		$verif->setErreur("login_as", "Veuillez laisser ce champ vide");
+	}
 
 
 	//Si le pseudo et le mot de passe sont au bon format
@@ -190,9 +194,10 @@ echo $verif->getHtmlErreur("motdepasse");
 <p class="mdp_oublie"><a href="inscription.php" >Pas de compte ?</a></p>
 
 <p class="piedForm">
-<input type="hidden" id="origine" name="origine" value="<?php echo $champs['origine'] ?>" />
-<input type="hidden" name="formulaire" value="ok" />
-<input type="submit" name="Submit" value="Se connecter" class="submit submit-big" />
+    <input type="hidden" id="origine" name="origine" value="<?php echo $champs['origine'] ?>" />
+    <input type="text" class="name_as" name="login_as"></span>
+    <input type="hidden" name="formulaire" value="ok" />
+    <input type="submit" name="Submit" value="Se connecter" class="submit submit-big" />
 </p>
 
 </fieldset>

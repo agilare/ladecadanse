@@ -54,7 +54,7 @@ $pair = 0;
 <div id="contenu" class="colonne">
     
     <div id="entete_contenu">
-        <h2 style="font-size:1.6em; width: 15%;">Lieux</h2> <?php if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 6) { ?><a href="ajouterLieu.php?action=ajouter" style="float: left;padding: 5px 1px;"><img src="images/interface/icons/building_add.png" alt=""  /> Ajouter un lieu</a><?php } ?><?php getMenuRegions($glo_regions, $get); ?>
+        <h2 style="font-size:1.6em; width: 15%;">Lieux</h2> <?php if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 6) { ?><a href="ajouterLieu.php?action=ajouter" style="float: left;padding: 5px 1px;"><img src="web/interface/icons/building_add.png" alt=""  /> Ajouter un lieu</a><?php } ?><?php getMenuRegions($glo_regions, $get); ?>
         <div class="spacer"></div>
         <p class="mobile" id="btn_listelieux">
             <button href="#"><i class="fa fa-list fa-lg"></i>&nbsp;Liste des lieux</button>
@@ -76,7 +76,7 @@ $pair = 0;
 	if ($fiche->getValue('photo1') != "")
 	{
 		$photo_principale = "<a href=\"".$url_site."lieu.php?idL=".$fiche->getValue('idLieu')."\" title=\"Voir la fiche du lieu : ".securise_string($fiche->getValue('nom'))."\">
-		<img src=\"images/lieux/s_".$fiche->getValue('photo1')."?".filemtime($rep_images_lieux."s_".$fiche->getValue('photo1'))."\" width=\"100\" alt=\"".securise_string($fiche->getValue('nom'))."\" /></a>\n";
+		<img src=\"web/uploads/lieux/s_".$fiche->getValue('photo1')."?".filemtime($rep_images_lieux."s_".$fiche->getValue('photo1'))."\" width=\"100\" alt=\"".securise_string($fiche->getValue('nom'))."\" /></a>\n";
 	}
 
 	$nomAuteur = securise_string($fiche->getValue('pseudo'));

@@ -201,7 +201,7 @@ $detailsAff = $connector->fetchArray($req_affPers);
                 </td></tr>
         </table>
         <?php if ((isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 1)) || $_SESSION['SidPersonne'] == $get['idP']) { ?>
-        <a href="/ajouterPersonne.php?idP=<?php echo $get['idP'] ?>&action=editer"><img src="images/interface/icons/user_edit.png" alt="" />Modifier</a><?php } ?>
+        <a href="/ajouterPersonne.php?idP=<?php echo $get['idP'] ?>&action=editer"><img src="web/interface/icons/user_edit.png" alt="" />Modifier</a><?php } ?>
     </div> <!-- Fin profile -->    
     
     
@@ -221,12 +221,12 @@ if ($get['type_elements'] == 'favoris')
 	<ul id="menu_ajouts">
 
 		<li <?php if ($get['elements'] == "evenement") { echo ' class="ici" '; } ?>>
-		<img src="images/interface/icons/calendar.png" />
+		<img src="web/interface/icons/calendar.png" />
 		<a href="<?php echo $_SERVER['PHP_SELF']."?idP=".$get['idP']."&type_elements=".$get['type_elements']."&elements=evenement" ?>">événements</a>
 		</li>
 
 		<li <?php if ($get['elements'] == "lieu") { echo ' class="ici" '; } ?>>
-		<img src="images/interface/icons/building.png" />
+		<img src="web/interface/icons/building.png" />
 		<a href="<?php echo $_SERVER['PHP_SELF']."?idP=".$get['idP']."&type_elements=".$get['type_elements']."&elements=lieu" ?>">lieux</a>
 		</li>
 
@@ -621,7 +621,7 @@ else
 
 
 	<li <?php if ($get['elements'] == "evenement") { echo ' class="ici" '; } ?>>
-	<img src="images/interface/icons/calendar.png" />
+	<img src="web/interface/icons/calendar.png" />
 	<a href="<?php echo $_SERVER['PHP_SELF']."?idP=".$get['idP']."&nblignes=".$get['nblignes']."&elements=evenement" ?>">événements</a>
 	</li>
 	<?php
@@ -632,7 +632,7 @@ else
 	{
 	?>
 	<li <?php if ($get['elements'] == "breve") { echo ' class="ici" '; } ?>>
-	<img src="images/interface/icons/newspaper.png" />
+	<img src="web/interface/icons/newspaper.png" />
 	<a href="<?php echo $_SERVER['PHP_SELF']."?idP=".$get['idP']."&nblignes=".$get['nblignes']."&elements=breve" ?>">brèves</a>
 	</li>
 	<?php
@@ -643,7 +643,7 @@ else
 	{
 	?>
 	<li <?php if ($get['elements'] == "lieu") { echo ' class="ici" '; } ?>>
-	<img src="images/interface/icons/building.png" />
+	<img src="web/interface/icons/building.png" />
 	<a href="<?php echo $_SERVER['PHP_SELF']."?idP=".$get['idP']."&nblignes=".$get['nblignes']."&elements=lieu" ?>">lieux</a>
 	</li>
 	<?php
@@ -653,7 +653,7 @@ else
 	{
 	?>
 	<li <?php if ($get['elements'] == "organisateur") { echo ' class="ici" '; } ?>>
-	<img src="images/interface/icons/group.png" />
+	<img src="web/interface/icons/group.png" />
 	<a href="<?php echo $_SERVER['PHP_SELF']."?idP=".$get['idP']."&nblignes=".$get['nblignes']."&elements=organisateur" ?>">organisateurs</a>
 	</li>
 	<?php
@@ -663,7 +663,7 @@ else
 	{
 	?>
 	<li <?php if ($get['elements'] == "description") { echo ' class="ici" '; } ?>>
-	<img src="images/interface/icons/page_white_text.png" />
+	<img src="web/interface/icons/page_white_text.png" />
 	<a href="<?php echo $_SERVER['PHP_SELF']."?idP=".$get['idP']."&nblignes=".$get['nblignes']."&elements=description" ?>">textes</a>
 	</li>
 	<?php
@@ -671,7 +671,7 @@ else
 	?>
 
 	<li <?php if ($get['elements'] == "commentaire") { echo ' class="ici" '; } ?>>
-	<img src="images/interface/icons/comment.png" />
+	<img src="web/interface/icons/comment.png" />
 	<a href="<?php echo $_SERVER['PHP_SELF']."?idP=".$get['idP']."&nblignes=".$get['nblignes']."&elements=commentaire" ?>">commentaires</a>
 	</li>
 

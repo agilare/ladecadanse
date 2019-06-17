@@ -300,7 +300,7 @@ echo '<a id="bouton_imprimer" title="Imprimer la page" href="javascript:window.p
 <div id="entete">
    
     <div id="titre_site">
-        <a href="<?php echo $url_site.$url_query_region_1er ?>"><img src="/images/interface/logo_titre.jpg" alt="La décadanse" width="180" height="35" /></a>
+        <a href="<?php echo $url_site.$url_query_region_1er ?>"><img src="/web/interface/logo_titre.jpg" alt="La décadanse" width="180" height="35" /></a>
     </div>
 
     <div id="entete_haut">
@@ -471,14 +471,14 @@ echo '<a id="bouton_imprimer" title="Imprimer la page" href="javascript:window.p
 	<li class="form_recherche">
         <a href="#" id="btn_search"><i class="fa fa-search" aria-hidden="true"></i></a>
         <form class="recherche" action="recherche.php" method="get" enctype="application/x-www-form-urlencoded">
-            <input type="text" class="mots" name="mots" size="22" maxlength="100" placeholder="Rechercher un événement" /><input type="submit" class="submit" name="formulaire" value=" " />
+            <input type="text" class="mots" name="mots" size="22" maxlength="100" placeholder="Rechercher un événement" /><input type="submit" class="submit" name="formulaire" value=" " /><input type="text" name="name_as" value="" class="name_as" id="name_as" />
         </form>
 	</li>
 
 	</ul>
 	<div class="clear_mobile"></div>
     <form class="recherche_mobile" action="recherche.php" method="get" enctype="application/x-www-form-urlencoded">
-        <input type="text" class="mots" name="mots" size="35" maxlength="100" placeholder="Rechercher un événement" /><input type="submit" class="submit" name="formulaire" value="OK" />
+        <input type="text" class="mots" name="mots" size="35" maxlength="100" placeholder="Rechercher un événement" /><input type="submit" class="submit" name="formulaire" value="OK" /><input type="text" name="name_as" value="" class="name_as" id="name_as" />
     </form>
 </div>
 <!-- Fin Menu-->

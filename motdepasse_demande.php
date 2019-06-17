@@ -48,7 +48,7 @@ $champs = array("pseudo_email" => "");
 
 $verif = new Validateur();
 
-if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' && empty($_POST['as_nom']))
+if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' && empty($_POST['name_as']))
 {
 
 	foreach ($champs as $c => $v)
@@ -195,25 +195,19 @@ if ($verif->nbErreurs() > 0)
 
 
 <form id="ajouter_editer" class="submit-freeze-wait" action="" method="post">
-<span class="mr_as">
-		<label for="mr_as">Ne pas remplir ce champ</label><input type="text" id="as_nom" name="as_nom">
-	</span>
+    <span class="mr_as"><label for="mr_as">Ne pas remplir ce champ</label><input type="text" id="name_as" name="name_as"></span>
+    <p>
+        <label for="pseudo" id="login_pseudo">Identifiant ou e-mail du compte</label>
+        <input type="text" name="pseudo_email" id="pseudo_email" value="" size="30" />
+        <?php
+        echo $verif->getHtmlErreur("pseudo_email");
+        ?>
+    </p>
 
-<p>
-<label for="pseudo" id="login_pseudo">Identifiant ou e-mail du compte</label>
-<input type="text" name="pseudo_email" id="pseudo_email" value="" size="30" />
-<?php
-echo $verif->getHtmlErreur("pseudo_email");
-?>
-</p>
-
-<p class="piedForm">
-<input type="hidden" name="formulaire" value="ok" />
-
-
-<input type="submit" name="Submit" value="Envoyer la demande" class="submit" />
-</p>
-
+    <p class="piedForm">
+        <input type="hidden" name="formulaire" value="ok" />
+        <input type="submit" name="Submit" value="Envoyer la demande" class="submit" />
+    </p>
 </form>
 
 <?php } ?>

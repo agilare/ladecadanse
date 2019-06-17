@@ -240,30 +240,13 @@ document.write("<a href='mailto:"+link+"'>"+link+"</a>")
 
 <!-- Contenu obligatoire (textarea) -->
 <p>
-<label for="contenu" id="label_contenu">Contenu* </label><textarea name="contenu" id="message" rows="14" title="" tabindex="5">
-<?php echo securise_string($champs['contenu']) ?>
-</textarea>
-<?php echo $verif->getErreur("contenu"); ?>
+    <label for="contenu" id="label_contenu">Contenu* </label><textarea name="contenu" id="message" rows="14" title="" tabindex="5">
+    <?php echo securise_string($champs['contenu']) ?>
+    </textarea>
+    <?php echo $verif->getErreur("contenu"); ?>
 </p>
 
-
 </fieldset>
-
-<?php /* ?>
-<fieldset>
-
-<legend>Antispam</legend>
-
-<img src="librairies/freecap/freecap.php" id="freecap" alt="captcha" />
-<p class="guide_captcha"><a href="#" onClick="this.blur();new_freecap();return false;">Générer un nouveau mot</a></p>
-<div class="spacer"></div>
-<label for="word">Veuillez copier le mot ci-dessus* :</label>
-<input type="text" name="word" id="word" onblur="javascript:callServer();" onFocus="javascript:document.getElementById('captcha_result').innerHTML='';" />
-<span id="captcha_result"></span>
-<?php echo $verif->getHtmlErreur("freecap"); ?>
-
-</fieldset>
-<?php */ ?>
 
 <p class="piedForm">
 	<input type="hidden" name="formulaire" value="ok" />

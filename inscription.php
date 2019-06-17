@@ -214,9 +214,10 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 		$verif->setErreur("affiliation", "Le choix d'une affiliation est réservéee aux acteurs culturels");
 	}
 
-	//TEST
-	//echo $sql_existance;
-	//
+	if (!empty($_POST['username_as']))
+	{
+		$verif->setErreur("username_as", "Veuillez laisser ce champ vide");
+	}
 
 	/*
 	if(!empty($_SESSION['freecap_word_hash']) && !empty($_POST['word']))
@@ -596,8 +597,9 @@ echo $verif->getHtmlErreur("email_identique");?>
 <?php */ ?>
 
 <p class="piedForm">
-<input type="hidden" name="formulaire" value="ok" />
-<input type="submit" value="S'inscrire" class="submit submit-big" />
+    <input type="hidden" name="formulaire" value="ok" />
+    <input type="text" class="name_as" name="username_as">
+    <input type="submit" value="S'inscrire" class="submit submit-big" />
 </p>
 
 </form>

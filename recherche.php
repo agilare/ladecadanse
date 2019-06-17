@@ -86,6 +86,13 @@ if (!empty($get['mots']))
 		$mots = trim($get['mots']);
 	}
 
+	if (!empty($_GET['name_as']))
+	{
+        echo "Veuillez laisser le champ name_as vide";
+		exit;
+
+	}    
+    
 
 	$mots = mb_strtolower($mots);
 	$mots = str_replace("+", " ", trim($mots));

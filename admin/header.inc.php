@@ -189,7 +189,7 @@ if ($nom_page == "agenda" && isset($page_titre))
 <div id="entete">
 
 <div id="titre_site">
-<a href="<?php echo $url_site ?>"><img src="<?php echo $url_site ?>images/interface/logo_titre.jpg" alt="La décadanse"  width="180" height="35" /></a>
+<a href="<?php echo $url_site ?>"><img src="<?php echo $url_site ?>web/interface/logo_titre.jpg" alt="La décadanse"  width="180" height="35" /></a>
 </div>
 
 

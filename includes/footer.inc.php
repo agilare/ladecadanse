@@ -25,7 +25,7 @@
 		<li><a href="<?php echo $url_site ?>liens.php">Liens</a></li>
 	<li>
 	<form class="recherche" action="<?php echo $url_site ?>recherche.php" method="get">
-<input type="text" class="mots" name="mots" size="22" maxlength="50" value="" placeholder="Rechercher un événement" /><input type="submit" class="submit" name="formulaire" value=""  />
+<input type="text" class="mots" name="mots" size="22" maxlength="50" value="" placeholder="Rechercher un événement" /><input type="submit" class="submit" name="formulaire" value=""  /><input type="text" name="name_as" value="" class="name_as" id="name_as" />
 	</form>
 	</li>
 </ul>

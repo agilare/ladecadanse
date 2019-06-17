@@ -115,5 +115,3 @@ $limiteInf = 80;
 $limiteRecherche = 10;
 $min_pages = 10;
 $tab_nblignes = array(100, 250, 500);
-
-?>

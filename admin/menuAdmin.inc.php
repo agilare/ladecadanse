@@ -39,7 +39,7 @@
     <?php if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 1)) { ?>
     <h2 style="font-size:0.95em;margin-top:1em;color:#5c7378">Ajouter :</h2>
     <ul  style="list-style-type:none">
-        <li><a href="/ajouterPersonne.php?action=ajouter"><img src="/images/interface/icons/user_add.png" alt="" style="vertical-align:bottom" />une personne</a></li>
+        <li><a href="/ajouterPersonne.php?action=ajouter"><img src="/web/interface/icons/user_add.png" alt="" style="vertical-align:bottom" />une personne</a></li>
     </ul>
     <?php } ?>
 </div>
