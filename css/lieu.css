@@ -389,7 +389,7 @@ ul#menu_complement .ajouter_com
 	padding:0.2em 0 0.2em 1.4em;
 	text-align:right;
 
-	background-image:url(../images/interface/icons/comment_add.png);
+	background-image:url(../web/interface/icons/comment_add.png);
 	background-repeat:no-repeat;
 	background-position:0% 50%;
 }
@@ -693,7 +693,7 @@ padding:0 0.2em;
 {
 	text-align:left;
 	padding:0 0px 0 0;
-	background-image:url(../images/interface/icons/building_go.png);
+	background-image:url(../web/interface/icons/building_go.png);
 	background-repeat:no-repeat;
 	background-position: 85% 50%;
 }

@@ -136,11 +136,11 @@ margin:0.4em 0.4em 0.4em 2em;
 
 table.graph_horiz
 {
-background-image:url(../images/interface/fond.png);
-background-repeat: repeat-x;
-background-position: left bottom;
-height:150px;
-font-size:0.8em;
+    background-image:url(../web/interface/fond.png);
+    background-repeat: repeat-x;
+    background-position: left bottom;
+    height:150px;
+    font-size:0.8em;
 
 }
 
@@ -154,7 +154,7 @@ table.graph_horiz td
 
 table.graph_horiz td.valeur
 {
-/* 	background-image: url(../images/interface/ligne_vert.gif);
+/* 	background-image: url(../web/interface/ligne_vert.gif);
 	background-repeat: repeat-y;
 	background-position: left bottom; */
 	border-bottom: 1px solid #e5e5e5;
@@ -174,7 +174,7 @@ display:block;
 
 table.graph_vert
 {
-background-image:url(../images/interface/fond.png);
+background-image:url(../web/interface/fond.png);
 background-repeat: repeat-x;
 background-position: left top;
 width:33em;
@@ -183,7 +183,7 @@ width:33em;
 
 table.graph_vert td.valeur
 {
-	background-image: url(../images/interface/ligne.gif);
+	background-image: url(../web/interface/ligne.gif);
 	background-repeat: repeat-x;
 	background-position: left top;
 	border-left: 1px solid #e5e5e5;

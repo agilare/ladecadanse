@@ -589,8 +589,6 @@ else if ($get['element'] == "personne")
 	echo "<p>pers_total_page_max : $pers_total_page_max";	 */
 	
 	$sql_pers .= " LIMIT ".($get['page'] - 1) * $get['nblignes'].",".$get['nblignes'];
-
-echo $sql_pers;
 	
 	$req_pers = $connector->query($sql_pers);
 

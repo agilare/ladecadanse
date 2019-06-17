@@ -547,7 +547,7 @@ ul#menu_actions
 .selection ul li.descendre
 {
 	padding:0.1em 0em 0.1em 16px;
-	background-image:url(../images/interface/icons/bullet_arrow_bottom.png);
+	background-image:url(../web/interface/icons/bullet_arrow_bottom.png);
 	background-repeat:no-repeat;
 	background-position: 0% 30%;
 

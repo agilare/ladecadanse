@@ -402,7 +402,7 @@ border: 1px solid gray;
 #ajouter_editer label.probleme
 {
 text-align:right;
-background-image: url(../images/interface/icons/exclamation.png);
+background-image: url(../web/interface/icons/exclamation.png);
 background-repeat: no-repeat;
 background-position: 3px 0px;
 
@@ -410,7 +410,7 @@ background-position: 3px 0px;
 
 #ajouter_editer .complete
 {
-background-image: url(../images/interface/icons/tick.png);
+background-image: url(../web/interface/icons/tick.png);
 background-repeat: no-repeat;
 background-position: 3px 0px;
 
@@ -488,7 +488,7 @@ font-family:Georgia;
 /* #ajouter_editer #bouton_ajouter_champ
 {
 text-align:right;
-background-image: url(../images/interface/icons/add.png);
+background-image: url(../web/interface/icons/add.png);
 background-repeat: no-repeat;
 background-position: 52% 2px;
 

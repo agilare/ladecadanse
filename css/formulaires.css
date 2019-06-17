@@ -281,14 +281,14 @@ form#ajouter_editer .msg {
 form#ajouter_editer label.probleme
 {
     text-align:right;
-    background-image: url(../images/interface/icons/exclamation.png);
+    background-image: url(../web/interface/icons/exclamation.png);
     background-repeat: no-repeat;
     background-position: 3px 0px;
 }
 
 form#ajouter_editer .complete
 {
-    background-image: url(../images/interface/icons/tick.png);
+    background-image: url(../web/interface/icons/tick.png);
     background-repeat: no-repeat;
     background-position: 3px 0px;
 }
@@ -399,7 +399,7 @@ font-family:Georgia;
 	border-top:1px solid green;
 	border-bottom:1px solid green;
 	background-color: #dbe1db;
-	background-image:url(../images/interface/icons/tick.png);
+	background-image:url(../web/interface/icons/tick.png);
 	background-repeat:no-repeat;
 	background-position: 15px 17px;
 	line-height:1.3em;    

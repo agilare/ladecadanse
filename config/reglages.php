@@ -52,7 +52,7 @@ $IMGeven = $url_images;
 global $IMGbreves;
 $IMGbreves = $url_images."breves/";
 global $IMGlieux;
-$IMGlieux = $url_images."web/uploads/lieux/";
+$IMGlieux = $url_site."web/uploads/lieux/";
 
 global $IMGinterface;
 $IMGinterface = $url_site."web/interface/";

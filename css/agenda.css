@@ -429,14 +429,14 @@ ul.menu_edition li img
 .nb_commentaires
 {
     padding:0 0em 0 16px;
-    background-image:url(../images/interface/icons/comment.png);
+    background-image:url(../web/interface/icons/comment.png);
     background-repeat:no-repeat;
     background-position: 0% 30%;
 } 
 .en_favori
 {
     padding:0 0em 0 16px;
-    background-image:url(../images/interface/icons/heart.png);
+    background-image:url(../web/interface/icons/heart.png);
     background-repeat:no-repeat;
     background-position: 0% 30%;
 } 
@@ -594,7 +594,7 @@ table#evenements_s
 .vers_jour
 {
     padding:0 0em 0 16px;
-    background-image:url(../images/interface/icons/bullet_arrow_bottom.png);
+    background-image:url(../web/interface/icons/bullet_arrow_bottom.png);
     background-repeat:no-repeat;
     background-position: 0 70%;
 }

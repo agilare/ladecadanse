@@ -20,14 +20,14 @@ div.pagination a:hover, div.pagination a:active {
 div.pagination #prec
 {
 	padding-left:16px;
-	background-image:url(../images/interface/icons/arrow_left.gif);
+	background-image:url(../web/interface/icons/arrow_left.gif);
 	background-repeat:no-repeat;
 	background-position: 0 70%;
 }
 
 div.pagination #suiv{
 	padding-right:16px;
-	background-image:url(../images/interface/icons/arrow_right.gif);
+	background-image:url(../web/interface/icons/arrow_right.gif);
 	background-repeat:no-repeat;
 	background-position: 90% 70%;
 }

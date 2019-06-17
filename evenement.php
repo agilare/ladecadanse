@@ -200,7 +200,7 @@ if (!empty($_SESSION['ajouterEvenement_flash_msg']))
 		}
  ?>>
  
- <span class="category"><?php echo ucfirst(nom_genre($even->getValue('genre'))); ?></span>, <?php echo '<a href="'.$url_site.'agenda.php?courant='.$even->getValue('dateEvenement').'">'.date_fr($even->getValue('dateEvenement'), "annee").'</a>';
+ <span class="category"><?php echo ucfirst(nom_genre($even->getValue('genre'))); ?></span>, <?php echo '<a href="'.$url_site.'agenda.php?courant='.$even->getValue('dateEvenement').'">'.date_fr($even->getValue('dateEvenement'), "annee", "", "", false).'</a>';
  ?>
 </h2>
 		<div class="entete_contenu_navigation">
