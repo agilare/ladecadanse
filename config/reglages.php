@@ -246,7 +246,7 @@ $get['region'] = filter_input(INPUT_GET, "region", FILTER_SANITIZE_STRING);
 if (array_key_exists($get['region'], $glo_regions))
 {        
     $_SESSION['region'] = $get['region'];
-    setcookie("ladecadanse_region", $get['region'], time() + 36000, '');  /* , 'ladecadanse.darksite.ch' */    
+    setcookie("ladecadanse_region", $get['region'], time() + 36000, '', true, true);  /* , 'ladecadanse.darksite.ch' */    
     
 }
 //echo "session : ".$_SESSION['region'];

@@ -349,8 +349,7 @@ class Sentry extends SystemComponent {
 
 		if ($sauvegarder)
 		{
-			//setcookie('ladecadanseusername]', $_SESSION['user'], time() + 1209600, '/');
-			setcookie('ladecadanse_remember', $cookie, time() + 1209600, '/'); // 2 semaines
+			setcookie('ladecadanse_remember', $cookie, time() + 1209600, '/', true, true); // 2 semaines
 		}
 		
 	/* 	echo "Veuillez patienter...";
@@ -423,7 +422,7 @@ class Sentry extends SystemComponent {
 			//setcookie('ladecadanse_remember', '', time() - 3600); // semble ne pas fonctionner
 			unset($_COOKIE['ladecadanse_remember']);
 
-			setcookie('ladecadanse_remember', null, -1, '/');
+			setcookie('ladecadanse_remember', null, -1, '/', true, true);
 		}
 		
 	}
