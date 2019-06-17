@@ -18,7 +18,6 @@ include("includes/header.inc.php");
 <!-- Debut Contenu -->
 <div id="contenu" class="colonne contacteznous">
 
-
 	<div id="entete_contenu">
 		<h2>Contact</h2>
 		<div class="spacer"></div>
@@ -65,35 +64,11 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok'  && empty($_POS
 	$verif->valider($champs['sujet'], "sujet", "texte", 2, 80, 1);
 	$verif->valider($champs['contenu'], "contenu", "texte", 8, 10000, 1);
 
-
-/*
-	if(!empty($_SESSION['freecap_word_hash']) && !empty($_POST['word']))
+	if (!empty($_POST['name_as']))
 	{
-		// all freeCap words are lowercase.
-		// font #4 looks uppercase, but trust me, it's not...
-		if($_SESSION['hash_func'](strtolower($_POST['word']))==$_SESSION['freecap_word_hash'])
-		{
-			// reset freeCap session vars
-			// cannot stress enough how important it is to do this
-			// defeats re-use of known image with spoofed session id
-			$_SESSION['freecap_attempts'] = 0;
-			$_SESSION['freecap_word_hash'] = false;
-
-
-			// now process form
-
-
-			// now go somewhere else
-			// header("Location: somewhere.php");
-
-		} else {
-			$verif->setErreur("freecap", "Le texte que vous avez entré ne correspond pas au mot dans l'image");
-		}
-	} else {
-		$verif->setErreur("freecap", "Vous devez entrer un mot correspondant à celui de l'image ci-dessus");
+		$verif->setErreur("name_as", "Veuillez laisser ce champ vide");
 	}
 
-*/
 	/*
 	 * PAS D'ERREUR, donc envoi executé
 	 */
@@ -292,7 +267,7 @@ document.write("<a href='mailto:"+link+"'>"+link+"</a>")
 
 <p class="piedForm">
 	<input type="hidden" name="formulaire" value="ok" />
-
+    <input type="text" name="name_as" value="" class="name_as" id="name_as" />
 	<input type="submit" value="Envoyer" class="submit submit-big" />
 	<div class="spacer"><!-- --></div>
 </p>

@@ -15,16 +15,17 @@ ini_set('upload_max_filesize', UPLOAD_MAX_FILESIZE);
 ini_set('max_file_uploads', 3);
 
 $rep_images = $rep_absolu."images/";
-$rep_images_breves = $rep_images."breves/";
-$rep_images_even = $rep_images;
-$rep_images_interface = $rep_images."interface/";
-$rep_images_lieux = $rep_images."lieux/";
-$rep_images_lieux_galeries = $rep_images_lieux."galeries/";
-$rep_images_organisateurs = $rep_images."organisateurs/";
 
+$rep_images_breves = $rep_images."web/uploads/breves/";
+$rep_images_even = $rep_images;
+$rep_images_lieux = $rep_absolu."web/uploads/lieux/";
+$rep_images_lieux_galeries = $rep_images_lieux."galeries/";
+$rep_images_organisateurs = $rep_absolu."web/uploads/organisateurs/";
 $rep_fichiers =  $rep_absolu."web/uploads/fichiers/";
 $rep_fichiers_even = $rep_fichiers."evenements/";
 $rep_fichiers_lieu = $rep_fichiers."lieux/";
+
+$rep_images_interface = $rep_absolu."web/interface/";
 
 $rep_includes = $rep_absolu."includes/";
 $rep_librairies = $rep_absolu."librairies/";
@@ -38,8 +39,9 @@ $url_images = $url_site."images/";
 $url_fichiers = $url_site."web/uploads/fichiers/";
 $url_fichiers_even = $url_fichiers."evenements/";
 $url_fichiers_lieu = $url_fichiers."lieux/";
-$url_images_lieu_galeries = $url_images."lieux/galeries/";
-$url_images_organisateurs = $url_images."organisateurs/";
+$url_images_lieu_galeries = $url_site."web/uploads/lieux/galeries/";
+$url_images_organisateurs = $url_site."web/uploads/organisateurs/";
+
 $url_admin = $url_site."admin/";
 $url_css = $url_site."css/";
 $url_js = $url_site."js/";
@@ -49,12 +51,14 @@ global $IMGeven;
 $IMGeven = $url_images;
 global $IMGbreves;
 $IMGbreves = $url_images."breves/";
+global $IMGlieux;
+$IMGlieux = $url_images."web/uploads/lieux/";
+
 global $IMGinterface;
-$IMGinterface = $url_images."interface/";
+$IMGinterface = $url_site."web/interface/";
 global $IMGicones;
 $IMGicones = $IMGinterface."icons/";
-global $IMGlieux;
-$IMGlieux = $url_images."lieux/";
+
 
 
 $glo_mimes_documents_acceptes = array("image/jpeg", "image/pjpeg", "image/gif", "image/png", "image/x-png",
