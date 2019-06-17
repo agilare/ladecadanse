@@ -457,10 +457,13 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
                 if (!isset($_SESSION['Sgroupe']))
                 {
                     $_SESSION['ajouterEvenement_flash_msg'] = "Merci pour votre proposition. Nous allons l'examiner et vous aurez une réponse dès qu'elle sera traitée";	
-                    $subject = "[La décadanse] Nouvelle proposition d'événement : \"".$champs['titre']."\"";
+                    $subject = "[La décadanse] Nouvelle proposition d'événement : \"".$champs['titre']."\" le ".date_fr($champs['dateEvenement'], "annee")." à ".$champs['nomLieu'];
                     $contenu_message = "Merci de vérifier cet événement et l'accepter (statut : publié) ou le refuser (status : dépublié) : \n\n";
                     $contenu_message .= $url_site."evenement.php?idE=".$req_id;
                     $contenu_message .= "\n\n";
+                    $contenu_message .= "Par : ".$champs['user_email']; 
+                    $contenu_message .= "\nRemarque :\n".$champs['remarque'];
+                    
                     
                     if (ENV == 'prod')
                     {
