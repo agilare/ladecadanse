@@ -148,6 +148,11 @@ if (!empty($_POST['submit']))
 		$verif->setErreur("dateEvenement", "La date de fin doit être dans le futur");
 	}
     
+    if (!SecurityToken::check($_POST['token'], $_SESSION['token']))
+    {
+        $verif->setErreur("dateEvenement", "Le système de sécurité du site n'a pu authentifier votre action. Veuillez réafficher ce formulaire et réessayer");
+    }    
+    
 	if ($verif->nbErreurs() === 0)
 	{
 		$tab_champs = $connector->fetchAssoc(($connector->query("
@@ -433,6 +438,7 @@ if (isset($get['idE']))
     <?php
     echo $verif->getHtmlErreur('dateEvenement');
     ?>
+    <input type="hidden" name="token" value="<?php echo SecurityToken::getToken(); ?>" />
 </form>
 
 </div> <!-- fin contenu -->

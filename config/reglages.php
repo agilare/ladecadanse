@@ -208,6 +208,7 @@ require_once($rep_librairies.'usine.php');
 require_once($rep_librairies.'dates.php');
 require_once($rep_librairies.'presentation.php');
 require_once($rep_librairies.'Logger.php');
+require_once($rep_librairies.'SecurityToken.php');
 
 session_start();
 

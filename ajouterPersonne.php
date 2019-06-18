@@ -120,7 +120,7 @@ $champs = array("pseudo" => '',
 
 $action_terminee = false;
 
-if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
+if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 {
 	foreach ($champs as $c => $v)
 	{
@@ -281,6 +281,11 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 			$verif->setErreur("motdepasse", "Faux mot de passe");
 		}
 	}
+
+    if (!SecurityToken::check($_POST['token'], $_SESSION['token']))
+    {
+        $verif->setErreur("pseudo", "Le système de sécurité du site n'a pu authentifier votre action. Veuillez réafficher ce formulaire et réessayer");
+    }       
 
 	/*
 	 * PAS D'ERREUR, donc ajout ou update executés
@@ -1042,6 +1047,7 @@ else
 
 <p class="piedForm">
 <input type="hidden" name="formulaire" value="ok" />
+<input type="hidden" name="token" value="<?php echo SecurityToken::getToken(); ?>" />
 <input type="submit" value="Enregistrer" class="submit submit-big" />
 </p>
 

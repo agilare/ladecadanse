@@ -108,6 +108,12 @@ if (isset($_GET['idP']))
 */
 if ($get['action'] == 'confirmation' && isset($get['id']))
 {
+
+    if (!SecurityToken::check($_GET['token'], $_SESSION['token']))
+    {
+        echo "Le système de sécurité du site n'a pu authentifier votre action. Veuillez réessayer";
+    }  
+    
 	if ($get['type'] == "evenement")
 	{
 

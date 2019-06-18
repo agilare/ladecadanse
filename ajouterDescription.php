@@ -296,7 +296,7 @@ if ($get['action'] == 'editer' && isset($get['idL']) && isset($get['idP']))
     {
         echo '<ul class="entete_contenu_menu">';
         echo "<li class=\"action_supprimer\">
-        <a href=\"".$url_site."supprimer.php?type=descriptionlieu&id=".$get['idL']."&idP=".$get['idP']."\">Supprimer</a></li>";
+        <a href=\"supprimer.php?type=descriptionlieu&id=".$get['idL']."&idP=".$get['idP']."&token=".SecurityToken::getToken()."\">Supprimer</a></li>";
         echo "</ul>";
     }
 	

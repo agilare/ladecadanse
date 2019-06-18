@@ -386,7 +386,7 @@ if ($get['action'] == 'editer' && isset($get['idC']))
 
 		@mysqli_free_result($req_desc);
 
-		echo " <a href=\"".$url_site."supprimer.php?action=confirmation&amp;type=commentaire&amp;id=".$get['idC']."\" title=\"Supprimer le commentaire\"  onclick=\"return confirm('Voulez-vous vraiment supprimer ce commentaire ?');\">Supprimer</a>";
+		echo " <a href=\"supprimer.php?action=confirmation&amp;type=commentaire&amp;id=".$get['idC']."&token=".SecurityToken::getToken()."\" title=\"Supprimer le commentaire\"  onclick=\"return confirm('Voulez-vous vraiment supprimer ce commentaire ?');\">Supprimer</a>";
 		echo "</li>";
 	}
 } // if GET action

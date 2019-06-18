@@ -73,15 +73,17 @@ $supprimer = array('image_galerie' => '');
 
 $afficher_form = true;
 $message_ok = '';
-$form = new EditionLieu('form', $champs, $fichiers, $get);
-
-//TEST
-//printr($_POST);
-//
-
+$form = new EditionLieu('form', $champs, $fichiers, $get); 
+    
 $form->setAction($get['action']);
 if (isset($_POST['formulaire']) && $_POST['formulaire'] == 'ok')
 {
+    if (!SecurityToken::check($_POST['token'], $_SESSION['token']))
+    {
+        echo "Le système de sécurité du site n'a pu authentifier votre action. Veuillez réafficher ce formulaire et réessayer";
+        exit;
+    }       
+    
 	if ($form->traitement($_POST, $_FILES))
 	{
 		$_SESSION['lieu_flash_msg']  = $form->getMessage();
@@ -113,7 +115,7 @@ if (($get['action'] == 'editer' || $get['action'] == 'update'))
 		{
 			$titre_actions = '<ul class="entete_contenu_menu">';
 			$titre_actions .= "<li class=\"action_supprimer\">
-			<a href=\"".$url_site."supprimer.php?type=lieu&amp;id=".$get['idL']."\">Supprimer</a></li>";
+			<a href=\"supprimer.php?type=lieu&amp;id=".$get['idL']."&token=".SecurityToken::getToken()."\">Supprimer</a></li>";
 			$titre_actions .= '</ul>';
 		}
 
@@ -680,6 +682,7 @@ echo $form->getHtmlErreur("quartier");
 
 <p class="piedForm">
 <input type="hidden" name="formulaire" value="ok" />
+<input type="hidden" name="token" value="<?php echo SecurityToken::getToken(); ?>" />
 <input type="submit" value="Enregistrer" tabindex="20" title="Enregistrer le lieu" class="submit submit-big" />
 </p>
 </form>

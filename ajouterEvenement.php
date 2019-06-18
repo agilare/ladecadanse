@@ -7,7 +7,6 @@ if (is_file("config/reglages.php"))
 require_once($rep_librairies."Sentry.php");
 $videur = new Sentry();
 
-require_once($rep_librairies.'ImageDriver.php');
 require_once($rep_librairies.'ImageDriver2.php');
 require_once($rep_librairies.'Validateur.php');
 
@@ -115,6 +114,13 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 //            $verif->setErreur("global", "Le système de sécurité soupconne que vous êtes un robot, merci de réessayer; le cas échéant, contactez-nous");  
 //        }
         $logger->log('global', 'activity', "[ajouterEvenement] recaptcha score ".$recaptcha->score.", response : ".json_encode($recaptcha), Logger::GRAN_YEAR);  
+    }
+    else
+    {
+        if (!SecurityToken::check($_POST['token'], $_SESSION['token']))
+        {
+            $verif->setErreur("genres", "Le système de sécurité du site n'a pu authentifier votre action. Veuillez réafficher ce formulaire et réessayer");
+        }          
     }
     
 	
@@ -893,7 +899,7 @@ if (!$action_terminee)
             if ($_SESSION['Sgroupe'] <= 1)
             {
                 $aff_actions .= "<li class=\"action_supprimer\">
-                <a href=\"".$url_site."supprimer.php?action=confirmation&amp;type=evenement&amp;id=".$get['idE']."\" title=\"Supprimer l'événement\" onclick=\"return confirm('Voulez-vous vraiment supprimer cet événement ?');\">
+                <a href=\"supprimer.php?action=confirmation&amp;type=evenement&amp;id=".$get['idE']."&token=".SecurityToken::getToken()."\" title=\"Supprimer l'événement\" onclick=\"return confirm('Voulez-vous vraiment supprimer cet événement ?');\">
                 Supprimer</a>
                 </li>";
             }
@@ -1485,6 +1491,7 @@ else
     <input type="hidden" name="formulaire" value="ok" />
     <input type="text" name="name_as" value="" class="name_as" id="name_as" /><?php echo $verif->getHtmlErreur('name_as'); ?>
     <input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response">
+    <input type="hidden" name="token" value="<?php echo SecurityToken::getToken(); ?>" />
     <input type="submit" name="submit" value="<?php echo (!isset($_SESSION['Sgroupe']))?"Envoyer":"Enregistrer"; ?>" class="submit submit-big" />
 </p>
 

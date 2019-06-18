@@ -264,7 +264,7 @@ if ($get['action'] == 'editer' && isset($get['idS']))
 
 	echo '<ul class="entete_contenu_menu">';
 	echo "<li class=\"action_supprimer\">
-	<a href=\"".$url_site."supprimer.php?type=salle&id=".$get['idS']."\" title=\"Supprimer la salle\">Supprimer</a></li>";
+	<a href=\"".$url_site."supprimer.php?type=salle&id=".$get['idS']."&token=".SecurityToken::getToken()."\" title=\"Supprimer la salle\">Supprimer</a></li>";
 	echo "</ul>";
 
 } // if GET action
