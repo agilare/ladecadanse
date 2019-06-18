@@ -70,9 +70,9 @@ $event_count['vd'] = $connector->fetchAll($req_even_vd_nb)[0];
 if (HOME_TMP_BANNER_ENABLED)
 {
 ?>
-    <div style="position:relative;padding:0.7em 0.5em;margin:0em 0;background:#fff3cd;color:#856404">
-        <h2 style="padding:0; margin:0.1em 0 0.4em 0.1em;font-size:1.3em;color:#856404"><?php echo HOME_TMP_BANNER_TITLE; ?></h2>
-        <a style="position:absolute;right:0;top:0;padding:5px;font-size: 1rem;font-weight: 700;color:#856404" href="#" onclick="SetCookie('msg_orga_benevole', 1, 180);this.parentNode.style.display = 'none';return false;">&times;</a>
+    <div id="home-tmp-banner">
+        <h2><?php echo HOME_TMP_BANNER_TITLE; ?></h2>
+        <a class="close" href="#" onclick="SetCookie('msg_orga_benevole', 1, 180);this.parentNode.style.display = 'none';return false;">&times;</a>
         <p style="line-height:18px"><?php echo HOME_TMP_BANNER_CONTENT; ?></p>
     </div>
 <?php

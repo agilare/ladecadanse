@@ -735,3 +735,25 @@ table tr td.small
 {
     display:none;
 }
+
+#home-tmp-banner
+{
+    position:relative;
+    padding:0.7em 0.5em;
+    margin:0em 0;
+    background:#fff3cd;
+    color:#856404  ;
+}
+
+#home-tmp-banner h2
+{
+    padding:0;
+    margin:0.1em 0 0.4em 0.1em;
+    font-size:1.3em;
+    color:#856404  ;
+}
+
+#home-tmp-banner .close
+{
+    position:absolute;right:0;top:0;padding:5px;font-size: 1rem;font-weight: 700;color:#856404    
+}

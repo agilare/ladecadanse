@@ -258,7 +258,7 @@ $tab_de = $connector->fetchArray($req_de);
 	<?php
 	}
 	?>
-	<link rel="shortcut icon" href="web/images//favicon.png" />	
+	<link rel="shortcut icon" href="web/images/favicon.png" />	
     <link rel="apple-touch-icon" href="web/images/apple-icon.png" />    
     <link rel="apple-touch-icon" sizes="57x57" href="web/images/apple-icon-57x57.png" />       
     <link rel="apple-touch-icon" sizes="76x76" href="web/images/apple-icon-76x76.png" />     
