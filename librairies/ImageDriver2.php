@@ -52,17 +52,20 @@ class ImageDriver2 extends SystemComponent {
     function __construct($IMGtype)
     {
         global $rep_images;
-        $this->IMGracine = $rep_images;
+        global $rep_absolu;
+        
+        $this->IMGracine = $rep_absolu."web/uploads/";
         //TEST
         //echo $this->IMGracine;
         //
-        $this->IMGlieux = $rep_images."lieux/";
+        $this->IMGlieux = $this->IMGracine."lieux/";
         $this->IMGlieuxGaleries = $this->IMGlieux."galeries/";
         $this->formats = array('image/jpeg', 'image/pjpeg','image/gif','image/png', 'image/x-png');
 
         if ($IMGtype == "evenement")
         {
             $this->IMGtype = "";
+            $this->IMGracine = $rep_images;
         }
         else
         {
@@ -145,9 +148,7 @@ class ImageDriver2 extends SystemComponent {
        {
            return false;
        }
-       
 
-       
        $slash = "";
        if ($this->IMGtype != "evenement" && $this->IMGtype != "")
            $slash = "/";

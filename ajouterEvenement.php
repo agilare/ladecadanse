@@ -744,8 +744,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 
 		if (!empty($fichiers['image']['name']))
 		{
-			$imD = new ImageDriver();
-			$msg = $imD->processImage($fichiers['image'], $champs['image'], 'evenements', 600, 600);
+			$imD = new ImageDriver2("evenement");
+			$msg = $imD->processImage($fichiers['image'], $champs['image'], 600, 600);
 			if (!empty($msg))
 			{
 				msgErreur($msg);
