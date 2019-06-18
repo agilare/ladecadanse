@@ -67,7 +67,7 @@ $event_count['vd'] = $connector->fetchAll($req_even_vd_nb)[0];
 
 <div id="contenu" class="colonne">
 <?php
-if (HOME_TMP_BANNER_ENABLED)
+if (HOME_TMP_BANNER_ENABLED && !isset($_COOKIE['msg_orga_benevole']))
 {
 ?>
     <div id="home-tmp-banner">
