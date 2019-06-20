@@ -750,13 +750,18 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 
 		if (!empty($fichiers['image']['name']))
 		{
-			$imD = new ImageDriver2("evenement");
-			$msg = $imD->processImage($fichiers['image'], $champs['image'], 600, 600);
-			if (!empty($msg))
+			$imD2 = new ImageDriver2("evenement");
+			$erreur_image = array();
+			$erreur_image[] = $imD2->processImage($_FILES['image'], $champs['image'], 600, 600);
+			$erreur_image[] = $imD2->processImage($_FILES['image'], "s_".$champs['image'], 120, 190, 0, 0);
+			$erreur_image[] = $imD2->processImage($_FILES['image'], "t_".$champs['image'], 60, 80, 0, 0);
+			if (!empty($erreur_image))
 			{
-				msgErreur($msg);
+				print_r($erreur_image);
 			}
-			$champs['image'] = '';
+			
+            if (!empty($msg2))
+                $champs['image'] = '';                       
 		}
 
 		if (isset($_POST['organisateurs']) && is_array($champs['organisateurs']))
