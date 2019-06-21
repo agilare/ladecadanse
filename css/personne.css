@@ -1,10 +1,8 @@
 ul#menu_principal
 { 
-
-padding: 0.4em;
-width:96%;
-margin:1em auto 0 auto;
-background:#f0f0f0;
+    padding: 0.4em;
+    width:96%;
+    margin:1em auto 0 auto;
 }
 
 ul#menu_principal li
@@ -15,7 +13,8 @@ padding:0.4em 0.4em;
 
 ul#menu_principal li.ici
 {
-background-color:yellow;
+    background-color:yellow;
+    border-radius:4px;
 }
 
 ul#menu_principal li a
@@ -25,44 +24,44 @@ padding:0.4em 0;
 
 ul#menu_principal li a img
 {
-vertical-align:bottom;
-margin: 0 3px 0 0;
+    vertical-align:bottom;
+    margin: 0 3px 0 0;
 }
 
 
 ul#menu_elements
 {
-float:right;
+    float:right;
 }
 
 ul#menu_ajouts
 {
-width:96%;
-margin:1em auto 2em auto;
-background:#f0f0f0;
- padding: 0.4em;
+    width:96%;
+    margin:1em auto 2em auto;
+    padding: 0.4em;
 }
 
 ul#menu_ajouts li
 {
-display:inline;
-padding:0.4em 0.4em;
+    display:inline;
+    padding:0.4em 0.4em;
 }
 
 ul#menu_ajouts li a
 {
-padding:0.4em 0;
+    padding:0.4em 0;
 }
 
 ul#menu_ajouts li a img
 {
-vertical-align:bottom;
-margin: 0 3px 0 0;
+    vertical-align:bottom;
+    margin: 0 3px 0 0;
 }
 
 ul#menu_ajouts li.ici
 {
-background-color:yellow;
+    background-color:yellow;
+    border-radius:4px;
 }
 
 
@@ -210,8 +209,11 @@ margin: 0 0 0.6em;
 
 #profile table
 {
-font-size:0.8em;
-border-collapse:collapse;
+    font-size:0.9em;
+    border-collapse:collapse;
+    margin: 0.3em 0;
+    background: #f0f0fa;
+    border-radius: 3px;
 }
 
 
@@ -222,9 +224,9 @@ font-weight:bold;
 text-align:left;
 }
 
-.personne #profile th
+.personne #profile th, .personne #profile td
 {
-	padding:0.4em 0.1em;
+	padding: 0.5em;
 }
 
 table#favoris_evenements

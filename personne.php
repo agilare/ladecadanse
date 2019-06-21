@@ -173,7 +173,7 @@ $detailsAff = $connector->fetchArray($req_affPers);
 	<div class="spacer"></div>
 
 	<!-- Deb profile -->
-	<div id="profile" style="padding: 0.4em;width: 96%;margin: 1em auto 0 auto;">
+	<div id="profile" style="padding: 0.4em;width: 94%;margin: 0 auto 0 auto;">
         
 		<table>
             <tr><th>Identifiant</th><td><?php echo securise_string($detailsPersonne['pseudo']) ?></td></tr>
@@ -895,7 +895,7 @@ else
 		}
 		else
 		{
-			echo '<p>Aucun '.$get['elements'].' ajouté pour le moment</p>';
+			echo '<p>Aucun texte ajouté pour le moment</p>';
 		}
 		 //if nbrow descriptions
 

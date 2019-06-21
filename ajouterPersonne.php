@@ -106,10 +106,8 @@ $champs = array("pseudo" => '',
 "affiliation" => '',
 "lieu" => '',
 'organisateurs' => '',
-"adresse" => '',
 "email" => '',
 "URL" => '',
-"telephone" => '',
 "groupe" => '',
 "signature" => 'pseudo',
 "avec_affiliation" => '',
@@ -137,12 +135,6 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 	if (isset($_POST['organisateurs']))
 		$champs['organisateurs'] = $_POST['organisateurs'];
 
-	/*
-	 * VERIFICATION DES CHAMPS ENVOYES par POST
-	 */
-	/*
-	 * Pseudo obligatoire
-	 */
 	$verif->valider($champs['pseudo'], "pseudo", "texte", 2, 50, 0);
 
 	/*
@@ -200,8 +192,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 			$verif->setErreur("nouveaux_pass", 'Les 2 mots de passe doivent être identiques.');
 		}
 		else
-		{	$verif->valider($champs['newPass'], "newPass", "texte", 6, 100, 1);
-			$verif->valider($champs['newPass2'], "newPass2", "texte", 6, 100, 1);
+		{	$verif->valider($champs['newPass'], "newPass", "texte", 8, 100, 1);
+			$verif->valider($champs['newPass2'], "newPass2", "texte", 8, 100, 1);
 
 			if (!preg_match("/[0-9]/", $champs['newPass']) || !preg_match("/[0-9]/", $champs['newPass2']))
 			{
@@ -217,19 +209,9 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 
 	$verif->valider($champs['nom'], "nom", "texte", 1, 80, 0);
 	$verif->valider($champs['prenom'], "prenom", "texte", 1, 60, 0);
-	$verif->valider($champs['adresse'], "adresse", "texte", 5, 80, 0);
 	$verif->valider($champs['email'], "email", "email", 4, 250, 1);
 	$verif->valider($champs['URL'], "URL", "URL", 2, 250, 0);
-	$verif->valider($champs['telephone'], "telephone", "telephone", 3, 250, 0);
 	$verif->valider($champs['affiliation'], "affiliation", "texte", 2, 60, 0);
-
-	/*
-	 * Si l'affiliation texte et l'affiliation lieu ont été choisies
-	 */
-	if ($champs['lieu'] != 0 && !empty($champs['affiliation']) )
-	{
-		$verif->setErreur("groupe", "Vous ne pouvez pas choisir 2 affiliations");
-	}
 
 	/*
 	 * Si l'affiliation texte et l'affiliation lieu ont été choisies
@@ -239,8 +221,6 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 		$verif->setErreur("avec_affiliation", "Vous devez choisir une affiliation");
 	}
 
-	
-	
 	/*
 	 * En cas d'ajout, vérification si le profil n'existe pas déjà
 	 */
@@ -249,11 +229,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 		$sql_existance = "SELECT pseudo FROM personne
 		WHERE pseudo='".$connector->sanitize($champs['pseudo'])."'
 		OR email='".$connector->sanitize($champs['email'])."'";
-
-		//TEST
-		//echo $sql_existance;
-		//
-
+        
 		$req_existance = $connector->query($sql_existance);
 
 		if ($connector->getNumRows($req_existance) > 0)
@@ -292,8 +268,6 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 	 */
 	if ($verif->nbErreurs() === 0)
 	{
-		$champs['telephone'] = str_replace(" ", "", $champs['telephone']);
-
 		if (!empty($champs['newPass']))
 		{
 			$champs['gds'] = mb_substr(sha1(uniqid(rand(), true)), 0, 5);
@@ -303,10 +277,6 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 		if ($_SESSION['Sgroupe'] > 1)
 		{
 			$champs['groupe'] = $_SESSION['Sgroupe'];
-		}
-
-		if ($_SESSION['Sgroupe'] > 1)
-		{
 			$champs['pseudo'] = $_SESSION['user'];
 		}
 
@@ -315,7 +285,6 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 		*/
 		if ($get['action'] == 'insert')
 		{
-
 			$sql_insert_attributs = "";
 			$sql_insert_valeurs = "";
 
@@ -335,9 +304,6 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 
 			$req_insert = $connector->query($sql_insert);
 			$req_id = mysql_insert_id();
-			//TEST
-			//echo $sql_insert;
-			//
 
 			//si un lieu a été choisi comme affiliation
 			if (isset($champs['lieu']) && $champs['lieu'] != 0)
@@ -381,13 +347,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 			$sql_update .= "date_derniere_modif='".date("Y-m-d H:i:s")."'";
 			$sql_update .= " WHERE idPersonne=".$get['idP'];
 
-			//TEST
-			//echo "<p>".$sql_update."</p>";
-			//
-
 			$req_update = $connector->query($sql_update);
-
-
 
 			//trouve si la personne a déjà une affiliation à un lieu
 			$connector->query("SELECT idPersonne FROM affiliation WHERE idPersonne=".$get['idP']);
@@ -395,7 +355,6 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 			//si la nouvelle affiliation est un lieu, update s'il en a déjà une, insert sinon
 			if (isset($champs['lieu']) && $champs['lieu'] != 0)
 			{
-
 				if ($connector->getAffectedRows() > 0)
 				{
 					$aff = "UPDATE affiliation SET idAffiliation='".$champs['lieu']."'
@@ -425,11 +384,9 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 
 			/*
 			* MAJ réussie -> MAJ des infos perso de session si la personne s'autoédite
-			*
 			*/
 			if ($req_update)
 			{
-
 				if ($_SESSION['SidPersonne'] == $get['idP'])
 				{
 
@@ -452,45 +409,9 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 					{
 						$_SESSION["Saffiliation_lieu"] = $champs['lieu'];
 					}
-					/*
-					if ($rc = opendir($cache_lieux))
-					{
-						while ($fichierLieux = readdir($rc))
-						{
-							if (!preg_match('/^\./', $fichierLieux))
-								unlink($cache_lieux.$fichierLieux);
-						}
-						closedir($rc);
-					}
 
-					$req_lieuxPers = $connector->query("SELECT idLieu FROM descriptionlieu
-					WHERE idPersonne=".$get['idP']);
-					while(list($idL) = $connector->fetchArray($req_lieuxPers))
-					{
-						@unlink($rep_cache."lieu/".$idL.".php");
-					}
-					*/
-
-
-
-					
-
-					
-					
-					
 					msgOk("Votre profil a été modifié");
                     $logger->log('global', 'activity', "[ajouterPersonne] user ".$_SESSION["user"]. " updated his profile", Logger::GRAN_YEAR);
-					/*
-					if ($rc = opendir($cache_index))
-					{
-						while ($fichierIndex = readdir($rc))
-						{
-							if (!preg_match('/^\./', $fichierIndex))
-								@unlink($cache_index.$fichierIndex);
-						}
-						closedir($rc);
-					} */
-
 					$action_terminee = true;
 				}
 				else
@@ -501,7 +422,6 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 				$sqld = "DELETE FROM personne_organisateur WHERE idPersonne=".$get['idP'];	
 				$connector->query($sqld);				
 				$req_id = $get['idP'];
-
 			}
 			else
 			{
@@ -516,7 +436,6 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 				if ($idOrg != 0)
 				{
 					$sql = "INSERT INTO personne_organisateur (idPersonne, idOrganisateur) VALUES (".$req_id.", ".$idOrg.")";
-					//echo $sql;
 					$connector->query($sql);
 				}
 			}
@@ -531,11 +450,6 @@ if (!$action_terminee)
 
 echo '<div id="entete_contenu">';
 
-/*
-* POUR EDITER UNE PERSONNE, ALLER CHERCHER SES VALEURS DANS LA BASE
-* Récupération des valeurs de la table 'personne' et de l'affiliation de genre 'lieu'
-* Affichage d'un menu d'actions pour l'admin
-*/
 if ($get['action'] == 'editer' && isset($get['idP']))
 {
 	$req_pers = $connector->query("SELECT * FROM personne WHERE idPersonne =".$get['idP']);
@@ -572,7 +486,7 @@ if ($get['action'] == 'editer' && isset($get['idP']))
 if ($get['action'] == 'editer' || $get['action'] == 'update')
 {
 	$act = "update&amp;idP=".$get['idP'];
-	echo "<h2>Modifier un compte</h2>";
+	echo "<h2>Modification du compte</h2>";
 }
 else
 {
@@ -590,155 +504,138 @@ if ($verif->nbErreurs() > 0)
 ?>
 
 
-<!-- FORMULAIRE -->
-
 <form method="post" id="ajouter_editer" enctype="multipart/form-data" class="submit-freeze-wait" action="<?php echo basename(__FILE__)."?action=".$act; ?>" >
 
 <p>* indique un champ obligatoire</p>
 
 <fieldset>
-<legend>Identification</legend>
+    <legend>Identification</legend>
 
-<!-- Pseudo* (text) -->
-<p>
-<label for="pseudo">Nom d'utilisateur*</label>
-<?php if ($_SESSION['Sgroupe'] == 1)
-{
-?>
-<input type="text" name="pseudo" id="pseudo" size="30" maxlength="80" value="<?php echo htmlentities($champs['pseudo']) ?>" required />
-<?php
-echo $verif->getHtmlErreur('pseudo');
-echo $verif->getHtmlErreur("pseudoIdentique");
-?>
-</p>
+    <!-- Pseudo* (text) -->
+    <p>
+        <label for="pseudo">Nom d'utilisateur*</label>
+        <?php if ($_SESSION['Sgroupe'] == 1)
+        {
+        ?>
+        <input type="text" name="pseudo" id="pseudo" size="30" maxlength="80" value="<?php echo htmlentities($champs['pseudo']) ?>" required />
+        <?php
+        echo $verif->getHtmlErreur('pseudo');
+        echo $verif->getHtmlErreur("pseudoIdentique");
+        ?>
+    </p>
 
-<?php
-}
-else
-{
-?>
+    <?php
+    }
+    else
+    {
+    ?>
 
-<input type="text" name="pseudo" id="pseudo" size="30" maxlength="80" value="<?php echo htmlentities($champs['pseudo']) ?>" readonly style="background:#f4f4f4" />
+    <input type="text" name="pseudo" id="pseudo" size="30" maxlength="80" value="<?php echo htmlentities($champs['pseudo']) ?>" readonly style="background:#f4f4f4" />
 
-<?php
-}
-?>
+    <?php
+    }
+    ?>
 
 
-<!-- Groupe pour admin (select) -->
-<?php
-if ($_SESSION['Sgroupe'] == 1)
-{
+    <!-- Groupe pour admin (select) -->
+    <?php
+    if ($_SESSION['Sgroupe'] == 1)
+    {
 
-	echo "<p>
-	<label for=\"groupe\">Groupe* :</label>
-	<select name=\"groupe\" id=\"groupe\">";
+        echo "<p>
+        <label for=\"groupe\">Groupe* :</label>
+        <select name=\"groupe\" id=\"groupe\">";
 
-	$req_groupe = $connector->query("SELECT idGroupe, nom FROM groupes WHERE nom!='' ORDER BY idGroupe");
+        $req_groupe = $connector->query("SELECT idGroupe, nom FROM groupes WHERE nom!='' ORDER BY idGroupe");
 
-	while ($groupeTrouve = $connector->fetchArray($req_groupe))
-	{
-	      echo "<option ";
-	      	//en cas d'update groupe de la personne sélectionnée
-			if ($groupeTrouve['idGroupe'] == $champs['groupe'])
-			{
-				echo "selected=\"selected\"";
-			//en cas d'ajout, 10 est par défaut
-			}
-			elseif (($get['action'] == 'ajouter' || $get['action'] == 'insert') && $groupeTrouve['idGroupe'] == 10)
-			{
-				echo "selected=\"selected\"";
-			}
-			echo " value=\"".$groupeTrouve['idGroupe']."\">".$groupeTrouve['idGroupe']." : ".$groupeTrouve['nom']."</option>";
-	}
-	echo "</select>";
-	echo $verif->getHtmlErreur("groupe");
-	echo "</p>";
-}
-?>
+        while ($groupeTrouve = $connector->fetchArray($req_groupe))
+        {
+              echo "<option ";
+                //en cas d'update groupe de la personne sélectionnée
+                if ($groupeTrouve['idGroupe'] == $champs['groupe'])
+                {
+                    echo "selected=\"selected\"";
+                //en cas d'ajout, 10 est par défaut
+                }
+                elseif (($get['action'] == 'ajouter' || $get['action'] == 'insert') && $groupeTrouve['idGroupe'] == 10)
+                {
+                    echo "selected=\"selected\"";
+                }
+                echo " value=\"".$groupeTrouve['idGroupe']."\">".$groupeTrouve['idGroupe']." : ".$groupeTrouve['nom']."</option>";
+        }
+        echo "</select>";
+        echo $verif->getHtmlErreur("groupe");
+        echo "</p>";
+    }
+    ?>
 </fieldset>
 
 <!-- Mot de passe actuel* en cas de mise à jour -->
 <fieldset>
-<legend>Mot de passe</legend>
+    <legend>Mot de passe</legend>
 
-<?php if ($_SESSION['Sgroupe'] > 1 && ($get['action'] == 'editer' || $get['action'] == 'update'))
-{
-?>
-	<div class="guideForm">À remplir si vous souhaitez modifier votre mot de passe actuel</div>
-	<p><label for="motdepasse">Actuel</label>
-	<input type="password" name="motdepasse" id="motdepasse" size="20" value="" autocomplete="off" />
-	<?php
-	echo $verif->getHtmlErreur("motdepasse");
-	?>
-	</p>
+    <?php if ($_SESSION['Sgroupe'] > 1 && ($get['action'] == 'editer' || $get['action'] == 'update'))
+    {
+    ?>
+        <div class="guideForm">À remplir si vous souhaitez modifier votre mot de passe actuel</div>
+        <p><label for="motdepasse">Actuel</label>
+        <input type="password" name="motdepasse" id="motdepasse" size="20" value="" autocomplete="off" />
+        <?php
+        echo $verif->getHtmlErreur("motdepasse");
+        ?>
+        </p>
 
-<?php
-}
-?>
+    <?php
+    }
+    ?>
 
-<!-- Nouveau mot de passe* en cas de mise à jour -->
-<p>
-<label for="newPass">Nouveau<?php if ($get['action'] != 'editer' || $get['action'] != 'update') { echo "*"; } ?></label>
-<input type="password" name="newPass" id="newPass" size="20" value="" />
-<?php echo $verif->getHtmlErreur("newPass");?>
-</p>
+    <!-- Nouveau mot de passe* en cas de mise à jour -->
+    <p>
+        <label for="newPass">Nouveau<?php if ($get['action'] != 'editer' || $get['action'] != 'update') { echo "*"; } ?></label>
+        <input type="password" name="newPass" id="newPass" size="20" value="" />
+        <?php echo $verif->getHtmlErreur("newPass");?>
+    </p>
 
-<!-- Nouveau mot de passe* à confirmation en cas de mise à jour -->
-<p>
-<label for="newPass2">Confirmer le nouveau<?php if ($get['action'] != 'editer' || $get['action'] != 'update') { echo "*"; } ?></label>
-<input type="password" name="newPass2" id="newPass2" size="20" value="" />
-<?php echo $verif->getHtmlErreur("newPass2");?>
-</p>
-<?php echo $verif->getHtmlErreur("nouveaux_pass");?>
+    <!-- Nouveau mot de passe* à confirmation en cas de mise à jour -->
+    <p>
+        <label for="newPass2">Confirmer le nouveau<?php if ($get['action'] != 'editer' || $get['action'] != 'update') { echo "*"; } ?></label>
+        <input type="password" name="newPass2" id="newPass2" size="20" value="" />
+        <?php echo $verif->getHtmlErreur("newPass2");?>
+    </p>
+    <?php echo $verif->getHtmlErreur("nouveaux_pass");?>
 </fieldset>
 
 
 <fieldset>
-<legend>Informations</legend>
-<div class="guideForm">Données personnelles</div>
-<!-- Nom (text) -->
-<p>
-<label for="nom">Nom</label>
-<input type="text" name="nom" id="nom" size="20" maxlength="80" value="<?php echo htmlentities($champs['nom']) ?>" />
-<?php echo $verif->getHtmlErreur("nom");?>
-</p>
+    <legend>Informations</legend>
+    <!-- Nom (text) -->
+    <p>
+    <label for="nom">Nom</label>
+    <input type="text" name="nom" id="nom" size="20" maxlength="80" value="<?php echo htmlentities($champs['nom']) ?>" />
+    <?php echo $verif->getHtmlErreur("nom");?>
+    </p>
 
-<!-- Prénom (text) -->
-<p>
-<label for="prenom">Prénom</label>
-<input type="text" name="prenom" id="prenom" size="20" maxlength="80" value="<?php echo htmlentities($champs['prenom']); ?>" />
-<?php echo $verif->getHtmlErreur("prenom"); ?>
-</p>
+    <!-- Prénom (text) -->
+    <p>
+    <label for="prenom">Prénom</label>
+    <input type="text" name="prenom" id="prenom" size="20" maxlength="80" value="<?php echo htmlentities($champs['prenom']); ?>" />
+    <?php echo $verif->getHtmlErreur("prenom"); ?>
+    </p>
 
-<!-- Adresse (text) -->
-<p>
-<label for="adresse">Adresse</label>
-<input type="text" name="adresse" id="adresse" size="30" maxlength="100" value="<?php echo htmlentities($champs['adresse']) ?>" />
-<?php echo $verif->getHtmlErreur("adresse");?>
-</p>
+    <!-- Site perso (text) -->
+    <p>
+    <label for="URL">Site web http://</label>
+    <input type="url" name="URL" id="URL" size="40" maxlength="80" value="<?php echo htmlentities($champs['URL']); ?>" />
+    <?php echo $verif->getHtmlErreur("URL");?>
+    </p>
 
-<!-- Site perso (text) -->
-<p>
-<label for="URL">Site web http://</label>
-<input type="text" name="URL" id="URL" size="40" maxlength="80" value="<?php echo htmlentities($champs['URL']); ?>" />
-<?php echo $verif->getHtmlErreur("URL");?>
-</p>
-
-<!-- Email* (text) -->
-<p>
-<label for="email">E-mail*</label>
-<input type="text" name="email" id="email" size="40" maxlength="80" value="<?php echo htmlentities(stripslashes($champs['email'])) ?>" required />
-<?php echo $verif->getHtmlErreur("email");
-echo $verif->getErreur("emailIdentique");?>
-</p>
-
-<!-- Téléphone* (text) -->
-<p>
-<label for="telephone">Téléphone</label>
-<input type="text" name="telephone" id="telephone" size="16" maxlength="80" value="<?php echo htmlentities(stripslashes($champs['telephone'])) ?>"   />
-<?php echo $verif->getHtmlErreur("telephone");?>
-</p>
+    <!-- Email* (text) -->
+    <p>
+    <label for="email">E-mail*</label>
+    <input type="email" name="email" id="email" size="40" maxlength="80" value="<?php echo htmlentities(stripslashes($champs['email'])) ?>" required />
+    <?php echo $verif->getHtmlErreur("email");
+    echo $verif->getErreur("emailIdentique");?>
+    </p>
 </fieldset>
 
 <?php
@@ -748,150 +645,162 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 8))
 
 <!-- Affiliation (text) -->
 <fieldset id="references">
-<legend>Affiliation</legend>
-<div class="guideForm">Appartenance à un groupe, une association, etc.</div>
+    <legend>Affiliation(s)</legend>
+    <div class="guideForm">Si vous souhaitez modifier ces informations merci de nous <a href="contacteznous.php">contacter</a></div>
 
-<?php
-if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 6))
-{
-?>
-<p>
-<label for="affiliation">Nom</label>
-<input type="text" name="affiliation" id="affiliation" size="30" maxlength="80" value="<?php echo htmlentities($champs['affiliation']); ?>" />
-<?php echo $verif->getHtmlErreur("affiliation"); ?>
+    <?php
+    if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 6))
+    {
+    ?>
+    <p>
+    <label for="affiliation">Nom</label>
+    <input type="text" name="affiliation" id="affiliation" size="30" maxlength="80" value="<?php echo htmlentities($champs['affiliation']); ?>" />
+    <?php echo $verif->getHtmlErreur("affiliation"); ?>
 
-</p>
+    </p>
 
-<p class="entreLabels"><strong>ou</strong></p>
-<div class="spacer"></div>
-<p>
+    <p class="entreLabels"><strong>ou</strong></p>
+    <div class="spacer"></div>
+    <p>
 
-<label for="lieu">lieu</label>
-<select name="lieu" id="lieu" class="chosen-select" style="max-width:300px;">
-<?php
+    <label for="lieu">lieu</label>
+    <select name="lieu" id="lieu" class="chosen-select" style="max-width:300px;">
+    <?php
 
-echo "<option value=\"0\">&nbsp;</option>";
-$req_lieux = $connector->query("
-SELECT idLieu, nom FROM lieu WHERE actif=1 AND statut='actif' ORDER BY TRIM(LEADING 'L\'' FROM (TRIM(LEADING 'Les ' FROM (TRIM(LEADING 'La ' FROM (TRIM(LEADING 'Le ' FROM nom))))))) COLLATE utf8_general_ci"
- );
-while ($lieuTrouve = $connector->fetchArray($req_lieux))
-{
-	echo "<option ";
-	if ($lieuTrouve['idLieu'] == $champs['lieu'])
-	{
-		echo "selected=\"selected\" ";
-	}
-	echo "value=\"".$lieuTrouve['idLieu']."\">".$lieuTrouve['nom']."</option>";
+    echo "<option value=\"0\">&nbsp;</option>";
+    $req_lieux = $connector->query("
+    SELECT idLieu, nom FROM lieu WHERE actif=1 AND statut='actif' ORDER BY TRIM(LEADING 'L\'' FROM (TRIM(LEADING 'Les ' FROM (TRIM(LEADING 'La ' FROM (TRIM(LEADING 'Le ' FROM nom))))))) COLLATE utf8_general_ci"
+     );
+    while ($lieuTrouve = $connector->fetchArray($req_lieux))
+    {
+        echo "<option ";
+        if ($lieuTrouve['idLieu'] == $champs['lieu'])
+        {
+            echo "selected=\"selected\" ";
+        }
+        echo "value=\"".$lieuTrouve['idLieu']."\">".$lieuTrouve['nom']."</option>";
 
-}
-?>
-</select>
+    }
+    ?>
+    </select>
 
-<p class="entreLabels"><strong>ou</strong></p>
-<div class="spacer"></div>
+    <p class="entreLabels"><strong>ou</strong></p>
+    <div class="spacer"></div>
 
-<?php
-$tab_organisateurs_pers = array();
-if ($get['action'] == "editer" || $get['action'] == "update")
-{
+    <?php
+    $tab_organisateurs_pers = array();
+    if ($get['action'] == "editer" || $get['action'] == "update")
+    {
 
-	$sql = "SELECT idOrganisateur
-FROM personne_organisateur
-WHERE personne_organisateur.idPersonne=".$get['idP'];
+        $sql = "SELECT idOrganisateur
+    FROM personne_organisateur
+    WHERE personne_organisateur.idPersonne=".$get['idP'];
 
- $req = $connector->query($sql);
+     $req = $connector->query($sql);
 
-	if ($connector->getNumRows($req))
-	{
-		//echo "<table class=\"fichiers_associes\"><tr><th>nom</th><th>".$iconeSupprimer."</th></tr>";
-		while ($tab = $connector->fetchArray($req))
-		{
-			
-			$tab_organisateurs_pers[] = $tab['idOrganisateur'];
-		/*
-			echo "<tr><td><a href=\"".$url_site."organisateur.php?idO=".$tab['idOrganisateur']."\">"
-			.$tab['nom']."</a>
-			</td>
-			<td><input type=\"checkbox\" name=\"sup_organisateur[]\" value=\"".$tab['idOrganisateur']."\" /></td></tr>";
-			*/
-		}
-		//echo "</table>";
-	}
+        if ($connector->getNumRows($req))
+        {
+            //echo "<table class=\"fichiers_associes\"><tr><th>nom</th><th>".$iconeSupprimer."</th></tr>";
+            while ($tab = $connector->fetchArray($req))
+            {
 
-}
-?>
-<p>
-<label for="organisateurs">organisateur(s)</label>
-<select name="organisateurs[]" id="organisateurs" data-placeholder="Choisissez un ou plusieurs organisateurs" class="chosen-select" multiple  style="max-width:350px;">
-<?php
-echo "<option value=\"0\">&nbsp;</option>";
-$req = $connector->query("
-SELECT idOrganisateur, nom FROM organisateur WHERE statut='actif' ORDER BY TRIM(LEADING 'L\'' FROM (TRIM(LEADING 'Les ' FROM (TRIM(LEADING 'La ' FROM (TRIM(LEADING 'Le ' FROM nom))))))) COLLATE utf8_general_ci"
- );
+                $tab_organisateurs_pers[] = $tab['idOrganisateur'];
+            }
+            //echo "</table>";
+        }
 
-while ($tab = $connector->fetchArray($req))
-{
-	echo "<option ";
-	
-	if ((isset($_POST['organisateurs']) && in_array($tab['idOrganisateur'], $_POST['organisateurs'])) || in_array($tab['idOrganisateur'], $tab_organisateurs_pers))
-	{
-		echo 'selected="selected" ';
+    }
+    ?>
+    <p>
+    <label for="organisateurs">organisateur(s)</label>
+    <select name="organisateurs[]" id="organisateurs" data-placeholder="Choisissez un ou plusieurs organisateurs" class="chosen-select" multiple  style="max-width:350px;">
+    <?php
+    echo "<option value=\"0\">&nbsp;</option>";
+    $req = $connector->query("
+    SELECT idOrganisateur, nom FROM organisateur WHERE statut='actif' ORDER BY TRIM(LEADING 'L\'' FROM (TRIM(LEADING 'Les ' FROM (TRIM(LEADING 'La ' FROM (TRIM(LEADING 'Le ' FROM nom))))))) COLLATE utf8_general_ci"
+     );
 
-	}	
-	
-	
-	echo "value=\"".$tab['idOrganisateur']."\">".$tab['nom']."</option>";
-}
-?>
-</select>
+    while ($tab = $connector->fetchArray($req))
+    {
+        echo "<option ";
+
+        if ((isset($_POST['organisateurs']) && in_array($tab['idOrganisateur'], $_POST['organisateurs'])) || in_array($tab['idOrganisateur'], $tab_organisateurs_pers))
+        {
+            echo 'selected="selected" ';
+
+        }	
 
 
-</p>
-<?php
-}
-else
-{
-	if (!empty($champs['affiliation']))
-	{
-		echo htmlentities($champs['affiliation']);
-	}
-	else if (!empty($champs['lieu']))
-	{
+        echo "value=\"".$tab['idOrganisateur']."\">".$tab['nom']."</option>";
+    }
+    ?>
+    </select>
 
-		$req_lieux = $connector->query("SELECT nom FROM lieu WHERE idLieu=".$champs['lieu']);
-		$lieuTrouve = $connector->fetchArray($req_lieux);
 
-		echo "Lieu : ".htmlentities($lieuTrouve['nom']);
-	}
+    </p>
+    <?php
+    }
+    else
+    {
+        if (!empty($champs['affiliation']))
+        {
+        ?>  
+        <p>
+            <label></label><input type="text" disabled value="<?php echo htmlentities($champs['affiliation']);?>" >
+        </p>
+        
+        <?php     
+        }
+        
+        if (!empty($champs['lieu']))
+        {
+            $req_lieux = $connector->query("SELECT nom FROM lieu WHERE idLieu=".$champs['lieu']);
+            $lieuTrouve = $connector->fetchArray($req_lieux);
+            ?>  
+                <p>
+                <label>Lieu</label>
+                <ul style="float:left;margin:0;padding-left:1em;">
+                    <li><a href="lieu.php?idL=<?php echo $champs['lieu'];?>"><?php echo htmlentities($lieuTrouve['nom']);?></a></li>
+                </ul><div class="spacer"><!-- --></div>
+            </p>
+        <div class="guideChamp" style='padding: 0em 0 0.2em 175px;'>Vous pouvez modifier les informations de ce lieu et tous les événements qui s'y déroulent</div>            
+        <?php            
+        }
 
-	$sql = "SELECT organisateur.idOrganisateur, nom
-FROM organisateur, personne_organisateur
-WHERE personne_organisateur.idPersonne=".$get['idP']." AND
- organisateur.idOrganisateur=personne_organisateur.idOrganisateur
- ORDER BY date_ajout DESC";
+        $sql = "SELECT organisateur.idOrganisateur, nom
+    FROM organisateur, personne_organisateur
+    WHERE personne_organisateur.idPersonne=".$get['idP']." AND
+     organisateur.idOrganisateur=personne_organisateur.idOrganisateur
+     ORDER BY date_ajout DESC";
 
- $req = $connector->query($sql);
+     $req = $connector->query($sql);
 
-	if ($connector->getNumRows($req))
-	{
-		echo "<table class=\"fichiers_associes\">";
-		while ($tab = $connector->fetchArray($req))
-		{
+        if ($connector->getNumRows($req))
+        { 
+             ?>  
+            <p>
+                <label>Organisateur(s)</label>
+            <ul style="float:left;margin:0;padding-left:1em;">
+                <?php                       
+                while ($tab = $connector->fetchArray($req))
+                {
+                    ?>
+                    <li><a href="organisateur.php?idO=<?php echo $tab['idOrganisateur']; ?>"><?php echo $tab['nom']; ?></a></li>
+                    <?php
+                }
+           ?> 
+            </ul><div class="spacer"><!-- --></div>
+            
+            </p>
+        <div class="guideChamp" style='padding: 0em 0 0.2em 175px;'>Vous pouvez modifier ces organisateurs, tous les événements qui y sont associés ainsi que les lieux associés à ces organisateurs</div>
+            
 
-			echo "<tr><td><a href=\"".$url_site."organisateur.php?idO=".$tab['idOrganisateur']."\">"
-			.$tab['nom']."</a>
-			</td>
-			</tr>";
-		}
-		echo "</table>";
-	}
-	
-	
-
-}
-?>
-<?php echo $verif->getHtmlErreur("affiliation"); ?>
-<?php echo $verif->getHtmlErreur("doublon_organisateur"); ?>
+        <?php             
+        }
+    }
+    ?>
+    <?php echo $verif->getHtmlErreur("affiliation"); ?>
+    <?php echo $verif->getHtmlErreur("doublon_organisateur"); ?>
 </fieldset>
 
 <?php
@@ -899,119 +808,94 @@ WHERE personne_organisateur.idPersonne=".$get['idP']." AND
 ?>
 
 <fieldset>
-<legend>Signature</legend>
-<div class="guideForm">Affichée sous les événements, commentaires, etc.</div>
+    <legend>Votre signature</legend>
+    <div class="guideForm">Affichée sous les événements, commentaires, etc. que vous avez ajoutés</div>
 
-<label style="float:none">Afficher :</label>
-<ul class="radio">
-<?php
-$signatures = array("pseudo", "prenom", "nomcomplet", "aucune");
-foreach ($signatures as $s)
-{
-	$coche = '';
-	if ($s == $champs['signature'])
-	{
-		$coche = 'checked="checked"';
-	}
-	echo '<li style="display:block" >
-	<input type="radio" name="signature" value="'.$s.'" '.$coche.' id="signature_'.$s.'" title="" class="radio_horiz" />
-<label class="continu" for="signature_'.$s.'">'.$s.'</label>
-	</li>';
-}
-?>
-</ul>
-<?php
-echo $verif->getHtmlErreur("signature");
-?>
+    <label style="display:block;float:none">Afficher :</label>
+    
+    <ul class="radio" style="display:block">
+    <?php
+    $signatures = array("pseudo" => "L'identifiant", "prenom" => "Le prénom", "nomcomplet" => "Le prénom et le nom", "aucune" => "Aucune signature");
+    foreach ($signatures as $s => $label)
+    {
+        $coche = '';
+        if ($s == $champs['signature'])
+        {
+            $coche = 'checked="checked"';
+        }
+        echo '<li style="display:block" >
+        <input type="radio" name="signature" value="'.$s.'" '.$coche.' id="signature_'.$s.'" />
+        <label class="continu" for="signature_'.$s.'">'.$label.' ';
+        
+        if ($s == 'nomcomplet')
+        {
+            echo ": <b>".$champs['prenom']." ".$champs['nom']."</b>";
+        }
+        elseif ($s == 'aucune')
+        {
+            echo "";
+        }        
+        else
+        {
+            echo ": <b>".$champs[$s]."</b>";
+        }        
+        echo '</label>
+        </li>';
+    }
+    ?>
+    </ul>
+    <?php
+    echo $verif->getHtmlErreur("signature");
+    ?>
 
-<?php
-if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 10))
-{
-?>
+    <?php
+    if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 10))
+    {
+    ?>
 
-<label style="float:none">avec l'affiliation :</label>
-<ul class="radio">
-<li style="display:block" >
-<input type="radio" id="avec_affiliation_oui" name="avec_affiliation" value="oui" class="radio_horiz"
-<?php
-if ($champs['avec_affiliation'] == "oui")
-{
-	echo  ' checked="checked"';
-}
-echo "/>";
-?>
-<label class="continu" for="avec_affiliation_oui">oui</label>
-</li>
-<li style="display:block" ><input type="radio" id="avec_affiliation_non" name="avec_affiliation" value="non" class="radio_horiz"
-<?php
-if ($champs['avec_affiliation'] == "non")
-{
-	echo  ' checked="checked"';
-}
-echo "/>";
-?>
-<label class="continu" for="avec_affiliation_non">non</label>
-</li>
-</ul>
-<?php
-echo $verif->getHtmlErreur('avec_affiliation');
-?>
-</p>
+    <label style="display:block;float:none">avec l'affiliation :</label>
+    <ul class="radio" style="display:block;">
+        <li style="display:block" >
+        <input type="radio" id="avec_affiliation_oui" name="avec_affiliation" value="oui" class="radio_horiz"
+        <?php
+        if ($champs['avec_affiliation'] == "oui")
+        {
+            echo  ' checked="checked"';
+        }
+        echo "/>";
+        ?>
+        <label class="continu" for="avec_affiliation_oui">oui</label>
+        </li>
+        <li style="display:block" ><input type="radio" id="avec_affiliation_non" name="avec_affiliation" value="non" class="radio_horiz"
+        <?php
+        if ($champs['avec_affiliation'] == "non")
+        {
+            echo  ' checked="checked"';
+        }
+        echo "/>";
+        ?>
+        <label class="continu" for="avec_affiliation_non">non</label>
+        </li>
+    </ul>
+    <?php
+    echo $verif->getHtmlErreur('avec_affiliation');
+    ?>
+    </p>
 
 
-<?php
-}
-?>
+    <?php
+    }
+    ?>
 
 </fieldset>
 
-<fieldset>
+
 <?php
 
 if ($_SESSION['Sgroupe'] == 1 && ($get['action'] == "editer" || $get['action'] == "update") && isset($get['idP']))
 {
 ?>
-
-<legend>Recevoir une notification par email de nouveaux commentaires (ADMIN seulement)</legend>
-<ul class="radio">
-<?php
-$choix = array('oui','non');
-foreach ($choix as $c)
-{
-	$coche = '';
-	if ($c == $champs['notification_commentaires'])
-	{
-		$coche = 'checked="checked"';
-	}
-	echo '<li class="listehoriz"><input type="radio" name="notification_commentaires" value="'.$c.'" '.$coche.' id="notification_commentaires_'.$c.'" title="" class="radio_horiz" />
-	<label class="continu" for="notification_commentaires_'.$c.'">'.$c.'</label></li>';
-}
-?>
-</ul>
-<?php
-echo $verif->getHtmlErreur("notification_commentaires");
-?>
-
-<?php
-}
-else
-{
-?>
-
-<input type="hidden" name="statut" value="actif" id="statut_actif" title="statut" />
-
-<?php
-}
-?>
-
-</fieldset>
 <fieldset>
-<?php
-
-if ($_SESSION['Sgroupe'] == 1 && ($get['action'] == "editer" || $get['action'] == "update") && isset($get['idP']))
-{
-?>
-
 <legend>Statut</legend>
 <ul class="radio">
 <?php
@@ -1030,42 +914,33 @@ foreach ($glo_statuts_personne as $s)
 <?php
 echo $verif->getHtmlErreur("statut");
 ?>
-
+</fieldset>
 <?php
 }
 else
 {
 ?>
-
 <input type="hidden" name="statut" value="actif" id="statut_actif" title="statut" />
-
 <?php
 }
 ?>
 
-</fieldset>
-
 <p class="piedForm">
-<input type="hidden" name="formulaire" value="ok" />
-<input type="hidden" name="token" value="<?php echo SecurityToken::getToken(); ?>" />
-<input type="submit" value="Enregistrer" class="submit submit-big" />
+    <input type="hidden" name="formulaire" value="ok" />
+    <input type="hidden" name="token" value="<?php echo SecurityToken::getToken(); ?>" />
+    <input type="submit" value="Enregistrer" class="submit submit-big" />
 </p>
 
 </form>
 
-
-
 <?php
 } // if action_terminee
 ?>
-</div>
-<!-- fin contenu  -->
+</div> <!-- fin contenu  -->
+
 <div id="colonne_gauche" class="colonne">
-
 <?php include("includes/navigation_calendrier.inc.php"); ?>
-
-</div>
-<!-- Fin Colonne gauche -->
+</div><!-- Fin Colonne gauche -->
 
 <?php
 include("includes/footer.inc.php");
