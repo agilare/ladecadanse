@@ -33,24 +33,112 @@ if (isset($_GET['idL']))
 	$get['idL'] = verif_get($_GET['idL'], "int", 1);
 }
 
-/**
-* Récupère les dernières description + infos sur lieux et utilisateurs
-*/
-
 $fiches = new CollectionDescription();
-
 $fiches->loadFiches('description', $_SESSION['region']);
-
-
 $pair = 0;
 
+$map_style = '';
+if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 4))
+{
+    
 
+$rf = '';
+if ($_SESSION['region'] == 'ge')
+    $rf = "'rf',";
+    
+//  AND e.statut = 'actif' AND e.dateEvenement >= CURDATE()
+$sql_lieux = "
+SELECT l.idLieu AS idLieu, nom, l.adresse AS adresse, l.quartier AS quartier, categorie, lat, lng, (select count(idEvenement) from evenement e where e.statut = 'actif' AND e.dateEvenement >= CURDATE() and e.idLieu = l.idLieu) AS nb_event
+FROM lieu l
+WHERE l.statut='actif' AND l.region IN ('".$connector->sanitize($_SESSION['region'])."', $rf 'hs')  
+    AND lat != '0.000000' AND lng != '0.000000'
+ORDER BY TRIM(LEADING 'l\'' FROM (TRIM(LEADING 'les ' FROM (TRIM(LEADING 'la ' FROM (TRIM(LEADING 'le ' FROM lower(nom)))))))) COLLATE utf8_general_ci";
+
+//echo $sql_lieux;
+
+$req_lieux = $connector->query($sql_lieux);
+
+$nb_lieux = $connector->getNumRows($req_lieux);
+
+$pair = 0;
+$prec = "";
+$url_prec = "";
+$url_suiv = "";
+$nomDuLieu = "";
+$id_passe = 0;
+
+$tab_markers = [];
+while ($lieu = mysqli_fetch_assoc($req_lieux))
+{
+    $tab_markers[] = $lieu;
+}
 ?>
 
+<script type="text/javascript">
 
+var tab_markers = <?php echo json_encode($tab_markers); ?>;
 
+console.log(tab_markers);
 
-<!-- Début Contenu -->
+function initMap() {
+	
+	var mapDiv = document.getElementById('map');
+	var map = new google.maps.Map(mapDiv, {
+	  center: {lat: 46.519653, lng: 6.632273}, // Suisse Romande
+	  zoom: 9
+	});
+		
+	markers = [];
+	infowindows = [];
+	
+	var bounds = new google.maps.LatLngBounds();
+	
+	jQuery.each(tab_markers, function() {
+				
+		// création position avec lat et lng, puis marker dans map, puis extension contours avec ce nouv. marker
+		var pos = new google.maps.LatLng(parseFloat(this['lat']), parseFloat(this['lng'])); 
+		var marker = new google.maps.Marker({
+			position: pos,
+           label: this['nb_event'],
+
+			map: map
+           // icon: {                               url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"                           }
+		});
+		
+		bounds.extend(marker.getPosition());
+		
+		var contentString = '<div class="vd-marker-infowindow"><a href="lieu.php?idL=' + this['idLieu'] + '"><b>' + this['nom'] + '</b></a><br>' + this['categorie'] + '<br>' + this['adresse'] + '<br>' + this['quartier'];
+		
+		var infowindow = new google.maps.InfoWindow({
+			content: contentString
+		});
+		
+		infowindows.push(infowindow);
+
+		marker.addListener('click', function() {
+			
+		   for (var i = 0; i < infowindows.length; i++) {
+			  infowindows[i].close();
+			}
+			
+			infowindow.open(map, marker);
+		});
+		
+		markers.push(marker);
+		map.fitBounds(bounds);
+	});
+	
+	//var mc = new MarkerClusterer(map, markers, {styles: [{  textColor: "#e72557", textSize:13, height:46, width:46, url: '/templates/ee/images/cluster-j.png' }], gridSize: 40, maxZoom: 15}); // anchor:[14,16],
+
+  }
+
+  
+  
+</script>
+<?php 
+$map_style = 'style="width:94%;margin:0 auto;height:500px;border:1px solid #555;border-radius:4px"';
+
+} ?>
 <div id="contenu" class="colonne">
     
     <div id="entete_contenu">
@@ -59,88 +147,22 @@ $pair = 0;
         <p class="mobile" id="btn_listelieux">
             <button href="#"><i class="fa fa-list fa-lg"></i>&nbsp;Liste des lieux</button>
         </p>
-        <div style="margin-top:1em;">
-            <h3 style="color: #888;font-size: 1.2em;margin-top: 0.2em;">Dernières descriptions <a href="<?php echo $url_site ?>rss.php?type=lieux_descriptions" title="Flux RSS des dernières descriptions de lieux" style="font-size:0.8em;"><i class="fa fa-rss fa-lg" style="color:#f5b045"></i></a></h3>
-        </div>
     </div>
 
 	<div class="spacer"></div>
     
-	<ol id="dernieres_descriptions">
-
-    <?php
-    foreach($fiches->getElements() as $id => $fiche)
-    {
-
-	$photo_principale = '';
-	if ($fiche->getValue('photo1') != "")
-	{
-		$photo_principale = "<a href=\"".$url_site."lieu.php?idL=".$fiche->getValue('idLieu')."\" title=\"Voir la fiche du lieu : ".securise_string($fiche->getValue('nom'))."\">
-		<img src=\"web/uploads/lieux/s_".$fiche->getValue('photo1')."?".filemtime($rep_images_lieux."s_".$fiche->getValue('photo1'))."\" width=\"100\" alt=\"".securise_string($fiche->getValue('nom'))."\" /></a>\n";
-	}
-
-	$nomAuteur = securise_string($fiche->getValue('pseudo'));
-	if ($fiche->getValue('groupe') >= 8)
-		$nomAuteur = $fiche->getValue('prenom')." ".$fiche->getValue('nomAuteur');
-
-	//Réduction du descriptif
-	$maxChar = trouveMaxChar($fiche->getValue('contenu'), 36, 7);
-	$tailleCont = mb_strlen($fiche->getValue('contenu'));
-
-    $apercu = $fiche->getValue('contenu'); 
-
-	if ($tailleCont > $maxChar)
-	{
-		//$apercu = html_substr($apercu, $maxChar, 2);
-        $apercu = texteHtmlReduit($apercu, $maxChar);
-	}
-
-	?>
-
-	<!-- Début vignette -->
-	<li class="vignette<?php if ($pair % 2 != 0){echo " ici";} ?>">
-		<h3><a href="<?php echo $url_site; ?>lieu.php?idL=<?php echo $fiche->getValue('idLieu'); ?>" title="Voir la fiche du lieu : <?php echo securise_string($fiche->getValue('nom')); ?>"><?php echo securise_string($fiche->getValue('nom')); ?></a></h3>
-		<div class="icone">
-		<?php echo $photo_principale; ?>
-		</div>
-
-		<span class="qui">par <?php echo securise_string($nomAuteur); ?><br /><?php echo date_fr($fiche->getValue('dateAjout'), "annee", "non", "non"); ?></span>
-		<div class="spacer"></div>
-		<div class="apercu">
-		<?php echo $apercu; ?>
-		</div>
-		<div class="continuer">
-			<a href="<?php echo $url_site; ?>lieu.php?idL=<?php echo $fiche->getValue('idLieu'); ?>" title="Voir la fiche du lieu : <?php echo securise_string($fiche->getValue('nom')); ?>">
-		Voir la fiche complète</a>
-		</div>
-	</li>
-	<!-- FIN vignette -->
-<?php
-	$pair++;
-
-} // while
-?>
-
-	</ol>
-	<!-- Fin dernieres_descriptions -->
-<div class="clear_mobile"></div>
-</div>
-<!-- fin Contenu -->
-
-<div id="colonne_gauche" class="colonne">
-
-<?php
-include("includes/navigation_calendrier.inc.php");
-?>
-<div style="clear:both"></div>
-	<div id="derniers_lieux">
+    
+    <div id="map" <?php echo $map_style ?>></div>
+ <div style="clear:both"></div>
+	
+    <div id="derniers_lieux" style="width:94%;margin:0 auto;">
 
 	<h2>Derniers lieux ajoutés</h2>
 
 	<?php
 	$req_lieux_recents = $connector->query("
 	SELECT idLieu, nom, adresse, quartier, localite, dateAjout
-	FROM lieu, localite WHERE lieu.localite_id=localite.id AND region='".$connector->sanitize($_SESSION['region'])."' ORDER BY dateAjout DESC LIMIT 8");
+	FROM lieu, localite WHERE lieu.localite_id=localite.id AND region='".$connector->sanitize($_SESSION['region'])."' ORDER BY dateAjout DESC LIMIT 10");
 
 	// Création de la section si il y a moins un lieu
 	if ($connector->getNumRows($req_lieux_recents) > 0)
@@ -161,7 +183,17 @@ include("includes/navigation_calendrier.inc.php");
 	?>
 
 	</div>
+   
 
+<div class="clear_mobile"></div>
+</div>
+<!-- fin Contenu -->
+
+<div id="colonne_gauche" class="colonne">
+
+<?php
+include("includes/navigation_calendrier.inc.php");
+?>
 </div>
 <!-- Fin Colonnegauche -->
 
