@@ -649,45 +649,14 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 8))
     <div class="guideForm">Si vous souhaitez modifier ces informations merci de nous <a href="contacteznous.php">contacter</a></div>
 
     <?php
-    if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 6))
-    {
-    ?>
-    <p>
-    <label for="affiliation">Nom</label>
-    <input type="text" name="affiliation" id="affiliation" size="30" maxlength="80" value="<?php echo htmlentities($champs['affiliation']); ?>" />
-    <?php echo $verif->getHtmlErreur("affiliation"); ?>
-
-    </p>
-
-    <p class="entreLabels"><strong>ou</strong></p>
-    <div class="spacer"></div>
-    <p>
-
-    <label for="lieu">lieu</label>
-    <select name="lieu" id="lieu" class="chosen-select" style="max-width:300px;">
-    <?php
-
-    echo "<option value=\"0\">&nbsp;</option>";
     $req_lieux = $connector->query("
     SELECT idLieu, nom FROM lieu WHERE actif=1 AND statut='actif' ORDER BY TRIM(LEADING 'L\'' FROM (TRIM(LEADING 'Les ' FROM (TRIM(LEADING 'La ' FROM (TRIM(LEADING 'Le ' FROM nom))))))) COLLATE utf8_general_ci"
-     );
-    while ($lieuTrouve = $connector->fetchArray($req_lieux))
-    {
-        echo "<option ";
-        if ($lieuTrouve['idLieu'] == $champs['lieu'])
-        {
-            echo "selected=\"selected\" ";
-        }
-        echo "value=\"".$lieuTrouve['idLieu']."\">".$lieuTrouve['nom']."</option>";
+     );    
 
-    }
-    ?>
-    </select>
-
-    <p class="entreLabels"><strong>ou</strong></p>
-    <div class="spacer"></div>
-
-    <?php
+        $sql = "SELECT idOrganisateur
+    FROM personne_organisateur
+    WHERE personne_organisateur.idPersonne=".$get['idP'];
+ 
     $tab_organisateurs_pers = array();
     if ($get['action'] == "editer" || $get['action'] == "update")
     {
@@ -709,8 +678,44 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 8))
             //echo "</table>";
         }
 
+    }        
+    
+    if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 6))
+    {
+    ?>
+    <p>
+    <label for="affiliation">Nom</label>
+    <input type="text" name="affiliation" id="affiliation" size="30" maxlength="80" value="<?php echo htmlentities($champs['affiliation']); ?>" />
+    <?php echo $verif->getHtmlErreur("affiliation"); ?>
+
+    </p>
+
+    <p class="entreLabels"><strong>ou</strong></p>
+    <div class="spacer"></div>
+    <p>
+
+    <label for="lieu">lieu</label>
+    <select name="lieu" id="lieu" class="chosen-select" style="max-width:300px;">
+    <?php
+
+    echo "<option value=\"0\">&nbsp;</option>";
+
+    while ($lieuTrouve = $connector->fetchArray($req_lieux))
+    {
+        echo "<option ";
+        if ($lieuTrouve['idLieu'] == $champs['lieu'])
+        {
+            echo "selected=\"selected\" ";
+        }
+        echo "value=\"".$lieuTrouve['idLieu']."\">".$lieuTrouve['nom']."</option>";
+
     }
     ?>
+    </select>
+
+    <p class="entreLabels"><strong>ou</strong></p>
+    <div class="spacer"></div>
+
     <p>
     <label for="organisateurs">organisateur(s)</label>
     <select name="organisateurs[]" id="organisateurs" data-placeholder="Choisissez un ou plusieurs organisateurs" class="chosen-select" multiple  style="max-width:350px;">
@@ -760,7 +765,9 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 8))
                 <p>
                 <label>Lieu</label>
                 <ul style="float:left;margin:0;padding-left:1em;">
-                    <li><a href="lieu.php?idL=<?php echo $champs['lieu'];?>"><?php echo htmlentities($lieuTrouve['nom']);?></a></li>
+                    <li><a href="lieu.php?idL=<?php echo $champs['lieu'];?>"><?php echo htmlentities($lieuTrouve['nom']);?></a>
+                    <input type="hidden" name="lieu" value="<?php echo $champs['lieu'];?>">
+                    </li>
                 </ul><div class="spacer"><!-- --></div>
             </p>
         <div class="guideChamp" style='padding: 0em 0 0.2em 175px;'>Vous pouvez modifier les informations de ce lieu et tous les événements qui s'y déroulent</div>            
@@ -785,7 +792,9 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 8))
                 while ($tab = $connector->fetchArray($req))
                 {
                     ?>
-                    <li><a href="organisateur.php?idO=<?php echo $tab['idOrganisateur']; ?>"><?php echo $tab['nom']; ?></a></li>
+                    <li><a href="organisateur.php?idO=<?php echo $tab['idOrganisateur']; ?>"><?php echo $tab['nom']; ?></a>
+                    <input type="hidden" name="organisateurs[]" value="<?php echo $tab['idOrganisateur']; ?>">
+                    </li>
                     <?php
                 }
            ?> 
@@ -809,9 +818,9 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 8))
 
 <fieldset>
     <legend>Votre signature</legend>
-    <div class="guideForm">Affichée sous les événements, commentaires, etc. que vous avez ajoutés</div>
+    <div class="guideForm">Apparait sous les événements, commentaires, etc. que vous avez ajoutés</div>
 
-    <label style="display:block;float:none">Afficher :</label>
+    <label style="display:block;float:none;width:8em" >Afficher :</label>
     
     <ul class="radio" style="display:block">
     <?php
