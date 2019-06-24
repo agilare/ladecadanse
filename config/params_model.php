@@ -1,5 +1,6 @@
 <?php
-// à renommer en params.php pour faire fonctionner l'appli
+// make a copy of this file named params.php 
+
 define("ENV", "dev");
 
 define("MODE_DEBUG", FALSE);
