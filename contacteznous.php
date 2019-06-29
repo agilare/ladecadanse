@@ -9,7 +9,7 @@ $videur = new Sentry();
 $page_titre = "Contact";
 $page_description = "Formulaire pour envoyer un email au webmaster de La décadanse : proposer un événement, poser une question, etc.";
 $nom_page = "contacteznous";
-$extra_css = array("formulaires", "contacteznous_formulaire");
+$extra_css = array("formulaires", "contacteznous");
 //$extra_js = array("freecap", "verif_captcha");
 include("includes/header.inc.php");
 ?>
