@@ -9,6 +9,7 @@ $videur = new Sentry();
 $nom_page = "apropos";
 $page_titre = "à propos du site";
 $page_description = "portrait du site La décadanse : description, liste des membres, outils utilisés";
+$extra_css = array("apropos");
 include("includes/header.inc.php");
 ?>
 
