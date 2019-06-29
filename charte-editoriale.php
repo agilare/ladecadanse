@@ -8,6 +8,7 @@ $videur = new Sentry();
 $nom_page = "charte-editoriale";
 $page_titre = "Charte éditoriale";
 $page_description = "";
+$extra_css = array("charte-editoriale");
 include("includes/header.inc.php");
 ?>
 
