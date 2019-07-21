@@ -370,6 +370,7 @@ if ($genre_courant != '')
 
     <h2>Partenaires</h2>
     <ul style="padding-left:5px">
+        <li style="margin:2px 0;float:left;"><a href="https://culture-accessible.ch/" onclick="window.open(this.href,'_blank');return false;"><img src="web/interface/culture-accessible-geneve.svg" alt="Culture accessible Genève" width="150" style="border:1px solid #eaeaea" /></a></li>
         <li style="margin:2px 0;float:left;"><a href="https://epic-magazine.ch/" onclick="window.open(this.href,'_blank');return false;"><img src="web/interface/EPIC_noir.png" alt="EPIC Magazine" width="150" style="border:1px solid #eaeaea" /></a></li>
 
     <li style="margin:2px 0;float:left;"><a href="http://www.radiovostok.ch/" onclick="window.open(this.href,'_blank');return false;"><img src="web/interface/radio_vostok.png" alt="Radio Vostok" width="150" height="59" style="border:1px solid #eaeaea" /></a></li>
