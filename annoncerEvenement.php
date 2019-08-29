@@ -26,8 +26,8 @@ include("includes/header.inc.php");
 	<div class="rubrique" style="padding:0 0 .8em 0;background:#f4f4f4;border-radius:3px">
 	<ul >
         <li>
-            <h3>vous avez des événements à&nbsp;ajouter régulièrement</h3>
-            <p>Le mieux est de&nbsp;<a href="<?php echo $url_site; ?>inscription.php" title="S'inscrire pour devenir membre"><strong>s'inscrire</strong></a>, ce qui vous permettra aussitôt de&nbsp;:</p>
+            <h3>vous avez des événements à&nbsp;ajouter régulièrement, <a href="<?php echo $url_site; ?>inscription.php">inscrivez-vous</a> (ou <a href="login.php">connectez-vous</a> si vous avez déjà un compte)</h3>
+            <p><strong>S'inscrire</strong></a> vous permettra aussitôt de&nbsp;:</p>
             <ul style="list-style-type:circle">
             <li>créer et modifier vos événements;</li>
             <li>ajouter une présentation de votre lieu s'il est enregistré sur le site;</li>
@@ -35,10 +35,9 @@ include("includes/header.inc.php");
             <li>poster des commentaires.</li>
             </ul>
         </li>
-        <p>Si vous avez déjà un compte sur le site, veuillez vous <a href="login.php">connecter</a>.</p>
         <li>
-            <h3>vous voulez juste annoncer un&nbsp;événement</h3>
-            <p><a href="ajouterEvenement.php" style="font-weight: bold">Envoyez nous les infos via ce formulaire</a>, on s'occupera de l'ajouter dans les prochains jours.<br>
+            <h3>vous voulez annoncer un&nbsp;événement une seule fois, sans compte</h3>
+            <p><a href="ajouterEvenement.php">Envoyez nous les infos via ce formulaire</a>, l'événement sera validé par nous dans les prochains jours.<br>
             Veuillez vérifier svp au préalable que l'événement n'est pas déjà présent dans l'<a href="agenda.php">agenda</a>
             </p>
         </li>
