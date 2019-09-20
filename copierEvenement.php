@@ -368,7 +368,7 @@ include("includes/header.inc.php");
 
 <div id="contenu" class="colonne">
     
-<div id="entete_contenu" ><h2 style="width:100%">Copier un événement</h2><div class="spacer"></div></div>
+<div id="entete_contenu" ><h2 style="width:100%">Copier un événement vers d'autres dates</h2><div class="spacer"></div></div>
 
 <div style="width:94%;margin:0 auto">
 <?php
@@ -431,10 +431,11 @@ if (isset($get['idE']))
 ?>
 
 <form method="post" id="ajouter_editer" style="width: 94%;margin: 0em auto 0em auto;background:#efefef;padding: 1em 0;border-radius: 4px;" enctype="multipart/form-data" action="<?php echo basename(__FILE__)."?action=coller&amp;idE=".$get['idE']; ?>">
-    <label for="from" style="float:none">Du </label><input type="text" name="from" size="9" id="date-from" class="datepicker_from" placeholder="jj.mm.aaaa" required value="<?php echo $date_du; ?>"> 
+    <h3 style="font-size:1em;margin-left:.3em">Copier l'événement ci-dessus vers les dates suivantes (1 par jour)</h3><p style="margin-left:.3em" >Dans la page suivante vous pourrez si besoin modifier ou supprimer chaque événement un par un</p>
+    <label for="from" style="float:none">du </label><input type="text" name="from" size="9" id="date-from" class="datepicker_from" placeholder="jj.mm.aaaa" required value="<?php echo $date_du; ?>"> 
     <span style="position:relative"><label for="date-to" style="float:none">au </label><input type="text" name="to" size="9" id="date-to" class="datepicker_to" placeholder="jj.mm.aaaa"></span>
         &nbsp;<input id="coller" name="submit" type="submit" class="submit" value="Coller" style="width: 80px;margin-left: 0.6em;">
-        <div style="margin: 15px 0 0px 30px;font-style: italic;color: #999;">Laissez la 2<sup>e</sup> date vide si vous ne collez l'événement que vers un seul jour.</div>
+        <div style="margin: 15px 0 0px 30px;font-style: italic;color: #777;">Laissez la 2<sup>e</sup> date vide si vous ne collez l'événement que vers un seul jour.</div>
     <?php
     echo $verif->getHtmlErreur('dateEvenement');
     ?>
