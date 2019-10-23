@@ -16,7 +16,6 @@ elseif ($_SESSION['region'] == 'fr')
     $page_titre_region = "Fribourg";   
 }
 
-$nom_page = "index";
 $page_titre = " agenda de sorties à ".$page_titre_region." : concerts, soirées, films, théâtre, expos, bars, cinémas";
 $page_description = "Programme des prochains événements festifs et culturels à Genève et Lausanne : fêtes, concerts et soirées, cinéma,
 théâtre, expositions, vernissages, conférences, lieux culturels et alternatifs";

@@ -1,14 +1,7 @@
 <?php
 $tab_pages_dc = array("/agenda.php", "/evenement.php");
 
-preg_match(PREG_PATTERN_NOMPAGE, $_SERVER['PHP_SELF'], $matches);
-
-$nom_page = 'index';
-if (!empty( $matches[1] ))
-{
-	$tab_nom_page = explode("/", $matches[1]);
-	$nom_page = end($tab_nom_page);
-}
+$nom_page = basename($_SERVER["SCRIPT_FILENAME"], '.php');
 
 /* GENRE */
 $get['genre'] = "";

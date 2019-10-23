@@ -11,17 +11,10 @@ if (isset($extra_js) && is_array($extra_js))
 	}
 }
 
-preg_match(PREG_PATTERN_NOMPAGE, $_SERVER['PHP_SELF'], $matches);
-$nom_page = 'index';
-if (!empty( $matches[1] ))
-{
-	$tab_nom_page = explode("/", $matches[1]);
-	$nom_page = end($tab_nom_page);
-}
+$nom_page = basename($_SERVER["SCRIPT_FILENAME"], '.php');
 
-$pages_orga = array("ajouterEvenement", "ajouterLieu", "ajouterPersonne", 'inscription');
-
-$pages_formulaires = array("ajouterEvenement", "copierEvenement", "ajouterLieu", "inscription", "gererEvenements", "ajouterPersonne", "ajouterDescription", "ajouterOrganisateur");
+$pages_orga = ["ajouterEvenement", "ajouterLieu", "ajouterPersonne", 'inscription'];
+$pages_formulaires = ["ajouterEvenement", "copierEvenement", "ajouterLieu", "inscription", "gererEvenements", "ajouterPersonne", "ajouterDescription", "ajouterOrganisateur"];
 $pages_tinymce = ["ajouterDescription", "ajouterOrganisateur"];
 ?>
 

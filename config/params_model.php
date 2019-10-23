@@ -42,11 +42,6 @@ $rep_absolu = "";
 $url_domaine = "";
 $url_site = $url_domaine."";
 
-
-// pour récupérer le nom du script courant (sans path ni extension)
-// define("PREG_PATTERN_NOMPAGE", "/^\/(.+)\.php$/"); // prod : ladecadanse.darksite.ch
-define("PREG_PATTERN_NOMPAGE", "/^\/.*\/(.+)\.php$/"); // host/ladecadanse/
-
 // base de données
 $param['dbhost'] = '';
 $param['dbusername'] = '';
