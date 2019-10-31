@@ -148,7 +148,7 @@ $sql_menu = "
 SELECT idOrganisateur, nom, presentation
 FROM organisateur
 WHERE statut='".$get['statut']."' ".$sql_vue."
-ORDER BY TRIM(LEADING 'l\'' FROM (TRIM(LEADING 'les ' FROM (TRIM(LEADING 'la ' FROM (TRIM(LEADING 'le ' FROM lower(nom)))))))) COLLATE utf8_general_ci";
+ORDER BY TRIM(LEADING 'l\'' FROM (TRIM(LEADING 'les ' FROM (TRIM(LEADING 'la ' FROM (TRIM(LEADING 'le ' FROM lower(nom)))))))) COLLATE utf8mb4_unicode_ci";
 
 $req = $connector->query($sql_menu);
 

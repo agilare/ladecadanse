@@ -52,7 +52,7 @@ SELECT l.idLieu AS idLieu, nom, l.adresse AS adresse, l.quartier AS quartier, ca
 FROM lieu l
 WHERE l.statut='actif' AND l.region IN ('".$connector->sanitize($_SESSION['region'])."', $rf 'hs')  
     AND lat != '0.000000' AND lng != '0.000000'
-ORDER BY TRIM(LEADING 'l\'' FROM (TRIM(LEADING 'les ' FROM (TRIM(LEADING 'la ' FROM (TRIM(LEADING 'le ' FROM lower(nom)))))))) COLLATE utf8_general_ci";
+ORDER BY TRIM(LEADING 'l\'' FROM (TRIM(LEADING 'les ' FROM (TRIM(LEADING 'la ' FROM (TRIM(LEADING 'le ' FROM lower(nom)))))))) COLLATE utf8mb4_unicode_ci";
 
 //echo $sql_lieux;
 

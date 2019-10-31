@@ -31,7 +31,7 @@ class DbConnector extends SystemComponent
         //connection à la base de données
         $this->lien = mysqli_connect($host, $user, $pass, $db);
 
-        mysqli_set_charset($this->lien, 'UTF8');
+        mysqli_set_charset($this->lien, 'utf8mb4');
         //enregistre la méthode "close" pour qu'elle soit executée une fois le script terminé
         register_shutdown_function(array(&$this, 'close'));
     }

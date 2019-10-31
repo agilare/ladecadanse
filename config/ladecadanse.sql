@@ -1,196 +1,121 @@
--- phpMyAdmin SQL Dump
--- version 4.6.6deb4
--- https://www.phpmyadmin.net/
---
--- Client :  localhost:3306
--- Généré le :  Lun 24 Juin 2019 à 22:29
--- Version du serveur :  10.1.37-MariaDB-0+deb9u1
--- Version de PHP :  7.0.33-0+deb9u3
-
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
+START TRANSACTION;
 SET time_zone = "+00:00";
-
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8mb4 */;
 
---
--- Base de données :  `ladecadanse2`
---
-
--- --------------------------------------------------------
-
---
--- Structure de la table `affiliation`
---
 
 CREATE TABLE `affiliation` (
   `idPersonne` smallint(5) UNSIGNED NOT NULL DEFAULT '0',
   `idAffiliation` smallint(5) UNSIGNED NOT NULL DEFAULT '0',
-  `genre` set('lieu','association','groupe') NOT NULL DEFAULT ''
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `breve`
---
+  `genre` set('lieu','association','groupe') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT ''
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `breve` (
   `idBreve` mediumint(8) UNSIGNED NOT NULL,
-  `titre` varchar(255) NOT NULL DEFAULT '',
-  `contenu` text NOT NULL,
-  `img_breve` varchar(255) NOT NULL DEFAULT '',
+  `titre` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `contenu` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `img_breve` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `date_debut` date NOT NULL DEFAULT '0000-00-00',
   `date_fin` date NOT NULL DEFAULT '0000-00-00',
   `idPersonne` smallint(5) UNSIGNED NOT NULL DEFAULT '0',
   `actif` tinyint(4) UNSIGNED NOT NULL DEFAULT '1',
   `dateAjout` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `date_derniere_modif` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `statut` enum('actif','inactif') NOT NULL DEFAULT 'actif'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `commentaire`
---
+  `statut` enum('actif','inactif') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'actif'
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `commentaire` (
   `idCommentaire` mediumint(11) UNSIGNED NOT NULL,
   `idPersonne` smallint(11) UNSIGNED NOT NULL DEFAULT '0',
   `id` mediumint(11) UNSIGNED NOT NULL DEFAULT '0',
-  `element` enum('evenement','lieu') NOT NULL DEFAULT 'evenement',
-  `titre` varchar(255) NOT NULL DEFAULT '',
-  `contenu` text NOT NULL,
-  `titreEvenement` varchar(255) NOT NULL DEFAULT '',
-  `statut` enum('actif','inactif','archive') NOT NULL DEFAULT 'actif',
+  `element` enum('evenement','lieu') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'evenement',
+  `titre` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `contenu` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `titreEvenement` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `statut` enum('actif','inactif','archive') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'actif',
   `dateAjout` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `date_derniere_modif` datetime NOT NULL DEFAULT '0000-00-00 00:00:00'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `descriptionlieu`
---
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `descriptionlieu` (
   `idLieu` mediumint(8) UNSIGNED NOT NULL DEFAULT '0',
   `idPersonne` smallint(5) UNSIGNED NOT NULL DEFAULT '0',
-  `type` enum('description','presentation') NOT NULL DEFAULT 'description',
+  `type` enum('description','presentation') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'description',
   `dateAjout` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `contenu` text,
+  `contenu` mediumtext COLLATE utf8mb4_unicode_ci,
   `date_derniere_modif` datetime NOT NULL DEFAULT '0000-00-00 00:00:00'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `evenement`
---
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `evenement` (
   `idevenement` mediumint(8) UNSIGNED NOT NULL,
   `idLieu` smallint(5) UNSIGNED NOT NULL DEFAULT '0',
   `idSalle` mediumint(9) NOT NULL DEFAULT '0',
   `idPersonne` smallint(5) UNSIGNED NOT NULL DEFAULT '0',
-  `statut` enum('actif','inactif','annule','complet','propose') NOT NULL DEFAULT 'actif',
-  `genre` varchar(20) NOT NULL DEFAULT 'divers',
-  `titre` varchar(100) NOT NULL DEFAULT '',
+  `statut` enum('actif','inactif','annule','complet','propose') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'actif',
+  `genre` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'divers',
+  `titre` varchar(120) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `dateEvenement` date NOT NULL DEFAULT '0000-00-00',
-  `nomLieu` varchar(255) NOT NULL DEFAULT '',
-  `adresse` text NOT NULL,
-  `quartier` varchar(255) NOT NULL DEFAULT 'autre',
+  `nomLieu` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `adresse` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `quartier` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'autre',
   `localite_id` smallint(6) NOT NULL,
-  `region` varchar(2) NOT NULL,
-  `urlLieu` varchar(255) NOT NULL DEFAULT '',
+  `region` varchar(2) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `urlLieu` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `horaire_debut` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `horaire_fin` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `horaire_complement` varchar(100) NOT NULL DEFAULT '',
-  `description` text NOT NULL,
-  `flyer` varchar(255) NOT NULL DEFAULT '',
-  `image` varchar(255) NOT NULL DEFAULT '',
-  `price_type` varchar(40) DEFAULT NULL,
-  `prix` varchar(255) NOT NULL DEFAULT '',
-  `prelocations` varchar(80) NOT NULL DEFAULT '',
-  `URL1` varchar(255) NOT NULL DEFAULT '',
-  `URL2` varchar(255) NOT NULL DEFAULT '',
-  `ref` varchar(255) NOT NULL DEFAULT '',
-  `remarque` text,
-  `user_email` varchar(255) DEFAULT NULL,
+  `horaire_complement` varchar(120) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `description` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `flyer` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `image` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `price_type` varchar(40) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `prix` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `prelocations` varchar(80) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `URL1` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `URL2` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `ref` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `remarque` mediumtext COLLATE utf8mb4_unicode_ci,
+  `user_email` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `dateAjout` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `date_derniere_modif` datetime NOT NULL DEFAULT '0000-00-00 00:00:00'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `evenement_favori`
---
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `evenement_favori` (
   `idPersonne` smallint(5) NOT NULL DEFAULT '0',
   `idEvenement` mediumint(8) NOT NULL DEFAULT '0',
   `date_ajout` datetime NOT NULL DEFAULT '0000-00-00 00:00:00'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `evenement_fichierrecu`
---
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `evenement_fichierrecu` (
   `idEvenement` mediumint(9) NOT NULL DEFAULT '0',
   `idFichierrecu` mediumint(9) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `evenement_organisateur`
---
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `evenement_organisateur` (
   `idEvenement` mediumint(9) NOT NULL DEFAULT '0',
   `idOrganisateur` mediumint(9) NOT NULL DEFAULT '0'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `fichierrecu`
---
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `fichierrecu` (
   `idFichierrecu` mediumint(9) NOT NULL,
   `idElement` int(10) NOT NULL DEFAULT '0',
-  `type_element` enum('lieu','evenement') NOT NULL DEFAULT 'lieu',
-  `description` char(255) NOT NULL DEFAULT '',
-  `mime` char(80) NOT NULL DEFAULT '',
-  `extension` char(6) NOT NULL DEFAULT '',
-  `type` enum('document','image') NOT NULL DEFAULT 'document',
+  `type_element` enum('lieu','evenement') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'lieu',
+  `description` char(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `mime` char(80) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `extension` char(6) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `type` enum('document','image') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'document',
   `dateAjout` datetime NOT NULL DEFAULT '0000-00-00 00:00:00'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `groupes`
---
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `groupes` (
   `idgroupe` tinyint(3) UNSIGNED NOT NULL DEFAULT '0',
-  `nom` varchar(80) DEFAULT NULL,
-  `description` text NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
---
--- Contenu de la table `groupes`
---
+  `nom` varchar(80) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `description` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `groupes` (`idgroupe`, `nom`, `description`) VALUES
 (1, 'superadmin', 'BDFL'),
@@ -200,92 +125,58 @@ INSERT INTO `groupes` (`idgroupe`, `nom`, `description`) VALUES
 (10, 'contributeur', '? (33 personnes)'),
 (12, 'membre', 'favoris, commentaires');
 
--- --------------------------------------------------------
-
---
--- Structure de la table `lieu`
---
-
 CREATE TABLE `lieu` (
   `idLieu` smallint(5) UNSIGNED NOT NULL,
   `idpersonne` smallint(5) UNSIGNED NOT NULL DEFAULT '0',
-  `statut` enum('actif','inactif','ancien') NOT NULL DEFAULT 'actif',
-  `nom` varchar(60) NOT NULL DEFAULT '',
-  `adresse` varchar(80) NOT NULL DEFAULT '',
-  `quartier` varchar(255) NOT NULL DEFAULT 'Plainpalais',
+  `statut` enum('actif','inactif','ancien') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'actif',
+  `nom` varchar(80) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `adresse` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `quartier` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Plainpalais',
   `localite_id` smallint(6) NOT NULL,
-  `region` varchar(2) NOT NULL,
+  `region` varchar(2) COLLATE utf8mb4_unicode_ci NOT NULL,
   `lat` float(10,6) NOT NULL DEFAULT '0.000000',
   `lng` float(10,6) NOT NULL DEFAULT '0.000000',
-  `horaire_general` text NOT NULL,
-  `horaire_evenement` text NOT NULL,
-  `entree` varchar(255) NOT NULL DEFAULT '',
-  `categorie` set('bistrot','salle','restaurant','cinema','theatre','galerie','boutique','musee','autre') NOT NULL DEFAULT '',
-  `telephone` varchar(40) NOT NULL DEFAULT '',
-  `photo1` varchar(255) NOT NULL DEFAULT '',
-  `photo2` varchar(255) NOT NULL DEFAULT '',
-  `logo` varchar(255) NOT NULL DEFAULT '',
-  `URL` varchar(255) NOT NULL DEFAULT '',
-  `email` varchar(255) NOT NULL DEFAULT '',
-  `plan` varchar(255) NOT NULL DEFAULT '',
-  `acces_tpg` varchar(255) NOT NULL DEFAULT '',
+  `horaire_general` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `horaire_evenement` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `entree` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `categorie` set('bistrot','salle','restaurant','cinema','theatre','galerie','boutique','musee','autre') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `telephone` varchar(40) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `photo1` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `photo2` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `logo` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `URL` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `plan` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `acces_tpg` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `dateAjout` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `actif` tinyint(3) UNSIGNED NOT NULL DEFAULT '1',
-  `determinant` varchar(40) NOT NULL DEFAULT '',
+  `determinant` varchar(40) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `date_derniere_modif` datetime NOT NULL DEFAULT '0000-00-00 00:00:00'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `lieu_favori`
---
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `lieu_favori` (
   `idPersonne` smallint(5) NOT NULL DEFAULT '0',
   `idLieu` smallint(5) NOT NULL DEFAULT '0',
   `date_ajout` datetime NOT NULL DEFAULT '0000-00-00 00:00:00'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `lieu_fichierrecu`
---
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `lieu_fichierrecu` (
   `idLieu` mediumint(9) NOT NULL DEFAULT '0',
   `idFichierrecu` mediumint(9) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `lieu_organisateur`
---
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `lieu_organisateur` (
   `idOrganisateur` mediumint(9) NOT NULL DEFAULT '0',
   `idLieu` mediumint(9) NOT NULL DEFAULT '0'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `localite`
---
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `localite` (
   `id` int(6) NOT NULL,
-  `localite` varchar(255) NOT NULL,
-  `commune` varchar(255) NOT NULL,
+  `localite` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `commune` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `npa` int(4) NOT NULL,
-  `canton` varchar(2) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Contenu de la table `localite`
---
+  `canton` varchar(2) COLLATE utf8mb4_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `localite` (`id`, `localite`, `commune`, `npa`, `canton`) VALUES
 (1, 'Autre', '', 0, ''),
@@ -1350,292 +1241,177 @@ INSERT INTO `localite` (`id`, `localite`, `commune`, `npa`, `canton`) VALUES
 (1063, 'Zumholz', 'Alterswil', 1713, 'fr'),
 (1064, 'Zumholz bei Plaffeien', 'Zumholz', 1719, 'fr');
 
--- --------------------------------------------------------
-
---
--- Structure de la table `organisateur`
---
-
 CREATE TABLE `organisateur` (
   `idOrganisateur` mediumint(9) NOT NULL,
   `idPersonne` mediumint(9) NOT NULL DEFAULT '0',
-  `nom` varchar(255) NOT NULL DEFAULT '',
-  `adresse` varchar(255) NOT NULL DEFAULT '',
-  `region` varchar(2) NOT NULL DEFAULT 'ge',
-  `URL` varchar(255) NOT NULL DEFAULT '',
-  `email` varchar(255) NOT NULL DEFAULT '',
-  `telephone` varchar(255) NOT NULL DEFAULT '',
-  `logo` varchar(255) NOT NULL DEFAULT '',
-  `photo` varchar(255) NOT NULL DEFAULT '',
-  `presentation` text NOT NULL,
-  `statut` enum('actif','inactif','ancien') NOT NULL DEFAULT 'actif',
+  `nom` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `adresse` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `region` varchar(2) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'ge',
+  `URL` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `telephone` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `logo` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `photo` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `presentation` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `statut` enum('actif','inactif','ancien') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'actif',
   `date_ajout` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `date_derniere_modif` datetime NOT NULL DEFAULT '0000-00-00 00:00:00'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `personne`
---
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `personne` (
   `idPersonne` smallint(5) UNSIGNED NOT NULL,
-  `pseudo` varchar(60) NOT NULL DEFAULT '',
-  `mot_de_passe` varchar(40) NOT NULL DEFAULT '',
-  `cookie` varchar(32) NOT NULL DEFAULT '',
-  `session` varchar(32) NOT NULL DEFAULT '',
-  `ip` varchar(15) NOT NULL DEFAULT '',
+  `pseudo` varchar(80) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `mot_de_passe` varchar(60) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `cookie` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `session` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `ip` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `groupe` tinyint(4) UNSIGNED NOT NULL DEFAULT '12',
-  `statut` enum('actif','inactif','demande') NOT NULL DEFAULT 'actif',
-  `nom` varchar(40) NOT NULL DEFAULT '',
-  `prenom` varchar(40) NOT NULL DEFAULT '',
-  `affiliation` varchar(255) NOT NULL DEFAULT '',
-  `adresse` text NOT NULL,
-  `region` varchar(2) NOT NULL DEFAULT 'ge',
-  `telephone` varchar(20) NOT NULL DEFAULT '',
-  `email` varchar(80) NOT NULL DEFAULT '',
-  `URL` text NOT NULL,
-  `signature` enum('pseudo','prenom','nomcomplet','aucune') NOT NULL DEFAULT 'pseudo',
-  `avec_affiliation` enum('oui','non') NOT NULL DEFAULT 'non',
-  `notification_commentaires` enum('oui','non') NOT NULL DEFAULT 'non',
-  `gds` varchar(255) NOT NULL DEFAULT '',
+  `statut` enum('actif','inactif','demande') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'actif',
+  `nom` varchar(60) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `prenom` varchar(60) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `affiliation` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `adresse` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `region` varchar(2) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'ge',
+  `telephone` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `email` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `URL` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `signature` enum('pseudo','prenom','nomcomplet','aucune') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'pseudo',
+  `avec_affiliation` enum('oui','non') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'non',
+  `notification_commentaires` enum('oui','non') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'non',
+  `gds` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `actif` tinyint(3) UNSIGNED NOT NULL DEFAULT '1',
-  `remarque` varchar(255) NOT NULL,
+  `remarque` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `dateAjout` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `date_derniere_modif` datetime NOT NULL DEFAULT '0000-00-00 00:00:00'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `personne_organisateur`
---
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `personne_organisateur` (
   `idOrganisateur` mediumint(9) NOT NULL DEFAULT '0',
   `idPersonne` smallint(6) NOT NULL DEFAULT '0',
-  `role` varchar(255) NOT NULL DEFAULT ''
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `salle`
---
+  `role` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT ''
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `salle` (
   `idSalle` mediumint(9) NOT NULL,
   `idLieu` mediumint(9) NOT NULL DEFAULT '0',
   `idPersonne` mediumint(9) NOT NULL DEFAULT '0',
-  `nom` varchar(255) NOT NULL DEFAULT '',
-  `emplacement` varchar(255) NOT NULL DEFAULT '',
+  `nom` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `emplacement` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `dateAjout` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `date_derniere_modif` datetime NOT NULL DEFAULT '0000-00-00 00:00:00'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `temp`
---
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `temp` (
   `id` mediumint(9) NOT NULL,
   `idPersonne` mediumint(9) DEFAULT NULL,
-  `email` varchar(255) DEFAULT NULL,
-  `token` varchar(255) NOT NULL DEFAULT '',
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `token` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `expiration` datetime DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Index pour les tables exportées
---
 
---
--- Index pour la table `affiliation`
---
 ALTER TABLE `affiliation`
   ADD PRIMARY KEY (`idPersonne`,`idAffiliation`);
 
---
--- Index pour la table `breve`
---
 ALTER TABLE `breve`
   ADD PRIMARY KEY (`idBreve`),
   ADD KEY `breve_dateajout` (`dateAjout`),
   ADD KEY `breve_actif` (`actif`);
 
---
--- Index pour la table `commentaire`
---
 ALTER TABLE `commentaire`
   ADD PRIMARY KEY (`idCommentaire`);
 
---
--- Index pour la table `descriptionlieu`
---
 ALTER TABLE `descriptionlieu`
-  ADD PRIMARY KEY (`idLieu`,`idPersonne`),
+  ADD PRIMARY KEY (`idLieu`,`idPersonne`,`type`) USING BTREE,
   ADD KEY `desclieu_dateajout` (`dateAjout`);
 
---
--- Index pour la table `evenement`
---
 ALTER TABLE `evenement`
   ADD PRIMARY KEY (`idevenement`),
   ADD KEY `semaine` (`genre`,`dateEvenement`),
   ADD KEY `dateajout` (`dateAjout`),
   ADD KEY `ev_idlieu_dateev` (`idLieu`,`dateEvenement`);
 
---
--- Index pour la table `evenement_favori`
---
 ALTER TABLE `evenement_favori`
   ADD PRIMARY KEY (`idPersonne`,`idEvenement`);
 
---
--- Index pour la table `evenement_fichierrecu`
---
 ALTER TABLE `evenement_fichierrecu`
   ADD PRIMARY KEY (`idEvenement`,`idFichierrecu`);
 
---
--- Index pour la table `evenement_organisateur`
---
 ALTER TABLE `evenement_organisateur`
   ADD PRIMARY KEY (`idEvenement`,`idOrganisateur`);
 
---
--- Index pour la table `fichierrecu`
---
 ALTER TABLE `fichierrecu`
   ADD PRIMARY KEY (`idFichierrecu`);
 
---
--- Index pour la table `groupes`
---
 ALTER TABLE `groupes`
   ADD PRIMARY KEY (`idgroupe`);
 
---
--- Index pour la table `lieu`
---
 ALTER TABLE `lieu`
   ADD PRIMARY KEY (`idLieu`),
   ADD KEY `nom` (`nom`),
   ADD KEY `lieu_dateajout` (`dateAjout`);
 
---
--- Index pour la table `lieu_favori`
---
 ALTER TABLE `lieu_favori`
   ADD PRIMARY KEY (`idPersonne`,`idLieu`);
 
---
--- Index pour la table `lieu_fichierrecu`
---
 ALTER TABLE `lieu_fichierrecu`
   ADD PRIMARY KEY (`idLieu`,`idFichierrecu`);
 
---
--- Index pour la table `lieu_organisateur`
---
 ALTER TABLE `lieu_organisateur`
   ADD PRIMARY KEY (`idOrganisateur`,`idLieu`);
 
---
--- Index pour la table `localite`
---
 ALTER TABLE `localite`
   ADD PRIMARY KEY (`id`);
 
---
--- Index pour la table `organisateur`
---
 ALTER TABLE `organisateur`
   ADD PRIMARY KEY (`idOrganisateur`);
 
---
--- Index pour la table `personne`
---
 ALTER TABLE `personne`
   ADD PRIMARY KEY (`idPersonne`),
   ADD KEY `pseudo` (`pseudo`);
 
---
--- Index pour la table `personne_organisateur`
---
 ALTER TABLE `personne_organisateur`
   ADD PRIMARY KEY (`idOrganisateur`,`idPersonne`);
 
---
--- Index pour la table `salle`
---
 ALTER TABLE `salle`
   ADD PRIMARY KEY (`idSalle`);
 
---
--- Index pour la table `temp`
---
 ALTER TABLE `temp`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `idPersonne` (`idPersonne`);
 
---
--- AUTO_INCREMENT pour les tables exportées
---
 
---
--- AUTO_INCREMENT pour la table `breve`
---
 ALTER TABLE `breve`
   MODIFY `idBreve` mediumint(8) UNSIGNED NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT pour la table `commentaire`
---
+
 ALTER TABLE `commentaire`
   MODIFY `idCommentaire` mediumint(11) UNSIGNED NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT pour la table `evenement`
---
+
 ALTER TABLE `evenement`
   MODIFY `idevenement` mediumint(8) UNSIGNED NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT pour la table `fichierrecu`
---
+
 ALTER TABLE `fichierrecu`
   MODIFY `idFichierrecu` mediumint(9) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT pour la table `lieu`
---
+
 ALTER TABLE `lieu`
   MODIFY `idLieu` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT pour la table `localite`
---
+
 ALTER TABLE `localite`
   MODIFY `id` int(6) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT pour la table `organisateur`
---
+
 ALTER TABLE `organisateur`
   MODIFY `idOrganisateur` mediumint(9) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT pour la table `personne`
---
+
 ALTER TABLE `personne`
   MODIFY `idPersonne` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT pour la table `salle`
---
+
 ALTER TABLE `salle`
   MODIFY `idSalle` mediumint(9) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT pour la table `temp`
---
+
 ALTER TABLE `temp`
   MODIFY `id` mediumint(9) NOT NULL AUTO_INCREMENT;
+COMMIT;
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

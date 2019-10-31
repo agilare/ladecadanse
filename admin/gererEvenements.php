@@ -1049,7 +1049,7 @@ $req_lieux = $connector->query("
 SELECT idLieu, nom FROM lieu
 WHERE actif=1 AND statut='actif'
 ORDER BY TRIM(LEADING 'L\'' FROM (TRIM(LEADING 'Les ' FROM (TRIM(LEADING 'La ' FROM (TRIM(LEADING 'Le ' FROM nom)))))))
-COLLATE utf8_general_ci"
+COLLATE utf8mb4_unicode_ci"
  );
 
 
@@ -1306,7 +1306,7 @@ echo $verif->getHtmlErreur('description');
 	//Menu des lieux actifs de la base
 	echo "<option value=\"0\">&nbsp;</option>";
 	$req = $connector->query("
-	SELECT idOrganisateur, nom FROM organisateur WHERE statut='actif' ORDER BY TRIM(LEADING 'L\'' FROM (TRIM(LEADING 'Les ' FROM (TRIM(LEADING 'La ' FROM (TRIM(LEADING 'Le ' FROM nom))))))) COLLATE utf8_general_ci"
+	SELECT idOrganisateur, nom FROM organisateur WHERE statut='actif' ORDER BY TRIM(LEADING 'L\'' FROM (TRIM(LEADING 'Les ' FROM (TRIM(LEADING 'La ' FROM (TRIM(LEADING 'Le ' FROM nom))))))) COLLATE utf8mb4_unicode_ci"
 	 );
 
 

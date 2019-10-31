@@ -946,7 +946,7 @@ if ($verif->nbErreurs() > 0)
     {
         echo $verif->getHtmlErreur("global");
     }
-	//print_r($verif->getErreurs());
+	print_r($verif->getErreurs());
 }
 ?>
 
@@ -1080,7 +1080,7 @@ if ($verif->nbErreurs() > 0)
         //Menu des lieux actifs de la base
         echo "<option value=\"\"></option>";
         $req_lieux = $connector->query("
-        SELECT idLieu, nom FROM lieu WHERE statut='actif' ".$sql_lieu_excl_fr." ORDER BY TRIM(LEADING 'L\'' FROM (TRIM(LEADING 'Les ' FROM (TRIM(LEADING 'La ' FROM (TRIM(LEADING 'Le ' FROM nom))))))) COLLATE utf8_general_ci"
+        SELECT idLieu, nom FROM lieu WHERE statut='actif' ".$sql_lieu_excl_fr." ORDER BY TRIM(LEADING 'L\'' FROM (TRIM(LEADING 'Les ' FROM (TRIM(LEADING 'La ' FROM (TRIM(LEADING 'Le ' FROM nom))))))) COLLATE utf8mb4_unicode_ci"
          );
 
 
@@ -1318,7 +1318,7 @@ if ($verif->nbErreurs() > 0)
         <?php
         echo "<option value=\"0\">&nbsp;</option>";
         $req = $connector->query("
-        SELECT idOrganisateur, nom FROM organisateur WHERE statut='actif' ORDER BY TRIM(LEADING 'L\'' FROM (TRIM(LEADING 'Les ' FROM (TRIM(LEADING 'La ' FROM (TRIM(LEADING 'Le ' FROM nom))))))) COLLATE utf8_general_ci"
+        SELECT idOrganisateur, nom FROM organisateur WHERE statut='actif' ORDER BY TRIM(LEADING 'L\'' FROM (TRIM(LEADING 'Les ' FROM (TRIM(LEADING 'La ' FROM (TRIM(LEADING 'Le ' FROM nom))))))) COLLATE utf8mb4_unicode_ci"
          );
 
         while ($tab = $connector->fetchArray($req))
