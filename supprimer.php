@@ -186,6 +186,8 @@ WHERE evenement_fichierrecu.idEvenement=".$get['id']." AND type='document' AND
 			if ($connector->query("DELETE FROM evenement WHERE idEvenement=".$get['id']))
 			{
 				msgOk('L\'événement "'.securise_string($titreSup).'" a été supprimé');
+                $logger->log('global', 'activity', "[supprimer] event \"$titreSup\" (".$get['id'].") deleted", Logger::GRAN_YEAR);  
+
 			}
 			else
 			{
@@ -423,6 +425,7 @@ WHERE lieu_fichierrecu.idLieu=".$get['id']." AND type='document' AND
 			if ($req_delDes)
 			{
 				msgOk("La description a été supprimée");
+                $logger->log('global', 'activity', "[supprimer] description of lieu (".$get['id'].") deleted", Logger::GRAN_YEAR);  
 
 				/*
 				 * Suppression des caches
@@ -462,6 +465,7 @@ WHERE lieu_fichierrecu.idLieu=".$get['id']." AND type='document' AND
 			if ($connector->query("DELETE FROM ".$get['type']." WHERE idCommentaire=".$get['id']))
 			{
 				msgOk("Le commentaire a été supprimée");
+                $logger->log('global', 'activity', "[supprimer] comment (".$get['id'].") of ".$get['type']." deleted", Logger::GRAN_YEAR);         
 				exit;
 			}
 			else
@@ -477,12 +481,8 @@ WHERE lieu_fichierrecu.idLieu=".$get['id']." AND type='document' AND
 	}
 	else if ($get['type'] == "salle")
 	{
-
-
 		if ($_SESSION['Sgroupe'] <= 6)
 		{
-
-
 			$req = $connector->query("SELECT idSalle FROM evenement WHERE idSalle=".$get['id']);
 
 			if ($connector->getNumRows($req) == 0)
@@ -490,6 +490,7 @@ WHERE lieu_fichierrecu.idLieu=".$get['id']." AND type='document' AND
 				if ($connector->query("DELETE FROM ".$get['type']." WHERE idSalle=".$get['id']))
 				{
 					msgOk("La salle a été supprimée");
+                    $logger->log('global', 'activity', "[supprimer] ".$get['type']." (".$get['id'].") deleted", Logger::GRAN_YEAR);
 					exit;
 				}
 				else
@@ -541,6 +542,7 @@ WHERE lieu_fichierrecu.idLieu=".$get['id']." AND type='document' AND
 				if ($connector->query("DELETE FROM ".$get['type']." WHERE idOrganisateur=".$get['id']))
 				{
 					msgOk("L'organisateur a été supprimé");
+                    $logger->log('global', 'activity', "[supprimer] organizer ".$get['id']." deleted", Logger::GRAN_YEAR);
 					exit;
 				}
 				else
