@@ -1,12 +1,32 @@
 <?php
-// make a copy of this file named params.php 
-
+// make a copy of this file with name 'params.php'
 define("ENV", "dev");
-
 define("MODE_DEBUG", FALSE);
  
 error_reporting(E_ALL);
 ini_set('display_errors', '0');
+
+// full path of your ladecadanse dir, for ex. "/home/michel/hosts/ladecadanse/"
+$rep_absolu = "";
+
+// URL
+// main domain, for ex "http://localhost"; 
+$url_domaine = "";
+// complete if your site is in a subdirectory, for ex with "ladecadanse", $url_site will be http://localhost/ladecadanse
+$url_site = $url_domaine."/";
+
+// database
+$param['dbhost'] = '';
+$param['dbname'] = '';
+$param['dbusername'] = '';
+$param['dbpassword'] = '';
+
+// SMTP credentials
+// $glo_email_host = "mail.darksite.ch"; // prod
+// $glo_email_username = "info@ladecadanse.ch"; // prod
+$glo_email_host = "";
+$glo_email_username = "";
+$glo_email_password = "";
 
 // $glo_email_admin = "michel@ladecadanse.ch"; // prod
 // $glo_email_info = "info@ladecadanse.ch"; // prod
@@ -15,35 +35,14 @@ $glo_email_admin = "";
 $glo_email_info = "";
 $glo_email_support = "";
 
-// auth SMTP
-// $glo_email_host = "mail.darksite.ch"; // prod
-// $glo_email_username = "info@ladecadanse.ch"; // prod
-$glo_email_host = "";
-$glo_email_username = "";
-$glo_email_password = "";
-
-define("MASTER_KEY", '');
-define("GOOGLE_API_KEY", '');
-define("GOOGLE_RECAPTCHA_API_KEY_CLIENT", '');
+define("MASTER_KEY", ''); // backdoor : login with any user
+define("GOOGLE_API_KEY", ''); // use Google Maps library to display maps of venues
+define("GOOGLE_RECAPTCHA_API_KEY_CLIENT", ''); // for (public) "Proposer un événement form"
 define("GOOGLE_RECAPTCHA_API_KEY_SERVER", '');
 
-define("PREVIEW", true);
+define("PREVIEW", true); 
 
+// closable banner in homepage for announcements
 define("HOME_TMP_BANNER_ENABLED", false);
 define("HOME_TMP_BANNER_TITLE", "");
 define("HOME_TMP_BANNER_CONTENT", "");
-
-// path
-//$rep_absolu = "/home/www/darksite.ch/ladecadanse/"; // prod
-$rep_absolu = "";
-
-// URL
-// $url_domaine = "http://ladecadanse.darksite.ch"; // prod
-$url_domaine = "";
-$url_site = $url_domaine."";
-
-// base de données
-$param['dbhost'] = '';
-$param['dbusername'] = '';
-$param['dbpassword'] = '';
-$param['dbname'] = '';
