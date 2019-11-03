@@ -153,18 +153,9 @@ class ImageDriver2 extends SystemComponent {
        if ($this->IMGtype != "evenement" && $this->IMGtype != "")
            $slash = "/";
 
-       //echo "slash : ".$slash."<br>";
        $cheminImage = $this->IMGracine.$this->IMGtype.$slash.$imageCreated;
+       $mime_type = mime_content_type($imageSource['tmp_name']);
 
-       $imgInfo = getimagesize($imageSource['tmp_name']);
-       $mime_type = $imgInfo['mime'];
-       
-       //TEST
-       // echo "tmp_name :".$imageSource['tmp_name']."<br>";
-       // echo "<br>chem. image :".$cheminImage;
-       // printr($imgInfo);
-
-       //
        if ($mime_type == "image/jpeg")
        {
            $img = ImageCreateFromJpeg($imageSource['tmp_name']);
