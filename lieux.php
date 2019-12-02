@@ -78,10 +78,8 @@ while ($lieu = mysqli_fetch_assoc($req_lieux))
 
 var tab_markers = <?php echo json_encode($tab_markers); ?>;
 
-console.log(tab_markers);
-
 function initMap() {
-	
+	return;
 	var mapDiv = document.getElementById('map');
 	var map = new google.maps.Map(mapDiv, {
 	  center: {lat: 46.519653, lng: 6.632273}, // Suisse Romande
@@ -136,7 +134,7 @@ function initMap() {
   
 </script>
 <?php 
-$map_style = 'style="width:94%;margin:0 auto;height:500px;border:1px solid #555;border-radius:4px"';
+$map_style = 'style="width:94%;margin:0 auto;height:500px;border:1px solid #555;border-radius:4px;display:none"';
 
 } ?>
 <div id="contenu" class="colonne">
