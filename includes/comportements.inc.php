@@ -92,6 +92,14 @@ $(document).ready(function() {
 		ignoreClick      : 'a'
 
 	});
+    $('#flyer').bind('change', function() {
+        
+        if (this.files[0].size > 2097152)
+        {
+            alert("La taille du fichier que vous avez sélectionné dépasse la limite autorisée (2 Mo), merci d'en choisir un plus léger" );
+        }
+    });
+    
       });
 <?php
 }
