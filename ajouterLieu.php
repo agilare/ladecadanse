@@ -488,7 +488,7 @@ echo $form->getHtmlErreur("quartier");
 
         <p>
             <label for="Logo">Logo</label>
-            <input type="file" name="logo" id="Logo" tabindex="18" title="Logo du lieu qui s'affichera à gauche du titre" size="25" />
+            <input type="file" name="logo" id="Logo" class="file-upload-size-max" tabindex="18" title="Logo du lieu qui s'affichera à gauche du titre" size="25" />
 
             <?php
             echo $form->getHtmlErreur("logo");
@@ -526,7 +526,7 @@ echo $form->getHtmlErreur("quartier");
         <!-- Photo1 (file) -->
         <p>
         <label for="photo1">Photo</label>
-        <input type="file" name="photo1" id="photo1" tabindex="16" title="Photo qui s'affichera en haut à droite" size="25" />
+        <input type="file" name="photo1" id="photo1" class="file-upload-size-max" tabindex="16" title="Photo qui s'affichera en haut à droite" size="25" />
 
 
         <?php
@@ -597,7 +597,7 @@ echo $form->getHtmlErreur("quartier");
         ?>            
         <p>
             <label for="image_galerie">Galerie</label>
-            <input type="file" name="image_galerie" id="image_galerie" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif"  class="fichier" />
+            <input type="file" name="image_galerie" id="image_galerie" class="file-upload-size-max" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif"  class="fichier" />
         </p>
         <div class="spacer"></div>
         <?php

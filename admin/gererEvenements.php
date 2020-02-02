@@ -1387,7 +1387,7 @@ echo $verif->getHtmlErreur('prelocations');
 
 <p>
 <label for="flyer">Flyer :</label>
-<input type="file" name="flyer" id="flyer" size="25"
+<input type="file" name="flyer" id="flyer" class="file-upload-size-max" size="25"
 accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif" tabindex="12" class="fichier" />
 </p>
 
@@ -1419,7 +1419,7 @@ if (isset($get_idE) && !empty($champs['flyer']) && !$verif->getErreur($champs['f
 
 <p>
 <label for="image">Image :</label>
-<input type="file" name="image" id="flyer" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif" title="Choisissez une image pour illustrer l'ê·©nement" tabindex="12" class="fichier" />
+<input type="file" name="image" id="flyer" class="file-upload-size-max" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif" title="Choisissez une image pour illustrer l'ê·©nement" tabindex="12" class="fichier" />
 </p>
 <div class="guideChamp">Seul les formats JPEG, PNG et GIF sont acceptÃ©s.</div>
 <div class="spacer"></div>

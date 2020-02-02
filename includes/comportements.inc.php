@@ -92,7 +92,7 @@ $(document).ready(function() {
 		ignoreClick      : 'a'
 
 	});
-    $('#flyer').bind('change', function() {
+    $('.file-upload-size-max').bind('change', function() {
         
         if (this.files[0].size > 2097152)
         {
