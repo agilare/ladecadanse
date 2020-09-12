@@ -28,8 +28,8 @@ if (!$videur->checkGroup(12))
 } */
 
 //$cache_lieux = $rep_cache."lieux/";
-header("Cache-Control: max-age=30, must-revalidate");
-header ("Refresh: 1.5;URL=".$_SERVER['HTTP_REFERER']);
+// header("Cache-Control: max-age=30, must-revalidate");
+header ("Refresh: 2;URL=".$_SERVER['HTTP_REFERER']);
 $nom_page = "action_favori";
 $page_titre = "ajouter/éditer un favori";
 $page_description = "ajouter/édite";

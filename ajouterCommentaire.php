@@ -49,8 +49,8 @@ if ($get['element'] == 'lieu')
 }
 
 //$cache_lieux = $rep_cache."lieux/";
-header("Cache-Control: max-age=30, must-revalidate");
-header ("Refresh: 1.5;URL=".$url_retour);
+// header("Cache-Control: max-age=30, must-revalidate");
+header ("Refresh: 2;URL=".$url_retour);
 $nom_page = "ajouterCommentaire";
 $page_titre = "ajouter/éditer un commentaire";
 $page_description = "ajouter/éditer un commentaire";

@@ -25,7 +25,7 @@ require_once($rep_librairies.'Validator.php');
 require_once($rep_librairies.'usine.php');
 require_once($rep_includes.'head.php');
 
-header("Cache-Control: max-age=600, must-revalidate");
+// header("Cache-Control: max-age=600, must-revalidate");
 header_html("La décadanse : gérer les groupes", $indexMotsClef, $indexCssScreen, $indexCssPrint);
 ?>
 

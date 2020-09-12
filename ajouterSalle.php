@@ -25,7 +25,7 @@ if (!$videur->checkGroup(8))
 
 
 $cache_lieux = $rep_cache."lieux/";
-header("Cache-Control: max-age=30, must-revalidate");
+// header("Cache-Control: max-age=30, must-revalidate");
 
 
 $page_titre = "ajouter/modifier une salle";

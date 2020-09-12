@@ -122,18 +122,17 @@ $pages_post = array("ajouterBreve", "ajouterCommentaire", "ajouterDescription", 
 "ajouterPersonne", "copierEvenement", "contacteznous", "login");
 
 
-/*header("Cache-Control: no-store, no-cache, must-revalidate");
+header("Cache-Control: no-store, no-cache, must-revalidate");
 header("Cache-Control: post-check=0, pre-check=0", false);
 header("Pragma: no-cache");
-header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");*/
-if (isset($nom_page) && in_array($nom_page, $pages_post))
-{
-	include_once("header_cache_post.inc.php");
-}
-else
-{
-	include_once("header_cache_get.inc.php");
-}
+//if (isset($nom_page) && in_array($nom_page, $pages_post))
+//{
+//	include_once("header_cache_post.inc.php");
+//}
+//else
+//{
+//	include_once("header_cache_get.inc.php");
+//}
 
 
 if ($nom_page == "agenda" && isset($page_titre))
