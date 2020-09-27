@@ -104,6 +104,9 @@ $champs = array("pseudo" => '',
 "nom" => '',
 "prenom" => '',
 "affiliation" => '',
+"adresse" => '',
+"region" => '',
+"telephone" => '',
 "lieu" => '',
 'organisateurs' => '',
 "email" => '',
@@ -112,7 +115,8 @@ $champs = array("pseudo" => '',
 "signature" => 'pseudo',
 "avec_affiliation" => '',
 "statut" => '',
-"notification_commentaires" => '');
+"remarque" => '',
+"notification_commentaires" => 'non');
 
 
 

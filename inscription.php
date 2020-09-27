@@ -100,11 +100,14 @@ $champs = array("utilisateur" => '',
 "prenom" => '',
 'organisateurs' => '',
 "affiliation" => '',
+"adresse" => '',
+"region" => '',
 "lieu" => '',
 "email" => '',
 "URL" => '',
 "telephone" => '',
 "groupe" => '',
+"remarque" => '',
 );
 
 $action_terminee = false;

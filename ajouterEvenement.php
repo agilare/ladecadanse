@@ -79,8 +79,8 @@ if ($get['action'] != "ajouter" && $get['action'] != "insert")
 }
 
 $verif = new Validateur();
-$champs = array("statut" => "", "genre" => "", "titre" => "", "dateEvenement" => "", "idLieu" => "",
- "idSalle" => "", "nomLieu" => "", "adresse" => "", "quartier" => "",  "localite_id" => "", "region" => "", "urlLieu" => "", 'organisateurs' => '', "description" => "", "ref" => "",
+$champs = array("statut" => "", "genre" => "", "titre" => "", "dateEvenement" => "", "idLieu" => 0,
+ "idSalle" => 0, "nomLieu" => "", "adresse" => "", "quartier" => "",  "localite_id" => "", "region" => "", "urlLieu" => "", 'organisateurs' => '', "description" => "", "ref" => "",
   "horaire_debut" => "", "horaire_fin" => "", "horaire_complement" => "", "price_type" => "", "prix" => "", "prelocations" => "", "user_email" => "", "remarque" => "");
 $fichiers = array('flyer' => '', 'image' => '');
 $supprimer = array();
@@ -113,7 +113,11 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 //        if ($recaptcha->score <= 0.5) {
 //            $verif->setErreur("global", "Le système de sécurité soupconne que vous êtes un robot, merci de réessayer; le cas échéant, contactez-nous");  
 //        }
-        $logger->log('global', 'activity', "[ajouterEvenement] recaptcha score ".$recaptcha->score.", response : ".json_encode($recaptcha), Logger::GRAN_YEAR);  
+        $recaptcha_score = 0;
+        if (!empty($recaptcha->score))
+            $recaptcha_score = $recaptcha->score;
+        
+        $logger->log('global', 'activity', "[ajouterEvenement] recaptcha score ".$recaptcha_score.", response : ".json_encode($recaptcha), Logger::GRAN_YEAR);  
     }
     else
     {
@@ -133,6 +137,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 	if (isset($fichiers['image']))
 		$fichiers['image'] = $_FILES['image'];
 	
+    if (empty($champs['idLieu']))
+        $champs['idLieu'] = 0;
 	
 	//$fichiers['document'] = $_FILES['document'];
 
@@ -172,7 +178,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 		$verif->setErreur("idLieu", "Vous devez designer un lieu");
 	}
 
-	if ($champs['idLieu'] != '' && preg_match("/^[0-9]+_[0-9]+$/", $champs['idLieu']))
+	if (!empty($champs['idLieu']) && preg_match("/^[0-9]+_[0-9]+$/", $champs['idLieu']))
 	{
 		//echo "match";
 		$tab_idLieu = explode("_", $champs['idLieu']);
@@ -184,7 +190,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 		$champs['idSalle'] = 0;
 	}
     
-	if ($champs['idLieu'] != '' && (!preg_match("/^[0-9]+$/", $champs['idLieu']) && !preg_match("/^[0-9]+_[0-9]+$/", $champs['idLieu'])))
+	if (!empty($champs['idLieu']) && (!preg_match("/^[0-9]+$/", $champs['idLieu']) && !preg_match("/^[0-9]+_[0-9]+$/", $champs['idLieu'])))
 	{
         $verif->setErreur("idLieu", "La valeur du lieu n'est pas au bon format");
 	}    
@@ -448,7 +454,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 			$sql_insert =  "INSERT INTO evenement (".$sql_insert_attributs.") VALUES (".$sql_insert_valeurs.")";
 
 			//TEST
-			//echo "<p>".$sql_insert."</p>";
+			echo "<p>".$sql_insert."</p>";
 			//
 			/*
 			* Insertion réussie, message OK, aperçu, et RAZ des champs
