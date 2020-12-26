@@ -39,6 +39,8 @@ define("MASTER_KEY", ''); // backdoor : login with any user
 define("GOOGLE_API_KEY", ''); // use Google Maps library to display maps of venues
 define("GOOGLE_RECAPTCHA_API_KEY_CLIENT", ''); // for (public) "Proposer un événement form"
 define("GOOGLE_RECAPTCHA_API_KEY_SERVER", '');
+define("GOOGLE_ANALYTICS_ID", '');
+define("GOOGLE_ANALYTICS_ENABLED", false);
 
 define("PREVIEW", true); 
 

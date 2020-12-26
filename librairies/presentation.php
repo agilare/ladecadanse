@@ -590,7 +590,7 @@ function formatbytes($val, $digits = 3, $mode = "SI", $bB = "B"){ //$mode == "SI
         }
         for($i=0;$i<count($symbols)-1 && $val>=$factor;$i++)
             $val /= $factor;
-        $p = mb_strpos($val, ".");
+        $p = mb_strpos((string)$val, ".");
         if($p !== false && $p > $digits) $val = round($val);
         elseif($p !== false) $val = round($val, $digits-$p);
         return round($val, $digits) . " " . $symbols[$i] . $bB;

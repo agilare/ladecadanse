@@ -256,7 +256,7 @@ $tab_de = $connector->fetchArray($req_de);
     <link rel="apple-touch-icon" sizes="76x76" href="web/images/apple-icon-76x76.png" />     
     <link rel="apple-touch-icon" sizes="152x152" href="web/images/apple-icon-152x152.png" />  
 
-    <!-- Piwik -->
+    <!-- Matomo -->
     <script type="text/javascript">
       var _paq = _paq || [];
       // tracker methods like "setCustomDimension" should be called before "trackPageView"
@@ -270,7 +270,13 @@ $tab_de = $connector->fetchArray($req_de);
         g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
       })();
     </script>
-    <!-- End Piwik Code --> 
+    <!-- End Matomo Code --> 
+    
+    <?php     
+    if (GOOGLE_ANALYTICS_ENABLED) {
+        include_once("includes/analyticstracking.php");
+    }
+    ?>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>  
    <script async defer
       src="https://maps.googleapis.com/maps/api/js?key=<?php echo GOOGLE_API_KEY; ?>&callback=initMap">
@@ -278,7 +284,7 @@ $tab_de = $connector->fetchArray($req_de);
 </head>
 
 <body>
-<?php include_once("includes/analyticstracking.php") ?>
+
 <?php
 if (isset($_GET['style']) && $_GET['style'] == "imprimer")
 {
