@@ -180,7 +180,7 @@ array('123456',
 'abc123'
 ); 
 
-$glo_regions = array("ge" => "Genève", "vd" => "Vaud", "fr" => "Fribourg", "rf" => "France", "hs" => "Autre");
+$glo_regions = array("ge" => "Genève", "vd" => "Vaud", "rf" => "France", "hs" => "Autre"); //  "fr" => "Fribourg", 
 $price_types = ['unknown' => 'inconnu', 'gratis' => 'entrée libre', 'asyouwish' => 'prix libre', 'chargeable' => 'payant'];
 
 
