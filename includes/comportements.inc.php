@@ -1,6 +1,6 @@
-<script src="<?php echo $url_site; ?>librairies/magnific-popup/jquery.magnific-popup.js"></script>
+<script src="<?php echo $url_site; ?>vendor/dimsemenov/magnific-popup/dist/jquery.magnific-popup.js"></script>
 <script src="<?php echo $url_site; ?>librairies/zebra_datepicker/zebra_datepicker.min.js"></script>
-<script src="<?php echo $url_site; ?>librairies/chosen/chosen.jquery.min.js"></script>
+<script src="<?php echo $url_site; ?>vendor/harvesthq/chosen/chosen.jquery.min.js"></script>
 
 <?php
 if (isset($extra_js) && is_array($extra_js))

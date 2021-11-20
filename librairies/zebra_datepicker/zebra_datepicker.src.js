@@ -6,8 +6,8 @@
  *  Read more {@link https://github.com/stefangabos/Zebra_Datepicker/ here}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    1.9.13 (last revision: September 26, 2019)
- *  @copyright  (c) 2011 - 2019 Stefan Gabos
+ *  @version    1.9.18 (last revision: December 31, 2020)
+ *  @copyright  (c) 2011 - 2020 Stefan Gabos
  *  @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_DatePicker
  */
@@ -31,7 +31,7 @@
     $.Zebra_DatePicker = function(element, options) {
 
         // so you can tell the version number even if all you have is the minified source
-        this.version = '1.9.13';
+        this.version = '1.9.18';
 
         var defaults = {
 
@@ -157,6 +157,13 @@
                 //  DISABLING ALL DATES AND NOT SPECIFYING AT LEAST ONE ENABLED DATE WILL SEND THE SCRIPT INTO AN INFINITE
                 //  LOOP SEARCHING FOR AN ENABLED DATE TO DISPLAY!
                 disabled_dates: false,
+
+                // an array of selectable am/pm.
+                // allowed values are ['am'], ['pm'], or ['am', 'pm']
+                // default is FALSE, both are always selectable.
+                // note that this only applies when the date format includes am/pm (a or A)
+                // even when only one is enabled, onChange() will still be triggered when clicking the up/down buttons next to AM/PM on the timepicker
+                enabled_ampm: false,
 
                 //  an array of enabled dates in the same format as required for "disabled_dates" property.
                 //  to be used together with the "disabled_dates" property by first setting the "disabled_dates" property to
@@ -662,10 +669,21 @@
                                             if (!$.isArray(plugin.settings.enabled_seconds) || $.inArray(i, plugin.settings.enabled_seconds) > -1) timepicker_config.seconds.push(i);
 
                                     // if am/pm is available in the date's format
-                                    } else
+                                    } else {
 
-                                        // pre-fill the array of selectable seconds
-                                        timepicker_config.ampm = ['am', 'pm'];
+                                        // we'll use this to show AM/PM or am/pm, depending on the format
+                                        timepicker_config.ampm_case = character;
+
+                                        // if custom values are specified and values are "am" and/or "pm"
+                                        if ($.isArray(plugin.settings.enabled_ampm) && $.grep(plugin.settings.enabled_ampm, function(value) { return $.inArray(value.toLowerCase(), ['am', 'pm']) > -1; }).length)
+
+                                            // use the given value(s)
+                                            timepicker_config.ampm = plugin.settings.enabled_ampm;
+
+                                        // use default values
+                                        else timepicker_config.ampm = ['am', 'pm'];
+
+                                    }
 
                                 }
 
@@ -1020,6 +1038,9 @@
                             // because we've changed years, reset the month to December
                             first_selectable_month = 11;
 
+                            // because we've changed months, reset the day to the 1st
+                            first_selectable_day = 1;
+
                         // otherwise
                         } else {
 
@@ -1028,6 +1049,9 @@
 
                             // because we've changed years, reset the month to January
                             first_selectable_month = 0;
+
+                            // because we've changed months, reset the day to the 1st
+                            first_selectable_day = 1;
 
                         }
 
@@ -1350,6 +1374,12 @@
 
                     }
 
+                    // in case "container" has changed
+                    if (datepicker.parent() !== plugin.settings.container)
+
+                        // remove from the old one and place in the one one
+                        plugin.settings.container.append(datepicker.detach());
+
                     // don't go further
                     return;
 
@@ -1654,8 +1684,10 @@
 
                     // as users may click this before making any adjustments to time, simulate time adjustment so that
                     // a value is selected
-                    $('.dp_time_controls_increase td', timepicker).trigger('click');
-                    $('.dp_time_controls_decrease td', timepicker).trigger('click');
+                    $('.dp_time_controls_increase td', timepicker).first().trigger('mousedown');
+                    clearInterval(timer_interval);
+                    $('.dp_time_controls_decrease td', timepicker).first().trigger('mousedown');
+                    clearInterval(timer_interval);
 
                     // if a callback function exists for when selecting a date
                     if (plugin.settings.onSelect && typeof plugin.settings.onSelect === 'function') {
@@ -1677,9 +1709,7 @@
                 });
 
                 // handle value increases/decreases on the time picker
-                datepicker.on('mousedown', '.dp_time_controls_increase td, .dp_time_controls_decrease td', function(e) {
-
-                    e.stopPropagation();
+                datepicker.on('mousedown', '.dp_time_controls_increase td, .dp_time_controls_decrease td', function() {
 
                     var element = this,
                         count = 0;
@@ -1774,7 +1804,10 @@
                             ) &&
 
                             // and the click is not inside the calendar
-                            $(e.target).closest('.Zebra_DatePicker').length === 0
+                            $(e.target).closest('.Zebra_DatePicker').length === 0 &&
+
+                            // and the click is not on a time control element
+                            !$(e.target).hasClass('dp_time_control')
 
                         // hide the date picker
                         ) plugin.hide(true);
@@ -1862,15 +1895,15 @@
                         switch (match.character) {
 
                             case 'd': regexp.push('0[1-9]|[12][0-9]|3[01]'); break;
-                            case 'D': regexp.push('[a-z]{3}'); break;
+                            case 'D': regexp.push(plugin.settings.days_abbr ? plugin.settings.days_abbr.map(function(value) { return escape_regexp(value); }).join('|') : '[a-z\u00C0-\u024F]{3}'); break;
                             case 'j': regexp.push('[1-9]|[12][0-9]|3[01]'); break;
-                            case 'l': regexp.push('[a-z\u00C0-\u024F]+'); break;
+                            case 'l': regexp.push(plugin.settings.days ? plugin.settings.days.map(function(value) { return escape_regexp(value); }).join('|') : '[a-z\u00C0-\u024F]+'); break;
                             case 'N': regexp.push('[1-7]'); break;
                             case 'S': regexp.push('st|nd|rd|th'); break;
                             case 'w': regexp.push('[0-6]'); break;
-                            case 'F': regexp.push('[a-z]+'); break;
+                            case 'F': regexp.push(plugin.settings.months ? plugin.settings.months.map(function(value) { return escape_regexp(value); }).join('|') : '[a-z\u00C0-\u024F]+'); break;
                             case 'm': regexp.push('0[1-9]|1[012]'); break;
-                            case 'M': regexp.push('[a-z]{3}'); break;
+                            case 'M': regexp.push(plugin.settings.months_abbr ? plugin.settings.months_abbr.map(function(value) { return escape_regexp(value); }).join('|') : '[a-z\u00C0-\u024F]{3}'); break;
                             case 'n': regexp.push('[1-9]|1[012]'); break;
                             case 'Y': regexp.push('[0-9]{4}'); break;
                             case 'y': regexp.push('[0-9]{2}'); break;
@@ -1958,9 +1991,11 @@
                                     case 'M':
 
                                         // if day is given as day name, we'll check against the names in the used language
-                                        if (match.character === 'D' || match.character === 'l') iterable = plugin.settings.days;
+                                        if (match.character === 'D') iterable = plugin.settings.days_abbr || plugin.settings.days;
+                                        else if (match.character === 'l') iterable = plugin.settings.days;
 
                                         // if month is given as month name, we'll check against the names in the used language
+                                        else if (match.character === 'M') iterable = plugin.settings.months_abbr || plugin.settings.months;
                                         else iterable = plugin.settings.months;
 
                                         // by default, we assume the day or month was not entered correctly
@@ -1973,7 +2008,7 @@
                                             if (valid) return true;
 
                                             // if month/day was entered correctly
-                                            if (segments[index + 1].toLowerCase() === value.substring(0, (match.character === 'D' || match.character === 'M' ? 3 : value.length)).toLowerCase()) {
+                                            if (segments[index + 1].toLowerCase() === value.substring(0, ((match.character === 'D' && !plugin.settings.days_abbr) || (match.character === 'M' && !plugin.settings.months_abbr) ? 3 : value.length)).toLowerCase()) {
 
                                                 // extract the day/month from the value entered by the user
                                                 switch (match.character) {
@@ -2253,7 +2288,7 @@
 
                 }
 
-                // return formated date
+                // return formatted date
                 return result;
 
             },
@@ -2489,11 +2524,11 @@
 
                 html += '<tr class="dp_time_segments' + (condensed ? ' dp_time_controls_condensed' : '') + '">';
 
-                if (plugin.settings.rtl && timepicker_config.ampm) html += '<td class="dp_time_ampm dp_disabled' + (timepicker_config.hours || timepicker_config.minutes || timepicker_config.seconds ? ' dp_time_separator' : '') + '"><div>' + selected_ampm.toUpperCase() + '</div></td>';
+                if (plugin.settings.rtl && timepicker_config.ampm) html += '<td class="dp_time_ampm dp_disabled' + (timepicker_config.hours || timepicker_config.minutes || timepicker_config.seconds ? ' dp_time_separator' : '') + '"><div>' + (timepicker_config.ampm_case === 'A' ? selected_ampm.toUpperCase() : selected_ampm) + '</div></td>';
                 if (timepicker_config.hours) html += '<td class="dp_time_hours dp_disabled' + (timepicker_config.minutes || timepicker_config.seconds || (!plugin.settings.rtl && timepicker_config.ampm) ? ' dp_time_separator' : '') + '"><div>' + (timepicker_config.hour_format === 'h' || timepicker_config.hour_format === 'H' ? str_pad(selected_hour, 2) : selected_hour) + '</div></td>';
                 if (timepicker_config.minutes) html += '<td class="dp_time_minutes dp_disabled' + (timepicker_config.seconds || (!plugin.settings.rtl && timepicker_config.ampm) ? ' dp_time_separator' : '') + '"><div>' + str_pad(selected_minute, 2) + '</div></td>';
                 if (timepicker_config.seconds) html += '<td class="dp_time_seconds dp_disabled' + (!plugin.settings.rtl && timepicker_config.ampm ? ' dp_time_separator' : '') + '"><div>' + str_pad(selected_second, 2) + '</div></td>';
-                if (!plugin.settings.rtl && timepicker_config.ampm) html += '<td class="dp_time_ampm dp_disabled">' + selected_ampm.toUpperCase() + '</td>';
+                if (!plugin.settings.rtl && timepicker_config.ampm) html += '<td class="dp_time_ampm dp_disabled">' + (timepicker_config.ampm_case === 'A' ? selected_ampm.toUpperCase() : selected_ampm) + '</td>';
 
                 html += '</tr>';
 
@@ -3415,7 +3450,7 @@
                     // the selected date, formatted correctly
                     selected_value = format(default_date);
 
-                // set the currently selected and formated date as the value of the element the plugin is attached to
+                // set the currently selected and formatted date as the value of the element the plugin is attached to
                 $element.val(selected_value);
 
                 // if date picker is always visible or time picker is available
@@ -3821,11 +3856,11 @@
                     // convert it to the correct value
                     selected_hour = (selected_hour % 12 === 0 ? 12 : selected_hour % 12);
 
-                // make sure that the default values are withing the allowed range, if a range is defined
+                // make sure that the default values are within the allowed range, if a range is defined
                 if ($.isArray(plugin.settings.enabled_hours) && $.inArray(selected_hour, plugin.settings.enabled_hours) === -1) selected_hour = plugin.settings.enabled_hours[0];
                 if ($.isArray(plugin.settings.enabled_minutes) && $.inArray(selected_minute, plugin.settings.enabled_minutes) === -1) selected_minute = plugin.settings.enabled_minutes[0];
                 if ($.isArray(plugin.settings.enabled_seconds) && $.inArray(selected_second, plugin.settings.enabled_seconds) === -1) selected_second = plugin.settings.enabled_seconds[0];
-
+                if ($.isArray(plugin.settings.enabled_ampm) && $.inArray(selected_ampm, plugin.settings.enabled_ampm) === -1) selected_ampm = plugin.settings.enabled_ampm[0];
             }
 
             // generate the appropriate view

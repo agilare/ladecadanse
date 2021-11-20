@@ -11,8 +11,11 @@
         }
     ],     
     "require": {
-        "php" : "7.0.*",
-        "ext-fileinfo": "*"
+        "php" : "7.3.*",
+        "ext-fileinfo": "*",
+        "harvesthq/chosen": "^1.8",
+        "dimsemenov/magnific-popup": "^1.1",
+        "fortawesome/font-awesome": "4.7"
     },
     "support": {
         "email": "michel@ladecadanse.ch",
