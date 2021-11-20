@@ -178,7 +178,7 @@ else
 echo $verif->getHtmlErreur("pseudo");
 ?>
 <label for="motdepasse" id="login_motdepasse">Mot de Passe</label>
-<input type="password" name="motdepasse" id="motdepasse" value="" size="20" />
+<input type="password" name="motdepasse" id="motdepasse" value="" size="40" />
 <?php
 echo $verif->getHtmlErreur("motdepasse");
 ?>
