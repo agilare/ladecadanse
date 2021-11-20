@@ -441,7 +441,7 @@ if ($genre_courant != '')
 
     $req_dern_even = $connector->query("
     SELECT idEvenement, titre, dateEvenement, dateAjout, nomLieu, idLieu, idSalle, flyer, image, statut
-    FROM evenement WHERE region IN ('".$connector->sanitize($_SESSION['region'])."', ".$sql_rf." 'hs') AND statut NOT IN ('inactif', 'propose') ORDER BY dateAjout DESC LIMIT 0, 6
+    FROM evenement WHERE region IN ('".$connector->sanitize($_SESSION['region'])."', ".$sql_rf." 'hs') AND statut NOT IN ('inactif', 'propose') ORDER BY dateAjout DESC LIMIT 0, 10
     ");
 
     $date_ajout_courante = "";
