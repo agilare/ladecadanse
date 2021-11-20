@@ -364,19 +364,24 @@ if ($genre_courant != '')
     <?php include("includes/navigation_calendrier.inc.php"); ?>
 
 
-    <div id="dernieres" style="margin-top:40px;width: 100%;">
+    <div id="dernieres" style="margin-top:15px;width: 100%;">
 
+        <ul style="padding-left:5px">
+            <li style="display:inline-block"><a href="https://www.facebook.com/ladecadanse" aria-label="Watch agilare/ladecadanse on GitHub" style="font-size:1em" target="_blank"><i class="fa fa-facebook fa-2x" aria-hidden="true"></i></a></li>
+            <li style="display:inline-block;margin-left:10px"><a href="https://github.com/agilare/ladecadanse/" aria-label="Watch agilare/ladecadanse on GitHub" style="font-size:1em" target="_blank"><i class="fa fa-github fa-2x" aria-hidden="true"></i></a>
+            </li>
+        </ul>
+        
+        <h2 style="margin-top:15px;">Partenaires</h2>
+        <ul style="padding-left:5px">
+            <li style="margin:2px 0;float:left;"><a href="https://culture-accessible.ch/" onclick="window.open(this.href,'_blank');return false;"><img src="web/interface/culture-accessible-geneve.svg" alt="Culture accessible Genève" width="150" style="border:1px solid #eaeaea" /></a></li>
+            <li style="margin:2px 0;float:left;"><a href="https://epic-magazine.ch/" onclick="window.open(this.href,'_blank');return false;"><img src="web/interface/EPIC_noir.png" alt="EPIC Magazine" width="150" style="border:1px solid #eaeaea" /></a></li>
 
-    <h2>Partenaires</h2>
-    <ul style="padding-left:5px">
-        <li style="margin:2px 0;float:left;"><a href="https://culture-accessible.ch/" onclick="window.open(this.href,'_blank');return false;"><img src="web/interface/culture-accessible-geneve.svg" alt="Culture accessible Genève" width="150" style="border:1px solid #eaeaea" /></a></li>
-        <li style="margin:2px 0;float:left;"><a href="https://epic-magazine.ch/" onclick="window.open(this.href,'_blank');return false;"><img src="web/interface/EPIC_noir.png" alt="EPIC Magazine" width="150" style="border:1px solid #eaeaea" /></a></li>
+        <li style="margin:2px 0;float:left;"><a href="http://www.radiovostok.ch/" onclick="window.open(this.href,'_blank');return false;"><img src="web/interface/radio_vostok.png" alt="Radio Vostok" width="150" height="59" style="border:1px solid #eaeaea" /></a></li>
 
-    <li style="margin:2px 0;float:left;"><a href="http://www.radiovostok.ch/" onclick="window.open(this.href,'_blank');return false;"><img src="web/interface/radio_vostok.png" alt="Radio Vostok" width="150" height="59" style="border:1px solid #eaeaea" /></a></li>
-
-    <li style="margin:2px 0;float:left;">
-    <a href="https://www.darksite.ch/" onclick="window.open(this.href,'_blank');return false;"><img src="web/interface/darksite.png" alt="Darksite" width="150" height="43" style="border:1px solid #eaeaea" /></a></li>
-    </ul>
+        <li style="margin:2px 0;float:left;">
+        <a href="https://www.darksite.ch/" onclick="window.open(this.href,'_blank');return false;"><img src="web/interface/darksite.png" alt="Darksite" width="150" height="43" style="border:1px solid #eaeaea" /></a></li>
+        </ul>
     </div>
 
     <?php
@@ -565,7 +570,7 @@ if ($genre_courant != '')
     <?php } ?>
 
     <!-- Fin derniers_evenements -->
-    <iframe style="margin-top:1em;width:180px;" src="https://www.facebook.com/plugins/likebox.php?href=http%3A%2F%2Fwww.facebook.com%2Fpages%2FLa-decadanse%2F119538226363&amp;width=180&amp;colorscheme=light&amp;show_faces=false&amp;stream=false&amp;header=true&amp;height=62" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:180px; height:62px;" allowTransparency="true"></iframe>
+
 
 </div> <!-- fin dernieres -->
 </div> <!-- Fin colonne_droite -->
