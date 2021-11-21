@@ -35,13 +35,6 @@ $champs = array("pseudo" => "", "motdepasse" => "", "memoriser" => "", "origine"
 
 $pseudo = '';
 $motdepasse = '';
-$origine = $url_site;
-
-if (isset($_GET['origine']))
-{
-	$champs['origine'] = verif_get($_GET['origine'], "string", 1);
-}
-
 
 //TEST
 //printr($_POST);
@@ -67,7 +60,6 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 
 	$verif->valider($champs['pseudo'], "pseudo", "texte", 2, 50, 1);
 	$verif->valider($champs['motdepasse'], "motdepasse", "texte", 4, 50, 1);
-	//$verif->valider($champs['origine'], "origine", "url", 10, 800, 1);
 
 	if (!empty($champs['memoriser']) && $champs['memoriser'] != 1)
 	{
@@ -84,21 +76,11 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 	if ($verif->nbErreurs() == 0)
 	{
 
-		if (isset($_SESSION['origine']))
-		{
-			$origine = $_SESSION['origine'];
-		}
-		
-		if (strstr($origine, "inscription.php") || strstr($origine, "motdepasse_reset.php") || strstr($origine, "login.php"))
-			$origine = $url_site;
-		
-
-
 		$videur->checkLogin(
 		$champs['pseudo'],
 		$champs['motdepasse'],
 		12,
-		$origine,
+		$url_site,
 		$url_site.'login.php?msg=faux',
 		$champs['memoriser']
 		);
@@ -149,24 +131,7 @@ if ($verif->nbErreurs() > 0)
 
 <form id="ajouter_editer" action="login.php" method="post">
 <?php
-
 echo $verif->getHtmlErreur("connexion");
-
-if (isset($_SERVER['HTTP_REFERER']) && strstr($_SERVER['HTTP_REFERER'], $url_site))
-{
-	if (strstr($_SERVER['HTTP_REFERER'], "login.php") == false)
-	{
-		$_SESSION['origine'] = $_SERVER['HTTP_REFERER'];
-	}
-}
-else
-{
-	$_SESSION['origine'] = $url_site;
-}
-
-//TEST
-//echo "origine : ".$_SESSION['origine'];
-//
 ?>
 
 <fieldset>

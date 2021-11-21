@@ -85,8 +85,6 @@ function arguments_URI($get, $sauf = "")
 
 function verif_get($get, $type, $statut, $tab = '')
 {
-	global $iconeErreur;
-
 	$erreur = "";
 
 	if ($get == '')
@@ -112,7 +110,7 @@ function verif_get($get, $type, $statut, $tab = '')
 		if ($type == "int")
 		{
 			if (is_numeric($get))
-			{
+			{ 
 				return $get;
 			}
 			else
@@ -170,10 +168,8 @@ function verif_get($get, $type, $statut, $tab = '')
 
 
 	}
-//
-//	trigger_error($iconeErreur.$erreur, E_USER_ERROR);
-//	exit;
 
+    throw new \Exception($erreur);
 }
 
 
