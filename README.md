@@ -25,4 +25,4 @@ Une section d'administration permet de gérer les différentes entités composan
 1. se connecter à l'administration avec ce login *admin* et le mot de passe `MASTER_KEY` défini plus haut 
 1. (optionnel) installer [Pear Mail](https://pear.php.net/package/Mail/) pour que l'envoi d'emails fonctionne (les `require_once Mail.php;` dans le code)
 
-Testé avec Apache 2.4, PHP 7.0, MariaDB 10
+Testé avec Apache 2.4, PHP 7.3, MariaDB 10/MySQL 5.7
