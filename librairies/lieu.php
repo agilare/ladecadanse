@@ -310,7 +310,7 @@ if ($lieu->getValue('photo1') != '')
 		}
 
 		$salles = '';
-		$sql_salle = "SELECT * FROM salle WHERE idLieu=".$get['idL'];
+		$sql_salle = "SELECT * FROM salle WHERE idLieu=".$get['idL']. " AND salle.status='actif' ";
 //		echo $sql_salle;
 		$req_salle = $connector->query($sql_salle);
 

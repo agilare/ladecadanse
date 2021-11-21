@@ -1109,7 +1109,7 @@ if ($verif->nbErreurs() > 0)
             echo "value=\"".$lieuTrouve['idLieu']."\">".$nom_lieu."</option>";
 
 
-            $sql_salle = "select * from salle where idLieu=".$lieuTrouve['idLieu'];
+            $sql_salle = "select * from salle where idLieu=".$lieuTrouve['idLieu']. " AND salle.status='actif' ";
             $req_salle = $connector->query($sql_salle);
             while ($tab_salle = $connector->fetchArray($req_salle))
 
