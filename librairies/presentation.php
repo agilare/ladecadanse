@@ -91,11 +91,11 @@ function securise_string($chaine)
 function textToHtml($temp)
 {
 
-	$temp = preg_replace("/'''(('?[^\n'])*)'''/", "<strong>\\1</strong>", $temp);
+	//$temp = preg_replace("/'''(('?[^\n'])*)'''/", "<strong>\\1</strong>", $temp);
 
     $temp = preg_replace("/([^*]{2}|)\n/","\\1<br />", $temp);
 
-    $temp = preg_replace("/''(('?[^\n'])*)''/", "<em>\\1</em>", $temp);
+    //$temp = preg_replace("/''(('?[^\n'])*)''/", "<em>\\1</em>", $temp);
 
 //$temp = preg_replace("/\*\*(.*?)\*\*/", "<blockquote>\\1</blockquote>", $temp);
     //$temp = str_replace("----", "<hr />", $temp);
