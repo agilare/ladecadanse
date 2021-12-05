@@ -1,6 +1,6 @@
 config/params.php
 dploy.yaml
-/nbproject/
+/nbproject
 /images/
-/vendor/
-/.idea/
+/vendor
+/.idea
