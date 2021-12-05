@@ -30,7 +30,7 @@ $page_titre = "copier un événement";
 $page_description = "Copie d'un événement vers d'autres dates";
 $nom_page = "copierevenement";
 $extra_css = array("formulaires", "evenement_inc", "copier_evenement");
-$extra_js = array("chosen.jquery.min", "jquery.shiftcheckbox");
+$extra_js = array("jquery.shiftcheckbox");
 
 
 /*

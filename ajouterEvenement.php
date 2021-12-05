@@ -22,7 +22,7 @@ if (isset($_SESSION['Sgroupe']))
 }
 
 $extra_css = array("formulaires", "evenement_inc", "ajouterEvenement_formulaire", "default");
-$extra_js = array("chosen.jquery.min", "jquery.shiftcheckbox");
+$extra_js = array("jquery.shiftcheckbox");
 
 /*
 * action choisie, ID si édition
