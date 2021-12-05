@@ -30,7 +30,7 @@ include("includes/header.inc.php");
 $get['idL'] = "";
 if (isset($_GET['idL']))
 {
-	$get['idL'] = verif_get($_GET['idL'], "int", 1);
+	$get['idL'] = verif_get($_GET['idL'], "int", 0);
 }
 
 $fiches = new CollectionDescription();
