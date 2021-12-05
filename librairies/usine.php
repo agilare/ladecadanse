@@ -18,7 +18,7 @@
    * auteur de $id
    * @return boolean Si $idP est auteur ou non
    */
-function estAuteur($idP, $id, $table)
+function estAuteur($idP = 0, $id = 0, $table)
 {
 	global $connector;
 
@@ -371,7 +371,7 @@ function est_organisateur_lieu($idP, $idL): bool
 
 }
 
-function est_organisateur_evenement($idP, $idE): bool
+function est_organisateur_evenement($idP = 0, $idE = 0): bool
 {
 	global $connector;
 
