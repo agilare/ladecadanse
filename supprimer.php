@@ -42,7 +42,7 @@ $page_titre = "supprimer un élément";
 $page_description = "Suppression d'un élément";
 $nom_page = "supprimer";
 $extra_css = array("evenement_inc", "breve_inc", "lieu_inc", "descriptionlieu_inc", "commentaire_inc");
-include("includes/header.inc.php");
+include("_header.inc.php");
 
 
 /*
@@ -591,14 +591,7 @@ if (((estAuteur($_SESSION['SidPersonne'], $get['idE'], "evenement") && $_SESSION
 		if ($tab_even = $connector->fetchArray($req_even))
 		{
 			$evenement = $tab_even;
-			include("templates/evenement.inc.php");
-
-			// if (!empty($affEven['idLieu'])) {
-				// $lieu = $affEven['idLieu'];
-			// } else {
-				// $nomLieu = $affEven['nomLieu'];
-				// $adresse = $affEven['adresse'];
-			// }
+			include("_evenement.inc.php");
 
 		}
 		else
@@ -635,15 +628,6 @@ if (((estAuteur($_SESSION['SidPersonne'], $get['idE'], "evenement") && $_SESSION
 		{
 
 			$lieu = $tab_lieu;
-			//include("templates/lieu.inc.php");
-
-			// if (!empty($affEven['idLieu'])) {
-				// $lieu = $affEven['idLieu'];
-			// } else {
-				// $nomLieu = $affEven['nomLieu'];
-				// $adresse = $affEven['adresse'];
-			// }
-
 		}
 		else
 		{
@@ -663,7 +647,39 @@ if (((estAuteur($_SESSION['SidPersonne'], $get['idE'], "evenement") && $_SESSION
 		if ($res_desc = $connector->fetchArray($req_desc))
 		{
 			$descriptionlieu = $res_desc;
-			include("templates/descriptionlieu.inc.php");
+            ?>
+            <?php
+            if (isset($descriptionlieu['dateAjout']))
+            {
+                $ajoute = "Ajouté le ".date_fr($descriptionlieu['dateAjout'], 'annee');
+            }
+            ?>
+            <?php
+            if ($descriptionlieu['date_derniere_modif'] != "0000-00-00 00:00:00")
+            {
+                $dern_modif =  "Dernière modification : ".date_fr($descriptionlieu['date_derniere_modif'], 'annee');
+            }
+            ?>
+            <div id="descriptions">
+
+            <div class="description">
+
+            <p><?php echo textToHtml($descriptionlieu['contenu']) ?></p>
+
+                <div class="auteur">
+                    <span class="left"><?php echo $ajoute; ?><br /><?php echo $dern_modif; ?></span>
+                    <span class="right action_editer">
+                    <a href="<?php echo $url_site ?>ajouterDescription.php?action=editer&amp;idL=<?php echo $descriptionlieu['idLieu'] ?>&amp;idP=<?php echo $descriptionlieu['auteur'] ?>">
+                    Modifier</a>
+                    </span>
+
+                </div>
+                <div class="spacer"><!-- --></div>
+            </div>
+            <!-- Fin description -->
+
+            </div>    
+            <?php
 		}
 
 		@mysqli_free_result($req_desc);
@@ -676,7 +692,34 @@ if (((estAuteur($_SESSION['SidPersonne'], $get['idE'], "evenement") && $_SESSION
 		{
 
 			$breve = $res_comm;
-			include("templates/commentaire.inc.php");
+
+            $req_auteur = $connector->query("SELECT pseudo FROM personne WHERE idPersonne=".$breve['idPersonne']);
+            $listeAut = $connector->fetchArray($req_auteur);
+
+            $da = explode(" ", $breve['dateAjout']);
+
+
+            echo "<h2 class=\"jour\">".date_fr($da[0])."</h2>";
+
+
+            echo "<div class=\"breve_contenu\">
+            <h3>".securise_string($breve['titre'])."</h3>\n
+            <div class=\"spacer\"></div>\n";	
+
+            if (!empty($breve['img_breve']))
+            {
+                $imgInfo = getimagesize($rep_images_breves.$breve['img_breve']);	
+                echo "<div class=\"image\">";
+                echo lien_popup($IMGbreves.$breve['img_breve'], "Image brève", $imgInfo[0]+20, $imgInfo[1]+20,
+                "<img src=\"".$IMGbreves."s_".$breve['img_breve']."\" alt=\"image pour ".securise_string($breve['titre'])."\" />");
+                echo "</div>";
+            }
+
+            echo "<p>".textToHtml(securise_string($breve['contenu']))."</p><p class=\"auteur\">".$listeAut['pseudo']."</p>";
+            echo "<div class=\"spacer\"></div>\n";
+
+            echo "<div class=\"spacer\"></div>\n
+            </div>\n";
 
 		}
 
@@ -688,9 +731,14 @@ if (((estAuteur($_SESSION['SidPersonne'], $get['idE'], "evenement") && $_SESSION
 
 		if ($salle = $connector->fetchArray($req))
 		{
-
-
-			include("templates/salle.inc.php");
+        ?>
+            <ul>
+            <li><?= $salle['idSalle']; ?></li>
+            <li><?= $salle['idLieu']; ?></li>
+            <li><?= $salle['nom']; ?></li>
+            <li><?= $salle['emplacement']; ?></li>
+            </ul>    
+        <?php
 
 		}
 
@@ -704,7 +752,14 @@ if (((estAuteur($_SESSION['SidPersonne'], $get['idE'], "evenement") && $_SESSION
 
 		if ($organisateur = $connector->fetchArray($req))
 		{
-			include("templates/organisateur.inc.php");
+        ?>
+
+        <ul>
+        <li><?= $organisateur['idOrganisateur']; ?></li>
+        <li><?= $organisateur['nom']; ?></li>
+        <li><?= $organisateur['presentation']; ?></li>
+        </ul>    
+        <?php
 
 		}
 
@@ -737,7 +792,7 @@ if ($get['action'] == "suppression")
 
 <div id="colonne_gauche" class="colonne">
 <?php
-include("includes/navigation_calendrier.inc.php");
+include("_navigation_calendrier.inc.php");
 ?>
 </div>
 <!-- Fin Colonnegauche -->
@@ -746,5 +801,5 @@ include("includes/navigation_calendrier.inc.php");
 </div>
 
 <?php
-include("includes/footer.inc.php");
+include("_footer.inc.php");
 ?>

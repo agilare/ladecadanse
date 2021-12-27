@@ -22,7 +22,7 @@ $nom_page = "annonce_erreur";
 $page_titre = "Signaler une erreur";
 $page_description = "";
 $extra_css = array("formulaires", "evenement_inc");
-include("includes/header.inc.php");
+include("_header.inc.php");
 
 
 if (isset($_GET['idE']))
@@ -204,7 +204,7 @@ if (isset($get['idE']))
 		$evenement = $affEven;
 
 		//echo date_fr($affEven['dateEvenement']);
-		include("templates/evenement.inc.php");
+		include("_evenement.inc.php");
 	}
 	else
 	{
@@ -311,10 +311,10 @@ Antispam, ne pas remplir ce champ
 
 <div id="colonne_gauche" class="colonne">
 
-<?php include("includes/navigation_calendrier.inc.php"); ?>
+<?php include("_navigation_calendrier.inc.php"); ?>
 </div>
 <!-- Fin Colonne gauche -->
 
 <?php
-include("includes/footer.inc.php");
+include("_footer.inc.php");
 ?>

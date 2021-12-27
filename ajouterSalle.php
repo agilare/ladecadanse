@@ -31,7 +31,7 @@ $cache_lieux = $rep_cache."lieux/";
 $page_titre = "ajouter/modifier une salle";
 $page_description = "ajouter/modifier une salle";
 $extra_css = array("formulaires", "description");
-include("includes/header.inc.php");
+include("_header.inc.php");
 
 
 
@@ -357,7 +357,7 @@ echo $verif->getErreur('nom');
 
 <div id="colonne_gauche" class="colonne">
 
-<?php include("includes/navigation_calendrier.inc.php"); ?>
+<?php include("_navigation_calendrier.inc.php"); ?>
 </div>
 <!-- Fin Colonne gauche -->
 
@@ -365,5 +365,5 @@ echo $verif->getErreur('nom');
 </div>
 
 <?php
-include("includes/footer.inc.php");
+include("_footer.inc.php");
 ?>

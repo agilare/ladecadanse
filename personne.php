@@ -15,7 +15,7 @@ if (!$videur->checkGroup(12))
 $nom_page = "personne";
 $page_titre = "profil";
 $page_description = "profil";
-include("includes/header.inc.php");
+include("_header.inc.php");
 
 
 $tab_elements = array("evenement" => "Événements",  "breve" => "Brèves", "lieu" => "Lieux", 'organisateur' => 'Organisateurs',
@@ -1366,7 +1366,7 @@ echo getPaginationString($get['page'], $tot_elements, $get['nblignes'], 1, $_SER
 
 <div id="colonne_gauche" class="colonne">
 <?php
-include("includes/navigation_calendrier.inc.php");
+include("_navigation_calendrier.inc.php");
 ?>
 </div>
 <!-- Fin Colonnegauche -->
@@ -1378,5 +1378,5 @@ include("includes/navigation_calendrier.inc.php");
 
 
 <?php
-include("includes/footer.inc.php");
+include("_footer.inc.php");
 ?>

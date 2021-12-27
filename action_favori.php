@@ -34,7 +34,7 @@ $nom_page = "action_favori";
 $page_titre = "ajouter/éditer un favori";
 $page_description = "ajouter/édite";
 $extra_css = array("formulaires");
-include("includes/header.inc.php");
+include("_header.inc.php");
 
 
 $tab_actions = array("ajouter", "insert", "delete", "supprimer");
@@ -193,10 +193,10 @@ echo '</div>';
 
 <div id="colonne_gauche" class="colonne">
 
-<?php include("includes/navigation_calendrier.inc.php"); ?>
+<?php include("_navigation_calendrier.inc.php"); ?>
 </div>
 <!-- Fin Colonne gauche -->
 
 <?php
-include("includes/footer.inc.php");
+include("_footer.inc.php");
 ?>

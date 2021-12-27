@@ -56,7 +56,7 @@ $limite = 10;
 $nom_page = "recherche";
 $page_titre = "recherche dans l'agenda des événements";
 $page_description = "Rechercher un événement culturel à Genève et Lausanne";
-include("includes/header.inc.php");
+include("_header.inc.php");
 
 ?>
 
@@ -414,11 +414,6 @@ if (!empty($get['mots']))
 								<td class="desc_even">
 								<?php
 								$titre = $tab_even['titre'];
-								foreach ($tab_mots as $n => $mot)
-								{
-									$titre = highlight($titre, $mot);
-								}
-
 								?>
 								<h3><a href="<?php echo $url_site ?>evenement.php?idE=<?php echo $tab_even['idEvenement'] ?>" title="Voir la fiche de l'événement"><?php echo $titre ?></a></h3>
 							<?php
@@ -592,7 +587,7 @@ else
 
 <div id="colonne_gauche" class="colonne">
 <?php
-include("includes/navigation_calendrier.inc.php");
+include("_navigation_calendrier.inc.php");
 ?>
 </div>
 
@@ -601,5 +596,5 @@ include("includes/navigation_calendrier.inc.php");
 
 <!-- Fin Colonne gauche -->
 <?php
-include("includes/footer.inc.php");
+include("_footer.inc.php");
 ?>

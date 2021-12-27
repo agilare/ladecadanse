@@ -840,7 +840,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 	} //if erreur == 0       
 } // if POST != ""
 
-include("includes/header.inc.php");
+include("_header.inc.php");
 ?>
 
 <div id="contenu" class="colonne ajouterEvenement">
@@ -1520,7 +1520,7 @@ else
 
 <div id="colonne_gauche" class="colonne">
 
-<?php include("includes/navigation_calendrier.inc.php"); ?>
+<?php include("_navigation_calendrier.inc.php"); ?>
 </div>
 <!-- Fin Colonnegauche -->
 
@@ -1528,5 +1528,5 @@ else
 </div>
 
 <?php
-include("includes/footer.inc.php");
+include("_footer.inc.php");
 ?>

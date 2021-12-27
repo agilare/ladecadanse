@@ -252,7 +252,6 @@ class Fonctions
 
 		while ($tab_docu = $connector->fetchArray($req_docu))
 		{
-			printr($tab_docu);
 			unlink($rep_fichiers_even.$tab_docu['idFichierrecu'].".".$tab_docu['extension']);
 			$connector->query("DELETE FROM fichierrecu WHERE idFichierrecu=".$tab_docu['idFichierrecu']);
 		}

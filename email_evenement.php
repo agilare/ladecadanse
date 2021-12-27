@@ -27,7 +27,7 @@ $nom_page = "email_evenement";
 $page_titre = "Envoyer un événement";
 $page_description = "Envoyer un événement par email";
 $extra_css = array("formulaires", "evenement_inc", "email_evenement_formulaire");
-include("includes/header.inc.php");
+include("_header.inc.php");
 
 
 if (isset($_GET['idE']))
@@ -226,7 +226,7 @@ if (isset($get['idE']))
 		$evenement = $affEven;
 
 		//echo date_fr($affEven['dateEvenement']);
-		include("templates/evenement.inc.php");
+		include("_evenement.inc.php");
 	}
 	else
 	{
@@ -290,10 +290,10 @@ if ($verif->nbErreurs() > 0)
 
 <div id="colonne_gauche" class="colonne">
 
-<?php include("includes/navigation_calendrier.inc.php"); ?>
+<?php include("_navigation_calendrier.inc.php"); ?>
 </div>
 <!-- Fin Colonne gauche -->
 
 <?php
-include("includes/footer.inc.php");
+include("_footer.inc.php");
 ?>

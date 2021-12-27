@@ -55,7 +55,7 @@ $nom_page = "ajouterCommentaire";
 $page_titre = "ajouter/éditer un commentaire";
 $page_description = "ajouter/éditer un commentaire";
 $extra_css = array("formulaires");
-include("includes/header.inc.php");
+include("_header.inc.php");
 
 
 /*
@@ -441,10 +441,10 @@ if ($verif->nbErreurs() > 0)
 
 <div id="colonne_gauche" class="colonne">
 
-<?php include("includes/navigation_calendrier.inc.php"); ?>
+<?php include("_navigation_calendrier.inc.php"); ?>
 </div>
 <!-- Fin Colonne gauche -->
 
 <?php
-include("includes/footer.inc.php");
+include("_footer.inc.php");
 ?>

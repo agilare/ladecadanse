@@ -363,7 +363,7 @@ FROM evenement WHERE idEvenement=".$get['idE'])));
 	} //if nberreur = 0
 } // if POST != ""
 
-include("includes/header.inc.php");
+include("_header.inc.php");
 ?>
 
 <div id="contenu" class="colonne">
@@ -420,7 +420,7 @@ if (isset($get['idE']))
 			$evenement = $affEven;
 
 			//echo date_fr($affEven['dateEvenement']);
-			include("templates/evenement.inc.php");
+			include("_evenement.inc.php");
 		}
 		else
 		{
@@ -445,9 +445,9 @@ if (isset($get['idE']))
 </div> <!-- fin contenu -->
 
 <div id="colonne_gauche" class="colonne">
-    <?php include("includes/navigation_calendrier.inc.php"); ?>
+    <?php include("_navigation_calendrier.inc.php"); ?>
 </div>
 
 <?php
-include("includes/footer.inc.php");
+include("_footer.inc.php");
 ?>

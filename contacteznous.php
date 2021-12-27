@@ -11,7 +11,7 @@ $page_description = "Formulaire pour envoyer un email au webmaster de La década
 $nom_page = "contacteznous";
 $extra_css = array("formulaires", "contacteznous");
 //$extra_js = array("freecap", "verif_captcha");
-include("includes/header.inc.php");
+include("_header.inc.php");
 ?>
 
 
@@ -266,7 +266,7 @@ document.write("<a href='mailto:"+link+"'>"+link+"</a>")
 
 <div id="colonne_gauche" class="colonne">
 
-<?php include("includes/navigation_calendrier.inc.php"); ?>
+<?php include("_navigation_calendrier.inc.php"); ?>
 </div>
 <!-- Fin Colonnegauche -->
 
@@ -274,5 +274,5 @@ document.write("<a href='mailto:"+link+"'>"+link+"</a>")
 </div>
 
 <?php
-include("includes/footer.inc.php");
+include("_footer.inc.php");
 ?>

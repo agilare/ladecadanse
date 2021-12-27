@@ -303,7 +303,7 @@ table
 		border-right:1px solid #8a8a8a;
 		border-left:none;	
 		background-color:#eaeaea;		
-		background-image:url(../web/interface/icons/search.png);
+		background-image:url(../interface/icons/search.png);
 		background-repeat:no-repeat;
 		background-position:2px;
 
@@ -412,7 +412,7 @@ table
 	border-top:1px solid red;
 	border-bottom:1px solid red;
 	background-color:#ffefef;
-	background-image:url(../web/interface/icons/error.png);
+	background-image:url(../interface/icons/error.png);
 	background-repeat:no-repeat;
 	background-position: 15px 50%;
 	line-height:1.3em;
@@ -426,7 +426,7 @@ table
 	border-top:1px solid blue;
 	border-bottom:1px solid blue;
 	background-color:#eaeaff;
-	background-image:url(../web/interface/icons/information.png);
+	background-image:url(../interface/icons/information.png);
 	background-repeat:no-repeat;
 	background-position: 15px 50%;
 		line-height:1.3em;
@@ -440,7 +440,7 @@ table
 	border-top:1px solid green;
 	border-bottom:1px solid green;
 	background-color:#eaf0ea;
-	background-image:url(../web/interface/icons/tick.png);
+	background-image:url(../interface/icons/tick.png);
 	background-repeat:no-repeat;
 	background-position: 15px 50%;
 		line-height:1.3em;
@@ -454,7 +454,7 @@ table
 	border-top:1px solid blue;
 	border-bottom:1px solid blue;
 	background-color:#eaeaff;
-	background-image:url(../web/interface/icons/email.png);
+	background-image:url(../interface/icons/email.png);
 	background-repeat:no-repeat;
 	background-position: 15px 50%;
 		line-height:1.3em;
@@ -463,7 +463,7 @@ table
 .info
 {
 	padding:0 0em 0 16px;
-	background-image:url(../web/interface/icons/information.png);
+	background-image:url(../interface/icons/information.png);
 	background-repeat:no-repeat;
 	background-position: 0 50%;
 		line-height:1.3em;
@@ -473,7 +473,7 @@ table
 {
 	text-align:right;
 	padding:0 15px 0 0;
-	background-image:url(../web/interface/icons/resultset_next.png);
+	background-image:url(../interface/icons/resultset_next.png);
 	background-repeat:no-repeat;
 	background-position: 100% 50%;
 	_background-image:none;
@@ -483,7 +483,7 @@ table
 .action_ajouter
 {
 	padding:5px 0 5px 18px;
-	background-image:url(../web/interface/icons/page_white_add.png);
+	background-image:url(../interface/icons/page_white_add.png);
 	background-repeat:no-repeat;
 	background-position: 0 50%;
 }
@@ -491,7 +491,7 @@ table
 .action_supprimer
 {
 	padding:5px 0 5px 18px;
-	background-image:url(../web/interface/icons/delete.png);
+	background-image:url(../interface/icons/delete.png);
 	background-repeat:no-repeat;
 	background-position: 0% 70%;
 }
@@ -499,7 +499,7 @@ table
 .action_depublier
 {
 	padding:5px 0 5px 18px;
-	background-image:url(../web/interface/icons/calendar_delete.png);
+	background-image:url(../interface/icons/calendar_delete.png);
 	background-repeat:no-repeat;
 	background-position: 0% 30%;
 }
@@ -507,7 +507,7 @@ table
 .action_copier
 {
 	padding:5px 0 5px 18px;
-	background-image:url(../web/interface/icons/page_white_copy.png);
+	background-image:url(../interface/icons/page_white_copy.png);
 	background-repeat:no-repeat;
 	background-position: 0% 30%;
 }
@@ -516,7 +516,7 @@ table
 {
 
 	padding:5px 0em 5px 18px;
-	background-image:url(../web/interface/icons/page_white_edit.png);
+	background-image:url(../interface/icons/page_white_edit.png);
 	background-repeat:no-repeat;
 	background-position: 0% 30%;
 	height:2em;
@@ -526,7 +526,7 @@ table
 {
 
 	padding:0em 0em 0em 0px;
-	background-image:url(../web/interface/fond_inscrivez.gif);
+	background-image:url(../interface/fond_inscrivez.gif);
 	background-repeat:no-repeat;
 	background-position: 50% 50%;
 }
@@ -535,7 +535,7 @@ table
 .popup_gmaps
 {
 	padding:0.1em 0em 0.1em 16px;
-	background-image:url(../web/interface/icons/map.png);
+	background-image:url(../interface/icons/map.png);
 	background-repeat:no-repeat;
 	background-position: 0% 30%;
 	height:2em;
@@ -544,7 +544,7 @@ table
 .lien_ext
 {
 	padding:0em 15px 0em 0px;
-	background-image:url(../web/interface/lien_ext.gif);
+	background-image:url(../interface/lien_ext.gif);
 	background-repeat:no-repeat;
 	background-position: 100% 50%;
     

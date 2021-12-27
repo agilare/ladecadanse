@@ -25,7 +25,7 @@ $page_titre = "Lieux de sorties ".$page_titre_region." : bistrots, salles, bars,
  théâtres, galeries, boutiques, musées, ...";
 $page_description = "Dernières descriptions de lieux à Genève";
 $extra_css = array("menu_lieux");
-include("includes/header.inc.php");
+include("_header.inc.php");
 
 $get['idL'] = "";
 if (isset($_GET['idL']))
@@ -190,17 +190,17 @@ $map_style = 'style="width:94%;margin:0 auto;height:500px;border:1px solid #555;
 <div id="colonne_gauche" class="colonne">
 
 <?php
-include("includes/navigation_calendrier.inc.php");
+include("_navigation_calendrier.inc.php");
 ?>
 </div>
 <!-- Fin Colonnegauche -->
 
 <div id="colonne_droite" class="colonne">
-    <?php include("includes/menulieux.inc.php");echo $aff_menulieux; ?>
+    <?php include("_menulieux.inc.php");echo $aff_menulieux; ?>
 </div>
 <!-- Fin colonne_droite -->
 
 <div class="spacer"><!-- --></div>
 <?php
-include("includes/footer.inc.php");
+include("_footer.inc.php");
 ?>

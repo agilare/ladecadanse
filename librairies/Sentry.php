@@ -311,7 +311,7 @@ class Sentry extends SystemComponent {
 		$_SESSION["Sprenom"] = $this->userdata["prenom"];
 		$_SESSION['Semail'] = $this->userdata['email'];
 		$_SESSION['Sregion'] = $this->userdata['region'];
-		$_SESSION['Saffiliation_lieu'] = $tab_affiliation['idAffiliation'];
+		$_SESSION['Saffiliation_lieu'] = $tab_affiliation['idAffiliation'] ?? 0;
 		
 		
 	/* 	if ($_SESSION["user"] == 'agilare')

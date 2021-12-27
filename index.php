@@ -20,7 +20,7 @@ $page_titre = " agenda de sorties à ".$page_titre_region.", prochains événeme
 $page_description = "Programme des prochains événements festifs et culturels à Genève et Lausanne : fêtes, concerts et soirées, cinéma,
 théâtre, expositions, vernissages, conférences, lieux culturels et alternatifs";
 
-include("includes/header.inc.php");
+include("_header.inc.php");
 
 if (isset($_GET['auj']))
 {
@@ -361,7 +361,7 @@ if ($genre_courant != '')
 
 <div id="colonne_gauche" class="colonne">
 
-    <?php include("includes/navigation_calendrier.inc.php"); ?>
+    <?php include("_navigation_calendrier.inc.php"); ?>
 
 
     <div id="dernieres" style="margin-top:15px;width: 100%;">
@@ -578,5 +578,5 @@ if ($genre_courant != '')
 <div class="spacer"><!-- --></div>
 
 <?php
-include("includes/footer.inc.php");
+include("_footer.inc.php");
 ?>

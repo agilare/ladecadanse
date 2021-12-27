@@ -75,7 +75,7 @@ $page_description = "Création d'une compte sur La décadanse";
 $nom_page = "ajouterPersonne";
 $extra_css = array("formulaires", "inscription_formulaire");
 $extra_js = array("zebra_datepicker", "jquery.shiftcheckbox");
-include("includes/header.inc.php");
+include("_header.inc.php");
 ?>
 
 
@@ -618,7 +618,7 @@ echo $verif->getHtmlErreur("email_identique");?>
 
 <div id="colonne_gauche" class="colonne">
 
-<?php include("includes/navigation_calendrier.inc.php"); ?>
+<?php include("_navigation_calendrier.inc.php"); ?>
 
 </div>
 <!-- Fin Colonne gauche -->
@@ -626,5 +626,5 @@ echo $verif->getHtmlErreur("email_identique");?>
 
 </div>
 <?php
-include("includes/footer.inc.php");
+include("_footer.inc.php");
 ?>

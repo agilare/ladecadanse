@@ -9,7 +9,7 @@ $videur = new Sentry();
 $nom_page = "apropos";
 $page_titre = "à propos du site";
 $page_description = "portrait du site La décadanse : description, liste des membres, outils utilisés";
-include("includes/header.inc.php");
+include("_header.inc.php");
 ?>
 
 
@@ -68,7 +68,7 @@ Le site est mis à jour quotidiennement par le webmaster et les contributeurs.</
 
 
 <div id="colonne_gauche" class="colonne">
-<?php include("includes/navigation_calendrier.inc.php"); ?>
+<?php include("_navigation_calendrier.inc.php"); ?>
 </div>
 <!-- Fin Colonnegauche -->
 
@@ -77,5 +77,5 @@ Le site est mis à jour quotidiennement par le webmaster et les contributeurs.</
 
 
 <?php
-include("includes/footer.inc.php");
+include("_footer.inc.php");
 ?>

@@ -10,7 +10,7 @@ $videur = new Sentry();
 $nom_page = "404";
 $page_titre = "404 - page non trouvée";
 $page_description = "Erreur 404 - page non trouvée";
-include("includes/header.inc.php");
+include("_header.inc.php");
 ?>
 <html>
 <head>
@@ -57,5 +57,5 @@ border-radius:5px;
 
 
 <?php
-include("includes/footer.inc.php");
+include("_footer.inc.php");
 ?>

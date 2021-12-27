@@ -24,7 +24,7 @@ if ($videur->checkGroup(12))
 $nom_page = "motdepasse_demande.php";
 $page_titre = "Mot de passe oublié";
 $extra_css = array("formulaires", "login");
-include("includes/header.inc.php");
+include("_header.inc.php");
 include("librairies/Validateur.php");
 
 $tab_messages = array('faux');
@@ -216,7 +216,7 @@ if ($verif->nbErreurs() > 0)
 <!-- fin  -->
 <div id="colonne_gauche" class="colonne">
 <?php
-include("includes/navigation_calendrier.inc.php");
+include("_navigation_calendrier.inc.php");
 ?>
 </div>
 <!-- Fin Colonne gauche -->
@@ -227,5 +227,5 @@ include("includes/navigation_calendrier.inc.php");
 
 
 <?php
-include("includes/footer.inc.php");
+include("_footer.inc.php");
 ?>

@@ -26,7 +26,7 @@ $nom_page = "motdepasse_reset";
 $page_titre = "Réinitialisation du mot de passe";
 $page_description = "";
 $extra_css = ["formulaires"];
-include("includes/header.inc.php");
+include("_header.inc.php");
 
 
 
@@ -319,10 +319,10 @@ else
 
 <div id="colonne_gauche" class="colonne">
 
-<?php include("includes/navigation_calendrier.inc.php"); ?>
+<?php include("_navigation_calendrier.inc.php"); ?>
 </div>
 <!-- Fin Colonne gauche -->
 
 <?php
-include("includes/footer.inc.php");
+include("_footer.inc.php");
 ?>

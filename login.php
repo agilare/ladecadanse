@@ -103,7 +103,7 @@ $nom_page = "login";
 $page_titre = "connexion";
 $page_description = "Formulaire de connexion pour les membres";
 $extra_css = array("formulaires", "login");
-include("includes/header.inc.php");
+include("_header.inc.php");
 
 
 ?>
@@ -177,7 +177,7 @@ echo $verif->getHtmlErreur("motdepasse");
 <!-- fin  -->
 <div id="colonne_gauche" class="colonne">
 <?php
-include("includes/navigation_calendrier.inc.php");
+include("_navigation_calendrier.inc.php");
 ?>
 </div>
 <!-- Fin Colonne gauche -->
@@ -188,5 +188,5 @@ include("includes/navigation_calendrier.inc.php");
 
 
 <?php
-include("includes/footer.inc.php");
+include("_footer.inc.php");
 ?>

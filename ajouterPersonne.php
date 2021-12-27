@@ -67,7 +67,7 @@ if (isset($_GET['action']))
 }
 else
 {
-	formaterTexte("Vous devez faire une action", "p");
+	echo "Vous devez faire une action";
 	exit;
 }
 
@@ -79,7 +79,7 @@ $page_description = "Formulaire d'ajout/edition d'un membre";
 $nom_page = "ajouterPersonne";
 $extra_css = array("formulaires", "ajouterPersonne_formulaire");
 $extra_js = array("zebra_datepicker", "jquery.shiftcheckbox");
-include("includes/header.inc.php");
+include("_header.inc.php");
 ?>
 
 
@@ -952,9 +952,9 @@ else
 </div> <!-- fin contenu  -->
 
 <div id="colonne_gauche" class="colonne">
-<?php include("includes/navigation_calendrier.inc.php"); ?>
+<?php include("_navigation_calendrier.inc.php"); ?>
 </div><!-- Fin Colonne gauche -->
 
 <?php
-include("includes/footer.inc.php");
+include("_footer.inc.php");
 ?>

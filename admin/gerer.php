@@ -23,7 +23,7 @@ require_once($rep_librairies.'usine.php');
 $page_titre = "gérer";
 $page_description = "Gestion des éléments ajoutés";
 $nom_page = "gerer";
-require_once('header.inc.php');
+require_once('_header.inc.php');
 
 $tab_listes = array("evenement" => "Événements",  "breve" => "Brèves", "lieu" => "Lieux", "organisateur" => "Organisateurs", "description" => "Descriptions", "commentaire" => "Commentaires", "personne" => "Personnes");
 
@@ -726,12 +726,12 @@ echo '<div class="spacer"></div>';
 <div id="colonne_droite" class="colonne">
 
 <?php
-include("menuAdmin.inc.php");
+include("_menuAdmin.inc.php");
 ?>
 </div>
 <!-- Fin colonne_droite -->
 
 <div class="spacer"><!-- --></div>
 <?php
-include("../includes/footer.inc.php");
+include("../_footer.inc.php");
 ?>

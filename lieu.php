@@ -95,7 +95,7 @@ $page_description = $page_titre." : accès, horaires, description, photos et pro
 
 
 $extra_css = array("menu_lieux", "element_login");
-include("includes/header.inc.php");
+include("_header.inc.php");
 
 $deb_nom_lieu = mb_strtolower(mb_substr($lieu->getValue('nom'), 0, 1));
 if (!isset($_GET['tranche']) && $deb_nom_lieu > "l" && $deb_nom_lieu < "z")
@@ -103,7 +103,7 @@ if (!isset($_GET['tranche']) && $deb_nom_lieu > "l" && $deb_nom_lieu < "z")
 	$_GET['tranche'] = "lz";
 }
 
-include("includes/menulieux.inc.php");
+include("_menulieux.inc.php");
 
 /* $logo = '';
 if ($lieu->getValue('logo') !='')
@@ -1123,7 +1123,7 @@ else if ($get['complement'] == 'commentaires')
 
 
 <div id="colonne_gauche" class="colonne">
-    <?php include("includes/navigation_calendrier.inc.php");?>
+    <?php include("_navigation_calendrier.inc.php");?>
 </div>
 <!-- Fin Colonnegauche -->
 
@@ -1137,5 +1137,5 @@ else if ($get['complement'] == 'commentaires')
 
 <div class="spacer"><!-- --></div>
 <?php
-include("includes/footer.inc.php");
+include("_footer.inc.php");
 ?>

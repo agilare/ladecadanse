@@ -11,7 +11,7 @@ require_once($rep_librairies."CollectionOrganisateur.class.php");
 $page_titre = "Organisateurs d'événements culturels à Genève et Lausanne : associations, labels, collectifs";
 $page_description = "Derniers organisateurs ajoutés";
 $extra_css = array("menu_lieux");
-include("includes/header.inc.php");
+include("_header.inc.php");
 
 $get['idO'] = "";
 if (isset($_GET['idO']))
@@ -97,7 +97,7 @@ $pair = 0;
 <div id="colonne_gauche" class="colonne">
 
 <?php
-include("includes/navigation_calendrier.inc.php");
+include("_navigation_calendrier.inc.php");
 ?>
 
 
@@ -107,7 +107,7 @@ include("includes/navigation_calendrier.inc.php");
 
 <div id="colonne_droite" class="colonne">
 
-<?php include("includes/menuorganisateurs.inc.php");
+<?php include("_menuorganisateurs.inc.php");
 echo $aff_menulieux; ?>
 
 </div>
@@ -115,5 +115,5 @@ echo $aff_menulieux; ?>
 
 <div class="spacer"><!-- --></div>
 <?php
-include("includes/footer.inc.php");
+include("_footer.inc.php");
 ?>

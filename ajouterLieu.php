@@ -132,7 +132,7 @@ else
 	$titre_form = "Ajouter";
 }
 
-include("includes/header.inc.php");
+include("_header.inc.php");
 ?>
 
 <div id="contenu" class="colonne">
@@ -697,7 +697,7 @@ echo $form->getHtmlErreur("quartier");
 
 <div id="colonne_gauche" class="colonne">
 
-<?php include("includes/navigation_calendrier.inc.php"); ?>
+<?php include("_navigation_calendrier.inc.php"); ?>
 </div>
 <!-- Fin Colonne gauche -->
 
@@ -705,5 +705,5 @@ echo $form->getHtmlErreur("quartier");
 </div>
 
 <?php
-include("includes/footer.inc.php");
+include("_footer.inc.php");
 ?>

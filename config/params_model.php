@@ -42,6 +42,8 @@ define("GOOGLE_RECAPTCHA_API_KEY_SERVER", '');
 define("GOOGLE_ANALYTICS_ID", '');
 define("GOOGLE_ANALYTICS_ENABLED", false);
 
+define("MATOMO_ENABLED", false);
+
 define("PREVIEW", true); 
 
 // closable banner in homepage for announcements

@@ -46,8 +46,8 @@ $page_description .= ": informations pratiques, description et prochains événe
 
 $extra_css = array("menu_lieux");
 
-include("includes/header.inc.php");
-include("includes/menuorganisateurs.inc.php");
+include("_header.inc.php");
+include("_menuorganisateurs.inc.php");
 
 $action_ajouter = '';
 if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 10)
@@ -511,7 +511,7 @@ echo '</div>';
 
 
 <?php
-include("includes/navigation_calendrier.inc.php");
+include("_navigation_calendrier.inc.php");
  ?>
 
 </div>
@@ -527,5 +527,5 @@ include("includes/navigation_calendrier.inc.php");
 
 <div class="spacer"><!-- --></div>
 <?php
-include("includes/footer.inc.php");
+include("_footer.inc.php");
 ?>

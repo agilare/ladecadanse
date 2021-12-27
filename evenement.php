@@ -106,7 +106,7 @@ $page_description = $even->getValue('titre')." ".$determinant_lieu.$even->getVal
 " le ".date_fr($even->getValue('dateEvenement'), "annee", "", "", false)." ".
 afficher_debut_fin($even->getValue('horaire_debut'), $even->getValue('horaire_fin'),$even->getValue('dateEvenement'));
 $extra_css = array("element_login");
-include("includes/header.inc.php");
+include("_header.inc.php");
 
 
 if ($connector->getNumRows($req_even) > 0)
@@ -959,7 +959,7 @@ else
 
 <div id="colonne_gauche" class="colonne">
 
-<?php include("includes/navigation_calendrier.inc.php"); ?>
+<?php include("_navigation_calendrier.inc.php"); ?>
 
 </div>
 <!-- Fin Colonnegauche -->
@@ -1080,5 +1080,5 @@ echo "</ul>";
 
 
 <?php
-include("includes/footer.inc.php");
+include("_footer.inc.php");
 ?>

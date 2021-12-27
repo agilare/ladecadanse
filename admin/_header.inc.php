@@ -166,13 +166,13 @@ if ($nom_page == "agenda" && isset($page_titre))
 	?>
 	<?php
 
-	include("../includes/styles.inc.php");
+	include("../_styles.inc.php");
 	?>
-	<link rel="shortcut icon" href="web/images//favicon.png" />	
-    <link rel="apple-touch-icon" href="web/images/apple-icon.png" />    
-    <link rel="apple-touch-icon" sizes="57x57" href="web/images/apple-icon-57x57.png" />       
-    <link rel="apple-touch-icon" sizes="76x76" href="web/images/apple-icon-76x76.png" />     
-    <link rel="apple-touch-icon" sizes="152x152" href="web/images/apple-icon-152x152.png" />  
+	<link rel="shortcut icon" href="web/interface/favicon.png" />	
+    <link rel="apple-touch-icon" href="web/interface/apple-icon.png" />    
+    <link rel="apple-touch-icon" sizes="57x57" href="web/interface/apple-icon-57x57.png" />       
+    <link rel="apple-touch-icon" sizes="76x76" href="web/interface/apple-icon-76x76.png" />     
+    <link rel="apple-touch-icon" sizes="152x152" href="web/interface/apple-icon-152x152.png" />  
 	<link rel="shortcut icon" href="<?php echo $url_images ?>interface/favicone.gif" />
      <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>  
    <script async defer

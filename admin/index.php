@@ -30,7 +30,7 @@ $page_titre = "administration";
 $page_description = "Tableau de bord";
 $extra_css = array("admin");
 $extra_js = array( "zebra_datepicker", "jquery.shiftcheckbox");
-require_once('header.inc.php');
+require_once('_header.inc.php');
 ?>
 
 <!-- Début contenu -->
@@ -522,12 +522,12 @@ while ($tab_desc = $connector->fetchArray($req_getDes))
 
 <div id="colonne_droite" class="colonne">
 <?php
-include("menuAdmin.inc.php");
+include("_menuAdmin.inc.php");
 ?>
 </div>
 <!-- Fin colonne_droite -->
 
 <div class="spacer"><!-- --></div>
 <?php
-include("../includes/footer.inc.php");
+include("../_footer.inc.php");
 ?>

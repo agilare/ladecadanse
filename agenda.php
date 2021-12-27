@@ -12,7 +12,7 @@ require_once($rep_librairies."CollectionEvenement.class.php");
 
 $page_titre = "Agenda";
 $page_description = "Événements culturels et festifs à Genève et Lausanne : concerts, soirées, films, théâtre, expos...";
-include("includes/header.inc.php");
+include("_header.inc.php");
 
 /* MOMENTS */
 $tab_moments = array("journee", "soir", "nuit", "tout");
@@ -610,7 +610,7 @@ if ($nb_evenements > 5)
 
 
 <div id="colonne_gauche" class="colonne">
-    <?php include("includes/navigation_calendrier.inc.php"); ?>
+    <?php include("_navigation_calendrier.inc.php"); ?>
 </div>
 
 <?php
@@ -649,5 +649,5 @@ if ($get['tri_agenda'] == "dateAjout") $tri_ajout = "ici";
 
 <div class="spacer"><!-- --></div>
 <?php
-include("includes/footer.inc.php");
+include("_footer.inc.php");
 ?>

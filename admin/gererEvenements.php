@@ -24,7 +24,7 @@ $page_description = "Gestion des événements ajoutés";
 $nom_page = "gererEvenements";
 $extra_css = array("formulaires", "gerer", "chosen.min");
 $extra_js = array("zebra_datepicker", "jquery.shiftcheckbox");
-require_once('header.inc.php');
+require_once('_header.inc.php');
 
 $tab_listes = array("evenement" => "Événements",  "breve" => "Brèves", "lieu" => "Lieux", "description" => "Descriptions", "commentaire" => "Commentaires", "personne" => "Personnes");
 $tab_nblignes = [100, 250, 500];
@@ -1461,7 +1461,7 @@ if (isset($get_idE) && !empty($champs['image']) && !$verif->getErreur('image'))
 
 <div id="colonne_droite" class="colonne">
 <?php
-include("menuAdmin.inc.php");
+include("_menuAdmin.inc.php");
 ?>
 </div>
 <!-- Fin colonne_droite -->
@@ -1469,6 +1469,6 @@ include("menuAdmin.inc.php");
 
 <div class="spacer"><!-- --></div>
 <?php
-include("../includes/footer.inc.php");
+include("../_footer.inc.php");
 ?>
 

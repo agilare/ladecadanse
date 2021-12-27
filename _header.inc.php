@@ -125,15 +125,6 @@ $pages_post = array("ajouterBreve", "ajouterCommentaire", "ajouterDescription", 
 header("Cache-Control: no-store, no-cache, must-revalidate");
 header("Cache-Control: post-check=0, pre-check=0", false);
 header("Pragma: no-cache");
-//if (isset($nom_page) && in_array($nom_page, $pages_post))
-//{
-//	include_once("header_cache_post.inc.php");
-//}
-//else
-//{
-//	include_once("header_cache_get.inc.php");
-//}
-
 
 if ($nom_page == "agenda" && isset($page_titre))
 {
@@ -221,7 +212,7 @@ $tab_de = $connector->fetchArray($req_de);
 	?>
 	<?php
 
-	include("styles.inc.php");
+	include("_styles.inc.php");
 
 	if ($nom_page == "index")
 	{
@@ -250,12 +241,14 @@ $tab_de = $connector->fetchArray($req_de);
 	<?php
 	}
 	?>
-	<link rel="shortcut icon" href="web/images/favicon.png" />	
-    <link rel="apple-touch-icon" href="web/images/apple-icon.png" />    
-    <link rel="apple-touch-icon" sizes="57x57" href="web/images/apple-icon-57x57.png" />       
-    <link rel="apple-touch-icon" sizes="76x76" href="web/images/apple-icon-76x76.png" />     
-    <link rel="apple-touch-icon" sizes="152x152" href="web/images/apple-icon-152x152.png" />  
-
+	<link rel="shortcut icon" href="web/interface/favicon.png" />	
+    <link rel="apple-touch-icon" href="web/interface/apple-icon.png" />    
+    <link rel="apple-touch-icon" sizes="57x57" href="web/interface/apple-icon-57x57.png" />       
+    <link rel="apple-touch-icon" sizes="76x76" href="web/interface/apple-icon-76x76.png" />     
+    <link rel="apple-touch-icon" sizes="152x152" href="web/interface/apple-icon-152x152.png" />  
+    <?php     
+    if (GOOGLE_ANALYTICS_ENABLED) {
+    ?> 
     <!-- Matomo -->
     <script type="text/javascript">
       var _paq = _paq || [];
@@ -271,10 +264,21 @@ $tab_de = $connector->fetchArray($req_de);
       })();
     </script>
     <!-- End Matomo Code --> 
-    
+    <?php
+    }
+    ?>    
     <?php     
     if (GOOGLE_ANALYTICS_ENABLED) {
-        include_once("includes/analyticstracking.php");
+    ?>    
+        <script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo GOOGLE_ANALYTICS_ID; ?>"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+
+          gtag('config', '<?php echo GOOGLE_ANALYTICS_ID; ?>');
+        </script>
+    <?php
     }
     ?>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>  
