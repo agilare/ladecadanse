@@ -1,11 +1,11 @@
 # La décadanse
 Agenda culturel local
 
-La décadanse présente une sélection d'événements culturels accessibles et locals, donnant la possibilité aux organisateurs d'ajouter leurs propres événements et de gérer leur fiche de présentation.
+La décadanse présente une sélection d'événements culturels accessibles et locaux (actuellement pour les régions de Genève et Lausanne), donnant la possibilité aux organisateurs d'ajouter leurs propres événements et de gérer leur fiche de présentation.
 
 La majeur partie du site est composée d'un agenda permettant de naviguer dans les événements passés ou futurs. Chacun de ceux-ci a sa fiche détaillée avec la possibilité donnée aux personnes inscrites d'y laisser un commentaire. Une rubrique Lieux répertorie des endroits où se déroulent des événements, et une page similaire liste les organisateurs d'événements.
 
-Une section d'administration permet de gérer les différentes entités composant le site. 
+Une section d'administration permet de gérer les différentes contenus du site : utilisateurs, événements, lieux, organisateurs, etc.
 
 ## Installation
 
@@ -22,7 +22,7 @@ Une section d'administration permet de gérer les différentes entités composan
 1. dans la table `personne` créer le user *admin* (groupe : 1) qui vous servira à gérer le site :
     
     ```INSERT INTO `personne` (`idPersonne`, `pseudo`, `mot_de_passe`, `cookie`, `session`, `ip`, `groupe`, `statut`, `nom`, `prenom`, `affiliation`, `adresse`, `region`, `telephone`, `email`, `URL`, `signature`, `avec_affiliation`, `notification_commentaires`, `gds`, `actif`, `remarque`, `dateAjout`, `date_derniere_modif`) VALUES (NULL, 'admin', '', '', '', '', '1', 'actif', '', '', '', '', 'ge', '', '', '', 'pseudo', 'non', 'non', '', '1', '', '0000-00-00 00:00:00.000000', '0000-00-00 00:00:00.000000');```
-1. se connecter à l'administration avec ce login *admin* et le mot de passe `MASTER_KEY` défini plus haut 
+1. afin d'avoir accès à l'administration, se connecter avec ce login *admin* et le mot de passe `MASTER_KEY` défini plus haut 
 1. (optionnel) installer [Pear Mail](https://pear.php.net/package/Mail/) pour que l'envoi d'emails fonctionne (les `require_once Mail.php;` dans le code)
 
-Testé avec Apache 2.4, PHP 7.3, MariaDB 10/MySQL 5.7
+Testé avec Apache 2.4, PHP 7.4, MariaDB 10/MySQL 5.7
