@@ -1,10 +1,10 @@
 <?php
 // make a copy of this file with name 'params.php'
 define("ENV", "dev");
-define("MODE_DEBUG", FALSE);
+define("MODE_DEBUG", true);
  
 error_reporting(E_ALL);
-ini_set('display_errors', '0');
+ini_set('display_errors', '1');
 
 // full path of your ladecadanse dir, for ex. "/home/michel/hosts/ladecadanse/"
 $rep_absolu = "";
@@ -35,14 +35,16 @@ $glo_email_admin = "";
 $glo_email_info = "";
 $glo_email_support = "";
 
-define("MASTER_KEY", ''); // backdoor : login with any user
+define("MASTER_KEY", ''); // backdoor : allows to login with any user
+
 define("GOOGLE_API_KEY", ''); // use Google Maps library to display maps of venues
+
 define("GOOGLE_RECAPTCHA_API_KEY_CLIENT", ''); // for (public) "Proposer un événement form"
 define("GOOGLE_RECAPTCHA_API_KEY_SERVER", '');
-define("GOOGLE_ANALYTICS_ID", '');
-define("GOOGLE_ANALYTICS_ENABLED", false);
 
-define("MATOMO_ENABLED", false);
+define("GOOGLE_ANALYTICS_ID", ''); // 1st analytics tool (enabled only in prod)
+define("GOOGLE_ANALYTICS_ENABLED", false);
+define("MATOMO_ENABLED", false); // 2nd analytics tool (enabled only in prod)
 
 define("PREVIEW", true); 
 
