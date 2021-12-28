@@ -1,21 +1,13 @@
 <?php
-require_once("Edition.class.php");
-require_once("Validateur.php");
-require_once("Lieu.class.php");
-require_once("Fonctions.class.php");
-require_once($rep_librairies.'ImageDriver2.php');
 
-  /**
-  * An abstract class implementing generic functionality for processing user's input
-  *
-  * This class encapsulates generic functions for working
-  * with data coming from user forms. Descendants must only override certain
-  * functions that perform context-specific tasks, like custom checking of
-  * data, storing correct data, etc.
-  *
-  * @author Yuri Makassiouk <racer@bfpg.ru>,
-  *  Mission & Media <firma@missionandmedia.com>
-  */
+namespace Ladecadanse;
+
+use Ladecadanse\Edition;
+use Ladecadanse\Validateur;
+use Ladecadanse\Lieu;
+use Ladecadanse\Fonctions;
+use Ladecadanse\ImageDriver2;
+
   class EditionLieu extends Edition
   {
     var $nom;

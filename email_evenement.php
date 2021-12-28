@@ -14,7 +14,10 @@ if (is_file("config/reglages.php"))
 	require_once("config/reglages.php");
 }
 
-require_once($rep_librairies."Sentry.php");
+use Ladecadanse\Sentry;
+use Ladecadanse\Validateur;
+use Ladecadanse\Logger;
+
 $videur = new Sentry();
 
 if (!$videur->checkGroup(12))
@@ -57,7 +60,7 @@ else
 /*
 * TRAITEMENT DU FORMULAIRE (EDITION OU AJOUT)
 */
-require_once($rep_librairies.'Validateur.php');
+
 $verif = new Validateur();
 
 $champs = array("email_destinataire" => '', 'message' => '');

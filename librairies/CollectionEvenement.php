@@ -1,17 +1,8 @@
 <?php
-/**
- * Lance la session et vérifie le login du visiteur
- *
- *
- * PHP versions 4 and 5
- *
- * @category   librairie
- * @author     Michel Gaudry <michel@ladecadanse.ch>
- * @see        SystemComponent.php
- */
+namespace Ladecadanse;
 
-require_once("Evenement.class.php");
-require_once("Collection.class.php");
+use Ladecadanse\Collection;
+use Ladecadanse\Evenement;
 
 class CollectionEvenement extends Collection {
 
@@ -88,5 +79,3 @@ class CollectionEvenement extends Collection {
 	}
 
 }
-
-?>

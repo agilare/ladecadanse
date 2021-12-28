@@ -1,6 +1,6 @@
 {
     "name": "ladecadanse/ladecadanse",
-    "description":"Agenda culturel local",
+    "description": "Agenda culturel local",
     "type": "project",
     "readme": "README.md",
     "authors": [
@@ -17,6 +17,10 @@
         "dimsemenov/magnific-popup": "^1.1",
         "fortawesome/font-awesome": "4.7"
     },
+    "autoload": {
+        "psr-4": {"Ladecadanse\\": "librairies"},
+        "files": ["librairies/dates.php", "librairies/presentation.php", "librairies/usine.php"]
+    },   
     "support": {
         "email": "michel@ladecadanse.ch",
         "source": "https://github.com/agilare/ladecadanse.git"

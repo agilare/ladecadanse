@@ -1,7 +1,8 @@
 <?php
 
-require_once 'SystemComponent.php';
+namespace Ladecadanse;
 
+use Ladecadanse\SystemComponent;
 
 class DbConnector extends SystemComponent
 {

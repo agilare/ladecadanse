@@ -3,10 +3,11 @@ if (is_file("config/reglages.php"))
 {
 	require_once("config/reglages.php");
 }
-require_once($rep_librairies."Sentry.php");
-$videur = new Sentry();
 
-require_once($rep_librairies."CollectionOrganisateur.class.php");
+use Ladecadanse\Sentry;
+use Ladecadanse\CollectionOrganisateur;
+
+$videur = new Sentry();
 
 $page_titre = "Organisateurs d'événements culturels à Genève et Lausanne : associations, labels, collectifs";
 $page_description = "Derniers organisateurs ajoutés";

@@ -35,10 +35,11 @@ if (is_file("config/reglages.php"))
 }
 
 date_default_timezone_set('Europe/Paris');
-require_once($rep_librairies."Sentry.php");
-$videur = new Sentry();
 
-require_once($rep_librairies."Evenement.class.php");
+use Ladecadanse\Sentry;
+use Ladecadanse\Evenement;
+
+$videur = new Sentry();
 
 if (isset($_GET['idE']))
 {

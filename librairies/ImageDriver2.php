@@ -1,19 +1,15 @@
 <?php
+
+namespace Ladecadanse;
+
+use Ladecadanse\SystemComponent;
+
 /**
  * Traite des images envoyées par upload via un champ 'file' de formulaire et
  * les stocke dans images/
  * Ce sont des flyers, photos et logos envoyés par les membres pour illustrer
  * un événement, une brêve ou un lieu
- *
- * PHP versions 4 and 5
- *
- * @category   librairie
- * @author     Michel Gaudry <michel@ladecadanse.ch>
- * @see        ajouterBreve.php, ajouterEvenement.php, ajouterLieu.php
  */
-
-require_once ('SystemComponent.php');
-
 class ImageDriver2 extends SystemComponent {
 
     /**

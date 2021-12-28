@@ -5,6 +5,8 @@ header('X-Frame-Options: "ALLOW-FROM https://epic-magazine.ch/"');
 date_default_timezone_set('Europe/Berlin');
 
 require_once('params.php');
+
+require $rep_absolu . 'vendor/autoload.php';
  
 define("UPLOAD_MAX_FILESIZE", 3145728); // octets, = 3 Mo
 define("POST_MAX_SIZE", 6291456);
@@ -303,25 +305,17 @@ $glo_auj = date("Y-m-d");
 $auj = date("Y-m-d");
 $glo_auj_6h = date("Y-m-d", time() - 14400);
 
-//require $rep_absolu.'vendor/autoload.php';
+use Ladecadanse\DbConnector;
+use Ladecadanse\Logger;
 
-if (is_file($rep_librairies.'DbConnector.php'))
-{
-	require_once($rep_librairies.'DbConnector.php');
-	$connector = new DbConnector($param['dbhost'],$param['dbname'], $param['dbusername'], $param['dbpassword']);
-}
-else
-{
-	echo "<p>Classe de connexion à la base de données non trouvée à ".$rep_librairies."DbConnector.php</p>";
-	exit;
+if (ENV == 'prod') {
+    include_once "Mail.php";  
 }
 
 
-require_once($rep_librairies.'usine.php');
-require_once($rep_librairies.'dates.php');
-require_once($rep_librairies.'presentation.php');
-require_once($rep_librairies.'Logger.php');
-require_once($rep_librairies.'SecurityToken.php');
+require_once($rep_librairies.'DbConnector.php');
+$connector = new DbConnector($param['dbhost'],$param['dbname'], $param['dbusername'], $param['dbpassword']);
+
 
 session_start();
 

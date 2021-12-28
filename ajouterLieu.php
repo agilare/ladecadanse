@@ -16,7 +16,10 @@ if (is_file("config/reglages.php"))
 	require_once("config/reglages.php");
 }
 
-require_once($rep_librairies."Sentry.php");
+use Ladecadanse\Sentry;
+use Ladecadanse\SecurityToken;
+use Ladecadanse\EditionLieu;
+
 $videur = new Sentry();
 
 if (!$videur->checkGroup(8))
@@ -24,7 +27,7 @@ if (!$videur->checkGroup(8))
 	header("Location: index.php"); die();
 }
 
-require_once($rep_librairies."EditionLieu.class.php");
+
 
 $page_titre = "ajouter/éditer un lieu";
 $page_description = "ajouter/éditer un lieu";

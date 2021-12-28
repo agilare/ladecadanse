@@ -9,7 +9,9 @@ else
 	exit;
 }
 
-require_once($rep_librairies."Sentry.php");
+use Ladecadanse\Sentry;
+use Ladecadanse\Validateur;
+
 $videur = new Sentry();
 
 if (!$videur->checkGroup(4))
@@ -23,7 +25,6 @@ if ($_SESSION['Sgroupe'] >= 4 && !empty($_SESSION['Sregion']))
     $_SESSION['region_admin'] = $_SESSION['Sregion'];
 }
 
-require_once($rep_librairies.'Validateur.php');
 
 $nom_page = "index";
 $page_titre = "administration";

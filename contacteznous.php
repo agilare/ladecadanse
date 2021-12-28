@@ -3,8 +3,12 @@ if (is_file("config/reglages.php"))
 {
 	require_once("config/reglages.php");
 }
-require_once($rep_librairies."Sentry.php");
+
+use Ladecadanse\Sentry;
+use Ladecadanse\Validateur;
+
 $videur = new Sentry();
+
 
 $page_titre = "Contact";
 $page_description = "Formulaire pour envoyer un email au webmaster de La décadanse : proposer un événement, poser une question, etc.";
@@ -29,7 +33,6 @@ include("_header.inc.php");
 * $post_pour : tableau de destinataires membres
 */
 
-require_once($rep_librairies.'Validateur.php');
 $verif = new Validateur();
 
 $champs = array("email" => "", "auteur" => "", "affiliation" => "", "sujet" => "", "contenu" => "");
@@ -74,8 +77,6 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok'  && empty($_POS
 	 */
 	if ($verif->nbErreurs() == 0)
 	{
-
-        require_once "Mail.php";
         $from = $champs['email'];
 		$to = '"La décadanse" <'.$glo_email_info.'>';
         $subject = "[La décadanse] ".$champs['sujet'];

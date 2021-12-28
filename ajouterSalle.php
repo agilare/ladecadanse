@@ -14,7 +14,9 @@ if (is_file("config/reglages.php"))
 	require_once("config/reglages.php");
 }
 
-require_once($rep_librairies."Sentry.php");
+use Ladecadanse\Sentry;
+use Ladecadanse\Validateur;
+
 $videur = new Sentry();
 
 if (!$videur->checkGroup(8))
@@ -84,7 +86,6 @@ if ($get['action'] != "ajouter" && $get['action'] != "insert")
 /*
 * TRAITEMENT DU FORMULAIRE (EDITION OU AJOUT)
 */
-require_once($rep_librairies.'Validateur.php');
 $verif = new Validateur();
 
 $champs = array("idLieu" => '', "nom" => '', "emplacement" => '');

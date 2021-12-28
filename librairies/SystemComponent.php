@@ -1,14 +1,9 @@
 <?php
+
+namespace Ladecadanse;
+
 /**
- * 
  * Classe de base pour toutes les autres classes du site
- *
- * PHP versions 4 and 5
- *
- * @category   librairie
- * @package    NomPaquetage
- * @author     Michel Gaudry <michel@ladecadanse.ch>
- * @see        DbConnector.php, ImageDriver.php, Sentry.php, Validator.php
  */
 class SystemComponent {
 

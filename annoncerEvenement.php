@@ -3,7 +3,10 @@ if (is_file("config/reglages.php"))
 {
 	require_once("config/reglages.php");
 }
-require_once($rep_librairies."Sentry.php");
+
+use Ladecadanse\Sentry;
+use Ladecadanse\Logger;
+
 $videur = new Sentry();
 
 

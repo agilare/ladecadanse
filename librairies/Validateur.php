@@ -1,13 +1,9 @@
 <?php
+
+namespace Ladecadanse;
 /**
  * Donne diverses méthodes de vérification pour des données entrées par un formulaire
- *
- * PHP versions 4 and 5
- *
- * @category   librairie
- * @author     Michel Gaudry <michel.gaudry@adm.unige.ch>
  */
-
 class Validateur
 {
 

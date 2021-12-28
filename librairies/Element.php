@@ -1,15 +1,6 @@
 <?php
-/**
- * Lance la session et vérifie le login du visiteur
- *
- *
- * PHP versions 4 and 5
- *
- * @category   librairie
- * @author     Michel Gaudry <michel@ladecadanse.ch>
- * @see        SystemComponent.php
- */
 
+namespace Ladecadanse;
 
 class Element
 {

@@ -2,8 +2,9 @@
 
 require_once("config/reglages.php");
 
+use Ladecadanse\Sentry;
 
-require_once($rep_librairies."Sentry.php");
+
 $videur = new Sentry();
 
 $page_titre_region = 'Genève';

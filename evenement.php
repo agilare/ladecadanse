@@ -3,10 +3,9 @@ if (is_file("config/reglages.php"))
 {
 	require_once("config/reglages.php");
 }
-require_once($rep_librairies."Sentry.php");
-$videur = new Sentry();
 
-require_once($rep_librairies."Evenement.class.php");
+use Ladecadanse\Sentry;
+use Ladecadanse\Evenement;
 
 
 $tab_tri = array("dateAjout", "horaire_debut");

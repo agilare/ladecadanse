@@ -1,17 +1,14 @@
 <?php
 
-/**
- *
- * @category   modification d'une table de la base
- * @author     Michel Gaudry <michel@ladecadanse.ch>
- */
-
 if (is_file("config/reglages.php"))
 {
 	require_once("config/reglages.php");
 }
 
-require_once($rep_librairies."Sentry.php");
+use Ladecadanse\Sentry;
+use Ladecadanse\Validateur;
+use Ladecadanse\Logger;
+
 $videur = new Sentry();
 
 if ($videur->checkGroup(12))

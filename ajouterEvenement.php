@@ -4,13 +4,13 @@ if (is_file("config/reglages.php"))
 	require_once("config/reglages.php");
 }
 
-require_once($rep_librairies."Sentry.php");
+use Ladecadanse\Sentry;
+use Ladecadanse\Validateur;
+use Ladecadanse\ImageDriver2;
+use Ladecadanse\SecurityToken;
+use Ladecadanse\Logger;
+
 $videur = new Sentry();
-
-require_once($rep_librairies.'ImageDriver2.php');
-require_once($rep_librairies.'Validateur.php');
-
-
     
 $page_titre = "Proposer un événement";
 $page_description = "Proposer un événement pour l'agenda";
@@ -92,15 +92,9 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 	{
 		if (isset($_POST[$c]) )
 		{
-			if (get_magic_quotes_gpc() && !is_array($_POST[$c]))
-			{
-				
-				$champs[$c] = stripslashes($_POST[$c]);
-			}
-			else
-			{
+
 				$champs[$c] = $_POST[$c];
-			}
+			
 		}
 	}
     
@@ -480,7 +474,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
                     if (ENV == 'prod')
                     {
                         
-                        require_once "Mail.php";
+                        
                         $from = '"'."La décadanse".'" <'.$glo_email_info.'>';
                         $to = $from;    
 
@@ -690,11 +684,9 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
                     {
                         // refus...
                     }
-     
-                    
+                       
                     if (ENV == 'prod')
                     {
-                        require_once "Mail.php";
                         $from = '"'."La décadanse".'" <'.$glo_email_info.'>';
                         $to = $champs['user_email'];    
 

@@ -4,14 +4,14 @@ if (is_file("config/reglages.php"))
 	require_once("config/reglages.php");
 }
 
-require_once($rep_librairies."Sentry.php");
+use Ladecadanse\Sentry;
+use Ladecadanse\Organisateur;
+use Ladecadanse\CollectionOrganisateur;
+use Ladecadanse\Evenement;
+use Ladecadanse\CollectionEvenement;
+
+
 $videur = new Sentry();
-
-require_once($rep_librairies."Organisateur.class.php");
-require_once($rep_librairies."CollectionOrganisateur.class.php");
-
-require_once($rep_librairies."Evenement.class.php");
-require_once($rep_librairies."CollectionEvenement.class.php");
 
 if (isset($_GET['idO']))
 {

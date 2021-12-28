@@ -12,7 +12,10 @@ if (is_file("config/reglages.php"))
 	require_once("config/reglages.php");
 }
 
-require_once($rep_librairies."Sentry.php");
+use Ladecadanse\Sentry;
+use Ladecadanse\Validateur;
+use Ladecadanse\Logger;
+
 $videur = new Sentry();
 
 if ($videur->checkGroup(12))
@@ -25,7 +28,6 @@ $nom_page = "motdepasse_demande.php";
 $page_titre = "Mot de passe oublié";
 $extra_css = array("formulaires", "login");
 include("_header.inc.php");
-include("librairies/Validateur.php");
 
 $tab_messages = array('faux');
 
@@ -118,9 +120,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' && empty($_POST
 			$sql = "INSERT INTO temp (idPersonne, email, token, expiration) VALUES (".$idPersonne.", '".$email."', '".$token."', NOW() + INTERVAL 1 DAY)";
 			//echo $sql; 
 			$connector->query($sql);			
-		
-			
-			require_once "Mail.php";
+
+            
 			//envoi mail avec  motdepasse_reset.php?token=...
 			$from = '"'."La décadanse".'" <'.$glo_email_info.'>';
 			$to = $email_envoi;

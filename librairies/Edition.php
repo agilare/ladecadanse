@@ -1,5 +1,7 @@
 <?php
-require_once("Validateur.php");
+namespace Ladecadanse;
+
+use Ladecadanse\Validateur;
 
   /**
   * An abstract class implementing generic functionality for processing user's input
@@ -206,4 +208,3 @@ require_once("Validateur.php");
 	}
 
 }
-?>

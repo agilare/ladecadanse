@@ -3,10 +3,13 @@ if (is_file("config/reglages.php"))
 {
 	require_once("config/reglages.php");
 }
-require_once($rep_librairies."Sentry.php");
+
+use Ladecadanse\Sentry;
+use Ladecadanse\CollectionDescription;
+
 $videur = new Sentry();
 
-require_once($rep_librairies.'CollectionDescription.class.php');
+
 
 if ($_SESSION['region'] == 'vd')
  {

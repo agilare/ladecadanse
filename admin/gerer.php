@@ -9,7 +9,9 @@ else
 	exit;
 }
 
-require_once($rep_librairies."Sentry.php");
+use Ladecadanse\Sentry;
+use Ladecadanse\Validateur;
+
 $videur = new Sentry();
 
 if (!$videur->checkGroup(4))
@@ -17,8 +19,6 @@ if (!$videur->checkGroup(4))
 	header("Location: ".$url_site."login.php"); die();
 }
 
-require_once($rep_librairies.'Validateur.php');
-require_once($rep_librairies.'usine.php');
 
 $page_titre = "gérer";
 $page_description = "Gestion des éléments ajoutés";

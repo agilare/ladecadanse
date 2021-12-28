@@ -1,16 +1,9 @@
 <?php
-/**
- *
- *
- *
- * PHP versions 4
- *
- * @category   librairie
- * @author     Michel Gaudry <michel@ladecadanse.ch>
- * @see
- */
 
-require_once("Element.class.php");
+namespace Ladecadanse;
+
+use Ladecadanse\Element;
+
 
 class Organisateur extends Element
 {
@@ -25,5 +18,3 @@ class Organisateur extends Element
 
 
 }
-
-?>

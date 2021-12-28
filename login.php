@@ -11,7 +11,9 @@ if (is_file("config/reglages.php"))
 	require_once("config/reglages.php");
 }
 
-require_once($rep_librairies."Sentry.php");
+use Ladecadanse\Sentry;
+use Ladecadanse\Validateur;
+
 $videur = new Sentry();
 
 if ($videur->checkGroup(12))
@@ -19,7 +21,6 @@ if ($videur->checkGroup(12))
 	header("Location: index.php"); die();
 }
 
-include("librairies/Validateur.php");
 
 $tab_messages = array('faux');
 

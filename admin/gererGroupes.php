@@ -14,15 +14,14 @@ if (is_file("../config/reglages.php")) {
 	exit;
 }
 
-require_once($rep_librairies."Sentry.php");
+use Ladecadanse\Sentry;
+
 $videur = new Sentry();
 
 if (!$videur->checkGroup(1))
 	header("Location: ".$url_site."index.php"); die();
 
 
-require_once($rep_librairies.'Validator.php');
-require_once($rep_librairies.'usine.php');
 require_once($rep_includes.'head.php');
 
 // header("Cache-Control: max-age=600, must-revalidate");

@@ -14,7 +14,9 @@ if (is_file("config/reglages.php"))
 	require_once("config/reglages.php");
 }
 
-require_once($rep_librairies."Sentry.php");
+use Ladecadanse\Sentry;
+use Ladecadanse\Validateur;
+
 $videur = new Sentry();
 
 //$cache_lieux = $rep_cache."lieux/";
@@ -59,7 +61,7 @@ $tab_type_erreur = array(
 /*
 * TRAITEMENT DU FORMULAIRE (EDITION OU AJOUT)
 */
-require_once($rep_librairies.'Validateur.php');
+
 $verif = new Validateur();
 
 $champs = array("type_erreur" => '', 'message' => '', 'name' => '', 'email' => '');
@@ -106,7 +108,6 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 	 */
 	if ($verif->nbErreurs() === 0)
 	{
-            require_once "Mail.php";
 		
 		$from = '"La décadanse" <'.$glo_email_support.'>';
 		if (isset($_SESSION['user']))

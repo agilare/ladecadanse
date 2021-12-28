@@ -1,5 +1,7 @@
 <?php
 
+namespace Ladecadanse;
+
 class SecurityToken
 {
     public static function check($received, $session)

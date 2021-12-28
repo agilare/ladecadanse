@@ -9,7 +9,10 @@ else
 	exit;
 }
 
-require_once($rep_librairies."Sentry.php");
+use Ladecadanse\Sentry;
+use Ladecadanse\Validateur;
+use Ladecadanse\ImageDriver2;
+
 $videur = new Sentry();
 
 if (!$videur->checkGroup(4))
@@ -17,7 +20,6 @@ if (!$videur->checkGroup(4))
 	header("Location: ".$url_site."login.php"); die();
 }
 
-require_once($rep_librairies.'Validateur.php');
 
 $page_titre = "gérer les événements";
 $page_description = "Gestion des événements ajoutés";
@@ -127,9 +129,6 @@ if (!empty($_SESSION['region_admin']))
 	</div>
 	
 <?php
-
-require_once($rep_librairies.'ImageDriver2.php');
-
 $evenements = array();
 
 $champs = array("genre" => "", "idLieu" => "", "idSalle" => "", "nomLieu" => "", "adresse" => "", "quartier" => "",  "localite_id" => "", "region" => "", "urlLieu" => "", "titre" => "", "description" => "", "ref" => "", "horaire_debut" => "", "horaire_fin" => "", "horaire_complement" => "", "prix" => "", "prelocations" => "", "statut" => "");

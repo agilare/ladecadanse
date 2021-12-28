@@ -11,7 +11,9 @@ if (is_file("config/reglages.php"))
 	require_once("config/reglages.php");
 }
 
-require_once($rep_librairies."Sentry.php");
+use Ladecadanse\Sentry;
+use Ladecadanse\Logger;
+
 $videur = new Sentry();
 
 $logger->log('global', 'activity', "Logout of ".$_SESSION['user'], Logger::GRAN_YEAR);

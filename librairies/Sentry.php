@@ -1,16 +1,13 @@
 <?php
+
+namespace Ladecadanse;
+
+use Ladecadanse\SystemComponent;
+use Ladecadanse\Validateur;
+
 /**
  * Lance la session et vérifie le login du visiteur
- *
- *
- * PHP versions 4 and 5
- *
- * @category   librairie
- * @author     Michel Gaudry <michel@ladecadanse.ch>
- * @see        SystemComponent.php
  */
-require_once 'SystemComponent.php';
-
 class Sentry extends SystemComponent {
 
    /**
@@ -128,9 +125,7 @@ class Sentry extends SystemComponent {
 		/* Appel de l'instance de la classe d'accès à la BD*/
 		global $connector;
         global $logger;
-
-
-		require_once('Validateur.php');
+        
 		$valide = new Validateur();
 
 		$erreurs = array();

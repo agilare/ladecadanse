@@ -21,11 +21,11 @@ else
 	exit;
 }
 
-require_once($rep_librairies."Sentry.php");
+use Ladecadanse\Sentry;
+use Ladecadanse\Validateur;
+use Ladecadanse\Logger;
+
 $videur = new Sentry();
-
-
-require_once($rep_librairies.'Validateur.php');
 
 
 
@@ -357,10 +357,6 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 			//PROD
 			if ($connector->query($sql_update))
 			{
-				
-			
-	
-				require_once "Mail.php";
 				// Mail de notification au nouvel utilisateur
 
 				

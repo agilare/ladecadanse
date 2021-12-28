@@ -21,16 +21,17 @@ else
 	exit;
 }
 
-require_once($rep_librairies."Sentry.php");
+use Ladecadanse\Sentry;
+use Ladecadanse\Validateur;
+use Ladecadanse\SecurityToken;
+use Ladecadanse\Logger;
+
 $videur = new Sentry();
 
 if (!$videur->checkGroup(12))
 {
 	header("Location: ".$url_site."login.php"); die();
 }
-
-require_once($rep_librairies.'Validateur.php');
-
 
 
 /*

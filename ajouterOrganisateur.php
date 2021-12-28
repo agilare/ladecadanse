@@ -1,26 +1,20 @@
 <?php
-/**
- *
- * @category   modification d'une table de la base
- * @see organisateur.php
- * @author     Michel Gaudry <michel@ladecadanse.ch>
- */
 
 if (is_file("config/reglages.php"))
 {
 	require_once("config/reglages.php");
 }
 
-require_once($rep_librairies."Sentry.php");
+use Ladecadanse\Sentry;
+use Ladecadanse\SecurityToken;
+use Ladecadanse\EditionOrganisateur;
+
 $videur = new Sentry();
 
 if (!$videur->checkGroup(8))
 {
 	header("Location: index.php"); die();
 }
-
-require_once($rep_librairies."EditionOrganisateur.class.php");
-
 
 $page_titre = "ajouter/éditer un organisateur";
 $page_description = "ajouter/éditer un organisateur";

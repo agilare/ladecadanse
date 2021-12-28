@@ -1,20 +1,13 @@
 <?php
-/**
- * Permet d'ajouter une description sur un lieu de la base
- *
- * Le traitement de suppression est suivi par le traitement d'ajout/edition et le formulaire
- * est à¡¬a fin
- *
- * @category   modification d'une table de la base
- * @author     Michel Gaudry <michel@ladecadanse.ch>
- */
 
 if (is_file("config/reglages.php"))
 {
 	require_once("config/reglages.php");
 }
 
-require_once($rep_librairies."Sentry.php");
+use Ladecadanse\Sentry;
+use Ladecadanse\Logger;
+
 $videur = new Sentry();
 
 

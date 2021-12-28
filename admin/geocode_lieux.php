@@ -9,15 +9,15 @@ else
 	exit;
 }
 
-require_once($rep_librairies."Sentry.php");
+use Ladecadanse\Sentry;
+use Ladecadanse\Validateur;
+
 $videur = new Sentry();
 
 if (!$videur->checkGroup(1))
 {
 	header("Location: ".$url_site."login.php"); die();
 }
-
-require_once($rep_librairies.'Validateur.php');
 
 define("MAPS_HOST", "maps.google.ch");
 

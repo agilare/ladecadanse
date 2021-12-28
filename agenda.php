@@ -4,11 +4,11 @@ if (is_file("config/reglages.php"))
         require_once("config/reglages.php");
 }
 
-require_once($rep_librairies."Sentry.php");
-$videur = new Sentry();
+use Ladecadanse\Sentry;
+use Ladecadanse\Evenement;
+use Ladecadanse\CollectionEvenement;
 
-require_once($rep_librairies."Evenement.class.php");
-require_once($rep_librairies."CollectionEvenement.class.php");
+$videur = new Sentry();
 
 $page_titre = "Agenda";
 $page_description = "Événements culturels et festifs à Genève et Lausanne : concerts, soirées, films, théâtre, expos...";

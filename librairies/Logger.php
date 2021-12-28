@@ -1,5 +1,7 @@
 <?php
 
+namespace Ladecadanse;
+
 /**
  * Classe de log générique permettant de gérer l'archivage des fichiers de log
  * Configuration requise: PHP 5 (ne fonctionne pas avec PHP 4)

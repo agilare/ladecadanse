@@ -1,11 +1,4 @@
 <?php
-/**
- * Boite à outils de fonctions
- * Chaque page du site l'a inclus
- *
- * @category   librairie
- * @author     Michel Gaudry <michel@ladecadanse.ch>
- */
 
 /**
  * Vérifie dans la base si une personne est bien l'auteur d'un événement,
