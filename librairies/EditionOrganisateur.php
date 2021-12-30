@@ -4,8 +4,8 @@ namespace Ladecadanse;
 use Ladecadanse\Edition;
 use Ladecadanse\Validateur;
 use Ladecadanse\Organisateur;
-use Ladecadanse\Fonctions;
 use Ladecadanse\ImageDriver2;
+use Ladecadanse\File;
 
   class EditionOrganisateur extends Edition
   {
@@ -27,7 +27,6 @@ use Ladecadanse\ImageDriver2;
 	var $action;
 
     var $connector;
-	var $fonctions;
 
     function __construct($nom, $champs, $fichiers)
     {
@@ -39,11 +38,9 @@ use Ladecadanse\ImageDriver2;
 
       $this->valeurs = $champs;
       $this->fichiers = $fichiers;
-	  
-	  $this->fonctions = new Fonctions();
 
       $this->erreurs = array_merge($champs, $fichiers);
-		$this->erreurs['nom_existant'] = '';
+        $this->erreurs['nom_existant'] = '';
     }
 
     function traitement($post, $files)
@@ -234,7 +231,7 @@ use Ladecadanse\ImageDriver2;
 					//echo "<div class=\"msg\">Ancienne image supprimée</div>";
 				}
 
-				$organisateur->setValue('logo', $this->fonctions->creer_nom_fichier($organisateur->getId(), 'logo', '', $this->fichiers['logo']['name']));
+				$organisateur->setValue('logo', File::getFilename($organisateur->getId(), 'logo', '', $this->fichiers['logo']['name']));
 
 			}
 			elseif (in_array('logo', $this->supprimer))
@@ -261,7 +258,7 @@ use Ladecadanse\ImageDriver2;
 					//echo "<div class=\"msg\">Ancienne image supprimée</div>";
 				}
 
-				$organisateur->setValue('photo',  $this->fonctions->creer_nom_fichier($organisateur->getId(), 'photo', '', $this->fichiers['photo']['name']));
+				$organisateur->setValue('photo', File::getFilename($organisateur->getId(), 'photo', '', $this->fichiers['photo']['name']));
 
 			}
 			/*

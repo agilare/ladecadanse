@@ -5,8 +5,8 @@ namespace Ladecadanse;
 use Ladecadanse\Edition;
 use Ladecadanse\Validateur;
 use Ladecadanse\Lieu;
-use Ladecadanse\Fonctions;
 use Ladecadanse\ImageDriver2;
+use Ladecadanse\File;
 
   class EditionLieu extends Edition
   {
@@ -350,7 +350,7 @@ use Ladecadanse\ImageDriver2;
 					//echo "<div class=\"msg\">Ancienne image supprimée</div>";
 				}
 
-				$lieu->setValue('logo', Fonctions::creer_nom_fichier($lieu->getId(), 'logo', '', $this->fichiers['logo']['name']));
+				$lieu->setValue('logo', File::getFilename($lieu->getId(), 'logo', '', $this->fichiers['logo']['name']));
 
 			}
 
@@ -383,7 +383,7 @@ use Ladecadanse\ImageDriver2;
 					//echo "<div class=\"msg\">Ancienne image supprimée</div>";
 				}
 
-				$lieu->setValue('photo1', Fonctions::creer_nom_fichier($lieu->getId(), 'photo1', '', $this->fichiers['photo1']['name']));
+				$lieu->setValue('photo1', File::getFilename($lieu->getId(), 'photo1', '', $this->fichiers['photo1']['name']));
 
 			}
 			/*
