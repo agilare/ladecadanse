@@ -152,6 +152,4 @@ class Logger {
         fputs($fichier, $row);
         fclose($fichier);
     }
-
 }
-?>

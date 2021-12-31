@@ -38,16 +38,18 @@ date_default_timezone_set('Europe/Paris');
 
 use Ladecadanse\Sentry;
 use Ladecadanse\Evenement;
+use Ladecadanse\HtmlShrink;
+use Ladecadanse\Validateur;
 
 $videur = new Sentry();
 
 if (isset($_GET['idE']))
 {
-	$get['idE'] = verif_get($_GET['idE'], "int", 1);
+	$get['idE'] = Validateur::validateUrlQueryValue($_GET['idE'], "int", 1);
 }
 else
 {
-	msgErreur("idE obligatoire");
+	HtmlShrink::msgErreur("idE obligatoire");
 	exit;
 }
 
@@ -75,20 +77,20 @@ if ($even->getValue('idLieu') != 0)
 	$req_lieu = $connector->query("SELECT nom, adresse, quartier, localite, region, URL, lat, lng FROM lieu, localite
 	WHERE lieu.localite_id=localite.id AND idlieu='".$even->getValue('idLieu')."'");
 	$listeLieu = $connector->fetchArray($req_lieu);
-	$lieu = securise_string($listeLieu['nom']);
+	$lieu = sanitizeForHtml($listeLieu['nom']);
 
 }
 else
 {
-	$listeLieu['nom'] = securise_string($even->getValue('nomLieu'));
-	$lieu = securise_string($even->getValue('nomLieu'));
-	$listeLieu['adresse'] = securise_string($even->getValue('adresse'));
-	$listeLieu['quartier'] = securise_string($even->getValue('quartier'));
+	$listeLieu['nom'] = sanitizeForHtml($even->getValue('nomLieu'));
+	$lieu = sanitizeForHtml($even->getValue('nomLieu'));
+	$listeLieu['adresse'] = sanitizeForHtml($even->getValue('adresse'));
+	$listeLieu['quartier'] = sanitizeForHtml($even->getValue('quartier'));
         $req_localite = $connector->query("SELECT  localite FROM localite WHERE  id='".$even->getValue('localite_id')."'");
         $tab_localite = $connector->fetchArray($req_localite);                
 
-        $listeLieu['localite'] = securise_string($tab_localite[0]);
-	$listeLieu['URL'] = securise_string($even->getValue('urlLieu'));
+        $listeLieu['localite'] = sanitizeForHtml($tab_localite[0]);
+	$listeLieu['URL'] = sanitizeForHtml($even->getValue('urlLieu'));
 
 	$nom_lieu = $lieu;
 }
@@ -103,7 +105,7 @@ if ($even->getValue('description') != '')
 
 $filename = "evenement.ics";
 
-$address = get_adresse(null, $listeLieu['localite'], $listeLieu['quartier'], $listeLieu['adresse']);
+$address = HtmlShrink::getAdressFitted(null, $listeLieu['localite'], $listeLieu['quartier'], $listeLieu['adresse']);
 
 $dateend = '';
 if ($even->getValue('horaire_fin') != "0000-00-00 00:00:00")
@@ -122,7 +124,7 @@ $uniqueid = $get['idE'];
 
 $uri = $url_site."evenement.php?idE=".$get['idE'];
 
-$summary = securise_string($even->getValue('titre'));
+$summary = sanitizeForHtml($even->getValue('titre'));
 
 if ($even->getValue('statut') == "annule" || $even->getValue('statut')  == "inactif" || $even->getValue('statut')  == "complet")
 {

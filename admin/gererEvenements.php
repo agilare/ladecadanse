@@ -12,6 +12,9 @@ else
 use Ladecadanse\Sentry;
 use Ladecadanse\Validateur;
 use Ladecadanse\ImageDriver2;
+use Ladecadanse\CollectionEvenement;
+use Ladecadanse\Utils;
+use Ladecadanse\HtmlShrink;
 
 $videur = new Sentry();
 
@@ -44,13 +47,13 @@ $get['element'] = "evenement";
 $get['page'] = 1;
 if (isset($_GET['page']))
 {
-	$get['page'] = verif_get($_GET['page'], "int", 1);
+	$get['page'] = Validateur::validateUrlQueryValue($_GET['page'], "int", 1);
 }
 
 $get['tri_gerer'] = "dateAjout";
 if (isset($_GET['tri_gerer']))
 {
-	$get['tri_gerer'] = verif_get($_GET['tri_gerer'], "enum", 1, ["dateAjout", "date_derniere_modif", "statut", "date_debut","id", "titre", "genre"]);
+	$get['tri_gerer'] = Validateur::validateUrlQueryValue($_GET['tri_gerer'], "enum", 1, ["dateAjout", "date_derniere_modif", "statut", "date_debut","id", "titre", "genre"]);
 }
 
 $tab_ordre = array("asc", "desc");
@@ -58,7 +61,7 @@ $get['ordre'] = "desc";
 $ordre_inverse = "asc";
 if (isset($_GET['ordre']))
 {
-	$get['ordre'] = verif_get($_GET['ordre'], "enum", 1, $tab_ordre);
+	$get['ordre'] = Validateur::validateUrlQueryValue($_GET['ordre'], "enum", 1, $tab_ordre);
 	if ($get['ordre'] == "asc")
 	{
 		$ordre_inverse = "desc";
@@ -72,7 +75,7 @@ if (isset($_GET['ordre']))
 $get['nblignes'] = 100;
 if (!empty($_GET['nblignes']))
 {
-	$get['nblignes'] = verif_get($_GET['nblignes'], "int", 1);
+	$get['nblignes'] = Validateur::validateUrlQueryValue($_GET['nblignes'], "int", 1);
 }
 
 
@@ -161,9 +164,9 @@ else if (!empty($_POST['formulaire']) && !empty($_POST['supprimerSerie']))
 	if (count($erreurs) === 0)
 	{
 		foreach($evenements as $even)
-			supprimerEvenement($even);
-
-
+        {
+            CollectionEvenement::deleteEvenement($even);    
+        }
 	}
         
 	unset($_POST);
@@ -463,7 +466,7 @@ elseif (!empty($_POST['formulaire']))
 
 			if (!empty($erreursEv))
 			{
-				msgErreur($erreursEv);
+				HtmlShrink::msgErreur($erreursEv);
 				continue;
 			}
 
@@ -504,7 +507,7 @@ elseif (!empty($_POST['formulaire']))
 				}
 				else
 				{
-					msgErreur("La requête SELECT flyer a échoué");
+					HtmlShrink::msgErreur("La requête SELECT flyer a échoué");
 				}
 
 			//si le champ "supprimer le flyer" est coché sans qu'un nouveau flyer soit remplacant
@@ -531,7 +534,7 @@ elseif (!empty($_POST['formulaire']))
 				}
 				else
 				{
-					msgErreur("La requête SELECT flyer a échoué");
+					HtmlShrink::msgErreur("La requête SELECT flyer a échoué");
 				}
 
 			} //elseif supprimer flyer
@@ -559,7 +562,7 @@ elseif (!empty($_POST['formulaire']))
 				}
 				else
 				{
-					msgErreur("La requÃªte SELECT image a Ã©chouÃ©");
+					HtmlShrink::msgErreur("La requÃªte SELECT image a Ã©chouÃ©");
 				}
 
 			//si le champ "supprimer le flyer" est coché¡³ans qu'un nouveau flyer soit remplacant
@@ -585,7 +588,7 @@ elseif (!empty($_POST['formulaire']))
 				}
 				else
 				{
-					msgErreur("La requête SELECT image a Ã©chouÃ©");
+					HtmlShrink::msgErreur("La requête SELECT image a Ã©chouÃ©");
 				}
 
 			} //if supprimer image
@@ -620,7 +623,7 @@ elseif (!empty($_POST['formulaire']))
 			*/
 			if ($req_update)
 			{
-				msgOk('Mise à jour de <a href="'.$url_site.'evenement.php?idE='.$idEven_courant.'">'.$tab_even['titre'].'</a> le <a href="'.$url_site."agenda.php?courant=".$tab_even['dateEvenement'].'">'.date_fr($tab_even['dateEvenement'], "annee").'</a> réussie');
+				HtmlShrink::msgOk('Mise à jour de <a href="'.$url_site.'evenement.php?idE='.$idEven_courant.'">'.$tab_even['titre'].'</a> le <a href="'.$url_site."agenda.php?courant=".$tab_even['dateEvenement'].'">'.date_fr($tab_even['dateEvenement'], "annee").'</a> réussie');
 
 				$sql = "DELETE FROM evenement_organisateur WHERE idEvenement=".$idEven_courant;
 				$req = $connector->query($sql);						
@@ -650,7 +653,7 @@ elseif (!empty($_POST['formulaire']))
 			else
 			{
 
-				msgErreur("La requête UPDATE de la table evenement a échoué");
+				HtmlShrink::msgErreur("La requête UPDATE de la table evenement a échoué");
 			}
 
 			/*
@@ -681,20 +684,20 @@ elseif (!empty($_POST['formulaire']))
 				$des = $rep_images.$champs['flyer'];
 
 				if (!copy($src, $des))
-					msgErreur("La copie du fichier taille normale ".$champs['flyer']." n'a pas réussi...");
+					HtmlShrink::msgErreur("La copie du fichier taille normale ".$champs['flyer']." n'a pas réussi...");
 
 
 				$src = $rep_images."s_".$srcFlyer;
 				$des = $rep_images."s_".$champs['flyer'];
 
 				if (!copy($src, $des))
-					msgErreur("La copie du fichier taille small ".$champs['flyer']." n'a pas réussi...");
+					HtmlShrink::msgErreur("La copie du fichier taille small ".$champs['flyer']." n'a pas réussi...");
 
 				$src = $rep_images."t_".$srcFlyer;
 				$des = $rep_images."t_".$champs['flyer'];
 
 				if (!copy($src, $des))
-					msgErreur("La copie du fichier taille tiny ".$champs['flyer']." n'a pas réussi...");
+					HtmlShrink::msgErreur("La copie du fichier taille tiny ".$champs['flyer']." n'a pas réussi...");
 
 			}
 
@@ -722,13 +725,13 @@ elseif (!empty($_POST['formulaire']))
 				$des = $rep_images.$champs['image'];
 
 				if (!copy($src, $des))
-					msgErreur("La copie du fichier taille normale ".$champs['image']." n'a pas réussi...");
+					HtmlShrink::msgErreur("La copie du fichier taille normale ".$champs['image']." n'a pas réussi...");
 
 				$src = $rep_images."s_".$src_image;
 				$des = $rep_images."s_".$champs['image'];
 
 				if (!copy($src, $des))
-					msgErreur("La copie du fichier taille small ".$champs['image']." n'a pas réussi...");
+					HtmlShrink::msgErreur("La copie du fichier taille small ".$champs['image']." n'a pas réussi...");
 
 			}
 
@@ -763,7 +766,7 @@ elseif (!empty($_POST['formulaire']))
 
 if ($verif->nbErreurs() > 0)
 {
-	msgErreur("Il y a ".$verif->nbErreurs()." erreur(s).");
+	HtmlShrink::msgErreur("Il y a ".$verif->nbErreurs()." erreur(s).");
 	
 	//print_r($verif->getErreurs());
 }
@@ -805,7 +808,7 @@ $req_evenement = $connector->query($sql_evenement);
 <?php
 if ($get['filtre_genre'] == 'tous') { echo 'class="ici"'; }
 
-echo '><a href="?'.arguments_URI($get, "filtre_genre").'&filtre_genre=tous">Tous</a></li>';
+echo '><a href="?'.Utils::urlQueryArrayToString($get, "filtre_genre").'&filtre_genre=tous">Tous</a></li>';
 
 foreach ($glo_tab_genre as $ng => $nl)
 {
@@ -815,7 +818,7 @@ foreach ($glo_tab_genre as $ng => $nl)
         if ($ng == 'cinéma')
             $nom = 'ciné';
 
-	echo '><a href="?'.arguments_URI($get, "filtre_genre").'&filtre_genre='.$ng.'">'.ucfirst($nom).'</a></li>';
+	echo '><a href="?'.Utils::urlQueryArrayToString($get, "filtre_genre").'&filtre_genre='.$ng.'">'.ucfirst($nom).'</a></li>';
 }
 echo '</ul>';
 ?>
@@ -839,7 +842,7 @@ echo '</ul>';
 <div id="gerer-even-pagination">
 
 <?php
-echo getPaginationString($get['page'], $tot_elements, $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?element=".$get['element']."&tri_gerer=".$get['tri_gerer']."&ordre=".$get['ordre']."&nblignes=".$get['nblignes']."&filtre_genre=".$get['filtre_genre']."&terme=".$get['terme']."&page=");
+echo HtmlShrink::getPaginationString($get['page'], $tot_elements, $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?element=".$get['element']."&tri_gerer=".$get['tri_gerer']."&ordre=".$get['ordre']."&nblignes=".$get['nblignes']."&filtre_genre=".$get['filtre_genre']."&terme=".$get['terme']."&page=");
 ?>
 
 
@@ -852,7 +855,7 @@ foreach ($tab_nblignes as $nbl)
 	echo '<li ';
 	if ($get['nblignes'] == $nbl) { echo 'class="ici"'; }
 
-	echo '><a href="'.$url_admin.'gererEvenements.php?'.arguments_URI($get, "nblignes").'&nblignes='.$nbl.'">'.$nbl.'</a></li>';
+	echo '><a href="'.$url_admin.'gererEvenements.php?'.Utils::urlQueryArrayToString($get, "nblignes").'&nblignes='.$nbl.'">'.$nbl.'</a></li>';
 }
 echo '</ul>';
 ?>
@@ -886,7 +889,7 @@ foreach ($th_evenements as $att => $th)
 			echo "<th>";
 		}
 
-		echo "<a href=\"?".arguments_URI($get, "ordre")."&ordre=".$ordre_inverse."\">".$th."</a></th>";
+		echo "<a href=\"?".Utils::urlQueryArrayToString($get, "ordre")."&ordre=".$ordre_inverse."\">".$th."</a></th>";
 	}
 }
 
@@ -897,13 +900,13 @@ $pair = 0;
 while ($tab_even = $connector->fetchArray($req_evenement))
 {
 
-	$nomLieu = securise_string($tab_even['nomLieu']);
+	$nomLieu = sanitizeForHtml($tab_even['nomLieu']);
 
 	if ($tab_even['idLieu'] != 0)
 	{
 		$req_lieu = $connector->query("SELECT nom FROM lieu WHERE idLieu=".$tab_even['idLieu']);
 		$tabLieu = $connector->fetchArray($req_lieu);
-		$nomLieu = "<a href=\"".$url_site."lieu.php?idL=".$tab_even['idLieu']."\" title=\"Voir la fiche du lieu : ".securise_string($tabLieu['nom'])." \">".securise_string($tabLieu['nom'])."</a>";
+		$nomLieu = "<a href=\"".$url_site."lieu.php?idL=".$tab_even['idLieu']."\" title=\"Voir la fiche du lieu : ".sanitizeForHtml($tabLieu['nom'])." \">".sanitizeForHtml($tabLieu['nom'])."</a>";
 	}
 
 
@@ -916,7 +919,7 @@ while ($tab_even = $connector->fetchArray($req_evenement))
 		echo "<tr class=\"impair shiftcheckbox\" >";
 	}
 
-	echo "	<td><a href=\"".$url_site."evenement.php?idE=".$tab_even['idEvenement']."\" title=\"Voir la fiche de l'événement\" class='titre'>".securise_string($tab_even['titre'])."</a></td>	<td>".$nomLieu."</td>
+	echo "	<td><a href=\"".$url_site."evenement.php?idE=".$tab_even['idEvenement']."\" title=\"Voir la fiche de l'événement\" class='titre'>".sanitizeForHtml($tab_even['titre'])."</a></td>	<td>".$nomLieu."</td>
 	<td>".date_iso2app($tab_even['dateEvenement'])."</td>
 	<td>".ucfirst($glo_tab_genre[$tab_even['genre']])."</td>
 
@@ -1119,15 +1122,15 @@ echo $verif->getErreur("dejaPresent");
 <p>
 <?php
 $tab_nomLieu_label = array("for" => "nomLieu");
-echo form_label($tab_nomLieu_label, "Nom du lieu :");
+echo HtmlShrink::formLabel($tab_nomLieu_label, "Nom du lieu :");
 echo $verif->getErreur("nomLieuIdentique");
 
 $tab_nomLieu = array("type" => "text", "name" => "nomLieu", "id" => "nomLieu", "size" => "40", "maxlength" => "80", "tabindex" => "9", "value" => "",  "onfocus" => "this.className='focus';", "onblur" => "this.className='normal';");
 if (empty($champs['idLieu']))
 {
-	$tab_nomLieu['value'] = securise_string($champs['nomLieu']);
+	$tab_nomLieu['value'] = sanitizeForHtml($champs['nomLieu']);
 }
-echo form_input($tab_nomLieu);
+echo HtmlShrink::formInput($tab_nomLieu);
 echo $verif->getErreur("nomLieu");
 ?>
 </p>
@@ -1139,7 +1142,7 @@ echo $verif->getErreur("adresseIdentique");
 ?>
 
 <input type="text" name="adresse" id="adresse" size="60" maxlength="100" title="rue, no" tabindex="10" value="
-<?php if (empty($champs['idLieu'])) { echo securise_string($champs['adresse']); } ?>" onfocus="this.className='focus';" onblur="this.className='normal';" />
+<?php if (empty($champs['idLieu'])) { echo sanitizeForHtml($champs['adresse']); } ?>" onfocus="this.className='focus';" onblur="this.className='normal';" />
 <?php
 echo $verif->getHtmlErreur("adresse");
 echo $verif->getErreur("doublonLieux");
@@ -1245,7 +1248,7 @@ echo $verif->getHtmlErreur("localite_id");
 <p>
 <label for="urlLieu">URL</label>
 <input type="text" name="urlLieu" id="urlLieu" size="60" maxlength="80" title="url du lieu" tabindex="9" value="
-<?php if (empty($champs['idLieu'])) { echo securise_string($champs['urlLieu']); } ?>" onfocus="this.className='focus';" onblur="this.className='normal';" />
+<?php if (empty($champs['idLieu'])) { echo sanitizeForHtml($champs['urlLieu']); } ?>" onfocus="this.className='focus';" onblur="this.className='normal';" />
 <?php
 echo $verif->getErreur("urlLieu");
 ?>
@@ -1263,7 +1266,7 @@ echo $verif->getErreur("urlLieu");
 
 <p>
 <label for="titre">Titre</label>
-<input type="text" name="titre" id="titre" size="60" maxlength="80" title="titre de l'événement" tabindex="11" value="<?php echo securise_string($champs['titre']) ?>" />
+<input type="text" name="titre" id="titre" size="60" maxlength="80" title="titre de l'événement" tabindex="11" value="<?php echo sanitizeForHtml($champs['titre']) ?>" />
 <?php
 echo $verif->getErreur("titre");
 ?>
@@ -1273,10 +1276,10 @@ echo $verif->getErreur("titre");
 <p>
 <label for="description">Description </label>
 <textarea name="description" id="description" cols="50" rows="16" title="description de l'événement" tabindex="13">
-<?php echo securise_string($champs['description']) ?></textarea>
+<?php echo sanitizeForHtml($champs['description']) ?></textarea>
 <div class="guideForm">
 <?php
-echo lien_popup("includes/miniGuideWiki.inc.php", "Guide de mise en forme", 500, 300, "Guide de mise en forme");
+echo HtmlShrink::popupLink("includes/miniGuideWiki.inc.php", "Guide de mise en forme", 500, 300, "Guide de mise en forme");
 ?>
 </div>
 <?php //include $rep_includes.'miniGuideWiki.inc.php'; ?>
@@ -1288,7 +1291,7 @@ echo $verif->getHtmlErreur('description');
 <p>
 <label for="ref">Références</label>
 <input type="text" name="ref" id="ref" size="60" maxlength="100" title="Organisateur, site web de l'Ã©vÃ©nement, contact..." tabindex="14" value="
-<?php echo securise_string($champs['ref']); ?>" />
+<?php echo sanitizeForHtml($champs['ref']); ?>" />
 </p>
 <div class="guideChamp">Indiquez ici les sites web de l'événement ou des organisateurs.</div>
 
@@ -1333,12 +1336,12 @@ echo $verif->getHtmlErreur('description');
 <legend>Horaire*</legend>
 <p>
 <label for="horaire_debut">Début :</label>
-<input type="text" name="horaire_debut" id="horaire_debut" size="6" maxlength="100" title="début" tabindex="16" value="<?php echo securise_string($champs['horaire_debut']) ?>"  placeholder="hh:mm" />
+<input type="text" name="horaire_debut" id="horaire_debut" size="6" maxlength="100" title="début" tabindex="16" value="<?php echo sanitizeForHtml($champs['horaire_debut']) ?>"  placeholder="hh:mm" />
 <?php
 echo $verif->getHtmlErreur('horaire_debut');
 ?>
 <label for="horaire_fin" class="continu">Fin :</label>
-<input type="text" name="horaire_fin" id="horaire_fin" size="6" maxlength="100" title="fin" tabindex="16" value="<?php echo securise_string($champs['horaire_fin']) ?>" placeholder="hh:mm" />
+<input type="text" name="horaire_fin" id="horaire_fin" size="6" maxlength="100" title="fin" tabindex="16" value="<?php echo sanitizeForHtml($champs['horaire_fin']) ?>" placeholder="hh:mm" />
 <?php
 echo $verif->getHtmlErreur('horaire_fin');
 ?>
@@ -1346,7 +1349,7 @@ echo $verif->getHtmlErreur('horaire_fin');
 
 <p>
 <label for="horaire_complement">Complément :</label>
-<input type="text" name="horaire_complement" id="horaire_complement" size="60" maxlength="100" title="PrÃ©cisions" tabindex="17" value="<?php echo securise_string($champs['horaire_complement']) ?>" />
+<input type="text" name="horaire_complement" id="horaire_complement" size="60" maxlength="100" title="PrÃ©cisions" tabindex="17" value="<?php echo sanitizeForHtml($champs['horaire_complement']) ?>" />
 <?php
 echo $verif->getHtmlErreur('horaire_complement');
 ?>
@@ -1361,7 +1364,7 @@ echo $verif->getHtmlErreur('horaire_complement');
 <legend>Entrée</legend>
 <p>
 <label for="prix">Prix :</label>
-<input type="text" name="prix" id="prix" size="60" title="Tarifs d'entrÃ©e" tabindex="17" value="<?php echo securise_string($champs['prix']) ?>" />
+<input type="text" name="prix" id="prix" size="60" title="Tarifs d'entrÃ©e" tabindex="17" value="<?php echo sanitizeForHtml($champs['prix']) ?>" />
 <?php
 echo $verif->getHtmlErreur('prix');
 ?>
@@ -1369,7 +1372,7 @@ echo $verif->getHtmlErreur('prix');
 </p>
 <p>
 <label for="prelocations" class="continu">Prélocs :</label>
-<input type="text" name="prelocations" id="prelocations" size="60" maxlength="100" title="OÃ¹ acheter les billets" tabindex="18" value="<?php echo securise_string($champs['prelocations']) ?>" />
+<input type="text" name="prelocations" id="prelocations" size="60" maxlength="100" title="OÃ¹ acheter les billets" tabindex="18" value="<?php echo sanitizeForHtml($champs['prelocations']) ?>" />
 
 <?php
 echo $verif->getHtmlErreur('prelocations');
@@ -1400,8 +1403,8 @@ if (isset($get_idE) && !empty($champs['flyer']) && !$verif->getErreur($champs['f
 {
 	echo '<div class="supImg">';
 	$imgInfo = getimagesize($rep_images_even.$champs['flyer']);
-	$iconeImage = '<img src="'.$IMGeven."s_".$champs['flyer'].'" alt="image pour '.securise_string($champs['titre']).'" />';
-	echo lien_popup($IMGeven.$tab_even['flyer'], "Flyer", $imgInfo[0]+20, $imgInfo[1]+20, $iconeImage);
+	$iconeImage = '<img src="'.$IMGeven."s_".$champs['flyer'].'" alt="image pour '.sanitizeForHtml($champs['titre']).'" />';
+	echo HtmlShrink::popupLink($IMGeven.$tab_even['flyer'], "Flyer", $imgInfo[0]+20, $imgInfo[1]+20, $iconeImage);
 	?>
 
 	<div><label for="sup_flyer" class="continu">Supprimer</label>
@@ -1430,8 +1433,8 @@ echo $verif->getErreur("image");
 if (isset($get_idE) && !empty($champs['image']) && !$verif->getErreur('image'))
 {
 	$imgInfo = getimagesize($rep_images_even.$champs['image']);
-	$iconeImage = "<img src=\"".$IMGeven."s_".$champs['image']."\"  alt=\"image pour ".securise_string($champs['titre'])."\" />";
-	echo lien_popup($IMGeven.$tab_even['image'], "image", $imgInfo[0]+20, $imgInfo[1]+20, $iconeImage);
+	$iconeImage = "<img src=\"".$IMGeven."s_".$champs['image']."\"  alt=\"image pour ".sanitizeForHtml($champs['titre'])."\" />";
+	echo HtmlShrink::popupLink($IMGeven.$tab_even['image'], "image", $imgInfo[0]+20, $imgInfo[1]+20, $iconeImage);
 	echo "<div><label for=\"sup_image\" class=\"continu\">Supprimer</label><input type=\"checkbox\" name=\"sup_image\" id=\"sup_image\" value=\"image\" class=\"checkbox\" ";
 
 	if (!empty($supprimer['image']) && $verif->nbErreurs() == 0)

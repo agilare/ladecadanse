@@ -25,6 +25,7 @@ use Ladecadanse\Sentry;
 use Ladecadanse\Validateur;
 use Ladecadanse\SecurityToken;
 use Ladecadanse\Logger;
+use Ladecadanse\HtmlShrink;
 
 $videur = new Sentry();
 
@@ -47,21 +48,21 @@ $get['action'] = "ajouter";
 if (isset($_GET['idP']))
 {
 
-	$get['idP'] = verif_get($_GET['idP'], "int", 1);
+	$get['idP'] = Validateur::validateUrlQueryValue($_GET['idP'], "int", 1);
 }
 
 if (isset($_GET['action']))
 {
-	$get['action'] = verif_get($_GET['action'], "enum", 1, $actions);
+	$get['action'] = Validateur::validateUrlQueryValue($_GET['action'], "enum", 1, $actions);
 
 	if (($_GET['action'] == "ajouter" || $_GET['action'] == 'insert') && $_SESSION['Sgroupe'] > 1)
 	{
-		msgErreur("Vous n'avez pas le droit d'ajouter une personne");
+		HtmlShrink::msgErreur("Vous n'avez pas le droit d'ajouter une personne");
 		exit;
 	}
 	elseif (($get['action'] == "update" || $get['action'] == "editer") && $_SESSION['SidPersonne'] != $get['idP'] && $_SESSION['Sgroupe'] > 1)
 	{
-		msgErreur("Vous n'avez pas le droit de modifier cette personne");
+		HtmlShrink::msgErreur("Vous n'avez pas le droit de modifier cette personne");
 		exit;
 	}
 
@@ -323,7 +324,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 			*/
 			if ($req_insert)
 			{
-				msgOk("Personne <em>".$champs['pseudo']."</em> ajoutée dans le groupe ".$champs['groupe']);
+				HtmlShrink::msgOk("Personne <em>".$champs['pseudo']."</em> ajoutée dans le groupe ".$champs['groupe']);
 				foreach ($champs as $k => $v)
 				{
 					$champs[$k] = '';
@@ -333,7 +334,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 			}
 			else
 			{
-				msgErreur("La requête INSERT dans 'personne' a échoué");
+				HtmlShrink::msgErreur("La requête INSERT dans 'personne' a échoué");
 			}
 		}
 		elseif ($get['action'] == 'update')
@@ -373,7 +374,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 
 				if (!$connector->query($aff))
 				{
-					msgErreur("La requête INSERT ou UPDATE dans 'affiliation' a échoué");
+					HtmlShrink::msgErreur("La requête INSERT ou UPDATE dans 'affiliation' a échoué");
 				}
 
 			//si la nouvelle affiliation n'est pas un lieu elle ira dans la table 'personne',
@@ -415,13 +416,13 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 						$_SESSION["Saffiliation_lieu"] = $champs['lieu'];
 					}
 
-					msgOk("Votre profil a été modifié");
+					HtmlShrink::msgOk("Votre profil a été modifié");
                     $logger->log('global', 'activity', "[ajouterPersonne] user ".$_SESSION["user"]. " updated his profile", Logger::GRAN_YEAR);
 					$action_terminee = true;
 				}
 				else
 				{
-					msgOk("Le profil de <em>".$champs['pseudo']."</em> a été modifié");
+					HtmlShrink::msgOk("Le profil de <em>".$champs['pseudo']."</em> a été modifié");
 				}
 				
 				$sqld = "DELETE FROM personne_organisateur WHERE idPersonne=".$get['idP'];	
@@ -430,7 +431,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 			}
 			else
 			{
-				msgErreur("La requête UPDATE dans 'personne' a échoué");
+				HtmlShrink::msgErreur("La requête UPDATE dans 'personne' a échoué");
 			}
 		} //if action
 
@@ -469,7 +470,7 @@ if ($get['action'] == 'editer' && isset($get['idP']))
 	}
 	else
 	{
-		msgErreur("La personne ".$get['idP']." n'existe pas");
+		HtmlShrink::msgErreur("La personne ".$get['idP']." n'existe pas");
 		exit;
 	}
 
@@ -504,7 +505,7 @@ echo '<div class="spacer"></div></div>';
 
 if ($verif->nbErreurs() > 0)
 {
-	msgErreur("Il y a ".$verif->nbErreurs()." erreur(s).");
+	HtmlShrink::msgErreur("Il y a ".$verif->nbErreurs()." erreur(s).");
 }
 ?>
 

@@ -15,6 +15,7 @@ if (is_file("config/reglages.php"))
 use Ladecadanse\Sentry;
 use Ladecadanse\Validateur;
 use Ladecadanse\Logger;
+use Ladecadanse\HtmlShrink;
 
 $videur = new Sentry();
 
@@ -158,14 +159,14 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' && empty($_POST
 				echo("<p>Erreur : " . $mail->getMessage() . "</p>");
 			}
 
-			msgOk("Un email a été envoyé à ".$email_envoi." qui contient un lien vous permettant de modifier votre mot de passe.");	
+			HtmlShrink::msgOk("Un email a été envoyé à ".$email_envoi." qui contient un lien vous permettant de modifier votre mot de passe.");	
 
             $logger->log('global', 'activity', "[motdepasse_demande] request by ".$to." ".$url_site."personne.php?idP=".$idPersonne, Logger::GRAN_YEAR);
 		}
 		else
 		{
             $logger->log('global', 'activity', "[motdepasse_demande] request failed for pseudo/email ".$champs['pseudo_email'], Logger::GRAN_YEAR);
-			msgErreur("L'email/identifiant que vous avez saisi pour votre demande n'est pas enregistré sur La décadanse");				
+			HtmlShrink::msgErreur("L'email/identifiant que vous avez saisi pour votre demande n'est pas enregistré sur La décadanse");				
 		}
 
 
@@ -189,7 +190,7 @@ if (!$termine)
 
 if ($verif->nbErreurs() > 0)
 {
-	msgErreur("Il y a ".$verif->nbErreurs()." erreur(s)");
+	HtmlShrink::msgErreur("Il y a ".$verif->nbErreurs()." erreur(s)");
 }
 
 ?>

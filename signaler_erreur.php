@@ -16,6 +16,7 @@ if (is_file("config/reglages.php"))
 
 use Ladecadanse\Sentry;
 use Ladecadanse\Validateur;
+use Ladecadanse\HtmlShrink;
 
 $videur = new Sentry();
 
@@ -29,11 +30,11 @@ include("_header.inc.php");
 
 if (isset($_GET['idE']))
 {
-	$get['idE'] = verif_get($_GET['idE'], "int", 1);
+	$get['idE'] = Validateur::validateUrlQueryValue($_GET['idE'], "int", 1);
 }
 else
 {
-	msgErreur("idE obligatoire");
+	HtmlShrink::msgErreur("idE obligatoire");
 	exit;
 }
 
@@ -149,12 +150,12 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
         if ((new PEAR)->isError($mail))
 		{
 			echo("<p>" . $mail->getMessage() . "</p>");
-			msgErreur('L\'envoi a echoué, veuillez réessayer ou alors utilisez le formulaire de contact');
+			HtmlShrink::msgErreur('L\'envoi a echoué, veuillez réessayer ou alors utilisez le formulaire de contact');
         }
 		else
 		{
 			
-				msgOk('Erreur envoyée au webmaster. Merci de l\'avoir signalée');
+				HtmlShrink::msgOk('Erreur envoyée au webmaster. Merci de l\'avoir signalée');
                 $logger->log('global', 'activity', "[signaler_erreur] by ".$from." for ".$url_site."evenement.php?idE=".$champs['idEvenement'], Logger::GRAN_YEAR);
               
                 
@@ -172,7 +173,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 	} // if antispam
 	else
 	{
-		msgErreur("Ne seriez-vous pas un robot ? Veuillez réessayer");
+		HtmlShrink::msgErreur("Ne seriez-vous pas un robot ? Veuillez réessayer");
 	}
 
 } // if POST != ""
@@ -209,7 +210,7 @@ if (isset($get['idE']))
 	}
 	else
 	{
-		msgErreur("Aucun événement n'est associé à ".$get['idE']);
+		HtmlShrink::msgErreur("Aucun événement n'est associé à ".$get['idE']);
 		exit;
 	} // if fetchArray
 
@@ -220,7 +221,7 @@ if (isset($get['idE']))
 
 if ($verif->nbErreurs() > 0)
 {
-	msgErreur("Il y a ".$verif->nbErreurs()." erreur(s).");
+	HtmlShrink::msgErreur("Il y a ".$verif->nbErreurs()." erreur(s).");
 	//print_r($verif->getErreurs());
 }
 ?>
@@ -256,7 +257,7 @@ echo $verif->getHtmlErreur("type_erreur");
 <p>
 <label for="message">Description de l’erreur*</label>
 <textarea name="message" id="message" cols="35" rows="8" title="">
-<?php echo securise_string($champs['message']) ?>
+<?php echo sanitizeForHtml($champs['message']) ?>
 </textarea>
 <?php echo $verif->getHtmlErreur("message"); ?>
 </p>
@@ -268,7 +269,7 @@ if (!isset($_SESSION['user']))
 ?>                                                    
     <p>
     <label for="email" id="label_email">Votre e-mail</label>
-    <input name="email" id="email" type="text" size="40" value="<?php echo securise_string($champs['email']) ?>"  />
+    <input name="email" id="email" type="text" size="40" value="<?php echo sanitizeForHtml($champs['email']) ?>"  />
     <?php echo $verif->getErreur("email"); ?>
     </p>
 <?php

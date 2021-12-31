@@ -307,6 +307,9 @@ $glo_auj_6h = date("Y-m-d", time() - 14400);
 
 use Ladecadanse\DbConnector;
 use Ladecadanse\Logger;
+use Ladecadanse\Authorization;
+
+$authorization = new Authorization();
 
 if (ENV == 'prod') {
     include_once "Mail.php";  
@@ -377,3 +380,13 @@ if ($_SESSION['region'] != 'ge')
 $logger = new Logger($rep_absolu."logs/");
 
 $recaptcha_url = 'https://www.google.com/recaptcha/api/siteverify';
+
+/**
+ * FIXME: mv to String class
+ * @param string $chaine
+ * @return string
+ */
+function sanitizeForHtml(string $chaine): string
+{
+    return trim(htmlspecialchars($chaine));
+}

@@ -18,6 +18,7 @@ use Ladecadanse\Sentry;
 use Ladecadanse\Validateur;
 use Ladecadanse\SecurityToken;
 use Ladecadanse\Logger;
+use Ladecadanse\HtmlShrink;
 
 $videur = new Sentry();
 
@@ -42,13 +43,13 @@ $tab_actions = array("ajouter", "insert", "editer", "update");
 $get['action'] = "ajouter";
 if (isset($_GET['action']))
 {
-	$get['action'] = verif_get($_GET['action'], "enum", 0, $tab_actions);
+	$get['action'] = Validateur::validateUrlQueryValue($_GET['action'], "enum", 0, $tab_actions);
 }
 
 $tab_types = array("description", "presentation");
 if (isset($_GET['type']))
 {
-	$get['type'] = verif_get($_GET['type'], "enum", 0, $tab_types);
+	$get['type'] = Validateur::validateUrlQueryValue($_GET['type'], "enum", 0, $tab_types);
 }
 else
 {
@@ -77,20 +78,20 @@ elseif (isset($_SESSION['SidPersonne']))
 
 if ($get['type'] == 'description' && $_SESSION['Sgroupe'] > 6)
 {
-	msgErreur("Vous n'avez pas les droits pour ajouter/éditer cette description");
+	HtmlShrink::msgErreur("Vous n'avez pas les droits pour ajouter/éditer cette description");
 	exit;
 
 }
 else if ($get['type'] == 'presentation' && $_SESSION['Sgroupe'] > 8)
 {
-	msgErreur("Vous n'avez pas les droits pour ajouter/éditer cette présentation");
+	HtmlShrink::msgErreur("Vous n'avez pas les droits pour ajouter/éditer cette présentation");
 	exit;
 
 }
 
-if ($get['type'] == 'presentation' && $_SESSION['Sgroupe'] == 8 && ($get['idL'] && !(est_organisateur_lieu($_SESSION['SidPersonne'], $get['idL']) || est_affilie_lieu($_SESSION['SidPersonne'], $get['idL'])))) 
+if ($get['type'] == 'presentation' && $_SESSION['Sgroupe'] == 8 && ($get['idL'] && !($authorization->isPersonneInLieuByOrganisateur($_SESSION['SidPersonne'], $get['idL']) || $authorization->isPersonneAffiliatedWithLieu($_SESSION['SidPersonne'], $get['idL'])))) 
 {
-	msgErreur("Vous n'avez pas les droits pour ajouter/éditer cette présentation");
+	HtmlShrink::msgErreur("Vous n'avez pas les droits pour ajouter/éditer cette présentation");
 	exit;
 }
 
@@ -142,7 +143,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 	{
 		if ($connector->getNumRows($connector->query("SELECT * FROM descriptionlieu WHERE idPersonne=".$_SESSION['SidPersonne']." AND idLieu=".$connector->sanitize($champs['idLieu'])." > 0 AND type='".$get['type']."'") ))
 		{
-			$verif->setErreur('doublon', "Vous avez déjà écrit une <a href=\"".basename(__FILE__)."?action=editer&idL=".securise_string($champs['idLieu'])."&idP=".$_SESSION['SidPersonne']."\"  title=\"Voir la description de ".$_SESSION['user']."\">description</a> pour ce lieu");
+			$verif->setErreur('doublon', "Vous avez déjà écrit une <a href=\"".basename(__FILE__)."?action=editer&idL=".sanitizeForHtml($champs['idLieu'])."&idP=".$_SESSION['SidPersonne']."\"  title=\"Voir la description de ".$_SESSION['user']."\">description</a> pour ce lieu");
 
 		}
 		else if ($get['type'] == 'presentation' && $connector->getNumRows($connector->query("SELECT * FROM descriptionlieu WHERE idLieu=".$connector->sanitize($champs['idLieu'])." > 0 AND type='presentation'") ))
@@ -195,7 +196,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 			}
 			else
 			{
-				msgErreur("La requête INSERT dans descriptionlieu a échoué");
+				HtmlShrink::msgErreur("La requête INSERT dans descriptionlieu a échoué");
 			}
 		}
 		elseif ($get['action'] == 'update')
@@ -224,7 +225,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 			}
 			else
 			{
-				msgErreur("La requête UPDATE a échoué");
+				HtmlShrink::msgErreur("La requête UPDATE a échoué");
 			}
 
 		} //if action
@@ -263,7 +264,7 @@ if ($get['action'] == 'editer' || $get['action'] == 'update')
  	$detailsLieu = $connector->fetchArray($req_lieu);
 
 	echo '
-	<h2>Modifier la '.$get['type'].' sur <a href="'.$url_site.'lieu.php?idL='.$get['idL'].'" title="Fiche du lieu '.securise_string($detailsLieu['nom']).'">'.securise_string($detailsLieu['nom']).'</a></h2>';
+	<h2>Modifier la '.$get['type'].' sur <a href="'.$url_site.'lieu.php?idL='.$get['idL'].'" title="Fiche du lieu '.sanitizeForHtml($detailsLieu['nom']).'">'.sanitizeForHtml($detailsLieu['nom']).'</a></h2>';
 
 
 }
@@ -310,7 +311,7 @@ echo '<div class="spacer"></div></div>';
 
 if ($verif->nbErreurs() > 0)
 {
-	msgErreur("Il y a ".$verif->nbErreurs()." erreur(s).");
+	HtmlShrink::msgErreur("Il y a ".$verif->nbErreurs()." erreur(s).");
 	//print_r($verif->getErreurs());
 }
 ?>

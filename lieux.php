@@ -6,6 +6,8 @@ if (is_file("config/reglages.php"))
 
 use Ladecadanse\Sentry;
 use Ladecadanse\CollectionDescription;
+use Ladecadanse\HtmlShrink;
+use Ladecadanse\Validateur;
 
 $videur = new Sentry();
 
@@ -33,7 +35,7 @@ include("_header.inc.php");
 $get['idL'] = "";
 if (isset($_GET['idL']))
 {
-	$get['idL'] = verif_get($_GET['idL'], "int", 0);
+	$get['idL'] = Validateur::validateUrlQueryValue($_GET['idL'], "int", 0);
 }
 
 $fiches = new CollectionDescription();
@@ -143,7 +145,7 @@ $map_style = 'style="width:94%;margin:0 auto;height:500px;border:1px solid #555;
 <div id="contenu" class="colonne">
     
     <div id="entete_contenu">
-        <h2 style="font-size:1.6em; width: 15%;">Lieux</h2> <?php if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 6) { ?><a href="ajouterLieu.php?action=ajouter" style="float: left;padding: 5px 1px;"><img src="web/interface/icons/building_add.png" alt=""  /> Ajouter un lieu</a><?php } ?><?php getMenuRegions($glo_regions, $get); ?>
+        <h2 style="font-size:1.6em; width: 15%;">Lieux</h2> <?php if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 6) { ?><a href="ajouterLieu.php?action=ajouter" style="float: left;padding: 5px 1px;"><img src="web/interface/icons/building_add.png" alt=""  /> Ajouter un lieu</a><?php } ?><?php HtmlShrink::getMenuRegions($glo_regions, $get); ?>
         <div class="spacer"></div>
         <p class="mobile" id="btn_listelieux">
             <button href="#"><i class="fa fa-list fa-lg"></i>&nbsp;Liste des lieux</button>
@@ -177,7 +179,7 @@ $map_style = 'style="width:94%;margin:0 auto;height:500px;border:1px solid #555;
 		
 		<p><?php 
                 
-                echo htmlspecialchars(get_adresse( '', $tab_lieux_recents['localite'], $tab_lieux_recents['quartier'], $tab_lieux_recents['adresse'])); ?></p>
+                echo htmlspecialchars(HtmlShrink::getAdressFitted( '', $tab_lieux_recents['localite'], $tab_lieux_recents['quartier'], $tab_lieux_recents['adresse'])); ?></p>
 		<?php
 		}
 	}

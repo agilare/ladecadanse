@@ -9,13 +9,15 @@ use Ladecadanse\Organisateur;
 use Ladecadanse\CollectionOrganisateur;
 use Ladecadanse\Evenement;
 use Ladecadanse\CollectionEvenement;
-
+use Ladecadanse\Validateur;
+use Ladecadanse\Text;
+use Ladecadanse\HtmlShrink;
 
 $videur = new Sentry();
 
 if (isset($_GET['idO']))
 {
-	$get['idO'] = verif_get($_GET['idO'], "int", 1);
+	$get['idO'] = Validateur::validateUrlQueryValue($_GET['idO'], "int", 1);
 }
 else
 {
@@ -27,7 +29,7 @@ $tab_genre_even = array("fête", "cinéma", "théâtre", "expos", "divers", "tou
 $get['genre_even'] = "tous";
 if (isset($_GET['genre_even']))
 {
-	$get['genre_even'] = verif_get($_GET['genre_even'], "enum", 0, $tab_genre_even);
+	$get['genre_even'] = Validateur::validateUrlQueryValue($_GET['genre_even'], "enum", 0, $tab_genre_even);
 }
 
 
@@ -51,14 +53,14 @@ include("_menuorganisateurs.inc.php");
 
 $action_ajouter = '';
 if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 10)
-|| isset($_SESSION['SidPersonne']) && est_membre_organisateur($_SESSION['SidPersonne'], $get['idO']))
+|| isset($_SESSION['SidPersonne']) && $authorization->isPersonneInOrganisateur($_SESSION['SidPersonne'], $get['idO']))
 {
 	$action_ajouter = '<li class="action_ajouter"><a href="'.$url_site.'ajouterEvenement.php?idO='.$get['idO'].'" title="ajouter un événement à ce lieu">Ajouter un événement de cet organisateur</a></li>';
 }
 
 $action_editer = '';
 if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 6
-|| (isset($_SESSION['SidPersonne']) && est_membre_organisateur($_SESSION['SidPersonne'], $get['idO']) && $_SESSION['Sgroupe'] <= 8))
+|| (isset($_SESSION['SidPersonne']) && $authorization->isPersonneInOrganisateur($_SESSION['SidPersonne'], $get['idO']) && $_SESSION['Sgroupe'] <= 8))
 )
 {
 	$action_editer = '<li class="action_editer"><a href="'.$url_site.'ajouterOrganisateur.php?action=editer&amp;idO='.$get['idO'].'" title="Éditer cet organisateur">Modifier cet organisateur</a></li>';
@@ -85,7 +87,7 @@ if ($url_suiv != "")
     <?php
     if (!empty($_SESSION['organisateur_flash_msg']))
     {
-        msgOk($_SESSION['organisateur_flash_msg']);
+        HtmlShrink::msgOk($_SESSION['organisateur_flash_msg']);
         unset($_SESSION['organisateur_flash_msg']);
     }
     ?>   	
@@ -190,8 +192,8 @@ if ($url_suiv != "")
 		{	
 			if (isset($_SESSION['SidPersonne']) && 
 			(
-			estAuteur($_SESSION['SidPersonne'], $get['idO'], "organisateur")
-			|| est_membre_organisateur($_SESSION['SidPersonne'], $get['idO'])
+			$authorization->estAuteur($_SESSION['SidPersonne'], $get['idO'], "organisateur")
+			|| $authorization->isPersonneInOrganisateur($_SESSION['SidPersonne'], $get['idO'])
 			)
 			)
 			{	
@@ -338,17 +340,17 @@ if ($evenements->getNbElements() > 0)
 		$presentation = '';
 		if ($even->getValue('description') != '')
 		{	
-			$maxChar = trouveMaxChar($even->getValue('description'), 50, 2);
+			$maxChar = Text::trouveMaxChar($even->getValue('description'), 50, 2);
 			
 			if (mb_strlen($even->getValue('description')) > $maxChar)
 			{
 				//$continuer = "<span class=\"continuer\"><a href=\"".$url_site."evenement.php?idE=".$even->getValue('idEvenement')."\" title=\"Voir la fiche complète de l'événement\"> Lire la suite</a></span>";
-				$presentation = texteHtmlReduit(textToHtml(htmlspecialchars($even->getValue('description'))), $maxChar);
+				$presentation = Text::texteHtmlReduit(Text::wikiToHtml(htmlspecialchars($even->getValue('description'))), $maxChar);
 						
 			}
 			else
 			{
-				$presentation = textToHtml(htmlspecialchars($even->getValue('description')));
+				$presentation = Text::wikiToHtml(htmlspecialchars($even->getValue('description')));
 			}
 		}
 		if ($nbMois == 0)
@@ -432,7 +434,7 @@ if ($evenements->getNbElements() > 0)
 		<td>
             <h3>
             <?php
-            $titre_url = '<a href="'.$url_site.'evenement.php?idE='.$even->getValue('idEvenement').'" title="Voir la fiche de l\'événement">'.titre_selon_statut(securise_string($even->getValue('titre')), $even->getValue('statut')).'</a>';
+            $titre_url = '<a href="'.$url_site.'evenement.php?idE='.$even->getValue('idEvenement').'" title="Voir la fiche de l\'événement">'.Evenement::titre_selon_statut(sanitizeForHtml($even->getValue('titre')), $even->getValue('statut')).'</a>';
             echo $titre_url; ?>
             </h3>
             <p class="description"><?php echo $presentation; ?></p>
@@ -450,9 +452,9 @@ if ($evenements->getNbElements() > 0)
             || $_SESSION['SidPersonne'] == $even->getValue('idPersonne'))
             )
             ||  (isset($_SESSION['Saffiliation_lieu']) && !empty($get['idL']) && $get['idL'] == $_SESSION['Saffiliation_lieu'])
-            ||  (isset($_SESSION['SidPersonne']) && est_membre_organisateur($_SESSION['SidPersonne'], $get['idO']))
-            || (isset($_SESSION['SidPersonne']) && est_organisateur_evenement($_SESSION['SidPersonne'], $id))
-            || (isset($_SESSION['SidPersonne']) && $even->getValue('idLieu') != 0 && est_organisateur_lieu($_SESSION['SidPersonne'], $even->getValue('idLieu')))		
+            ||  (isset($_SESSION['SidPersonne']) && $authorization->isPersonneInOrganisateur($_SESSION['SidPersonne'], $get['idO']))
+            || (isset($_SESSION['SidPersonne']) && $authorization->isPersonneInEvenementByOrganisateur($_SESSION['SidPersonne'], $id))
+            || (isset($_SESSION['SidPersonne']) && $even->getValue('idLieu') != 0 && $authorization->isPersonneInLieuByOrganisateur($_SESSION['SidPersonne'], $even->getValue('idLieu')))		
             )
             {
             ?>

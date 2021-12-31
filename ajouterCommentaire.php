@@ -16,6 +16,7 @@ if (is_file("config/reglages.php"))
 
 use Ladecadanse\Sentry;
 use Ladecadanse\Validateur;
+use Ladecadanse\HtmlShrink;
 
 $videur = new Sentry();
 
@@ -27,7 +28,7 @@ if (!$videur->checkGroup(12))
 
 if (isset($_GET['id']))
 {
-	$get['id'] = verif_get($_GET['id'], "int", 1);
+	$get['id'] = Validateur::validateUrlQueryValue($_GET['id'], "int", 1);
 }
 
 $tab_elements = array("evenement", "lieu");
@@ -35,11 +36,11 @@ $get['element'] = "";
 
 if (isset($_GET['element']))
 {
-	$get['element'] = verif_get($_GET['element'], "enum", 0, $tab_elements);
+	$get['element'] = Validateur::validateUrlQueryValue($_GET['element'], "enum", 0, $tab_elements);
 }
 else if ($get['action'] == 'ajouter' || $get['action'] == 'insert')
 {
-	msgErreur("element requis");
+	HtmlShrink::msgErreur("element requis");
 	exit;
 }
 
@@ -77,15 +78,15 @@ include("_header.inc.php");
 } */
 $tab_actions = array("ajouter", "insert", "update", "editer");
 $get['action'] = "";
-$get['action'] = verif_get($_GET['action'], "enum", 0, $tab_actions);
+$get['action'] = Validateur::validateUrlQueryValue($_GET['action'], "enum", 0, $tab_actions);
 
 
 
 if (isset($_GET['idC']))
 {
-	if (!verif_get($_GET['idC'], "int", 1))
+	if (!Validateur::validateUrlQueryValue($_GET['idC'], "int", 1))
 	{
-		msgErreur("Un commentaire doit être désigné par un entier");
+		HtmlShrink::msgErreur("Un commentaire doit être désigné par un entier");
 		exit;
 	}
 	else
@@ -93,7 +94,7 @@ if (isset($_GET['idC']))
 
 		if ($connector->getNumRows($connector->query("SELECT idCommentaire FROM commentaire WHERE idCommentaire=".$_GET['idC'])) < 1)
 		{
-				msgErreur("Ce commentaire n'existe pas");
+				HtmlShrink::msgErreur("Ce commentaire n'existe pas");
 				exit;
 		}
 
@@ -104,14 +105,14 @@ if (isset($_GET['idC']))
 }
 else if ($get['action'] == 'editer' || $get['action'] == 'update')
 {
-	msgErreur("idC requis");
+	HtmlShrink::msgErreur("idC requis");
 	exit;
 }
 
 
 if (isset($_GET['idP']))
 {
-	$get['idP'] = verif_get($_GET['idP'], "int", 1);
+	$get['idP'] = Validateur::validateUrlQueryValue($_GET['idP'], "int", 1);
 }
 elseif (isset($_SESSION['SidPersonne']))
 {
@@ -120,7 +121,7 @@ elseif (isset($_SESSION['SidPersonne']))
 
 if (isset($_GET['id']))
 {
-	$get['id'] = verif_get($_GET['id'], "int", 1);
+	$get['id'] = Validateur::validateUrlQueryValue($_GET['id'], "int", 1);
 }
 
 $tab_elements = array("evenement", "lieu");
@@ -128,11 +129,11 @@ $get['element'] = "";
 
 if (isset($_GET['element']))
 {
-	$get['element'] = verif_get($_GET['element'], "enum", 0, $tab_elements);
+	$get['element'] = Validateur::validateUrlQueryValue($_GET['element'], "enum", 0, $tab_elements);
 }
 else if ($get['action'] == 'ajouter' || $get['action'] == 'insert')
 {
-	msgErreur("element requis");
+	HtmlShrink::msgErreur("element requis");
 	exit;
 }
 
@@ -154,7 +155,7 @@ if ($get['action'] != "ajouter" && $get['action'] != "insert")
 {
 	if ($_SESSION['SidPersonne'] != $get['idP'] && $_SESSION['Sgroupe'] > 4)
 	{
-		msgErreur("Vous n'avez pas les droits pour éditer cette commentaire");
+		HtmlShrink::msgErreur("Vous n'avez pas les droits pour éditer cette commentaire");
 		exit;
 	}
 }
@@ -261,11 +262,11 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 
 				if ($get['element'] == 'evenement')
 				{
-					msgOk("Commentaire de <a href=\"".$url_site."evenement.php?idE=".$get['id']."\" title=\"Voir la fiche de l'événement\">".$iconeVoirFiche."l'événement</a> ajouté");
+					HtmlShrink::msgOk("Commentaire de <a href=\"".$url_site."evenement.php?idE=".$get['id']."\" title=\"Voir la fiche de l'événement\">".$iconeVoirFiche."l'événement</a> ajouté");
 				}
 				else
 				{
-					msgOk("Commentaire du  <a href=\"".$url_site."lieu.php?idL=".$get['id']."&amp;complement=commentaires#menu_complement\" title=\"Voir la fiche du lieu\">".$iconeVoirFiche."lieu</a> ajouté");
+					HtmlShrink::msgOk("Commentaire du  <a href=\"".$url_site."lieu.php?idL=".$get['id']."&amp;complement=commentaires#menu_complement\" title=\"Voir la fiche du lieu\">".$iconeVoirFiche."lieu</a> ajouté");
 				}
 
 				/*
@@ -288,7 +289,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 			}
 			else
 			{
-				msgErreur("La requête INSERT dans commentairelieu a échoué");
+				HtmlShrink::msgErreur("La requête INSERT dans commentairelieu a échoué");
 			}
 
 		/*
@@ -306,7 +307,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 			if ($req_update)
 			{
 
-				msgOk("Commentaire modifié");
+				HtmlShrink::msgOk("Commentaire modifié");
 
 				/*
 				 * Suppression des caches
@@ -329,7 +330,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 			}
 			else
 			{
-				msgErreur("La requête UPDATE a échoué");
+				HtmlShrink::msgErreur("La requête UPDATE a échoué");
 			}
 
 		} //if action
@@ -403,7 +404,7 @@ echo '</div>';
 
 if ($verif->nbErreurs() > 0)
 {
-	msgErreur("Il y a ".$verif->nbErreurs()." erreur(s).");
+	HtmlShrink::msgErreur("Il y a ".$verif->nbErreurs()." erreur(s).");
 	//print_r($verif->getErreurs());
 }
 ?>
@@ -420,7 +421,7 @@ if ($verif->nbErreurs() > 0)
 	<?php
 	$id_textarea = "commentaire";
 	?>
-	<textarea name="contenu" id="commentaire" title="écrivez ici votre commentaire" cols="50" rows="8"><?php echo securise_string($champs['contenu']) ?></textarea>
+	<textarea name="contenu" id="commentaire" title="écrivez ici votre commentaire" cols="50" rows="8"><?php echo sanitizeForHtml($champs['contenu']) ?></textarea>
 	<?php
 	echo $verif->getErreur('contenu');
 	?>

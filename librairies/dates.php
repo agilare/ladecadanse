@@ -1,13 +1,15 @@
 <?php
 
-
-class Date 
+class Date
 {
+
     public static function toFr()
     {
         
     }
+
 }
+
 /**
  * Convertit une date au format MySQL au format franÃ§ais
  *
@@ -27,14 +29,14 @@ function date_fr($d, $format = "", $affMois = "", $jour_sem = "", $html = true)
 
     $hhmmss = "";
 
-//si l'heure est présente et que le choix est la date complÃ¨te ou seulement l'heure
+    // si l'heure est présente et que le choix est la date complÃ¨te ou seulement l'heure
     if (isset($temps[1]) && ($format == "tout" || $format == "heure"))
     {
         $hhmmss = explode(":", $temps[1]);
         $hhmmss = " " . $hhmmss[0] . "h" . $hhmmss[1];
     }
 
-//si c'est "tout" ou "annee"
+    // si c'est "tout" ou "annee"
     if ($format != "heure")
     {
 
@@ -162,17 +164,17 @@ function date2nomJour($date)
 function date2sem($date)
 {
 
-//Jour de la semaine actuel
+    //Jour de la semaine actuel
     $jourSem = date("w");
 
-//date Unix de $date
+    //date Unix de $date
     $aaaammjj = explode("-", $date);
     $dateU = mktime(0, 0, 0, $aaaammjj[1], $aaaammjj[2], $aaaammjj[0]);
 
-//date Unix d'aujourd'hui
+    //date Unix d'aujourd'hui
     $auj = mktime(1, 0, 0, date("m"), date("d"), date("Y"));
 
-//recherche du lundi de la semaine courante
+    //recherche du lundi de la semaine courante
     $lun0 = $auj;
     while ($jourSem != 1)
     {
@@ -180,10 +182,10 @@ function date2sem($date)
         $jourSem = date("w", $lun0);
     }
 
-//dimanche de la semaine courante
+    //dimanche de la semaine courante
     $dim0 = $lun0 + (6 * 86400);
 
-//Parcours les semaines 0, 1 et 2, et compare chacun des jours de la semaine avec la date
+    // Parcours les semaines 0, 1 et 2, et compare chacun des jours de la semaine avec la date
     for ($sem = 0; $sem < 3; $sem++)
     {
 
@@ -210,7 +212,6 @@ function date2sem($date)
 
 function date_iso2app($date)
 {
-
     if (mb_strlen($date) > 10)
     {
         $tab_date = explode(" ", $date);

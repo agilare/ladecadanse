@@ -84,8 +84,8 @@ while(list($idGroupe, $nom, $description) = $connector->fetchArray($getGroupes) 
 
 	echo "<tr>
 	<td>".$idGroupe."</td>
-	<td>".securise_string($nom)."</td>
-	<td>".securise_string($description)."</td>
+	<td>".sanitizeForHtml($nom)."</td>
+	<td>".sanitizeForHtml($description)."</td>
 	<td><a href=\"".$url_site."ajouterGroupe.php?action=editer&idG=".$idGroupe."\" title=\"Modifier le groupe\">".$iconeEditer."</a></td>
 	</tr>";
 }

@@ -3,20 +3,21 @@
 	require_once("config/reglages.php");
 }
 
-
+use Ladecadanse\Validateur;
+use Ladecadanse\Text;
 
 $tab_types = array("breves", "evenements_auj", "lieu_evenements", "evenement_commentaires", "lieux_descriptions", 'organisateur_evenements', 'evenements_ajoutes');
 $get['type'] = "breves";
 
 if (isset($_GET['type']))
 {
-	$get['type'] =  verif_get($_GET['type'], "enum", 1, $tab_types);
+	$get['type'] =  Validateur::validateUrlQueryValue($_GET['type'], "enum", 1, $tab_types);
 }
 
 $get['id'] = '';
 if (isset($_GET['id']))
 {
-	$get['id'] =  verif_get($_GET['id'], "int", 1);
+	$get['id'] =  Validateur::validateUrlQueryValue($_GET['id'], "int", 1);
 }
 
 $xml = '<?xml version="1.0" encoding="utf-8" ?><rss version="2.0">';
@@ -73,7 +74,7 @@ if ($get['type'] == "breves")
 			</div>";
 		}
 
-		$items .= "<p>".textToHtml(htmlspecialchars($tab_breve['contenu']))."</p>";
+		$items .= "<p>".Text::wikiToHtml(htmlspecialchars($tab_breve['contenu']))."</p>";
 		$items .= "<div style=\"clear:both\"></div>]]></description>\n";
 		$items .= "<author>".$tab_pers['pseudo']."</author>\n";
 		$items .= "<pubDate>".date("r", datetime_iso2time($tab_breve['dateAjout']))."</pubDate>\n";
@@ -130,7 +131,7 @@ else if ($get['type'] == "evenements_auj")
 		{
 			$genre_even = "ciné";
 		}
-		$items .= "<title>".ucfirst(date_fr($tab_even['dateEvenement'], "", "", "", false))." - ".$genre_even." : ".securise_string($tab_even['titre'])."</title>\n";
+		$items .= "<title>".ucfirst(date_fr($tab_even['dateEvenement'], "", "", "", false))." - ".$genre_even." : ".sanitizeForHtml($tab_even['titre'])."</title>\n";
 		$items .= "<link>".$url_site."evenement.php?idE=".$tab_even['idEvenement']."</link>\n";
 		$items .= "<comments>".$url_site."evenement.php?idE=".$tab_even['idEvenement']."#commentaires</comments>\n";
 		$items .= "<description><![CDATA[";
@@ -138,8 +139,8 @@ else if ($get['type'] == "evenements_auj")
 		if ($tab_even['idLieu'] != 0)
 		{
 			$nom_lieu = "<a href=\"".$url_site."lieu.php?idL=".$tab_even['idLieu']."\"
-			title=\"Voir la fiche du lieu : ".securise_string($tab_even['nomLieu'])."\" >
-			".securise_string($tab_even['nomLieu'])."</a>";
+			title=\"Voir la fiche du lieu : ".sanitizeForHtml($tab_even['nomLieu'])."\" >
+			".sanitizeForHtml($tab_even['nomLieu'])."</a>";
 
 			if ($tab_even['idSalle'])
 			{
@@ -151,7 +152,7 @@ else if ($get['type'] == "evenements_auj")
 		}
 		else
 		{
-			$nom_lieu = securise_string($tab_even['nomLieu']);
+			$nom_lieu = sanitizeForHtml($tab_even['nomLieu']);
 		}
 
 		$items .= '<h3>'.$nom_lieu.'</h3>';
@@ -161,20 +162,20 @@ else if ($get['type'] == "evenements_auj")
 			$items .= "<div class=\"flyer\"><img src=\"".$IMGeven."s_".$tab_even['flyer']."\"  alt=\"Flyer\" /></div>";
 		}
 
-		$maxChar = trouveMaxChar($tab_even['description'], 60, 5);
+		$maxChar = Text::trouveMaxChar($tab_even['description'], 60, 5);
 		if (mb_strlen($tab_even['description']) > $maxChar)
 		{
-			$items .= texteHtmlReduit(textToHtml(securise_string($tab_even['description'])), $maxChar, "");
+			$items .= Text::texteHtmlReduit(Text::wikiToHtml(sanitizeForHtml($tab_even['description'])), $maxChar, "");
 		}
 		else
 		{
-			$items .= textToHtml(securise_string($tab_even['description']));
+			$items .= Text::wikiToHtml(sanitizeForHtml($tab_even['description']));
 		}
 
 
 		$items .= "<p>".afficher_debut_fin($tab_even['horaire_debut'], $tab_even['horaire_fin'], $tab_even['dateEvenement'])."
-		".securise_string($tab_even['horaire_complement'])."</p>";
-		$items .= "<p>".securise_string($tab_even['prix'])."</p>";
+		".sanitizeForHtml($tab_even['horaire_complement'])."</p>";
+		$items .= "<p>".sanitizeForHtml($tab_even['prix'])."</p>";
 
 		$items .= "]]></description>\n";
 		//$items .= "<enclosure url=\"".$IMGeven.$tab_even['flyer']."\" type="image/jpeg" length="2441"></enclosure>
@@ -213,7 +214,7 @@ else if ($get['type'] == "lieu_evenements")
 	{
 
 		$items .= "<item>\n";
-		$items .= "<title>".securise_string($tab_even['titre'])."</title>\n";
+		$items .= "<title>".sanitizeForHtml($tab_even['titre'])."</title>\n";
 		$items .= "<link>".$url_site."evenement.php?idE=".$tab_even['idEvenement']."</link>\n";
 		$items .= "<comments>".$url_site."evenement.php?idE=".$tab_even['idEvenement']."#commentaires</comments>\n";
 		$items .= "<description><![CDATA[";
@@ -235,19 +236,19 @@ else if ($get['type'] == "lieu_evenements")
 			$items .= "<div class=\"flyer\"><img src=\"".$IMGeven."s_".$tab_even['flyer']."\"  alt=\"Flyer\" /></div>";
 		}
 
-		$maxChar = trouveMaxChar($tab_even['description'], 60, 5);
+		$maxChar = Text::trouveMaxChar($tab_even['description'], 60, 5);
 		if (mb_strlen($tab_even['description']) > $maxChar)
 		{
-			$items .= texteHtmlReduit(textToHtml(htmlspecialchars($tab_even['description'])), $maxChar, "");
+			$items .= Text::texteHtmlReduit(Text::wikiToHtml(htmlspecialchars($tab_even['description'])), $maxChar, "");
 		}
 		else
 		{
-			$items .= textToHtml(htmlspecialchars($tab_even['description']));
+			$items .= Text::wikiToHtml(htmlspecialchars($tab_even['description']));
 		}
 
 
-		$items .= "<p>".afficher_debut_fin($tab_even['horaire_debut'], $tab_even['horaire_fin'], $tab_even['dateEvenement'])." ".securise_string($tab_even['horaire_complement'])."</p>";
-		$items .= "<p>".securise_string($tab_even['prix'])."</p>";
+		$items .= "<p>".afficher_debut_fin($tab_even['horaire_debut'], $tab_even['horaire_fin'], $tab_even['dateEvenement'])." ".sanitizeForHtml($tab_even['horaire_complement'])."</p>";
+		$items .= "<p>".sanitizeForHtml($tab_even['prix'])."</p>";
 
 		$items .= "]]></description>\n";
 		//$items .= "<enclosure url=\"".$IMGeven.$tab_even['flyer']."\" type="image/jpeg" length="2441"></enclosure>
@@ -291,7 +292,7 @@ else if ($get['type'] == "evenement_commentaires")
 		$items .= "<link>".$url_site."evenement.php?idE=".$tab_comm['idEvenement']."</link>\n";
 
 		$items .= "<description><![CDATA[";
-		$items .= textToHtml(htmlspecialchars($tab_comm['contenu']));
+		$items .= Text::wikiToHtml(htmlspecialchars($tab_comm['contenu']));
 		$items .= "]]></description>\n";
 		$items .= "<author>".$tab_pers['pseudo']."</author>";
 		$items .= "<guid isPermaLink=\"false\">".$tab_comm['idCommentaire']."</guid>\n";
@@ -335,7 +336,7 @@ else if ($get['type'] == "lieux_descriptions")
 		$items .= "<link>".$url_site."lieu.php?idL=".$tab['idLieu']."</link>\n";
 
 		$items .= "<description><![CDATA[";
-		$items .= textToHtml(htmlspecialchars($tab['contenu']));
+		$items .= Text::wikiToHtml(htmlspecialchars($tab['contenu']));
 		$items .= "]]></description>\n";
 		$items .= "<author>".$tab_pers['pseudo']."</author>";
 		$items .= "<pubDate>".date("r", datetime_iso2time($tab['dateAjout']))."</pubDate>\n";
@@ -374,7 +375,7 @@ else if ($get['type'] == "organisateur_evenements")
 	{
 
 		$items .= "<item>\n";
-		$items .= "<title>".securise_string($tab_even['titre'])."</title>\n";
+		$items .= "<title>".sanitizeForHtml($tab_even['titre'])."</title>\n";
 		$items .= "<link>".$url_site."evenement.php?idE=".$tab_even['idEvenement']."</link>\n";
 		$items .= "<comments>".$url_site."evenement.php?idE=".$tab_even['idEvenement']."#commentaires</comments>\n";
 		$items .= "<description><![CDATA[";
@@ -386,8 +387,8 @@ else if ($get['type'] == "organisateur_evenements")
 		if ($tab_even['idLieu'] != 0)
 		{
 			$nom_lieu = "<a href=\"".$url_site."lieu.php?idL=".$tab_even['idLieu']."\"
-			title=\"Voir la fiche du lieu : ".securise_string($tab_even['nomLieu'])."\" >
-			".securise_string($tab_even['nomLieu'])."</a>";
+			title=\"Voir la fiche du lieu : ".sanitizeForHtml($tab_even['nomLieu'])."\" >
+			".sanitizeForHtml($tab_even['nomLieu'])."</a>";
 
 			if ($tab_even['idSalle'])
 			{
@@ -399,7 +400,7 @@ else if ($get['type'] == "organisateur_evenements")
 		}
 		else
 		{
-			$nom_lieu = securise_string($tab_even['nomLieu']);
+			$nom_lieu = sanitizeForHtml($tab_even['nomLieu']);
 		}
 
 		$items .= $nom_lieu;
@@ -409,19 +410,19 @@ else if ($get['type'] == "organisateur_evenements")
 			$items .= "<div class=\"flyer\"><img src=\"".$IMGeven."s_".$tab_even['flyer']."\"  alt=\"Flyer\" /></div>";
 		}
 
-		$maxChar = trouveMaxChar($tab_even['description'], 60, 5);
+		$maxChar = Text::trouveMaxChar($tab_even['description'], 60, 5);
 		if (mb_strlen($tab_even['description']) > $maxChar)
 		{
-			$items .= texteHtmlReduit(textToHtml(htmlspecialchars($tab_even['description'])), $maxChar, "");
+			$items .= Text::texteHtmlReduit(Text::wikiToHtml(htmlspecialchars($tab_even['description'])), $maxChar, "");
 		}
 		else
 		{
-			$items .= textToHtml(htmlspecialchars($tab_even['description']));
+			$items .= Text::wikiToHtml(htmlspecialchars($tab_even['description']));
 		}
 
 
-		$items .= "<p>".afficher_debut_fin($tab_even['horaire_debut'], $tab_even['horaire_fin'], $tab_even['dateEvenement'])." ".securise_string($tab_even['horaire_complement'])."</p>";
-		$items .= "<p>".securise_string($tab_even['prix'])."</p>";
+		$items .= "<p>".afficher_debut_fin($tab_even['horaire_debut'], $tab_even['horaire_fin'], $tab_even['dateEvenement'])." ".sanitizeForHtml($tab_even['horaire_complement'])."</p>";
+		$items .= "<p>".sanitizeForHtml($tab_even['prix'])."</p>";
 
 		$items .= "]]></description>\n";
 		//$items .= "<enclosure url=\"".$IMGeven.$tab_even['flyer']."\" type="image/jpeg" length="2441"></enclosure>
@@ -457,7 +458,7 @@ else if ($get['type'] == "evenements_ajoutes")
 	{
 
 		$items .= "<item>\n";
-		$items .= "<title>".securise_string($tab_even['titre'])."</title>\n";
+		$items .= "<title>".sanitizeForHtml($tab_even['titre'])."</title>\n";
 		$items .= "<link>".$url_site."evenement.php?idE=".$tab_even['idEvenement']."</link>\n";
 		$items .= "<comments>".$url_site."evenement.php?idE=".$tab_even['idEvenement']."#commentaires</comments>\n";
 		$items .= "<description><![CDATA[";
@@ -469,8 +470,8 @@ else if ($get['type'] == "evenements_ajoutes")
 		if ($tab_even['idLieu'] != 0)
 		{
 			$nom_lieu = "<a href=\"".$url_site."lieu.php?idL=".$tab_even['idLieu']."\"
-			title=\"Voir la fiche du lieu : ".securise_string($tab_even['nomLieu'])."\" >
-			".securise_string($tab_even['nomLieu'])."</a>";
+			title=\"Voir la fiche du lieu : ".sanitizeForHtml($tab_even['nomLieu'])."\" >
+			".sanitizeForHtml($tab_even['nomLieu'])."</a>";
 
 			if ($tab_even['idSalle'])
 			{
@@ -482,7 +483,7 @@ else if ($get['type'] == "evenements_ajoutes")
 		}
 		else
 		{
-			$nom_lieu = securise_string($tab_even['nomLieu']);
+			$nom_lieu = sanitizeForHtml($tab_even['nomLieu']);
 		}
 		
 		$items .= "<h3>".$nom_lieu."</h3>";
@@ -503,19 +504,19 @@ else if ($get['type'] == "evenements_ajoutes")
 
 
 		$items .= "<div class=\"desc\">";
-		$maxChar = trouveMaxChar($tab_even['description'], 60, 8);
+		$maxChar = Text::trouveMaxChar($tab_even['description'], 60, 8);
 		if (mb_strlen($tab_even['description']) > $maxChar)
 		{
-			$items .= texteHtmlReduit(textToHtml(htmlspecialchars($tab_even['description'])), $maxChar, "");
+			$items .= Text::texteHtmlReduit(Text::wikiToHtml(htmlspecialchars($tab_even['description'])), $maxChar, "");
 		}
 		else
 		{
-			$items .= textToHtml(htmlspecialchars($tab_even['description']));
+			$items .= Text::wikiToHtml(htmlspecialchars($tab_even['description']));
 		}
 		$items .= "</div>";
 
-		$items .= "<p>".afficher_debut_fin($tab_even['horaire_debut'], $tab_even['horaire_fin'], $tab_even['dateEvenement'])." ".securise_string($tab_even['horaire_complement'])."</p>";
-		$items .= "<p>".securise_string($tab_even['prix'])."</p>";
+		$items .= "<p>".afficher_debut_fin($tab_even['horaire_debut'], $tab_even['horaire_fin'], $tab_even['dateEvenement'])." ".sanitizeForHtml($tab_even['horaire_complement'])."</p>";
+		$items .= "<p>".sanitizeForHtml($tab_even['prix'])."</p>";
 
 		$items .= "]]></description>\n";
 		//$items .= "<enclosure url=\"".$IMGeven.$tab_even['flyer']."\" type="image/jpeg" length="2441"></enclosure>

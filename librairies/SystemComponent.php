@@ -13,33 +13,4 @@ class SystemComponent {
      * @var string
      */
 	var $settings;
-	
-	
-   /**
-   	 * Renvoie le tableau contenant les paramètres de la classe
-     * @access public
-     * @return Method available since Release 1.2.0
-     */	
-	function getSettings() {
-
-		//system variables
-		$settings['siteDir'] = 'http://www.darksite.ch/ladecadanse/';
-		
-		//database variables
-/* 		$settings['dbhost'] = 'localhost';
-		$settings['dbusername'] = 'ladecadanse';
-		$settings['dbpassword'] = 'la2973de';
-		$settings['dbname'] = 'ladecadanse'; */
-		
-		// !!! AVANT UPLOAD vers www.ladecadanse.ch, METTRE LES VALEURS CI-DESSOUS		
-		$settings['dbhost'] = '';
-		$settings['dbusername'] = 'ladecadanse';
-		$settings['dbpassword'] = 'la2973de';
-		$settings['dbname'] = 'ladecadanse_test';
-		
-		return $settings;
-	}
-	
-
 }
-?>

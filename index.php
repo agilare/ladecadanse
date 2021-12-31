@@ -3,7 +3,9 @@
 require_once("config/reglages.php");
 
 use Ladecadanse\Sentry;
-
+use Ladecadanse\Text;
+use Ladecadanse\HtmlShrink;
+use Ladecadanse\Evenement;
 
 $videur = new Sentry();
 
@@ -82,14 +84,14 @@ if (HOME_TMP_BANNER_ENABLED && !isset($_COOKIE['msg_orga_benevole']))
     <?php
     if (!empty($_SESSION['ajouterEvenement_flash_msg']))
     {
-        msgOk($_SESSION['ajouterEvenement_flash_msg']);
+        HtmlShrink::msgOk($_SESSION['ajouterEvenement_flash_msg']);
         unset($_SESSION['ajouterEvenement_flash_msg']);
     }
     ?>    
     
 	<div id="entete_contenu">
         <h2 class="accueil" style="margin: 0;">Aujourd’hui <a href="<?php echo $url_site ?>rss.php?type=evenements_auj" title="Flux RSS des événements du jour" style="font-size:12px;vertical-align: top;" class="desktop"><i class="fa fa-rss fa-lg" style="color:#f5b045"></i></a></h2>
-        <?php getMenuRegions($glo_regions, $get, $event_count); ?>
+        <?php HtmlShrink::getMenuRegions($glo_regions, $get, $event_count); ?>
         <div class="spacer"></div>           
         <h2 style="width:65%;font-size: 1.4em;margin-top: 0;"><small><?php echo ucfirst(date_fr($get['auj'])); ?></small></h2>                             
 	</div>
@@ -101,7 +103,7 @@ if (HOME_TMP_BANNER_ENABLED && !isset($_COOKIE['msg_orga_benevole']))
 
     if ($nb_evenements == 0)
     {
-        echo msgInfo("Pas d’événement prévu aujourd’hui");
+        echo HtmlShrink::msgInfo("Pas d’événement prévu aujourd’hui");
     }
 
     $dateCourante = ' ';
@@ -118,7 +120,7 @@ if (HOME_TMP_BANNER_ENABLED && !isset($_COOKIE['msg_orga_benevole']))
         {
             if ($genre_courant != '')
             {
-                $genre_prec = replace_accents($tab_genres[$genre_courant]);
+                $genre_prec = Text::stripAccents($tab_genres[$genre_courant]);
                 echo "</div>";
                 $i = 0;
             }
@@ -129,11 +131,11 @@ if (HOME_TMP_BANNER_ENABLED && !isset($_COOKIE['msg_orga_benevole']))
     /* 		if ($np = next(&$tab_genres))
                 $proch = replace_accents($np); */
             if ($np = next($tab_genres))
-                $proch = replace_accents($np);			
+                $proch = Text::stripAccents($np);			
         ?>
             <div class="genre">	
                 <div class="genre-titre">
-                    <h3 id="<?php echo mb_strtolower(replace_accents($genre_fr)); ?>"><?php echo $genre_fr; ?></h3>
+                    <h3 id="<?php echo mb_strtolower(Text::stripAccents($genre_fr)); ?>"><?php echo $genre_fr; ?></h3>
 
                     <?php if ($tab_even['genre'] != 'divers') { ?>
                     <a class="genre-jump" href="#<?php echo $proch; ?>"><i class="fa fa-long-arrow-down"></i></a>
@@ -185,7 +187,7 @@ if (HOME_TMP_BANNER_ENABLED && !isset($_COOKIE['msg_orga_benevole']))
 
         $req_event_orga = $connector->query($sql_event_orga);         
 
-        $even_adresse = get_adresse(null, $listeLieu['localite'], $listeLieu['quartier'], $listeLieu['adresse']);
+        $even_adresse = HtmlShrink::getAdressFitted(null, $listeLieu['localite'], $listeLieu['quartier'], $listeLieu['adresse']);
 
         if ($i > 1 && ($i % 2 != 0))
         {
@@ -204,12 +206,12 @@ if (HOME_TMP_BANNER_ENABLED && !isset($_COOKIE['msg_orga_benevole']))
             <div class="titre">
                 <span class="left">
                 <?php
-                $maxChar = trouveMaxChar($tab_even['description'], 60, 6);
+                $maxChar = Text::trouveMaxChar($tab_even['description'], 60, 6);
                 $titre_url = '
         <a href="'.$url_site.'evenement.php?idE='.$tab_even['idEvenement'].'&amp;tri_agenda='.$get['tri_agenda'].'&amp;courant='.$get['courant'].'"
-        title="Voir la fiche complète de l\'événement">'.securise_string($tab_even['titre']).'</a>';
+        title="Voir la fiche complète de l\'événement">'.sanitizeForHtml($tab_even['titre']).'</a>';
 
-                echo titre_selon_statut($titre_url, $tab_even['statut']);
+                echo Evenement::titre_selon_statut($titre_url, $tab_even['statut']);
 
                 ?>
                 </span>
@@ -244,11 +246,11 @@ if (HOME_TMP_BANNER_ENABLED && !isset($_COOKIE['msg_orga_benevole']))
             if (mb_strlen($tab_even['description']) > $maxChar)
             {
                 $continuer = " <a class=\"continuer\" href=\"".$url_site."evenement.php?idE=".$tab_even['idEvenement']."\" title=\"Voir la fiche complète de l'événement\"> Lire la suite</a>";
-                echo texteHtmlReduit(textToHtml(htmlspecialchars($tab_even['description'])),$maxChar, $continuer);
+                echo Text::texteHtmlReduit(Text::wikiToHtml(htmlspecialchars($tab_even['description'])),$maxChar, $continuer);
             }
             else
             {
-                echo textToHtml(htmlspecialchars($tab_even['description']));
+                echo Text::wikiToHtml(htmlspecialchars($tab_even['description']));
             }
             ?>
             <ul class="event_orga">
@@ -323,8 +325,8 @@ if (HOME_TMP_BANNER_ENABLED && !isset($_COOKIE['msg_orga_benevole']))
             if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 6
             || $_SESSION['SidPersonne'] == $tab_even['idPersonne'])
             || (isset($_SESSION['Saffiliation_lieu']) && !empty($tab_even['idLieu']) && $tab_even['idLieu'] == $_SESSION['Saffiliation_lieu'])
-            || isset($_SESSION['SidPersonne']) && est_organisateur_evenement($_SESSION['SidPersonne'], $tab_even['idEvenement'])
-            || isset($_SESSION['SidPersonne']) && $tab_even['idLieu'] != 0 && est_organisateur_lieu($_SESSION['SidPersonne'], $tab_even['idLieu'])	
+            || isset($_SESSION['SidPersonne']) && $authorization->isPersonneInEvenementByOrganisateur($_SESSION['SidPersonne'], $tab_even['idEvenement'])
+            || isset($_SESSION['SidPersonne']) && $tab_even['idLieu'] != 0 && $authorization->isPersonneInLieuByOrganisateur($_SESSION['SidPersonne'], $tab_even['idLieu'])	
             )
             {
                 
@@ -538,11 +540,11 @@ if ($genre_courant != '')
 
             echo "<h4>";
             $titre_url = "<a href=\"".$url_site."evenement.php?idE=".$tab_dern_even['idEvenement']."\" title=\"\" >".
-            securise_string($tab_dern_even['titre']).'</a>';
+            sanitizeForHtml($tab_dern_even['titre']).'</a>';
 
 
 
-            echo titre_selon_statut($titre_url, $tab_dern_even['statut']);
+            echo Evenement::titre_selon_statut($titre_url, $tab_dern_even['statut']);
 
             echo "</h4>";
             echo '<h5 style="font-size:1em;color:#5C7378">';

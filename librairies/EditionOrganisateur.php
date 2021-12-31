@@ -6,6 +6,7 @@ use Ladecadanse\Validateur;
 use Ladecadanse\Organisateur;
 use Ladecadanse\ImageDriver2;
 use Ladecadanse\File;
+use Ladecadanse\HtmlShrink;
 
   class EditionOrganisateur extends Edition
   {
@@ -202,7 +203,7 @@ use Ladecadanse\File;
 			}
 			else
 			{
-				msgErreur("Erreur lors de l'insertion dans la table");
+				HtmlShrink::msgErreur("Erreur lors de l'insertion dans la table");
 				return false;
 			}
 
@@ -288,7 +289,7 @@ use Ladecadanse\File;
 			}
 			else
 			{
-				msgErreur("Erreur lors de la mise à jour de la table");
+				HtmlShrink::msgErreur("Erreur lors de la mise à jour de la table");
 			}
 
 

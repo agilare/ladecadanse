@@ -19,6 +19,7 @@ use Ladecadanse\Sentry;
 use Ladecadanse\Validateur;
 use Ladecadanse\SecurityToken;
 use Ladecadanse\Logger;
+use Ladecadanse\HtmlShrink;
 
 $videur = new Sentry();
 
@@ -45,16 +46,16 @@ $get['action'] = "";
 
 if (isset($_GET['action']))
 {
-	$get['action'] = verif_get($_GET['action'], "enum", 0, $tab_actions);
+	$get['action'] = Validateur::validateUrlQueryValue($_GET['action'], "enum", 0, $tab_actions);
 }
 
 if (isset($_GET['idE']))
 {
-	$get['idE'] = verif_get($_GET['idE'], "int", 1);
+	$get['idE'] = Validateur::validateUrlQueryValue($_GET['idE'], "int", 1);
 }
 else
 {
-	msgErreur("idE obligatoire");
+	HtmlShrink::msgErreur("idE obligatoire");
 	exit;
 }
 
@@ -63,17 +64,17 @@ $req_lieu = $connector->query("SELECT idLieu, dateEvenement FROM evenement WHERE
 $tab_lieu = $connector->fetchArray($req_lieu);
 
 
-if (estAuteur($_SESSION['SidPersonne'], $get['idE'], "evenement") || $_SESSION['Sgroupe'] <= 6
+if ($authorization->estAuteur($_SESSION['SidPersonne'], $get['idE'], "evenement") || $_SESSION['Sgroupe'] <= 6
  || (isset($_SESSION['Saffiliation_lieu']) && isset($tab_lieu['idLieu']) && $tab_lieu['idLieu'] == $_SESSION['Saffiliation_lieu'])
-|| est_organisateur_evenement($_SESSION['SidPersonne'], $get['idE'])
-|| (isset($tab_lieu['idLieu']) && est_organisateur_lieu($_SESSION['SidPersonne'], $tab_lieu['idLieu']))
+|| $authorization->isPersonneInEvenementByOrganisateur($_SESSION['SidPersonne'], $get['idE'])
+|| (isset($tab_lieu['idLieu']) && $authorization->isPersonneInLieuByOrganisateur($_SESSION['SidPersonne'], $tab_lieu['idLieu']))
  )
 
 {
 }
 else
 {
-	msgErreur("Vous ne pouvez pas copier cet événement");
+	HtmlShrink::msgErreur("Vous ne pouvez pas copier cet événement");
 	exit;
 }
 
@@ -171,7 +172,7 @@ FROM evenement WHERE idEvenement=".$get['idE'])));
 		$dateIncrUnix = $dateEUnix;
 		$dateIncrUnixOld = $dateIncrUnix;
 		
-		$_SESSION['copierEvenement_flash_msg']['msg'] = '<p style="margin:4px 0">L\'événement <a href="evenement.php?idE='.$get['idE'].'"><strong>'.securise_string($tab_champs['titre']).'</strong> du '.date_fr($tab_lieu['dateEvenement']).'</a> a été copié vers les dates suivantes :</p>';
+		$_SESSION['copierEvenement_flash_msg']['msg'] = '<p style="margin:4px 0">L\'événement <a href="evenement.php?idE='.$get['idE'].'"><strong>'.sanitizeForHtml($tab_champs['titre']).'</strong> du '.date_fr($tab_lieu['dateEvenement']).'</a> a été copié vers les dates suivantes :</p>';
         $_SESSION['copierEvenement_flash_msg']['table'] = '';
         
 		/*
@@ -266,7 +267,7 @@ FROM evenement WHERE idEvenement=".$get['idE'])));
                     $hor_compl = "<br>".$tab_champs['horaire_complement'];
                 
 //<td><a href="'.$url_site.'evenement.php?idE='.$nouv_id.'">'.securise_string($tab_champs['titre']).'</a></td>
-				$_SESSION['copierEvenement_flash_msg']['table'] .= '<tr><td><a href="evenement.php?idE='.$nouv_id.'">'.securise_string($tab_champs['titre'])."<br>".date_fr(date('Y-m-d', $dateIncrUnix)).'</a></td><td>'.$hor_debfin.$hor_compl.'</td><td><a class="action_editer" href="'.$url_site.'ajouterEvenement.php?action=editer&idE='.$nouv_id.'" title="Modifier cet événement">Modifier</a>&nbsp;&nbsp;<a href="'.$url_site.'ajouterEvenement.php?action=editer&idE='.$nouv_id.'" title="Modifier cet événement dans un nouvel onglet" target="_blank"><i class="fa fa-external-link" aria-hidden="true"></i></a>&nbsp;&nbsp;&nbsp;<a href="#" id="btn_event_del_'.$nouv_id.'" class="btn_event_del action_supprimer" data-id='.$nouv_id.'>Supprimer</a></td></tr>';
+				$_SESSION['copierEvenement_flash_msg']['table'] .= '<tr><td><a href="evenement.php?idE='.$nouv_id.'">'.sanitizeForHtml($tab_champs['titre'])."<br>".date_fr(date('Y-m-d', $dateIncrUnix)).'</a></td><td>'.$hor_debfin.$hor_compl.'</td><td><a class="action_editer" href="'.$url_site.'ajouterEvenement.php?action=editer&idE='.$nouv_id.'" title="Modifier cet événement">Modifier</a>&nbsp;&nbsp;<a href="'.$url_site.'ajouterEvenement.php?action=editer&idE='.$nouv_id.'" title="Modifier cet événement dans un nouvel onglet" target="_blank"><i class="fa fa-external-link" aria-hidden="true"></i></a>&nbsp;&nbsp;&nbsp;<a href="#" id="btn_event_del_'.$nouv_id.'" class="btn_event_del action_supprimer" data-id='.$nouv_id.'>Supprimer</a></td></tr>';
 
 				if (!empty($tab_champs['flyer']))
 				{
@@ -275,7 +276,7 @@ FROM evenement WHERE idEvenement=".$get['idE'])));
 
 					if (!copy($src, $des))
 					{
-				  		msgErreur("La copie du fichier ".$tab_champs['flyer']." n'a pas réussi...");
+				  		HtmlShrink::msgErreur("La copie du fichier ".$tab_champs['flyer']." n'a pas réussi...");
 					}
 
 					$src = $rep_images."s_".$flyer_orig;
@@ -283,7 +284,7 @@ FROM evenement WHERE idEvenement=".$get['idE'])));
 
 					if (!copy($src, $des))
 					{
-				  		msgErreur("La copie du fichier ".$tab_champs['flyer']." n'a pas réussi...");
+				  		HtmlShrink::msgErreur("La copie du fichier ".$tab_champs['flyer']." n'a pas réussi...");
 					}
 
 					$src = $rep_images."t_".$flyer_orig;
@@ -291,7 +292,7 @@ FROM evenement WHERE idEvenement=".$get['idE'])));
 
 					if (!copy($src, $des))
 					{
-				  		msgErreur("La copie du fichier ".$tab_champs['flyer']." n'a pas réussi...");
+				  		HtmlShrink::msgErreur("La copie du fichier ".$tab_champs['flyer']." n'a pas réussi...");
 					}
 
 					$flyer = '';
@@ -304,7 +305,7 @@ FROM evenement WHERE idEvenement=".$get['idE'])));
 
 					if (!copy($src, $des))
 					{
-				  		msgErreur("La copie du fichier ".$tab_champs['image']." n'a pas réussi...");
+				  		HtmlShrink::msgErreur("La copie du fichier ".$tab_champs['image']." n'a pas réussi...");
 					}
 
 					$src = $rep_images."s_".$image_orig;
@@ -312,7 +313,7 @@ FROM evenement WHERE idEvenement=".$get['idE'])));
 
 					if (!copy($src, $des))
 					{
-				  		msgErreur("La copie du fichier ".$tab_champs['image']." n'a pas réussi...");
+				  		HtmlShrink::msgErreur("La copie du fichier ".$tab_champs['image']." n'a pas réussi...");
 					}
 
 		        }
@@ -341,7 +342,7 @@ FROM evenement WHERE idEvenement=".$get['idE'])));
 			}
 			else
 			{
-				msgErreur("La requête INSERT dans 'evenement' pour le ".date_fr(date('Y-m-d', $dateIncrUnix))." a échoué");
+				HtmlShrink::msgErreur("La requête INSERT dans 'evenement' pour le ".date_fr(date('Y-m-d', $dateIncrUnix))." a échoué");
 			}
 
 			//copie de la date courante, passage au jour suivant, et saut d'une heure en cas de passage à l'heure d'hiver
@@ -425,7 +426,7 @@ if (isset($get['idE']))
 		}
 		else
 		{
-			msgErreur("Aucun événement n'est associé à ".$get['idE']);
+			HtmlShrink::msgErreur("Aucun événement n'est associé à ".$get['idE']);
 			exit;
 		}
 } // if isset idE

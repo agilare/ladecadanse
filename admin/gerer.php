@@ -11,6 +11,9 @@ else
 
 use Ladecadanse\Sentry;
 use Ladecadanse\Validateur;
+use Ladecadanse\HtmlShrink;
+use Ladecadanse\Utils;
+use Ladecadanse\Text;
 
 $videur = new Sentry();
 
@@ -52,7 +55,7 @@ else
 $get['page'] = 1;
 if (isset($_GET['page']))
 {
-	$get['page'] = verif_get($_GET['page'], "int", 1);
+	$get['page'] = Validateur::validateUrlQueryValue($_GET['page'], "int", 1);
 }
 
 $tab_tris = array("dateAjout", "date_ajout", "idOrganisateur", "date_derniere_modif", "statut", "date_debut", "date_fin", "id", "titre", "nom", "prenom", "groupe", "pseudo", "idPersonne");
@@ -61,7 +64,7 @@ $tab_tris = array("dateAjout", "date_ajout", "idOrganisateur", "date_derniere_mo
 $get['tri_gerer'] = "dateAjout";
 if (isset($_GET['tri_gerer']))
 {
-	$get['tri_gerer'] = verif_get($_GET['tri_gerer'], "enum", 1, $tab_tris);
+	$get['tri_gerer'] = Validateur::validateUrlQueryValue($_GET['tri_gerer'], "enum", 1, $tab_tris);
 
 }
 
@@ -70,7 +73,7 @@ $get['ordre'] = "desc";
 $ordre_inverse = "asc";
 if (isset($_GET['ordre']))
 {
-	$get['ordre'] = verif_get($_GET['ordre'], "enum", 1, $tab_ordre);
+	$get['ordre'] = Validateur::validateUrlQueryValue($_GET['ordre'], "enum", 1, $tab_ordre);
 	if ($get['ordre'] == "asc")
 	{
 		$ordre_inverse = "desc";
@@ -84,7 +87,7 @@ if (isset($_GET['ordre']))
 $get['nblignes'] = 500;
 if (!empty($_GET['nblignes']))
 {
-	$get['nblignes'] = verif_get($_GET['nblignes'], "int", 1);
+	$get['nblignes'] = Validateur::validateUrlQueryValue($_GET['nblignes'], "int", 1);
 }
 
 
@@ -144,7 +147,7 @@ if ($get['element'] == "description")
 
 	$th_descriptions = array("idLieu" => "Lieu",  "contenu" => "Contenu", "dateAjout" => "Date d'ajout", "date_derniere_modif" => "m-à-j");
 
-	echo getPaginationString($get['page'], $tot_elements, $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?".arguments_URI($get, "page")."&page=");
+	echo HtmlShrink::getPaginationString($get['page'], $tot_elements, $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?".Utils::urlQueryArrayToString($get, "page")."&page=");
 
 	echo '<ul class="menu_nb_res">';
 	foreach ($tab_nblignes as $nbl)
@@ -152,7 +155,7 @@ if ($get['element'] == "description")
 		echo '<li ';
 		if ($get['nblignes'] == $nbl) { echo 'class="ici"'; }
 
-		echo '><a href="'.$url_admin.'gerer.php?'.arguments_URI($get, "nblignes").'&nblignes='.$nbl.'">'.$nbl.'</a></li>';
+		echo '><a href="'.$url_admin.'gerer.php?'.Utils::urlQueryArrayToString($get, "nblignes").'&nblignes='.$nbl.'">'.$nbl.'</a></li>';
 	}
 	echo '</ul>';
 echo '<div class="spacer"></div>';
@@ -189,7 +192,7 @@ echo '<div class="spacer"></div>';
 
 		$req_lieu = $connector->query("SELECT nom FROM lieu WHERE idLieu=".$tab_desc['idLieu']);
 		$tabLieu = $connector->fetchArray($req_lieu);
-		$nomLieu = "<a href=\"".$url_site."lieu.php?idL=".$tab_desc['idLieu']."\" title=\"Éditer le lieu\">".securise_string($tabLieu['nom'])."</a>";
+		$nomLieu = "<a href=\"".$url_site."lieu.php?idL=".$tab_desc['idLieu']."\" title=\"Éditer le lieu\">".sanitizeForHtml($tabLieu['nom'])."</a>";
 
 		if ($pair % 2 == 0)
 		{
@@ -206,7 +209,7 @@ echo '<div class="spacer"></div>';
 		{
 			$tab_desc['contenu'] = mb_substr($tab_desc['contenu'], 0, 50)." [...]";
 		}
-		echo "<td class=\"tdleft\">".textToHtml(securise_string($tab_desc['contenu']))."</td>";
+		echo "<td class=\"tdleft\">".Text::wikiToHtml(sanitizeForHtml($tab_desc['contenu']))."</td>";
 		echo "<td>".date_iso2app($tab_desc['dateAjout'])."</td>";
 
 		echo "<td>";
@@ -247,7 +250,7 @@ else if ($get['element'] == "lieu")
 	$th_lieu = array("idLieu" => "ID",  "nom" => "Nom", "categorie" => "Catégorie", "URL" => "URL",
 	"description" => "Desc", "dateAjout" => "Créé", "date_derniere_modif" => "Modifié", "statut" => "Statut");
 
-	echo getPaginationString($get['page'], $tot_elements, $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?element=".$get['element']."&tri_gerer=".$get['tri_gerer']."&ordre=".$get['ordre']."&page=");
+	echo HtmlShrink::getPaginationString($get['page'], $tot_elements, $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?element=".$get['element']."&tri_gerer=".$get['tri_gerer']."&ordre=".$get['ordre']."&page=");
 
 	echo '<ul class="menu_nb_res">';
 	foreach ($tab_nblignes as $nbl)
@@ -255,7 +258,7 @@ else if ($get['element'] == "lieu")
 		echo '<li ';
 		if ($get['nblignes'] == $nbl) { echo 'class="ici"'; }
 
-		echo '><a href="'.$url_admin.'gerer.php?'.arguments_URI($get, "nblignes").'&nblignes='.$nbl.'">'.$nbl.'</a></li>';
+		echo '><a href="'.$url_admin.'gerer.php?'.Utils::urlQueryArrayToString($get, "nblignes").'&nblignes='.$nbl.'">'.$nbl.'</a></li>';
 	}
 	echo '</ul>';
 echo '<div class="spacer"></div>';
@@ -305,7 +308,7 @@ echo '<div class="spacer"></div>';
 
 		echo "
 		<td>".$tab_lieux['idLieu']."</td>
-		<td><a href=\"".$url_site."lieu.php?idL=".$tab_lieux['idLieu']."\" title=\"Voir la fiche du lieu :".securise_string($tab_lieux['nom'])."\">".securise_string($tab_lieux['nom'])."</a></td>
+		<td><a href=\"".$url_site."lieu.php?idL=".$tab_lieux['idLieu']."\" title=\"Voir la fiche du lieu :".sanitizeForHtml($tab_lieux['nom'])."\">".sanitizeForHtml($tab_lieux['nom'])."</a></td>
 		<td class=\"tdleft\"><ul>";
 
 		$listeCat = explode(",", $tab_lieux['categorie']);
@@ -370,7 +373,7 @@ else if ($get['element'] == "organisateur")
 	$th_lieu = array("idOrganisateur" => "ID",  "nom" => "Nom",
 	 "date_ajout" => "Créé", "date_derniere_modif" => "Modifié", "statut" => "Statut");
 
-	echo getPaginationString($get['page'], $tot_elements, $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?element=".$get['element']."&tri_gerer=".$get['tri_gerer']."&ordre=".$get['ordre']."&page=");
+	echo HtmlShrink::getPaginationString($get['page'], $tot_elements, $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?element=".$get['element']."&tri_gerer=".$get['tri_gerer']."&ordre=".$get['ordre']."&page=");
 
 	echo '<ul class="menu_nb_res">';
 	foreach ($tab_nblignes as $nbl)
@@ -378,7 +381,7 @@ else if ($get['element'] == "organisateur")
 		echo '<li ';
 		if ($get['nblignes'] == $nbl) { echo 'class="ici"'; }
 
-		echo '><a href="'.$url_admin.'gerer.php?'.arguments_URI($get, "nblignes").'&nblignes='.$nbl.'">'.$nbl.'</a></li>';
+		echo '><a href="'.$url_admin.'gerer.php?'.Utils::urlQueryArrayToString($get, "nblignes").'&nblignes='.$nbl.'">'.$nbl.'</a></li>';
 	}
 	echo '</ul>';
 echo '<div class="spacer"></div>';
@@ -424,7 +427,7 @@ echo '<div class="spacer"></div>';
 
 		echo "
 		<td>".$tab['idOrganisateur']."</td>
-		<td><a href=\"".$url_site."organisateur.php?idO=".$tab['idOrganisateur']."\" title=\"Voir la fiche\">".securise_string($tab['nom'])."</a></td>";
+		<td><a href=\"".$url_site."organisateur.php?idO=".$tab['idOrganisateur']."\" title=\"Voir la fiche\">".sanitizeForHtml($tab['nom'])."</a></td>";
 
 		echo "
 		<td>".date_iso2app($tab['date_ajout'])."</td>";
@@ -461,7 +464,7 @@ else if ($get['element'] == "commentaire")
 	$tab_count = $connector->fetchArray($req_count);
 	$tot_elements = $tab_count['total'];
 
-	echo getPaginationString($get['page'], $tot_elements, $get['nblignes'], 1, $_SERVER['PHP_SELF'],
+	echo HtmlShrink::getPaginationString($get['page'], $tot_elements, $get['nblignes'], 1, $_SERVER['PHP_SELF'],
 	"?element=".$get['element']."&tri_gerer=".$get['tri_gerer']."&ordre=".$get['ordre']."&nblignes=".$get['nblignes']."&page=");
 
 	echo '<ul class="menu_nb_res">';
@@ -470,7 +473,7 @@ else if ($get['element'] == "commentaire")
 		echo '<li ';
 		if ($get['nblignes'] == $nbl) { echo 'class="ici"'; }
 
-		echo '><a href="'.$url_admin.'gerer.php?'.arguments_URI($get, "nblignes").'&nblignes='.$nbl.'">'.$nbl.'</a></li>';
+		echo '><a href="'.$url_admin.'gerer.php?'.Utils::urlQueryArrayToString($get, "nblignes").'&nblignes='.$nbl.'">'.$nbl.'</a></li>';
 	}
 	echo '</ul>';
 echo '<div class="spacer"></div>';
@@ -521,7 +524,7 @@ echo '<div class="spacer"></div>';
 		echo "<td><a href=\"".$url_site."personne.php?idP=".$tab_comm['idPersonne']."\" title=\"Voir l'auteur\">".$tab_pers['pseudo']."</a></td>";
 
 
-		echo "<td>".mb_substr(securise_string($tab_comm['contenu']), 0, 30)."</td>";
+		echo "<td>".mb_substr(sanitizeForHtml($tab_comm['contenu']), 0, 30)."</td>";
 
 		if ($tab_comm['element'] == 'evenement')
 		{
@@ -615,7 +618,7 @@ else if ($get['element'] == "personne")
 	
 	<?php
 
-	echo getPaginationString($get['page'], $num_pers_total, $get['nblignes'], 1, $_SERVER['PHP_SELF'],
+	echo HtmlShrink::getPaginationString($get['page'], $num_pers_total, $get['nblignes'], 1, $_SERVER['PHP_SELF'],
 	"?element=".$get['element']."&tri_gerer=".$get['tri_gerer']."&ordre=".$get['ordre']."&nblignes=".$get['nblignes']."&terme=".$get['terme']."&page=");
 	echo '<ul class="menu_nb_res">';
 
@@ -624,7 +627,7 @@ else if ($get['element'] == "personne")
 		echo '<li ';
 		if ($get['nblignes'] == $nbl) { echo 'class="ici"'; }
 
-		echo '><a href="'.$url_admin.'gerer.php?'.arguments_URI($get, "nblignes").'&nblignes='.$nbl.'">'.$nbl.'</a></li>';
+		echo '><a href="'.$url_admin.'gerer.php?'.Utils::urlQueryArrayToString($get, "nblignes").'&nblignes='.$nbl.'">'.$nbl.'</a></li>';
 	}
 	echo '</ul>';
 echo '<div class="spacer"></div>';
@@ -677,7 +680,7 @@ echo '<div class="spacer"></div>';
 
 		echo ">
 		<td>".$tab_pers ['idPersonne']."</td>
-		<td style='width:20%'><a href=\"".$url_site."personne.php?idP=".$tab_pers['idPersonne']."\" title=\"Voir le profile :".securise_string($tab_pers['pseudo'])."\">".securise_string($tab_pers['pseudo'])."</a></td>
+		<td style='width:20%'><a href=\"".$url_site."personne.php?idP=".$tab_pers['idPersonne']."\" title=\"Voir le profile :".sanitizeForHtml($tab_pers['pseudo'])."\">".sanitizeForHtml($tab_pers['pseudo'])."</a></td>
 		<td><a href='mailto:".$tab_pers['email']."'>".$tab_pers['email']."</a></td>
 		<td>".$nom_groupe."</td>";
 		echo "
@@ -705,7 +708,7 @@ echo '<div class="spacer"></div>';
 
 	echo "</table>";
 
-	echo getPaginationString($get['page'], $num_pers_total, $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?element=".$get['element']."&tri_gerer=".$get['tri_gerer']."&ordre=".$get['ordre']."&nblignes=".$get['nblignes']."&terme=".$get['terme']."&page=");
+	echo HtmlShrink::getPaginationString($get['page'], $num_pers_total, $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?element=".$get['element']."&tri_gerer=".$get['tri_gerer']."&ordre=".$get['ordre']."&nblignes=".$get['nblignes']."&terme=".$get['terme']."&page=");
 
 }
 

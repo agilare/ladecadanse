@@ -423,6 +423,3 @@ class Sentry extends SystemComponent {
 	}
 
 }
-
-
-?>

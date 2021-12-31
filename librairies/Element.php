@@ -130,7 +130,7 @@ class Element
 
 	function getHtmlValue($nom)
 	{
-		return securise_string($this->valeurs[$nom]);
+		return sanitizeForHtml($this->valeurs[$nom]);
 	}
 
 	function securise_string($chaine)

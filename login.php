@@ -13,6 +13,7 @@ if (is_file("config/reglages.php"))
 
 use Ladecadanse\Sentry;
 use Ladecadanse\Validateur;
+use Ladecadanse\HtmlShrink;
 
 $videur = new Sentry();
 
@@ -29,7 +30,7 @@ $tab_messages = array('faux');
 */
 if (isset($_GET['msg']))
 {
-	$get['msg'] = verif_get($_GET['msg'], "enum", 1, $tab_messages);
+	$get['msg'] = Validateur::validateUrlQueryValue($_GET['msg'], "enum", 1, $tab_messages);
 }
 
 $champs = array("pseudo" => "", "motdepasse" => "", "memoriser" => "", "origine" => "");
@@ -124,7 +125,7 @@ include("_header.inc.php");
 
 if ($verif->nbErreurs() > 0)
 {
-	msgErreur("Il y a ".$verif->nbErreurs()." erreur(s)");
+	HtmlShrink::msgErreur("Il y a ".$verif->nbErreurs()." erreur(s)");
 }
 
 ?>

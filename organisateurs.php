@@ -6,6 +6,8 @@ if (is_file("config/reglages.php"))
 
 use Ladecadanse\Sentry;
 use Ladecadanse\CollectionOrganisateur;
+use Ladecadanse\Validateur;
+use Ladecadanse\Text;
 
 $videur = new Sentry();
 
@@ -17,7 +19,7 @@ include("_header.inc.php");
 $get['idO'] = "";
 if (isset($_GET['idO']))
 {
-	$get['idO'] = verif_get($_GET['idO'], "int", 1);
+	$get['idO'] = Validateur::validateUrlQueryValue($_GET['idO'], "int", 1);
 }
 
 /**
@@ -50,18 +52,18 @@ $pair = 0;
         if ($fiche->getValue('logo') != "")
         {
             $logo_time = @filemtime($rep_images_organisateurs.$fiche->getValue('logo'));
-            $photo_principale = "<a href=\"".$url_site."organisateur.php?idO=".$fiche->getValue('idOrganisateur')."\" title=\"Voir la fiche de l'organisateur : ".securise_string($fiche->getValue('nom'))."\">
-            <img src=\"".$url_images_organisateurs.$fiche->getValue('logo')."?".$logo_time."\" width=\"100\" alt=\"".securise_string($fiche->getValue('nom'))."\" /></a>\n";
+            $photo_principale = "<a href=\"".$url_site."organisateur.php?idO=".$fiche->getValue('idOrganisateur')."\" title=\"Voir la fiche de l'organisateur : ".sanitizeForHtml($fiche->getValue('nom'))."\">
+            <img src=\"".$url_images_organisateurs.$fiche->getValue('logo')."?".$logo_time."\" width=\"100\" alt=\"".sanitizeForHtml($fiche->getValue('nom'))."\" /></a>\n";
         }
 
         //Réduction du descriptif
-        $maxChar = trouveMaxChar($fiche->getValue('presentation'), 36, 8);
+        $maxChar = Text::trouveMaxChar($fiche->getValue('presentation'), 36, 8);
         $tailleCont = mb_strlen($fiche->getValue('presentation'));
 
         $apercu = $fiche->getValue('presentation');
         if ($tailleCont > $maxChar)
         {
-            $apercu = html_substr($fiche->getValue('presentation'), $maxChar, 2);
+            $apercu = Text::html_substr($fiche->getValue('presentation'), $maxChar, 2);
         }
         ?>
 
@@ -71,14 +73,14 @@ $pair = 0;
             <div class="icone">
             <?php echo $photo_principale; ?>
             </div>
-            <h3><a href="<?php echo $url_site; ?>organisateur.php?idO=<?php echo $fiche->getValue('idOrganisateur'); ?>" title="Voir la fiche de l'organisateur : <?php echo securise_string($fiche->getValue('nom')); ?>"><?php echo securise_string($fiche->getValue('nom')); ?></a></h3>
+            <h3><a href="<?php echo $url_site; ?>organisateur.php?idO=<?php echo $fiche->getValue('idOrganisateur'); ?>" title="Voir la fiche de l'organisateur : <?php echo sanitizeForHtml($fiche->getValue('nom')); ?>"><?php echo sanitizeForHtml($fiche->getValue('nom')); ?></a></h3>
             <span class="qui"><?php echo date_fr($fiche->getValue('date_ajout'), "annee", "non", "non"); ?></span>
             <div class="spacer"></div>
             <div class="apercu">
             <?php echo $apercu; ?>
             </div>
             <div class="continuer">
-                <a href="<?php echo $url_site; ?>organisateur.php?idO=<?php echo $fiche->getValue('idOrganisateur'); ?>" title="Voir la fiche de l'organisateur  : <?php echo securise_string($fiche->getValue('nom')); ?>">
+                <a href="<?php echo $url_site; ?>organisateur.php?idO=<?php echo $fiche->getValue('idOrganisateur'); ?>" title="Voir la fiche de l'organisateur  : <?php echo sanitizeForHtml($fiche->getValue('nom')); ?>">
             Voir la fiche complète</a>
             </div>
         </li>

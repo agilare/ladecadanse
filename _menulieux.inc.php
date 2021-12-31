@@ -1,6 +1,7 @@
 <?php
 
-
+use Ladecadanse\Utils;
+use Ladecadanse\Validateur;
 
 $de = "0";
 $vers = "l";
@@ -9,13 +10,13 @@ $tab_statuts = array("actif", "inactif", "ancien");
 $get['statut'] = "actif";
 if (isset($_GET['statut']))
 {
-	$get['statut'] = verif_get($_GET['statut'], "enum", 1, $tab_statuts);
+	$get['statut'] = Validateur::validateUrlQueryValue($_GET['statut'], "enum", 1, $tab_statuts);
 }
 
 $tab_vues = array("az", "genre", "quartier");
 if (isset($_GET['vue']))
 {
-	$get['vue'] = verif_get($_GET['vue'], "enum", 1, $tab_vues);
+	$get['vue'] = Validateur::validateUrlQueryValue($_GET['vue'], "enum", 1, $tab_vues);
 
 	if($get['vue'] != "az")
 	{
@@ -34,7 +35,7 @@ $tab_tranches = array_merge(array_merge(array("ak", "lz", "tout"), array_keys($g
 if (isset($_GET['tranche']))
 {
 
-	$get['tranche'] = verif_get($_GET['tranche'], "enum", 1, $tab_tranches);
+	$get['tranche'] = Validateur::validateUrlQueryValue($_GET['tranche'], "enum", 1, $tab_tranches);
 
 	if ($get['vue'] == "az")
 	{
@@ -245,7 +246,7 @@ while (list ($id, $nom) = mysqli_fetch_row($req_lieux))
 
 
 	$aff_menulieux .= ">
-	<td><a href=\"".$url_site."lieu.php?idL=".$id."&amp;".arguments_URI($get, array("idL", "type_description"))."\">";
+	<td><a href=\"".$url_site."lieu.php?idL=".$id."&amp;".Utils::urlQueryArrayToString($get, array("idL", "type_description"))."\">";
 
 	if (preg_match("/^(Le |La |Les |L')(.*)/", $nomDuLieu, $matches))
 	{

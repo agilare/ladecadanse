@@ -6,24 +6,26 @@ if (is_file("config/reglages.php"))
 
 use Ladecadanse\Sentry;
 use Ladecadanse\Evenement;
-
+use Ladecadanse\Text;
+use Ladecadanse\HtmlShrink;
+use Ladecadanse\Validateur;
 
 $tab_tri = array("dateAjout", "horaire_debut");
 
 if (isset($_GET['idE']))
 {
-	$get['idE'] = verif_get($_GET['idE'], "int", 1);
+	$get['idE'] = Validateur::validateUrlQueryValue($_GET['idE'], "int", 1);
 }
 else
 {
-	msgErreur("idE obligatoire");
+	HtmlShrink::msgErreur("idE obligatoire");
 	exit;
 }
 
 $get['tri'] = "dateAjout";
 if (isset($_GET['tri']))
 {
-	$get['tri'] = verif_get($_GET['tri'], "enum", 1, $tab_tri);
+	$get['tri'] = Validateur::validateUrlQueryValue($_GET['tri'], "enum", 1, $tab_tri);
 }
 
 /**
@@ -49,9 +51,9 @@ if (!$even->getValues() || in_array($even->getValue('statut'), ['inactif', 'prop
 	(
 	$_SESSION['Sgroupe'] <= 6
 	||
-	estAuteur($_SESSION['SidPersonne'], $get['idE'], "evenement") 
+	$authorization->estAuteur($_SESSION['SidPersonne'], $get['idE'], "evenement") 
 	||
-	est_organisateur_evenement($_SESSION['SidPersonne'], $get['idE'])	
+	$authorization->isPersonneInEvenementByOrganisateur($_SESSION['SidPersonne'], $get['idE'])	
 	)
 		
 	)
@@ -100,7 +102,7 @@ $page_titre_localite = " – ";
 
 
 $nom_page = "evenement";
-$page_titre = $even->getValue('titre')." ".$determinant_lieu.$even->getValue('nomLieu').$even_salle.", ".get_adresse($even->getValue('region'), $tab_localite['localite'], $even->getValue('quartier'), $even->getValue('adresse'))."; le ".date_fr($even->getValue('dateEvenement'), "annee", "", "", false);
+$page_titre = $even->getValue('titre')." ".$determinant_lieu.$even->getValue('nomLieu').$even_salle.", ".HtmlShrink::getAdressFitted($even->getValue('region'), $tab_localite['localite'], $even->getValue('quartier'), $even->getValue('adresse'))."; le ".date_fr($even->getValue('dateEvenement'), "annee", "", "", false);
 $page_description = $even->getValue('titre')." ".$determinant_lieu.$even->getValue('nomLieu').
 " le ".date_fr($even->getValue('dateEvenement'), "annee", "", "", false)." ".
 afficher_debut_fin($even->getValue('horaire_debut'), $even->getValue('horaire_fin'),$even->getValue('dateEvenement'));
@@ -183,7 +185,7 @@ else
 <?php
 if (!empty($_SESSION['ajouterEvenement_flash_msg']))
 {
-	msgOk($_SESSION['ajouterEvenement_flash_msg']);
+	HtmlShrink::msgOk($_SESSION['ajouterEvenement_flash_msg']);
 	unset($_SESSION['ajouterEvenement_flash_msg']);
 }
 ?>
@@ -199,7 +201,7 @@ if (!empty($_SESSION['ajouterEvenement_flash_msg']))
 		}
  ?>>
  
- <span class="category"><?php echo ucfirst(nom_genre($even->getValue('genre'))); ?></span>, <?php echo '<a href="'.$url_site.'agenda.php?courant='.$even->getValue('dateEvenement').'">'.date_fr($even->getValue('dateEvenement'), "annee", "", "", false).'</a>';
+            <span class="category"><?php echo ucfirst(Evenement::nom_genre($even->getValue('genre'))); ?></span>, <?php echo '<a href="'.$url_site.'agenda.php?courant='.$even->getValue('dateEvenement').'">'.date_fr($even->getValue('dateEvenement'), "annee", "", "", false).'</a>';
  ?>
 </h2>
 		<div class="entete_contenu_navigation">
@@ -254,8 +256,8 @@ if (!empty($_SESSION['ajouterEvenement_flash_msg']))
 		(isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 6)
 		|| (isset($_SESSION['SidPersonne'])) && $_SESSION['SidPersonne'] == $even->getValue('idPersonne')
 	|| (isset($_SESSION['Saffiliation_lieu']) && $even->getValue('idLieu') != '' && $even->getValue('idLieu') == $_SESSION['Saffiliation_lieu'])
-		|| isset($_SESSION['SidPersonne']) && est_organisateur_evenement($_SESSION['SidPersonne'], $even->getId())
-		|| isset($_SESSION['SidPersonne']) && $even->getValue('idLieu') != 0 && est_organisateur_lieu($_SESSION['SidPersonne'], $even->getValue('idLieu'))
+		|| isset($_SESSION['SidPersonne']) && $authorization->isPersonneInEvenementByOrganisateur($_SESSION['SidPersonne'], $even->getId())
+		|| isset($_SESSION['SidPersonne']) && $even->getValue('idLieu') != 0 && $authorization->isPersonneInLieuByOrganisateur($_SESSION['SidPersonne'], $even->getValue('idLieu'))
 		)
 		{
 		
@@ -266,8 +268,8 @@ if (!empty($_SESSION['ajouterEvenement_flash_msg']))
 		if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 6)
 		|| (isset($_SESSION['SidPersonne'])) && $_SESSION['SidPersonne'] == $even->getValue('idPersonne')
 	|| (isset($_SESSION['Saffiliation_lieu']) && $even->getValue('idLieu') != '' && $even->getValue('idLieu') == $_SESSION['Saffiliation_lieu'])
-	|| isset($_SESSION['SidPersonne']) && est_organisateur_evenement($_SESSION['SidPersonne'], $even->getId())	
-			|| isset($_SESSION['SidPersonne']) && $even->getValue('idLieu') != 0 && est_organisateur_lieu($_SESSION['SidPersonne'], $even->getValue('idLieu'))	
+	|| isset($_SESSION['SidPersonne']) && $authorization->isPersonneInEvenementByOrganisateur($_SESSION['SidPersonne'], $even->getId())	
+			|| isset($_SESSION['SidPersonne']) && $even->getValue('idLieu') != 0 && $authorization->isPersonneInLieuByOrganisateur($_SESSION['SidPersonne'], $even->getValue('idLieu'))	
 		)
 		{
 		?>
@@ -299,7 +301,7 @@ iCal</a></li>
 				 <h3 class="left summary"><?php
 
 
-		$titre = titre_selon_statut($even->getValue('titre'), $even->getValue('statut'));
+		$titre = Evenement::titre_selon_statut($even->getValue('titre'), $even->getValue('statut'));
 
 /* 		if ($even->getValue('statut') == "annule" || $even->getValue('statut')  == "inactif" || $even->getValue('statut')  == "complet")
 		{
@@ -318,7 +320,7 @@ iCal</a></li>
 		$req_lieu = $connector->query("SELECT nom, adresse, quartier, localite.localite AS localite, region, URL, lat, lng FROM lieu, localite 
 		WHERE localite_id=localite.id AND idlieu='".$even->getValue('idLieu')."'");
 		$listeLieu = $connector->fetchArray($req_lieu);
-		$lieu = "<a href=\"".$url_site."lieu.php?idLieu=".$even->getValue('idLieu')."\" title=\"Voir la fiche du lieu : ".securise_string($listeLieu['nom'])."\">".securise_string($listeLieu['nom'])."</a>";
+		$lieu = "<a href=\"".$url_site."lieu.php?idLieu=".$even->getValue('idLieu')."\" title=\"Voir la fiche du lieu : ".sanitizeForHtml($listeLieu['nom'])."\">".sanitizeForHtml($listeLieu['nom'])."</a>";
                 
 		$nom_lieu = '<a href="'.$url_site.'lieu.php?idL='.$even->getValue('idLieu').'" title="Voir la fiche du lieu : " >
 		'.$even->getValue('nomLieu').'</a>';
@@ -327,24 +329,24 @@ iCal</a></li>
 	}
 	else
 	{
-		$listeLieu['nom'] = securise_string($even->getValue('nomLieu'));
-		$lieu = securise_string($even->getValue('nomLieu'));
-		$listeLieu['adresse'] = securise_string($even->getValue('adresse'));               
-                $listeLieu['quartier'] = securise_string($even->getValue('quartier')); 
+		$listeLieu['nom'] = sanitizeForHtml($even->getValue('nomLieu'));
+		$lieu = sanitizeForHtml($even->getValue('nomLieu'));
+		$listeLieu['adresse'] = sanitizeForHtml($even->getValue('adresse'));               
+                $listeLieu['quartier'] = sanitizeForHtml($even->getValue('quartier')); 
                 
 		$req_localite = $connector->query("SELECT  localite FROM localite 
 		WHERE  id='".$even->getValue('localite_id')."'");
 		$tab_localite = $connector->fetchArray($req_localite);                
                 
-                $listeLieu['localite'] = securise_string($tab_localite[0]);
+                $listeLieu['localite'] = sanitizeForHtml($tab_localite[0]);
                 
-		$listeLieu['region'] = securise_string($even->getValue('region'));
-		$listeLieu['URL'] = securise_string($even->getValue('urlLieu'));
+		$listeLieu['region'] = sanitizeForHtml($even->getValue('region'));
+		$listeLieu['URL'] = sanitizeForHtml($even->getValue('urlLieu'));
 
 		$nom_lieu = $lieu;
 	}
        
-		$adresse = htmlspecialchars(get_adresse( $listeLieu['region'], $listeLieu['localite'], $listeLieu['quartier'], $listeLieu['adresse']));
+		$adresse = htmlspecialchars(HtmlShrink::getAdressFitted( $listeLieu['region'], $listeLieu['localite'], $listeLieu['quartier'], $listeLieu['adresse']));
 
 
 ?>
@@ -537,7 +539,7 @@ iCal</a></li>
 							$url_fichier = $url_fichiers_even.$tab_docu['idFichierrecu'].".".$tab_docu['extension'];
 							echo "<li><a href=\"".$url_fichier."\" title=\"Fichier ".$tab_docu['description']."\" onclick=\"window.open(this.href,'_blank');return false;\">".
 							$icone[mb_strtolower($tab_docu['extension'])].
-							$tab_docu['description']." (".formatbytes(filesize($chemin_fichier)).", ".$tab_docu['extension'].")</a></li>";
+							$tab_docu['description']." (".Text::formatbytes(filesize($chemin_fichier)).", ".$tab_docu['extension'].")</a></li>";
 						}
 
 						echo "</ul>";
@@ -556,7 +558,7 @@ iCal</a></li>
 			<?php
 				if ($even->getValue('description') != '')
 				{
-					echo textToHtml($even->getValue('description'))."\n";
+					echo Text::wikiToHtml($even->getValue('description'))."\n";
 				}
 				else
 				{
@@ -649,7 +651,7 @@ iCal</a></li>
 						<th><i class="fa fa-money fa-lg"></i></i></th><td><?php echo $even->getValue('prix') ?></td>
 						</tr>
 						<tr>
-						<th><i class="fa fa-ticket fa-lg"></th><td><?php echo linkify($even->getValue('prelocations')); ?></td>
+						<th><i class="fa fa-ticket fa-lg"></th><td><?php echo Text::linkify($even->getValue('prelocations')); ?></td>
 						</tr>
 
 					</table>
@@ -880,13 +882,13 @@ while ($liste_comm = $connector->fetchArray($req_comm))
 	?>
         
     <div class="commentaire_de">
-     <?php echo "<span class=\"left\">".signature_auteur($liste_comm['idPersonne'])."</span>";
+     <?php echo "<span class=\"left\">".HtmlShrink::authorSignature($liste_comm['idPersonne'])."</span>";
      echo "<span class=\"right\">".date_fr($liste_comm['dateAjout'], "annee")." ";
      echo mb_substr($liste_comm['dateAjout'], 11, -3); ?>
      </span>
      </div> <!-- fin commentaire_de -->
     <div class="spacer"><!-- --></div>
-    <p><?php echo textToHtml(htmlspecialchars($liste_comm['contenu'])) ?></p>
+    <p><?php echo Text::wikiToHtml(htmlspecialchars($liste_comm['contenu'])) ?></p>
 <?php
 }
 

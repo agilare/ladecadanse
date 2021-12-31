@@ -15,6 +15,4 @@ class Organisateur extends Element
         parent::__construct();
 		$this->table = "organisateur";
 	}
-
-
 }

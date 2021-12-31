@@ -6,6 +6,7 @@ if (is_file("config/reglages.php"))
 
 use Ladecadanse\Sentry;
 use Ladecadanse\Validateur;
+use Ladecadanse\HtmlShrink;
 
 $videur = new Sentry();
 
@@ -102,10 +103,10 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok'  && empty($_POS
         //if (PEAR::isError($mail)){
         if ((new PEAR)->isError($mail))
 		{
-            msgErreur('L\'envoi a echoué');			
+            HtmlShrink::msgErreur('L\'envoi a echoué');			
 			echo("<p>" . $mail->getMessage() . "</p>");
         } else {
-			msgOk('Merci, votre message a été envoyé au webmaster');
+			HtmlShrink::msgOk('Merci, votre message a été envoyé au webmaster');
         }
 
 
@@ -125,12 +126,12 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok'  && empty($_POS
 
 		if($mail->Send())
 		{
-			msgOk('Merci, votre message a été envoyé au webmaster');
+			HtmlShrink::msgOk('Merci, votre message a été envoyé au webmaster');
 			
 		}
 		else
 		{
-			msgErreur('L\'envoi a echoué');				 
+			HtmlShrink::msgErreur('L\'envoi a echoué');				 
 			echo "Mailer Error: " . $mail->ErrorInfo;
 		}		
 	    */
@@ -150,7 +151,7 @@ if (!$action_terminee)
 	
 if ($verif->nbErreurs() > 0)
 {
-	msgErreur($verif->getMsgNbErreurs());
+	HtmlShrink::msgErreur($verif->getMsgNbErreurs());
 }
 // onsubmit="return validerEnvoiEmail();
 ?>
@@ -204,7 +205,7 @@ document.write("<a href='mailto:"+link+"'>"+link+"</a>")
 <!-- Email obligatoire (text) -->
 <p>
 <label for="email" id="label_email">E-mail* </label>
-<input name="email" id="email" type="text" size="40" title="email expéditeur" tabindex="1" value="<?php echo securise_string($champs['email']) ?>"  onblur="validerEmail('email', 'false');" />
+<input name="email" id="email" type="text" size="40" title="email expéditeur" tabindex="1" value="<?php echo sanitizeForHtml($champs['email']) ?>"  onblur="validerEmail('email', 'false');" />
 <?php echo $verif->getErreur("email"); ?>
 </p>
 <div class="guideChamp">Votre adresse e-mail restera confidentielle.</div>
@@ -212,7 +213,7 @@ document.write("<a href='mailto:"+link+"'>"+link+"</a>")
 <!-- Nom obligatoire (text) -->
 <p>
 <label for="auteur" id="label_nom">Prénom/Nom* </label>
-<input name="auteur" id="auteur" type="text" size="30" title="auteur" tabindex="2" value="<?php echo securise_string($champs['auteur']) ?>" />
+<input name="auteur" id="auteur" type="text" size="30" title="auteur" tabindex="2" value="<?php echo sanitizeForHtml($champs['auteur']) ?>" />
 <?php echo $verif->getErreur("auteur"); ?>
 </p>
 
@@ -220,7 +221,7 @@ document.write("<a href='mailto:"+link+"'>"+link+"</a>")
 <!-- Affiliation (text) -->
 <p>
 <label for="affiliation" id="label_affiliation">Affiliation </label>
-<input name="affiliation" id="affiliation" type="text" size="30" tabindex="3" value="<?php echo securise_string($champs['affiliation']) ?>" />
+<input name="affiliation" id="affiliation" type="text" size="30" tabindex="3" value="<?php echo sanitizeForHtml($champs['affiliation']) ?>" />
 <?php echo $verif->getErreur("affiliation"); ?>
 </p>
 <div class="guideChamp">Vous pouvez indiquer ici à quel groupe, assoc, etc. vous appartenez.</div>
@@ -234,7 +235,7 @@ document.write("<a href='mailto:"+link+"'>"+link+"</a>")
 
 <p>
 <label for="sujet" id="label_sujet">Sujet* </label>
-<input name="sujet" id="sujet" type="text" size="40" maxlength="100"  tabindex="4" value="<?php echo securise_string($champs['sujet']) ?>" />
+<input name="sujet" id="sujet" type="text" size="40" maxlength="100"  tabindex="4" value="<?php echo sanitizeForHtml($champs['sujet']) ?>" />
 <?php echo $verif->getErreur("sujet"); ?>
 </p>
 
@@ -242,7 +243,7 @@ document.write("<a href='mailto:"+link+"'>"+link+"</a>")
 <!-- Contenu obligatoire (textarea) -->
 <p>
     <label for="contenu" id="label_contenu">Contenu* </label><textarea name="contenu" id="message" rows="14" title="" tabindex="5">
-    <?php echo securise_string($champs['contenu']) ?>
+    <?php echo sanitizeForHtml($champs['contenu']) ?>
     </textarea>
     <?php echo $verif->getErreur("contenu"); ?>
 </p>

@@ -5,7 +5,10 @@ if (is_file("config/reglages.php"))
 }
 
 use Ladecadanse\Sentry;
-
+use Ladecadanse\HtmlShrink;
+use Ladecadanse\Utils;
+use Ladecadanse\Validateur;
+use Ladecadanse\Text;
 
 $videur = new Sentry();
 if (!$videur->checkGroup(12))
@@ -34,7 +37,7 @@ if (isset($_GET['idP']))
 }
 else
 {
-	msgErreur("id obligatoire");
+	HtmlShrink::msgErreur("id obligatoire");
 	exit;
 }
 
@@ -47,7 +50,7 @@ if (isset($_GET['type_elements']))
 	}
 	else
 	{
-		msgErreur("type_elements faux");
+		HtmlShrink::msgErreur("type_elements faux");
 		exit;
 	}
 }
@@ -66,7 +69,7 @@ if (isset($_GET['elements']))
 	}
 	else
 	{
-		msgErreur("element faux");
+		HtmlShrink::msgErreur("element faux");
 		exit;
 	}
 }
@@ -106,7 +109,7 @@ $tab_tri = array("dateAjout", "idOrganisateur", "idEvenement", "idLieu", "idBrev
 
 if (isset($_GET['tri']))
 {
-	$get['tri'] = verif_get($_GET['tri'], "enum", 1, $tab_tri);
+	$get['tri'] = Validateur::validateUrlQueryValue($_GET['tri'], "enum", 1, $tab_tri);
 }
 else
 {
@@ -117,7 +120,7 @@ else
 $tab_ordre = array("asc", "desc");
 if (isset($_GET['ordre']))
 {
-	$get['ordre'] = verif_get($_GET['ordre'], "enum", 1, $tab_ordre);
+	$get['ordre'] = Validateur::validateUrlQueryValue($_GET['ordre'], "enum", 1, $tab_ordre);
 
 	if ($get['ordre'] == "asc")
 	{
@@ -137,12 +140,12 @@ else
 $get['nblignes'] = 100;
 if (!empty($_GET['nblignes']))
 {
-	$get['nblignes'] = verif_get($_GET['nblignes'], "int", 1);
+	$get['nblignes'] = Validateur::validateUrlQueryValue($_GET['nblignes'], "int", 1);
 }
 
 if ($_SESSION['SidPersonne'] != $get['idP'] && $_SESSION['Sgroupe'] > 4 )
 {
-	msgErreur("Vous ne pouvez accédez à cette page");
+	HtmlShrink::msgErreur("Vous ne pouvez accédez à cette page");
 	exit;
 }
 
@@ -178,18 +181,18 @@ $detailsAff = $connector->fetchArray($req_affPers);
 	<div id="profile" style="padding: 0.4em;width: 94%;margin: 0 auto 0 auto;">
         
 		<table>
-            <tr><th>Identifiant</th><td><?php echo securise_string($detailsPersonne['pseudo']) ?></td></tr>
-            <tr><th>E-mail</th><td><?php echo securise_string($detailsPersonne['email']) ?></td></tr>
+            <tr><th>Identifiant</th><td><?php echo sanitizeForHtml($detailsPersonne['pseudo']) ?></td></tr>
+            <tr><th>E-mail</th><td><?php echo sanitizeForHtml($detailsPersonne['email']) ?></td></tr>
             <tr><th>Affiliations</th><td>
             <?php
             //si l'affiliation est un lieu, crée un lien vers ce lieu
             if ($connector->getNumRows($req_affPers) > 0)
             {
-                echo "<a href=\"lieu.php?idL=".securise_string($detailsAff['idLieu'])."\" title=\"Voir la fiche du lieu : ".securise_string($detailsAff['idLieu'])."\" >".securise_string($detailsAff['nom'])."</a>";
+                echo "<a href=\"lieu.php?idL=".sanitizeForHtml($detailsAff['idLieu'])."\" title=\"Voir la fiche du lieu : ".sanitizeForHtml($detailsAff['idLieu'])."\" >".sanitizeForHtml($detailsAff['nom'])."</a>";
             }
             else
             {
-                echo securise_string($detailsPersonne['affiliation']);
+                echo sanitizeForHtml($detailsPersonne['affiliation']);
             }
             echo '<br />';
             $sql = "SELECT * FROM personne_organisateur, organisateur WHERE personne_organisateur.idOrganisateur=organisateur.idOrganisateur AND personne_organisateur.idPersonne=".$get['idP'];
@@ -251,7 +254,7 @@ if ($get['elements'] == "evenement")
 	$tab_nb_fav = $connector->fetchArray($req_nb_fav);
 	$tot_fav = $tab_nb_fav['nbeven'];
 
-	echo getPaginationString($get['page'], $tot_fav, $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?idP=".$get['idP']."&elements=".$get['elements']."&type_elements=".$get['type_elements']."&page=");
+	echo HtmlShrink::getPaginationString($get['page'], $tot_fav, $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?idP=".$get['idP']."&elements=".$get['elements']."&type_elements=".$get['type_elements']."&page=");
 
 
 	if ($connector->getNumRows($req_favoris) > 0)
@@ -271,13 +274,13 @@ if ($get['elements'] == "evenement")
 		while ($tab_even = $connector->fetchArray($req_favoris))
 		{
 
-			$nomLieu = securise_string($tab_even['nomLieu']);
+			$nomLieu = sanitizeForHtml($tab_even['nomLieu']);
 
 			if ($tab_even['idLieu'] != 0)
 			{
 				$req_lieu = $connector->query("SELECT nom FROM lieu WHERE idLieu=".$tab_even['idLieu']);
 				$tabLieu = $connector->fetchArray($req_lieu);
-				$nomLieu = "<a href=\"".$url_site."lieu.php?idL=".$tab_even['idLieu']."\" title=\"Voir la fiche du lieu : ".securise_string($tabLieu['nom'])." \">".securise_string($tabLieu['nom'])."</a>";
+				$nomLieu = "<a href=\"".$url_site."lieu.php?idL=".$tab_even['idLieu']."\" title=\"Voir la fiche du lieu : ".sanitizeForHtml($tabLieu['nom'])." \">".sanitizeForHtml($tabLieu['nom'])."</a>";
 			}
 
 
@@ -295,7 +298,7 @@ if ($get['elements'] == "evenement")
 			if (!empty($tab_even['flyer']))
 			{
 				$imgInfo = @getimagesize($rep_images_even.$tab_even['flyer']);
-				echo lien_popup($IMGeven.$tab_even['flyer']."?".@filemtime($rep_images_even.$tab_even['flyer']),
+				echo HtmlShrink::popupLink($IMGeven.$tab_even['flyer']."?".@filemtime($rep_images_even.$tab_even['flyer']),
 				"Flyer", $imgInfo[0]+20,$imgInfo[1]+20,
 				'<img src="'.$IMGeven.'t_'.$tab_even['flyer'].'" alt="Flyer" width="60" />'
 				);
@@ -304,14 +307,14 @@ if ($get['elements'] == "evenement")
 
 			echo '<td>';
 			echo "<h3><a href=\"".$url_site."evenement.php?idE=".$tab_even['idEvenement']."\"
-			title=\"Voir la fiche de l'événement\">".securise_string($tab_even['titre'])."</a></h3>";
+			title=\"Voir la fiche de l'événement\">".sanitizeForHtml($tab_even['titre'])."</a></h3>";
 
 			echo '<p class="description">';
 
 			if (!empty($tab_even['description']))
 			{
-				$maxChar = trouveMaxChar($tab_even['description'], 45, 2);
-				echo @texteHtmlReduit(textToHtml($tab_even['description']),
+				$maxChar = Text::trouveMaxChar($tab_even['description'], 45, 2);
+				echo @Text::texteHtmlReduit(Text::wikiToHtml($tab_even['description']),
 				$maxChar,
 				"<span class=\"continuer\"><a href=\"".$url_site."evenement.php?idE=".$tab_even['idEvenement']."\"
 				title=\"Voir la fiche complète de l'événement\"> Lire la suite</a></span>");
@@ -365,7 +368,7 @@ else if ($get['elements'] == "lieu")
 	$req_lieux = $connector->query($sql_favoris);
 	$nb_rows = $connector->getNumRows($req_lieux);
 
-	echo getPaginationString($get['page'], $nb_rows, $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?idP=".$get['idP']."&elements=".$get['elements']."&tri=".$get['tri']."&ordre=".$get['ordre']."&nblignes=".$get['nblignes']."&page=");
+	echo HtmlShrink::getPaginationString($get['page'], $nb_rows, $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?idP=".$get['idP']."&elements=".$get['elements']."&tri=".$get['tri']."&ordre=".$get['ordre']."&nblignes=".$get['nblignes']."&page=");
 
 	if ($nb_rows > 0)
 	{
@@ -401,7 +404,7 @@ else if ($get['elements'] == "lieu")
 			if (!empty($tab_lieu['logo']))
 			{
 				$imgInfo = @getimagesize($rep_images_lieux.$tab_lieu['logo']);
-				echo lien_popup($IMGlieux.$tab_lieu['logo']."?".@filemtime($rep_images_lieux.$tab_lieu['logo']),
+				echo HtmlShrink::popupLink($IMGlieux.$tab_lieu['logo']."?".@filemtime($rep_images_lieux.$tab_lieu['logo']),
 				"Logo", $imgInfo[0]+20,$imgInfo[1]+20,
 				'<img src="'.$IMGlieux.'s_'.$tab_lieu['logo'].'" alt="Logo" />'
 				);
@@ -409,7 +412,7 @@ else if ($get['elements'] == "lieu")
 			else if ($tab_lieu['photo1'] != "")
 			{
 				$imgInfo = @getimagesize($rep_images_lieux.$tab_lieu['photo1']);
-				echo lien_popup($IMGlieux.$tab_lieu['photo1']."?".@filemtime($rep_images_lieux.$tab_lieu['photo1']),
+				echo HtmlShrink::popupLink($IMGlieux.$tab_lieu['photo1']."?".@filemtime($rep_images_lieux.$tab_lieu['photo1']),
 				"photo1", $imgInfo[0]+20,$imgInfo[1]+20,
 				'<img src="'.$IMGlieux.'s_'.$tab_lieu['photo1'].'" width="80" alt="photo1" />'
 				);
@@ -423,9 +426,9 @@ else if ($get['elements'] == "lieu")
 
 
 
-			<td><a href=\"".$url_site."lieu.php?idL=".$tab_lieu['idLieu']."\" title=\"Voir la fiche du lieu :".securise_string($tab_lieu['nom'])."\">".securise_string($tab_lieu['nom'])."</a></td>
+			<td><a href=\"".$url_site."lieu.php?idL=".$tab_lieu['idLieu']."\" title=\"Voir la fiche du lieu :".sanitizeForHtml($tab_lieu['nom'])."\">".sanitizeForHtml($tab_lieu['nom'])."</a></td>
 			";
-			echo "<td><p class=\"adresse\">".get_adresse($tab_lieu['region'], $tab_lieu['localite'], $tab_lieu['quartier'], $tab_lieu['adresse'] )."</p></td>";
+			echo "<td><p class=\"adresse\">".HtmlShrink::getAdressFitted($tab_lieu['region'], $tab_lieu['localite'], $tab_lieu['quartier'], $tab_lieu['adresse'] )."</p></td>";
 			echo "
 
 			<td class=\"tdleft\"><ul>";
@@ -477,7 +480,7 @@ else if ($get['type_elements'] == 'participations')
 	$tab_nb_fav = $connector->fetchArray($req_nb_fav);
 	$tot_fav = $tab_nb_fav['nbeven'];
 
-	echo getPaginationString($get['page'], $tot_fav, $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?idP=".$get['idP']."&elements=".$get['elements']."&type_elements=".$get['type_elements']."&page=");
+	echo HtmlShrink::getPaginationString($get['page'], $tot_fav, $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?idP=".$get['idP']."&elements=".$get['elements']."&type_elements=".$get['type_elements']."&page=");
 
 
 	if ($connector->getNumRows($req_favoris) > 0)
@@ -497,13 +500,13 @@ else if ($get['type_elements'] == 'participations')
 		while ($tab_even = $connector->fetchArray($req_favoris))
 		{
 
-			$nomLieu = securise_string($tab_even['nomLieu']);
+			$nomLieu = sanitizeForHtml($tab_even['nomLieu']);
 
 			if ($tab_even['idLieu'] != 0)
 			{
 				$req_lieu = $connector->query("SELECT nom FROM lieu WHERE idLieu=".$tab_even['idLieu']);
 				$tabLieu = $connector->fetchArray($req_lieu);
-				$nomLieu = "<a href=\"".$url_site."lieu.php?idL=".$tab_even['idLieu']."\" title=\"Voir la fiche du lieu : ".securise_string($tabLieu['nom'])." \">".securise_string($tabLieu['nom'])."</a>";
+				$nomLieu = "<a href=\"".$url_site."lieu.php?idL=".$tab_even['idLieu']."\" title=\"Voir la fiche du lieu : ".sanitizeForHtml($tabLieu['nom'])." \">".sanitizeForHtml($tabLieu['nom'])."</a>";
 			}
 
 
@@ -522,7 +525,7 @@ else if ($get['type_elements'] == 'participations')
 			if (!empty($tab_even['flyer']))
 			{
 				$imgInfo = @getimagesize($rep_images_even.$tab_even['flyer']);
-				echo lien_popup($IMGeven.$tab_even['flyer']."?".@filemtime($rep_images_even.$tab_even['flyer']),
+				echo HtmlShrink::popupLink($IMGeven.$tab_even['flyer']."?".@filemtime($rep_images_even.$tab_even['flyer']),
 				"Flyer", $imgInfo[0]+20,$imgInfo[1]+20,
 				'<img src="'.$IMGeven.'t_'.$tab_even['flyer'].'" alt="Flyer" width="60" />'
 				);
@@ -531,14 +534,14 @@ else if ($get['type_elements'] == 'participations')
 
 			echo '<td>';
 			echo "<h3><a href=\"".$url_site."evenement.php?idE=".$tab_even['idEvenement']."\"
-			title=\"Voir la fiche de l'événement\">".securise_string($tab_even['titre'])."</a></h3>";
+			title=\"Voir la fiche de l'événement\">".sanitizeForHtml($tab_even['titre'])."</a></h3>";
 
 			echo '<p class="description">';
 
 			if (!empty($tab_even['description']))
 			{
-				$maxChar = trouveMaxChar($tab_even['description'], 45, 2);
-				echo @texteHtmlReduit(textToHtml($tab_even['description']),
+				$maxChar = Text::trouveMaxChar($tab_even['description'], 45, 2);
+				echo @Text::texteHtmlReduit(Text::wikiToHtml($tab_even['description']),
 				$maxChar,
 				"<span class=\"continuer\"><a href=\"".$url_site."evenement.php?idE=".$tab_even['idEvenement']."\"
 				title=\"Voir la fiche complète de l'événement\"> Lire la suite</a></span>");
@@ -697,7 +700,7 @@ else
 		$tab_nbeven = $connector->fetchArray($req_nbeven);
 		$tot_elements = $tab_nbeven['nbeven'];
 
-		echo getPaginationString($get['page'], $tot_elements, $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?idP=".$get['idP']."&elements=".$get['elements']."&tri=".$get['tri']."&ordre=".$get['ordre']."&nblignes=".$get['nblignes']."&page=");
+		echo HtmlShrink::getPaginationString($get['page'], $tot_elements, $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?idP=".$get['idP']."&elements=".$get['elements']."&tri=".$get['tri']."&ordre=".$get['ordre']."&nblignes=".$get['nblignes']."&page=");
 
 
 		if ($connector->getNumRows($req_evenement) > 0)
@@ -708,7 +711,7 @@ else
 				echo '<li ';
 				if ($get['nblignes'] == $nbl) { echo 'class="ici"'; }
 
-				echo '><a href="'.$_SERVER['PHP_SELF'].'?'.arguments_URI($get, "nblignes").'&nblignes='.$nbl.'">'.$nbl.'</a></li>';
+				echo '><a href="'.$_SERVER['PHP_SELF'].'?'.Utils::urlQueryArrayToString($get, "nblignes").'&nblignes='.$nbl.'">'.$nbl.'</a></li>';
 			}
 			echo '</ul>';
 			echo '<div class="spacer"><!-- --></div>';
@@ -745,13 +748,13 @@ else
 			while ($tab_even = $connector->fetchArray($req_evenement))
 			{
 
-				$nomLieu = securise_string($tab_even['nomLieu']);
+				$nomLieu = sanitizeForHtml($tab_even['nomLieu']);
 
 				if ($tab_even['idLieu'] != 0)
 				{
 					$req_lieu = $connector->query("SELECT nom FROM lieu WHERE idLieu=".$tab_even['idLieu']);
 					$tabLieu = $connector->fetchArray($req_lieu);
-					$nomLieu = "<a href=\"".$url_site."lieu.php?idL=".$tab_even['idLieu']."\" title=\"Voir la fiche du lieu : ".securise_string($tabLieu['nom'])." \">".securise_string($tabLieu['nom'])."</a>";
+					$nomLieu = "<a href=\"".$url_site."lieu.php?idL=".$tab_even['idLieu']."\" title=\"Voir la fiche du lieu : ".sanitizeForHtml($tabLieu['nom'])." \">".sanitizeForHtml($tabLieu['nom'])."</a>";
 				}
 
 
@@ -767,7 +770,7 @@ else
 				echo "
 				<td>".date_iso2app($tab_even['dateEvenement'])."</td>
 				<td>".$nomLieu."</td>
-				<td><a href=\"".$url_site."evenement.php?idE=".$tab_even['idEvenement']."\" title=\"Voir la fiche de l'événement\">".securise_string($tab_even['titre'])."</a></td>";
+				<td><a href=\"".$url_site."evenement.php?idE=".$tab_even['idEvenement']."\" title=\"Voir la fiche de l'événement\">".sanitizeForHtml($tab_even['titre'])."</a></td>";
 				/*echo "<td>";
 				if (!empty($tab_even['flyer']))
 				{
@@ -813,7 +816,7 @@ else
 
 
 
-		echo getPaginationString($get['page'], $tot_elements, $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?idP=".$get['idP']."&elements=".$get['elements']."&tri=".$get['tri']."&ordre=".$get['ordre']."&nblignes=".$get['nblignes']."&page=");
+		echo HtmlShrink::getPaginationString($get['page'], $tot_elements, $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?idP=".$get['idP']."&elements=".$get['elements']."&tri=".$get['tri']."&ordre=".$get['ordre']."&nblignes=".$get['nblignes']."&page=");
 
 		if ($connector->getNumRows($req_des) > 0)
 		{
@@ -823,7 +826,7 @@ else
 				echo '<li ';
 				if ($get['nblignes'] == $nbl) { echo 'class="ici"'; }
 
-				echo '><a href="'.$_SERVER['PHP_SELF'].'?'.arguments_URI($get, "nblignes").'&nblignes='.$nbl.'">'.$nbl.'</a></li>';
+				echo '><a href="'.$_SERVER['PHP_SELF'].'?'.Utils::urlQueryArrayToString($get, "nblignes").'&nblignes='.$nbl.'">'.$nbl.'</a></li>';
 			}
 			echo '</ul>';
 			echo '<div class="spacer"><!-- --></div>';
@@ -863,7 +866,7 @@ else
 
 				$req_lieu = $connector->query("SELECT nom FROM lieu WHERE idLieu=".$tab_desc['idLieu']);
 				$tabLieu = $connector->fetchArray($req_lieu);
-				$nomLieu = "<a href=\"".$url_site."lieu.php?idL=".$tab_desc['idLieu']."\" title=\"Éditer le lieu\">".securise_string($tabLieu['nom'])."</a>";
+				$nomLieu = "<a href=\"".$url_site."lieu.php?idL=".$tab_desc['idLieu']."\" title=\"Éditer le lieu\">".sanitizeForHtml($tabLieu['nom'])."</a>";
 
 
 				if ($pair % 2 == 0)
@@ -881,7 +884,7 @@ else
 					$tab_desc['contenu'] = mb_substr($tab_desc['contenu'], 0, 200)." [...]";
 				}
 
-				echo "<td class=\"tdleft\" style=\"width:150px\">".textToHtml(securise_string($tab_desc['contenu']))."</td>";
+				echo "<td class=\"tdleft\" style=\"width:150px\">".Text::wikiToHtml(sanitizeForHtml($tab_desc['contenu']))."</td>";
 				echo '<td>'.$tab_desc['type'].'</td>';
 				echo "<td>".mb_substr(date_iso2app($tab_desc['dateAjout']), 8)."</td>";
 				if ($_SESSION['SidPersonne'] == $detailsPersonne['idPersonne'] || $_SESSION['Sgroupe'] <= 4)
@@ -918,7 +921,7 @@ else
 	$tot_elements = $tab_count['total'];
 
 
-	echo getPaginationString($get['page'], $tot_elements, $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?idP=".$get['idP']."&elements=".$get['elements']."&tri=".$get['tri']."&ordre=".$get['ordre']."&nblignes=".$get['nblignes']."&page=");
+	echo HtmlShrink::getPaginationString($get['page'], $tot_elements, $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?idP=".$get['idP']."&elements=".$get['elements']."&tri=".$get['tri']."&ordre=".$get['ordre']."&nblignes=".$get['nblignes']."&page=");
 
 
 	if ($connector->getNumRows($req_lieux) > 0)
@@ -932,7 +935,7 @@ else
 			echo '<li ';
 			if ($get['nblignes'] == $nbl) { echo 'class="ici"'; }
 
-			echo '><a href="'.$_SERVER['PHP_SELF'].'?'.arguments_URI($get, "nblignes").'&nblignes='.$nbl.'">'.$nbl.'</a></li>';
+			echo '><a href="'.$_SERVER['PHP_SELF'].'?'.Utils::urlQueryArrayToString($get, "nblignes").'&nblignes='.$nbl.'">'.$nbl.'</a></li>';
 		}
 		echo '</ul>';
 			echo '<div class="spacer"><!-- --></div>';
@@ -984,7 +987,7 @@ else
 
 			echo "
 			<td>".$idLieu."</td>
-			<td><a href=\"".$url_site."lieu.php?idL=".$idLieu."\" title=\"Voir la fiche du lieu :".securise_string($nom)."\">".securise_string($nom)."</a></td>
+			<td><a href=\"".$url_site."lieu.php?idL=".$idLieu."\" title=\"Voir la fiche du lieu :".sanitizeForHtml($nom)."\">".sanitizeForHtml($nom)."</a></td>
 			<td class=\"tdleft\"><ul>";
 
 
@@ -1031,7 +1034,7 @@ else if ($get['elements'] == "organisateur")
 	$tab_count = $connector->fetchArray($req_count);
 	$tot_elements = $tab_count['total'];
 
-	echo getPaginationString($get['page'], $tot_elements, $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?idP=".$get['idP']."&elements=".$get['elements']."&tri=".$get['tri']."&ordre=".$get['ordre']."&nblignes=".$get['nblignes']."&page=");
+	echo HtmlShrink::getPaginationString($get['page'], $tot_elements, $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?idP=".$get['idP']."&elements=".$get['elements']."&tri=".$get['tri']."&ordre=".$get['ordre']."&nblignes=".$get['nblignes']."&page=");
 
 	if ($connector->getNumRows($req_lieux) > 0)
 	{
@@ -1044,7 +1047,7 @@ else if ($get['elements'] == "organisateur")
 			echo '<li ';
 			if ($get['nblignes'] == $nbl) { echo 'class="ici"'; }
 
-			echo '><a href="'.$_SERVER['PHP_SELF'].'?'.arguments_URI($get, "nblignes").'&nblignes='.$nbl.'">'.$nbl.'</a></li>';
+			echo '><a href="'.$_SERVER['PHP_SELF'].'?'.Utils::urlQueryArrayToString($get, "nblignes").'&nblignes='.$nbl.'">'.$nbl.'</a></li>';
 		}
 		echo '</ul>';
 		echo '<div class="spacer"><!-- --></div>';
@@ -1090,7 +1093,7 @@ else if ($get['elements'] == "organisateur")
 
 			echo "
 			<td>".$tab['idOrganisateur']."</td>
-			<td><a href=\"".$url_site."organisateur.php?idO=".$tab['idOrganisateur']."\" title=\"Voir la fiche\">".securise_string($tab['nom'])."</a></td>
+			<td><a href=\"".$url_site."organisateur.php?idO=".$tab['idOrganisateur']."\" title=\"Voir la fiche\">".sanitizeForHtml($tab['nom'])."</a></td>
 	</td>";
 			echo "<td>";
 			if (!empty($tab['URL'])) {
@@ -1130,7 +1133,7 @@ else if ($get['elements'] == "breve")
 	$tab_count = $connector->fetchArray($req_count);
 	$tot_elements = $tab_count['total'];
 
-	echo getPaginationString($get['page'], $tot_elements, $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?idP=".$get['idP']."&elements=".$get['elements']."&nblignes=".$get['nblignes']."&page=");
+	echo HtmlShrink::getPaginationString($get['page'], $tot_elements, $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?idP=".$get['idP']."&elements=".$get['elements']."&nblignes=".$get['nblignes']."&page=");
 
 	if ($connector->getNumRows($req_breves) > 0)
 	{
@@ -1140,7 +1143,7 @@ else if ($get['elements'] == "breve")
 			echo '<li ';
 			if ($get['nblignes'] == $nbl) { echo 'class="ici"'; }
 
-			echo '><a href="'.$_SERVER['PHP_SELF'].'?'.arguments_URI($get, "nblignes").'&nblignes='.$nbl.'">'.$nbl.'</a></li>';
+			echo '><a href="'.$_SERVER['PHP_SELF'].'?'.Utils::urlQueryArrayToString($get, "nblignes").'&nblignes='.$nbl.'">'.$nbl.'</a></li>';
 		}
 		echo '</ul>';
 		echo '<div class="spacer"><!-- --></div>';
@@ -1191,13 +1194,13 @@ else if ($get['elements'] == "breve")
 
 			echo "
 			<td>".$idBreve."</td>
-			<td>".securise_string($titre)."</td>
+			<td>".sanitizeForHtml($titre)."</td>
 
 			<td>";
 			if (!empty($image))
 			{
 				$imgInfo = @getimagesize($rep_images_breves.$image);
-				echo lien_popup($IMGbreves.$image."?".@filemtime($rep_images_breves.$image), "Image", $imgInfo[0]+20, $imgInfo[1]+20, $iconeImage);
+				echo HtmlShrink::popupLink($IMGbreves.$image."?".@filemtime($rep_images_breves.$image), "Image", $imgInfo[0]+20, $imgInfo[1]+20, $iconeImage);
 			}
 			echo "</td>";
 			echo "<td>";
@@ -1245,7 +1248,7 @@ $req_count = $connector->query("SELECT COUNT(*) AS total FROM commentaire WHERE 
 $tab_count = $connector->fetchArray($req_count);
 $tot_elements = $tab_count['total'];
 
-echo getPaginationString($get['page'], $tot_elements, $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?idP=".$get['idP']."&elements=".$get['elements']."&nblignes=".$get['nblignes']."&page=");
+echo HtmlShrink::getPaginationString($get['page'], $tot_elements, $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?idP=".$get['idP']."&elements=".$get['elements']."&nblignes=".$get['nblignes']."&page=");
 
 
 
@@ -1258,7 +1261,7 @@ if ($connector->getNumRows($req_comm) > 0)
 		echo '<li ';
 		if ($get['nblignes'] == $nbl) { echo 'class="ici"'; }
 
-		echo '><a href="'.$_SERVER['PHP_SELF'].'?'.arguments_URI($get, "nblignes").'&nblignes='.$nbl.'">'.$nbl.'</a></li>';
+		echo '><a href="'.$_SERVER['PHP_SELF'].'?'.Utils::urlQueryArrayToString($get, "nblignes").'&nblignes='.$nbl.'">'.$nbl.'</a></li>';
 	}
 	echo '</ul>';
 	echo '<div class="spacer"><!-- --></div>';
@@ -1303,7 +1306,7 @@ if ($connector->getNumRows($req_comm) > 0)
 			echo "<tr class=\"impair\" >";
 		}
 
-		echo "<td class=\"tdleft\" style=\"width:150px\">".textToHtml(securise_string($tab_comm['contenu']))."</td>";
+		echo "<td class=\"tdleft\" style=\"width:150px\">".Text::wikiToHtml(sanitizeForHtml($tab_comm['contenu']))."</td>";
 
 		if ($tab_comm['element'] == 'evenement')
 		{
@@ -1352,7 +1355,7 @@ else
 
 }
 
-echo getPaginationString($get['page'], $tot_elements, $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?idP=".$get['idP']."&elements=".$get['elements']."&tri=".$get['tri']."&ordre=".$get['ordre']."&nblignes=".$get['nblignes']."&page=");
+echo HtmlShrink::getPaginationString($get['page'], $tot_elements, $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?idP=".$get['idP']."&elements=".$get['elements']."&tri=".$get['tri']."&ordre=".$get['ordre']."&nblignes=".$get['nblignes']."&page=");
 
 ?>
 	</table>

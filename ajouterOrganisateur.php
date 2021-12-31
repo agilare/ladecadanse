@@ -8,6 +8,8 @@ if (is_file("config/reglages.php"))
 use Ladecadanse\Sentry;
 use Ladecadanse\SecurityToken;
 use Ladecadanse\EditionOrganisateur;
+use Ladecadanse\Validateur;
+use Ladecadanse\HtmlShrink;
 
 $videur = new Sentry();
 
@@ -31,7 +33,7 @@ $get['action'] = "ajouter";
 $get['idO'] = "idO";
 if (isset($_GET['action']))
 {
-	$get['action'] = verif_get($_GET['action'], "enum", "ajouter", $actions);
+	$get['action'] = Validateur::validateUrlQueryValue($_GET['action'], "enum", "ajouter", $actions);
 }
 
 if (isset($_GET['idO']))
@@ -44,9 +46,9 @@ if (isset($_GET['idO']))
 */
 if ($get['action'] != "ajouter" && $get['action'] != "insert")
 {
-	if (!estAuteur($_SESSION['SidPersonne'], $get['idO'], "organisateur") && $_SESSION['Sgroupe'] > 8)
+	if (!$authorization->estAuteur($_SESSION['SidPersonne'], $get['idO'], "organisateur") && $_SESSION['Sgroupe'] > 8)
 	{
-		msgErreur("Vous ne pouvez pas modifier cet organisateur");
+		HtmlShrink::msgErreur("Vous ne pouvez pas modifier cet organisateur");
 		exit;
 	}
 }
@@ -98,7 +100,7 @@ if (($get['action'] == 'editer' || $get['action'] == 'update'))
 	$titre_form = "Modifier";
 	$nom_submit = "Modifier";
 
-	if (estAuteur($_SESSION["SidPersonne"], $get['idO'], "organisateur") || $_SESSION['Sgroupe'] <= 8)
+	if ($authorization->estAuteur($_SESSION["SidPersonne"], $get['idO'], "organisateur") || $_SESSION['Sgroupe'] <= 8)
 	{
 		//Menu d'actions
 		if ($_SESSION['Sgroupe'] < 2)
@@ -112,7 +114,7 @@ if (($get['action'] == 'editer' || $get['action'] == 'update'))
 	}
 	else
 	{
-		msgErreur("Vous ne pouvez pas éditer cet élément");
+		HtmlShrink::msgErreur("Vous ne pouvez pas éditer cet élément");
 		exit;
 	}
 }
@@ -228,8 +230,8 @@ if (isset($get['idO']) && $form->getValeur('logo') != '' && $form->getErreur("lo
 
 	$imgInfo = getimagesize($rep_images_organisateurs.$form->getValeur('logo'));
 
-	$lien_popup = lien_popup($url_images_organisateurs.$form->getValeur('logo')."?".filemtime($rep_images_organisateurs.$form->getValeur('logo')), "Logo", $imgInfo[0]+20, $imgInfo[1]+20,
-	"<img src=\"".$url_images_organisateurs."s_".$form->getValeur('logo')."?".filemtime($rep_images_organisateurs.$form->getValeur('logo'))."\" alt=\"Logo pour ".securise_string($form->getValeur('nom'))."\" />"
+	$lien_popup = HtmlShrink::popupLink($url_images_organisateurs.$form->getValeur('logo')."?".filemtime($rep_images_organisateurs.$form->getValeur('logo')), "Logo", $imgInfo[0]+20, $imgInfo[1]+20,
+	"<img src=\"".$url_images_organisateurs."s_".$form->getValeur('logo')."?".filemtime($rep_images_organisateurs.$form->getValeur('logo'))."\" alt=\"Logo pour ".sanitizeForHtml($form->getValeur('nom'))."\" />"
 	);
 	$checked = '';
 	$tab_sup = $form->getSupprimer();
@@ -269,8 +271,8 @@ if (isset($get['idO']) && $form->getValeur('photo') != '' && $form->getErreur("p
 {
 	$imgInfo = getimagesize($rep_images_organisateurs.$form->getValeur('photo'));
 
-	$lien_popup = lien_popup($url_images_organisateurs.$form->getValeur('photo')."?".filemtime($rep_images_organisateurs.$form->getValeur('photo')), "Photo", $imgInfo[0]+20, $imgInfo[1]+20,
-	"<img src=\"".$url_images_organisateurs."s_".$form->getValeur('photo')."?".filemtime($rep_images_organisateurs.$form->getValeur('photo'))."\" alt=\"photo pour ".securise_string($form->getValeur('nom'))."\" />"
+	$lien_popup = HtmlShrink::popupLink($url_images_organisateurs.$form->getValeur('photo')."?".filemtime($rep_images_organisateurs.$form->getValeur('photo')), "Photo", $imgInfo[0]+20, $imgInfo[1]+20,
+	"<img src=\"".$url_images_organisateurs."s_".$form->getValeur('photo')."?".filemtime($rep_images_organisateurs.$form->getValeur('photo'))."\" alt=\"photo pour ".sanitizeForHtml($form->getValeur('nom'))."\" />"
 	);
 	$checked = '';
 	$tab_sup = $form->getSupprimer();
@@ -304,7 +306,7 @@ if (isset($get['idO']) && $form->getValeur('photo') != '' && $form->getErreur("p
 
 //menu d'actions (activation et suppression)  pour l'auteur > 6 ou l'admin
 if (($get['action'] == 'editer' || $get['action'] == 'update') &&
-((estAuteur($_SESSION['SidPersonne'], $get['idO'], "organisateur") && $_SESSION['Sgroupe'] < 6) || $_SESSION['Sgroupe'] <= 4))
+(($authorization->estAuteur($_SESSION['SidPersonne'], $get['idO'], "organisateur") && $_SESSION['Sgroupe'] < 6) || $_SESSION['Sgroupe'] <= 4))
 {
 ?>
 

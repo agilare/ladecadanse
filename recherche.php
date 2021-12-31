@@ -7,6 +7,10 @@ if (is_file("config/reglages.php"))
 
 use Ladecadanse\Sentry;
 use Ladecadanse\Logger;
+use Ladecadanse\HtmlShrink;
+use Ladecadanse\Utils;
+use Ladecadanse\Validateur;
+use Ladecadanse\Text;
 
 $videur = new Sentry();
 
@@ -19,25 +23,25 @@ $get = array();
 $get['tri'] = "pertinence";
 if (isset($_GET['tri']))
 {
-	$get['tri'] =  verif_get($_GET['tri'], "enum", 1, array("pertinence", "dateEvenement", "dateAjout"));
+	$get['tri'] =  Validateur::validateUrlQueryValue($_GET['tri'], "enum", 1, array("pertinence", "dateEvenement", "dateAjout"));
 }
 
 $get['page'] = 1;
 if (isset($_GET['page']))
 {
-	$get['page'] =  verif_get($_GET['page'], "int", 1);
+	$get['page'] =  Validateur::validateUrlQueryValue($_GET['page'], "int", 1);
 }
 
 $get['periode'] = "futur";
 if (isset($_GET['periode']))
 {
-	$get['periode'] =  verif_get($_GET['periode'], "enum", 1, $tab_periodes);
+	$get['periode'] =  Validateur::validateUrlQueryValue($_GET['periode'], "enum", 1, $tab_periodes);
 }
 
 $get['mots'] = "";
 if (isset($_GET['mots']))
 {
-	$get['mots'] = verif_get($_GET['mots'], "string", 1);
+	$get['mots'] = Validateur::validateUrlQueryValue($_GET['mots'], "string", 1);
 }
 
 $mots_brut = $get['mots'];
@@ -58,7 +62,7 @@ include("_header.inc.php");
 <!-- D?t Contenu -->
 <div id="contenu" class="colonne rechercher">
 	<div id="entete_contenu">
-        <h2>Rechercher un événement</h2><?php getMenuRegions($glo_regions, $get); ?>
+        <h2>Rechercher un événement</h2><?php HtmlShrink::getMenuRegions($glo_regions, $get); ?>
 		<div class="spacer"></div>
 	</div>
 
@@ -206,7 +210,7 @@ if (!empty($get['mots']))
 
 	if ($nb_even == 0)
 	{
-	  	msgInfo("Pas d'événement trouvé pour <em>".securise_string($mots)."</em>");
+	  	HtmlShrink::msgInfo("Pas d'événement trouvé pour <em>".sanitizeForHtml($mots)."</em>");
 	}
 	else
 	{
@@ -280,7 +284,7 @@ if (!empty($get['mots']))
             $pluriel = "s ";
 		}
 		
-?><h3 class="res"><?php echo $nb_even." événement".$pluriel."  trouvé".$pluriel; ?> pour <em><?php echo securise_string($mots) ?></em></h3>
+?><h3 class="res"><?php echo $nb_even." événement".$pluriel."  trouvé".$pluriel; ?> pour <em><?php echo sanitizeForHtml($mots) ?></em></h3>
 
     <?php } ?>
 
@@ -292,11 +296,11 @@ if (!empty($get['mots']))
             <?php
             $get['mots'] = urlencode($get['mots']);
             ?>
-            <li class="futur<?php if ($get['periode'] == "futur") { echo " ici"; } ?>"><?php echo "<a href=\"".basename(__FILE__)."?".arguments_URI($get, "periode")."&amp;periode=futur\" title=\"\">Futurs</a></li>";?>
+            <li class="futur<?php if ($get['periode'] == "futur") { echo " ici"; } ?>"><?php echo "<a href=\"".basename(__FILE__)."?".Utils::urlQueryArrayToString($get, "periode")."&amp;periode=futur\" title=\"\">Futurs</a></li>";?>
 
 
-            <li class="ancien<?php if ($get['periode'] == "ancien") { echo " ici"; } ?>"><?php echo "<a href=\"".basename(__FILE__)."?".arguments_URI($get, "periode")."&amp;periode=ancien\" title=\"\">Anciens</a></li>";?>
-            <li class="tous<?php if ($get['periode'] == "tous") { echo " ici"; } ?>"><?php echo "<a href=\"".basename(__FILE__)."?".arguments_URI($get, "periode")."&amp;periode=tous\" title=\"\">Tous</a></li>"; ?>
+            <li class="ancien<?php if ($get['periode'] == "ancien") { echo " ici"; } ?>"><?php echo "<a href=\"".basename(__FILE__)."?".Utils::urlQueryArrayToString($get, "periode")."&amp;periode=ancien\" title=\"\">Anciens</a></li>";?>
+            <li class="tous<?php if ($get['periode'] == "tous") { echo " ici"; } ?>"><?php echo "<a href=\"".basename(__FILE__)."?".Utils::urlQueryArrayToString($get, "periode")."&amp;periode=tous\" title=\"\">Tous</a></li>"; ?>
             <div class="spacer"></div>
 		</ul>
     <?php 
@@ -313,11 +317,11 @@ if (!empty($get['mots']))
 
 			if ($get['tri'] == $tri)
 			{
-				echo " id=\"ici\"><a href=\"".basename(__FILE__)."?".arguments_URI($get, "tri")."&amp;tri=".$tri."\" title=\"Trier par ".$nom_tri."\">".ucfirst($nom_tri)."</a>";
+				echo " id=\"ici\"><a href=\"".basename(__FILE__)."?".Utils::urlQueryArrayToString($get, "tri")."&amp;tri=".$tri."\" title=\"Trier par ".$nom_tri."\">".ucfirst($nom_tri)."</a>";
 			}
 			else
 			{
-				echo "><a href=\"".basename(__FILE__)."?".arguments_URI($get, "tri")."&amp;tri=".$tri."\" title=\"Trier par ".$nom_tri."\">".ucfirst($nom_tri)."</a>";
+				echo "><a href=\"".basename(__FILE__)."?".Utils::urlQueryArrayToString($get, "tri")."&amp;tri=".$tri."\" title=\"Trier par ".$nom_tri."\">".ucfirst($nom_tri)."</a>";
 			}
 			echo "&nbsp;</li>";
 		}
@@ -327,7 +331,7 @@ if (!empty($get['mots']))
 		<?php
 
 
-		echo getPaginationString($get['page'], $nb_even, $limite, 1, basename(__FILE__), "?".arguments_URI($get, "page")."&amp;page=");
+		echo HtmlShrink::getPaginationString($get['page'], $nb_even, $limite, 1, basename(__FILE__), "?".Utils::urlQueryArrayToString($get, "page")."&amp;page=");
 
 ?>
 
@@ -410,10 +414,10 @@ if (!empty($get['mots']))
 								?>
 								<h3><a href="<?php echo $url_site ?>evenement.php?idE=<?php echo $tab_even['idEvenement'] ?>" title="Voir la fiche de l'événement"><?php echo $titre ?></a></h3>
 							<?php
-								$maxChar = trouveMaxChar($tab_even['description'], 50, 4);
+								$maxChar = Text::trouveMaxChar($tab_even['description'], 50, 4);
 								if (mb_strlen($tab_even['description']) > $maxChar)
 								{
-									$texte_court = texteHtmlReduit(wiki2text(htmlspecialchars($tab_even['description'])), $maxChar, "");
+									$texte_court = Text::texteHtmlReduit(Text::wikiToText(htmlspecialchars($tab_even['description'])), $maxChar, "");
 /* 									foreach($tab_mots as $n => $mot)
 									{
 										$texte_court = highlight($texte_court, $mot);
@@ -422,7 +426,7 @@ if (!empty($get['mots']))
 								}
 								else
 								{
-									$texte_court =  textToHtml(htmlspecialchars($tab_even['description']));
+									$texte_court =  Text::wikiToHtml(htmlspecialchars($tab_even['description']));
 /* 									foreach($tab_mots as $n => $mot)
 									{
 										$texte_court = highlight($texte_court, $mot);
@@ -520,14 +524,14 @@ if (!empty($get['mots']))
 					<td class="desc_even">
 					<h3><a href="<?php echo $url_site ?>evenement.php?idE=<?php echo $tab_even['idEvenement'] ?>" title="Voir la fiche de l'événement"><?php echo $tab_even['titre'] ?></a></h3>
 							<?php
-								$maxChar = trouveMaxChar($tab_even['description'], 50, 4);
+								$maxChar = Text::trouveMaxChar($tab_even['description'], 50, 4);
 								if (mb_strlen($tab_even['description']) > $maxChar)
 								{
-									echo "<p class=\"description\">".texteHtmlReduit(wiki2text(htmlspecialchars($tab_even['description'])), $maxChar, "")."</p>";
+									echo "<p class=\"description\">".Text::texteHtmlReduit(Text::wikiToText(htmlspecialchars($tab_even['description'])), $maxChar, "")."</p>";
 								}
 								else
 								{
-									echo "<p class=\"description\">".textToHtml(htmlspecialchars($tab_even['description']))."</p>";
+									echo "<p class=\"description\">".Text::wikiToHtml(htmlspecialchars($tab_even['description']))."</p>";
 								}
 
 							echo "<p>".$infosLieu."</p>";
@@ -562,7 +566,7 @@ if (!empty($get['mots']))
 
 
 		echo "</table>";
-		echo getPaginationString($get['page'], $nb_even, $limite, 1, basename(__FILE__), "?".arguments_URI($get, "page")."&amp;page=");
+		echo HtmlShrink::getPaginationString($get['page'], $nb_even, $limite, 1, basename(__FILE__), "?".Utils::urlQueryArrayToString($get, "page")."&amp;page=");
 	} //if evenement trouvé
 		echo "</div>"; //res_recherche
 

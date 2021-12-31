@@ -11,6 +11,8 @@ else
 
 use Ladecadanse\Sentry;
 use Ladecadanse\Validateur;
+use Ladecadanse\Text;
+use Ladecadanse\HtmlShrink;
 
 $videur = new Sentry();
 
@@ -90,7 +92,7 @@ while($tab_pers = $connector->fetchArray($req_get))
 	$datetime_dateajout = date_iso2app($tab_pers['dateAjout']);
 	$tab_datetime_dateajout = explode(" ", $datetime_dateajout);
 	echo "<td>".$tab_datetime_dateajout[1]."</td><td>".$tab_datetime_dateajout[0]."</td>
-	<td><a href=\"".$url_site."personne.php?idP=".$tab_pers['idPersonne']."\" >".securise_string($tab_pers['pseudo'])."</a></td>
+	<td><a href=\"".$url_site."personne.php?idP=".$tab_pers['idPersonne']."\" >".sanitizeForHtml($tab_pers['pseudo'])."</a></td>
 	<td><a href='mailto:".$tab_pers['email']."'>".$tab_pers['email']."</a></td>
 	<td>".$tab_pers['groupe']."</td>
 	<td>".$tab_pers['affiliation']."</td>
@@ -143,7 +145,7 @@ while($tab_comm = $connector->fetchArray($req_comm))
 	$datetime_dateajout = date_iso2app($tab_comm['dateAjout']);
 	$tab_datetime_dateajout = explode(" ", $datetime_dateajout);
 	echo "<td>".$tab_datetime_dateajout[1]."</td><td>".$tab_datetime_dateajout[0]."</td>";
-	echo "<td class='small'>".mb_substr(securise_string($tab_comm['contenu']), 0, 50)."</td>";
+	echo "<td class='small'>".mb_substr(sanitizeForHtml($tab_comm['contenu']), 0, 50)."</td>";
 
 	$req_even = $connector->query("SELECT titre FROM evenement WHERE idEvenement=".$tab_comm['id']);
 	$tab_even = $connector->fetchArray($req_even);
@@ -172,7 +174,7 @@ while($tab_comm = $connector->fetchArray($req_comm))
 	if ($tab_auteur = $connector->fetchArray($connector->query("SELECT pseudo FROM personne WHERE idPersonne=".$tab_comm['idPersonne'])))
 	{
 		$nom_auteur = "<a href=\"".$url_site."personne.php?idP=".$tab_comm['idPersonne']."\"
-		title=\"Voir le profile de la personne\">".securise_string($tab_auteur['pseudo'])."</a>";
+		title=\"Voir le profile de la personne\">".sanitizeForHtml($tab_auteur['pseudo'])."</a>";
 	}
 	echo "<td>".$nom_auteur."</td>";
 
@@ -244,13 +246,13 @@ if ($connector->getNumRows($req_getEvenement) > 0)
 $pair = 0;
 while($tab_even = $connector->fetchArray($req_getEvenement))
 {
-	$nomLieu = securise_string($tab_even['nomLieu']);
+	$nomLieu = sanitizeForHtml($tab_even['nomLieu']);
 
 	if ($tab_even['idLieu'] != 0)
 	{
 		$req_lieu = $connector->query("SELECT nom FROM lieu WHERE idLieu=".$tab_even['idLieu']);
 		$tabLieu = $connector->fetchArray($req_lieu);
-		$nomLieu = "<a href=\"".$url_site."lieu.php?idL=".$tab_even['idLieu']."\" title=\"Voir la fiche du lieu : ".securise_string($tabLieu['nom'])." \">".securise_string($tabLieu['nom'])."</a>";
+		$nomLieu = "<a href=\"".$url_site."lieu.php?idL=".$tab_even['idLieu']."\" title=\"Voir la fiche du lieu : ".sanitizeForHtml($tabLieu['nom'])." \">".sanitizeForHtml($tabLieu['nom'])."</a>";
 	}
 
 
@@ -264,7 +266,7 @@ while($tab_even = $connector->fetchArray($req_getEvenement))
 	}
 
 
-	echo "<td><a href=\"".$url_site."evenement.php?idE=".$tab_even['idEvenement']."\" title=\"Voir la fiche de l'événement\" class='titre'>".securise_string($tab_even['titre'])."</a></td>
+	echo "<td><a href=\"".$url_site."evenement.php?idE=".$tab_even['idEvenement']."\" title=\"Voir la fiche de l'événement\" class='titre'>".sanitizeForHtml($tab_even['titre'])."</a></td>
 	<td>".$nomLieu."</td>
 	<td>".date_iso2app($tab_even['dateEvenement'])."</td>";
         
@@ -286,7 +288,7 @@ while($tab_even = $connector->fetchArray($req_getEvenement))
 	if ($tab_auteur = $connector->fetchArray($connector->query("SELECT pseudo FROM personne WHERE idPersonne=".$tab_even['idPersonne'])))
 	{
 		$nom_auteur = "<a href=\"".$url_site."personne.php?idP=".$tab_even['idPersonne']."\"
-		title=\"Voir le profile de la personne\">".securise_string($tab_auteur['pseudo'])."</a>";
+		title=\"Voir le profile de la personne\">".sanitizeForHtml($tab_auteur['pseudo'])."</a>";
 	}
 	echo "<td>".$nom_auteur."</td>";
 
@@ -335,13 +337,13 @@ $req_getEvenement = $connector->query("SELECT idEvenement, idLieu, idPersonne, t
 $pair = 0;
 while($tab_even = $connector->fetchArray($req_getEvenement))
 {
-	$nomLieu = securise_string($tab_even['nomLieu']);
+	$nomLieu = sanitizeForHtml($tab_even['nomLieu']);
 
 	if ($tab_even['idLieu'] != 0)
 	{
 		$req_lieu = $connector->query("SELECT nom FROM lieu WHERE idLieu=".$tab_even['idLieu']);
 		$tabLieu = $connector->fetchArray($req_lieu);
-		$nomLieu = "<a href=\"".$url_site."lieu.php?idL=".$tab_even['idLieu']."\" title=\"Voir la fiche du lieu : ".securise_string($tabLieu['nom'])." \">".securise_string($tabLieu['nom'])."</a>";
+		$nomLieu = "<a href=\"".$url_site."lieu.php?idL=".$tab_even['idLieu']."\" title=\"Voir la fiche du lieu : ".sanitizeForHtml($tabLieu['nom'])." \">".sanitizeForHtml($tabLieu['nom'])."</a>";
 	}
 
 
@@ -359,14 +361,14 @@ while($tab_even = $connector->fetchArray($req_getEvenement))
 	echo "<td>".$tab_datetime_dateajout[1]."</td><td>".$tab_datetime_dateajout[0]."</td>";
 
 	echo "
-	<td><a href=\"".$url_site."evenement.php?idE=".$tab_even['idEvenement']."\" title=\"Voir la fiche de l'événement\">".securise_string($tab_even['titre'])."</a></td>
+	<td><a href=\"".$url_site."evenement.php?idE=".$tab_even['idEvenement']."\" title=\"Voir la fiche de l'événement\">".sanitizeForHtml($tab_even['titre'])."</a></td>
 	<td>".$nomLieu."</td>
 	<td>".date_iso2app($tab_even['dateEvenement'])."</td>
 	<td>";
 	if (!empty($tab_even['flyer']))
 	{
 		$imgInfo = getimagesize($rep_images_even.$tab_even['flyer']);
-		echo lien_popup($IMGeven.$tab_even['flyer'], "Flyer", $imgInfo[0]+20, $imgInfo[1]+20, $iconeImage);
+		echo HtmlShrink::popupLink($IMGeven.$tab_even['flyer'], "Flyer", $imgInfo[0]+20, $imgInfo[1]+20, $iconeImage);
 	}
 	echo "</td>
 	<td>".$tab_icones_statut[$tab_even['statut']]."</td>";
@@ -376,7 +378,7 @@ while($tab_even = $connector->fetchArray($req_getEvenement))
 	if ($tab_auteur = $connector->fetchArray($connector->query("SELECT pseudo FROM personne WHERE idPersonne=".$tab_even['idPersonne'])))
 	{
 		$nom_auteur = "<a href=\"".$url_site."personne.php?idP=".$tab_even['idPersonne']."\"
-		title=\"Voir le profile de la personne\">".securise_string($tab_auteur['pseudo'])."</a>";
+		title=\"Voir le profile de la personne\">".sanitizeForHtml($tab_auteur['pseudo'])."</a>";
 	}
 	echo "<td>".$nom_auteur."</td>";
 
@@ -425,14 +427,14 @@ while($tab = $connector->fetchArray($req_fav_even))
 	}
 
 	echo "<td><a href=\"".$url_site."evenement.php?idE=".$tab['idEvenement']."\"
-	title=\"Voir l'événement\">".securise_string($tab['titre'])."</a></td>";
+	title=\"Voir l'événement\">".sanitizeForHtml($tab['titre'])."</a></td>";
 
 	$nom_auteur = "<i>Ancien membre</i>";
 
 	if ($tab_auteur = $connector->fetchArray($connector->query("SELECT pseudo FROM personne WHERE idPersonne=".$tab['idPersonne'])))
 	{
 		$nom_auteur = "<a href=\"".$url_site."personne.php?idP=".$tab['idPersonne']."\"
-		title=\"Voir le profile de la personne\">".securise_string($tab_auteur['pseudo'])."</a>";
+		title=\"Voir le profile de la personne\">".sanitizeForHtml($tab_auteur['pseudo'])."</a>";
 	}
 	echo "<td>".$nom_auteur."</td>";
 	echo "<td>".date_iso2app($tab['date_ajout'])."</td>";
@@ -472,7 +474,7 @@ while ($tab_desc = $connector->fetchArray($req_getDes))
 
 	$req_lieu = $connector->query("SELECT nom FROM lieu WHERE idLieu=".$tab_desc['idLieu']);
 	$tabLieu = $connector->fetchArray($req_lieu);
-	$nomLieu = "<a href=\"".$url_site."lieu.php?idL=".$tab_desc['idLieu']."\" title=\"Éditer le lieu\">".securise_string($tabLieu['nom'])."</a>";
+	$nomLieu = "<a href=\"".$url_site."lieu.php?idL=".$tab_desc['idLieu']."\" title=\"Éditer le lieu\">".sanitizeForHtml($tabLieu['nom'])."</a>";
 
 
 	if ($pair % 2 == 0)
@@ -493,13 +495,13 @@ while ($tab_desc = $connector->fetchArray($req_getDes))
 	{
 		$tab_desc['contenu'] = mb_substr($tab_desc['contenu'], 0, 200)." [...]";
 	}
-	echo "<td class=\"tdleft small\">".html_substr($tab_desc['contenu'])."</td>";
+	echo "<td class=\"tdleft small\">".Text::html_substr($tab_desc['contenu'])."</td>";
 	$nom_auteur = "<i>Ancien membre</i>";
 
 	if ($tab_auteur = $connector->fetchArray($connector->query("SELECT pseudo FROM personne WHERE idPersonne=".$tab_desc['idPersonne'])))
 	{
 		$nom_auteur = "<a href=\"".$url_site."personne.php?idP=".$tab_desc['idPersonne']."\"
-		title=\"Voir le profile de la personne\">".securise_string($tab_auteur['pseudo'])."</a>";
+		title=\"Voir le profile de la personne\">".sanitizeForHtml($tab_auteur['pseudo'])."</a>";
 	}
 	echo "<td>".$tab_desc['type']."</td>";
 	echo "<td>".$nom_auteur."</td>";

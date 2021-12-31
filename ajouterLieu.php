@@ -19,6 +19,9 @@ if (is_file("config/reglages.php"))
 use Ladecadanse\Sentry;
 use Ladecadanse\SecurityToken;
 use Ladecadanse\EditionLieu;
+use Ladecadanse\Text;
+use Ladecadanse\Validateur;
+use Ladecadanse\HtmlShrink;
 
 $videur = new Sentry();
 
@@ -43,12 +46,12 @@ $get['action'] = "ajouter";
 $get['idL'] = "idL";
 if (isset($_GET['action']))
 {
-	$get['action'] = verif_get($_GET['action'], "enum", "ajouter", $actions);
+	$get['action'] = Validateur::validateUrlQueryValue($_GET['action'], "enum", "ajouter", $actions);
 }
 
 if (isset($_GET['idL']))
 {
-	$get['idL'] = verif_get($_GET['idL'], "int", 1);
+	$get['idL'] = Validateur::validateUrlQueryValue($_GET['idL'], "int", 1);
 }
 
 /* VERIFICATION POUR MODIFICATION
@@ -56,15 +59,15 @@ if (isset($_GET['idL']))
 */
 if ($get['action'] != "ajouter" && $get['action'] != "insert")
 {
-	if (!(isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 6 || est_affilie_lieu($_SESSION['SidPersonne'], $get['idL']) || est_organisateur_lieu($_SESSION['SidPersonne'], $get['idL']))))
+	if (!(isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 6 || $authorization->isPersonneAffiliatedWithLieu($_SESSION['SidPersonne'], $get['idL']) || $authorization->isPersonneInLieuByOrganisateur($_SESSION['SidPersonne'], $get['idL']))))
 	{
-		msgErreur("Vous ne pouvez pas modifier ce lieu");
+		HtmlShrink::msgErreur("Vous ne pouvez pas modifier ce lieu");
 		exit;
 	}
 }
 else if ($_SESSION['Sgroupe'] > 6)
 {
-    msgErreur("Vous ne pouvez pas ajouter de lieu");
+    HtmlShrink::msgErreur("Vous ne pouvez pas ajouter de lieu");
     exit;
 }
 
@@ -111,7 +114,7 @@ if (($get['action'] == 'editer' || $get['action'] == 'update'))
 	$titre_form = "Modifier";
 	$nom_submit = "Modifier";
 
-	if ($_SESSION['Sgroupe'] <= 6 || est_affilie_lieu($_SESSION['SidPersonne'], $get['idL']) || est_organisateur_lieu($_SESSION['SidPersonne'], $get['idL']))
+	if ($_SESSION['Sgroupe'] <= 6 || $authorization->isPersonneAffiliatedWithLieu($_SESSION['SidPersonne'], $get['idL']) || $authorization->isPersonneInLieuByOrganisateur($_SESSION['SidPersonne'], $get['idL']))
 	{
 		//Menu d'actions
 		if ($_SESSION['Sgroupe'] < 2)
@@ -125,7 +128,7 @@ if (($get['action'] == 'editer' || $get['action'] == 'update'))
 	}
 	else
 	{
-		msgErreur("Vous ne pouvez pas éditer ce lieu");
+		HtmlShrink::msgErreur("Vous ne pouvez pas éditer ce lieu");
 		exit;
 	}
 }
@@ -464,8 +467,8 @@ echo $form->getHtmlErreur("quartier");
         <?php
             foreach ($glo_categories_lieux as $cat => $cat_nom)
             {
-                echo '<li class="checkbox"><label for="categorie_'.replace_accents($cat).'" class="checkbox">'.$cat_nom.'</label>' .
-                        '<input type="checkbox" id="categorie_'.replace_accents($cat).'" name="categorie[]" value="'.$cat.'" class="checkbox '.$cat_class.'" ';
+                echo '<li class="checkbox"><label for="categorie_'.Text::stripAccents($cat).'" class="checkbox">'.$cat_nom.'</label>' .
+                        '<input type="checkbox" id="categorie_'.Text::stripAccents($cat).'" name="categorie[]" value="'.$cat.'" class="checkbox '.$cat_class.'" ';
                 $tab_cat_lieu = $form->getValeur('categorie');
                 if (in_array($cat, $tab_cat_lieu))
                 {
@@ -501,8 +504,8 @@ echo $form->getHtmlErreur("quartier");
             {
                 $imgInfo = getimagesize($rep_images_lieux.$form->getValeur('logo'));
 
-                $lien_popup = lien_popup($IMGlieux.$form->getValeur('logo')."?".filemtime($rep_images_lieux.$form->getValeur('logo')), "Logo", $imgInfo[0]+20, $imgInfo[1]+20,
-                "<img src=\"".$IMGlieux."s_".$form->getValeur('logo')."?".filemtime($rep_images_lieux.$form->getValeur('logo'))."\" alt=\"Logo pour ".securise_string($form->getValeur('nom'))."\" />"
+                $lien_popup = HtmlShrink::popupLink($IMGlieux.$form->getValeur('logo')."?".filemtime($rep_images_lieux.$form->getValeur('logo')), "Logo", $imgInfo[0]+20, $imgInfo[1]+20,
+                "<img src=\"".$IMGlieux."s_".$form->getValeur('logo')."?".filemtime($rep_images_lieux.$form->getValeur('logo'))."\" alt=\"Logo pour ".sanitizeForHtml($form->getValeur('nom'))."\" />"
                 );
                 $checked = '';
                 $tab_sup = $form->getSupprimer();
@@ -540,8 +543,8 @@ echo $form->getHtmlErreur("quartier");
         {
             $imgInfo = getimagesize($rep_images_lieux.$form->getValeur('photo1'));
 
-            $lien_popup = lien_popup($IMGlieux.$form->getValeur('photo1')."?".filemtime($rep_images_lieux.$form->getValeur('photo1')), "Photo 1", $imgInfo[0]+20, $imgInfo[1]+20,
-            "<img src=\"".$IMGlieux."s_".$form->getValeur('photo1')."?".filemtime($rep_images_lieux.$form->getValeur('photo1'))."\" alt=\"photo pour ".securise_string($form->getValeur('nom'))."\" />"
+            $lien_popup = HtmlShrink::popupLink($IMGlieux.$form->getValeur('photo1')."?".filemtime($rep_images_lieux.$form->getValeur('photo1')), "Photo 1", $imgInfo[0]+20, $imgInfo[1]+20,
+            "<img src=\"".$IMGlieux."s_".$form->getValeur('photo1')."?".filemtime($rep_images_lieux.$form->getValeur('photo1'))."\" alt=\"photo pour ".sanitizeForHtml($form->getValeur('nom'))."\" />"
             );
             $checked = '';
             $tab_sup = $form->getSupprimer();
@@ -641,7 +644,7 @@ echo $form->getHtmlErreur("quartier");
 
     //menu d'actions (activation et suppression)  pour l'auteur > 6 ou l'admin
     if (($get['action'] == 'editer' || $get['action'] == 'update') &&
-    ((estAuteur($_SESSION['SidPersonne'], $get['idL'], "lieu") && $_SESSION['Sgroupe'] < 6) || $_SESSION['Sgroupe'] <= 4))
+    (($authorization->estAuteur($_SESSION['SidPersonne'], $get['idL'], "lieu") && $_SESSION['Sgroupe'] < 6) || $_SESSION['Sgroupe'] <= 4))
     {
     ?>
 

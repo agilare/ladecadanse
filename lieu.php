@@ -11,6 +11,11 @@ use Ladecadanse\Commentaire;
 use Ladecadanse\CollectionCommentaire;
 use Ladecadanse\Evenement;
 use Ladecadanse\CollectionEvenement;
+use Ladecadanse\HtmlShrink;
+use Ladecadanse\Utils;
+use Ladecadanse\Validateur;
+use Ladecadanse\Text;
+
 
 $videur = new Sentry();
 
@@ -32,7 +37,7 @@ else
 
 if (isset($_GET['idL']) && $_GET['idL'] > 0)
 {
-	$get['idL'] = verif_get($_GET['idL'], "int", 1);
+	$get['idL'] = Validateur::validateUrlQueryValue($_GET['idL'], "int", 1);
 }
 else
 {
@@ -48,21 +53,21 @@ $tab_genre_even = array("fête", "cinéma", "théâtre", "expos", "divers", "tou
 $get['genre_even'] = "tous";
 if (isset($_GET['genre_even']))
 {
-	$get['genre_even'] = verif_get($_GET['genre_even'], "enum", 0, $tab_genre_even);
+	$get['genre_even'] = Validateur::validateUrlQueryValue($_GET['genre_even'], "enum", 0, $tab_genre_even);
 }
 
 $tab_complement = array("evenements", "commentaires");
 $get['complement'] = "evenements";
 if (isset($_GET['complement']))
 {
-	$get['complement'] = verif_get($_GET['complement'], "enum", 0, $tab_complement);
+	$get['complement'] = Validateur::validateUrlQueryValue($_GET['complement'], "enum", 0, $tab_complement);
 }
 
 $tab_types_description = array("description", "presentation");
 $get['type_description'] = "";
 if (isset($_GET['type_description']))
 {
-	$get['type_description'] = verif_get($_GET['type_description'], "enum", 0, $tab_types_description);
+	$get['type_description'] = Validateur::validateUrlQueryValue($_GET['type_description'], "enum", 0, $tab_types_description);
 }
 
 $lieu = new Lieu();
@@ -89,7 +94,7 @@ $req_lieu_localite = $connector->query($sql_lieu_localite);
 
 $lieu_localite = $connector->fetchAssoc($req_lieu_localite);
 
-$page_titre = $lieu->getValue('nom').get_adresse($lieu->getValue('region'), $lieu_localite['localite'], $lieu->getValue('quartier'), '' );
+$page_titre = $lieu->getValue('nom').HtmlShrink::getAdressFitted($lieu->getValue('region'), $lieu_localite['localite'], $lieu->getValue('quartier'), '' );
 
 
 $page_description = $page_titre." : accès, horaires, description, photos et prochains événements";
@@ -172,7 +177,7 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 10))
 }
 
 $action_editer = '';
-if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 6 || est_affilie_lieu($_SESSION['SidPersonne'], $get['idL']) || est_organisateur_lieu($_SESSION['SidPersonne'], $get['idL'])))
+if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 6 || $authorization->isPersonneAffiliatedWithLieu($_SESSION['SidPersonne'], $get['idL']) || $authorization->isPersonneInLieuByOrganisateur($_SESSION['SidPersonne'], $get['idL'])))
 {
 	$action_editer = '<li class="action_editer"><a href="'.$url_site.'ajouterLieu.php?action=editer&amp;idL='.$get['idL'].'">Modifier ce lieu</a></li>';
 }
@@ -203,7 +208,7 @@ if ($lieu->getValue('photo1') != '')
 
 	$imgInfo = getimagesize($rep_images_lieux.$lieu->getValue('photo1'));
 
-	$photo_principale = lien_popup($IMGlieux.$lieu->getValue('photo1').'?'.filemtime($rep_images_lieux.$lieu->getValue('photo1')),	"Logo", $imgInfo[0]+20, $imgInfo[1]+20,	"<img src=\"".$IMGlieux."s_".$lieu->getValue('photo1')."?".filemtime($rep_images_lieux."s_".$lieu->getValue('photo1'))."\" alt=\"Photo du lieu\" />");
+	$photo_principale = HtmlShrink::popupLink($IMGlieux.$lieu->getValue('photo1').'?'.filemtime($rep_images_lieux.$lieu->getValue('photo1')),	"Logo", $imgInfo[0]+20, $imgInfo[1]+20,	"<img src=\"".$IMGlieux."s_".$lieu->getValue('photo1')."?".filemtime($rep_images_lieux."s_".$lieu->getValue('photo1'))."\" alt=\"Photo du lieu\" />");
 
 	
 
@@ -221,7 +226,7 @@ else if (!empty($lieu->getValue('photo1')))
 	$illustration = "<img src=".$IMGlieux."s_".$lieu->getValue('photo1')." height=80 style='float:left;margin-right:0.2em' />";
 }
 
-$info_lieu = "<div style='width:200px'>".$illustration."<div class=details><p class=adresse><strong>".securise_string($lieu->getValue('nom'))."</strong></p><p class=adresse>".securise_string($lieu->getValue('adresse'))."</p><p class=adresse>".$lieu->getValue('quartier')."</p></div></div>";
+$info_lieu = "<div style='width:200px'>".$illustration."<div class=details><p class=adresse><strong>".sanitizeForHtml($lieu->getValue('nom'))."</strong></p><p class=adresse>".sanitizeForHtml($lieu->getValue('adresse'))."</p><p class=adresse>".$lieu->getValue('quartier')."</p></div></div>";
 ?>
 <script>
 var map;
@@ -260,7 +265,7 @@ function initMap() {
     <?php
     if (!empty($_SESSION['lieu_flash_msg']))
     {
-        msgOk($_SESSION['lieu_flash_msg']);
+        HtmlShrink::msgOk($_SESSION['lieu_flash_msg']);
         unset($_SESSION['lieu_flash_msg']);
     }
     ?>    
@@ -300,7 +305,7 @@ if ($lieu->getValue('logo'))
 		?><!--
 		<li><?php echo $lien_prec; ?></li>
 		<li><?php echo $lien_suiv; ?></li>
-		<li><a href="<?php echo basename(__FILE__)."?".arguments_URI($get) ?>&amp;style=imprimer" title="Format imprimable">
+		<li><a href="<?php echo basename(__FILE__)."?".Utils::urlQueryArrayToString($get) ?>&amp;style=imprimer" title="Format imprimable">
 		<?php echo $iconeImprimer ?></a></li>-->
 	</ul>
 
@@ -426,7 +431,7 @@ if ($lieu->getValue('logo'))
 				{
 					$chemin_fichier = $rep_fichiers_lieu.$tab_docu['idFichierrecu'].".".$tab_docu['extension'];
 					$url_fichier = $url_fichiers_lieu.$tab_docu['idFichierrecu'].".".$tab_docu['extension'];
-					echo "<li><a href=\"".$url_fichier."\" >".$icone[mb_strtolower($tab_docu['extension'])].$tab_docu['description']." (".formatbytes(filesize($chemin_fichier)).", ".$tab_docu['extension'].")</a></li>";
+					echo "<li><a href=\"".$url_fichier."\" >".$icone[mb_strtolower($tab_docu['extension'])].$tab_docu['description']." (".Text::formatbytes(filesize($chemin_fichier)).", ".$tab_docu['extension'].")</a></li>";
 				}
 				echo "</ul>
 					</div>";
@@ -442,7 +447,7 @@ if ($lieu->getValue('logo'))
             $c = $glo_categories_lieux[$c];
         }
         
-        $adresse = get_adresse($lieu->getValue('region'), $lieu_localite['localite'], $lieu->getValue('quartier'), $lieu->getValue('adresse') );
+        $adresse = HtmlShrink::getAdressFitted($lieu->getValue('region'), $lieu_localite['localite'], $lieu->getValue('quartier'), $lieu->getValue('adresse') );
               
 		$carte = '';
 		if ($lieu->getValue('lat') != 0.000000 && $lieu->getValue('lng') != 0.000000)
@@ -546,7 +551,7 @@ if ($lieu->getValue('logo'))
                 <span class="longitude">
                    <span class="value-title" title="<?php echo $lieu->getValue('lng'); ?>"></span>
                 </span>				
-				<li><?php echo textToHtml($lieu->getValue('horaire_general')); ?></li>
+				<li><?php echo Text::wikiToHtml($lieu->getValue('horaire_general')); ?></li>
 				<li class="sitelieu"><a class="url" href="<?php echo $URL; ?>" title="Voir le site web du lieu" onclick="window.open(this.href,'_blank');return false;"><?php echo $lieu->getValue('URL'); ?></a> <?php if ($lieu->getId() == 13) { // exception pour le Rez ?><a href="http://kalvingrad.com" onclick="window.open(this.href,'_blank');return false;">kalvingrad.com</a><br><a href="http://www.ptrnet.ch" onclick="window.open(this.href,'_blank');return false;">ptrnet.ch</a><?php } ?></li>
 				<?php echo $organisateurs; ?>
             </ul>
@@ -641,7 +646,7 @@ if ($nb_pres > 0)
                 $editer = '';
                 if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 4)
                 || (isset($_SESSION['Sgroupe']) && $type == 'description' && $_SESSION['Sgroupe'] <= 6 && (isset($_SESSION['SidPersonne'])) && $_SESSION['SidPersonne'] == $des->getValue('idPersonne'))
-                || (isset($_SESSION['Sgroupe']) && $type == 'presentation' && ($_SESSION['Sgroupe'] <= 6 || ($_SESSION['Sgroupe'] <= 8 && (est_organisateur_lieu($_SESSION['SidPersonne'], $get['idL']) || est_affilie_lieu($_SESSION['SidPersonne'], $get['idL'])))))
+                || (isset($_SESSION['Sgroupe']) && $type == 'presentation' && ($_SESSION['Sgroupe'] <= 6 || ($_SESSION['Sgroupe'] <= 8 && ($authorization->isPersonneInLieuByOrganisateur($_SESSION['SidPersonne'], $get['idL']) || $authorization->isPersonneAffiliatedWithLieu($_SESSION['SidPersonne'], $get['idL'])))))
                         )
                 {
                     $editer = '<span class="right">';
@@ -661,13 +666,13 @@ if ($nb_pres > 0)
                 }
                 else
                 {
-                    echo "<p>".textToHtml($des->getHtmlValue('contenu'))."</p>";
+                    echo "<p>".Text::wikiToHtml($des->getHtmlValue('contenu'))."</p>";
                 }
                 ?>
                 <p><?php 
                     if ($type == 'description')
                     {
-                        echo signature_auteur($des->getValue('idPersonne'));
+                        echo HtmlShrink::authorSignature($des->getValue('idPersonne'));
                     }	
                     ?></p>
 
@@ -694,7 +699,7 @@ if ($nb_pres > 0)
 	}
 
 	if (isset($_SESSION['Sgroupe']) &&
-            ($_SESSION['Sgroupe'] <= 6 || ($_SESSION['Sgroupe'] == 8 && (est_affilie_lieu($_SESSION['SidPersonne'], $get['idL']) || est_organisateur_lieu($_SESSION['SidPersonne'], $get['idL']))))
+            ($_SESSION['Sgroupe'] <= 6 || ($_SESSION['Sgroupe'] == 8 && ($authorization->isPersonneAffiliatedWithLieu($_SESSION['SidPersonne'], $get['idL']) || $authorization->isPersonneInLieuByOrganisateur($_SESSION['SidPersonne'], $get['idL']))))
             && $nb_pres == 0)
 	{
 		echo "<a href=\"ajouterDescription.php?idL=".$get['idL']."&amp;type=presentation\">".$icone['ajouter_texte']." Ajouter une présentation</a>";
@@ -739,13 +744,13 @@ title="Flux RSS des prochains événements"><i class="fa fa-rss fa-lg" style="co
 ?>
 
 <ul id="menu_complement" style="display:none">
-	<li<?php echo $evenements_ici; ?>><a href="<?php echo basename(__FILE__); ?>?<?php echo arguments_URI($get, "complement")?>&amp;complement=evenements#menu_complement" title="" >Prochains événements</a></li>
+	<li<?php echo $evenements_ici; ?>><a href="<?php echo basename(__FILE__); ?>?<?php echo Utils::urlQueryArrayToString($get, "complement")?>&amp;complement=evenements#menu_complement" title="" >Prochains événements</a></li>
 	
-	<li<?php echo $commentaires_ici; ?>><a href="<?php echo basename(__FILE__); ?>?<?php echo arguments_URI($get, "complement")?>&amp;complement=commentaires#menu_complement" title="" >Commentaires (<?php echo $commentaires->getNbElements(); ?>)</a></li>
+	<li<?php echo $commentaires_ici; ?>><a href="<?php echo basename(__FILE__); ?>?<?php echo Utils::urlQueryArrayToString($get, "complement")?>&amp;complement=commentaires#menu_complement" title="" >Commentaires (<?php echo $commentaires->getNbElements(); ?>)</a></li>
 	<?php
 	if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 12)
 	{
-		echo '<li class="ajouter_com"><a href="'.basename(__FILE__).'?'.arguments_URI($get, "complement").'&amp;complement=commentaires#menu_complement" title="">écrire un commentaire</a></li>';
+		echo '<li class="ajouter_com"><a href="'.basename(__FILE__).'?'.Utils::urlQueryArrayToString($get, "complement").'&amp;complement=commentaires#menu_complement" title="">écrire un commentaire</a></li>';
 	}
 	?>
 	<li class="rss"><?php echo $lien_rss_evenements; ?></li>
@@ -870,17 +875,17 @@ title="Flux RSS des prochains événements"><i class="fa fa-rss fa-lg" style="co
 		$description = '';
 		if ($even->getValue('description') != '')
 		{	
-			$maxChar = trouveMaxChar($even->getValue('description'), 50, 2);
+			$maxChar = Text::trouveMaxChar($even->getValue('description'), 50, 2);
 			
 			if (mb_strlen($even->getValue('description')) > $maxChar)
 			{
 				//$continuer = "<span class=\"continuer\"><a href=\"".$url_site."evenement.php?idE=".$even->getValue('idEvenement')."\" title=\"Voir la fiche complète de l'événement\"> Lire la suite</a></span>";
-				$description = texteHtmlReduit(textToHtml(htmlspecialchars($even->getValue('description'))), $maxChar);
+				$description = Text::texteHtmlReduit(Text::wikiToHtml(htmlspecialchars($even->getValue('description'))), $maxChar);
 						
 			}
 			else
 			{
-				$description = textToHtml(htmlspecialchars($even->getValue('description')));
+				$description = Text::wikiToHtml(htmlspecialchars($even->getValue('description')));
 			}
 		}
 
@@ -970,7 +975,7 @@ title="Flux RSS des prochains événements"><i class="fa fa-rss fa-lg" style="co
 			<td>
 			<h3 class="summary">
 			<?php
-			$titre_url = '<a class="url" href="'.$url_site.'evenement.php?idE='.$even->getValue('idEvenement').'" title="Voir la fiche de l\'événement">'.titre_selon_statut(securise_string($even->getValue('titre')), $even->getValue('statut')).'</a>';
+			$titre_url = '<a class="url" href="'.$url_site.'evenement.php?idE='.$even->getValue('idEvenement').'" title="Voir la fiche de l\'événement">'.Evenement::titre_selon_statut(sanitizeForHtml($even->getValue('titre')), $even->getValue('statut')).'</a>';
 			echo $titre_url; ?>
 			</h3>
 		
@@ -997,8 +1002,8 @@ title="Flux RSS des prochains événements"><i class="fa fa-rss fa-lg" style="co
 			|| $_SESSION['SidPersonne'] == $even->getValue('idPersonne'))
 			)
 			||  (isset($_SESSION['Saffiliation_lieu']) && !empty($get['idL']) && $get['idL'] == $_SESSION['Saffiliation_lieu'])
-			 || isset($_SESSION['SidPersonne']) && est_organisateur_evenement($_SESSION['SidPersonne'], $even->getValue('idEvenement'))
-			 || isset($_SESSION['SidPersonne']) && est_organisateur_lieu($_SESSION['SidPersonne'], $get['idL'])	
+			 || isset($_SESSION['SidPersonne']) && $authorization->isPersonneInEvenementByOrganisateur($_SESSION['SidPersonne'], $even->getValue('idEvenement'))
+			 || isset($_SESSION['SidPersonne']) && $authorization->isPersonneInLieuByOrganisateur($_SESSION['SidPersonne'], $get['idL'])	
 			)
 			{
 			?>
@@ -1058,13 +1063,13 @@ else if ($get['complement'] == 'commentaires')
 		<blockquote>
 			<div class="commentaire_de" style="color:#5C7378">
 
-			 <?php echo "<span class=\"left\">".signature_auteur($commentaire->getValue('idPersonne'))."</span>";
+			 <?php echo "<span class=\"left\">".HtmlShrink::authorSignature($commentaire->getValue('idPersonne'))."</span>";
 
 			 echo "<span class=\"right\">".date_fr($commentaire->getValue('dateAjout'), "annee", 1, "non"); ?>
 			 <span style="background:#fafafa"><?php echo $nb_c+1;?></span></span>
 			 </div> <!-- fin commentaire_de -->
 			<div class="spacer"><!-- --></div>
-			<p style="padding:0.5em"><?php echo textToHtml(htmlspecialchars($commentaire->getHtmlValue('contenu'))) ?></p>
+			<p style="padding:0.5em"><?php echo Text::wikiToHtml(htmlspecialchars($commentaire->getHtmlValue('contenu'))) ?></p>
 
 		</blockquote>
 		<!-- Fin commentaire -->

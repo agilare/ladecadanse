@@ -8,6 +8,7 @@ if (is_file("config/reglages.php"))
 use Ladecadanse\Sentry;
 use Ladecadanse\Validateur;
 use Ladecadanse\Logger;
+use Ladecadanse\HtmlShrink;
 
 $videur = new Sentry();
 
@@ -29,11 +30,11 @@ include("_header.inc.php");
 
 if (isset($_GET['token']))
 {
-	$get['token'] = verif_get($_GET['token'], "alpha_numeric", 1);
+	$get['token'] = Validateur::validateUrlQueryValue($_GET['token'], "alpha_numeric", 1);
 }
 else
 {
-	msgErreur("token obligatoire");
+	HtmlShrink::msgErreur("token obligatoire");
 	exit;
 }
 
@@ -178,12 +179,12 @@ if ($connector->getNumRows($req_temp) == 1)
 			
 			if ($connector->query($sql_update) && $connector->query($sql_delete))
 			{
-				msgOk("Le mot de passe a été mis à jour, vous pouvez maintenant vous <a href='login.php'>connecter</a> avec votre identifiant et ce nouveau mot de passe");
+				HtmlShrink::msgOk("Le mot de passe a été mis à jour, vous pouvez maintenant vous <a href='login.php'>connecter</a> avec votre identifiant et ce nouveau mot de passe");
                 $logger->log('global', 'activity', "[motdepasse_reset] success by user idP ".$idPersonne, Logger::GRAN_YEAR);                
 			}
 			else
 			{
-				msgErreur("La requête UPDATE a échoué, veuillez contacter le webmaster");
+				HtmlShrink::msgErreur("La requête UPDATE a échoué, veuillez contacter le webmaster");
 			}
 			
 			$action_terminee = true;
@@ -223,7 +224,7 @@ $act = 'insert';
 
 if ($verif->nbErreurs() > 0)
 {
-	msgErreur("Il y a ".$verif->nbErreurs()." erreur(s).");
+	HtmlShrink::msgErreur("Il y a ".$verif->nbErreurs()." erreur(s).");
 	//echo $verif->listErreurs();
 }
 ?>
@@ -302,7 +303,7 @@ else if (count($tab_comptes) == 1)
 }
 else
 {
-	msgErreur("Cette demande n'est pas valable");
+	HtmlShrink::msgErreur("Cette demande n'est pas valable");
 
 }
 

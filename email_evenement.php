@@ -17,6 +17,8 @@ if (is_file("config/reglages.php"))
 use Ladecadanse\Sentry;
 use Ladecadanse\Validateur;
 use Ladecadanse\Logger;
+use Ladecadanse\Text;
+use Ladecadanse\HtmlShrink;
 
 $videur = new Sentry();
 
@@ -35,11 +37,11 @@ include("_header.inc.php");
 
 if (isset($_GET['idE']))
 {
-	$get['idE'] = verif_get($_GET['idE'], "int", 1);
+	$get['idE'] = Validateur::validateUrlQueryValue($_GET['idE'], "int", 1);
 }
 else
 {
-	msgErreur("idE obligatoire");
+	HtmlShrink::msgErreur("idE obligatoire");
 	exit;
 }
 
@@ -127,21 +129,21 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 			$contenu_message .= $tab_even['nomLieu']."\n";
 			$contenu_message .= $tab_even['adresse']." - ".$tab_even['quartier']."\n\n";
 			$items = "";
-			$maxChar = trouveMaxChar($tab_even['description'], 60, 5);
+			$maxChar = Text::trouveMaxChar($tab_even['description'], 60, 5);
 			if (mb_strlen($tab_even['description']) > $maxChar)
 			{
-				$items = texteHtmlReduit(textToHtml(securise_string($tab_even['description'])), $maxChar, "");
+				$items = Text::texteHtmlReduit(Text::wikiToHtml(sanitizeForHtml($tab_even['description'])), $maxChar, "");
 			}
 			else
 			{
-				$items = textToHtml(securise_string($tab_even['description']));
+				$items = Text::wikiToHtml(sanitizeForHtml($tab_even['description']));
 			}
 
 			$contenu_message .= strip_tags($items);
 			$contenu_message .= "\n\n";
 			$contenu_message .= afficher_debut_fin($tab_even['horaire_debut'], $tab_even['horaire_fin'], $tab_even['dateEvenement'])."\n";
-			$contenu_message .= securise_string($tab_even['horaire_complement'])."\n";
-			$contenu_message .= securise_string($tab_even['prix'])."\n\n";
+			$contenu_message .= sanitizeForHtml($tab_even['horaire_complement'])."\n";
+			$contenu_message .= sanitizeForHtml($tab_even['prix'])."\n\n";
 
 			$contenu_message .= "------------------\n";
 			
@@ -151,7 +153,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 		}
 		else
 		{
-			msgErreur("Aucun événement n'est associé à ".$get['idE']);
+			HtmlShrink::msgErreur("Aucun événement n'est associé à ".$get['idE']);
 			exit;
 		} // if fetchArray
 
@@ -181,13 +183,13 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
         //if (PEAR::isError($mail)){
         if (!(new PEAR)->isError($mail))
 		{
-			msgOk('Événement <strong>'.$tab_even['titre'].'</strong> envoyé à '.$champs['email_destinataire']);
+			HtmlShrink::msgOk('Événement <strong>'.$tab_even['titre'].'</strong> envoyé à '.$champs['email_destinataire']);
 
 			$action_terminee = true;
 		}
 		else
 		{
-			msgErreur('L\'envoi a echoué');
+			HtmlShrink::msgErreur('L\'envoi a echoué');
 			echo("<p>" . $mail->getMessage() . "</p>");
 		}
 		
@@ -233,7 +235,7 @@ if (isset($get['idE']))
 	}
 	else
 	{
-		msgErreur("Aucun événement n'est associé à ".$get['idE']);
+		HtmlShrink::msgErreur("Aucun événement n'est associé à ".$get['idE']);
 		exit;
 	} // if fetchArray
 
@@ -244,7 +246,7 @@ if (isset($get['idE']))
 
 if ($verif->nbErreurs() > 0)
 {
-	msgErreur("Il y a ".$verif->nbErreurs()." erreur(s).");
+	HtmlShrink::msgErreur("Il y a ".$verif->nbErreurs()." erreur(s).");
 	//print_r($verif->getErreurs());
 }
 ?>
@@ -257,7 +259,7 @@ if ($verif->nbErreurs() > 0)
 <!-- Description Texte -->
 <p>
 <label for="email_destinataire">Email du destinataire* :</label>
-<input name="email_destinataire" id="email_destinataire" value="<?php echo securise_string($champs['email_destinataire']) ?>" size="35" />
+<input name="email_destinataire" id="email_destinataire" value="<?php echo sanitizeForHtml($champs['email_destinataire']) ?>" size="35" />
 <?php echo $verif->getHtmlErreur("email_destinataire"); ?>
 </p>
 <div class="guideChamp">L'adresse email restera confidentielle.</div>
@@ -265,7 +267,7 @@ if ($verif->nbErreurs() > 0)
 
 <p>
 <label for="message">Message* :</label><textarea name="message" id="message" cols="35" rows="8" style="width: auto;">
-<?php echo securise_string($champs['message']) ?>
+<?php echo sanitizeForHtml($champs['message']) ?>
 </textarea>
 <?php echo $verif->getHtmlErreur("message"); ?>
 </p>

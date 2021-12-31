@@ -19,6 +19,8 @@ if (is_file("config/reglages.php"))
 
 use Ladecadanse\Sentry;
 use Ladecadanse\Validateur;
+use Ladecadanse\Text;
+use Ladecadanse\HtmlShrink;
 
 $videur = new Sentry();
 
@@ -61,11 +63,11 @@ $tab_types = array("evenement", "lieu", "descriptionlieu", "breve", "commentaire
 $get['type'] = "";
 if (isset($_GET['type']))
 {
-	$get['type'] =  verif_get($_GET['type'], "enum", 1, $tab_types);
+	$get['type'] =  Validateur::validateUrlQueryValue($_GET['type'], "enum", 1, $tab_types);
 }
 else
 {
-	msgErreur("type obligatoire");
+	HtmlShrink::msgErreur("type obligatoire");
 }
 
 
@@ -73,22 +75,22 @@ $tab_actions = array("confirmation", "suppression");
 $get['action'] = "suppression";
 if (isset($_GET['action']))
 {
-	$get['action'] =  verif_get($_GET['action'], "enum", 1, $tab_actions);
+	$get['action'] =  Validateur::validateUrlQueryValue($_GET['action'], "enum", 1, $tab_actions);
 }
 
 if (isset($_GET['id']))
 {
-	$get['id'] = verif_get($_GET['id'], "int", 1);
+	$get['id'] = Validateur::validateUrlQueryValue($_GET['id'], "int", 1);
 }
 else
 {
-	msgErreur("id obligatoire");
+	HtmlShrink::msgErreur("id obligatoire");
 	exit;
 }
 
 if (isset($_GET['idP']))
 {
-	$get['idP'] = verif_get($_GET['idP'], "int", 1);
+	$get['idP'] = Validateur::validateUrlQueryValue($_GET['idP'], "int", 1);
 }
 
 ?>
@@ -121,7 +123,7 @@ if ($get['action'] == 'confirmation' && isset($get['id']))
 
 		///TESTER SI L'EVENEMENT EXISTE ENCORE
 
-		if (((estAuteur($_SESSION['SidPersonne'], $get['id'], $get['type']) && $_SESSION['Sgroupe'] <= 6) || $_SESSION['Sgroupe'] < 2))
+		if ((($authorization->estAuteur($_SESSION['SidPersonne'], $get['id'], $get['type']) && $_SESSION['Sgroupe'] <= 6) || $_SESSION['Sgroupe'] < 2))
 		{
 			/*
 			 * Suppression du flyer
@@ -187,25 +189,25 @@ WHERE evenement_fichierrecu.idEvenement=".$get['id']." AND type='document' AND
 
 			if ($connector->query("DELETE FROM evenement WHERE idEvenement=".$get['id']))
 			{
-				msgOk('L\'événement "'.securise_string($titreSup).'" a été supprimé');
+				HtmlShrink::msgOk('L\'événement "'.sanitizeForHtml($titreSup).'" a été supprimé');
                 $logger->log('global', 'activity', "[supprimer] event \"$titreSup\" (".$get['id'].") deleted", Logger::GRAN_YEAR);  
 
 			}
 			else
 			{
-				msgErreur("La requète DELETE a échoué");
+				HtmlShrink::msgErreur("La requète DELETE a échoué");
 			}
 		}
 		else
 		{
-			msgErreur("Vous ne pouvez pas supprimer cet événement.");
+			HtmlShrink::msgErreur("Vous ne pouvez pas supprimer cet événement.");
 		}
 
 	}
 	else if ($get['type'] == "breve")
 	{
 
-		if (estAuteur($_SESSION["SidPersonne"], $get['id'], $get['type']) || $_SESSION['Sgroupe'] < 2)
+		if ($authorization->estAuteur($_SESSION["SidPersonne"], $get['id'], $get['type']) || $_SESSION['Sgroupe'] < 2)
 		{
 
 			$req_breve = $connector->query("SELECT titre, img_breve, actif FROM breve WHERE idBreve=".$get['id']);
@@ -236,17 +238,17 @@ WHERE evenement_fichierrecu.idEvenement=".$get['id']." AND type='document' AND
 
 			if ($connector->query("DELETE FROM breve WHERE idBreve=".$get['id']))
 			{
-				msgOk("La brève \"".securise_string($res_breve['titre'])."\" a été supprimée");
+				HtmlShrink::msgOk("La brève \"".sanitizeForHtml($res_breve['titre'])."\" a été supprimée");
 			}
 			else
 			{
-				msgErreur("La requète a échoué");
+				HtmlShrink::msgErreur("La requète a échoué");
 			}
 
 		}
 		else
 		{
-			msgErreur("Vous n'avez pas les droits pour supprimer cette brève");
+			HtmlShrink::msgErreur("Vous n'avez pas les droits pour supprimer cette brève");
 		}
 	}
 	else if ($get['type'] == "lieu")
@@ -284,7 +286,7 @@ WHERE evenement_fichierrecu.idEvenement=".$get['id']." AND type='document' AND
 				<td>".$tab_even['idEvenement']."</td>
 				<td>".$tab_even['dateEvenement']."</td>
 				<td><a href=\"".$url_site."personne.php?idP=".$tab_even['idPersonne']."\" title=\"Voir le profile de la personne\">".$tab_even['idPersonne']."</a></td>
-				<td>".securise_string($tab_even['titre'])."</td>
+				<td>".sanitizeForHtml($tab_even['titre'])."</td>
 				<td>".$tab_even['dateAjout']."</td>
 				</tr>";
 			}
@@ -311,7 +313,7 @@ WHERE evenement_fichierrecu.idEvenement=".$get['id']." AND type='document' AND
 				if (strlen($contenu) > 200) {
 					$contenu = mb_substr($contenu, 0, 200)." [...]";
 				}
-				echo "<td>".securise_string($contenu)."</td>
+				echo "<td>".sanitizeForHtml($contenu)."</td>
 				<td>".$dateAjout."</td>
 				</tr>";
 			}
@@ -321,7 +323,7 @@ WHERE evenement_fichierrecu.idEvenement=".$get['id']." AND type='document' AND
 		}
 		else
 		{
-			if (((estAuteur($_SESSION['SidPersonne'], $get['id'], $get['type']) && $_SESSION['Sgroupe'] < 7) || $_SESSION['Sgroupe'] < 2) )
+			if ((($authorization->estAuteur($_SESSION['SidPersonne'], $get['id'], $get['type']) && $_SESSION['Sgroupe'] < 7) || $_SESSION['Sgroupe'] < 2) )
 			{
 
 /* 			if ($rc = opendir($cache_lieux))
@@ -404,17 +406,17 @@ WHERE lieu_fichierrecu.idLieu=".$get['id']." AND type='document' AND
 				//supression du lieu
 				if ($connector->query("DELETE FROM lieu WHERE idLieu=".$get['id']))
 				{
-					msgOk("Le lieu a été supprimé");
+					HtmlShrink::msgOk("Le lieu a été supprimé");
 
 				}
 				else
 				{
-					msgErreur("La requète DELETE sur 'lieu' a échoué");
+					HtmlShrink::msgErreur("La requète DELETE sur 'lieu' a échoué");
 				}
 			}
 			else
 			{
-				msgErreur("Vous ne pouvez pas supprimer ce lieu.");
+				HtmlShrink::msgErreur("Vous ne pouvez pas supprimer ce lieu.");
 			}
 		}
 	}
@@ -426,7 +428,7 @@ WHERE lieu_fichierrecu.idLieu=".$get['id']." AND type='document' AND
 
 			if ($req_delDes)
 			{
-				msgOk("La description a été supprimée");
+				HtmlShrink::msgOk("La description a été supprimée");
                 $logger->log('global', 'activity', "[supprimer] description of lieu (".$get['id'].") deleted", Logger::GRAN_YEAR);  
 
 				/*
@@ -447,18 +449,18 @@ WHERE lieu_fichierrecu.idLieu=".$get['id']." AND type='document' AND
 			}
 			else
 			{
-				msgErreur("La requète DELETE a échoué");
+				HtmlShrink::msgErreur("La requète DELETE a échoué");
 			}
 
 		}
 		else
 		{
-			msgErreur("Vous n'avez pas les droits pour supprimer cette description");
+			HtmlShrink::msgErreur("Vous n'avez pas les droits pour supprimer cette description");
 		}
 	}
 	else if ($get['type'] == "commentaire")
 	{
-		if (estAuteur($_SESSION["SidPersonne"], $get['id'], $get['type']) || $_SESSION['Sgroupe'] < 2)
+		if ($authorization->estAuteur($_SESSION["SidPersonne"], $get['id'], $get['type']) || $_SESSION['Sgroupe'] < 2)
 		{
 
 			$req_breve = $connector->query("SELECT contenu FROM commentaire WHERE idCommentaire=".$get['id']);
@@ -466,19 +468,19 @@ WHERE lieu_fichierrecu.idLieu=".$get['id']." AND type='document' AND
 
 			if ($connector->query("DELETE FROM ".$get['type']." WHERE idCommentaire=".$get['id']))
 			{
-				msgOk("Le commentaire a été supprimée");
+				HtmlShrink::msgOk("Le commentaire a été supprimée");
                 $logger->log('global', 'activity', "[supprimer] comment (".$get['id'].") of ".$get['type']." deleted", Logger::GRAN_YEAR);         
 				exit;
 			}
 			else
 			{
-				msgErreur("La requète a échoué");
+				HtmlShrink::msgErreur("La requète a échoué");
 			}
 
 		}
 		else
 		{
-			msgErreur("Vous n'avez pas les droits pour supprimer ce commentaire");
+			HtmlShrink::msgErreur("Vous n'avez pas les droits pour supprimer ce commentaire");
 		}
 	}
 	else if ($get['type'] == "salle")
@@ -491,24 +493,24 @@ WHERE lieu_fichierrecu.idLieu=".$get['id']." AND type='document' AND
 			{
 				if ($connector->query("DELETE FROM ".$get['type']." WHERE idSalle=".$get['id']))
 				{
-					msgOk("La salle a été supprimée");
+					HtmlShrink::msgOk("La salle a été supprimée");
                     $logger->log('global', 'activity', "[supprimer] ".$get['type']." (".$get['id'].") deleted", Logger::GRAN_YEAR);
 					exit;
 				}
 				else
 				{
-					msgErreur("La requète a échoué");
+					HtmlShrink::msgErreur("La requète a échoué");
 				}
 			}
 			else
 			{
-				msgErreur("Il y a encore ".$connector->getNumRows($req)." événement(s) se déroulant dans cette salle.");
+				HtmlShrink::msgErreur("Il y a encore ".$connector->getNumRows($req)." événement(s) se déroulant dans cette salle.");
 			}
 
 		}
 		else
 		{
-			msgErreur("Vous n'avez pas les droits pour supprimer cette salle");
+			HtmlShrink::msgErreur("Vous n'avez pas les droits pour supprimer cette salle");
 		}
 	}
 	else if ($get['type'] == "organisateur")
@@ -529,11 +531,11 @@ WHERE lieu_fichierrecu.idLieu=".$get['id']." AND type='document' AND
 
 		if ($nb_ev > 0)
 		{
-			msgErreur('Il y a encore '.$nb_ev.' événement(s) de cet organisateur.');
+			HtmlShrink::msgErreur('Il y a encore '.$nb_ev.' événement(s) de cet organisateur.');
 		}
 		else if ($nb_lieu > 0)
 		{
-			msgErreur('Il y a encore '.$nb_lieu.' lieu(x) géré(s) par cet organisateur.');
+			HtmlShrink::msgErreur('Il y a encore '.$nb_lieu.' lieu(x) géré(s) par cet organisateur.');
 		}
 		else
 		{
@@ -543,19 +545,19 @@ WHERE lieu_fichierrecu.idLieu=".$get['id']." AND type='document' AND
 
 				if ($connector->query("DELETE FROM ".$get['type']." WHERE idOrganisateur=".$get['id']))
 				{
-					msgOk("L'organisateur a été supprimé");
+					HtmlShrink::msgOk("L'organisateur a été supprimé");
                     $logger->log('global', 'activity', "[supprimer] organizer ".$get['id']." deleted", Logger::GRAN_YEAR);
 					exit;
 				}
 				else
 				{
-					msgErreur("La requète a échoué");
+					HtmlShrink::msgErreur("La requète a échoué");
 				}
 
 			}
 			else
 			{
-				msgErreur("Vous n'avez pas les droits pour supprimer cette salle");
+				HtmlShrink::msgErreur("Vous n'avez pas les droits pour supprimer cette salle");
 			}
 
 		}
@@ -573,7 +575,7 @@ else if ($get['action'] == 'suppression')
 
 
 /*
-if (((estAuteur($_SESSION['SidPersonne'], $get['idE'], "evenement") && $_SESSION['Sgroupe'] <= 6) || $_SESSION['Sgroupe'] == 1) ) {
+if ((($authorization->estAuteur($_SESSION['SidPersonne'], $get['idE'], "evenement") && $_SESSION['Sgroupe'] <= 6) || $_SESSION['Sgroupe'] == 1) ) {
 
 
 
@@ -598,7 +600,7 @@ if (((estAuteur($_SESSION['SidPersonne'], $get['idE'], "evenement") && $_SESSION
 		}
 		else
 		{
-			msgErreur("La requète select a échoué");
+			HtmlShrink::msgErreur("La requète select a échoué");
 			exit;
 		}
 
@@ -633,7 +635,7 @@ if (((estAuteur($_SESSION['SidPersonne'], $get['idE'], "evenement") && $_SESSION
 		}
 		else
 		{
-			msgErreur("La requète select a échoué");
+			HtmlShrink::msgErreur("La requète select a échoué");
 			exit;
 		}
 
@@ -666,7 +668,7 @@ if (((estAuteur($_SESSION['SidPersonne'], $get['idE'], "evenement") && $_SESSION
 
             <div class="description">
 
-            <p><?php echo textToHtml($descriptionlieu['contenu']) ?></p>
+            <p><?php echo Text::wikiToHtml($descriptionlieu['contenu']) ?></p>
 
                 <div class="auteur">
                     <span class="left"><?php echo $ajoute; ?><br /><?php echo $dern_modif; ?></span>
@@ -705,19 +707,19 @@ if (((estAuteur($_SESSION['SidPersonne'], $get['idE'], "evenement") && $_SESSION
 
 
             echo "<div class=\"breve_contenu\">
-            <h3>".securise_string($breve['titre'])."</h3>\n
+            <h3>".sanitizeForHtml($breve['titre'])."</h3>\n
             <div class=\"spacer\"></div>\n";	
 
             if (!empty($breve['img_breve']))
             {
                 $imgInfo = getimagesize($rep_images_breves.$breve['img_breve']);	
                 echo "<div class=\"image\">";
-                echo lien_popup($IMGbreves.$breve['img_breve'], "Image brève", $imgInfo[0]+20, $imgInfo[1]+20,
-                "<img src=\"".$IMGbreves."s_".$breve['img_breve']."\" alt=\"image pour ".securise_string($breve['titre'])."\" />");
+                echo HtmlShrink::popupLink($IMGbreves.$breve['img_breve'], "Image brève", $imgInfo[0]+20, $imgInfo[1]+20,
+                "<img src=\"".$IMGbreves."s_".$breve['img_breve']."\" alt=\"image pour ".sanitizeForHtml($breve['titre'])."\" />");
                 echo "</div>";
             }
 
-            echo "<p>".textToHtml(securise_string($breve['contenu']))."</p><p class=\"auteur\">".$listeAut['pseudo']."</p>";
+            echo "<p>".Text::wikiToHtml(sanitizeForHtml($breve['contenu']))."</p><p class=\"auteur\">".$listeAut['pseudo']."</p>";
             echo "<div class=\"spacer\"></div>\n";
 
             echo "<div class=\"spacer\"></div>\n

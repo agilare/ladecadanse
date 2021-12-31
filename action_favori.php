@@ -16,6 +16,8 @@ if (is_file("config/reglages.php"))
 
 use Ladecadanse\Sentry;
 use Ladecadanse\Logger;
+use Ladecadanse\Validateur;
+use Ladecadanse\HtmlShrink;
 
 $videur = new Sentry();
 
@@ -41,25 +43,25 @@ include("_header.inc.php");
 
 $tab_actions = array("ajouter", "insert", "delete", "supprimer");
 $get['action'] = "";
-$get['action'] = verif_get($_GET['action'], "enum", 0, $tab_actions);
+$get['action'] = Validateur::validateUrlQueryValue($_GET['action'], "enum", 0, $tab_actions);
 
 $tab_elements = array("evenement", "lieu");
 $get['element'] = "";
-$get['element'] = verif_get($_GET['element'], "enum", 0, $tab_elements);
+$get['element'] = Validateur::validateUrlQueryValue($_GET['element'], "enum", 0, $tab_elements);
 
 
 if (isset($_GET['idE']))
 {
-	$get['idE'] = verif_get($_GET['idE'], "int", 1);
+	$get['idE'] = Validateur::validateUrlQueryValue($_GET['idE'], "int", 1);
 }
 if (isset($_GET['idL']))
 {
-	$get['idL'] = verif_get($_GET['idL'], "int", 1);
+	$get['idL'] = Validateur::validateUrlQueryValue($_GET['idL'], "int", 1);
 }
 
 if (!isset($_GET['idL']) && !isset($_GET['idE']))
 {
-	msgErreur("Paramètre id obligatoire");
+	HtmlShrink::msgErreur("Paramètre id obligatoire");
 	exit;
 }
 
@@ -96,12 +98,12 @@ if ($get['element'] == 'evenement')
 		//message résultat et réinit
 		if ($connector->query($sql_insert))
 		{
-			msgOk("Favori de <a href=\"".$url_site."evenement.php?idE=".$get['idE']."\" title=\"Voir la fiche du lieu\">".$iconeVoirFiche."l'événement</a> ajouté");
+			HtmlShrink::msgOk("Favori de <a href=\"".$url_site."evenement.php?idE=".$get['idE']."\" title=\"Voir la fiche du lieu\">".$iconeVoirFiche."l'événement</a> ajouté");
 
 		}
 		else
 		{
-			msgErreur("La requête INSERT dans favoris a échoué");
+			HtmlShrink::msgErreur("La requête INSERT dans favoris a échoué");
 		}
 
 	}
@@ -114,11 +116,11 @@ if ($get['element'] == 'evenement')
 		//message résultat et réinit de l'action
 		if ($req_update)
 		{
-			msgOk("Favori de <a href=\"".$url_site."evenement.php?idE=".$get['idE']."\" title=\"Voir la fiche du lieu\">".$iconeVoirFiche."l'événement</a> supprimé");
+			HtmlShrink::msgOk("Favori de <a href=\"".$url_site."evenement.php?idE=".$get['idE']."\" title=\"Voir la fiche du lieu\">".$iconeVoirFiche."l'événement</a> supprimé");
 		}
 		else
 		{
-			msgErreur("La requête UPDATE a échoué");
+			HtmlShrink::msgErreur("La requête UPDATE a échoué");
 		}
 
         $logger->log('global', 'activity', "[action_favori] ".$get['action']." on idE ".$get['idE']." by user ".$_SESSION['user'], Logger::GRAN_YEAR);         
@@ -145,7 +147,7 @@ else if ($get['element'] == 'lieu')
 		if ($connector->query($sql_insert))
 		{
 
-			msgOk("Favori pour le <a href=\"".$url_site."lieu.php?idL=".$get['idL']."\"
+			HtmlShrink::msgOk("Favori pour le <a href=\"".$url_site."lieu.php?idL=".$get['idL']."\"
 			title=\"Voir la fiche du lieu\">".$iconeVoirFiche."lieu</a> ajouté");
 
 			$action_terminee = true;
@@ -153,7 +155,7 @@ else if ($get['element'] == 'lieu')
 		}
 		else
 		{
-			msgErreur("La requête INSERT dans favoris a échoué");
+			HtmlShrink::msgErreur("La requête INSERT dans favoris a échoué");
 		}
 
 	/*
@@ -170,12 +172,12 @@ else if ($get['element'] == 'lieu')
 		if ($req_update)
 		{
 
-			msgOk("Favori pour <a href=\"".$url_site."lieu.php?idL=".$get['idL']."\" title=\"Voir la fiche du lieu\">".$iconeVoirFiche."le lieu</a> supprimé");
+			HtmlShrink::msgOk("Favori pour <a href=\"".$url_site."lieu.php?idL=".$get['idL']."\" title=\"Voir la fiche du lieu\">".$iconeVoirFiche."le lieu</a> supprimé");
 
 		}
 		else
 		{
-			msgErreur("La requête UPDATE a échoué");
+			HtmlShrink::msgErreur("La requête UPDATE a échoué");
 		}
 
 	} //if action

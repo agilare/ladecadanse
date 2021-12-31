@@ -7,6 +7,9 @@ if (is_file("config/reglages.php"))
 use Ladecadanse\Sentry;
 use Ladecadanse\Evenement;
 use Ladecadanse\CollectionEvenement;
+use Ladecadanse\Text;
+use Ladecadanse\HtmlShrink;
+use Ladecadanse\Utils;
 
 $videur = new Sentry();
 
@@ -83,12 +86,12 @@ if ($get['sem'] == 0)
 		$entete_contenu = ucfirst($entete_contenu);
 	
 	$precedent = date("Y-m-d", mktime(0, 0, 0, (int)$mois_courant, $jour_courant - 1, $annee_courant));
-	$lien_precedent = "<a href=\"".$url_site."agenda.php?".arguments_URI($get)."&amp;courant=".$precedent."\" style=\"border-radius:3px 0 0 3px;\">".$iconePrecedent."&nbsp;</a>";
+	$lien_precedent = "<a href=\"".$url_site."agenda.php?".Utils::urlQueryArrayToString($get)."&amp;courant=".$precedent."\" style=\"border-radius:3px 0 0 3px;\">".$iconePrecedent."&nbsp;</a>";
 	$suivant = date("Y-m-d", mktime(0, 0, 0, (int)$mois_courant, $jour_courant + 1, $annee_courant));
 
     
     $suivant_nomjour_parts = explode(" ", date_fr($suivant, "tout", "non", ""));
-	$lien_suivant = "<a href=\"".$url_site."agenda.php?".arguments_URI($get)."&amp;courant=".$suivant."\" style=\"border-radius:0 3px 3px 0;background:#e4e4e4\" title=\"".$suivant_nomjour_parts[1]."\">".ucfirst($suivant_nomjour_parts[0])."<span class=desktop> ".$suivant_nomjour_parts[1]."</span>"."&nbsp;".$iconeSuivant."</a>";
+	$lien_suivant = "<a href=\"".$url_site."agenda.php?".Utils::urlQueryArrayToString($get)."&amp;courant=".$suivant."\" style=\"border-radius:0 3px 3px 0;background:#e4e4e4\" title=\"".$suivant_nomjour_parts[1]."\">".ucfirst($suivant_nomjour_parts[0])."<span class=desktop> ".$suivant_nomjour_parts[1]."</span>"."&nbsp;".$iconeSuivant."</a>";
 }
 else if ($get['sem'] == 1)
 {
@@ -163,7 +166,7 @@ $sql_even = $sql_even.$limite;
 $req_even = $connector->query($sql_even);
 $nb_evenements = $connector->getNumRows($req_even);
 
-$lien_imprimer = '<a href="'.basename(__FILE__).'?'.arguments_URI($get).'&amp;style=imprimer" title="Format imprimable">';
+$lien_imprimer = '<a href="'.basename(__FILE__).'?'.Utils::urlQueryArrayToString($get).'&amp;style=imprimer" title="Format imprimable">';
 
 if ($get['sem'])
 {
@@ -191,7 +194,7 @@ if ($get['sem'])
 <div id="contenu" class="colonne">
    
 	<div id="entete_contenu">
-		<h2>Agenda</h2><?php getMenuRegions($glo_regions, $get); ?>
+		<h2>Agenda</h2><?php HtmlShrink::getMenuRegions($glo_regions, $get); ?>
         <div class="spacer"></div>
         <div style="margin-top: 0.6em;">
             <h3><?php echo $entete_contenu ?></h3> 
@@ -203,7 +206,7 @@ if ($get['sem'])
 	</div>	<!-- entete_contenu -->
 	<div class="spacer"></div>
     <div>
-	<?php echo getPaginationString($get['page'], $total_even, $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?".arguments_URI($get, "page")."&page=");?>
+	<?php echo HtmlShrink::getPaginationString($get['page'], $total_even, $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?".Utils::urlQueryArrayToString($get, "page")."&page=");?>
         <form action="" method="get" class="queries">
             <div style="display:inline-block;margin-top:0.2em">
                 
@@ -248,7 +251,7 @@ if ($get['sem'])
 
 	if ($nb_evenements == 0)
 	{
-	  	echo msgInfo("Pas d'événements", "p");
+	  	echo HtmlShrink::msgInfo("Pas d'événements", "p");
 	}
 	else
 	{
@@ -334,7 +337,7 @@ if ($get['sem'])
 			<div class="genre">
 
 			<div class="genre-titre">
-                <h4 id="<?php echo replace_accents($listeEven['genre']); ?>"><?php echo ucfirst(nom_genre($listeEven['genre'])); ?></h4>
+                <h4 id="<?php echo Text::stripAccents($listeEven['genre']); ?>"><?php echo ucfirst(Evenement::nom_genre($listeEven['genre'])); ?></h4>
                 <?php if (0) { //(isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 1 && $listeEven['genre'] != 'divers') { ?>
                 <a class="genre-jump" href="#<?php echo $proch; ?>"><i class="fa fa-long-arrow-down"></i></a>
                 <?php } else { ?>
@@ -391,10 +394,10 @@ if ($get['sem'])
 			$listeLieu['localite'] = htmlspecialchars($listeEven['localite']);
 		}
 
-		$maxChar = trouveMaxChar($listeEven['description'], 70, 8);
+		$maxChar = Text::trouveMaxChar($listeEven['description'], 70, 8);
 
-		$titre_url = '<a class="url" href="'.$url_site.'evenement.php?idE='.$listeEven['idEvenement'].'&amp;tri_agenda='.$get['tri_agenda'].'&amp;courant='.$get['courant'].'" title="Voir la fiche complète de l\'événement">'.securise_string($listeEven['titre']).'</a>';
-		$titre = titre_selon_statut($titre_url, $listeEven['statut']);
+		$titre_url = '<a class="url" href="'.$url_site.'evenement.php?idE='.$listeEven['idEvenement'].'&amp;tri_agenda='.$get['tri_agenda'].'&amp;courant='.$get['courant'].'" title="Voir la fiche complète de l\'événement">'.sanitizeForHtml($listeEven['titre']).'</a>';
+		$titre = Evenement::titre_selon_statut($titre_url, $listeEven['statut']);
 
 		$lien_flyer = "";
 		if (!empty($listeEven['flyer']))
@@ -410,14 +413,14 @@ if ($get['sem'])
 
 		if (mb_strlen($listeEven['description']) > $maxChar)
 		{
-			$description = texteHtmlReduit(textToHtml($listeEven['description']),
+			$description = Text::texteHtmlReduit(Text::wikiToHtml($listeEven['description']),
 			$maxChar);
 			$description .= "<span class=\"continuer\">
 			<a href=\"".$url_site."evenement.php?idE=".$listeEven['idEvenement']."&amp;tri_agenda=".$get['tri_agenda']."\" title=\"Voir la fiche complète de l'événement\"> Lire la suite</a></span>";
 		}
 		else
 		{
-			$description = textToHtml($listeEven['description']);
+			$description = Text::wikiToHtml($listeEven['description']);
 		}
         
         $sql_event_orga = "SELECT organisateur.idOrganisateur, nom, URL
@@ -428,7 +431,7 @@ if ($get['sem'])
 
         $req_event_orga = $connector->query($sql_event_orga);        
 
-		$adresse = htmlspecialchars(get_adresse(null, $listeLieu['localite'], $listeLieu['quartier'], $listeLieu['adresse']));
+		$adresse = htmlspecialchars(HtmlShrink::getAdressFitted(null, $listeLieu['localite'], $listeLieu['quartier'], $listeLieu['adresse']));
 		
 		$horaire = afficher_debut_fin($listeEven['horaire_debut'], $listeEven['horaire_fin'], $listeEven['dateEvenement']);
 
@@ -558,8 +561,8 @@ if ($get['sem'])
                 $_SESSION['Sgroupe'] <= 6
                 || $_SESSION['SidPersonne'] == $listeEven['idPersonne']
             || (isset($_SESSION['Saffiliation_lieu']) && !empty($listeEven['idLieu']) && $listeEven['idLieu'] == $_SESSION['Saffiliation_lieu'])
-            || est_organisateur_evenement($_SESSION['SidPersonne'], $listeEven['idEvenement'])
-            || est_organisateur_lieu($_SESSION['SidPersonne'], $listeEven['idLieu'])
+            || $authorization->iisPersonneInEvenementByOrganisateur($_SESSION['SidPersonne'], $listeEven['idEvenement'])
+            || $authorization->isPersonneInLieuByOrganisateur($_SESSION['SidPersonne'], $listeEven['idLieu'])
                 ))
                 {
                 ?>
@@ -594,7 +597,7 @@ if ($get['sem'])
 
 if ($nb_evenements > 5)
 { 
-	echo getPaginationString($get['page'], $total_even, $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?".arguments_URI($get, "page")."&page=");
+	echo HtmlShrink::getPaginationString($get['page'], $total_even, $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?".Utils::urlQueryArrayToString($get, "page")."&page=");
 	?>
 	<div id="entete_contenu">
 		<h2><?php echo $entete_contenu ?></h2>			

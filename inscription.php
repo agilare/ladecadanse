@@ -24,6 +24,7 @@ else
 use Ladecadanse\Sentry;
 use Ladecadanse\Validateur;
 use Ladecadanse\Logger;
+use Ladecadanse\HtmlShrink;
 
 $videur = new Sentry();
 
@@ -42,7 +43,7 @@ $get['action'] = "ajouter";
 if (isset($_GET['idP']))
 {
 
-	$get['idP'] = verif_get($_GET['idP'], "int", 1);
+	$get['idP'] = Validateur::validateUrlQueryValue($_GET['idP'], "int", 1);
 }
 
 /* if (isset($_GET['action']))
@@ -51,12 +52,12 @@ if (isset($_GET['idP']))
 
 	if (($_GET['action'] == "ajouter" || $_GET['action'] == 'insert') && $_SESSION['Sgroupe'] > 1)
 	{
-		msgErreur("Vous n'avez pas le droit d'ajouter une personne");
+		HtmlShrink::msgErreur("Vous n'avez pas le droit d'ajouter une personne");
 		exit;
 	}
 	elseif (($get['action'] == "update" || $get['action'] == "editer") && $_SESSION['SidPersonne'] != $get['idP'] && $_SESSION['Sgroupe'] > 1)
 	{
-		msgErreur("Vous n'avez pas le droit de modifier cette personne");
+		HtmlShrink::msgErreur("Vous n'avez pas le droit de modifier cette personne");
 		exit;
 	}
 
@@ -401,7 +402,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 				if (isset($champs['organisateurs']) && count($champs['organisateurs']) > 0)
 					$compte_organisateur = " en tant qu'acteur culturel";
 				
-				msgOk("<strong>Votre compte".$compte_organisateur." a été créé</strong>; vous pouvez maintenant vous <a href=\"".$url_site."login.php\">connecter</a> avec l'identifiant et le mot de passe que vous venez de saisir.
+				HtmlShrink::msgOk("<strong>Votre compte".$compte_organisateur." a été créé</strong>; vous pouvez maintenant vous <a href=\"".$url_site."login.php\">connecter</a> avec l'identifiant et le mot de passe que vous venez de saisir.
 				<br />Un e-mail de confirmation récapitulant vos données d'accès vous a été envoyé à l'adresse : ".$tab_pers['email']);
 
                 $logger->log('global', 'activity', "[inscription] by ".$tab_pers['pseudo']." (".$tab_pers['email'].") in group ".$tab_pers['groupe']." ".$url_site."personne.php?idP=".$req_id, Logger::GRAN_YEAR);
@@ -418,7 +419,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 		}
 		else
 		{
-			msgErreur("La requête INSERT dans 'personne' a échoué");
+			HtmlShrink::msgErreur("La requête INSERT dans 'personne' a échoué");
 		}
 
 	} // if erreurs == 0
@@ -445,7 +446,7 @@ $act = 'insert';
 
 if ($verif->nbErreurs() > 0)
 {
-	msgErreur("Il y a ".$verif->nbErreurs()." erreur(s).");
+	HtmlShrink::msgErreur("Il y a ".$verif->nbErreurs()." erreur(s).");
 }
 ?>
 

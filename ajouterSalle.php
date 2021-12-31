@@ -16,6 +16,7 @@ if (is_file("config/reglages.php"))
 
 use Ladecadanse\Sentry;
 use Ladecadanse\Validateur;
+use Ladecadanse\HtmlShrink;
 
 $videur = new Sentry();
 
@@ -44,7 +45,7 @@ $tab_actions = array("ajouter", "insert", "editer", "update");
 $get['action'] = "ajouter";
 if (isset($_GET['action']))
 {
-	$get['action'] = verif_get($_GET['action'], "enum", 0, $tab_actions);
+	$get['action'] = Validateur::validateUrlQueryValue($_GET['action'], "enum", 0, $tab_actions);
 }
 
 $get['idS'] = 0;
@@ -77,7 +78,7 @@ if ($get['action'] != "ajouter" && $get['action'] != "insert")
 {
 	if ($_SESSION['Sgroupe'] > 6)
 	{
-		msgErreur("Vous n'avez pas les droits pour éditer cette salle");
+		HtmlShrink::msgErreur("Vous n'avez pas les droits pour éditer cette salle");
 		exit;
 	}
 }
@@ -162,13 +163,13 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 			if ($connector->query($sql_insert))
 			{
 
-				msgOk("Salle <em>".securise_string($champs['nom'])."</em> ajoutée");
+				HtmlShrink::msgOk("Salle <em>".sanitizeForHtml($champs['nom'])."</em> ajoutée");
 
 				$action_terminee = true;
 			}
 			else
 			{
-				msgErreur("La requête INSERT a échoué");
+				HtmlShrink::msgErreur("La requête INSERT a échoué");
 			}
 
 		/*
@@ -194,14 +195,14 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 			if ($req_update)
 			{
 
-				msgOk('Salle du <a href="'.$url_site.'lieu.php?idL='.$champs['idLieu'].'" title="Fiche du lieu">lieu</a> modifiée');
+				HtmlShrink::msgOk('Salle du <a href="'.$url_site.'lieu.php?idL='.$champs['idLieu'].'" title="Fiche du lieu">lieu</a> modifiée');
 
 				$get['action'] = 'editer';
 				$action_terminee = true;
 			}
 			else
 			{
-				msgErreur("La requête UPDATE a échoué");
+				HtmlShrink::msgErreur("La requête UPDATE a échoué");
 			}
 
 		} //if action
@@ -276,7 +277,7 @@ echo '<div class="spacer"></div></div>';
 
 if ($verif->nbErreurs() > 0)
 {
-	msgErreur("Il y a ".$verif->nbErreurs()." erreur(s).");
+	HtmlShrink::msgErreur("Il y a ".$verif->nbErreurs()." erreur(s).");
 	//print_r($verif->getErreurs());
 }
 
@@ -328,13 +329,13 @@ echo $verif->getErreur('nom');
 
 <p>
 <label for="nom">Nom* :</label>
-<input name="nom" id="nom" type="text" size="30" title="nom" value="<?php echo securise_string($champs['nom']) ?>" />
+<input name="nom" id="nom" type="text" size="30" title="nom" value="<?php echo sanitizeForHtml($champs['nom']) ?>" />
 <?php echo $verif->getErreur("nom"); ?>
 </p>
 
 <p>
 <label for="emplacement">Emplacement :</label>
-<input name="emplacement" id="emplacement" type="text" size="30" title="emplacement" value="<?php echo securise_string($champs['emplacement']) ?>" />
+<input name="emplacement" id="emplacement" type="text" size="30" title="emplacement" value="<?php echo sanitizeForHtml($champs['emplacement']) ?>" />
 <?php echo $verif->getErreur("emplacement"); ?>
 </p>
 

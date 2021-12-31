@@ -9,6 +9,8 @@ use Ladecadanse\Validateur;
 use Ladecadanse\ImageDriver2;
 use Ladecadanse\SecurityToken;
 use Ladecadanse\Logger;
+use Ladecadanse\Text;
+use Ladecadanse\HtmlShrink;
 
 $videur = new Sentry();
     
@@ -36,22 +38,22 @@ $get['action'] = "ajouter";
 */
 if (isset($_GET['action']))
 {
-	$get['action'] = verif_get($_GET['action'], "enum", "ajouter", $actions);
+	$get['action'] = Validateur::validateUrlQueryValue($_GET['action'], "enum", "ajouter", $actions);
 }
 
 if (isset($_GET['idE']))
 {
-	$get['idE'] = verif_get($_GET['idE'], "int", 1);
+	$get['idE'] = Validateur::validateUrlQueryValue($_GET['idE'], "int", 1);
 }
 
 if (isset($_GET['idL']))
 {
-	$get['idL'] = verif_get($_GET['idL'], "int", 1);
+	$get['idL'] = Validateur::validateUrlQueryValue($_GET['idL'], "int", 1);
 }
 
 if (isset($_GET['idO']))
 {
-	$get['idO'] = verif_get($_GET['idO'], "int", 1);
+	$get['idO'] = Validateur::validateUrlQueryValue($_GET['idO'], "int", 1);
 }
 
 
@@ -64,16 +66,16 @@ if ($get['action'] != "ajouter" && $get['action'] != "insert")
 	$req_even_cur = $connector->query("SELECT idLieu, statut FROM evenement WHERE idEvenement=".$get['idE']);
 	$tab_even_cur = $connector->fetchArray($req_even_cur);
 
-	if (estAuteur($_SESSION['SidPersonne'], $get['idE'], "evenement") || $_SESSION['Sgroupe'] <= 6
+	if ($authorization->estAuteur($_SESSION['SidPersonne'], $get['idE'], "evenement") || $_SESSION['Sgroupe'] <= 6
 	 || (isset($_SESSION['Saffiliation_lieu']) && isset($tab_even_cur['idLieu']) && $tab_even_cur['idLieu'] == $_SESSION['Saffiliation_lieu'])
-	|| est_organisateur_evenement($_SESSION['SidPersonne'], $get['idE'])
-	|| (isset($tab_even_cur['idLieu']) && est_organisateur_lieu($_SESSION['SidPersonne'], $tab_even_cur['idLieu']))
+	|| $authorization->isPersonneInEvenementByOrganisateur($_SESSION['SidPersonne'], $get['idE'])
+	|| (isset($tab_even_cur['idLieu']) && $authorization->isPersonneInLieuByOrganisateur($_SESSION['SidPersonne'], $tab_even_cur['idLieu']))
 	 )
 	{
 	}
 	else
 	{
-		msgErreur("Vous ne pouvez pas modifier cet événement");
+		HtmlShrink::msgErreur("Vous ne pouvez pas modifier cet événement");
 		exit;
 	}
 }
@@ -503,7 +505,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 				$action_terminee = true;
 
 			} else {
-				msgErreur("La requête INSERT dans 'evenement' a échoué");
+				HtmlShrink::msgErreur("La requête INSERT dans 'evenement' a échoué");
 			}
 		}
 		elseif ($get['action'] == 'update')
@@ -532,7 +534,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 				}
 				else
 				{
-					msgErreur("La requête SELECT flyer a échoué");
+					HtmlShrink::msgErreur("La requête SELECT flyer a échoué");
 				}	
 			}
 			
@@ -557,7 +559,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 				}
 				else
 				{
-					msgErreur("La requète SELECT flyer a échoué");
+					HtmlShrink::msgErreur("La requète SELECT flyer a échoué");
 				}
 
 			} //elseif supprimer flyer
@@ -584,7 +586,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 				}
 				else
 				{
-					msgErreur("La requète SELECT image a échoué");
+					HtmlShrink::msgErreur("La requète SELECT image a échoué");
 				}
 
 			//si le champ "supprimer le flyer" est coché¡³ans qu'un nouveau flyer soit remplacant
@@ -608,7 +610,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 				}
 				else
 				{
-					msgErreur("La requète SELECT image a échoué");
+					HtmlShrink::msgErreur("La requète SELECT image a échoué");
 				}
 
 			} //if supprimer image
@@ -617,7 +619,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 			{
 				foreach ($supprimer['document'] as $nom_fichier)
 				{
-					$idF = reverse_mb_strrchr($nom_fichier, '.');
+					$idF = Text::reverseMbStrrchr($nom_fichier, '.');
 
 					$connector->query("DELETE FROM evenement_fichierrecu WHERE idEvenement=".$get['idE']." AND idFichierrecu=".$idF);
 
@@ -721,7 +723,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 			}
 			else
 			{
-				msgErreur("La requête UPDATE de la table evenement a échoué");
+				HtmlShrink::msgErreur("La requête UPDATE de la table evenement a échoué");
 			}
 
 		} //if get_action = 'insert' ou 'update'
@@ -885,13 +887,13 @@ if (!$action_terminee)
             }
             else
             {
-                msgErreur("La requête select a échoué");
+                HtmlShrink::msgErreur("La requête select a échoué");
                 exit;
             }
         }
         else
         {
-            msgErreur("Vous n'avez pas les droits pour éditer un événement");
+            HtmlShrink::msgErreur("Vous n'avez pas les droits pour éditer un événement");
             exit;
         } // if GET action
 
@@ -939,7 +941,7 @@ if (!$action_terminee)
 <?php
 if ($verif->nbErreurs() > 0)
 {
-	msgErreur("Il y a ".$verif->nbErreurs()." erreur(s).");
+	HtmlShrink::msgErreur("Il y a ".$verif->nbErreurs()." erreur(s).");
     if (!empty($verif->getHtmlErreur("global")))
     {
         echo $verif->getHtmlErreur("global");
@@ -998,7 +1000,7 @@ if ($verif->nbErreurs() > 0)
         <legend>Date & horaire</legend>
 
         <div>
-            <label for="dateEvenement">Date*</label><input type="text" name="dateEvenement" id="dateEvenement" size="9" value="<?php echo securise_string($champs['dateEvenement']); ?>" class="datepicker" placeholder="jj.mm.aaaa" required />
+            <label for="dateEvenement">Date*</label><input type="text" name="dateEvenement" id="dateEvenement" size="9" value="<?php echo sanitizeForHtml($champs['dateEvenement']); ?>" class="datepicker" placeholder="jj.mm.aaaa" required />
         <?php
         echo $verif->getHtmlErreur('dateEvenement');
         ?>
@@ -1019,10 +1021,10 @@ if ($verif->nbErreurs() > 0)
 
         <p>
             <label for="horaire_debut"><span class="tooltip">Début<span class="tooltiptext">Jusqu’à 06:00, le début sera considéré faisant partie du jour de l’événement</span></span> </label>
-            <input type="time" name="horaire_debut" id="horaire_debut" size="5" value="<?php echo securise_string($champs['horaire_debut']) ?>" />
+            <input type="time" name="horaire_debut" id="horaire_debut" size="5" value="<?php echo sanitizeForHtml($champs['horaire_debut']) ?>" />
 
             <label for="horaire_fin" class="continu">Fin</label>
-            <input type="time" name="horaire_fin" id="horaire_fin" size="5" value="<?php echo securise_string($champs['horaire_fin']) ?>" />
+            <input type="time" name="horaire_fin" id="horaire_fin" size="5" value="<?php echo sanitizeForHtml($champs['horaire_fin']) ?>" />
 
             <?php
             echo $verif->getHtmlErreur('horaire_debut');
@@ -1032,7 +1034,7 @@ if ($verif->nbErreurs() > 0)
 
         <div>
             <label for="horaire_complement">Complément</label>
-            <input type="text" name="horaire_complement" id="horaire_complement" size="40" maxlength="100" value="<?php echo securise_string($champs['horaire_complement']) ?>" />
+            <input type="text" name="horaire_complement" id="horaire_complement" size="40" maxlength="100" value="<?php echo sanitizeForHtml($champs['horaire_complement']) ?>" />
             <?php
             echo $verif->getHtmlErreur('horaire_complement');
             ?>
@@ -1130,7 +1132,7 @@ if ($verif->nbErreurs() > 0)
         <p>
         <?php
         $tab_nomLieu_label = array("for" => "nomLieu");
-        echo form_label($tab_nomLieu_label, "Nom du lieu");
+        echo HtmlShrink::formLabel($tab_nomLieu_label, "Nom du lieu");
         echo $verif->getHtmlErreur("nomLieuIdentique");
 
         $tab_nomLieu = array("type" => "text", "name" => "nomLieu", "id" => "nomLieu", "size" => "35",
@@ -1138,9 +1140,9 @@ if ($verif->nbErreurs() > 0)
          "onfocus" => "this.className='focus';", "onblur" => "this.className='normal';");
         if (empty($champs['idLieu']))
         {
-            $tab_nomLieu['value'] = securise_string($champs['nomLieu']);
+            $tab_nomLieu['value'] = sanitizeForHtml($champs['nomLieu']);
         }
-        echo form_input($tab_nomLieu);
+        echo HtmlShrink::formInput($tab_nomLieu);
         echo $verif->getHtmlErreur("nomLieu");
         ?>
         </p>
@@ -1151,7 +1153,7 @@ if ($verif->nbErreurs() > 0)
             echo $verif->getHtmlErreur("adresseIdentique");
             ?>
 
-            <input type="text" name="adresse" id="adresse" size="40" maxlength="100" title="rue, no" value="<?php if (empty($champs['idLieu'])) { echo securise_string($champs['adresse']); } ?>" onfocus="this.className='focus';" onblur="this.className='normal';" />
+            <input type="text" name="adresse" id="adresse" size="40" maxlength="100" title="rue, no" value="<?php if (empty($champs['idLieu'])) { echo sanitizeForHtml($champs['adresse']); } ?>" onfocus="this.className='focus';" onblur="this.className='normal';" />
         <?php
         echo $verif->getHtmlErreur("adresse");
         echo $verif->getHtmlErreur("doublonLieux");
@@ -1243,7 +1245,7 @@ if ($verif->nbErreurs() > 0)
 
         <p>
             <label for="urlLieu">Site web</label>
-            <input type="text" name="urlLieu" id="urlLieu" size="40" maxlength="80" title="URL du lieu" value="<?php if (empty($champs['idLieu'])) { echo securise_string($champs['urlLieu']); } ?>" onfocus="this.className='focus';" onblur="this.className='normal';" />
+            <input type="text" name="urlLieu" id="urlLieu" size="40" maxlength="80" title="URL du lieu" value="<?php if (empty($champs['idLieu'])) { echo sanitizeForHtml($champs['urlLieu']); } ?>" onfocus="this.className='focus';" onblur="this.className='normal';" />
         <?php
         echo $verif->getHtmlErreur("urlLieu");
         ?>
@@ -1256,7 +1258,7 @@ if ($verif->nbErreurs() > 0)
 
         <p>
         <label for="titre">Titre*</label>
-        <input type="text" name="titre" id="titre" maxlength="80" value="<?php echo securise_string($champs['titre']) ?>" required />
+        <input type="text" name="titre" id="titre" maxlength="80" value="<?php echo sanitizeForHtml($champs['titre']) ?>" required />
         <?php
         echo $verif->getHtmlErreur("titre");
         ?>
@@ -1268,7 +1270,7 @@ if ($verif->nbErreurs() > 0)
         $id_textarea = "description";
         ?>
 
-        <textarea name="description" id="description" rows="20"><?php echo securise_string($champs['description']) ?></textarea>
+        <textarea name="description" id="description" rows="20"><?php echo sanitizeForHtml($champs['description']) ?></textarea>
         <?php
         echo $verif->getHtmlErreur('description');
         ?>
@@ -1279,7 +1281,7 @@ if ($verif->nbErreurs() > 0)
         <legend>Références</legend>
         <p>
             <label for="ref">Sites web</label>
-            <input type="text" name="ref" id="ref" value="<?php echo securise_string($champs['ref']); ?>" placeholder="URL1;URL2; etc." />
+            <input type="text" name="ref" id="ref" value="<?php echo sanitizeForHtml($champs['ref']); ?>" placeholder="URL1;URL2; etc." />
         </p>
         <div class="guideChamp">Site de l’événement, de l’organisateur (s’il n’est pas présent ci-dessous), de la page Facebook... Séparer chaque élément par un point-virgule.</div>
 
@@ -1360,7 +1362,7 @@ if ($verif->nbErreurs() > 0)
                 ) { ?> style="display:block" <?php } ?>>
             <p>
                 <label for="prix">Prix</label>
-                            <input type="text" name="prix" id="prix" size="50" maxlength="100" value="<?php echo securise_string($champs['prix']) ?>" />
+                            <input type="text" name="prix" id="prix" size="50" maxlength="100" value="<?php echo sanitizeForHtml($champs['prix']) ?>" />
                 <?php
                 echo $verif->getHtmlErreur('prix');
                 ?>
@@ -1370,7 +1372,7 @@ if ($verif->nbErreurs() > 0)
             <?php } ?>   
             <p>
                 <label for="prelocations">Prélocations</label>
-                            <input type="text" name="prelocations" id="prelocations" size="50" maxlength="150" value="<?php echo securise_string($champs['prelocations']) ?>" />
+                            <input type="text" name="prelocations" id="prelocations" size="50" maxlength="150" value="<?php echo sanitizeForHtml($champs['prelocations']) ?>" />
                 <?php
                 echo $verif->getHtmlErreur('prelocations');
                 ?>
@@ -1441,8 +1443,8 @@ if ($verif->nbErreurs() > 0)
     <?php    
     if (!isset($_SESSION['Sgroupe']) || !empty($champs['user_email'])) { ?>
     <fieldset>
-        <p><label for="remarque">Remarque</label><textarea name="remarque" id="remarque" cols="20" rows="6" <?php echo (isset($_SESSION['Sgroupe']) && !empty($champs['user_email'])) ? 'readonly class="readonly" ': ''; ?>><?php echo securise_string($champs['remarque']) ?></textarea></p>
-        <p><label for="user_email">Votre email*</label><input type="email" id="user_email" name="user_email" value="<?php echo securise_string($champs['user_email']) ?>" required size="25" <?php echo (isset($_SESSION['Sgroupe']) && !empty($champs['user_email'])) ? 'readonly class="readonly" ': ''; ?> maxlength="80"></p>
+        <p><label for="remarque">Remarque</label><textarea name="remarque" id="remarque" cols="20" rows="6" <?php echo (isset($_SESSION['Sgroupe']) && !empty($champs['user_email'])) ? 'readonly class="readonly" ': ''; ?>><?php echo sanitizeForHtml($champs['remarque']) ?></textarea></p>
+        <p><label for="user_email">Votre email*</label><input type="email" id="user_email" name="user_email" value="<?php echo sanitizeForHtml($champs['user_email']) ?>" required size="25" <?php echo (isset($_SESSION['Sgroupe']) && !empty($champs['user_email'])) ? 'readonly class="readonly" ': ''; ?> maxlength="80"></p>
     </fieldset>
     <?php } else if (!empty($champs['user_email'])) {  ?>
     

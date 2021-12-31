@@ -7,6 +7,7 @@ use Ladecadanse\Validateur;
 use Ladecadanse\Lieu;
 use Ladecadanse\ImageDriver2;
 use Ladecadanse\File;
+use Ladecadanse\HtmlShrink;
 
   class EditionLieu extends Edition
   {
@@ -322,7 +323,7 @@ use Ladecadanse\File;
 			}
 			else
 			{
-				msgErreur("Erreur lors de l'insertion dans la table");
+				HtmlShrink::msgErreur("Erreur lors de l'insertion dans la table");
 				return false;
 			}
 
@@ -405,7 +406,7 @@ use Ladecadanse\File;
 
 			foreach ($this->supprimer_document as $nom_fichier)
 			{
-				$idF = reverse_mb_strrchr($nom_fichier, '.');
+				$idF = Text::reverseMbStrrchr($nom_fichier, '.');
 				$this->connector->query("DELETE FROM lieu_fichierrecu WHERE idLieu=".$lieu->getId()." AND idFichierrecu=".$idF);
 				$this->connector->query("DELETE FROM fichierrecu WHERE idFichierrecu=".$idF);
 				unlink($rep_fichiers_lieu.$nom_fichier);
@@ -415,7 +416,7 @@ use Ladecadanse\File;
 
 			foreach ($this->supprimer_galerie as $nom_fichier)
 			{
-				$idF = reverse_mb_strrchr($nom_fichier, '.');
+				$idF = Text::reverseMbStrrchr($nom_fichier, '.');
 				//echo $idF;
 				$this->connector->query("DELETE FROM lieu_fichierrecu WHERE idLieu=".$lieu->getId()." AND idFichierrecu=".$idF);
 				$this->connector->query("DELETE FROM fichierrecu WHERE idFichierrecu=".$idF);
@@ -440,7 +441,7 @@ use Ladecadanse\File;
 			}
 			else
 			{
-				msgErreur("Erreur lors de la mise à jour de la table");
+				HtmlShrink::msgErreur("Erreur lors de la mise à jour de la table");
 			}
 
 
@@ -577,7 +578,7 @@ use Ladecadanse\File;
 			$erreur_image[] = $imD->processImage($this->fichiers['image_galerie'], $nom_image_galerie, 600, 600, '', 0);
             if (!empty($msg))
 			{
-                 msgErreur($msg);
+                 HtmlShrink::msgErreur($msg);
             }
 			$champs['image_galerie'] = '';
 		}
