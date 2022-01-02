@@ -1,6 +1,6 @@
 <?php
 use Ladecadanse\HtmlShrink;
-use Ladecadanse\Text;
+use Ladecadanse\Utils\Text;
 use Ladecadanse\Evenement;
 
 //Affichage du lieu selon son existence ou non dans la base

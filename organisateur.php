@@ -4,13 +4,13 @@ if (is_file("config/reglages.php"))
 	require_once("config/reglages.php");
 }
 
-use Ladecadanse\Sentry;
+use Ladecadanse\Security\Sentry;
 use Ladecadanse\Organisateur;
-use Ladecadanse\CollectionOrganisateur;
+use Ladecadanse\OrganisateurCollection;
 use Ladecadanse\Evenement;
-use Ladecadanse\CollectionEvenement;
-use Ladecadanse\Validateur;
-use Ladecadanse\Text;
+use Ladecadanse\EvenementCollection;
+use Ladecadanse\Utils\Validateur;
+use Ladecadanse\Utils\Text;
 use Ladecadanse\HtmlShrink;
 
 $videur = new Sentry();
@@ -265,7 +265,7 @@ if (isset($get['genre_even']) && $get['genre_even'] != "tous")
 	$genre .= $get['genre_even'];
 }
 
-$evenements = new CollectionEvenement($connector);
+$evenements = new EvenementCollection($connector);
 
 $evenements->loadOrganisateur($get['idO'], $date_debut, $genre);
 

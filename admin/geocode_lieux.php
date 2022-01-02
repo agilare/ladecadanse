@@ -9,8 +9,8 @@ else
 	exit;
 }
 
-use Ladecadanse\Sentry;
-use Ladecadanse\Validateur;
+use Ladecadanse\Security\Sentry;
+use Ladecadanse\Utils\Validateur;
 
 $videur = new Sentry();
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Ladecadanse;
+namespace Ladecadanse\Utils;
 
 /**
  * Donne diverses méthodes de vérification pour des données entrées par un formulaire

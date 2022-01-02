@@ -1,8 +1,8 @@
 <?php
 
-namespace Ladecadanse;
+namespace Ladecadanse\Utils;
 
-use Ladecadanse\SystemComponent;
+use Ladecadanse\Utils\SystemComponent;
 
 /**
  * Traite des images envoyées par upload via un champ 'file' de formulaire et

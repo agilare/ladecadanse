@@ -305,9 +305,9 @@ $glo_auj = date("Y-m-d");
 $auj = date("Y-m-d");
 $glo_auj_6h = date("Y-m-d", time() - 14400);
 
-use Ladecadanse\DbConnector;
-use Ladecadanse\Logger;
-use Ladecadanse\Authorization;
+use Ladecadanse\Utils\DbConnector;
+use Ladecadanse\Utils\Logger;
+use Ladecadanse\Security\Authorization;
 
 $authorization = new Authorization();
 
@@ -315,8 +315,6 @@ if (ENV == 'prod') {
     include_once "Mail.php";  
 }
 
-
-require_once($rep_librairies.'DbConnector.php');
 $connector = new DbConnector($param['dbhost'],$param['dbname'], $param['dbusername'], $param['dbpassword']);
 
 

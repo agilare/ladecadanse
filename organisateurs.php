@@ -4,10 +4,10 @@ if (is_file("config/reglages.php"))
 	require_once("config/reglages.php");
 }
 
-use Ladecadanse\Sentry;
-use Ladecadanse\CollectionOrganisateur;
-use Ladecadanse\Validateur;
-use Ladecadanse\Text;
+use Ladecadanse\Security\Sentry;
+use Ladecadanse\OrganisateurCollection;
+use Ladecadanse\Utils\Validateur;
+use Ladecadanse\Utils\Text;
 
 $videur = new Sentry();
 
@@ -25,7 +25,7 @@ if (isset($_GET['idO']))
 /**
 * Récupère les dernières description + infos sur lieux et utilisateurs
 */
-$col = new CollectionOrganisateur();
+$col = new OrganisateurCollection();
 $col->loadFiches();
 $pair = 0;
 ?>

@@ -1,6 +1,6 @@
 <?php
 
-namespace Ladecadanse;
+namespace Ladecadanse\Utils;
 
 /**
  * Classe de log générique permettant de gérer l'archivage des fichiers de log

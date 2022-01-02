@@ -16,11 +16,11 @@ if (is_file("config/reglages.php"))
 	require_once("config/reglages.php");
 }
 
-use Ladecadanse\Sentry;
-use Ladecadanse\SecurityToken;
-use Ladecadanse\EditionLieu;
-use Ladecadanse\Text;
-use Ladecadanse\Validateur;
+use Ladecadanse\Security\Sentry;
+use Ladecadanse\Security\SecurityToken;
+use Ladecadanse\LieuEdition;
+use Ladecadanse\Utils\Text;
+use Ladecadanse\Utils\Validateur;
 use Ladecadanse\HtmlShrink;
 
 $videur = new Sentry();
@@ -79,7 +79,7 @@ $supprimer = array('image_galerie' => '');
 
 $afficher_form = true;
 $message_ok = '';
-$form = new EditionLieu('form', $champs, $fichiers, $get); 
+$form = new LieuEdition('form', $champs, $fichiers, $get); 
     
 $form->setAction($get['action']);
 if (isset($_POST['formulaire']) && $_POST['formulaire'] == 'ok')

@@ -5,7 +5,7 @@ use Ladecadanse\Collection;
 use Ladecadanse\Evenement;
 use Ladecadanse\HtmlShrink;
 
-class CollectionEvenement extends Collection {
+class EvenementCollection extends Collection {
 
  /**
    * @access public

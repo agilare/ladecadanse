@@ -9,11 +9,11 @@ else
 	exit;
 }
 
-use Ladecadanse\Sentry;
-use Ladecadanse\Validateur;
-use Ladecadanse\ImageDriver2;
-use Ladecadanse\CollectionEvenement;
-use Ladecadanse\Utils;
+use Ladecadanse\Security\Sentry;
+use Ladecadanse\Utils\Validateur;
+use Ladecadanse\Utils\ImageDriver2;
+use Ladecadanse\EvenementCollection;
+use Ladecadanse\Utils\Utils;
 use Ladecadanse\HtmlShrink;
 
 $videur = new Sentry();
@@ -165,7 +165,7 @@ else if (!empty($_POST['formulaire']) && !empty($_POST['supprimerSerie']))
 	{
 		foreach($evenements as $even)
         {
-            CollectionEvenement::deleteEvenement($even);    
+            EvenementCollection::deleteEvenement($even);    
         }
 	}
         

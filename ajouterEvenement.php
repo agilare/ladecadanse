@@ -4,12 +4,12 @@ if (is_file("config/reglages.php"))
 	require_once("config/reglages.php");
 }
 
-use Ladecadanse\Sentry;
-use Ladecadanse\Validateur;
-use Ladecadanse\ImageDriver2;
-use Ladecadanse\SecurityToken;
-use Ladecadanse\Logger;
-use Ladecadanse\Text;
+use Ladecadanse\Security\Sentry;
+use Ladecadanse\Utils\Validateur;
+use Ladecadanse\Utils\ImageDriver2;
+use Ladecadanse\Security\SecurityToken;
+use Ladecadanse\Utils\Logger;
+use Ladecadanse\Utils\Text;
 use Ladecadanse\HtmlShrink;
 
 $videur = new Sentry();

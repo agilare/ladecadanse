@@ -1,6 +1,6 @@
 <?php
 
-namespace Ladecadanse;
+namespace Ladecadanse\Security;
 
 class SecurityToken
 {

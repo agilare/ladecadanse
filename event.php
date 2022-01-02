@@ -4,7 +4,7 @@ if (is_file("config/reglages.php"))
 	require_once("config/reglages.php");
 }
 
-use Ladecadanse\Sentry;
+use Ladecadanse\Security\Sentry;
 
 
 $videur = new Sentry();

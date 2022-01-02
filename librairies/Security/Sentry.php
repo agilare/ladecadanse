@@ -1,9 +1,10 @@
 <?php
 
-namespace Ladecadanse;
+namespace Ladecadanse\Security;
 
-use Ladecadanse\SystemComponent;
-use Ladecadanse\Validateur;
+use Ladecadanse\Utils\SystemComponent;
+use Ladecadanse\Utils\Validateur;
+use Ladecadanse\Utils\Logger;
 
 /**
  * Lance la session et vérifie le login du visiteur

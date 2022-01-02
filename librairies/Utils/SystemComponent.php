@@ -1,6 +1,6 @@
 <?php
 
-namespace Ladecadanse;
+namespace Ladecadanse\Utils;
 
 /**
  * Classe de base pour toutes les autres classes du site

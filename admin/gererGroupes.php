@@ -14,7 +14,7 @@ if (is_file("../config/reglages.php")) {
 	exit;
 }
 
-use Ladecadanse\Sentry;
+use Ladecadanse\Security\Sentry;
 
 $videur = new Sentry();
 

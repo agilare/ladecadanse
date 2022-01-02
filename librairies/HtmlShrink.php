@@ -6,7 +6,7 @@
 
 namespace Ladecadanse;
 
-use Ladecadanse\Utils;
+use Ladecadanse\Utils\Utils;
 
 /**
  * Description of HtmlShrink

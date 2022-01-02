@@ -1,11 +1,17 @@
 <?php
+
 namespace Ladecadanse;
 
 use Ladecadanse\Collection;
-use Ladecadanse\Description;
+use Ladecadanse\Organisateur;
 
-class CollectionDescription extends Collection {
-
+class OrganisateurCollection extends Collection
+{
+ /**
+ 	 * Démarre la session et inclut un en-tête interdisant de stocker le mot
+	 * de passe dans le cache de l'utilisateur
+   * @access public
+   */
 	function __construct()
 	{
 		global $connector;
@@ -64,22 +70,14 @@ class CollectionDescription extends Collection {
 		return true;
 	}
 
-	function loadFiches($type = '', $region = null)
+	function loadFiches($region = null)
 	{
-		if ($type != '')
-		{
-			$type = " AND descriptionlieu.type='".$type."'";
-		}
-                
+
                 $sql_region = '';
                 if (!empty($region))
-                    $sql_region = "and lieu.region='$region' ";
-                
-              
-		$req = $this->connector->query("SELECT lieu.idLieu, lieu.nom, pseudo, contenu,
-		descriptionlieu.dateAjout, photo1, groupe, personne.nom as nomAuteur, prenom, descriptionlieu.date_derniere_modif AS date_derniere_modif
-		FROM descriptionlieu, lieu, personne WHERE descriptionlieu.idPersonne=personne.idPersonne AND
-		descriptionlieu.idLieu=lieu.idLieu".$type." AND lieu.actif=1 AND lieu.statut='actif' ".$sql_region." ORDER BY descriptionlieu.dateAjout DESC LIMIT 6");
+                    $sql_region = "and organisateur.region='$region' ";            
+            
+		$req = $this->connector->query("SELECT * FROM organisateur WHERE statut='actif' ".$sql_region."  ORDER BY date_ajout DESC LIMIT 8");
 
 
 		if ($this->connector->getNumRows($req) == 0)
@@ -89,10 +87,10 @@ class CollectionDescription extends Collection {
 
 		while ($tab = $this->connector->fetchArray($req))
 		{
-			$des = new Description();
-			$des->setValues($tab);
-			$id = $des->getValue('idLieu');
-			$this->elements[$id] = $des;
+			$org = new Organisateur();
+			$org->setValues($tab);
+			$id = $org->getValue('idOrganisateur');
+			$this->elements[$id] = $org;
 		}
 
 		return true;

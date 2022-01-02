@@ -1,12 +1,12 @@
 <?php
 
-namespace Ladecadanse;
+namespace Ladecadanse\Utils;
 
-use Ladecadanse\SystemComponent;
+use Ladecadanse\Utils\SystemComponent;
 
 class DbConnector extends SystemComponent
 {
-    private string $sql;
+    private $sql;
 
     /**
      * Ressource vers la BD

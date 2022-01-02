@@ -1,6 +1,6 @@
 <?php
-use Ladecadanse\Utils;
-use Ladecadanse\Validateur;
+use Ladecadanse\Utils\Utils;
+use Ladecadanse\Utils\Validateur;
 
 $categoriesVal = array("bistrot", "cinéma", "restaurant", "salle", "galerie", "théâtre", "boutique", "musée", "autre");
 

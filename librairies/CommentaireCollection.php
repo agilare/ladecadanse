@@ -4,7 +4,7 @@ namespace Ladecadanse;
 use Ladecadanse\Collection;
 use Ladecadanse\Commentaire;
 
-class CollectionCommentaire extends Collection
+class CommentaireCollection extends Collection
 {
 
  /**

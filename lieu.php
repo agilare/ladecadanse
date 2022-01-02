@@ -4,17 +4,17 @@ if (is_file("config/reglages.php"))
 	require_once("config/reglages.php");
 }
 
-use Ladecadanse\Sentry;
+use Ladecadanse\Security\Sentry;
 use Ladecadanse\Lieu;
-use Ladecadanse\CollectionDescription;
+use Ladecadanse\DescriptionCollection;
 use Ladecadanse\Commentaire;
-use Ladecadanse\CollectionCommentaire;
+use Ladecadanse\CommentaireCollection;
 use Ladecadanse\Evenement;
-use Ladecadanse\CollectionEvenement;
+use Ladecadanse\EvenementCollection;
 use Ladecadanse\HtmlShrink;
-use Ladecadanse\Utils;
-use Ladecadanse\Validateur;
-use Ladecadanse\Text;
+use Ladecadanse\Utils\Utils;
+use Ladecadanse\Utils\Validateur;
+use Ladecadanse\Utils\Text;
 
 
 $videur = new Sentry();
@@ -561,7 +561,7 @@ if ($lieu->getValue('logo'))
         <div class="spacer only-mobile"></div>
 
 <?php
-$descriptions = new CollectionDescription();
+$descriptions = new DescriptionCollection();
 $type2hide = ['description' => ' style="display:none"', 'presentation' => ' style="display:none"'];
 
 $nb_desc = 0;
@@ -627,7 +627,7 @@ if ($nb_pres > 0)
     $types_desc = ['description', 'presentation'];
     foreach ($types_desc as $type)
     {
-        $descriptions = new CollectionDescription();
+        $descriptions = new DescriptionCollection();
         ?>
     <div class="type-<?php echo $type; ?>" <?php echo $type2hide[$type]; ?>>
         <?php
@@ -720,7 +720,7 @@ if ($nb_pres > 0)
 <?php
 
 /* Chargement des commentaires */
-$commentaires = new CollectionCommentaire();
+$commentaires = new CommentaireCollection();
 $commentaires->load($get['idL']);
 
 $evenements_ici = '';
@@ -772,7 +772,7 @@ title="Flux RSS des prochains événements"><i class="fa fa-rss fa-lg" style="co
 		$genre .= $get['genre_even'];
 	}
 
-	$evenements = new CollectionEvenement($connector);
+	$evenements = new EvenementCollection($connector);
 
 	$evenements->loadLieu($get['idL'], $date_debut, $genre);
 

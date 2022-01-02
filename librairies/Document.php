@@ -12,7 +12,7 @@ namespace Ladecadanse;
  *
  * @author michel
  */
-class File
+class Document
 {
     public static function getFilename(int $id, string $type = '', string $date_time = '', string $nom_original): string
     {

@@ -4,8 +4,8 @@ if (is_file("config/reglages.php"))
 	require_once("config/reglages.php");
 }
 
-use Ladecadanse\Sentry;
-use Ladecadanse\Validateur;
+use Ladecadanse\Security\Sentry;
+use Ladecadanse\Utils\Validateur;
 use Ladecadanse\HtmlShrink;
 
 $videur = new Sentry();

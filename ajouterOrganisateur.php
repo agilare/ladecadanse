@@ -5,10 +5,10 @@ if (is_file("config/reglages.php"))
 	require_once("config/reglages.php");
 }
 
-use Ladecadanse\Sentry;
-use Ladecadanse\SecurityToken;
-use Ladecadanse\EditionOrganisateur;
-use Ladecadanse\Validateur;
+use Ladecadanse\Security\Sentry;
+use Ladecadanse\Security\SecurityToken;
+use Ladecadanse\OrganisateurEdition;
+use Ladecadanse\Utils\Validateur;
 use Ladecadanse\HtmlShrink;
 
 $videur = new Sentry();
@@ -61,7 +61,7 @@ $supprimer = array('logo' => '', 'photo' => '');
 
 $afficher_form = true;
 $message_ok = '';
-$form = new EditionOrganisateur('form', $champs, $fichiers, $get);
+$form = new OrganisateurEdition('form', $champs, $fichiers, $get);
 
 //TEST
 //printr($_POST);

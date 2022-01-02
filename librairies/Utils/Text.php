@@ -1,6 +1,6 @@
 <?php
 
-namespace Ladecadanse;
+namespace Ladecadanse\Utils;
 
 class Text
 {

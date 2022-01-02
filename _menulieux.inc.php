@@ -1,7 +1,7 @@
 <?php
 
-use Ladecadanse\Utils;
-use Ladecadanse\Validateur;
+use Ladecadanse\Utils\Utils;
+use Ladecadanse\Utils\Validateur;
 
 $de = "0";
 $vers = "l";

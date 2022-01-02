@@ -36,10 +36,10 @@ if (is_file("config/reglages.php"))
 
 date_default_timezone_set('Europe/Paris');
 
-use Ladecadanse\Sentry;
+use Ladecadanse\Security\Sentry;
 use Ladecadanse\Evenement;
 use Ladecadanse\HtmlShrink;
-use Ladecadanse\Validateur;
+use Ladecadanse\Utils\Validateur;
 
 $videur = new Sentry();
 

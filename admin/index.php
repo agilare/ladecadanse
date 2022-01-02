@@ -9,9 +9,9 @@ else
 	exit;
 }
 
-use Ladecadanse\Sentry;
-use Ladecadanse\Validateur;
-use Ladecadanse\Text;
+use Ladecadanse\Security\Sentry;
+use Ladecadanse\Utils\Validateur;
+use Ladecadanse\Utils\Text;
 use Ladecadanse\HtmlShrink;
 
 $videur = new Sentry();

@@ -19,7 +19,7 @@
     },
     "autoload": {
         "psr-4": {"Ladecadanse\\": "librairies"},
-        "files": ["librairies/dates.php"]
+        "files": ["librairies/Utils/dates.php"]
     },   
     "support": {
         "email": "michel@ladecadanse.ch",

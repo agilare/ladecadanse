@@ -21,10 +21,10 @@ else
 	exit;
 }
 
-use Ladecadanse\Sentry;
-use Ladecadanse\Validateur;
-use Ladecadanse\SecurityToken;
-use Ladecadanse\Logger;
+use Ladecadanse\Security\Sentry;
+use Ladecadanse\Utils\Validateur;
+use Ladecadanse\Security\SecurityToken;
+use Ladecadanse\Utils\Logger;
 use Ladecadanse\HtmlShrink;
 
 $videur = new Sentry();

@@ -4,10 +4,10 @@ if (is_file("config/reglages.php"))
 	require_once("config/reglages.php");
 }
 
-use Ladecadanse\Sentry;
-use Ladecadanse\CollectionDescription;
+use Ladecadanse\Security\Sentry;
+use Ladecadanse\DescriptionCollection;
 use Ladecadanse\HtmlShrink;
-use Ladecadanse\Validateur;
+use Ladecadanse\Utils\Validateur;
 
 $videur = new Sentry();
 
@@ -38,7 +38,7 @@ if (isset($_GET['idL']))
 	$get['idL'] = Validateur::validateUrlQueryValue($_GET['idL'], "int", 0);
 }
 
-$fiches = new CollectionDescription();
+$fiches = new DescriptionCollection();
 $fiches->loadFiches('description', $_SESSION['region']);
 $pair = 0;
 

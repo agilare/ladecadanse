@@ -1,23 +1,11 @@
 <?php
-
 namespace Ladecadanse;
 
 use Ladecadanse\Collection;
-use Ladecadanse\Organisateur;
+use Ladecadanse\Description;
 
-class CollectionOrganisateur extends Collection {
+class DescriptionCollection extends Collection {
 
-   /**
- *
- * @var string
- */
-
-
- /**
- 	 * Démarre la session et inclut un en-tête interdisant de stocker le mot
-	 * de passe dans le cache de l'utilisateur
-   * @access public
-   */
 	function __construct()
 	{
 		global $connector;
@@ -76,14 +64,22 @@ class CollectionOrganisateur extends Collection {
 		return true;
 	}
 
-	function loadFiches($region = null)
+	function loadFiches($type = '', $region = null)
 	{
-
+		if ($type != '')
+		{
+			$type = " AND descriptionlieu.type='".$type."'";
+		}
+                
                 $sql_region = '';
                 if (!empty($region))
-                    $sql_region = "and organisateur.region='$region' ";            
-            
-		$req = $this->connector->query("SELECT * FROM organisateur WHERE statut='actif' ".$sql_region."  ORDER BY date_ajout DESC LIMIT 8");
+                    $sql_region = "and lieu.region='$region' ";
+                
+              
+		$req = $this->connector->query("SELECT lieu.idLieu, lieu.nom, pseudo, contenu,
+		descriptionlieu.dateAjout, photo1, groupe, personne.nom as nomAuteur, prenom, descriptionlieu.date_derniere_modif AS date_derniere_modif
+		FROM descriptionlieu, lieu, personne WHERE descriptionlieu.idPersonne=personne.idPersonne AND
+		descriptionlieu.idLieu=lieu.idLieu".$type." AND lieu.actif=1 AND lieu.statut='actif' ".$sql_region." ORDER BY descriptionlieu.dateAjout DESC LIMIT 6");
 
 
 		if ($this->connector->getNumRows($req) == 0)
@@ -93,10 +89,10 @@ class CollectionOrganisateur extends Collection {
 
 		while ($tab = $this->connector->fetchArray($req))
 		{
-			$org = new Organisateur();
-			$org->setValues($tab);
-			$id = $org->getValue('idOrganisateur');
-			$this->elements[$id] = $org;
+			$des = new Description();
+			$des->setValues($tab);
+			$id = $des->getValue('idLieu');
+			$this->elements[$id] = $des;
 		}
 
 		return true;

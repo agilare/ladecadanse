@@ -1,7 +1,7 @@
 <?php
 namespace Ladecadanse;
 
-use Ladecadanse\Validateur;
+use Ladecadanse\Utils\Validateur;
 
   /**
   * An abstract class implementing generic functionality for processing user's input
