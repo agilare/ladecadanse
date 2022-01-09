@@ -136,7 +136,7 @@ class ImageDriver2 extends SystemComponent {
       * @param int $maxHeight Hauteur maximale voulue pour l'image réduite
       * @param string $selon ('', w, h) Pour imposer la largeur ou la hauteur de l'image réduite selon $maxWidth ou $maxHeigth
       * @return string $msgErreur Messag s'il y a eu une erreur
-      * @see        ajouterBreve.php, ajouterEvenement.php, ajouterLieu.php
+      * @see        ajouterBreve.php, evenement-edit.php, lieu-edit.php
       */
    function processImage($imageSource, $imageCreated, $maxWidth = 0, $maxHeigth = 0, $selon = '', $rognage = 0)
    {

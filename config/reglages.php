@@ -43,7 +43,7 @@ $url_fichiers_lieu = $url_fichiers."lieux/";
 $url_images_lieu_galeries = $url_site."web/uploads/lieux/galeries/";
 $url_images_organisateurs = $url_site."web/uploads/organisateurs/";
 
-$url_admin = $url_site."admin/";
+$url_admin = $url_site."pages/admin/";
 $url_css = $url_site."web/css/";
 $url_js = $url_site."web/js/";
 
@@ -120,7 +120,7 @@ $mimes_documents_acceptes = array("image/jpeg", "image/pjpeg", "image/gif", "ima
 "application/zip", "multipart/x-zip", "multipart/x-gzip", "application/x-tar");
 
 
-$glo_menu_pratique = array("Contact" => "contacteznous.php", "À propos" => "apropos.php", "Faire un don" => "faireUnDon.php");
+$glo_menu_pratique = array("Contact" => "contacteznous.php", "À propos" => "articles/apropos.php", "Faire un don" => "articles/faireUnDon.php");
 
 $g_mauvais_mdp = 
 array('123456',

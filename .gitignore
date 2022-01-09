@@ -4,3 +4,4 @@ dploy.yaml
 /images/
 /vendor
 /.idea
+.htaccess

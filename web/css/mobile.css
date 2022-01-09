@@ -345,7 +345,7 @@ a.url, #evenement #pratique .lien_ext
     text-align:left;
 }
 
-#commentaires #connexion #inscription
+#commentaires #connexion #user-register
 {
      width:50%;
      padding:5px;
@@ -535,43 +535,43 @@ float:none;
 	margin:0.6em 0 0 0.4em;
 }
 
-/* inscription */
+/* user-register */
 
-.inscription form#ajouter_editer label
+.user-register form#ajouter_editer label
 {
     float: none;
 	display:block;
 	text-align:left;
 }
 
-.inscription form#ajouter_editer input
+.user-register form#ajouter_editer input
 {
 	margin:0 0 0 0.4em;
 }
-.inscription .guide_champ, .inscription .guide_groupe
+.user-register .guide_champ, .user-register .guide_groupe
 {
 	margin:0 0 0 0.4em;
 	font-style:italic;
 	font-size:0.9em;
 }
 
-.inscription .affiliation
+.user-register .affiliation
 {
 	padding:2em;
 }
 
-.inscription form#ajouter_editer .entreLabels
+.user-register form#ajouter_editer .entreLabels
 {
 	padding:0;
 }
 
-.inscription form#ajouter_editer select, .ajouterPersonne form#ajouter_editer select
+.user-register form#ajouter_editer select, .user-edit form#ajouter_editer select
 {
 	width:200px;
 }
 
 
-.inscription form#ajouter_editer .msg {
+.user-register form#ajouter_editer .msg {
 margin-left:0;
 }
 
