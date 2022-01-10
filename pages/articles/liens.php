@@ -1,6 +1,6 @@
 <?php
 
-require_once("../../config/reglages.php");
+require_once("../../app/bootstrap.php");
 
 use Ladecadanse\Security\Sentry;
 

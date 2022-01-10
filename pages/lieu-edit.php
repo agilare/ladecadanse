@@ -1,6 +1,6 @@
 <?php
 
-require_once("../config/reglages.php");
+require_once("../app/bootstrap.php");
 
 use Ladecadanse\Security\Sentry;
 use Ladecadanse\Security\SecurityToken;
@@ -488,8 +488,8 @@ echo $form->getHtmlErreur("quartier");
             {
                 $imgInfo = getimagesize($rep_images_lieux.$form->getValeur('logo'));
 
-                $lien_popup = HtmlShrink::popupLink($IMGlieux.$form->getValeur('logo')."?".filemtime($rep_images_lieux.$form->getValeur('logo')), "Logo", $imgInfo[0]+20, $imgInfo[1]+20,
-                "<img src=\"".$IMGlieux."s_".$form->getValeur('logo')."?".filemtime($rep_images_lieux.$form->getValeur('logo'))."\" alt=\"Logo pour ".sanitizeForHtml($form->getValeur('nom'))."\" />"
+                $lien_popup = HtmlShrink::popupLink($url_uploads_lieux.$form->getValeur('logo')."?".filemtime($rep_images_lieux.$form->getValeur('logo')), "Logo", $imgInfo[0]+20, $imgInfo[1]+20,
+                "<img src=\"".$url_uploads_lieux."s_".$form->getValeur('logo')."?".filemtime($rep_images_lieux.$form->getValeur('logo'))."\" alt=\"Logo pour ".sanitizeForHtml($form->getValeur('nom'))."\" />"
                 );
                 $checked = '';
                 $tab_sup = $form->getSupprimer();
@@ -527,8 +527,8 @@ echo $form->getHtmlErreur("quartier");
         {
             $imgInfo = getimagesize($rep_images_lieux.$form->getValeur('photo1'));
 
-            $lien_popup = HtmlShrink::popupLink($IMGlieux.$form->getValeur('photo1')."?".filemtime($rep_images_lieux.$form->getValeur('photo1')), "Photo 1", $imgInfo[0]+20, $imgInfo[1]+20,
-            "<img src=\"".$IMGlieux."s_".$form->getValeur('photo1')."?".filemtime($rep_images_lieux.$form->getValeur('photo1'))."\" alt=\"photo pour ".sanitizeForHtml($form->getValeur('nom'))."\" />"
+            $lien_popup = HtmlShrink::popupLink($url_uploads_lieux.$form->getValeur('photo1')."?".filemtime($rep_images_lieux.$form->getValeur('photo1')), "Photo 1", $imgInfo[0]+20, $imgInfo[1]+20,
+            "<img src=\"".$url_uploads_lieux."s_".$form->getValeur('photo1')."?".filemtime($rep_images_lieux.$form->getValeur('photo1'))."\" alt=\"photo pour ".sanitizeForHtml($form->getValeur('nom'))."\" />"
             );
             $checked = '';
             $tab_sup = $form->getSupprimer();

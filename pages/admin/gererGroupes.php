@@ -1,6 +1,6 @@
 <?php
 
-require_once("../../config/reglages.php");
+require_once("../../app/bootstrap.php");
 
 use Ladecadanse\Security\Sentry;
 
@@ -11,8 +11,6 @@ if (!$videur->checkGroup(1))
 
 require_once($rep_includes.'head.php');
 
-// header("Cache-Control: max-age=600, must-revalidate");
-header_html("La décadanse : gérer les groupes", $indexMotsClef, $indexCssScreen, $indexCssPrint);
 ?>
 
 

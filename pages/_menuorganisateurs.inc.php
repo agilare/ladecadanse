@@ -140,7 +140,7 @@ $aff_menulieux = '<div id="menu_lieux">';
 
 		$aff_menulieux .= '</th>
 		<th>&nbsp;</th>
-		<th><img src="'.$IMGicones .'calendar.png" alt="Nombre d\'événements agendés" /></th></tr>';
+		<th><img src="'.$url_images_interface_icons .'calendar.png" alt="Nombre d\'événements agendés" /></th></tr>';
 
 /*
 * Requète SQL vers table 'lieu' selon choix de listage (AK ou LZ) et pour les lieux

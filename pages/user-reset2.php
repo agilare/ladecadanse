@@ -1,6 +1,6 @@
 <?php
 
-require_once("../config/reglages.php");
+require_once("../app/bootstrap.php");
 
 use Ladecadanse\Security\Sentry;
 use Ladecadanse\Utils\Validateur;
@@ -13,8 +13,6 @@ if ($videur->checkGroup(12))
 {
 	header("Location: index.php"); die();
 }
-
-require_once($rep_librairies.'Validateur.php');
 
 //$cache_lieux = $rep_cache."lieux/";
 $nom_page = "user-reset2";

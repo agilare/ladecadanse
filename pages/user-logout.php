@@ -3,7 +3,7 @@
  * Accomplis la déconnexion en detruisant la session et redirige vers la page d'accueil
  */
 
-require_once("../config/reglages.php");
+require_once("../app/bootstrap.php");
 
 use Ladecadanse\Security\Sentry;
 use Ladecadanse\Utils\Logger;

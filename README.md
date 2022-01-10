@@ -10,9 +10,9 @@ Une section d'administration permet de gérer les différentes contenus du site 
 ## Installation
 
 1. cloner la branche `master`
-1. créer le fichier de configuration du site en copiant le modèle `config/params_model.php` vers `config/params.php`
+1. créer le fichier de configuration du site en copiant le modèle `app/env_model.php` vers `app/env.php`
 1. créer une base de données et y importer `config/ladecadanse.sql`
-1. dans votre `config/params.php` saisir les valeurs pour (davantage d'explication et exemples se trouvent dans ce fichier `params.php`) :
+1. dans votre `app/env.php` saisir les valeurs pour (davantage d'explication et exemples se trouvent dans ce fichier `env.php`) :
     - `$rep_absolu`
     - `$url_domaine`
     - `$url_site` 

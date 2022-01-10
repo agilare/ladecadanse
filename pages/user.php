@@ -1,6 +1,6 @@
 <?php
 
-require_once("../config/reglages.php");
+require_once("../app/bootstrap.php");
 
 use Ladecadanse\Security\Sentry;
 use Ladecadanse\HtmlShrink;
@@ -296,9 +296,9 @@ if ($get['elements'] == "evenement")
 			if (!empty($tab_even['flyer']))
 			{
 				$imgInfo = @getimagesize($rep_images_even.$tab_even['flyer']);
-				echo HtmlShrink::popupLink($IMGeven.$tab_even['flyer']."?".@filemtime($rep_images_even.$tab_even['flyer']),
+				echo HtmlShrink::popupLink($url_images_even.$tab_even['flyer']."?".@filemtime($rep_images_even.$tab_even['flyer']),
 				"Flyer", $imgInfo[0]+20,$imgInfo[1]+20,
-				'<img src="'.$IMGeven.'t_'.$tab_even['flyer'].'" alt="Flyer" width="60" />'
+				'<img src="'.$url_images_even.'t_'.$tab_even['flyer'].'" alt="Flyer" width="60" />'
 				);
 			}
 			echo '</td>';
@@ -402,17 +402,17 @@ else if ($get['elements'] == "lieu")
 			if (!empty($tab_lieu['logo']))
 			{
 				$imgInfo = @getimagesize($rep_images_lieux.$tab_lieu['logo']);
-				echo HtmlShrink::popupLink($IMGlieux.$tab_lieu['logo']."?".@filemtime($rep_images_lieux.$tab_lieu['logo']),
+				echo HtmlShrink::popupLink($url_uploads_lieux.$tab_lieu['logo']."?".@filemtime($rep_images_lieux.$tab_lieu['logo']),
 				"Logo", $imgInfo[0]+20,$imgInfo[1]+20,
-				'<img src="'.$IMGlieux.'s_'.$tab_lieu['logo'].'" alt="Logo" />'
+				'<img src="'.$url_uploads_lieux.'s_'.$tab_lieu['logo'].'" alt="Logo" />'
 				);
 			}
 			else if ($tab_lieu['photo1'] != "")
 			{
 				$imgInfo = @getimagesize($rep_images_lieux.$tab_lieu['photo1']);
-				echo HtmlShrink::popupLink($IMGlieux.$tab_lieu['photo1']."?".@filemtime($rep_images_lieux.$tab_lieu['photo1']),
+				echo HtmlShrink::popupLink($url_uploads_lieux.$tab_lieu['photo1']."?".@filemtime($rep_images_lieux.$tab_lieu['photo1']),
 				"photo1", $imgInfo[0]+20,$imgInfo[1]+20,
-				'<img src="'.$IMGlieux.'s_'.$tab_lieu['photo1'].'" width="80" alt="photo1" />'
+				'<img src="'.$url_uploads_lieux.'s_'.$tab_lieu['photo1'].'" width="80" alt="photo1" />'
 				);
 			}
 
@@ -523,9 +523,9 @@ else if ($get['type_elements'] == 'participations')
 			if (!empty($tab_even['flyer']))
 			{
 				$imgInfo = @getimagesize($rep_images_even.$tab_even['flyer']);
-				echo HtmlShrink::popupLink($IMGeven.$tab_even['flyer']."?".@filemtime($rep_images_even.$tab_even['flyer']),
+				echo HtmlShrink::popupLink($url_images_even.$tab_even['flyer']."?".@filemtime($rep_images_even.$tab_even['flyer']),
 				"Flyer", $imgInfo[0]+20,$imgInfo[1]+20,
-				'<img src="'.$IMGeven.'t_'.$tab_even['flyer'].'" alt="Flyer" width="60" />'
+				'<img src="'.$url_images_even.'t_'.$tab_even['flyer'].'" alt="Flyer" width="60" />'
 				);
 			}
 			echo '</td>';
@@ -1195,11 +1195,6 @@ else if ($get['elements'] == "breve")
 			<td>".sanitizeForHtml($titre)."</td>
 
 			<td>";
-			if (!empty($image))
-			{
-				$imgInfo = @getimagesize($rep_images_breves.$image);
-				echo HtmlShrink::popupLink($IMGbreves.$image."?".@filemtime($rep_images_breves.$image), "Image", $imgInfo[0]+20, $imgInfo[1]+20, $iconeImage);
-			}
 			echo "</td>";
 			echo "<td>";
 			if ($date_debut != "0000-00-00")

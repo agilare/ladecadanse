@@ -1,6 +1,6 @@
 <?php
 
-require_once("../config/reglages.php");
+require_once("../app/bootstrap.php");
 
 
 use Ladecadanse\Security\Sentry;
@@ -1395,7 +1395,7 @@ if ($verif->nbErreurs() > 0)
                 $imgInfo = getimagesize($rep_images_even.$champs['flyer']);
                 ?>
                 <div class="supImg">
-                    <a href="<?php echo $IMGeven.$champs['flyer'].'?'.filemtime($rep_images_even.$champs['flyer']) ?>" class="magnific-popup" target="_blank"><img src="<?php echo $IMGeven."s_".$champs['flyer'].'?'.filemtime($rep_images_even.$champs['flyer']) ?>" alt="Flyer" /></a>
+                    <a href="<?php echo $url_images_even.$champs['flyer'].'?'.filemtime($rep_images_even.$champs['flyer']) ?>" class="magnific-popup" target="_blank"><img src="<?php echo $url_images_even."s_".$champs['flyer'].'?'.filemtime($rep_images_even.$champs['flyer']) ?>" alt="Flyer" /></a>
                 <div><label for="sup_flyer" class="continu">Supprimer</label><input type="checkbox" name="sup_flyer" id="sup_flyer" value="flyer" class="checkbox"
                 <?php
                 if (!empty($supprimer['flyer']) && $verif->nbErreurs() > 0)
@@ -1426,7 +1426,7 @@ if ($verif->nbErreurs() > 0)
             $imgInfo = @getimagesize($rep_images_even.$champs['image']);
             echo "<div class=\"supImg\">";
             ?>
-            <a href="<?php echo $IMGeven.$champs['image'].'?'.filemtime($rep_images_even.$champs['image']) ?>" class="magnific-popup"  target="_blank"><img src="<?php echo $IMGeven."s_".$champs['image'].'?'.filemtime($rep_images_even.$champs['image']) ?>" alt="Photo" /></a>
+            <a href="<?php echo $url_images_even.$champs['image'].'?'.filemtime($rep_images_even.$champs['image']) ?>" class="magnific-popup"  target="_blank"><img src="<?php echo $url_images_even."s_".$champs['image'].'?'.filemtime($rep_images_even.$champs['image']) ?>" alt="Photo" /></a>
            <?php
             echo "<div><label for=\"sup_image\" class=\"continu\">Supprimer</label><input type=\"checkbox\" name=\"sup_image\" id=\"sup_image\" value=\"image\" class=\"checkbox\" ";
 

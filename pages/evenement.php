@@ -1,6 +1,6 @@
 <?php
 
-require_once("../config/reglages.php");
+require_once("../app/bootstrap.php");
 
 use Ladecadanse\Security\Sentry;
 use Ladecadanse\Evenement;
@@ -454,9 +454,9 @@ iCal</a></li>
                         
                         $file_time = @filemtime($rep_images_even.$even->getValue('flyer'));
 						?>
-							<a href="<?php echo $IMGeven.$even->getValue('flyer')."?".$file_time ?>" class="magnific-popup">
+							<a href="<?php echo $url_images_even.$even->getValue('flyer')."?".$file_time ?>" class="magnific-popup">
 							
-								<img src="<?php echo $IMGeven.$even->getValue('flyer')."?".$file_time ?>" alt="Flyer de cet événement" width="<?php echo $img_width; ?>" />
+								<img src="<?php echo $url_images_even.$even->getValue('flyer')."?".$file_time ?>" alt="Flyer de cet événement" width="<?php echo $img_width; ?>" />
 							</a>						
 						
 						<?php
@@ -476,9 +476,9 @@ iCal</a></li>
 						$imgInfo[1]+20, $imgLien); */
 						
 						?>
-							<a href="<?php echo $IMGeven.$even->getValue('image')."?".filemtime($rep_images_even.$even->getValue('image')) ?>" class="magnific-popup">
+							<a href="<?php echo $url_images_even.$even->getValue('image')."?".filemtime($rep_images_even.$even->getValue('image')) ?>" class="magnific-popup">
 							
-								<img src="<?php echo $IMGeven.$even->getValue('image')."?".filemtime($rep_images_even.$even->getValue('image')) ?>" alt="Photo pour cet événement" width="<?php echo $img_width; ?>" />
+								<img src="<?php echo $url_images_even.$even->getValue('image')."?".filemtime($rep_images_even.$even->getValue('image')) ?>" alt="Photo pour cet événement" width="<?php echo $img_width; ?>" />
 							</a>						
 						
 						<?php						
@@ -499,9 +499,9 @@ iCal</a></li>
  */													$img_width = 140;
 						if ($imgInfo[0] >= 140) {  $img_width = 160; }
 						?>
-							<a href="<?php echo $IMGeven.$even->getValue('image')."?".filemtime($rep_images_even.$even->getValue('image')) ?>" class="magnific-popup">
+							<a href="<?php echo $url_images_even.$even->getValue('image')."?".filemtime($rep_images_even.$even->getValue('image')) ?>" class="magnific-popup">
 							
-								<img src="<?php echo $IMGeven.$even->getValue('image')."?".filemtime($rep_images_even.$even->getValue('image')) ?>" alt="Photo pour cet événement" width="<?php echo $img_width; ?>" />
+								<img src="<?php echo $url_images_even.$even->getValue('image')."?".filemtime($rep_images_even.$even->getValue('image')) ?>" alt="Photo pour cet événement" width="<?php echo $img_width; ?>" />
 							</a>						
 						
 						<?php								

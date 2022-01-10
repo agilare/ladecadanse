@@ -12,26 +12,26 @@
 
 	<ul style="list-style-type:none">
 		<li>
-            <a href="/pages/admin/gererEvenements.php"><img src="<?php echo $IMGicones ?>calendar.png" alt="" />les événements</a>
+            <a href="/pages/admin/gererEvenements.php"><img src="<?php echo $url_images_interface_icons ?>calendar.png" alt="" />les événements</a>
 		</li>                
 		<li>
-            <a href="/pages/admin/gerer.php?element=lieu"><img src="<?php echo $IMGicones ?>building.png" alt="" />les lieux</a>
+            <a href="/pages/admin/gerer.php?element=lieu"><img src="<?php echo $url_images_interface_icons ?>building.png" alt="" />les lieux</a>
 		</li>
 		<li>
-            <a href="/pages/admin/gerer.php?element=organisateur"><img src="<?php echo $IMGicones ?>group.png" alt="" />les organisateurs</a>
+            <a href="/pages/admin/gerer.php?element=organisateur"><img src="<?php echo $url_images_interface_icons ?>group.png" alt="" />les organisateurs</a>
 		</li>
                 
         <?php if ($_SESSION['Sgroupe'] == 1) { ?>                
 		<li>
-            <a href="/pages/admin/gerer.php?element=description"><img src="<?php echo $IMGicones ?>page_white.png" alt="" />les descriptions</a>
+            <a href="/pages/admin/gerer.php?element=description"><img src="<?php echo $url_images_interface_icons ?>page_white.png" alt="" />les descriptions</a>
 		</li>                       
 		<li>
-            <a href="/pages/admin/gerer.php?element=personne"><img src="<?php echo $IMGicones ?>user.png" alt="" />les personnes</a>
+            <a href="/pages/admin/gerer.php?element=personne"><img src="<?php echo $url_images_interface_icons ?>user.png" alt="" />les personnes</a>
 		</li>
         <?php } ?>
         <?php if ($_SESSION['Sgroupe'] == 1) { ?>   
 		<li>
-            <a href="/pages/admin/gerer.php?element=commentaire"><img src="<?php echo $IMGicones ?>comment.png" alt="" />les commentaires</a>
+            <a href="/pages/admin/gerer.php?element=commentaire"><img src="<?php echo $url_images_interface_icons ?>comment.png" alt="" />les commentaires</a>
         </li>        
         <?php } ?>
 	</ul>

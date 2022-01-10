@@ -1,6 +1,6 @@
 <?php
 
-require_once("../config/reglages.php");
+require_once("../app/bootstrap.php");
 
 use Ladecadanse\Security\Sentry;
 use Ladecadanse\Evenement;
@@ -401,12 +401,12 @@ if ($get['sem'])
 		if (!empty($listeEven['flyer']))
 		{
 			$imgInfo = @getimagesize($rep_images.$listeEven['flyer']);
-			$lien_flyer = '<a href="'.$IMGeven.$listeEven['flyer']."?".@filemtime($rep_images_even.$listeEven['flyer']).'" class="magnific-popup"><img src="'.$IMGeven."s_".$listeEven['flyer']."?".@filemtime($rep_images_even.$listeEven['flyer']).'"  alt="Flyer" width="100" /></a>';			
+			$lien_flyer = '<a href="'.$url_images_even.$listeEven['flyer']."?".@filemtime($rep_images_even.$listeEven['flyer']).'" class="magnific-popup"><img src="'.$url_images_even."s_".$listeEven['flyer']."?".@filemtime($rep_images_even.$listeEven['flyer']).'"  alt="Flyer" width="100" /></a>';			
 		}
 		else if ($listeEven['image'] != '')
 		{	
 			$imgInfo = @getimagesize($rep_images.$listeEven['image']);
-			$lien_flyer = '<a href="'.$IMGeven.$listeEven['image']."?".@filemtime($rep_images_even.$listeEven['image']).'" class="magnific-popup"><img src="'.$IMGeven."s_".$listeEven['image']."?".@filemtime($rep_images_even.$listeEven['image']).'" alt="Photo" width="100" /></a>';					
+			$lien_flyer = '<a href="'.$url_images_even.$listeEven['image']."?".@filemtime($rep_images_even.$listeEven['image']).'" class="magnific-popup"><img src="'.$url_images_even."s_".$listeEven['image']."?".@filemtime($rep_images_even.$listeEven['image']).'" alt="Photo" width="100" /></a>';					
 		}
 
 		if (mb_strlen($listeEven['description']) > $maxChar)

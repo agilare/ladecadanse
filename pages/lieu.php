@@ -1,6 +1,6 @@
 <?php
 
-require_once("../config/reglages.php");
+require_once("../app/bootstrap.php");
 
 use Ladecadanse\Security\Sentry;
 use Ladecadanse\Lieu;
@@ -206,7 +206,7 @@ if ($lieu->getValue('photo1') != '')
 
 	$imgInfo = getimagesize($rep_images_lieux.$lieu->getValue('photo1'));
 
-	$photo_principale = HtmlShrink::popupLink($IMGlieux.$lieu->getValue('photo1').'?'.filemtime($rep_images_lieux.$lieu->getValue('photo1')),	"Logo", $imgInfo[0]+20, $imgInfo[1]+20,	"<img src=\"".$IMGlieux."s_".$lieu->getValue('photo1')."?".filemtime($rep_images_lieux."s_".$lieu->getValue('photo1'))."\" alt=\"Photo du lieu\" />");
+	$photo_principale = HtmlShrink::popupLink($url_uploads_lieux.$lieu->getValue('photo1').'?'.filemtime($rep_images_lieux.$lieu->getValue('photo1')),	"Logo", $imgInfo[0]+20, $imgInfo[1]+20,	"<img src=\"".$url_uploads_lieux."s_".$lieu->getValue('photo1')."?".filemtime($rep_images_lieux."s_".$lieu->getValue('photo1'))."\" alt=\"Photo du lieu\" />");
 
 	
 
@@ -217,11 +217,11 @@ $illustration = "";
 
 if (!empty($lieu->getValue('logo')))
 {
-	$illustration = "<img src=".$IMGlieux."s_".$lieu->getValue('logo')." style='float:left;margin-right:0.2em' class='logo'  />";
+	$illustration = "<img src=".$url_uploads_lieux."s_".$lieu->getValue('logo')." style='float:left;margin-right:0.2em' class='logo'  />";
 }
 else if (!empty($lieu->getValue('photo1')))
 {
-	$illustration = "<img src=".$IMGlieux."s_".$lieu->getValue('photo1')." height=80 style='float:left;margin-right:0.2em' />";
+	$illustration = "<img src=".$url_uploads_lieux."s_".$lieu->getValue('photo1')." height=80 style='float:left;margin-right:0.2em' />";
 }
 
 $info_lieu = "<div style='width:200px'>".$illustration."<div class=details><p class=adresse><strong>".sanitizeForHtml($lieu->getValue('nom'))."</strong></p><p class=adresse>".sanitizeForHtml($lieu->getValue('adresse'))."</p><p class=adresse>".$lieu->getValue('quartier')."</p></div></div>";
@@ -276,8 +276,8 @@ function initMap() {
 if ($lieu->getValue('logo'))
 {
 ?>
-<a href="<?php echo $IMGlieux.$lieu->getValue('logo').'?'.filemtime($rep_images_lieux.$lieu->getValue('logo')) ?>" class="magnific-popup">
-	<img src="<?php echo $IMGlieux."s_".$lieu->getValue('logo')."?".filemtime($rep_images_lieux."s_".$lieu->getValue('logo')); ?>" alt="Logo" class="logo" />
+<a href="<?php echo $url_uploads_lieux.$lieu->getValue('logo').'?'.filemtime($rep_images_lieux.$lieu->getValue('logo')) ?>" class="magnific-popup">
+	<img src="<?php echo $url_uploads_lieux."s_".$lieu->getValue('logo')."?".filemtime($rep_images_lieux."s_".$lieu->getValue('logo')); ?>" alt="Logo" class="logo" />
 </a>
 <?php 
 }
@@ -318,7 +318,7 @@ if ($lieu->getValue('logo'))
 			<?php
 			if ($lieu->getValue('photo1') != '') {
 			?>
-			<a href="<?php echo $IMGlieux.$lieu->getValue('photo1').'?'.filemtime($rep_images_lieux.$lieu->getValue('photo1')); ?>" class="gallery-item"><img src="<?php echo $IMGlieux."s_".$lieu->getValue('photo1').'?'.filemtime($rep_images_lieux.$lieu->getValue('photo1')); ?>" alt="Photo du lieu"></a>			
+			<a href="<?php echo $url_uploads_lieux.$lieu->getValue('photo1').'?'.filemtime($rep_images_lieux.$lieu->getValue('photo1')); ?>" class="gallery-item"><img src="<?php echo $url_uploads_lieux."s_".$lieu->getValue('photo1').'?'.filemtime($rep_images_lieux.$lieu->getValue('photo1')); ?>" alt="Photo du lieu"></a>			
 			<?php } ?>
             <?php 
             if (empty($_SESSION['Sgroupe']))
@@ -941,8 +941,8 @@ title="Flux RSS des prochains événements"><i class="fa fa-rss fa-lg" style="co
 
 			//$illustration = lien_popup($IMGeven.$even->getValue('flyer')."?".filemtime($rep_images_even.$even->getValue('even')), "Flyer", $imgInfo[0]+20,$imgInfo[1]+20,			"<img src=\"".$IMGeven."t_".$even->getValue('flyer')."?".filemtime($rep_images_even."t_".$even->getValue('flyer'))."\" alt=\"Flyer\" />");
 			?>
-			<a href="<?php echo $IMGeven.$even->getValue('flyer').'?'.filemtime($rep_images_even.$even->getValue('flyer')) ?>" class="magnific-popup">
-				<img src="<?php echo $IMGeven."t_".$even->getValue('flyer')."?".filemtime($rep_images_even."t_".$even->getValue('flyer')); ?>" alt="Flyer" width="60" />
+			<a href="<?php echo $url_images_even.$even->getValue('flyer').'?'.filemtime($rep_images_even.$even->getValue('flyer')) ?>" class="magnific-popup">
+				<img src="<?php echo $url_images_even."t_".$even->getValue('flyer')."?".filemtime($rep_images_even."t_".$even->getValue('flyer')); ?>" alt="Flyer" width="60" />
 			</a>			
 			
 			<?php
@@ -955,8 +955,8 @@ title="Flux RSS des prochains événements"><i class="fa fa-rss fa-lg" style="co
 			$illustration = lien_popup($IMGeven.$even->getValue('image')."?".filemtime($rep_images_even.$even->getValue('image')), "Image", $imgInfo[0]+20, $imgInfo[1]+20, "<img src=\"".$IMGeven."s_".$even->getValue('image')."?".filemtime($rep_images_even.$even->getValue('image'))."\" alt=\"Image\" width=\"60\" />"); */
 			
 			?>
-			<a href="<?php echo $IMGeven.$even->getValue('image').'?'.filemtime($rep_images_even.$even->getValue('image')) ?>" class="magnific-popup">
-				<img src="<?php echo $IMGeven."s_".$even->getValue('image')."?".filemtime($rep_images_even."s_".$even->getValue('image')); ?>" alt="Photo" width="60" />
+			<a href="<?php echo $url_images_even.$even->getValue('image').'?'.filemtime($rep_images_even.$even->getValue('image')) ?>" class="magnific-popup">
+				<img src="<?php echo $url_images_even."s_".$even->getValue('image')."?".filemtime($rep_images_even."s_".$even->getValue('image')); ?>" alt="Photo" width="60" />
 			</a>			
 			
 			<?php			

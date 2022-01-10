@@ -1,6 +1,6 @@
 <?php 
 
-require_once("../config/reglages.php");
+require_once("../app/bootstrap.php");
 
 
 use Ladecadanse\Utils\Validateur;
@@ -159,7 +159,7 @@ else if ($get['type'] == "evenements_auj")
 			//si un flyer existe
 		if (!empty($tab_even['flyer']))
 		{
-			$items .= "<div class=\"flyer\"><img src=\"".$IMGeven."s_".$tab_even['flyer']."\"  alt=\"Flyer\" /></div>";
+			$items .= "<div class=\"flyer\"><img src=\"".$url_images_even."s_".$tab_even['flyer']."\"  alt=\"Flyer\" /></div>";
 		}
 
 		$maxChar = Text::trouveMaxChar($tab_even['description'], 60, 5);
@@ -233,7 +233,7 @@ else if ($get['type'] == "lieu_evenements")
 			//si un flyer existe
 		if (!empty($tab_even['flyer']))
 		{
-			$items .= "<div class=\"flyer\"><img src=\"".$IMGeven."s_".$tab_even['flyer']."\"  alt=\"Flyer\" /></div>";
+			$items .= "<div class=\"flyer\"><img src=\"".$url_images_even."s_".$tab_even['flyer']."\"  alt=\"Flyer\" /></div>";
 		}
 
 		$maxChar = Text::trouveMaxChar($tab_even['description'], 60, 5);
@@ -407,7 +407,7 @@ else if ($get['type'] == "organisateur_evenements")
 			//si un flyer existe
 		if (!empty($tab_even['flyer']))
 		{
-			$items .= "<div class=\"flyer\"><img src=\"".$IMGeven."s_".$tab_even['flyer']."\"  alt=\"Flyer\" /></div>";
+			$items .= "<div class=\"flyer\"><img src=\"".$url_images_even."s_".$tab_even['flyer']."\"  alt=\"Flyer\" /></div>";
 		}
 
 		$maxChar = Text::trouveMaxChar($tab_even['description'], 60, 5);
@@ -493,11 +493,11 @@ else if ($get['type'] == "evenements_ajoutes")
 			//si un flyer existe
 		if (!empty($tab_even['flyer']))
 		{
-			$items .= "<div class=\"flyer\"><img src=\"".$IMGeven."s_".$tab_even['flyer']."\"  alt=\"Flyer\" /></div>";
+			$items .= "<div class=\"flyer\"><img src=\"".$url_images_even."s_".$tab_even['flyer']."\"  alt=\"Flyer\" /></div>";
 		}
 		else if (!empty($tab_even['image']))
 		{
-			$items .= "<div class=\"flyer\"><img src=\"".$IMGeven."s_".$tab_even['image']."\"  alt=\"Photo\" /></div>";
+			$items .= "<div class=\"flyer\"><img src=\"".$url_images_even."s_".$tab_even['image']."\"  alt=\"Photo\" /></div>";
 
 		}
 

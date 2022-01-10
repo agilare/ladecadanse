@@ -1,4 +1,4 @@
-config/params.php
+app/env.php
 dploy.yaml
 /nbproject
 /images/

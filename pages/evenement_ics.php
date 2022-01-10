@@ -30,7 +30,7 @@
 // https://www.ietf.org/rfc/rfc5545.txt
 
 
-require_once("../config/reglages.php");
+require_once("../app/bootstrap.php");
 
 
 date_default_timezone_set('Europe/Paris');

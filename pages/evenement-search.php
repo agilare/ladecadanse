@@ -1,6 +1,6 @@
 <?php
 
-require_once("../config/reglages.php");
+require_once("../app/bootstrap.php");
 
 use Ladecadanse\Security\Sentry;
 use Ladecadanse\Utils\Logger;
@@ -97,7 +97,7 @@ if (!empty($get['mots']))
 
 
 	$mots_vides = array();
-	if (!$fp = fopen($rep_absolu."config/mots_vides.txt","r"))
+	if (!$fp = fopen($rep_absolu."app/mots_vides.txt","r"))
 	{
 		echo "Echec de l'ouverture du fichier";
 		exit;

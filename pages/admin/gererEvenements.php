@@ -1,6 +1,6 @@
 <?php
 
-require_once("../../config/reglages.php");
+require_once("../../app/bootstrap.php");
 
 use Ladecadanse\Security\Sentry;
 use Ladecadanse\Utils\Validateur;
@@ -861,7 +861,7 @@ echo '<div class="spacer"></div>';
 $th_evenements = array("titre" => "Titre", "idLieu" => "Lieu", "dateEvenement" => "Date", "genre" => "Catégorie", "horaire" => "Horaire", "statut" => "Statut",
 "dateAjout" => "Ajouté");
 
-echo "<form method=\"post\" id=\"formGererEvenements\" class='submit-freeze-wait' enctype=\"multipart/form-data\" action=\"".$url_admin."gererEvenements.php\">";
+echo "<form method=\"post\" id=\"formGererEvenements\" class='submit-freeze-wait' enctype=\"multipart/form-data\" action=\"/pages/admin/gererEvenements.php\">";
 
 echo "<table id=\"ajouts\" ><tr>";
 
@@ -1396,8 +1396,8 @@ if (isset($get_idE) && !empty($champs['flyer']) && !$verif->getErreur($champs['f
 {
 	echo '<div class="supImg">';
 	$imgInfo = getimagesize($rep_images_even.$champs['flyer']);
-	$iconeImage = '<img src="'.$IMGeven."s_".$champs['flyer'].'" alt="image pour '.sanitizeForHtml($champs['titre']).'" />';
-	echo HtmlShrink::popupLink($IMGeven.$tab_even['flyer'], "Flyer", $imgInfo[0]+20, $imgInfo[1]+20, $iconeImage);
+	$iconeImage = '<img src="'.$url_images_even."s_".$champs['flyer'].'" alt="image pour '.sanitizeForHtml($champs['titre']).'" />';
+	echo HtmlShrink::popupLink($url_images_even.$tab_even['flyer'], "Flyer", $imgInfo[0]+20, $imgInfo[1]+20, $iconeImage);
 	?>
 
 	<div><label for="sup_flyer" class="continu">Supprimer</label>
@@ -1426,8 +1426,8 @@ echo $verif->getErreur("image");
 if (isset($get_idE) && !empty($champs['image']) && !$verif->getErreur('image'))
 {
 	$imgInfo = getimagesize($rep_images_even.$champs['image']);
-	$iconeImage = "<img src=\"".$IMGeven."s_".$champs['image']."\"  alt=\"image pour ".sanitizeForHtml($champs['titre'])."\" />";
-	echo HtmlShrink::popupLink($IMGeven.$tab_even['image'], "image", $imgInfo[0]+20, $imgInfo[1]+20, $iconeImage);
+	$iconeImage = "<img src=\"".$url_images_even."s_".$champs['image']."\"  alt=\"image pour ".sanitizeForHtml($champs['titre'])."\" />";
+	echo HtmlShrink::popupLink($url_images_even.$tab_even['image'], "image", $imgInfo[0]+20, $imgInfo[1]+20, $iconeImage);
 	echo "<div><label for=\"sup_image\" class=\"continu\">Supprimer</label><input type=\"checkbox\" name=\"sup_image\" id=\"sup_image\" value=\"image\" class=\"checkbox\" ";
 
 	if (!empty($supprimer['image']) && $verif->nbErreurs() == 0)

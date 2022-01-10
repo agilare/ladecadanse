@@ -1,5 +1,4 @@
 <?php
-$tab_pages_dc = array("/pages/agenda.php", "/pages/evenement.php");
 
 $nom_page = basename($_SERVER["SCRIPT_FILENAME"], '.php');
 /* GENRE */
@@ -173,7 +172,7 @@ if ($nom_page == "agenda" && isset($page_titre))
     <link rel="apple-touch-icon" sizes="57x57" href="/web/interface/apple-icon-57x57.png" />       
     <link rel="apple-touch-icon" sizes="76x76" href="/web/interface/apple-icon-76x76.png" />     
     <link rel="apple-touch-icon" sizes="152x152" href="/web/interface/apple-icon-152x152.png" />  
-	<link rel="shortcut icon" href="<?php echo $url_images ?>interface/favicone.gif" />
+	<link rel="shortcut icon" href="/web/interface/favicone.gif" />
      <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>  
    <script async defer
       src="https://maps.googleapis.com/maps/api/js?key=<?php echo GOOGLE_API_KEY; ?>&callback=initMap">

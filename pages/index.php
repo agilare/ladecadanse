@@ -1,6 +1,6 @@
 <?php
 
-require_once("../config/reglages.php");
+require_once("../app/bootstrap.php");
 
 use Ladecadanse\Security\Sentry;
 use Ladecadanse\Utils\Text;
@@ -225,7 +225,7 @@ if (HOME_TMP_BANNER_ENABLED && !isset($_COOKIE['msg_orga_benevole']))
             {
                 $imgInfo = @getimagesize($rep_images.$tab_even['flyer']);
                 ?>
-                <a href="<?php echo $IMGeven.$tab_even['flyer']; ?>" class="magnific-popup"><img src="<?php echo $IMGeven."s_".$tab_even['flyer']; ?>" alt="Flyer" width="100" /></a>
+                <a href="<?php echo $url_images_even.$tab_even['flyer']; ?>" class="magnific-popup"><img src="<?php echo $url_images_even."s_".$tab_even['flyer']; ?>" alt="Flyer" width="100" /></a>
                 <?php
             }
             else if (!empty($tab_even['image']))
@@ -233,7 +233,7 @@ if (HOME_TMP_BANNER_ENABLED && !isset($_COOKIE['msg_orga_benevole']))
                 $imgInfo = @getimagesize($rep_images.$tab_even['image']);
                 ?>
 
-                <a href="<?php echo $IMGeven.$tab_even['image']; ?>" class="magnific-popup"><img src="<?php echo $IMGeven."s_".$tab_even['image']; ?>" alt="Photo" width="100" /></a>
+                <a href="<?php echo $url_images_even.$tab_even['image']; ?>" class="magnific-popup"><img src="<?php echo $url_images_even."s_".$tab_even['image']; ?>" alt="Photo" width="100" /></a>
 
             <?php 
             }
@@ -485,7 +485,7 @@ if ($genre_courant != '')
 
                 ?>
 
-                <a href="<?php echo $IMGeven.$tab_dern_even['flyer']; ?>" class="magnific-popup"><img src="<?php echo $IMGeven."t_".$tab_dern_even['flyer']; ?>" alt="Flyer" width="60" /></a>
+                <a href="<?php echo $url_images_even.$tab_dern_even['flyer']; ?>" class="magnific-popup"><img src="<?php echo $url_images_even."t_".$tab_dern_even['flyer']; ?>" alt="Flyer" width="60" /></a>
 
                 <?php
 
@@ -498,7 +498,7 @@ if ($genre_courant != '')
 
                 ?>
 
-                <a href="<?php echo $IMGeven.$tab_dern_even['image']; ?>" class="magnific-popup"><img src="<?php echo $IMGeven."s_".$tab_dern_even['image']; ?>" alt="Photo" width="60" /></a>
+                <a href="<?php echo $url_images_even.$tab_dern_even['image']; ?>" class="magnific-popup"><img src="<?php echo $url_images_even."s_".$tab_dern_even['image']; ?>" alt="Photo" width="60" /></a>
 
                 <?php 
 

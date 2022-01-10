@@ -1,6 +1,6 @@
 <?php
 
-require_once("../config/reglages.php");
+require_once("../app/bootstrap.php");
 
 
 use Ladecadanse\Security\Sentry;
@@ -28,7 +28,6 @@ header("Pragma: no-cache");
 header("Expires: 0");
 header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
 header("Cache-Control: no-cache, must-revalidate");
-header_html("La dê¤¡danse : ".$get['action']." un ê·©nement", $indexMotsClef, $formsCssScreen, $formsCssPrint);
  */
 $page_titre = "supprimer un élément";
 $page_description = "Suppression d'un élément";
@@ -697,15 +696,6 @@ if ((($authorization->estAuteur($_SESSION['SidPersonne'], $get['idE'], "evenemen
             echo "<div class=\"breve_contenu\">
             <h3>".sanitizeForHtml($breve['titre'])."</h3>\n
             <div class=\"spacer\"></div>\n";	
-
-            if (!empty($breve['img_breve']))
-            {
-                $imgInfo = getimagesize($rep_images_breves.$breve['img_breve']);	
-                echo "<div class=\"image\">";
-                echo HtmlShrink::popupLink($IMGbreves.$breve['img_breve'], "Image brève", $imgInfo[0]+20, $imgInfo[1]+20,
-                "<img src=\"".$IMGbreves."s_".$breve['img_breve']."\" alt=\"image pour ".sanitizeForHtml($breve['titre'])."\" />");
-                echo "</div>";
-            }
 
             echo "<p>".Text::wikiToHtml(sanitizeForHtml($breve['contenu']))."</p><p class=\"auteur\">".$listeAut['pseudo']."</p>";
             echo "<div class=\"spacer\"></div>\n";

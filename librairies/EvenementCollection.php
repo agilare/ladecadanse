@@ -86,7 +86,6 @@ class EvenementCollection extends Collection {
         global $rep_absolu;
         global $rep_images;
         global $rep_fichiers_even;
-        global $rep_librairies;
         global $rep_cache;
 
         //TESTER SI L'EVENEMENT EXISTE ENCORE

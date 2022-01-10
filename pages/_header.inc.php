@@ -1,5 +1,4 @@
 <?php
-$tab_pages_dc = array("/pages/agenda.php", "/pages/evenement.php");
 
 $nom_page = basename($_SERVER["SCRIPT_FILENAME"], '.php');
 
@@ -118,8 +117,7 @@ else
 }
 
 
-$pages_post = array("ajouterBreve", "multi-comment", "multi-description", "evenement-edit", "lieu-edit",
-"user-edit", "evenement-copy", "contacteznous", "user-login");
+$pages_post = ["ajouterBreve", "multi-comment", "multi-description", "evenement-edit", "lieu-edit", "user-edit", "evenement-copy", "contacteznous", "user-login"];
 
 
 header("Cache-Control: no-store, no-cache, must-revalidate");
@@ -436,7 +434,7 @@ echo '<a id="bouton_imprimer" title="Imprimer la page" href="javascript:window.p
             ?>
             </li>
             <li id="bouton_calendrier">
-            <a href="#" id="btn_calendrier" class="mobile"><img src="<?php echo $IMGicones ?>calendar_view_week.png" alt="Calendrier" width="16" height="16" /></a>
+            <a href="#" id="btn_calendrier" class="mobile"><img src="<?php echo $url_images_interface_icons ?>calendar_view_week.png" alt="Calendrier" width="16" height="16" /></a>
             </li>
     <?php
         }

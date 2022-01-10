@@ -1,6 +1,6 @@
 <?php
 
-require_once("../../config/reglages.php");
+require_once("../../app/bootstrap.php");
 
 use Ladecadanse\Security\Sentry;
 use Ladecadanse\Utils\Validateur;
@@ -361,7 +361,7 @@ while($tab_even = $connector->fetchArray($req_getEvenement))
 	if (!empty($tab_even['flyer']))
 	{
 		$imgInfo = getimagesize($rep_images_even.$tab_even['flyer']);
-		echo HtmlShrink::popupLink($IMGeven.$tab_even['flyer'], "Flyer", $imgInfo[0]+20, $imgInfo[1]+20, $iconeImage);
+		echo HtmlShrink::popupLink($url_images_even.$tab_even['flyer'], "Flyer", $imgInfo[0]+20, $imgInfo[1]+20, $iconeImage);
 	}
 	echo "</td>
 	<td>".$tab_icones_statut[$tab_even['statut']]."</td>";

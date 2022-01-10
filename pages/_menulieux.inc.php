@@ -170,12 +170,12 @@ $aff_menulieux .= '
 			}
 
 	$aff_menulieux .= '<div class="spacer"><!-- --></div>';
-	$aff_menulieux .= '<table summary="Menu des lieux"><tr><th><img src="'.$IMGicones.'building.png" alt="Lieu"  />';
+	$aff_menulieux .= '<table summary="Menu des lieux"><tr><th><img src="'.$url_images_interface_icons.'building.png" alt="Lieu"  />';
 
 
 		$aff_menulieux .= '</th>
-		<th><img src="'.$IMGicones .'page_white_text.png" alt="Description" title="Description" /></th>
-		<th><img src="'.$IMGicones .'calendar.png" alt="Nombre d\'événements agendés" title="Nombre d\'événements agendés" /></th></tr>';
+		<th><img src="'.$url_images_interface_icons .'page_white_text.png" alt="Description" title="Description" /></th>
+		<th><img src="'.$url_images_interface_icons .'calendar.png" alt="Nombre d\'événements agendés" title="Nombre d\'événements agendés" /></th></tr>';
 
 /*
 * Requète SQL vers table 'lieu' selon choix de listage (AK ou LZ) et pour les lieux

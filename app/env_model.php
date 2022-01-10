@@ -1,10 +1,8 @@
 <?php
-// make a copy of this file with name 'params.php'
+// make a copy of this file with name 'env.php'
 define("ENV", "dev");
 define("MODE_DEBUG", true);
  
-error_reporting(E_ALL);
-ini_set('display_errors', '1');
 
 // full path of your ladecadanse dir, for ex. "/home/michel/hosts/ladecadanse/"
 $rep_absolu = "";
@@ -44,6 +42,7 @@ define("GOOGLE_RECAPTCHA_API_KEY_SERVER", '');
 
 define("GOOGLE_ANALYTICS_ID", ''); // 1st analytics tool (enabled only in prod)
 define("GOOGLE_ANALYTICS_ENABLED", false);
+
 define("MATOMO_ENABLED", false); // 2nd analytics tool (enabled only in prod)
 
 define("PREVIEW", true); 

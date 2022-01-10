@@ -43,7 +43,7 @@ class ImageDriver2 extends SystemComponent {
     * Établit les formats d'image acceptés
     *
     * @access public
-    * @see config/reglages.php
+    * @see app/config.php
     */
     function __construct($IMGtype)
     {
