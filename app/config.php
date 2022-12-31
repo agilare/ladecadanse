@@ -13,10 +13,10 @@ $rep_images_even = $rep_images;
 $rep_images_lieux = $rep_absolu . "web/uploads/lieux/";
 $rep_images_lieux_galeries = $rep_images_lieux . "galeries/";
 $rep_images_organisateurs = $rep_absolu . "web/uploads/organisateurs/";
+$rep_images_interface = $rep_absolu . "web/interface/";
 $rep_fichiers = $rep_absolu . "web/uploads/fichiers/";
 $rep_fichiers_even = $rep_fichiers . "evenements/";
 $rep_fichiers_lieu = $rep_fichiers . "lieux/";
-$rep_images_interface = $rep_absolu . "web/interface/";
 $rep_cache = $rep_absolu . "cache/";
 
 // URL

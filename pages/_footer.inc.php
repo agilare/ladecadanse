@@ -1,38 +1,38 @@
-</div>
-<!-- fin conteneur -->
+    </div>
+    <!-- fin conteneur -->
 
-<div id="pied-wrapper"> 
-	
-	<!-- Début pied -->
-	<div id="pied">
+    <footer id="pied-wrapper"> 
 
-		<ul class="menu_pied">
+        <!-- Début pied -->
+        <div id="pied">
 
-        <?php
-        foreach ($glo_menu_pratique as $nom => $lien)
-        {
-        	if (strstr($_SERVER['PHP_SELF'], $lien))
-        	{
-        		$ici = " class=\"ici\"";
-        	}
-        ?>
-        
-            <li><a href="<?php echo $url_site.$lien; ?>" title="<?php echo $nom; ?>" <?php echo $ici; ?>><?php echo $nom; ?></a></li>
-        <?php } ?>
-            
-            
-		<li><a href="/pages/articles/charte-editoriale.php">Charte éditoriale</a></li>
-		<li><a href="/pages/articles/liens.php">Liens</a></li>
-	<li>
-	<form class="recherche" action="/pages/evenement-search.php" method="get">
-<input type="text" class="mots" name="mots" size="22" maxlength="50" value="" placeholder="Rechercher un événement" /><input type="submit" class="submit" name="formulaire" value=""  /><input type="text" name="name_as" value="" class="name_as" id="name_as" />
-	</form>
-	</li>
-</ul>
-	</div>
-	<!-- Fin Pied -->
+            <ul class="menu_pied">
 
-</div> 
+                <?php
+                foreach ($glo_menu_pratique as $nom => $lien)
+                {
+                    if (strstr($_SERVER['PHP_SELF'], $lien))
+                    {
+                        $ici = " class=\"ici\"";
+                    }
+                    ?>
+
+                    <li><a href="<?php echo $url_site . $lien; ?>" title="<?php echo $nom; ?>" <?php echo $ici; ?>><?php echo $nom; ?></a></li>
+                <?php } ?>
+
+
+                <li><a href="/pages/articles/charte-editoriale.php">Charte éditoriale</a></li>
+                <li><a href="/pages/articles/liens.php">Liens</a></li>
+                <li>
+                    <form class="recherche" action="/pages/evenement-search.php" method="get">
+                        <input type="text" class="mots" name="mots" size="22" maxlength="50" value="" placeholder="Rechercher un événement" /><input type="submit" class="submit" name="formulaire" value=""  /><input type="text" name="name_as" value="" class="name_as" id="name_as" />
+                    </form>
+                </li>
+            </ul>
+        </div>
+        <!-- Fin Pied -->
+
+    </footer> 
 
  </div>
 <!-- Fin Global -->

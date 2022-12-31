@@ -2,7 +2,6 @@
 
 require_once("../app/bootstrap.php");
 
-use Ladecadanse\Security\Sentry;
 use Ladecadanse\Evenement;
 use Ladecadanse\Utils\Text;
 use Ladecadanse\HtmlShrink;
@@ -13,6 +12,15 @@ $tab_tri = array("dateAjout", "horaire_debut");
 if (isset($_GET['idE']))
 {
 	$get['idE'] = Validateur::validateUrlQueryValue($_GET['idE'], "int", 1);
+    $req_even = $connector->query("
+    SELECT dateEvenement, genre
+    FROM evenement WHERE idEvenement=".$get['idE']);
+
+    $tab_even = $connector->fetchArray($req_even);
+
+
+    $get['courant'] = $tab_even['dateEvenement'];
+    $get['genre'] = $tab_even['genre'];    
 }
 else
 {

@@ -95,45 +95,48 @@ if (HOME_TMP_BANNER_ENABLED && !isset($_COOKIE['msg_orga_benevole']))
         <div class="spacer"></div>           
         <h2 style="width:65%;font-size: 1.4em;margin-top: 0;"><small><?php echo ucfirst(date_fr($get['auj'])); ?></small></h2>                             
 	</div>
+    
 	<div class="spacer"><!-- --></div>
 
-	<div id="prochains_evenements" >
+	<section id="prochains_evenements" >
         
-    <?php
+        <?php
 
-    if ($nb_evenements == 0)
-    {
-        echo HtmlShrink::msgInfo("Pas d’événement prévu aujourd’hui");
-    }
-
-    $dateCourante = ' ';
-
-    $tab_genres = $glo_tab_genre;
-    $genre_courant = '';
-    $genre_prec = '';
-    $genre_fr = "";
-    $i = 0;
-
-    while ($tab_even = $connector->fetchArray($req_even))
-    {
-        if ($tab_even['genre'] != $genre_courant)
+        if ($nb_evenements == 0)
         {
-            if ($genre_courant != '')
+            echo HtmlShrink::msgInfo("Pas d’événement prévu aujourd’hui");
+        }
+
+        $dateCourante = ' ';
+
+        $tab_genres = $glo_tab_genre;
+        $genre_courant = '';
+        $genre_prec = '';
+        $genre_fr = "";
+        $i = 0;
+
+        while ($tab_even = $connector->fetchArray($req_even))
+        {
+            if ($tab_even['genre'] != $genre_courant)
             {
-                $genre_prec = Text::stripAccents($tab_genres[$genre_courant]);
-                echo "</div>";
-                $i = 0;
-            }
+                if ($genre_courant != '')
+                {
+                    $genre_prec = Text::stripAccents($tab_genres[$genre_courant]);
+                    echo "</div>";
+                    $i = 0;
+                }
 
-            $genre_fr = ucfirst($glo_tab_genre[$tab_even['genre']]);
+                $genre_fr = ucfirst($glo_tab_genre[$tab_even['genre']]);
 
-            $proch = '';
-    /* 		if ($np = next(&$tab_genres))
-                $proch = replace_accents($np); */
-            if ($np = next($tab_genres))
-                $proch = Text::stripAccents($np);			
-        ?>
-            <div class="genre">	
+                $proch = '';
+        /* 		if ($np = next(&$tab_genres))
+                    $proch = replace_accents($np); */
+                if ($np = next($tab_genres))
+                    $proch = Text::stripAccents($np);			
+            ?>
+        
+            <div class="genre">
+                
                 <div class="genre-titre">
                     <h3 id="<?php echo mb_strtolower(Text::stripAccents($genre_fr)); ?>"><?php echo $genre_fr; ?></h3>
 
@@ -148,60 +151,60 @@ if (HOME_TMP_BANNER_ENABLED && !isset($_COOKIE['msg_orga_benevole']))
 
                     <div class="spacer"></div>
                 </div>
-        <?php
-        }
-
-        $genre_courant = $tab_even['genre'];
-
-
-        //Affichage du lieu selon son existence ou non dans la base
-        if ($tab_even['idLieu'] != 0)
-        {
-            $listeLieu = $connector->fetchArray(
-            $connector->query("SELECT nom, adresse, quartier, localite.localite AS localite, URL FROM lieu, localite WHERE lieu.localite_id=localite.id AND idlieu='".$tab_even['idLieu']."'"));
-
-            $infosLieu = "<a href=\"/pages/lieu.php?idL=".$tab_even['idLieu']."\" title=\"Voir la fiche du lieu : ".htmlspecialchars($listeLieu['nom'])."\" >".htmlspecialchars($listeLieu['nom'])."</a>";
-
-            if ($tab_even['idSalle'])
-            {
-                $req_salle = $connector->query("SELECT nom FROM salle WHERE idSalle='".$tab_even['idSalle']."'");
-                $tab_salle = $connector->fetchArray($req_salle);
-                $infosLieu .= " - ".$tab_salle['nom'];
+            <?php
             }
-        }
-        else
-        {
 
-            $listeLieu['nom'] = htmlspecialchars($tab_even['nomLieu']);
-            $infosLieu = htmlspecialchars($tab_even['nomLieu']);
-            $listeLieu['adresse'] = htmlspecialchars($tab_even['adresse']);
-            $listeLieu['quartier'] = htmlspecialchars($tab_even['quartier']);
-            $listeLieu['localite'] = htmlspecialchars($tab_even['localite']);
-        }
+            $genre_courant = $tab_even['genre'];
+
+
+            //Affichage du lieu selon son existence ou non dans la base
+            if ($tab_even['idLieu'] != 0)
+            {
+                $listeLieu = $connector->fetchArray(
+                $connector->query("SELECT nom, adresse, quartier, localite.localite AS localite, URL FROM lieu, localite WHERE lieu.localite_id=localite.id AND idlieu='".$tab_even['idLieu']."'"));
+
+                $infosLieu = "<a href=\"/pages/lieu.php?idL=".$tab_even['idLieu']."\" title=\"Voir la fiche du lieu : ".htmlspecialchars($listeLieu['nom'])."\" >".htmlspecialchars($listeLieu['nom'])."</a>";
+
+                if ($tab_even['idSalle'])
+                {
+                    $req_salle = $connector->query("SELECT nom FROM salle WHERE idSalle='".$tab_even['idSalle']."'");
+                    $tab_salle = $connector->fetchArray($req_salle);
+                    $infosLieu .= " - ".$tab_salle['nom'];
+                }
+            }
+            else
+            {
+
+                $listeLieu['nom'] = htmlspecialchars($tab_even['nomLieu']);
+                $infosLieu = htmlspecialchars($tab_even['nomLieu']);
+                $listeLieu['adresse'] = htmlspecialchars($tab_even['adresse']);
+                $listeLieu['quartier'] = htmlspecialchars($tab_even['quartier']);
+                $listeLieu['localite'] = htmlspecialchars($tab_even['localite']);
+            }
         
-        $sql_event_orga = "SELECT organisateur.idOrganisateur, nom, URL
-        FROM organisateur, evenement_organisateur
-        WHERE evenement_organisateur.idEvenement=".$tab_even['idEvenement']." AND
-         organisateur.idOrganisateur=evenement_organisateur.idOrganisateur
-         ORDER BY nom DESC";
+            $sql_event_orga = "SELECT organisateur.idOrganisateur, nom, URL
+            FROM organisateur, evenement_organisateur
+            WHERE evenement_organisateur.idEvenement=".$tab_even['idEvenement']." AND
+             organisateur.idOrganisateur=evenement_organisateur.idOrganisateur
+             ORDER BY nom DESC";
 
-        $req_event_orga = $connector->query($sql_event_orga);         
+            $req_event_orga = $connector->query($sql_event_orga);         
 
-        $even_adresse = HtmlShrink::getAdressFitted(null, $listeLieu['localite'], $listeLieu['quartier'], $listeLieu['adresse']);
+            $even_adresse = HtmlShrink::getAdressFitted(null, $listeLieu['localite'], $listeLieu['quartier'], $listeLieu['adresse']);
 
-        if ($i > 1 && ($i % 2 != 0))
-        {
-            $region = $glo_regions[$_SESSION['region']];
-            if ($_SESSION['region'] == 'vd')
-                $region = "Lausanne";
+            if ($i > 1 && ($i % 2 != 0))
+            {
+                $region = $glo_regions[$_SESSION['region']];
+                if ($_SESSION['region'] == 'vd')
+                    $region = "Lausanne";
+            ?>
+                    <p class="rappel_date"><?php echo $region; ?>, aujourd’hui, <?php echo mb_strtolower($genre_fr); // ",".date_fr($get['auj']); ?></p>
+
+            <?php	
+            }
         ?>
-                <p class="rappel_date"><?php echo $region; ?>, aujourd’hui, <?php echo mb_strtolower($genre_fr); // ",".date_fr($get['auj']); ?></p>
 
-        <?php	
-        }
-    ?>
-
-        <div class="evenement">
+        <article class="evenement">
 
             <div class="titre">
                 <span class="left">
@@ -220,59 +223,61 @@ if (HOME_TMP_BANNER_ENABLED && !isset($_COOKIE['msg_orga_benevole']))
             </div>
 
             <div class="flyer">
-            <?php
-            if (!empty($tab_even['flyer']))
-            {
-                $imgInfo = @getimagesize($rep_images.$tab_even['flyer']);
-                ?>
-                <a href="<?php echo $url_images_even.$tab_even['flyer']; ?>" class="magnific-popup"><img src="<?php echo $url_images_even."s_".$tab_even['flyer']; ?>" alt="Flyer" width="100" /></a>
                 <?php
-            }
-            else if (!empty($tab_even['image']))
-            {
-                $imgInfo = @getimagesize($rep_images.$tab_even['image']);
+                if (!empty($tab_even['flyer']))
+                {
+                    $imgInfo = @getimagesize($rep_images.$tab_even['flyer']);
+                    ?>
+                    <a href="<?php echo $url_images_even.$tab_even['flyer']; ?>" class="magnific-popup"><img src="<?php echo $url_images_even."s_".$tab_even['flyer']; ?>" alt="Flyer" width="100" /></a>
+                    <?php
+                }
+                else if (!empty($tab_even['image']))
+                {
+                    $imgInfo = @getimagesize($rep_images.$tab_even['image']);
+                    ?>
+
+                    <a href="<?php echo $url_images_even.$tab_even['image']; ?>" class="magnific-popup"><img src="<?php echo $url_images_even."s_".$tab_even['image']; ?>" alt="Photo" width="100" /></a>
+
+                <?php 
+                }
+                ?>
+            </div>
+            
+            <div class="description">
+                <?php
+                //reduction de la description pour la caser dans la boite "desc"
+                if (mb_strlen($tab_even['description']) > $maxChar)
+                {
+                    $continuer = " <a class=\"continuer\" href=\"/pages/evenement.php?idE=".$tab_even['idEvenement']."\" title=\"Voir la fiche complète de l'événement\"> Lire la suite</a>";
+                    echo Text::texteHtmlReduit(Text::wikiToHtml(htmlspecialchars($tab_even['description'])),$maxChar, $continuer);
+                }
+                else
+                {
+                    echo Text::wikiToHtml(htmlspecialchars($tab_even['description']));
+                }
                 ?>
 
-                <a href="<?php echo $url_images_even.$tab_even['image']; ?>" class="magnific-popup"><img src="<?php echo $url_images_even."s_".$tab_even['image']; ?>" alt="Photo" width="100" /></a>
-
-            <?php 
-            }
-            ?>
-
-            </div>
-            <div class="description">
-            <?php
-            //reduction de la description pour la caser dans la boite "desc"
-            if (mb_strlen($tab_even['description']) > $maxChar)
-            {
-                $continuer = " <a class=\"continuer\" href=\"/pages/evenement.php?idE=".$tab_even['idEvenement']."\" title=\"Voir la fiche complète de l'événement\"> Lire la suite</a>";
-                echo Text::texteHtmlReduit(Text::wikiToHtml(htmlspecialchars($tab_even['description'])),$maxChar, $continuer);
-            }
-            else
-            {
-                echo Text::wikiToHtml(htmlspecialchars($tab_even['description']));
-            }
-            ?>
-            <ul class="event_orga">
-            <?php
-            while ($tab = $connector->fetchArray($req_event_orga))
-            {
-                $org_url = $tab['URL'];
-                $org_url_nom = rtrim(preg_replace("(^https?://)", "", $tab['URL']), "/");
-                if (!preg_match("/^https?:\/\//", $tab['URL']))
-                {
-                    $org_url = 'http://'.$tab['URL'];
-                }                    
-            ?>
-                <li><a href="/pages/organisateur.php?idO=<?php echo $tab['idOrganisateur']; ?>" title="Voir la fiche de l'organisateur"><?php echo $tab['nom']; ?></a> <a href="<?php echo $org_url; ?>" title="Site web de l'organisateur" class="lien_ext" target="_blank"><?php echo $org_url_nom; ?></a></li>                
-            <?php
-            }             
-            ?>
-            </ul>                 
+                <ul class="event_orga">
+                    <?php
+                    while ($tab = $connector->fetchArray($req_event_orga))
+                    {
+                        $org_url = $tab['URL'];
+                        $org_url_nom = rtrim(preg_replace("(^https?://)", "", $tab['URL']), "/");
+                        if (!preg_match("/^https?:\/\//", $tab['URL']))
+                        {
+                            $org_url = 'http://'.$tab['URL'];
+                        }                    
+                    ?>
+                        <li><a href="/pages/organisateur.php?idO=<?php echo $tab['idOrganisateur']; ?>" title="Voir la fiche de l'organisateur"><?php echo $tab['nom']; ?></a> <a href="<?php echo $org_url; ?>" title="Site web de l'organisateur" class="lien_ext" target="_blank"><?php echo $org_url_nom; ?></a></li>                
+                    <?php
+                    }             
+                    ?>
+                </ul>                 
                 
             </div>
 
             <div class="spacer"></div>
+            
             <div class="pratique">
                 <span class="left"><?php echo htmlspecialchars($even_adresse); ?></span><span class="right"><?php echo afficher_debut_fin($tab_even['horaire_debut'], $tab_even['horaire_fin'], $tab_even['dateEvenement']);
                 if (!empty($tab_even['prix']))
@@ -318,9 +323,7 @@ if (HOME_TMP_BANNER_ENABLED && !isset($_COOKIE['msg_orga_benevole']))
                 }
 
                 echo $commentaires;
-
-                
-                
+            
             //Peut ètre édité par les 'auteurs' sinon par le propre publicateur de cet événement
             if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 6
             || $_SESSION['SidPersonne'] == $tab_even['idPersonne'])
@@ -328,46 +331,49 @@ if (HOME_TMP_BANNER_ENABLED && !isset($_COOKIE['msg_orga_benevole']))
             || isset($_SESSION['SidPersonne']) && $authorization->isPersonneInEvenementByOrganisateur($_SESSION['SidPersonne'], $tab_even['idEvenement'])
             || isset($_SESSION['SidPersonne']) && $tab_even['idLieu'] != 0 && $authorization->isPersonneInLieuByOrganisateur($_SESSION['SidPersonne'], $tab_even['idLieu'])	
             )
-            {
+            {            
+            ?>
                 
-                ?>
-
-                <ul class="menu_edition">
+            <nav class="menu_edition">
                 <?php
                 echo "<li class=\"action_copier\"><a href=\"/pages/evenement-copy.php?idE=".$tab_even['idEvenement']."\" title=\"Copier l'événement\">Copier vers d'autres dates</a></li>";
                 echo "<li class=\"action_editer\"><a href=\"/pages/evenement-edit.php?action=editer&amp;idE=".$tab_even['idEvenement']."\" title=\"Modifier l'événement\">Modifier</a></li>";
                 echo '<li class="action_depublier"><a href="#" id="btn_event_unpublish_'.$tab_even['idEvenement'].'" class="btn_event_unpublish" data-id='.$tab_even['idEvenement'].'>Dépublier</a></li>';
                 echo '<li class=""><a href="/pages/user.php?idP='.$tab_even['idPersonne'].'">'.$icone['personne'].'</a></li>';
                 echo '</ul>';
-
-            }
-            ?>
+                }
+                ?>
+            </nav>
+                
         </div> <!-- fin edition -->
-            <div class="spacer"></div>
-        </div> <!-- evenement -->
+        
+        <div class="spacer"></div>
+        
+        </article> <!-- evenement -->
 
         <div class="spacer"></div>
 
-        <?php
-        $i++;
-    } //while
-if ($genre_courant != '')
-{
-    echo "</div>";
-}
-?>
-</div> <!-- prochains_evenements -->
+            <?php
+            $i++;
+        } //while
+        
+        if ($genre_courant != '')
+        {
+            echo "</div>";
+        }
+        ?>
+    </section> <!-- prochains_evenements -->
 
 </div>
 <!-- fin contenu -->
 
 
-<div id="colonne_gauche" class="colonne">
+<aside id="colonne_gauche" class="colonne">
 
     <?php include("_navigation_calendrier.inc.php"); ?>
 
 
-    <div id="dernieres" style="margin-top:15px;width: 100%;">
+    <section id="dernieres" style="margin-top:15px;width: 100%;">
 
         <ul style="padding-left:5px">
             <li style="display:inline-block"><a href="https://www.facebook.com/ladecadanse" aria-label="Watch agilare/ladecadanse on GitHub" style="font-size:1em" target="_blank"><i class="fa fa-facebook fa-2x" aria-hidden="true"></i></a></li>
@@ -385,52 +391,13 @@ if ($genre_courant != '')
         <li style="margin:2px 0;float:left;">
         <a href="https://www.darksite.ch/" onclick="window.open(this.href,'_blank');return false;"><img src="/web/interface/darksite.png" alt="Darksite" width="150" height="43" style="border:1px solid #eaeaea" /></a></li>
         </ul>
-    </div>
+    </section>
 
-    <?php
-
-    /**
-    * les commentaires la dernière ajoutée d'abord
-    */
-    /* $req_commentaires = $connector->query("SELECT idCommentaire, idEvenement, titre, contenu, idPersonne, dateAjout FROM commentaire
-     WHERE actif=1 ORDER BY dateAjout DESC LIMIT 0,5");
-    $dateAvant = '';
-
-    while($tab_commentaires = $connector->fetchArray($req_commentaires))
-    {
-
-        $req_auteur = $connector->query("SELECT pseudo FROM personne WHERE idPersonne=".$tab_commentaires['idPersonne']);
-        $tab_auteur = $connector->fetchArray($req_auteur);
-
-        $da = explode(" ", $tab_commentaires['dateAjout']);
-
-
-        echo "<h2>".date_fr($da[0])."</h2>";
-
-
-        echo "<div>
-        <h3>".$tab_auteur['pseudo']." sur ".$tab_commentaires['idEvenement']."</h3>\n
-        <div class=\"spacer\"></div>\n";
-
-        echo "<p>".textToHtml(htmlspecialchars($tab_commentaires['contenu']))."<a href=\"#\">Lire la suite</a></p>";
-        echo "<div class=\"spacer\"></div>\n
-        </div>\n";
-        $dateAvant = $da[0];
-    }
-
-    @mysql_free_result($req_dernUpdate); */
-
-
-
-    ?>
-	<!--
-	</div>
-	Fin derniers_commentaires -->
-</div>
+</aside>
 <!-- Fin Colonnegauche -->
 
 
-<div id="colonne_droite" class="colonne">
+<aside id="colonne_droite" class="colonne">
 
     <div id="dernieres"><span style="float:right;margin-top:0.4em;padding:0.2em;">
     <a href="/pages/rss.php?type=evenements_ajoutes" title="Flux RSS des derniers événements ajoutés"><i class="fa fa-rss fa-lg" style="color:#f5b045"></i></a></span>
@@ -559,24 +526,11 @@ if ($genre_courant != '')
     ?>
 
     </div>
-
-    <?php if (0) { ?>
-    <div id="dernieres" style="padding:0.6em 0.2em;margin:1em 0;background:#ff5;border-radius:5px;">
-    <h2 style="padding:0; margin:0.1em 0 0.4em 0.1em;font-size:1.3em">Touche pas à ma sécu&nbsp;!</h2>
-    <p style="margin:2px 0;line-height:17px;font-weight:bold;">Signez la <a href="http://www.grandconseildelanuit.ch/files/GCN_PETITION_CONCORDAT_2014.pdf" onclick="window.open(this.href,'_blank');return false;">pétitition (PDF)</a>
-    </p>
-    <p style="line-height:17px">Contre l’extension du concordat sur les entreprises
-    de sécurité (CES) à l’ensemble du personnel assurant
-    des tâches de protection et de surveillance dans les
-    établissements publics</p>
-    </div>
-    <?php } ?>
-
     <!-- Fin derniers_evenements -->
-
-
-</div> <!-- fin dernieres -->
-</div> <!-- Fin colonne_droite -->
+    
+    </div> <!-- fin dernieres 
+           
+</aside> <!-- Fin colonne_droite -->
 
 <div class="spacer"><!-- --></div>
 

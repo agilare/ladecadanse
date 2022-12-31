@@ -13,25 +13,30 @@ $videur = new Sentry();
 
 $page_titre = "Agenda";
 $page_description = "Événements culturels et festifs à Genève et Lausanne : concerts, soirées, films, théâtre, expos...";
+
 include("_header.inc.php");
 
-/* MOMENTS */
-$tab_moments = array("journee", "soir", "nuit", "tout");
-if (isset($_GET['moment']))
+if ($get['sem'] == 1)
 {
-	if (in_array($_GET['moment'], $tab_moments))
-	{
-		$get['moment'] = $_GET['moment'];
-	}
-	else
-	{
-		trigger_error("moment non valable : ".$_GET['moment'], E_USER_WARNING);
-		exit;
-	}
+    $lundim = date_iso2lundim($get['courant']);
+    $page_titre .= " ".$get['genre']." du ".date_fr($lundim[0], "annee", "", "", false)." au ".date_fr($lundim[1], "annee", "", "", false);
 }
 else
 {
-	$get['moment'] = 'tout';
+    $page_titre .= " ".$get['genre']." du ".date_fr($get['courant'], "annee", "", "", false);
+}
+
+if ($_SESSION['region'] == 'vd')
+{
+    $page_titre .= " à Lausanne";   
+}
+elseif ($_SESSION['region'] == 'fr')
+{
+    $page_titre .= " à Fribourg";   
+}            
+else
+{
+    $page_titre .= " à Genève";
 }
 
 if ($get['tri_agenda'] == "horaire_debut")

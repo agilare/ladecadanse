@@ -1,19 +1,22 @@
 <?php
+
+$get['genre'] = "";
+if (!empty($_GET['genre']))
+{
+	if (array_key_exists(urldecode($_GET['genre']), $glo_tab_genre))
+	{
+		$get['genre'] = urldecode($_GET['genre']);
+	}
+	else
+	{
+		exit;
+	}
+
+}
+
+$get['zone'] = "tout";
+
 $tab_auj = explode("-", $glo_auj);
-
-/* if (empty($_GET['courant']) && empty($_GET['deb_sem']))
-{
-	$get['courant'] = $auj;
-}
-else if (!empty($_GET['courant']))
-{
-	$get['courant'] = $_GET['courant'];
-}
- */
-
-//include("calendrier.php");
-//echo showCalendar($get['courant']);
-
 $tab_courant = explode("-", $get['courant']);
 
 
