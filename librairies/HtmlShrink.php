@@ -354,21 +354,21 @@ class HtmlShrink
         if ($nom_page == "index")
         {
         ?>
-            <link rel="alternate" type="application/rss+xml" title="Événements du jour" href="/pages/rss.php?type=evenements_auj" />
-            <link rel="alternate" type="application/rss+xml" title="Derniers événements ajoutés" href="/pages/rss.php?type=evenements_ajoutes" />
+            <link rel="alternate" type="application/rss+xml" title="Événements du jour" href="/rss.php?type=evenements_auj" />
+            <link rel="alternate" type="application/rss+xml" title="Derniers événements ajoutés" href="/rss.php?type=evenements_ajoutes" />
         <?php
         }
 
         if ($nom_page == "lieu")
         {
         ?>
-            <link rel="alternate" type="application/rss+xml" title="Prochains événements dans ce lieu" href="/pages/rss.php?type=lieu_evenements&amp;id='<?php intval($_GET['idL']) ?>" />
+            <link rel="alternate" type="application/rss+xml" title="Prochains événements dans ce lieu" href="/rss.php?type=lieu_evenements&amp;id='<?php intval($_GET['idL']) ?>" />
         <?php
         }
         else if ($nom_page == "evenement")
         {
         ?>
-            <link rel="alternate" type="application/rss+xml" title="Commentaires de cette événement" href="/pages/rss.php?type=evenement_commentaires&amp;id='<?php intval($_GET['idE']) ?>" />
+            <link rel="alternate" type="application/rss+xml" title="Commentaires de cette événement" href="/rss.php?type=evenement_commentaires&amp;id='<?php intval($_GET['idE']) ?>" />
 
         <?php
         }

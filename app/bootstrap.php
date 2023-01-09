@@ -1,4 +1,7 @@
 <?php
+/**
+ *  included at the beginning of each page
+ */
 
 # Added by PorCus comme un goret 
 date_default_timezone_set('Europe/Berlin');
