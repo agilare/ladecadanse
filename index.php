@@ -334,7 +334,7 @@ if (HOME_TMP_BANNER_ENABLED && !isset($_COOKIE['msg_orga_benevole']))
             {            
             ?>
                 
-            <nav class="menu_edition">
+            <ul class="menu_edition">
                 <?php
                 echo "<li class=\"action_copier\"><a href=\"/evenement-copy.php?idE=".$tab_even['idEvenement']."\" title=\"Copier l'événement\">Copier vers d'autres dates</a></li>";
                 echo "<li class=\"action_editer\"><a href=\"/evenement-edit.php?action=editer&amp;idE=".$tab_even['idEvenement']."\" title=\"Modifier l'événement\">Modifier</a></li>";
@@ -343,7 +343,7 @@ if (HOME_TMP_BANNER_ENABLED && !isset($_COOKIE['msg_orga_benevole']))
                 echo '</ul>';
                 }
                 ?>
-            </nav>
+            </ul>
                 
         </div> <!-- fin edition -->
         
