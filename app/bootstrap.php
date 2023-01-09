@@ -1,4 +1,7 @@
 <?php
+/**
+ *  included at the beginning of each page
+ */
 
 # Added by PorCus comme un goret 
 date_default_timezone_set('Europe/Berlin');
@@ -75,8 +78,14 @@ if (ENV == 'prod')
 }
 
 
+$nom_page = basename($_SERVER["SCRIPT_FILENAME"], '.php');
+
 header('X-Content-Type-Options "nosniff"');
 header('X-Frame-Options: "ALLOW-FROM https://epic-magazine.ch/"');
+
+header("Cache-Control: no-store, no-cache, must-revalidate");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
 
 /**
  * FIXME: mv to String class

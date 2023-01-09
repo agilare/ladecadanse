@@ -287,7 +287,7 @@ class ImageDriver2 extends SystemComponent {
 
        if (!$fp)
        {
-           $this->erreur = "Problème de création du fichier";
+           $this->erreur = "Problème de création du fichier : ".$cheminImage;
            return false;
        }
 
