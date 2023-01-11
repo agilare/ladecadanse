@@ -4,6 +4,7 @@ require_once("app/bootstrap.php");
 
 use Ladecadanse\Security\Sentry;
 use Ladecadanse\Utils\Validateur;
+use Ladecadanse\Utils\Utils;
 use Ladecadanse\HtmlShrink;
 
 $videur = new Sentry();
@@ -120,7 +121,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 		"Content-Type" => "text/plain; charset=\"UTF-8\"",
 		'From' => $from, 
 		'To' => $to, 
-		'Subject' => $subject
+		'Subject' => $subject,
+        'Message-ID' => Utils::generateMessageID()            
 		);
         
         $smtp = Mail::factory(

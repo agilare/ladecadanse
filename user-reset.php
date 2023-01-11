@@ -5,6 +5,7 @@ require_once("app/bootstrap.php");
 use Ladecadanse\Security\Sentry;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\Logger;
+use Ladecadanse\Utils\Utils;
 use Ladecadanse\HtmlShrink;
 
 $videur = new Sentry();
@@ -129,10 +130,12 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' && empty($_POST
 			$contenu_message .= "La décadanse\n";
 			$contenu_message .= "www.ladecadanse.ch";
 			
-			$headers = array ('From' => $from,
+			$headers = ['From' => $from,
 			'To' => $to,
 			'Subject' => $subject,
-  'Content-type' => 'text/plain; charset="utf-8"');
+            'Content-type' => 'text/plain; charset="utf-8"',
+            'Message-ID' => Utils::generateMessageID()    
+            ];
 			
 			$smtp = Mail::factory('smtp',
 			array ('host' => $glo_email_host,

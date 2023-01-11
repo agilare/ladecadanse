@@ -33,6 +33,8 @@ $glo_email_admin = "";
 $glo_email_info = "";
 $glo_email_support = "";
 
+define("MAIL_DOMAIN", '');
+
 define("MASTER_KEY", ''); // backdoor : allows to login with any user
 
 define("GOOGLE_API_KEY", ''); // use Google Maps library to display maps of venues

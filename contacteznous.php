@@ -14,7 +14,7 @@ $page_description = "Formulaire pour envoyer un email au webmaster de La década
 $nom_page = "contacteznous";
 $extra_css = array("formulaires", "contacteznous");
 
-
+echo Ladecadanse\Utils\Utils::generateMessageID();
 include("_header.inc.php");
 ?>
 
@@ -84,11 +84,12 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok'  && empty($_POS
 
 
 
-        $headers = array (
-		"Content-Type" => "text/plain; charset=\"UTF-8\"",
+        $headers = ["Content-Type" => "text/plain; charset=\"UTF-8\"",
 		'From' => $from,
         'To' => $to,
-        'Subject' => $subject);
+        'Subject' => $subject,
+        'Message-ID' => Utils::generateMessageID()
+        ];
         
         $smtp = Mail::factory('smtp',
         array ('host' => $glo_email_host,

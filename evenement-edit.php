@@ -9,6 +9,7 @@ use Ladecadanse\Utils\ImageDriver2;
 use Ladecadanse\Security\SecurityToken;
 use Ladecadanse\Utils\Logger;
 use Ladecadanse\Utils\Text;
+use Ladecadanse\Utils\Utils;
 use Ladecadanse\HtmlShrink;
 
 $videur = new Sentry();
@@ -484,7 +485,9 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
                         "Content-Type" => "text/plain; charset=\"UTF-8\"",
                         'From' => $from,
                         'To' => $to,
-                        'Subject' => $subject);                    
+                        'Subject' => $subject,
+                        'Message-ID' => Utils::generateMessageID()
+                        );                    
                         $smtp = Mail::factory('smtp',
                         array ('host' => $glo_email_host,
                         'auth' => true,
@@ -696,7 +699,9 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
                         "Content-Type" => "text/plain; charset=\"UTF-8\"",
                         'From' => $from,
                         'To' => $to,
-                        'Subject' => $subject);                    
+                        'Subject' => $subject,
+                        'Message-ID' => Utils::generateMessageID()    
+                            );                    
                         $smtp = Mail::factory('smtp',
                         array ('host' => $glo_email_host,
                         'auth' => true,
