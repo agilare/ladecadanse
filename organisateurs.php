@@ -18,7 +18,7 @@ include("_header.inc.php");
 $get['idO'] = "";
 if (isset($_GET['idO']))
 {
-	$get['idO'] = Validateur::validateUrlQueryValue($_GET['idO'], "int", 1);
+	$get['idO'] = Validateur::validateUrlQueryValue($_GET['idO'], "int", 0);
 }
 
 /**
