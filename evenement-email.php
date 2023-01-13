@@ -57,19 +57,9 @@ $action_terminee = false;
 if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 {
 
-	/*
-	 * Copie des champs envoyes par POST
-	 */
 	foreach ($champs as $c => $v)
 	{
-		if (get_magic_quotes_gpc())
-		{
-			$champs[$c] = stripslashes($_POST[$c]);
-		}
-		else if (isset($_POST[$c]))
-		{
-			$champs[$c] = $_POST[$c];
-		}
+        $champs[$c] = $_POST[$c];	
 	}
 
 	if (isset($_POST['idP']))

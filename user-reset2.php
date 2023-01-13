@@ -69,14 +69,7 @@ if ($connector->getNumRows($req_temp) == 1)
 	{
 		foreach ($champs as $c => $v)
 		{
-			if (get_magic_quotes_gpc())
-			{
-				$champs[$c] = stripslashes($_POST[$c]);
-			}
-			else if (isset($_POST[$c]))
-			{
-				$champs[$c] = $_POST[$c];
-			}
+			$champs[$c] = $_POST[$c];		
 		}
 		
 		if (empty($tab_temp['idPersonne']) && empty($champs['idPersonne']))

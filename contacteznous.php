@@ -41,18 +41,9 @@ $action_terminee = false;
 
 if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok'  && empty($_POST['as_nom']))
 {
-
-
 	foreach ($champs as $c => $v)
 	{
-		if (get_magic_quotes_gpc())
-		{
-			$champs[$c] = stripslashes($_POST[$c]);
-		}
-		else
-		{
-			$champs[$c] = $_POST[$c];
-		}
+        $champs[$c] = $_POST[$c];
 	}
 
 	/*

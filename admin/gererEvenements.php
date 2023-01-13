@@ -170,14 +170,7 @@ elseif (!empty($_POST['formulaire']))
 
 	foreach ($champs as $c => $v)
 	{
-		if (get_magic_quotes_gpc())
-		{
-			$champs[$c] = trim(stripslashes($_POST[$c]));
-		}
-		else if (isset($_POST[$c]))
-		{
-			$champs[$c] = trim($_POST[$c]);
-		}
+		$champs[$c] = trim($_POST[$c]);		
 	}
 
 	$evenements = $_POST['evenements'];

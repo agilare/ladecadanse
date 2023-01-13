@@ -51,14 +51,7 @@ use Ladecadanse\Utils\Validateur;
     	{
     		if (isset($post[$nom]))
     		{
-				if (get_magic_quotes_gpc())
-				{
-					$this->valeurs[$nom] = stripslashes($post[$nom]);
-				}
-				else
-				{
-					$this->valeurs[$nom] = $post[$nom];
-				}
+                $this->valeurs[$nom] = $post[$nom];		
     		}
 
     	}

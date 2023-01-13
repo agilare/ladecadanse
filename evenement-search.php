@@ -70,15 +70,8 @@ $mot = "";
 
 if (!empty($get['mots']))
 {
-
-	if (get_magic_quotes_gpc())
-	{
-		$mots = stripslashes(trim($get['mots']));
-	}
-	else if (isset($get['mots']))
-	{
-		$mots = trim($get['mots']);
-	}
+    $mots = trim($get['mots']);
+	
 
 	if (!empty($_GET['name_as']))
 	{
