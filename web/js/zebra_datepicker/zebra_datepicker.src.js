@@ -6,9 +6,9 @@
  *  Read more {@link https://github.com/stefangabos/Zebra_Datepicker/ here}
  *
  *  @author     Stefan Gabos <contact@stefangabos.ro>
- *  @version    1.9.18 (last revision: December 31, 2020)
- *  @copyright  (c) 2011 - 2020 Stefan Gabos
- *  @license    http://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
+ *  @version    1.9.19 (last revision: April 06, 2022)
+ *  @copyright  (c) 2011 - 2022 Stefan Gabos
+ *  @license    https://www.gnu.org/licenses/lgpl-3.0.txt GNU LESSER GENERAL PUBLIC LICENSE
  *  @package    Zebra_DatePicker
  */
 (function(factory) {
@@ -31,7 +31,7 @@
     $.Zebra_DatePicker = function(element, options) {
 
         // so you can tell the version number even if all you have is the minified source
-        this.version = '1.9.18';
+        this.version = '1.9.19';
 
         var defaults = {
 
@@ -361,8 +361,12 @@
 
                 //  should a calendar icon be added to the elements the plugin is attached to?
                 //
-                //  default is TRUE
-                show_icon: true,
+                //  set this property's value to boolean FALSE if you don't want the calendar icon.
+                //  note that the text is not visible by default, having `text-indentation` set to a big negative value, so
+                //  you might want to change that in case you want to make the text visible
+                //
+                //  default is 'Pick a date'
+                show_icon: 'Pick a date',
 
                 //  should days from previous and/or next month be visible?
                 //
@@ -518,7 +522,7 @@
 
                 // generate a random ID for each date picker (we'll use this if later a certain date picker is destroyed to
                 // remove related events)
-                // the code is taken from http://stackoverflow.com/a/105074
+                // the code is taken from https://stackoverflow.com/a/105074
                 for (k = 0; k < 3; k++) uniqueid += Math.floor((1 + Math.random()) * 0x10000).toString(16);
 
                 // start by assuming there are no enabled/disabled dates
@@ -630,7 +634,7 @@
 
                                         // make sure we treat values as integers
                                         // (or this won't work when doing $.inArray(): enabled_hours: ['11', '12', '13'])
-                                        if ($.isArray(plugin.settings.enabled_hours)) plugin.settings.enabled_hour = plugin.settings.enabled_hours.map(function(value) { return parseInt(value, 10); })
+                                        if ($.isArray(plugin.settings.enabled_hours)) plugin.settings.enabled_hour = plugin.settings.enabled_hours.map(function(value) { return parseInt(value, 10); });
 
                                         // iterate through valid hours
                                         for (i = (max === 12 ? 1 : 0); i < (max === 12 ? 13 : max); i++)
@@ -645,7 +649,7 @@
 
                                         // make sure we treat values as integers
                                         // (or this won't work when doing $.inArray(): enabled_minutes: ['11', '12', '13'])
-                                        if ($.isArray(plugin.settings.enabled_minutes)) plugin.settings.enabled_minutes = plugin.settings.enabled_minutes.map(function(value) { return parseInt(value, 10); })
+                                        if ($.isArray(plugin.settings.enabled_minutes)) plugin.settings.enabled_minutes = plugin.settings.enabled_minutes.map(function(value) { return parseInt(value, 10); });
 
                                         // iterate through valid minutes
                                         for (i = 0; i < 60; i++)
@@ -660,7 +664,7 @@
 
                                         // make sure we treat values as integers
                                         // (or this won't work when doing $.inArray(): enabled_seconds: ['11', '12', '13'])
-                                        if ($.isArray(plugin.settings.enabled_seconds)) plugin.settings.enabled_seconds = plugin.settings.enabled_seconds.map(function(value) { return parseInt(value, 10); })
+                                        if ($.isArray(plugin.settings.enabled_seconds)) plugin.settings.enabled_seconds = plugin.settings.enabled_seconds.map(function(value) { return parseInt(value, 10); });
 
                                         // iterate through valid minutes
                                         for (i = 0; i < 60; i++)
@@ -1165,7 +1169,7 @@
                     if (!update) {
 
                         // if a calendar icon should be added to the element the plugin is attached to, create the icon now
-                        if (plugin.settings.show_icon) {
+                        if (plugin.settings.show_icon !== false) {
 
                             // strangely, in Firefox 21+ (or maybe even earlier) input elements have their "display" property
                             // set to "inline" instead of "inline-block" as do all the other browsers.
@@ -1217,7 +1221,7 @@
                             });
 
                             // create the actual calendar icon (show a disabled icon if the element is disabled)
-                            icon = $('<button type="button" class="Zebra_DatePicker_Icon' + ($element.attr('disabled') === 'disabled' ? ' Zebra_DatePicker_Icon_Disabled' : '') + '">Pick a date</button>');
+                            icon = $('<button type="button" class="Zebra_DatePicker_Icon' + ($element.attr('disabled') === 'disabled' ? ' Zebra_DatePicker_Icon_Disabled' : '') + '">' + plugin.settings.show_icon + '</button>');
 
                             // a reference to the icon, as a global property
                             plugin.icon = icon;
@@ -1246,7 +1250,7 @@
 
                                     // wait for 600 milliseconds for the virtual keyboard to appear and show the date picker afterwards
                                     timeout = setTimeout(function() {
-                                        plugin.show()
+                                        plugin.show();
                                     }, 600);
 
                                 }
@@ -1894,17 +1898,17 @@
                         // add to the array of regular expressions, based on the character
                         switch (match.character) {
 
-                            case 'd': regexp.push('0[1-9]|[12][0-9]|3[01]'); break;
+                            case 'd': regexp.push('0?[1-9]|[12][0-9]|3[01]'); break;
                             case 'D': regexp.push(plugin.settings.days_abbr ? plugin.settings.days_abbr.map(function(value) { return escape_regexp(value); }).join('|') : '[a-z\u00C0-\u024F]{3}'); break;
-                            case 'j': regexp.push('[1-9]|[12][0-9]|3[01]'); break;
+                            case 'j': regexp.push('0?[1-9]|[12][0-9]|3[01]'); break;
                             case 'l': regexp.push(plugin.settings.days ? plugin.settings.days.map(function(value) { return escape_regexp(value); }).join('|') : '[a-z\u00C0-\u024F]+'); break;
                             case 'N': regexp.push('[1-7]'); break;
                             case 'S': regexp.push('st|nd|rd|th'); break;
                             case 'w': regexp.push('[0-6]'); break;
                             case 'F': regexp.push(plugin.settings.months ? plugin.settings.months.map(function(value) { return escape_regexp(value); }).join('|') : '[a-z\u00C0-\u024F]+'); break;
-                            case 'm': regexp.push('0[1-9]|1[012]'); break;
+                            case 'm': regexp.push('0?[1-9]|1[012]'); break;
                             case 'M': regexp.push(plugin.settings.months_abbr ? plugin.settings.months_abbr.map(function(value) { return escape_regexp(value); }).join('|') : '[a-z\u00C0-\u024F]{3}'); break;
-                            case 'n': regexp.push('[1-9]|1[012]'); break;
+                            case 'n': regexp.push('0?[1-9]|1[012]'); break;
                             case 'Y': regexp.push('[0-9]{4}'); break;
                             case 'y': regexp.push('[0-9]{2}'); break;
                             case 'G': regexp.push('[1-9]|1[0-9]|2[0123]'); break;
@@ -2105,8 +2109,6 @@
              *  Prevents the possibility of selecting text on a given element. Used on the "previous" and "next" buttons
              *  where text might get accidentally selected when user quickly clicks on the buttons.
              *
-             *  Code by http://chris-barr.com/index.php/entry/disable_text_selection_with_jquery/
-             *
              *  @param  jQuery Element  el  A jQuery element on which to prevents text selection.
              *
              *  @return void
@@ -2144,7 +2146,6 @@
 
             /**
              *  Formats a JavaScript date object to the format specified by the "format" property.
-             *  Code taken from http://electricprism.com/aeron/calendar/
              *
              *  @param  date    date    A valid JavaScript date object
              *
@@ -2331,7 +2332,7 @@
                 if (plugin.settings.show_week_number)
 
                     // column title
-                    html += '<th>' + plugin.settings.show_week_number + '</th>';
+                    html += '<th scope="col">' + plugin.settings.show_week_number + '</th>';
 
                 // name of week days
                 // show the abbreviated day names (or only the first two letters of the full name if no abbreviations are specified)
@@ -2341,7 +2342,7 @@
                     // the week day's number; account for RTL
                     day = (plugin.settings.first_day_of_week + (plugin.settings.rtl ? 6 - i : i)) % 7;
 
-                    html += '<th>' + ($.isArray(plugin.settings.days_abbr) && undefined !== plugin.settings.days_abbr[day] ? plugin.settings.days_abbr[day] : plugin.settings.days[day].substr(0, 2)) + '</th>';
+                    html += '<th scope="col">' + ($.isArray(plugin.settings.days_abbr) && undefined !== plugin.settings.days_abbr[day] ? plugin.settings.days_abbr[day] : plugin.settings.days[day].substr(0, 2)) + '</th>';
 
                 }
 
@@ -2360,7 +2361,7 @@
                     if (i % 7 === 0 && plugin.settings.show_week_number)
 
                         // show ISO 8601 week number
-                        html += '<th>' + get_week_number(new Date(selected_year, selected_month, (i - days_from_previous_month + 1))) + '</th>';
+                        html += '<th scope="row">' + get_week_number(new Date(selected_year, selected_month, (i - days_from_previous_month + 1))) + '</th>';
 
                     // the number of the day in month
                     day = rtl_offset + (i - days_from_previous_month + 1);
@@ -2679,7 +2680,7 @@
             /**
              *  Calculate the ISO 8601 week number for a given date.
              *
-             *  Code is based on the algorithm at http://www.tondering.dk/claus/cal/week.php#calcweekno
+             *  Code is based on the algorithm at https://www.tondering.dk/claus/cal/week.php#calcweekno
              */
             get_week_number = function(date) {
 
@@ -3621,7 +3622,7 @@
             },
 
             // since with jQuery 1.9.0 the $.browser object was removed, we rely on this piece of code from
-            // http://www.quirksmode.org/js/detect.html to detect the browser
+            // https://www.quirksmode.org/js/detect.html to detect the browser
             browser = {
                 init: function() {
                     this.name = this.searchString(this.dataBrowser) || '';
