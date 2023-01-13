@@ -13,6 +13,9 @@
     "require": {
         "php" : "7.4.*",
         "ext-fileinfo": "*",
+        "ext-mysqli": "*",
+        "ext-mbstring": "*",
+        "ext-gd": "*",
         "harvesthq/chosen": "^1.8",
         "dimsemenov/magnific-popup": "^1.1",
         "fortawesome/font-awesome": "4.7"

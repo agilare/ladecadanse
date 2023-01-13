@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2c8d9815ac88138eaaa1a7ab2def3f9d",
+    "content-hash": "d619ff9f92e8c4d36652d13b025cce57",
     "packages": [
         {
             "name": "dimsemenov/magnific-popup",
@@ -262,7 +262,10 @@
     "prefer-lowest": false,
     "platform": {
         "php": "7.4.*",
-        "ext-fileinfo": "*"
+        "ext-fileinfo": "*",
+        "ext-mysqli": "*",
+        "ext-mbstring": "*",
+        "ext-gd": "*"
     },
     "platform-dev": [],
     "plugin-api-version": "2.3.0"
