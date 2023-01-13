@@ -69,7 +69,7 @@ if (!$even->getValues() || in_array($even->getValue('statut'), ['inactif', 'prop
 	else
 	{
 		header("HTTP/1.1 404 Not Found");
-		echo file_get_contents($rep_absolu.$rep_absolu."404.php");
+		echo file_get_contents($rep_absolu."articles/404.php");
 		exit;
 	}
 }

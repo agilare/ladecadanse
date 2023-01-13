@@ -75,7 +75,7 @@ $lieu->load();
 if ($lieu->getValue('statut') == 'inactif' && !((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 6)))
 {
     header("HTTP/1.1 404 Not Found");
-    echo file_get_contents($rep_absolu."404.php");
+    echo file_get_contents($rep_absolu."articles/404.php");
     exit;
 }        
 
@@ -141,9 +141,9 @@ elseif ($lieu->getValue('statut') == 'inactif')
 	}
 	else
 	{
-            header("HTTP/1.1 404 Not Found");
-            echo file_get_contents($rep_absolu."404.php");
-            exit;
+        header("HTTP/1.1 404 Not Found");
+        echo file_get_contents($rep_absolu."articles/404.php");
+        exit;
 	}
 }
 

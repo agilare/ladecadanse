@@ -65,9 +65,9 @@ $even->load();
 if (!$even->getValues() || in_array($even->getValue('statut'), ['propose', 'inactif']))
 {
 
-header("HTTP/1.1 404 Not Found");
-echo file_get_contents($rep_absolu."404.php");
-exit;
+    header("HTTP/1.1 404 Not Found");
+    echo file_get_contents($rep_absolu."articles/404.php");
+    exit;
 
 }
 
