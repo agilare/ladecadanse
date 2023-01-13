@@ -21,8 +21,15 @@
         "psr-4": {"Ladecadanse\\": "librairies"},
         "files": ["librairies/Utils/dates.php"]
     },   
+    "scripts": {
+        "sniffer:php74": "phpcs -p ./ --ignore=*/images/*,*/logs/*,*/vendor/*,*/web/*,*/data/* --standard=vendor/phpcompatibility/php-compatibility/PHPCompatibility --runtime-set testVersion 7.4"
+    },
     "support": {
         "email": "michel@ladecadanse.ch",
         "source": "https://github.com/agilare/ladecadanse.git"
-    }     
+    },
+    "require-dev": {
+        "squizlabs/php_codesniffer": "^3.7",
+        "phpcompatibility/php-compatibility": "^9.3"
+    }
 }
