@@ -41,6 +41,10 @@ $mois_suiv = date("Y-m-d", mktime(0, 0, 0, $mois_courant + 1, $jour_mois_suiv, $
 
 $sem = "01";
 
+if (!isset($get['moment']))
+{
+    $get['moment'] = "tout";
+}
 
 
 ?>

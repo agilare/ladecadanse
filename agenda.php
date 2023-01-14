@@ -19,11 +19,11 @@ include("_header.inc.php");
 if ($get['sem'] == 1)
 {
     $lundim = date_iso2lundim($get['courant']);
-    $page_titre .= " ".$get['genre']." du ".date_fr($lundim[0], "annee", "", "", false)." au ".date_fr($lundim[1], "annee", "", "", false);
+    $page_titre .= " du ".date_fr($lundim[0], "annee", "", "", false)." au ".date_fr($lundim[1], "annee", "", "", false);
 }
 else
 {
-    $page_titre .= " ".$get['genre']." du ".date_fr($get['courant'], "annee", "", "", false);
+    $page_titre .=  " du ".date_fr($get['courant'], "annee", "", "", false);
 }
 
 if ($_SESSION['region'] == 'vd')
@@ -62,7 +62,7 @@ else
 	$sql_date_evenement = "LIKE '".$get['courant']."%'";
 }
 
-if ($get['genre'] == '')
+if (empty($get['genre'])) 
 {
 	$genre_titre = 'Tout';
 }
@@ -111,7 +111,7 @@ else if ($get['sem'] == 1)
 }
 
 $sql_genre = '';
-if ($get['genre'] != '')
+if (isset($get['genre']) && $get['genre'] != '')
 {
 	$sql_genre = "genre='".$get['genre']."' AND";
 	$sql_tri_agenda = 'dateEvenement, '.$sql_tri_agenda;
@@ -219,7 +219,7 @@ if ($get['sem'])
                     foreach ($glo_tab_genre as $na => $la)
                     {
                         echo "<option value=".$na;
-                        if ($na == $get['genre'])
+                        if (isset($get['genre']) && $na == $get['genre'])
                         {
                             echo " selected";
                         }
@@ -328,7 +328,7 @@ if ($get['sem'])
 			echo "</h3>\n";
 		}	
 
-		if ($listeEven['genre'] != $genre_courant && $get['genre'] == '')
+		if (isset($listeEven['genre']) && $listeEven['genre'] != $genre_courant && isset($get['genre']) && $get['genre'] == '' )
 		{
 			if ($genre_courant != '')
 			{
@@ -589,7 +589,7 @@ if ($get['sem'])
 		$i++;
 	} //while
 	
-	if ($genre_courant != '' && $get['genre'] == '')
+	if ($genre_courant != '' && isset($get['genre']) && $get['genre'] == '')
 	{
 		echo "</div>";
 	}

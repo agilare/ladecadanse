@@ -191,7 +191,7 @@ if (isset($get['idE']))
 		$evenement = $affEven;
 
 		//echo date_fr($affEven['dateEvenement']);
-		include("$rep_absolu._evenement.inc.php");
+		include($rep_absolu."_evenement.inc.php");
 	}
 	else
 	{
