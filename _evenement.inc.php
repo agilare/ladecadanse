@@ -87,7 +87,7 @@ if (!empty($evenement['flyer']))
 
 if (mb_strlen($evenement['description']) > $maxChar)
 {
-	echo texteHtmlReduit(Text::wikiToHtml(sanitizeForHtml($evenement['description'])), 
+	echo Text::texteHtmlReduit(Text::wikiToHtml(sanitizeForHtml($evenement['description'])), 
 	$maxChar, 
 	" <a href=\"/evenement.php?idE=".$evenement['idEvenement']."\" title=\"Voir la fiche complète de l'événement\"> Lire la suite".$iconeSuite."</a>");
 }

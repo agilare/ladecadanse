@@ -331,7 +331,9 @@ class Text
             $cloture .= "</";
 
             //parcours le mot de balise courante de la pile et l'ajoute a $cloture
-            for ($n = 0, $pileTaille = count($pileTags[$hauteur]); $n < $pileTaille; $n++)
+            
+            $pileTagsHauteurNb = count((is_countable($pileTags[$hauteur]) ? $pileTags[$hauteur] : []));
+            for ($n = 0, $pileTaille = $pileTagsHauteurNb; $n < $pileTaille; $n++)
             {
                 if (isset($pileTags[$hauteur][$n]))
                     $cloture .= $pileTags[$hauteur][$n];
