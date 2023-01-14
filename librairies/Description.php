@@ -14,7 +14,7 @@ class Description extends Element
 
 	function loadByType($type)
 	{
-		$sql = "SELECT * FROM ".$this->table." WHERE id".ucfirst($this->table)."=".$this->id." AND type='".mysql_real_escape_string($type)."'";
+		$sql = "SELECT * FROM ".$this->table." WHERE id".ucfirst($this->table)."=".$this->id." AND type='".$this->connector->sanitize($type)."'";
 		//echo $sql;
 		$res = $this->connector->query($sql);
 		$this->valeurs = $this->connector->fetchAssoc($res);

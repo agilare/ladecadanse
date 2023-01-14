@@ -294,7 +294,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 			$sql_insert =  "INSERT INTO personne (".$sql_insert_attributs.") VALUES (".$sql_insert_valeurs.")";
 
 			$req_insert = $connector->query($sql_insert);
-			$req_id = mysql_insert_id();
+			$req_id = $connector->getInsertId();
 
 			//si un lieu a été choisi comme affiliation
 			if (isset($champs['lieu']) && $champs['lieu'] != 0)
