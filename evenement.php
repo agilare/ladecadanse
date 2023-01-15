@@ -681,10 +681,10 @@ Signaler une erreur
 				$sql_auteur = "SELECT pseudo, nom, prenom, affiliation, signature, avec_affiliation FROM personne WHERE idPersonne=".$even->getValue('idPersonne')."";
 
 				$req_auteur = $connector->query($sql_auteur);
+                $tab_auteur = $connector->fetchArray($req_auteur);
                 
                 if (!empty($tab_auteur))
-                {
-                    $tab_auteur = $connector->fetchArray($req_auteur);
+                {                    
                     if ($tab_auteur['signature'] == 'pseudo')
                     {
                         $signature_auteur = " par <strong>".$tab_auteur['pseudo']."</strong> ";
