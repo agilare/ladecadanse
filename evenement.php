@@ -189,7 +189,7 @@ else
 <div id="contenu" class="colonne vevent">
 
 <?php
-if (!empty($_SESSION['ajouterEvenement_flash_msg']))
+if (!empty($_SESSION['evenement-edit_flash_msg']))
 {
 	HtmlShrink::msgOk($_SESSION['evenement-edit_flash_msg']);
 	unset($_SESSION['evenement-edit_flash_msg']);
