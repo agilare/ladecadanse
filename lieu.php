@@ -442,7 +442,10 @@ if ($lieu->getValue('logo'))
         $tab_categories = explode(",", str_replace(" ", "", $lieu->getValue('categorie')));
         foreach ($tab_categories as &$c)
         {
-            $c = $glo_categories_lieux[$c];
+            if (isset($glo_categories_lieux[$c]))
+            {
+                $c = $glo_categories_lieux[$c];    
+            }            
         }
         
         $adresse = HtmlShrink::getAdressFitted($lieu->getValue('region'), $lieu_localite['localite'], $lieu->getValue('quartier'), $lieu->getValue('adresse') );

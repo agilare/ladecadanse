@@ -681,40 +681,43 @@ Signaler une erreur
 				$sql_auteur = "SELECT pseudo, nom, prenom, affiliation, signature, avec_affiliation FROM personne WHERE idPersonne=".$even->getValue('idPersonne')."";
 
 				$req_auteur = $connector->query($sql_auteur);
-				$tab_auteur = $connector->fetchArray($req_auteur);
-				if ($tab_auteur['signature'] == 'pseudo')
-				{
-					$signature_auteur = " par <strong>".$tab_auteur['pseudo']."</strong> ";
-				}
-				else if ($tab_auteur['signature'] == 'prenom' && $tab_auteur['prenom'] != '')
-				{
-					$signature_auteur = " par <strong>".$tab_auteur['prenom']."</strong> ";
-				}
-				else if ($tab_auteur['signature'] == 'nomcomplet' && ($tab_auteur['prenom'] != '' || $tab_auteur['nom'] != ''))
-				{
-					$signature_auteur = " par <strong>".$tab_auteur['prenom']." ".$tab_auteur['nom']."</strong> ";
-				}
+                
+                if (!empty($tab_auteur))
+                {
+                    $tab_auteur = $connector->fetchArray($req_auteur);
+                    if ($tab_auteur['signature'] == 'pseudo')
+                    {
+                        $signature_auteur = " par <strong>".$tab_auteur['pseudo']."</strong> ";
+                    }
+                    else if ($tab_auteur['signature'] == 'prenom' && $tab_auteur['prenom'] != '')
+                    {
+                        $signature_auteur = " par <strong>".$tab_auteur['prenom']."</strong> ";
+                    }
+                    else if ($tab_auteur['signature'] == 'nomcomplet' && ($tab_auteur['prenom'] != '' || $tab_auteur['nom'] != ''))
+                    {
+                        $signature_auteur = " par <strong>".$tab_auteur['prenom']." ".$tab_auteur['nom']."</strong> ";
+                    }
 
-				if ($tab_auteur['avec_affiliation'] == 'oui')
-				{
-					$nom_affiliation = "";
-					$req_aff = $connector->query("SELECT idAffiliation FROM affiliation WHERE
-	 idPersonne=".$even->getValue('idPersonne')." AND genre='lieu'");
+                    if ($tab_auteur['avec_affiliation'] == 'oui')
+                    {
+                        $nom_affiliation = "";
+                        $req_aff = $connector->query("SELECT idAffiliation FROM affiliation WHERE
+         idPersonne=".$even->getValue('idPersonne')." AND genre='lieu'");
 
-					if (!empty($tab_auteur['affiliation']))
-					{
-						$nom_affiliation = $tab_auteur['affiliation'];
-					}
-					else if ($tab_aff = $connector->fetchArray($req_aff))
-					{
-						$req_lieu_aff = $connector->query("SELECT nom FROM lieu WHERE idLieu=".$tab_aff['idAffiliation']);
-						$tab_lieu_aff = $connector->fetchArray($req_lieu_aff);
-						$nom_affiliation = $tab_lieu_aff['nom'];
-					}
+                        if (!empty($tab_auteur['affiliation']))
+                        {
+                            $nom_affiliation = $tab_auteur['affiliation'];
+                        }
+                        else if ($tab_aff = $connector->fetchArray($req_aff))
+                        {
+                            $req_lieu_aff = $connector->query("SELECT nom FROM lieu WHERE idLieu=".$tab_aff['idAffiliation']);
+                            $tab_lieu_aff = $connector->fetchArray($req_lieu_aff);
+                            $nom_affiliation = $tab_lieu_aff['nom'];
+                        }
 
-					$signature_auteur .= " (".$nom_affiliation.") ";
-				}
-				
+                        $signature_auteur .= " (".$nom_affiliation.") ";
+                    }
+                }
 				
 					
 			if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 4)

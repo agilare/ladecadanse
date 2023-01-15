@@ -64,6 +64,7 @@ else
 
 if (empty($get['genre'])) 
 {
+    $get['genre'] = '';
 	$genre_titre = 'Tout';
 }
 else
