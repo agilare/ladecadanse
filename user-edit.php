@@ -96,10 +96,6 @@ $champs = array("pseudo" => '',
 "nom" => '',
 "prenom" => '',
 "affiliation" => '',
-"adresse" => '',
-"region" => '',
-"telephone" => '',
-"lieu" => '',
 'organisateurs' => '',
 "email" => '',
 "URL" => '',
@@ -107,8 +103,7 @@ $champs = array("pseudo" => '',
 "signature" => 'pseudo',
 "avec_affiliation" => '',
 "statut" => '',
-"remarque" => '',
-"notification_commentaires" => 'non');
+);
 
 
 
@@ -118,10 +113,11 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 {
 	foreach ($champs as $c => $v)
 	{
-
-			$champs[$c] = $_POST[$c];
-		
-	}
+        if (isset($_POST[$c]))
+        {
+            $champs[$c] = $_POST[$c];		
+        }
+    }
 	
 	if (isset($_POST['organisateurs']))
 		$champs['organisateurs'] = $_POST['organisateurs'];
