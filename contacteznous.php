@@ -14,7 +14,6 @@ $page_description = "Formulaire pour envoyer un email au webmaster de La década
 $nom_page = "contacteznous";
 $extra_css = array("formulaires", "contacteznous");
 
-echo Ladecadanse\Utils\Utils::generateMessageID();
 include("_header.inc.php");
 ?>
 

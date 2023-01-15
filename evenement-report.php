@@ -4,6 +4,7 @@ require_once("app/bootstrap.php");
 
 use Ladecadanse\Security\Sentry;
 use Ladecadanse\Utils\Validateur;
+use Ladecadanse\Utils\Logger;
 use Ladecadanse\Utils\Utils;
 use Ladecadanse\HtmlShrink;
 
