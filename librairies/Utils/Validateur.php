@@ -553,7 +553,7 @@ class Validateur
                 }
                 else
                 {
-                    $erreur = "Ce n'est pas un entier";
+                    $erreur = $get." n'est pas un numeric";
                 }
             }
             else if ($type == "string")
@@ -564,7 +564,7 @@ class Validateur
                 }
                 else
                 {
-                    $erreur = "Ce n'est pas une chaine";
+                    $erreur = $get." n'est pas une chaine";
                 }
             }
             else if ($type == "date")
@@ -576,7 +576,7 @@ class Validateur
                 }
                 else
                 {
-                    $erreur = "Ce n'est pas une date";
+                    $erreur = $get." n'est pas une date";
                 }
             }
             else if ($type == "enum")
@@ -587,7 +587,7 @@ class Validateur
                 }
                 else
                 {
-                    $erreur = "Ce n'est pas une valeur acceptée";
+                    $erreur = $get." n'est pas une valeur acceptée";
                 }
             }
             else if ($type == "alpha_numeric")
@@ -598,7 +598,7 @@ class Validateur
                 }
                 else
                 {
-                    $erreur = "Ce n'est pas une valeur acceptée";
+                    $erreur = $get." n'est pas un alpha_numeric";
                 }
             }
         }
