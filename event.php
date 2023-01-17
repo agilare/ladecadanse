@@ -66,7 +66,7 @@ if ($get['action'] == 'unpublish' && !empty($get['id']))
     	if (!empty($val_even) && 
                 (
 	 		(isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 6
-			|| $_SESSION['SidPersonne'] == $even->getValue('idPersonne'))
+			|| $_SESSION['SidPersonne'] == $val_even['idPersonne'])
 			)
 			||  (isset($_SESSION['Saffiliation_lieu']) && !empty($val_even['idLieu']) && $val_even['idLieu'] == $_SESSION['Saffiliation_lieu'])
 			 || isset($_SESSION['SidPersonne']) && $authorization->isPersonneInEvenementByOrganisateur($_SESSION['SidPersonne'], $get['id'])

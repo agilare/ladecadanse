@@ -66,9 +66,9 @@ if ($get['action'] != "ajouter" && $get['action'] != "insert")
 	$req_even_cur = $connector->query("SELECT idLieu, statut FROM evenement WHERE idEvenement=".$get['idE']);
 	$tab_even_cur = $connector->fetchArray($req_even_cur);
 
-	if ($authorization->estAuteur($_SESSION['SidPersonne'], $get['idE'], "evenement") || $_SESSION['Sgroupe'] <= 6
+	if ((isset($_SESSION['SidPersonne']) && $authorization->estAuteur($_SESSION['SidPersonne'], $get['idE'], "evenement")) || $_SESSION['Sgroupe'] <= 6
 	 || (isset($_SESSION['Saffiliation_lieu']) && isset($tab_even_cur['idLieu']) && $tab_even_cur['idLieu'] == $_SESSION['Saffiliation_lieu'])
-	|| $authorization->isPersonneInEvenementByOrganisateur($_SESSION['SidPersonne'], $get['idE'])
+	|| (isset($_SESSION['SidPersonne']) && $authorization->isPersonneInEvenementByOrganisateur($_SESSION['SidPersonne'], $get['idE']))
 	|| (isset($tab_even_cur['idLieu']) && $authorization->isPersonneInLieuByOrganisateur($_SESSION['SidPersonne'], $tab_even_cur['idLieu']))
 	 )
 	{
@@ -450,7 +450,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 			$sql_insert =  "INSERT INTO evenement (".$sql_insert_attributs.") VALUES (".$sql_insert_valeurs.")";
 
 			//TEST
-			echo "<p>".$sql_insert."</p>";
+			//echo "<p>".$sql_insert."</p>";
 			//
 			/*
 			* Insertion réussie, message OK, aperçu, et RAZ des champs
@@ -495,12 +495,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
                         'password' => $glo_email_password));
 
                         $mail = $smtp->send($to, $headers, $contenu_message);  
-                    }
-                    else
-                    {
-                        $_SESSION['evenement-edit_flash_msg'] .= "<br><pre>".$subject."</pre>"; 
-                        $_SESSION['evenement-edit_flash_msg'] .= "<br><pre>".$contenu_message."</pre>"; 
-                    }                    
+                    }                
                     
                 }      
 				
@@ -1171,7 +1166,7 @@ if ($verif->nbErreurs() > 0)
         <?php
         echo "<option value=\"0\">&nbsp;</option>";
         $req = $connector->query("
-        SELECT id, localite, canton FROM localite WHERE id!=1 $sql_localite_excl_fr ".$sql_prov." ORDER BY canton, localite "
+        SELECT id, localite, canton FROM localite WHERE id!=1 $sql_localite_excl_fr ORDER BY canton, localite "
          );
 
         $select_canton = '';
