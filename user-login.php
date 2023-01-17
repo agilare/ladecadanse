@@ -40,9 +40,10 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 
 	foreach ($champs as $c => $v)
 	{
-
-			$champs[$c] = $_POST[$c];
-		
+        if (isset($_POST[$c]))
+        {
+            $champs[$c] = $_POST[$c];	
+        }
 	}
 
 
