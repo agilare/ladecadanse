@@ -76,40 +76,41 @@ $entete_contenu = "";
 if ($genre_titre != 'Tout')
 	$entete_contenu =  ucfirst($genre_titre)." du ";
 
-$annee_courant = mb_substr($get['courant'], 0, 4);
-$mois_courant = mb_substr($get['courant'], 5, 2);
-$jour_courant = mb_substr($get['courant'], 8, 2);
+list($annee_courant, $mois_courant, $jour_courant) = explode('-', $get['courant']);
 
 $lien_precedent = '';
 $lien_suivant = '';
 
-if ($get['sem'] == 0)
+if (is_numeric($annee_courant) && is_numeric($mois_courant) && is_numeric($jour_courant))
 {
-    $entete_contenu .= date_fr($get['courant'], "annee");
+    if ($get['sem'] == 0)
+    {
+        $entete_contenu .= date_fr($get['courant'], "annee");
 
-    if ($genre_titre == 'Tout')	
-        $entete_contenu = ucfirst($entete_contenu);
+        if ($genre_titre == 'Tout')	
+            $entete_contenu = ucfirst($entete_contenu);
 
-    $precedent = date("Y-m-d", mktime(0, 0, 0, (int)$mois_courant, $jour_courant - 1, $annee_courant));
-    $lien_precedent = "<a href=\"/agenda.php?".Utils::urlQueryArrayToString($get)."&amp;courant=".$precedent."\" style=\"border-radius:3px 0 0 3px;\">".$iconePrecedent."&nbsp;</a>";
-    $suivant = date("Y-m-d", mktime(0, 0, 0, (int)$mois_courant, $jour_courant + 1, $annee_courant));
+        $precedent = date("Y-m-d", mktime(0, 0, 0, (int)$mois_courant, $jour_courant - 1, $annee_courant));
+        $lien_precedent = "<a href=\"/agenda.php?".Utils::urlQueryArrayToString($get)."&amp;courant=".$precedent."\" style=\"border-radius:3px 0 0 3px;\">".$iconePrecedent."&nbsp;</a>";
+        $suivant = date("Y-m-d", mktime(0, 0, 0, (int)$mois_courant, $jour_courant + 1, $annee_courant));
 
 
-    $suivant_nomjour_parts = explode(" ", date_fr($suivant, "tout", "non", ""));
-    $lien_suivant = "<a href=\"/agenda.php?".Utils::urlQueryArrayToString($get)."&amp;courant=".$suivant."\" style=\"border-radius:0 3px 3px 0;background:#e4e4e4\" title=\"".$suivant_nomjour_parts[1]."\">".ucfirst($suivant_nomjour_parts[0])."<span class=desktop> ".$suivant_nomjour_parts[1]."</span>"."&nbsp;".$iconeSuivant."</a>";
-}
-else if ($get['sem'] == 1)
-{
-    if ($genre_titre == 'Tout')	
-        $entete_contenu = ucfirst($entete_contenu);
+        $suivant_nomjour_parts = explode(" ", date_fr($suivant, "tout", "non", ""));
+        $lien_suivant = "<a href=\"/agenda.php?".Utils::urlQueryArrayToString($get)."&amp;courant=".$suivant."\" style=\"border-radius:0 3px 3px 0;background:#e4e4e4\" title=\"".$suivant_nomjour_parts[1]."\">".ucfirst($suivant_nomjour_parts[0])."<span class=desktop> ".$suivant_nomjour_parts[1]."</span>"."&nbsp;".$iconeSuivant."</a>";
+    }
+    else if ($get['sem'] == 1)
+    {
+        if ($genre_titre == 'Tout')	
+            $entete_contenu = ucfirst($entete_contenu);
 
-    $entete_contenu .= date_fr($lundim[0], "non", "non", "non")." au ".date_fr($lundim[1], "annee", "non", "non");
-    $precedent = date("Y-m-d", mktime(0, 0, 0, (int)$mois_courant  ,(int)($jour_courant - 7), $annee_courant));
-    $lien_precedent = "<a href=\"/agenda.php?courant=".$precedent."&amp;sem=1&amp;genre=".$get['genre']."\" style=\"border-radius:3px 0 0 3px;background:#e4e4e4\">".$iconePrecedent."</a>";
+        $entete_contenu .= date_fr($lundim[0], "non", "non", "non")." au ".date_fr($lundim[1], "annee", "non", "non");
+        $precedent = date("Y-m-d", mktime(0, 0, 0, (int)$mois_courant  ,(int)($jour_courant - 7), $annee_courant));
+        $lien_precedent = "<a href=\"/agenda.php?courant=".$precedent."&amp;sem=1&amp;genre=".$get['genre']."\" style=\"border-radius:3px 0 0 3px;background:#e4e4e4\">".$iconePrecedent."</a>";
 
-    $suivant = date("Y-m-d", mktime(0, 0, 0, (int)$mois_courant  , $jour_courant + 7, $annee_courant));
-    $lien_suivant = "<a href=\"/agenda.php?courant=".$suivant."&amp;sem=1&amp;genre=".$get['genre']."\" style=\"border-radius:0 3px 3px 0;\">".$iconeSuivant."</a>";
+        $suivant = date("Y-m-d", mktime(0, 0, 0, (int)$mois_courant  , $jour_courant + 7, $annee_courant));
+        $lien_suivant = "<a href=\"/agenda.php?courant=".$suivant."&amp;sem=1&amp;genre=".$get['genre']."\" style=\"border-radius:0 3px 3px 0;\">".$iconeSuivant."</a>";
 
+    }
 }
 
 $sql_genre = '';
