@@ -592,7 +592,7 @@ class Validateur
             }
             else if ($type == "alpha_numeric")
             {
-                if (!preg_match("/^\w+$/i", $get) )
+                if (preg_match("/^\w+$/i", $get) )
                 {
                     return $get;
                 }
