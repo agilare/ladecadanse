@@ -11,6 +11,10 @@ Une section d'administration permet de gérer les différentes contenus du site 
 
 1. cloner la branche `master`
 1. créer le fichier de configuration du site en copiant le modèle `app/env_model.php` vers `app/env.php`
+1. dans un fichier de configuration Apache (`.htaccess` ou autre) définir le décalage horaire par défaut PHP, par ex. :
+    ```
+    php_value date.timezone 'Europe/Zurich'
+    ```
 1. créer une base de données et y importer `config/ladecadanse.sql`
 1. dans votre `app/env.php` saisir les valeurs pour (davantage d'explication et exemples se trouvent dans ce fichier `env.php`) :
     - `$rep_absolu`

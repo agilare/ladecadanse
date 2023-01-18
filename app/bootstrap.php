@@ -3,20 +3,7 @@
  *  included at the beginning of each page
  */
 
-# Added by PorCus comme un goret 
-date_default_timezone_set('Europe/Berlin');
-
 require_once('env.php');
-
-error_reporting(E_ALL);
-if (MODE_DEBUG)
-{
-    ini_set('display_errors', '1');
-}
-else
-{
-    ini_set('display_errors', '0');
-}
 
 require $rep_absolu . 'vendor/autoload.php';
 
