@@ -5,3 +5,4 @@ dploy.yaml
 /vendor
 /.idea
 .htaccess
+.git-ftp-ignore
