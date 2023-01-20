@@ -1,0 +1,14 @@
+parameters:
+    paths:
+        - .
+    excludePaths:
+        - images
+        - logs
+        - web
+        - vendor
+        - var
+    fileExtensions:
+        - php
+    tmpDir: var/cache/ecs
+    level: 0
+    inferPrivatePropertyTypeFromConstructor: true

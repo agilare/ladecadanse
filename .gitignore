@@ -1,8 +1,9 @@
 app/env.php
-dploy.yaml
 /nbproject
 /images/
+/var/*
 /vendor
 /.idea
 .htaccess
 .git-ftp-ignore
+dploy.yaml
