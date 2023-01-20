@@ -6,6 +6,9 @@ app/env.php
 /var/logs/*
 !var/logs/.gitkeep
 /vendor
+!/web/uploads/
+/web/uploads/*
+!web/uploads/.gitkeep
 /.idea
 .htaccess
 .git-ftp-ignore
