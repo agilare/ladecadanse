@@ -55,7 +55,7 @@ if ($_SESSION['region'] != 'ge')
     $get['region'] = $_SESSION['region'];
 }
 
-$logger = new Logger($rep_absolu . "logs/");
+$logger = new Logger($rep_absolu . "var/logs/");
 
 $authorization = new Authorization();
 
