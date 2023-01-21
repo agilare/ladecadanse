@@ -25,9 +25,6 @@ $query = "SELECT nom, adresse, idLieu, localite FROM lieu "
         . "INNER JOIN localite ON lieu.localite_id= localite.id "
         . "WHERE statut='actif' and lat='' and lng ='' and idLieu BETWEEN $from AND $to";
 $result = $connector->query($query);
-if (!$result) {
-  die("Invalid query: " . mysqli_error());
-}
 
 // Initialize delay in geocode speed
 $delay = 0;
@@ -63,10 +60,6 @@ while ($row = $connector->fetchArray($result)) {
                $connector->sanitize($id));
         echo $query."<br><br>";
         $update_result = $connector->query($query);
-
-        if (!$update_result) {
-          die("Invalid query: " . mysqli_error());
-        }
     } 
     else
     {

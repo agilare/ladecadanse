@@ -93,11 +93,6 @@ class OrganisateurEdition extends Edition
         //$GLOBALS['wizardPage'] = $this->NextWizardPage();
     }
 
-    function IsCompleted()
-    {
-        return (!$this->FirstTime && count($this->Errors) <= 0);
-    }
-
     function verification()
     {
 

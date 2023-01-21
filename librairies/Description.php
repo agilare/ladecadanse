@@ -9,7 +9,6 @@ class Description extends Element
 	function __construct()
 	{
 		$this->table = 'descriptionlieu';
-		$this->nom = 'description';
 	}
 
 	function loadByType($type)

@@ -71,10 +71,6 @@ use Ladecadanse\Utils\Validateur;
 
     }
 
-    function IsCompleted() {
-      return (!$this->FirstTime && count($this->Errors)<=0);
-    }
-
     function verification()
     {
 		/*
