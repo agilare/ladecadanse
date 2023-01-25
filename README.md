@@ -7,7 +7,7 @@ La majeur partie du site est composée d'un agenda permettant de naviguer dans l
 
 Une section d'administration permet de gérer les différentes contenus du site : utilisateurs, événements, lieux, organisateurs, etc.
 
-## Installation
+## Installation locale
 
 1. cloner la branche `master`
 1. créer le fichier de configuration du site en copiant le modèle `app/env_model.php` vers `app/env.php`
@@ -29,4 +29,12 @@ Une section d'administration permet de gérer les différentes contenus du site 
 1. afin d'avoir accès à l'administration, se connecter avec ce login *admin* et le mot de passe `MASTER_KEY` défini plus haut 
 1. (optionnel) installer [Pear Mail](https://pear.php.net/package/Mail/) pour que l'envoi d'emails fonctionne (les `require_once Mail.php;` dans le code)
 
+## Installation par Docker
+Lancer la commande suivante à la racine du projet:
+```
+docker compose up -d
+```
+Le site ladecadanse est déployé sur localhost:7777.
+
+## Dépendances
 Testé avec Apache 2.4, PHP 7.4, MariaDB 10/MySQL 5.7

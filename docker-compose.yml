@@ -1,0 +1,45 @@
+version: '3'
+
+services:
+  db:
+    image: mariadb:10.3
+    container_name: ladecadanse_db
+    environment:
+      MYSQL_DATABASE: ladecadanse
+      MYSQL_ROOT_PASSWORD: dev
+      MYSQL_USER: dev
+      MYSQL_PASSWORD: dev
+    volumes:
+      - ${PWD}/app/ladecadanse.sql:/docker-entrypoint-initdb.d/ladecadanse.sql
+    ports:
+      - "127.0.0.1:9906:3306"
+    networks:
+      - ladecadanse_net
+  install-dep:
+    build:
+      dockerfile: ./docker/php/Dockerfile
+    container_name: ladecadanse_install_dep
+    command: ./install_dep.sh
+    volumes:
+      - ${PWD}:/var/www/html/
+  web:
+    build:
+      dockerfile: ./docker/php/Dockerfile
+    container_name: ladecadanse_php
+    depends_on:
+      db:
+        condition: service_started
+      install-dep:
+        condition: service_completed_successfully
+    volumes:
+      - ${PWD}:/var/www/html/
+      - ${PWD}/docker/apache/ladecadanse.conf:/etc/apache2/sites-enabled/000-default.conf
+      - ${PWD}/docker/env/env.php:/var/www/html/app/env.php
+    ports:
+      - "127.0.0.1:7777:80"
+    networks:
+      - ladecadanse_net
+    stdin_open: true
+    tty: true
+networks:
+  ladecadanse_net:
