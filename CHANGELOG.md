@@ -76,7 +76,7 @@
 - js alert in forms if user selects a file to upload > 2 Mb
 - "prochains événements" in home page title
 
-## [3.2.1] - 2021-11-21
+## [3.2.1] - 2019-12-21
 
 ### Added
 
@@ -89,3 +89,15 @@
 ### Changed
 
 - updates of libs
+
+## [3.2] - 2019-06-23
+
+### Added
+
+- better experience for visitors, contributors and admins
+
+### Fixed
+
+- fixes and improvements of old v3 issues
+
+Details in issues of Milestone for v3.2 : https://github.com/agilare/ladecadanse/milestone/1?closed=1
