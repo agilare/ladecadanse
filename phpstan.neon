@@ -3,7 +3,6 @@ parameters:
         - .
     excludePaths:
         - images
-        - logs
         - web
         - vendor
         - var
