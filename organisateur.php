@@ -16,7 +16,9 @@ $videur = new Sentry();
 
 if (isset($_GET['idO']))
 {
-	$get['idO'] = Validateur::validateUrlQueryValue($_GET['idO'], "int", 1);
+    try {     
+        $get['idO'] = Validateur::validateUrlQueryValue($_GET['idO'], "int", 1);
+    } catch (Exception $e) { header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); exit; }     
 }
 else
 {
@@ -28,7 +30,9 @@ $tab_genre_even = array("fête", "cinéma", "théâtre", "expos", "divers", "tou
 $get['genre_even'] = "tous";
 if (isset($_GET['genre_even']))
 {
-	$get['genre_even'] = Validateur::validateUrlQueryValue($_GET['genre_even'], "enum", 0, $tab_genre_even);
+    try { 
+        $get['genre_even'] = Validateur::validateUrlQueryValue($_GET['genre_even'], "enum", 0, $tab_genre_even);
+    } catch (Exception $e) { header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); exit; }     
 }
 
 

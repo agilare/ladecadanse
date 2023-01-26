@@ -11,7 +11,10 @@ $tab_tri = array("dateAjout", "horaire_debut");
 
 if (isset($_GET['idE']))
 {
-	$get['idE'] = Validateur::validateUrlQueryValue($_GET['idE'], "int", 1);
+    try {    
+        $get['idE'] = Validateur::validateUrlQueryValue($_GET['idE'], "int", 1);
+    } catch (Exception $e) { header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); exit; }         
+    
     $req_even = $connector->query("
     SELECT dateEvenement, genre
     FROM evenement WHERE idEvenement=".$get['idE']);
@@ -31,7 +34,9 @@ else
 $get['tri'] = "dateAjout";
 if (isset($_GET['tri']))
 {
-	$get['tri'] = Validateur::validateUrlQueryValue($_GET['tri'], "enum", 1, $tab_tri);
+    try {
+        $get['tri'] = Validateur::validateUrlQueryValue($_GET['tri'], "enum", 1, $tab_tri);
+    } catch (Exception $e) { header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); exit; }      
 }
 
 /**

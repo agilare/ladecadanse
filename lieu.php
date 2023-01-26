@@ -35,7 +35,9 @@ else
 
 if (isset($_GET['idL']) && $_GET['idL'] > 0)
 {
-	$get['idL'] = Validateur::validateUrlQueryValue($_GET['idL'], "int", 1);
+    try {
+        $get['idL'] = Validateur::validateUrlQueryValue($_GET['idL'], "int", 1);
+    } catch (Exception $e) { header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); exit; }     
 }
 else
 {
@@ -44,28 +46,33 @@ else
 	header("HTTP/1.1 404 Not Found");
 	echo file_get_contents($rep_absolu."articles/404.php");
 	exit;
-
 }
 
 $tab_genre_even = array("fête", "cinéma", "théâtre", "expos", "divers", "tous");
 $get['genre_even'] = "tous";
 if (isset($_GET['genre_even']))
 {
-	$get['genre_even'] = Validateur::validateUrlQueryValue($_GET['genre_even'], "enum", 0, $tab_genre_even);
+    try {    
+        $get['genre_even'] = Validateur::validateUrlQueryValue($_GET['genre_even'], "enum", 0, $tab_genre_even);
+    } catch (Exception $e) { header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); exit; }     
 }
 
 $tab_complement = array("evenements", "commentaires");
 $get['complement'] = "evenements";
 if (isset($_GET['complement']))
 {
-	$get['complement'] = Validateur::validateUrlQueryValue($_GET['complement'], "enum", 0, $tab_complement);
+    try {  
+        $get['complement'] = Validateur::validateUrlQueryValue($_GET['complement'], "enum", 0, $tab_complement);
+    } catch (Exception $e) { header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); exit; }     
 }
 
 $tab_types_description = array("description", "presentation");
 $get['type_description'] = "";
 if (isset($_GET['type_description']))
 {
-	$get['type_description'] = Validateur::validateUrlQueryValue($_GET['type_description'], "enum", 0, $tab_types_description);
+    try {    
+        $get['type_description'] = Validateur::validateUrlQueryValue($_GET['type_description'], "enum", 0, $tab_types_description);
+    } catch (Exception $e) { header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); exit; }     
 }
 
 $lieu = new Lieu();

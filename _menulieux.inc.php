@@ -10,14 +10,17 @@ $tab_statuts = array("actif", "inactif", "ancien");
 $get['statut'] = "actif";
 if (isset($_GET['statut']))
 {
-	$get['statut'] = Validateur::validateUrlQueryValue($_GET['statut'], "enum", 1, $tab_statuts);
+    try { 
+        $get['statut'] = Validateur::validateUrlQueryValue($_GET['statut'], "enum", 1, $tab_statuts);
+    } catch (Exception $e) { header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); exit; }     
 }
 
 $tab_vues = array("az", "genre", "quartier");
 if (isset($_GET['vue']))
 {
-	$get['vue'] = Validateur::validateUrlQueryValue($_GET['vue'], "enum", 1, $tab_vues);
-
+    try {
+        $get['vue'] = Validateur::validateUrlQueryValue($_GET['vue'], "enum", 1, $tab_vues);
+    } catch (Exception $e) { header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); exit; } 
 	if($get['vue'] != "az")
 	{
 		$de = "0";

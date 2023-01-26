@@ -18,7 +18,9 @@ include("_header.inc.php");
 $get['idO'] = "";
 if (isset($_GET['idO']))
 {
-	$get['idO'] = Validateur::validateUrlQueryValue($_GET['idO'], "int", 0);
+    try { 
+        $get['idO'] = Validateur::validateUrlQueryValue($_GET['idO'], "int", 0);
+    } catch (Exception $e) { header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); exit; }        
 }
 
 /**
