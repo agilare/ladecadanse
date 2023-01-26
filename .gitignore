@@ -13,3 +13,5 @@ app/env.php
 .htaccess
 .git-ftp-ignore
 dploy.yaml
+composer-setup.php
+composer.phar
