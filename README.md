@@ -1,14 +1,19 @@
 # La décadanse
-Agenda culturel local
+📅 Agenda culturel local
 
-La décadanse présente une sélection d'événements culturels accessibles et locaux (actuellement pour les régions de Genève et Lausanne), donnant la possibilité aux organisateurs d'ajouter leurs propres événements et de gérer leur fiche de présentation.
+La décadanse est un site web qui présente aux visiteurs une sélection d'événements culturels locaux et accessibles. Il est actuellement [déployé pour Genève et Lausanne](https://ladecadanse.darksite.ch/)
 
-La majeur partie du site est composée d'un agenda permettant de naviguer dans les événements passés ou futurs. Chacun de ceux-ci a sa fiche détaillée avec la possibilité donnée aux personnes inscrites d'y laisser un commentaire. Une rubrique Lieux répertorie des endroits où se déroulent des événements, et une page similaire liste les organisateurs d'événements.
+Les organisateurs d'événements ont la possibilité de s'inscrire puis de se présenter et annoncer leurs événements.
 
-Une section d'administration permet de gérer les différentes contenus du site : utilisateurs, événements, lieux, organisateurs, etc.
+Les principales sections du site sont :
+- un **agenda d'événements**, chacun de ceux-ci ayant sa fiche détaillée accompagnée de quelques services (commentaires, signaler une erreur, format iCal...)
+- un répertoire des **Lieux** où se déroulent des événements, avec détails, présentation, photos
+- un répertoire des **Organisateurs d'événements**, similaire aux Lieux
+- un **back-office** permettant de gérer les diverses entités du site : utilisateurs, événements, lieux, organisateurs, etc.
 
 ## Installation locale
 
+### Manuelle
 1. cloner la branche `master`
 1. créer le fichier de configuration du site en copiant le modèle `app/env_model.php` vers `app/env.php`
 1. dans un fichier de configuration Apache (`.htaccess` ou autre) définir le décalage horaire par défaut PHP, par ex. :
@@ -29,12 +34,21 @@ Une section d'administration permet de gérer les différentes contenus du site 
 1. afin d'avoir accès à l'administration, se connecter avec ce login *admin* et le mot de passe `MASTER_KEY` défini plus haut 
 1. (optionnel) installer [Pear Mail](https://pear.php.net/package/Mail/) pour que l'envoi d'emails fonctionne (les `require_once Mail.php;` dans le code)
 
-## Installation par Docker
+### Par Docker
 Lancer la commande suivante à la racine du projet:
 ```
 docker compose up -d
 ```
 Le site ladecadanse est déployé sur localhost:7777.
 
-## Dépendances
+### Dépendances
 Testé avec Apache 2.4, PHP 7.4, MariaDB 10/MySQL 5.7
+
+## Changelog
+Voir le [changelog](CHANGELOG.md) et les [releases sur GitHub](https://github.com/agilare/ladecadanse/releases)
+
+## Contribuer
+Les Pull requests sont les bienvenues. Pour les changements majeurs, veuillez d'abord ouvrir une Issue pour discuter de ce que vous souhaitez changer.
+
+## License
+This work is licensed under CC BY-NC-SA 4.0 
