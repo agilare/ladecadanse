@@ -9,6 +9,15 @@ app/env.php
 !/web/uploads/
 /web/uploads/*
 !web/uploads/.gitkeep
+!/web/uploads/lieux/
+/web/uploads/lieux/*
+!web/uploads/lieux/.gitkeep
+!/web/uploads/lieux/galeries/
+/web/uploads/lieux/galeries/*
+!web/uploads/lieux/galeries/.gitkeep
+!/web/uploads/organisateurs/
+/web/uploads/organisateurs/*
+!web/uploads/organisateurs/.gitkeep
 /.idea
 .htaccess
 .git-ftp-ignore
