@@ -945,16 +945,23 @@ if ($verif->nbErreurs() > 0)
     {
         echo $verif->getHtmlErreur("global");
     }
-	print_r($verif->getErreurs());
+	//print_r($verif->getErreurs());
 }
 ?>
 
 <form method="post" id="ajouter_editer" class="submit-freeze-wait" enctype="multipart/form-data" action="<?php echo basename(__FILE__)."?action=".$act ?>">
-    <h2>Avant de commencer veillez svp à ce que votre événement :</h2>
-    <ul style="line-height:1.2em">
-        <li style="margin:6px 2px;">n’est pas déjà présent dans l’<a href="/agenda.php" target="_blank">agenda</a></li>
-        <li style="margin:6px 2px;">respecte notre <b><a href="/articles/charte-editoriale.php" target="_blank">charte&nbsp;éditoriale</a></b></li>
-    </ul>
+    <div id="home-tmp-banner">       
+        <h2>Avant de commencer :</h2>
+        <?php if (!isset($_SESSION['Sgroupe'])) { ?>
+            <p style="line-height: 1.6em;">Utilisez ce formulaire <strong>si vous n'avez pas déjà un compte sur La décadanse</strong>. L'événement sera publié (ou pas) après une validation de notre part, dans les prochains jours.<br>Sinon, veuillez <a href="/user-login.php">vous connecter</a> pour ajouter votre événement.</p>
+        <?php } ?>
+        <p>Veillez svp à ce que votre événement</p>
+        <ul style="line-height:1.2em">
+            <li style="margin:6px 2px;">n’est pas déjà présent dans l’<a href="/agenda.php" target="_blank">agenda</a></li>
+            <li style="margin:6px 2px;">respecte notre <a href="/articles/charte-editoriale.php" target="_blank">charte&nbsp;éditoriale</a></li>
+        </ul>
+    </div>
+    
     <h2 style="margin:20px 0 5px 0;">L’événement</h2>
     <p style="margin:5px 0;">* indique un champ obligatoire</p>
 
