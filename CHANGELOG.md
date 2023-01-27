@@ -15,13 +15,13 @@
 - docker compose recipe
 - analyzers setup : PHPCompatibility, phpstan, security checker 
 - git-ftp setup
+- setup PHPMailer (replaces PEAR Mail)
 
 ### Changed
 
 - composer : complete php extensions needed
 - php errors and timezone config externalized
 - readme - installation completed
-- setup PHPMailer (replaces PEAR Mail)
 - Zebra datepicker 1.9.19
 - logs dir
 

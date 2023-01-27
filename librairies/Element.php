@@ -44,7 +44,12 @@ class Element
 
 	function getValue($nom)
 	{
-		return $this->valeurs[$nom];
+        if (isset($this->valeurs[$nom]))
+		{
+            return $this->valeurs[$nom];
+        }
+        
+        return '';
 	}
 
 	function setValues($tab)

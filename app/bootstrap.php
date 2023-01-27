@@ -79,7 +79,7 @@ header("Pragma: no-cache");
  * @param string $chaine
  * @return string
  */
-function sanitizeForHtml(string $chaine): string
+function sanitizeForHtml(?string $chaine): string
 {
     return trim(htmlspecialchars($chaine));
 }
