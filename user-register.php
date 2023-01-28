@@ -309,7 +309,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 
 			
 			$req_pers = $connector->query("
-			SELECT pseudo, mot_de_passe, email
+			SELECT pseudo, mot_de_passe, email, groupe
 			FROM personne
 			WHERE idPersonne=".$req_id);
 

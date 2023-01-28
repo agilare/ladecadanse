@@ -37,9 +37,10 @@ $tab_tranches = array_merge(array_merge(array("ak", "lz", "tout"), array_keys($g
 
 if (isset($_GET['tranche']))
 {
-
-	$get['tranche'] = Validateur::validateUrlQueryValue($_GET['tranche'], "enum", 1, $tab_tranches);
-
+    try {
+        $get['tranche'] = Validateur::validateUrlQueryValue($_GET['tranche'], "enum", 1, $tab_tranches);
+    } catch (Exception $e) { header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); exit; }
+    
 	if ($get['vue'] == "az")
 	{
 
