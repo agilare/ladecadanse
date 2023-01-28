@@ -3,10 +3,12 @@
 ## [Unreleased]
 
 ### Fixed
+
 - misc in agenda, users, contact
 - gitignore
 
 ### Added
+
 - home : Debout les braves banner
 - propose event : clarifications
 - event form : clarifications for ask organisation registration 
@@ -21,7 +23,7 @@
 
 - composer : complete php extensions needed
 - php errors and timezone config externalized
-- readme - installation completed
+- readme - partially rewritten, completed
 - Zebra datepicker 1.9.19
 - logs dir
 
