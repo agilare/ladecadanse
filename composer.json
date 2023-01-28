@@ -18,7 +18,8 @@
         "ext-gd": "*",
         "harvesthq/chosen": "^1.8",
         "dimsemenov/magnific-popup": "^1.1",
-        "fortawesome/font-awesome": "4.7"
+        "fortawesome/font-awesome": "4.7",
+        "phpmailer/phpmailer": "^6.7"
     },
     "autoload": {
         "psr-4": {"Ladecadanse\\": "librairies"},
