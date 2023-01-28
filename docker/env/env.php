@@ -9,7 +9,7 @@ $rep_absolu = "/var/www/html/";
 
 // URL
 // main domain, for ex "http://localhost" or "http://ladecadanse.local";
-$url_domaine = "";
+$url_domaine = "http://localhost:7777";
 // complete if your site is in a subdirectory, for ex with "ladecadanse", $url_site will be http://localhost/ladecadanse
 $url_site = $url_domaine."/";
 
@@ -35,7 +35,7 @@ $glo_email_support = "";
 
 define("MAIL_DOMAIN", '');
 
-define("MASTER_KEY", ''); // backdoor : allows to login with any user
+define("MASTER_KEY", 'admin_dev'); // backdoor : allows to login with any user
 
 define("GOOGLE_API_KEY", ''); // use Google Maps library to display maps of venues
 
