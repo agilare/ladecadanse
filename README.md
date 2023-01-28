@@ -42,7 +42,8 @@ docker compose up -d
 Le site ladecadanse est déployé sur localhost:7777.
 
 ### Dépendances
-Testé avec Apache 2.4, PHP 7.4, MariaDB 10/MySQL 5.7
+- Testé avec Apache 2.4, PHP 7.4, MariaDB 10/MySQL 5.7.
+- Nécessite les extensions PHP: GD et MySQLi.
 
 ## Changelog
 Voir le [changelog](CHANGELOG.md) et les [releases sur GitHub](https://github.com/agilare/ladecadanse/releases)
