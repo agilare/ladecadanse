@@ -9,7 +9,7 @@ $rep_absolu = "/var/www/html/";
 
 // URL
 // main domain, for ex "http://localhost" or "http://ladecadanse.local";
-$url_domaine = "";
+$url_domaine = "http://localhost:7777";
 // complete if your site is in a subdirectory, for ex with "ladecadanse", $url_site will be http://localhost/ladecadanse
 $url_site = $url_domaine."/";
 
