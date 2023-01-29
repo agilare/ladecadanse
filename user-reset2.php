@@ -69,7 +69,10 @@ if ($connector->getNumRows($req_temp) == 1)
 	{
 		foreach ($champs as $c => $v)
 		{
-			$champs[$c] = $_POST[$c];		
+            if (isset($_POST[$c]) )
+            {            
+                $champs[$c] = $_POST[$c];
+            }
 		}
 		
 		if (empty($tab_temp['idPersonne']) && empty($champs['idPersonne']))

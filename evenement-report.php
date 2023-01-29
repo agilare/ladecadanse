@@ -6,6 +6,7 @@ use Ladecadanse\Security\Sentry;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\Logger;
 use Ladecadanse\Utils\Utils;
+use Ladecadanse\Utils\Mailing;
 use Ladecadanse\HtmlShrink;
 
 $videur = new Sentry();
@@ -16,7 +17,6 @@ $page_titre = "Signaler une erreur";
 $page_description = "";
 $extra_css = array("formulaires", "evenement_inc");
 include("_header.inc.php");
-
 
 if (isset($_GET['idE']))
 {
@@ -29,11 +29,7 @@ else
 	HtmlShrink::msgErreur("idE obligatoire");
 	exit;
 }
-
 ?>
-
-
-
 
 <!-- D?t Contenu -->
 <div id="contenu" class="colonne signaler-erreur">
@@ -62,15 +58,9 @@ $action_terminee = false;
 
 if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 {
-
-	/*
-	 * Copie des champs envoyes par POST
-	 */
 	foreach ($champs as $c => $v)
 	{
-
-			$champs[$c] = $_POST[$c];
-		
+			$champs[$c] = $_POST[$c];	
 	}
 
 	$champs['idEvenement'] = $get['idE'];
@@ -87,77 +77,35 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
         
 	$verif->valider($champs['email'], "email", "email", 4, 80, 0);
         
-	
 	if (empty($champs['name']))
 	{
-	
-/*
-	 * Pas d'erreur, donc ajout ou update executés
-	 */
-	if ($verif->nbErreurs() === 0)
-	{
-		
-		$from = '"La décadanse" <'.$glo_email_support.'>';
-		if (isset($_SESSION['user']))
-		{
-			$from = '"'.$_SESSION['user'].'" <'.$_SESSION['Semail'].'>';
-		}
-                elseif (!empty($champs['email']))
-                {
-                    $from = '"'.$champs['email'].'" <'.$champs['email'].'>';    
-                }
-		
-		$to = '"La décadanse" <'.$glo_email_support.'>';
-                $subject = "[La décadanse] Rapport d'erreur sur un événement";
-		$contenu_message = "Type : ".$tab_type_erreur[$champs['type_erreur']];
-		$contenu_message .= "\n\n";
-		$contenu_message .= "Événement : ".$url_site."/evenement.php?idE=".$champs['idEvenement'];
-		$contenu_message .= "\n\n";
-		$contenu_message .= "Description : ".$champs['message']."\n\n";
+        if ($verif->nbErreurs() === 0)
+        {
+            $from = $champs['email'];
+            if (isset($_SESSION['user']))
+            {
+                $from = $_SESSION['Semail'];
+            }
 
-        $headers = array (
-		"Content-Type" => "text/plain; charset=\"UTF-8\"",
-		'From' => $from, 
-		'To' => $to, 
-		'Subject' => $subject,
-        'Message-ID' => Utils::generateMessageID()            
-		);
-        
-        $smtp = Mail::factory(
-		'smtp',
-        array ('host' => $glo_email_host,
-        'auth' => true,
-        'username' => $glo_email_username,
-        'password' => $glo_email_password)
-		);
+            $subject = "Rapport d'erreur sur un événement : ".$tab_type_erreur[$champs['type_erreur']];
+            $contenu_message = "Événement : ".$url_site."/evenement.php?idE=".$champs['idEvenement'];
+            $contenu_message .= "\n\n";
+            $contenu_message .= "Message :\n\n".$champs['message']."\n\n";
+            if (isset($_SESSION['user']))
+            {
+                $contenu_message .= "\n\n".$_SESSION['user'];
+            }            
+	            
+            $mailer = new Mailing();
+            if ($mailer->toAdmin($subject, $contenu_message, $from))
+            {
+                HtmlShrink::msgOk("Merci d'avoir signalé cette erreur, je m'en occupe dès que possible");    
+$logger->log('global', 'activity', "[evenement-report] by ".$from." for ".$url_site."/evenement.php?idE=".$champs['idEvenement'], Logger::GRAN_YEAR);              
+            }            
 
-        $mail = $smtp->send($to, $headers, $contenu_message);
-
-		// HACK : pear http://forum.revive-adserver.com/topic/1597-non-static-method-peariserror-should-not-be-called-statically/
-        //if (PEAR::isError($mail)){
-        if ((new PEAR)->isError($mail))
-		{
-			echo("<p>" . $mail->getMessage() . "</p>");
-			HtmlShrink::msgErreur('L\'envoi a echoué, veuillez réessayer ou alors utilisez le formulaire de contact');
+            unset($_POST);
+            $action_terminee = true;
         }
-		else
-		{
-			
-				HtmlShrink::msgOk('Erreur envoyée au webmaster. Merci de l\'avoir signalée');
-                $logger->log('global', 'activity', "[signaler_erreur] by ".$from." for ".$url_site."/evenement.php?idE=".$champs['idEvenement'], Logger::GRAN_YEAR);
-              
-                
-				$action_terminee = true;
-        }		
-		
-
-		unset($_POST);
-
-		$action_terminee = true;
-
-
-	} // if erreurs == 0
-
 	} // if antispam
 	else
 	{

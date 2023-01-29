@@ -6,6 +6,7 @@ use Ladecadanse\Security\Sentry;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\Logger;
 use Ladecadanse\Utils\Utils;
+use Ladecadanse\Utils\Mailing;
 use Ladecadanse\HtmlShrink;
 
 $videur = new Sentry();
@@ -328,71 +329,40 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 			$sql_update = "UPDATE personne SET mot_de_passe='".$champs['mot_de_passe']."', gds='".$champs['gds']."',
 			statut='actif' WHERE idPersonne=".$req_id;
 
-			//TEST
-			//echo $sql_update;
-			//
-
 			//message résultat et réinit
-			//PROD
 			if ($connector->query($sql_update))
-			{
-				// Mail de notification au nouvel utilisateur
-
-				
-				$from = '"'."La décadanse".'" <'.$glo_email_info.'>';
-				$to = '"'.$tab_pers['pseudo'].'" <'.$tab_pers['email'].'>';
-				$subject = "Votre compte sur La décadanse";
+			{		
+				$subject = "Votre nouveau compte 👤 ".$tab_pers['pseudo']." sur La décadanse";
 
 				$contenu_message = "Bonjour,\n\n";
 				$contenu_message .= "Merci de vous être inscrit-e sur www.ladecadanse.ch";
 				$contenu_message .= "\n\n";
-				$contenu_message .= "Voici vos données de connexion :";
-				$contenu_message .= "\n";
-				$contenu_message .= "\n";
-				$contenu_message .= "Identifiant : ".$tab_pers['pseudo'];
-				$contenu_message .= "\n";
-				$contenu_message .= "Mot de passe : ".$pass_email;
-				$contenu_message .= "\n\n";
-				$contenu_message .= "Pour vous connecter : ".$url_site."/user-login.php";
+				$contenu_message .= "Pour vous connecter : ".$url_site."user-login.php";
 				$contenu_message .= "\n\n";
 				$contenu_message .= "Vous pouvez compléter votre profil sur votre page de membre : ";
-				$contenu_message .= $url_site."/user.php?idP=".$req_id;
+				$contenu_message .= $url_site."user.php?idP=".$req_id;
 				$contenu_message .= "\n\n";
 				$contenu_message .= "Bonne visite";
 				$contenu_message .= "\n\n";
 				$contenu_message .= "La décadanse";
 				
-				$headers = ["Content-Type" => "text/plain; charset=\"UTF-8\"",
-				'From' => $from,
-				'To' => $to,
-				'Subject' => $subject,
-                'Message-ID' => Utils::generateMessageID()
-                ];
-				
-				$smtp = Mail::factory('smtp',
-				array ('host' => $glo_email_host,
-				'auth' => true,
-				'username' => $glo_email_username,
-				'password' => $glo_email_password));
-
-				$mail = $smtp->send($to, $headers, $contenu_message);
+                $mailer = new Mailing();
+                $mailer->toUser($tab_pers['email'], $subject, $contenu_message);
 
 				$compte_organisateur = "";
 				if (isset($champs['organisateurs']) && count($champs['organisateurs']) > 0)
 					$compte_organisateur = " en tant qu'acteur culturel";
 				
 				HtmlShrink::msgOk("<strong>Votre compte".$compte_organisateur." a été créé</strong>; vous pouvez maintenant vous <a href=\"".$url_site."/user-login.php\">connecter</a> avec l'identifiant et le mot de passe que vous venez de saisir.
-				<br />Un e-mail de confirmation récapitulant vos données d'accès vous a été envoyé à l'adresse : ".$tab_pers['email']);
+				<br />Un e-mail de confirmation vous a été envoyé à l'adresse : ".$tab_pers['email']);
 
                 $logger->log('global', 'activity', "[user-register] by ".$tab_pers['pseudo']." (".$tab_pers['email'].") in group ".$tab_pers['groupe']." ".$url_site."/user.php?idP=".$req_id, Logger::GRAN_YEAR);
 			}
-			
-			
+						
 			foreach ($champs as $k => $v)
 			{
 				$champs[$k] = '';
 			}
-
 
 			$action_terminee = true;
 		}

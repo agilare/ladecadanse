@@ -22,11 +22,6 @@ class Mailing {
         $this->mail->CharSet = 'utf-8';    
      }
      
-    /**
-     * 
-     * @param string $title
-     * @param string $body
-     */
     public function toAdmin(string $title, string $body, ?string $from): bool
     {
         $this->mail->From     = EMAIL_SITE;

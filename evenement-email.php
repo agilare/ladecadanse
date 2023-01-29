@@ -7,6 +7,7 @@ use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\Logger;
 use Ladecadanse\Utils\Text;
 use Ladecadanse\Utils\Utils;
+use Ladecadanse\Utils\Mailing;
 use Ladecadanse\HtmlShrink;
 
 $videur = new Sentry();
@@ -38,18 +39,9 @@ else
 
 ?>
 
-<!-- D?t Contenu -->
 <div id="contenu" class="colonne email_evenement">
 
-
 <?php
-//TEST
-//printr($_SESSION);
-//
-
-/*
-* TRAITEMENT DU FORMULAIRE (EDITION OU AJOUT)
-*/
 
 $verif = new Validateur();
 
@@ -78,20 +70,10 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 
 	$verif->valider($champs['message'], "message", "texte", 2, 10000, 0);
 
-/*
-	 * Pas d'erreur, donc ajout ou update executés
-	 */
 	if ($verif->nbErreurs() === 0)
 	{
-
-		require_once "Mail.php";
-
-		$from = '"'.$_SESSION['user'].'" <'.$_SESSION['Semail'].'>';
-
-		$to = $champs['email_destinataire'];
-
-		$contenu_message = $champs['message']."\n\n";
-
+        $contenu_message = "Message envoyé depuis www.ladecadanse.ch par ".$_SESSION['user']." (".$_SESSION['Semail'].") :\n\n";     
+		$contenu_message .= "> ".$champs['message']."\n\n";
 		$contenu_message .= "------------------\n";
 
 		$req_getEven = $connector->query("SELECT idEvenement, idLieu, idSalle, idPersonne, titre, genre, dateEvenement,
@@ -122,12 +104,16 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 			$contenu_message .= afficher_debut_fin($tab_even['horaire_debut'], $tab_even['horaire_fin'], $tab_even['dateEvenement'])."\n";
 			$contenu_message .= sanitizeForHtml($tab_even['horaire_complement'])."\n";
 			$contenu_message .= sanitizeForHtml($tab_even['prix'])."\n\n";
-
 			$contenu_message .= "------------------\n";
-			
-			
-			$subject = $tab_even['titre'];
+	
+			$subject = "Événement \"".$tab_even['titre']."\"";
 
+            $mailer = new Mailing();
+            if ($mailer->toUser($champs['email_destinataire'], $subject, $contenu_message, ['email' => $_SESSION['Semail'], 'name' => $_SESSION['user'] ]))
+            {
+                HtmlShrink::msgOk('Événement <strong>'.$tab_even['titre'].'</strong> envoyé à '.$champs['email_destinataire']);   		
+                $logger->log('global', 'activity', "[email_evenement] event ".$tab_even['titre']." (idE ".$get['idE'].") sent from ".$_SESSION['user']." to ".$champs['email_destinataire'], Logger::GRAN_YEAR);                
+            }                        
 		}
 		else
 		{
@@ -135,52 +121,11 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 			exit;
 		} // if fetchArray
 
-		/*
-		* Envoi de l'email
-		*/
-		
-		
-		$headers = array (
-		"Content-Type" => "text/plain; charset=\"UTF-8\"",
-		'From' => $from,
-		'To' => $to,
-		'Subject' => $subject,
-        'Message-ID' => Utils::generateMessageID()
-                );
-		
-		$smtp = Mail::factory('smtp',
-		array ('host' => $glo_email_host,
-		'auth' => true,
-		'username' => $glo_email_username,
-		'password' => $glo_email_password));
-
-		$mail = $smtp->send($to, $headers, $contenu_message);
-
-
-
-
-		// HACK : pear http://forum.revive-adserver.com/topic/1597-non-static-method-peariserror-should-not-be-called-statically/
-        //if (PEAR::isError($mail)){
-        if (!(new PEAR)->isError($mail))
-		{
-			HtmlShrink::msgOk('Événement <strong>'.$tab_even['titre'].'</strong> envoyé à '.$champs['email_destinataire']);
-
-			$action_terminee = true;
-		}
-		else
-		{
-			HtmlShrink::msgErreur('L\'envoi a echoué');
-			echo("<p>" . $mail->getMessage() . "</p>");
-		}
-		
-        $logger->log('global', 'activity', "[email_evenement] event ".$tab_even['titre']." (idE ".$get['idE'].") sent from $from to $to", Logger::GRAN_YEAR);
 		unset($_POST);
 
 		$action_terminee = true;
 
 	} // if erreurs == 0
-
-
 } // if POST != ""
 
 

@@ -20,20 +20,18 @@ $param['dbusername'] = '';
 $param['dbpassword'] = '';
 
 // SMTP credentials
-// $glo_email_host = "mail.darksite.ch"; // prod
-// $glo_email_username = "info@ladecadanse.ch"; // prod
-$glo_email_host = "";
-$glo_email_username = "";
-$glo_email_password = "";
+define("EMAIL_AUTH_HOST", ''); // prod : mail.darksite.ch
+define("EMAIL_AUTH_USERNAME", '');
+define("EMAIL_AUTH_PASSWORD", '');
+define("EMAIL_AUTH_SMTPSECURE", 'TLS');
+define("EMAIL_AUTH_PORT", '587');
+define("EMAIL_AUTH_SMTPDEBUG", '0');
 
-// $glo_email_admin = "michel@ladecadanse.ch"; // prod
-// $glo_email_info = "info@ladecadanse.ch"; // prod
-// $glo_email_support = "info@ladecadanse.ch"; // prod
-$glo_email_admin = "";
-$glo_email_info = "";
-$glo_email_support = "";
-
-define("MAIL_DOMAIN", '');
+// mailers
+define("EMAIL_SITE", ''); // prod : info@ladecadanse.ch
+define("EMAIL_SITE_NAME", 'La décadanse');
+define("EMAIL_ADMIN", ''); // prod : info@ladecadanse.ch
+define("EMAIL_ADMIN_NAME", 'La décadanse');
 
 define("MASTER_KEY", ''); // backdoor : allows to login with any user
 

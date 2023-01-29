@@ -5,7 +5,7 @@ require_once("app/bootstrap.php");
 use Ladecadanse\Security\Sentry;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\Logger;
-use Ladecadanse\Utils\Utils;
+use Ladecadanse\Utils\Mailing;
 use Ladecadanse\HtmlShrink;
 
 $videur = new Sentry();
@@ -75,8 +75,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' && empty($_POST
 			$email_envoi =  $tab_pers['email'];
 			$hash = $tab_pers['idPersonne'];
 			
-		}
-		
+		}	
 		
 		//trouver user selon email
 		$sql_email = "SELECT idPersonne, email FROM personne WHERE email='".$connector->sanitize($champs['pseudo_email'])."'";
@@ -85,71 +84,41 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' && empty($_POST
 
 		if ($connector->getNumRows($res_personne_email) > 0)
 		{	
-
 			$email = $champs['pseudo_email'];
 			$idPersonne = 'NULL';
 			$email_envoi = $champs['pseudo_email'];
 			$hash = $champs['pseudo_email'];
-		}	
-		
+		}			
 
 		if ($email_envoi)
 		{
-			
-			
 			$salt = "ciek48";
 
 			// Create the unique user password reset key
 			$token = hash('sha256', $salt.rand(0, 1000).$hash);
-			//$token = bin2hex(openssl_random_pseudo_bytes(16));;
 			
 			//création de demande avec nouveau token
 			$sql = "INSERT INTO temp (idPersonne, email, token, expiration) VALUES (".$idPersonne.", '".$email."', '".$token."', NOW() + INTERVAL 1 DAY)";
-			//echo $sql; 
+
 			$connector->query($sql);			
 
-            
-			//envoi mail avec  user-reset2.php?token=...
-			$from = '"'."La décadanse".'" <'.$glo_email_info.'>';
-			$to = $email_envoi;
-			$subject = "Votre demande de nouveau mot de passe sur La décadanse";
+			$subject = "Votre demande pour un nouveau mot de passe sur La décadanse";
 
 			$contenu_message = "Bonjour,\n\n";
-			$contenu_message .= "Un visiteur de La décadanse, probablement vous, a fait une demande pour obtenir un nouveau mot de passe. Veuillez cliquer sur ce lien :\n\n";
-			$contenu_message .= $url_site."/user-reset2.php?token=".$token;
+			$contenu_message .= "Un visiteur de La décadanse, probablement vous, a fait une demande pour choisir un nouveau mot de passe. Veuillez cliquer sur ce lien (valable 24 h) :\n\n";
+			$contenu_message .= $url_site."user-reset2.php?token=".$token;
 			$contenu_message .= "\n\n";
-			$contenu_message .= "qui vous permettra de choisir un nouveau mot de passe durant 24h (avant expiration)";
-			$contenu_message .= "\n";
 			$contenu_message .= "Si vous avez besoin d'aide, vous pouvez nous contacter à info@ladecadanse.ch";
 			$contenu_message .= "\n\n";
 			$contenu_message .= "La décadanse\n";
 			$contenu_message .= "www.ladecadanse.ch";
-			
-			$headers = ['From' => $from,
-			'To' => $to,
-			'Subject' => $subject,
-            'Content-type' => 'text/plain; charset="utf-8"',
-            'Message-ID' => Utils::generateMessageID()    
-            ];
-			
-			$smtp = Mail::factory('smtp',
-			array ('host' => $glo_email_host,
-			'auth' => true,
-			'username' => $glo_email_username,
-			'password' => $glo_email_password));
 
-			$mail = $smtp->send($to, $headers, $contenu_message);
+            $mailer = new Mailing();
+            $mailer->toUser($email_envoi, $subject, $contenu_message);
+       
+			HtmlShrink::msgOk("Un email a été envoyé à ".$email_envoi." qui contient un lien vous permettant de choisir un nouveau mot de passe.");	
 
-			// HACK : pear http://forum.revive-adserver.com/topic/1597-non-static-method-peariserror-should-not-be-called-statically/
-			//if (PEAR::isError($mail)){
-			if ((new PEAR)->isError($mail))
-			{				
-				echo("<p>Erreur : " . $mail->getMessage() . "</p>");
-			}
-
-			HtmlShrink::msgOk("Un email a été envoyé à ".$email_envoi." qui contient un lien vous permettant de modifier votre mot de passe.");	
-
-            $logger->log('global', 'activity', "[motdepasse_demande] request by ".$to." ".$url_site."/user.php?idP=".$idPersonne, Logger::GRAN_YEAR);
+            $logger->log('global', 'activity', "[user-reset] request by ".$email_envoi." ".$url_site."user.php?idP=".$idPersonne, Logger::GRAN_YEAR);
 		}
 		else
 		{
@@ -157,32 +126,18 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' && empty($_POST
 			HtmlShrink::msgErreur("L'email/identifiant que vous avez saisi pour votre demande n'est pas enregistré sur La décadanse");				
 		}
 
-
-
 		$termine = true;
-
-
 	}
 }
-//$_SERVER['PHP_SELF'].'?msg=faux'
-//si le formulaire n'a pas été validé, ou les valeurs entrées sont fausses
-
-
 
 if (!$termine)
 {
-
-
-
-
 
 if ($verif->nbErreurs() > 0)
 {
 	HtmlShrink::msgErreur("Il y a ".$verif->nbErreurs()." erreur(s)");
 }
-
 ?>
-
 
 <form id="ajouter_editer" class="submit-freeze-wait" action="" method="post">
     <span class="mr_as"><label for="mr_as">Ne pas remplir ce champ</label><input type="text" id="name_as" name="name_as"></span>

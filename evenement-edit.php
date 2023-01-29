@@ -10,6 +10,7 @@ use Ladecadanse\Security\SecurityToken;
 use Ladecadanse\Utils\Logger;
 use Ladecadanse\Utils\Text;
 use Ladecadanse\Utils\Utils;
+use Ladecadanse\Utils\Mailing;
 use Ladecadanse\HtmlShrink;
 
 $videur = new Sentry();
@@ -94,9 +95,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 	{
 		if (isset($_POST[$c]) )
 		{
-
-				$champs[$c] = $_POST[$c];
-			
+			$champs[$c] = $_POST[$c];	
 		}
 	}
     
@@ -425,10 +424,6 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 			}
 		}
 
-
-		/*
-		* Insertion dans la base : INSERT
-		*/
 		if ($get['action'] == 'insert')
 		{
 
@@ -449,54 +444,24 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 
 			$sql_insert =  "INSERT INTO evenement (".$sql_insert_attributs.") VALUES (".$sql_insert_valeurs.")";
 
-			//TEST
-			//echo "<p>".$sql_insert."</p>";
-			//
-			/*
-			* Insertion réussie, message OK, aperçu, et RAZ des champs
-			*/
 			if ($connector->query($sql_insert))
 			{
-
 				$req_id = $connector->getInsertId();
                 
 				$_SESSION['evenement-edit_flash_msg'] = "L'événement a été créé. <a href='/agenda.php?courant=".$champs['dateEvenement']."#event-".$req_id."'>Voir dans l'agenda</a>";	
                 
                 if (!isset($_SESSION['Sgroupe']))
                 {
-                    $_SESSION['evenement-edit_flash_msg'] = "Merci pour votre proposition. Nous allons l'examiner et vous aurez une réponse dès qu'elle sera traitée";	
-                    $subject = "[La décadanse] Nouvelle proposition d'événement : \"".$champs['titre']."\" le ".date_fr($champs['dateEvenement'], "annee")." à ".$champs['nomLieu'];
-                    $contenu_message = "Merci de vérifier cet événement et l'accepter (statut : publié) ou le refuser (status : dépublié) : \n\n";
-                    $contenu_message .= $url_site."/evenement.php?idE=".$req_id;
+                    $_SESSION['evenement-edit_flash_msg'] = "Merci pour votre proposition. Nous allons l'examiner et vous aurez une réponse dès qu'elle sera traitée (cela peut prendre quelques jours)";	
+                    $subject = "Nouvelle proposition d'événement : \"".$champs['titre']."\" le ".date_fr($champs['dateEvenement'], "annee", "", "", false)." à ".$champs['nomLieu'];
+                    $contenu_message = "Merci de vérifier cet événement et l'accepter (statut : publié) ou le refuser (status : dépublié) : ";
+                    $contenu_message .= $url_site."evenement.php?idE=".$req_id;
                     $contenu_message .= "\n\n";
                     $contenu_message .= "Par : ".$champs['user_email']; 
-                    $contenu_message .= "\nRemarque :\n".$champs['remarque'];
+                    $contenu_message .= "\n\nRemarque :\n".$champs['remarque'];
                     
-                    
-                    if (ENV == 'prod')
-                    {
-                        
-                        
-                        $from = '"'."La décadanse".'" <'.$glo_email_info.'>';
-                        $to = $from;    
-
-
-                        $headers = array (
-                        "Content-Type" => "text/plain; charset=\"UTF-8\"",
-                        'From' => $from,
-                        'To' => $to,
-                        'Subject' => $subject,
-                        'Message-ID' => Utils::generateMessageID()
-                        );                    
-                        $smtp = Mail::factory('smtp',
-                        array ('host' => $glo_email_host,
-                        'auth' => true,
-                        'username' => $glo_email_username,
-                        'password' => $glo_email_password));
-
-                        $mail = $smtp->send($to, $headers, $contenu_message);  
-                    }                
-                    
+                    $mailer = new Mailing();
+                    $mailer->toAdmin($subject, $contenu_message, $champs['user_email']);
                 }      
 				
 				$action_terminee = true;
@@ -669,11 +634,10 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
                 {                 
                     if ($champs['statut'] == 'actif')
                     {
-                        $subject = "Votre événement \"".$champs['titre']."\" sur La décadanse";
+                        $subject = "Votre événement \"".$champs['titre']."\" sur La décadanse a été publié";
                         $contenu_message = "Bonjour,\n\n";
-                        $contenu_message .= "Merci de nous avoir proposé un événement, nous venons de le publier";
-                        $contenu_message .= "\n\n";
-                        $contenu_message .= $url_site."/evenement.php?idE=".$req_id;
+                        $contenu_message .= "Merci de nous avoir proposé un événement, nous venons de le publier : ";
+                        $contenu_message .= $url_site."evenement.php?idE=".$req_id;
                         $contenu_message .= "\n\n";
                         $contenu_message .= "La décadanse"; 
                         
@@ -683,35 +647,9 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
                     {
                         // refus...
                     }
-                       
-                    if (ENV == 'prod')
-                    {
-                        $from = '"'."La décadanse".'" <'.$glo_email_info.'>';
-                        $to = $champs['user_email'];    
 
-
-                        $headers = array (
-                        "Content-Type" => "text/plain; charset=\"UTF-8\"",
-                        'From' => $from,
-                        'To' => $to,
-                        'Subject' => $subject,
-                        'Message-ID' => Utils::generateMessageID()    
-                            );                    
-                        $smtp = Mail::factory('smtp',
-                        array ('host' => $glo_email_host,
-                        'auth' => true,
-                        'username' => $glo_email_username,
-                        'password' => $glo_email_password));
-
-                        $mail = $smtp->send($to, $headers, $contenu_message);
-                        
-                        
-                    }
-                    else
-                    {
-                        $_SESSION['evenement-edit_flash_msg'] .= "<br><pre>".$subject."</pre>"; 
-                        $_SESSION['evenement-edit_flash_msg'] .= "<br><pre>".$contenu_message."</pre>"; 
-                    }
+                    $mailer = new Mailing();
+                    $mailer->toUser($champs['user_email'], $subject, $contenu_message);                  
                 }                    
 
                 $_SESSION['evenement-edit_flash_msg'] = "L'événement a été modifié.$confirmation_flash_msg<br><a href='/agenda.php?courant=".$champs['dateEvenement']."#event-".$req_id."'>Voir dans l'agenda</a>";    

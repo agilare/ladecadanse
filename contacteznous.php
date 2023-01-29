@@ -5,10 +5,9 @@ require_once("app/bootstrap.php");
 use Ladecadanse\Security\Sentry;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\HtmlShrink;
-use Ladecadanse\Utils\Utils;
+use Ladecadanse\Utils\Mailing;
 
 $videur = new Sentry();
-
 
 $page_titre = "Contact";
 $page_description = "Formulaire pour envoyer un email au webmaster de La décadanse : proposer un événement, poser une question, etc.";
@@ -46,9 +45,6 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok'  && empty($_POS
         $champs[$c] = $_POST[$c];
 	}
 
-	/*
-	 * VERIFICATION DES CHAMPS ENVOYES par POST
-	 */
 	$verif = new Validateur();
 	$erreurs = array();
 
@@ -63,77 +59,16 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok'  && empty($_POS
 		$verif->setErreur("name_as", "Veuillez laisser ce champ vide");
 	}
 
-	/*
-	 * PAS D'ERREUR, donc envoi executé
-	 */
 	if ($verif->nbErreurs() == 0)
 	{
-        $from = $champs['email'];
-		$to = '"La décadanse" <'.$glo_email_info.'>';
-        $subject = "[La décadanse] ".$champs['sujet'];
-		$contenu_message = "Affiliation : ".$champs['affiliation']."\n\n".$champs['contenu'];
-
-
-
-        $headers = ["Content-Type" => "text/plain; charset=\"UTF-8\"",
-		'From' => $from,
-        'To' => $to,
-        'Subject' => $subject,
-        'Message-ID' => Utils::generateMessageID()
-        ];
-        
-        $smtp = Mail::factory('smtp',
-        array ('host' => $glo_email_host,
-        'auth' => true,
-        'username' => $glo_email_username,
-        'password' => $glo_email_password));
-
-        $mail = $smtp->send($to, $headers, $contenu_message);
-
-		// HACK : pear http://forum.revive-adserver.com/topic/1597-non-static-method-peariserror-should-not-be-called-statically/
-        //if (PEAR::isError($mail)){
-        if ((new PEAR)->isError($mail))
-		{
-            HtmlShrink::msgErreur('L\'envoi a echoué');			
-			echo("<p>" . $mail->getMessage() . "</p>");
-        } else {
-			HtmlShrink::msgOk('Merci, votre message a été envoyé au webmaster');
+        $mailer = new Mailing();
+        if ($mailer->toAdmin($champs['sujet'], "Affiliation : ".$champs['affiliation']."\n\n".$champs['contenu'], $champs['email']))
+        {
+            HtmlShrink::msgOk('Merci, votre message a été envoyé. Je vous répondrai dans les prochains jours');    
         }
-
-
-		/*
-		* Envoi de l'email
-		*/
-		/* avant 2014-09-22
-		$mail = new PHPMailer();
-
-		$mail->From = $champs['email'];
-		$mail->FromName = $champs['auteur'];
-		$mail->AddAddress($glo_email_info, "La décadanse");
-		$mail->WordWrap = 50;                                 // set word wrap to 50 characters
-
-		$mail->Subject = "[La décadanse] ".$champs['sujet'];
-		$mail->Body    = "Affiliation : ".$champs['affiliation']."\n\n".$champs['contenu'];
-
-		if($mail->Send())
-		{
-			HtmlShrink::msgOk('Merci, votre message a été envoyé au webmaster');
-			
-		}
-		else
-		{
-			HtmlShrink::msgErreur('L\'envoi a echoué');				 
-			echo "Mailer Error: " . $mail->ErrorInfo;
-		}		
-	    */
-
 		$action_terminee = true;
 		unset($_POST);
-
-
-	} //if erreurs == 0
-
-
+	}
 } //POST
 
 
@@ -144,9 +79,7 @@ if ($verif->nbErreurs() > 0)
 {
 	HtmlShrink::msgErreur($verif->getMsgNbErreurs());
 }
-// onsubmit="return validerEnvoiEmail();
 ?>
-
 
 <div style="margin:1em 0 1em 1em">
 
