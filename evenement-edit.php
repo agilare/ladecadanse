@@ -888,8 +888,10 @@ if ($verif->nbErreurs() > 0)
 ?>
 
 <form method="post" id="ajouter_editer" class="submit-freeze-wait" enctype="multipart/form-data" action="<?php echo basename(__FILE__)."?action=".$act ?>">
-    <div id="home-tmp-banner">       
-        <h2>Avant de commencer :</h2>
+    <div id="home-tmp-banner">    
+        <?php if (!in_array($get['action'], ['editer', 'update'])) { ?>        
+            <h2>Avant de commencer :</h2>
+        <?php } ?>
         <?php if (!isset($_SESSION['Sgroupe'])) { ?>
             <p style="line-height: 1.6em;">Utilisez ce formulaire <strong>si vous n'avez pas déjà un compte sur La décadanse</strong>. L'événement sera publié (ou pas) après une validation de notre part, dans les prochains jours.<br>Sinon, veuillez <a href="/user-login.php">vous connecter</a> pour ajouter votre événement.</p>
         <?php } ?>
