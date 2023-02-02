@@ -64,6 +64,25 @@ Le site ladecadanse est déployé sur localhost:7777.
 ### Usage
 Une fois le site fonctionnel, se connecter avec le login *admin* et le mot de passe `MASTER_KEY` (créés ci-dessus) permet d'ajouter et modifier des événements, lieux, etc. (partie publique) et de les gérer largement (partie back-office)
 
+## Déploiement
+
+### Avec Git-ftp
+
+#### Prérequis
+1. installer [git-ftp](https://github.com/git-ftp/git-ftp/blob/master/INSTALL.md)
+1. dans le répertoire du projet, configurer les données de connexion (ici avec un scope pour le site de production : `prod`) :
+    ```sh
+    $ git config git-ftp.prod.user mon-login
+    $ git config git-ftp.prod.url "ftp://le-serveur.ch/web"
+    $ git config git-ftp.prod.password 'le-mot-de-passe'
+    ```
+
+#### Pour envoyer les derniers commits en prod
+```sh
+$ git ftp push -s prod
+```
+
+
 ## Changelog
 Voir le [changelog](CHANGELOG.md) et les [releases sur GitHub](https://github.com/agilare/ladecadanse/releases)
 

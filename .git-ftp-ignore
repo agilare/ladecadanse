@@ -1,0 +1,17 @@
+/docker
+images/*
+app/env_model.php
+app/ladecadanse.sql
+app/ladecadanse-utf8-to-utf8mb4.sql
+.gitattributes
+.gitignore
+*/.gitignore      # ignore files in sub directories
+*/.gitkeep
+.git-ftp-ignore
+CHANGELOG.md
+README.md
+TESTS.md
+_config.yml
+docker-compose.yml
+install_dep.sh
+phpstan.neon

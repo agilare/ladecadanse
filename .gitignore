@@ -20,7 +20,6 @@ app/env.php
 !web/uploads/organisateurs/.gitkeep
 /.idea
 .htaccess
-.git-ftp-ignore
 dploy.yaml
 composer-setup.php
 composer.phar
