@@ -81,6 +81,11 @@ else
         
 	<title>
         <?php
+        if (ENV !== 'prod')
+        {
+            echo '['.ENV.'] ';
+        }
+        
         if ($nom_page != "index")
         {
             echo $page_titre." — La décadanse";
