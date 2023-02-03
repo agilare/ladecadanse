@@ -22,7 +22,7 @@ if (isset($_GET['idO']))
 }
 else
 {
-	trigger_error("id obligatoire", E_USER_WARNING);
+	header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request");
 	exit;
 }
 

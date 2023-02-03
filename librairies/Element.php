@@ -133,9 +133,13 @@ class Element
 		return $tab['max_id'];
 	}
 
-	function getHtmlValue($nom)
+	function getHtmlValue($nom): string
 	{
-		return sanitizeForHtml($this->valeurs[$nom]);
+        if (isset($this->valeurs[$nom]))
+		{
+            return sanitizeForHtml($this->valeurs[$nom]);
+        }        
+		return '';
 	}
 
 	function securise_string($chaine)

@@ -7,6 +7,7 @@ require_once("app/bootstrap.php");
 use Ladecadanse\Security\Sentry;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\HtmlShrink;
+use Ladecadanse\Security\SecurityToken;
 
 $videur = new Sentry();
 

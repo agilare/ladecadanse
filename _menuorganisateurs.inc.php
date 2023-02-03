@@ -12,7 +12,7 @@ $get['statut'] = "actif";
 if (isset($_GET['statut']))
 { try {
 	$get['statut'] = Validateur::validateUrlQueryValue($_GET['statut'], "enum", 1, $tab_statuts);
-} catch (Exception $e) { header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); exit; }     
+} catch (Exception $e) { exit; }     
 }
 
 $tab_vues = array("az", "genre");
@@ -20,7 +20,7 @@ if (isset($_GET['vue']))
 {
     try {
         $get['vue'] = Validateur::validateUrlQueryValue($_GET['vue'], "enum", 1, $tab_vues);
-    } catch (Exception $e) { header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); exit; } 
+    } catch (Exception $e) { exit; } 
 	if($get['vue'] != "az")
 	{
 		$de = "0";
@@ -40,7 +40,7 @@ if (isset($_GET['tranche']))
 {
     try {
         $get['tranche'] = Validateur::validateUrlQueryValue($_GET['tranche'], "enum", 1, $tab_tranches);
-    } catch (Exception $e) { header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); exit; }
+    } catch (Exception $e) { exit; }
     
 	if ($get['vue'] == "az")
 	{

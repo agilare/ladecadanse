@@ -529,39 +529,6 @@ iCal</a></li>
 				</li>
 				</ul>
 
-
-				<?php
-
-				$sql_docu = "SELECT fichierrecu.idFichierrecu AS idFichierrecu, description, mime, extension
-					FROM fichierrecu, evenement_fichierrecu
-					WHERE evenement_fichierrecu.idEvenement=".$get['idE']." AND type='document' AND
-					 fichierrecu.idFichierrecu=evenement_fichierrecu.idFichierrecu
-					 ORDER BY dateAjout DESC";
-
-					$req_docu = $connector->query($sql_docu);
-
-					if ($connector->getNumRows($req_docu))
-					{
-
-						echo '<ul id="fichiers">';
-
-						while ($tab_docu = $connector->fetchArray($req_docu))
-						{
-							$chemin_fichier = $rep_fichiers_even.$tab_docu['idFichierrecu'].".".$tab_docu['extension'];
-							$url_fichier = $url_fichiers_even.$tab_docu['idFichierrecu'].".".$tab_docu['extension'];
-							echo "<li><a href=\"".$url_fichier."\" title=\"Fichier ".$tab_docu['description']."\" onclick=\"window.open(this.href,'_blank');return false;\">".
-							$icone[mb_strtolower($tab_docu['extension'])].
-							$tab_docu['description']." (".Text::formatbytes(filesize($chemin_fichier)).", ".$tab_docu['extension'].")</a></li>";
-						}
-
-						echo "</ul>";
-					}
-
-
-
-				?>
-
-
 			</div>
 			<!-- Fin complement -->
 

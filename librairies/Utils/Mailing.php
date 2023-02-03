@@ -38,7 +38,7 @@ class Mailing {
         try {        
             $this->mail->Send();
             return true;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             echo "Message could not be sent. Mailer Error: {$this->mail->ErrorInfo}";
             return false;
         }              
@@ -66,7 +66,7 @@ class Mailing {
         try {        
             $this->mail->Send();
             return true;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             echo "Message could not be sent. Mailer Error: {$this->mail->ErrorInfo}";
             return false;
         }  
