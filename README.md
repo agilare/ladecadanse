@@ -6,6 +6,8 @@
 
 La décadanse est un site web qui présente aux visiteurs une sélection d'événements culturels locaux et accessibles. Il est actuellement [déployé pour Genève et Lausanne](https://ladecadanse.darksite.ch/)
 
+![La décadanse - accueil](https://ladecadanse.darksite.ch/web/interface/ladecadanse-home.png)
+
 Les organisateurs d'événements ont la possibilité de s'inscrire puis de se présenter et annoncer leurs événements.
 
 Les principales sections du site sont :
@@ -15,6 +17,8 @@ Les principales sections du site sont :
 - un **back-office** permettant de gérer les diverses entités du site : utilisateurs, événements, lieux, organisateurs, etc.
 
 ## Installation locale
+
+Ces instructions vous permettront de mettre en place une copie du projet sur votre machine locale à des fins de développement et de test. Voir [déploiement](README.md#deploiement) pour des notes sur la façon de déployer le projet sur un système actif.
 
 ### Prérequis
 - Apache 2.4
@@ -66,6 +70,9 @@ Une fois le site fonctionnel, se connecter avec le login *admin* et le mot de pa
 
 ## Déploiement
 
+### Prérequis
+Un espace sur un serveur avec l'infrastructure prérequise, une timezone définie et une base de données
+
 ### Avec Git-ftp
 
 #### Prérequis
@@ -77,17 +84,28 @@ Une fois le site fonctionnel, se connecter avec le login *admin* et le mot de pa
     $ git config git-ftp.prod.password 'le-mot-de-passe'
     ```
 
-#### Pour envoyer les derniers commits en prod
+#### Pour mettre en place 
+1. premier envoi des fichiers
+    ```sh
+    $ git ftp init -s prod
+    ```
+1. dans `app/env.php` [configurer le site  selon l'environnement](README.md#manuelle)
+
+#### Pour mettre à jour avec les derniers commits
 ```sh
 $ git ftp push -s prod
 ```
-
 
 ## Changelog
 Voir le [changelog](CHANGELOG.md) et les [releases sur GitHub](https://github.com/agilare/ladecadanse/releases)
 
 ## Contribuer
 Les Pull requests sont les bienvenues. Pour les changements majeurs, veuillez d'abord ouvrir une Issue pour discuter de ce que vous souhaitez changer.
+
+## Contact
+Michel Gaudry - michel@ladecadanse.ch
+
+[GitHub La décadanse](https://github.com/agilare/ladecadanse)
 
 ## License
 This work is licensed under CC BY-NC-SA 4.0
