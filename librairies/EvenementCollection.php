@@ -84,7 +84,7 @@ class EvenementCollection extends Collection {
 
         global $connector;
         global $rep_absolu;
-        global $rep_images;
+        global $rep_images_even;
         global $rep_fichiers_even;
         global $rep_cache;
 
@@ -103,15 +103,15 @@ class EvenementCollection extends Collection {
 
             if (!empty($val_even['flyer']))
             {
-                unlink($rep_images . $val_even['flyer']);
-                unlink($rep_images . "s_" . $val_even['flyer']);
-                unlink($rep_images . "t_" . $val_even['flyer']);
+                unlink($rep_images_even . $val_even['flyer']);
+                unlink($rep_images_even . "s_" . $val_even['flyer']);
+                unlink($rep_images_even . "t_" . $val_even['flyer']);
             }
 
             if (!empty($val_even['image']))
             {
-                unlink($rep_images . $val_even['image']);
-                unlink($rep_images . "s_" . $val_even['image']);
+                unlink($rep_images_even . $val_even['image']);
+                unlink($rep_images_even . "s_" . $val_even['image']);
             }
 
             $req_docu = $connector->query("SELECT * FROM fichierrecu

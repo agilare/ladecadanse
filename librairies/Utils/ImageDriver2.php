@@ -32,7 +32,8 @@ class ImageDriver2 extends SystemComponent {
      * @var string
      */
     var $IMGlieux;
-
+    var $IMGlieuxGaleries;
+    
     var $IMGtype;
 
     var $erreur;
@@ -47,7 +48,7 @@ class ImageDriver2 extends SystemComponent {
     */
     function __construct($IMGtype)
     {
-        global $rep_images;
+        global $rep_images_even;
         global $rep_absolu;
         
         $this->IMGracine = $rep_absolu."web/uploads/";
@@ -61,7 +62,7 @@ class ImageDriver2 extends SystemComponent {
         if ($IMGtype == "evenement")
         {
             $this->IMGtype = "";
-            $this->IMGracine = $rep_images;
+            $this->IMGracine = $rep_images_even;
         }
         else
         {

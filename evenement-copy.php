@@ -269,24 +269,24 @@ FROM evenement WHERE idEvenement=".$get['idE'])));
 
 				if (!empty($tab_champs['flyer']))
 				{
-					$src = $rep_images.$flyer_orig;
-					$des = $rep_images.$tab_champs['flyer'];
+					$src = $rep_images_even.$flyer_orig;
+					$des = $rep_images_even.$tab_champs['flyer'];
 
 					if (!copy($src, $des))
 					{
 				  		HtmlShrink::msgErreur("La copie du fichier ".$tab_champs['flyer']." n'a pas réussi...");
 					}
 
-					$src = $rep_images."s_".$flyer_orig;
-					$des = $rep_images."s_".$tab_champs['flyer'];
+					$src = $rep_images_even."s_".$flyer_orig;
+					$des = $rep_images_even."s_".$tab_champs['flyer'];
 
 					if (!copy($src, $des))
 					{
 				  		HtmlShrink::msgErreur("La copie du fichier ".$tab_champs['flyer']." n'a pas réussi...");
 					}
 
-					$src = $rep_images."t_".$flyer_orig;
-					$des = $rep_images."t_".$tab_champs['flyer'];
+					$src = $rep_images_even."t_".$flyer_orig;
+					$des = $rep_images_even."t_".$tab_champs['flyer'];
 
 					if (!copy($src, $des))
 					{
@@ -298,16 +298,16 @@ FROM evenement WHERE idEvenement=".$get['idE'])));
 
 				if (!empty($tab_champs['image']))
 				{
-					$src = $rep_images.$image_orig;
-					$des = $rep_images.$tab_champs['image'];
+					$src = $rep_images_even.$image_orig;
+					$des = $rep_images_even.$tab_champs['image'];
 
 					if (!copy($src, $des))
 					{
 				  		HtmlShrink::msgErreur("La copie du fichier ".$tab_champs['image']." n'a pas réussi...");
 					}
 
-					$src = $rep_images."s_".$image_orig;
-					$des = $rep_images."s_".$tab_champs['image'];
+					$src = $rep_images_even."s_".$image_orig;
+					$des = $rep_images_even."s_".$tab_champs['image'];
 
 					if (!copy($src, $des))
 					{

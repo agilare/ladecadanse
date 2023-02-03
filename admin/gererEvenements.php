@@ -483,9 +483,9 @@ elseif (!empty($_POST['formulaire']))
 					//si  un ancien flyer a été effectivement trouvé suppression des fichiers
 					if (!empty($affFly['flyer']))
 					{
-							unlink($rep_images.$affFly['flyer']);
-							unlink($rep_images."s_".$affFly['flyer']);
-							unlink($rep_images."t_".$affFly['flyer']);
+							unlink($rep_images_even.$affFly['flyer']);
+							unlink($rep_images_even."s_".$affFly['flyer']);
+							unlink($rep_images_even."t_".$affFly['flyer']);
 							echo "<div class=\"msg\">Ancien flyer ".$affFly['flyer']." supprimé</div>";
 					}
 
@@ -512,9 +512,9 @@ elseif (!empty($_POST['formulaire']))
 
 					if (!empty($affFly['flyer']))
 					{
-						unlink($rep_images.$affFly['flyer']);
-						unlink($rep_images."s_".$affFly['flyer']);
-						unlink($rep_images."t_".$affFly['flyer']);
+						unlink($rep_images_even.$affFly['flyer']);
+						unlink($rep_images_even."s_".$affFly['flyer']);
+						unlink($rep_images_even."t_".$affFly['flyer']);
 						//echo "<div class=\"msg\">Ancien flyer ".$affFly['flyer']." supprimÃ©</div>";
 					}
 				}
@@ -541,8 +541,8 @@ elseif (!empty($_POST['formulaire']))
 					//si  un ancien flyer a êµ© effectivement trouvé¡³uppression des fichiers
 					if (!empty($affImg['image']))
 					{
-							unlink($rep_images.$affImg['image']);
-							unlink($rep_images."s_".$affImg['image']);
+							unlink($rep_images_even.$affImg['image']);
+							unlink($rep_images_even."s_".$affImg['image']);
 							//echo "<div class=\"msg\">Ancienne image ".$affImg['image']." supprimÃ©e</div>";
 					}
 				}
@@ -567,8 +567,8 @@ elseif (!empty($_POST['formulaire']))
 
 					if (!empty($affimage['image']))
 					{
-						unlink($rep_images.$affimage['image']);
-						unlink($rep_images."s_".$affimage['image']);
+						unlink($rep_images_even.$affimage['image']);
+						unlink($rep_images_even."s_".$affimage['image']);
 						//echo "<div class=\"msg\">Ancien image ".$affimage['image']." supprimÃ©e</div>";
 					}
 				}
@@ -666,21 +666,21 @@ elseif (!empty($_POST['formulaire']))
 			elseif (!empty($fichiers['flyer']['name']))
 			{
 
-				$src = $rep_images.$srcFlyer;
-				$des = $rep_images.$champs['flyer'];
+				$src = $rep_images_even.$srcFlyer;
+				$des = $rep_images_even.$champs['flyer'];
 
 				if (!copy($src, $des))
 					HtmlShrink::msgErreur("La copie du fichier taille normale ".$champs['flyer']." n'a pas réussi...");
 
 
-				$src = $rep_images."s_".$srcFlyer;
-				$des = $rep_images."s_".$champs['flyer'];
+				$src = $rep_images_even."s_".$srcFlyer;
+				$des = $rep_images_even."s_".$champs['flyer'];
 
 				if (!copy($src, $des))
 					HtmlShrink::msgErreur("La copie du fichier taille small ".$champs['flyer']." n'a pas réussi...");
 
-				$src = $rep_images."t_".$srcFlyer;
-				$des = $rep_images."t_".$champs['flyer'];
+				$src = $rep_images_even."t_".$srcFlyer;
+				$des = $rep_images_even."t_".$champs['flyer'];
 
 				if (!copy($src, $des))
 					HtmlShrink::msgErreur("La copie du fichier taille tiny ".$champs['flyer']." n'a pas réussi...");
@@ -707,14 +707,14 @@ elseif (!empty($_POST['formulaire']))
 			elseif (!empty($fichiers['image']['name']))
 			{
 
-				$src = $rep_images.$src_image;
-				$des = $rep_images.$champs['image'];
+				$src = $rep_images_even.$src_image;
+				$des = $rep_images_even.$champs['image'];
 
 				if (!copy($src, $des))
 					HtmlShrink::msgErreur("La copie du fichier taille normale ".$champs['image']." n'a pas réussi...");
 
-				$src = $rep_images."s_".$src_image;
-				$des = $rep_images."s_".$champs['image'];
+				$src = $rep_images_even."s_".$src_image;
+				$des = $rep_images_even."s_".$champs['image'];
 
 				if (!copy($src, $des))
 					HtmlShrink::msgErreur("La copie du fichier taille small ".$champs['image']." n'a pas réussi...");

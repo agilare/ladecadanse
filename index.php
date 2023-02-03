@@ -226,14 +226,14 @@ if (HOME_TMP_BANNER_ENABLED && !isset($_COOKIE['msg_orga_benevole']))
                 <?php
                 if (!empty($tab_even['flyer']))
                 {
-                    $imgInfo = @getimagesize($rep_images.$tab_even['flyer']);
+                    $imgInfo = @getimagesize($rep_images_even.$tab_even['flyer']);
                     ?>
                     <a href="<?php echo $url_images_even.$tab_even['flyer']; ?>" class="magnific-popup"><img src="<?php echo $url_images_even."s_".$tab_even['flyer']; ?>" alt="Flyer" width="100" /></a>
                     <?php
                 }
                 else if (!empty($tab_even['image']))
                 {
-                    $imgInfo = @getimagesize($rep_images.$tab_even['image']);
+                    $imgInfo = @getimagesize($rep_images_even.$tab_even['image']);
                     ?>
 
                     <a href="<?php echo $url_images_even.$tab_even['image']; ?>" class="magnific-popup"><img src="<?php echo $url_images_even."s_".$tab_even['image']; ?>" alt="Photo" width="100" /></a>
@@ -449,7 +449,7 @@ if (HOME_TMP_BANNER_ENABLED && !isset($_COOKIE['msg_orga_benevole']))
 
             if (!empty($tab_dern_even['flyer']))
             {
-                $imgInfo = @getimagesize($rep_images.$tab_dern_even['flyer']);
+                $imgInfo = @getimagesize($rep_images_even.$tab_dern_even['flyer']);
 
                 ?>
 
@@ -462,7 +462,7 @@ if (HOME_TMP_BANNER_ENABLED && !isset($_COOKIE['msg_orga_benevole']))
             }
             else if (!empty($tab_dern_even['image']))
             {
-                $imgInfo = @getimagesize($rep_images.$tab_dern_even['image']);
+                $imgInfo = @getimagesize($rep_images_even.$tab_dern_even['image']);
 
                 ?>
 

@@ -8,32 +8,36 @@ ini_set('upload_max_filesize', UPLOAD_MAX_FILESIZE);
 ini_set('max_file_uploads', 3);
 
 // DIR
-$rep_images = $rep_absolu . "images/";
-$rep_images_even = $rep_images;
-$rep_images_lieux = $rep_absolu . "web/uploads/lieux/";
-$rep_images_lieux_galeries = $rep_images_lieux . "galeries/";
-$rep_images_organisateurs = $rep_absolu . "web/uploads/organisateurs/";
 $rep_images_interface = $rep_absolu . "web/interface/";
-$rep_fichiers = $rep_absolu . "web/uploads/fichiers/";
+$rep_uploads = $rep_absolu . "web/uploads/";
+
+$rep_images_even = $rep_absolu . "images/"; // legacy, should be web/uploads/evenements
+
+$rep_images_lieux = $rep_uploads . "lieux/";
+$rep_images_lieux_galeries = $rep_images_lieux . "galeries/";
+
+$rep_images_organisateurs = $rep_uploads . "organisateurs/";
+
+$rep_fichiers = $rep_uploads . "fichiers/";
 $rep_fichiers_even = $rep_fichiers . "evenements/";
 $rep_fichiers_lieu = $rep_fichiers . "lieux/";
 $rep_cache = $rep_absolu . "cache/";
 
+
 // URL
 $url_images = $url_site . "images/";
-global $url_images_even;
 $url_images_even = $url_images;
-global $url_uploads_lieux;
+
 $url_uploads_lieux = $url_site . "web/uploads/lieux/";
 $url_images_lieu_galeries = $url_site . "web/uploads/lieux/galeries/";
 $url_images_organisateurs = $url_site . "web/uploads/organisateurs/";
+
 $url_fichiers = $url_site . "web/uploads/fichiers/";
 $url_fichiers_even = $url_fichiers . "evenements/";
 $url_fichiers_lieu = $url_fichiers . "lieux/";
 
-global $url_images_interface;
+
 $url_images_interface = $url_site . "web/interface/";
-global $url_images_interface_icons;
 $url_images_interface_icons = $url_images_interface . "icons/";
 
 $glo_mimes_documents_acceptes = array("image/jpeg", "image/pjpeg", "image/gif", "image/png", "image/x-png",

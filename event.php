@@ -26,15 +26,15 @@ if ($get['action'] == 'delete' && !empty($get['id']))
            
 			if (!empty($val_even['flyer']))
 			{
-				unlink($rep_images.$val_even['flyer']);
-				unlink($rep_images."s_".$val_even['flyer']);
-				unlink($rep_images."t_".$val_even['flyer']);
+				unlink($rep_images_even.$val_even['flyer']);
+				unlink($rep_images_even."s_".$val_even['flyer']);
+				unlink($rep_images_even."t_".$val_even['flyer']);
 			}
 
 			if (!empty($val_even['image']))
 			{
-				unlink($rep_images.$val_even['image']);
-				unlink($rep_images."s_".$val_even['image']);
+				unlink($rep_images_even.$val_even['image']);
+				unlink($rep_images_even."s_".$val_even['image']);
 			}
 
 			if ($connector->query("DELETE FROM evenement WHERE idEvenement=".$get['id']))

@@ -67,7 +67,7 @@ if ($get['action'] != "ajouter" && $get['action'] != "insert")
 	$req_even_cur = $connector->query("SELECT idLieu, statut FROM evenement WHERE idEvenement=".$get['idE']);
 	$tab_even_cur = $connector->fetchArray($req_even_cur);
 
-	if ((isset($_SESSION['SidPersonne']) && $authorization->estAuteur($_SESSION['SidPersonne'], $get['idE'], "evenement")) || $_SESSION['Sgroupe'] <= 6
+	if ((isset($_SESSION['SidPersonne']) && $authorization->estAuteur($_SESSION['SidPersonne'], $get['idE'], "evenement")) || (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 6)
 	 || (isset($_SESSION['Saffiliation_lieu']) && isset($tab_even_cur['idLieu']) && $tab_even_cur['idLieu'] == $_SESSION['Saffiliation_lieu'])
 	|| (isset($_SESSION['SidPersonne']) && $authorization->isPersonneInEvenementByOrganisateur($_SESSION['SidPersonne'], $get['idE']))
 	|| (isset($tab_even_cur['idLieu']) && $authorization->isPersonneInLieuByOrganisateur($_SESSION['SidPersonne'], $tab_even_cur['idLieu']))
@@ -489,9 +489,9 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 					//si  un ancien flyer a été effectivement trouvé suppression des fichiers
 					if (!empty($affFly['flyer']))
 					{
-                        unlink($rep_images.$affFly['flyer']);
-                        unlink($rep_images."s_".$affFly['flyer']);
-                        unlink($rep_images."t_".$affFly['flyer']);
+                        unlink($rep_images_even.$affFly['flyer']);
+                        unlink($rep_images_even."s_".$affFly['flyer']);
+                        unlink($rep_images_even."t_".$affFly['flyer']);
 					}
 				}
 				else
@@ -514,9 +514,9 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 
 					if (!empty($affFly['flyer']))
 					{
-						unlink($rep_images.$affFly['flyer']);
-						unlink($rep_images."s_".$affFly['flyer']);
-						unlink($rep_images."t_".$affFly['flyer']);
+						unlink($rep_images_even.$affFly['flyer']);
+						unlink($rep_images_even."s_".$affFly['flyer']);
+						unlink($rep_images_even."t_".$affFly['flyer']);
 					}
 				}
 				else
@@ -542,8 +542,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 					//si  un ancien flyer a été effectivement trouvé suppression des fichiers
 					if (!empty($affImg['image']))
 					{
-							unlink($rep_images.$affImg['image']);
-							unlink($rep_images."s_".$affImg['image']);
+							unlink($rep_images_even.$affImg['image']);
+							unlink($rep_images_even."s_".$affImg['image']);
 					}
 				}
 				else
@@ -566,8 +566,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 
 					if (!empty($affimage['image']))
 					{
-						unlink($rep_images.$affimage['image']);
-						unlink($rep_images."s_".$affimage['image']);
+						unlink($rep_images_even.$affimage['image']);
+						unlink($rep_images_even."s_".$affimage['image']);
 					}
 				}
 				else

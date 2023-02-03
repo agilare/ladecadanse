@@ -68,7 +68,7 @@ if (!empty($evenement['flyer']))
 	}
 	else if (!empty($evenement['image']))
 	{
-		$imgInfo = @getimagesize($rep_images.$evenement['image']);
+		$imgInfo = @getimagesize($rep_images_even.$evenement['image']);
 		//echo lien_popup($IMGeven.$evenement['image']."?".filemtime($rep_images_even.$evenement['image']), "Image", $imgInfo[0]+20, $imgInfo[1]+20,"<img src=\"".$IMGeven."s_".$evenement['image']."?".filemtime($rep_images_even.$evenement['image'])."\" alt=\"Image\" />");	
 	?>
 	<a href="<?php echo $url_images_even.$evenement['image']."?".filemtime($rep_images_even.$evenement['image']) ?>" class="magnific-popup" target="_blank">

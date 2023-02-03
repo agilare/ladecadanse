@@ -408,12 +408,12 @@ if ($get['sem'])
 		$lien_flyer = "";
 		if (!empty($listeEven['flyer']))
 		{
-			$imgInfo = @getimagesize($rep_images.$listeEven['flyer']);
+			$imgInfo = @getimagesize($rep_images_even.$listeEven['flyer']);
 			$lien_flyer = '<a href="'.$url_images_even.$listeEven['flyer']."?".@filemtime($rep_images_even.$listeEven['flyer']).'" class="magnific-popup"><img src="'.$url_images_even."s_".$listeEven['flyer']."?".@filemtime($rep_images_even.$listeEven['flyer']).'"  alt="Flyer" width="100" /></a>';			
 		}
 		else if ($listeEven['image'] != '')
 		{	
-			$imgInfo = @getimagesize($rep_images.$listeEven['image']);
+			$imgInfo = @getimagesize($rep_images_even.$listeEven['image']);
 			$lien_flyer = '<a href="'.$url_images_even.$listeEven['image']."?".@filemtime($rep_images_even.$listeEven['image']).'" class="magnific-popup"><img src="'.$url_images_even."s_".$listeEven['image']."?".@filemtime($rep_images_even.$listeEven['image']).'" alt="Photo" width="100" /></a>';					
 		}
 
