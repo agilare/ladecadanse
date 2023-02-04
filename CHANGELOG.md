@@ -11,13 +11,14 @@
 
 - home : Debout les braves banner
 - propose event : clarifications
-- event form : clarifications for ask organisation registration 
+- event form : clarifications for ask organisation registration
 - changelog
 - TESTS.md
 - docker compose recipe
-- analyzers setup : PHPCompatibility, phpstan, security checker 
+- analyzers setup : PHPCompatibility, phpstan, security checker
 - git-ftp setup
 - setup PHPMailer (replaces PEAR Mail)
+- editorconfig
 
 ### Changed
 
@@ -37,7 +38,7 @@
 ### Fixed
 
 - mailing with Message-ID in header (problem with Gmail rejection #58 )
-- organisateurs : access to "lz" menu #55 
+- organisateurs : access to "lz" menu #55
 - password reset avoid URL token rejected
 
 ### Changed
@@ -69,7 +70,7 @@
 ### Fixed
 
 - propose event : clarifications
-- event form : clarifications for ask organisation registration 
+- event form : clarifications for ask organisation registration
 
 ## [3.2.2] - 2021-11-21
 
@@ -86,7 +87,7 @@
 
 ### Fixed
 
-- misc 
+- misc
 
 ### Changed
 
