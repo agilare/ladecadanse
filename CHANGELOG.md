@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [3.2.6] - 2023-02-05
 
 ### Fixed
 
@@ -9,20 +9,20 @@
 
 ### Added
 
+- setup PHPMailer (replaces PEAR Mail)
+- Docker compose recipe
+- analyzers setup : PHPCompatibility, phpstan, security checker
+- git-ftp setup
 - home : Debout les braves banner
-- propose event : clarifications
+- propose event : intro clarifications
 - event form : clarifications for ask organisation registration
 - changelog
 - TESTS.md
-- docker compose recipe
-- analyzers setup : PHPCompatibility, phpstan, security checker
-- git-ftp setup
-- setup PHPMailer (replaces PEAR Mail)
 - editorconfig
 
 ### Changed
 
-- composer : complete php extensions needed
+- composer : complete needed PHP extensions
 - php errors and timezone config externalized
 - readme - partially rewritten, completed
 - Zebra datepicker 1.9.19
