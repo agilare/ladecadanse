@@ -33,6 +33,9 @@
 - PEAR Mail
 - php obsolete functions
 
+### Security
+- rm master key
+
 ## [3.2.5] - 2023-01-12
 
 ### Fixed

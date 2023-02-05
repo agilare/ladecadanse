@@ -33,8 +33,6 @@ define("EMAIL_SITE_NAME", 'La décadanse');
 define("EMAIL_ADMIN", ''); // prod : info@ladecadanse.ch
 define("EMAIL_ADMIN_NAME", 'La décadanse');
 
-define("MASTER_KEY", ''); // backdoor : allows to login with any user
-
 define("GOOGLE_API_KEY", ''); // use Google Maps library to display maps of venues
 
 define("GOOGLE_RECAPTCHA_API_KEY_CLIENT", ''); // for (public) "Proposer un événement form"
