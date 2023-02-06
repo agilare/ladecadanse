@@ -377,7 +377,7 @@ echo $form->getHtmlErreur("quartier");
             while ($tab = $connector->fetchArray($req))
             {
                 $lieu_organisateurs[] = $tab['idOrganisateur'];
-    /* 			echo "<tr><td><a href=\"".$url_site."organisateur.php?idO=".$tab['idOrganisateur']."\">"
+    /* 			echo "<tr><td><a href=\"/organisateur.php?idO=".$tab['idOrganisateur']."\">"
                 .$tab['nom']."</a>
                 </td>
                 <td><input type=\"checkbox\" name=\"sup_organisateur[]\" value=\"".$tab['idOrganisateur']."\" /></td></tr>"; */
@@ -486,10 +486,10 @@ echo $form->getHtmlErreur("quartier");
 
             if (isset($get['idL']) && !empty($form->getValeur('logo')) && $form->getErreur("logo") == '')
             {
-                $imgInfo = getimagesize($rep_images_lieux.$form->getValeur('logo'));
+                $imgInfo = getimagesize($rep_uploads_lieux.$form->getValeur('logo'));
 
-                $lien_popup = HtmlShrink::popupLink($url_uploads_lieux.$form->getValeur('logo')."?".filemtime($rep_images_lieux.$form->getValeur('logo')), "Logo", $imgInfo[0]+20, $imgInfo[1]+20,
-                "<img src=\"".$url_uploads_lieux."s_".$form->getValeur('logo')."?".filemtime($rep_images_lieux.$form->getValeur('logo'))."\" alt=\"Logo pour ".sanitizeForHtml($form->getValeur('nom'))."\" />"
+                $lien_popup = HtmlShrink::popupLink($url_uploads_lieux.$form->getValeur('logo')."?".filemtime($rep_uploads_lieux.$form->getValeur('logo')), "Logo", $imgInfo[0]+20, $imgInfo[1]+20,
+                "<img src=\"".$url_uploads_lieux."s_".$form->getValeur('logo')."?".filemtime($rep_uploads_lieux.$form->getValeur('logo'))."\" alt=\"Logo pour ".sanitizeForHtml($form->getValeur('nom'))."\" />"
                 );
                 $checked = '';
                 $tab_sup = $form->getSupprimer();
@@ -525,10 +525,10 @@ echo $form->getHtmlErreur("quartier");
         //affichage de l'image existante
         if (isset($get['idL']) && !empty($form->getValeur('photo1')) && $form->getErreur("logo") == '')
         {
-            $imgInfo = getimagesize($rep_images_lieux.$form->getValeur('photo1'));
+            $imgInfo = getimagesize($rep_uploads_lieux.$form->getValeur('photo1'));
 
-            $lien_popup = HtmlShrink::popupLink($url_uploads_lieux.$form->getValeur('photo1')."?".filemtime($rep_images_lieux.$form->getValeur('photo1')), "Photo 1", $imgInfo[0]+20, $imgInfo[1]+20,
-            "<img src=\"".$url_uploads_lieux."s_".$form->getValeur('photo1')."?".filemtime($rep_images_lieux.$form->getValeur('photo1'))."\" alt=\"photo pour ".sanitizeForHtml($form->getValeur('nom'))."\" />"
+            $lien_popup = HtmlShrink::popupLink($url_uploads_lieux.$form->getValeur('photo1')."?".filemtime($rep_uploads_lieux.$form->getValeur('photo1')), "Photo 1", $imgInfo[0]+20, $imgInfo[1]+20,
+            "<img src=\"".$url_uploads_lieux."s_".$form->getValeur('photo1')."?".filemtime($rep_uploads_lieux.$form->getValeur('photo1'))."\" alt=\"photo pour ".sanitizeForHtml($form->getValeur('nom'))."\" />"
             );
             $checked = '';
             $tab_sup = $form->getSupprimer();
@@ -555,31 +555,31 @@ echo $form->getHtmlErreur("quartier");
 
         <?php
 
-
-        if ($get['action'] == "editer")
-        {
-
-            $sql_docu = "SELECT fichierrecu.idFichierrecu AS idFichierrecu, description, mime, extension, dateAjout
-        FROM fichierrecu, lieu_fichierrecu
-        WHERE lieu_fichierrecu.idLieu=".$get['idL']." AND type='document' AND
-         fichierrecu.idFichierrecu=lieu_fichierrecu.idFichierrecu
-         ORDER BY dateAjout DESC";
-
-         $req_docu = $connector->query($sql_docu);
-            if ($connector->getNumRows($req_docu))
-            {
-                echo "<table class=\"fichiers_associes\"><tr><th>nom</th><th>ajouté le</th><th>".$iconeSupprimer."</th></tr>";
-                while ($tab_docu = $connector->fetchArray($req_docu))
-                {
-                    $nom_fichier = $tab_docu['idFichierrecu'].".".$tab_docu['extension'];
-                    echo "<tr><td><a href=\"".$url_fichiers_even.$nom_fichier."\">"
-                    .$tab_docu['description']."</a></td><td>".date_iso2app($tab_docu['dateAjout'])."</td>
-                    <td><input type=\"checkbox\" name=\"supprimer_document[]\" value=\"".$tab_docu['idFichierrecu'].".".$tab_docu['extension']."\" /></td></tr>";
-                }
-                echo "</table>";
-            }
-
-        }
+//
+//        if ($get['action'] == "editer")
+//        {
+//
+//            $sql_docu = "SELECT fichierrecu.idFichierrecu AS idFichierrecu, description, mime, extension, dateAjout
+//        FROM fichierrecu, lieu_fichierrecu
+//        WHERE lieu_fichierrecu.idLieu=".$get['idL']." AND type='document' AND
+//         fichierrecu.idFichierrecu=lieu_fichierrecu.idFichierrecu
+//         ORDER BY dateAjout DESC";
+//
+//         $req_docu = $connector->query($sql_docu);
+//            if ($connector->getNumRows($req_docu))
+//            {
+//                echo "<table class=\"fichiers_associes\"><tr><th>nom</th><th>ajouté le</th><th>".$iconeSupprimer."</th></tr>";
+//                while ($tab_docu = $connector->fetchArray($req_docu))
+//                {
+//                    $nom_fichier = $tab_docu['idFichierrecu'].".".$tab_docu['extension'];
+//                    echo "<tr><td><a href=\"".$url_fichiers_even.$nom_fichier."\">"
+//                    .$tab_docu['description']."</a></td><td>".date_iso2app($tab_docu['dateAjout'])."</td>
+//                    <td><input type=\"checkbox\" name=\"supprimer_document[]\" value=\"".$tab_docu['idFichierrecu'].".".$tab_docu['extension']."\" /></td></tr>";
+//                }
+//                echo "</table>";
+//            }
+//
+//        }
         ?>
         <?php
         if ($_SESSION['Sgroupe'] <= 6)
@@ -609,7 +609,7 @@ echo $form->getHtmlErreur("quartier");
                 while ($tab_galerie = $connector->fetchArray($req_galerie))
                 {
                     $nom_fichier = $tab_galerie['idFichierrecu'].".".$tab_galerie['extension'];
-                    echo "<tr><td><img src=\"".$url_images_lieu_galeries."s_".$nom_fichier."\" /></td>
+                    echo "<tr><td><img src=\"".$url_uploads_lieux_galeries."s_".$nom_fichier."\" /></td>
                     <td>".date_iso2app($tab_galerie['dateAjout'])."</td>
                     <td><input type=\"checkbox\" name=\"supprimer_galerie[]\" value=\"".$tab_galerie['idFichierrecu'].".".$tab_galerie['extension']."\" /></td></tr>";
                 }

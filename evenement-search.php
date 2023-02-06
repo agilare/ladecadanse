@@ -407,7 +407,7 @@ if (!empty($get['mots']))
 								<?php
 								$titre = $tab_even['titre'];
 								?>
-								<h3><a href="<?php echo $url_site ?>/evenement.php?idE=<?php echo $tab_even['idEvenement'] ?>" title="Voir la fiche de l'événement"><?php echo $titre ?></a></h3>
+								<h3><a href="/evenement.php?idE=<?php echo $tab_even['idEvenement'] ?>" title="Voir la fiche de l'événement"><?php echo $titre ?></a></h3>
 							<?php
 								$maxChar = Text::trouveMaxChar($tab_even['description'], 50, 4);
 								if (mb_strlen($tab_even['description']) > $maxChar)
@@ -486,7 +486,7 @@ if (!empty($get['mots']))
 							$tab_salle = $connector->fetchArray($connector->query("SELECT nom from salle where idSalle=".$tab_even['idSalle']));
 							$salle = " - ".$tab_salle['nom'];
 						}
-						$infosLieu = $listeLieu['determinant']." <a href=\"".$url_site."/lieu.php?idL=".$tab_even['idLieu']."\" title=\"Voir la fiche du lieu : ".htmlspecialchars($listeLieu['nom'])."\" >".htmlspecialchars($listeLieu['nom'])."</a>".$salle;
+						$infosLieu = $listeLieu['determinant']." <a href=\"/lieu.php?idL=".$tab_even['idLieu']."\" title=\"Voir la fiche du lieu : ".htmlspecialchars($listeLieu['nom'])."\" >".htmlspecialchars($listeLieu['nom'])."</a>".$salle;
 
 					}
 					else
@@ -517,7 +517,7 @@ if (!empty($get['mots']))
 
 
 					<td class="desc_even">
-					<h3><a href="<?php echo $url_site ?>/evenement.php?idE=<?php echo $tab_even['idEvenement'] ?>" title="Voir la fiche de l'événement"><?php echo $tab_even['titre'] ?></a></h3>
+					<h3><a href="/evenement.php?idE=<?php echo $tab_even['idEvenement'] ?>" title="Voir la fiche de l'événement"><?php echo $tab_even['titre'] ?></a></h3>
 							<?php
 								$maxChar = Text::trouveMaxChar($tab_even['description'], 50, 4);
 								if (mb_strlen($tab_even['description']) > $maxChar)

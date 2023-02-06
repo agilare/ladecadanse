@@ -296,9 +296,9 @@ if ($get['elements'] == "evenement")
 			if (!empty($tab_even['flyer']))
 			{
 				$imgInfo = @getimagesize($rep_images_even.$tab_even['flyer']);
-				echo HtmlShrink::popupLink($url_images_even.$tab_even['flyer']."?".@filemtime($rep_images_even.$tab_even['flyer']),
+				echo HtmlShrink::popupLink($url_uploads_events.$tab_even['flyer']."?".@filemtime($rep_images_even.$tab_even['flyer']),
 				"Flyer", $imgInfo[0]+20,$imgInfo[1]+20,
-				'<img src="'.$url_images_even.'t_'.$tab_even['flyer'].'" alt="Flyer" width="60" />'
+				'<img src="'.$url_uploads_events.'t_'.$tab_even['flyer'].'" alt="Flyer" width="60" />'
 				);
 			}
 			echo '</td>';
@@ -401,16 +401,16 @@ else if ($get['elements'] == "lieu")
 			echo '<td>';
 			if (!empty($tab_lieu['logo']))
 			{
-				$imgInfo = @getimagesize($rep_images_lieux.$tab_lieu['logo']);
-				echo HtmlShrink::popupLink($url_uploads_lieux.$tab_lieu['logo']."?".@filemtime($rep_images_lieux.$tab_lieu['logo']),
+				$imgInfo = @getimagesize($rep_uploads_lieux.$tab_lieu['logo']);
+				echo HtmlShrink::popupLink($url_uploads_lieux.$tab_lieu['logo']."?".@filemtime($rep_uploads_lieux.$tab_lieu['logo']),
 				"Logo", $imgInfo[0]+20,$imgInfo[1]+20,
 				'<img src="'.$url_uploads_lieux.'s_'.$tab_lieu['logo'].'" alt="Logo" />'
 				);
 			}
 			else if ($tab_lieu['photo1'] != "")
 			{
-				$imgInfo = @getimagesize($rep_images_lieux.$tab_lieu['photo1']);
-				echo HtmlShrink::popupLink($url_uploads_lieux.$tab_lieu['photo1']."?".@filemtime($rep_images_lieux.$tab_lieu['photo1']),
+				$imgInfo = @getimagesize($rep_uploads_lieux.$tab_lieu['photo1']);
+				echo HtmlShrink::popupLink($url_uploads_lieux.$tab_lieu['photo1']."?".@filemtime($rep_uploads_lieux.$tab_lieu['photo1']),
 				"photo1", $imgInfo[0]+20,$imgInfo[1]+20,
 				'<img src="'.$url_uploads_lieux.'s_'.$tab_lieu['photo1'].'" width="80" alt="photo1" />'
 				);
@@ -523,9 +523,9 @@ else if ($get['type_elements'] == 'participations')
 			if (!empty($tab_even['flyer']))
 			{
 				$imgInfo = @getimagesize($rep_images_even.$tab_even['flyer']);
-				echo HtmlShrink::popupLink($url_images_even.$tab_even['flyer']."?".@filemtime($rep_images_even.$tab_even['flyer']),
+				echo HtmlShrink::popupLink($url_uploads_events.$tab_even['flyer']."?".@filemtime($rep_images_even.$tab_even['flyer']),
 				"Flyer", $imgInfo[0]+20,$imgInfo[1]+20,
-				'<img src="'.$url_images_even.'t_'.$tab_even['flyer'].'" alt="Flyer" width="60" />'
+				'<img src="'.$url_uploads_events.'t_'.$tab_even['flyer'].'" alt="Flyer" width="60" />'
 				);
 			}
 			echo '</td>';

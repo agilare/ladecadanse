@@ -2,16 +2,9 @@
 // make a copy of this file with name 'env.php'
 define("ENV", "dev");
 define("MODE_DEBUG", true);
- 
 
 // full path of your ladecadanse application directory, for ex. "/home/michel/hosts/ladecadanse/"
 $rep_absolu = "";
-
-// URL
-// main domain, for ex "http://localhost" or "http://ladecadanse.local"; 
-$url_domaine = "";
-// complete if your site is in a subdirectory, for ex with "ladecadanse", $url_site will be http://localhost/ladecadanse
-$url_site = $url_domaine."/";
 
 // database
 $param['dbhost'] = '';

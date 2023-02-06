@@ -7,12 +7,6 @@ define("MODE_DEBUG", true);
 // full path of your ladecadanse application directory, for ex. "/home/michel/hosts/ladecadanse/"
 $rep_absolu = "/var/www/html/";
 
-// URL
-// main domain, for ex "http://localhost" or "http://ladecadanse.local";
-$url_domaine = "http://localhost:7777";
-// complete if your site is in a subdirectory, for ex with "ladecadanse", $url_site will be http://localhost/ladecadanse
-$url_site = $url_domaine."/";
-
 // database
 $param['dbhost'] = 'ladecadanse_db';
 $param['dbname'] = 'ladecadanse';
@@ -20,20 +14,18 @@ $param['dbusername'] = 'dev';
 $param['dbpassword'] = 'dev';
 
 // SMTP credentials
-// $glo_email_host = "mail.darksite.ch"; // prod
-// $glo_email_username = "info@ladecadanse.ch"; // prod
-$glo_email_host = "";
-$glo_email_username = "";
-$glo_email_password = "";
+define("EMAIL_AUTH_HOST", ''); // prod : mail.darksite.ch
+define("EMAIL_AUTH_USERNAME", '');
+define("EMAIL_AUTH_PASSWORD", '');
+define("EMAIL_AUTH_SMTPSECURE", 'TLS');
+define("EMAIL_AUTH_PORT", '587');
+define("EMAIL_AUTH_SMTPDEBUG", '0');
 
-// $glo_email_admin = "michel@ladecadanse.ch"; // prod
-// $glo_email_info = "info@ladecadanse.ch"; // prod
-// $glo_email_support = "info@ladecadanse.ch"; // prod
-$glo_email_admin = "";
-$glo_email_info = "";
-$glo_email_support = "";
-
-define("MAIL_DOMAIN", '');
+// mailers
+define("EMAIL_SITE", ''); // prod : info@ladecadanse.ch
+define("EMAIL_SITE_NAME", 'La décadanse');
+define("EMAIL_ADMIN", ''); // prod : info@ladecadanse.ch
+define("EMAIL_ADMIN_NAME", 'La décadanse');
 
 define("GOOGLE_API_KEY", ''); // use Google Maps library to display maps of venues
 

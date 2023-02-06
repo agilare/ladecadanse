@@ -329,13 +329,13 @@ WHERE evenement_fichierrecu.idEvenement=".$get['id']." AND type='document' AND
 
 				if (!empty($im['photo1']))
 				{
-					unlink($rep_images_lieux.$im['photo1']);
-					unlink($rep_images_lieux."s_".$im['photo1']);
+					unlink($rep_uploads_lieux.$im['photo1']);
+					unlink($rep_uploads_lieux."s_".$im['photo1']);
 				}
 				if (!empty($im['logo']))
 				{
-					unlink($rep_images_lieux.$im['logo']);
-					unlink($rep_images_lieux."s_".$im['logo']);
+					unlink($rep_uploads_lieux.$im['logo']);
+					unlink($rep_uploads_lieux."s_".$im['logo']);
 				}
 
 
@@ -349,11 +349,11 @@ WHERE lieu_fichierrecu.idLieu=".$get['id']." AND type='image' AND
 		while ($tab_docu = $connector->fetchArray($req_docu))
 		{
 			$nom_fichier = $tab_docu['idFichierrecu'].".".$tab_docu['extension'];
-			if(unlink($rep_images_lieux_galeries.$nom_fichier))
+			if(unlink($rep_uploads_lieux_galeries.$nom_fichier))
 			{
 				echo $nom_fichier." supprimé<br>";
 			}
-			if(unlink($rep_images_lieux_galeries."s_".$nom_fichier))
+			if(unlink($rep_uploads_lieux_galeries."s_".$nom_fichier))
 			{
 				echo "s_".$nom_fichier." supprimé<br>";
 			}

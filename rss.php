@@ -67,14 +67,14 @@ if ($get['type'] == "breves")
 
 		$items .= "<item>\n";
 		$items .= "<title>".htmlspecialchars($tab_breve['titre'])."</title>\n";
-		$items .= "<link>".$url_site."breves.php</link>\n";
+		$items .= "<link>".$site_full_url."breves.php</link>\n";
 		$items .= "<description><![CDATA[";
 		$items .= $css;
 		if (!empty($tab_breve['img_breve']))
 		{
 			//$imgInfo = @getimagesize($rep_images."breves/".$tab_breve['img_breve']);
 			$items .= "<div style=\"float:left\">
-			<a href=\"".$url_site."breves.php\" title=\"Brève\"><img src=\"".$IMGbreves."s_".$tab_breve['img_breve']."\" alt=\"image pour ".$tab_breve['titre']."\" /></a>
+			<a href=\""."breves.php\" title=\"Brève\"><img src=\"".$IMGbreves."s_".$tab_breve['img_breve']."\" alt=\"image pour ".$tab_breve['titre']."\" /></a>
 			</div>";
 		}
 
@@ -95,7 +95,7 @@ else if ($get['type'] == "evenements_auj")
 	$genres_c = array("fête", "cinéma", "théâtre", "expos", "divers");
 
 	$channel = '<title>La décadanse : événements du jour</title>';
-	$channel .= '<link>'.$url_site.'</link>';
+	$channel .= '<link>'.$site_full_url.'</link>';
 	$channel .= '<description>Événements quotidiens, actualité culturelle à Genève</description>';
 	$channel .= '<ttl>1440</ttl>';
 	$channel .= "<pubDate>".date("r",  mktime(0, 0, 0, date("m")  , date("d") , date("Y")))."</pubDate>\n";
@@ -136,13 +136,13 @@ else if ($get['type'] == "evenements_auj")
 			$genre_even = "ciné";
 		}
 		$items .= "<title>".ucfirst(date_fr($tab_even['dateEvenement'], "", "", "", false))." - ".$genre_even." : ".sanitizeForHtml($tab_even['titre'])."</title>\n";
-		$items .= "<link>".$url_site."/evenement.php?idE=".$tab_even['idEvenement']."</link>\n";
-		$items .= "<comments>".$url_site."/evenement.php?idE=".$tab_even['idEvenement']."#commentaires</comments>\n";
+		$items .= "<link>".$site_full_url."/evenement.php?idE=".$tab_even['idEvenement']."</link>\n";
+		$items .= "<comments>".$site_full_url."/evenement.php?idE=".$tab_even['idEvenement']."#commentaires</comments>\n";
 		$items .= "<description><![CDATA[";
 
 		if ($tab_even['idLieu'] != 0)
 		{
-			$nom_lieu = "<a href=\"".$url_site."/lieu.php?idL=".$tab_even['idLieu']."\"
+			$nom_lieu = "<a href=\"".$site_full_url."/lieu.php?idL=".$tab_even['idLieu']."\"
 			title=\"Voir la fiche du lieu : ".sanitizeForHtml($tab_even['nomLieu'])."\" >
 			".sanitizeForHtml($tab_even['nomLieu'])."</a>";
 
@@ -163,7 +163,7 @@ else if ($get['type'] == "evenements_auj")
 			//si un flyer existe
 		if (!empty($tab_even['flyer']))
 		{
-			$items .= "<div class=\"flyer\"><img src=\"".$url_images_even."s_".$tab_even['flyer']."\"  alt=\"Flyer\" /></div>";
+			$items .= "<div class=\"flyer\"><img src=\"".$url_uploads_events."s_".$tab_even['flyer']."\"  alt=\"Flyer\" /></div>";
 		}
 
 		$maxChar = Text::trouveMaxChar($tab_even['description'], 60, 5);
@@ -199,7 +199,7 @@ else if ($get['type'] == "lieu_evenements")
 	$tab_lieu = $connector->fetchArray($req_lieu);
 
 	$channel = '<title>La décadanse : Événements '.$tab_lieu['determinant'].' '.$tab_lieu['nom'].'</title>';
-	$channel .= '<link>'.$url_site.'/lieu.php?idL='.$get['id'].'</link>';
+	$channel .= '<link>'.$site_full_url.'/lieu.php?idL='.$get['id'].'</link>';
 	$channel .= '<description>Événements '.$tab_lieu['determinant'].' '.$tab_lieu['nom'].'</description>';
 	//$channel .= "<pubDate>".date("r",  mktime(0, 0, 0, date("m")  , date("d") - 7, date("Y")))."</pubDate>\n";
 	$channel .= "<language>fr</language>\n";
@@ -219,8 +219,8 @@ else if ($get['type'] == "lieu_evenements")
 
 		$items .= "<item>\n";
 		$items .= "<title>".sanitizeForHtml($tab_even['titre'])."</title>\n";
-		$items .= "<link>".$url_site."/evenement.php?idE=".$tab_even['idEvenement']."</link>\n";
-		$items .= "<comments>".$url_site."/evenement.php?idE=".$tab_even['idEvenement']."#commentaires</comments>\n";
+		$items .= "<link>".$site_full_url."/evenement.php?idE=".$tab_even['idEvenement']."</link>\n";
+		$items .= "<comments>".$site_full_url."/evenement.php?idE=".$tab_even['idEvenement']."#commentaires</comments>\n";
 		$items .= "<description><![CDATA[";
 		$items .= $css;
 		 $items .= '<h2 style="padding:0.2em 0.1em;border-bottom:1px solid #aeaeae;">'.date_fr($tab_even['dateEvenement']).'</h2>';
@@ -237,7 +237,7 @@ else if ($get['type'] == "lieu_evenements")
 			//si un flyer existe
 		if (!empty($tab_even['flyer']))
 		{
-			$items .= "<div class=\"flyer\"><img src=\"".$url_images_even."s_".$tab_even['flyer']."\"  alt=\"Flyer\" /></div>";
+			$items .= "<div class=\"flyer\"><img src=\"".$url_uploads_events."s_".$tab_even['flyer']."\"  alt=\"Flyer\" /></div>";
 		}
 
 		$maxChar = Text::trouveMaxChar($tab_even['description'], 60, 5);
@@ -275,7 +275,7 @@ else if ($get['type'] == "evenement_commentaires")
 	$tab_even = $connector->fetchArray($req_even);
 
 	$channel = '<title>La décadanse : commentaires pour '.$tab_even['titre'].'</title>';
-	$channel .= '<link>'.$url_site.'/evenement.php?idE='.$get['id'].'</link>';
+	$channel .= '<link>'.$site_full_url.'/evenement.php?idE='.$get['id'].'</link>';
 	$channel .= '<description>Commentaires de l\'événement '.$tab_even['titre'].'</description>';
 	$channel .= "<pubDate>".date("r",  mktime(0, 0, 0, date("m")  , date("d") - 7, date("Y")))."</pubDate>\n";
 	$channel .= "<language>fr</language>\n";
@@ -293,7 +293,7 @@ else if ($get['type'] == "evenement_commentaires")
 
 		$items .= "<item>\n";
 		$items .= "<title>".mb_substr($tab_comm['contenu'], 0, 20)."</title>\n";
-		$items .= "<link>".$url_site."/evenement.php?idE=".$tab_comm['idEvenement']."</link>\n";
+		$items .= "<link>".$site_full_url."/evenement.php?idE=".$tab_comm['idEvenement']."</link>\n";
 
 		$items .= "<description><![CDATA[";
 		$items .= Text::wikiToHtml(htmlspecialchars($tab_comm['contenu']));
@@ -316,7 +316,7 @@ else if ($get['type'] == "lieux_descriptions")
 {
 
 	$channel = '<title>La décadanse : dernières descriptions de lieux</title>';
-	$channel .= '<link>'.$url_site.'/lieux.php</link>';
+	$channel .= '<link>'.$site_full_url.'/lieux.php</link>';
 	$channel .= '<description>Dernières descriptions d\'événements</description>';
 	$channel .= "<pubDate>".date("r",  mktime(0, 0, 0, date("m")  , date("d") - 7, date("Y")))."</pubDate>\n";
 	$channel .= "<language>fr</language>\n";
@@ -337,7 +337,7 @@ else if ($get['type'] == "lieux_descriptions")
 
 		$items .= "<item>\n";
 		$items .= "<title>".$tab_lieu['nom']."</title>\n";
-		$items .= "<link>".$url_site."/lieu.php?idL=".$tab['idLieu']."</link>\n";
+		$items .= "<link>".$site_full_url."/lieu.php?idL=".$tab['idLieu']."</link>\n";
 
 		$items .= "<description><![CDATA[";
 		$items .= Text::wikiToHtml(htmlspecialchars($tab['contenu']));
@@ -361,7 +361,7 @@ else if ($get['type'] == "organisateur_evenements")
 	$tab = $connector->fetchArray($req);
 
 	$channel = '<title>La décadanse : événements pour '.$tab['nom'].'</title>';
-	$channel .= '<link>'.$url_site.'/organisateur.php?idO='.$get['id'].'</link>';
+	$channel .= '<link>'.$site_full_url.'/organisateur.php?idO='.$get['id'].'</link>';
 	$channel .= '<description>'.$tab['nom'].'</description>';
 	$channel .= "<language>fr</language>\n";
 
@@ -380,8 +380,8 @@ else if ($get['type'] == "organisateur_evenements")
 
 		$items .= "<item>\n";
 		$items .= "<title>".sanitizeForHtml($tab_even['titre'])."</title>\n";
-		$items .= "<link>".$url_site."/evenement.php?idE=".$tab_even['idEvenement']."</link>\n";
-		$items .= "<comments>".$url_site."/evenement.php?idE=".$tab_even['idEvenement']."#commentaires</comments>\n";
+		$items .= "<link>".$site_full_url."/evenement.php?idE=".$tab_even['idEvenement']."</link>\n";
+		$items .= "<comments>".$site_full_url."/evenement.php?idE=".$tab_even['idEvenement']."#commentaires</comments>\n";
 		$items .= "<description><![CDATA[";
 		$items .= $css;
 		 $items .= '<h2 style="padding:0.2em 0.1em;border-bottom:1px solid #aeaeae;">'.date_fr($tab_even['dateEvenement']).'</h2>';
@@ -390,7 +390,7 @@ else if ($get['type'] == "organisateur_evenements")
 
 		if ($tab_even['idLieu'] != 0)
 		{
-			$nom_lieu = "<a href=\"".$url_site."/lieu.php?idL=".$tab_even['idLieu']."\"
+			$nom_lieu = "<a href=\"".$site_full_url."/lieu.php?idL=".$tab_even['idLieu']."\"
 			title=\"Voir la fiche du lieu : ".sanitizeForHtml($tab_even['nomLieu'])."\" >
 			".sanitizeForHtml($tab_even['nomLieu'])."</a>";
 
@@ -411,7 +411,7 @@ else if ($get['type'] == "organisateur_evenements")
 			//si un flyer existe
 		if (!empty($tab_even['flyer']))
 		{
-			$items .= "<div class=\"flyer\"><img src=\"".$url_images_even."s_".$tab_even['flyer']."\"  alt=\"Flyer\" /></div>";
+			$items .= "<div class=\"flyer\"><img src=\"".$url_uploads_events."s_".$tab_even['flyer']."\"  alt=\"Flyer\" /></div>";
 		}
 
 		$maxChar = Text::trouveMaxChar($tab_even['description'], 60, 5);
@@ -442,7 +442,7 @@ else if ($get['type'] == "evenements_ajoutes")
 {
 
 	$channel = '<title>La décadanse : derniers événements ajoutés</title>';
-	$channel .= '<link>'.$url_site.'</link>';
+	$channel .= '<link>'.$site_full_url.'</link>';
 	$channel .= '<description>Derniers événements ajoutés</description>';
 	$channel .= "<pubDate>".date("r")."</pubDate>\n";
 	$channel .= "<language>fr</language>\n";
@@ -463,8 +463,8 @@ else if ($get['type'] == "evenements_ajoutes")
 
 		$items .= "<item>\n";
 		$items .= "<title>".sanitizeForHtml($tab_even['titre'])."</title>\n";
-		$items .= "<link>".$url_site."/evenement.php?idE=".$tab_even['idEvenement']."</link>\n";
-		$items .= "<comments>".$url_site."/evenement.php?idE=".$tab_even['idEvenement']."#commentaires</comments>\n";
+		$items .= "<link>".$site_full_url."/evenement.php?idE=".$tab_even['idEvenement']."</link>\n";
+		$items .= "<comments>".$site_full_url."/evenement.php?idE=".$tab_even['idEvenement']."#commentaires</comments>\n";
 		$items .= "<description><![CDATA[";
 		$items .= $css;
 		 $items .= '<h2 style="padding:0.1em 0.1em;border-bottom:1px dotted #aeaeae;">'.ucfirst(date_fr($tab_even['dateEvenement'], 'annee')).'</h2>';
@@ -473,7 +473,7 @@ else if ($get['type'] == "evenements_ajoutes")
 	
 		if ($tab_even['idLieu'] != 0)
 		{
-			$nom_lieu = "<a href=\"".$url_site."/lieu.php?idL=".$tab_even['idLieu']."\"
+			$nom_lieu = "<a href=\"".$site_full_url."/lieu.php?idL=".$tab_even['idLieu']."\"
 			title=\"Voir la fiche du lieu : ".sanitizeForHtml($tab_even['nomLieu'])."\" >
 			".sanitizeForHtml($tab_even['nomLieu'])."</a>";
 
@@ -497,11 +497,11 @@ else if ($get['type'] == "evenements_ajoutes")
 			//si un flyer existe
 		if (!empty($tab_even['flyer']))
 		{
-			$items .= "<div class=\"flyer\"><img src=\"".$url_images_even."s_".$tab_even['flyer']."\"  alt=\"Flyer\" /></div>";
+			$items .= "<div class=\"flyer\"><img src=\"".$url_uploads_events."s_".$tab_even['flyer']."\"  alt=\"Flyer\" /></div>";
 		}
 		else if (!empty($tab_even['image']))
 		{
-			$items .= "<div class=\"flyer\"><img src=\"".$url_images_even."s_".$tab_even['image']."\"  alt=\"Photo\" /></div>";
+			$items .= "<div class=\"flyer\"><img src=\"".$url_uploads_events."s_".$tab_even['image']."\"  alt=\"Photo\" /></div>";
 
 		}
 

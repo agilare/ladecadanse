@@ -211,9 +211,9 @@ $photo_principale = '';
 if ($lieu->getValue('photo1') != '')
 {
 
-	$imgInfo = getimagesize($rep_images_lieux.$lieu->getValue('photo1'));
+	$imgInfo = getimagesize($rep_uploads_lieux.$lieu->getValue('photo1'));
 
-	$photo_principale = HtmlShrink::popupLink($url_uploads_lieux.$lieu->getValue('photo1').'?'.filemtime($rep_images_lieux.$lieu->getValue('photo1')),	"Logo", $imgInfo[0]+20, $imgInfo[1]+20,	"<img src=\"".$url_uploads_lieux."s_".$lieu->getValue('photo1')."?".filemtime($rep_images_lieux."s_".$lieu->getValue('photo1'))."\" alt=\"Photo du lieu\" />");
+	$photo_principale = HtmlShrink::popupLink($url_uploads_lieux.$lieu->getValue('photo1').'?'.filemtime($rep_uploads_lieux.$lieu->getValue('photo1')),	"Logo", $imgInfo[0]+20, $imgInfo[1]+20,	"<img src=\"".$url_uploads_lieux."s_".$lieu->getValue('photo1')."?".filemtime($rep_uploads_lieux."s_".$lieu->getValue('photo1'))."\" alt=\"Photo du lieu\" />");
 
 	
 
@@ -283,8 +283,8 @@ function initMap() {
 if ($lieu->getValue('logo'))
 {
 ?>
-<a href="<?php echo $url_uploads_lieux.$lieu->getValue('logo').'?'.filemtime($rep_images_lieux.$lieu->getValue('logo')) ?>" class="magnific-popup">
-	<img src="<?php echo $url_uploads_lieux."s_".$lieu->getValue('logo')."?".filemtime($rep_images_lieux."s_".$lieu->getValue('logo')); ?>" alt="Logo" class="logo" />
+<a href="<?php echo $url_uploads_lieux.$lieu->getValue('logo').'?'.filemtime($rep_uploads_lieux.$lieu->getValue('logo')) ?>" class="magnific-popup">
+	<img src="<?php echo $url_uploads_lieux."s_".$lieu->getValue('logo')."?".filemtime($rep_uploads_lieux."s_".$lieu->getValue('logo')); ?>" alt="Logo" class="logo" />
 </a>
 <?php 
 }
@@ -325,7 +325,7 @@ if ($lieu->getValue('logo'))
 			<?php
 			if ($lieu->getValue('photo1') != '') {
 			?>
-			<a href="<?php echo $url_uploads_lieux.$lieu->getValue('photo1').'?'.filemtime($rep_images_lieux.$lieu->getValue('photo1')); ?>" class="gallery-item"><img src="<?php echo $url_uploads_lieux."s_".$lieu->getValue('photo1').'?'.filemtime($rep_images_lieux.$lieu->getValue('photo1')); ?>" alt="Photo du lieu"></a>			
+			<a href="<?php echo $url_uploads_lieux.$lieu->getValue('photo1').'?'.filemtime($rep_uploads_lieux.$lieu->getValue('photo1')); ?>" class="gallery-item"><img src="<?php echo $url_uploads_lieux."s_".$lieu->getValue('photo1').'?'.filemtime($rep_uploads_lieux.$lieu->getValue('photo1')); ?>" alt="Photo du lieu"></a>			
 			<?php } ?>
             <?php 
             if (empty($_SESSION['Sgroupe']))
@@ -359,20 +359,14 @@ if ($lieu->getValue('logo'))
 							$icone_fichier = $iconeImage;
 						}
 
-						$url_fichier = $url_images_lieu_galeries.$tab_galerie['idFichierrecu'].".".$tab_galerie['extension'];
-						$rep_fichier = $rep_images_lieux_galeries.$tab_galerie['idFichierrecu'].".".$tab_galerie['extension'];
-						$rep_fichier_s = $rep_images_lieux_galeries."s_".$tab_galerie['idFichierrecu'].".".$tab_galerie['extension'];
-						$url_fichier_s = $url_images_lieu_galeries."s_".$tab_galerie['idFichierrecu'].".".$tab_galerie['extension'];
-
-						//echo lien_popup($url_site."galerielieu.php?idL=".$get['idL']."&amp;idI=".$tab_galerie['idFichierrecu'],	"galerie", 860, 700, "<img class=\"galerie\" src=\"".$url_fichier."?".filemtime($chemin_fichier)."\" alt=\"photo\" />");
+						$url_fichier = $url_uploads_lieux_galeries.$tab_galerie['idFichierrecu'].".".$tab_galerie['extension'];
+						$rep_fichier = $rep_uploads_lieux_galeries.$tab_galerie['idFichierrecu'].".".$tab_galerie['extension'];
+						$rep_fichier_s = $rep_uploads_lieux_galeries."s_".$tab_galerie['idFichierrecu'].".".$tab_galerie['extension'];
+						$url_fichier_s = $url_uploads_lieux_galeries."s_".$tab_galerie['idFichierrecu'].".".$tab_galerie['extension'];
 						?>
-					
-					
-					<a href="<?php echo $url_fichier."?".filemtime($rep_fichier); ?>" class="gallery-item"><img src="<?php echo $url_fichier_s."?".filemtime($rep_fichier_s); ?>" alt="Photo du lieu"></a>
-					<?php	
-						
-						
-						
+
+                    	<a href="<?php echo $url_fichier."?".filemtime($rep_fichier); ?>" class="gallery-item"><img src="<?php echo $url_fichier_s."?".filemtime($rep_fichier_s); ?>" alt="Photo du lieu"></a>
+                        <?php	
 					}					
 					
 /* 				if ($connector->getNumRows($req_galerie) == 1)
@@ -404,7 +398,7 @@ if ($lieu->getValue('logo'))
 						$chemin_fichier = $rep_images_lieux_galeries."s_".$tab_galerie['idFichierrecu'].".".$tab_galerie['extension'];
 						$url_fichier = $url_images_lieu_galeries."s_".$tab_galerie['idFichierrecu'].".".$tab_galerie['extension'];
 
-						echo lien_popup($url_site."galerielieu.php?idL=".$get['idL']."&amp;idI=".$tab_galerie['idFichierrecu'],
+						echo lien_popup("galerielieu.php?idL=".$get['idL']."&amp;idI=".$tab_galerie['idFichierrecu'],
 						"galerie", 860, 700, "<img class=\"galerie\" src=\"".$url_fichier."?".filemtime($chemin_fichier)."\" alt=\"photo\" />");
 					}
 				} */
@@ -417,30 +411,30 @@ if ($lieu->getValue('logo'))
 			}
 
 			/* Documents */
-			$sql_docu = "SELECT fichierrecu.idFichierrecu AS idFichierrecu, description, mime, extension
-			FROM fichierrecu, lieu_fichierrecu
-			WHERE lieu_fichierrecu.idLieu=".$get['idL']." AND type='document' AND
-			 fichierrecu.idFichierrecu=lieu_fichierrecu.idFichierrecu
-			 ORDER BY dateAjout DESC";
-
-			$req_docu = $connector->query($sql_docu);
-
-			if ($connector->getNumRows($req_docu) > 0)
-			{
-				echo '<div class="section">
-				<h3>Fichiers</h3>
-				<ul>';
-
-
-				while ($tab_docu = $connector->fetchArray($req_docu))
-				{
-					$chemin_fichier = $rep_fichiers_lieu.$tab_docu['idFichierrecu'].".".$tab_docu['extension'];
-					$url_fichier = $url_fichiers_lieu.$tab_docu['idFichierrecu'].".".$tab_docu['extension'];
-					echo "<li><a href=\"".$url_fichier."\" >".$icone[mb_strtolower($tab_docu['extension'])].$tab_docu['description']." (".Text::formatbytes(filesize($chemin_fichier)).", ".$tab_docu['extension'].")</a></li>";
-				}
-				echo "</ul>
-					</div>";
-			}
+//			$sql_docu = "SELECT fichierrecu.idFichierrecu AS idFichierrecu, description, mime, extension
+//			FROM fichierrecu, lieu_fichierrecu
+//			WHERE lieu_fichierrecu.idLieu=".$get['idL']." AND type='document' AND
+//			 fichierrecu.idFichierrecu=lieu_fichierrecu.idFichierrecu
+//			 ORDER BY dateAjout DESC";
+//
+//			$req_docu = $connector->query($sql_docu);
+//
+//			if ($connector->getNumRows($req_docu) > 0)
+//			{
+//				echo '<div class="section">
+//				<h3>Fichiers</h3>
+//				<ul>';
+//
+//
+//				while ($tab_docu = $connector->fetchArray($req_docu))
+//				{
+//					$chemin_fichier = $rep_fichiers_lieu.$tab_docu['idFichierrecu'].".".$tab_docu['extension'];
+//					$url_fichier = $url_fichiers_lieu.$tab_docu['idFichierrecu'].".".$tab_docu['extension'];
+//					echo "<li><a href=\"".$url_fichier."\" >".$icone[mb_strtolower($tab_docu['extension'])].$tab_docu['description']." (".Text::formatbytes(filesize($chemin_fichier)).", ".$tab_docu['extension'].")</a></li>";
+//				}
+//				echo "</ul>
+//					</div>";
+//			}
 			?>
 		</div>
 		<!-- Fin medias -->
@@ -951,8 +945,8 @@ title="Flux RSS des prochains événements"><i class="fa fa-rss fa-lg" style="co
 
 			//$illustration = lien_popup($IMGeven.$even->getValue('flyer')."?".filemtime($rep_images_even.$even->getValue('even')), "Flyer", $imgInfo[0]+20,$imgInfo[1]+20,			"<img src=\"".$IMGeven."t_".$even->getValue('flyer')."?".filemtime($rep_images_even."t_".$even->getValue('flyer'))."\" alt=\"Flyer\" />");
 			?>
-			<a href="<?php echo $url_images_even.$even->getValue('flyer').'?'.filemtime($rep_images_even.$even->getValue('flyer')) ?>" class="magnific-popup">
-				<img src="<?php echo $url_images_even."t_".$even->getValue('flyer')."?".filemtime($rep_images_even."t_".$even->getValue('flyer')); ?>" alt="Flyer" width="60" />
+			<a href="<?php echo $url_uploads_events.$even->getValue('flyer').'?'.filemtime($rep_images_even.$even->getValue('flyer')) ?>" class="magnific-popup">
+				<img src="<?php echo $url_uploads_events."t_".$even->getValue('flyer')."?".filemtime($rep_images_even."t_".$even->getValue('flyer')); ?>" alt="Flyer" width="60" />
 			</a>			
 			
 			<?php
@@ -965,8 +959,8 @@ title="Flux RSS des prochains événements"><i class="fa fa-rss fa-lg" style="co
 			$illustration = lien_popup($IMGeven.$even->getValue('image')."?".filemtime($rep_images_even.$even->getValue('image')), "Image", $imgInfo[0]+20, $imgInfo[1]+20, "<img src=\"".$IMGeven."s_".$even->getValue('image')."?".filemtime($rep_images_even.$even->getValue('image'))."\" alt=\"Image\" width=\"60\" />"); */
 			
 			?>
-			<a href="<?php echo $url_images_even.$even->getValue('image').'?'.filemtime($rep_images_even.$even->getValue('image')) ?>" class="magnific-popup">
-				<img src="<?php echo $url_images_even."s_".$even->getValue('image')."?".filemtime($rep_images_even."s_".$even->getValue('image')); ?>" alt="Photo" width="60" />
+			<a href="<?php echo $url_uploads_events.$even->getValue('image').'?'.filemtime($rep_images_even.$even->getValue('image')) ?>" class="magnific-popup">
+				<img src="<?php echo $url_uploads_events."s_".$even->getValue('image')."?".filemtime($rep_images_even."s_".$even->getValue('image')); ?>" alt="Photo" width="60" />
 			</a>			
 			
 			<?php			

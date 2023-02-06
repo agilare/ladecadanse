@@ -337,10 +337,10 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 				$contenu_message = "Bonjour,\n\n";
 				$contenu_message .= "Merci de vous être inscrit-e sur www.ladecadanse.ch";
 				$contenu_message .= "\n\n";
-				$contenu_message .= "Pour vous connecter : ".$url_site."user-login.php";
+				$contenu_message .= "Pour vous connecter : ".$site_full_url."user-login.php";
 				$contenu_message .= "\n\n";
 				$contenu_message .= "Vous pouvez compléter votre profil sur votre page de membre : ";
-				$contenu_message .= $url_site."user.php?idP=".$req_id;
+				$contenu_message .= $site_full_url."user.php?idP=".$req_id;
 				$contenu_message .= "\n\n";
 				$contenu_message .= "Bonne visite";
 				$contenu_message .= "\n\n";
@@ -353,10 +353,10 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 				if (isset($champs['organisateurs']) && count($champs['organisateurs']) > 0)
 					$compte_organisateur = " en tant qu'acteur culturel";
 				
-				HtmlShrink::msgOk("<strong>Votre compte".$compte_organisateur." a été créé</strong>; vous pouvez maintenant vous <a href=\"".$url_site."/user-login.php\">connecter</a> avec l'identifiant et le mot de passe que vous venez de saisir.
+				HtmlShrink::msgOk("<strong>Votre compte".$compte_organisateur." a été créé</strong>; vous pouvez maintenant vous <a href=\"/user-login.php\">connecter</a> avec l'identifiant et le mot de passe que vous venez de saisir.
 				<br />Un e-mail de confirmation vous a été envoyé à l'adresse : ".$tab_pers['email']);
 
-                $logger->log('global', 'activity', "[user-register] by ".$tab_pers['pseudo']." (".$tab_pers['email'].") in group ".$tab_pers['groupe']." ".$url_site."/user.php?idP=".$req_id, Logger::GRAN_YEAR);
+                $logger->log('global', 'activity', "[user-register] by ".$tab_pers['pseudo']." (".$tab_pers['email'].") in group ".$tab_pers['groupe']." /user.php?idP=".$req_id, Logger::GRAN_YEAR);
 			}
 						
 			foreach ($champs as $k => $v)

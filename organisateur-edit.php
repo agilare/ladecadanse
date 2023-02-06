@@ -226,10 +226,10 @@ echo $form->getHtmlErreur("logo");
 if (isset($get['idO']) && $form->getValeur('logo') != '' && $form->getErreur("logo") == '')
 {
 
-	$imgInfo = getimagesize($rep_images_organisateurs.$form->getValeur('logo'));
+	$imgInfo = getimagesize($rep_uploads_organisateurs.$form->getValeur('logo'));
 
-	$lien_popup = HtmlShrink::popupLink($url_images_organisateurs.$form->getValeur('logo')."?".filemtime($rep_images_organisateurs.$form->getValeur('logo')), "Logo", $imgInfo[0]+20, $imgInfo[1]+20,
-	"<img src=\"".$url_images_organisateurs."s_".$form->getValeur('logo')."?".filemtime($rep_images_organisateurs.$form->getValeur('logo'))."\" alt=\"Logo pour ".sanitizeForHtml($form->getValeur('nom'))."\" />"
+	$lien_popup = HtmlShrink::popupLink($url_uploads_organisateurs.$form->getValeur('logo')."?".filemtime($rep_uploads_organisateurs.$form->getValeur('logo')), "Logo", $imgInfo[0]+20, $imgInfo[1]+20,
+	"<img src=\"".$url_uploads_organisateurs."s_".$form->getValeur('logo')."?".filemtime($rep_uploads_organisateurs.$form->getValeur('logo'))."\" alt=\"Logo pour ".sanitizeForHtml($form->getValeur('nom'))."\" />"
 	);
 	$checked = '';
 	$tab_sup = $form->getSupprimer();
@@ -267,10 +267,10 @@ echo $form->getHtmlErreur("photo");
 //affichage de l'image existante
 if (isset($get['idO']) && $form->getValeur('photo') != '' && $form->getErreur("photo") == '')
 {
-	$imgInfo = getimagesize($rep_images_organisateurs.$form->getValeur('photo'));
+	$imgInfo = getimagesize($rep_uploads_organisateurs.$form->getValeur('photo'));
 
-	$lien_popup = HtmlShrink::popupLink($url_images_organisateurs.$form->getValeur('photo')."?".filemtime($rep_images_organisateurs.$form->getValeur('photo')), "Photo", $imgInfo[0]+20, $imgInfo[1]+20,
-	"<img src=\"".$url_images_organisateurs."s_".$form->getValeur('photo')."?".filemtime($rep_images_organisateurs.$form->getValeur('photo'))."\" alt=\"photo pour ".sanitizeForHtml($form->getValeur('nom'))."\" />"
+	$lien_popup = HtmlShrink::popupLink($url_uploads_organisateurs.$form->getValeur('photo')."?".filemtime($rep_uploads_organisateurs.$form->getValeur('photo')), "Photo", $imgInfo[0]+20, $imgInfo[1]+20,
+	"<img src=\"".$url_uploads_organisateurs."s_".$form->getValeur('photo')."?".filemtime($rep_uploads_organisateurs.$form->getValeur('photo'))."\" alt=\"photo pour ".sanitizeForHtml($form->getValeur('nom'))."\" />"
 	);
 	$checked = '';
 	$tab_sup = $form->getSupprimer();

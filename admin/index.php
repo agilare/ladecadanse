@@ -361,7 +361,7 @@ while($tab_even = $connector->fetchArray($req_getEvenement))
 	if (!empty($tab_even['flyer']))
 	{
 		$imgInfo = getimagesize($rep_images_even.$tab_even['flyer']);
-		echo HtmlShrink::popupLink($url_images_even.$tab_even['flyer'], "Flyer", $imgInfo[0]+20, $imgInfo[1]+20, $iconeImage);
+		echo HtmlShrink::popupLink($url_uploads_events.$tab_even['flyer'], "Flyer", $imgInfo[0]+20, $imgInfo[1]+20, $iconeImage);
 	}
 	echo "</td>
 	<td>".$tab_icones_statut[$tab_even['statut']]."</td>";

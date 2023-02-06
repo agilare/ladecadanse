@@ -69,8 +69,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 		$champs['pseudo'],
 		$champs['motdepasse'],
 		12,
-		$url_site,
-		$url_site.'/user-login.php?msg=faux',
+		"/",
+		'/user-login.php?msg=faux',
 		$champs['memoriser']
 		);
 	}

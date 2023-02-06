@@ -151,9 +151,9 @@ class OrganisateurEdition extends Edition
 
     function enregistrer()
     {
-        global $rep_images_organisateurs;
+        global $rep_uploads_organisateurs;
         global $rep_templates;
-        global $url_site;
+
 
         $organisateur = new Organisateur();
         $organisateur->setValues($this->valeurs);
@@ -211,8 +211,8 @@ class OrganisateurEdition extends Edition
                 // suppression des fichiers de l'ancienne image
                 if ($organisateur->getValue('logo') != '')
                 {
-                    unlink($rep_images_organisateurs . $organisateur->getValue('logo'));
-                    unlink($rep_images_organisateurs . "s_" . $organisateur->getValue('logo'));
+                    unlink($rep_uploads_organisateurs . $organisateur->getValue('logo'));
+                    unlink($rep_uploads_organisateurs . "s_" . $organisateur->getValue('logo'));
 
                     //echo "<div class=\"msg\">Ancienne image supprimée</div>";
                 }
@@ -224,8 +224,8 @@ class OrganisateurEdition extends Edition
                 // suppression des fichiers de l'image, s'il elle est effectivement enregistrée
                 if ($organisateur->getValue('logo') != '')
                 {
-                    unlink($rep_images_organisateurs . $organisateur->getValue('logo'));
-                    unlink($rep_images_organisateurs . "s_" . $organisateur->getValue('logo'));
+                    unlink($rep_uploads_organisateurs . $organisateur->getValue('logo'));
+                    unlink($rep_uploads_organisateurs . "s_" . $organisateur->getValue('logo'));
                 }
 
                 $organisateur->setValue('logo', '');
@@ -236,8 +236,8 @@ class OrganisateurEdition extends Edition
                 // suppression des fichiers de l'ancienne image
                 if ($organisateur->getValue('photo') != '')
                 {
-                    unlink($rep_images_organisateurs . $organisateur->getValue('photo'));
-                    unlink($rep_images_organisateurs . "s_" . $organisateur->getValue('photo'));
+                    unlink($rep_uploads_organisateurs . $organisateur->getValue('photo'));
+                    unlink($rep_uploads_organisateurs . "s_" . $organisateur->getValue('photo'));
 
                     //echo "<div class=\"msg\">Ancienne image supprimée</div>";
                 }
@@ -252,8 +252,8 @@ class OrganisateurEdition extends Edition
                 // suppression des fichiers de l'image, s'il elle est effectivement enregistrée
                 if ($organisateur->getValue('photo') != '')
                 {
-                    unlink($rep_images_organisateurs . $organisateur->getValue('photo'));
-                    unlink($rep_images_organisateurs . "s_" . $organisateur->getValue('photo'));
+                    unlink($rep_uploads_organisateurs . $organisateur->getValue('photo'));
+                    unlink($rep_uploads_organisateurs . "s_" . $organisateur->getValue('photo'));
                 }
 
                 $organisateur->setValue('photo', '');

@@ -14,5 +14,5 @@ $logger->log('global', 'activity', "Logout of ".$_SESSION['user'], Logger::GRAN_
 
 $videur->logout(); // destruction des caractéristiques de la session en cours.
 
-header("Location: ".$url_site."/index.php");
+header("Location: /index.php");
 exit();

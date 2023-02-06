@@ -21,7 +21,7 @@ $videur = new Sentry();
 
 if (!$videur->checkGroup(12))
 {
-	header("Location: ".$url_site."/user-login.php"); die();
+	header("Location: /user-login.php"); die();
 }
 
 

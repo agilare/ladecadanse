@@ -186,7 +186,7 @@ if ($nom_page == "agenda" && isset($page_titre))
 <div id="entete">
 
 <div id="titre_site">
-<a href="<?php echo $url_site ?>"><img src="<?php echo $url_site ?>web/interface/logo_titre.jpg" alt="La décadanse"  width="180" height="35" /></a>
+<a href="/"><img src="/web/interface/logo_titre.jpg" alt="La décadanse"  width="180" height="35" /></a>
 </div>
 
 
@@ -295,7 +295,7 @@ foreach ($menu_principal as $nom => $lien)
     ?>
 		id="bouton_agenda">
         <?php
-		echo "<a href=\"".$url_site.$lien."?courant=".$get['courant']."&amp;sem=".$get['sem']."&amp;tri_agenda=".$get['tri_agenda']."\">".$nom."</a></li>"; 
+		echo "<a href=\"".$lien."?courant=".$get['courant']."&amp;sem=".$get['sem']."&amp;tri_agenda=".$get['tri_agenda']."\">".$nom."</a></li>"; 
         ?>
 		<li>
 <?php
@@ -304,7 +304,7 @@ foreach ($menu_principal as $nom => $lien)
 	{
         echo $ici;
         ?>
-		><a href="<?php echo $url_site.$lien; ?>"><?php echo $nom; ?></a>
+		><a href="<?php echo $lien; ?>"><?php echo $nom; ?></a>
         <?php
 	}
 

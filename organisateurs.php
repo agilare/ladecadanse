@@ -52,9 +52,9 @@ $pair = 0;
         $photo_principale = '';
         if ($fiche->getValue('logo') != "")
         {
-            $logo_time = @filemtime($rep_images_organisateurs.$fiche->getValue('logo'));
+            $logo_time = @filemtime($rep_uploads_organisateurs.$fiche->getValue('logo'));
             $photo_principale = "<a href=\"/organisateur.php?idO=".$fiche->getValue('idOrganisateur')."\" title=\"Voir la fiche de l'organisateur : ".sanitizeForHtml($fiche->getValue('nom'))."\">
-            <img src=\"".$url_images_organisateurs.$fiche->getValue('logo')."?".$logo_time."\" width=\"100\" alt=\"".sanitizeForHtml($fiche->getValue('nom'))."\" /></a>\n";
+            <img src=\"".$url_uploads_organisateurs.$fiche->getValue('logo')."?".$logo_time."\" width=\"100\" alt=\"".sanitizeForHtml($fiche->getValue('nom'))."\" /></a>\n";
         }
 
         //Réduction du descriptif

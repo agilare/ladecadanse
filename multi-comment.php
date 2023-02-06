@@ -36,7 +36,7 @@ else if ($get['action'] == 'ajouter' || $get['action'] == 'insert')
 }
 
 
-$url_retour = $url_site.'/evenement.php?idE='.$get['id'].'#commentaires';
+$url_retour = '/evenement.php?idE='.$get['id'].'#commentaires';
 if ($get['element'] == 'lieu')
 {
 	$url_retour = '/lieu.php?idL='.$get['id'].'&complement=commentaires#ajouter_editer';

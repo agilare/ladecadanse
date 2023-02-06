@@ -7,7 +7,7 @@ use Ladecadanse\Security\Sentry;
 $videur = new Sentry();
 
 if (!$videur->checkGroup(1))
-	header("Location: ".$url_site."index.php"); die();
+	header("Location: /index.php"); die();
 
 require_once($rep_includes.'head.php');
 
@@ -71,7 +71,6 @@ while(list($idGroupe, $nom, $description) = $connector->fetchArray($getGroupes) 
 	<td>".$idGroupe."</td>
 	<td>".sanitizeForHtml($nom)."</td>
 	<td>".sanitizeForHtml($description)."</td>
-	<td><a href=\"".$url_site."ajouterGroupe.php?action=editer&idG=".$idGroupe."\" title=\"Modifier le groupe\">".$iconeEditer."</a></td>
 	</tr>";
 }
 

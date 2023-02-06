@@ -51,8 +51,6 @@ Ces instructions vous permettront de mettre en place une copie du projet sur vot
         ```
 1. créer le fichier de configuration du site en copiant le modèle `app/env_model.php` vers `app/env.php` et y saisir les valeurs de votre environnement pour (davantage d'explications et exemples se trouvent dans le fichier lui même) :
     - `$rep_absolu`
-    - `$url_domaine`
-    - `$url_site` 
     - `$param['dbhost']`, etc. les informations de connexion à la base de données (selon point précédent)
     - `define("EMAIL_AUTH_HOST", '');`, etc. : l'authentification et les comptes pour l'envoi d'emails par le site
     - (optionel) les clés Google pour [Maps](https://developers.google.com/maps/documentation/javascript/get-api-key) (cartes des lieux) et [Recaptcha 3](https://www.google.com/recaptcha/intro/v3.html) (formulaire Proposer un événement)

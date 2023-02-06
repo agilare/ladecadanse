@@ -88,7 +88,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
             }
 
             $subject = "Rapport d'erreur sur un événement : ".$tab_type_erreur[$champs['type_erreur']];
-            $contenu_message = "Événement : ".$url_site."/evenement.php?idE=".$champs['idEvenement'];
+            $contenu_message = "Événement : ".$site_full_url."/evenement.php?idE=".$champs['idEvenement'];
             $contenu_message .= "\n\n";
             $contenu_message .= "Message :\n\n".$champs['message']."\n\n";
             if (isset($_SESSION['user']))
@@ -100,7 +100,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
             if ($mailer->toAdmin($subject, $contenu_message, $from))
             {
                 HtmlShrink::msgOk("Merci d'avoir signalé cette erreur, je m'en occupe dès que possible");    
-$logger->log('global', 'activity', "[evenement-report] by ".$from." for ".$url_site."/evenement.php?idE=".$champs['idEvenement'], Logger::GRAN_YEAR);              
+$logger->log('global', 'activity', "[evenement-report] by ".$from." for /evenement.php?idE=".$champs['idEvenement'], Logger::GRAN_YEAR);              
             }            
 
             unset($_POST);

@@ -1,5 +1,20 @@
 # Changelog
 
+## [Unreleased]
+
+### Changed
+- refactor bootstrap, config
+    - purge, rename global url, rep vars
+    - html sanitization moved in Text class
+    - class to manage region user choice
+    - rm headers (externalized)
+    - replace remaining env var by const
+
+### Removed
+- cache
+- file upload
+
+
 ## [3.2.6] - 2023-02-05
 
 ### Fixed

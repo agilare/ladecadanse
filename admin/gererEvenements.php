@@ -13,7 +13,7 @@ $videur = new Sentry();
 
 if (!$videur->checkGroup(4))
 {
-	header("Location: ".$url_site."/user-login.php"); die();
+	header("Location: /user-login.php"); die();
 }
 
 
@@ -1389,8 +1389,8 @@ if (isset($get_idE) && !empty($champs['flyer']) && !$verif->getErreur($champs['f
 {
 	echo '<div class="supImg">';
 	$imgInfo = getimagesize($rep_images_even.$champs['flyer']);
-	$iconeImage = '<img src="'.$url_images_even."s_".$champs['flyer'].'" alt="image pour '.sanitizeForHtml($champs['titre']).'" />';
-	echo HtmlShrink::popupLink($url_images_even.$tab_even['flyer'], "Flyer", $imgInfo[0]+20, $imgInfo[1]+20, $iconeImage);
+	$iconeImage = '<img src="'.$url_uploads_events."s_".$champs['flyer'].'" alt="image pour '.sanitizeForHtml($champs['titre']).'" />';
+	echo HtmlShrink::popupLink($url_uploads_events.$tab_even['flyer'], "Flyer", $imgInfo[0]+20, $imgInfo[1]+20, $iconeImage);
 	?>
 
 	<div><label for="sup_flyer" class="continu">Supprimer</label>
@@ -1419,8 +1419,8 @@ echo $verif->getErreur("image");
 if (isset($get_idE) && !empty($champs['image']) && !$verif->getErreur('image'))
 {
 	$imgInfo = getimagesize($rep_images_even.$champs['image']);
-	$iconeImage = "<img src=\"".$url_images_even."s_".$champs['image']."\"  alt=\"image pour ".sanitizeForHtml($champs['titre'])."\" />";
-	echo HtmlShrink::popupLink($url_images_even.$tab_even['image'], "image", $imgInfo[0]+20, $imgInfo[1]+20, $iconeImage);
+	$iconeImage = "<img src=\"".$url_uploads_events."s_".$champs['image']."\"  alt=\"image pour ".sanitizeForHtml($champs['titre'])."\" />";
+	echo HtmlShrink::popupLink($url_uploads_events.$tab_even['image'], "image", $imgInfo[0]+20, $imgInfo[1]+20, $iconeImage);
 	echo "<div><label for=\"sup_image\" class=\"continu\">Supprimer</label><input type=\"checkbox\" name=\"sup_image\" id=\"sup_image\" value=\"image\" class=\"checkbox\" ";
 
 	if (!empty($supprimer['image']) && $verif->nbErreurs() == 0)

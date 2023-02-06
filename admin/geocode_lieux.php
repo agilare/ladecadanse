@@ -9,7 +9,7 @@ $videur = new Sentry();
 
 if (!$videur->checkGroup(1))
 {
-	header("Location: ".$url_site."/user-login.php"); die();
+	header("Location: /user-login.php"); die();
 }
 
 define("MAPS_HOST", "maps.google.ch");
