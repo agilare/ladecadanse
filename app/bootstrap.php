@@ -29,7 +29,7 @@ $authorization = new Authorization();
 $site_full_url = Utils::getBaseUrl()."/";
 $nom_page = basename($_SERVER["SCRIPT_FILENAME"], '.php');
 
-header('X-Content-Type-Options "nosniff"');
+header('X-Content-Type-Options: nosniff');
 header('X-Frame-Options: "ALLOW-FROM https://epic-magazine.ch/"');
 
 header("Cache-Control: no-store, no-cache, must-revalidate");
