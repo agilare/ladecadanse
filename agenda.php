@@ -2,18 +2,13 @@
 
 require_once("app/bootstrap.php");
 
-use Ladecadanse\Security\Sentry;
 use Ladecadanse\Evenement;
-use Ladecadanse\EvenementCollection;
 use Ladecadanse\Utils\Text;
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\Utils\Utils;
 
-$videur = new Sentry();
-
 $page_titre = "Agenda";
 $page_description = "Événements culturels et festifs à Genève et Lausanne : concerts, soirées, films, théâtre, expos...";
-
 include("_header.inc.php");
 
 if ($get['sem'] == 1)

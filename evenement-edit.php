@@ -2,18 +2,13 @@
 
 require_once("app/bootstrap.php");
 
-
-use Ladecadanse\Security\Sentry;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\ImageDriver2;
 use Ladecadanse\Security\SecurityToken;
 use Ladecadanse\Utils\Logger;
 use Ladecadanse\Utils\Text;
-use Ladecadanse\Utils\Utils;
 use Ladecadanse\Utils\Mailing;
 use Ladecadanse\HtmlShrink;
-
-$videur = new Sentry();
     
 $page_titre = "Proposer un événement";
 $page_description = "Proposer un événement pour l'agenda";

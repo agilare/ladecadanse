@@ -5,10 +5,8 @@
 
 require_once("app/bootstrap.php");
 
-use Ladecadanse\Security\Sentry;
 use Ladecadanse\Utils\Logger;
 
-$videur = new Sentry();
 
 $logger->log('global', 'activity', "Logout of ".$_SESSION['user'], Logger::GRAN_YEAR);
 

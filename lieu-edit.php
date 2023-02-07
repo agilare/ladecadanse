@@ -2,14 +2,11 @@
 
 require_once("app/bootstrap.php");
 
-use Ladecadanse\Security\Sentry;
 use Ladecadanse\Security\SecurityToken;
 use Ladecadanse\LieuEdition;
 use Ladecadanse\Utils\Text;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\HtmlShrink;
-
-$videur = new Sentry();
 
 if (!$videur->checkGroup(8))
 {

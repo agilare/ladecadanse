@@ -2,12 +2,9 @@
 
 require_once("app/bootstrap.php");
 
-use Ladecadanse\Security\Sentry;
 use Ladecadanse\Utils\Text;
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\Evenement;
-
-$videur = new Sentry();
 
 $page_titre_region = 'Genève';
 if ($_SESSION['region'] == 'vd')

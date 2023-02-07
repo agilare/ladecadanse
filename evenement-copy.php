@@ -13,14 +13,10 @@
 
 require_once("app/bootstrap.php");
 
-
-use Ladecadanse\Security\Sentry;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Security\SecurityToken;
 use Ladecadanse\Utils\Logger;
 use Ladecadanse\HtmlShrink;
-
-$videur = new Sentry();
 
 if (!$videur->checkGroup(10))
 {
@@ -32,7 +28,6 @@ $cache_index = $rep_cache."index/";
 
 $page_titre = "copier un événement";
 $page_description = "Copie d'un événement vers d'autres dates";
-$nom_page = "evenement-copy";
 $extra_css = array("formulaires", "evenement_inc", "copier_evenement");
 $extra_js = array("jquery.shiftcheckbox");
 

@@ -2,32 +2,24 @@
 
 require_once("app/bootstrap.php");
 
-use Ladecadanse\Security\Sentry;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\Logger;
 use Ladecadanse\Utils\Mailing;
 use Ladecadanse\HtmlShrink;
-
-$videur = new Sentry();
 
 if ($videur->checkGroup(12))
 {
 	header("Location: index.php"); die();
 }
 
-
-$nom_page = "user-reset.php";
 $page_titre = "Mot de passe oublié";
 $extra_css = array("formulaires", "login");
 include("_header.inc.php");
 
 $tab_messages = array('faux');
 
-
 ?>
 
-
-<!-- D?t Contenu -->
 <div id="contenu" class="colonne">
 
 <div id="entete_contenu">

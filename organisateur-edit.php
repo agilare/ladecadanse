@@ -2,14 +2,10 @@
 
 require_once("app/bootstrap.php");
 
-
-use Ladecadanse\Security\Sentry;
 use Ladecadanse\Security\SecurityToken;
 use Ladecadanse\OrganisateurEdition;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\HtmlShrink;
-
-$videur = new Sentry();
 
 if (!$videur->checkGroup(8))
 {
@@ -20,7 +16,6 @@ $page_titre = "ajouter/éditer un organisateur";
 $page_description = "ajouter/éditer un organisateur";
 $extra_css = array("formulaires", "ajouterOrganisateur_formulaire", "organisateur_inc");
 $extra_js = array("zebra_datepicker", "jquery.shiftcheckbox");
-
 
 /*
 * action choisie, ID si édition, val pour (dés)activer l'événement

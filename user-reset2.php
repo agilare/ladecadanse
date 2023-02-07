@@ -2,26 +2,19 @@
 
 require_once("app/bootstrap.php");
 
-use Ladecadanse\Security\Sentry;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\Logger;
 use Ladecadanse\HtmlShrink;
-
-$videur = new Sentry();
 
 if ($videur->checkGroup(12))
 {
 	header("Location: index.php"); die();
 }
 
-//$cache_lieux = $rep_cache."lieux/";
-$nom_page = "user-reset2";
 $page_titre = "Réinitialisation du mot de passe";
 $page_description = "";
 $extra_css = ["formulaires"];
 include("_header.inc.php");
-
-
 
 if (isset($_GET['token']))
 {

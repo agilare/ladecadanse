@@ -2,7 +2,6 @@
 
 require_once("app/bootstrap.php");
 
-
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\Text;
 

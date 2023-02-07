@@ -2,15 +2,11 @@
 
 require_once("app/bootstrap.php");
 
-use Ladecadanse\Security\Sentry;
 use Ladecadanse\Utils\Logger;
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\Utils\Utils;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\Text;
-
-$videur = new Sentry();
-
 
 $tab_menu_tri = array("pertinence" => "pertinence", "dateEvenement" => "date", "dateAjout" => "date d'ajout");
 $tab_periodes = array("futur", "ancien", "tous");
@@ -50,15 +46,11 @@ $mots_brut = $get['mots'];
 
 $limite = 10;
 
-//$cache_lieux = $rep_cache."lieux/";
-//header("Cache-Control: max-age=30, must-revalidate");
-$nom_page = "evenement-search";
+
 $page_titre = "recherche dans l'agenda des événements";
 $page_description = "Rechercher un événement culturel à Genève et Lausanne";
 include("_header.inc.php");
-
 ?>
-
 
 
 <!-- D?t Contenu -->
@@ -127,10 +119,6 @@ if (!empty($get['mots']))
 		if (!in_array($tab_tous_mots[$i], $mots_vides))
 		{
 			$tab_mots[] = $tab_tous_mots[$i];
-		}
-		else
-		{
-			echo $tab_tous_mots[$i];
 		}
 	}
 	$nb_mots = count($tab_mots);

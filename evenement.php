@@ -113,8 +113,6 @@ $tab_localite = $connector->fetchArray($req_localite);
 
 $page_titre_localite = " – ";
 
-
-$nom_page = "evenement";
 $page_titre = $even->getValue('titre')." ".$determinant_lieu.$even->getValue('nomLieu').$even_salle.", ".HtmlShrink::getAdressFitted($even->getValue('region'), $tab_localite['localite'], $even->getValue('quartier'), $even->getValue('adresse'))."; le ".date_fr($even->getValue('dateEvenement'), "annee", "", "", false);
 $page_description = $even->getValue('titre')." ".$determinant_lieu.$even->getValue('nomLieu').
 " le ".date_fr($even->getValue('dateEvenement'), "annee", "", "", false)." ".

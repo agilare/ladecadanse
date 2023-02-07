@@ -2,10 +2,8 @@
 
 require_once("app/bootstrap.php");
 
-use Ladecadanse\Security\Sentry;
 use Ladecadanse\Lieu;
 use Ladecadanse\DescriptionCollection;
-use Ladecadanse\Commentaire;
 use Ladecadanse\CommentaireCollection;
 use Ladecadanse\Evenement;
 use Ladecadanse\EvenementCollection;
@@ -13,25 +11,6 @@ use Ladecadanse\HtmlShrink;
 use Ladecadanse\Utils\Utils;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\Text;
-
-
-$videur = new Sentry();
-
-
-/* if (!isset($_GET['idL']) || !is_numeric($_GET['idL']))
-{
-	echo "Un ID lieu doit ètre désigné par un entier";
-	exit;
-}
-else
-{
-	$get['idL'] = trim($_GET['idL']);
-} */
-/* if (isset($_GET['genre_even']))
-{
-
-	$get['genre_even'] = trim($_GET['genre_even']);
-} */
 
 if (isset($_GET['idL']) && $_GET['idL'] > 0)
 {

@@ -2,30 +2,19 @@
 
 require_once("app/bootstrap.php");
 
-use Ladecadanse\Security\Sentry;
 use Ladecadanse\Security\SecurityToken; 
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\HtmlShrink;
-
-$videur = new Sentry();
 
 if (!$videur->checkGroup(8))
 {
 	header("Location: index.php"); die();
 }
 
-
-
-$cache_lieux = $rep_cache."lieux/";
-// header("Cache-Control: max-age=30, must-revalidate");
-
-
 $page_titre = "ajouter/modifier une salle";
 $page_description = "ajouter/modifier une salle";
 $extra_css = array("formulaires", "description");
 include("_header.inc.php");
-
-
 
 /*
 * action choisie, idL et idP si édition

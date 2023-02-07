@@ -2,7 +2,6 @@
 
 require_once("../app/bootstrap.php");
 
-use Ladecadanse\Security\Sentry;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\ImageDriver2;
 use Ladecadanse\EvenementCollection;
@@ -18,8 +17,7 @@ if (!$videur->checkGroup(4))
 
 
 $page_titre = "gérer les événements";
-$page_description = "Gestion des événements ajoutés";
-$nom_page = "gererEvenements";
+$page_description = "Gestion des événements";
 $extra_css = array("formulaires", "gerer", "chosen.min");
 $extra_js = array("jquery.shiftcheckbox");
 require_once('_header.inc.php');
@@ -1405,11 +1403,11 @@ if (isset($get_idE) && !empty($champs['flyer']) && !$verif->getErreur($champs['f
 }
 ?>
 
-<p>
-<label for="image">Image :</label>
-<input type="file" name="image" id="flyer" class="file-upload-size-max" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif" title="Choisissez une image pour illustrer l'ê·©nement" tabindex="12" class="fichier" />
-</p>
-<div class="guideChamp">Seul les formats JPEG, PNG et GIF sont acceptÃ©s.</div>
+    <p>
+    <label for="image">Image :</label>
+    <input type="file" name="image" id="flyer" class="file-upload-size-max" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif" title="Choisissez une image pour illustrer l'ê·©nement" tabindex="12" class="fichier" />
+    </p>
+    <div class="guideChamp">Seul les formats JPEG, PNG et GIF sont acceptés.</div>
 <div class="spacer"></div>
 <?php
 echo $verif->getErreur("image");
@@ -1436,8 +1434,8 @@ if (isset($get_idE) && !empty($champs['image']) && !$verif->getErreur('image'))
 
 
 <p class="piedForm">
-<input type="hidden" name="formulaire" value="ok" />
-<input type="submit" value="Remplacer" tabindex="19" class="submit" />
+    <input type="hidden" name="formulaire" value="ok" />
+    <input type="submit" value="Remplacer" tabindex="19" class="submit" />
 </p>
 </div>
 </form>

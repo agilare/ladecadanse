@@ -2,17 +2,12 @@
 
 require_once("app/bootstrap.php");
 
-
-use Ladecadanse\Security\Sentry;
 use Ladecadanse\Organisateur;
-use Ladecadanse\OrganisateurCollection;
 use Ladecadanse\Evenement;
 use Ladecadanse\EvenementCollection;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\Text;
 use Ladecadanse\HtmlShrink;
-
-$videur = new Sentry();
 
 if (isset($_GET['idO']))
 {

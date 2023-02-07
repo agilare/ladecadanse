@@ -2,13 +2,9 @@
 
 require_once("app/bootstrap.php");
 
-
-use Ladecadanse\Security\Sentry;
 use Ladecadanse\OrganisateurCollection;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\Text;
-
-$videur = new Sentry();
 
 $page_titre = "Organisateurs d'événements culturels à Genève et Lausanne : associations, labels, collectifs";
 $page_description = "Derniers organisateurs ajoutés";

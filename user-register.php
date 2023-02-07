@@ -2,78 +2,29 @@
 
 require_once("app/bootstrap.php");
 
-use Ladecadanse\Security\Sentry;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\Logger;
-use Ladecadanse\Utils\Utils;
 use Ladecadanse\Utils\Mailing;
 use Ladecadanse\HtmlShrink;
 
-$videur = new Sentry();
-
-
-
-/*
-* action choisie, ID si édition
-* action "ajouter" par défaut
-*/
-
 $get['action'] = "ajouter";
 
-/*
-* Vérification et attribution des variables d'URL GET
-*/
 if (isset($_GET['idP']))
 {
 
 	$get['idP'] = Validateur::validateUrlQueryValue($_GET['idP'], "int", 1);
 }
 
-/* if (isset($_GET['action']))
-{
-	$get['action'] = verif_get($_GET['action'], "enum", 1, $actions);
-
-	if (($_GET['action'] == "ajouter" || $_GET['action'] == 'insert') && $_SESSION['Sgroupe'] > 1)
-	{
-		HtmlShrink::msgErreur("Vous n'avez pas le droit d'ajouter une personne");
-		exit;
-	}
-	elseif (($get['action'] == "update" || $get['action'] == "editer") && $_SESSION['SidPersonne'] != $get['idP'] && $_SESSION['Sgroupe'] > 1)
-	{
-		HtmlShrink::msgErreur("Vous n'avez pas le droit de modifier cette personne");
-		exit;
-	}
-
-}
-else
-{
-	formaterTexte("Vous devez faire une action", "p");
-	exit;
-} */
-
-//header("Cache-Control: max-age=600, must-revalidate");
-/* $cache_index = $rep_cache."index/";
-$cache_lieux = $rep_cache."lieux/"; */
 $page_titre = "Inscription";
 $page_description = "Création d'une compte sur La décadanse";
-$nom_page = "user-register";
 $extra_css = array("formulaires", "inscription_formulaire");
 $extra_js = array("zebra_datepicker", "jquery.shiftcheckbox");
 include("_header.inc.php");
 ?>
 
-
-
-
-
-<!-- Début Evenements -->
 <div id="contenu" class="colonne inscription">
 
 <?php
-
-/*
- * TRAITEMENT DU FORMULAIRE (EDITION OU AJOUT)
- */
 
 $verif = new Validateur();
 

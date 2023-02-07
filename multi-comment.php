@@ -1,21 +1,15 @@
 <?php
 
-
 require_once("app/bootstrap.php");
 
-
-use Ladecadanse\Security\Sentry;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\Security\SecurityToken;
-
-$videur = new Sentry();
 
 if (!$videur->checkGroup(12))
 {
 	header("Location: index.php"); die();
 }
-
 
 if (isset($_GET['id']))
 {
@@ -45,7 +39,6 @@ if ($get['element'] == 'lieu')
 //$cache_lieux = $rep_cache."lieux/";
 // header("Cache-Control: max-age=30, must-revalidate");
 header ("Refresh: 2;URL=".$url_retour);
-$nom_page = "multi-comment";
 $page_titre = "ajouter/éditer un commentaire";
 $page_description = "ajouter/éditer un commentaire";
 $extra_css = array("formulaires");

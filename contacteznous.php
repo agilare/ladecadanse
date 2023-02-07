@@ -2,23 +2,17 @@
 
 require_once("app/bootstrap.php");
 
-use Ladecadanse\Security\Sentry;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\Utils\Mailing;
 
-$videur = new Sentry();
-
 $page_titre = "Contact";
 $page_description = "Formulaire pour envoyer un email au webmaster de La décadanse : proposer un événement, poser une question, etc.";
-$nom_page = "contacteznous";
 $extra_css = array("formulaires", "contacteznous");
 
 include("_header.inc.php");
 ?>
 
-
-<!-- Debut Contenu -->
 <div id="contenu" class="colonne contacteznous">
 
 	<div id="entete_contenu">
@@ -27,10 +21,6 @@ include("_header.inc.php");
 	</div>
 
 <?php
-/*
-* TRAITEMENT DU FORMULAIRE (EDITION OU AJOUT)
-* $post_pour : tableau de destinataires membres
-*/
 
 $verif = new Validateur();
 

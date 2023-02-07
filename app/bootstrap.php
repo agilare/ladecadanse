@@ -11,6 +11,7 @@ use Ladecadanse\Utils\DbConnector;
 use Ladecadanse\Utils\Logger;
 use Ladecadanse\Utils\RegionConfig;
 use Ladecadanse\Security\Authorization;
+use Ladecadanse\Security\Sentry;
 use Ladecadanse\Utils\Utils;
 
 require_once('config.php');
@@ -26,6 +27,8 @@ $connector = new DbConnector($param['dbhost'], $param['dbname'], $param['dbusern
 
 $authorization = new Authorization();
 
+$videur = new Sentry();
+
 $site_full_url = Utils::getBaseUrl()."/";
 $nom_page = basename($_SERVER["SCRIPT_FILENAME"], '.php');
 
@@ -37,9 +40,9 @@ header("Cache-Control: post-check=0, pre-check=0", false);
 header("Pragma: no-cache");
 
 /**
- * FIXME: mv to String class
- * @param string $chaine
- * @return string
+ * FIXME: mv to Text class
+ * @param string $chaine dirty
+ * @return string clean
  */
 function sanitizeForHtml(?string $chaine): string
 {

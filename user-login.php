@@ -2,17 +2,13 @@
 
 require_once("app/bootstrap.php");
 
-use Ladecadanse\Security\Sentry;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\HtmlShrink;
-
-$videur = new Sentry();
 
 if ($videur->checkGroup(12))
 {
 	header("Location: index.php"); die();
 }
-
 
 $tab_messages = array('faux');
 
@@ -88,16 +84,11 @@ else
 
 }
 
-$nom_page = "login";
 $page_titre = "connexion";
 $page_description = "Formulaire de connexion pour les membres";
 $extra_css = array("formulaires", "login");
 include("_header.inc.php");
-
-
 ?>
-
-
 
 
 <!-- D?t Contenu -->

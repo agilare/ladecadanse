@@ -9,10 +9,17 @@
     - class to manage region user choice
     - rm headers (externalized)
     - replace remaining env var by const
+    - rss.php, agenda.php names
+    - mots-vides.txt -> utf8
 
 ### Removed
 - cache
+- comments ?
+- event-email ?
+- breves
+- favorites ?
 - file upload
+- app : index.html, utf8-to-utf8mb4
 
 
 ## [3.2.6] - 2023-02-05

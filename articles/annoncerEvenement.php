@@ -2,14 +2,6 @@
 
 require_once("../app/bootstrap.php");
 
-
-use Ladecadanse\Security\Sentry;
-use Ladecadanse\Utils\Logger;
-
-$videur = new Sentry();
-
-
-$nom_page = "annoncer";
 $page_titre = "Annoncer un événement";
 $page_description = "portrait du site La décadanse : description, liste des membres, outils utilisés";
 $extra_css = array("apropos");
@@ -17,7 +9,6 @@ include("../_header.inc.php");
 ?>
 
 
-<!-- Deb contenu -->
 <div id="contenu" class="colonne">
 
 	<div id="entete_contenu">

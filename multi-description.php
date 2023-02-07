@@ -2,13 +2,10 @@
 
 require_once("app/bootstrap.php");
 
-use Ladecadanse\Security\Sentry;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Security\SecurityToken;
 use Ladecadanse\Utils\Logger;
 use Ladecadanse\HtmlShrink;
-
-$videur = new Sentry();
 
 if (!$videur->checkGroup(8))
 {
@@ -20,7 +17,6 @@ $cache_lieux = $rep_cache."lieux/";
 
 $page_titre = "ajouter/modifier une description/présentation de lieu";
 $page_description = "ajouter/modifier une description/présentation  de lieu";
-$nom_page = "multi-description";
 $extra_css = array("formulaires", "description");
 $extra_js = array( "zebra_datepicker", "jquery.shiftcheckbox");
 

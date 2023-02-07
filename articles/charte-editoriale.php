@@ -2,19 +2,11 @@
 
 require_once("../app/bootstrap.php");
 
-
-use Ladecadanse\Security\Sentry;
-
-$videur = new Sentry();
-
-$nom_page = "charte-editoriale";
 $page_titre = "Charte éditoriale";
 $page_description = "";
 include("../_header.inc.php");
 ?>
 
-
-<!-- Deb contenu -->
 <div id="contenu" class="colonne">
 
     <div id="entete_contenu">

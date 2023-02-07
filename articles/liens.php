@@ -2,27 +2,17 @@
 
 require_once("../app/bootstrap.php");
 
-use Ladecadanse\Security\Sentry;
-
-
-$videur = new Sentry();
-
-$nom_page = "liens";
 $page_titre = "liens";
 $page_description = "Liens";
 include("../_header.inc.php");
 ?>
 
-
-<!-- Deb contenu -->
 <div id="contenu" class="colonne">
 
 	<div id="entete_contenu">
 		<h2>Liens</h2>
 	<div class="spacer"></div>
 	</div>
-
-
 
 	<div class="rubrique">
 		

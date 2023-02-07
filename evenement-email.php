@@ -2,23 +2,17 @@
 
 require_once("app/bootstrap.php");
 
-use Ladecadanse\Security\Sentry;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\Logger;
 use Ladecadanse\Utils\Text;
-use Ladecadanse\Utils\Utils;
 use Ladecadanse\Utils\Mailing;
 use Ladecadanse\HtmlShrink;
-
-$videur = new Sentry();
 
 if (!$videur->checkGroup(12))
 {
 	header("Location: index.php"); die();
 }
 
-//$cache_lieux = $rep_cache."lieux/";
-$nom_page = "email_evenement";
 $page_titre = "Envoyer un événement";
 $page_description = "Envoyer un événement par email";
 $extra_css = array("formulaires", "evenement_inc", "email_evenement_formulaire");
@@ -112,7 +106,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
             if ($mailer->toUser($champs['email_destinataire'], $subject, $contenu_message, ['email' => $_SESSION['Semail'], 'name' => $_SESSION['user'] ]))
             {
                 HtmlShrink::msgOk('Événement <strong>'.$tab_even['titre'].'</strong> envoyé à '.$champs['email_destinataire']);   		
-                $logger->log('global', 'activity', "[email_evenement] event ".$tab_even['titre']." (idE ".$get['idE'].") sent from ".$_SESSION['user']." to ".$champs['email_destinataire'], Logger::GRAN_YEAR);                
+                $logger->log('global', 'activity', "[evenement-email] event ".$tab_even['titre']." (idE ".$get['idE'].") sent from ".$_SESSION['user']." to ".$champs['email_destinataire'], Logger::GRAN_YEAR);                
             }                        
 		}
 		else

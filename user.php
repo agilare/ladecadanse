@@ -2,20 +2,16 @@
 
 require_once("app/bootstrap.php");
 
-use Ladecadanse\Security\Sentry;
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\Utils\Utils;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\Text;
 
-$videur = new Sentry();
 if (!$videur->checkGroup(12))
 {
 	header("Location: /user-login.php"); die();
 }
 
-
-$nom_page = "user";
 $page_titre = "profil";
 $page_description = "profil";
 include("_header.inc.php");
@@ -25,9 +21,6 @@ $tab_elements = array("evenement" => "Événements",  "breve" => "Brèves", "lie
  "description" => "Descriptions", "commentaire" => "Commentaires");
 
 $tab_type_elements = array("ajouts" => "ajoutés",  "favoris" => "Favoris", "participations" => "Participations");
-
-
-
 
 if (isset($_GET['idP']))
 {

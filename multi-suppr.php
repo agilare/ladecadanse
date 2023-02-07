@@ -2,44 +2,25 @@
 
 require_once("app/bootstrap.php");
 
-
-use Ladecadanse\Security\Sentry;
 use Ladecadanse\Security\SecurityToken;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\Text;
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\Utils\Logger;
 
-$videur = new Sentry();
-
 if (!$videur->checkGroup(6))
 {
 	header("Location: index.php"); die();
 }
 
-
 $cache_lieu = $rep_cache."lieu/";
 $cache_even = $rep_cache."evenement/";
 $cache_index = $rep_cache."index/";
 
-//header("Cache-Control: max-age=30, must-revalidate");
-/*
-header("Pragma: no-cache");
-header("Expires: 0");
-header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
-header("Cache-Control: no-cache, must-revalidate");
- */
 $page_titre = "supprimer un élément";
 $page_description = "Suppression d'un élément";
-$nom_page = "supprimer";
 $extra_css = array("evenement_inc", "breve_inc", "lieu_inc", "descriptionlieu_inc", "commentaire_inc");
 include("_header.inc.php");
-
-
-/*
-* action choisie, ID si édition
-* action "ajouter" par défaut
-*/
 
 
 $tab_types = array("evenement", "lieu", "descriptionlieu", "breve", "commentaire", "personne", "salle", "organisateur");
