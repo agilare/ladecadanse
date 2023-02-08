@@ -2,32 +2,24 @@
 
 require_once("app/bootstrap.php");
 
-use Ladecadanse\Security\Sentry;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\Logger;
 use Ladecadanse\Utils\Mailing;
 use Ladecadanse\HtmlShrink;
-
-$videur = new Sentry();
 
 if ($videur->checkGroup(12))
 {
 	header("Location: index.php"); die();
 }
 
-
-$nom_page = "user-reset.php";
 $page_titre = "Mot de passe oublié";
 $extra_css = array("formulaires", "login");
 include("_header.inc.php");
 
 $tab_messages = array('faux');
 
-
 ?>
 
-
-<!-- D?t Contenu -->
 <div id="contenu" class="colonne">
 
 <div id="entete_contenu">
@@ -106,7 +98,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' && empty($_POST
 
 			$contenu_message = "Bonjour,\n\n";
 			$contenu_message .= "Un visiteur de La décadanse, probablement vous, a fait une demande pour choisir un nouveau mot de passe. Veuillez cliquer sur ce lien (valable 24 h) :\n\n";
-			$contenu_message .= $url_site."user-reset2.php?token=".$token;
+			$contenu_message .= $site_full_url."user-reset2.php?token=".$token;
 			$contenu_message .= "\n\n";
 			$contenu_message .= "Si vous avez besoin d'aide, vous pouvez nous contacter à info@ladecadanse.ch";
 			$contenu_message .= "\n\n";
@@ -118,7 +110,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' && empty($_POST
        
 			HtmlShrink::msgOk("Un email a été envoyé à ".$email_envoi." qui contient un lien vous permettant de choisir un nouveau mot de passe.");	
 
-            $logger->log('global', 'activity', "[user-reset] request by ".$email_envoi." ".$url_site."user.php?idP=".$idPersonne, Logger::GRAN_YEAR);
+            $logger->log('global', 'activity', "[user-reset] request by ".$email_envoi." user.php?idP=".$idPersonne, Logger::GRAN_YEAR);
 		}
 		else
 		{

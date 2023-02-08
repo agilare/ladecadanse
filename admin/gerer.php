@@ -2,13 +2,10 @@
 
 require_once("../app/bootstrap.php");
 
-use Ladecadanse\Security\Sentry;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\Utils\Utils;
 use Ladecadanse\Utils\Text;
-
-$videur = new Sentry();
 
 if (!$videur->checkGroup(4))
 {
@@ -18,7 +15,6 @@ if (!$videur->checkGroup(4))
 
 $page_titre = "gérer";
 $page_description = "Gestion des éléments ajoutés";
-$nom_page = "gerer";
 require_once('_header.inc.php');
 
 $tab_listes = array("evenement" => "Événements",  "breve" => "Brèves", "lieu" => "Lieux", "organisateur" => "Organisateurs", "description" => "Descriptions", "commentaire" => "Commentaires", "personne" => "Personnes");

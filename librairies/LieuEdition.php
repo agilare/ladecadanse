@@ -229,11 +229,10 @@ class LieuEdition extends Edition
 
     function enregistrer()
     {
-        global $rep_images_lieux;
+        global $rep_uploads_lieux;
         global $rep_templates;
         global $rep_fichiers_lieu;
-        global $rep_images_lieux_galeries;
-        global $url_site;
+        global $rep_uploads_lieux_galeries;
         global $glo_tab_quartiers2;
 
         $lieu = new Lieu();
@@ -331,8 +330,8 @@ class LieuEdition extends Edition
                 // suppression des fichiers de l'ancienne image
                 if (!empty($lieu->getValue('logo')))
                 {
-                    unlink($rep_images_lieux . $lieu->getValue('logo'));
-                    unlink($rep_images_lieux . "s_" . $lieu->getValue('logo'));
+                    unlink($rep_uploads_lieux . $lieu->getValue('logo'));
+                    unlink($rep_uploads_lieux . "s_" . $lieu->getValue('logo'));
 
                     //echo "<div class=\"msg\">Ancienne image supprimée</div>";
                 }
@@ -350,8 +349,8 @@ class LieuEdition extends Edition
                 // suppression des fichiers de l'image, s'il elle est effectivement enregistrée
                 if (!empty($lieu->getValue('logo')))
                 {
-                    unlink($rep_images_lieux . $lieu->getValue('logo'));
-                    unlink($rep_images_lieux . "s_" . $lieu->getValue('logo'));
+                    unlink($rep_uploads_lieux . $lieu->getValue('logo'));
+                    unlink($rep_uploads_lieux . "s_" . $lieu->getValue('logo'));
                 }
 
                 $lieu->setValue('logo', '');
@@ -362,8 +361,8 @@ class LieuEdition extends Edition
                 // suppression des fichiers de l'ancienne image
                 if ($lieu->getValue('photo1') != '')
                 {
-                    unlink($rep_images_lieux . $lieu->getValue('photo1'));
-                    unlink($rep_images_lieux . "s_" . $lieu->getValue('photo1'));
+                    unlink($rep_uploads_lieux . $lieu->getValue('photo1'));
+                    unlink($rep_uploads_lieux . "s_" . $lieu->getValue('photo1'));
 
                     //echo "<div class=\"msg\">Ancienne image supprimée</div>";
                 }
@@ -378,8 +377,8 @@ class LieuEdition extends Edition
                 // suppression des fichiers de l'image, s'il elle est effectivement enregistrée
                 if ($lieu->getValue('photo1') != '')
                 {
-                    unlink($rep_images_lieux . $lieu->getValue('photo1'));
-                    unlink($rep_images_lieux . "s_" . $lieu->getValue('photo1'));
+                    unlink($rep_uploads_lieux . $lieu->getValue('photo1'));
+                    unlink($rep_uploads_lieux . "s_" . $lieu->getValue('photo1'));
                 }
 
                 $lieu->setValue('photo1', '');
@@ -401,8 +400,8 @@ class LieuEdition extends Edition
                 //echo $idF;
                 $this->connector->query("DELETE FROM lieu_fichierrecu WHERE idLieu=" . $lieu->getId() . " AND idFichierrecu=" . $idF);
                 $this->connector->query("DELETE FROM fichierrecu WHERE idFichierrecu=" . $idF);
-                unlink($rep_images_lieux_galeries . $nom_fichier);
-                unlink($rep_images_lieux_galeries . "s_" . $nom_fichier);
+                unlink($rep_uploads_lieux_galeries . $nom_fichier);
+                unlink($rep_uploads_lieux_galeries . "s_" . $nom_fichier);
             }
 
 

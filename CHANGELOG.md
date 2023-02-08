@@ -2,6 +2,28 @@
 
 ## [Unreleased]
 
+### Changed
+- refactor bootstrap, config
+    - purge, rename global url, rep vars
+    - html sanitization moved in Text class
+    - class to manage region user choice
+    - rm headers (externalized)
+    - replace remaining env var by const
+    - rss.php, agenda.php names
+    - mots-vides.txt -> utf8
+
+### Removed
+- cache
+- comments ?
+- event-email ?
+- breves
+- favorites ?
+- file upload
+- app : index.html, utf8-to-utf8mb4
+
+
+## [3.2.6] - 2023-02-05
+
 ### Fixed
 
 - misc in agenda, users, contact
@@ -9,20 +31,20 @@
 
 ### Added
 
+- setup PHPMailer (replaces PEAR Mail)
+- Docker compose recipe
+- analyzers setup : PHPCompatibility, phpstan, security checker
+- git-ftp setup
 - home : Debout les braves banner
-- propose event : clarifications
+- propose event : intro clarifications
 - event form : clarifications for ask organisation registration
 - changelog
 - TESTS.md
-- docker compose recipe
-- analyzers setup : PHPCompatibility, phpstan, security checker
-- git-ftp setup
-- setup PHPMailer (replaces PEAR Mail)
 - editorconfig
 
 ### Changed
 
-- composer : complete php extensions needed
+- composer : complete needed PHP extensions
 - php errors and timezone config externalized
 - readme - partially rewritten, completed
 - Zebra datepicker 1.9.19
@@ -32,6 +54,9 @@
 
 - PEAR Mail
 - php obsolete functions
+
+### Security
+- rm master key
 
 ## [3.2.5] - 2023-01-12
 

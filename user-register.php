@@ -2,78 +2,29 @@
 
 require_once("app/bootstrap.php");
 
-use Ladecadanse\Security\Sentry;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\Logger;
-use Ladecadanse\Utils\Utils;
 use Ladecadanse\Utils\Mailing;
 use Ladecadanse\HtmlShrink;
 
-$videur = new Sentry();
-
-
-
-/*
-* action choisie, ID si édition
-* action "ajouter" par défaut
-*/
-
 $get['action'] = "ajouter";
 
-/*
-* Vérification et attribution des variables d'URL GET
-*/
 if (isset($_GET['idP']))
 {
 
 	$get['idP'] = Validateur::validateUrlQueryValue($_GET['idP'], "int", 1);
 }
 
-/* if (isset($_GET['action']))
-{
-	$get['action'] = verif_get($_GET['action'], "enum", 1, $actions);
-
-	if (($_GET['action'] == "ajouter" || $_GET['action'] == 'insert') && $_SESSION['Sgroupe'] > 1)
-	{
-		HtmlShrink::msgErreur("Vous n'avez pas le droit d'ajouter une personne");
-		exit;
-	}
-	elseif (($get['action'] == "update" || $get['action'] == "editer") && $_SESSION['SidPersonne'] != $get['idP'] && $_SESSION['Sgroupe'] > 1)
-	{
-		HtmlShrink::msgErreur("Vous n'avez pas le droit de modifier cette personne");
-		exit;
-	}
-
-}
-else
-{
-	formaterTexte("Vous devez faire une action", "p");
-	exit;
-} */
-
-//header("Cache-Control: max-age=600, must-revalidate");
-/* $cache_index = $rep_cache."index/";
-$cache_lieux = $rep_cache."lieux/"; */
 $page_titre = "Inscription";
 $page_description = "Création d'une compte sur La décadanse";
-$nom_page = "user-register";
 $extra_css = array("formulaires", "inscription_formulaire");
 $extra_js = array("zebra_datepicker", "jquery.shiftcheckbox");
 include("_header.inc.php");
 ?>
 
-
-
-
-
-<!-- Début Evenements -->
 <div id="contenu" class="colonne inscription">
 
 <?php
-
-/*
- * TRAITEMENT DU FORMULAIRE (EDITION OU AJOUT)
- */
 
 $verif = new Validateur();
 
@@ -337,10 +288,10 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 				$contenu_message = "Bonjour,\n\n";
 				$contenu_message .= "Merci de vous être inscrit-e sur www.ladecadanse.ch";
 				$contenu_message .= "\n\n";
-				$contenu_message .= "Pour vous connecter : ".$url_site."user-login.php";
+				$contenu_message .= "Pour vous connecter : ".$site_full_url."user-login.php";
 				$contenu_message .= "\n\n";
 				$contenu_message .= "Vous pouvez compléter votre profil sur votre page de membre : ";
-				$contenu_message .= $url_site."user.php?idP=".$req_id;
+				$contenu_message .= $site_full_url."user.php?idP=".$req_id;
 				$contenu_message .= "\n\n";
 				$contenu_message .= "Bonne visite";
 				$contenu_message .= "\n\n";
@@ -353,10 +304,10 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 				if (isset($champs['organisateurs']) && count($champs['organisateurs']) > 0)
 					$compte_organisateur = " en tant qu'acteur culturel";
 				
-				HtmlShrink::msgOk("<strong>Votre compte".$compte_organisateur." a été créé</strong>; vous pouvez maintenant vous <a href=\"".$url_site."/user-login.php\">connecter</a> avec l'identifiant et le mot de passe que vous venez de saisir.
+				HtmlShrink::msgOk("<strong>Votre compte".$compte_organisateur." a été créé</strong>; vous pouvez maintenant vous <a href=\"/user-login.php\">connecter</a> avec l'identifiant et le mot de passe que vous venez de saisir.
 				<br />Un e-mail de confirmation vous a été envoyé à l'adresse : ".$tab_pers['email']);
 
-                $logger->log('global', 'activity', "[user-register] by ".$tab_pers['pseudo']." (".$tab_pers['email'].") in group ".$tab_pers['groupe']." ".$url_site."/user.php?idP=".$req_id, Logger::GRAN_YEAR);
+                $logger->log('global', 'activity', "[user-register] by ".$tab_pers['pseudo']." (".$tab_pers['email'].") in group ".$tab_pers['groupe']." /user.php?idP=".$req_id, Logger::GRAN_YEAR);
 			}
 						
 			foreach ($champs as $k => $v)

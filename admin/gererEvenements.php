@@ -2,7 +2,6 @@
 
 require_once("../app/bootstrap.php");
 
-use Ladecadanse\Security\Sentry;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\ImageDriver2;
 use Ladecadanse\EvenementCollection;
@@ -13,13 +12,12 @@ $videur = new Sentry();
 
 if (!$videur->checkGroup(4))
 {
-	header("Location: ".$url_site."/user-login.php"); die();
+	header("Location: /user-login.php"); die();
 }
 
 
 $page_titre = "gérer les événements";
-$page_description = "Gestion des événements ajoutés";
-$nom_page = "gererEvenements";
+$page_description = "Gestion des événements";
 $extra_css = array("formulaires", "gerer", "chosen.min");
 $extra_js = array("jquery.shiftcheckbox");
 require_once('_header.inc.php');
@@ -1389,8 +1387,8 @@ if (isset($get_idE) && !empty($champs['flyer']) && !$verif->getErreur($champs['f
 {
 	echo '<div class="supImg">';
 	$imgInfo = getimagesize($rep_images_even.$champs['flyer']);
-	$iconeImage = '<img src="'.$url_images_even."s_".$champs['flyer'].'" alt="image pour '.sanitizeForHtml($champs['titre']).'" />';
-	echo HtmlShrink::popupLink($url_images_even.$tab_even['flyer'], "Flyer", $imgInfo[0]+20, $imgInfo[1]+20, $iconeImage);
+	$iconeImage = '<img src="'.$url_uploads_events."s_".$champs['flyer'].'" alt="image pour '.sanitizeForHtml($champs['titre']).'" />';
+	echo HtmlShrink::popupLink($url_uploads_events.$tab_even['flyer'], "Flyer", $imgInfo[0]+20, $imgInfo[1]+20, $iconeImage);
 	?>
 
 	<div><label for="sup_flyer" class="continu">Supprimer</label>
@@ -1405,11 +1403,11 @@ if (isset($get_idE) && !empty($champs['flyer']) && !$verif->getErreur($champs['f
 }
 ?>
 
-<p>
-<label for="image">Image :</label>
-<input type="file" name="image" id="flyer" class="file-upload-size-max" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif" title="Choisissez une image pour illustrer l'ê·©nement" tabindex="12" class="fichier" />
-</p>
-<div class="guideChamp">Seul les formats JPEG, PNG et GIF sont acceptÃ©s.</div>
+    <p>
+    <label for="image">Image :</label>
+    <input type="file" name="image" id="flyer" class="file-upload-size-max" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif" title="Choisissez une image pour illustrer l'ê·©nement" tabindex="12" class="fichier" />
+    </p>
+    <div class="guideChamp">Seul les formats JPEG, PNG et GIF sont acceptés.</div>
 <div class="spacer"></div>
 <?php
 echo $verif->getErreur("image");
@@ -1419,8 +1417,8 @@ echo $verif->getErreur("image");
 if (isset($get_idE) && !empty($champs['image']) && !$verif->getErreur('image'))
 {
 	$imgInfo = getimagesize($rep_images_even.$champs['image']);
-	$iconeImage = "<img src=\"".$url_images_even."s_".$champs['image']."\"  alt=\"image pour ".sanitizeForHtml($champs['titre'])."\" />";
-	echo HtmlShrink::popupLink($url_images_even.$tab_even['image'], "image", $imgInfo[0]+20, $imgInfo[1]+20, $iconeImage);
+	$iconeImage = "<img src=\"".$url_uploads_events."s_".$champs['image']."\"  alt=\"image pour ".sanitizeForHtml($champs['titre'])."\" />";
+	echo HtmlShrink::popupLink($url_uploads_events.$tab_even['image'], "image", $imgInfo[0]+20, $imgInfo[1]+20, $iconeImage);
 	echo "<div><label for=\"sup_image\" class=\"continu\">Supprimer</label><input type=\"checkbox\" name=\"sup_image\" id=\"sup_image\" value=\"image\" class=\"checkbox\" ";
 
 	if (!empty($supprimer['image']) && $verif->nbErreurs() == 0)
@@ -1436,8 +1434,8 @@ if (isset($get_idE) && !empty($champs['image']) && !$verif->getErreur('image'))
 
 
 <p class="piedForm">
-<input type="hidden" name="formulaire" value="ok" />
-<input type="submit" value="Remplacer" tabindex="19" class="submit" />
+    <input type="hidden" name="formulaire" value="ok" />
+    <input type="submit" value="Remplacer" tabindex="19" class="submit" />
 </p>
 </div>
 </form>

@@ -11,12 +11,9 @@
 
 require_once("app/bootstrap.php");
 
-use Ladecadanse\Security\Sentry;
 use Ladecadanse\Utils\Logger;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\HtmlShrink;
-
-$videur = new Sentry();
 
 if (!$videur->checkGroup(12))
 {
@@ -31,7 +28,6 @@ if (!$videur->checkGroup(12))
 //$cache_lieux = $rep_cache."lieux/";
 // header("Cache-Control: max-age=30, must-revalidate");
 header ("Refresh: 2;URL=".$_SERVER['HTTP_REFERER']);
-$nom_page = "action_favori";
 $page_titre = "ajouter/éditer un favori";
 $page_description = "ajouter/édite";
 $extra_css = array("formulaires");
@@ -120,7 +116,7 @@ if ($get['element'] == 'evenement')
 			HtmlShrink::msgErreur("La requête UPDATE a échoué");
 		}
 
-        $logger->log('global', 'activity', "[action_favori] ".$get['action']." on idE ".$get['idE']." by user ".$_SESSION['user'], Logger::GRAN_YEAR);         
+        $logger->log('global', 'activity', "[".$nom_page."] ".$get['action']." on idE ".$get['idE']." by user ".$_SESSION['user'], Logger::GRAN_YEAR);         
         
 	} //if action
 
@@ -179,7 +175,7 @@ else if ($get['element'] == 'lieu')
 
 	} //if action
    
-    $logger->log('global', 'activity', "[action_favori] ".$get['action']." on idL ".$get['idL']." by user ".$_SESSION['user'], Logger::GRAN_YEAR);  
+    $logger->log('global', 'activity', "[".$nom_page."] ".$get['action']." on idL ".$get['idL']." by user ".$_SESSION['user'], Logger::GRAN_YEAR);  
 
 }
 

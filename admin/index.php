@@ -2,12 +2,8 @@
 
 require_once("../app/bootstrap.php");
 
-use Ladecadanse\Security\Sentry;
-use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\Text;
 use Ladecadanse\HtmlShrink;
-
-$videur = new Sentry();
 
 if (!$videur->checkGroup(4))
 {
@@ -20,8 +16,6 @@ if ($_SESSION['Sgroupe'] >= 4 && !empty($_SESSION['Sregion']))
     $_SESSION['region_admin'] = $_SESSION['Sregion'];
 }
 
-
-$nom_page = "index";
 $page_titre = "administration";
 $page_description = "Tableau de bord";
 $extra_css = array("admin");
@@ -29,7 +23,6 @@ $extra_js = array( "zebra_datepicker", "jquery.shiftcheckbox");
 require_once('_header.inc.php');
 ?>
 
-<!-- Début contenu -->
 <div id="contenu" class="colonne">
 
 <?php
@@ -361,7 +354,7 @@ while($tab_even = $connector->fetchArray($req_getEvenement))
 	if (!empty($tab_even['flyer']))
 	{
 		$imgInfo = getimagesize($rep_images_even.$tab_even['flyer']);
-		echo HtmlShrink::popupLink($url_images_even.$tab_even['flyer'], "Flyer", $imgInfo[0]+20, $imgInfo[1]+20, $iconeImage);
+		echo HtmlShrink::popupLink($url_uploads_events.$tab_even['flyer'], "Flyer", $imgInfo[0]+20, $imgInfo[1]+20, $iconeImage);
 	}
 	echo "</td>
 	<td>".$tab_icones_statut[$tab_even['statut']]."</td>";

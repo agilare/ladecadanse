@@ -2,14 +2,9 @@
 
 require_once("app/bootstrap.php");
 
-use Ladecadanse\Security\Sentry;
 use Ladecadanse\DescriptionCollection;
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\Utils\Validateur;
-
-$videur = new Sentry();
-
-
 
 if ($_SESSION['region'] == 'vd')
  {

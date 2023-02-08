@@ -7,16 +7,17 @@ ini_set('post_max_size', POST_MAX_SIZE);
 ini_set('upload_max_filesize', UPLOAD_MAX_FILESIZE);
 ini_set('max_file_uploads', 3);
 
+
 // DIR
 $rep_images_interface = $rep_absolu . "web/interface/";
 $rep_uploads = $rep_absolu . "web/uploads/";
 
 $rep_images_even = $rep_absolu . "images/"; // legacy, should be web/uploads/evenements
 
-$rep_images_lieux = $rep_uploads . "lieux/";
-$rep_images_lieux_galeries = $rep_images_lieux . "galeries/";
+$rep_uploads_lieux = $rep_uploads . "lieux/";
+$rep_uploads_lieux_galeries = $rep_uploads_lieux . "galeries/";
 
-$rep_images_organisateurs = $rep_uploads . "organisateurs/";
+$rep_uploads_organisateurs = $rep_uploads . "organisateurs/";
 
 $rep_fichiers = $rep_uploads . "fichiers/";
 $rep_fichiers_even = $rep_fichiers . "evenements/";
@@ -24,21 +25,14 @@ $rep_fichiers_lieu = $rep_fichiers . "lieux/";
 $rep_cache = $rep_absolu . "cache/";
 
 
-// URL
-$url_images = $url_site . "images/";
-$url_images_even = $url_images;
+// PATHS
+$url_uploads_events = "/images/";
+$url_uploads_lieux = "/web/uploads/lieux/";
+$url_uploads_lieux_galeries = "/web/uploads/lieux/galeries/";
+$url_uploads_organisateurs = "/web/uploads/organisateurs/";
 
-$url_uploads_lieux = $url_site . "web/uploads/lieux/";
-$url_images_lieu_galeries = $url_site . "web/uploads/lieux/galeries/";
-$url_images_organisateurs = $url_site . "web/uploads/organisateurs/";
+$url_images_interface_icons = "/web/interface/icons/";
 
-$url_fichiers = $url_site . "web/uploads/fichiers/";
-$url_fichiers_even = $url_fichiers . "evenements/";
-$url_fichiers_lieu = $url_fichiers . "lieux/";
-
-
-$url_images_interface = $url_site . "web/interface/";
-$url_images_interface_icons = $url_images_interface . "icons/";
 
 $glo_mimes_documents_acceptes = array("image/jpeg", "image/pjpeg", "image/gif", "image/png", "image/x-png",
     "application/pdf",
@@ -156,7 +150,7 @@ $icone['drapeau'] = '<img src="' . $url_images_interface_icons . 'flag_yellow.pn
 $icone['ajouter_texte'] = '<img src="' . $url_images_interface_icons . 'pencil.png" alt="Ajouter texte" width="16" height="16" />';
 $icone['organisateur'] = '<img src="' . $url_images_interface_icons . 'group.png" alt="" />';
 $icone['url_externe'] = '<img src="' . $url_images_interface_icons . 'house_go.png" alt="Lien externe" />';
-$icone['popup'] = '<img src="' . $url_images_interface . 'lien_ext.gif" alt="Nouvel onglet" />';
+$icone['popup'] = '<img src="/web/interface/lien_ext.gif" alt="Nouvel onglet" />';
 $icone['depublier'] = '<img src="' . $url_images_interface_icons . 'calendar_delete.png" alt="Dépublier" />';
 $icone['jpg'] = "<img src=\"" . $url_images_interface_icons . "page_white_picture.png\" alt=\"\" />";
 $icone['jpeg'] = "<img src=\"" . $url_images_interface_icons . "page_white_picture.png\" alt=\"\" />";

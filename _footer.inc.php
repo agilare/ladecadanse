@@ -17,7 +17,7 @@
                     }
                     ?>
 
-                    <li><a href="<?php echo $url_site . $lien; ?>" title="<?php echo $nom; ?>" <?php echo $ici; ?>><?php echo $nom; ?></a></li>
+                    <li><a href="<?php echo $lien; ?>" title="<?php echo $nom; ?>" <?php echo $ici; ?>><?php echo $nom; ?></a></li>
                 <?php } ?>
 
 

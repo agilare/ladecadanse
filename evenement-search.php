@@ -2,15 +2,11 @@
 
 require_once("app/bootstrap.php");
 
-use Ladecadanse\Security\Sentry;
 use Ladecadanse\Utils\Logger;
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\Utils\Utils;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\Text;
-
-$videur = new Sentry();
-
 
 $tab_menu_tri = array("pertinence" => "pertinence", "dateEvenement" => "date", "dateAjout" => "date d'ajout");
 $tab_periodes = array("futur", "ancien", "tous");
@@ -50,15 +46,11 @@ $mots_brut = $get['mots'];
 
 $limite = 10;
 
-//$cache_lieux = $rep_cache."lieux/";
-//header("Cache-Control: max-age=30, must-revalidate");
-$nom_page = "evenement-search";
+
 $page_titre = "recherche dans l'agenda des événements";
 $page_description = "Rechercher un événement culturel à Genève et Lausanne";
 include("_header.inc.php");
-
 ?>
-
 
 
 <!-- D?t Contenu -->
@@ -127,10 +119,6 @@ if (!empty($get['mots']))
 		if (!in_array($tab_tous_mots[$i], $mots_vides))
 		{
 			$tab_mots[] = $tab_tous_mots[$i];
-		}
-		else
-		{
-			echo $tab_tous_mots[$i];
 		}
 	}
 	$nb_mots = count($tab_mots);
@@ -407,7 +395,7 @@ if (!empty($get['mots']))
 								<?php
 								$titre = $tab_even['titre'];
 								?>
-								<h3><a href="<?php echo $url_site ?>/evenement.php?idE=<?php echo $tab_even['idEvenement'] ?>" title="Voir la fiche de l'événement"><?php echo $titre ?></a></h3>
+								<h3><a href="/evenement.php?idE=<?php echo $tab_even['idEvenement'] ?>" title="Voir la fiche de l'événement"><?php echo $titre ?></a></h3>
 							<?php
 								$maxChar = Text::trouveMaxChar($tab_even['description'], 50, 4);
 								if (mb_strlen($tab_even['description']) > $maxChar)
@@ -486,7 +474,7 @@ if (!empty($get['mots']))
 							$tab_salle = $connector->fetchArray($connector->query("SELECT nom from salle where idSalle=".$tab_even['idSalle']));
 							$salle = " - ".$tab_salle['nom'];
 						}
-						$infosLieu = $listeLieu['determinant']." <a href=\"".$url_site."/lieu.php?idL=".$tab_even['idLieu']."\" title=\"Voir la fiche du lieu : ".htmlspecialchars($listeLieu['nom'])."\" >".htmlspecialchars($listeLieu['nom'])."</a>".$salle;
+						$infosLieu = $listeLieu['determinant']." <a href=\"/lieu.php?idL=".$tab_even['idLieu']."\" title=\"Voir la fiche du lieu : ".htmlspecialchars($listeLieu['nom'])."\" >".htmlspecialchars($listeLieu['nom'])."</a>".$salle;
 
 					}
 					else
@@ -517,7 +505,7 @@ if (!empty($get['mots']))
 
 
 					<td class="desc_even">
-					<h3><a href="<?php echo $url_site ?>/evenement.php?idE=<?php echo $tab_even['idEvenement'] ?>" title="Voir la fiche de l'événement"><?php echo $tab_even['titre'] ?></a></h3>
+					<h3><a href="/evenement.php?idE=<?php echo $tab_even['idEvenement'] ?>" title="Voir la fiche de l'événement"><?php echo $tab_even['titre'] ?></a></h3>
 							<?php
 								$maxChar = Text::trouveMaxChar($tab_even['description'], 50, 4);
 								if (mb_strlen($tab_even['description']) > $maxChar)

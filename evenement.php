@@ -113,8 +113,6 @@ $tab_localite = $connector->fetchArray($req_localite);
 
 $page_titre_localite = " – ";
 
-
-$nom_page = "evenement";
 $page_titre = $even->getValue('titre')." ".$determinant_lieu.$even->getValue('nomLieu').$even_salle.", ".HtmlShrink::getAdressFitted($even->getValue('region'), $tab_localite['localite'], $even->getValue('quartier'), $even->getValue('adresse'))."; le ".date_fr($even->getValue('dateEvenement'), "annee", "", "", false);
 $page_description = $even->getValue('titre')." ".$determinant_lieu.$even->getValue('nomLieu').
 " le ".date_fr($even->getValue('dateEvenement'), "annee", "", "", false)." ".
@@ -469,9 +467,9 @@ iCal</a></li>
                         
                         $file_time = @filemtime($rep_images_even.$even->getValue('flyer'));
 						?>
-							<a href="<?php echo $url_images_even.$even->getValue('flyer')."?".$file_time ?>" class="magnific-popup">
+							<a href="<?php echo $url_uploads_events.$even->getValue('flyer')."?".$file_time ?>" class="magnific-popup">
 							
-								<img src="<?php echo $url_images_even.$even->getValue('flyer')."?".$file_time ?>" alt="Flyer de cet événement" width="<?php echo $img_width; ?>" />
+								<img src="<?php echo $url_uploads_events.$even->getValue('flyer')."?".$file_time ?>" alt="Flyer de cet événement" width="<?php echo $img_width; ?>" />
 							</a>						
 						
 						<?php
@@ -491,9 +489,9 @@ iCal</a></li>
 						$imgInfo[1]+20, $imgLien); */
 						
 						?>
-							<a href="<?php echo $url_images_even.$even->getValue('image')."?".filemtime($rep_images_even.$even->getValue('image')) ?>" class="magnific-popup">
+							<a href="<?php echo $url_uploads_events.$even->getValue('image')."?".filemtime($rep_images_even.$even->getValue('image')) ?>" class="magnific-popup">
 							
-								<img src="<?php echo $url_images_even.$even->getValue('image')."?".filemtime($rep_images_even.$even->getValue('image')) ?>" alt="Photo pour cet événement" width="<?php echo $img_width; ?>" />
+								<img src="<?php echo $url_uploads_events.$even->getValue('image')."?".filemtime($rep_images_even.$even->getValue('image')) ?>" alt="Photo pour cet événement" width="<?php echo $img_width; ?>" />
 							</a>						
 						
 						<?php						
@@ -514,9 +512,9 @@ iCal</a></li>
  */													$img_width = 140;
 						if ($imgInfo[0] >= 140) {  $img_width = 160; }
 						?>
-							<a href="<?php echo $url_images_even.$even->getValue('image')."?".filemtime($rep_images_even.$even->getValue('image')) ?>" class="magnific-popup">
+							<a href="<?php echo $url_uploads_events.$even->getValue('image')."?".filemtime($rep_images_even.$even->getValue('image')) ?>" class="magnific-popup">
 							
-								<img src="<?php echo $url_images_even.$even->getValue('image')."?".filemtime($rep_images_even.$even->getValue('image')) ?>" alt="Photo pour cet événement" width="<?php echo $img_width; ?>" />
+								<img src="<?php echo $url_uploads_events.$even->getValue('image')."?".filemtime($rep_images_even.$even->getValue('image')) ?>" alt="Photo pour cet événement" width="<?php echo $img_width; ?>" />
 							</a>						
 						
 						<?php								

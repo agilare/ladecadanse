@@ -2,19 +2,14 @@
 
 require_once("app/bootstrap.php");
 
-
-use Ladecadanse\Security\Sentry;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\ImageDriver2;
 use Ladecadanse\Security\SecurityToken;
 use Ladecadanse\Utils\Logger;
 use Ladecadanse\Utils\Text;
-use Ladecadanse\Utils\Utils;
 use Ladecadanse\Utils\Mailing;
 use Ladecadanse\HtmlShrink;
-
-$videur = new Sentry();
-
+    
 $page_titre = "Proposer un événement";
 $page_description = "Proposer un événement pour l'agenda";
 
@@ -455,7 +450,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
                     $_SESSION['evenement-edit_flash_msg'] = "Merci pour votre proposition. Nous allons l'examiner et vous aurez une réponse dès qu'elle sera traitée (cela peut prendre quelques jours)";
                     $subject = "Nouvelle proposition d'événement : \"".$champs['titre']."\" le ".date_fr($champs['dateEvenement'], "annee", "", "", false)." à ".$champs['nomLieu'];
                     $contenu_message = "Merci de vérifier cet événement et l'accepter (statut : publié) ou le refuser (status : dépublié) : ";
-                    $contenu_message .= $url_site."evenement.php?idE=".$req_id;
+                    $contenu_message .= $site_full_url."evenement.php?idE=".$req_id;
                     $contenu_message .= "\n\n";
                     $contenu_message .= "Par : ".$champs['user_email'];
                     $contenu_message .= "\n\nRemarque :\n".$champs['remarque'];
@@ -637,7 +632,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
                         $subject = "Votre événement \"".$champs['titre']."\" sur La décadanse a été publié";
                         $contenu_message = "Bonjour,\n\n";
                         $contenu_message .= "Merci de nous avoir proposé un événement, nous venons de le publier : ";
-                        $contenu_message .= $url_site."evenement.php?idE=".$req_id;
+                        $contenu_message .= $site_full_url."evenement.php?idE=".$req_id;
                         $contenu_message .= "\n\n";
                         $contenu_message .= "La décadanse";
 
@@ -1342,7 +1337,7 @@ if ($verif->nbErreurs() > 0)
                 $imgInfo = getimagesize($rep_images_even.$champs['flyer']);
                 ?>
                 <div class="supImg">
-                    <a href="<?php echo $url_images_even.$champs['flyer'].'?'.filemtime($rep_images_even.$champs['flyer']) ?>" class="magnific-popup" target="_blank"><img src="<?php echo $url_images_even."s_".$champs['flyer'].'?'.filemtime($rep_images_even.$champs['flyer']) ?>" alt="Flyer" /></a>
+                    <a href="<?php echo $url_uploads_events.$champs['flyer'].'?'.filemtime($rep_images_even.$champs['flyer']) ?>" class="magnific-popup" target="_blank"><img src="<?php echo $url_uploads_events."s_".$champs['flyer'].'?'.filemtime($rep_images_even.$champs['flyer']) ?>" alt="Flyer" /></a>
                 <div><label for="sup_flyer" class="continu">Supprimer</label><input type="checkbox" name="sup_flyer" id="sup_flyer" value="flyer" class="checkbox"
                 <?php
                 if (!empty($supprimer['flyer']) && $verif->nbErreurs() > 0)
@@ -1373,7 +1368,7 @@ if ($verif->nbErreurs() > 0)
             $imgInfo = @getimagesize($rep_images_even.$champs['image']);
             echo "<div class=\"supImg\">";
             ?>
-            <a href="<?php echo $url_images_even.$champs['image'].'?'.filemtime($rep_images_even.$champs['image']) ?>" class="magnific-popup"  target="_blank"><img src="<?php echo $url_images_even."s_".$champs['image'].'?'.filemtime($rep_images_even.$champs['image']) ?>" alt="Photo" /></a>
+            <a href="<?php echo $url_uploads_events.$champs['image'].'?'.filemtime($rep_images_even.$champs['image']) ?>" class="magnific-popup"  target="_blank"><img src="<?php echo $url_uploads_events."s_".$champs['image'].'?'.filemtime($rep_images_even.$champs['image']) ?>" alt="Photo" /></a>
            <?php
             echo "<div><label for=\"sup_image\" class=\"continu\">Supprimer</label><input type=\"checkbox\" name=\"sup_image\" id=\"sup_image\" value=\"image\" class=\"checkbox\" ";
 

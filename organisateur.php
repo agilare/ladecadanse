@@ -2,17 +2,12 @@
 
 require_once("app/bootstrap.php");
 
-
-use Ladecadanse\Security\Sentry;
 use Ladecadanse\Organisateur;
-use Ladecadanse\OrganisateurCollection;
 use Ladecadanse\Evenement;
 use Ladecadanse\EvenementCollection;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\Text;
 use Ladecadanse\HtmlShrink;
-
-$videur = new Sentry();
 
 if (isset($_GET['idO']))
 {
@@ -101,8 +96,8 @@ if ($url_suiv != "")
 	if ($organisateur->getValue('logo') !='')
 	{		
 	?>
-	<a href="<?php echo $url_images_organisateurs.$organisateur->getValue('logo').'?'.filemtime($rep_images_organisateurs.$organisateur->getValue('logo')) ?>" class="magnific-popup">
-		<img src="<?php echo $url_images_organisateurs."s_".$organisateur->getValue('logo')."?".filemtime($rep_images_organisateurs."s_".$organisateur->getValue('logo')); ?>" alt="Logo" height="60" class="logo" />
+	<a href="<?php echo $url_uploads_organisateurs.$organisateur->getValue('logo').'?'.filemtime($rep_uploads_organisateurs.$organisateur->getValue('logo')) ?>" class="magnific-popup">
+		<img src="<?php echo $url_uploads_organisateurs."s_".$organisateur->getValue('logo')."?".filemtime($rep_uploads_organisateurs."s_".$organisateur->getValue('logo')); ?>" alt="Logo" height="60" class="logo" />
 	</a>
 	<?php 			
 	}	
@@ -137,8 +132,8 @@ if ($url_suiv != "")
                 {
                 ?>
 
-                    <a href="<?php echo $url_images_organisateurs.$organisateur->getValue('photo').'?'.filemtime($rep_images_organisateurs.$organisateur->getValue('photo')) ?>" class="magnific-popup">
-                        <img src="<?php echo $url_images_organisateurs."s_".$organisateur->getValue('photo')."?".filemtime($rep_images_organisateurs."s_".$organisateur->getValue('photo')); ?>" alt="Photo"  />
+                    <a href="<?php echo $url_uploads_organisateurs.$organisateur->getValue('photo').'?'.filemtime($rep_uploads_organisateurs.$organisateur->getValue('photo')) ?>" class="magnific-popup">
+                        <img src="<?php echo $url_uploads_organisateurs."s_".$organisateur->getValue('photo')."?".filemtime($rep_uploads_organisateurs."s_".$organisateur->getValue('photo')); ?>" alt="Photo"  />
                     </a>	
 
 
@@ -412,8 +407,8 @@ if ($evenements->getNbElements() > 0)
                 $imgInfo = @getimagesize($rep_images_even.$even->getValue('flyer'));
 
                 ?>
-                <a href="<?php echo $url_images_even.$even->getValue('flyer').'?'. @filemtime($rep_images_even.$even->getValue('flyer')) ?>" class="magnific-popup">
-                    <img src="<?php echo $url_images_even."t_".$even->getValue('flyer')."?". @filemtime($rep_images_even."t_".$even->getValue('flyer')); ?>" alt="Flyer" width="60" />
+                <a href="<?php echo $url_uploads_events.$even->getValue('flyer').'?'. @filemtime($rep_images_even.$even->getValue('flyer')) ?>" class="magnific-popup">
+                    <img src="<?php echo $url_uploads_events."t_".$even->getValue('flyer')."?". @filemtime($rep_images_even."t_".$even->getValue('flyer')); ?>" alt="Flyer" width="60" />
                 </a>			
 
                 <?php
@@ -424,8 +419,8 @@ if ($evenements->getNbElements() > 0)
             {
 
                 ?>
-                <a href="<?php echo $url_images_even.$even->getValue('image').'?'. @filemtime($rep_images_even.$even->getValue('image')) ?>" class="magnific-popup">
-                                <img src="<?php echo $url_images_even."s_".$even->getValue('image')."?". @filemtime($rep_images_even."t_".$even->getValue('image')); ?>" alt="Photo" width="60" />
+                <a href="<?php echo $url_uploads_events.$even->getValue('image').'?'. @filemtime($rep_images_even.$even->getValue('image')) ?>" class="magnific-popup">
+                                <img src="<?php echo $url_uploads_events."s_".$even->getValue('image')."?". @filemtime($rep_images_even."t_".$even->getValue('image')); ?>" alt="Photo" width="60" />
                 </a>			
 
                 <?php			

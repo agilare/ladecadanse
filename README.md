@@ -45,17 +45,14 @@ Ces instructions vous permettront de mettre en place une copie du projet sur vot
         GRANT SELECT, INSERT, DELETE, UPDATE  ON `ladecadanse`.* TO 'ladecadanse'@'localhost';
         ```
     1. importer dans la base de données `app/ladecadanse.sql` (la structure, et les données utiles pour les tables `groupes` et `localite`)
-    1. ajouter un 1er utilisateur, l'*admin* (groupe 1) qui vous servira à gérer le site :  
+    1. ajouter un 1er utilisateur, l'*admin* (groupe 1) qui vous servira à gérer le site (pour la valeur du champ `mot_de_passe` remplacer `mon-mot-de-passe` ci-dessous par un mot de passe de votre choix préalablement haché avec [password_hash](https://phppasswordhash.com/) ) :  
         ```sql
-        INSERT INTO `personne` (`idPersonne`, `pseudo`, `mot_de_passe`, `cookie`, `session`, `ip`, `groupe`, `statut`, `nom`, `prenom`, `affiliation`, `adresse`, `region`, `telephone`, `email`, `URL`, `signature`, `avec_affiliation`, `notification_commentaires`, `gds`, `actif`, `remarque`, `dateAjout`, `date_derniere_modif`) VALUES (NULL, 'admin', '', '', '', '', '1', 'actif', '', '', '', '', 'ge', '', '', '', 'pseudo', 'non', 'non', '', '1', '', '0000-00-00 00:00:00.000000', '0000-00-00 00:00:00.000000');
+        INSERT INTO `personne` (`idPersonne`, `pseudo`, `mot_de_passe`, `cookie`, `session`, `ip`, `groupe`, `statut`, `nom`, `prenom`, `affiliation`, `adresse`, `region`, `telephone`, `email`, `URL`, `signature`, `avec_affiliation`, `notification_commentaires`, `gds`, `actif`, `remarque`, `dateAjout`, `date_derniere_modif`) VALUES (NULL, 'admin', '', 'mon-mot-de-passe', '', '', '1', 'actif', '', '', '', '', 'ge', '', '', '', 'pseudo', 'non', 'non', '', '1', '', '0000-00-00 00:00:00.000000', '0000-00-00 00:00:00.000000');
         ```
 1. créer le fichier de configuration du site en copiant le modèle `app/env_model.php` vers `app/env.php` et y saisir les valeurs de votre environnement pour (davantage d'explications et exemples se trouvent dans le fichier lui même) :
     - `$rep_absolu`
-    - `$url_domaine`
-    - `$url_site` 
     - `$param['dbhost']`, etc. les informations de connexion à la base de données (selon point précédent)
     - `define("EMAIL_AUTH_HOST", '');`, etc. : l'authentification et les comptes pour l'envoi d'emails par le site
-    - `MASTER_KEY` : un mot de passe "magique" qui fonctionne pour tous les identifiants
     - (optionel) les clés Google pour [Maps](https://developers.google.com/maps/documentation/javascript/get-api-key) (cartes des lieux) et [Recaptcha 3](https://www.google.com/recaptcha/intro/v3.html) (formulaire Proposer un événement)
 
 ### Par Docker
@@ -66,7 +63,7 @@ docker compose up -d
 Le site ladecadanse est déployé sur localhost:7777.
 
 ### Usage
-Une fois le site fonctionnel, se connecter avec le login *admin* et le mot de passe `MASTER_KEY` (créés ci-dessus) permet d'ajouter et modifier des événements, lieux, etc. (partie publique) et de les gérer largement (partie back-office)
+Une fois le site fonctionnel, se connecter avec le login *admin* (créé ci-dessus) permet d'ajouter et modifier des événements, lieux, etc. (partie publique) et de les gérer largement (partie back-office)
 
 ## Déploiement
 

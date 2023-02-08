@@ -2,44 +2,25 @@
 
 require_once("app/bootstrap.php");
 
-
-use Ladecadanse\Security\Sentry;
 use Ladecadanse\Security\SecurityToken;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\Text;
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\Utils\Logger;
 
-$videur = new Sentry();
-
 if (!$videur->checkGroup(6))
 {
 	header("Location: index.php"); die();
 }
 
-
 $cache_lieu = $rep_cache."lieu/";
 $cache_even = $rep_cache."evenement/";
 $cache_index = $rep_cache."index/";
 
-//header("Cache-Control: max-age=30, must-revalidate");
-/*
-header("Pragma: no-cache");
-header("Expires: 0");
-header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
-header("Cache-Control: no-cache, must-revalidate");
- */
 $page_titre = "supprimer un élément";
 $page_description = "Suppression d'un élément";
-$nom_page = "supprimer";
 $extra_css = array("evenement_inc", "breve_inc", "lieu_inc", "descriptionlieu_inc", "commentaire_inc");
 include("_header.inc.php");
-
-
-/*
-* action choisie, ID si édition
-* action "ajouter" par défaut
-*/
 
 
 $tab_types = array("evenement", "lieu", "descriptionlieu", "breve", "commentaire", "personne", "salle", "organisateur");
@@ -329,13 +310,13 @@ WHERE evenement_fichierrecu.idEvenement=".$get['id']." AND type='document' AND
 
 				if (!empty($im['photo1']))
 				{
-					unlink($rep_images_lieux.$im['photo1']);
-					unlink($rep_images_lieux."s_".$im['photo1']);
+					unlink($rep_uploads_lieux.$im['photo1']);
+					unlink($rep_uploads_lieux."s_".$im['photo1']);
 				}
 				if (!empty($im['logo']))
 				{
-					unlink($rep_images_lieux.$im['logo']);
-					unlink($rep_images_lieux."s_".$im['logo']);
+					unlink($rep_uploads_lieux.$im['logo']);
+					unlink($rep_uploads_lieux."s_".$im['logo']);
 				}
 
 
@@ -349,11 +330,11 @@ WHERE lieu_fichierrecu.idLieu=".$get['id']." AND type='image' AND
 		while ($tab_docu = $connector->fetchArray($req_docu))
 		{
 			$nom_fichier = $tab_docu['idFichierrecu'].".".$tab_docu['extension'];
-			if(unlink($rep_images_lieux_galeries.$nom_fichier))
+			if(unlink($rep_uploads_lieux_galeries.$nom_fichier))
 			{
 				echo $nom_fichier." supprimé<br>";
 			}
-			if(unlink($rep_images_lieux_galeries."s_".$nom_fichier))
+			if(unlink($rep_uploads_lieux_galeries."s_".$nom_fichier))
 			{
 				echo "s_".$nom_fichier." supprimé<br>";
 			}

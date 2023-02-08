@@ -8,27 +8,17 @@
  * @author     Michel Gaudry <michel@ladecadanse.ch>
  */
 
-
 require_once("app/bootstrap.php");
 
-use Ladecadanse\Security\Sentry;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Security\SecurityToken;
 use Ladecadanse\Utils\Logger;
 use Ladecadanse\HtmlShrink;
 
-$videur = new Sentry();
-
 if (!$videur->checkGroup(12))
 {
-	header("Location: ".$url_site."/user-login.php"); die();
+	header("Location: /user-login.php"); die();
 }
-
-
-/*
-* action choisie, ID si édition
-* action "ajouter" par défaut
-*/
 
 $get['action'] = "ajouter";
 
@@ -68,7 +58,6 @@ else
 $cache_lieux = $rep_cache."lieux/"; */
 $page_titre = $get['action']." d'une personne";
 $page_description = "Formulaire d'ajout/edition d'un membre";
-$nom_page = "user-edit";
 $extra_css = array("formulaires", "user-edit_formulaire");
 $extra_js = array("zebra_datepicker", "jquery.shiftcheckbox");
 include("_header.inc.php");

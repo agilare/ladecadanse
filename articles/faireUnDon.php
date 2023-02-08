@@ -1,18 +1,11 @@
 <?php
 require_once("../app/bootstrap.php");
 
-use Ladecadanse\Security\Sentry;
-
-$videur = new Sentry();
-
-$nom_page = "faireundon";
 $page_titre = "Faire un don";
 $page_description = "";
 include("../_header.inc.php");
 ?>
 
-
-<!-- Deb contenu -->
 <div id="contenu" class="colonne">
 
     <div id="entete_contenu">

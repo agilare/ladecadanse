@@ -2,19 +2,11 @@
 
 require_once("../app/bootstrap.php");
 
-
-use Ladecadanse\Security\Sentry;
-
-$videur = new Sentry();
-
-$nom_page = "apropos";
 $page_titre = "à propos du site";
 $page_description = "portrait du site La décadanse : description, liste des membres, outils utilisés";
 include("../_header.inc.php");
 ?>
 
-
-<!-- Deb contenu -->
 <div id="contenu" class="colonne">
 
 	<div id="entete_contenu">
