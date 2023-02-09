@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Added
+- CONTRIBUTING.md
+
 ### Changed
 - refactor bootstrap, config
     - purge, rename global url, rep vars
@@ -11,6 +14,7 @@
     - replace remaining env var by const*
     - rss.php, agenda.php names
     - mots-vides.txt -> utf8
+- mv files to more adequate dirs
 
 ### Removed
 - cache
@@ -21,6 +25,8 @@
 - file upload
 - app : index.html, utf8-to-utf8mb4
 
+### Security
+- rm display of mysql errors
 
 ## [3.2.6] - 2023-02-05
 
