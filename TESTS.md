@@ -1,6 +1,21 @@
 # TESTS
 
-## Events
+## Front
+
+### Global
+
+- main menu
+- secondary menu
+- calendar
+
+### Home
+
+
+### Events
+
+- agenda
+
+- event
 
 - announce
     - submit : mail with URL, author email, message
@@ -12,11 +27,40 @@
 - send
     - submit : mail to recipient
 
-## Users
+### Venues
+
+- venues menu
+- add
+- latests
+
+#### Venue
+
+- edit
+- add event
+- add/remove favorite
+- add room
+- add/edit description/presentation
+
+### Organizers
+
+- organizers menu
+- add
+- latests 
+- add/edit description
+
+#### Organizer
+
+- edit  
+
+### Users
 
 - register
     - mail to user
+- login
+    - password reset
 
-## Contact
+### Contact
 
 - submit : mail to admin with prénom, nom, sujet, contenu
+
+## Back
