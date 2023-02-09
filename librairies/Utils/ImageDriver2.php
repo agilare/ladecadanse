@@ -49,9 +49,8 @@ class ImageDriver2 extends SystemComponent {
     function __construct($IMGtype)
     {
         global $rep_images_even;
-        global $rep_absolu;
         
-        $this->IMGracine = $rep_absolu."web/uploads/";
+        $this->IMGracine = __ROOT__."/web/uploads/";
         //TEST
         //echo $this->IMGracine;
         //

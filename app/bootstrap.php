@@ -3,9 +3,9 @@
  *  included at the beginning of each page
  */
 
-require_once('env.php');
+require_once __DIR__ . '/env.php';
 
-require $rep_absolu . 'vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 
 use Ladecadanse\Utils\DbConnector;
 use Ladecadanse\Utils\Logger;
@@ -14,16 +14,16 @@ use Ladecadanse\Security\Authorization;
 use Ladecadanse\Security\Sentry;
 use Ladecadanse\Utils\Utils;
 
-require_once('config.php');
+require_once __DIR__ . '/config.php';
 
 session_start();
 
 $regionConfig = new RegionConfig($glo_regions);
 list($url_query_region, $url_query_region_et, $url_query_region_1er) = $regionConfig->getAppVars();
 
-$logger = new Logger($rep_absolu . "var/logs/");
+$logger = new Logger(__DIR__ . "/../var/logs/");
 
-$connector = new DbConnector($param['dbhost'], $param['dbname'], $param['dbusername'], $param['dbpassword']);
+$connector = new DbConnector(DB_HOST, DB_NAME, DB_USERNAME, DB_PASSWORD);
 
 $authorization = new Authorization();
 

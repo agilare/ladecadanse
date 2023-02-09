@@ -83,11 +83,8 @@ class EvenementCollection extends Collection {
     {
 
         global $connector;
-        global $rep_absolu;
         global $rep_images_even;
         global $rep_fichiers_even;
-        global $rep_cache;
-
         //TESTER SI L'EVENEMENT EXISTE ENCORE
 
         if ((($authorization->estAuteur($_SESSION['SidPersonne'], $get_idE, "evenement") && $_SESSION['Sgroupe'] <= 6) || $_SESSION['Sgroupe'] < 2))

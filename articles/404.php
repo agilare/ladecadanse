@@ -3,7 +3,7 @@ require_once("../app/bootstrap.php");
 
 $page_titre = "404 - page non trouvée";
 $page_description = "Erreur 404 - page non trouvée";
-include($rep_absolu . "_header.inc.php");
+include("../_header.inc.php");
 ?>
 
 <div id="contenu" class="colonne">
@@ -21,5 +21,5 @@ include($rep_absolu . "_header.inc.php");
 <!-- fin Contenu -->
 
 <?php
-include($rep_absolu . "_footer.inc.php");
+include("../_footer.inc.php");
 ?>

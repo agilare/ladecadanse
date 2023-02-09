@@ -563,7 +563,7 @@ if ((($authorization->estAuteur($_SESSION['SidPersonne'], $get['idE'], "evenemen
 		if ($tab_even = $connector->fetchArray($req_even))
 		{
 			$evenement = $tab_even;
-			include($rep_absolu."_evenement.inc.php");
+			include("_evenement.inc.php");
 
 		}
 		else

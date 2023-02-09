@@ -107,7 +107,7 @@ include("_navigation_calendrier.inc.php");
 
 <div id="colonne_droite" class="colonne">
 
-<?php include($rep_absolu."_menuorganisateurs.inc.php");
+<?php include("_menuorganisateurs.inc.php");
 echo $aff_menulieux; ?>
 
 </div>

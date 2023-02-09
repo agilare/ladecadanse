@@ -121,7 +121,7 @@ else
             if ($affEven = $connector->fetchArray($req_getEven))
             {
                 $evenement = $affEven;
-                include($rep_absolu . "_evenement.inc.php");
+                include("_evenement.inc.php");
             }
             else
             {

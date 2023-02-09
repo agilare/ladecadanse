@@ -3,14 +3,11 @@
 define("ENV", "dev");
 define("MODE_DEBUG", true);
 
-// full path of your ladecadanse application directory, for ex. "/home/michel/hosts/ladecadanse/"
-$rep_absolu = "";
-
 // database
-$param['dbhost'] = '';
-$param['dbname'] = '';
-$param['dbusername'] = '';
-$param['dbpassword'] = '';
+define("DB_HOST", '');
+define("DB_NAME", '');
+define("DB_USERNAME", '');
+define("DB_PASSWORD", '');
 
 // SMTP credentials
 define("EMAIL_AUTH_HOST", ''); // prod : mail.darksite.ch
@@ -26,6 +23,9 @@ define("EMAIL_SITE_NAME", 'La décadanse');
 define("EMAIL_ADMIN", ''); // prod : info@ladecadanse.ch
 define("EMAIL_ADMIN_NAME", 'La décadanse');
 
+// external services
+define("MATOMO_ENABLED", false); // analytics tool (enabled only in prod)
+
 define("GOOGLE_API_KEY", ''); // use Google Maps library to display maps of venues
 
 define("GOOGLE_RECAPTCHA_API_KEY_CLIENT", ''); // for (public) "Proposer un événement form"
@@ -34,8 +34,7 @@ define("GOOGLE_RECAPTCHA_API_KEY_SERVER", '');
 define("GOOGLE_ANALYTICS_ID", ''); // 1st analytics tool (enabled only in prod)
 define("GOOGLE_ANALYTICS_ENABLED", false);
 
-define("MATOMO_ENABLED", false); // 2nd analytics tool (enabled only in prod)
-
+// small modules
 define("PREVIEW", true); 
 
 // closable banner in homepage for announcements

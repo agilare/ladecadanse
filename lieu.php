@@ -23,7 +23,7 @@ else
 	//trigger_error("id obligatoire", E_USER_WARNING);
 
 	header("HTTP/1.1 404 Not Found");
-	echo file_get_contents($rep_absolu."articles/404.php");
+	echo file_get_contents("articles/404.php");
 	exit;
 }
 
@@ -61,7 +61,7 @@ $lieu->load();
 if ($lieu->getValue('statut') == 'inactif' && !((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 6)))
 {
     header("HTTP/1.1 404 Not Found");
-    echo file_get_contents($rep_absolu."articles/404.php");
+    echo file_get_contents("articles/404.php");
     exit;
 }        
 
@@ -93,18 +93,8 @@ if (!isset($_GET['tranche']) && $deb_nom_lieu > "l" && $deb_nom_lieu < "z")
 	$_GET['tranche'] = "lz";
 }
 
-include($rep_absolu."_menulieux.inc.php");
+include_once "_menulieux.inc.php";
 
-/* $logo = '';
-if ($lieu->getValue('logo') !='')
-{
-	$imgInfo = getimagesize($rep_images_lieux.$lieu->getValue('logo'));
-
-	$logo = lien_popup($IMGlieux.$lieu->getValue('logo').'?'.filemtime($rep_images_lieux.$lieu->getValue('logo')),
-	"Logo", $imgInfo[0]+20, $imgInfo[1]+20,
-	"<img src=\"".$IMGlieux."s_".$lieu->getValue('logo')."?".filemtime($rep_images_lieux."s_".$lieu->getValue('logo'))."\" alt=\"Logo\" />");
-}
- */
 $lieu_status = '';
 if ($lieu->getValue('statut') == 'ancien')
 {
@@ -128,7 +118,7 @@ elseif ($lieu->getValue('statut') == 'inactif')
 	else
 	{
         header("HTTP/1.1 404 Not Found");
-        echo file_get_contents($rep_absolu."articles/404.php");
+        echo file_get_contents("articles/404.php");
         exit;
 	}
 }

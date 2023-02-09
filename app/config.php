@@ -9,20 +9,15 @@ ini_set('max_file_uploads', 3);
 
 
 // DIR
-$rep_images_interface = $rep_absolu . "web/interface/";
-$rep_uploads = $rep_absolu . "web/uploads/";
+define('__ROOT__', dirname(dirname(__FILE__))); // full path to dir, for ex. /users/michel/hosts/ladecadanse
 
-$rep_images_even = $rep_absolu . "images/"; // legacy, should be web/uploads/evenements
-
-$rep_uploads_lieux = $rep_uploads . "lieux/";
-$rep_uploads_lieux_galeries = $rep_uploads_lieux . "galeries/";
-
-$rep_uploads_organisateurs = $rep_uploads . "organisateurs/";
-
-$rep_fichiers = $rep_uploads . "fichiers/";
-$rep_fichiers_even = $rep_fichiers . "evenements/";
-$rep_fichiers_lieu = $rep_fichiers . "lieux/";
-$rep_cache = $rep_absolu . "cache/";
+$rep_images_even = __ROOT__ . "/images/"; // legacy, should be web/uploads/evenements
+$rep_uploads_lieux = __ROOT__ . "/web/uploads/lieux/";
+$rep_uploads_lieux_galeries = __ROOT__ . "/web/uploads/lieux/galeries/";
+$rep_uploads_organisateurs = __ROOT__ . "/web/uploads/organisateurs/";
+$rep_fichiers_even = __ROOT__ . "/web/uploads/fichiers/evenements/";
+$rep_fichiers_lieu = __ROOT__ . "/web/uploads/fichiers/lieux/";
+$rep_cache = __ROOT__ . "/cache/";
 
 
 // PATHS

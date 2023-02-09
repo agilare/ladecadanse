@@ -8,7 +8,7 @@
     - html sanitization moved in Text class
     - class to manage region user choice
     - rm headers (externalized)
-    - replace remaining env var by const
+    - replace remaining env var by const*
     - rss.php, agenda.php names
     - mots-vides.txt -> utf8
 

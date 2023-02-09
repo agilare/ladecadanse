@@ -47,7 +47,7 @@ $page_description .= ": informations pratiques, description et prochains événe
 $extra_css = array("menu_lieux");
 
 include("_header.inc.php");
-include($rep_absolu."_menuorganisateurs.inc.php");
+include("_menuorganisateurs.inc.php");
 
 $action_ajouter = '';
 if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 10)

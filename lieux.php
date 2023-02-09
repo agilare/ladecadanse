@@ -196,7 +196,7 @@ include("_navigation_calendrier.inc.php");
 <!-- Fin Colonnegauche -->
 
 <div id="colonne_droite" class="colonne">
-    <?php include($rep_absolu."_menulieux.inc.php");echo $aff_menulieux; ?>
+    <?php include("_menulieux.inc.php");echo $aff_menulieux; ?>
 </div>
 <!-- Fin colonne_droite -->
 
