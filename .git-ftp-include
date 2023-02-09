@@ -1,0 +1,1 @@
+vendor/:composer.lock # when composer.lock (git tracked) is changed, vendor/ (not git tracked) will be uploaded; uploads all files, and doesn't delete
