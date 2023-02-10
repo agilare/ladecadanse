@@ -29,10 +29,6 @@ Ces instructions vous permettront de mettre en place une copie du projet sur vot
 ### Manuelle
 1. cloner la branche `master`
 1. `composer install`
-1. dans un fichier de configuration Apache (`.htaccess` ou autre) définir le décalage horaire par défaut PHP, par ex. :
-    ```ini
-    php_value date.timezone 'Europe/Zurich'
-    ```
 1. base de données
     1. créer une base de données avec `COLLATE 'utf8mb4_unicode_ci'` par ex.
         ```sql
@@ -49,6 +45,10 @@ Ces instructions vous permettront de mettre en place une copie du projet sur vot
         ```sql
         INSERT INTO `personne` (`idPersonne`, `pseudo`, `mot_de_passe`, `cookie`, `session`, `ip`, `groupe`, `statut`, `nom`, `prenom`, `affiliation`, `adresse`, `region`, `telephone`, `email`, `URL`, `signature`, `avec_affiliation`, `notification_commentaires`, `gds`, `actif`, `remarque`, `dateAjout`, `date_derniere_modif`) VALUES (NULL, 'admin', '', 'mon-mot-de-passe', '', '', '1', 'actif', '', '', '', '', 'ge', '', '', '', 'pseudo', 'non', 'non', '', '1', '', '0000-00-00 00:00:00.000000', '0000-00-00 00:00:00.000000');
         ```
+1. dans un fichier de configuration Apache (`.htaccess` ou autre) définir le décalage horaire par défaut PHP, par ex. : 
+    ```ini
+    php_value date.timezone 'Europe/Zurich'
+    ```
 1. copier `app/env_model.php` vers `app/env.php` et y saisir les valeurs de votre environnement (davantage d'explications et exemples se trouvent dans le fichier lui même), avec au minimum les informations de connexion à la base de données
 
 ### Par Docker
