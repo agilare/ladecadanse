@@ -314,15 +314,6 @@ class OrganisateurEdition extends Edition
                 exit;
             }
         }
-
-
-        /* 		$breve = $breve->getValues();
-          include($rep_templates."breve.inc.php");
-
-          foreach ($champs as $c)
-          {
-          $champs[$c] = "";
-          } */
     }
 
     function loadValues($id)
@@ -332,14 +323,12 @@ class OrganisateurEdition extends Edition
         $organisateur->load();
         $champs = $organisateur->getValues();
 
-//		printr($champs);
-
         $this->valeurs = $champs;
     }
 
     function NextWizardPage()
     {
-        
+
     }
 
     //abstract

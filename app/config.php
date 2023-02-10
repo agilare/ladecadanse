@@ -110,7 +110,6 @@ $icone['information'] = "<img src=\"" . $url_images_interface_icons . "informati
 $icone['monter'] = "<img src=\"" . $url_images_interface_icons . "bullet_arrow_top.png\" alt=\"\" />";
 $icone['descendre'] = "<img src=\"" . $url_images_interface_icons . "bullet_arrow_bottom.png\" alt=\"\" />";
 $icone['evenement'] = '<img src="' . $url_images_interface_icons . 'calendar.png" alt="Événement" />';
-$icone['breve'] = '<img src="' . $url_images_interface_icons . 'newspaper.png" alt="" />';
 $icone['lieu'] = '<img src="' . $url_images_interface_icons . 'building.png" alt="Lieu" width="16" height="16" />';
 $icone['description'] = '<img src="' . $url_images_interface_icons . 'page_white.png" alt="Description" />';
 $icone['personne'] = '<img src="' . $url_images_interface_icons . 'user.png" alt="Personne" />';
@@ -125,7 +124,6 @@ $icone['mode_etendu'] = '<img src="' . $url_images_interface_icons . 'mode_etend
 $icone['recherche'] = '<img src="' . $url_images_interface_icons . 'search.png" alt="Recherche" />';
 $icone['voir_lieux'] = '<img src="' . $url_images_interface_icons . 'building_go.png" alt="Voir lieux" width="16" height="16" />';
 $icone['voir_semaine'] = '<img src="' . $url_images_interface_icons . 'bullet_go.png" alt="Voir semaine" width="16" height="16" />';
-$icone['voir_breves'] = '<img src="' . $url_images_interface_icons . 'newspaper_go.png" alt="" />';
 $icone['envoi_email'] = '<img src="' . $url_images_interface_icons . 'email_go.png" alt="Envoi e-mail" width="16" height="16" />';
 $icone['favori'] = '<img src="' . $url_images_interface_icons . 'heart.png" alt="Favori" width="16" height="16" />';
 $icone['ajouter_favori'] = '<img src="' . $url_images_interface_icons . 'heart_add.png" alt="Ajouter favori" width="16" height="16" />';

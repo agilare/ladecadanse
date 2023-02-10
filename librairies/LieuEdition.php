@@ -496,7 +496,7 @@ class LieuEdition extends Edition
 
             if ($this->connector->query($sql_ins_ef))
             {
-                
+
             }
 
             $nom_document = $id_nouveau_fichier . $extension;
@@ -528,7 +528,7 @@ class LieuEdition extends Edition
 
             if ($this->connector->query($sql_insert))
             {
-                
+
             }
 
             $id_nouveau_fichier = $this->connector->getInsertId();
@@ -567,14 +567,6 @@ class LieuEdition extends Edition
                 $this->connector->query($sql);
             }
         }
-
-        /* 		$breve = $breve->getValues();
-          include($rep_templates."breve.inc.php");
-
-          foreach ($champs as $c)
-          {
-          $champs[$c] = "";
-          } */
     }
 
     function loadValues($id)
@@ -593,7 +585,7 @@ class LieuEdition extends Edition
 
     function NextWizardPage()
     {
-        
+
     }
 
     //abstract

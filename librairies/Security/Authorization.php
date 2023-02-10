@@ -21,7 +21,7 @@ class Authorization
      *
      * @param int $didP ID utilisateur à vérifier
      * @param int $id ID entité dont l'auteur est à vérifier
-     * @param string $table (breve, evenement, descriptionlieu, lieu) vérifie si $idP est
+     * @param string $table (evenement, descriptionlieu, lieu) vérifie si $idP est
      * auteur de $id
      * @return boolean Si $idP est auteur ou non
      */
@@ -42,7 +42,7 @@ class Authorization
             return false;
         }
     }
-    
+
 
     public function isPersonneInOrganisateur($idP, $idO): bool
     {
@@ -66,7 +66,7 @@ class Authorization
     {
         global $connector;
 
-        $sql = "SELECT idPersonne FROM personne_organisateur, lieu_organisateur 
+        $sql = "SELECT idPersonne FROM personne_organisateur, lieu_organisateur
         WHERE personne_organisateur.idOrganisateur=lieu_organisateur.idOrganisateur AND
         lieu_organisateur.idLieu=" . $idL . " AND idPersonne=" . $idP;
 
@@ -80,8 +80,8 @@ class Authorization
         {
             return false;
         }
-    } 
-    
+    }
+
     public function isPersonneInEvenementByOrganisateur($idP = 0, $idE = 0): bool
     {
         global $connector;
@@ -100,7 +100,7 @@ class Authorization
         {
             return false;
         }
-    }    
+    }
 
     public function isPersonneAffiliatedWithLieu(int $idP, int $idL): bool
     {
@@ -119,5 +119,5 @@ class Authorization
             return false;
         }
     }
-    
+
 }

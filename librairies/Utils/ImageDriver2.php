@@ -33,7 +33,7 @@ class ImageDriver2 extends SystemComponent {
      */
     var $IMGlieux;
     var $IMGlieuxGaleries;
-    
+
     var $IMGtype;
 
     var $erreur;
@@ -49,7 +49,7 @@ class ImageDriver2 extends SystemComponent {
     function __construct($IMGtype)
     {
         global $rep_images_even;
-        
+
         $this->IMGracine = __ROOT__."/web/uploads/";
         //TEST
         //echo $this->IMGracine;
@@ -131,12 +131,12 @@ class ImageDriver2 extends SystemComponent {
       * @access public
       * @param string $imageSource Adresse de l'image uploadée
       * @param string $imageCreated Nom à donner à l'image réduite crée
-      * @param string $typeIMG (breves, evenements, lieux) Genre d'utilisation de l'image
+      * @param string $typeIMG (evenements, lieux) Genre d'utilisation de l'image
       * @param int $maxWidth Largeur maximale voulue pour l'image réduite
       * @param int $maxHeight Hauteur maximale voulue pour l'image réduite
       * @param string $selon ('', w, h) Pour imposer la largeur ou la hauteur de l'image réduite selon $maxWidth ou $maxHeigth
       * @return string $msgErreur Messag s'il y a eu une erreur
-      * @see        ajouterBreve.php, evenement-edit.php, lieu-edit.php
+      * @see        evenement-edit.php, lieu-edit.php
       */
    function processImage($imageSource, $imageCreated, $maxWidth = 0, $maxHeigth = 0, $selon = '', $rognage = 0)
    {

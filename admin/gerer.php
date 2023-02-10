@@ -17,8 +17,7 @@ $page_titre = "gérer";
 $page_description = "Gestion des éléments ajoutés";
 require_once('_header.inc.php');
 
-$tab_listes = array("evenement" => "Événements",  "breve" => "Brèves", "lieu" => "Lieux", "organisateur" => "Organisateurs", "description" => "Descriptions", "commentaire" => "Commentaires", "personne" => "Personnes");
-
+$tab_listes = array("evenement" => "Événements", "lieu" => "Lieux", "organisateur" => "Organisateurs", "description" => "Descriptions", "commentaire" => "Commentaires", "personne" => "Personnes");
 
 $get = array();
 

@@ -1,18 +1,17 @@
-<?php 
+<?php
 
 require_once("app/bootstrap.php");
 
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\Text;
 
-$tab_types = array("breves", "evenements_auj", "lieu_evenements", "evenement_commentaires", "lieux_descriptions", 'organisateur_evenements', 'evenements_ajoutes');
-$get['type'] = "breves";
+$tab_types = array("evenements_auj", "lieu_evenements", "evenement_commentaires", "lieux_descriptions", 'organisateur_evenements', 'evenements_ajoutes');
 
 if (isset($_GET['type']))
 {
     try {
         $get['type'] =  Validateur::validateUrlQueryValue($_GET['type'], "enum", 1, $tab_types);
-    } catch (Exception $e) { header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); exit; }        
+    } catch (Exception $e) { header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); exit; }
 }
 
 $get['id'] = '';
@@ -28,68 +27,7 @@ $xml .= "<channel>";
 
 $items = "";
 
-if ($get['type'] == "breves")
-{
-	$der_dateAjout = time();
-
-	$channel = '<title>La décadanse : brèves</title>';
-	$channel .= '<link></link>';
-	$channel .= '<description>Brèves publiées sur le site, actualité culturelle à Genève</description>';
-	$channel .= "<pubDate>".date("r",  mktime(0, 0, 0, date("m")  , date("d"), date("Y")))."</pubDate>\n";
-	$channel .= "<language>fr</language>\n";
-
-	$items = "";
-
-	$css = "<style>img { border:none; } </style>";
-
-	$req_breves = $connector->query("
-	SELECT idBreve, titre, contenu, img_breve, idPersonne, dateAjout FROM breve
-	WHERE
-	statut='actif'
-	AND (
-	(date_debut <= '".$glo_auj."' AND date_fin >= '".$glo_auj."') OR (date_debut='0000-00-00' AND date_fin='0000-00-00')
-	OR (date_debut <= '".$glo_auj."' AND date_fin='0000-00-00') OR (date_fin >= '".$glo_auj."' AND date_fin='0000-00-00')
-	)
-	 ORDER BY dateAjout DESC");
-
-
-	$dateAvant = '';
-
-	while($tab_breve = $connector->fetchArray($req_breves))
-	{
-
-		$req_pers = $connector->query("SELECT pseudo FROM personne WHERE idPersonne=".$tab_breve['idPersonne']);
-		$tab_pers = $connector->fetchArray($req_pers);
-
-		$der_dateAjout = $tab_breve['dateAjout'];
-		
-
-		$items .= "<item>\n";
-		$items .= "<title>".htmlspecialchars($tab_breve['titre'])."</title>\n";
-		$items .= "<link>".$site_full_url."breves.php</link>\n";
-		$items .= "<description><![CDATA[";
-		$items .= $css;
-		if (!empty($tab_breve['img_breve']))
-		{
-			//$imgInfo = @getimagesize($rep_images."breves/".$tab_breve['img_breve']);
-			$items .= "<div style=\"float:left\">
-			<a href=\""."breves.php\" title=\"Brève\"><img src=\"".$IMGbreves."s_".$tab_breve['img_breve']."\" alt=\"image pour ".$tab_breve['titre']."\" /></a>
-			</div>";
-		}
-
-		$items .= "<p>".Text::wikiToHtml(htmlspecialchars($tab_breve['contenu']))."</p>";
-		$items .= "<div style=\"clear:both\"></div>]]></description>\n";
-		$items .= "<author>".$tab_pers['pseudo']."</author>\n";
-		$items .= "<pubDate>".date("r", datetime_iso2time($tab_breve['dateAjout']))."</pubDate>\n";
-		$items .= "<guid isPermaLink=\"false\">".$tab_breve['idBreve']."</guid>\n";
-		//$items .= "<enclosure url=\"".$IMGbreves.$tab_breve['img_breve']."\" type="image/jpeg" length="2441"></enclosure>
-		$items .= "</item>\n";
-
-	}
-
-}
-else if ($get['type'] == "evenements_auj")
-{
+if ($get['type'] == "evenements_auj") {
 
 	$genres_c = array("fête", "cinéma", "théâtre", "expos", "divers");
 
@@ -114,7 +52,7 @@ else if ($get['type'] == "evenements_auj")
        WHEN 'théâtre' THEN 3
        WHEN 'expos' THEN 4
        WHEN 'divers' THEN 5 END, dateAjout DESC";
-	
+
 	$req_even = $connector->query($sql);
 
 
@@ -185,9 +123,9 @@ else if ($get['type'] == "evenements_auj")
 		$items .= "<guid isPermaLink=\"false\">".$tab_even['idEvenement']."</guid>\n";
 		$items .= "<pubDate>".date("r")."</pubDate>\n";
 		$items .= "</item>\n";
-	
+
 		$der_dateAjout = date_iso2time($tab_even['dateAjout']);
-		
+
 	} //while
 
 	//$channel .= "<pubDate>".date("r")."</pubDate>\n";
@@ -261,9 +199,9 @@ else if ($get['type'] == "lieu_evenements")
 
 
 		$der_dateAjout = date_iso2time($tab_even['dateAjout']);
-		
+
 	}
-	
+
 	$channel .= "<pubDate>".date("r", $der_dateAjout)."</pubDate>\n";
 }
 else if ($get['type'] == "evenement_commentaires")
@@ -302,9 +240,9 @@ else if ($get['type'] == "evenement_commentaires")
 		$items .= "<pubDate>".date("r", datetime_iso2time($tab_comm['dateAjout']))."</pubDate>\n";
 		$items .= "</item>\n";
 
-	
+
 		$der_dateAjout = date_iso2time($tab_comm['dateAjout']);
-		
+
 	}
 
 	$channel .= "<lastBuildDate>".date("r", $der_dateAjout)."</lastBuildDate>\n";
@@ -347,7 +285,7 @@ else if ($get['type'] == "lieux_descriptions")
 
 
 		$der_dateAjout = date_iso2time($tab['dateAjout']);
-	
+
 	}
 
 	$channel .= "<lastBuildDate>".date("r", $der_dateAjout)."</lastBuildDate>\n";
@@ -446,7 +384,7 @@ else if ($get['type'] == "evenements_ajoutes")
 	$channel .= "<pubDate>".date("r")."</pubDate>\n";
 	$channel .= "<language>fr</language>\n";
 
-	
+
 	$der_dateAjout = time();
 
 	$req_even = $connector->query("SELECT idEvenement, idPersonne, idSalle, genre, titre, dateEvenement,
@@ -468,8 +406,8 @@ else if ($get['type'] == "evenements_ajoutes")
 		$items .= $css;
 		 $items .= '<h2 style="padding:0.1em 0.1em;border-bottom:1px dotted #aeaeae;">'.ucfirst(date_fr($tab_even['dateEvenement'], 'annee')).'</h2>';
 
-		 
-	
+
+
 		if ($tab_even['idLieu'] != 0)
 		{
 			$nom_lieu = "<a href=\"".$site_full_url."/lieu.php?idL=".$tab_even['idLieu']."\"
@@ -488,11 +426,11 @@ else if ($get['type'] == "evenements_ajoutes")
 		{
 			$nom_lieu = sanitizeForHtml($tab_even['nomLieu']);
 		}
-		
+
 		$items .= "<h3>".$nom_lieu."</h3>";
 		$items .= "<p>".$tab_even['adresse']." - ".$tab_even['quartier']."</p>";
 		$items .= "<h4>".ucfirst($glo_tab_genre[$tab_even['genre']])."</h4>";
-		
+
 			//si un flyer existe
 		if (!empty($tab_even['flyer']))
 		{
@@ -528,11 +466,11 @@ else if ($get['type'] == "evenements_ajoutes")
 		$items .= "</item>\n";
 
 
-			
+
 		$der_dateAjout = datetime_iso2time($tab_even['dateAjout']);
-	
+
 	}
-	
+
 }
 
 

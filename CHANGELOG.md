@@ -19,10 +19,10 @@
 - mv files to more adequate dirs
 
 ### Removed
-- cache
+- cache*
 - comments ?
 - event-email ?
-- breves
+- breves*
 - favorites ?
 - file upload
 - app : index.html, utf8-to-utf8mb4

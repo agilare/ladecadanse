@@ -14,10 +14,10 @@ if (!$videur->checkGroup(6)) {
 
 $page_titre = "supprimer un élément";
 $page_description = "Suppression d'un élément";
-$extra_css = array("evenement_inc", "breve_inc", "lieu_inc", "descriptionlieu_inc", "commentaire_inc");
+$extra_css = array("evenement_inc", "lieu_inc", "descriptionlieu_inc", "commentaire_inc");
 include("_header.inc.php");
 
-$tab_types = array("evenement", "lieu", "descriptionlieu", "breve", "commentaire", "personne", "salle", "organisateur");
+$tab_types = array("evenement", "lieu", "descriptionlieu", "commentaire", "personne", "salle", "organisateur");
 
 /*
  * Vérification et attribution des variables d'URL GET
@@ -125,30 +125,6 @@ WHERE evenement_fichierrecu.idEvenement=" . $get['id'] . " AND type='document' A
             }
             else {
                 HtmlShrink::msgErreur("Vous ne pouvez pas supprimer cet événement.");
-            }
-        }
-        else if ($get['type'] == "breve") {
-
-            if ($authorization->estAuteur($_SESSION["SidPersonne"], $get['id'], $get['type']) || $_SESSION['Sgroupe'] < 2) {
-
-                $req_breve = $connector->query("SELECT titre, img_breve, actif FROM breve WHERE idBreve=" . $get['id']);
-                $res_breve = $connector->fetchArray($req_breve);
-                $titreSup = $res_breve['titre']; //pour le message après suppression
-
-                if (!empty($im['img_breve'])) {
-                    unlink($IMGbreves . $im['img_breve']);
-                    unlink($IMGbreves . "s_" . $im['img_breve']);
-                }
-
-                if ($connector->query("DELETE FROM breve WHERE idBreve=" . $get['id'])) {
-                    HtmlShrink::msgOk("La brève \"" . sanitizeForHtml($res_breve['titre']) . "\" a été supprimée");
-                }
-                else {
-                    HtmlShrink::msgErreur("La requète a échoué");
-                }
-            }
-            else {
-                HtmlShrink::msgErreur("Vous n'avez pas les droits pour supprimer cette brève");
             }
         }
         else if ($get['type'] == "lieu") {
@@ -305,8 +281,8 @@ WHERE lieu_fichierrecu.idLieu=" . $get['id'] . " AND type='document' AND
         else if ($get['type'] == "commentaire") {
             if ($authorization->estAuteur($_SESSION["SidPersonne"], $get['id'], $get['type']) || $_SESSION['Sgroupe'] < 2) {
 
-                $req_breve = $connector->query("SELECT contenu FROM commentaire WHERE idCommentaire=" . $get['id']);
-                $res_breve = $connector->fetchArray($req_breve);
+                $req_comm = $connector->query("SELECT contenu FROM commentaire WHERE idCommentaire=" . $get['id']);
+                $connector->fetchArray($req_comm);
 
                 if ($connector->query("DELETE FROM " . $get['type'] . " WHERE idCommentaire=" . $get['id'])) {
                     HtmlShrink::msgOk("Le commentaire a été supprimée");
@@ -419,18 +395,6 @@ else if ($get['action'] == 'suppression') {
 
             @mysqli_free_result($req_even);
         }
-        else if ($get['type'] == "breve") {
-            $req_breve = $connector->query("SELECT idBreve, idPersonne, titre, contenu, img_breve,
-		 actif, dateAjout FROM breve WHERE idBreve =" . $get['id']);
-
-            if ($affBreve = $connector->fetchArray($req_breve)) {
-
-                $breve = $affBreve;
-                include("templates/breve.inc.php");
-            }
-
-            @mysqli_free_result($req_breve);
-        }
         else if ($get['type'] == "lieu") {
             //récolte des détails sur le lieu
             $req_lieu = $connector->query("SELECT idLieu, nom, adresse, quartier, horaire_general, acces_tpg, entree,
@@ -495,21 +459,21 @@ else if ($get['action'] == 'suppression') {
 
                         if ($res_comm = $connector->fetchArray($req_comm)) {
 
-                            $breve = $res_comm;
+                            $commentaire = $res_comm;
 
-                            $req_auteur = $connector->query("SELECT pseudo FROM personne WHERE idPersonne=" . $breve['idPersonne']);
-                            $listeAut = $connector->fetchArray($req_auteur);
+            $req_auteur = $connector->query("SELECT pseudo FROM personne WHERE idPersonne=" . $commentaire['idPersonne']);
+            $listeAut = $connector->fetchArray($req_auteur);
 
-                            $da = explode(" ", $breve['dateAjout']);
+                            $da = explode(" ", $commentaire['dateAjout']);
 
-                            echo "<h2 class=\"jour\">" . date_fr($da[0]) . "</h2>";
+            echo "<h2 class=\"jour\">" . date_fr($da[0]) . "</h2>";
 
-                            echo "<div class=\"breve_contenu\">
-            <h3>" . sanitizeForHtml($breve['titre']) . "</h3>\n
+                            echo "<div>
+            <h3>" . sanitizeForHtml($commentaire['titre']) . "</h3>\n
             <div class=\"spacer\"></div>\n";
 
-                            echo "<p>" . Text::wikiToHtml(sanitizeForHtml($breve['contenu'])) . "</p><p class=\"auteur\">" . $listeAut['pseudo'] . "</p>";
-                            echo "<div class=\"spacer\"></div>\n";
+                            echo "<p>" . Text::wikiToHtml(sanitizeForHtml($commentaire['contenu'])) . "</p><p class=\"auteur\">" . $listeAut['pseudo'] . "</p>";
+            echo "<div class=\"spacer\"></div>\n";
 
                             echo "<div class=\"spacer\"></div>\n
             </div>\n";

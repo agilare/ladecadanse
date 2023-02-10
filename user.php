@@ -17,8 +17,8 @@ $page_description = "profil";
 include("_header.inc.php");
 
 
-$tab_elements = array("evenement" => "Événements",  "breve" => "Brèves", "lieu" => "Lieux", 'organisateur' => 'Organisateurs',
- "description" => "Descriptions", "commentaire" => "Commentaires");
+$tab_elements = array("evenement" => "Événements", "lieu" => "Lieux", 'organisateur' => 'Organisateurs',
+    "description" => "Descriptions", "commentaire" => "Commentaires");
 
 $tab_type_elements = array("ajouts" => "ajoutés",  "favoris" => "Favoris", "participations" => "Participations");
 
@@ -94,8 +94,8 @@ else
 	$get['page'] = 1;
 }
 
-$tab_tri = array("dateAjout", "idOrganisateur", "idEvenement", "idLieu", "idBreve", "dateEvenement", "date_derniere_modif", "statut",
- "date_debut", "date_fin", "id", "titre", "nom", "prenom", "groupe", "pseudo");
+$tab_tri = array("dateAjout", "idOrganisateur", "idEvenement", "idLieu", "dateEvenement", "date_derniere_modif", "statut",
+    "date_debut", "date_fin", "id", "titre", "nom", "prenom", "groupe", "pseudo");
 
 
 if (isset($_GET['tri']))
@@ -170,7 +170,7 @@ $detailsAff = $connector->fetchArray($req_affPers);
 
 	<!-- Deb profile -->
 	<div id="profile" style="padding: 0.4em;width: 94%;margin: 0 auto 0 auto;">
-        
+
 		<table>
             <tr><th>Identifiant</th><td><?php echo sanitizeForHtml($detailsPersonne['pseudo']) ?></td></tr>
             <tr><th>E-mail</th><td><?php echo sanitizeForHtml($detailsPersonne['email']) ?></td></tr>
@@ -198,9 +198,9 @@ $detailsAff = $connector->fetchArray($req_affPers);
         </table>
         <?php if ((isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 1)) || $_SESSION['SidPersonne'] == $get['idP']) { ?>
         <a href="/user-edit.php?idP=<?php echo $get['idP'] ?>&action=editer"><img src="/web/interface/icons/user_edit.png" alt="" />Modifier</a><?php } ?>
-    </div> <!-- Fin profile -->    
-    
-    
+    </div> <!-- Fin profile -->
+
+
 	<ul id="menu_principal">
         <li <?php if ($get['type_elements'] == "ajouts") { echo ' class="ici" '; } ?>>
         <a href="/user.php?idP=<?php echo $get['idP'] ?>&type_elements=ajouts">
@@ -623,19 +623,7 @@ else
 	<?php
 	}
 
-	/*
-	if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 6))
-	{
-	?>
-	<li <?php if ($get['elements'] == "breve") { echo ' class="ici" '; } ?>>
-	<img src="/web/interface/icons/newspaper.png" />
-	<a href="<?php echo $_SERVER['PHP_SELF']."?idP=".$get['idP']."&nblignes=".$get['nblignes']."&elements=breve" ?>">brèves</a>
-	</li>
-	<?php
-	}
-	*/
-	
-	if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 6))
+        if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 6))
 	{
 	?>
 	<li <?php if ($get['elements'] == "lieu") { echo ' class="ici" '; } ?>>
@@ -1113,116 +1101,7 @@ else if ($get['elements'] == "organisateur")
 	}
 
 }
-else if ($get['elements'] == "breve")
-{
-	//BREVES
-
-	$req_breves = $connector->query("SELECT idBreve, titre, contenu, img_breve, date_debut, date_fin, dateAjout
-	FROM breve WHERE idPersonne=".$get['idP']." ORDER BY ".$get['tri']." ".$get['ordre']." LIMIT ".($get['page'] - 1) * $get['nblignes'].",".$get['nblignes']);
-
-	$req_count = $connector->query("SELECT COUNT(*) AS total FROM breve WHERE idPersonne=".$get['idP']);
-	$tab_count = $connector->fetchArray($req_count);
-	$tot_elements = $tab_count['total'];
-
-	echo HtmlShrink::getPaginationString($get['page'], $tot_elements, $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?idP=".$get['idP']."&elements=".$get['elements']."&nblignes=".$get['nblignes']."&page=");
-
-	if ($connector->getNumRows($req_breves) > 0)
-	{
-		echo '<ul id="menu_nb_res">';
-		foreach ($tab_nblignes as $nbl)
-		{
-			echo '<li ';
-			if ($get['nblignes'] == $nbl) { echo 'class="ici"'; }
-
-			echo '><a href="'.$_SERVER['PHP_SELF'].'?'.Utils::urlQueryArrayToString($get, "nblignes").'&nblignes='.$nbl.'">'.$nbl.'</a></li>';
-		}
-		echo '</ul>';
-		echo '<div class="spacer"><!-- --></div>';
-
-
-		$th_breves = array("idBreve" => "ID",  "titre" => "Titre", "imgBreve" => "Image", "date_debut" => "Début",
-		 "date_fin" => "Fin", "dateAjout" => "Date d'ajout");
-
-		echo "<table id=\"ajouts\"><tr>";
-		foreach ($th_breves as $att => $th)
-		{
-			if ($att == "imgBreve")
-			{
-				echo "<th>".$th."</th>";
-			}
-			else
-			{
-				if ($att == $get['tri'])
-				{
-					echo "<th class=\"ici\">".$icone[$get['ordre']];
-				}
-				else
-				{
-					echo "<th>";
-				}
-
-				echo "<a href=\"".$_SERVER['PHP_SELF']."?idP=".$get['idP']."&elements=".$get['elements']."&page=".$get['page']."&tri=".$att."&ordre=".$ordre_inverse."&nblignes=".$get['nblignes']."\">".$th."</a></th>";
-			}
-		}
-		echo "<th>Éditer</th></tr>";
-
-
-
-		$pair = 0;
-
-		while (list($idBreve, $titre, $contenu, $image, $date_debut, $date_fin, $dateAjout) = $connector->fetchArray($req_breves) )
-		{
-
-
-			if ($pair % 2 == 0)
-			{
-				echo "<tr>";
-			}
-			else
-			{
-				echo "<tr class=\"impair\" >";
-			}
-
-			echo "
-			<td>".$idBreve."</td>
-			<td>".sanitizeForHtml($titre)."</td>
-
-			<td>";
-			echo "</td>";
-			echo "<td>";
-			if ($date_debut != "0000-00-00")
-			{
-				date_iso2app($date_debut);
-			}
-			echo "</td>";
-			echo "<td>";
-			if ($date_fin != "0000-00-00")
-			{
-				date_iso2app($date_fin);
-			}
-			echo "</td>";
-			echo "<td>".date_iso2app($dateAjout)."</td>";
-
-			//Edition pour l'admin ou l'auteur
-			if ($_SESSION['SidPersonne'] == $detailsPersonne['idPersonne'] || $_SESSION['Sgroupe'] < 2)
-			{
-				echo "<td><a href=\"/ajouterBreve.php?action=editer&idB=".$idBreve."\" title=\"Éditer la brève\">".$iconeEditer."</a></td>";
-			}
-
-			echo "</tr>";
-
-			$pair++;
-		}
-
-		echo "</table>";
-	}
-	else
-	{
-		echo '<p>Aucun '.$get['elements'].' ajouté pour le moment</p>';
-	}
-	//if nbrowbreves
-}
-else if ($get['elements'] == "commentaire")
+    else if ($get['elements'] == "commentaire")
 {
 
 
@@ -1311,7 +1190,7 @@ if ($connector->getNumRows($req_comm) > 0)
 		}
 
 		echo "<td>".$tab_comm['element']."</td>";
-		
+
 
 		$tab_dateAjout = explode(" ", $tab_comm['dateAjout']);
 
@@ -1336,10 +1215,7 @@ else
 {
 	echo '<p>Aucun '.$get['elements'].' ajouté pour le moment</p>';
 }
- //if nbrowbreves
-
-
-}
+    }
 
 echo HtmlShrink::getPaginationString($get['page'], $tot_elements, $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?idP=".$get['idP']."&elements=".$get['elements']."&tri=".$get['tri']."&ordre=".$get['ordre']."&nblignes=".$get['nblignes']."&page=");
 

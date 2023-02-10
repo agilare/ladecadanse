@@ -118,8 +118,8 @@ else
 }
 
 
-$pages_post = array("ajouterBreve", "multi-comment", "multi-description", "evenement-edit", "lieu-edit",
-"user-edit", "evenement-copy", "contacteznous", "user-login");
+$pages_post = array("multi-comment", "multi-description", "evenement-edit", "lieu-edit",
+    "user-edit", "evenement-copy", "contacteznous", "user-login");
 
 
 
@@ -152,10 +152,10 @@ if ($nom_page == "agenda" && isset($page_titre))
 
 	<title>
 	<?php
-		echo $page_titre." - La décadanse";	
+		echo $page_titre." - La décadanse";
 	?>
 	</title>
-	<?php 
+	<?php
 	if (!empty($page_description))
 	{
 	?>
@@ -167,16 +167,16 @@ if ($nom_page == "agenda" && isset($page_titre))
 
 	include("../_styles.inc.php");
 	?>
-	<link rel="shortcut icon" href="/web/interface/favicon.png" />	
-    <link rel="apple-touch-icon" href="/web/interface/apple-icon.png" />    
-    <link rel="apple-touch-icon" sizes="57x57" href="/web/interface/apple-icon-57x57.png" />       
-    <link rel="apple-touch-icon" sizes="76x76" href="/web/interface/apple-icon-76x76.png" />     
-    <link rel="apple-touch-icon" sizes="152x152" href="/web/interface/apple-icon-152x152.png" />  
+	<link rel="shortcut icon" href="/web/interface/favicon.png" />
+    <link rel="apple-touch-icon" href="/web/interface/apple-icon.png" />
+    <link rel="apple-touch-icon" sizes="57x57" href="/web/interface/apple-icon-57x57.png" />
+    <link rel="apple-touch-icon" sizes="76x76" href="/web/interface/apple-icon-76x76.png" />
+    <link rel="apple-touch-icon" sizes="152x152" href="/web/interface/apple-icon-152x152.png" />
 	<link rel="shortcut icon" href="/web/interface/favicone.gif" />
-     <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>  
+     <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
    <script async defer
       src="https://maps.googleapis.com/maps/api/js?key=<?php echo GOOGLE_API_KEY; ?>&callback=initMap">
-    </script>      
+    </script>
 </head>
 
 <body>
@@ -203,8 +203,8 @@ foreach ($glo_menu_pratique as $nom => $lien)
 	}
     ?>
 	<li><a href="/<?php echo $lien; ?>" <?php echo $ici; ?>><?php echo $nom; ?></a></li>
-    
-   
+
+
 <?php
 }
 
@@ -216,7 +216,7 @@ if (!isset($_SESSION['SidPersonne']))
 		$ici = " class=\"ici\"";
 	}
 	?>
-    
+
     <li><a href="/user-register.php" title="S'inscrire pour devenir membre">Inscrivez-vous</a></li>
 <li <?php echo $ici; ?>><a href="/user-login.php" title="Se connecter au site">Connexion</a></li>
 
@@ -232,12 +232,12 @@ else
 			$ici = " class=\"ici\"";
 		}
         ?>
-        
+
         <li <?php echo $ici; ?>><a href="/evenement-edit.php?action=ajouter">Ajouter un événement</a></li>
-        
+
         <?php
 	}
-	
+
     $ici = '';
 	if (mb_strstr($_SERVER['PHP_SELF'], "user.php") )
 	{
@@ -246,7 +246,7 @@ else
     ?>
    <li <?php echo $ici; ?>><a href="/user.php?idP=<?php echo $_SESSION['SidPersonne']; ?>"><?php echo $_SESSION['user']; ?></a></li>
 	<li><a href="/user-logout.php" title="Fermer la session">Sortir</a></li>
-    
+
     <?php
 	if ($_SESSION['Sgroupe'] <= 4)
 	{
@@ -278,7 +278,7 @@ $menu_principal = array("Agenda" => "/agenda.php",  "Lieux" => "/lieux.php", "Or
 foreach ($menu_principal as $nom => $lien)
 {
     $ici = '';
-	if (mb_strstr($_SERVER['PHP_SELF'], $lien) 
+	if (mb_strstr($_SERVER['PHP_SELF'], $lien)
 	|| ($lien == "/lieux.php" && mb_strstr($_SERVER['PHP_SELF'], "lieu.php"))
 	|| ($lien == "/organisateurs.php" && mb_strstr($_SERVER['PHP_SELF'], "organisateur.php"))
 	)
@@ -286,16 +286,16 @@ foreach ($menu_principal as $nom => $lien)
 		$ici = " class=\"ici\" ";
 	}
 ?>
-    
+
     <li
-    
-  <?php  
+
+  <?php
 	if ($nom == "Agenda")
 	{
     ?>
 		id="bouton_agenda">
         <?php
-		echo "<a href=\"".$lien."?courant=".$get['courant']."&amp;sem=".$get['sem']."&amp;tri_agenda=".$get['tri_agenda']."\">".$nom."</a></li>"; 
+		echo "<a href=\"".$lien."?courant=".$get['courant']."&amp;sem=".$get['sem']."&amp;tri_agenda=".$get['tri_agenda']."\">".$nom."</a></li>";
         ?>
 		<li>
 <?php

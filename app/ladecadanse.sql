@@ -15,20 +15,6 @@ CREATE TABLE `affiliation` (
   `genre` set('lieu','association','groupe') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT ''
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE `breve` (
-  `idBreve` mediumint(8) UNSIGNED NOT NULL,
-  `titre` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `contenu` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
-  `img_breve` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `date_debut` date NOT NULL DEFAULT '0000-00-00',
-  `date_fin` date NOT NULL DEFAULT '0000-00-00',
-  `idPersonne` smallint(5) UNSIGNED NOT NULL DEFAULT '0',
-  `actif` tinyint(4) UNSIGNED NOT NULL DEFAULT '1',
-  `dateAjout` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `date_derniere_modif` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `statut` enum('actif','inactif') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'actif'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
 CREATE TABLE `commentaire` (
   `idCommentaire` mediumint(11) UNSIGNED NOT NULL,
   `idPersonne` smallint(11) UNSIGNED NOT NULL DEFAULT '0',
@@ -1313,11 +1299,6 @@ CREATE TABLE `temp` (
 ALTER TABLE `affiliation`
   ADD PRIMARY KEY (`idPersonne`,`idAffiliation`);
 
-ALTER TABLE `breve`
-  ADD PRIMARY KEY (`idBreve`),
-  ADD KEY `breve_dateajout` (`dateAjout`),
-  ADD KEY `breve_actif` (`actif`);
-
 ALTER TABLE `commentaire`
   ADD PRIMARY KEY (`idCommentaire`);
 
@@ -1379,10 +1360,6 @@ ALTER TABLE `salle`
 ALTER TABLE `temp`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `idPersonne` (`idPersonne`);
-
-
-ALTER TABLE `breve`
-  MODIFY `idBreve` mediumint(8) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `commentaire`
   MODIFY `idCommentaire` mediumint(11) UNSIGNED NOT NULL AUTO_INCREMENT;

@@ -22,7 +22,7 @@ $extra_css = array("formulaires", "gerer", "chosen.min");
 $extra_js = array("jquery.shiftcheckbox");
 require_once('_header.inc.php');
 
-$tab_listes = array("evenement" => "Événements",  "breve" => "Brèves", "lieu" => "Lieux", "description" => "Descriptions", "commentaire" => "Commentaires", "personne" => "Personnes");
+$tab_listes = array("evenement" => "Événements", "lieu" => "Lieux", "description" => "Descriptions", "commentaire" => "Commentaires", "personne" => "Personnes");
 $tab_nblignes = [100, 250, 500];
 
 $get = [];
