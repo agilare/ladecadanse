@@ -89,7 +89,7 @@ if (!empty($_GET['terme']))
 
 $_SESSION['region_admin'] = '';
 if ($_SESSION['Sgroupe'] >= 4 && !empty($_SESSION['Sregion']) && in_array($get['element'], ['lieu']))
-{ 
+{
     $_SESSION['region_admin'] = $_SESSION['Sregion'];
 }
 
@@ -100,18 +100,11 @@ if (!empty($_SESSION['region_admin']))
 {
     $sql_where_region = " WHERE region='".$connector->sanitize($_SESSION['region_admin'])."' ";
 
-        
+
         $titre_region = " - ".$glo_regions[$_SESSION['region_admin']];
 }
-  
-/*
 
-header("Cache-Control: max-age=60, must-revalidate");
-header_html("La décadanse : fréquentation du site", $indexMotsClef, $indexCssScreen, $indexCssPrint);
- */
 ?>
-
-
 
 <!-- Deb Contenu -->
 <div id="contenu" class="colonne">
@@ -228,7 +221,7 @@ else if ($get['element'] == "lieu")
 	$req_lieux = $connector->query("
 	SELECT idLieu, idPersonne, nom, quartier, categorie, URL, statut, dateAjout, date_derniere_modif
 	FROM lieu
-        ".$sql_where_region."  
+        ".$sql_where_region."
 	ORDER BY ".$get['tri_gerer']." ".$get['ordre']."
 	LIMIT ".($get['page'] - 1) * $get['nblignes'].",".$get['nblignes']);
 
@@ -445,7 +438,7 @@ else if ($get['element'] == "commentaire")
 {
 	$req_comm = $connector->query("SELECT idCommentaire, id, idPersonne, contenu, statut, element, dateAjout, date_derniere_modif
 	FROM commentaire
-                ".$sql_where_region." 
+                ".$sql_where_region."
 	ORDER BY ".$get['tri_gerer']." ".$get['ordre']."
 	LIMIT ".($get['page'] - 1) * $get['nblignes'].",".$get['nblignes']);
 
@@ -563,7 +556,7 @@ else if ($get['element'] == "personne")
 	$sql_terme = '';
 	if (!empty($get['terme']))
 		$sql_terme = " WHERE ( LOWER(pseudo) like LOWER('%".$connector->sanitize($get['terme'])."%') OR LOWER(email) like LOWER('%".$connector->sanitize($get['terme'])."%')) ";
-	
+
 	$sql_pers = "
 	SELECT idPersonne, pseudo, email, groupe, nom, prenom, affiliation, statut, dateAjout, date_derniere_modif
 	FROM personne
@@ -576,35 +569,35 @@ else if ($get['element'] == "personne")
 	$pers_total_page_max = ceil($num_pers_total / $get['nblignes']);
 	if ($pers_total_page_max > 0 && $get['page'] > $pers_total_page_max)
 		$get['page'] = $pers_total_page_max;
-	
+
 /* 	echo "<p>num_pers_total : $num_pers_total";
 	echo "<p>pers_total_page_max : $pers_total_page_max";	 */
-	
+
 	$sql_pers .= " LIMIT ".($get['page'] - 1) * $get['nblignes'].",".$get['nblignes'];
-	
+
 	$req_pers = $connector->query($sql_pers);
 
 	$th_lieu = array("idPersonne" => "ID", "pseudo" => "Pseudo",  "email" => "E-mail",  "groupe" => "Groupe",
 	"dateAjout" => "Création",
 	"statut" => "Statut"
 	);
-	
+
 	?>
-	
+
 	<form method="get" action="" id="ajouter_editer">
-	
+
 		<input type="hidden" name="page" value="<?php echo $get['page']; ?>" />
 		<input type="hidden" name="nblignes" value="<?php echo $get['nblignes']; ?>" />
 		<input type="hidden" name="tri_gerer" value="<?php echo $get['tri_gerer']; ?>" />
 		<input type="hidden" name="element" value="<?php echo $get['element']; ?>" />
 		<input type="hidden" name="ordre" value="<?php echo $get['ordre']; ?>" />
-		
-		
+
+
 		<input type="text" name="terme" value="<?php echo $get['terme']; ?>" placeholder="pseudo ou email" size="20" />
 		<input type="submit" name="submit" value="Filtrer" />
-	
+
 	</form>
-	
+
 	<?php
 
 	echo HtmlShrink::getPaginationString($get['page'], $num_pers_total, $get['nblignes'], 1, $_SERVER['PHP_SELF'],
@@ -656,13 +649,13 @@ echo '<div class="spacer"></div>';
 		else if ($nom_groupe == 6)
 		{
 			$nom_groupe = "Rédacteur";
-		}	
+		}
 		else if ($nom_groupe == 4)
 		{
 			$nom_groupe = "Admin";
-		}	
-				
-		
+		}
+
+
 		echo "<tr";
 
 		if ($pair % 2 != 0) { echo " class=\"impair\""; }

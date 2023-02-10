@@ -29,7 +29,7 @@ $get = [];
 
 $_SESSION['region_admin'] = '';
 if ($_SESSION['Sgroupe'] >= 4 && !empty($_SESSION['Sregion']))
-{ 
+{
     $_SESSION['region_admin'] = $_SESSION['Sregion'];
 }
 
@@ -89,27 +89,27 @@ $get['filtre_genre'] = "tous";
 if (isset($_GET['filtre_genre']) && $_GET['filtre_genre'] != 'tous')
 {
 	$get['filtre_genre'] = $_GET['filtre_genre'];
-	
-		
+
+
 	if (!empty($_GET['terme']))
 		$where .= " AND ";
-	
+
 	$where .= " genre='".$connector->sanitize($_GET['filtre_genre'])."' ";
 }
 
 $verif = new Validateur();
-    
+
 $sql_region = '';
 $titre_region = '';
 if (!empty($_SESSION['region_admin']))
 {
     	if ((!empty($_GET['filtre_genre']) && $_GET['filtre_genre'] != 'tous') || !empty($_GET['terme']))
 		$where .= " AND ";
-        
+
         $where .=  " region='".$connector->sanitize($_SESSION['region_admin'])."' ";
-      
+
         $titre_region = " - ".$glo_regions[$_SESSION['region_admin']];
-}   
+}
 ?>
 
 
@@ -121,7 +121,7 @@ if (!empty($_SESSION['region_admin']))
 		<h2>Gérer les événements <?php echo $titre_region ?></h2>
         <div class="spacer"></div>
 	</div>
-	
+
 <?php
 $evenements = array();
 
@@ -156,10 +156,10 @@ else if (!empty($_POST['formulaire']) && !empty($_POST['supprimerSerie']))
 	{
 		foreach($evenements as $even)
         {
-            EvenementCollection::deleteEvenement($even);    
+            EvenementCollection::deleteEvenement($even);
         }
 	}
-        
+
 	unset($_POST);
 
 }
@@ -168,16 +168,16 @@ elseif (!empty($_POST['formulaire']))
 
 	foreach ($champs as $c => $v)
 	{
-		$champs[$c] = trim($_POST[$c]);		
+		$champs[$c] = trim($_POST[$c]);
 	}
 
 	$evenements = $_POST['evenements'];
-	
-	
+
+
 	$champs['organisateurs'] = array();
 	if (isset($_POST['organisateurs']))
-		$champs['organisateurs'] = $_POST['organisateurs'];	
-	
+		$champs['organisateurs'] = $_POST['organisateurs'];
+
 	//TEST
 	//printr($_FILES);
 	//
@@ -286,8 +286,8 @@ elseif (!empty($_POST['formulaire']))
 		}
 
 		$lieu_modifie = false;
-                
-               
+
+
 		// pour remplir les champs nomLieu, adresse, etc. de la table evenement
 		if (!empty($champs['idLieu']))
 		{
@@ -303,7 +303,7 @@ elseif (!empty($_POST['formulaire']))
                         $lieu_modifie = true;
 		}
                 elseif (!empty($champs['localite_id']))
-                {    
+                {
                     $loc_qua = explode("_", $champs['localite_id']);
                     if (count($loc_qua) > 1)
                     {
@@ -313,7 +313,7 @@ elseif (!empty($_POST['formulaire']))
                     }
                     else
                     {
-                        $champs['quartier'] = ''; 
+                        $champs['quartier'] = '';
 
                         if ($champs['localite_id'] == 'vd' || $champs['localite_id'] == 'rf' || $champs['localite_id'] == 'hs')
                         {
@@ -323,23 +323,23 @@ elseif (!empty($_POST['formulaire']))
                         elseif ($champs['localite_id'] == 529 )
                         {
                             $champs['region'] = 'ge';
-                                               
 
-                        }   
+
+                        }
                         else
                         {
                             $sql_lieu = "SELECT canton FROM localite WHERE id=".$connector->sanitize($champs['localite_id']);
                             $req_lieu = $connector->query($sql_lieu);
-                            $tab_lieu = $connector->fetchArray($req_lieu);    
+                            $tab_lieu = $connector->fetchArray($req_lieu);
                             $champs['region'] = $tab_lieu['canton'];
                         }
                     }
-                    
+
                         $champs['idLieu'] = "0";
 			$lieu_modifie = true;
-                    
+
                 }
-                
+
                 /*
 		if ($champs['idLieu'] != "" && $champs['idLieu'] != 0)
 		{
@@ -363,8 +363,8 @@ elseif (!empty($_POST['formulaire']))
 		if (count($champs['organisateurs']) > 0)
 		{
 			$champs['organisateurs'] = array_unique($champs['organisateurs']);
-		}		
-		
+		}
+
 
 		$compteur_evenements = 0;
 
@@ -581,25 +581,25 @@ elseif (!empty($_POST['formulaire']))
 
 			foreach ($champs as $c => $v)
 			{
-                            if ((!empty($v) && $c != "document_description" && $c != "idPersonne" && $c != "organisateurs") 
-                            || (($c == "idLieu" || $c == "urlLieu" || $c == "quartier" || $c == "localite_id" || $c == "region") && $lieu_modifie == true )     
+                            if ((!empty($v) && $c != "document_description" && $c != "idPersonne" && $c != "organisateurs")
+                            || (($c == "idLieu" || $c == "urlLieu" || $c == "quartier" || $c == "localite_id" || $c == "region") && $lieu_modifie == true )
                             )
-                            {           
+                            {
                                     $sql_update .= $c."='".$connector->sanitize($v)."', ";
                             }
 			}
 
-                        
+
                         //(($v == "" && ($c == "urlLieu" || $c == "quartier")) || $v != "") &&
 
 			$sql_update .= "date_derniere_modif='".date("Y-m-d H:i:s")."'";
 			$sql_update .= $sql_flyer.$sql_image."
 			WHERE idEvenement=".$idEven_courant;
-			
-                        
+
+
 				//echo "<p>".$sql_update."</p>";
 
-                        
+
 			$req_update = $connector->query($sql_update);
 
 			/*
@@ -610,30 +610,10 @@ elseif (!empty($_POST['formulaire']))
 				HtmlShrink::msgOk('Mise à jour de <a href="/evenement.php?idE='.$idEven_courant.'">'.$tab_even['titre'].'</a> le <a href="/agenda.php?courant='.$tab_even['dateEvenement'].'">'.date_fr($tab_even['dateEvenement'], "annee").'</a> réussie');
 
 				$sql = "DELETE FROM evenement_organisateur WHERE idEvenement=".$idEven_courant;
-				$req = $connector->query($sql);						
-				
-				
-				/*
-				* Suppression des caches
-				* -  si l'événement a lieu dans un lieu présent dans la base
-				* - de la fiche de l'événement en question
-				* - de tous les index
+				$req = $connector->query($sql);
 
- 				if (!empty($lieu))
-					@unlink($cache_lieu.$lieu.".php");
-
-				@unlink($cache_even.$get_idE.".php");
-
-				if ($rc = opendir($cache_index)) {
-					while ($fichierIndex = readdir($rc)) {
-						@unlink($cache_index.$fichierIndex);
-					}
-					closedir($rc);
-				}
-*/
 				$action_terminee = true;
-
-			}
+            }
 			else
 			{
 
@@ -725,14 +705,14 @@ elseif (!empty($_POST['formulaire']))
 					{
 						$sql = "INSERT INTO evenement_organisateur (idEvenement, idOrganisateur) VALUES (".$idEven_courant.", ".$idOrg.")";
 						//echo $sql;
-					
+
 						if ($connector->query($sql))
 						{
-							
+
 						}
 					}
-				}			
-			
+				}
+
 
 			$compteur_evenements++;
 		}
@@ -751,7 +731,7 @@ elseif (!empty($_POST['formulaire']))
 if ($verif->nbErreurs() > 0)
 {
 	HtmlShrink::msgErreur("Il y a ".$verif->nbErreurs()." erreur(s).");
-	
+
 	//print_r($verif->getErreurs());
 }
 
@@ -769,8 +749,8 @@ $tot_elements = $tab_nbeven['nbeven'];
 $total_page_max = ceil($tot_elements / $get['nblignes']);
 if ($get['page'] > $total_page_max)
 	$get['page'] = $total_page_max;
- 
- 
+
+
 $sql_page = $get['page'];
 if ($get['page'] < 1)
     $sql_page = 1;
@@ -784,11 +764,11 @@ ORDER BY ".$get['tri_gerer']." ".$get['ordre']." LIMIT ".($sql_page - 1) * $get[
 //echo $sql_evenement;
 $req_evenement = $connector->query($sql_evenement);
 ?>
-        
+
 <div style="width:94%;margin:0 auto">
 
 <ul class="menu_filtre" style="float:left;width:60%">
-<li 
+<li
 <?php
 if ($get['filtre_genre'] == 'tous') { echo 'class="ici"'; }
 
@@ -808,17 +788,17 @@ echo '</ul>';
 ?>
     <div class="spacer"></div>
 	<form method="get" action="" id="ajouter_editer" style="margin:0;">
-	
+
 		<input type="hidden" name="filtre_genre" value="<?php echo $get['filtre_genre']; ?>" />
 		<input type="hidden" name="page" value="<?php echo $get['page']; ?>" />
 		<input type="hidden" name="nblignes" value="<?php echo $get['nblignes']; ?>" />
 		<input type="hidden" name="tri_gerer" value="<?php echo $get['tri_gerer']; ?>" />
 		<input type="hidden" name="element" value="<?php echo $get['element']; ?>" />
 		<input type="hidden" name="ordre" value="<?php echo $get['ordre']; ?>" />
-				
+
 		<input type="text" name="terme" value="<?php echo $get['terme']; ?>" placeholder="Titre" size="30" />
 		<input type="submit" name="submit" value="Filtrer" />
-	
+
 	</form>
 </div>
 <div class="spacer"></div>
@@ -911,12 +891,12 @@ while ($tab_even = $connector->fetchArray($req_evenement))
 	<td>";
 
 	echo afficher_debut_fin($tab_even['horaire_debut'], $tab_even['horaire_fin'], $tab_even['dateEvenement']);
-	
-	
+
+
 	echo "</td><td>".$tab_icones_statut[$tab_even['statut']]."</td>";
 	$datetime_dateajout = date_iso2app($tab_even['dateAjout']);
 	$tab_datetime_dateajout = explode(" ", $datetime_dateajout);
-	echo "<td>".$tab_datetime_dateajout[1]." ".$tab_datetime_dateajout[0]."</td>";    
+	echo "<td>".$tab_datetime_dateajout[1]." ".$tab_datetime_dateajout[0]."</td>";
 
 
 	if ($_SESSION['Sgroupe'] <= 4)
@@ -1059,12 +1039,12 @@ while ($lieuTrouve = $connector->fetchArray($req_lieux))
 {
 
 	echo "<option ";
-	
+
 	$nom_lieu = $lieuTrouve['nom'];
 	if (preg_match("/^(Le |La |Les |L')(.*)/", $lieuTrouve['nom'], $matches))
 	{
 		$nom_lieu = $matches[2].', '.$matches[1];
-		
+
 	}
 
 	if ($lieuTrouve['idLieu'] == $champs['idLieu'])
@@ -1148,77 +1128,77 @@ SELECT id, localite, canton FROM localite WHERE id!=1 ORDER BY canton, localite 
 $select_canton = '';
 while ($tab = $connector->fetchArray($req))
 {
-    
+
     if ($tab['canton'] != $select_canton)
-    {       
+    {
         if (!empty($select_canton))
-            echo "</optgroup>"; 
-        
+            echo "</optgroup>";
+
         echo "<optgroup label=''>"; // ".$glo_regions[strtolower($tab['canton'])]."
     }
-    
+
 	echo "<option ";
-	
+
 	if (empty($champs['idLieu']) && ($champs['localite_id'] == $tab['id'] && empty($champs['quartier'])) || ((isset($_POST['localite_id']) && $tab['id'] == $_POST['localite_id'])))
 	{
 		echo 'selected="selected" ';
-	}	
-	
+	}
+
 	echo "value=\"".$tab['id']."\">".$tab['localite']."</option>";
 
-    // Genève quartiers    
+    // Genève quartiers
     if ($tab['id'] == 44)
     {
-        
+
         // si erreur formulaire
         $champs_quartier = '';
         $loc_qua = explode("_", $champs['localite_id']);
         if (!empty($loc_qua[1]))
            $champs_quartier = $loc_qua[1];
-        
+
         // si chargement even existant
         if (!empty($champs['quartier']))
-            $champs_quartier = $champs['quartier'];        
-        
+            $champs_quartier = $champs['quartier'];
+
         foreach ($glo_tab_quartiers2['ge'] as $no => $quartier)
-       {  
+       {
                echo "<option ";
 
                if (empty($champs['idLieu']) && $champs_quartier == $quartier)
                {
                        echo 'selected="selected" ';
-               }	
+               }
 
                echo " value=\"44-".$quartier."\">Genève - ".$quartier."</option>";
 
-       }       
+       }
 
-    }        
-        
+    }
+
      $select_canton = $tab['canton'];
 }
 ?>
-    <optgroup label="Ailleurs">    
+    <optgroup label="Ailleurs">
 <?php
     foreach ($glo_tab_ailleurs as $id => $nom)
-   {  
+   {
            echo "<option ";
 
            if (empty($champs['idLieu']) && (($champs['region'] == $id) || ((isset($_POST['localite_id']) && $id == $_POST['localite_id'])))
-                  ) // $form->getValeur('quartier') 
+                  ) // $form->getValeur('quartier')
            {
                    echo ' selected="selected" ';
-           }	
+           }
 
            echo " value=\"".$id."\">".$nom."</option>";
 
-   }  
+   }
 ?>
-    
 
-   
-    </optgroup>    
-    
+
+
+    </optgroup>
+
 
 </select>
 <?php

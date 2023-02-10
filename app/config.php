@@ -17,7 +17,6 @@ $rep_uploads_lieux_galeries = __ROOT__ . "/web/uploads/lieux/galeries/";
 $rep_uploads_organisateurs = __ROOT__ . "/web/uploads/organisateurs/";
 $rep_fichiers_even = __ROOT__ . "/web/uploads/fichiers/evenements/";
 $rep_fichiers_lieu = __ROOT__ . "/web/uploads/fichiers/lieux/";
-$rep_cache = __ROOT__ . "/cache/";
 
 
 // PATHS
@@ -47,7 +46,7 @@ $glo_auj = date("Y-m-d");
 $auj = date("Y-m-d");
 $glo_auj_6h = date("Y-m-d", time() - 14400); // 4h
 
-$glo_regions = array("ge" => "Genève", "vd" => "Vaud", "rf" => "France", "hs" => "Autre"); //  "fr" => "Fribourg", 
+$glo_regions = array("ge" => "Genève", "vd" => "Vaud", "rf" => "France", "hs" => "Autre"); //  "fr" => "Fribourg",
 $glo_moisF = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
 
 // USERS

@@ -53,9 +53,6 @@ else
 	exit;
 }
 
-//header("Cache-Control: max-age=600, must-revalidate");
-/* $cache_index = $rep_cache."index/";
-$cache_lieux = $rep_cache."lieux/"; */
 $page_titre = $get['action']." d'une personne";
 $page_description = "Formulaire d'ajout/edition d'un membre";
 $extra_css = array("formulaires", "user-edit_formulaire");
@@ -105,10 +102,10 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 	{
         if (isset($_POST[$c]))
         {
-            $champs[$c] = $_POST[$c];		
+            $champs[$c] = $_POST[$c];
         }
     }
-	
+
 	if (isset($_POST['organisateurs']))
 		$champs['organisateurs'] = $_POST['organisateurs'];
 
@@ -178,10 +175,10 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 			}
 		}
 	}
-	
+
 	if (in_array($champs['newPass'], $g_mauvais_mdp))
 	{
-		$verif->setErreur("nouveaux_pass", "Veuillez choisir un meilleur mot de passe");	
+		$verif->setErreur("nouveaux_pass", "Veuillez choisir un meilleur mot de passe");
 	}
 
 	$verif->valider($champs['nom'], "nom", "texte", 1, 80, 0);
@@ -206,7 +203,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 		$sql_existance = "SELECT pseudo FROM personne
 		WHERE pseudo='".$connector->sanitize($champs['pseudo'])."'
 		OR email='".$connector->sanitize($champs['email'])."'";
-        
+
 		$req_existance = $connector->query($sql_existance);
 
 		if ($connector->getNumRows($req_existance) > 0)
@@ -238,7 +235,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
     if (!SecurityToken::check($_POST['token'], $_SESSION['token']))
     {
         $verif->setErreur("pseudo", "Le système de sécurité du site n'a pu authentifier votre action. Veuillez réafficher ce formulaire et réessayer");
-    }       
+    }
 
 	/*
 	 * PAS D'ERREUR, donc ajout ou update executés
@@ -395,9 +392,9 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 				{
 					HtmlShrink::msgOk("Le profil de <em>".$champs['pseudo']."</em> a été modifié");
 				}
-				
-				$sqld = "DELETE FROM personne_organisateur WHERE idPersonne=".$get['idP'];	
-				$connector->query($sqld);				
+
+				$sqld = "DELETE FROM personne_organisateur WHERE idPersonne=".$get['idP'];
+				$connector->query($sqld);
 				$req_id = $get['idP'];
 			}
 			else
@@ -628,12 +625,12 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 8))
     <?php
     $req_lieux = $connector->query("
     SELECT idLieu, nom FROM lieu WHERE actif=1 AND statut='actif' ORDER BY TRIM(LEADING 'L\'' FROM (TRIM(LEADING 'Les ' FROM (TRIM(LEADING 'La ' FROM (TRIM(LEADING 'Le ' FROM nom))))))) COLLATE utf8mb4_unicode_ci"
-     );    
+     );
 
         $sql = "SELECT idOrganisateur
     FROM personne_organisateur
     WHERE personne_organisateur.idPersonne=".$get['idP'];
- 
+
     $tab_organisateurs_pers = array();
     if ($get['action'] == "editer" || $get['action'] == "update")
     {
@@ -655,8 +652,8 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 8))
             //echo "</table>";
         }
 
-    }        
-    
+    }
+
     if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 6))
     {
     ?>
@@ -710,7 +707,7 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 8))
         {
             echo 'selected="selected" ';
 
-        }	
+        }
 
 
         echo "value=\"".$tab['idOrganisateur']."\">".$tab['nom']."</option>";
@@ -726,19 +723,19 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 8))
     {
         if (!empty($champs['affiliation']))
         {
-        ?>  
+        ?>
         <p>
             <label></label><input type="text" disabled value="<?php echo htmlentities($champs['affiliation']);?>" >
         </p>
-        
-        <?php     
+
+        <?php
         }
-        
+
         if (!empty($champs['lieu']))
         {
             $req_lieux = $connector->query("SELECT nom FROM lieu WHERE idLieu=".$champs['lieu']);
             $lieuTrouve = $connector->fetchArray($req_lieux);
-            ?>  
+            ?>
                 <p>
                 <label>Lieu</label>
                 <ul style="float:left;margin:0;padding-left:1em;">
@@ -747,8 +744,8 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 8))
                     </li>
                 </ul><div class="spacer"><!-- --></div>
             </p>
-        <div class="guideChamp" style='padding: 0em 0 0.2em 175px;'>Vous pouvez modifier les informations de ce lieu et tous les événements qui s'y déroulent</div>            
-        <?php            
+        <div class="guideChamp" style='padding: 0em 0 0.2em 175px;'>Vous pouvez modifier les informations de ce lieu et tous les événements qui s'y déroulent</div>
+        <?php
         }
 
         $sql = "SELECT organisateur.idOrganisateur, nom
@@ -760,12 +757,12 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 8))
      $req = $connector->query($sql);
 
         if ($connector->getNumRows($req))
-        { 
-             ?>  
+        {
+             ?>
             <p>
                 <label>Organisateur(s)</label>
             <ul style="float:left;margin:0;padding-left:1em;">
-                <?php                       
+                <?php
                 while ($tab = $connector->fetchArray($req))
                 {
                     ?>
@@ -774,14 +771,14 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 8))
                     </li>
                     <?php
                 }
-           ?> 
+           ?>
             </ul><div class="spacer"><!-- --></div>
-            
+
             </p>
         <div class="guideChamp" style='padding: 0em 0 0.2em 175px;'>Vous pouvez modifier ces organisateurs, tous les événements qui y sont associés ainsi que les lieux associés à ces organisateurs</div>
-            
 
-        <?php             
+
+        <?php
         }
     }
     ?>
@@ -798,7 +795,7 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 8))
     <div class="guideForm">Apparait sous les événements, commentaires, etc. que vous avez ajoutés</div>
 
     <label style="display:block;float:none;width:8em" >Afficher :</label>
-    
+
     <ul class="radio" style="display:block">
     <?php
     $signatures = array("pseudo" => "L'identifiant", "prenom" => "Le prénom", "nomcomplet" => "Le prénom et le nom", "aucune" => "Aucune signature");
@@ -812,7 +809,7 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 8))
         echo '<li style="display:block" >
         <input type="radio" name="signature" value="'.$s.'" '.$coche.' id="signature_'.$s.'" />
         <label class="continu" for="signature_'.$s.'">'.$label.' ';
-        
+
         if ($s == 'nomcomplet')
         {
             echo ": <b>".$champs['prenom']." ".$champs['nom']."</b>";
@@ -820,11 +817,11 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 8))
         elseif ($s == 'aucune')
         {
             echo "";
-        }        
+        }
         else
         {
             echo ": <b>".$champs[$s]."</b>";
-        }        
+        }
         echo '</label>
         </li>';
     }

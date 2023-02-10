@@ -5,28 +5,19 @@ namespace Ladecadanse;
 class Element
 {
 
-   /**
- *
- * @var string
- */
- 	var $id;
+    var $id;
 	var $valeurs = array();
 	var $connector;
 	var $table;
 
- /**
- 	 * Démarre la session et inclut un en-tête interdisant de stocker le mot
-	 * de passe dans le cache de l'utilisateur
-   * @access public
-   */
 	function __construct()
 	{
 		global $connector;
 		$this->connector = $connector;
 	}
 
- 
-        
+
+
 	function setId($id)
 	{
 		$this->id = $id;
@@ -48,7 +39,7 @@ class Element
 		{
             return $this->valeurs[$nom];
         }
-        
+
         return '';
 	}
 
@@ -138,7 +129,7 @@ class Element
         if (isset($this->valeurs[$nom]))
 		{
             return sanitizeForHtml($this->valeurs[$nom]);
-        }        
+        }
 		return '';
 	}
 

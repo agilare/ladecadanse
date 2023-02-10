@@ -7,12 +7,8 @@ use Ladecadanse\Organisateur;
 
 class OrganisateurCollection extends Collection
 {
- /**
- 	 * Démarre la session et inclut un en-tête interdisant de stocker le mot
-	 * de passe dans le cache de l'utilisateur
-   * @access public
-   */
-	function __construct()
+
+    function __construct()
 	{
 		global $connector;
 		$this->connector = $connector;
@@ -75,8 +71,8 @@ class OrganisateurCollection extends Collection
 
                 $sql_region = '';
                 if (!empty($region))
-                    $sql_region = "and organisateur.region='$region' ";            
-            
+                    $sql_region = "and organisateur.region='$region' ";
+
 		$req = $this->connector->query("SELECT * FROM organisateur WHERE statut='actif' ".$sql_region."  ORDER BY date_ajout DESC LIMIT 8");
 
 

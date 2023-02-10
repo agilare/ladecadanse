@@ -19,11 +19,6 @@ class Sentry extends SystemComponent
      */
     var $userdata;
 
-    /**
-     * Démarre la session et inclut un en-tête interdisant de stocker le mot
-     * de passe dans le cache de l'utilisateur
-     * @access public
-     */
     function __construct()
     {
         if (!isset($_SESSION['logged']))
@@ -36,7 +31,7 @@ class Sentry extends SystemComponent
         }
         else if (!empty($_COOKIE['ladecadanse_remember']))
         {
-            $this->checkRemembered($_COOKIE['ladecadanse_remember']);            
+            $this->checkRemembered($_COOKIE['ladecadanse_remember']);
         }
     }
 

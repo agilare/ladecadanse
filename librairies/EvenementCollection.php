@@ -78,7 +78,7 @@ class EvenementCollection extends Collection {
 
 		return true;
 	}
-    
+
     public static function deleteEvenement($get_idE)
     {
 
@@ -120,24 +120,6 @@ class EvenementCollection extends Collection {
                 unlink($rep_fichiers_even . $tab_docu['idFichierrecu'] . "." . $tab_docu['extension']);
                 $connector->query("DELETE FROM fichierrecu WHERE idFichierrecu=" . $tab_docu['idFichierrecu']);
             }
-
-
-            /*
-             * Suppression du cache si l'?nement a lieu dans un lieu pr?nt dans la base
-             */
-            /* if (!empty($val_even['idLieu']))
-              @unlink($cache_lieu.$val_even['idLieu'].".php");
-
-              @unlink($cache_even.$get_idE.".php");
-
-              if ($rc = opendir($cache_index)) {
-              while ($fichierIndex = readdir($rc)) {
-              if (preg_match('/^'.urlencode($val_even['genre']).'_'.date2sem($val_even['dateEvenement']).'/', $fichierIndex))
-              @unlink($cache_index.$fichierIndex);
-              }
-              closedir($rc);
-              } */
-
 
             if ($connector->query("DELETE FROM evenement WHERE idEvenement=" . $get_idE))
             {

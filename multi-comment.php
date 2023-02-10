@@ -36,8 +36,6 @@ if ($get['element'] == 'lieu')
 	$url_retour = '/lieu.php?idL='.$get['id'].'&complement=commentaires#ajouter_editer';
 }
 
-//$cache_lieux = $rep_cache."lieux/";
-// header("Cache-Control: max-age=30, must-revalidate");
 header ("Refresh: 2;URL=".$url_retour);
 $page_titre = "ajouter/éditer un commentaire";
 $page_description = "ajouter/éditer un commentaire";
@@ -83,8 +81,6 @@ if (isset($_GET['idC']))
 		}
 
 		$get['idC'] = $_GET['idC'];
-
-		//$cache_lieu = $rep_cache."lieu/".$get['idL'].".php";
 	}
 }
 else if ($get['action'] == 'editer' || $get['action'] == 'update')
@@ -164,7 +160,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 	{
 
 			$champs[$c] = $_POST[$c];
-		
+
 	}
 
 	if (isset($_POST['idP']))
@@ -248,24 +244,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 					HtmlShrink::msgOk("Commentaire du  <a href=\"/lieu.php?idL=".$get['id']."&amp;complement=commentaires#menu_complement\" title=\"Voir la fiche du lieu\">".$iconeVoirFiche."lieu</a> ajouté");
 				}
 
-				/*
-				 * Suppression des caches
-				 * - le lieu de la commentaire
-				 * - la page Lieux
-				 */
-/* 				@unlink($cache_lieu);
-				if ($rc = opendir($cache_lieux))
-				{
-					while ($fichierLieux = readdir($rc))
-					{
-						@unlink($cache_lieux.$fichierLieux);
-					}
-					closedir($rc);
-				} //si le lieu est l'un des dernier ajoutés ou si son nom est changé (menu lieux) */
-
 				$action_terminee = true;
-
-			}
+            }
 			else
 			{
 				HtmlShrink::msgErreur("La requête INSERT dans commentairelieu a échoué");
@@ -288,21 +268,6 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 
 				HtmlShrink::msgOk("Commentaire modifié");
 
-				/*
-				 * Suppression des caches
-				 * - le lieu de la commentaire
-				 * - la page Lieux
-				 */
-/* 				@unlink($cache_lieu);
-				if ($rc = opendir($cache_lieux))
-				{
-					while ($fichierLieux = readdir($rc))
-					{
-						@unlink($cache_lieux.$fichierLieux);
-					}
-					closedir($rc);
-				} //si le lieu est l'un des dernier ajoutés ou si son nom est changé (menu lieux)
-				 */
 				$get['action'] = 'editer';
 				$action_terminee = true;
 

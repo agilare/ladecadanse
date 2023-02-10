@@ -25,8 +25,6 @@ if (!$videur->checkGroup(12))
 	include_once($rep_includes."tracerVisiteur.php");
 } */
 
-//$cache_lieux = $rep_cache."lieux/";
-// header("Cache-Control: max-age=30, must-revalidate");
 header ("Refresh: 2;URL=".$_SERVER['HTTP_REFERER']);
 $page_titre = "ajouter/éditer un favori";
 $page_description = "ajouter/édite";
@@ -116,8 +114,8 @@ if ($get['element'] == 'evenement')
 			HtmlShrink::msgErreur("La requête UPDATE a échoué");
 		}
 
-        $logger->log('global', 'activity', "[".$nom_page."] ".$get['action']." on idE ".$get['idE']." by user ".$_SESSION['user'], Logger::GRAN_YEAR);         
-        
+        $logger->log('global', 'activity', "[".$nom_page."] ".$get['action']." on idE ".$get['idE']." by user ".$_SESSION['user'], Logger::GRAN_YEAR);
+
 	} //if action
 
 }
@@ -174,8 +172,8 @@ else if ($get['element'] == 'lieu')
 		}
 
 	} //if action
-   
-    $logger->log('global', 'activity', "[".$nom_page."] ".$get['action']." on idL ".$get['idL']." by user ".$_SESSION['user'], Logger::GRAN_YEAR);  
+
+    $logger->log('global', 'activity', "[".$nom_page."] ".$get['action']." on idL ".$get['idL']." by user ".$_SESSION['user'], Logger::GRAN_YEAR);
 
 }
 

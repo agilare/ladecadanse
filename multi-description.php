@@ -12,9 +12,6 @@ if (!$videur->checkGroup(8))
 	header("Location: index.php"); die();
 }
 
-$cache_lieux = $rep_cache."lieux/";
-// header("Cache-Control: max-age=30, must-revalidate");
-
 $page_titre = "ajouter/modifier une description/présentation de lieu";
 $page_description = "ajouter/modifier une description/présentation  de lieu";
 $extra_css = array("formulaires", "description");
@@ -73,7 +70,7 @@ else if ($get['type'] == 'presentation' && $_SESSION['Sgroupe'] > 8)
 
 }
 
-if ($get['type'] == 'presentation' && $_SESSION['Sgroupe'] == 8 && ($get['idL'] && !($authorization->isPersonneInLieuByOrganisateur($_SESSION['SidPersonne'], $get['idL']) || $authorization->isPersonneAffiliatedWithLieu($_SESSION['SidPersonne'], $get['idL'])))) 
+if ($get['type'] == 'presentation' && $_SESSION['Sgroupe'] == 8 && ($get['idL'] && !($authorization->isPersonneInLieuByOrganisateur($_SESSION['SidPersonne'], $get['idL']) || $authorization->isPersonneAffiliatedWithLieu($_SESSION['SidPersonne'], $get['idL']))))
 {
 	HtmlShrink::msgErreur("Vous n'avez pas les droits pour ajouter/éditer cette présentation");
 	exit;
@@ -95,7 +92,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 	{
 
 			$champs[$c] = $_POST[$c];
-		
+
 	}
 
 	if (isset($_POST['idP']))
@@ -165,11 +162,11 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 			{
 
                 $_SESSION['lieu_flash_msg'] = ucfirst($get['type'])." ajoutée";
-                
+
 				$descriptionlieu = $champs;
 				$descriptionlieu['auteur'] = $get['idP'];
 				$descriptionlieu['date_derniere_modif'] = date("Y-m-d H:i:s");
-                $logger->log('global', 'activity', "[multi-description] insert of ".$get['type']." for idL ".$get['idL']." by user ".$_SESSION['user'], Logger::GRAN_YEAR); 
+                $logger->log('global', 'activity', "[multi-description] insert of ".$get['type']." for idL ".$get['idL']." by user ".$_SESSION['user'], Logger::GRAN_YEAR);
 
 				$action_terminee = true;
 			}
@@ -199,7 +196,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 				$descriptionlieu = $champs;
 				$descriptionlieu['auteur'] = $get['idP'];
 				$get['action'] = 'editer';
-                $logger->log('global', 'activity', "[multi-description] update of ".$get['type']." for idL ".$get['idL']." by user ".$_SESSION['user'], Logger::GRAN_YEAR); 
+                $logger->log('global', 'activity', "[multi-description] update of ".$get['type']." for idL ".$get['idL']." by user ".$_SESSION['user'], Logger::GRAN_YEAR);
 				$action_terminee = true;
 			}
 			else
@@ -208,21 +205,21 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 			}
 
 		} //if action
-        
+
         header("Location: /lieu.php?idL=".$champs['idLieu']); die();
 
 	} // if erreurs == 0
 } // if POST != ""
 
-include("_header.inc.php");   
+include("_header.inc.php");
 ?>
 
 
-<div id="contenu" class="colonne">   
+<div id="contenu" class="colonne">
 
 <?php
 
- 
+
 
 if (!$action_terminee)
 {
@@ -276,14 +273,14 @@ if ($get['action'] == 'editer' && isset($get['idL']) && isset($get['idP']))
 
     @mysqli_free_result($req_desc);
 
-    if ($_SESSION['Sgroupe'] <= 4) 
+    if ($_SESSION['Sgroupe'] <= 4)
     {
         echo '<ul class="entete_contenu_menu">';
         echo "<li class=\"action_supprimer\">
         <a href=\"/multi-suppr.php?type=descriptionlieu&id=".$get['idL']."&idP=".$get['idP']."&token=".SecurityToken::getToken()."\">Supprimer</a></li>";
         echo "</ul>";
     }
-	
+
 } // if GET action
 
 echo '<div class="spacer"></div></div>';

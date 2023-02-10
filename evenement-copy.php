@@ -23,9 +23,6 @@ if (!$videur->checkGroup(10))
 	header("Location: index.php"); die();
 }
 
-$cache_lieu = $rep_cache."lieu/";
-$cache_index = $rep_cache."index/";
-
 $page_titre = "copier un événement";
 $page_description = "Copie d'un événement vers d'autres dates";
 $extra_css = array("formulaires", "evenement_inc", "copier_evenement");
@@ -101,7 +98,7 @@ if (!empty($_POST['submit']))
 		$jour2 = $jour = stripslashes($date_from_parts[0]);
 		$mois2 = $mois = stripslashes($date_from_parts[1]);
 		$annee2 = $annee = stripslashes($date_from_parts[2]);
-       
+
         if (!empty($date_to))
         {
             $jour2 = stripslashes($date_to_parts[0]);
@@ -143,12 +140,12 @@ if (!empty($_POST['submit']))
 	{
 		$verif->setErreur("dateEvenement", "La date de fin doit être dans le futur");
 	}
-    
+
     if (!SecurityToken::check($_POST['token'], $_SESSION['token']))
     {
         $verif->setErreur("dateEvenement", "Le système de sécurité du site n'a pu authentifier votre action. Veuillez réafficher ce formulaire et réessayer");
-    }    
-    
+    }
+
 	if ($verif->nbErreurs() === 0)
 	{
 		$tab_champs = $connector->fetchAssoc(($connector->query("
@@ -159,16 +156,16 @@ FROM evenement WHERE idEvenement=".$get['idE'])));
 		$tab_champs['idPersonne'] = $_SESSION['SidPersonne'];
 
         $hor_debfin = afficher_debut_fin($tab_champs['horaire_debut'], $tab_champs['horaire_fin'], $tab_champs['dateEvenement']);
-        
+
 		$flyer = "";
 
 		//Initialisation de la date à incrémenter avec la date de début
 		$dateIncrUnix = $dateEUnix;
 		$dateIncrUnixOld = $dateIncrUnix;
-		
+
 		$_SESSION['copierEvenement_flash_msg']['msg'] = '<p style="margin:4px 0">L\'événement <a href="/evenement.php?idE='.$get['idE'].'"><strong>'.sanitizeForHtml($tab_champs['titre']).'</strong> du '.date_fr($tab_lieu['dateEvenement']).'</a> a été copié vers les dates suivantes :</p>';
         $_SESSION['copierEvenement_flash_msg']['table'] = '';
-        
+
 		/*
 		 * Collage de l'événement entre la date de début et la date de fin
 		 */
@@ -253,13 +250,13 @@ FROM evenement WHERE idEvenement=".$get['idE'])));
 				//lien d'édition de l'événement juste copié pour l'auteur ou les membres
 				$edition = "";
 				$nouv_id = $connector->getInsertId();
-	
+
 				$edition = " <a href=\"/evenement-edit.php?action=editer&idE=".$nouv_id."\" title=\"Éditer l'événement\">".$iconeEditer."</a>";
-				
+
                 $hor_compl = '';
                 if (!empty($tab_champs['horaire_complement']))
                     $hor_compl = "<br>".$tab_champs['horaire_complement'];
-                
+
 				$_SESSION['copierEvenement_flash_msg']['table'] .= '<tr><td><a href="/evenement.php?idE='.$nouv_id.'">'.sanitizeForHtml($tab_champs['titre'])."<br>".date_fr(date('Y-m-d', $dateIncrUnix)).'</a></td><td>'.$hor_debfin.$hor_compl.'</td><td><a class="action_editer" href="/evenement-edit.php?action=editer&idE='.$nouv_id.'" title="Modifier cet événement">Modifier</a>&nbsp;&nbsp;<a href="/evenement-edit.php?action=editer&idE='.$nouv_id.'" title="Modifier cet événement dans un nouvel onglet" target="_blank"><i class="fa fa-external-link" aria-hidden="true"></i></a>&nbsp;&nbsp;&nbsp;<a href="#" id="btn_event_del_'.$nouv_id.'" class="btn_event_del action_supprimer" data-id='.$nouv_id.'>Supprimer</a></td></tr>';
 
 				if (!empty($tab_champs['flyer']))
@@ -347,13 +344,13 @@ FROM evenement WHERE idEvenement=".$get['idE'])));
 				$dateIncrUnix += 3600;
 			}
 		} //while date
-	
+
         $date2 = '';
         if (!empty($dateEvenement2))
             $date2 = ' - '.$dateEvenement2;
-        
-        $logger->log('global', 'activity', "[copierEvenement] event \"".$tab_champs['titre']."\" of ".$tab_champs['dateEvenement']." copied to ".$dateEvenement.$date2, Logger::GRAN_YEAR); 
-        
+
+        $logger->log('global', 'activity', "[copierEvenement] event \"".$tab_champs['titre']."\" of ".$tab_champs['dateEvenement']." copied to ".$dateEvenement.$date2, Logger::GRAN_YEAR);
+
 		header("Location: ?idE=".$get['idE']); die();
 	} //if nberreur = 0
 } // if POST != ""
@@ -362,7 +359,7 @@ include("_header.inc.php");
 ?>
 
 <div id="contenu" class="colonne">
-    
+
 <div id="entete_contenu" ><h2 style="width:100%">Copier un événement vers d'autres dates</h2><div class="spacer"></div></div>
 
 <div style="width:94%;margin:0 auto">
@@ -370,7 +367,7 @@ include("_header.inc.php");
 if (!empty($_SESSION['copierEvenement_flash_msg']))
 {
     ?>
-    
+
     <div class="msg_ok_copy">
     <?php echo $_SESSION['copierEvenement_flash_msg']['msg']; ?>
     <table class="table">
@@ -378,7 +375,7 @@ if (!empty($_SESSION['copierEvenement_flash_msg']))
         <tbody><?php echo $_SESSION['copierEvenement_flash_msg']['table']; ?></tbody>
     </table>
     </div>
-    
+
 	<?php
 	unset($_SESSION['copierEvenement_flash_msg']);
 }
@@ -426,7 +423,7 @@ if (isset($get['idE']))
 
 <form method="post" id="ajouter_editer" style="width: 94%;margin: 0em auto 0em auto;background:#efefef;padding: 1em 0;border-radius: 4px;" enctype="multipart/form-data" action="<?php echo basename(__FILE__)."?action=coller&amp;idE=".$get['idE']; ?>">
     <h3 style="font-size:1em;margin-left:.3em">Copier l'événement ci-dessus vers les dates suivantes (1 par jour)</h3><p style="margin-left:.3em" >Dans la page suivante vous pourrez si besoin modifier ou supprimer chaque événement un par un</p>
-    <label for="from" style="float:none">du </label><input type="text" name="from" size="9" id="date-from" class="datepicker_from" placeholder="jj.mm.aaaa" required value="<?php echo $date_du; ?>"> 
+    <label for="from" style="float:none">du </label><input type="text" name="from" size="9" id="date-from" class="datepicker_from" placeholder="jj.mm.aaaa" required value="<?php echo $date_du; ?>">
     <span style="position:relative"><label for="date-to" style="float:none">au </label><input type="text" name="to" size="9" id="date-to" class="datepicker_to" placeholder="jj.mm.aaaa"></span>
         &nbsp;<input id="coller" name="submit" type="submit" class="submit" value="Coller" style="width: 80px;margin-left: 0.6em;">
         <div style="margin: 15px 0 0px 30px;font-style: italic;color: #777;">Laissez la 2<sup>e</sup> date vide si vous ne collez l'événement que vers un seul jour.</div>
