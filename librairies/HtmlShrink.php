@@ -82,8 +82,8 @@ class HtmlShrink
                 {
                     $nb = $event_nb[$n]['nb'];
                 }
-                ?><li><a href="?region=<?php echo $n; ?>&<?php echo Utils::urlQueryArrayToString($get, 'region'); ?>" class="<?php echo $class_region; ?><?php echo $ici; ?>"><?php echo $v; ?>&nbsp;<?php if (PREVIEW && $nb !== '')
-                {
+                ?><li><a href="?region=<?php echo $n; ?>&<?php echo Utils::urlQueryArrayToString($get, 'region'); ?>" class="<?php echo $class_region; ?><?php echo $ici; ?>"><?php echo $v; ?>&nbsp;<?php
+                if ($nb !== '') {
                     ?><span class="events-nb"><?php echo $nb; ?></span><?php } ?></a></li><?php
                         }
                     }
@@ -91,7 +91,7 @@ class HtmlShrink
                     <?php
         return ob_get_contents();
     }
-    
+
 
     public static function getPaginationString($page = 1, $totalitems, $limit = 15, $adjacents = 1, $targetpage = "/", $pagestring = "?page=")
     {
@@ -210,7 +210,7 @@ class HtmlShrink
         }
 
         return $pagination;
-    }    
+    }
 
 
     public static function authorSignature($idPersonne)
@@ -267,7 +267,7 @@ class HtmlShrink
     {
         return "<a href=\"#\" onclick=\"window.open('" . $uri . "','" . $nom . "','height=" . $hauteur . "px,width=" . $largeur . "px,toolbar=no,menuBar=yes,location=no,directories=0,status=no,scrollbars=yes,resizable=yes,left=10,top=10');return(false)\" title=\"" . $nom . "\">" . $lien . "</a>";
     }
- 
+
 
     public static function formLabel($tab_att, $nom)
     {
@@ -284,7 +284,7 @@ class HtmlShrink
         $aff .= ">" . $nom . "</label>";
 
         return $aff;
-    }    
+    }
 
     public static function formInput($tab_att)
     {
@@ -312,7 +312,7 @@ class HtmlShrink
     {
         echo '<div class="msg_info">' . $message . '</div>';
     }
-    
+
     /**
      * Affiche un texte dans une balise  de la classe "msg" et une icone OK
      *
@@ -321,7 +321,7 @@ class HtmlShrink
     public static function msgOk($message)
     {
         echo '<div class="msg_ok">' . $message . '</div>';
-    }    
+    }
 
 
     /**
@@ -343,12 +343,12 @@ class HtmlShrink
 
         if (isset($_GET['courant']) && $_GET['courant'] < date("Y-m-d"))
         {
-            return true;        
+            return true;
         }
-        
+
         return false;
     }
-    
+
     public static function showLinkRss($nom_page): void
     {
         if ($nom_page == "index")
@@ -372,7 +372,7 @@ class HtmlShrink
 
         <?php
         }
-               
-    }    
-    
+
+    }
+
 }

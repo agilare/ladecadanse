@@ -33,26 +33,23 @@ Ces instructions vous permettront de mettre en place une copie du projet sur vot
     ```ini
     php_value date.timezone 'Europe/Zurich'
     ```
-1. base de données 
-    1. créer une base de données avec `COLLATE 'utf8mb4_unicode_ci'` par ex. 
-        ```sql        
+1. base de données
+    1. créer une base de données avec `COLLATE 'utf8mb4_unicode_ci'` par ex.
+        ```sql
         CREATE DATABASE `ladecadanse` /*!40100 COLLATE 'utf8mb4_unicode_ci' */;
         ```
     1. créer un utilisateur avec les droits suffisants sur cette base de données, par ex.
-        ```sql        
+        ```sql
         CREATE USER 'ladecadanse'@'localhost' IDENTIFIED BY 'my-password';
         GRANT USAGE ON *.* TO 'ladecadanse'@'localhost';
         GRANT SELECT, INSERT, DELETE, UPDATE  ON `ladecadanse`.* TO 'ladecadanse'@'localhost';
         ```
     1. importer dans la base de données `app/ladecadanse.sql` (la structure, et les données utiles pour les tables `groupes` et `localite`)
-    1. ajouter un 1er utilisateur, l'*admin* (groupe 1) qui vous servira à gérer le site (pour la valeur du champ `mot_de_passe` remplacer `mon-mot-de-passe` ci-dessous par un mot de passe de votre choix préalablement haché avec [password_hash](https://phppasswordhash.com/) ) :  
+    1. ajouter un 1er utilisateur, l'*admin* (groupe 1) qui vous servira à gérer le site (pour la valeur du champ `mot_de_passe` remplacer `mon-mot-de-passe` ci-dessous par un mot de passe de votre choix préalablement haché avec [password_hash](https://phppasswordhash.com/) ) :
         ```sql
         INSERT INTO `personne` (`idPersonne`, `pseudo`, `mot_de_passe`, `cookie`, `session`, `ip`, `groupe`, `statut`, `nom`, `prenom`, `affiliation`, `adresse`, `region`, `telephone`, `email`, `URL`, `signature`, `avec_affiliation`, `notification_commentaires`, `gds`, `actif`, `remarque`, `dateAjout`, `date_derniere_modif`) VALUES (NULL, 'admin', '', 'mon-mot-de-passe', '', '', '1', 'actif', '', '', '', '', 'ge', '', '', '', 'pseudo', 'non', 'non', '', '1', '', '0000-00-00 00:00:00.000000', '0000-00-00 00:00:00.000000');
         ```
-1. créer le fichier de configuration du site en copiant le modèle `app/env_model.php` vers `app/env.php` et y saisir les valeurs de votre environnement pour (davantage d'explications et exemples se trouvent dans le fichier lui même) :
-    - `define("DB_HOST", '');`, etc. les informations de connexion à la base de données (selon point précédent)
-    - `define("EMAIL_AUTH_HOST", '');`, etc. : l'authentification STMP et les comptes pour l'envoi d'emails par le site
-    - (optionel) les clés Google pour [Maps](https://developers.google.com/maps/documentation/javascript/get-api-key) (cartes des lieux) et [Recaptcha 3](https://www.google.com/recaptcha/intro/v3.html) (formulaire Proposer un événement)
+1. copier `app/env_model.php` vers `app/env.php` et y saisir les valeurs de votre environnement (davantage d'explications et exemples se trouvent dans le fichier lui même), avec au minimum les informations de connexion à la base de données
 
 ### Par Docker
 Lancer la commande suivante à la racine du projet :
@@ -80,7 +77,7 @@ Un espace sur un serveur avec l'infrastructure prérequise, une timezone défini
     $ git config git-ftp.prod.password 'le-mot-de-passe'
     ```
 
-#### Pour mettre en place 
+#### Pour mettre en place
 1. premier envoi des fichiers
     ```sh
     $ git ftp init -s prod
