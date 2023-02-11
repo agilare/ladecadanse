@@ -8,8 +8,6 @@ use Ladecadanse\EvenementCollection;
 use Ladecadanse\Utils\Utils;
 use Ladecadanse\HtmlShrink;
 
-$videur = new Sentry();
-
 if (!$videur->checkGroup(4))
 {
 	header("Location: /user-login.php"); die();
@@ -17,10 +15,9 @@ if (!$videur->checkGroup(4))
 
 
 $page_titre = "gérer les événements";
-$page_description = "Gestion des événements";
 $extra_css = array("formulaires", "gerer", "chosen.min");
 $extra_js = array("jquery.shiftcheckbox");
-require_once('_header.inc.php');
+require_once '../_header.inc.php';
 
 $tab_listes = array("evenement" => "Événements", "lieu" => "Lieux", "description" => "Descriptions", "commentaire" => "Commentaires", "personne" => "Personnes");
 $tab_nblignes = [100, 250, 500];
@@ -1423,15 +1420,11 @@ if (isset($get_idE) && !empty($champs['image']) && !$verif->getErreur('image'))
 </div>
 <!-- Fin contenu -->
 
-
-
-<div id="colonne_droite" class="colonne">
-<?php
-include("_menuAdmin.inc.php");
-?>
+<div id="colonne_gauche" class="colonne">
+    <?php
+    include("_menuAdmin.inc.php");
+    ?>
 </div>
-<!-- Fin colonne_droite -->
-<!-- Fin colonne_droite -->
 
 <div class="spacer"><!-- --></div>
 <?php

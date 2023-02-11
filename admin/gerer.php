@@ -14,8 +14,7 @@ if (!$videur->checkGroup(4))
 
 
 $page_titre = "gérer";
-$page_description = "Gestion des éléments ajoutés";
-require_once('_header.inc.php');
+require_once '../_header.inc.php';
 
 $tab_listes = array("evenement" => "Événements", "lieu" => "Lieux", "organisateur" => "Organisateurs", "description" => "Descriptions", "commentaire" => "Commentaires", "personne" => "Personnes");
 
@@ -701,19 +700,12 @@ echo '<div class="spacer"></div>';
 </div>
 <!-- fin Contenu -->
 
+
 <div id="colonne_gauche" class="colonne">
-
-
+    <?php
+    include("_menuAdmin.inc.php");
+    ?>
 </div>
-<!-- Fin Colonnegauche -->
-
-<div id="colonne_droite" class="colonne">
-
-<?php
-include("_menuAdmin.inc.php");
-?>
-</div>
-<!-- Fin colonne_droite -->
 
 <div class="spacer"><!-- --></div>
 <?php

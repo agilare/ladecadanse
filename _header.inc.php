@@ -56,7 +56,7 @@ if (!empty($_GET['tri_agenda']))
 		$get['tri_agenda'] = $_GET['tri_agenda'];
 	}
 	else
-	{	
+	{
 
 		//trigger_error("GET tri_agenda non valable : ".$_GET['tri_agenda'], E_USER_WARNING);
 		exit;
@@ -70,22 +70,22 @@ else
 
 <!doctype html>
 <html lang="fr">
-    
+
 <head>
-    
+
     <meta charset="utf-8" />
 
     <?php if (HtmlShrink::getHeadMetaRobots($nom_page)) { ?>
         <meta name="robots" content="noindex, nofollow" />
     <?php } ?>
-        
+
 	<title>
         <?php
         if (ENV !== 'prod')
         {
             echo '['.ENV.'] ';
         }
-        
+
         if ($nom_page != "index")
         {
             echo $page_titre." — La décadanse";
@@ -96,31 +96,62 @@ else
         }
         ?>
 	</title>
-        
+
 	<?php if (!empty($page_description)) { ?>
         <meta name="description" content="<?php echo $page_description ?>" />
 	<?php }	?>
-        
-	<?php
-	include("_styles.inc.php");
-    ?>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+        <link rel="stylesheet" type="text/css" href="/web/css/normalize.css" />
+        <?php
+        if (isset($_GET['style']) && $_GET['style'] == "imprimer") {
+            ?>
+            <link rel="stylesheet" type="text/css" href="/web/css/imprimer.css" title="Normal" />
+            <?php }
+            else { ?>
+
+            <link rel="stylesheet" type="text/css" href="/web/css/global.css?<?php echo time() ?>" title="Normal" />
+                <link rel="stylesheet" type="text/css" href="/web/css/calendrier.css" media="screen" />
+                <link rel="stylesheet" type="text/css" href="/web/css/<?php echo $nom_page; ?>.css" media="screen"  />
+                <link rel="stylesheet" type="text/css" href="/web/css/diggstyle.css" media="screen" />
+                <link rel="stylesheet" type="text/css" href="/vendor/harvesthq/chosen/chosen.css" media="screen" />
+
+            <?php
+        }
+
+        if (isset($extra_css) && is_array($extra_css)) {
+    foreach ($extra_css as $import)
+    {
+        ?>
+        <link rel="stylesheet" type="text/css" href="/web/css/<?php echo $import ?>.css" media="screen" title="Normal" />
+                <?php
+            }
+        }
+        ?>
+
+                <link rel="stylesheet" type="text/css" media="screen and (min-width:800px)"  href="/web/css/desktop.css">
+                <link rel="stylesheet" type="text/css" media="screen and (max-width:800px)"  href="/web/css/mobile.css">
+                <link rel="stylesheet" type="text/css" media="print" href="/web/css/imprimer.css" title="Imprimer" />
+                <link rel="stylesheet" type="text/css" href="/vendor/fortawesome/font-awesome/css/font-awesome.min.css">
+                <link rel="stylesheet" type="text/css" href="/vendor/dimsemenov/magnific-popup/dist/magnific-popup.css">
+                <link rel="stylesheet" type="text/css" href="/web/js/zebra_datepicker/css/default/zebra_datepicker.min.css">
 
     <?php HtmlShrink::showLinkRss($nom_page); ?>
-        
-	<link rel="shortcut icon" href="/web/interface/favicon.png" />	
-    <link rel="apple-touch-icon" href="/web/interface/apple-icon.png" />    
-    <link rel="apple-touch-icon" sizes="57x57" href="/web/interface/apple-icon-57x57.png" />       
-    <link rel="apple-touch-icon" sizes="76x76" href="/web/interface/apple-icon-76x76.png" />     
+
+	<link rel="shortcut icon" href="/web/interface/favicon.png" />
+    <link rel="apple-touch-icon" href="/web/interface/apple-icon.png" />
+    <link rel="apple-touch-icon" sizes="57x57" href="/web/interface/apple-icon-57x57.png" />
+    <link rel="apple-touch-icon" sizes="76x76" href="/web/interface/apple-icon-76x76.png" />
     <link rel="apple-touch-icon" sizes="152x152" href="/web/interface/apple-icon-152x152.png" />
 
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>  
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
     <script async defer
       src="https://maps.googleapis.com/maps/api/js?key=<?php echo GOOGLE_API_KEY; ?>&callback=initMap">
     </script>
-    
-    <?php     
+
+    <?php
     if (MATOMO_ENABLED) {
-    ?> 
+    ?>
     <!-- Matomo -->
     <script type="text/javascript">
       var _paq = _paq || [];
@@ -135,13 +166,13 @@ else
         g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
       })();
     </script>
-    <!-- End Matomo Code --> 
+    <!-- End Matomo Code -->
     <?php
     }
-    ?>    
-    <?php     
+    ?>
+    <?php
     if (GOOGLE_ANALYTICS_ENABLED) {
-    ?>    
+    ?>
         <script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo GOOGLE_ANALYTICS_ID; ?>"></script>
         <script>
           window.dataLayer = window.dataLayer || [];
@@ -168,18 +199,18 @@ else
             </div>
 
             <div id="entete_haut">
-                
+
                 <a id="btn_menu_pratique" href="#" title="Menu"><i class="fa fa-bars" aria-hidden="true"></i></a>
-                
+
                 <nav id="menu_pratique">
-                    
+
                     <ul>
                        <li><a href="https://github.com/agilare/ladecadanse/" aria-label="Watch agilare/ladecadanse on GitHub" style="font-size:1em" target="_blank"><i class="fa fa-github" aria-hidden="true"></i>
             </a>
                        </li>
                     <?php
                     foreach ($glo_menu_pratique as $nom => $lien)
-                    {	
+                    {
                         $menu_pratique_li = '';
                         if ($nom == "Faire un don")
                              $menu_pratique_li = ' style="background: #ffe771;border-radius: 0 0 3px 3px;padding:2px 0;" ';
@@ -201,7 +232,7 @@ else
                             {
                                 $ici = ' ici ';
                             }
-                        ?>	
+                        ?>
 
                         <li class="<?php echo $ici; ?>" ><a href="/articles/annoncerEvenement.php"  >Annoncer un événement</a></li>
                         <li class="<?php echo $ici; ?> only-mobile" ><a href="/articles/charte-editoriale.php">Charte éditoriale</a></li>
@@ -270,7 +301,7 @@ else
             <div class="spacer"><!-- --></div>
 
             <nav id="menu">
-                
+
                 <ul>
                     <?php
                     $menu_principal = array("Agenda" => "agenda.php",  "Lieux" => "lieux.php", "Organisateurs" => "organisateurs.php");
@@ -278,7 +309,7 @@ else
                     foreach ($menu_principal as $nom => $lien)
                     {
                         $ici = '';
-                        if (strstr($_SERVER['PHP_SELF'], $lien) 
+                        if (strstr($_SERVER['PHP_SELF'], $lien)
                         || ($lien == "/lieux.php" && strstr($_SERVER['PHP_SELF'], "lieu.php"))
                         || ($lien == "/organisateurs.php" && strstr($_SERVER['PHP_SELF'], "organisateur.php"))
                         || ($lien == "/agenda.php" && strstr($_SERVER['PHP_SELF'], "agenda.php"))
@@ -290,13 +321,13 @@ else
 
                         <li <?php  echo $ici; ?>
 
-                      <?php  
+                      <?php
                         if ($nom == "Agenda")
                         {
                         ?>
                             id="bouton_agenda">
                             <?php
-                            echo "<a href=\"/".$lien."?".$url_query_region_et."courant=".$get['courant']."&amp;sem=".$get['sem']."&amp;tri_agenda=".$get['tri_agenda']."\">".$nom."</a>"; 
+                            echo "<a href=\"/".$lien."?".$url_query_region_et."courant=".$get['courant']."&amp;sem=".$get['sem']."&amp;tri_agenda=".$get['tri_agenda']."\">".$nom."</a>";
                             ?>
                             </li>
                             <li id="bouton_calendrier">
@@ -311,8 +342,8 @@ else
                         <?php
                         }
                     }
-                    ?>	
-            
+                    ?>
+
                     <li class="form_recherche">
                         <a href="#" id="btn_search"><i class="fa fa-search" aria-hidden="true"></i></a>
                         <form class="recherche" action="/evenement-search.php" method="get" enctype="application/x-www-form-urlencoded">
@@ -337,7 +368,5 @@ else
         <div class="spacer"><!-- --></div>
 
         <!-- Début Conteneur -->
-        <div id="conteneur">
-
-
+        <div id="conteneur" <?php if (strstr(dirname($_SERVER['PHP_SELF']), 'admin')) { ?>style="padding-right: 0" <?php } ?> >
 

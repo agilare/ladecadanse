@@ -17,17 +17,16 @@ if ($_SESSION['Sgroupe'] >= 4 && !empty($_SESSION['Sregion']))
 }
 
 $page_titre = "administration";
-$page_description = "Tableau de bord";
 $extra_css = array("admin");
 $extra_js = array( "zebra_datepicker", "jquery.shiftcheckbox");
-require_once('_header.inc.php');
+require_once '../_header.inc.php';
 ?>
 
 <div id="contenu" class="colonne">
 
-<?php
+    <?php
 //les dates au delà de 2 jours sont dispo pour être archivées
-define("JOUR_LIM", 2);
+    define("JOUR_LIM", 2);
 
 $troisJoursAvant = date("Y-m-d H:i:s", time() - (3*86400));
 
@@ -460,12 +459,12 @@ while ($tab_desc = $connector->fetchArray($req_getDes))
 
 </div><!-- fin contenu -->
 
-<div id="colonne_droite" class="colonne">
-<?php
-include("_menuAdmin.inc.php");
-?>
+<div id="colonne_gauche" class="colonne">
+    <?php
+    include("_menuAdmin.inc.php");
+    ?>
 </div>
-<!-- Fin colonne_droite -->
+
 
 <div class="spacer"><!-- --></div>
 <?php
