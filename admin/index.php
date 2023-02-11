@@ -12,7 +12,7 @@ if (!$videur->checkGroup(4))
 
 $_SESSION['region_admin'] = '';
 if ($_SESSION['Sgroupe'] >= 4 && !empty($_SESSION['Sregion']))
-{ 
+{
     $_SESSION['region_admin'] = $_SESSION['Sregion'];
 }
 
@@ -40,8 +40,8 @@ $troisJoursAvant = date("Y-m-d H:i:s", time() - (3*86400));
 
 <div id="tableaux">
 
-<?php if ($_SESSION['Sgroupe'] < 4) { ?>  
-    
+<?php if ($_SESSION['Sgroupe'] < 4) { ?>
+
 <h3 style="padding:0.4em 0">Inscriptions de ces 3 derniers jours</h3>
 <table summary="Dernières inscriptions">
 <tr>
@@ -82,7 +82,7 @@ while($tab_pers = $connector->fetchArray($req_get))
 	<td><a href='mailto:".$tab_pers['email']."'>".$tab_pers['email']."</a></td>
 	<td>".$tab_pers['groupe']."</td>
 	<td>".$tab_pers['affiliation']."</td>
-	
+
 	";
 
 	if ($_SESSION['Sgroupe'] < 2)
@@ -112,7 +112,7 @@ $th_comm = array("contenu" => "Commentaire", "idEvenement" => "Événement", "el
 
 $req_comm = $connector->query("
 SELECT idCommentaire, id, idPersonne, contenu, statut, element, dateAjout
-FROM commentaire WHERE dateAjout >= DATE_SUB(CURDATE(), INTERVAL 3 DAY) 
+FROM commentaire WHERE dateAjout >= DATE_SUB(CURDATE(), INTERVAL 3 DAY)
 ORDER BY dateAjout DESC, idCommentaire DESC LIMIT 0, 10");
 
 $pair = 0;
@@ -180,14 +180,14 @@ while($tab_comm = $connector->fetchArray($req_comm))
 
 <?php } ?>
 
-<?php if ($_SESSION['Sgroupe'] < 4) { ?>  
+<?php if ($_SESSION['Sgroupe'] < 4) { ?>
 <p><a href="/admin/gerer.php?element=personne">Gérer les personnes</a></p>
 <?php } ?>
-               
+
 <?php if (!empty($_SESSION['region_admin'])) { ?>
     <h3><?php echo $glo_regions[$_SESSION['region_admin']]; ?></h3>
 <?php } ?>
-    
+
 <h4 style="padding:0.4em 0">Événements ajoutés ces 3 derniers jours</h4>
 
 <?php
@@ -198,11 +198,11 @@ $troisJoursAvant = date("Y-m-d H:i:s", time() - (3*86400));
 * classés par date d'ajout
 */
 
-    
+
 $sql_region = '';
 if (!empty( $_SESSION['region_admin']))
     $sql_region = " AND region='".$connector->sanitize( $_SESSION['region_admin'])."'";
-    
+
 $sql_even = "SELECT idEvenement, idLieu, idPersonne, titre,
  dateEvenement, horaire_debut, horaire_fin, genre, nomLieu, adresse, statut, flyer, dateAjout
  FROM evenement WHERE dateAjout >= DATE_SUB(CURDATE(), INTERVAL 3 DAY) ".$sql_region."
@@ -255,20 +255,20 @@ while($tab_even = $connector->fetchArray($req_getEvenement))
 	echo "<td><a href=\"/evenement.php?idE=".$tab_even['idEvenement']."\" title=\"Voir la fiche de l'événement\" class='titre'>".sanitizeForHtml($tab_even['titre'])."</a></td>
 	<td>".$nomLieu."</td>
 	<td>".date_iso2app($tab_even['dateEvenement'])."</td>";
-        
-        echo "<td>".ucfirst($glo_tab_genre[$tab_even['genre']])."</td>";	
-        
+
+        echo "<td>".ucfirst($glo_tab_genre[$tab_even['genre']])."</td>";
+
         echo "<td>";
 
 	echo afficher_debut_fin($tab_even['horaire_debut'], $tab_even['horaire_fin'], $tab_even['dateEvenement']);
-	
+
 	echo "</td>
 	<td style='text-align: center;'>".$tab_icones_statut[$tab_even['statut']]."</td>";
 
 	$datetime_dateajout = date_iso2app($tab_even['dateAjout']);
 	$tab_datetime_dateajout = explode(" ", $datetime_dateajout);
-	echo "<td>".$tab_datetime_dateajout[1]." ".$tab_datetime_dateajout[0]."</td>";       
-        
+	echo "<td>".$tab_datetime_dateajout[1]." ".$tab_datetime_dateajout[0]."</td>";
+
 	$nom_auteur = "-";
 
 	if ($tab_auteur = $connector->fetchArray($connector->query("SELECT pseudo FROM personne WHERE idPersonne=".$tab_even['idPersonne'])))
@@ -379,60 +379,11 @@ while($tab_even = $connector->fetchArray($req_getEvenement))
 
 ?>
 </table>
-<?php } // if (0) ?>
+<?php } ?>
 
-<h3 style="padding:0.4em 0">Derniers évenements mis en favoris</h3>
+<?php if ($_SESSION['Sgroupe'] < 4) { ?>
 
-<table class="ajouts" summary="Derniers favoris ajoutés">
-<tr>
-    <th>Événement</th>
-    <th>Personne</th>
-    <th>&nbsp;</th>
-</tr>
-<?php
-$th_comm = array("titre" => "Titre", "pseudo" => "Pseudo", "date_ajout" => "Ajouté");
-
-$req_fav_even = $connector->query("
-SELECT evenement_favori.idEvenement, evenement_favori.date_ajout AS date_ajout, titre, evenement_favori.idPersonne AS idPersonne
-FROM evenement_favori, evenement 
-WHERE evenement_favori.idEvenement=evenement.idEvenement AND date_ajout >= DATE_SUB(CURDATE(), INTERVAL 3 DAY) ".$sql_region."
-ORDER BY date_ajout DESC LIMIT 0, 20");
-
-$pair = 0;
-
-while($tab = $connector->fetchArray($req_fav_even))
-{
-
-	if ($pair % 2 == 0)
-	{
-		echo "<tr>";
-	}
-	else
-	{
-		echo "<tr class=\"impair\">";
-	}
-
-	echo "<td><a href=\"/evenement.php?idE=".$tab['idEvenement']."\"
-	title=\"Voir l'événement\">".sanitizeForHtml($tab['titre'])."</a></td>";
-
-	$nom_auteur = "<i>Ancien membre</i>";
-
-	if ($tab_auteur = $connector->fetchArray($connector->query("SELECT pseudo FROM personne WHERE idPersonne=".$tab['idPersonne'])))
-	{
-		$nom_auteur = "<a href=\"/user.php?idP=".$tab['idPersonne']."\"
-		title=\"Voir le profile de la personne\">".sanitizeForHtml($tab_auteur['pseudo'])."</a>";
-	}
-	echo "<td>".$nom_auteur."</td>";
-	echo "<td>".date_iso2app($tab['date_ajout'])."</td>";
-	echo "</tr>";
-
-	$pair++;
-}
-?>
-
-</table>
-<?php if ($_SESSION['Sgroupe'] < 4) { ?> 
-<h3 style="padding:0.2em">Derniers textes ajoutés</h3>
+    <h3 style="padding:0.2em">Derniers textes ajoutés</h3>
 
 <table summary="Derniers textes ajoutés">
 <tr>

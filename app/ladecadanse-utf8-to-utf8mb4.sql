@@ -5,14 +5,12 @@ ALTER TABLE descriptionlieu CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_uni
 ALTER TABLE `evenement` CHANGE `titre` `titre` VARCHAR(120) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '';
 ALTER TABLE `evenement` CHANGE `horaire_complement` `horaire_complement` VARCHAR(120) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '';
 ALTER TABLE evenement CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-ALTER TABLE evenement_favori CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ALTER TABLE evenement_fichierrecu CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ALTER TABLE evenement_organisateur CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ALTER TABLE fichierrecu CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ALTER TABLE groupes CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ALTER TABLE `lieu` CHANGE `nom` `nom` VARCHAR(80) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '', CHANGE `adresse` `adresse` VARCHAR(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '';
 ALTER TABLE lieu CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-ALTER TABLE lieu_favori CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ALTER TABLE lieu_fichierrecu CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ;
 ALTER TABLE lieu_organisateur CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ALTER TABLE localite CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

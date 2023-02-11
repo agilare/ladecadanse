@@ -23,12 +23,12 @@ else
 
 if ($_SESSION['region'] == 'vd')
 {
-    $page_titre .= " à Lausanne";   
+    $page_titre .= " à Lausanne";
 }
 elseif ($_SESSION['region'] == 'fr')
 {
-    $page_titre .= " à Fribourg";   
-}            
+    $page_titre .= " à Fribourg";
+}
 else
 {
     $page_titre .= " à Genève";
@@ -57,7 +57,7 @@ else
 	$sql_date_evenement = "LIKE '".$get['courant']."%'";
 }
 
-if (empty($get['genre'])) 
+if (empty($get['genre']))
 {
     $get['genre'] = '';
 	$genre_titre = 'Tout';
@@ -82,7 +82,7 @@ if (is_numeric($annee_courant) && is_numeric($mois_courant) && is_numeric($jour_
     {
         $entete_contenu .= date_fr($get['courant'], "annee");
 
-        if ($genre_titre == 'Tout')	
+        if ($genre_titre == 'Tout')
             $entete_contenu = ucfirst($entete_contenu);
 
         $precedent = date("Y-m-d", mktime(0, 0, 0, (int)$mois_courant, $jour_courant - 1, $annee_courant));
@@ -95,7 +95,7 @@ if (is_numeric($annee_courant) && is_numeric($mois_courant) && is_numeric($jour_
     }
     else if ($get['sem'] == 1)
     {
-        if ($genre_titre == 'Tout')	
+        if ($genre_titre == 'Tout')
             $entete_contenu = ucfirst($entete_contenu);
 
         $entete_contenu .= date_fr($lundim[0], "non", "non", "non")." au ".date_fr($lundim[1], "annee", "non", "non");
@@ -156,9 +156,9 @@ $limite = " LIMIT ".($get['page'] - 1) * $get['nblignes'].",".$get['nblignes'];
 $sql_even = "SELECT idEvenement, idLieu, idSalle, statut, genre, nomLieu, adresse, quartier, localite.localite AS localite,
  titre, idPersonne, dateEvenement, URL1, flyer, image, description, horaire_complement, horaire_debut, horaire_fin, price_type, prix, prelocations
  FROM evenement, localite
- WHERE evenement.localite_id=localite.id AND ".$sql_genre." dateEvenement ".$sql_date_evenement." AND statut NOT IN ('inactif', 'propose') AND ".$sql_region." 
+ WHERE evenement.localite_id=localite.id AND ".$sql_genre." dateEvenement ".$sql_date_evenement." AND statut NOT IN ('inactif', 'propose') AND ".$sql_region."
  ORDER BY ".$sql_tri_agenda;
- 
+
 $req_nb = $connector->query($sql_even);
 $total_even = $connector->getNumRows($req_nb);
 
@@ -179,7 +179,7 @@ if ($get['sem'])
     $sql_dateEven = "
     SELECT DISTINCT dateEvenement
     FROM evenement
-    WHERE ".$sql_genre." dateEvenement ".$sql_date_evenement." AND statut NOT IN ('inactif', 'propose') AND ".$sql_region." 
+    WHERE ".$sql_genre." dateEvenement ".$sql_date_evenement." AND statut NOT IN ('inactif', 'propose') AND ".$sql_region."
     ORDER BY dateEvenement ASC";
 
     $req_dateEven = $connector->query($sql_dateEven);
@@ -193,24 +193,24 @@ if ($get['sem'])
 
 <!-- Deb contenu -->
 <div id="contenu" class="colonne">
-   
+
 	<div id="entete_contenu">
 		<h2>Agenda</h2><?php HtmlShrink::getMenuRegions($glo_regions, $get); ?>
         <div class="spacer"></div>
         <div style="margin-top: 0.6em;">
-            <h3><?php echo $entete_contenu ?></h3> 
+            <h3><?php echo $entete_contenu ?></h3>
             <ul class="entete_contenu_navigation" style="width:45%;margin-top: 0.5em;">
                 <li><?php echo $lien_precedent.$lien_suivant; ?></li>
             </ul>
             <div class="spacer"></div>
-        </div>          
+        </div>
 	</div>	<!-- entete_contenu -->
 	<div class="spacer"></div>
     <div>
 	<?php echo HtmlShrink::getPaginationString($get['page'], $total_even, $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?".Utils::urlQueryArrayToString($get, "page")."&page=");?>
         <form action="" method="get" class="queries">
             <div style="display:inline-block;margin-top:0.2em">
-                
+
                 <select name="genre" id="select_genre" onChange="javascript:this.form.submit();">
                     <option value="">Filtre</option>
                     <?php
@@ -237,7 +237,7 @@ if ($get['sem'])
                     <input type="hidden" name="<?php echo $nom;?>" value="<?php echo $valeur;?>" />
                     <?php
                     }
-                }            
+                }
                 ?>
                 <label for="select_order">Tri</label>
                 <select name="tri_agenda" id="select_order" onChange="javascript:this.form.submit();">
@@ -316,7 +316,7 @@ if ($get['sem'])
 						echo "</li>";
 					}
 				}
-                
+
                 echo "<li class=\"haut2\"><a title=\"Remonter en haut de la page\" href=\"#global\">".$iconeRemonter."</a></li>";
 				echo "</ul>";
 			}
@@ -324,7 +324,7 @@ if ($get['sem'])
 			echo "\n<h3 class=\"menu_date\">";
 			echo "<a name=\"date_".$listeEven['dateEvenement']."\" id=\"date_".$listeEven['dateEvenement']."\"></a>".ucfirst(date_fr($listeEven['dateEvenement']));
 			echo "</h3>\n";
-		}	
+		}
 
 		if (isset($listeEven['genre']) && $listeEven['genre'] != $genre_courant && isset($get['genre']) && $get['genre'] == '' )
 		{
@@ -333,7 +333,7 @@ if ($get['sem'])
 				echo "</div>";
 			}
 			?>
-			
+
 			<div class="spacer"></div>
 			<div class="genre">
 
@@ -343,18 +343,18 @@ if ($get['sem'])
                 <a class="genre-jump" href="#<?php echo $proch; ?>"><i class="fa fa-long-arrow-down"></i></a>
                 <?php } else { ?>
                 <span style="float: right;margin: 0.2em;padding: 0.4em 0.8em;">&nbsp;</span>
-                <?php } ?>	
+                <?php } ?>
 
                 <?php if (0) { //isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 1 && $listeEven['genre'] != 'fête') { ?>
                 <a class="genre-jump" href="#<?php echo $genre_prec; ?>"><i class="fa fa-long-arrow-up"></i></a>
                 <?php } ?>
-                <div class="spacer"></div>		
+                <div class="spacer"></div>
 			</div>
 			<?php
 		}
 
-		$genre_courant = $listeEven['genre'];	
-        
+		$genre_courant = $listeEven['genre'];
+
 		if ($i != 0 && ($i % 2 != 0 && $get['sem'] == 0) ||
 		($get['sem'] == 1 && $nb_even_jour % 2 == 0 && $dateCourante == $listeEven['dateEvenement']))
 		{
@@ -362,8 +362,8 @@ if ($get['sem'])
             if ($_SESSION['region'] == 'vd')
                 $region = "Lausanne";
             if ($_SESSION['region'] == 'fr')
-                $region = "Fribourg";            
-            
+                $region = "Fribourg";
+
 			echo "<h5>".$region.", ".date_fr($dateCourante);
 			echo "</h5><div class=\"spacer\"></div>";
 		}
@@ -404,12 +404,12 @@ if ($get['sem'])
 		if (!empty($listeEven['flyer']))
 		{
 			$imgInfo = @getimagesize($rep_images_even.$listeEven['flyer']);
-			$lien_flyer = '<a href="'.$url_uploads_events.$listeEven['flyer']."?".@filemtime($rep_images_even.$listeEven['flyer']).'" class="magnific-popup"><img src="'.$url_uploads_events."s_".$listeEven['flyer']."?".@filemtime($rep_images_even.$listeEven['flyer']).'"  alt="Flyer" width="100" /></a>';			
+			$lien_flyer = '<a href="'.$url_uploads_events.$listeEven['flyer']."?".@filemtime($rep_images_even.$listeEven['flyer']).'" class="magnific-popup"><img src="'.$url_uploads_events."s_".$listeEven['flyer']."?".@filemtime($rep_images_even.$listeEven['flyer']).'"  alt="Flyer" width="100" /></a>';
 		}
 		else if ($listeEven['image'] != '')
-		{	
+		{
 			$imgInfo = @getimagesize($rep_images_even.$listeEven['image']);
-			$lien_flyer = '<a href="'.$url_uploads_events.$listeEven['image']."?".@filemtime($rep_images_even.$listeEven['image']).'" class="magnific-popup"><img src="'.$url_uploads_events."s_".$listeEven['image']."?".@filemtime($rep_images_even.$listeEven['image']).'" alt="Photo" width="100" /></a>';					
+			$lien_flyer = '<a href="'.$url_uploads_events.$listeEven['image']."?".@filemtime($rep_images_even.$listeEven['image']).'" class="magnific-popup"><img src="'.$url_uploads_events."s_".$listeEven['image']."?".@filemtime($rep_images_even.$listeEven['image']).'" alt="Photo" width="100" /></a>';
 		}
 
 		if (mb_strlen($listeEven['description']) > $maxChar)
@@ -423,44 +423,44 @@ if ($get['sem'])
 		{
 			$description = Text::wikiToHtml($listeEven['description']);
 		}
-        
+
         $sql_event_orga = "SELECT organisateur.idOrganisateur, nom, URL
         FROM organisateur, evenement_organisateur
         WHERE evenement_organisateur.idEvenement=".$listeEven['idEvenement']." AND
          organisateur.idOrganisateur=evenement_organisateur.idOrganisateur
          ORDER BY nom DESC";
 
-        $req_event_orga = $connector->query($sql_event_orga);        
+        $req_event_orga = $connector->query($sql_event_orga);
 
 		$adresse = htmlspecialchars(HtmlShrink::getAdressFitted(null, $listeLieu['localite'], $listeLieu['quartier'], $listeLieu['adresse']));
-		
+
 		$horaire = afficher_debut_fin($listeEven['horaire_debut'], $listeEven['horaire_fin'], $listeEven['dateEvenement']);
 
 		// TODO : marche pas, à corriger (voir valeurs d'even sans début ou fin)
 		if (($listeEven['horaire_debut'] != '0000-00-00 00:00:00' || $listeEven['horaire_fin'] != '0000-00-00 00:00:00') && !empty($listeEven['horaire_complement']) )
 		{
 			$horaire .= " ".lcfirst(htmlspecialchars($listeEven['horaire_complement'])) ;
-		}				
+		}
 		else
 		{
 			$horaire .= htmlspecialchars($listeEven['horaire_complement']);
 		}
-        
+
         if (!empty($listeEven['price_type']) && in_array($listeEven['price_type'], ['gratis', 'asyouwish']))
-        { 
+        {
             $horaire .= " ".$price_types[$listeEven['price_type']];
-        }        
-        
+        }
+
         if (!empty($listeEven['prix']))
         {
             if (!empty($listeEven['horaire_debut']) || !empty($listeEven['horaire_fin']) || !empty($listeEven['horaire_complement']))
             {
                 $horaire .= ", ";
             }
-            $horaire .= htmlspecialchars($listeEven['prix']);		
+            $horaire .= htmlspecialchars($listeEven['prix']);
         }
 
-        
+
 		$sql_dateEven = "
 		SELECT idCommentaire
 		 FROM commentaire
@@ -481,45 +481,27 @@ if ($get['sem'])
 			title="Voir le'.$pluriel.' '.$nb_comm.' commentaires">'.$nb_comm.' commentaire'.$pluriel.'</a>';
 			$commentaires .= '</li>';
 		}
-			
+
 		$actions = "";
 		if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 12))
 		{
 			if ($nb_comm == 0)
 			{
-			$actions .= '<li>
+                $actions .= '<li>
 			<a href="/evenement.php?idE='.$listeEven['idEvenement'].'&amp;tri_agenda='.$get['tri_agenda'].'&amp;courant='.$get['courant'].'#commentaires"
 			title="Ajouter un commentaire à cet événement">'.$icone['ajouter_commentaire'].'</a></li>';
 			}
-			$req_nb_favori = $connector->query("SELECT * FROM evenement_favori
-			WHERE idEvenement=".$listeEven['idEvenement']." AND idPersonne=".$_SESSION['SidPersonne']);
+        }
 
-			$nb_favori = $connector->getNumRows($req_nb_favori);
-
-			$actions .= '<li>';
-			if ($nb_favori == 0)
-			{
-				$actions .= '<a href="/multi-star.php?action=ajouter&amp;element=evenement&amp;idE='.$listeEven['idEvenement'].'"
-			title="Ajouter à vos favoris">'.$icone['ajouter_favori'].'</a>';
-			}
-			else
-			{
-				$actions .= $icone['favori'].'en favori <a href="/multi-star.php?action=supprimer&amp;element=evenement&amp;idE='.$listeEven['idEvenement'].'"
-			title="Enlever de vos favoris">'.$icone['supprimer_favori'].'</a>';
-			}
-
-			$actions .= '</li>';
-		}
-        
         $vcard_starttime = '';
         if (mb_substr($listeEven['horaire_debut'], 11, 5) != '06:00')
-            $vcard_starttime = "T".mb_substr($listeEven['horaire_debut'], 11, 5).":00";	
+            $vcard_starttime = "T".mb_substr($listeEven['horaire_debut'], 11, 5).":00";
         ?>
-                
+
 		<div id="event-<?php echo $listeEven['idEvenement']; ?>" class="evenement vevent">
 			<div class="dtstart">
-                <span class="value-title" title="<?php echo $listeEven['dateEvenement'].$vcard_starttime; ?>"></span>	
-			</div>		
+                <span class="value-title" title="<?php echo $listeEven['dateEvenement'].$vcard_starttime; ?>"></span>
+			</div>
 			<div class="titre">
                 <span class="left summary"><?php echo $titre; ?></span><span class="right location"><?php echo $infosLieu ?></span>
                 <div class="spacer"></div>
@@ -538,14 +520,14 @@ if ($get['sem'])
                         if (!preg_match("/^https?:\/\//", $tab['URL']))
                         {
                             $org_url = 'http://'.$tab['URL'];
-                        }                    
+                        }
 
                     ?>
-                        <li><a href="/organisateur.php?idO=<?php echo $tab['idOrganisateur']; ?>" title="Voir la fiche de l'organisateur"><?php echo $tab['nom']; ?></a> <a href="<?php echo $org_url; ?>" title="Site web de l'organisateur" class="lien_ext" target="_blank"><?php echo $org_url_nom; ?></a></li>                
+                        <li><a href="/organisateur.php?idO=<?php echo $tab['idOrganisateur']; ?>" title="Voir la fiche de l'organisateur"><?php echo $tab['nom']; ?></a> <a href="<?php echo $org_url; ?>" title="Site web de l'organisateur" class="lien_ext" target="_blank"><?php echo $org_url_nom; ?></a></li>
                     <?php
-                    }             
+                    }
                     ?>
-                    </ul>        
+                    </ul>
                 </div>
             </div>
 			<div class="pratique"><span class="left"><?php echo $adresse; ?></span><span class="right"><?php echo $horaire; ?></span>
@@ -555,7 +537,7 @@ if ($get['sem'])
 			<div class="edition">
                 <ul class="menu_action">
                     <li><a href="/evenement-report.php?idE=<?php echo $listeEven['idEvenement']; ?>" class="signaler"  title="Signaler une erreur"><i class="fa fa-flag-o fa-lg"></i></a></li><li><a href="/evenement_ics.php?idE=<?php echo $listeEven['idEvenement']; ?>" class="ical" title="Exporter au format iCalendar dans votre agenda"><i class="fa fa-calendar-plus-o fa-lg"></i></a></li><?php echo $commentaires; echo $actions;?></ul>
-			
+
                 <?php
                 if (isset($_SESSION['Sgroupe'])
                 && (
@@ -570,12 +552,12 @@ if ($get['sem'])
                 <ul class="menu_edition">
                     <li class="action_copier">
                         <a href="/evenement-copy.php?idE=<?php echo $listeEven['idEvenement']; ?>" title="Copier l'événement">Copier<span class="desktop"> vers d'autres dates</span></a>
-                    </li>	
+                    </li>
                     <li class="action_editer">
                     <a href="/evenement-edit.php?idE=<?php echo $listeEven['idEvenement']; ?>&amp;action=editer" title="Éditer l'événement">Modifier</a>
                     </li>
-                    <li class="action_depublier"><a href="#" id="btn_event_unpublish_<?php echo $listeEven['idEvenement']; ?>" class="btn_event_unpublish" data-id="<?php echo $listeEven['idEvenement']; ?>">Dépublier</a></li>                    
-                    <li><a href="/user.php?idP=<?php echo $listeEven['idPersonne']; ?>"><?php echo $icone['personne']; ?></a></li>                    
+                    <li class="action_depublier"><a href="#" id="btn_event_unpublish_<?php echo $listeEven['idEvenement']; ?>" class="btn_event_unpublish" data-id="<?php echo $listeEven['idEvenement']; ?>">Dépublier</a></li>
+                    <li><a href="/user.php?idP=<?php echo $listeEven['idPersonne']; ?>"><?php echo $icone['personne']; ?></a></li>
                 </ul>
                 <?php
                 }
@@ -586,7 +568,7 @@ if ($get['sem'])
 		<?php
 		$i++;
 	} //while
-	
+
 	if ($genre_courant != '' && isset($get['genre']) && $get['genre'] == '')
 	{
 		echo "</div>";
@@ -597,16 +579,16 @@ if ($get['sem'])
 }
 
 if ($nb_evenements > 5)
-{ 
+{
 	echo HtmlShrink::getPaginationString($get['page'], $total_even, $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?".Utils::urlQueryArrayToString($get, "page")."&page=");
 	?>
 	<div id="entete_contenu">
-		<h2><?php echo $entete_contenu ?></h2>			
+		<h2><?php echo $entete_contenu ?></h2>
 		<ul class="entete_contenu_navigation">
 			<li><?php echo $lien_precedent.$lien_suivant; ?></li>
         </ul>
 		<div class="spacer"></div>
-	</div><!-- entete_contenu -->	
+	</div><!-- entete_contenu -->
 <?php
 } //if nb evenement
 ?>

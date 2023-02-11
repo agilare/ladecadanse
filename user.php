@@ -207,26 +207,19 @@ $detailsAff = $connector->fetchArray($req_affPers);
         <?php echo $icone['ajouts']."Éléments ajoutés" ?></a></li>
         <li <?php if ($get['type_elements'] == "favoris") { echo ' class="ici" '; } ?>>
         <a href="/user.php?idP=<?php echo $get['idP'] ?>&type_elements=favoris">
-        <?php echo $icone['favori']."Favoris" ?></a></li>
-	</ul>
+            <?php echo "Favoris" ?></a></li>
+    </ul>
 
 <?php
 if ($get['type_elements'] == 'favoris')
 {
 ?>
-	<ul id="menu_ajouts">
-
-		<li <?php if ($get['elements'] == "evenement") { echo ' class="ici" '; } ?>>
+    <ul id="menu_ajouts">
+            <li <?php if ($get['elements'] == "evenement") { echo ' class="ici" '; } ?>>
 		<img src="/web/interface/icons/calendar.png" />
 		<a href="<?php echo $_SERVER['PHP_SELF']."?idP=".$get['idP']."&type_elements=".$get['type_elements']."&elements=evenement" ?>">événements</a>
-		</li>
-
-		<li <?php if ($get['elements'] == "lieu") { echo ' class="ici" '; } ?>>
-		<img src="/web/interface/icons/building.png" />
-		<a href="<?php echo $_SERVER['PHP_SELF']."?idP=".$get['idP']."&type_elements=".$get['type_elements']."&elements=lieu" ?>">lieux</a>
-		</li>
-
-	</ul>
+        </li>
+        </ul>
 
 	<div class="spacer"></div>
 	<?php
@@ -258,9 +251,9 @@ if ($get['elements'] == "evenement")
 		echo "<table id=\"favoris_evenements\"><tr>";
 
 
-		echo '<th colspan="2">Événement</th><th>Lieu</th><th>Date</th><th colspan="2">Actions</th></tr>';
+		echo '<th colspan="2">Événement</th><th>Lieu</th><th>Date</th></tr>';
 
-		$pair = 0;
+            $pair = 0;
 
 		while ($tab_even = $connector->fetchArray($req_favoris))
 		{
@@ -331,9 +324,7 @@ if ($get['elements'] == "evenement")
 				echo "<td><!-- --></td>";
 			}
 
-			echo "<td><a href=\"/multi-star.php?action=supprimer&amp;element=evenement&amp;idE=".$tab_even['idEvenement']."\" title=\"Enlever le favori\">".$icone['supprimer_favori']."</a></td>";
-
-			echo "</tr>";
+                echo "</tr>";
 
 			$pair++;
 		} // fin while
@@ -347,247 +338,7 @@ if ($get['elements'] == "evenement")
 	}//if nbrows evenements
 
 
-} // if type_elements
-else if ($get['elements'] == "lieu")
-{
-	$sql_favoris = "SELECT lieu.idLieu AS idLieu, lieu.idPersonne, nom, categorie, adresse, quartier, localite, region, logo, photo1, dateAjout
-	 FROM lieu, lieu_favori, localite WHERE localite.id=lieu.localite_id AND lieu_favori.idPersonne=".$get['idP']."
-	 AND lieu_favori.idLieu=lieu.idLieu
-	 ORDER BY dateAjout LIMIT ".($get['page'] - 1) * $get['nblignes'].",".$get['nblignes'];
-
-
-	$req_lieux = $connector->query($sql_favoris);
-	$nb_rows = $connector->getNumRows($req_lieux);
-
-	echo HtmlShrink::getPaginationString($get['page'], $nb_rows, $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?idP=".$get['idP']."&elements=".$get['elements']."&tri=".$get['tri']."&ordre=".$get['ordre']."&nblignes=".$get['nblignes']."&page=");
-
-	if ($nb_rows > 0)
-	{
-
-		$th_lieu = array("nom" => "Nom", "categorie" => "Catégorie", "quartier" => "Quartier");
-
-		echo "
-		<table id=\"favoris_lieux\">
-		<tr>";
-
-				echo "<th colspan=\"4\"></th>";
-
-
-		echo "<th>Retirer des favoris</th></tr>";
-
-		$pair = 0;
-
-		while ($tab_lieu = $connector->fetchArray($req_lieux))
-		{
-			$listeCat = explode(",", $tab_lieu['categorie']);
-
-			if ($pair % 2 == 0)
-			{
-				echo "<tr>";
-			}
-			else
-			{
-				echo "<tr class=\"impair\" >";
-			}
-
-
-			echo '<td>';
-			if (!empty($tab_lieu['logo']))
-			{
-				$imgInfo = @getimagesize($rep_uploads_lieux.$tab_lieu['logo']);
-				echo HtmlShrink::popupLink($url_uploads_lieux.$tab_lieu['logo']."?".@filemtime($rep_uploads_lieux.$tab_lieu['logo']),
-				"Logo", $imgInfo[0]+20,$imgInfo[1]+20,
-				'<img src="'.$url_uploads_lieux.'s_'.$tab_lieu['logo'].'" alt="Logo" />'
-				);
-			}
-			else if ($tab_lieu['photo1'] != "")
-			{
-				$imgInfo = @getimagesize($rep_uploads_lieux.$tab_lieu['photo1']);
-				echo HtmlShrink::popupLink($url_uploads_lieux.$tab_lieu['photo1']."?".@filemtime($rep_uploads_lieux.$tab_lieu['photo1']),
-				"photo1", $imgInfo[0]+20,$imgInfo[1]+20,
-				'<img src="'.$url_uploads_lieux.'s_'.$tab_lieu['photo1'].'" width="80" alt="photo1" />'
-				);
-			}
-
-
-			echo '</td>';
-
-
-			echo "
-
-
-
-			<td><a href=\"/lieu.php?idL=".$tab_lieu['idLieu']."\" title=\"Voir la fiche du lieu :".sanitizeForHtml($tab_lieu['nom'])."\">".sanitizeForHtml($tab_lieu['nom'])."</a></td>
-			";
-			echo "<td><p class=\"adresse\">".HtmlShrink::getAdressFitted($tab_lieu['region'], $tab_lieu['localite'], $tab_lieu['quartier'], $tab_lieu['adresse'] )."</p></td>";
-			echo "
-
-			<td class=\"tdleft\"><ul>";
-
-
-			for ($i = 0, $totalCat = count($listeCat); $i<$totalCat; $i++)
-			{
-				echo "<li>".$listeCat[$i]."</li>";
-			}
-
-			echo "</ul></td>";
-
-			echo "<td><a href=\"/multi-star.php?action=supprimer&amp;element=lieu&amp;idL=".$tab_lieu['idLieu']."\" title=\"Enlever le favori\">".$icone['supprimer_favori']."</a></td>";
-
-
-			echo "</tr>";
-
-			$pair++;
-
-		}
-
-		echo "</table>";
-
-	}
-	else
-	{
-		echo '<p>Aucun '.$get['elements'].' en favori pour le moment</p>';
-	} //if numrows lieux
-
-	@mysqli_free_result($req_lieux);
-
-	}
-}
-else if ($get['type_elements'] == 'participations')
-{
-
-	echo "<p>Ici figurent les événements où vous avez assisté et ceux où vous pensez aller.</p>";
-
-
-	$sql_favoris = "SELECT *
-	 FROM evenement, participation WHERE participation.idPersonne=".$get['idP']."
-	 AND participation.idEvenement=evenement.idEvenement
-	 ORDER BY dateAjout LIMIT ".($get['page'] - 1) * $get['nblignes'].",".$get['nblignes'];
-
-
-	$req_favoris = $connector->query($sql_favoris);
-
-	$req_nb_fav = $connector->query("SELECT COUNT(*) AS nbeven FROM participation WHERE idPersonne=".$get['idP']);
-	$tab_nb_fav = $connector->fetchArray($req_nb_fav);
-	$tot_fav = $tab_nb_fav['nbeven'];
-
-	echo HtmlShrink::getPaginationString($get['page'], $tot_fav, $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?idP=".$get['idP']."&elements=".$get['elements']."&type_elements=".$get['type_elements']."&page=");
-
-
-	if ($connector->getNumRows($req_favoris) > 0)
-	{
-
-		$th_evenements = array("dateEvenement" => "Date", "titre" => "Titre", "idLieu" => "Lieu",
-		"flyer" => "Flyer");
-
-
-		echo "<table id=\"favoris_evenements\"><tr>";
-
-
-		echo '<th colspan="2">Événement</th><th>Lieu</th><th>Date</th><th colspan="2">Actions</th></tr>';
-
-		$pair = 0;
-
-		while ($tab_even = $connector->fetchArray($req_favoris))
-		{
-
-			$nomLieu = sanitizeForHtml($tab_even['nomLieu']);
-
-			if ($tab_even['idLieu'] != 0)
-			{
-				$req_lieu = $connector->query("SELECT nom FROM lieu WHERE idLieu=".$tab_even['idLieu']);
-				$tabLieu = $connector->fetchArray($req_lieu);
-				$nomLieu = "<a href=\"/lieu.php?idL=".$tab_even['idLieu']."\" title=\"Voir la fiche du lieu : ".sanitizeForHtml($tabLieu['nom'])." \">".sanitizeForHtml($tabLieu['nom'])."</a>";
-			}
-
-
-			if (time() < datetime_iso2time(date_lendemain($tab_even['dateEvenement'])." 06:00:01"))
-
-			{
-				echo "<tr>";
-			}
-			else
-			{
-				echo "<tr class=\"ancien\" >";
-			}
-
-			echo '
-			<td class="flyer">';
-			if (!empty($tab_even['flyer']))
-			{
-				$imgInfo = @getimagesize($rep_images_even.$tab_even['flyer']);
-				echo HtmlShrink::popupLink($url_uploads_events.$tab_even['flyer']."?".@filemtime($rep_images_even.$tab_even['flyer']),
-				"Flyer", $imgInfo[0]+20,$imgInfo[1]+20,
-				'<img src="'.$url_uploads_events.'t_'.$tab_even['flyer'].'" alt="Flyer" width="60" />'
-				);
-			}
-			echo '</td>';
-
-			echo '<td>';
-			echo "<h3><a href=\"/evenement.php?idE=".$tab_even['idEvenement']."\"
-			title=\"Voir la fiche de l'événement\">".sanitizeForHtml($tab_even['titre'])."</a></h3>";
-
-			echo '<p class="description">';
-
-			if (!empty($tab_even['description']))
-			{
-				$maxChar = Text::trouveMaxChar($tab_even['description'], 45, 2);
-				echo @Text::texteHtmlReduit(Text::wikiToHtml($tab_even['description']),
-				$maxChar,
-				"<span class=\"continuer\"><a href=\"/evenement.php?idE=".$tab_even['idEvenement']."\"
-				title=\"Voir la fiche complète de l'événement\"> Lire la suite</a></span>");
-			}
-
-			echo '</p>';
-			?>
-<p class="pratique"><?php echo afficher_debut_fin($tab_even['horaire_debut'], $tab_even['horaire_fin'], $tab_even['dateEvenement'])." ".$tab_even['prix'] ?></p>
-			<?php
-			echo "</td>";
-
-			echo "<td>".$nomLieu."</td>";
-
-			echo "
-			<td>".date_iso2app($tab_even['dateEvenement'])."</td>";
-
-			if ($_SESSION['SidPersonne'] == $tab_even['idPersonne'] || $_SESSION['Sgroupe'] <= 4)
-			{
-				echo "<td><a href=\"/evenement-edit.php?action=editer&idE=".$tab_even['idEvenement']."\" title=\"Éditer l'événement\">".$iconeEditer."</a></td>";
-			}
-			else
-			{
-				echo "<td><!-- --></td>";
-			}
-
-			echo "<td>";
-			echo "<a href=\"/action_participation.php?action=supprimer&amp;idE=".$tab_even['idEvenement']."\" title=\"Enlever le favori\">";
-			echo $icone['supprimer_date'];
-			if (time() < datetime_iso2time(date_lendemain($tab_even['dateEvenement'])." 06:00:01"))
-
-			{
-				echo "Je n'irais finalement pas";
-			}
-			else
-			{
-				echo "En fait je n'y étais pas";
-			}
-
-			echo '</a></td>';
-
-
-			echo "</tr>";
-
-			$pair++;
-		} // fin while
-
-		echo "</table>";
-
-	}
-	else
-	{
-		echo '<p>Aucune participation pour le moment</p>';
-	}//if nbrows evenements
-
-	@mysqli_free_result($req_evenement);
+    }
 }
 else
 {

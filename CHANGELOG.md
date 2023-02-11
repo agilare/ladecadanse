@@ -2,10 +2,13 @@
 
 ## [Unreleased]
 
+3.3.0
+
 ### Added
 - CONTRIBUTING.md
 
 ### Changed
+- lieux home like organizers
 - refactor bootstrap, config
     - purge, rename global url, rep vars
     - html sanitization moved in Text class
@@ -23,9 +26,10 @@
 - comments ?
 - event-email ?
 - breves*
-- favorites ?
+- favorites*
 - file upload
 - app : index.html, utf8-to-utf8mb4
+- events : tiny flyers
 
 ### Security
 - rm display of mysql errors

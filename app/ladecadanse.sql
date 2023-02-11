@@ -70,12 +70,6 @@ CREATE TABLE `evenement` (
   `date_derniere_modif` datetime NOT NULL DEFAULT '0000-00-00 00:00:00'
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE `evenement_favori` (
-  `idPersonne` smallint(5) NOT NULL DEFAULT '0',
-  `idEvenement` mediumint(8) NOT NULL DEFAULT '0',
-  `date_ajout` datetime NOT NULL DEFAULT '0000-00-00 00:00:00'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
 CREATE TABLE `evenement_fichierrecu` (
   `idEvenement` mediumint(9) NOT NULL DEFAULT '0',
   `idFichierrecu` mediumint(9) NOT NULL DEFAULT '0'
@@ -138,12 +132,6 @@ CREATE TABLE `lieu` (
   `actif` tinyint(3) UNSIGNED NOT NULL DEFAULT '1',
   `determinant` varchar(40) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `date_derniere_modif` datetime NOT NULL DEFAULT '0000-00-00 00:00:00'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-CREATE TABLE `lieu_favori` (
-  `idPersonne` smallint(5) NOT NULL DEFAULT '0',
-  `idLieu` smallint(5) NOT NULL DEFAULT '0',
-  `date_ajout` datetime NOT NULL DEFAULT '0000-00-00 00:00:00'
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `lieu_fichierrecu` (
@@ -1312,9 +1300,6 @@ ALTER TABLE `evenement`
   ADD KEY `dateajout` (`dateAjout`),
   ADD KEY `ev_idlieu_dateev` (`idLieu`,`dateEvenement`);
 
-ALTER TABLE `evenement_favori`
-  ADD PRIMARY KEY (`idPersonne`,`idEvenement`);
-
 ALTER TABLE `evenement_fichierrecu`
   ADD PRIMARY KEY (`idEvenement`,`idFichierrecu`);
 
@@ -1331,9 +1316,6 @@ ALTER TABLE `lieu`
   ADD PRIMARY KEY (`idLieu`),
   ADD KEY `nom` (`nom`),
   ADD KEY `lieu_dateajout` (`dateAjout`);
-
-ALTER TABLE `lieu_favori`
-  ADD PRIMARY KEY (`idPersonne`,`idLieu`);
 
 ALTER TABLE `lieu_fichierrecu`
   ADD PRIMARY KEY (`idLieu`,`idFichierrecu`);

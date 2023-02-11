@@ -125,9 +125,6 @@ $icone['recherche'] = '<img src="' . $url_images_interface_icons . 'search.png" 
 $icone['voir_lieux'] = '<img src="' . $url_images_interface_icons . 'building_go.png" alt="Voir lieux" width="16" height="16" />';
 $icone['voir_semaine'] = '<img src="' . $url_images_interface_icons . 'bullet_go.png" alt="Voir semaine" width="16" height="16" />';
 $icone['envoi_email'] = '<img src="' . $url_images_interface_icons . 'email_go.png" alt="Envoi e-mail" width="16" height="16" />';
-$icone['favori'] = '<img src="' . $url_images_interface_icons . 'heart.png" alt="Favori" width="16" height="16" />';
-$icone['ajouter_favori'] = '<img src="' . $url_images_interface_icons . 'heart_add.png" alt="Ajouter favori" width="16" height="16" />';
-$icone['supprimer_favori'] = '<img src="' . $url_images_interface_icons . 'heart_delete.png" alt="Supprimer favori" width="16" height="16" />';
 $icone['ajouts'] = '<img src="' . $url_images_interface_icons . 'add.png" alt="" width="16" height="16" />';
 $icone['accepter'] = '<img src="' . $url_images_interface_icons . 'accept.png" alt="Accepter" width="16" height="16" />';
 $icone['refuser'] = '<img src="' . $url_images_interface_icons . 'decline.png" alt="Refuser" width="16" height="16" />';

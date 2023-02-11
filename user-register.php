@@ -83,13 +83,13 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 		{
 			$verif->setErreur("motdepasse_inegaux", 'Les 2 mots de passe doivent être identiques.');
 		}
-		
+
 		if (in_array($champs['motdepasse'], $g_mauvais_mdp))
 		{
-			$verif->setErreur("motdepasse", "Veuillez choisir un meilleur mot de passe");	
+			$verif->setErreur("motdepasse", "Veuillez choisir un meilleur mot de passe");
 		}
-		
-		
+
+
 		if (!empty($champs['motdepasse'])&& !preg_match("/[0-9]/", $champs['motdepasse']))
 		{
 			$verif->setErreur("motdepasse", 'Le mot de passe doit comporter au moins 1 chiffre.');
@@ -204,8 +204,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 		// pour mail de notif admin (plus bas
 		$type_compte = 'membre';
 		if ($champs['groupe'] == 8)
-			$type_compte = 'organisateur';		
-		
+			$type_compte = 'organisateur';
+
 		$sql_insert_attributs = "";
 		$sql_insert_valeurs = "";
 
@@ -247,11 +247,11 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 				//echo $sql;
 				$connector->query($sql);
 			}
-		}		
-		
-		
-		
-		
+		}
+
+
+
+
 		/*
 		* Insertion réussie, message OK, et RAZ des champs
 		*/
@@ -259,7 +259,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 		{
 
 
-			
+
 			$req_pers = $connector->query("
 			SELECT pseudo, mot_de_passe, email, groupe
 			FROM personne
@@ -282,7 +282,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 
 			//message résultat et réinit
 			if ($connector->query($sql_update))
-			{		
+			{
 				$subject = "Votre nouveau compte 👤 ".$tab_pers['pseudo']." sur La décadanse";
 
 				$contenu_message = "Bonjour,\n\n";
@@ -296,20 +296,20 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 				$contenu_message .= "Bonne visite";
 				$contenu_message .= "\n\n";
 				$contenu_message .= "La décadanse";
-				
+
                 $mailer = new Mailing();
                 $mailer->toUser($tab_pers['email'], $subject, $contenu_message);
 
 				$compte_organisateur = "";
 				if (isset($champs['organisateurs']) && count($champs['organisateurs']) > 0)
 					$compte_organisateur = " en tant qu'acteur culturel";
-				
+
 				HtmlShrink::msgOk("<strong>Votre compte".$compte_organisateur." a été créé</strong>; vous pouvez maintenant vous <a href=\"/user-login.php\">connecter</a> avec l'identifiant et le mot de passe que vous venez de saisir.
 				<br />Un e-mail de confirmation vous a été envoyé à l'adresse : ".$tab_pers['email']);
 
                 $logger->log('global', 'activity', "[user-register] by ".$tab_pers['pseudo']." (".$tab_pers['email'].") in group ".$tab_pers['groupe']." /user.php?idP=".$req_id, Logger::GRAN_YEAR);
 			}
-						
+
 			foreach ($champs as $k => $v)
 			{
 				$champs[$k] = '';
@@ -404,8 +404,8 @@ echo $verif->getHtmlErreur("email_identique");?>
 	<legend>En tant que*</legend>
 	<ul class="radio" style="margin:0;font-size:0.85em"><li class="listehoriz" style="float: left;display:inline-block;min-height:7em">
 			<label for="membre" style="float:left"><strong>Membre</strong><br>
-			Pour écrire des commentaires et garder en favori des lieux et des événements</label>&nbsp;<input type="radio" name="groupe" id="membre" value="12" 
-			<?php if ($champs['groupe'] == 12) { echo ' checked'; } ?> />
+                Pour commenter les événements et les lieux </label>&nbsp;<input type="radio" name="groupe" id="membre" value="12"
+                                                                                <?php if ($champs['groupe'] == 12) { echo ' checked'; } ?> />
 		</li><li class="listehoriz" style="float: left;display:inline-block;min-height:7em">
 			<label for="user-register_organisateur" style="float:left"><strong>Acteur culturel</strong><br>Mêmes droits qu'un membre + possibilité d'ajouter des événements</label>&nbsp;<input type="radio" name="groupe" id="user-register_organisateur" value="8" <?php if ($champs['groupe'] == 8) { echo ' checked'; } ?> />
 		</li>
@@ -461,10 +461,10 @@ echo $verif->getHtmlErreur("email_identique");?>
 		?>
 		</select>
 
-		</p>		
+		</p>
 
 <?php echo $verif->getHtmlErreur("doublon_organisateur"); ?>
-		
+
 		<p class="entreLabels"><strong>sinon</strong></p>
 		<div class="spacer"></div>
 
