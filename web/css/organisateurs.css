@@ -40,7 +40,7 @@ color:#4a4a4a;
 	height : 100px;
 	overflow:hidden;
 	background : #EDEDED;
-} 
+}
 
 #dernieres_descriptions .vignette .qui
 {
@@ -59,7 +59,7 @@ color:#4a4a4a;
 	padding:2px 2px 2px 2px;
 	line-height:1.2em;
 }
-	
+
 
 #dernieres_descriptions .vignette .continuer
 {
@@ -86,8 +86,7 @@ background-color:#ffffff;
 	padding:0.4em 0em 0.4em 0.2em;
 	color:#5C7378;
 	font-size:1.1em;
-	font-weight:bold;
-	background-color:#eaeaea;
+    font-weight:bold;
 }
 
 #derniers_lieux h3
