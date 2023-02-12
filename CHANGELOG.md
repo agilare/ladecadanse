@@ -5,34 +5,36 @@
 3.3.0
 
 ### Added
-- CONTRIBUTING.md
+- [ ] CONTRIBUTING.md
 
 ### Changed
-- lieux home like organizers
-- refactor bootstrap, config
-    - purge, rename global url, rep vars
-    - html sanitization moved in Text class
-    - class to manage region user choice
-    - rm headers (externalized)
-    - env
-        - replace remaining env var by const*
-        - document
-    - rss.php, agenda.php names
-    - mots-vides.txt -> utf8
-- mv files to more adequate dirs
+- [x] lieux home like organizers
+- [ ] refactor
+    - [ ] bootstrap, config
+        - [x] purge, rename global url, rep vars
+        - [ ] html sanitization moved in Text class
+        - [x] class to manage region user choice
+        - [ ] rm headers (externalized)
+        - [x] env
+            - [x] replace remaining env var by const*
+            - [x] document
+        - [ ] rss.php, agenda.php names
+        - [ ] mots-vides.txt -> utf8
+    - [ ] mv files to more adequate dirs
+- [x] adding comments disabled
 
 ### Removed
-- cache*
-- comments ?
-- event-email ?
-- breves*
-- favorites*
-- file upload
-- app : index.html, utf8-to-utf8mb4
-- events : tiny flyers
+- [x] cache
+- [x] breves
+- [x] favorites
+- [ ] file upload
+- [ ] app : index.html, utf8-to-utf8mb4
+- [ ] events : tiny flyers
+- [x] header files
+- [ ] tables temp, statarchives ?
 
 ### Security
-- rm display of mysql errors
+- [x] rm display of mysql errors
 
 ## [3.2.6] - 2023-02-05
 

@@ -680,11 +680,6 @@ if ($get['complement'] == 'evenements')
 	$evenements_ici = ' class="ici"';
 }
 
-$commentaires_ici = '';
-if ($get['complement'] == 'commentaires')
-{
-	$commentaires_ici = ' class="ici"';
-}
 
 $lien_rss_evenements = '';
 if ($get['complement'] == 'evenements')
@@ -694,18 +689,6 @@ title="Flux RSS des prochains événements"><i class="fa fa-rss fa-lg" style="co
 }
 ?>
 
-<ul id="menu_complement" style="display:none">
-	<li<?php echo $evenements_ici; ?>><a href="<?php echo basename(__FILE__); ?>?<?php echo Utils::urlQueryArrayToString($get, "complement")?>&amp;complement=evenements#menu_complement" title="" >Prochains événements</a></li>
-
-	<li<?php echo $commentaires_ici; ?>><a href="<?php echo basename(__FILE__); ?>?<?php echo Utils::urlQueryArrayToString($get, "complement")?>&amp;complement=commentaires#menu_complement" title="" >Commentaires (<?php echo $commentaires->getNbElements(); ?>)</a></li>
-	<?php
-	if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 12)
-	{
-		echo '<li class="ajouter_com"><a href="'.basename(__FILE__).'?'.Utils::urlQueryArrayToString($get, "complement").'&amp;complement=commentaires#menu_complement" title="">écrire un commentaire</a></li>';
-	}
-	?>
-	<li class="rss"><?php echo $lien_rss_evenements; ?></li>
-</ul>
 
 <h2 style="font-size:1.2em;font-weight:bold;color:#5C7378;width:96%;margin:2em 2% 0.4em 2%;min-height:30px">Prochains événements</h2>
 
@@ -1000,13 +983,13 @@ title="Flux RSS des prochains événements"><i class="fa fa-rss fa-lg" style="co
 
 	echo '</div>';
 
+    ?>
 
-/* } //if complement
-else if ($get['complement'] == 'commentaires')
-{ */
+    <?php if (0) { ?>
+    	<div id="commentaires"><h2 style="margin:10px;font-size:1.2em;font-weight:bold;color:#5C7378">Commentaires</h2>
 
-	echo '<div id="commentaires"><h2 style="margin:10px;font-size:1.2em;font-weight:bold;color:#5C7378">Commentaires</h2>';
-    $nb_c = 0;
+        <?php
+        $nb_c = 0;
 	foreach ($commentaires->getElements() as $id => $commentaire)
 	{
 		?>
@@ -1069,7 +1052,9 @@ else if ($get['complement'] == 'commentaires')
 	</div>
 	<!-- Fin commentaires -->
 
-<?php
+    <?php } // if 0 ?>
+
+    <?php
 /* }  */// if complement
 ?>
 

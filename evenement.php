@@ -807,15 +807,17 @@ Signaler une erreur
 
 
 <?php
-$req_comm = $connector->query("SELECT idPersonne, idCommentaire, contenu, dateAjout FROM commentaire
+    $req_comm = $connector->query("SELECT idPersonne, idCommentaire, contenu, dateAjout FROM commentaire
 WHERE id=".$get['idE']." AND element='evenement' AND statut='actif' ORDER BY dateAjout ASC");
 
-$nb_comm = $connector->getNumRows($req_comm);
-?>
+    $nb_comm = $connector->getNumRows($req_comm);
+
+if ($nb_comm > 0) {
+    ?>
 	<div id="commentaires">
 
-		<h5><span id="left">Commentaires (<?php echo $nb_comm ?>)</span></h5>
-		<div class="spacer"><!-- --></div>
+        <h5><span id="left">Commentaires</span></h5>
+            <div class="spacer"><!-- --></div>
 <?php
 
 $apres = 0;
@@ -857,7 +859,9 @@ while ($liste_comm = $connector->fetchArray($req_comm))
 <?php
 }
 
-if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 12 ))
+    if (0) {
+
+    if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 12 ))
 {
 ?>
 
@@ -913,12 +917,12 @@ else
 }
 ?>
 
-
+    <?php } ?>
 
 	</div>
 	<!-- fin commentaires -->
 
-
+    <?php } ?>
 
 </div>
 <!-- fin contenu -->
