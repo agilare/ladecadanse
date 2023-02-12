@@ -56,7 +56,7 @@ Lancer la commande suivante à la racine du projet :
 ```sh
 docker compose up -d
 ```
-Le site ladecadanse est déployé sur localhost:7777.
+Le site ladecadanse est déployé sur localhost:7777. Le mot de passe, par défaut, pour l'utilisateur `admin` est `admin_dev`.
 
 ### Usage
 Une fois le site fonctionnel, se connecter avec le login *admin* (créé ci-dessus) permet d'ajouter et modifier des événements, lieux, etc. (partie publique) et de les gérer largement (partie back-office)
