@@ -5,7 +5,7 @@ require_once("app/bootstrap.php");
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\Text;
 
-$tab_types = array("evenements_auj", "lieu_evenements", "evenement_commentaires", "lieux_descriptions", 'organisateur_evenements', 'evenements_ajoutes');
+$tab_types = array("evenements_auj", "lieu_evenements", 'organisateur_evenements', 'evenements_ajoutes');
 
 if (isset($_GET['type']))
 {
@@ -204,94 +204,6 @@ else if ($get['type'] == "lieu_evenements")
 
 	$channel .= "<pubDate>".date("r", $der_dateAjout)."</pubDate>\n";
 }
-else if ($get['type'] == "evenement_commentaires")
-{
-
-	$req_even = $connector->query("SELECT titre FROM evenement WHERE idEvenement=".$get['id']);
-
-	$tab_even = $connector->fetchArray($req_even);
-
-	$channel = '<title>La décadanse : commentaires pour '.$tab_even['titre'].'</title>';
-	$channel .= '<link>'.$site_full_url.'/evenement.php?idE='.$get['id'].'</link>';
-	$channel .= '<description>Commentaires de l\'événement '.$tab_even['titre'].'</description>';
-	$channel .= "<pubDate>".date("r",  mktime(0, 0, 0, date("m")  , date("d") - 7, date("Y")))."</pubDate>\n";
-	$channel .= "<language>fr</language>\n";
-
-	$der_dateAjout = time();
-
-	$req_comm = $connector->query("SELECT idPersonne, idCommentaire, id AS idEvenement, contenu, dateAjout FROM commentaire WHERE id=".$get['id']." AND element='evenement' ORDER BY dateAjout ASC");
-
-
-	while($tab_comm = $connector->fetchArray($req_comm))
-	{
-
-		$req_pers = $connector->query("SELECT pseudo FROM personne WHERE idPersonne=".$tab_comm['idPersonne']);
-		$tab_pers = $connector->fetchArray($req_pers);
-
-		$items .= "<item>\n";
-		$items .= "<title>".mb_substr($tab_comm['contenu'], 0, 20)."</title>\n";
-		$items .= "<link>".$site_full_url."/evenement.php?idE=".$tab_comm['idEvenement']."</link>\n";
-
-		$items .= "<description><![CDATA[";
-		$items .= Text::wikiToHtml(htmlspecialchars($tab_comm['contenu']));
-		$items .= "]]></description>\n";
-		$items .= "<author>".$tab_pers['pseudo']."</author>";
-		$items .= "<guid isPermaLink=\"false\">".$tab_comm['idCommentaire']."</guid>\n";
-		$items .= "<pubDate>".date("r", datetime_iso2time($tab_comm['dateAjout']))."</pubDate>\n";
-		$items .= "</item>\n";
-
-
-		$der_dateAjout = date_iso2time($tab_comm['dateAjout']);
-
-	}
-
-	$channel .= "<lastBuildDate>".date("r", $der_dateAjout)."</lastBuildDate>\n";
-
-
-}
-else if ($get['type'] == "lieux_descriptions")
-{
-
-	$channel = '<title>La décadanse : dernières descriptions de lieux</title>';
-	$channel .= '<link>'.$site_full_url.'/lieux.php</link>';
-	$channel .= '<description>Dernières descriptions d\'événements</description>';
-	$channel .= "<pubDate>".date("r",  mktime(0, 0, 0, date("m")  , date("d") - 7, date("Y")))."</pubDate>\n";
-	$channel .= "<language>fr</language>\n";
-
-	$der_dateAjout = time();
-
-	$req = $connector->query("SELECT * FROM descriptionlieu, lieu WHERE descriptionlieu.idLieu=lieu.idLieu AND type='description' AND region='".$connector->sanitize($_SESSION['region'])."' ORDER BY descriptionlieu.dateAjout DESC");
-
-
-	while($tab = $connector->fetchArray($req))
-	{
-
-		$req_pers = $connector->query("SELECT pseudo FROM personne WHERE idPersonne=".$tab['idPersonne']);
-		$tab_pers = $connector->fetchArray($req_pers);
-
-		$req_lieu = $connector->query("SELECT nom FROM lieu WHERE idLieu=".$tab['idLieu']);
-		$tab_lieu = $connector->fetchArray($req_lieu);
-
-		$items .= "<item>\n";
-		$items .= "<title>".$tab_lieu['nom']."</title>\n";
-		$items .= "<link>".$site_full_url."/lieu.php?idL=".$tab['idLieu']."</link>\n";
-
-		$items .= "<description><![CDATA[";
-		$items .= Text::wikiToHtml(htmlspecialchars($tab['contenu']));
-		$items .= "]]></description>\n";
-		$items .= "<author>".$tab_pers['pseudo']."</author>";
-		$items .= "<pubDate>".date("r", datetime_iso2time($tab['dateAjout']))."</pubDate>\n";
-		$items .= "</item>\n";
-
-
-		$der_dateAjout = date_iso2time($tab['dateAjout']);
-
-	}
-
-	$channel .= "<lastBuildDate>".date("r", $der_dateAjout)."</lastBuildDate>\n";
-
-
-}
 else if ($get['type'] == "organisateur_evenements")
 {
 	$req = $connector->query("SELECT nom FROM organisateur WHERE idOrganisateur=".$get['id']);
@@ -473,13 +385,6 @@ else if ($get['type'] == "evenements_ajoutes")
 
 }
 
-
-
-header('Content-Disposition: inline; filename='.$get['type'].'.xml');
-
-
-
+header('Content-Disposition: inline; filename=' . $get['type'] . '.xml');
 header('Content-Type: text/xml');
-echo $xml.$channel.$items."</channel></rss>";
-
-?>
+echo $xml . $channel . $items . "</channel></rss>";

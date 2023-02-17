@@ -2,70 +2,6 @@
 
 use Ladecadanse\HtmlShrink;
 
-/* DATE COURANTE : _navigation_calendrier, agenda, evenement-edit, index */
-$get['courant'] = "";
-if (!empty($_GET['courant']))
-{
-	if (preg_match("/^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}$/", trim($_GET['courant'])))
-	{
-		$get['courant'] = $_GET['courant'];
-	}
-	else if (preg_match("/^[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{4}$/", trim($_GET['courant'])))
-	{
-		$get['courant'] = date_app2iso($_GET['courant']);
-
-	}
-	else
-	{
-		$get['courant'] = $glo_auj_6h;
-	}
-}
-else if (isset($_GET['auj']))
-{
-	$get['courant'] = $_GET['auj'];
-}
-else
-{
-	$get['courant'] = $glo_auj_6h;
-}
-
-/* SEMAINE : _navigation_calendrier, agenda */
-if (!empty($_GET['sem']))
-{
-	if (is_numeric($_GET['sem']))
-	{
-		$get['sem'] = $_GET['sem'];
-	}
-	else
-	{
-		//trigger_error("sem non valable", E_USER_WARNING);
-		exit;
-	}
-}
-else
-{
-	$get['sem'] = 0;
-}
-
-/* TRI : index, _navigation_calendrier, agenda */
-$tab_tri_agenda = array("dateAjout", "horaire_debut");
-if (!empty($_GET['tri_agenda']))
-{
-	if (in_array($_GET['tri_agenda'], $tab_tri_agenda))
-	{
-		$get['tri_agenda'] = $_GET['tri_agenda'];
-	}
-	else
-	{
-
-		//trigger_error("GET tri_agenda non valable : ".$_GET['tri_agenda'], E_USER_WARNING);
-		exit;
-	}
-}
-else
-{
-	$get['tri_agenda'] = "dateAjout";
-}
 ?>
 
 <!doctype html>
@@ -97,44 +33,34 @@ else
         ?>
 	</title>
 
-	<?php if (!empty($page_description)) { ?>
-        <meta name="description" content="<?php echo $page_description ?>" />
-	<?php }	?>
-
+        <meta name="description" content="<?php echo $page_description ?? '' ?>" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
-        <link rel="stylesheet" type="text/css" href="/web/css/normalize.css" />
-        <?php
-        if (isset($_GET['style']) && $_GET['style'] == "imprimer") {
+
+    <link rel="stylesheet" type="text/css" href="/web/css/normalize.css" />
+    <link rel="stylesheet" type="text/css" href="/web/css/imprimer.css" media="print" />
+    <link rel="stylesheet" type="text/css" href="/web/css/global.css?<?php echo time() ?>" />
+    <link rel="stylesheet" type="text/css" href="/web/css/calendrier.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="/web/css/<?php echo $nom_page; ?>.css" media="screen"  />
+    <link rel="stylesheet" type="text/css" href="/web/css/diggstyle.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="/vendor/harvesthq/chosen/chosen.css" media="screen" />
+
+    <?php
+    if (isset($extra_css) && is_array($extra_css)) {
+        foreach ($extra_css as $import)
+        {
             ?>
-            <link rel="stylesheet" type="text/css" href="/web/css/imprimer.css" title="Normal" />
-            <?php }
-            else { ?>
-
-            <link rel="stylesheet" type="text/css" href="/web/css/global.css?<?php echo time() ?>" title="Normal" />
-                <link rel="stylesheet" type="text/css" href="/web/css/calendrier.css" media="screen" />
-                <link rel="stylesheet" type="text/css" href="/web/css/<?php echo $nom_page; ?>.css" media="screen"  />
-                <link rel="stylesheet" type="text/css" href="/web/css/diggstyle.css" media="screen" />
-                <link rel="stylesheet" type="text/css" href="/vendor/harvesthq/chosen/chosen.css" media="screen" />
-
+            <link rel="stylesheet" type="text/css" href="/web/css/<?php echo $import ?>.css" media="screen" title="Normal" />
             <?php
         }
+    }
+    ?>
 
-        if (isset($extra_css) && is_array($extra_css)) {
-    foreach ($extra_css as $import)
-    {
-        ?>
-        <link rel="stylesheet" type="text/css" href="/web/css/<?php echo $import ?>.css" media="screen" title="Normal" />
-                <?php
-            }
-        }
-        ?>
-
-                <link rel="stylesheet" type="text/css" media="screen and (min-width:800px)"  href="/web/css/desktop.css">
-                <link rel="stylesheet" type="text/css" media="screen and (max-width:800px)"  href="/web/css/mobile.css">
-                <link rel="stylesheet" type="text/css" media="print" href="/web/css/imprimer.css" title="Imprimer" />
-                <link rel="stylesheet" type="text/css" href="/vendor/fortawesome/font-awesome/css/font-awesome.min.css">
-                <link rel="stylesheet" type="text/css" href="/vendor/dimsemenov/magnific-popup/dist/magnific-popup.css">
-                <link rel="stylesheet" type="text/css" href="/web/js/zebra_datepicker/css/default/zebra_datepicker.min.css">
+    <link rel="stylesheet" type="text/css" media="screen and (min-width:800px)"  href="/web/css/desktop.css">
+    <link rel="stylesheet" type="text/css" media="screen and (max-width:800px)"  href="/web/css/mobile.css">
+    <link rel="stylesheet" type="text/css" media="print" href="/web/css/imprimer.css" title="Imprimer" />
+    <link rel="stylesheet" type="text/css" href="/vendor/fortawesome/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="/vendor/dimsemenov/magnific-popup/dist/magnific-popup.css">
+    <link rel="stylesheet" type="text/css" href="/web/js/zebra_datepicker/css/default/zebra_datepicker.min.css">
 
     <?php HtmlShrink::showLinkRss($nom_page); ?>
 
@@ -283,7 +209,7 @@ else
                         }
                         ?>
                         <li <?php echo $ici; ?>><a href="/user.php?idP=<?php echo $_SESSION['SidPersonne']; ?>"><?php echo $_SESSION['user']; ?></a></li>
-                        <li><a href="/user-logout.php" title="Fermer la session">Sortir</a></li>
+                            <li><a href="/user-logout.php" >Sortir</a></li>
 
                         <?php
                         if ($_SESSION['Sgroupe'] <= 4)
@@ -327,12 +253,12 @@ else
                         ?>
                             id="bouton_agenda">
                             <?php
-                            echo "<a href=\"/".$lien."?".$url_query_region_et."courant=".$get['courant']."&amp;sem=".$get['sem']."&amp;tri_agenda=".$get['tri_agenda']."\">".$nom."</a>";
-                            ?>
-                            </li>
+                            echo "<a href=\"/" . $lien . "?" . $url_query_region_et . "\">" . $nom . "</a>";
+                                    ?>
+                                </li>
                             <li id="bouton_calendrier">
-                            <a href="#" id="btn_calendrier" class="mobile"><img src="<?php echo $url_images_interface_icons ?>calendar_view_week.png" alt="Calendrier" width="16" height="16" /></a>
-                            </li>
+                                        <a href="#" id="btn_calendrier" class="mobile"><img src="<?php echo $url_images_interface_icons ?>calendar_view_week.png" alt="Calendrier" width="16" height="16" /></a>
+                                    </li>
                     <?php
                         }
                         else

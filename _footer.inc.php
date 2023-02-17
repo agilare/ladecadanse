@@ -1,7 +1,7 @@
     </div>
     <!-- fin conteneur -->
 
-    <footer id="pied-wrapper"> 
+    <footer id="pied-wrapper">
 
         <!-- Début pied -->
         <div id="pied">
@@ -32,26 +32,17 @@
         </div>
         <!-- Fin Pied -->
 
-    </footer> 
+    </footer>
 
  </div>
 <!-- Fin Global -->
 
 <script src="/vendor/dimsemenov/magnific-popup/dist/jquery.magnific-popup.js"></script>
 <script src="/web/js/zebra_datepicker/zebra_datepicker.min.js"></script>
+<script src="/web/js/jquery.shiftcheckbox"></script>
 <script src="/vendor/harvesthq/chosen/chosen.jquery.min.js"></script>
 
 <?php
-if (isset($extra_js) && is_array($extra_js))
-{
-	foreach ($extra_js as $src)
-	{
-		echo '<script type="text/javascript" src="/web/js/'.$src.'.js"></script>';	
-	}
-}
-
-$nom_page = basename($_SERVER["SCRIPT_FILENAME"], '.php');
-
 $pages_orga = ["evenement-edit", "lieu-edit", "user-edit", 'user-register'];
 $pages_formulaires = ["evenement-edit", "evenement-copy", "lieu-edit", "user-register", "gererEvenements", "user-edit", "multi-description", "organisateur-edit", "lieu-salle-edit"];
 $pages_tinymce = ["multi-description", "organisateur-edit"];
@@ -66,7 +57,7 @@ $pages_tinymce = ["multi-description", "organisateur-edit"];
                 recaptchaResponse.value = token;
             });
         });
-    </script> 
+    </script>
 <?php } ?>
 
 <script type="text/javascript">
@@ -111,16 +102,16 @@ $(document).ready(function() {
 	  lang_clear_date : "Effacer",
 	  show_select_today : "Aujourd’hui",
       readonly_element : false
-	});        
-	
+	});
+
 	$(".chosen-select").chosen({
-        allow_single_deselect: true, 
+        allow_single_deselect: true,
         no_results_text: "Aucun &eacute;l&eacute;ment correspondant n'a &eacute;t&eacute; trouv&eacute;",
         include_group_label_in_selected: true,
         search_contains : true
     })
 
-	
+
 	$('.shiftcheckbox').shiftcheckbox({
 
 		// Options accept selectors, jQuery objects, or DOM
@@ -132,13 +123,13 @@ $(document).ready(function() {
 
 	});
     $('.file-upload-size-max').bind('change', function() {
-        
+
         if (this.files[0].size > 2097152)
         {
             alert("La taille du fichier que vous avez sélectionné dépasse la limite autorisée (2 Mo), merci d'en choisir un plus léger" );
         }
     });
-    
+
       });
 <?php
 }
@@ -146,7 +137,7 @@ $(document).ready(function() {
 
 function SetCookie(name, value, days, path)
 {
-    /*Valeur par défaut de l'expiration*/ 
+    /*Valeur par défaut de l'expiration*/
     var expires = '';
     /*Si on a spécifié un nombre de jour on le convertit en dae*/
     if (days != undefined && days != 0)
@@ -174,8 +165,8 @@ function setupMobile()
 	$("#contenu").prepend($("#navigation_calendrier"));
 	$("#menu_lieux").hide();
 	$("#btn_listelieux").after($("#menu_lieux"));
-	$("#btn_listeorganisateurs").after($("#menu_lieux"));	
-	
+	$("#btn_listeorganisateurs").after($("#menu_lieux"));
+
 }
 
 function setupDesktop()
@@ -190,7 +181,7 @@ function showhide(show, hide)
    $(".btn-" + show).addClass("ici");
    $(".type-" + hide).fadeOut(100);
    $(".btn-" + hide).removeClass("ici");
-   
+
 }
 
 $(document).ready(function()
@@ -198,15 +189,15 @@ $(document).ready(function()
 	var vitesse_fondu = 400;
 	var maxWidthMobile = 800;
 	//console.log("width : " + viewportWidth + ", height :" + viewportHeight);
-	
+
 	var viewportWidthPrev = $(window).width();
 	var viewportHeightPrev = $(window).height();
-	
-	
+
+
 	var viewportWidth = $(window).width();
 	var viewportHeight = $(window).height();
 
-	
+
 	if (viewportWidth < maxWidthMobile)
 	{
 		mode_viewport = 'mobile';
@@ -217,8 +208,8 @@ $(document).ready(function()
 	{
 		viewportWidth = $(window).width();
 		viewportHeight = $(window).height();
-		
-	
+
+
 		if (viewportWidth < maxWidthMobile && viewportWidthPrev > maxWidthMobile)
 		{
 			//console.log('mode mobile');
@@ -231,10 +222,10 @@ $(document).ready(function()
 			mode_viewport = 'desktop';
 			setupDesktop();
 		}
-		
+
 	    viewportWidthPrev = $(window).width();
-	    viewportHeightPrev = $(window).height();		
-		
+	    viewportHeightPrev = $(window).height();
+
 
 	});
 
@@ -251,10 +242,10 @@ $(document).ready(function()
 			else
 			{
 				$("#menu_pratique").fadeOut(vitesse_fondu);
-				//$("#main_menu").toggle(vitesse_fondu);		
-			}	
-		
-	}); 
+				//$("#main_menu").toggle(vitesse_fondu);
+			}
+
+	});
 
 	$(".btn_event_del").on('click', function (e)
 	{
@@ -263,8 +254,8 @@ $(document).ready(function()
         $.get( "/event.php?action=delete&id=" + event_id, function( data ) {
             $( "#btn_event_del_" + event_id).closest( "tr" ).fadeOut( "fast" );
         });
-						
-	});         
+
+	});
 
     $(".btn_event_unpublish").on('click', function (e)
 	{
@@ -273,9 +264,9 @@ $(document).ready(function()
         $.get( "/event.php?action=unpublish&id=" + event_id, function( data ) {
             $( "#btn_event_unpublish_" + event_id).closest( ".evenement" ).fadeOut();
         });
-						
-	});         
-    
+
+	});
+
 
 	jQuery("#btn_calendrier").click( function() {$('#navigation_calendrier').toggle();return false;} );
 	jQuery(".dropdown").click( function() {
@@ -295,46 +286,46 @@ $(document).ready(function()
 		else
 		{
 			$("#menu_lieux").fadeOut(vitesse_fondu);
-			//$("#main_menu").toggle(vitesse_fondu);		
-		}	
-		
-	});	
-	
+			//$("#main_menu").toggle(vitesse_fondu);
+		}
+
+	});
+
 	$('.magnific-popup').magnificPopup({
 		type: 'image',
 		tClose: 'Fermer (Esc)', // Alt text on close button
 		tLoading: 'Chargement...', // Text that is displayed during loading. Can contain %curr% and %total
 		image: {
 			tError: '<a href="%url%">L&#039;image</a> n&#039;a pas pu &ecirc;tre charg&eacute;e.' // Error message when image could not be loaded
-		}	  
+		}
 	});
 
 	$('.gallery-item').magnificPopup({
 	  type: 'image',
 		tClose: 'Fermer (Esc)', // Alt text on close button
-		tLoading: 'Chargement...', // Text that is displayed during loading. Can contain %curr% and %total	  
+		tLoading: 'Chargement...', // Text that is displayed during loading. Can contain %curr% and %total
 	  gallery:{
 		enabled:true,
 		tPrev: 'Pr&eacute;c&eacute;dente (bouton gauche)', // title for left button
 		tNext: 'Suivante (bouton droit)', // title for right button
-		tCounter: '<span class="mfp-counter">%curr% de %total%</span>' // markup of counter		
+		tCounter: '<span class="mfp-counter">%curr% de %total%</span>' // markup of counter
 	  }
 	});
 
  	$(".btn_toggle").on('click', function (e)
-	{	
+	{
 		$(".element_toggle").toggle();
 		//return false;
 	});
-    
-    //$("#prix-precisions").hide();   
+
+    //$("#prix-precisions").hide();
     $(".precisions").change(function() {
         if(this.checked && (this.value == 'asyouwish' || this.value == 'chargeable')) {
            $("#prix-precisions").show();
-           
-  
+
+
                $("#prix-precisions #prix").focus();
-           
+
         }
         else
         {
@@ -345,7 +336,7 @@ $(document).ready(function()
 });
 
 
-    
+
     $('form.submit-freeze-wait').submit(function()
     {
        $("input[type='submit']", this)
@@ -354,14 +345,14 @@ $(document).ready(function()
 
        return true;
      });
-     
+
  	$("#btn_search").on('click', function (e)
-	{	
+	{
 		$(".recherche_mobile").toggle(400);
 		//return false;
-	});     
-     
-});    
+	});
+
+});
 </script>
 
 <?php if (in_array($nom_page, $pages_tinymce)) { ?>

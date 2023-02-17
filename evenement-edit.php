@@ -9,7 +9,7 @@ use Ladecadanse\Utils\Logger;
 use Ladecadanse\Utils\Text;
 use Ladecadanse\Utils\Mailing;
 use Ladecadanse\HtmlShrink;
-    
+
 $page_titre = "Proposer un événement";
 $page_description = "Proposer un événement pour l'agenda";
 
@@ -20,7 +20,6 @@ if (isset($_SESSION['Sgroupe']))
 }
 
 $extra_css = array("formulaires", "evenement_inc", "evenement-edit_formulaire", "default");
-$extra_js = array("jquery.shiftcheckbox");
 
 /*
 * action choisie, ID si édition
@@ -211,8 +210,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 	else
 	{
 		$date_iso = date_app2iso($champs['dateEvenement']);
-		$get['courant'] = $date_iso;
-		$lendemain_evenement = date_lendemain($date_iso);
+        $lendemain_evenement = date_lendemain($date_iso);
 
 		$tab_date = explode('.', $champs['dateEvenement']);
 		if (!checkdate($tab_date[1], $tab_date[0], $tab_date[2]))

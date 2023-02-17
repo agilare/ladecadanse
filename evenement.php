@@ -23,7 +23,6 @@ if (isset($_GET['idE']))
 
     if (!empty($tab_even))
     {
-        $get['courant'] = $tab_even['dateEvenement'];
         $get['genre'] = $tab_even['genre'];
     }
 }

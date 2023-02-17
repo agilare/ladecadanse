@@ -3,24 +3,13 @@
 require_once("app/bootstrap.php");
 
 use Ladecadanse\OrganisateurCollection;
-use Ladecadanse\Utils\Validateur;
 
 $page_titre = "Organisateurs d'événements culturels à Genève et Lausanne : associations, labels, collectifs";
 $page_description = "";
 $extra_css = array("menu_lieux");
 include("_header.inc.php");
 
-$get['idO'] = "";
-if (isset($_GET['idO']))
-{
-    try {
-        $get['idO'] = Validateur::validateUrlQueryValue($_GET['idO'], "int", 0);
-    } catch (Exception $e) { header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); exit; }
-}
 
-/**
-* Récupère les dernières description + infos sur lieux et utilisateurs
-*/
 $col = new OrganisateurCollection();
 $col->loadFiches();
 $pair = 0;

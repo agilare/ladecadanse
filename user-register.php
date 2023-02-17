@@ -18,7 +18,6 @@ if (isset($_GET['idP']))
 $page_titre = "Inscription";
 $page_description = "Création d'une compte sur La décadanse";
 $extra_css = array("formulaires", "inscription_formulaire");
-$extra_js = array("zebra_datepicker", "jquery.shiftcheckbox");
 include("_header.inc.php");
 ?>
 

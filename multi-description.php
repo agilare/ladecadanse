@@ -15,7 +15,6 @@ if (!$videur->checkGroup(8))
 $page_titre = "ajouter/modifier une description/présentation de lieu";
 $page_description = "ajouter/modifier une description/présentation  de lieu";
 $extra_css = array("formulaires", "description");
-$extra_js = array( "zebra_datepicker", "jquery.shiftcheckbox");
 
 /*
 * action choisie, idL et idP si édition

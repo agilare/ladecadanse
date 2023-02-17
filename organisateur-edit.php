@@ -15,7 +15,6 @@ if (!$videur->checkGroup(8))
 $page_titre = "ajouter/éditer un organisateur";
 $page_description = "ajouter/éditer un organisateur";
 $extra_css = array("formulaires", "ajouterOrganisateur_formulaire", "organisateur_inc");
-$extra_js = array("zebra_datepicker", "jquery.shiftcheckbox");
 
 /*
 * action choisie, ID si édition, val pour (dés)activer l'événement
@@ -67,8 +66,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] == 'ok')
     {
         echo "Le système de sécurité du site n'a pu authentifier votre action. Veuillez réafficher ce formulaire et réessayer";
         exit;
-    }  
-    
+    }
+
 	if ($form->traitement($_POST, $_FILES))
 	{
 		$_SESSION['organisateur_flash_msg'] = $form->getMessage();
@@ -130,7 +129,7 @@ include("_header.inc.php");
 if ($afficher_form)
 {
 
-	
+
 ?>
 
 <!-- FORMULAIRE POUR UN LIEU -->

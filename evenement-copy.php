@@ -26,8 +26,6 @@ if (!$videur->checkGroup(10))
 $page_titre = "copier un événement";
 $page_description = "Copie d'un événement vers d'autres dates";
 $extra_css = array("formulaires", "evenement_inc", "copier_evenement");
-$extra_js = array("jquery.shiftcheckbox");
-
 
 /*
 * action choisie, ID si collage

@@ -21,6 +21,8 @@
         - [ ] rss.php, agenda.php names
         - [ ] mots-vides.txt -> utf8
     - [ ] mv files to more adequate dirs
+    - [ ] table temp -> user_reset
+    - [x] url queries for calendar simplified
 - [x] adding comments disabled
 
 ### Removed
@@ -30,8 +32,8 @@
 - [ ] file upload
 - [ ] app : index.html, utf8-to-utf8mb4
 - [ ] events : tiny flyers
-- [x] header files
-- [ ] tables temp, statarchives ?
+- [x] header files (home latests, lieu, organisateur)
+- [ ] rss : even comments, lieux descriptions
 
 ### Security
 - [x] rm display of mysql errors

@@ -78,12 +78,12 @@ class HtmlShrink
                     $ici = ' ici';
 
                 $nb = '';
-                if (!empty($event_nb[$n]))
-                {
-                    $nb = $event_nb[$n]['nb'];
+                if (!empty($event_nb)) {
+                    $nb = $event_nb[$n];
                 }
-                ?><li><a href="?region=<?php echo $n; ?>&<?php echo Utils::urlQueryArrayToString($get, 'region'); ?>" class="<?php echo $class_region; ?><?php echo $ici; ?>"><?php echo $v; ?>&nbsp;<?php
-                if ($nb !== '') {
+                ?><li>
+                                    <a href="?region=<?php echo $n; ?>&<?php echo Utils::urlQueryArrayToString($get, 'region'); ?>" class="<?php echo $class_region; ?><?php echo $ici; ?>"><?php echo $v; ?>&nbsp;<?php
+                                        if ($nb !== '') {
                     ?><span class="events-nb"><?php echo $nb; ?></span><?php } ?></a></li><?php
                         }
                     }
@@ -336,11 +336,6 @@ class HtmlShrink
 
     public static function getHeadMetaRobots($nom_page, $date = ''): bool
     {
-        if (isset($_GET['style']) && $_GET['style'] == "imprimer")
-        {
-            return true;
-        }
-
         if (isset($_GET['courant']) && $_GET['courant'] < date("Y-m-d"))
         {
             return true;
@@ -362,17 +357,9 @@ class HtmlShrink
         if ($nom_page == "lieu")
         {
         ?>
-            <link rel="alternate" type="application/rss+xml" title="Prochains événements dans ce lieu" href="/rss.php?type=lieu_evenements&amp;id='<?php intval($_GET['idL']) ?>" />
-        <?php
+            <link rel="alternate" type="application/rss+xml" title="Prochains événements dans ce lieu" href="/rss.php?type=lieu_evenements&amp;id=<?php echo intval($_GET['idL']) ?>" />
+                        <?php
         }
-        else if ($nom_page == "evenement")
-        {
-        ?>
-            <link rel="alternate" type="application/rss+xml" title="Commentaires de cette événement" href="/rss.php?type=evenement_commentaires&amp;id='<?php intval($_GET['idE']) ?>" />
-
-        <?php
-        }
-
-    }
+            }
 
 }

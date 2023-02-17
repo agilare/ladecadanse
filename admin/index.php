@@ -18,7 +18,6 @@ if ($_SESSION['Sgroupe'] >= 4 && !empty($_SESSION['Sregion']))
 
 $page_titre = "administration";
 $extra_css = array("admin");
-$extra_js = array( "zebra_datepicker", "jquery.shiftcheckbox");
 require_once '../_header.inc.php';
 ?>
 

@@ -54,7 +54,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok'  && empty($_POS
         $mailer = new Mailing();
         if ($mailer->toAdmin($champs['sujet'], "Affiliation : ".$champs['affiliation']."\n\n".$champs['contenu'], $champs['email']))
         {
-            HtmlShrink::msgOk('Merci, votre message a été envoyé. Je vous répondrai dans les prochains jours');    
+            HtmlShrink::msgOk('Merci, votre message a été envoyé. Je vous répondrai dans les prochains jours');
         }
 		$action_terminee = true;
 		unset($_POST);
@@ -64,47 +64,48 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok'  && empty($_POS
 
 if (!$action_terminee)
 {
-	
+
 if ($verif->nbErreurs() > 0)
 {
 	HtmlShrink::msgErreur($verif->getMsgNbErreurs());
 }
 ?>
 
-<div style="margin:1em 0 1em 1em">
+    <div style="margin:1em 0 1em 1em">
+            <p>Pour nous communiquer vos événements, merci de passer par la page <strong><a href="/articles/annoncerEvenement.php">Annoncer&nbsp;un&nbsp;événement</a></strong></p>
+        </div>
 
-<p>Pour nous communiquer vos événements, merci de passer par la page <strong><a href="/articles/annoncerEvenement.php">Annoncer&nbsp;un&nbsp;événement</a></strong></p>
+        <h3>E-mail</h3>
 
-</div>
-<h3>E-mail</h3>
 <div style="margin:1em 0 0em 2em">
-<p>
-<script type="text/javascript" language="javascript">
-<!--
-// Email obfuscator script 2.1 by Tim Williams, University of Arizona
-// Random encryption key feature by Andrew Moulden, Site Engineering Ltd
-// This code is freeware provided these four comment lines remain intact
-// A wizard to generate this code is at http://www.jottings.com/obfuscator/
-{ coded = "SR2w@1DthHDtDRgh.H8"
-  key = "hRVNufMo37X6xZEKHsk8QWTI2mwqPjFr5iUYglCa0vdenOBGb4z9SyLA1JDcpt"
-  shift=coded.length
-  link=""
-  for (i=0; i<coded.length; i++) {
-    if (key.indexOf(coded.charAt(i))==-1) {
-      ltr = coded.charAt(i)
-      link += (ltr)
-    }
-    else {     
-      ltr = (key.indexOf(coded.charAt(i))-shift+key.length) % key.length
-      link += (key.charAt(ltr))
-    }
-  }
-document.write("<a href='mailto:"+link+"'>"+link+"</a>")
-}
-//-->
-</script><noscript>Sorry, you need Javascript on to email me.</noscript>
-</p>
-</div>
+        <p>
+            <script type="text/javascript" language="javascript">
+            <!--
+            // Email obfuscator script 2.1 by Tim Williams, University of Arizona
+            // Random encryption key feature by Andrew Moulden, Site Engineering Ltd
+            // This code is freeware provided these four comment lines remain intact
+            // A wizard to generate this code is at http://www.jottings.com/obfuscator/
+            { coded = "SR2w@1DthHDtDRgh.H8"
+              key = "hRVNufMo37X6xZEKHsk8QWTI2mwqPjFr5iUYglCa0vdenOBGb4z9SyLA1JDcpt"
+              shift=coded.length
+              link=""
+              for (i=0; i<coded.length; i++) {
+                if (key.indexOf(coded.charAt(i))==-1) {
+                  ltr = coded.charAt(i)
+                  link += (ltr)
+                }
+                else {
+                  ltr = (key.indexOf(coded.charAt(i))-shift+key.length) % key.length
+                  link += (key.charAt(ltr))
+                }
+              }
+            document.write("<a href='mailto:"+link+"'>"+link+"</a>")
+            }
+            //-->
+            </script><noscript>Sorry, you need Javascript on to email me.</noscript>
+        </p>
+    </div>
+
 <?php if (1) { ?>
 <h3>Formulaire</h3>
 <form method="post" id="ajouter_editer"  class="submit-freeze-wait" enctype="multipart/form-data" action="<?php echo basename(__FILE__) ?>">

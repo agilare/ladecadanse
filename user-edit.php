@@ -56,7 +56,6 @@ else
 $page_titre = $get['action']." d'une personne";
 $page_description = "Formulaire d'ajout/edition d'un membre";
 $extra_css = array("formulaires", "user-edit_formulaire");
-$extra_js = array("zebra_datepicker", "jquery.shiftcheckbox");
 include("_header.inc.php");
 ?>
 

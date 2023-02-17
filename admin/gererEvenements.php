@@ -16,7 +16,6 @@ if (!$videur->checkGroup(4))
 
 $page_titre = "gérer les événements";
 $extra_css = array("formulaires", "gerer", "chosen.min");
-$extra_js = array("jquery.shiftcheckbox");
 require_once '../_header.inc.php';
 
 $tab_listes = array("evenement" => "Événements", "lieu" => "Lieux", "description" => "Descriptions", "commentaire" => "Commentaires", "personne" => "Personnes");

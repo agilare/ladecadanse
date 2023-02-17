@@ -16,7 +16,6 @@ if (!$videur->checkGroup(8))
 $page_titre = "ajouter/éditer un lieu";
 $page_description = "ajouter/éditer un lieu";
 $extra_css = array("formulaires", "ajouterLieu_formulaire", "lieu_inc");
-$extra_js = array("zebra_datepicker", "jquery.shiftcheckbox");
 
 /*
 * action choisie, ID si édition, val pour (dés)activer l'événement
@@ -60,8 +59,8 @@ $supprimer = array('image_galerie' => '');
 
 $afficher_form = true;
 $message_ok = '';
-$form = new LieuEdition('form', $champs, $fichiers, $get); 
-    
+$form = new LieuEdition('form', $champs, $fichiers, $get);
+
 $form->setAction($get['action']);
 if (isset($_POST['formulaire']) && $_POST['formulaire'] == 'ok')
 {
@@ -69,8 +68,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] == 'ok')
     {
         echo "Le système de sécurité du site n'a pu authentifier votre action. Veuillez réafficher ce formulaire et réessayer";
         exit;
-    }       
-    
+    }
+
 	if ($form->traitement($_POST, $_FILES))
 	{
 		$_SESSION['lieu_flash_msg']  = $form->getMessage();
@@ -179,9 +178,9 @@ if ($afficher_form)
 echo "<option value=\"\"></option>";
 
 $sql_prov = '';
-if ($get['action'] == 'ajouter' || $get['action'] == 'insert') 
-{ 
-    $sql_prov = " AND canton != 'fr' ";     
+if ($get['action'] == 'ajouter' || $get['action'] == 'insert')
+{
+    $sql_prov = " AND canton != 'fr' ";
 }
 
 
@@ -194,76 +193,76 @@ SELECT id, localite, canton FROM localite WHERE id!=1 ".$sql_prov." ORDER BY can
 $select_canton = '';
 while ($tab = $connector->fetchArray($req))
 {
-    
+
     if ($tab['canton'] != $select_canton)
-    {       
+    {
         if (!empty($select_canton))
-            echo "</optgroup>"; 
-        
+            echo "</optgroup>";
+
         echo "<optgroup label=''>"; // ".$glo_regions[strtolower($tab['canton'])]."
     }
-    
-    
 
-    
+
+
+
 	echo "<option ";
-	
+
 	if (($form->getValeur('localite_id') == $tab['id'] && empty($form->getValeur('quartier'))) || ((isset($_POST['localite_id']) && $tab['id'] == $_POST['localite_id'])))
 	{
 		echo 'selected="selected" ';
-	}	
-	
+	}
+
 	echo "value=\"".$tab['id']."\">".$tab['localite']."</option>";
 
-    // Genève quartiers    
+    // Genève quartiers
     if ($tab['id'] == 44)
     {
-        
+
        // si erreur formulaire
         $champs_quartier = '';
         $loc_qua = explode("_", $form->getValeur('localite_id'));
         if (!empty($loc_qua[1]))
            $champs_quartier = $loc_qua[1];
-        
+
         // si chargement even existant
         if (!empty($form->getValeur('quartier')))
-            $champs_quartier = $form->getValeur('quartier');        
-        
+            $champs_quartier = $form->getValeur('quartier');
+
         foreach ($glo_tab_quartiers2['ge'] as $no => $quartier)
-       {  
+       {
                echo "<option ";
 
                if ($champs_quartier == $quartier)
                {
                        echo 'selected="selected" ';
-               }	
+               }
 
                echo " value=\"44_".$quartier."\">Genève - ".$quartier."</option>";
 
-       }       
+       }
 
-    }        
-        
+    }
+
      $select_canton = $tab['canton'];
 }
 ?>
-    <optgroup label="Ailleurs">    
+    <optgroup label="Ailleurs">
 <?php
     foreach ($glo_tab_ailleurs as $id => $nom)
-   {  
+   {
            echo "<option ";
 
            if (($form->getValeur('region') == $id) || ((isset($_POST['localite_id']) && $id == $_POST['localite_id']))
-                  ) // $form->getValeur('quartier') 
+                  ) // $form->getValeur('quartier')
            {
                    echo ' selected="selected" ';
-           }	
+           }
 
            echo " value=\"".$id."\">".$nom."</option>";
 
-   }  
+   }
 ?>
-    </optgroup>     
+    </optgroup>
 </select>
 <?php
 echo $form->getHtmlErreur("localite_id");
@@ -384,11 +383,11 @@ echo $form->getHtmlErreur("quartier");
 
     }
     ?>
-    <?php 
+    <?php
     if ($_SESSION['Sgroupe'] <= 6)
-    { 
+    {
     ?>
-     
+
     <p>
         <label for="organisateurs">Organisateur(s)</label>
         <select name="organisateurs[]" id="organisateurs" data-placeholder="Choisissez un ou plusieurs organisateurs" class="chosen-select" multiple title="Un organisateur dans base de données de La décadanse" readonly style="max-width:400px;">
@@ -406,7 +405,7 @@ echo $form->getHtmlErreur("quartier");
             {
                 echo 'selected="selected" ';
 
-            }	
+            }
 
             echo "value=\"".$tab['idOrganisateur']."\">".$tab['nom']."</option>";
         }
@@ -415,8 +414,8 @@ echo $form->getHtmlErreur("quartier");
         <div class="guideChamp">Les personnes membres de ces organisateurs pourront modifier ce lieu ainsi que tous les événements s’y déroulant</div>
     </p>
     <?php echo $form->getHtmlErreur("doublon_organisateur"); ?>
-    <?php } else { 
-        
+    <?php } else {
+
         foreach ($lieu_organisateurs as $lo) {
         ?>
         <input type="hidden" name="organisateurs[]" value="<?php echo $lo ?>">
@@ -424,23 +423,23 @@ echo $form->getHtmlErreur("quartier");
     } } ?>
     </fieldset>
 
-    <?php 
+    <?php
     $cat_readonly = '';
     $cat_class = '';
     if ($_SESSION['Sgroupe'] > 6)
-    {   
+    {
         foreach ($glo_categories_lieux as $cat => $cat_nom)
-        {          
+        {
             $tab_cat_lieu = $form->getValeur('categorie');
             if (in_array($cat, $tab_cat_lieu))
             {
                  echo '<input type="hidden" name="categorie[]" value="'.$cat.'" '.$cat_class.' >';
             }
         }
-       
+
     }
     else
-    { 
+    {
     ?>
     <fieldset>
         <legend>Catégorie(s)</legend>
@@ -470,7 +469,7 @@ echo $form->getHtmlErreur("quartier");
 
     <fieldset>
         <legend>Images</legend>
-        <input type="hidden" name="MAX_FILE_SIZE" value="<?php UPLOAD_MAX_FILESIZE ?>" /> 
+        <input type="hidden" name="MAX_FILE_SIZE" value="<?php UPLOAD_MAX_FILESIZE ?>" />
         <div style="margin-left: 0.8em;font-weight: bold">Formats JPEG, PNG ou GIF; max. 2 Mo</div>
 
         <p>
@@ -580,8 +579,8 @@ echo $form->getHtmlErreur("quartier");
         ?>
         <?php
         if ($_SESSION['Sgroupe'] <= 6)
-        {  
-        ?>            
+        {
+        ?>
         <p>
             <label for="image_galerie">Galerie</label>
             <input type="file" name="image_galerie" id="image_galerie" class="file-upload-size-max" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif"  class="fichier" />

@@ -9,40 +9,67 @@ use Ladecadanse\Utils\Utils;
 
 $page_titre = "Agenda";
 $page_description = "Événements culturels et festifs à Genève et Lausanne : concerts, soirées, films, théâtre, expos...";
-include("_header.inc.php");
 
-if ($get['sem'] == 1)
-{
+/* DATE COURANTE : _navigation_calendrier, agenda, evenement-edit */
+$get['courant'] = $glo_auj_6h;
+if (!empty($_GET['courant'])) {
+    if (preg_match("/^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}$/", trim($_GET['courant']))) {
+        $get['courant'] = $_GET['courant'];
+    }
+    else if (preg_match("/^[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{4}$/", trim($_GET['courant']))) {
+        $get['courant'] = date_app2iso($_GET['courant']);
+    }
+}
+
+$get['sem'] = 0;
+if (!empty($_GET['sem']) && is_numeric($_GET['sem'])) {
+    $get['sem'] = $_GET['sem'];
+}
+
+$page_titre .= " du " . date_fr($get['courant'], "annee", "", "", false);
+if ($get['sem'] == 1) {
     $lundim = date_iso2lundim($get['courant']);
-    $page_titre .= " du ".date_fr($lundim[0], "annee", "", "", false)." au ".date_fr($lundim[1], "annee", "", "", false);
-}
-else
-{
-    $page_titre .=  " du ".date_fr($get['courant'], "annee", "", "", false);
+    $page_titre .= " du " . date_fr($lundim[0], "annee", "", "", false) . " au " . date_fr($lundim[1], "annee", "", "", false);
 }
 
-if ($_SESSION['region'] == 'vd')
-{
+$page_titre .= " à Genève";
+if ($_SESSION['region'] == 'vd') {
     $page_titre .= " à Lausanne";
 }
-elseif ($_SESSION['region'] == 'fr')
-{
+elseif ($_SESSION['region'] == 'fr') {
     $page_titre .= " à Fribourg";
 }
-else
-{
-    $page_titre .= " à Genève";
+
+include("_header.inc.php");
+
+$get['genre'] = "";
+if (!empty($_GET['genre']) && array_key_exists(urldecode($_GET['genre']), $glo_tab_genre)) {
+    $get['genre'] = urldecode($_GET['genre']);
 }
 
+if (empty($get['genre'])) {
+    $get['genre'] = '';
+    $genre_titre = 'Tout';
+}
+else {
+    $genre_titre = $glo_tab_genre[$get['genre']];
+}
+
+/* TRI : index, _navigation_calendrier, agenda */
+$get['tri_agenda'] = "dateAjout";
+if (!empty($_GET['tri_agenda']) && in_array($_GET['tri_agenda'], $tab_tri_agenda)) {
+
+    $get['tri_agenda'] = $_GET['tri_agenda'];
+}
+
+// build SQL
+$sql_tri_agenda = $get['tri_agenda'] . " DESC";
 if ($get['tri_agenda'] == "horaire_debut")
 {
 	$sql_tri_agenda = "horaire_debut ASC";
 }
-else
-{
-	$sql_tri_agenda = $get['tri_agenda']." DESC";
-}
 
+$sql_date_evenement = "LIKE '" . $get['courant'] . "%'";
 if (isset($get['date_deb']) && isset($get['date_fin']))
 {
 	$sql_date_evenement = ">= '".date_app2iso($get['date_deb'])."' AND dateEvenement <= '".date_app2iso($get['date_fin'])."'";
@@ -52,20 +79,7 @@ else if ($get['sem'] == 1)
 	$lundim = date_iso2lundim($get['courant']);
 	$sql_date_evenement = ">= '".$lundim[0]."' AND dateEvenement <= '".$lundim[1]."'";
 }
-else
-{
-	$sql_date_evenement = "LIKE '".$get['courant']."%'";
-}
 
-if (empty($get['genre']))
-{
-    $get['genre'] = '';
-	$genre_titre = 'Tout';
-}
-else
-{
-	$genre_titre = $glo_tab_genre[$get['genre']];
-}
 
 $entete_contenu = "";
 if ($genre_titre != 'Tout')
@@ -103,12 +117,17 @@ if (is_numeric($annee_courant) && is_numeric($mois_courant) && is_numeric($jour_
         $lien_precedent = "<a href=\"/agenda.php?courant=".$precedent."&amp;sem=1&amp;genre=".$get['genre']."\" style=\"border-radius:3px 0 0 3px;background:#e4e4e4\">".$iconePrecedent."</a>";
 
         $suivant = date("Y-m-d", mktime(0, 0, 0, (int)$mois_courant  , $jour_courant + 7, $annee_courant));
-        $lien_suivant = "<a href=\"/agenda.php?courant=".$suivant."&amp;sem=1&amp;genre=".$get['genre']."\" style=\"border-radius:0 3px 3px 0;\">".$iconeSuivant."</a>";
-
+        $lien_suivant = "<a href=\"/agenda.php?courant=" . $suivant . "&amp;sem=1&amp;genre=" . $get['genre'] . "\" style=\"border-radius:0 3px 3px 0;\">" . $iconeSuivant . "</a>";
     }
 }
 
 $sql_genre = '';
+$sql_tri_agenda = " dateEvenement, CASE `genre`
+   WHEN 'fête' THEN 1
+   WHEN 'cinéma' THEN 2
+   WHEN 'théâtre' THEN 3
+   WHEN 'expos' THEN 4
+   WHEN 'divers' THEN 5 END, " . $sql_tri_agenda;
 if (isset($get['genre']) && $get['genre'] != '')
 {
 	$sql_genre = "genre='".$get['genre']."' AND";
@@ -123,23 +142,11 @@ else if ($get['sem'] == 0)
        WHEN 'expos' THEN 4
        WHEN 'divers' THEN 5 END, dateEvenement, ".$sql_tri_agenda;
 }
-else
-{
-	$sql_tri_agenda = " dateEvenement, CASE `genre`
-       WHEN 'fête' THEN 1
-       WHEN 'cinéma' THEN 2
-       WHEN 'théâtre' THEN 3
-       WHEN 'expos' THEN 4
-       WHEN 'divers' THEN 5 END, ".$sql_tri_agenda;
-}
 
+$get['page'] = 1;
 if (isset($_GET['page']))
 {
 	$get['page'] = (int)$_GET['page'];
-}
-else
-{
-	$get['page'] = 1;
 }
 
 $sql_rf = "";
@@ -166,8 +173,6 @@ $sql_even = $sql_even.$limite;
 
 $req_even = $connector->query($sql_even);
 $nb_evenements = $connector->getNumRows($req_even);
-
-$lien_imprimer = '<a href="'.basename(__FILE__).'?'.Utils::urlQueryArrayToString($get).'&amp;style=imprimer" title="Format imprimable">';
 
 if ($get['sem'])
 {
@@ -377,8 +382,8 @@ if ($get['sem'])
 		{
 			$listeLieu = $connector->fetchArray($connector->query("SELECT nom, adresse, quartier, localite.localite AS localite, URL FROM lieu, localite WHERE lieu.localite_id=localite.id AND idlieu='".$listeEven['idLieu']."'"));
 
-			$infosLieu = "<a href=\"/lieu.php?idL=".$listeEven['idLieu']."\" title=\"Voir la fiche du lieu : ".htmlspecialchars($listeLieu['nom'])."\" >".htmlspecialchars($listeLieu['nom'])."</a>";
-			if ($listeEven['idSalle'])
+			$infosLieu = "<a href=\"/lieu.php?idL=" . $listeEven['idLieu'] . "\">" . htmlspecialchars($listeLieu['nom']) . "</a>";
+            if ($listeEven['idSalle'])
 			{
                 $req_salle = $connector->query("SELECT nom FROM salle WHERE idSalle='".$listeEven['idSalle']."'");
                 $tab_salle = $connector->fetchArray($req_salle);
@@ -397,8 +402,8 @@ if ($get['sem'])
 
 		$maxChar = Text::trouveMaxChar($listeEven['description'], 70, 8);
 
-		$titre_url = '<a class="url" href="/evenement.php?idE='.$listeEven['idEvenement'].'&amp;tri_agenda='.$get['tri_agenda'].'&amp;courant='.$get['courant'].'" title="Voir la fiche complète de l\'événement">'.sanitizeForHtml($listeEven['titre']).'</a>';
-		$titre = Evenement::titre_selon_statut($titre_url, $listeEven['statut']);
+		$titre_url = '<a class="url" href="/evenement.php?idE=' . $listeEven['idEvenement'] . '&amp;tri_agenda=' . $get['tri_agenda'] . '&amp;courant=' . $get['courant'] . '">' . sanitizeForHtml($listeEven['titre']) . '</a>';
+        $titre = Evenement::titre_selon_statut($titre_url, $listeEven['statut']);
 
 		$lien_flyer = "";
 		if (!empty($listeEven['flyer']))
@@ -417,8 +422,8 @@ if ($get['sem'])
 			$description = Text::texteHtmlReduit(Text::wikiToHtml($listeEven['description']),
 			$maxChar);
 			$description .= "<span class=\"continuer\">
-			<a href=\"/evenement.php?idE=".$listeEven['idEvenement']."&amp;tri_agenda=".$get['tri_agenda']."\" title=\"Voir la fiche complète de l'événement\"> Lire la suite</a></span>";
-		}
+			<a href=\"/evenement.php?idE=" . $listeEven['idEvenement'] . "&amp;tri_agenda=" . $get['tri_agenda'] . "\"> Lire la suite</a></span>";
+        }
 		else
 		{
 			$description = Text::wikiToHtml($listeEven['description']);
@@ -460,38 +465,7 @@ if ($get['sem'])
             $horaire .= htmlspecialchars($listeEven['prix']);
         }
 
-
-		$sql_dateEven = "
-		SELECT idCommentaire
-		 FROM commentaire
-		 WHERE id='".$listeEven['idEvenement']."' AND statut='actif'";
-
-		// echo $sql_even;
-		$commentaires = "";
-		$req_dateEven = $connector->query($sql_dateEven);
-		$nb_comm = $connector->getNumRows($req_dateEven);
-		if ($nb_comm > 0)
-		{
-			$pluriel = "";
-			if ($nb_comm > 1)
-				$pluriel = "s";
-
-			$commentaires = '<li>'.$icone['commentaire'].'
-			<a href="/evenement.php?idE='.$listeEven['idEvenement'].'&amp;tri_agenda='.$get['tri_agenda'].'&amp;courant='.$get['courant'].'#borne_commentaires"
-			title="Voir le'.$pluriel.' '.$nb_comm.' commentaires">'.$nb_comm.' commentaire'.$pluriel.'</a>';
-			$commentaires .= '</li>';
-		}
-
-		$actions = "";
-		if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 12))
-		{
-			if ($nb_comm == 0)
-			{
-                $actions .= '<li>
-			<a href="/evenement.php?idE='.$listeEven['idEvenement'].'&amp;tri_agenda='.$get['tri_agenda'].'&amp;courant='.$get['courant'].'#commentaires"
-			title="Ajouter un commentaire à cet événement">'.$icone['ajouter_commentaire'].'</a></li>';
-			}
-        }
+        $actions = "";
 
         $vcard_starttime = '';
         if (mb_substr($listeEven['horaire_debut'], 11, 5) != '06:00')
@@ -523,8 +497,8 @@ if ($get['sem'])
                         }
 
                     ?>
-                        <li><a href="/organisateur.php?idO=<?php echo $tab['idOrganisateur']; ?>" title="Voir la fiche de l'organisateur"><?php echo $tab['nom']; ?></a> <a href="<?php echo $org_url; ?>" title="Site web de l'organisateur" class="lien_ext" target="_blank"><?php echo $org_url_nom; ?></a></li>
-                    <?php
+                                    <li><a href="/organisateur.php?idO=<?php echo $tab['idOrganisateur']; ?>"><?php echo $tab['nom']; ?></a> <a href="<?php echo $org_url; ?>" class="lien_ext" target="_blank"><?php echo $org_url_nom; ?></a></li>
+                                    <?php
                     }
                     ?>
                     </ul>
@@ -536,7 +510,7 @@ if ($get['sem'])
 			<div class="spacer"></div>
 			<div class="edition">
                 <ul class="menu_action">
-                    <li><a href="/evenement-report.php?idE=<?php echo $listeEven['idEvenement']; ?>" class="signaler"  title="Signaler une erreur"><i class="fa fa-flag-o fa-lg"></i></a></li><li><a href="/evenement_ics.php?idE=<?php echo $listeEven['idEvenement']; ?>" class="ical" title="Exporter au format iCalendar dans votre agenda"><i class="fa fa-calendar-plus-o fa-lg"></i></a></li><?php echo $commentaires; echo $actions;?></ul>
+                            <li><a href="/evenement-report.php?idE=<?php echo $listeEven['idEvenement']; ?>" class="signaler"  title="Signaler une erreur"><i class="fa fa-flag-o fa-lg"></i></a></li><li><a href="/evenement_ics.php?idE=<?php echo $listeEven['idEvenement']; ?>" class="ical" title="Exporter au format iCalendar dans votre agenda"><i class="fa fa-calendar-plus-o fa-lg"></i></a></li><?php echo $actions; ?></ul>
 
                 <?php
                 if (isset($_SESSION['Sgroupe'])
@@ -605,30 +579,6 @@ if ($get['tri_agenda'] == "dateAjout") $tri_ajout = "ici";
 ?>
 
 <div id="colonne_droite" class="colonne">
-
-	<div id="selection">
-		<?php
-		$liste = '';
-		if ($get['sem'] == 1 && $nb_evenements > 1)
-		{
-
-			for ($i = 1; $i < count($tab_jours_semaine); $i++)
-			{
-				$liste = "<li class=\"vers_jour\"><a href=\"#date_".$tab_jours_semaine[$i]."\" title=\"".$tab_jours_semaine[$i]."\">".
-				date_fr($tab_jours_semaine[$i])."</a>
-				</li>";
-			}
-
-			?>
-			<h2>Aller à</h2>
-			<ul class="menu_selection">
-			<?php echo $liste ?>
-			</ul>
-			<?php
-		}
-			?>
-	</div>
-	<!-- Fin selection -->
 
 </div>
 
