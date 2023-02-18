@@ -1,15 +1,4 @@
 <?php
-/**
- * Permet de copier un événement avec le flyer vers une ou plusieurs dates
- * affiché dans l'index
- *
- * Le traitement de suppression est suivi par le traitement d'ajout/edition et le formulaire
- * est à la fin
- *
- * @category   modification d'une table de la base
- * @see index.php, lieu.php
- * @author     Michel Gaudry <michel@ladecadanse.ch>
- */
 
 require_once("app/bootstrap.php");
 
@@ -23,8 +12,7 @@ if (!$videur->checkGroup(10))
 	header("Location: index.php"); die();
 }
 
-$page_titre = "copier un événement";
-$page_description = "Copie d'un événement vers d'autres dates";
+$page_titre = "copier un événement vers d'autres dates";
 $extra_css = array("formulaires", "evenement_inc", "copier_evenement");
 
 /*
@@ -192,8 +180,9 @@ FROM evenement WHERE idEvenement=".$get['idE'])));
 			$date_prec = date('Y-m-d', $dateIncrUnixOld);
 			$tab_champs['dateEvenement'] = date('Y-m-d', $dateIncrUnix);
 			$tab_champs['dateAjout'] = date("Y-m-d H:i:s");
+			$tab_champs['date_derniere_modif'] = date("Y-m-d H:i:s");
 
-			if (mb_substr($tab_champs['horaire_debut'], 11) != "06:00:01"
+            if (mb_substr($tab_champs['horaire_debut'], 11) != "06:00:01"
 			&& $tab_champs['horaire_debut'] != "0000-00-00 00:00:00")
 			{
 				$tab_champs['horaire_debut'] = $tab_champs['dateEvenement']." ".mb_substr($tab_champs['horaire_debut'], 11);
@@ -358,78 +347,71 @@ include("_header.inc.php");
 
 <div id="contenu" class="colonne">
 
-<div id="entete_contenu" ><h2 style="width:100%">Copier un événement vers d'autres dates</h2><div class="spacer"></div></div>
+    <div id="entete_contenu"><h2 style="width:100%">Copier un événement vers d'autres dates</h2><div class="spacer"></div></div>
 
-<div style="width:94%;margin:0 auto">
-<?php
-if (!empty($_SESSION['copierEvenement_flash_msg']))
-{
+    <div style="width:94%;margin:0 auto">
+        <?php
+        if (!empty($_SESSION['copierEvenement_flash_msg'])) {
+            ?>
+
+            <div class="msg_ok_copy">
+                <?php echo $_SESSION['copierEvenement_flash_msg']['msg']; ?>
+                <table class="table">
+                    <thead><tr><th>Date</th><th>Horaire</th><th></th></tr></thead>
+                    <tbody><?php echo $_SESSION['copierEvenement_flash_msg']['table']; ?></tbody>
+                </table>
+            </div>
+
+            <?php
+            unset($_SESSION['copierEvenement_flash_msg']);
+        }
+        ?>
+    </div>
+    <?php
+    if (empty($_POST['jour2'])) {
+        $jour2 = $mois2 = $annee2 = '';
+    }
+
+    $date_du = '';
+
+/*
+     * Récupérations des détails de l'événement à copier, affichage dans une boîte
+     */
+    if (isset($get['idE'])) {
+        $req_getEven = $connector->query("SELECT idEvenement, idLieu, idSalle, idPersonne, titre, genre, dateEvenement,
+             nomLieu, adresse, quartier, localite, region, urlLieu, description, flyer, prix, horaire_debut,horaire_fin, horaire_complement, URL1, ref, prelocations,statut
+              FROM evenement, localite WHERE evenement.localite_id=localite.id AND idEvenement =" . $get['idE']);
+
+        if ($affEven = $connector->fetchArray($req_getEven)) {
+            //si le formulaire est chargé pour la 1ère fois, on prend la date extraite de la base
+            if ($get['action'] != "coller") {
+                $tab = explode("-", $affEven['dateEvenement']);
+                //$date_du = $tab[2].".".$tab[1].".".$tab[0];
+                $date_du = date('d.m.Y', mktime(0, 0, 0, $tab[1], $tab[2], $tab[0]) + 86400);
+            }
+
+            $evenement = $affEven;
+
+            include("_evenement.inc.php");
+        }
+        else {
+            HtmlShrink::msgErreur("Aucun événement n'est associé à " . $get['idE']);
+            exit;
+        }
+    } // if isset idE
     ?>
 
-    <div class="msg_ok_copy">
-    <?php echo $_SESSION['copierEvenement_flash_msg']['msg']; ?>
-    <table class="table">
-        <thead><tr><th>Date</th><th>Horaire</th><th></th></tr></thead>
-        <tbody><?php echo $_SESSION['copierEvenement_flash_msg']['table']; ?></tbody>
-    </table>
-    </div>
-
-	<?php
-	unset($_SESSION['copierEvenement_flash_msg']);
-}
-?>
-</div>
-<?php
-
-
-if (empty($_POST['jour2']))
-{
-	$jour2 = $mois2 = $annee2 = '';
-}
-
-$date_du = '';
-/*
- * Récupérations des détails de l'événement à copier, affichage dans une boîte
- */
-if (isset($get['idE']))
-{
-		$req_getEven = $connector->query("SELECT idEvenement, idLieu, idSalle, idPersonne, titre, genre, dateEvenement,
-		 nomLieu, adresse, quartier, localite, region, urlLieu, description, flyer, prix, horaire_debut,horaire_fin, horaire_complement, URL1, ref, prelocations,statut
-		  FROM evenement, localite WHERE evenement.localite_id=localite.id AND idEvenement =".$get['idE']);
-
-		if ($affEven = $connector->fetchArray($req_getEven))
-		{
-			//si le formulaire est chargé pour la 1ère fois, on prend la date extraite de la base
-			if ($get['action'] != "coller")
-			{
-				$tab = explode("-", $affEven['dateEvenement']);
-				//$date_du = $tab[2].".".$tab[1].".".$tab[0];
-				$date_du = date('d.m.Y', mktime(0, 0, 0, $tab[1], $tab[2], $tab[0]) + 86400);
-			}
-
-			$evenement = $affEven;
-
-			include("_evenement.inc.php");
-		}
-		else
-		{
-			HtmlShrink::msgErreur("Aucun événement n'est associé à ".$get['idE']);
-			exit;
-		}
-} // if isset idE
-?>
-
-<form method="post" id="ajouter_editer" style="width: 94%;margin: 0em auto 0em auto;background:#efefef;padding: 1em 0;border-radius: 4px;" enctype="multipart/form-data" action="<?php echo basename(__FILE__)."?action=coller&amp;idE=".$get['idE']; ?>">
-    <h3 style="font-size:1em;margin-left:.3em">Copier l'événement ci-dessus vers les dates suivantes (1 par jour)</h3><p style="margin-left:.3em" >Dans la page suivante vous pourrez si besoin modifier ou supprimer chaque événement un par un</p>
-    <label for="from" style="float:none">du </label><input type="text" name="from" size="9" id="date-from" class="datepicker_from" placeholder="jj.mm.aaaa" required value="<?php echo $date_du; ?>">
-    <span style="position:relative"><label for="date-to" style="float:none">au </label><input type="text" name="to" size="9" id="date-to" class="datepicker_to" placeholder="jj.mm.aaaa"></span>
+    <form method="post" id="ajouter_editer" style="width: 94%;margin: 0em auto 0em auto;background:#efefef;padding: 1em 0;border-radius: 4px;" enctype="multipart/form-data" action="<?php echo basename(__FILE__) . "?action=coller&amp;idE=" . $get['idE']; ?>">
+        <h3 style="font-size:1em;margin-left:.3em">Copier l'événement ci-dessus vers les dates suivantes (1 par jour)</h3><p style="margin-left:.3em" >Dans la page suivante vous pourrez si besoin modifier ou supprimer chaque événement un par un</p>
+        <label for="from" style="float:none">du </label><input type="text" name="from" size="9" id="date-from" class="datepicker_from" placeholder="jj.mm.aaaa" required value="<?php echo $date_du; ?>">
+        <span style="position:relative"><label for="date-to" style="float:none">au </label><input type="text" name="to" size="9" id="date-to" class="datepicker_to" placeholder="jj.mm.aaaa"></span>
         &nbsp;<input id="coller" name="submit" type="submit" class="submit" value="Coller" style="width: 80px;margin-left: 0.6em;">
         <div style="margin: 15px 0 0px 30px;font-style: italic;color: #777;">Laissez la 2<sup>e</sup> date vide si vous ne collez l'événement que vers un seul jour.</div>
-    <?php
-    echo $verif->getHtmlErreur('dateEvenement');
-    ?>
-    <input type="hidden" name="token" value="<?php echo SecurityToken::getToken(); ?>" />
-</form>
+        <?php
+        echo $verif->getHtmlErreur('dateEvenement');
+        ?>
+        <input type="hidden" name="token" value="<?php echo SecurityToken::getToken(); ?>" />
+    </form>
 
 </div> <!-- fin contenu -->
 

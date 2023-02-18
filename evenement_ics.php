@@ -43,17 +43,13 @@ if (isset($_GET['idE']))
 {
     try {
         $get['idE'] = Validateur::validateUrlQueryValue($_GET['idE'], "int", 1);
-    } catch (Exception $e) { header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); exit; }     
+    } catch (Exception $e) { header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); exit; }
 }
 else
 {
-	HtmlShrink::msgErreur("idE obligatoire");
-	exit;
+    header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
+    exit;
 }
-
-/**
-* R꤯lte de toutes les infos de l'귩nement par son ID
-*/
 
 $even = new Evenement();
 $even->setId($get['idE']);
@@ -85,7 +81,7 @@ else
 	$listeLieu['adresse'] = sanitizeForHtml($even->getValue('adresse'));
 	$listeLieu['quartier'] = sanitizeForHtml($even->getValue('quartier'));
         $req_localite = $connector->query("SELECT  localite FROM localite WHERE  id='".$even->getValue('localite_id')."'");
-        $tab_localite = $connector->fetchArray($req_localite);                
+        $tab_localite = $connector->fetchArray($req_localite);
 
         $listeLieu['localite'] = sanitizeForHtml($tab_localite[0]);
 	$listeLieu['URL'] = sanitizeForHtml($even->getValue('urlLieu'));
@@ -128,11 +124,6 @@ if ($even->getValue('statut') == "annule" || $even->getValue('statut')  == "inac
 {
 	$summary .= " - ".$even->getValue('statut') ;
 }
-
-/* $summary = iconv("ISO-8859-1//TRANSLIT", "UTF-8",  $summary );
-$address = iconv("ISO-8859-1//TRANSLIT", "UTF-8",  $address );
-$description = iconv("ISO-8859-1//TRANSLIT", "UTF-8",  $description ); */
-
 
 
 // 1. Set the correct headers for this file

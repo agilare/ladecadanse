@@ -7,57 +7,33 @@ use Ladecadanse\Utils\Text;
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\Utils\Validateur;
 
-$tab_tri = array("dateAjout", "horaire_debut");
-
 if (isset($_GET['idE']))
 {
     try {
         $get['idE'] = Validateur::validateUrlQueryValue($_GET['idE'], "int", 1);
-    } catch (Exception $e) { header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); exit; }
-
-    $req_even = $connector->query("
-    SELECT dateEvenement, genre
-    FROM evenement WHERE idEvenement=".$get['idE']);
-
-    $tab_even = $connector->fetchArray($req_even);
-
-    if (!empty($tab_even))
+    }
+    catch (Exception $e)
     {
-        $get['genre'] = $tab_even['genre'];
+        header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
+        exit;
     }
 }
 else
 {
-	HtmlShrink::msgErreur("idE obligatoire");
-	exit;
+    header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
+    exit;
 }
-
-$get['tri'] = "dateAjout";
-if (isset($_GET['tri']))
-{
-    try {
-        $get['tri'] = Validateur::validateUrlQueryValue($_GET['tri'], "enum", 1, $tab_tri);
-    } catch (Exception $e) { header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); exit; }
-}
-
-/**
-* Récolte de toutes les infos de l'événement par son ID
-*/
 
 $even = new Evenement();
 $even->setId($get['idE']);
-
 $even->load();
 
 $even_status = '';
 
-//printr($even->getValues());
-
 // si idE ne correspond à aucune entrée dans la table
 if (!$even->getValues() || in_array($even->getValue('statut'), ['inactif', 'propose']) )
-{
-
-	// le staff, ainsi que l'auteur et les personnes liées par organisateur peuvent voir l'even dépublié
+ {
+    // le staff, ainsi que l'auteur et les personnes liées par organisateur peuvent voir l'even dépublié
 	if (
 	isset($_SESSION['Sgroupe']) &&
 	(
@@ -115,138 +91,131 @@ $page_titre_localite = " – ";
 $page_titre = $even->getValue('titre')." ".$determinant_lieu.$even->getValue('nomLieu').$even_salle.", ".HtmlShrink::getAdressFitted($even->getValue('region'), $tab_localite['localite'], $even->getValue('quartier'), $even->getValue('adresse'))."; le ".date_fr($even->getValue('dateEvenement'), "annee", "", "", false);
 $page_description = $even->getValue('titre')." ".$determinant_lieu.$even->getValue('nomLieu').
 " le ".date_fr($even->getValue('dateEvenement'), "annee", "", "", false)." ".
-afficher_debut_fin($even->getValue('horaire_debut'), $even->getValue('horaire_fin'),$even->getValue('dateEvenement'));
-$extra_css = array("element_login");
+afficher_debut_fin($even->getValue('horaire_debut'), $even->getValue('horaire_fin'), $even->getValue('dateEvenement'));
+
 include("_header.inc.php");
 
 
-if ($connector->getNumRows($req_even) > 0)
-{
+// current user agenda order leads prev/next navigation
 
-	/*
-	Valeur exacte de la semaine de l'événement
-	*/
-	$sem = date2sem($even->getValue('dateEvenement'));
-
-	$sql_even = "
-	 SELECT idEvenement, titre FROM evenement
-	 WHERE  dateEvenement='".$even->getValue('dateEvenement')."'
-	 AND statut NOT IN ('inactif', 'propose')
-         AND region='".$even->getValue('region')."'
-	 ORDER BY dateEvenement,
-         CASE `genre`
-         WHEN 'fête' THEN 1
-         WHEN 'cinéma' THEN 2
-         WHEN 'théâtre' THEN 3
-         WHEN 'expos' THEN 4
-         WHEN 'divers' THEN 5
-         END,
-
-	 ".$get['tri']." DESC"; // genre='".$even->getValue('genre')."' AND
-
-	// echo $sql_even;
-
-	$req_even = $connector->query($sql_even);
-
-	$i = 0;
-	$courant = "";
-	$url_prec = "";
-	$url_suiv = "";
-	$id_passe = 0;
-	$titre = '';
-
-	while ($tab_even = $connector->fetchArray($req_even))
-	{
-		if ($tab_even['idEvenement'] == $get['idE'])
-		{
-			$url_prec = $courant;
-			$titre_prec = $titre;
-			$id_passe = 1;
-		}
-
-		$courant = "/evenement.php?idE=".$tab_even['idEvenement']."&amp;tri=".$get['tri'];
-		$titre =  $tab_even['titre'];
-
-		// préc déjà trouvé, suiv pas encore, pas l'actuel, donc c'est le suivant
-		if ($id_passe && $url_suiv == "" && $tab_even['idEvenement'] != $get['idE'])
-		{
-	 		if ($i != $connector->getNumRows($req_even))
-			{
-				$url_suiv = $courant;
-				$titre_suiv = $titre;
-			}
-		}
-		$i++;
-	}
-
+$get['tri'] = "dateAjout";
+if (isset($_GET['tri'])) {
+    try
+    {
+        $get['tri'] = Validateur::validateUrlQueryValue($_GET['tri'], "enum", 1, $tab_tri_agenda);
+    }
+    catch (Exception $e)
+    {
+        header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
+        exit;
+    }
 }
-else
-{
-	$sem = -1;
 
+$req_even = $connector->query("SELECT dateEvenement, genre FROM evenement WHERE idEvenement=" . $get['idE']);
+
+/*
+Valeur exacte de la semaine de l'événement
+*/
+$sem = date2sem($even->getValue('dateEvenement'));
+
+$sql_even = "
+ SELECT idEvenement, titre FROM evenement
+ WHERE  dateEvenement='" . $even->getValue('dateEvenement') . "'
+ AND statut NOT IN ('inactif', 'propose')
+     AND region='" . $even->getValue('region') . "'
+ ORDER BY dateEvenement,
+     CASE `genre`
+     WHEN 'fête' THEN 1
+     WHEN 'cinéma' THEN 2
+     WHEN 'théâtre' THEN 3
+     WHEN 'expos' THEN 4
+     WHEN 'divers' THEN 5
+     END,
+
+ " . $get['tri'] . " DESC"; // genre='".$even->getValue('genre')."' AND
+// echo $sql_even;
+
+$req_even = $connector->query($sql_even);
+
+$i = 0;
+$courant = "";
+$url_prec = "";
+$url_suiv = "";
+$id_passe = 0;
+$titre = '';
+
+while ($tab_even = $connector->fetchArray($req_even))
+{
+    if ($tab_even['idEvenement'] == $get['idE']) {
+        $url_prec = $courant;
+        $titre_prec = $titre;
+        $id_passe = 1;
+    }
+
+    $courant = "/evenement.php?idE=" . $tab_even['idEvenement'] . "&amp;tri=" . $get['tri'];
+    $titre = $tab_even['titre'];
+
+    // préc déjà trouvé, suiv pas encore, pas l'actuel, donc c'est le suivant
+    if ($id_passe && $url_suiv == "" && $tab_even['idEvenement'] != $get['idE']) {
+        if ($i != $connector->getNumRows($req_even)) {
+            $url_suiv = $courant;
+            $titre_suiv = $titre;
+        }
+    }
+    $i++;
 }
-//echo $url_prec." ".$url_suiv;
 ?>
 
 
 <!-- Début Contenu -->
 <div id="contenu" class="colonne vevent">
 
-<?php
-if (!empty($_SESSION['evenement-edit_flash_msg']))
-{
-	HtmlShrink::msgOk($_SESSION['evenement-edit_flash_msg']);
-	unset($_SESSION['evenement-edit_flash_msg']);
-}
-?>
+    <?php
+    if (!empty($_SESSION['evenement-edit_flash_msg'])) {
+        HtmlShrink::msgOk($_SESSION['evenement-edit_flash_msg']);
+        unset($_SESSION['evenement-edit_flash_msg']);
+    }
+    ?>
 
+    <div id="entete_contenu">
 
-
-	<div id="entete_contenu">
-		<h2 id="entete_contenu_titre"
-		<?php
-		if ($even->getValue('dateEvenement') < $glo_auj)
-		{
-			echo ' class="ancien"';
-		}
- ?>>
+        <h2 id="entete_contenu_titre" <?php if ($even->getValue('dateEvenement') < $glo_auj) {
+        echo ' class="ancien"';
+    } ?>>
 
             <span class="category"><?php echo ucfirst(Evenement::nom_genre($even->getValue('genre'))); ?></span>, <?php echo '<a href="/agenda.php?courant='.$even->getValue('dateEvenement').'">'.date_fr($even->getValue('dateEvenement'), "annee", "", "", false).'</a>';
  ?>
 </h2>
 		<div class="entete_contenu_navigation">
-		<?php
-		if ($url_prec != "")
-		{
-			echo '<a href="'.$url_prec.'" style="border-radius:3px 0 0 3px;" title="'.str_replace('"', '', $titre_prec).'">'.$iconePrecedent;
+            <?php
+            if ($url_prec != "") {
+                echo '<a href="' . $url_prec . '" style="border-radius:3px 0 0 3px;" title="' . str_replace('"', '', $titre_prec) . '">' . $iconePrecedent;
 
-            echo '&nbsp;<span class="event-navig-link">'.$titre_prec.'</span>';
+                echo '&nbsp;<span class="event-navig-link">' . $titre_prec . '</span>';
 
             echo '</a>';
-		}
-		if ($url_suiv != "")
-		{
-			echo '<a href="'.$url_suiv.'" style="border-radius:0 3px 3px 0;margin-left:1px" title="'.str_replace('"', '', $titre_suiv).'">';
+        }
+        if ($url_suiv != "") {
+            echo '<a href="' . $url_suiv . '" style="border-radius:0 3px 3px 0;margin-left:1px" title="' . str_replace('"', '', $titre_suiv) . '">';
 
-            echo '<span class="event-navig-link">'.$titre_suiv.'</span>&nbsp;';
+            echo '<span class="event-navig-link">' . $titre_suiv . '</span>&nbsp;';
 
-            echo $iconeSuivant.'</a>';
-		}
-
-		?>
+            echo $iconeSuivant . '</a>';
+        }
+        ?>
             <div class="spacer"></div>
 		</div>
 		<div class="spacer"></div>
 	</div>
 	<div class="spacer"><!-- --></div>
 	<ul class="menu_actions_evenement">
-	<?php
-	if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 12))
+
+        <?php
+        if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 12))
 	{
 		echo '<li><a href="/evenement-email.php?idE=' . $get['idE'] . '" title="Envoyer l\'événement par email">' . $icone['envoi_email'] . 'Envoyer à un ami</a></li>';
-}
-
-		if (
+    }
+        if (
 		(isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 6)
 		|| (isset($_SESSION['SidPersonne'])) && $_SESSION['SidPersonne'] == $even->getValue('idPersonne')
 	|| (isset($_SESSION['Saffiliation_lieu']) && $even->getValue('idLieu') != '' && $even->getValue('idLieu') == $_SESSION['Saffiliation_lieu'])
@@ -254,10 +223,9 @@ if (!empty($_SESSION['evenement-edit_flash_msg']))
 		|| isset($_SESSION['SidPersonne']) && $even->getValue('idLieu') != 0 && $authorization->isPersonneInLieuByOrganisateur($_SESSION['SidPersonne'], $even->getValue('idLieu'))
 		)
 		{
-
-		?>
-			<li><a href="/evenement-copy.php?idE=<?php echo $get['idE'] ?>" title="Copier cet événement"><?php echo $iconeCopier ?>Copier vers d'autres dates</a></li>
-		<?php
+            ?>
+        <li><a href="/evenement-copy.php?idE=<?php echo $get['idE'] ?>"><?php echo $iconeCopier ?>Copier vers d'autres dates</a></li>
+            <?php
 		}
 		if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 6)
 		|| (isset($_SESSION['SidPersonne'])) && $_SESSION['SidPersonne'] == $even->getValue('idPersonne')
@@ -272,77 +240,58 @@ if (!empty($_SESSION['evenement-edit_flash_msg']))
 		}
 		?>
 
-
-			<!--<li><a href="annuler.php?idE=<?php //$get['idE'] ?>" title="Annuler cet événement"><img src="/web/interface/icons/page_delete.png" />Annuler</a></li> -->
-
-			<li><a href="/evenement_ics.php?idE=<?php echo $get['idE'] ?>" title="Exporter au format iCalendar dans votre agenda"><i class="fa fa-calendar-plus-o fa-lg"></i>
+            <li><a href="/evenement_ics.php?idE=<?php echo $get['idE'] ?>" title="Exporter au format iCalendar dans votre agenda"><i class="fa fa-calendar-plus-o fa-lg"></i>
 iCal</a></li>
 
-
-		</ul>
+    </ul>
 
 
 	<div class="spacer"></div>
 
-		<div id="evenement">
-			<div class="dtstart"><span class="value-title" title="<?php echo $even->getValue('dateEvenement'); ?>T<?php echo mb_substr($even->getValue('horaire_debut'), 11, 5); ?>:00"></span></div>
-		<?php /*	<div class="dtend"><span class="value-title" title="<?php echo $even->getValue('dateFin'); ?>T<?php echo mb_substr($even->getValue('horaire_fin'), 11,5); ?>"></span>
-			 </div> */ ?>
-			<div class="titre">
+    <div id="evenement">
 
+        <div class="dtstart"><span class="value-title" title="<?php echo $even->getValue('dateEvenement'); ?>T<?php echo mb_substr($even->getValue('horaire_debut'), 11, 5); ?>:00"></span></div>
 
-				<!-- <span class="left">"Le langage est-il l'expression adéquate de toutes les réalités?..."</span> -->
-				 <h3 class="left summary"><?php
+            <div class="titre">
 
+                <h3 class="left summary"><?php
+                    $titre = Evenement::titre_selon_statut($even->getValue('titre'), $even->getValue('statut'));
+                     echo $titre . $even_status;
+                     ?></h3>
 
-		$titre = Evenement::titre_selon_statut($even->getValue('titre'), $even->getValue('statut'));
+                <?php
+                //si le lieu est dans la base, affichage des détails du lieu,
+                //$lieu contient un lien vers la fiche du lieu
+                $lien_gmaps = "";
 
-/* 		if ($even->getValue('statut') == "annule" || $even->getValue('statut')  == "inactif" || $even->getValue('statut')  == "complet")
-		{
-			$titre = "<strike>".securise_string($even->getValue('titre') )."</strike> ".$even->getValue('statut') ;
-		} */
+                if ($even->getValue('idLieu') != 0) {
+    $req_lieu = $connector->query("SELECT nom, adresse, quartier, localite.localite AS localite, region, URL, lat, lng FROM lieu, localite
+                        WHERE localite_id=localite.id AND idlieu='" . $even->getValue('idLieu') . "'");
+    $listeLieu = $connector->fetchArray($req_lieu);
+    $lieu = "<a href=\"//lieu.php?idLieu=" . $even->getValue('idLieu') . "\">" . sanitizeForHtml($listeLieu['nom']) . "</a>";
 
-		echo $titre.$even_status; ?></h3>
+    $nom_lieu = '<a href="/lieu.php?idL=' . $even->getValue('idLieu') . '" >
+                        ' . $even->getValue('nomLieu') . '</a>';
+}
+else {
+    $listeLieu['nom'] = sanitizeForHtml($even->getValue('nomLieu'));
+    $lieu = sanitizeForHtml($even->getValue('nomLieu'));
+    $listeLieu['adresse'] = sanitizeForHtml($even->getValue('adresse'));
+    $listeLieu['quartier'] = sanitizeForHtml($even->getValue('quartier'));
 
-<?php
-	//si le lieu est dans la base, affichage des détails du lieu,
-	//$lieu contient un lien vers la fiche du lieu
-	$lien_gmaps = "";
+    $req_localite = $connector->query("SELECT  localite FROM localite
+                        WHERE  id='" . $even->getValue('localite_id') . "'");
+    $tab_localite = $connector->fetchArray($req_localite);
 
-	if ($even->getValue('idLieu') != 0)
-	{
-		$req_lieu = $connector->query("SELECT nom, adresse, quartier, localite.localite AS localite, region, URL, lat, lng FROM lieu, localite
-		WHERE localite_id=localite.id AND idlieu='".$even->getValue('idLieu')."'");
-		$listeLieu = $connector->fetchArray($req_lieu);
-		$lieu = "<a href=\"//lieu.php?idLieu=".$even->getValue('idLieu')."\" title=\"Voir la fiche du lieu : ".sanitizeForHtml($listeLieu['nom'])."\">".sanitizeForHtml($listeLieu['nom'])."</a>";
+    $listeLieu['localite'] = sanitizeForHtml($tab_localite[0]);
 
-		$nom_lieu = '<a href="/lieu.php?idL='.$even->getValue('idLieu').'" title="Voir la fiche du lieu : " >
-		'.$even->getValue('nomLieu').'</a>';
+    $listeLieu['region'] = sanitizeForHtml($even->getValue('region'));
+    $listeLieu['URL'] = sanitizeForHtml($even->getValue('urlLieu'));
 
+    $nom_lieu = $lieu;
+}
 
-	}
-	else
-	{
-		$listeLieu['nom'] = sanitizeForHtml($even->getValue('nomLieu'));
-		$lieu = sanitizeForHtml($even->getValue('nomLieu'));
-		$listeLieu['adresse'] = sanitizeForHtml($even->getValue('adresse'));
-                $listeLieu['quartier'] = sanitizeForHtml($even->getValue('quartier'));
-
-		$req_localite = $connector->query("SELECT  localite FROM localite
-		WHERE  id='".$even->getValue('localite_id')."'");
-		$tab_localite = $connector->fetchArray($req_localite);
-
-                $listeLieu['localite'] = sanitizeForHtml($tab_localite[0]);
-
-		$listeLieu['region'] = sanitizeForHtml($even->getValue('region'));
-		$listeLieu['URL'] = sanitizeForHtml($even->getValue('urlLieu'));
-
-		$nom_lieu = $lieu;
-	}
-
-		$adresse = htmlspecialchars(HtmlShrink::getAdressFitted( $listeLieu['region'], $listeLieu['localite'], $listeLieu['quartier'], $listeLieu['adresse']));
-
-
+$adresse = htmlspecialchars(HtmlShrink::getAdressFitted($listeLieu['region'], $listeLieu['localite'], $listeLieu['quartier'], $listeLieu['adresse']));
 ?>
 
 
@@ -351,9 +300,8 @@ iCal</a></li>
 					<?php
 					if ($even->getValue('idSalle') != 0)
 					{
-					$req_salle = $connector->query("SELECT nom, emplacement FROM salle
-		WHERE idSalle='".$even->getValue('idSalle')."'");
-		$tab_salle = $connector->fetchArray($req_salle);
+                        $req_salle = $connector->query("SELECT nom, emplacement FROM salle WHERE idSalle='" . $even->getValue('idSalle') . "'");
+    $tab_salle = $connector->fetchArray($req_salle);
 					echo '<br><span style="font-size:0.9em">'.$tab_salle['nom']."</span>";
 
 					}
@@ -412,14 +360,14 @@ iCal</a></li>
 						{
 							echo $listeLieu['URL'];
 						}
-						?>" title="Voir le site web du lieu" onclick="window.open(this.href,'_blank');return false;"><?php echo $listeLieu['URL'] ?></a></li>
-						<?php
+						?>" target="_blank"><?php echo $listeLieu['URL'] ?></a></li>
+                            <?php
 						}
 						?>
                         <?php if ($even->getValue('idLieu') == 13) { // exception pour le Rez ?>
-                        <a href="http://kalvingrad.com" onclick="window.open(this.href,'_blank');return false;">kalvingrad.com</a><br>
-                        <a href="http://www.ptrnet.ch" onclick="window.open(this.href,'_blank');return false;">ptrnet.ch</a>
-                            <?php } ?>
+                            <a href="http://kalvingrad.com" target="_blank">kalvingrad.com</a><br>
+                            <a href="http://www.ptrnet.ch" target="_blank">ptrnet.ch</a>
+                        <?php } ?>
 					</ul>
 				</div>
 			<div class="spacer"></div>
@@ -432,24 +380,21 @@ iCal</a></li>
 			<div id="complement">
 
 				<ul id="images">
-				<li id="flyer" >
+                    <li id="flyer" >
 
-
-
-					<?php
+                        <?php
 					$image_pour_flyer = false;
 					//flyer s'il existe, avec pop up
 					if ($even->getValue('flyer') != '')
 					{
 						$imgInfo = @getimagesize($rep_images_even.$even->getValue('flyer'));
 
-						//$imgLien = "<img class=\"photo\" src=\"".$IMGeven.$even->getValue('flyer')."\" ";
 						 $img_width = 140;
-						if ($imgInfo[0] >= 140) { /* $imgLien .= "width=\"160\" "; */  $img_width = 160; }
-						/* $imgLien .= " alt=\"Flyer\" />";
-						echo lien_popup($IMGeven.$even->getValue('flyer')."?".filemtime($rep_images_even.$even->getValue('flyer')), "Flyer", $imgInfo[0]+20, $imgInfo[1]+20, $imgLien); */
+						if ($imgInfo[0] >= 140) {
+                                $img_width = 160;
+                            }
 
-                        $file_time = @filemtime($rep_images_even.$even->getValue('flyer'));
+                            $file_time = @filemtime($rep_images_even.$even->getValue('flyer'));
 						?>
 							<a href="<?php echo $url_uploads_events.$even->getValue('flyer')."?".$file_time ?>" class="magnific-popup">
 
@@ -464,18 +409,13 @@ iCal</a></li>
 						$image_pour_flyer = true;
 						$imgInfo = @getimagesize($rep_images_even.$even->getValue('image'));
 
-						//$imgLien = "<img class=\"photo\" src=\"".$IMGeven.$even->getValue('image')."\" ";
 						$img_width = 140;
-						if ($imgInfo[0] >= 140) { /* $imgLien .= "width=\"160\" "; */ $img_width = 160; }
-/* 						$imgLien .= " alt=\"Photo\" />";
-
-						echo lien_popup($IMGeven.$even->getValue('image'), "Photo de l'événement", $imgInfo[0]+20,
-						$imgInfo[1]+20, $imgLien); */
-
-						?>
-							<a href="<?php echo $url_uploads_events.$even->getValue('image')."?".filemtime($rep_images_even.$even->getValue('image')) ?>" class="magnific-popup">
-
-								<img src="<?php echo $url_uploads_events.$even->getValue('image')."?".filemtime($rep_images_even.$even->getValue('image')) ?>" alt="Photo pour cet événement" width="<?php echo $img_width; ?>" />
+                            if ($imgInfo[0] >= 140) {
+                                $img_width = 160;
+                            }
+                            ?>
+                        <a href="<?php echo $url_uploads_events . $even->getValue('image') . "?" . filemtime($rep_images_even . $even->getValue('image')) ?>" class="magnific-popup">
+                                <img src="<?php echo $url_uploads_events.$even->getValue('image')."?".filemtime($rep_images_even.$even->getValue('image')) ?>" alt="Photo pour cet événement" width="<?php echo $img_width; ?>" />
 							</a>
 
 						<?php
@@ -483,50 +423,43 @@ iCal</a></li>
 					}
 
 					?>
-				</li>
+                    </li>
 
-				<li id="photo">
-					<?php
-						//photo si existe, avec pop up
-						if ($even->getValue('image') != '' && !$image_pour_flyer)
-						{
-/* 							$imgInfo = @getimagesize($rep_images_even.$even->getValue('image'));
-							echo lien_popup($IMGeven.$even->getValue('image'), "Image", $imgInfo[0]+20,
-							$imgInfo[1]+20,"<img src=\"".$IMGeven."s_".$even->getValue('image')."?".filemtime($rep_images_even."s_".$even->getValue('image'))."\" ");
- */													$img_width = 140;
-						if ($imgInfo[0] >= 140) {  $img_width = 160; }
-						?>
-							<a href="<?php echo $url_uploads_events.$even->getValue('image')."?".filemtime($rep_images_even.$even->getValue('image')) ?>" class="magnific-popup">
+                    <li id="photo">
+                        <?php
+                        //photo si existe, avec pop up
+                        if ($even->getValue('image') != '' && !$image_pour_flyer) {
+                            $img_width = 140;
+                            if ($imgInfo[0] >= 140) {
+                                $img_width = 160;
+                            }
+                            ?>
+                            <a href="<?php echo $url_uploads_events . $even->getValue('image') . "?" . filemtime($rep_images_even . $even->getValue('image')) ?>" class="magnific-popup">
 
-								<img src="<?php echo $url_uploads_events.$even->getValue('image')."?".filemtime($rep_images_even.$even->getValue('image')) ?>" alt="Photo pour cet événement" width="<?php echo $img_width; ?>" />
-							</a>
+                                        <img src="<?php echo $url_uploads_events . $even->getValue('image') . "?" . filemtime($rep_images_even . $even->getValue('image')) ?>" alt="Photo pour cet événement" width="<?php echo $img_width; ?>" />
+                                    </a>
 
-						<?php
+                            <?php
+                        }
+                            ?>
 
-
-						}
-
-					?>
-<!-- <a href='#' onclick='window.open("http://www.ladecadanse.ch", "", "width=800px,height=300px");return false'>OPEN</A>-->
-				</li>
+                    </li>
 				</ul>
 
 			</div>
 			<!-- Fin complement -->
 
 			<div id="description">
-			<a name="borne_description"></a>
-			<?php
-				if ($even->getValue('description') != '')
-				{
-					echo Text::wikiToHtml($even->getValue('description'))."\n";
-				}
-				else
-				{
-					echo "&nbsp;";
-				}
-			?>
-			</div>
+                <a name="borne_description"></a>
+                <?php
+                if ($even->getValue('description') != '') {
+                    echo Text::wikiToHtml($even->getValue('description')) . "\n";
+                }
+                else {
+                    echo "&nbsp;";
+                }
+                ?>
+            </div>
 			<!-- Fin description -->
 
 			<div class="spacer"></div>
@@ -552,8 +485,8 @@ iCal</a></li>
 							$url_org = 'http://'.$tab['URL'];
 						}
 
-						echo '<li><strong><a href="/organisateur.php?idO='.$tab['idOrganisateur'].'" title="Voir la fiche de l\'organisateur">'.$tab['nom'].'</strong></a>';
-						if ( $tab['URL'] != '')
+						echo '<li><strong><a href="/organisateur.php?idO=' . $tab['idOrganisateur'] . '">' . $tab['nom'] . '</strong></a>';
+                if ( $tab['URL'] != '')
 						{
 
 							echo ' : <a href="'.$url_org.'" title="Site web de '.$tab['nom'].'" class="lien_ext" target="_blank">'.$nom_url.'</a>'; //$icone['url_externe']
@@ -625,9 +558,7 @@ iCal</a></li>
 
 			<div id="auteur">
 
-		<a class="signaler" href="/evenement-report.php?idE=<?php echo $get['idE'] ?>" ><i class="fa fa-flag-o fa-lg"></i>
-Signaler une erreur
-		</a>
+                <a class="signaler" href="/evenement-report.php?idE=<?php echo $get['idE'] ?>" ><i class="fa fa-flag-o fa-lg"></i>Signaler une erreur</a>
 
 
 		Ajouté
@@ -717,93 +648,8 @@ Signaler une erreur
 		</div>
 
 		<!-- Fin Evenement -->
-		<div id="participation">
-		<span class="score_participation"></span>
-		<?php
-		/*
-			$req_nb = $connector->query("SELECT * FROM participation WHERE idEvenement=".$get['idE']);
 
-			$nb = $connector->getNumRows($req_nb);
-
-			if (time() < datetime_iso2time(date_lendemain($detailsEven['dateEvenement'])." 06:00:01"))
-			{
-				if ($nb == 0)
-				{
-					echo "Aucun membre n'a encore prévu d'aller à cet événement";
-				}
-				else if ($nb == 1)
-				{
-					echo $nb." membre à prévu d'y aller";
-				}
-				else
-				{
-					echo $nb." membres ont prévu d'y aller";
-				}
-			}
-			else
-			{
-				if ($nb == 0)
-				{
-					echo "Aucun membre n'a assisté à cet événement";
-				}
-				else if ($nb == 1)
-				{
-					echo $nb." membre a assisté à cet événement";
-				}
-				else
-				{
-					echo $nb." membres ont assisté à cet événement";
-				}
-			}
-
-
-		if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 12))
-		{
-			echo '<span class="action_participation">';
-			$req_nb = $connector->query("SELECT * FROM participation
-			WHERE idEvenement=".$get['idE']." AND idPersonne=".$_SESSION['SidPersonne']);
-
-			$nb = $connector->getNumRows($req_nb);
-
-			if (time() < datetime_iso2time(date_lendemain($detailsEven['dateEvenement'])." 06:00:01"))
-			{
-				if ($nb == 0)
-				{
-					echo '<a href="/action_participation.php?action=ajouter&amp;idE='.$get['idE'].'"
-				title="Ajouter">J\'y vais'.$icone['ajouter_date'].'</a>';
-				}
-				else
-				{
-					echo "<p>Vous avez prévu d'aller à cette événement";
-					echo '<a href="/action_participation.php?action=supprimer&amp;idE='.$get['idE'].'"
-				title="Enlever">Finalement je n\'y vais pas'.$icone['supprimer_date'].'</a></p>';
-				}
-			}
-			else
-			{
-				if ($nb == 0)
-				{
-					echo '<a href="/action_participation.php?action=ajouter&amp;idE='.$get['idE'].'"
-				title="Ajouter">J\'y étais'.$icone['ajouter_date'].'</a>';
-				}
-				else
-				{
-					echo "<p>Vous avez prévu d'aller à cette événement";
-					echo '<a href="/action_participation.php?action=supprimer&amp;idE='.$get['idE'].'"
-				title="Enlever">Finalement je n\'y étais pas'.$icone['supprimer_date'].'</a></p>';
-				}
-			}
-
-			echo '</span>';
-		}
-
-		*/
-		?>
-
-		</div>
-<div class="spacer"><!-- --></div>
-
-
+        <div class="spacer"><!-- --></div>
 
 <?php
     $req_comm = $connector->query("SELECT idPersonne, idCommentaire, contenu, dateAjout FROM commentaire
@@ -928,122 +774,20 @@ else
 
 <div id="colonne_gauche" class="colonne">
 
-<?php include("_navigation_calendrier.inc.php"); ?>
+    <?php
+    // force current event genre to calendar urls ?
+
+    $tab_even = $connector->fetchArray($req_even);
+
+    if (!empty($tab_even)) {
+        $get['genre'] = $tab_even['genre'];
+    }
+    include("_navigation_calendrier.inc.php");
+    ?>
 
 </div>
-<!-- Fin Colonnegauche -->
-<?php
-/*
-<div id="colonne_droite" class="colonne">
 
-	<!-- Deb selection -->
-	<div class="selection">
-
-		<h3>Aller à :</h3>
-		<ul>
-		<?php
-		if (!empty($detailsEven['description']))
-		{
-		?>
-			<li class="descendre"><a href="#borne_description">Description</a></li>
-		<?php
-		}
-		if ($nb_comm > 0)
-		{
-		?>
-			<li class="descendre"><a href="#borne_commentaires">Commentaires</a></li>
-		<?php
-		}
-		?>
-			<li class="descendre"><a href="#commentaires">Ajouter un commentaire</a></li>
-		</ul>
-
-
-
-
-		<h3><?php echo ucfirst(nom_genre($even->getValue('genre'))); ?> le même jour</h3>
-
-
-
-
-
-
-<?php
-$sql_even = "SELECT idEvenement, idLieu, nomLieu, adresse, urlLieu,
- titre, idPersonne, dateEvenement, URL1, flyer, description, horaire_debut, horaire_fin, horaire_complement, prix
- FROM evenement
- WHERE genre='".$even->getValue('genre')."' AND
- dateEvenement='".$even->getValue('dateEvenement')."'
- AND statut NOT IN ('inactif', 'propose')
- ORDER BY dateAjout";
-
-$req_even = $connector->query($sql_even);
-
-if ($connector->getNumRows($req_even) == 0)
-{
-  	echo formaterTexte("Pas d'autre événement", "p");
-}
-
-$dateCourante = ' ';
-
-
-if ($connector->getNumRows($req_even))
-{
-
-?>
-
-
-<ul class="selection">
-
-<?php
-while ($details_even = $connector->fetchArray($req_even))
-{
-?>
-
-
-
-<li class="evenement_s
-<?php
-
-if ($details_even['idEvenement'] == $even->getId())
-{
-	echo " ici";
-}
-?>
-">
-
-<div class="flyer">
-<?php
-if (!empty($details_even['flyer']))
-{
-	$imgInfo = @getimagesize($rep_images_even.$details_even['flyer']);
-	$time_dern_modif = @filemtime($rep_images_even.'t_'.$details_even['flyer']);
-	$img_lien = '<img src="'.$IMGeven.'t_'.$details_even['flyer'].'?'.$time_dern_modif.'" alt="Flyer" />';
-	echo lien_popup($IMGeven.$details_even['flyer'].'?'.@filemtime($rep_images_even.$details_even['flyer']), "Flyer", $imgInfo[0]+20, $imgInfo[1]+20, $img_lien);
-}
-?>
-</div>
-
-echo "<h4><a href=\"/lieu.php?idL=".$details_even['idLieu']."\">";
-echo securise_string($details_even['nomLieu']) ?></a></h4>
 <div class="spacer"><!-- --></div>
-</li>
-
-
-<?php
-}
-echo "</ul>";
-} //if nb_even
-?>
-
-	</div>
-	<!-- Fin selection -->
-
-</div>
-<!-- Fin colonne_droite -->
-*/ ?>
-<div class="spacer"><!-- --></div>
-
 
 <?php
 include("_footer.inc.php");

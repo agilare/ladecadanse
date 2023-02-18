@@ -7,7 +7,6 @@ use Ladecadanse\Utils\Mailing;
 use Ladecadanse\HtmlShrink;
 
 $page_titre = "Signaler une erreur";
-$page_description = "";
 $extra_css = array("formulaires", "evenement_inc");
 include("_header.inc.php");
 
@@ -24,7 +23,7 @@ if (isset($_GET['idE']))
 }
 else
 {
-    HtmlShrink::msgErreur("idE obligatoire");
+    header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
     exit;
 }
 ?>
@@ -104,18 +103,18 @@ else
     if (!$action_terminee)
     {
         ?>
-    
+
         <div id="entete_contenu">
             <h2>Signaler une erreur</h2>
             <div class="spacer"></div>
         </div>
-    
+
         <?php
- 
+
         if (isset($get['idE']))
         {
             $req_getEven = $connector->query("SELECT idEvenement, idLieu, idSalle, idPersonne, titre, genre, dateEvenement,
-	 nomLieu, adresse, quartier, urlLieu, description, flyer, prix, horaire_debut,horaire_fin, horaire_complement, URL1, ref, prelocations, statut, localite 
+	 nomLieu, adresse, quartier, urlLieu, description, flyer, prix, horaire_debut,horaire_fin, horaire_complement, URL1, ref, prelocations, statut, localite
 	  FROM evenement, localite WHERE evenement.localite_id=localite.id AND idEvenement =" . $get['idE']);
 
             if ($affEven = $connector->fetchArray($req_getEven))
@@ -141,7 +140,7 @@ else
         <form method="post" id="ajouter_editer" class="submit-freeze-wait" action="<?php echo basename(__FILE__) . "?idE=" . $get['idE']; ?>">
 
             <fieldset style="width:100%">
-   
+
                 <legend>Type d'erreur*</legend>
                 <ul class="radio_vert" >
                     <?php
@@ -172,7 +171,7 @@ else
             // email, utile si visiteur non logué
             if (!isset($_SESSION['user']))
             {
-                ?>                                                    
+                ?>
                 <p>
                     <label for="email" id="label_email">Votre e-mail</label>
                     <input name="email" id="email" type="text" size="40" value="<?php echo sanitizeForHtml($champs['email']) ?>"  />

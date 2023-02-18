@@ -14,7 +14,6 @@ if (!$videur->checkGroup(12))
 }
 
 $page_titre = "Envoyer un événement";
-$page_description = "Envoyer un événement par email";
 $extra_css = array("formulaires", "evenement_inc", "email_evenement_formulaire");
 include("_header.inc.php");
 
@@ -23,12 +22,12 @@ if (isset($_GET['idE']))
 {
     try {
         $get['idE'] = Validateur::validateUrlQueryValue($_GET['idE'], "int", 1);
-    } catch (Exception $e) { header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); exit; }    
+    } catch (Exception $e) { header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); exit; }
 }
 else
 {
-	HtmlShrink::msgErreur("idE obligatoire");
-	exit;
+    header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
+    exit;
 }
 
 ?>
@@ -47,7 +46,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 
 	foreach ($champs as $c => $v)
 	{
-        $champs[$c] = $_POST[$c];	
+        $champs[$c] = $_POST[$c];
 	}
 
 	if (isset($_POST['idP']))
@@ -66,7 +65,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 
 	if ($verif->nbErreurs() === 0)
 	{
-        $contenu_message = "Message envoyé depuis www.ladecadanse.ch par ".$_SESSION['user']." (".$_SESSION['Semail'].") :\n\n";     
+        $contenu_message = "Message envoyé depuis www.ladecadanse.ch par ".$_SESSION['user']." (".$_SESSION['Semail'].") :\n\n";
 		$contenu_message .= "> ".$champs['message']."\n\n";
 		$contenu_message .= "------------------\n";
 
@@ -99,15 +98,15 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 			$contenu_message .= sanitizeForHtml($tab_even['horaire_complement'])."\n";
 			$contenu_message .= sanitizeForHtml($tab_even['prix'])."\n\n";
 			$contenu_message .= "------------------\n";
-	
+
 			$subject = "Événement \"".$tab_even['titre']."\"";
 
             $mailer = new Mailing();
             if ($mailer->toUser($champs['email_destinataire'], $subject, $contenu_message, ['email' => $_SESSION['Semail'], 'name' => $_SESSION['user'] ]))
             {
-                HtmlShrink::msgOk('Événement <strong>'.$tab_even['titre'].'</strong> envoyé à '.$champs['email_destinataire']);   		
-                $logger->log('global', 'activity', "[evenement-email] event ".$tab_even['titre']." (idE ".$get['idE'].") sent from ".$_SESSION['user']." to ".$champs['email_destinataire'], Logger::GRAN_YEAR);                
-            }                        
+                HtmlShrink::msgOk('Événement <strong>'.$tab_even['titre'].'</strong> envoyé à '.$champs['email_destinataire']);
+                $logger->log('global', 'activity', "[evenement-email] event ".$tab_even['titre']." (idE ".$get['idE'].") sent from ".$_SESSION['user']." to ".$champs['email_destinataire'], Logger::GRAN_YEAR);
+            }
 		}
 		else
 		{
@@ -178,7 +177,7 @@ if ($verif->nbErreurs() > 0)
 <input name="email_destinataire" id="email_destinataire" value="<?php echo sanitizeForHtml($champs['email_destinataire']) ?>" size="35" />
 <?php echo $verif->getHtmlErreur("email_destinataire"); ?>
 </p>
-<div class="guideChamp">L'adresse email restera confidentielle.</div>
+    <div class="guideChamp">L'adresse email restera confidentielle</div>
 
 
 <p>

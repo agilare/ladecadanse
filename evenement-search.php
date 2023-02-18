@@ -39,7 +39,7 @@ $get['mots'] = "";
 if (isset($_GET['mots']))
 {try {
 	$get['mots'] = Validateur::validateUrlQueryValue($_GET['mots'], "string", 1);
-    } catch (Exception $e) { header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); exit; }    
+    } catch (Exception $e) { header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); exit; }
 }
 
 $mots_brut = $get['mots'];
@@ -52,8 +52,6 @@ $page_description = "Rechercher un événement culturel à Genève et Lausanne";
 include("_header.inc.php");
 ?>
 
-
-<!-- D?t Contenu -->
 <div id="contenu" class="colonne rechercher">
 	<div id="entete_contenu">
         <h2>Rechercher un événement</h2><?php HtmlShrink::getMenuRegions($glo_regions, $get); ?>
@@ -68,15 +66,14 @@ $mot = "";
 if (!empty($get['mots']))
 {
     $mots = trim($get['mots']);
-	
+
 
 	if (!empty($_GET['name_as']))
 	{
         echo "Veuillez laisser le champ name_as vide";
 		exit;
+    }
 
-	}    
-    
 
 	$mots = mb_strtolower($mots);
 	$mots = str_replace("+", " ", trim($mots));
@@ -154,7 +151,7 @@ if (!empty($get['mots']))
 	if (count($champs_evenement))
 		$sql_select = mb_substr($sql_select, 0, -3);
 
-	$sql_select .= ") "; 
+	$sql_select .= ") ";
 
 	if ($get['periode'] == "futur")
 	{
@@ -187,8 +184,8 @@ if (!empty($get['mots']))
 	}
 
     if ($get['page'] == 1)
-        $logger->log('global', 'activity', "[recherche] \"".$mots_brut."\" with ".$nb_even." events found", Logger::GRAN_YEAR);  
-    
+        $logger->log('global', 'activity', "[recherche] \"".$mots_brut."\" with ".$nb_even." events found", Logger::GRAN_YEAR);
+
 	$idE_trouves = "";
 
 	if ($nb_even == 0)
@@ -233,15 +230,15 @@ if (!empty($get['mots']))
 						$nb_titre = 0;
 						$nb_nomLieu = 0;
 						$nb_desc = 0;
-						
+
 						if (mb_strlen($sous_phrase) > 0)
 						{
 							$nb_titre = mb_substr_count(mb_strtolower($tab_even['titre']), $sous_phrase);
 							$nb_nomLieu = mb_substr_count(mb_strtolower($tab_even['nomLieu']), $sous_phrase);
 							$nb_desc = mb_substr_count(mb_strtolower($tab_even['description']), $sous_phrase);
-							
+
 						}
-						
+
 						$even_points[$tab_even['idEvenement']] += ($nb_titre * $i) * 5;
 						$even_points[$tab_even['idEvenement']] += ($nb_nomLieu * $i) * 5;
 						$even_points[$tab_even['idEvenement']] += $nb_desc * $i;
@@ -260,13 +257,13 @@ if (!empty($get['mots']))
 		//print_r($even_points);
 
 		$url_tri = "";
-	
+
 		$pluriel = " ";
 		if ($nb_even > 1)
 		{
             $pluriel = "s ";
 		}
-		
+
 ?><h3 class="res"><?php echo $nb_even." événement".$pluriel."  trouvé".$pluriel; ?> pour <em><?php echo sanitizeForHtml($mots) ?></em></h3>
 
     <?php } ?>
@@ -286,10 +283,10 @@ if (!empty($get['mots']))
             <li class="tous<?php if ($get['periode'] == "tous") { echo " ici"; } ?>"><?php echo "<a href=\"".basename(__FILE__)."?".Utils::urlQueryArrayToString($get, "periode")."&amp;periode=tous\" title=\"\">Tous</a></li>"; ?>
             <div class="spacer"></div>
 		</ul>
-    <?php 
+    <?php
 	if ($nb_even > 0)
-	{            
-    ?>  
+	{
+    ?>
         <div style="padding: 0.4em 0;">Trier par :</div>
 		<ul id="menu_tri">
 		<?php
@@ -376,18 +373,18 @@ if (!empty($get['mots']))
 
 								if ($tab_even['dateEvenement'] < $glo_auj_6h)
 								{
-									echo " class=\"ancien\">";
-								}
+									echo " class=\"ancien\"";
+                            }
 								else if ($tab_even['dateEvenement'] == $glo_auj_6h)
 								{
-									echo " class=\"auj\">";
-								}
+									echo " class=\"auj\"";
+                            }
 								else if ($tab_even['dateEvenement'] > $glo_auj_6h)
 								{
-									echo " class=\"futur\">";
-								}
+									echo " class=\"futur\"";
+                            }
 
-							?>
+							?>>
 
 
 
