@@ -439,8 +439,8 @@ else if ($get['action'] == 'suppression') {
                                     <div class="auteur">
                                         <span class="left"><?php echo $ajoute; ?><br /><?php echo $dern_modif; ?></span>
                                         <span class="right action_editer">
-                                            <a href="/multi-description.php?action=editer&amp;idL=<?php echo $descriptionlieu['idLieu'] ?>&amp;idP=<?php echo $descriptionlieu['auteur'] ?>">
-                                                Modifier</a>
+                                                        <a href="/lieu-text-edit.php?action=editer&amp;idL=<?php echo $descriptionlieu['idLieu'] ?>&amp;idP=<?php echo $descriptionlieu['auteur'] ?>">
+                                                            Modifier</a>
                                         </span>
 
                                     </div>

@@ -13,7 +13,6 @@ if (!$videur->checkGroup(8))
 }
 
 $page_titre = "ajouter/modifier une description/présentation de lieu";
-$page_description = "ajouter/modifier une description/présentation  de lieu";
 $extra_css = array("formulaires", "description");
 
 /*
@@ -165,9 +164,9 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 				$descriptionlieu = $champs;
 				$descriptionlieu['auteur'] = $get['idP'];
 				$descriptionlieu['date_derniere_modif'] = date("Y-m-d H:i:s");
-                $logger->log('global', 'activity', "[multi-description] insert of ".$get['type']." for idL ".$get['idL']." by user ".$_SESSION['user'], Logger::GRAN_YEAR);
+                $logger->log('global', 'activity', "[lieu-text-edit] insert of " . $get['type'] . " for idL " . $get['idL'] . " by user " . $_SESSION['user'], Logger::GRAN_YEAR);
 
-				$action_terminee = true;
+                $action_terminee = true;
 			}
 			else
 			{
@@ -195,8 +194,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 				$descriptionlieu = $champs;
 				$descriptionlieu['auteur'] = $get['idP'];
 				$get['action'] = 'editer';
-                $logger->log('global', 'activity', "[multi-description] update of ".$get['type']." for idL ".$get['idL']." by user ".$_SESSION['user'], Logger::GRAN_YEAR);
-				$action_terminee = true;
+                $logger->log('global', 'activity', "[lieu-text-edit] update of " . $get['type'] . " for idL " . $get['idL'] . " by user " . $_SESSION['user'], Logger::GRAN_YEAR);
+                $action_terminee = true;
 			}
 			else
 			{

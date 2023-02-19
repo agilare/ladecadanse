@@ -20,10 +20,8 @@ if (isset($_GET['idL']) && $_GET['idL'] > 0)
 }
 else
 {
-	//trigger_error("id obligatoire", E_USER_WARNING);
-
 	header("HTTP/1.1 404 Not Found");
-	echo file_get_contents("articles/404.php");
+    echo file_get_contents("articles/404.php");
 	exit;
 }
 
@@ -136,18 +134,6 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 6 || $authorization-
 	$action_editer = '<li class="action_editer"><a href="/lieu-edit.php?action=editer&amp;idL='.$get['idL'].'">Modifier ce lieu</a></li>';
 }
 
-$lien_prec = '';
-if ($url_prec != "")
-{
-	$lien_prec = '<a href="'.$url_prec.'" title="Lieu précédent dans la liste">'.$iconePrecedent.'</a>';
-}
-
-$lien_suiv = '';
-if ($url_suiv != "")
-{
-	$lien_suiv = '<a href="'.$url_suiv.'" title="Lieu suivant dans la liste">'.$iconeSuivant.'</a>';
-}
-
 $req_nb_des = $connector->query("SELECT idPersonne FROM descriptionlieu WHERE descriptionlieu.idLieu=".$get['idL']);
 
 $class_vide = '';
@@ -163,9 +149,6 @@ if ($lieu->getValue('photo1') != '')
 	$imgInfo = getimagesize($rep_uploads_lieux.$lieu->getValue('photo1'));
 
 	$photo_principale = HtmlShrink::popupLink($url_uploads_lieux.$lieu->getValue('photo1').'?'.filemtime($rep_uploads_lieux.$lieu->getValue('photo1')),	"Logo", $imgInfo[0]+20, $imgInfo[1]+20,	"<img src=\"".$url_uploads_lieux."s_".$lieu->getValue('photo1')."?".filemtime($rep_uploads_lieux."s_".$lieu->getValue('photo1'))."\" alt=\"Photo du lieu\" />");
-
-
-
 
 }
 
@@ -318,73 +301,13 @@ if ($lieu->getValue('logo'))
                         <?php
 					}
 
-/* 				if ($connector->getNumRows($req_galerie) == 1)
-				{
-					$tab_galerie = $connector->fetchArray($req_galerie);
-					$url_fichier = $url_images_lieu_galeries.$tab_galerie['idFichierrecu'].".".$tab_galerie['extension'];
-					$rep_fichier = $rep_images_lieux_galeries.$tab_galerie['idFichierrecu'].".".$tab_galerie['extension'];
-					$rep_fichier_s = $rep_images_lieux_galeries."s_".$tab_galerie['idFichierrecu'].".".$tab_galerie['extension'];
-					$url_fichier_s = $url_images_lieu_galeries."s_".$tab_galerie['idFichierrecu'].".".$tab_galerie['extension'];
-					$imgsize = getimagesize($rep_fichier);
-					?>
-
-					<a href="<?php echo $url_fichier; ?>" class="gallery-item"><img src="<?php echo $url_fichier_s."?".filemtime($rep_fichier_s); ?>" alt="Photo du lieu"></a>
-
-
-					<?php
-
-					//echo lien_popup($url_fichier, "images", $imgsize[0], $imgsize[1], "<img src=\"".$url_fichier_s."?".filemtime($rep_fichier_s)."\" alt=\"Photo du lieu\" />");
-				}
-				else
-				{
-					while ($tab_galerie = $connector->fetchArray($req_galerie))
-					{
-						if (mb_strstr($tab_galerie['mime'], "image"))
-						{
-							$icone_fichier = $iconeImage;
-						}
-
-						$chemin_fichier = $rep_images_lieux_galeries."s_".$tab_galerie['idFichierrecu'].".".$tab_galerie['extension'];
-						$url_fichier = $url_images_lieu_galeries."s_".$tab_galerie['idFichierrecu'].".".$tab_galerie['extension'];
-
-						echo lien_popup("galerielieu.php?idL=".$get['idL']."&amp;idI=".$tab_galerie['idFichierrecu'],
-						"galerie", 860, 700, "<img class=\"galerie\" src=\"".$url_fichier."?".filemtime($chemin_fichier)."\" alt=\"photo\" />");
-					}
-				} */
-
 
 				echo '</div>';
 
 
 					echo '<div class="spacer"></div>';
 			}
-
-			/* Documents */
-//			$sql_docu = "SELECT fichierrecu.idFichierrecu AS idFichierrecu, description, mime, extension
-//			FROM fichierrecu, lieu_fichierrecu
-//			WHERE lieu_fichierrecu.idLieu=".$get['idL']." AND type='document' AND
-//			 fichierrecu.idFichierrecu=lieu_fichierrecu.idFichierrecu
-//			 ORDER BY dateAjout DESC";
-//
-//			$req_docu = $connector->query($sql_docu);
-//
-//			if ($connector->getNumRows($req_docu) > 0)
-//			{
-//				echo '<div class="section">
-//				<h3>Fichiers</h3>
-//				<ul>';
-//
-//
-//				while ($tab_docu = $connector->fetchArray($req_docu))
-//				{
-//					$chemin_fichier = $rep_fichiers_lieu.$tab_docu['idFichierrecu'].".".$tab_docu['extension'];
-//					$url_fichier = $url_fichiers_lieu.$tab_docu['idFichierrecu'].".".$tab_docu['extension'];
-//					echo "<li><a href=\"".$url_fichier."\" >".$icone[mb_strtolower($tab_docu['extension'])].$tab_docu['description']." (".Text::formatbytes(filesize($chemin_fichier)).", ".$tab_docu['extension'].")</a></li>";
-//				}
-//				echo "</ul>
-//					</div>";
-//			}
-			?>
+        ?>
 		</div>
 		<!-- Fin medias -->
 
@@ -601,8 +524,8 @@ if ($nb_pres > 0)
                         )
                 {
                     $editer = '<span class="right">';
-                    $editer .= '<a href="/multi-description.php?action=editer&amp;type='.$type.'&amp;idL='.$get['idL'].'&amp;idP='.$des->getValue('idPersonne').'">'.$iconeEditer.'Modifier</a>';
-                    $editer .= '</span>';
+                    $editer .= '<a href="/lieu-text-edit.php?action=editer&amp;type=' . $type . '&amp;idL=' . $get['idL'] . '&amp;idP=' . $des->getValue('idPersonne') . '">' . $iconeEditer . 'Modifier</a>';
+                $editer .= '</span>';
 
                     if ($_SESSION['SidPersonne'] == $des->getValue('idPersonne'))
                         $auteurs_de_desc[] = $des->getValue('idPersonne');
@@ -646,15 +569,15 @@ if ($nb_pres > 0)
 	// un rédacteur qui n'a pas déjà écrit une description
 	if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 6 && !in_array($_SESSION['SidPersonne'], $auteurs_de_desc))
 	{
-		echo "<a href=\"/multi-description.php?idL=".$get['idL']."&amp;type=description\">".$icone['ajouter_texte']." Ajouter une description (avis)</a><br>";
-	}
+		echo "<a href=\"/lieu-text-edit.php?idL=" . $get['idL'] . "&amp;type=description\">" . $icone['ajouter_texte'] . " Ajouter une description (avis)</a><br>";
+}
 
 	if (isset($_SESSION['Sgroupe']) &&
             ($_SESSION['Sgroupe'] <= 6 || ($_SESSION['Sgroupe'] == 8 && ($authorization->isPersonneAffiliatedWithLieu($_SESSION['SidPersonne'], $get['idL']) || $authorization->isPersonneInLieuByOrganisateur($_SESSION['SidPersonne'], $get['idL']))))
             && $nb_pres == 0)
 	{
-		echo "<a href=\"/multi-description.php?idL=".$get['idL']."&amp;type=presentation\">".$icone['ajouter_texte']." Ajouter une présentation</a>";
-	}
+		echo "<a href=\"/lieu-text-edit.php?idL=" . $get['idL'] . "&amp;type=presentation\">" . $icone['ajouter_texte'] . " Ajouter une présentation</a>";
+}
 	?>
 
 	</div>
@@ -887,8 +810,6 @@ title="Flux RSS des prochains événements"><i class="fa fa-rss fa-lg" style="co
 		}
 		else if ($even->getValue('image') != '')
 		{
-/* 			$imgInfo = @getimagesize($rep_images.$even->getValue('image'));
-			$illustration = lien_popup($IMGeven.$even->getValue('image')."?".filemtime($rep_images_even.$even->getValue('image')), "Image", $imgInfo[0]+20, $imgInfo[1]+20, "<img src=\"".$IMGeven."s_".$even->getValue('image')."?".filemtime($rep_images_even.$even->getValue('image'))."\" alt=\"Image\" width=\"60\" />"); */
 
 			?>
 			<a href="<?php echo $url_uploads_events.$even->getValue('image').'?'.filemtime($rep_images_even.$even->getValue('image')) ?>" class="magnific-popup">

@@ -201,8 +201,8 @@ echo '<div class="spacer"></div>';
 
 		if ($_SESSION['Sgroupe'] <= 4)
 		{
-			echo "<td><a href=\"/multi-description.php?action=editer&idL=".$tab_desc['idLieu']."&idP=".$tab_desc['idPersonne']."\" title=\"Éditer le lieu\">".$iconeEditer."</a></td>";
-		}
+			echo "<td><a href=\"/lieu-text-edit.php?action=editer&idL=" . $tab_desc['idLieu'] . "&idP=" . $tab_desc['idPersonne'] . "\" title=\"Éditer le lieu\">" . $iconeEditer . "</a></td>";
+        }
 		echo "</tr>";
 
 		$pair++;

@@ -13,7 +13,6 @@ if (!$videur->checkGroup(8))
 }
 
 $page_titre = "ajouter/éditer un organisateur";
-$page_description = "ajouter/éditer un organisateur";
 $extra_css = array("formulaires", "ajouterOrganisateur_formulaire", "organisateur_inc");
 
 /*
@@ -132,9 +131,7 @@ if ($afficher_form)
 
 ?>
 
-<!-- FORMULAIRE POUR UN LIEU -->
-
-<form  method="post" enctype="multipart/form-data" id="ajouter_editer" class="submit-freeze-wait" action="<?php echo basename(__FILE__)."?action=".$act; ?>">
+        <form  method="post" enctype="multipart/form-data" id="ajouter_editer" class="submit-freeze-wait" action="<?php echo basename(__FILE__)."?action=".$act; ?>">
 
 <p>* indique un champ obligatoire</p>
 

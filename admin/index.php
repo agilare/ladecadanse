@@ -442,8 +442,8 @@ while ($tab_desc = $connector->fetchArray($req_getDes))
 	echo "<td>".$nom_auteur."</td>";
 	if ( $_SESSION['Sgroupe'] <= 4)
 	{
-		echo "<td><a href=\"/multi-description.php?action=editer&amp;idL=".$tab_desc['idLieu']."&amp;idP=".$tab_desc['idPersonne']."&type=".$tab_desc['type']."\" title=\"Éditer le lieu\">".$iconeEditer."</a></td>";
-	}
+		echo "<td><a href=\"/lieu-text-edit.php?action=editer&amp;idL=" . $tab_desc['idLieu'] . "&amp;idP=" . $tab_desc['idPersonne'] . "&type=" . $tab_desc['type'] . "\" title=\"Éditer le lieu\">" . $iconeEditer . "</a></td>";
+        }
 	echo "</tr>";
 
 	$pair++;

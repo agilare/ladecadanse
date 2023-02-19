@@ -44,8 +44,8 @@
 
 <?php
 $pages_orga = ["evenement-edit", "lieu-edit", "user-edit", 'user-register'];
-$pages_formulaires = ["evenement-edit", "evenement-copy", "lieu-edit", "user-register", "gererEvenements", "user-edit", "multi-description", "organisateur-edit", "lieu-salle-edit"];
-$pages_tinymce = ["multi-description", "organisateur-edit"];
+$pages_formulaires = ["evenement-edit", "evenement-copy", "lieu-edit", "user-register", "gererEvenements", "user-edit", "lieu-text-edit", "organisateur-edit", "lieu-salle-edit"];
+$pages_tinymce = ["lieu-text-edit", "organisateur-edit"];
 ?>
 
 <?php if ($nom_page == "evenement-edit" && !isset($_SESSION['Sgroupe'])) { ?>

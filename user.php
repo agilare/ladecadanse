@@ -619,8 +619,8 @@ else
 				echo "<td>".mb_substr(date_iso2app($tab_desc['dateAjout']), 8)."</td>";
 				if ($_SESSION['SidPersonne'] == $detailsPersonne['idPersonne'] || $_SESSION['Sgroupe'] <= 4)
 				{
-					echo "<td><a href=\"/multi-description.php?action=editer&idL=".$tab_desc['idLieu']."&idP=".$tab_desc['idPersonne']."&type=".$tab_desc['type']."\" title=\"Éditer le lieu\">".$iconeEditer."</a></td>";
-				}
+					echo "<td><a href=\"/lieu-text-edit.php?action=editer&idL=" . $tab_desc['idLieu'] . "&idP=" . $tab_desc['idPersonne'] . "&type=" . $tab_desc['type'] . "\" title=\"Éditer le lieu\">" . $iconeEditer . "</a></td>";
+                }
 				echo "</tr>";
 
 				$pair++;

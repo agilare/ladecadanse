@@ -11,9 +11,9 @@ use Ladecadanse\HtmlShrink;
 
 if (isset($_GET['idO']))
 {
-    try {     
+    try {
         $get['idO'] = Validateur::validateUrlQueryValue($_GET['idO'], "int", 1);
-    } catch (Exception $e) { header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); exit; }     
+    } catch (Exception $e) { header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); exit; }
 }
 else
 {
@@ -25,9 +25,9 @@ $tab_genre_even = array("fête", "cinéma", "théâtre", "expos", "divers", "tou
 $get['genre_even'] = "tous";
 if (isset($_GET['genre_even']))
 {
-    try { 
+    try {
         $get['genre_even'] = Validateur::validateUrlQueryValue($_GET['genre_even'], "enum", 0, $tab_genre_even);
-    } catch (Exception $e) { header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); exit; }     
+    } catch (Exception $e) { header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); exit; }
 }
 
 
@@ -38,11 +38,8 @@ $organisateur = new Organisateur();
 $organisateur->setId($get['idO']);
 $organisateur->load();
 
-//printr($organisateur->getValues());
-
 $page_titre = $organisateur->getValue('nom');
-$page_description = "Page de présentation de ".$organisateur->getValue('nom');
-$page_description .= ": informations pratiques, description et prochains événements";
+$page_description = "Page de présentation de " . $organisateur->getValue('nom') . " : informations pratiques, description et prochains événements";
 
 $extra_css = array("menu_lieux");
 
@@ -53,7 +50,7 @@ $action_ajouter = '';
 if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 10)
 || isset($_SESSION['SidPersonne']) && $authorization->isPersonneInOrganisateur($_SESSION['SidPersonne'], $get['idO']))
 {
-	$action_ajouter = '<li class="action_ajouter"><a href="/evenement-edit.php?idO='.$get['idO'].'" title="ajouter un événement à ce lieu">Ajouter un événement de cet organisateur</a></li>';
+	$action_ajouter = '<li class="action_ajouter"><a href="/evenement-edit.php?idO=' . $get['idO'] . '">Ajouter un événement de cet organisateur</a></li>';
 }
 
 $action_editer = '';
@@ -61,20 +58,9 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 6
 || (isset($_SESSION['SidPersonne']) && $authorization->isPersonneInOrganisateur($_SESSION['SidPersonne'], $get['idO']) && $_SESSION['Sgroupe'] <= 8))
 )
 {
-	$action_editer = '<li class="action_editer"><a href="/organisateur-edit.php?action=editer&amp;idO='.$get['idO'].'" title="Éditer cet organisateur">Modifier cet organisateur</a></li>';
+	$action_editer = '<li class="action_editer"><a href="/organisateur-edit.php?action=editer&amp;idO=' . $get['idO'] . '">Modifier cet organisateur</a></li>';
 }
 
-$lien_prec = '';
-if ($url_prec != "")
-{
-	$lien_prec = '<a href="'.$url_prec.'" title="Organisateur précédent dans la liste">'.$iconePrecedent.'</a>';
-}
-
-$lien_suiv = '';
-if ($url_suiv != "")
-{
-	$lien_suiv = '<a href="'.$url_suiv.'" title="Organisateur dans la liste">'.$iconeSuivant.'</a>';
-}
 ?>
 
 <div id="contenu" class="colonne">
@@ -88,28 +74,28 @@ if ($url_suiv != "")
         HtmlShrink::msgOk($_SESSION['organisateur_flash_msg']);
         unset($_SESSION['organisateur_flash_msg']);
     }
-    ?>   	
+    ?>
 
 	<div id="entete_contenu">
 
-	<?php 
+	<?php
 	if ($organisateur->getValue('logo') !='')
-	{		
+	{
 	?>
 	<a href="<?php echo $url_uploads_organisateurs.$organisateur->getValue('logo').'?'.filemtime($rep_uploads_organisateurs.$organisateur->getValue('logo')) ?>" class="magnific-popup">
 		<img src="<?php echo $url_uploads_organisateurs."s_".$organisateur->getValue('logo')."?".filemtime($rep_uploads_organisateurs."s_".$organisateur->getValue('logo')); ?>" alt="Logo" height="60" class="logo" />
 	</a>
-	<?php 			
-	}	
-	
+	<?php
+	}
+
 	$h2_style = '';
 	if ($organisateur->getValue('logo') !='')
 		$h2_style = "width:48%";
 	?>
-	
+
 
 	<h2><?php echo $organisateur->getHtmlValue('nom'); ?></h2>
-		<div class="spacer"></div>	
+		<div class="spacer"></div>
 	</div>
 
 	<ul class="menu_actions_lieu">
@@ -134,24 +120,20 @@ if ($url_suiv != "")
 
                     <a href="<?php echo $url_uploads_organisateurs.$organisateur->getValue('photo').'?'.filemtime($rep_uploads_organisateurs.$organisateur->getValue('photo')) ?>" class="magnific-popup">
                         <img src="<?php echo $url_uploads_organisateurs."s_".$organisateur->getValue('photo')."?".filemtime($rep_uploads_organisateurs."s_".$organisateur->getValue('photo')); ?>" alt="Photo"  />
-                    </a>	
+                    </a>
 
 
                 <?php
-                }					
-                ?>										
+                }
+                ?>
 			</div>
 			<div class="spacer"><!-- --></div>
 		</div>
 		<!-- Fin medias -->
 
 		<?php
-//		$categories = str_replace(",", ", ", $organisateur->getValue('categorie'));
-//		$adresse = $organisateur->getValue('adresse').' - '.$organisateur->getValue('quartier');
-
-
 		$URL = '';
-		if ($organisateur->getValue('URL') != '' )
+        if ($organisateur->getValue('URL') != '' )
 		{
 			if (!preg_match("/^https?:\/\//", $organisateur->getValue('URL')))
 			{
@@ -187,14 +169,14 @@ if ($url_suiv != "")
 		$membres = '';
 
 		if ($connector->getNumRows($req) > 0)
-		{	
-			if (isset($_SESSION['SidPersonne']) && 
+		{
+			if (isset($_SESSION['SidPersonne']) &&
 			(
 			$authorization->estAuteur($_SESSION['SidPersonne'], $get['idO'], "organisateur")
 			|| $authorization->isPersonneInOrganisateur($_SESSION['SidPersonne'], $get['idO'])
 			)
 			)
-			{	
+			{
 				$membres .= '<li>Membre(s) :';
 				$membres .= '<ul class="salles"> ';
 
@@ -202,12 +184,12 @@ if ($url_suiv != "")
 				{
 					$membres .= '<li>'.$tab['pseudo'].'</li>';
 				}
-				
-				$membres .= '</ul></li>';				
-			}			
+
+				$membres .= '</ul></li>';
+			}
 		}
 		?>
-		
+
 		<!-- Deb pratique -->
 		<div id="pratique">
 			<ul>
@@ -229,8 +211,8 @@ if ($url_suiv != "")
         ?>
 
         <ul id="menu_descriptions">
-        <li class="ici"><h3><a href="<?php echo basename(__FILE__); ?>?idO=<?php echo $get['idO'] ?>">L'organisateur se présente</a></h3></li>
-        </ul>
+                <li class="ici"><h3><a href="<?php echo basename(__FILE__); ?>?idO=<?php echo $get['idO'] ?>">L'organisateur se présente</a></h3></li>
+            </ul>
         <?php
 	}
     ?>
@@ -337,14 +319,14 @@ if ($evenements->getNbElements() > 0)
 	{
 		$presentation = '';
 		if ($even->getValue('description') != '')
-		{	
+		{
 			$maxChar = Text::trouveMaxChar($even->getValue('description'), 50, 2);
-			
+
 			if (mb_strlen($even->getValue('description')) > $maxChar)
 			{
 				//$continuer = "<span class=\"continuer\"><a href=\"/evenement.php?idE=".$even->getValue('idEvenement')."\" title=\"Voir la fiche complète de l'événement\"> Lire la suite</a></span>";
 				$presentation = Text::texteHtmlReduit(Text::wikiToHtml(htmlspecialchars($even->getValue('description'))), $maxChar);
-						
+
 			}
 			else
 			{
@@ -379,7 +361,7 @@ if ($evenements->getNbElements() > 0)
 			$tab_salle = $connector->fetchArray($req_salle);
 			$salle = $tab_salle['nom'];
 		}
-	
+
 		$nom_lieu = '';
 		if ($even->getValue('idLieu') != 0)
 		{
@@ -392,7 +374,7 @@ if ($evenements->getNbElements() > 0)
 		{
 			$nom_lieu = htmlspecialchars($even->getValue('nomLieu'));
 		}
-		
+
 	?>
 	<tr <?php if ($date_debut == $even->getValue('dateEvenement')) { echo "class=\"ici\""; } ?> class="evenement">
 
@@ -409,7 +391,7 @@ if ($evenements->getNbElements() > 0)
                 ?>
                 <a href="<?php echo $url_uploads_events.$even->getValue('flyer').'?'. @filemtime($rep_images_even.$even->getValue('flyer')) ?>" class="magnific-popup">
                     <img src="<?php echo $url_uploads_events."t_".$even->getValue('flyer')."?". @filemtime($rep_images_even."t_".$even->getValue('flyer')); ?>" alt="Flyer" width="60" />
-                </a>			
+                </a>
 
                 <?php
 
@@ -421,12 +403,12 @@ if ($evenements->getNbElements() > 0)
                 ?>
                 <a href="<?php echo $url_uploads_events.$even->getValue('image').'?'. @filemtime($rep_images_even.$even->getValue('image')) ?>" class="magnific-popup">
                                 <img src="<?php echo $url_uploads_events."s_".$even->getValue('image')."?". @filemtime($rep_images_even."t_".$even->getValue('image')); ?>" alt="Photo" width="60" />
-                </a>			
+                </a>
 
-                <?php			
+                <?php
 
             }
-            ?>				
+            ?>
 		</td>
 
 		<td>
@@ -452,7 +434,7 @@ if ($evenements->getNbElements() > 0)
             ||  (isset($_SESSION['Saffiliation_lieu']) && !empty($get['idL']) && $get['idL'] == $_SESSION['Saffiliation_lieu'])
             ||  (isset($_SESSION['SidPersonne']) && $authorization->isPersonneInOrganisateur($_SESSION['SidPersonne'], $get['idO']))
             || (isset($_SESSION['SidPersonne']) && $authorization->isPersonneInEvenementByOrganisateur($_SESSION['SidPersonne'], $id))
-            || (isset($_SESSION['SidPersonne']) && $even->getValue('idLieu') != 0 && $authorization->isPersonneInLieuByOrganisateur($_SESSION['SidPersonne'], $even->getValue('idLieu')))		
+            || (isset($_SESSION['SidPersonne']) && $even->getValue('idLieu') != 0 && $authorization->isPersonneInLieuByOrganisateur($_SESSION['SidPersonne'], $even->getValue('idLieu')))
             )
             {
             ?>
@@ -460,7 +442,7 @@ if ($evenements->getNbElements() > 0)
 
                 <li ><a href="/evenement-copy.php?idE=<?php echo $even->getValue('idEvenement') ?>" title="Copier cet événement"><?php echo $iconeCopier ?></a></li>
                 <li ><a href="/evenement-edit.php?action=editer&amp;idE=<?php echo $even->getValue('idEvenement') ?>" title="Éditer cet événement"><?php echo $iconeEditer ?></a></li>
-                <li class=""><a href="#" id="btn_event_unpublish_<?php echo $even->getValue('idEvenement'); ?>" class="btn_event_unpublish" data-id="<?php echo $even->getValue('idEvenement') ?>"><?php echo $icone['depublier']; ?></a></li>                 
+                <li class=""><a href="#" id="btn_event_unpublish_<?php echo $even->getValue('idEvenement'); ?>" class="btn_event_unpublish" data-id="<?php echo $even->getValue('idEvenement') ?>"><?php echo $icone['depublier']; ?></a></li>
             </ul>
             <?php
             }
@@ -485,15 +467,13 @@ else
 	echo "<p>Pas d'événement actuellement annoncé pour <strong>".$organisateur->getHtmlValue('nom')."</strong></p>";
 }
 
-if (!empty($tab_lieu['URL']))
-{
-	$URLcomplete = $tab_lieu['URL'];
+if (!empty($organisateur->getValue('URL'))) {
+	$URLcomplete = $organisateur->getValue('URL');
 
-	if (!preg_match("/^(https?:\/\/)/i", $tab_lieu['URL']))
-	{
-		$URLcomplete = "http://".$tab_lieu['URL'];
-	}
-	echo "<p>Pour des informations complémentaires : <a href=\"".$URLcomplete."\" title=\"Aller sur le site web\" onclick=\"window.open(this.href,'_blank');return false;\">".$tab_lieu['URL']."</a></p>\n";
+    if (!preg_match("/^(https?:\/\/)/i", $organisateur->getValue('URL'))) {
+		$URLcomplete = "http://" . $organisateur->getValue('URL');
+    }
+	echo "<p>Pour des informations complémentaires : <a href=\"" . $URLcomplete . "\" title=\"Aller sur le site web\" onclick=\"window.open(this.href,'_blank');return false;\">" . $organisateur->getValue('URL') . "</a></p>\n";
 }
 
 echo '</div>';

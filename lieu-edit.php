@@ -14,13 +14,8 @@ if (!$videur->checkGroup(8))
 }
 
 $page_titre = "ajouter/éditer un lieu";
-$page_description = "ajouter/éditer un lieu";
 $extra_css = array("formulaires", "ajouterLieu_formulaire", "lieu_inc");
 
-/*
-* action choisie, ID si édition, val pour (dés)activer l'événement
-* action "ajouter" par défaut
-*/
 $tab_actions = array("ajouter", "insert", "editer", "update");
 $get['action'] = "ajouter";
 $get['idL'] = "idL";
@@ -549,35 +544,7 @@ echo $form->getHtmlErreur("quartier");
         ?>
         </p>
 
-        <?php
-
-//
-//        if ($get['action'] == "editer")
-//        {
-//
-//            $sql_docu = "SELECT fichierrecu.idFichierrecu AS idFichierrecu, description, mime, extension, dateAjout
-//        FROM fichierrecu, lieu_fichierrecu
-//        WHERE lieu_fichierrecu.idLieu=".$get['idL']." AND type='document' AND
-//         fichierrecu.idFichierrecu=lieu_fichierrecu.idFichierrecu
-//         ORDER BY dateAjout DESC";
-//
-//         $req_docu = $connector->query($sql_docu);
-//            if ($connector->getNumRows($req_docu))
-//            {
-//                echo "<table class=\"fichiers_associes\"><tr><th>nom</th><th>ajouté le</th><th>".$iconeSupprimer."</th></tr>";
-//                while ($tab_docu = $connector->fetchArray($req_docu))
-//                {
-//                    $nom_fichier = $tab_docu['idFichierrecu'].".".$tab_docu['extension'];
-//                    echo "<tr><td><a href=\"".$url_fichiers_even.$nom_fichier."\">"
-//                    .$tab_docu['description']."</a></td><td>".date_iso2app($tab_docu['dateAjout'])."</td>
-//                    <td><input type=\"checkbox\" name=\"supprimer_document[]\" value=\"".$tab_docu['idFichierrecu'].".".$tab_docu['extension']."\" /></td></tr>";
-//                }
-//                echo "</table>";
-//            }
-//
-//        }
-        ?>
-        <?php
+            <?php
         if ($_SESSION['Sgroupe'] <= 6)
         {
         ?>

@@ -2,7 +2,7 @@
 
 require_once("app/bootstrap.php");
 
-use Ladecadanse\Security\SecurityToken; 
+use Ladecadanse\Security\SecurityToken;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\HtmlShrink;
 
@@ -12,7 +12,6 @@ if (!$videur->checkGroup(8))
 }
 
 $page_titre = "ajouter/modifier une salle";
-$page_description = "ajouter/modifier une salle";
 $extra_css = array("formulaires", "description");
 include("_header.inc.php");
 
@@ -81,7 +80,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 	{
 
 		$champs[$c] = $_POST[$c];
-		
+
 	}
 
 

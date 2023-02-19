@@ -10,9 +10,9 @@ $tab_statuts = array("actif", "inactif", "ancien");
 $get['statut'] = "actif";
 if (isset($_GET['statut']))
 {
-    try { 
+    try {
         $get['statut'] = Validateur::validateUrlQueryValue($_GET['statut'], "enum", 1, $tab_statuts);
-    } catch (Exception $e) { exit; }     
+    } catch (Exception $e) { exit; }
 }
 
 $tab_vues = array("az", "genre", "quartier");
@@ -20,7 +20,7 @@ if (isset($_GET['vue']))
 {
     try {
         $get['vue'] = Validateur::validateUrlQueryValue($_GET['vue'], "enum", 1, $tab_vues);
-    } catch (Exception $e) { exit; } 
+    } catch (Exception $e) { exit; }
 	if($get['vue'] != "az")
 	{
 		$de = "0";
@@ -40,7 +40,7 @@ if (isset($_GET['tranche']))
     try {
         $get['tranche'] = Validateur::validateUrlQueryValue($_GET['tranche'], "enum", 1, $tab_tranches);
     } catch (Exception $e) { exit; }
-    
+
 	if ($get['vue'] == "az")
 	{
 
@@ -52,7 +52,7 @@ if (isset($_GET['tranche']))
 		}
 		else if ($get['tranche'] == "lz")
 		{
-			
+
 			$de = "l";
 			$vers = "z";
 		}
@@ -102,11 +102,11 @@ $aff_menulieux = '<div id="menu_lieux"><ul class="selon">
 	if ($get['statut'] == "ancien") { $aff_menulieux .= " class=\"ici\""; }
 	$aff_menulieux .= '><a href="'.$_SERVER['PHP_SELF'].'?'.$url_query_region_et.'statut=ancien&amp;vue=az'.$url_idLieu.'" >Anciens</a></li>';
 
-           
-    $aff_menulieux .= ' 
+
+    $aff_menulieux .= '
 <div class="spacer"><!-- --></div></ul>
-    ';    
-    
+    ';
+
 $aff_menulieux .= '
 <ul class="selon">
 	<li';
@@ -114,10 +114,10 @@ $aff_menulieux .= '
 	$aff_menulieux .= '><a href="'.$_SERVER['PHP_SELF'].'?'.$url_query_region_et.'statut='.$get['statut'].'&amp;vue=az'.$url_idLieu.'" title="Liste alphabétique">A-Z</a></li><li';
 	if ($get['vue'] == "genre") { $aff_menulieux .= " class=\"ici\""; }
 	$aff_menulieux .= '><a href="'.$_SERVER['PHP_SELF'].'?'.$url_query_region_et.'statut='.$get['statut'].'&amp;vue=genre'.$url_idLieu.'" title="Liste par genre">Type</a></li>';
-        
 
-           
-        $aff_menulieux .= ' 
+
+
+        $aff_menulieux .= '
 <div class="spacer"><!-- --></div></ul>
 		';
 
@@ -149,7 +149,7 @@ $aff_menulieux .= '
 			{
 				$aff_menulieux .= "
 				<form action=\"".$_SERVER['PHP_SELF']."\" method=\"get\">
-				
+
 				<input type=\"hidden\" name=\"vue\" value=\"genre\" />
 				<input type=\"hidden\" name=\"idL\" value=\"".$get['idL']."\" />
 				<input type=\"hidden\" name=\"statut\" value=\"".$get['statut']."\" />
@@ -183,7 +183,7 @@ $aff_menulieux .= '
 
 /*
 * Requète SQL vers table 'lieu' selon choix de listage (AK ou LZ) et pour les lieux
-* actif ou non 
+* actif ou non
 */
 $sql_rf = "";
 if ($_SESSION['region'] == 'ge')
@@ -192,7 +192,7 @@ if ($_SESSION['region'] == 'ge')
 $sql_menu_lieux = "
 SELECT idLieu, nom
 FROM lieu
-WHERE statut='".$get['statut']."'  ".$sql_vue." AND region IN ('".$connector->sanitize($_SESSION['region'])."', ".$sql_rf." 'hs')  
+WHERE statut='".$get['statut']."'  ".$sql_vue." AND region IN ('".$connector->sanitize($_SESSION['region'])."', ".$sql_rf." 'hs')
 ORDER BY TRIM(LEADING 'l\'' FROM (TRIM(LEADING 'les ' FROM (TRIM(LEADING 'la ' FROM (TRIM(LEADING 'le ' FROM lower(nom)))))))) COLLATE utf8mb4_unicode_ci";
 
 $req_lieux = $connector->query($sql_menu_lieux);
@@ -232,7 +232,7 @@ while (list ($id, $nom) = mysqli_fetch_row($req_lieux))
     $nb_evenements = $connector->getNumRows($req_even);
 
 
-	
+
 
 	$aff_menulieux .=  "<tr ";
 	if ($id == $get['idL'])
@@ -289,49 +289,6 @@ while (list ($id, $nom) = mysqli_fetch_row($req_lieux))
 
 }
 
-/* $aff_menulieux .= $url_prec." ".$url_suiv;
-$aff_menulieux .= count($tab_noms_low); */
-/*
-$nomDuLieu = "";
-while ($tab_lieux = $connector->fetchArray($req_lieux))
-{
-
-	$nb_evenements = 0;
-	$aumoins1des = "";
-    $req_des = $connector->query("SELECT idLieu FROM descriptionlieu WHERE idLieu=".$tab_lieux['idLieu']);
-
-	$nomDuLieu = securise_string($tab_lieux['nom']);
-
-	// Précision pour dire si le lieu a une ou plusieurs descriptions
-    if ($connector->getNumRows($req_des) > 0)
-	{
-       $aumoins1des = "*";
-    }
-
-	$sql_even = "SELECT titre FROM evenement WHERE idLieu=".$tab_lieux['idLieu']." AND dateEvenement > '".date("Y-m-d")."'";
-
-	//echo $sql_even;
-
-    $req_even = $connector->query($sql_even);
-	// Précision pour dire si le lieu a une ou plusieurs descriptions
-
-    $nb_evenements = $connector->getNumRows($req_even);
-
-
-	echo "<tr ";
-	if ($pair % 2 != 0)
-	{
-		echo "class=\"impair\"";
-	}
-	echo "><td><a href=\"lieu.php?idL=".$tab_lieux['idLieu']."\">".$nomDuLieu."</a></td><td>".$aumoins1des."</td><td>".$nb_evenements."</td>
-	</tr>";
-
-
-
-
-	$pair++;
-
-	}  */
 	$aff_menulieux .= "
 	<tr><td></td></tr>
 		</table>
