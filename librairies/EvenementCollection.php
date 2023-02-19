@@ -84,9 +84,8 @@ class EvenementCollection extends Collection {
 
         global $connector;
         global $rep_images_even;
-        global $rep_fichiers_even;
-        //TESTER SI L'EVENEMENT EXISTE ENCORE
 
+        //TESTER SI L'EVENEMENT EXISTE ENCORE
         if ((($authorization->estAuteur($_SESSION['SidPersonne'], $get_idE, "evenement") && $_SESSION['Sgroupe'] <= 6) || $_SESSION['Sgroupe'] < 2))
         {
             /*
@@ -108,16 +107,6 @@ class EvenementCollection extends Collection {
             {
                 unlink($rep_images_even . $val_even['image']);
                 unlink($rep_images_even . "s_" . $val_even['image']);
-            }
-
-            $req_docu = $connector->query("SELECT * FROM fichierrecu
-        WHERE idElement=" . $get_idE . " AND type_element='evenement' AND type='document'");
-
-            while ($tab_docu = $connector->fetchArray($req_docu))
-            {
-                //printr($tab_docu);
-                unlink($rep_fichiers_even . $tab_docu['idFichierrecu'] . "." . $tab_docu['extension']);
-                $connector->query("DELETE FROM fichierrecu WHERE idFichierrecu=" . $tab_docu['idFichierrecu']);
             }
 
             if ($connector->query("DELETE FROM evenement WHERE idEvenement=" . $get_idE))

@@ -94,26 +94,6 @@ if (isset($_GET['idP'])) {
                     unlink($rep_images_even . "s_" . $val_even['image']);
                 }
 
-                $sql_docu = "SELECT fichierrecu.idFichierrecu AS idFichierrecu, description, mime, extension, dateAjout
-FROM fichierrecu, evenement_fichierrecu
-WHERE evenement_fichierrecu.idEvenement=" . $get['id'] . " AND type='document' AND
- fichierrecu.idFichierrecu=evenement_fichierrecu.idFichierrecu";
-
-                $req_docu = $connector->query($sql_docu);
-
-                while ($tab_docu = $connector->fetchArray($req_docu))
-                {
-                    $nom_fichier = $tab_docu['idFichierrecu'] . "." . $tab_docu['extension'];
-                    if (unlink($rep_fichiers_even . $nom_fichier)) {
-                        //echo $nom_fichier." supprimé<br>";
-                    }
-
-                    $connector->query("DELETE FROM fichierrecu WHERE idFichierrecu=" . $tab_docu['idFichierrecu']);
-                }
-
-
-                $connector->query("DELETE FROM evenement_fichierrecu WHERE idEvenement=" . $get['id']);
-
                 if ($connector->query("DELETE FROM evenement WHERE idEvenement=" . $get['id'])) {
                     HtmlShrink::msgOk('L\'événement "' . sanitizeForHtml($titreSup) . '" a été supprimé');
                     $logger->log('global', 'activity', "[supprimer] event \"$titreSup\" (" . $get['id'] . ") deleted", Logger::GRAN_YEAR);
@@ -227,24 +207,7 @@ WHERE lieu_fichierrecu.idLieu=" . $get['id'] . " AND type='image' AND
                         $connector->query("DELETE FROM fichierrecu WHERE idFichierrecu=" . $tab_docu['idFichierrecu']);
                     }
 
-                    $sql_docu = "SELECT fichierrecu.idFichierrecu AS idFichierrecu, description, mime, extension, dateAjout
-FROM fichierrecu, lieu_fichierrecu
-WHERE lieu_fichierrecu.idLieu=" . $get['id'] . " AND type='document' AND
- fichierrecu.idFichierrecu=lieu_fichierrecu.idFichierrecu";
-
-                    $req_docu = $connector->query($sql_docu);
-
-                    while ($tab_docu = $connector->fetchArray($req_docu))
-                    {
-                        $nom_fichier = $tab_docu['idFichierrecu'] . "." . $tab_docu['extension'];
-                        if (unlink($rep_fichiers_lieu . $nom_fichier)) {
-                            echo $nom_fichier . " supprimé<br>";
-                        }
-
-                        $connector->query("DELETE FROM fichierrecu WHERE idFichierrecu=" . $tab_docu['idFichierrecu']);
-                    }
-
-                    $connector->query("DELETE FROM lieu_fichierrecu WHERE idLieu=" . $get['id']);
+                $connector->query("DELETE FROM lieu_fichierrecu WHERE idLieu=" . $get['id']);
 
                     $connector->query("DELETE FROM salle WHERE idLieu=" . $get['id']);
 

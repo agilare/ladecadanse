@@ -15,9 +15,7 @@ $rep_images_even = __ROOT__ . "/images/"; // legacy, should be web/uploads/evene
 $rep_uploads_lieux = __ROOT__ . "/web/uploads/lieux/";
 $rep_uploads_lieux_galeries = __ROOT__ . "/web/uploads/lieux/galeries/";
 $rep_uploads_organisateurs = __ROOT__ . "/web/uploads/organisateurs/";
-$rep_fichiers_even = __ROOT__ . "/web/uploads/fichiers/evenements/";
 $rep_fichiers_lieu = __ROOT__ . "/web/uploads/fichiers/lieux/";
-
 
 // PATHS
 $url_uploads_events = "/images/";

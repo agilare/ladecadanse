@@ -20,7 +20,6 @@ class OrganisateurEdition extends Edition
     var $supprimer_document = array();
     var $supprimer_galerie = array();
     var $erreurs = array();
-    var $document_description;
     var $message;
     var $verif;
     var $action;

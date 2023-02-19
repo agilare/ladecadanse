@@ -21,7 +21,6 @@ class LieuEdition extends Edition
     var $supprimer_galerie = array();
     var $supprimer_organisateur = array();
     var $erreurs = array();
-    var $document_description;
     var $organisateurs = array();
     var $message;
     var $verif;
@@ -49,12 +48,8 @@ class LieuEdition extends Edition
     {
         parent::traitement($post, $files);
 
-        unset($this->valeurs['document_description']);
         unset($this->valeurs['organisateurs']);
         $this->id = $post['idLieu'];
-
-        if (isset($post['document_description']))
-            $this->document_description = $post['document_description'];
 
         if (isset($post['organisateurs']))
             $this->organisateurs = $post['organisateurs'];
@@ -163,18 +158,6 @@ class LieuEdition extends Edition
 
         $verif->validerFichier($this->fichiers['logo'], "logo", $mimes_images_acceptes, 0);
         $verif->validerFichier($this->fichiers['photo1'], "photo1", $mimes_images_acceptes, 0);
-
-        if (isset($this->fichiers['document']))
-            $verif->validerFichier($this->fichiers['document'], "document", $mimes_documents_acceptes, 0);
-
-        $doc_desc_oblig = 0;
-        if (!empty($fichiers['document']['name']))
-        {
-            $doc_desc_oblig = 1;
-        }
-
-        if (isset($this->document_description))
-            $verif->valider($this->document_description, "document_description", "texte", 2, 35, $doc_desc_oblig);
 
         $verif->validerFichier($this->fichiers['image_galerie'], "image_galerie", $mimes_images_acceptes, 0);
 
@@ -384,16 +367,6 @@ class LieuEdition extends Edition
                 $lieu->setValue('photo1', '');
             }
 
-
-            foreach ($this->supprimer_document as $nom_fichier)
-            {
-                $idF = Text::reverseMbStrrchr($nom_fichier, '.');
-                $this->connector->query("DELETE FROM lieu_fichierrecu WHERE idLieu=" . $lieu->getId() . " AND idFichierrecu=" . $idF);
-                $this->connector->query("DELETE FROM fichierrecu WHERE idFichierrecu=" . $idF);
-                unlink($rep_fichiers_lieu . $nom_fichier);
-            }
-
-
             foreach ($this->supprimer_galerie as $nom_fichier)
             {
                 $idF = Text::reverseMbStrrchr($nom_fichier, '.');
@@ -461,53 +434,6 @@ class LieuEdition extends Edition
             {
                 trigger_error($imD2->getErreur());
                 exit;
-            }
-        }
-
-        if (!empty($this->fichiers['document']['name']))
-        {
-            $extension = mb_strrchr($this->fichiers['document']['name'], '.');
-
-            $sql_insert = "INSERT INTO fichierrecu (idElement, type_element, description, mime, extension, type, dateAjout)
-			VALUES ('" . $lieu->getId() . "', 'lieu',
-			'" . $this->connector->sanitize($this->document_description) . "',
-			'" . $this->connector->sanitize($this->fichiers['document']['type']) . "',
-			'" . $this->connector->sanitize(mb_substr($extension, 1)) . "', 'document', '" . date("Y-m-d H:i:s") . "')";
-
-            //TEST
-            //echo "<p>".$sql_insert."</p>";
-            //
-
-            if ($this->connector->query($sql_insert))
-            {
-                //TEST
-                //echo "fichier inseré";
-                //
-            }
-
-            $id_nouveau_fichier = $this->connector->getInsertId();
-
-            $sql_ins_ef = "INSERT INTO lieu_fichierrecu (idLieu, idFichierrecu)
-			VALUES ('" . $lieu->getId() . "', '" . $id_nouveau_fichier . "')";
-
-            //TEST
-            //echo "<p>".$sql_ins_ef."</p>";
-            //
-
-            if ($this->connector->query($sql_ins_ef))
-            {
-
-            }
-
-            $nom_document = $id_nouveau_fichier . $extension;
-            //TEST
-            //echo "Transfert de ".$fichiers['document']['tmp_name']." vers ".$rep_fichiers_even.$champs['document'];
-            //
-            if ($copie_fichier = move_uploaded_file($this->fichiers['document']['tmp_name'], $rep_fichiers_lieu . $nom_document))
-            {
-                //TEST
-                //echo $champs['document']." transféré";
-                //
             }
         }
 

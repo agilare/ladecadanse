@@ -575,8 +575,7 @@ elseif (!empty($_POST['formulaire']))
 
 			foreach ($champs as $c => $v)
 			{
-                            if ((!empty($v) && $c != "document_description" && $c != "idPersonne" && $c != "organisateurs")
-                            || (($c == "idLieu" || $c == "urlLieu" || $c == "quartier" || $c == "localite_id" || $c == "region") && $lieu_modifie == true )
+                            if ((!empty($v) && $c != "idPersonne" && $c != "organisateurs") || (($c == "idLieu" || $c == "urlLieu" || $c == "quartier" || $c == "localite_id" || $c == "region") && $lieu_modifie == true )
                             )
                             {
                                     $sql_update .= $c."='".$connector->sanitize($v)."', ";

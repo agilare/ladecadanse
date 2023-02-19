@@ -129,7 +129,6 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
     if (empty($champs['idLieu']))
         $champs['idLieu'] = 0;
 
-	//$fichiers['document'] = $_FILES['document'];
 
 	// récup des suppressions qui seront à effectuer
 	if (isset($_POST['sup_flyer']))
@@ -425,8 +424,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 
 			foreach ($champs as $c => $v)
 			{
-				if ($c != "document_description" && $c != 'organisateurs')
-				{
+				if ($c != 'organisateurs') {
 					$sql_insert_attributs .= $c.", ";
 					$sql_insert_valeurs .= "'".$connector->sanitize($v)."', ";
 				}
@@ -568,31 +566,11 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 
 			} //if supprimer image
 
-			if (!empty($supprimer['document']))
-			{
-				foreach ($supprimer['document'] as $nom_fichier)
-				{
-					$idF = Text::reverseMbStrrchr($nom_fichier, '.');
-
-					$connector->query("DELETE FROM evenement_fichierrecu WHERE idEvenement=".$get['idE']." AND idFichierrecu=".$idF);
-
-					$req_nbf = $connector->query("SELECT COUNT(*) AS nb FROM evenement_fichierrecu WHERE idFichierrecu=".$idF);
-					$tab_nbf = $connector->fetchArray($req_nbf);
-
-					if ($tab_nbf['nb'] == 0)
-					{
-						$connector->query("DELETE FROM fichierrecu WHERE idFichierrecu=".$idF);
-						unlink($rep_fichiers_even.$nom_fichier);
-					}
-				}
-			}
-
 			$sql_update = "UPDATE evenement SET ";
 
 			foreach ($champs as $c => $v)
 			{
-				if ($c != "document_description" && $c != "idPersonne" && $c != 'organisateurs')
-				{
+				if ($c != "idPersonne" && $c != 'organisateurs') {
 					$sql_update .= $c."='".$connector->sanitize($v)."', ";
 				}
 			}
