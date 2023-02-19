@@ -19,7 +19,7 @@ ALTER TABLE `personne` CHANGE `pseudo` `pseudo` VARCHAR(80) CHARACTER SET utf8 C
 ALTER TABLE personne CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ALTER TABLE personne_organisateur CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ;
 ALTER TABLE salle CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ;
-ALTER TABLE temp CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ;
+ALTER TABLE user_reset_requests CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ;
 
 
 -- For each table

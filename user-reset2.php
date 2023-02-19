@@ -39,7 +39,7 @@ $action_terminee = false;
 
 <!-- Deb Contenu -->
 <div id="contenu" class="colonne">
-		
+
 <div id="entete_contenu">
 <h2>Réinitialisation du mot de passe</h2>
 <div class="spacer"></div>
@@ -49,7 +49,7 @@ $action_terminee = false;
 <?php
 // vérification en tous temps; un seul enregistrement accepté
 
-$sql_temp = "SELECT * FROM temp WHERE token='".$connector->sanitize($get['token'])."' AND expiration > NOW()";
+$sql_temp = "SELECT * FROM user_reset_requests WHERE token='" . $connector->sanitize($get['token']) . "' AND expiration > NOW()";
 //echo $sql_temp;
 $req_temp = $connector->query($sql_temp);
 
@@ -63,61 +63,61 @@ if ($connector->getNumRows($req_temp) == 1)
 		foreach ($champs as $c => $v)
 		{
             if (isset($_POST[$c]) )
-            {            
+            {
                 $champs[$c] = $_POST[$c];
             }
 		}
-		
+
 		if (empty($tab_temp['idPersonne']) && empty($champs['idPersonne']))
 		{
-			$verif->setErreur("motdepasse", "Veuillez choisir un compte");			
+			$verif->setErreur("motdepasse", "Veuillez choisir un compte");
 		}
-		
+
 		// si l'email avait été fourni, vérification qu'il correspond bien au compte choisi
 		if (!empty($tab_temp['email']) && !empty($champs['idPersonne']))
-		{		
+		{
 			// retrouver user dans personne à partir de la demande
 			$sql_auth = "SELECT pseudo, idPersonne FROM personne WHERE ";
-			
-			$tab_auth_where = [];	
-	
+
+			$tab_auth_where = [];
+
 			$tab_auth_where[] = " email='".$connector->sanitize($tab_temp['email'])."' ";
 			// si le demandeur a choisi un compte parmi plusieurs qui ont son email : et l'id du compte correspondant
 			$tab_auth_where[] = " idPersonne='".$connector->sanitize($champs['idPersonne'])."' ";
 
 			$sql_auth .= implode(" AND ", $tab_auth_where);
-		
+
 			//echo $sql_auth;
-		
-			$req_auth = $connector->query($sql_auth);	
-			
+
+			$req_auth = $connector->query($sql_auth);
+
 			// on doit obtenir un seul compte
 			if ($connector->getNumRows($req_auth) != 1)
 			{
 				$verif->setErreur("auth", "Vous n'êtes pas autorisé à modifier ce compte");
-			}				
+			}
 			else
 			{
 				// un seul row donc
-				$tab_auth = $connector->fetchArray($req_auth);	
+				$tab_auth = $connector->fetchArray($req_auth);
 			}
 
-	
-		}	
+
+		}
 
 		$idPersonne = '';
-		
+
 		if (!empty($tab_temp['idPersonne']))
 		{
 			$idPersonne = $tab_temp['idPersonne'];
-		}			
+		}
 		else if (!empty($tab_temp['email']))
 		{
-			$idPersonne = $tab_auth['idPersonne'];		
+			$idPersonne = $tab_auth['idPersonne'];
 		}
 		else
 		{
-			$verif->setErreur("motdepasse", "L'utilisateur n'a pu être retrouvé");			
+			$verif->setErreur("motdepasse", "L'utilisateur n'a pu être retrouvé");
 		}
 
 		$verif->valider($champs['motdepasse'], "motdepasse", "texte", 6, 18, 1);
@@ -130,13 +130,13 @@ if ($connector->getNumRows($req_temp) == 1)
 			{
 				$verif->setErreur("motdepasse_inegaux", 'Les 2 mots de passe doivent être identiques.');
 			}
-			
+
 			if (in_array($champs['motdepasse'], $g_mauvais_mdp))
 			{
-				$verif->setErreur("motdepasse", "Veuillez choisir un meilleur mot de passe");	
+				$verif->setErreur("motdepasse", "Veuillez choisir un meilleur mot de passe");
 			}
-			
-			
+
+
 			if (!empty($champs['motdepasse'])&& !preg_match("/[0-9]/", $champs['motdepasse']))
 			{
 				$verif->setErreur("motdepasse", 'Le mot de passe doit comporter au moins 1 chiffre.');
@@ -157,38 +157,37 @@ if ($connector->getNumRows($req_temp) == 1)
 			//TEST
 			//echo "<p>".$sql_update."</p>";
 			//
-			
-			$sql_delete = "DELETE FROM temp WHERE token='".$connector->sanitize($get['token'])."'";
 
-			
-			if ($connector->query($sql_update) && $connector->query($sql_delete))
+			$sql_delete = "DELETE FROM user_reset_requests WHERE token='" . $connector->sanitize($get['token']) . "'";
+
+            if ($connector->query($sql_update) && $connector->query($sql_delete))
 			{
 				HtmlShrink::msgOk("Le mot de passe a été mis à jour, vous pouvez maintenant vous <a href='/user-login.php'>connecter</a> avec votre identifiant et ce nouveau mot de passe");
-                $logger->log('global', 'activity', "[user-reset2] success by user idP ".$idPersonne, Logger::GRAN_YEAR);                
+                $logger->log('global', 'activity', "[user-reset2] success by user idP ".$idPersonne, Logger::GRAN_YEAR);
 			}
 			else
 			{
 				HtmlShrink::msgErreur("La requête UPDATE a échoué, veuillez contacter le webmaster");
 			}
-			
+
 			$action_terminee = true;
-			
+
 
 		} // if erreurs == 0
 	} // if POST != ""
 
 	// si l'email avait été fourni, retrouve le(s) compte(s) associé(s)
 	$tab_comptes = [];
-	
+
 	if (empty($tab_temp['idPersonne']) && !empty($tab_temp['email']))
 	{
 		$sql_comptes = "SELECT * FROM personne WHERE email ='".$connector->sanitize($tab_temp['email'])."' AND actif='1'";
 		//echo $sql_comptes;
 		$req_comptes = $connector->query($sql_comptes);
 
-		if ($connector->getNumRows($req_comptes) > 0)		
+		if ($connector->getNumRows($req_comptes) > 0)
 		{
-			
+
 			while ($tab_compte = $connector->fetchArray($req_comptes))
 			{
 				$tab_comptes[] = $tab_compte;
@@ -244,14 +243,14 @@ if (count($tab_comptes) > 1) {
 </select>
 <?php echo $verif->getHtmlErreur("auth");?>
 </p>
-<?php 
-} 
+<?php
+}
 else if (count($tab_comptes) == 1)
 {
 ?>
 <input type="hidden" name="idPersonne" value="<?php echo $tab_comptes[0]['idPersonne']; ?>" />
 
-<?php	
+<?php
 }
 ?>
 
@@ -279,8 +278,8 @@ else if (count($tab_comptes) == 1)
 <input type="submit" value="Envoyer" class="submit" />
 </p>
 
-</form>		
-		
+</form>
+
 <?php
 } // if action
 

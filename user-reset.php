@@ -41,46 +41,45 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' && empty($_POST
 	{
 
 			$champs[$c] = $_POST[$c];
-		
+
 	}
 
 
 	$verif->valider($champs['pseudo_email'], "pseudo_email", "texte", 2, 80, 1);
 
 
-	//Si le pseudo et le mot de passe sont au bon format
-	if ($verif->nbErreurs() == 0)
+    //Si le pseudo et le mot de passe sont au bon format
+    if ($verif->nbErreurs() == 0)
 	{
 		$idPersonne = '';
 		$email = '';
 		$email_envoi = '';
-		
+
 		//trouver user selon pseudo
 		$sql_pseudo = "SELECT idPersonne, email FROM personne WHERE pseudo='".$connector->sanitize($champs['pseudo_email'])."'";
 		//echo $sql;
 		$res_personne_pseudo = $connector->query($sql_pseudo);
 		if ($connector->getNumRows($res_personne_pseudo) > 0)
-		{	
+		{
 			$tab_pers = $connector->fetchArray($res_personne_pseudo);
 			$idPersonne = $tab_pers['idPersonne'];
 			$email =  'NULL';
 			$email_envoi =  $tab_pers['email'];
 			$hash = $tab_pers['idPersonne'];
-			
-		}	
-		
+
+		}
+
 		//trouver user selon email
 		$sql_email = "SELECT idPersonne, email FROM personne WHERE email='".$connector->sanitize($champs['pseudo_email'])."'";
-		
+
 		$res_personne_email = $connector->query($sql_email);
 
-		if ($connector->getNumRows($res_personne_email) > 0)
-		{	
+        if ($connector->getNumRows($res_personne_email) > 0) {
 			$email = $champs['pseudo_email'];
 			$idPersonne = 'NULL';
 			$email_envoi = $champs['pseudo_email'];
 			$hash = $champs['pseudo_email'];
-		}			
+		}
 
 		if ($email_envoi)
 		{
@@ -88,11 +87,11 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' && empty($_POST
 
 			// Create the unique user password reset key
 			$token = hash('sha256', $salt.rand(0, 1000).$hash);
-			
-			//création de demande avec nouveau token
-			$sql = "INSERT INTO temp (idPersonne, email, token, expiration) VALUES (".$idPersonne.", '".$email."', '".$token."', NOW() + INTERVAL 1 DAY)";
 
-			$connector->query($sql);			
+			//création de demande avec nouveau token
+			$sql = "INSERT INTO user_reset_requests (idPersonne, email, token, expiration) VALUES (" . $idPersonne . ", '" . $email . "', '" . $token . "', NOW() + INTERVAL 1 DAY)";
+
+            $connector->query($sql);
 
 			$subject = "Votre demande pour un nouveau mot de passe sur La décadanse";
 
@@ -107,15 +106,15 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' && empty($_POST
 
             $mailer = new Mailing();
             $mailer->toUser($email_envoi, $subject, $contenu_message);
-       
-			HtmlShrink::msgOk("Un email a été envoyé à ".$email_envoi." qui contient un lien vous permettant de choisir un nouveau mot de passe.");	
+
+			HtmlShrink::msgOk("Un email a été envoyé à ".$email_envoi." qui contient un lien vous permettant de choisir un nouveau mot de passe.");
 
             $logger->log('global', 'activity', "[user-reset] request by ".$email_envoi." user.php?idP=".$idPersonne, Logger::GRAN_YEAR);
 		}
 		else
 		{
             $logger->log('global', 'activity', "[motdepasse_demande] request failed for pseudo/email ".$champs['pseudo_email'], Logger::GRAN_YEAR);
-			HtmlShrink::msgErreur("L'email/identifiant que vous avez saisi pour votre demande n'est pas enregistré sur La décadanse");				
+			HtmlShrink::msgErreur("L'email/identifiant que vous avez saisi pour votre demande n'est pas enregistré sur La décadanse");
 		}
 
 		$termine = true;

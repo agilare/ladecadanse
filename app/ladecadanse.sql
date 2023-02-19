@@ -1275,7 +1275,7 @@ CREATE TABLE `salle` (
   `date_derniere_modif` datetime NOT NULL DEFAULT '0000-00-00 00:00:00'
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE `temp` (
+CREATE TABLE `user_reset_requests` (
   `id` mediumint(9) NOT NULL,
   `idPersonne` mediumint(9) DEFAULT NULL,
   `email` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -1339,7 +1339,7 @@ ALTER TABLE `personne_organisateur`
 ALTER TABLE `salle`
   ADD PRIMARY KEY (`idSalle`);
 
-ALTER TABLE `temp`
+ALTER TABLE `user_reset_requests`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `idPersonne` (`idPersonne`);
 
@@ -1367,7 +1367,7 @@ ALTER TABLE `personne`
 ALTER TABLE `salle`
   MODIFY `idSalle` mediumint(9) NOT NULL AUTO_INCREMENT;
 
-ALTER TABLE `temp`
+ALTER TABLE `user_reset_requests`
   MODIFY `id` mediumint(9) NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `salle` ADD `status` VARCHAR(20) NOT NULL DEFAULT 'actif' AFTER `emplacement`;
