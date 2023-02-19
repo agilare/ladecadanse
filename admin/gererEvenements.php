@@ -478,9 +478,8 @@ elseif (!empty($_POST['formulaire']))
 					if (!empty($affFly['flyer']))
 					{
 							unlink($rep_images_even.$affFly['flyer']);
-							unlink($rep_images_even."s_".$affFly['flyer']);
-							unlink($rep_images_even."t_".$affFly['flyer']);
-							echo "<div class=\"msg\">Ancien flyer ".$affFly['flyer']." supprimé</div>";
+							unlink($rep_images_even . "s_" . $affFly['flyer']);
+                        echo "<div class=\"msg\">Ancien flyer ".$affFly['flyer']." supprimé</div>";
 					}
 
 
@@ -507,9 +506,8 @@ elseif (!empty($_POST['formulaire']))
 					if (!empty($affFly['flyer']))
 					{
 						unlink($rep_images_even.$affFly['flyer']);
-						unlink($rep_images_even."s_".$affFly['flyer']);
-						unlink($rep_images_even."t_".$affFly['flyer']);
-						//echo "<div class=\"msg\">Ancien flyer ".$affFly['flyer']." supprimÃ©</div>";
+						unlink($rep_images_even . "s_" . $affFly['flyer']);
+                        //echo "<div class=\"msg\">Ancien flyer ".$affFly['flyer']." supprimÃ©</div>";
 					}
 				}
 				else
@@ -626,7 +624,7 @@ elseif (!empty($_POST['formulaire']))
 				$erreur_image = array();
 				$erreur_image[] = $imD2->processImage($_FILES['flyer'], $champs['flyer'], 400, 400);
 				$erreur_image[] = $imD2->processImage($_FILES['flyer'], "s_".$champs['flyer'], 120, 190, 0, 1);
-				$erreur_image[] = $imD2->processImage($_FILES['flyer'], "t_".$champs['flyer'], 60, 80, 0, 1);
+
 				if (!empty($erreur_image))
 				{
 					//printr($erreur_image);
@@ -651,15 +649,8 @@ elseif (!empty($_POST['formulaire']))
 				$des = $rep_images_even."s_".$champs['flyer'];
 
 				if (!copy($src, $des))
-					HtmlShrink::msgErreur("La copie du fichier taille small ".$champs['flyer']." n'a pas réussi...");
-
-				$src = $rep_images_even."t_".$srcFlyer;
-				$des = $rep_images_even."t_".$champs['flyer'];
-
-				if (!copy($src, $des))
-					HtmlShrink::msgErreur("La copie du fichier taille tiny ".$champs['flyer']." n'a pas réussi...");
-
-			}
+					HtmlShrink::msgErreur("La copie du fichier taille small " . $champs['flyer'] . " n'a pas réussi...");
+            }
 
 			if (!empty($fichiers['image']['name']) && $compteur_evenements == 0)
 			{

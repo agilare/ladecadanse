@@ -283,8 +283,8 @@ if ($get['elements'] == "evenement")
 				$imgInfo = @getimagesize($rep_images_even.$tab_even['flyer']);
 				echo HtmlShrink::popupLink($url_uploads_events.$tab_even['flyer']."?".@filemtime($rep_images_even.$tab_even['flyer']),
 				"Flyer", $imgInfo[0]+20,$imgInfo[1]+20,
-				'<img src="'.$url_uploads_events.'t_'.$tab_even['flyer'].'" alt="Flyer" width="60" />'
-				);
+				'<img src="' . $url_uploads_events . 's_' . $tab_even['flyer'] . '" alt="Flyer" width="60" />'
+                    );
 			}
 			echo '</td>';
 

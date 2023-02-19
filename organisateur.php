@@ -390,8 +390,8 @@ if ($evenements->getNbElements() > 0)
 
                 ?>
                 <a href="<?php echo $url_uploads_events.$even->getValue('flyer').'?'. @filemtime($rep_images_even.$even->getValue('flyer')) ?>" class="magnific-popup">
-                    <img src="<?php echo $url_uploads_events."t_".$even->getValue('flyer')."?". @filemtime($rep_images_even."t_".$even->getValue('flyer')); ?>" alt="Flyer" width="60" />
-                </a>
+                                <img src="<?php echo $url_uploads_events . "s_" . $even->getValue('flyer') . "?" . @filemtime($rep_images_even . "s_" . $even->getValue('flyer')); ?>" alt="Flyer" width="60" />
+                            </a>
 
                 <?php
 
@@ -402,8 +402,8 @@ if ($evenements->getNbElements() > 0)
 
                 ?>
                 <a href="<?php echo $url_uploads_events.$even->getValue('image').'?'. @filemtime($rep_images_even.$even->getValue('image')) ?>" class="magnific-popup">
-                                <img src="<?php echo $url_uploads_events."s_".$even->getValue('image')."?". @filemtime($rep_images_even."t_".$even->getValue('image')); ?>" alt="Photo" width="60" />
-                </a>
+                                <img src="<?php echo $url_uploads_events . "s_" . $even->getValue('image') . "?" . @filemtime($rep_images_even . "s_" . $even->getValue('image')); ?>" alt="Photo" width="60" />
+                            </a>
 
                 <?php
 

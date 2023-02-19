@@ -54,7 +54,7 @@ class LieuEdition extends Edition
         $this->id = $post['idLieu'];
 
         if (isset($post['document_description']))
-            $this->document_description = $post['docuàment_description'];
+            $this->document_description = $post['document_description'];
 
         if (isset($post['organisateurs']))
             $this->organisateurs = $post['organisateurs'];

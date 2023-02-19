@@ -394,13 +394,10 @@ FROM evenement WHERE region IN ('" . $connector->sanitize($_SESSION['region']) .
 
                 ?>
 
-                <a href="<?php echo $url_uploads_events.$tab_dern_even['flyer']; ?>" class="magnific-popup"><img src="<?php echo $url_uploads_events."t_".$tab_dern_even['flyer']; ?>" alt="Flyer" width="60" /></a>
+        <a href="<?php echo $url_uploads_events . $tab_dern_even['flyer']; ?>" class="magnific-popup"><img src="<?php echo $url_uploads_events . "s_" . $tab_dern_even['flyer']; ?>" alt="Flyer" width="60" /></a>
 
-                <?php
-
-                //echo lien_popup($IMGeven.$tab_dern_even['flyer'], "flyer", $imgInfo[0]+20, $imgInfo[1]+20, "<img src=\"".$IMGeven."t_".$tab_dern_even['flyer']."\" alt=\"Flyer\" width=\"60\" />");
-
-            }
+                            <?php
+                        }
             else if (!empty($tab_dern_even['image']))
             {
                 $imgInfo = @getimagesize($rep_images_even.$tab_dern_even['image']);
@@ -409,12 +406,8 @@ FROM evenement WHERE region IN ('" . $connector->sanitize($_SESSION['region']) .
 
                 <a href="<?php echo $url_uploads_events.$tab_dern_even['image']; ?>" class="magnific-popup"><img src="<?php echo $url_uploads_events."s_".$tab_dern_even['image']; ?>" alt="Photo" width="60" /></a>
 
-                <?php
-
-                //echo lien_popup($IMGeven.$tab_dern_even['image'], "Image", $imgInfo[0]+20, $imgInfo[1]+20, "<img width=\"60\" src=\"".$IMGeven."s_".$tab_dern_even['image']."\" alt=\"Image\" />");
-
-
-            }
+                            <?php
+                        }
 
             echo "</div>";
 

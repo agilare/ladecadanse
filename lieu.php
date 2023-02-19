@@ -798,11 +798,10 @@ title="Flux RSS des prochains événements"><i class="fa fa-rss fa-lg" style="co
 		{
 			$imgInfo = getimagesize($rep_images_even.$even->getValue('flyer'));
 
-			//$illustration = lien_popup($IMGeven.$even->getValue('flyer')."?".filemtime($rep_images_even.$even->getValue('even')), "Flyer", $imgInfo[0]+20,$imgInfo[1]+20,			"<img src=\"".$IMGeven."t_".$even->getValue('flyer')."?".filemtime($rep_images_even."t_".$even->getValue('flyer'))."\" alt=\"Flyer\" />");
 			?>
 			<a href="<?php echo $url_uploads_events.$even->getValue('flyer').'?'.filemtime($rep_images_even.$even->getValue('flyer')) ?>" class="magnific-popup">
-				<img src="<?php echo $url_uploads_events."t_".$even->getValue('flyer')."?".filemtime($rep_images_even."t_".$even->getValue('flyer')); ?>" alt="Flyer" width="60" />
-			</a>
+                <img src="<?php echo $url_uploads_events . "s_" . $even->getValue('flyer') . "?" . filemtime($rep_images_even . "s_" . $even->getValue('flyer')); ?>" alt="Flyer" width="60" />
+                        </a>
 
 			<?php
 

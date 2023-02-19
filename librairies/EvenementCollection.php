@@ -102,7 +102,6 @@ class EvenementCollection extends Collection {
             {
                 unlink($rep_images_even . $val_even['flyer']);
                 unlink($rep_images_even . "s_" . $val_even['flyer']);
-                unlink($rep_images_even . "t_" . $val_even['flyer']);
             }
 
             if (!empty($val_even['image']))

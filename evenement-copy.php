@@ -264,15 +264,7 @@ FROM evenement WHERE idEvenement=".$get['idE'])));
 				  		HtmlShrink::msgErreur("La copie du fichier ".$tab_champs['flyer']." n'a pas réussi...");
 					}
 
-					$src = $rep_images_even."t_".$flyer_orig;
-					$des = $rep_images_even."t_".$tab_champs['flyer'];
-
-					if (!copy($src, $des))
-					{
-				  		HtmlShrink::msgErreur("La copie du fichier ".$tab_champs['flyer']." n'a pas réussi...");
-					}
-
-					$flyer = '';
+                    $flyer = '';
 		        }
 
 				if (!empty($tab_champs['image']))
