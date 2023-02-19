@@ -239,11 +239,7 @@ if ($lieu->getValue('logo'))
 		echo $menu_actions;
 		echo $action_ajouter;
 		echo $action_editer;
-		?><!--
-		<li><?php echo $lien_prec; ?></li>
-		<li><?php echo $lien_suiv; ?></li>
-		<li><a href="<?php echo basename(__FILE__)."?".Utils::urlQueryArrayToString($get) ?>&amp;style=imprimer" title="Format imprimable">
-		<?php echo $iconeImprimer ?></a></li>-->
+		?>
 	</ul>
 
 	<div class="spacer"><!-- --></div>
