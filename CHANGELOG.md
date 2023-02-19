@@ -23,6 +23,7 @@
 ### Changed
 
 - lieux home like organizers
+- Matomo tracking code modernized and for tools.ladecadanse.ch/matomo
 - refactor
     -  bootstrap, config
         - purge, rename global url, rep vars
