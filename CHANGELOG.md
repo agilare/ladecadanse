@@ -1,42 +1,51 @@
 # Changelog
 
+
 ## [Unreleased]
 
-3.3.0
-
 ### Added
+
 - [ ] CONTRIBUTING.md
 
 ### Changed
-- [x] lieux home like organizers
+
 - [ ] refactor
-    - [ ] bootstrap, config
-        - [x] purge, rename global url, rep vars
-        - [ ] html sanitization moved in Text class
-        - [x] class to manage region user choice
-        - [ ] rm headers (externalized)
-        - [x] env
-            - [x] replace remaining env var by const*
-            - [x] document
-        - [ ] rss.php, agenda.php names
-        - [ ] mots-vides.txt -> utf8
-    - [ ] mv files to more adequate dirs
-    - [ ] table temp -> user_reset
-    - [x] url queries for calendar simplified
-- [x] adding comments disabled
+    - [ ] html sanitization moved in Text class
+    - [ ] agenda.php to evenement-agenda.php
+
+
+## [3.3.0] - 2023-02-19
+
+### Fixed
+
+- search : mots-vides.txt in utf-8
+
+### Changed
+
+- lieux home like organizers
+- refactor
+    -  bootstrap, config
+        - purge, rename global url, rep vars
+        - class to manage region user choice
+        - env : replace remaining env var by const, document
+    - table temp -> user_reset_requests
+    - url queries for calendar simplified
+    - misc
 
 ### Removed
-- [x] cache
-- [x] breves
-- [x] favorites
-- [ ] file upload
-- [ ] app : index.html, utf8-to-utf8mb4
-- [ ] events : tiny flyers
-- [x] header files (home latests, lieu, organisateur)
-- [ ] rss : even comments, lieux descriptions
+
+- cache
+- breves
+- favorites
+- adding comments
+- lieux : document upload
+- app : index.html, utf8-to-utf8mb4
+- events : tiny flyers, document upload
+- header files (home latests, lieu, organisateur)
+- rss : even comments, lieux descriptions
 
 ### Security
-- [x] rm display of mysql errors
+- rm display of mysql errors
 
 ## [3.2.6] - 2023-02-05
 

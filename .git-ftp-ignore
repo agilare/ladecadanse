@@ -3,6 +3,7 @@ images/*
 app/env_model.php
 app/ladecadanse.sql
 app/ladecadanse-utf8-to-utf8mb4.sql
+.editorconfig
 .gitattributes
 .gitignore
 */.gitignore      # ignore files in sub directories
