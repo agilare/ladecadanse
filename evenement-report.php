@@ -6,10 +6,6 @@ use Ladecadanse\Utils\Logger;
 use Ladecadanse\Utils\Mailing;
 use Ladecadanse\HtmlShrink;
 
-$page_titre = "Signaler une erreur";
-$extra_css = array("formulaires", "evenement_inc");
-include("_header.inc.php");
-
 if (isset($_GET['idE']))
 {
     try
@@ -26,6 +22,10 @@ else
     header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
     exit;
 }
+
+$page_titre = "Signaler une erreur";
+$extra_css = array("formulaires", "evenement_inc");
+include("_header.inc.php");
 ?>
 
 <div id="contenu" class="colonne signaler-erreur">

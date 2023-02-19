@@ -70,11 +70,6 @@ CREATE TABLE `evenement` (
   `date_derniere_modif` datetime NOT NULL DEFAULT '0000-00-00 00:00:00'
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE `evenement_fichierrecu` (
-  `idEvenement` mediumint(9) NOT NULL DEFAULT '0',
-  `idFichierrecu` mediumint(9) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
 CREATE TABLE `evenement_organisateur` (
   `idEvenement` mediumint(9) NOT NULL DEFAULT '0',
   `idOrganisateur` mediumint(9) NOT NULL DEFAULT '0'
@@ -1299,9 +1294,6 @@ ALTER TABLE `evenement`
   ADD KEY `semaine` (`genre`,`dateEvenement`),
   ADD KEY `dateajout` (`dateAjout`),
   ADD KEY `ev_idlieu_dateev` (`idLieu`,`dateEvenement`);
-
-ALTER TABLE `evenement_fichierrecu`
-  ADD PRIMARY KEY (`idEvenement`,`idFichierrecu`);
 
 ALTER TABLE `evenement_organisateur`
   ADD PRIMARY KEY (`idEvenement`,`idOrganisateur`);
