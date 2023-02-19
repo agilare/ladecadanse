@@ -16,7 +16,7 @@ if (isset($_GET['idP']))
 }
 
 $page_titre = "Inscription";
-$page_description = "Création d'une compte sur La décadanse";
+$page_description = "Création d'un compte sur La décadanse";
 $extra_css = array("formulaires", "inscription_formulaire");
 include("_header.inc.php");
 ?>
@@ -56,9 +56,6 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
         }
 	}
 	$champs['organisateurs'] = $_POST['organisateurs'];
-	/*
-	 * VERIFICATION DES CHAMPS ENVOYES par POST
-	 */
 
 	$verif->valider($champs['utilisateur'], "utilisateur", "texte", 2, 50, 1);
 
@@ -152,48 +149,9 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 		$verif->setErreur("username_as", "Veuillez laisser ce champ vide");
 	}
 
-	/*
-	if(!empty($_SESSION['freecap_word_hash']) && !empty($_POST['word']))
-	{
-		// all freeCap words are lowercase.
-		// font #4 looks uppercase, but trust me, it's not...
-		if($_SESSION['hash_func'](mb_strtolower($_POST['word']))==$_SESSION['freecap_word_hash'])
-		{
-			// reset freeCap session vars
-			// cannot stress enough how important it is to do this
-			// defeats re-use of known image with spoofed session id
-			$_SESSION['freecap_attempts'] = 0;
-			$_SESSION['freecap_word_hash'] = false;
-
-
-			// now process form
-
-
-			// now go somewhere else
-			// header("Location: somewhere.php");
-
-		} else {
-			$verif->setErreur("freecap", "Le texte que vous avez entré ne correspond pas au mot dans l'image");
-		}
-	} else {
-		$verif->setErreur("freecap", "Vous devez entrer un mot correspondant à celui de l'image ci-dessus");
-	}
-	*/
-
-	/*
-	 * PAS D'ERREUR, donc ajout ou update executés
-	 */
 	if ($verif->nbErreurs() === 0)
 	{
-
-
-/* 		if (!empty($champs['motdepasse']))
-		{
-			$champs['gds'] = mb_substr(sha1(uniqid(rand(), true)), 0, 5);
-			$champs['mot_de_passe'] = sha1($champs['gds'].sha1($champs['motdepasse']));
-		}
- */
-		$champs['pseudo'] = $champs['utilisateur'];
+        $champs['pseudo'] = $champs['utilisateur'];
 		$champs['mot_de_passe'] = $champs['motdepasse'];
 
 		$champs['dateAjout'] = date("Y-m-d H:i:s");
@@ -479,23 +437,8 @@ echo $verif->getHtmlErreur("email_identique");?>
 
 </fieldset>
 </fieldset>
-<?php /* ?>
-<fieldset>
 
-<legend>Antispam</legend>
-
-<img src="librairies/freecap/freecap.php" id="freecap" alt="captcha" />
-<p class="guide_captcha"><a href="#" onClick="this.blur();new_freecap();return false;">Générer un nouveau mot</a></p>
-<div class="spacer"></div>
-<label for="word">Veuillez copier le mot ci-dessus* :</label>
-<input type="text" name="word" id="word" onblur="javascript:callServer();" onFocus="javascript:document.getElementById('captcha_result').innerHTML='';" />
-<span id="captcha_result"></span>
-<?php echo $verif->getHtmlErreur("freecap"); ?>
-
-</fieldset>
-<?php */ ?>
-
-<p class="piedForm">
+    <p class="piedForm">
     <input type="hidden" name="formulaire" value="ok" />
     <input type="text" class="name_as" name="username_as">
     <input type="submit" value="S'inscrire" class="submit submit-big" />

@@ -13,7 +13,6 @@ if (!$videur->checkGroup(12))
 }
 
 $page_titre = "profil";
-$page_description = "profil";
 include("_header.inc.php");
 
 

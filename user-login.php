@@ -25,10 +25,6 @@ $champs = array("pseudo" => "", "motdepasse" => "", "memoriser" => "", "origine"
 $pseudo = '';
 $motdepasse = '';
 
-//TEST
-//printr($_POST);
-//
-
 $verif = new Validateur();
 
 if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
@@ -38,7 +34,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 	{
         if (isset($_POST[$c]))
         {
-            $champs[$c] = $_POST[$c];	
+            $champs[$c] = $_POST[$c];
         }
 	}
 
@@ -78,20 +74,17 @@ else
 {
 
 	if (!empty($get['msg']) && $get['msg'] == "faux")
-	{      
+	{
 		$verif->setErreur("connexion", "Votre identifiant et/ou votre mot de passe ne sont pas corrects. Veuillez également vérifier que vous avez bien saisi votre <b>identifiant</b> (celui que vous avez choisi à l'inscription), qui est distinct de l'email");
 	}
 
 }
 
-$page_titre = "connexion";
-$page_description = "Formulaire de connexion pour les membres";
+$page_titre = "Connexion";
 $extra_css = array("formulaires", "login");
 include("_header.inc.php");
 ?>
 
-
-<!-- D?t Contenu -->
 <div id="contenu" class="colonne">
 
 <div id="entete_contenu">

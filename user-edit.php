@@ -53,24 +53,14 @@ else
 	exit;
 }
 
-$page_titre = $get['action']." d'une personne";
-$page_description = "Formulaire d'ajout/edition d'un membre";
+$page_titre = $get['action'] . " une personne";
 $extra_css = array("formulaires", "user-edit_formulaire");
 include("_header.inc.php");
 ?>
 
-
-
-
-
-<!-- Début Evenements -->
 <div id="contenu" class="colonne user-edit">
 
 <?php
-
-/*
- * TRAITEMENT DU FORMULAIRE (EDITION OU AJOUT)
- */
 
 $verif = new Validateur();
 
