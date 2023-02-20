@@ -340,22 +340,8 @@ if ($get['sem'])
 			?>
 
 			<div class="spacer"></div>
-			<div class="genre">
-
-			<div class="genre-titre">
-                <h4 id="<?php echo Text::stripAccents($listeEven['genre']); ?>"><?php echo ucfirst(Evenement::nom_genre($listeEven['genre'])); ?></h4>
-                <?php if (0) { //(isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 1 && $listeEven['genre'] != 'divers') { ?>
-                <a class="genre-jump" href="#<?php echo $proch; ?>"><i class="fa fa-long-arrow-down"></i></a>
-                <?php } else { ?>
-                <span style="float: right;margin: 0.2em;padding: 0.4em 0.8em;">&nbsp;</span>
-                <?php } ?>
-
-                <?php if (0) { //isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 1 && $listeEven['genre'] != 'fête') { ?>
-                <a class="genre-jump" href="#<?php echo $genre_prec; ?>"><i class="fa fa-long-arrow-up"></i></a>
-                <?php } ?>
-                <div class="spacer"></div>
-			</div>
-			<?php
+            <div class="genre">
+                            <?php
 		}
 
 		$genre_courant = $listeEven['genre'];

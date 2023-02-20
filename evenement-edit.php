@@ -32,23 +32,55 @@ $get['action'] = "ajouter";
 * Vérification et attribution des variables d'URL GET
 */
 if (isset($_GET['action']))
-{
-	$get['action'] = Validateur::validateUrlQueryValue($_GET['action'], "enum", "ajouter", $actions);
+ {
+    try
+    {
+        $get['action'] = Validateur::validateUrlQueryValue($_GET['action'], "enum", "ajouter", $actions);
+    }
+    catch (Exception $e)
+    {
+        header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
+        exit;
+    }
 }
 
 if (isset($_GET['idE']))
-{
-	$get['idE'] = Validateur::validateUrlQueryValue($_GET['idE'], "int", 1);
+ {
+    try
+    {
+        $get['idE'] = Validateur::validateUrlQueryValue($_GET['idE'], "int", 1);
+    }
+    catch (Exception $e)
+    {
+        header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
+        exit;
+    }
 }
 
 if (isset($_GET['idL']))
-{
-	$get['idL'] = Validateur::validateUrlQueryValue($_GET['idL'], "int", 1);
+ {
+    try
+    {
+        $get['idL'] = Validateur::validateUrlQueryValue($_GET['idL'], "int", 1);
+    }
+    catch (Exception $e)
+    {
+        header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
+        exit;
+    }
 }
 
 if (isset($_GET['idO']))
-{
-	$get['idO'] = Validateur::validateUrlQueryValue($_GET['idO'], "int", 1);
+ {
+    try
+    {
+        $get['idO'] = Validateur::validateUrlQueryValue($_GET['idO'], "int", 1);
+    }
+    catch (Exception $e)
+    {
+        header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
+        exit;
+    }
 }
 
 

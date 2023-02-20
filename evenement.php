@@ -106,8 +106,8 @@ if (isset($_GET['tri'])) {
     }
     catch (Exception $e)
     {
-        header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
-        exit;
+//        header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
+//        exit;
     }
 }
 

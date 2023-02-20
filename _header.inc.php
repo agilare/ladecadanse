@@ -188,10 +188,9 @@ use Ladecadanse\HtmlShrink;
                     }
                     else
                     {
-                        if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 10))
-                        {
-                            $ici = '';
-                            if (strstr($_SERVER['PHP_SELF'], "evenement-edit.php") )
+                        if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 10)) {
+                                $ici = '';
+                                if (strstr($_SERVER['PHP_SELF'], "evenement-edit.php") )
                             {
                                 $ici = " class=\"ici\"";
                             }
@@ -212,10 +211,9 @@ use Ladecadanse\HtmlShrink;
                             <li><a href="/user-logout.php" >Sortir</a></li>
 
                         <?php
-                        if ($_SESSION['Sgroupe'] <= 4)
-                        {
-                            echo '<li><a href="/admin/index.php" title="Administration" >Admin</a></li>';
-                        }
+                        if ($_SESSION['Sgroupe'] <= 4) {
+                                echo '<li><a href="/admin/index.php" title="Administration" >Admin</a></li>';
+                            }
                     }
                     ?>
                     </ul>

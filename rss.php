@@ -7,6 +7,7 @@ use Ladecadanse\Utils\Text;
 
 $tab_types = array("evenements_auj", "lieu_evenements", 'organisateur_evenements', 'evenements_ajoutes');
 
+$get['type'] = '';
 if (isset($_GET['type']))
 {
     try {
