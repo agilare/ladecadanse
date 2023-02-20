@@ -3,6 +3,7 @@ namespace Ladecadanse;
 
 use Ladecadanse\Collection;
 use Ladecadanse\Evenement;
+use Ladecadanse\UserLevel;
 use Ladecadanse\HtmlShrink;
 
 class EvenementCollection extends Collection {
@@ -86,8 +87,7 @@ class EvenementCollection extends Collection {
         global $rep_images_even;
 
         //TESTER SI L'EVENEMENT EXISTE ENCORE
-        if ((($authorization->estAuteur($_SESSION['SidPersonne'], $get_idE, "evenement") && $_SESSION['Sgroupe'] <= 6) || $_SESSION['Sgroupe'] < 2))
-        {
+        if ((($authorization->estAuteur($_SESSION['SidPersonne'], $get_idE, "evenement") && $_SESSION['Sgroupe'] <= UserLevel::AUTHOR) || $_SESSION['Sgroupe'] == UserLevel::SUPERADMIN)) {
             /*
              * Suppression du flyer
              */

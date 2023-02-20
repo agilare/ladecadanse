@@ -2,6 +2,7 @@
 
 namespace Ladecadanse\Security;
 
+use Ladecadanse\UserLevel;
 use Ladecadanse\Utils\SystemComponent;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\Logger;
@@ -97,7 +98,7 @@ class Sentry extends SystemComponent
      * @return boolean True si les infos entrée en login OU si les données de session
      * 				se vérifient dans la base
      */
-    function checkLogin($user = '', $pass = '', $group = 10, $goodRedirect = '', $badRedirect = '', $memoriser = false)
+    function checkLogin($user = '', $pass = '', $group = UserLevel::MEMBER, $goodRedirect = '', $badRedirect = '', $memoriser = false)
     {
 
         /* Appel de l'instance de la classe d'accès à la BD */
@@ -143,7 +144,7 @@ class Sentry extends SystemComponent
                 $this->userdata = $connector->fetchArray($getUser);
 
                 // exception pour admin
-                if ($this->userdata['groupe'] == 1)
+                if ($this->userdata['groupe'] == UserLevel::SUPERADMIN)
                     $goodRedirect = "admin/index.php";
 
                 if ((sha1($this->userdata['gds'] . sha1($pass)) == $this->userdata['mot_de_passe']) || password_verify($pass, $this->userdata['mot_de_passe']))
@@ -317,7 +318,7 @@ class Sentry extends SystemComponent
         $_SESSION["groupe"] = 20;
     }
 
-    function checkGroup($groupe = 10)
+    function checkGroup($groupe = UserLevel::MEMBER)
     {
         global $connector;
 
@@ -326,7 +327,7 @@ class Sentry extends SystemComponent
             $getUser = $connector->query("
 			SELECT idPersonne, pseudo, mot_de_passe, cookie, session, ip, groupe, nom, prenom, email, gds
 			FROM personne
-			WHERE pseudo = '" . $connector->sanitize($_SESSION['user']) . "' AND groupe <= " . $groupe . " AND statut='actif'");
+			WHERE pseudo = '" . $connector->sanitize($_SESSION['user']) . "' AND groupe <= " . (int) $groupe . " AND statut='actif'");
 
             if ($connector->getNumRows($getUser) == 1)
             {

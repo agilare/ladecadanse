@@ -66,8 +66,6 @@ class HtmlShrink
 
                 if ($n == 'fr')
                 {
-//                    if (!(isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 4))
-//                        continue;
 
                     $v = 'Fribourg';
                     $class_region = 'fr';

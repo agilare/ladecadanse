@@ -4,15 +4,14 @@ require_once("../app/bootstrap.php");
 
 use Ladecadanse\Utils\Text;
 use Ladecadanse\HtmlShrink;
+use Ladecadanse\UserLevel;
 
-if (!$videur->checkGroup(4))
-{
+if (!$videur->checkGroup(UserLevel::ADMIN)) {
 	header("Location: /user-login.php"); die();
 }
 
 $_SESSION['region_admin'] = '';
-if ($_SESSION['Sgroupe'] >= 4 && !empty($_SESSION['Sregion']))
-{
+if ($_SESSION['Sgroupe'] >= UserLevel::ADMIN && !empty($_SESSION['Sregion'])) {
     $_SESSION['region_admin'] = $_SESSION['Sregion'];
 }
 
@@ -25,7 +24,7 @@ require_once '../_header.inc.php';
 
     <?php
 //les dates au delà de 2 jours sont dispo pour être archivées
-    define("JOUR_LIM", 2);
+define("JOUR_LIM", 2);
 
 $troisJoursAvant = date("Y-m-d H:i:s", time() - (3*86400));
 
@@ -38,7 +37,7 @@ $troisJoursAvant = date("Y-m-d H:i:s", time() - (3*86400));
 
 <div id="tableaux">
 
-<?php if ($_SESSION['Sgroupe'] < 4) { ?>
+    <?php if ($_SESSION['Sgroupe'] < UserLevel::ADMIN) { ?>
 
 <h3 style="padding:0.4em 0">Inscriptions de ces 3 derniers jours</h3>
 <table summary="Dernières inscriptions">
@@ -83,8 +82,7 @@ while($tab_pers = $connector->fetchArray($req_get))
 
 	";
 
-	if ($_SESSION['Sgroupe'] < 2)
-	{
+	if ($_SESSION['Sgroupe'] < UserLevel::SUPERADMIN) {
 		echo "<td><a href=\"/user-edit.php?action=editer&amp;idP=".$tab_pers['idPersonne']."\" title=\"Modifier\">".$iconeEditer."</a></td>";
 	}
 	echo "</tr>";
@@ -92,94 +90,12 @@ while($tab_pers = $connector->fetchArray($req_get))
 	$pair++;
 }
 ?>
-</table>
-
-<h3 style="padding:0.4em 0">Derniers commentaires</h3>
-<table class="ajouts" summary="Derniers commentaires ajoutés">
-<tr>
-    <th colspan="2">Date d'ajout</th>
-    <th>Contenu</th>
-    <th>Élément</th>
-    <th>Type</th>
-    <th>Statut</th>
-    <th>par</th>
-    <th>&nbsp;</th>
-</tr>
-<?php
-$th_comm = array("contenu" => "Commentaire", "idEvenement" => "Événement", "element" => "Élément", "statut" => "Statut", "dateAjout" => "Date d'ajout", "heure" => "Heure");
-
-$req_comm = $connector->query("
-SELECT idCommentaire, id, idPersonne, contenu, statut, element, dateAjout
-FROM commentaire WHERE dateAjout >= DATE_SUB(CURDATE(), INTERVAL 3 DAY)
-ORDER BY dateAjout DESC, idCommentaire DESC LIMIT 0, 10");
-
-$pair = 0;
-
-while($tab_comm = $connector->fetchArray($req_comm))
-{
-
-	if ($pair % 2 == 0)
-	{
-		echo "<tr>";
-	}
-	else
-	{
-		echo "<tr class=\"impair\">";
-	}
-	$datetime_dateajout = date_iso2app($tab_comm['dateAjout']);
-	$tab_datetime_dateajout = explode(" ", $datetime_dateajout);
-	echo "<td>".$tab_datetime_dateajout[1]."</td><td>".$tab_datetime_dateajout[0]."</td>";
-	echo "<td class='small'>".mb_substr(sanitizeForHtml($tab_comm['contenu']), 0, 50)."</td>";
-
-	$req_even = $connector->query("SELECT titre FROM evenement WHERE idEvenement=".$tab_comm['id']);
-	$tab_even = $connector->fetchArray($req_even);
-
-	if ($tab_comm['element'] == 'evenement')
-	{
-
-		$req_even = $connector->query("SELECT titre FROM evenement WHERE idEvenement=".$tab_comm['id']);
-		$tab_even = $connector->fetchArray($req_even);
-		echo "<td><a href=\"/evenement.php?idE=".$tab_comm['id']."\" title=\"Voir l'événement\">".$tab_even['titre']."</a></td>";
-
-	}
-	else if ($tab_comm['element'] == 'lieu')
-	{
-		$req_even = $connector->query("SELECT nom FROM lieu WHERE idLieu=".$tab_comm['id']);
-		$tab_even = $connector->fetchArray($req_even);
-		echo "<td><a href=\"/lieu.php?idL=".$tab_comm['id']."\" title=\"Voir le lieu\">".$tab_even['nom']."</a></td>";
-
-	}
-
-	echo "<td>".$tab_comm['element']."</td>";
-	echo "<td>".$tab_icones_statut[$tab_comm['statut']]."</td>";
-
-	$nom_auteur = "<i>Ancien membre</i>";
-
-	if ($tab_auteur = $connector->fetchArray($connector->query("SELECT pseudo FROM personne WHERE idPersonne=".$tab_comm['idPersonne'])))
-	{
-		$nom_auteur = "<a href=\"/user.php?idP=".$tab_comm['idPersonne']."\"
-		title=\"Voir le profile de la personne\">".sanitizeForHtml($tab_auteur['pseudo'])."</a>";
-	}
-	echo "<td>".$nom_auteur."</td>";
-
-	//Edition pour l'admin ou l'auteur
-	if ($_SESSION['Sgroupe'] <= 4)
-	{
-		echo "<td><a href=\"/multi-comment.php?action=editer&amp;idC=".$tab_comm['idCommentaire']."\" title=\"Éditer la brêve\">".$iconeEditer."</a></td>";
-	}
-
-	echo "</tr>";
-
-	$pair++;
-}
-?>
-</table>
-
+    </table>
 
 <?php } ?>
 
-<?php if ($_SESSION['Sgroupe'] < 4) { ?>
-<p><a href="/admin/gerer.php?element=personne">Gérer les personnes</a></p>
+<?php if ($_SESSION['Sgroupe'] < UserLevel::ADMIN) { ?>
+    <p><a href="/admin/gerer.php?element=personne">Gérer les personnes</a></p>
 <?php } ?>
 
 <?php if (!empty($_SESSION['region_admin'])) { ?>
@@ -191,11 +107,6 @@ while($tab_comm = $connector->fetchArray($req_comm))
 <?php
 
 $troisJoursAvant = date("Y-m-d H:i:s", time() - (3*86400));
-
-/* EVENEMENTS
-* classés par date d'ajout
-*/
-
 
 $sql_region = '';
 if (!empty( $_SESSION['region_admin']))
@@ -276,8 +187,7 @@ while($tab_even = $connector->fetchArray($req_getEvenement))
 	}
 	echo "<td>".$nom_auteur."</td>";
 
-	if ($_SESSION['Sgroupe'] <= 4)
-	{
+	if ($_SESSION['Sgroupe'] <= UserLevel::ADMIN) {
 		echo "<td><a href=\"/evenement-edit.php?action=editer&amp;idE=".$tab_even['idEvenement']."\" title=\"Éditer l'événement\">".$iconeEditer."</a></td>";
 	}
 	echo "</tr>";
@@ -292,94 +202,7 @@ Rien
 <?php } ?>
 <p><a href="/admin/gererEvenements.php">Gérer les événements</a></p>
 
-<?php if (0) { ?>
-<h3>Derniers événements modifiés</h3>
-
-<table summary="Derniers événements modifiés">
-<tr>
-<th colspan="2">Modification</th>
-<th>Titre</th>
-<th>Lieu</th>
-<th>Date</th>
-<th>Flyer</th>
-<th>Statut</th>
-<th>Ajouté par</th>
-<th>&nbsp;</th>
-</tr>
-<?php
-
-$troisJoursAvant = date("Y-m-d H:i:s", time() - (3*86400));
-
-
-
-$req_getEvenement = $connector->query("SELECT idEvenement, idLieu, idPersonne, titre,
- dateEvenement, genre, nomLieu, adresse, statut, flyer, dateAjout, date_derniere_modif
- FROM evenement
- WHERE dateAjout!=date_derniere_modif
- ORDER BY date_derniere_modif DESC, idEvenement DESC LIMIT 0, 10");
-
-$pair = 0;
-while($tab_even = $connector->fetchArray($req_getEvenement))
-{
-	$nomLieu = sanitizeForHtml($tab_even['nomLieu']);
-
-	if ($tab_even['idLieu'] != 0)
-	{
-		$req_lieu = $connector->query("SELECT nom FROM lieu WHERE idLieu=".$tab_even['idLieu']);
-		$tabLieu = $connector->fetchArray($req_lieu);
-		$nomLieu = "<a href=\"/lieu.php?idL=".$tab_even['idLieu']."\" title=\"Voir la fiche du lieu : ".sanitizeForHtml($tabLieu['nom'])." \">".sanitizeForHtml($tabLieu['nom'])."</a>";
-	}
-
-
-	if ($pair % 2 == 0)
-	{
-		echo "<tr>";
-	}
-	else
-	{
-		echo "<tr class=\"impair\">";
-	}
-
-	$datetime_dateajout = date_iso2app($tab_even['date_derniere_modif']);
-	$tab_datetime_dateajout = explode(" ", $datetime_dateajout);
-	echo "<td>".$tab_datetime_dateajout[1]."</td><td>".$tab_datetime_dateajout[0]."</td>";
-
-	echo "
-	<td><a href=\"/evenement.php?idE=".$tab_even['idEvenement']."\" title=\"Voir la fiche de l'événement\">".sanitizeForHtml($tab_even['titre'])."</a></td>
-	<td>".$nomLieu."</td>
-	<td>".date_iso2app($tab_even['dateEvenement'])."</td>
-	<td>";
-	if (!empty($tab_even['flyer']))
-	{
-		$imgInfo = getimagesize($rep_images_even.$tab_even['flyer']);
-		echo HtmlShrink::popupLink($url_uploads_events.$tab_even['flyer'], "Flyer", $imgInfo[0]+20, $imgInfo[1]+20, $iconeImage);
-	}
-	echo "</td>
-	<td>".$tab_icones_statut[$tab_even['statut']]."</td>";
-
-	$nom_auteur = "<i>Ancien membre</i>";
-
-	if ($tab_auteur = $connector->fetchArray($connector->query("SELECT pseudo FROM personne WHERE idPersonne=".$tab_even['idPersonne'])))
-	{
-		$nom_auteur = "<a href=\"/user.php?idP=".$tab_even['idPersonne']."\"
-		title=\"Voir le profile de la personne\">".sanitizeForHtml($tab_auteur['pseudo'])."</a>";
-	}
-	echo "<td>".$nom_auteur."</td>";
-
-	if ($_SESSION['Sgroupe'] <= 4)
-	{
-		echo "<td><a href=\"/evenement-edit.php?action=editer&amp;idE=".$tab_even['idEvenement']."\" title=\"Éditer l'événement\">".$iconeEditer."</a></td>";
-	}
-	echo "</tr>";
-
-	$pair++;
-}
-
-?>
-</table>
-<?php } ?>
-
-<?php if ($_SESSION['Sgroupe'] < 4) { ?>
+<?php if ($_SESSION['Sgroupe'] < UserLevel::ADMIN) { ?>
 
     <h3 style="padding:0.2em">Derniers textes ajoutés</h3>
 
@@ -440,8 +263,7 @@ while ($tab_desc = $connector->fetchArray($req_getDes))
 	}
 	echo "<td>".$tab_desc['type']."</td>";
 	echo "<td>".$nom_auteur."</td>";
-	if ( $_SESSION['Sgroupe'] <= 4)
-	{
+	if ($_SESSION['Sgroupe'] <= UserLevel::ADMIN) {
 		echo "<td><a href=\"/lieu-text-edit.php?action=editer&amp;idL=" . $tab_desc['idLieu'] . "&amp;idP=" . $tab_desc['idPersonne'] . "&type=" . $tab_desc['type'] . "\" title=\"Éditer le lieu\">" . $iconeEditer . "</a></td>";
         }
 	echo "</tr>";

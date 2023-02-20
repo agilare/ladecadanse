@@ -86,20 +86,6 @@ CREATE TABLE `fichierrecu` (
   `dateAjout` datetime NOT NULL DEFAULT '0000-00-00 00:00:00'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE `groupes` (
-  `idgroupe` tinyint(3) UNSIGNED NOT NULL DEFAULT '0',
-  `nom` varchar(80) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `description` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-INSERT INTO `groupes` (`idgroupe`, `nom`, `description`) VALUES
-(1, 'superadmin', 'BDFL'),
-(4, 'admin', 'administrateurs régionaux'),
-(6, 'auteur', 'accès à tous les contenus'),
-(8, 'acteur', 'ajout et modif de ses even, éventuellement de sa fiche organisateur'),
-(10, 'contributeur', '? (33 personnes)'),
-(12, 'membre', 'favoris, commentaires');
-
 CREATE TABLE `lieu` (
   `idLieu` smallint(5) UNSIGNED NOT NULL,
   `idpersonne` smallint(5) UNSIGNED NOT NULL DEFAULT '0',
@@ -1300,9 +1286,6 @@ ALTER TABLE `evenement_organisateur`
 
 ALTER TABLE `fichierrecu`
   ADD PRIMARY KEY (`idFichierrecu`);
-
-ALTER TABLE `groupes`
-  ADD PRIMARY KEY (`idgroupe`);
 
 ALTER TABLE `lieu`
   ADD PRIMARY KEY (`idLieu`),

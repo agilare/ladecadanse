@@ -6,6 +6,7 @@
 ### Added
 
 - [ ] CONTRIBUTING.md
+- [x] `UserLevel` class introduced (replaces useless table `groupes`)
 
 ### Changed
 
@@ -13,6 +14,10 @@
     - [ ] html sanitization moved in Text class
     - [ ] agenda.php to evenement-agenda.php
 
+### Removed
+
+- [ ] comments (completely)
+- [ ] favorites (completely)
 
 ## [3.3.0] - 2023-02-19
 

@@ -5,6 +5,7 @@ require_once("../app/bootstrap.php");
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\ImageDriver2;
 use Ladecadanse\EvenementCollection;
+use Ladecadanse\UserLevel;
 use Ladecadanse\Utils\Utils;
 use Ladecadanse\HtmlShrink;
 
@@ -24,8 +25,7 @@ $tab_nblignes = [100, 250, 500];
 $get = [];
 
 $_SESSION['region_admin'] = '';
-if ($_SESSION['Sgroupe'] >= 4 && !empty($_SESSION['Sregion']))
-{
+if ($_SESSION['Sgroupe'] >= UserLevel::ADMIN && !empty($_SESSION['Sregion'])) {
     $_SESSION['region_admin'] = $_SESSION['Sregion'];
 }
 
@@ -885,8 +885,7 @@ while ($tab_even = $connector->fetchArray($req_evenement))
 	echo "<td>".$tab_datetime_dateajout[1]." ".$tab_datetime_dateajout[0]."</td>";
 
 
-	if ($_SESSION['Sgroupe'] <= 4)
-	{
+	if ($_SESSION['Sgroupe'] <= UserLevel::ADMIN) {
 		echo '<td style="text-align:center"><a href="/evenement-edit.php?action=editer&idE='.$tab_even['idEvenement'].'" title="Éditer l\'événement">'.$iconeEditer.'</a></td>';
 	}
 	echo '<td style="text-align:center"><input type="checkbox" name="evenements[]" value="'.$tab_even['idEvenement'].'" /></td></tr>';

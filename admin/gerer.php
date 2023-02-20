@@ -2,6 +2,7 @@
 
 require_once("../app/bootstrap.php");
 
+use Ladecadanse\UserLevel;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\Utils\Utils;
@@ -86,8 +87,7 @@ if (!empty($_GET['terme']))
 
 
 $_SESSION['region_admin'] = '';
-if ($_SESSION['Sgroupe'] >= 4 && !empty($_SESSION['Sregion']) && in_array($get['element'], ['lieu']))
-{
+if ($_SESSION['Sgroupe'] >= UserLevel::ADMIN && !empty($_SESSION['Sregion']) && in_array($get['element'], ['lieu'])) {
     $_SESSION['region_admin'] = $_SESSION['Sregion'];
 }
 
@@ -199,8 +199,7 @@ echo '<div class="spacer"></div>';
 		}
 		echo "</td>";
 
-		if ($_SESSION['Sgroupe'] <= 4)
-		{
+		if ($_SESSION['Sgroupe'] <= UserLevel::ADMIN) {
 			echo "<td><a href=\"/lieu-text-edit.php?action=editer&idL=" . $tab_desc['idLieu'] . "&idP=" . $tab_desc['idPersonne'] . "\" title=\"Éditer le lieu\">" . $iconeEditer . "</a></td>";
         }
 		echo "</tr>";
@@ -318,8 +317,7 @@ echo '<div class="spacer"></div>';
 		<td>".$tab_icones_statut[$tab_lieux['statut']]."</td>";
 
 		//Edition pour l'admin ou l'auteur
-		if ($_SESSION['Sgroupe'] <= 4)
-		{
+		if ($_SESSION['Sgroupe'] <= UserLevel::ADMIN) {
 			echo "<td><a href=\"/lieu-edit.php?action=editer&idL=".$tab_lieux['idLieu']."\" title=\"Éditer le lieu\">".$iconeEditer."</a></td>";
 		}
 		echo "</tr>";
@@ -421,8 +419,7 @@ echo '<div class="spacer"></div>';
 		<td>".$tab_icones_statut[$tab['statut']]."</td>";
 
 		//Edition pour l'admin ou l'auteur
-		if ($_SESSION['Sgroupe'] <= 4)
-		{
+		if ($_SESSION['Sgroupe'] <= UserLevel::ADMIN) {
 			echo "<td><a href=\"/organisateur-edit.php?action=editer&idO=".$tab['idOrganisateur']."\" title=\"Éditer\">".$iconeEditer."</a></td>";
 		}
 		echo "</tr>";
@@ -536,8 +533,7 @@ echo '<div class="spacer"></div>';
 		}
 		echo "</td>";
 		//Edition pour l'admin ou l'auteur
-		if ($_SESSION['Sgroupe'] <= 4)
-		{
+		if ($_SESSION['Sgroupe'] <= UserLevel::ADMIN) {
 			echo "<td><a href=\"/multi-comment.php?action=editer&idC=".$tab_comm['idCommentaire']."\">".$iconeEditer."</a></td>";
 		}
 
@@ -636,20 +632,16 @@ echo '<div class="spacer"></div>';
 	while ($tab_pers = $connector->fetchArray($req_pers))
 	{
 		$nom_groupe = $tab_pers['groupe'];
-		if ($nom_groupe == 8)
-		{
+		if ($nom_groupe == UserLevel::ACTOR) {
 			$nom_groupe = 'Acteur culturel';
 		}
-		else if ($nom_groupe == 12)
-		{
+		else if ($nom_groupe == UserLevel::MEMBER) {
 			$nom_groupe = "Membre";
 		}
-		else if ($nom_groupe == 6)
-		{
+		else if ($nom_groupe == UserLevel::AUTHOR) {
 			$nom_groupe = "Rédacteur";
 		}
-		else if ($nom_groupe == 4)
-		{
+		else if ($nom_groupe == UserLevel::ADMIN) {
 			$nom_groupe = "Admin";
 		}
 
