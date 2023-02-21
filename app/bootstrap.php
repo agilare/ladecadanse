@@ -13,8 +13,15 @@ use Ladecadanse\Utils\RegionConfig;
 use Ladecadanse\Security\Authorization;
 use Ladecadanse\Security\Sentry;
 use Ladecadanse\Utils\Utils;
+use Whoops\Handler\PrettyPageHandler;
 
 require_once __DIR__ . '/config.php';
+
+$whoops = new \Whoops\Run;
+$whoopsHandler = new PrettyPageHandler();
+$whoopsHandler->setEditor('netbeans');
+$whoops->pushHandler($whoopsHandler);
+$whoops->register();
 
 session_start();
 
