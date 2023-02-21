@@ -6,19 +6,16 @@ use Ladecadanse\Evenement;
 use Ladecadanse\UserLevel;
 use Ladecadanse\HtmlShrink;
 
-class EvenementCollection extends Collection {
+class EvenementCollection extends Collection
+{
 
- /**
-   * @access public
-   */
-	function __construct($connector)
+    function __construct($connector)
 	{
+        parent::__construct();
+    }
 
-		$this->connector = $connector;
-	}
-
-	function loadLieu($idL, $date_debut, $genre = '')
-	{
+	function loadLieu(int $idL, $date_debut, $genre = ''): bool
+    {
 		$sql_genre = '';
 		if ($genre != '')
 		{
@@ -48,8 +45,8 @@ class EvenementCollection extends Collection {
 		return true;
 	}
 
-	function loadOrganisateur($idO, $date_debut, $genre = '')
-	{
+	function loadOrganisateur(int $idO, $date_debut, $genre = ''): bool
+    {
 		$sql_genre = '';
 		if ($genre != '')
 		{
@@ -80,7 +77,7 @@ class EvenementCollection extends Collection {
 		return true;
 	}
 
-    public static function deleteEvenement($get_idE)
+    public static function deleteEvenement(int $get_idE): void
     {
 
         global $connector;

@@ -8,12 +8,11 @@ class DescriptionCollection extends Collection {
 
 	function __construct()
 	{
-		global $connector;
-		$this->connector = $connector;
-	}
+        parent::__construct();
+    }
 
-	function load($idL)
-	{
+	function load(int $idL): bool
+    {
 		$req = $this->connector->query("
 		 SELECT descriptionlieu.idLieu AS idLieu, contenu, descriptionlieu.dateAjout AS dateAjout, pseudo, nom,
 		 		 prenom, groupe, descriptionlieu.idPersonne AS idPersonne, descriptionlieu.date_derniere_modif
@@ -37,8 +36,8 @@ class DescriptionCollection extends Collection {
 		return true;
 	}
 
-	function loadByType($idL, $type)
-	{
+	function loadByType(int $idL, $type): bool
+    {
 		$sql = "
 		 SELECT descriptionlieu.idLieu AS idLieu, type, contenu, descriptionlieu.dateAjout AS dateAjout, pseudo, nom,
 		 		 prenom, groupe, descriptionlieu.idPersonne AS idPersonne, descriptionlieu.date_derniere_modif
@@ -64,18 +63,18 @@ class DescriptionCollection extends Collection {
 		return true;
 	}
 
-	function loadFiches($type = '', $region = null)
-	{
+	function loadFiches(string $type = '', ?string $region = null): bool
+    {
 		if ($type != '')
 		{
 			$type = " AND descriptionlieu.type='".$type."'";
 		}
-                
+
                 $sql_region = '';
                 if (!empty($region))
                     $sql_region = "and lieu.region='$region' ";
-                
-              
+
+
 		$req = $this->connector->query("SELECT lieu.idLieu, lieu.nom, pseudo, contenu,
 		descriptionlieu.dateAjout, photo1, groupe, personne.nom as nomAuteur, prenom, descriptionlieu.date_derniere_modif AS date_derniere_modif
 		FROM descriptionlieu, lieu, personne WHERE descriptionlieu.idPersonne=personne.idPersonne AND
@@ -98,8 +97,8 @@ class DescriptionCollection extends Collection {
 		return true;
 	}
 
-	function getNumRows($idL, $type = '')
-	{
+	function getNumRows(int $idL, string $type = ''): int
+    {
 		 if ($type == 'description' || $type == 'presentation')
 		 {
 		 	$type = " AND type='".$type."'";
@@ -112,7 +111,6 @@ class DescriptionCollection extends Collection {
 		 WHERE descriptionlieu.idLieu =".$idL.$type." ORDER BY descriptionlieu.dateAjout");
 
 		  	return $this->connector->getNumRows($req);
-
-
 	}
+
 }

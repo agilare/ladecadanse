@@ -4,14 +4,14 @@ namespace Ladecadanse\Utils;
 
 class Text
 {
-    public static function stripAccents($str)
+    public static function stripAccents(string $str): string
     {
         $str = htmlentities($str, ENT_COMPAT | ENT_HTML401, "UTF-8");
         $str = preg_replace('/&([a-zA-Z])(uml|acute|grave|circ|tilde);/', '$1', $str);
         return html_entity_decode($str);
     }
-    
-    public static function linkify($input)
+
+    public static function linkify(string $input): string
     {
         $re = <<<'REGEX'
     !
@@ -59,10 +59,10 @@ class Text
             return "<a href='$url'>$text</a>";
         },
                 $input);
-    }  
-    
+    }
 
-    public static function formatbytes($val, $digits = 3, $mode = "SI", $bB = "B")
+
+    public static function formatbytes($val, int $digits = 3, $mode = "SI", $bB = "B"): string
     { //$mode == "SI"|"IEC", $bB == "b"|"B"
         $si = array("", "k", "M", "G", "T", "P", "E", "Z", "Y");
         $iec = array("", "Ki", "Mi", "Gi", "Ti", "Pi", "Ei", "Zi", "Yi");
@@ -93,8 +93,8 @@ class Text
         elseif ($p !== false)
             $val = round($val, $digits - $p);
         return round($val, $digits) . " " . $symbols[$i] . $bB;
-    }    
-  
+    }
+
     /**
      * Remplace tous les tags wiki d'un texte par des balises HTML
      * ==texte== -> h2
@@ -165,7 +165,7 @@ class Text
      * @see function texteHtmlReduit
      * @todo Tenir compte des autres balises wiki
      */
-    public static function trouveMaxChar($texte, $charsLigne, $maxLignes)
+    public static function trouveMaxChar(string $texte, int $charsLigne, int $maxLignes)
     {
 
         $i = 0;
@@ -331,7 +331,7 @@ class Text
             $cloture .= "</";
 
             //parcours le mot de balise courante de la pile et l'ajoute a $cloture
-            
+
             $pileTagsHauteurNb = count((is_countable($pileTags[$hauteur]) ? $pileTags[$hauteur] : []));
             for ($n = 0, $pileTaille = $pileTagsHauteurNb; $n < $pileTaille; $n++)
             {
@@ -346,7 +346,7 @@ class Text
 
         //renvoie le texte reduit, les balises fermantes et le lien vers la suite
         return $texteHtmlCourt . $cloture . $lienSuite;
-    }    
+    }
 
 
     /**
@@ -449,5 +449,5 @@ class Text
         return mb_strrpos($haystack, $needle) ? mb_substr($haystack, 0, mb_strrpos($haystack, $needle)) : false;
     }
 
-    
+
 }

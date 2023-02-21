@@ -8,13 +8,12 @@ class Evenement extends Element
 {
 
     function __construct() {
-        global $connector;
+
+        parent::__construct();
         $this->table = "evenement";
-        $this->connector = $connector;
     }
 
-
-    public static function nom_genre($nom)
+    public static function nom_genre($nom): string
     {
         if ($nom == 'fête')
         {

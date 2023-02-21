@@ -7,12 +7,15 @@
 
 - [ ] CONTRIBUTING.md
 - [x] `UserLevel` class introduced (replaces useless table `groupes`)
+- [ ] [Whoops](https://github.com/filp/whoops)
 
 ### Changed
 
 - [ ] refactor
     - [ ] html sanitization moved in Text class
     - [ ] agenda.php to evenement-agenda.php
+    - [ ] classes in `libraries` : cleaning, typehints
+    - [ ] dates.php to Date class
 
 ### Removed
 
@@ -62,7 +65,7 @@
 
 ### Added
 
-- setup PHPMailer (replaces PEAR Mail)
+- setup [PHPMailer](https://github.com/PHPMailer/PHPMailer) (replaces PEAR Mail)
 - Docker compose recipe
 - analyzers setup : PHPCompatibility, phpstan, security checker
 - git-ftp setup

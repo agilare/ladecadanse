@@ -6,11 +6,7 @@ use Ladecadanse\Utils\SystemComponent;
 
 class DbConnector extends SystemComponent
 {
-    private $sql;
-
-    /**
-     * Ressource vers la BD
-     */
+    private string $sql;
     private $dbConnection;
 
     public function __construct($host, $db, $user, $pass)
@@ -22,7 +18,7 @@ class DbConnector extends SystemComponent
         register_shutdown_function(array(&$this, 'close'));
     }
 
-    public function query($requete)
+    public function query(string $requete)
     {
         $this->sql = $requete;
         if (MODE_DEBUG)
@@ -33,7 +29,7 @@ class DbConnector extends SystemComponent
         {
             $result = mysqli_query($this->dbConnection, $requete) or die();
         }
-            
+
         return $result;
     }
 
@@ -41,7 +37,7 @@ class DbConnector extends SystemComponent
     {
         return mysqli_fetch_array($result);
     }
-    
+
     public function fetchAssoc($result)
     {
         return mysqli_fetch_assoc($result);
@@ -78,7 +74,7 @@ class DbConnector extends SystemComponent
         return mysqli_affected_rows($this->dbConnection);
     }
 
-    public function sanitize($escapestr): string
+    public function sanitize(string $escapestr): string
     {
         return mysqli_real_escape_string ($this->dbConnection, $escapestr);
     }

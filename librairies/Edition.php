@@ -1,9 +1,7 @@
 <?php
 namespace Ladecadanse;
 
-use Ladecadanse\Utils\Validateur;
-
-  /**
+/**
   * An abstract class implementing generic functionality for processing user's input
   *
   * This class encapsulates generic functions for working
@@ -35,26 +33,22 @@ use Ladecadanse\Utils\Validateur;
 
 		$this->connector = $connector;
       	$this->nom = $nom;
-      	//$this->wizardPage = $wPage;
 
-      	$this->valeurs = $champs;
+        $this->valeurs = $champs;
       	$this->fichiers = $fichiers;
 
       	$this->erreurs = array_merge($champs, $fichiers);
-
     }
 
-    function traitement($post, $files)
+    function traitement(array $post, array $files): void
     {
-
-   		foreach ($this->valeurs as $nom => $val)
+        foreach ($this->valeurs as $nom => $val)
     	{
     		if (isset($post[$nom]))
     		{
-                $this->valeurs[$nom] = $post[$nom];		
+                $this->valeurs[$nom] = $post[$nom];
     		}
-
-    	}
+        }
 
     	foreach ($this->fichiers as $nom => $val)
     	{
@@ -65,10 +59,6 @@ use Ladecadanse\Utils\Validateur;
     	{
     			$this->supprimer[] = $post['supprimer'];
     	}
-
-        //$GLOBALS['wizardPage'] = $this->NextWizardPage();
-
-
     }
 
     function verification()
@@ -112,7 +102,7 @@ use Ladecadanse\Utils\Validateur;
 
     }
 
-    function getNbErreurs()
+    function getNbErreurs(): int
     {
 
     	return count($this->erreurs);
@@ -182,7 +172,7 @@ use Ladecadanse\Utils\Validateur;
 		}
 		else
 		{
-			return NULL;			
+			return NULL;
 		}
 	}
 

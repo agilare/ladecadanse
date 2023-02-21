@@ -2,6 +2,9 @@
 
 namespace Ladecadanse;
 
+/**
+ * Extented by DescriptionCollection, EvenementCollection, LieuCollection, OrganisateurCollection
+ */
 class Collection {
 
 	var $nom;
@@ -14,8 +17,8 @@ class Collection {
 		$this->connector = $connector;
 	}
 
-	function setElement($id, $element)
-	{
+	function setElement($id, $element): void
+    {
 		$this->elements[$id] = $element;
 	}
 
@@ -24,8 +27,8 @@ class Collection {
 		return $this->elements[$id];
 	}
 
-	function setElements($elements)
-	{
+	function setElements($elements): void
+    {
 		$this->elements = $elements;
 	}
 
@@ -34,8 +37,8 @@ class Collection {
 		return $this->elements;
 	}
 
-	function getNbElements()
-	{
+	function getNbElements(): int
+    {
 		return count($this->elements);
 	}
 }

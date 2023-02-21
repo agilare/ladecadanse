@@ -1,17 +1,8 @@
 <?php
 
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Scripting/PHPClass.php to edit this template
- */
-
 namespace Ladecadanse\Security;
 
-/**
- * Description of Authorization
- *
- * @author michel
- */
+
 class Authorization
 {
 
@@ -25,7 +16,7 @@ class Authorization
      * auteur de $id
      * @return boolean Si $idP est auteur ou non
      */
-    function estAuteur($idP = 0, $id = 0, $table)
+    function estAuteur(int $idP = 0, int $id = 0, $table): bool
     {
         global $connector;
 
@@ -37,14 +28,12 @@ class Authorization
         {
             return true;
         }
-        else
-        {
-            return false;
-        }
+
+        return false;
     }
 
 
-    public function isPersonneInOrganisateur($idP, $idO): bool
+    public function isPersonneInOrganisateur(int $idP, int $idO): bool
     {
         global $connector;
 
@@ -56,13 +45,12 @@ class Authorization
         {
             return true;
         }
-        else
-        {
+
             return false;
-        }
+
     }
 
-    function isPersonneInLieuByOrganisateur($idP, $idL): bool
+    function isPersonneInLieuByOrganisateur(int $idP, int $idL): bool
     {
         global $connector;
 
@@ -76,13 +64,11 @@ class Authorization
         {
             return true;
         }
-        else
-        {
-            return false;
-        }
+
+        return false;
     }
 
-    public function isPersonneInEvenementByOrganisateur($idP = 0, $idE = 0): bool
+    public function isPersonneInEvenementByOrganisateur(int $idP = 0, int $idE = 0): bool
     {
         global $connector;
 
@@ -96,10 +82,8 @@ class Authorization
         {
             return true;
         }
-        else
-        {
-            return false;
-        }
+
+        return false;
     }
 
     public function isPersonneAffiliatedWithLieu(int $idP, int $idL): bool
@@ -114,10 +98,7 @@ class Authorization
         {
             return true;
         }
-        else
-        {
-            return false;
-        }
+        return false;
     }
 
 }

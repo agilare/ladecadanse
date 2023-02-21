@@ -4,7 +4,7 @@ namespace Ladecadanse\Utils;
 
 class Utils
 {
-    public static function urlQueryArrayToString($get, $sauf = "")
+    public static function urlQueryArrayToString(array $get, $sauf = ""): string
     {
         $afficher = "";
 
@@ -32,7 +32,7 @@ class Utils
 
         return $afficher;
     }
-    
+
     public static function getBaseUrl(): string
     {
         $full_url = "http://";
@@ -43,6 +43,6 @@ class Utils
         }
 
         // 3. append domain name
-        return $full_url . $_SERVER["SERVER_NAME"];        
+        return $full_url . $_SERVER["SERVER_NAME"];
     }
 }

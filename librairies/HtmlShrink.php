@@ -8,11 +8,6 @@ namespace Ladecadanse;
 
 use Ladecadanse\Utils\Utils;
 
-/**
- * Description of HtmlShrink
- *
- * @author michel
- */
 class HtmlShrink
 {
 
@@ -43,10 +38,8 @@ class HtmlShrink
         return $adresse;
     }
 
-    public static function getMenuRegions($glo_regions, $get, $event_nb = [])
+    public static function getMenuRegions(array $glo_regions, $get, $event_nb = []): string
     {
-
-
         $html = '';
         ob_start();
         //
@@ -91,7 +84,7 @@ class HtmlShrink
     }
 
 
-    public static function getPaginationString($page = 1, $totalitems, $limit = 15, $adjacents = 1, $targetpage = "/", $pagestring = "?page=")
+    public static function getPaginationString(int $page = 1, $totalitems, int $limit = 15, int $adjacents = 1, $targetpage = "/", $pagestring = "?page="): string
     {
         //defaults
         if (!$adjacents)
@@ -211,7 +204,7 @@ class HtmlShrink
     }
 
 
-    public static function authorSignature($idPersonne)
+    public static function authorSignature(int $idPersonne): string
     {
 
         global $connector;
@@ -261,13 +254,13 @@ class HtmlShrink
     }
 
 
-    public static function popupLink($uri, $nom, $largeur, $hauteur, $lien)
+    public static function popupLink($uri, $nom, $largeur, $hauteur, $lien): string
     {
         return "<a href=\"#\" onclick=\"window.open('" . $uri . "','" . $nom . "','height=" . $hauteur . "px,width=" . $largeur . "px,toolbar=no,menuBar=yes,location=no,directories=0,status=no,scrollbars=yes,resizable=yes,left=10,top=10');return(false)\" title=\"" . $nom . "\">" . $lien . "</a>";
     }
 
 
-    public static function formLabel($tab_att, $nom)
+    public static function formLabel(array $tab_att, string $nom): string
     {
         $aff = "<label ";
 
@@ -284,7 +277,7 @@ class HtmlShrink
         return $aff;
     }
 
-    public static function formInput($tab_att)
+    public static function formInput(array $tab_att): string
     {
         $aff = "<input ";
 
@@ -306,7 +299,7 @@ class HtmlShrink
      *
      * @param string $message Texte ? afficher
      */
-    public static function msgInfo($message)
+    public static function msgInfo(string $message): void
     {
         echo '<div class="msg_info">' . $message . '</div>';
     }
@@ -316,7 +309,7 @@ class HtmlShrink
      *
      * @param string $message Texte ? afficher
      */
-    public static function msgOk($message)
+    public static function msgOk(string $message): void
     {
         echo '<div class="msg_ok">' . $message . '</div>';
     }
@@ -327,12 +320,12 @@ class HtmlShrink
      *
      * @param string $message Texte ? afficher
      */
-    public static function msgErreur($message)
+    public static function msgErreur(string $message): void
     {
         echo '<div class="msg_erreur">' . $message . '</div>';
     }
 
-    public static function getHeadMetaRobots($nom_page, $date = ''): bool
+    public static function getHeadMetaRobots(string $nom_page, $date = ''): bool
     {
         if (isset($_GET['courant']) && $_GET['courant'] < date("Y-m-d"))
         {
@@ -342,7 +335,7 @@ class HtmlShrink
         return false;
     }
 
-    public static function showLinkRss($nom_page): void
+    public static function showLinkRss(string $nom_page): void
     {
         if ($nom_page == "index")
         {

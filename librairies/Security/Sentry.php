@@ -39,7 +39,7 @@ class Sentry extends SystemComponent
     /*
      * Si l'utilisateur est déjà loggé -> si la session est déjà remplie avec les valeurs de login
      */
-    function checkSession()
+    function checkSession(): bool
     {
 
         global $connector;

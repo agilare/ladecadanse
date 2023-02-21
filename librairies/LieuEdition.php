@@ -44,7 +44,7 @@ class LieuEdition extends Edition
         $this->erreurs['doublon_organisateur'] = '';
     }
 
-    function traitement($post, $files)
+    function traitement(array $post, array $files): bool
     {
         parent::traitement($post, $files);
 
@@ -56,10 +56,7 @@ class LieuEdition extends Edition
 
         if (!empty($post['categorie']))
             $this->valeurs['categorie'] = $post['categorie'];
-        //TEST
-        //echo "post:";
-        //printr($post);
-        //
+
         if (isset($post['logo_existant']))
         {
             $this->valeurs['logo'] = $post['logo_existant'];
@@ -110,12 +107,12 @@ class LieuEdition extends Edition
         }
     }
 
-    function IsCompleted()
+    function IsCompleted(): bool
     {
         return (!$this->FirstTime && count($this->Errors) <= 0);
     }
 
-    function verification()
+    function verification(): bool
     {
         global $glo_tab_quartiers;
         global $glo_regions;
@@ -197,7 +194,7 @@ class LieuEdition extends Edition
         }
     }
 
-    function loadValeurs($id)
+    function loadValeurs(int $id): void
     {
         $lieu = new Lieu();
         $lieu->setId($id);
@@ -495,7 +492,7 @@ class LieuEdition extends Edition
         }
     }
 
-    function loadValues($id)
+    function loadValues(int $id): void
     {
         $lieu = new Lieu();
         $lieu->setId($id);
@@ -509,11 +506,6 @@ class LieuEdition extends Edition
         $this->valeurs = $champs;
     }
 
-    function NextWizardPage()
-    {
-
-    }
-
     //abstract
 
     function Additional()
@@ -525,7 +517,7 @@ class LieuEdition extends Edition
         endif;
     }
 
-    function Set($Name, $Value)
+    function Set($Name, $Value): void
     {
         $this->$Name = $Value;
     }
@@ -536,7 +528,7 @@ class LieuEdition extends Edition
         return $erreur;
     }
 
-    function getNbErreurs()
+    function getNbErreurs(): int
     {
 
         return count($this->erreurs);
@@ -600,4 +592,3 @@ class LieuEdition extends Edition
     }
 
 }
-?>

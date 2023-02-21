@@ -314,9 +314,8 @@ if (($get['action'] == 'editer' || $get['action'] == 'update') && isset($get['id
 
 	echo "<input type=\"hidden\" name=\"idLieu\" value=\"".$get['idL']."\" />
 	<input type=\"hidden\" name=\"idP\" value=\"".$get['idP']."\" />";
-	//echo securise_string($detailsLieu['nom']);
 }
-else
+    else
 {
 
 	echo "<p><label for=\"idLieu\" style=\"text-align:left;float:none;\">Lieu* :</label><select name=\"idLieu\" id=\"idLieu\"  class=\"chosen-select\" title=\"Choisissez le lieu que vous voulez décrire\" style=\"max-width:300px;\">

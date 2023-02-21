@@ -40,16 +40,12 @@ class OrganisateurEdition extends Edition
         $this->erreurs['nom_existant'] = '';
     }
 
-    function traitement($post, $files)
+    function traitement(array $post, array $files): bool
     {
         parent::traitement($post, $files);
 
         $this->id = $post['idOrganisateur'];
 
-        //TEST
-        //echo "post:";
-        //printr($post);
-        //
         if (isset($post['logo_existant']))
         {
             $this->valeurs['logo'] = $post['logo_existant'];
@@ -73,26 +69,16 @@ class OrganisateurEdition extends Edition
             $this->supprimer = $post['supprimer'];
         }
 
-
-//		echo "Réc:";
-//		printr($this->valeurs);
-        /* 		echo "réc.";
-          echo "fichiers:";
-          printr($this->fichiers); */
         if ($this->verification())
         {
             $this->enregistrer();
             return true;
         }
-        else
-        {
-            return false;
-        }
 
-        //$GLOBALS['wizardPage'] = $this->NextWizardPage();
+        return false;
     }
 
-    function verification()
+    function verification(): bool
     {
 
         global $mimes_images_acceptes;
@@ -132,13 +118,11 @@ class OrganisateurEdition extends Edition
         {
             return true;
         }
-        else
-        {
-            return false;
-        }
+
+        return false;
     }
 
-    function loadValeurs($id)
+    function loadValeurs(int $id): bool
     {
         $organisateur = new Organisateur();
         $organisateur->setId($id);
@@ -415,4 +399,3 @@ class OrganisateurEdition extends Edition
     }
 
 }
-?>

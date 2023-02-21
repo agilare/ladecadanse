@@ -7,10 +7,5 @@ namespace Ladecadanse\Utils;
  */
 class SystemComponent {
 
-   /**
-     * Tableau contenant les paramètres de base
-     *
-     * @var string
-     */
 	var $settings;
 }

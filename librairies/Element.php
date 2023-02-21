@@ -2,12 +2,15 @@
 
 namespace Ladecadanse;
 
+/**
+ * Extended by Description, Evenement, Lieu, Organisateur
+ */
 class Element
 {
 
     var $id;
-	var $valeurs = array();
-	var $connector;
+    var $valeurs = [];
+    var $connector;
 	var $table;
 
 	function __construct()
@@ -16,20 +19,18 @@ class Element
 		$this->connector = $connector;
 	}
 
-
-
-	function setId($id)
-	{
+    function setId($id): void
+    {
 		$this->id = $id;
 	}
 
-	function getId()
-	{
+	function getId(): int
+    {
 		return $this->id;
 	}
 
-	function setValue($nom, $valeur)
-	{
+	function setValue($nom, $valeur): void
+    {
 		$this->valeurs[$nom] = $valeur;
 	}
 
@@ -43,8 +44,8 @@ class Element
         return '';
 	}
 
-	function setValues($tab)
-	{
+	function setValues($tab): void
+    {
 		$this->valeurs = $tab;
 	}
 
@@ -53,18 +54,16 @@ class Element
 		return $this->valeurs;
 	}
 
-	function load()
-	{
-		$sql = "SELECT * FROM ".$this->table." WHERE id".ucfirst($this->table)."=".$this->id;
-//		echo $sql;
+	function load(): void
+    {
+		$sql = "SELECT * FROM " . $this->table . " WHERE id" . ucfirst($this->table) . "=" . $this->id;
 
-		$res = $this->connector->query($sql);
+        $res = $this->connector->query($sql);
 		$this->valeurs = $this->connector->fetchAssoc($res);
+    }
 
-	}
-
-	function insert()
-	{
+	function insert(): bool
+    {
 		$sql = "INSERT INTO ".$this->table." SET ";
 		foreach ($this->valeurs as $nom => $val)
 		{
@@ -73,23 +72,17 @@ class Element
 
 		$sql = mb_substr($sql, 0, -2);
 
-
-		//echo $sql;
-
 		if ($this->connector->query($sql))
 		{
 			$this->id= $this->connector->getInsertId();
 			return true;
 		}
-		else
 
-		{
-			return false;
-		}
-	}
+		return false;
+    }
 
-	function update()
-	{
+	function update(): bool
+    {
 		$sql = "UPDATE ".$this->table." SET ";
 		foreach ($this->valeurs as $nom => $val)
 		{
@@ -103,21 +96,13 @@ class Element
 
 		if ($this->connector->query($sql))
 		{
-			//echo "ok update";
-			return true;
+            return true;
 		}
-		else
-		{
-			return false;
-		}
-	}
 
-	function delete()
-	{
-		$this->connector->query("DELETE FROM ".$this->table." WHERE id".ucfirst($this->table)."=".$this->id);
-	}
+        return false;
+    }
 
-	function getMaxId()
+    function getMaxId()
 	{
 		$req_max_id = $this->connector->query("SELECT MAX(id".ucfirst($this->table).") AS max_id FROM ".$this->table);
 		$tab = $this->connector->fetchArray($req_max_id);
@@ -131,16 +116,6 @@ class Element
             return sanitizeForHtml($this->valeurs[$nom]);
         }
 		return '';
-	}
-
-	function securise_string($chaine)
-	{
-		//$chaine = trim($chaine);
-		//return $chaine;
-		//return trim(str_replace(array("&gt;", "&lt;", "&quot;"), array(">", "<", "\""), $chaine));
-		return trim(htmlspecialchars($chaine));
-	//enlevï¿½ "&" "&amp;"
-	//$chaine = str_replace(';','&#x3B',$chaine);
 	}
 
 }
