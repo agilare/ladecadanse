@@ -21,7 +21,7 @@
     - submit : mail with URL, author email, message
     - accept submit
         - mail with URL
-- report 
+- report
     - submit : mail to admin with type, URL, email author
 
 - send
@@ -45,12 +45,12 @@
 
 - organizers menu
 - add
-- latests 
+- latests
 - add/edit description
 
 #### Organizer
 
-- edit  
+- edit
 
 ### Users
 
@@ -58,6 +58,14 @@
     - mail to user
 - login
     - password reset
+        - mail to user
+        - reset
+    - rememberme
+    - link to register
+- profile
+    - elements added
+    - edit
+logout
 
 ### Contact
 

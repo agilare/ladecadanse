@@ -46,8 +46,7 @@ if (isset($_GET['page']))
 	$get['page'] = Validateur::validateUrlQueryValue($_GET['page'], "int", 1);
 }
 
-$tab_tris = array("dateAjout", "date_ajout", "idOrganisateur", "date_derniere_modif", "statut", "date_debut", "date_fin", "id", "titre", "nom", "prenom", "groupe", "pseudo", "idPersonne");
-
+$tab_tris = array("dateAjout", "date_ajout", "idOrganisateur", "date_derniere_modif", "statut", "date_debut", "date_fin", "id", "titre", "groupe", "pseudo", "idPersonne");
 
 $get['tri_gerer'] = "dateAjout";
 if (isset($_GET['tri_gerer']))
@@ -552,7 +551,7 @@ else if ($get['element'] == "personne")
 		$sql_terme = " WHERE ( LOWER(pseudo) like LOWER('%".$connector->sanitize($get['terme'])."%') OR LOWER(email) like LOWER('%".$connector->sanitize($get['terme'])."%')) ";
 
 	$sql_pers = "
-	SELECT idPersonne, pseudo, email, groupe, nom, prenom, affiliation, statut, dateAjout, date_derniere_modif
+	SELECT idPersonne, pseudo, email, groupe, affiliation, statut, dateAjout, date_derniere_modif
 	FROM personne
 	".$sql_terme."
 	ORDER BY ".$get['tri_gerer']." ".$get['ordre'];

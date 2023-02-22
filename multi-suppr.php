@@ -374,7 +374,7 @@ else if ($get['action'] == 'suppression') {
             @mysqli_free_result($req_lieu);
         }
         else if ($get['type'] == "descriptionlieu") {
-            $req_desc = $connector->query("SELECT descriptionlieu.idLieu, contenu, descriptionlieu.dateAjout, pseudo, nom, prenom, groupe, descriptionlieu.idPersonne AS auteur, descriptionlieu.date_derniere_modif
+            $req_desc = $connector->query("SELECT descriptionlieu.idLieu, contenu, descriptionlieu.dateAjout, pseudo, groupe, descriptionlieu.idPersonne AS auteur, descriptionlieu.date_derniere_modif
 		FROM descriptionlieu
 		INNER JOIN personne ON descriptionlieu.idPersonne = personne.idPersonne
 		WHERE descriptionlieu.idLieu =" . $get['id'] . " AND personne.idPersonne=" . $get['idP'] . " ORDER BY descriptionlieu.dateAjout");

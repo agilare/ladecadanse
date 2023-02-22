@@ -10,6 +10,7 @@
 
 require_once("app/bootstrap.php");
 
+use Ladecadanse\UserLevel;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Security\SecurityToken;
 use Ladecadanse\Utils\Logger;
@@ -68,14 +69,11 @@ $champs = array("pseudo" => '',
 "motdepasse" => '',
 "newPass" => '',
 "newPass2" => '',
-"nom" => '',
-"prenom" => '',
-"affiliation" => '',
+    "affiliation" => '',
 'lieu' => '',
 'organisateurs' => '',
 "email" => '',
-"URL" => '',
-"groupe" => '',
+    "groupe" => '',
 "signature" => 'pseudo',
 "avec_affiliation" => '',
 "statut" => '',
@@ -170,11 +168,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 		$verif->setErreur("nouveaux_pass", "Veuillez choisir un meilleur mot de passe");
 	}
 
-	$verif->valider($champs['nom'], "nom", "texte", 1, 80, 0);
-	$verif->valider($champs['prenom'], "prenom", "texte", 1, 60, 0);
 	$verif->valider($champs['email'], "email", "email", 4, 250, 1);
-	$verif->valider($champs['URL'], "URL", "URL", 2, 250, 0);
-	$verif->valider($champs['affiliation'], "affiliation", "texte", 2, 60, 0);
+    $verif->valider($champs['affiliation'], "affiliation", "texte", 2, 60, 0);
 
 	/*
 	 * Si l'affiliation texte et l'affiliation lieu ont été choisies
@@ -365,10 +360,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 						$_SESSION['Sgroupe'] = $champs['groupe'];
 					}
 
-					$_SESSION["Snom"] = $champs['nom'];
-					$_SESSION["Sprenom"] = $champs['prenom'];
-
-					if (isset($champs['lieu']) && $champs['lieu'] != 0)
+                    if (isset($champs['lieu']) && $champs['lieu'] != 0)
 					{
 						$_SESSION["Saffiliation_lieu"] = $champs['lieu'];
 					}
@@ -509,22 +501,19 @@ if ($verif->nbErreurs() > 0)
         <label for=\"groupe\">Groupe* :</label>
         <select name=\"groupe\" id=\"groupe\">";
 
-        $req_groupe = $connector->query("SELECT idGroupe, nom FROM groupes WHERE nom!='' ORDER BY idGroupe");
+        $groupes = UserLevel::getConstants();
 
-        while ($groupeTrouve = $connector->fetchArray($req_groupe))
+        foreach ($groupes as $nom => $id)
         {
               echo "<option ";
                 //en cas d'update groupe de la personne sélectionnée
-                if ($groupeTrouve['idGroupe'] == $champs['groupe'])
-                {
+                if ($id == $champs['groupe']) {
                     echo "selected=\"selected\"";
-                //en cas d'ajout, 10 est par défaut
+            }
+                elseif (($get['action'] == 'ajouter' || $get['action'] == 'insert') && $id == UserLevel::MEMBER) {
+                echo "selected=\"selected\"";
                 }
-                elseif (($get['action'] == 'ajouter' || $get['action'] == 'insert') && $groupeTrouve['idGroupe'] == 10)
-                {
-                    echo "selected=\"selected\"";
-                }
-                echo " value=\"".$groupeTrouve['idGroupe']."\">".$groupeTrouve['idGroupe']." : ".$groupeTrouve['nom']."</option>";
+                echo " value=\"" . $id . "\">" . $id . " : " . $nom . "</option>";
         }
         echo "</select>";
         echo $verif->getHtmlErreur("groupe");
@@ -571,28 +560,8 @@ if ($verif->nbErreurs() > 0)
 
 <fieldset>
     <legend>Informations</legend>
-    <!-- Nom (text) -->
-    <p>
-    <label for="nom">Nom</label>
-    <input type="text" name="nom" id="nom" size="20" maxlength="80" value="<?php echo htmlentities($champs['nom']) ?>" />
-    <?php echo $verif->getHtmlErreur("nom");?>
-    </p>
 
-    <!-- Prénom (text) -->
-    <p>
-    <label for="prenom">Prénom</label>
-    <input type="text" name="prenom" id="prenom" size="20" maxlength="80" value="<?php echo htmlentities($champs['prenom']); ?>" />
-    <?php echo $verif->getHtmlErreur("prenom"); ?>
-    </p>
-
-    <!-- Site perso (text) -->
-    <p>
-    <label for="URL">Site web http://</label>
-    <input type="url" name="URL" id="URL" size="40" maxlength="80" value="<?php echo htmlentities($champs['URL']); ?>" />
-    <?php echo $verif->getHtmlErreur("URL");?>
-    </p>
-
-    <!-- Email* (text) -->
+        <!-- Email* (text) -->
     <p>
     <label for="email">E-mail*</label>
     <input type="email" name="email" id="email" size="40" maxlength="80" value="<?php echo htmlentities(stripslashes($champs['email'])) ?>" required />
@@ -787,8 +756,8 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 8))
 
     <ul class="radio" style="display:block">
     <?php
-    $signatures = array("pseudo" => "L'identifiant", "prenom" => "Le prénom", "nomcomplet" => "Le prénom et le nom", "aucune" => "Aucune signature");
-    foreach ($signatures as $s => $label)
+    $signatures = array("pseudo" => "L'identifiant", "aucune" => "Aucune signature");
+        foreach ($signatures as $s => $label)
     {
         $coche = '';
         if ($s == $champs['signature'])
@@ -799,12 +768,7 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 8))
         <input type="radio" name="signature" value="'.$s.'" '.$coche.' id="signature_'.$s.'" />
         <label class="continu" for="signature_'.$s.'">'.$label.' ';
 
-        if ($s == 'nomcomplet')
-        {
-            echo ": <b>".$champs['prenom']." ".$champs['nom']."</b>";
-        }
-        elseif ($s == 'aucune')
-        {
+        if ($s == 'aucune') {
             echo "";
         }
         else

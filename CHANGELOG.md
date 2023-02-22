@@ -3,24 +3,30 @@
 
 ## [Unreleased]
 
+3.4.0
+
 ### Added
 
 - [ ] CONTRIBUTING.md
 - [x] `UserLevel` class introduced (replaces useless table `groupes`)
-- [ ] [Whoops](https://github.com/filp/whoops)
+- [x] [Whoops](https://github.com/filp/whoops)
 
 ### Changed
 
 - [ ] refactor
     - [ ] html sanitization moved in Text class
     - [ ] agenda.php to evenement-agenda.php
-    - [ ] classes in `libraries` : cleaning, typehints
+    - [x] classes in `libraries` : cleaning, typehints
     - [ ] dates.php to Date class
+    - [ ] _footer.php externalize js
+    - [ ] _header.php mv script jquery to footer
 
 ### Removed
 
 - [ ] comments (completely)
 - [ ] favorites (completely)
+- [ ] user useless fields (ip, session, nom, prenom, adresse, telephone, URL, notification_commentaires, remarque), personne_organisateur (role)
+- [ ] user level "membre"
 
 ## [3.3.0] - 2023-02-19
 

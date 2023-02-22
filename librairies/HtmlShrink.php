@@ -210,7 +210,7 @@ class HtmlShrink
         global $connector;
 
         $signature_auteur = "";
-        $sql_auteur = "SELECT pseudo, nom, prenom, affiliation, signature, avec_affiliation
+        $sql_auteur = "SELECT pseudo, affiliation, signature, avec_affiliation
         FROM personne WHERE idPersonne=" . $idPersonne . "";
 
         $req_auteur = $connector->query($sql_auteur);
@@ -219,14 +219,6 @@ class HtmlShrink
         if ($tab_auteur['signature'] == 'pseudo')
         {
             $signature_auteur = "<strong>" . $tab_auteur['pseudo'] . "</strong>";
-        }
-        else if ($tab_auteur['signature'] == 'prenom')
-        {
-            $signature_auteur = "<strong>" . $tab_auteur['prenom'] . "</strong>";
-        }
-        else if ($tab_auteur['signature'] == 'nomcomplet')
-        {
-            $signature_auteur = "<strong>" . $tab_auteur['prenom'] . " " . $tab_auteur['nom'] . "</strong>";
         }
 
         if ($tab_auteur['avec_affiliation'] == 'oui')

@@ -565,9 +565,9 @@ $adresse = htmlspecialchars(HtmlShrink::getAdressFitted($listeLieu['region'], $l
 		<?php
 
 				$signature_auteur = "";
-				$sql_auteur = "SELECT pseudo, nom, prenom, affiliation, signature, avec_affiliation FROM personne WHERE idPersonne=".$even->getValue('idPersonne')."";
+				$sql_auteur = "SELECT pseudo, affiliation, signature, avec_affiliation FROM personne WHERE idPersonne=" . $even->getValue('idPersonne') . "";
 
-				$req_auteur = $connector->query($sql_auteur);
+$req_auteur = $connector->query($sql_auteur);
                 $tab_auteur = $connector->fetchArray($req_auteur);
 
                 if (!empty($tab_auteur))
@@ -576,16 +576,8 @@ $adresse = htmlspecialchars(HtmlShrink::getAdressFitted($listeLieu['region'], $l
                     {
                         $signature_auteur = " par <strong>".$tab_auteur['pseudo']."</strong> ";
                     }
-                    else if ($tab_auteur['signature'] == 'prenom' && $tab_auteur['prenom'] != '')
-                    {
-                        $signature_auteur = " par <strong>".$tab_auteur['prenom']."</strong> ";
-                    }
-                    else if ($tab_auteur['signature'] == 'nomcomplet' && ($tab_auteur['prenom'] != '' || $tab_auteur['nom'] != ''))
-                    {
-                        $signature_auteur = " par <strong>".$tab_auteur['prenom']." ".$tab_auteur['nom']."</strong> ";
-                    }
 
-                    if ($tab_auteur['avec_affiliation'] == 'oui')
+    if ($tab_auteur['avec_affiliation'] == 'oui')
                     {
                         $nom_affiliation = "";
                         $req_aff = $connector->query("SELECT idAffiliation FROM affiliation WHERE

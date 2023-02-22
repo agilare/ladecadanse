@@ -1218,32 +1218,22 @@ CREATE TABLE `personne` (
   `pseudo` varchar(80) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `mot_de_passe` varchar(60) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `cookie` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `session` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `ip` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `groupe` tinyint(4) UNSIGNED NOT NULL DEFAULT '12',
   `statut` enum('actif','inactif','demande') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'actif',
-  `nom` varchar(60) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `prenom` varchar(60) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `affiliation` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `adresse` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
   `region` varchar(2) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'ge',
-  `telephone` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `email` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `URL` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
   `signature` enum('pseudo','prenom','nomcomplet','aucune') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'pseudo',
   `avec_affiliation` enum('oui','non') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'non',
-  `notification_commentaires` enum('oui','non') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'non',
   `gds` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `actif` tinyint(3) UNSIGNED NOT NULL DEFAULT '1',
-  `remarque` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `dateAjout` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `date_derniere_modif` datetime NOT NULL DEFAULT '0000-00-00 00:00:00'
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `personne_organisateur` (
   `idOrganisateur` mediumint(9) NOT NULL DEFAULT '0',
-  `idPersonne` smallint(6) NOT NULL DEFAULT '0',
-  `role` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT ''
+  `idPersonne` smallint(6) NOT NULL DEFAULT '0'
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `salle` (

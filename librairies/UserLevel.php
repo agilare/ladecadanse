@@ -20,4 +20,10 @@ class UserLevel
     /** @var int favoris, commentaires */
     public const MEMBER = 12;
 
+    static function getConstants()
+    {
+        $oClass = new \ReflectionClass(__CLASS__);
+        return $oClass->getConstants();
+    }
+
 }

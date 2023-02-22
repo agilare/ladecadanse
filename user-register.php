@@ -30,18 +30,12 @@ $verif = new Validateur();
 $champs = array("utilisateur" => '',
 "motdepasse" => '',
 "motdepasse2" => '',
-"nom" => '',
-"prenom" => '',
-'organisateurs' => '',
+    'organisateurs' => '',
 "affiliation" => '',
-"adresse" => '',
-"region" => '',
+    "region" => '',
 "lieu" => '',
 "email" => '',
-"URL" => '',
-"telephone" => '',
-"groupe" => '',
-"remarque" => '',
+    "groupe" => ''
 );
 
 $action_terminee = false;
@@ -111,10 +105,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 	 */
 	if (!empty($champs['groupe']))
 	{
-		if ($connector->getNumRows($connector->query("SELECT idGroupe FROM groupes
-		WHERE nom !='' AND idGroupe=".$connector->sanitize($champs['groupe']))) < 1)
-		{
-			$verif->setErreur("groupe", "Le groupe ".$champs['groupe']." n'est pas valable");
+		if ($champs['groupe'] > \Ladecadanse\UserLevel::MEMBER) {
+            $verif->setErreur("groupe", "Le groupe ".$champs['groupe']." n'est pas valable");
 		}
 	}
 

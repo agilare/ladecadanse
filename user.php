@@ -94,8 +94,7 @@ else
 }
 
 $tab_tri = array("dateAjout", "idOrganisateur", "idEvenement", "idLieu", "dateEvenement", "date_derniere_modif", "statut",
-    "date_debut", "date_fin", "id", "titre", "nom", "prenom", "groupe", "pseudo");
-
+    "date_debut", "date_fin", "id", "titre", "groupe", "pseudo");
 
 if (isset($_GET['tri']))
 {
@@ -140,8 +139,7 @@ if ($_SESSION['SidPersonne'] != $get['idP'] && $_SESSION['Sgroupe'] > 4 )
 }
 
 //details de la personne
-$req_personne = $connector->query("SELECT idPersonne, pseudo, nom, prenom, affiliation,
- adresse, email, telephone, URL, groupe, actif FROM personne WHERE idPersonne=".$get['idP']);
+$req_personne = $connector->query("SELECT idPersonne, pseudo, affiliation, email, groupe, actif FROM personne WHERE idPersonne=" . $get['idP']);
 
 $detailsPersonne = $connector->fetchArray($req_personne);
 

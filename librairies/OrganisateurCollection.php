@@ -16,8 +16,7 @@ class OrganisateurCollection extends Collection
 	function load(int $idL): bool
     {
 		$req = $this->connector->query("
-		 SELECT descriptionlieu.idLieu AS idLieu, contenu, descriptionlieu.dateAjout AS dateAjout, pseudo, nom,
-		 		 prenom, groupe, descriptionlieu.idPersonne AS idPersonne, descriptionlieu.date_derniere_modif
+		 SELECT descriptionlieu.idLieu AS idLieu, contenu, descriptionlieu.dateAjout AS dateAjout, pseudo, groupe, descriptionlieu.idPersonne AS idPersonne, descriptionlieu.date_derniere_modif
 		 FROM descriptionlieu
 		 INNER JOIN personne ON descriptionlieu.idPersonne = personne.idPersonne
 		 WHERE descriptionlieu.idLieu =".$idL." ORDER BY descriptionlieu.dateAjout");

@@ -14,7 +14,7 @@ class Sentry extends SystemComponent
 {
 
     /**
-     * Tableau contenant idPersonne, pseudo, mot_de_passe, groupe, nom, prenom, email
+     * Tableau contenant idPersonne, pseudo, mot_de_passe, groupe, email
      * Rempli dès qu'une personne se logue
      * @var string
      */
@@ -48,7 +48,7 @@ class Sentry extends SystemComponent
         $ses_id = session_id();
 
         $sql_user = "
-		SELECT idPersonne, pseudo, mot_de_passe, cookie, session, ip, groupe, nom, prenom, region, email, gds
+		SELECT idPersonne, pseudo, mot_de_passe, cookie, groupe, region, email, gds
 		FROM personne WHERE
 		pseudo = '" . $connector->sanitize($_SESSION['user']) . "'
 				AND groupe = '" . $connector->sanitize($_SESSION['Sgroupe']) . "'
@@ -72,7 +72,7 @@ class Sentry extends SystemComponent
             else
             {
                 unset($this->userdata);
-                $message = "Erreur de session (pass) : " . $_SESSION['user'] . ", ip:" . $_SESSION['ip'] . ", sid:" . session_id() . ", session db:" . $this->userdata['session'];
+                $message = "Erreur de session (pass) : " . $_SESSION['user'] . ", sid:" . session_id();
                 trigger_error($message, E_USER_ERROR);
                 return false;
             } // if pass
@@ -80,7 +80,7 @@ class Sentry extends SystemComponent
         else
         {
 
-            $message = "Erreur de session (requete) : " . $_SESSION['user'] . ", ip:" . $_SESSION['ip'] . ", sid:" . session_id() . ", session db:" . $this->userdata['session'];
+            $message = "Erreur de session (requete) : " . $_SESSION['user'] . ", sid:" . session_id();
             trigger_error($message, E_USER_ERROR);
             unset($this->userdata);
             return false;
@@ -133,7 +133,7 @@ class Sentry extends SystemComponent
         if (count($erreurs) === 0)
         {
             $sql = "
-			SELECT idPersonne, pseudo, mot_de_passe, cookie, session, ip, groupe, nom, prenom, region, email, gds
+			SELECT idPersonne, pseudo, mot_de_passe, cookie, groupe, region, email, gds
 			FROM personne
 			WHERE pseudo = '" . $connector->sanitize($user) . "' AND groupe <= " . $group . " AND statut='actif'";
 
@@ -206,19 +206,8 @@ class Sentry extends SystemComponent
     {
         global $connector;
         global $logger;
-        //	if (!$username || !$cookie)
-        //	{
-        //		return false;
-        //	}
 
-
-        /* 		$sql_getUser = "SELECT idPersonne, pseudo, mot_de_passe, cookie, session, ip, groupe, nom, prenom, email, gds
-          FROM personne
-          WHERE pseudo = '".$connector->sanitize($cookie['username'])."'
-          AND cookie='".$connector->sanitize($cookie['cookie'])."'
-          AND statut='actif'"; */
-
-        $sql_getUser = "SELECT idPersonne, pseudo, mot_de_passe, cookie, session, ip, groupe, nom, prenom, region, email, gds
+        $sql_getUser = "SELECT idPersonne, pseudo, mot_de_passe, cookie, groupe, region, email, gds
 						FROM personne
 						WHERE cookie='" . $connector->sanitize($cookie) . "'
 						 AND statut='actif'";
@@ -260,12 +249,9 @@ class Sentry extends SystemComponent
         $_SESSION["user"] = $this->userdata["pseudo"];
         $_SESSION["pass"] = $this->userdata['mot_de_passe'];
         $_SESSION["cookie"] = $this->userdata["cookie"];
-        $_SESSION["ip"] = $this->userdata['ip'];
         $_SESSION["logged"] = true;
 
         $_SESSION["Sgroupe"] = $this->userdata["groupe"];
-        $_SESSION["Snom"] = $this->userdata["nom"];
-        $_SESSION["Sprenom"] = $this->userdata["prenom"];
         $_SESSION['Semail'] = $this->userdata['email'];
         $_SESSION['Sregion'] = $this->userdata['region'];
         $_SESSION['Saffiliation_lieu'] = $tab_affiliation['idAffiliation'] ?? 0;
@@ -287,11 +273,8 @@ class Sentry extends SystemComponent
         if ($init)
         {
             $session = session_id();
-            $ip = $_SERVER['REMOTE_ADDR'];
-
             $sql = "UPDATE personne
-			SET cookie='" . $connector->sanitize($cookie) . "', session='" . $connector->sanitize($session) . "', ip='" . $connector->sanitize($ip) . "'
-			WHERE idPersonne=" . $this->userdata['idPersonne'];
+			SET cookie='" . $connector->sanitize($cookie) . "' WHERE idPersonne=" . $this->userdata['idPersonne'];
             //echo $sql;
             $connector->query($sql);
         }
@@ -325,7 +308,7 @@ class Sentry extends SystemComponent
         if (isset($_SESSION['user']))
         {
             $getUser = $connector->query("
-			SELECT idPersonne, pseudo, mot_de_passe, cookie, session, ip, groupe, nom, prenom, email, gds
+			SELECT idPersonne, pseudo, mot_de_passe, cookie, groupe, email, gds
 			FROM personne
 			WHERE pseudo = '" . $connector->sanitize($_SESSION['user']) . "' AND groupe <= " . (int) $groupe . " AND statut='actif'");
 
