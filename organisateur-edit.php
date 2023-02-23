@@ -45,8 +45,7 @@ if ($get['action'] != "ajouter" && $get['action'] != "insert")
 }
 
 
-$champs = array('statut' => '', 'nom' => '', 'adresse' => '',  'telephone' => '', 'URL' => '',
- 'email' => '', 'presentation' => '',  "date_ajout" => "");
+$champs = array('statut' => '', 'nom' => '', 'adresse' => '', 'URL' => '', 'email' => '', 'presentation' => '', "date_ajout" => "");
 $fichiers = array('logo' => '', 'photo' => '');
 $supprimer = array('logo' => '', 'photo' => '');
 
@@ -161,16 +160,7 @@ echo $form->getHtmlErreur("adresse");
 ?>
 </p>
 
-<div class="spacer"></div>
-<!-- Telephone (text) -->
-<p>
-<label for="telephone">Téléphone :</label>
-<input type="text" name="telephone" id="telephone" size="20" maxlength="40"
-title="Numéro de téléphone" value="<?php echo $form->getValeur('telephone') ?>" onblur="validerTelephone('telephone', 'false');" />
-<?php
-echo $form->getHtmlErreur("telephone");
-?>
-</p>
+    <div class="spacer"></div>
 
 <!-- URL (text) -->
 <p>

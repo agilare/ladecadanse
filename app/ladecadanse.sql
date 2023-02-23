@@ -1195,7 +1195,6 @@ CREATE TABLE `organisateur` (
   `region` varchar(2) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'ge',
   `URL` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `telephone` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `logo` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `photo` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `presentation` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,

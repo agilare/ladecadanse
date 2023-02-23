@@ -26,7 +26,7 @@
 - [ ] user level "membre"
 - [ ] comments (completely)
 - [ ] favorites (completely)
-- [ ] useless fields of user (ip, session, nom, prenom, adresse, telephone, URL, notification_commentaires, remarque), personne_organisateur (role), evenement (URL1, URL2), lieu (horaire_evenement, entree, telephone, email, acces_tpg, plan, actif), organisateur
+- [ ] useless fields of user (ip, session, nom, prenom, adresse, telephone, URL, notification_commentaires, remarque), personne_organisateur (role), evenement (URL1, URL2), lieu (horaire_evenement, entree, telephone, email, acces_tpg, plan, actif), organisateur (telephone)
 
 
 ## [3.3.0] - 2023-02-19
