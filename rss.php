@@ -43,7 +43,7 @@ if ($get['type'] == "evenements_auj") {
 	$sem_derniere = time() - (7 * 24 * 60 * 60);
 
 	$sql = "SELECT idEvenement, idLieu, idSalle, genre, nomLieu, adresse, quartier, urlLieu,
-	 titre, idPersonne, dateEvenement, URL1, ref, flyer, description, horaire_debut, horaire_fin, horaire_complement,
+	 titre, idPersonne, dateEvenement, ref, flyer, description, horaire_debut, horaire_fin, horaire_complement,
 	 prix, prelocations, dateAjout, date_derniere_modif
 	 FROM evenement
 	 WHERE dateEvenement='".$glo_auj_6h."' AND statut NOT IN ('inactif', 'propose') AND region IN ('".$connector->sanitize($_SESSION['region'])."', 'rf', 'hs')

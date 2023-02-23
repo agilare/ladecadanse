@@ -161,7 +161,7 @@ $get['nblignes'] = 50;
 $limite = " LIMIT ".($get['page'] - 1) * $get['nblignes'].",".$get['nblignes'];
 
 $sql_even = "SELECT idEvenement, idLieu, idSalle, statut, genre, nomLieu, adresse, quartier, localite.localite AS localite,
- titre, idPersonne, dateEvenement, URL1, flyer, image, description, horaire_complement, horaire_debut, horaire_fin, price_type, prix, prelocations
+ titre, idPersonne, dateEvenement, flyer, image, description, horaire_complement, horaire_debut, horaire_fin, price_type, prix, prelocations
  FROM evenement, localite
  WHERE evenement.localite_id=localite.id AND ".$sql_genre." dateEvenement ".$sql_date_evenement." AND statut NOT IN ('inactif', 'propose') AND ".$sql_region."
  ORDER BY ".$sql_tri_agenda;

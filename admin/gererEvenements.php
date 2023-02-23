@@ -237,15 +237,9 @@ elseif (!empty($_POST['formulaire']))
 
 	$verif->valider($champs['description'], "description", "texte", 4, 10000, 0);
 
-	/*
-	 * 1ère URL, au bon format
-	 */
-/* 	$verif->valider($champs['URL1'], "URL1", "texte", 5, 100, 0);
-	$verif->valider($champs['URL2'], "URL2", "texte", 5, 100, 0); */
-
 	$mimes_acceptes = array("image/jpeg", "image/pjpeg", "image/gif", "image/png", "image/x-png");
 
-	$verif->validerFichier($fichiers['flyer'], "flyer", $mimes_images_acceptes, 0);
+    $verif->validerFichier($fichiers['flyer'], "flyer", $mimes_images_acceptes, 0);
 	$verif->validerFichier($fichiers['image'], "image", $mimes_images_acceptes, 0);
 
 	$verif->valider($champs['horaire_debut'], "horaire_debut", "texte", 1, 100, 0);

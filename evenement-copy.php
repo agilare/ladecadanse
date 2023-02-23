@@ -217,19 +217,9 @@ FROM evenement WHERE idEvenement=".$get['idE'])));
 			$sql_insert_attributs = mb_substr($sql_insert_attributs, 0, -2);
 			$sql_insert_valeurs = mb_substr($sql_insert_valeurs, 0, -2);
 
-			$sql_insert =  "INSERT INTO evenement (".$sql_insert_attributs.") VALUES (".$sql_insert_valeurs.")";
+			$sql_insert = "INSERT INTO evenement (" . $sql_insert_attributs . ") VALUES (" . $sql_insert_valeurs . ")";
 
-/* 			//FAIRE BOUCLE DE DATE1 A DATE2
-			$sql_inserer = "INSERT INTO evenement (idLieu, idPersonne, genre, titre, dateEvenement,
-							nomLieu, adresse, description, flyer, prix, horaire_debut, horaire_complement, prelocations,  URL1, ref, dateAjout)"."
-							 VALUES ('".$detailsEven['idLieu']."', '$pers',
-							 '".$detailsEven['genre']."', '".$detailsEven['titre']."', '".."',
-							  '".$detailsEven['nomLieu']."','".$detailsEven['adresse']."', '".$detailsEven['description']."', '".$flyer."',
-							  '".$detailsEven['prix']."',
-							  '".$detailsEven['horaire_debut']."', '".$detailsEven['horaire_complement']."', '".$detailsEven['prelocations']."', '".$detailsEven['URL1']."',
-							  '".$detailsEven['ref']."', '".."')"; */
-
-			/*
+            /*
 			* Insertion réussie, message OK, RAZ des champs, copie du flyer (réduit et mini)
 			*/
 			if ($connector->query($sql_insert))
@@ -371,7 +361,7 @@ include("_header.inc.php");
      */
     if (isset($get['idE'])) {
         $req_getEven = $connector->query("SELECT idEvenement, idLieu, idSalle, idPersonne, titre, genre, dateEvenement,
-             nomLieu, adresse, quartier, localite, region, urlLieu, description, flyer, prix, horaire_debut,horaire_fin, horaire_complement, URL1, ref, prelocations,statut
+             nomLieu, adresse, quartier, localite, region, urlLieu, description, flyer, prix, horaire_debut,horaire_fin, horaire_complement, ref, prelocations,statut
               FROM evenement, localite WHERE evenement.localite_id=localite.id AND idEvenement =" . $get['idE']);
 
         if ($affEven = $connector->fetchArray($req_getEven)) {

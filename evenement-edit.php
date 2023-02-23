@@ -794,7 +794,7 @@ if (!$action_terminee)
         if ($_SESSION['Sgroupe'] <= 10)
         {
             $req_even = $connector->query("SELECT idLieu, idSalle, idPersonne, statut, titre, genre,
-            dateEvenement, nomLieu, adresse, urlLieu, quartier, localite_id, region, description, flyer, image, prix, price_type, horaire_debut, horaire_fin, horaire_complement, URL1, ref, prelocations, remarque, user_email FROM evenement WHERE idEvenement =".$get['idE']);
+            dateEvenement, nomLieu, adresse, urlLieu, quartier, localite_id, region, description, flyer, image, prix, price_type, horaire_debut, horaire_fin, horaire_complement, ref, prelocations, remarque, user_email FROM evenement WHERE idEvenement =" . $get['idE']);
 
             if ($affEven = $connector->fetchArray($req_even))
             {

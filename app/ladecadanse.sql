@@ -61,8 +61,6 @@ CREATE TABLE `evenement` (
   `price_type` varchar(40) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `prix` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `prelocations` varchar(80) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `URL1` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `URL2` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `ref` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `remarque` mediumtext COLLATE utf8mb4_unicode_ci,
   `user_email` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,

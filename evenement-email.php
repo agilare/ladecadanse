@@ -70,7 +70,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 		$contenu_message .= "------------------\n";
 
 		$req_getEven = $connector->query("SELECT idEvenement, idLieu, idSalle, idPersonne, titre, genre, dateEvenement,
-		 nomLieu, adresse, quartier, urlLieu, description, flyer, prix, horaire_debut,horaire_fin, horaire_complement, URL1, ref, prelocations, statut
+		 nomLieu, adresse, quartier, urlLieu, description, flyer, prix, horaire_debut,horaire_fin, horaire_complement, ref, prelocations, statut
 		  FROM evenement WHERE idEvenement =".$get['idE']);
 
 		if ($tab_even = $connector->fetchArray($req_getEven))
@@ -140,7 +140,7 @@ if (!$action_terminee)
 if (isset($get['idE']))
 {
 	$req_getEven = $connector->query("SELECT idEvenement, idLieu, idSalle, idPersonne, titre, genre, dateEvenement,
-	 nomLieu, adresse, quartier, urlLieu, description, flyer, prix, horaire_debut,horaire_fin, horaire_complement, URL1, ref, prelocations, statut
+	 nomLieu, adresse, quartier, urlLieu, description, flyer, prix, horaire_debut,horaire_fin, horaire_complement, ref, prelocations, statut
 	  FROM evenement WHERE idEvenement =".$get['idE']);
 
 	if ($affEven = $connector->fetchArray($req_getEven))

@@ -343,7 +343,7 @@ else if ($get['action'] == 'suppression') {
     if ($get['action'] != 'confirmation' && isset($get['id'])) {
         if ($get['type'] == "evenement") {
             $req_even = $connector->query("SELECT idEvenement, idLieu, idSalle, idPersonne, titre, genre,
-		dateEvenement, nomLieu, adresse, quartier, urlLieu, description, flyer, image, prix, horaire_debut, horaire_fin, horaire_complement, URL1,
+		dateEvenement, nomLieu, adresse, quartier, urlLieu, description, flyer, image, prix, horaire_debut, horaire_fin, horaire_complement,
 		ref, prelocations FROM " . $get['type'] . " WHERE idEvenement =" . $get['id']);
 
             if ($tab_even = $connector->fetchArray($req_even)) {

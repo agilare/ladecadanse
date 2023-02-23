@@ -20,7 +20,7 @@ if ($_SESSION['region'] == 'ge')
 
 
 $sqlEv = "SELECT idEvenement, genre, idLieu, idSalle, nomLieu, adresse, quartier, localite.localite AS localite, urlLieu, statut,
- titre, idPersonne, dateEvenement, URL1, ref, flyer, image, description, horaire_debut, horaire_fin,
+ titre, idPersonne, dateEvenement, ref, flyer, image, description, horaire_debut, horaire_fin,
  horaire_complement, prix, prelocations
  FROM evenement, localite
  WHERE evenement.localite_id=localite.id AND dateEvenement LIKE '" . $get['auj'] . "%' AND statut NOT IN ('inactif', 'propose') AND region IN ('" . $connector->sanitize($_SESSION['region']) . "', " . $sql_rf . " 'hs')

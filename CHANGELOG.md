@@ -23,10 +23,11 @@
 
 ### Removed
 
+- [ ] user level "membre"
 - [ ] comments (completely)
 - [ ] favorites (completely)
-- [ ] user useless fields (ip, session, nom, prenom, adresse, telephone, URL, notification_commentaires, remarque), personne_organisateur (role)
-- [ ] user level "membre"
+- [ ] useless fields of user (ip, session, nom, prenom, adresse, telephone, URL, notification_commentaires, remarque), personne_organisateur (role), evenement (URL1, URL2)
+
 
 ## [3.3.0] - 2023-02-19
 
