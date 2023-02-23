@@ -87,7 +87,6 @@ class OrganisateurEdition extends Edition
 
         $verif->valider($this->valeurs['nom'], "nom", "texte", 1, 80, 1);
         $verif->valider($this->valeurs['adresse'], "adresse", "texte", 1, 80, 0);
-        $verif->valider($this->valeurs['telephone'], "telephone", "texte", 2, 80, 0);
         $verif->valider($this->valeurs['URL'], "URL", "url", 2, 100, 0);
         $verif->valider($this->valeurs['email'], "email", "email", 4, 100, 0);
         $verif->valider($this->valeurs['presentation'], "presentation", "texte", 20, 10000, 0);
@@ -336,7 +335,7 @@ class OrganisateurEdition extends Edition
         return $erreur;
     }
 
-    function getNbErreurs()
+    function getNbErreurs(): int
     {
         return count($this->erreurs);
     }

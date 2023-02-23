@@ -359,10 +359,9 @@ else if ($get['action'] == 'suppression') {
         }
         else if ($get['type'] == "lieu") {
             //récolte des détails sur le lieu
-            $req_lieu = $connector->query("SELECT idLieu, nom, adresse, quartier, horaire_general, acces_tpg, entree,
-		categorie, URL, photo1, logo, actif, dateAjout, date_derniere_modif FROM lieu WHERE idLieu=" . $get['id']);
+            $req_lieu = $connector->query("SELECT idLieu, nom, adresse, quartier, horaire_general, categorie, URL, photo1, logo, dateAjout, date_derniere_modif FROM lieu WHERE idLieu=" . $get['id']);
 
-            if ($tab_lieu = $connector->fetchArray($req_lieu)) {
+        if ($tab_lieu = $connector->fetchArray($req_lieu)) {
 
                 $lieu = $tab_lieu;
             }

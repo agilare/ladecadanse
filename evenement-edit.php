@@ -995,22 +995,6 @@ if ($verif->nbErreurs() > 0)
         <select name="idLieu" id="idLieu" class="chosen-select" title="Un lieu dans base de données de La décadanse" onfocus="this.className='focus';" style="max-width:300px"  data-placeholder="Tapez le nom du lieu">
         <?php
 
-        /*
-         * Si l'ajout d'événement se fait depuis une page 'lieu', le formulaire est
-         * pré-complété pour l'horaire et le prix
-         */
-        if (($get['action'] == 'ajouter' || $get['action'] == 'insert') && !empty($get['idL']))
-        {
-            $champs['idLieu'] = $get['idL'];
-            $lieuTrouve = $connector->fetchArray($connector->query("SELECT horaire_evenement, entree FROM lieu WHERE idLieu=".$get['idL']));
-
-            //$champs['horaire_debut'] = $lieuTrouve['horaire_ev'];
-            $champs['horaire_complement'] = $lieuTrouve['horaire_evenement'];
-            $champs['prix'] = $lieuTrouve['entree'];
-
-        }
-
-
         $sql_lieu_excl_fr = '';
         $sql_localite_excl_fr = '';
         if ($get['action'] == 'ajouter' || $get['action'] == 'insert')

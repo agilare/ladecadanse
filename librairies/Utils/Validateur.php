@@ -14,7 +14,7 @@ class Validateur
      * @var array string
      */
     var $erreurs = array();
-    var $types = array('texte', 'email', 'telephone', 'nombre', 'date', 'url', 'fichier', 'image');
+    var $types = array('texte', 'email', 'nombre', 'date', 'url', 'fichier', 'image');
 
     function valider($valeur_champ, $nom_champ, $type_champ, $longueur_min, $longueur_max, $obligatoire)
     {
@@ -604,8 +604,8 @@ class Validateur
         }
 
         throw new \Exception($erreur);
-    }    
-    
+    }
+
 }
 
 //class

@@ -330,12 +330,6 @@ if ($lieu->getValue('logo'))
             </li>';
 		}
 
-		$acces_tpg = '';
-		if ($lieu->getValue('acces_tpg') != "")
-		{
-			$acces_tpg = '<li>Accès TPG : '.$lieu->getValue('acces_tpg').'</li>';
-		}
-
 		$URL = '';
 		if ($lieu->getValue('URL') != '' )
 		{

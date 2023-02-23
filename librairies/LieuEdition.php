@@ -44,7 +44,7 @@ class LieuEdition extends Edition
         $this->erreurs['doublon_organisateur'] = '';
     }
 
-    function traitement(array $post, array $files): bool
+    function traitement(array $post, array $files)
     {
         parent::traitement($post, $files);
 
@@ -126,15 +126,8 @@ class LieuEdition extends Edition
         $verif->valider($this->valeurs['determinant'], "determinant", "texte", 1, 30, 0);
         $verif->valider($this->valeurs['adresse'], "adresse", "texte", 1, 80, 1);
         $verif->valider($this->valeurs['localite_id'], "localite_id", "texte", 1, 80, 1);
-
-        $verif->valider($this->valeurs['acces_tpg'], "acces_tpg", "texte", 2, 80, 0);
         $verif->valider($this->valeurs['horaire_general'], "horaire_general", "texte", 2, 200, 0);
-        $verif->valider($this->valeurs['horaire_evenement'], "horaire_evenement", "texte", 2, 80, 0);
-        $verif->valider($this->valeurs['entree'], "entree", "texte", 2, 80, 0);
-        $verif->valider($this->valeurs['telephone'], "telephone", "texte", 2, 80, 0);
         $verif->valider($this->valeurs['URL'], "URL", "url", 2, 100, 0);
-        $verif->valider($this->valeurs['email'], "email", "email", 4, 100, 0);
-
         /*
          * Catégorie (salle, cinéma, bistrot, etc.)
          */
@@ -157,30 +150,6 @@ class LieuEdition extends Edition
         $verif->validerFichier($this->fichiers['photo1'], "photo1", $mimes_images_acceptes, 0);
 
         $verif->validerFichier($this->fichiers['image_galerie'], "image_galerie", $mimes_images_acceptes, 0);
-
-        /*
-         * En cas d'ajout vérification si le lieu n'existe pas déjà
-         */
-        if ($this->action == 'insert')
-        {
-            $req_getLieux = $this->connector->query("SELECT nom, telephone FROM lieu WHERE statut='actif'");
-
-            while ($tab_lieux = $this->connector->fetchArray($req_getLieux))
-            {
-                //si un lieu a déjà le même nom
-                if ($this->valeurs['nom'] != '' && $this->valeurs['nom'] == $tab_lieux['nom'])
-                {
-                    $verif->setErreur('nom_existant', "Le lieu s'appelant <em>" . $this->valeurs['nom'] . "</em> existe déjà.");
-                }
-
-                //si un lieu a déjà la même adresse
-                if ($this->valeurs['telephone'] != '' && $this->valeurs['telephone'] == $tab_lieux['telephone'])
-                {
-                    $verif->setErreur('telephone_existant', "Un lieu dans la base a déjà le numéro <em>" . $this->valeurs['telephone']) . "</em>";
-                }
-            }
-        } //if action==ajouter
-
 
         $this->erreurs = array_merge($this->erreurs, $verif->getErreurs());
 

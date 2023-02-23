@@ -40,7 +40,7 @@ namespace Ladecadanse;
       	$this->erreurs = array_merge($champs, $fichiers);
     }
 
-    function traitement(array $post, array $files): void
+    function traitement(array $post, array $files)
     {
         foreach ($this->valeurs as $nom => $val)
     	{
@@ -69,8 +69,8 @@ namespace Ladecadanse;
 
     }
 
-	function loadValeurs($id)
-	{
+	function loadValeurs(int $id)
+    {
 
 
 	}

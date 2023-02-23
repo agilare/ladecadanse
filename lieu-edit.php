@@ -46,9 +46,7 @@ else if ($_SESSION['Sgroupe'] > 6)
     exit;
 }
 
-$champs = array('idpersonne' => '', 'statut' => '', 'nom' => '', 'determinant' => '', 'adresse' => '', 'localite_id' => '', 'region' => '', 'horaire_general' => '',
- 'horaire_evenement' => '', 'entree' => '', 'organisateurs' => '', 'categorie' => '', 'telephone' => '', 'URL' => '',
- 'email' => '', 'acces_tpg' => '',  "dateAjout" => "");
+$champs = array('idpersonne' => '', 'statut' => '', 'nom' => '', 'determinant' => '', 'adresse' => '', 'localite_id' => '', 'region' => '', 'horaire_general' => '', 'organisateurs' => '', 'categorie' => '', 'URL' => '', "dateAjout" => "");
 $fichiers = array('logo' => '', 'photo1' => '', 'image_galerie' => '');
 $supprimer = array('image_galerie' => '');
 
@@ -320,15 +318,7 @@ echo $form->getHtmlErreur("quartier");
         echo $form->getHtmlErreur("horaire_general");
         ?>
     </p>
-    <div class="spacer"></div>
-    <p>
-        <label for="telephone">Téléphone</label>
-        <input type="text" name="telephone" id="telephone" size="15" maxlength="40" tabindex="6"
-         value="<?php echo $form->getValeur('telephone') ?>"  />
-        <?php
-        echo $form->getHtmlErreur("telephone");
-        ?>
-    </p>
+        <div class="spacer"></div>
 
     <!-- URL (text) -->
     <p>
@@ -338,16 +328,7 @@ echo $form->getHtmlErreur("quartier");
     <?php
     echo $form->getHtmlErreur("URL");
     ?>
-    </p>
-
-    <p>
-    <label for="email">E-mail</label>
-    <input type="email" name="email" id="email" size="40" maxlength="40" tabindex="8" title="Adresse e-mail du lieu"
-     value="<?php echo $form->getValeur('email') ?>" />
-    <?php
-    echo $form->getHtmlErreur("email");
-    ?>
-    </p>
+        </p>
 
     <?php
     $lieu_organisateurs = array();
