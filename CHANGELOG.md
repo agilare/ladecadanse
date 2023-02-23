@@ -13,6 +13,7 @@
 
 ### Changed
 
+- sessions saved in `var/sessions`
 - [ ] refactor
     - [ ] html sanitization moved in Text class
     - [ ] agenda.php to evenement-agenda.php
@@ -20,13 +21,14 @@
     - [ ] dates.php to Date class
     - [ ] _footer.php externalize js
     - [ ] _header.php mv script jquery to footer
-
+    - [x] data files to new dir "resources"
+    
 ### Removed
 
 - [ ] user level "membre"
 - [ ] comments (completely)
 - [ ] favorites (completely)
-- [ ] useless fields of user (ip, session, nom, prenom, adresse, telephone, URL, notification_commentaires, remarque), personne_organisateur (role), evenement (URL1, URL2), lieu (horaire_evenement, entree, telephone, email, acces_tpg, plan, actif), organisateur (telephone)
+- [x] useless fields of user (ip, session, nom, prenom, adresse, telephone, URL, notification_commentaires, remarque), personne_organisateur (role), evenement (URL1, URL2), lieu (horaire_evenement, entree, telephone, email, acces_tpg, plan, actif), organisateur (telephone)
 
 
 ## [3.3.0] - 2023-02-19
