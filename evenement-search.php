@@ -84,7 +84,7 @@ if (!empty($get['mots']))
 
 
 	$mots_vides = array();
-	if (!$fp = fopen("app/mots_vides.txt","r"))
+	if (!$fp = fopen("resources/mots_vides.txt","r"))
 	{
 		echo "Echec de l'ouverture du fichier";
 		exit;
