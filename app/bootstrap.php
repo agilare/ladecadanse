@@ -23,6 +23,7 @@ $whoopsHandler->setEditor('netbeans');
 $whoops->pushHandler($whoopsHandler);
 $whoops->register();
 
+session_save_path(__ROOT__ . "/var/sessions");
 session_start();
 
 $regionConfig = new RegionConfig($glo_regions);

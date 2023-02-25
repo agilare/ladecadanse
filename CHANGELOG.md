@@ -13,22 +13,23 @@
 
 ### Changed
 
-- sessions saved in `var/sessions`
+- [x] sessions saved in `var/sessions`
+- [ ] config for events fils from images/ to web/uploads/evenements (and gitignore)
 - [ ] refactor
-    - [ ] html sanitization moved in Text class
-    - [ ] agenda.php to evenement-agenda.php
+    - [x] data files to new dir "resources"
     - [x] classes in `libraries` : cleaning, typehints
+    - [ ] html sanitization moved in Text class
     - [ ] dates.php to Date class
+    - [ ] agenda.php to evenement-agenda.php, event to evenement-actions
     - [ ] _footer.php externalize js
     - [ ] _header.php mv script jquery to footer
-    - [x] data files to new dir "resources"
-    
+
 ### Removed
 
+- [x] useless fields of user (ip, session, nom, prenom, adresse, telephone, URL, notification_commentaires, remarque), personne_organisateur (role), evenement (URL1, URL2), lieu (horaire_evenement, entree, telephone, email, acces_tpg, plan, actif), organisateur (telephone)
 - [ ] user level "membre"
 - [ ] comments (completely)
 - [ ] favorites (completely)
-- [x] useless fields of user (ip, session, nom, prenom, adresse, telephone, URL, notification_commentaires, remarque), personne_organisateur (role), evenement (URL1, URL2), lieu (horaire_evenement, entree, telephone, email, acces_tpg, plan, actif), organisateur (telephone)
 
 
 ## [3.3.0] - 2023-02-19

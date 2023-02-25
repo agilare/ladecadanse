@@ -5,6 +5,9 @@ app/env.php
 !/var/logs
 /var/logs/*
 !var/logs/.gitkeep
+!/var/sessions
+/var/sessions/*
+!var/sessions/.gitkeep
 /vendor
 !/web/uploads/
 /web/uploads/*
