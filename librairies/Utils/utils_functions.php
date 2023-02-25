@@ -1,15 +1,5 @@
 <?php
 
-class Date
-{
-
-    public static function toFr()
-    {
-        
-    }
-
-}
-
 /**
  * Convertit une date au format MySQL au format franÃ§ais
  *
@@ -333,4 +323,15 @@ function afficher_debut_fin($horaire_debut, $horaire_fin, $date_evenement)
     $afficher .= horaire2heure($horaire_fin, $date_evenement);
 
     return $afficher;
+}
+
+
+/**
+ * FIXME: mv to Text class
+ * @param string $chaine dirty
+ * @return string clean
+ */
+function sanitizeForHtml(?string $chaine): string
+{
+    return trim(htmlspecialchars($chaine));
 }

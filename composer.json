@@ -9,7 +9,7 @@
             "email": "michel@ladecadanse.ch",
             "role": "Developer"
         }
-    ],     
+    ],
     "require": {
         "php" : "7.4.*",
         "ext-fileinfo": "*",
@@ -24,8 +24,8 @@
     },
     "autoload": {
         "psr-4": {"Ladecadanse\\": "librairies"},
-        "files": ["librairies/Utils/dates.php"]
-    },   
+        "files": ["librairies/Utils/utils_functions.php"]
+    },
     "scripts": {
         "sniffer:php74": "phpcs -p ./ --ignore=*/images/*,*/logs/*,*/vendor/*,*/web/* --standard=vendor/phpcompatibility/php-compatibility/PHPCompatibility --runtime-set testVersion 7.4"
     },

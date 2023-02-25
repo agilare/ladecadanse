@@ -46,13 +46,3 @@ header('X-Frame-Options: "ALLOW-FROM https://epic-magazine.ch/"');
 header("Cache-Control: no-store, no-cache, must-revalidate");
 header("Cache-Control: post-check=0, pre-check=0", false);
 header("Pragma: no-cache");
-
-/**
- * FIXME: mv to Text class
- * @param string $chaine dirty
- * @return string clean
- */
-function sanitizeForHtml(?string $chaine): string
-{
-    return trim(htmlspecialchars($chaine));
-}
