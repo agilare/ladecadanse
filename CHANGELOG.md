@@ -15,13 +15,13 @@
 
 - [x] sessions saved in `var/sessions`
 - [ ] config for events fils from images/ to web/uploads/evenements (and gitignore)
-- [ ] refactor
+- [x] refactor
     - [x] data files to new dir `resources`
     - [x] classes in `libraries` : cleaning, typehints
     - [x] `dates.php` more generic as `utils_functions.php` and moved in `sanitizeForHtml()`
     - [x] agenda.php to evenement-agenda.php, event to evenement-actions
-    - [ ] _footer.php externalize js
-    - [ ] _header.php mv script jquery to footer
+    - [x] _footer.php externalize js
+    - [x] _header.php mv script jquery to footer
 
 ### Removed
 

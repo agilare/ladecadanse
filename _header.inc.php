@@ -70,11 +70,6 @@ use Ladecadanse\HtmlShrink;
     <link rel="apple-touch-icon" sizes="76x76" href="/web/interface/apple-icon-76x76.png" />
     <link rel="apple-touch-icon" sizes="152x152" href="/web/interface/apple-icon-152x152.png" />
 
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
-    <script async defer
-      src="https://maps.googleapis.com/maps/api/js?key=<?php echo GOOGLE_API_KEY; ?>&callback=initMap">
-    </script>
-
     <?php
     if (MATOMO_ENABLED) {
     ?>
