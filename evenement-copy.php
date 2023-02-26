@@ -277,20 +277,7 @@ FROM evenement WHERE idEvenement=".$get['idE'])));
 
 		        }
 
-				$sql_docu = "SELECT idFichierrecu
-				FROM evenement_fichierrecu
-				WHERE idEvenement=".$get['idE'];
-
-				$req_docu = $connector->query($sql_docu);
-
-				while ($tab_docu = $connector->fetchArray($req_docu))
-				{
-					$sql_insert_fichier =  "INSERT INTO evenement_fichierrecu
-					(idEvenement, idFichierrecu) VALUES (".$nouv_id.", ".$tab_docu['idFichierrecu'].")";
-					$req_insert_fichier = $connector->query($sql_insert_fichier);
-				}
-
-				$req_orga = $connector->query("SELECT idOrganisateur FROM evenement_organisateur WHERE idEvenement=".$get['idE']);
+                $req_orga = $connector->query("SELECT idOrganisateur FROM evenement_organisateur WHERE idEvenement=".$get['idE']);
 
 				while ($tab = $connector->fetchArray($req_orga))
 				{
