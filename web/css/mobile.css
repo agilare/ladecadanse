@@ -41,7 +41,7 @@
     font-size: 0.9em;
 	margin-right: 1.1em;
 }
-	
+
 	#entete_haut #menu_pratique ul li
 	{
 		display:block;
@@ -69,7 +69,7 @@
 }
 
 #menu ul li.form_recherche {
- 
+
 	  border-right: none;
       float: right;
 }
@@ -88,7 +88,7 @@
 
 .recherche_mobile .mots
 {
-    border: solid 1px #888;   
+    border: solid 1px #888;
     height:1.5em;
 }
 
@@ -189,15 +189,15 @@ clear:both;
 
 #btn_listelieux, #btn_listeorganisateurs
 {
-	width:94%;	
+	width:94%;
 	margin:1em 0;
-	
+
 }
 #btn_listelieux button, #btn_listeorganisateurs button
 {
-	
+
 padding:0.4em;
-	
+
 }
 
 
@@ -234,7 +234,7 @@ display:none;
     font-size:1.15em
 }
 
-#entete_contenu, #prochains_evenements, #evenements, #dernieres_descriptions, div#fiche 
+#entete_contenu, #prochains_evenements, #evenements, #dernieres_descriptions, div#fiche
 {
     width: 96%;
 }
@@ -250,7 +250,7 @@ display:none;
     float: left;
 }
 
-form#ajouter_editer 
+form#ajouter_editer
 {
     margin-left: 0.1em;
     margin-right: 0.1em;
@@ -314,51 +314,6 @@ a.url, #evenement #pratique .lien_ext
 {
     word-wrap: break-word;
 }
-
-#commentaires #connexion form 
-{
-    padding:10px 5px;
-    height:auto;
-}
-
-#commentaires #connexion form p
-{
-    display:block;
-    clear:both;
-}
-
-	#connexion form p.se-connecter
-	{
-		text-align:right;
-		margin-top: 0.8em;
-	}
-
-#commentaires #connexion form input.submit
-{
-
-}
-
-#commentaires #connexion form label
-{
-    width:100px;
-    margin:5px 0 0 5px;
-    text-align:left;
-}
-
-#commentaires #connexion #user-register
-{
-     width:50%;
-     padding:5px;
-	 
-}
-
-form#ajouter_editer #commentaire
-{
-	
-	width:100%;
-}
-
-
 
 #entete_contenu h2
 {
@@ -444,7 +399,7 @@ width:1em;
     padding: 0.4em 0.25em 0.4em 0.35em;
 	float:left;
 	font-size:0.95em;
-	
+
 }
 
 
@@ -462,14 +417,14 @@ font-size:0.9em;
 #fiche #medias {
 
     width: 140px;
-	
+
 }
 
 #fiche #medias #photo {
     min-width:150px;
     min-height:150px;
 }
-    
+
 #fiche #medias #photo img {
 
     max-width:100%;
@@ -501,7 +456,7 @@ font-size:0.9em;
     height: 1em;
     padding: 0.4em 0;
     width: 90px;
-	
+
 }
 
 #menu_lieux table {
@@ -581,10 +536,10 @@ form#ajouter_editer textarea {
 
 
     width: 280px;
-	
+
 	}
-	
-	
+
+
 form#ajouter_editer select#idLieu
 {
     width: 200px;
@@ -617,7 +572,7 @@ margin-left: 50px;
 
 /* personne */
 
-.personne #actions 
+.personne #actions
 {
 	float:left;
 }
@@ -651,6 +606,6 @@ form#ajouter_editer p.memoriser label, form#ajouter_editer p.mdp_oublie
 #coller
 {
    margin-left: 1.5em !important;
-   margin-top: 1em !important;   
+   margin-top: 1em !important;
 }
 

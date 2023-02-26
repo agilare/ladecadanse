@@ -17,7 +17,7 @@ class UserLevel
     /** @var int ajout et modif de ses even, éventuellement de sa fiche organisateur */
     public const ACTOR = 8;
 
-    /** @var int favoris, commentaires */
+    /** @var int */
     public const MEMBER = 12;
 
     static function getConstants()

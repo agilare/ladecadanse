@@ -112,8 +112,6 @@ $icone['evenement'] = '<img src="' . $url_images_interface_icons . 'calendar.png
 $icone['lieu'] = '<img src="' . $url_images_interface_icons . 'building.png" alt="Lieu" width="16" height="16" />';
 $icone['description'] = '<img src="' . $url_images_interface_icons . 'page_white.png" alt="Description" />';
 $icone['personne'] = '<img src="' . $url_images_interface_icons . 'user.png" alt="Personne" />';
-$icone['commentaire'] = '<img src="' . $url_images_interface_icons . 'comment.png" alt="" />';
-$icone['ajouter_commentaire'] = '<img src="' . $url_images_interface_icons . 'comment_add.png" alt="" />';
 $icone['asc'] = '<img src="' . $url_images_interface_icons . 'bullet_arrow_up.png" alt="" />';
 $icone['desc'] = '<img src="' . $url_images_interface_icons . 'bullet_arrow_down.png" alt="" />';
 $icone['liste'] = '<img src="' . $url_images_interface_icons . 'application_view_list.png" alt="Liste" />';

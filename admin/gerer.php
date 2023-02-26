@@ -17,7 +17,7 @@ if (!$videur->checkGroup(4))
 $page_titre = "gérer";
 require_once '../_header.inc.php';
 
-$tab_listes = array("evenement" => "Événements", "lieu" => "Lieux", "organisateur" => "Organisateurs", "description" => "Descriptions", "commentaire" => "Commentaires", "personne" => "Personnes");
+$tab_listes = array("evenement" => "Événements", "lieu" => "Lieux", "organisateur" => "Organisateurs", "description" => "Descriptions", "personne" => "Personnes");
 
 $get = array();
 
@@ -427,122 +427,6 @@ echo '<div class="spacer"></div>';
 
 	}
 	echo "</table>";
-}
-else if ($get['element'] == "commentaire")
-{
-	$req_comm = $connector->query("SELECT idCommentaire, id, idPersonne, contenu, statut, element, dateAjout, date_derniere_modif
-	FROM commentaire
-                ".$sql_where_region."
-	ORDER BY ".$get['tri_gerer']." ".$get['ordre']."
-	LIMIT ".($get['page'] - 1) * $get['nblignes'].",".$get['nblignes']);
-
-	$req_count = $connector->query("SELECT COUNT(*) AS total FROM commentaire");
-	$tab_count = $connector->fetchArray($req_count);
-	$tot_elements = $tab_count['total'];
-
-	echo HtmlShrink::getPaginationString($get['page'], $tot_elements, $get['nblignes'], 1, $_SERVER['PHP_SELF'],
-	"?element=".$get['element']."&tri_gerer=".$get['tri_gerer']."&ordre=".$get['ordre']."&nblignes=".$get['nblignes']."&page=");
-
-	echo '<ul class="menu_nb_res">';
-	foreach ($tab_nblignes as $nbl)
-	{
-		echo '<li ';
-		if ($get['nblignes'] == $nbl) { echo 'class="ici"'; }
-
-		echo '><a href="/admin/gerer.php?'.Utils::urlQueryArrayToString($get, "nblignes").'&nblignes='.$nbl.'">'.$nbl.'</a></li>';
-	}
-	echo '</ul>';
-echo '<div class="spacer"></div>';
-	echo "<table id=\"ajouts\"><tr>";
-
-
-	$th_comm = array("idPersonne" => "Auteur", "contenu" => "Extrait", "idEvenement" => "Élément", "statut" => "Statut", "dateAjout" => "Créé",  "date_derniere_modif" => "Modifié");
-
-	foreach ($th_comm as $att => $th)
-	{
-		if ($att == "contenu" || $att == "idEvenement" || $att == "idPersonne")
-		{
-			echo "<th>".$th."</th>";
-		}
-		else
-		{
-			echo '<th';
-			if ($att == "dateAjout")
-			{
-				echo ' colspan="2"';
-			}
-			if ($att == $get['tri_gerer'])
-			{
-				echo "class=\"ici\">".$icone[$get['ordre']];
-			}
-			else
-			{
-				echo ">";
-			}
-
-			echo "<a href=\"".$_SERVER['PHP_SELF']."?element=".$get['element']."&page=".$get['page']."&tri_gerer=".$att."&ordre=".$ordre_inverse."&nblignes=".$get['nblignes']."\">".$th."</a></th>";
-		}
-	}
-
-	echo "<th></th></tr>";
-	$pair = 0;
-
-	while($tab_comm = $connector->fetchArray($req_comm))
-	{
-		echo "<tr";
-		if ($pair % 2 != 0) { echo " class=\"impair\""; }
-
-		echo ">";
-
-		$req_pers = $connector->query("SELECT pseudo FROM personne WHERE idPersonne=".$tab_comm['idPersonne']);
-		$tab_pers = $connector->fetchArray($req_pers);
-
-		echo "<td><a href=\"/user.php?idP=".$tab_comm['idPersonne']."\" title=\"Voir l'auteur\">".$tab_pers['pseudo']."</a></td>";
-
-
-		echo "<td>".mb_substr(sanitizeForHtml($tab_comm['contenu']), 0, 30)."</td>";
-
-		if ($tab_comm['element'] == 'evenement')
-		{
-
-		$req_even = $connector->query("SELECT titre FROM evenement WHERE idEvenement=".$tab_comm['id']);
-		$tab_even = $connector->fetchArray($req_even);
-		echo "<td><a href=\"/evenement.php?idE=".$tab_comm['id']."\" title=\"Voir l'événement\">".$tab_even['titre']."</a></td>";
-
-		}
-		else if ($tab_comm['element'] == 'lieu')
-		{
-		$req_even = $connector->query("SELECT nom FROM lieu WHERE idLieu=".$tab_comm['id']);
-		$tab_even = $connector->fetchArray($req_even);
-		echo "<td><a href=\"/lieu.php?idL=".$tab_comm['id']."\" title=\"Voir le lieu\">".$tab_even['nom']."</a></td>";
-
-		}
-
-
-		echo "<td>".$tab_icones_statut[$tab_comm['statut']]."</td>";
-
-
-		$tab_dateAjout = explode(" ", $tab_comm['dateAjout']);
-		echo "<td>".date_iso2app($tab_dateAjout[0])."</td>";
-		echo "<td>".$tab_dateAjout[1]."</td>";
-		echo "<td>";
-		if ($tab_comm['date_derniere_modif'] != "0000-00-00 00:00:00")
-		{
-			echo date_iso2app($tab_comm['date_derniere_modif']);
-		}
-		echo "</td>";
-		//Edition pour l'admin ou l'auteur
-		if ($_SESSION['Sgroupe'] <= UserLevel::ADMIN) {
-			echo "<td><a href=\"/multi-comment.php?action=editer&idC=".$tab_comm['idCommentaire']."\">".$iconeEditer."</a></td>";
-		}
-
-		echo "</tr>";
-
-		$pair++;
-	}
-
-	echo "</table>";
-
 }
 else if ($get['element'] == "personne")
 {

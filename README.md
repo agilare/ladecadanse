@@ -11,7 +11,7 @@ La décadanse est un site web qui présente aux visiteurs une sélection d'évé
 Les organisateurs d'événements ont la possibilité de s'inscrire puis de se présenter et annoncer leurs événements.
 
 Les principales sections du site sont :
-- un **agenda d'événements**, chacun de ceux-ci ayant sa fiche détaillée accompagnée de quelques services (commentaires, signaler une erreur, format iCal...)
+- un **agenda d'événements**, chacun de ceux-ci ayant sa fiche détaillée accompagnée de quelques services (signaler une erreur, format iCal...)
 - un répertoire des **Lieux** où se déroulent des événements, avec détails, présentation, photos
 - un répertoire des **Organisateurs d'événements**, similaire aux Lieux
 - un **back-office** permettant de gérer les diverses entités du site : utilisateurs, événements, lieux, organisateurs, etc.

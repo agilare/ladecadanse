@@ -14,10 +14,10 @@ if (!$videur->checkGroup(6)) {
 
 $page_titre = "supprimer un élément";
 $page_description = "Suppression d'un élément";
-$extra_css = array("evenement_inc", "lieu_inc", "descriptionlieu_inc", "commentaire_inc");
+$extra_css = array("evenement_inc", "lieu_inc", "descriptionlieu_inc");
 include("_header.inc.php");
 
-$tab_types = array("evenement", "lieu", "descriptionlieu", "commentaire", "personne", "salle", "organisateur");
+$tab_types = array("evenement", "lieu", "descriptionlieu", "personne", "salle", "organisateur");
 
 /*
  * Vérification et attribution des variables d'URL GET
@@ -240,26 +240,7 @@ WHERE lieu_fichierrecu.idLieu=" . $get['id'] . " AND type='image' AND
                 HtmlShrink::msgErreur("Vous n'avez pas les droits pour supprimer cette description");
             }
         }
-        else if ($get['type'] == "commentaire") {
-            if ($authorization->estAuteur($_SESSION["SidPersonne"], $get['id'], $get['type']) || $_SESSION['Sgroupe'] < 2) {
-
-                $req_comm = $connector->query("SELECT contenu FROM commentaire WHERE idCommentaire=" . $get['id']);
-                $connector->fetchArray($req_comm);
-
-                if ($connector->query("DELETE FROM " . $get['type'] . " WHERE idCommentaire=" . $get['id'])) {
-                    HtmlShrink::msgOk("Le commentaire a été supprimée");
-                    $logger->log('global', 'activity', "[supprimer] comment (" . $get['id'] . ") of " . $get['type'] . " deleted", Logger::GRAN_YEAR);
-                    exit;
-                }
-                else {
-                    HtmlShrink::msgErreur("La requète a échoué");
-                }
-            }
-            else {
-                HtmlShrink::msgErreur("Vous n'avez pas les droits pour supprimer ce commentaire");
-            }
-        }
-        else if ($get['type'] == "salle") {
+    else if ($get['type'] == "salle") {
             if ($_SESSION['Sgroupe'] <= 6) {
                 $req = $connector->query("SELECT idSalle FROM evenement WHERE idSalle=" . $get['id']);
 
@@ -415,34 +396,7 @@ else if ($get['action'] == 'suppression') {
 
                         @mysqli_free_result($req_desc);
                     }
-                    else if ($get['type'] == "commentaire") {
-                        $req_comm = $connector->query("SELECT * FROM commentaire WHERE idCommentaire =" . $get['id']);
-
-                        if ($res_comm = $connector->fetchArray($req_comm)) {
-
-                            $commentaire = $res_comm;
-
-            $req_auteur = $connector->query("SELECT pseudo FROM personne WHERE idPersonne=" . $commentaire['idPersonne']);
-            $listeAut = $connector->fetchArray($req_auteur);
-
-                            $da = explode(" ", $commentaire['dateAjout']);
-
-            echo "<h2 class=\"jour\">" . date_fr($da[0]) . "</h2>";
-
-                            echo "<div>
-            <h3>" . sanitizeForHtml($commentaire['titre']) . "</h3>\n
-            <div class=\"spacer\"></div>\n";
-
-                            echo "<p>" . Text::wikiToHtml(sanitizeForHtml($commentaire['contenu'])) . "</p><p class=\"auteur\">" . $listeAut['pseudo'] . "</p>";
-            echo "<div class=\"spacer\"></div>\n";
-
-                            echo "<div class=\"spacer\"></div>\n
-            </div>\n";
-                        }
-
-                        @mysqli_free_result($req_comm);
-                    }
-                    else if ($get['type'] == "salle") {
+    else if ($get['type'] == "salle") {
                         $req = $connector->query("SELECT * FROM salle WHERE idSalle =" . $get['id']);
 
                         if ($salle = $connector->fetchArray($req)) {

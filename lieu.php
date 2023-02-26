@@ -4,11 +4,9 @@ require_once("app/bootstrap.php");
 
 use Ladecadanse\Lieu;
 use Ladecadanse\DescriptionCollection;
-use Ladecadanse\CommentaireCollection;
 use Ladecadanse\Evenement;
 use Ladecadanse\EvenementCollection;
 use Ladecadanse\HtmlShrink;
-use Ladecadanse\Utils\Utils;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\Text;
 
@@ -34,7 +32,7 @@ if (isset($_GET['genre_even']))
     } catch (Exception $e) { header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); exit; }
 }
 
-$tab_complement = array("evenements", "commentaires");
+$tab_complement = array("evenements");
 $get['complement'] = "evenements";
 if (isset($_GET['complement']))
 {
@@ -580,29 +578,6 @@ if ($nb_pres > 0)
 <div class="spacer"><!-- --></div>
 
 
-
-<?php
-
-/* Chargement des commentaires */
-$commentaires = new CommentaireCollection();
-$commentaires->load($get['idL']);
-
-$evenements_ici = '';
-if ($get['complement'] == 'evenements')
-{
-	$evenements_ici = ' class="ici"';
-}
-
-
-$lien_rss_evenements = '';
-if ($get['complement'] == 'evenements')
-{
-	$lien_rss_evenements = '<a href="/rss.php?type=lieu_evenements&amp;id='.$get['idL'].'"
-title="Flux RSS des prochains événements"><i class="fa fa-rss fa-lg" style="color:#f5b045"></i></a>';
-}
-?>
-
-
 <h2 style="font-size:1.2em;font-weight:bold;color:#5C7378;width:96%;margin:2em 2% 0.4em 2%;min-height:30px">Prochains événements</h2>
 
 <?php
@@ -893,78 +868,6 @@ title="Flux RSS des prochains événements"><i class="fa fa-rss fa-lg" style="co
 
 	echo '</div>';
 
-    ?>
-
-    <?php if (0) { ?>
-    	<div id="commentaires"><h2 style="margin:10px;font-size:1.2em;font-weight:bold;color:#5C7378">Commentaires</h2>
-
-        <?php
-        $nb_c = 0;
-	foreach ($commentaires->getElements() as $id => $commentaire)
-	{
-		?>
-
-		<blockquote>
-			<div class="commentaire_de" style="color:#5C7378">
-
-			 <?php echo "<span class=\"left\">".HtmlShrink::authorSignature($commentaire->getValue('idPersonne'))."</span>";
-
-			 echo "<span class=\"right\">".date_fr($commentaire->getValue('dateAjout'), "annee", 1, "non"); ?>
-			 <span style="background:#fafafa"><?php echo $nb_c+1;?></span></span>
-			 </div> <!-- fin commentaire_de -->
-			<div class="spacer"><!-- --></div>
-			<p style="padding:0.5em"><?php echo Text::wikiToHtml(htmlspecialchars($commentaire->getHtmlValue('contenu'))) ?></p>
-
-		</blockquote>
-		<!-- Fin commentaire -->
-
-	<?php
-    $nb_c++;
-	}
-    if (!$nb_c)
-        echo '<p style="margin:20px;color:#5C7378">Pas encore de commentaire</p>';
-
-	if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 12 ))
-	{
-	?>
-		<form method="post" id="ajouter_editer" action="multi-comment.php?action=insert&amp;element=lieu&amp;id=<?php echo $get['idL'] ?>">
-
-			<p>
-				<label for="contenu">Votre commentaire</label>
-				<?php
-				$id_textarea = "commentaire";
-
-				?>
-				<textarea style="margin-left:0em;" id="commentaire" name="contenu" cols="45" rows="5"></textarea>
-			</p>
-
-			<div class="spacer"><!-- --></div>
-			<div style="margin-left:10em"></div>
-			<p id="pied_form">
-				<input type="hidden" name="formulaire" value="ok" />
-				<input type="submit" value="Publier" class="submit" />
-			</p>
-
-		</form>
-
-		<?php
-	}
-	else
-	{
-    ?>
-		<p style="margin:10px;color:#5C7378" id="inscription">
-<a href="/user-register.php" title="Formulaire d'inscription"><strong>Créez un compte</strong></a> afin de pouvoir ajouter vos commentaires.
-</p>
-<?php
-	} // if login
-	?>
-
-	</div>
-	<!-- Fin commentaires -->
-
-    <?php } // if 0 ?>
-
-    <?php
 /* }  */// if complement
 ?>
 

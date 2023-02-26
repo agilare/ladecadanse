@@ -93,7 +93,7 @@ ul.menu_actions_lieu li {
 		{
 			padding:2px 2px 2px 2px;
 			border-bottom: 1px dashed Gray;
-			padding: 0.3em 0.4em;			
+			padding: 0.3em 0.4em;
 			list-style-type: none;
 		}
 
@@ -132,7 +132,7 @@ ul.menu_actions_lieu li {
 			{
 				display:inline;
 				border-bottom: none;
-				
+
 			}
 
 			#fiche #pratique ul li ul.salles li
@@ -168,7 +168,7 @@ ul.menu_actions_lieu li {
 			padding:0 0.4em;
 
 	}
-    
+
 	ul#menu_descriptions li h3
 	{
         font-size: 1.1em;
@@ -223,7 +223,7 @@ ul.menu_actions_lieu li {
 		{
 			font-size: 1em;
 		}
-        
+
 		#fiche #descriptions  .description h4
 		{
 			font-size: 1.05em;
@@ -231,7 +231,7 @@ ul.menu_actions_lieu li {
             margin:0;
             border:none
 		}
-        
+
 		#fiche #descriptions blockquote
 		{
             margin-left:0.5em;
@@ -467,7 +467,7 @@ font-weight:bold;
 }
 
 #prochains_evenements table td h3 a:visited {
-    color:#105199; /*  #104d91*/   
+    color:#105199; /*  #104d91*/
 }
 
 #prochains_evenements table td.mois
@@ -517,119 +517,6 @@ overflow:hidden;
 
 }
 
-
-
-#commentaires h3, h4
-{
-	margin: 1.4em 1em 0.6em 1em;
-	border-top:1px dotted #5C7378;
-	font-size:1em;
-	color:#5C7378;
-}
-
-#commentaires h5
-{
-	margin: 2em 0em 0.6em 0em;
-	font-size:1.2em;
-}
-
-#commentaires .apres_evenement
-{
-	margin: 1.4em 1em 0.6em 1em;
-}
-
-#commentaires blockquote
-{
-	width:94%;
-	margin: 1em auto 1em auto;
-	padding:0.2em 0.2em;
-	background:#fafafa;
-	border:1px solid #eaeaea;
-	line-height:1.2em;
-}
-
-
-#commentaires blockquote strong
-{
-	font-weight:bold;
-}
-
-#commentaires blockquote h2
-{
-	font-weight:bold;
-	font-size:1.2em;
-}
-
-
-#commentaires blockquote .date
-{
-
-}
-
-
-#commentaires blockquote .commentaire_de
-{
-	background:#eaeaea;
-	height:1.4em;
-	padding:0.2em;
-}
-
-#commentaires blockquote .commentaire_de .left
-{
-	float:left;
-
-}
-
-#commentaires blockquote .commentaire_de .right
-{
-	float:right;
-
-}
-
-
-	/*Ajouter commentaire */
-	form#ajouter_editer
-	{
-		width:94%;
-		margin:0 auto 0 auto;
-		/* border:1px solid blue; */
-
-	}
-
-	 form#ajouter_editer label
-	{
-		float:left;
-		text-align:right;
-		width:10em;
-	}
-
-	form#ajouter_editer #commentaire
-	{
-		float:right;
-		margin:0;
-		padding:0.2em;
-		border:1px solid #aeaeae;
-		font-size:1.1em;
-		margin:0;
-		width:400px;
-	}
-
-
-
-	form#ajouter_editer #pied_form
-	{
-		background-color:#eaeaea;
-		height:2em;
-		text-align:right;
-		margin:0.2em 0;
-		padding:0.5em 0.4em;
-	}
-
-	form#ajouter_editer #pied_form .submit
-	{
-		background-color:#fafafa;
-		border:#909090 2px solid;
-	}
 
 .menu_wikicode
 {

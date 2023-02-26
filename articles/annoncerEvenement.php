@@ -25,7 +25,6 @@ include("../_header.inc.php");
             <li>créer et modifier vos événements;</li>
             <li>ajouter une présentation de votre lieu s'il est enregistré sur le site;</li>
             <li>modifier vos infos d'organisateur s'il est enregistré sur le site;</li>
-            <li>poster des commentaires.</li>
             </ul>
         </li>
         <li>
@@ -38,7 +37,7 @@ include("../_header.inc.php");
 
 <p>Tout cela est <b>gratuit</b>, mais vous pouvez nous soutenir <a href="/articles/faireUnDon.php">en faisant un don</a></p>
 <p>Veillez également à ce que vos événements respectent notre <b><a href="/articles/charte-editoriale.php">charte éditoriale</a></b>.</p>
- 
+
 	</div>
 	<!-- Fin  -->
 

@@ -13,7 +13,7 @@
 
 .entete_contenu_navigation img
 {
-    vertical-align: bottom;    
+    vertical-align: bottom;
 }
 
 
@@ -245,7 +245,7 @@ ul.menu_actions_evenement li
 		padding: 0.2em 1% 0.2em 0px;
 		overflow: hidden;
 		-o-text-overflow: ellipsis; /* pour Opera 9 */
-		text-overflow: ellipsis; /* pour le reste du monde */	
+		text-overflow: ellipsis; /* pour le reste du monde */
 	}
 
 
@@ -262,7 +262,7 @@ ul.menu_actions_evenement li
 	#pratique table.right
 	{
 		text-align:left;
-		table-layout: fixed; 	
+		table-layout: fixed;
 	}
 
 	#pratique table.right tr
@@ -274,7 +274,7 @@ ul.menu_actions_evenement li
 	{
 		width:25px;
        padding:5px 0 0px 0;
-        text-align: center;	
+        text-align: center;
         vertical-align:top;
  }
 
@@ -283,7 +283,7 @@ ul.menu_actions_evenement li
 		vertical-align:top;
          padding:5px 0 0px 0;
  	}
-    
+
 #auteur
 {
 	font-style:italic;
@@ -306,18 +306,6 @@ ul.menu_actions_evenement li
 
 }
 
-/* Deb COMMENTAIRES  */
-#commentaires
-{
-	margin:1em auto 1em auto;
-	width:94%;
-	color:#3E5355;
-}
-
-	#commentaires #entete_commentaires
-	{
-		background:#eaeaea;
-	}
 
 	#contenu h5
 	{
@@ -340,118 +328,6 @@ ul.menu_actions_evenement li
 		float:right;
 		width:10%;
 		text-align:right;
-	}
-
-	#commentaires h3, h4
-	{
-		margin: 1.4em 1em 0.6em 1em;
-		border-top:1px dotted #5C7378;
-		font-size:1em;
-		color:#5C7378;
-	}
-
-	#commentaires h5
-	{
-		margin: 2em 0em 0.6em 0em;
-		font-size:1.2em;
-	}
-
-	#commentaires .apres_evenement
-	{
-		margin: 1.4em 1em 0.6em 1em;
-	}
-
-	#commentaires
-	{
-		width:94%;
-		margin: 1em auto 2em auto;
-		padding:0.2em 0.2em;
-		line-height:1.3em;		
-	}
-
-
-	#commentaires  strong
-	{
-		font-weight:bold;
-	}
-
-	#commentaires h2
-	{
-		font-weight:bold;
-		font-size:1.2em;	
-	}
-
-
-	#commentaires  .date
-	{
-
-	}
-
-
-	#commentaires .commentaire_de
-	{
-		background:#eaeaea;
-		height:1.4em;
-		padding:0.2em;margin:0 0 0.8em 0;
-	}
-
-	#commentaires .commentaire_de .left
-	{
-		float:left;
-	}
-
-	#commentaires .commentaire_de .right
-	{
-		float:right;
-	}
-
-	/*Ajouter commentaire */
-	form#ajouter_editer
-	{
-		width:94%;
-		margin:0 auto 0 auto;
-	}
-
-	 form#ajouter_editer label
-	{
-		float:left;
-		text-align:right;
-		width:10em;
-	}
-
-	form#ajouter_editer #commentaire
-	{
-		float:right;
-		margin:0;
-		padding:0.4em;
-		border:1px solid #aeaeae;
-		font-size:1.2em;
-		margin:0;
-		width:380px;
-	}
-
-	form#ajouter_editer #pied_form
-	{
-		height:2em;
-		text-align:right;
-		margin:0.2em 0;
-		padding:0.5em 0.4em;
-	}
-
-	form#ajouter_editer #pied_form .submit
-	{
-		background-color:#fafafa;
-		border:#909090 2px solid;
-		padding:0.4em 0.6em;
-	}
-
-
-    #commentaires #connexion form input.text
-    {
-        width:100px;
-        height:17px;
-        margin-top:2px;
-        border-radius: 2px;
     }
 
 ul#menu_actions

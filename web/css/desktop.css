@@ -65,8 +65,8 @@
 
 #entete_haut #soutien {
 	display:none;
-}	
-	
+}
+
 #menu
 {
 	height:2.4em;
@@ -82,7 +82,7 @@
 		width:140px; /* 140 */
 		height:1em;
 	}
-	
+
 	#menu ul li.form_recherche
 	{
 		float:right;
@@ -90,7 +90,7 @@
 	#menu ul li #btn_search
 	{
 		display:none;
-	}	
+	}
 
 .rechercher #entete_contenu h2
 {
@@ -107,13 +107,13 @@
 	#menu ul li#bouton_agenda.ici a
 	{
 		background: none;
-	}	
-	
+	}
+
 	form.recherche
 	{
 		text-align:right;
 	}
-	
+
 #navigation_calendrier
 {
     background: none repeat scroll 0 0 #eaeaea;
@@ -218,31 +218,6 @@ display:none;
 
 }
 
-#commentaires #connexion form 
-{
-    padding:10px 5px;
-    height:auto;
-}
-
-#commentaires #connexion form input.text
-{
-    width:80px;
-    height:17px;
-}
-
-#commentaires #connexion form label
-{
-    width:90px;
-    margin:5px 0 0 5px;
-    text-align:left;
-}
-
-#commentaires #connexion #user-register
-{
-     width:50%;
-     padding:5px;
-}
-
 /* lieu */
 
 #btn_listelieux
@@ -274,13 +249,13 @@ display:none;
 /* menu_lieux */
 
 #menu_lieux
-{	
+{
 	width:180px;
 }
 
 	#menu_lieux ul.selon
-	{	
-		
+	{
+
 		width:180px;
 	}
 
@@ -288,27 +263,27 @@ display:none;
 	{
 		width:180px;
 	}
-	
+
 	#menu_lieux form
 	{
-		width:180px;		
+		width:180px;
 	}
 
 	#menu_lieux form select
 	{
 		width:150px;
 	}
-	
+
 #menu_lieux ul#tranches {
 
     width: 200px;
-}	
-	
+}
+
 #menu_lieux table tr td a
 {
 
 	width:143px;
-	
+
 }
 
 /* organisateurs */
@@ -346,11 +321,11 @@ ul#menu_descriptions
 	{
 			float:left;
 	}
-	
+
 /* recherche */
 
 
-#res_recherche tr td p.description 
+#res_recherche tr td p.description
 {
 min-height:4.5em;
 
@@ -385,8 +360,8 @@ form#ajouter_editer ul.radio li
 
 }
 
-form#ajouter_editer label 
-{ 
+form#ajouter_editer label
+{
 	/* vertical-align: middle; */
 	float: left;
 }
@@ -406,14 +381,14 @@ form#ajouter_editer #titre
 form#ajouter_editer table.fichiers_associes {
 
     margin-left: 11.5em;
-	
+
 }
 
-form#ajouter_editer textarea, form#ajouter_editer #ref 
+form#ajouter_editer textarea, form#ajouter_editer #ref
 {
     width:430px;
 }
-	
+
 /* personne */
 
 .personne #actions
@@ -433,7 +408,7 @@ form#ajouter_editer textarea, form#ajouter_editer #ref
 
 #entete_contenu .menu_region li a
 {
-    padding: .5em;  
+    padding: .5em;
 }
 
 #entete_contenu .menu_region li .events-nb

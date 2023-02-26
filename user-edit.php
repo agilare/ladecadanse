@@ -750,7 +750,7 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 8))
 
 <fieldset>
     <legend>Votre signature</legend>
-    <div class="guideForm">Apparait sous les événements, commentaires, etc. que vous avez ajoutés</div>
+        <div class="guideForm">Apparait sous les événements que vous avez ajoutés</div>
 
     <label style="display:block;float:none;width:8em" >Afficher :</label>
 

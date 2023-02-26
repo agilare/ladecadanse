@@ -288,25 +288,6 @@ margin:20pt 0;
 display:none;
 }
 
-#ajouter_commentaire
-{
-display:none;
-}
-
-#commentaires blockquote
-{
-border:1px dotted #aeaeae;
-}
-
-#commentaires .apres_evenement
-{
-border-bottom:1px solid #aeaeae;
-}
-
-#commentaires #connexion
-{
-display:none;
-}
 /* FIN evenement */
 
 /* DEB lieux */
@@ -331,7 +312,7 @@ display:none;
 	line-height:1.2em;
 	margin-left:100px;
 }
-	
+
 /* FIN lieux */
 
 /* DEB lieu */

@@ -75,10 +75,9 @@ if ($get['type'] == "evenements_auj") {
 		}
 		$items .= "<title>".ucfirst(date_fr($tab_even['dateEvenement'], "", "", "", false))." - ".$genre_even." : ".sanitizeForHtml($tab_even['titre'])."</title>\n";
 		$items .= "<link>".$site_full_url."/evenement.php?idE=".$tab_even['idEvenement']."</link>\n";
-		$items .= "<comments>".$site_full_url."/evenement.php?idE=".$tab_even['idEvenement']."#commentaires</comments>\n";
 		$items .= "<description><![CDATA[";
 
-		if ($tab_even['idLieu'] != 0)
+        if ($tab_even['idLieu'] != 0)
 		{
 			$nom_lieu = "<a href=\"".$site_full_url."/lieu.php?idL=".$tab_even['idLieu']."\"
 			title=\"Voir la fiche du lieu : ".sanitizeForHtml($tab_even['nomLieu'])."\" >
@@ -158,9 +157,8 @@ else if ($get['type'] == "lieu_evenements")
 		$items .= "<item>\n";
 		$items .= "<title>".sanitizeForHtml($tab_even['titre'])."</title>\n";
 		$items .= "<link>".$site_full_url."/evenement.php?idE=".$tab_even['idEvenement']."</link>\n";
-		$items .= "<comments>".$site_full_url."/evenement.php?idE=".$tab_even['idEvenement']."#commentaires</comments>\n";
 		$items .= "<description><![CDATA[";
-		$items .= $css;
+        $items .= $css;
 		 $items .= '<h2 style="padding:0.2em 0.1em;border-bottom:1px solid #aeaeae;">'.date_fr($tab_even['dateEvenement']).'</h2>';
 
 		 $items .= "<h3>".$tab_even['genre']."</h3>";
@@ -231,9 +229,8 @@ else if ($get['type'] == "organisateur_evenements")
 		$items .= "<item>\n";
 		$items .= "<title>".sanitizeForHtml($tab_even['titre'])."</title>\n";
 		$items .= "<link>".$site_full_url."/evenement.php?idE=".$tab_even['idEvenement']."</link>\n";
-		$items .= "<comments>".$site_full_url."/evenement.php?idE=".$tab_even['idEvenement']."#commentaires</comments>\n";
 		$items .= "<description><![CDATA[";
-		$items .= $css;
+        $items .= $css;
 		 $items .= '<h2 style="padding:0.2em 0.1em;border-bottom:1px solid #aeaeae;">'.date_fr($tab_even['dateEvenement']).'</h2>';
 
 		 $items .= "<h3>".$tab_even['genre']."</h3>";
@@ -314,9 +311,8 @@ else if ($get['type'] == "evenements_ajoutes")
 		$items .= "<item>\n";
 		$items .= "<title>".sanitizeForHtml($tab_even['titre'])."</title>\n";
 		$items .= "<link>".$site_full_url."/evenement.php?idE=".$tab_even['idEvenement']."</link>\n";
-		$items .= "<comments>".$site_full_url."/evenement.php?idE=".$tab_even['idEvenement']."#commentaires</comments>\n";
 		$items .= "<description><![CDATA[";
-		$items .= $css;
+        $items .= $css;
 		 $items .= '<h2 style="padding:0.1em 0.1em;border-bottom:1px dotted #aeaeae;">'.ucfirst(date_fr($tab_even['dateEvenement'], 'annee')).'</h2>';
 
 

@@ -1,6 +1,6 @@
 #entete_contenu h2
 {
-   font-size: 1.7em;width:55% 
+   font-size: 1.7em;width:55%
 }
 
 #entete_contenu h2 small
@@ -41,7 +41,7 @@ margin:0.2em 0 1em 0;
 	padding:0;
 	font-size:1.2em;
 	background:#eaeaea;
-	
+
 }
 
 .dernier_evenement
@@ -52,7 +52,7 @@ margin:0.2em 0 1em 0;
 	line-height:1.3em;
 }
 
-.dernier_evenement .flyer 
+.dernier_evenement .flyer
 {
 	background:#f0f0f0;
 	float:left;
@@ -71,7 +71,7 @@ margin:0.2em 0 1em 0;
 }
 
 .dernier_evenement h4 a:visited {
-    color:#105199; /*  #104d91*/   
+    color:#105199; /*  #104d91*/
 }
 
 .dernier_evenement h5
@@ -85,7 +85,7 @@ margin:0.2em 0 1em 0;
 
 #partenaires
 {
-	margin:1em 0em 0em 0em;	
+	margin:1em 0em 0em 0em;
 	color:#5C7378;
 	font-size:1em;
 	border:1px solid #5C7378;
@@ -107,7 +107,7 @@ margin:0.2em 0 1em 0;
 {
     margin: 0;
 }
-    
+
 #prochains_evenements
 {
 	width:94%;
@@ -119,26 +119,26 @@ margin:0.2em 0 1em 0;
 		background:#f8f8f8;
 		margin: 0 0 2em 0;
 	}
-	
+
 	#prochains_evenements .genre .genre-titre
 	{
-		border-top:solid 1px #aeaeae;		
+		border-top:solid 1px #aeaeae;
 	}
-	
+
 	#prochains_evenements .genre .genre-jump
 	{
-		
+
 		margin:0.2em 0.2em;
 		float: right;
 		padding: 0.4em 0.8em;
 		background:#f0f0f0;
 		border-radius: 3px;
-	}	
+	}
 
 	#prochains_evenements .genre .genre-jump:hover
 	{
 		background:#ddd;
-	}	
+	}
 
 	#prochains_evenements h3
 	{
@@ -147,7 +147,7 @@ margin:0.2em 0 1em 0;
 		color:#777;
 		font-size:1.25em;
 	}
-	
+
 	#prochains_evenements h4
 	{
 		color:#777;
@@ -198,27 +198,27 @@ border-bottom:1px solid black;
 /*
 		background-color:yellow;
 */
-		
+
 	}
-        
+
         .evenement .titre .left a:visited {
-        color:#105199; /*  #104d91*/   
-       }       
-        
+        color:#105199; /*  #104d91*/
+       }
+
 
 	.evenement .titre .right
 	{
 		float:right;
 		width:40%;
 		padding:0;
-		padding:0 0.2em 0 0 ;		
+		padding:0 0.2em 0 0 ;
 		text-align:right;
-                line-height: 1.25em;		
+                line-height: 1.25em;
 /*
 	background-color:aqua;
 */
 	}
-    
+
     .evenement .titre #titre, #nom_lieu
     {
     display:block;
@@ -253,7 +253,7 @@ border-bottom:1px solid black;
         padding:0.2em;
         display:inline-block;
         background:#efefef;
-        border-radius:3px;    
+        border-radius:3px;
     }
 
 .evenement .description h2
@@ -275,7 +275,7 @@ font-weight:bold;
 
 .evenement .pratique
 {
- 	background:#E6EDF7; 
+ 	background:#E6EDF7;
 	font-size:0.8em;
 	border:1px solid #eaeaea;
 	padding:0.4em 0.2em;
@@ -298,18 +298,6 @@ font-weight:bold;
 	text-align:right;
 }
 
-.evenement .edition .nb_commentaires
-{
-	padding:0em 0.2em;
-	float:left;
-	font-weight:bold;
-}
-
-.evenement .edition .nb_commentaires img
-{
-    vertical-align: middle;
-}
-
 .evenement .edition
 {
     height:1.6em;
@@ -317,7 +305,7 @@ font-weight:bold;
 }
 
 ul.menu_action
-{	float:left;	
+{	float:left;
     height:1.6em;
     margin:.3em 0 0 0;
     padding: 0;

@@ -353,8 +353,8 @@ echo $verif->getHtmlErreur("email_identique");?>
 	<legend>En tant que*</legend>
 	<ul class="radio" style="margin:0;font-size:0.85em"><li class="listehoriz" style="float: left;display:inline-block;min-height:7em">
 			<label for="membre" style="float:left"><strong>Membre</strong><br>
-                Pour commenter les événements et les lieux </label>&nbsp;<input type="radio" name="groupe" id="membre" value="12"
-                                                                                <?php if ($champs['groupe'] == 12) { echo ' checked'; } ?> />
+            </label>&nbsp;<input type="radio" name="groupe" id="membre" value="12"
+                                     <?php if ($champs['groupe'] == 12) { echo ' checked'; } ?> />
 		</li><li class="listehoriz" style="float: left;display:inline-block;min-height:7em">
 			<label for="user-register_organisateur" style="float:left"><strong>Acteur culturel</strong><br>Mêmes droits qu'un membre + possibilité d'ajouter des événements</label>&nbsp;<input type="radio" name="groupe" id="user-register_organisateur" value="8" <?php if ($champs['groupe'] == 8) { echo ' checked'; } ?> />
 		</li>

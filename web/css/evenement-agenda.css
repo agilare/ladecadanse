@@ -426,13 +426,6 @@ ul.menu_edition li img
     vertical-align: middle;
 }
 
-.nb_commentaires
-{
-    padding:0 0em 0 16px;
-    background-image:url(../web/interface/icons/comment.png);
-    background-repeat:no-repeat;
-    background-position: 0% 30%;
-}
 
 #evenements_s
 {

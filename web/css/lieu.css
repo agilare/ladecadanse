@@ -100,7 +100,7 @@ ul.menu_actions_lieu li
 			list-style-type: none;
             padding:0.2em;
 		}
-            
+
 			#fiche #pratique ul li
 			{
 				margin:0.4em 0.2em 0.5em 0.2em;
@@ -117,7 +117,7 @@ ul.menu_actions_lieu li
 			{
 				padding:10px 5px 10px 5px;
 				list-style:none;
-				
+
 			}
 
 			#fiche #pratique .liste li
@@ -131,7 +131,7 @@ ul.menu_actions_lieu li
 			{
 				display:inline;
 				border-bottom: none;
-				
+
 			}
 
 			#fiche #pratique ul li ul.salles li
@@ -215,7 +215,7 @@ ul.menu_actions_lieu li
 		}
 
 		#fiche  #descriptions .description p
-		{		
+		{
 			margin:0em 1em 1em 0.4em;
 		}
 
@@ -234,7 +234,7 @@ ul.menu_actions_lieu li
 		{
 			font-size:1em;
 		}
-        
+
 		#fiche #descriptions .description h4
 		{
 			font-size: 1.05em;
@@ -242,14 +242,14 @@ ul.menu_actions_lieu li
             margin:0.4em;
 			border:none
 		}
-        
+
 		#fiche #descriptions .description blockquote
 		{
             margin-left:0.5em;
             font-style: italic;
             border-left: 1px solid #bbb;
 		}
-        
+
 		#fiche #descriptions .description .auteur
 		{
 			height:4em;
@@ -262,7 +262,7 @@ ul.menu_actions_lieu li
 			font-style:italic;
 		}
 
-        
+
 		#fiche #descriptions .description .auteur .left
 		{
 
@@ -358,7 +358,7 @@ ul#menu_complement li
 		display:block;
 		text-align:center;
 		padding:0 0.3em;
-		 
+
 }
 
 
@@ -381,18 +381,6 @@ ul#menu_complement li
 
 		padding:0.3em 0.5em 0.4em 0.5em;
 	}
-
-
-ul#menu_complement .ajouter_com
-{
-	font-size:0.8em;
-	padding:0.2em 0 0.2em 1.4em;
-	text-align:right;
-
-	background-image:url(../web/interface/icons/comment_add.png);
-	background-repeat:no-repeat;
-	background-position:0% 50%;
-}
 
 
 ul#menu_complement .rss
@@ -487,7 +475,7 @@ ul#menu_complement .rss
 }
 
 #prochains_evenements table td h3 a:visited {
-    color:#105199; /*  #104d91*/   
+    color:#105199; /*  #104d91*/
 }
 
 #prochains_evenements table td.mois
@@ -559,112 +547,6 @@ background-color:transparent;
 #prochains_evenements table td p.description {
 font-size: 0.95em;
 }
-
-
-#commentaires h5
-{
-	margin: 2em 0em 0.6em 0em;
-	font-size:1.2em;
-}
-
-#commentaires .apres_evenement
-{
-	margin: 1.4em 1em 0.6em 1em;
-}
-
-#commentaires blockquote
-{
-	width:94%;
-	margin: 1em auto 1em auto;
-	padding:0.2em 0.2em;
-	background:#fafafa;
-	border:1px solid #eaeaea;
-	line-height:1.2em;
-}
-
-
-#commentaires blockquote strong
-{
-	font-weight:bold;
-}
-
-#commentaires blockquote h2
-{
-	font-weight:bold;
-	font-size:1.2em;
-}
-
-
-#commentaires blockquote .date
-{
-
-}
-
-
-#commentaires blockquote .commentaire_de
-{
-	background:#eaeaea;
-	height:1.4em;
-	padding:0.2em;
-	margin-bottom:0.4em;
-}
-
-#commentaires blockquote .commentaire_de .left
-{
-	float:left;
-
-}
-
-#commentaires blockquote .commentaire_de .right
-{
-	float:right;
-
-}
-
-
-	/*Ajouter commentaire */
-	form#ajouter_editer
-	{
-		width:94%;
-		margin:0 auto 0 auto;
-		/* border:1px solid blue; */
-
-	}
-
-	 form#ajouter_editer label
-	{
-		float:left;
-		text-align:right;
-		width:10em;
-	}
-
-	form#ajouter_editer #commentaire
-	{
-		float:right;
-		margin:0;
-		padding:0.2em;
-		border:1px solid #aeaeae;
-		font-size:1.2em;
-		margin:0;
-		width:400px;
-	}
-
-
-
-	form#ajouter_editer #pied_form
-	{
-		background-color:#eaeaea;
-		text-align:right;
-		margin:0.2em 0;
-		padding:0.5em 0.4em;
-	}
-
-	form#ajouter_editer #pied_form .submit
-	{
-		background-color:#fafafa;
-		border:#909090 2px solid;
-		padding:0.4em 0.6em;
-	}
 
 .menu_wikicode
 {

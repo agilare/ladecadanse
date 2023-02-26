@@ -15,19 +15,6 @@ CREATE TABLE `affiliation` (
   `genre` set('lieu','association','groupe') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT ''
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE `commentaire` (
-  `idCommentaire` mediumint(11) UNSIGNED NOT NULL,
-  `idPersonne` smallint(11) UNSIGNED NOT NULL DEFAULT '0',
-  `id` mediumint(11) UNSIGNED NOT NULL DEFAULT '0',
-  `element` enum('evenement','lieu') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'evenement',
-  `titre` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `contenu` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
-  `titreEvenement` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `statut` enum('actif','inactif','archive') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'actif',
-  `dateAjout` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `date_derniere_modif` datetime NOT NULL DEFAULT '0000-00-00 00:00:00'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
 CREATE TABLE `descriptionlieu` (
   `idLieu` mediumint(8) UNSIGNED NOT NULL DEFAULT '0',
   `idPersonne` smallint(5) UNSIGNED NOT NULL DEFAULT '0',
@@ -1248,9 +1235,6 @@ CREATE TABLE `user_reset_requests` (
 ALTER TABLE `affiliation`
   ADD PRIMARY KEY (`idPersonne`,`idAffiliation`);
 
-ALTER TABLE `commentaire`
-  ADD PRIMARY KEY (`idCommentaire`);
-
 ALTER TABLE `descriptionlieu`
   ADD PRIMARY KEY (`idLieu`,`idPersonne`,`type`) USING BTREE,
   ADD KEY `desclieu_dateajout` (`dateAjout`);
@@ -1297,9 +1281,6 @@ ALTER TABLE `salle`
 ALTER TABLE `user_reset_requests`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `idPersonne` (`idPersonne`);
-
-ALTER TABLE `commentaire`
-  MODIFY `idCommentaire` mediumint(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `evenement`
   MODIFY `idevenement` mediumint(8) UNSIGNED NOT NULL AUTO_INCREMENT;
