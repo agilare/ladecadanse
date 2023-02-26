@@ -11,14 +11,14 @@ ini_set('max_file_uploads', 3);
 // DIR
 define('__ROOT__', dirname(dirname(__FILE__))); // full path to dir, for ex. /users/michel/hosts/ladecadanse
 
-$rep_images_even = __ROOT__ . "/images/"; // legacy, should be web/uploads/evenements
+$rep_images_even = __ROOT__ . "/web/uploads/evenements/"; // legacy, should be web/uploads/evenements
 $rep_uploads_lieux = __ROOT__ . "/web/uploads/lieux/";
 $rep_uploads_lieux_galeries = __ROOT__ . "/web/uploads/lieux/galeries/";
 $rep_uploads_organisateurs = __ROOT__ . "/web/uploads/organisateurs/";
 $rep_fichiers_lieu = __ROOT__ . "/web/uploads/fichiers/lieux/";
 
 // PATHS
-$url_uploads_events = "/images/";
+$url_uploads_events = "/web/uploads/evenements/";
 $url_uploads_lieux = "/web/uploads/lieux/";
 $url_uploads_lieux_galeries = "/web/uploads/lieux/galeries/";
 $url_uploads_organisateurs = "/web/uploads/organisateurs/";

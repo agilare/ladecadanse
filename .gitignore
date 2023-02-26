@@ -1,6 +1,5 @@
 app/env.php
 /nbproject
-/images/
 /var/*
 !/var/logs
 /var/logs/*
@@ -12,6 +11,9 @@ app/env.php
 !/web/uploads/
 /web/uploads/*
 !web/uploads/.gitkeep
+!/web/uploads/evenements/
+/web/uploads/evenements/*
+!web/uploads/evenements/.gitkeep
 !/web/uploads/lieux/
 /web/uploads/lieux/*
 !web/uploads/lieux/.gitkeep
@@ -23,5 +25,3 @@ app/env.php
 !web/uploads/organisateurs/.gitkeep
 /.idea
 .htaccess
-composer-setup.php
-composer.phar
