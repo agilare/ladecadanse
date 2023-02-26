@@ -2,15 +2,15 @@
 
 require_once("app/bootstrap.php");
 
+use Ladecadanse\UserLevel;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\Logger;
 use Ladecadanse\Utils\Text;
 use Ladecadanse\Utils\Mailing;
 use Ladecadanse\HtmlShrink;
 
-if (!$videur->checkGroup(12))
-{
-	header("Location: index.php"); die();
+if (!$videur->checkGroup(UserLevel::MEMBER)) {
+    header("Location: index.php"); die();
 }
 
 $page_titre = "Envoyer un événement";

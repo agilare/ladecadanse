@@ -2,6 +2,7 @@
 
 require_once("app/bootstrap.php");
 
+use Ladecadanse\UserLevel;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\Logger;
 use Ladecadanse\Utils\Mailing;
@@ -128,15 +129,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 		$verif->setErreur("affiliation", "Vous devez choisir une affiliation");
 	}
 
-	/*
-	 * Si l'affiliation texte et l'affiliation lieu ont été choisies
-	 */
-	if ($champs['groupe'] == 12 && (!empty($champs['affiliation']) || !empty($champs['lieu'])))
-	{
-		$verif->setErreur("affiliation", "Le choix d'une affiliation est réservéee aux acteurs culturels");
-	}
-
-	if (!empty($_POST['username_as']))
+    if (!empty($_POST['username_as']))
 	{
 		$verif->setErreur("username_as", "Veuillez laisser ce champ vide");
 	}
@@ -151,9 +144,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 		$champs['statut'] = 'demande';
 
 		// pour mail de notif admin (plus bas
-		$type_compte = 'membre';
-		if ($champs['groupe'] == 8)
-			$type_compte = 'organisateur';
+        $type_compte = 'organisateur';
 
 		$sql_insert_attributs = "";
 		$sql_insert_valeurs = "";
@@ -350,25 +341,15 @@ echo $verif->getHtmlErreur("email_identique");?>
 
 <fieldset>
 
-	<legend>En tant que*</legend>
-	<ul class="radio" style="margin:0;font-size:0.85em"><li class="listehoriz" style="float: left;display:inline-block;min-height:7em">
-			<label for="membre" style="float:left"><strong>Membre</strong><br>
-            </label>&nbsp;<input type="radio" name="groupe" id="membre" value="12"
-                                     <?php if ($champs['groupe'] == 12) { echo ' checked'; } ?> />
-		</li><li class="listehoriz" style="float: left;display:inline-block;min-height:7em">
-			<label for="user-register_organisateur" style="float:left"><strong>Acteur culturel</strong><br>Mêmes droits qu'un membre + possibilité d'ajouter des événements</label>&nbsp;<input type="radio" name="groupe" id="user-register_organisateur" value="8" <?php if ($champs['groupe'] == 8) { echo ' checked'; } ?> />
-		</li>
-        <div class="spacer"></div>
-	</ul>
-    <div class="spacer"></div>
-	<?php echo $verif->getHtmlErreur("groupe");?>
+    <input type="hidden" name="groupe" id="user-register_organisateur" value="<?php echo UserLevel::ACTOR ?> " />
+
 
 	<!-- Affiliation (text) -->
 	<fieldset class="affiliation" id="user-register_references" >
 
 		<legend>Affiliation</legend>
-        <div class="guide_affiliation">Si vous avez choisi <b>Acteur culturel</b>, merci d'indiquer à quel association, collectif, lieu, etc. vous appartenez.<br>Ainsi, une fois votre compte créé, vous pourrez modifier les informations du <a href="/lieux.php" target="_blank">Lieu</a> et/ou <a href="/organisateurs.php" target="_blank">Organisateur</a> sur La décadanse (données pratiques, images, présentations)</div>
-		<p>
+            <div class="guide_affiliation">Si vous êtes un <b>Acteur culturel</b>, merci d'indiquer à quel association, collectif, lieu, etc. vous appartenez.<br>Ainsi, une fois votre compte créé, vous pourrez modifier les informations du <a href="/lieux.php" target="_blank">Lieu</a> et/ou <a href="/organisateurs.php" target="_blank">Organisateur</a> sur La décadanse (données pratiques, images, présentations)</div>
+            <p>
             <label for="lieu" class="affil">Lieu&nbsp;</label>
             <select name="lieu" id="lieu" class="chosen-select" data-placeholder="Tapez le nom..."  style="max-width:350px">
             <?php

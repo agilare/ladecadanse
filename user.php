@@ -2,13 +2,13 @@
 
 require_once("app/bootstrap.php");
 
+use Ladecadanse\UserLevel;
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\Utils\Utils;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\Text;
 
-if (!$videur->checkGroup(12))
-{
+if (!$videur->checkGroup(UserLevel::MEMBER)) {
 	header("Location: /user-login.php"); die();
 }
 
@@ -192,8 +192,7 @@ $detailsAff = $connector->fetchArray($req_affPers);
     <ul id="menu_ajouts">
 
 	<?php
-	if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 10))
-	{
+	if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= UserLevel::ACTOR)) {
 	?>
 
 

@@ -92,7 +92,7 @@ class Sentry extends SystemComponent
      * @access public
      * @param string $user Nom de membre à évaluer en cas de login
      * @param string $pass Mot de passe de membre à évaluer en cas de login
-     * @param int $group (1 à 10) No de groupe auquel est accessible une page
+     * @param int $group (1 à 12) No de groupe auquel est accessible une page
      * @param string $goodRedirect Lien en cas de login réussi
      * @param string $badRedirect Lien en cas de login raté
      * @return boolean True si les infos entrée en login OU si les données de session
@@ -305,26 +305,20 @@ class Sentry extends SystemComponent
     {
         global $connector;
 
-        if (isset($_SESSION['user']))
-        {
-            $getUser = $connector->query("
-			SELECT idPersonne, pseudo, mot_de_passe, cookie, groupe, email, gds
-			FROM personne
-			WHERE pseudo = '" . $connector->sanitize($_SESSION['user']) . "' AND groupe <= " . (int) $groupe . " AND statut='actif'");
-
-            if ($connector->getNumRows($getUser) == 1)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-        else
-        {
+        if (!isset($_SESSION['user'])) {
             return false;
         }
+
+        $getUser = $connector->query("
+        SELECT idPersonne, pseudo, mot_de_passe, cookie, groupe, email, gds
+        FROM personne
+        WHERE pseudo = '" . $connector->sanitize($_SESSION['user']) . "' AND groupe <= " . (int) $groupe . " AND statut='actif'");
+
+        if ($connector->getNumRows($getUser) == 1) {
+            return true;
+        }
+
+        return false;
     }
 
     function token()

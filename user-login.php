@@ -4,9 +4,9 @@ require_once("app/bootstrap.php");
 
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\HtmlShrink;
+use Ladecadanse\UserLevel;
 
-if ($videur->checkGroup(12))
-{
+if ($videur->checkGroup(UserLevel::MEMBER)) {
 	header("Location: index.php"); die();
 }
 
@@ -60,8 +60,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 		$videur->checkLogin(
 		$champs['pseudo'],
 		$champs['motdepasse'],
-		12,
-		"/",
+		UserLevel::MEMBER,
+                "/",
 		'/user-login.php?msg=faux',
 		$champs['memoriser']
 		);

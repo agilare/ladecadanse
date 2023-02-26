@@ -2,6 +2,7 @@
 
 require_once("app/bootstrap.php");
 
+use Ladecadanse\UserLevel;
 use Ladecadanse\Lieu;
 use Ladecadanse\DescriptionCollection;
 use Ladecadanse\Evenement;
@@ -121,8 +122,7 @@ elseif ($lieu->getValue('statut') == 'inactif')
 
 $menu_actions = '';
 $action_ajouter = '';
-if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 10))
-{
+if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= UserLevel::ACTOR)) {
 	$action_ajouter = '<li class="action_ajouter"><a href="/evenement-edit.php?idL='.$get['idL'].'" title="ajouter un événement à ce lieu">Ajouter un événement à ce lieu</a></li>';
 }
 

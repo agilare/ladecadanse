@@ -2,6 +2,7 @@
 
 require_once("app/bootstrap.php");
 
+use Ladecadanse\UserLevel;
 use Ladecadanse\Organisateur;
 use Ladecadanse\Evenement;
 use Ladecadanse\EvenementCollection;
@@ -47,8 +48,7 @@ include("_header.inc.php");
 include("_menuorganisateurs.inc.php");
 
 $action_ajouter = '';
-if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 10)
-|| isset($_SESSION['SidPersonne']) && $authorization->isPersonneInOrganisateur($_SESSION['SidPersonne'], $get['idO']))
+if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= UserLevel::ACTOR) || isset($_SESSION['SidPersonne']) && $authorization->isPersonneInOrganisateur($_SESSION['SidPersonne'], $get['idO']))
 {
 	$action_ajouter = '<li class="action_ajouter"><a href="/evenement-edit.php?idO=' . $get['idO'] . '">Ajouter un événement de cet organisateur</a></li>';
 }

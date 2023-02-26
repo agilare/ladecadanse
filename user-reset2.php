@@ -2,12 +2,12 @@
 
 require_once("app/bootstrap.php");
 
+use Ladecadanse\UserLevel;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\Logger;
 use Ladecadanse\HtmlShrink;
 
-if ($videur->checkGroup(12))
-{
+if ($videur->checkGroup(UserLevel::MEMBER)) {
 	header("Location: index.php"); die();
 }
 

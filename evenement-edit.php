@@ -6,9 +6,9 @@ use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\ImageDriver2;
 use Ladecadanse\Security\SecurityToken;
 use Ladecadanse\Utils\Logger;
-use Ladecadanse\Utils\Text;
 use Ladecadanse\Utils\Mailing;
 use Ladecadanse\HtmlShrink;
+use Ladecadanse\UserLevel;
 
 $page_titre = "Proposer un événement";
 $page_description = "Proposer un événement pour l'agenda";
@@ -785,14 +785,12 @@ if (!$action_terminee)
 
     /*
     * POUR EDITER UN EVENEMENT, ALLER CHERCHER SES VALEURS DANS LA BASE
-    * Accessible par un membre
     * Récupération des valeurs de la table et remplissage des champs pour le formulaire
     * Affichage d'un menu d'actions pour l'admin
     */
     if ($get['action'] == 'editer' && isset($get['idE']))
     {
-        if ($_SESSION['Sgroupe'] <= 10)
-        {
+        if ($_SESSION['Sgroupe'] <= UserLevel::ACTOR) {
             $req_even = $connector->query("SELECT idLieu, idSalle, idPersonne, statut, titre, genre,
             dateEvenement, nomLieu, adresse, urlLieu, quartier, localite_id, region, description, flyer, image, prix, price_type, horaire_debut, horaire_fin, horaire_complement, ref, prelocations, remarque, user_email FROM evenement WHERE idEvenement =" . $get['idE']);
 
@@ -831,8 +829,7 @@ if (!$action_terminee)
             exit;
         } // if GET action
 
-        if ($_SESSION['Sgroupe'] <= 10)
-        {
+        if ($_SESSION['Sgroupe'] <= UserLevel::ACTOR) {
             $aff_actions = '<ul class="entete_contenu_menu">';
             //Menu d'actions
             if ($_SESSION['Sgroupe'] <= 1)

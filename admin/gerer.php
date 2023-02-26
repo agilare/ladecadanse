@@ -519,10 +519,10 @@ echo '<div class="spacer"></div>';
 			$nom_groupe = 'Acteur culturel';
 		}
 		else if ($nom_groupe == UserLevel::MEMBER) {
-			$nom_groupe = "Membre";
-		}
-		else if ($nom_groupe == UserLevel::AUTHOR) {
-			$nom_groupe = "Rédacteur";
+            $nom_groupe = "Membre";
+        }
+        else if ($nom_groupe == UserLevel::AUTHOR) {
+            $nom_groupe = "Rédacteur";
 		}
 		else if ($nom_groupe == UserLevel::ADMIN) {
 			$nom_groupe = "Admin";

@@ -3,7 +3,6 @@
 require_once("../app/bootstrap.php");
 
 $page_titre = "Annoncer un événement";
-$page_description = "portrait du site La décadanse : description, liste des membres, outils utilisés";
 $extra_css = array("apropos");
 include("../_header.inc.php");
 ?>

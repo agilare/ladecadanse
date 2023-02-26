@@ -16,8 +16,7 @@ use Ladecadanse\Security\SecurityToken;
 use Ladecadanse\Utils\Logger;
 use Ladecadanse\HtmlShrink;
 
-if (!$videur->checkGroup(12))
-{
+if (!$videur->checkGroup(UserLevel::MEMBER)) {
 	header("Location: /user-login.php"); die();
 }
 
@@ -785,8 +784,7 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 8))
     ?>
 
     <?php
-    if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 10))
-    {
+    if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= UserLevel::ACTOR)) {
     ?>
 
     <label style="display:block;float:none">avec l'affiliation :</label>

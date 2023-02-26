@@ -2,6 +2,7 @@
 
 require_once("app/bootstrap.php");
 
+use Ladecadanse\UserLevel;
 use Ladecadanse\Evenement;
 use Ladecadanse\Utils\Text;
 use Ladecadanse\HtmlShrink;
@@ -211,8 +212,7 @@ while ($tab_even = $connector->fetchArray($req_even))
 	<ul class="menu_actions_evenement">
 
         <?php
-        if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 12))
-	{
+        if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= UserLevel::MEMBER)) {
 		echo '<li><a href="/evenement-email.php?idE=' . $get['idE'] . '" title="Envoyer l\'événement par email">' . $icone['envoi_email'] . 'Envoyer à un ami</a></li>';
     }
         if (

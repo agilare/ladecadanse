@@ -6,9 +6,9 @@ use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\Logger;
 use Ladecadanse\Utils\Mailing;
 use Ladecadanse\HtmlShrink;
+use Ladecadanse\UserLevel;
 
-if ($videur->checkGroup(12))
-{
+if ($videur->checkGroup(UserLevel::MEMBER)) {
 	header("Location: index.php"); die();
 }
 
