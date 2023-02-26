@@ -251,7 +251,7 @@ $(document).ready(function()
 	{
 		e.preventDefault();
         var event_id = $(this).data('id')
-        $.get( "/event.php?action=delete&id=" + event_id, function( data ) {
+        $.get( "/evenement-actions.php?action=delete&id=" + event_id, function( data ) {
             $( "#btn_event_del_" + event_id).closest( "tr" ).fadeOut( "fast" );
         });
 
@@ -261,7 +261,7 @@ $(document).ready(function()
 	{
 		e.preventDefault();
         var event_id = $(this).data('id');
-        $.get( "/event.php?action=unpublish&id=" + event_id, function( data ) {
+        $.get( "/evenement-actions.php?action=unpublish&id=" + event_id, function( data ) {
             $( "#btn_event_unpublish_" + event_id).closest( ".evenement" ).fadeOut();
         });
 

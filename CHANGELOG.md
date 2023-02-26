@@ -19,7 +19,7 @@
     - [x] data files to new dir `resources`
     - [x] classes in `libraries` : cleaning, typehints
     - [x] `dates.php` more generic as `utils_functions.php` and moved in `sanitizeForHtml()`
-    - [ ] agenda.php to evenement-agenda.php, event to evenement-actions
+    - [x] agenda.php to evenement-agenda.php, event to evenement-actions
     - [ ] _footer.php externalize js
     - [ ] _header.php mv script jquery to footer
 

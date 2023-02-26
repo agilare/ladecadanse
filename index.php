@@ -423,7 +423,7 @@ FROM evenement WHERE region IN ('" . $connector->sanitize($_SESSION['region']) .
             echo '<h5 style="font-size:1em;color:#5C7378">';
             echo $infosLieu;
             echo "</h5>";
-            echo "<p>le&nbsp;<a href=/agenda.php?courant=".$tab_dern_even['dateEvenement'].">".date_fr($tab_dern_even['dateEvenement'])."</a></p><div class=\"spacer\"></div>";
+            echo "<p>le&nbsp;<a href=/evenement-agenda.php?courant=".$tab_dern_even['dateEvenement'].">".date_fr($tab_dern_even['dateEvenement'])."</a></p><div class=\"spacer\"></div>";
             echo "</div>";
             echo '<div class="spacer"><!-- --></div>';
             $date_ajout_courante = $date_ajout;

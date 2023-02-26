@@ -228,7 +228,7 @@ use Ladecadanse\HtmlShrink;
 
                 <ul>
                     <?php
-                    $menu_principal = array("Agenda" => "agenda.php",  "Lieux" => "lieux.php", "Organisateurs" => "organisateurs.php");
+                    $menu_principal = array("Agenda" => "evenement-agenda.php", "Lieux" => "lieux.php", "Organisateurs" => "organisateurs.php");
 
                     foreach ($menu_principal as $nom => $lien)
                     {
@@ -236,7 +236,7 @@ use Ladecadanse\HtmlShrink;
                         if (strstr($_SERVER['PHP_SELF'], $lien)
                         || ($lien == "/lieux.php" && strstr($_SERVER['PHP_SELF'], "lieu.php"))
                         || ($lien == "/organisateurs.php" && strstr($_SERVER['PHP_SELF'], "organisateur.php"))
-                        || ($lien == "/agenda.php" && strstr($_SERVER['PHP_SELF'], "agenda.php"))
+                        || ($lien == "/evenement-agenda.php" && strstr($_SERVER['PHP_SELF'], "agenda.php"))
                         )
                         {
                             $ici = ' class="ici" ';

@@ -183,7 +183,7 @@ while ($tab_even = $connector->fetchArray($req_even))
         echo ' class="ancien"';
     } ?>>
 
-            <span class="category"><?php echo ucfirst(Evenement::nom_genre($even->getValue('genre'))); ?></span>, <?php echo '<a href="/agenda.php?courant='.$even->getValue('dateEvenement').'">'.date_fr($even->getValue('dateEvenement'), "annee", "", "", false).'</a>';
+            <span class="category"><?php echo ucfirst(Evenement::nom_genre($even->getValue('genre'))); ?></span>, <?php echo '<a href="/evenement-agenda.php?courant='.$even->getValue('dateEvenement').'">'.date_fr($even->getValue('dateEvenement'), "annee", "", "", false).'</a>';
  ?>
 </h2>
 		<div class="entete_contenu_navigation">
@@ -558,7 +558,7 @@ $adresse = htmlspecialchars(HtmlShrink::getAdressFitted($listeLieu['region'], $l
 
 			<div id="auteur">
 
-                <a class="signaler" href="/evenement-report.php?idE=<?php echo $get['idE'] ?>" ><i class="fa fa-flag-o fa-lg"></i>Signaler une erreur</a>
+                <a class="signaler" href="/evenement-report.php?idE=<?php echo $get['idE'] ?>" ><i class="fa fa-flag-o fa-lg"></i> Signaler une erreur</a>
 
 
 		Ajouté

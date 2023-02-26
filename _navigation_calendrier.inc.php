@@ -48,7 +48,7 @@ $mois_suiv = date("Y-m-d", mktime(0, 0, 0, $mois_courant + 1, $jour_mois_suiv, $
 		if (mktime(0, 0, 0, $mois_courant, $jour_courant, $annee_courant) > mktime(12, 0, 0, 9, 1, 2005))
 		{
 		?>
-            <a href="<?php echo "/agenda.php?" . $url_query_region_et . "courant=" . $mois_prec . "&amp;genre=" . $get['genre'] . "&amp;sem=" . $get['sem'] . "&amp;tri_agenda=" . $get['tri_agenda']; ?>" title="mois précédent" >
+            <a href="<?php echo "/evenement-agenda.php?" . $url_query_region_et . "courant=" . $mois_prec . "&amp;genre=" . $get['genre'] . "&amp;sem=" . $get['sem'] . "&amp;tri_agenda=" . $get['tri_agenda']; ?>" title="mois précédent" >
                     <i class="fa fa-backward"></i></a>
 		<?php
 		}
@@ -58,7 +58,7 @@ $mois_suiv = date("Y-m-d", mktime(0, 0, 0, $mois_courant + 1, $jour_mois_suiv, $
             <?php echo ucfirst(mois2fr($mois_courant)) . " " . $annee_courant ?>
         </th>
         <th>
-            <a href="<?php echo "/agenda.php?" . $url_query_region_et . "courant=" . $mois_suiv . "&amp;sem=" . $get['sem'] . "&amp;genre=" . $get['genre'] . "&amp;tri_agenda=" . $get['tri_agenda']; ?>" title="mois suivant" >
+            <a href="<?php echo "/evenement-agenda.php?" . $url_query_region_et . "courant=" . $mois_suiv . "&amp;sem=" . $get['sem'] . "&amp;genre=" . $get['genre'] . "&amp;tri_agenda=" . $get['tri_agenda']; ?>" title="mois suivant" >
                 <i class="fa fa-forward"></i></a>
         </th>
     </tr>
@@ -117,7 +117,7 @@ $mois_suiv = date("Y-m-d", mktime(0, 0, 0, $mois_courant + 1, $jour_mois_suiv, $
 				echo " class=\"semaine\"";
 			}
 
-			echo "><td><a href=\"/agenda.php?" . $url_query_region_et . "courant=" . $date_deb_sem . "&amp;sem=1&amp;tri_agenda=" . $get['tri_agenda'] . "\" title=\"Semaine\"><i class=\"fa fa-caret-right\"></i>
+			echo "><td><a href=\"/evenement-agenda.php?" . $url_query_region_et . "courant=" . $date_deb_sem . "&amp;sem=1&amp;tri_agenda=" . $get['tri_agenda'] . "\" title=\"Semaine\"><i class=\"fa fa-caret-right\"></i>
 </a></td>";
 
 		}
@@ -155,7 +155,7 @@ $mois_suiv = date("Y-m-d", mktime(0, 0, 0, $mois_courant + 1, $jour_mois_suiv, $
 			$proch_date = Date("Y-m-d", mktime(0, 0, 0, $mois_courant, $pas, $annee_courant));
 
 			echo "<td".$classe.">";
-			echo "<a href=\"/agenda.php?" . $url_query_region_et . "courant=" . $proch_date . "&amp;sem=0&amp;tri_agenda=" . $get['tri_agenda'] . "\" title=\"" . date_fr($proch_date, "annee", "", "", false) . "\">" . $pas . "</a></td>";
+			echo "<a href=\"/evenement-agenda.php?" . $url_query_region_et . "courant=" . $proch_date . "&amp;sem=0&amp;tri_agenda=" . $get['tri_agenda'] . "\" title=\"" . date_fr($proch_date, "annee", "", "", false) . "\">" . $pas . "</a></td>";
 
         $pas++;
     	}
@@ -170,7 +170,7 @@ $mois_suiv = date("Y-m-d", mktime(0, 0, 0, $mois_courant + 1, $jour_mois_suiv, $
 				echo ' sam';
     		}
     		echo '">';
-			echo "<a href=\"/agenda.php?" . $url_query_region_et . "courant=" . $proch_date . "&amp;genre=" . $get['genre'] . "&amp;sem=0&amp;tri_agenda=" . $get['tri_agenda'] . "\" title=\"\">" . $jour_mois_avant . "</a>";
+			echo "<a href=\"/evenement-agenda.php?" . $url_query_region_et . "courant=" . $proch_date . "&amp;genre=" . $get['genre'] . "&amp;sem=0&amp;tri_agenda=" . $get['tri_agenda'] . "\" title=\"\">" . $jour_mois_avant . "</a>";
         echo  "</td>";
     		$b--;
     	}
@@ -189,7 +189,7 @@ $mois_suiv = date("Y-m-d", mktime(0, 0, 0, $mois_courant + 1, $jour_mois_suiv, $
 					echo ' sam';
 	    		}
 	    		echo '">';
-				echo "<a href=\"/agenda.php?".$url_query_region_et."courant=".$proch_date."&amp;genre=".$get['genre']."&amp;sem=0&amp;tri_agenda=".$get['tri_agenda']."\" title=\"\">".$n."</a>";
+				echo "<a href=\"/evenement-agenda.php?".$url_query_region_et."courant=".$proch_date."&amp;genre=".$get['genre']."&amp;sem=0&amp;tri_agenda=".$get['tri_agenda']."\" title=\"\">".$n."</a>";
 				echo  "</td>\n";
 				$i++;
 				$n++;
@@ -216,15 +216,15 @@ $mois_suiv = date("Y-m-d", mktime(0, 0, 0, $mois_courant + 1, $jour_mois_suiv, $
     <ul id="menu_calendrier">
         <li id="demain">
             <?php $tab_auj = explode("-", $glo_auj); ?>
-            <a href="<?php echo "/agenda.php?" . $url_query_region_et . "courant=" . date("Y-m-d", mktime(12, 0, 0, $tab_auj[1], $tab_auj[2] + 1, $tab_auj[0])) . "&amp;genre=" . $get['genre'] . "&amp;tri_agenda=" . $get['tri_agenda'] ?>" >Demain</a>
+            <a href="<?php echo "/evenement-agenda.php?" . $url_query_region_et . "courant=" . date("Y-m-d", mktime(12, 0, 0, $tab_auj[1], $tab_auj[2] + 1, $tab_auj[0])) . "&amp;genre=" . $get['genre'] . "&amp;tri_agenda=" . $get['tri_agenda'] ?>" >Demain</a>
         </li>
         <li id="cette_semaine">
-            <a href="<?php echo "/agenda.php?" . $url_query_region_et . "courant=" . $auj . "&amp;genre=" . $get['genre'] . "&amp;tri_agenda=" . $get['tri_agenda'] . "&amp;sem=1" ?>" >
+            <a href="<?php echo "/evenement-agenda.php?" . $url_query_region_et . "courant=" . $auj . "&amp;genre=" . $get['genre'] . "&amp;tri_agenda=" . $get['tri_agenda'] . "&amp;sem=1" ?>" >
                 Cette semaine
             </a>
         </li>
         <li>
-            <form action="/agenda.php" method="get" >
+            <form action="/evenement-agenda.php" method="get" >
                 <fieldset>
                     <input type="hidden" name="genre" value="<?php echo $get['genre'] ?>" />
                     <input type="hidden" name="sem" value="<?php echo $get['sem'] ?>" />
