@@ -1,35 +1,42 @@
 # Changelog
 
-
 ## [Unreleased]
-
-3.4.0
-
-### Added
-
-- [ ] CONTRIBUTING.md
-- [x] `UserLevel` class introduced (replaces useless table `groupes`)
-- [x] [Whoops](https://github.com/filp/whoops)
-
-### Changed
-
-- [x] sessions saved in `var/sessions`
-- [ ] config for events fils from images/ to web/uploads/evenements (and gitignore)
-- [x] refactor
-    - [x] data files to new dir `resources`
-    - [x] classes in `libraries` : cleaning, typehints
-    - [x] `dates.php` more generic as `utils_functions.php` and moved in `sanitizeForHtml()`
-    - [x] agenda.php to evenement-agenda.php, event to evenement-actions
-    - [x] _footer.php externalize js
-    - [x] _header.php mv script jquery to footer
 
 ### Removed
 
-- [x] useless fields of user (ip, session, nom, prenom, adresse, telephone, URL, notification_commentaires, remarque), personne_organisateur (role), evenement (URL1, URL2), lieu (horaire_evenement, entree, telephone, email, acces_tpg, plan, actif), organisateur (telephone)
-- [ ] user level "membre"
-- [ ] comments (completely)
-- [ ] favorites (completely)
+- [ ] usage of globals
 
+## [3.4.0] - 2023-02-27
+
+### Fixed
+
+- events : copy
+
+### Added
+
+- `UserLevel` class introduced (replaces useless table `groupes`)
+- [Whoops](https://github.com/filp/whoops) error handler
+
+### Changed
+
+- users : level 12 (member) disabled
+- sessions saved in `var/sessions`
+- config for events files from images/ to web/uploads/evenements (and gitignore)
+- refactor
+    - data files to new dir `resources`
+    - classes in `libraries` : cleaning, typehints
+    - `dates.php` more generic as `utils_functions.php` and moved in `sanitizeForHtml()`
+    - agenda.php to evenement-agenda.php, event to evenement-actions
+    - _footer.php externalize js
+    - _header.php mv script jquery to footer
+
+### Removed
+
+- useless fields of user (ip, session, nom, prenom, adresse, telephone, URL, notification_commentaires, remarque), personne_organisateur (role), evenement (URL1, URL2), lieu (horaire_evenement, entree, telephone, email, acces_tpg, plan, actif), organisateur (telephone)
+- users : level 10
+- comments (completely)
+- favorites (completely)
+- enlightn/security-checker
 
 ## [3.3.0] - 2023-02-19
 
