@@ -2,8 +2,7 @@
 docker/*
 images/*
 app/env_model.php
-app/ladecadanse.sql
-app/ladecadanse-utf8-to-utf8mb4.sql
+resources/ladecadanse.sql
 .editorconfig
 .gitattributes
 .gitignore
