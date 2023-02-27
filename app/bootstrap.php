@@ -17,11 +17,13 @@ use Whoops\Handler\PrettyPageHandler;
 
 require_once __DIR__ . '/config.php';
 
-$whoops = new \Whoops\Run;
-$whoopsHandler = new PrettyPageHandler();
-$whoopsHandler->setEditor('netbeans');
-$whoops->pushHandler($whoopsHandler);
-$whoops->register();
+if (ENV === 'dev') {
+    $whoops = new \Whoops\Run;
+    $whoopsHandler = new PrettyPageHandler();
+    $whoopsHandler->setEditor('netbeans');
+    $whoops->pushHandler($whoopsHandler);
+    $whoops->register();
+}
 
 session_save_path(__ROOT__ . "/var/sessions");
 session_start();
