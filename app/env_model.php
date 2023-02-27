@@ -27,6 +27,8 @@ define("EMAIL_ADMIN", ''); // recipient of site activity to watch, users request
 define("EMAIL_ADMIN_NAME", 'La décadanse');
 
 // external services
+define("TINYMCE_API_KEY", '');
+
 define("MATOMO_ENABLED", false); // analytics tool (enabled only in prod)
 
 define("GOOGLE_API_KEY", ''); // use Google Maps library to display maps of venues https://developers.google.com/maps/documentation/javascript/get-api-key
