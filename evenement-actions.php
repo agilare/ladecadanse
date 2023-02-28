@@ -2,8 +2,9 @@
 
 require_once("app/bootstrap.php");
 
-if (!$videur->checkGroup(8))
-{
+use Ladecadanse\UserLevel;
+
+if (!$videur->checkGroup(UserLevel::ACTOR)) {
 	header("Location: index.php"); die();
 }
 
@@ -23,8 +24,7 @@ if ($get['action'] == 'delete' && !empty($get['id']))
         if (!empty($val_even['flyer']))
         {
             unlink($rep_images_even.$val_even['flyer']);
-            unlink($rep_images_even."s_".$val_even['flyer']);
-            unlink($rep_images_even."t_".$val_even['flyer']);
+            unlink($rep_images_even . "s_" . $val_even['flyer']);
         }
 
         if (!empty($val_even['image']))
@@ -58,11 +58,10 @@ if ($get['action'] == 'unpublish' && !empty($get['id']))
 
     $val_even = $connector->fetchArray($req_im);
 
-    if (!empty($val_even) && 
+    if (!empty($val_even) &&
             (
-        (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 6
-        || $_SESSION['SidPersonne'] == $val_even['idPersonne'])
-        )
+        (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= UserLevel::AUTHOR || (isset($_SESSION['SidPersonne']) && $_SESSION['SidPersonne'] == $val_even['idPersonne']))
+            )
         ||  (isset($_SESSION['Saffiliation_lieu']) && !empty($val_even['idLieu']) && $val_even['idLieu'] == $_SESSION['Saffiliation_lieu'])
          || isset($_SESSION['SidPersonne']) && $authorization->isPersonneInEvenementByOrganisateur($_SESSION['SidPersonne'], $get['id'])
          || isset($_SESSION['SidPersonne']) && $authorization->isPersonneInLieuByOrganisateur($_SESSION['SidPersonne'], $val_even['idLieu'])	))
