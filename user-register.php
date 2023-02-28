@@ -138,8 +138,9 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 	{
         $champs['pseudo'] = $champs['utilisateur'];
 		$champs['mot_de_passe'] = $champs['motdepasse'];
+		$champs['cookie'] = '';
 
-		$champs['dateAjout'] = date("Y-m-d H:i:s");
+        $champs['dateAjout'] = date("Y-m-d H:i:s");
 		$champs['date_derniere_modif'] = date("Y-m-d H:i:s");
 		$champs['statut'] = 'demande';
 
