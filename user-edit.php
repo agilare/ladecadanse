@@ -16,8 +16,8 @@ use Ladecadanse\Security\SecurityToken;
 use Ladecadanse\Utils\Logger;
 use Ladecadanse\HtmlShrink;
 
-if (!$videur->checkGroup(UserLevel::MEMBER)) {
-	header("Location: /user-login.php"); die();
+if (!$videur->checkGroup(UserLevel::ACTOR)) {
+    header("Location: /user-login.php"); die();
 }
 
 $get['action'] = "ajouter";
@@ -509,7 +509,7 @@ if ($verif->nbErreurs() > 0)
                 if ($id == $champs['groupe']) {
                     echo "selected=\"selected\"";
             }
-                elseif (($get['action'] == 'ajouter' || $get['action'] == 'insert') && $id == UserLevel::MEMBER) {
+                elseif (($get['action'] == 'ajouter' || $get['action'] == 'insert') && $id == UserLevel::ACTOR) {
                 echo "selected=\"selected\"";
                 }
                 echo " value=\"" . $id . "\">" . $id . " : " . $nom . "</option>";

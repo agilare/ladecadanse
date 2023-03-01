@@ -106,7 +106,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 	 */
 	if (!empty($champs['groupe']))
 	{
-		if ($champs['groupe'] > \Ladecadanse\UserLevel::MEMBER) {
+		if ($champs['groupe'] > UserLevel::MEMBER) {
             $verif->setErreur("groupe", "Le groupe ".$champs['groupe']." n'est pas valable");
 		}
 	}

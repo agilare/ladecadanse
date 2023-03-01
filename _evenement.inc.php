@@ -5,11 +5,11 @@ use Ladecadanse\Evenement;
 
 //Affichage du lieu selon son existence ou non dans la base
 if ($evenement['idLieu'] != 0)
-{	
+{
 	$listeLieu = $connector->fetchArray(
-	$connector->query("SELECT nom, adresse, quartier, localite.localite AS localite, region, URL, lat, lng FROM lieu, localite 
+	$connector->query("SELECT nom, adresse, quartier, localite.localite AS localite, region, URL, lat, lng FROM lieu, localite
 		WHERE localite_id=localite.id AND idlieu='".$evenement['idLieu']."'"));
-	
+
 	$nom_lieu = "<a href=\"/lieu.php?idL=".$evenement['idLieu']."\" title=\"Voir la fiche du lieu : ".sanitizeForHtml($listeLieu['nom'])."\" >".htmlspecialchars($listeLieu['nom'])."</a>";
 
 	if ($evenement['idSalle'] != 0)
@@ -20,12 +20,12 @@ if ($evenement['idLieu'] != 0)
 		$nom_lieu .=  " - ".$tab_salle['nom'];
 	}
 }
-else 
+else
 {
 	$nom_lieu = $listeLieu['nom'] =  htmlspecialchars($evenement['nomLieu']);
 	$listeLieu['adresse'] = htmlspecialchars($evenement['adresse']);
 	$listeLieu['quartier'] = htmlspecialchars($evenement['quartier']);
-    $listeLieu['localite'] = sanitizeForHtml($evenement['localite']);              
+    $listeLieu['localite'] = "";
 }
 
 $adresse = htmlspecialchars(HtmlShrink::getAdressFitted(null, $listeLieu['localite'], $listeLieu['quartier'], $listeLieu['adresse']));
@@ -38,17 +38,17 @@ echo "<p><a href=\"/evenement-agenda.php?courant=".$evenement['dateEvenement']."
 <div class="titre">
 	<span class="left">
 	<?php
-	
+
 	$maxChar = Text::trouveMaxChar($evenement['description'], 60, 9);
-	
-	echo '<a href="/evenement.php?idE='.$evenement['idEvenement'].'" 
+
+	echo '<a href="/evenement.php?idE='.$evenement['idEvenement'].'"
 	title="Voir la fiche complète de l\'événement">'.Evenement::titre_selon_statut($evenement['titre'], $evenement['statut']).'</a>';
-	
+
 
 	?>
 	</span>
 	<span class="right"><?php echo $nom_lieu ?></span>
-	<div class="spacer"></div>	
+	<div class="spacer"></div>
 </div>
 <!-- fin titre -->
 
@@ -59,7 +59,7 @@ if (!empty($evenement['flyer']))
 	$imgInfo = getimagesize($rep_images_even.$evenement['flyer']);
 ?>
 	<a href="<?php echo $url_uploads_events.$evenement['flyer']."?".filemtime($rep_images_even.$evenement['flyer']) ?>" class="magnific-popup" target="_blank">
-	
+
 		<img src="<?php echo $url_uploads_events.$evenement['flyer']."?".filemtime($rep_images_even.$evenement['flyer']) ?>" alt="Flyer de cet événement" width="100" />
 	</a>
 <?php
@@ -69,10 +69,10 @@ if (!empty($evenement['flyer']))
 	else if (!empty($evenement['image']))
 	{
 		$imgInfo = @getimagesize($rep_images_even.$evenement['image']);
-		//echo lien_popup($IMGeven.$evenement['image']."?".filemtime($rep_images_even.$evenement['image']), "Image", $imgInfo[0]+20, $imgInfo[1]+20,"<img src=\"".$IMGeven."s_".$evenement['image']."?".filemtime($rep_images_even.$evenement['image'])."\" alt=\"Image\" />");	
+		//echo lien_popup($IMGeven.$evenement['image']."?".filemtime($rep_images_even.$evenement['image']), "Image", $imgInfo[0]+20, $imgInfo[1]+20,"<img src=\"".$IMGeven."s_".$evenement['image']."?".filemtime($rep_images_even.$evenement['image'])."\" alt=\"Image\" />");
 	?>
 	<a href="<?php echo $url_uploads_events.$evenement['image']."?".filemtime($rep_images_even.$evenement['image']) ?>" class="magnific-popup" target="_blank">
-	
+
 		<img src="<?php echo $url_uploads_events.$evenement['image']."?".filemtime($rep_images_even.$evenement['image']) ?>" alt="Photo pour cet événement" width="100" />
 	</a>
 	<?php
@@ -87,12 +87,12 @@ if (!empty($evenement['flyer']))
 
 if (mb_strlen($evenement['description']) > $maxChar)
 {
-	echo Text::texteHtmlReduit(Text::wikiToHtml(sanitizeForHtml($evenement['description'])), 
-	$maxChar, 
+	echo Text::texteHtmlReduit(Text::wikiToHtml(sanitizeForHtml($evenement['description'])),
+	$maxChar,
 	" <a href=\"/evenement.php?idE=".$evenement['idEvenement']."\" title=\"Voir la fiche complète de l'événement\"> Lire la suite".$iconeSuite."</a>");
 }
 else
-{ 
+{
 	echo Text::wikiToHtml(htmlspecialchars($evenement['description']));
 }
 

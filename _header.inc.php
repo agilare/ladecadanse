@@ -1,6 +1,7 @@
 <?php
 
 use Ladecadanse\HtmlShrink;
+use Ladecadanse\UserLevel;
 
 ?>
 
@@ -183,8 +184,8 @@ use Ladecadanse\HtmlShrink;
                     }
                     else
                     {
-                        if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 10)) {
-                                $ici = '';
+                        if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= UserLevel::ACTOR)) {
+        $ici = '';
                                 if (strstr($_SERVER['PHP_SELF'], "evenement-edit.php") )
                             {
                                 $ici = " class=\"ici\"";
