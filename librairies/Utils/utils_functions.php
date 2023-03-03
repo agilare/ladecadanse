@@ -202,6 +202,9 @@ function date2sem($date)
 
 function date_iso2app($date)
 {
+    if (empty($date))
+        return '';
+
     if (mb_strlen($date) > 10)
     {
         $tab_date = explode(" ", $date);

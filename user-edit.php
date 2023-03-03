@@ -35,13 +35,11 @@ if (isset($_GET['action']))
 {
 	$get['action'] = Validateur::validateUrlQueryValue($_GET['action'], "enum", 1, $actions);
 
-	if (($_GET['action'] == "ajouter" || $_GET['action'] == 'insert') && $_SESSION['Sgroupe'] > 1)
-	{
+	if (($_GET['action'] == "ajouter" || $_GET['action'] == 'insert') && $_SESSION['Sgroupe'] > UserLevel::SUPERADMIN) {
 		HtmlShrink::msgErreur("Vous n'avez pas le droit d'ajouter une personne");
 		exit;
 	}
-	elseif (($get['action'] == "update" || $get['action'] == "editer") && $_SESSION['SidPersonne'] != $get['idP'] && $_SESSION['Sgroupe'] > 1)
-	{
+	elseif (($get['action'] == "update" || $get['action'] == "editer") && $_SESSION['SidPersonne'] != $get['idP'] && $_SESSION['Sgroupe'] > UserLevel::SUPERADMIN) {
 		HtmlShrink::msgErreur("Vous n'avez pas le droit de modifier cette personne");
 		exit;
 	}
@@ -100,21 +98,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 	/*
 	 * Les non admin ne peuvent rendre admin quelqu'un
 	 */
-	if (!empty($champs['groupe']) && $_SESSION['Sgroupe'] > 1 && $champs['groupe'] == 1)
-	{
+	if (!empty($champs['groupe']) && $_SESSION['Sgroupe'] > UserLevel::SUPERADMIN && $champs['groupe'] == UserLevel::SUPERADMIN) {
 		$verif->setErreur("groupe", "Vous ne pouvez pas attribuer ce groupe");
-	}
-
-	/*
-	 * Modification du groupe, vérifie si le groupe envoyé existe et a bien un nom
-	 */
-	if (!empty($champs['groupe']))
-	{
-		if ($connector->getNumRows($connector->query("SELECT idGroupe FROM groupes
-		WHERE nom !='' AND idGroupe=".$connector->sanitize($champs['groupe']))) < 1)
-		{
-			$verif->setErreur("groupe", "Le groupe ".$champs['groupe']." n'est pas valable");
-		}
 	}
 
 	/*
@@ -122,8 +107,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 	 * Le mot de passe ancien doit être tapé
 	 */
 
-	if ($_SESSION['Sgroupe'] > 1)
-	{
+	if ($_SESSION['Sgroupe'] > UserLevel::SUPERADMIN) {
 		if ($get['action'] == "update" && (!empty($champs['newPass']) || !empty($champs['newPass2'])))
 		{
 			$verif->valider($champs['motdepasse'], "motdepasse", "texte", 6, 100, 1);
@@ -231,8 +215,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 			$champs['mot_de_passe'] = sha1($champs['gds'].sha1($champs['newPass']));
 		}
 
-		if ($_SESSION['Sgroupe'] > 1)
-		{
+		if ($_SESSION['Sgroupe'] > UserLevel::SUPERADMIN) {
 			$champs['groupe'] = $_SESSION['Sgroupe'];
 			$champs['pseudo'] = $_SESSION['user'];
 		}
@@ -468,8 +451,8 @@ if ($verif->nbErreurs() > 0)
     <!-- Pseudo* (text) -->
     <p>
         <label for="pseudo">Nom d'utilisateur*</label>
-        <?php if ($_SESSION['Sgroupe'] == 1)
-        {
+            <?php
+            if ($_SESSION['Sgroupe'] == UserLevel::SUPERADMIN) {
         ?>
         <input type="text" name="pseudo" id="pseudo" size="30" maxlength="80" value="<?php echo htmlentities($champs['pseudo']) ?>" required />
         <?php
@@ -493,8 +476,7 @@ if ($verif->nbErreurs() > 0)
 
     <!-- Groupe pour admin (select) -->
     <?php
-    if ($_SESSION['Sgroupe'] == 1)
-    {
+    if ($_SESSION['Sgroupe'] == UserLevel::SUPERADMIN) {
 
         echo "<p>
         <label for=\"groupe\">Groupe* :</label>
@@ -525,8 +507,8 @@ if ($verif->nbErreurs() > 0)
 <fieldset>
     <legend>Mot de passe</legend>
 
-    <?php if ($_SESSION['Sgroupe'] > 1 && ($get['action'] == 'editer' || $get['action'] == 'update'))
-    {
+        <?php
+        if ($_SESSION['Sgroupe'] > UserLevel::SUPERADMIN && ($get['action'] == 'editer' || $get['action'] == 'update')) {
     ?>
         <div class="guideForm">À remplir si vous souhaitez modifier votre mot de passe actuel</div>
         <p><label for="motdepasse">Actuel</label>
@@ -570,8 +552,7 @@ if ($verif->nbErreurs() > 0)
 </fieldset>
 
 <?php
-if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 8))
-{
+if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= UserLevel::ACTOR)) {
 ?>
 
 <!-- Affiliation (text) -->
@@ -611,8 +592,7 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 8))
 
     }
 
-    if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 6))
-    {
+    if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= UserLevel::AUTHOR)) {
     ?>
     <p>
     <label for="affiliation">Nom</label>
@@ -826,8 +806,7 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 8))
 
 <?php
 
-if ($_SESSION['Sgroupe'] == 1 && ($get['action'] == "editer" || $get['action'] == "update") && isset($get['idP']))
-{
+if ($_SESSION['Sgroupe'] == UserLevel::SUPERADMIN && ($get['action'] == "editer" || $get['action'] == "update") && isset($get['idP'])) {
 ?>
 <fieldset>
 <legend>Statut</legend>
