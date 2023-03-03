@@ -37,7 +37,7 @@ table#calendrier
 
 	border-spacing:0px;
 	border-collapse:collapse;
-	
+
 	/*width:180px;*/
 	width:100%; /* plus responsive qu'en px*/
 }
@@ -135,13 +135,18 @@ table#calendrier tr.semaine td a:hover, table#calendrier tr.semaine td a:active
 
 table#calendrier tr.semaine td.autre_mois a
 {
-color:#b0b0ff;
+    color:#d8d8f7;
 }
 
 
 table#calendrier td.sam, td.dim, td.ferie
 {
-background:#efefef;
+    background:#efefef;
+}
+
+table#calendrier td.past a
+{
+    color:#9f9ffb;
 }
 
 
@@ -202,7 +207,7 @@ ul#menu_calendrier li form input
 	border:1px solid gray;
 	font-size:1em;
 	padding:0.2em 0.2em;
-	
+
 }
 
 ul#menu_calendrier li form input.submit
@@ -218,7 +223,7 @@ ul#menu_calendrier li form input.submit
 
 @media screen and (-webkit-min-device-pixel-ratio:0)
 {
-	
+
 	ul#menu_calendrier li form input.submit
 	{
 		padding: 0.4em 0.3em 0.2em 0.3em;

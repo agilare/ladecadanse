@@ -7,6 +7,11 @@
 - [x] user levels usage
 - [x] date functions to avoid notices
 
+### Added
+
+- in calendar, past days half transparent
+- evenement : `<time>` on event date
+
 ### Changed
 
 - [ ] refactor

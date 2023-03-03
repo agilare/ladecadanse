@@ -184,8 +184,9 @@ while ($tab_even = $connector->fetchArray($req_even))
         echo ' class="ancien"';
     } ?>>
 
-            <span class="category"><?php echo ucfirst(Evenement::nom_genre($even->getValue('genre'))); ?></span>, <?php echo '<a href="/evenement-agenda.php?courant='.$even->getValue('dateEvenement').'">'.date_fr($even->getValue('dateEvenement'), "annee", "", "", false).'</a>';
- ?>
+            <span class="category">
+                <?php echo ucfirst(Evenement::nom_genre($even->getValue('genre'))); ?></span>, <?php echo '<a href="/evenement-agenda.php?courant=' . $even->getValue('dateEvenement') . '"><time datetime="' . $even->getValue('dateEvenement') . '">' . date_fr($even->getValue('dateEvenement'), "annee", "", "", false) . '</time></a>';
+                ?>
 </h2>
 		<div class="entete_contenu_navigation">
             <?php

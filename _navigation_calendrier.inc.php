@@ -133,8 +133,7 @@ $mois_suiv = date("Y-m-d", mktime(0, 0, 0, $mois_courant + 1, $jour_mois_suiv, $
             }
 
             if (Date("w", mktime(0, 0, 0, $mois_courant, $pas, $annee_courant)) == 6 || Date("w", mktime(0, 0, 0, $mois_courant, $pas, $annee_courant)) == 0) {
-            if ($classe != '')
-				{
+            if ($classe != '') {
 					$classe .= ' sam';
 				}
 				else
@@ -143,12 +142,24 @@ $mois_suiv = date("Y-m-d", mktime(0, 0, 0, $mois_courant + 1, $jour_mois_suiv, $
 				}
 				//echo Date("w", mktime(0, 0, 0, $mois_courant, $pas, $annee_courant));
 			}
-			if ($classe != '')
+
+        if (date("Y-m-d", mktime(0, 0, 0, $mois_courant, $pas, $annee_courant)) < date("Y-m-d")) {
+            if ($classe != '') {
+                $classe .= ' past';
+            }
+            else {
+                $classe .= ' class="past';
+            }
+        }
+
+        if ($classe != '')
 			{
 				$classe .= '"';
 			}
 
-			if (date("Y-m-d", mktime(0, 0, 0, $mois_courant, $pas, $annee_courant)) == date("Y-m-d", mktime(0, 0, 0, $mois_courant, $jour_courant, $annee_courant)) && $get['sem'] != 1) {
+
+
+        if (date("Y-m-d", mktime(0, 0, 0, $mois_courant, $pas, $annee_courant)) == date("Y-m-d", mktime(0, 0, 0, $mois_courant, $jour_courant, $annee_courant)) && $get['sem'] != 1) {
 				$classe .= ' id="cal_ici"';
             }
 
