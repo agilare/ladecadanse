@@ -2,15 +2,6 @@
 
 ## [Unreleased]
 
-### Fixed
-
-- [x] user levels usage
-- [x] date functions to avoid notices
-
-### Added
-
-- in calendar, past days half transparent
-- evenement : `<time>` on event date
 
 ### Changed
 
@@ -20,6 +11,19 @@
 
 - [ ] usage of globals
 
+
+## [3.4.1] - 2023-03-03
+
+### Fixed
+
+- agenda : event categories title weren't displayed in the list
+- user levels usage
+- date functions to avoid notices
+
+### Added
+
+- in calendar, past days half transparent
+- evenement : `<time>` on event date
 
 ### Security
 

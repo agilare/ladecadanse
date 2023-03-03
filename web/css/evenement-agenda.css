@@ -107,10 +107,10 @@ ul#calendrier_menu
 #evenements .genre-titre
 {
     margin:0.8em 0 0 0;
-    padding:0em 0;
+    padding: 0.5em 0.4em;
     background-color:#ffdd44;
     width:100%;
-
+    border-radius: 3px 3px 0 0;
 }
 
 #evenements h4

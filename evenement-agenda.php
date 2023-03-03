@@ -336,11 +336,13 @@ if ($get['sem'])
 			if ($genre_courant != '')
 			{
 				echo "</div>";
-			}
-			?>
+                }
+                ?>
 
 			<div class="spacer"></div>
             <div class="genre">
+                            <h4 class="genre-titre"><?php echo ucfirst($glo_tab_genre[$listeEven['genre']]); ?></h4>
+                            <div class="spacer"></div>
                             <?php
 		}
 
