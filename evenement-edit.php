@@ -641,15 +641,11 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
                         $contenu_message .= "\n\n";
                         $contenu_message .= "La décadanse";
 
-                        $confirmation_flash_msg = " Un email de confirmation a été envoyé à ".$champs['user_email'];
-                    }
-                    else if ($champs['statut'] == 'inactif')
-                    {
-                        // refus...
-                    }
+                        $confirmation_flash_msg = " Un email de confirmation a été envoyé à " . $champs['user_email'];
 
-                    $mailer = new Mailing();
-                    $mailer->toUser($champs['user_email'], $subject, $contenu_message);
+                        $mailer = new Mailing();
+                        $mailer->toUser($champs['user_email'], $subject, $contenu_message);
+                    }
                 }
 
                 $_SESSION['evenement-edit_flash_msg'] = "L'événement a été modifié.$confirmation_flash_msg<br><a href='/evenement-agenda.php?courant=".$champs['dateEvenement']."#event-".$req_id."'>Voir dans l'agenda</a>";
