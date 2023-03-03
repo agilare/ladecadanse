@@ -224,11 +224,14 @@ function date_app2iso($date)
     {
         return $date;
     }
-    else
-    {
-        $tab_date = explode(".", $date);
-        return $tab_date[2] . "-" . $tab_date[1] . "-" . $tab_date[0];
+
+    $tab_date = explode(".", $date);
+
+    if (count($tab_date) < 3) {
+        return '';
     }
+
+    return $tab_date[2] . "-" . $tab_date[1] . "-" . $tab_date[0];
 }
 
 function date_iso2time($date)
@@ -285,6 +288,11 @@ function date_iso2lundim($date)
 function date_lendemain($date)
 {
     $tab_date = explode("-", $date);
+
+    if (count($tab_date) < 3) {
+        return $date;
+    }
+
     return date('Y-m-d', mktime(0, 0, 0, $tab_date[1], $tab_date[2] + 1, $tab_date[0])); // $annee."-".$mois."-".$annee;
 }
 

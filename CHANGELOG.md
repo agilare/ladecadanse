@@ -2,9 +2,24 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- [x] user levels usage
+- [x] date functions to avoid notices
+
+### Changed
+
+- [ ] refactor
+
 ### Removed
 
 - [ ] usage of globals
+
+
+### Security
+
+- [x] restored honeypot in evenement-report
+
 
 ## [3.4.0] - 2023-02-27
 

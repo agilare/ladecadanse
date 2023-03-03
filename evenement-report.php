@@ -47,7 +47,12 @@ include("_header.inc.php");
 
     if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
     {
-        foreach ($champs as $c => $v)
+
+    if (!empty($_POST['name'])) {
+        exit;
+    }
+
+    foreach ($champs as $c => $v)
         {
             $champs[$c] = $_POST[$c];
         }
@@ -174,8 +179,8 @@ include("_header.inc.php");
                 ?>
                 <p>
                     <label for="email" id="label_email">Votre e-mail</label>
-                    <input name="email" id="email" type="text" size="40" value="<?php echo sanitizeForHtml($champs['email']) ?>"  />
-                <?php echo $verif->getErreur("email"); ?>
+                            <input name="email" id="email" type="email" size="40" value="<?php echo sanitizeForHtml($champs['email']) ?>"  />
+                            <?php echo $verif->getErreur("email"); ?>
                 </p>
                 <?php
             }
@@ -188,9 +193,9 @@ include("_header.inc.php");
             ?>
 
             <div class="mr_as">
-                <label for="mr_as">ne pas remplir ce champ</label>
-                <input type="text" id="mr_as" name="name">
-            </div>
+                <label for="name_as">nom</label>
+                    <input type="text" id="name_as" name="name">
+                </div>
 
             <p class="piedForm">
                 <input type="hidden" name="formulaire" value="ok" />

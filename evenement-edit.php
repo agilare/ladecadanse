@@ -244,8 +244,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
         $lendemain_evenement = date_lendemain($date_iso);
 
 		$tab_date = explode('.', $champs['dateEvenement']);
-		if (!checkdate($tab_date[1], $tab_date[0], $tab_date[2]))
-		{
+		if (!checkdate((int) $tab_date[1], (int) $tab_date[0], (int) $tab_date[2])) {
 			$verif->setErreur('dateEvenement', "La date n'est pas correcte");
 		}
 	}
