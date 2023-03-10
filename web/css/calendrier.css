@@ -118,7 +118,8 @@ table#calendrier tr.semaine td a
     display: block;
     height: 15px;
     padding: 5px 0;
-/*     width: 20px; */
+    color: #0934DD;
+    /*     width: 20px; */
 }
 
 table#calendrier tr#mois th a

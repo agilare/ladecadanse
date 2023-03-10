@@ -960,7 +960,7 @@ if ($verif->nbErreurs() > 0)
 
             <label for="horaire_fin" class="continu">Fin</label>
             <input type="time" name="horaire_fin" id="horaire_fin" size="5" value="<?php echo sanitizeForHtml($champs['horaire_fin']) ?>" />
-
+        <div class="guideChamp">Mettez si possible l'heure de fin, pour un meilleur fonctionnement de l'agenda</div>
             <?php
             echo $verif->getHtmlErreur('horaire_debut');
             echo $verif->getHtmlErreur('horaire_fin');
@@ -1045,8 +1045,8 @@ if ($verif->nbErreurs() > 0)
         ?>
         </p>
 
-        <p class="entreLabels" style="width:auto;font-size: 1em;"><strong>Sinon :</strong></p>
-        <div class="spacer"></div>
+            <p class="entreLabels" style="width:auto;font-size: 1em;"><strong>Si le lieu n'est pas sur La décadanse :</strong></p>
+            <div class="spacer"></div>
         <div style="margin-left:4.5em">
         <p>
         <?php
@@ -1251,7 +1251,7 @@ if ($verif->nbErreurs() > 0)
         }
         ?>
         </select>
-        <div class="guideChamp">L’événement figurera dans la page de ces <a href="/organisateurs.php" target="_blank">organisateurs</a>. Si vous souhaitez que votre organisation soit listée, <a href="/contacteznous.php" target='_blank'>demandez-nous</a></div>
+            <div class="guideChamp">L’événement figurera dans la page de ces <a href="/organisateurs.php" target="_blank">organisateurs</a>. Si vous souhaitez que votre organisation soit listée, <a href="/contacteznous.php" target='_blank'>demandez-nous</a> (avec des infos : texte, liens...)</div>
         </p>
     </fieldset>
 

@@ -18,8 +18,9 @@ form#ajouter_editer
 
 		form#ajouter_editer fieldset legend
 		{
-			font-weight:bold;
-			padding-left:0.8em;
+            font-weight:bold;
+            font-size:1.1em;
+            padding-left:0.8em;
 		}
 
 	form#ajouter_editer p
@@ -30,8 +31,8 @@ form#ajouter_editer
 
 
 
-form#ajouter_editer label 
-{ 
+form#ajouter_editer label
+{
 	text-align: right;
 	width: 8em;
 	margin:0.3em 0.3em 0 0;
@@ -43,13 +44,13 @@ form#ajouter_editer label
 		float:none;
 		margin: 3px 3px 0 0;
 	}
-	
+
 form#ajouter_editer label.large {
     margin: 0.3em 0.3em 0 0;
     padding: 0 0 0 0.4em;
     text-align: right;
     width: 16em;
-}	
+}
 
 form#ajouter_editer input
 {
@@ -80,12 +81,12 @@ form#ajouter_editer optgroup
 
 form#ajouter_editer input:focus
 {
-    background-color:#ffc; 
+    background-color:#ffc;
 }
 
 form#ajouter_editer select:focus
 {
-    background-color:#ffc; 
+    background-color:#ffc;
 }
 
 form#ajouter_editer  ul.radio
@@ -193,7 +194,7 @@ form#ajouter_editer  table
 
 form#ajouter_editer label h2
 {
-    
+
 }
 
 form#ajouter_editer .clearfix
@@ -225,8 +226,8 @@ form#ajouter_editer .guideChamp
 {
 	font-style: italic;
 	margin:0.4em 0 0.8em 0;
-	font-size:0.85em;
-	padding:0em 0 0.2em 120px;
+    font-size:0.9em;
+    padding:0em 0 0.2em 120px;
 	line-height:1.2em;
 }
 
@@ -256,7 +257,7 @@ form#ajouter_editer input.submit
 
 form#ajouter_editer .submit-big
 {
-    padding: 0.5em 0.7em;
+    padding: 0.6em 0.8em;
     font-size: 1.1em;
 }
 
@@ -300,7 +301,7 @@ form#ajouter_editer .complete
         margin-left:115px;
 	}
 
-		form .supImg img 
+		form .supImg img
 		{
 			border:1px solid gray;
             border-radius:3px;
@@ -369,7 +370,7 @@ font-family:Georgia;
     width: 95%;
     border-collapse: collapse;
     color: #5C7378;
-    background: #F7F7F5;   
+    background: #F7F7F5;
 }
 
 .table tr{
@@ -384,7 +385,7 @@ font-family:Georgia;
 
 .table td
 {
-   
+
     padding: 0.5em;
     font-size: 1em;
     line-height: 1.3em;
@@ -402,7 +403,7 @@ font-family:Georgia;
 	background-image:url(../web/interface/icons/tick.png);
 	background-repeat:no-repeat;
 	background-position: 15px 17px;
-	line-height:1.3em;    
+	line-height:1.3em;
 }
 
 .readonly
