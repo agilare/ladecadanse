@@ -288,5 +288,5 @@ use Ladecadanse\UserLevel;
         <div class="spacer"><!-- --></div>
 
         <!-- Début Conteneur -->
-        <div id="conteneur" <?php if (strstr(dirname($_SERVER['PHP_SELF']), 'admin')) { ?>style="padding-right: 0" <?php } ?> >
+        <div id="conteneur" <?php if (strstr(dirname($_SERVER['PHP_SELF']), 'admin') || $nom_page == 'evenement-edit') { ?>style="padding-right: 5px" <?php } ?> >
 

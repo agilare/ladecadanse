@@ -934,51 +934,54 @@ if ($verif->nbErreurs() > 0)
     <fieldset>
         <legend>Date & horaire</legend>
 
-        <div>
-            <label for="dateEvenement">Date*</label><input type="text" name="dateEvenement" id="dateEvenement" size="9" value="<?php echo sanitizeForHtml($champs['dateEvenement']); ?>" class="datepicker" placeholder="jj.mm.aaaa" required />
-        <?php
-        echo $verif->getHtmlErreur('dateEvenement');
-        ?>
-        </div>
-        <div id="calendarDiv"></div>
+            <div style="display: inline-block;">
+                <label for="dateEvenement">Date*</label><input type="text" name="dateEvenement" id="dateEvenement" size="9" value="<?php echo sanitizeForHtml($champs['dateEvenement']); ?>" class="datepicker" placeholder="jj.mm.aaaa" required />
+                    <?php
+                    echo $verif->getHtmlErreur('dateEvenement');
+                    ?><div id="calendarDiv"></div>
+                </div>
 
-        <?php if (in_array($get['action'], ["ajouter", "insert"])) { ?>
 
-        <div class="guideChamp">
-            <?php if (isset($_SESSION['Sgroupe'])) { ?>
-            Si l’événement se répète sur plusieurs dates, vous pouvez l’ajouter à d'autres dates avec le bouton <b>Copier</b>, à la page suivante
-            <?php } else { ?>
-            Si l’événement se répète sur plusieurs dates, merci de nous indiquer précisément les jours et horaires dans le <a href="#remarque">champ Remarque</a> ci-dessous.
-            <?php } ?>
-        </div>
-            <div class="spacer"></div>
-        <?php } ?>
 
-        <p>
-            <label for="horaire_debut"><span class="tooltip">Début<span class="tooltiptext">Jusqu’à 06:00, le début sera considéré faisant partie du jour de l’événement</span></span> </label>
-            <input type="time" name="horaire_debut" id="horaire_debut" size="5" value="<?php echo sanitizeForHtml($champs['horaire_debut']) ?>" />
 
-            <label for="horaire_fin" class="continu">Fin</label>
-            <input type="time" name="horaire_fin" id="horaire_fin" size="5" value="<?php echo sanitizeForHtml($champs['horaire_fin']) ?>" />
-        <div class="guideChamp">Mettez si possible l'heure de fin, pour un meilleur fonctionnement de l'agenda</div>
-            <?php
-            echo $verif->getHtmlErreur('horaire_debut');
-            echo $verif->getHtmlErreur('horaire_fin');
-            ?>
+        <p style="display: inline-block;width:50%;margin:5px 0">
+                <label for="horaire_debut" style="width:6em"><span class="tooltip">Début<span class="tooltiptext">Jusqu’à 06:00, le début sera considéré faisant partie du jour de l’événement</span></span> </label>
+                    <input type="time" name="horaire_debut" id="horaire_debut" size="5" value="<?php echo sanitizeForHtml($champs['horaire_debut']) ?>" />
+
+                    <label for="horaire_fin" class="continu">Fin</label>
+                        <input type="time" name="horaire_fin" id="horaire_fin" size="5" value="<?php echo sanitizeForHtml($champs['horaire_fin']) ?>" />
+
+                            <?php
+                echo $verif->getHtmlErreur('horaire_debut');
+                    echo $verif->getHtmlErreur('horaire_fin');
+                    ?>
         </p>
+            <div class="guideChamp" style="margin-top:0">Mettez si possible l'heure de fin, pour un meilleur fonctionnement de l'agenda</div>
+            <?php if (in_array($get['action'], ["ajouter", "insert"])) { ?>
 
-        <div>
-            <label for="horaire_complement">Complément</label>
-            <input type="text" name="horaire_complement" id="horaire_complement" size="40" maxlength="100" value="<?php echo sanitizeForHtml($champs['horaire_complement']) ?>" />
-            <?php
+            <div class="guideChamp" style="margin-top:-0.2em">
+                        <?php if (isset($_SESSION['Sgroupe'])) { ?>
+                        Si l’événement se répète sur plusieurs dates, vous pouvez l’ajouter à d'autres dates avec le bouton <b>Copier</b>, à la page suivante
+                    <?php }
+                    else { ?>
+                        Si l’événement se répète sur plusieurs dates, merci de nous indiquer précisément les jours et horaires dans le <a href="#remarque">champ Remarque</a> ci-dessous.
+        <?php } ?>
+                </div>
+                <div class="spacer"></div>
+    <?php } ?>
+
+                    <div style="margin-top:1.3em">
+                        <label for="horaire_complement">Complément</label>
+                            <input type="text" name="horaire_complement" id="horaire_complement" size="45" maxlength="100" value="<?php echo sanitizeForHtml($champs['horaire_complement']) ?>" />
+                            <?php
             echo $verif->getHtmlErreur('horaire_complement');
             ?>
         </div>
-        <p>
-        <?php
+
+                    <?php
         echo $verif->getHtmlErreur('horaire');
-        ?></p>
-    </fieldset>
+        ?>
+        </fieldset>
 
     <fieldset>
         <legend>Lieu*</legend>
@@ -1281,8 +1284,8 @@ if ($verif->nbErreurs() > 0)
                 ) { ?> style="display:block" <?php } ?>>
             <p>
                 <label for="prix">Prix</label>
-                            <input type="text" name="prix" id="prix" size="50" maxlength="100" value="<?php echo sanitizeForHtml($champs['prix']) ?>" />
-                <?php
+                <input type="text" name="prix" id="prix" size="55" maxlength="100" value="<?php echo sanitizeForHtml($champs['prix']) ?>" />
+                    <?php
                 echo $verif->getHtmlErreur('prix');
                 ?>
             </p>
@@ -1291,8 +1294,8 @@ if ($verif->nbErreurs() > 0)
             <?php } ?>
             <p>
                 <label for="prelocations">Prélocations</label>
-                            <input type="text" name="prelocations" id="prelocations" size="50" maxlength="150" value="<?php echo sanitizeForHtml($champs['prelocations']) ?>" />
-                <?php
+                    <input type="text" name="prelocations" id="prelocations" size="65" maxlength="150" value="<?php echo sanitizeForHtml($champs['prelocations']) ?>" />
+                    <?php
                 echo $verif->getHtmlErreur('prelocations');
                 ?>
             </p>

@@ -2,12 +2,20 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- evenement
+    - in calendar, event's date (instead of today)
+    - handle if img not found
+
 ### Added
 
-- events : in edit form, more help texts for better data entered
+- events : in edit form, larger width and inputs, more help texts for better data entered
+- TESTS.md v1
 
 ### Changed
 
+- darken `a:visited`
 - [ ] refactor
     - [ ] get genre, tri_agenda params to session
 
