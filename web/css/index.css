@@ -71,7 +71,7 @@ margin:0.2em 0 1em 0;
 }
 
 .dernier_evenement h4 a:visited {
-    color:#105199; /*  #104d91*/
+ color:#0f4786; /* #105199  #104d91*/
 }
 
 .dernier_evenement h5
@@ -202,7 +202,7 @@ border-bottom:1px solid black;
 	}
 
         .evenement .titre .left a:visited {
-        color:#105199; /*  #104d91*/
+            color:#0f4786; /* #105199 #104d91*/
        }
 
 

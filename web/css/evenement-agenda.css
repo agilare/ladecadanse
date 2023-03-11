@@ -264,7 +264,7 @@ ul#calendrier_menu
 }
 
 .evenement .titre .left a:visited {
- color:#105199; /*  #104d91*/
+ color:#0f4786; /* #105199  #104d91*/
 }
 
 .evenement .event-contenu
@@ -506,7 +506,7 @@ table#evenements_s
 }
 
 #evenements_s tr td h2.titre a:visited {
-    color:#105199; /*  #104d91*/
+    color:#0f4786; /* #105199  #104d91*/
 }
 
 #evenements_s tr td.action

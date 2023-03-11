@@ -391,7 +391,7 @@ $adresse = htmlspecialchars(HtmlShrink::getAdressFitted($listeLieu['region'], $l
 						$imgInfo = @getimagesize($rep_images_even.$even->getValue('flyer'));
 
 						 $img_width = 140;
-						if ($imgInfo[0] >= 140) {
+						if ($imgInfo && $imgInfo[0] >= 140) {
                                 $img_width = 160;
                             }
 
@@ -411,7 +411,7 @@ $adresse = htmlspecialchars(HtmlShrink::getAdressFitted($listeLieu['region'], $l
 						$imgInfo = @getimagesize($rep_images_even.$even->getValue('image'));
 
 						$img_width = 140;
-                            if ($imgInfo[0] >= 140) {
+                            if ($imgInfo && $imgInfo[0] >= 140) {
                                 $img_width = 160;
                             }
                             ?>
@@ -431,7 +431,7 @@ $adresse = htmlspecialchars(HtmlShrink::getAdressFitted($listeLieu['region'], $l
                         //photo si existe, avec pop up
                         if ($even->getValue('image') != '' && !$image_pour_flyer) {
                             $img_width = 140;
-                            if ($imgInfo[0] >= 140) {
+                            if ($imgInfo && $imgInfo[0] >= 140) {
                                 $img_width = 160;
                             }
                             ?>
@@ -650,13 +650,7 @@ $req_auteur = $connector->query($sql_auteur);
 <div id="colonne_gauche" class="colonne">
 
     <?php
-    // force current event genre to calendar urls ?
-
-    $tab_even = $connector->fetchArray($req_even);
-
-    if (!empty($tab_even)) {
-        $get['genre'] = $tab_even['genre'];
-    }
+    $get['courant'] = $even->getValue('dateEvenement');
     include("_navigation_calendrier.inc.php");
     ?>
 
