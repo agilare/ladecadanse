@@ -2,7 +2,6 @@ parameters:
     paths:
         - .
     excludePaths:
-        - images
         - web
         - vendor
         - var

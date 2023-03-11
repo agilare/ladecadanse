@@ -2,10 +2,14 @@
 
 ## [Unreleased]
 
+### Added
+
+- events : in edit form, more help texts for better data entered
 
 ### Changed
 
 - [ ] refactor
+    - [ ] get genre, tri_agenda params to session
 
 ### Removed
 
