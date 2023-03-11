@@ -5,70 +5,219 @@
 ### Global
 
 - main menu
+    - agenda
+    - lieux
+    - organisateurs
+    - search
+
 - secondary menu
+    - contact
+    - à propos
+    - annoncer
+    - inscription
+    - log in
+
 - calendar
 
+#### Logged in
+
+- add event
+- user (my account)
+- logout
+- admin
+
+
 ### Home
+
+- today
+    - filter : region
+    - rss
+    - event
+    - lieu
+    - lightbox
+    - organisateur(s)
+    - report
+    - ical
+    - prev/next category
+
+- derniers événements
+    - rss
+    - event
+    - lightbox
+    - lieu
+    - date
+
+partenaires
+
+#### Logged in
+
+- event
+    - copy, edit, unpublish, author
 
 
 ### Events
 
 - agenda
+    - filter
+        - date
+            - calendar
+                - pick
+                - write
+                - month : prev, next
+                - week       
+            - prev, next (day, week)
+        - region
+        - category
+        - page
+    - lightbox image
+    - event
+    - lieu
+    - report
+    - ical
 
 - event
+    - ical
+    - lieu
+        - map
+    - lightboxes
+    - organisateur(s)
+    - report
+        - submit : 
+            - success msg
+            - mail to admin with type, URL, email author
+    - prev, next
 
 - announce
     - submit : mail with URL, author email, message
     - accept submit
         - mail with URL
-- report
-    - submit : mail to admin with type, URL, email author
 
-- send
-    - submit : mail to recipient
+- search
+    - nb results
+    - filter
+    - sort
+    - event, lieu, date
 
-### Venues
+#### logged in
 
-- venues menu
-- add
+- home, agenda, event
+    - edit (and process announce)
+    - copy
+    - unpublish
+    - author
+    - send
+
+
+### Lieux
 - latests
+- menu
+    - filter
+        - current, old
+        - A-Z, Type
+        - ak, lz, all
+    - lieu
 
-#### Venue
+#### Logged in
+- add
+
+#### Lieu
+
+- organizer(s)
+- lightboxes
+- map
+- description/presentation
+- events
+    - rss
+    - filter
+    - event
+
+#### Logged in
 
 - edit
 - add event
-- add/remove favorite
 - add room
 - add/edit description/presentation
 
-### Organizers
 
-- organizers menu
-- add
+### Organizers
 - latests
-- add/edit description
+- menu
+    - filter
+        - ak, lz, all
 
 #### Organizer
 
+- lightboxes
+- presentation
+- events
+    - rss
+    - filter
+    - event
+
+#### Logged in
+
+- add
 - edit
+- add/edit description
+
 
 ### Users
 
 - register
+    - success msg
     - mail to user
+
 - login
     - password reset
+        - success msg
         - mail to user
         - reset
     - rememberme
     - link to register
+
+#### Logged in
+
 - profile
-    - elements added
     - edit
-logout
+    - elements added
+         - menu 
+            - events
+            - lieux
+            - organisateurs
+            - texts
+        - list
+            - page
+            - nb items
+            - sort
+     
+- logout
 
 ### Contact
 
-- submit : mail to admin with prénom, nom, sujet, contenu
+- submit :
+    - success msg
+    - mail to admin with prénom, nom, sujet, contenu
 
-## Back
+
+## Back-office (admin/)
+
+### Dashboard
+
+- latest registrations
+- latest events
+- latest texts
+
+### Elements
+    - events
+        - filters
+            - category
+            - title
+            - page
+            - nb items
+            - sort
+        - list
+            - select
+        - replace form...
+    - lieux...
+    - organisateurs...
+    - users...
