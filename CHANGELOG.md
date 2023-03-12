@@ -2,6 +2,18 @@
 
 ## [Unreleased]
 
+### Changed
+
+- [ ] refactor
+    - [ ] get genre, tri_agenda params to session
+
+### Removed
+
+- [ ] usage of globals
+
+
+## [3.4.2] - 2023-03-12
+
 ### Fixed
 
 - evenement
@@ -10,18 +22,12 @@
 
 ### Added
 
-- events : in edit form, larger width and inputs, more help texts for better data entered
 - TESTS.md v1
 
 ### Changed
 
+- events : in edit form, larger width and inputs, more help texts for better data entered
 - darken `a:visited`
-- [ ] refactor
-    - [ ] get genre, tri_agenda params to session
-
-### Removed
-
-- [ ] usage of globals
 
 
 ## [3.4.1] - 2023-03-03
