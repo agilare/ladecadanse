@@ -53,8 +53,7 @@ if ($get['action'] == 'delete' && !empty($get['id']))
 
 if ($get['action'] == 'unpublish' && !empty($get['id']))
 {
-    $req_im = $connector->query("SELECT titre, flyer, image, idLieu, genre, dateEvenement
-    FROM evenement WHERE idEvenement=".$get['id']);
+    $req_im = $connector->query("SELECT titre, flyer, image, idLieu, genre, dateEvenement, idPersonne FROM evenement WHERE idEvenement=" . $get['id']);
 
     $val_even = $connector->fetchArray($req_im);
 
