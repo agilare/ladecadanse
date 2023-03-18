@@ -257,9 +257,9 @@ if ($get['sem'])
 
 	if ($nb_evenements == 0)
 	{
-	  	echo HtmlShrink::msgInfo("Pas d'événements", "p");
-	}
-	else
+	  	HtmlShrink::msgInfo("Pas d'événements", "p");
+    }
+else
 	{
 		$dateCourante = '';
 		$genre_courant = '';

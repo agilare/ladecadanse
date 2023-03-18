@@ -150,10 +150,9 @@ class Validateur
      * @param string Texte à vérifier
      * @param int $min Taille minimale que le texte doit avoir
      * @param int $max Taille maximale que le texte doit avoir
-     * @return boolean Validation réussie ou non
      * @access public
      */
-    function validerLongueurTexte($nom, $theInput, $min = 0, $max = 20)
+    function validerLongueurTexte($nom, $theInput, $min = 0, $max = 20): bool
     {
         $theInput = trim($theInput);
 
@@ -171,6 +170,8 @@ class Validateur
             $this->erreurs[$nom] = "Le texte est trop long : " . mb_strlen($theInput) . ", max " . $max . " characters";
             return false;
         }
+
+        return false;
     }
 
     /**

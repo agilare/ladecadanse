@@ -86,8 +86,8 @@ FROM evenement WHERE region IN ('" . $connector->sanitize($_SESSION['region']) .
         <?php
 
         if ($event_count[$_SESSION['region']] == 0) {
-            echo HtmlShrink::msgInfo("Pas d’événement prévu aujourd’hui");
-        }
+            HtmlShrink::msgInfo("Pas d’événement prévu aujourd’hui");
+}
 
         $dateCourante = ' ';
 

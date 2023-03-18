@@ -121,7 +121,7 @@ class OrganisateurEdition extends Edition
         return false;
     }
 
-    function loadValeurs(int $id): bool
+    function loadValeurs(int $id): void
     {
         $organisateur = new Organisateur();
         $organisateur->setId($id);
@@ -313,17 +313,6 @@ class OrganisateurEdition extends Edition
 
     }
 
-    //abstract
-
-    function Additional()
-    {
-        if ($this->wizardPage) :
-            ?>
-            <input type="Hidden" name="wizardPage" value="<?php echo $this->wizardPage ?>">
-        <?php
-        endif;
-    }
-
     function Set($Name, $Value)
     {
         $this->$Name = $Value;
@@ -346,12 +335,6 @@ class OrganisateurEdition extends Edition
         {
             return '<div class="msg">' . $this->erreurs[$champ] . '</div>';
         }
-    }
-
-    function ErrorReport($Name)
-    {
-        if (isset($this->Errors[$Name]))
-            printf($this->ErrorMessageFormat, $this->Errors[$Name]);
     }
 
     function GetInitialValue($Name)

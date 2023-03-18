@@ -2,6 +2,16 @@
 
 ## [Unreleased]
 
+- [ ] refactor
+    - [ ] get genre, tri_agenda params to session
+
+### Removed
+
+- [ ] usage of globals
+
+
+## [3.4.3] - 2023-03-21
+
 ### Fixed
 
 - home : mobile left col was unusable
@@ -9,16 +19,9 @@
 - evenement : in edit ref, prelocations length validation
 - lieux : header
 
-
 ### Changed
 
 - [ ] TESTS v1.1
-- [ ] refactor
-    - [ ] get genre, tri_agenda params to session
-
-### Removed
-
-- [ ] usage of globals
 
 
 ## [3.4.2] - 2023-03-12

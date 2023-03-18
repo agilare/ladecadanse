@@ -6,6 +6,7 @@ use Ladecadanse\Edition;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Lieu;
 use Ladecadanse\Utils\ImageDriver2;
+use Ladecadanse\Utils\Text;
 use Ladecadanse\Document;
 use Ladecadanse\HtmlShrink;
 
@@ -105,11 +106,6 @@ class LieuEdition extends Edition
         {
             return false;
         }
-    }
-
-    function IsCompleted(): bool
-    {
-        return (!$this->FirstTime && count($this->Errors) <= 0);
     }
 
     function verification(): bool
@@ -410,7 +406,7 @@ class LieuEdition extends Edition
 
             $sql_insert = "INSERT INTO fichierrecu (idElement, type_element, description, mime, extension, type, dateAjout)
 			VALUES ('" . $lieu->getId() . "', 'lieu',
-			'" . $this->connector->sanitize($this->document_description) . "',
+			'',
 			'" . $this->connector->sanitize($this->fichiers['document']['type']) . "',
 			'" . $this->connector->sanitize(mb_substr($extension, 1)) . "', 'image', '" . date("Y-m-d H:i:s") . "')";
 
@@ -475,17 +471,6 @@ class LieuEdition extends Edition
         $this->valeurs = $champs;
     }
 
-    //abstract
-
-    function Additional()
-    {
-        if ($this->wizardPage) :
-            ?>
-            <input type="Hidden" name="wizardPage" value="<?php echo $this->wizardPage ?>">
-        <?php
-        endif;
-    }
-
     function Set($Name, $Value): void
     {
         $this->$Name = $Value;
@@ -509,12 +494,6 @@ class LieuEdition extends Edition
         {
             return '<div class="msg">' . $this->erreurs[$champ] . '</div>';
         }
-    }
-
-    function ErrorReport($Name)
-    {
-        if (isset($this->Errors[$Name]))
-            printf($this->ErrorMessageFormat, $this->Errors[$Name]);
     }
 
     function GetInitialValue($Name)

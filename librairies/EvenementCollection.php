@@ -79,7 +79,7 @@ class EvenementCollection extends Collection
 
     public static function deleteEvenement(int $get_idE): void
     {
-
+        global $authorization;
         global $connector;
         global $rep_images_even;
 

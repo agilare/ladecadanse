@@ -69,7 +69,7 @@ namespace Ladecadanse;
 
     }
 
-	function loadValeurs(int $id)
+	function loadValeurs(int $id): void
     {
 
 
@@ -83,13 +83,6 @@ namespace Ladecadanse;
 
     function NextWizardPage() {}
     //abstract
-
-    function Additional() {
-      if ($this->wizardPage) :
-    ?>
-    <input type="Hidden" name="wizardPage" value="<?php echo $this->wizardPage?>">
-    <?php endif;
-    }
 
     function Set($Name, $Value) {
       $this->$Name = $Value;
@@ -114,11 +107,6 @@ namespace Ladecadanse;
     	{
     		return '<div class="msg">'.$this->erreurs[$champ].'</div>';
     	}
-    }
-
-    function ErrorReport($Name) {
-      if (isset($this->Errors[$Name]))
-        printf($this->ErrorMessageFormat, $this->Errors[$Name]);
     }
 
     function GetInitialValue($Name) {
