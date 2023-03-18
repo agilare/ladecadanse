@@ -331,7 +331,7 @@ FROM evenement WHERE region IN ('" . $connector->sanitize($_SESSION['region']) .
         </ul>
 
         <h2 style="margin-top:15px;">Partenaires</h2>
-        <ul style="padding-left:5px">
+        <ul style="list-style-type: none;padding-left:5px">
             <li style="margin:2px 0;float:left;"><a href="https://www.darksite.ch/olive/oliveblog/" target="_blank"><img src="/web/interface/debout-les-braves.jpg" alt="Debout les braves - Visions de la scène genevoise et d'ailleurs" title="Debout les braves - Visions de la scène genevoise et d'ailleurs" width="150" style="border:1px solid #eaeaea" /></a></li>
             <li style="margin:2px 0;float:left;"><a href="https://culture-accessible.ch/" target="_blank"><img src="/web/interface/culture-accessible-geneve.svg" alt="Culture accessible Genève" width="150" style="border:1px solid #eaeaea" /></a></li>
             <li style="margin:2px 0;float:left;"><a href="https://epic-magazine.ch/" target="_blank"><img src="/web/interface/EPIC_noir.png" alt="EPIC Magazine" width="150" style="border:1px solid #eaeaea" /></a></li>

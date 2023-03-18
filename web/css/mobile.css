@@ -13,7 +13,7 @@
 
 #conteneur > #colonne_gauche, #conteneur .colonne
 {
-	float:none;
+    /*	float:none;*/
 }
 
 #menu ul li

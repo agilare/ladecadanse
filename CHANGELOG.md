@@ -2,8 +2,16 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- home : mobile left col was unusable
+- evenement : unpublish auth
+- lieux : header
+
+
 ### Changed
 
+- [ ] TESTS v1.1
 - [ ] refactor
     - [ ] get genre, tri_agenda params to session
 
