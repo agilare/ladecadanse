@@ -250,6 +250,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 	}
 
 	$verif->valider($champs['description'], "description", "texte", 4, 10000, 0);
+	$verif->valider($champs['ref'], "ref", "texte", 1, 250, 0);
 
     if ($_SERVER["CONTENT_LENGTH"] > POST_MAX_SIZE)
     {
@@ -281,9 +282,9 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 
 	$verif->valider($champs['horaire_complement'], "horaire_complement", "texte", 1, 100, 0);
 	$verif->valider($champs['prix'], "prix", "texte", 1, 100, 0);
-	$verif->valider($champs['prelocations'], "prelocations", "texte", 1, 100, 0);
+	$verif->valider($champs['prelocations'], "prelocations", "texte", 1, 80, 0);
 
-	$doc_desc_oblig = 0;
+    $doc_desc_oblig = 0;
 
     if (!isset($_SESSION['Sgroupe']))
     {
@@ -1206,8 +1207,10 @@ if ($verif->nbErreurs() > 0)
             <input type="text" name="ref" id="ref" value="<?php echo sanitizeForHtml($champs['ref']); ?>" placeholder="URL1;URL2; etc." />
         </p>
         <div class="guideChamp">Site de l’événement, de l’organisateur (s’il n’est pas présent ci-dessous), de la page Facebook... Séparer chaque élément par un point-virgule.</div>
-
-        <div class="spacer"></div>
+            <?php
+            echo $verif->getHtmlErreur('ref');
+            ?>
+            <div class="spacer"></div>
 
         <?php
         $tab_organisateurs_even = array();

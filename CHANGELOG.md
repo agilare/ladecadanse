@@ -6,6 +6,7 @@
 
 - home : mobile left col was unusable
 - evenement : unpublish auth
+- evenement : in edit ref, prelocations length validation
 - lieux : header
 
 
