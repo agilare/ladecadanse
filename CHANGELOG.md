@@ -17,12 +17,12 @@
 - home : mobile left col was unusable
 - evenement : unpublish auth
 - evenement : in edit ref, prelocations length validation
-- lieux : header
+- lieux : header; in home, latests added only actives, logo size in mobile
 - readme : create admin sql
 
 ### Added
 
-- basic end to end tests kit for Selenium IDE
+- basic end to end tests suites for Selenium IDE
 
 ### Changed
 
