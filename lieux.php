@@ -29,7 +29,12 @@ if (isset($_GET['idL']))
 {
 try {
 	$get['idL'] = Validateur::validateUrlQueryValue($_GET['idL'], "int", 0);
- } catch (Exception $e) { header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); exit; }
+ }
+    catch (Exception $e)
+    {
+        echo 'paramètre idL non valable';
+        exit;
+    }
 }
 
 $fiches = new DescriptionCollection();

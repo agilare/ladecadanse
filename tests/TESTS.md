@@ -52,8 +52,7 @@ partenaires
 #### Logged in
 
 - event
-    - copy, edit, unpublish, author
-
+    - copy, edit, author (l)
 
 ### Events
 
@@ -64,7 +63,7 @@ partenaires
                 - pick
                 - write
                 - month : prev, next
-                - week       
+                - week
             - prev, next (day, week)
         - region
         - category
@@ -82,7 +81,7 @@ partenaires
     - lightboxes
     - organisateur(s)
     - report
-        - submit : 
+        - submit :
             - success msg
             - mail to admin with type, URL, email author
     - prev, next
@@ -98,15 +97,26 @@ partenaires
     - sort
     - event, lieu, date
 
-#### logged in
+#### Logged in
 
 - home, agenda, event
-    - edit (and process announce)
-    - copy
-    - unpublish
-    - author
-    - send
+    - edit (l)
+    - copy (l)
+    - author (l)
+    - send (l)
 
+#### Logged in cases
+
+- add/edit (and process announce)
+...
+
+- copy
+...
+
+- send
+...
+
+- unpublish
 
 ### Lieux
 - latests
@@ -118,7 +128,7 @@ partenaires
     - lieu
 
 #### Logged in
-- add
+- add (l)
 
 #### Lieu
 
@@ -132,18 +142,26 @@ partenaires
     - event
 
 #### Logged in
+- add event (l)
 
-- edit
-- add event
+#### Logged in cases
+- add/edit
+...
+
 - add room
-- add/edit description/presentation
+...
 
+- add/edit description/presentation
+...
 
 ### Organizers
 - latests
 - menu
     - filter
         - ak, lz, all
+
+#### Logged in
+- add (l)
 
 #### Organizer
 
@@ -155,11 +173,16 @@ partenaires
     - event
 
 #### Logged in
+- edit (l)
+
+
+#### Logged in cases
 
 - add
-- edit
-- add/edit description
+...
 
+- edit
+...
 
 ### Users
 
@@ -180,7 +203,7 @@ partenaires
 - profile
     - edit
     - elements added
-         - menu 
+         - menu
             - events
             - lieux
             - organisateurs
@@ -189,7 +212,7 @@ partenaires
             - page
             - nb items
             - sort
-     
+
 - logout
 
 ### Contact

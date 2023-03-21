@@ -18,11 +18,16 @@
 - evenement : unpublish auth
 - evenement : in edit ref, prelocations length validation
 - lieux : header
+- readme : create admin sql
+
+### Added
+
+- basic end to end tests kit for Selenium IDE
 
 ### Changed
 
-- [ ] TESTS v1.1
-
+- TESTS.md v1.1
+- in home, agenda links iCal, report more visible
 
 ## [3.4.2] - 2023-03-12
 
