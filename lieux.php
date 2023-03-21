@@ -61,9 +61,9 @@ $pair = 0;
 	<?php
 	$req_lieux_recents = $connector->query("
 	SELECT idLieu, nom, adresse, quartier, localite, dateAjout
-	FROM lieu, localite WHERE lieu.localite_id=localite.id AND region='".$connector->sanitize($_SESSION['region'])."' ORDER BY dateAjout DESC LIMIT 10");
+	FROM lieu, localite WHERE lieu.localite_id=localite.id AND region='" . $connector->sanitize($_SESSION['region']) . "' AND statut = 'actif' ORDER BY dateAjout DESC LIMIT 10");
 
-	// Création de la section si il y a moins un lieu
+// Création de la section si il y a moins un lieu
 	if ($connector->getNumRows($req_lieux_recents) > 0)
 	{
 
