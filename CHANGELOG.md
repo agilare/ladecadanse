@@ -10,13 +10,12 @@
 - [ ] usage of globals
 
 
-## [3.4.3] - 2023-03-21
+## [3.4.3] - 2023-03-22
 
 ### Fixed
 
 - home : mobile left col was unusable
-- evenement : unpublish auth
-- evenement : in edit ref, prelocations length validation
+- evenement : unpublish auth, in edit ref and prelocations length validation, calendar past days color
 - lieux : header; in home, latests added only actives, logo size in mobile
 - readme : create admin sql
 
@@ -28,6 +27,7 @@
 
 - TESTS.md v1.1
 - in home, agenda links iCal, report more visible
+
 
 ## [3.4.2] - 2023-03-12
 

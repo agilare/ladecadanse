@@ -1,8 +1,8 @@
 /docker
 docker/*
-images/*
 app/env_model.php
 resources/ladecadanse.sql
+tests*
 .editorconfig
 .gitattributes
 .gitignore
@@ -12,7 +12,6 @@ resources/ladecadanse.sql
 .git-ftp-include
 CHANGELOG.md
 README.md
-TESTS.md
 _config.yml
 docker-compose.yml
 install_dep.sh

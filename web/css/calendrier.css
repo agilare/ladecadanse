@@ -145,9 +145,9 @@ table#calendrier td.sam, td.dim, td.ferie
     background:#efefef;
 }
 
-table#calendrier td.past a
+table#calendrier td.past a, table#calendrier tr.semaine td.past a
 {
-    color:#9f9ffb;
+    color:#8e8ef5;
 }
 
 
