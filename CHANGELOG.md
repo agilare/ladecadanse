@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+
+### Fixed
+
+- evenement : crash if lieu not found
+- lieu : galerie image upload
+
+### Changed
+
 - [ ] refactor
     - [ ] get genre, tri_agenda params to session
 

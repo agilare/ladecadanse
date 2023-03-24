@@ -407,7 +407,7 @@ class LieuEdition extends Edition
             $sql_insert = "INSERT INTO fichierrecu (idElement, type_element, description, mime, extension, type, dateAjout)
 			VALUES ('" . $lieu->getId() . "', 'lieu',
 			'',
-			'" . $this->connector->sanitize($this->fichiers['document']['type']) . "',
+			'image',
 			'" . $this->connector->sanitize(mb_substr($extension, 1)) . "', 'image', '" . date("Y-m-d H:i:s") . "')";
 
             //TEST
