@@ -57,20 +57,17 @@ if (!$even->getValues() || in_array($even->getValue('statut'), ['inactif', 'prop
 	}
 }
 
-$req_deter = $connector->query("SELECT determinant FROM lieu WHERE idLieu=".$even->getValue('idLieu'));
-$tab_deter = $connector->fetchArray($req_deter);
+$determinant_lieu = "- ";
+if (!empty($even->getValue('idLieu'))) {
+    $req_deter = $connector->query("SELECT determinant FROM lieu WHERE idLieu=" . $even->getValue('idLieu'));
+    $tab_deter = $connector->fetchArray($req_deter);
 
-if ($connector->getNumRows($req_deter) == 0)
-{
-	$determinant_lieu = " - ";
-}
-else
-{
-	$determinant_lieu = $tab_deter['determinant'];
-	if ($tab_deter['determinant'] != trim("l'") && $tab_deter['determinant'] != trim("à l'"))
-	{
-		$determinant_lieu .= " ";
-	}
+    if ($connector->getNumRows($req_deter) && !empty($tab_deter['determinant'])) {
+        $determinant_lieu = $tab_deter['determinant'];
+        if ($tab_deter['determinant'] != trim("l'") && $tab_deter['determinant'] != trim("à l'")) {
+            $determinant_lieu .= " ";
+        }
+    }
 }
 
 $even_salle = '';
