@@ -31,12 +31,12 @@ Le site est mis à jour quotidiennement par le webmaster et les contributeurs.</
 	<div class="rubrique">
 	<h3>Staff</h3>
 	<dl>
-		<dt>Webmasters</dt>
+        <!--		<dt>Webmasters</dt>
 
 			<dd>Michel</dd>
 			<dd>Sabrina</dd>
-			<dd>Anne</dd>
-	
+                    <dd>Anne</dd>-->
+
 		<dt>Participer</dt>
 			<ul>
 				<li><a href="/user-register.php">Inscrivez-vous</a></li>
@@ -46,9 +46,9 @@ Le site est mis à jour quotidiennement par le webmaster et les contributeurs.</
 	<h3>Hébergement</h3>
 
 			<dd><a href="https://www.darksite.ch/" >Darksite</a> : portail culturel et indépendant</dd>
-	
+
 	</dl>
-	
+
 	</div>
 
 

@@ -1,12 +1,6 @@
 # Changelog
 
-## [Unreleased]
-
-
-### Fixed
-
-- evenement : crash if lieu not found
-- lieu : galerie image upload
+## [3.4.6] Unreleased
 
 ### Changed
 
@@ -16,6 +10,41 @@
 ### Removed
 
 - [ ] usage of globals
+
+
+## [3.4.5] Unreleased
+
+### Changed
+
+- [ ] events form
+    - [ ] inscrease width of fields (complément, titre, desc, sites web, prix, prélocs)
+    - [ ] put back horaire under date
+    - [ ] categories : replace fêtes tooltip by permanent text
+    - [ ] lieu "Ou si le lieu n'est pas listé :", one background for div "Nom du lieu", "Adresse", etc.; and more on right
+- [ ] tests
+    - [ ] documentation revised, completed (TESTS.md 1.2, README)
+    - [ ] Selenium suites improved
+
+
+## [3.4.4] - 2023-04-16
+
+### Added
+
+- tests : readme and strategy more detailed
+
+### Fixed
+
+- evenement : crash if lieu not found
+- lieu : galerie image upload
+- tests : some fixes in Selenium suites
+
+### Removed
+
+- à propos : inactive in staff
+
+### Security
+
+- update [jquery link "latest"](https://cdn.jsdelivr.net/jquery/latest/jquery.min.js) (actually freezed at 3.2.1) to lastest 3.6.4
 
 
 ## [3.4.3] - 2023-03-22
