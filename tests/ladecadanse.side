@@ -2,7 +2,7 @@
   "id": "63e99cd5-4a8e-4364-899e-ff6d0b3b0f9b",
   "version": "2.0",
   "name": "ladecadanse",
-  "url": "https://ladecadanse.darksite.ch/",
+  "url": "http://ladecadanse.local/",
   "tests": [{
     "id": "1c4e0b1a-ecd3-4bee-b216-8448f663e804",
     "name": "global menus small",
@@ -417,13 +417,6 @@
         ["xpath=//header/nav/ul/li[5]/a", "xpath:position"]
       ],
       "value": ""
-    }, {
-      "id": "2f8d7ddc-4d09-438e-93aa-006ae5dd861c",
-      "comment": "",
-      "command": "close",
-      "target": "",
-      "targets": [],
-      "value": ""
     }]
   }, {
     "id": "5b25e806-0e1c-44d8-8740-8fea9c4ef72b",
@@ -659,17 +652,10 @@
         ["xpath=//a[2]", "xpath:position"]
       ],
       "value": ""
-    }, {
-      "id": "70fbb4b7-b630-4d7d-bfc9-4676d1ad3600",
-      "comment": "",
-      "command": "close",
-      "target": "",
-      "targets": [],
-      "value": ""
     }]
   }, {
     "id": "f7075d90-d631-4aa3-ad62-6344bb052890",
-    "name": "agenda small",
+    "name": "agenda small (vars)",
     "commands": [{
       "id": "326de392-50bf-40d6-8246-9eacd69b014e",
       "comment": "",
@@ -700,7 +686,7 @@
       "id": "abc11e52-8da5-4802-b814-9905d1dfe415",
       "comment": "",
       "command": "click",
-      "target": "css=.semaine:nth-child(3) > .past:nth-child(5) > a",
+      "target": "css=.semaine:nth-child(3) > td:nth-child(5) > a",
       "targets": [
         ["linkText=2", "linkText"],
         ["css=.semaine:nth-child(3) > .past:nth-child(5) > a", "css:finder"],
@@ -1009,7 +995,7 @@
       "id": "78a817ad-3b62-40fe-8ed4-2da793e0e86a",
       "comment": "",
       "command": "click",
-      "target": "css=.semaine:nth-child(3) > .past:nth-child(5) > a",
+      "target": "css=.semaine:nth-child(3) > td:nth-child(5) > a",
       "targets": [
         ["linkText=3", "linkText"],
         ["css=.semaine:nth-child(3) > .past:nth-child(6) > a", "css:finder"],
@@ -1085,7 +1071,7 @@
         ["xpath=//ul[@id='menu_calendrier']/li[3]/form/fieldset/input[4]", "xpath:idRelative"],
         ["xpath=//input[4]", "xpath:position"]
       ],
-      "value": "14.03.2023"
+      "value": "01.04.2023"
     }, {
       "id": "7631b56f-ab9e-4302-b17e-b5323407cf20",
       "comment": "",
@@ -1641,7 +1627,7 @@
     }]
   }, {
     "id": "6785a2a4-47e6-4ae8-809e-4b01fd72e204",
-    "name": "announce small",
+    "name": "announce small (vars)",
     "commands": [{
       "id": "c904c7b6-93d7-430b-8c4e-a54d3f7fbfe0",
       "comment": "",
@@ -2212,7 +2198,7 @@
     }]
   }, {
     "id": "a54ef26c-624f-4400-98e0-ad747f718ec3",
-    "name": "user (actor) login",
+    "name": "user (actor) login (vars)",
     "commands": [{
       "id": "f6936e6c-32d9-4c08-ab9f-ed93702c836f",
       "comment": "",
@@ -2374,13 +2360,6 @@
       "targets": [],
       "value": ""
     }, {
-      "id": "4514fc0d-1f73-4267-829a-2994cfefc44c",
-      "comment": "",
-      "command": "setWindowSize",
-      "target": "1009x861",
-      "targets": [],
-      "value": ""
-    }, {
       "id": "37985e22-f7f7-4610-8b89-6c1d38f9b903",
       "comment": "",
       "command": "click",
@@ -2408,21 +2387,6 @@
         ["xpath=//a[contains(@href, '/user.php?idP=2')]", "xpath:href"],
         ["xpath=//li[6]/a", "xpath:position"],
         ["xpath=//a[contains(.,'test')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "32e57a62-1c90-4794-bf22-184fa95d291c",
-      "comment": "",
-      "command": "click",
-      "target": "linkText=Sortir",
-      "targets": [
-        ["linkText=Sortir", "linkText"],
-        ["css=li:nth-child(7) > a", "css:finder"],
-        ["xpath=//a[contains(text(),'Sortir')]", "xpath:link"],
-        ["xpath=//nav[@id='menu_pratique']/ul/li[7]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/user-logout.php')]", "xpath:href"],
-        ["xpath=//li[7]/a", "xpath:position"],
-        ["xpath=//a[contains(.,'Sortir')]", "xpath:innerText"]
       ],
       "value": ""
     }]
@@ -2898,13 +2862,6 @@
       "targets": [],
       "value": ""
     }, {
-      "id": "bfc1fb80-88f2-4873-b5c1-2d7e32d4340d",
-      "comment": "",
-      "command": "setWindowSize",
-      "target": "1063x867",
-      "targets": [],
-      "value": ""
-    }, {
       "id": "5c027f70-d3d6-4914-a7df-45ef7479b5a8",
       "comment": "",
       "command": "click",
@@ -3214,7 +3171,7 @@
         ["xpath=//form[@id='ajouter_editer']/fieldset[4]/p/input", "xpath:idRelative"],
         ["xpath=//fieldset[4]/p/input", "xpath:position"]
       ],
-      "value": "Fête de la bière et de la choucroute 2"
+      "value": "test"
     }, {
       "id": "e1d6cf9d-0dd4-4b6a-8f5f-552655711d54",
       "comment": "",
@@ -3268,7 +3225,7 @@
         ["xpath=//fieldset[@id='references']/p/input", "xpath:idRelative"],
         ["xpath=//fieldset[5]/p/input", "xpath:position"]
       ],
-      "value": "https://coriserenfete.ch"
+      "value": "https://test.ch"
     }, {
       "id": "d53012ec-8d07-4b56-b5d2-a456521e625c",
       "comment": "",
@@ -3395,13 +3352,6 @@
       "targets": [],
       "value": ""
     }, {
-      "id": "93376239-2564-4d13-9580-2c38af1b8de6",
-      "comment": "",
-      "command": "setWindowSize",
-      "target": "1063x867",
-      "targets": [],
-      "value": ""
-    }, {
       "id": "a0e0b593-68e4-4b4d-a582-4851047e4d6a",
       "comment": "",
       "command": "click",
@@ -3486,7 +3436,7 @@
         ["xpath=//form[@id='ajouter_editer']/fieldset/p[2]/textarea", "xpath:idRelative"],
         ["xpath=//textarea", "xpath:position"]
       ],
-      "value": "Bonjour,\\nJ'ai vu que vous avez posté l'annonce du concert du duo cubain Rey Pantoja et Yasel Muñoz à l'Ecurie le mercredi 28.09.2022 et je vous en remercie. \\nEst-ce que vous pourriez le mettre sous Fêtes au lieu de sous Divers? Je cherchais la rubrique Concerts ou Musique et ne l'ayant pas trouvé j'avais indiqué divers. Je vois maintenant que cela serait mieux sous Fêtes, avec la mention \"Concert\".\\n\\nUn grand merci d'avance!"
+      "value": "Bonjour,\\n\\nTests testsTests testsTests testsTests tests\\nTests testsTests testsTests testsTests tests\\nTests testsTests testsTests testsTests tests\\n"
     }, {
       "id": "6a9cbd3b-fd40-4030-800a-0303b3cfa462",
       "comment": "",
@@ -3518,13 +3468,6 @@
       "targets": [],
       "value": ""
     }, {
-      "id": "1aa5ac61-7065-4fe4-a5f8-3b43ecdc9123",
-      "comment": "",
-      "command": "setWindowSize",
-      "target": "1165x868",
-      "targets": [],
-      "value": ""
-    }, {
       "id": "db1d9e90-19e4-40f5-a94d-845fbf53df55",
       "comment": "",
       "command": "click",
@@ -3539,7 +3482,7 @@
     }]
   }, {
     "id": "c3060854-829d-4124-9885-e36d67bed18d",
-    "name": "venue home",
+    "name": "venue home small",
     "commands": [{
       "id": "2efa7664-00b7-42af-bae3-f36929056553",
       "comment": "",
@@ -3870,7 +3813,7 @@
         ["xpath=//form[@id='ajouter_editer']/fieldset/p/input", "xpath:idRelative"],
         ["xpath=//p/input", "xpath:position"]
       ],
-      "value": "Urgence Disk"
+      "value": "test"
     }, {
       "id": "c03e3997-0f68-4203-9b64-455969a5cbd8",
       "comment": "",
@@ -3982,7 +3925,7 @@
         ["xpath=//form[@id='ajouter_editer']/fieldset/p[6]/input", "xpath:idRelative"],
         ["xpath=//p[6]/input", "xpath:position"]
       ],
-      "value": "https://le-sagittario-bar-cafe.business.site/"
+      "value": "https://test.ch"
     }, {
       "id": "0be71463-6710-4c14-8c5b-c8c4e6441839",
       "comment": "",
@@ -4089,7 +4032,7 @@
       "id": "6d532efe-e023-4d56-97ec-509d16fc1bc5",
       "comment": "",
       "command": "click",
-      "target": "linkText=Urgence Disk",
+      "target": "css=h3:nth-child(2) > a",
       "targets": [
         ["linkText=Urgence Disk", "linkText"],
         ["css=h3:nth-child(2) > a", "css:finder"],
@@ -4142,7 +4085,7 @@
         ["xpath=//form[@id='ajouter_editer']/fieldset/p/input", "xpath:idRelative"],
         ["xpath=//p/input", "xpath:position"]
       ],
-      "value": "Urgence Disk 2"
+      "value": "test 2"
     }, {
       "id": "de39f71b-0176-40f0-8d64-dfab51753d52",
       "comment": "",
@@ -4170,7 +4113,7 @@
         ["xpath=//form[@id='ajouter_editer']/fieldset/p[2]/input", "xpath:idRelative"],
         ["xpath=//p[2]/input", "xpath:position"]
       ],
-      "value": "à2"
+      "value": "à 2"
     }, {
       "id": "7c811803-be3d-406d-a241-4cccd6c4a3e2",
       "comment": "",
@@ -4254,7 +4197,7 @@
         ["xpath=//form[@id='ajouter_editer']/fieldset/p[6]/input", "xpath:idRelative"],
         ["xpath=//p[6]/input", "xpath:position"]
       ],
-      "value": "https://le-sagittario-bar-cafe.business.site/2"
+      "value": "https://test2.ch"
     }, {
       "id": "afe9c56c-7eb0-448c-9933-14ed354295e2",
       "comment": "",
@@ -4452,7 +4395,7 @@
       "id": "f2ed399f-de60-47c4-9a0d-38a247139c8a",
       "comment": "",
       "command": "click",
-      "target": "linkText=Urgence Disk",
+      "target": "css=h3:nth-child(2) > a",
       "targets": [
         ["linkText=Urgence Disk", "linkText"],
         ["css=h3:nth-child(2) > a", "css:finder"],
@@ -4505,7 +4448,7 @@
         ["xpath=//form[@id='ajouter_editer']/fieldset/p[2]/input", "xpath:idRelative"],
         ["xpath=//p[2]/input", "xpath:position"]
       ],
-      "value": "Bar"
+      "value": "test"
     }, {
       "id": "703f4961-3aba-4874-a83f-5674306099a4",
       "comment": "",
@@ -4548,13 +4491,6 @@
       "comment": "",
       "command": "open",
       "target": "/",
-      "targets": [],
-      "value": ""
-    }, {
-      "id": "141993a1-b21c-45e6-8da1-6a7e5103a8b5",
-      "comment": "",
-      "command": "setWindowSize",
-      "target": "1165x869",
       "targets": [],
       "value": ""
     }, {
@@ -5132,13 +5068,6 @@
       "targets": [],
       "value": ""
     }, {
-      "id": "63a8ff0e-9a7c-4585-9314-71fc68111c15",
-      "comment": "",
-      "command": "setWindowSize",
-      "target": "1063x865",
-      "targets": [],
-      "value": ""
-    }, {
       "id": "df78cfa3-b9bb-4c0b-bcb8-afef7c0ea8f5",
       "comment": "",
       "command": "click",
@@ -5195,7 +5124,7 @@
         ["xpath=//form[@id='ajouter_editer']/fieldset/p/input", "xpath:idRelative"],
         ["xpath=//p/input", "xpath:position"]
       ],
-      "value": "Collectif BreakFree"
+      "value": "test "
     }, {
       "id": "6c4a0280-3304-4000-976d-676102c67faa",
       "comment": "",
@@ -5223,7 +5152,7 @@
         ["xpath=//form[@id='ajouter_editer']/fieldset/p[3]/input", "xpath:idRelative"],
         ["xpath=//p[3]/input", "xpath:position"]
       ],
-      "value": "https://breakfreesuisse.org/"
+      "value": "https://test.org/"
     }, {
       "id": "4d8657cd-0738-45b9-b8bc-8cc8bac41ea6",
       "comment": "",
@@ -5239,7 +5168,7 @@
     }]
   }, {
     "id": "82a5cf0c-2c0b-4baf-8545-45193e3ca01e",
-    "name": "user register",
+    "name": "user register (vars)",
     "commands": [{
       "id": "edfff489-25cf-4d08-8264-e5f4e1e98fa1",
       "comment": "",
@@ -5462,7 +5391,7 @@
     }]
   }, {
     "id": "1936c9ce-4dcc-4002-b874-9230988f6c99",
-    "name": "user reset password",
+    "name": "user reset password (vars)",
     "commands": [{
       "id": "a5c85990-68ed-44ec-9dcd-a3abd2d102e9",
       "comment": "",
@@ -5567,13 +5496,6 @@
       "targets": [],
       "value": ""
     }, {
-      "id": "91c2990d-ee3c-4dbd-bce0-45028990e8b3",
-      "comment": "",
-      "command": "setWindowSize",
-      "target": "1165x868",
-      "targets": [],
-      "value": ""
-    }, {
       "id": "3fe1cc59-f606-4dd0-aaaa-6d89c9e0b46b",
       "comment": "",
       "command": "click",
@@ -5592,7 +5514,7 @@
       "id": "aac443da-de33-4d03-9f96-26a3ecafda0f",
       "comment": "",
       "command": "click",
-      "target": "linkText=mardi au vendredi de 14h à 19h et samedi de 13h à 17hmardi au vendredi de 14h à",
+      "target": "css=tr:nth-child(2) > td:nth-child(3) > a",
       "targets": [
         ["linkText=mardi au vendredi de 14h à 19h et samedi de 13h à 17hmardi au vendredi de 14h à", "linkText"],
         ["css=tr:nth-child(2) > td:nth-child(3) > a", "css:finder"],
@@ -5741,7 +5663,7 @@
         ["xpath=//form[@id='ajouter_editer']/fieldset/p/input", "xpath:idRelative"],
         ["xpath=//p/input", "xpath:position"]
       ],
-      "value": "agilare@gmail.com"
+      "value": "test@ladecadanse.ch"
     }, {
       "id": "3743bedc-31f6-43a5-8db8-9f26ea764307",
       "comment": "",
@@ -5930,7 +5852,7 @@
     }]
   }, {
     "id": "fa4a12b8-1f55-4435-8fe1-3fe8294be63a",
-    "name": "user (admin) login",
+    "name": "user (admin) login (vars)",
     "commands": [{
       "id": "a2045d67-344e-428c-acac-ad6c0826cb7e",
       "comment": "",
@@ -6595,8 +6517,19 @@
       "target": "history.back()",
       "targets": [],
       "value": ""
+    }]
+  }, {
+    "id": "1b3cabfb-9a16-44ae-b21b-2356228e88f1",
+    "name": "user logout",
+    "commands": [{
+      "id": "5816dc84-2f8d-4510-84a8-54fecd0987ca",
+      "comment": "",
+      "command": "open",
+      "target": "/",
+      "targets": [],
+      "value": ""
     }, {
-      "id": "d9460f1b-1208-47f3-92f9-33c4a717c7e5",
+      "id": "209dd077-c148-4a08-bf2b-2fe9151d085e",
       "comment": "",
       "command": "click",
       "target": "linkText=Sortir",
@@ -6609,6 +6542,20 @@
         ["xpath=//li[7]/a", "xpath:position"],
         ["xpath=//a[contains(.,'Sortir')]", "xpath:innerText"]
       ],
+      "value": ""
+    }, {
+      "id": "64b18ab8-5b92-4cce-9e8b-f0fbdcbe0e6d",
+      "comment": "",
+      "command": "assertElementPresent",
+      "target": "linkText=Connexion",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "8d899a51-c02c-4a57-8b85-3969a104b1f2",
+      "comment": "",
+      "command": "close",
+      "target": "",
+      "targets": [],
       "value": ""
     }]
   }],
@@ -6625,14 +6572,14 @@
     "persistSession": false,
     "parallel": false,
     "timeout": 300,
-    "tests": ["a54ef26c-624f-4400-98e0-ad747f718ec3", "8718788e-89d5-4f41-84a8-0e8078d9092f", "d7da26ab-7b0b-4969-8469-1f4a8137a946", "3903cc42-f8aa-4e10-927b-8edbca982554", "2de5e6e7-bdb4-47af-a646-c14e26ff32ac", "4e570d46-e2cd-4ad1-91d7-fed74be93607", "9046ab6b-67f8-48f0-9dde-4b5d348e7f6e"]
+    "tests": ["a54ef26c-624f-4400-98e0-ad747f718ec3", "8718788e-89d5-4f41-84a8-0e8078d9092f", "d7da26ab-7b0b-4969-8469-1f4a8137a946", "3903cc42-f8aa-4e10-927b-8edbca982554", "2de5e6e7-bdb4-47af-a646-c14e26ff32ac", "4e570d46-e2cd-4ad1-91d7-fed74be93607", "9046ab6b-67f8-48f0-9dde-4b5d348e7f6e", "1b3cabfb-9a16-44ae-b21b-2356228e88f1"]
   }, {
     "id": "954f4299-556e-464e-accf-7aff83bf6da5",
     "name": "user admin",
     "persistSession": false,
     "parallel": false,
     "timeout": 300,
-    "tests": ["fa4a12b8-1f55-4435-8fe1-3fe8294be63a", "d5d4f0bd-52d5-4cd9-8fd2-b38ee992812d", "5c790b97-c4b1-4056-a004-daa889c1a3ee", "2422f54c-2560-4fa2-ad65-b10fe0deba9e", "b4c14c81-4533-4742-8d96-526b91077359", "92d58e15-7bbd-49aa-8440-5c14b4554622", "1e0fa7b9-f784-4860-a139-b7be9b393fc0", "8f01a9a0-9f4c-4f52-825e-a54eba6fcb27", "7f6cb209-b243-4a0e-889f-097dd12be52d", "602346d1-62ed-43a5-9bfd-b78a52eaaa59", "816a221b-9428-4767-9d1b-cf51dc2f8fb4"]
+    "tests": ["fa4a12b8-1f55-4435-8fe1-3fe8294be63a", "d5d4f0bd-52d5-4cd9-8fd2-b38ee992812d", "5c790b97-c4b1-4056-a004-daa889c1a3ee", "2422f54c-2560-4fa2-ad65-b10fe0deba9e", "b4c14c81-4533-4742-8d96-526b91077359", "92d58e15-7bbd-49aa-8440-5c14b4554622", "1e0fa7b9-f784-4860-a139-b7be9b393fc0", "8f01a9a0-9f4c-4f52-825e-a54eba6fcb27", "7f6cb209-b243-4a0e-889f-097dd12be52d", "602346d1-62ed-43a5-9bfd-b78a52eaaa59", "816a221b-9428-4767-9d1b-cf51dc2f8fb4", "1b3cabfb-9a16-44ae-b21b-2356228e88f1"]
   }],
   "urls": ["https://ladecadanse.darksite.ch/", "http://ladecadanse.local/"],
   "plugins": []
