@@ -66,12 +66,12 @@ $champs = array("pseudo" => '',
 "motdepasse" => '',
 "newPass" => '',
 "newPass2" => '',
-    "affiliation" => '',
-'lieu' => '',
+"affiliation" => '',
+    'lieu' => '',
 'organisateurs' => '',
 "email" => '',
-    "groupe" => '',
-"signature" => 'pseudo',
+"groupe" => '',
+    "signature" => 'pseudo',
 "avec_affiliation" => '',
 "statut" => '',
 );
@@ -157,12 +157,11 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 	/*
 	 * Si l'affiliation texte et l'affiliation lieu ont été choisies
 	 */
-	if ($champs['avec_affiliation'] == 'oui' && (empty($champs['affiliation']) && empty($champs['lieu']) && empty($champs['organisateurs'])))
-	{
-		$verif->setErreur("avec_affiliation", "Vous devez choisir une affiliation");
-	}
+	if ($champs['avec_affiliation'] == 'oui' && (empty($champs['affiliation']) && empty($champs['lieu']) && empty($champs['organisateurs']))) {
+        $verif->setErreur("avec_affiliation", "Vous devez choisir une affiliation");
+    }
 
-	/*
+    /*
 	 * En cas d'ajout, vérification si le profil n'existe pas déjà
 	 */
 	if ($get['action'] == 'insert')
@@ -287,9 +286,9 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 			$sql_update .= "date_derniere_modif='".date("Y-m-d H:i:s")."'";
 			$sql_update .= " WHERE idPersonne=".$get['idP'];
 
-			$req_update = $connector->query($sql_update);
+            $req_update = $connector->query($sql_update);
 
-			//trouve si la personne a déjà une affiliation à un lieu
+            //trouve si la personne a déjà une affiliation à un lieu
 			$connector->query("SELECT idPersonne FROM affiliation WHERE idPersonne=".$get['idP']);
 
 			//si la nouvelle affiliation est un lieu, update s'il en a déjà une, insert sinon
@@ -662,8 +661,8 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= UserLevel::ACTOR)) {
         {
         ?>
         <p>
-            <label></label><input type="text" disabled value="<?php echo htmlentities($champs['affiliation']);?>" >
-        </p>
+            <label></label><input name="affiliation" type="text" readonly value="<?php echo htmlentities($champs['affiliation']); ?>" >
+                        </p>
 
         <?php
         }
@@ -764,8 +763,9 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= UserLevel::ACTOR)) {
     ?>
 
     <?php
-    if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= UserLevel::ACTOR)) {
-    ?>
+    if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= UserLevel::ACTOR) && (!empty($champs['affiliation']) || !empty($tab_organisateurs_pers) || !empty($champs['lieu']))
+        ) {
+            ?>
 
     <label style="display:block;float:none">avec l'affiliation :</label>
     <ul class="radio" style="display:block;">

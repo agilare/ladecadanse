@@ -14,6 +14,17 @@
 
 ## [3.4.5] Unreleased
 
+### Fixed
+
+- users - password reset : in db table rm unique of idPersonne to avoid crash
+- users - edit : affiliation text wasn't saved, display "avec affiliation" field only if pertinent
+- add ini_set session.gc_probability to enable auto clean of old session in Debian
+
+- [ ] tests
+    - [ ] Selenium suites
+
+### Added
+
 ### Changed
 
 - [ ] events form
@@ -25,18 +36,17 @@
     - [ ] documentation revised, completed (TESTS.md 1.2, README)
     - [ ] Selenium suites improved
 
-
 ## [3.4.4] - 2023-04-16
-
-### Added
-
-- tests : readme and strategy more detailed
 
 ### Fixed
 
 - evenement : crash if lieu not found
 - lieu : galerie image upload
 - tests : some fixes in Selenium suites
+
+### Added
+
+- tests : readme and strategy more detailed
 
 ### Removed
 
