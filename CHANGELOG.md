@@ -4,8 +4,15 @@
 
 ### Changed
 
+- [ ] events form
+    - [ ] inscrease width of fields (complément, titre, desc, sites web, prix, prélocs)
+    - [ ] put back horaire under date
+    - [ ] categories : replace fêtes tooltip by permanent text
+    - [ ] lieu "Ou si le lieu n'est pas listé :", one background for div "Nom du lieu", "Adresse", etc.; and more on right
 - [ ] refactor
     - [ ] get genre, tri_agenda params to session
+- [ ] tests
+    - [ ] documentation revised, completed (readme, strategy, map)
 
 ### Removed
 
@@ -19,22 +26,17 @@
 - users - password reset : in db table rm unique of idPersonne to avoid crash
 - users - edit : affiliation text wasn't saved, display "avec affiliation" field only if pertinent
 - add ini_set session.gc_probability to enable auto clean of old session in Debian
-
-- [ ] tests
-    - [ ] Selenium suites
+- [ ] in small screens events lists right overflow
 
 ### Added
 
+- [ ] Doc link in menu 1 for admin users
+- tests : added assertions, for most important cases in Selenium suites
+
 ### Changed
 
-- [ ] events form
-    - [ ] inscrease width of fields (complément, titre, desc, sites web, prix, prélocs)
-    - [ ] put back horaire under date
-    - [ ] categories : replace fêtes tooltip by permanent text
-    - [ ] lieu "Ou si le lieu n'est pas listé :", one background for div "Nom du lieu", "Adresse", etc.; and more on right
-- [ ] tests
-    - [ ] documentation revised, completed (TESTS.md 1.2, README)
-    - [ ] Selenium suites improved
+- php libraries : whoops 2.15, phpmailer 6.8, phpstan
+
 
 ## [3.4.4] - 2023-04-16
 
@@ -46,7 +48,7 @@
 
 ### Added
 
-- tests : readme and strategy more detailed
+- tests : in documentation, readme and strategy revised, completed
 
 ### Removed
 

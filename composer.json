@@ -10,6 +10,11 @@
             "role": "Developer"
         }
     ],
+    "support": {
+        "issues": "https://github.com/agilare/ladecadanse/issues",
+        "email": "michel@ladecadanse.ch",
+        "source": "https://github.com/agilare/ladecadanse.git"
+    },
     "require": {
         "php" : "7.4.*",
         "ext-fileinfo": "*",
@@ -27,10 +32,6 @@
     },
     "scripts": {
         "sniffer:php74": "phpcs -p ./ --ignore=*/images/*,*/logs/*,*/vendor/*,*/web/* --standard=vendor/phpcompatibility/php-compatibility/PHPCompatibility --runtime-set testVersion 7.4"
-    },
-    "support": {
-        "email": "michel@ladecadanse.ch",
-        "source": "https://github.com/agilare/ladecadanse.git"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "^3.7",

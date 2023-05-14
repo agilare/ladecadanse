@@ -24,9 +24,11 @@ According to (tests/TESTS.md)[TESTS.md] :
 Suites availables by user type (screen size) :
 - public (small)
 - actor (large)
-- admin (large)
+- admin (large) : avoid edit and delete tests on prod !
 
-Tests that could need some adaptations in values filled by user have a name with `(vars)`
+Tests names contains some codes :
+- vars : could need some adaptations in values filled by user
+- r : data is added, edited or deleted; restoration needed after the test
 
 ### Running the tests on an instance
 

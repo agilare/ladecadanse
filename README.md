@@ -24,7 +24,7 @@ Ces instructions vous permettront de mettre en place une copie du projet sur vot
 - Apache 2.4
 - PHP 7.4 (avec les extensions `fileinfo`, `mysqli`, `mbstring`, `gd`)
 - Composer
-- MariaDB 10/MySQL 5.7
+- MariaDB 10/MySQL 5.7 (with `sql_mode` containing `ALLOW_INVALID_DATES`)
 
 ### Manuelle
 1. cloner la branche `master`
