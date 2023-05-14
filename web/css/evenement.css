@@ -60,7 +60,8 @@ ul.menu_actions_evenement li
 	width:94%;
 	padding :0px;
 	margin:0.4em auto 1em auto;
-	background-color: #f4f4f4;
+    background-color: #f4f4f4;
+    overflow-x: hidden;
 }
 
 #evenement p
@@ -152,7 +153,7 @@ ul.menu_actions_evenement li
 	color: #3e5355;
 	background:	#F9F9F9;
 	min-height:17em;
-	line-height:1.4em;
+    line-height:1.4em;
 }
 
 	#desciption a

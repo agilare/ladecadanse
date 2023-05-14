@@ -281,6 +281,7 @@ ul#calendrier_menu
         line-height:1.4em;
         font-size:0.9em;
         min-height: 150px;
+        overflow: hidden;
     }
 
     .evenement .description a

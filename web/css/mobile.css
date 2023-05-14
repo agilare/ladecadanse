@@ -16,6 +16,11 @@
     /*	float:none;*/
 }
 
+#conteneur .colonne
+{
+    max-width: 100%;
+}
+
 #menu ul li
 {
 	float:left;
