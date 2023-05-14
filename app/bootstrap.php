@@ -26,6 +26,7 @@ if (ENV === 'dev') {
 }
 
 session_save_path(__ROOT__ . "/var/sessions");
+ini_set('session.gc_probability', 1); // to enable auto clean of old session in Debian https://www.php.net/manual/en/function.session-save-path.php#98106
 session_start();
 
 $regionConfig = new RegionConfig($glo_regions);
