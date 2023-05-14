@@ -414,8 +414,13 @@ if ($lieu->getValue('logo'))
                    <span class="value-title" title="<?php echo $lieu->getValue('lng'); ?>"></span>
                 </span>
 				<li><?php echo Text::wikiToHtml($lieu->getValue('horaire_general')); ?></li>
-				<li class="sitelieu"><a class="url" href="<?php echo $URL; ?>" title="Voir le site web du lieu" onclick="window.open(this.href,'_blank');return false;"><?php echo $lieu->getValue('URL'); ?></a> <?php if ($lieu->getId() == 13) { // exception pour le Rez ?><a href="http://kalvingrad.com" onclick="window.open(this.href,'_blank');return false;">kalvingrad.com</a><br><a href="http://www.ptrnet.ch" onclick="window.open(this.href,'_blank');return false;">ptrnet.ch</a><?php } ?></li>
-				<?php echo $organisateurs; ?>
+                <li class="sitelieu">
+                    <?php if (!empty($URL)) { ?>
+                        <a class="url lien_ext" href="<?php echo $URL; ?>" title="Voir le site web du lieu"  target="_blank"><?php echo $lieu->getValue('URL'); ?></a>
+                    <?php } ?>
+                    <?php if ($lieu->getId() == 13) { // exception pour le Rez   ?><a href="http://kalvingrad.com" class="url lien_ext"  target="_blank">kalvingrad.com</a><br><a href="http://www.ptrnet.ch" class="url lien_ext" target="_blank">ptrnet.ch</a><?php } ?>
+                </li>
+                <?php echo $organisateurs; ?>
             </ul>
             <div id="plan" style="display:none"><div id="map"></div></div>
         </div><!-- Fin pratique -->

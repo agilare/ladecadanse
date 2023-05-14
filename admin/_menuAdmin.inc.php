@@ -32,5 +32,10 @@ use Ladecadanse\UserLevel;
 		</li>
         <?php } ?>
     </ul>
+    <ul style="list-style-type:none">
+        <li>
+            <a href="https://tools.ladecadanse.ch/doc/Administration/index.html" class="url lien_ext" target="_blank">Documentation</a>
+        </li>
+    </ul>
 </div>
 <!-- Fin gestion -->

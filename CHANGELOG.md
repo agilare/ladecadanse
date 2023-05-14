@@ -2,6 +2,10 @@
 
 ## [3.4.6] Unreleased
 
+### Added
+
+- events : api sending night "fêtes" events of a day (Noctambus)
+
 ### Changed
 
 - [ ] events form
@@ -26,11 +30,12 @@
 - users - password reset : in db table rm unique of idPersonne to avoid crash
 - users - edit : affiliation text wasn't saved, display "avec affiliation" field only if pertinent
 - add ini_set session.gc_probability to enable auto clean of old session in Debian
+- UX : added missing icon ext links
 - [ ] in small screens events lists right overflow
 
 ### Added
 
-- [ ] Doc link in menu 1 for admin users
+- Doc link in menu 1 for admin users
 - tests : added assertions, for most important cases in Selenium suites
 
 ### Changed

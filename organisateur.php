@@ -192,10 +192,13 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 6
 
 		<!-- Deb pratique -->
 		<div id="pratique">
-			<ul>
-				<li class="siteLieu"><a class="url" href="<?php echo $URL; ?>" onclick="window.open(this.href,'_blank');return false;">
-				<?php echo $organisateur->getValue('URL'); ?></a></li>
-				<?php echo $lieux; ?>
+            <ul>
+                <?php if (!empty($URL)) { ?>
+                    <li class="siteLieu"><a href="<?php echo $URL; ?>" class="url lien_ext" target="_blank">
+                                <?php echo $organisateur->getValue('URL'); ?></a>
+                        </li>
+                <?php } ?>
+                <?php echo $lieux; ?>
 				<?php echo $membres; ?>
 			</ul>
 
@@ -473,7 +476,7 @@ if (!empty($organisateur->getValue('URL'))) {
     if (!preg_match("/^(https?:\/\/)/i", $organisateur->getValue('URL'))) {
 		$URLcomplete = "http://" . $organisateur->getValue('URL');
     }
-	echo "<p>Pour des informations complémentaires : <a href=\"" . $URLcomplete . "\" title=\"Aller sur le site web\" onclick=\"window.open(this.href,'_blank');return false;\">" . $organisateur->getValue('URL') . "</a></p>\n";
+	echo "<p>Pour des informations complémentaires : <a href=\"" . $URLcomplete . "\" class=\"lien_ext\" target=\"_blank\">" . $organisateur->getValue('URL') . "</a></p>\n";
 }
 
 echo '</div>';

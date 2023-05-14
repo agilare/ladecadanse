@@ -347,10 +347,8 @@ $adresse = htmlspecialchars(HtmlShrink::getAdressFitted($listeLieu['region'], $l
                         }
 						if (!empty($listeLieu['URL']))
 						{?>
-						<li><a class="url" href="<?php
-
-
-						if (!preg_match("/^https?:\/\//", $listeLieu['URL']))
+                            <li><a class="url lien_ext" href="<?php
+                                       if (!preg_match("/^https?:\/\//", $listeLieu['URL']))
 						{
 							echo 'http://'.$listeLieu['URL'];
 						}
@@ -363,8 +361,8 @@ $adresse = htmlspecialchars(HtmlShrink::getAdressFitted($listeLieu['region'], $l
 						}
 						?>
                         <?php if ($even->getValue('idLieu') == 13) { // exception pour le Rez ?>
-                            <a href="http://kalvingrad.com" target="_blank">kalvingrad.com</a><br>
-                            <a href="http://www.ptrnet.ch" target="_blank">ptrnet.ch</a>
+                        <a href="http://kalvingrad.com" class="url lien_ext" target="_blank">kalvingrad.com</a><br>
+                            <a href="http://www.ptrnet.ch" class="url lien_ext" target="_blank">ptrnet.ch</a>
                         <?php } ?>
 					</ul>
 				</div>
