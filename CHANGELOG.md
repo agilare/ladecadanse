@@ -23,7 +23,7 @@
 - [ ] usage of globals
 
 
-## [3.4.5] Unreleased
+## [3.4.5] - 2023-05-18
 
 ### Fixed
 
@@ -31,12 +31,12 @@
 - users - edit : affiliation text wasn't saved, display "avec affiliation" field only if pertinent
 - add ini_set session.gc_probability to enable auto clean of old session in Debian
 - UX : added missing icon ext links
-- [ ] in small screens events lists right overflow
+- in small screens events lists right overflow
 
 ### Added
 
-- Doc link in menu 1 for admin users
 - tests : added assertions, for most important cases in Selenium suites
+- Doc link in menu 1 for admin users
 
 ### Changed
 
