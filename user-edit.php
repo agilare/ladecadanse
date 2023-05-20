@@ -62,18 +62,19 @@ include("_header.inc.php");
 
 $verif = new Validateur();
 
-$champs = array("pseudo" => '',
-"motdepasse" => '',
-"newPass" => '',
-"newPass2" => '',
-"affiliation" => '',
+$champs = array(
+    "pseudo" => '',
+    "motdepasse" => '',
+    "newPass" => '',
+    "newPass2" => '',
+    "affiliation" => '',
     'lieu' => '',
-'organisateurs' => '',
-"email" => '',
-"groupe" => '',
+    'organisateurs' => '',
+    "email" => '',
+    "groupe" => '',
     "signature" => 'pseudo',
-"avec_affiliation" => '',
-"statut" => '',
+    "avec_affiliation" => 'non',
+    "statut" => '',
 );
 
 
@@ -157,9 +158,9 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 	/*
 	 * Si l'affiliation texte et l'affiliation lieu ont été choisies
 	 */
-	if ($champs['avec_affiliation'] == 'oui' && (empty($champs['affiliation']) && empty($champs['lieu']) && empty($champs['organisateurs']))) {
-        $verif->setErreur("avec_affiliation", "Vous devez choisir une affiliation");
-    }
+//	if ($champs['avec_affiliation'] == 'oui' && (empty($champs['affiliation']) && empty($champs['lieu']) && empty($champs['organisateurs']))) {
+//        $verif->setErreur("avec_affiliation", "Vous devez choisir une affiliation");
+//    }
 
     /*
 	 * En cas d'ajout, vérification si le profil n'existe pas déjà
@@ -762,11 +763,6 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= UserLevel::ACTOR)) {
     echo $verif->getHtmlErreur("signature");
     ?>
 
-    <?php
-    if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= UserLevel::ACTOR) && (!empty($champs['affiliation']) || !empty($tab_organisateurs_pers) || !empty($champs['lieu']))
-        ) {
-            ?>
-
     <label style="display:block;float:none">avec l'affiliation :</label>
     <ul class="radio" style="display:block;">
         <li style="display:block" >
@@ -796,10 +792,6 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= UserLevel::ACTOR)) {
     ?>
     </p>
 
-
-    <?php
-    }
-    ?>
 
 </fieldset>
 

@@ -2,6 +2,10 @@
 
 ## [3.4.6] Unreleased
 
+### Fixed
+
+- users - edit : "avec affiliation" value must be sent in submit, rm conditions
+
 ### Added
 
 - events : api sending night "fêtes" events of a day (Noctambus)
