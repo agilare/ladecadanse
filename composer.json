@@ -16,7 +16,7 @@
         "source": "https://github.com/agilare/ladecadanse.git"
     },
     "require": {
-        "php" : "7.4.*",
+        "php": "7.4.*",
         "ext-fileinfo": "*",
         "ext-mysqli": "*",
         "ext-mbstring": "*",
@@ -27,8 +27,12 @@
         "phpmailer/phpmailer": "^6.7"
     },
     "autoload": {
-        "psr-4": {"Ladecadanse\\": "librairies"},
-        "files": ["librairies/Utils/utils_functions.php"]
+        "psr-4": {
+            "Ladecadanse\\": "librairies"
+        },
+        "files": [
+            "librairies/Utils/utils_functions.php"
+        ]
     },
     "scripts": {
         "sniffer:php74": "phpcs -p ./ --ignore=*/images/*,*/logs/*,*/vendor/*,*/web/* --standard=vendor/phpcompatibility/php-compatibility/PHPCompatibility --runtime-set testVersion 7.4"
@@ -38,6 +42,9 @@
         "phpcompatibility/php-compatibility": "^9.3",
         "phpstan/phpstan": "^1.9",
         "filp/whoops": "^2.14",
-        "symfony/var-dumper": "^5.4"
+        "symfony/var-dumper": "^5.4",
+        "codeception/codeception": "^4.2",
+        "codeception/module-rest": "^1.0.0",
+        "codeception/module-phpbrowser": "^1.0.0"
     }
 }
