@@ -26,9 +26,8 @@ if (isset($_GET['action']))
 }
 
 $tab_types = array("description", "presentation");
-if (isset($_GET['type']))
-{
-	$get['type'] = Validateur::validateUrlQueryValue($_GET['type'], "enum", 0, $tab_types);
+if (isset($_GET['type'])) {
+    $get['type'] = Validateur::validateUrlQueryValue($_GET['type'], "enum", 0, $tab_types);
 }
 else
 {
