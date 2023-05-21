@@ -39,6 +39,10 @@ define("GOOGLE_RECAPTCHA_API_KEY_SERVER", '');
 define("GOOGLE_ANALYTICS_ID", ''); // 1st analytics tool (enabled only in prod)
 define("GOOGLE_ANALYTICS_ENABLED", false);
 
+
+define("LADECADANSE_API_USER_NOCTAMBUS", '');
+define("LADECADANSE_API_KEY", '');
+
 // small modules
 
 // in homepage, banner (closable by user) for announcements by site admin
