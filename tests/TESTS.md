@@ -1,30 +1,5 @@
 # TESTS
 
-## Criterias considered to build scope and level of tests suites
-- features
-    - priority according to importance and frequency of use of feature
-    - most frequent user actions scenarios
-- variables
-    - environnement (dev, prod...)
-    - user logged in/out
-    - screen size (desktop, mobile)
-
-## Depth of checks in order to meet the user expectations of user actions, by order of detail and complexity :
-1. links respond and in their content the **basic** data are displayed, according to user
-    - selection by
-        - filtering
-            - entity type : event, lieu...
-            - entity values : region, date
-            - format (html, json, rss...)
-        - scope
-            - detail : collection or single item
-            - entity detail (values selection) : summary or detailed
-    - intention : view, add/edit, delete, other (report, export...)
-1. data displayed is **relevant** according to filter (events : date, category, etc.) and scope (as in the previous point)
-1. users are guided in expected way by handling their mistakes (error handling, particularly in forms)
-1. data is changed exactly according to user action on it
-1. special and unexpected cases are handled
-
 ## Map of elements to test
 
 ### caption

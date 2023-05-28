@@ -4,9 +4,7 @@ The only automated tests currently available are end to end, with Selenium IDE (
 
 ## End to end
 
-The scope of the application and its functionalities are basically covered; these tests are not yet very detailed but already allow to check the essential.
-
-According to (tests/TESTS.md)[TESTS.md] :
+The scope of the application and its functionalities are basically covered; these tests are not yet very detailed but already allow to check the essential. It follows 3 dimensions, according to [Strategy] :
 - criterias
 - depth : thus far level 1. of "Depth of checks in order..."; doesn't go into too much depth due to lack of time/knowledge of the tool and because the feat will probably change a lot in the coming time
 - scope : "Map"
@@ -37,8 +35,31 @@ Tests names contains some codes :
 1. enter url to test (local, prod...)
 1. run all tests in suite
 
-### Edit
-...
-
 ## Strategy
-...
+
+### Criterias considered to build tests suites (their scope and depth)
+
+- features
+    - priority according to importance and frequency of use of feature
+    - most frequent user actions scenarios
+- variables
+    - environnement (dev, prod...)
+    - user logged in/out
+    - screen size (desktop, mobile)
+
+### Depth of checks in order to meet the user expectations of user actions, by order of detail and complexity :
+
+1. links respond and in their content the **basic** data are displayed, according to user
+    - selection by
+        - filtering
+            - entity type : event, lieu...
+            - entity values : region, date
+            - format (html, json, rss...)
+        - scope
+            - detail : collection or single item
+            - entity detail (values selection) : summary or detailed
+    - intention : view, add/edit, delete, other (report, export...)
+1. data displayed is **relevant** according to filter (events : date, category, etc.) and scope (as in the previous point)
+1. users are guided in expected way by handling their **mistakes** (error handling, particularly in forms)
+1. data is **modified exactly** according to user action on it
+1. special and unexpected cases are handled

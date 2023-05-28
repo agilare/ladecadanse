@@ -1,5 +1,18 @@
 # Changelog
 
+
+## [3.4.7] Unreleased
+
+### Changed
+
+- [ ] refactor
+    - [ ] get genre, tri_agenda params to session
+
+### Removed
+
+- [ ] usage of globals
+
+
 ## [3.4.6] Unreleased
 
 ### Fixed
@@ -9,6 +22,7 @@
 ### Added
 
 - events : api sending night "fêtes" events of a day (Noctambus)
+- tests : setup Codeception and basic API tests
 
 ### Changed
 
@@ -17,14 +31,8 @@
     - [ ] put back horaire under date
     - [ ] categories : replace fêtes tooltip by permanent text
     - [ ] lieu "Ou si le lieu n'est pas listé :", one background for div "Nom du lieu", "Adresse", etc.; and more on right
-- [ ] refactor
-    - [ ] get genre, tri_agenda params to session
-- [ ] tests
-    - [ ] documentation revised, completed (readme, strategy, map)
-
-### Removed
-
-- [ ] usage of globals
+- [ ] tests : documentation revised, completed (readme, strategy, map)
+- [ ] update jQuery from 3.6.4 to 3.7.0
 
 
 ## [3.4.5] - 2023-05-18
