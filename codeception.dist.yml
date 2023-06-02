@@ -8,6 +8,7 @@ suites:
                 - REST:
                     url: https://ladecadanse.darksite.ch/api.php
                     depends: PhpBrowser
+                - Asserts
         step_decorators:
             - \Codeception\Step\AsJson
 
