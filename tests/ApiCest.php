@@ -14,11 +14,17 @@ class ApiCest
 
     }
 
+    // TODO: 1.0 test empty or wrong credentials and getting response 403
+
     public function getEvent(ApiTester $I)
     {
         $I->amHttpAuthenticated(LADECADANSE_API_USER_NOCTAMBUS, LADECADANSE_API_KEY);
 
-        $I->sendGet('/', ['entity' => 'event', 'region' => 'ge', 'category' => 'fête', 'date' => '2023-05-20', 'endtime' => '01:00:00']);
+        // TODO: test various param entity, region, category, date values
+
+        $apiParams = ['entity' => 'event', 'region' => 'ge', 'category' => 'fête', 'date' => '2023-05-20', 'endtime' => '01:00:00'];
+        $I->sendGet('/', $apiParams);
+
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->seeResponseIsJson();
 
@@ -36,11 +42,15 @@ class ApiCest
             return array_key_exists($value, ['propose' => 'Proposé', 'actif' => 'Proposé', 'complet' => 'Complet', 'annule' => 'Annulé', 'inactif' => 'Dépublié']);
         });
 
+        JsonType::addCustomFilter('ladecadanse-notempty', function ($value) {
+            return !empty($value);
+        });
+
         $I->seeResponseMatchesJsonType(
                 [
-                    'idevenement' => 'string:>0',
+                    'idevenement' => 'string:>0:ladecadanse-notempty',
                     'statut' => 'string:ladecadanse-event-statut',
-                    'titre' => 'string',
+                    'titre' => 'string:ladecadanse-notempty',
                     'image' => 'string:regex(/(|\.jpg|\.jpeg|\.png|\.gif)$/)',
                     'description' => 'string',
                     'references' => 'string',
@@ -51,27 +61,44 @@ class ApiCest
                     ],
                     'prix' => 'string',
                     'lieu' => [
-                        'nom' => 'string',
-                        'adresse' => 'string',
+                        'nom' => 'string:ladecadanse-notempty',
+                        'adresse' => 'string:ladecadanse-notempty',
                         'quartier' => 'string',
-                        'localite' => 'string',
+                        'localite' => 'string:ladecadanse-notempty',
                         'url' => 'string',
                     ],
-                    'created' => 'string',
-                    'updated' => 'string',
+                    'created' => 'string:ladecadanse-notempty',
+                    'updated' => 'string:ladecadanse-notempty',
                 ], '$.events[*]');
 
-        // TODO: 1.0 check horaire fin value >= endtime and endtime <= 06:01 if endtime param present
-        // TODO: 1.0 notempty : titre, fin, lieu (nom, adresse, localite), created, updated
-        // TODO: test horaire debut & fin formats
+
+        // check values
+        // events
+        // check horaire fin value >= endtime and endtime <= 06:01 if endtime param present
+        $dateMinEnd = new Datetime($apiParams['date']);
+        $dateMinEnd->modify('+1 day');
+        $datetimeMinEnd = $dateMinEnd->format('Y-m-d') . ' ' . $apiParams['endtime'];
+        foreach ($events as $e)
+        {
+            $datetimeRegexPattern = "/^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}$/";
+            if (!empty($e['horaire']['debut'])) {
+                $I->assertMatchesRegularExpression($datetimeRegexPattern, $e['horaire']['debut']);
+            }
+
+            if (!empty($e['horaire']['fin'])) {
+                $I->assertMatchesRegularExpression($datetimeRegexPattern, $e['horaire']['fin']);
+            }
+
+            // TODO: test horaire debut & fin formats
+            if (!empty($apiParams['endtime'])) {
+
+                $I->assertGreaterOrEquals($datetimeMinEnd, $e['horaire']['fin']);
+            }
+            $I->assertLessThanOrEqual($dateMinEnd->format('Y-m-d') . ' 06:00:01', $e['horaire']['fin']);
+        }
     }
 
-    // TODO: 1.0 test empty credentials and getting response 403
-    // TODO: 1.0 test wrong credentials and getting response 403
-    // TODO: 1.1 test wrong params (missing, value or format) and getting response 401
-    // TODO: test various param entity, region, category, date values
-    //
-    //
-    // TODO: 1.0 test values of an event (on prod site)
 
+    // TODO: 1.1 test wrong params (missing, value or format) and getting response 401
+    // TODO: test values of an event (on prod site)
 }
