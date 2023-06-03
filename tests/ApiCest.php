@@ -7,23 +7,61 @@ require_once __DIR__ . '/../app/env.php';
 
 class ApiCest
 {
+    private array $apiParams = ['entity' => 'event', 'region' => 'ge', 'category' => 'fête', 'date' => '2023-05-20', 'endtime' => '01:00:00'];
 
-    function _before(ApiTester $I)
+    /**
+     * @dataProvider authenticateProvider
+     */
+    public function authenticate(ApiTester $I, \Codeception\Example $example)
     {
-        // will be executed at the beginning of each test
-
+        $I->amHttpAuthenticated($example[0], $example[1]);
+        $I->sendGet('/', $this->apiParams);
+        $I->seeResponseCodeIs($example[2]);
     }
 
-    // TODO: 1.0 test empty or wrong credentials and getting response 403
+    /**
+     * @return array
+     */
+    protected function authenticateProvider()
+    {
+        return [
+            ["plop", "faux", HttpCode::UNAUTHORIZED],
+            [LADECADANSE_API_USER_NOCTAMBUS, "faux", HttpCode::UNAUTHORIZED],
+            ["plop", LADECADANSE_API_KEY, HttpCode::UNAUTHORIZED],
+            [LADECADANSE_API_USER_NOCTAMBUS, LADECADANSE_API_KEY, HttpCode::OK],
+        ];
+    }
 
-    public function getEvent(ApiTester $I)
+    /**
+     * @dataProvider paramsProvider
+     */
+    public function badParams(ApiTester $I, \Codeception\Example $example)
     {
         $I->amHttpAuthenticated(LADECADANSE_API_USER_NOCTAMBUS, LADECADANSE_API_KEY);
+        $I->sendGet('/', $example[0]);
+        $I->seeResponseCodeIs($example[1]);
+    }
 
-        // TODO: test various param entity, region, category, date values
+    /**
+     * @return array
+     */
+    protected function paramsProvider()
+    {
+        return [
+            [['entity' => '', 'region' => 'ge', 'category' => 'fête', 'date' => '2023-05-20', 'endtime' => '01:00:00'], HttpCode::BAD_REQUEST],
+            [['entity' => 'event', 'region' => 'bz', 'category' => 'fête', 'date' => '2023-05-20', 'endtime' => '01:00:00'], HttpCode::BAD_REQUEST],
+            [['entity' => 'event', 'region' => 'ge', 'category' => 'ciné', 'date' => '2023-05-20', 'endtime' => '01:00:00'], HttpCode::BAD_REQUEST],
+            [['entity' => 'event', 'region' => 'ge', 'category' => 'fête', 'date' => '2023.05.20', 'endtime' => '01:00:00'], HttpCode::BAD_REQUEST],
+            [['entity' => 'event', 'region' => 'ge', 'category' => 'fête', 'date' => '2023-05-20', 'endtime' => '01h00:00'], HttpCode::BAD_REQUEST],
+        ];
+    }
 
-        $apiParams = ['entity' => 'event', 'region' => 'ge', 'category' => 'fête', 'date' => '2023-05-20', 'endtime' => '01:00:00'];
-        $I->sendGet('/', $apiParams);
+    public function getEventsByDay(ApiTester $I)
+    {
+
+        $I->amHttpAuthenticated(LADECADANSE_API_USER_NOCTAMBUS, LADECADANSE_API_KEY);
+
+        $I->sendGet('/', $this->apiParams);
 
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->seeResponseIsJson();
@@ -75,9 +113,9 @@ class ApiCest
         // check values
         // events
         // check horaire fin value >= endtime and endtime <= 06:01 if endtime param present
-        $dateMinEnd = new Datetime($apiParams['date']);
+        $dateMinEnd = new Datetime($this->apiParams['date']);
         $dateMinEnd->modify('+1 day');
-        $datetimeMinEnd = $dateMinEnd->format('Y-m-d') . ' ' . $apiParams['endtime'];
+        $datetimeMinEnd = $dateMinEnd->format('Y-m-d') . ' ' . $this->apiParams['endtime'];
         foreach ($events as $e)
         {
             $datetimeRegexPattern = "/^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}$/";
@@ -90,7 +128,7 @@ class ApiCest
             }
 
             // TODO: test horaire debut & fin formats
-            if (!empty($apiParams['endtime'])) {
+            if (!empty($this->apiParams['endtime'])) {
 
                 $I->assertGreaterOrEquals($datetimeMinEnd, $e['horaire']['fin']);
             }
@@ -98,7 +136,5 @@ class ApiCest
         }
     }
 
-
-    // TODO: 1.1 test wrong params (missing, value or format) and getting response 401
     // TODO: test values of an event (on prod site)
 }
