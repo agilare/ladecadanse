@@ -4,7 +4,7 @@ require_once 'app/bootstrap.php';
 
 use Ladecadanse\Utils\Validateur;
 
-if (!($_SERVER['PHP_AUTH_USER'] == LADECADANSE_API_USER_NOCTAMBUS && $_SERVER['PHP_AUTH_PW'] == LADECADANSE_API_KEY)) {
+if (empty($_SERVER['PHP_AUTH_USER']) || empty($_SERVER['PHP_AUTH_PW']) || !($_SERVER['PHP_AUTH_USER'] == LADECADANSE_API_USER_NOCTAMBUS && $_SERVER['PHP_AUTH_PW'] == LADECADANSE_API_KEY)) {
     header('WWW-Authenticate: Basic realm="La décadanse"');
     header($_SERVER['SERVER_PROTOCOL'].' 401 Unauthorized');
     die('Not authorized');
@@ -34,7 +34,7 @@ try {
 }
 
 if (!preg_match('/^[0-9]{2}:[0-9]{2}:[0-9]{2}$/', trim($_GET['endtime']))) {
-    header($_SERVER['SERVER_PROTOCOL'].' 400 Bad Request');
+    header($_SERVER['SERVER_PROTOCOL'] . ' 400 Bad Request');
     exit;
 }
 
@@ -133,7 +133,10 @@ if ($get['entity'] == 'event') {
         $events[] = $event;
     } //end while
 
-    // $events[0]['titre'] = '';
+    //$events[0]['horaire']['debut'] = "2023-05-21 00:30:00";
+    //$events[1]['lieu']['nom'] = "";
+    //$events[1]['titre'] = "";
+
     $result = [
         'date'   => $get['date'],
         'events' => $events,
