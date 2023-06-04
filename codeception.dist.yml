@@ -5,9 +5,7 @@ suites:
         path: .
         modules:
             enabled:
-                - REST:
-                    url: https://ladecadanse.darksite.ch/api.php
-                    depends: PhpBrowser
+                - REST
                 - Asserts
         step_decorators:
             - \Codeception\Step\AsJson

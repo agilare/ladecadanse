@@ -1,8 +1,10 @@
 # Tests
 
-The only automated tests currently available are end to end, with Selenium IDE (see below), there are no unit tests or other
+There is currently 2 automated tests available for :
+- user application : end to end, with Selenium IDE (see below)
+- API : functional with a Codeception script
 
-## End to end
+## End to end (user application)
 
 The scope of the application and its functionalities are basically covered; these tests are not yet very detailed but already allow to check the essential.
 
@@ -32,13 +34,52 @@ Tests names contains some codes :
 
 ### Running the tests on an instance
 
-1. open project `tests/ladecadanse.side`
+1. in your browser, launch Selenium IDE and open project `tests/ladecadanse.side`
 1. select a test in a suite
 1. enter url to test (local, prod...)
 1. run all tests in suite
 
 ### Edit
 ...
+
+## Functional (API)
+
+### Prerequisites
+
+The application API must be enabled with the credentials defined in `app/env.php` (`LADECADANSE_API_USER` and `LADECADANSE_API_KEY`)
+
+### Setup
+
+Define the URL targeted and the credentials used by the tests :
+
+1. in the root folder create a `codeception.yml` (which will be merged with base configuration `codeception.dist.yml`, at execution) containing your [custom configuration](https://codeception.com/docs/reference/Configuration#Configuration-Templates-distyml), especially of the REST test module with your URL of the API[1], for ex. (do not change the values `depends` and `part`) :
+    ```yml
+        suites:
+            api:
+                modules:
+                    enabled:
+                        - REST:
+                            url: http://ladecadanse.local/api.php
+                            depends: PhpBrowser
+                            part: Json
+    ```
+1. fill your credentials in your test configuration
+
+[1]: As for API credentials, in the future, the URL above will be stored in an env variable
+
+
+### The tests
+
+- authentication
+- request parameters
+- get events, with response :
+    - as JSON
+    - correct structure of events
+    - required values of events
+
+### Running the tests on an instance
+
+`php vendor/bin/codecept run`
 
 ## Strategy
 ...

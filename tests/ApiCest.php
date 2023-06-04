@@ -7,7 +7,7 @@ require_once __DIR__ . '/../app/env.php';
 
 class ApiCest
 {
-    private array $apiParams = ['entity' => 'event', 'region' => 'ge', 'category' => 'fête', 'date' => '2023-05-20', 'endtime' => '01:00:00'];
+    private array $validRequestParams = ['entity' => 'event', 'region' => 'ge', 'category' => 'fête', 'date' => '2023-05-20', 'endtime' => '01:00:00'];
 
     /**
      * @dataProvider authenticateProvider
@@ -15,7 +15,7 @@ class ApiCest
     public function authenticate(ApiTester $I, \Codeception\Example $example)
     {
         $I->amHttpAuthenticated($example[0], $example[1]);
-        $I->sendGet('/', $this->apiParams);
+        $I->sendGet('/', $this->validRequestParams);
         $I->seeResponseCodeIs($example[2]);
     }
 
@@ -33,7 +33,7 @@ class ApiCest
     }
 
     /**
-     * @dataProvider paramsProvider
+     * @dataProvider badParamsProvider
      */
     public function badParams(ApiTester $I, \Codeception\Example $example)
     {
@@ -45,7 +45,7 @@ class ApiCest
     /**
      * @return array
      */
-    protected function paramsProvider()
+    protected function badParamsProvider()
     {
         return [
             [['entity' => '', 'region' => 'ge', 'category' => 'fête', 'date' => '2023-05-20', 'endtime' => '01:00:00'], HttpCode::BAD_REQUEST],
@@ -61,7 +61,7 @@ class ApiCest
 
         $I->amHttpAuthenticated(LADECADANSE_API_USER, LADECADANSE_API_KEY);
 
-        $I->sendGet('/', $this->apiParams);
+        $I->sendGet('/', $this->validRequestParams);
 
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->seeResponseIsJson();
@@ -113,9 +113,9 @@ class ApiCest
         // check values
         // events
         // check horaire fin value >= endtime and endtime <= 06:01 if endtime param present
-        $dateMinEnd = new Datetime($this->apiParams['date']);
+        $dateMinEnd = new Datetime($this->validRequestParams['date']);
         $dateMinEnd->modify('+1 day');
-        $datetimeMinEnd = $dateMinEnd->format('Y-m-d') . ' ' . $this->apiParams['endtime'];
+        $datetimeMinEnd = $dateMinEnd->format('Y-m-d') . ' ' . $this->validRequestParams['endtime'];
         foreach ($events as $e)
         {
             $datetimeRegexPattern = "/^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}$/";
@@ -128,7 +128,7 @@ class ApiCest
             }
 
             // TODO: test horaire debut & fin formats
-            if (!empty($this->apiParams['endtime'])) {
+            if (!empty($this->validRequestParams['endtime'])) {
 
                 $I->assertGreaterOrEquals($datetimeMinEnd, $e['horaire']['fin']);
             }
