@@ -26,9 +26,9 @@ class ApiCest
     {
         return [
             ["plop", "faux", HttpCode::UNAUTHORIZED],
-            [LADECADANSE_API_USER_NOCTAMBUS, "faux", HttpCode::UNAUTHORIZED],
+            [LADECADANSE_API_USER, "faux", HttpCode::UNAUTHORIZED],
             ["plop", LADECADANSE_API_KEY, HttpCode::UNAUTHORIZED],
-            [LADECADANSE_API_USER_NOCTAMBUS, LADECADANSE_API_KEY, HttpCode::OK],
+            [LADECADANSE_API_USER, LADECADANSE_API_KEY, HttpCode::OK],
         ];
     }
 
@@ -37,7 +37,7 @@ class ApiCest
      */
     public function badParams(ApiTester $I, \Codeception\Example $example)
     {
-        $I->amHttpAuthenticated(LADECADANSE_API_USER_NOCTAMBUS, LADECADANSE_API_KEY);
+        $I->amHttpAuthenticated(LADECADANSE_API_USER, LADECADANSE_API_KEY);
         $I->sendGet('/', $example[0]);
         $I->seeResponseCodeIs($example[1]);
     }
@@ -59,7 +59,7 @@ class ApiCest
     public function getEventsByDay(ApiTester $I)
     {
 
-        $I->amHttpAuthenticated(LADECADANSE_API_USER_NOCTAMBUS, LADECADANSE_API_KEY);
+        $I->amHttpAuthenticated(LADECADANSE_API_USER, LADECADANSE_API_KEY);
 
         $I->sendGet('/', $this->apiParams);
 
