@@ -7,7 +7,18 @@ require_once __DIR__ . '/../app/env.php';
 
 class ApiCest
 {
-    private array $validRequestParams = ['entity' => 'event', 'region' => 'ge', 'category' => 'fête', 'date' => '2023-05-20', 'endtime' => '01:00:00'];
+    /**
+     * @var array|string[]
+     */
+    private array $validRequestParams = ['entity' => 'event', 'region' => 'ge', 'category' => 'fête'];
+
+    public function _before(ApiTester $I)
+    {
+        $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+        $dotenv->load();
+        $this->validRequestParams['date'] = $_ENV['LADECADANSE_API_KEY_QUERY_DATE'];
+        $this->validRequestParams['endtime'] = $_ENV['LADECADANSE_API_KEY_QUERY_ENDTIME'];
+    }
 
     /**
      * @dataProvider authenticateProvider
@@ -26,9 +37,9 @@ class ApiCest
     {
         return [
             ["plop", "faux", HttpCode::UNAUTHORIZED],
-            [LADECADANSE_API_USER, "faux", HttpCode::UNAUTHORIZED],
+            [$_ENV['LADECADANSE_API_USER'], "faux", HttpCode::UNAUTHORIZED],
             ["plop", LADECADANSE_API_KEY, HttpCode::UNAUTHORIZED],
-            [LADECADANSE_API_USER, LADECADANSE_API_KEY, HttpCode::OK],
+            [$_ENV['LADECADANSE_API_USER'], $_ENV['LADECADANSE_API_KEY'], HttpCode::OK],
         ];
     }
 
@@ -37,7 +48,7 @@ class ApiCest
      */
     public function badParams(ApiTester $I, \Codeception\Example $example)
     {
-        $I->amHttpAuthenticated(LADECADANSE_API_USER, LADECADANSE_API_KEY);
+        $I->amHttpAuthenticated($_ENV['LADECADANSE_API_USER'], $_ENV['LADECADANSE_API_KEY']);
         $I->sendGet('/', $example[0]);
         $I->seeResponseCodeIs($example[1]);
     }
@@ -59,7 +70,7 @@ class ApiCest
     public function getEventsByDay(ApiTester $I)
     {
 
-        $I->amHttpAuthenticated(LADECADANSE_API_USER, LADECADANSE_API_KEY);
+        $I->amHttpAuthenticated($_ENV['LADECADANSE_API_USER'], $_ENV['LADECADANSE_API_KEY']);
 
         $I->sendGet('/', $this->validRequestParams);
 

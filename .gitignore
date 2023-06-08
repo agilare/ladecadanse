@@ -25,4 +25,4 @@ app/env.php
 !web/uploads/organisateurs/.gitkeep
 /.idea
 .htaccess
-codeception.yml
+tests/.env

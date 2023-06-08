@@ -5,7 +5,10 @@ suites:
         path: .
         modules:
             enabled:
-                - REST
+                - REST:
+                    url: '%LADECADANSE_API_URL%'
+                    depends: PhpBrowser
+                    part: Json
                 - Asserts
         step_decorators:
             - \Codeception\Step\AsJson
@@ -19,3 +22,6 @@ paths:
 settings:
     shuffle: false
     lint: true
+
+params:
+    - tests/.env

@@ -8,7 +8,7 @@ There is currently 2 automated tests available for :
 
 The scope of the application and its functionalities are basically covered; these tests are not yet very detailed but already allow to check the essential.
 
-According to (tests/TESTS.md)[TESTS.md] :
+According to [TESTS.md](tests/TESTS.md) :
 - criterias
 - depth : thus far level 1. of "Depth of checks in order..."; doesn't go into too much depth due to lack of time/knowledge of the tool and because the feat will probably change a lot in the coming time
 - scope : "Map"
@@ -50,23 +50,7 @@ The application API must be enabled with the credentials defined in `app/env.php
 
 ### Setup
 
-Define the URL targeted and the credentials used by the tests :
-
-1. in the root folder create a `codeception.yml` (which will be merged with base configuration `codeception.dist.yml`, at execution) containing your [custom configuration](https://codeception.com/docs/reference/Configuration#Configuration-Templates-distyml), especially of the REST test module with your URL of the API[1], for ex. (do not change the values `depends` and `part`) :
-    ```yml
-        suites:
-            api:
-                modules:
-                    enabled:
-                        - REST:
-                            url: http://ladecadanse.local/api.php
-                            depends: PhpBrowser
-                            part: Json
-    ```
-1. fill your credentials in your test configuration
-
-[1]: As for API credentials, in the future, the URL above will be stored in an env variable
-
+1. copy `tests/.env_model` to `tests/.env` and enter the values used by your tests (target URL and credentials)
 
 ### The tests
 
