@@ -63,7 +63,7 @@ Une fois le site fonctionnel, se connecter avec le login *admin* (créé ci-dess
 
 ## Tests
 
-See (tests/README.md)[tests/README.md]
+See [tests/README.md](tests/README.md)
 
 ## Déploiement
 

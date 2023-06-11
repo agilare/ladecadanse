@@ -39,8 +39,8 @@ define("GOOGLE_RECAPTCHA_API_KEY_SERVER", '');
 define("GOOGLE_ANALYTICS_ID", ''); // 1st analytics tool (enabled only in prod)
 define("GOOGLE_ANALYTICS_ENABLED", false);
 
-
-define("LADECADANSE_API_USER_NOCTAMBUS", '');
+// to allow access to events API (api.php)
+define("LADECADANSE_API_USER", '');
 define("LADECADANSE_API_KEY", '');
 
 // small modules

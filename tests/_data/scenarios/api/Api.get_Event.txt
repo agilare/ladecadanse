@@ -1,0 +1,10 @@
+I WANT TO GET EVENT
+
+I am http authenticated "LADECADANSE_API_USER"," LADECADANSE_API_KEY"
+I send get '/'," ['entity' => 'event'," 'region' => 'ge'," 'category' => 'fête'," 'date' => '2023-04-01'," 'endtime' => '01:00:00']"
+I see response code is "HttpCode::OK"
+I see response is json ""
+I see response json matches json path '$.date'
+I grab data from response by json path '$.events'
+I see response json matches json path '$.events[*].idevenement'
+
