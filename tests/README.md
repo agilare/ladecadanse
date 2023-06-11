@@ -8,14 +8,14 @@ There is currently 2 automated tests available for :
 
 The scope of the application and its functionalities are basically covered; these tests are not yet very detailed but already allow to check the essential.
 
-According to [TESTS.md](tests/TESTS.md) :
-- criterias
+According to [TESTS.md](TESTS.md) :
+- criteria
 - depth : thus far level 1. of "Depth of checks in order..."; doesn't go into too much depth due to lack of time/knowledge of the tool and because the feat will probably change a lot in the coming time
 - scope : "Map"
 
 ### Prerequisites
 
-- [Selenium IDE](https://www.selenium.dev/selenium-ide/) browser extension insalled
+- [Selenium IDE](https://www.selenium.dev/selenium-ide/) browser extension installed
 - fake data in the instance to test :
     - users : an admin, an actor
     - entities : about a hundred events (of 2-3 categories), some lieux and organizers (try to link these entities like an Event in a Lieu with some Organizers)
@@ -23,7 +23,7 @@ According to [TESTS.md](tests/TESTS.md) :
 
 ### The tests
 
-Suites availables by user type (screen size) :
+Suites available by user type (screen size) :
 - public (small)
 - actor (large)
 - admin (large) : avoid edit and delete tests on prod !
@@ -46,20 +46,20 @@ Tests names contains some codes :
 
 ### Prerequisites
 
-The application API must be enabled with the credentials defined in `app/env.php` (`LADECADANSE_API_USER` and `LADECADANSE_API_KEY`)
+The application API must be configured with its credentials defined in `app/env.php` (`LADECADANSE_API_USER` and `LADECADANSE_API_KEY`)
 
 ### Setup
 
-1. copy `tests/.env_model` to `tests/.env` and enter the values used by your tests (target URL and credentials)
+1. copy `tests/.env_model` to a new file `tests/.env` and enter the values used by your tests (URL targeted and submitted credentials)
 
 ### The tests
 
 - authentication
-- request parameters
+- request parameters validation
 - get events, with response :
     - as JSON
-    - correct structure of events
-    - required values of events
+    - correct structure
+    - required values
 
 ### Running the tests on an instance
 

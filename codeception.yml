@@ -1,4 +1,5 @@
 # suite config
+# RUN `build` COMMAND AFTER ADDING/REMOVING MODULES.
 suites:
     api:
         actor: ApiTester
