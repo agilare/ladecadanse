@@ -1,56 +1,58 @@
 # Tests
 
 There is currently 2 automated tests available for :
-- user application : end to end, with Selenium IDE (see below)
-- API : functional with a Codeception script
+- user application (index.php) : end to end, with Selenium IDE
+- API (api.php) : functional with a Codeception script
 
-## End to end (user application)
+## Automated tests
 
-The scope of the application and its functionalities are basically covered; these tests are not yet very detailed but already allow to check the essential. It follows 3 dimensions, according to [Strategy] :
+### End to end (user application)
+
+The scope of the application and its features are basically covered; these tests are not yet very detailed but already allow to check the essential. It follows 3 dimensions, according to [Strategy](#Strategy):
 - criteria
 - depth : thus far level 1. of "Depth of checks in order..."; doesn't go into too much depth due to lack of time/knowledge of the tool and because the feat will probably change a lot in the coming time
 - scope : "Map"
 
-### Prerequisites
+#### Prerequisites
 
 - [Selenium IDE](https://www.selenium.dev/selenium-ide/) browser extension installed
-- fake data in the instance to test :
-    - users : an admin, an actor
-    - entities : about a hundred events (of 2-3 categories), some lieux and organizers (try to link these entities like an Event in a Lieu with some Organizers)
-- mail sending is configured in `env.php` and mails can be sent, really or using a mail catcher for development like [FakeSMTP](https://nilhcem.com/FakeSMTP/)
+- fake data in the instance to test (to create manually) :
+    - users : an admin, an actor (the most important profiles)
+    - entities : about a hundred events (of 2-3 categories), some venues and organizers (try to link these entities, like an Event in a Venue with some Organizers)
+- mail sending parameters are complete in `env.php` and mails can be sent (really or using a mail catcher for development like [FakeSMTP](https://nilhcem.com/FakeSMTP/))
 
-### The tests
+#### The tests
 
-Suites available by user type (screen size) :
+Suites available by user type (screen size used) :
 - public (small)
 - actor (large)
-- admin (large) : avoid edit and delete tests on prod !
+- admin (large) : avoid tests editing and deleting items on prod !
 
-Tests names contains some codes :
-- vars : could need some adaptations in values filled by user
-- r : data is added, edited or deleted; restoration needed after the test
+Tests have some name conventions :
+- "vars" : could need some adaptations in values filled by user
+- "r" : data is added, edited or deleted; restoration could be needed after the test
 
-### Running the tests on an instance
+#### Running the tests on an instance
 
 1. in your browser, launch Selenium IDE and open project `tests/ladecadanse.side`
-1. select a test in a suite
-1. enter url to test (local, prod...)
-1. run all tests in suite
+2. select a test in a suite
+3. enter the URL to test (local, prod...)
+4. run all tests in suite
 
-### Edit
+#### Edit
 ...
 
-## Functional (API)
+### Functional (API)
 
-### Prerequisites
+#### Prerequisites
 
-The application API must be configured with its credentials defined in `app/env.php` (`LADECADANSE_API_USER` and `LADECADANSE_API_KEY`)
+The application API must be configured with its access credentials defined in `app/env.php` (`LADECADANSE_API_USER` and `LADECADANSE_API_KEY`)
 
-### Setup
+#### Setup
 
-1. copy `tests/.env_model` to a new file `tests/.env` and enter the values used by your tests (URL targeted and submitted credentials)
+Copy `tests/.env_model` to a new file `tests/.env` and enter the values used by your tests (URL targeted and submitted credentials)
 
-### The tests
+#### The tests
 
 - authentication
 - request parameters validation
@@ -59,7 +61,7 @@ The application API must be configured with its credentials defined in `app/env.
     - correct structure
     - required values
 
-### Running the tests on an instance
+#### Running the tests on an instance
 
 `php vendor/bin/codecept run`
 
@@ -75,9 +77,9 @@ The application API must be configured with its credentials defined in `app/env.
     - user logged in/out
     - screen size (desktop, mobile)
 
-### Depth of checks in order to meet the user expectations of user actions, by order of detail and complexity :
+### Depth of checks in order to meet the user expectations of user actions, by order of precision and complexity to test :
 
-1. links respond and in their content the **basic** data are displayed, according to user
+1. links respond and in their content the **basic** data are displayed, according to user :
     - selection by
         - filtering
             - entity type : event, lieu...

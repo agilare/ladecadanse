@@ -1,7 +1,6 @@
 # Changelog
 
-
-## [3.4.7] Unreleased
+## [3.5.1] - Unreleased
 
 ### Changed
 
@@ -13,25 +12,27 @@
 - [ ] usage of globals
 
 
-## [3.4.6] Unreleased
+## [3.5.0] - Unreleased
 
 ### Fixed
 
 - users - edit : "avec affiliation" value must be sent in submit, rm conditions
+- [ ] event : in edit and copy form config of datepicker to allow adding event for today event after 0h
+- [ ] événements copiés ont un horaire_fin faux si > 0h ?
 
 ### Added
 
-- events : api sending night "fêtes" events of a day (Noctambus)
-- tests : setup Codeception and basic API tests
+- events : API to get night events "fêtes" of a day
+- tests : setup Codeception and basic tests of API
 
 ### Changed
 
 - [ ] events form
-    - [ ] inscrease width of fields (complément, titre, desc, sites web, prix, prélocs)
+    - [ ] increase width of fields (complément, titre, desc, sites web, prix, prélocs)
     - [ ] put back horaire under date
     - [ ] categories : replace fêtes tooltip by permanent text
     - [ ] lieu "Ou si le lieu n'est pas listé :", one background for div "Nom du lieu", "Adresse", etc.; and more on right
-- [ ] tests : documentation revised, completed (readme, strategy, map)
+- tests : documentation revised, completed (readme, strategy, map)
 - [ ] update jQuery from 3.6.4 to 3.7.0
 
 
