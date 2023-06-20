@@ -17,7 +17,7 @@
 ### Fixed
 
 - users - edit : "avec affiliation" value must be sent in submit, rm conditions
-- [ ] event : in edit and copy form config of datepicker to allow adding event for today event after 0h
+- event : in edit and copy form config of datepicker to allow adding event for today event after 0h
 - [ ] événements copiés ont un horaire_fin faux si > 0h ?
 
 ### Added

@@ -1,5 +1,11 @@
+// users can add events for today, until 06h the day after, in line with the agenda
+const nbHoursAfterMidnightForDay = 6;
+let d = new Date();
+d.setHours(d.getHours() - nbHoursAfterMidnightForDay);
+const eventEditStartDate = d.getDate() + "." + (d.getMonth() + 1) + "." + d.getFullYear();
+
 $('input.datepicker').Zebra_DatePicker({
-    direction: true,
+    direction: [eventEditStartDate, false],
     format: 'd.m.Y',
     zero_pad: true,
     days: ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'],
@@ -10,7 +16,7 @@ $('input.datepicker').Zebra_DatePicker({
 });
 
 $('input.datepicker_from').Zebra_DatePicker({
-    direction: true,
+    direction: [eventEditStartDate, false],
     pair: $('input.datepicker_to'),
     format: 'd.m.Y',
     zero_pad: true,
