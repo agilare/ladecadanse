@@ -10,15 +10,16 @@
 ### Removed
 
 - [ ] usage of globals
-
+- [ ] jQuery Migrate
 
 ## [3.5.0] - Unreleased
 
 ### Fixed
 
 - users - edit : "avec affiliation" value must be sent in submit, rm conditions
-- event : in edit and copy form config of datepicker to allow adding event for today event after 0h
-- [ ] événements copiés ont un horaire_fin faux si > 0h ?
+- events
+  - in edit and copy form config of datepicker to allow adding event for today event after 0h
+  - [ ] copy of an event had horaire_fin *before* horaire_deb if original horaire_fin was after midnight; horaires of event copied were in the wrong day (the same day as dateEvenement) if horaires of original were after midnight
 
 ### Added
 
@@ -33,7 +34,7 @@
     - [ ] categories : replace fêtes tooltip by permanent text
     - [ ] lieu "Ou si le lieu n'est pas listé :", one background for div "Nom du lieu", "Adresse", etc.; and more on right
 - tests : documentation revised, completed (readme, strategy, map)
-- [ ] update jQuery from 3.6.4 to 3.7.0
+- update jQuery from 3.6.4 to 3.7.0
 
 
 ## [3.4.5] - 2023-05-18
