@@ -42,7 +42,7 @@ $req_lieu = $connector->query("SELECT idLieu, dateEvenement FROM evenement WHERE
 $tab_lieu = $connector->fetchArray($req_lieu);
 
 
-if ($authorization->estAuteur($_SESSION['SidPersonne'], $get['idE'], "evenement") || $_SESSION['Sgroupe'] <= 6
+if ($authorization->estAuteur($_SESSION['SidPersonne'], $get['idE'], "evenement") || $_SESSION['Sgroupe'] <= UserLevel::AUTHOR
  || (isset($_SESSION['Saffiliation_lieu']) && isset($tab_lieu['idLieu']) && $tab_lieu['idLieu'] == $_SESSION['Saffiliation_lieu'])
 || $authorization->isPersonneInEvenementByOrganisateur($_SESSION['SidPersonne'], $get['idE'])
 || (isset($tab_lieu['idLieu']) && $authorization->isPersonneInLieuByOrganisateur($_SESSION['SidPersonne'], $tab_lieu['idLieu']))
@@ -182,11 +182,17 @@ FROM evenement WHERE idEvenement=".$get['idE'])));
 			$tab_champs['dateEvenement'] = date('Y-m-d', $dateIncrUnix);
 			$tab_champs['dateAjout'] = date("Y-m-d H:i:s");
 			$tab_champs['date_derniere_modif'] = date("Y-m-d H:i:s");
-
-            if (mb_substr($tab_champs['horaire_debut'], 11) != "06:00:01"
-			&& $tab_champs['horaire_debut'] != "0000-00-00 00:00:00")
+            // dump($tab_champs);
+            if (mb_substr($tab_champs['horaire_debut'], 11) != "06:00:01" && $tab_champs['horaire_debut'] != "0000-00-00 00:00:00")
 			{
-				$tab_champs['horaire_debut'] = $tab_champs['dateEvenement']." ".mb_substr($tab_champs['horaire_debut'], 11);
+                if (mb_substr($tab_champs['horaire_debut'], 0, 10) > $date_originale    )
+                {
+                    $tab_champs['horaire_debut'] = date_lendemain($tab_champs['dateEvenement'])." ".mb_substr($tab_champs['horaire_debut'], 11);
+                }
+                else
+                {
+                    $tab_champs['horaire_debut'] = $tab_champs['dateEvenement']." ".mb_substr($tab_champs['horaire_debut'], 11);
+                }
 			}
 			else
 			{
@@ -195,11 +201,17 @@ FROM evenement WHERE idEvenement=".$get['idE'])));
 
 
 			//echo date_lendemain($tab_champs['dateEvenement'])." 06:00:01";
-			if (mb_substr($tab_champs['horaire_fin'], 11) != "06:00:01"
-			&& $tab_champs['horaire_fin'] != "0000-00-00 00:00:00")
-			{
+			if (mb_substr($tab_champs['horaire_fin'], 11) != "06:00:01" && $tab_champs['horaire_fin'] != "0000-00-00 00:00:00")
+			{   // echo $date_originale;
+                if (mb_substr($tab_champs['horaire_fin'], 0, 10) > $date_originale)
+                {   // echo $tab_champs['horaire_fin'];
+                    $tab_champs['horaire_fin'] = date_lendemain($tab_champs['dateEvenement'])." ".mb_substr($tab_champs['horaire_fin'], 11);
 
-				$tab_champs['horaire_fin'] = $tab_champs['dateEvenement']." ".mb_substr($tab_champs['horaire_fin'], 11);
+                }
+                else
+                {
+                    $tab_champs['horaire_fin'] = $tab_champs['dateEvenement']." ".mb_substr($tab_champs['horaire_fin'], 11);
+                }
 			}
 			else
 			{

@@ -19,7 +19,7 @@
 - users - edit : "avec affiliation" value must be sent in submit, rm conditions
 - events
   - in edit and copy form config of datepicker to allow adding event for today event after 0h
-  - [ ] copy of an event had horaire_fin *before* horaire_deb if original horaire_fin was after midnight; horaires of event copied were in the wrong day (the same day as dateEvenement) if horaires of original were after midnight
+  - copy of an event had horaire_fin *before* horaire_deb if original horaire_fin was after midnight; horaires of event copied were in the wrong day (the same day as dateEvenement) if horaires of original were after midnight
 
 ### Added
 
