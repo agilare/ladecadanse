@@ -288,5 +288,5 @@ use Ladecadanse\UserLevel;
         <div class="spacer"><!-- --></div>
 
         <!-- Début Conteneur -->
-        <div id="conteneur" <?php if (strstr(dirname($_SERVER['PHP_SELF']), 'admin') || $nom_page == 'evenement-edit') { ?>style="padding-right: 5px" <?php } ?> >
+        <div id="conteneur" <?php if (strstr(dirname($_SERVER['PHP_SELF']), 'admin') || in_array($nom_page, ['evenement-edit', 'evenement-report', 'lieu-edit', 'lieu-text-edit', 'organisateur-edit', 'contacteznous', 'user-login', 'user-edit', 'user-register'])) { ?>style="padding-right: 5px" <?php } ?> >
 

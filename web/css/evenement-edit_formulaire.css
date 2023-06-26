@@ -14,3 +14,11 @@ p.action_ajouter
 {
     display:none;
 }
+
+#evenement-lieu-pastrouve
+{
+    margin-left:8em;
+    padding: 5px;
+    background:#e1e1e1;
+    max-width: 500px;
+}

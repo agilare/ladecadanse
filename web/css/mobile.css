@@ -357,7 +357,7 @@ form#ajouter_editer label#label_nom, form#ajouter_editer label#label_affiliation
 
 .contacteznous form#ajouter_editer textarea#message
 {
-width:280px;
+    width:90%;
 }
 
 form#ajouter_editer .guideChamp {
@@ -540,7 +540,7 @@ margin-left:0;
 form#ajouter_editer textarea {
 
 
-    width: 280px;
+    width: 320px;
 
 	}
 
@@ -552,15 +552,15 @@ form#ajouter_editer select#idLieu
 
 form#ajouter_editer #adresse, form#ajouter_editer #urlLieu, form#ajouter_editer  #horaire_complement,form#ajouter_editer  #prelocations, form#ajouter_editer #titre, form#ajouter_editer #ref
 {
-    width: 280px;
+    width: 320px;
 }
 
 
 form#ajouter_editer label {
-    display: inline-block;
+    display: block;
     margin: 0 0.2em 0.2em 0;
     padding: 0 0 0 0;
-    text-align: right;
+    text-align: left;
     width: auto;
 }
 
@@ -573,6 +573,11 @@ form#ajouter_editer label.continu
 form#ajouter_editer .supImg
 {
 margin-left: 50px;
+}
+
+#evenement-lieu-pastrouve
+{
+    margin-left:1em;
 }
 
 /* personne */
@@ -596,6 +601,11 @@ ul#menu_ajouts li {
 {
 	display: inline;
 	text-align: left;
+}
+
+form#ajouter_editer .entreLabels
+{
+    margin-left: 0;
 }
 
 form#ajouter_editer p.memoriser label, form#ajouter_editer p.mdp_oublie

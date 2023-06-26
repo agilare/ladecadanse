@@ -150,16 +150,14 @@ if ($verif->nbErreurs() > 0)
 
 <p>
 <label for="sujet" id="label_sujet">Sujet* </label>
-<input name="sujet" id="sujet" type="text" size="40" maxlength="100"  tabindex="4" value="<?php echo sanitizeForHtml($champs['sujet']) ?>" />
-<?php echo $verif->getErreur("sujet"); ?>
+        <input name="sujet" id="sujet" type="text" size="45" maxlength="100"  tabindex="4" value="<?php echo sanitizeForHtml($champs['sujet']) ?>" />
+        <?php echo $verif->getErreur("sujet"); ?>
 </p>
 
 
 <!-- Contenu obligatoire (textarea) -->
 <p>
-    <label for="contenu" id="label_contenu">Contenu* </label><textarea name="contenu" id="message" rows="14" title="" tabindex="5">
-    <?php echo sanitizeForHtml($champs['contenu']) ?>
-    </textarea>
+    <label for="contenu" id="label_contenu">Contenu* </label><textarea name="contenu" id="message" rows="14" title="" tabindex="5"><?php echo sanitizeForHtml($champs['contenu']) ?></textarea>
     <?php echo $verif->getErreur("contenu"); ?>
 </p>
 

@@ -2,7 +2,7 @@
   "id": "63e99cd5-4a8e-4364-899e-ff6d0b3b0f9b",
   "version": "2.0",
   "name": "ladecadanse",
-  "url": "https://ladecadanse.darksite.ch/",
+  "url": "http://ladecadanse.local/",
   "tests": [{
     "id": "1c4e0b1a-ecd3-4bee-b216-8448f663e804",
     "name": "global menus small",
@@ -2194,17 +2194,6 @@
         ["xpath=//div[2]/p/input", "xpath:position"]
       ],
       "value": "La Gravière"
-    }, {
-      "id": "8c05d492-db3c-4bc7-9b10-dde255028d90",
-      "comment": "",
-      "command": "click",
-      "target": "css=fieldset:nth-child(6) > div:nth-child(5)",
-      "targets": [
-        ["css=fieldset:nth-child(6) > div:nth-child(5)", "css:finder"],
-        ["xpath=//form[@id='ajouter_editer']/fieldset[3]/div[2]", "xpath:idRelative"],
-        ["xpath=//fieldset[3]/div[2]", "xpath:position"]
-      ],
-      "value": ""
     }, {
       "id": "bfea8cda-d6ac-48a7-9249-914d89488143",
       "comment": "",

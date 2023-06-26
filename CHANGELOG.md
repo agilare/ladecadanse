@@ -2,6 +2,10 @@
 
 ## [3.5.1] - Unreleased
 
+### Fixed
+
+- [ ] forms : in mobile view Chosen doesn't work
+
 ### Changed
 
 - [ ] refactor
@@ -12,7 +16,7 @@
 - [ ] usage of globals
 - [ ] jQuery Migrate
 
-## [3.5.0] - Unreleased
+## [3.5.0] - 2023-06-26
 
 ### Fixed
 
@@ -28,11 +32,12 @@
 
 ### Changed
 
-- [ ] events form
-    - [ ] increase width of fields (complément, titre, desc, sites web, prix, prélocs)
-    - [ ] put back horaire under date
-    - [ ] categories : replace fêtes tooltip by permanent text
-    - [ ] lieu "Ou si le lieu n'est pas listé :", one background for div "Nom du lieu", "Adresse", etc.; and more on right
+- events form presentation improvements
+    - increase width of some fields
+    - put back horaire under date
+    - complete link for tooltip by a more visible help button
+    - clearer lieu manual fields
+- forms : increase container width for lieu, organisateur, contact...
 - tests : documentation revised, completed (readme, strategy, map)
 - update jQuery from 3.6.4 to 3.7.0
 

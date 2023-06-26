@@ -369,12 +369,12 @@ form#ajouter_editer label
 form#ajouter_editer .description
 {
     margin-left:10.5em;
-    width:560px;
+    width:600px;
 }
 
 form#ajouter_editer #titre
 {
-    width:560px;
+    width:600px;
 }
 
 
@@ -386,7 +386,7 @@ form#ajouter_editer table.fichiers_associes {
 
 form#ajouter_editer textarea, form#ajouter_editer #ref
 {
-    width:560px;
+    width:600px;
 }
 
 /* personne */

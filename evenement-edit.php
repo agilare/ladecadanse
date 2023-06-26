@@ -920,7 +920,8 @@ if ($verif->nbErreurs() > 0)
             if ($k === 'fête')
             {
                 $required = ' required';
-                $v = '<span class="tooltip">fêtes<span class="tooltiptext">Inclut les soirées, les concerts, etc.</span></span>';
+                $v = '<span class="tooltip">fêtes <i class="fa fa-info-circle" aria-hidden="true"></i>
+<span class="tooltiptext">Inclut les soirées, les concerts, etc.</span></span>';
             }
             echo '<li class="listehoriz"><input type="radio" name="genre" value="'.$k.'" '.$coche.' id="genre_'.$k.'"  class="radio_horiz" '.$required.' /><label class="continu" for="genre_'.$k.'">'.$v.'</label></li>';
 
@@ -945,8 +946,9 @@ if ($verif->nbErreurs() > 0)
 
 
 
-        <p style="display: inline-block;width:50%;margin:5px 0">
-                <label for="horaire_debut" style="width:6em"><span class="tooltip">Début<span class="tooltiptext">Jusqu’à 06:00, le début sera considéré faisant partie du jour de l’événement</span></span> </label>
+        <p style="margin:5px 0">
+                <label for="horaire_debut" style="display:inline-block"><span class="tooltip">Début <i class="fa fa-info-circle" aria-hidden="true"></i>
+<span class="tooltiptext">Jusqu’à 06:00, le début sera considéré faisant partie du jour de l’événement</span></span> </label>
                     <input type="time" name="horaire_debut" id="horaire_debut" size="5" value="<?php echo sanitizeForHtml($champs['horaire_debut']) ?>" />
 
                     <label for="horaire_fin" class="continu">Fin</label>
@@ -973,7 +975,7 @@ if ($verif->nbErreurs() > 0)
 
                     <div style="margin-top:1.3em">
                         <label for="horaire_complement">Complément</label>
-                            <input type="text" name="horaire_complement" id="horaire_complement" size="45" maxlength="100" value="<?php echo sanitizeForHtml($champs['horaire_complement']) ?>" />
+                            <input type="text" name="horaire_complement" id="horaire_complement" size="60" maxlength="100" value="<?php echo sanitizeForHtml($champs['horaire_complement']) ?>" />
                             <?php
             echo $verif->getHtmlErreur('horaire_complement');
             ?>
@@ -987,8 +989,8 @@ if ($verif->nbErreurs() > 0)
     <fieldset>
         <legend>Lieu*</legend>
         <p>
-        <label for="idLieu">Dans la liste</label>
-        <select name="idLieu" id="idLieu" class="chosen-select" title="Un lieu dans base de données de La décadanse" onfocus="this.className='focus';" style="max-width:300px"  data-placeholder="Tapez le nom du lieu">
+            <label for="idLieu"><strong>Nom du lieu :</strong></label>
+        <select name="idLieu" id="idLieu" class="chosen-select" title="Un lieu dans base de données de La décadanse" style="max-width:300px"  data-placeholder="">
         <?php
 
         $sql_lieu_excl_fr = '';
@@ -1049,19 +1051,18 @@ if ($verif->nbErreurs() > 0)
         ?>
         </p>
 
-            <p class="entreLabels" style="width:auto;font-size: 1em;"><strong>Si le lieu n'est pas sur La décadanse :</strong></p>
-            <div class="spacer"></div>
-        <div style="margin-left:4.5em">
+        <div id="evenement-lieu-pastrouve">
+
+            <p style="width:auto;font-size: 1em;text-align: left;margin: 5px">Si et seulement si vous n'avez pas trouvé le lieu dans la liste ci-dessus, renseignez-le ici&nbsp;:</p>
+                <div class="spacer"></div>
         <p>
         <?php
         $tab_nomLieu_label = array("for" => "nomLieu");
         echo HtmlShrink::formLabel($tab_nomLieu_label, "Nom du lieu");
         echo $verif->getHtmlErreur("nomLieuIdentique");
 
-        $tab_nomLieu = array("type" => "text", "name" => "nomLieu", "id" => "nomLieu", "size" => "35",
-         "maxlength" => "60", "value" => "",
-         "onfocus" => "this.className='focus';", "onblur" => "this.className='normal';");
-        if (empty($champs['idLieu']))
+        $tab_nomLieu = array("type" => "text", "name" => "nomLieu", "id" => "nomLieu", "size" => "35", "maxlength" => "60", "value" => "");
+    if (empty($champs['idLieu']))
         {
             $tab_nomLieu['value'] = sanitizeForHtml($champs['nomLieu']);
         }
@@ -1076,7 +1077,7 @@ if ($verif->nbErreurs() > 0)
             echo $verif->getHtmlErreur("adresseIdentique");
             ?>
 
-            <input type="text" name="adresse" id="adresse" size="40" maxlength="100" title="rue, no" value="<?php if (empty($champs['idLieu'])) { echo sanitizeForHtml($champs['adresse']); } ?>" onfocus="this.className='focus';" onblur="this.className='normal';" />
+            <input type="text" name="adresse" id="adresse" size="40" maxlength="100" title="rue, no" value="<?php if (empty($champs['idLieu'])) { echo sanitizeForHtml($champs['adresse']); } ?>"  />
         <?php
         echo $verif->getHtmlErreur("adresse");
         echo $verif->getHtmlErreur("doublonLieux");
@@ -1168,7 +1169,7 @@ if ($verif->nbErreurs() > 0)
 
         <p>
             <label for="urlLieu">Site web</label>
-            <input type="text" name="urlLieu" id="urlLieu" size="40" maxlength="80" title="URL du lieu" value="<?php if (empty($champs['idLieu'])) { echo sanitizeForHtml($champs['urlLieu']); } ?>" onfocus="this.className='focus';" onblur="this.className='normal';" />
+            <input type="text" name="urlLieu" id="urlLieu" size="40" maxlength="80" title="URL du lieu" value="<?php if (empty($champs['idLieu'])) { echo sanitizeForHtml($champs['urlLieu']); } ?>" />
         <?php
         echo $verif->getHtmlErreur("urlLieu");
         ?>
@@ -1263,8 +1264,8 @@ if ($verif->nbErreurs() > 0)
 
     <fieldset>
         <legend>Entrée</legend>
-        <?php if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] < 6)) { ?>
-        <?php
+            <?php if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] < UserLevel::AUTHOR)) { ?>
+                <?php
         $price_types = ['unknown' => 'inconnu', 'gratis' => 'entrée libre', 'asyouwish' => 'prix libre', 'chargeable' => 'payant'];
         ?>
             <ul class="radio" style="list-style-type: none">
@@ -1282,22 +1283,21 @@ if ($verif->nbErreurs() > 0)
 <?php } ?>
 
         <div id="prix-precisions" <?php
-        if (!isset($_SESSION['Sgroupe']) || (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] >= 6)  || ($get['action'] == "editer" || $get['action'] == "update")
-                && (!empty($champs['prix']) || (!empty($champs['price_type']) && ($champs['price_type'] == 'asyouwish' || $champs['price_type'] == 'chargeable') ))
+        if (!isset($_SESSION['Sgroupe']) || (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] >= UserLevel::AUTHOR) || ($get['action'] == "editer" || $get['action'] == "update") && (!empty($champs['prix']) || (!empty($champs['price_type']) && ($champs['price_type'] == 'asyouwish' || $champs['price_type'] == 'chargeable') ))
                 ) { ?> style="display:block" <?php } ?>>
             <p>
                 <label for="prix">Prix</label>
-                <input type="text" name="prix" id="prix" size="55" maxlength="100" value="<?php echo sanitizeForHtml($champs['prix']) ?>" />
+                    <input type="text" name="prix" id="prix" size="45" maxlength="100" value="<?php echo sanitizeForHtml($champs['prix']) ?>" />
                     <?php
                 echo $verif->getHtmlErreur('prix');
                 ?>
             </p>
-            <?php if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] > 6 ) { ?>
-            <div class="guideChamp">Vous pouvez mettre seulement <strong>0</strong> si l'entrée est libre.</div>
+                <?php if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] > UserLevel::AUTHOR) { ?>
+                    <div class="guideChamp">Vous pouvez mettre seulement <strong>0</strong> si l'entrée est libre.</div>
             <?php } ?>
             <p>
                 <label for="prelocations">Prélocations</label>
-                    <input type="text" name="prelocations" id="prelocations" size="65" maxlength="150" value="<?php echo sanitizeForHtml($champs['prelocations']) ?>" />
+                    <input type="text" name="prelocations" id="prelocations" size="70" maxlength="150" value="<?php echo sanitizeForHtml($champs['prelocations']) ?>" />
                     <?php
                 echo $verif->getHtmlErreur('prelocations');
                 ?>
@@ -1337,7 +1337,8 @@ if ($verif->nbErreurs() > 0)
         </p>
             <div class="spacer"></div>
         <p>
-            <label for="image"><span class="tooltip">Photo<span class="tooltiptext"> S’affiche à la place du flyer s’il n’y a pas de flyer, sinon en dessous de celui-ci</span></span></label>
+            <label for="image"><span class="tooltip">Photo <i class="fa fa-info-circle" aria-hidden="true"></i>
+<span class="tooltiptext"> S’affiche à la place du flyer s’il n’y a pas de flyer, sinon en dessous de celui-ci</span></span></label>
             <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo UPLOAD_MAX_FILESIZE ?>" /> <!-- 2 Mo -->
             <input type="file" name="image" id="image" class="file-upload-size-max" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif" class="fichier" />
             <div class="guideChamp">Photo des artistes, de leurs œuvres, du lieu, etc.</div>

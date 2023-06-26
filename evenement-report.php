@@ -36,9 +36,8 @@ include("_header.inc.php");
     $tab_type_erreur = array(
         "info" => "mauvaise information au sujet de l’événement",
         "enlever" => "événement à enlever",
-        "bug" => "un bug",
         "autre" => "autre"
-    );
+);
 
     $verif = new Validateur();
 
