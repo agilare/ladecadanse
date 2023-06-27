@@ -4,6 +4,7 @@
 
 ### Fixed
 
+- events : queries to fix horaires val of copied rows and some other
 - [ ] forms : in mobile view Chosen doesn't work
 
 ### Changed

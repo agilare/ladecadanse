@@ -2,6 +2,7 @@
 docker/*
 app/env_model.php
 resources/ladecadanse.sql
+resources/evenement-fix-horaires.sql
 tests*
 .editorconfig
 .gitattributes
