@@ -61,7 +61,7 @@ use Ladecadanse\UserLevel;
     <link rel="stylesheet" type="text/css" media="print" href="/web/css/imprimer.css" title="Imprimer" />
     <link rel="stylesheet" type="text/css" href="/vendor/fortawesome/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="/vendor/dimsemenov/magnific-popup/dist/magnific-popup.css">
-    <link rel="stylesheet" type="text/css" href="/web/js/zebra_datepicker/css/default/zebra_datepicker.min.css">
+    <link rel="stylesheet" type="text/css" href="/web/js/Zebra_datepicker/css/default/zebra_datepicker.min.css">
 
     <?php HtmlShrink::showLinkRss($nom_page); ?>
 

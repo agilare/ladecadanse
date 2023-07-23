@@ -48,7 +48,7 @@ $pages_tinymce = ["lieu-text-edit", "organisateur-edit"];
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=<?php echo GOOGLE_API_KEY; ?>&callback=initMap"></script>
 <script src="/vendor/dimsemenov/magnific-popup/dist/jquery.magnific-popup.js"></script>
 <script src="/vendor/harvesthq/chosen/chosen.jquery.min.js"></script>
-<script src="/web/js/zebra_datepicker/zebra_datepicker.min.js"></script>
+<script src="/web/js/Zebra_datepicker/zebra_datepicker.min.js"></script>
 <script src="/web/js/jquery.shiftcheckbox.js"></script>
 <?php if (in_array($nom_page, $pages_tinymce)) { ?>
     <script src="https://cloud.tinymce.com/5/tinymce.min.js?apiKey=<?php echo TINYMCE_API_KEY; ?>"></script>
