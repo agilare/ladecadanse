@@ -19,13 +19,11 @@ namespace Ladecadanse;
     var $fichiers = array();
     var $supprimer = array();
     var $erreurs = array();
-
     var $verif;
 	var $action;
 
 	var $message;
     var $connector;
-
 
     function __construct($nom, $champs, $fichiers)
     {

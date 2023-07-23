@@ -43,8 +43,8 @@ class HtmlShrink
         $html = '';
         ob_start();
         //
-        ?>
-        <ul class="menu_region">
+?>
+                        <ul class="menu_region">
         <?php
         $class_region = 'ge';
         foreach ($glo_regions as $n => $v)
@@ -69,20 +69,21 @@ class HtmlShrink
                     $ici = ' ici';
 
                 $nb = '';
-                if (!empty($event_nb)) {
+                if (!empty($event_nb))
+                {
                     $nb = $event_nb[$n];
                 }
-                ?><li>
-                                    <a href="?region=<?php echo $n; ?>&<?php echo Utils::urlQueryArrayToString($get, 'region'); ?>" class="<?php echo $class_region; ?><?php echo $ici; ?>"><?php echo $v; ?>&nbsp;<?php
-                                        if ($nb !== '') {
-                    ?><span class="events-nb"><?php echo $nb; ?></span><?php } ?></a></li><?php
-                        }
-                    }
-                    ?></ul>
-                    <?php
+        ?><li>
+                                                                    <a href="?region=<?php echo $n; ?>&<?php echo Utils::urlQueryArrayToString($get, 'region'); ?>" class="<?php echo $class_region; ?><?php echo $ici; ?>"><?php echo $v; ?>&nbsp;<?php
+                if ($nb !== '')
+                {
+        ?><span class="events-nb"><?php echo $nb; ?></span><?php } ?></a></li><?php
+            }
+        }
+        ?></ul>
+        <?php
         return ob_get_contents();
     }
-
 
     public static function getPaginationString(int $page = 1, $totalitems, int $limit = 15, int $adjacents = 1, $targetpage = "/", $pagestring = "?page="): string
     {

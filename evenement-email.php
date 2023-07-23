@@ -2,12 +2,13 @@
 
 require_once("app/bootstrap.php");
 
-use Ladecadanse\UserLevel;
-use Ladecadanse\Utils\Validateur;
-use Ladecadanse\Utils\Logger;
-use Ladecadanse\Utils\Text;
-use Ladecadanse\Utils\Mailing;
 use Ladecadanse\HtmlShrink;
+use Ladecadanse\UserLevel;
+use Ladecadanse\Utils\Logger;
+use Ladecadanse\Utils\Mailing;
+use Ladecadanse\Utils\Text;
+use Ladecadanse\Utils\Validateur;
+use Swoole\Exception;
 
 if (!$videur->checkGroup(UserLevel::MEMBER)) {
     header("Location: index.php"); die();
@@ -22,7 +23,11 @@ if (isset($_GET['idE']))
 {
     try {
         $get['idE'] = Validateur::validateUrlQueryValue($_GET['idE'], "int", 1);
-    } catch (Exception $e) { header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); exit; }
+    } catch (Exception $e)
+    {
+        header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
+        exit;
+    }
 }
 else
 {
@@ -73,31 +78,31 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 		 nomLieu, adresse, quartier, urlLieu, description, flyer, prix, horaire_debut,horaire_fin, horaire_complement, ref, prelocations, statut
 		  FROM evenement WHERE idEvenement =".$get['idE']);
 
-		if ($tab_even = $connector->fetchArray($req_getEven))
-		{
+		if ($tab_even = $connector->fetchpArray($req_getEven))
+        {
 			$contenu_message .= $tab_even['titre']."\n\n";
-			$contenu_message .= ucfirst(html_entity_decode(date_fr($tab_even['dateEvenement'], "annee", "", "", false)))."\n\n";
-			$contenu_message .= $site_full_url.'/evenement.php?idE='.$get['idE']."\n\n";
+			$contenu_message .= ucfirst(html_entity_decode(date_fr($tab_even['dateEvenement'], "annee", "", "", false))) . "\n\n";
+            $contenu_message .= $site_full_url.'/evenement.php?idE='.$get['idE']."\n\n";
 
 			$contenu_message .= $tab_even['nomLieu']."\n";
 			$contenu_message .= $tab_even['adresse']." - ".$tab_even['quartier']."\n\n";
 			$items = "";
 			$maxChar = Text::trouveMaxChar($tab_even['description'], 60, 5);
 			if (mb_strlen($tab_even['description']) > $maxChar)
-			{
+            {
 				$items = Text::texteHtmlReduit(Text::wikiToHtml(sanitizeForHtml($tab_even['description'])), $maxChar, "");
-			}
+            }
 			else
 			{
 				$items = Text::wikiToHtml(sanitizeForHtml($tab_even['description']));
-			}
+            }
 
 			$contenu_message .= strip_tags($items);
 			$contenu_message .= "\n\n";
-			$contenu_message .= afficher_debut_fin($tab_even['horaire_debut'], $tab_even['horaire_fin'], $tab_even['dateEvenement'])."\n";
-			$contenu_message .= sanitizeForHtml($tab_even['horaire_complement'])."\n";
-			$contenu_message .= sanitizeForHtml($tab_even['prix'])."\n\n";
-			$contenu_message .= "------------------\n";
+			$contenu_message .= afficher_debut_fin($tab_even['horaire_debut'], $tab_even['horaire_fin'], $tab_even['dateEvenement']) . "\n";
+            $contenu_message .= sanitizeForHtml($tab_even['horaire_complement']) . "\n";
+            $contenu_message .= sanitizeForHtml($tab_even['prix']) . "\n\n";
+            $contenu_message .= "------------------\n";
 
 			$subject = "Événement \"".$tab_even['titre']."\"";
 
@@ -173,16 +178,16 @@ if ($verif->nbErreurs() > 0)
 <!-- Description Texte -->
 <p>
 <label for="email_destinataire">Email du destinataire* :</label>
-<input name="email_destinataire" id="email_destinataire" value="<?php echo sanitizeForHtml($champs['email_destinataire']) ?>" size="35" />
-<?php echo $verif->getHtmlErreur("email_destinataire"); ?>
+    <input name="email_destinataire" id="email_destinataire" value="<?php echo sanitizeForHtml($champs['email_destinataire']) ?>" size="35" />
+    <?php echo $verif->getHtmlErreur("email_destinataire"); ?>
 </p>
     <div class="guideChamp">L'adresse email restera confidentielle</div>
 
 
 <p>
 <label for="message">Message* :</label><textarea name="message" id="message" cols="35" rows="8" style="width: auto;">
-<?php echo sanitizeForHtml($champs['message']) ?>
-</textarea>
+        <?php echo sanitizeForHtml($champs['message']) ?>
+    </textarea>
 <?php echo $verif->getHtmlErreur("message"); ?>
 </p>
 

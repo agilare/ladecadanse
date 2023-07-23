@@ -35,7 +35,7 @@ $pair = 0;
         foreach ($col->getElements() as $id => $fiche)
         {
             ?>
-            <h3><a href="/organisateur.php?idO=<?php echo $fiche->getValue('idOrganisateur'); ?>" title="Voir la fiche de l'organisateur : <?php echo sanitizeForHtml($fiche->getValue('nom')); ?>"><?php echo sanitizeForHtml($fiche->getValue('nom')); ?></a></h3>
+        <h3><a href="/organisateur.php?idO=<?php echo $fiche->getValue('idOrganisateur'); ?>" title="Voir la fiche de l'organisateur : <?php echo sanitizeForHtml($fiche->getValue('nom')); ?>"><?php echo sanitizeForHtml($fiche->getValue('nom')); ?></a></h3>
             <?php
     } // while
     ?>

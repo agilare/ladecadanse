@@ -2,12 +2,11 @@
 
 require_once("app/bootstrap.php");
 
-use Ladecadanse\UserLevel;
 use Ladecadanse\HtmlShrink;
-use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Security\SecurityToken;
+use Ladecadanse\UserLevel;
 use Ladecadanse\Utils\Logger;
-
+use Ladecadanse\Utils\Validateur;
 
 if (!$videur->checkGroup(UserLevel::ACTOR)) {
 	header("Location: index.php"); die();
@@ -144,13 +143,13 @@ FROM evenement WHERE idEvenement=".$get['idE'])));
 
         $hor_debfin = afficher_debut_fin($tab_champs['horaire_debut'], $tab_champs['horaire_fin'], $tab_champs['dateEvenement']);
 
-		$flyer = "";
+        $flyer = "";
 
 		//Initialisation de la date à incrémenter avec la date de début
 		$dateIncrUnix = $dateEUnix;
 		$dateIncrUnixOld = $dateIncrUnix;
 
-		$_SESSION['copierEvenement_flash_msg']['msg'] = '<p style="margin:4px 0">L\'événement <a href="/evenement.php?idE='.$get['idE'].'"><strong>'.sanitizeForHtml($tab_champs['titre']).'</strong> du '.date_fr($tab_lieu['dateEvenement']).'</a> a été copié vers les dates suivantes :</p>';
+		$_SESSION['copierEvenement_flash_msg']['msg'] = '<p style="margin:4px 0">L\'événement <a href="/evenement.php?idE=' . $get['idE'] . '"><strong>' . sanitizeForHtml($tab_champs['titre']) . '</strong> du ' . date_fr($tab_lieu['dateEvenement']) . '</a> a été copié vers les dates suivantes :</p>';
         $_SESSION['copierEvenement_flash_msg']['table'] = '';
 
 		/*
@@ -167,15 +166,15 @@ FROM evenement WHERE idEvenement=".$get['idE'])));
 			if (!empty($tab_champs['flyer']))
 			{
 				$flyer_orig = $tab_champs['flyer'];
-				$tab_champs['flyer'] = ($maxId['max_id'] + 1)."_".date('Y-m-d', $dateIncrUnix).mb_strrchr($tab_champs['flyer'],'.');
-			}
+				$tab_champs['flyer'] = ($maxId['max_id'] + 1) . "_" . date('Y-m-d', $dateIncrUnix) . mb_strrchr($tab_champs['flyer'], '.');
+            }
 
 			if (!empty($tab_champs['image']))
 			{
 
 				$image_orig = $tab_champs['image'];
-				$tab_champs['image'] = ($maxId['max_id'] + 1)."_".date('Y-m-d', $dateIncrUnix)."_img".mb_strrchr($tab_champs['image'],'.');
-			}
+				$tab_champs['image'] = ($maxId['max_id'] + 1) . "_" . date('Y-m-d', $dateIncrUnix) . "_img" . mb_strrchr($tab_champs['image'], '.');
+            }
 
 			$date_originale = $tab_champs['dateEvenement'];
 			$date_prec = date('Y-m-d', $dateIncrUnixOld);
@@ -184,39 +183,38 @@ FROM evenement WHERE idEvenement=".$get['idE'])));
 			$tab_champs['date_derniere_modif'] = date("Y-m-d H:i:s");
             // dump($tab_champs);
             if (mb_substr($tab_champs['horaire_debut'], 11) != "06:00:01" && $tab_champs['horaire_debut'] != "0000-00-00 00:00:00")
-			{
-                if (mb_substr($tab_champs['horaire_debut'], 0, 10) > $date_originale    )
+            {
+                if (mb_substr($tab_champs['horaire_debut'], 0, 10) > $date_originale)
                 {
-                    $tab_champs['horaire_debut'] = date_lendemain($tab_champs['dateEvenement'])." ".mb_substr($tab_champs['horaire_debut'], 11);
+                    $tab_champs['horaire_debut'] = date_lendemain($tab_champs['dateEvenement']) . " " . mb_substr($tab_champs['horaire_debut'], 11);
                 }
                 else
                 {
-                    $tab_champs['horaire_debut'] = $tab_champs['dateEvenement']." ".mb_substr($tab_champs['horaire_debut'], 11);
+                    $tab_champs['horaire_debut'] = $tab_champs['dateEvenement'] . " " . mb_substr($tab_champs['horaire_debut'], 11);
                 }
 			}
 			else
 			{
-				$tab_champs['horaire_debut'] = date_lendemain($tab_champs['dateEvenement'])." 06:00:01";
-			}
+				$tab_champs['horaire_debut'] = date_lendemain($tab_champs['dateEvenement']) . " 06:00:01";
+            }
 
 
 			//echo date_lendemain($tab_champs['dateEvenement'])." 06:00:01";
 			if (mb_substr($tab_champs['horaire_fin'], 11) != "06:00:01" && $tab_champs['horaire_fin'] != "0000-00-00 00:00:00")
-			{   // echo $date_originale;
+            {   // echo $date_originale;
                 if (mb_substr($tab_champs['horaire_fin'], 0, 10) > $date_originale)
                 {   // echo $tab_champs['horaire_fin'];
-                    $tab_champs['horaire_fin'] = date_lendemain($tab_champs['dateEvenement'])." ".mb_substr($tab_champs['horaire_fin'], 11);
-
+                    $tab_champs['horaire_fin'] = date_lendemain($tab_champs['dateEvenement']) . " " . mb_substr($tab_champs['horaire_fin'], 11);
                 }
                 else
                 {
-                    $tab_champs['horaire_fin'] = $tab_champs['dateEvenement']." ".mb_substr($tab_champs['horaire_fin'], 11);
+                    $tab_champs['horaire_fin'] = $tab_champs['dateEvenement'] . " " . mb_substr($tab_champs['horaire_fin'], 11);
                 }
 			}
 			else
 			{
-				$tab_champs['horaire_fin'] = date_lendemain($tab_champs['dateEvenement'])." 06:00:01";
-			}
+				$tab_champs['horaire_fin'] = date_lendemain($tab_champs['dateEvenement']) . " 06:00:01";
+            }
 
 			$sql_insert_attributs = "";
 			$sql_insert_valeurs  = "";
@@ -228,9 +226,9 @@ FROM evenement WHERE idEvenement=".$get['idE'])));
 			}
 
 			$sql_insert_attributs = mb_substr($sql_insert_attributs, 0, -2);
-			$sql_insert_valeurs = mb_substr($sql_insert_valeurs, 0, -2);
+            $sql_insert_valeurs = mb_substr($sql_insert_valeurs, 0, -2);
 
-			$sql_insert = "INSERT INTO evenement (" . $sql_insert_attributs . ") VALUES (" . $sql_insert_valeurs . ")";
+            $sql_insert = "INSERT INTO evenement (" . $sql_insert_attributs . ") VALUES (" . $sql_insert_valeurs . ")";
 
             /*
 			* Insertion réussie, message OK, RAZ des champs, copie du flyer (réduit et mini)
@@ -247,9 +245,9 @@ FROM evenement WHERE idEvenement=".$get['idE'])));
                 if (!empty($tab_champs['horaire_complement']))
                     $hor_compl = "<br>".$tab_champs['horaire_complement'];
 
-				$_SESSION['copierEvenement_flash_msg']['table'] .= '<tr><td><a href="/evenement.php?idE='.$nouv_id.'">'.sanitizeForHtml($tab_champs['titre'])."<br>".date_fr(date('Y-m-d', $dateIncrUnix)).'</a></td><td>'.$hor_debfin.$hor_compl.'</td><td><a class="action_editer" href="/evenement-edit.php?action=editer&idE='.$nouv_id.'" title="Modifier cet événement">Modifier</a>&nbsp;&nbsp;<a href="/evenement-edit.php?action=editer&idE='.$nouv_id.'" title="Modifier cet événement dans un nouvel onglet" target="_blank"><i class="fa fa-external-link" aria-hidden="true"></i></a>&nbsp;&nbsp;&nbsp;<a href="#" id="btn_event_del_'.$nouv_id.'" class="btn_event_del action_supprimer" data-id='.$nouv_id.'>Supprimer</a></td></tr>';
+				$_SESSION['copierEvenement_flash_msg']['table'] .= '<tr><td><a href="/evenement.php?idE=' . $nouv_id . '">' . sanitizeForHtml($tab_champs['titre']) . "<br>" . date_fr(date('Y-m-d', $dateIncrUnix)) . '</a></td><td>' . $hor_debfin . $hor_compl . '</td><td><a class="action_editer" href="/evenement-edit.php?action=editer&idE=' . $nouv_id . '" title="Modifier cet événement">Modifier</a>&nbsp;&nbsp;<a href="/evenement-edit.php?action=editer&idE=' . $nouv_id . '" title="Modifier cet événement dans un nouvel onglet" target="_blank"><i class="fa fa-external-link" aria-hidden="true"></i></a>&nbsp;&nbsp;&nbsp;<a href="#" id="btn_event_del_' . $nouv_id . '" class="btn_event_del action_supprimer" data-id=' . $nouv_id . '>Supprimer</a></td></tr>';
 
-				if (!empty($tab_champs['flyer']))
+                if (!empty($tab_champs['flyer']))
 				{
 					$src = $rep_images_even.$flyer_orig;
 					$des = $rep_images_even.$tab_champs['flyer'];
@@ -301,8 +299,8 @@ FROM evenement WHERE idEvenement=".$get['idE'])));
 			}
 			else
 			{
-				HtmlShrink::msgErreur("La requête INSERT dans 'evenement' pour le ".date_fr(date('Y-m-d', $dateIncrUnix))." a échoué");
-			}
+				HtmlShrink::msgErreur("La requête INSERT dans 'evenement' pour le " . date_fr(date('Y-m-d', $dateIncrUnix)) . " a échoué");
+            }
 
 			//copie de la date courante, passage au jour suivant, et saut d'une heure en cas de passage à l'heure d'hiver
 			$dateIncrUnixOld = $dateIncrUnix;
