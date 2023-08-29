@@ -17,6 +17,8 @@ use Whoops\Handler\PrettyPageHandler;
 
 require_once __DIR__ . '/config.php';
 
+date_default_timezone_set(DATE_DEFAULT_TIMEZONE);
+
 if (ENV === 'dev') {
     $whoops = new \Whoops\Run;
     $whoopsHandler = new PrettyPageHandler();
