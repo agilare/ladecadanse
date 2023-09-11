@@ -40,6 +40,8 @@ $mimes_documents_acceptes = array("image/jpeg", "image/pjpeg", "image/gif", "ima
     "application/zip", "multipart/x-zip", "multipart/x-gzip", "application/x-tar");
 
 
+define("DATE_DEFAULT_TIMEZONE", 'Europe/Zurich');
+
 $glo_auj = date("Y-m-d");
 $auj = date("Y-m-d");
 $glo_auj_6h = date("Y-m-d", time() - 14400); // 4h
