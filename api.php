@@ -157,7 +157,7 @@ if ($get['entity'] == 'event')
     ];
 }//end if
 
-$logger->log('global', 'api', "GET ".$get['entity']." ".$get['category']." in ". $get['region']." the ".$get['date']." until ".$get['endtime']." by user ".LADECADANSE_API_USER, Logger::GRAN_YEAR);
+$logger->log('global', 'api', "GET ".count($events)." item(s) for ".$get['entity']." ".$get['category']." in ". $get['region']." the ".$get['date']." until ".$get['endtime']." by user ".LADECADANSE_API_USER, Logger::GRAN_YEAR);
 
 header('Content-Disposition: inline; filename=' . $get['entity'] . '.json');
 header('Content-Type: application/json; charset=UTF-8');
