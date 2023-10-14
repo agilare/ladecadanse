@@ -39,8 +39,8 @@
         "sniffer:php74": "phpcs -p ./ --ignore=*/images/*,*/logs/*,*/var/*,*/vendor/*,*/web/* --standard=vendor/phpcompatibility/php-compatibility/PHPCompatibility --runtime-set testVersion 7.4",
         "sniffer:php80": "phpcs -p ./ --ignore=*/images/*,*/logs/*,*/var/*,*/vendor/*,*/web/* --standard=vendor/phpcompatibility/php-compatibility/PHPCompatibility --runtime-set testVersion 8.0",
         "sniffer:php81": "phpcs -p ./ --ignore=*/images/*,*/logs/*,*/var/*,*/vendor/*,*/web/* --standard=vendor/phpcompatibility/php-compatibility/PHPCompatibility --runtime-set testVersion 8.1",
-        "sniffer:php82": "phpcs -p ./ --ignore=*/images/*,*/logs/*,*/var/*,*/vendor/*,*/web/* --standard=vendor/phpcompatibility/php-compatibility/PHPCompatibility --runtime-set testVersion 8.2"
-
+        "sniffer:php82": "phpcs -p ./ --ignore=*/images/*,*/logs/*,*/var/*,*/vendor/*,*/web/* --standard=vendor/phpcompatibility/php-compatibility/PHPCompatibility --runtime-set testVersion 8.2",
+        "phpstan": "vendor/bin/phpstan analyse -c phpstan.neon --ansi"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "^3.7",
@@ -54,6 +54,7 @@
         "hoa/console": "^3.17",
         "codeception/module-asserts": "^2.0",
         "phpstan/phpstan-deprecation-rules": "^1.1",
-        "spaze/phpstan-disallowed-calls": "^2.16"
+        "spaze/phpstan-disallowed-calls": "^2.16",
+        "rector/rector": "^0.17.1"
     }
 }

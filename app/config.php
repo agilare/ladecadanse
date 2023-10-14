@@ -11,7 +11,7 @@ ini_set('max_file_uploads', 3);
 // DIR
 define('__ROOT__', dirname(dirname(__FILE__))); // full path to dir, for ex. /users/michel/hosts/ladecadanse
 
-$rep_images_even = __ROOT__ . "/web/uploads/evenements/"; // legacy, should be web/uploads/evenements
+$rep_images_even = __ROOT__ . "/web/uploads/evenements/"; // legacy : on prod instance, there is a dir /images which is a link to /web/uploads/evenements/ to not avoid broken links
 $rep_uploads_lieux = __ROOT__ . "/web/uploads/lieux/";
 $rep_uploads_lieux_galeries = __ROOT__ . "/web/uploads/lieux/galeries/";
 $rep_uploads_organisateurs = __ROOT__ . "/web/uploads/organisateurs/";
