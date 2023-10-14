@@ -1,5 +1,6 @@
 <?php
 
+namespace Ladecadanse;
 
 use Ladecadanse\Collection;
 use Ladecadanse\Description;
