@@ -10,3 +10,6 @@ parameters:
     tmpDir: var/cache/ecs
     level: 0
     inferPrivatePropertyTypeFromConstructor: true
+includes:
+    - vendor/phpstan/phpstan-deprecation-rules/rules.neon
+    - vendor/spaze/phpstan-disallowed-calls/extension.neon
