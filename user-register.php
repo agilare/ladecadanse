@@ -296,9 +296,18 @@ if ($verif->nbErreurs() > 0)
 
 <form method="post" id="ajouter_editer" class="submit-freeze-wait" action="<?php echo $_SERVER['PHP_SELF']."?action=".$act; ?>" onsubmit="return valideruser-edit();">
 
-    <p>Avant de vous inscrire en tant qu'Organisateur, veillez svp à ce que les événements que vous souhaitez ajouter respectent notre <b><a href="/articles/charte-editoriale.php">charte&nbsp;éditoriale</a></b>.</p>
+        <p>Avant de vous inscrire en tant qu'Organisateur, veillez svp à ce que les événements que vous souhaitez ajouter respectent notre <b><a href="/articles/charte-editoriale.php">charte&nbsp;éditoriale</a></b>.
+        </p>
+            <p>Les événements annoncés sur La décadanse sont également visibles sur les sites de nos partenaires : <a href="https://epic-magazine.ch/" target="_blank">EPIC-Magazine</a> et <a href="https://noctambus.ch/" target="_blank">Noctambus</a></p>
+                <details style="margin-top:-11px">
+                    <summary>Détails</summary>
+                <ul><li><b>EPIC-Magazine</b> - webmagazine qui met en avant la culture locale et émergente à Genève et dans ses environs&nbsp;: intégration de l'agenda dans la <a href="https://epic-magazine.ch/lieux/" target="_blank">page Cartographie</a>
+                    </li>
+                    <li>🆕 <b>Noctambus</b> - réseau de bus de nuit desservant le canton de Genève et ses régions transfrontalières&nbsp;: une sélection des événements nocturnes du vendredi au samedi dans les <a href="https://noctambus.ch/actualites/" target="_blank">actualités</a>
+                    </li>
+            </details>
 
-<p>* indique un champ obligatoire</p>
+        <p>* indique un champ obligatoire</p>
 
 <fieldset>
 <legend>Avec :</legend>
