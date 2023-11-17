@@ -100,5 +100,5 @@ Michel Gaudry - michel@ladecadanse.ch
 
 [GitHub La décadanse](https://github.com/agilare/ladecadanse)
 
-## License
-This work is licensed under CC BY-NC-SA 4.0
+## Licence
+This work is licensed under AGPL-3.0-or-later
