@@ -1,11 +1,6 @@
 # Changelog
 
-## [3.5.1] - Unreleased
-
-### Fixed
-
-- events : queries to fix horaires val of copied rows and some other
-- [ ] forms : in mobile view Chosen doesn't work
+## Unreleased
 
 ### Changed
 
@@ -15,7 +10,23 @@
 ### Removed
 
 - [ ] usage of globals
+
+
+## [3.5.1] - Unreleased
+
+### Fixed
+
+- events : queries to fix horaires val of copied rows and some other
+- [ ] forms : in mobile view Chosen doesn't work
+
+### Added
+
+- Noctambus : add banner in home and explanation of partnership (and also for EPIC magazine) in user registration and add event
+
+### Removed
+
 - [ ] jQuery Migrate
+
 
 ## [3.5.0] - 2023-06-26
 
