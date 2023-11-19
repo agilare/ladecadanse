@@ -17,7 +17,6 @@
 ### Fixed
 
 - events : queries to fix horaires val of copied rows and some other
-- [ ] forms : in mobile view Chosen doesn't work
 
 ### Added
 
@@ -26,6 +25,10 @@
 ### Removed
 
 - [ ] jQuery Migrate
+
+### Security
+
+- replace apparently [unsafe shiftcheckbox jQuery plugin](https://github.com/agilare/ladecadanse/security/code-scanning/1) by [checkboxes.js](http://rmariuzzo.github.io/checkboxes.js)
 
 
 ## [3.5.0] - 2023-06-26

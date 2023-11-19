@@ -47,18 +47,6 @@ $(".chosen-select").chosen({
     search_contains: true
 });
 
-
-$('.shiftcheckbox').shiftcheckbox({
-
-    // Options accept selectors, jQuery objects, or DOM
-    // elements.
-
-    checkboxSelector: ':checkbox',
-    selectAll: $('#demo1 .all'),
-    ignoreClick: 'a'
-
-});
-
 $('.file-upload-size-max').bind('change', function ()
 {
 
@@ -66,6 +54,11 @@ $('.file-upload-size-max').bind('change', function ()
     {
         alert("La taille du fichier que vous avez sélectionné dépasse la limite autorisée (2 Mo), merci d'en choisir un plus léger");
     }
+});
+
+
+jQuery(function($) {
+    $('.jquery-checkboxes').checkboxes('range', true);
 });
 
 tinymce.init({

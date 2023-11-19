@@ -814,7 +814,7 @@ $th_evenements = array("titre" => "Titre", "idLieu" => "Lieu", "dateEvenement" =
 
 echo "<form method=\"post\" id=\"formGererEvenements\" class='submit-freeze-wait' enctype=\"multipart/form-data\" action=\"/admin/gererEvenements.php\">";
 
-echo "<table id=\"ajouts\" ><tr>";
+echo "<table id=\"ajouts\" class=\"jquery-checkboxes\"><tr>";
 
 foreach ($th_evenements as $att => $th)
 {
@@ -856,12 +856,12 @@ while ($tab_even = $connector->fetchArray($req_evenement))
 
 	if ($pair % 2 == 0)
 	{
-		echo "<tr class=\"shiftcheckbox\">";
-	}
+		echo "<tr>";
+    }
 	else
 	{
-		echo "<tr class=\"impair shiftcheckbox\" >";
-	}
+		echo "<tr class=\"impair\" >";
+    }
 
 	echo "	<td><a href=\"/evenement.php?idE=".$tab_even['idEvenement']."\" title=\"Voir la fiche de l'événement\" class='titre'>".sanitizeForHtml($tab_even['titre'])."</a></td>	<td>".$nomLieu."</td>
 	<td>".date_iso2app($tab_even['dateEvenement'])."</td>

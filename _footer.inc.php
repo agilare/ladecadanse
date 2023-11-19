@@ -49,7 +49,7 @@ $pages_tinymce = ["lieu-text-edit", "organisateur-edit"];
 <script src="/vendor/dimsemenov/magnific-popup/dist/jquery.magnific-popup.js"></script>
 <script src="/vendor/harvesthq/chosen/chosen.jquery.min.js"></script>
 <script src="/web/js/Zebra_datepicker/zebra_datepicker.min.js"></script>
-<script src="/web/js/jquery.shiftcheckbox.js"></script>
+<script src="/web/js/jquery.checkboxes-1.2.2.min.js"></script>
 <?php if (in_array($nom_page, $pages_tinymce)) { ?>
     <script src="https://cloud.tinymce.com/5/tinymce.min.js?apiKey=<?php echo TINYMCE_API_KEY; ?>"></script>
 <?php } ?>
