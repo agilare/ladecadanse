@@ -78,7 +78,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 		 nomLieu, adresse, quartier, urlLieu, description, flyer, prix, horaire_debut,horaire_fin, horaire_complement, ref, prelocations, statut
 		  FROM evenement WHERE idEvenement =".$get['idE']);
 
-		if ($tab_even = $connector->fetchpArray($req_getEven))
+		if ($tab_even = $connector->fetchArray($req_getEven))
         {
 			$contenu_message .= $tab_even['titre']."\n\n";
 			$contenu_message .= ucfirst(html_entity_decode(date_fr($tab_even['dateEvenement'], "annee", "", "", false))) . "\n\n";

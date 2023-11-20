@@ -17,10 +17,15 @@
 ### Fixed
 
 - events : queries to fix horaires val of copied rows and some other
+- events : a typo was breaking the sending process in send by email
 
 ### Added
 
 - Noctambus : add banner in home and explanation of partnership (and also for EPIC magazine) in user registration and add event
+
+### Changed
+
+- update PHPMailer, whoops, phpdotenv, phpstan, var-dumper...
 
 ### Removed
 
