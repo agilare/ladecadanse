@@ -1,18 +1,7 @@
 # Changelog
 
-## Unreleased
 
-### Changed
-
-- [ ] refactor
-    - [ ] get genre, tri_agenda params to session
-
-### Removed
-
-- [ ] usage of globals
-
-
-## [3.5.1] - Unreleased
+## [3.5.1] - 2023-11-26
 
 ### Fixed
 
@@ -22,14 +11,19 @@
 ### Added
 
 - Noctambus : add banner in home and explanation of partnership (and also for EPIC magazine) in user registration and add event
+- api : nb of items returned in logging of each request
 
 ### Changed
 
+- timezone definition moved to config.php to improve portability
 - update PHPMailer, whoops, phpdotenv, phpstan, var-dumper...
+- update jQuery from 3.7.0 to 3.7.1
+- update Zebra datepicker to v2.0
+- php analyzers configs, plugins
 
 ### Removed
 
-- [ ] jQuery Migrate
+- jQuery Migrate
 
 ### Security
 
@@ -49,6 +43,7 @@
 
 - events : API to get night events "fêtes" of a day
 - tests : setup Codeception and basic tests of API
+- Symfony VarDumper component
 
 ### Changed
 

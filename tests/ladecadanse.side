@@ -2852,7 +2852,7 @@
       "command": "type",
       "target": "css=#dateEvenement",
       "targets": [],
-      "value": "20.10.2023"
+      "value": "26.11.2023"
     }, {
       "id": "0b145ec9-56cd-4f36-a83b-7433844497ac",
       "comment": "",
@@ -5935,7 +5935,7 @@
         ["xpath=//form[@id='ajouter_editer']/fieldset/p/input", "xpath:idRelative"],
         ["xpath=//p/input", "xpath:position"]
       ],
-      "value": "test7"
+      "value": "test8"
     }, {
       "id": "2ac6e6c5-aa3e-43e2-ae65-75ef86c250b0",
       "comment": "",
@@ -6019,7 +6019,7 @@
         ["xpath=//form[@id='ajouter_editer']/fieldset/p[4]/input", "xpath:idRelative"],
         ["xpath=//p[4]/input", "xpath:position"]
       ],
-      "value": "test7@ladecadanse.ch"
+      "value": "test8@ladecadanse.ch"
     }, {
       "id": "e2faa741-d1fd-44df-a8ea-c5a7be7d689d",
       "comment": "",
