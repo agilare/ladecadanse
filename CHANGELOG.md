@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- maintenance page
+
 ## [3.5.1] - 2023-11-26
 
 ### Fixed
