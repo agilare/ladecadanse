@@ -15,24 +15,14 @@ include("../_header.inc.php");
 	</div>
 
 	<div class="rubrique">
-		
-	<ul>
-		<li><a onclick="window.open(this.href,'_blank');return false;" title="Aller sur Darksite forum agenda" href="http://www.darksite.ch/forum">Forum Darksite</a></li>
-		<!--<li><a onclick="window.open(this.href,'_blank');return false;" title="www.findumonde.ch" href="http://www.findumonde.ch/">Derniers bars avant la fin du monde</a> : tour de Genève des lieux typiques et pittoresques</li>
-		<li><a onclick="window.open(this.href,'_blank');return false;" title="Electronism.net" href="http://www.electronism.net/">Electronism.net</a> : communauté autour de la musique électronique en Suisse romande</li>-->
-		<li><a onclick="window.open(this.href,'_blank');return false;" title="Raggasessions" href="http://www.raggasessions.ch/">Raggasessions.ch</a> : agenda de concerts et soirées reggae en Suisse</li>
-		<!--<li><a onclick="window.open(this.href,'_blank');return false;" title="The Fake" href="http://www.thefake.ch/">The fake</a> : webzine culturel</li>-->
-		<li><a onclick="window.open(this.href,'_blank');return false;" title="Heimathome Swiss support'act" href="http://www.wilrecords.com/heimathome/index.php">Heimathome</a> : actu rock Genève et alentours</li>
-		<li><a onclick="window.open(this.href,'_blank');return false;" href="http://reprezent.ch/">Reprezent</a> : actualité du hip hop en Suisse Romande</li>
-		<li><a onclick="window.open(this.href,'_blank');return false;" href="http://azanya.ch/">Azanya.ch</a> : l’Agenda des événements culturels Afro-Caribéens de Genève et environs</li>
-		<!--<li><a onclick="window.open(this.href,'_blank');return false;" title="Nuit.ch" href="http://www.lachaine.ch/">La Chaîne.ch</a> : webTV indépendante</li>-->
-	</ul>
 
-	</div>
+        <ul>
+            <li><a href="http://www.raggasessions.ch/" target="_blank">Raggasessions.ch</a> : agenda de concerts et soirées reggae en Suisse</li>
+            <li><a href="http://reprezent.ch/" target="_blank">Reprezent</a> : actualité du hip hop en Suisse Romande</li>
+            <li><a href="http://azanya.ch/" target="_blank">Azanya.ch</a> : l’Agenda des événements culturels Afro-Caribéens de Genève et environs</li>
+        </ul>
 
-
-
-
+    </div>
 
 </div>
 <!-- fin Contenu -->
