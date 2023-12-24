@@ -246,13 +246,6 @@ class HtmlShrink
         return $signature_auteur;
     }
 
-
-    public static function popupLink($uri, $nom, $largeur, $hauteur, $lien): string
-    {
-        return "<a href=\"#\" onclick=\"window.open('" . $uri . "','" . $nom . "','height=" . $hauteur . "px,width=" . $largeur . "px,toolbar=no,menuBar=yes,location=no,directories=0,status=no,scrollbars=yes,resizable=yes,left=10,top=10');return(false)\" title=\"" . $nom . "\">" . $lien . "</a>";
-    }
-
-
     public static function formLabel(array $tab_att, string $nom): string
     {
         $aff = "<label ";

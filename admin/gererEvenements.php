@@ -1220,12 +1220,7 @@ echo $verif->getErreur("titre");
 <label for="description">Description </label>
 <textarea name="description" id="description" cols="50" rows="16" title="description de l'événement" tabindex="13">
 <?php echo sanitizeForHtml($champs['description']) ?></textarea>
-<div class="guideForm">
-<?php
-echo HtmlShrink::popupLink("includes/miniGuideWiki.inc.php", "Guide de mise en forme", 500, 300, "Guide de mise en forme");
-?>
-</div>
-<?php //include $rep_includes.'miniGuideWiki.inc.php'; ?>
+
 <?php
 echo $verif->getHtmlErreur('description');
 ?>
@@ -1346,9 +1341,8 @@ if (isset($get_idE) && !empty($champs['flyer']) && !$verif->getErreur($champs['f
 {
 	echo '<div class="supImg">';
 	$imgInfo = getimagesize($rep_images_even.$champs['flyer']);
-	$iconeImage = '<img src="'.$url_uploads_events."s_".$champs['flyer'].'" alt="image pour '.sanitizeForHtml($champs['titre']).'" />';
-	echo HtmlShrink::popupLink($url_uploads_events.$tab_even['flyer'], "Flyer", $imgInfo[0]+20, $imgInfo[1]+20, $iconeImage);
-	?>
+	$iconeImage = '<img src="' . $url_uploads_events . "s_" . $champs['flyer'] . '" alt="image pour ' . sanitizeForHtml($champs['titre']) . '" />';
+    ?>
 
 	<div><label for="sup_flyer" class="continu">Supprimer</label>
 	<input type="checkbox" name="sup_flyer" id="sup_flyer" value="flyer" class="checkbox" ";
@@ -1377,7 +1371,7 @@ if (isset($get_idE) && !empty($champs['image']) && !$verif->getErreur('image'))
 {
 	$imgInfo = getimagesize($rep_images_even.$champs['image']);
 	$iconeImage = "<img src=\"".$url_uploads_events."s_".$champs['image']."\"  alt=\"image pour ".sanitizeForHtml($champs['titre'])."\" />";
-	echo HtmlShrink::popupLink($url_uploads_events.$tab_even['image'], "image", $imgInfo[0]+20, $imgInfo[1]+20, $iconeImage);
+
 	echo "<div><label for=\"sup_image\" class=\"continu\">Supprimer</label><input type=\"checkbox\" name=\"sup_image\" id=\"sup_image\" value=\"image\" class=\"checkbox\" ";
 
 	if (!empty($supprimer['image']) && $verif->nbErreurs() == 0)

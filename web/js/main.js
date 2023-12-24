@@ -220,3 +220,29 @@ $("#btn_search").on('click', function (e)
     $(".recherche_mobile").toggle(400);
     //return false;
 });
+
+
+$("#home-tmp-banner-close-btn").on('click', function (e)
+{
+    SetCookie('msg_orga_benevole', 1, 180);
+    this.parentNode.style.display = 'none';
+    return false;
+});
+
+$("#event-delete-btn").on('click', function (e)
+{
+    return confirm('Voulez-vous vraiment supprimer cet événement ?');
+});
+
+
+$("#show-description-btn").on('click', function (e)
+{
+    showhide('description', 'presentation');
+    return false;
+});
+
+$("#show-presentation-btn").on('click', function (e)
+{
+    showhide('presentation', 'description');
+    return false;
+});

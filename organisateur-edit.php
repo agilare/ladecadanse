@@ -209,9 +209,6 @@ if (isset($get['idO']) && $form->getValeur('logo') != '' && $form->getErreur("lo
 
 	$imgInfo = getimagesize($rep_uploads_organisateurs.$form->getValeur('logo'));
 
-	$lien_popup = HtmlShrink::popupLink($url_uploads_organisateurs.$form->getValeur('logo')."?".filemtime($rep_uploads_organisateurs.$form->getValeur('logo')), "Logo", $imgInfo[0]+20, $imgInfo[1]+20,
-	"<img src=\"".$url_uploads_organisateurs."s_".$form->getValeur('logo')."?".filemtime($rep_uploads_organisateurs.$form->getValeur('logo'))."\" alt=\"Logo pour ".sanitizeForHtml($form->getValeur('nom'))."\" />"
-	);
 	$checked = '';
 	$tab_sup = $form->getSupprimer();
 	if (in_array('logo', $tab_sup) && $form->getNbErreurs() > 0)
@@ -222,8 +219,8 @@ if (isset($get['idO']) && $form->getValeur('logo') != '' && $form->getErreur("lo
 
 	<input type="hidden" name="logo_existant" value="<?php echo $form->getValeur('logo'); ?>" />
 	<div class="supImg">
-	<?php echo $lien_popup; ?>
-	<div>
+                <?php echo "<img src=\"" . $url_uploads_organisateurs . "s_" . $form->getValeur('logo') . "?" . filemtime($rep_uploads_organisateurs . $form->getValeur('logo')) . "\" alt=\"Logo pour " . sanitizeForHtml($form->getValeur('nom')) . "\" />"; ?>
+                <div>
 		<label for="supprimer_logo" class="continu">Supprimer</label>
 		<input type="checkbox" name="supprimer[]" id="supprimer_logo" value="logo" class="checkbox" <?php echo $checked; ?> />
 
@@ -248,12 +245,8 @@ echo $form->getHtmlErreur("photo");
 //affichage de l'image existante
 if (isset($get['idO']) && $form->getValeur('photo') != '' && $form->getErreur("photo") == '')
 {
-	$imgInfo = getimagesize($rep_uploads_organisateurs.$form->getValeur('photo'));
-
-	$lien_popup = HtmlShrink::popupLink($url_uploads_organisateurs.$form->getValeur('photo')."?".filemtime($rep_uploads_organisateurs.$form->getValeur('photo')), "Photo", $imgInfo[0]+20, $imgInfo[1]+20,
-	"<img src=\"".$url_uploads_organisateurs."s_".$form->getValeur('photo')."?".filemtime($rep_uploads_organisateurs.$form->getValeur('photo'))."\" alt=\"photo pour ".sanitizeForHtml($form->getValeur('nom'))."\" />"
-	);
-	$checked = '';
+	$imgInfo = getimagesize($rep_uploads_organisateurs . $form->getValeur('photo'));
+        $checked = '';
 	$tab_sup = $form->getSupprimer();
 	if (in_array('photo', $tab_sup) && $form->getNbErreurs() > 0)
 	{
@@ -263,8 +256,8 @@ if (isset($get['idO']) && $form->getValeur('photo') != '' && $form->getErreur("p
 
 	<input type="hidden" name="photo_existant" value="<?php echo $form->getValeur('photo'); ?>" />
 	<div class="supImg">
-	<?php echo $lien_popup; ?>
-	<div>
+                <?php echo "<img src=\"" . $url_uploads_organisateurs . "s_" . $form->getValeur('photo') . "?" . filemtime($rep_uploads_organisateurs . $form->getValeur('photo')) . "\" alt=\"photo pour " . sanitizeForHtml($form->getValeur('nom')) . "\" />"; ?>
+                <div>
 		<label for="supprimer_photo" class="continu">Supprimer</label>
 		<input type="checkbox" name="supprimer[]" id="supprimer_photo" value="photo" class="checkbox" <?php echo $checked; ?> />
 

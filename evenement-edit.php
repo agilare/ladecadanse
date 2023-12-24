@@ -831,7 +831,7 @@ if (!$action_terminee)
             if ($_SESSION['Sgroupe'] <= 1)
             {
                 $aff_actions .= "<li class=\"action_supprimer\">
-                <a href=\"/multi-suppr.php?action=confirmation&amp;type=evenement&amp;id=".$get['idE']."&token=".SecurityToken::getToken()."\" title=\"Supprimer l'événement\" onclick=\"return confirm('Voulez-vous vraiment supprimer cet événement ?');\">
+                <a href=\"/multi-suppr.php?action=confirmation&amp;type=evenement&amp;id=" . $get['idE'] . "&token=" . SecurityToken::getToken() . "\" id='event-delete-btn'>
                 Supprimer</a>
                 </li>";
             }

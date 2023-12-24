@@ -63,8 +63,8 @@ FROM evenement WHERE region IN ('" . $connector->sanitize($_SESSION['region']) .
         ?>
         <div id="home-tmp-banner">
             <h2><?php echo HOME_TMP_BANNER_TITLE; ?></h2>
-            <a class="close" href="#" onclick="SetCookie('msg_orga_benevole', 1, 180);this.parentNode.style.display = 'none';return false;">&times;</a>
-            <p style="line-height:18px"><?php echo HOME_TMP_BANNER_CONTENT; ?></p>
+            <a href="#" id="home-tmp-banner-close-btn" class="close">&times;</a>
+                <p style="line-height:18px"><?php echo HOME_TMP_BANNER_CONTENT; ?></p>
         </div>
         <?php
     }

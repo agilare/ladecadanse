@@ -50,27 +50,28 @@ $pages_tinymce = ["lieu-text-edit", "organisateur-edit"];
 <script src="/vendor/harvesthq/chosen/chosen.jquery.min.js"></script>
 <script src="/web/js/Zebra_datepicker/zebra_datepicker.min.js"></script>
 <script src="/web/js/jquery.checkboxes-1.2.2.min.js"></script>
-<?php if (in_array($nom_page, $pages_tinymce)) { ?>
+<?php if (in_array($nom_page, $pages_tinymce))
+{ ?>
     <script src="https://cloud.tinymce.com/5/tinymce.min.js?apiKey=<?php echo TINYMCE_API_KEY; ?>"></script>
-<?php } ?>
-
-
-    <?php if (in_array($nom_page, $pages_formulaires)) { ?>
+    <?php } ?>
+    <?php if (in_array($nom_page, $pages_formulaires))
+    { ?>
         <script src="/web/js/forms.js"></script>
     <?php } ?>
 
     <script src="/web/js/main.js"></script>
-    <?php if ($nom_page == "evenement-edit" && !isset($_SESSION['Sgroupe'])) { ?>
+    <?php if ($nom_page == "evenement-edit" && !isset($_SESSION['Sgroupe']))
+    { ?>
         <script src="https://www.google.com/recaptcha/api.js?render=<?php echo GOOGLE_RECAPTCHA_API_KEY_CLIENT; ?>"></script>
-            <script>
-                grecaptcha.ready(function () {
-                    grecaptcha.execute('<?php echo GOOGLE_RECAPTCHA_API_KEY_CLIENT ?>', { action: 'propose_event' }).then(function (token) {
-                        var recaptchaResponse = document.getElementById('g-recaptcha-response');
-                        recaptchaResponse.value = token;
-                    });
+        <script>
+            grecaptcha.ready(function () {
+                grecaptcha.execute('<?php echo GOOGLE_RECAPTCHA_API_KEY_CLIENT ?>', { action: 'propose_event' }).then(function (token) {
+                    var recaptchaResponse = document.getElementById('g-recaptcha-response');
+                    recaptchaResponse.value = token;
                 });
-            </script>
-        <?php } ?>
+            });
+        </script>
+    <?php } ?>
 
     </body>
 

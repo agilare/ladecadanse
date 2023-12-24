@@ -507,8 +507,8 @@ $adresse = htmlspecialchars(HtmlShrink::getAdressFitted($listeLieu['region'], $l
 
 						if (preg_match('#^(https?\\:\\/\\/)[a-z0-9_-]+\.([a-z0-9_-]+\.)?[a-zA-Z]{2,3}#i', $r))
 						{
-							echo "<li><a href=\"".$r."\" title=\"Aller vers ".$r."\" onclick=\"window.open(this.href,'_blank');return false;\"  class=\"lien_ext\">";
-							if (preg_match('/^https?:\/\/www/', $r))
+							echo "<li><a href=\"" . $r . "\" target='_blank' class=\"lien_ext\">";
+        if (preg_match('/^https?:\/\/www/', $r))
 							{
 								echo wordwrap($r_aff, 30, "<br />", 1);
 							}
