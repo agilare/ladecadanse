@@ -312,33 +312,6 @@ $adresse = htmlspecialchars(HtmlShrink::getAdressFitted($listeLieu['region'], $l
                         if (!empty($listeLieu['lat']) && !empty($listeLieu['lng']))
                         {
                         ?>
-                        <script>
-                        var map;
-                        function initMap() {
-
-                            var myLatLng = {lat: <?php echo $listeLieu['lat'] ?>, lng: <?php echo $listeLieu['lng'] ?>};
-
-                            map = new google.maps.Map(document.getElementById('map'), {
-                                center: myLatLng,
-                                zoom: 14
-                            });
-
-                            var marker = new google.maps.Marker({
-                                position: myLatLng,
-                                map: map
-                            });
-
-                            var infowindow = new google.maps.InfoWindow({
-                                content: "<?php echo $listeLieu['nom'] ?>"
-                            });
-
-                            marker.addListener('click', function() {
-                                infowindow.open(map, marker);
-                            });
-
-                        }
-                        </script>
-
 
                             <li>
                                 <a href="#" class="dropdown" data-target="plan"><?php echo $icone['plan']; ?> Voir sur le plan <i class="fa fa-caret-down" aria-hidden="true"></i></a>
@@ -367,8 +340,11 @@ $adresse = htmlspecialchars(HtmlShrink::getAdressFitted($listeLieu['region'], $l
 					</ul>
 				</div>
 			<div class="spacer"></div>
-            <div id="plan" style="display:none"><div id="map"></div></div>
-			</div>
+            <div id="plan" style="display:none">
+                <div id="lieu-map-infowindow" style="display:none"><?php echo $listeLieu['nom'] ?></div>
+                <div id="lieu-map" data-lat="<?php echo $listeLieu['lat'] ?>" data-lng="<?php echo $listeLieu['lng'] ?>"></div>
+            </div>
+            </div>
 			<!-- Fin titre -->
 
 

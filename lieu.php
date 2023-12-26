@@ -151,34 +151,7 @@ else if (!empty($lieu->getValue('photo1')))
 	$illustration = "<img src=".$url_uploads_lieux."s_".$lieu->getValue('photo1')." height=80 style='float:left;margin-right:0.2em' />";
 }
 
-$info_lieu = "<div style='width:200px'>".$illustration."<div class=details><p class=adresse><strong>".sanitizeForHtml($lieu->getValue('nom'))."</strong></p><p class=adresse>".sanitizeForHtml($lieu->getValue('adresse'))."</p><p class=adresse>".$lieu->getValue('quartier')."</p></div></div>";
 ?>
-<script>
-var map;
-function initMap() {
-
-	var myLatLng = {lat: <?php echo $lieu->getValue('lat') ?>, lng: <?php echo $lieu->getValue('lng') ?>};
-
-	map = new google.maps.Map(document.getElementById('map'), {
-		center: myLatLng,
-		zoom: 14
-	});
-
-	var marker = new google.maps.Marker({
-		position: myLatLng,
-		map: map
-	});
-
-	var infowindow = new google.maps.InfoWindow({
-		content: "<?php echo $info_lieu; ?>"
-	});
-
-	marker.addListener('click', function() {
-		infowindow.open(map, marker);
-	});
-
-}
-</script>
 
 <!-- Début Contenu -->
 <div id="contenu" class="colonne">
@@ -308,8 +281,8 @@ if ($lieu->getValue('logo'))
         $adresse = HtmlShrink::getAdressFitted($lieu->getValue('region'), $lieu_localite['localite'], $lieu->getValue('quartier'), $lieu->getValue('adresse') );
 
 		$carte = '';
-		if ($lieu->getValue('lat') != 0.000000 && $lieu->getValue('lng') != 0.000000)
-		{
+		if ($lieu->getValue('lat') != 4 && $lieu->getValue('lng') != 4)
+{
             $carte = '
             <li>
                 <a href="#" class="dropdown" data-target="plan">'.$icone['plan'].' Voir sur le plan <i class="fa fa-caret-down" aria-hidden="true"></i>
@@ -412,7 +385,12 @@ if ($lieu->getValue('logo'))
                 </li>
                 <?php echo $organisateurs; ?>
             </ul>
-            <div id="plan" style="display:none"><div id="map"></div></div>
+            <div id="plan" style="display:none">
+                <div id="lieu-map-infowindow" style='display:none;width:200px'>
+                    <?php echo $illustration; ?><div class=details><p class=adresse><strong><?php echo sanitizeForHtml($lieu->getValue('nom')); ?></strong></p><p class=adresse><?php echo sanitizeForHtml($lieu->getValue('adresse')); ?></p><p class=adresse><?php echo $lieu->getValue('quartier'); ?></p></div>
+                </div>
+                <div id="lieu-map" data-lat="<?php echo $lieu->getValue('lat') ?>" data-lng="<?php echo $lieu->getValue('lng') ?>"></div>
+            </div>
         </div><!-- Fin pratique -->
 
         <div class="spacer only-mobile"></div>

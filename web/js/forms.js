@@ -57,22 +57,3 @@ $('.file-upload-size-max').bind('change', function ()
 });
 
 
-jQuery(function($) {
-    $('.jquery-checkboxes').checkboxes('range', true);
-});
-
-tinymce.init({
-    selector: 'textarea.tinymce',
-    height: 500,
-    menubar: false,
-    plugins: [
-        'autolink lists link charmap',
-        'searchreplace visualblocks code',
-        'paste code help wordcount'
-    ],
-    toolbar: 'bold italic link | h4 bullist numlist blockquote | undo redo | visualblocks removeformat code',
-    content_css: [
-        '//fonts.googleapis.com/css?family=Lato:300,300i,400,400i',
-        '//www.tiny.cloud/css/codepen.min.css'
-    ]
-});

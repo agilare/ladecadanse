@@ -1,24 +1,24 @@
-    </div>
-    <!-- fin conteneur -->
+</div>
+<!-- fin conteneur -->
 
-    <footer id="pied-wrapper">
+<footer id="pied-wrapper">
 
-        <!-- Début pied -->
-        <div id="pied">
+    <!-- Début pied -->
+    <div id="pied">
 
-            <ul class="menu_pied">
+        <ul class="menu_pied">
 
-                <?php
-                foreach ($glo_menu_pratique as $nom => $lien)
+            <?php
+            foreach ($glo_menu_pratique as $nom => $lien)
+            {
+                if (strstr($_SERVER['PHP_SELF'], $lien))
                 {
-                    if (strstr($_SERVER['PHP_SELF'], $lien))
-                    {
-                        $ici = " class=\"ici\"";
-                    }
-                    ?>
+                    $ici = " class=\"ici\"";
+                }
+                ?>
 
-                    <li><a href="<?php echo $lien; ?>" title="<?php echo $nom; ?>" <?php echo $ici; ?>><?php echo $nom; ?></a></li>
-                <?php } ?>
+            <li><a href="<?php echo $lien; ?>" title="<?php echo $nom; ?>" <?php echo $ici; ?>><?php echo $nom; ?></a></li>
+            <?php } ?>
 
 
                 <li><a href="/articles/charte-editoriale.php">Charte éditoriale</a></li>
@@ -28,52 +28,132 @@
                         <input type="text" class="mots" name="mots" size="22" maxlength="50" value="" placeholder="Rechercher un événement" /><input type="submit" class="submit" name="formulaire" value=""  /><input type="text" name="name_as" value="" class="name_as" id="name_as" />
                     </form>
                 </li>
-            </ul>
-        </div>
-        <!-- Fin Pied -->
+        </ul>
+    </div>
+    <!-- Fin Pied -->
 
-    </footer>
+</footer>
 
- </div>
+</div>
 <!-- Fin Global -->
 
 
 <?php
 $pages_formulaires = ["evenement-edit", "evenement-copy", "lieu-edit", "user-register", "gererEvenements", "user-edit", "lieu-text-edit", "organisateur-edit", "lieu-salle-edit"];
 $pages_tinymce = ["lieu-text-edit", "organisateur-edit"];
+$pages_lieumap = ["lieu", "evenement"];
 ?>
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-<!--<script src="https://code.jquery.com/jquery-migrate-3.4.1.min.js" integrity="sha256-UnTxHm+zKuDPLfufgEMnKGXDl6fEIjtM+n1Q6lL73ok=" crossorigin="anonymous"></script>-->
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=<?php echo GOOGLE_API_KEY; ?>&callback=initMap"></script>
+
 <script src="/vendor/dimsemenov/magnific-popup/dist/jquery.magnific-popup.js"></script>
-<script src="/vendor/harvesthq/chosen/chosen.jquery.min.js"></script>
-<script src="/web/js/Zebra_datepicker/zebra_datepicker.min.js"></script>
-<script src="/web/js/jquery.checkboxes-1.2.2.min.js"></script>
-<?php if (in_array($nom_page, $pages_tinymce))
-{ ?>
-    <script src="https://cloud.tinymce.com/5/tinymce.min.js?apiKey=<?php echo TINYMCE_API_KEY; ?>"></script>
+
+<?php
+if (in_array($nom_page, $pages_lieumap))
+{
+    ?>
+    <script>
+
+            let lieuMap;
+            function initLieuMap()
+            {
+
+                var myLatLng = {lat: parseFloat($('#lieu-map').data('lat')), lng: parseFloat($('#lieu-map').data('lng'))};
+
+                lieuMap = new google.maps.Map(document.getElementById('lieu-map'), {
+                    center: myLatLng,
+                    zoom: 14
+                });
+
+                var marker = new google.maps.Marker({
+                    position: myLatLng,
+                    map: lieuMap
+                });
+
+                var infowindow = new google.maps.InfoWindow({
+                    content: $('#lieu-map-infowindow').html()
+                });
+
+                marker.addListener('click', function ()
+                {
+                    infowindow.open(lieuMap, marker);
+                });
+
+            }
+
+        </script>
+        <script async defer src="https://maps.googleapis.com/maps/api/js?key=<?php echo GOOGLE_API_KEY; ?>&callback=initLieuMap"></script>
     <?php } ?>
-    <?php if (in_array($nom_page, $pages_formulaires))
-    { ?>
-        <script src="/web/js/forms.js"></script>
+
+
+        <?php
+        if (in_array($nom_page, $pages_formulaires))
+        {
+            ?>
+
+        <script src="/vendor/harvesthq/chosen/chosen.jquery.min.js"></script>
+            <script src="/web/js/Zebra_datepicker/zebra_datepicker.min.js"></script>
+
+                <?php
+                if (in_array($nom_page, $pages_tinymce))
+                {
+                    ?>
+                    <script src="https://cloud.tinymce.com/5/tinymce.min.js?apiKey=<?php echo TINYMCE_API_KEY; ?>"></script>
+                    <script>
+                tinymce.init({
+                selector: 'textarea.tinymce',
+                height: 500,
+                menubar: false,
+                plugins: [
+                'autolink lists link charmap',
+                'searchreplace visualblocks code',
+                'paste code help wordcount'
+                ],
+                toolbar: 'bold italic link | h4 bullist numlist blockquote | undo redo | visualblocks removeformat code',
+                content_css: [
+                '//fonts.googleapis.com/css?family=Lato:300,300i,400,400i',
+                '//www.tiny.cloud/css/codepen.min.css'
+                ]
+                });
+                    </script>
+                <?php } ?>
+
+                <?php
+                if ($nom_page == "gererEvenements")
+                {
+                    ?>
+                    <script src="/web/js/jquery.checkboxes-1.2.2.min.js"></script>
+                    <script>
+                    jQuery(function ($)
+                    {
+                    $('.jquery-checkboxes').checkboxes('range', true);
+                    });
+                    </script>
+                <?php } ?>
+
+                <?php
+                if ($nom_page == "evenement-edit" && !isset($_SESSION['Sgroupe']))
+                {
+                    ?>
+                    <script src="https://www.google.com/recaptcha/api.js?render=<?php echo GOOGLE_RECAPTCHA_API_KEY_CLIENT; ?>"></script>
+                    <script>
+                    grecaptcha.ready(function ()
+                    {
+                        grecaptcha.execute('<?php echo GOOGLE_RECAPTCHA_API_KEY_CLIENT ?>', {action: 'propose_event'}).then(function (token)
+                        {
+                            var recaptchaResponse = document.getElementById('g-recaptcha-response');
+                            recaptchaResponse.value = token;
+                        });
+                    });
+                    </script>
+                <?php } ?>
+
+                <script src="/web/js/forms.js"></script>
+
     <?php } ?>
 
     <script src="/web/js/main.js"></script>
-    <?php if ($nom_page == "evenement-edit" && !isset($_SESSION['Sgroupe']))
-    { ?>
-        <script src="https://www.google.com/recaptcha/api.js?render=<?php echo GOOGLE_RECAPTCHA_API_KEY_CLIENT; ?>"></script>
-        <script>
-            grecaptcha.ready(function () {
-                grecaptcha.execute('<?php echo GOOGLE_RECAPTCHA_API_KEY_CLIENT ?>', { action: 'propose_event' }).then(function (token) {
-                    var recaptchaResponse = document.getElementById('g-recaptcha-response');
-                    recaptchaResponse.value = token;
-                });
-            });
-        </script>
-    <?php } ?>
-
-    </body>
+</body>
 
 </html>
 
