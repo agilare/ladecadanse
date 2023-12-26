@@ -2,7 +2,7 @@
 const nbHoursAfterMidnightForDay = 6;
 let d = new Date();
 d.setHours(d.getHours() - nbHoursAfterMidnightForDay);
-const eventEditStartDate = d.getDate() + "." + (d.getMonth() + 1) + "." + d.getFullYear();
+const eventEditStartDate = d.getDate() + '.' + (d.getMonth() + 1) + '.' + d.getFullYear();
 
 $('input.datepicker').Zebra_DatePicker({
     direction: [eventEditStartDate, false],
@@ -11,8 +11,8 @@ $('input.datepicker').Zebra_DatePicker({
     days: ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'],
     months: ['Janvier', 'F&eacute;vrier', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Ao&ucirc;t', 'Septembre', 'Octobre', 'Novembre', 'D&eacute;cembre'],
     show_clear_date: true,
-    lang_clear_date: "Effacer",
-    show_select_today: "Aujourd’hui"
+    lang_clear_date: 'Effacer',
+    show_select_today: 'Aujourd’hui'
 });
 
 $('input.datepicker_from').Zebra_DatePicker({
@@ -23,8 +23,8 @@ $('input.datepicker_from').Zebra_DatePicker({
     days: ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'],
     months: ['Janvier', 'F&eacute;vrier', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Ao&ucirc;t', 'Septembre', 'Octobre', 'Novembre', 'D&eacute;cembre'],
     show_clear_date: true,
-    lang_clear_date: "Effacer",
-    show_select_today: "Aujourd’hui",
+    lang_clear_date: 'Effacer',
+    show_select_today: 'Aujourd’hui',
     readonly_element: false
 });
 
@@ -35,14 +35,14 @@ $('input.datepicker_to').Zebra_DatePicker({
     days: ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'],
     months: ['Janvier', 'F&eacute;vrier', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Ao&ucirc;t', 'Septembre', 'Octobre', 'Novembre', 'D&eacute;cembre'],
     show_clear_date: true,
-    lang_clear_date: "Effacer",
-    show_select_today: "Aujourd’hui",
+    lang_clear_date: 'Effacer',
+    show_select_today: 'Aujourd’hui',
     readonly_element: false
 });
 
-$(".chosen-select").chosen({
+$('.chosen-select').chosen({
     allow_single_deselect: true,
-    no_results_text: "Aucun &eacute;l&eacute;ment correspondant n'a &eacute;t&eacute; trouv&eacute;",
+    no_results_text: 'Aucun &eacute;l&eacute;ment correspondant n’a &eacute;t&eacute; trouv&eacute;',
     include_group_label_in_selected: true,
     search_contains: true
 });
@@ -52,7 +52,7 @@ $('.file-upload-size-max').bind('change', function ()
 
     if (this.files[0].size > 2097152)
     {
-        alert("La taille du fichier que vous avez sélectionné dépasse la limite autorisée (2 Mo), merci d'en choisir un plus léger");
+        alert('La taille du fichier que vous avez sélectionné dépasse la limite autorisée (2 Mo), merci d’en choisir un plus léger');
     }
 });
 
