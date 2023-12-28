@@ -1,10 +1,13 @@
 # Changelog
 
-## Unreleased
+## [3.5.2] - Unreleased
 
 ### Added
 
 - maintenance page
+
+### Changed
+- refactor js
 
 ## [3.5.1] - 2023-11-26
 

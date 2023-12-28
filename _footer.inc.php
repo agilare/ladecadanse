@@ -47,7 +47,29 @@ $pages_lieumap = ["lieu", "evenement"];
 <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 
 <script src="/vendor/dimsemenov/magnific-popup/dist/jquery.magnific-popup.js"></script>
+<script>
 
+$('.magnific-popup').magnificPopup({
+    type: 'image',
+    tClose: 'Fermer (Esc)', // Alt text on close button
+    tLoading: 'Chargement...', // Text that is displayed during loading. Can contain %curr% and %total
+    image: {
+        tError: '<a href="%url%">L&#039;image</a> n&#039;a pas pu &ecirc;tre charg&eacute;e.' // Error message when image could not be loaded
+    }
+});
+
+$('.gallery-item').magnificPopup({
+    type: 'image',
+    tClose: 'Fermer (Esc)', // Alt text on close button
+    tLoading: 'Chargement...', // Text that is displayed during loading. Can contain %curr% and %total
+    gallery: {
+        enabled: true,
+        tPrev: 'Pr&eacute;c&eacute;dente (bouton gauche)', // title for left button
+        tNext: 'Suivante (bouton droit)', // title for right button
+        tCounter: '<span class="mfp-counter">%curr% de %total%</span>' // markup of counter
+    }
+});
+</script>
 <?php
 if (in_array($nom_page, $pages_lieumap))
 {
@@ -91,9 +113,43 @@ if (in_array($nom_page, $pages_lieumap))
         {
             ?>
 
-        <script src="/vendor/harvesthq/chosen/chosen.jquery.min.js"></script>
+            <script src="/vendor/harvesthq/chosen/chosen.jquery.min.js"></script>
+            <script>
+            $('.chosen-select').chosen({
+                allow_single_deselect: true,
+                no_results_text: 'Aucun &eacute;l&eacute;ment correspondant n’a &eacute;t&eacute; trouv&eacute;',
+                include_group_label_in_selected: true,
+                search_contains: true
+            });
+            </script>
             <script src="/web/js/Zebra_datepicker/zebra_datepicker.min.js"></script>
+                <script>
+                // users can add events for today, until 06h the day after, in line with the agenda
+                const nbHoursAfterMidnightForDay = 6;
+                let d = new Date();
+                d.setHours(d.getHours() - nbHoursAfterMidnightForDay);
+                    const eventEditStartDate = d.getDate() + '.' + (d.getMonth() + 1) + '.' + d.getFullYear();
 
+                        let ZebraDatepickerBasicConfig = {
+                        format: 'd.m.Y',
+                    zero_pad: true,
+                    days: ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'],
+                    months: ['Janvier', 'F&eacute;vrier', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Ao&ucirc;t', 'Septembre', 'Octobre', 'Novembre', 'D&eacute;cembre'],
+                    show_clear_date: true,
+                    lang_clear_date: 'Effacer',
+                    show_select_today: 'Aujourd’hui'
+                    };
+
+                    const inputDatepickerConfig = {direction: [eventEditStartDate, false]};
+                    $('input.datepicker').Zebra_DatePicker({...ZebraDatepickerBasicConfig, ...inputDatepickerConfig});
+
+                    const inputDatepickerFromConfig = {direction: [eventEditStartDate, false], pair: $('input.datepicker_to'), readonly_element: false};
+                    $('input.datepicker_from').Zebra_DatePicker({...ZebraDatepickerBasicConfig, ...inputDatepickerFromConfig});
+
+                    const inputDatepickerToConfig = {direction: 1, readonly_element: false};
+                        $('input.datepicker_to').Zebra_DatePicker({...ZebraDatepickerBasicConfig, ...inputDatepickerToConfig});
+
+                </script>
                 <?php
                 if (in_array($nom_page, $pages_tinymce))
                 {
@@ -126,8 +182,8 @@ if (in_array($nom_page, $pages_lieumap))
                     <script>
                     jQuery(function ($)
                     {
-                    $('.jquery-checkboxes').checkboxes('range', true);
-                    });
+                                $('.jquery-checkboxes').checkboxes('range', true);
+                            });
                     </script>
                 <?php } ?>
 
@@ -146,13 +202,10 @@ if (in_array($nom_page, $pages_lieumap))
                         });
                     });
                     </script>
-                <?php } ?>
+                        <?php } ?>
+                    <?php } ?>
 
-                <script src="/web/js/forms.js"></script>
-
-    <?php } ?>
-
-    <script src="/web/js/main.js"></script>
+                    <script type="module" src="/web/js/main.js"></script>
 </body>
 
 </html>
