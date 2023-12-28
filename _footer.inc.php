@@ -122,7 +122,7 @@ if (in_array($nom_page, $pages_lieumap))
                 search_contains: true
             });
             </script>
-            <script src="/web/js/Zebra_datepicker/zebra_datepicker.min.js"></script>
+                <script src="/web/js/libs/Zebra_datepicker/zebra_datepicker.min.js"></script>
                 <script>
                 // users can add events for today, until 06h the day after, in line with the agenda
                 const nbHoursAfterMidnightForDay = 6;
@@ -178,8 +178,8 @@ if (in_array($nom_page, $pages_lieumap))
                 if ($nom_page == "gererEvenements")
                 {
                     ?>
-                    <script src="/web/js/jquery.checkboxes-1.2.2.min.js"></script>
-                    <script>
+                            <script src="/web/js/libs/jquery.checkboxes-1.2.2.min.js"></script>
+                            <script>
                     jQuery(function ($)
                     {
                                 $('.jquery-checkboxes').checkboxes('range', true);
