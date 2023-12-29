@@ -79,7 +79,11 @@ if (in_array($nom_page, $pages_lieumap))
             let lieuMap;
             function initLieuMap()
             {
-
+                if ($('#lieu-map').length === 0)
+                {
+                    return;
+                }
+                
                 var myLatLng = {lat: parseFloat($('#lieu-map').data('lat')), lng: parseFloat($('#lieu-map').data('lng'))};
 
                 lieuMap = new google.maps.Map(document.getElementById('lieu-map'), {
