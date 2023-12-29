@@ -129,7 +129,7 @@ if ($afficher_form)
 {
 ?>
 
-<form  method="post" enctype="multipart/form-data" id="ajouter_editer" class="submit-freeze-wait" action="<?php echo basename(__FILE__)."?action=".$act; ?>">
+<form  method="post" enctype="multipart/form-data" id="ajouter_editer" class="js-submit-freeze-wait" action="<?php echo basename(__FILE__)."?action=".$act; ?>">
 
 <p>* indique un champ obligatoire</p>
 <p>Si vous souhaitez modifier le nom du lieu, ses catégories, ses organisateurs ou les photos de la galerie, merci de nous <a href="/contacteznous.php">contacter</a></p>
@@ -450,7 +450,7 @@ echo $form->getHtmlErreur("quartier");
 
         <p>
             <label for="Logo">Logo</label>
-            <input type="file" name="logo" id="Logo" class="file-upload-size-max" tabindex="18" title="Logo du lieu qui s'affichera à gauche du titre" size="25" />
+            <input type="file" name="logo" id="Logo" class="js-file-upload-size-max" tabindex="18" title="Logo du lieu qui s'affichera à gauche du titre" size="25" />
 
             <?php
             echo $form->getHtmlErreur("logo");
@@ -485,7 +485,7 @@ echo $form->getHtmlErreur("quartier");
         <!-- Photo1 (file) -->
         <p>
         <label for="photo1">Photo</label>
-        <input type="file" name="photo1" id="photo1" class="file-upload-size-max" tabindex="16" title="Photo qui s'affichera en haut à droite" size="25" />
+        <input type="file" name="photo1" id="photo1" class="js-file-upload-size-max" tabindex="16" title="Photo qui s'affichera en haut à droite" size="25" />
 
 
         <?php
@@ -524,7 +524,7 @@ echo $form->getHtmlErreur("quartier");
         ?>
         <p>
             <label for="image_galerie">Galerie</label>
-            <input type="file" name="image_galerie" id="image_galerie" class="file-upload-size-max" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif"  class="fichier" />
+            <input type="file" name="image_galerie" id="image_galerie" class="js-file-upload-size-max" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif"  class="fichier" />
         </p>
         <div class="spacer"></div>
         <?php

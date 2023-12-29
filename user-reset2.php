@@ -215,7 +215,7 @@ if ($verif->nbErreurs() > 0)
 
 <!-- FORMULAIRE -->
 
-<form method="post" id="ajouter_editer"  class="submit-freeze-wait" action="<?php echo $_SERVER['PHP_SELF']."?token=".$get['token'] ?>">
+<form method="post" id="ajouter_editer"  class="js-submit-freeze-wait" action="<?php echo $_SERVER['PHP_SELF']."?token=".$get['token'] ?>">
 
 
 <fieldset>

@@ -1,6 +1,7 @@
 import { SetCookie } from './browser.js';
 
-export const vitesse_fondu = 400;
+export const FADE_SPEED_MEDIUM_IN_MS = 400;
+const FADE_SPEED_SHORT_IN_MS = 100;
 
 export function bindEventsOfVariousInteractions()
 {
@@ -40,14 +41,13 @@ export function bindEventsOfMainNavigation ()
         e.preventDefault();
 
         if (!$('#menu_pratique').is(':visible'))
-        {
-            b;
-            $('#menu_pratique').fadeIn(vitesse_fondu);
+        {          
+            $('#menu_pratique').fadeIn(FADE_SPEED_MEDIUM_IN_MS);
             //$('#main_menu').toggle(vitesse_fondu);
         }
         else
         {
-            $('#menu_pratique').fadeOut(vitesse_fondu);
+            $('#menu_pratique').fadeOut(FADE_SPEED_MEDIUM_IN_MS);
             //$('#main_menu').toggle(vitesse_fondu);
         }
     });
@@ -60,7 +60,7 @@ export function bindEventsOfMainNavigation ()
 
     $('#btn_search').on('click', function toggleSearchField()
     {
-        $('.recherche_mobile').toggle(400);
+        $('.recherche_mobile').toggle(FADE_SPEED_MEDIUM_IN_MS);
         //return false;
     });
 }
@@ -69,7 +69,7 @@ export function bindEventsOfMainNavigation ()
 export function bindEventsOfForms()
 {
     const MAX_UPLOAD_SIZE_IN_BYTES = 2097152;
-    $('.file-upload-size-max').on('change', function alertOnFilesizeUpload()
+    $('.js-file-upload-size-max').on('change', function alertOnFilesizeUpload()
     {
         if (this.files[0].size > MAX_UPLOAD_SIZE_IN_BYTES)
         {
@@ -93,7 +93,7 @@ export function bindEventsOfForms()
         }
     });
 
-    $('form.submit-freeze-wait').submit(function disableSubmit()
+    $('form.js-submit-freeze-wait').submit(function disableSubmit()
     {
         $('input[type="submit"]', this).val('Envoi...').attr('disabled', 'disabled');
         return true;
@@ -105,7 +105,7 @@ export function bindEventsOfForms()
 export function bindHomeEvents()
 {
     // browser.js
-    $('#home-tmp-banner-close-btn').on('click', function hideTmpBannerAndSetCookie()
+    $('#js-home-tmp-banner-close-btn').on('click', function hideTmpBannerAndSetCookie()
     {
         const HOME_TMP_BANNER_COOKIE_DURATION_IN_DAYS = 180;
         SetCookie('msg_orga_benevole', 1, HOME_TMP_BANNER_COOKIE_DURATION_IN_DAYS);
@@ -127,12 +127,12 @@ export function bindLieuxEvents()
 
         if (!$('#menu_lieux').is(':visible'))
         {
-            $('#menu_lieux').fadeIn(vitesse_fondu);
+            $('#menu_lieux').fadeIn(FADE_SPEED_MEDIUM_IN_MS);
             //$('#main_menu').toggle(vitesse_fondu);
         }
         else
         {
-            $('#menu_lieux').fadeOut(vitesse_fondu);
+            $('#menu_lieux').fadeOut(FADE_SPEED_MEDIUM_IN_MS);
             //$('#main_menu').toggle(vitesse_fondu);
         }
     });
@@ -168,7 +168,7 @@ export function bindEventsEvents ()
 
     });
 
-    $('#event-delete-btn').on('click', function confirmEventDel()
+    $('#js-event-delete-btn').on('click', function confirmEventDel()
     {
         return confirm('Voulez-vous vraiment supprimer cet événement ?');
     });
@@ -177,8 +177,8 @@ export function bindEventsEvents ()
 
 function showhide(show, hide)
 {
-    $('.type-' + show).fadeIn(100);
+    $('.type-' + show).fadeIn(FADE_SPEED_SHORT_IN_MS);
     $('.btn-' + show).addClass('ici');
-    $('.type-' + hide).fadeOut(100);
+    $('.type-' + hide).fadeOut(FADE_SPEED_SHORT_IN_MS);
     $('.btn-' + hide).removeClass('ici');
 }

@@ -812,7 +812,7 @@ echo '<div class="spacer"></div>';
 $th_evenements = array("titre" => "Titre", "idLieu" => "Lieu", "dateEvenement" => "Date", "genre" => "Catégorie", "horaire" => "Horaire", "statut" => "Statut",
 "dateAjout" => "Ajouté");
 
-echo "<form method=\"post\" id=\"formGererEvenements\" class='submit-freeze-wait' enctype=\"multipart/form-data\" action=\"/admin/gererEvenements.php\">";
+echo "<form method=\"post\" id=\"formGererEvenements\" class='js-submit-freeze-wait' enctype=\"multipart/form-data\" action=\"/admin/gererEvenements.php\">";
 
 echo "<table id=\"ajouts\" class=\"jquery-checkboxes\"><tr>";
 
@@ -1327,7 +1327,7 @@ echo $verif->getHtmlErreur('prelocations');
 
 <p>
 <label for="flyer">Flyer :</label>
-<input type="file" name="flyer" id="flyer" class="file-upload-size-max" size="25"
+<input type="file" name="flyer" id="flyer" class="js-file-upload-size-max" size="25"
 accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif" tabindex="12" class="fichier" />
 </p>
 
@@ -1358,7 +1358,7 @@ if (isset($get_idE) && !empty($champs['flyer']) && !$verif->getErreur($champs['f
 
     <p>
     <label for="image">Image :</label>
-    <input type="file" name="image" id="flyer" class="file-upload-size-max" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif" title="Choisissez une image pour illustrer l'ê·©nement" tabindex="12" class="fichier" />
+    <input type="file" name="image" id="flyer" class="js-file-upload-size-max" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif" title="Choisissez une image pour illustrer l'ê·©nement" tabindex="12" class="fichier" />
     </p>
     <div class="guideChamp">Seul les formats JPEG, PNG et GIF sont acceptés.</div>
 <div class="spacer"></div>

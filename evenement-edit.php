@@ -831,7 +831,7 @@ if (!$action_terminee)
             if ($_SESSION['Sgroupe'] <= 1)
             {
                 $aff_actions .= "<li class=\"action_supprimer\">
-                <a href=\"/multi-suppr.php?action=confirmation&amp;type=evenement&amp;id=" . $get['idE'] . "&token=" . SecurityToken::getToken() . "\" id='event-delete-btn'>
+                <a href=\"/multi-suppr.php?action=confirmation&amp;type=evenement&amp;id=" . $get['idE'] . "&token=" . SecurityToken::getToken() . "\" id='js-event-delete-btn'>
                 Supprimer</a>
                 </li>";
             }
@@ -877,7 +877,7 @@ if ($verif->nbErreurs() > 0)
 }
 ?>
 
-<form method="post" id="ajouter_editer" class="submit-freeze-wait" enctype="multipart/form-data" action="<?php echo basename(__FILE__)."?action=".$act ?>">
+<form method="post" id="ajouter_editer" class="js-submit-freeze-wait" enctype="multipart/form-data" action="<?php echo basename(__FILE__)."?action=".$act ?>">
     <div id="home-tmp-banner">
         <?php if (!in_array($get['action'], ['editer', 'update'])) { ?>
             <h2>Avant de commencer :</h2>
@@ -1318,7 +1318,7 @@ if ($verif->nbErreurs() > 0)
         <p>
             <label for="flyer">Affiche/flyer</label>
             <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo UPLOAD_MAX_FILESIZE ?>" /> <!-- 2 Mo -->
-            <input type="file" name="flyer" id="flyer" class="file-upload-size-max" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif" class="fichier" />
+            <input type="file" name="flyer" id="flyer" class="js-file-upload-size-max" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif" class="fichier" />
             <?php
             echo $verif->getHtmlErreur("flyer");
 
@@ -1347,7 +1347,7 @@ if ($verif->nbErreurs() > 0)
             <label for="image"><span class="tooltip">Photo <i class="fa fa-info-circle" aria-hidden="true"></i>
 <span class="tooltiptext"> S’affiche à la place du flyer s’il n’y a pas de flyer, sinon en dessous de celui-ci</span></span></label>
             <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo UPLOAD_MAX_FILESIZE ?>" /> <!-- 2 Mo -->
-            <input type="file" name="image" id="image" class="file-upload-size-max" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif" class="fichier" />
+            <input type="file" name="image" id="image" class="js-file-upload-size-max" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif" class="fichier" />
             <div class="guideChamp">Photo des artistes, de leurs œuvres, du lieu, etc.</div>
         </p>
         <div class="spacer"></div>

@@ -2,6 +2,9 @@
 
 ## [3.5.2] - Unreleased
 
+### Fixed
+- menus : pratique links 404
+
 ### Added
 
 - maintenance page

@@ -259,7 +259,7 @@ if ($verif->nbErreurs() > 0)
 
 
 <!-- FORMULAIRE POUR UNE DESCRIPTION -->
-<form method="post" id="ajouter_editer" enctype="multipart/form-data" class="submit-freeze-wait" action="<?php echo basename(__FILE__)."?action=".$act; ?>">
+<form method="post" id="ajouter_editer" enctype="multipart/form-data" class="js-submit-freeze-wait" action="<?php echo basename(__FILE__)."?action=".$act; ?>">
 
 <p>* indique un champ obligatoire</p>
 

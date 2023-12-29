@@ -130,7 +130,7 @@ if ($afficher_form)
 
 ?>
 
-        <form  method="post" enctype="multipart/form-data" id="ajouter_editer" class="submit-freeze-wait" action="<?php echo basename(__FILE__)."?action=".$act; ?>">
+        <form  method="post" enctype="multipart/form-data" id="ajouter_editer" class="js-submit-freeze-wait" action="<?php echo basename(__FILE__)."?action=".$act; ?>">
 
 <p>* indique un champ obligatoire</p>
 
@@ -198,7 +198,7 @@ echo $form->getHtmlErreur("presentation");
 <!-- Logo (file) -->
 <p>
 <label for="Logo">Logo</label>
-<input type="file" name="logo" id="Logo" class="file-upload-size-max" tabindex="18" title="Logo qui s'affichera à gauche du titre" size="25" />
+<input type="file" name="logo" id="Logo" class="js-file-upload-size-max" tabindex="18" title="Logo qui s'affichera à gauche du titre" size="25" />
 
 <?php
 echo $form->getHtmlErreur("logo");
@@ -236,7 +236,7 @@ if (isset($get['idO']) && $form->getValeur('logo') != '' && $form->getErreur("lo
 <!-- photo (file) -->
 <p>
 <label for="photo">Photo</label>
-<input type="file" name="photo" id="photo" class="file-upload-size-max" tabindex="16" title="Photo qui s'affichera en haut à droite" size="25" />
+<input type="file" name="photo" id="photo" class="js-file-upload-size-max" tabindex="16" title="Photo qui s'affichera en haut à droite" size="25" />
 
 
 <?php

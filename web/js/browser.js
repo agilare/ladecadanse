@@ -26,14 +26,14 @@ export function SetCookie(name, value, days, path)
 
 export function responsiveSetup()
 {
-    const maxWidthMobile = 800;
+    const MAX_WIDTH_FOR_MOBILE_INTERFACE = 800;
     let viewportWidthPrev = $(window).width();
     let viewportHeightPrev = $(window).height();
     let viewportWidth = $(window).width();
     let viewportHeight = $(window).height();
 
     var mode_viewport;
-    if (viewportWidth < maxWidthMobile)
+    if (viewportWidth < MAX_WIDTH_FOR_MOBILE_INTERFACE)
     {
         mode_viewport = 'mobile';
         setupMobile();
@@ -44,13 +44,13 @@ export function responsiveSetup()
         viewportWidth = $(window).width();
         viewportHeight = $(window).height();
 
-        if (viewportWidth < maxWidthMobile && viewportWidthPrev > maxWidthMobile)
+        if (viewportWidth < MAX_WIDTH_FOR_MOBILE_INTERFACE && viewportWidthPrev > MAX_WIDTH_FOR_MOBILE_INTERFACE)
         {
             //console.log('mode mobile');
             mode_viewport = 'mobile';
             setupMobile();
         }
-        else if (viewportWidth > maxWidthMobile && viewportWidthPrev < maxWidthMobile)
+        else if (viewportWidth > MAX_WIDTH_FOR_MOBILE_INTERFACE && viewportWidthPrev < MAX_WIDTH_FOR_MOBILE_INTERFACE)
         {
             //console.log('mode desktop');
             mode_viewport = 'desktop';

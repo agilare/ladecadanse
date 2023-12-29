@@ -141,7 +141,7 @@ include("_header.inc.php");
         }
         ?>
 
-        <form method="post" id="ajouter_editer" class="submit-freeze-wait" action="<?php echo basename(__FILE__) . "?idE=" . $get['idE']; ?>">
+        <form method="post" id="ajouter_editer" class="js-submit-freeze-wait" action="<?php echo basename(__FILE__) . "?idE=" . $get['idE']; ?>">
 
             <fieldset style="width:100%">
 
