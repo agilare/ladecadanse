@@ -77,7 +77,7 @@ $glo_tab_quartiers_hors_geneve = array("Nyon", "Vaud", "France", "autre");
 $glo_tab_ailleurs = ["rf" => "France", "hs" => "Autre"];
 
 // INTERFACE
-$glo_menu_pratique = array("Contact" => "contacteznous.php", "À propos" => "articles/apropos.php", "Faire un don" => "articles/faireUnDon.php");
+$glo_menu_pratique = array("Contact" => "/contacteznous.php", "À propos" => "/articles/apropos.php", "Faire un don" => "/articles/faireUnDon.php");
 $tab_nblignes = array(100, 250, 500); // nb lignes de resultats de listes
 $actions = array("ajouter", "insert", "update", "editer");
 

@@ -143,7 +143,7 @@ use Ladecadanse\UserLevel;
                             $ici = " class=\"ici\"";
                         }
                         ?>
-                        <li <?php echo $ici; ?> <?php echo $menu_pratique_li; ?>><a href="/<?php echo $lien; ?>" <?php echo $ici; ?>><?php echo $nom; ?></a></li>
+                        <li <?php echo $ici; ?> <?php echo $menu_pratique_li; ?>><a href="<?php echo $lien; ?>" <?php echo $ici; ?>><?php echo $nom; ?></a></li>
                         <?php
                         }
 
