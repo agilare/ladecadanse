@@ -4,25 +4,25 @@ export const vitesse_fondu = 400;
 
 export function bindEventsOfVariousInteractions()
 {
-    $('.dropdown').click(function ()
+    $('.dropdown').click(function dropdownTarget()
     {
         $('#' + $(this).data('target')).toggle();
         return false;
     });
 
-    $('.btn_toggle').on('click', function ()
+    $('.btn_toggle').on('click', function toggleTarget()
     {
         $('.element_toggle').toggle();
         //return false;
     });
 
-    $('#show-description-btn').on('click', function ()
+    $('#show-description-btn').on('click', function showDescription()
     {
         showhide('description', 'presentation');
         return false;
     });
 
-    $('#show-presentation-btn').on('click', function ()
+    $('#show-presentation-btn').on('click', function showPresentation()
     {
         showhide('presentation', 'description');
         return false;
@@ -35,12 +35,13 @@ export function bindEventsOfVariousInteractions()
  */
 export function bindEventsOfMainNavigation ()
 {
-    $('#btn_menu_pratique').on('click', function (e)
+    $('#btn_menu_pratique').on('click', function toggleMenuPratique(e)
     {
         e.preventDefault();
 
         if (!$('#menu_pratique').is(':visible'))
         {
+            b;
             $('#menu_pratique').fadeIn(vitesse_fondu);
             //$('#main_menu').toggle(vitesse_fondu);
         }
@@ -51,13 +52,13 @@ export function bindEventsOfMainNavigation ()
         }
     });
 
-    $('#btn_calendrier').click(function ()
+    $('#btn_calendrier').click(function toggleCalendrier()
     {
         $('#navigation_calendrier').toggle();
         return false;
     });
 
-    $('#btn_search').on('click', function ()
+    $('#btn_search').on('click', function toggleSearchField()
     {
         $('.recherche_mobile').toggle(400);
         //return false;
@@ -68,7 +69,7 @@ export function bindEventsOfMainNavigation ()
 export function bindEventsOfForms()
 {
     const MAX_UPLOAD_SIZE_IN_BYTES = 2097152;
-    $('.file-upload-size-max').on('change', function ()
+    $('.file-upload-size-max').on('change', function alertOnFilesizeUpload()
     {
         if (this.files[0].size > MAX_UPLOAD_SIZE_IN_BYTES)
         {
@@ -77,7 +78,7 @@ export function bindEventsOfForms()
     });
 
     //$('#prix-precisions').hide();
-    $('.precisions').on('change', function ()
+    $('.precisions').on('change', function togglePrixPrecision()
     {
         if (this.checked && (this.value == 'asyouwish' || this.value == 'chargeable'))
         {
@@ -92,7 +93,7 @@ export function bindEventsOfForms()
         }
     });
 
-    $('form.submit-freeze-wait').submit(function ()
+    $('form.submit-freeze-wait').submit(function disableSubmit()
     {
         $('input[type="submit"]', this).val('Envoi...').attr('disabled', 'disabled');
         return true;
@@ -104,7 +105,7 @@ export function bindEventsOfForms()
 export function bindHomeEvents()
 {
     // browser.js
-    $('#home-tmp-banner-close-btn').on('click', function ()
+    $('#home-tmp-banner-close-btn').on('click', function hideTmpBannerAndSetCookie()
     {
         const HOME_TMP_BANNER_COOKIE_DURATION_IN_DAYS = 180;
         SetCookie('msg_orga_benevole', 1, HOME_TMP_BANNER_COOKIE_DURATION_IN_DAYS);
@@ -120,7 +121,7 @@ export function bindHomeEvents()
  */
 export function bindLieuxEvents()
 {
-    $('#btn_listelieux').on('click', function (e)
+    $('#btn_listelieux').on('click', function toggleMenuLieux(e)
     {
         e.preventDefault();
 
@@ -145,29 +146,29 @@ export function bindLieuxEvents()
  */
 export function bindEventsEvents ()
 {
-    $('.btn_event_del').on('click', function (e)
+    $('.btn_event_del').on('click', function requestEventDel(e)
     {
         e.preventDefault();
         const event_id = $(this).data('id');
-        $.get('/evenement-actions.php?action=delete&id=' + event_id, function ()
+        $.get('/evenement-actions.php?action=delete&id=' + event_id, function hideEventRow()
         {
             $('#btn_event_del_' + event_id).closest('tr').fadeOut('fast');
         });
 
     });
 
-    $('.btn_event_unpublish').on('click', function (e)
+    $('.btn_event_unpublish').on('click', function requestUnpublishEvent(e)
     {
         e.preventDefault();
         var event_id = $(this).data('id');
-        $.get('/evenement-actions.php?action=unpublish&id=' + event_id, function ()
+        $.get('/evenement-actions.php?action=unpublish&id=' + event_id, function hideEvent()
         {
             $('#btn_event_unpublish_' + event_id).closest('.evenement').fadeOut();
         });
 
     });
 
-    $('#event-delete-btn').on('click', function ()
+    $('#event-delete-btn').on('click', function confirmEventDel()
     {
         return confirm('Voulez-vous vraiment supprimer cet événement ?');
     });

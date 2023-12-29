@@ -39,7 +39,7 @@ export function responsiveSetup()
         setupMobile();
     }
 
-    $(window).resize(function ()
+    $(window).resize(function setupInterfaceForWidth() 
     {
         viewportWidth = $(window).width();
         viewportHeight = $(window).height();

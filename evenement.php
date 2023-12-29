@@ -340,10 +340,15 @@ $adresse = htmlspecialchars(HtmlShrink::getAdressFitted($listeLieu['region'], $l
 					</ul>
 				</div>
 			<div class="spacer"></div>
-            <div id="plan" style="display:none">
-                <div id="lieu-map-infowindow" style="display:none"><?php echo $listeLieu['nom'] ?></div>
-                <div id="lieu-map" data-lat="<?php echo $listeLieu['lat'] ?>" data-lng="<?php echo $listeLieu['lng'] ?>"></div>
-            </div>
+            	<?php
+                if (!empty($listeLieu['lat']) && !empty($listeLieu['lng']))
+                {
+                ?>
+                <div id="plan" style="display:none">
+                    <div id="lieu-map-infowindow" style="display:none"><?php echo $listeLieu['nom'] ?></div>
+                    <div id="lieu-map" data-lat="<?php echo $listeLieu['lat'] ?>" data-lng="<?php echo $listeLieu['lng'] ?>"></div>
+                </div>
+                <?php } ?>
             </div>
 			<!-- Fin titre -->
 
