@@ -140,16 +140,6 @@ if ($connector->getNumRows($req_nb_des) == 0)
 	$class_vide = ' class="vide"';
 }
 
-$photo_principale = '';
-if ($lieu->getValue('photo1') != '')
-{
-
-	$imgInfo = getimagesize($rep_uploads_lieux.$lieu->getValue('photo1'));
-
-	$photo_principale = HtmlShrink::popupLink($url_uploads_lieux.$lieu->getValue('photo1').'?'.filemtime($rep_uploads_lieux.$lieu->getValue('photo1')),	"Logo", $imgInfo[0]+20, $imgInfo[1]+20,	"<img src=\"".$url_uploads_lieux."s_".$lieu->getValue('photo1')."?".filemtime($rep_uploads_lieux."s_".$lieu->getValue('photo1'))."\" alt=\"Photo du lieu\" />");
-
-}
-
 $illustration = "";
 
 if (!empty($lieu->getValue('logo')))
@@ -161,34 +151,7 @@ else if (!empty($lieu->getValue('photo1')))
 	$illustration = "<img src=".$url_uploads_lieux."s_".$lieu->getValue('photo1')." height=80 style='float:left;margin-right:0.2em' />";
 }
 
-$info_lieu = "<div style='width:200px'>".$illustration."<div class=details><p class=adresse><strong>".sanitizeForHtml($lieu->getValue('nom'))."</strong></p><p class=adresse>".sanitizeForHtml($lieu->getValue('adresse'))."</p><p class=adresse>".$lieu->getValue('quartier')."</p></div></div>";
 ?>
-<script>
-var map;
-function initMap() {
-
-	var myLatLng = {lat: <?php echo $lieu->getValue('lat') ?>, lng: <?php echo $lieu->getValue('lng') ?>};
-
-	map = new google.maps.Map(document.getElementById('map'), {
-		center: myLatLng,
-		zoom: 14
-	});
-
-	var marker = new google.maps.Marker({
-		position: myLatLng,
-		map: map
-	});
-
-	var infowindow = new google.maps.InfoWindow({
-		content: "<?php echo $info_lieu; ?>"
-	});
-
-	marker.addListener('click', function() {
-		infowindow.open(map, marker);
-	});
-
-}
-</script>
 
 <!-- Début Contenu -->
 <div id="contenu" class="colonne">
@@ -247,8 +210,8 @@ if ($lieu->getValue('logo'))
 		<!-- Deb medias -->
 		<div id="medias">
 
-			<div id="photo" <?php echo (!$photo_principale)?" style='  background: #eaeaea;'":""; ?>>
-			<?php
+            <div id="photo" <?php echo (!$lieu->getValue('photo1')) ? " style='  background: #eaeaea;'" : ""; ?>>
+                <?php
 			if ($lieu->getValue('photo1') != '') {
 			?>
 			<a href="<?php echo $url_uploads_lieux.$lieu->getValue('photo1').'?'.filemtime($rep_uploads_lieux.$lieu->getValue('photo1')); ?>" class="gallery-item"><img src="<?php echo $url_uploads_lieux."s_".$lieu->getValue('photo1').'?'.filemtime($rep_uploads_lieux.$lieu->getValue('photo1')); ?>" alt="Photo du lieu"></a>
@@ -257,7 +220,7 @@ if ($lieu->getValue('logo'))
             if (empty($_SESSION['Sgroupe']))
             {
             ?>
-			<?php echo (!$photo_principale)?'<p style="font-size:0.9em;padding:2em 0.5em;line-height:1.2em">Vous gérez ce lieu ? <a href="/user-register.php">Inscrivez-vous</a> pour pouvoir ajouter ou modifier les informations et des photos</p>':""; ?>
+                <?php echo (!$lieu->getValue('photo1')) ? '<p style="font-size:0.9em;padding:2em 0.5em;line-height:1.2em">Vous gérez ce lieu ? <a href="/user-register.php">Inscrivez-vous</a> pour pouvoir ajouter ou modifier les informations et des photos</p>' : ""; ?>
             <?php } ?>
 			</div>
 			<div class="spacer"><!-- --></div>
@@ -318,8 +281,8 @@ if ($lieu->getValue('logo'))
         $adresse = HtmlShrink::getAdressFitted($lieu->getValue('region'), $lieu_localite['localite'], $lieu->getValue('quartier'), $lieu->getValue('adresse') );
 
 		$carte = '';
-		if ($lieu->getValue('lat') != 0.000000 && $lieu->getValue('lng') != 0.000000)
-		{
+		if ($lieu->getValue('lat') != 4 && $lieu->getValue('lng') != 4)
+{
             $carte = '
             <li>
                 <a href="#" class="dropdown" data-target="plan">'.$icone['plan'].' Voir sur le plan <i class="fa fa-caret-down" aria-hidden="true"></i>
@@ -422,7 +385,12 @@ if ($lieu->getValue('logo'))
                 </li>
                 <?php echo $organisateurs; ?>
             </ul>
-            <div id="plan" style="display:none"><div id="map"></div></div>
+            <div id="plan" style="display:none">
+                <div id="lieu-map-infowindow" style='display:none;width:200px'>
+                    <?php echo $illustration; ?><div class=details><p class=adresse><strong><?php echo sanitizeForHtml($lieu->getValue('nom')); ?></strong></p><p class=adresse><?php echo sanitizeForHtml($lieu->getValue('adresse')); ?></p><p class=adresse><?php echo $lieu->getValue('quartier'); ?></p></div>
+                </div>
+                <div id="lieu-map" data-lat="<?php echo $lieu->getValue('lat') ?>" data-lng="<?php echo $lieu->getValue('lng') ?>"></div>
+            </div>
         </div><!-- Fin pratique -->
 
         <div class="spacer only-mobile"></div>
@@ -465,8 +433,8 @@ if ($nb_desc)
 ?>
 
     <li class="btn-description <?php if ($get['type_description'] == 'description') { echo 'ici'; }?>">
-    <h3><a href="#description" onclick="showhide('description', 'presentation');">Description</a></h3>
-    </li>
+        <h3><a href="#description" id="show-description-btn">Description</a></h3>
+            </li>
  <?php
 
  }
@@ -476,8 +444,8 @@ if ($nb_pres > 0)
 
 ?>
     <li class="btn-presentation <?php if ($get['type_description'] == 'presentation') { echo 'ici'; }?>">
-        <h3><a href="#presentation" onclick="showhide('presentation', 'description');">Le lieu se présente</a></h3>
-    </li>
+                <h3><a href="#presentation" id="show-presentation-btn">Le lieu se présente</a></h3>
+            </li>
  <?php
 
  }
@@ -868,8 +836,8 @@ if ($nb_pres > 0)
 		{
 			$URLcomplete = "http://".$tab_lieu['URL'];
 		}
-		echo "<p>Pour des informations complémentaires veuillez consulter <a href=\"".$URLcomplete."\" title=\"Aller sur le site web\" onclick=\"window.open(this.href,'_blank');return false;\">".$tab_lieu['URL']."</a></p>\n";
-	}
+		echo "<p>Pour des informations complémentaires veuillez consulter <a href=\"" . $URLcomplete . "\" target='_blank'>" . $tab_lieu['URL'] . "</a></p>\n";
+}
 
 	echo '</div>';
 

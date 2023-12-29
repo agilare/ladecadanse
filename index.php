@@ -63,8 +63,8 @@ FROM evenement WHERE region IN ('" . $connector->sanitize($_SESSION['region']) .
         ?>
         <div id="home-tmp-banner">
             <h2><?php echo HOME_TMP_BANNER_TITLE; ?></h2>
-            <a class="close" href="#" onclick="SetCookie('msg_orga_benevole', 1, 180);this.parentNode.style.display = 'none';return false;">&times;</a>
-            <p style="line-height:18px"><?php echo HOME_TMP_BANNER_CONTENT; ?></p>
+            <a href="#" id="home-tmp-banner-close-btn" class="close">&times;</a>
+                <p style="line-height:18px"><?php echo HOME_TMP_BANNER_CONTENT; ?></p>
         </div>
         <?php
     }
@@ -338,15 +338,15 @@ FROM evenement WHERE region IN ('" . $connector->sanitize($_SESSION['region']) .
 
         <h2 style="margin-top:15px;">Partenaires</h2>
         <ul style="list-style-type: none;padding-left:5px">
-            <li style="margin:2px 0;float:left;"><a href="https://www.noctambus.ch/" target="_blank"><img src="/web/interface/logo-noctambus-geneve.jpg" alt="Noctambus - réseau de bus de nuit desservant le canton de Genève et ses régions transfrontalières" title="Noctambus - réseau de bus de nuit desservant le canton de Genève et ses régions transfrontalières" width="150" style="border:1px solid #eaeaea" /></a></li>
-            <li style="margin:2px 0;float:left;"><a href="https://www.darksite.ch/olive/oliveblog/" target="_blank"><img src="/web/interface/debout-les-braves.jpg" alt="Debout les braves - Visions de la scène genevoise et d'ailleurs" title="Debout les braves - Visions de la scène genevoise et d'ailleurs" width="150" style="border:1px solid #eaeaea" /></a></li>
-            <li style="margin:2px 0;float:left;"><a href="https://culture-accessible.ch/" target="_blank"><img src="/web/interface/culture-accessible-geneve.svg" alt="Culture accessible Genève" width="150" style="border:1px solid #eaeaea" /></a></li>
-            <li style="margin:2px 0;float:left;"><a href="https://epic-magazine.ch/" target="_blank"><img src="/web/interface/EPIC_noir.png" alt="EPIC Magazine" width="150" style="border:1px solid #eaeaea" /></a></li>
+            <li style="margin:2px 0;float:left;"><a href="https://www.noctambus.ch/" target="_blank"><img src="/web/content/logo-noctambus-geneve.jpg" alt="Noctambus - réseau de bus de nuit desservant le canton de Genève et ses régions transfrontalières" title="Noctambus - réseau de bus de nuit desservant le canton de Genève et ses régions transfrontalières" width="150" style="border:1px solid #eaeaea" /></a></li>
+            <li style="margin:2px 0;float:left;"><a href="https://www.darksite.ch/olive/oliveblog/" target="_blank"><img src="/web/content/debout-les-braves.jpg" alt="Debout les braves - Visions de la scène genevoise et d'ailleurs" title="Debout les braves - Visions de la scène genevoise et d'ailleurs" width="150" style="border:1px solid #eaeaea" /></a></li>
+            <li style="margin:2px 0;float:left;"><a href="https://culture-accessible.ch/" target="_blank"><img src="/web/content/culture-accessible-geneve.svg" alt="Culture accessible Genève" width="150" style="border:1px solid #eaeaea" /></a></li>
+            <li style="margin:2px 0;float:left;"><a href="https://epic-magazine.ch/" target="_blank"><img src="/web/content/EPIC_noir.png" alt="EPIC Magazine" width="150" style="border:1px solid #eaeaea" /></a></li>
 
-            <li style="margin:2px 0;float:left;"><a href="https://www.radiovostok.ch/" target="_blank"><img src="/web/interface/radio_vostok.png" alt="Radio Vostok" width="150" height="59" style="border:1px solid #eaeaea" /></a></li>
+            <li style="margin:2px 0;float:left;"><a href="https://www.radiovostok.ch/" target="_blank"><img src="/web/content/radio_vostok.png" alt="Radio Vostok" width="150" height="59" style="border:1px solid #eaeaea" /></a></li>
 
         <li style="margin:2px 0;float:left;">
-            <a href="https://www.darksite.ch/" target="_blank"><img src="/web/interface/darksite.png" alt="Darksite" width="150" height="43" style="border:1px solid #eaeaea" /></a></li>
+            <a href="https://www.darksite.ch/" target="_blank"><img src="/web/content/darksite.png" alt="Darksite" width="150" height="43" style="border:1px solid #eaeaea" /></a></li>
         </ul>
     </section>
 

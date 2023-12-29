@@ -26,3 +26,4 @@ app/env.php
 /.idea
 .htaccess
 tests/.env
+/node_modules

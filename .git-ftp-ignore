@@ -20,3 +20,4 @@ phpstan.neon
 codeception.yml
 rector.php
 LICENSE
+.eslintrc.js
