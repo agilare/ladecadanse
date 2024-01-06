@@ -41,7 +41,7 @@ export function bindEventsOfMainNavigation ()
         e.preventDefault();
 
         if (!$('#menu_pratique').is(':visible'))
-        {          
+        {
             $('#menu_pratique').fadeIn(FADE_SPEED_MEDIUM_IN_MS);
             //$('#main_menu').toggle(vitesse_fondu);
         }
@@ -104,6 +104,11 @@ export function bindEventsOfForms()
 
 export function bindHomeEvents()
 {
+    if ($('#js-home-tmp-banner-close-btn').length === 0)
+    {
+        return;
+    }
+
     // browser.js
     $('#js-home-tmp-banner-close-btn').on('click', function hideTmpBannerAndSetCookie()
     {
@@ -146,29 +151,36 @@ export function bindLieuxEvents()
  */
 export function bindEventsEvents ()
 {
-    $('.btn_event_del').on('click', function requestEventDel(e)
+    const $content = $('#contenu');
+
+    if ($content.length === 0)
+    {
+        return;
+    }
+
+    $content.on('click', '.btn_event_del', function requestEventDel(e)
     {
         e.preventDefault();
         const event_id = $(this).data('id');
-        $.get('/evenement-actions.php?action=delete&id=' + event_id, function hideEventRow()
+        $.get(`/evenement-actions.php?action=delete&id=${event_id}`, function hideEventRow()
         {
-            $('#btn_event_del_' + event_id).closest('tr').fadeOut('fast');
+            $(`#btn_event_del_${event_id}`).closest('tr').fadeOut('fast');
         });
 
     });
 
-    $('.btn_event_unpublish').on('click', function requestUnpublishEvent(e)
+    $content.on('click', '.btn_event_unpublish', function requestUnpublishEvent(e)
     {
         e.preventDefault();
-        var event_id = $(this).data('id');
-        $.get('/evenement-actions.php?action=unpublish&id=' + event_id, function hideEvent()
+        const event_id = $(this).data('id');
+        $.get(`/evenement-actions.php?action=unpublish&id=${event_id}` , function hideEvent()
         {
-            $('#btn_event_unpublish_' + event_id).closest('.evenement').fadeOut();
+            $(`#btn_event_unpublish_${event_id}`).closest('.evenement').fadeOut();
         });
 
     });
 
-    $('#js-event-delete-btn').on('click', function confirmEventDel()
+    $content.on('click', '#js-event-delete-btn', function confirmEventDel()
     {
         return confirm('Voulez-vous vraiment supprimer cet événement ?');
     });
