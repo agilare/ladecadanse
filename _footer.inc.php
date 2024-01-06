@@ -83,7 +83,7 @@ if (in_array($nom_page, $pages_lieumap))
                 {
                     return;
                 }
-                
+
                 var myLatLng = {lat: parseFloat($('#lieu-map').data('lat')), lng: parseFloat($('#lieu-map').data('lng'))};
 
                 lieuMap = new google.maps.Map(document.getElementById('lieu-map'), {
@@ -209,7 +209,15 @@ if (in_array($nom_page, $pages_lieumap))
                         <?php } ?>
                     <?php } ?>
 
-                    <script type="module" src="/web/js/main.js"></script>
+                    <?php
+                    if ($nom_page == "contacteznous")
+                    {
+                        ?>
+                        <script>
+                                  document.getElementById("email-info").innerHTML = atob("<?php echo base64_encode(EMAIL_ADMIN); ?>");
+                        </script>
+                    <?php } ?>
+                        <script type="module" src="/web/js/main.js"></script>
 </body>
 
 </html>

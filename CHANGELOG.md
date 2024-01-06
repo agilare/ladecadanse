@@ -10,6 +10,7 @@
 - maintenance page
 
 ### Changed
+- contact : replace old email obfuscation method
 - refactor js
 
 ## [3.5.1] - 2023-11-26
