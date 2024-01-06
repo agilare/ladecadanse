@@ -75,8 +75,9 @@ use Ladecadanse\UserLevel;
     if (MATOMO_ENABLED) {
     ?>
         <!-- Matomo -->
-        <script>
-          var _paq = window._paq = window._paq || [];
+            <script>
+                'use strict';
+                  var _paq = window._paq = window._paq || [];
           /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
           _paq.push(['trackPageView']);
           _paq.push(['enableLinkTracking']);
@@ -96,8 +97,9 @@ use Ladecadanse\UserLevel;
     if (GOOGLE_ANALYTICS_ENABLED) {
     ?>
         <script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo GOOGLE_ANALYTICS_ID; ?>"></script>
-        <script>
-          window.dataLayer = window.dataLayer || [];
+            <script>
+                'use strict';
+              window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
 

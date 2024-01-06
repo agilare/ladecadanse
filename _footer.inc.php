@@ -48,7 +48,7 @@ $pages_lieumap = ["lieu", "evenement"];
 
 <script src="/vendor/dimsemenov/magnific-popup/dist/jquery.magnific-popup.js"></script>
 <script>
-
+'use strict';
 $('.magnific-popup').magnificPopup({
     type: 'image',
     tClose: 'Fermer (Esc)', // Alt text on close button
@@ -75,8 +75,8 @@ if (in_array($nom_page, $pages_lieumap))
 {
     ?>
     <script>
-
-            let lieuMap;
+    'use strict';
+                let lieuMap;
             function initLieuMap()
             {
                 if ($('#lieu-map').length === 0)
@@ -118,8 +118,9 @@ if (in_array($nom_page, $pages_lieumap))
             ?>
 
             <script src="/vendor/harvesthq/chosen/chosen.jquery.min.js"></script>
-            <script>
-            $('.chosen-select').chosen({
+                <script>
+                    'use strict';
+                $('.chosen-select').chosen({
                 allow_single_deselect: true,
                 no_results_text: 'Aucun &eacute;l&eacute;ment correspondant n’a &eacute;t&eacute; trouv&eacute;',
                 include_group_label_in_selected: true,
@@ -127,8 +128,9 @@ if (in_array($nom_page, $pages_lieumap))
             });
             </script>
                 <script src="/web/js/libs/Zebra_datepicker/zebra_datepicker.min.js"></script>
-                <script>
-                // users can add events for today, until 06h the day after, in line with the agenda
+                    <script>
+                        'use strict';
+                    // users can add events for today, until 06h the day after, in line with the agenda
                 const nbHoursAfterMidnightForDay = 6;
                 let d = new Date();
                 d.setHours(d.getHours() - nbHoursAfterMidnightForDay);
@@ -144,8 +146,8 @@ if (in_array($nom_page, $pages_lieumap))
                     show_select_today: 'Aujourd’hui'
                     };
 
-                    const inputDatepickerConfig = {direction: [eventEditStartDate, false]};
-                    $('input.datepicker').Zebra_DatePicker({...ZebraDatepickerBasicConfig, ...inputDatepickerConfig});
+                        const inputDatepickerConfig = {direction: [eventEditStartDate, false]};
+                        $('input.datepicker').Zebra_DatePicker({...ZebraDatepickerBasicConfig, ...inputDatepickerConfig});
 
                     const inputDatepickerFromConfig = {direction: [eventEditStartDate, false], pair: $('input.datepicker_to'), readonly_element: false};
                     $('input.datepicker_from').Zebra_DatePicker({...ZebraDatepickerBasicConfig, ...inputDatepickerFromConfig});
@@ -159,8 +161,9 @@ if (in_array($nom_page, $pages_lieumap))
                 {
                     ?>
                     <script src="https://cloud.tinymce.com/5/tinymce.min.js?apiKey=<?php echo TINYMCE_API_KEY; ?>"></script>
-                    <script>
-                tinymce.init({
+                            <script>
+                                'use strict';
+                        tinymce.init({
                 selector: 'textarea.tinymce',
                 height: 500,
                 menubar: false,
@@ -183,8 +186,9 @@ if (in_array($nom_page, $pages_lieumap))
                 {
                     ?>
                             <script src="/web/js/libs/jquery.checkboxes-1.2.2.min.js"></script>
-                            <script>
-                    jQuery(function ($)
+                                    <script>
+                                        'use strict';
+                            jQuery(function ($)
                     {
                                 $('.jquery-checkboxes').checkboxes('range', true);
                             });
@@ -197,7 +201,8 @@ if (in_array($nom_page, $pages_lieumap))
                     ?>
                     <script src="https://www.google.com/recaptcha/api.js?render=<?php echo GOOGLE_RECAPTCHA_API_KEY_CLIENT; ?>"></script>
                     <script>
-                    grecaptcha.ready(function ()
+                                        'use strict';
+                                    grecaptcha.ready(function ()
                     {
                         grecaptcha.execute('<?php echo GOOGLE_RECAPTCHA_API_KEY_CLIENT ?>', {action: 'propose_event'}).then(function (token)
                         {
@@ -214,7 +219,8 @@ if (in_array($nom_page, $pages_lieumap))
                     {
                         ?>
                         <script>
-                                  document.getElementById("email-info").innerHTML = atob("<?php echo base64_encode(EMAIL_ADMIN); ?>");
+                            'use strict';
+                                          document.getElementById("email-info").innerHTML = atob("<?php echo base64_encode(EMAIL_ADMIN); ?>");
                         </script>
                     <?php } ?>
                         <script type="module" src="/web/js/main.js"></script>
