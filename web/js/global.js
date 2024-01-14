@@ -162,22 +162,18 @@ export function bindEventsEvents ()
     {
         e.preventDefault();
         const event_id = $(this).data('id');
-        $.get(`/evenement-actions.php?action=delete&id=${event_id}`, function hideEventRow()
-        {
-            $(`#btn_event_del_${event_id}`).closest('tr').fadeOut('fast');
-        });
-
+        fetch(`/evenement-actions.php?action=delete&id=${event_id}`)
+        .then(response => $(`#btn_event_del_${event_id}`).closest('tr').fadeOut('fast'))
+        .catch(error => alert("Erreur : " + error));
     });
 
     $content.on('click', '.btn_event_unpublish', function requestUnpublishEvent(e)
     {
         e.preventDefault();
         const event_id = $(this).data('id');
-        $.get(`/evenement-actions.php?action=unpublish&id=${event_id}` , function hideEvent()
-        {
-            $(`#btn_event_unpublish_${event_id}`).closest('.evenement').fadeOut();
-        });
-
+        fetch(`/evenement-actions.php?action=unpublish&id=${event_id}`)
+        .then(response => $(`#btn_event_unpublish_${event_id}`).closest('.evenement').fadeOut())
+        .catch(error => alert("Erreur : " + error));
     });
 
     $content.on('click', '#js-event-delete-btn', function confirmEventDel()
