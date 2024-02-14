@@ -3,145 +3,145 @@ import { SetCookie } from './browser.js';
 export const FADE_SPEED_MEDIUM_IN_MS = 400;
 const FADE_SPEED_SHORT_IN_MS = 100;
 
-export function bindEventsOfVariousInteractions()
+export const AppGlobal = 
 {
-    $('.dropdown').click(function dropdownTarget()
+    init : function init()
     {
-        $('#' + $(this).data('target')).toggle();
-        return false;
-    });
-
-    $('.btn_toggle').on('click', function toggleTarget()
+        this.commonInteractions();
+        this.mainNavigation();
+        Forms.init();
+        Events.init();
+        Lieux.init(); 
+        HomePage.init();
+    },
+    commonInteractions : function bindEventsOfVariousInteractions()
     {
-        $('.element_toggle').toggle();
-        //return false;
-    });
-
-    $('#show-description-btn').on('click', function showDescription()
-    {
-        showhide('description', 'presentation');
-        return false;
-    });
-
-    $('#show-presentation-btn').on('click', function showPresentation()
-    {
-        showhide('presentation', 'description');
-        return false;
-    });
-}
-
-/**
- * only used in mobile view
- * @returns {undefined}
- */
-export function bindEventsOfMainNavigation ()
-{
-    $('#btn_menu_pratique').on('click', function toggleMenuPratique(e)
-    {
-        e.preventDefault();
-
-        if (!$('#menu_pratique').is(':visible'))
+        $('.dropdown').click(function dropdownTarget()
         {
-            $('#menu_pratique').fadeIn(FADE_SPEED_MEDIUM_IN_MS);
-            //$('#main_menu').toggle(vitesse_fondu);
-        }
-        else
+            $('#' + $(this).data('target')).toggle();
+            return false;
+        });
+
+        $('.btn_toggle').on('click', function toggleTarget()
         {
-            $('#menu_pratique').fadeOut(FADE_SPEED_MEDIUM_IN_MS);
-            //$('#main_menu').toggle(vitesse_fondu);
-        }
-    });
+            $('.element_toggle').toggle();
+            //return false;
+        });
 
-    $('#btn_calendrier').click(function toggleCalendrier()
-    {
-        $('#navigation_calendrier').toggle();
-        return false;
-    });
-
-    $('#btn_search').on('click', function toggleSearchField()
-    {
-        $('.recherche_mobile').toggle(FADE_SPEED_MEDIUM_IN_MS);
-        //return false;
-    });
-}
-
-
-export function bindEventsOfForms()
-{
-    const MAX_UPLOAD_SIZE_IN_BYTES = 2097152;
-    $('.js-file-upload-size-max').on('change', function alertOnFilesizeUpload()
-    {
-        if (this.files[0].size > MAX_UPLOAD_SIZE_IN_BYTES)
+        $('#show-description-btn').on('click', function showDescription()
         {
-            alert('La taille du fichier que vous avez sélectionné dépasse la limite autorisée (2 Mo), merci d’en choisir un plus léger');
-        }
-    });
+            showhide('description', 'presentation');
+            return false;
+        });
 
-    //$('#prix-precisions').hide();
-    $('.precisions').on('change', function togglePrixPrecision()
-    {
-        if (this.checked && (this.value == 'asyouwish' || this.value == 'chargeable'))
+        $('#show-presentation-btn').on('click', function showPresentation()
         {
-            $('#prix-precisions').show();
-            $('#prix-precisions #prix').focus();
-        }
-        else
+            showhide('presentation', 'description');
+            return false;
+        });
+    },
+    /**
+     * only used in mobile view
+     * @returns {undefined}
+     */
+    mainNavigation : function bindEventsOfMainNavigation()
+    {
+        $('#btn_menu_pratique').on('click', function toggleMenuPratique(e)
         {
-            $('#prix-precisions').hide();
-            $('#prix-precisions #prix, #prix-precisions #prelocations').val('');
-            this.focus();
-        }
-    });
+            e.preventDefault();
 
-    $('form.js-submit-freeze-wait').submit(function disableSubmit()
+            if (!$('#menu_pratique').is(':visible'))
+            {
+                $('#menu_pratique').fadeIn(FADE_SPEED_MEDIUM_IN_MS);
+                //$('#main_menu').toggle(vitesse_fondu);
+            }
+            else
+            {
+                $('#menu_pratique').fadeOut(FADE_SPEED_MEDIUM_IN_MS);
+                //$('#main_menu').toggle(vitesse_fondu);
+            }
+        });
+
+        $('#btn_calendrier').click(function toggleCalendrier()
+        {
+            $('#navigation_calendrier').toggle();
+            return false;
+        });
+
+        $('#btn_search').on('click', function toggleSearchField()
+        {
+            $('.recherche_mobile').toggle(FADE_SPEED_MEDIUM_IN_MS);
+            //return false;
+        });
+    }    
+    
+};
+
+const Forms = {
+    init : function bindEventsOfForms()
     {
-        $('input[type="submit"]', this).val('Envoi...').attr('disabled', 'disabled');
-        return true;
-    });
-}
+        const MAX_UPLOAD_SIZE_IN_BYTES = 2097152;
+        $('.js-file-upload-size-max').on('change', function alertOnFilesizeUpload()
+        {
+            if (this.files[0].size > MAX_UPLOAD_SIZE_IN_BYTES)
+            {
+                alert('La taille du fichier que vous avez sélectionné dépasse la limite autorisée (2 Mo), merci d’en choisir un plus léger');
+            }
+        });
 
-// pages specific
+        //$('#prix-precisions').hide();
+        $('.precisions').on('change', function togglePrixPrecision()
+        {
+            if (this.checked && (this.value == 'asyouwish' || this.value == 'chargeable'))
+            {
+                $('#prix-precisions').show();
+                $('#prix-precisions #prix').focus();
+            }
+            else
+            {
+                $('#prix-precisions').hide();
+                $('#prix-precisions #prix, #prix-precisions #prelocations').val('');
+                this.focus();
+            }
+        });
 
-export function bindHomeEvents()
-{
-    if ($('#js-home-tmp-banner-close-btn').length === 0)
-    {
-        return;
+        $('form.js-submit-freeze-wait').submit(function disableSubmit()
+        {
+            $('input[type="submit"]', this).val('Envoi...').attr('disabled', 'disabled');
+            return true;
+        });
     }
+};
 
-    // browser.js
-    $('#js-home-tmp-banner-close-btn').on('click', function hideTmpBannerAndSetCookie()
-    {
-        const HOME_TMP_BANNER_COOKIE_DURATION_IN_DAYS = 180;
-        SetCookie('msg_orga_benevole', 1, HOME_TMP_BANNER_COOKIE_DURATION_IN_DAYS);
-        this.parentNode.style.display = 'none';
-        return false;
-    });
-}
+
+// pages specific 
 
 /**
- * used in pages lieu, lieux, organisateur, organisateurs
- *
- * @returns {undefined}
- */
-export function bindLieuxEvents()
-{
-    $('#btn_listelieux').on('click', function toggleMenuLieux(e)
+* used in pages lieu, lieux, organisateur, organisateurs
+*
+* @returns {undefined}
+*/  
+const Lieux = {
+    init : function bindLieuxEvents()
     {
-        e.preventDefault();
+        $('#btn_listelieux').on('click', function toggleMenuLieux(e)
+        {
+            e.preventDefault();
 
-        if (!$('#menu_lieux').is(':visible'))
-        {
-            $('#menu_lieux').fadeIn(FADE_SPEED_MEDIUM_IN_MS);
-            //$('#main_menu').toggle(vitesse_fondu);
-        }
-        else
-        {
-            $('#menu_lieux').fadeOut(FADE_SPEED_MEDIUM_IN_MS);
-            //$('#main_menu').toggle(vitesse_fondu);
-        }
-    });
-}
+            if (!$('#menu_lieux').is(':visible'))
+            {
+                $('#menu_lieux').fadeIn(FADE_SPEED_MEDIUM_IN_MS);
+                //$('#main_menu').toggle(vitesse_fondu);
+            }
+            else
+            {
+                $('#menu_lieux').fadeOut(FADE_SPEED_MEDIUM_IN_MS);
+                //$('#main_menu').toggle(vitesse_fondu);
+            }
+        });
+    }
+};
+
 
 
 /**
@@ -149,42 +149,68 @@ export function bindLieuxEvents()
  *
  * @returns {undefined}
  */
-export function bindEventsEvents ()
-{
-    const $content = $('#contenu');
-
-    if ($content.length === 0)
+const Events = {
+    init : function bindEventsEvents ()
     {
-        return;
+        const $content = $('#contenu');
+
+        if ($content.length === 0)
+        {
+            return;
+        }
+
+        $content.on('click', '.btn_event_del', function requestEventDel(e)
+        {
+            e.preventDefault();
+            const event_id = $(this).data('id');
+            $.get(`/evenement-actions.php?action=delete&id=${event_id}`, function hideEventRow()
+            {
+                $(`#btn_event_del_${event_id}`).closest('tr').fadeOut('fast');
+            });
+
+        });
+
+        $content.on('click', '.btn_event_unpublish', function requestUnpublishEvent(e)
+        {
+            e.preventDefault();
+            const event_id = $(this).data('id');
+            $.get(`/evenement-actions.php?action=unpublish&id=${event_id}` , function hideEvent()
+            {
+                $(`#btn_event_unpublish_${event_id}`).closest('.evenement').fadeOut();
+            });
+
+        });
+
+        $content.on('click', '#js-event-delete-btn', function confirmEventDel()
+        {
+            return confirm('Voulez-vous vraiment supprimer cet événement ?');
+        });
     }
+};
 
-    $content.on('click', '.btn_event_del', function requestEventDel(e)
+
+// page specific
+
+const HomePage =
+{
+    init : function bindHomeEvents()
     {
-        e.preventDefault();
-        const event_id = $(this).data('id');
-        $.get(`/evenement-actions.php?action=delete&id=${event_id}`, function hideEventRow()
+        if ($('#js-home-tmp-banner-close-btn').length === 0)
         {
-            $(`#btn_event_del_${event_id}`).closest('tr').fadeOut('fast');
-        });
+            return;
+        }
 
-    });
-
-    $content.on('click', '.btn_event_unpublish', function requestUnpublishEvent(e)
-    {
-        e.preventDefault();
-        const event_id = $(this).data('id');
-        $.get(`/evenement-actions.php?action=unpublish&id=${event_id}` , function hideEvent()
+        // browser.js
+        $('#js-home-tmp-banner-close-btn').on('click', function hideTmpBannerAndSetCookie()
         {
-            $(`#btn_event_unpublish_${event_id}`).closest('.evenement').fadeOut();
+            const HOME_TMP_BANNER_COOKIE_DURATION_IN_DAYS = 180;
+            SetCookie('msg_orga_benevole', 1, HOME_TMP_BANNER_COOKIE_DURATION_IN_DAYS);
+            this.parentNode.style.display = 'none';
+            return false;
         });
+    }
+};
 
-    });
-
-    $content.on('click', '#js-event-delete-btn', function confirmEventDel()
-    {
-        return confirm('Voulez-vous vraiment supprimer cet événement ?');
-    });
-}
 
 
 function showhide(show, hide)

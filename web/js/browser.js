@@ -46,13 +46,11 @@ export function responsiveSetup()
 
         if (viewportWidth < MAX_WIDTH_FOR_MOBILE_INTERFACE && viewportWidthPrev > MAX_WIDTH_FOR_MOBILE_INTERFACE)
         {
-            //console.log('mode mobile');
             mode_viewport = 'mobile';
             setupMobile();
         }
         else if (viewportWidth > MAX_WIDTH_FOR_MOBILE_INTERFACE && viewportWidthPrev < MAX_WIDTH_FOR_MOBILE_INTERFACE)
         {
-            //console.log('mode desktop');
             mode_viewport = 'desktop';
             setupDesktop();
         }
