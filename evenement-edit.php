@@ -19,7 +19,7 @@ if (isset($_SESSION['Sgroupe']))
     $page_description = "Formulaire d'ajout/modification d'un événement dans l'agenda";
 }
 
-$extra_css = array("formulaires", "evenement_inc", "evenement-edit_formulaire", "default");
+$extra_css = array("formulaires", "evenement_inc");
 
 /*
 * action choisie, ID si édition

@@ -13,7 +13,7 @@ if (!$videur->checkGroup(8))
 }
 
 $page_titre = "ajouter/éditer un organisateur";
-$extra_css = array("formulaires", "ajouterOrganisateur_formulaire", "organisateur_inc");
+$extra_css = array("formulaires");
 
 /*
 * action choisie, ID si édition, val pour (dés)activer l'événement

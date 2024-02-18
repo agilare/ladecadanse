@@ -44,11 +44,13 @@ $pages_tinymce = ["lieu-text-edit", "organisateur-edit"];
 $pages_lieumap = ["lieu", "evenement"];
 ?>
 
+<!-- used by ZebraDatepicker, MagnificPopup, checkboxes, custom in _footer.inc.php, browser.js, global.js -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 
 <script src="/vendor/dimsemenov/magnific-popup/dist/jquery.magnific-popup.js"></script>
 <script>
 'use strict';
+// used everywhere : home, events, lieux, user...
 $('.magnific-popup').magnificPopup({
     type: 'image',
     tClose: 'Fermer (Esc)', // Alt text on close button
@@ -58,6 +60,7 @@ $('.magnific-popup').magnificPopup({
     }
 });
 
+// used in lieu
 $('.gallery-item').magnificPopup({
     type: 'image',
     tClose: 'Fermer (Esc)', // Alt text on close button

@@ -14,7 +14,7 @@ if (!$videur->checkGroup(8))
 }
 
 $page_titre = "ajouter/éditer un lieu";
-$extra_css = array("formulaires", "ajouterLieu_formulaire", "lieu_inc");
+$extra_css = array("formulaires", "lieu_inc");
 
 $tab_actions = array("ajouter", "insert", "editer", "update");
 $get['action'] = "ajouter";

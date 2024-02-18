@@ -52,7 +52,7 @@ else
 }
 
 $page_titre = $get['action'] . " une personne";
-$extra_css = array("formulaires", "user-edit_formulaire");
+$extra_css = array("formulaires");
 include("_header.inc.php");
 ?>
 
