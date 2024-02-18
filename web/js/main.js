@@ -1,15 +1,6 @@
+// 2 façons d'utiliser les modules, juste pour voir : par fonctions (browser.js) et par objet literal (global.js)
 import { responsiveSetup } from './browser.js';
-import * as AppGlobal from './global.js';
+import { AppGlobal } from './global.js';
 
-// ALL
 responsiveSetup();
-AppGlobal.bindEventsOfMainNavigation();
-AppGlobal.bindEventsOfVariousInteractions();
-
-// SOME PAGES
-AppGlobal.bindEventsOfForms();
-AppGlobal.bindEventsEvents();
-
-// SPECIFIC PAGES
-AppGlobal.bindHomeEvents();
-AppGlobal.bindLieuxEvents();
+AppGlobal.init();
