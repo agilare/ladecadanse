@@ -6,6 +6,7 @@
 - menus : pratique links 404
 - session : back to default config
 - library : order of parameters in 2 functions
+- forms : rectify some calls to css files
 
 ### Added
 
@@ -14,6 +15,7 @@
 ### Changed
 - contact : replace old email obfuscation method
 - refactor js
+- upgrade TinyMCE from 5 to 6
 
 ## [3.5.1] - 2023-11-26
 
