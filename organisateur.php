@@ -172,8 +172,7 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 6
 		{
 			if (isset($_SESSION['SidPersonne']) &&
 			(
-			$authorization->estAuteur($_SESSION['SidPersonne'], $get['idO'], "organisateur")
-			|| $authorization->isPersonneInOrganisateur($_SESSION['SidPersonne'], $get['idO'])
+			$authorization->isAuthor("organisateur", $_SESSION['SidPersonne'], $get['idO']) || $authorization->isPersonneInOrganisateur($_SESSION['SidPersonne'], $get['idO'])
 			)
 			)
 			{

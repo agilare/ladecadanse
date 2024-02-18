@@ -18,7 +18,7 @@ if ($get['action'] == 'delete' && !empty($get['id']))
 
     $val_even = $connector->fetchArray($req_im);
 
-    if (!empty($val_even) && (($authorization->estAuteur($_SESSION['SidPersonne'], $get['id'], 'evenement') && $_SESSION['Sgroupe'] <= 8) || $_SESSION['Sgroupe'] < 2))
+    if (!empty($val_even) && (($authorization->isAuthor('evenement', $_SESSION['SidPersonne'], $get['id']) && $_SESSION['Sgroupe'] <= 8) || $_SESSION['Sgroupe'] < 2))
     {
 
         if (!empty($val_even['flyer']))

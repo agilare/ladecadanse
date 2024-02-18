@@ -37,8 +37,8 @@ if (isset($_GET['idO']))
 */
 if ($get['action'] != "ajouter" && $get['action'] != "insert")
 {
-	if (!$authorization->estAuteur($_SESSION['SidPersonne'], $get['idO'], "organisateur") && $_SESSION['Sgroupe'] > 8)
-	{
+	if (!$authorization->isAuthor("organisateur", $_SESSION['SidPersonne'], $get['idO']) && $_SESSION['Sgroupe'] > 8)
+    {
 		HtmlShrink::msgErreur("Vous ne pouvez pas modifier cet organisateur");
 		exit;
 	}
@@ -90,8 +90,8 @@ if (($get['action'] == 'editer' || $get['action'] == 'update'))
 	$titre_form = "Modifier";
 	$nom_submit = "Modifier";
 
-	if ($authorization->estAuteur($_SESSION["SidPersonne"], $get['idO'], "organisateur") || $_SESSION['Sgroupe'] <= 8)
-	{
+	if ($authorization->isAuthor("organisateur", $_SESSION["SidPersonne"], $get['idO']) || $_SESSION['Sgroupe'] <= 8)
+    {
 		//Menu d'actions
 		if ($_SESSION['Sgroupe'] < 2)
 		{
@@ -278,8 +278,8 @@ if (isset($get['idO']) && $form->getValeur('photo') != '' && $form->getErreur("p
 
 //menu d'actions (activation et suppression)  pour l'auteur > 6 ou l'admin
 if (($get['action'] == 'editer' || $get['action'] == 'update') &&
-(($authorization->estAuteur($_SESSION['SidPersonne'], $get['idO'], "organisateur") && $_SESSION['Sgroupe'] < 6) || $_SESSION['Sgroupe'] <= 4))
-{
+        (($authorization->isAuthor("organisateur", $_SESSION['SidPersonne'], $get['idO']) && $_SESSION['Sgroupe'] < 6) || $_SESSION['Sgroupe'] <= 4))
+    {
 ?>
 
 

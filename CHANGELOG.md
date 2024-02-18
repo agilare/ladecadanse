@@ -4,6 +4,8 @@
 
 ### Fixed
 - menus : pratique links 404
+- session : back to default config
+- library : order of parameters in 2 functions
 
 ### Added
 
@@ -24,6 +26,7 @@
 
 - Noctambus : add banner in home and explanation of partnership (and also for EPIC magazine) in user registration and add event
 - api : nb of items returned in logging of each request
+- license (AGPL) file
 
 ### Changed
 

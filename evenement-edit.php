@@ -93,8 +93,7 @@ if ($get['action'] != "ajouter" && $get['action'] != "insert")
 	$req_even_cur = $connector->query("SELECT idLieu, statut FROM evenement WHERE idEvenement=".$get['idE']);
 	$tab_even_cur = $connector->fetchArray($req_even_cur);
 
-	if ((isset($_SESSION['SidPersonne']) && $authorization->estAuteur($_SESSION['SidPersonne'], $get['idE'], "evenement")) || (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 6)
-	 || (isset($_SESSION['Saffiliation_lieu']) && isset($tab_even_cur['idLieu']) && $tab_even_cur['idLieu'] == $_SESSION['Saffiliation_lieu'])
+	if ((isset($_SESSION['SidPersonne']) && $authorization->isAuthor("evenement", $_SESSION['SidPersonne'], $get['idE'])) || (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 6) || (isset($_SESSION['Saffiliation_lieu']) && isset($tab_even_cur['idLieu']) && $tab_even_cur['idLieu'] == $_SESSION['Saffiliation_lieu'])
 	|| (isset($_SESSION['SidPersonne']) && $authorization->isPersonneInEvenementByOrganisateur($_SESSION['SidPersonne'], $get['idE']))
 	|| (isset($_SESSION['SidPersonne']) && isset($tab_even_cur['idLieu']) && $authorization->isPersonneInLieuByOrganisateur($_SESSION['SidPersonne'], $tab_even_cur['idLieu']))
     )

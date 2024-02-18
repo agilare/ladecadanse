@@ -85,7 +85,7 @@ class HtmlShrink
         return ob_get_contents();
     }
 
-    public static function getPaginationString(int $page = 1, $totalitems, int $limit = 15, int $adjacents = 1, $targetpage = "/", $pagestring = "?page="): string
+    public static function getPaginationString($totalitems, int $page = 1, int $limit = 15, int $adjacents = 1, $targetpage = "/", $pagestring = "?page="): string
     {
         //defaults
         if (!$adjacents)

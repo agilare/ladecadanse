@@ -74,8 +74,9 @@ if (isset($_GET['idP'])) {
 
             ///TESTER SI L'EVENEMENT EXISTE ENCORE
 
-            if ((($authorization->estAuteur($_SESSION['SidPersonne'], $get['id'], $get['type']) && $_SESSION['Sgroupe'] <= 6) || $_SESSION['Sgroupe'] < 2)) {
-                /*
+            if ((($authorization->isAuthor($get['type'], $_SESSION['SidPersonne'], $get['id']) && $_SESSION['Sgroupe'] <= 6) || $_SESSION['Sgroupe'] < 2))
+        {
+            /*
                  * Suppression du flyer
                  */
                 $req_im = $connector->query("SELECT titre, flyer, image, idLieu, genre, dateEvenement
@@ -173,8 +174,9 @@ if (isset($_GET['idP'])) {
                 echo "</table>";
             }
             else {
-                if ((($authorization->estAuteur($_SESSION['SidPersonne'], $get['id'], $get['type']) && $_SESSION['Sgroupe'] < 7) || $_SESSION['Sgroupe'] < 2)) {
-                    //supression des images
+                if ((($authorization->isAuthor($get['type'], $_SESSION['SidPersonne'], $get['id']) && $_SESSION['Sgroupe'] < 7) || $_SESSION['Sgroupe'] < 2))
+            {
+                //supression des images
                     $req_imLieu = $connector->query("SELECT nom, photo1, logo FROM lieu WHERE idLieu=" . $get['id']);
                     $im = $connector->fetchArray($req_imLieu);
 

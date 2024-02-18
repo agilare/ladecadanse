@@ -84,7 +84,8 @@ class EvenementCollection extends Collection
         global $rep_images_even;
 
         //TESTER SI L'EVENEMENT EXISTE ENCORE
-        if ((($authorization->estAuteur($_SESSION['SidPersonne'], $get_idE, "evenement") && $_SESSION['Sgroupe'] <= UserLevel::AUTHOR) || $_SESSION['Sgroupe'] == UserLevel::SUPERADMIN)) {
+        if ((($authorization->isAuthor("evenement", $_SESSION['SidPersonne'], $get_idE) && $_SESSION['Sgroupe'] <= UserLevel::AUTHOR) || $_SESSION['Sgroupe'] == UserLevel::SUPERADMIN))
+        {
             /*
              * Suppression du flyer
              */

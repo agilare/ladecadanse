@@ -254,10 +254,9 @@ $detailsAff = $connector->fetchArray($req_affPers);
 		$tab_nbeven = $connector->fetchArray($req_nbeven);
 		$tot_elements = $tab_nbeven['nbeven'];
 
-		echo HtmlShrink::getPaginationString($get['page'], $tot_elements, $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?idP=".$get['idP']."&elements=".$get['elements']."&tri=".$get['tri']."&ordre=".$get['ordre']."&nblignes=".$get['nblignes']."&page=");
+		echo HtmlShrink::getPaginationString($tot_elements, $get['page'], $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?idP=" . $get['idP'] . "&elements=" . $get['elements'] . "&tri=" . $get['tri'] . "&ordre=" . $get['ordre'] . "&nblignes=" . $get['nblignes'] . "&page=");
 
-
-		if ($connector->getNumRows($req_evenement) > 0)
+    if ($connector->getNumRows($req_evenement) > 0)
 		{
 			echo '<ul id="menu_nb_res">';
 			foreach ($tab_nblignes as $nbl)
@@ -370,9 +369,9 @@ $detailsAff = $connector->fetchArray($req_affPers);
 
 
 
-		echo HtmlShrink::getPaginationString($get['page'], $tot_elements, $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?idP=".$get['idP']."&elements=".$get['elements']."&tri=".$get['tri']."&ordre=".$get['ordre']."&nblignes=".$get['nblignes']."&page=");
+		echo HtmlShrink::getPaginationString($tot_elements, $get['page'], $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?idP=" . $get['idP'] . "&elements=" . $get['elements'] . "&tri=" . $get['tri'] . "&ordre=" . $get['ordre'] . "&nblignes=" . $get['nblignes'] . "&page=");
 
-		if ($connector->getNumRows($req_des) > 0)
+    if ($connector->getNumRows($req_des) > 0)
 		{
 			echo '<ul id="menu_nb_res">';
 			foreach ($tab_nblignes as $nbl)
@@ -475,10 +474,9 @@ $detailsAff = $connector->fetchArray($req_affPers);
 	$tot_elements = $tab_count['total'];
 
 
-	echo HtmlShrink::getPaginationString($get['page'], $tot_elements, $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?idP=".$get['idP']."&elements=".$get['elements']."&tri=".$get['tri']."&ordre=".$get['ordre']."&nblignes=".$get['nblignes']."&page=");
+	echo HtmlShrink::getPaginationString($tot_elements, $get['page'], $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?idP=" . $get['idP'] . "&elements=" . $get['elements'] . "&tri=" . $get['tri'] . "&ordre=" . $get['ordre'] . "&nblignes=" . $get['nblignes'] . "&page=");
 
-
-	if ($connector->getNumRows($req_lieux) > 0)
+    if ($connector->getNumRows($req_lieux) > 0)
 	{
 
 		$th_lieu = array("idLieu" => "ID",  "nom" => "Nom", "categorie" => "Catégorie", "URL" => "Site web", "description" => "Desc", "dateAjout" => "Date d'ajout");
@@ -588,9 +586,9 @@ else if ($get['elements'] == "organisateur")
 	$tab_count = $connector->fetchArray($req_count);
 	$tot_elements = $tab_count['total'];
 
-	echo HtmlShrink::getPaginationString($get['page'], $tot_elements, $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?idP=".$get['idP']."&elements=".$get['elements']."&tri=".$get['tri']."&ordre=".$get['ordre']."&nblignes=".$get['nblignes']."&page=");
+	echo HtmlShrink::getPaginationString($tot_elements, $get['page'], $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?idP=" . $get['idP'] . "&elements=" . $get['elements'] . "&tri=" . $get['tri'] . "&ordre=" . $get['ordre'] . "&nblignes=" . $get['nblignes'] . "&page=");
 
-	if ($connector->getNumRows($req_lieux) > 0)
+    if ($connector->getNumRows($req_lieux) > 0)
 	{
 
 		$th_lieu = array("idOrganisateur" => "ID",  "nom" => "Nom", "URL" => "Site web", "dateAjout" => "Date d'ajout");
@@ -677,8 +675,7 @@ else if ($get['elements'] == "organisateur")
 
 }
 
-echo HtmlShrink::getPaginationString($get['page'], $tot_elements, $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?idP=".$get['idP']."&elements=".$get['elements']."&tri=".$get['tri']."&ordre=".$get['ordre']."&nblignes=".$get['nblignes']."&page=");
-
+echo HtmlShrink::getPaginationString($tot_elements, $get['page'], $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?idP=" . $get['idP'] . "&elements=" . $get['elements'] . "&tri=" . $get['tri'] . "&ordre=" . $get['ordre'] . "&nblignes=" . $get['nblignes'] . "&page=");
 ?>
 	</table>
 

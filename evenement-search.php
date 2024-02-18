@@ -311,9 +311,8 @@ if (!empty($get['mots']))
 		<?php
 
 
-		echo HtmlShrink::getPaginationString($get['page'], $nb_even, $limite, 1, basename(__FILE__), "?".Utils::urlQueryArrayToString($get, "page")."&amp;page=");
-
-?>
+		echo HtmlShrink::getPaginationString($nb_even, $get['page'], $limite, 1, basename(__FILE__), "?" . Utils::urlQueryArrayToString($get, "page") . "&amp;page=");
+                ?>
 
 
 
@@ -546,8 +545,8 @@ if (!empty($get['mots']))
 
 
 		echo "</table>";
-		echo HtmlShrink::getPaginationString($get['page'], $nb_even, $limite, 1, basename(__FILE__), "?".Utils::urlQueryArrayToString($get, "page")."&amp;page=");
-	} //if evenement trouvé
+		echo HtmlShrink::getPaginationString($nb_even, $get['page'], $limite, 1, basename(__FILE__), "?" . Utils::urlQueryArrayToString($get, "page") . "&amp;page=");
+    } //if evenement trouvé
 		echo "</div>"; //res_recherche
 
 

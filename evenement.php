@@ -40,8 +40,7 @@ if (!$even->getValues() || in_array($even->getValue('statut'), ['inactif', 'prop
 	(
 	$_SESSION['Sgroupe'] <= 6
 	||
-	$authorization->estAuteur($_SESSION['SidPersonne'], $get['idE'], "evenement")
-	||
+	$authorization->isAuthor("evenement", $_SESSION['SidPersonne'], $get['idE']) ||
 	$authorization->isPersonneInEvenementByOrganisateur($_SESSION['SidPersonne'], $get['idE'])
 	)
 

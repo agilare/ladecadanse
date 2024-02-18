@@ -16,7 +16,7 @@ class Authorization
      * auteur de $id
      * @return boolean Si $idP est auteur ou non
      */
-    function estAuteur(int $idP = 0, int $id = 0, $table): bool
+    function isAuthor(string $table, int $idP = 0, int $id = 0): bool
     {
         global $connector;
 

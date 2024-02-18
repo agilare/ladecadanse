@@ -41,8 +41,7 @@ $req_lieu = $connector->query("SELECT idLieu, dateEvenement FROM evenement WHERE
 $tab_lieu = $connector->fetchArray($req_lieu);
 
 
-if ($authorization->estAuteur($_SESSION['SidPersonne'], $get['idE'], "evenement") || $_SESSION['Sgroupe'] <= UserLevel::AUTHOR
- || (isset($_SESSION['Saffiliation_lieu']) && isset($tab_lieu['idLieu']) && $tab_lieu['idLieu'] == $_SESSION['Saffiliation_lieu'])
+if ($authorization->isAuthor("evenement", $_SESSION['SidPersonne'], $get['idE']) || $_SESSION['Sgroupe'] <= UserLevel::AUTHOR || (isset($_SESSION['Saffiliation_lieu']) && isset($tab_lieu['idLieu']) && $tab_lieu['idLieu'] == $_SESSION['Saffiliation_lieu'])
 || $authorization->isPersonneInEvenementByOrganisateur($_SESSION['SidPersonne'], $get['idE'])
 || (isset($tab_lieu['idLieu']) && $authorization->isPersonneInLieuByOrganisateur($_SESSION['SidPersonne'], $tab_lieu['idLieu']))
  )

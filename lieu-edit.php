@@ -565,7 +565,7 @@ echo $form->getHtmlErreur("quartier");
 
     //menu d'actions (activation et suppression)  pour l'auteur > 6 ou l'admin
     if (($get['action'] == 'editer' || $get['action'] == 'update') &&
-    (($authorization->estAuteur($_SESSION['SidPersonne'], $get['idL'], "lieu") && $_SESSION['Sgroupe'] < 6) || $_SESSION['Sgroupe'] <= 4))
+    (($authorization->isAuthor("lieu", $_SESSION['SidPersonne'], $get['idL']) && $_SESSION['Sgroupe'] < 6) || $_SESSION['Sgroupe'] <= 4))
     {
     ?>
 

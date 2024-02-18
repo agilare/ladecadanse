@@ -126,9 +126,9 @@ if ($get['element'] == "description")
 
 	$th_descriptions = array("idLieu" => "Lieu",  "contenu" => "Contenu", "dateAjout" => "Date d'ajout", "date_derniere_modif" => "m-à-j");
 
-	echo HtmlShrink::getPaginationString($get['page'], $tot_elements, $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?".Utils::urlQueryArrayToString($get, "page")."&page=");
+	echo HtmlShrink::getPaginationString($tot_elements, $get['page'], $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?" . Utils::urlQueryArrayToString($get, "page") . "&page=");
 
-	echo '<ul class="menu_nb_res">';
+        echo '<ul class="menu_nb_res">';
 	foreach ($tab_nblignes as $nbl)
 	{
 		echo '<li ';
@@ -228,9 +228,9 @@ else if ($get['element'] == "lieu")
 	$th_lieu = array("idLieu" => "ID",  "nom" => "Nom", "categorie" => "Catégorie", "URL" => "URL",
 	"description" => "Desc", "dateAjout" => "Créé", "date_derniere_modif" => "Modifié", "statut" => "Statut");
 
-	echo HtmlShrink::getPaginationString($get['page'], $tot_elements, $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?element=".$get['element']."&tri_gerer=".$get['tri_gerer']."&ordre=".$get['ordre']."&page=");
+	echo HtmlShrink::getPaginationString($tot_elements, $get['page'], $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?element=" . $get['element'] . "&tri_gerer=" . $get['tri_gerer'] . "&ordre=" . $get['ordre'] . "&page=");
 
-	echo '<ul class="menu_nb_res">';
+        echo '<ul class="menu_nb_res">';
 	foreach ($tab_nblignes as $nbl)
 	{
 		echo '<li ';
@@ -350,9 +350,9 @@ else if ($get['element'] == "organisateur")
 	$th_lieu = array("idOrganisateur" => "ID",  "nom" => "Nom",
 	 "date_ajout" => "Créé", "date_derniere_modif" => "Modifié", "statut" => "Statut");
 
-	echo HtmlShrink::getPaginationString($get['page'], $tot_elements, $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?element=".$get['element']."&tri_gerer=".$get['tri_gerer']."&ordre=".$get['ordre']."&page=");
+	echo HtmlShrink::getPaginationString($tot_elements, $get['page'], $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?element=" . $get['element'] . "&tri_gerer=" . $get['tri_gerer'] . "&ordre=" . $get['ordre'] . "&page=");
 
-	echo '<ul class="menu_nb_res">';
+        echo '<ul class="menu_nb_res">';
 	foreach ($tab_nblignes as $nbl)
 	{
 		echo '<li ';
@@ -477,8 +477,8 @@ else if ($get['element'] == "personne")
 
 	<?php
 
-	echo HtmlShrink::getPaginationString($get['page'], $num_pers_total, $get['nblignes'], 1, $_SERVER['PHP_SELF'],
-	"?element=".$get['element']."&tri_gerer=".$get['tri_gerer']."&ordre=".$get['ordre']."&nblignes=".$get['nblignes']."&terme=".$get['terme']."&page=");
+	echo HtmlShrink::getPaginationString($num_pers_total, $get['page'], $get['nblignes'], 1, $_SERVER['PHP_SELF'],
+                "?element=".$get['element']."&tri_gerer=".$get['tri_gerer']."&ordre=".$get['ordre']."&nblignes=".$get['nblignes']."&terme=".$get['terme']."&page=");
 	echo '<ul class="menu_nb_res">';
 
 	foreach ($tab_nblignes as $nbl)
@@ -563,8 +563,7 @@ echo '<div class="spacer"></div>';
 
 	echo "</table>";
 
-	echo HtmlShrink::getPaginationString($get['page'], $num_pers_total, $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?element=".$get['element']."&tri_gerer=".$get['tri_gerer']."&ordre=".$get['ordre']."&nblignes=".$get['nblignes']."&terme=".$get['terme']."&page=");
-
+	echo HtmlShrink::getPaginationString($num_pers_total, $get['page'], $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?element=" . $get['element'] . "&tri_gerer=" . $get['tri_gerer'] . "&ordre=" . $get['ordre'] . "&nblignes=" . $get['nblignes'] . "&terme=" . $get['terme'] . "&page=");
 }
 
 
