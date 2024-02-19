@@ -7,7 +7,7 @@ div.pagination a {
 	padding: 2px 5px 2px 5px;
 	margin: 2px;
 	border: 1px solid #aad;
-	
+
 	text-decoration: none; /* no underline */
 	color: #009;
 }
@@ -20,15 +20,15 @@ div.pagination a:hover, div.pagination a:active {
 div.pagination #prec
 {
 	padding-left:16px;
-	background-image:url(../web/interface/icons/arrow_left.gif);
-	background-repeat:no-repeat;
+    background-image:url(../interface/icons/arrow_left.gif);
+    background-repeat:no-repeat;
 	background-position: 0 70%;
 }
 
 div.pagination #suiv{
 	padding-right:16px;
-	background-image:url(../web/interface/icons/arrow_right.gif);
-	background-repeat:no-repeat;
+    background-image:url(../interface/icons/arrow_right.gif);
+    background-repeat:no-repeat;
 	background-position: 90% 70%;
 }
 
@@ -36,7 +36,7 @@ div.pagination span.current {
 	padding: 2px 5px 2px 5px;
 	margin: 2px;
 		border: 1px solid #009;
-		
+
 		font-weight: bold;
 		background-color: #009;
 		color: #FFF;
@@ -48,4 +48,3 @@ div.pagination span.disabled {
 		background:transparent;
 		color: #DDD;
 	}
-	

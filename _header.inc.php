@@ -41,7 +41,13 @@ use Ladecadanse\UserLevel;
     <link rel="stylesheet" type="text/css" href="/web/css/imprimer.css" media="print" />
     <link rel="stylesheet" type="text/css" href="/web/css/global.css?<?php echo time() ?>" />
     <link rel="stylesheet" type="text/css" href="/web/css/calendrier.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="/web/css/<?php echo $nom_page; ?>.css" media="screen"  />
+    <?php
+    $cssFilePath = "/web/css/${nom_page}.css";
+    if (file_exists(__ROOT__ . $cssFilePath))
+    {
+        ?>
+        <link rel="stylesheet" type="text/css" href="<?php echo $cssFilePath; ?>" media="screen"  />
+    <?php } ?>
     <link rel="stylesheet" type="text/css" href="/web/css/diggstyle.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="/vendor/harvesthq/chosen/chosen.css" media="screen" />
 
@@ -50,9 +56,9 @@ use Ladecadanse\UserLevel;
         foreach ($extra_css as $import)
         {
             ?>
-            <link rel="stylesheet" type="text/css" href="/web/css/<?php echo $import ?>.css" media="screen" title="Normal" />
-            <?php
-        }
+                    <link rel="stylesheet" type="text/css" href="/web/css/<?php echo $import ?>.css" media="screen" title="Normal" />
+        <?php
+    }
     }
     ?>
 
