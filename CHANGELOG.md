@@ -3,6 +3,7 @@
 ## [3.5.2] - Unreleased
 
 ### Fixed
+
 - menus : pratique links 404
 - session : back to default config
 - library : order of parameters in 2 functions
@@ -12,11 +13,13 @@
 ### Added
 
 - maintenance page
+- Glitchtip error tracker
 
 ### Changed
 - contact : replace old email obfuscation method
 - refactor js
 - upgrade TinyMCE from 5 to 6
+
 
 ## [3.5.1] - 2023-11-26
 

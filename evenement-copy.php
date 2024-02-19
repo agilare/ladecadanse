@@ -13,7 +13,7 @@ if (!$videur->checkGroup(UserLevel::ACTOR)) {
 }
 
 $page_titre = "copier un événement vers d'autres dates";
-$extra_css = array("formulaires", "evenement_inc", "copier_evenement");
+$extra_css = array("formulaires", "evenement_inc");
 
 /*
 * action choisie, ID si collage
