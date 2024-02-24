@@ -1,6 +1,6 @@
 # Changelog
 
-## [3.5.2] - Unreleased
+## [3.5.2] - 2024-02-25
 
 ### Fixed
 
@@ -16,9 +16,14 @@
 - Glitchtip error tracker
 
 ### Changed
+
 - contact : replace old email obfuscation method
-- refactor js
+- refactor js : reorganize by scope, use modules
 - upgrade TinyMCE from 5 to 6
+
+### Removed
+
+- liens page : obsolete links
 
 
 ## [3.5.1] - 2023-11-26
