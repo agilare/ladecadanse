@@ -98,7 +98,7 @@ include("_header.inc.php");
                             <!-- Email obligatoire (text) -->
                             <p>
                                 <label for="email" id="label_email">E-mail* </label>
-                                <input name="email" id="email" type="text" size="40" title="email expéditeur" tabindex="1" value="<?php echo sanitizeForHtml($champs['email']) ?>"  onblur="validerEmail('email', 'false');" />
+                                <input name="email" id="email" type="text" size="40" title="email expéditeur" tabindex="1" value="<?php echo sanitizeForHtml($champs['email']) ?>" />
                                 <?php echo $verif->getErreur("email"); ?>
                             </p>
                             <div class="guideChamp">Votre adresse e-mail restera confidentielle.</div>

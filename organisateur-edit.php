@@ -175,7 +175,7 @@ echo $form->getHtmlErreur("URL");
 <p>
 <label for="email">Email :</label>
 <input type="text" name="email" id="email" size="40" maxlength="40"
- value="<?php echo $form->getValeur('email') ?>" onblur="validerEmail('email', 'false');" />
+ value="<?php echo $form->getValeur('email') ?>" />
 <?php
 echo $form->getHtmlErreur("email");
 ?>

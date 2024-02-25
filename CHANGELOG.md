@@ -9,6 +9,7 @@
 - library : order of parameters in 2 functions
 - forms : rectify some calls to css files
 - style : avoid page's css broken link
+- forms : rm calls to inexistent validerEmail()
 
 ### Added
 

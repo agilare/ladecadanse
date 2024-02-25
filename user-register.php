@@ -341,7 +341,7 @@ echo $verif->getHtmlErreur("utilisateur_existant");
 <!-- Email* (text) -->
 <p>
 <label for="email">E-mail*</label>
-<input type="email" name="email" id="email" size="35" maxlength="80" value="<?php echo htmlspecialchars($champs['email']) ?>" onblur="validerEmail('email', true);"/>
+<input type="email" name="email" id="email" size="35" maxlength="80" value="<?php echo htmlspecialchars($champs['email']) ?>" />
 <?php echo $verif->getHtmlErreur("email");
 echo $verif->getHtmlErreur("email_identique");?>
 </p>
