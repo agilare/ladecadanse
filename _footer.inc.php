@@ -226,7 +226,7 @@ if (in_array($nom_page, $pages_lieumap))
                                           document.getElementById("email-info").innerHTML = atob("<?php echo base64_encode(EMAIL_ADMIN); ?>");
                         </script>
                     <?php } ?>
-                        <script type="module" src="/web/js/main.js"></script>
+                        <script type="module" src="/web/js/main.js<?php echo time() ?>"></script>
 </body>
 
 </html>
