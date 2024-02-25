@@ -40,6 +40,7 @@ define("GOOGLE_ANALYTICS_ID", ''); // 1st analytics tool (enabled only in prod)
 define("GOOGLE_ANALYTICS_ENABLED", false);
 
 define("GLITCHTIP_ENABLED", false);
+define("GLITCHTIP_DSN", "");
 
 // to allow access to events API (api.php)
 define("LADECADANSE_API_USER", '');

@@ -84,7 +84,7 @@ use Ladecadanse\UserLevel;
     <script src="https://browser.sentry-cdn.com/7.60.0/bundle.min.js" crossorigin="anonymous"></script>
         <script>
         Sentry.init({
-              dsn: "https://8d6341b9b5b2479481394158630f0e74@app.glitchtip.com/5463",
+              dsn: "<?php echo GLITCHTIP_DSN ?>",
               tracesSampleRate: 0.01,
         });
         </script>
