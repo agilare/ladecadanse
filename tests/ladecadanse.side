@@ -329,11 +329,14 @@
       "id": "82522d2c-a334-46ab-a563-9c6d83b9e578",
       "comment": "",
       "command": "assertElementPresent",
-      "target": "css=fieldset:nth-child(3)",
+      "target": "id=utilisateur",
       "targets": [
-        ["css=fieldset:nth-child(3)", "css:finder"],
-        ["xpath=//form[@id='ajouter_editer']/fieldset", "xpath:idRelative"],
-        ["xpath=//fieldset", "xpath:position"]
+        ["id=utilisateur", "id"],
+        ["name=utilisateur", "name"],
+        ["css=#utilisateur", "css:finder"],
+        ["xpath=//input[@id='utilisateur']", "xpath:attributes"],
+        ["xpath=//form[@id='ajouter_editer']/fieldset/p/input", "xpath:idRelative"],
+        ["xpath=//p/input", "xpath:position"]
       ],
       "value": ""
     }, {
@@ -603,17 +606,17 @@
       "value": ""
     }, {
       "id": "dabddf0d-b7f0-4e97-be41-dd9d994d096f",
-      "comment": "",
+      "comment": "Lieu link of first event",
       "command": "click",
-      "target": "css=.genre:nth-child(1) > .evenement:nth-child(4) .right > a",
+      "target": "css=.genre:nth-child(1) > .evenement:nth-child(2) .right > a",
       "targets": [
-        ["linkText=Cave12", "linkText"],
-        ["css=.genre:nth-child(1) > .evenement:nth-child(4) .right > a", "css:finder"],
-        ["xpath=//a[contains(text(),'Cave12')]", "xpath:link"],
-        ["xpath=//section[@id='prochains_evenements']/div/article[2]/div/span[2]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/lieu.php?idL=222')]", "xpath:href"],
-        ["xpath=//article[2]/div/span[2]/a", "xpath:position"],
-        ["xpath=//a[contains(.,'Cave12')]", "xpath:innerText"]
+        ["linkText=Le Sagittario", "linkText"],
+        ["css=.right > a", "css:finder"],
+        ["xpath=//a[contains(text(),'Le Sagittario')]", "xpath:link"],
+        ["xpath=//section[@id='prochains_evenements']/div/article/div/span[2]/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '/lieu.php?idL=1')]", "xpath:href"],
+        ["xpath=//span[2]/a", "xpath:position"],
+        ["xpath=//a[contains(.,'Le Sagittario')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
@@ -661,9 +664,9 @@
       "value": ""
     }, {
       "id": "5e2afd96-318f-424f-ab21-08bfb49c21c3",
-      "comment": "",
+      "comment": "Signaler link of first event",
       "command": "click",
-      "target": "css=.evenement:nth-child(4) .signaler",
+      "target": "css=.evenement:nth-child(2) .signaler",
       "targets": [
         ["css=.evenement:nth-child(4) .signaler", "css:finder"],
         ["xpath=//section[@id='prochains_evenements']/div/article[2]/div[6]/ul/li/a", "xpath:idRelative"],
@@ -697,9 +700,9 @@
       "value": ""
     }, {
       "id": "16864106-dee7-4da1-b101-2f37e916c3ec",
-      "comment": "",
+      "comment": "iCal link of first event",
       "command": "//click",
-      "target": "css=.evenement:nth-child(4) .ical > .fa",
+      "target": "css=.evenement:nth-child(2) .ical > .fa",
       "targets": [],
       "value": ""
     }, {
@@ -752,7 +755,7 @@
     }]
   }, {
     "id": "f7075d90-d631-4aa3-ad62-6344bb052890",
-    "name": "agenda small (vars)",
+    "name": "agenda small - to Sat. of 1st week (vars)",
     "commands": [{
       "id": "326de392-50bf-40d6-8246-9eacd69b014e",
       "comment": "",
@@ -781,16 +784,16 @@
       "value": ""
     }, {
       "id": "abc11e52-8da5-4802-b814-9905d1dfe415",
-      "comment": "click 5th day of 3rd week",
+      "comment": "click Saturday of 5rd week",
       "command": "click",
-      "target": "css=.semaine:nth-child(3) > td:nth-child(5) > a",
+      "target": "css=.semaine:nth-child(7) > .sam:nth-child(7) > a",
       "targets": [
-        ["linkText=2", "linkText"],
-        ["css=.semaine:nth-child(3) > .past:nth-child(5) > a", "css:finder"],
-        ["xpath=(//a[contains(text(),'2')])[3]", "xpath:link"],
-        ["xpath=//table[@id='calendrier']/tbody/tr[3]/td[5]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/evenement-agenda.php?courant=2023-03-02&sem=0&tri_agenda=dateAjout')]", "xpath:href"],
-        ["xpath=//td[5]/a", "xpath:position"]
+        ["linkText=3", "linkText"],
+        ["css=.semaine:nth-child(3) > .sam:nth-child(7) > a", "css:finder"],
+        ["xpath=(//a[contains(text(),'3')])[3]", "xpath:link"],
+        ["xpath=//table[@id='calendrier']/tbody/tr[3]/td[7]/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '/evenement-agenda.php?courant=2024-02-03&sem=0&tri_agenda=dateAjout')]", "xpath:href"],
+        ["xpath=//td[7]/a", "xpath:position"]
       ],
       "value": ""
     }, {
@@ -2852,7 +2855,7 @@
       "command": "type",
       "target": "css=#dateEvenement",
       "targets": [],
-      "value": "26.11.2023"
+      "value": "24.02.2024"
     }, {
       "id": "0b145ec9-56cd-4f36-a83b-7433844497ac",
       "comment": "",
@@ -3374,14 +3377,15 @@
       "id": "f4d73fe2-b689-4859-9b1f-fa6bb8bb29ad",
       "comment": "",
       "command": "click",
-      "target": "linkText=test",
+      "target": "css=.left > a",
       "targets": [
-        ["linkText=test", "linkText"],
-        ["css=.genre:nth-child(1) > .evenement:nth-child(2) .left > a", "css:finder"],
-        ["xpath=(//a[contains(text(),'test')])[2]", "xpath:link"],
+        ["linkText=21e édition du FIFDH", "linkText"],
+        ["css=.left > a", "css:finder"],
+        ["xpath=//a[contains(text(),'21e édition du FIFDH')]", "xpath:link"],
         ["xpath=//section[@id='prochains_evenements']/div/article/div/span/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/evenement.php?idE=207')]", "xpath:href"],
-        ["xpath=//span/a", "xpath:position"]
+        ["xpath=//a[contains(@href, '/evenement.php?idE=849')]", "xpath:href"],
+        ["xpath=//span/a", "xpath:position"],
+        ["xpath=//a[contains(.,'21e édition du FIFDH')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
@@ -5935,7 +5939,7 @@
         ["xpath=//form[@id='ajouter_editer']/fieldset/p/input", "xpath:idRelative"],
         ["xpath=//p/input", "xpath:position"]
       ],
-      "value": "test8"
+      "value": "test9"
     }, {
       "id": "2ac6e6c5-aa3e-43e2-ae65-75ef86c250b0",
       "comment": "",
@@ -6019,7 +6023,7 @@
         ["xpath=//form[@id='ajouter_editer']/fieldset/p[4]/input", "xpath:idRelative"],
         ["xpath=//p[4]/input", "xpath:position"]
       ],
-      "value": "test8@ladecadanse.ch"
+      "value": "test9@ladecadanse.ch"
     }, {
       "id": "e2faa741-d1fd-44df-a8ea-c5a7be7d689d",
       "comment": "",
@@ -6047,7 +6051,7 @@
         ["xpath=//fieldset[@id='user-register_references']/p[4]/input", "xpath:idRelative"],
         ["xpath=//fieldset[2]/fieldset/p[4]/input", "xpath:position"]
       ],
-      "value": "test7"
+      "value": "test"
     }, {
       "id": "62b3054e-4500-4068-b293-0902022db279",
       "comment": "",
@@ -6155,7 +6159,7 @@
         ["xpath=//form[@id='ajouter_editer']/p/input", "xpath:idRelative"],
         ["xpath=//p/input", "xpath:position"]
       ],
-      "value": "test7"
+      "value": "test9"
     }, {
       "id": "7bdacb21-0917-4e3d-9752-9c41b29b6101",
       "comment": "",
