@@ -165,8 +165,7 @@ echo $form->getHtmlErreur("adresse");
 <!-- URL (text) -->
 <p>
 <label for="URL">Site web :</label>
-<input type="text" name="URL" id="URL" size="50" maxlength="80"
-value="<?php echo $form->getValeur('URL') ?>"  onblur="validerURL('URL', 'false');" />
+<input type="text" name="URL" id="URL" size="50" maxlength="80" value="<?php echo $form->getValeur('URL') ?>" />
 <?php
 echo $form->getHtmlErreur("URL");
 ?>

@@ -83,7 +83,7 @@ const Forms = {
         const MAX_UPLOAD_SIZE_IN_BYTES = 2097152;
         $('.js-file-upload-size-max').on('change', function alertOnFilesizeUpload()
         {
-            if (this.files[0].size > MAX_UPLOAD_SIZE_IN_BYTES)
+            if (this.files.length > 0 && this.files[0].size > MAX_UPLOAD_SIZE_IN_BYTES)
             {
                 alert('La taille du fichier que vous avez sélectionné dépasse la limite autorisée (2 Mo), merci d’en choisir un plus léger');
             }
