@@ -2,7 +2,7 @@
 📅 Agenda culturel local
 
 > **Warning**
-> En raison d'une grande partie de code legacy, et pour des raisons de sécurité, ne déployez pas cette application sur des serveurs publics. La modernisation est en cours, vous pouvez [contribuer](README.md#contribuer)
+> En raison d'une grande partie de code legacy, et pour des raisons de sécurité, ne déployez pas cette application sur des serveurs publics. La [modernisation est en cours](https://github.com/users/agilare/projects/2/views/1), vous pouvez [contribuer](README.md#contribuer)
 
 La décadanse est un site web qui présente aux visiteurs une sélection d'événements culturels locaux et accessibles. Il est actuellement [déployé pour Genève et Lausanne](https://ladecadanse.darksite.ch/)
 
@@ -31,18 +31,18 @@ Ces instructions vous permettront de mettre en place une copie du projet sur vot
 1. `composer install`
 1. base de données
     1. créer une base de données avec `COLLATE 'utf8mb4_unicode_ci'` par ex.
-        ```sql
+        ```mysql
         CREATE DATABASE `ladecadanse` /*!40100 COLLATE 'utf8mb4_unicode_ci' */;
         ```
     1. créer un utilisateur avec les droits suffisants sur cette base de données, par ex.
-        ```sql
+        ```mysql
         CREATE USER 'ladecadanse'@'localhost' IDENTIFIED BY 'my-password';
         GRANT USAGE ON *.* TO 'ladecadanse'@'localhost';
         GRANT SELECT, INSERT, DELETE, UPDATE  ON `ladecadanse`.* TO 'ladecadanse'@'localhost';
         ```
     1. importer dans la base de données `resources/ladecadanse.sql` (la structure, et les données utiles pour la table `localite`)
     1. ajouter un 1er utilisateur, l'*admin* (groupe 1) qui vous servira à gérer le site (mot de passe : `admin_dev`) :
-        ```sql
+        ```mysql
         INSERT INTO `personne` (`idPersonne`, `pseudo`, `mot_de_passe`, `cookie`, `groupe`, `statut`, `affiliation`, `region`, `email`,  `signature`, `avec_affiliation`, `gds`, `actif`, `dateAjout`, `date_derniere_modif`) VALUES (NULL, 'admin', '$2y$10$34Z0QxaycAgPFQGtiVzPbeoZFN1kwLEdWDEBI1kEOJGK4A3xRJtMa', '', '1', 'actif', '', 'ge', '', 'pseudo', 'non', '', '1', '0000-00-00 00:00:00.000000', '0000-00-00 00:00:00.000000');
         ```
 1. copier `app/env_model.php` vers `app/env.php` et y saisir les valeurs de votre environnement (davantage d'explications et exemples se trouvent dans le fichier lui même), avec au minimum les informations de connexion à la base de données
@@ -93,7 +93,11 @@ $ git ftp push -s prod
 Voir le [changelog](CHANGELOG.md) et les [releases sur GitHub](https://github.com/agilare/ladecadanse/releases)
 
 ## Contribuer
-Les Pull requests sont les bienvenues. Pour les changements majeurs, veuillez d'abord ouvrir une Issue pour discuter de ce que vous souhaitez changer.
+Pour contribuer au travail le plus important actuellement pour La décadanse, consultez le **[projet de modernisation](https://github.com/users/agilare/projects/2/views/1)**.
+
+Si vous ne connaissez pas encore bien le code de cette application, vous pouvez commencer par une _[Good first issue](https://github.com/agilare/ladecadanse/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22)_
+
+Les Pull requests sont les bienvenues. Pour les propositions de changements majeurs, veuillez d'abord ouvrir une Issue pour discuter de ce que vous souhaitez changer. En cas de doutes sur les spécifications et/ou la conception d'Issues existantes, vous êtes encouragé à les commenter.
 
 ## Contact
 Michel Gaudry - michel@ladecadanse.ch
