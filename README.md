@@ -18,7 +18,7 @@ Les principales sections du site sont :
 
 ## Installation locale
 
-Ces instructions vous permettront de mettre en place une copie du projet sur votre machine locale à des fins de développement et de test. Voir [déploiement](README.md#deploiement) pour des notes sur la façon de déployer le projet sur un système actif.
+Ces instructions vous permettront de mettre en place une copie du projet sur votre machine locale à des fins de développement et de test. Voir [déploiement](README.md#déploiement) pour des notes sur la façon de déployer le projet sur un système actif.
 
 ### Prérequis
 - Apache 2.4
@@ -93,11 +93,9 @@ $ git ftp push -s prod
 Voir le [changelog](CHANGELOG.md) et les [releases sur GitHub](https://github.com/agilare/ladecadanse/releases)
 
 ## Contribuer
-Pour contribuer au travail le plus important actuellement pour La décadanse, consultez le **[projet de modernisation](https://github.com/users/agilare/projects/2/views/1)**.
 
-Si vous ne connaissez pas encore bien le code de cette application, vous pouvez commencer par une _[Good first issue](https://github.com/agilare/ladecadanse/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22)_
-
-Les Pull requests sont les bienvenues. Pour les propositions de changements majeurs, veuillez d'abord ouvrir une Issue pour discuter de ce que vous souhaitez changer. En cas de doutes sur les spécifications et/ou la conception d'Issues existantes, vous êtes encouragé à les commenter.
+Le projet accepte volontiers de l'aide ; il y a diverses manières de contribuer.
+Cette [page](CONTRIBUTING.md) décrit l'état actuel du projet, les possibilités d'aide et comment le faire.
 
 ## Contact
 Michel Gaudry - michel@ladecadanse.ch
