@@ -20,7 +20,7 @@ Je m'occupe donc de gérer ce projet dans son ensemble et décide des lignes dir
 
 ## Développer
 
-La version actuelle a été créée en **2008** (avec un modeste niveau de programmation, essayant de suivre les standards de l'époque) et est aujourd'hui assez **legacy**, malgré quelques modernisations et nettoyages effectués ces dernières années (voir le [CHANGELOG](CHANGELOG.md)). Aujourd'hui le but principal est de réduire cette dette technique afin de reprendre sur de bonnes bases l'amélioration de l'application. À cet effet, le **[projet de modernisation](https://github.com/users/agilare/projects/2/views/1)** a été conçu pour résorber pas à pas les parties les plus obsolètes.
+La version actuelle a été créée en 2008 (avec un modeste niveau de programmation, essayant de suivre les standards de l'époque) et est aujourd'hui assez **legacy**, malgré quelques modernisations et nettoyages effectués ces dernières années (voir le [CHANGELOG](CHANGELOG.md)). Aujourd'hui le but principal est de réduire cette dette technique afin de reprendre sur de bonnes bases l'amélioration de l'application. À cet effet, le **[projet de modernisation](https://github.com/users/agilare/projects/2/views/1)** a été conçu pour résorber pas à pas les parties les plus obsolètes.
 Le **mode de développement actuel du projet** est brièvement décrit dans la section idoine du [Wiki](https://github.com/agilare/ladecadanse/wiki#organisation)
 
 ### Tâches
