@@ -12,6 +12,8 @@ tests*
 .git-ftp-ignore
 .git-ftp-include
 CHANGELOG.md
+CONTRIBUTING.md
+LICENSE
 README.md
 _config.yml
 docker-compose.yml
@@ -19,5 +21,4 @@ install_dep.sh
 phpstan.neon
 codeception.yml
 rector.php
-LICENSE
 .eslintrc.js

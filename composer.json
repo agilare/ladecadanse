@@ -10,6 +10,7 @@
             "role": "Developer"
         }
     ],
+    "license": "AGPL-3.0-or-later",
     "support": {
         "issues": "https://github.com/agilare/ladecadanse/issues",
         "email": "michel@ladecadanse.ch",

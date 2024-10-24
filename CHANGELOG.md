@@ -9,7 +9,7 @@
 - library : order of parameters in 2 functions
 - forms : rectify some calls to css files
 - style : avoid page's css broken link
-- forms : rm calls to inexistent validerEmail()
+- forms : rm calls to nonexistent validerEmail()
 
 ### Added
 
@@ -122,7 +122,7 @@
 
 ### Security
 
-- update [jquery link "latest"](https://cdn.jsdelivr.net/jquery/latest/jquery.min.js) (actually freezed at 3.2.1) to lastest 3.6.4
+- update [jquery link "latest"](https://cdn.jsdelivr.net/jquery/latest/jquery.min.js) (actually frozen at 3.2.1) to latest 3.6.4
 
 
 ## [3.4.3] - 2023-03-22
@@ -131,12 +131,12 @@
 
 - home : mobile left col was unusable
 - evenement : unpublish auth, in edit ref and prelocations length validation, calendar past days color
-- lieux : header; in home, latests added only actives, logo size in mobile
+- lieux : header; in home, latest added only actives, logo size in mobile
 - readme : create admin sql
 
 ### Added
 
-- basic end to end tests suites for Selenium IDE
+- basic end-to-end tests suites for Selenium IDE
 
 ### Changed
 
@@ -177,7 +177,7 @@
 
 ### Security
 
-- [x] restored honeypot in evenement-report
+- restored honeypot in evenement-report
 
 
 ## [3.4.0] - 2023-02-27
@@ -240,7 +240,7 @@
 - lieux : document upload
 - app : index.html, utf8-to-utf8mb4
 - events : tiny flyers, document upload
-- header files (home latests, lieu, organisateur)
+- header files (home latest's, lieu, organisateur)
 - rss : even comments, lieux descriptions
 
 ### Security
@@ -294,7 +294,7 @@
 
 - better names of files
 - better organisation
-- moved most of functions into classes
+- moved most of the functions into classes
 - namespaces and autolading
 - `env_model.php` (ex `params_model.php`) completed
 - cleaning of useless code

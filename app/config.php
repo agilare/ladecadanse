@@ -1,5 +1,8 @@
 <?php
 
+// INFRA
+//// FILE MANAGEMENT
+
 define("UPLOAD_MAX_FILESIZE", 3145728); // 3 Mo
 define("POST_MAX_SIZE", 6291456); // 6 Mo
 
@@ -39,6 +42,10 @@ $mimes_documents_acceptes = array("image/jpeg", "image/pjpeg", "image/gif", "ima
     "text/richtext", "application/rtf", "image/svg+xml", "application/gzip",
     "application/zip", "multipart/x-zip", "multipart/x-gzip", "application/x-tar");
 
+//// FILE MANAGEMENT END
+
+
+//// TIME & REGIONS
 
 define("DATE_DEFAULT_TIMEZONE", 'Europe/Zurich');
 
@@ -49,17 +56,24 @@ $glo_auj_6h = date("Y-m-d", time() - 14400); // 4h
 $glo_regions = array("ge" => "Genève", "vd" => "Lausanne", "rf" => "France", "hs" => "Autre"); //  "fr" => "Fribourg",
 $glo_moisF = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
 
-// USERS
+//// TIME & REGIONS END
+
+// INFRA END
+
+
+// DOMAIN
+
+//// USERS
 $glo_statuts_personne = array('demande', 'actif', 'inactif');
 $g_mauvais_mdp = ['123456', 'password', 'soleil', 'genève', 'coucou', 'boubou', 'bonheur', 'vacances', 'doudou', 'papillon', 'bonjour', 'cheval', 'capitainne', 'Mathilde', 'caramel', 'garfield', 'friends', 'simba12', 'reslabol', 'shaka00', '1254321', 'xydney', 'caline', 'licorne', 'mjdc10435410', '280195', 'freesurf', 'musique', 'jfdodolaure', '333333', 'rochet88', 'jennifer', 'motdepasse', 'maison', '123soleil', 'chocolat', '123123', 'nicolas', '888888', 'othello1', 'carpediem', 'multipass', 'berocl69', '166459', 'sofia10mag', 'chonchon', 'Camille', 'joelle', '654321', '12345678', 'qwertz', '12345', 'football', 'ladecadanse', '111111', 'abc123' ];
 
-// EVENTS
+//// EVENTS
 $glo_tab_genre = array("fête" => "fêtes", "cinéma" => "ciné", "théâtre" => "théâtre", "expos" => "expos", "divers" => "divers");
 $statuts_evenement = array('propose' => 'Proposé', 'actif' => 'Proposé', 'complet' => 'Complet', 'annule' => 'Annulé', 'inactif' => 'Dépublié');
 $price_types = ['unknown' => 'inconnu', 'gratis' => 'entrée libre', 'asyouwish' => 'prix libre', 'chargeable' => 'payant'];
 $tab_tri_agenda = array("dateAjout", "horaire_debut");
 
-// PLACES
+//// PLACES
 $statuts_lieu = array('actif', 'ancien', 'inactif');
 $glo_categories_lieux = array('bistrot' => 'bistrot', 'salle' => 'salle', 'restaurant' => 'restaurant', 'cinema' => 'cinéma', 'theatre' => 'théâtre', 'galerie' => 'galerie', 'boutique' => 'boutique', 'musee' => 'musée', 'autre' => 'autre');
 
@@ -76,7 +90,9 @@ $glo_tab_quartiers2 = [
 $glo_tab_quartiers_hors_geneve = array("Nyon", "Vaud", "France", "autre");
 $glo_tab_ailleurs = ["rf" => "France", "hs" => "Autre"];
 
-// INTERFACE
+// DOMAIN END
+
+// VIEW
 $glo_menu_pratique = array("Contact" => "/contacteznous.php", "À propos" => "/articles/apropos.php", "Faire un don" => "/articles/faireUnDon.php");
 $tab_nblignes = array(100, 250, 500); // nb lignes de resultats de listes
 $actions = array("ajouter", "insert", "update", "editer");
