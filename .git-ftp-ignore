@@ -1,5 +1,7 @@
 /docker
 docker/*
+/.github
+.github/*
 app/env_model.php
 resources/ladecadanse.sql
 resources/evenement-fix-horaires.sql
@@ -8,7 +10,6 @@ tests*
 .gitattributes
 .gitignore
 */.gitignore      # ignore files in sub directories
-*/.gitkeep
 .git-ftp-ignore
 .git-ftp-include
 CHANGELOG.md

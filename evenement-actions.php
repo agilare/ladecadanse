@@ -3,6 +3,7 @@
 require_once("app/bootstrap.php");
 
 use Ladecadanse\UserLevel;
+use Ladecadanse\HtmlShrink;
 
 if (!$videur->checkGroup(UserLevel::ACTOR)) {
 	header("Location: index.php"); die();
@@ -13,13 +14,19 @@ $get['action'] = filter_input(INPUT_GET, 'action', FILTER_SANITIZE_STRING);
 
 if ($get['action'] == 'delete' && !empty($get['id']))
 {
-    $req_im = $connector->query("SELECT titre, flyer, image, idLieu, genre, dateEvenement
+    $req_im = $connector->query("SELECT titre, flyer, image, idLieu, genre, dateEvenement, dateAjout
     FROM evenement WHERE idEvenement=".$get['id']);
 
     $val_even = $connector->fetchArray($req_im);
 
     if (!empty($val_even) && (($authorization->isAuthor('evenement', $_SESSION['SidPersonne'], $get['id']) && $_SESSION['Sgroupe'] <= 8) || $_SESSION['Sgroupe'] < 2))
     {
+
+        if (PARTIAL_EDIT_MODE && $val_even['dateAjout'] < PARTIAL_EDIT_FROM_DATETIME)
+        {
+            HtmlShrink::msgErreur(PARTIAL_EDIT_MODE_MSG);
+            exit;
+        }
 
         if (!empty($val_even['flyer']))
         {
@@ -53,7 +60,7 @@ if ($get['action'] == 'delete' && !empty($get['id']))
 
 if ($get['action'] == 'unpublish' && !empty($get['id']))
 {
-    $req_im = $connector->query("SELECT titre, flyer, image, idLieu, genre, dateEvenement, idPersonne FROM evenement WHERE idEvenement=" . $get['id']);
+    $req_im = $connector->query("SELECT titre, flyer, image, idLieu, genre, dateEvenement, idPersonne, dateAjout FROM evenement WHERE idEvenement=" . $get['id']);
 
     $val_even = $connector->fetchArray($req_im);
 
@@ -65,6 +72,13 @@ if ($get['action'] == 'unpublish' && !empty($get['id']))
          || isset($_SESSION['SidPersonne']) && $authorization->isPersonneInEvenementByOrganisateur($_SESSION['SidPersonne'], $get['id'])
          || isset($_SESSION['SidPersonne']) && $authorization->isPersonneInLieuByOrganisateur($_SESSION['SidPersonne'], $val_even['idLieu'])	))
     {
+
+        if (PARTIAL_EDIT_MODE && $val_even['dateAjout'] < PARTIAL_EDIT_FROM_DATETIME)
+        {
+            HtmlShrink::msgErreur(PARTIAL_EDIT_MODE_MSG);
+            exit;
+        }
+
         if ($connector->query("UPDATE evenement SET statut='inactif' WHERE idEvenement=".$get['id']))
         {
             header('HTTP/1.1 200 OK');

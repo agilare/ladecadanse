@@ -1,5 +1,27 @@
 # Changelog
 
+## [3.5.3] - 2024-11-03
+
+### Fixed
+
+- deploy : exclusions and inclusions in git-ftp-ignore
+- js : main.js freshness, obsolete function calls
+
+### Added
+
+- edition : add partial edit mode a limited edition on current db version to avoid conflicts with an other DB version
+- docs : CONTRIBUTING.md
+- GitHub issue templates (bug report, feat request)
+- dev : Browsersync config file
+
+### Changed
+
+- docs : mention modernization project in README.md
+- docs : clearer app/config.php
+- remove obsolete attribute 'version' in docker-compose.yml
+- build : mention licence in composer.json
+
+
 ## [3.5.2] - 2024-02-25
 
 ### Fixed
