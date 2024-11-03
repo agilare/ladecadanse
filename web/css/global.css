@@ -51,7 +51,7 @@ sup {
     vertical-align: super;
     font-size: smaller;
 	line-height:0;
-} 
+}
 
 table
 {
@@ -209,7 +209,7 @@ table
 
 	#menu ul
 	{
-        margin-top: 0px;padding-left: 0px;        
+        margin-top: 0px;padding-left: 0px;
 		background-color:#F5B045;
 	}
 
@@ -229,7 +229,7 @@ table
 		font-family:"Century Gothic", Verdana, Helvetica;
 		color:#452817;
 	}
-	
+
 	#menu ul li a:hover
 	{
 		background-color:#F5EBC7;
@@ -296,26 +296,26 @@ table
 	}
 
 	form.recherche input.submit
-	{		
+	{
 		width:2em;
 		border-top:1px solid #8a8a8a;
 		border-bottom:1px solid #8a8a8a;
 		border-right:1px solid #8a8a8a;
-		border-left:none;	
-		background-color:#eaeaea;		
+		border-left:none;
+		background-color:#eaeaea;
 		background-image:url(../interface/icons/search.png);
 		background-repeat:no-repeat;
 		background-position:2px;
 
 	}
-	
+
 @media screen and (-webkit-min-device-pixel-ratio:0) {
 
    	form.recherche input.mots
-	{	
+	{
 		height:16px;
 	}
-    
+
  	form.recherche input.submit
 	{
 		height:20px;
@@ -370,7 +370,7 @@ table
 	{
 		display:inline;
 	}
-	
+
 	#entete_contenu_titre
 	{
 		float:left;
@@ -379,7 +379,7 @@ table
 	.entete_contenu_navigation
 	{
 		float:right;
-		
+
 	}
 
 	.entete_contenu_navigation a
@@ -388,9 +388,9 @@ table
 		background:#f0f0f0;
 		display:inline-block;
 	}
-        
+
 	.entete_contenu_navigation .mode a
-	{	
+	{
 		background:none;
 	}
 
@@ -398,7 +398,7 @@ table
 	{
 		background:#ff6;
 	}
-	
+
 	.entete_contenu_navigation a:hover, .entete_contenu_navigation a:active
 	{
 		background:#ccc;
@@ -547,7 +547,7 @@ table
 	background-image:url(../interface/lien_ext.gif);
 	background-repeat:no-repeat;
 	background-position: 100% 50%;
-    
+
 }
 
 /* personne */
@@ -558,12 +558,12 @@ table#ajouts tr .tdleft
 
 .icalendar
 {
-	
+
 	background-image: url("../images/interface/icons/date_add.png");
     background-position: 0% 50%;
     background-repeat: no-repeat;
 	padding-left:20px;
-	
+
 }
 
 #soutien
@@ -594,16 +594,16 @@ table tr td.small
 
 #entete_contenu .menu_region li
 {
-  display:inline-block;     
- 
+  display:inline-block;
+
 }
 
 #entete_contenu .menu_region li a
 {
     background: #e0e0e0;
-    display:inline-block;  
-    padding: .5em .2em;  
-    text-align: center;    
+    display:inline-block;
+    padding: .5em .2em;
+    text-align: center;
 }
 
 #entete_contenu .menu_region li a .events-nb
@@ -617,14 +617,14 @@ table tr td.small
 
 #entete_contenu .menu_region li:first-child a
 {
-    border-radius: 5px 0 0 5px;  
+    border-radius: 5px 0 0 5px;
     border-left: 1px solid #efeffa;
     border-right: none;
 }
 
 #entete_contenu .menu_region li:last-child a
 {
-    border-radius: 0 5px 5px 0;   
+    border-radius: 0 5px 5px 0;
     border:1px solid #efeffa;
     border-left: none;
 }
@@ -643,7 +643,7 @@ table tr td.small
 #entete_contenu .menu_region li a.ici
 {
    background: #ff6;
-   color: #5a7175;   
+   color: #5a7175;
 }
 
 #entete_contenu .menu_region li a.vd.ici
@@ -655,7 +655,7 @@ table tr td.small
 
 #entete_contenu .menu_region li a:not(.ici):hover
 {
-   background: #f0f0f0; 
+   background: #f0f0f0;
 }
 
  /* Tooltip container */
@@ -703,14 +703,14 @@ table tr td.small
 .tooltip:hover .tooltiptext {
   visibility: visible;
   opacity: 1;
-} 
+}
 
 .even-statut-badge
 {
     padding:0.2em 0.2em;
     background:lightblue;
     color:#4c4c4c;
-    border-radius:6px   
+    border-radius:6px
 }
 
 .even-statut-badge.inactif
@@ -755,5 +755,5 @@ table tr td.small
 
 #home-tmp-banner .close
 {
-    position:absolute;right:0;top:0;padding:5px;font-size: 1rem;font-weight: 700;color:#856404    
+    position:absolute;right:0;top:0;padding:5px;font-size: 1rem;font-weight: 700;color:#856404
 }

@@ -415,6 +415,11 @@ if ($get['action'] == 'editer' && isset($get['idP']))
 
 } // if GET action
 
+if (PARTIAL_EDIT_MODE && $champs['dateAjout'] < PARTIAL_EDIT_FROM_DATETIME)
+{
+    HtmlShrink::msgErreur(PARTIAL_EDIT_MODE_MSG);
+        exit;
+}
 
 /*
  * PREPARATION DES URLS SELON LES ACTIONS,

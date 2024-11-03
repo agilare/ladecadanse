@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.5.3] - 2024-11-03
+
+### Added
+
+- partial edit mode : limited edition on current db version to avoid conflicts with an other DB version
+
 ## [3.5.2] - 2024-02-25
 
 ### Fixed
