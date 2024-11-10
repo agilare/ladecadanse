@@ -1,11 +1,12 @@
 # Changelog
 
-## [3.5.3] - 2024-11-03
+## [3.5.3] - 2024-11-10
 
 ### Fixed
 
 - deploy : exclusions and inclusions in git-ftp-ignore
 - js : main.js freshness, obsolete function calls
+- mailing : in toAdmin() replace "from" by a "replyto" in order to allow sending with SMTP auth
 
 ### Added
 

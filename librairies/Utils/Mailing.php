@@ -21,16 +21,15 @@ class Mailing {
         $this->mail->SMTPSecure = EMAIL_AUTH_SMTPSECURE;
         $this->mail->Port = (int)EMAIL_AUTH_PORT;
         $this->mail->CharSet = 'utf-8';
-     }
+    }
 
-    public function toAdmin(string $title, string $body, ?string $from): bool
+    public function toAdmin(string $title, string $body, ?string $replyToEmail): bool
     {
         $this->mail->From     = EMAIL_SITE;
         $this->mail->FromName = EMAIL_SITE_NAME;
-        if (!empty($from))
+        if (!empty($replyToEmail))
         {
-            $this->mail->From     = $from;
-            $this->mail->FromName = '';
+            $this->mail->addReplyTo($replyToEmail);
         }
 
         $this->mail->Subject 	= "[La décadanse] ".$title;
