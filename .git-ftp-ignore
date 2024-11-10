@@ -20,6 +20,7 @@ _config.yml
 docker-compose.yml
 install_dep.sh
 phpstan.neon
+bs-config.js
 codeception.yml
 rector.php
 .eslintrc.js
