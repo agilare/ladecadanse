@@ -203,7 +203,13 @@ if ($get['action'] == 'editer' || $get['action'] == 'update')
 	$req_lieu = $connector->query("SELECT * FROM salle WHERE idSalle=".$get['idS']);
  	$detailsLieu = $connector->fetchArray($req_lieu);
 
-	echo '
+    if (PARTIAL_EDIT_MODE && $champs['dateAjout'] < PARTIAL_EDIT_FROM_DATETIME)
+        {
+            HtmlShrink::msgErreur(PARTIAL_EDIT_MODE_MSG);
+            exit;
+        }
+
+        echo '
 	<h2>Modifier</h2>';
 
 

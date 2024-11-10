@@ -256,7 +256,7 @@ else
 */
 if ($get['action'] == 'editer' && isset($get['idL']) && isset($get['idP']))
 {
-    $sql = "SELECT idPersonne, idLieu, contenu, type
+    $sql = "SELECT idPersonne, idLieu, contenu, type, dateAjout
     FROM descriptionlieu WHERE idLieu =".$get['idL']." AND idPersonne=".$get['idP']." AND type='".$get['type']."'";
     $req_desc = $connector->query($sql);
 
@@ -270,7 +270,13 @@ if ($get['action'] == 'editer' && isset($get['idL']) && isset($get['idP']))
 
     @mysqli_free_result($req_desc);
 
-    if ($_SESSION['Sgroupe'] <= 4)
+        if (PARTIAL_EDIT_MODE && $champs['dateAjout'] < PARTIAL_EDIT_FROM_DATETIME)
+        {
+            HtmlShrink::msgErreur(PARTIAL_EDIT_MODE_MSG);
+            exit;
+        }
+
+        if ($_SESSION['Sgroupe'] <= 4)
     {
         echo '<ul class="entete_contenu_menu">';
         echo "<li class=\"action_supprimer\">

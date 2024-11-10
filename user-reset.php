@@ -56,8 +56,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' && empty($_POST
 		$email_envoi = '';
 
 		//trouver user selon pseudo
-		$sql_pseudo = "SELECT idPersonne, email FROM personne WHERE pseudo='".$connector->sanitize($champs['pseudo_email'])."'";
-		//echo $sql;
+		$sql_pseudo = "SELECT idPersonne, email, dateAjout FROM personne WHERE pseudo='" . $connector->sanitize($champs['pseudo_email']) . "'";
+        //echo $sql;
 		$res_personne_pseudo = $connector->query($sql_pseudo);
 		if ($connector->getNumRows($res_personne_pseudo) > 0)
 		{
@@ -66,22 +66,31 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' && empty($_POST
 			$email =  'NULL';
 			$email_envoi =  $tab_pers['email'];
 			$hash = $tab_pers['idPersonne'];
-
-		}
+            $dateAjout = $tab_pers['dateAjout'];
+        }
 
 		//trouver user selon email
-		$sql_email = "SELECT idPersonne, email FROM personne WHERE email='".$connector->sanitize($champs['pseudo_email'])."'";
+		$sql_email = "SELECT idPersonne, email, dateAjout FROM personne WHERE email='" . $connector->sanitize($champs['pseudo_email']) . "'";
 
-		$res_personne_email = $connector->query($sql_email);
+        $res_personne_email = $connector->query($sql_email);
 
-        if ($connector->getNumRows($res_personne_email) > 0) {
-			$email = $champs['pseudo_email'];
+        if ($connector->getNumRows($res_personne_email) > 0)
+        {
+            $tab_pers = $connector->fetchArray($res_personne_email);
+            $email = $champs['pseudo_email'];
 			$idPersonne = 'NULL';
 			$email_envoi = $champs['pseudo_email'];
 			$hash = $champs['pseudo_email'];
-		}
+            $dateAjout = $tab_pers['dateAjout'];
+        }
 
-		if ($email_envoi)
+        if (PARTIAL_EDIT_MODE && $dateAjout < PARTIAL_EDIT_FROM_DATETIME)
+        {
+            HtmlShrink::msgErreur(PARTIAL_EDIT_MODE_MSG);
+            exit;
+        }
+
+        if ($email_envoi)
 		{
 			$salt = "ciek48";
 

@@ -107,6 +107,12 @@ if (($get['action'] == 'editer' || $get['action'] == 'update'))
 		HtmlShrink::msgErreur("Vous ne pouvez pas éditer cet élément");
 		exit;
 	}
+
+    if (PARTIAL_EDIT_MODE && $form->getValeur('date_ajout') < PARTIAL_EDIT_FROM_DATETIME)
+    {
+        HtmlShrink::msgErreur(PARTIAL_EDIT_MODE_MSG);
+        exit;
+    }
 }
 else
 {
