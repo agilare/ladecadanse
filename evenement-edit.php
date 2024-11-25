@@ -249,7 +249,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 	}
 
 	$verif->valider($champs['description'], "description", "texte", 4, 10000, 0);
-	$verif->valider($champs['ref'], "ref", "texte", 1, 250, 0);
+	$verif->valider($champs['ref'], "ref", "texte", 1, 1000, 0);
 
     if ($_SERVER["CONTENT_LENGTH"] > POST_MAX_SIZE)
     {
@@ -279,9 +279,9 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 		$verif->setErreur('horaire_debut', "Le format de l'heure n'est pas correct, veuillez écrire en hh:mm");
 	}
 
-	$verif->valider($champs['horaire_complement'], "horaire_complement", "texte", 1, 100, 0);
-	$verif->valider($champs['prix'], "prix", "texte", 1, 100, 0);
-	$verif->valider($champs['prelocations'], "prelocations", "texte", 1, 80, 0);
+	$verif->valider($champs['horaire_complement'], "horaire_complement", "texte", 1, 200, 0);
+    $verif->valider($champs['prix'], "prix", "texte", 1, 100, 0);
+	$verif->valider($champs['prelocations'], "prelocations", "texte", 1, 200, 0);
 
     $doc_desc_oblig = 0;
 
@@ -987,7 +987,7 @@ if ($verif->nbErreurs() > 0)
 
                     <div style="margin-top:1.3em">
                         <label for="horaire_complement">Complément</label>
-                            <input type="text" name="horaire_complement" id="horaire_complement" size="60" maxlength="100" value="<?php echo sanitizeForHtml($champs['horaire_complement']) ?>" />
+                            <input type="text" name="horaire_complement" id="horaire_complement" size="60" maxlength="200" value="<?php echo sanitizeForHtml($champs['horaire_complement']) ?>" />
                             <?php
             echo $verif->getHtmlErreur('horaire_complement');
             ?>
@@ -1309,7 +1309,7 @@ if ($verif->nbErreurs() > 0)
             <?php } ?>
             <p>
                 <label for="prelocations">Prélocations</label>
-                    <input type="text" name="prelocations" id="prelocations" size="70" maxlength="150" value="<?php echo sanitizeForHtml($champs['prelocations']) ?>" />
+                    <input type="text" name="prelocations" id="prelocations" size="70" maxlength="200" value="<?php echo sanitizeForHtml($champs['prelocations']) ?>" />
                     <?php
                 echo $verif->getHtmlErreur('prelocations');
                 ?>
