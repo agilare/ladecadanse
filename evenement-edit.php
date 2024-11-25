@@ -901,7 +901,7 @@ if ($verif->nbErreurs() > 0)
             <summary>Détails</summary>
             <ul><li><b>EPIC-Magazine</b> - webmagazine qui met en avant la culture locale et émergente à Genève et dans ses environs&nbsp;: intégration de l'agenda dans la <a href="https://epic-magazine.ch/lieux/" target="_blank">page Cartographie</a>
                 </li>
-                <li>🆕 <b>Noctambus</b> - réseau de bus de nuit desservant le canton de Genève et ses régions transfrontalières&nbsp;: une sélection des événements nocturnes du vendredi au samedi dans les <a href="https://noctambus.ch/noctualites" target="_blank">noctualités</a>
+                    <li><b>Noctambus</b> - réseau de bus de nuit desservant le canton de Genève et ses régions transfrontalières&nbsp;: une sélection des événements nocturnes du vendredi au samedi dans les <a href="https://noctambus.ch/noctualites" target="_blank">noctualités</a>
                     </li>
         </details>
         <h2 style="margin:20px 0 5px 0;">L’événement</h2>
