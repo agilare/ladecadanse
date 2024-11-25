@@ -987,7 +987,7 @@ if ($verif->nbErreurs() > 0)
 
                     <div style="margin-top:1.3em">
                         <label for="horaire_complement">Complément</label>
-                            <input type="text" name="horaire_complement" id="horaire_complement" size="60" maxlength="100" value="<?php echo sanitizeForHtml($champs['horaire_complement']) ?>" />
+                            <input type="text" name="horaire_complement" id="horaire_complement" size="60" maxlength="200" value="<?php echo sanitizeForHtml($champs['horaire_complement']) ?>" />
                             <?php
             echo $verif->getHtmlErreur('horaire_complement');
             ?>
@@ -1309,7 +1309,7 @@ if ($verif->nbErreurs() > 0)
             <?php } ?>
             <p>
                 <label for="prelocations">Prélocations</label>
-                    <input type="text" name="prelocations" id="prelocations" size="70" maxlength="150" value="<?php echo sanitizeForHtml($champs['prelocations']) ?>" />
+                    <input type="text" name="prelocations" id="prelocations" size="70" maxlength="200" value="<?php echo sanitizeForHtml($champs['prelocations']) ?>" />
                     <?php
                 echo $verif->getHtmlErreur('prelocations');
                 ?>
