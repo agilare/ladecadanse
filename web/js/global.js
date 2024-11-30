@@ -110,6 +110,34 @@ const Forms = {
             $('input[type="submit"]', this).val('Envoi...').attr('disabled', 'disabled');
             return true;
         });
+
+        $('form#ajouter_editer #titre').on('paste', function(e) {
+
+            e.preventDefault();
+
+            // Récupère le texte collé
+            const pastedText = (e.originalEvent.clipboardData || window.clipboardData).getData('text');
+
+            // Récupère la limite depuis l'attribut maxlength
+            const maxLength = parseInt($(this).prop('maxLength'));
+
+            if (!maxLength) {
+                $(this).val(pastedText);
+                return;
+            }
+
+            // Limite le texte selon maxlength
+            const limitedText = pastedText.slice(0, maxLength);
+
+            // Insère le texte limité dans le champ
+            $(this).val(limitedText);
+
+            // Optionnel : affiche un message d'avertissement
+            if (pastedText.length > maxLength) {
+                alert(`Le texte collé dans ce champ dépasse la longueur maximale de ${maxLength} caractères, il sera donc tronqué`);
+            }
+        });
+
     }
 };
 
@@ -164,8 +192,8 @@ const Events = {
             e.preventDefault();
             const event_id = $(this).data('id');
             fetch(`/evenement-actions.php?action=delete&id=${event_id}`)
-            .then(response => $(`#btn_event_del_${event_id}`).closest('tr').fadeOut('fast'))
-            .catch(error => alert("Erreur : " + error));
+                .then(response => $(`#btn_event_del_${event_id}`).closest('tr').fadeOut('fast'))
+                .catch(error => alert('Erreur : ' + error));
         });
 
         $content.on('click', '.btn_event_unpublish', function requestUnpublishEvent(e)
@@ -173,8 +201,8 @@ const Events = {
             e.preventDefault();
             const event_id = $(this).data('id');
             fetch(`/evenement-actions.php?action=unpublish&id=${event_id}`)
-            .then(response => $(`#btn_event_unpublish_${event_id}`).closest('.evenement').fadeOut())
-            .catch(error => alert("Erreur : " + error));
+                .then(response => $(`#btn_event_unpublish_${event_id}`).closest('.evenement').fadeOut())
+                .catch(error => alert('Erreur : ' + error));
         });
 
         $content.on('click', '#js-event-delete-btn', function confirmEventDel()
