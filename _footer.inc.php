@@ -56,7 +56,7 @@ $('.magnific-popup').magnificPopup({
     tClose: 'Fermer (Esc)', // Alt text on close button
     tLoading: 'Chargement...', // Text that is displayed during loading. Can contain %curr% and %total
     image: {
-        tError: '<a href="%url%">L&#039;image</a> n&#039;a pas pu &ecirc;tre charg&eacute;e.' // Error message when image could not be loaded
+        tError: "L'image n'a pas pu être chargée" // Error message when image could not be loaded
     }
 });
 
@@ -69,7 +69,7 @@ $('.gallery-item').magnificPopup({
         enabled: true,
         tPrev: 'Pr&eacute;c&eacute;dente (bouton gauche)', // title for left button
         tNext: 'Suivante (bouton droit)', // title for right button
-        tCounter: '<span class="mfp-counter">%curr% de %total%</span>' // markup of counter
+        tCounter: '%curr% de %total%' // markup of counter
     }
 });
 </script>
