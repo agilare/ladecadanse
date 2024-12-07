@@ -5,6 +5,7 @@ require_once("app/bootstrap.php");
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\ImageDriver2;
 use Ladecadanse\Security\SecurityToken;
+use Ladecadanse\Evenement;
 use Ladecadanse\Utils\Logger;
 use Ladecadanse\Utils\Mailing;
 use Ladecadanse\HtmlShrink;
@@ -511,14 +512,10 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 					//si  un ancien flyer a été effectivement trouvé suppression des fichiers
 					if (!empty($affFly['flyer']))
 					{
-                        unlink($rep_images_even.$affFly['flyer']);
-                        unlink($rep_images_even."s_".$affFly['flyer']);
+                        Evenement::rmImageAndItsMiniature($affFly['flyer']);
 					}
                 }
-				else
-				{
-					HtmlShrink::msgErreur("La requête SELECT flyer a échoué");
-				}
+
 			}
 
 			//si le champ "supprimer le flyer" est coché sans qu'un nouveau flyer soit remplacant
@@ -528,20 +525,15 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 				$sql_flyer = ", flyer=''";
 				$req_flyer = $connector->query("SELECT flyer FROM evenement WHERE idEvenement=".$get['idE']);
 
-				//si  un ancien flyer a été effectivement trouvé suppression des fichiers
+				//si un ancien flyer a été effectivement trouvé suppression des fichiers
 				if ($req_flyer)
 				{
 					$affFly = $connector->fetchArray($req_flyer);
 
 					if (!empty($affFly['flyer']))
 					{
-						unlink($rep_images_even.$affFly['flyer']);
-						unlink($rep_images_even . "s_" . $affFly['flyer']);
+                        Evenement::rmImageAndItsMiniature($affFly['flyer']);
                     }
-				}
-				else
-				{
-					HtmlShrink::msgErreur("La requète SELECT flyer a échoué");
 				}
 
 			} //elseif supprimer flyer
@@ -562,13 +554,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 					//si  un ancien flyer a été effectivement trouvé suppression des fichiers
 					if (!empty($affImg['image']))
 					{
-							unlink($rep_images_even.$affImg['image']);
-							unlink($rep_images_even."s_".$affImg['image']);
+                        Evenement::rmImageAndItsMiniature($affImg['image']);
 					}
-				}
-				else
-				{
-					HtmlShrink::msgErreur("La requète SELECT image a échoué");
 				}
 
 			//si le champ "supprimer le flyer" est coché¡³ans qu'un nouveau flyer soit remplacant
@@ -586,13 +573,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 
 					if (!empty($affimage['image']))
 					{
-						unlink($rep_images_even.$affimage['image']);
-						unlink($rep_images_even."s_".$affimage['image']);
+                        Evenement::rmImageAndItsMiniature($affimage['image']);
 					}
-				}
-				else
-				{
-					HtmlShrink::msgErreur("La requète SELECT image a échoué");
 				}
 
 			} //if supprimer image
@@ -1330,20 +1312,23 @@ if ($verif->nbErreurs() > 0)
             //affichage du flyer precedent, et du bouton pour supprimer
             if (isset($get['idE']) && !empty($champs['flyer']) && !$verif->getErreur($champs['flyer']))
             {
-                $imgInfo = getimagesize($rep_images_even.$champs['flyer']);
-                ?>
-                <div class="supImg">
-                    <a href="<?php echo $url_uploads_events.$champs['flyer'].'?'.filemtime($rep_images_even.$champs['flyer']) ?>" class="magnific-popup" target="_blank"><img src="<?php echo $url_uploads_events."s_".$champs['flyer'].'?'.filemtime($rep_images_even.$champs['flyer']) ?>" alt="Flyer" /></a>
-                <div><label for="sup_flyer" class="continu">Supprimer</label><input type="checkbox" name="sup_flyer" id="sup_flyer" value="flyer" class="checkbox"
-                <?php
-                if (!empty($supprimer['flyer']) && $verif->nbErreurs() > 0)
-                {
-                    echo 'checked="checked"' ;
-                }
-                ?>
-                        /></div>
+        ?>
+        <div class="supImg">
+            <a href="<?php echo Evenement::getFileHref(Evenement::getFilePath($champs['flyer']), true) ?>" class="magnific-popup" target="_blank">
+                        <img src="<?php echo Evenement::getFileHref(Evenement::getFilePath($champs['flyer'], 's_'), true) ?>" alt="Flyer de cet événement" width="100" />
+                    </a>
+                    <div>
+                        <label for="sup_flyer" class="continu">Supprimer</label><input type="checkbox" name="sup_flyer" id="sup_flyer" value="flyer" class="checkbox"
+                        <?php
+                        if (!empty($supprimer['flyer']) && $verif->nbErreurs() > 0)
+                        {
+                            echo 'checked="checked"';
+                        }
+                        ?>
+                                                                                       />
+                    </div>
                 </div>
-            <?php
+                <?php
             }
         ?>
         </p>
@@ -1362,11 +1347,12 @@ if ($verif->nbErreurs() > 0)
         //affichage de l'image et du bouton pour supprimer
         if (isset($get['idE']) && !empty($champs['image']) && !$verif->getErreur('image'))
         {
-            $imgInfo = @getimagesize($rep_images_even.$champs['image']);
-            echo "<div class=\"supImg\">";
+                echo "<div class=\"supImg\">";
             ?>
-            <a href="<?php echo $url_uploads_events.$champs['image'].'?'.filemtime($rep_images_even.$champs['image']) ?>" class="magnific-popup"  target="_blank"><img src="<?php echo $url_uploads_events."s_".$champs['image'].'?'.filemtime($rep_images_even.$champs['image']) ?>" alt="Photo" /></a>
-           <?php
+        <a href="<?php echo Evenement::getFileHref(Evenement::getFilePath($champs['image']), true) ?>" class="magnific-popup" target="_blank">
+                    <img src="<?php echo Evenement::getFileHref(Evenement::getFilePath($champs['image'], 's_'), true) ?>" alt="Photo" width="100" />
+                </a>
+                <?php
             echo "<div><label for=\"sup_image\" class=\"continu\">Supprimer</label><input type=\"checkbox\" name=\"sup_image\" id=\"sup_image\" value=\"image\" class=\"checkbox\" ";
 
             if (!empty($supprimer['image']) && $verif->nbErreurs() == 0)

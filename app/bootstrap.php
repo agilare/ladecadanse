@@ -7,11 +7,12 @@ require_once __DIR__ . '/env.php';
 
 require __DIR__ . '/../vendor/autoload.php';
 
+use Ladecadanse\Evenement;
+use Ladecadanse\Security\Authorization;
+use Ladecadanse\Security\Sentry;
 use Ladecadanse\Utils\DbConnector;
 use Ladecadanse\Utils\Logger;
 use Ladecadanse\Utils\RegionConfig;
-use Ladecadanse\Security\Authorization;
-use Ladecadanse\Security\Sentry;
 use Ladecadanse\Utils\Utils;
 use Whoops\Handler\PrettyPageHandler;
 
@@ -44,6 +45,10 @@ $authorization = new Authorization();
 $videur = new Sentry();
 
 $site_full_url = Utils::getBaseUrl()."/";
+
+Evenement::$systemDirPath = $rep_images_even;
+Evenement::$urlDirPath = $url_uploads_events;
+
 $nom_page = basename($_SERVER["SCRIPT_FILENAME"], '.php');
 
 header('X-Content-Type-Options: nosniff');

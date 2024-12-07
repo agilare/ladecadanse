@@ -360,64 +360,37 @@ $adresse = htmlspecialchars(HtmlShrink::getAdressFitted($listeLieu['region'], $l
 
                         <?php
 					$image_pour_flyer = false;
-					//flyer s'il existe, avec pop up
-					if ($even->getValue('flyer') != '')
+                        if ($even->getValue('flyer') != '')
 					{
-						$imgInfo = @getimagesize($rep_images_even.$even->getValue('flyer'));
-
-						 $img_width = 140;
-						if ($imgInfo && $imgInfo[0] >= 140) {
-                                $img_width = 160;
-                            }
-
-                            $file_time = @filemtime($rep_images_even.$even->getValue('flyer'));
-						?>
-							<a href="<?php echo $url_uploads_events.$even->getValue('flyer')."?".$file_time ?>" class="magnific-popup">
-
-								<img src="<?php echo $url_uploads_events.$even->getValue('flyer')."?".$file_time ?>" alt="Flyer de cet événement" width="<?php echo $img_width; ?>" />
-							</a>
-
-						<?php
-
-					}
+                            ?>
+                        <a href="<?php echo Evenement::getFileHref(Evenement::getFilePath($even->getValue('flyer')), true) ?>" class="magnific-popup">
+                                <img src="<?php echo Evenement::getFileHref(Evenement::getFilePath($even->getValue('flyer')), true) ?>" alt="Flyer de cet événement" width="160" />
+                            </a>
+                            <?php
+                        }
 					else if ($even->getValue('image') != '')
 					{
 						$image_pour_flyer = true;
-						$imgInfo = @getimagesize($rep_images_even.$even->getValue('image'));
-
-						$img_width = 140;
-                            if ($imgInfo && $imgInfo[0] >= 140) {
-                                $img_width = 160;
-                            }
                             ?>
-                        <a href="<?php echo $url_uploads_events . $even->getValue('image') . "?" . filemtime($rep_images_even . $even->getValue('image')) ?>" class="magnific-popup">
-                                <img src="<?php echo $url_uploads_events.$even->getValue('image')."?".filemtime($rep_images_even.$even->getValue('image')) ?>" alt="Photo pour cet événement" width="<?php echo $img_width; ?>" />
-							</a>
-
-						<?php
-
-					}
-
-					?>
+                        <a href="<?php echo Evenement::getFileHref(Evenement::getFilePath($even->getValue('image')), true) ?>" class="magnific-popup">
+                                <img src="<?php echo Evenement::getFileHref(Evenement::getFilePath($even->getValue('image')), true) ?>" alt="Photo pour cet événement" width="160" />
+                            </a>
+                            <?php
+                        }
+                        ?>
                     </li>
 
                     <li id="photo">
                         <?php
-                        //photo si existe, avec pop up
-                        if ($even->getValue('image') != '' && !$image_pour_flyer) {
-                            $img_width = 140;
-                            if ($imgInfo && $imgInfo[0] >= 140) {
-                                $img_width = 160;
-                            }
+                        if ($even->getValue('image') != '' && !$image_pour_flyer)
+                        {
                             ?>
-                            <a href="<?php echo $url_uploads_events . $even->getValue('image') . "?" . filemtime($rep_images_even . $even->getValue('image')) ?>" class="magnific-popup">
-
-                                        <img src="<?php echo $url_uploads_events . $even->getValue('image') . "?" . filemtime($rep_images_even . $even->getValue('image')) ?>" alt="Photo pour cet événement" width="<?php echo $img_width; ?>" />
-                                    </a>
-
+                        <a href="<?php echo Evenement::getFileHref(Evenement::getFilePath($even->getValue('image')), true) ?>" class="magnific-popup">
+                                <img src="<?php echo Evenement::getFileHref(Evenement::getFilePath($even->getValue('image')), true) ?>" alt="Photo pour cet événement" width="160" />
+                            </a>
                             <?php
                         }
-                            ?>
+                        ?>
 
                     </li>
 				</ul>

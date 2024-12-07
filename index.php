@@ -208,17 +208,18 @@ FROM evenement WHERE region IN ('" . $connector->sanitize($_SESSION['region']) .
                 <?php
                 if (!empty($tab_even['flyer']))
                 {
-                    $imgInfo = @getimagesize($rep_images_even.$tab_even['flyer']);
                     ?>
-                    <a href="<?php echo $url_uploads_events.$tab_even['flyer']; ?>" class="magnific-popup"><img src="<?php echo $url_uploads_events."s_".$tab_even['flyer']; ?>" alt="Flyer" width="100" /></a>
+                    <a href="<?php echo Evenement::getFileHref(Evenement::getFilePath($tab_even['flyer'])) ?>" class="magnific-popup">
+                        <img src="<?php echo Evenement::getFileHref(Evenement::getFilePath($tab_even['flyer'], "s_"), true) ?>" alt="Flyer" width="100" />
+                    </a>
                     <?php
                 }
                 else if (!empty($tab_even['image']))
                 {
-                    $imgInfo = @getimagesize($rep_images_even.$tab_even['image']);
                     ?>
-
-                    <a href="<?php echo $url_uploads_events.$tab_even['image']; ?>" class="magnific-popup"><img src="<?php echo $url_uploads_events."s_".$tab_even['image']; ?>" alt="Photo" width="100" /></a>
+                            <a href="<?php echo Evenement::getFileHref(Evenement::getFilePath($tab_even['image'])) ?>" class="magnific-popup">
+                                        <img src="<?php echo Evenement::getFileHref(Evenement::getFilePath($tab_even['image'], "s_"), true) ?>" alt="Photo" width="100" />
+                                    </a>
 
                 <?php
                 }
@@ -397,23 +398,24 @@ FROM evenement WHERE region IN ('" . $connector->sanitize($_SESSION['region']) .
 
             if (!empty($tab_dern_even['flyer']))
             {
-                $imgInfo = @getimagesize($rep_images_even.$tab_dern_even['flyer']);
-
                 ?>
 
-        <a href="<?php echo $url_uploads_events . $tab_dern_even['flyer']; ?>" class="magnific-popup"><img src="<?php echo $url_uploads_events . "s_" . $tab_dern_even['flyer']; ?>" alt="Flyer" width="60" /></a>
+        <a href="<?php echo Evenement::getFileHref(Evenement::getFilePath($tab_dern_even['flyer'])) ?>" class="magnific-popup">
+                        <img src="<?php echo Evenement::getFileHref(Evenement::getFilePath($tab_dern_even['flyer'], "s_"), true) ?>" alt="Flyer" width="60" />
+                    </a>
 
                             <?php
-                        }
+         }
             else if (!empty($tab_dern_even['image']))
             {
-                $imgInfo = @getimagesize($rep_images_even.$tab_dern_even['image']);
-
                 ?>
 
-                <a href="<?php echo $url_uploads_events.$tab_dern_even['image']; ?>" class="magnific-popup"><img src="<?php echo $url_uploads_events."s_".$tab_dern_even['image']; ?>" alt="Photo" width="60" /></a>
+                <a href="<?php echo Evenement::getFileHref(Evenement::getFilePath($tab_dern_even['image'])) ?>" class="magnific-popup">
+                                <img src="<?php echo Evenement::getFileHref(Evenement::getFilePath($tab_dern_even['image'], "s_"), true) ?>" alt="Photo" width="60" />
+                            </a>
 
-                            <?php
+
+                 <?php
                         }
 
             echo "</div>";

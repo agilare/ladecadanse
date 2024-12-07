@@ -734,35 +734,29 @@ if ($nb_pres > 0)
 			<?php
 		if ($even->getValue('flyer') != '')
 		{
-			$imgInfo = getimagesize($rep_images_even.$even->getValue('flyer'));
+                            ?>
+                <a href="<?php echo Evenement::getFileHref(Evenement::getFilePath($even->getValue('flyer')), true) ?>" class="magnific-popup" target="_blank">
 
-			?>
-			<a href="<?php echo $url_uploads_events.$even->getValue('flyer').'?'.filemtime($rep_images_even.$even->getValue('flyer')) ?>" class="magnific-popup">
-                <img src="<?php echo $url_uploads_events . "s_" . $even->getValue('flyer') . "?" . filemtime($rep_images_even . "s_" . $even->getValue('flyer')); ?>" alt="Flyer" width="60" />
-                        </a>
+                                            <img src="<?php echo Evenement::getFileHref(Evenement::getFilePath($even->getValue('flyer'), 's_'), true) ?>" alt="Flyer" width="60" />
+                                        </a>
 
-			<?php
+                            <?php
 
 
 		}
 		else if ($even->getValue('image') != '')
 		{
+                            ?>
+                <a href="<?php echo Evenement::getFileHref(Evenement::getFilePath($even->getValue('image')), true) ?>" class="magnific-popup" target="_blank">
 
-			?>
-			<a href="<?php echo $url_uploads_events.$even->getValue('image').'?'.filemtime($rep_images_even.$even->getValue('image')) ?>" class="magnific-popup">
-				<img src="<?php echo $url_uploads_events."s_".$even->getValue('image')."?".filemtime($rep_images_even."s_".$even->getValue('image')); ?>" alt="Photo" width="60" />
-			</a>
-
-			<?php
+                                <img src="<?php echo Evenement::getFileHref(Evenement::getFilePath($even->getValue('image'), 's_'), true) ?>" alt="Photo" width="60" />
+                            </a>
+                            <?php
 
 		}
 ?>
 
-
-
-
-
-			</td>
+                    </td>
 
 			<td>
 			<h3 class="summary">

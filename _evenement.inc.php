@@ -56,24 +56,19 @@ echo "<p><a href=\"/evenement-agenda.php?courant=".$evenement['dateEvenement']."
 <?php
 if (!empty($evenement['flyer']))
 {
-	$imgInfo = getimagesize($rep_images_even.$evenement['flyer']);
 ?>
-	<a href="<?php echo $url_uploads_events.$evenement['flyer']."?".filemtime($rep_images_even.$evenement['flyer']) ?>" class="magnific-popup" target="_blank">
+	<a href="<?php echo Evenement::getFileHref(Evenement::getFilePath($evenement['flyer']), true) ?>" class="magnific-popup" target="_blank">
 
-		<img src="<?php echo $url_uploads_events.$evenement['flyer']."?".filemtime($rep_images_even.$evenement['flyer']) ?>" alt="Flyer de cet événement" width="100" />
+		<img src="<?php echo Evenement::getFileHref(Evenement::getFilePath($evenement['flyer'], 's_'), true) ?>" alt="Flyer de cet événement" width="100" />
 	</a>
 <?php
-	//echo lien_popup($IMGeven.$evenement['flyer'].'?'.filemtime($rep_images_even.$evenement['flyer']), "flyer", $imgInfo[0]+20, $imgInfo[1]+20, "<img src=\"".$IMGeven."s_".$evenement['flyer']."?".filemtime($rep_images_even."s_".$evenement['flyer'])."\" alt=\"Flyer\" />");
-
 	}
 	else if (!empty($evenement['image']))
 	{
-		$imgInfo = @getimagesize($rep_images_even.$evenement['image']);
-		//echo lien_popup($IMGeven.$evenement['image']."?".filemtime($rep_images_even.$evenement['image']), "Image", $imgInfo[0]+20, $imgInfo[1]+20,"<img src=\"".$IMGeven."s_".$evenement['image']."?".filemtime($rep_images_even.$evenement['image'])."\" alt=\"Image\" />");
 	?>
-	<a href="<?php echo $url_uploads_events.$evenement['image']."?".filemtime($rep_images_even.$evenement['image']) ?>" class="magnific-popup" target="_blank">
+	<a href="<?php echo Evenement::getFileHref(Evenement::getFilePath($evenement['image']), true) ?>" class="magnific-popup" target="_blank">
 
-		<img src="<?php echo $url_uploads_events.$evenement['image']."?".filemtime($rep_images_even.$evenement['image']) ?>" alt="Photo pour cet événement" width="100" />
+		<img src="<?php echo Evenement::getFileHref(Evenement::getFilePath($evenement['image'], 's_'), true) ?>" alt="Photo pour cet événement" width="100" />
 	</a>
 	<?php
 	}
