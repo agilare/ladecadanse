@@ -1,6 +1,8 @@
 <?php
+global $logger;
 require_once("app/bootstrap.php");
 
+use Ladecadanse\Evenement;
 use Ladecadanse\Security\SecurityToken;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\Text;
@@ -82,9 +84,6 @@ if (isset($_GET['idP'])) {
 
             if ((($authorization->isAuthor($get['type'], $_SESSION['SidPersonne'], $get['id']) && $_SESSION['Sgroupe'] <= 6) || $_SESSION['Sgroupe'] < 2))
         {
-            /*
-                 * Suppression du flyer
-                 */
                 $req_im = $connector->query("SELECT titre, flyer, image, idLieu, genre, dateEvenement
 			FROM evenement WHERE idEvenement=" . $get['id']);
 
@@ -92,21 +91,16 @@ if (isset($_GET['idP'])) {
                 $titreSup = $val_even['titre']; //pour le message apres suppression
 
                 if (!empty($val_even['flyer'])) {
-                    unlink($rep_images_even . $val_even['flyer']);
-                    unlink($rep_images_even . "s_" . $val_even['flyer']);
+                    Evenement::rmImageAndItsMiniature($val_even['flyer']);
             }
 
                 if (!empty($val_even['image'])) {
-                    unlink($rep_images_even . $val_even['image']);
-                    unlink($rep_images_even . "s_" . $val_even['image']);
+                    Evenement::rmImageAndItsMiniature($val_even['image']);
                 }
 
                 if ($connector->query("DELETE FROM evenement WHERE idEvenement=" . $get['id'])) {
                     HtmlShrink::msgOk('L\'événement "' . sanitizeForHtml($titreSup) . '" a été supprimé');
                     $logger->log('global', 'activity', "[supprimer] event \"$titreSup\" (" . $get['id'] . ") deleted", Logger::GRAN_YEAR);
-                }
-                else {
-                    HtmlShrink::msgErreur("La requète DELETE a échoué");
                 }
             }
             else {

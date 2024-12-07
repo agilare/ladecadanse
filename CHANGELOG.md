@@ -1,5 +1,19 @@
 # Changelog
 
+## [3.5.4] - 2024-12-08
+
+### Fixed
+- events : increase "horaire_complement", "ref", "prelocations" fields lengths which were a little too tight
+
+### Added
+- events : split images in "evenements" dir by year to ease the load of the huge amount of files
+- events : in edit form, title field, warn if user pastes text too large; it happens often and results in odd titles
+
+### Changed
+- events : remove the "new" icon in the 2 infos about Noctambus which were put 1 year ago
+- upgrades : PHPMailer, PHP dotenv, Whoops 2.16, PHPStan 1.12, PHP_Codesniffer 3.10, Magnific-Popup 1.1 to 1.2, Zebra Datepicker 2.2
+
+
 ## [3.5.3] - 2024-11-10
 
 ### Fixed

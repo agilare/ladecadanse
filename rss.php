@@ -2,6 +2,7 @@
 
 require_once("app/bootstrap.php");
 
+use Ladecadanse\Evenement;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\Text;
 
@@ -101,8 +102,8 @@ if ($get['type'] == "evenements_auj") {
 			//si un flyer existe
 		if (!empty($tab_even['flyer']))
 		{
-			$items .= "<div class=\"flyer\"><img src=\"".$url_uploads_events."s_".$tab_even['flyer']."\"  alt=\"Flyer\" /></div>";
-		}
+			$items .= "<div class=\"flyer\"><img src=\"" . Evenement::getFileHref(Evenement::getFilePath($tab_even['flyer'], "s_")) . "\"  alt=\"Flyer\" /></div>";
+        }
 
 		$maxChar = Text::trouveMaxChar($tab_even['description'], 60, 5);
 		if (mb_strlen($tab_even['description']) > $maxChar)
@@ -174,8 +175,8 @@ else if ($get['type'] == "lieu_evenements")
 			//si un flyer existe
 		if (!empty($tab_even['flyer']))
 		{
-			$items .= "<div class=\"flyer\"><img src=\"".$url_uploads_events."s_".$tab_even['flyer']."\"  alt=\"Flyer\" /></div>";
-		}
+			$items .= "<div class=\"flyer\"><img src=\"" . Evenement::getFileHref(Evenement::getFilePath($tab_even['flyer'], "s_")) . "\"  alt=\"Flyer\" /></div>";
+        }
 
 		$maxChar = Text::trouveMaxChar($tab_even['description'], 60, 5);
 		if (mb_strlen($tab_even['description']) > $maxChar)
@@ -259,8 +260,8 @@ else if ($get['type'] == "organisateur_evenements")
 			//si un flyer existe
 		if (!empty($tab_even['flyer']))
 		{
-			$items .= "<div class=\"flyer\"><img src=\"".$url_uploads_events."s_".$tab_even['flyer']."\"  alt=\"Flyer\" /></div>";
-		}
+			$items .= "<div class=\"flyer\"><img src=\"" . Evenement::getFileHref(Evenement::getFilePath($tab_even['flyer'], "s_")) . "\"  alt=\"Flyer\" /></div>";
+        }
 
 		$maxChar = Text::trouveMaxChar($tab_even['description'], 60, 5);
 		if (mb_strlen($tab_even['description']) > $maxChar)
@@ -344,13 +345,12 @@ else if ($get['type'] == "evenements_ajoutes")
 			//si un flyer existe
 		if (!empty($tab_even['flyer']))
 		{
-			$items .= "<div class=\"flyer\"><img src=\"".$url_uploads_events."s_".$tab_even['flyer']."\"  alt=\"Flyer\" /></div>";
-		}
+			$items .= "<div class=\"flyer\"><img src=\"" . Evenement::getFileHref(Evenement::getFilePath($tab_even['flyer'], "s_")) . "\"  alt=\"Flyer\" /></div>";
+        }
 		else if (!empty($tab_even['image']))
 		{
-			$items .= "<div class=\"flyer\"><img src=\"".$url_uploads_events."s_".$tab_even['image']."\"  alt=\"Photo\" /></div>";
-
-		}
+			$items .= "<div class=\"flyer\"><img src=\"" . Evenement::getFileHref(Evenement::getFilePath($tab_even['image'], "s_")) . "\"  alt=\"Photo\" /></div>";
+        }
 
 
 

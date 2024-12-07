@@ -2,6 +2,7 @@
 
 require_once("app/bootstrap.php");
 
+use Ladecadanse\Evenement;
 use Ladecadanse\UserLevel;
 use Ladecadanse\HtmlShrink;
 
@@ -30,14 +31,12 @@ if ($get['action'] == 'delete' && !empty($get['id']))
 
         if (!empty($val_even['flyer']))
         {
-            unlink($rep_images_even.$val_even['flyer']);
-            unlink($rep_images_even . "s_" . $val_even['flyer']);
+            Evenement::rmImageAndItsMiniature($val_even['flyer']);
         }
 
         if (!empty($val_even['image']))
         {
-            unlink($rep_images_even.$val_even['image']);
-            unlink($rep_images_even."s_".$val_even['image']);
+            Evenement::rmImageAndItsMiniature($val_even['image']);
         }
 
         if ($connector->query("DELETE FROM evenement WHERE idEvenement=".$get['id']))

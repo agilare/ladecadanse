@@ -337,6 +337,14 @@ class HtmlShrink
             <link rel="alternate" type="application/rss+xml" title="Prochains événements dans ce lieu" href="/rss.php?type=lieu_evenements&amp;id=<?php echo intval($_GET['idL']) ?>" />
                         <?php
         }
-            }
+    }
 
+    public static function getLinkAroundImg($aHref, $aClasses, $imgSrc, $imgWidth, $imgAlt)
+    {
+            ?>
+        	<a href="<?php echo $aHref ?>" class="<?php echo $aClasses ?>" target="_blank">
+        		<img src="<?php echo $imgSrc ?>" width="<?php echo $imgWidth ?>"  alt="<?php echo $imgAlt ?>" />
+        	</a>
+        <?php
+    }
 }

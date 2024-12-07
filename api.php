@@ -2,6 +2,7 @@
 
 require_once 'app/bootstrap.php';
 
+use Ladecadanse\Evenement;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\Logger;
 
@@ -101,10 +102,13 @@ if ($get['entity'] == 'event')
         ];
 
         // image : if flyer empty, image; add path
-        $event['image'] = $url_uploads_events . $row['image'];
-        if (!empty($row['flyer']))
+        if (!empty($row['image']))
         {
-            $event['image'] = $url_uploads_events . $row['flyer'];
+            $event['image'] = Evenement::getFileHref(Evenement::getFilePath($row['image']));
+        }
+        elseif (!empty($row['flyer']))
+        {
+            $event['image'] = Evenement::getFileHref(Evenement::getFilePath($row['flyer']));
         }
 
         $event['description'] = $row['description'];

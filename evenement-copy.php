@@ -2,6 +2,7 @@
 
 require_once("app/bootstrap.php");
 
+use Ladecadanse\Evenement;
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\Security\SecurityToken;
 use Ladecadanse\UserLevel;
@@ -248,44 +249,16 @@ FROM evenement WHERE idEvenement=".$get['idE'])));
 
                 if (!empty($tab_champs['flyer']))
 				{
-					$src = $rep_images_even.$flyer_orig;
-					$des = $rep_images_even.$tab_champs['flyer'];
-
-					if (!copy($src, $des))
-					{
-				  		HtmlShrink::msgErreur("La copie du fichier ".$tab_champs['flyer']." n'a pas réussi...");
-					}
-
-					$src = $rep_images_even."s_".$flyer_orig;
-					$des = $rep_images_even."s_".$tab_champs['flyer'];
-
-					if (!copy($src, $des))
-					{
-				  		HtmlShrink::msgErreur("La copie du fichier ".$tab_champs['flyer']." n'a pas réussi...");
-					}
-
+                    copy(Evenement::getSystemFilePath(Evenement::getFilePath($flyer_orig)), Evenement::getSystemFilePath(Evenement::getFilePath($tab_champs['flyer'])));
+                    copy(Evenement::getSystemFilePath(Evenement::getFilePath($flyer_orig, "s_")), Evenement::getSystemFilePath(Evenement::getFilePath($tab_champs['flyer'], "s_")));
                     $flyer = '';
 		        }
 
 				if (!empty($tab_champs['image']))
 				{
-					$src = $rep_images_even.$image_orig;
-					$des = $rep_images_even.$tab_champs['image'];
-
-					if (!copy($src, $des))
-					{
-				  		HtmlShrink::msgErreur("La copie du fichier ".$tab_champs['image']." n'a pas réussi...");
-					}
-
-					$src = $rep_images_even."s_".$image_orig;
-					$des = $rep_images_even."s_".$tab_champs['image'];
-
-					if (!copy($src, $des))
-					{
-				  		HtmlShrink::msgErreur("La copie du fichier ".$tab_champs['image']." n'a pas réussi...");
-					}
-
-		        }
+                    copy(Evenement::getSystemFilePath(Evenement::getFilePath($image_orig)), Evenement::getSystemFilePath(Evenement::getFilePath($tab_champs['image'])));
+                    copy(Evenement::getSystemFilePath(Evenement::getFilePath($image_orig, "s_")), Evenement::getSystemFilePath(Evenement::getFilePath($tab_champs['image'], "s_")));
+                }
 
                 $req_orga = $connector->query("SELECT idOrganisateur FROM evenement_organisateur WHERE idEvenement=".$get['idE']);
 
@@ -296,12 +269,8 @@ FROM evenement WHERE idEvenement=".$get['idE'])));
 					$connector->query($sql);
 				}
 			}
-			else
-			{
-				HtmlShrink::msgErreur("La requête INSERT dans 'evenement' pour le " . date_fr(date('Y-m-d', $dateIncrUnix)) . " a échoué");
-            }
 
-			//copie de la date courante, passage au jour suivant, et saut d'une heure en cas de passage à l'heure d'hiver
+            //copie de la date courante, passage au jour suivant, et saut d'une heure en cas de passage à l'heure d'hiver
 			$dateIncrUnixOld = $dateIncrUnix;
 			$dateIncrUnix += 86400;
 
