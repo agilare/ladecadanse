@@ -37,15 +37,14 @@ if (isset($_GET['periode']))
 
 $get['mots'] = "";
 if (isset($_GET['mots']))
-{try {
-	$get['mots'] = Validateur::validateUrlQueryValue($_GET['mots'], "string", 1);
+{
+    try
+    {
+        $get['mots'] = Validateur::validateUrlQueryValue($_GET['mots'], "string", 1);
     } catch (Exception $e) { header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); exit; }
 }
 
-$mots_brut = $get['mots'];
-
 $limite = 10;
-
 
 $page_titre = "recherche dans l'agenda des événements";
 $page_description = "Rechercher un événement culturel à Genève et Lausanne";
@@ -184,9 +183,9 @@ if (!empty($get['mots']))
 	}
 
     if ($get['page'] == 1)
-        $logger->log('global', 'activity', "[recherche] \"".$mots_brut."\" with ".$nb_even." events found", Logger::GRAN_YEAR);
+        $logger->log('global', 'activity', "[recherche] \"" . $get['mots'] . "\" with " . $nb_even . " events found", Logger::GRAN_YEAR);
 
-	$idE_trouves = "";
+    $idE_trouves = "";
 
 	if ($nb_even == 0)
 	{

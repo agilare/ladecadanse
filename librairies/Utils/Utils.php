@@ -14,7 +14,7 @@ class Utils
             {
                 if ($nom != $sauf)
                 {
-                    $afficher .= $nom . "=" . $valeur . "&amp;";
+                    $afficher .= $nom . "=" . $valeur . "&";
                 }
             }
         }
@@ -24,13 +24,12 @@ class Utils
             {
                 if (!in_array($nom, $sauf))
                 {
-                    $afficher .= $nom . "=" . $valeur . "&amp;";
+                    $afficher .= $nom . "=" . $valeur . "&";
                 }
             }
         }
-        $afficher = mb_substr($afficher, 0, -5);
 
-        return $afficher;
+        return mb_substr(sanitizeForHtml($afficher), 0, -5);
     }
 
     public static function getBaseUrl(): string

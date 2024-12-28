@@ -44,9 +44,9 @@ class HtmlShrink
         ob_start();
         //
 ?>
-                        <ul class="menu_region">
-        <?php
-        $class_region = 'ge';
+        <ul class="menu_region">
+            <?php
+            $class_region = 'ge';
         foreach ($glo_regions as $n => $v)
         {
             if ($n == 'ge' || $n == 'vd') //|| $n == 'fr'
@@ -74,8 +74,8 @@ class HtmlShrink
                     $nb = $event_nb[$n];
                 }
         ?><li>
-                                                                    <a href="?region=<?php echo $n; ?>&<?php echo Utils::urlQueryArrayToString($get, 'region'); ?>" class="<?php echo $class_region; ?><?php echo $ici; ?>"><?php echo $v; ?>&nbsp;<?php
-                if ($nb !== '')
+            <a href="?region=<?php echo $n; ?>&<?php echo Utils::urlQueryArrayToString($get, 'region'); ?>" class="<?php echo $class_region; ?><?php echo $ici; ?>"><?php echo $v; ?>&nbsp;<?php
+                                if ($nb !== '')
                 {
         ?><span class="events-nb"><?php echo $nb; ?></span><?php } ?></a></li><?php
             }

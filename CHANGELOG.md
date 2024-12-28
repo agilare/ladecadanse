@@ -1,9 +1,9 @@
 # Changelog
 
-## [3.5.4] - 2024-12-08
+## [3.5.4] - 2024-12-30
 
 ### Fixed
-- events : increase "horaire_complement", "ref", "prelocations" fields lengths which were a little too tight
+- events : increase "horaire_complement", "ref", "prelocations" fields lengths which were a little too tight based on usage
 
 ### Added
 - events : split images in "evenements" dir by year to ease the load of the huge amount of files
@@ -13,6 +13,8 @@
 - events : remove the "new" icon in the 2 infos about Noctambus which were put 1 year ago
 - upgrades : PHPMailer, PHP dotenv, Whoops 2.16, PHPStan 1.12, PHP_Codesniffer 3.10, Magnific-Popup 1.1 to 1.2, Zebra Datepicker 2.2
 
+### Security
+- Utils::urlQueryArrayToString() now sanitize its output; revealed by https://www.openbugbounty.org/reports/955861/
 
 ## [3.5.3] - 2024-11-10
 
