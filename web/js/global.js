@@ -111,30 +111,29 @@ const Forms = {
             return true;
         });
 
-        $('form#ajouter_editer #titre').on('paste', function(e) {
+//        $('form#ajouter_editer #titre').on('paste', function(e)
+//        {
+//            // Récupère le texte collé
+//            const pastedText = (e.originalEvent.clipboardData || window.clipboardData).getData('text');
+//
+//            const maxLength = parseInt($(this).prop('maxLength'));
+//
+//            if (!maxLength) {
+//                return;
+//            }
+//
+//            if (pastedText.length > maxLength)
+//            {
+//                alert(`Le texte collé dans ce champ dépasse la longueur maximale de ${maxLength} caractères, il a donc été tronqué`);
+//            }
+//        });
+    // better than above
+        $('form#ajouter_editer #titre').on("input", function () {
+            const maxLength = this.maxLength; // Récupère la valeur de maxlength
+            const currentLength = this.value.length;
 
-            e.preventDefault();
-
-            // Récupère le texte collé
-            const pastedText = (e.originalEvent.clipboardData || window.clipboardData).getData('text');
-
-            // Récupère la limite depuis l'attribut maxlength
-            const maxLength = parseInt($(this).prop('maxLength'));
-
-            if (!maxLength) {
-                $(this).val(pastedText);
-                return;
-            }
-
-            // Limite le texte selon maxlength
-            const limitedText = pastedText.slice(0, maxLength);
-
-            // Insère le texte limité dans le champ
-            $(this).val(limitedText);
-
-            // Optionnel : affiche un message d'avertissement
-            if (pastedText.length > maxLength) {
-                alert(`Le texte collé dans ce champ dépasse la longueur maximale de ${maxLength} caractères, il sera donc tronqué`);
+            if (currentLength >= maxLength) {
+                alert(`Le texte dans ce champ ne peut dépasser la longueur maximale de ${maxLength} caractères`);
             }
         });
 
