@@ -78,7 +78,7 @@ while($tab_pers = $connector->fetchArray($req_get))
 	<td><a href=\"/user.php?idP=".$tab_pers['idPersonne']."\" >".sanitizeForHtml($tab_pers['pseudo'])."</a></td>
 	<td><a href='mailto:".$tab_pers['email']."'>".$tab_pers['email']."</a></td>
 	<td>".$tab_pers['groupe']."</td>
-	<td>".$tab_pers['affiliation']."</td>
+	<td>" . sanitizeForHtml($tab_pers['affiliation']) . "</td>
 
 	";
 
