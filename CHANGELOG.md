@@ -1,6 +1,6 @@
 # Changelog
 
-## [3.5.4] - 2024-12-30
+## [3.5.4] - 2025-01-19
 
 ### Fixed
 - events : increase "horaire_complement", "ref", "prelocations" fields lengths which were a little too tight based on usage
@@ -15,6 +15,8 @@
 
 ### Security
 - Utils::urlQueryArrayToString() now sanitize its output; revealed by https://www.openbugbounty.org/reports/955861/
+- headers: replace outdated configs, add CSP
+- admin : add sanitize of new user affiliation
 
 ## [3.5.3] - 2024-11-10
 
