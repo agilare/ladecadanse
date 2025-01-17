@@ -52,7 +52,8 @@ Evenement::$urlDirPath = $url_uploads_events;
 $nom_page = basename($_SERVER["SCRIPT_FILENAME"], '.php');
 
 header('X-Content-Type-Options: nosniff');
-header('X-Frame-Options: "ALLOW-FROM https://epic-magazine.ch/"');
+header("Content-Security-Policy: frame-ancestors 'self' https://epic-magazine.ch");
+header('X-Frame-Options:    SAMEORIGIN');
 
 header("Cache-Control: no-store, no-cache, must-revalidate");
 header("Cache-Control: post-check=0, pre-check=0", false);
