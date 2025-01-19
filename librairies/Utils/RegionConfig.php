@@ -26,7 +26,16 @@ class RegionConfig
         if (array_key_exists($getRegion, $regions))
         {
             $_SESSION['region'] = $getRegion;
-            setcookie("ladecadanse_region", $getRegion, time() + self::COOKIE_DURATION, '/', '', false, true);
+            $cookieOptions = [
+                'expires' => time() + self::COOKIE_DURATION,
+                'path' => '/',
+                //'domain' => '.example.com', // leading dot for compatibility or use subdomain
+                'secure' => true,
+                'httponly' => true,
+                'samesite' => 'Lax'
+            ];
+
+            setcookie("ladecadanse_region", $getRegion, $cookieOptions);
         }
     }
 

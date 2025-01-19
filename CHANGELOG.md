@@ -17,6 +17,7 @@
 - Utils::urlQueryArrayToString() now sanitize its output; revealed by https://www.openbugbounty.org/reports/955861/
 - headers: replace outdated configs, add CSP
 - admin : add sanitize of new user affiliation
+- add secure, httponly and samesite to most of cookies sent
 
 ## [3.5.3] - 2024-11-10
 

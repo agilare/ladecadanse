@@ -19,7 +19,7 @@ export function SetCookie(name, value, days, path)
     }
     /*Si on a pas spécifié de path on pose le cookie sur tout le domain*/
     path = path || '/';
-    document.cookie = name + '=' + encodeURIComponent(value) + expires + '; path=' + path;
+    document.cookie = name + '=' + encodeURIComponent(value) + expires + '; path=' + path + '; secure; samesite=lax';
 }
 
 
@@ -39,7 +39,7 @@ export function responsiveSetup()
         setupMobile();
     }
 
-    $(window).resize(function setupInterfaceForWidth() 
+    $(window).resize(function setupInterfaceForWidth()
     {
         viewportWidth = $(window).width();
         viewportHeight = $(window).height();
