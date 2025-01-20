@@ -9,8 +9,9 @@ Vous pouvez contribuer de plusieurs manières :
 - [faire un don](https://ladecadanse.darksite.ch/articles/faireUnDon.php)
 
 et spécifiquement, si vous êtes développeur :
-- compléter la documentation : le [README](README.md), le [Wiki](https://github.com/agilare/ladecadanse/wiki)...
 - résoudre ou proposer des [Issues](https://github.com/agilare/ladecadanse/issues) (corrections, améliorations...)
+- signaler voire corriger des vulnérabilités : voire les modalités dans la [politique de sécurité](SECURITY.md)
+- compléter la documentation : le [README](README.md), le [Wiki](https://github.com/agilare/ladecadanse/wiki)...
 
 ## Contexte
 
@@ -27,7 +28,7 @@ Le **mode de développement actuel du projet** est brièvement décrit dans la s
 
 Vous pouvez reprendre des [Issues](https://github.com/agilare/ladecadanse/issues) existantes — en choisissant de préférences les plus prioritaires (label _high_) — ou en créer de nouvelles. Cela peut consister à :
 - spécifier, concevoir une amélioration
-- reproduire, cerner des bugs
+- reproduire, cerner des bugs ou vulnérabilités
 - développer et tester
 
 Il est aussi possible de proposer des fonctionnalités, bien qu'en ce moment l'accent est mis surtout sur la résolution de _[bugs](https://github.com/agilare/ladecadanse/issues?q=is%3Aissue+is%3Aopen+label%3Abug)_ et le _[refactoring](https://github.com/agilare/ladecadanse/labels/refactoring)_ (notamment au sein du projet de modernisation) pour les raisons décrites ci-dessus.
