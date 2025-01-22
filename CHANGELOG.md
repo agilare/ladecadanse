@@ -1,6 +1,6 @@
 # Changelog
 
-## [3.5.4] - 2025-01-19
+## [3.5.4] - 2025-01-22
 
 ### Fixed
 - events : increase "horaire_complement", "ref", "prelocations" fields lengths which were a little too tight based on usage
@@ -17,7 +17,9 @@
 - Utils::urlQueryArrayToString() now sanitize its output; revealed by https://www.openbugbounty.org/reports/955861/
 - headers: replace outdated configs, add CSP
 - admin : add sanitize of new user affiliation
-- add secure, httponly and samesite to most of cookies sent
+- add secure, httponly and mostly samesite to cookies sent
+- security guidelines in SECURITY.md
+
 
 ## [3.5.3] - 2024-11-10
 

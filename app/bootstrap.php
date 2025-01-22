@@ -31,7 +31,7 @@ if (ENV === 'dev') {
 // FIXME: seems to not work on current depl server (darksite.ch)
 // session_save_path(__ROOT__ . "/var/sessions");
 // ini_set('session.gc_probability', 1); // to enable auto clean of old session in Debian https://www.php.net/manual/en/function.session-save-path.php#98106
-session_start();
+session_start(['cookie_secure' => true, 'cookie_httponly' => true]);
 
 $regionConfig = new RegionConfig($glo_regions);
 list($url_query_region, $url_query_region_et, $url_query_region_1er) = $regionConfig->getAppVars();
