@@ -4,9 +4,9 @@
 > [!WARNING]
 > En raison d'une grande partie de code legacy, et pour des raisons de sécurité, ne déployez pas cette application sur des serveurs publics. La [modernisation est en cours](https://github.com/users/agilare/projects/2/views/1), vous pouvez [contribuer](README.md#contribuer)
 
-La décadanse est un site web qui présente aux visiteurs une sélection d'événements culturels locaux et accessibles. Il est actuellement [déployé pour Genève et Lausanne](https://ladecadanse.darksite.ch/)
+La décadanse est un site web qui présente aux visiteurs une sélection d'événements culturels locaux et accessibles. Il est actuellement [déployé pour Genève et Lausanne](https://www.ladecadanse.ch/)
 
-![La décadanse - accueil](https://ladecadanse.darksite.ch/web/interface/ladecadanse-home.png)
+![La décadanse - page d'accueil](./web/interface/ladecadanse-home-example.png)
 
 Les organisateurs d'événements ont la possibilité de s'inscrire puis de se présenter et annoncer leurs événements.
 
