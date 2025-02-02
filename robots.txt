@@ -1,3 +1,16 @@
 User-agent: *
-Crawl-delay: 15
+Crawl-delay: 15 # rule ignored by Google
+Disallow: /admin/
+Disallow: /app/
+Disallow: /librairies/
+Disallow: /resources/
+Disallow: /var/
+Disallow: /vendor/
+Disallow: /.git-ftp.log
+Disallow: /*.inc.php
+Disallow: /maintenance.php
+# ignore years 2100, 2200...
+Disallow: /evenement-agenda.php?courant=21*
+Disallow: /evenement-agenda.php?courant=22*
+Disallow: /evenement-agenda.php?courant=23*
 
