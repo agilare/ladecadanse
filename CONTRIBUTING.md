@@ -5,8 +5,8 @@ Merci de vous intéresser à ce projet qui est d'une assez grande utilité dans 
 Vous pouvez contribuer de plusieurs manières :
 - [reporter des bugs](https://github.com/agilare/ladecadanse/issues)
 - participer aux tests après que des changements ont été faits ([me contacter](https://github.com/agilare/ladecadanse?tab=readme-ov-file#contact))
-- aider à l'administration du [site actuel](https://ladecadanse.darksite.ch/) ([me contacter](https://github.com/agilare/ladecadanse?tab=readme-ov-file#contact))
-- [faire un don](https://ladecadanse.darksite.ch/articles/faireUnDon.php)
+- aider à l'administration du [site actuel](https://www.ladecadanse.ch/) ([me contacter](https://github.com/agilare/ladecadanse?tab=readme-ov-file#contact))
+- [faire un don](https://www.ladecadanse.ch/articles/faireUnDon.php)
 
 et spécifiquement, si vous êtes développeur :
 - résoudre ou proposer des [Issues](https://github.com/agilare/ladecadanse/issues) (corrections, améliorations...)
@@ -15,7 +15,7 @@ et spécifiquement, si vous êtes développeur :
 
 ## Contexte
 
-À côté du travail régulier de gestion du [site actuellement en ligne](https://ladecadanse.darksite.ch/) (contenu et technique), ce projet demande une maintenance classique (mises à jour, documentation, etc.), essentiellement effectuée par son auteur, durant son temps libre et bénévolement. Quand du temps est davantage disponible, je fais des mises à jour plus conséquentes comme des corrections, du refactoring voire des améliorations.
+À côté du travail régulier de gestion du [site actuellement en ligne](https://ladecadanse.ch/) (contenu et technique), ce projet demande une maintenance classique (mises à jour, documentation, etc.), essentiellement effectuée par son auteur, durant son temps libre et bénévolement. Quand du temps est davantage disponible, je fais des mises à jour plus conséquentes comme des corrections, du refactoring voire des améliorations.
 
 Je m'occupe donc de gérer ce projet dans son ensemble et décide des lignes directrices à suivre. J'essaie de réagir promptement aux diverses demandes, mais en raison du peu de temps dont je dispose, cela peut demander un certain délai.
 
@@ -46,7 +46,7 @@ Pour aborder le travail, vous pouvez d'abord chercher à connaître suffisamment
 - _[Fonctionnement](https://github.com/agilare/ladecadanse/wiki#fonctionnement-de-lapplication)_
 - _[Résumé conceptuel](https://github.com/agilare/ladecadanse/wiki#r%C3%A9sum%C3%A9-conceptuel)_
 
-Plus concrètement, vous pouvez aussi explorer le site actuel, voire [créer un compte](https://ladecadanse.darksite.ch/user-register.php) *Acteur culturel* qui vous montrera les fonctionnalités de back-office, utilisées quotidiennement par les organisateurs d'événements pour leur diffusion.
+Plus concrètement, vous pouvez aussi explorer le site actuel, voire [créer un compte](https://ladecadanse.ch/user-register.php) *Acteur culturel* qui vous montrera les fonctionnalités de back-office, utilisées quotidiennement par les organisateurs d'événements pour leur diffusion.
 
 Ensuite, si vous êtes intéressés au **travail sur une Issue**, je vous invite à la préciser si besoin (spécifications, conception... n'hésitez pas la commenter ou créer une [Discussion](https://github.com/agilare/ladecadanse/discussions)) puis la réaliser sous forme de [pull request](https://github.com/agilare/ladecadanse/pulls). Une fois acceptée, le changement sera intégrée dans une future release et déployé, selon mes disponibilités.
 Les modifications doivent suivre dans la mesure du possible les [Commits Conventionnels](https://www.conventionalcommits.org/fr/v1.0.0/)
