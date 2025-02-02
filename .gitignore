@@ -27,4 +27,4 @@ app/env.php
 .htaccess
 tests/.env
 /node_modules
-security.txt
+/.well-known
