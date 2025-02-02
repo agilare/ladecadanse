@@ -82,11 +82,11 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' && empty($_POST
 			$hash = $champs['pseudo_email'];
         }
 
-        if (PARTIAL_EDIT_MODE && $dateAjout < PARTIAL_EDIT_FROM_DATETIME)
-        {
-            HtmlShrink::msgErreur(PARTIAL_EDIT_MODE_MSG);
-            exit;
-        }
+//        if (PARTIAL_EDIT_MODE   )
+//        {
+//            HtmlShrink::msgErreur(PARTIAL_EDIT_MODE_MSG);
+//            exit;
+//        }
 
         if ($email_envoi)
         {
@@ -114,17 +114,16 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' && empty($_POST
             $mailer = new Mailing();
             $mailer->toUser($email_envoi, $subject, $contenu_message);
 
-			HtmlShrink::msgOk("Un email a été envoyé à " . sanitizeForHtml($email_envoi) . " qui contient un lien vous permettant de choisir un nouveau mot de passe.");
-
             $logger->log('global', 'activity', "[user-reset] request by ".$email_envoi." user.php?idP=".$idPersonne, Logger::GRAN_YEAR);
 		}
 		else
 		{
             $logger->log('global', 'activity', "[motdepasse_demande] request failed for pseudo/email ".$champs['pseudo_email'], Logger::GRAN_YEAR);
-			HtmlShrink::msgErreur("L'email/identifiant que vous avez saisi pour votre demande n'est pas enregistré sur La décadanse");
 		}
 
-		$termine = true;
+        HtmlShrink::msgOk("Si l'identifiant ou email que vous avez fourni existe comme compte sur La décadanse, un email contenant un lien pour réinitialiser le mot de passe vous a été envoyé");
+
+        $termine = true;
 	}
 }
 
