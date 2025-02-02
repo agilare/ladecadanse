@@ -370,23 +370,23 @@ else
 		{
 			$listeLieu = $connector->fetchArray($connector->query("SELECT nom, adresse, quartier, localite.localite AS localite, URL FROM lieu, localite WHERE lieu.localite_id=localite.id AND idlieu='".$listeEven['idLieu']."'"));
 
-			$infosLieu = "<a href=\"/lieu.php?idL=" . $listeEven['idLieu'] . "\">" . htmlspecialchars($listeLieu['nom']) . "</a>";
+			$infosLieu = "<a href=\"/lieu.php?idL=" . $listeEven['idLieu'] . "\">" . sanitizeForHtml($listeLieu['nom']) . "</a>";
             if ($listeEven['idSalle'])
 			{
                 $req_salle = $connector->query("SELECT nom FROM salle WHERE idSalle='".$listeEven['idSalle']."'");
                 $tab_salle = $connector->fetchArray($req_salle);
-                $infosLieu .= " - ".$tab_salle['nom'];
-			}
+                $infosLieu .= " - " . sanitizeForHtml($tab_salle['nom']);
+            }
 		}
 		else
 		{
 
-			$listeLieu['nom'] = htmlspecialchars($listeEven['nomLieu']);
-			$infosLieu = htmlspecialchars($listeEven['nomLieu']);
-			$listeLieu['adresse'] = htmlspecialchars($listeEven['adresse']);
-			$listeLieu['quartier'] = htmlspecialchars($listeEven['quartier']);
-			$listeLieu['localite'] = htmlspecialchars($listeEven['localite']);
-		}
+			$listeLieu['nom'] = $listeEven['nomLieu'];
+            $infosLieu = sanitizeForHtml($listeEven['nomLieu']);
+            $listeLieu['adresse'] = $listeEven['adresse'];
+            $listeLieu['quartier'] = $listeEven['quartier'];
+            $listeLieu['localite'] = $listeEven['localite'];
+        }
 
 		$maxChar = Text::trouveMaxChar($listeEven['description'], 70, 8);
 
@@ -405,15 +405,14 @@ else
 
 		if (mb_strlen($listeEven['description']) > $maxChar)
 		{
-			$description = Text::texteHtmlReduit(Text::wikiToHtml($listeEven['description']),
-			$maxChar);
-			$description .= "<span class=\"continuer\">
+			$description = Text::texteHtmlReduit(Text::wikiToHtml(sanitizeForHtml($listeEven['description'])), $maxChar);
+            $description .= "<span class=\"continuer\">
 			<a href=\"/evenement.php?idE=" . $listeEven['idEvenement'] . "&amp;tri_agenda=" . $get['tri_agenda'] . "\"> Lire la suite</a></span>";
         }
 		else
 		{
-			$description = Text::wikiToHtml($listeEven['description']);
-		}
+			$description = Text::wikiToHtml(sanitizeForHtml($listeEven['description']));
+        }
 
         $sql_event_orga = "SELECT organisateur.idOrganisateur, nom, URL
         FROM organisateur, evenement_organisateur
@@ -423,19 +422,19 @@ else
 
         $req_event_orga = $connector->query($sql_event_orga);
 
-		$adresse = htmlspecialchars(HtmlShrink::getAdressFitted(null, $listeLieu['localite'], $listeLieu['quartier'], $listeLieu['adresse']));
+		$adresse = HtmlShrink::getAdressFitted(null, sanitizeForHtml($listeLieu['localite']), sanitizeForHtml($listeLieu['quartier']), sanitizeForHtml($listeLieu['adresse']));
 
-		$horaire = afficher_debut_fin($listeEven['horaire_debut'], $listeEven['horaire_fin'], $listeEven['dateEvenement']);
+        $horaire = afficher_debut_fin($listeEven['horaire_debut'], $listeEven['horaire_fin'], $listeEven['dateEvenement']);
 
 		// TODO : marche pas, à corriger (voir valeurs d'even sans début ou fin)
 		if (($listeEven['horaire_debut'] != '0000-00-00 00:00:00' || $listeEven['horaire_fin'] != '0000-00-00 00:00:00') && !empty($listeEven['horaire_complement']) )
 		{
-			$horaire .= " ".lcfirst(htmlspecialchars($listeEven['horaire_complement'])) ;
-		}
+			$horaire .= " " . lcfirst(sanitizeForHtml($listeEven['horaire_complement']));
+        }
 		else
 		{
-			$horaire .= htmlspecialchars($listeEven['horaire_complement']);
-		}
+			$horaire .= sanitizeForHtml($listeEven['horaire_complement']);
+        }
 
         if (!empty($listeEven['price_type']) && in_array($listeEven['price_type'], ['gratis', 'asyouwish']))
         {
@@ -448,7 +447,7 @@ else
             {
                 $horaire .= ", ";
             }
-            $horaire .= htmlspecialchars($listeEven['prix']);
+            $horaire .= sanitizeForHtml($listeEven['prix']);
         }
 
         $actions = "";
@@ -483,7 +482,7 @@ else
                         }
 
                     ?>
-                                    <li><a href="/organisateur.php?idO=<?php echo $tab['idOrganisateur']; ?>"><?php echo $tab['nom']; ?></a> <a href="<?php echo $org_url; ?>" class="lien_ext" target="_blank"><?php echo $org_url_nom; ?></a></li>
+                        <li><a href="/organisateur.php?idO=<?php echo $tab['idOrganisateur']; ?>"><?php echo sanitizeForHtml($tab['nom']); ?></a> <a href="<?php echo sanitizeForHtml($org_url); ?>" class="lien_ext" target="_blank"><?php echo sanitizeForHtml($org_url_nom); ?></a></li>
                                     <?php
                     }
                     ?>

@@ -253,10 +253,10 @@ while ($tab_desc = $connector->fetchArray($req_getDes))
 	{
 		$tab_desc['contenu'] = mb_substr($tab_desc['contenu'], 0, 200)." [...]";
 	}
-	echo "<td class=\"tdleft small\">".Text::html_substr($tab_desc['contenu'])."</td>";
-	$nom_auteur = "<i>Ancien membre</i>";
+	echo "<td class=\"tdleft small\">" . Text::html_substr($tab_desc['contenu']) . "</td>";
+        $nom_auteur = "<i>Ancien membre</i>";
 
-	if ($tab_auteur = $connector->fetchArray($connector->query("SELECT pseudo FROM personne WHERE idPersonne=".$tab_desc['idPersonne'])))
+        if ($tab_auteur = $connector->fetchArray($connector->query("SELECT pseudo FROM personne WHERE idPersonne=".$tab_desc['idPersonne'])))
 	{
 		$nom_auteur = "<a href=\"/user.php?idP=".$tab_desc['idPersonne']."\"
 		title=\"Voir le profile de la personne\">".sanitizeForHtml($tab_auteur['pseudo'])."</a>";

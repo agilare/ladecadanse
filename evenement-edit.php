@@ -837,8 +837,8 @@ if (!$action_terminee)
 	 */
 	if ($get['action'] == 'update' || $get['action'] == 'editer')
 	{
-        $aff_titre .= '<h2>Modifier <a style="font-size:0.7em" href="/evenement.php?idE='.$get['idE'].'" title="Fiche de l\'événement" >'.$champs['titre'].'</a></h2>';
-		$act = "update&amp;idE=".$get['idE'];
+        $aff_titre .= '<h2>Modifier <a style="font-size:0.7em" href="/evenement.php?idE=' . $get['idE'] . '" title="Fiche de l\'événement" >' . sanitizeForHtml($champs['titre']) . '</a></h2>';
+        $act = "update&amp;idE=".$get['idE'];
 	}
 	else
 	{
@@ -1019,10 +1019,9 @@ if ($verif->nbErreurs() > 0)
                 echo "selected=\"selected\" ";
             }
 
-            echo "value=\"".$lieuTrouve['idLieu']."\">".$nom_lieu."</option>";
+            echo "value=\"" . $lieuTrouve['idLieu'] . "\">" . sanitizeForHtml($nom_lieu) . "</option>";
 
-
-            $sql_salle = "select * from salle where idLieu=".$lieuTrouve['idLieu']. " AND salle.status='actif' ";
+        $sql_salle = "select * from salle where idLieu=".$lieuTrouve['idLieu']. " AND salle.status='actif' ";
             $req_salle = $connector->query($sql_salle);
             while ($tab_salle = $connector->fetchArray($req_salle))
 
@@ -1032,9 +1031,8 @@ if ($verif->nbErreurs() > 0)
                 {
                     echo "selected=\"selected\" ";
                 }
-                echo " style=\"font-style:italic;color:#444;\" value=".$lieuTrouve['idLieu']."_".$tab_salle['idSalle'].">".$nom_lieu."&nbsp;– ".$tab_salle['nom']."</option>";
-
-            }
+                echo " style=\"font-style:italic;color:#444;\" value=" . $lieuTrouve['idLieu'] . "_" . $tab_salle['idSalle'] . ">" . sanitizeForHtml($nom_lieu) . "&nbsp;– " . sanitizeForHtml($tab_salle['nom']) . "</option>";
+        }
         }
         ?>
         </select>
@@ -1248,8 +1246,8 @@ if ($verif->nbErreurs() > 0)
             {
                 echo 'selected="selected" ';
             }
-            echo "value=\"".$tab['idOrganisateur']."\">".$tab['nom']."</option>";
-        }
+            echo "value=\"" . $tab['idOrganisateur'] . "\">" . sanitizeForHtml($tab['nom']) . "</option>";
+    }
         ?>
         </select>
             <div class="guideChamp">L’événement figurera dans la page de ces <a href="/organisateurs.php" target="_blank">organisateurs</a>. Si vous souhaitez que votre organisation soit listée, <a href="/contacteznous.php" target='_blank'>demandez-nous</a> (avec des infos : texte, liens...)</div>

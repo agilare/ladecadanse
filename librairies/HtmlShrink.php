@@ -205,7 +205,7 @@ class HtmlShrink
     }
 
 
-    public static function authorSignature(int $idPersonne): string
+    public static function authorSignatureForHtml(int $idPersonne): string
     {
 
         global $connector;
@@ -219,7 +219,7 @@ class HtmlShrink
 
         if ($tab_auteur['signature'] == 'pseudo')
         {
-            $signature_auteur = "<strong>" . $tab_auteur['pseudo'] . "</strong>";
+            $signature_auteur = "<strong>" . sanitizeForHtml($tab_auteur['pseudo']) . "</strong>";
         }
 
         if ($tab_auteur['avec_affiliation'] == 'oui')
@@ -240,7 +240,7 @@ class HtmlShrink
                 $nom_affiliation = $tab_lieu_aff['nom'];
             }
 
-            $signature_auteur .= " (" . $nom_affiliation . ")";
+            $signature_auteur .= " (" . sanitizeForHtml($nom_affiliation) . ")";
         }
 
         return $signature_auteur;

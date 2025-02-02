@@ -243,9 +243,9 @@ FROM evenement WHERE idEvenement=".$get['idE'])));
 
                 $hor_compl = '';
                 if (!empty($tab_champs['horaire_complement']))
-                    $hor_compl = "<br>".$tab_champs['horaire_complement'];
+                    $hor_compl = "<br>" . sanitizeForHtml($tab_champs['horaire_complement']);
 
-				$_SESSION['copierEvenement_flash_msg']['table'] .= '<tr><td><a href="/evenement.php?idE=' . $nouv_id . '">' . sanitizeForHtml($tab_champs['titre']) . "<br>" . date_fr(date('Y-m-d', $dateIncrUnix)) . '</a></td><td>' . $hor_debfin . $hor_compl . '</td><td><a class="action_editer" href="/evenement-edit.php?action=editer&idE=' . $nouv_id . '" title="Modifier cet événement">Modifier</a>&nbsp;&nbsp;<a href="/evenement-edit.php?action=editer&idE=' . $nouv_id . '" title="Modifier cet événement dans un nouvel onglet" target="_blank"><i class="fa fa-external-link" aria-hidden="true"></i></a>&nbsp;&nbsp;&nbsp;<a href="#" id="btn_event_del_' . $nouv_id . '" class="btn_event_del action_supprimer" data-id=' . $nouv_id . '>Supprimer</a></td></tr>';
+                $_SESSION['copierEvenement_flash_msg']['table'] .= '<tr><td><a href="/evenement.php?idE=' . $nouv_id . '">' . sanitizeForHtml($tab_champs['titre']) . "<br>" . date_fr(date('Y-m-d', $dateIncrUnix)) . '</a></td><td>' . $hor_debfin . $hor_compl . '</td><td><a class="action_editer" href="/evenement-edit.php?action=editer&idE=' . $nouv_id . '" title="Modifier cet événement">Modifier</a>&nbsp;&nbsp;<a href="/evenement-edit.php?action=editer&idE=' . $nouv_id . '" title="Modifier cet événement dans un nouvel onglet" target="_blank"><i class="fa fa-external-link" aria-hidden="true"></i></a>&nbsp;&nbsp;&nbsp;<a href="#" id="btn_event_del_' . $nouv_id . '" class="btn_event_del action_supprimer" data-id=' . $nouv_id . '>Supprimer</a></td></tr>';
 
                 if (!empty($tab_champs['flyer']))
 				{

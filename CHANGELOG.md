@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.5.5] - Unreleased
+
+### Fixed
+- features restored (remove from partial edit mode) and more detailed logging : password reset, user edit
+- SEO: complete robots.txt to ignore irrelevant pages
+- docs : replace old home URL by ladecadanse.ch in README, CONTRIBUTING
+- docs : homepage example image URL in README
+
+### Security
+- complete missing sanitization of values displayed in HTML
+
 ## [3.5.4] - 2025-01-22
 
 ### Fixed

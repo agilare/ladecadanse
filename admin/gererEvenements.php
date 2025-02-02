@@ -975,10 +975,9 @@ while ($lieuTrouve = $connector->fetchArray($req_lieux))
 		echo "selected=\"selected\" ";
 	}
 
-	echo "value=\"".$lieuTrouve['idLieu']."\">".$nom_lieu."</option>";
+	echo "value=\"" . $lieuTrouve['idLieu'] . "\">" . sanitizeForHtml($nom_lieu) . "</option>";
 
-
-	$sql_salle = "select * from salle where idLieu=".$lieuTrouve['idLieu']. " AND salle.status='actif' ";
+    $sql_salle = "select * from salle where idLieu=".$lieuTrouve['idLieu']. " AND salle.status='actif' ";
 	$req_salle = $connector->query($sql_salle);
 	while ($tab_salle = $connector->fetchArray($req_salle))
 
@@ -1113,9 +1112,8 @@ while ($tab = $connector->fetchArray($req))
                    echo ' selected="selected" ';
            }
 
-           echo " value=\"".$id."\">".$nom."</option>";
-
-   }
+           echo " value=\"" . $id . "\">" . sanitizeForHtml($nom) . "</option>";
+}
 ?>
 
 
@@ -1199,8 +1197,8 @@ echo $verif->getHtmlErreur('description');
 
 		echo "<option ";
 
-		echo "value=\"".$tab['idOrganisateur']."\">".$tab['nom']."</option>";
-	}
+		echo "value=\"" . $tab['idOrganisateur'] . "\">" . sanitizeForHtml($tab['nom']) . "</option>";
+}
 ?>
 </select>
 

@@ -139,8 +139,9 @@ if ($afficher_form)
 
     <p>
         <label for="nom">Nom du lieu*</label>
-        <input type="text" name="nom" id="nom" size="40" maxlength="60" value="<?php echo $form->getValeur('nom') ?>" required <?php if ($_SESSION['Sgroupe'] > 6) { ?>readonly class="read-only"<?php } ?> />
-        <?php
+            <input type="text" name="nom" id="nom" size="40" maxlength="60" value="<?php echo sanitizeForHtml($form->getValeur('nom')) ?>" required <?php if ($_SESSION['Sgroupe'] > 6)
+    { ?>readonly class="read-only"<?php } ?> />
+    <?php
         echo $form->getHtmlErreur("nom");
         echo $form->getHtmlErreur("nom_existant");
         ?>
@@ -149,18 +150,18 @@ if ($afficher_form)
     <?php if ($_SESSION['Sgroupe'] <= 6) { ?>
         <p>
             <label for="determinant">Préposition du nom</label>
-            <input type="text" name="determinant" id="determinant" size="15" maxlength="60" value="<?php echo $form->getValeur('determinant') ?>"  />
-            <?php
+                    <input type="text" name="determinant" id="determinant" size="15" maxlength="60" value="<?php echo sanitizeForHtml($form->getValeur('determinant')) ?>"  />
+                    <?php
             echo $form->getHtmlErreur("determinant");
             ?>
         </p>
     <?php } else { ?>
-        <input type="hidden" name="determinant" value="<?php echo $form->getValeur('determinant') ?>"  />
-    <?php } ?>
+                <input type="hidden" name="determinant" value="<?php echo sanitizeForHtml($form->getValeur('determinant')) ?>"  />
+            <?php } ?>
     <p>
         <label for="adresse">Adresse*</label>
-        <input type="text" name="adresse" id="adresse" size="40" maxlength="80" title="numéro et rue" value="<?php echo $form->getValeur('adresse') ?>" required />
-        <?php
+            <input type="text" name="adresse" id="adresse" size="40" maxlength="80" title="numéro et rue" value="<?php echo sanitizeForHtml($form->getValeur('adresse')) ?>" required />
+            <?php
         echo $form->getHtmlErreur("adresse");
         ?>
     </p>
@@ -313,8 +314,8 @@ echo $form->getHtmlErreur("quartier");
 <?php } ?>
     <p>
         <label for="horaire_general">Jours et heures d’ouverture habituels</label>
-        <textarea name="horaire_general" id="horaire_general" cols="25" rows="3" tabindex="4" title="Quels sont les horaires typiques d'une soirée ?"><?php echo $form->getValeur('horaire_general') ?></textarea>
-        <?php
+            <textarea name="horaire_general" id="horaire_general" cols="25" rows="3" tabindex="4" title="Quels sont les horaires typiques d'une soirée ?"><?php echo sanitizeForHtml($form->getValeur('horaire_general')) ?></textarea>
+            <?php
         echo $form->getHtmlErreur("horaire_general");
         ?>
     </p>
@@ -324,8 +325,8 @@ echo $form->getHtmlErreur("quartier");
     <p>
     <label for="URL">Site web</label>
     <input type="url" name="URL" id="URL" size="50" maxlength="80" tabindex="7" title="Page web du lieu"
-    value="<?php echo $form->getValeur('URL') ?>"  />
-    <?php
+           value="<?php echo sanitizeForHtml($form->getValeur('URL')) ?>"  />
+        <?php
     echo $form->getHtmlErreur("URL");
     ?>
         </p>
@@ -383,7 +384,7 @@ echo $form->getHtmlErreur("quartier");
 
             }
 
-            echo "value=\"".$tab['idOrganisateur']."\">".$tab['nom']."</option>";
+            echo "value=\"" . $tab['idOrganisateur'] . "\">" . sanitizeForHtml($tab['nom']) . "</option>";
         }
         ?>
         </select>

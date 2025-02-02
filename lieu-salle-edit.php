@@ -292,8 +292,8 @@ if (($get['action'] != 'editer' || $get['action'] != 'update') && !empty($get['i
 		{
 		  	echo " selected=\"selected\"";
 		}
-		echo " value=\"".$lieuTrouve['idLieu']."\">".$lieuTrouve['nom']."</option>";
-	}
+		echo " value=\"" . $lieuTrouve['idLieu'] . "\">" . sanitizeForHtml($lieuTrouve['nom']) . "</option>";
+    }
 
 ?>
 </select>

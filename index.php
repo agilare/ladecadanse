@@ -62,10 +62,10 @@ FROM evenement WHERE region IN ('" . $connector->sanitize($_SESSION['region']) .
     if (HOME_TMP_BANNER_ENABLED && !isset($_COOKIE['msg_orga_benevole'])) {
         ?>
         <div id="home-tmp-banner">
-            <h2><?php echo HOME_TMP_BANNER_TITLE; ?></h2>
-            <a href="#" id="js-home-tmp-banner-close-btn" class="close">&times;</a>
-                <p style="line-height:18px"><?php echo HOME_TMP_BANNER_CONTENT; ?></p>
-        </div>
+                <h2><?php echo sanitizeForHtml(HOME_TMP_BANNER_TITLE); ?></h2>
+                <a href="#" id="js-home-tmp-banner-close-btn" class="close">&times;</a>
+            <p style="line-height:18px"><?php echo sanitizeForHtml(HOME_TMP_BANNER_CONTENT); ?></p>
+            </div>
         <?php
     }
     ?>
@@ -149,23 +149,23 @@ FROM evenement WHERE region IN ('" . $connector->sanitize($_SESSION['region']) .
                 $listeLieu = $connector->fetchArray(
                 $connector->query("SELECT nom, adresse, quartier, localite.localite AS localite, URL FROM lieu, localite WHERE lieu.localite_id=localite.id AND idlieu='".$tab_even['idLieu']."'"));
 
-                $infosLieu = "<a href=\"/lieu.php?idL=" . $tab_even['idLieu'] . "\" >" . htmlspecialchars($listeLieu['nom']) . "</a>";
+                $infosLieu = "<a href=\"/lieu.php?idL=" . $tab_even['idLieu'] . "\" >" . sanitizeForHtml($listeLieu['nom']) . "</a>";
 
         if ($tab_even['idSalle'])
                 {
                     $req_salle = $connector->query("SELECT nom FROM salle WHERE idSalle='".$tab_even['idSalle']."'");
                     $tab_salle = $connector->fetchArray($req_salle);
-                    $infosLieu .= " - ".$tab_salle['nom'];
-                }
+                    $infosLieu .= " - " . sanitizeForHtml($tab_salle['nom']);
+        }
             }
             else
             {
-                $listeLieu['nom'] = htmlspecialchars($tab_even['nomLieu']);
-        $infosLieu = htmlspecialchars($tab_even['nomLieu']);
-                $listeLieu['adresse'] = htmlspecialchars($tab_even['adresse']);
-                $listeLieu['quartier'] = htmlspecialchars($tab_even['quartier']);
-                $listeLieu['localite'] = htmlspecialchars($tab_even['localite']);
-            }
+                $listeLieu['nom'] = sanitizeForHtml($tab_even['nomLieu']);
+        $infosLieu = sanitizeForHtml($tab_even['nomLieu']);
+        $listeLieu['adresse'] = sanitizeForHtml($tab_even['adresse']);
+        $listeLieu['quartier'] = sanitizeForHtml($tab_even['quartier']);
+        $listeLieu['localite'] = sanitizeForHtml($tab_even['localite']);
+    }
 
             $sql_event_orga = "SELECT organisateur.idOrganisateur, nom, URL
             FROM organisateur, evenement_organisateur
@@ -232,12 +232,12 @@ FROM evenement WHERE region IN ('" . $connector->sanitize($_SESSION['region']) .
                 if (mb_strlen($tab_even['description']) > $maxChar)
                 {
                     $continuer = " <a class=\"continuer\" href=\"/evenement.php?idE=".$tab_even['idEvenement']."\" title=\"Voir la fiche complète de l'événement\"> Lire la suite</a>";
-                    echo Text::texteHtmlReduit(Text::wikiToHtml(htmlspecialchars($tab_even['description'])),$maxChar, $continuer);
-                }
+                    echo Text::texteHtmlReduit(Text::wikiToHtml(sanitizeForHtml($tab_even['description'])), $maxChar, $continuer);
+    }
                 else
                 {
-                    echo Text::wikiToHtml(htmlspecialchars($tab_even['description']));
-                }
+                    echo Text::wikiToHtml(sanitizeForHtml($tab_even['description']));
+    }
                 ?>
 
                 <ul class="event_orga">
@@ -251,7 +251,7 @@ FROM evenement WHERE region IN ('" . $connector->sanitize($_SESSION['region']) .
                             $org_url = 'http://'.$tab['URL'];
                         }
                     ?>
-                    <li><a href="/organisateur.php?idO=<?php echo $tab['idOrganisateur']; ?>"><?php echo $tab['nom']; ?></a> <a href="<?php echo $org_url; ?>" title="Site web de l'organisateur" class="lien_ext" target="_blank"><?php echo $org_url_nom; ?></a></li>
+                            <li><a href="/organisateur.php?idO=<?php echo $tab['idOrganisateur']; ?>"><?php echo sanitizeForHtml($tab['nom']); ?></a> <a href="<?php echo sanitizeForHtml($org_url); ?>" title="Site web de l'organisateur" class="lien_ext" target="_blank"><?php echo sanitizeForHtml($org_url_nom); ?></a></li>
                             <?php
                     }
                     ?>
@@ -262,15 +262,16 @@ FROM evenement WHERE region IN ('" . $connector->sanitize($_SESSION['region']) .
             <div class="spacer"></div>
 
             <div class="pratique">
-                <span class="left"><?php echo htmlspecialchars($even_adresse); ?></span><span class="right"><?php echo afficher_debut_fin($tab_even['horaire_debut'], $tab_even['horaire_fin'], $tab_even['dateEvenement']);
-                if (!empty($tab_even['prix']))
+                    <span class="left"><?php echo sanitizeForHtml($even_adresse); ?></span><span class="right"><?php
+                        echo afficher_debut_fin($tab_even['horaire_debut'], $tab_even['horaire_fin'], $tab_even['dateEvenement']);
+                        if (!empty($tab_even['prix']))
                 {
                     if (!empty($tab_even['horaire_debut']) || !empty($tab_even['horaire_fin']))
                     {
                         echo ", ";
                     }
-                    echo htmlspecialchars($tab_even['prix']);
-                }
+                    echo sanitizeForHtml($tab_even['prix']);
+    }
                 ?>
 
                 </span>
@@ -376,21 +377,20 @@ FROM evenement WHERE region IN ('" . $connector->sanitize($_SESSION['region']) .
             if ($tab_dern_even['idLieu'] != 0)
             {
 
-                $infosLieu = "<a href=\"/lieu.php?idL=" . $tab_dern_even['idLieu'] . "\">" . htmlspecialchars($tab_dern_even['nomLieu']) . "</a>";
+                $infosLieu = "<a href=\"/lieu.php?idL=" . $tab_dern_even['idLieu'] . "\">" . sanitizeForHtml($tab_dern_even['nomLieu']) . "</a>";
 
             if ($tab_dern_even['idSalle'] != 0)
                 {
                     $req_salle = $connector->query("SELECT nom, emplacement FROM salle
                     WHERE idSalle='".$tab_dern_even['idSalle']."'");
                     $tab_salle = $connector->fetchArray($req_salle);
-                    $infosLieu .=  " - ".$tab_salle['nom'];
-
-                }
+                    $infosLieu .= " - " . sanitizeForHtml($tab_salle['nom']);
+            }
             }
             else
             {
-                $infosLieu = htmlspecialchars($tab_dern_even['nomLieu']);
-            }
+                $infosLieu = sanitizeForHtml($tab_dern_even['nomLieu']);
+        }
 
             echo "<div class=\"dernier_evenement\">";
 

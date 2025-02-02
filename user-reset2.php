@@ -237,7 +237,7 @@ if (count($tab_comptes) > 1) {
 			$selected = " selected";
 	?>
 
-	<option value="<?php echo $c['idPersonne']; ?>" <?php echo $selected; ?>><?php echo $c['pseudo']; ?></option>
+    <option value="<?php echo $c['idPersonne']; ?>" <?php echo $selected; ?>><?php echo sanitizeForHtml($c['pseudo']); ?></option>
 
 	<?php } ?>
 </select>

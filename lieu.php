@@ -317,9 +317,9 @@ if ($lieu->getValue('logo'))
 			$salles .= '<ul class="salles">';
 			while ($tab_salle = $connector->fetchArray($req_salle))
 			{
-				$salles .= '<li>'.$tab_salle['nom'];
+				$salles .= '<li>' . sanitizeForHtml($tab_salle['nom']);
 
-				if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 6)
+        if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 6)
 				{
 					$salles .= '<a href="/lieu-salle-edit.php?action=editer&amp;idS='.$tab_salle['idSalle'].'">'.$iconeEditer.'</a>';
 				}
@@ -355,9 +355,9 @@ if ($lieu->getValue('logo'))
 			while ($tab = $connector->fetchArray($req))
 			{
 				$organisateurs .= '<li><a href="/organisateur.php?idO='.$tab['idOrganisateur'].'" >';
-				$organisateurs .= $tab['nom'];
+				$organisateurs .= sanitizeForHtml($tab['nom']);
 
-				$organisateurs .= '</a></li>';
+        $organisateurs .= '</a></li>';
 			}
 			$organisateurs .= '</ul></li>';
 
@@ -367,8 +367,8 @@ if ($lieu->getValue('logo'))
 		<div id="pratique">
 			<ul>
 				<li><?php echo implode(", ", $tab_categories); ?></li>
-                <li class="adr"><?php echo $adresse ?></li>
-				<?php echo $carte; ?>
+                <li class="adr"><?php echo sanitizeForHtml($adresse) ?></li>
+                <?php echo $carte; ?>
                 <?php echo $salles; ?>
                 <span class="latitude">
                    <span class="value-title" title="<?php echo $lieu->getValue('lat'); ?>"></span>
@@ -376,10 +376,10 @@ if ($lieu->getValue('logo'))
                 <span class="longitude">
                    <span class="value-title" title="<?php echo $lieu->getValue('lng'); ?>"></span>
                 </span>
-				<li><?php echo Text::wikiToHtml($lieu->getValue('horaire_general')); ?></li>
+                <li><?php echo Text::wikiToHtml(sanitizeForHtml($lieu->getValue('horaire_general'))); ?></li>
                 <li class="sitelieu">
                     <?php if (!empty($URL)) { ?>
-                        <a class="url lien_ext" href="<?php echo $URL; ?>" title="Voir le site web du lieu"  target="_blank"><?php echo $lieu->getValue('URL'); ?></a>
+                        <a class="url lien_ext" href="<?php echo sanitizeForHtml($URL); ?>" title="Voir le site web du lieu"  target="_blank"><?php echo sanitizeForHtml($lieu->getValue('URL')); ?></a>
                     <?php } ?>
                     <?php if ($lieu->getId() == 13) { // exception pour le Rez   ?><a href="http://kalvingrad.com" class="url lien_ext"  target="_blank">kalvingrad.com</a><br><a href="http://www.ptrnet.ch" class="url lien_ext" target="_blank">ptrnet.ch</a><?php } ?>
                 </li>
@@ -498,18 +498,18 @@ if ($nb_pres > 0)
                 if (datetime_iso2time($des->getValue('date_derniere_modif')) > datetime_iso2time("2009-10-12 12:00:00"))
                 {
                     echo $des->getValue('contenu');
-                }
-                else
+            }
+            else
                 {
-                    echo "<p>".Text::wikiToHtml($des->getHtmlValue('contenu'))."</p>";
-                }
-                ?>
+                    echo "<p>" . Text::wikiToHtml($des->getHtmlValue('contenu')) . "</p>";
+            }
+            ?>
                 <p><?php
                     if ($type == 'description')
                     {
-                        echo HtmlShrink::authorSignature($des->getValue('idPersonne'));
-                    }
-                    ?></p>
+                        echo HtmlShrink::authorSignatureForHtml($des->getValue('idPersonne'));
+            }
+            ?></p>
 
                 <div class="auteur">
                     <span class="left"><?php echo ucfirst(date_fr($des->getValue('dateAjout'), 'annee','', 'non')) ?><?php echo $dern_modif; ?></span><?php echo $editer;?>
@@ -675,13 +675,12 @@ if ($nb_pres > 0)
 			if (mb_strlen($even->getValue('description')) > $maxChar)
 			{
 				//$continuer = "<span class=\"continuer\"><a href=\"/evenement.php?idE=".$even->getValue('idEvenement')."\" title=\"Voir la fiche complète de l'événement\"> Lire la suite</a></span>";
-				$description = Text::texteHtmlReduit(Text::wikiToHtml(htmlspecialchars($even->getValue('description'))), $maxChar);
-
-			}
+				$description = Text::texteHtmlReduit(Text::wikiToHtml(sanitizeForHtml($even->getValue('description'))), $maxChar);
+                    }
 			else
 			{
-				$description = Text::wikiToHtml(htmlspecialchars($even->getValue('description')));
-			}
+				$description = Text::wikiToHtml(sanitizeForHtml($even->getValue('description')));
+                    }
 		}
 
 		if ($nbMois == 0)
@@ -775,11 +774,11 @@ if ($nb_pres > 0)
 			<div class="location">
 			<span class="value-title" title="<?php echo $lieu->getHtmlValue('nom'); ?>"></span>
 			</div>
-			<p class="pratique"><?php echo afficher_debut_fin($even->getValue('horaire_debut'), $even->getValue('horaire_fin'), $even->getValue('dateEvenement'))." ".$even->getValue('prix') ?></p>
-			</td>
+            <p class="pratique"><?php echo afficher_debut_fin($even->getValue('horaire_debut'), $even->getValue('horaire_fin'), $even->getValue('dateEvenement')) . " " . sanitizeForHtml($even->getValue('prix')) ?></p>
+                    </td>
 
-			<td><?php echo $salle; ?></td>
-			<td class="category"><?php echo $glo_tab_genre[$even->getValue('genre')]; ?></td>
+            <td><?php echo sanitizeForHtml($salle); ?></td>
+                    <td class="category"><?php echo $glo_tab_genre[$even->getValue('genre')]; ?></td>
 
 			<td class="lieu_actions_evenement">
 			<?php
@@ -830,7 +829,7 @@ if ($nb_pres > 0)
 		{
 			$URLcomplete = "http://".$tab_lieu['URL'];
 		}
-		echo "<p>Pour des informations complémentaires veuillez consulter <a href=\"" . $URLcomplete . "\" target='_blank'>" . $tab_lieu['URL'] . "</a></p>\n";
+		echo "<p>Pour des informations complémentaires veuillez consulter <a href=\"" . sanitizeForHtml($URLcomplete) . "\" target='_blank'>" . sanitizeForHtml($tab_lieu['URL']) . "</a></p>\n";
 }
 
 	echo '</div>';

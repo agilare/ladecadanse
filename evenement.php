@@ -181,25 +181,19 @@ while ($tab_even = $connector->fetchArray($req_even))
     } ?>>
 
             <span class="category">
-                <?php echo ucfirst(Evenement::nom_genre($even->getValue('genre'))); ?></span>, <?php echo '<a href="/evenement-agenda.php?courant=' . $even->getValue('dateEvenement') . '"><time datetime="' . $even->getValue('dateEvenement') . '">' . date_fr($even->getValue('dateEvenement'), "annee", "", "", false) . '</time></a>';
+                <?php echo sanitizeForHtml(ucfirst(Evenement::nom_genre($even->getValue('genre')))); ?></span>, <?php echo '<a href="/evenement-agenda.php?courant=' . $even->getValue('dateEvenement') . '"><time datetime="' . $even->getValue('dateEvenement') . '">' . date_fr($even->getValue('dateEvenement'), "annee", "", "", false) . '</time></a>';
                 ?>
 </h2>
 		<div class="entete_contenu_navigation">
             <?php
             if ($url_prec != "") {
-                echo '<a href="' . $url_prec . '" style="border-radius:3px 0 0 3px;" title="' . str_replace('"', '', $titre_prec) . '">' . $iconePrecedent;
+                echo '<a href="' . $url_prec . '" style="border-radius:3px 0 0 3px;" rel="prev">' . $iconePrecedent . '&nbsp;<span class="event-navig-link">' . sanitizeForHtml($titre_prec) . '</span>';
 
-                echo '&nbsp;<span class="event-navig-link">' . $titre_prec . '</span>';
-
-            echo '</a>';
+    echo '</a>';
         }
         if ($url_suiv != "") {
-            echo '<a href="' . $url_suiv . '" style="border-radius:0 3px 3px 0;margin-left:1px" title="' . str_replace('"', '', $titre_suiv) . '">';
-
-            echo '<span class="event-navig-link">' . $titre_suiv . '</span>&nbsp;';
-
-            echo $iconeSuivant . '</a>';
-        }
+            echo '<a href="' . $url_suiv . '" style="border-radius:0 3px 3px 0;margin-left:1px" rel="next"><span class="event-navig-link">' . sanitizeForHtml($titre_suiv) . '</span>&nbsp;' . $iconeSuivant . '</a>';
+}
         ?>
             <div class="spacer"></div>
 		</div>
@@ -253,8 +247,8 @@ iCal</a></li>
 
                 <h3 class="left summary"><?php
                     $titre = Evenement::titre_selon_statut($even->getValue('titre'), $even->getValue('statut'));
-                     echo $titre . $even_status;
-                     ?></h3>
+                     echo sanitizeForHtml($titre . $even_status);
+?></h3>
 
                 <?php
                 //si le lieu est dans la base, affichage des détails du lieu,
@@ -262,33 +256,34 @@ iCal</a></li>
                 $lien_gmaps = "";
 
                 if ($even->getValue('idLieu') != 0) {
-    $req_lieu = $connector->query("SELECT nom, adresse, quartier, localite.localite AS localite, region, URL, lat, lng FROM lieu, localite
-                        WHERE localite_id=localite.id AND idlieu='" . $even->getValue('idLieu') . "'");
+                    $req_lieu = $connector->query("SELECT nom, adresse, quartier, localite.localite AS localite, region, URL, lat, lng FROM lieu, localite
+                                        WHERE localite_id=localite.id AND idlieu='" . $even->getValue('idLieu') . "'");
     $listeLieu = $connector->fetchArray($req_lieu);
     $lieu = "<a href=\"//lieu.php?idLieu=" . $even->getValue('idLieu') . "\">" . sanitizeForHtml($listeLieu['nom']) . "</a>";
 
     $nom_lieu = '<a href="/lieu.php?idL=' . $even->getValue('idLieu') . '" >
-                        ' . $even->getValue('nomLieu') . '</a>';
+                                        ' . sanitizeForHtml($even->getValue('nomLieu')) . '</a>';
 }
-else {
+else
+{
     $listeLieu['nom'] = sanitizeForHtml($even->getValue('nomLieu'));
     $lieu = sanitizeForHtml($even->getValue('nomLieu'));
-    $listeLieu['adresse'] = sanitizeForHtml($even->getValue('adresse'));
-    $listeLieu['quartier'] = sanitizeForHtml($even->getValue('quartier'));
+    $listeLieu['adresse'] = $even->getValue('adresse');
+    $listeLieu['quartier'] = $even->getValue('quartier');
 
     $req_localite = $connector->query("SELECT  localite FROM localite
-                        WHERE  id='" . $even->getValue('localite_id') . "'");
+                                        WHERE  id='" . $even->getValue('localite_id') . "'");
     $tab_localite = $connector->fetchArray($req_localite);
 
-    $listeLieu['localite'] = sanitizeForHtml($tab_localite[0]);
+    $listeLieu['localite'] = $tab_localite[0];
 
-    $listeLieu['region'] = sanitizeForHtml($even->getValue('region'));
+    $listeLieu['region'] = $even->getValue('region');
     $listeLieu['URL'] = sanitizeForHtml($even->getValue('urlLieu'));
 
     $nom_lieu = $lieu;
 }
 
-$adresse = htmlspecialchars(HtmlShrink::getAdressFitted($listeLieu['region'], $listeLieu['localite'], $listeLieu['quartier'], $listeLieu['adresse']));
+$adresse = HtmlShrink::getAdressFitted($listeLieu['region'], sanitizeForHtml($listeLieu['localite']), sanitizeForHtml($listeLieu['quartier']), sanitizeForHtml($listeLieu['adresse']));
 ?>
 
 
@@ -299,15 +294,14 @@ $adresse = htmlspecialchars(HtmlShrink::getAdressFitted($listeLieu['region'], $l
 					{
                         $req_salle = $connector->query("SELECT nom, emplacement FROM salle WHERE idSalle='" . $even->getValue('idSalle') . "'");
     $tab_salle = $connector->fetchArray($req_salle);
-					echo '<br><span style="font-size:0.9em">'.$tab_salle['nom']."</span>";
-
-					}
+					echo '<br><span style="font-size:0.9em">' . sanitizeForHtml($tab_salle['nom']) . "</span>";
+}
 					?></h4>
 					<ul style="list-style-type: none;">
 						<li class="adr">
 
-						<?php echo $adresse ?></li>
-						<?php
+                            <?php echo $adresse; ?></li>
+                        <?php
                         if (!empty($listeLieu['lat']) && !empty($listeLieu['lng']))
                         {
                         ?>
@@ -322,15 +316,15 @@ $adresse = htmlspecialchars(HtmlShrink::getAdressFitted($listeLieu['region'], $l
                             <li><a class="url lien_ext" href="<?php
                                        if (!preg_match("/^https?:\/\//", $listeLieu['URL']))
 						{
-							echo 'http://'.$listeLieu['URL'];
-						}
-						else
+							echo 'http://' . $listeLieu['URL'];
+    }
+    else
 						{
 							echo $listeLieu['URL'];
 						}
 						?>" target="_blank"><?php echo $listeLieu['URL'] ?></a></li>
-                            <?php
-						}
+    <?php
+}
 						?>
                         <?php if ($even->getValue('idLieu') == 13) { // exception pour le Rez ?>
                         <a href="http://kalvingrad.com" class="url lien_ext" target="_blank">kalvingrad.com</a><br>
@@ -344,8 +338,8 @@ $adresse = htmlspecialchars(HtmlShrink::getAdressFitted($listeLieu['region'], $l
                 {
                 ?>
                 <div id="plan" style="display:none">
-                    <div id="lieu-map-infowindow" style="display:none"><?php echo $listeLieu['nom'] ?></div>
-                    <div id="lieu-map" data-lat="<?php echo $listeLieu['lat'] ?>" data-lng="<?php echo $listeLieu['lng'] ?>"></div>
+                        <div id="lieu-map-infowindow" style="display:none"><?php echo sanitizeForHtml($listeLieu['nom']) ?></div>
+                        <div id="lieu-map" data-lat="<?php echo $listeLieu['lat'] ?>" data-lng="<?php echo $listeLieu['lng'] ?>"></div>
                 </div>
                 <?php } ?>
             </div>
@@ -402,8 +396,8 @@ $adresse = htmlspecialchars(HtmlShrink::getAdressFitted($listeLieu['region'], $l
                 <a name="borne_description"></a>
                 <?php
                 if ($even->getValue('description') != '') {
-                    echo Text::wikiToHtml($even->getValue('description')) . "\n";
-                }
+                    echo Text::wikiToHtml(sanitizeForHtml($even->getValue('description'))) . "\n";
+}
                 else {
                     echo "&nbsp;";
                 }
@@ -434,18 +428,18 @@ $adresse = htmlspecialchars(HtmlShrink::getAdressFitted($listeLieu['region'], $l
 							$url_org = 'http://'.$tab['URL'];
 						}
 
-						echo '<li><strong><a href="/organisateur.php?idO=' . $tab['idOrganisateur'] . '">' . $tab['nom'] . '</strong></a>';
-                if ( $tab['URL'] != '')
+						echo '<li><strong><a href="/organisateur.php?idO=' . $tab['idOrganisateur'] . '">' . sanitizeForHtml($tab['nom']) . '</strong></a>';
+    if ( $tab['URL'] != '')
 						{
 
-							echo ' : <a href="'.$url_org.'" title="Site web de '.$tab['nom'].'" class="lien_ext" target="_blank">'.$nom_url.'</a>'; //$icone['url_externe']
-						}
+							echo ' : <a href="' . sanitizeForHtml($url_org) . '" class="lien_ext" target="_blank">' . sanitizeForHtml($nom_url) . '</a>'; //$icone['url_externe']
+    }
 						echo '</li>';
 					}
 
-					$tab_ref = explode(";", $even->getValue('ref'));
+					$tab_ref = explode(";", strip_tags($even->getValue('ref')));
 
-					foreach ($tab_ref as $r)
+foreach ($tab_ref as $r)
 					{
 						$r = trim($r);
 						$r_aff = $r;
@@ -460,7 +454,7 @@ $adresse = htmlspecialchars(HtmlShrink::getAdressFitted($listeLieu['region'], $l
 
 						if (preg_match('#^(https?\\:\\/\\/)[a-z0-9_-]+\.([a-z0-9_-]+\.)?[a-zA-Z]{2,3}#i', $r))
 						{
-							echo "<li><a href=\"" . $r . "\" target='_blank' class=\"lien_ext\">";
+							echo "<li><a href=\"" . sanitizeForHtml($r) . "\" target='_blank' class=\"lien_ext\">";
         if (preg_match('/^https?:\/\/www/', $r))
 							{
 								echo wordwrap($r_aff, 30, "<br />", 1);
@@ -473,8 +467,8 @@ $adresse = htmlspecialchars(HtmlShrink::getAdressFitted($listeLieu['region'], $l
 						}
 						else
 						{
-							echo "<li>".$r."<!-- --></li>";
-						}
+							echo "<li>" . sanitizeForHtml($r) . "<!-- --></li>";
+    }
 					}
 					echo "</ul>";
 					?>
@@ -484,18 +478,18 @@ $adresse = htmlspecialchars(HtmlShrink::getAdressFitted($listeLieu['region'], $l
 						<th><i class="fa fa-clock-o fa-lg"></i></th>
 						<td>
 						<?php
-						echo afficher_debut_fin($even->getValue('horaire_debut'), $even->getValue('horaire_fin'), $even->getValue('dateEvenement'))."<br />".$even->getValue('horaire_complement');
-						?>
+						echo sanitizeForHtml(afficher_debut_fin($even->getValue('horaire_debut'), $even->getValue('horaire_fin'), $even->getValue('dateEvenement')) . "<br />" . $even->getValue('horaire_complement'));
+                            ?>
 
 						</td>
 
 						</tr>
 						<tr>
-						<th><i class="fa fa-money fa-lg"></i></i></th><td><?php echo $even->getValue('prix') ?></td>
-						</tr>
+                            <th><i class="fa fa-money fa-lg"></i></i></th><td><?php echo sanitizeForHtml($even->getValue('prix')) ?></td>
+                        </tr>
 						<tr>
-						<th><i class="fa fa-ticket fa-lg"></th><td><?php echo Text::linkify($even->getValue('prelocations')); ?></td>
-						</tr>
+                            <th><i class="fa fa-ticket fa-lg"></th><td><?php echo Text::linkify(sanitizeForHtml($even->getValue('prelocations'))); ?></td>
+                        </tr>
 
 					</table>
 					<div class="spacer"></div>
@@ -516,18 +510,18 @@ $adresse = htmlspecialchars(HtmlShrink::getAdressFitted($listeLieu['region'], $l
 				$signature_auteur = "";
 				$sql_auteur = "SELECT pseudo, affiliation, signature, avec_affiliation FROM personne WHERE idPersonne=" . $even->getValue('idPersonne') . "";
 
-$req_auteur = $connector->query($sql_auteur);
-                $tab_auteur = $connector->fetchArray($req_auteur);
+                $req_auteur = $connector->query($sql_auteur);
+        $tab_auteur = $connector->fetchArray($req_auteur);
 
                 if (!empty($tab_auteur))
                 {
                     if ($tab_auteur['signature'] == 'pseudo')
                     {
-                        $signature_auteur = " par <strong>".$tab_auteur['pseudo']."</strong> ";
-                    }
+                        $signature_auteur = " par <strong>" . sanitizeForHtml($tab_auteur['pseudo']) . "</strong> ";
+            }
 
-    if ($tab_auteur['avec_affiliation'] == 'oui')
-                    {
+                    if ($tab_auteur['avec_affiliation'] == 'oui')
+            {
                         $nom_affiliation = "";
                         $req_aff = $connector->query("SELECT idAffiliation FROM affiliation WHERE
          idPersonne=".$even->getValue('idPersonne')." AND genre='lieu'");
@@ -543,21 +537,21 @@ $req_auteur = $connector->query($sql_auteur);
                             $nom_affiliation = $tab_lieu_aff['nom'];
                         }
 
-                        $signature_auteur .= " (".$nom_affiliation.") ";
-                    }
+                        $signature_auteur .= " (" . sanitizeForHtml($nom_affiliation) . ") ";
+            }
                 }
 
 
 			if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 4)
 			{
 			?>
-				<a href="/user.php?idP=<?php echo $even->getValue('idPersonne')?>"><?php echo $signature_auteur; ?></a>
-			<?php
+            <a href="/user.php?idP=<?php echo $even->getValue('idPersonne') ?>"><?php echo $signature_auteur; ?></a>
+            <?php
 			}
 			else
 			{
 				 echo $signature_auteur;
-			}
+}
 			?>
 			le&nbsp;<?php echo date_fr($even->getValue('dateAjout'), "annee", 1, "non") ?>
 			</div>
@@ -568,19 +562,19 @@ $req_auteur = $connector->query($sql_auteur);
             <?php
             if ($url_prec != "")
             {
-                echo '<a href="'.$url_prec.'" style="border-radius:3px 0 0 3px;" title="'.str_replace('"', '', $titre_prec).'">'.$iconePrecedent;
+                echo '<a href="' . $url_prec . '" rel="prev" style="border-radius:3px 0 0 3px;">' . $iconePrecedent;
 
-                echo '&nbsp;<span class="event-navig-link" style="width:110px">'.$titre_prec.'</span>';
+    echo '&nbsp;<span class="event-navig-link" style="width:110px">' . sanitizeForHtml($titre_prec) . '</span>';
 
-                echo '</a>';
+    echo '</a>';
             }
             if ($url_suiv != "")
             {
-                echo '<a href="'.$url_suiv.'" style="border-radius:0 3px 3px 0;margin-left:1px" title="'.str_replace('"', '', $titre_suiv).'">';
+                echo '<a href="' . $url_suiv . '" rel="next" style="border-radius:0 3px 3px 0;margin-left:1px">';
 
-                echo '<span class="event-navig-link" style="width:110px">'.$titre_suiv.'</span>&nbsp;';
+    echo '<span class="event-navig-link" style="width:110px">' . sanitizeForHtml($titre_suiv) . '</span>&nbsp;';
 
-                echo $iconeSuivant.'</a>';
+    echo $iconeSuivant.'</a>';
             }
 
             ?>

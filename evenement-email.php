@@ -109,7 +109,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
             $mailer = new Mailing();
             if ($mailer->toUser($champs['email_destinataire'], $subject, $contenu_message, ['email' => $_SESSION['Semail'], 'name' => $_SESSION['user'] ]))
             {
-                HtmlShrink::msgOk('Événement <strong>'.$tab_even['titre'].'</strong> envoyé à '.$champs['email_destinataire']);
+                HtmlShrink::msgOk('Événement <strong>' . sanitizeForHtml($tab_even['titre']) . '</strong> envoyé à ' . sanitizeForHtml($champs['email_destinataire']));
                 $logger->log('global', 'activity', "[evenement-email] event ".$tab_even['titre']." (idE ".$get['idE'].") sent from ".$_SESSION['user']." to ".$champs['email_destinataire'], Logger::GRAN_YEAR);
             }
 		}

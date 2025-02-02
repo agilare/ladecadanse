@@ -216,12 +216,12 @@ while (list ($id, $nom, $presentation) = mysqli_fetch_row($req))
 	if (preg_match("/^(Le |La |Les |L')(.*)/", $nomDuLieu, $matches))
 	{
 		$aff_menulieux .= $matches[2];
-		$aff_menulieux .= '<span style="font-size:1em">, '.$matches[1].'</span>';
-	}
+		$aff_menulieux .= '<span style="font-size:1em">, ' . sanitizeForHtml($matches[1]) . '</span>';
+    }
 	else
 	{
-		$aff_menulieux .= $nomDuLieu;
-	}
+		$aff_menulieux .= sanitizeForHtml($nomDuLieu);
+    }
 
 	$aff_menulieux .= "</a></td>
 	<td class=\"nb_desc_lieu\">".$aumoins1des."</td>";

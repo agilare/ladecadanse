@@ -149,8 +149,8 @@ if ($afficher_form)
 <!-- Nom (text) -->
 <p>
 <label for="nom">Nom* :</label>
-<input type="text" name="nom" id="nom" size="50" maxlength="80" value="<?php echo $form->getValeur('nom') ?>" required />
-<?php
+    <input type="text" name="nom" id="nom" size="50" maxlength="80" value="<?php echo sanitizeForHtml($form->getValeur('nom')) ?>" required />
+    <?php
 echo $form->getHtmlErreur("nom");
 echo $form->getHtmlErreur("nom_existant");
 ?>
@@ -160,8 +160,8 @@ echo $form->getHtmlErreur("nom_existant");
 <!-- Adresse (text) -->
 <p>
 <label for="adresse">Adresse :</label>
-<input type="text" name="adresse" id="adresse" size="50" maxlength="80" value="<?php echo $form->getValeur('adresse') ?>" />
-<?php
+    <input type="text" name="adresse" id="adresse" size="50" maxlength="80" value="<?php echo sanitizeForHtml($form->getValeur('adresse')) ?>" />
+    <?php
 echo $form->getHtmlErreur("adresse");
 ?>
 </p>
@@ -171,8 +171,8 @@ echo $form->getHtmlErreur("adresse");
 <!-- URL (text) -->
 <p>
 <label for="URL">Site web :</label>
-<input type="text" name="URL" id="URL" size="50" maxlength="80" value="<?php echo $form->getValeur('URL') ?>" />
-<?php
+    <input type="text" name="URL" id="URL" size="50" maxlength="80" value="<?php echo sanitizeForHtml($form->getValeur('URL')) ?>" />
+    <?php
 echo $form->getHtmlErreur("URL");
 ?>
 </p>
@@ -180,16 +180,16 @@ echo $form->getHtmlErreur("URL");
 <p>
 <label for="email">Email :</label>
 <input type="text" name="email" id="email" size="40" maxlength="40"
- value="<?php echo $form->getValeur('email') ?>" />
-<?php
+       value="<?php echo sanitizeForHtml($form->getValeur('email')) ?>" />
+    <?php
 echo $form->getHtmlErreur("email");
 ?>
 </p>
 <p>
     <label for="presentation">Présentation :</label><br><br>
 <textarea name="presentation" id="presentation" class="tinymce" rows="16" cols="50">
-<?php echo $form->getValeur('presentation') ?></textarea>
-<?php
+        <?php echo sanitizeForHtml($form->getValeur('presentation')) ?></textarea>
+    <?php
 echo $form->getHtmlErreur("presentation");
 ?>
 </p>

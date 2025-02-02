@@ -315,7 +315,7 @@ function horaire2heure($horaire_complet, $date_evenement)
     return mb_substr($horaire_heure, 11, -3);
 }
 
-function afficher_debut_fin($horaire_debut, $horaire_fin, $date_evenement)
+function afficher_debut_fin($horaire_debut, $horaire_fin, $date_evenement): string
 {
 
     $afficher = "";
@@ -343,5 +343,5 @@ function afficher_debut_fin($horaire_debut, $horaire_fin, $date_evenement)
  */
 function sanitizeForHtml(?string $chaine): string
 {
-    return trim(htmlspecialchars($chaine));
+    return trim(htmlspecialchars($chaine, ENT_QUOTES, 'UTF-8'));
 }

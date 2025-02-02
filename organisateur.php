@@ -157,8 +157,8 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 6
 
 			while ($tab = $connector->fetchArray($req))
 			{
-				$lieux .= '<li><a href="/lieu.php?idL='.$tab['idLieu'].'">'.$tab['nom']."</a></li>";
-			}
+				$lieux .= '<li><a href="/lieu.php?idL=' . $tab['idLieu'] . '">' . sanitizeForHtml($tab['nom']) . "</a></li>";
+    }
 			$lieux .= '</ul></li>';
 		}
 
@@ -171,18 +171,18 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 6
 		if ($connector->getNumRows($req) > 0)
 		{
 			if (isset($_SESSION['SidPersonne']) &&
-			(
-			$authorization->isAuthor("organisateur", $_SESSION['SidPersonne'], $get['idO']) || $authorization->isPersonneInOrganisateur($_SESSION['SidPersonne'], $get['idO'])
-			)
-			)
+                (
+            $authorization->isAuthor("organisateur", $_SESSION['SidPersonne'], $get['idO']) || $authorization->isPersonneInOrganisateur($_SESSION['SidPersonne'], $get['idO'])
+            )
+    )
 			{
 				$membres .= '<li>Membre(s) :';
 				$membres .= '<ul class="salles"> ';
 
 				while ($tab = $connector->fetchArray($req))
 				{
-					$membres .= '<li>'.$tab['pseudo'].'</li>';
-				}
+					$membres .= '<li>' . sanitizeForHtml($tab['pseudo']) . '</li>';
+        }
 
 				$membres .= '</ul></li>';
 			}
@@ -193,9 +193,11 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 6
 		<div id="pratique">
             <ul>
                 <?php if (!empty($URL)) { ?>
-                    <li class="siteLieu"><a href="<?php echo $URL; ?>" class="url lien_ext" target="_blank">
-                                <?php echo $organisateur->getValue('URL'); ?></a>
-                        </li>
+                <li class="siteLieu">
+                        <a href="<?php echo sanitizeForHtml($URL); ?>" class="url lien_ext" target="_blank">
+                            <?php echo sanitizeForHtml($organisateur->getValue('URL')); ?>
+                        </a>
+                    </li>
                 <?php } ?>
                 <?php echo $lieux; ?>
 				<?php echo $membres; ?>
@@ -221,8 +223,8 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 6
 	<div id="descriptions">
 		<div class="description">
             <p><?php echo $organisateur->getValue('presentation'); ?></p>
-		</div>
-	</div>
+        </div>
+    </div>
 	<!-- Fin presentations -->
     <div class="spacer"></div>
 </div>
@@ -327,13 +329,12 @@ if ($evenements->getNbElements() > 0)
 			if (mb_strlen($even->getValue('description')) > $maxChar)
 			{
 				//$continuer = "<span class=\"continuer\"><a href=\"/evenement.php?idE=".$even->getValue('idEvenement')."\" title=\"Voir la fiche complète de l'événement\"> Lire la suite</a></span>";
-				$presentation = Text::texteHtmlReduit(Text::wikiToHtml(htmlspecialchars($even->getValue('description'))), $maxChar);
-
-			}
+				$presentation = Text::texteHtmlReduit(Text::wikiToHtml(sanitizeForHtml($even->getValue('description'))), $maxChar);
+            }
 			else
 			{
-				$presentation = Text::wikiToHtml(htmlspecialchars($even->getValue('description')));
-			}
+				$presentation = Text::wikiToHtml(sanitizeForHtml($even->getValue('description')));
+            }
 		}
 		if ($nbMois == 0)
 		{
@@ -370,12 +371,12 @@ if ($evenements->getNbElements() > 0)
 			$tab_lieu = $connector->fetchArray(
 			$connector->query("SELECT nom FROM lieu WHERE idlieu='".$even->getValue('idLieu')."'"));
 
-			$nom_lieu = "<a href=\"/lieu.php?idL=".$even->getValue('idLieu')."\" title=\"Voir la fiche du lieu : ".htmlspecialchars($tab_lieu['nom'])."\" >".htmlspecialchars($tab_lieu['nom'])."</a>";
-		}
+			$nom_lieu = "<a href=\"/lieu.php?idL=" . $even->getValue('idLieu') . "\" title=\"Voir la fiche du lieu : " . sanitizeForHtml($tab_lieu['nom']) . "\" >" . sanitizeForHtml($tab_lieu['nom']) . "</a>";
+        }
 		else
 		{
-			$nom_lieu = htmlspecialchars($even->getValue('nomLieu'));
-		}
+			$nom_lieu = sanitizeForHtml($even->getValue('nomLieu'));
+        }
 
 	?>
 	<tr <?php if ($date_debut == $even->getValue('dateEvenement')) { echo "class=\"ici\""; } ?> class="evenement">
@@ -420,8 +421,8 @@ if ($evenements->getNbElements() > 0)
             </h3>
             <p class="description"><?php echo $presentation; ?></p>
 
-            <p class="pratique"><?php echo afficher_debut_fin($even->getValue('horaire_debut'), $even->getValue('horaire_fin'), $even->getValue('dateEvenement'))." ".$even->getValue('prix') ?></p>
-		</td>
+                    <p class="pratique"><?php echo afficher_debut_fin($even->getValue('horaire_debut'), $even->getValue('horaire_fin'), $even->getValue('dateEvenement')) . " " . sanitizeForHtml($even->getValue('prix')) ?></p>
+                </td>
 
 		<td><?php echo $nom_lieu; ?></td>
 		<td><?php echo $glo_tab_genre[$even->getValue('genre')] ?></td>
@@ -474,7 +475,7 @@ if (!empty($organisateur->getValue('URL'))) {
     if (!preg_match("/^(https?:\/\/)/i", $organisateur->getValue('URL'))) {
 		$URLcomplete = "http://" . $organisateur->getValue('URL');
     }
-	echo "<p>Pour des informations complémentaires : <a href=\"" . $URLcomplete . "\" class=\"lien_ext\" target=\"_blank\">" . $organisateur->getValue('URL') . "</a></p>\n";
+	echo "<p>Pour des informations complémentaires : <a href=\"" . sanitizeForHtml($URLcomplete) . "\" class=\"lien_ext\" target=\"_blank\">" . sanitizeForHtml($organisateur->getValue('URL')) . "</a></p>\n";
 }
 
 echo '</div>';

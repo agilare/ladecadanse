@@ -258,8 +258,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 			*/
 			if ($req_insert)
 			{
-				HtmlShrink::msgOk("Personne <em>".$champs['pseudo']."</em> ajoutée dans le groupe ".$champs['groupe']);
-				foreach ($champs as $k => $v)
+				HtmlShrink::msgOk("Personne ajoutée dans le groupe " . $champs['groupe']);
+                foreach ($champs as $k => $v)
 				{
 					$champs[$k] = '';
 				}
@@ -348,15 +348,17 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 					}
 
 					HtmlShrink::msgOk("Votre profil a été modifié");
-                    $logger->log('global', 'activity', "[user-edit] user ".$_SESSION["user"]. " updated his profile", Logger::GRAN_YEAR);
-					$action_terminee = true;
+
+                    $action_terminee = true;
 				}
 				else
 				{
-					HtmlShrink::msgOk("Le profil de <em>".$champs['pseudo']."</em> a été modifié");
-				}
+					HtmlShrink::msgOk("Le profil a été modifié");
+                }
 
-				$sqld = "DELETE FROM personne_organisateur WHERE idPersonne=".$get['idP'];
+                $logger->log('global', 'activity', "[user-edit] user " . $champs['pseudo'] . " updated by " . $_SESSION["user"] . "; details : personne $sql_update and affiliation : " . ($aff ?? "-" ), Logger::GRAN_YEAR);
+
+                $sqld = "DELETE FROM personne_organisateur WHERE idPersonne=".$get['idP'];
 				$connector->query($sqld);
 				$req_id = $get['idP'];
 			}
@@ -376,7 +378,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 					$connector->query($sql);
 				}
 			}
-		}
+            $logger->log('global', 'activity', "[user-edit] user " . $champs['pseudo'] . " organisateurs updated; idOrganisateurs inserted : " . implode(", ", $champs['organisateurs']), Logger::GRAN_YEAR);
+        }
 
 	} // if erreurs == 0
 } // if POST != ""
@@ -416,12 +419,12 @@ if ($get['action'] == 'editer' && isset($get['idP']))
 } // if GET action
 
 if (PARTIAL_EDIT_MODE && $champs['dateAjout'] < PARTIAL_EDIT_FROM_DATETIME)
-{
-    HtmlShrink::msgErreur(PARTIAL_EDIT_MODE_MSG);
+    {
+        HtmlShrink::msgErreur(PARTIAL_EDIT_MODE_MSG);
         exit;
-}
+    }
 
-/*
+    /*
  * PREPARATION DES URLS SELON LES ACTIONS,
  * update et idE en cas d'édition, insert pour ajout
  */
@@ -459,8 +462,8 @@ if ($verif->nbErreurs() > 0)
             <?php
             if ($_SESSION['Sgroupe'] == UserLevel::SUPERADMIN) {
         ?>
-        <input type="text" name="pseudo" id="pseudo" size="30" maxlength="80" value="<?php echo htmlentities($champs['pseudo']) ?>" required />
-        <?php
+                <input type="text" name="pseudo" id="pseudo" size="30" maxlength="80" value="<?php echo sanitizeForHtml($champs['pseudo']) ?>" required />
+                <?php
         echo $verif->getHtmlErreur('pseudo');
         echo $verif->getHtmlErreur("pseudoIdentique");
         ?>
@@ -472,7 +475,7 @@ if ($verif->nbErreurs() > 0)
     {
     ?>
 
-    <input type="text" name="pseudo" id="pseudo" size="30" maxlength="80" value="<?php echo htmlentities($champs['pseudo']) ?>" readonly style="background:#f4f4f4" />
+            <input type="text" name="pseudo" id="pseudo" size="30" maxlength="80" value="<?php echo sanitizeForHtml($champs['pseudo']) ?>" readonly style="background:#f4f4f4" />
 
     <?php
     }
@@ -499,7 +502,7 @@ if ($verif->nbErreurs() > 0)
                 elseif (($get['action'] == 'ajouter' || $get['action'] == 'insert') && $id == UserLevel::ACTOR) {
                 echo "selected=\"selected\"";
                 }
-                echo " value=\"" . $id . "\">" . $id . " : " . $nom . "</option>";
+                echo " value=\"" . $id . "\">" . $id . " : " . sanitizeForHtml($nom) . "</option>";
         }
         echo "</select>";
         echo $verif->getHtmlErreur("groupe");
@@ -550,8 +553,8 @@ if ($verif->nbErreurs() > 0)
         <!-- Email* (text) -->
     <p>
     <label for="email">E-mail*</label>
-    <input type="email" name="email" id="email" size="40" maxlength="80" value="<?php echo htmlentities(stripslashes($champs['email'])) ?>" required />
-    <?php echo $verif->getHtmlErreur("email");
+        <input type="email" name="email" id="email" size="40" maxlength="80" value="<?php echo sanitizeForHtml(stripslashes($champs['email'])) ?>" required />
+        <?php echo $verif->getHtmlErreur("email");
     echo $verif->getErreur("emailIdentique");?>
     </p>
 </fieldset>
@@ -601,8 +604,8 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= UserLevel::ACTOR)) {
     ?>
     <p>
     <label for="affiliation">Nom</label>
-    <input type="text" name="affiliation" id="affiliation" size="30" maxlength="80" value="<?php echo htmlentities($champs['affiliation']); ?>" />
-    <?php echo $verif->getHtmlErreur("affiliation"); ?>
+                <input type="text" name="affiliation" id="affiliation" size="30" maxlength="80" value="<?php echo sanitizeForHtml($champs['affiliation']); ?>" />
+                <?php echo $verif->getHtmlErreur("affiliation"); ?>
 
     </p>
 
@@ -623,9 +626,8 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= UserLevel::ACTOR)) {
         {
             echo "selected=\"selected\" ";
         }
-        echo "value=\"".$lieuTrouve['idLieu']."\">".$lieuTrouve['nom']."</option>";
-
-    }
+        echo "value=\"" . $lieuTrouve['idLieu'] . "\">" . sanitizeForHtml($lieuTrouve['nom']) . "</option>";
+                }
     ?>
     </select>
 
@@ -652,8 +654,8 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= UserLevel::ACTOR)) {
         }
 
 
-        echo "value=\"".$tab['idOrganisateur']."\">".$tab['nom']."</option>";
-    }
+        echo "value=\"" . $tab['idOrganisateur'] . "\">" . sanitizeForHtml($tab['nom']) . "</option>";
+                }
     ?>
     </select>
 
@@ -667,7 +669,7 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= UserLevel::ACTOR)) {
         {
         ?>
         <p>
-            <label></label><input name="affiliation" type="text" readonly value="<?php echo htmlentities($champs['affiliation']); ?>" >
+                            <label></label><input name="affiliation" type="text" readonly value="<?php echo sanitizeForHtml($champs['affiliation']); ?>" >
                         </p>
 
         <?php
@@ -681,8 +683,8 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= UserLevel::ACTOR)) {
                 <p>
                 <label>Lieu</label>
                 <ul style="float:left;margin:0;padding-left:1em;">
-                    <li><a href="/lieu.php?idL=<?php echo $champs['lieu'];?>"><?php echo htmlentities($lieuTrouve['nom']);?></a>
-                    <input type="hidden" name="lieu" value="<?php echo $champs['lieu'];?>">
+                                    <li><a href="/lieu.php?idL=<?php echo $champs['lieu']; ?>"><?php echo sanitizeForHtml($lieuTrouve['nom']); ?></a>
+                                        <input type="hidden" name="lieu" value="<?php echo $champs['lieu'];?>">
                     </li>
                 </ul><div class="spacer"><!-- --></div>
             </p>
@@ -708,8 +710,8 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= UserLevel::ACTOR)) {
                 while ($tab = $connector->fetchArray($req))
                 {
                     ?>
-                    <li><a href="/organisateur.php?idO=<?php echo $tab['idOrganisateur']; ?>"><?php echo $tab['nom']; ?></a>
-                    <input type="hidden" name="organisateurs[]" value="<?php echo $tab['idOrganisateur']; ?>">
+                <li><a href="/organisateur.php?idO=<?php echo $tab['idOrganisateur']; ?>"><?php echo sanitizeForHtml($tab['nom']); ?></a>
+                                        <input type="hidden" name="organisateurs[]" value="<?php echo $tab['idOrganisateur']; ?>">
                     </li>
                     <?php
                 }
@@ -757,7 +759,7 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= UserLevel::ACTOR)) {
         }
         else
         {
-            echo ": <b>".$champs[$s]."</b>";
+            echo ": <b>" . sanitizeForHtml($champs[$s]) . "</b>";
         }
         echo '</label>
         </li>';

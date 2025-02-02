@@ -172,8 +172,8 @@ $detailsAff = $connector->fetchArray($req_affPers);
             $req = $connector->query($sql);
             while ($tab = $connector->fetchArray($req))
             {
-                echo '<a href="/organisateur.php?idO='.$tab['idOrganisateur'].'">'.$tab['nom'].'</a><br />';
-            }
+                echo '<a href="/organisateur.php?idO=' . $tab['idOrganisateur'] . '">' . sanitizeForHtml($tab['nom']) . '</a><br />';
+}
             ?>
 
                 </td></tr>
@@ -550,8 +550,8 @@ $detailsAff = $connector->fetchArray($req_affPers);
 			echo "</ul></td>";
 			echo "<td>";
 			if (!empty($URL)) {
-				echo "<a href=\"http://".$URL."\" title=\"Aller sur le site du lieu\">".$iconeURL."</a>\n";
-			}
+				echo "<a href=\"http://" . sanitizeForHtml($URL) . "\" title=\"Aller sur le site du lieu\">" . $iconeURL . "</a>\n";
+            }
 			echo "</td>";
 			echo "
 			<td>".$tabDes['COUNT(*)']."</td>
@@ -649,8 +649,8 @@ else if ($get['elements'] == "organisateur")
 	</td>";
 			echo "<td>";
 			if (!empty($tab['URL'])) {
-				echo "<a href=\"http://".$tab['URL']."\" title=\"Aller sur le site du lieu\">".$iconeURL."</a>\n";
-			}
+				echo "<a href=\"http://" . sanitizeForHtml($tab['URL']) . "\" title=\"Aller sur le site du lieu\">" . $iconeURL . "</a>\n";
+            }
 			echo "</td>";
 			echo "
 			<td>".date_iso2app($tab['date_ajout'])."</td>";

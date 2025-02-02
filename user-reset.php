@@ -66,7 +66,6 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' && empty($_POST
 			$email =  'NULL';
 			$email_envoi =  $tab_pers['email'];
 			$hash = $tab_pers['idPersonne'];
-            $dateAjout = $tab_pers['dateAjout'];
         }
 
 		//trouver user selon email
@@ -81,7 +80,6 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' && empty($_POST
 			$idPersonne = 'NULL';
 			$email_envoi = $champs['pseudo_email'];
 			$hash = $champs['pseudo_email'];
-            $dateAjout = $tab_pers['dateAjout'];
         }
 
         if (PARTIAL_EDIT_MODE && $dateAjout < PARTIAL_EDIT_FROM_DATETIME)
@@ -91,7 +89,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' && empty($_POST
         }
 
         if ($email_envoi)
-		{
+        {
 			$salt = "ciek48";
 
 			// Create the unique user password reset key
@@ -116,7 +114,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' && empty($_POST
             $mailer = new Mailing();
             $mailer->toUser($email_envoi, $subject, $contenu_message);
 
-			HtmlShrink::msgOk("Un email a été envoyé à ".$email_envoi." qui contient un lien vous permettant de choisir un nouveau mot de passe.");
+			HtmlShrink::msgOk("Un email a été envoyé à " . sanitizeForHtml($email_envoi) . " qui contient un lien vous permettant de choisir un nouveau mot de passe.");
 
             $logger->log('global', 'activity', "[user-reset] request by ".$email_envoi." user.php?idP=".$idPersonne, Logger::GRAN_YEAR);
 		}

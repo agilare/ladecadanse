@@ -355,15 +355,14 @@ if (!empty($get['mots']))
 									$tab_salle = $connector->fetchArray($connector->query("SELECT nom from salle where idSalle=".$tab_even['idSalle']));
 									$salle = " - ".$tab_salle['nom'];
 									}
-									$infosLieu = $listeLieu['determinant']." <a href=\"/lieu.php?idL=".$tab_even['idLieu']."\" title=\"Voir la fiche du lieu : ".htmlspecialchars($listeLieu['nom'])."\" >".htmlspecialchars($listeLieu['nom'])."</a>".$salle;
-
-								}
+									$infosLieu = $listeLieu['determinant'] . " <a href=\"/lieu.php?idL=" . $tab_even['idLieu'] . "\" title=\"Voir la fiche du lieu : " . sanitizeForHtml($listeLieu['nom']) . "\" >" . sanitizeForHtml($listeLieu['nom']) . "</a>" . $salle;
+                            }
 								else
 								{
 
-									$listeLieu['nom'] = htmlspecialchars($tab_even['nomLieu']);
-									$infosLieu = htmlspecialchars($tab_even['nomLieu']);
-								}
+									$listeLieu['nom'] = sanitizeForHtml($tab_even['nomLieu']);
+                                $infosLieu = sanitizeForHtml($tab_even['nomLieu']);
+                            }
 							?>
 							<tr
 
@@ -390,13 +389,13 @@ if (!empty($get['mots']))
 								<?php
 								$titre = $tab_even['titre'];
 								?>
-								<h3><a href="/evenement.php?idE=<?php echo $tab_even['idEvenement'] ?>" title="Voir la fiche de l'événement"><?php echo $titre ?></a></h3>
-							<?php
+                                    <h3><a href="/evenement.php?idE=<?php echo $tab_even['idEvenement'] ?>" title="Voir la fiche de l'événement"><?php echo sanitizeForHtml($titre) ?></a></h3>
+                                                                <?php
 								$maxChar = Text::trouveMaxChar($tab_even['description'], 50, 4);
 								if (mb_strlen($tab_even['description']) > $maxChar)
 								{
-									$texte_court = Text::texteHtmlReduit(Text::wikiToText(htmlspecialchars($tab_even['description'])), $maxChar, "");
-/* 									foreach($tab_mots as $n => $mot)
+									$texte_court = Text::texteHtmlReduit(Text::wikiToText(sanitizeForHtml($tab_even['description'])), $maxChar, "");
+                                                                    /* 									foreach($tab_mots as $n => $mot)
 									{
 										$texte_court = highlight($texte_court, $mot);
 									} */
@@ -404,8 +403,8 @@ if (!empty($get['mots']))
 								}
 								else
 								{
-									$texte_court =  Text::wikiToHtml(htmlspecialchars($tab_even['description']));
-/* 									foreach($tab_mots as $n => $mot)
+									$texte_court = Text::wikiToHtml(sanitizeForHtml($tab_even['description']));
+                                                                    /* 									foreach($tab_mots as $n => $mot)
 									{
 										$texte_court = highlight($texte_court, $mot);
 									} */

@@ -10,9 +10,9 @@ if ($evenement['idLieu'] != 0)
 	$connector->query("SELECT nom, adresse, quartier, localite.localite AS localite, region, URL, lat, lng FROM lieu, localite
 		WHERE localite_id=localite.id AND idlieu='".$evenement['idLieu']."'"));
 
-	$nom_lieu = "<a href=\"/lieu.php?idL=".$evenement['idLieu']."\" title=\"Voir la fiche du lieu : ".sanitizeForHtml($listeLieu['nom'])."\" >".htmlspecialchars($listeLieu['nom'])."</a>";
+	$nom_lieu = "<a href=\"/lieu.php?idL=" . $evenement['idLieu'] . "\" title=\"Voir la fiche du lieu\" >" . sanitizeForHtml($listeLieu['nom']) . "</a>";
 
-	if ($evenement['idSalle'] != 0)
+    if ($evenement['idSalle'] != 0)
 	{
 		$req_salle = $connector->query("SELECT nom, emplacement FROM salle
 		WHERE idSalle='".$evenement['idSalle']."'");
@@ -22,13 +22,13 @@ if ($evenement['idLieu'] != 0)
 }
 else
 {
-	$nom_lieu = $listeLieu['nom'] =  htmlspecialchars($evenement['nomLieu']);
-	$listeLieu['adresse'] = htmlspecialchars($evenement['adresse']);
-	$listeLieu['quartier'] = htmlspecialchars($evenement['quartier']);
+	$nom_lieu = $listeLieu['nom'] = sanitizeForHtml($evenement['nomLieu']);
+    $listeLieu['adresse'] = sanitizeForHtml($evenement['adresse']);
+    $listeLieu['quartier'] = sanitizeForHtml($evenement['quartier']);
     $listeLieu['localite'] = "";
 }
 
-$adresse = htmlspecialchars(HtmlShrink::getAdressFitted(null, $listeLieu['localite'], $listeLieu['quartier'], $listeLieu['adresse']));
+$adresse = HtmlShrink::getAdressFitted(null, $listeLieu['localite'], $listeLieu['quartier'], $listeLieu['adresse']);
 
 echo '<div id="evenements">';
 echo "<p><a href=\"/evenement-agenda.php?courant=".$evenement['dateEvenement']."\" title=\"Agenda\">".ucfirst(date_fr($evenement['dateEvenement'], "annee"))."</a></p>";
@@ -42,13 +42,11 @@ echo "<p><a href=\"/evenement-agenda.php?courant=".$evenement['dateEvenement']."
 	$maxChar = Text::trouveMaxChar($evenement['description'], 60, 9);
 
 	echo '<a href="/evenement.php?idE='.$evenement['idEvenement'].'"
-	title="Voir la fiche complète de l\'événement">'.Evenement::titre_selon_statut($evenement['titre'], $evenement['statut']).'</a>';
-
-
-	?>
+	title="Voir la fiche complète de l\'événement">' . sanitizeForHtml(Evenement::titre_selon_statut($evenement['titre'], $evenement['statut'])) . '</a>';
+    ?>
 	</span>
-	<span class="right"><?php echo $nom_lieu ?></span>
-	<div class="spacer"></div>
+    <span class="right"><?php echo $nom_lieu ?></span>
+    <div class="spacer"></div>
 </div>
 <!-- fin titre -->
 
@@ -88,7 +86,7 @@ if (mb_strlen($evenement['description']) > $maxChar)
 }
 else
 {
-	echo Text::wikiToHtml(htmlspecialchars($evenement['description']));
+	echo Text::wikiToHtml(sanitizeForHtml($evenement['description']));
 }
 
 echo "</div>

@@ -60,8 +60,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 
 	if ($connector->getNumRows($req_existance) > 0)
 	{
-		$verif->setErreur("utilisateur_existant", "Un membre avec l'identifiant <em>".$champs['utilisateur']."</em> existe déjà.");
-	}
+		$verif->setErreur("utilisateur_existant", "Un membre avec cet identifiant existe déjà.");
+    }
 
 
 	$verif->valider($champs['motdepasse'], "motdepasse", "texte", 8, 30, 1);
@@ -96,8 +96,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 
 	if ($connector->getNumRows($req_existance) > 0)
 	{
-		$verif->setErreur("email_identique", "Un membre avec l'email ".$champs['email']." existe déjà.");
-	}
+		$verif->setErreur("email_identique", "Un compte avec cet email existe déjà.");
+    }
 
 
 	$verif->valider($champs['groupe'], "groupe", "int", 1, 2, 1);
@@ -246,7 +246,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 					$compte_organisateur = " en tant qu'acteur culturel";
 
 				HtmlShrink::msgOk("<strong>Votre compte".$compte_organisateur." a été créé</strong>; vous pouvez maintenant vous <a href=\"/user-login.php\">connecter</a> avec l'identifiant et le mot de passe que vous venez de saisir.
-				<br />Un e-mail de confirmation vous a été envoyé à l'adresse : ".$tab_pers['email']);
+				<br />Un e-mail de confirmation vous a été envoyé à l'adresse : " . sanitizeForHtml($tab_pers['email']));
 
                 $logger->log('global', 'activity', "[user-register] by ".$tab_pers['pseudo']." (".$tab_pers['email'].") in group ".$tab_pers['groupe']." /user.php?idP=".$req_id, Logger::GRAN_YEAR);
 			}
@@ -315,8 +315,8 @@ if ($verif->nbErreurs() > 0)
 <p>
 <label for="utilisateur">Identifiant*</label>
 
-<input type="text" name="utilisateur" id="utilisateur" size="40" maxlength="80" value="<?php echo htmlspecialchars($champs['utilisateur']) ?>" />
-<div class="guide_champ">&#9888; C'est avec celui-ci que vous vous connecterez au site, pas l'email ci-dessous</div>
+    <input type="text" name="utilisateur" id="utilisateur" size="40" maxlength="80" value="<?php echo sanitizeForHtml($champs['utilisateur']) ?>" />
+    <div class="guide_champ">&#9888; C'est avec celui-ci que vous vous connecterez au site, pas l'email ci-dessous</div>
 <?php
 echo $verif->getHtmlErreur('utilisateur');
 echo $verif->getHtmlErreur("utilisateur_existant");
@@ -341,8 +341,8 @@ echo $verif->getHtmlErreur("utilisateur_existant");
 <!-- Email* (text) -->
 <p>
 <label for="email">E-mail*</label>
-<input type="email" name="email" id="email" size="35" maxlength="80" value="<?php echo htmlspecialchars($champs['email']) ?>" />
-<?php echo $verif->getHtmlErreur("email");
+    <input type="email" name="email" id="email" size="35" maxlength="80" value="<?php echo sanitizeForHtml($champs['email']) ?>" />
+    <?php echo $verif->getHtmlErreur("email");
 echo $verif->getHtmlErreur("email_identique");?>
 </p>
 </fieldset>
@@ -376,9 +376,8 @@ echo $verif->getHtmlErreur("email_identique");?>
                 {
                     echo "selected=\"selected\" ";
                 }
-                echo "value=\"".$lieuTrouve['idLieu']."\">".$lieuTrouve['nom']."</option>";
-
-            }
+                echo "value=\"" . $lieuTrouve['idLieu'] . "\">" . sanitizeForHtml($lieuTrouve['nom']) . "</option>";
+                }
             ?>
 
             </select>
@@ -396,8 +395,8 @@ echo $verif->getHtmlErreur("email_identique");?>
 		while ($tab = $connector->fetchArray($req))
 		{
 			echo "<option ";
-			echo "value=\"".$tab['idOrganisateur']."\">".$tab['nom']."</option>";
-		}
+			echo "value=\"" . $tab['idOrganisateur'] . "\">" . sanitizeForHtml($tab['nom']) . "</option>";
+            }
 		?>
 		</select>
 
@@ -411,8 +410,8 @@ echo $verif->getHtmlErreur("email_identique");?>
 
 		<p>
 		<label for="affiliation" class="affil">Nom&nbsp;</label>
-		<input type="text" name="affiliation" id="affiliation" size="30" maxlength="80" value="<?php echo htmlspecialchars($champs['affiliation']); ?>" />
-		</p>
+        <input type="text" name="affiliation" id="affiliation" size="30" maxlength="80" value="<?php echo sanitizeForHtml($champs['affiliation']); ?>" />
+            </p>
 		<?php echo $verif->getHtmlErreur("affiliation"); ?>
 
 

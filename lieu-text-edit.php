@@ -334,8 +334,8 @@ if (($get['action'] == 'editer' || $get['action'] == 'update') && isset($get['id
 		{
 		  	echo " selected=\"selected\"";
 		}
-		echo " value=\"".$lieuTrouve['idLieu']."\">".$lieuTrouve['nom']."</option>";
-	}
+		echo " value=\"" . $lieuTrouve['idLieu'] . "\">" . sanitizeForHtml($lieuTrouve['nom']) . "</option>";
+        }
     ?>
     </select></p>
     <?php
@@ -347,8 +347,8 @@ echo $verif->getErreur('nom');
 ?>
 <!-- Description Texte -->
 <p>
-<label for="contenu" style="display:block;text-align:left;float:none;">La description* :</label>
-<textarea style="float:left" id="contenu" name="contenu" cols="45" rows="16" class="tinymce"><?php echo $champs['contenu']; ?></textarea>
+    <label for="contenu" style="display:block;text-align:left;float:none;">La description*&nbsp;:</label>
+        <textarea style="float:left" id="contenu" name="contenu" cols="45" rows="16" class="tinymce"><?php echo $champs['contenu']; ?></textarea>
 <?php
 echo $verif->getHtmlErreur('contenu');
 ?>

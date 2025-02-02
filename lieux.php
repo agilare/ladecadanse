@@ -71,12 +71,12 @@ $pair = 0;
 		{
 		//printr($tab_lieux_recents);
 		?>
-		<h3><a href="/lieu.php?idL=<?php echo $tab_lieux_recents['idLieu']; ?>" title="Voir la fiche du lieu" ><?php echo $tab_lieux_recents['nom']; ?></a></h3>
+        <h3><a href="/lieu.php?idL=<?php echo $tab_lieux_recents['idLieu']; ?>" title="Voir la fiche du lieu" ><?php echo sanitizeForHtml($tab_lieux_recents['nom']); ?></a></h3>
 
 		<p><?php
 
-                echo htmlspecialchars(HtmlShrink::getAdressFitted( '', $tab_lieux_recents['localite'], $tab_lieux_recents['quartier'], $tab_lieux_recents['adresse'])); ?></p>
-		<?php
+                echo sanitizeForHtml(HtmlShrink::getAdressFitted('', $tab_lieux_recents['localite'], $tab_lieux_recents['quartier'], $tab_lieux_recents['adresse'])); ?></p>
+                <?php
 		}
 	}
 	?>
