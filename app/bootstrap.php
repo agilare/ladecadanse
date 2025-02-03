@@ -31,7 +31,7 @@ if (ENV === 'dev') {
 // FIXME: seems to not work on current depl server (darksite.ch)
 // session_save_path(__ROOT__ . "/var/sessions");
 // ini_set('session.gc_probability', 1); // to enable auto clean of old session in Debian https://www.php.net/manual/en/function.session-save-path.php#98106
-session_start(['cookie_secure' => true, 'cookie_httponly' => true]);
+session_start(['cookie_secure' => true, 'cookie_httponly' => true, 'cookie_samesite' => 'Lax']);
 
 $regionConfig = new RegionConfig($glo_regions);
 list($url_query_region, $url_query_region_et, $url_query_region_1er) = $regionConfig->getAppVars();
@@ -53,6 +53,8 @@ $nom_page = basename($_SERVER["SCRIPT_FILENAME"], '.php');
 
 header('X-Content-Type-Options: nosniff');
 header("Content-Security-Policy: frame-ancestors 'self' https://epic-magazine.ch");
+// v2
+//header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-rAnd0m' https://code.jquery.com https://maps.googleapis.com https://browser.sentry-cdn.com https://www.google.com https://www.gstatic.com https://www.googletagmanager.com https://cdn.tiny.cloud; img-src 'self' https://maps.gstatic.com https://maps.googleapis.com https://streetviewpixels-pa.googleapis.com https://lh3.ggpht.com https://www.paypalobjects.com https://sp.tinymce.com data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.tiny.cloud https://www.tiny.cloud; font-src 'self' https://fonts.gstatic.com https://www.tiny.cloud; connect-src https://maps.googleapis.com https://cdn.tiny.cloud; frame-ancestors 'self' https://epic-magazine.ch; frame-src https://www.google.com");
 header('X-Frame-Options:    SAMEORIGIN');
 
 header("Cache-Control: no-store, no-cache, must-revalidate");
