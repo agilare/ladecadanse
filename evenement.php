@@ -245,10 +245,7 @@ iCal</a></li>
 
             <div class="titre">
 
-                <h3 class="left summary"><?php
-                    $titre = Evenement::titre_selon_statut($even->getValue('titre'), $even->getValue('statut'));
-                     echo sanitizeForHtml($titre . $even_status);
-?></h3>
+                <h3 class="left summary"><?php echo Evenement::titre_selon_statut(sanitizeForHtml($even->getValue('titre')), $even->getValue('statut')); ?></h3>
 
                 <?php
                 //si le lieu est dans la base, affichage des détails du lieu,
@@ -478,7 +475,7 @@ foreach ($tab_ref as $r)
 						<th><i class="fa fa-clock-o fa-lg"></i></th>
 						<td>
 						<?php
-						echo sanitizeForHtml(afficher_debut_fin($even->getValue('horaire_debut'), $even->getValue('horaire_fin'), $even->getValue('dateEvenement')) . "<br />" . $even->getValue('horaire_complement'));
+						echo afficher_debut_fin($even->getValue('horaire_debut'), $even->getValue('horaire_fin'), $even->getValue('dateEvenement')) . "<br />" . sanitizeForHtml($even->getValue('horaire_complement'));
                             ?>
 
 						</td>

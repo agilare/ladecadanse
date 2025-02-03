@@ -46,11 +46,11 @@ class Evenement extends Element
 
         if ($statut == "annule")
         {
-            $titre_avec_statut = '<strike>' . $titre . '</strike> ANNULÉ';
+            $titre_avec_statut = '<strike>' . $titre . '</strike> <span>ANNULÉ</span>';
         }
         if ($statut == "complet")
         {
-            $titre_avec_statut = '<em>' . $titre . '</em> COMPLET';
+            $titre_avec_statut = '<em>' . $titre . '</em> <span>COMPLET</span>';
         }
 
         return $titre_avec_statut;
