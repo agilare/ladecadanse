@@ -62,9 +62,9 @@ FROM evenement WHERE region IN ('" . $connector->sanitize($_SESSION['region']) .
     if (HOME_TMP_BANNER_ENABLED && !isset($_COOKIE['msg_orga_benevole'])) {
         ?>
         <div id="home-tmp-banner">
-                <h2><?php echo sanitizeForHtml(HOME_TMP_BANNER_TITLE); ?></h2>
+            <h2><?php echo HOME_TMP_BANNER_TITLE; ?></h2>
                 <a href="#" id="js-home-tmp-banner-close-btn" class="close">&times;</a>
-            <p style="line-height:18px"><?php echo sanitizeForHtml(HOME_TMP_BANNER_CONTENT); ?></p>
+                <p style="line-height:18px"><?php echo HOME_TMP_BANNER_CONTENT; ?></p>
             </div>
         <?php
     }
