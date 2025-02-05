@@ -113,12 +113,12 @@ if ($get['statut'] == "actif")
 {
     $aff_menulieux .= " class=\"ici\"";
 }
-$aff_menulieux .= '><a href="' . $_SERVER['PHP_SELF'] . '?' . $url_query_region_et . 'statut=actif&amp;vue=az' . $url_idLieu . '">Actuels</a></li><li';
+$aff_menulieux .= '><a href="?' . $url_query_region_et . 'statut=actif&amp;vue=az' . $url_idLieu . '">Actuels</a></li><li';
 if ($get['statut'] == "ancien")
 {
     $aff_menulieux .= " class=\"ici\"";
 }
-$aff_menulieux .= '><a href="' . $_SERVER['PHP_SELF'] . '?' . $url_query_region_et . 'statut=ancien&amp;vue=az' . $url_idLieu . '" >Anciens</a></li>';
+$aff_menulieux .= '><a href="?' . $url_query_region_et . 'statut=ancien&amp;vue=az' . $url_idLieu . '" >Anciens</a></li>';
 
 $aff_menulieux .= '
 <div class="spacer"><!-- --></div></ul>
@@ -131,12 +131,12 @@ if ($get['vue'] == "az")
 {
     $aff_menulieux .= " class=\"ici\"";
 }
-$aff_menulieux .= '><a href="' . $_SERVER['PHP_SELF'] . '?' . $url_query_region_et . 'statut=' . $get['statut'] . '&amp;vue=az' . $url_idLieu . '" title="Liste alphabétique">A-Z</a></li><li';
+$aff_menulieux .= '><a href="?' . $url_query_region_et . 'statut=' . $get['statut'] . '&amp;vue=az' . $url_idLieu . '" title="Liste alphabétique">A-Z</a></li><li';
 if ($get['vue'] == "genre")
 {
     $aff_menulieux .= " class=\"ici\"";
 }
-$aff_menulieux .= '><a href="' . $_SERVER['PHP_SELF'] . '?' . $url_query_region_et . 'statut=' . $get['statut'] . '&amp;vue=genre' . $url_idLieu . '" title="Liste par genre">Type</a></li>';
+$aff_menulieux .= '><a href="?' . $url_query_region_et . 'statut=' . $get['statut'] . '&amp;vue=genre' . $url_idLieu . '" title="Liste par genre">Type</a></li>';
 
 $aff_menulieux .= '
 <div class="spacer"><!-- --></div></ul>
@@ -153,19 +153,19 @@ if ($get['vue'] == "az")
     {
         $aff_menulieux .= " class=\"ici\"";
     }
-    $aff_menulieux .= '><a href="' . $_SERVER['PHP_SELF'] . '?' . $url_query_region_et . 'statut=' . $get['statut'] . '&amp;vue=az' . $url_idLieu . '&amp;tranche=ak" title="Liste alphabétique">a-k</a></li>
+    $aff_menulieux .= '><a href="?' . $url_query_region_et . 'statut=' . $get['statut'] . '&amp;vue=az' . $url_idLieu . '&amp;tranche=ak" title="Liste alphabétique">a-k</a></li>
 				<li';
     if ($get['tranche'] == "lz")
     {
         $aff_menulieux .= " class=\"ici\"";
     }
-    $aff_menulieux .= '><a href="' . $_SERVER['PHP_SELF'] . '?' . $url_query_region_et . 'statut=' . $get['statut'] . '&amp;vue=az' . $url_idLieu . '&amp;tranche=lz" title="Liste alphabétique">l-z</a></li>
+    $aff_menulieux .= '><a href="?' . $url_query_region_et . 'statut=' . $get['statut'] . '&amp;vue=az' . $url_idLieu . '&amp;tranche=lz" title="Liste alphabétique">l-z</a></li>
 				<li';
     if ($get['tranche'] == "tout")
     {
         $aff_menulieux .= " class=\"ici\"";
     }
-    $aff_menulieux .= '><a href="' . $_SERVER['PHP_SELF'] . '?' . $url_query_region_et . 'statut=' . $get['statut'] . '&amp;vue=az' . $url_idLieu . '&amp;tranche=tout" title="Liste alphabétique">tout</a></li>
+    $aff_menulieux .= '><a href="?' . $url_query_region_et . 'statut=' . $get['statut'] . '&amp;vue=az' . $url_idLieu . '&amp;tranche=tout" title="Liste alphabétique">tout</a></li>
 				<div class="spacer"><!-- --></div></ul>';
 
     $sql_vue = "AND TRIM(LEADING 'l\'' FROM (TRIM(LEADING 'les ' FROM (TRIM(LEADING 'la ' FROM (TRIM(LEADING 'le ' FROM LOWER(nom)))))))) >=  LOWER('" . $de . "%')";
@@ -178,7 +178,7 @@ if ($get['vue'] == "az")
 else if ($get['vue'] == "genre")
 {
     $aff_menulieux .= "
-				<form action=\"" . $_SERVER['PHP_SELF'] . "\" method=\"get\">
+				<form action=\"\" method=\"get\">
 
 				<input type=\"hidden\" name=\"vue\" value=\"genre\" />
 				<input type=\"hidden\" name=\"idL\" value=\"" . $get['idL'] . "\" />

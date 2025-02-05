@@ -437,7 +437,7 @@ else if ($get['action'] == 'suppression') {
         ?>
 
     <!-- FORMULAIRE POUR UN EVENEMENT -->
-        <form method="post" id="supprimerEvenement" action="<?php echo $_SERVER['PHP_SELF'] . "?action=" . $act ?>">
+        <form method="post" id="supprimerEvenement" action="?action=<?php echo $act ?>">
 
                 <p>
                     Êtes-vous sûr de vouloir supprimer cet élément ?

@@ -94,8 +94,6 @@ class HtmlShrink
             $limit = 15;
         if (!$page)
             $page = 1;
-        if (!$targetpage)
-            $targetpage = "/";
 
         //other vars
         $prev = $page - 1;         //previous page is page - 1

@@ -294,7 +294,7 @@ if ($verif->nbErreurs() > 0)
 
 <!-- FORMULAIRE -->
 
-<form method="post" id="ajouter_editer" class="js-submit-freeze-wait" action="<?php echo $_SERVER['PHP_SELF']."?action=".$act; ?>">
+    <form method="post" id="ajouter_editer" class="js-submit-freeze-wait" action="?action=<?php echo $act ?>">
 
         <p>Avant de vous inscrire en tant qu'Organisateur, veillez svp à ce que les événements que vous souhaitez ajouter respectent notre <b><a href="/articles/charte-editoriale.php">charte&nbsp;éditoriale</a></b>.
         </p>

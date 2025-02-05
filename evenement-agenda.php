@@ -212,7 +212,7 @@ if ($get['sem'])
 	</div>	<!-- entete_contenu -->
 	<div class="spacer"></div>
     <div>
-        <?php echo HtmlShrink::getPaginationString($total_even, $get['page'], $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?" . Utils::urlQueryArrayToString($get, "page") . "&page="); ?>
+        <?php echo HtmlShrink::getPaginationString($total_even, $get['page'], $get['nblignes'], 1, "", "?" . Utils::urlQueryArrayToString($get, "page") . "&page="); ?>
         <form action="" method="get" class="queries">
             <div style="display:inline-block;margin-top:0.2em">
 
@@ -539,7 +539,7 @@ else
 
 if ($nb_evenements > 5)
 {
-	echo HtmlShrink::getPaginationString($total_even, $get['page'], $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?" . Utils::urlQueryArrayToString($get, "page") . "&page=");
+	echo HtmlShrink::getPaginationString($total_even, $get['page'], $get['nblignes'], 1, "", "?" . Utils::urlQueryArrayToString($get, "page") . "&page=");
     ?>
 	<div id="entete_contenu">
 		<h2><?php echo $entete_contenu ?></h2>

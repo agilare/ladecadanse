@@ -730,7 +730,7 @@ echo '</ul>';
 <div id="gerer-even-pagination">
 
 <?php
-echo HtmlShrink::getPaginationString($tot_elements, $get['page'], $get['nblignes'], 1, $_SERVER['PHP_SELF'], "?element=" . $get['element'] . "&tri_gerer=" . $get['tri_gerer'] . "&ordre=" . $get['ordre'] . "&nblignes=" . $get['nblignes'] . "&filtre_genre=" . $get['filtre_genre'] . "&terme=" . $get['terme'] . "&page=");
+echo HtmlShrink::getPaginationString($tot_elements, $get['page'], $get['nblignes'], 1, "", "?element=" . $get['element'] . "&tri_gerer=" . $get['tri_gerer'] . "&ordre=" . $get['ordre'] . "&nblignes=" . $get['nblignes'] . "&filtre_genre=" . $get['filtre_genre'] . "&terme=" . $get['terme'] . "&page=");
 ?>
 
 

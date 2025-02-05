@@ -67,7 +67,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 		);
 	}
 
-//$_SERVER['PHP_SELF'].'?msg=faux'
+//'?msg=faux'
 //si le formulaire n'a pas été validé, ou les valeurs entrées sont fausses
 }
 else
