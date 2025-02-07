@@ -77,8 +77,8 @@ include("_header.inc.php");
 
             <div style="margin:1em 0 0em 2em">
                 <p id="email-info">
-                    <span id="email-info"><noscript>JS is required to view this address.</noscript></span>
-                </p>
+                        <span id="contacteznous-email-info"><noscript>JS is required to view this address.</noscript></span>
+                    </p>
             </div>
 
             <?php

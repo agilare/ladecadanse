@@ -30,14 +30,15 @@ define("EMAIL_ADMIN_NAME", 'La décadanse');
 define("TINYMCE_API_KEY", '');
 
 define("MATOMO_ENABLED", false); // analytics tool (enabled only in prod)
+define("MATOMO_URL", '');
 
 define("GOOGLE_API_KEY", ''); // use Google Maps library to display maps of venues https://developers.google.com/maps/documentation/javascript/get-api-key
 
 define("GOOGLE_RECAPTCHA_API_KEY_CLIENT", ''); // for (public) "Proposer un événement form"
 define("GOOGLE_RECAPTCHA_API_KEY_SERVER", '');
 
-define("GOOGLE_ANALYTICS_ID", ''); // 1st analytics tool (enabled only in prod)
 define("GOOGLE_ANALYTICS_ENABLED", false);
+define("GOOGLE_ANALYTICS_ID", ''); // 1st analytics tool (enabled only in prod)
 
 define("GLITCHTIP_ENABLED", false);
 define("GLITCHTIP_DSN", "");

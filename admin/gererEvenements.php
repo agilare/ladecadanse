@@ -1011,8 +1011,8 @@ $tab_nomLieu_label = array("for" => "nomLieu");
 echo HtmlShrink::formLabel($tab_nomLieu_label, "Nom du lieu :");
 echo $verif->getErreur("nomLieuIdentique");
 
-$tab_nomLieu = array("type" => "text", "name" => "nomLieu", "id" => "nomLieu", "size" => "40", "maxlength" => "80", "tabindex" => "9", "value" => "",  "onfocus" => "this.className='focus';", "onblur" => "this.className='normal';");
-if (empty($champs['idLieu']))
+$tab_nomLieu = array("type" => "text", "name" => "nomLieu", "id" => "nomLieu", "size" => "40", "maxlength" => "80", "tabindex" => "9", "value" => "");
+    if (empty($champs['idLieu']))
 {
 	$tab_nomLieu['value'] = sanitizeForHtml($champs['nomLieu']);
 }
@@ -1028,7 +1028,10 @@ echo $verif->getErreur("adresseIdentique");
 ?>
 
 <input type="text" name="adresse" id="adresse" size="60" maxlength="100" title="rue, no" tabindex="10" value="
-<?php if (empty($champs['idLieu'])) { echo sanitizeForHtml($champs['adresse']); } ?>" onfocus="this.className='focus';" onblur="this.className='normal';" />
+       <?php if (empty($champs['idLieu']))
+       {
+           echo sanitizeForHtml($champs['adresse']);
+       } ?>" />
 <?php
 echo $verif->getHtmlErreur("adresse");
 echo $verif->getErreur("doublonLieux");
@@ -1133,7 +1136,10 @@ echo $verif->getHtmlErreur("localite_id");
 <p>
 <label for="urlLieu">URL</label>
 <input type="text" name="urlLieu" id="urlLieu" size="60" maxlength="80" title="url du lieu" tabindex="9" value="
-<?php if (empty($champs['idLieu'])) { echo sanitizeForHtml($champs['urlLieu']); } ?>" onfocus="this.className='focus';" onblur="this.className='normal';" />
+       <?php if (empty($champs['idLieu']))
+       {
+           echo sanitizeForHtml($champs['urlLieu']);
+       } ?>" />
 <?php
 echo $verif->getErreur("urlLieu");
 ?>

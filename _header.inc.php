@@ -82,8 +82,8 @@ use Ladecadanse\UserLevel;
     {
         ?>
     <script src="https://browser.sentry-cdn.com/7.60.0/bundle.min.js" crossorigin="anonymous"></script>
-        <script>
-        Sentry.init({
+        <script nonce="<?php echo CSP_NONCE ?>">
+                Sentry.init({
               dsn: "<?php echo GLITCHTIP_DSN ?>",
               tracesSampleRate: 0.01,
         });
@@ -96,15 +96,15 @@ use Ladecadanse\UserLevel;
     if (MATOMO_ENABLED) {
     ?>
         <!-- Matomo -->
-            <script>
-                'use strict';
+        <script nonce="<?php echo CSP_NONCE ?>">
+                    'use strict';
                   var _paq = window._paq = window._paq || [];
           /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
           _paq.push(['trackPageView']);
           _paq.push(['enableLinkTracking']);
           (function() {
-            var u="//tools.ladecadanse.ch/matomo/";
-            _paq.push(['setTrackerUrl', u+'matomo.php']);
+                var u="//<?php echo MATOMO_URL; ?>";
+                _paq.push(['setTrackerUrl', u+'matomo.php']);
             _paq.push(['setSiteId', '1']);
             var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
             g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
@@ -118,8 +118,8 @@ use Ladecadanse\UserLevel;
     if (GOOGLE_ANALYTICS_ENABLED) {
     ?>
         <script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo GOOGLE_ANALYTICS_ID; ?>"></script>
-            <script>
-                'use strict';
+        <script nonce="<?php echo CSP_NONCE ?>">
+                    'use strict';
               window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());

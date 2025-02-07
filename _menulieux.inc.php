@@ -183,7 +183,7 @@ else if ($get['vue'] == "genre")
 				<input type=\"hidden\" name=\"vue\" value=\"genre\" />
 				<input type=\"hidden\" name=\"idL\" value=\"" . $get['idL'] . "\" />
 				<input type=\"hidden\" name=\"statut\" value=\"" . $get['statut'] . "\" />
-				<select name=\"tranche\" onChange=\"javascript:this.form.submit();\">";
+				<select name=\"tranche\" class=\"js-auto-submiter\">";
     foreach ($glo_categories_lieux as $c => $c_nom)
     {
 
