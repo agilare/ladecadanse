@@ -137,6 +137,10 @@ const Forms = {
             }
         });
 
+        $('.js-auto-submiter').on('change', function autosubmit()
+        {
+            this.form.submit();
+        });
     }
 };
 

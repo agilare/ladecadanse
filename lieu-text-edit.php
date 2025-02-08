@@ -296,8 +296,8 @@ if ($verif->nbErreurs() > 0)
 ?>
 
 <!-- FORMULAIRE POUR UNE DESCRIPTION -->
-<form method="post" id="ajouter_editer" class="js-submit-freeze-wait" enctype="multipart/form-data" action="<?php echo basename(__FILE__)."?action=".$act; ?>" onsubmit="return validerAjouterDescription()">
-<?php
+    <form method="post" id="ajouter_editer" class="js-submit-freeze-wait" enctype="multipart/form-data" action="<?php echo basename(__FILE__) . "?action=" . $act; ?>">
+        <?php
 if ($get['type'] == 'presentation')
 {
 ?>

@@ -216,7 +216,7 @@ if ($get['sem'])
         <form action="" method="get" class="queries">
             <div style="display:inline-block;margin-top:0.2em">
 
-                <select name="genre" id="select_genre" onChange="javascript:this.form.submit();">
+                <select name="genre" id="select_genre" class="js-auto-submiter">
                     <option value="">Filtre</option>
                     <?php
                     foreach ($glo_tab_genre as $na => $la)
@@ -245,7 +245,7 @@ if ($get['sem'])
                 }
                 ?>
                 <label for="select_order">Tri</label>
-                <select name="tri_agenda" id="select_order" onChange="javascript:this.form.submit();">
+                <select name="tri_agenda" id="select_order" class="js-auto-submiter">
                     <option value="dateAjout" <?php if ($get['tri_agenda'] == 'dateAjout') { ?>selected<?php } ?>>date d’ajout</option>
                     <option value="horaire_debut" <?php if ($get['tri_agenda'] == 'horaire_debut') { ?>selected<?php } ?>>heure de début</option>
                 </select>

@@ -120,9 +120,9 @@ $aff_menulieux = '<div id="menu_lieux">';
 				<input type=\"hidden\" name=\"vue\" value=\"genre\" />
 				<input type=\"hidden\" name=\"idO\" value=\"".$get['idO']."\" />
 				<input type=\"hidden\" name=\"statut\" value=\"".$get['statut']."\" />
-				<select name=\"tranche\" onChange=\"javascript:this.form.submit();\">";
-				foreach ($categoriesVal as $c)
-				{
+				<select name=\"tranche\" class=\"js-auto-submiter\">";
+                foreach ($categoriesVal as $c)
+    {
 
 
 					$aff_menulieux .= "<option value=\"".$c."\"";

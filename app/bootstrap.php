@@ -52,9 +52,11 @@ Evenement::$urlDirPath = $url_uploads_events;
 $nom_page = basename($_SERVER["SCRIPT_FILENAME"], '.php');
 
 header('X-Content-Type-Options: nosniff');
-header("Content-Security-Policy: frame-ancestors 'self' https://epic-magazine.ch");
+// v1
+//header("Content-Security-Policy: frame-ancestors 'self' https://epic-magazine.ch");
 // v2
-//header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-rAnd0m' https://code.jquery.com https://maps.googleapis.com https://browser.sentry-cdn.com https://www.google.com https://www.gstatic.com https://www.googletagmanager.com https://cdn.tiny.cloud; img-src 'self' https://maps.gstatic.com https://maps.googleapis.com https://streetviewpixels-pa.googleapis.com https://lh3.ggpht.com https://www.paypalobjects.com https://sp.tinymce.com data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.tiny.cloud https://www.tiny.cloud; font-src 'self' https://fonts.gstatic.com https://www.tiny.cloud; connect-src https://maps.googleapis.com https://cdn.tiny.cloud; frame-ancestors 'self' https://epic-magazine.ch; frame-src https://www.google.com");
+define("CSP_NONCE", bin2hex(openssl_random_pseudo_bytes(32)));
+header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-" . CSP_NONCE . "' https://code.jquery.com https://maps.googleapis.com https://browser.sentry-cdn.com https://www.google.com https://www.gstatic.com https://www.googletagmanager.com https://cdn.tiny.cloud; img-src 'self' https://maps.gstatic.com https://maps.googleapis.com https://streetviewpixels-pa.googleapis.com https://lh3.ggpht.com https://www.paypalobjects.com https://sp.tinymce.com data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.tiny.cloud https://www.tiny.cloud; font-src 'self' https://fonts.gstatic.com https://www.tiny.cloud; connect-src https://maps.googleapis.com https://cdn.tiny.cloud https://www.google.com; frame-ancestors 'self' https://epic-magazine.ch; frame-src https://www.google.com; object-src 'none'; media-src 'none'; form-action 'self'; base-uri 'self'; worker-src 'none';");
 header('X-Frame-Options:    SAMEORIGIN');
 
 header("Cache-Control: no-store, no-cache, must-revalidate");
