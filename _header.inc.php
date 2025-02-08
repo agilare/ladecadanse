@@ -290,7 +290,9 @@ use Ladecadanse\UserLevel;
                     <li class="form_recherche">
                         <a href="#" id="btn_search"><i class="fa fa-search" aria-hidden="true"></i></a>
                         <form class="recherche" action="/evenement-search.php" method="get" enctype="application/x-www-form-urlencoded">
-                            <input type="text" class="mots" name="mots" size="22" maxlength="100" placeholder="Rechercher un événement" /><input type="submit" class="submit" name="formulaire" value=" " /><input type="text" name="name_as" value="" class="name_as" id="name_as" />
+                            <input type="text" class="mots" name="mots" size="22" maxlength="100" placeholder="Rechercher un événement" />
+                            <input type="submit" class="submit" name="formulaire" value=" " />
+                            <input type="text" name="name_as" value="" class="name_as" id="name_as" />
                         </form>
                     </li>
 
@@ -299,7 +301,9 @@ use Ladecadanse\UserLevel;
                 <div class="clear_mobile"></div>
 
                 <form class="recherche_mobile" action="/evenement-search.php" method="get" enctype="application/x-www-form-urlencoded">
-                    <input type="text" class="mots" name="mots" size="35" maxlength="100" placeholder="Rechercher un événement" /><input type="submit" class="submit" name="formulaire" value="OK" /><input type="text" name="name_as" value="" class="name_as" id="name_as" />
+                    <input type="text" class="mots" name="mots" size="35" maxlength="100" placeholder="Rechercher un événement" />
+                    <input type="submit" class="submit" name="formulaire" value="OK" />
+                    <input type="text" name="name_as" value="" class="name_as" id="name_as" />
                 </form>
 
             </nav>

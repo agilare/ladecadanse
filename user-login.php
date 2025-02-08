@@ -132,7 +132,7 @@ echo $verif->getHtmlErreur("motdepasse");
 <p class="mdp_oublie"><a href="/user-register.php" >Pas de compte ?</a></p>
 
 <p class="piedForm">
-    <input type="hidden" id="origine" name="origine" value="<?php echo $champs['origine'] ?>" />
+    <input type="hidden" id="origine" name="origine" value="" />
     <input type="text" class="name_as" name="login_as"></span>
     <input type="hidden" name="formulaire" value="ok" />
     <input type="submit" name="Submit" value="Se connecter" class="submit submit-big" />
