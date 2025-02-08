@@ -144,7 +144,7 @@ else if ($get['sem'] == 0)
 }
 
 $get['page'] = 1;
-if (isset($_GET['page']))
+if (!empty($_GET['page']))
 {
 	$get['page'] = (int)$_GET['page'];
 }
