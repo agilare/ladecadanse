@@ -20,6 +20,8 @@ include("_header.inc.php");
     </div>
 
     <?php
+    $formTokenName = 'form_token_contacteznous';
+
     $verif = new Validateur();
 
     $champs = array("email" => "", "auteur" => "", "affiliation" => "", "sujet" => "", "contenu" => "");
@@ -28,42 +30,54 @@ include("_header.inc.php");
 
     if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' && empty($_POST['as_nom']))
     {
-        foreach ($champs as $c => $v)
+        // check token received == token initially set in form registered in session
+        if (!isset($_SESSION[$formTokenName]) || $_POST[$formTokenName] !== $_SESSION[$formTokenName])
         {
-            $champs[$c] = $_POST[$c];
+            HtmlShrink::msgErreur("Désolé, le formulaire est expiré, veuillez le saisir à nouveau");
+            //die('Le formulaire est expiré; <a href="' . $_SERVER['PHP_SELF'] . '">Recharger la page');
         }
-
-        $verif = new Validateur();
-        $erreurs = array();
-
-        $verif->valider($champs['email'], "email", "email", 4, 80, 1);
-        $verif->valider($champs['auteur'], "auteur", "texte", 2, 80, 1);
-        $verif->valider($champs['affiliation'], "affiliation", "texte", 2, 80, 0);
-        $verif->valider($champs['sujet'], "sujet", "texte", 2, 80, 1);
-        $verif->valider($champs['contenu'], "contenu", "texte", 8, 10000, 1);
-
-        if (!empty($_POST['name_as']))
+        else
         {
-            $verif->setErreur("name_as", "Veuillez laisser ce champ vide");
-        }
+            unset($_SESSION[$formTokenName]);
 
-        if ($verif->nbErreurs() == 0)
-        {
-            $mailer = new Mailing();
-            if ($mailer->toAdmin($champs['sujet'], "Affiliation : " . $champs['affiliation'] . "\n\n" . $champs['contenu'], $champs['email']))
+            foreach ($champs as $c => $v)
             {
-                HtmlShrink::msgOk('Merci, votre message a été envoyé. Je vous répondrai dans les prochains jours');
+                $champs[$c] = $_POST[$c];
             }
-            $action_terminee = true;
-            unset($_POST);
-        }
+
+            $verif = new Validateur();
+            $erreurs = array();
+
+            $verif->valider($champs['email'], "email", "email", 4, 80, 1);
+            $verif->valider($champs['auteur'], "auteur", "texte", 2, 80, 1);
+            $verif->valider($champs['affiliation'], "affiliation", "texte", 2, 80, 0);
+            $verif->valider($champs['sujet'], "sujet", "texte", 2, 80, 1);
+            $verif->valider($champs['contenu'], "contenu", "texte", 8, 10000, 1);
+
+            if (!empty($_POST['name_as']))
+            {
+                $verif->setErreur("name_as", "Veuillez laisser ce champ vide");
+            }
+
+            if ($verif->nbErreurs() == 0)
+            {
+                $mailer = new Mailing();
+                if ($mailer->toAdmin($champs['sujet'], "Affiliation : " . $champs['affiliation'] . "\n\n" . $champs['contenu'], $champs['email']))
+                {
+                    HtmlShrink::msgOk('Merci, votre message a été envoyé. Je vous répondrai dans les prochains jours');
+                }
+                $action_terminee = true;
+                unset($_POST);
+            }
+        } // form_token check
     } //POST
 
 
     if (!$action_terminee)
     {
+        $_SESSION[$formTokenName] = bin2hex(random_bytes(32));
 
-        if ($verif->nbErreurs() > 0)
+    if ($verif->nbErreurs() > 0)
         {
             HtmlShrink::msgErreur($verif->getMsgNbErreurs());
         }
@@ -87,10 +101,11 @@ include("_header.inc.php");
                 ?>
                 <h3>Formulaire</h3>
                 <form method="post" id="ajouter_editer"  class="js-submit-freeze-wait" enctype="multipart/form-data" action="<?php echo basename(__FILE__) ?>">
-                    <p>* indique un champ obligatoire</p>
-                    <span class="mr_as">
-                        <label for="mr_as">Ne pas remplir ce champ</label><input name="as_nom" id="as_nom" type="text">
-                    </span>
+                            <p>* indique un champ obligatoire</p>
+                                    <input type="hidden" name="<?php echo $formTokenName; ?>" value="<?php echo $_SESSION[$formTokenName]; ?>">
+                                    <span class="mr_as">
+                                <label for="mr_as">Ne pas remplir ce champ</label><input name="as_nom" id="as_nom" type="text">
+                                    </span>
 
                         <fieldset>
                             <legend>Vos coordonnées</legend>
