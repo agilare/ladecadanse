@@ -22,7 +22,7 @@ if (isset($_GET['tri']))
 }
 
 $get['page'] = 1;
-if (isset($_GET['page']))
+if (!empty($_GET['page']) && is_numeric($_GET['page']))
 {try {
 	$get['page'] =  Validateur::validateUrlQueryValue($_GET['page'], "int", 1);
     } catch (Exception $e) { header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); exit; }
@@ -112,78 +112,82 @@ if (!empty($get['mots']))
 		$get['mots'] .= $tab_tous_mots[$i]."+";
 
 		//exclusion des mots vides
-		if (!in_array($tab_tous_mots[$i], $mots_vides))
-		{
+		if (!in_array($tab_tous_mots[$i], $mots_vides) && mb_strlen($tab_tous_mots[$i]) > 1)
+        {
 			$tab_mots[] = $tab_tous_mots[$i];
 		}
 	}
 	$nb_mots = count($tab_mots);
 
+    $get['mots'] = mb_substr($get['mots'], 0, -1);
 
-	$get['mots'] = mb_substr($get['mots'], 0, -1);
+    $nb_even = 0;
 
-	$champs_evenement = array("titre", "nomLieu", "description");
+    if ($nb_mots > 0)
+    {
+        $champs_evenement = array("titre", "nomLieu", "description");
 
-	$sql_select = "SELECT SQL_CALC_FOUND_ROWS idEvenement, idPersonne, titre, idLieu, idSalle, nomLieu, description, genre, dateEvenement,
-	flyer, prix, horaire_debut, horaire_complement, dateAjout
-	FROM evenement WHERE statut='actif' AND region IN ('".$connector->sanitize($_SESSION['region'])."', 'rf', 'hs') AND ";
+        $sql_select = "SELECT SQL_CALC_FOUND_ROWS idEvenement, idPersonne, titre, idLieu, idSalle, nomLieu, description, genre, dateEvenement,
+        flyer, prix, horaire_debut, horaire_complement, dateAjout
+        FROM evenement WHERE statut='actif' AND region IN ('" . $connector->sanitize($_SESSION['region']) . "', 'rf', 'hs') AND ";
 
-	$sql_select .= "( ";
+        $sql_select .= "( ";
 
-	for ($c = 0; $c < count($champs_evenement); $c++)
-	{
-		if ($champs_evenement[$c] == "nomLieu")
-		{
-			$et_ou = "OR";
-		}
+        for ($c = 0; $c < count($champs_evenement); $c++)
+        {
+            if ($champs_evenement[$c] == "nomLieu")
+            {
+                $et_ou = "OR";
+            }
 
-		for ($i = 0; $i < $nb_mots; $i++)
-		{
-			$sql_select .= $connector->sanitize($champs_evenement[$c])." LIKE '%".$connector->sanitize($tab_mots[$i])."%' ".$et_ou." ";
+            for ($i = 0; $i < $nb_mots; $i++)
+            {
+                $sql_select .= $connector->sanitize($champs_evenement[$c]) . " LIKE '%" . $connector->sanitize($tab_mots[$i]) . "%' " . $et_ou . " ";
+            }
+            $et_ou = "AND";
 
-		}
-		$et_ou = "AND";
+            $sql_select = mb_substr($sql_select, 0, -4);
+            $sql_select .= "OR ";
+        }
 
-		$sql_select = mb_substr($sql_select, 0, -4);
-		$sql_select .= "OR ";
-	}
-	if (count($champs_evenement))
-		$sql_select = mb_substr($sql_select, 0, -3);
+        if (count($champs_evenement))
+            $sql_select = mb_substr($sql_select, 0, -3);
 
-	$sql_select .= ") ";
+        if ($nb_mots > 0)
+            $sql_select .= ") ";
 
-	if ($get['periode'] == "futur")
-	{
-		$sql_select .= " AND dateEvenement >= '".$glo_auj."'";
-	}
-	else if ($get['periode'] == "ancien")
-	{
-		$sql_select .= " AND dateEvenement < '".$glo_auj."'";
-	}
+        if ($get['periode'] == "futur")
+        {
+            $sql_select .= " AND dateEvenement >= '" . $glo_auj . "'";
+        }
+        else if ($get['periode'] == "ancien")
+        {
+            $sql_select .= " AND dateEvenement < '" . $glo_auj . "'";
+        }
 
-	if ($get['tri'] == "dateAjout" || $get['tri'] == "dateEvenement")
-	{
-		$sql_select .= " ORDER BY ".$get['tri']." DESC ";
-	}
+        if ($get['tri'] == "dateAjout" || $get['tri'] == "dateEvenement")
+        {
+            $sql_select .= " ORDER BY " . $get['tri'] . " DESC ";
+        }
 
-	//$sql_select .= " AND evenement.idLieu = lieu.idLieu";
-	//echo $sql_select;
-	//echo $sql_select;
-	$req_even = $connector->query($sql_select);
-	$nb_even = $connector->getNumRows($req_even);
+        //$sql_select .= " AND evenement.idLieu = lieu.idLieu";
+        //echo $sql_select;
+        $req_even = $connector->query($sql_select);
+        $nb_even = $connector->getNumRows($req_even);
 
-	if ($get['tri'] != "pertinence")
-	{
-		$sql_select .= " LIMIT ".($get['page'] - 1) * $limite.", ".(($get['page'] - 1)* $limite + $limite);
-		$req_even = $connector->query($sql_select);
-	}
-	else
-	{
-		$nb_even = $connector->getNumRows($req_even);
-	}
+        if ($get['tri'] != "pertinence")
+        {
+            $sql_select .= " LIMIT " . ($get['page'] - 1) * $limite . ", " . (($get['page'] - 1) * $limite + $limite);
+            $req_even = $connector->query($sql_select);
+        }
+        else
+        {
+            $nb_even = $connector->getNumRows($req_even);
+        }
 
-    if ($get['page'] == 1)
-        $logger->log('global', 'activity', "[recherche] \"" . $get['mots'] . "\" with " . $nb_even . " events found", Logger::GRAN_YEAR);
+        if ($get['page'] == 1)
+            $logger->log('global', 'activity', "[recherche] \"" . $get['mots'] . "\" with " . $nb_even . " events found", Logger::GRAN_YEAR);
+    }
 
     $idE_trouves = "";
 
