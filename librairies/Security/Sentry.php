@@ -149,7 +149,7 @@ class Sentry extends SystemComponent
 
                 if ((sha1($this->userdata['gds'] . sha1($pass)) == $this->userdata['mot_de_passe']) || password_verify($pass, $this->userdata['mot_de_passe']))
                 {
-
+                    session_regenerate_id(true); // to avoid session fixation attack
                     $this->_setSession($this->userdata, $memoriser);
                     $logger->log('global', 'activity', "[Sentry] login of " . $_SESSION["user"], Logger::GRAN_YEAR);
 
@@ -218,7 +218,7 @@ class Sentry extends SystemComponent
         {
 
             $this->userdata = $connector->fetchArray($getUser);
-
+            session_regenerate_id(true); // to avoid session fixation attack
             $this->_setSession($this->userdata, true, true);
             $logger->log('global', 'activity', "[Sentry] remembered access of " . $_SESSION["user"] . " (" . $_SESSION['Semail'] . ")", Logger::GRAN_YEAR);
             return true;
@@ -347,6 +347,7 @@ class Sentry extends SystemComponent
     function logout()
     {
         unset($this->userdata);
+        session_regenerate_id(true); // to avoid session fixation attack
         session_destroy();
         unset($_SESSION);
         if (isset($_COOKIE['ladecadanse_remember']))
