@@ -20,6 +20,8 @@ if (isset($_GET['msg']))
 	$get['msg'] = Validateur::validateUrlQueryValue($_GET['msg'], "enum", 1, $tab_messages);
 }
 
+$formTokenName = 'form_token_user_login';
+
 $champs = array("pseudo" => "", "motdepasse" => "", "memoriser" => "", "origine" => "");
 
 $pseudo = '';
@@ -27,46 +29,54 @@ $motdepasse = '';
 
 $verif = new Validateur();
 
-if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
+if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' && empty($_POST['login_as']))
 {
+    // check token received == token initially set in form registered in session
+    if (!isset($_SESSION[$formTokenName]) || $_POST[$formTokenName] !== $_SESSION[$formTokenName])
+    {
+        HtmlShrink::msgErreur("Désolé, le formulaire est expiré, veuillez le saisir à nouveau");
+    }
+    else
+    {
+        unset($_SESSION[$formTokenName]);
 
-	foreach ($champs as $c => $v)
-	{
-        if (isset($_POST[$c]))
+        foreach ($champs as $c => $v)
         {
-            $champs[$c] = $_POST[$c];
+            if (isset($_POST[$c]))
+            {
+                $champs[$c] = $_POST[$c];
+            }
         }
-	}
 
 
-	$verif->valider($champs['pseudo'], "pseudo", "texte", 2, 50, 1);
-	$verif->valider($champs['motdepasse'], "motdepasse", "texte", 4, 50, 1);
+        $verif->valider($champs['pseudo'], "pseudo", "texte", 2, 50, 1);
+        $verif->valider($champs['motdepasse'], "motdepasse", "texte", 4, 50, 1);
 
-	if (!empty($champs['memoriser']) && $champs['memoriser'] != 1)
-	{
-		$verif->setErreur("memoriser", "Valeur fausse");
-	}
+        if (!empty($champs['memoriser']) && $champs['memoriser'] != 1)
+        {
+            $verif->setErreur("memoriser", "Valeur fausse");
+        }
 
-	if (!empty($_POST['login_as']))
-	{
-		$verif->setErreur("login_as", "Veuillez laisser ce champ vide");
-	}
+        if (!empty($_POST['login_as']))
+        {
+            $verif->setErreur("login_as", "Veuillez laisser ce champ vide");
+        }
 
 
-	//Si le pseudo et le mot de passe sont au bon format
-	if ($verif->nbErreurs() == 0)
-	{
+        //Si le pseudo et le mot de passe sont au bon format
+        if ($verif->nbErreurs() == 0)
+        {
 
-		$videur->checkLogin(
-		$champs['pseudo'],
-		$champs['motdepasse'],
-		UserLevel::MEMBER,
-                "/",
-		'/user-login.php?msg=faux',
-		$champs['memoriser']
-		);
-	}
-
+            $videur->checkLogin(
+                    $champs['pseudo'],
+                    $champs['motdepasse'],
+                    UserLevel::MEMBER,
+                    "/",
+                    '/user-login.php?msg=faux',
+                    $champs['memoriser']
+            );
+        }
+    }
 //'?msg=faux'
 //si le formulaire n'a pas été validé, ou les valeurs entrées sont fausses
 }
@@ -98,14 +108,18 @@ if ($verif->nbErreurs() > 0)
 {
 	HtmlShrink::msgErreur("Il y a ".$verif->nbErreurs()." erreur(s)");
 }
+    $_SESSION[$formTokenName] = bin2hex(random_bytes(32));
+    ?>
 
-?>
 
+    <form id="ajouter_editer" action="/user-login.php" method="post">
 
-<form id="ajouter_editer" action="/user-login.php" method="post">
-<?php
+        <?php
 echo $verif->getHtmlErreur("connexion");
 ?>
+
+<input type="text" class="name_as" name="login_as">
+<input type="hidden" name="<?php echo $formTokenName; ?>" value="<?php echo $_SESSION[$formTokenName]; ?>">
 
 <fieldset>
 <legend class="btn_toggle">Authentification</legend>
@@ -133,7 +147,7 @@ echo $verif->getHtmlErreur("motdepasse");
 
 <p class="piedForm">
     <input type="hidden" id="origine" name="origine" value="" />
-    <input type="text" class="name_as" name="login_as"></span>
+
     <input type="hidden" name="formulaire" value="ok" />
     <input type="submit" name="Submit" value="Se connecter" class="submit submit-big" />
 </p>

@@ -107,6 +107,7 @@ if ($get['action'] != "ajouter" && $get['action'] != "insert")
 	}
 }
 
+$formTokenName = 'form_token_evenement_edit';
 $verif = new Validateur();
 $champs = array("statut" => "", "genre" => "", "titre" => "", "dateEvenement" => "", "idLieu" => 0,
  "idSalle" => 0, "nomLieu" => "", "adresse" => "", "quartier" => "",  "localite_id" => "", "region" => "", "urlLieu" => "", 'organisateurs' => '', "description" => "", "ref" => "",
@@ -117,8 +118,8 @@ $action_terminee = false;
 
 if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 {
-	foreach ($champs as $c => $v)
-	{
+        foreach ($champs as $c => $v)
+{
 		if (isset($_POST[$c]) )
 		{
 			$champs[$c] = $_POST[$c];
@@ -138,7 +139,16 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
         if (!empty($recaptcha->score))
             $recaptcha_score = $recaptcha->score;
 
-        $logger->log('global', 'activity', "[evenement-edit] recaptcha score ".$recaptcha_score.", response : ".json_encode($recaptcha), Logger::GRAN_YEAR);
+        $logger->log('global', 'activity', "[evenement-edit] recaptcha score " . $recaptcha_score . ", response : " . json_encode($recaptcha), Logger::GRAN_YEAR);
+
+        // check token received == token initially set in form registered in session
+        if (!isset($_SESSION[$formTokenName]) || $_POST[$formTokenName] !== $_SESSION[$formTokenName])
+        {
+            HtmlShrink::msgErreur("Désolé, le formulaire est expiré, veuillez le saisir à nouveau");
+            exit;
+        }
+
+        unset($_SESSION[$formTokenName]);
     }
     else
     {
@@ -862,10 +872,15 @@ if ($verif->nbErreurs() > 0)
     }
 	//print_r($verif->getErreurs());
 }
-?>
+    $_SESSION[$formTokenName] = bin2hex(random_bytes(32));
+    ?>
 
-<form method="post" id="ajouter_editer" class="js-submit-freeze-wait" enctype="multipart/form-data" action="<?php echo basename(__FILE__)."?action=".$act ?>">
-    <div id="home-tmp-banner">
+    <form method="post" id="ajouter_editer" class="js-submit-freeze-wait" enctype="multipart/form-data" action="<?php echo basename(__FILE__) . "?action=" . $act ?>">
+
+            <input type="text" name="name_as" value="" class="name_as" /><?php echo $verif->getHtmlErreur('name_as'); ?>
+            <input type="hidden" name="<?php echo $formTokenName; ?>" value="<?php echo $_SESSION[$formTokenName]; ?>">
+
+        <div id="home-tmp-banner">
         <?php if (!in_array($get['action'], ['editer', 'update'])) { ?>
             <h2>Avant de commencer :</h2>
         <?php } ?>
@@ -1416,9 +1431,8 @@ else
 
 <p class="piedForm">
     <input type="hidden" name="formulaire" value="ok" />
-    <input type="text" name="name_as" value="" class="name_as"  /><?php echo $verif->getHtmlErreur('name_as'); ?>
-    <input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response">
-    <input type="hidden" name="token" value="<?php echo SecurityToken::getToken(); ?>" />
+        <input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response">
+        <input type="hidden" name="token" value="<?php echo SecurityToken::getToken(); ?>" />
     <input type="submit" name="submit" value="<?php echo (!isset($_SESSION['Sgroupe']))?"Envoyer":"Enregistrer"; ?>" class="submit submit-big" />
 </p>
 

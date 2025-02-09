@@ -25,8 +25,9 @@ include("_header.inc.php");
 <div id="contenu" class="colonne inscription">
 
 <?php
+    $formTokenName = 'form_token_user_register';
 
-$verif = new Validateur();
+    $verif = new Validateur();
 
 $champs = array("utilisateur" => '',
 "motdepasse" => '',
@@ -43,228 +44,234 @@ $action_terminee = false;
 
 if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 {
-	foreach ($champs as $c => $v)
-	{
-        if (isset($_POST[$c]))
+        // check token received == token initially set in form registered in session
+        if (!isset($_SESSION[$formTokenName]) || $_POST[$formTokenName] !== $_SESSION[$formTokenName])
         {
-            $champs[$c] = $_POST[$c];
+            HtmlShrink::msgErreur("Désolé, le formulaire est expiré, veuillez le saisir à nouveau");
         }
-	}
-	$champs['organisateurs'] = $_POST['organisateurs'];
+        else
+        {
+            unset($_SESSION[$formTokenName]);
 
-	$verif->valider($champs['utilisateur'], "utilisateur", "texte", 2, 50, 1);
+            foreach ($champs as $c => $v)
+            {
+                if (isset($_POST[$c]))
+                {
+                    $champs[$c] = $_POST[$c];
+                }
+            }
+            $champs['organisateurs'] = $_POST['organisateurs'];
 
-	$sql_existance = "SELECT pseudo FROM personne
-	WHERE pseudo='".$connector->sanitize($champs['utilisateur'])."'";
-	$req_existance = $connector->query($sql_existance);
+            $verif->valider($champs['utilisateur'], "utilisateur", "texte", 2, 50, 1);
 
-	if ($connector->getNumRows($req_existance) > 0)
-	{
-		$verif->setErreur("utilisateur_existant", "Un membre avec cet identifiant existe déjà.");
-    }
+            $sql_existance = "SELECT pseudo FROM personne
+        WHERE pseudo='" . $connector->sanitize($champs['utilisateur']) . "'";
+            $req_existance = $connector->query($sql_existance);
 
-
-	$verif->valider($champs['motdepasse'], "motdepasse", "texte", 8, 30, 1);
-	$verif->valider($champs['motdepasse2'], "motdepasse2", "texte", 8, 30, 1);
-
-
-	if (!empty($champs['motdepasse']) || !empty($champs['motdepasse2']))
-	{
-		if ($champs['motdepasse'] != $champs['motdepasse2'])
-		{
-			$verif->setErreur("motdepasse_inegaux", 'Les 2 mots de passe doivent être identiques.');
-		}
-
-		if (in_array($champs['motdepasse'], $g_mauvais_mdp))
-		{
-			$verif->setErreur("motdepasse", "Veuillez choisir un meilleur mot de passe");
-		}
+            if ($connector->getNumRows($req_existance) > 0)
+            {
+                $verif->setErreur("utilisateur_existant", "Un membre avec cet identifiant existe déjà.");
+            }
 
 
-		if (!empty($champs['motdepasse'])&& !preg_match("/[0-9]/", $champs['motdepasse']))
-		{
-			$verif->setErreur("motdepasse", 'Le mot de passe doit comporter au moins 1 chiffre.');
-		}
+            $verif->valider($champs['motdepasse'], "motdepasse", "texte", 8, 30, 1);
+            $verif->valider($champs['motdepasse2'], "motdepasse2", "texte", 8, 30, 1);
 
-	}
+            if (!empty($champs['motdepasse']) || !empty($champs['motdepasse2']))
+            {
+                if ($champs['motdepasse'] != $champs['motdepasse2'])
+                {
+                    $verif->setErreur("motdepasse_inegaux", 'Les 2 mots de passe doivent être identiques.');
+                }
 
-	$verif->valider($champs['email'], "email", "email", 4, 250, 1);
-
-	$sql_existance = "SELECT email FROM personne
-	WHERE email='".$connector->sanitize($champs['email'])."'";
-	$req_existance = $connector->query($sql_existance);
-
-	if ($connector->getNumRows($req_existance) > 0)
-	{
-		$verif->setErreur("email_identique", "Un compte avec cet email existe déjà.");
-    }
+                if (in_array($champs['motdepasse'], $g_mauvais_mdp))
+                {
+                    $verif->setErreur("motdepasse", "Veuillez choisir un meilleur mot de passe");
+                }
 
 
-	$verif->valider($champs['groupe'], "groupe", "int", 1, 2, 1);
-	/*
-	 * Modification du groupe, vérifie si le groupe envoyé existe et a bien un nom
-	 */
-	if (!empty($champs['groupe']))
-	{
-		if ($champs['groupe'] > UserLevel::MEMBER) {
-            $verif->setErreur("groupe", "Le groupe ".$champs['groupe']." n'est pas valable");
-		}
-	}
+                if (!empty($champs['motdepasse']) && !preg_match("/[0-9]/", $champs['motdepasse']))
+                {
+                    $verif->setErreur("motdepasse", 'Le mot de passe doit comporter au moins 1 chiffre.');
+                }
+            }
 
-	$verif->valider($champs['affiliation'], "affiliation", "texte", 2, 60, 0);
+            $verif->valider($champs['email'], "email", "email", 4, 250, 1);
 
-	/*
-	 * Si l'affiliation texte et l'affiliation lieu ont été choisies
-	 */
-	if ($champs['lieu'] != 0 && !empty($champs['affiliation']) )
-	{
-		$verif->setErreur("affiliation", "Vous ne pouvez pas choisir 2 affiliations");
-	}
+            $sql_existance = "SELECT email FROM personne
+        WHERE email='" . $connector->sanitize($champs['email']) . "'";
+            $req_existance = $connector->query($sql_existance);
 
-	/*
-	 * Si l'affiliation texte et l'affiliation lieu ont été choisies
-	 */
-	if ($champs['groupe'] == 8 && (empty($champs['affiliation']) && empty($champs['lieu']) && count($champs['organisateurs']) == 0))
-	{
-		$verif->setErreur("affiliation", "Vous devez choisir une affiliation");
-	}
-
-    if (!empty($_POST['username_as']))
-	{
-		$verif->setErreur("username_as", "Veuillez laisser ce champ vide");
-	}
-
-	if ($verif->nbErreurs() === 0)
-	{
-        $champs['pseudo'] = $champs['utilisateur'];
-		$champs['mot_de_passe'] = $champs['motdepasse'];
-		$champs['cookie'] = '';
-
-        $champs['dateAjout'] = date("Y-m-d H:i:s");
-		$champs['date_derniere_modif'] = date("Y-m-d H:i:s");
-		$champs['statut'] = 'demande';
-
-		// pour mail de notif admin (plus bas
-        $type_compte = 'organisateur';
-
-		$sql_insert_attributs = "";
-		$sql_insert_valeurs = "";
-
-		foreach ($champs as $c => $v)
-		{
-			if ($c != "utilisateur" && $c != "motdepasse" && $c != "motdepasse2" && $c != "lieu" && $c != "organisateurs")
-			{
-				$sql_insert_attributs .= $c.", ";
-				$sql_insert_valeurs .= "'".$connector->sanitize($v)."', ";
-			}
-		}
-
-		$sql_insert_attributs = mb_substr($sql_insert_attributs, 0, -2);
-		$sql_insert_valeurs = mb_substr($sql_insert_valeurs, 0, -2);
+            if ($connector->getNumRows($req_existance) > 0)
+            {
+                $verif->setErreur("email_identique", "Un compte avec cet email existe déjà.");
+            }
 
 
+            $verif->valider($champs['groupe'], "groupe", "int", 1, 2, 1);
+            /*
+             * Modification du groupe, vérifie si le groupe envoyé existe et a bien un nom
+             */
+            if (!empty($champs['groupe']))
+            {
+                if ($champs['groupe'] > UserLevel::MEMBER)
+                {
+                    $verif->setErreur("groupe", "Le groupe " . $champs['groupe'] . " n'est pas valable");
+                }
+            }
 
-		$sql_insert =  "INSERT INTO personne (".$sql_insert_attributs.") VALUES (".$sql_insert_valeurs.")";
-		//TEST
-		//echo $sql_insert;
-		//
-		$req_insert = $connector->query($sql_insert);
+            $verif->valider($champs['affiliation'], "affiliation", "texte", 2, 60, 0);
 
-		$req_id = $connector->getInsertId();
+            /*
+             * Si l'affiliation texte et l'affiliation lieu ont été choisies
+             */
+            if ($champs['lieu'] != 0 && !empty($champs['affiliation']))
+            {
+                $verif->setErreur("affiliation", "Vous ne pouvez pas choisir 2 affiliations");
+            }
 
-		//si un lieu a été choisi comme affiliation
-		if (isset($champs['lieu']) && $champs['lieu'] != 0)
-		{
-			$req_insAff = $connector->query("INSERT INTO affiliation
-			(idPersonne, idAffiliation,
-			 genre) VALUES ('".$req_id."','".$champs['lieu']."','lieu')");
-		}
+            /*
+             * Si l'affiliation texte et l'affiliation lieu ont été choisies
+             */
+            if ($champs['groupe'] == 8 && (empty($champs['affiliation']) && empty($champs['lieu']) && count($champs['organisateurs']) == 0))
+            {
+                $verif->setErreur("affiliation", "Vous devez choisir une affiliation");
+            }
 
-		foreach ($champs['organisateurs'] as $idOrg)
-		{
-			if ($idOrg != 0)
-			{
-				$sql = "INSERT INTO personne_organisateur (idPersonne, idOrganisateur) VALUES (".$req_id.", ".$idOrg.")";
-				//echo $sql;
-				$connector->query($sql);
-			}
-		}
+            if (!empty($_POST['username_as']))
+            {
+                $verif->setErreur("username_as", "Veuillez laisser ce champ vide");
+            }
 
+            if ($verif->nbErreurs() === 0)
+            {
+                $champs['pseudo'] = $champs['utilisateur'];
+                $champs['mot_de_passe'] = $champs['motdepasse'];
+                $champs['cookie'] = '';
 
+                $champs['dateAjout'] = date("Y-m-d H:i:s");
+                $champs['date_derniere_modif'] = date("Y-m-d H:i:s");
+                $champs['statut'] = 'demande';
 
+                // pour mail de notif admin (plus bas
+                $type_compte = 'organisateur';
 
-		/*
-		* Insertion réussie, message OK, et RAZ des champs
-		*/
-		if ($req_insert)
-		{
+                $sql_insert_attributs = "";
+                $sql_insert_valeurs = "";
+
+                foreach ($champs as $c => $v)
+                {
+                    if ($c != "utilisateur" && $c != "motdepasse" && $c != "motdepasse2" && $c != "lieu" && $c != "organisateurs")
+                    {
+                        $sql_insert_attributs .= $c . ", ";
+                        $sql_insert_valeurs .= "'" . $connector->sanitize($v) . "', ";
+                    }
+                }
+
+                $sql_insert_attributs = mb_substr($sql_insert_attributs, 0, -2);
+                $sql_insert_valeurs = mb_substr($sql_insert_valeurs, 0, -2);
+
+                $sql_insert = "INSERT INTO personne (" . $sql_insert_attributs . ") VALUES (" . $sql_insert_valeurs . ")";
+                //TEST
+                //echo $sql_insert;
+                //
+                $req_insert = $connector->query($sql_insert);
+
+                $req_id = $connector->getInsertId();
+
+                //si un lieu a été choisi comme affiliation
+                if (isset($champs['lieu']) && $champs['lieu'] != 0)
+                {
+                    $req_insAff = $connector->query("INSERT INTO affiliation
+                (idPersonne, idAffiliation,
+                 genre) VALUES ('" . $req_id . "','" . $champs['lieu'] . "','lieu')");
+                }
+
+                foreach ($champs['organisateurs'] as $idOrg)
+                {
+                    if ($idOrg != 0)
+                    {
+                        $sql = "INSERT INTO personne_organisateur (idPersonne, idOrganisateur) VALUES (" . $req_id . ", " . $idOrg . ")";
+                        //echo $sql;
+                        $connector->query($sql);
+                    }
+                }
 
 
 
-			$req_pers = $connector->query("
-			SELECT pseudo, mot_de_passe, email, groupe
-			FROM personne
-			WHERE idPersonne=".$req_id);
 
-			$tab_pers = $connector->fetchArray($req_pers);
+                /*
+                 * Insertion réussie, message OK, et RAZ des champs
+                 */
+                if ($req_insert)
+                {
 
-			$champs = array('gds' => '', 'mot_de_passe' => '');
 
-			$pass_email = $tab_pers['mot_de_passe'];
 
-			if (!empty($tab_pers['mot_de_passe']))
-				{
-					$champs['gds'] = mb_substr(sha1(uniqid(rand(), true)), 0, 5);
-					$champs['mot_de_passe'] = sha1($champs['gds'].sha1($tab_pers['mot_de_passe']));
-				}
+                    $req_pers = $connector->query("
+                SELECT pseudo, mot_de_passe, email, groupe
+                FROM personne
+                WHERE idPersonne=" . $req_id);
 
-			$sql_update = "UPDATE personne SET mot_de_passe='".$champs['mot_de_passe']."', gds='".$champs['gds']."',
-			statut='actif' WHERE idPersonne=".$req_id;
+                    $tab_pers = $connector->fetchArray($req_pers);
 
-			//message résultat et réinit
-			if ($connector->query($sql_update))
-			{
-				$subject = "Votre nouveau compte 👤 ".$tab_pers['pseudo']." sur La décadanse";
+                    $champs = array('gds' => '', 'mot_de_passe' => '');
 
-				$contenu_message = "Bonjour,\n\n";
-				$contenu_message .= "Merci de vous être inscrit-e sur www.ladecadanse.ch";
-				$contenu_message .= "\n\n";
-				$contenu_message .= "Pour vous connecter : ".$site_full_url."user-login.php";
-				$contenu_message .= "\n\n";
-				$contenu_message .= "Vous pouvez compléter votre profil sur votre page de membre : ";
-				$contenu_message .= $site_full_url."user.php?idP=".$req_id;
-				$contenu_message .= "\n\n";
-				$contenu_message .= "Bonne visite";
-				$contenu_message .= "\n\n";
-				$contenu_message .= "La décadanse";
+                    $pass_email = $tab_pers['mot_de_passe'];
 
-                $mailer = new Mailing();
-                $mailer->toUser($tab_pers['email'], $subject, $contenu_message);
+                    if (!empty($tab_pers['mot_de_passe']))
+                    {
+                        $champs['gds'] = mb_substr(sha1(uniqid(rand(), true)), 0, 5);
+                        $champs['mot_de_passe'] = sha1($champs['gds'] . sha1($tab_pers['mot_de_passe']));
+                    }
 
-				$compte_organisateur = "";
-				if (isset($champs['organisateurs']) && count($champs['organisateurs']) > 0)
-					$compte_organisateur = " en tant qu'acteur culturel";
+                    $sql_update = "UPDATE personne SET mot_de_passe='" . $champs['mot_de_passe'] . "', gds='" . $champs['gds'] . "',
+                statut='actif' WHERE idPersonne=" . $req_id;
 
-				HtmlShrink::msgOk("<strong>Votre compte".$compte_organisateur." a été créé</strong>; vous pouvez maintenant vous <a href=\"/user-login.php\">connecter</a> avec l'identifiant et le mot de passe que vous venez de saisir.
-				<br />Un e-mail de confirmation vous a été envoyé à l'adresse : " . sanitizeForHtml($tab_pers['email']));
+                    //message résultat et réinit
+                    if ($connector->query($sql_update))
+                    {
+                        $subject = "Votre nouveau compte 👤 " . $tab_pers['pseudo'] . " sur La décadanse";
 
-                $logger->log('global', 'activity', "[user-register] by ".$tab_pers['pseudo']." (".$tab_pers['email'].") in group ".$tab_pers['groupe']." /user.php?idP=".$req_id, Logger::GRAN_YEAR);
-			}
+                        $contenu_message = "Bonjour,\n\n";
+                        $contenu_message .= "Merci de vous être inscrit-e sur www.ladecadanse.ch";
+                        $contenu_message .= "\n\n";
+                        $contenu_message .= "Pour vous connecter : " . $site_full_url . "user-login.php";
+                        $contenu_message .= "\n\n";
+                        $contenu_message .= "Vous pouvez compléter votre profil sur votre page de membre : ";
+                        $contenu_message .= $site_full_url . "user.php?idP=" . $req_id;
+                        $contenu_message .= "\n\n";
+                        $contenu_message .= "Bonne visite";
+                        $contenu_message .= "\n\n";
+                        $contenu_message .= "La décadanse";
 
-			foreach ($champs as $k => $v)
-			{
-				$champs[$k] = '';
-			}
+                        $mailer = new Mailing();
+                        $mailer->toUser($tab_pers['email'], $subject, $contenu_message);
 
-			$action_terminee = true;
-		}
-		else
-		{
-			HtmlShrink::msgErreur("La requête INSERT dans 'personne' a échoué");
-		}
+                        $compte_organisateur = "";
+                        if (isset($champs['organisateurs']) && count($champs['organisateurs']) > 0)
+                            $compte_organisateur = " en tant qu'acteur culturel";
 
-	} // if erreurs == 0
-} // if POST != ""
+                        HtmlShrink::msgOk("<strong>Votre compte" . $compte_organisateur . " a été créé</strong>; vous pouvez maintenant vous <a href=\"/user-login.php\">connecter</a> avec l'identifiant et le mot de passe que vous venez de saisir.
+                    <br />Un e-mail de confirmation vous a été envoyé à l'adresse : " . sanitizeForHtml($tab_pers['email']));
+
+                        $logger->log('global', 'activity', "[user-register] by " . $tab_pers['pseudo'] . " (" . $tab_pers['email'] . ") in group " . $tab_pers['groupe'] . " /user.php?idP=" . $req_id, Logger::GRAN_YEAR);
+                    }
+
+                    foreach ($champs as $k => $v)
+                    {
+                        $champs[$k] = '';
+                    }
+
+                    $action_terminee = true;
+                }
+                else
+                {
+                    HtmlShrink::msgErreur("La requête INSERT dans 'personne' a échoué");
+                }
+            } // if erreurs == 0
+        }
+    } // if POST != ""
 
 
 if (!$action_terminee)
@@ -289,23 +296,28 @@ if ($verif->nbErreurs() > 0)
 {
 	HtmlShrink::msgErreur("Il y a ".$verif->nbErreurs()." erreur(s).");
 }
-?>
+
+        $_SESSION[$formTokenName] = bin2hex(random_bytes(32));
+        ?>
 
 
 <!-- FORMULAIRE -->
 
     <form method="post" id="ajouter_editer" class="js-submit-freeze-wait" action="?action=<?php echo $act ?>">
 
+        <input type="text" class="name_as" name="username_as">
+        <input type="hidden" name="<?php echo $formTokenName; ?>" value="<?php echo $_SESSION[$formTokenName]; ?>">
+
         <p>Avant de vous inscrire en tant qu'Organisateur, veillez svp à ce que les événements que vous souhaitez ajouter respectent notre <b><a href="/articles/charte-editoriale.php">charte&nbsp;éditoriale</a></b>.
         </p>
-            <p>Les événements annoncés sur La décadanse sont également visibles sur les sites de nos partenaires : <a href="https://epic-magazine.ch/" target="_blank">EPIC-Magazine</a> et <a href="https://noctambus.ch/" target="_blank">Noctambus</a></p>
-                <details style="margin-top:-11px">
-                    <summary>Détails</summary>
-                <ul><li><b>EPIC-Magazine</b> - webmagazine qui met en avant la culture locale et émergente à Genève et dans ses environs&nbsp;: intégration de l'agenda dans la <a href="https://epic-magazine.ch/lieux/" target="_blank">page Cartographie</a>
-                    </li>
-                        <li><b>Noctambus</b> - réseau de bus de nuit desservant le canton de Genève et ses régions transfrontalières&nbsp;: une sélection des événements nocturnes du vendredi au samedi dans les <a href="https://noctambus.ch/noctualites" target="_blank">noctualités</a>
-                        </li>
-            </details>
+        <p>Les événements annoncés sur La décadanse sont également visibles sur les sites de nos partenaires : <a href="https://epic-magazine.ch/" target="_blank">EPIC-Magazine</a> et <a href="https://noctambus.ch/" target="_blank">Noctambus</a></p>
+        <details style="margin-top:-11px">
+            <summary>Détails</summary>
+            <ul><li><b>EPIC-Magazine</b> - webmagazine qui met en avant la culture locale et émergente à Genève et dans ses environs&nbsp;: intégration de l'agenda dans la <a href="https://epic-magazine.ch/lieux/" target="_blank">page Cartographie</a>
+                </li>
+                <li><b>Noctambus</b> - réseau de bus de nuit desservant le canton de Genève et ses régions transfrontalières&nbsp;: une sélection des événements nocturnes du vendredi au samedi dans les <a href="https://noctambus.ch/noctualites" target="_blank">noctualités</a>
+                </li>
+        </details>
 
         <p>* indique un champ obligatoire</p>
 
@@ -421,9 +433,8 @@ echo $verif->getHtmlErreur("email_identique");?>
 </fieldset>
 
     <p class="piedForm">
-    <input type="hidden" name="formulaire" value="ok" />
-    <input type="text" class="name_as" name="username_as">
-    <input type="submit" value="S'inscrire" class="submit submit-big" />
+        <input type="hidden" name="formulaire" value="ok" />
+            <input type="submit" value="S'inscrire" class="submit submit-big" />
 </p>
 
 </form>

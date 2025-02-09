@@ -32,26 +32,37 @@ include("_header.inc.php");
 
 
     <?php
+    $formTokenName = 'form_token_evenement_report';
 
     $tab_type_erreur = array(
         "info" => "mauvaise information au sujet de l’événement",
         "enlever" => "événement à enlever",
         "autre" => "autre"
-);
+    );
 
-    $verif = new Validateur();
+$verif = new Validateur();
 
     $champs = array("type_erreur" => '', 'message' => '', 'name' => '', 'email' => '');
     $action_terminee = false;
 
     if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
     {
-
-    if (!empty($_POST['name'])) {
-        exit;
+        // check token received == token initially set in form registered in session
+    if (!isset($_SESSION[$formTokenName]) || $_POST[$formTokenName] !== $_SESSION[$formTokenName])
+    {
+        HtmlShrink::msgErreur("Désolé, le formulaire est expiré, veuillez le saisir à nouveau");
+        //die('Le formulaire est expiré; <a href="' . $_SERVER['PHP_SELF'] . '">Recharger la page');
     }
+    else
+    {
+        unset($_SESSION[$formTokenName]);
 
-    foreach ($champs as $c => $v)
+        if (!empty($_POST['name']))
+        {
+            exit;
+        }
+
+        foreach ($champs as $c => $v)
         {
             $champs[$c] = $_POST[$c];
         }
@@ -70,42 +81,40 @@ include("_header.inc.php");
 
         $verif->valider($champs['email'], "email", "email", 4, 80, 0);
 
-        if (empty($champs['name']))
+        if ($verif->nbErreurs() === 0)
         {
-            if ($verif->nbErreurs() === 0)
+            $from = $champs['email'];
+            if (isset($_SESSION['user']))
             {
-                $from = $champs['email'];
-                if (isset($_SESSION['user']))
-                {
-                    $from = $_SESSION['Semail'];
-                }
-
-                $subject = "Rapport d'erreur sur un événement : " . $tab_type_erreur[$champs['type_erreur']];
-                $contenu_message = "Événement : " . $site_full_url . "/evenement.php?idE=" . $champs['idEvenement'];
-                $contenu_message .= "\n\n";
-                $contenu_message .= "Message :\n\n" . $champs['message'] . "\n\n";
-                if (isset($_SESSION['user']))
-                {
-                    $contenu_message .= "\n\n" . $_SESSION['user'];
-                }
-
-                $mailer = new Mailing();
-                if ($mailer->toAdmin($subject, $contenu_message, $from))
-                {
-                    HtmlShrink::msgOk("Merci d'avoir signalé cette erreur, je m'en occupe dès que possible");
-                    $logger->log('global', 'activity', "[evenement-report] by " . $from . " for /evenement.php?idE=" . $champs['idEvenement'], Logger::GRAN_YEAR);
-                }
-
-                unset($_POST);
-                $action_terminee = true;
+                $from = $_SESSION['Semail'];
             }
-        } // if antispam
 
-    } // if POST != ""
+            $subject = "Rapport d'erreur sur un événement : " . $tab_type_erreur[$champs['type_erreur']];
+            $contenu_message = "Événement : " . $site_full_url . "/evenement.php?idE=" . $champs['idEvenement'];
+            $contenu_message .= "\n\n";
+            $contenu_message .= "Message :\n\n" . $champs['message'] . "\n\n";
+            if (isset($_SESSION['user']))
+            {
+                $contenu_message .= "\n\n" . $_SESSION['user'];
+            }
+
+            $mailer = new Mailing();
+            if ($mailer->toAdmin($subject, $contenu_message, $from))
+            {
+                HtmlShrink::msgOk("Merci d'avoir signalé cette erreur, je m'en occupe dès que possible");
+                $logger->log('global', 'activity', "[evenement-report] by " . $from . " for /evenement.php?idE=" . $champs['idEvenement'], Logger::GRAN_YEAR);
+            }
+
+            unset($_POST);
+            $action_terminee = true;
+        }
+    }
+} // if POST != ""
 
 
     if (!$action_terminee)
     {
+        $_SESSION[$formTokenName] = bin2hex(random_bytes(32));
         ?>
 
         <div id="entete_contenu">
@@ -143,7 +152,13 @@ include("_header.inc.php");
 
         <form method="post" id="ajouter_editer" class="js-submit-freeze-wait" action="<?php echo basename(__FILE__) . "?idE=" . $get['idE']; ?>">
 
-            <fieldset style="width:100%">
+                <input type="hidden" name="<?php echo $formTokenName; ?>" value="<?php echo $_SESSION[$formTokenName]; ?>">
+                <div class="mr_as">
+                    <label for="name_as">nom</label>
+                        <input type="text" name="name">
+                    </div>
+
+                <fieldset style="width:100%">
 
                 <legend>Type d'erreur*</legend>
                 <ul class="radio_vert" >
@@ -191,10 +206,6 @@ include("_header.inc.php");
             }
             ?>
 
-            <div class="mr_as">
-                <label for="name_as">nom</label>
-                    <input type="text"  name="name">
-                </div>
 
             <p class="piedForm">
                 <input type="hidden" name="formulaire" value="ok" />
