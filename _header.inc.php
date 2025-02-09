@@ -135,7 +135,7 @@ use Ladecadanse\UserLevel;
 
     <div id="global">
 
-        <a name="haut" id="haut"></a>
+        <a id="haut"></a>
 
         <header id="entete">
 
@@ -292,7 +292,7 @@ use Ladecadanse\UserLevel;
                         <form class="recherche" action="/evenement-search.php" method="get" enctype="application/x-www-form-urlencoded">
                             <input type="text" class="mots" name="mots" size="22" maxlength="100" placeholder="Rechercher un événement" />
                             <input type="submit" class="submit" name="formulaire" value=" " />
-                            <input type="text" name="name_as" value="" class="name_as" id="name_as" />
+                            <input type="text" name="name_as" value="" class="name_as"  />
                         </form>
                     </li>
 
@@ -303,7 +303,7 @@ use Ladecadanse\UserLevel;
                 <form class="recherche_mobile" action="/evenement-search.php" method="get" enctype="application/x-www-form-urlencoded">
                     <input type="text" class="mots" name="mots" size="35" maxlength="100" placeholder="Rechercher un événement" />
                     <input type="submit" class="submit" name="formulaire" value="OK" />
-                    <input type="text" name="name_as" value="" class="name_as" id="name_as" />
+                    <input type="text" name="name_as" value="" class="name_as"  />
                 </form>
 
             </nav>

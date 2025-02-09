@@ -1416,7 +1416,7 @@ else
 
 <p class="piedForm">
     <input type="hidden" name="formulaire" value="ok" />
-    <input type="text" name="name_as" value="" class="name_as" id="name_as" /><?php echo $verif->getHtmlErreur('name_as'); ?>
+    <input type="text" name="name_as" value="" class="name_as"  /><?php echo $verif->getHtmlErreur('name_as'); ?>
     <input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response">
     <input type="hidden" name="token" value="<?php echo SecurityToken::getToken(); ?>" />
     <input type="submit" name="submit" value="<?php echo (!isset($_SESSION['Sgroupe']))?"Envoyer":"Enregistrer"; ?>" class="submit submit-big" />

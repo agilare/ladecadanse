@@ -158,7 +158,7 @@ include("_header.inc.php");
 
                         <p class="piedForm">
                             <input type="hidden" name="formulaire" value="ok" />
-                            <input type="text" name="name_as" value="" class="name_as" id="name_as" />
+                            <input type="text" name="name_as" value="" class="name_as"  />
                             <input type="submit" value="Envoyer" class="submit submit-big" />
                         <div class="spacer"><!-- --></div>
                     </p>

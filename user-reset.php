@@ -137,7 +137,7 @@ if ($verif->nbErreurs() > 0)
 ?>
 
 <form id="ajouter_editer" class="js-submit-freeze-wait" action="" method="post">
-    <span class="mr_as"><label for="mr_as">Ne pas remplir ce champ</label><input type="text" id="name_as" name="name_as"></span>
+    <span class="mr_as"><label for="mr_as">Ne pas remplir ce champ</label><input type="text"  name="name_as"></span>
     <p>
         <label for="pseudo" id="login_pseudo">Identifiant ou e-mail du compte</label>
         <input type="text" name="pseudo_email" id="pseudo_email" value="" size="30" />

@@ -40,9 +40,9 @@ $mois_suiv = date("Y-m-d", mktime(0, 0, 0, $mois_courant + 1, $jour_mois_suiv, $
 
 <div id="navigation_calendrier" >
 
-	<table id="calendrier" summary="Calendrier pour choisir une date du mois">
-
-	<tr id="mois">
+    <table id="calendrier">
+<!--        <caption>Calendrier pour choisir une date du mois</caption>-->
+        <tr id="mois">
 		<th>
 		<?php
 		if (mktime(0, 0, 0, $mois_courant, $jour_courant, $annee_courant) > mktime(12, 0, 0, 9, 1, 2005))

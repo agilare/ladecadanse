@@ -193,7 +193,7 @@ include("_header.inc.php");
 
             <div class="mr_as">
                 <label for="name_as">nom</label>
-                    <input type="text" id="name_as" name="name">
+                    <input type="text"  name="name">
                 </div>
 
             <p class="piedForm">

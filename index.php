@@ -251,8 +251,13 @@ FROM evenement WHERE region IN ('" . $connector->sanitize($_SESSION['region']) .
                             $org_url = 'http://'.$tab['URL'];
                         }
                     ?>
-                            <li><a href="/organisateur.php?idO=<?php echo $tab['idOrganisateur']; ?>"><?php echo sanitizeForHtml($tab['nom']); ?></a> <a href="<?php echo sanitizeForHtml($org_url); ?>" title="Site web de l'organisateur" class="lien_ext" target="_blank"><?php echo sanitizeForHtml($org_url_nom); ?></a></li>
-                            <?php
+                    <li><a href="/organisateur.php?idO=<?php echo $tab['idOrganisateur']; ?>"><?php echo sanitizeForHtml($tab['nom']); ?></a>
+                                <?php if (!empty($tab['URL']))
+                                { ?>
+                                    <a href="<?php echo sanitizeForHtml($org_url); ?>" title="Site web de l'organisateur" class="lien_ext" target="_blank"><?php echo sanitizeForHtml($org_url_nom); ?></a>
+                        <?php } ?>
+                    </li>
+                    <?php
                     }
                     ?>
                 </ul>
@@ -297,10 +302,9 @@ FROM evenement WHERE region IN ('" . $connector->sanitize($_SESSION['region']) .
                 echo "<li class=\"action_editer\"><a href=\"/evenement-edit.php?action=editer&amp;idE=".$tab_even['idEvenement']."\" title=\"Modifier l'événement\">Modifier</a></li>";
                 echo '<li class="action_depublier"><a href="#" id="btn_event_unpublish_'.$tab_even['idEvenement'].'" class="btn_event_unpublish" data-id='.$tab_even['idEvenement'].'>Dépublier</a></li>';
                 echo '<li class=""><a href="/user.php?idP='.$tab_even['idPersonne'].'">'.$icone['personne'].'</a></li>';
-                echo '</ul>';
-                }
-                ?>
-            </ul>
+                ?></ul>
+                <?php } ?>
+
 
         </div> <!-- fin edition -->
 
@@ -330,7 +334,7 @@ FROM evenement WHERE region IN ('" . $connector->sanitize($_SESSION['region']) .
     <?php include("_navigation_calendrier.inc.php"); ?>
 
 
-    <section id="dernieres" style="margin-top:15px;width: 100%;">
+    <section class="dernieres" style="margin-top:15px;width: 100%;">
 
         <ul style="padding-left:5px">
             <li style="display:inline-block"><a href="https://www.facebook.com/ladecadanse" aria-label="Watch agilare/ladecadanse on GitHub" style="font-size:1em" target="_blank"><i class="fa fa-facebook fa-2x" aria-hidden="true"></i></a></li>
@@ -358,7 +362,7 @@ FROM evenement WHERE region IN ('" . $connector->sanitize($_SESSION['region']) .
 
 <aside id="colonne_droite" class="colonne">
 
-    <div id="dernieres">
+    <div class="dernieres">
 
         <span style="float:right;margin-top:0.4em;padding:0.2em;"><a href="/rss.php?type=evenements_ajoutes"><i class="fa fa-rss fa-lg" style="color:#f5b045"></i></a></span>
         <h2>Derniers événements ajoutés</h2>
@@ -432,8 +436,8 @@ FROM evenement WHERE region IN ('" . $connector->sanitize($_SESSION['region']) .
             echo '<h5 style="font-size:1em;color:#5C7378">';
             echo $infosLieu;
             echo "</h5>";
-            echo "<p>le&nbsp;<a href=/evenement-agenda.php?courant=".$tab_dern_even['dateEvenement'].">".date_fr($tab_dern_even['dateEvenement'])."</a></p><div class=\"spacer\"></div>";
-            echo "</div>";
+            echo "<p>le&nbsp;<a href=\"/evenement-agenda.php?courant=" . $tab_dern_even['dateEvenement'] . "\">" . date_fr($tab_dern_even['dateEvenement']) . "</a></p><div class=\"spacer\"></div>";
+        echo "</div>";
             echo '<div class="spacer"><!-- --></div>';
             $date_ajout_courante = $date_ajout;
         }
@@ -443,7 +447,7 @@ FROM evenement WHERE region IN ('" . $connector->sanitize($_SESSION['region']) .
     </div>
     <!-- Fin derniers_evenements -->
 
-    </div> <!-- fin dernieres
+    </div> <!-- fin dernieres -->
 
 </aside> <!-- Fin colonne_droite -->
 
