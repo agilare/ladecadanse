@@ -18,7 +18,10 @@ The scope of the application and its features are basically covered; these tests
 - [Selenium IDE](https://www.selenium.dev/selenium-ide/) browser extension installed
 - fake data in the instance to test (to create manually) :
     - users : an admin, an actor (the most important profiles)
-    - entities : about a hundred events (of 2-3 categories), some venues and organizers (try to link these entities, like an Event in a Venue with some Organizers)
+    - entities : dozen of events (of 2-3 categories), some venues and organizers (try to link these entities, like an Event in a Venue with some Organizers)
+    - in pages :
+        - home : 1st event is in a registered Venue, min. 2 events in category "Fêtes"
+        - agenda : the Saturday of the 5th week of the current months has min 2 events
 - mail sending parameters are complete in `env.php` and mails can be sent (really or using a mail catcher for development like [FakeSMTP](https://nilhcem.com/FakeSMTP/))
 
 #### The tests
@@ -35,9 +38,10 @@ Tests have some name conventions :
 #### Running the tests on an instance
 
 1. in your browser, launch Selenium IDE and open project `tests/ladecadanse.side`
-2. select a test in a suite
-3. enter the URL to test (local, prod...)
-4. run all tests in suite
+2. disable website CSP
+3. select a test in a suite
+4. enter the URL to test (local, prod...)
+5. run all tests in suite
 
 #### Edit
 ...

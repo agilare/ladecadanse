@@ -2096,12 +2096,19 @@
       ],
       "value": "20:30"
     }, {
+      "id": "9693e0aa-655d-4a08-9f6f-ccd86772c6c5",
+      "comment": "",
+      "command": "executeScript",
+      "target": "return ((new Date()).getDate()) + \".\" + ((new Date()).getMonth() + 1) + \".\" + ((new Date()).getFullYear() )",
+      "targets": [],
+      "value": "eventDate"
+    }, {
       "id": "580b472f-d0db-4bc3-a981-c965e74c397b",
       "comment": "",
       "command": "type",
       "target": "id=dateEvenement",
       "targets": [],
-      "value": "01.03.2025"
+      "value": "${eventDate}"
     }, {
       "id": "1651df04-b744-48f5-b8f9-618d734eeb04",
       "comment": "",
@@ -2850,12 +2857,19 @@
       "targets": [],
       "value": ""
     }, {
+      "id": "3a58f64c-499a-44a6-8902-88d3cf24e2c5",
+      "comment": "",
+      "command": "executeScript",
+      "target": "return ((new Date()).getDate()) + \".\" + ((new Date()).getMonth() + 1) + \".\" + ((new Date()).getFullYear() )",
+      "targets": [],
+      "value": "eventDate"
+    }, {
       "id": "6ee3f627-773f-408f-bfb0-6f71d5a13fe5",
       "comment": "",
       "command": "type",
       "target": "css=#dateEvenement",
       "targets": [],
-      "value": "24.02.2024"
+      "value": "${eventDate}"
     }, {
       "id": "0b145ec9-56cd-4f36-a83b-7433844497ac",
       "comment": "",
@@ -5927,6 +5941,13 @@
       ],
       "value": ""
     }, {
+      "id": "59009417-a54c-4c22-ba46-4c53c99bc933",
+      "comment": "",
+      "command": "executeScript",
+      "target": "return Math.random().toString(36).substring(2,16)",
+      "targets": [],
+      "value": "myusername"
+    }, {
       "id": "d4258e0e-2492-4da7-8b2f-66ab01fb7510",
       "comment": "",
       "command": "type",
@@ -5939,7 +5960,7 @@
         ["xpath=//form[@id='ajouter_editer']/fieldset/p/input", "xpath:idRelative"],
         ["xpath=//p/input", "xpath:position"]
       ],
-      "value": "test99"
+      "value": "${myusername}"
     }, {
       "id": "2ac6e6c5-aa3e-43e2-ae65-75ef86c250b0",
       "comment": "",
@@ -6023,7 +6044,7 @@
         ["xpath=//form[@id='ajouter_editer']/fieldset/p[4]/input", "xpath:idRelative"],
         ["xpath=//p[4]/input", "xpath:position"]
       ],
-      "value": "test99@ladecadanse.ch"
+      "value": "${myusername}@ladecadanse.ch"
     }, {
       "id": "e2faa741-d1fd-44df-a8ea-c5a7be7d689d",
       "comment": "",
