@@ -2099,7 +2099,7 @@
       "id": "9693e0aa-655d-4a08-9f6f-ccd86772c6c5",
       "comment": "",
       "command": "executeScript",
-      "target": "return ((new Date()).getDate()) + \".\" + ((new Date()).getMonth() + 1) + \".\" + ((new Date()).getFullYear() )",
+      "target": "return (new Date().getDate().toString().padStart(2, '0')) + \".\" + ((new Date().getMonth() + 1).toString().padStart(2, '0')) + \".\" + ((new Date()).getFullYear() )",
       "targets": [],
       "value": "eventDate"
     }, {
@@ -2860,7 +2860,7 @@
       "id": "3a58f64c-499a-44a6-8902-88d3cf24e2c5",
       "comment": "",
       "command": "executeScript",
-      "target": "return ((new Date()).getDate()) + \".\" + ((new Date()).getMonth() + 1) + \".\" + ((new Date()).getFullYear() )",
+      "target": "return (new Date().getDate().toString().padStart(2, '0')) + \".\" + ((new Date().getMonth() + 1).toString().padStart(2, '0')) + \".\" + ((new Date()).getFullYear() )",
       "targets": [],
       "value": "eventDate"
     }, {
@@ -7450,6 +7450,519 @@
       "targets": [],
       "value": ""
     }]
+  }, {
+    "id": "47b5c3dd-0f06-46df-829b-be4eb31ea1b6",
+    "name": "user (actor) event add and unpublish (vars, r)",
+    "commands": [{
+      "id": "42ea6ed7-2442-4091-a0c4-e4148a5158ab",
+      "comment": "",
+      "command": "open",
+      "target": "/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "ddea995a-0e4c-4281-af97-cd7348717e97",
+      "comment": "",
+      "command": "click",
+      "target": "css=#menu_pratique li:nth-child(5) > a",
+      "targets": [
+        ["linkText=Ajouter un événement", "linkText"],
+        ["css=#menu_pratique li:nth-child(5) > a", "css:finder"],
+        ["xpath=//a[contains(text(),'Ajouter un événement')]", "xpath:link"],
+        ["xpath=//nav[@id='menu_pratique']/ul/li[5]/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '/evenement-edit.php?action=ajouter')]", "xpath:href"],
+        ["xpath=//li[5]/a", "xpath:position"],
+        ["xpath=//a[contains(.,'Ajouter un événement')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "725173c5-7868-4015-bc7c-936a6f11d970",
+      "comment": "",
+      "command": "assertElementPresent",
+      "target": "name=submit",
+      "targets": [
+        ["name=submit", "name"],
+        ["css=.submit-big", "css:finder"],
+        ["xpath=//input[@name='submit']", "xpath:attributes"],
+        ["xpath=//form[@id='ajouter_editer']/p[2]/input[5]", "xpath:idRelative"],
+        ["xpath=//input[5]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "106847c6-5740-4119-8612-ecf9e6d858f7",
+      "comment": "",
+      "command": "click",
+      "target": "id=genre_cinéma",
+      "targets": [
+        ["id=genre_cinéma", "id"],
+        ["css=#genre_cin\\E9ma", "css:finder"],
+        ["xpath=//input[@id='genre_cinéma']", "xpath:attributes"],
+        ["xpath=//form[@id='ajouter_editer']/fieldset/ul/li[2]/input", "xpath:idRelative"],
+        ["xpath=//li[2]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "7bc8e352-9cf2-4af4-82c1-9ab92145d8eb",
+      "comment": "",
+      "command": "//click",
+      "target": "id=dateEvenement",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "de40e5ab-e64c-4c2d-8f2c-f5b2222aa8dd",
+      "comment": "",
+      "command": "//click",
+      "target": "css=.dp_hover",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "ba40f49c-19ad-4cc5-a30c-ad3a3fea9a4d",
+      "comment": "",
+      "command": "executeScript",
+      "target": "return (new Date().getDate().toString().padStart(2, '0')) + \".\" + ((new Date().getMonth() + 1).toString().padStart(2, '0')) + \".\" + ((new Date()).getFullYear() )",
+      "targets": [],
+      "value": "eventDate"
+    }, {
+      "id": "ac09fa90-708d-471b-a272-38a0660149fc",
+      "comment": "",
+      "command": "type",
+      "target": "css=#dateEvenement",
+      "targets": [],
+      "value": "${eventDate}"
+    }, {
+      "id": "0598a534-fea7-4ee8-996d-8a4ca7412791",
+      "comment": "",
+      "command": "click",
+      "target": "id=horaire_debut",
+      "targets": [
+        ["id=horaire_debut", "id"],
+        ["name=horaire_debut", "name"],
+        ["css=#horaire_debut", "css:finder"],
+        ["xpath=//input[@id='horaire_debut']", "xpath:attributes"],
+        ["xpath=//form[@id='ajouter_editer']/fieldset[2]/p/input", "xpath:idRelative"],
+        ["xpath=//p/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "8dfb88ec-f4fa-4b41-8c3b-2eb55af7be57",
+      "comment": "",
+      "command": "type",
+      "target": "id=horaire_debut",
+      "targets": [
+        ["id=horaire_debut", "id"],
+        ["name=horaire_debut", "name"],
+        ["css=#horaire_debut", "css:finder"],
+        ["xpath=//input[@id='horaire_debut']", "xpath:attributes"],
+        ["xpath=//form[@id='ajouter_editer']/fieldset[2]/p/input", "xpath:idRelative"],
+        ["xpath=//p/input", "xpath:position"]
+      ],
+      "value": "19:30"
+    }, {
+      "id": "30373ddf-47b2-4dae-9f99-208700c50d50",
+      "comment": "",
+      "command": "type",
+      "target": "id=horaire_fin",
+      "targets": [
+        ["id=horaire_fin", "id"],
+        ["name=horaire_fin", "name"],
+        ["css=#horaire_fin", "css:finder"],
+        ["xpath=//input[@id='horaire_fin']", "xpath:attributes"],
+        ["xpath=//form[@id='ajouter_editer']/fieldset[2]/p/input[2]", "xpath:idRelative"],
+        ["xpath=//p/input[2]", "xpath:position"]
+      ],
+      "value": "23:30"
+    }, {
+      "id": "299f26cf-cf14-4e0e-8afd-1930b3f05e71",
+      "comment": "",
+      "command": "click",
+      "target": "id=horaire_complement",
+      "targets": [
+        ["id=horaire_complement", "id"],
+        ["name=horaire_complement", "name"],
+        ["css=#horaire_complement", "css:finder"],
+        ["xpath=//input[@id='horaire_complement']", "xpath:attributes"],
+        ["xpath=//form[@id='ajouter_editer']/fieldset[2]/div[5]/input", "xpath:idRelative"],
+        ["xpath=//div[5]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "2f4d09c1-3acf-4caf-85a9-62ab009f81fa",
+      "comment": "",
+      "command": "type",
+      "target": "id=horaire_complement",
+      "targets": [
+        ["id=horaire_complement", "id"],
+        ["name=horaire_complement", "name"],
+        ["css=#horaire_complement", "css:finder"],
+        ["xpath=//input[@id='horaire_complement']", "xpath:attributes"],
+        ["xpath=//form[@id='ajouter_editer']/fieldset[2]/div[5]/input", "xpath:idRelative"],
+        ["xpath=//div[5]/input", "xpath:position"]
+      ],
+      "value": "Du mardi au samedi : 20h, Dimanche : 18h,  Lundi : relâche"
+    }, {
+      "id": "814c52ff-f7eb-41b9-9e87-13200cf95b27",
+      "comment": "",
+      "command": "click",
+      "target": "id=nomLieu",
+      "targets": [
+        ["id=nomLieu", "id"],
+        ["name=nomLieu", "name"],
+        ["css=#nomLieu", "css:finder"],
+        ["xpath=//input[@id='nomLieu']", "xpath:attributes"],
+        ["xpath=//form[@id='ajouter_editer']/fieldset[3]/div[2]/p/input", "xpath:idRelative"],
+        ["xpath=//div[2]/p/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "8bff32be-6b54-4491-b6d2-30f43bd1c5d3",
+      "comment": "",
+      "command": "click",
+      "target": "id=nomLieu",
+      "targets": [
+        ["id=nomLieu", "id"],
+        ["name=nomLieu", "name"],
+        ["css=#nomLieu", "css:finder"],
+        ["xpath=//input[@id='nomLieu']", "xpath:attributes"],
+        ["xpath=//form[@id='ajouter_editer']/fieldset[3]/div[2]/p/input", "xpath:idRelative"],
+        ["xpath=//div[2]/p/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "12926d10-4576-43d1-8700-65290079f499",
+      "comment": "",
+      "command": "doubleClick",
+      "target": "id=nomLieu",
+      "targets": [
+        ["id=nomLieu", "id"],
+        ["name=nomLieu", "name"],
+        ["css=#nomLieu", "css:finder"],
+        ["xpath=//input[@id='nomLieu']", "xpath:attributes"],
+        ["xpath=//form[@id='ajouter_editer']/fieldset[3]/div[2]/p/input", "xpath:idRelative"],
+        ["xpath=//div[2]/p/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "1c9995e7-bca1-430d-943a-57631ecf187c",
+      "comment": "",
+      "command": "type",
+      "target": "id=nomLieu",
+      "targets": [
+        ["id=nomLieu", "id"],
+        ["name=nomLieu", "name"],
+        ["css=#nomLieu", "css:finder"],
+        ["xpath=//input[@id='nomLieu']", "xpath:attributes"],
+        ["xpath=//form[@id='ajouter_editer']/fieldset[3]/div[2]/p/input", "xpath:idRelative"],
+        ["xpath=//div[2]/p/input", "xpath:position"]
+      ],
+      "value": "Plaine de Plainpalais"
+    }, {
+      "id": "9366b01c-2d9b-412b-9470-b517e6ac9939",
+      "comment": "",
+      "command": "click",
+      "target": "id=adresse",
+      "targets": [
+        ["id=adresse", "id"],
+        ["name=adresse", "name"],
+        ["css=#adresse", "css:finder"],
+        ["xpath=//input[@id='adresse']", "xpath:attributes"],
+        ["xpath=//form[@id='ajouter_editer']/fieldset[3]/div[2]/p[2]/input", "xpath:idRelative"],
+        ["xpath=//p[2]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "ef4a71e0-5102-484d-bb6d-617ce75bf581",
+      "comment": "",
+      "command": "type",
+      "target": "id=adresse",
+      "targets": [
+        ["id=adresse", "id"],
+        ["name=adresse", "name"],
+        ["css=#adresse", "css:finder"],
+        ["xpath=//input[@id='adresse']", "xpath:attributes"],
+        ["xpath=//form[@id='ajouter_editer']/fieldset[3]/div[2]/p[2]/input", "xpath:idRelative"],
+        ["xpath=//p[2]/input", "xpath:position"]
+      ],
+      "value": "Rue de l'Ecole-de-Médecine 2"
+    }, {
+      "id": "4768bdc4-aa6b-48d7-9078-cd53c1af944c",
+      "comment": "",
+      "command": "clickAt",
+      "target": "id=localite_chosen",
+      "targets": [
+        ["css=#localite_chosen span", "css:finder"],
+        ["xpath=//div[@id='localite_chosen']/a/span", "xpath:idRelative"],
+        ["xpath=//p[3]/div/a/span", "xpath:position"],
+        ["xpath=//span[contains(.,' ')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "08092449-852e-4c55-8358-1a82ed1b0f6c",
+      "comment": "",
+      "command": "clickAt",
+      "target": "css=div[id='localite_chosen'] div ul li:nth-child(3)",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "d35d2209-5945-46cd-a9f8-a0150ffba663",
+      "comment": "",
+      "command": "click",
+      "target": "id=urlLieu",
+      "targets": [
+        ["id=urlLieu", "id"],
+        ["name=urlLieu", "name"],
+        ["css=#urlLieu", "css:finder"],
+        ["xpath=//input[@id='urlLieu']", "xpath:attributes"],
+        ["xpath=//form[@id='ajouter_editer']/fieldset[3]/div[2]/p[4]/input", "xpath:idRelative"],
+        ["xpath=//p[4]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "72547726-ef6a-4266-a472-71491fff5009",
+      "comment": "",
+      "command": "type",
+      "target": "id=urlLieu",
+      "targets": [
+        ["id=urlLieu", "id"],
+        ["name=urlLieu", "name"],
+        ["css=#urlLieu", "css:finder"],
+        ["xpath=//input[@id='urlLieu']", "xpath:attributes"],
+        ["xpath=//form[@id='ajouter_editer']/fieldset[3]/div[2]/p[4]/input", "xpath:idRelative"],
+        ["xpath=//p[4]/input", "xpath:position"]
+      ],
+      "value": "http://www.mufflins.ch"
+    }, {
+      "id": "0f42023f-71d6-4216-967b-8438293dbbf0",
+      "comment": "",
+      "command": "click",
+      "target": "id=titre",
+      "targets": [
+        ["id=titre", "id"],
+        ["name=titre", "name"],
+        ["css=#titre", "css:finder"],
+        ["xpath=//input[@id='titre']", "xpath:attributes"],
+        ["xpath=//form[@id='ajouter_editer']/fieldset[4]/p/input", "xpath:idRelative"],
+        ["xpath=//fieldset[4]/p/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "b8fe58e5-28aa-4701-b8cf-09fe588c5232",
+      "comment": "",
+      "command": "type",
+      "target": "id=titre",
+      "targets": [
+        ["id=titre", "id"],
+        ["name=titre", "name"],
+        ["css=#titre", "css:finder"],
+        ["xpath=//input[@id='titre']", "xpath:attributes"],
+        ["xpath=//form[@id='ajouter_editer']/fieldset[4]/p/input", "xpath:idRelative"],
+        ["xpath=//fieldset[4]/p/input", "xpath:position"]
+      ],
+      "value": "evenementfugace"
+    }, {
+      "id": "c583e934-4fc4-483f-9661-0b7086c10de8",
+      "comment": "",
+      "command": "click",
+      "target": "id=description",
+      "targets": [
+        ["id=description", "id"],
+        ["css=#description", "css:finder"],
+        ["xpath=//textarea[@id='description']", "xpath:attributes"],
+        ["xpath=//form[@id='ajouter_editer']/fieldset[4]/p[2]/textarea", "xpath:idRelative"],
+        ["xpath=//textarea", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "701a55a4-c659-4597-8c87-5553b930409d",
+      "comment": "",
+      "command": "type",
+      "target": "id=description",
+      "targets": [
+        ["id=description", "id"],
+        ["css=#description", "css:finder"],
+        ["xpath=//textarea[@id='description']", "xpath:attributes"],
+        ["xpath=//form[@id='ajouter_editer']/fieldset[4]/p[2]/textarea", "xpath:idRelative"],
+        ["xpath=//textarea", "xpath:position"]
+      ],
+      "value": "\\n\\nDu 10 au 19 mars prochain, le Festival du film et forum international sur les droits humains (FIFDH) célèbre sa 21e édition avec une quarantaine de films ainsi qu’une cinquantaine de débats et d’événements autour de thématiques au cœur de l’actualité.\\n\\nDe l’Iran au Sri Lanka en passant par l’Ukraine et la Somalie, le Festival abordera l’urgence climatique, les migrations, les enjeux sociaux et les conflits à travers un cinéma engagé et des forums inclusifs. Durant 10 jours, plus de 200 activistes, cinéastes et expert·es internationaux·ales seront à Genève pour mettre en lumière leur combat.\\n\\nDécouvrez le programme et tous les invité.es du Festival sur www.fifdh.org. "
+    }, {
+      "id": "e2f8f7d5-2631-4590-87ec-1272a10f8453",
+      "comment": "",
+      "command": "click",
+      "target": "id=ref",
+      "targets": [
+        ["id=ref", "id"],
+        ["name=ref", "name"],
+        ["css=#ref", "css:finder"],
+        ["xpath=//input[@id='ref']", "xpath:attributes"],
+        ["xpath=//fieldset[@id='references']/p/input", "xpath:idRelative"],
+        ["xpath=//fieldset[5]/p/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "07c913c9-35d7-470b-9a12-c177bb628b0f",
+      "comment": "",
+      "command": "type",
+      "target": "id=ref",
+      "targets": [
+        ["id=ref", "id"],
+        ["name=ref", "name"],
+        ["css=#ref", "css:finder"],
+        ["xpath=//input[@id='ref']", "xpath:attributes"],
+        ["xpath=//fieldset[@id='references']/p/input", "xpath:idRelative"],
+        ["xpath=//fieldset[5]/p/input", "xpath:position"]
+      ],
+      "value": "https://coriserenfete.ch"
+    }, {
+      "id": "7339505a-6c58-4f50-941b-fdaa27bb36f7",
+      "comment": "",
+      "command": "click",
+      "target": "css=.default",
+      "targets": [
+        ["css=.default", "css:finder"],
+        ["xpath=//input[@value='Tapez les noms des organisateurs']", "xpath:attributes"],
+        ["xpath=//div[@id='organisateurs_chosen']/ul/li/input", "xpath:idRelative"],
+        ["xpath=//div/ul/li/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "c5651c6a-250a-4125-8c61-e8c3f0f4c743",
+      "comment": "",
+      "command": "click",
+      "target": "css=.guideChamp:nth-child(3)",
+      "targets": [
+        ["css=.guideChamp:nth-child(3)", "css:finder"],
+        ["xpath=//fieldset[@id='references']/div", "xpath:idRelative"],
+        ["xpath=//fieldset[5]/div", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "def39797-d5c6-44a3-9db3-8943e06c745a",
+      "comment": "",
+      "command": "click",
+      "target": "id=prix-precisions",
+      "targets": [
+        ["id=prix-precisions", "id"],
+        ["css=#prix-precisions", "css:finder"],
+        ["xpath=//div[@id='prix-precisions']", "xpath:attributes"],
+        ["xpath=//form[@id='ajouter_editer']/fieldset[6]/div", "xpath:idRelative"],
+        ["xpath=//fieldset[6]/div", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "a98ef96a-1999-490a-9152-973444a1468c",
+      "comment": "",
+      "command": "click",
+      "target": "id=prix",
+      "targets": [
+        ["id=prix", "id"],
+        ["name=prix", "name"],
+        ["css=#prix", "css:finder"],
+        ["xpath=//input[@id='prix']", "xpath:attributes"],
+        ["xpath=//div[@id='prix-precisions']/p/input", "xpath:idRelative"],
+        ["xpath=//fieldset[6]/div/p/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "95139037-a1f2-4812-b5f4-13de5f5597af",
+      "comment": "",
+      "command": "type",
+      "target": "id=prix",
+      "targets": [
+        ["id=prix", "id"],
+        ["name=prix", "name"],
+        ["css=#prix", "css:finder"],
+        ["xpath=//input[@id='prix']", "xpath:attributes"],
+        ["xpath=//div[@id='prix-precisions']/p/input", "xpath:idRelative"],
+        ["xpath=//fieldset[6]/div/p/input", "xpath:position"]
+      ],
+      "value": "Entrée libre, pas de réservation possible"
+    }, {
+      "id": "680eba2a-cca9-40b3-b2cc-8b7cda9c62c5",
+      "comment": "",
+      "command": "click",
+      "target": "id=prelocations",
+      "targets": [
+        ["id=prelocations", "id"],
+        ["name=prelocations", "name"],
+        ["css=#prelocations", "css:finder"],
+        ["xpath=//input[@id='prelocations']", "xpath:attributes"],
+        ["xpath=//div[@id='prix-precisions']/p[2]/input", "xpath:idRelative"],
+        ["xpath=//fieldset[6]/div/p[2]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "2b4d8ceb-c851-457c-ab07-1e4097dd3667",
+      "comment": "",
+      "command": "type",
+      "target": "id=prelocations",
+      "targets": [
+        ["id=prelocations", "id"],
+        ["name=prelocations", "name"],
+        ["css=#prelocations", "css:finder"],
+        ["xpath=//input[@id='prelocations']", "xpath:attributes"],
+        ["xpath=//div[@id='prix-precisions']/p[2]/input", "xpath:idRelative"],
+        ["xpath=//fieldset[6]/div/p[2]/input", "xpath:position"]
+      ],
+      "value": "test test"
+    }, {
+      "id": "837c01a9-4614-402a-a5e0-af62b10f327d",
+      "comment": "",
+      "command": "click",
+      "target": "name=submit",
+      "targets": [
+        ["name=submit", "name"],
+        ["css=.submit-big", "css:finder"],
+        ["xpath=//input[@name='submit']", "xpath:attributes"],
+        ["xpath=//form[@id='ajouter_editer']/p[2]/input[5]", "xpath:idRelative"],
+        ["xpath=//input[5]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "e35d0ad9-3a04-4689-904f-bdd91d821b42",
+      "comment": "",
+      "command": "assertElementPresent",
+      "target": "css=.msg_ok",
+      "targets": [
+        ["css=.msg_ok", "css:finder"],
+        ["xpath=//div[@id='contenu']/div", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "c1c436bd-16c8-4ffb-b40d-33e5a4dedd6c",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=Voir dans l'agenda",
+      "targets": [
+        ["linkText=Voir dans l'agenda", "linkText"],
+        ["css=.msg_ok > a", "css:finder"],
+        ["xpath=//div[@id='contenu']/div/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '/evenement-agenda.php?courant=2023-03-18#event-508')]", "xpath:href"],
+        ["xpath=//div/div/a", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "63b99552-3079-4bff-bbb2-aa8369a64cc7",
+      "comment": "",
+      "command": "verifyElementPresent",
+      "target": "xpath=//a[text()='evenementfugace']",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "c33f0d30-341a-4c0f-9112-a9dbb916ad95",
+      "comment": "click on unpublish",
+      "command": "click",
+      "target": "xpath=//a[normalize-space(text())='evenementfugace']/ancestor::div[contains(@class, 'evenement')]/descendant::a[contains(@class, 'btn_event_unpublish')]",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "0c62f500-38b0-4f9e-b708-099e6a6cf21e",
+      "comment": "",
+      "command": "waitForElementNotPresent",
+      "target": "xpath=//a[text()='evenementfugace']",
+      "targets": [],
+      "value": "3000"
+    }]
   }],
   "suites": [{
     "id": "e598238f-e9bc-40f6-9876-6274e4bf1e3f",
@@ -7464,7 +7977,7 @@
     "persistSession": false,
     "parallel": false,
     "timeout": 300,
-    "tests": ["a54ef26c-624f-4400-98e0-ad747f718ec3", "8718788e-89d5-4f41-84a8-0e8078d9092f", "d7da26ab-7b0b-4969-8469-1f4a8137a946", "3903cc42-f8aa-4e10-927b-8edbca982554", "2de5e6e7-bdb4-47af-a646-c14e26ff32ac", "4e570d46-e2cd-4ad1-91d7-fed74be93607", "9046ab6b-67f8-48f0-9dde-4b5d348e7f6e", "1b3cabfb-9a16-44ae-b21b-2356228e88f1"]
+    "tests": ["a54ef26c-624f-4400-98e0-ad747f718ec3", "8718788e-89d5-4f41-84a8-0e8078d9092f", "d7da26ab-7b0b-4969-8469-1f4a8137a946", "3903cc42-f8aa-4e10-927b-8edbca982554", "2de5e6e7-bdb4-47af-a646-c14e26ff32ac", "4e570d46-e2cd-4ad1-91d7-fed74be93607", "9046ab6b-67f8-48f0-9dde-4b5d348e7f6e", "47b5c3dd-0f06-46df-829b-be4eb31ea1b6", "1b3cabfb-9a16-44ae-b21b-2356228e88f1"]
   }, {
     "id": "954f4299-556e-464e-accf-7aff83bf6da5",
     "name": "user admin",
