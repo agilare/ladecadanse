@@ -14,7 +14,7 @@ ini_set('max_file_uploads', 3);
 // DIR
 define('__ROOT__', dirname(dirname(__FILE__))); // full path to dir, for ex. /users/michel/hosts/ladecadanse
 
-$rep_images_even = __ROOT__ . "/web/uploads/evenements/"; // legacy : on prod instance, there is a dir /images which is a link to /web/uploads/evenements/ to not avoid broken links
+$rep_images_even = __ROOT__ . "/web/uploads/evenements/";
 $rep_uploads_lieux = __ROOT__ . "/web/uploads/lieux/";
 $rep_uploads_lieux_galeries = __ROOT__ . "/web/uploads/lieux/galeries/";
 $rep_uploads_organisateurs = __ROOT__ . "/web/uploads/organisateurs/";
@@ -29,18 +29,21 @@ $url_uploads_organisateurs = "/web/uploads/organisateurs/";
 $url_images_interface_icons = "/web/interface/icons/";
 
 
-$glo_mimes_documents_acceptes = array("image/jpeg", "image/pjpeg", "image/gif", "image/png", "image/x-png",
+$glo_mimes_documents_acceptes = [
+    "image/jpeg", "image/pjpeg", "image/gif", "image/png", "image/x-png",
     "application/pdf",
     "application/msword",
     "text/richtext", "application/rtf", "image/svg+xml", "application/gzip",
-    "application/zip", "multipart/x-zip", "multipart/x-gzip", "application/x-tar");
-$glo_mimes_images_acceptees = array("image/jpeg", "image/pjpeg", "image/gif", "image/png", "image/x-png");
-$mimes_images_acceptes = array("image/jpeg", "image/pjpeg", "image/gif", "image/png", "image/x-png");
-$mimes_documents_acceptes = array("image/jpeg", "image/pjpeg", "image/gif", "image/png", "image/x-png",
+    "application/zip", "multipart/x-zip", "multipart/x-gzip", "application/x-tar"
+];
+$glo_mimes_images_acceptees = ["image/jpeg", "image/pjpeg", "image/gif", "image/png", "image/x-png"];
+$mimes_images_acceptes = ["image/jpeg", "image/pjpeg", "image/gif", "image/png", "image/x-png"];
+$mimes_documents_acceptes = [
+    "image/jpeg", "image/pjpeg", "image/gif", "image/png", "image/x-png",
     "application/pdf",
     "application/msword", "application/msexcel",
     "text/richtext", "application/rtf", "image/svg+xml", "application/gzip",
-    "application/zip", "multipart/x-zip", "multipart/x-gzip", "application/x-tar");
+    "application/zip", "multipart/x-zip", "multipart/x-gzip", "application/x-tar"];
 
 //// FILE MANAGEMENT END
 
@@ -53,7 +56,7 @@ $glo_auj = date("Y-m-d");
 $auj = date("Y-m-d");
 $glo_auj_6h = date("Y-m-d", time() - 14400); // 4h
 
-$glo_regions = array("ge" => "Genève", "vd" => "Lausanne", "rf" => "France", "hs" => "Autre"); //  "fr" => "Fribourg",
+$glo_regions = ["ge" => "Genève", "vd" => "Lausanne", "rf" => "France", "hs" => "Autre"]; //  "fr" => "Fribourg",
 $glo_moisF = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
 
 //// TIME & REGIONS END
@@ -64,18 +67,18 @@ $glo_moisF = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", 
 // DOMAIN
 
 //// USERS
-$glo_statuts_personne = array('demande', 'actif', 'inactif');
+$glo_statuts_personne = ['demande', 'actif', 'inactif'];
 $g_mauvais_mdp = ['123456', 'password', 'soleil', 'genève', 'coucou', 'boubou', 'bonheur', 'vacances', 'doudou', 'papillon', 'bonjour', 'cheval', 'capitainne', 'Mathilde', 'caramel', 'garfield', 'friends', 'simba12', 'reslabol', 'shaka00', '1254321', 'xydney', 'caline', 'licorne', 'mjdc10435410', '280195', 'freesurf', 'musique', 'jfdodolaure', '333333', 'rochet88', 'jennifer', 'motdepasse', 'maison', '123soleil', 'chocolat', '123123', 'nicolas', '888888', 'othello1', 'carpediem', 'multipass', 'berocl69', '166459', 'sofia10mag', 'chonchon', 'Camille', 'joelle', '654321', '12345678', 'qwertz', '12345', 'football', 'ladecadanse', '111111', 'abc123' ];
 
 //// EVENTS
-$glo_tab_genre = array("fête" => "fêtes", "cinéma" => "ciné", "théâtre" => "théâtre", "expos" => "expos", "divers" => "divers");
-$statuts_evenement = array('propose' => 'Proposé', 'actif' => 'Proposé', 'complet' => 'Complet', 'annule' => 'Annulé', 'inactif' => 'Dépublié');
+$glo_tab_genre = ["fête" => "fêtes", "cinéma" => "ciné", "théâtre" => "théâtre", "expos" => "expos", "divers" => "divers"];
+$statuts_evenement = ['propose' => 'Proposé', 'actif' => 'Proposé', 'complet' => 'Complet', 'annule' => 'Annulé', 'inactif' => 'Dépublié'];
 $price_types = ['unknown' => 'inconnu', 'gratis' => 'entrée libre', 'asyouwish' => 'prix libre', 'chargeable' => 'payant'];
-$tab_tri_agenda = array("dateAjout", "horaire_debut");
+$tab_tri_agenda = ["dateAjout", "horaire_debut"];
 
 //// PLACES
-$statuts_lieu = array('actif', 'ancien', 'inactif');
-$glo_categories_lieux = array('bistrot' => 'bistrot', 'salle' => 'salle', 'restaurant' => 'restaurant', 'cinema' => 'cinéma', 'theatre' => 'théâtre', 'galerie' => 'galerie', 'boutique' => 'boutique', 'musee' => 'musée', 'autre' => 'autre');
+$statuts_lieu = ['actif', 'ancien', 'inactif'];
+$glo_categories_lieux = ['bistrot' => 'bistrot', 'salle' => 'salle', 'restaurant' => 'restaurant', 'cinema' => 'cinéma', 'theatre' => 'théâtre', 'galerie' => 'galerie', 'boutique' => 'boutique', 'musee' => 'musée', 'autre' => 'autre'];
 
 $glo_tab_quartiers = ["geneve", "Champel", "Charmilles", "Centre", "Cornavin", "Grottes", "Jonction", "Nations", "Pâquis", "Plainpalais", "Saint-Gervais", "Saint-Jean", "Servette",
     "communes", "Aire-la-Ville", "Anières", "Avully", "Avusy", "Bardonnex", "Bellevue", "Bernex", "Carouge", "Cartigny", "Céligny",
@@ -87,14 +90,14 @@ $glo_tab_quartiers2 = [
             "ge" =>
             ["Champel", "Charmilles", "Centre", "Cornavin", "Grottes", "Jonction", "Nations", "Pâquis", "Petit-Saconnex", "Saint-Gervais", "Saint-Jean", "Servette"]
 ];
-$glo_tab_quartiers_hors_geneve = array("Nyon", "Vaud", "France", "autre");
+$glo_tab_quartiers_hors_geneve = ["Nyon", "Vaud", "France", "autre"];
 $glo_tab_ailleurs = ["rf" => "France", "hs" => "Autre"];
 
 // DOMAIN END
 
 // VIEW
-$glo_menu_pratique = array("Contact" => "/contacteznous.php", "À propos" => "/articles/apropos.php", "Faire un don" => "/articles/faireUnDon.php");
-$tab_nblignes = array(100, 250, 500); // nb lignes de resultats de listes
+$glo_menu_pratique = ["Contact" => "/contacteznous.php", "À propos" => "/articles/apropos.php", "Faire un don" => "/articles/faireUnDon.php"];
+$tab_nblignes = [100, 250, 500]; // nb lignes de resultats de listes
 $actions = array("ajouter", "insert", "update", "editer");
 
 $iconeSupprimer = "<img src=\"" . $url_images_interface_icons . "delete.png\" alt=\"Supprimer\" title=\"Supprimer\" />";
@@ -167,15 +170,14 @@ $icone['xls'] = "<img src=\"" . $url_images_interface_icons . "page_white_excel.
 $icone['svg'] = "<img src=\"" . $url_images_interface_icons . "page_white_picture.png\" alt=\"\" />";
 $icone['zip'] = "<img src=\"" . $url_images_interface_icons . "page_white_zip.png\" alt=\"\" />";
 $icone['tar'] = "<img src=\"" . $url_images_interface_icons . "page_white_zip.png\" alt=\"\" />";
-$icones_fichiers = array("text" => "text.png");
+$icones_fichiers = ["text" => "text.png"];
 
-$tab_icones_statut = array("actif" => "<div style='display:inline-block;background:green;width:12px;height:12px;border-radius:50%' title='Publié'>&nbsp;</div>",
+$tab_icones_statut = ["actif" => "<div style='display:inline-block;background:green;width:12px;height:12px;border-radius:50%' title='Publié'>&nbsp;</div>",
     "inactif" => "<div style='display:inline-block;background:red;width:12px;height:12px;border-radius:50%' title='Dépublié'>&nbsp;</div>",
     "annule" => "<div style='display:inline-block;background:orange;width:12px;height:12px;border-radius:50%' title='Annulé'>&nbsp;</div>",
     "complet" => "<div style='display:inline-block;background:darkorange;width:12px;height:12px;border-radius:50%' title='Complet'>&nbsp;</div>",
     "ancien" => "<div style='display:inline-block;background:lightgray;width:12px;height:12px;border-radius:50%' title='Ancien'>&nbsp;</div>",
     "propose" => "<div style='display:inline-block;background:lightblue;width:12px;height:12px;border-radius:50%' title='Proposé'>&nbsp;</div>"
-);
-
+   ];
 
 $recaptcha_url = 'https://www.google.com/recaptcha/api/siteverify';
