@@ -1,15 +1,29 @@
 # Changelog
 
-## [3.5.5] - Unreleased
+## [3.5.5] - 14.02.2025
 
 ### Fixed
 - features restored (remove from partial edit mode) and more detailed logging : password reset, user edit
+- deployment : git-ftp exclusion list
+- HTML errors in home, contact, header
 - SEO: complete robots.txt to ignore irrelevant pages
 - docs : replace old home URL by ladecadanse.ch in README, CONTRIBUTING
 - docs : homepage example image URL in README
 
+### Added
+- Selenium tests : some forms values auto-generated, unpublish event action test
+- Apache configuration example for local env
+
 ### Security
-- complete missing sanitization of values displayed in HTML
+- CSP completed (more precise and restrictive) and inline scripts in html adapted accordingly (externalizations, *nonce* implementation)
+- add Referrer policy
+- all cookies sent with "samesite"
+- completed missing sanitization of values displayed in HTML
+- removed bad usage of PHP_SELF
+- add token verif to public forms to avoid multi-submits
+- add session id regeneration on login and logout
+- various vulnerabilities fixed in login, agenda, search
+
 
 ## [3.5.4] - 2025-01-22
 
