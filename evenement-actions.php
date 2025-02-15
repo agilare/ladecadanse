@@ -22,13 +22,6 @@ if ($get['action'] == 'delete' && !empty($get['id']))
 
     if (!empty($val_even) && (($authorization->isAuthor('evenement', $_SESSION['SidPersonne'], $get['id']) && $_SESSION['Sgroupe'] <= 8) || $_SESSION['Sgroupe'] < 2))
     {
-
-        if (PARTIAL_EDIT_MODE && $val_even['dateAjout'] < PARTIAL_EDIT_FROM_DATETIME)
-        {
-            HtmlShrink::msgErreur(PARTIAL_EDIT_MODE_MSG);
-            exit;
-        }
-
         if (!empty($val_even['flyer']))
         {
             Evenement::rmImageAndItsMiniature($val_even['flyer']);
@@ -71,12 +64,6 @@ if ($get['action'] == 'unpublish' && !empty($get['id']))
          || isset($_SESSION['SidPersonne']) && $authorization->isPersonneInEvenementByOrganisateur($_SESSION['SidPersonne'], $get['id'])
          || isset($_SESSION['SidPersonne']) && $authorization->isPersonneInLieuByOrganisateur($_SESSION['SidPersonne'], $val_even['idLieu'])	))
     {
-
-        if (PARTIAL_EDIT_MODE && $val_even['dateAjout'] < PARTIAL_EDIT_FROM_DATETIME)
-        {
-            HtmlShrink::msgErreur(PARTIAL_EDIT_MODE_MSG);
-            exit;
-        }
 
         if ($connector->query("UPDATE evenement SET statut='inactif' WHERE idEvenement=".$get['id']))
         {

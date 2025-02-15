@@ -270,14 +270,8 @@ if ($get['action'] == 'editer' && isset($get['idL']) && isset($get['idP']))
 
     @mysqli_free_result($req_desc);
 
-        if (PARTIAL_EDIT_MODE && $champs['dateAjout'] < PARTIAL_EDIT_FROM_DATETIME)
-        {
-            HtmlShrink::msgErreur(PARTIAL_EDIT_MODE_MSG);
-            exit;
-        }
-
         if ($_SESSION['Sgroupe'] <= 4)
-    {
+        {
         echo '<ul class="entete_contenu_menu">';
         echo "<li class=\"action_supprimer\">
         <a href=\"/multi-suppr.php?type=descriptionlieu&id=".$get['idL']."&idP=".$get['idP']."&token=".SecurityToken::getToken()."\">Supprimer</a></li>";

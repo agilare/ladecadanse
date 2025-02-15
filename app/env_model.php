@@ -55,6 +55,7 @@ define("HOME_TMP_BANNER_TITLE", "Title of my announcement");
 define("HOME_TMP_BANNER_CONTENT", "My announcement...");
 
 // after crash of 22.10.2024 and then existence of 2 database versions, allow restart of application with limited edition on current db version to avoid conflict qui backed up db
+// removed its usage in code the 15.02.2025
 define("PARTIAL_EDIT_MODE", false);
 define("PARTIAL_EDIT_FROM_DATETIME", "2024-10-22 23:21:00");
 define("PARTIAL_EDIT_MODE_MSG", "Le site est actuellement partiellement fonctionel, ainsi certains éléments comme celui-ci ne peuvent être modifiés");

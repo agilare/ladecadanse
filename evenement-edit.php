@@ -816,12 +816,6 @@ if (!$action_terminee)
             exit;
         } // if GET action
 
-        if (PARTIAL_EDIT_MODE && $champs['dateAjout'] < PARTIAL_EDIT_FROM_DATETIME)
-        {
-            HtmlShrink::msgErreur(PARTIAL_EDIT_MODE_MSG);
-            exit;
-        }
-
         if ($_SESSION['Sgroupe'] <= UserLevel::ACTOR) {
             $aff_actions = '<ul class="entete_contenu_menu">';
             //Menu d'actions

@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.5.6] - Unreleased
+
+### Fixed
+- features restored (remove from partial edit mode, i.e. blocking edition of entities added before 22.10.2024) : edit events, users, salles, organisateurs, lieux texts
+
+
 ## [3.5.5] - 14.02.2025
 
 ### Fixed

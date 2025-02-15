@@ -19,12 +19,6 @@ $page_description = "Suppression d'un élément";
 $extra_css = array("evenement_inc", "lieu_inc", "descriptionlieu_inc");
 include("_header.inc.php");
 
-if (PARTIAL_EDIT_MODE)
-{
-    HtmlShrink::msgErreur(PARTIAL_EDIT_MODE_MSG);
-    exit;
-}
-
 $tab_types = array("evenement", "lieu", "descriptionlieu", "personne", "salle", "organisateur");
 
 /*
