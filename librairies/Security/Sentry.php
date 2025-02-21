@@ -16,9 +16,8 @@ class Sentry extends SystemComponent
     /**
      * Tableau contenant idPersonne, pseudo, mot_de_passe, groupe, email
      * Rempli dès qu'une personne se logue
-     * @var string
      */
-    var $userdata;
+    private array $userdata;
 
     function __construct()
     {

@@ -227,7 +227,7 @@ $mois_suiv = date("Y-m-d", mktime(0, 0, 0, $mois_courant + 1, $jour_mois_suiv, $
     <ul id="menu_calendrier">
         <li id="demain">
             <?php $tab_auj = explode("-", $glo_auj); ?>
-            <a href="<?php echo "/evenement-agenda.php?" . $url_query_region_et . "courant=" . date("Y-m-d", mktime(12, 0, 0, $tab_auj[1], $tab_auj[2] + 1, $tab_auj[0])) . "&amp;genre=" . $get['genre'] . "&amp;tri_agenda=" . $get['tri_agenda'] ?>" >Demain</a>
+            <a href="<?php echo "/evenement-agenda.php?" . $url_query_region_et . "courant=" . date("Y-m-d", mktime(12, 0, 0, $tab_auj[1], ((int) $tab_auj[2]) + 1, $tab_auj[0])) . "&amp;genre=" . $get['genre'] . "&amp;tri_agenda=" . $get['tri_agenda'] ?>" >Demain</a>
         </li>
         <li id="cette_semaine">
             <a href="<?php echo "/evenement-agenda.php?" . $url_query_region_et . "courant=" . $auj . "&amp;genre=" . $get['genre'] . "&amp;tri_agenda=" . $get['tri_agenda'] . "&amp;sem=1" ?>" >

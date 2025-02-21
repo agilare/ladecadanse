@@ -454,7 +454,6 @@ class Validateur
      * Réunis les valeurs du tableau erreurs en une chaine de car., séparées par un delim
      *
      * @param string $delim Séparateur texte pour les valeurs du tableau
-     * @return boolean Validation réussie ou non
      * @access public
      */
     function listErreurs($delim = ' ')

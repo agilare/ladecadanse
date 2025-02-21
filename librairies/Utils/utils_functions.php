@@ -263,7 +263,7 @@ function date_iso2lundim($date)
 
     while ($ds != 1)
     {
-        $ds = date("w", mktime(0, 0, 0, $tab_date[1], $tab_date[2] - $i, $tab_date[0]));
+        $ds = date("w", mktime(0, 0, 0, $tab_date[1], (int) $tab_date[2] - $i, $tab_date[0]));
         $i++;
         //echo "i:".$i." ";
     }
@@ -271,18 +271,18 @@ function date_iso2lundim($date)
     if ($i > 0)
         $i--;
 
-    $lundi = date("Y-m-d", mktime(0, 0, 0, $tab_date[1], $tab_date[2] - $i, $tab_date[0]));
+    $lundi = date("Y-m-d", mktime(0, 0, 0, $tab_date[1], (int) $tab_date[2] - $i, $tab_date[0]));
 
     //echo "lundi:".$lundi."<br>";
 
     $j = 0;
     while ($ds != 0)
     {
-        $ds = date("w", mktime(0, 0, 0, $tab_date[1], $tab_date[2] + $j, $tab_date[0]));
+        $ds = date("w", mktime(0, 0, 0, $tab_date[1], (int) $tab_date[2] + $j, $tab_date[0]));
         $j++;
     }
 
-    $dimanche = date("Y-m-d", mktime(0, 0, 0, $tab_date[1], $tab_date[2] + $j - 1, $tab_date[0]));
+    $dimanche = date("Y-m-d", mktime(0, 0, 0, $tab_date[1], (int) $tab_date[2] + $j - 1, $tab_date[0]));
     //echo "dimanche:".$dimanche."<br>";
 
     return array($lundi, $dimanche);
@@ -296,7 +296,7 @@ function date_lendemain($date)
         return $date;
     }
 
-    return date('Y-m-d', mktime(0, 0, 0, $tab_date[1], $tab_date[2] + 1, $tab_date[0])); // $annee."-".$mois."-".$annee;
+    return date('Y-m-d', mktime(0, 0, 0, $tab_date[1], (int) $tab_date[2] + 1, $tab_date[0])); // $annee."-".$mois."-".$annee;
 }
 
 function horaire2heure($horaire_complet, $date_evenement)

@@ -25,19 +25,17 @@ class Logger {
      *
      * @param string $path Chemin vers le dossier de dépôt
     **/
-    public function __construct($path){
+    public function __construct($path)
+    {
         $this->ready = false;
 
         # Si le dépôt n'éxiste pas
         if( !is_dir($path) ){
             trigger_error("path : $path n'existe pas ou n'est pas un répertoire", E_USER_WARNING);
-            return false;
         }
 
         $this->depot = realpath($path);
         $this->ready = true;
-
-        return true;
     }
 
     /**
@@ -48,7 +46,7 @@ class Logger {
 	 * @param string $type Dossier dans lequel sera enregistré le fichier de log
      * @param string $name Nom du fichier de log
      * @param string $granularity Granularité : GRAN_VOID, GRAN_MONTH ou GRAN_YEAR
-	 * @return string Chemin vers le fichier de log
+	 * @return string|bool Chemin vers le fichier de log
     **/
     public function path($type, $name, $granularity = self::GRAN_VOID){
 		# On vérifie que le logger est prêt (et donc que le dossier de dépôt existe

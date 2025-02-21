@@ -382,8 +382,8 @@ elseif (!empty($_POST['formulaire']))
 			{
 				$tab_horaire_debut = explode(":", $champs['horaire_debut']);
 
-				$sec_horaire_debut = $tab_horaire_debut[0] * 3600 + $tab_horaire_debut[1] * 60;
-				//echo "sec_H:".$sec_horaire_debut;
+				$sec_horaire_debut = (int) $tab_horaire_debut[0] * 3600 + (int) $tab_horaire_debut[1] * 60;
+                //echo "sec_H:".$sec_horaire_debut;
 
 				if ($sec_horaire_debut >= 0 && $sec_horaire_debut <= 21600)
 				{
@@ -401,8 +401,8 @@ elseif (!empty($_POST['formulaire']))
 			{
 				$tab_horaire_fin = explode(":", $champs['horaire_fin']);
 
-				$sec_horaire_fin = $tab_horaire_fin[0] * 3600 + $tab_horaire_fin[1] * 60;
-				//echo "sec_H:".$sec_horaire_fin;
+				$sec_horaire_fin = (int) $tab_horaire_fin[0] * 3600 + (int) $tab_horaire_fin[1] * 60;
+                //echo "sec_H:".$sec_horaire_fin;
 
 				if ($sec_horaire_fin >= 0 && $sec_horaire_fin <= 21600)
 				{
