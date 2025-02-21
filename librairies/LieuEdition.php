@@ -281,7 +281,7 @@ class LieuEdition extends Edition
                     //echo "<div class=\"msg\">Ancienne image supprimée</div>";
                 }
 
-                $lieu->setValue('logo', Document::getFilename($lieu->getId(), 'logo', '', $this->fichiers['logo']['name']));
+                $lieu->setValue('logo', Document::getFilename($this->fichiers['logo']['name'], $lieu->getId(), 'logo', ''));
             }
 
 
@@ -312,7 +312,7 @@ class LieuEdition extends Edition
                     //echo "<div class=\"msg\">Ancienne image supprimée</div>";
                 }
 
-                $lieu->setValue('photo1', Document::getFilename($lieu->getId(), 'photo1', '', $this->fichiers['photo1']['name']));
+                $lieu->setValue('photo1', Document::getFilename($this->fichiers['photo1']['name'], $lieu->getId(), 'photo1', ''));
             }
             /*
              * Si on a seulement choisi de supprimer l'image existante
@@ -439,10 +439,7 @@ class LieuEdition extends Edition
 
             $erreur_image[] = $imD->processImage($this->fichiers['image_galerie'], "s_" . $nom_image_galerie, 60, 60, '', 1);
             $erreur_image[] = $imD->processImage($this->fichiers['image_galerie'], $nom_image_galerie, 600, 600, '', 0);
-            if (!empty($msg))
-            {
-                HtmlShrink::msgErreur($msg);
-            }
+
             $champs['image_galerie'] = '';
         }
 

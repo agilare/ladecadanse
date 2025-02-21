@@ -257,8 +257,8 @@ if ($get['sem'])
 
 	if ($nb_evenements == 0)
 	{
-	  	HtmlShrink::msgInfo("Pas d'événements", "p");
-    }
+	  	HtmlShrink::msgInfo("Pas d'événements");
+}
 else
 	{
 		$dateCourante = '';

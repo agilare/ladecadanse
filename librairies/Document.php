@@ -5,7 +5,7 @@ namespace Ladecadanse;
 
 class Document
 {
-    public static function getFilename(int $id, string $type = '', string $date_time = '', string $nom_original): string
+    public static function getFilename(string $nom_original, int $id, string $type = '', string $date_time = ''): string
     {
         $suffixe = mb_strrchr($nom_original, '.');
 

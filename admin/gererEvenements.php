@@ -612,13 +612,9 @@ elseif (!empty($_POST['formulaire']))
 				$imD2 = new ImageDriver2("evenement");
 				$erreur_image = array();
 				$erreur_image[] = $imD2->processImage($_FILES['image'], $champs['image'], 400, 400);
-				$erreur_image[] = $imD2->processImage($_FILES['image'], "s_".$champs['image'], 120, 190, 0, 1);
-				if (!empty($erreur_image))
-				{
-					//printr($erreur_image);
-				}
+				$erreur_image[] = $imD2->processImage($_FILES['image'], "s_" . $champs['image'], 120, 190, 0, 1);
 
-				if (!empty($msg2))
+                if (!empty($msg2))
 					$champs['image'] = '';
 
 				$src_image = $champs['image'];

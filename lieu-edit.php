@@ -52,7 +52,7 @@ $supprimer = array('image_galerie' => '');
 
 $afficher_form = true;
 $message_ok = '';
-$form = new LieuEdition('form', $champs, $fichiers, $get);
+$form = new LieuEdition('form', $champs, $fichiers);
 
 $form->setAction($get['action']);
 if (isset($_POST['formulaire']) && $_POST['formulaire'] == 'ok')

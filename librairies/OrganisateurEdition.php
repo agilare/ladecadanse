@@ -199,7 +199,7 @@ class OrganisateurEdition extends Edition
                     //echo "<div class=\"msg\">Ancienne image supprimée</div>";
                 }
 
-                $organisateur->setValue('logo', Document::getFilename($organisateur->getId(), 'logo', '', $this->fichiers['logo']['name']));
+                $organisateur->setValue('logo', Document::getFilename($this->fichiers['logo']['name'], $organisateur->getId(), 'logo', ''));
             }
             elseif (in_array('logo', $this->supprimer))
             {
@@ -224,7 +224,7 @@ class OrganisateurEdition extends Edition
                     //echo "<div class=\"msg\">Ancienne image supprimée</div>";
                 }
 
-                $organisateur->setValue('photo', Document::getFilename($organisateur->getId(), 'photo', '', $this->fichiers['photo']['name']));
+                $organisateur->setValue('photo', Document::getFilename($this->fichiers['photo']['name'], $organisateur->getId(), 'photo', ''));
             }
             /*
              * Si on a seulement choisi de supprimer l'image existante

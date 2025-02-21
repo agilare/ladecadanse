@@ -662,10 +662,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 			$imD2 = new ImageDriver2("evenement");
 			$erreur_image = array();
 			$erreur_image[] = $imD2->processImage($_FILES['flyer'], $champs['flyer'], 600, 600);
-			$erreur_image[] = $imD2->processImage($_FILES['flyer'], "s_".$champs['flyer'], 120, 190, 0, 0);
-			if (!empty($erreur_image)) {
-				print_r($erreur_image);
-			}
+			$erreur_image[] = $imD2->processImage($_FILES['flyer'], "s_" . $champs['flyer'], 120, 190, 0, 0);
 
             if (!empty($msg2))
                 $champs['flyer'] = '';
@@ -676,10 +673,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 			$imD2 = new ImageDriver2("evenement");
 			$erreur_image = array();
 			$erreur_image[] = $imD2->processImage($_FILES['image'], $champs['image'], 600, 600);
-			$erreur_image[] = $imD2->processImage($_FILES['image'], "s_".$champs['image'], 120, 190, 0, 0);
-			if (!empty($erreur_image)) {
-				print_r($erreur_image);
-			}
+			$erreur_image[] = $imD2->processImage($_FILES['image'], "s_" . $champs['image'], 120, 190, 0, 0);
 
             if (!empty($msg2))
                 $champs['image'] = '';

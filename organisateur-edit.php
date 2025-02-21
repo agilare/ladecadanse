@@ -51,7 +51,7 @@ $supprimer = array('logo' => '', 'photo' => '');
 
 $afficher_form = true;
 $message_ok = '';
-$form = new OrganisateurEdition('form', $champs, $fichiers, $get);
+$form = new OrganisateurEdition('form', $champs, $fichiers);
 
 //TEST
 //printr($_POST);
