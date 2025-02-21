@@ -2793,7 +2793,7 @@
     }]
   }, {
     "id": "8718788e-89d5-4f41-84a8-0e8078d9092f",
-    "name": "user (actor) event add (vars, r)",
+    "name": "user (actor) event add (r)",
     "commands": [{
       "id": "ab4b93cb-f711-4f8b-be63-a19340e4c19e",
       "comment": "",
@@ -3556,7 +3556,7 @@
     }]
   }, {
     "id": "5c790b97-c4b1-4056-a004-daa889c1a3ee",
-    "name": "user (admin) event edit (vars, r)",
+    "name": "user (admin) event edit (r)",
     "commands": [{
       "id": "9e19c954-72dc-4306-afb0-4eb832c6cbd3",
       "comment": "",
@@ -3607,12 +3607,19 @@
       ],
       "value": ""
     }, {
+      "id": "72885ca5-e807-4239-91b7-1ffa45b2c245",
+      "comment": "",
+      "command": "executeScript",
+      "target": "return (new Date().getDate().toString().padStart(2, '0')) + \".\" + ((new Date().getMonth() + 1).toString().padStart(2, '0')) + \".\" + ((new Date()).getFullYear() )",
+      "targets": [],
+      "value": "eventDate"
+    }, {
       "id": "65abf7ec-0c45-4310-9707-d8f09f8ca893",
       "comment": "",
       "command": "sendKeys",
       "target": "id=dateEvenement",
       "targets": [],
-      "value": "2023-12-12"
+      "value": "${eventDate}"
     }, {
       "id": "feff111d-c9c7-425e-9064-a0dcd2be4a6b",
       "comment": "",

@@ -4,7 +4,13 @@
 
 ### Fixed
 - features restored (remove from partial edit mode, i.e. blocking edition of entities added before 22.10.2024) : edit events, users, salles, organisateurs, lieux texts
+- add .htaccess.example to .gitignore
 
+### Added
+- Selenium tests : forms values auto-generated, edit event test
+
+### Security
+- headers: add Permissions-Policy
 
 ## [3.5.5] - 14.02.2025
 
