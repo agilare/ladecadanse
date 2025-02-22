@@ -520,7 +520,7 @@ $detailsAff = $connector->fetchArray($req_affPers);
 
 		$pair = 0;
 
-		while(list($idLieu, $idPersonne, $nom, $quartier, $categorie, $URL, $dateAjout) = $connector->fetchArray($req_lieux))
+		while([$idLieu, $idPersonne, $nom, $quartier, $categorie, $URL, $dateAjout] = $connector->fetchArray($req_lieux))
 		{
 
 			$req_nbDes = $connector->query("SELECT COUNT(*) FROM descriptionlieu WHERE idLieu=".$idLieu);

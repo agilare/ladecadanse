@@ -234,7 +234,7 @@ $url_suiv = "";
 $nomDuLieu = "";
 $id_passe = 0;
 
-while (list ($id, $nom) = mysqli_fetch_row($req_lieux))
+while ([$id, $nom] = mysqli_fetch_row($req_lieux))
 {
     $nb_evenements = 0;
     $aumoins1des = "";

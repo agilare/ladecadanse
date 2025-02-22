@@ -161,7 +161,7 @@ use Ladecadanse\UserLevel;
                              $menu_pratique_li = ' style="background: #ffe771;border-radius: 0 0 3px 3px;padding:2px 0;" ';
 
                             $ici = '';
-                        if (strstr($_SERVER['PHP_SELF'], $lien) )
+                        if (strstr($_SERVER['PHP_SELF'], (string) $lien) )
                         {
                             $ici = " class=\"ici\"";
                         }

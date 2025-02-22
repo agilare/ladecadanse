@@ -153,7 +153,7 @@ if (isset($_GET['idP'])) {
 			<th>Ajouté le</th>
 			</tr>";
 
-                while (list($idPersonne, $dateAjout, $contenu) = $connector->fetchArray($req_desLieu))
+                while ([$idPersonne, $dateAjout, $contenu] = $connector->fetchArray($req_desLieu))
                 {
                     echo "<tr>
 				<td><a href=\"/user.php?idP=" . $idPersonne . "\" title=\"Voir le profile de la personne\">" . $idPersonne . "</a></td>";

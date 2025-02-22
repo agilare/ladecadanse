@@ -11,7 +11,7 @@
             <?php
             foreach ($glo_menu_pratique as $nom => $lien)
             {
-                if (strstr($_SERVER['PHP_SELF'], $lien))
+                if (strstr($_SERVER['PHP_SELF'], (string) $lien))
                 {
                     $ici = " class=\"ici\"";
                 }

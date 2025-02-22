@@ -85,7 +85,7 @@ $entete_contenu = "";
 if ($genre_titre != 'Tout')
 	$entete_contenu =  ucfirst($genre_titre)." du ";
 
-list($annee_courant, $mois_courant, $jour_courant) = explode('-', $get['courant']);
+[$annee_courant, $mois_courant, $jour_courant] = explode('-', $get['courant']);
 
 $lien_precedent = '';
 $lien_suivant = '';

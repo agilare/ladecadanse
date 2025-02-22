@@ -170,7 +170,7 @@ $url_suiv = "";
 $nomDuLieu = "";
 $id_passe = 0;
 
-while (list ($id, $nom, $presentation) = mysqli_fetch_row($req))
+while ([$id, $nom, $presentation] = mysqli_fetch_row($req))
 {
 	$nb_evenements = 0;
 	$aumoins1des = "";
