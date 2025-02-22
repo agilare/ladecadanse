@@ -12,10 +12,7 @@ use Ladecadanse\HtmlShrink;
 class OrganisateurEdition extends Edition
 {
 
-    public $nom;
     public $firstTime;
-    public $valeurs = [];
-    public $fichiers = [];
     public $supprimer = [];
     public $supprimer_document = [];
     public $supprimer_galerie = [];
@@ -25,18 +22,13 @@ class OrganisateurEdition extends Edition
     public $action;
     public $connector;
 
-    function __construct($nom, $champs, $fichiers)
+    function __construct(public $nom, public $valeurs, public $fichiers)
     {
         global $connector;
 
         $this->connector = $connector;
-        $this->nom = $nom;
-        //$this->wizardPage = $wPage;
 
-        $this->valeurs = $champs;
-        $this->fichiers = $fichiers;
-
-        $this->erreurs = array_merge($champs, $fichiers);
+        $this->erreurs = array_merge($this->valeurs, $this->fichiers);
         $this->erreurs['nom_existant'] = '';
     }
 

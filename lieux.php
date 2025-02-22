@@ -30,7 +30,7 @@ if (isset($_GET['idL']))
 try {
 	$get['idL'] = Validateur::validateUrlQueryValue($_GET['idL'], "int", 0);
  }
-    catch (Exception $e)
+    catch (Exception)
     {
         echo 'paramètre idL non valable';
         exit;

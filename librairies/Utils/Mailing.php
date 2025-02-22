@@ -41,7 +41,8 @@ class Mailing {
                 echo $this->errorMsg . $this->mail->ErrorInfo;
                 return false;
             }
-        } catch (\Exception $e) {
+        } catch (\Exception)
+        {
             echo $this->errorMsg . $this->mail->ErrorInfo;
             return false;
         }
@@ -73,7 +74,8 @@ class Mailing {
                 echo $this->errorMsg . $this->mail->ErrorInfo;
                 return false;
             }
-        } catch (\Exception $e) {
+        } catch (\Exception)
+        {
             echo $this->errorMsg . $this->mail->ErrorInfo;
             return false;
         }

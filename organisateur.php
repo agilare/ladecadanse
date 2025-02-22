@@ -14,7 +14,11 @@ if (isset($_GET['idO']))
 {
     try {
         $get['idO'] = Validateur::validateUrlQueryValue($_GET['idO'], "int", 1);
-    } catch (Exception $e) { header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); exit; }
+    } catch (Exception)
+    {
+        header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
+        exit;
+    }
 }
 else
 {
@@ -28,7 +32,11 @@ if (isset($_GET['genre_even']))
 {
     try {
         $get['genre_even'] = Validateur::validateUrlQueryValue($_GET['genre_even'], "enum", 0, $tab_genre_even);
-    } catch (Exception $e) { header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); exit; }
+    } catch (Exception)
+    {
+        header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
+        exit;
+    }
 }
 
 

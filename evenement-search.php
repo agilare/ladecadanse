@@ -18,21 +18,21 @@ if (isset($_GET['tri']))
 {
     try {
         $get['tri'] =  Validateur::validateUrlQueryValue($_GET['tri'], "enum", 1, ["pertinence", "dateEvenement", "dateAjout"]);
-    } catch (Exception $e) { header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); exit; }
+    } catch (Exception) { header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); exit; }
 }
 
 $get['page'] = 1;
 if (!empty($_GET['page']) && is_numeric($_GET['page']))
 {try {
 	$get['page'] =  Validateur::validateUrlQueryValue($_GET['page'], "int", 1);
-    } catch (Exception $e) { header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); exit; }
+    } catch (Exception) { header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); exit; }
 }
 
 $get['periode'] = "futur";
 if (isset($_GET['periode']))
 {try {
 	$get['periode'] =  Validateur::validateUrlQueryValue($_GET['periode'], "enum", 1, $tab_periodes);
-    } catch (Exception $e) { header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); exit; }
+    } catch (Exception) { header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); exit; }
 }
 
 $get['mots'] = "";
@@ -41,7 +41,7 @@ if (isset($_GET['mots']))
     try
     {
         $get['mots'] = Validateur::validateUrlQueryValue($_GET['mots'], "string", 1);
-    } catch (Exception $e) { header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); exit; }
+    } catch (Exception) { header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); exit; }
 }
 
 $limite = 10;

@@ -13,7 +13,7 @@ if (isset($_GET['statut']))
     try
     {
         $get['statut'] = Validateur::validateUrlQueryValue($_GET['statut'], "enum", 1, $tab_statuts);
-    } catch (Exception $e)
+    } catch (Exception)
     {
         exit;
     }
@@ -25,7 +25,7 @@ if (isset($_GET['vue']))
     try
     {
         $get['vue'] = Validateur::validateUrlQueryValue($_GET['vue'], "enum", 1, $tab_vues);
-    } catch (Exception $e)
+    } catch (Exception)
     {
         exit;
     }
@@ -48,7 +48,7 @@ if (isset($_GET['tranche']))
     try
     {
         $get['tranche'] = Validateur::validateUrlQueryValue($_GET['tranche'], "enum", 1, $tab_tranches);
-    } catch (Exception $e)
+    } catch (Exception)
     {
         exit;
     }

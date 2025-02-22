@@ -15,7 +15,11 @@ if (isset($_GET['idL']) && $_GET['idL'] > 0)
 {
     try {
         $get['idL'] = Validateur::validateUrlQueryValue($_GET['idL'], "int", 1);
-    } catch (Exception $e) { header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); exit; }
+    } catch (Exception)
+    {
+        header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
+        exit;
+    }
 }
 else
 {
@@ -30,7 +34,11 @@ if (isset($_GET['genre_even']))
 {
     try {
         $get['genre_even'] = Validateur::validateUrlQueryValue($_GET['genre_even'], "enum", 0, $tab_genre_even);
-    } catch (Exception $e) { header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); exit; }
+    } catch (Exception)
+    {
+        header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
+        exit;
+    }
 }
 
 $tab_complement = ["evenements"];
@@ -39,7 +47,11 @@ if (isset($_GET['complement']))
 {
     try {
         $get['complement'] = Validateur::validateUrlQueryValue($_GET['complement'], "enum", 0, $tab_complement);
-    } catch (Exception $e) { header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); exit; }
+    } catch (Exception)
+    {
+        header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
+        exit;
+    }
 }
 
 $tab_types_description = ["description", "presentation"];
@@ -48,7 +60,11 @@ if (isset($_GET['type_description']))
 {
     try {
         $get['type_description'] = Validateur::validateUrlQueryValue($_GET['type_description'], "enum", 0, $tab_types_description);
-    } catch (Exception $e) { header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); exit; }
+    } catch (Exception)
+    {
+        header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
+        exit;
+    }
 }
 
 $lieu = new Lieu();

@@ -13,7 +13,11 @@ if (isset($_GET['type']))
 {
     try {
         $get['type'] =  Validateur::validateUrlQueryValue($_GET['type'], "enum", 1, $tab_types);
-    } catch (Exception $e) { header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); exit; }
+    } catch (Exception)
+    {
+        header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
+        exit;
+    }
 }
 
 $get['id'] = '';
@@ -21,7 +25,11 @@ if (isset($_GET['id']))
 {
     try {
         $get['id'] =  Validateur::validateUrlQueryValue($_GET['id'], "int", 1);
-    } catch (Exception $e) { header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); exit; }
+    } catch (Exception)
+    {
+        header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
+        exit;
+    }
 }
 
 $xml = '<?xml version="1.0" encoding="utf-8" ?><rss version="2.0">';

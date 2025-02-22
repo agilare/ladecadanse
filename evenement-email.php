@@ -23,7 +23,7 @@ if (isset($_GET['idE']))
 {
     try {
         $get['idE'] = Validateur::validateUrlQueryValue($_GET['idE'], "int", 1);
-    } catch (Exception $e)
+    } catch (Exception)
     {
         header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
         exit;
