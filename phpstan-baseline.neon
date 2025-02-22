@@ -1,0 +1,283 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^If condition is always false\.$#'
+			identifier: if.alwaysFalse
+			count: 3
+			path: _header.inc.php
+
+		-
+			message: '#^Loose comparison using \=\= between ''evenement\-agenda\.php''\|''lieux\.php''\|''organisateurs\.php'' and ''/evenement\-agenda…'' will always evaluate to false\.$#'
+			identifier: equal.alwaysFalse
+			count: 1
+			path: _header.inc.php
+
+		-
+			message: '#^Loose comparison using \=\= between ''evenement\-agenda\.php''\|''lieux\.php''\|''organisateurs\.php'' and ''/lieux\.php'' will always evaluate to false\.$#'
+			identifier: equal.alwaysFalse
+			count: 1
+			path: _header.inc.php
+
+		-
+			message: '#^Loose comparison using \=\= between ''evenement\-agenda\.php''\|''lieux\.php''\|''organisateurs\.php'' and ''/organisateurs\.php'' will always evaluate to false\.$#'
+			identifier: equal.alwaysFalse
+			count: 1
+			path: _header.inc.php
+
+		-
+			message: '#^Result of && is always false\.$#'
+			identifier: booleanAnd.alwaysFalse
+			count: 3
+			path: _header.inc.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between ''dev'' and ''prod'' will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: _header.inc.php
+
+		-
+			message: '#^Loose comparison using \=\= between ''categorie''\|''date_derniere_modif''\|''dateAjout''\|''description''\|''idLieu''\|''nom''\|''statut''\|''URL'' and ''adresse'' will always evaluate to false\.$#'
+			identifier: equal.alwaysFalse
+			count: 1
+			path: admin/gerer.php
+
+		-
+			message: '#^Loose comparison using \=\= between ''contenu''\|''date_derniere_modif''\|''dateAjout'' and ''idPersonne'' will always evaluate to false\.$#'
+			identifier: equal.alwaysFalse
+			count: 1
+			path: admin/gerer.php
+
+		-
+			message: '#^Loose comparison using \=\= between ''date_ajout''\|''date_derniere_modif''\|''idOrganisateur''\|''nom''\|''statut'' and ''URL'' will always evaluate to false\.$#'
+			identifier: equal.alwaysFalse
+			count: 1
+			path: admin/gerer.php
+
+		-
+			message: '#^Loose comparison using \!\= between ''adresse''\|''description''\|''flyer''\|''genre''\|''horaire_complement''\|''horaire_debut''\|''horaire_fin''\|''idLieu''\|''idSalle''\|''image''\|''localite_id''\|''nomLieu''\|''organisateurs''\|''prelocations''\|''prix''\|''quartier''\|''ref''\|''region''\|''statut''\|''titre''\|''urlLieu'' and ''idPersonne'' will always evaluate to true\.$#'
+			identifier: notEqual.alwaysTrue
+			count: 1
+			path: admin/gererEvenements.php
+
+		-
+			message: '#^Loose comparison using \=\= between ''dateAjout''\|''dateEvenement''\|''genre''\|''horaire''\|''statut''\|''titre'' and ''flyer'' will always evaluate to false\.$#'
+			identifier: equal.alwaysFalse
+			count: 1
+			path: admin/gererEvenements.php
+
+		-
+			message: '#^Offset ''lien'' on array\{genre\: string, idLieu\: string, idSalle\: string, nomLieu\: string, adresse\: string, quartier\: string, localite_id\: string, region\: string, \.\.\.\} in empty\(\) does not exist\.$#'
+			identifier: empty.offset
+			count: 2
+			path: admin/gererEvenements.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between ''dev'' and ''dev'' will always evaluate to true\.$#'
+			identifier: identical.alwaysTrue
+			count: 1
+			path: app/bootstrap.php
+
+		-
+			message: '#^If condition is always false\.$#'
+			identifier: if.alwaysFalse
+			count: 1
+			path: articles/faireUnDon.php
+
+		-
+			message: '#^If condition is always true\.$#'
+			identifier: if.alwaysTrue
+			count: 1
+			path: contacteznous.php
+
+		-
+			message: '#^Negated boolean expression is always true\.$#'
+			identifier: booleanNot.alwaysTrue
+			count: 1
+			path: evenement-edit.php
+
+		-
+			message: '#^Offset ''lien'' on array\{statut\: mixed, genre\: mixed, titre\: mixed, dateEvenement\: mixed, idLieu\: mixed, idSalle\: 0\|string, nomLieu\: mixed, adresse\: mixed, \.\.\.\} in empty\(\) does not exist\.$#'
+			identifier: empty.offset
+			count: 2
+			path: evenement-edit.php
+
+		-
+			message: '#^Comparison operation "\>" between int\<1, max\> and 0 is always true\.$#'
+			identifier: greater.alwaysTrue
+			count: 1
+			path: evenement-search.php
+
+		-
+			message: '#^If condition is always true\.$#'
+			identifier: if.alwaysTrue
+			count: 1
+			path: evenement-search.php
+
+		-
+			message: '#^Left side of && is always false\.$#'
+			identifier: booleanAnd.leftAlwaysFalse
+			count: 1
+			path: index.php
+
+		-
+			message: '#^If condition is always true\.$#'
+			identifier: if.alwaysTrue
+			count: 2
+			path: librairies/HtmlShrink.php
+
+		-
+			message: '#^Left side of \|\| is always true\.$#'
+			identifier: booleanOr.leftAlwaysTrue
+			count: 1
+			path: librairies/HtmlShrink.php
+
+		-
+			message: '#^Right side of \|\| is always true\.$#'
+			identifier: booleanOr.rightAlwaysTrue
+			count: 1
+			path: librairies/HtmlShrink.php
+
+		-
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
+			count: 1
+			path: librairies/Security/Sentry.php
+
+		-
+			message: '#^If condition is always true\.$#'
+			identifier: if.alwaysTrue
+			count: 1
+			path: librairies/Utils/DbConnector.php
+
+		-
+			message: '#^Property Ladecadanse\\Utils\\DbConnector\:\:\$sql is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: librairies/Utils/DbConnector.php
+
+		-
+			message: '#^Call to function is_countable\(\) with string will always evaluate to false\.$#'
+			identifier: function.impossibleType
+			count: 1
+			path: librairies/Utils/Text.php
+
+		-
+			message: '#^Comparison operation "\<" between 0 and 0 is always false\.$#'
+			identifier: smaller.alwaysFalse
+			count: 1
+			path: librairies/Utils/Text.php
+
+		-
+			message: '#^If condition is always true\.$#'
+			identifier: if.alwaysTrue
+			count: 1
+			path: librairies/Utils/Text.php
+
+		-
+			message: '#^Offset \*NEVER\* on string in isset\(\) does not exist\.$#'
+			identifier: isset.offset
+			count: 1
+			path: librairies/Utils/Text.php
+
+		-
+			message: '#^Call to function is_string\(\) with string will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: librairies/Utils/Validateur.php
+
+		-
+			message: '#^Expression "\\UPLOAD_MAX_FILESIZE" on a separate line does not do anything\.$#'
+			identifier: expr.resultUnused
+			count: 1
+			path: lieu-edit.php
+
+		-
+			message: '#^If condition is always false\.$#'
+			identifier: if.alwaysFalse
+			count: 1
+			path: lieu-edit.php
+
+		-
+			message: '#^If condition is always true\.$#'
+			identifier: if.alwaysTrue
+			count: 1
+			path: lieu-edit.php
+
+		-
+			message: '#^Negated boolean expression is always true\.$#'
+			identifier: booleanNot.alwaysTrue
+			count: 1
+			path: lieu-text-edit.php
+
+		-
+			message: '#^Static method Flatted\:\:asString\(\) is unused\.$#'
+			identifier: method.unused
+			count: 1
+			path: node_modules/flatted/php/flatted.php
+
+		-
+			message: '#^Static method Flatted\:\:wrap\(\) is unused\.$#'
+			identifier: method.unused
+			count: 1
+			path: node_modules/flatted/php/flatted.php
+
+		-
+			message: '#^If condition is always true\.$#'
+			identifier: if.alwaysTrue
+			count: 1
+			path: organisateur-edit.php
+
+		-
+			message: '#^Offset ''lieu'' on array\{pseudo\: mixed, motdepasse\: mixed, newPass\: mixed, newPass2\: mixed, affiliation\: mixed, lieu\: mixed, organisateurs\: mixed, email\: mixed, \.\.\.\} in isset\(\) always exists and is not nullable\.$#'
+			identifier: isset.offset
+			count: 3
+			path: user-edit.php
+
+		-
+			message: '#^Offset ''mot_de_passe'' on array\{pseudo\: mixed, motdepasse\: mixed, newPass\: mixed, newPass2\: mixed, affiliation\: mixed, lieu\: mixed, organisateurs\: mixed, email\: mixed, \.\.\.\} in empty\(\) always exists and is not falsy\.$#'
+			identifier: empty.offset
+			count: 1
+			path: user-edit.php
+
+		-
+			message: '#^Offset ''lieu'' on array\{utilisateur\: mixed, motdepasse\: mixed, motdepasse2\: mixed, organisateurs\: mixed, affiliation\: mixed, region\: mixed, lieu\: mixed, email\: mixed, \.\.\.\} in isset\(\) always exists and is not nullable\.$#'
+			identifier: isset.offset
+			count: 1
+			path: user-register.php
+
+		-
+			message: '#^Offset ''organisateurs'' on array\{gds\: '''', mot_de_passe\: ''''\}\|array\{gds\: non\-falsy\-string, mot_de_passe\: non\-falsy\-string\} in isset\(\) does not exist\.$#'
+			identifier: isset.offset
+			count: 1
+			path: user-register.php
+
+		-
+			message: '#^Result of && is always false\.$#'
+			identifier: booleanAnd.alwaysFalse
+			count: 1
+			path: user-register.php
+
+		-
+			message: '#^Loose comparison using \=\= between ''categorie''\|''dateAjout''\|''description''\|''idLieu''\|''nom''\|''URL'' and ''adresse'' will always evaluate to false\.$#'
+			identifier: equal.alwaysFalse
+			count: 1
+			path: user.php
+
+		-
+			message: '#^Loose comparison using \=\= between ''contenu''\|''dateAjout''\|''type'' and ''idPersonne'' will always evaluate to false\.$#'
+			identifier: equal.alwaysFalse
+			count: 1
+			path: user.php
+
+		-
+			message: '#^Loose comparison using \=\= between ''dateAjout''\|''dateEvenement''\|''statut''\|''titre'' and ''flyer'' will always evaluate to false\.$#'
+			identifier: equal.alwaysFalse
+			count: 1
+			path: user.php
+
+		-
+			message: '#^Loose comparison using \=\= between ''dateAjout''\|''idOrganisateur''\|''nom'' and ''presentation'' will always evaluate to false\.$#'
+			identifier: equal.alwaysFalse
+			count: 1
+			path: user.php

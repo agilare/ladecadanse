@@ -1,3 +1,13 @@
+# 0 basic checks, unknown classes, unknown functions, unknown methods called on $this, wrong number of arguments passed to those methods and functions, always undefined variables
+# 1 possibly undefined variables, unknown magic methods and properties on classes with __call and __get
+# 2 unknown methods checked on all expressions (not just $this), validating PHPDocs
+# 3 return types, types assigned to properties
+# 4 basic dead code checking - always false instanceof and other type checks, dead else branches, unreachable code after return; etc.
+# 5 checking types of arguments passed to methods and functions
+# 6 report missing typehints
+# 7 report partially wrong union types - if you call a method that only exists on some types in a union type, level 7 starts to report that; other possibly incorrect situations
+# ...
+
 parameters:
     paths:
         - .
@@ -5,11 +15,24 @@ parameters:
         - web
         - vendor
         - var
+        - tests
     fileExtensions:
         - php
     tmpDir: var/cache/ecs
-    level: 0
+    level: 4 # aller jusqu'à 7 pour compat avec php 8.0 (?)
+    phpVersion: 80000 # 8.0 80000 7.4 70400 7.1 70100
     inferPrivatePropertyTypeFromConstructor: true
+    checkMissingTypehints: true
+    ignoreErrors:
+        -
+            identifier: variable.undefined
+        -
+            identifier: constant.notFound
+        -
+            identifier: phpDoc.parseError
+        -
+            identifier: constructor.unusedParameter
 includes:
     - vendor/phpstan/phpstan-deprecation-rules/rules.neon
     - vendor/spaze/phpstan-disallowed-calls/extension.neon
+    - phpstan-baseline.neon
