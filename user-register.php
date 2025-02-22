@@ -221,7 +221,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 
                     if (!empty($tab_pers['mot_de_passe']))
                     {
-                        $champs['gds'] = mb_substr(sha1(uniqid((string) rand(), true)), 0, 5);
+                        $champs['gds'] = mb_substr(sha1(uniqid((string) random_int(0, mt_getrandmax()), true)), 0, 5);
                     $champs['mot_de_passe'] = sha1($champs['gds'] . sha1($tab_pers['mot_de_passe']));
                     }
 

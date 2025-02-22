@@ -148,7 +148,7 @@ if ($connector->getNumRows($req_temp) == 1)
 		 */
 		if ($verif->nbErreurs() === 0)
 		{
-			$champs['gds'] = mb_substr(sha1(uniqid((string) rand(), true)), 0, 5);
+			$champs['gds'] = mb_substr(sha1(uniqid((string) random_int(0, mt_getrandmax()), true)), 0, 5);
             $champs['motdepasse'] = sha1($champs['gds'].sha1($champs['motdepasse']));
 
 

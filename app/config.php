@@ -12,10 +12,8 @@ ini_set('max_file_uploads', 3);
 
 
 // DIR
-define('__ROOT__', dirname(dirname(__FILE__))); // full path to dir, for ex. /users/michel/hosts/ladecadanse
+define('__ROOT__', dirname(__FILE__, 2)); // full path to dir, for ex. /users/michel/hosts/ladecadanse
 
-//echo __ROOT__;
-//echo "<br>" . dirname(__FILE__);
 
 $rep_images_even = __ROOT__ . "/web/uploads/evenements/";
 $rep_uploads_lieux = __ROOT__ . "/web/uploads/lieux/";

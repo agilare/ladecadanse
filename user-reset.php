@@ -99,7 +99,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' && empty($_POST
                 $salt = "ciek48";
 
                 // Create the unique user password reset key
-                $token = hash('sha256', $salt . rand(0, 1000) . $hash);
+                $token = hash('sha256', $salt . random_int(0, 1000) . $hash);
 
                 //création de demande avec nouveau token
                 $sql = "INSERT INTO user_reset_requests (idPersonne, email, token, expiration) VALUES (" . $idPersonne . ", '" . $email . "', '" . $token . "', NOW() + INTERVAL 1 DAY)";

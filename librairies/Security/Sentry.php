@@ -333,7 +333,7 @@ class Sentry extends SystemComponent
         $seed = "";
         for ($i = 1; $i < 33; $i++)
         {
-            $seed .= chr(rand(0, 255));
+            $seed .= chr(random_int(0, 255));
         }
         return md5($seed);
     }
