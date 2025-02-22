@@ -24,7 +24,7 @@ else
 	exit;
 }
 
-$tab_genre_even = array("fête", "cinéma", "théâtre", "expos", "divers", "tous");
+$tab_genre_even = ["fête", "cinéma", "théâtre", "expos", "divers", "tous"];
 $get['genre_even'] = "tous";
 if (isset($_GET['genre_even']))
 {
@@ -33,7 +33,7 @@ if (isset($_GET['genre_even']))
     } catch (Exception $e) { header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); exit; }
 }
 
-$tab_complement = array("evenements");
+$tab_complement = ["evenements"];
 $get['complement'] = "evenements";
 if (isset($_GET['complement']))
 {
@@ -42,7 +42,7 @@ if (isset($_GET['complement']))
     } catch (Exception $e) { header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); exit; }
 }
 
-$tab_types_description = array("description", "presentation");
+$tab_types_description = ["description", "presentation"];
 $get['type_description'] = "";
 if (isset($_GET['type_description']))
 {
@@ -81,7 +81,7 @@ $page_titre = $lieu->getValue('nom').HtmlShrink::getAdressFitted($lieu->getValue
 $page_description = $page_titre." : accès, horaires, description, photos et prochains événements";
 
 
-$extra_css = array("menu_lieux", "element_login");
+$extra_css = ["menu_lieux", "element_login"];
 include("_header.inc.php");
 
 $deb_nom_lieu = mb_strtolower(mb_substr($lieu->getValue('nom'), 0, 1));
@@ -466,7 +466,7 @@ if ($nb_pres > 0)
         ?>
     <div class="type-<?php echo $type; ?>" <?php echo $type2hide[$type]; ?>>
         <?php
-        $auteurs_de_desc = array();
+        $auteurs_de_desc = [];
         if ($descriptions->loadByType($get['idL'], $type))
         {
             foreach ($descriptions->getElements() as $id => $des)
@@ -578,7 +578,7 @@ if ($nb_pres > 0)
 	if ($evenements->getNbElements() > 0)
 	{
 		$menu_genre .= '<ul id="menu_genre">';
-		$genres_even = array("tous", "fête", "cinéma", "théâtre", "expos", "divers");
+		$genres_even = ["tous", "fête", "cinéma", "théâtre", "expos", "divers"];
 
 		foreach ($genres_even as $g)
 		{

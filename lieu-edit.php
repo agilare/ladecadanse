@@ -14,9 +14,9 @@ if (!$videur->checkGroup(8))
 }
 
 $page_titre = "ajouter/éditer un lieu";
-$extra_css = array("formulaires", "lieu_inc");
+$extra_css = ["formulaires", "lieu_inc"];
 
-$tab_actions = array("ajouter", "insert", "editer", "update");
+$tab_actions = ["ajouter", "insert", "editer", "update"];
 $get['action'] = "ajouter";
 $get['idL'] = "idL";
 if (isset($_GET['action']))
@@ -46,9 +46,9 @@ else if ($_SESSION['Sgroupe'] > 6)
     exit;
 }
 
-$champs = array('idpersonne' => '', 'statut' => '', 'nom' => '', 'determinant' => '', 'adresse' => '', 'localite_id' => '', 'region' => '', 'horaire_general' => '', 'organisateurs' => '', 'categorie' => '', 'URL' => '', "dateAjout" => "");
-$fichiers = array('logo' => '', 'photo1' => '', 'image_galerie' => '');
-$supprimer = array('image_galerie' => '');
+$champs = ['idpersonne' => '', 'statut' => '', 'nom' => '', 'determinant' => '', 'adresse' => '', 'localite_id' => '', 'region' => '', 'horaire_general' => '', 'organisateurs' => '', 'categorie' => '', 'URL' => '', "dateAjout" => ""];
+$fichiers = ['logo' => '', 'photo1' => '', 'image_galerie' => ''];
+$supprimer = ['image_galerie' => ''];
 
 $afficher_form = true;
 $message_ok = '';
@@ -332,7 +332,7 @@ echo $form->getHtmlErreur("quartier");
         </p>
 
     <?php
-    $lieu_organisateurs = array();
+    $lieu_organisateurs = [];
     if ($get['action'] == "editer" || $get['action'] == "update")
     {
 

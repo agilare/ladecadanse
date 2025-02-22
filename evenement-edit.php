@@ -20,13 +20,13 @@ if (isset($_SESSION['Sgroupe']))
     $page_description = "Formulaire d'ajout/modification d'un événement dans l'agenda";
 }
 
-$extra_css = array("formulaires", "evenement_inc");
+$extra_css = ["formulaires", "evenement_inc"];
 
 /*
 * action choisie, ID si édition
 * action "ajouter" par défaut
 */
-$actions = array("ajouter", "insert", "editer", "update");
+$actions = ["ajouter", "insert", "editer", "update"];
 $get['action'] = "ajouter";
 
 /*
@@ -109,11 +109,11 @@ if ($get['action'] != "ajouter" && $get['action'] != "insert")
 
 $formTokenName = 'form_token_evenement_edit';
 $verif = new Validateur();
-$champs = array("statut" => "", "genre" => "", "titre" => "", "dateEvenement" => "", "idLieu" => 0,
+$champs = ["statut" => "", "genre" => "", "titre" => "", "dateEvenement" => "", "idLieu" => 0,
  "idSalle" => 0, "nomLieu" => "", "adresse" => "", "quartier" => "",  "localite_id" => "", "region" => "", "urlLieu" => "", 'organisateurs' => '', "description" => "", "ref" => "",
-  "horaire_debut" => "", "horaire_fin" => "", "horaire_complement" => "", "price_type" => "", "prix" => "", "prelocations" => "", "user_email" => "", "remarque" => "");
-$fichiers = array('flyer' => '', 'image' => '');
-$supprimer = array();
+  "horaire_debut" => "", "horaire_fin" => "", "horaire_complement" => "", "price_type" => "", "prix" => "", "prelocations" => "", "user_email" => "", "remarque" => ""];
+$fichiers = ['flyer' => '', 'image' => ''];
+$supprimer = [];
 $action_terminee = false;
 
 if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
@@ -658,7 +658,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 		if (!empty($fichiers['flyer']['name']))
 		{
 			$imD2 = new ImageDriver2("evenement");
-			$erreur_image = array();
+			$erreur_image = [];
 			$erreur_image[] = $imD2->processImage($_FILES['flyer'], $champs['flyer'], 600, 600);
 			$erreur_image[] = $imD2->processImage($_FILES['flyer'], "s_" . $champs['flyer'], 120, 190, '', 0);
 
@@ -669,7 +669,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 		if (!empty($fichiers['image']['name']))
 		{
 			$imD2 = new ImageDriver2("evenement");
-			$erreur_image = array();
+			$erreur_image = [];
 			$erreur_image[] = $imD2->processImage($_FILES['image'], $champs['image'], 600, 600);
 			$erreur_image[] = $imD2->processImage($_FILES['image'], "s_" . $champs['image'], 120, 190, '', 0);
 
@@ -1050,11 +1050,11 @@ if ($verif->nbErreurs() > 0)
                 <div class="spacer"></div>
         <p>
         <?php
-        $tab_nomLieu_label = array("for" => "nomLieu");
+        $tab_nomLieu_label = ["for" => "nomLieu"];
         echo HtmlShrink::formLabel($tab_nomLieu_label, "Nom du lieu");
         echo $verif->getHtmlErreur("nomLieuIdentique");
 
-        $tab_nomLieu = array("type" => "text", "name" => "nomLieu", "id" => "nomLieu", "size" => "35", "maxlength" => "60", "value" => "");
+        $tab_nomLieu = ["type" => "text", "name" => "nomLieu", "id" => "nomLieu", "size" => "35", "maxlength" => "60", "value" => ""];
     if (empty($champs['idLieu']))
         {
             $tab_nomLieu['value'] = sanitizeForHtml($champs['nomLieu']);
@@ -1207,7 +1207,7 @@ if ($verif->nbErreurs() > 0)
             <div class="spacer"></div>
 
         <?php
-        $tab_organisateurs_even = array();
+        $tab_organisateurs_even = [];
         if ($get['action'] == "editer" || $get['action'] == "update")
         {
 
@@ -1382,7 +1382,7 @@ if (($get['action'] == "editer" || $get['action'] == "update") && isset($get['id
     <ul class="radio">
     <?php
 
-    $statuts = array('propose' => '<strong>proposé</strong> (non visible sur le site)', 'actif' => '<strong>publié</strong> (visible sur le site)',  'complet' => '<strong>complet</strong> (visible sur le site mais marqué comme étant complet)', 'annule' => '<strong>annulé</strong> (visible sur le site mais marqué comme étant annulé)', 'inactif' => '<strong>dépublié</strong> (non visible sur le site)');
+    $statuts = ['propose' => '<strong>proposé</strong> (non visible sur le site)', 'actif' => '<strong>publié</strong> (visible sur le site)',  'complet' => '<strong>complet</strong> (visible sur le site mais marqué comme étant complet)', 'annule' => '<strong>annulé</strong> (visible sur le site mais marqué comme étant annulé)', 'inactif' => '<strong>dépublié</strong> (non visible sur le site)'];
     foreach ($statuts as $s => $n)
     {
         if ($s === 'propose' && ($_SESSION['Sgroupe'] > 6 || (!empty($champs['user_email']) && $champs['statut'] != 'propose')))

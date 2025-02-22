@@ -56,7 +56,7 @@ class ImageDriver2 extends SystemComponent {
         //
         $this->IMGlieux = $this->IMGracine."lieux/";
         $this->IMGlieuxGaleries = $this->IMGlieux."galeries/";
-        $this->formats = array('image/jpeg', 'image/pjpeg','image/gif','image/png', 'image/x-png');
+        $this->formats = ['image/jpeg', 'image/pjpeg','image/gif','image/png', 'image/x-png'];
 
         if ($IMGtype == "evenement")
         {

@@ -15,7 +15,7 @@ if (!$videur->checkGroup(UserLevel::MEMBER)) {
 }
 
 $page_titre = "Envoyer un événement";
-$extra_css = array("formulaires", "evenement_inc", "email_evenement_formulaire");
+$extra_css = ["formulaires", "evenement_inc", "email_evenement_formulaire"];
 include("_header.inc.php");
 
 
@@ -43,7 +43,7 @@ else
 
 $verif = new Validateur();
 
-$champs = array("email_destinataire" => '', 'message' => '');
+$champs = ["email_destinataire" => '', 'message' => ''];
 $action_terminee = false;
 
 if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
@@ -62,7 +62,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 	$champs['idEvenement'] = $get['idE'];
 
 	$verif = new Validateur();
-	$erreurs = array();
+	$erreurs = [];
 
 	$verif->valider($champs['email_destinataire'], "email_destinataire", "email", 4, 80, 1);
 

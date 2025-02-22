@@ -17,9 +17,9 @@ if (!$videur->checkGroup(4))
 $page_titre = "gérer";
 require_once '../_header.inc.php';
 
-$tab_listes = array("evenement" => "Événements", "lieu" => "Lieux", "organisateur" => "Organisateurs", "description" => "Descriptions", "personne" => "Personnes");
+$tab_listes = ["evenement" => "Événements", "lieu" => "Lieux", "organisateur" => "Organisateurs", "description" => "Descriptions", "personne" => "Personnes"];
 
-$get = array();
+$get = [];
 
 if (!empty($_GET['element']))
 {
@@ -46,7 +46,7 @@ if (isset($_GET['page']))
 	$get['page'] = Validateur::validateUrlQueryValue($_GET['page'], "int", 1);
 }
 
-$tab_tris = array("dateAjout", "date_ajout", "idOrganisateur", "date_derniere_modif", "statut", "date_debut", "date_fin", "id", "titre", "groupe", "pseudo", "idPersonne");
+$tab_tris = ["dateAjout", "date_ajout", "idOrganisateur", "date_derniere_modif", "statut", "date_debut", "date_fin", "id", "titre", "groupe", "pseudo", "idPersonne"];
 
 $get['tri_gerer'] = "dateAjout";
 if (isset($_GET['tri_gerer']))
@@ -55,7 +55,7 @@ if (isset($_GET['tri_gerer']))
 
 }
 
-$tab_ordre = array("asc", "desc");
+$tab_ordre = ["asc", "desc"];
 $get['ordre'] = "desc";
 $ordre_inverse = "asc";
 if (isset($_GET['ordre']))
@@ -124,7 +124,7 @@ if ($get['element'] == "description")
 	$tab_nbdesc = $connector->fetchArray($req_nbdesc);
 	$tot_elements = $tab_nbdesc['total'];
 
-	$th_descriptions = array("idLieu" => "Lieu",  "contenu" => "Contenu", "dateAjout" => "Date d'ajout", "date_derniere_modif" => "m-à-j");
+	$th_descriptions = ["idLieu" => "Lieu",  "contenu" => "Contenu", "dateAjout" => "Date d'ajout", "date_derniere_modif" => "m-à-j"];
 
 	echo HtmlShrink::getPaginationString($tot_elements, $get['page'], $get['nblignes'], 1, "", "?" . Utils::urlQueryArrayToString($get, "page") . "&page=");
 
@@ -225,8 +225,8 @@ else if ($get['element'] == "lieu")
 	$tab_count = $connector->fetchArray($req_count);
 	$tot_elements = $tab_count['total'];
 
-	$th_lieu = array("idLieu" => "ID",  "nom" => "Nom", "categorie" => "Catégorie", "URL" => "URL",
-	"description" => "Desc", "dateAjout" => "Créé", "date_derniere_modif" => "Modifié", "statut" => "Statut");
+	$th_lieu = ["idLieu" => "ID",  "nom" => "Nom", "categorie" => "Catégorie", "URL" => "URL",
+	"description" => "Desc", "dateAjout" => "Créé", "date_derniere_modif" => "Modifié", "statut" => "Statut"];
 
 	echo HtmlShrink::getPaginationString($tot_elements, $get['page'], $get['nblignes'], 1, "", "?element=" . $get['element'] . "&tri_gerer=" . $get['tri_gerer'] . "&ordre=" . $get['ordre'] . "&page=");
 
@@ -347,8 +347,8 @@ else if ($get['element'] == "organisateur")
 	$tab_count = $connector->fetchArray($req_count);
 	$tot_elements = $tab_count['total'];
 
-	$th_lieu = array("idOrganisateur" => "ID",  "nom" => "Nom",
-	 "date_ajout" => "Créé", "date_derniere_modif" => "Modifié", "statut" => "Statut");
+	$th_lieu = ["idOrganisateur" => "ID",  "nom" => "Nom",
+	 "date_ajout" => "Créé", "date_derniere_modif" => "Modifié", "statut" => "Statut"];
 
 	echo HtmlShrink::getPaginationString($tot_elements, $get['page'], $get['nblignes'], 1, "", "?element=" . $get['element'] . "&tri_gerer=" . $get['tri_gerer'] . "&ordre=" . $get['ordre'] . "&page=");
 
@@ -454,10 +454,10 @@ else if ($get['element'] == "personne")
 
 	$req_pers = $connector->query($sql_pers);
 
-	$th_lieu = array("idPersonne" => "ID", "pseudo" => "Pseudo",  "email" => "E-mail",  "groupe" => "Groupe",
+	$th_lieu = ["idPersonne" => "ID", "pseudo" => "Pseudo",  "email" => "E-mail",  "groupe" => "Groupe",
 	"dateAjout" => "Création",
 	"statut" => "Statut"
-	);
+	];
 
 	?>
 

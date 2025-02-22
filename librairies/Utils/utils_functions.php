@@ -12,8 +12,8 @@
 function date_fr($d, $format = "", $affMois = "", $jour_sem = "", $html = true)
 {
 
-    $Jour = array("dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi");
-    $Mois = array("", "janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre");
+    $Jour = ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"];
+    $Mois = ["", "janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
 
     $temps = explode(" ", $d);
 
@@ -110,7 +110,7 @@ function date2annee($date)
 
 function mois2fr($mois)
 {
-    $Mois = array("", "janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre");
+    $Mois = ["", "janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
 
     if (mb_substr($mois, 0, 1) == "0")
     {
@@ -136,7 +136,7 @@ function date2jour($date)
 
 function date2nomJour($date)
 {
-    $Jour = array("dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi");
+    $Jour = ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"];
     $temps = explode(" ", $date);
     $tabDate = explode("-", $temps[0]);
 
@@ -285,7 +285,7 @@ function date_iso2lundim($date)
     $dimanche = date("Y-m-d", mktime(0, 0, 0, $tab_date[1], (int) $tab_date[2] + $j - 1, $tab_date[0]));
     //echo "dimanche:".$dimanche."<br>";
 
-    return array($lundi, $dimanche);
+    return [$lundi, $dimanche];
 }
 
 function date_lendemain($date)

@@ -21,7 +21,7 @@ if ($_SESSION['region'] == 'vd')
 
 $page_titre = "Lieux de sorties ".$page_titre_region." : bistrots, salles, bars, restaurants, cinémas,
  théâtres, galeries, boutiques, musées...";
-$extra_css = array("menu_lieux");
+$extra_css = ["menu_lieux"];
 include("_header.inc.php");
 
 $get['idL'] = "";

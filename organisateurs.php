@@ -6,7 +6,7 @@ use Ladecadanse\OrganisateurCollection;
 
 $page_titre = "Organisateurs d'événements culturels à Genève et Lausanne : associations, labels, collectifs";
 $page_description = "";
-$extra_css = array("menu_lieux");
+$extra_css = ["menu_lieux"];
 include("_header.inc.php");
 
 

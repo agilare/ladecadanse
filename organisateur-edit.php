@@ -13,13 +13,13 @@ if (!$videur->checkGroup(8))
 }
 
 $page_titre = "ajouter/éditer un organisateur";
-$extra_css = array("formulaires");
+$extra_css = ["formulaires"];
 
 /*
 * action choisie, ID si édition, val pour (dés)activer l'événement
 * action "ajouter" par défaut
 */
-$tab_actions = array("ajouter", "insert", "editer", "update");
+$tab_actions = ["ajouter", "insert", "editer", "update"];
 $get['action'] = "ajouter";
 $get['idO'] = "idO";
 if (isset($_GET['action']))
@@ -45,9 +45,9 @@ if ($get['action'] != "ajouter" && $get['action'] != "insert")
 }
 
 
-$champs = array('statut' => '', 'nom' => '', 'adresse' => '', 'URL' => '', 'email' => '', 'presentation' => '', "date_ajout" => "");
-$fichiers = array('logo' => '', 'photo' => '');
-$supprimer = array('logo' => '', 'photo' => '');
+$champs = ['statut' => '', 'nom' => '', 'adresse' => '', 'URL' => '', 'email' => '', 'presentation' => '', "date_ajout" => ""];
+$fichiers = ['logo' => '', 'photo' => ''];
+$supprimer = ['logo' => '', 'photo' => ''];
 
 $afficher_form = true;
 $message_ok = '';

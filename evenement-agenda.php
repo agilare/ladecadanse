@@ -187,7 +187,7 @@ if ($get['sem'])
     ORDER BY dateEvenement ASC";
 
     $req_dateEven = $connector->query($sql_dateEven);
-    $tab_date_even = array();
+    $tab_date_even = [];
     while ($listeEven = $connector->fetchArray($req_dateEven))
     {
         $tab_date_even[] = $listeEven['dateEvenement'];

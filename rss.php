@@ -6,7 +6,7 @@ use Ladecadanse\Evenement;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\Text;
 
-$tab_types = array("evenements_auj", "lieu_evenements", 'organisateur_evenements', 'evenements_ajoutes');
+$tab_types = ["evenements_auj", "lieu_evenements", 'organisateur_evenements', 'evenements_ajoutes'];
 
 $get['type'] = '';
 if (isset($_GET['type']))
@@ -32,7 +32,7 @@ $channel = '';
 
 if ($get['type'] == "evenements_auj") {
 
-	$genres_c = array("fête", "cinéma", "théâtre", "expos", "divers");
+	$genres_c = ["fête", "cinéma", "théâtre", "expos", "divers"];
 
 	$channel = '<title>La décadanse : événements du jour</title>';
 	$channel .= '<link>'.$site_full_url.'</link>';

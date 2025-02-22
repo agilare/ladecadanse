@@ -13,10 +13,10 @@ if ($videur->checkGroup(UserLevel::MEMBER)) {
 }
 
 $page_titre = "Mot de passe oublié";
-$extra_css = array("formulaires", "login");
+$extra_css = ["formulaires", "login"];
 include("_header.inc.php");
 
-$tab_messages = array('faux');
+$tab_messages = ['faux'];
 
 ?>
 
@@ -30,7 +30,7 @@ $tab_messages = array('faux');
 
 <?php
 $termine = false;
-$champs = array("pseudo_email" => "");
+$champs = ["pseudo_email" => ""];
 $formTokenName = 'form_token_user_reset';
 
 $verif = new Validateur();

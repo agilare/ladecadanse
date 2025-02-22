@@ -14,12 +14,12 @@ class OrganisateurEdition extends Edition
 
     public $nom;
     public $firstTime;
-    public $valeurs = array();
-    public $fichiers = array();
-    public $supprimer = array();
-    public $supprimer_document = array();
-    public $supprimer_galerie = array();
-    public $erreurs = array();
+    public $valeurs = [];
+    public $fichiers = [];
+    public $supprimer = [];
+    public $supprimer_document = [];
+    public $supprimer_galerie = [];
+    public $erreurs = [];
     public $message;
     public $verif;
     public $action;

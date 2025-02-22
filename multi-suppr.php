@@ -16,10 +16,10 @@ if (!$videur->checkGroup(6)) {
 
 $page_titre = "supprimer un élément";
 $page_description = "Suppression d'un élément";
-$extra_css = array("evenement_inc", "lieu_inc", "descriptionlieu_inc");
+$extra_css = ["evenement_inc", "lieu_inc", "descriptionlieu_inc"];
 include("_header.inc.php");
 
-$tab_types = array("evenement", "lieu", "descriptionlieu", "personne", "salle", "organisateur");
+$tab_types = ["evenement", "lieu", "descriptionlieu", "personne", "salle", "organisateur"];
 
 /*
  * Vérification et attribution des variables d'URL GET
@@ -33,7 +33,7 @@ else {
 }
 
 
-$tab_actions = array("confirmation", "suppression");
+$tab_actions = ["confirmation", "suppression"];
 $get['action'] = "suppression";
 if (isset($_GET['action'])) {
     $get['action'] = Validateur::validateUrlQueryValue($_GET['action'], "enum", 1, $tab_actions);

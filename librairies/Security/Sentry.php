@@ -104,7 +104,7 @@ class Sentry extends SystemComponent
 
         $valide = new Validateur();
 
-        $erreurs = array();
+        $erreurs = [];
         if ($memoriser)
         {
             $memoriser = true;

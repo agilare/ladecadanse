@@ -6,7 +6,7 @@ use Ladecadanse\Utils\Validateur;
 $de = "0";
 $vers = "l";
 
-$tab_statuts = array("actif", "inactif", "ancien");
+$tab_statuts = ["actif", "inactif", "ancien"];
 $get['statut'] = "actif";
 if (isset($_GET['statut']))
 {
@@ -19,7 +19,7 @@ if (isset($_GET['statut']))
     }
 }
 
-$tab_vues = array("az", "genre", "quartier");
+$tab_vues = ["az", "genre", "quartier"];
 if (isset($_GET['vue']))
 {
     try
@@ -41,7 +41,7 @@ else
 }
 
 
-$tab_tranches = array_merge(array_merge(array("ak", "lz", "tout"), array_keys($glo_categories_lieux)), $glo_tab_quartiers);
+$tab_tranches = array_merge(array_merge(["ak", "lz", "tout"], array_keys($glo_categories_lieux)), $glo_tab_quartiers);
 
 if (isset($_GET['tranche']))
 {
@@ -273,7 +273,7 @@ while (list ($id, $nom) = mysqli_fetch_row($req_lieux))
 
 
     $aff_menulieux .= ">
-	<td><a href=\"/lieu.php?idL=" . $id . "&amp;" . Utils::urlQueryArrayToString($get, array("idL", "type_description")) . "\">";
+	<td><a href=\"/lieu.php?idL=" . $id . "&amp;" . Utils::urlQueryArrayToString($get, ["idL", "type_description"]) . "\">";
 
     if (preg_match("/^(Le |La |Les |L')(.*)/", $nomDuLieu, $matches))
     {

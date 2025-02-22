@@ -13,8 +13,8 @@ class Validateur
      *
      * @var array string
      */
-    public $erreurs = array();
-    public $types = array('texte', 'email', 'nombre', 'date', 'url', 'fichier', 'image');
+    public $erreurs = [];
+    public $types = ['texte', 'email', 'nombre', 'date', 'url', 'fichier', 'image'];
 
     function valider($valeur_champ, $nom_champ, $type_champ, $longueur_min, $longueur_max, $obligatoire)
     {
@@ -364,7 +364,7 @@ class Validateur
      */
     function validerImage($imageSource, $description = '')
     {
-        $allowedmime = array("image/jpeg", "image/pjpeg", "image/gif", "image/png", "image/x-png");
+        $allowedmime = ["image/jpeg", "image/pjpeg", "image/gif", "image/png", "image/x-png"];
 
         if (in_array($imageSource['type'], $allowedmime))
         {

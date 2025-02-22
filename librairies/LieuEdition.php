@@ -15,14 +15,14 @@ class LieuEdition extends Edition
 
     public $nom;
     public $firstTime;
-    public $valeurs = array();
-    public $fichiers = array();
-    public $supprimer = array();
-    public $supprimer_document = array();
-    public $supprimer_galerie = array();
-    public $supprimer_organisateur = array();
-    public $erreurs = array();
-    public $organisateurs = array();
+    public $valeurs = [];
+    public $fichiers = [];
+    public $supprimer = [];
+    public $supprimer_document = [];
+    public $supprimer_galerie = [];
+    public $supprimer_organisateur = [];
+    public $erreurs = [];
+    public $organisateurs = [];
     public $message;
     public $verif;
     public $action;
@@ -37,7 +37,7 @@ class LieuEdition extends Edition
         //$this->wizardPage = $wPage;
 
         $this->valeurs = $champs;
-        $this->valeurs['categorie'] = array();
+        $this->valeurs['categorie'] = [];
         $this->fichiers = $fichiers;
 
         $this->erreurs = array_merge($champs, $fichiers);

@@ -52,7 +52,7 @@ else
 }
 
 $page_titre = $get['action'] . " une personne";
-$extra_css = array("formulaires");
+$extra_css = ["formulaires"];
 include("_header.inc.php");
 ?>
 
@@ -62,7 +62,7 @@ include("_header.inc.php");
 
 $verif = new Validateur();
 
-$champs = array(
+$champs = [
     "pseudo" => '',
     "motdepasse" => '',
     "newPass" => '',
@@ -75,7 +75,7 @@ $champs = array(
     "signature" => 'pseudo',
     "avec_affiliation" => 'non',
     "statut" => '',
-);
+];
 
 
 
@@ -572,7 +572,7 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= UserLevel::ACTOR)) {
     FROM personne_organisateur
     WHERE personne_organisateur.idPersonne=".$get['idP'];
 
-    $tab_organisateurs_pers = array();
+    $tab_organisateurs_pers = [];
     if ($get['action'] == "editer" || $get['action'] == "update")
     {
 
@@ -737,7 +737,7 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= UserLevel::ACTOR)) {
 
     <ul class="radio" style="display:block">
     <?php
-    $signatures = array("pseudo" => "L'identifiant", "aucune" => "Aucune signature");
+    $signatures = ["pseudo" => "L'identifiant", "aucune" => "Aucune signature"];
         foreach ($signatures as $s => $label)
     {
         $coche = '';

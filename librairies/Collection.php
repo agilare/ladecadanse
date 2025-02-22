@@ -8,7 +8,7 @@ namespace Ladecadanse;
 class Collection {
 
 	public $nom;
-	public $elements = array();
+	public $elements = [];
 	public $connector;
 
 	function __construct()

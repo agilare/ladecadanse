@@ -15,10 +15,10 @@ namespace Ladecadanse;
     public $nom;
     public $firstTime;
 	public $id;
-    public $valeurs = array();
-    public $fichiers = array();
-    public $supprimer = array();
-    public $erreurs = array();
+    public $valeurs = [];
+    public $fichiers = [];
+    public $supprimer = [];
+    public $erreurs = [];
     public $verif;
 	public $action;
 

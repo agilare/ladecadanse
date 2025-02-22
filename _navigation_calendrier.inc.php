@@ -88,7 +88,7 @@ $mois_suiv = date("Y-m-d", mktime(0, 0, 0, $mois_courant + 1, $jour_mois_suiv, $
 	$no_dern_sem_mois = date("W", mktime(0,0,0,$mois_courant,$nb_jours_mois,$annee_courant));
 
 
-    $tab_no_jour_sem = Array("0", "1", "2", "3", "4", "5", "6", "0");
+    $tab_no_jour_sem = ["0", "1", "2", "3", "4", "5", "6", "0"];
 
 	$pas = 1;
 	$no_jour = "01";

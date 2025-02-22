@@ -8,16 +8,16 @@ use Ladecadanse\Utils\Utils;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\Text;
 
-$tab_menu_tri = array("pertinence" => "pertinence", "dateEvenement" => "date", "dateAjout" => "date d'ajout");
-$tab_periodes = array("futur", "ancien", "tous");
+$tab_menu_tri = ["pertinence" => "pertinence", "dateEvenement" => "date", "dateAjout" => "date d'ajout"];
+$tab_periodes = ["futur", "ancien", "tous"];
 
-$get = array();
+$get = [];
 
 $get['tri'] = "pertinence";
 if (isset($_GET['tri']))
 {
     try {
-        $get['tri'] =  Validateur::validateUrlQueryValue($_GET['tri'], "enum", 1, array("pertinence", "dateEvenement", "dateAjout"));
+        $get['tri'] =  Validateur::validateUrlQueryValue($_GET['tri'], "enum", 1, ["pertinence", "dateEvenement", "dateAjout"]);
     } catch (Exception $e) { header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); exit; }
 }
 
@@ -82,7 +82,7 @@ if (!empty($get['mots']))
 	$tab_tous_mots = explode(" ", $mots);
 
 
-	$mots_vides = array();
+	$mots_vides = [];
 	if (!$fp = fopen("resources/mots_vides.txt","r"))
 	{
 		echo "Echec de l'ouverture du fichier";
@@ -105,7 +105,7 @@ if (!empty($get['mots']))
 
 
 	$get['mots'] = "";
-	$tab_mots = array();
+	$tab_mots = [];
 	for ($i = 0; $i < sizeof($tab_tous_mots); $i++)
 	{
 		//pour l'url
@@ -125,7 +125,7 @@ if (!empty($get['mots']))
 
     if ($nb_mots > 0)
     {
-        $champs_evenement = array("titre", "nomLieu", "description");
+        $champs_evenement = ["titre", "nomLieu", "description"];
 
         $sql_select = "SELECT SQL_CALC_FOUND_ROWS idEvenement, idPersonne, titre, idLieu, idSalle, nomLieu, description, genre, dateEvenement,
         flyer, prix, horaire_debut, horaire_complement, dateAjout
@@ -199,7 +199,7 @@ if (!empty($get['mots']))
 	{
 		if ($get['tri'] == "pertinence")
 		{
-			$even_points = array();
+			$even_points = [];
 
 			$p = 0;
 

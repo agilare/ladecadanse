@@ -247,7 +247,7 @@ use Ladecadanse\UserLevel;
 
                 <ul>
                     <?php
-                    $menu_principal = array("Agenda" => "evenement-agenda.php", "Lieux" => "lieux.php", "Organisateurs" => "organisateurs.php");
+                    $menu_principal = ["Agenda" => "evenement-agenda.php", "Lieux" => "lieux.php", "Organisateurs" => "organisateurs.php"];
 
                     foreach ($menu_principal as $nom => $lien)
                     {

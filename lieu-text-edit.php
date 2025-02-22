@@ -13,19 +13,19 @@ if (!$videur->checkGroup(8))
 }
 
 $page_titre = "ajouter/modifier une description/présentation de lieu";
-$extra_css = array("formulaires", "description");
+$extra_css = ["formulaires", "description"];
 
 /*
 * action choisie, idL et idP si édition
 */
-$tab_actions = array("ajouter", "insert", "editer", "update");
+$tab_actions = ["ajouter", "insert", "editer", "update"];
 $get['action'] = "ajouter";
 if (isset($_GET['action']))
 {
 	$get['action'] = Validateur::validateUrlQueryValue($_GET['action'], "enum", 0, $tab_actions);
 }
 
-$tab_types = array("description", "presentation");
+$tab_types = ["description", "presentation"];
 if (isset($_GET['type'])) {
     $get['type'] = Validateur::validateUrlQueryValue($_GET['type'], "enum", 0, $tab_types);
 }
@@ -79,7 +79,7 @@ if ($get['type'] == 'presentation' && $_SESSION['Sgroupe'] == 8 && ($get['idL'] 
 
 $verif = new Validateur();
 
-$champs = array("idLieu" => '', "contenu" => '');
+$champs = ["idLieu" => '', "contenu" => ''];
 
 $action_terminee = false;
 

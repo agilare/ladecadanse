@@ -14,12 +14,12 @@ if (!$videur->checkGroup(UserLevel::ACTOR)) {
 }
 
 $page_titre = "copier un événement vers d'autres dates";
-$extra_css = array("formulaires", "evenement_inc");
+$extra_css = ["formulaires", "evenement_inc"];
 
 /*
 * action choisie, ID si collage
 */
-$tab_actions = array("coller");
+$tab_actions = ["coller"];
 $get['action'] = "";
 
 if (isset($_GET['action']))
@@ -71,7 +71,7 @@ $jour2 = '';
 $mois2 = '';
 $annee2 = '';
 
-$tab_champs = array();
+$tab_champs = [];
 
 if (!empty($_POST['submit']))
 {
