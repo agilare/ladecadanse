@@ -150,8 +150,9 @@ class ImageDriver2 extends SystemComponent {
 
        $cheminImage = $this->IMGracine.$this->IMGtype.$slash.$imageCreated;
        $mime_type = mime_content_type($imageSource['tmp_name']);
+        $originaltransparentcolor = -1;
 
-       if ($mime_type == "image/jpeg")
+        if ($mime_type == "image/jpeg")
        {
            $img = ImageCreateFromJpeg($imageSource['tmp_name']);
 

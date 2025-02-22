@@ -338,7 +338,7 @@ function afficher_debut_fin($horaire_debut, $horaire_fin, $date_evenement): stri
 
 /**
  * FIXME: mv to Text class
- * @param string $chaine dirty
+ * @param ?string $chaine dirty
  * @return string clean
  */
 function sanitizeForHtml(?string $chaine): string

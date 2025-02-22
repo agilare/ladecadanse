@@ -35,10 +35,13 @@ class Text
     REGEX;
 
         return preg_replace_callback($re, function ($m) {
-            //print_r($m);
+
             if ($m[1])
                 return $m[1];
+
+            $url = '';
             $text = "lien";
+
             if ($m[2])
             {
                 $url = $m[2];
@@ -54,11 +57,9 @@ class Text
                 $url = "mailto:$m[4]";
                 $text = $m[4];
             }
-            $url = htmlspecialchars($url);
-            $text = htmlspecialchars($text);
-            return "<a href='$url'>$text</a>";
-        },
-                $input);
+
+            return "<a href='" . htmlspecialchars($url) . "'>" . htmlspecialchars($text) . "</a>";
+        }, $input);
     }
 
 
