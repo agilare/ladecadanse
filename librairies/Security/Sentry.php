@@ -73,7 +73,6 @@ class Sentry extends SystemComponent
                 unset($this->userdata);
                 $message = "Erreur de session (pass) : " . $_SESSION['user'] . ", sid:" . session_id();
                 trigger_error($message, E_USER_ERROR);
-                return false;
             } // if pass
         }
         else
@@ -82,7 +81,6 @@ class Sentry extends SystemComponent
             $message = "Erreur de session (requete) : " . $_SESSION['user'] . ", sid:" . session_id();
             trigger_error($message, E_USER_ERROR);
             unset($this->userdata);
-            return false;
         } //if num rows
     }
 
@@ -356,7 +354,7 @@ class Sentry extends SystemComponent
             //setcookie('ladecadanse_remember', '', time() - 3600); // semble ne pas fonctionner
             unset($_COOKIE['ladecadanse_remember']);
 
-            setcookie('ladecadanse_remember', null, 1);
+            setcookie('ladecadanse_remember', '', 1);
         }
     }
 

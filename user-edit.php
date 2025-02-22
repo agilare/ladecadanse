@@ -211,8 +211,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 	{
 		if (!empty($champs['newPass']))
 		{
-			$champs['gds'] = mb_substr(sha1(uniqid(rand(), true)), 0, 5);
-			$champs['mot_de_passe'] = sha1($champs['gds'].sha1($champs['newPass']));
+			$champs['gds'] = mb_substr(sha1(uniqid((string) rand(), true)), 0, 5);
+            $champs['mot_de_passe'] = sha1($champs['gds'].sha1($champs['newPass']));
 		}
 
 		if ($_SESSION['Sgroupe'] > UserLevel::SUPERADMIN) {

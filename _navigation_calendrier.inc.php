@@ -1,6 +1,6 @@
 <?php
 
-$get ?? [];
+//$get ?? [];
 
 if (empty($get['courant'])) {
     $get['courant'] = $glo_auj_6h;
@@ -24,7 +24,7 @@ $jour_courant = (int) $tab_date_courant[2];
 $mois_courant = (int) $tab_date_courant[1];
 $annee_courant = (int) $tab_date_courant[0];
 
-$nb_jours_mois = date("t", mktime(0, 0, 0, $mois_courant, $jour_courant, $annee_courant));
+$nb_jours_mois = (int) date("t", mktime(0, 0, 0, $mois_courant, $jour_courant, $annee_courant));
 
 $jour_mois_prec = $jour_mois_suiv = $jour_courant;
 if ($jour_courant == $nb_jours_mois)
@@ -69,9 +69,9 @@ $mois_suiv = date("Y-m-d", mktime(0, 0, 0, $mois_courant + 1, $jour_mois_suiv, $
     </tr>
 
 	<?php
-	$nb_jours_mois = date("t", mktime(0,0,0,$mois_courant,01,$annee_courant));
+	$nb_jours_mois = (int) date("t", mktime(0, 0, 0, $mois_courant, 01, $annee_courant));
 
-	$no_premier_jour_sem = date("w", mktime(0,0,0,$mois_courant,01,$annee_courant));
+    $no_premier_jour_sem = date("w", mktime(0,0,0,$mois_courant,01,$annee_courant));
 	if ($no_premier_jour_sem == 0)
 	{
 		$no_premier_jour_sem = 7;

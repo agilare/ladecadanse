@@ -148,8 +148,8 @@ if ($connector->getNumRows($req_temp) == 1)
 		 */
 		if ($verif->nbErreurs() === 0)
 		{
-			$champs['gds'] = mb_substr(sha1(uniqid(rand(), true)), 0, 5);
-			$champs['motdepasse'] = sha1($champs['gds'].sha1($champs['motdepasse']));
+			$champs['gds'] = mb_substr(sha1(uniqid((string) rand(), true)), 0, 5);
+            $champs['motdepasse'] = sha1($champs['gds'].sha1($champs['motdepasse']));
 
 
 			$sql_update = "UPDATE personne SET mot_de_passe='".$connector->sanitize($champs['motdepasse'])."', gds='".$connector->sanitize($champs['gds'])."', date_derniere_modif=NOW() WHERE idPersonne=".$idPersonne;

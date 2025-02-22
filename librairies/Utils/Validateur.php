@@ -331,22 +331,18 @@ class Validateur
                     case 1: // UPLOAD_ERR_INI_SIZE
                         $this->erreurs[$nom] = "Le fichier dépasse la taille autorisée (2 Mo)";
                         return false;
-                        break;
 
                     case 2: // UPLOAD_ERR_FORM_SIZE
                         $this->erreurs[$nom] = "Le fichier dépasse la limite autorisée dans le formulaire HTML (2 Mo)";
                         return false;
-                        break;
 
                     case 3: // UPLOAD_ERR_PARTIAL
                         $this->erreurs[$nom] = "L\'envoi du fichier a été interrompu pendant le transfert";
                         return false;
-                        break;
 
                     case 4: // UPLOAD_ERR_NO_FILE
                         $this->erreurs[$nom] = "Le fichier envoyé a une taille nulle";
                         return false;
-                        break;
 
                     default:
                         $this->erreurs[$nom] = "Il y a eu un problème de transfert.";

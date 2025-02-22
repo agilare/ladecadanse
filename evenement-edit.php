@@ -162,11 +162,9 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 	if (isset($_POST['organisateurs']))
 		$champs['organisateurs'] = $_POST['organisateurs'];
 
-	if (isset($fichiers['flyer']))
-		$fichiers['flyer'] = $_FILES['flyer'];
+	$fichiers['flyer'] = $_FILES['flyer'];
 
-	if (isset($fichiers['image']))
-		$fichiers['image'] = $_FILES['image'];
+    $fichiers['image'] = $_FILES['image'];
 
     if (empty($champs['idLieu']))
         $champs['idLieu'] = 0;
@@ -662,7 +660,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 			$imD2 = new ImageDriver2("evenement");
 			$erreur_image = array();
 			$erreur_image[] = $imD2->processImage($_FILES['flyer'], $champs['flyer'], 600, 600);
-			$erreur_image[] = $imD2->processImage($_FILES['flyer'], "s_" . $champs['flyer'], 120, 190, 0, 0);
+			$erreur_image[] = $imD2->processImage($_FILES['flyer'], "s_" . $champs['flyer'], 120, 190, '', 0);
 
             if (!empty($msg2))
                 $champs['flyer'] = '';
@@ -673,7 +671,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 			$imD2 = new ImageDriver2("evenement");
 			$erreur_image = array();
 			$erreur_image[] = $imD2->processImage($_FILES['image'], $champs['image'], 600, 600);
-			$erreur_image[] = $imD2->processImage($_FILES['image'], "s_" . $champs['image'], 120, 190, 0, 0);
+			$erreur_image[] = $imD2->processImage($_FILES['image'], "s_" . $champs['image'], 120, 190, '', 0);
 
             if (!empty($msg2))
                 $champs['image'] = '';

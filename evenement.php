@@ -454,12 +454,12 @@ foreach ($tab_ref as $r)
 							echo "<li><a href=\"" . sanitizeForHtml($r) . "\" target='_blank' class=\"lien_ext\">";
         if (preg_match('/^https?:\/\/www/', $r))
 							{
-								echo wordwrap($r_aff, 30, "<br />", 1);
-							}
+								echo wordwrap($r_aff, 30, "<br />", true);
+        }
 							else if (!empty($r))
 							{
-								echo wordwrap($r_aff, 30, "<br />", 1);
-							}
+								echo wordwrap($r_aff, 30, "<br />", true);
+        }
 							echo "</a></li>";
 						}
 						else
