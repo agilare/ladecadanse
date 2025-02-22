@@ -17,26 +17,26 @@ class ImageDriver2 extends SystemComponent {
      *
      * @var array string
      */
-    var $formats;
+    public $formats;
 
     /**
      * Nom du répertoire des images du site
      *
      * @var string
      */
-    var $IMGracine;
+    public $IMGracine;
 
     /**
      * Nom du répertoire des images des lieux
      *
      * @var string
      */
-    var $IMGlieux;
-    var $IMGlieuxGaleries;
+    public $IMGlieux;
+    public $IMGlieuxGaleries;
 
-    var $IMGtype;
+    public $IMGtype;
 
-    var $erreur;
+    public $erreur;
 
     /**
     * Constructeur

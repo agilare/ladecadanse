@@ -8,10 +8,10 @@ namespace Ladecadanse;
 class Element
 {
 
-    var $id;
-    var $valeurs = [];
-    var $connector;
-	var $table;
+    public $id;
+    public $valeurs = [];
+    public $connector;
+	public $table;
 
 	function __construct()
 	{

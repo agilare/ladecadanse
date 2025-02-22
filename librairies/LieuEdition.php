@@ -13,20 +13,20 @@ use Ladecadanse\HtmlShrink;
 class LieuEdition extends Edition
 {
 
-    var $nom;
-    var $firstTime;
-    var $valeurs = array();
-    var $fichiers = array();
-    var $supprimer = array();
-    var $supprimer_document = array();
-    var $supprimer_galerie = array();
-    var $supprimer_organisateur = array();
-    var $erreurs = array();
-    var $organisateurs = array();
-    var $message;
-    var $verif;
-    var $action;
-    var $connector;
+    public $nom;
+    public $firstTime;
+    public $valeurs = array();
+    public $fichiers = array();
+    public $supprimer = array();
+    public $supprimer_document = array();
+    public $supprimer_galerie = array();
+    public $supprimer_organisateur = array();
+    public $erreurs = array();
+    public $organisateurs = array();
+    public $message;
+    public $verif;
+    public $action;
+    public $connector;
 
     function __construct($nom, $champs, $fichiers)
     {

@@ -12,18 +12,18 @@ namespace Ladecadanse;
   */
   class Edition
   {
-    var $nom;
-    var $firstTime;
-	var $id;
-    var $valeurs = array();
-    var $fichiers = array();
-    var $supprimer = array();
-    var $erreurs = array();
-    var $verif;
-	var $action;
+    public $nom;
+    public $firstTime;
+	public $id;
+    public $valeurs = array();
+    public $fichiers = array();
+    public $supprimer = array();
+    public $erreurs = array();
+    public $verif;
+	public $action;
 
-	var $message;
-    var $connector;
+	public $message;
+    public $connector;
 
     function __construct($nom, $champs, $fichiers)
     {

@@ -13,8 +13,8 @@ class Validateur
      *
      * @var array string
      */
-    var $erreurs = array();
-    var $types = array('texte', 'email', 'nombre', 'date', 'url', 'fichier', 'image');
+    public $erreurs = array();
+    public $types = array('texte', 'email', 'nombre', 'date', 'url', 'fichier', 'image');
 
     function valider($valeur_champ, $nom_champ, $type_champ, $longueur_min, $longueur_max, $obligatoire)
     {
