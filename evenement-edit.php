@@ -20,13 +20,13 @@ if (isset($_SESSION['Sgroupe']))
     $page_description = "Formulaire d'ajout/modification d'un événement dans l'agenda";
 }
 
-$extra_css = array("formulaires", "evenement_inc");
+$extra_css = ["formulaires", "evenement_inc"];
 
 /*
 * action choisie, ID si édition
 * action "ajouter" par défaut
 */
-$actions = array("ajouter", "insert", "editer", "update");
+$actions = ["ajouter", "insert", "editer", "update"];
 $get['action'] = "ajouter";
 
 /*
@@ -38,7 +38,7 @@ if (isset($_GET['action']))
     {
         $get['action'] = Validateur::validateUrlQueryValue($_GET['action'], "enum", "ajouter", $actions);
     }
-    catch (Exception $e)
+    catch (Exception)
     {
         header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
         exit;
@@ -51,7 +51,7 @@ if (isset($_GET['idE']))
     {
         $get['idE'] = Validateur::validateUrlQueryValue($_GET['idE'], "int", 1);
     }
-    catch (Exception $e)
+    catch (Exception)
     {
         header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
         exit;
@@ -64,7 +64,7 @@ if (isset($_GET['idL']))
     {
         $get['idL'] = Validateur::validateUrlQueryValue($_GET['idL'], "int", 1);
     }
-    catch (Exception $e)
+    catch (Exception)
     {
         header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
         exit;
@@ -77,7 +77,7 @@ if (isset($_GET['idO']))
     {
         $get['idO'] = Validateur::validateUrlQueryValue($_GET['idO'], "int", 1);
     }
-    catch (Exception $e)
+    catch (Exception)
     {
         header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
         exit;
@@ -109,11 +109,11 @@ if ($get['action'] != "ajouter" && $get['action'] != "insert")
 
 $formTokenName = 'form_token_evenement_edit';
 $verif = new Validateur();
-$champs = array("statut" => "", "genre" => "", "titre" => "", "dateEvenement" => "", "idLieu" => 0,
+$champs = ["statut" => "", "genre" => "", "titre" => "", "dateEvenement" => "", "idLieu" => 0,
  "idSalle" => 0, "nomLieu" => "", "adresse" => "", "quartier" => "",  "localite_id" => "", "region" => "", "urlLieu" => "", 'organisateurs' => '', "description" => "", "ref" => "",
-  "horaire_debut" => "", "horaire_fin" => "", "horaire_complement" => "", "price_type" => "", "prix" => "", "prelocations" => "", "user_email" => "", "remarque" => "");
-$fichiers = array('flyer' => '', 'image' => '');
-$supprimer = array();
+  "horaire_debut" => "", "horaire_fin" => "", "horaire_complement" => "", "price_type" => "", "prix" => "", "prelocations" => "", "user_email" => "", "remarque" => ""];
+$fichiers = ['flyer' => '', 'image' => ''];
+$supprimer = [];
 $action_terminee = false;
 
 if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
@@ -162,11 +162,9 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 	if (isset($_POST['organisateurs']))
 		$champs['organisateurs'] = $_POST['organisateurs'];
 
-	if (isset($fichiers['flyer']))
-		$fichiers['flyer'] = $_FILES['flyer'];
+	$fichiers['flyer'] = $_FILES['flyer'];
 
-	if (isset($fichiers['image']))
-		$fichiers['image'] = $_FILES['image'];
+    $fichiers['image'] = $_FILES['image'];
 
     if (empty($champs['idLieu']))
         $champs['idLieu'] = 0;
@@ -330,8 +328,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 		{
 			$tab_horaire_debut = explode(":", $champs['horaire_debut']);
 			//print_r($tab_horaire_debut);
-			$sec_horaire_debut = $tab_horaire_debut[0] * 3600 + $tab_horaire_debut[1] * 60;
-			//TEST
+			$sec_horaire_debut = (int) $tab_horaire_debut[0] * 3600 + (int) $tab_horaire_debut[1] * 60;
+            //TEST
 			//echo "sec_H:".$sec_horaire_debut;
 			//
 			if ($sec_horaire_debut >= 0 && $sec_horaire_debut <= 21600)
@@ -352,8 +350,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 		if (!empty($champs['horaire_fin']))
 		{
 			$tab_horaire_fin = explode(":", $champs['horaire_fin']);
-			$sec_horaire_fin = $tab_horaire_fin[0] * 3600 + $tab_horaire_fin[1] * 60;
-			//TEST
+			$sec_horaire_fin = (int) $tab_horaire_fin[0] * 3600 + (int) $tab_horaire_fin[1] * 60;
+            //TEST
 			//echo "sec_H:".$sec_horaire_debut;
 			//
 			if ($sec_horaire_fin >= 0 && $sec_horaire_fin <= 21600)
@@ -660,12 +658,9 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 		if (!empty($fichiers['flyer']['name']))
 		{
 			$imD2 = new ImageDriver2("evenement");
-			$erreur_image = array();
+			$erreur_image = [];
 			$erreur_image[] = $imD2->processImage($_FILES['flyer'], $champs['flyer'], 600, 600);
-			$erreur_image[] = $imD2->processImage($_FILES['flyer'], "s_".$champs['flyer'], 120, 190, 0, 0);
-			if (!empty($erreur_image)) {
-				print_r($erreur_image);
-			}
+			$erreur_image[] = $imD2->processImage($_FILES['flyer'], "s_" . $champs['flyer'], 120, 190, '', 0);
 
             if (!empty($msg2))
                 $champs['flyer'] = '';
@@ -674,12 +669,9 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 		if (!empty($fichiers['image']['name']))
 		{
 			$imD2 = new ImageDriver2("evenement");
-			$erreur_image = array();
+			$erreur_image = [];
 			$erreur_image[] = $imD2->processImage($_FILES['image'], $champs['image'], 600, 600);
-			$erreur_image[] = $imD2->processImage($_FILES['image'], "s_".$champs['image'], 120, 190, 0, 0);
-			if (!empty($erreur_image)) {
-				print_r($erreur_image);
-			}
+			$erreur_image[] = $imD2->processImage($_FILES['image'], "s_" . $champs['image'], 120, 190, '', 0);
 
             if (!empty($msg2))
                 $champs['image'] = '';
@@ -1058,11 +1050,11 @@ if ($verif->nbErreurs() > 0)
                 <div class="spacer"></div>
         <p>
         <?php
-        $tab_nomLieu_label = array("for" => "nomLieu");
+        $tab_nomLieu_label = ["for" => "nomLieu"];
         echo HtmlShrink::formLabel($tab_nomLieu_label, "Nom du lieu");
         echo $verif->getHtmlErreur("nomLieuIdentique");
 
-        $tab_nomLieu = array("type" => "text", "name" => "nomLieu", "id" => "nomLieu", "size" => "35", "maxlength" => "60", "value" => "");
+        $tab_nomLieu = ["type" => "text", "name" => "nomLieu", "id" => "nomLieu", "size" => "35", "maxlength" => "60", "value" => ""];
     if (empty($champs['idLieu']))
         {
             $tab_nomLieu['value'] = sanitizeForHtml($champs['nomLieu']);
@@ -1215,7 +1207,7 @@ if ($verif->nbErreurs() > 0)
             <div class="spacer"></div>
 
         <?php
-        $tab_organisateurs_even = array();
+        $tab_organisateurs_even = [];
         if ($get['action'] == "editer" || $get['action'] == "update")
         {
 
@@ -1390,7 +1382,7 @@ if (($get['action'] == "editer" || $get['action'] == "update") && isset($get['id
     <ul class="radio">
     <?php
 
-    $statuts = array('propose' => '<strong>proposé</strong> (non visible sur le site)', 'actif' => '<strong>publié</strong> (visible sur le site)',  'complet' => '<strong>complet</strong> (visible sur le site mais marqué comme étant complet)', 'annule' => '<strong>annulé</strong> (visible sur le site mais marqué comme étant annulé)', 'inactif' => '<strong>dépublié</strong> (non visible sur le site)');
+    $statuts = ['propose' => '<strong>proposé</strong> (non visible sur le site)', 'actif' => '<strong>publié</strong> (visible sur le site)',  'complet' => '<strong>complet</strong> (visible sur le site mais marqué comme étant complet)', 'annule' => '<strong>annulé</strong> (visible sur le site mais marqué comme étant annulé)', 'inactif' => '<strong>dépublié</strong> (non visible sur le site)'];
     foreach ($statuts as $s => $n)
     {
         if ($s === 'propose' && ($_SESSION['Sgroupe'] > 6 || (!empty($champs['user_email']) && $champs['statut'] != 'propose')))

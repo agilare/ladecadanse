@@ -27,4 +27,7 @@ rector.php
 SECURITY.md
 package-lock.json
 package.json
+phpstan-baseline.neon
+/.phan
+.phan/*
 .htaccess.example

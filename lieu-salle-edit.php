@@ -12,13 +12,13 @@ if (!$videur->checkGroup(8))
 }
 
 $page_titre = "ajouter/modifier une salle";
-$extra_css = array("formulaires", "description");
+$extra_css = ["formulaires", "description"];
 include("_header.inc.php");
 
 /*
 * action choisie, idL et idP si édition
 */
-$tab_actions = array("ajouter", "insert", "editer", "update");
+$tab_actions = ["ajouter", "insert", "editer", "update"];
 $get['action'] = "ajouter";
 if (isset($_GET['action']))
 {
@@ -66,7 +66,7 @@ if ($get['action'] != "ajouter" && $get['action'] != "insert")
 */
 $verif = new Validateur();
 
-$champs = array("idLieu" => '', "nom" => '', "emplacement" => '');
+$champs = ["idLieu" => '', "nom" => '', "emplacement" => ''];
 
 $action_terminee = false;
 

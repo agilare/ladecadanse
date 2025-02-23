@@ -16,9 +16,9 @@ $page_titre = "profil";
 include("_header.inc.php");
 
 
-$tab_elements = array("evenement" => "Événements", "lieu" => "Lieux", 'organisateur' => 'Organisateurs', "description" => "Descriptions");
+$tab_elements = ["evenement" => "Événements", "lieu" => "Lieux", 'organisateur' => 'Organisateurs', "description" => "Descriptions"];
 
-$tab_type_elements = array("ajouts" => "ajoutés");
+$tab_type_elements = ["ajouts" => "ajoutés"];
 
 if (isset($_GET['idP']))
 {
@@ -78,8 +78,8 @@ else
 	$get['page'] = 1;
 }
 
-$tab_tri = array("dateAjout", "idOrganisateur", "idEvenement", "idLieu", "dateEvenement", "date_derniere_modif", "statut",
-    "date_debut", "date_fin", "id", "titre", "groupe", "pseudo");
+$tab_tri = ["dateAjout", "idOrganisateur", "idEvenement", "idLieu", "dateEvenement", "date_derniere_modif", "statut",
+    "date_debut", "date_fin", "id", "titre", "groupe", "pseudo"];
 
 if (isset($_GET['tri']))
 {
@@ -91,7 +91,7 @@ else
 }
 
 
-$tab_ordre = array("asc", "desc");
+$tab_ordre = ["asc", "desc"];
 if (isset($_GET['ordre']))
 {
 	$get['ordre'] = Validateur::validateUrlQueryValue($_GET['ordre'], "enum", 1, $tab_ordre);
@@ -268,7 +268,7 @@ $detailsAff = $connector->fetchArray($req_affPers);
         }
 			echo '</ul>';
 			echo '<div class="spacer"><!-- --></div>';
-			$th_evenements = array("dateEvenement" => "Date", "idLieu" => "Lieu", "titre" => "Titre", "dateAjout" => "Date d'ajout", "statut" => "");
+			$th_evenements = ["dateEvenement" => "Date", "idLieu" => "Lieu", "titre" => "Titre", "dateAjout" => "Date d'ajout", "statut" => ""];
 
 
 			echo "<table id=\"ajouts\"><tr>";
@@ -384,7 +384,7 @@ $detailsAff = $connector->fetchArray($req_affPers);
 			echo '</ul>';
 			echo '<div class="spacer"><!-- --></div>';
 
-			$th_descriptions = array("idLieu" => "Lieu",  "contenu" => "Contenu", "type" => "Type", "dateAjout" => "Date d'ajout");
+			$th_descriptions = ["idLieu" => "Lieu",  "contenu" => "Contenu", "type" => "Type", "dateAjout" => "Date d'ajout"];
 
 			echo "<table id=\"ajouts\"><tr>";
 			foreach ($th_descriptions as $att => $th)
@@ -479,7 +479,7 @@ $detailsAff = $connector->fetchArray($req_affPers);
     if ($connector->getNumRows($req_lieux) > 0)
 	{
 
-		$th_lieu = array("idLieu" => "ID",  "nom" => "Nom", "categorie" => "Catégorie", "URL" => "Site web", "description" => "Desc", "dateAjout" => "Date d'ajout");
+		$th_lieu = ["idLieu" => "ID",  "nom" => "Nom", "categorie" => "Catégorie", "URL" => "Site web", "description" => "Desc", "dateAjout" => "Date d'ajout"];
 
 		echo '<ul id="menu_nb_res">';
 		foreach ($tab_nblignes as $nbl)
@@ -520,7 +520,7 @@ $detailsAff = $connector->fetchArray($req_affPers);
 
 		$pair = 0;
 
-		while(list($idLieu, $idPersonne, $nom, $quartier, $categorie, $URL, $dateAjout) = $connector->fetchArray($req_lieux))
+		while([$idLieu, $idPersonne, $nom, $quartier, $categorie, $URL, $dateAjout] = $connector->fetchArray($req_lieux))
 		{
 
 			$req_nbDes = $connector->query("SELECT COUNT(*) FROM descriptionlieu WHERE idLieu=".$idLieu);
@@ -591,7 +591,7 @@ else if ($get['elements'] == "organisateur")
     if ($connector->getNumRows($req_lieux) > 0)
 	{
 
-		$th_lieu = array("idOrganisateur" => "ID",  "nom" => "Nom", "URL" => "Site web", "dateAjout" => "Date d'ajout");
+		$th_lieu = ["idOrganisateur" => "ID",  "nom" => "Nom", "URL" => "Site web", "dateAjout" => "Date d'ajout"];
 
 		echo '<ul id="menu_nb_res">';
 		foreach ($tab_nblignes as $nbl)

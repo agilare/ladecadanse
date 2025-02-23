@@ -6,14 +6,18 @@ use Ladecadanse\Evenement;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\Text;
 
-$tab_types = array("evenements_auj", "lieu_evenements", 'organisateur_evenements', 'evenements_ajoutes');
+$tab_types = ["evenements_auj", "lieu_evenements", 'organisateur_evenements', 'evenements_ajoutes'];
 
 $get['type'] = '';
 if (isset($_GET['type']))
 {
     try {
         $get['type'] =  Validateur::validateUrlQueryValue($_GET['type'], "enum", 1, $tab_types);
-    } catch (Exception $e) { header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); exit; }
+    } catch (Exception)
+    {
+        header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
+        exit;
+    }
 }
 
 $get['id'] = '';
@@ -21,7 +25,11 @@ if (isset($_GET['id']))
 {
     try {
         $get['id'] =  Validateur::validateUrlQueryValue($_GET['id'], "int", 1);
-    } catch (Exception $e) { header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); exit; }
+    } catch (Exception)
+    {
+        header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
+        exit;
+    }
 }
 
 $xml = '<?xml version="1.0" encoding="utf-8" ?><rss version="2.0">';
@@ -32,7 +40,7 @@ $channel = '';
 
 if ($get['type'] == "evenements_auj") {
 
-	$genres_c = array("fête", "cinéma", "théâtre", "expos", "divers");
+	$genres_c = ["fête", "cinéma", "théâtre", "expos", "divers"];
 
 	$channel = '<title>La décadanse : événements du jour</title>';
 	$channel .= '<link>'.$site_full_url.'</link>';

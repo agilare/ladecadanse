@@ -13,8 +13,8 @@ class Validateur
      *
      * @var array string
      */
-    var $erreurs = array();
-    var $types = array('texte', 'email', 'nombre', 'date', 'url', 'fichier', 'image');
+    public $erreurs = [];
+    public $types = ['texte', 'email', 'nombre', 'date', 'url', 'fichier', 'image'];
 
     function valider($valeur_champ, $nom_champ, $type_champ, $longueur_min, $longueur_max, $obligatoire)
     {
@@ -296,57 +296,53 @@ class Validateur
      * Vérifie qu'un fichier uploadé ne soit pas d'un type dangereux et qu'il a bien été
      * reçu sur le serveur. Si ce n'est pas le cas détecte l'erreur qui a été engendrée
      *
-     * @param string Nom du fichier à vérifier
+     * @param array Nom du fichier à vérifier
      * @param string Message d'erreur à afficher en cas d'échec
      * @return boolean Validation réussie ou non
      * @access public
      */
-    function validerFichier($filename, $nom, $mimes_acceptes, $obligatoire)
+    function validerFichier($fileinfo, $nom, $mimes_acceptes, $obligatoire)
     {
-        if ($obligatoire && empty($filename['name']))
+        if ($obligatoire && empty($fileinfo['name']))
         {
             $this->erreurs[$nom] = "Ce champ est obligatoire";
         }
-        else if (!empty($filename['name']))
+        else if (!empty($fileinfo['name']))
         {
-            if (!empty($filename['type']) && !in_array($filename['type'], $mimes_acceptes))
+            if (!empty($fileinfo['type']) && !in_array($fileinfo['type'], $mimes_acceptes))
             {
-                $this->erreurs[$nom] = "Ce format de fichier (" . pathinfo($filename['name'], PATHINFO_EXTENSION) . ") n'est pas accepté";
+                $this->erreurs[$nom] = "Ce format de fichier (" . pathinfo($fileinfo['name'], PATHINFO_EXTENSION) . ") n'est pas accepté";
                 return false;
             }
 
-            if (strstr($filename['name'], "php"))
+            if (strstr($fileinfo['name'], "php"))
                 $this->erreurs[$nom] = "Veuillez ôter 'php' du nom de votre fichier";
 
 
-            if (is_uploaded_file($filename['tmp_name']))
+            if (is_uploaded_file($fileinfo['tmp_name']))
             {
                 return true;
             }
             else
             {
-                switch ($filename['error'])
+                switch ($fileinfo['error'])
                 {
 
                     case 1: // UPLOAD_ERR_INI_SIZE
                         $this->erreurs[$nom] = "Le fichier dépasse la taille autorisée (2 Mo)";
                         return false;
-                        break;
 
                     case 2: // UPLOAD_ERR_FORM_SIZE
                         $this->erreurs[$nom] = "Le fichier dépasse la limite autorisée dans le formulaire HTML (2 Mo)";
                         return false;
-                        break;
 
                     case 3: // UPLOAD_ERR_PARTIAL
                         $this->erreurs[$nom] = "L\'envoi du fichier a été interrompu pendant le transfert";
                         return false;
-                        break;
 
                     case 4: // UPLOAD_ERR_NO_FILE
                         $this->erreurs[$nom] = "Le fichier envoyé a une taille nulle";
                         return false;
-                        break;
 
                     default:
                         $this->erreurs[$nom] = "Il y a eu un problème de transfert.";
@@ -361,14 +357,14 @@ class Validateur
     /**
      * Vérifie qu'une image uploadée soit d'un type de fichier autorisé
      *
-     * @param string Nom du fichier à vérifier
+     * @param array Fichier à vérifier
      * @param string Message d'erreur à afficher en cas d'échec
      * @return boolean Validation réussie ou non
      * @access public
      */
     function validerImage($imageSource, $description = '')
     {
-        $allowedmime = array("image/jpeg", "image/pjpeg", "image/gif", "image/png", "image/x-png");
+        $allowedmime = ["image/jpeg", "image/pjpeg", "image/gif", "image/png", "image/x-png"];
 
         if (in_array($imageSource['type'], $allowedmime))
         {
@@ -454,7 +450,6 @@ class Validateur
      * Réunis les valeurs du tableau erreurs en une chaine de car., séparées par un delim
      *
      * @param string $delim Séparateur texte pour les valeurs du tableau
-     * @return boolean Validation réussie ou non
      * @access public
      */
     function listErreurs($delim = ' ')

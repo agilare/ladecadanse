@@ -11,7 +11,7 @@ if (isset($_GET['idE']))
     try
     {
         $get['idE'] = Validateur::validateUrlQueryValue($_GET['idE'], "int", 1);
-    } catch (Exception $e)
+    } catch (Exception)
     {
         header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
         exit;
@@ -24,7 +24,7 @@ else
 }
 
 $page_titre = "Signaler une erreur";
-$extra_css = array("formulaires", "evenement_inc");
+$extra_css = ["formulaires", "evenement_inc"];
 include("_header.inc.php");
 ?>
 
@@ -34,15 +34,15 @@ include("_header.inc.php");
     <?php
     $formTokenName = 'form_token_evenement_report';
 
-    $tab_type_erreur = array(
+    $tab_type_erreur = [
         "info" => "mauvaise information au sujet de l’événement",
         "enlever" => "événement à enlever",
         "autre" => "autre"
-    );
+    ];
 
 $verif = new Validateur();
 
-    $champs = array("type_erreur" => '', 'message' => '', 'name' => '', 'email' => '');
+    $champs = ["type_erreur" => '', 'message' => '', 'name' => '', 'email' => ''];
     $action_terminee = false;
 
     if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
@@ -70,7 +70,7 @@ $verif = new Validateur();
         $champs['idEvenement'] = $get['idE'];
 
         $verif = new Validateur();
-        $erreurs = array();
+        $erreurs = [];
 
         $verif->valider($champs['message'], "message", "texte", 2, 10000, 1);
 

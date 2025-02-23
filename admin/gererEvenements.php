@@ -17,10 +17,10 @@ if (!$videur->checkGroup(4))
 
 
 $page_titre = "gérer les événements";
-$extra_css = array("formulaires", "gerer", "chosen.min");
+$extra_css = ["formulaires", "gerer", "chosen.min"];
 require_once '../_header.inc.php';
 
-$tab_listes = array("evenement" => "Événements", "lieu" => "Lieux", "description" => "Descriptions", "personne" => "Personnes");
+$tab_listes = ["evenement" => "Événements", "lieu" => "Lieux", "description" => "Descriptions", "personne" => "Personnes"];
 $tab_nblignes = [100, 250, 500];
 
 $get = [];
@@ -44,7 +44,7 @@ if (isset($_GET['tri_gerer']))
 	$get['tri_gerer'] = Validateur::validateUrlQueryValue($_GET['tri_gerer'], "enum", 1, ["dateAjout", "date_derniere_modif", "statut", "date_debut","id", "titre", "genre"]);
 }
 
-$tab_ordre = array("asc", "desc");
+$tab_ordre = ["asc", "desc"];
 $get['ordre'] = "desc";
 $ordre_inverse = "asc";
 if (isset($_GET['ordre']))
@@ -120,11 +120,11 @@ if (!empty($_SESSION['region_admin']))
 	</div>
 
 <?php
-$evenements = array();
+$evenements = [];
 
-$champs = array("genre" => "", "idLieu" => "", "idSalle" => "", "nomLieu" => "", "adresse" => "", "quartier" => "",  "localite_id" => "", "region" => "", "urlLieu" => "", "titre" => "", "description" => "", "ref" => "", "horaire_debut" => "", "horaire_fin" => "", "horaire_complement" => "", "prix" => "", "prelocations" => "", "statut" => "");
+$champs = ["genre" => "", "idLieu" => "", "idSalle" => "", "nomLieu" => "", "adresse" => "", "quartier" => "",  "localite_id" => "", "region" => "", "urlLieu" => "", "titre" => "", "description" => "", "ref" => "", "horaire_debut" => "", "horaire_fin" => "", "horaire_complement" => "", "prix" => "", "prelocations" => "", "statut" => ""];
 
-$fichiers = array('flyer' => '', 'image' => '');
+$fichiers = ['flyer' => '', 'image' => ''];
 
 $action_terminee = false;
 
@@ -139,7 +139,7 @@ else if (!empty($_POST['formulaire']) && !empty($_POST['supprimerSerie']))
 
 	$evenements = $_POST['evenements'];
 
-	$erreurs = array();
+	$erreurs = [];
 
 	$totalEv = count($evenements);
 	for ($i = 0; $i < $totalEv; $i++)
@@ -171,7 +171,7 @@ elseif (!empty($_POST['formulaire']))
 	$evenements = $_POST['evenements'];
 
 
-	$champs['organisateurs'] = array();
+	$champs['organisateurs'] = [];
 	if (isset($_POST['organisateurs']))
 		$champs['organisateurs'] = $_POST['organisateurs'];
 
@@ -238,7 +238,7 @@ elseif (!empty($_POST['formulaire']))
 
 	$verif->valider($champs['description'], "description", "texte", 4, 10000, 0);
 
-	$mimes_acceptes = array("image/jpeg", "image/pjpeg", "image/gif", "image/png", "image/x-png");
+	$mimes_acceptes = ["image/jpeg", "image/pjpeg", "image/gif", "image/png", "image/x-png"];
 
     $verif->validerFichier($fichiers['flyer'], "flyer", $mimes_images_acceptes, 0);
 	$verif->validerFichier($fichiers['image'], "image", $mimes_images_acceptes, 0);
@@ -382,8 +382,8 @@ elseif (!empty($_POST['formulaire']))
 			{
 				$tab_horaire_debut = explode(":", $champs['horaire_debut']);
 
-				$sec_horaire_debut = $tab_horaire_debut[0] * 3600 + $tab_horaire_debut[1] * 60;
-				//echo "sec_H:".$sec_horaire_debut;
+				$sec_horaire_debut = (int) $tab_horaire_debut[0] * 3600 + (int) $tab_horaire_debut[1] * 60;
+                //echo "sec_H:".$sec_horaire_debut;
 
 				if ($sec_horaire_debut >= 0 && $sec_horaire_debut <= 21600)
 				{
@@ -401,8 +401,8 @@ elseif (!empty($_POST['formulaire']))
 			{
 				$tab_horaire_fin = explode(":", $champs['horaire_fin']);
 
-				$sec_horaire_fin = $tab_horaire_fin[0] * 3600 + $tab_horaire_fin[1] * 60;
-				//echo "sec_H:".$sec_horaire_fin;
+				$sec_horaire_fin = (int) $tab_horaire_fin[0] * 3600 + (int) $tab_horaire_fin[1] * 60;
+                //echo "sec_H:".$sec_horaire_fin;
 
 				if ($sec_horaire_fin >= 0 && $sec_horaire_fin <= 21600)
 				{
@@ -591,11 +591,11 @@ elseif (!empty($_POST['formulaire']))
 			{
 
 				$imD2 = new ImageDriver2("evenement");
-				$erreur_image = array();
+				$erreur_image = [];
 				$erreur_image[] = $imD2->processImage($_FILES['flyer'], $champs['flyer'], 400, 400);
-				$erreur_image[] = $imD2->processImage($_FILES['flyer'], "s_".$champs['flyer'], 120, 190, 0, 1);
+				$erreur_image[] = $imD2->processImage($_FILES['flyer'], "s_" . $champs['flyer'], 120, 190, '', 1);
 
-				if (!empty($msg2))
+                if (!empty($msg2))
 					$champs['flyer'] = '';
 
 				$srcFlyer = $champs['flyer'];
@@ -610,15 +610,11 @@ elseif (!empty($_POST['formulaire']))
 			{
 
 				$imD2 = new ImageDriver2("evenement");
-				$erreur_image = array();
+				$erreur_image = [];
 				$erreur_image[] = $imD2->processImage($_FILES['image'], $champs['image'], 400, 400);
-				$erreur_image[] = $imD2->processImage($_FILES['image'], "s_".$champs['image'], 120, 190, 0, 1);
-				if (!empty($erreur_image))
-				{
-					//printr($erreur_image);
-				}
+				$erreur_image[] = $imD2->processImage($_FILES['image'], "s_" . $champs['image'], 120, 190, '', 1);
 
-				if (!empty($msg2))
+                if (!empty($msg2))
 					$champs['image'] = '';
 
 				$src_image = $champs['image'];
@@ -753,8 +749,8 @@ echo '</ul>';
 <?php
 
 echo '<div class="spacer"></div>';
-$th_evenements = array("titre" => "Titre", "idLieu" => "Lieu", "dateEvenement" => "Date", "genre" => "Catégorie", "horaire" => "Horaire", "statut" => "Statut",
-"dateAjout" => "Ajouté");
+$th_evenements = ["titre" => "Titre", "idLieu" => "Lieu", "dateEvenement" => "Date", "genre" => "Catégorie", "horaire" => "Horaire", "statut" => "Statut",
+"dateAjout" => "Ajouté"];
 
 echo "<form method=\"post\" id=\"formGererEvenements\" class='js-submit-freeze-wait' enctype=\"multipart/form-data\" action=\"/admin/gererEvenements.php\">";
 
@@ -874,7 +870,7 @@ foreach ($statuts_evenement as $s => $v)
 <ul class="radio">
 <?php
 
-$statuts = array('actif' => '<strong>publié</strong> (visible sur le site)',  'complet' => '<strong>complet</strong> (visible sur le site mais marqué comme étant complet)', 'annule' => '<strong>annulé</strong> (visible sur le site mais marqué comme étant annulé)', 'inactif' => '<strong>dépublié</strong> (non visible sur le site)');
+$statuts = ['actif' => '<strong>publié</strong> (visible sur le site)',  'complet' => '<strong>complet</strong> (visible sur le site mais marqué comme étant complet)', 'annule' => '<strong>annulé</strong> (visible sur le site mais marqué comme étant annulé)', 'inactif' => '<strong>dépublié</strong> (non visible sur le site)'];
 foreach ($statuts as $s => $n)
 {
 	$coche = '';
@@ -1007,11 +1003,11 @@ echo $verif->getErreur("dejaPresent");
 
 <p>
 <?php
-$tab_nomLieu_label = array("for" => "nomLieu");
+$tab_nomLieu_label = ["for" => "nomLieu"];
 echo HtmlShrink::formLabel($tab_nomLieu_label, "Nom du lieu :");
 echo $verif->getErreur("nomLieuIdentique");
 
-$tab_nomLieu = array("type" => "text", "name" => "nomLieu", "id" => "nomLieu", "size" => "40", "maxlength" => "80", "tabindex" => "9", "value" => "");
+$tab_nomLieu = ["type" => "text", "name" => "nomLieu", "id" => "nomLieu", "size" => "40", "maxlength" => "80", "tabindex" => "9", "value" => ""];
     if (empty($champs['idLieu']))
 {
 	$tab_nomLieu['value'] = sanitizeForHtml($champs['nomLieu']);

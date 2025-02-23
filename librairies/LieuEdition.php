@@ -13,34 +13,26 @@ use Ladecadanse\HtmlShrink;
 class LieuEdition extends Edition
 {
 
-    var $nom;
-    var $firstTime;
-    var $valeurs = array();
-    var $fichiers = array();
-    var $supprimer = array();
-    var $supprimer_document = array();
-    var $supprimer_galerie = array();
-    var $supprimer_organisateur = array();
-    var $erreurs = array();
-    var $organisateurs = array();
-    var $message;
-    var $verif;
-    var $action;
-    var $connector;
+    public $firstTime;
+    public $supprimer = [];
+    public $supprimer_document = [];
+    public $supprimer_galerie = [];
+    public $supprimer_organisateur = [];
+    public $erreurs = [];
+    public $organisateurs = [];
+    public $message;
+    public $verif;
+    public $action;
+    public $connector;
 
-    function __construct($nom, $champs, $fichiers)
+    function __construct(public $nom, public $valeurs, public $fichiers)
     {
         global $connector;
 
         $this->connector = $connector;
-        $this->nom = $nom;
-        //$this->wizardPage = $wPage;
+        $this->valeurs['categorie'] = [];
 
-        $this->valeurs = $champs;
-        $this->valeurs['categorie'] = array();
-        $this->fichiers = $fichiers;
-
-        $this->erreurs = array_merge($champs, $fichiers);
+        $this->erreurs = array_merge($this->valeurs, $this->fichiers);
         $this->erreurs['nom_existant'] = '';
         $this->erreurs['doublon_organisateur'] = '';
     }
@@ -281,7 +273,7 @@ class LieuEdition extends Edition
                     //echo "<div class=\"msg\">Ancienne image supprimée</div>";
                 }
 
-                $lieu->setValue('logo', Document::getFilename($lieu->getId(), 'logo', '', $this->fichiers['logo']['name']));
+                $lieu->setValue('logo', Document::getFilename($this->fichiers['logo']['name'], $lieu->getId(), 'logo', ''));
             }
 
 
@@ -312,7 +304,7 @@ class LieuEdition extends Edition
                     //echo "<div class=\"msg\">Ancienne image supprimée</div>";
                 }
 
-                $lieu->setValue('photo1', Document::getFilename($lieu->getId(), 'photo1', '', $this->fichiers['photo1']['name']));
+                $lieu->setValue('photo1', Document::getFilename($this->fichiers['photo1']['name'], $lieu->getId(), 'photo1', ''));
             }
             /*
              * Si on a seulement choisi de supprimer l'image existante
@@ -439,10 +431,7 @@ class LieuEdition extends Edition
 
             $erreur_image[] = $imD->processImage($this->fichiers['image_galerie'], "s_" . $nom_image_galerie, 60, 60, '', 1);
             $erreur_image[] = $imD->processImage($this->fichiers['image_galerie'], $nom_image_galerie, 600, 600, '', 0);
-            if (!empty($msg))
-            {
-                HtmlShrink::msgErreur($msg);
-            }
+
             $champs['image_galerie'] = '';
         }
 

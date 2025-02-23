@@ -7,5 +7,5 @@ namespace Ladecadanse\Utils;
  */
 class SystemComponent {
 
-	var $settings;
+	public $settings;
 }

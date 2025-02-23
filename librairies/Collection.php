@@ -7,9 +7,9 @@ namespace Ladecadanse;
  */
 class Collection {
 
-	var $nom;
-	var $elements = array();
-	var $connector;
+	public $nom;
+	public $elements = [];
+	public $connector;
 
 	function __construct()
 	{

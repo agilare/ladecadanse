@@ -8,10 +8,10 @@ namespace Ladecadanse;
 class Element
 {
 
-    var $id;
-    var $valeurs = [];
-    var $connector;
-	var $table;
+    public $id;
+    public $valeurs = [];
+    public $connector;
+	public $table;
 
 	function __construct()
 	{
@@ -36,12 +36,7 @@ class Element
 
 	function getValue($nom)
 	{
-        if (isset($this->valeurs[$nom]))
-		{
-            return $this->valeurs[$nom];
-        }
-
-        return '';
+        return $this->valeurs[$nom] ?? '';
 	}
 
 	function setValues($tab): void

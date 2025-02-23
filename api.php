@@ -59,7 +59,7 @@ $get['endtime'] = trim($_GET['endtime']);
 try
 {
     $get['category'] = Validateur::validateUrlQueryValue($_GET['category'], 'enum', 1, $eventCategories);
-} catch (Exception $e)
+} catch (Exception)
 {
     header($_SERVER['SERVER_PROTOCOL'] . ' 400 Bad Request');
     exit;

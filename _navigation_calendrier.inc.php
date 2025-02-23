@@ -1,6 +1,6 @@
 <?php
 
-$get ?? [];
+//$get ?? [];
 
 if (empty($get['courant'])) {
     $get['courant'] = $glo_auj_6h;
@@ -24,7 +24,7 @@ $jour_courant = (int) $tab_date_courant[2];
 $mois_courant = (int) $tab_date_courant[1];
 $annee_courant = (int) $tab_date_courant[0];
 
-$nb_jours_mois = date("t", mktime(0, 0, 0, $mois_courant, $jour_courant, $annee_courant));
+$nb_jours_mois = (int) date("t", mktime(0, 0, 0, $mois_courant, $jour_courant, $annee_courant));
 
 $jour_mois_prec = $jour_mois_suiv = $jour_courant;
 if ($jour_courant == $nb_jours_mois)
@@ -69,9 +69,9 @@ $mois_suiv = date("Y-m-d", mktime(0, 0, 0, $mois_courant + 1, $jour_mois_suiv, $
     </tr>
 
 	<?php
-	$nb_jours_mois = date("t", mktime(0,0,0,$mois_courant,01,$annee_courant));
+	$nb_jours_mois = (int) date("t", mktime(0, 0, 0, $mois_courant, 01, $annee_courant));
 
-	$no_premier_jour_sem = date("w", mktime(0,0,0,$mois_courant,01,$annee_courant));
+    $no_premier_jour_sem = date("w", mktime(0,0,0,$mois_courant,01,$annee_courant));
 	if ($no_premier_jour_sem == 0)
 	{
 		$no_premier_jour_sem = 7;
@@ -88,7 +88,7 @@ $mois_suiv = date("Y-m-d", mktime(0, 0, 0, $mois_courant + 1, $jour_mois_suiv, $
 	$no_dern_sem_mois = date("W", mktime(0,0,0,$mois_courant,$nb_jours_mois,$annee_courant));
 
 
-    $tab_no_jour_sem = Array("0", "1", "2", "3", "4", "5", "6", "0");
+    $tab_no_jour_sem = ["0", "1", "2", "3", "4", "5", "6", "0"];
 
 	$pas = 1;
 	$no_jour = "01";
@@ -227,7 +227,7 @@ $mois_suiv = date("Y-m-d", mktime(0, 0, 0, $mois_courant + 1, $jour_mois_suiv, $
     <ul id="menu_calendrier">
         <li id="demain">
             <?php $tab_auj = explode("-", $glo_auj); ?>
-            <a href="<?php echo "/evenement-agenda.php?" . $url_query_region_et . "courant=" . date("Y-m-d", mktime(12, 0, 0, $tab_auj[1], $tab_auj[2] + 1, $tab_auj[0])) . "&amp;genre=" . $get['genre'] . "&amp;tri_agenda=" . $get['tri_agenda'] ?>" >Demain</a>
+            <a href="<?php echo "/evenement-agenda.php?" . $url_query_region_et . "courant=" . date("Y-m-d", mktime(12, 0, 0, $tab_auj[1], ((int) $tab_auj[2]) + 1, $tab_auj[0])) . "&amp;genre=" . $get['genre'] . "&amp;tri_agenda=" . $get['tri_agenda'] ?>" >Demain</a>
         </li>
         <li id="cette_semaine">
             <a href="<?php echo "/evenement-agenda.php?" . $url_query_region_et . "courant=" . $auj . "&amp;genre=" . $get['genre'] . "&amp;tri_agenda=" . $get['tri_agenda'] . "&amp;sem=1" ?>" >

@@ -12,31 +12,23 @@ use Ladecadanse\HtmlShrink;
 class OrganisateurEdition extends Edition
 {
 
-    var $nom;
-    var $firstTime;
-    var $valeurs = array();
-    var $fichiers = array();
-    var $supprimer = array();
-    var $supprimer_document = array();
-    var $supprimer_galerie = array();
-    var $erreurs = array();
-    var $message;
-    var $verif;
-    var $action;
-    var $connector;
+    public $firstTime;
+    public $supprimer = [];
+    public $supprimer_document = [];
+    public $supprimer_galerie = [];
+    public $erreurs = [];
+    public $message;
+    public $verif;
+    public $action;
+    public $connector;
 
-    function __construct($nom, $champs, $fichiers)
+    function __construct(public $nom, public $valeurs, public $fichiers)
     {
         global $connector;
 
         $this->connector = $connector;
-        $this->nom = $nom;
-        //$this->wizardPage = $wPage;
 
-        $this->valeurs = $champs;
-        $this->fichiers = $fichiers;
-
-        $this->erreurs = array_merge($champs, $fichiers);
+        $this->erreurs = array_merge($this->valeurs, $this->fichiers);
         $this->erreurs['nom_existant'] = '';
     }
 
@@ -199,7 +191,7 @@ class OrganisateurEdition extends Edition
                     //echo "<div class=\"msg\">Ancienne image supprimée</div>";
                 }
 
-                $organisateur->setValue('logo', Document::getFilename($organisateur->getId(), 'logo', '', $this->fichiers['logo']['name']));
+                $organisateur->setValue('logo', Document::getFilename($this->fichiers['logo']['name'], $organisateur->getId(), 'logo', ''));
             }
             elseif (in_array('logo', $this->supprimer))
             {
@@ -224,7 +216,7 @@ class OrganisateurEdition extends Edition
                     //echo "<div class=\"msg\">Ancienne image supprimée</div>";
                 }
 
-                $organisateur->setValue('photo', Document::getFilename($organisateur->getId(), 'photo', '', $this->fichiers['photo']['name']));
+                $organisateur->setValue('photo', Document::getFilename($this->fichiers['photo']['name'], $organisateur->getId(), 'photo', ''));
             }
             /*
              * Si on a seulement choisi de supprimer l'image existante

@@ -10,7 +10,7 @@ if ($videur->checkGroup(UserLevel::MEMBER)) {
 	header("Location: index.php"); die();
 }
 
-$tab_messages = array('faux');
+$tab_messages = ['faux'];
 
 /**
 * Valeur auto-reçue en cas d'échec dans la vérification du login
@@ -22,7 +22,7 @@ if (isset($_GET['msg']))
 
 $formTokenName = 'form_token_user_login';
 
-$champs = array("pseudo" => "", "motdepasse" => "", "memoriser" => "", "origine" => "");
+$champs = ["pseudo" => "", "motdepasse" => "", "memoriser" => "", "origine" => ""];
 
 $pseudo = '';
 $motdepasse = '';
@@ -91,7 +91,7 @@ else
 }
 
 $page_titre = "Connexion";
-$extra_css = array("formulaires", "login");
+$extra_css = ["formulaires", "login"];
 include("_header.inc.php");
 ?>
 

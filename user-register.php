@@ -18,7 +18,7 @@ if (isset($_GET['idP']))
 
 $page_titre = "Inscription";
 $page_description = "Création d'un compte sur La décadanse";
-$extra_css = array("formulaires");
+$extra_css = ["formulaires"];
 include("_header.inc.php");
 ?>
 
@@ -29,7 +29,7 @@ include("_header.inc.php");
 
     $verif = new Validateur();
 
-$champs = array("utilisateur" => '',
+$champs = ["utilisateur" => '',
 "motdepasse" => '',
 "motdepasse2" => '',
     'organisateurs' => '',
@@ -38,7 +38,7 @@ $champs = array("utilisateur" => '',
 "lieu" => '',
 "email" => '',
     "groupe" => ''
-);
+];
 
 $action_terminee = false;
 
@@ -215,14 +215,14 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 
                     $tab_pers = $connector->fetchArray($req_pers);
 
-                    $champs = array('gds' => '', 'mot_de_passe' => '');
+                    $champs = ['gds' => '', 'mot_de_passe' => ''];
 
                     $pass_email = $tab_pers['mot_de_passe'];
 
                     if (!empty($tab_pers['mot_de_passe']))
                     {
-                        $champs['gds'] = mb_substr(sha1(uniqid(rand(), true)), 0, 5);
-                        $champs['mot_de_passe'] = sha1($champs['gds'] . sha1($tab_pers['mot_de_passe']));
+                        $champs['gds'] = mb_substr(sha1(uniqid((string) random_int(0, mt_getrandmax()), true)), 0, 5);
+                    $champs['mot_de_passe'] = sha1($champs['gds'] . sha1($tab_pers['mot_de_passe']));
                     }
 
                     $sql_update = "UPDATE personne SET mot_de_passe='" . $champs['mot_de_passe'] . "', gds='" . $champs['gds'] . "',

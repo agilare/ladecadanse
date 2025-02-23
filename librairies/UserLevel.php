@@ -22,7 +22,7 @@ class UserLevel
 
     static function getConstants()
     {
-        $oClass = new \ReflectionClass(__CLASS__);
+        $oClass = new \ReflectionClass(self::class);
         return $oClass->getConstants();
     }
 

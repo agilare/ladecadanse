@@ -14,7 +14,11 @@ if (isset($_GET['idO']))
 {
     try {
         $get['idO'] = Validateur::validateUrlQueryValue($_GET['idO'], "int", 1);
-    } catch (Exception $e) { header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); exit; }
+    } catch (Exception)
+    {
+        header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
+        exit;
+    }
 }
 else
 {
@@ -22,13 +26,17 @@ else
 	exit;
 }
 
-$tab_genre_even = array("fête", "cinéma", "théâtre", "expos", "divers", "tous");
+$tab_genre_even = ["fête", "cinéma", "théâtre", "expos", "divers", "tous"];
 $get['genre_even'] = "tous";
 if (isset($_GET['genre_even']))
 {
     try {
         $get['genre_even'] = Validateur::validateUrlQueryValue($_GET['genre_even'], "enum", 0, $tab_genre_even);
-    } catch (Exception $e) { header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); exit; }
+    } catch (Exception)
+    {
+        header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
+        exit;
+    }
 }
 
 
@@ -42,7 +50,7 @@ $organisateur->load();
 $page_titre = $organisateur->getValue('nom');
 $page_description = "Page de présentation de " . $organisateur->getValue('nom') . " : informations pratiques, description et prochains événements";
 
-$extra_css = array("menu_lieux");
+$extra_css = ["menu_lieux"];
 
 include("_header.inc.php");
 include("_menuorganisateurs.inc.php");
@@ -260,7 +268,7 @@ $menu_genre = '';
 if ($evenements->getNbElements() > 0)
 {
 	$menu_genre .= '<ul id="menu_genre">';
-	$genres_even = array("tous", "fête", "cinéma", "théâtre", "expos", "divers");
+	$genres_even = ["tous", "fête", "cinéma", "théâtre", "expos", "divers"];
 
 	foreach ($genres_even as $g)
 	{

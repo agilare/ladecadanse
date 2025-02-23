@@ -6,26 +6,26 @@ use Ladecadanse\Utils\Validateur;
 $de = "0";
 $vers = "l";
 
-$tab_statuts = array("actif", "inactif", "ancien");
+$tab_statuts = ["actif", "inactif", "ancien"];
 $get['statut'] = "actif";
 if (isset($_GET['statut']))
 {
     try
     {
         $get['statut'] = Validateur::validateUrlQueryValue($_GET['statut'], "enum", 1, $tab_statuts);
-    } catch (Exception $e)
+    } catch (Exception)
     {
         exit;
     }
 }
 
-$tab_vues = array("az", "genre", "quartier");
+$tab_vues = ["az", "genre", "quartier"];
 if (isset($_GET['vue']))
 {
     try
     {
         $get['vue'] = Validateur::validateUrlQueryValue($_GET['vue'], "enum", 1, $tab_vues);
-    } catch (Exception $e)
+    } catch (Exception)
     {
         exit;
     }
@@ -41,14 +41,14 @@ else
 }
 
 
-$tab_tranches = array_merge(array_merge(array("ak", "lz", "tout"), array_keys($glo_categories_lieux)), $glo_tab_quartiers);
+$tab_tranches = array_merge(array_merge(["ak", "lz", "tout"], array_keys($glo_categories_lieux)), $glo_tab_quartiers);
 
 if (isset($_GET['tranche']))
 {
     try
     {
         $get['tranche'] = Validateur::validateUrlQueryValue($_GET['tranche'], "enum", 1, $tab_tranches);
-    } catch (Exception $e)
+    } catch (Exception)
     {
         exit;
     }
@@ -234,7 +234,7 @@ $url_suiv = "";
 $nomDuLieu = "";
 $id_passe = 0;
 
-while (list ($id, $nom) = mysqli_fetch_row($req_lieux))
+while ([$id, $nom] = mysqli_fetch_row($req_lieux))
 {
     $nb_evenements = 0;
     $aumoins1des = "";
@@ -273,7 +273,7 @@ while (list ($id, $nom) = mysqli_fetch_row($req_lieux))
 
 
     $aff_menulieux .= ">
-	<td><a href=\"/lieu.php?idL=" . $id . "&amp;" . Utils::urlQueryArrayToString($get, array("idL", "type_description")) . "\">";
+	<td><a href=\"/lieu.php?idL=" . $id . "&amp;" . Utils::urlQueryArrayToString($get, ["idL", "type_description"]) . "\">";
 
     if (preg_match("/^(Le |La |Les |L')(.*)/", $nomDuLieu, $matches))
     {

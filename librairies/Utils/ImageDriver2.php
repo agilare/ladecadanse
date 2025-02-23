@@ -17,26 +17,26 @@ class ImageDriver2 extends SystemComponent {
      *
      * @var array string
      */
-    var $formats;
+    public $formats;
 
     /**
      * Nom du répertoire des images du site
      *
      * @var string
      */
-    var $IMGracine;
+    public $IMGracine;
 
     /**
      * Nom du répertoire des images des lieux
      *
      * @var string
      */
-    var $IMGlieux;
-    var $IMGlieuxGaleries;
+    public $IMGlieux;
+    public $IMGlieuxGaleries;
 
-    var $IMGtype;
+    public $IMGtype;
 
-    var $erreur;
+    public $erreur;
 
     /**
     * Constructeur
@@ -56,7 +56,7 @@ class ImageDriver2 extends SystemComponent {
         //
         $this->IMGlieux = $this->IMGracine."lieux/";
         $this->IMGlieuxGaleries = $this->IMGlieux."galeries/";
-        $this->formats = array('image/jpeg', 'image/pjpeg','image/gif','image/png', 'image/x-png');
+        $this->formats = ['image/jpeg', 'image/pjpeg','image/gif','image/png', 'image/x-png'];
 
         if ($IMGtype == "evenement")
         {
@@ -129,13 +129,12 @@ class ImageDriver2 extends SystemComponent {
       * une réduite, une mini qui sont ensuite stockée dans le répertoire images du site
       *
       * @access public
-      * @param string $imageSource Adresse de l'image uploadée
+      * @param array $imageSource Adresse de l'image uploadée
       * @param string $imageCreated Nom à donner à l'image réduite crée
-      * @param string $typeIMG (evenements, lieux) Genre d'utilisation de l'image
       * @param int $maxWidth Largeur maximale voulue pour l'image réduite
-      * @param int $maxHeight Hauteur maximale voulue pour l'image réduite
+      * @param int $maxHeigth Hauteur maximale voulue pour l'image réduite
       * @param string $selon ('', w, h) Pour imposer la largeur ou la hauteur de l'image réduite selon $maxWidth ou $maxHeigth
-      * @return string $msgErreur Messag s'il y a eu une erreur
+      * @return bool
       * @see        evenement-edit.php, lieu-edit.php
       */
    function processImage($imageSource, $imageCreated, $maxWidth = 0, $maxHeigth = 0, $selon = '', $rognage = 0)
@@ -151,8 +150,9 @@ class ImageDriver2 extends SystemComponent {
 
        $cheminImage = $this->IMGracine.$this->IMGtype.$slash.$imageCreated;
        $mime_type = mime_content_type($imageSource['tmp_name']);
+        $originaltransparentcolor = -1;
 
-       if ($mime_type == "image/jpeg")
+        if ($mime_type == "image/jpeg")
        {
            $img = ImageCreateFromJpeg($imageSource['tmp_name']);
 

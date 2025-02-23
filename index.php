@@ -1,5 +1,5 @@
 <?php
-
+// declare(strict_types=1);
 /*
  * @package ladecadanse
  * @copyright  Copyright (c) 2007 - 2023 Michel Gaudry <michel@ladecadanse.ch>

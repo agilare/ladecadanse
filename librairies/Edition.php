@@ -12,30 +12,23 @@ namespace Ladecadanse;
   */
   class Edition
   {
-    var $nom;
-    var $firstTime;
-	var $id;
-    var $valeurs = array();
-    var $fichiers = array();
-    var $supprimer = array();
-    var $erreurs = array();
-    var $verif;
-	var $action;
+    public $firstTime;
+	public $id;
+    public $supprimer = [];
+    public $erreurs = [];
+    public $verif;
+	public $action;
 
-	var $message;
-    var $connector;
+	public $message;
+    public $connector;
 
-    function __construct($nom, $champs, $fichiers)
+    function __construct(public $nom, public $valeurs, public $fichiers)
     {
 		global $connector;
 
 		$this->connector = $connector;
-      	$this->nom = $nom;
 
-        $this->valeurs = $champs;
-      	$this->fichiers = $fichiers;
-
-      	$this->erreurs = array_merge($champs, $fichiers);
+      	$this->erreurs = array_merge($this->valeurs, $this->fichiers);
     }
 
     function traitement(array $post, array $files)

@@ -12,7 +12,8 @@ ini_set('max_file_uploads', 3);
 
 
 // DIR
-define('__ROOT__', dirname(dirname(__FILE__))); // full path to dir, for ex. /users/michel/hosts/ladecadanse
+define('__ROOT__', dirname(__FILE__, 2)); // full path to dir, for ex. /users/michel/hosts/ladecadanse
+
 
 $rep_images_even = __ROOT__ . "/web/uploads/evenements/";
 $rep_uploads_lieux = __ROOT__ . "/web/uploads/lieux/";
@@ -98,7 +99,7 @@ $glo_tab_ailleurs = ["rf" => "France", "hs" => "Autre"];
 // VIEW
 $glo_menu_pratique = ["Contact" => "/contacteznous.php", "À propos" => "/articles/apropos.php", "Faire un don" => "/articles/faireUnDon.php"];
 $tab_nblignes = [100, 250, 500]; // nb lignes de resultats de listes
-$actions = array("ajouter", "insert", "update", "editer");
+$actions = ["ajouter", "insert", "update", "editer"];
 
 $iconeSupprimer = "<img src=\"" . $url_images_interface_icons . "delete.png\" alt=\"Supprimer\" title=\"Supprimer\" />";
 $iconeEditer = "<img src=\"" . $url_images_interface_icons . "page_white_edit.png\" alt=\"Éditer\" width=\"16\" height=\"16\" />";

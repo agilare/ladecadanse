@@ -35,10 +35,13 @@ class Text
     REGEX;
 
         return preg_replace_callback($re, function ($m) {
-            //print_r($m);
+
             if ($m[1])
                 return $m[1];
+
+            $url = '';
             $text = "lien";
+
             if ($m[2])
             {
                 $url = $m[2];
@@ -54,18 +57,16 @@ class Text
                 $url = "mailto:$m[4]";
                 $text = $m[4];
             }
-            $url = htmlspecialchars($url);
-            $text = htmlspecialchars($text);
-            return "<a href='$url'>$text</a>";
-        },
-                $input);
+
+            return "<a href='" . htmlspecialchars($url) . "'>" . htmlspecialchars($text) . "</a>";
+        }, $input);
     }
 
 
     public static function formatbytes($val, int $digits = 3, $mode = "SI", $bB = "B"): string
     { //$mode == "SI"|"IEC", $bB == "b"|"B"
-        $si = array("", "k", "M", "G", "T", "P", "E", "Z", "Y");
-        $iec = array("", "Ki", "Mi", "Gi", "Ti", "Pi", "Ei", "Zi", "Yi");
+        $si = ["", "k", "M", "G", "T", "P", "E", "Z", "Y"];
+        $iec = ["", "Ki", "Mi", "Gi", "Ti", "Pi", "Ei", "Zi", "Yi"];
         switch (mb_strtoupper($mode))
         {
             case "SI" : $factor = 1000;
@@ -231,7 +232,7 @@ class Text
         //1 si une balise html vient d'etre ouverte, 0 sinon
         $ouvert = 0;
         //pile stockant les tags htmls rencontre
-        $pileTags = array();
+        $pileTags = [];
         $nivPile = 0;
 
         while ($t < $limChar)

@@ -1,5 +1,7 @@
 # suite config
 # RUN `build` COMMAND AFTER ADDING/REMOVING MODULES.
+namespace: Tests
+support_namespace: Support
 suites:
     api:
         actor: ApiTester
@@ -17,9 +19,10 @@ suites:
 paths:
     tests: tests
     output: tests/_output
-    data: tests/_data
-    support: tests/_support
-
+    data: tests/Support/Data
+    support: tests/Support
+    envs: tests/_envs
+actor_suffix: Tester
 settings:
     shuffle: false
     lint: true

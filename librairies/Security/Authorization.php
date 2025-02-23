@@ -10,9 +10,9 @@ class Authorization
      * Vérifie dans la base si une personne est bien l'auteur d'un événement,
      * une brêve, une description
      *
-     * @param int $didP ID utilisateur à vérifier
-     * @param int $id ID entité dont l'auteur est à vérifier
      * @param string $table (evenement, descriptionlieu, lieu) vérifie si $idP est
+     * @param int $idP ID utilisateur à vérifier
+     * @param int $id ID entité dont l'auteur est à vérifier
      * auteur de $id
      * @return boolean Si $idP est auteur ou non
      */

@@ -85,7 +85,7 @@ $entete_contenu = "";
 if ($genre_titre != 'Tout')
 	$entete_contenu =  ucfirst($genre_titre)." du ";
 
-list($annee_courant, $mois_courant, $jour_courant) = explode('-', $get['courant']);
+[$annee_courant, $mois_courant, $jour_courant] = explode('-', $get['courant']);
 
 $lien_precedent = '';
 $lien_suivant = '';
@@ -99,10 +99,9 @@ if (is_numeric($annee_courant) && is_numeric($mois_courant) && is_numeric($jour_
         if ($genre_titre == 'Tout')
             $entete_contenu = ucfirst($entete_contenu);
 
-        $precedent = date("Y-m-d", mktime(0, 0, 0, (int)$mois_courant, $jour_courant - 1, $annee_courant));
+        $precedent = date("Y-m-d", mktime(0, 0, 0, (int) $mois_courant, (int) $jour_courant - 1, (int) $annee_courant));
         $lien_precedent = "<a href=\"/evenement-agenda.php?".Utils::urlQueryArrayToString($get)."&amp;courant=".$precedent."\" style=\"border-radius:3px 0 0 3px;\">".$iconePrecedent."&nbsp;</a>";
-        $suivant = date("Y-m-d", mktime(0, 0, 0, (int)$mois_courant, $jour_courant + 1, $annee_courant));
-
+        $suivant = date("Y-m-d", mktime(0, 0, 0, (int) $mois_courant, (int) $jour_courant + 1, (int) $annee_courant));
 
         $suivant_nomjour_parts = explode(" ", date_fr($suivant, "tout", "non", ""));
         $lien_suivant = "<a href=\"/evenement-agenda.php?".Utils::urlQueryArrayToString($get)."&amp;courant=".$suivant."\" style=\"border-radius:0 3px 3px 0;background:#e4e4e4\" title=\"".$suivant_nomjour_parts[1]."\">".ucfirst($suivant_nomjour_parts[0])."<span class=desktop> ".$suivant_nomjour_parts[1]."</span>"."&nbsp;".$iconeSuivant."</a>";
@@ -113,10 +112,10 @@ if (is_numeric($annee_courant) && is_numeric($mois_courant) && is_numeric($jour_
             $entete_contenu = ucfirst($entete_contenu);
 
         $entete_contenu .= date_fr($lundim[0], "non", "non", "non")." au ".date_fr($lundim[1], "annee", "non", "non");
-        $precedent = date("Y-m-d", mktime(0, 0, 0, (int)$mois_courant  ,(int)($jour_courant - 7), $annee_courant));
+        $precedent = date("Y-m-d", mktime(0, 0, 0, (int) $mois_courant, (int) ($jour_courant - 7), (int) $annee_courant));
         $lien_precedent = "<a href=\"/evenement-agenda.php?courant=".$precedent."&amp;sem=1&amp;genre=".$get['genre']."\" style=\"border-radius:3px 0 0 3px;background:#e4e4e4\">".$iconePrecedent."</a>";
 
-        $suivant = date("Y-m-d", mktime(0, 0, 0, (int)$mois_courant  , $jour_courant + 7, $annee_courant));
+        $suivant = date("Y-m-d", mktime(0, 0, 0, (int) $mois_courant, (int) $jour_courant + 7, (int) $annee_courant));
         $lien_suivant = "<a href=\"/evenement-agenda.php?courant=" . $suivant . "&amp;sem=1&amp;genre=" . $get['genre'] . "\" style=\"border-radius:0 3px 3px 0;\">" . $iconeSuivant . "</a>";
     }
 }
@@ -188,7 +187,7 @@ if ($get['sem'])
     ORDER BY dateEvenement ASC";
 
     $req_dateEven = $connector->query($sql_dateEven);
-    $tab_date_even = array();
+    $tab_date_even = [];
     while ($listeEven = $connector->fetchArray($req_dateEven))
     {
         $tab_date_even[] = $listeEven['dateEvenement'];
@@ -257,8 +256,8 @@ if ($get['sem'])
 
 	if ($nb_evenements == 0)
 	{
-	  	HtmlShrink::msgInfo("Pas d'événements", "p");
-    }
+	  	HtmlShrink::msgInfo("Pas d'événements");
+}
 else
 	{
 		$dateCourante = '';

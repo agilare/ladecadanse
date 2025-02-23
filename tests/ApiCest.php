@@ -1,5 +1,7 @@
 <?php
 
+use Tests\Support\ApiTester;
+
 use Codeception\Util\HttpCode;
 use Codeception\Util\JsonType;
 

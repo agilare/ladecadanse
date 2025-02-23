@@ -7,7 +7,7 @@ use Ladecadanse\Utils\Mailing;
 
 $page_titre = "Contact";
 $page_description = "Formulaire pour envoyer un email au webmaster de La décadanse : proposer un événement, poser une question, etc.";
-$extra_css = array("formulaires", "contacteznous");
+$extra_css = ["formulaires", "contacteznous"];
 
 include("_header.inc.php");
 ?>
@@ -24,7 +24,7 @@ include("_header.inc.php");
 
     $verif = new Validateur();
 
-    $champs = array("email" => "", "auteur" => "", "affiliation" => "", "sujet" => "", "contenu" => "");
+    $champs = ["email" => "", "auteur" => "", "affiliation" => "", "sujet" => "", "contenu" => ""];
 
     $action_terminee = false;
 
@@ -46,7 +46,7 @@ include("_header.inc.php");
             }
 
             $verif = new Validateur();
-            $erreurs = array();
+            $erreurs = [];
 
             $verif->valider($champs['email'], "email", "email", 4, 80, 1);
             $verif->valider($champs['auteur'], "auteur", "texte", 2, 80, 1);

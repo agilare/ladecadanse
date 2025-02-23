@@ -14,12 +14,12 @@ if (!$videur->checkGroup(UserLevel::ACTOR)) {
 }
 
 $page_titre = "copier un événement vers d'autres dates";
-$extra_css = array("formulaires", "evenement_inc");
+$extra_css = ["formulaires", "evenement_inc"];
 
 /*
 * action choisie, ID si collage
 */
-$tab_actions = array("coller");
+$tab_actions = ["coller"];
 $get['action'] = "";
 
 if (isset($_GET['action']))
@@ -71,7 +71,7 @@ $jour2 = '';
 $mois2 = '';
 $annee2 = '';
 
-$tab_champs = array();
+$tab_champs = [];
 
 if (!empty($_POST['submit']))
 {
@@ -280,13 +280,9 @@ FROM evenement WHERE idEvenement=".$get['idE'])));
 			}
 		} //while date
 
-        $date2 = '';
-        if (!empty($dateEvenement2))
-            $date2 = ' - '.$dateEvenement2;
+        $logger->log('global', 'activity', "[copierEvenement] event \"" . $tab_champs['titre'] . "\" of " . $tab_champs['dateEvenement'] . " copied to " . $dateEvenement . " - " . $dateEvenement2, Logger::GRAN_YEAR);
 
-        $logger->log('global', 'activity', "[copierEvenement] event \"".$tab_champs['titre']."\" of ".$tab_champs['dateEvenement']." copied to ".$dateEvenement.$date2, Logger::GRAN_YEAR);
-
-		header("Location: ?idE=".$get['idE']); die();
+        header("Location: ?idE=".$get['idE']); die();
 	} //if nberreur = 0
 } // if POST != ""
 

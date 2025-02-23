@@ -12,8 +12,8 @@
 function date_fr($d, $format = "", $affMois = "", $jour_sem = "", $html = true)
 {
 
-    $Jour = array("dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi");
-    $Mois = array("", "janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre");
+    $Jour = ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"];
+    $Mois = ["", "janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
 
     $temps = explode(" ", $d);
 
@@ -110,7 +110,7 @@ function date2annee($date)
 
 function mois2fr($mois)
 {
-    $Mois = array("", "janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre");
+    $Mois = ["", "janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
 
     if (mb_substr($mois, 0, 1) == "0")
     {
@@ -136,7 +136,7 @@ function date2jour($date)
 
 function date2nomJour($date)
 {
-    $Jour = array("dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi");
+    $Jour = ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"];
     $temps = explode(" ", $date);
     $tabDate = explode("-", $temps[0]);
 
@@ -263,7 +263,7 @@ function date_iso2lundim($date)
 
     while ($ds != 1)
     {
-        $ds = date("w", mktime(0, 0, 0, $tab_date[1], $tab_date[2] - $i, $tab_date[0]));
+        $ds = date("w", mktime(0, 0, 0, $tab_date[1], (int) $tab_date[2] - $i, $tab_date[0]));
         $i++;
         //echo "i:".$i." ";
     }
@@ -271,21 +271,21 @@ function date_iso2lundim($date)
     if ($i > 0)
         $i--;
 
-    $lundi = date("Y-m-d", mktime(0, 0, 0, $tab_date[1], $tab_date[2] - $i, $tab_date[0]));
+    $lundi = date("Y-m-d", mktime(0, 0, 0, $tab_date[1], (int) $tab_date[2] - $i, $tab_date[0]));
 
     //echo "lundi:".$lundi."<br>";
 
     $j = 0;
     while ($ds != 0)
     {
-        $ds = date("w", mktime(0, 0, 0, $tab_date[1], $tab_date[2] + $j, $tab_date[0]));
+        $ds = date("w", mktime(0, 0, 0, $tab_date[1], (int) $tab_date[2] + $j, $tab_date[0]));
         $j++;
     }
 
-    $dimanche = date("Y-m-d", mktime(0, 0, 0, $tab_date[1], $tab_date[2] + $j - 1, $tab_date[0]));
+    $dimanche = date("Y-m-d", mktime(0, 0, 0, $tab_date[1], (int) $tab_date[2] + $j - 1, $tab_date[0]));
     //echo "dimanche:".$dimanche."<br>";
 
-    return array($lundi, $dimanche);
+    return [$lundi, $dimanche];
 }
 
 function date_lendemain($date)
@@ -296,7 +296,7 @@ function date_lendemain($date)
         return $date;
     }
 
-    return date('Y-m-d', mktime(0, 0, 0, $tab_date[1], $tab_date[2] + 1, $tab_date[0])); // $annee."-".$mois."-".$annee;
+    return date('Y-m-d', mktime(0, 0, 0, $tab_date[1], (int) $tab_date[2] + 1, $tab_date[0])); // $annee."-".$mois."-".$annee;
 }
 
 function horaire2heure($horaire_complet, $date_evenement)
@@ -338,7 +338,7 @@ function afficher_debut_fin($horaire_debut, $horaire_fin, $date_evenement): stri
 
 /**
  * FIXME: mv to Text class
- * @param string $chaine dirty
+ * @param ?string $chaine dirty
  * @return string clean
  */
 function sanitizeForHtml(?string $chaine): string

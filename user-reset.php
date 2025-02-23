@@ -13,10 +13,10 @@ if ($videur->checkGroup(UserLevel::MEMBER)) {
 }
 
 $page_titre = "Mot de passe oublié";
-$extra_css = array("formulaires", "login");
+$extra_css = ["formulaires", "login"];
 include("_header.inc.php");
 
-$tab_messages = array('faux');
+$tab_messages = ['faux'];
 
 ?>
 
@@ -30,7 +30,7 @@ $tab_messages = array('faux');
 
 <?php
 $termine = false;
-$champs = array("pseudo_email" => "");
+$champs = ["pseudo_email" => ""];
 $formTokenName = 'form_token_user_reset';
 
 $verif = new Validateur();
@@ -99,7 +99,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' && empty($_POST
                 $salt = "ciek48";
 
                 // Create the unique user password reset key
-                $token = hash('sha256', $salt . rand(0, 1000) . $hash);
+                $token = hash('sha256', $salt . random_int(0, 1000) . $hash);
 
                 //création de demande avec nouveau token
                 $sql = "INSERT INTO user_reset_requests (idPersonne, email, token, expiration) VALUES (" . $idPersonne . ", '" . $email . "', '" . $token . "', NOW() + INTERVAL 1 DAY)";

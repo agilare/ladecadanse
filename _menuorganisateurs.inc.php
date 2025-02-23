@@ -2,25 +2,25 @@
 use Ladecadanse\Utils\Utils;
 use Ladecadanse\Utils\Validateur;
 
-$categoriesVal = array("bistrot", "cinéma", "restaurant", "salle", "galerie", "théâtre", "boutique", "musée", "autre");
+$categoriesVal = ["bistrot", "cinéma", "restaurant", "salle", "galerie", "théâtre", "boutique", "musée", "autre"];
 
 $de = "0";
 $vers = "l";
 
-$tab_statuts = array("actif", "inactif", "ancien");
+$tab_statuts = ["actif", "inactif", "ancien"];
 $get['statut'] = "actif";
 if (isset($_GET['statut']))
 { try {
 	$get['statut'] = Validateur::validateUrlQueryValue($_GET['statut'], "enum", 1, $tab_statuts);
-} catch (Exception $e) { exit; }
+} catch (Exception) { exit; }
 }
 
-$tab_vues = array("az", "genre");
+$tab_vues = ["az", "genre"];
 if (isset($_GET['vue']))
 {
     try {
         $get['vue'] = Validateur::validateUrlQueryValue($_GET['vue'], "enum", 1, $tab_vues);
-    } catch (Exception $e) { exit; }
+    } catch (Exception) { exit; }
 	if($get['vue'] != "az")
 	{
 		$de = "0";
@@ -33,14 +33,14 @@ else
 }
 
 
-$tab_tranches = array_merge(array("ak", "lz", "tout"), $categoriesVal);
+$tab_tranches = array_merge(["ak", "lz", "tout"], $categoriesVal);
 //printr($tab_tranches);
 
 if (isset($_GET['tranche']))
 {
     try {
         $get['tranche'] = Validateur::validateUrlQueryValue($_GET['tranche'], "enum", 1, $tab_tranches);
-    } catch (Exception $e) { exit; }
+    } catch (Exception) { exit; }
 
 	if ($get['vue'] == "az")
 	{
@@ -170,7 +170,7 @@ $url_suiv = "";
 $nomDuLieu = "";
 $id_passe = 0;
 
-while (list ($id, $nom, $presentation) = mysqli_fetch_row($req))
+while ([$id, $nom, $presentation] = mysqli_fetch_row($req))
 {
 	$nb_evenements = 0;
 	$aumoins1des = "";
@@ -211,7 +211,7 @@ while (list ($id, $nom, $presentation) = mysqli_fetch_row($req))
 
 
 	$aff_menulieux .= ">
-	<td><a href=\"/organisateur.php?".Utils::urlQueryArrayToString($get, array("idO", "type_description"))."&amp;idO=".$id."\">";
+	<td><a href=\"/organisateur.php?".Utils::urlQueryArrayToString($get, ["idO", "type_description"])."&amp;idO=".$id."\">";
 
 	if (preg_match("/^(Le |La |Les |L')(.*)/", $nomDuLieu, $matches))
 	{

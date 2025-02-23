@@ -16,9 +16,8 @@ class Sentry extends SystemComponent
     /**
      * Tableau contenant idPersonne, pseudo, mot_de_passe, groupe, email
      * Rempli dès qu'une personne se logue
-     * @var string
      */
-    var $userdata;
+    private array $userdata;
 
     function __construct()
     {
@@ -74,7 +73,6 @@ class Sentry extends SystemComponent
                 unset($this->userdata);
                 $message = "Erreur de session (pass) : " . $_SESSION['user'] . ", sid:" . session_id();
                 trigger_error($message, E_USER_ERROR);
-                return false;
             } // if pass
         }
         else
@@ -83,7 +81,6 @@ class Sentry extends SystemComponent
             $message = "Erreur de session (requete) : " . $_SESSION['user'] . ", sid:" . session_id();
             trigger_error($message, E_USER_ERROR);
             unset($this->userdata);
-            return false;
         } //if num rows
     }
 
@@ -107,7 +104,7 @@ class Sentry extends SystemComponent
 
         $valide = new Validateur();
 
-        $erreurs = array();
+        $erreurs = [];
         if ($memoriser)
         {
             $memoriser = true;
@@ -336,7 +333,7 @@ class Sentry extends SystemComponent
         $seed = "";
         for ($i = 1; $i < 33; $i++)
         {
-            $seed .= chr(rand(0, 255));
+            $seed .= chr(random_int(0, 255));
         }
         return md5($seed);
     }
@@ -357,7 +354,7 @@ class Sentry extends SystemComponent
             //setcookie('ladecadanse_remember', '', time() - 3600); // semble ne pas fonctionner
             unset($_COOKIE['ladecadanse_remember']);
 
-            setcookie('ladecadanse_remember', null, 1);
+            setcookie('ladecadanse_remember', '', ['expires' => 1]);
         }
     }
 

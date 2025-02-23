@@ -15,7 +15,7 @@ class DbConnector extends SystemComponent
 
         mysqli_set_charset($this->dbConnection, 'utf8mb4');
         //enregistre la méthode "close" pour qu'elle soit executée une fois le script terminé
-        register_shutdown_function(array(&$this, 'close'));
+        register_shutdown_function([&$this, 'close']);
     }
 
     public function query(string $requete)
@@ -45,7 +45,7 @@ class DbConnector extends SystemComponent
 
     public function fetchAll($result)
     {
-        $return = array();
+        $return = [];
 
        while($row = mysqli_fetch_array($result))
        {

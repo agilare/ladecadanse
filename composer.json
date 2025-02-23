@@ -13,11 +13,19 @@
     "license": "AGPL-3.0-or-later",
     "support": {
         "issues": "https://github.com/agilare/ladecadanse/issues",
+        "wiki": "https://github.com/agilare/ladecadanse/wiki",
         "email": "michel@ladecadanse.ch",
-        "source": "https://github.com/agilare/ladecadanse.git"
+        "source": "https://github.com/agilare/ladecadanse.git",
+        "security": "https://github.com/agilare/ladecadanse/blob/master/SECURITY.md"
     },
+    "funding": [
+        {
+            "type": "other",
+            "url": "https://www.ladecadanse.ch/articles/faireUnDon.php"
+        }
+    ],
     "require": {
-        "php": "7.4.*",
+        "php": "8.0.*",
         "ext-fileinfo": "*",
         "ext-mysqli": "*",
         "ext-mbstring": "*",
@@ -36,26 +44,31 @@
             "librairies/Utils/utils_functions.php"
         ]
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
     "scripts": {
-        "sniffer:php74": "phpcs -p ./ --ignore=*/images/*,*/logs/*,*/var/*,*/vendor/*,*/web/* --standard=vendor/phpcompatibility/php-compatibility/PHPCompatibility --runtime-set testVersion 7.4",
         "sniffer:php80": "phpcs -p ./ --ignore=*/images/*,*/logs/*,*/var/*,*/vendor/*,*/web/* --standard=vendor/phpcompatibility/php-compatibility/PHPCompatibility --runtime-set testVersion 8.0",
         "sniffer:php81": "phpcs -p ./ --ignore=*/images/*,*/logs/*,*/var/*,*/vendor/*,*/web/* --standard=vendor/phpcompatibility/php-compatibility/PHPCompatibility --runtime-set testVersion 8.1",
         "sniffer:php82": "phpcs -p ./ --ignore=*/images/*,*/logs/*,*/var/*,*/vendor/*,*/web/* --standard=vendor/phpcompatibility/php-compatibility/PHPCompatibility --runtime-set testVersion 8.2",
-        "phpstan": "vendor/bin/phpstan analyse -c phpstan.neon --ansi"
+        "phpstan": "vendor/bin/phpstan analyse -c phpstan.neon --ansi",
+        "rector:dry-run": "vendor/bin/rector process --dry-run"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "^3.7",
         "phpcompatibility/php-compatibility": "^9.3",
-        "phpstan/phpstan": "^1.9",
+        "phpstan/phpstan": "^2.0",
         "filp/whoops": "^2.14",
-        "symfony/var-dumper": "^5.4",
-        "codeception/codeception": "^4.2",
-        "codeception/module-rest": "^1.0.0",
-        "codeception/module-phpbrowser": "^1.0.0",
-        "hoa/console": "^3.17",
+        "symfony/var-dumper": "^6.0",
+        "codeception/codeception": "^5.0",
+        "codeception/module-rest": "^3.0",
+        "codeception/module-phpbrowser": "^2.0",
         "codeception/module-asserts": "^2.0",
-        "phpstan/phpstan-deprecation-rules": "^1.1",
-        "spaze/phpstan-disallowed-calls": "^2.16",
-        "rector/rector": "^0.17.1"
+        "phpstan/phpstan-deprecation-rules": "^2.0",
+        "spaze/phpstan-disallowed-calls": "^4.3",
+        "rector/rector": "^2.0",
+        "phan/phan": "^5.4"
     }
 }

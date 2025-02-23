@@ -21,7 +21,7 @@ if ($_SESSION['region'] == 'vd')
 
 $page_titre = "Lieux de sorties ".$page_titre_region." : bistrots, salles, bars, restaurants, cinémas,
  théâtres, galeries, boutiques, musées...";
-$extra_css = array("menu_lieux");
+$extra_css = ["menu_lieux"];
 include("_header.inc.php");
 
 $get['idL'] = "";
@@ -30,7 +30,7 @@ if (isset($_GET['idL']))
 try {
 	$get['idL'] = Validateur::validateUrlQueryValue($_GET['idL'], "int", 0);
  }
-    catch (Exception $e)
+    catch (Exception)
     {
         echo 'paramètre idL non valable';
         exit;
