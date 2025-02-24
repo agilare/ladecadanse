@@ -54,7 +54,8 @@
         "sniffer:php81": "phpcs -p ./ --ignore=*/images/*,*/logs/*,*/var/*,*/vendor/*,*/web/* --standard=vendor/phpcompatibility/php-compatibility/PHPCompatibility --runtime-set testVersion 8.1",
         "sniffer:php82": "phpcs -p ./ --ignore=*/images/*,*/logs/*,*/var/*,*/vendor/*,*/web/* --standard=vendor/phpcompatibility/php-compatibility/PHPCompatibility --runtime-set testVersion 8.2",
         "phpstan": "vendor/bin/phpstan analyse -c phpstan.neon --ansi",
-        "rector:dry-run": "vendor/bin/rector process --dry-run"
+        "rector:dry-run": "vendor/bin/rector process --dry-run",
+        "psalm": "vendor/bin/psalm"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "^3.7",
@@ -69,6 +70,8 @@
         "phpstan/phpstan-deprecation-rules": "^2.0",
         "spaze/phpstan-disallowed-calls": "^4.3",
         "rector/rector": "^2.0",
-        "phan/phan": "^5.4"
+        "phan/phan": "^5.4",
+        "vimeo/psalm": "^5.26",
+        "orklah/psalm-insane-comparison": "^2.4"
     }
 }

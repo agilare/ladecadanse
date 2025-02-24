@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<psalm
+    phpVersion="8.0"
+    errorLevel="8"
+    resolveFromConfigFile="true"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="https://getpsalm.org/schema/config"
+    xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
+    findUnusedBaselineEntry="true"
+    findUnusedCode="false"
+    allConstantsGlobal="true"
+>
+    <projectFiles>
+        <directory name="."/>
+        <ignoreFiles>
+            <directory name="docker"/>
+            <directory name="node_modules"/>
+            <directory name="resources"/>
+            <directory name="tests"/>
+            <directory name="var"/>
+            <directory name="web"/>
+            <directory name="vendor"/>
+        </ignoreFiles>
+    </projectFiles>
+    <plugins>
+        <pluginClass class="Orklah\PsalmInsaneComparison\Plugin"/>
+    </plugins>
+    <globals>
+        <var name="url_query_region_et" type="string" />
+        <var name="glo_auj_6h"  type="string" />
+        <var name="connector"  type="mysqli"/>
+        <var name="url_images_interface_icons"  type="string"/>
+        <var name="url_query_region"  type="string"/>
+        <var name="url_query_region_1er"  type="string"/>
+        <var name="page_titre" type="string"/>
+        <var name="nom_page" type="string"/>
+        <var name="url_images_interface_icons" type="string"/>
+        <var name="auj" type="string"/>
+        <var name="glo_categories_lieux" type="string"/>
+        <var name="glo_tab_quartiers" type="string"/>
+        <var name="logger" type="Logger"/>
+    </globals>
+</psalm>
+<!--
+Level 1 is the most strict, level 8 is the most lenient.
+
+When no level is explicitly defined, psalm defaults to level 2.
+
+Some issues are always treated as errors. These are issues with a very low probability of false-positives.
+
+At level 1 all issues (except those emitted for opt-in features) that Psalm can find are treated as errors. Those issues include any situation where Psalm cannot infer the type of a given expression.
+
+At level 2 Psalm ignores those Mixed* issues, but treats most other issues as errors.
+
+At level 3 Psalm starts to be a little more lenient. For example Psalm allows missing param types, return types and property types.
+
+At level 4 Psalm ignores issues for possible problems. These are more likely to be false positives – where the application code may guarantee behaviour that Psalm isn't able to infer.
+
+Level 5 and above allows a more non-verifiable code, and higher levels are even more permissive.
+-->

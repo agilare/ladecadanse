@@ -1,16 +1,26 @@
 # Changelog
 
-## [3.5.6] - Unreleased
+## [3.6.0] - Unreleased
 
 ### Fixed
 - features restored (remove from partial edit mode, i.e. blocking edition of entities added before 22.10.2024) : edit events, users, salles, organisateurs, lieux texts
 - add .htaccess.example to .gitignore
+- legacy code cleaned up according to phpstan, rector and phan
 
 ### Added
 - Selenium tests : forms values auto-generated, edit event test
+- Analyzers : Phan, Psalm
+- Composer : funding, scripts
+
+### Changed
+- PHP 8.0 compatibility
+- Codeception 5
+- Analyzers : Rector 0.* to 2, phpstan 1 to 2
+- Analyzers : Rector, phpstan configurations for php 8.0
 
 ### Security
 - headers: add Permissions-Policy
+
 
 ## [3.5.5] - 14.02.2025
 

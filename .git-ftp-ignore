@@ -31,3 +31,5 @@ phpstan-baseline.neon
 /.phan
 .phan/*
 .htaccess.example
+rector.php
+psalm.xml
