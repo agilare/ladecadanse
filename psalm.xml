@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <psalm
     phpVersion="8.0"
-    errorLevel="8"
+    errorLevel="7"
     resolveFromConfigFile="true"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns="https://getpsalm.org/schema/config"
@@ -27,18 +27,19 @@
     </plugins>
     <globals>
         <var name="url_query_region_et" type="string" />
-        <var name="glo_auj_6h"  type="string" />
-        <var name="connector"  type="mysqli"/>
+        <var name="glo_auj_6h" type="string" />
+        <var name="connector" type="mysqli"/>
         <var name="url_images_interface_icons"  type="string"/>
-        <var name="url_query_region"  type="string"/>
-        <var name="url_query_region_1er"  type="string"/>
+        <var name="url_query_region"    type="string"/>
+        <var name="url_query_region_1er" type="string"/>
         <var name="page_titre" type="string"/>
         <var name="nom_page" type="string"/>
         <var name="url_images_interface_icons" type="string"/>
         <var name="auj" type="string"/>
         <var name="glo_categories_lieux" type="string"/>
         <var name="glo_tab_quartiers" type="string"/>
-        <var name="logger" type="Logger"/>
+        <var name="glo_menu_pratique" type="array"/>
+        <!--        <var name="logger" type="Logger"/>-->
     </globals>
 </psalm>
 <!--

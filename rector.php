@@ -6,8 +6,7 @@ declare(strict_types=1);
 use Rector\Config\RectorConfig;
 //use Rector\Set\ValueObject\LevelSetList;
 use Rector\Set\ValueObject\SetList;
-use Rector\Php53\Rector\FuncCall\DirNameFileConstantToDirConstantRector;
-
+// use Rector\Php53\Rector\FuncCall\DirNameFileConstantToDirConstantRector;
 // rector < 1
 /*
   return static function (RectorConfig $rectorConfig): void {
