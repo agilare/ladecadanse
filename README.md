@@ -22,9 +22,9 @@ Ces instructions vous permettront de mettre en place une copie du projet sur vot
 
 ### Prérequis
 - Apache 2.4
-- PHP 7.4 (avec les extensions `fileinfo`, `mysqli`, `mbstring`, `gd`)
+- PHP 8.0 (avec les extensions `fileinfo`, `mysqli`, `mbstring`, `gd`)
 - Composer
-- MariaDB 10/MySQL 5.7 (with `sql_mode` containing `ALLOW_INVALID_DATES`)
+- MariaDB 10.6/MySQL 5.7 (with `sql_mode` containing `ALLOW_INVALID_DATES`)
 
 ### Manuelle
 1. cloner la branche `master`
@@ -88,6 +88,55 @@ Un espace sur un serveur avec l'infrastructure prérequise, une timezone défini
 #### Pour mettre à jour avec les derniers commits
 ```sh
 $ git ftp push -s prod
+```
+
+## Analyse du code
+
+Cinq analyseurs de code PHP sont disponibles et peuvent être exécutés via Composer.
+
+- ils sont configurés pour la version de PHP [requise](#Prerequis)
+- le niveau d'analyse est réglé aussi haut que possible, mais pas trop pour ne pas relever les erreurs dûes à l'ancienneté du code (par ailleurs certaines erreurs peu ou pas pertinentes sont ignorées) et ciblé plutôt pour la version de PHP requise
+- les répertoires vendor, var, etc. sont ignorés
+
+### phpstan
+
+```sh
+$ composer phpstan
+```
+
+Erreurs nombreuses et peu importantes ignorées stockées dans `phpstan-baseline.neon`
+
+### Rector
+
+Sans modification directe du code :
+```sh
+$ composer rector:dry-run
+```
+
+### Psalm
+
+```sh
+$ composer psalm
+```
+
+### Phan
+
+```sh
+./vendor/bin/phan --progress-bar -o phan80.txt
+```
+
+puis éventuellement, pour abréger le rapport :
+
+```sh
+cat phan80.txt | cut -d ' ' -f2 | sort | uniq -c | sort -n -r
+```
+
+### PHPCompatibility
+
+Dispo de PHP 8.0 à 8.2
+
+```sh
+$ composer sniffer:php80
 ```
 
 ## Changelog

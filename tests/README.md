@@ -38,7 +38,7 @@ Tests have some name conventions :
 #### Running the tests on an instance
 
 1. in your browser, launch Selenium IDE and open project `tests/ladecadanse.side`
-2. disable website CSP
+2. disable website CSP and to detect PHP errors ensure `ENV` equals 'dev' (when Whoops error page appears, a test is garanteed to fail)
 3. select a test in a suite
 4. enter the URL to test (local, prod...)
 5. run all tests in suite
