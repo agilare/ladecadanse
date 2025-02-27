@@ -4,17 +4,18 @@
 
 ### Fixed
 - features restored (remove from partial edit mode, i.e. blocking edition of entities added before 22.10.2024) : edit events, users, salles, organisateurs, lieux texts
+- legacy code cleaned up according to phpstan, rector, psalm and phan analyzes
 - add .htaccess.example to .gitignore
-- legacy code cleaned up according to phpstan, rector and phan
 
 ### Added
 - Selenium tests : forms values auto-generated, edit event test
 - Analyzers : Phan, Psalm
 - Composer : funding, scripts
+- README : analyzers usage
 
 ### Changed
 - PHP 8.0 compatibility
-- Codeception 5
+- Codeception 4 to 5
 - Analyzers : Rector 0.* to 2, phpstan 1 to 2
 - Analyzers : Rector, phpstan configurations for php 8.0
 
