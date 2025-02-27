@@ -77,7 +77,7 @@ if (isset($get['date_deb']) && isset($get['date_fin']))
 else if ($get['sem'] == 1)
 {
 	$lundim = date_iso2lundim($get['courant']);
-	$sql_date_evenement = ">= '".$lundim[0]."' AND dateEvenement <= '".$lundim[1]."'";
+    $sql_date_evenement = ">= '" . $lundim[0] . "' AND dateEvenement <= '" . $lundim[1] . "'";
 }
 
 
@@ -111,7 +111,7 @@ if (is_numeric($annee_courant) && is_numeric($mois_courant) && is_numeric($jour_
         if ($genre_titre == 'Tout')
             $entete_contenu = ucfirst($entete_contenu);
 
-        $entete_contenu .= date_fr($lundim[0], "non", "non", "non")." au ".date_fr($lundim[1], "annee", "non", "non");
+        $entete_contenu .= date_fr($lundim[0], "non", "", "non") . " au " . date_fr($lundim[1], "annee", "", "non");
         $precedent = date("Y-m-d", mktime(0, 0, 0, (int) $mois_courant, (int) ($jour_courant - 7), (int) $annee_courant));
         $lien_precedent = "<a href=\"/evenement-agenda.php?courant=".$precedent."&amp;sem=1&amp;genre=".$get['genre']."\" style=\"border-radius:3px 0 0 3px;background:#e4e4e4\">".$iconePrecedent."</a>";
 

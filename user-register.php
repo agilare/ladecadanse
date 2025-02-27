@@ -125,12 +125,13 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
             /*
              * Si l'affiliation texte et l'affiliation lieu ont été choisies
              */
-            if ($champs['lieu'] != 0 && !empty($champs['affiliation']))
-            {
-                $verif->setErreur("affiliation", "Vous ne pouvez pas choisir 2 affiliations");
-            }
 
-            /*
+        if (!empty($champs['lieu']) && !empty($champs['affiliation']))
+        {
+            $verif->setErreur("affiliation", "Vous ne pouvez pas choisir 2 affiliations");
+        }
+
+        /*
              * Si l'affiliation texte et l'affiliation lieu ont été choisies
              */
             if ($champs['groupe'] == 8 && (empty($champs['affiliation']) && empty($champs['lieu']) && count($champs['organisateurs']) == 0))
@@ -180,8 +181,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
                 $req_id = $connector->getInsertId();
 
                 //si un lieu a été choisi comme affiliation
-                if (isset($champs['lieu']) && $champs['lieu'] != 0)
-                {
+                if (!empty($champs['lieu']))
+            {
                     $req_insAff = $connector->query("INSERT INTO affiliation
                 (idPersonne, idAffiliation,
                  genre) VALUES ('" . $req_id . "','" . $champs['lieu'] . "','lieu')");

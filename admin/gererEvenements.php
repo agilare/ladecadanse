@@ -165,8 +165,11 @@ elseif (!empty($_POST['formulaire']))
 
 	foreach ($champs as $c => $v)
 	{
-		$champs[$c] = trim($_POST[$c]);
-	}
+        if (isset($_POST[$c]))
+        {
+            $champs[$c] = trim($_POST[$c]);
+        }
+    }
 
 	$evenements = $_POST['evenements'];
 
@@ -219,8 +222,8 @@ elseif (!empty($_POST['formulaire']))
 	}
 
 
-	if ($champs['idLieu'] != 0 && ($champs['nomLieu'] != "" || $champs['adresse'] != "") )
-	{
+	if (!empty($champs['idLieu']) && ($champs['nomLieu'] != "" || $champs['adresse'] != ""))
+    {
 		$verif->setErreur('doublonLieux', 'Vous ne pouvez pas choisir 2 lieux');
 	}
 

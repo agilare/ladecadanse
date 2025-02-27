@@ -17,7 +17,7 @@ $tab_entity = ['event'];
 try
 {
     $get['entity'] = Validateur::validateUrlQueryValue($_GET['entity'], 'enum', 1, $tab_entity);
-} catch (Exception $e)
+} catch (Exception)
 {
     header($_SERVER['SERVER_PROTOCOL'] . ' 400 Bad Request');
     exit;
@@ -35,7 +35,7 @@ $get['region'] = trim($_GET['region']);
 try
 {
     $get['date'] = Validateur::validateUrlQueryValue(trim($_GET['date']), 'date', 1);
-} catch (Exception $e)
+} catch (Exception)
 {
     header($_SERVER['SERVER_PROTOCOL'] . ' 400 Bad Request');
     exit;

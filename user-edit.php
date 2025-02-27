@@ -246,12 +246,11 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 			$req_id = $connector->getInsertId();
 
 			//si un lieu a été choisi comme affiliation
-			if (isset($champs['lieu']) && $champs['lieu'] != 0)
-			{
+			if (!empty($champs['lieu']))
+            {
 				$req_insAff = $connector->query("INSERT INTO affiliation
-				(idPersonne, idAffiliation,
-				 genre) VALUES ('".$req_id."','".$champs['lieu']."','lieu')");
-			}
+				(idPersonne, idAffiliation, genre) VALUES ('" . $req_id . "','" . $champs['lieu'] . "','lieu')");
+            }
 
 			/*
 			* Insertion réussie, message OK, et RAZ des champs

@@ -11,7 +11,7 @@ use Ladecadanse\HtmlShrink;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\Text;
 
-if (isset($_GET['idL']) && $_GET['idL'] > 0)
+if (isset($_GET['idL']) && (int) $_GET['idL'] > 0)
 {
     try {
         $get['idL'] = Validateur::validateUrlQueryValue($_GET['idL'], "int", 1);

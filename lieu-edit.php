@@ -436,8 +436,8 @@ echo $form->getHtmlErreur("quartier");
         ?>
 
         </ul>
-        <?php
-        echo $form->getHtmlErreur("categorie");
+                <?php
+                echo $form->getHtmlErreur("categorie");
         ?>
     </fieldset>
     <?php } ?>

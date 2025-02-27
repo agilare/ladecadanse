@@ -479,7 +479,7 @@ class LieuEdition extends Edition
 
     function getHtmlErreur($champ)
     {
-        if ($this->erreurs[$champ] != '')
+        if (!empty($this->erreurs[$champ]))
         {
             return '<div class="msg">' . $this->erreurs[$champ] . '</div>';
         }

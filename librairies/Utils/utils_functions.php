@@ -1,4 +1,5 @@
 <?php
+//declare(strict_types=1);
 
 /**
  * Convertit une date au format MySQL au format franÃ§ais
@@ -62,8 +63,10 @@ function date_fr($d, $format = "", $affMois = "", $jour_sem = "", $html = true)
 
 
         $nomMois = '';
-        if ($affMois > -1)
+        if ($affMois == '')
+        {
             $nomMois = $Mois[date("n", $ts)];
+        }
 
 
         $date_formatee = $nj;

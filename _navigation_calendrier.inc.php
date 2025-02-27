@@ -20,8 +20,8 @@ if (empty($get['sem'])) {
 
 $tab_date_courant = explode("-", $get['courant']);
 
-$jour_courant = (int) $tab_date_courant[2];
-$mois_courant = (int) $tab_date_courant[1];
+$jour_courant = $tab_date_courant[2];
+$mois_courant = $tab_date_courant[1];
 $annee_courant = (int) $tab_date_courant[0];
 
 $nb_jours_mois = (int) date("t", mktime(0, 0, 0, $mois_courant, $jour_courant, $annee_courant));
@@ -102,11 +102,13 @@ $mois_suiv = date("Y-m-d", mktime(0, 0, 0, $mois_courant + 1, $jour_mois_suiv, $
 		$classe ="";
 		if ($cpt_sem == 1)
 		{
-			$date_deb_sem = $annee_courant."-".$mois_courant."-".$pas;
+            $pas_jour = $pas < 10 ? "0" . $pas : $pas;
+        $date_deb_sem = $annee_courant . "-" . $mois_courant . "-" . $pas_jour;
 
-			$lundim_cour = date_iso2lundim($get['courant']);
-			$lundim_pas = date_iso2lundim($annee_courant."-".$mois_courant."-".$pas);
-			echo "<tr";
+        $lundim_cour = date_iso2lundim($get['courant']);
+        $lundim_pas = date_iso2lundim($annee_courant . "-" . $mois_courant . "-" . $pas_jour);
+
+        echo "<tr";
 			//if (($get['sem'] == 1 && ($date_deb_sem >= $lundim_cour[0] && $date_deb_sem <= $lundim_cour[1])))
 			if ($get['sem'] == 1 && $lundim_cour[0] == $lundim_pas[0] && $lundim_cour[1] == $lundim_pas[1])
 			{

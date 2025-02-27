@@ -2,6 +2,7 @@
 
 namespace Ladecadanse\Utils;
 
+use Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 
 class Mailing {
@@ -12,20 +13,20 @@ class Mailing {
     public function __construct()
      {
         $this->mail = new PHPMailer();
-        $this->mail->SMTPDebug = (int)EMAIL_AUTH_SMTPDEBUG;
+        $this->mail->SMTPDebug = (int) EMAIL_AUTH_SMTPDEBUG;
         $this->mail->isSMTP();
         $this->mail->Host = EMAIL_AUTH_HOST;
         $this->mail->SMTPAuth = true;
         $this->mail->Username = EMAIL_AUTH_USERNAME;
         $this->mail->Password = EMAIL_AUTH_PASSWORD;
         $this->mail->SMTPSecure = EMAIL_AUTH_SMTPSECURE;
-        $this->mail->Port = (int)EMAIL_AUTH_PORT;
+        $this->mail->Port = (int) EMAIL_AUTH_PORT;
         $this->mail->CharSet = 'utf-8';
     }
 
     public function toAdmin(string $title, string $body, ?string $replyToEmail): bool
     {
-        $this->mail->From     = EMAIL_SITE;
+        $this->mail->From = EMAIL_SITE;
         $this->mail->FromName = EMAIL_SITE_NAME;
         if (!empty($replyToEmail))
         {
@@ -41,7 +42,7 @@ class Mailing {
                 echo $this->errorMsg . $this->mail->ErrorInfo;
                 return false;
             }
-        } catch (\Exception)
+        } catch (Exception)
         {
             echo $this->errorMsg . $this->mail->ErrorInfo;
             return false;
@@ -52,7 +53,7 @@ class Mailing {
 
     public function toUser(string $to, string $title, string $body, array $replyTo = [], ?string $attachementPath = null): bool
     {
-        $this->mail->From     = EMAIL_SITE;
+        $this->mail->From = EMAIL_SITE;
         $this->mail->FromName = EMAIL_SITE_NAME;
 
         if (!empty($replyTo))
@@ -74,7 +75,7 @@ class Mailing {
                 echo $this->errorMsg . $this->mail->ErrorInfo;
                 return false;
             }
-        } catch (\Exception)
+        } catch (Exception)
         {
             echo $this->errorMsg . $this->mail->ErrorInfo;
             return false;
