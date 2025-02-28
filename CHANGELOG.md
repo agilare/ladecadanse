@@ -16,6 +16,7 @@
 ### Changed
 - events : in agenda add for robots noindex, nofollow in pages above 1 year in the future and with no events
 - PHP 8.0 compatibility
+- upgrade docker files for latest version
 - Codeception 4 to 5
 - Analyzers : Rector 0.* to 2, phpstan 1 to 2
 - Analyzers : Rector, phpstan configurations for php 8.0
