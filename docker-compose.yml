@@ -1,6 +1,6 @@
 services:
   db:
-    image: mariadb:10.3
+    image: mariadb:10.6
     container_name: ladecadanse_db
     environment:
       MYSQL_DATABASE: ladecadanse
