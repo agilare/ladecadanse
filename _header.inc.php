@@ -12,7 +12,10 @@ use Ladecadanse\UserLevel;
 
     <meta charset="utf-8" />
 
-    <?php if (HtmlShrink::getHeadMetaRobots($nom_page)) { ?>
+    <?php
+    if ($nom_page == 'evenement-agenda' && isset($_GET['courant']) && ($_GET['courant'] < date("Y-m-d") || (isset($total_even) && $total_even == 0 && $_GET['courant'] > date('Y-m-d', strtotime('+1 year')))))
+    {
+        ?>
         <meta name="robots" content="noindex, nofollow" />
     <?php } ?>
 

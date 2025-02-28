@@ -40,8 +40,6 @@ elseif ($_SESSION['region'] == 'fr') {
     $page_titre .= " à Fribourg";
 }
 
-include("_header.inc.php");
-
 $get['genre'] = "";
 if (!empty($_GET['genre']) && array_key_exists(urldecode($_GET['genre']), $glo_tab_genre)) {
     $get['genre'] = urldecode($_GET['genre']);
@@ -193,6 +191,9 @@ if ($get['sem'])
         $tab_date_even[] = $listeEven['dateEvenement'];
     }
 }
+
+
+include("_header.inc.php");
 ?>
 
 <!-- Deb contenu -->

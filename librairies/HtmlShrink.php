@@ -309,16 +309,6 @@ class HtmlShrink
         echo '<div class="msg_erreur">' . $message . '</div>';
     }
 
-    public static function getHeadMetaRobots(string $nom_page, $date = ''): bool
-    {
-        if (isset($_GET['courant']) && $_GET['courant'] < date("Y-m-d"))
-        {
-            return true;
-        }
-
-        return false;
-    }
-
     public static function showLinkRss(string $nom_page): void
     {
         if ($nom_page == "index")
