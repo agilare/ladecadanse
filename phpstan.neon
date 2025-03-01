@@ -20,7 +20,7 @@ parameters:
         - php
     tmpDir: var/cache/ecs
     level: 4 # 5+ trop d'erreurs (because vieux code); aller jusqu'à 7 pour compat avec php 8.0 (?)
-    phpVersion: 80000 # 8.0 80000 7.4 70400 7.1 70100
+    phpVersion: 80100 # 8.0 80000 7.4 70400 7.1 70100
     inferPrivatePropertyTypeFromConstructor: true
     checkMissingTypehints: true
     ignoreErrors:

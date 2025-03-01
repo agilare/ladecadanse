@@ -25,7 +25,7 @@
         }
     ],
     "require": {
-        "php": "8.0.*",
+        "php": "8.1.*",
         "ext-fileinfo": "*",
         "ext-mysqli": "*",
         "ext-mbstring": "*",
@@ -65,13 +65,13 @@
         "symfony/var-dumper": "^6.0",
         "codeception/codeception": "^5.0",
         "codeception/module-rest": "^3.0",
-        "codeception/module-phpbrowser": "^2.0",
-        "codeception/module-asserts": "^2.0",
+        "codeception/module-phpbrowser": "^3.0",
+        "codeception/module-asserts": "^3.0",
         "phpstan/phpstan-deprecation-rules": "^2.0",
         "spaze/phpstan-disallowed-calls": "^4.3",
         "rector/rector": "^2.0",
         "phan/phan": "^5.4",
-        "vimeo/psalm": "^5.26",
+        "vimeo/psalm": "^6.0",
         "orklah/psalm-insane-comparison": "^2.4"
     }
 }

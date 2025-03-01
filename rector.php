@@ -50,4 +50,4 @@ return RectorConfig::configure()
                 ])
                 ->withFileExtensions(['php'])
                 //->withSets([LevelSetList::UP_TO_PHP_53]);
-                ->withSets([SetList::PHP_80]); // PHP_52, etc. PHP_80
+                ->withSets([SetList::PHP_81]); // PHP_52, etc. PHP_80
