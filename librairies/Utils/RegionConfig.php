@@ -22,8 +22,13 @@ class RegionConfig
             $_SESSION['region'] = $_COOKIE['ladecadanse_region'];
         }
 
+        if (empty($_GET['region']))
+        {
+            return;
+        }
+
         // 3. query
-        $getRegion = filter_input(INPUT_GET, "region", FILTER_SANITIZE_STRING);
+        $getRegion = strip_tags($_GET['region']);
         if (array_key_exists($getRegion, $regions))
         {
             $_SESSION['region'] = $getRegion;

@@ -75,10 +75,10 @@ $tab_champs = [];
 
 if (!empty($_POST['submit']))
 {
-        $date_from = filter_input(INPUT_POST, 'from', FILTER_SANITIZE_STRING);
-        $date_to = filter_input(INPUT_POST, 'to', FILTER_SANITIZE_STRING);
+        $date_from = strip_tags($_GET['from']);
+    $date_to = strip_tags($_GET['to']);
 
-        $date_from_parts = explode(".", $date_from);
+    $date_from_parts = explode(".", $date_from);
         $date_to_parts = explode(".", $date_to);
 
 		$jour2 = $jour = stripslashes($date_from_parts[0]);

@@ -128,7 +128,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 
     if (!isset($_SESSION['Sgroupe']))
     {
-        $recaptcha_response = filter_input(INPUT_POST, 'g-recaptcha-response', FILTER_SANITIZE_STRING);
+        $recaptcha_response = strip_tags($_GET['g-recaptcha-response']);
         // Make and decode POST request:
         $recaptcha = file_get_contents($recaptcha_url . '?secret=' . GOOGLE_RECAPTCHA_API_KEY_SERVER . '&response=' . $recaptcha_response);
         $recaptcha = json_decode($recaptcha);
