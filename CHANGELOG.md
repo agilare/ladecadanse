@@ -1,6 +1,17 @@
 # Changelog
 
-## [3.6.0] - Unreleased
+## [3.6.1] - Unreleased
+
+### Changed
+- PHP 8.1 compatibility
+- refactoring : usage of html converters, Rector's NullToStrictStringFuncCallArgRector application
+- replace deprecated usage of FILTER_SANITIZE_STRING
+- Codeception phpbrowser and asserts modules 2 to 3
+- Analyzers : Psalm 5 to 6
+- Analyzers : configurations for php 8.1
+
+
+## [3.6.0] - 2025-02-28
 
 ### Fixed
 - features restored (remove from partial edit mode, i.e. blocking edition of entities added before 22.10.2024) : edit events, users, salles, organisateurs, lieux texts
