@@ -144,7 +144,7 @@ class Sentry extends SystemComponent
                 if ($this->userdata['groupe'] == UserLevel::SUPERADMIN)
                     $goodRedirect = "admin/index.php";
 
-                if ((sha1($this->userdata['gds'] . sha1($pass)) == $this->userdata['mot_de_passe']) || password_verify($pass, $this->userdata['mot_de_passe']))
+                if ((sha1($this->userdata['gds'] . sha1($pass)) == $this->userdata['mot_de_passe']) || password_verify($pass, (string) $this->userdata['mot_de_passe']))
                 {
                     session_regenerate_id(true); // to avoid session fixation attack
                     $this->_setSession($this->userdata, $memoriser);
@@ -292,7 +292,7 @@ class Sentry extends SystemComponent
                 'samesite' => 'Lax'
             ];
 
-            setcookie('ladecadanse_remember', $cookie, $cookieOptions);
+            setcookie('ladecadanse_remember', (string) $cookie, $cookieOptions);
         }
 
         /* 	echo "Veuillez patienter...";

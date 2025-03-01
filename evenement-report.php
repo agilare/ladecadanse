@@ -166,7 +166,7 @@ $verif = new Validateur();
                     foreach ($tab_type_erreur as $t => $libelle)
                     {
                         $coche = '';
-                        if (strcmp($t, $champs['type_erreur']) == 0)
+                        if (strcmp($t, (string) $champs['type_erreur']) == 0)
                         {
                             $coche = 'checked="checked"';
                         }

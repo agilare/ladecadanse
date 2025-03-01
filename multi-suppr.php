@@ -157,8 +157,8 @@ if (isset($_GET['idP'])) {
                 {
                     echo "<tr>
 				<td><a href=\"/user.php?idP=" . $idPersonne . "\" title=\"Voir le profile de la personne\">" . $idPersonne . "</a></td>";
-                    if (strlen($contenu) > 200) {
-                        $contenu = mb_substr($contenu, 0, 200) . " [...]";
+                    if (strlen((string) $contenu) > 200) {
+                        $contenu = mb_substr((string) $contenu, 0, 200) . " [...]";
                     }
                     echo "<td>" . sanitizeForHtml($contenu) . "</td>
 				<td>" . $dateAjout . "</td>

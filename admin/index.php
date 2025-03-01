@@ -73,7 +73,7 @@ while($tab_pers = $connector->fetchArray($req_get))
 	}
 
 	$datetime_dateajout = date_iso2app($tab_pers['dateAjout']);
-	$tab_datetime_dateajout = explode(" ", $datetime_dateajout);
+	$tab_datetime_dateajout = explode(" ", (string) $datetime_dateajout);
 	echo "<td>".$tab_datetime_dateajout[1]."</td><td>".$tab_datetime_dateajout[0]."</td>
 	<td><a href=\"/user.php?idP=".$tab_pers['idPersonne']."\" >".sanitizeForHtml($tab_pers['pseudo'])."</a></td>
 	<td><a href='mailto:".$tab_pers['email']."'>".$tab_pers['email']."</a></td>
@@ -165,7 +165,7 @@ while($tab_even = $connector->fetchArray($req_getEvenement))
 	<td>".$nomLieu."</td>
 	<td>".date_iso2app($tab_even['dateEvenement'])."</td>";
 
-        echo "<td>".ucfirst($glo_tab_genre[$tab_even['genre']])."</td>";
+        echo "<td>".ucfirst((string) $glo_tab_genre[$tab_even['genre']])."</td>";
 
         echo "<td>";
 
@@ -175,7 +175,7 @@ while($tab_even = $connector->fetchArray($req_getEvenement))
 	<td style='text-align: center;'>".$tab_icones_statut[$tab_even['statut']]."</td>";
 
 	$datetime_dateajout = date_iso2app($tab_even['dateAjout']);
-	$tab_datetime_dateajout = explode(" ", $datetime_dateajout);
+	$tab_datetime_dateajout = explode(" ", (string) $datetime_dateajout);
 	echo "<td>".$tab_datetime_dateajout[1]." ".$tab_datetime_dateajout[0]."</td>";
 
 	$nom_auteur = "-";
@@ -245,13 +245,13 @@ while ($tab_desc = $connector->fetchArray($req_getDes))
 	}
 
 	$datetime_dateajout = date_iso2app($tab_desc['dateAjout']);
-	$tab_datetime_dateajout = explode(" ", $datetime_dateajout);
+	$tab_datetime_dateajout = explode(" ", (string) $datetime_dateajout);
 	echo "<td>".$tab_datetime_dateajout[1]."</td><td>".$tab_datetime_dateajout[0]."</td>";
 
 	echo "<td>".$nomLieu."</td>";
-	if (mb_strlen($tab_desc['contenu']) > 200)
+	if (mb_strlen((string) $tab_desc['contenu']) > 200)
 	{
-		$tab_desc['contenu'] = mb_substr($tab_desc['contenu'], 0, 200)." [...]";
+		$tab_desc['contenu'] = mb_substr((string) $tab_desc['contenu'], 0, 200)." [...]";
 	}
 	echo "<td class=\"tdleft small\">" . Text::html_substr($tab_desc['contenu']) . "</td>";
         $nom_auteur = "<i>Ancien membre</i>";

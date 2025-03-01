@@ -18,7 +18,7 @@ if (empty($get['sem'])) {
     $get['sem'] = 0;
 }
 
-$tab_date_courant = explode("-", $get['courant']);
+$tab_date_courant = explode("-", (string) $get['courant']);
 
 $jour_courant = $tab_date_courant[2];
 $mois_courant = $tab_date_courant[1];
@@ -53,7 +53,7 @@ $mois_suiv = date("Y-m-d", mktime(0, 0, 0, (int) $mois_courant + 1, $jour_mois_s
 		?>
 		</th>
         <th id="mois_courant" colspan="6">
-            <?php echo ucfirst(mois2fr($mois_courant)) . " " . $annee_courant ?>
+            <?php echo ucfirst((string) mois2fr($mois_courant)) . " " . $annee_courant ?>
         </th>
         <th>
             <a href="<?php echo "/evenement-agenda.php?" . $url_query_region_et . "courant=" . $mois_suiv . "&amp;sem=" . $get['sem'] . "&amp;genre=" . $get['genre'] . "&amp;tri_agenda=" . $get['tri_agenda']; ?>" title="mois suivant" >
@@ -226,7 +226,7 @@ $b = $no_premier_jour_sem - 2;
 
     <ul id="menu_calendrier">
         <li id="demain">
-            <?php $tab_auj = explode("-", $glo_auj); ?>
+            <?php $tab_auj = explode("-", (string) $glo_auj); ?>
             <a href="<?php echo "/evenement-agenda.php?" . $url_query_region_et . "courant=" . date("Y-m-d", mktime(12, 0, 0, $tab_auj[1], ((int) $tab_auj[2]) + 1, $tab_auj[0])) . "&amp;genre=" . $get['genre'] . "&amp;tri_agenda=" . $get['tri_agenda'] ?>" >Demain</a>
         </li>
         <li id="cette_semaine">

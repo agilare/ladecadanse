@@ -82,7 +82,7 @@ FROM evenement WHERE region IN ('" . $connector->sanitize($_SESSION['region']) .
         <h2 class="accueil" style="margin: 0;">Aujourd’hui <a href="/rss.php?type=evenements_auj" title="Flux RSS des événements du jour" style="font-size:12px;vertical-align: top;" class="desktop"><i class="fa fa-rss fa-lg" style="color:#f5b045"></i></a></h2>
         <?php HtmlShrink::getMenuRegions($glo_regions, $get, $event_count); ?>
         <div class="spacer"></div>
-        <h2 style="width:65%;font-size: 1.4em;margin-top: 0;"><small><?php echo ucfirst(date_fr($get['auj'])); ?></small></h2>
+        <h2 style="width:65%;font-size: 1.4em;margin-top: 0;"><small><?php echo ucfirst((string) date_fr($get['auj'])); ?></small></h2>
 	</div>
 
 	<div class="spacer"><!-- --></div>
@@ -112,7 +112,7 @@ FROM evenement WHERE region IN ('" . $connector->sanitize($_SESSION['region']) .
                     $i = 0;
                 }
 
-                $genre_fr = ucfirst($glo_tab_genre[$tab_even['genre']]);
+                $genre_fr = ucfirst((string) $glo_tab_genre[$tab_even['genre']]);
 
                 $proch = '';
         /* 		if ($np = next(&$tab_genres))
@@ -229,7 +229,7 @@ FROM evenement WHERE region IN ('" . $connector->sanitize($_SESSION['region']) .
             <div class="description">
                 <?php
                 //reduction de la description pour la caser dans la boite "desc"
-                if (mb_strlen($tab_even['description']) > $maxChar)
+                if (mb_strlen((string) $tab_even['description']) > $maxChar)
                 {
                     $continuer = " <a class=\"continuer\" href=\"/evenement.php?idE=".$tab_even['idEvenement']."\" title=\"Voir la fiche complète de l'événement\"> Lire la suite</a>";
                     echo Text::texteHtmlReduit(Text::wikiToHtml(sanitizeForHtml($tab_even['description'])), $maxChar, $continuer);
@@ -245,8 +245,8 @@ FROM evenement WHERE region IN ('" . $connector->sanitize($_SESSION['region']) .
                     while ($tab = $connector->fetchArray($req_event_orga))
                     {
                         $org_url = $tab['URL'];
-                        $org_url_nom = rtrim(preg_replace("(^https?://)", "", $tab['URL']), "/");
-                        if (!preg_match("/^https?:\/\//", $tab['URL']))
+                        $org_url_nom = rtrim(preg_replace("(^https?://)", "", (string) $tab['URL']), "/");
+                        if (!preg_match("/^https?:\/\//", (string) $tab['URL']))
                         {
                             $org_url = 'http://'.$tab['URL'];
                         }
@@ -376,7 +376,7 @@ FROM evenement WHERE region IN ('" . $connector->sanitize($_SESSION['region']) .
     {
         while ($tab_dern_even = $connector->fetchArray($req_dern_even))
         {
-            $date_ajout = mb_substr($tab_dern_even['dateAjout'], 0, 10);
+            $date_ajout = mb_substr((string) $tab_dern_even['dateAjout'], 0, 10);
 
             if ($tab_dern_even['idLieu'] != 0)
             {

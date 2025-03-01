@@ -213,7 +213,7 @@ while ([$id, $nom, $presentation] = mysqli_fetch_row($req))
 	$aff_menulieux .= ">
 	<td><a href=\"/organisateur.php?".Utils::urlQueryArrayToString($get, ["idO", "type_description"])."&amp;idO=".$id."\">";
 
-	if (preg_match("/^(Le |La |Les |L')(.*)/", $nomDuLieu, $matches))
+	if (preg_match("/^(Le |La |Les |L')(.*)/", (string) $nomDuLieu, $matches))
 	{
 		$aff_menulieux .= $matches[2];
 		$aff_menulieux .= '<span style="font-size:1em">, ' . sanitizeForHtml($matches[1]) . '</span>';

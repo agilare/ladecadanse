@@ -90,7 +90,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
                 }
 
 
-                if (!empty($champs['motdepasse']) && !preg_match("/[0-9]/", $champs['motdepasse']))
+                if (!empty($champs['motdepasse']) && !preg_match("/[0-9]/", (string) $champs['motdepasse']))
                 {
                     $verif->setErreur("motdepasse", 'Le mot de passe doit comporter au moins 1 chiffre.');
                 }
@@ -223,7 +223,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
                     if (!empty($tab_pers['mot_de_passe']))
                     {
                         $champs['gds'] = mb_substr(sha1(uniqid((string) random_int(0, mt_getrandmax()), true)), 0, 5);
-                    $champs['mot_de_passe'] = sha1($champs['gds'] . sha1($tab_pers['mot_de_passe']));
+                    $champs['mot_de_passe'] = sha1($champs['gds'] . sha1((string) $tab_pers['mot_de_passe']));
                     }
 
                     $sql_update = "UPDATE personne SET mot_de_passe='" . $champs['mot_de_passe'] . "', gds='" . $champs['gds'] . "',

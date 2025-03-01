@@ -167,7 +167,7 @@ elseif (!empty($_POST['formulaire']))
 	{
         if (isset($_POST[$c]))
         {
-            $champs[$c] = trim($_POST[$c]);
+            $champs[$c] = trim((string) $_POST[$c]);
         }
     }
 
@@ -383,7 +383,7 @@ elseif (!empty($_POST['formulaire']))
 
 			if (!empty($champs['horaire_debut']))
 			{
-				$tab_horaire_debut = explode(":", $champs['horaire_debut']);
+				$tab_horaire_debut = explode(":", (string) $champs['horaire_debut']);
 
 				$sec_horaire_debut = (int) $tab_horaire_debut[0] * 3600 + (int) $tab_horaire_debut[1] * 60;
                 //echo "sec_H:".$sec_horaire_debut;
@@ -402,7 +402,7 @@ elseif (!empty($_POST['formulaire']))
 
 			if (!empty($champs['horaire_fin']))
 			{
-				$tab_horaire_fin = explode(":", $champs['horaire_fin']);
+				$tab_horaire_fin = explode(":", (string) $champs['horaire_fin']);
 
 				$sec_horaire_fin = (int) $tab_horaire_fin[0] * 3600 + (int) $tab_horaire_fin[1] * 60;
                 //echo "sec_H:".$sec_horaire_fin;
@@ -450,12 +450,12 @@ elseif (!empty($_POST['formulaire']))
 
 			if (!empty($fichiers['flyer']['name']))
 			{
-				$champs['flyer'] = $idEven_courant . "_" . $tab_even['dateEvenement'] . strrchr($fichiers['flyer']['name'], '.');
+				$champs['flyer'] = $idEven_courant . "_" . $tab_even['dateEvenement'] . strrchr((string) $fichiers['flyer']['name'], '.');
             }
 
 			if (!empty($fichiers['image']['name']))
 			{
-				$champs['image'] = $idEven_courant . "_" . $tab_even['dateEvenement'] . "_img" . strrchr($fichiers['image']['name'], '.');
+				$champs['image'] = $idEven_courant . "_" . $tab_even['dateEvenement'] . "_img" . strrchr((string) $fichiers['image']['name'], '.');
             }
 
 
@@ -705,7 +705,7 @@ foreach ($glo_tab_genre as $ng => $nl)
         if ($ng == 'cinéma')
             $nom = 'ciné';
 
-	echo '><a href="?'.Utils::urlQueryArrayToString($get, "filtre_genre").'&filtre_genre='.$ng.'">'.ucfirst($nom).'</a></li>';
+	echo '><a href="?'.Utils::urlQueryArrayToString($get, "filtre_genre").'&filtre_genre='.$ng.'">'.ucfirst((string) $nom).'</a></li>';
 }
 echo '</ul>';
 ?>
@@ -808,7 +808,7 @@ while ($tab_even = $connector->fetchArray($req_evenement))
 
 	echo "	<td><a href=\"/evenement.php?idE=".$tab_even['idEvenement']."\" title=\"Voir la fiche de l'événement\" class='titre'>".sanitizeForHtml($tab_even['titre'])."</a></td>	<td>".$nomLieu."</td>
 	<td>".date_iso2app($tab_even['dateEvenement'])."</td>
-	<td>".ucfirst($glo_tab_genre[$tab_even['genre']])."</td>
+	<td>".ucfirst((string) $glo_tab_genre[$tab_even['genre']])."</td>
 
 
 	<td>";
@@ -818,7 +818,7 @@ while ($tab_even = $connector->fetchArray($req_evenement))
 
 	echo "</td><td>".$tab_icones_statut[$tab_even['statut']]."</td>";
 	$datetime_dateajout = date_iso2app($tab_even['dateAjout']);
-	$tab_datetime_dateajout = explode(" ", $datetime_dateajout);
+	$tab_datetime_dateajout = explode(" ", (string) $datetime_dateajout);
 	echo "<td>".$tab_datetime_dateajout[1]." ".$tab_datetime_dateajout[0]."</td>";
 
 
@@ -861,7 +861,7 @@ echo $verif->getErreur("evenements");
 foreach ($statuts_evenement as $s => $v)
 {
 	$coche = '';
-	if (strcmp($s,$champs['statut']) == 0)
+	if (strcmp((string) $s,$champs['statut']) == 0)
 	{
 		$coche = 'checked="1"';
 	}
@@ -963,7 +963,7 @@ while ($lieuTrouve = $connector->fetchArray($req_lieux))
 	echo "<option ";
 
 	$nom_lieu = $lieuTrouve['nom'];
-	if (preg_match("/^(Le |La |Les |L')(.*)/", $lieuTrouve['nom'], $matches))
+	if (preg_match("/^(Le |La |Les |L')(.*)/", (string) $lieuTrouve['nom'], $matches))
 	{
 		$nom_lieu = $matches[2].', '.$matches[1];
 
@@ -1076,7 +1076,7 @@ while ($tab = $connector->fetchArray($req))
 
         // si erreur formulaire
         $champs_quartier = '';
-        $loc_qua = explode("_", $champs['localite_id']);
+        $loc_qua = explode("_", (string) $champs['localite_id']);
         if (!empty($loc_qua[1]))
            $champs_quartier = $loc_qua[1];
 

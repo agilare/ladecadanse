@@ -16,7 +16,7 @@ function date_fr($d, $format = "", $affMois = "", $jour_sem = "", $html = true)
     $Jour = ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"];
     $Mois = ["", "janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
 
-    $temps = explode(" ", $d);
+    $temps = explode(" ", (string) $d);
 
     $hhmmss = "";
 
@@ -31,7 +31,7 @@ function date_fr($d, $format = "", $affMois = "", $jour_sem = "", $html = true)
     if ($format != "heure")
     {
 
-        $tab0 = explode(" ", $d);
+        $tab0 = explode(" ", (string) $d);
         $tab = explode("-", $tab0[0]);
 
         //debogage
@@ -97,7 +97,7 @@ function date_fr($d, $format = "", $affMois = "", $jour_sem = "", $html = true)
 
 function date2mois($date)
 {
-    $temps = explode(" ", $date);
+    $temps = explode(" ", (string) $date);
     $tabDate = explode("-", $temps[0]);
 
     return $tabDate[1];
@@ -105,7 +105,7 @@ function date2mois($date)
 
 function date2annee($date)
 {
-    $temps = explode(" ", $date);
+    $temps = explode(" ", (string) $date);
     $tabDate = explode("-", $temps[0]);
 
     return $tabDate[0];
@@ -115,9 +115,9 @@ function mois2fr($mois)
 {
     $Mois = ["", "janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
 
-    if (mb_substr($mois, 0, 1) == "0")
+    if (mb_substr((string) $mois, 0, 1) == "0")
     {
-        $mois = mb_substr($mois, 1, 1);
+        $mois = mb_substr((string) $mois, 1, 1);
     }
 
     return $Mois[$mois];
@@ -125,7 +125,7 @@ function mois2fr($mois)
 
 function date2jour($date)
 {
-    $temps = explode(" ", $date);
+    $temps = explode(" ", (string) $date);
     $tabDate = explode("-", $temps[0]);
     $noJour = $tabDate[2];
 
@@ -140,7 +140,7 @@ function date2jour($date)
 function date2nomJour($date)
 {
     $Jour = ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"];
-    $temps = explode(" ", $date);
+    $temps = explode(" ", (string) $date);
     $tabDate = explode("-", $temps[0]);
 
     $t = mktime(0, 0, 0, $tabDate[1], $tabDate[2], $tabDate[0]);
@@ -208,9 +208,9 @@ function date_iso2app($date)
     if (empty($date))
         return '';
 
-    if (mb_strlen($date) > 10)
+    if (mb_strlen((string) $date) > 10)
     {
-        $tab_date = explode(" ", $date);
+        $tab_date = explode(" ", (string) $date);
 
         $tab_jour = explode("-", $tab_date[0]);
         //$tab_heure = explode(":", $tab_date[1]);
@@ -219,19 +219,19 @@ function date_iso2app($date)
     }
     else
     {
-        $tab_date = explode("-", $date);
+        $tab_date = explode("-", (string) $date);
         return $tab_date[2] . "." . $tab_date[1] . "." . $tab_date[0];
     }
 }
 
 function date_app2iso($date)
 {
-    if (mb_strlen($date) > 10)
+    if (mb_strlen((string) $date) > 10)
     {
         return $date;
     }
 
-    $tab_date = explode(".", $date);
+    $tab_date = explode(".", (string) $date);
 
     if (count($tab_date) < 3) {
         return '';
@@ -242,7 +242,7 @@ function date_app2iso($date)
 
 function date_iso2time($date)
 {
-    $tab_datetime = explode(" ", $date);
+    $tab_datetime = explode(" ", (string) $date);
     $tab_date = explode("-", $tab_datetime[0]);
 
     return mktime(0, 0, 0, $tab_date[1], $tab_date[2], $tab_date[0]);
@@ -250,7 +250,7 @@ function date_iso2time($date)
 
 function datetime_iso2time($date)
 {
-    $tab_date = explode(" ", $date);
+    $tab_date = explode(" ", (string) $date);
     $tab_jour = explode("-", $tab_date[0]);
     $tab_heure = explode(":", $tab_date[1]);
 
@@ -259,7 +259,7 @@ function datetime_iso2time($date)
 
 function date_iso2lundim($date)
 {
-    $tab_date = explode("-", $date);
+    $tab_date = explode("-", (string) $date);
 
     $i = 0;
     $ds = date("w", mktime(0, 0, 0, $tab_date[1], $tab_date[2], $tab_date[0]));
@@ -293,7 +293,7 @@ function date_iso2lundim($date)
 
 function date_lendemain($date)
 {
-    $tab_date = explode("-", $date);
+    $tab_date = explode("-", (string) $date);
 
     if (count($tab_date) < 3) {
         return $date;
@@ -315,7 +315,7 @@ function horaire2heure($horaire_complet, $date_evenement)
 
     //	echo "hor heure:".$horaire_heure;
 
-    return mb_substr($horaire_heure, 11, -3);
+    return mb_substr((string) $horaire_heure, 11, -3);
 }
 
 function afficher_debut_fin($horaire_debut, $horaire_fin, $date_evenement): string
@@ -347,5 +347,5 @@ function afficher_debut_fin($horaire_debut, $horaire_fin, $date_evenement): stri
 function sanitizeForHtml(?string $chaine): string
 {
     // ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401 is the default value since php 8.1
-    return trim(htmlspecialchars($chaine, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401, 'UTF-8'));
+    return trim(htmlspecialchars((string) $chaine, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401, 'UTF-8'));
 }

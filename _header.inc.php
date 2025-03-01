@@ -164,7 +164,7 @@ use Ladecadanse\UserLevel;
                              $menu_pratique_li = ' style="background: #ffe771;border-radius: 0 0 3px 3px;padding:2px 0;" ';
 
                             $ici = '';
-                        if (strstr($_SERVER['PHP_SELF'], (string) $lien) )
+                        if (strstr((string) $_SERVER['PHP_SELF'], (string) $lien) )
                         {
                             $ici = " class=\"ici\"";
                         }
@@ -176,7 +176,7 @@ use Ladecadanse\UserLevel;
                         $ici = '';
                         if (!isset($_SESSION['SidPersonne']))
                         {
-                            if ( strstr($_SERVER['PHP_SELF'], "annoncerEvenement.php") )
+                            if ( strstr((string) $_SERVER['PHP_SELF'], "annoncerEvenement.php") )
                             {
                                 $ici = ' ici ';
                             }
@@ -192,12 +192,12 @@ use Ladecadanse\UserLevel;
                     {
                         $ici = '';
                         $ici_login = '';
-                        if (strstr($_SERVER['PHP_SELF'], "user-login.php") )
+                        if (strstr((string) $_SERVER['PHP_SELF'], "user-login.php") )
                         {
                             $ici_login = " class=\"ici\"";
                         }
 
-                        if ( strstr($_SERVER['PHP_SELF'], "user-register.php"))
+                        if ( strstr((string) $_SERVER['PHP_SELF'], "user-register.php"))
                         {
                             $ici = " class=\"ici\"";
                         }
@@ -212,7 +212,7 @@ use Ladecadanse\UserLevel;
                     {
                         if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= UserLevel::ACTOR)) {
         $ici = '';
-                                if (strstr($_SERVER['PHP_SELF'], "evenement-edit.php") )
+                                if (strstr((string) $_SERVER['PHP_SELF'], "evenement-edit.php") )
                             {
                                 $ici = " class=\"ici\"";
                             }
@@ -224,7 +224,7 @@ use Ladecadanse\UserLevel;
                         }
 
                         $ici = '';
-                        if (strstr($_SERVER['PHP_SELF'], "user.php") )
+                        if (strstr((string) $_SERVER['PHP_SELF'], "user.php") )
                         {
                             $ici = " class=\"ici\"";
                         }
@@ -255,10 +255,10 @@ use Ladecadanse\UserLevel;
                     foreach ($menu_principal as $nom => $lien)
                     {
                         $ici = '';
-                        if (strstr($_SERVER['PHP_SELF'], $lien)
-                        || ($lien == "/lieux.php" && strstr($_SERVER['PHP_SELF'], "lieu.php"))
-                        || ($lien == "/organisateurs.php" && strstr($_SERVER['PHP_SELF'], "organisateur.php"))
-                        || ($lien == "/evenement-agenda.php" && strstr($_SERVER['PHP_SELF'], "agenda.php"))
+                        if (strstr((string) $_SERVER['PHP_SELF'], $lien)
+                        || ($lien == "/lieux.php" && strstr((string) $_SERVER['PHP_SELF'], "lieu.php"))
+                        || ($lien == "/organisateurs.php" && strstr((string) $_SERVER['PHP_SELF'], "organisateur.php"))
+                        || ($lien == "/evenement-agenda.php" && strstr((string) $_SERVER['PHP_SELF'], "agenda.php"))
                         )
                         {
                             $ici = ' class="ici" ';
@@ -318,5 +318,5 @@ use Ladecadanse\UserLevel;
         <div class="spacer"><!-- --></div>
 
         <!-- Début Conteneur -->
-        <div id="conteneur" <?php if (strstr(dirname($_SERVER['PHP_SELF']), 'admin') || in_array($nom_page, ['evenement-edit', 'evenement-report', 'lieu-edit', 'lieu-text-edit', 'organisateur-edit', 'contacteznous', 'user-login', 'user-edit', 'user-register'])) { ?>style="padding-right: 5px" <?php } ?> >
+        <div id="conteneur" <?php if (strstr(dirname((string) $_SERVER['PHP_SELF']), 'admin') || in_array($nom_page, ['evenement-edit', 'evenement-report', 'lieu-edit', 'lieu-text-edit', 'organisateur-edit', 'contacteznous', 'user-login', 'user-edit', 'user-register'])) { ?>style="padding-right: 5px" <?php } ?> >
 

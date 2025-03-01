@@ -226,7 +226,7 @@ class ImageDriver2 extends SystemComponent {
                }
            }
 
-           if (strstr($imageSource['type'], "gif"))
+           if (strstr((string) $imageSource['type'], "gif"))
            {
                $img2 = ImageCreate($imgX2, $imgY2);
 

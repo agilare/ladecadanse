@@ -23,31 +23,31 @@ try
     exit;
 }
 
-if (!array_key_exists(trim($_GET['region']), $glo_regions))
+if (!array_key_exists(trim((string) $_GET['region']), $glo_regions))
 {
     echo 'Unknown region';
     header($_SERVER['SERVER_PROTOCOL'] . ' 400 Bad Request');
     exit;
 }
 
-$get['region'] = trim($_GET['region']);
+$get['region'] = trim((string) $_GET['region']);
 
 try
 {
-    $get['date'] = Validateur::validateUrlQueryValue(trim($_GET['date']), 'date', 1);
+    $get['date'] = Validateur::validateUrlQueryValue(trim((string) $_GET['date']), 'date', 1);
 } catch (Exception)
 {
     header($_SERVER['SERVER_PROTOCOL'] . ' 400 Bad Request');
     exit;
 }
 
-if (!preg_match('/^[0-9]{2}:[0-9]{2}:[0-9]{2}$/', trim($_GET['endtime'])))
+if (!preg_match('/^[0-9]{2}:[0-9]{2}:[0-9]{2}$/', trim((string) $_GET['endtime'])))
 {
     header($_SERVER['SERVER_PROTOCOL'] . ' 400 Bad Request');
     exit;
 }
 
-$get['endtime'] = trim($_GET['endtime']);
+$get['endtime'] = trim((string) $_GET['endtime']);
 
     $eventCategories = [
     'fête',

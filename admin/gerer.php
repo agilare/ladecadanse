@@ -184,9 +184,9 @@ echo '<div class="spacer"></div>';
 
 		echo "<td>".$nomLieu."</td>";
 
-		if (mb_strlen($tab_desc['contenu']) > 50)
+		if (mb_strlen((string) $tab_desc['contenu']) > 50)
 		{
-			$tab_desc['contenu'] = mb_substr($tab_desc['contenu'], 0, 50)." [...]";
+			$tab_desc['contenu'] = mb_substr((string) $tab_desc['contenu'], 0, 50)." [...]";
 		}
 		echo "<td class=\"tdleft\">".Text::wikiToHtml(sanitizeForHtml($tab_desc['contenu']))."</td>";
 		echo "<td>".date_iso2app($tab_desc['dateAjout'])."</td>";
@@ -289,7 +289,7 @@ echo '<div class="spacer"></div>';
 		<td><a href=\"/lieu.php?idL=".$tab_lieux['idLieu']."\" title=\"Voir la fiche du lieu :".sanitizeForHtml($tab_lieux['nom'])."\">".sanitizeForHtml($tab_lieux['nom'])."</a></td>
 		<td class=\"tdleft\"><ul>";
 
-		$listeCat = explode(",", $tab_lieux['categorie']);
+		$listeCat = explode(",", (string) $tab_lieux['categorie']);
 
 		for ($i = 0, $totalCat = count($listeCat); $i<$totalCat; $i++)
 		{

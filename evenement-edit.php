@@ -128,7 +128,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 
     if (!isset($_SESSION['Sgroupe']))
     {
-        $recaptcha_response = strip_tags($_POST['g-recaptcha-response']);
+        $recaptcha_response = strip_tags((string) $_POST['g-recaptcha-response']);
         // Make and decode POST request:
         $recaptcha = file_get_contents($recaptcha_url . '?secret=' . GOOGLE_RECAPTCHA_API_KEY_SERVER . '&response=' . $recaptcha_response);
         $recaptcha = json_decode($recaptcha);
@@ -206,10 +206,10 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 		$verif->setErreur("idLieu", "Vous devez désigner un lieu");
     }
 
-	if (!empty($champs['idLieu']) && preg_match("/^[0-9]+_[0-9]+$/", $champs['idLieu']))
+	if (!empty($champs['idLieu']) && preg_match("/^[0-9]+_[0-9]+$/", (string) $champs['idLieu']))
 	{
 		//echo "match";
-		$tab_idLieu = explode("_", $champs['idLieu']);
+		$tab_idLieu = explode("_", (string) $champs['idLieu']);
 		$champs['idLieu'] = $tab_idLieu[0];
 		$champs['idSalle'] = $tab_idLieu[1];
 	}
@@ -218,7 +218,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 		$champs['idSalle'] = 0;
 	}
 
-	if (!empty($champs['idLieu']) && (!preg_match("/^[0-9]+$/", $champs['idLieu']) && !preg_match("/^[0-9]+_[0-9]+$/", $champs['idLieu'])))
+	if (!empty($champs['idLieu']) && (!preg_match("/^[0-9]+$/", (string) $champs['idLieu']) && !preg_match("/^[0-9]+_[0-9]+$/", (string) $champs['idLieu'])))
 	{
         $verif->setErreur("idLieu", "La valeur du lieu n'est pas au bon format");
 	}
@@ -251,7 +251,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 		$date_iso = date_app2iso($champs['dateEvenement']);
         $lendemain_evenement = date_lendemain($date_iso);
 
-		$tab_date = explode('.', $champs['dateEvenement']);
+		$tab_date = explode('.', (string) $champs['dateEvenement']);
 		if (!checkdate((int) $tab_date[1], (int) $tab_date[0], (int) $tab_date[2])) {
 			$verif->setErreur('dateEvenement', "La date n'est pas correcte");
 		}
@@ -277,13 +277,13 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 
 	$verif->valider($champs['horaire_debut'], "horaire_debut", "texte", 1, 5, 0);
 
-	if (!empty($champs['horaire_debut']) && !preg_match("/^[0-9]{1,2}:[0-9]{2}$/", $champs['horaire_debut']))
+	if (!empty($champs['horaire_debut']) && !preg_match("/^[0-9]{1,2}:[0-9]{2}$/", (string) $champs['horaire_debut']))
 	{
 		$verif->setErreur('horaire_debut', "Le format de l'heure n'est pas correct, veuillez écrire en hh:mm");
 	}
 
 	$verif->valider($champs['horaire_fin'], "horaire_fin", "texte", 1, 5, 0);
-	if (!empty($champs['horaire_fin']) && !preg_match("/^[0-9]{1,2}:[0-9]{2}$/", $champs['horaire_fin']))
+	if (!empty($champs['horaire_fin']) && !preg_match("/^[0-9]{1,2}:[0-9]{2}$/", (string) $champs['horaire_fin']))
 	{
 		$verif->setErreur('horaire_debut', "Le format de l'heure n'est pas correct, veuillez écrire en hh:mm");
 	}
@@ -318,7 +318,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 		}
 
 		// TODO : transposer également le protocole
-		if ($champs['urlLieu'] != "" && !preg_match("/^https?:\/\//", $champs['urlLieu']))
+		if ($champs['urlLieu'] != "" && !preg_match("/^https?:\/\//", (string) $champs['urlLieu']))
 		{
 			$champs['urlLieu'] = "http://".$champs['urlLieu'];
 		}
@@ -326,7 +326,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 		// conversion de l'heure indiquée en datetime
 		if (!empty($champs['horaire_debut']))
 		{
-			$tab_horaire_debut = explode(":", $champs['horaire_debut']);
+			$tab_horaire_debut = explode(":", (string) $champs['horaire_debut']);
 			//print_r($tab_horaire_debut);
 			$sec_horaire_debut = (int) $tab_horaire_debut[0] * 3600 + (int) $tab_horaire_debut[1] * 60;
             //TEST
@@ -349,7 +349,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 		// conversion de l'heure indiquée en datetime
 		if (!empty($champs['horaire_fin']))
 		{
-			$tab_horaire_fin = explode(":", $champs['horaire_fin']);
+			$tab_horaire_fin = explode(":", (string) $champs['horaire_fin']);
 			$sec_horaire_fin = (int) $tab_horaire_fin[0] * 3600 + (int) $tab_horaire_fin[1] * 60;
             //TEST
 			//echo "sec_H:".$sec_horaire_debut;
@@ -390,7 +390,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 		}
         elseif (!empty($champs['localite_id']))
         {
-            $loc_qua = explode("_", $champs['localite_id']);
+            $loc_qua = explode("_", (string) $champs['localite_id']);
             if (count($loc_qua) > 1)
             {
                 $champs['localite_id'] =  $loc_qua[0];
@@ -447,12 +447,12 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 
 			if (!empty($fichiers['flyer']['name']))
 			{
-				$champs['flyer'] = $nouv_idE."_".$champs['dateEvenement'].mb_strrchr($fichiers['flyer']['name'], '.');
+				$champs['flyer'] = $nouv_idE."_".$champs['dateEvenement'].mb_strrchr((string) $fichiers['flyer']['name'], '.');
 			}
 
 			if (!empty($fichiers['image']['name']))
 			{
-				$champs['image'] = $nouv_idE."_".$champs['dateEvenement']."_img".mb_strrchr($fichiers['image']['name'], '.');
+				$champs['image'] = $nouv_idE."_".$champs['dateEvenement']."_img".mb_strrchr((string) $fichiers['image']['name'], '.');
 			}
 		}
 
@@ -906,7 +906,7 @@ if ($verif->nbErreurs() > 0)
         foreach ($glo_tab_genre as $k => $v)
         {
             $coche = '';
-            if (strcmp($k, $champs['genre']) == 0)
+            if (strcmp((string) $k, (string) $champs['genre']) == 0)
             {
                 $coche = 'checked="checked"';
             }
@@ -1009,7 +1009,7 @@ if ($verif->nbErreurs() > 0)
             echo "<option ";
 
             $nom_lieu = $lieuTrouve['nom'];
-            if (preg_match("/^(Le |La |Les |L')(.*)/", $lieuTrouve['nom'], $matches))
+            if (preg_match("/^(Le |La |Les |L')(.*)/", (string) $lieuTrouve['nom'], $matches))
             {
                 $nom_lieu = $matches[2].', '.$matches[1];
 
@@ -1096,7 +1096,7 @@ if ($verif->nbErreurs() > 0)
                 if (!empty($select_canton))
                     echo "</optgroup>";
 
-                echo "<optgroup label='".strtoupper($tab['canton'])."'>"; // ".$glo_regions[strtolower($tab['canton'])]."
+                echo "<optgroup label='".strtoupper((string) $tab['canton'])."'>"; // ".$glo_regions[strtolower($tab['canton'])]."
             }
             echo "<option ";
 
@@ -1112,7 +1112,7 @@ if ($verif->nbErreurs() > 0)
             {
                 // si erreur formulaire
                 $champs_quartier = '';
-                $loc_qua = explode("_", $champs['localite_id']);
+                $loc_qua = explode("_", (string) $champs['localite_id']);
                 if (!empty($loc_qua[1]))
                    $champs_quartier = $loc_qua[1];
 
@@ -1267,8 +1267,8 @@ if ($verif->nbErreurs() > 0)
                     ?>
                 <li><label class="listehoriz" style="float: none"><input class="precisions" type="radio" name="price_type" value="<?php echo $pt; ?>" <?php
                 if ($pt == $champs['price_type'] ||
-                        ($pt == 'gratis' && !empty($champs['prix']) && strstr($champs['prix'], 'entrée libre')) ||
-                        ($pt == 'asyouwish' && !empty($champs['prix']) && strstr($champs['prix'], 'prix libre'))) { ?> checked <?php } ?>> <?php echo $label ?></label></li>
+                        ($pt == 'gratis' && !empty($champs['prix']) && strstr((string) $champs['prix'], 'entrée libre')) ||
+                        ($pt == 'asyouwish' && !empty($champs['prix']) && strstr((string) $champs['prix'], 'prix libre'))) { ?> checked <?php } ?>> <?php echo $label ?></label></li>
         <?php
                 }
         ?>
@@ -1389,7 +1389,7 @@ if (($get['action'] == "editer" || $get['action'] == "update") && isset($get['id
             continue;
 
         $coche = '';
-        if (strcmp($s, $champs['statut']) == 0)
+        if (strcmp($s, (string) $champs['statut']) == 0)
         {
             $coche = 'checked="checked"';
         }

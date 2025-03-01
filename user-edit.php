@@ -132,7 +132,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 	 */
 	if ($get['action'] == "insert" || (!empty($champs['newPass']) || !empty($champs['newPass2'])) )
 	{
-		if (strcmp($champs['newPass'], $champs['newPass2']) != 0)
+		if (strcmp((string) $champs['newPass'], (string) $champs['newPass2']) != 0)
 		{
 			$verif->setErreur("nouveaux_pass", 'Les 2 mots de passe doivent être identiques.');
 		}
@@ -140,7 +140,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 		{	$verif->valider($champs['newPass'], "newPass", "texte", 8, 100, 1);
 			$verif->valider($champs['newPass2'], "newPass2", "texte", 8, 100, 1);
 
-			if (!preg_match("/[0-9]/", $champs['newPass']) || !preg_match("/[0-9]/", $champs['newPass2']))
+			if (!preg_match("/[0-9]/", (string) $champs['newPass']) || !preg_match("/[0-9]/", (string) $champs['newPass2']))
 			{
 				$verif->setErreur("nouveaux_pass", 'Le nouveau mot de passe doit comporter au moins 1 chiffre.');
 			}
@@ -193,7 +193,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 
 		//print_r($tab_user);
 		//Si au moins un enregistrement de personne est trouvé
-		if (sha1($tab_user['gds'].sha1($champs['motdepasse'])) != $tab_user['mot_de_passe'])
+		if (sha1($tab_user['gds'].sha1((string) $champs['motdepasse'])) != $tab_user['mot_de_passe'])
 		{
 			$verif->setErreur("motdepasse", "Faux mot de passe");
 		}
@@ -212,7 +212,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 		if (!empty($champs['newPass']))
 		{
 			$champs['gds'] = mb_substr(sha1(uniqid((string) random_int(0, mt_getrandmax()), true)), 0, 5);
-            $champs['mot_de_passe'] = sha1($champs['gds'].sha1($champs['newPass']));
+            $champs['mot_de_passe'] = sha1($champs['gds'].sha1((string) $champs['newPass']));
 		}
 
 		if ($_SESSION['Sgroupe'] > UserLevel::SUPERADMIN) {
@@ -547,7 +547,7 @@ if ($verif->nbErreurs() > 0)
         <!-- Email* (text) -->
     <p>
     <label for="email">E-mail*</label>
-        <input type="email" name="email" id="email" size="40" maxlength="80" value="<?php echo sanitizeForHtml(stripslashes($champs['email'])) ?>" required />
+        <input type="email" name="email" id="email" size="40" maxlength="80" value="<?php echo sanitizeForHtml(stripslashes((string) $champs['email'])) ?>" required />
         <?php echo $verif->getHtmlErreur("email");
     echo $verif->getErreur("emailIdentique");?>
     </p>

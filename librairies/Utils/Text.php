@@ -9,7 +9,7 @@ class Text
         // ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401 is the default value since php 8.1
         $str = htmlentities($str, ENT_COMPAT | ENT_SUBSTITUTE | ENT_HTML401, "UTF-8");
         $str = preg_replace('/&([a-zA-Z])(uml|acute|grave|circ|tilde);/', '$1', $str);
-        return html_entity_decode($str, ENT_COMPAT | ENT_SUBSTITUTE | ENT_HTML401, "UTF-8");
+        return html_entity_decode((string) $str, ENT_COMPAT | ENT_SUBSTITUTE | ENT_HTML401, "UTF-8");
     }
 
     public static function linkify(string $input): string
@@ -68,7 +68,7 @@ class Text
     { //$mode == "SI"|"IEC", $bB == "b"|"B"
         $si = ["", "k", "M", "G", "T", "P", "E", "Z", "Y"];
         $iec = ["", "Ki", "Mi", "Gi", "Ti", "Pi", "Ei", "Zi", "Yi"];
-        switch (mb_strtoupper($mode))
+        switch (mb_strtoupper((string) $mode))
         {
             case "SI" : $factor = 1000;
                 $symbols = $si;
@@ -119,13 +119,13 @@ class Text
         //$temp = preg_replace("/\*\*(.*?)\*\*/", "<blockquote>\\1</blockquote>", $temp);
         //$temp = str_replace("----", "<hr />", $temp);
 
-        $temp = preg_replace("/(([^[]|^)(http)+(s)?:(\/\/)|([^\[\/]|^)(www\.))((\w|\.|\-|_)+)(\/)?(\S+)?/i", "\\2\\6<a href=\"http\\4://\\7\\8\\10\\11\" title=\"\\0\">\\7\\8</a>", $temp);
+        $temp = preg_replace("/(([^[]|^)(http)+(s)?:(\/\/)|([^\[\/]|^)(www\.))((\w|\.|\-|_)+)(\/)?(\S+)?/i", "\\2\\6<a href=\"http\\4://\\7\\8\\10\\11\" title=\"\\0\">\\7\\8</a>", (string) $temp);
         //[
         $temp = preg_replace("/\[(http[s]?:\/\/)([-a-z0-9_]{2,}\.[-a-z0-9.]{2,}[-a-z0-9\/&\?=.;~_%]*) (.+?)\]/i",
-                "<a href=\"\\1\\2\" title=\"\\1\\2\">\\3</a>", $temp);
+                "<a href=\"\\1\\2\" title=\"\\1\\2\">\\3</a>", (string) $temp);
 
         $temp = preg_replace("/\[www\.([-a-z0-9.]{2,}[-a-z0-9\/&\?=.~_%]*) (.+?)\]/i",
-                "<a href=\"http://www.\\1\" title=\"www.\\1\">\\2</a>", $temp);
+                "<a href=\"http://www.\\1\" title=\"www.\\1\">\\2</a>", (string) $temp);
 
         return $temp;
     }
@@ -135,7 +135,7 @@ class Text
     public static function wikiToText($temp)
     {
 
-        $temp = preg_replace("/'''(('?[^\n'])*)'''/", "\\1", $temp);
+        $temp = preg_replace("/'''(('?[^\n'])*)'''/", "\\1", (string) $temp);
         $temp = preg_replace("/(\r|\n)*==(('?[^\n'])*)==( |\n|\r)*/", "\\2 ", $temp);
         $temp = preg_replace("/([^*]{2}|)\r\n/", "\\1 <br />", $temp);
         //$temp = preg_replace("/([^*]{2}|)(\r|\n)/", "\\1 ", $temp);
@@ -371,18 +371,18 @@ class Text
         $tag_counter = 0;
         $quotes_on = FALSE;
         // Check if the text is too long
-        if (mb_strlen($posttext) > $minimum_length)
+        if (mb_strlen((string) $posttext) > $minimum_length)
         {
             // Reset the tag_counter and pass through (part of) the entire text
             $c = 0;
-            for ($i = 0; $i < mb_strlen($posttext); $i++)
+            for ($i = 0; $i < mb_strlen((string) $posttext); $i++)
             {
                 // Load the current character and the next one
                 // if the string has not arrived at the last character
-                $current_char = mb_substr($posttext, $i, 1);
-                if ($i < mb_strlen($posttext) - 1)
+                $current_char = mb_substr((string) $posttext, $i, 1);
+                if ($i < mb_strlen((string) $posttext) - 1)
                 {
-                    $next_char = mb_substr($posttext, $i + 1, 1);
+                    $next_char = mb_substr((string) $posttext, $i + 1, 1);
                 }
                 else
                 {
@@ -434,7 +434,7 @@ class Text
                 // then wait for the tag_counter to become 0, and chop the string there
                 if ($c > $minimum_length - $length_offset && $tag_counter == 0 && ($next_char == ' ' || $cut_words == TRUE))
                 {
-                    $posttext = mb_substr($posttext, 0, $i + 1);
+                    $posttext = mb_substr((string) $posttext, 0, $i + 1);
                     if ($dots)
                     {
                         $posttext .= '...';
@@ -448,7 +448,7 @@ class Text
 
     public static function reverseMbStrrchr($haystack, $needle)
     {
-        return mb_strrpos($haystack, $needle) ? mb_substr($haystack, 0, mb_strrpos($haystack, $needle)) : false;
+        return mb_strrpos((string) $haystack, (string) $needle) ? mb_substr((string) $haystack, 0, mb_strrpos((string) $haystack, (string) $needle)) : false;
     }
 
 

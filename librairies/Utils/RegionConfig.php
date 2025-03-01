@@ -28,7 +28,7 @@ class RegionConfig
         }
 
         // 3. query
-        $getRegion = strip_tags($_GET['region']);
+        $getRegion = strip_tags((string) $_GET['region']);
         if (array_key_exists($getRegion, $regions))
         {
             $_SESSION['region'] = $getRegion;

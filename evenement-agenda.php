@@ -13,10 +13,10 @@ $page_description = "Événements culturels et festifs à Genève et Lausanne : 
 /* DATE COURANTE : _navigation_calendrier, agenda, evenement-edit */
 $get['courant'] = $glo_auj_6h;
 if (!empty($_GET['courant'])) {
-    if (preg_match("/^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}$/", trim($_GET['courant']))) {
+    if (preg_match("/^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}$/", trim((string) $_GET['courant']))) {
         $get['courant'] = $_GET['courant'];
     }
-    else if (preg_match("/^[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{4}$/", trim($_GET['courant']))) {
+    else if (preg_match("/^[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{4}$/", trim((string) $_GET['courant']))) {
         $get['courant'] = date_app2iso($_GET['courant']);
     }
 }
@@ -41,8 +41,8 @@ elseif ($_SESSION['region'] == 'fr') {
 }
 
 $get['genre'] = "";
-if (!empty($_GET['genre']) && array_key_exists(urldecode($_GET['genre']), $glo_tab_genre)) {
-    $get['genre'] = urldecode($_GET['genre']);
+if (!empty($_GET['genre']) && array_key_exists(urldecode((string) $_GET['genre']), $glo_tab_genre)) {
+    $get['genre'] = urldecode((string) $_GET['genre']);
 }
 
 if (empty($get['genre'])) {
@@ -81,9 +81,9 @@ else if ($get['sem'] == 1)
 
 $entete_contenu = "";
 if ($genre_titre != 'Tout')
-	$entete_contenu =  ucfirst($genre_titre)." du ";
+	$entete_contenu =  ucfirst((string) $genre_titre)." du ";
 
-[$annee_courant, $mois_courant, $jour_courant] = explode('-', $get['courant']);
+[$annee_courant, $mois_courant, $jour_courant] = explode('-', (string) $get['courant']);
 
 $lien_precedent = '';
 $lien_suivant = '';
@@ -101,7 +101,7 @@ if (is_numeric($annee_courant) && is_numeric($mois_courant) && is_numeric($jour_
         $lien_precedent = "<a href=\"/evenement-agenda.php?".Utils::urlQueryArrayToString($get)."&amp;courant=".$precedent."\" style=\"border-radius:3px 0 0 3px;\">".$iconePrecedent."&nbsp;</a>";
         $suivant = date("Y-m-d", mktime(0, 0, 0, (int) $mois_courant, (int) $jour_courant + 1, (int) $annee_courant));
 
-        $suivant_nomjour_parts = explode(" ", date_fr($suivant, "tout", "non", ""));
+        $suivant_nomjour_parts = explode(" ", (string) date_fr($suivant, "tout", "non", ""));
         $lien_suivant = "<a href=\"/evenement-agenda.php?".Utils::urlQueryArrayToString($get)."&amp;courant=".$suivant."\" style=\"border-radius:0 3px 3px 0;background:#e4e4e4\" title=\"".$suivant_nomjour_parts[1]."\">".ucfirst($suivant_nomjour_parts[0])."<span class=desktop> ".$suivant_nomjour_parts[1]."</span>"."&nbsp;".$iconeSuivant."</a>";
     }
     else if ($get['sem'] == 1)
@@ -227,7 +227,7 @@ include("_header.inc.php");
                             echo " selected";
                         }
 
-                        echo ">".ucfirst($la)."</option>";
+                        echo ">".ucfirst((string) $la)."</option>";
                     }
                     ?>
                 </select>
@@ -278,7 +278,7 @@ else
 		if ($dateCourante != $listeEven['dateEvenement'] && $get['sem'] == 1)
 		{
 			$nb_even_jour = 0;
-	   		$dateSep = explode("-", $listeEven['dateEvenement']);
+	   		$dateSep = explode("-", (string) $listeEven['dateEvenement']);
 			$tab_jours_semaine[] = $listeEven['dateEvenement'];
 	   		//lien interne avec le no de jour
 			$nomJour = date("l", mktime(0, 0, 0, $dateSep[1], $dateSep[2], $dateSep[0]));
@@ -327,7 +327,7 @@ else
 			}
 
 			echo "\n<h3 class=\"menu_date\">";
-			echo "<a name=\"date_".$listeEven['dateEvenement']."\" id=\"date_".$listeEven['dateEvenement']."\"></a>".ucfirst(date_fr($listeEven['dateEvenement']));
+			echo "<a name=\"date_".$listeEven['dateEvenement']."\" id=\"date_".$listeEven['dateEvenement']."\"></a>".ucfirst((string) date_fr($listeEven['dateEvenement']));
 			echo "</h3>\n";
 		}
 
@@ -341,7 +341,7 @@ else
 
 			<div class="spacer"></div>
             <div class="genre">
-                            <h4 class="genre-titre"><?php echo ucfirst($glo_tab_genre[$listeEven['genre']]); ?></h4>
+                            <h4 class="genre-titre"><?php echo ucfirst((string) $glo_tab_genre[$listeEven['genre']]); ?></h4>
                             <div class="spacer"></div>
                             <?php
 		}
@@ -403,7 +403,7 @@ else
 			$lien_flyer = '<a href="'.Evenement::getFileHref(Evenement::getFilePath($listeEven['image']), true).'" class="magnific-popup"><img src="'.Evenement::getFileHref(Evenement::getFilePath($listeEven['image'], 's_'), true).'" alt="Photo" width="100" /></a>';
 		}
 
-		if (mb_strlen($listeEven['description']) > $maxChar)
+		if (mb_strlen((string) $listeEven['description']) > $maxChar)
 		{
 			$description = Text::texteHtmlReduit(Text::wikiToHtml(sanitizeForHtml($listeEven['description'])), $maxChar);
             $description .= "<span class=\"continuer\">
@@ -453,8 +453,8 @@ else
         $actions = "";
 
         $vcard_starttime = '';
-        if (mb_substr($listeEven['horaire_debut'], 11, 5) != '06:00')
-            $vcard_starttime = "T".mb_substr($listeEven['horaire_debut'], 11, 5).":00";
+        if (mb_substr((string) $listeEven['horaire_debut'], 11, 5) != '06:00')
+            $vcard_starttime = "T".mb_substr((string) $listeEven['horaire_debut'], 11, 5).":00";
         ?>
 
 		<div id="event-<?php echo $listeEven['idEvenement']; ?>" class="evenement vevent">
@@ -475,8 +475,8 @@ else
                     while ($tab = $connector->fetchArray($req_event_orga))
                     {
                         $org_url = $tab['URL'];
-                        $org_url_nom = rtrim(preg_replace("(^https?://)", "", $tab['URL']), "/");
-                        if (!preg_match("/^https?:\/\//", $tab['URL']))
+                        $org_url_nom = rtrim(preg_replace("(^https?://)", "", (string) $tab['URL']), "/");
+                        if (!preg_match("/^https?:\/\//", (string) $tab['URL']))
                         {
                             $org_url = 'http://'.$tab['URL'];
                         }

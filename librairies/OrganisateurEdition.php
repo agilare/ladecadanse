@@ -143,12 +143,12 @@ class OrganisateurEdition extends Edition
             $nouvel_id = $organisateur->getMaxId() + 1;
             if (!empty($this->fichiers['logo']['name']))
             {
-                $organisateur->setValue('logo', $nouvel_id . '_logo' . strrchr($this->fichiers['logo']['name'], '.'));
+                $organisateur->setValue('logo', $nouvel_id . '_logo' . strrchr((string) $this->fichiers['logo']['name'], '.'));
             }
 
             if (!empty($this->fichiers['photo']['name']))
             {
-                $organisateur->setValue('photo', $nouvel_id . '_photo' . strrchr($this->fichiers['logo']['name'], '.'));
+                $organisateur->setValue('photo', $nouvel_id . '_photo' . strrchr((string) $this->fichiers['logo']['name'], '.'));
             }
 
             $organisateur->setValue('date_ajout', date("Y-m-d H:i:s"));

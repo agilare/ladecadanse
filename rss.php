@@ -83,7 +83,7 @@ if ($get['type'] == "evenements_auj") {
 		{
 			$genre_even = "ciné";
 		}
-		$items .= "<title>".ucfirst(date_fr($tab_even['dateEvenement'], "", "", "", false))." - ".$genre_even." : ".sanitizeForHtml($tab_even['titre'])."</title>\n";
+		$items .= "<title>".ucfirst((string) date_fr($tab_even['dateEvenement'], "", "", "", false))." - ".$genre_even." : ".sanitizeForHtml($tab_even['titre'])."</title>\n";
 		$items .= "<link>".$site_full_url."/evenement.php?idE=".$tab_even['idEvenement']."</link>\n";
 		$items .= "<description><![CDATA[";
 
@@ -114,7 +114,7 @@ if ($get['type'] == "evenements_auj") {
         }
 
 		$maxChar = Text::trouveMaxChar($tab_even['description'], 60, 5);
-		if (mb_strlen($tab_even['description']) > $maxChar)
+		if (mb_strlen((string) $tab_even['description']) > $maxChar)
 		{
 			$items .= Text::texteHtmlReduit(Text::wikiToHtml(sanitizeForHtml($tab_even['description'])), $maxChar, "");
 		}
@@ -187,7 +187,7 @@ else if ($get['type'] == "lieu_evenements")
         }
 
 		$maxChar = Text::trouveMaxChar($tab_even['description'], 60, 5);
-		if (mb_strlen($tab_even['description']) > $maxChar)
+		if (mb_strlen((string) $tab_even['description']) > $maxChar)
 		{
 			$items .= Text::texteHtmlReduit(Text::wikiToHtml(sanitizeForHtml($tab_even['description'])), $maxChar, "");
         }
@@ -272,7 +272,7 @@ else if ($get['type'] == "organisateur_evenements")
         }
 
 		$maxChar = Text::trouveMaxChar($tab_even['description'], 60, 5);
-		if (mb_strlen($tab_even['description']) > $maxChar)
+		if (mb_strlen((string) $tab_even['description']) > $maxChar)
 		{
 			$items .= Text::texteHtmlReduit(Text::wikiToHtml(sanitizeForHtml($tab_even['description'])), $maxChar, "");
         }
@@ -323,7 +323,7 @@ else if ($get['type'] == "evenements_ajoutes")
 		$items .= "<link>".$site_full_url."/evenement.php?idE=".$tab_even['idEvenement']."</link>\n";
 		$items .= "<description><![CDATA[";
         $items .= $css;
-		 $items .= '<h2 style="padding:0.1em 0.1em;border-bottom:1px dotted #aeaeae;">'.ucfirst(date_fr($tab_even['dateEvenement'], 'annee')).'</h2>';
+		 $items .= '<h2 style="padding:0.1em 0.1em;border-bottom:1px dotted #aeaeae;">'.ucfirst((string) date_fr($tab_even['dateEvenement'], 'annee')).'</h2>';
 
 
 
@@ -348,7 +348,7 @@ else if ($get['type'] == "evenements_ajoutes")
 
 		$items .= "<h3>".$nom_lieu."</h3>";
 		$items .= "<p>".$tab_even['adresse']." - ".$tab_even['quartier']."</p>";
-		$items .= "<h4>".ucfirst($glo_tab_genre[$tab_even['genre']])."</h4>";
+		$items .= "<h4>".ucfirst((string) $glo_tab_genre[$tab_even['genre']])."</h4>";
 
 			//si un flyer existe
 		if (!empty($tab_even['flyer']))
@@ -364,7 +364,7 @@ else if ($get['type'] == "evenements_ajoutes")
 
 		$items .= "<div class=\"desc\">";
 		$maxChar = Text::trouveMaxChar($tab_even['description'], 60, 8);
-		if (mb_strlen($tab_even['description']) > $maxChar)
+		if (mb_strlen((string) $tab_even['description']) > $maxChar)
 		{
 			$items .= Text::texteHtmlReduit(Text::wikiToHtml(sanitizeForHtml($tab_even['description'])), $maxChar, "");
         }

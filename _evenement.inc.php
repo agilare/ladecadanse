@@ -31,7 +31,7 @@ else
 $adresse = HtmlShrink::getAdressFitted(null, $listeLieu['localite'], $listeLieu['quartier'], $listeLieu['adresse']);
 
 echo '<div id="evenements">';
-echo "<p><a href=\"/evenement-agenda.php?courant=".$evenement['dateEvenement']."\" title=\"Agenda\">".ucfirst(date_fr($evenement['dateEvenement'], "annee"))."</a></p>";
+echo "<p><a href=\"/evenement-agenda.php?courant=".$evenement['dateEvenement']."\" title=\"Agenda\">".ucfirst((string) date_fr($evenement['dateEvenement'], "annee"))."</a></p>";
 ?>
 <div class="evenement">
 
@@ -78,7 +78,7 @@ if (!empty($evenement['flyer']))
 <?php
 //reduction de la description pour la caser dans la boite "desc"
 
-if (mb_strlen($evenement['description']) > $maxChar)
+if (mb_strlen((string) $evenement['description']) > $maxChar)
 {
 	echo Text::texteHtmlReduit(Text::wikiToHtml(sanitizeForHtml($evenement['description'])),
 	$maxChar,

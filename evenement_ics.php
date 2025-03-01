@@ -104,13 +104,13 @@ $address = HtmlShrink::getAdressFitted(null, $listeLieu['localite'], $listeLieu[
 $dateend = '';
 if ($even->getValue('horaire_fin') != "0000-00-00 00:00:00")
 {
-	$dateend = date("U", strtotime($even->getValue('horaire_fin')));
+	$dateend = date("U", strtotime((string) $even->getValue('horaire_fin')));
 }
 
-$datestart = date("U", strtotime($even->getValue('dateEvenement')));
+$datestart = date("U", strtotime((string) $even->getValue('dateEvenement')));
 if ($even->getValue('horaire_debut') != "0000-00-00 00:00:00")
 {
-	$datestart = date("U", strtotime($even->getValue('horaire_debut')));
+	$datestart = date("U", strtotime((string) $even->getValue('horaire_debut')));
 }
 
 
@@ -143,7 +143,7 @@ return date('Ymd\THis', $timestamp);
 }
 // Escapes a string of characters
 function escapeString($string) {
-return preg_replace('/([\,;])/','\\\$1', $string);
+return preg_replace('/([\,;])/','\\\$1', (string) $string);
 }
 
 // 3. Echo out the ics file's contents

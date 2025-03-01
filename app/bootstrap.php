@@ -52,7 +52,7 @@ $site_full_url = Utils::getBaseUrl()."/";
 Evenement::$systemDirPath = $rep_images_even;
 Evenement::$urlDirPath = $url_uploads_events;
 
-$nom_page = basename($_SERVER["SCRIPT_FILENAME"], '.php');
+$nom_page = basename((string) $_SERVER["SCRIPT_FILENAME"], '.php');
 
 header('X-Content-Type-Options: nosniff');
 // v1

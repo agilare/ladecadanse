@@ -159,7 +159,7 @@ class LieuEdition extends Edition
         $this->id = $id;
         $this->valeurs = $lieu->getValues();
 
-        $this->valeurs['categorie'] = explode(",", $this->valeurs['categorie']);
+        $this->valeurs['categorie'] = explode(",", (string) $this->valeurs['categorie']);
 
 //		printr($this->valeurs);
     }
@@ -177,7 +177,7 @@ class LieuEdition extends Edition
 
         $lieu->setValue('idpersonne', $_SESSION['SidPersonne']);
 
-        $loc_qua = explode("_", $this->valeurs['localite_id']);
+        $loc_qua = explode("_", (string) $this->valeurs['localite_id']);
 
         if (count($loc_qua) > 1)
         {
@@ -226,12 +226,12 @@ class LieuEdition extends Edition
             $nouvel_id = $lieu->getMaxId() + 1;
             if (!empty($this->fichiers['logo']['name']))
             {
-                $lieu->setValue('logo', $nouvel_id . '_logo' . mb_strrchr($this->fichiers['logo']['name'], '.'));
+                $lieu->setValue('logo', $nouvel_id . '_logo' . mb_strrchr((string) $this->fichiers['logo']['name'], '.'));
             }
 
             if (!empty($this->fichiers['photo1']['name']))
             {
-                $lieu->setValue('photo1', $nouvel_id . '_photo1' . mb_strrchr($this->fichiers['logo']['name'], '.'));
+                $lieu->setValue('photo1', $nouvel_id . '_photo1' . mb_strrchr((string) $this->fichiers['logo']['name'], '.'));
             }
 
             $lieu->setValue('dateAjout', date("Y-m-d H:i:s"));
@@ -394,7 +394,7 @@ class LieuEdition extends Edition
         if (!empty($this->fichiers['image_galerie']['name']))
         {
 
-            $extension = mb_strrchr($this->fichiers['image_galerie']['name'], '.');
+            $extension = mb_strrchr((string) $this->fichiers['image_galerie']['name'], '.');
 
             $sql_insert = "INSERT INTO fichierrecu (idElement, type_element, description, mime, extension, type, dateAjout)
 			VALUES ('" . $lieu->getId() . "', 'lieu',
@@ -453,7 +453,7 @@ class LieuEdition extends Edition
         $lieu->load();
         $champs = $lieu->getValues();
 
-        $champs['categorie'] = explode(',', $champs['categorie']);
+        $champs['categorie'] = explode(',', (string) $champs['categorie']);
 
 //		printr($champs);
 

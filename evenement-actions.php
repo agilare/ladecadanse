@@ -11,7 +11,7 @@ if (!$videur->checkGroup(UserLevel::ACTOR)) {
 }
 
 $get['id'] = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
-$get['action'] = strip_tags($_GET['action']);
+$get['action'] = strip_tags((string) $_GET['action']);
 
 if ($get['action'] == 'delete' && !empty($get['id']))
 {

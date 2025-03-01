@@ -214,7 +214,7 @@ while ($tab = $connector->fetchArray($req))
 
        // si erreur formulaire
         $champs_quartier = '';
-        $loc_qua = explode("_", $form->getValeur('localite_id'));
+        $loc_qua = explode("_", (string) $form->getValeur('localite_id'));
         if (!empty($loc_qua[1]))
            $champs_quartier = $loc_qua[1];
 

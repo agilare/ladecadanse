@@ -75,8 +75,8 @@ $tab_champs = [];
 
 if (!empty($_POST['submit']))
 {
-        $date_from = strip_tags($_POST['from']);
-    $date_to = strip_tags($_POST['to']);
+        $date_from = strip_tags((string) $_POST['from']);
+    $date_to = strip_tags((string) $_POST['to']);
 
     $date_from_parts = explode(".", $date_from);
         $date_to_parts = explode(".", $date_to);
@@ -166,14 +166,14 @@ FROM evenement WHERE idEvenement=".$get['idE'])));
 			if (!empty($tab_champs['flyer']))
 			{
 				$flyer_orig = $tab_champs['flyer'];
-				$tab_champs['flyer'] = ($maxId['max_id'] + 1) . "_" . date('Y-m-d', $dateIncrUnix) . mb_strrchr($tab_champs['flyer'], '.');
+				$tab_champs['flyer'] = ($maxId['max_id'] + 1) . "_" . date('Y-m-d', $dateIncrUnix) . mb_strrchr((string) $tab_champs['flyer'], '.');
             }
 
 			if (!empty($tab_champs['image']))
 			{
 
 				$image_orig = $tab_champs['image'];
-				$tab_champs['image'] = ($maxId['max_id'] + 1) . "_" . date('Y-m-d', $dateIncrUnix) . "_img" . mb_strrchr($tab_champs['image'], '.');
+				$tab_champs['image'] = ($maxId['max_id'] + 1) . "_" . date('Y-m-d', $dateIncrUnix) . "_img" . mb_strrchr((string) $tab_champs['image'], '.');
             }
 
 			$date_originale = $tab_champs['dateEvenement'];
@@ -182,15 +182,15 @@ FROM evenement WHERE idEvenement=".$get['idE'])));
 			$tab_champs['dateAjout'] = date("Y-m-d H:i:s");
 			$tab_champs['date_derniere_modif'] = date("Y-m-d H:i:s");
             // dump($tab_champs);
-            if (mb_substr($tab_champs['horaire_debut'], 11) != "06:00:01" && $tab_champs['horaire_debut'] != "0000-00-00 00:00:00")
+            if (mb_substr((string) $tab_champs['horaire_debut'], 11) != "06:00:01" && $tab_champs['horaire_debut'] != "0000-00-00 00:00:00")
             {
-                if (mb_substr($tab_champs['horaire_debut'], 0, 10) > $date_originale)
+                if (mb_substr((string) $tab_champs['horaire_debut'], 0, 10) > $date_originale)
                 {
-                    $tab_champs['horaire_debut'] = date_lendemain($tab_champs['dateEvenement']) . " " . mb_substr($tab_champs['horaire_debut'], 11);
+                    $tab_champs['horaire_debut'] = date_lendemain($tab_champs['dateEvenement']) . " " . mb_substr((string) $tab_champs['horaire_debut'], 11);
                 }
                 else
                 {
-                    $tab_champs['horaire_debut'] = $tab_champs['dateEvenement'] . " " . mb_substr($tab_champs['horaire_debut'], 11);
+                    $tab_champs['horaire_debut'] = $tab_champs['dateEvenement'] . " " . mb_substr((string) $tab_champs['horaire_debut'], 11);
                 }
 			}
 			else
@@ -200,15 +200,15 @@ FROM evenement WHERE idEvenement=".$get['idE'])));
 
 
 			//echo date_lendemain($tab_champs['dateEvenement'])." 06:00:01";
-			if (mb_substr($tab_champs['horaire_fin'], 11) != "06:00:01" && $tab_champs['horaire_fin'] != "0000-00-00 00:00:00")
+			if (mb_substr((string) $tab_champs['horaire_fin'], 11) != "06:00:01" && $tab_champs['horaire_fin'] != "0000-00-00 00:00:00")
             {   // echo $date_originale;
-                if (mb_substr($tab_champs['horaire_fin'], 0, 10) > $date_originale)
+                if (mb_substr((string) $tab_champs['horaire_fin'], 0, 10) > $date_originale)
                 {   // echo $tab_champs['horaire_fin'];
-                    $tab_champs['horaire_fin'] = date_lendemain($tab_champs['dateEvenement']) . " " . mb_substr($tab_champs['horaire_fin'], 11);
+                    $tab_champs['horaire_fin'] = date_lendemain($tab_champs['dateEvenement']) . " " . mb_substr((string) $tab_champs['horaire_fin'], 11);
                 }
                 else
                 {
-                    $tab_champs['horaire_fin'] = $tab_champs['dateEvenement'] . " " . mb_substr($tab_champs['horaire_fin'], 11);
+                    $tab_champs['horaire_fin'] = $tab_champs['dateEvenement'] . " " . mb_substr((string) $tab_champs['horaire_fin'], 11);
                 }
 			}
 			else
@@ -329,7 +329,7 @@ include("_header.inc.php");
         if ($affEven = $connector->fetchArray($req_getEven)) {
             //si le formulaire est chargé pour la 1ère fois, on prend la date extraite de la base
             if ($get['action'] != "coller") {
-                $tab = explode("-", $affEven['dateEvenement']);
+                $tab = explode("-", (string) $affEven['dateEvenement']);
                 //$date_du = $tab[2].".".$tab[1].".".$tab[0];
                 $date_du = date('d.m.Y', mktime(0, 0, 0, $tab[1], $tab[2], $tab[0]) + 86400);
             }

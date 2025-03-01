@@ -137,7 +137,7 @@ if ($connector->getNumRows($req_temp) == 1)
 			}
 
 
-			if (!empty($champs['motdepasse'])&& !preg_match("/[0-9]/", $champs['motdepasse']))
+			if (!empty($champs['motdepasse'])&& !preg_match("/[0-9]/", (string) $champs['motdepasse']))
 			{
 				$verif->setErreur("motdepasse", 'Le mot de passe doit comporter au moins 1 chiffre.');
 			}
@@ -149,7 +149,7 @@ if ($connector->getNumRows($req_temp) == 1)
 		if ($verif->nbErreurs() === 0)
 		{
 			$champs['gds'] = mb_substr(sha1(uniqid((string) random_int(0, mt_getrandmax()), true)), 0, 5);
-            $champs['motdepasse'] = sha1($champs['gds'].sha1($champs['motdepasse']));
+            $champs['motdepasse'] = sha1($champs['gds'].sha1((string) $champs['motdepasse']));
 
 
 			$sql_update = "UPDATE personne SET mot_de_passe='".$connector->sanitize($champs['motdepasse'])."', gds='".$connector->sanitize($champs['gds'])."', date_derniere_modif=NOW() WHERE idPersonne=".$idPersonne;

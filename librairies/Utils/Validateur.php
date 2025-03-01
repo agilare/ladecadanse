@@ -83,7 +83,7 @@ class Validateur
     function validerTexte($nom, $theInput, $description = '')
     {
 
-        $result = preg_match("/^[A-Za-z0-9\ ]+$/", $theInput);
+        $result = preg_match("/^[A-Za-z0-9\ ]+$/", (string) $theInput);
         if ($result)
         {
             return true;
@@ -107,7 +107,7 @@ class Validateur
     function validerAlpha($nom, $theInput, $description = '')
     {
 
-        $result = preg_match("/^[A-Za-z0-9\ ]+$/", $theInput);
+        $result = preg_match("/^[A-Za-z0-9\ ]+$/", (string) $theInput);
         if ($result)
         {
             return true;
@@ -131,7 +131,7 @@ class Validateur
     function validerAlpha2($nom, $theInput, $description = '')
     {
 
-        $result = preg_match("/^[A-Za-z0-9]+$/", $theInput);
+        $result = preg_match("/^[A-Za-z0-9]+$/", (string) $theInput);
         if ($result)
         {
             return true;
@@ -154,7 +154,7 @@ class Validateur
      */
     function validerLongueurTexte($nom, $theInput, $min = 0, $max = 20): bool
     {
-        $theInput = trim($theInput);
+        $theInput = trim((string) $theInput);
 
         if (mb_strlen($theInput) >= $min && mb_strlen($theInput) <= $max)
         {
@@ -184,7 +184,7 @@ class Validateur
      */
     function validerEmail($nom, $theInput, $description = '')
     {
-        $result = preg_match("/^[^@ ]+@[^@ ]+\.[^@ \.]+$/", $theInput);
+        $result = preg_match("/^[^@ ]+@[^@ ]+\.[^@ \.]+$/", (string) $theInput);
         if ($result)
         {
             return true;
@@ -238,7 +238,7 @@ class Validateur
         // }
         // else
         // {
-        $tab_date = explode(".", $date);
+        $tab_date = explode(".", (string) $date);
 
         if (mb_strlen($tab_date[2]) > 4)
         {
@@ -276,7 +276,7 @@ class Validateur
         if (isset($url) && !preg_match("/^(https?:\/\/)/i", $url))
             $url = "http://" . $url;
 
-        $result = preg_match('#^https?\\:\\/\\/[a-z0-9_-]+\.([a-z0-9_-]+\.)?[a-zA-Z]{2,3}#i', $url);
+        $result = preg_match('#^https?\\:\\/\\/[a-z0-9_-]+\.([a-z0-9_-]+\.)?[a-zA-Z]{2,3}#i', (string) $url);
 
         if ($result)
         {
@@ -311,11 +311,11 @@ class Validateur
         {
             if (!empty($fileinfo['type']) && !in_array($fileinfo['type'], $mimes_acceptes))
             {
-                $this->erreurs[$nom] = "Ce format de fichier (" . pathinfo($fileinfo['name'], PATHINFO_EXTENSION) . ") n'est pas accepté";
+                $this->erreurs[$nom] = "Ce format de fichier (" . pathinfo((string) $fileinfo['name'], PATHINFO_EXTENSION) . ") n'est pas accepté";
                 return false;
             }
 
-            if (strstr($fileinfo['name'], "php"))
+            if (strstr((string) $fileinfo['name'], "php"))
                 $this->erreurs[$nom] = "Veuillez ôter 'php' du nom de votre fichier";
 
 
@@ -539,7 +539,7 @@ class Validateur
         }
         else
         {
-            $get = trim($get);
+            $get = trim((string) $get);
 
             if ($type == "int")
             {

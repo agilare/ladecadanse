@@ -64,7 +64,7 @@ $mot = "";
 
 if (!empty($get['mots']))
 {
-    $mots = trim($get['mots']);
+    $mots = trim((string) $get['mots']);
 
 
 	if (!empty($_GET['name_as']))
@@ -236,9 +236,9 @@ if (!empty($get['mots']))
 
 						if (mb_strlen($sous_phrase) > 0)
 						{
-							$nb_titre = mb_substr_count(mb_strtolower($tab_even['titre']), $sous_phrase);
-							$nb_nomLieu = mb_substr_count(mb_strtolower($tab_even['nomLieu']), $sous_phrase);
-							$nb_desc = mb_substr_count(mb_strtolower($tab_even['description']), $sous_phrase);
+							$nb_titre = mb_substr_count(mb_strtolower((string) $tab_even['titre']), $sous_phrase);
+							$nb_nomLieu = mb_substr_count(mb_strtolower((string) $tab_even['nomLieu']), $sous_phrase);
+							$nb_desc = mb_substr_count(mb_strtolower((string) $tab_even['description']), $sous_phrase);
 
 						}
 
@@ -396,7 +396,7 @@ if (!empty($get['mots']))
                                     <h3><a href="/evenement.php?idE=<?php echo $tab_even['idEvenement'] ?>" title="Voir la fiche de l'événement"><?php echo sanitizeForHtml($titre) ?></a></h3>
                                                                 <?php
 								$maxChar = Text::trouveMaxChar($tab_even['description'], 50, 4);
-								if (mb_strlen($tab_even['description']) > $maxChar)
+								if (mb_strlen((string) $tab_even['description']) > $maxChar)
 								{
 									$texte_court = Text::texteHtmlReduit(Text::wikiToText(sanitizeForHtml($tab_even['description'])), $maxChar, "");
                                                                     /* 									foreach($tab_mots as $n => $mot)
@@ -505,7 +505,7 @@ if (!empty($get['mots']))
 					<h3><a href="/evenement.php?idE=<?php echo $tab_even['idEvenement'] ?>" title="Voir la fiche de l'événement"><?php echo $tab_even['titre'] ?></a></h3>
 							<?php
 								$maxChar = Text::trouveMaxChar($tab_even['description'], 50, 4);
-								if (mb_strlen($tab_even['description']) > $maxChar)
+								if (mb_strlen((string) $tab_even['description']) > $maxChar)
 								{
 									echo "<p class=\"description\">" . Text::texteHtmlReduit(Text::wikiToText(sanitizeForHtml($tab_even['description'])), $maxChar, "") . "</p>";
                 }

@@ -143,7 +143,7 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 6
 		$URL = '';
         if ($organisateur->getValue('URL') != '' )
 		{
-			if (!preg_match("/^https?:\/\//", $organisateur->getValue('URL')))
+			if (!preg_match("/^https?:\/\//", (string) $organisateur->getValue('URL')))
 			{
 				$URL .=  "http://".$organisateur->getValue('URL');
 			}
@@ -334,7 +334,7 @@ if ($evenements->getNbElements() > 0)
 		{
 			$maxChar = Text::trouveMaxChar($even->getValue('description'), 50, 2);
 
-			if (mb_strlen($even->getValue('description')) > $maxChar)
+			if (mb_strlen((string) $even->getValue('description')) > $maxChar)
 			{
 				//$continuer = "<span class=\"continuer\"><a href=\"/evenement.php?idE=".$even->getValue('idEvenement')."\" title=\"Voir la fiche complète de l'événement\"> Lire la suite</a></span>";
 				$presentation = Text::texteHtmlReduit(Text::wikiToHtml(sanitizeForHtml($even->getValue('description'))), $maxChar);
@@ -347,12 +347,12 @@ if ($evenements->getNbElements() > 0)
 		if ($nbMois == 0)
 		{
 			$moisCourant = date2mois($even->getValue('dateEvenement'));
-			echo "<tr><td colspan=\"3\" class=\"mois\">".ucfirst(mois2fr($moisCourant))."</td></tr>";
+			echo "<tr><td colspan=\"3\" class=\"mois\">".ucfirst((string) mois2fr($moisCourant))."</td></tr>";
 		}
 
 		if (date2mois($even->getValue('dateEvenement')) != $moisCourant)
 		{
-			echo "<tr><td colspan=\"3\" class=\"mois\">".ucfirst(mois2fr(date2mois($even->getValue('dateEvenement'))));
+			echo "<tr><td colspan=\"3\" class=\"mois\">".ucfirst((string) mois2fr(date2mois($even->getValue('dateEvenement'))));
 
 			if (date2mois($even->getValue('dateEvenement')) == "01")
 			{
@@ -480,7 +480,7 @@ else
 if (!empty($organisateur->getValue('URL'))) {
 	$URLcomplete = $organisateur->getValue('URL');
 
-    if (!preg_match("/^(https?:\/\/)/i", $organisateur->getValue('URL'))) {
+    if (!preg_match("/^(https?:\/\/)/i", (string) $organisateur->getValue('URL'))) {
 		$URLcomplete = "http://" . $organisateur->getValue('URL');
     }
 	echo "<p>Pour des informations complémentaires : <a href=\"" . sanitizeForHtml($URLcomplete) . "\" class=\"lien_ext\" target=\"_blank\">" . sanitizeForHtml($organisateur->getValue('URL')) . "</a></p>\n";

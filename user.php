@@ -333,7 +333,7 @@ $detailsAff = $connector->fetchArray($req_affPers);
 				echo "</td>
 				*/
 				echo "
-				<td>".mb_substr(date_iso2app($tab_even['dateAjout']), 9)."</td><td>".$tab_icones_statut[$tab_even['statut']]."</td>";
+				<td>".mb_substr((string) date_iso2app($tab_even['dateAjout']), 9)."</td><td>".$tab_icones_statut[$tab_even['statut']]."</td>";
 
 				if ($_SESSION['SidPersonne'] == $detailsPersonne['idPersonne'] || $_SESSION['Sgroupe'] <= 4)
 				{
@@ -432,14 +432,14 @@ $detailsAff = $connector->fetchArray($req_affPers);
 				}
 
 				echo "<td>".$nomLieu."</td>";
-				if (mb_strlen($tab_desc['contenu']) > 200)
+				if (mb_strlen((string) $tab_desc['contenu']) > 200)
 				{
-					$tab_desc['contenu'] = mb_substr($tab_desc['contenu'], 0, 200)." [...]";
+					$tab_desc['contenu'] = mb_substr((string) $tab_desc['contenu'], 0, 200)." [...]";
 				}
 
 				echo "<td class=\"tdleft\" style=\"width:150px\">".Text::wikiToHtml(sanitizeForHtml($tab_desc['contenu']))."</td>";
 				echo '<td>'.$tab_desc['type'].'</td>';
-				echo "<td>".mb_substr(date_iso2app($tab_desc['dateAjout']), 8)."</td>";
+				echo "<td>".mb_substr((string) date_iso2app($tab_desc['dateAjout']), 8)."</td>";
 				if ($_SESSION['SidPersonne'] == $detailsPersonne['idPersonne'] || $_SESSION['Sgroupe'] <= 4)
 				{
 					echo "<td><a href=\"/lieu-text-edit.php?action=editer&idL=" . $tab_desc['idLieu'] . "&idP=" . $tab_desc['idPersonne'] . "&type=" . $tab_desc['type'] . "\" title=\"Éditer le lieu\">" . $iconeEditer . "</a></td>";
@@ -526,7 +526,7 @@ $detailsAff = $connector->fetchArray($req_affPers);
 			$req_nbDes = $connector->query("SELECT COUNT(*) FROM descriptionlieu WHERE idLieu=".$idLieu);
 			$tabDes = $connector->fetchArray($req_nbDes);
 
-			$listeCat = explode(",", $categorie);
+			$listeCat = explode(",", (string) $categorie);
 
 			if ($pair % 2 == 0)
 			{

@@ -158,7 +158,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 			if ($connector->query($sql_insert))
 			{
 
-                $_SESSION['lieu_flash_msg'] = ucfirst($get['type'])." ajoutée";
+                $_SESSION['lieu_flash_msg'] = ucfirst((string) $get['type'])." ajoutée";
 
 				$descriptionlieu = $champs;
 				$descriptionlieu['auteur'] = $get['idP'];

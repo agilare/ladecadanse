@@ -241,7 +241,7 @@ iCal</a></li>
 
     <div id="evenement">
 
-        <div class="dtstart"><span class="value-title" title="<?php echo $even->getValue('dateEvenement'); ?>T<?php echo mb_substr($even->getValue('horaire_debut'), 11, 5); ?>:00"></span></div>
+        <div class="dtstart"><span class="value-title" title="<?php echo $even->getValue('dateEvenement'); ?>T<?php echo mb_substr((string) $even->getValue('horaire_debut'), 11, 5); ?>:00"></span></div>
 
             <div class="titre">
 
@@ -311,7 +311,7 @@ $adresse = HtmlShrink::getAdressFitted($listeLieu['region'], sanitizeForHtml($li
 						if (!empty($listeLieu['URL']))
 						{?>
                             <li><a class="url lien_ext" href="<?php
-                                       if (!preg_match("/^https?:\/\//", $listeLieu['URL']))
+                                       if (!preg_match("/^https?:\/\//", (string) $listeLieu['URL']))
 						{
 							echo 'http://' . $listeLieu['URL'];
     }
@@ -420,7 +420,7 @@ $adresse = HtmlShrink::getAdressFitted($listeLieu['region'], sanitizeForHtml($li
 					{
 						$url_org = $tab['URL'];
                         $nom_url = $tab['URL'];
-						if (!preg_match("/^https?:\/\//", $tab['URL']))
+						if (!preg_match("/^https?:\/\//", (string) $tab['URL']))
 						{
 							$url_org = 'http://'.$tab['URL'];
 						}
@@ -434,7 +434,7 @@ $adresse = HtmlShrink::getAdressFitted($listeLieu['region'], sanitizeForHtml($li
 						echo '</li>';
 					}
 
-					$tab_ref = explode(";", strip_tags($even->getValue('ref')));
+					$tab_ref = explode(";", strip_tags((string) $even->getValue('ref')));
 
 foreach ($tab_ref as $r)
 					{

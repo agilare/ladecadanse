@@ -51,7 +51,7 @@ class Element
 
 	function load(): void
     {
-		$sql = "SELECT * FROM " . $this->table . " WHERE id" . ucfirst($this->table) . "=" . $this->id;
+		$sql = "SELECT * FROM " . $this->table . " WHERE id" . ucfirst((string) $this->table) . "=" . $this->id;
 
         $res = $this->connector->query($sql);
 		$this->valeurs = $this->connector->fetchAssoc($res);
@@ -85,7 +85,7 @@ class Element
 		}
 
 		$sql = mb_substr($sql, 0, -2);
-		$sql .= " WHERE id".ucfirst($this->table)."=".$this->id;
+		$sql .= " WHERE id".ucfirst((string) $this->table)."=".$this->id;
 
 		//echo $sql;
 
@@ -99,7 +99,7 @@ class Element
 
     function getMaxId()
 	{
-		$req_max_id = $this->connector->query("SELECT MAX(id".ucfirst($this->table).") AS max_id FROM ".$this->table);
+		$req_max_id = $this->connector->query("SELECT MAX(id".ucfirst((string) $this->table).") AS max_id FROM ".$this->table);
 		$tab = $this->connector->fetchArray($req_max_id);
 		return $tab['max_id'];
 	}

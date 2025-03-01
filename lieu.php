@@ -100,7 +100,7 @@ $page_description = $page_titre." : accès, horaires, description, photos et pro
 $extra_css = ["menu_lieux", "element_login"];
 include("_header.inc.php");
 
-$deb_nom_lieu = mb_strtolower(mb_substr($lieu->getValue('nom'), 0, 1));
+$deb_nom_lieu = mb_strtolower(mb_substr((string) $lieu->getValue('nom'), 0, 1));
 if (!isset($_GET['tranche']) && $deb_nom_lieu > "l" && $deb_nom_lieu < "z")
 {
 	$_GET['tranche'] = "lz";
@@ -259,7 +259,7 @@ if ($lieu->getValue('logo'))
 
 					while ($tab_galerie = $connector->fetchArray($req_galerie))
 					{
-						if (mb_strstr($tab_galerie['mime'], "image"))
+						if (mb_strstr((string) $tab_galerie['mime'], "image"))
 						{
 							$icone_fichier = $iconeImage;
 						}
@@ -311,7 +311,7 @@ if ($lieu->getValue('logo'))
 		if ($lieu->getValue('URL') != '' )
 		{
 
-			if (!preg_match("/^https?:\/\//", $lieu->getValue('URL')))
+			if (!preg_match("/^https?:\/\//", (string) $lieu->getValue('URL')))
 			{
 				$URL .=  "http://".$lieu->getValue('URL');
 			}
@@ -528,7 +528,7 @@ if ($nb_pres > 0)
             ?></p>
 
                 <div class="auteur">
-                    <span class="left"><?php echo ucfirst(date_fr($des->getValue('dateAjout'), 'annee','', 'non')) ?><?php echo $dern_modif; ?></span><?php echo $editer;?>
+                    <span class="left"><?php echo ucfirst((string) date_fr($des->getValue('dateAjout'), 'annee','', 'non')) ?><?php echo $dern_modif; ?></span><?php echo $editer;?>
                 </div>
                 <div class="spacer"><!-- --></div>
             </div>
@@ -688,7 +688,7 @@ if ($nb_pres > 0)
 		{
 			$maxChar = Text::trouveMaxChar($even->getValue('description'), 50, 2);
 
-			if (mb_strlen($even->getValue('description')) > $maxChar)
+			if (mb_strlen((string) $even->getValue('description')) > $maxChar)
 			{
 				//$continuer = "<span class=\"continuer\"><a href=\"/evenement.php?idE=".$even->getValue('idEvenement')."\" title=\"Voir la fiche complète de l'événement\"> Lire la suite</a></span>";
 				$description = Text::texteHtmlReduit(Text::wikiToHtml(sanitizeForHtml($even->getValue('description'))), $maxChar);
@@ -702,12 +702,12 @@ if ($nb_pres > 0)
 		if ($nbMois == 0)
 		{
 			$moisCourant = date2mois($even->getValue('dateEvenement'));
-			echo "<tr><td colspan=\"3\" class=\"mois\">".ucfirst(mois2fr($moisCourant))."</td></tr>";
+			echo "<tr><td colspan=\"3\" class=\"mois\">".ucfirst((string) mois2fr($moisCourant))."</td></tr>";
 		}
 
 		if (date2mois($even->getValue('dateEvenement')) != $moisCourant)
 		{
-			echo "<tr><td colspan=\"3\" class=\"mois\">".ucfirst(mois2fr(date2mois($even->getValue('dateEvenement'))));
+			echo "<tr><td colspan=\"3\" class=\"mois\">".ucfirst((string) mois2fr(date2mois($even->getValue('dateEvenement'))));
 
 			if (date2mois($even->getValue('dateEvenement')) == "01")
 			{
@@ -729,8 +729,8 @@ if ($nb_pres > 0)
 		}
 
                 $vcard_starttime = '';
-                if (mb_substr($even->getValue('horaire_debut'), 11, 5) != '06:00')
-                    $vcard_starttime = "T".mb_substr($even->getValue('horaire_debut'), 11, 5).":00";
+                if (mb_substr((string) $even->getValue('horaire_debut'), 11, 5) != '06:00')
+                    $vcard_starttime = "T".mb_substr((string) $even->getValue('horaire_debut'), 11, 5).":00";
 
 	?>
 
@@ -841,7 +841,7 @@ if ($nb_pres > 0)
 	{
 		$URLcomplete = $tab_lieu['URL'];
 
-		if (!preg_match("/^(https?:\/\/)/i", $tab_lieu['URL']))
+		if (!preg_match("/^(https?:\/\/)/i", (string) $tab_lieu['URL']))
 		{
 			$URLcomplete = "http://".$tab_lieu['URL'];
 		}

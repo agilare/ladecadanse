@@ -81,14 +81,14 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 		if ($tab_even = $connector->fetchArray($req_getEven))
         {
 			$contenu_message .= $tab_even['titre']."\n\n";
-			$contenu_message .= ucfirst(html_entity_decode(date_fr($tab_even['dateEvenement'], "annee", "", "", false))) . "\n\n";
+			$contenu_message .= ucfirst(html_entity_decode((string) date_fr($tab_even['dateEvenement'], "annee", "", "", false))) . "\n\n";
             $contenu_message .= $site_full_url.'/evenement.php?idE='.$get['idE']."\n\n";
 
 			$contenu_message .= $tab_even['nomLieu']."\n";
 			$contenu_message .= $tab_even['adresse']." - ".$tab_even['quartier']."\n\n";
 			$items = "";
 			$maxChar = Text::trouveMaxChar($tab_even['description'], 60, 5);
-			if (mb_strlen($tab_even['description']) > $maxChar)
+			if (mb_strlen((string) $tab_even['description']) > $maxChar)
             {
 				$items = Text::texteHtmlReduit(Text::wikiToHtml(sanitizeForHtml($tab_even['description'])), $maxChar, "");
             }
