@@ -6,9 +6,10 @@ class Text
 {
     public static function stripAccents(string $str): string
     {
-        $str = htmlentities($str, ENT_COMPAT | ENT_HTML401, "UTF-8");
+        // ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401 is the default value since php 8.1
+        $str = htmlentities($str, ENT_COMPAT | ENT_SUBSTITUTE | ENT_HTML401, "UTF-8");
         $str = preg_replace('/&([a-zA-Z])(uml|acute|grave|circ|tilde);/', '$1', $str);
-        return html_entity_decode($str);
+        return html_entity_decode($str, ENT_COMPAT | ENT_SUBSTITUTE | ENT_HTML401, "UTF-8");
     }
 
     public static function linkify(string $input): string
@@ -58,7 +59,7 @@ class Text
                 $text = $m[4];
             }
 
-            return "<a href='" . htmlspecialchars($url) . "'>" . htmlspecialchars($text) . "</a>";
+            return "<a href='" . sanitizeForHtml($url) . "'>" . sanitizeForHtml($text) . "</a>";
         }, $input);
     }
 

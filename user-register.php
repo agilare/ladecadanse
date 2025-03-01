@@ -24,23 +24,23 @@ include("_header.inc.php");
 
 <div id="contenu" class="colonne inscription">
 
-<?php
+    <?php
     $formTokenName = 'form_token_user_register';
 
     $verif = new Validateur();
 
-$champs = ["utilisateur" => '',
-"motdepasse" => '',
-"motdepasse2" => '',
-    'organisateurs' => '',
-"affiliation" => '',
-    "region" => '',
-"lieu" => '',
-"email" => '',
-    "groupe" => ''
-];
+    $champs = ["utilisateur" => '',
+        "motdepasse" => '',
+        "motdepasse2" => '',
+        'organisateurs' => '',
+        "affiliation" => '',
+        "region" => '',
+        "lieu" => '',
+        "email" => '',
+        "groupe" => ''
+    ];
 
-$action_terminee = false;
+    $action_terminee = false;
 
 if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 {

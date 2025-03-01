@@ -472,14 +472,13 @@ if (!empty($get['mots']))
 							$tab_salle = $connector->fetchArray($connector->query("SELECT nom from salle where idSalle=".$tab_even['idSalle']));
 							$salle = " - ".$tab_salle['nom'];
 						}
-						$infosLieu = $listeLieu['determinant']." <a href=\"/lieu.php?idL=".$tab_even['idLieu']."\" title=\"Voir la fiche du lieu : ".htmlspecialchars($listeLieu['nom'])."\" >".htmlspecialchars($listeLieu['nom'])."</a>".$salle;
-
-					}
+						$infosLieu = $listeLieu['determinant'] . " <a href=\"/lieu.php?idL=" . $tab_even['idLieu'] . "\">" . sanitizeForHtml($listeLieu['nom']) . "</a>" . $salle;
+                }
 					else
 					{
-						$listeLieu['nom'] = htmlspecialchars($tab_even['nomLieu']);
-						$infosLieu = htmlspecialchars($tab_even['nomLieu']);
-					}
+						$listeLieu['nom'] = sanitizeForHtml($tab_even['nomLieu']);
+                    $infosLieu = sanitizeForHtml($tab_even['nomLieu']);
+                }
 
 
 					?>
@@ -508,12 +507,12 @@ if (!empty($get['mots']))
 								$maxChar = Text::trouveMaxChar($tab_even['description'], 50, 4);
 								if (mb_strlen($tab_even['description']) > $maxChar)
 								{
-									echo "<p class=\"description\">".Text::texteHtmlReduit(Text::wikiToText(htmlspecialchars($tab_even['description'])), $maxChar, "")."</p>";
-								}
+									echo "<p class=\"description\">" . Text::texteHtmlReduit(Text::wikiToText(sanitizeForHtml($tab_even['description'])), $maxChar, "") . "</p>";
+                }
 								else
 								{
-									echo "<p class=\"description\">".Text::wikiToHtml(htmlspecialchars($tab_even['description']))."</p>";
-								}
+									echo "<p class=\"description\">" . Text::wikiToHtml(sanitizeForHtml($tab_even['description'])) . "</p>";
+                }
 
 							echo "<p>".$infosLieu."</p>";
 							?>

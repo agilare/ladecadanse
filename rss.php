@@ -189,12 +189,12 @@ else if ($get['type'] == "lieu_evenements")
 		$maxChar = Text::trouveMaxChar($tab_even['description'], 60, 5);
 		if (mb_strlen($tab_even['description']) > $maxChar)
 		{
-			$items .= Text::texteHtmlReduit(Text::wikiToHtml(htmlspecialchars($tab_even['description'])), $maxChar, "");
-		}
+			$items .= Text::texteHtmlReduit(Text::wikiToHtml(sanitizeForHtml($tab_even['description'])), $maxChar, "");
+        }
 		else
 		{
-			$items .= Text::wikiToHtml(htmlspecialchars($tab_even['description']));
-		}
+			$items .= Text::wikiToHtml(sanitizeForHtml($tab_even['description']));
+        }
 
 
 		$items .= "<p>".afficher_debut_fin($tab_even['horaire_debut'], $tab_even['horaire_fin'], $tab_even['dateEvenement'])." ".sanitizeForHtml($tab_even['horaire_complement'])."</p>";
@@ -274,12 +274,12 @@ else if ($get['type'] == "organisateur_evenements")
 		$maxChar = Text::trouveMaxChar($tab_even['description'], 60, 5);
 		if (mb_strlen($tab_even['description']) > $maxChar)
 		{
-			$items .= Text::texteHtmlReduit(Text::wikiToHtml(htmlspecialchars($tab_even['description'])), $maxChar, "");
-		}
+			$items .= Text::texteHtmlReduit(Text::wikiToHtml(sanitizeForHtml($tab_even['description'])), $maxChar, "");
+        }
 		else
 		{
-			$items .= Text::wikiToHtml(htmlspecialchars($tab_even['description']));
-		}
+			$items .= Text::wikiToHtml(sanitizeForHtml($tab_even['description']));
+        }
 
 
 		$items .= "<p>".afficher_debut_fin($tab_even['horaire_debut'], $tab_even['horaire_fin'], $tab_even['dateEvenement'])." ".sanitizeForHtml($tab_even['horaire_complement'])."</p>";
@@ -366,12 +366,12 @@ else if ($get['type'] == "evenements_ajoutes")
 		$maxChar = Text::trouveMaxChar($tab_even['description'], 60, 8);
 		if (mb_strlen($tab_even['description']) > $maxChar)
 		{
-			$items .= Text::texteHtmlReduit(Text::wikiToHtml(htmlspecialchars($tab_even['description'])), $maxChar, "");
-		}
+			$items .= Text::texteHtmlReduit(Text::wikiToHtml(sanitizeForHtml($tab_even['description'])), $maxChar, "");
+        }
 		else
 		{
-			$items .= Text::wikiToHtml(htmlspecialchars($tab_even['description']));
-		}
+			$items .= Text::wikiToHtml(sanitizeForHtml($tab_even['description']));
+        }
 		$items .= "</div>";
 
 		$items .= "<p>".afficher_debut_fin($tab_even['horaire_debut'], $tab_even['horaire_fin'], $tab_even['dateEvenement'])." ".sanitizeForHtml($tab_even['horaire_complement'])."</p>";

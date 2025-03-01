@@ -346,5 +346,6 @@ function afficher_debut_fin($horaire_debut, $horaire_fin, $date_evenement): stri
  */
 function sanitizeForHtml(?string $chaine): string
 {
-    return trim(htmlspecialchars($chaine, ENT_QUOTES, 'UTF-8'));
+    // ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401 is the default value since php 8.1
+    return trim(htmlspecialchars($chaine, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401, 'UTF-8'));
 }

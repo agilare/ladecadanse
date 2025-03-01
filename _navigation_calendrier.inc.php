@@ -27,15 +27,13 @@ $annee_courant = (int) $tab_date_courant[0];
 $nb_jours_mois = (int) date("t", mktime(0, 0, 0, $mois_courant, $jour_courant, $annee_courant));
 
 $jour_mois_prec = $jour_mois_suiv = $jour_courant;
-if ($jour_courant == $nb_jours_mois)
+if ((int) $jour_courant === $nb_jours_mois)
 {
-	$jour_mois_prec = date("t", mktime(0, 0, 0, $mois_courant - 1, 1, $annee_courant));
-	$jour_mois_suiv = date("t", mktime(0, 0, 0, $mois_courant + 1, 1, $annee_courant));
-
+	$jour_mois_prec = date("t", mktime(0, 0, 0, (int) $mois_courant - 1, 1, $annee_courant));
+    $jour_mois_suiv = date("t", mktime(0, 0, 0, (int) $mois_courant + 1, 1, $annee_courant));
 }
-$mois_prec = date("Y-m-d", mktime(0, 0, 0, $mois_courant - 1, $jour_mois_prec, $annee_courant));
-$mois_suiv = date("Y-m-d", mktime(0, 0, 0, $mois_courant + 1, $jour_mois_suiv, $annee_courant));
-
+$mois_prec = date("Y-m-d", mktime(0, 0, 0, (int) $mois_courant - 1, $jour_mois_prec, $annee_courant));
+$mois_suiv = date("Y-m-d", mktime(0, 0, 0, (int) $mois_courant + 1, $jour_mois_suiv, $annee_courant));
 ?>
 
 <div id="navigation_calendrier" >
@@ -45,8 +43,8 @@ $mois_suiv = date("Y-m-d", mktime(0, 0, 0, $mois_courant + 1, $jour_mois_suiv, $
         <tr id="mois">
 		<th>
 		<?php
-		if (mktime(0, 0, 0, $mois_courant, $jour_courant, $annee_courant) > mktime(12, 0, 0, 9, 1, 2005))
-		{
+		if (mktime(0, 0, 0, (int) $mois_courant, $jour_courant, $annee_courant) > mktime(12, 0, 0, 9, 1, 2005))
+        {
 		?>
             <a href="<?php echo "/evenement-agenda.php?" . $url_query_region_et . "courant=" . $mois_prec . "&amp;genre=" . $get['genre'] . "&amp;sem=" . $get['sem'] . "&amp;tri_agenda=" . $get['tri_agenda']; ?>" title="mois précédent" >
                     <i class="fa fa-backward"></i></a>
@@ -69,23 +67,23 @@ $mois_suiv = date("Y-m-d", mktime(0, 0, 0, $mois_courant + 1, $jour_mois_suiv, $
     </tr>
 
 	<?php
-	$nb_jours_mois = (int) date("t", mktime(0, 0, 0, $mois_courant, 01, $annee_courant));
+	$nb_jours_mois = (int) date("t", mktime(0, 0, 0, (int) $mois_courant, 01, $annee_courant));
 
-    $no_premier_jour_sem = date("w", mktime(0,0,0,$mois_courant,01,$annee_courant));
-	if ($no_premier_jour_sem == 0)
+    $no_premier_jour_sem = date("w", mktime(0, 0, 0, (int) $mois_courant, 01, $annee_courant));
+if ($no_premier_jour_sem == 0)
 	{
 		$no_premier_jour_sem = 7;
 	}
 
-	$no_dernier_jour_sem = date("w", mktime(0,0,0,$mois_courant,$nb_jours_mois,$annee_courant));
+	$no_dernier_jour_sem = date("w", mktime(0, 0, 0, (int) $mois_courant, $nb_jours_mois, $annee_courant));
 
-	if ($no_dernier_jour_sem == 0)
+if ($no_dernier_jour_sem == 0)
 	{
 		$no_dernier_jour_sem = 7;
 	}
 
-	$no_prem_sem_mois = date("W", mktime(0,0,0,$mois_courant,01,$annee_courant));
-	$no_dern_sem_mois = date("W", mktime(0,0,0,$mois_courant,$nb_jours_mois,$annee_courant));
+	$no_prem_sem_mois = date("W", mktime(0, 0, 0, (int) $mois_courant, 01, $annee_courant));
+$no_dern_sem_mois = date("W", mktime(0,0,0,$mois_courant,$nb_jours_mois,$annee_courant));
 
 
     $tab_no_jour_sem = ["0", "1", "2", "3", "4", "5", "6", "0"];
@@ -93,8 +91,8 @@ $mois_suiv = date("Y-m-d", mktime(0, 0, 0, $mois_courant + 1, $jour_mois_suiv, $
 	$pas = 1;
 	$no_jour = "01";
 	$cpt_sem = 1;
-	$nb_jour_mois_avant = date("t", mktime(0,0,0,$mois_courant - 1,01,$annee_courant));
-	$b = $no_premier_jour_sem - 2;
+	$nb_jour_mois_avant = date("t", mktime(0, 0, 0, (int) $mois_courant - 1, 01, $annee_courant));
+$b = $no_premier_jour_sem - 2;
 
 	while ($pas <= $nb_jours_mois)
 	{
@@ -176,10 +174,10 @@ $mois_suiv = date("Y-m-d", mktime(0, 0, 0, $mois_courant + 1, $jour_mois_suiv, $
     	{
 			$jour_mois_avant = $nb_jour_mois_avant - $b;
 
-			$proch_date = Date("Y-m-d", mktime(0, 0, 0, $mois_courant -1, $jour_mois_avant, $annee_courant));
-    		echo '<td class="autre_mois';
-    		if (Date("w", mktime(0, 0, 0, $mois_courant -1, $jour_mois_avant, $annee_courant)) == 6)
-    		{
+			$proch_date = Date("Y-m-d", mktime(0, 0, 0, (int) $mois_courant - 1, $jour_mois_avant, $annee_courant));
+        echo '<td class="autre_mois';
+    		if (Date("w", mktime(0, 0, 0, (int) $mois_courant - 1, $jour_mois_avant, $annee_courant)) == 6)
+        {
 				echo ' sam';
     		}
     		echo '">';
@@ -194,10 +192,10 @@ $mois_suiv = date("Y-m-d", mktime(0, 0, 0, $mois_courant + 1, $jour_mois_suiv, $
 			$n = 1;
 			while ($i < 7)
 			{
-				$proch_date = Date("Y-m-d", mktime(0, 0, 0, $mois_courant + 1, $n, $annee_courant));
-	    		echo '<td class="autre_mois';
-	    		$no_jour_sem_suiv = Date("w", mktime(0, 0, 0, $mois_courant + 1, $n, $annee_courant));
-	    		if ($no_jour_sem_suiv == 6 || $no_jour_sem_suiv == 0)
+				$proch_date = Date("Y-m-d", mktime(0, 0, 0, (int) $mois_courant + 1, $n, $annee_courant));
+            echo '<td class="autre_mois';
+	    		$no_jour_sem_suiv = Date("w", mktime(0, 0, 0, (int) $mois_courant + 1, $n, $annee_courant));
+            if ($no_jour_sem_suiv == 6 || $no_jour_sem_suiv == 0)
 	    		{
 					echo ' sam';
 	    		}
