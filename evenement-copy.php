@@ -75,8 +75,8 @@ $tab_champs = [];
 
 if (!empty($_POST['submit']))
 {
-        $date_from = strip_tags($_GET['from']);
-    $date_to = strip_tags($_GET['to']);
+        $date_from = strip_tags($_POST['from']);
+    $date_to = strip_tags($_POST['to']);
 
     $date_from_parts = explode(".", $date_from);
         $date_to_parts = explode(".", $date_to);

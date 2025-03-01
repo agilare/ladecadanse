@@ -116,7 +116,7 @@ $fichiers = ['flyer' => '', 'image' => ''];
 $supprimer = [];
 $action_terminee = false;
 
-if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
+if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 {
         foreach ($champs as $c => $v)
 {
@@ -128,7 +128,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 
     if (!isset($_SESSION['Sgroupe']))
     {
-        $recaptcha_response = strip_tags($_GET['g-recaptcha-response']);
+        $recaptcha_response = strip_tags($_POST['g-recaptcha-response']);
         // Make and decode POST request:
         $recaptcha = file_get_contents($recaptcha_url . '?secret=' . GOOGLE_RECAPTCHA_API_KEY_SERVER . '&response=' . $recaptcha_response);
         $recaptcha = json_decode($recaptcha);
