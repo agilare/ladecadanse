@@ -292,8 +292,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 			$connector->query("SELECT idPersonne FROM affiliation WHERE idPersonne=".$get['idP']);
 
 			//si la nouvelle affiliation est un lieu, update s'il en a déjà une, insert sinon
-			if (isset($champs['lieu']) && $champs['lieu'] != 0)
-			{
+			if (!empty($champs['lieu']))
+            {
 				if ($connector->getAffectedRows() > 0)
 				{
 					$aff = "UPDATE affiliation SET idAffiliation='".$champs['lieu']."'
@@ -341,8 +341,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 						$_SESSION['Sgroupe'] = $champs['groupe'];
 					}
 
-                    if (isset($champs['lieu']) && $champs['lieu'] != 0)
-					{
+                    if (!empty($champs['lieu']))
+                    {
 						$_SESSION["Saffiliation_lieu"] = $champs['lieu'];
 					}
 
