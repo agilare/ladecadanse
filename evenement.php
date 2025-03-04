@@ -550,8 +550,8 @@ foreach ($tab_ref as $r)
 				 echo $signature_auteur;
 }
 			?>
-			le&nbsp;<?php echo date_fr($even->getValue('dateAjout'), "annee", 1, "non") ?>
-			</div>
+            le&nbsp;<?php echo date_fr($even->getValue('dateAjout'), "annee", "", "non") ?>
+            </div>
 
 		</div>
 		<div style="color: #5c7378;    margin: 0em auto 0;    vertical-align: middle;width: 94%;">
