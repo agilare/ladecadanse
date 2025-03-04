@@ -1,6 +1,6 @@
 # Changelog
 
-## [3.6.1] - Unreleased
+## [3.6.1] - 2025-03-04
 
 ### Fixed
 - events: in evenement, creation date displayed was missing month
