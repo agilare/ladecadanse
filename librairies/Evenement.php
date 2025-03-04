@@ -82,8 +82,10 @@ class Evenement extends Element
     public static function getFileHref(string $filePath, bool $isWithAntiCache = false): string
     {
 	    $result = self::$urlDirPath . $filePath;
-	    if ($isWithAntiCache) {
-            $result .= "?" . filemtime(self::getSystemFilePath($filePath));
+        $systemFilePath = self::getSystemFilePath($filePath);
+        if ($isWithAntiCache && file_exists($systemFilePath))
+        {
+            $result .= "?" . filemtime($systemFilePath);
         }
 
 	    return $result;
