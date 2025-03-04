@@ -22,7 +22,7 @@ Ces instructions vous permettront de mettre en place une copie du projet sur vot
 
 ### Prérequis
 - Apache 2.4
-- PHP 8.0 (avec les extensions `fileinfo`, `mysqli`, `mbstring`, `gd`)
+- PHP 8.1 (avec les extensions `fileinfo`, `mysqli`, `mbstring`, `gd`)
 - Composer
 - MariaDB 10.6/MySQL 5.7 (with `sql_mode` containing `ALLOW_INVALID_DATES`)
 

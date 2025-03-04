@@ -2,6 +2,10 @@
 
 ## [3.6.1] - Unreleased
 
+### Fixed
+- events: in evenement, creation date displayed was missing month
+- events: when generating image URL avoid Warning if file doesn't exists
+
 ### Changed
 - PHP 8.1 compatibility
 - refactoring : usage of html converters, Rector's NullToStrictStringFuncCallArgRector application
