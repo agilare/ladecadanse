@@ -16,16 +16,13 @@ $page_description = "";
 $extra_css = ["formulaires"];
 include("_header.inc.php");
 
-if (isset($_GET['token']))
+if (empty($_GET['token']))
 {
-	$get['token'] = Validateur::validateUrlQueryValue($_GET['token'], "alpha_numeric", 1);
-}
-else
-{
-	HtmlShrink::msgErreur("token obligatoire");
+    HtmlShrink::msgErreur("token obligatoire");
 	exit;
 }
 
+$get['token'] = Validateur::validateUrlQueryValue($_GET['token'], "alpha_numeric", 1);
 
 $verif = new Validateur();
 
