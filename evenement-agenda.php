@@ -429,7 +429,7 @@ else
 		// TODO : marche pas, à corriger (voir valeurs d'even sans début ou fin)
 		if (($listeEven['horaire_debut'] != '0000-00-00 00:00:00' || $listeEven['horaire_fin'] != '0000-00-00 00:00:00') && !empty($listeEven['horaire_complement']) )
 		{
-			$horaire .= " " . lcfirst(sanitizeForHtml($listeEven['horaire_complement']));
+			$horaire .= " " . sanitizeForHtml(lcfirst($listeEven['horaire_complement']));
         }
 		else
 		{

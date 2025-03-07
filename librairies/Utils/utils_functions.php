@@ -4,7 +4,7 @@
 /**
  * Convertit une date au format MySQL au format franÃ§ais
  *
- * @param: string $d  Date au format mysql, par exemple 2005-05-24 (avec ou sans l'heure)
+ * @param: string $d Date au format mysql, par exemple 2005-05-24 (avec ou sans l'heure)
  * @param: string $format ('tout', 'heure', 'annee') Choix de la conversion
  * @see: categorie affichage
  * @return: string Date au format voulu

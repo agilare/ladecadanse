@@ -42,7 +42,7 @@ return RectorConfig::configure()
                 ->withSkip([
                     __DIR__ . '/docker',
                     __DIR__ . '/node_modules',
-                    __DIR__ . '/resouces',
+                    __DIR__ . '/resources',
                     __DIR__ . '/var',
                     __DIR__ . '/vendor',
                     __DIR__ . '/tests',
@@ -50,4 +50,4 @@ return RectorConfig::configure()
                 ])
                 ->withFileExtensions(['php'])
                 //->withSets([LevelSetList::UP_TO_PHP_53]);
-                ->withSets([SetList::PHP_81]); // PHP_52, etc. PHP_80
+                ->withSets([SetList::PHP_82]); // PHP_52, etc. PHP_80
