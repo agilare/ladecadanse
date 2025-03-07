@@ -1,6 +1,17 @@
 # Changelog
 
-## [3.6.1] - Unreleased
+## [3.6.2] - Unreleased
+
+### Fixed
+- Selenium tests : unpublish event (actor), add venue texte (admin), check Profil page (admin)
+
+### Changed
+- PHP 8.2 compatibility
+- var_dump 6 to 7
+- Analyzers : Phan config stricter
+
+
+## [3.6.1] - 2025-03-02
 
 ### Changed
 - PHP 8.1 compatibility

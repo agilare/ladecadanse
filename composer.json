@@ -25,7 +25,7 @@
         }
     ],
     "require": {
-        "php": "8.1.*",
+        "php": "8.2.*",
         "ext-fileinfo": "*",
         "ext-mysqli": "*",
         "ext-mbstring": "*",
@@ -50,9 +50,9 @@
         }
     },
     "scripts": {
-        "sniffer:php80": "phpcs -p ./ --ignore=*/images/*,*/logs/*,*/var/*,*/vendor/*,*/web/* --standard=vendor/phpcompatibility/php-compatibility/PHPCompatibility --runtime-set testVersion 8.0",
         "sniffer:php81": "phpcs -p ./ --ignore=*/images/*,*/logs/*,*/var/*,*/vendor/*,*/web/* --standard=vendor/phpcompatibility/php-compatibility/PHPCompatibility --runtime-set testVersion 8.1",
         "sniffer:php82": "phpcs -p ./ --ignore=*/images/*,*/logs/*,*/var/*,*/vendor/*,*/web/* --standard=vendor/phpcompatibility/php-compatibility/PHPCompatibility --runtime-set testVersion 8.2",
+        "sniffer:php83": "phpcs -p ./ --ignore=*/images/*,*/logs/*,*/var/*,*/vendor/*,*/web/* --standard=vendor/phpcompatibility/php-compatibility/PHPCompatibility --runtime-set testVersion 8.3",
         "phpstan": "vendor/bin/phpstan analyse -c phpstan.neon --ansi",
         "rector:dry-run": "vendor/bin/rector process --dry-run",
         "psalm": "vendor/bin/psalm"
@@ -62,7 +62,7 @@
         "phpcompatibility/php-compatibility": "^9.3",
         "phpstan/phpstan": "^2.0",
         "filp/whoops": "^2.14",
-        "symfony/var-dumper": "^6.0",
+        "symfony/var-dumper": "7.*",
         "codeception/codeception": "^5.0",
         "codeception/module-rest": "^3.0",
         "codeception/module-phpbrowser": "^3.0",

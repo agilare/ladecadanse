@@ -1096,8 +1096,8 @@ if ($verif->nbErreurs() > 0)
                 if (!empty($select_canton))
                     echo "</optgroup>";
 
-                echo "<optgroup label='".strtoupper((string) $tab['canton'])."'>"; // ".$glo_regions[strtolower($tab['canton'])]."
-            }
+                echo "<optgroup label='" . mb_strtoupper((string) $tab['canton']) . "'>"; // ".$glo_regions[strtolower($tab['canton'])]."
+        }
             echo "<option ";
 
             if (empty($champs['idLieu']) && ($champs['localite_id'] == $tab['id'] && empty($champs['quartier'])) || ((isset($_POST['localite_id']) && $tab['id'] == $_POST['localite_id'])))

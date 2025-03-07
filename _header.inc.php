@@ -45,7 +45,7 @@ use Ladecadanse\UserLevel;
     <link rel="stylesheet" type="text/css" href="/web/css/global.css?<?php echo time() ?>" />
     <link rel="stylesheet" type="text/css" href="/web/css/calendrier.css" media="screen" />
     <?php
-    $cssFilePath = "/web/css/${nom_page}.css";
+    $cssFilePath = "/web/css/{$nom_page}.css";
     if (file_exists(__ROOT__ . $cssFilePath))
     {
         ?>

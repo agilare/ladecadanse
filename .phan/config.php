@@ -50,7 +50,7 @@ return [
     // Note that the **only** effect of choosing `'5.6'` is to infer that functions removed in php 7.0 exist.
     // (See `backward_compatibility_checks` for additional options)
     // Automatically inferred from composer.json requirement for "php" of "7.4.*"
-    'target_php_version' => '8.1',
+    'target_php_version' => '8.2',
     // If enabled, missing properties will be created when
     // they are first seen. If false, we'll report an
     // error message if there is an attempt to write
@@ -98,7 +98,7 @@ return [
     // or if **any** type in an invoked expression is not a callable.
     // Setting this to true will introduce numerous false positives
     // (and reveal some bugs).
-    'strict_method_checking' => false,
+    'strict_method_checking' => true,
 
     // If enabled, Phan will warn if **any** type of the object expression for a property access
     // does not contain that property.
@@ -137,7 +137,7 @@ return [
     //
     // Even when this is false, Phan will still infer return values and check parameters of internal functions
     // if Phan has the signatures.
-    'ignore_undeclared_functions_with_known_signatures' => true,
+    'ignore_undeclared_functions_with_known_signatures' => false,
 
     // Backwards Compatibility Checking. This is slow
     // and expensive, but you should consider running
@@ -198,13 +198,13 @@ return [
     // `dead_code_detection` will also enable unused variable detection.
     //
     // This has a few known false positives, e.g. for loops or branches.
-    'unused_variable_detection' => false,
+    'unused_variable_detection' => true,
 
     // Set to true in order to attempt to detect redundant and impossible conditions.
     //
     // This has some false positives involving loops,
     // variables set in branches of loops, and global variables.
-    'redundant_condition_detection' => false,
+    'redundant_condition_detection' => true,
 
     // If enabled, Phan will act as though it's certain of real return types of a subset of internal functions,
     // even if those return types aren't available in reflection (real types were taken from php 7.3 or 8.0-dev, depending on target_php_version).
@@ -242,7 +242,7 @@ return [
     // the call and rescan `test()`'s code block that we can
     // detect that it is actually returning the passed in
     // `string` instead of an `int` as declared.
-    'quick_mode' => true,
+    'quick_mode' => false,
 
     // Override to hardcode existence and types of (non-builtin) globals in the global scope.
     // Class names should be prefixed with `\`.

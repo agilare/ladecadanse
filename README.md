@@ -22,7 +22,7 @@ Ces instructions vous permettront de mettre en place une copie du projet sur vot
 
 ### Prérequis
 - Apache 2.4
-- PHP 8.0 (avec les extensions `fileinfo`, `mysqli`, `mbstring`, `gd`)
+- PHP 8.2 (avec les extensions `fileinfo`, `mysqli`, `mbstring`, `gd`)
 - Composer
 - MariaDB 10.6/MySQL 5.7 (with `sql_mode` containing `ALLOW_INVALID_DATES`)
 
@@ -122,7 +122,7 @@ $ composer psalm
 ### Phan
 
 ```sh
-./vendor/bin/phan --progress-bar -o phan80.txt
+./vendor/bin/phan --progress-bar -o phan.txt
 ```
 
 puis éventuellement, pour abréger le rapport :
