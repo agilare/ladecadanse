@@ -58,7 +58,7 @@ if (!$even->getValues() || in_array($even->getValue('statut'), ['inactif', 'prop
 
 $determinant_lieu = "- ";
 if (!empty($even->getValue('idLieu'))) {
-    $req_deter = $connector->query("SELECT determinant FROM lieu WHERE idLieu=" . $even->getValue('idLieu'));
+    $req_deter = $connector->query("SELECT determinant FROM lieu WHERE idLieu=" . (int) $even->getValue('idLieu'));
     $tab_deter = $connector->fetchArray($req_deter);
 
     if ($connector->getNumRows($req_deter) && !empty($tab_deter['determinant'])) {
@@ -73,14 +73,14 @@ $even_salle = '';
 if ($even->getValue('idSalle') != 0)
 {
 	$req_salle = $connector->query("SELECT nom, emplacement FROM salle
-	WHERE idSalle='".$even->getValue('idSalle')."'");
-	$tab_salle = $connector->fetchArray($req_salle);
+	WHERE idSalle='" . (int) $even->getValue('idSalle') . "'");
+    $tab_salle = $connector->fetchArray($req_salle);
 	$even_salle = " - ".$tab_salle['nom'];
 
 }
 
 
-$req_localite = $connector->query("SELECT localite FROM localite WHERE  id='".$even->getValue('localite_id')."'");
+$req_localite = $connector->query("SELECT localite FROM localite WHERE  id='" . (int) $even->getValue('localite_id') . "'");
 $tab_localite = $connector->fetchArray($req_localite);
 
 $page_titre_localite = " – ";
@@ -254,11 +254,11 @@ iCal</a></li>
 
                 if ($even->getValue('idLieu') != 0) {
                     $req_lieu = $connector->query("SELECT nom, adresse, quartier, localite.localite AS localite, region, URL, lat, lng FROM lieu, localite
-                                        WHERE localite_id=localite.id AND idlieu='" . $even->getValue('idLieu') . "'");
+                                        WHERE localite_id=localite.id AND idlieu='" . (int) $even->getValue('idLieu') . "'");
     $listeLieu = $connector->fetchArray($req_lieu);
-    $lieu = "<a href=\"//lieu.php?idLieu=" . $even->getValue('idLieu') . "\">" . sanitizeForHtml($listeLieu['nom']) . "</a>";
+    $lieu = "<a href=\"//lieu.php?idLieu=" . (int) $even->getValue('idLieu') . "\">" . sanitizeForHtml($listeLieu['nom']) . "</a>";
 
-    $nom_lieu = '<a href="/lieu.php?idL=' . $even->getValue('idLieu') . '" >
+    $nom_lieu = '<a href="/lieu.php?idL=' . (int) $even->getValue('idLieu') . '" >
                                         ' . sanitizeForHtml($even->getValue('nomLieu')) . '</a>';
 }
 else
@@ -269,10 +269,10 @@ else
     $listeLieu['quartier'] = $even->getValue('quartier');
 
     $req_localite = $connector->query("SELECT  localite FROM localite
-                                        WHERE  id='" . $even->getValue('localite_id') . "'");
+                                        WHERE  id='" . (int) $even->getValue('localite_id') . "'");
     $tab_localite = $connector->fetchArray($req_localite);
 
-    $listeLieu['localite'] = $tab_localite[0];
+    $listeLieu['localite'] = $tab_localite[0] ?? "";
 
     $listeLieu['region'] = $even->getValue('region');
     $listeLieu['URL'] = sanitizeForHtml($even->getValue('urlLieu'));
@@ -289,7 +289,7 @@ $adresse = HtmlShrink::getAdressFitted($listeLieu['region'], sanitizeForHtml($li
 					<?php
 					if ($even->getValue('idSalle') != 0)
 					{
-                        $req_salle = $connector->query("SELECT nom, emplacement FROM salle WHERE idSalle='" . $even->getValue('idSalle') . "'");
+                        $req_salle = $connector->query("SELECT nom, emplacement FROM salle WHERE idSalle='" . (int) $even->getValue('idSalle') . "'");
     $tab_salle = $connector->fetchArray($req_salle);
 					echo '<br><span style="font-size:0.9em">' . sanitizeForHtml($tab_salle['nom']) . "</span>";
 }
