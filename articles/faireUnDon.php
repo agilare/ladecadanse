@@ -16,15 +16,31 @@ include("../_header.inc.php");
     <div class="rubrique" style="background:#f4f4f4;border-radius:3px;margin: 1em auto 0;padding:1em 1%;width: 92%;">
 
         <div style="float:right">
-            <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top" >
-                <input type="hidden" name="image_url" value="https://www.darksite.ch/ladecadanse/images/interface/logo_titre.jpg">
+            <div id="donate-button-container">
+                <div id="donate-button"></div>
+                <script src="https://www.paypalobjects.com/donate/sdk/donate-sdk.js" charset="UTF-8"></script>
+                <script nonce="<?php echo CSP_NONCE ?>">
+                PayPal.Donation.Button({
+                env:'production',
+                hosted_button_id:'4ZA8G8XRLUTC2',
+                image: {
+                src:'https://www.paypalobjects.com/fr_FR/CH/i/btn/btn_donate_LG.gif',
+                alt:'Bouton Faites un don avec PayPal',
+                title:'PayPal - The safer, easier way to pay online!',
+                }
+                }).render('#donate-button');
+                </script>
+            </div>
+
+            <!--            <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top" >
+                            <input type="hidden" name="image_url" value="https://www.darksite.ch/ladecadanse/images/interface/logo_titre.jpg">
 
                 <input type="hidden" name="cmd" value="_s-xclick">
                 <input type="hidden" name="hosted_button_id" value="4ZA8G8XRLUTC2">
                 <input type="image" src="https://www.paypalobjects.com/fr_FR/CH/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal, le réflexe sécurité pour payer en ligne">
                 <img alt="" border="0" src="https://www.paypalobjects.com/fr_FR/i/scr/pixel.gif" width="1" height="1">
-            </form>
-            <?php if (0) { ?>
+                        </form>-->
+<?php if (0) { ?>
                 <p style="margin-top:1em">
                     <a href="https://flattr.com/submit/auto?fid=von3k3&url=https%3A%2F%2Fwww.darksite.ch%2Fladecadanse%2F" target="_blank"><img src="//button.flattr.com/flattr-badge-large.png" alt="Flattr this" title="Flattr this" border="0"></a>
                 </p>
