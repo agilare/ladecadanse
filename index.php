@@ -78,7 +78,7 @@ FROM evenement WHERE region IN ('" . $connector->sanitize($_SESSION['region']) .
     }
     ?>
 
-	<div id="entete_contenu">
+    <div id="entete_contenu">
         <h2 class="accueil" style="margin: 0;">Aujourd’hui <a href="/rss.php?type=evenements_auj" title="Flux RSS des événements du jour" style="font-size:12px;vertical-align: top;" class="desktop"><i class="fa fa-rss fa-lg" style="color:#f5b045"></i></a></h2>
         <?php HtmlShrink::getMenuRegions($glo_regions, $get, $event_count); ?>
         <div class="spacer"></div>
@@ -147,14 +147,14 @@ FROM evenement WHERE region IN ('" . $connector->sanitize($_SESSION['region']) .
             if ($tab_even['idLieu'] != 0)
             {
                 $listeLieu = $connector->fetchArray(
-                $connector->query("SELECT nom, adresse, quartier, localite.localite AS localite, URL FROM lieu, localite WHERE lieu.localite_id=localite.id AND idlieu='".$tab_even['idLieu']."'"));
+                $connector->query("SELECT nom, adresse, quartier, localite.localite AS localite, URL FROM lieu, localite WHERE lieu.localite_id=localite.id AND idlieu='" . (int) $tab_even['idLieu'] . "'"));
 
-                $infosLieu = "<a href=\"/lieu.php?idL=" . $tab_even['idLieu'] . "\" >" . sanitizeForHtml($listeLieu['nom']) . "</a>";
+        $infosLieu = "<a href=\"/lieu.php?idL=" . $tab_even['idLieu'] . "\" >" . sanitizeForHtml($listeLieu['nom']) . "</a>";
 
         if ($tab_even['idSalle'])
                 {
-                    $req_salle = $connector->query("SELECT nom FROM salle WHERE idSalle='".$tab_even['idSalle']."'");
-                    $tab_salle = $connector->fetchArray($req_salle);
+                    $req_salle = $connector->query("SELECT nom FROM salle WHERE idSalle='" . (int) $tab_even['idSalle'] . "'");
+            $tab_salle = $connector->fetchArray($req_salle);
                     $infosLieu .= " - " . sanitizeForHtml($tab_salle['nom']);
         }
             }
@@ -169,7 +169,7 @@ FROM evenement WHERE region IN ('" . $connector->sanitize($_SESSION['region']) .
 
             $sql_event_orga = "SELECT organisateur.idOrganisateur, nom, URL
             FROM organisateur, evenement_organisateur
-            WHERE evenement_organisateur.idEvenement=".$tab_even['idEvenement']." AND
+            WHERE evenement_organisateur.idEvenement=" . (int) $tab_even['idEvenement'] . " AND
              organisateur.idOrganisateur=evenement_organisateur.idOrganisateur
              ORDER BY nom DESC";
 
@@ -195,7 +195,7 @@ FROM evenement WHERE region IN ('" . $connector->sanitize($_SESSION['region']) .
                 <span class="left">
                 <?php
                 $maxChar = Text::trouveMaxChar($tab_even['description'], 60, 6);
-                $titre_url = '<a href="/evenement.php?idE=' . $tab_even['idEvenement'] . '">' . sanitizeForHtml($tab_even['titre']) . '</a>';
+                $titre_url = '<a href="/evenement.php?idE=' . (int) $tab_even['idEvenement'] . '">' . sanitizeForHtml($tab_even['titre']) . '</a>';
 
     echo Evenement::titre_selon_statut($titre_url, $tab_even['statut']);
     ?>
@@ -381,13 +381,13 @@ FROM evenement WHERE region IN ('" . $connector->sanitize($_SESSION['region']) .
             if ($tab_dern_even['idLieu'] != 0)
             {
 
-                $infosLieu = "<a href=\"/lieu.php?idL=" . $tab_dern_even['idLieu'] . "\">" . sanitizeForHtml($tab_dern_even['nomLieu']) . "</a>";
+                $infosLieu = "<a href=\"/lieu.php?idL=" . (int) $tab_dern_even['idLieu'] . "\">" . sanitizeForHtml($tab_dern_even['nomLieu']) . "</a>";
 
             if ($tab_dern_even['idSalle'] != 0)
                 {
                     $req_salle = $connector->query("SELECT nom, emplacement FROM salle
-                    WHERE idSalle='".$tab_dern_even['idSalle']."'");
-                    $tab_salle = $connector->fetchArray($req_salle);
+                    WHERE idSalle='" . (int) $tab_dern_even['idSalle'] . "'");
+                $tab_salle = $connector->fetchArray($req_salle);
                     $infosLieu .= " - " . sanitizeForHtml($tab_salle['nom']);
             }
             }
