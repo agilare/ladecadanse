@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.6.2] - Unreleased
+
+### Fixed
+- add some int casts in sqls to strengthen security
+
+### Changed
+- PHP 8.3 compatibility
+
+### Removed
+- Recaptcha
+
+
 ## [3.6.2] - 2025-03-07
 
 ### Fixed
@@ -12,6 +24,7 @@
 - var_dump 6 to 7
 - Analyzers : Phan config stricter
 - dev: browser-sync config clearer
+
 
 ## [3.6.1] - 2025-03-04
 
