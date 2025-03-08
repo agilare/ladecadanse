@@ -1,15 +1,17 @@
 # Changelog
 
-## [3.6.2] - Unreleased
+## [3.6.2] - 2025-03-07
 
 ### Fixed
 - Selenium tests : unpublish event (actor), add venue texte (admin), check Profil page (admin)
+- events : event page when localite not found; castings for security
+- events : in Evenement::getFilePath handle date not in filename
 
 ### Changed
 - PHP 8.2 compatibility
 - var_dump 6 to 7
 - Analyzers : Phan config stricter
-
+- dev: browser-sync config clearer
 
 ## [3.6.1] - 2025-03-04
 
