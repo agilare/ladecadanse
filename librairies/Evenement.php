@@ -69,10 +69,13 @@ class Evenement extends Element
 
         // extract year from $fileName : 12345_2024-11-18.jpg or 12345_2024-11-18_img.jpg
         //$dateMatches = [];
-        preg_match('/(\d{4}-\d{2}-\d{2})/', $fileName, $dateMatches);
+        if (!preg_match('/(\d{4}-\d{2}-\d{2})/', $fileName, $dateMatches))
+        {
+            return $filePath;
+        }
+
         $eventYear = substr($dateMatches[1], 0, 4);
-        //dump($dateMatches);
-        if ( (new \DateTime('now'))->format('Y') > $eventYear )
+        if ((new \DateTime('now'))->format('Y') > $eventYear)
         {
             $filePath = $eventYear . "/" . $filePath;
         }
