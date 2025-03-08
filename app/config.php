@@ -181,5 +181,3 @@ $tab_icones_statut = ["actif" => "<div style='display:inline-block;background:gr
     "propose" => "<div style='display:inline-block;background:lightblue;width:12px;height:12px;border-radius:50%' title='Proposé'>&nbsp;</div>",
     "demande" => "dem"
 ];
-
-$recaptcha_url = 'https://www.google.com/recaptcha/api/siteverify';

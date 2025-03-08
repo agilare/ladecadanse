@@ -84,24 +84,7 @@ $pages_lieumap = ["lieu", "evenement"];
                         </script>
             <?php } ?>
 
-            <?php
-            if ($nom_page == "evenement-edit" && !isset($_SESSION['Sgroupe']))
-            {
-                ?>
-                <script src="https://www.google.com/recaptcha/api.js?render=<?php echo GOOGLE_RECAPTCHA_API_KEY_CLIENT; ?>"></script>
-                        <script nonce="<?php echo CSP_NONCE ?>">
-                                            'use strict';
-                                grecaptcha.ready(function ()
-                {
-                    grecaptcha.execute('<?php echo GOOGLE_RECAPTCHA_API_KEY_CLIENT ?>', {action: 'propose_event'}).then(function (token)
-                    {
-                        var recaptchaResponse = document.getElementById('g-recaptcha-response');
-                        recaptchaResponse.value = token;
-                    });
-                });
-                </script>
-            <?php } ?>
-        <?php } ?>
+                        <?php } ?>
 
             <?php
             if ($nom_page == "contacteznous")

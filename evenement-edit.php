@@ -128,19 +128,6 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 
     if (!isset($_SESSION['Sgroupe']))
     {
-        $recaptcha_response = strip_tags((string) $_POST['g-recaptcha-response']);
-        // Make and decode POST request:
-        $recaptcha = file_get_contents($recaptcha_url . '?secret=' . GOOGLE_RECAPTCHA_API_KEY_SERVER . '&response=' . $recaptcha_response);
-        $recaptcha = json_decode($recaptcha);
-//        if ($recaptcha->score <= 0.5) {
-//            $verif->setErreur("global", "Le système de sécurité soupconne que vous êtes un robot, merci de réessayer; le cas échéant, contactez-nous");
-//        }
-        $recaptcha_score = 0;
-        if (!empty($recaptcha->score))
-            $recaptcha_score = $recaptcha->score;
-
-        $logger->log('global', 'activity', "[evenement-edit] recaptcha score " . $recaptcha_score . ", response : " . json_encode($recaptcha), Logger::GRAN_YEAR);
-
         // check token received == token initially set in form registered in session
         if (!isset($_SESSION[$formTokenName]) || $_POST[$formTokenName] !== $_SESSION[$formTokenName])
         {
@@ -1416,8 +1403,7 @@ else
 ?>
 
 <p class="piedForm">
-    <input type="hidden" name="formulaire" value="ok" />
-        <input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response">
+        <input type="hidden" name="formulaire" value="ok" />
         <input type="hidden" name="token" value="<?php echo SecurityToken::getToken(); ?>" />
     <input type="submit" name="submit" value="<?php echo (!isset($_SESSION['Sgroupe']))?"Envoyer":"Enregistrer"; ?>" class="submit submit-big" />
 </p>
