@@ -43,9 +43,6 @@ class Sentry extends SystemComponent
 
         global $connector;
 
-        $ses_cookie = $_SESSION['cookie'];
-        $ses_id = session_id();
-
         $sql_user = "
 		SELECT idPersonne, pseudo, mot_de_passe, cookie, groupe, region, email, gds
 		FROM personne WHERE
@@ -269,7 +266,6 @@ class Sentry extends SystemComponent
 
         if ($init)
         {
-            $session = session_id();
             $sql = "UPDATE personne
 			SET cookie='" . $connector->sanitize($cookie) . "' WHERE idPersonne=" . $this->userdata['idPersonne'];
             //echo $sql;

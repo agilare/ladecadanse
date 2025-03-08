@@ -5,8 +5,8 @@ namespace Ladecadanse\Utils;
 
 class RegionConfig
 {
-    private const DEFAULT = 'ge';
-    private const COOKIE_DURATION = 36_000; // 10 h
+    private const string DEFAULT = 'ge';
+    private const int COOKIE_DURATION = 36_000; // 10 h
 
     public function __construct(array $regions)
     {

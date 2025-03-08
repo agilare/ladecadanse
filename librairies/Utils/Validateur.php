@@ -182,7 +182,7 @@ class Validateur
      * @return boolean Validation réussie ou non
      * @access public
      */
-    function validerEmail($nom, $theInput, $description = '')
+    function validerEmail($nom, $theInput)
     {
         $result = preg_match("/^[^@ ]+@[^@ ]+\.[^@ \.]+$/", (string) $theInput);
         if ($result)
@@ -204,7 +204,7 @@ class Validateur
      * @return boolean Validation réussie ou non
      * @access public
      */
-    function validerNombre($nom, $theInput, $description = '')
+    function validerNombre($nom, $theInput)
     {
 
 
@@ -270,7 +270,7 @@ class Validateur
      * @return boolean Validation réussie ou non
      * @access public
      */
-    function validerURL($nom, $url, $description = '')
+    function validerURL($nom, $url)
     {
 
         if (isset($url) && !preg_match("/^(https?:\/\/)/i", $url))

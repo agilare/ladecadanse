@@ -40,7 +40,6 @@ class HtmlShrink
 
     public static function getMenuRegions(array $glo_regions, $get, $event_nb = []): string
     {
-        $html = '';
         ob_start();
         //
 ?>

@@ -85,7 +85,7 @@ if ($lieu->getValue('statut') == 'inactif' && !((isset($_SESSION['Sgroupe']) && 
 $sql_lieu_localite = "
 SELECT *
 FROM localite
-WHERE id='".$lieu->getValue('localite_id')."'";
+WHERE id='" . (int) $lieu->getValue('localite_id') . "'";
 
 $req_lieu_localite = $connector->query($sql_lieu_localite);
 
@@ -148,7 +148,7 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 6 || $authorization-
 	$action_editer = '<li class="action_editer"><a href="/lieu-edit.php?action=editer&amp;idL='.$get['idL'].'">Modifier ce lieu</a></li>';
 }
 
-$req_nb_des = $connector->query("SELECT idPersonne FROM descriptionlieu WHERE descriptionlieu.idLieu=".$get['idL']);
+$req_nb_des = $connector->query("SELECT idPersonne FROM descriptionlieu WHERE descriptionlieu.idLieu=" . (int) $get['idL']);
 
 $class_vide = '';
 if ($connector->getNumRows($req_nb_des) == 0)
@@ -245,7 +245,7 @@ if ($lieu->getValue('logo'))
 			/* Galerie d'images */
 			$sql_galerie = "SELECT fichierrecu.idFichierrecu AS idFichierrecu, description, mime, extension
 			FROM fichierrecu, lieu_fichierrecu
-			WHERE lieu_fichierrecu.idLieu=".$get['idL']." AND type='image' AND fichierrecu.idFichierrecu=lieu_fichierrecu.idFichierrecu
+			WHERE lieu_fichierrecu.idLieu=" . (int) $get['idL'] . " AND type='image' AND fichierrecu.idFichierrecu=lieu_fichierrecu.idFichierrecu
 			 ORDER BY dateAjout DESC";
 
 			$req_galerie = $connector->query($sql_galerie);
@@ -323,7 +323,7 @@ if ($lieu->getValue('logo'))
 		}
 
 		$salles = '';
-		$sql_salle = "SELECT * FROM salle WHERE idLieu=".$get['idL']. " AND salle.status='actif' ";
+		$sql_salle = "SELECT * FROM salle WHERE idLieu=" . (int) $get['idL'] . " AND salle.status='actif' ";
 //		echo $sql_salle;
 		$req_salle = $connector->query($sql_salle);
 
@@ -355,9 +355,9 @@ if ($lieu->getValue('logo'))
 		$organisateurs = '';
 		$sql = "SELECT organisateur.idOrganisateur AS idOrganisateur, nom FROM organisateur, lieu_organisateur
 
-				WHERE organisateur.idOrganisateur=lieu_organisateur.idOrganisateur AND lieu_organisateur.idLieu=".$get['idL'];
+				WHERE organisateur.idOrganisateur=lieu_organisateur.idOrganisateur AND lieu_organisateur.idLieu=" . (int) $get['idL'];
 
-		$req = $connector->query($sql);
+$req = $connector->query($sql);
 
 		if ($connector->getNumRows($req) > 0)
 		{
@@ -607,10 +607,9 @@ if ($nb_pres > 0)
 
 			$sql_nb_even = "SELECT idEvenement
 			 FROM evenement
-			 WHERE idLieu=".$get['idL']." AND dateEvenement >= '".$date_debut."' AND statut NOT IN ('inactif', 'propose') ".$genre;
+			 WHERE idLieu=" . (int) $get['idL'] . " AND dateEvenement >= '" . $date_debut . "' AND statut NOT IN ('inactif', 'propose') " . $genre;
 
-
-			$req_nb_even = $connector->query($sql_nb_even);
+        $req_nb_even = $connector->query($sql_nb_even);
 			$nb_even_genre = $connector->getNumRows($req_nb_even);
 
 			$menu_genre .= "<li";
@@ -718,9 +717,9 @@ if ($nb_pres > 0)
 		}
 
 		$salle = '';
-		$sql_salle = "SELECT nom FROM salle WHERE idSalle=".$even->getValue('idSalle');
+		$sql_salle = "SELECT nom FROM salle WHERE idSalle=" . (int) $even->getValue('idSalle');
 
-		$req_salle = $connector->query($sql_salle);
+        $req_salle = $connector->query($sql_salle);
 
 		if ($connector->getNumRows($req_salle) > 0)
 		{

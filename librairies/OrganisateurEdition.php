@@ -32,6 +32,7 @@ class OrganisateurEdition extends Edition
         $this->erreurs['nom_existant'] = '';
     }
 
+    #[\Override]
     function traitement(array $post, array $files): bool
     {
         parent::traitement($post, $files);
@@ -70,6 +71,7 @@ class OrganisateurEdition extends Edition
         return false;
     }
 
+    #[\Override]
     function verification(): bool
     {
 
@@ -240,7 +242,6 @@ class OrganisateurEdition extends Edition
             if ($organisateur->update())
             {
                 $this->message = 'Organisateur modifié';
-                $action_terminee = true;
             }
             else
             {
@@ -305,22 +306,26 @@ class OrganisateurEdition extends Edition
 
     }
 
+    #[\Override]
     function Set($Name, $Value)
     {
         $this->$Name = $Value;
     }
 
+    #[\Override]
     function getErreur($champ)
     {
         $erreur = $this->erreurs[$champ];
         return $erreur;
     }
 
+    #[\Override]
     function getNbErreurs(): int
     {
         return count($this->erreurs);
     }
 
+    #[\Override]
     function getHtmlErreur($champ)
     {
         if ($this->erreurs[$champ] != '')
@@ -329,6 +334,7 @@ class OrganisateurEdition extends Edition
         }
     }
 
+    #[\Override]
     function GetInitialValue($Name)
     {
         if (isset($this->Values[$Name]))
@@ -337,36 +343,43 @@ class OrganisateurEdition extends Edition
             return false;
     }
 
+    #[\Override]
     function InitialValue($Name)
     {
         echo $this->GetInitialValue($Name);
     }
 
+    #[\Override]
     function setAction($action)
     {
         $this->action = $action;
     }
 
+    #[\Override]
     function getAction()
     {
         return $this->action;
     }
 
+    #[\Override]
     function setMessage($message)
     {
         $this->message = $message;
     }
 
+    #[\Override]
     function getMessage()
     {
         return $this->message;
     }
 
+    #[\Override]
     function getSupprimer()
     {
         return $this->supprimer;
     }
 
+    #[\Override]
     function setSupprimer($sup)
     {
         $this->supprimer = $sup;

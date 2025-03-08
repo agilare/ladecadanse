@@ -22,7 +22,7 @@ Ces instructions vous permettront de mettre en place une copie du projet sur vot
 
 ### Prérequis
 - Apache 2.4
-- PHP 8.2 (avec les extensions `fileinfo`, `mysqli`, `mbstring`, `gd`)
+- PHP 8.3 (avec les extensions `fileinfo`, `mysqli`, `mbstring`, `gd`)
 - Composer
 - MariaDB 10.6/MySQL 5.7 (with `sql_mode` containing `ALLOW_INVALID_DATES`)
 
@@ -133,10 +133,10 @@ cat phan80.txt | cut -d ' ' -f2 | sort | uniq -c | sort -n -r
 
 ### PHPCompatibility
 
-Dispo de PHP 8.0 à 8.2
+Dispo de PHP 8.0 à 8.4
 
 ```sh
-$ composer sniffer:php80
+$ composer sniffer:php84
 ```
 
 ## Changelog

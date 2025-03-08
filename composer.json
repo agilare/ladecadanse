@@ -25,7 +25,7 @@
         }
     ],
     "require": {
-        "php": "8.2.*",
+        "php": "8.3.*",
         "ext-fileinfo": "*",
         "ext-mysqli": "*",
         "ext-mbstring": "*",
@@ -53,6 +53,7 @@
         "sniffer:php81": "phpcs -p ./ --ignore=*/images/*,*/logs/*,*/var/*,*/vendor/*,*/web/* --standard=vendor/phpcompatibility/php-compatibility/PHPCompatibility --runtime-set testVersion 8.1",
         "sniffer:php82": "phpcs -p ./ --ignore=*/images/*,*/logs/*,*/var/*,*/vendor/*,*/web/* --standard=vendor/phpcompatibility/php-compatibility/PHPCompatibility --runtime-set testVersion 8.2",
         "sniffer:php83": "phpcs -p ./ --ignore=*/images/*,*/logs/*,*/var/*,*/vendor/*,*/web/* --standard=vendor/phpcompatibility/php-compatibility/PHPCompatibility --runtime-set testVersion 8.3",
+        "sniffer:php84": "phpcs -p ./ --ignore=*/images/*,*/logs/*,*/var/*,*/vendor/*,*/web/* --standard=vendor/phpcompatibility/php-compatibility/PHPCompatibility --runtime-set testVersion 8.4",
         "phpstan": "vendor/bin/phpstan analyse -c phpstan.neon --ansi",
         "rector:dry-run": "vendor/bin/rector process --dry-run",
         "psalm": "vendor/bin/psalm"

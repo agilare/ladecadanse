@@ -368,12 +368,12 @@ else
 		//Affichage du lieu selon son existence ou non dans la base
 		if (!empty($listeEven['idLieu']))
 		{
-			$listeLieu = $connector->fetchArray($connector->query("SELECT nom, adresse, quartier, localite.localite AS localite, URL FROM lieu, localite WHERE lieu.localite_id=localite.id AND idlieu='".$listeEven['idLieu']."'"));
+			$listeLieu = $connector->fetchArray($connector->query("SELECT nom, adresse, quartier, localite.localite AS localite, URL FROM lieu, localite WHERE lieu.localite_id=localite.id AND idlieu='" . (int) $listeEven['idLieu'] . "'"));
 
-			$infosLieu = "<a href=\"/lieu.php?idL=" . $listeEven['idLieu'] . "\">" . sanitizeForHtml($listeLieu['nom']) . "</a>";
+            $infosLieu = "<a href=\"/lieu.php?idL=" . (int) $listeEven['idLieu'] . "\">" . sanitizeForHtml($listeLieu['nom']) . "</a>";
             if ($listeEven['idSalle'])
 			{
-                $req_salle = $connector->query("SELECT nom FROM salle WHERE idSalle='".$listeEven['idSalle']."'");
+                $req_salle = $connector->query("SELECT nom FROM salle WHERE idSalle='" . (int) $listeEven['idSalle'] . "'");
                 $tab_salle = $connector->fetchArray($req_salle);
                 $infosLieu .= " - " . sanitizeForHtml($tab_salle['nom']);
             }
@@ -416,7 +416,7 @@ else
 
         $sql_event_orga = "SELECT organisateur.idOrganisateur, nom, URL
         FROM organisateur, evenement_organisateur
-        WHERE evenement_organisateur.idEvenement=".$listeEven['idEvenement']." AND
+        WHERE evenement_organisateur.idEvenement=" . (int) $listeEven['idEvenement'] . " AND
          organisateur.idOrganisateur=evenement_organisateur.idOrganisateur
          ORDER BY nom DESC";
 

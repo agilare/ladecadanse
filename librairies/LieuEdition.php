@@ -37,6 +37,7 @@ class LieuEdition extends Edition
         $this->erreurs['doublon_organisateur'] = '';
     }
 
+    #[\Override]
     function traitement(array $post, array $files)
     {
         parent::traitement($post, $files);
@@ -100,6 +101,7 @@ class LieuEdition extends Edition
         }
     }
 
+    #[\Override]
     function verification(): bool
     {
         global $glo_tab_quartiers;
@@ -460,23 +462,27 @@ class LieuEdition extends Edition
         $this->valeurs = $champs;
     }
 
+    #[\Override]
     function Set($Name, $Value): void
     {
         $this->$Name = $Value;
     }
 
+    #[\Override]
     function getErreur($champ)
     {
         $erreur = $this->erreurs[$champ];
         return $erreur;
     }
 
+    #[\Override]
     function getNbErreurs(): int
     {
 
         return count($this->erreurs);
     }
 
+    #[\Override]
     function getHtmlErreur($champ)
     {
         if (!empty($this->erreurs[$champ]))
@@ -485,6 +491,7 @@ class LieuEdition extends Edition
         }
     }
 
+    #[\Override]
     function GetInitialValue($Name)
     {
         if (isset($this->Values[$Name]))
@@ -493,36 +500,43 @@ class LieuEdition extends Edition
             return false;
     }
 
+    #[\Override]
     function InitialValue($Name)
     {
         echo $this->GetInitialValue($Name);
     }
 
+    #[\Override]
     function setAction($action)
     {
         $this->action = $action;
     }
 
+    #[\Override]
     function getAction()
     {
         return $this->action;
     }
 
+    #[\Override]
     function setMessage($message)
     {
         $this->message = $message;
     }
 
+    #[\Override]
     function getMessage()
     {
         return $this->message;
     }
 
+    #[\Override]
     function getSupprimer()
     {
         return $this->supprimer;
     }
 
+    #[\Override]
     function setSupprimer($sup)
     {
         $this->supprimer = $sup;

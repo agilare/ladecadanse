@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <psalm
-    phpVersion="8.2"
+    phpVersion="8.3"
     errorLevel="7"
     resolveFromConfigFile="true"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -42,6 +42,7 @@
         <var name="nom_page" type="string"/>
         <var name="auj" type="string"/>
         <var name="evenement" type="array"/>
+        <var name="iconeSuite" type="string"/>
         <!--        <var name="logger" type="Logger"/>-->
     </globals>
 </psalm>

@@ -153,8 +153,8 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 6
 			}
 		}
 
-		$sql = "SELECT nom, lieu.idLieu AS idLieu FROM lieu_organisateur, lieu WHERE lieu_organisateur.idLieu=lieu.idLieu AND idOrganisateur=".$get['idO'];
-		$req = $connector->query($sql);
+		$sql = "SELECT nom, lieu.idLieu AS idLieu FROM lieu_organisateur, lieu WHERE lieu_organisateur.idLieu=lieu.idLieu AND idOrganisateur=" . (int) $get['idO'];
+$req = $connector->query($sql);
 
 		$lieux = '';
 
@@ -171,8 +171,8 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 6
 		}
 
 
-		$sql = "SELECT pseudo, personne.idPersonne AS idPersonne FROM personne_organisateur, personne WHERE personne_organisateur.idPersonne=personne.idPersonne AND idOrganisateur=".$get['idO'];
-		$req = $connector->query($sql);
+		$sql = "SELECT pseudo, personne.idPersonne AS idPersonne FROM personne_organisateur, personne WHERE personne_organisateur.idPersonne=personne.idPersonne AND idOrganisateur=" . (int) $get['idO'];
+$req = $connector->query($sql);
 
 		$membres = '';
 
@@ -281,10 +281,9 @@ if ($evenements->getNbElements() > 0)
 
 		$sql_nb_even = "SELECT evenement.idEvenement
 		 FROM evenement, evenement_organisateur
-		 WHERE evenement.idEvenement=evenement_organisateur.idEvenement AND idOrganisateur=".$get['idO']." AND dateEvenement >= '".$date_debut."' AND statut NOT IN ('inactif', 'propose') ".$genre;
+		 WHERE evenement.idEvenement=evenement_organisateur.idEvenement AND idOrganisateur=" . (int) $get['idO'] . " AND dateEvenement >= '" . $date_debut . "' AND statut NOT IN ('inactif', 'propose') " . $genre;
 
-
-		$req_nb_even = $connector->query($sql_nb_even);
+        $req_nb_even = $connector->query($sql_nb_even);
 		$nb_even_genre = $connector->getNumRows($req_nb_even);
 
 		$menu_genre .= "<li";
@@ -363,9 +362,9 @@ if ($evenements->getNbElements() > 0)
 		}
 
 		$salle = '';
-		$sql_salle = "SELECT nom FROM salle WHERE idSalle=".$even->getValue('idSalle');
+		$sql_salle = "SELECT nom FROM salle WHERE idSalle=" . (int) $even->getValue('idSalle');
 
-		$req_salle = $connector->query($sql_salle);
+        $req_salle = $connector->query($sql_salle);
 
 		if ($connector->getNumRows($req_salle) > 0)
 		{
@@ -377,9 +376,9 @@ if ($evenements->getNbElements() > 0)
 		if ($even->getValue('idLieu') != 0)
 		{
 			$tab_lieu = $connector->fetchArray(
-			$connector->query("SELECT nom FROM lieu WHERE idlieu='".$even->getValue('idLieu')."'"));
+			$connector->query("SELECT nom FROM lieu WHERE idlieu='" . (int) $even->getValue('idLieu') . "'"));
 
-			$nom_lieu = "<a href=\"/lieu.php?idL=" . $even->getValue('idLieu') . "\" title=\"Voir la fiche du lieu : " . sanitizeForHtml($tab_lieu['nom']) . "\" >" . sanitizeForHtml($tab_lieu['nom']) . "</a>";
+            $nom_lieu = "<a href=\"/lieu.php?idL=" . $even->getValue('idLieu') . "\" title=\"Voir la fiche du lieu : " . sanitizeForHtml($tab_lieu['nom']) . "\" >" . sanitizeForHtml($tab_lieu['nom']) . "</a>";
         }
 		else
 		{
