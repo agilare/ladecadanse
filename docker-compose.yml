@@ -18,7 +18,7 @@ services:
     build:
       dockerfile: ./docker/php/Dockerfile
     container_name: ladecadanse_install_dep
-    command: ./install_dep.sh
+    command: ./docker/php/install_dep.sh
     volumes:
       - ${PWD}:/var/www/html/
   web:
