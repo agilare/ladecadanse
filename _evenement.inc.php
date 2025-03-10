@@ -8,15 +8,15 @@ if ($evenement['idLieu'] != 0)
 {
 	$listeLieu = $connector->fetchArray(
 	$connector->query("SELECT nom, adresse, quartier, localite.localite AS localite, region, URL, lat, lng FROM lieu, localite
-		WHERE localite_id=localite.id AND idlieu='".$evenement['idLieu']."'"));
+		WHERE localite_id=localite.id AND idlieu='" . (int) $evenement['idLieu'] . "'"));
 
-	$nom_lieu = "<a href=\"/lieu.php?idL=" . $evenement['idLieu'] . "\" title=\"Voir la fiche du lieu\" >" . sanitizeForHtml($listeLieu['nom']) . "</a>";
+    $nom_lieu = "<a href=\"/lieu.php?idL=" . (int) $evenement['idLieu'] . "\" title=\"Voir la fiche du lieu\" >" . sanitizeForHtml($listeLieu['nom']) . "</a>";
 
     if ($evenement['idSalle'] != 0)
 	{
 		$req_salle = $connector->query("SELECT nom, emplacement FROM salle
-		WHERE idSalle='".$evenement['idSalle']."'");
-		$tab_salle = $connector->fetchArray($req_salle);
+		WHERE idSalle='" . (int) $evenement['idSalle'] . "'");
+        $tab_salle = $connector->fetchArray($req_salle);
 		$nom_lieu .=  " - ".$tab_salle['nom'];
 	}
 }

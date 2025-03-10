@@ -91,8 +91,8 @@ if (isset($_GET['idO']))
 if ($get['action'] != "ajouter" && $get['action'] != "insert")
 {
 
-	$req_even_cur = $connector->query("SELECT idLieu, statut FROM evenement WHERE idEvenement=".$get['idE']);
-	$tab_even_cur = $connector->fetchArray($req_even_cur);
+	$req_even_cur = $connector->query("SELECT idLieu, statut FROM evenement WHERE idEvenement=" . (int) $get['idE']);
+    $tab_even_cur = $connector->fetchArray($req_even_cur);
 
 	if ((isset($_SESSION['SidPersonne']) && $authorization->isAuthor("evenement", $_SESSION['SidPersonne'], $get['idE'])) || (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 6) || (isset($_SESSION['Saffiliation_lieu']) && isset($tab_even_cur['idLieu']) && $tab_even_cur['idLieu'] == $_SESSION['Saffiliation_lieu'])
 	|| (isset($_SESSION['SidPersonne']) && $authorization->isPersonneInEvenementByOrganisateur($_SESSION['SidPersonne'], $get['idE']))
@@ -498,9 +498,9 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 			{
 
 				$sql_flyer = ", flyer='".$champs['flyer']."'";
-				$req_flyer = $connector->query("SELECT flyer FROM evenement WHERE idEvenement=".$get['idE']);
+				$req_flyer = $connector->query("SELECT flyer FROM evenement WHERE idEvenement=" . (int) $get['idE']);
 
-				if ($req_flyer)
+                if ($req_flyer)
 				{
 					$affFly = $connector->fetchArray($req_flyer);
 
@@ -518,9 +518,9 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 			{
 
 				$sql_flyer = ", flyer=''";
-				$req_flyer = $connector->query("SELECT flyer FROM evenement WHERE idEvenement=".$get['idE']);
+				$req_flyer = $connector->query("SELECT flyer FROM evenement WHERE idEvenement=" . (int) $get['idE']);
 
-				//si un ancien flyer a été effectivement trouvé suppression des fichiers
+                //si un ancien flyer a été effectivement trouvé suppression des fichiers
 				if ($req_flyer)
 				{
 					$affFly = $connector->fetchArray($req_flyer);
@@ -540,9 +540,9 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 			{
 
 				$sql_image = ", image='".$champs['image']."'";
-				$req_image = $connector->query("SELECT image FROM evenement WHERE idEvenement=".$get['idE']);
+				$req_image = $connector->query("SELECT image FROM evenement WHERE idEvenement=" . (int) $get['idE']);
 
-				if ($req_image)
+                if ($req_image)
 				{
 					$affImg = $connector->fetchArray($req_image);
 
@@ -560,9 +560,9 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 			{
 
 				$sql_image = ", image=''";
-				$req_image = $connector->query("SELECT image FROM evenement WHERE idEvenement=".$get['idE']);
+				$req_image = $connector->query("SELECT image FROM evenement WHERE idEvenement=" . (int) $get['idE']);
 
-				if ($req_image)
+                if ($req_image)
 				{
 					$affimage= $connector->fetchArray($req_image);
 
@@ -600,8 +600,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 				if (!empty($lieu))
 					$lienLieu = " au <a href=\"/lieu.php?idLieu=".$lieu."\"> lieu ".$lieu."</a>";
 
-				$sql = "DELETE FROM evenement_organisateur WHERE idEvenement=".$get['idE'];
-				$req = $connector->query($sql);
+				$sql = "DELETE FROM evenement_organisateur WHERE idEvenement=" . (int) $get['idE'];
+                $req = $connector->query($sql);
 				$req_id = $get['idE'];
 
                 $confirmation_flash_msg = '';
@@ -670,8 +670,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 			{
 				if ($idOrg != 0)
 				{
-                    $sql = "INSERT INTO evenement_organisateur (idEvenement, idOrganisateur) VALUES (".$req_id.", ".$idOrg.")";
-					$connector->query($sql);
+                    $sql = "INSERT INTO evenement_organisateur (idEvenement, idOrganisateur) VALUES (" . (int) $req_id . ", " . (int) $idOrg . ")";
+                    $connector->query($sql);
 				}
 			}
 		}
@@ -688,18 +688,18 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 			$evenement['idEvenement'] = $get['idE'];
 		}
 
-		$sql_img = "SELECT image FROM evenement WHERE idEvenement=".$evenement['idEvenement'];
+		$sql_img = "SELECT image FROM evenement WHERE idEvenement=" . (int) $evenement['idEvenement'];
 
-		$req_img = $connector->query($sql_img);
+        $req_img = $connector->query($sql_img);
 		$tab_img = $connector->fetchArray($req_img);
 		if (!empty($tab_img['image']))
 		{
 			$evenement['image'] = $tab_img['image'];
 		}
 
-		$sql_fly = "SELECT flyer FROM evenement WHERE idEvenement=".$evenement['idEvenement'];
+		$sql_fly = "SELECT flyer FROM evenement WHERE idEvenement=" . (int) $evenement['idEvenement'];
 
-		$req_fly = $connector->query($sql_fly);
+        $req_fly = $connector->query($sql_fly);
 		$tab_fly = $connector->fetchArray($req_fly);
 		if (!empty($tab_fly['flyer']))
 		{
@@ -707,11 +707,12 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 		}
 
 		unset($_POST); // ?
-        $logger->log('global', 'activity', "[evenement-edit] ".$get['action']." of \"".$champs['titre']."\" in ".$champs['nomLieu']." /evenement.php?idE=".$evenement['idEvenement'], Logger::GRAN_YEAR);
+        $logger->log('global', 'activity', "[evenement-edit] " . $get['action'] . " of \"" . $champs['titre'] . "\" in " . $champs['nomLieu'] . " /evenement.php?idE=" . (int) $evenement['idEvenement'], Logger::GRAN_YEAR);
 
         if (isset($_SESSION['Sgroupe']))
         {
-            header("Location: /evenement.php?idE=".$req_id); die();
+            header("Location: /evenement.php?idE=" . (int) $req_id);
+            die();
         }
         else
         {
@@ -725,8 +726,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 	elseif ($get['action'] == 'update')
 	{
 
-		if ($affIm = $connector->fetchArray($connector->query("SELECT flyer, image FROM evenement WHERE idEvenement =".$get['idE'])))
-		{
+		if ($affIm = $connector->fetchArray($connector->query("SELECT flyer, image FROM evenement WHERE idEvenement =" . (int) $get['idE'])))
+        {
 			$champs['flyer'] = $affIm['flyer'];
 			$champs['image'] = $affIm['image'];
 		}
@@ -758,7 +759,7 @@ if (!$action_terminee)
     {
         if ($_SESSION['Sgroupe'] <= UserLevel::ACTOR) {
             $req_even = $connector->query("SELECT idLieu, idSalle, idPersonne, statut, titre, genre,
-            dateEvenement, nomLieu, adresse, urlLieu, quartier, localite_id, region, description, flyer, image, prix, price_type, horaire_debut, horaire_fin, horaire_complement, ref, prelocations, remarque, user_email, dateAjout FROM evenement WHERE idEvenement =" . $get['idE']);
+            dateEvenement, nomLieu, adresse, urlLieu, quartier, localite_id, region, description, flyer, image, prix, price_type, horaire_debut, horaire_fin, horaire_complement, ref, prelocations, remarque, user_email, dateAjout FROM evenement WHERE idEvenement =" . (int) $get['idE']);
 
             if ($affEven = $connector->fetchArray($req_even))
             {
@@ -801,13 +802,13 @@ if (!$action_terminee)
             if ($_SESSION['Sgroupe'] <= 1)
             {
                 $aff_actions .= "<li class=\"action_supprimer\">
-                <a href=\"/multi-suppr.php?action=confirmation&amp;type=evenement&amp;id=" . $get['idE'] . "&token=" . SecurityToken::getToken() . "\" id='js-event-delete-btn'>
+                <a href=\"/multi-suppr.php?action=confirmation&amp;type=evenement&amp;id=" . (int) $get['idE'] . "&token=" . SecurityToken::getToken() . "\" id='js-event-delete-btn'>
                 Supprimer</a>
                 </li>";
             }
 
             $aff_actions .= "<li class=\"action_copier\">
-                <a href=\"/evenement-copy.php?idE=".$get['idE']."\" title=\"Copier l'événement vers une autre date\">Copier vers d'autres dates</a></li></ul>";
+                <a href=\"/evenement-copy.php?idE=" . (int) $get['idE'] . "\" title=\"Copier l'événement vers une autre date\">Copier vers d'autres dates</a></li></ul>";
         }
     } // action editer
 

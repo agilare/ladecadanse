@@ -69,8 +69,8 @@ if (!$even->getValues() || in_array($even->getValue('statut'), ['propose', 'inac
 if ($even->getValue('idLieu') != 0)
 {
 	$req_lieu = $connector->query("SELECT nom, adresse, quartier, localite, region, URL, lat, lng FROM lieu, localite
-	WHERE lieu.localite_id=localite.id AND idlieu='".$even->getValue('idLieu')."'");
-	$listeLieu = $connector->fetchArray($req_lieu);
+	WHERE lieu.localite_id=localite.id AND idlieu='" . (int) $even->getValue('idLieu') . "'");
+    $listeLieu = $connector->fetchArray($req_lieu);
 	$lieu = sanitizeForHtml($listeLieu['nom']);
 
 }
@@ -80,11 +80,11 @@ else
 	$lieu = sanitizeForHtml($even->getValue('nomLieu'));
 	$listeLieu['adresse'] = sanitizeForHtml($even->getValue('adresse'));
 	$listeLieu['quartier'] = sanitizeForHtml($even->getValue('quartier'));
-        $req_localite = $connector->query("SELECT  localite FROM localite WHERE  id='".$even->getValue('localite_id')."'");
-        $tab_localite = $connector->fetchArray($req_localite);
+        $req_localite = $connector->query("SELECT  localite FROM localite WHERE  id='" . (int) $even->getValue('localite_id') . "'");
+    $tab_localite = $connector->fetchArray($req_localite);
 
-        $listeLieu['localite'] = sanitizeForHtml($tab_localite[0]);
-	$listeLieu['URL'] = sanitizeForHtml($even->getValue('urlLieu'));
+        $listeLieu['localite'] = sanitizeForHtml($tab_localite[0] ?? "");
+    $listeLieu['URL'] = sanitizeForHtml($even->getValue('urlLieu'));
 
 	$nom_lieu = $lieu;
 }
@@ -116,7 +116,7 @@ if ($even->getValue('horaire_debut') != "0000-00-00 00:00:00")
 
 $uniqueid = $get['idE'];
 
-$uri = $site_full_url."/evenement.php?idE=".$get['idE'];
+$uri = $site_full_url . "/evenement.php?idE=" . (int) $get['idE'];
 
 $summary = sanitizeForHtml($even->getValue('titre'));
 

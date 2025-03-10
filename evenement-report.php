@@ -90,7 +90,7 @@ $verif = new Validateur();
             }
 
             $subject = "Rapport d'erreur sur un événement : " . $tab_type_erreur[$champs['type_erreur']];
-            $contenu_message = "Événement : " . $site_full_url . "/evenement.php?idE=" . $champs['idEvenement'];
+            $contenu_message = "Événement : " . $site_full_url . "/evenement.php?idE=" . (int) $champs['idEvenement'];
             $contenu_message .= "\n\n";
             $contenu_message .= "Message :\n\n" . $champs['message'] . "\n\n";
             if (isset($_SESSION['user']))
@@ -102,7 +102,7 @@ $verif = new Validateur();
             if ($mailer->toAdmin($subject, $contenu_message, $from))
             {
                 HtmlShrink::msgOk("Merci d'avoir signalé cette erreur, je m'en occupe dès que possible");
-                $logger->log('global', 'activity', "[evenement-report] by " . $from . " for /evenement.php?idE=" . $champs['idEvenement'], Logger::GRAN_YEAR);
+                $logger->log('global', 'activity', "[evenement-report] by " . $from . " for /evenement.php?idE=" . (int) $champs['idEvenement'], Logger::GRAN_YEAR);
             }
 
             unset($_POST);
@@ -128,16 +128,16 @@ $verif = new Validateur();
         {
             $req_getEven = $connector->query("SELECT idEvenement, idLieu, idSalle, idPersonne, titre, genre, dateEvenement,
 	 nomLieu, adresse, quartier, urlLieu, description, flyer, prix, horaire_debut,horaire_fin, horaire_complement, ref, prelocations, statut, localite
-	  FROM evenement, localite WHERE evenement.localite_id=localite.id AND idEvenement =" . $get['idE']);
+	  FROM evenement, localite WHERE evenement.localite_id=localite.id AND idEvenement =" . (int) $get['idE']);
 
-            if ($affEven = $connector->fetchArray($req_getEven))
+        if ($affEven = $connector->fetchArray($req_getEven))
             {
                 $evenement = $affEven;
                 include("_evenement.inc.php");
             }
             else
             {
-                HtmlShrink::msgErreur("Aucun événement n'est associé à " . $get['idE']);
+                HtmlShrink::msgErreur("Aucun événement n'est associé à " . (int) $get['idE']);
                 exit;
             } // if fetchArray
         } // if isset idE
@@ -150,7 +150,7 @@ $verif = new Validateur();
         }
         ?>
 
-        <form method="post" id="ajouter_editer" class="js-submit-freeze-wait" action="<?php echo basename(__FILE__) . "?idE=" . $get['idE']; ?>">
+    <form method="post" id="ajouter_editer" class="js-submit-freeze-wait" action="<?php echo basename(__FILE__) . "?idE=" . (int) $get['idE']; ?>">
 
                 <input type="hidden" name="<?php echo $formTokenName; ?>" value="<?php echo $_SESSION[$formTokenName]; ?>">
                 <div class="mr_as">

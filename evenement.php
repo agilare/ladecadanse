@@ -204,8 +204,8 @@ while ($tab_even = $connector->fetchArray($req_even))
 
         <?php
         if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= UserLevel::MEMBER)) {
-		echo '<li><a href="/evenement-email.php?idE=' . $get['idE'] . '" title="Envoyer l\'événement par email">' . $icone['envoi_email'] . 'Envoyer à un ami</a></li>';
-    }
+		echo '<li><a href="/evenement-email.php?idE=' . (int) $get['idE'] . '" title="Envoyer l\'événement par email">' . $icone['envoi_email'] . 'Envoyer à un ami</a></li>';
+        }
         if (
 		(isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 6)
 		|| (isset($_SESSION['SidPersonne'])) && $_SESSION['SidPersonne'] == $even->getValue('idPersonne')
@@ -215,7 +215,7 @@ while ($tab_even = $connector->fetchArray($req_even))
 		)
 		{
             ?>
-        <li><a href="/evenement-copy.php?idE=<?php echo $get['idE'] ?>"><?php echo $iconeCopier ?>Copier vers d'autres dates</a></li>
+            <li><a href="/evenement-copy.php?idE=<?php echo (int) $get['idE'] ?>"><?php echo $iconeCopier ?>Copier vers d'autres dates</a></li>
             <?php
 		}
 		if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 6)
@@ -231,8 +231,8 @@ while ($tab_even = $connector->fetchArray($req_even))
 		}
 		?>
 
-            <li><a href="/evenement_ics.php?idE=<?php echo $get['idE'] ?>" title="Exporter au format iCalendar dans votre agenda"><i class="fa fa-calendar-plus-o fa-lg"></i>
-iCal</a></li>
+            <li><a href="/evenement_ics.php?idE=<?php echo (int) $get['idE'] ?>" title="Exporter au format iCalendar dans votre agenda"><i class="fa fa-calendar-plus-o fa-lg"></i>
+                    iCal</a></li>
 
     </ul>
 
@@ -280,7 +280,7 @@ else
     $nom_lieu = $lieu;
 }
 
-$adresse = HtmlShrink::getAdressFitted($listeLieu['region'], sanitizeForHtml($listeLieu['localite']), sanitizeForHtml($listeLieu['quartier']), sanitizeForHtml($listeLieu['adresse']));
+$adresse = HtmlShrink::getAdressFitted($listeLieu['region'], sanitizeForHtml($listeLieu['localite'] ?? ""), sanitizeForHtml($listeLieu['quartier']), sanitizeForHtml($listeLieu['adresse']));
 ?>
 
 
@@ -411,7 +411,7 @@ $adresse = HtmlShrink::getAdressFitted($listeLieu['region'], sanitizeForHtml($li
 				echo "<ul class=\"left\">";
 					$sql = "SELECT organisateur.idOrganisateur, nom, URL
 				FROM organisateur, evenement_organisateur
-				WHERE evenement_organisateur.idEvenement=".$get['idE']." AND
+				WHERE evenement_organisateur.idEvenement=" . (int) $get['idE'] . " AND
 				 organisateur.idOrganisateur=evenement_organisateur.idOrganisateur
 				 ORDER BY nom DESC";
 
@@ -505,9 +505,9 @@ foreach ($tab_ref as $r)
 		<?php
 
 				$signature_auteur = "";
-				$sql_auteur = "SELECT pseudo, affiliation, signature, avec_affiliation FROM personne WHERE idPersonne=" . $even->getValue('idPersonne') . "";
+				$sql_auteur = "SELECT pseudo, affiliation, signature, avec_affiliation FROM personne WHERE idPersonne=" . (int) $even->getValue('idPersonne') . "";
 
-                $req_auteur = $connector->query($sql_auteur);
+$req_auteur = $connector->query($sql_auteur);
         $tab_auteur = $connector->fetchArray($req_auteur);
 
                 if (!empty($tab_auteur))
@@ -521,16 +521,16 @@ foreach ($tab_ref as $r)
             {
                         $nom_affiliation = "";
                         $req_aff = $connector->query("SELECT idAffiliation FROM affiliation WHERE
-         idPersonne=".$even->getValue('idPersonne')." AND genre='lieu'");
+         idPersonne=" . (int) $even->getValue('idPersonne') . " AND genre='lieu'");
 
-                        if (!empty($tab_auteur['affiliation']))
+        if (!empty($tab_auteur['affiliation']))
                         {
                             $nom_affiliation = $tab_auteur['affiliation'];
                         }
                         else if ($tab_aff = $connector->fetchArray($req_aff))
                         {
-                            $req_lieu_aff = $connector->query("SELECT nom FROM lieu WHERE idLieu=".$tab_aff['idAffiliation']);
-                            $tab_lieu_aff = $connector->fetchArray($req_lieu_aff);
+                            $req_lieu_aff = $connector->query("SELECT nom FROM lieu WHERE idLieu=" . (int) $tab_aff['idAffiliation']);
+            $tab_lieu_aff = $connector->fetchArray($req_lieu_aff);
                             $nom_affiliation = $tab_lieu_aff['nom'];
                         }
 

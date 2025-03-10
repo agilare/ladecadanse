@@ -422,7 +422,7 @@ else
 
         $req_event_orga = $connector->query($sql_event_orga);
 
-		$adresse = HtmlShrink::getAdressFitted(null, sanitizeForHtml($listeLieu['localite']), sanitizeForHtml($listeLieu['quartier']), sanitizeForHtml($listeLieu['adresse']));
+		$adresse = HtmlShrink::getAdressFitted(null, sanitizeForHtml($listeLieu['localite'] ?? ""), sanitizeForHtml($listeLieu['quartier']), sanitizeForHtml($listeLieu['adresse']));
 
         $horaire = afficher_debut_fin($listeEven['horaire_debut'], $listeEven['horaire_fin'], $listeEven['dateEvenement']);
 
