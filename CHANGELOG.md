@@ -1,12 +1,14 @@
 # Changelog
 
-## [3.6.2] - Unreleased
+## [3.6.3] - 2025-03-09
 
 ### Fixed
 - add some int casts in sqls to strengthen security
+- donate : Paypal btn was disabled because of a missing URL in CSP
 
 ### Changed
 - PHP 8.3 compatibility
+- donate : Paypal btn modernized and following new & improv. config
 
 ### Removed
 - Recaptcha
