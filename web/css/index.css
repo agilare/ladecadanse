@@ -417,3 +417,20 @@ height:120px;
 	color: #888;
 	font-size: 1em;
 }
+
+#faireundon_btn
+{
+    position:absolute;
+    top: 3px;
+    display:inline-block;
+    font-size:1.2em;
+    margin-left:15px
+}
+
+#faireundon_btn a
+{
+    font-size:1em;
+    background: #ffe771;
+    padding: 5px;
+    border-radius: 4px;
+}

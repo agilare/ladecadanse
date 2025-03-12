@@ -336,9 +336,11 @@ FROM evenement WHERE region IN ('" . $connector->sanitize($_SESSION['region']) .
 
     <section class="dernieres" style="margin-top:15px;width: 100%;">
 
-        <ul style="padding-left:5px">
+        <ul style="position:relative;padding-left:5px">
             <li style="display:inline-block"><a href="https://www.facebook.com/ladecadanse" aria-label="Watch agilare/ladecadanse on GitHub" style="font-size:1em" target="_blank"><i class="fa fa-facebook fa-2x" aria-hidden="true"></i></a></li>
             <li style="display:inline-block;margin-left:10px"><a href="https://github.com/agilare/ladecadanse/" aria-label="Watch agilare/ladecadanse on GitHub" style="font-size:1em" target="_blank"><i class="fa fa-github fa-2x" aria-hidden="true"></i></a>
+            </li>
+            <li id="faireundon_btn" class="clear_mobile_important"><a href="/articles/faireUnDon.php">Faire un don</a>
             </li>
         </ul>
 

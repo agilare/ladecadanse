@@ -6,13 +6,16 @@
 - add some int casts in sqls to strengthen security
 - donate : Paypal btn was disabled because of a missing URL in CSP
 
+### Added
+- home : donate button aside Github link for mobile view
+
 ### Changed
 - PHP 8.3 compatibility
 - donate : Paypal btn modernized and following new & improv. config
 
 ### Removed
 - Recaptcha
-
+- donate : in page rm (commented) Flattr code
 
 ## [3.6.2] - 2025-03-07
 

@@ -160,7 +160,12 @@ float: left;
 
 .clear_mobile
 {
-display:none;
+    display:none;
+}
+
+.clear_mobile_important
+{
+    display:none !important;
 }
 
 
