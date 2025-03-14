@@ -11,6 +11,7 @@ require_once("app/bootstrap.php");
 use Ladecadanse\Utils\Text;
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\Evenement;
+use Ladecadanse\UserLevel;
 
 $page_titre = " agenda de sorties à " . $glo_regions[$_SESSION['region']] . ", prochains événements : concerts, soirées, films, théâtre, expos, bars, cinémas";
 $page_description = "Programme des prochains événements festifs et culturels à Genève et Lausanne : fêtes, concerts et soirées, cinéma,
@@ -59,11 +60,11 @@ FROM evenement WHERE region IN ('" . $connector->sanitize($_SESSION['region']) .
 <div id="contenu" class="colonne">
 
     <?php
-    if (HOME_TMP_BANNER_ENABLED && !isset($_COOKIE['msg_orga_benevole'])) {
+    if (HOME_TMP_BANNER_ENABLED && !isset($_COOKIE['home_tmp_banner'])) {
         ?>
-        <div id="home-tmp-banner">
+        <div id="home_tmp_banner" class="alert-warn">
             <h2><?php echo HOME_TMP_BANNER_TITLE; ?></h2>
-                <a href="#" id="js-home-tmp-banner-close-btn" class="close">&times;</a>
+                <a href="#" class="js-alert-close-btn close">&times;</a>
                 <p style="line-height:18px"><?php echo HOME_TMP_BANNER_CONTENT; ?></p>
             </div>
         <?php
@@ -71,6 +72,19 @@ FROM evenement WHERE region IN ('" . $connector->sanitize($_SESSION['region']) .
     ?>
 
     <?php
+    if ($videur->checkGroup(UserLevel::ACTOR) && HOME_TMP_BACK_BANNER_ENABLED && !isset($_COOKIE['home_tmp_back_banner']))
+    {
+        ?>
+    <div id="home_tmp_back_banner" class="alert-info">
+            <h2><?php echo HOME_TMP_BACK_BANNER_TITLE; ?></h2>
+            <a href="#" class="js-alert-close-btn close">&times;</a>
+                <p style="line-height:18px"><?php echo HOME_TMP_BACK_BANNER_CONTENT; ?></p>
+        </div>
+        <?php
+    }
+    ?>
+
+<?php
     if (!empty($_SESSION['evenement-edit_flash_msg']))
     {
         HtmlShrink::msgOk($_SESSION['evenement-edit_flash_msg']);
@@ -149,7 +163,7 @@ FROM evenement WHERE region IN ('" . $connector->sanitize($_SESSION['region']) .
                 $listeLieu = $connector->fetchArray(
                 $connector->query("SELECT nom, adresse, quartier, localite.localite AS localite, URL FROM lieu, localite WHERE lieu.localite_id=localite.id AND idlieu='" . (int) $tab_even['idLieu'] . "'"));
 
-        $infosLieu = "<a href=\"/lieu.php?idL=" . $tab_even['idLieu'] . "\" >" . sanitizeForHtml($listeLieu['nom']) . "</a>";
+        $infosLieu = "<a href=\"/lieu.php?idL=" . (int) $tab_even['idLieu'] . "\" >" . sanitizeForHtml($listeLieu['nom']) . "</a>";
 
         if ($tab_even['idSalle'])
                 {
@@ -231,8 +245,8 @@ FROM evenement WHERE region IN ('" . $connector->sanitize($_SESSION['region']) .
                 //reduction de la description pour la caser dans la boite "desc"
                 if (mb_strlen((string) $tab_even['description']) > $maxChar)
                 {
-                    $continuer = " <a class=\"continuer\" href=\"/evenement.php?idE=".$tab_even['idEvenement']."\" title=\"Voir la fiche complète de l'événement\"> Lire la suite</a>";
-                    echo Text::texteHtmlReduit(Text::wikiToHtml(sanitizeForHtml($tab_even['description'])), $maxChar, $continuer);
+                    $continuer = " <a class=\"continuer\" href=\"/evenement.php?idE=" . (int) $tab_even['idEvenement'] . "\" title=\"Voir la fiche complète de l'événement\"> Lire la suite</a>";
+        echo Text::texteHtmlReduit(Text::wikiToHtml(sanitizeForHtml($tab_even['description'])), $maxChar, $continuer);
     }
                 else
                 {
@@ -251,7 +265,7 @@ FROM evenement WHERE region IN ('" . $connector->sanitize($_SESSION['region']) .
                             $org_url = 'http://'.$tab['URL'];
                         }
                     ?>
-                    <li><a href="/organisateur.php?idO=<?php echo $tab['idOrganisateur']; ?>"><?php echo sanitizeForHtml($tab['nom']); ?></a>
+                            <li><a href="/organisateur.php?idO=<?php echo (int) $tab['idOrganisateur']; ?>"><?php echo sanitizeForHtml($tab['nom']); ?></a>
                                 <?php if (!empty($tab['URL']))
                                 { ?>
                                     <a href="<?php echo sanitizeForHtml($org_url); ?>" title="Site web de l'organisateur" class="lien_ext" target="_blank"><?php echo sanitizeForHtml($org_url_nom); ?></a>
@@ -286,8 +300,8 @@ FROM evenement WHERE region IN ('" . $connector->sanitize($_SESSION['region']) .
             <div class="edition">
 
                 <ul class="menu_action">
-                        <li><a href="/evenement-report.php?idE=<?php echo $tab_even['idEvenement']; ?>" class="signaler"  title="Signaler une erreur"><i class="fa fa-flag-o fa-lg"></i></a></li>
-                        <li><a href="/evenement_ics.php?idE=<?php echo $tab_even['idEvenement']; ?>" class="ical" title="Exporter au format iCalendar dans votre agenda"><i class="fa fa-calendar-plus-o fa-lg"></i></a></li>
+                    <li><a href="/evenement-report.php?idE=<?php echo (int) $tab_even['idEvenement']; ?>" class="signaler"  title="Signaler une erreur"><i class="fa fa-flag-o fa-lg"></i></a></li>
+                        <li><a href="/evenement_ics.php?idE=<?php echo (int) $tab_even['idEvenement']; ?>" class="ical" title="Exporter au format iCalendar dans votre agenda"><i class="fa fa-calendar-plus-o fa-lg"></i></a></li>
                     </ul>
 
                     <?php

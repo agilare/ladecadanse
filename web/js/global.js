@@ -222,16 +222,16 @@ const HomePage =
 {
     init : function bindHomeEvents()
     {
-        if ($('#js-home-tmp-banner-close-btn').length === 0)
+        if ($('.js-alert-close-btn').length === 0)
         {
             return;
         }
 
         // browser.js
-        $('#js-home-tmp-banner-close-btn').on('click', function hideTmpBannerAndSetCookie()
+        $('.js-alert-close-btn').on('click', function hideTmpBannerAndSetCookie()
         {
             const HOME_TMP_BANNER_COOKIE_DURATION_IN_DAYS = 180;
-            SetCookie('msg_orga_benevole', 1, HOME_TMP_BANNER_COOKIE_DURATION_IN_DAYS);
+            SetCookie(this.parentNode.id, 1, HOME_TMP_BANNER_COOKIE_DURATION_IN_DAYS);
             this.parentNode.style.display = 'none';
             return false;
         });

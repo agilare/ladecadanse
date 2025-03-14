@@ -8,6 +8,7 @@
 
 ### Added
 - home : donate button aside Github link for mobile view
+- home : info closable alert for connected users
 
 ### Changed
 - PHP 8.3 compatibility

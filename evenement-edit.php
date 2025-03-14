@@ -854,8 +854,8 @@ if ($verif->nbErreurs() > 0)
             <input type="text" name="name_as" value="" class="name_as" /><?php echo $verif->getHtmlErreur('name_as'); ?>
             <input type="hidden" name="<?php echo $formTokenName; ?>" value="<?php echo $_SESSION[$formTokenName]; ?>">
 
-        <div id="home-tmp-banner">
-        <?php if (!in_array($get['action'], ['editer', 'update'])) { ?>
+            <div class="alert-warn">
+                    <?php if (!in_array($get['action'], ['editer', 'update'])) { ?>
             <h2>Avant de commencer :</h2>
         <?php } ?>
         <?php if (!isset($_SESSION['Sgroupe'])) { ?>
