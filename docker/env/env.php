@@ -46,10 +46,15 @@ define("LADECADANSE_API_KEY", '');
 
 // small modules
 
-// in homepage, banner (closable by user) for announcements by site admin
+// in homepage, closable warn alert for announcements by site admin
 define("HOME_TMP_BANNER_ENABLED", false);
 define("HOME_TMP_BANNER_TITLE", "Title of my announcement");
 define("HOME_TMP_BANNER_CONTENT", "My announcement...");
+
+// in homepage, closable info alert for announcements by site admin to actors
+define("HOME_TMP_BACK_BANNER_ENABLED", false);
+define("HOME_TMP_BACK_BANNER_TITLE", "Title of my announcement");
+define("HOME_TMP_BACK_BANNER_CONTENT", "My announcement...");
 
 // after crash of 22.10.2024 and then existence of 2 database versions, allow restart of application with limited edition on current db version to avoid conflict qui backed up db
 // removed its usage in code the 15.02.2025
