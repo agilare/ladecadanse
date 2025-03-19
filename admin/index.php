@@ -1,5 +1,6 @@
 <?php
 
+global $connector, $tab_icones_statut;
 require_once("../app/bootstrap.php");
 
 use Ladecadanse\Utils\Text;
@@ -145,9 +146,9 @@ while($tab_even = $connector->fetchArray($req_getEvenement))
 
 	if ($tab_even['idLieu'] != 0)
 	{
-		$req_lieu = $connector->query("SELECT nom FROM lieu WHERE idLieu=".$tab_even['idLieu']);
+		$req_lieu = $connector->query("SELECT nom FROM lieu WHERE idLieu=".(int) $tab_even['idLieu']);
 		$tabLieu = $connector->fetchArray($req_lieu);
-		$nomLieu = "<a href=\"/lieu.php?idL=".$tab_even['idLieu']."\" title=\"Voir la fiche du lieu : ".sanitizeForHtml($tabLieu['nom'])." \">".sanitizeForHtml($tabLieu['nom'])."</a>";
+		$nomLieu = "<a href=\"/lieu.php?idL=".(int) $tab_even['idLieu']."\" title=\"Voir la fiche du lieu : ".sanitizeForHtml($tabLieu['nom'])." \">".sanitizeForHtml($tabLieu['nom'])."</a>";
 	}
 
 
@@ -180,7 +181,7 @@ while($tab_even = $connector->fetchArray($req_getEvenement))
 
 	$nom_auteur = "-";
 
-	if ($tab_auteur = $connector->fetchArray($connector->query("SELECT pseudo FROM personne WHERE idPersonne=".$tab_even['idPersonne'])))
+	if ($tab_auteur = $connector->fetchArray($connector->query("SELECT pseudo FROM personne WHERE idPersonne=".(int) $tab_even['idPersonne'])))
 	{
 		$nom_auteur = "<a href=\"/user.php?idP=".$tab_even['idPersonne']."\"
 		title=\"Voir le profile de la personne\">".sanitizeForHtml($tab_auteur['pseudo'])."</a>";
@@ -227,10 +228,10 @@ $req_getDes = $connector->query($sql_req);
 while ($tab_desc = $connector->fetchArray($req_getDes))
 {
 
-	$req_auteur = $connector->query("SELECT pseudo FROM personne WHERE idPersonne=".$tab_desc['idPersonne']);
+	$req_auteur = $connector->query("SELECT pseudo FROM personne WHERE idPersonne=".(int) $tab_desc['idPersonne']);
 	$tabAuteur = $connector->fetchArray($req_auteur);
 
-	$req_lieu = $connector->query("SELECT nom FROM lieu WHERE idLieu=".$tab_desc['idLieu']);
+	$req_lieu = $connector->query("SELECT nom FROM lieu WHERE idLieu=".(int) $tab_desc['idLieu']);
 	$tabLieu = $connector->fetchArray($req_lieu);
 	$nomLieu = "<a href=\"/lieu.php?idL=".$tab_desc['idLieu']."\" title=\"Éditer le lieu\">".sanitizeForHtml($tabLieu['nom'])."</a>";
 
@@ -256,7 +257,7 @@ while ($tab_desc = $connector->fetchArray($req_getDes))
 	echo "<td class=\"tdleft small\">" . Text::html_substr($tab_desc['contenu']) . "</td>";
         $nom_auteur = "<i>Ancien membre</i>";
 
-        if ($tab_auteur = $connector->fetchArray($connector->query("SELECT pseudo FROM personne WHERE idPersonne=".$tab_desc['idPersonne'])))
+        if ($tab_auteur = $connector->fetchArray($connector->query("SELECT pseudo FROM personne WHERE idPersonne=".(int) $tab_desc['idPersonne'])))
 	{
 		$nom_auteur = "<a href=\"/user.php?idP=".$tab_desc['idPersonne']."\"
 		title=\"Voir le profile de la personne\">".sanitizeForHtml($tab_auteur['pseudo'])."</a>";

@@ -1,5 +1,6 @@
 <?php
 
+global $connector, $glo_regions, $mimes_images_acceptes, $glo_tab_ailleurs, $glo_tab_quartiers2;
 require_once("../app/bootstrap.php");
 
 use Ladecadanse\Evenement;
@@ -370,7 +371,7 @@ elseif (!empty($_POST['formulaire']))
 
 			$modifFlyerSQL = ""; // champ SQL pour le flyer
 
-			$req_even = $connector->query("SELECT * FROM evenement WHERE idEvenement =".$idEven_courant);
+			$req_even = $connector->query("SELECT * FROM evenement WHERE idEvenement =".(int) $idEven_courant);
 
 			$tab_even = $connector->fetchArray($req_even);
 
@@ -561,7 +562,7 @@ elseif (!empty($_POST['formulaire']))
 
 			$sql_update .= "date_derniere_modif='".date("Y-m-d H:i:s")."'";
 			$sql_update .= $sql_flyer.$sql_image."
-			WHERE idEvenement=".$idEven_courant;
+			WHERE idEvenement=".(int) $idEven_courant;
 
 
 				//echo "<p>".$sql_update."</p>";
@@ -576,7 +577,7 @@ elseif (!empty($_POST['formulaire']))
 			{
 				HtmlShrink::msgOk('Mise à jour de <a href="/evenement.php?idE='.$idEven_courant.'">'.$tab_even['titre'].'</a> le <a href="/evenement-agenda.php?courant='.$tab_even['dateEvenement'].'">'.date_fr($tab_even['dateEvenement'], "annee").'</a> réussie');
 
-				$sql = "DELETE FROM evenement_organisateur WHERE idEvenement=".$idEven_courant;
+				$sql = "DELETE FROM evenement_organisateur WHERE idEvenement=".(int) $idEven_courant;
 				$req = $connector->query($sql);
 
 				$action_terminee = true;
@@ -632,7 +633,7 @@ elseif (!empty($_POST['formulaire']))
 				{
 					if ($idOrg != 0)
 					{
-						$sql = "INSERT INTO evenement_organisateur (idEvenement, idOrganisateur) VALUES (" . $idEven_courant . ", " . $idOrg . ")";
+						$sql = "INSERT INTO evenement_organisateur (idEvenement, idOrganisateur) VALUES (" . (int) $idEven_courant . ", " . (int) $idOrg . ")";
                     $connector->query($sql);
                 }
 				}

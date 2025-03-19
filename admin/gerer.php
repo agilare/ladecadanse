@@ -166,10 +166,10 @@ echo '<div class="spacer"></div>';
 	while($tab_desc = $connector->fetchArray($req_des))
 	{
 
-		$req_auteur = $connector->query("SELECT pseudo FROM personne WHERE idPersonne=".$tab_desc['idPersonne']);
+		$req_auteur = $connector->query("SELECT pseudo FROM personne WHERE idPersonne=".(int) $tab_desc['idPersonne']);
 		$tabAuteur = $connector->fetchArray($req_auteur);
 
-		$req_lieu = $connector->query("SELECT nom FROM lieu WHERE idLieu=".$tab_desc['idLieu']);
+		$req_lieu = $connector->query("SELECT nom FROM lieu WHERE idLieu=".(int) $tab_desc['idLieu']);
 		$tabLieu = $connector->fetchArray($req_lieu);
 		$nomLieu = "<a href=\"/lieu.php?idL=".$tab_desc['idLieu']."\" title=\"Éditer le lieu\">".sanitizeForHtml($tabLieu['nom'])."</a>";
 
@@ -271,7 +271,7 @@ echo '<div class="spacer"></div>';
 	while($tab_lieux = $connector->fetchArray($req_lieux))
 	{
 
-		$req_nbDes = $connector->query("SELECT COUNT(*) AS total_desc FROM descriptionlieu WHERE idLieu=".$tab_lieux['idLieu']);
+		$req_nbDes = $connector->query("SELECT COUNT(*) AS total_desc FROM descriptionlieu WHERE idLieu=".(int) $tab_lieux['idLieu']);
 		$tabDes = $connector->fetchArray($req_nbDes);
 
 

@@ -34,7 +34,7 @@ use Ladecadanse\UserLevel;
     </ul>
     <ul style="list-style-type:none">
         <li>
-            <a href="https://tools.ladecadanse.ch/doc/Administration/index.html" class="url lien_ext" target="_blank">Documentation</a>
+            <a href="https://tools.ladecadanse.ch/doc/Administration/index.html" class="url lien_ext" target="_blank">Documentation (privé)</a>
         </li>
     </ul>
 </div>
