@@ -79,12 +79,6 @@ parameters:
 			path: app/bootstrap.php
 
 		-
-			message: '#^If condition is always false\.$#'
-			identifier: if.alwaysFalse
-			count: 1
-			path: articles/faireUnDon.php
-
-		-
 			message: '#^If condition is always true\.$#'
 			identifier: if.alwaysTrue
 			count: 1
@@ -117,6 +111,18 @@ parameters:
 		-
 			message: '#^Left side of && is always false\.$#'
 			identifier: booleanAnd.leftAlwaysFalse
+			count: 1
+			path: index.php
+
+		-
+			message: '#^Result of && is always false\.$#'
+			identifier: booleanAnd.alwaysFalse
+			count: 1
+			path: index.php
+
+		-
+			message: '#^Right side of && is always false\.$#'
+			identifier: booleanAnd.rightAlwaysFalse
 			count: 1
 			path: index.php
 
@@ -229,22 +235,10 @@ parameters:
 			path: organisateur-edit.php
 
 		-
-			message: '#^Offset ''lieu'' on array\{pseudo\: mixed, motdepasse\: mixed, newPass\: mixed, newPass2\: mixed, affiliation\: mixed, lieu\: mixed, organisateurs\: mixed, email\: mixed, \.\.\.\} in isset\(\) always exists and is not nullable\.$#'
-			identifier: isset.offset
-			count: 3
-			path: user-edit.php
-
-		-
 			message: '#^Offset ''mot_de_passe'' on array\{pseudo\: mixed, motdepasse\: mixed, newPass\: mixed, newPass2\: mixed, affiliation\: mixed, lieu\: mixed, organisateurs\: mixed, email\: mixed, \.\.\.\} in empty\(\) always exists and is not falsy\.$#'
 			identifier: empty.offset
 			count: 1
 			path: user-edit.php
-
-		-
-			message: '#^Offset ''lieu'' on array\{utilisateur\: mixed, motdepasse\: mixed, motdepasse2\: mixed, organisateurs\: mixed, affiliation\: mixed, region\: mixed, lieu\: mixed, email\: mixed, \.\.\.\} in isset\(\) always exists and is not nullable\.$#'
-			identifier: isset.offset
-			count: 1
-			path: user-register.php
 
 		-
 			message: '#^Offset ''organisateurs'' on array\{gds\: '''', mot_de_passe\: ''''\}\|array\{gds\: non\-falsy\-string, mot_de_passe\: non\-falsy\-string\} in isset\(\) does not exist\.$#'

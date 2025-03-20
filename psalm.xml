@@ -10,6 +10,7 @@
     findUnusedCode="false"
     allConstantsGlobal="true"
     ensureOverrideAttribute="false"
+    errorBaseline="psalm-baseline.xml"
 >
     <projectFiles>
         <directory name="."/>
