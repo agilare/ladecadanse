@@ -1,5 +1,6 @@
 <?php
 
+global $connector, $glo_regions, $glo_auj, $iconeEditer, $glo_auj_6h;
 require_once("app/bootstrap.php");
 
 use Ladecadanse\Utils\Logger;
@@ -129,7 +130,9 @@ if (!empty($get['mots']))
 
         $sql_select = "SELECT SQL_CALC_FOUND_ROWS idEvenement, idPersonne, titre, idLieu, idSalle, nomLieu, description, genre, dateEvenement,
         flyer, prix, horaire_debut, horaire_complement, dateAjout
-        FROM evenement WHERE statut='actif' AND region IN ('" . $connector->sanitize($_SESSION['region']) . "', 'rf', 'hs') AND ";
+        FROM evenement
+        JOIN localite on evenement.localite_id = localite.id
+        WHERE statut='actif' AND (region IN ('" . $connector->sanitize($_SESSION['region']) . "', 'rf', 'hs') OR FIND_IN_SET ('". $connector->sanitize($_SESSION['region']) ."', localite.regions_covered)) AND ";
 
         $sql_select .= "( ";
 
@@ -177,7 +180,7 @@ if (!empty($get['mots']))
 
         if ($get['tri'] != "pertinence")
         {
-            $sql_select .= " LIMIT " . ($get['page'] - 1) * $limite . ", " . (($get['page'] - 1) * $limite + $limite);
+            $sql_select .= " LIMIT " . (int) ($get['page'] - 1) * $limite . ", " . (int) (($get['page'] - 1) * $limite + $limite);
             $req_even = $connector->query($sql_select);
         }
         else
@@ -351,15 +354,15 @@ if (!empty($get['mots']))
 								{
 									$listeLieu = $connector->fetchArray(
 									$connector->query("SELECT nom, adresse, quartier, determinant, URL FROM lieu
-									WHERE idlieu='".$tab_even['idLieu']."'"));
+									WHERE idlieu='".(int) $tab_even['idLieu']."'"));
 
 									$salle = '';
 									if ($tab_even['idSalle'] != 0)
 									{
-									$tab_salle = $connector->fetchArray($connector->query("SELECT nom from salle where idSalle=".$tab_even['idSalle']));
+									$tab_salle = $connector->fetchArray($connector->query("SELECT nom from salle where idSalle=".(int) $tab_even['idSalle']));
 									$salle = " - ".$tab_salle['nom'];
 									}
-									$infosLieu = $listeLieu['determinant'] . " <a href=\"/lieu.php?idL=" . $tab_even['idLieu'] . "\" title=\"Voir la fiche du lieu : " . sanitizeForHtml($listeLieu['nom']) . "\" >" . sanitizeForHtml($listeLieu['nom']) . "</a>" . $salle;
+									$infosLieu = $listeLieu['determinant'] . " <a href=\"/lieu.php?idL=" . (int) $tab_even['idLieu'] . "\" title=\"Voir la fiche du lieu : " . sanitizeForHtml($listeLieu['nom']) . "\" >" . sanitizeForHtml($listeLieu['nom']) . "</a>" . $salle;
                             }
 								else
 								{
@@ -393,7 +396,7 @@ if (!empty($get['mots']))
 								<?php
 								$titre = $tab_even['titre'];
 								?>
-                                    <h3><a href="/evenement.php?idE=<?php echo $tab_even['idEvenement'] ?>" title="Voir la fiche de l'événement"><?php echo sanitizeForHtml($titre) ?></a></h3>
+                                    <h3><a href="/evenement.php?idE=<?php echo (int) $tab_even['idEvenement'] ?>" title="Voir la fiche de l'événement"><?php echo sanitizeForHtml($titre) ?></a></h3>
                                                                 <?php
 								$maxChar = Text::trouveMaxChar($tab_even['description'], 50, 4);
 								if (mb_strlen((string) $tab_even['description']) > $maxChar)
@@ -435,7 +438,7 @@ if (!empty($get['mots']))
 							{
 							?>
 
-							<a href="/evenement-edit.php?action=editer&amp;idE=<?php echo $tab_even['idEvenement'] ?>" title="Éditer cet événement"><?php echo $iconeEditer; ?></a>
+							<a href="/evenement-edit.php?action=editer&amp;idE=<?php echo (int) $tab_even['idEvenement'] ?>" title="Éditer cet événement"><?php echo $iconeEditer; ?></a>
 
 							<?php
 							}
@@ -464,15 +467,15 @@ if (!empty($get['mots']))
 					{
 						$listeLieu = $connector->fetchArray(
 						$connector->query("SELECT nom, adresse, determinant, quartier, URL
-						FROM lieu WHERE idlieu='".$tab_even['idLieu']."'"));
+						FROM lieu WHERE idlieu='".(int) $tab_even['idLieu']."'"));
 
 						$salle = '';
 						if ($tab_even['idSalle'] != 0)
 						{
-							$tab_salle = $connector->fetchArray($connector->query("SELECT nom from salle where idSalle=".$tab_even['idSalle']));
+							$tab_salle = $connector->fetchArray($connector->query("SELECT nom from salle where idSalle=".(int) $tab_even['idSalle']));
 							$salle = " - ".$tab_salle['nom'];
 						}
-						$infosLieu = $listeLieu['determinant'] . " <a href=\"/lieu.php?idL=" . $tab_even['idLieu'] . "\">" . sanitizeForHtml($listeLieu['nom']) . "</a>" . $salle;
+						$infosLieu = $listeLieu['determinant'] . " <a href=\"/lieu.php?idL=" .(int)  $tab_even['idLieu'] . "\">" . sanitizeForHtml($listeLieu['nom']) . "</a>" . $salle;
                 }
 					else
 					{
@@ -528,7 +531,7 @@ if (!empty($get['mots']))
 				){
 					?>
 
-					<a href="/evenement-edit.php?action=editer&amp;idE=<?php echo $tab_even['idEvenement'] ?>" title="Éditer cet événement"><?php echo $iconeEditer; ?></a>
+					<a href="/evenement-edit.php?action=editer&amp;idE=<?php echo (int) $tab_even['idEvenement'] ?>" title="Éditer cet événement"><?php echo $iconeEditer; ?></a>
 
 					<?php
 					}
@@ -543,15 +546,17 @@ if (!empty($get['mots']))
 	$dateCourante = ' ';
 
 	//listage des événements
+?>
+        </table>          <?php
 
 
-		echo "</table>";
 		echo HtmlShrink::getPaginationString($nb_even, $get['page'], $limite, 1, basename(__FILE__), "?" . Utils::urlQueryArrayToString($get, "page") . "&amp;page=");
     } //if evenement trouvé
-		echo "</div>"; //res_recherche
+		?>
+            </div>
 
 
-
+<?php
 }
 else
 {

@@ -116,10 +116,12 @@ Valeur exacte de la semaine de l'événement
 $sem = date2sem($even->getValue('dateEvenement'));
 
 $sql_even = "
- SELECT idEvenement, titre FROM evenement
+ SELECT idEvenement, titre
+ FROM evenement
+ JOIN localite l on evenement.localite_id = l.id
  WHERE  dateEvenement='" . $even->getValue('dateEvenement') . "'
  AND statut NOT IN ('inactif', 'propose')
-     AND region='" . $even->getValue('region') . "'
+     AND (region='" . $even->getValue('region') . "' OR FIND_IN_SET ('" . $even->getValue('region')  . "', l.regions_covered) )
  ORDER BY dateEvenement,
      CASE `genre`
      WHEN 'fête' THEN 1

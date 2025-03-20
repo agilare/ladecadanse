@@ -1,5 +1,6 @@
 <?php
 
+global $site_full_url, $glo_auj_6h, $connector, $auj, $glo_tab_genre;
 require_once("app/bootstrap.php");
 
 use Ladecadanse\Evenement;
@@ -56,7 +57,8 @@ if ($get['type'] == "evenements_auj") {
 	 titre, idPersonne, dateEvenement, ref, flyer, description, horaire_debut, horaire_fin, horaire_complement,
 	 prix, prelocations, dateAjout, date_derniere_modif
 	 FROM evenement
-	 WHERE dateEvenement='".$glo_auj_6h."' AND statut NOT IN ('inactif', 'propose') AND region IN ('".$connector->sanitize($_SESSION['region'])."', 'rf', 'hs')
+	 JOIN localite l on evenement.localite_id = l.id
+	 WHERE dateEvenement='".$glo_auj_6h."' AND statut NOT IN ('inactif', 'propose') AND (region IN ('".$connector->sanitize($_SESSION['region'])."', 'rf', 'hs') OR FIND_IN_SET ('". $connector->sanitize($_SESSION['region']) ."', l.regions_covered))
 	 ORDER BY CASE `genre`
        WHEN 'fête' THEN 1
        WHEN 'cinéma' THEN 2
@@ -142,7 +144,7 @@ if ($get['type'] == "evenements_auj") {
 }
 else if ($get['type'] == "lieu_evenements")
 {
-	$req_lieu = $connector->query("SELECT nom, determinant FROM lieu WHERE idLieu=".$get['id']);
+	$req_lieu = $connector->query("SELECT nom, determinant FROM lieu WHERE idLieu=".(int) $get['id']);
 	$tab_lieu = $connector->fetchArray($req_lieu);
 
 	$channel = '<title>La décadanse : Événements '.$tab_lieu['determinant'].' '.$tab_lieu['nom'].'</title>';
@@ -155,7 +157,7 @@ else if ($get['type'] == "lieu_evenements")
 
 	$req_even = $connector->query("SELECT idEvenement, idPersonne, idSalle, genre, titre, dateEvenement,
 		 nomLieu, description, flyer, horaire_debut, horaire_fin, horaire_complement, prix, dateAjout
-		 FROM evenement WHERE idLieu=".$get['id']." AND dateEvenement >= '".$auj."' AND statut NOT IN ('inactif', 'propose') ORDER BY dateAjout DESC");
+		 FROM evenement WHERE idLieu=".(int)$get['id']." AND dateEvenement >= '".$auj."' AND statut NOT IN ('inactif', 'propose') ORDER BY dateAjout DESC");
 
 	$items = "";
 	$css = "<style> .flyer { float:left; } h1, h2, h3, h4, p { margin: 1em 0.1em 0.6em 0.1em} .desc { margin: 0.4em 0.1em } .clean {clear:both;}</style>";
@@ -215,11 +217,11 @@ else if ($get['type'] == "lieu_evenements")
 }
 else if ($get['type'] == "organisateur_evenements")
 {
-	$req = $connector->query("SELECT nom FROM organisateur WHERE idOrganisateur=".$get['id']);
+	$req = $connector->query("SELECT nom FROM organisateur WHERE idOrganisateur=".(int) $get['id']);
 	$tab = $connector->fetchArray($req);
 
 	$channel = '<title>La décadanse : événements pour '.$tab['nom'].'</title>';
-	$channel .= '<link>'.$site_full_url.'/organisateur.php?idO='.$get['id'].'</link>';
+	$channel .= '<link>'.$site_full_url.'/organisateur.php?idO='.(int) $get['id'].'</link>';
 	$channel .= '<description>'.$tab['nom'].'</description>';
 	$channel .= "<language>fr</language>\n";
 
@@ -227,7 +229,7 @@ else if ($get['type'] == "organisateur_evenements")
 
 	$req_even = $connector->query("SELECT evenement.idEvenement AS idEvenement, idPersonne, idLieu, nomLieu, adresse, quartier, idSalle, genre, titre, dateEvenement,
 		 nomLieu, description, flyer, horaire_debut, horaire_fin, horaire_complement, prix, dateAjout
-		 FROM evenement, evenement_organisateur WHERE evenement.idEvenement=evenement_organisateur.idEvenement AND idOrganisateur=".$get['id']." AND dateEvenement >= '".$auj."' AND statut NOT IN ('inactif', 'propose') ORDER BY dateAjout DESC");
+		 FROM evenement, evenement_organisateur WHERE evenement.idEvenement=evenement_organisateur.idEvenement AND idOrganisateur=".(int) $get['id']." AND dateEvenement >= '".$auj."' AND statut NOT IN ('inactif', 'propose') ORDER BY dateAjout DESC");
 
 	$items = "";
 	$css = "<style> .flyer { float:left; } h1, h2, h3, h4, p { margin: 1em 0.1em 0.6em 0.1em} .desc { margin: 0.4em 0.1em } .clean {clear:both;}</style>";
@@ -247,13 +249,13 @@ else if ($get['type'] == "organisateur_evenements")
 
 		if ($tab_even['idLieu'] != 0)
 		{
-			$nom_lieu = "<a href=\"".$site_full_url."/lieu.php?idL=".$tab_even['idLieu']."\"
+			$nom_lieu = "<a href=\"".$site_full_url."/lieu.php?idL=".(int) $tab_even['idLieu']."\"
 			title=\"Voir la fiche du lieu : ".sanitizeForHtml($tab_even['nomLieu'])."\" >
 			".sanitizeForHtml($tab_even['nomLieu'])."</a>";
 
 			if ($tab_even['idSalle'])
 			{
-				$sql_salle = "SELECT nom FROM salle WHERE idSalle=".$tab_even['idSalle'];
+				$sql_salle = "SELECT nom FROM salle WHERE idSalle=".(int) $tab_even['idSalle'];
 				$req = $connector->query($sql_salle);
 				$tab = $connector->fetchArray($req);
 				$nom_lieu .= " - ".$tab['nom'];
@@ -329,13 +331,13 @@ else if ($get['type'] == "evenements_ajoutes")
 
 		if ($tab_even['idLieu'] != 0)
 		{
-			$nom_lieu = "<a href=\"".$site_full_url."/lieu.php?idL=".$tab_even['idLieu']."\"
+			$nom_lieu = "<a href=\"".$site_full_url."/lieu.php?idL=".(int) $tab_even['idLieu']."\"
 			title=\"Voir la fiche du lieu : ".sanitizeForHtml($tab_even['nomLieu'])."\" >
 			".sanitizeForHtml($tab_even['nomLieu'])."</a>";
 
 			if ($tab_even['idSalle'])
 			{
-				$sql_salle = "SELECT nom FROM salle WHERE idSalle=".$tab_even['idSalle'];
+				$sql_salle = "SELECT nom FROM salle WHERE idSalle=".(int) $tab_even['idSalle'];
 				$req = $connector->query($sql_salle);
 				$tab = $connector->fetchArray($req);
 				$nom_lieu .= " - ".$tab['nom'];
@@ -379,7 +381,7 @@ else if ($get['type'] == "evenements_ajoutes")
 
 		$items .= "]]></description>\n";
 		//$items .= "<enclosure url=\"".$IMGeven.$tab_even['flyer']."\" type="image/jpeg" length="2441"></enclosure>
-		$items .= "<guid isPermaLink=\"false\">".$tab_even['idEvenement']."</guid>\n";
+		$items .= "<guid isPermaLink=\"false\">".(int) $tab_even['idEvenement']."</guid>\n";
 		$items .= "<pubDate>".date("r", datetime_iso2time($tab_even['dateAjout']))."</pubDate>\n";
 		$items .= "</item>\n";
 

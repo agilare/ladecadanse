@@ -6,6 +6,7 @@
  * @license    AGPL License; see LICENSE file for details.
  */
 
+global $connector;
 require_once("app/bootstrap.php");
 
 use Ladecadanse\Utils\Text;
@@ -30,7 +31,7 @@ $sqlEv = "SELECT idEvenement, genre, idLieu, idSalle, nomLieu, adresse, quartier
  titre, idPersonne, dateEvenement, ref, flyer, image, description, horaire_debut, horaire_fin,
  horaire_complement, prix, prelocations
  FROM evenement, localite
- WHERE evenement.localite_id=localite.id AND dateEvenement LIKE '" . $get['auj'] . "%' AND statut NOT IN ('inactif', 'propose') AND region IN ('" . $connector->sanitize($_SESSION['region']) . "', " . $sql_rf . " 'hs')
+ WHERE evenement.localite_id=localite.id AND dateEvenement LIKE '" . $get['auj'] . "%' AND statut NOT IN ('inactif', 'propose') AND (region IN ('" . $connector->sanitize($_SESSION['region']) . "', " . $sql_rf . " 'hs') OR FIND_IN_SET ('". $connector->sanitize($_SESSION['region']) ."', localite.regions_covered))
  ORDER BY CASE `genre`
         WHEN 'fête' THEN 1
         WHEN 'cinéma' THEN 2
@@ -44,16 +45,19 @@ $req_even = $connector->query($sqlEv);
 $event_count = ['ge' => 0, 'vd' => 0];
 $req_even_ge_nb = $connector->query("SELECT COUNT(idEvenement) AS nb
  FROM evenement, localite
- WHERE evenement.localite_id=localite.id AND dateEvenement LIKE '" . $get['auj'] . "%' AND statut NOT IN ('inactif', 'propose') AND region IN ('ge', 'rf', 'hs')");
+ WHERE evenement.localite_id=localite.id AND dateEvenement LIKE '" . $get['auj'] . "%' AND statut NOT IN ('inactif', 'propose') AND (region IN ('ge', 'rf', 'hs') OR FIND_IN_SET ('ge', localite.regions_covered))");
 $event_count['ge'] = $connector->fetchAll($req_even_ge_nb)[0]['nb'];
+
 $req_even_vd_nb = $connector->query("SELECT COUNT(idEvenement) AS nb
  FROM evenement, localite
- WHERE evenement.localite_id=localite.id AND dateEvenement LIKE '" . $get['auj'] . "%' AND statut NOT IN ('inactif', 'propose') AND region IN ('vd', 'hs')");
+ WHERE evenement.localite_id=localite.id AND dateEvenement LIKE '" . $get['auj'] . "%' AND statut NOT IN ('inactif', 'propose') AND (region IN ('vd', 'hs') OR FIND_IN_SET ('vd', localite.regions_covered))");
 $event_count['vd'] = $connector->fetchAll($req_even_vd_nb)[0]['nb'];
 
 $req_dern_even = $connector->query("
 SELECT idEvenement, titre, dateEvenement, dateAjout, nomLieu, idLieu, idSalle, flyer, image, statut
-FROM evenement WHERE region IN ('" . $connector->sanitize($_SESSION['region']) . "', " . $sql_rf . " 'hs') AND statut NOT IN ('inactif', 'propose') ORDER BY dateAjout DESC LIMIT 0, 10
+FROM evenement
+JOIN localite l on evenement.localite_id = l.id
+WHERE (region IN ('" . $connector->sanitize($_SESSION['region']) . "', " . $sql_rf . " 'hs') OR FIND_IN_SET ('" . $connector->sanitize($_SESSION['region']) . "', l.regions_covered) ) AND statut NOT IN ('inactif', 'propose') ORDER BY dateAjout DESC LIMIT 0, 10
 ");
 ?>
 

@@ -1,5 +1,7 @@
 <?php
 
+global $connector;
+
 use Ladecadanse\Utils\Utils;
 use Ladecadanse\Utils\Validateur;
 
@@ -220,7 +222,8 @@ if ($_SESSION['region'] == 'ge')
 $sql_menu_lieux = "
 SELECT idLieu, nom
 FROM lieu
-WHERE statut='" . $get['statut'] . "'  " . $sql_vue . " AND region IN ('" . $connector->sanitize($_SESSION['region']) . "', " . $sql_rf . " 'hs')
+JOIN localite ON lieu.localite_id = localite.id
+WHERE statut='" . $get['statut'] . "'  " . $sql_vue . " AND (region IN ('" . $connector->sanitize($_SESSION['region']) . "', " . $sql_rf . " 'hs') OR FIND_IN_SET ('". $connector->sanitize($_SESSION['region']) ."', localite.regions_covered))
 ORDER BY TRIM(LEADING 'l\'' FROM (TRIM(LEADING 'les ' FROM (TRIM(LEADING 'la ' FROM (TRIM(LEADING 'le ' FROM lower(nom)))))))) COLLATE utf8mb4_unicode_ci";
 
 $req_lieux = $connector->query($sql_menu_lieux);

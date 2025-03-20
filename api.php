@@ -80,8 +80,11 @@ if ($get['entity'] == 'event')
      LEFT JOIN localite eloc ON e.localite_id = eloc.id
      LEFT JOIN lieu l ON e.idLieu = l.idLieu
      LEFT JOIN localite loc ON l.localite_id = loc.id
-	 WHERE dateEvenement = '" . $connector->sanitize($get['date']) . "' AND genre = '" . $connector->sanitize($get['category']) . "' AND e.statut NOT IN ('propose') AND e.region IN ('" . $connector->sanitize($get['region']) . "')";
+	 WHERE dateEvenement = '" . $connector->sanitize($get['date']) . "' AND genre = '" . $connector->sanitize($get['category']) . "' AND e.statut NOT IN ('propose')
+	 AND e.region IN ('" . $connector->sanitize($get['region']) . "')";
     // noctambus : don't covers 'rf', 'hs'
+    // so, localite.regions_covered is not used
+
     if (!empty($get['endtime']))
     {
         $sql .= "AND horaire_fin >= '" . $datetimeMinEnd->format('Y-m-d') . ' ' . $connector->sanitize($get['endtime']) . "' AND horaire_fin < '" . $datetimeMinEnd->format('Y-m-d') . " 06:00:01'";

@@ -1,5 +1,6 @@
 <?php
 
+global $connector;
 require_once("app/bootstrap.php");
 
 use Ladecadanse\Evenement;
@@ -150,7 +151,7 @@ $sql_rf = "";
 if ($_SESSION['region'] == 'ge')
     $sql_rf = " 'rf', ";
 
-$sql_region = " region IN ('".$connector->sanitize($_SESSION['region'])."', ".$sql_rf." 'hs') ";
+$sql_region = " (region IN ('".$connector->sanitize($_SESSION['region'])."', ".$sql_rf." 'hs') OR FIND_IN_SET ('". $connector->sanitize($_SESSION['region']) ."', localite.regions_covered)) ";
 
 
 $get['nblignes'] = 50;
