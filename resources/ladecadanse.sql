@@ -1227,7 +1227,7 @@ CREATE TABLE `organisateur` (
 
 
 DROP TABLE IF EXISTS `personne`;
-CREATE TABLE `personne` (
+CREATE TABLE `personne2` (
   `idPersonne` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `pseudo` varchar(80) COLLATE utf8mb4_unicode_ci NOT NULL,
   `mot_de_passe` varchar(60) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -1243,6 +1243,7 @@ CREATE TABLE `personne` (
   `actif` tinyint(3) unsigned NOT NULL DEFAULT 1,
   `dateAjout` datetime NOT NULL,
   `date_derniere_modif` datetime NOT NULL,
+  `last_login` datetime NULL DEFAULT NULL,
   PRIMARY KEY (`idPersonne`),
   KEY `pseudo` (`pseudo`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

@@ -143,6 +143,7 @@ class Sentry extends SystemComponent
 
                 if ((sha1($this->userdata['gds'] . sha1($pass)) == $this->userdata['mot_de_passe']) || password_verify($pass, (string) $this->userdata['mot_de_passe']))
                 {
+                    $connector->query("UPDATE personne SET last_login = now() WHERE idPersonne=".(int)$this->userdata['idPersonne']);
                     session_regenerate_id(true); // to avoid session fixation attack
                     $this->_setSession($this->userdata, $memoriser);
                     $logger->log('global', 'activity', "[Sentry] login of " . $_SESSION["user"], Logger::GRAN_YEAR);
