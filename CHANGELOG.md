@@ -1,22 +1,32 @@
 # Changelog
 
-## [3.6.3] - 2025-03-09
+## [3.7.0] - 2025-03-21
 
 ### Fixed
 - add some int casts in sqls to strengthen security
 - donate : Paypal btn was disabled because of a missing URL in CSP
 
 ### Added
+- localite region covered to soften cantons strict separation to user
+- last_login in personne table
 - home : donate button aside Github link for mobile view
 - home : info closable alert for connected users
+- FUNDING.yml
+- analyzers baselines
 
 ### Changed
 - PHP 8.3 compatibility
+- donate : text completed with explanations
 - donate : Paypal btn modernized and following new & improv. config
+- docker configuration
 
 ### Removed
 - Recaptcha
 - donate : in page rm (commented) Flattr code
+- À propos : Darksite hosting
+
+### Security
+- add 8G firewall and rejected requests logger
 
 ## [3.6.2] - 2025-03-07
 
