@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<files psalm-version="6.7.0@11a32693fb9e33d4f0505de17af41c8fcac698a7">
+  <file src="_menulieux.inc.php">
+    <InvalidGlobal>
+      <code><![CDATA[global $connector;]]></code>
+    </InvalidGlobal>
+  </file>
+  <file src="admin/gererEvenements.php">
+    <InvalidGlobal>
+      <code><![CDATA[global $connector, $glo_regions, $mimes_images_acceptes, $glo_tab_ailleurs, $glo_tab_quartiers2;]]></code>
+    </InvalidGlobal>
+    <NoValue>
+      <code><![CDATA[$champs['flyer']]]></code>
+      <code><![CDATA[$champs['image']]]></code>
+    </NoValue>
+  </file>
+  <file src="admin/index.php">
+    <InvalidGlobal>
+      <code><![CDATA[global $connector, $tab_icones_statut;]]></code>
+    </InvalidGlobal>
+  </file>
+  <file src="evenement-agenda.php">
+    <InvalidGlobal>
+      <code><![CDATA[global $connector;]]></code>
+    </InvalidGlobal>
+  </file>
+  <file src="evenement-email.php">
+    <UndefinedClass>
+      <code><![CDATA[Exception]]></code>
+    </UndefinedClass>
+  </file>
+  <file src="evenement-search.php">
+    <InvalidGlobal>
+      <code><![CDATA[global $connector, $glo_regions, $glo_auj, $iconeEditer, $glo_auj_6h;]]></code>
+    </InvalidGlobal>
+  </file>
+  <file src="index.php">
+    <InvalidGlobal>
+      <code><![CDATA[global $connector;]]></code>
+    </InvalidGlobal>
+  </file>
+  <file src="lieux.php">
+    <InvalidGlobal>
+      <code><![CDATA[global $connector;]]></code>
+    </InvalidGlobal>
+  </file>
+  <file src="multi-suppr.php">
+    <InvalidGlobal>
+      <code><![CDATA[global $logger;]]></code>
+    </InvalidGlobal>
+  </file>
+  <file src="rss.php">
+    <InvalidGlobal>
+      <code><![CDATA[global $site_full_url, $glo_auj_6h, $connector, $auj, $glo_tab_genre;]]></code>
+    </InvalidGlobal>
+  </file>
+</files>
