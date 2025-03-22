@@ -1227,7 +1227,7 @@ CREATE TABLE `organisateur` (
 
 
 DROP TABLE IF EXISTS `personne`;
-CREATE TABLE `personne2` (
+CREATE TABLE `personne` (
   `idPersonne` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `pseudo` varchar(80) COLLATE utf8mb4_unicode_ci NOT NULL,
   `mot_de_passe` varchar(60) COLLATE utf8mb4_unicode_ci NOT NULL,
