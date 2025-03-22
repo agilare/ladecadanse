@@ -17,18 +17,16 @@ include("../_header.inc.php");
 
         <h3>Description</h3>
         <p>
-            La décadanse est un agenda de sorties créé en 2003 pour Genève et ses environs. Le site se compose d'une sélection d'événements culturels si possible ouverts, accessibles et intéressants.</p>
+            La décadanse est un agenda de sorties créé en 2003 pour Genève et ses environs. Le site se compose d'une sélection d'événements culturels si possible ouverts, accessibles et intéressants. Ceci est détaillé dans la <a href="charte-editoriale.php">charte éditoriale</a>.</p>
         <p>Les acteurs culturels (organisateurs, gérants, artistes et al.) ont la possibilité d'ajouter gratuitement leurs propres événements.<br>
-            Pour faire figurer un événement sur le site, l'inscription n'est pas obligatoire, même si elle encouragée s'il y en a un certain nombre à ajouter; il est en effet aussi possible de les annoncer en nous envoyant un message. Cela est résumé dans <a href="/articles/annoncerEvenement.php">cette page</a>.</p>
+            Pour faire figurer un événement sur le site, l'inscription n'est pas obligatoire, même si elle est encouragée dès qu'il y en a un certain nombre à ajouter ; cela est résumé dans <a href="annoncerEvenement.php">cette page</a>.</p>
         <p>
-            Les rubriques <a href="/lieux.php">Lieux</a> et <a href="organisateurs.php">Organisateurs</a> répertorient ces acteurs, avec pour chacun une fiche, si possible accompagnée d'un descriptif et de photos.</p>
-        <p>
-            Le site est mis à jour quotidiennement par le webmaster et les contributeurs.</p>
+            Les rubriques <a href="/lieux.php">Lieux</a> et <a href="/organisateurs.php">Organisateurs</a> répertorient ces acteurs, avec pour chacun une fiche, si possible accompagnée d'un descriptif et d'illustrations.</p>
+        <p>Le site est mis à jour quotidiennement par les contributeurs et par nous même</p>
     </div>
     <!-- Fin  -->
 
     <div class="rubrique">
-        <h3>Staff</h3>
         <dl>
             <!--		<dt>Webmasters</dt>
 
@@ -38,14 +36,10 @@ include("../_header.inc.php");
 
             <dt>Participer</dt>
             <ul>
-                <li><a href="/user-register.php">Inscrivez-vous</a></li>
+                <li><a href="/user-register.php">Inscrivez-vous</a> pour annoncer des événements</li>
                 <li>ou écrivez-nous via le <a href="/contacteznous.php">formulaire de contact</a>.</li>
                 <li>ou <a href="/articles/faireUnDon.php">faites un don</a>.</li>
             </ul>
-            <h3>Hébergement</h3>
-
-            <dd><a href="https://www.darksite.ch/" >Darksite</a> : portail culturel et indépendant</dd>
-
         </dl>
 
     </div>

@@ -1,33 +1,34 @@
 # Changelog
 
-## [3.7.0] - 2025-03-21
+## [3.7.0] - 2025-03-23
 
 ### Fixed
-- add some int casts in sqls to strengthen security
 - donate : Paypal btn was disabled because of a missing URL in CSP
 
 ### Added
-- localite region covered to soften cantons strict separation to user
-- last_login in personne table
-- home : donate button aside Github link for mobile view
-- home : info closable alert for connected users
-- FUNDING.yml
+- region_covered in localite table to soften cantons strict separation (goal : Nyon district in Geneva agenda) to user
+- record last_login in personne table
+- home : in mobile view, donate button aside Github link
+- home : closable info alert for connected users
+- FUNDING.yml with paypal.me link
 - analyzers baselines
 
 ### Changed
 - PHP 8.3 compatibility
-- donate : text completed with explanations
-- donate : Paypal btn modernized and following new & improv. config
+- donate : text completed with more explanations
+- donate : Paypal btn modernized and following new & improved config; extract hosted_button_id
 - footer : highlight donate button, remove search form
-- docker configuration
+- Charte éditoriale, À propos : actualisation
+- Docker configuration updated
 
 ### Removed
 - Recaptcha
-- donate : in page rm (commented) Flattr code
-- À propos : Darksite hosting
+- donate : (commented) Flattr code
 
 ### Security
-- add 8G firewall and rejected requests logger
+- add 8G firewall and logger script to record rejected requests
+- add some int casts in sqls
+
 
 ## [3.6.2] - 2025-03-07
 

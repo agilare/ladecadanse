@@ -40,6 +40,8 @@ define("MATOMO_URL", '');
 define("GLITCHTIP_ENABLED", false);
 define("GLITCHTIP_DSN", "");
 
+define("PAYPAL_HOSTED_BUTTON_ID", "");
+
 // to allow access to events API (api.php)
 define("LADECADANSE_API_USER", '');
 define("LADECADANSE_API_KEY", '');

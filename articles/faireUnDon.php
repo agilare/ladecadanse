@@ -15,34 +15,44 @@ include("../_header.inc.php");
 
     <div class="rubrique" style="background:#f4f4f4;border-radius:3px;margin: 1em auto 0;padding:1em 1%;width: 92%;">
 
-        <div style="float:right">
-            <div id="donate-button-container">
-                <div id="donate-button"></div>
-                <script src="https://www.paypalobjects.com/donate/sdk/donate-sdk.js" charset="UTF-8"></script>
-                <script nonce="<?php echo CSP_NONCE ?>">
-                PayPal.Donation.Button({
-                env:'production',
-                hosted_button_id:'4ZA8G8XRLUTC2',
-                image: {
-                src:'https://www.paypalobjects.com/fr_FR/CH/i/btn/btn_donate_LG.gif',
-                alt:'Bouton Faites un don avec PayPal',
-                title:'PayPal - The safer, easier way to pay online!',
-                }
-                }).render('#donate-button');
-                </script>
-            </div>
+        <p>La décadanse est un site entièrement gratuit sur un code <a href="https://github.com/agilare/ladecadanse/" target="_blank">open source</a>, que je développe et gère bénévolement depuis une vingtaine d'années, avec parfois l'aide d'autres personnes.</p>
 
-            <!--            <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top" >
-                            <input type="hidden" name="image_url" value="https://www.darksite.ch/ladecadanse/images/interface/logo_titre.jpg">
+        <p>En dehors des frais qui sont assez modestes (hébergement, flyers...), le site me demande un certain investissement en temps :</p>
+        <ul style="margin-left:0.4em;list-style-type: none">
+            <li>✅ <b>maintenance</b> : assurer sa disponibilité, sa sécurité ; garder à jour, chasser les bugs</li>
+            <li>✅ <b>amélioration continue</b> : ajout de nouvelles fonctionnalités et optimisations</li>
+            <li>✅ <b>gestion régulière</b> : ajout des événements, lieux, etc. et leur mise à jour ; aide aux utilisateurs, modération</li>
+        </ul>
+        <br>
+        <p>Un <b>don</b>, quel que soit son montant, est une manière de <b>montrer votre soutien</b> et m’encourage à poursuivre ce projet !</p>
 
-                <input type="hidden" name="cmd" value="_s-xclick">
-                <input type="hidden" name="hosted_button_id" value="4ZA8G8XRLUTC2">
-                <input type="image" src="https://www.paypalobjects.com/fr_FR/CH/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal, le réflexe sécurité pour payer en ligne">
-                <img alt="" border="0" src="https://www.paypalobjects.com/fr_FR/i/scr/pixel.gif" width="1" height="1">
-                        </form>-->
-        </div>
-        En faisant un don à La décadanse, vous nous aidez à son entretien et son évolution.
-        Merci d'avance !
+        <p>Vous pouvez contribuer (une seule fois ou de manière récurrente, selon vos possibilités) via :</p>
+        <ul style="margin-left:0.4em;list-style-type: none">
+            <li><b style="vertical-align: top">Carte de crédit, compte Paypal </b>
+                <div style="display:inline-block">
+                    <div id="donate-button-container">
+                        <div id="donate-button"></div>
+                        <script src="https://www.paypalobjects.com/donate/sdk/donate-sdk.js" charset="UTF-8"></script>
+                        <script nonce="<?php echo CSP_NONCE ?>">
+                            PayPal.Donation.Button({
+                                env:'production',
+                                hosted_button_id:'<?php echo PAYPAL_HOSTED_BUTTON_ID; ?>',
+                                image: {
+                                    src:'https://www.paypalobjects.com/fr_FR/CH/i/btn/btn_donate_SM.gif',
+                                    alt:'Bouton Faites un don avec PayPal',
+                                    title:'PayPal - The safer, easier way to pay online!',
+                                }
+                            }).render('#donate-button');
+                        </script>
+                    </div>
+
+
+                </div></li>
+            <li><b>Twint, virement</b> (<a href="/contacteznous.php">contactez-moi</a>)</li>
+        </ul>
+<br>
+        <p>Merci pour votre soutien ! ❤️</p>
+        <p>Michel</p>
 
         <div class="spacer"></div>
 
