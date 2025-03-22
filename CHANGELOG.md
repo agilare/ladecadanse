@@ -18,6 +18,7 @@
 - PHP 8.3 compatibility
 - donate : text completed with explanations
 - donate : Paypal btn modernized and following new & improv. config
+- footer : highlight donate button, remove search form
 - docker configuration
 
 ### Removed

@@ -11,25 +11,23 @@
             <?php
             foreach ($glo_menu_pratique as $nom => $lien)
             {
+                $highlightLink = '';
                 if (strstr((string) $_SERVER['PHP_SELF'], (string) $lien))
                 {
                     $ici = " class=\"ici\"";
                 }
+
+                if ($nom == "Faire un don") {
+                    $highlightLink = ' style="background: #ffe771;border-radius: 0 0 3px 4px;padding: 5px 4px;" ';
+                }
                 ?>
 
-            <li><a href="<?php echo $lien; ?>" title="<?php echo $nom; ?>" <?php echo $ici; ?>><?php echo $nom; ?></a></li>
+            <li <?php echo $highlightLink; ?>><a href="<?php echo $lien; ?>" title="<?php echo $nom; ?>" <?php echo $ici; ?>><?php echo $nom; ?></a></li>
             <?php } ?>
 
 
                 <li><a href="/articles/charte-editoriale.php">Charte éditoriale</a></li>
                 <li><a href="/articles/liens.php">Liens</a></li>
-                <li>
-                    <form class="recherche" action="/evenement-search.php" method="get">
-                        <input type="text" class="mots" name="mots" size="22" maxlength="50" value="" placeholder="Rechercher un événement" />
-                        <input type="submit" class="submit" name="formulaire" value=""  />
-                        <input type="text" name="name_as" value="" class="name_as"  />
-                    </form>
-                </li>
         </ul>
     </div>
     <!-- Fin Pied -->
