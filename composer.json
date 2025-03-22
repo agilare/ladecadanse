@@ -56,7 +56,8 @@
         "sniffer:php84": "phpcs -p ./ --ignore=*/images/*,*/logs/*,*/var/*,*/vendor/*,*/web/* --standard=vendor/phpcompatibility/php-compatibility/PHPCompatibility --runtime-set testVersion 8.4",
         "phpstan": "vendor/bin/phpstan analyse -c phpstan.neon --ansi",
         "rector:dry-run": "vendor/bin/rector process --dry-run",
-        "psalm": "vendor/bin/psalm"
+        "psalm": "vendor/bin/psalm",
+        "test:api": "vendor/bin/codecept run"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "^3.7",

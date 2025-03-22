@@ -67,7 +67,7 @@ Copy `tests/.env_model` to a new file `tests/.env` and enter the values used by 
 
 #### Running the tests on an instance
 
-`php vendor/bin/codecept run`
+`composer test:api`
 
 ## Strategy
 
