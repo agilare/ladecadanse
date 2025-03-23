@@ -233,7 +233,7 @@ while ($tab_desc = $connector->fetchArray($req_getDes))
 
 	$req_lieu = $connector->query("SELECT nom FROM lieu WHERE idLieu=".(int) $tab_desc['idLieu']);
 	$tabLieu = $connector->fetchArray($req_lieu);
-	$nomLieu = "<a href=\"/lieu.php?idL=".$tab_desc['idLieu']."\" title=\"Éditer le lieu\">".sanitizeForHtml($tabLieu['nom'])."</a>";
+	$nomLieu = "<a href=\"/lieu.php?idL=".(int)$tab_desc['idLieu']."\" title=\"Éditer le lieu\">".sanitizeForHtml($tabLieu['nom'])."</a>";
 
 
 	if ($pair % 2 == 0)

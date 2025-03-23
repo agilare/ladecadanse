@@ -467,7 +467,7 @@ elseif (!empty($_POST['formulaire']))
 			{
 
 				$sql_flyer = ", flyer='".$champs['flyer']."'";
-				$req_flyer = $connector->query("SELECT flyer FROM evenement WHERE idEvenement=".$idEven_courant);
+				$req_flyer = $connector->query("SELECT flyer FROM evenement WHERE idEvenement=".(int)$idEven_courant);
 
 				if ($req_flyer)
 				{
@@ -489,7 +489,7 @@ elseif (!empty($_POST['formulaire']))
 			{
 
 				$sql_flyer = ", flyer=''";
-				$req_flyer = $connector->query("SELECT flyer FROM evenement WHERE idEvenement=".$idEven_courant);
+				$req_flyer = $connector->query("SELECT flyer FROM evenement WHERE idEvenement=".(int)$idEven_courant);
 
 				//si  un ancien flyer a été effectivement trouvé suppression des fichiers
 				if ($req_flyer)
@@ -511,7 +511,7 @@ elseif (!empty($_POST['formulaire']))
 			{
 
 				$sql_image = ", image='".$champs['image']."'";
-				$req_image = $connector->query("SELECT image FROM evenement WHERE idEvenement=".$idEven_courant);
+				$req_image = $connector->query("SELECT image FROM evenement WHERE idEvenement=".(int)$idEven_courant);
 
 				if ($req_image)
 				{
@@ -531,7 +531,7 @@ elseif (!empty($_POST['formulaire']))
 			{
 
 				$sql_image = ", image=''";
-				$req_image = $connector->query("SELECT image FROM evenement WHERE idEvenement=".$idEven_courant);
+				$req_image = $connector->query("SELECT image FROM evenement WHERE idEvenement=".(int)$idEven_courant);
 
 				//si  un ancien flyer a êµ© effectivement trouvé¡³uppression des fichiers
 				if ($req_image)
@@ -683,7 +683,7 @@ $sql_evenement = "
 SELECT idEvenement, idLieu, idPersonne, statut, idPersonne, genre, titre, dateEvenement, horaire_debut, horaire_fin, nomLieu, flyer, dateAjout,
  date_derniere_modif
 FROM evenement ".$where."
-ORDER BY ".$get['tri_gerer']." ".$get['ordre']." LIMIT ".($sql_page - 1) * $get['nblignes'].",".$get['nblignes'];
+ORDER BY ".$get['tri_gerer']." ".$get['ordre']." LIMIT ".($sql_page - 1) * (int)$get['nblignes'].",".(int)$get['nblignes'];
 
 //echo $sql_evenement;
 $req_evenement = $connector->query($sql_evenement);

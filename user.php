@@ -124,14 +124,14 @@ if ($_SESSION['SidPersonne'] != $get['idP'] && $_SESSION['Sgroupe'] > 4 )
 }
 
 //details de la personne
-$req_personne = $connector->query("SELECT idPersonne, pseudo, affiliation, email, groupe, actif FROM personne WHERE idPersonne=" . $get['idP']);
+$req_personne = $connector->query("SELECT idPersonne, pseudo, affiliation, email, groupe, actif FROM personne WHERE idPersonne=" . (int)$get['idP']);
 
 $detailsPersonne = $connector->fetchArray($req_personne);
 
 //jointure pour obtenir toutes les affiliations qui sont liées à cette personne
 $req_affPers = $connector->query("SELECT lieu.idLieu, lieu.nom
 FROM affiliation INNER JOIN lieu ON affiliation.idAffiliation=lieu.idLieu
- WHERE affiliation.idPersonne=".$get['idP']." AND affiliation.genre='lieu'");
+ WHERE affiliation.idPersonne=".(int)$get['idP']." AND affiliation.genre='lieu'");
 
 $detailsAff = $connector->fetchArray($req_affPers);
 
@@ -168,24 +168,24 @@ $detailsAff = $connector->fetchArray($req_affPers);
                 echo sanitizeForHtml($detailsPersonne['affiliation']);
             }
             echo '<br />';
-            $sql = "SELECT * FROM personne_organisateur, organisateur WHERE personne_organisateur.idOrganisateur=organisateur.idOrganisateur AND personne_organisateur.idPersonne=".$get['idP'];
+            $sql = "SELECT * FROM personne_organisateur, organisateur WHERE personne_organisateur.idOrganisateur=organisateur.idOrganisateur AND personne_organisateur.idPersonne=".(int)$get['idP'];
             $req = $connector->query($sql);
             while ($tab = $connector->fetchArray($req))
             {
-                echo '<a href="/organisateur.php?idO=' . $tab['idOrganisateur'] . '">' . sanitizeForHtml($tab['nom']) . '</a><br />';
+                echo '<a href="/organisateur.php?idO=' . (int)$tab['idOrganisateur'] . '">' . sanitizeForHtml($tab['nom']) . '</a><br />';
 }
             ?>
 
                 </td></tr>
         </table>
         <?php if ((isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 1)) || $_SESSION['SidPersonne'] == $get['idP']) { ?>
-        <a href="/user-edit.php?idP=<?php echo $get['idP'] ?>&action=editer"><img src="/web/interface/icons/user_edit.png" alt="" />Modifier</a><?php } ?>
+        <a href="/user-edit.php?idP=<?php echo (int)$get['idP'] ?>&action=editer"><img src="/web/interface/icons/user_edit.png" alt="" />Modifier</a><?php } ?>
     </div> <!-- Fin profile -->
 
 
 	<ul id="menu_principal">
         <li <?php if ($get['type_elements'] == "ajouts") { echo ' class="ici" '; } ?>>
-        <a href="/user.php?idP=<?php echo $get['idP'] ?>&type_elements=ajouts">
+        <a href="/user.php?idP=<?php echo (int)$get['idP'] ?>&type_elements=ajouts">
             <?php echo $icone['ajouts'] . "Éléments ajoutés" ?></a></li>
     </ul>
 
@@ -245,16 +245,16 @@ $detailsAff = $connector->fetchArray($req_affPers);
 	if ($get['elements'] == "evenement")
 	{
 		$sql_evenement = "SELECT idEvenement, idLieu, statut, idPersonne, genre,titre, dateEvenement, nomLieu, flyer, dateAjout
-		 FROM evenement WHERE idPersonne=".$get['idP']." ORDER BY ".$get['tri']." ".$get['ordre']." LIMIT ".($get['page'] - 1) * $get['nblignes'].",".$get['nblignes'];
+		 FROM evenement WHERE idPersonne=".(int)$get['idP']." ORDER BY ".$get['tri']." ".$get['ordre']." LIMIT ".((int)$get['page'] - 1) * (int)$get['nblignes'].",".$get['nblignes'];
 
 
 		$req_evenement = $connector->query($sql_evenement);
 
-		$req_nbeven = $connector->query("SELECT COUNT(*) AS nbeven FROM evenement WHERE idPersonne=".$get['idP']);
+		$req_nbeven = $connector->query("SELECT COUNT(*) AS nbeven FROM evenement WHERE idPersonne=".(int)$get['idP']);
 		$tab_nbeven = $connector->fetchArray($req_nbeven);
 		$tot_elements = $tab_nbeven['nbeven'];
 
-		echo HtmlShrink::getPaginationString($tot_elements, $get['page'], $get['nblignes'], 1, "", "?idP=" . $get['idP'] . "&elements=" . $get['elements'] . "&tri=" . $get['tri'] . "&ordre=" . $get['ordre'] . "&nblignes=" . $get['nblignes'] . "&page=");
+		echo HtmlShrink::getPaginationString($tot_elements, $get['page'], $get['nblignes'], 1, "", "?idP=" . (int)$get['idP'] . "&elements=" . $get['elements'] . "&tri=" . $get['tri'] . "&ordre=" . $get['ordre'] . "&nblignes=" . (int)$get['nblignes'] . "&page=");
 
     if ($connector->getNumRows($req_evenement) > 0)
 		{
@@ -305,9 +305,9 @@ $detailsAff = $connector->fetchArray($req_affPers);
 
 				if ($tab_even['idLieu'] != 0)
 				{
-					$req_lieu = $connector->query("SELECT nom FROM lieu WHERE idLieu=".$tab_even['idLieu']);
+					$req_lieu = $connector->query("SELECT nom FROM lieu WHERE idLieu=".(int)$tab_even['idLieu']);
 					$tabLieu = $connector->fetchArray($req_lieu);
-					$nomLieu = "<a href=\"/lieu.php?idL=".$tab_even['idLieu']."\" title=\"Voir la fiche du lieu : ".sanitizeForHtml($tabLieu['nom'])." \">".sanitizeForHtml($tabLieu['nom'])."</a>";
+					$nomLieu = "<a href=\"/lieu.php?idL=".(int)$tab_even['idLieu']."\" title=\"Voir la fiche du lieu : ".sanitizeForHtml($tabLieu['nom'])." \">".sanitizeForHtml($tabLieu['nom'])."</a>";
 				}
 
 
@@ -361,7 +361,7 @@ $detailsAff = $connector->fetchArray($req_affPers);
 		// DESCRIPTIONS DE LIEUX
 
 		$req_des = $connector->query("SELECT idLieu, idPersonne, dateAjout, contenu, type
-		FROM descriptionlieu WHERE idPersonne=".$get['idP']. " ORDER BY ".$get['tri']." ".$get['ordre']." LIMIT ".($get['page'] - 1) * $get['nblignes'].",".$get['nblignes']);
+		FROM descriptionlieu WHERE idPersonne=".(int)$get['idP']. " ORDER BY ".$get['tri']." ".$get['ordre']." LIMIT ".($get['page'] - 1) * (int)$get['nblignes'].",".(int)$get['nblignes']);
 
 		$req_nbdesc = $connector->query("SELECT COUNT(*) AS total FROM descriptionlieu WHERE idPersonne=".$get['idP']);
 		$tab_nbdesc = $connector->fetchArray($req_nbdesc);
@@ -404,7 +404,7 @@ $detailsAff = $connector->fetchArray($req_affPers);
 						echo "<th>";
 					}
 
-					echo "<a href=\"?idP=" . $get['idP'] . "&elements=" . $get['elements'] . "&page=" . $get['page'] . "&tri=" . $att . "&ordre=" . $ordre_inverse . "&nblignes=" . $get['nblignes'] . "\">" . $th . "</a></th>";
+					echo "<a href=\"?idP=" . (int)$get['idP'] . "&elements=" . $get['elements'] . "&page=" . $get['page'] . "&tri=" . $att . "&ordre=" . $ordre_inverse . "&nblignes=" . $get['nblignes'] . "\">" . $th . "</a></th>";
             }
 			}
 			echo "<th></th></tr>";
@@ -414,10 +414,10 @@ $detailsAff = $connector->fetchArray($req_affPers);
 			while($tab_desc = $connector->fetchArray($req_des))
 			{
 
-				$req_auteur = $connector->query("SELECT pseudo FROM personne WHERE idPersonne=".$tab_desc['idPersonne']);
+				$req_auteur = $connector->query("SELECT pseudo FROM personne WHERE idPersonne=".(int)$tab_desc['idPersonne']);
 				$tabAuteur = $connector->fetchArray($req_auteur);
 
-				$req_lieu = $connector->query("SELECT nom FROM lieu WHERE idLieu=".$tab_desc['idLieu']);
+				$req_lieu = $connector->query("SELECT nom FROM lieu WHERE idLieu=".(int)$tab_desc['idLieu']);
 				$tabLieu = $connector->fetchArray($req_lieu);
 				$nomLieu = "<a href=\"/lieu.php?idL=".$tab_desc['idLieu']."\" title=\"Éditer le lieu\">".sanitizeForHtml($tabLieu['nom'])."</a>";
 
@@ -467,14 +467,14 @@ $detailsAff = $connector->fetchArray($req_affPers);
 
 	$req_lieux = $connector->query("SELECT idLieu, idPersonne, nom, quartier,
 	 categorie, URL, dateAjout FROM lieu
-	 WHERE idPersonne=".$get['idP']." ORDER BY ".$get['tri']." ".$get['ordre']." LIMIT ".($get['page'] - 1) * $get['nblignes'].",".$get['nblignes']);
+	 WHERE idPersonne=".(int)$get['idP']." ORDER BY ".$get['tri']." ".$get['ordre']." LIMIT ".($get['page'] - 1) * $get['nblignes'].",".$get['nblignes']);
 
-	$req_count = $connector->query("SELECT COUNT(*) AS total FROM lieu WHERE idPersonne=".$get['idP']);
+	$req_count = $connector->query("SELECT COUNT(*) AS total FROM lieu WHERE idPersonne=".(int)$get['idP']);
 	$tab_count = $connector->fetchArray($req_count);
 	$tot_elements = $tab_count['total'];
 
 
-	echo HtmlShrink::getPaginationString($tot_elements, $get['page'], $get['nblignes'], 1, "", "?idP=" . $get['idP'] . "&elements=" . $get['elements'] . "&tri=" . $get['tri'] . "&ordre=" . $get['ordre'] . "&nblignes=" . $get['nblignes'] . "&page=");
+	echo HtmlShrink::getPaginationString($tot_elements, $get['page'], $get['nblignes'], 1, "", "?idP=" . (int)$get['idP'] . "&elements=" . $get['elements'] . "&tri=" . $get['tri'] . "&ordre=" . $get['ordre'] . "&nblignes=" . (int)$get['nblignes'] . "&page=");
 
     if ($connector->getNumRows($req_lieux) > 0)
 	{
@@ -487,7 +487,7 @@ $detailsAff = $connector->fetchArray($req_affPers);
 			echo '<li ';
 			if ($get['nblignes'] == $nbl) { echo 'class="ici"'; }
 
-			echo '><a href="?' . Utils::urlQueryArrayToString($get, "nblignes") . '&nblignes=' . $nbl . '">' . $nbl . '</a></li>';
+			echo '><a href="?' . Utils::urlQueryArrayToString($get, "nblignes") . '&nblignes=' . (int)$nbl . '">' . (int)$nbl . '</a></li>';
         }
 		echo '</ul>';
 			echo '<div class="spacer"><!-- --></div>';
@@ -512,7 +512,7 @@ $detailsAff = $connector->fetchArray($req_affPers);
 					echo "<th>";
 				}
 
-				echo "<a href=\"?idP=" . $get['idP'] . "&elements=" . $get['elements'] . "&page=" . $get['page'] . "&tri=" . $att . "&ordre=" . $ordre_inverse . "&nblignes=" . $get['nblignes'] . "\">" . $th . "</a></th>";
+				echo "<a href=\"?idP=" . (int)$get['idP'] . "&elements=" . $get['elements'] . "&page=" . $get['page'] . "&tri=" . $att . "&ordre=" . $ordre_inverse . "&nblignes=" . (int)$get['nblignes'] . "\">" . $th . "</a></th>";
             }
 		}
 
@@ -523,7 +523,7 @@ $detailsAff = $connector->fetchArray($req_affPers);
 		while([$idLieu, $idPersonne, $nom, $quartier, $categorie, $URL, $dateAjout] = $connector->fetchArray($req_lieux))
 		{
 
-			$req_nbDes = $connector->query("SELECT COUNT(*) FROM descriptionlieu WHERE idLieu=".$idLieu);
+			$req_nbDes = $connector->query("SELECT COUNT(*) FROM descriptionlieu WHERE idLieu=".(int)$idLieu);
 			$tabDes = $connector->fetchArray($req_nbDes);
 
 			$listeCat = explode(",", (string) $categorie);
@@ -539,7 +539,7 @@ $detailsAff = $connector->fetchArray($req_affPers);
 
 			echo "
 			<td>".$idLieu."</td>
-			<td><a href=\"/lieu.php?idL=".$idLieu."\" title=\"Voir la fiche du lieu :".sanitizeForHtml($nom)."\">".sanitizeForHtml($nom)."</a></td>
+			<td><a href=\"/lieu.php?idL=".(int)$idLieu."\" title=\"Voir la fiche du lieu :".sanitizeForHtml($nom)."\">".sanitizeForHtml($nom)."</a></td>
 			<td class=\"tdleft\"><ul>";
 
 
@@ -559,7 +559,7 @@ $detailsAff = $connector->fetchArray($req_affPers);
 			//Edition pour l'admin ou l'auteur
 			if ($_SESSION['SidPersonne'] == $detailsPersonne['idPersonne'] || $_SESSION['Sgroupe'] <= 4)
 			{
-				echo "<td><a href=\"/lieu-edit?action=editer&idL=".$idLieu."\" title=\"Éditer le lieu\">".$iconeEditer."</a></td>";
+				echo "<td><a href=\"/lieu-edit?action=editer&idL=".(int)$idLieu."\" title=\"Éditer le lieu\">".$iconeEditer."</a></td>";
 			}
 			echo "</tr>";
 
@@ -580,9 +580,9 @@ else if ($get['elements'] == "organisateur")
 	}
 
 	$req_lieux = $connector->query("SELECT * FROM organisateur
-	 WHERE idPersonne=".$get['idP']." ORDER BY ".$get['tri']." ".$get['ordre']." LIMIT ".($get['page'] - 1) * $get['nblignes'].",".$get['nblignes']);
+	 WHERE idPersonne=".(int)$get['idP']." ORDER BY ".$get['tri']." ".$get['ordre']." LIMIT ".($get['page'] - 1) * (int)$get['nblignes'].",".(int)$get['nblignes']);
 
-	$req_count = $connector->query("SELECT COUNT(*) AS total FROM organisateur WHERE idPersonne=".$get['idP']);
+	$req_count = $connector->query("SELECT COUNT(*) AS total FROM organisateur WHERE idPersonne=".(int)$get['idP']);
 	$tab_count = $connector->fetchArray($req_count);
 	$tot_elements = $tab_count['total'];
 
@@ -645,7 +645,7 @@ else if ($get['elements'] == "organisateur")
 
 			echo "
 			<td>".$tab['idOrganisateur']."</td>
-			<td><a href=\"/organisateur.php?idO=".$tab['idOrganisateur']."\" title=\"Voir la fiche\">".sanitizeForHtml($tab['nom'])."</a></td>
+			<td><a href=\"/organisateur.php?idO=".(int)$tab['idOrganisateur']."\" title=\"Voir la fiche\">".sanitizeForHtml($tab['nom'])."</a></td>
 	</td>";
 			echo "<td>";
 			if (!empty($tab['URL'])) {
@@ -657,7 +657,7 @@ else if ($get['elements'] == "organisateur")
 			//Edition pour l'admin ou l'auteur
 			if ($_SESSION['SidPersonne'] == $detailsPersonne['idPersonne'] || $_SESSION['Sgroupe'] <= 4)
 			{
-				echo "<td><a href=\"/organisateur-edit.php?action=editer&idO=".$tab['idOrganisateur']."\" title=\"Éditer le lieu\">".$iconeEditer."</a></td>";
+				echo "<td><a href=\"/organisateur-edit.php?action=editer&idO=".(int)$tab['idOrganisateur']."\" title=\"Éditer le lieu\">".$iconeEditer."</a></td>";
 			}
 			echo "</tr>";
 
@@ -675,7 +675,7 @@ else if ($get['elements'] == "organisateur")
 
 }
 
-echo HtmlShrink::getPaginationString($tot_elements, $get['page'], $get['nblignes'], 1, "", "?idP=" . $get['idP'] . "&elements=" . $get['elements'] . "&tri=" . $get['tri'] . "&ordre=" . $get['ordre'] . "&nblignes=" . $get['nblignes'] . "&page=");
+echo HtmlShrink::getPaginationString($tot_elements, $get['page'], $get['nblignes'], 1, "", "?idP=" . (int)$get['idP'] . "&elements=" . $get['elements'] . "&tri=" . $get['tri'] . "&ordre=" . $get['ordre'] . "&nblignes=" . (int)$get['nblignes'] . "&page=");
 ?>
 	</table>
 

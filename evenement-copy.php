@@ -137,7 +137,7 @@ if (!empty($_POST['submit']))
 		$tab_champs = $connector->fetchAssoc(($connector->query("
 SELECT idLieu, idSalle, genre, flyer, dateEvenement, image, titre, nomLieu, adresse, quartier, localite_id, region, urlLieu, description, ref, prix,
  horaire_debut, horaire_fin, horaire_complement, prelocations
-FROM evenement WHERE idEvenement=".$get['idE'])));
+FROM evenement WHERE idEvenement=".(int)$get['idE'])));
 
 		$tab_champs['idPersonne'] = $_SESSION['SidPersonne'];
 
@@ -149,7 +149,7 @@ FROM evenement WHERE idEvenement=".$get['idE'])));
 		$dateIncrUnix = $dateEUnix;
 		$dateIncrUnixOld = $dateIncrUnix;
 
-		$_SESSION['copierEvenement_flash_msg']['msg'] = '<p style="margin:4px 0">L\'événement <a href="/evenement.php?idE=' . $get['idE'] . '"><strong>' . sanitizeForHtml($tab_champs['titre']) . '</strong> du ' . date_fr($tab_lieu['dateEvenement']) . '</a> a été copié vers les dates suivantes :</p>';
+		$_SESSION['copierEvenement_flash_msg']['msg'] = '<p style="margin:4px 0">L\'événement <a href="/evenement.php?idE=' .(int)$get['idE'] . '"><strong>' . sanitizeForHtml($tab_champs['titre']) . '</strong> du ' . date_fr($tab_lieu['dateEvenement']) . '</a> a été copié vers les dates suivantes :</p>';
         $_SESSION['copierEvenement_flash_msg']['table'] = '';
 
 		/*
@@ -239,7 +239,7 @@ FROM evenement WHERE idEvenement=".$get['idE'])));
 				$edition = "";
 				$nouv_id = $connector->getInsertId();
 
-				$edition = " <a href=\"/evenement-edit.php?action=editer&idE=".$nouv_id."\" title=\"Éditer l'événement\">".$iconeEditer."</a>";
+				$edition = " <a href=\"/evenement-edit.php?action=editer&idE=".(int)$nouv_id."\" title=\"Éditer l'événement\">".$iconeEditer."</a>";
 
                 $hor_compl = '';
                 if (!empty($tab_champs['horaire_complement']))
@@ -260,12 +260,12 @@ FROM evenement WHERE idEvenement=".$get['idE'])));
                     copy(Evenement::getSystemFilePath(Evenement::getFilePath($image_orig, "s_")), Evenement::getSystemFilePath(Evenement::getFilePath($tab_champs['image'], "s_")));
                 }
 
-                $req_orga = $connector->query("SELECT idOrganisateur FROM evenement_organisateur WHERE idEvenement=".$get['idE']);
+                $req_orga = $connector->query("SELECT idOrganisateur FROM evenement_organisateur WHERE idEvenement=".(int)$get['idE']);
 
 				while ($tab = $connector->fetchArray($req_orga))
 				{
 					$sql =  "INSERT INTO evenement_organisateur
-					(idEvenement, idOrganisateur) VALUES (".$nouv_id.", ".$tab['idOrganisateur'].")";
+					(idEvenement, idOrganisateur) VALUES (".(int)$nouv_id.", ".(int)$tab['idOrganisateur'].")";
 					$connector->query($sql);
 				}
 			}
@@ -324,7 +324,7 @@ include("_header.inc.php");
     if (isset($get['idE'])) {
         $req_getEven = $connector->query("SELECT idEvenement, idLieu, idSalle, idPersonne, titre, genre, dateEvenement,
              nomLieu, adresse, quartier, localite, region, urlLieu, description, flyer, prix, horaire_debut,horaire_fin, horaire_complement, ref, prelocations,statut
-              FROM evenement, localite WHERE evenement.localite_id=localite.id AND idEvenement =" . $get['idE']);
+              FROM evenement, localite WHERE evenement.localite_id=localite.id AND idEvenement =" . (int) $get['idE']);
 
         if ($affEven = $connector->fetchArray($req_getEven)) {
             //si le formulaire est chargé pour la 1ère fois, on prend la date extraite de la base

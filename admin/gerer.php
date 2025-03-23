@@ -171,7 +171,7 @@ echo '<div class="spacer"></div>';
 
 		$req_lieu = $connector->query("SELECT nom FROM lieu WHERE idLieu=".(int) $tab_desc['idLieu']);
 		$tabLieu = $connector->fetchArray($req_lieu);
-		$nomLieu = "<a href=\"/lieu.php?idL=".$tab_desc['idLieu']."\" title=\"Éditer le lieu\">".sanitizeForHtml($tabLieu['nom'])."</a>";
+		$nomLieu = "<a href=\"/lieu.php?idL=".(int)$tab_desc['idLieu']."\" title=\"Éditer le lieu\">".sanitizeForHtml($tabLieu['nom'])."</a>";
 
 		if ($pair % 2 == 0)
 		{
@@ -286,7 +286,7 @@ echo '<div class="spacer"></div>';
 
 		echo "
 		<td>".$tab_lieux['idLieu']."</td>
-		<td><a href=\"/lieu.php?idL=".$tab_lieux['idLieu']."\" title=\"Voir la fiche du lieu :".sanitizeForHtml($tab_lieux['nom'])."\">".sanitizeForHtml($tab_lieux['nom'])."</a></td>
+		<td><a href=\"/lieu.php?idL=".(int)$tab_lieux['idLieu']."\" title=\"Voir la fiche du lieu :".sanitizeForHtml($tab_lieux['nom'])."\">".sanitizeForHtml($tab_lieux['nom'])."</a></td>
 		<td class=\"tdleft\"><ul>";
 
 		$listeCat = explode(",", (string) $tab_lieux['categorie']);
@@ -317,7 +317,7 @@ echo '<div class="spacer"></div>';
 
 		//Edition pour l'admin ou l'auteur
 		if ($_SESSION['Sgroupe'] <= UserLevel::ADMIN) {
-			echo "<td><a href=\"/lieu-edit.php?action=editer&idL=".$tab_lieux['idLieu']."\" title=\"Éditer le lieu\">".$iconeEditer."</a></td>";
+			echo "<td><a href=\"/lieu-edit.php?action=editer&idL=".(int)$tab_lieux['idLieu']."\" title=\"Éditer le lieu\">".$iconeEditer."</a></td>";
 		}
 		echo "</tr>";
 
@@ -404,7 +404,7 @@ echo '<div class="spacer"></div>';
 
 		echo "
 		<td>".$tab['idOrganisateur']."</td>
-		<td><a href=\"/organisateur.php?idO=".$tab['idOrganisateur']."\" title=\"Voir la fiche\">".sanitizeForHtml($tab['nom'])."</a></td>";
+		<td><a href=\"/organisateur.php?idO=".(int)$tab['idOrganisateur']."\" title=\"Voir la fiche\">".sanitizeForHtml($tab['nom'])."</a></td>";
 
 		echo "
 		<td>".date_iso2app($tab['date_ajout'])."</td>";
@@ -419,7 +419,7 @@ echo '<div class="spacer"></div>';
 
 		//Edition pour l'admin ou l'auteur
 		if ($_SESSION['Sgroupe'] <= UserLevel::ADMIN) {
-			echo "<td><a href=\"/organisateur-edit.php?action=editer&idO=".$tab['idOrganisateur']."\" title=\"Éditer\">".$iconeEditer."</a></td>";
+			echo "<td><a href=\"/organisateur-edit.php?action=editer&idO=".(int)$tab['idOrganisateur']."\" title=\"Éditer\">".$iconeEditer."</a></td>";
 		}
 		echo "</tr>";
 
@@ -486,7 +486,7 @@ else if ($get['element'] == "personne")
 		echo '<li ';
 		if ($get['nblignes'] == $nbl) { echo 'class="ici"'; }
 
-		echo '><a href="/admin/gerer.php?'.Utils::urlQueryArrayToString($get, "nblignes").'&nblignes='.$nbl.'">'.$nbl.'</a></li>';
+		echo '><a href="/admin/gerer.php?'.Utils::urlQueryArrayToString($get, "nblignes").'&nblignes='.(int)$nbl.'">'.(int)$nbl.'</a></li>';
 	}
 	echo '</ul>';
 echo '<div class="spacer"></div>';
@@ -552,7 +552,7 @@ echo '<div class="spacer"></div>';
 		//Edition pour l'admin ou l'auteur
 		if ( $_SESSION['Sgroupe'] < 2)
 		{
-			echo "<td><a href=\"/user-edit.php?action=editer&idP=".$tab_pers['idPersonne']."\" title=\"Éditer\">".$iconeEditer."</a></td>";
+			echo "<td><a href=\"/user-edit.php?action=editer&idP=".(int)$tab_pers['idPersonne']."\" title=\"Éditer\">".$iconeEditer."</a></td>";
 		}
 		echo "</tr>";
 

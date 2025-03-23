@@ -139,7 +139,7 @@ elseif ($lieu->getValue('statut') == 'inactif')
 $menu_actions = '';
 $action_ajouter = '';
 if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= UserLevel::ACTOR)) {
-	$action_ajouter = '<li class="action_ajouter"><a href="/evenement-edit.php?idL='.$get['idL'].'" title="ajouter un événement à ce lieu">Ajouter un événement à ce lieu</a></li>';
+	$action_ajouter = '<li class="action_ajouter"><a href="/evenement-edit.php?idL='.(int)$get['idL'].'" title="ajouter un événement à ce lieu">Ajouter un événement à ce lieu</a></li>';
 }
 
 $action_editer = '';
