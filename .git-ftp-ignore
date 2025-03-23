@@ -3,8 +3,7 @@ docker/*
 /.github
 .github/*
 app/env_model.php
-resources/ladecadanse.sql
-resources/evenement-fix-horaires.sql
+resources/*.sql
 tests*
 .editorconfig
 .gitattributes
@@ -32,3 +31,4 @@ phpstan-baseline.neon
 .phan/*
 .htaccess.example
 psalm.xml
+psalm-baseline.neon
