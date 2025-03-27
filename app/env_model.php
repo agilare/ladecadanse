@@ -10,8 +10,9 @@ define("DB_NAME", '');
 define("DB_USERNAME", '');
 define("DB_PASSWORD", '');
 
-// SMTP credentials to send emails to site admin and users
+// SMTP config and credentials to send emails to site admin and users
 define("EMAIL_AUTH_HOST", '');
+define("EMAIL_SMTPAUTH", true);
 define("EMAIL_AUTH_USERNAME", '');
 define("EMAIL_AUTH_PASSWORD", '');
 define("EMAIL_AUTH_SMTPSECURE", 'TLS');

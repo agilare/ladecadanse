@@ -16,7 +16,7 @@ class Mailing {
         $this->mail->SMTPDebug = (int) EMAIL_AUTH_SMTPDEBUG;
         $this->mail->isSMTP();
         $this->mail->Host = EMAIL_AUTH_HOST;
-        $this->mail->SMTPAuth = true;
+        $this->mail->SMTPAuth = EMAIL_SMTPAUTH;
         $this->mail->Username = EMAIL_AUTH_USERNAME;
         $this->mail->Password = EMAIL_AUTH_PASSWORD;
         $this->mail->SMTPSecure = EMAIL_AUTH_SMTPSECURE;

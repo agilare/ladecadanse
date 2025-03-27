@@ -10,8 +10,9 @@ define("DB_NAME", 'ladecadanse');
 define("DB_USERNAME", 'dev');
 define("DB_PASSWORD", 'dev');
 
-// SMTP credentials to send emails to site admin and users
-define("EMAIL_AUTH_HOST", ''); // prod : mail.darksite.ch
+// SMTP config and credentials to send emails to site admin and users
+define("EMAIL_AUTH_HOST", '');
+define("EMAIL_SMTPAUTH", true);
 define("EMAIL_AUTH_USERNAME", '');
 define("EMAIL_AUTH_PASSWORD", '');
 define("EMAIL_AUTH_SMTPSECURE", 'TLS');
