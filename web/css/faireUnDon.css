@@ -5,7 +5,7 @@
 }
 
 
-#contenu .rubrique 
+#contenu .rubrique
 {
 	margin:1em auto 0em auto;
 	width:94%;
@@ -61,5 +61,13 @@
 	padding:0.2em 0em;
 }
 
+#contenu ul#payment-modes
+{
+    margin-left: 0.4em;
+    list-style-type: none;
+}
 
-
+#contenu ul#payment-modes li
+{
+    margin: 0.4em 0;
+}

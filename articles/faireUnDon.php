@@ -27,7 +27,7 @@ include("../_header.inc.php");
         <p>Un <b>don</b>, quel que soit son montant, est une manière de <b>montrer votre soutien</b> et m’encourage à poursuivre ce projet !</p>
 
         <p>Vous pouvez contribuer (une seule fois ou de manière récurrente, selon vos possibilités) via :</p>
-        <ul style="margin-left:0.4em;list-style-type: none">
+        <ul id="payment-modes">
             <li><b style="vertical-align: top">Carte de crédit, compte Paypal </b>
                 <div style="display:inline-block">
                     <div id="donate-button-container">
@@ -48,6 +48,8 @@ include("../_header.inc.php");
 
 
                 </div></li>
+            <li style="margin-top:-0.6em"><b>Liberapay</b> (récurrent)<script src="https://liberapay.com/michelg/widgets/button.js"></script>
+                <noscript><a href="https://liberapay.com/michelg/donate"><img alt="Donate using Liberapay" src="https://liberapay.com/assets/widgets/donate.svg"></a></noscript></li>
             <li><b>Twint, virement</b> (<a href="/contacteznous.php">contactez-moi</a>)</li>
         </ul>
 <br>
