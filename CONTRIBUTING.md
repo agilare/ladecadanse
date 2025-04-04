@@ -9,7 +9,7 @@ Vous pouvez contribuer de plusieurs manières :
 - [faire un don](https://www.ladecadanse.ch/articles/faireUnDon.php)
 
 et spécifiquement, si vous êtes développeur :
-- résoudre ou proposer des [Issues](https://github.com/agilare/ladecadanse/issues) (corrections, améliorations...)
+- résoudre ou proposer des [Issues](https://github.com/agilare/ladecadanse/issues) (corrections, améliorations...); une [sélection commentée de développements](https://github.com/agilare/ladecadanse/wiki/Les-prochains-d%C3%A9veloppements-sugg%C3%A9r%C3%A9s) est à disposition
 - signaler voire corriger des vulnérabilités : voire les modalités dans la [politique de sécurité](SECURITY.md)
 - compléter la documentation : le [README](README.md), le [Wiki](https://github.com/agilare/ladecadanse/wiki)...
 
@@ -26,15 +26,15 @@ Le **mode de développement actuel du projet** est brièvement décrit dans la s
 
 ### Tâches
 
-Vous pouvez reprendre des [Issues](https://github.com/agilare/ladecadanse/issues) existantes — en choisissant de préférences les plus prioritaires (label _high_) — ou en créer de nouvelles. Cela peut consister à :
+Vous pouvez reprendre des [Issues](https://github.com/agilare/ladecadanse/issues) existantes — en choisissant de préférences les plus prioritaires (label _high_) et/ou [suggérées](https://github.com/agilare/ladecadanse/wiki/Les-prochains-d%C3%A9veloppements-sugg%C3%A9r%C3%A9s) — ou en créer de nouvelles. Cela peut consister à :
 - spécifier, concevoir une amélioration
 - reproduire, cerner des bugs ou vulnérabilités
 - développer et tester
 
 Il est aussi possible de proposer des fonctionnalités, bien qu'en ce moment l'accent est mis surtout sur la résolution de _[bugs](https://github.com/agilare/ladecadanse/issues?q=is%3Aissue+is%3Aopen+label%3Abug)_ et le _[refactoring](https://github.com/agilare/ladecadanse/labels/refactoring)_ (notamment au sein du projet de modernisation) pour les raisons décrites ci-dessus.
 Si vous ne connaissez pas encore bien le code, vous pouvez commencer par une **_[Good first issue](https://github.com/agilare/ladecadanse/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22)_**. Deux autres labels précisent leur domaine d'application :
-- _[improve-information](https://github.com/agilare/ladecadanse/labels/improve-information)_ : amélioration du contenu (sa diffusion, sa disponibilité)
-- _[edition](https://github.com/agilare/ladecadanse/labels/edition)_ : amélioration du "back-office", donc surtout pour les utilisateurs qui ajoutent des événements
+- _[improve-information](https://github.com/agilare/ladecadanse/labels/improve-information) : amélioration du contenu (sa diffusion, sa disponibilité)
+- _[edition](https://github.com/agilare/ladecadanse/labels/edition) : amélioration du "back-office", donc surtout pour les utilisateurs qui ajoutent des événements
 
 #### Tests
 
