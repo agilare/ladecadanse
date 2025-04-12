@@ -33,25 +33,17 @@ class Evenement extends Element
         }
     }
 
-    /**
-     * Marque le titre de l'?v?nement selon le statut qui lui attribu?
-     *
-     *
-     * @param string $titre Titre de l'?v?nement
-     * @param string $statut Statut actuel de l'?v?nement
-     * @return string Le titre marqu?
-     */
-    public static function titre_selon_statut($titre, $statut)
+    public static function titre_selon_statut(string $titre, string $statut): string
     {
         $titre_avec_statut = $titre;
 
         if ($statut == "annule")
         {
-            $titre_avec_statut = '<strike>' . $titre . '</strike> <span>ANNULÉ</span>';
+            $titre_avec_statut = '<strike>' . $titre . '</strike> <span class="even-statut-badge ' . $statut . '">ANNULÉ</span>';
         }
         if ($statut == "complet")
         {
-            $titre_avec_statut = '<em>' . $titre . '</em> <span>COMPLET</span>';
+            $titre_avec_statut = '<em>' . $titre . '</em> <span class="even-statut-badge ' . $statut . '">COMPLET</span>';
         }
 
         return $titre_avec_statut;

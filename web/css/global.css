@@ -721,9 +721,17 @@ table tr td.small
 
 .even-statut-badge.propose
 {
-
     background:lightblue;
+}
 
+.even-statut-badge.annule
+{
+    background: rgba(238, 180, 41, .6)
+}
+
+.even-statut-badge.complet
+{
+    background: rgba(236, 226, 111, .7);
 }
 
 .recherche_mobile

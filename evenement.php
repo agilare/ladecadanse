@@ -247,7 +247,9 @@ while ($tab_even = $connector->fetchArray($req_even))
 
             <div class="titre">
 
-                <h3 class="left summary"><?php echo Evenement::titre_selon_statut(sanitizeForHtml($even->getValue('titre')), $even->getValue('statut')); ?></h3>
+                <h3 class="left summary"><?php echo Evenement::titre_selon_statut(sanitizeForHtml($even->getValue('titre')), $even->getValue('statut')); ?>
+                    <?php echo $even_status; ?>
+                </h3>
 
                 <?php
                 //si le lieu est dans la base, affichage des détails du lieu,
