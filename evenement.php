@@ -548,7 +548,7 @@ $req_auteur = $connector->query($sql_auteur);
 			if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 4)
 			{
 			?>
-            <a href="/user.php?idP=<?php echo $even->getValue('idPersonne') ?>"><?php echo $signature_auteur; ?></a>
+            <a href="/user.php?idP=<?php echo (int) $even->getValue('idPersonne') ?>"><?php echo!empty($signature_auteur) ? $signature_auteur : "par " . $icone['personne']; ?></a>
             <?php
 			}
 			else
