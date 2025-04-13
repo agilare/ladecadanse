@@ -251,9 +251,12 @@ form#ajouter_editer p.piedForm
 form#ajouter_editer input.submit
 {
     background-color:#f9f9f9;
-    color: #505a5a;
     font-weight:bold;
-	border:1px solid black;
+    border:1px solid black;
+    /* hack for Safari Mobile : */
+    color: rgba(0, 0, 0, 1);
+    -webkit-text-fill-color: rgba(0, 0, 0, 1);
+    -webkit-opacity: 1;
 }
 
 form#ajouter_editer .submit-big
