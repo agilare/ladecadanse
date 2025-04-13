@@ -969,7 +969,7 @@ if ($verif->nbErreurs() > 0)
         ?>
         </fieldset>
 
-    <fieldset>
+        <fieldset>
         <legend>Lieu*</legend>
         <p>
             <label for="idLieu"><strong>Nom du lieu :</strong></label>
@@ -993,7 +993,7 @@ if ($verif->nbErreurs() > 0)
 
 
         while ($lieuTrouve = $connector->fetchArray($req_lieux))
-        {
+    {
             echo "<option ";
 
             $nom_lieu = $lieuTrouve['nom'];
@@ -1003,8 +1003,8 @@ if ($verif->nbErreurs() > 0)
 
             }
 
-            if ($lieuTrouve['idLieu'] == $champs['idLieu'])
-            {
+            if ($lieuTrouve['idLieu'] == $champs['idLieu'] || (!empty($get['idL']) && $lieuTrouve['idLieu'] == $get['idL']))
+        {
                 echo "selected=\"selected\" ";
             }
 
