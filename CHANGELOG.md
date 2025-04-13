@@ -1,5 +1,24 @@
 # Changelog
 
+## [3.7.1] - Unreleased
+
+### Fixed
+- home : events list display the missing horaire_complement
+- events : disapeared status in event page, more status bkg colors
+- events : in lieu page restore "Ajouter un événement à ce lieu"
+- lieux : don't display lieu map if lat & lng are empty (0.000000)
+- donate : Paypal btn was disabled because of a missing URL in CSP
+- forms : disabled text buttons color in Safari Mobile
+
+### Added
+- donate : Liberapay button and link in FUNDING.yml
+- contributing : links to "Les prochains développements suggérés"
+
+### Changed
+- PHPMailer `smtpauth` option configurable
+- monitoring : for GlitchTip add Sentry URL in CSP & upgrade version
+
+
 ## [3.7.0] - 2025-03-23
 
 ### Fixed
