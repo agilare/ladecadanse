@@ -250,8 +250,9 @@ form#ajouter_editer p.piedForm
 
 form#ajouter_editer input.submit
 {
-	background-color:#f9f9f9;
-	font-weight:bold;
+    background-color:#f9f9f9;
+    color: #505a5a;
+    font-weight:bold;
 	border:1px solid black;
 }
 
