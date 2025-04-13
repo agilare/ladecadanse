@@ -287,19 +287,20 @@ WHERE (region IN ('" . $connector->sanitize($_SESSION['region']) . "', " . $sql_
             <div class="pratique">
                     <span class="left"><?php echo sanitizeForHtml($even_adresse); ?></span><span class="right"><?php
                         echo afficher_debut_fin($tab_even['horaire_debut'], $tab_even['horaire_fin'], $tab_even['dateEvenement']);
+                        echo " " . sanitizeForHtml($tab_even['horaire_complement']);
                         if (!empty($tab_even['prix']))
-                {
-                    if (!empty($tab_even['horaire_debut']) || !empty($tab_even['horaire_fin']))
-                    {
-                        echo ", ";
-                    }
-                    echo sanitizeForHtml($tab_even['prix']);
-    }
-                ?>
+                        {
+                            if (!empty($tab_even['horaire_debut']) || !empty($tab_even['horaire_fin']) || !empty($tab_even['horaire_complement']))
+                            {
+                                echo ", ";
+                            }
+                            echo sanitizeForHtml($tab_even['prix']);
+                        }
+                        ?>
 
-                </span>
-                <div class="spacer"></div>
-            </div> <!-- fin pratique -->
+                        </span>
+                        <div class="spacer"></div>
+                    </div> <!-- fin pratique -->
 
             <div class="edition">
 
@@ -316,11 +317,11 @@ WHERE (region IN ('" . $connector->sanitize($_SESSION['region']) . "', " . $sql_
 
             <ul class="menu_edition">
                 <?php
-                echo "<li class=\"action_copier\"><a href=\"/evenement-copy.php?idE=".$tab_even['idEvenement']."\" title=\"Copier l'événement\">Copier vers d'autres dates</a></li>";
-                echo "<li class=\"action_editer\"><a href=\"/evenement-edit.php?action=editer&amp;idE=".$tab_even['idEvenement']."\" title=\"Modifier l'événement\">Modifier</a></li>";
-                echo '<li class="action_depublier"><a href="#" id="btn_event_unpublish_'.$tab_even['idEvenement'].'" class="btn_event_unpublish" data-id='.$tab_even['idEvenement'].'>Dépublier</a></li>';
-                echo '<li class=""><a href="/user.php?idP='.$tab_even['idPersonne'].'">'.$icone['personne'].'</a></li>';
-                ?></ul>
+                echo "<li class=\"action_copier\"><a href=\"/evenement-copy.php?idE=" . (int) $tab_even['idEvenement'] . "\" title=\"Copier l'événement\">Copier vers d'autres dates</a></li>";
+                        echo "<li class=\"action_editer\"><a href=\"/evenement-edit.php?action=editer&amp;idE=" . (int) $tab_even['idEvenement'] . "\" title=\"Modifier l'événement\">Modifier</a></li>";
+                        echo '<li class="action_depublier"><a href="#" id="btn_event_unpublish_' . $tab_even['idEvenement'] . '" class="btn_event_unpublish" data-id=' . (int) $tab_even['idEvenement'] . '>Dépublier</a></li>';
+                        echo '<li class=""><a href="/user.php?idP=' . (int) $tab_even['idPersonne'] . '">' . $icone['personne'] . '</a></li>';
+                        ?></ul>
                 <?php } ?>
 
 
