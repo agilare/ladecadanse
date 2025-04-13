@@ -297,9 +297,10 @@ if ($lieu->getValue('logo'))
         $adresse = HtmlShrink::getAdressFitted($lieu->getValue('region'), $lieu_localite['localite'], $lieu->getValue('quartier'), $lieu->getValue('adresse') );
 
 		$carte = '';
-		if ($lieu->getValue('lat') != 4 && $lieu->getValue('lng') != 4)
+
+        if (!empty((float) $lieu->getValue('lat')) && !empty((float) $lieu->getValue('lng')))
 {
-            $carte = '
+    $carte = '
             <li>
                 <a href="#" class="dropdown" data-target="plan">'.$icone['plan'].' Voir sur le plan <i class="fa fa-caret-down" aria-hidden="true"></i>
 </a>
@@ -386,12 +387,16 @@ $req = $connector->query($sql);
                 <li class="adr"><?php echo sanitizeForHtml($adresse) ?></li>
                 <?php echo $carte; ?>
                 <?php echo $salles; ?>
-                <span class="latitude">
+                <?php
+                if (!empty((float) $lieu->getValue('lat')) && !empty((float) $lieu->getValue('lng')))
+                { ?>
+                    <span class="latitude">
                    <span class="value-title" title="<?php echo $lieu->getValue('lat'); ?>"></span>
                 </span>
                 <span class="longitude">
                    <span class="value-title" title="<?php echo $lieu->getValue('lng'); ?>"></span>
-                </span>
+                    </span>
+                <?php } ?>
                 <li><?php echo Text::wikiToHtml(sanitizeForHtml($lieu->getValue('horaire_general'))); ?></li>
                 <li class="sitelieu">
                     <?php if (!empty($URL)) { ?>
@@ -405,7 +410,13 @@ $req = $connector->query($sql);
                 <div id="lieu-map-infowindow" style='display:none;width:200px'>
                     <?php echo $illustration; ?><div class=details><p class=adresse><strong><?php echo sanitizeForHtml($lieu->getValue('nom')); ?></strong></p><p class=adresse><?php echo sanitizeForHtml($lieu->getValue('adresse')); ?></p><p class=adresse><?php echo $lieu->getValue('quartier'); ?></p></div>
                 </div>
-                <div id="lieu-map" data-lat="<?php echo $lieu->getValue('lat') ?>" data-lng="<?php echo $lieu->getValue('lng') ?>"></div>
+                <?php
+
+                if (!empty((float) $lieu->getValue('lat')) && !empty((float) $lieu->getValue('lng')))
+                {
+                    ?>
+                    <div id="lieu-map" data-lat="<?php echo $lieu->getValue('lat') ?>" data-lng="<?php echo $lieu->getValue('lng') ?>"></div>
+            <?php } ?>
             </div>
         </div><!-- Fin pratique -->
 

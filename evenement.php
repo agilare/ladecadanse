@@ -264,7 +264,7 @@ while ($tab_even = $connector->fetchArray($req_even))
 
     $nom_lieu = '<a href="/lieu.php?idL=' . (int) $even->getValue('idLieu') . '" >
                                         ' . sanitizeForHtml($even->getValue('nomLieu')) . '</a>';
-}
+                }
 else
 {
     $listeLieu['nom'] = sanitizeForHtml($even->getValue('nomLieu'));
@@ -273,12 +273,14 @@ else
     $listeLieu['quartier'] = $even->getValue('quartier');
 
     $req_localite = $connector->query("SELECT  localite FROM localite
-                                        WHERE  id='" . (int) $even->getValue('localite_id') . "'");
+                                                        WHERE  id='" . (int) $even->getValue('localite_id') . "'");
     $tab_localite = $connector->fetchArray($req_localite);
 
     $listeLieu['localite'] = $tab_localite[0] ?? "";
 
     $listeLieu['region'] = $even->getValue('region');
+    $listeLieu['lat'] = 0;
+    $listeLieu['lng'] = 0;
     $listeLieu['URL'] = sanitizeForHtml($even->getValue('urlLieu'));
 
     $nom_lieu = $lieu;
@@ -303,7 +305,7 @@ $adresse = HtmlShrink::getAdressFitted($listeLieu['region'], sanitizeForHtml($li
 
                             <?php echo $adresse; ?></li>
                         <?php
-                        if (!empty($listeLieu['lat']) && !empty($listeLieu['lng']))
+                        if (!empty((float) $listeLieu['lat']) && !empty((float) $listeLieu['lng']))
                         {
                         ?>
 
@@ -335,7 +337,7 @@ $adresse = HtmlShrink::getAdressFitted($listeLieu['region'], sanitizeForHtml($li
 				</div>
 			<div class="spacer"></div>
             	<?php
-                if (!empty($listeLieu['lat']) && !empty($listeLieu['lng']))
+                if (!empty((float) $listeLieu['lat']) && !empty((float) $listeLieu['lng']))
                 {
                 ?>
                 <div id="plan" style="display:none">
