@@ -89,22 +89,6 @@ const Forms = {
             }
         });
 
-        //$('#prix-precisions').hide();
-        $('.precisions').on('change', function togglePrixPrecision()
-        {
-            if (this.checked && (this.value == 'asyouwish' || this.value == 'chargeable'))
-            {
-                $('#prix-precisions').show();
-                $('#prix-precisions #prix').focus();
-            }
-            else
-            {
-                $('#prix-precisions').hide();
-                $('#prix-precisions #prix, #prix-precisions #prelocations').val('');
-                this.focus();
-            }
-        });
-
         $('form.js-submit-freeze-wait').submit(function disableSubmit()
         {
             $('input[type="submit"]', this).val('Envoi...').attr('disabled', 'disabled');

@@ -224,8 +224,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 
 	if ($champs['idLieu'] != 0 && ($champs['nomLieu'] != "" || $champs['adresse'] != "") )
 	{
-		$verif->setErreur('doublonLieux', 'Vous ne pouvez pas indiquer 2 lieux');
-	}
+		$verif->setErreur('doublonLieux', 'Vous ne pouvez pas indiquer 2 lieux; si vous choisissez le lieu dans la liste ci-dessus, vous pouvez le confirmer en  enregistrant ce formulaire');
+    }
 
 	//$champs['dateEvenement'] = date('Y-m-d', mktime(0, 0, 0, $_POST['mois'], $_POST['jour'], $_POST['annee'])); // $annee."-".$mois."-".$annee;
 
@@ -796,20 +796,6 @@ if (!$action_terminee)
             exit;
         } // if GET action
 
-        if ($_SESSION['Sgroupe'] <= UserLevel::ACTOR) {
-            $aff_actions = '<ul class="entete_contenu_menu">';
-            //Menu d'actions
-            if ($_SESSION['Sgroupe'] <= 1)
-            {
-                $aff_actions .= "<li class=\"action_supprimer\">
-                <a href=\"/multi-suppr.php?action=confirmation&amp;type=evenement&amp;id=" . (int) $get['idE'] . "&token=" . SecurityToken::getToken() . "\" id='js-event-delete-btn'>
-                Supprimer</a>
-                </li>";
-            }
-
-            $aff_actions .= "<li class=\"action_copier\">
-                <a href=\"/evenement-copy.php?idE=" . (int) $get['idE'] . "\" title=\"Copier l'événement vers une autre date\">Copier vers d'autres dates</a></li></ul>";
-        }
     } // action editer
 
 	$aff_titre = '<div id="entete_contenu">';
@@ -910,8 +896,11 @@ if ($verif->nbErreurs() > 0)
 
         }
         ?>
-        </ul>
-        <?php
+            </ul>
+        <div class="guideChamp" style="margin-top:1em">
+                Merci de choisir la catégorie pertinente; si vous hésitez, vous pouvez <a href="/contacteznous.php" target="_blank">me demander</a>
+            </div>
+            <?php
         echo $verif->getHtmlErreur("genre");
         ?>
     </fieldset>
@@ -1244,39 +1233,20 @@ if ($verif->nbErreurs() > 0)
     </fieldset>
 
     <fieldset>
-        <legend>Entrée</legend>
-            <?php if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] < UserLevel::AUTHOR)) { ?>
-                <?php
-        $price_types = ['unknown' => 'inconnu', 'gratis' => 'entrée libre', 'asyouwish' => 'prix libre', 'chargeable' => 'payant'];
-        ?>
-            <ul class="radio" style="list-style-type: none">
-                <?php foreach ($price_types as $pt => $label)
-                {
-                    ?>
-                <li><label class="listehoriz" style="float: none"><input class="precisions" type="radio" name="price_type" value="<?php echo $pt; ?>" <?php
-                if ($pt == $champs['price_type'] ||
-                        ($pt == 'gratis' && !empty($champs['prix']) && strstr((string) $champs['prix'], 'entrée libre')) ||
-                        ($pt == 'asyouwish' && !empty($champs['prix']) && strstr((string) $champs['prix'], 'prix libre'))) { ?> checked <?php } ?>> <?php echo $label ?></label></li>
-        <?php
-                }
-        ?>
-            </ul>
-<?php } ?>
+            <legend>Entrée</legend>
 
-        <div id="prix-precisions" <?php
-        if (!isset($_SESSION['Sgroupe']) || (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] >= UserLevel::AUTHOR) || ($get['action'] == "editer" || $get['action'] == "update") && (!empty($champs['prix']) || (!empty($champs['price_type']) && ($champs['price_type'] == 'asyouwish' || $champs['price_type'] == 'chargeable') ))
-                ) { ?> style="display:block" <?php } ?>>
-            <p>
+            <div id="prix-precisions" style="display:block">
+                <p>
                 <label for="prix">Prix</label>
                     <input type="text" name="prix" id="prix" size="45" maxlength="100" value="<?php echo sanitizeForHtml($champs['prix']) ?>" />
                     <?php
                 echo $verif->getHtmlErreur('prix');
                 ?>
             </p>
-                <?php if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] > UserLevel::AUTHOR) { ?>
-                    <div class="guideChamp">Vous pouvez mettre seulement <strong>0</strong> si l'entrée est libre.</div>
-            <?php } ?>
-            <p>
+
+            <div class="guideChamp">Vous pouvez mettre juste un <code>0</code> si l'entrée est libre.</div>
+
+                <p>
                 <label for="prelocations">Prélocations</label>
                     <input type="text" name="prelocations" id="prelocations" size="70" maxlength="200" value="<?php echo sanitizeForHtml($champs['prelocations']) ?>" />
                     <?php

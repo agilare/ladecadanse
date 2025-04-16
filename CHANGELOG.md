@@ -1,6 +1,6 @@
 # Changelog
 
-## [3.7.1] - Unreleased
+## [3.7.1] - 2025-04-19
 
 ### Fixed
 - home : events list display the missing horaire_complement
@@ -11,6 +11,7 @@
 - forms : disabled text buttons color in Safari Mobile
 
 ### Added
+- events : in edit form help text for Catégorie, clearer warn if 2 lieux filled
 - donate : Liberapay button and link in FUNDING.yml
 - contributing : links to "Les prochains développements suggérés"
 
@@ -18,6 +19,8 @@
 - PHPMailer `smtpauth` option configurable
 - monitoring : for GlitchTip add Sentry URL in CSP & upgrade version
 
+### Removed
+- events : in edit form menu with copy and delete, radios for price type
 
 ## [3.7.0] - 2025-03-23
 
