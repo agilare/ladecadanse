@@ -1,9 +1,10 @@
 # Changelog
 
-## [3.7.1] - 2025-04-19
+## [3.7.1] - 2025-04-20
 
 ### Fixed
 - home : events list display the missing horaire_complement
+- home : Debout les braves banner link from darksite to olivedks.ch
 - events : disapeared status in event page, more status bkg colors
 - events : in lieu page restore "Ajouter un événement à ce lieu"
 - lieux : don't display lieu map if lat & lng are empty (0.000000)
