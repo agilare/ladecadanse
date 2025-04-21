@@ -18,7 +18,7 @@ if (!$videur->checkGroup(4))
 
 
 $page_titre = "gérer les événements";
-$extra_css = ["formulaires", "gerer", "chosen.min"];
+$extra_css = ["formulaires", "gerer"];
 require_once '../_header.inc.php';
 
 $tab_listes = ["evenement" => "Événements", "lieu" => "Lieux", "description" => "Descriptions", "personne" => "Personnes"];
@@ -930,10 +930,10 @@ echo $verif->getErreur("genre");
 <p>
 <label for="lieu">Dans la liste :</label>
 
-<select name="idLieu" id="idLieu" class="chosen-select" style="max-width:300px">
-<?php
+<select name="idLieu" id="idLieu" class="js-select2" data-placeholder=""  style="max-width:350px">
+    <?php
 //Menu des lieux actifs de la base
-echo "<option value=\"0\">&nbsp;</option>";
+echo "<option value=\"\">&nbsp;</option>";
 $req_lieux = $connector->query("
 SELECT idLieu, nom FROM lieu
 WHERE statut='actif'
@@ -1041,9 +1041,9 @@ echo $verif->getErreur("doublonLieux");
 
 <p>
 <label for="localite">Localité/quartier</label>
-<select name="localite_id" id="localite" class="chosen-select" style="max-width:300px;">
-<?php
-echo "<option value=\"0\">&nbsp;</option>";
+<select name="localite_id" id="localite" class="js-select2" data-placeholder="" style="max-width:300px;">
+    <?php
+echo "<option value=\"\">&nbsp;</option>";
 $req = $connector->query("
 SELECT id, localite, canton FROM localite WHERE id!=1 ORDER BY canton, localite "
  );
@@ -1183,8 +1183,8 @@ echo $verif->getHtmlErreur('description');
 
 <p>
 <label for="organisateurs">Organisateur(s)</label>
-<select name="organisateurs[]" id="organisateurs" class="chosen-select" multiple data-placeholder="Choisissez un ou plusieurs organisateurs" style="max-width:400px;">
-<?php
+<select name="organisateurs[]" id="organisateurs" class="js-select2" multiple data-placeholder="Choisissez un ou plusieurs organisateurs" style="max-width:400px;">
+    <?php
 
 /*
  * Si l'ajout d'événement se fait depuis une page 'lieu', le formulaire est

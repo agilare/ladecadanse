@@ -2235,15 +2235,22 @@
     }, {
       "id": "83fccba2-c4b3-4b40-9148-9c6c186a4d0f",
       "comment": "",
-      "command": "clickAt",
-      "target": "id=localite_chosen",
+      "command": "click",
+      "target": "xpath=//select[@id='localite']/following-sibling::span//span[contains(@class,'select2-selection')]",
       "targets": [],
       "value": ""
     }, {
+      "id": "dc673ace-4cc6-4a5e-8302-0ab08d9ec333",
+      "comment": "",
+      "command": "waitForElementVisible",
+      "target": "css=.select2-results__options",
+      "targets": [],
+      "value": "30000"
+    }, {
       "id": "a798c97c-523d-4c43-90f5-686c3f2fcbf1",
       "comment": "",
-      "command": "clickAt",
-      "target": "css=div[id='localite_chosen'] div ul li:nth-child(3)",
+      "command": "click",
+      "target": "css=.select2-results__option:nth-child(3)",
       "targets": [],
       "value": ""
     }, {
@@ -3039,8 +3046,22 @@
     }, {
       "id": "4fa77387-45e5-4a51-9113-63e0c11b5c0c",
       "comment": "",
-      "command": "clickAt",
-      "target": "css=div[id='localite_chosen'] div ul li:nth-child(3)",
+      "command": "click",
+      "target": "xpath=//select[@id='localite']/following-sibling::span//span[contains(@class,'select2-selection')]",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "be38f50a-8d77-49d9-81e2-0bb0d71bbeb0",
+      "comment": "",
+      "command": "waitForElementVisible",
+      "target": "css=.select2-results__options",
+      "targets": [],
+      "value": "30000"
+    }, {
+      "id": "9b111950-82cc-4b87-8351-8748c8c88562",
+      "comment": "",
+      "command": "click",
+      "target": "css=.select2-results__option:nth-child(3)",
       "targets": [],
       "value": ""
     }, {
@@ -4465,15 +4486,22 @@
     }, {
       "id": "45447cd1-5cc1-496c-8a48-f865e3e6cf52",
       "comment": "",
-      "command": "clickAt",
-      "target": "id=localite_chosen",
+      "command": "click",
+      "target": "xpath=//select[@id='localite']/following-sibling::span//span[contains(@class,'select2-selection')]",
       "targets": [],
       "value": ""
     }, {
       "id": "80d5814a-30c5-490f-9691-b1d5649ff37d",
       "comment": "",
-      "command": "clickAt",
-      "target": "css=div[id='localite_chosen'] div ul li:nth-child(2)",
+      "command": "waitForElementVisible",
+      "target": "css=.select2-results__options",
+      "targets": [],
+      "value": "30000"
+    }, {
+      "id": "11931527-3ba9-408b-abf6-834e542b1258",
+      "comment": "",
+      "command": "click",
+      "target": "css=.select2-results__option:nth-child(3)",
       "targets": [],
       "value": ""
     }, {
@@ -7691,22 +7719,24 @@
       ],
       "value": "Rue de l'Ecole-de-Médecine 2"
     }, {
-      "id": "4768bdc4-aa6b-48d7-9078-cd53c1af944c",
+      "id": "8aa07bea-4027-42d9-adc3-addd68c2293d",
       "comment": "",
-      "command": "clickAt",
-      "target": "id=localite_chosen",
-      "targets": [
-        ["css=#localite_chosen span", "css:finder"],
-        ["xpath=//div[@id='localite_chosen']/a/span", "xpath:idRelative"],
-        ["xpath=//p[3]/div/a/span", "xpath:position"],
-        ["xpath=//span[contains(.,' ')]", "xpath:innerText"]
-      ],
+      "command": "click",
+      "target": "xpath=//select[@id='localite']/following-sibling::span//span[contains(@class,'select2-selection')]",
+      "targets": [],
       "value": ""
     }, {
-      "id": "08092449-852e-4c55-8358-1a82ed1b0f6c",
+      "id": "7685fb28-813a-414f-9f54-c623e018ebc4",
       "comment": "",
-      "command": "clickAt",
-      "target": "css=div[id='localite_chosen'] div ul li:nth-child(3)",
+      "command": "waitForElementVisible",
+      "target": "css=.select2-results__options",
+      "targets": [],
+      "value": "30000"
+    }, {
+      "id": "3d39e8c0-b0fc-4f9b-bf2d-58d9bea86f00",
+      "comment": "",
+      "command": "click",
+      "target": "css=.select2-results__option:nth-child(3)",
       "targets": [],
       "value": ""
     }, {

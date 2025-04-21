@@ -167,8 +167,8 @@ if ($afficher_form)
     </p>
 
 <p>
-<label for="localite">Localité/quartier*</label>&nbsp;<select name="localite_id" id="localite" class="chosen-select" style="max-width:300px;" required data-placeholder="Tapez le nom...">
-<?php
+    <label for="localite">Localité/quartier*</label>&nbsp;<select name="localite_id" id="localite" class="js-select2" style="max-width:300px;" required data-placeholder="Tapez le nom...">
+            <?php
 echo "<option value=\"\"></option>";
 
 $sql_prov = '';
@@ -267,8 +267,8 @@ echo $form->getHtmlErreur("localite_id");
 <?php if (0) { //$form->getValeur('region') == 'ge') { ?>
 <p>
 <label for="quartier">Quartier</label>
-<select name="quartier" id="quartier" class="chosen-select" style="max-width:300px;" required>
-<?php
+        <select name="quartier" id="quartier" class="js-select2" style="max-width:300px;" required>
+            <?php
 $m = 1;
 echo "<option></option><optgroup label=\"Genève\">";
 while ($glo_tab_quartiers[$m] != "communes")
@@ -367,10 +367,10 @@ echo $form->getHtmlErreur("quartier");
 
     <p>
         <label for="organisateurs">Organisateur(s)</label>
-        <select name="organisateurs[]" id="organisateurs" data-placeholder="Choisissez un ou plusieurs organisateurs" class="chosen-select" multiple title="Un organisateur dans base de données de La décadanse" readonly style="max-width:400px;">
-        <?php
-        echo "<option value=\"0\">&nbsp;</option>";
-        $req = $connector->query("
+        <select name="organisateurs[]" id="organisateurs" data-placeholder="Choisissez un ou plusieurs organisateurs" class="js-select2" multiple title="Un organisateur dans base de données de La décadanse" readonly style="max-width:350px;">
+                    <?php
+        echo "<option value=\"\">&nbsp;</option>";
+                $req = $connector->query("
         SELECT idOrganisateur, nom FROM organisateur WHERE statut='actif' ORDER BY TRIM(LEADING 'L\'' FROM (TRIM(LEADING 'Les ' FROM (TRIM(LEADING 'La ' FROM (TRIM(LEADING 'Le ' FROM nom))))))) COLLATE utf8mb4_unicode_ci"
          );
 

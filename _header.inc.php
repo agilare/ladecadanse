@@ -51,9 +51,8 @@ use Ladecadanse\UserLevel;
         ?>
         <link rel="stylesheet" type="text/css" href="<?php echo $cssFilePath; ?>" media="screen"  />
     <?php } ?>
-    <link rel="stylesheet" type="text/css" href="/web/css/diggstyle.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="/vendor/harvesthq/chosen/chosen.css" media="screen" />
-
+        <link rel="stylesheet" type="text/css" href="/web/css/diggstyle.css" media="screen" />
+        <link href="/vendor/select2/select2/dist/css/select2.min.css" rel="stylesheet">
     <?php
     if (isset($extra_css) && is_array($extra_css)) {
         foreach ($extra_css as $import)

@@ -608,12 +608,12 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= UserLevel::ACTOR)) {
     <p>
 
     <label for="lieu">lieu</label>
-    <select name="lieu" id="lieu" class="chosen-select" style="max-width:300px;">
-    <?php
+                <select name="lieu" id="lieu" class="js-select2" style="max-width:350px;" data-placeholder="">
+                    <?php
 
-    echo "<option value=\"0\">&nbsp;</option>";
+    echo "<option value=\"\">&nbsp;</option>";
 
-    while ($lieuTrouve = $connector->fetchArray($req_lieux))
+                                while ($lieuTrouve = $connector->fetchArray($req_lieux))
     {
         echo "<option ";
         if ($lieuTrouve['idLieu'] == $champs['lieu'])
@@ -630,10 +630,10 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= UserLevel::ACTOR)) {
 
     <p>
     <label for="organisateurs">organisateur(s)</label>
-    <select name="organisateurs[]" id="organisateurs" data-placeholder="Choisissez un ou plusieurs organisateurs" class="chosen-select" multiple  style="max-width:350px;">
-    <?php
-    echo "<option value=\"0\">&nbsp;</option>";
-    $req = $connector->query("
+    <select name="organisateurs[]" id="organisateurs" data-placeholder="Choisissez un ou plusieurs organisateurs" class="js-select2" multiple data-placeholder="" style="max-width:350px;">
+                    <?php
+    echo "<option value=\"\">&nbsp;</option>";
+                $req = $connector->query("
     SELECT idOrganisateur, nom FROM organisateur WHERE statut='actif' ORDER BY TRIM(LEADING 'L\'' FROM (TRIM(LEADING 'Les ' FROM (TRIM(LEADING 'La ' FROM (TRIM(LEADING 'Le ' FROM nom))))))) COLLATE utf8mb4_unicode_ci"
      );
 

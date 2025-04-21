@@ -271,9 +271,9 @@ if (($get['action'] != 'editer' || $get['action'] != 'update') && !empty($get['i
 	$champs['idLieu'] = $get['idL'];
 
 }
-	echo "<select name=\"idLieu\" id=\"idLieu\" title=\"Choisissez le lieu que vous voulez décrire\" >
-	<option value=\"0\"></option>";
-	$req_lieux = $connector->query("SELECT idLieu, nom FROM lieu ORDER BY nom");
+	echo "<select name=\"idLieu\" id=\"idLieu\" class=\"js-select2\" data-placeholder=\"\">
+	<option value=\"\"></option>";
+    $req_lieux = $connector->query("SELECT idLieu, nom FROM lieu ORDER BY nom");
 
 	while ($lieuTrouve = $connector->fetchArray($req_lieux))
 	{

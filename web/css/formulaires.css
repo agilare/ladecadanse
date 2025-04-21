@@ -89,6 +89,13 @@ form#ajouter_editer select:focus
     background-color:#ffc;
 }
 
+/* avoid deform unsightly original Select2 styling  */
+form#ajouter_editer input.select2-search__field
+{
+    border:none;
+    padding:0;
+}
+
 form#ajouter_editer  ul.radio
 {
     padding:0;

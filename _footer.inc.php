@@ -39,7 +39,7 @@
 
 
 <?php
-$pages_formulaires = ["evenement-edit", "evenement-copy", "lieu-edit", "user-register", "gererEvenements", "user-edit", "lieu-text-edit", "organisateur-edit", "lieu-salle-edit"];
+            $pages_formulaires = ["evenement-edit", "evenement-copy", "lieu-edit", "lieu-salle-edit", "user-register", "gererEvenements", "user-edit", "lieu-text-edit", "organisateur-edit"];
 $pages_tinymce = ["lieu-text-edit", "organisateur-edit"];
 $pages_lieumap = ["lieu", "evenement"];
 ?>
@@ -60,8 +60,9 @@ $pages_lieumap = ["lieu", "evenement"];
     <?php if (in_array($nom_page, $pages_formulaires))
     { ?>
 
-        <script src="/vendor/harvesthq/chosen/chosen.jquery.min.js"></script>
-        <script src="/web/js/libs/Zebra_datepicker/zebra_datepicker.min.js"></script>
+        <script src="/vendor/select2/select2/dist/js/select2.min.js"></script>
+            <script src="/vendor/select2/select2/dist/js/i18n/fr.js"></script>
+            <script src="/web/js/libs/Zebra_datepicker/zebra_datepicker.min.js"></script>
         <script src="/web/js/forms.js?<?php echo time() ?>"></script>
 
     <?php if (in_array($nom_page, $pages_tinymce))

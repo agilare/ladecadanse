@@ -898,7 +898,7 @@ if ($verif->nbErreurs() > 0)
         ?>
             </ul>
         <div class="guideChamp" style="margin-top:1em">
-                Merci de choisir la catégorie pertinente; si vous hésitez, vous pouvez <a href="/contacteznous.php" target="_blank">me demander</a>
+                Merci de choisir la catégorie pertinente; si vous n'êtes pas sûr, vous pouvez <a href="/contacteznous.php" target="_blank">nous demander</a>
             </div>
             <?php
         echo $verif->getHtmlErreur("genre");
@@ -962,8 +962,8 @@ if ($verif->nbErreurs() > 0)
         <legend>Lieu*</legend>
         <p>
             <label for="idLieu"><strong>Nom du lieu :</strong></label>
-        <select name="idLieu" id="idLieu" class="chosen-select" title="Un lieu dans base de données de La décadanse" style="max-width:300px"  data-placeholder="">
-        <?php
+                <select name="idLieu" id="idLieu" class="js-select2" title="Un lieu dans base de données de La décadanse" style="max-width:350px"  data-placeholder="">
+                    <?php
 
         $sql_lieu_excl_fr = '';
         $sql_localite_excl_fr = '';
@@ -1057,8 +1057,8 @@ if ($verif->nbErreurs() > 0)
         ?>
         </p>
         <p>
-            <label for="localite">Localité/quartier</label>&nbsp;<select name="localite_id" id="localite" class="chosen-select" style="max-width:300px;">
-        <?php
+            <label for="localite">Localité/quartier</label>&nbsp;<select name="localite_id" id="localite" class="js-select2" data-placeholder="" style="max-width:300px;">
+                    <?php
         echo "<option value=\"0\">&nbsp;</option>";
         $req = $connector->query("
         SELECT id, localite, canton FROM localite WHERE id!=1 $sql_localite_excl_fr ORDER BY canton, localite "
@@ -1210,25 +1210,23 @@ if ($verif->nbErreurs() > 0)
         ?>
         <p>
             <label for="organisateurs">Organisateur(s) de l’événement</label>
-            <select name="organisateurs[]" id="organisateurs" data-placeholder="Tapez les noms des organisateurs" class="chosen-select" multiple style="max-width:350px;">
-        <?php
-        echo "<option value=\"0\">&nbsp;</option>";
-        $req = $connector->query("
+                <select name="organisateurs[]" id="organisateurs" data-placeholder="Tapez les noms des organisateurs" class="js-select2" multiple style="max-width:350px;"><?php
+                    //echo "<option value=\"\">&nbsp;</option>";
+                        $req = $connector->query("
         SELECT idOrganisateur, nom FROM organisateur WHERE statut='actif' ORDER BY TRIM(LEADING 'L\'' FROM (TRIM(LEADING 'Les ' FROM (TRIM(LEADING 'La ' FROM (TRIM(LEADING 'Le ' FROM nom))))))) COLLATE utf8mb4_unicode_ci"
          );
 
         while ($tab = $connector->fetchArray($req))
         {
-            echo "<option ";
-            if ((isset($_POST['organisateurs']) && in_array($tab['idOrganisateur'], $_POST['organisateurs'])) || in_array($tab['idOrganisateur'], $tab_organisateurs_even))
+                        echo "<option ";
+                        if ((isset($_POST['organisateurs']) && in_array($tab['idOrganisateur'], $_POST['organisateurs'])) || in_array($tab['idOrganisateur'], $tab_organisateurs_even))
             {
                 echo 'selected="selected" ';
             }
             echo "value=\"" . $tab['idOrganisateur'] . "\">" . sanitizeForHtml($tab['nom']) . "</option>";
     }
-        ?>
-        </select>
-            <div class="guideChamp">L’événement figurera dans la page de ces <a href="/organisateurs.php" target="_blank">organisateurs</a>. Si vous souhaitez que votre organisation soit listée, <a href="/contacteznous.php" target='_blank'>demandez-nous</a> (avec des infos : texte, liens...)</div>
+        ?></select>
+                <div class="guideChamp">L’événement figurera dans la page de ces <a href="/organisateurs.php" target="_blank">organisateurs</a>. Si vous souhaitez que votre organisation soit listée, <a href="/contacteznous.php" target='_blank'>demandez-nous</a> (avec des infos : texte, liens...)</div>
         </p>
     </fieldset>
 

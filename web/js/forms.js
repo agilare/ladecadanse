@@ -5,13 +5,33 @@
  */
 'use strict';
 
-$('.chosen-select').chosen({
-    allow_single_deselect: true,
-    no_results_text: 'Aucun &eacute;l&eacute;ment correspondant n’a &eacute;t&eacute; trouv&eacute;',
-    include_group_label_in_selected: true,
-    search_contains: true
-});
+$('.js-select2').select2(
+        {
+            language: "fr",
+            allowClear: true,
+            templateResult: function (data) {
+                if (!data.id) return data.text;
 
+                const $option = $(data.element);
+                const style = $option.attr('style');
+
+                const $result = $('<span>').text(data.text);
+                if (style) $result.attr('style', style); // applique le style inline
+
+                return $result;
+            },
+            templateSelection: function (data) {
+                if (!data.id) return data.text;
+
+                const $option = $(data.element);
+                const style = $option.attr('style');
+
+                const $selection = $('<span>').text(data.text);
+                if (style) $selection.attr('style', style); // applique le style inline
+
+                return $selection;
+            }
+        });
 
 // users can add events for today, until 06h the day after, in line with the agenda
 const nbHoursAfterMidnightForDay = 6;

@@ -1,8 +1,9 @@
 # Changelog
 
-## [3.7.1] - 2025-04-20
+## [3.7.1] - 2025-04-21
 
 ### Fixed
+- forms : replace Chosen (not working on mobile) by Select2 (#17)
 - home : events list display the missing horaire_complement
 - home : Debout les braves banner link from darksite to olivedks.ch
 - events : disapeared status in event page, more status bkg colors
@@ -22,6 +23,7 @@
 
 ### Removed
 - events : in edit form menu with copy and delete, radios for price type
+
 
 ## [3.7.0] - 2025-03-23
 
