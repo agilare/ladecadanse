@@ -36,6 +36,7 @@ define("GOOGLE_ANALYTICS_ID", '');
 
 define("MATOMO_ENABLED", false); // analytics tool (enabled only in prod)
 define("MATOMO_URL", '');
+define("MATOMO_SITE_ID", '');
 
 // front-end errors logger
 define("GLITCHTIP_ENABLED", false);

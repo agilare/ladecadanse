@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.7.2] - Unreleased
+
+### Added
+- statistics : Matomo site id constant and tools.ladecadanse in CSP
+
+
 ## [3.7.1] - 2025-04-21
 
 ### Fixed
