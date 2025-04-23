@@ -2,6 +2,9 @@
 
 ## [3.7.2] - Unreleased
 
+### Fixed
+- errors : 404.php to error.php with try to handle more cases, rm wrong "inclusions"
+
 ### Added
 - statistics : Matomo site id constant and tools.ladecadanse in CSP
 

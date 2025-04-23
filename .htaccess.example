@@ -34,7 +34,9 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^web/uploads/evenements/(s_)?(\d+)_(200[5-9]|201[0-9]|202[0-3])-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])(.*)\.(jpe?g?|png|gif)$ /web/uploads/evenements/$3/$1$2_$3-$4-$5$6.$7 [NC,R=301,L]
 
 
-ErrorDocument 404 /articles/404.php
+ErrorDocument 404 /articles/error.php
+ErrorDocument 429 /articles/error.php
+ErrorDocument 500 /articles/error.php
 
 # MAINTENANCE-PAGE REDIRECT mg: 92.106.49.248
 # RewriteCond %{REMOTE_ADDR} !^127\.0\.0\.1

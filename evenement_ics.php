@@ -61,7 +61,6 @@ if (!$even->getValues() || in_array($even->getValue('statut'), ['propose', 'inac
 {
 
     header("HTTP/1.1 404 Not Found");
-    echo file_get_contents("articles/404.php");
     exit;
 
 }
