@@ -249,7 +249,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 			if (!empty($champs['lieu']))
             {
 				$req_insAff = $connector->query("INSERT INTO affiliation
-				(idPersonne, idAffiliation, genre) VALUES ('" . $req_id . "','" . $champs['lieu'] . "','lieu')");
+				(idPersonne, idAffiliation, genre) VALUES ('" . (int) $req_id . "','" . $champs['lieu'] . "','lieu')");
             }
 
 			/*
@@ -284,26 +284,26 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 			}
 
 			$sql_update .= "date_derniere_modif='".date("Y-m-d H:i:s")."'";
-			$sql_update .= " WHERE idPersonne=".$get['idP'];
+			$sql_update .= " WHERE idPersonne=" . (int) $get['idP'];
 
             $req_update = $connector->query($sql_update);
 
             //trouve si la personne a déjà une affiliation à un lieu
-			$connector->query("SELECT idPersonne FROM affiliation WHERE idPersonne=".$get['idP']);
+			$connector->query("SELECT idPersonne FROM affiliation WHERE idPersonne=" . (int) $get['idP']);
 
-			//si la nouvelle affiliation est un lieu, update s'il en a déjà une, insert sinon
+            //si la nouvelle affiliation est un lieu, update s'il en a déjà une, insert sinon
 			if (!empty($champs['lieu']))
             {
 				if ($connector->getAffectedRows() > 0)
 				{
 					$aff = "UPDATE affiliation SET idAffiliation='".$champs['lieu']."'
-					WHERE idPersonne=".$get['idP']." AND genre='lieu'";
-				}
+					WHERE idPersonne=" . (int) $get['idP'] . " AND genre='lieu'";
+                }
 				else
 				{
 					$aff = "INSERT INTO affiliation (idPersonne, idAffiliation, genre)
-					VALUES ('".$get['idP']."','".$champs['lieu']."','lieu')";
-				}
+					VALUES ('" . (int) $get['idP'] . "','" . $champs['lieu'] . "','lieu')";
+                }
 
 				if (!$connector->query($aff))
 				{
@@ -317,8 +317,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 			{
 				if ($connector->getAffectedRows() > 0)
 				{
-					$connector->query("DELETE FROM affiliation WHERE idPersonne=".$get['idP']." AND genre='lieu'");
-				}
+					$connector->query("DELETE FROM affiliation WHERE idPersonne=" . (int) $get['idP'] . " AND genre='lieu'");
+                }
 			}
 
 			/*
@@ -357,8 +357,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 
                 $logger->log('global', 'activity', "[user-edit] user " . $champs['pseudo'] . " updated by " . $_SESSION["user"] . "; details : personne $sql_update and affiliation : " . ($aff ?? "-" ), Logger::GRAN_YEAR);
 
-                $sqld = "DELETE FROM personne_organisateur WHERE idPersonne=".$get['idP'];
-				$connector->query($sqld);
+                $sqld = "DELETE FROM personne_organisateur WHERE idPersonne=" . (int) $get['idP'];
+                $connector->query($sqld);
 				$req_id = $get['idP'];
 			}
 			else
@@ -371,10 +371,10 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 		{
 			foreach ($champs['organisateurs'] as $idOrg)
 			{
-				if ($idOrg != 0)
-				{
-					$sql = "INSERT INTO personne_organisateur (idPersonne, idOrganisateur) VALUES (".$req_id.", ".$idOrg.")";
-					$connector->query($sql);
+				if (!empty($idOrg))
+                {
+					$sql = "INSERT INTO personne_organisateur (idPersonne, idOrganisateur) VALUES (" . (int) $req_id . ", " . (int) $idOrg . ")";
+                    $connector->query($sql);
 				}
 			}
             $logger->log('global', 'activity', "[user-edit] user " . $champs['pseudo'] . " organisateurs updated; idOrganisateurs inserted : " . implode(", ", $champs['organisateurs']), Logger::GRAN_YEAR);
@@ -391,9 +391,9 @@ echo '<div id="entete_contenu">';
 
 if ($get['action'] == 'editer' && isset($get['idP']))
 {
-	$req_pers = $connector->query("SELECT * FROM personne WHERE idPersonne =".$get['idP']);
+	$req_pers = $connector->query("SELECT * FROM personne WHERE idPersonne =" . (int) $get['idP']);
 
-	if ($tab_pers = $connector->fetchArray($req_pers))
+        if ($tab_pers = $connector->fetchArray($req_pers))
 	{
 		foreach ($tab_pers as $n => $v)
 		{
@@ -408,9 +408,9 @@ if ($get['action'] == 'editer' && isset($get['idP']))
 	}
 
 	$req_aff = $connector->query("SELECT idAffiliation FROM affiliation WHERE
-	 idPersonne=".$get['idP']." AND genre='lieu'");
+	 idPersonne=" . (int) $get['idP'] . " AND genre='lieu'");
 
-	if ($tab_aff = $connector->fetchArray($req_aff))
+        if ($tab_aff = $connector->fetchArray($req_aff))
 	{
 		$champs['lieu'] = $tab_aff['idAffiliation'];
 	}
@@ -569,17 +569,17 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= UserLevel::ACTOR)) {
 
         $sql = "SELECT idOrganisateur
     FROM personne_organisateur
-    WHERE personne_organisateur.idPersonne=".$get['idP'];
+    WHERE personne_organisateur.idPersonne=" . (int) $get['idP'];
 
-    $tab_organisateurs_pers = [];
+        $tab_organisateurs_pers = [];
     if ($get['action'] == "editer" || $get['action'] == "update")
     {
 
         $sql = "SELECT idOrganisateur
     FROM personne_organisateur
-    WHERE personne_organisateur.idPersonne=".$get['idP'];
+    WHERE personne_organisateur.idPersonne=" . (int) $get['idP'];
 
-     $req = $connector->query($sql);
+            $req = $connector->query($sql);
 
         if ($connector->getNumRows($req))
         {
@@ -688,7 +688,7 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= UserLevel::ACTOR)) {
 
         $sql = "SELECT organisateur.idOrganisateur, nom
     FROM organisateur, personne_organisateur
-    WHERE personne_organisateur.idPersonne=".$get['idP']." AND
+    WHERE personne_organisateur.idPersonne=" . (int) $get['idP'] . " AND
      organisateur.idOrganisateur=personne_organisateur.idOrganisateur
      ORDER BY date_ajout DESC";
 

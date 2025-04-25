@@ -185,15 +185,15 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
             {
                     $req_insAff = $connector->query("INSERT INTO affiliation
                 (idPersonne, idAffiliation,
-                 genre) VALUES ('" . $req_id . "','" . $champs['lieu'] . "','lieu')");
-                }
+                 genre) VALUES ('" . (int) $req_id . "','" . $champs['lieu'] . "','lieu')");
+            }
 
                 foreach ($champs['organisateurs'] as $idOrg)
                 {
-                    if ($idOrg != 0)
-                    {
-                        $sql = "INSERT INTO personne_organisateur (idPersonne, idOrganisateur) VALUES (" . $req_id . ", " . $idOrg . ")";
-                        //echo $sql;
+                    if (!empty($idOrg))
+                {
+                        $sql = "INSERT INTO personne_organisateur (idPersonne, idOrganisateur) VALUES (" . (int) $req_id . ", " . (int) $idOrg . ")";
+                    //echo $sql;
                         $connector->query($sql);
                     }
                 }
@@ -212,9 +212,9 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
                     $req_pers = $connector->query("
                 SELECT pseudo, mot_de_passe, email, groupe
                 FROM personne
-                WHERE idPersonne=" . $req_id);
+                WHERE idPersonne=" . (int) $req_id);
 
-                    $tab_pers = $connector->fetchArray($req_pers);
+                $tab_pers = $connector->fetchArray($req_pers);
 
                     $champs = ['gds' => '', 'mot_de_passe' => ''];
 
@@ -227,9 +227,9 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
                     }
 
                     $sql_update = "UPDATE personne SET mot_de_passe='" . $champs['mot_de_passe'] . "', gds='" . $champs['gds'] . "',
-                statut='actif' WHERE idPersonne=" . $req_id;
+                statut='actif' WHERE idPersonne=" . (int) $req_id;
 
-                    //message résultat et réinit
+                //message résultat et réinit
                     if ($connector->query($sql_update))
                     {
                         $subject = "Votre nouveau compte 👤 " . $tab_pers['pseudo'] . " sur La décadanse";
@@ -240,8 +240,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
                         $contenu_message .= "Pour vous connecter : " . $site_full_url . "user-login.php";
                         $contenu_message .= "\n\n";
                         $contenu_message .= "Vous pouvez compléter votre profil sur votre page de membre : ";
-                        $contenu_message .= $site_full_url . "user.php?idP=" . $req_id;
-                        $contenu_message .= "\n\n";
+                        $contenu_message .= $site_full_url . "user.php?idP=" . (int) $req_id;
+                    $contenu_message .= "\n\n";
                         $contenu_message .= "Bonne visite";
                         $contenu_message .= "\n\n";
                         $contenu_message .= "La décadanse";
@@ -256,8 +256,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
                         HtmlShrink::msgOk("<strong>Votre compte" . $compte_organisateur . " a été créé</strong>; vous pouvez maintenant vous <a href=\"/user-login.php\">connecter</a> avec l'identifiant et le mot de passe que vous venez de saisir.
                     <br />Un e-mail de confirmation vous a été envoyé à l'adresse : " . sanitizeForHtml($tab_pers['email']));
 
-                        $logger->log('global', 'activity', "[user-register] by " . $tab_pers['pseudo'] . " (" . $tab_pers['email'] . ") in group " . $tab_pers['groupe'] . " /user.php?idP=" . $req_id, Logger::GRAN_YEAR);
-                    }
+                        $logger->log('global', 'activity', "[user-register] by " . $tab_pers['pseudo'] . " (" . $tab_pers['email'] . ") in group " . $tab_pers['groupe'] . " /user.php?idP=" . (int) $req_id, Logger::GRAN_YEAR);
+                }
 
                     foreach ($champs as $k => $v)
                     {
