@@ -50,7 +50,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' && empty($_POST
 
 
         $verif->valider($champs['pseudo'], "pseudo", "texte", 2, 50, 1);
-        $verif->valider($champs['motdepasse'], "motdepasse", "texte", 4, 50, 1);
+        $verif->valider($champs['motdepasse'], "motdepasse", "texte", 4, 30, 1);
 
         if (!empty($champs['memoriser']) && $champs['memoriser'] != 1)
         {

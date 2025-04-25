@@ -111,8 +111,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 	if ($_SESSION['Sgroupe'] > UserLevel::SUPERADMIN) {
 		if ($get['action'] == "update" && (!empty($champs['newPass']) || !empty($champs['newPass2'])))
 		{
-			$verif->valider($champs['motdepasse'], "motdepasse", "texte", 6, 100, 1);
-		}
+			$verif->valider($champs['motdepasse'], "motdepasse", "texte", 6, 30, 1);
+        }
 
 		if ($get['action'] == "update" && !empty($champs['motdepasse']) && (empty($champs['newPass']) || empty($champs['newPass2'])))
 		{
@@ -137,10 +137,11 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 			$verif->setErreur("nouveaux_pass", 'Les 2 mots de passe doivent être identiques.');
 		}
 		else
-		{	$verif->valider($champs['newPass'], "newPass", "texte", 8, 100, 1);
-			$verif->valider($champs['newPass2'], "newPass2", "texte", 8, 100, 1);
+		{
+            $verif->valider($champs['newPass'], "newPass", "texte", 8, 30, 1);
+            $verif->valider($champs['newPass2'], "newPass2", "texte", 8, 30, 1);
 
-			if (!preg_match("/[0-9]/", (string) $champs['newPass']) || !preg_match("/[0-9]/", (string) $champs['newPass2']))
+            if (!preg_match("/[0-9]/", (string) $champs['newPass']) || !preg_match("/[0-9]/", (string) $champs['newPass2']))
 			{
 				$verif->setErreur("nouveaux_pass", 'Le nouveau mot de passe doit comporter au moins 1 chiffre.');
 			}
@@ -514,8 +515,8 @@ if ($verif->nbErreurs() > 0)
     ?>
         <div class="guideForm">À remplir si vous souhaitez modifier votre mot de passe actuel</div>
         <p><label for="motdepasse">Actuel</label>
-        <input type="password" name="motdepasse" id="motdepasse" size="20" value="" autocomplete="off" />
-        <?php
+                    <input type="password" name="motdepasse" id="motdepasse" size="30" value="" autocomplete="off" />
+                    <?php
         echo $verif->getHtmlErreur("motdepasse");
         ?>
         </p>
@@ -527,15 +528,15 @@ if ($verif->nbErreurs() > 0)
     <!-- Nouveau mot de passe* en cas de mise à jour -->
     <p>
         <label for="newPass">Nouveau<?php if ($get['action'] != 'editer' || $get['action'] != 'update') { echo "*"; } ?></label>
-        <input type="password" name="newPass" id="newPass" size="20" value="" />
-        <?php echo $verif->getHtmlErreur("newPass");?>
+            <input type="password" name="newPass" id="newPass" size="30" value="" />
+            <?php echo $verif->getHtmlErreur("newPass");?>
     </p>
 
     <!-- Nouveau mot de passe* à confirmation en cas de mise à jour -->
     <p>
         <label for="newPass2">Confirmer le nouveau<?php if ($get['action'] != 'editer' || $get['action'] != 'update') { echo "*"; } ?></label>
-        <input type="password" name="newPass2" id="newPass2" size="20" value="" />
-        <?php echo $verif->getHtmlErreur("newPass2");?>
+            <input type="password" name="newPass2" id="newPass2" size="30" value="" />
+            <?php echo $verif->getHtmlErreur("newPass2");?>
     </p>
     <?php echo $verif->getHtmlErreur("nouveaux_pass");?>
 </fieldset>
