@@ -232,7 +232,7 @@ class HtmlShrink
             }
             else if ($tab_aff = $connector->fetchArray($req_aff))
             {
-                $req_lieu_aff = $connector->query("SELECT nom FROM lieu WHERE idLieu=" . $tab_aff['idAffiliation']);
+                $req_lieu_aff = $connector->query("SELECT nom FROM lieu WHERE idLieu=" . (int) $tab_aff['idAffiliation']);
                 $tab_lieu_aff = $connector->fetchArray($req_lieu_aff);
                 $nom_affiliation = $tab_lieu_aff['nom'];
             }

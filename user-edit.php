@@ -296,13 +296,13 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
             {
 				if ($connector->getAffectedRows() > 0)
 				{
-					$aff = "UPDATE affiliation SET idAffiliation='".$champs['lieu']."'
+					$aff = "UPDATE affiliation SET idAffiliation='" . (int) $champs['lieu'] . "'
 					WHERE idPersonne=" . (int) $get['idP'] . " AND genre='lieu'";
                 }
 				else
 				{
 					$aff = "INSERT INTO affiliation (idPersonne, idAffiliation, genre)
-					VALUES ('" . (int) $get['idP'] . "','" . $champs['lieu'] . "','lieu')";
+					VALUES ('" . (int) $get['idP'] . "','" . (int) $champs['lieu'] . "','lieu')";
                 }
 
 				if (!$connector->query($aff))

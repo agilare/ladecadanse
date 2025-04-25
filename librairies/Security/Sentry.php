@@ -235,7 +235,7 @@ class Sentry extends SystemComponent
         $req_affiliation = $connector->query("
 		SELECT idAffiliation
 		FROM affiliation
-		WHERE idPersonne='" . $this->userdata["idPersonne"] . "' AND genre='lieu'");
+		WHERE idPersonne='" . (int) $this->userdata["idPersonne"] . "' AND genre='lieu'");
 
         $tab_affiliation = $connector->fetchArray($req_affiliation);
 

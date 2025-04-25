@@ -92,7 +92,7 @@ class Authorization
 
         $req_affPers = $connector->query("SELECT lieu.idLieu, lieu.nom
         FROM affiliation INNER JOIN lieu ON affiliation.idAffiliation=lieu.idLieu
-         WHERE affiliation.idPersonne=" . $idP . " AND affiliation.genre='lieu' AND affiliation.idAffiliation=" . $idL);
+         WHERE affiliation.idPersonne=" . (int) $idP . " AND affiliation.genre='lieu' AND affiliation.idAffiliation=" . (int) $idL);
 
         if ($connector->getNumRows($req_affPers) > 0)
         {

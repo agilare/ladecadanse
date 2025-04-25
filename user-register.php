@@ -185,7 +185,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
             {
                     $req_insAff = $connector->query("INSERT INTO affiliation
                 (idPersonne, idAffiliation,
-                 genre) VALUES ('" . (int) $req_id . "','" . $champs['lieu'] . "','lieu')");
+                 genre) VALUES ('" . (int) $req_id . "','" . (int) $champs['lieu'] . "','lieu')");
             }
 
                 foreach ($champs['organisateurs'] as $idOrg)
