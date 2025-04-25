@@ -668,8 +668,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 		{
 			foreach ($champs['organisateurs'] as $no => $idOrg)
 			{
-				if ($idOrg != 0)
-				{
+				if (!empty($idOrg))
+                {
                     $sql = "INSERT INTO evenement_organisateur (idEvenement, idOrganisateur) VALUES (" . (int) $req_id . ", " . (int) $idOrg . ")";
                     $connector->query($sql);
 				}

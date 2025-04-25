@@ -631,8 +631,8 @@ elseif (!empty($_POST['formulaire']))
 
 				foreach ($champs['organisateurs'] as $no => $idOrg)
 				{
-					if ($idOrg != 0)
-					{
+					if (!empty($idOrg))
+                {
 						$sql = "INSERT INTO evenement_organisateur (idEvenement, idOrganisateur) VALUES (" . (int) $idEven_courant . ", " . (int) $idOrg . ")";
                     $connector->query($sql);
                 }
