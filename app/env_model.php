@@ -31,10 +31,7 @@ define("TINYMCE_API_KEY", ''); // rich text editor for presentations of lieux an
 
 define("GOOGLE_API_KEY", ''); // use Google Maps library to display maps of venues https://developers.google.com/maps/documentation/javascript/get-api-key
 
-define("GOOGLE_ANALYTICS_ENABLED", false); // 1st analytics tool (enabled only in prod)
-define("GOOGLE_ANALYTICS_ID", '');
-
-define("MATOMO_ENABLED", false); // analytics tool (enabled only in prod)
+define("MATOMO_ENABLED", false); // statistics tool (enabled only in prod)
 define("MATOMO_URL", '');
 define("MATOMO_SITE_ID", '');
 

@@ -99,36 +99,22 @@ use Ladecadanse\UserLevel;
     ?>
         <!-- Matomo -->
         <script nonce="<?php echo CSP_NONCE ?>">
-                    'use strict';
-                  var _paq = window._paq = window._paq || [];
-          /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
-          _paq.push(['trackPageView']);
-          _paq.push(['enableLinkTracking']);
-          (function() {
-                var u="//<?php echo MATOMO_URL; ?>";
-                _paq.push(['setTrackerUrl', u+'matomo.php']);
-                _paq.push(['setSiteId', '<?php echo MATOMO_SITE_ID; ?>']);
-                var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-            g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
-          })();
-        </script>
-        <!-- End Matomo Code -->
+                        'use strict';
+                      var _paq = window._paq = window._paq || [];
+              /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+              _paq.push(['trackPageView']);
+              _paq.push(['enableLinkTracking']);
+              (function() {
+                    var u="//<?php echo MATOMO_URL; ?>";
+                    _paq.push(['setTrackerUrl', u+'matomo.php']);
+                    _paq.push(['setSiteId', '<?php echo MATOMO_SITE_ID; ?>']);
+                    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+                g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+              })();
+            </script>
+    <noscript><p><img referrerpolicy="no-referrer-when-downgrade" src="https://<?php echo MATOMO_URL; ?>matomo.php?idsite=<?php echo MATOMO_SITE_ID; ?>&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+    <!-- End Matomo Code -->
         <?php
-    }
-    ?>
-    <?php
-    if (GOOGLE_ANALYTICS_ENABLED) {
-    ?>
-        <script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo GOOGLE_ANALYTICS_ID; ?>"></script>
-        <script nonce="<?php echo CSP_NONCE ?>">
-                    'use strict';
-              window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-
-          gtag('config', '<?php echo GOOGLE_ANALYTICS_ID; ?>');
-        </script>
-    <?php
     }
     ?>
 </head>
