@@ -1729,6 +1729,20 @@
       ],
       "value": ""
     }, {
+      "id": "d62a0fc1-659a-4b24-9a16-385cabe781ae",
+      "comment": "",
+      "command": "executeScript",
+      "target": "return document.querySelector(\".location .map-dropdown-link\") !== null;",
+      "targets": [],
+      "value": "elementFound"
+    }, {
+      "id": "7d4a7b2c-38ef-4379-8026-524a33601657",
+      "comment": "",
+      "command": "if",
+      "target": "${elementFound}",
+      "targets": [],
+      "value": ""
+    }, {
       "id": "b868b17d-96a7-49a5-8fca-d409d7628a07",
       "comment": "click \"Voir sur le plan\"",
       "command": "click",
@@ -1764,6 +1778,13 @@
         ["xpath=//div[2]/div/ul/li[2]/a", "xpath:position"],
         ["xpath=//a[contains(.,' Voir sur le plan ')]", "xpath:innerText"]
       ],
+      "value": ""
+    }, {
+      "id": "7f3d85ad-f13f-4817-8ac1-1e620ca99df0",
+      "comment": "",
+      "command": "end",
+      "target": "",
+      "targets": [],
       "value": ""
     }, {
       "id": "0c192c67-ecb5-4240-854d-89bc0f57302d",
@@ -1892,6 +1913,20 @@
       ],
       "value": ""
     }, {
+      "id": "a2a53982-c77f-4ab8-aad7-aa5332d6ec6a",
+      "comment": "",
+      "command": "executeScript",
+      "target": "return document.querySelector(\".entete_contenu_navigation:nth-child(2) > a:nth-child(2) > .event-navig-link\") !== null;",
+      "targets": [],
+      "value": "navigLinkFound"
+    }, {
+      "id": "ad72b24c-49a6-43f9-a18d-9bb6b2da9fdf",
+      "comment": "",
+      "command": "if",
+      "target": "${navigLinkFound}",
+      "targets": [],
+      "value": ""
+    }, {
       "id": "9a72d289-f01e-46e0-8716-6f0f35f248be",
       "comment": "",
       "command": "click",
@@ -1985,6 +2020,13 @@
         ["xpath=//h3", "xpath:position"],
         ["xpath=//h3[contains(.,'Fête de la bière et de la choucroute')]", "xpath:innerText"]
       ],
+      "value": ""
+    }, {
+      "id": "c1bfed25-d9e4-453c-94e9-18cf0bcf2284",
+      "comment": "",
+      "command": "end",
+      "target": "",
+      "targets": [],
       "value": ""
     }]
   }, {
@@ -3035,7 +3077,7 @@
       "id": "ac05fe3e-72a7-4321-a30d-955ca7140482",
       "comment": "",
       "command": "clickAt",
-      "target": "id=localite_chosen",
+      "target": "id=localite",
       "targets": [
         ["css=#localite_chosen span", "css:finder"],
         ["xpath=//div[@id='localite_chosen']/a/span", "xpath:idRelative"],
@@ -3061,7 +3103,7 @@
       "id": "9b111950-82cc-4b87-8351-8748c8c88562",
       "comment": "",
       "command": "click",
-      "target": "css=.select2-results__option:nth-child(3)",
+      "target": "css=.select2-results__option:nth-child(30)",
       "targets": [],
       "value": ""
     }, {
@@ -3175,10 +3217,10 @@
       ],
       "value": "https://coriserenfete.ch"
     }, {
-      "id": "e268fdc6-60a9-48bb-a08d-b8bc38f36791",
+      "id": "4a04cacc-5572-4b50-99a9-669a682e027f",
       "comment": "",
       "command": "click",
-      "target": "css=.default",
+      "target": "xpath=//select[@id='organisateurs']/following-sibling::span//span[contains(@class,'select2-selection')]",
       "targets": [
         ["css=.default", "css:finder"],
         ["xpath=//input[@value='Tapez les noms des organisateurs']", "xpath:attributes"],
@@ -3187,28 +3229,44 @@
       ],
       "value": ""
     }, {
-      "id": "0c199d7e-7bf6-4d48-a389-9f3dc7191230",
+      "id": "57ed7ad2-59a2-425d-a5d1-9bd4c223fcf4",
+      "comment": "",
+      "command": "waitForElementVisible",
+      "target": "css=.select2-results__options",
+      "targets": [],
+      "value": "30000"
+    }, {
+      "id": "421293d6-7aeb-4bce-b523-89ece3791bf7",
       "comment": "",
       "command": "click",
-      "target": "css=.guideChamp:nth-child(3)",
+      "target": "css=.select2-results__option:nth-child(3)",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "e268fdc6-60a9-48bb-a08d-b8bc38f36791",
+      "comment": "",
+      "command": "click",
+      "target": "xpath=//select[@id='organisateurs']/following-sibling::span//span[contains(@class,'select2-selection')]",
       "targets": [
-        ["css=.guideChamp:nth-child(3)", "css:finder"],
-        ["xpath=//fieldset[@id='references']/div", "xpath:idRelative"],
-        ["xpath=//fieldset[5]/div", "xpath:position"]
+        ["css=.default", "css:finder"],
+        ["xpath=//input[@value='Tapez les noms des organisateurs']", "xpath:attributes"],
+        ["xpath=//div[@id='organisateurs_chosen']/ul/li/input", "xpath:idRelative"],
+        ["xpath=//div/ul/li/input", "xpath:position"]
       ],
       "value": ""
     }, {
-      "id": "5d087025-f37c-49a3-a19d-543e0b819b08",
+      "id": "b0a7687b-fd8d-48ff-a5c7-a84f042ef45e",
+      "comment": "",
+      "command": "waitForElementVisible",
+      "target": "css=.select2-results__options",
+      "targets": [],
+      "value": "30000"
+    }, {
+      "id": "82742019-0e45-46bb-b66a-dd9de50badff",
       "comment": "",
       "command": "click",
-      "target": "id=prix-precisions",
-      "targets": [
-        ["id=prix-precisions", "id"],
-        ["css=#prix-precisions", "css:finder"],
-        ["xpath=//div[@id='prix-precisions']", "xpath:attributes"],
-        ["xpath=//form[@id='ajouter_editer']/fieldset[6]/div", "xpath:idRelative"],
-        ["xpath=//fieldset[6]/div", "xpath:position"]
-      ],
+      "target": "css=.select2-results__option:nth-child(9)",
+      "targets": [],
       "value": ""
     }, {
       "id": "fc152ff3-52a1-4085-abc8-a4081776896d",
@@ -7736,7 +7794,7 @@
       "id": "3d39e8c0-b0fc-4f9b-bf2d-58d9bea86f00",
       "comment": "",
       "command": "click",
-      "target": "css=.select2-results__option:nth-child(3)",
+      "target": "css=.select2-results__option:nth-child(15)",
       "targets": [],
       "value": ""
     }, {
@@ -7849,42 +7907,6 @@
         ["xpath=//fieldset[5]/p/input", "xpath:position"]
       ],
       "value": "https://coriserenfete.ch"
-    }, {
-      "id": "7339505a-6c58-4f50-941b-fdaa27bb36f7",
-      "comment": "",
-      "command": "click",
-      "target": "css=.default",
-      "targets": [
-        ["css=.default", "css:finder"],
-        ["xpath=//input[@value='Tapez les noms des organisateurs']", "xpath:attributes"],
-        ["xpath=//div[@id='organisateurs_chosen']/ul/li/input", "xpath:idRelative"],
-        ["xpath=//div/ul/li/input", "xpath:position"]
-      ],
-      "value": ""
-    }, {
-      "id": "c5651c6a-250a-4125-8c61-e8c3f0f4c743",
-      "comment": "",
-      "command": "click",
-      "target": "css=.guideChamp:nth-child(3)",
-      "targets": [
-        ["css=.guideChamp:nth-child(3)", "css:finder"],
-        ["xpath=//fieldset[@id='references']/div", "xpath:idRelative"],
-        ["xpath=//fieldset[5]/div", "xpath:position"]
-      ],
-      "value": ""
-    }, {
-      "id": "def39797-d5c6-44a3-9db3-8943e06c745a",
-      "comment": "",
-      "command": "click",
-      "target": "id=prix-precisions",
-      "targets": [
-        ["id=prix-precisions", "id"],
-        ["css=#prix-precisions", "css:finder"],
-        ["xpath=//div[@id='prix-precisions']", "xpath:attributes"],
-        ["xpath=//form[@id='ajouter_editer']/fieldset[6]/div", "xpath:idRelative"],
-        ["xpath=//fieldset[6]/div", "xpath:position"]
-      ],
-      "value": ""
     }, {
       "id": "a98ef96a-1999-490a-9152-973444a1468c",
       "comment": "",

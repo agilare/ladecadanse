@@ -309,8 +309,8 @@ $adresse = HtmlShrink::getAdressFitted($listeLieu['region'], sanitizeForHtml($li
                         ?>
 
                             <li>
-                                <a href="#" class="dropdown" data-target="plan"><?php echo $icone['plan']; ?> Voir sur le plan <i class="fa fa-caret-down" aria-hidden="true"></i></a>
-                            </li>
+                                    <a href="#" class="dropdown map-dropdown-link" data-target="plan"><?php echo $icone['plan']; ?> Voir sur le plan <i class="fa fa-caret-down" aria-hidden="true"></i></a>
+                                </li>
                     <?php
                         }
 						if (!empty($listeLieu['URL']))
