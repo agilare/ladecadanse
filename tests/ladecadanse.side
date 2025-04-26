@@ -8022,6 +8022,75 @@
       "targets": [],
       "value": "3000"
     }]
+  }, {
+    "id": "557f8f3f-f10b-4fec-be4e-5cda336aaa94",
+    "name": "donation small",
+    "commands": [{
+      "id": "b9b3a091-8535-4da2-bf02-08304274b8f6",
+      "comment": "",
+      "command": "open",
+      "target": "/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "64b84c68-aac7-4b7c-a4c9-0a6cb4d7267a",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "360x720",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "fc9d126b-92b4-4ba4-b5de-110dd4b2d841",
+      "comment": "",
+      "command": "click",
+      "target": "id=btn_menu_pratique",
+      "targets": [
+        ["id=btn_menu_pratique", "id"],
+        ["css=#btn_menu_pratique", "css:finder"],
+        ["xpath=//a[@id='btn_menu_pratique']", "xpath:attributes"],
+        ["xpath=//div[@id='entete_haut']/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '#')]", "xpath:href"],
+        ["xpath=//div[2]/a", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "45b94f8f-32e1-44eb-b2fe-b6d4637c63a6",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=Faire un don",
+      "targets": [
+        ["linkText=Faire un don", "linkText"],
+        ["css=#menu_pratique li:nth-child(4) > a", "css:finder"],
+        ["xpath=//a[contains(text(),'Faire un don')]", "xpath:link"],
+        ["xpath=//nav[@id='menu_pratique']/ul/li[4]/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '/articles/faireUnDon.php')]", "xpath:href"],
+        ["xpath=//li[4]/a", "xpath:position"],
+        ["xpath=//a[contains(.,'Faire un don')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "de6ad849-cafe-4f85-99e9-574496d60be1",
+      "comment": "",
+      "command": "runScript",
+      "target": "window.scrollTo(0,169)",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "342428a4-1014-46d3-99df-b665184dd9fc",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=contactez-moi",
+      "targets": [
+        ["linkText=contactez-moi", "linkText"],
+        ["css=a:nth-child(2)", "css:finder"],
+        ["xpath=//a[contains(text(),'contactez-moi')]", "xpath:link"],
+        ["xpath=//ul[@id='payment-modes']/li[3]/a", "xpath:idRelative"],
+        ["xpath=(//a[contains(@href, '/contacteznous.php')])[2]", "xpath:href"],
+        ["xpath=//ul[2]/li[3]/a", "xpath:position"],
+        ["xpath=//a[contains(.,'contactez-moi')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }]
   }],
   "suites": [{
     "id": "e598238f-e9bc-40f6-9876-6274e4bf1e3f",
@@ -8029,7 +8098,7 @@
     "persistSession": false,
     "parallel": false,
     "timeout": 300,
-    "tests": ["1c4e0b1a-ecd3-4bee-b216-8448f663e804", "5b25e806-0e1c-44d8-8740-8fea9c4ef72b", "f7075d90-d631-4aa3-ad62-6344bb052890", "fcd88d4b-aaaf-4bab-9cb8-bc1bcaceae08", "ef663861-84a7-4224-83ef-4ae3c2041edf", "64a632a5-6285-43db-bcd2-b3023732989d", "d279109f-52b6-4b17-aa36-5704240df41e", "c3060854-829d-4124-9885-e36d67bed18d", "3ebd99c9-ee10-47ff-b262-faa2f02ad87d", "82a5cf0c-2c0b-4baf-8545-45193e3ca01e", "1936c9ce-4dcc-4002-b874-9230988f6c99", "6785a2a4-47e6-4ae8-809e-4b01fd72e204"]
+    "tests": ["1c4e0b1a-ecd3-4bee-b216-8448f663e804", "5b25e806-0e1c-44d8-8740-8fea9c4ef72b", "f7075d90-d631-4aa3-ad62-6344bb052890", "fcd88d4b-aaaf-4bab-9cb8-bc1bcaceae08", "ef663861-84a7-4224-83ef-4ae3c2041edf", "64a632a5-6285-43db-bcd2-b3023732989d", "d279109f-52b6-4b17-aa36-5704240df41e", "c3060854-829d-4124-9885-e36d67bed18d", "557f8f3f-f10b-4fec-be4e-5cda336aaa94", "3ebd99c9-ee10-47ff-b262-faa2f02ad87d", "82a5cf0c-2c0b-4baf-8545-45193e3ca01e", "1936c9ce-4dcc-4002-b874-9230988f6c99", "6785a2a4-47e6-4ae8-809e-4b01fd72e204"]
   }, {
     "id": "573974f0-13b4-4a75-857c-b375bb627729",
     "name": "user actor",
