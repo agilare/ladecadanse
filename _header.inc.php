@@ -83,7 +83,7 @@ use Ladecadanse\UserLevel;
     if (GLITCHTIP_ENABLED)
     {
         ?>
-        <script src="https://browser.sentry-cdn.com/9.12.0/bundle.min.js" crossorigin="anonymous"></script>
+    <script src="https://browser.sentry-cdn.com/9.14.0/bundle.min.js" crossorigin="anonymous"></script>
         <script nonce="<?php echo CSP_NONCE ?>">
                 Sentry.init({
               dsn: "<?php echo GLITCHTIP_DSN ?>",
