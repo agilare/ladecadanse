@@ -930,7 +930,7 @@ echo $verif->getErreur("genre");
 <p>
 <label for="lieu">Dans la liste :</label>
 
-<select name="idLieu" id="idLieu" class="js-select2" data-placeholder=""  style="max-width:350px">
+<select name="idLieu" id="idLieu" class="js-select2-options-with-style" data-placeholder=""  style="max-width:350px">
     <?php
 //Menu des lieux actifs de la base
 echo "<option value=\"\">&nbsp;</option>";
@@ -1041,7 +1041,7 @@ echo $verif->getErreur("doublonLieux");
 
 <p>
 <label for="localite">Localité/quartier</label>
-<select name="localite_id" id="localite" class="js-select2" data-placeholder="" style="max-width:300px;">
+<select name="localite_id" id="localite" class="js-select2-options-with-style" data-placeholder="" style="max-width:300px;">
     <?php
 echo "<option value=\"\">&nbsp;</option>";
 $req = $connector->query("
@@ -1183,7 +1183,7 @@ echo $verif->getHtmlErreur('description');
 
 <p>
 <label for="organisateurs">Organisateur(s)</label>
-<select name="organisateurs[]" id="organisateurs" class="js-select2" multiple data-placeholder="Choisissez un ou plusieurs organisateurs" style="max-width:400px;">
+<select name="organisateurs[]" id="organisateurs" class="js-select2-options-with-complement" multiple data-placeholder="Choisissez un ou plusieurs organisateurs" style="max-width:400px;">
     <?php
 
 /*

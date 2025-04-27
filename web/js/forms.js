@@ -5,33 +5,73 @@
  */
 'use strict';
 
-$('.js-select2').select2(
+$('.js-select2-options-with-style').select2(
         {
             language: "fr",
             allowClear: true,
-            templateResult: function (data) {
-                if (!data.id) return data.text;
-
-                const $option = $(data.element);
-                const style = $option.attr('style');
-
-                const $result = $('<span>').text(data.text);
-                if (style) $result.attr('style', style); // applique le style inline
-
-                return $result;
-            },
-            templateSelection: function (data) {
-                if (!data.id) return data.text;
-
-                const $option = $(data.element);
-                const style = $option.attr('style');
-
-                const $selection = $('<span>').text(data.text);
-                if (style) $selection.attr('style', style); // applique le style inline
-
-                return $selection;
-            }
+            templateResult: select2ApplyOptionInlineStyle,
+            templateSelection: select2ApplyOptionInlineStyle
         });
+
+$('.js-select2-options-with-complement').select2(
+        {
+            language: "fr",
+            allowClear: true,
+            templateResult: select2OptionWithComplement,
+            templateSelection: select2OptionWithComplement
+        });
+
+
+function select2ApplyOptionInlineStyle(item)
+{
+    if (!item.id)
+
+        return item.text;
+
+    const $option = $(item.element);
+    const style = $option.attr('style');
+
+    const $result = $('<span>').text(item.text);
+    if (style)
+
+        $result.attr('style', style); // applique le style inline
+
+    return $result;
+};
+
+function select2OptionWithComplement(item)
+{
+    if (!item.id)
+    {
+        return item.text; // Placeholder ou élément vide
+    }
+
+    let $option = $(item.element);
+    let nom = $option.data('nom');
+    let complement = $option.data('complement');
+
+    // Si ni data-nom ni data-complement => afficher normalement
+    if (!nom && !complement)
+    {
+        return item.text;
+    }
+
+    // Nettoyer complement si c'est une URL (on enlève http:// ou https://)
+    let complementAffiche = complement ? complement.replace(/^https?:\/\//, '') : '';
+
+    let result = '<span>';
+    if (nom)
+    {
+        result += `<span>${nom}</span>`;
+    }
+    if (complementAffiche)
+    {
+        result += ` <span style="font-size: 0.9em; color: #888;">${complementAffiche}</span>`;
+    }
+    result += '</span>';
+
+    return $(result);
+};
 
 // users can add events for today, until 06h the day after, in line with the agenda
 const nbHoursAfterMidnightForDay = 6;

@@ -374,7 +374,7 @@ echo $verif->getHtmlErreur("email_identique");?>
             <div class="guide_affiliation">Si vous êtes un <b>Acteur culturel</b>, merci d'indiquer à quel association, collectif, lieu, etc. vous appartenez.<br>Ainsi, une fois votre compte créé, vous pourrez modifier les informations du <a href="/lieux.php" target="_blank">Lieu</a> et/ou <a href="/organisateurs.php" target="_blank">Organisateur</a> sur La décadanse (données pratiques, images, présentations)</div>
             <p>
             <label for="lieu" class="affil">Lieu&nbsp;</label>
-                <select name="lieu" id="lieu" class="js-select2" data-placeholder="Tapez le nom..." style="max-width:350px">
+            <select name="lieu" id="lieu" class="js-select2-options-with-style" data-placeholder="Tapez le nom..." style="max-width:350px">
                     <?php
 
             echo "<option value=\"\"></option>";
@@ -398,7 +398,7 @@ echo $verif->getHtmlErreur("email_identique");?>
 		<div class="spacer"></div>
 		<p>
 		<label class="affil">Organisateur&nbsp;</label>
-        <select name="organisateurs[]" id="organisateurs" class="js-select2" title="Un organisateur dans base de données de La décadanse" style="max-width:350px" data-placeholder="Tapez le nom...">
+            <select name="organisateurs[]" id="organisateurs" class="js-select2-options-with-complement" title="Un organisateur dans base de données de La décadanse" style="max-width:350px" data-placeholder="Tapez le nom...">
                 <?php
 		echo "<option value=\"\"></option>";
                     $req = $connector->query("

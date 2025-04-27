@@ -271,7 +271,7 @@ if (($get['action'] != 'editer' || $get['action'] != 'update') && !empty($get['i
 	$champs['idLieu'] = $get['idL'];
 
 }
-	echo "<select name=\"idLieu\" id=\"idLieu\" class=\"js-select2\" data-placeholder=\"\">
+	echo "<select name=\"idLieu\" id=\"idLieu\" class=\"js-select2-options-with-style\" data-placeholder=\"\">
 	<option value=\"\"></option>";
     $req_lieux = $connector->query("SELECT idLieu, nom FROM lieu ORDER BY nom");
 

@@ -609,7 +609,7 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= UserLevel::ACTOR)) {
     <p>
 
     <label for="lieu">lieu</label>
-                <select name="lieu" id="lieu" class="js-select2" style="max-width:350px;" data-placeholder="">
+    <select name="lieu" id="lieu" class="js-select2-options-with-style" style="max-width:350px;" data-placeholder="">
                     <?php
 
     echo "<option value=\"\">&nbsp;</option>";
@@ -631,7 +631,7 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= UserLevel::ACTOR)) {
 
     <p>
     <label for="organisateurs">organisateur(s)</label>
-    <select name="organisateurs[]" id="organisateurs" data-placeholder="Choisissez un ou plusieurs organisateurs" class="js-select2" multiple data-placeholder="" style="max-width:350px;">
+                <select name="organisateurs[]" id="organisateurs" data-placeholder="Choisissez un ou plusieurs organisateurs" class="js-select2-options-with-style" multiple data-placeholder="" style="max-width:350px;">
                     <?php
     echo "<option value=\"\">&nbsp;</option>";
                 $req = $connector->query("

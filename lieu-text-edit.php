@@ -317,7 +317,7 @@ if (($get['action'] == 'editer' || $get['action'] == 'update') && isset($get['id
     else
 {
 
-	echo "<p><label for=\"idLieu\" style=\"text-align:left;float:none;\">Lieu* :</label><select name=\"idLieu\" id=\"idLieu\" class=\"js-select2\" title=\"Choisissez le lieu que vous voulez décrire\" style=\"max-width:350px;\" data-placeholder=\"\">
+	echo "<p><label for=\"idLieu\" style=\"text-align:left;float:none;\">Lieu* :</label><select name=\"idLieu\" id=\"idLieu\" class=\"js-select2-options-with-style\" title=\"Choisissez le lieu que vous voulez décrire\" style=\"max-width:350px;\" data-placeholder=\"\">
 	<option value=\"\"></option>";
 	$req_lieux = $connector->query("SELECT idLieu, nom FROM lieu WHERE actif=1 AND statut='actif' ORDER BY nom");
 

@@ -962,7 +962,7 @@ if ($verif->nbErreurs() > 0)
         <legend>Lieu*</legend>
         <p>
             <label for="idLieu"><strong>Nom du lieu :</strong></label>
-                <select name="idLieu" id="idLieu" class="js-select2" title="Un lieu dans base de données de La décadanse" style="max-width:350px"  data-placeholder="">
+            <select name="idLieu" id="idLieu" class="js-select2-options-with-style" title="Un lieu dans base de données de La décadanse" style="max-width:350px"  data-placeholder="">
                     <?php
 
         $sql_lieu_excl_fr = '';
@@ -977,13 +977,12 @@ if ($verif->nbErreurs() > 0)
         //Menu des lieux actifs de la base
         echo "<option value=\"\"></option>";
         $req_lieux = $connector->query("
-        SELECT idLieu, nom FROM lieu WHERE statut='actif' ".$sql_lieu_excl_fr." ORDER BY TRIM(LEADING 'L\'' FROM (TRIM(LEADING 'Les ' FROM (TRIM(LEADING 'La ' FROM (TRIM(LEADING 'Le ' FROM nom))))))) COLLATE utf8mb4_unicode_ci"
-         );
+        SELECT idLieu, nom FROM lieu WHERE statut='actif' " . $sql_lieu_excl_fr . " ORDER BY TRIM(LEADING 'L\'' FROM (TRIM(LEADING 'Les ' FROM (TRIM(LEADING 'La ' FROM (TRIM(LEADING 'Le ' FROM nom))))))) COLLATE utf8mb4_unicode_ci"
+    );
 
-
-        while ($lieuTrouve = $connector->fetchArray($req_lieux))
+    while ($lieuTrouve = $connector->fetchArray($req_lieux))
     {
-            echo "<option ";
+
 
             $nom_lieu = $lieuTrouve['nom'];
             if (preg_match("/^(Le |La |Les |L')(.*)/", (string) $lieuTrouve['nom'], $matches))
@@ -992,26 +991,27 @@ if ($verif->nbErreurs() > 0)
 
             }
 
-            if ($lieuTrouve['idLieu'] == $champs['idLieu'] || (!empty($get['idL']) && $lieuTrouve['idLieu'] == $get['idL']))
-        {
-                echo "selected=\"selected\" ";
-            }
+            echo '<option  ';
+
+                        if ($lieuTrouve['idLieu'] == $champs['idLieu'] || (!empty($get['idL']) && $lieuTrouve['idLieu'] == $get['idL']))
+                        {
+                            echo "selected=\"selected\" ";
+                        }
 
             echo "value=\"" . $lieuTrouve['idLieu'] . "\">" . sanitizeForHtml($nom_lieu) . "</option>";
 
-        $sql_salle = "select * from salle where idLieu=".$lieuTrouve['idLieu']. " AND salle.status='actif' ";
-            $req_salle = $connector->query($sql_salle);
+            $sql_salle = "select * from salle where idLieu=" . $lieuTrouve['idLieu'] . " AND salle.status='actif' ";
+                        $req_salle = $connector->query($sql_salle);
             while ($tab_salle = $connector->fetchArray($req_salle))
-
-            {
+                        {
                 echo "<option ";
                 if ($champs['idSalle'] != 0 && $tab_salle['idSalle'] == $champs['idSalle'])
                 {
                     echo "selected=\"selected\" ";
                 }
                 echo " style=\"font-style:italic;color:#444;\" value=" . $lieuTrouve['idLieu'] . "_" . $tab_salle['idSalle'] . ">" . sanitizeForHtml($nom_lieu) . "&nbsp;– " . sanitizeForHtml($tab_salle['nom']) . "</option>";
-        }
-        }
+            }
+                    }
         ?>
         </select>
         <!--<div class="guideChamp" style="font-size:0.9em"><span style="background:yellow">Nouveau :</span> tapez le nom du lieu dans le champ libre et accédez y plus rapidement</div>-->
@@ -1057,7 +1057,7 @@ if ($verif->nbErreurs() > 0)
         ?>
         </p>
         <p>
-            <label for="localite">Localité/quartier</label>&nbsp;<select name="localite_id" id="localite" class="js-select2" data-placeholder="" style="max-width:300px;">
+                <label for="localite">Localité/quartier</label>&nbsp;<select name="localite_id" id="localite" class="js-select2-options-with-style" data-placeholder="" style="max-width:300px;">
                     <?php
         echo "<option value=\"0\">&nbsp;</option>";
         $req = $connector->query("
@@ -1210,21 +1210,24 @@ if ($verif->nbErreurs() > 0)
         ?>
         <p>
             <label for="organisateurs">Organisateur(s) de l’événement</label>
-                <select name="organisateurs[]" id="organisateurs" data-placeholder="Tapez les noms des organisateurs" class="js-select2" multiple style="max-width:350px;"><?php
+                <select name="organisateurs[]" id="organisateurs" data-placeholder="Tapez les noms des organisateurs" class="js-select2-options-with-complement" multiple >
+                    <?php
                     //echo "<option value=\"\">&nbsp;</option>";
                         $req = $connector->query("
-        SELECT idOrganisateur, nom FROM organisateur WHERE statut='actif' ORDER BY TRIM(LEADING 'L\'' FROM (TRIM(LEADING 'Les ' FROM (TRIM(LEADING 'La ' FROM (TRIM(LEADING 'Le ' FROM nom))))))) COLLATE utf8mb4_unicode_ci"
-         );
+        SELECT idOrganisateur, nom, URL FROM organisateur WHERE statut='actif' ORDER BY TRIM(LEADING 'L\'' FROM (TRIM(LEADING 'Les ' FROM (TRIM(LEADING 'La ' FROM (TRIM(LEADING 'Le ' FROM nom))))))) COLLATE utf8mb4_unicode_ci"
+    );
 
         while ($tab = $connector->fetchArray($req))
         {
-                        echo "<option ";
-                        if ((isset($_POST['organisateurs']) && in_array($tab['idOrganisateur'], $_POST['organisateurs'])) || in_array($tab['idOrganisateur'], $tab_organisateurs_even))
+                        ?><option data-nom="<?php echo sanitizeForHtml($tab['nom']); ?>" data-complement="<?php echo sanitizeForHtml($tab['URL']); ?>"
+
+                                    <?php
+                                    if ((isset($_POST['organisateurs']) && in_array($tab['idOrganisateur'], $_POST['organisateurs'])) || in_array($tab['idOrganisateur'], $tab_organisateurs_even))
             {
                 echo 'selected="selected" ';
             }
             echo "value=\"" . $tab['idOrganisateur'] . "\">" . sanitizeForHtml($tab['nom']) . "</option>";
-    }
+                                }
         ?></select>
                 <div class="guideChamp">L’événement figurera dans la page de ces <a href="/organisateurs.php" target="_blank">organisateurs</a>. Si vous souhaitez que votre organisation soit listée, <a href="/contacteznous.php" target='_blank'>demandez-nous</a> (avec des infos : texte, liens...)</div>
         </p>
