@@ -1,12 +1,25 @@
 # Changelog
 
-## [3.7.2] - Unreleased
+## [3.7.2] - 2025-04-27
 
 ### Fixed
 - errors : 404.php to error.php with try to handle more cases, rm wrong "inclusions"
+- users : harmonize password fields size and validation
+- tests : on evenement page click Maps link and back navigation button only if presents
 
 ### Added
-- statistics : Matomo site id constant and tools.ladecadanse in CSP
+- statistics : Matomo site id constant and tools.ladecadanse.ch in CSP
+- tests : Selenium basic for Faire un don page
+- forms : options of selects with Select2 can display an additional text
+
+### Changed
+- monitoring : for GlitchTip upgrade Sentry version to 9.14
+
+### Security
+- secure lieu sql queries in affiliation table
+
+# Removed
+- statistics : Google Analytics tracking (#92)
 
 
 ## [3.7.1] - 2025-04-21
