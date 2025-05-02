@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.7.3] - Unreleased
+
+### Added
+- opengraph: add basic tags in <head> + url & flyer for event page
+
+
 ## [3.7.2] - 2025-04-27
 
 ### Fixed

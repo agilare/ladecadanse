@@ -38,6 +38,28 @@ use Ladecadanse\UserLevel;
 	</title>
 
         <meta name="description" content="<?php echo sanitizeForHtml(($page_description ?? '')) ?>" />
+
+    <meta property="og:site_name" content="La décadanse" />
+    <meta property="og:logo" content="/web/interface/apple-icon-152x152.png" />
+    <meta property="og:type" content="article" />
+    <meta property="og:locale" content="fr" />
+    <meta property="og:title" content="<?php echo sanitizeForHtml($page_titre) . " — La décadanse"; ?>" />
+    <meta property="og:description" content="<?php echo sanitizeForHtml(($page_description ?? '')) ?>" />
+    <?php
+    if (!empty($page_url))
+    {
+        ?>
+        <meta property="og:url" content="<?php echo $site_full_url . $page_url; ?>" />
+    <?php } ?>
+
+    <?php
+    if (!empty($page_image))
+    {
+        ?>
+        <meta property="og:image" content="<?php echo $site_full_url . $page_image ?>" />
+            <meta property="og:image:alt" content="Flyer" />
+        <?php } ?>
+
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 
     <link rel="stylesheet" type="text/css" href="/web/css/normalize.css" />

@@ -89,6 +89,11 @@ $page_description = $even->getValue('titre')." ".$determinant_lieu.$even->getVal
 " le ".date_fr($even->getValue('dateEvenement'), "annee", "", "", false)." ".
 afficher_debut_fin($even->getValue('horaire_debut'), $even->getValue('horaire_fin'), $even->getValue('dateEvenement'));
 
+if (!empty($even->getValue('flyer')))
+{
+    $page_image = Evenement::getFileHref(Evenement::getFilePath($even->getValue('flyer')), true);
+}
+$page_url = "evenement.php?idE=" . (int) $get['idE'];
 include("_header.inc.php");
 
 
@@ -227,8 +232,8 @@ while ($tab_even = $connector->fetchArray($req_even))
 		)
 		{
 		?>
-			<li><a href="/evenement-edit.php?action=editer&amp;idE=<?php echo $get['idE'] ?>"><?php echo $iconeEditer ?>Modifier</a></li>
-		<?php
+            <li><a href="/evenement-edit.php?action=editer&amp;idE=<?php echo (int) $get['idE'] ?>"><?php echo $iconeEditer ?>Modifier</a></li>
+                <?php
 		}
 		?>
 
@@ -430,7 +435,7 @@ $adresse = HtmlShrink::getAdressFitted($listeLieu['region'], sanitizeForHtml($li
 							$url_org = 'http://'.$tab['URL'];
 						}
 
-						echo '<li><strong><a href="/organisateur.php?idO=' . $tab['idOrganisateur'] . '">' . sanitizeForHtml($tab['nom']) . '</strong></a>';
+						echo '<li><strong><a href="/organisateur.php?idO=' . (int) $tab['idOrganisateur'] . '">' . sanitizeForHtml($tab['nom']) . '</strong></a>';
     if ( $tab['URL'] != '')
 						{
 
