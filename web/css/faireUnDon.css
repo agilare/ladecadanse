@@ -71,3 +71,14 @@
 {
     margin: 0.4em 0;
 }
+
+/* marche pas : */
+/*.widget--donation-box
+{
+    color: #776718 !important;
+}*/
+
+/*.widget--donation-box .title
+{
+    display: none !important;
+}*/
