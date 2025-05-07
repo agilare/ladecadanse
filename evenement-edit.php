@@ -2,15 +2,16 @@
 
 require_once("app/bootstrap.php");
 
-use Ladecadanse\Utils\Validateur;
-use Ladecadanse\Utils\ImageDriver2;
+use Ladecadanse\Utils\Validateur; // forms
+use Ladecadanse\Utils\ImageDriver2; // files
 use Ladecadanse\Security\SecurityToken;
-use Ladecadanse\Evenement;
-use Ladecadanse\Utils\Logger;
+use Ladecadanse\Evenement; // domain
+use Ladecadanse\Utils\Logger; // container
 use Ladecadanse\Utils\Mailing;
-use Ladecadanse\HtmlShrink;
-use Ladecadanse\UserLevel;
+use Ladecadanse\HtmlShrink; // template
+use Ladecadanse\UserLevel; // domain
 
+// template...
 $page_titre = "Proposer un événement";
 $page_description = "Proposer un événement pour l'agenda";
 
@@ -21,17 +22,9 @@ if (isset($_SESSION['Sgroupe']))
 }
 
 $extra_css = ["formulaires", "evenement_inc"];
-
-/*
-* action choisie, ID si édition
-* action "ajouter" par défaut
-*/
-$actions = ["ajouter", "insert", "editer", "update"];
+// ...template
+// Request query : action, idE, idL, idO
 $get['action'] = "ajouter";
-
-/*
-* Vérification et attribution des variables d'URL GET
-*/
 if (isset($_GET['action']))
  {
     try
@@ -84,48 +77,46 @@ if (isset($_GET['idO']))
     }
 }
 
-
-/* VERIFICATION POUR MODIFICATION
-* Si c'est une modification et que la personne n'est pas l'auteur, ni du staff, ni lié au lieu de l'événement, ni lié par l'organisateur : stop
-*/
+// autorization to edit : author, 'admin' level, member of lieu, member of organisateur, member of lieu's organisateur
 if ($get['action'] != "ajouter" && $get['action'] != "insert")
 {
+    $res_even_lieu = $connector->query("SELECT idLieu, statut FROM evenement WHERE idEvenement=" . (int) $get['idE']);
+    $tab_even_lieu = $connector->fetchArray($res_even_lieu);
 
-	$req_even_cur = $connector->query("SELECT idLieu, statut FROM evenement WHERE idEvenement=" . (int) $get['idE']);
-    $tab_even_cur = $connector->fetchArray($req_even_cur);
-
-	if ((isset($_SESSION['SidPersonne']) && $authorization->isAuthor("evenement", $_SESSION['SidPersonne'], $get['idE'])) || (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 6) || (isset($_SESSION['Saffiliation_lieu']) && isset($tab_even_cur['idLieu']) && $tab_even_cur['idLieu'] == $_SESSION['Saffiliation_lieu'])
-	|| (isset($_SESSION['SidPersonne']) && $authorization->isPersonneInEvenementByOrganisateur($_SESSION['SidPersonne'], $get['idE']))
-	|| (isset($_SESSION['SidPersonne']) && isset($tab_even_cur['idLieu']) && $authorization->isPersonneInLieuByOrganisateur($_SESSION['SidPersonne'], $tab_even_cur['idLieu']))
+    if (
+            !(
+            (isset($_SESSION['SidPersonne']) && $authorization->isAuthor("evenement", $_SESSION['SidPersonne'], $get['idE'])) || (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 6) || (isset($_SESSION['Saffiliation_lieu']) && isset($tab_even_lieu['idLieu']) && $tab_even_lieu['idLieu'] == $_SESSION['Saffiliation_lieu']) || (isset($_SESSION['SidPersonne']) && $authorization->isPersonneInEvenementByOrganisateur($_SESSION['SidPersonne'], $get['idE'])) || (isset($_SESSION['SidPersonne']) && isset($tab_even_lieu['idLieu']) && $authorization->isPersonneInLieuByOrganisateur($_SESSION['SidPersonne'], $tab_even_lieu['idLieu']))
+            )
     )
-	{
-	}
-	else
-	{
-		HtmlShrink::msgErreur("Vous ne pouvez pas modifier cet événement car vous n'avez pas les droits suffisants ou vous n'êtes pas (ou plus) connecté");
+    {
+        HtmlShrink::msgErreur("Vous ne pouvez pas modifier cet événement car vous n'avez pas les droits suffisants ou vous n'êtes pas (ou plus) connecté");
         exit;
-	}
+    }
 }
 
-$formTokenName = 'form_token_evenement_edit';
-$verif = new Validateur();
+// form values received
 $champs = ["statut" => "", "genre" => "", "titre" => "", "dateEvenement" => "", "idLieu" => 0,
  "idSalle" => 0, "nomLieu" => "", "adresse" => "", "quartier" => "",  "localite_id" => "", "region" => "", "urlLieu" => "", 'organisateurs' => '', "description" => "", "ref" => "",
   "horaire_debut" => "", "horaire_fin" => "", "horaire_complement" => "", "price_type" => "", "prix" => "", "prelocations" => "", "user_email" => "", "remarque" => ""];
 $fichiers = ['flyer' => '', 'image' => ''];
 $supprimer = [];
-$action_terminee = false;
+
+$show_form = true;
+$formTokenName = 'form_token_evenement_edit';
+$verif = new Validateur();
 
 if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 {
-        foreach ($champs as $c => $v)
-{
-		if (isset($_POST[$c]) )
-		{
-			$champs[$c] = $_POST[$c];
-		}
-	}
+    // fill default empty fields with received values
+    foreach ($champs as $c => $v)
+    {
+        if (isset($_POST[$c]))
+        {
+            $champs[$c] = $_POST[$c];
+        }
+    }
 
+    // public form : check
     if (!isset($_SESSION['Sgroupe']))
     {
         // check token received == token initially set in form registered in session
@@ -137,7 +128,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 
         unset($_SESSION[$formTokenName]);
     }
-    else
+    else // ?
     {
         if (!SecurityToken::check($_POST['token'], $_SESSION['token']))
         {
@@ -145,14 +136,15 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
         }
     }
 
-
-	if (isset($_POST['organisateurs']))
+    // redundant ?
+    if (isset($_POST['organisateurs']))
 		$champs['organisateurs'] = $_POST['organisateurs'];
 
 	$fichiers['flyer'] = $_FILES['flyer'];
-
     $fichiers['image'] = $_FILES['image'];
 
+    // ?
+    // not set, null, '' or 0 => 0
     if (empty($champs['idLieu']))
         $champs['idLieu'] = 0;
 
@@ -200,12 +192,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 		$champs['idLieu'] = $tab_idLieu[0];
 		$champs['idSalle'] = $tab_idLieu[1];
 	}
-	else
-	{
-		$champs['idSalle'] = 0;
-	}
 
-	if (!empty($champs['idLieu']) && (!preg_match("/^[0-9]+$/", (string) $champs['idLieu']) && !preg_match("/^[0-9]+_[0-9]+$/", (string) $champs['idLieu'])))
+    if (!empty($champs['idLieu']) && (!preg_match("/^[0-9]+$/", (string) $champs['idLieu']) && !preg_match("/^[0-9]+_[0-9]+$/", (string) $champs['idLieu'])))
 	{
         $verif->setErreur("idLieu", "La valeur du lieu n'est pas au bon format");
 	}
@@ -221,13 +209,10 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 		$verif->setErreur("localite_id", "La localité est obligatoire");
 	}
 
-
-	if ($champs['idLieu'] != 0 && ($champs['nomLieu'] != "" || $champs['adresse'] != "") )
+    if ($champs['idLieu'] != 0 && ($champs['nomLieu'] != "" || $champs['adresse'] != "") )
 	{
 		$verif->setErreur('doublonLieux', 'Vous ne pouvez pas indiquer 2 lieux; si vous choisissez le lieu dans la liste ci-dessus, vous pouvez le confirmer en  enregistrant ce formulaire');
     }
-
-	//$champs['dateEvenement'] = date('Y-m-d', mktime(0, 0, 0, $_POST['mois'], $_POST['jour'], $_POST['annee'])); // $annee."-".$mois."-".$annee;
 
 	if (empty($champs['dateEvenement']))
 	{
@@ -257,7 +242,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
         $verif->validerFichier($fichiers['image'], "image", $glo_mimes_images_acceptees, 0);
     }
 
-	if (empty($champs['horaire_debut']) && empty($champs['horaire_complement']))
+    // at least debut or complement
+    if (empty($champs['horaire_debut']) && empty($champs['horaire_complement']))
 	{
 		$verif->setErreur("horaire", "Veuillez indiquer l'horaire");
 	}
@@ -279,18 +265,15 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
     $verif->valider($champs['prix'], "prix", "texte", 1, 100, 0);
 	$verif->valider($champs['prelocations'], "prelocations", "texte", 1, 200, 0);
 
-    $doc_desc_oblig = 0;
-
+    // public : email (required) and remark
     if (!isset($_SESSION['Sgroupe']))
     {
         $verif->valider($champs['user_email'], "email", "email", 4, 250, 1);
         $verif->valider($champs['description'], "description", "texte", 4, 10000, 0);
     }
 
-	/*
-	 * PAS D'ERREUR, donc ajout ou update executés
-	 */
-	if ($verif->nbErreurs() === 0)
+    // valide : insert or update
+    if ($verif->nbErreurs() === 0)
 	{
 		//creation/nettoyage des valeurs à insérer dans la table
 
@@ -338,9 +321,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 		{
 			$tab_horaire_fin = explode(":", (string) $champs['horaire_fin']);
 			$sec_horaire_fin = (int) $tab_horaire_fin[0] * 3600 + (int) $tab_horaire_fin[1] * 60;
-            //TEST
-			//echo "sec_H:".$sec_horaire_debut;
-			//
+
 			if ($sec_horaire_fin >= 0 && $sec_horaire_fin <= 21600)
 			{
 				$champs['horaire_fin'] = $lendemain_evenement." ".$champs['horaire_fin'].":00";
@@ -482,9 +463,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
                     $mailer->toAdmin($subject, $contenu_message, $champs['user_email']);
                 }
 
-				$action_terminee = true;
-
-			} else {
+				$show_form = false;
+            } else {
 				HtmlShrink::msgErreur("La requête INSERT dans 'evenement' a échoué");
 			}
 		}
@@ -607,7 +587,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
                 $confirmation_flash_msg = '';
 
                 // acceptation d'un even
-                if ($tab_even_cur['statut'] == 'propose')
+                if ($tab_even_lieu['statut'] == 'propose')
                 {
                     if ($champs['statut'] == 'actif')
                     {
@@ -629,8 +609,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 
 				$get['action'] = 'editer';
 
-				$action_terminee = true;
-			}
+				$show_form = false;
+            }
 			else
 			{
 				HtmlShrink::msgErreur("La requête UPDATE de la table evenement a échoué");
@@ -740,9 +720,10 @@ include("_header.inc.php");
 
 <div id="contenu" class="colonne evenement-edit">
 
-<?php
-if (!$action_terminee)
-{
+    <?php
+// first display or redisplay (failed validation)
+    if ($show_form)
+    {
     $jour = "";
     $mois = "";
     $annee = "";
