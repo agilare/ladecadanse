@@ -792,10 +792,10 @@ while ($tab_even = $connector->fetchArray($req_evenement))
 
 	if ($tab_even['idLieu'] != 0)
 	{
-		$req_lieu = $connector->query("SELECT nom FROM lieu WHERE idLieu=".$tab_even['idLieu']);
-		$tabLieu = $connector->fetchArray($req_lieu);
-		$nomLieu = "<a href=\"/lieu.php?idL=".$tab_even['idLieu']."\" title=\"Voir la fiche du lieu : ".sanitizeForHtml($tabLieu['nom'])." \">".sanitizeForHtml($tabLieu['nom'])."</a>";
-	}
+		$req_lieu = $connector->query("SELECT nom FROM lieu WHERE idLieu=" . (int) $tab_even['idLieu']);
+        $tabLieu = $connector->fetchArray($req_lieu);
+		$nomLieu = "<a href=\"/lieu.php?idL=" . (int) $tab_even['idLieu'] . "\" title=\"Voir la fiche du lieu : " . sanitizeForHtml($tabLieu['nom']) . " \">" . sanitizeForHtml($tabLieu['nom']) . "</a>";
+    }
 
 
 	if ($pair % 2 == 0)
@@ -807,7 +807,7 @@ while ($tab_even = $connector->fetchArray($req_evenement))
 		echo "<tr class=\"impair\" >";
     }
 
-	echo "	<td><a href=\"/evenement.php?idE=".$tab_even['idEvenement']."\" title=\"Voir la fiche de l'événement\" class='titre'>".sanitizeForHtml($tab_even['titre'])."</a></td>	<td>".$nomLieu."</td>
+	echo "	<td><a href=\"/evenement.php?idE=" . (int) $tab_even['idEvenement'] . "\" title=\"Voir la fiche de l'événement\" class='titre'>" . sanitizeForHtml($tab_even['titre']) . "</a></td>	<td>" . $nomLieu . "</td>
 	<td>".date_iso2app($tab_even['dateEvenement'])."</td>
 	<td>".ucfirst((string) $glo_tab_genre[$tab_even['genre']])."</td>
 
@@ -824,11 +824,11 @@ while ($tab_even = $connector->fetchArray($req_evenement))
 
 
 	if ($_SESSION['Sgroupe'] <= UserLevel::ADMIN) {
-		echo '<td style="text-align:center"><a href="/evenement-edit.php?action=editer&idE='.$tab_even['idEvenement'].'" title="Éditer l\'événement">'.$iconeEditer.'</a></td>';
-	}
-	echo '<td style="text-align:center"><input type="checkbox" name="evenements[]" value="'.$tab_even['idEvenement'].'" /></td></tr>';
+		echo '<td style="text-align:center"><a href="/evenement-edit.php?action=editer&idE=' . (int) $tab_even['idEvenement'] . '" title="Éditer l\'événement">' . $iconeEditer . '</a></td>';
+    }
+	echo '<td style="text-align:center"><input type="checkbox" name="evenements[]" value="' . (int) $tab_even['idEvenement'] . '" /></td></tr>';
 
-	$pair++;
+    $pair++;
 
 } // fin while
 

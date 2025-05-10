@@ -223,7 +223,7 @@ $sql_menu_lieux = "
 SELECT idLieu, nom
 FROM lieu
 JOIN localite ON lieu.localite_id = localite.id
-WHERE statut='" . $get['statut'] . "'  " . $sql_vue . " AND (region IN ('" . $connector->sanitize($_SESSION['region']) . "', " . $sql_rf . " 'hs') OR FIND_IN_SET ('". $connector->sanitize($_SESSION['region']) ."', localite.regions_covered))
+WHERE statut='" . $connector->sanitize($get['statut']) . "'  " . $sql_vue . " AND (region IN ('" . $connector->sanitize($_SESSION['region']) . "', " . $sql_rf . " 'hs') OR FIND_IN_SET ('" . $connector->sanitize($_SESSION['region']) . "', localite.regions_covered))
 ORDER BY TRIM(LEADING 'l\'' FROM (TRIM(LEADING 'les ' FROM (TRIM(LEADING 'la ' FROM (TRIM(LEADING 'le ' FROM lower(nom)))))))) COLLATE utf8mb4_unicode_ci";
 
 $req_lieux = $connector->query($sql_menu_lieux);
@@ -241,7 +241,7 @@ while ([$id, $nom] = mysqli_fetch_row($req_lieux))
 {
     $nb_evenements = 0;
     $aumoins1des = "";
-    $req_des = $connector->query("SELECT idLieu FROM descriptionlieu WHERE idLieu=" . $id . " AND type='description'");
+    $req_des = $connector->query("SELECT idLieu FROM descriptionlieu WHERE idLieu=" . (int) $id . " AND type='description'");
 
     $nomDuLieu = $nom;
 
@@ -251,7 +251,7 @@ while ([$id, $nom] = mysqli_fetch_row($req_lieux))
         $aumoins1des = "*";
     }
 
-    $sql_even = "SELECT titre FROM evenement WHERE idLieu=" . $id . " AND dateEvenement >= '" . date("Y-m-d") . "' AND statut='actif'";
+    $sql_even = "SELECT titre FROM evenement WHERE idLieu=" . (int) $id . " AND dateEvenement >= '" . date("Y-m-d") . "' AND statut='actif'";
 
     //echo $sql_even;
 

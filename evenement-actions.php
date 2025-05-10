@@ -16,7 +16,7 @@ $get['action'] = strip_tags((string) $_GET['action']);
 if ($get['action'] == 'delete' && !empty($get['id']))
 {
     $req_im = $connector->query("SELECT titre, flyer, image, idLieu, genre, dateEvenement, dateAjout
-    FROM evenement WHERE idEvenement=".$get['id']);
+    FROM evenement WHERE idEvenement=" . (int) $get['id']);
 
     $val_even = $connector->fetchArray($req_im);
 
@@ -32,7 +32,7 @@ if ($get['action'] == 'delete' && !empty($get['id']))
             Evenement::rmImageAndItsMiniature($val_even['image']);
         }
 
-        if ($connector->query("DELETE FROM evenement WHERE idEvenement=".$get['id']))
+        if ($connector->query("DELETE FROM evenement WHERE idEvenement=" . (int) $get['id']))
         {
             header('HTTP/1.1 200 OK');
             echo 1;
@@ -52,7 +52,7 @@ if ($get['action'] == 'delete' && !empty($get['id']))
 
 if ($get['action'] == 'unpublish' && !empty($get['id']))
 {
-    $req_im = $connector->query("SELECT titre, flyer, image, idLieu, genre, dateEvenement, idPersonne, dateAjout FROM evenement WHERE idEvenement=" . $get['id']);
+    $req_im = $connector->query("SELECT titre, flyer, image, idLieu, genre, dateEvenement, idPersonne, dateAjout FROM evenement WHERE idEvenement=" . (int) $get['id']);
 
     $val_even = $connector->fetchArray($req_im);
 
@@ -65,7 +65,7 @@ if ($get['action'] == 'unpublish' && !empty($get['id']))
          || isset($_SESSION['SidPersonne']) && $authorization->isPersonneInLieuByOrganisateur($_SESSION['SidPersonne'], $val_even['idLieu'])	))
     {
 
-        if ($connector->query("UPDATE evenement SET statut='inactif' WHERE idEvenement=".$get['id']))
+        if ($connector->query("UPDATE evenement SET statut='inactif' WHERE idEvenement=" . (int) $get['id']))
         {
             header('HTTP/1.1 200 OK');
             echo 1;
