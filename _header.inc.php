@@ -116,14 +116,30 @@ use Ladecadanse\UserLevel;
     }
     ?>
 
-<?php
-    if (MATOMO_ENABLED) {
+        <?php
+        if (MATOMO_ENABLED) {
     ?>
         <!-- Matomo -->
         <script nonce="<?php echo CSP_NONCE ?>">
-                        'use strict';
-                      var _paq = window._paq = window._paq || [];
-              /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+            'use strict';
+              var _paq = window._paq = window._paq || [];
+                <?php
+                if (isset($_SESSION['SidPersonne']))
+                {
+                    ?>
+        _paq.push(['setUserId', <?php echo json_encode($_SESSION['user']) ?>]);
+                    <?php
+                }
+                ?>
+                <?php
+                if (!isset($_SESSION['SidPersonne']) && !empty($_COOKIE['just_logged_out']))
+                {
+                    ?>
+        _paq.push(['resetUserId']);
+                    <?php
+                }
+                ?>
+                      /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
               _paq.push(['trackPageView']);
               _paq.push(['enableLinkTracking']);
               (function() {

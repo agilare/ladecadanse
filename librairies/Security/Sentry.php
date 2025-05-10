@@ -353,6 +353,15 @@ class Sentry extends SystemComponent
 
             setcookie('ladecadanse_remember', '', ['expires' => 1]);
         }
+
+        // used (only) to inform in _header.inc.php, one time, to Matomo that the users logged out
+        setcookie('just_logged_out', '1', [
+            'expires' => time() + 3, // durée très courte, en secondes
+            'path' => '/',
+            'secure' => true, // true si HTTPS
+            'httponly' => true,
+            'samesite' => 'Lax'
+        ]);
     }
 
 }
