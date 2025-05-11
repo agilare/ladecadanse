@@ -1,9 +1,15 @@
 # Changelog
 
-## [3.7.3] - Unreleased
+## [3.7.3] - 2025-05-11
 
 ### Added
-- opengraph: add basic tags in <head> + url & flyer for event page
+- opengraph: add basic tags in `<head>` + url & flyer for event page
+- statistics : add users sessions to Matomo tracking
+- bots : tracking for Darkvisitors service
+- donation : Wemakeit donate widget
+
+### changed
+- build : upgrade Symfony yaml, var-dumper, Codeception, Whoops, phpstan, rector, phpmailer...
 
 
 ## [3.7.2] - 2025-04-27
