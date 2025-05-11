@@ -39,6 +39,11 @@ define("MATOMO_SITE_ID", '');
 define("GLITCHTIP_ENABLED", false);
 define("GLITCHTIP_DSN", "");
 
+// service to monitor and moderate bots (AI, crawlers, etc.)
+define("DARKVISITORS_ENABLED", false);
+define("DARKVISITORS_PROJECT_KEY", '');
+define("DARKVISITORS_ACCESS_TOKEN", '');
+
 define("PAYPAL_HOSTED_BUTTON_ID", "");
 
 // to allow access to events API (api.php)

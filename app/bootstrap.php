@@ -54,9 +54,42 @@ Evenement::$urlDirPath = $url_uploads_events;
 
 $nom_page = basename((string) $_SERVER["SCRIPT_FILENAME"], '.php');
 
+if (DARKVISITORS_ENABLED)
+{
+
+    function trackVisitAsync(array $data, string $accessToken): void
+    {
+        $ch = curl_init('https://api.darkvisitors.com/visits');
+
+        curl_setopt_array($ch, [
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => json_encode($data, JSON_THROW_ON_ERROR),
+            CURLOPT_HTTPHEADER => [
+                'Authorization: Bearer ' . $accessToken,
+                'Content-Type: application/json'
+            ],
+            CURLOPT_RETURNTRANSFER => false,
+            CURLOPT_TIMEOUT_MS => 200, // timeout très court pour libérer vite
+            CURLOPT_CONNECTTIMEOUT_MS => 100,
+        ]);
+
+        curl_exec($ch); // on lance sans lire la réponse
+        curl_close($ch);
+    }
+
+    // will only run at the end of the script, i.e. after your page has been generated. This will avoid slowing down the page rendering for the user, especially if you limit the timeout in cURL
+    register_shutdown_function(function () {
+        trackVisitAsync([
+            'request_path' => $_SERVER['REQUEST_URI'],
+            'request_method' => $_SERVER['REQUEST_METHOD'],
+            'request_headers' => getallheaders(),
+                ], DARKVISITORS_ACCESS_TOKEN);
+    });
+}
+
 header('X-Content-Type-Options: nosniff');
 define("CSP_NONCE", bin2hex(openssl_random_pseudo_bytes(32)));
-header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-" . CSP_NONCE . "' https://tools.ladecadanse.ch/ https://code.jquery.com https://maps.googleapis.com https://browser.sentry-cdn.com https://www.google.com https://www.gstatic.com https://www.paypalobjects.com https://liberapay.com https://wemakeit.com https://assets.wemakeit.com https://cdn.tiny.cloud https://browser.sentry-cdn.com; img-src 'self' https://tools.ladecadanse.ch/ https://maps.gstatic.com https://maps.googleapis.com https://streetviewpixels-pa.googleapis.com https://lh3.ggpht.com https://www.paypalobjects.com https://sp.tinymce.com data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.tiny.cloud https://www.tiny.cloud https://wemakeit.com https://assets.wemakeit.com/; font-src 'self' https://fonts.gstatic.com https://www.tiny.cloud https://assets.wemakeit.com; connect-src 'self' https://tools.ladecadanse.ch/ https://maps.googleapis.com https://cdn.tiny.cloud https://www.google.com https://wemakeit.com; frame-ancestors 'self' https://epic-magazine.ch; frame-src https://www.google.com; object-src 'none'; media-src 'none'; form-action 'self' https://www.paypal.com; base-uri 'self'; worker-src 'none';");
+header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-" . CSP_NONCE . "' https://tools.ladecadanse.ch/ https://code.jquery.com https://darkvisitors.com https://maps.googleapis.com https://browser.sentry-cdn.com https://www.google.com https://www.gstatic.com https://www.paypalobjects.com https://liberapay.com https://wemakeit.com https://assets.wemakeit.com https://cdn.tiny.cloud https://browser.sentry-cdn.com; img-src 'self' https://tools.ladecadanse.ch/ https://maps.gstatic.com https://maps.googleapis.com https://streetviewpixels-pa.googleapis.com https://lh3.ggpht.com https://www.paypalobjects.com https://sp.tinymce.com data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.tiny.cloud https://www.tiny.cloud https://wemakeit.com https://assets.wemakeit.com/; font-src 'self' https://fonts.gstatic.com https://www.tiny.cloud https://assets.wemakeit.com; connect-src 'self' https://tools.ladecadanse.ch/ https://maps.googleapis.com https://cdn.tiny.cloud https://www.google.com https://wemakeit.com; frame-ancestors 'self' https://epic-magazine.ch; frame-src https://www.google.com; object-src 'none'; media-src 'none'; form-action 'self' https://www.paypal.com; base-uri 'self'; worker-src 'none';");
 header("Permissions-Policy: accelerometer=(), ambient-light-sensor=(), autoplay=(), battery=(), camera=(), cross-origin-isolated=(), display-capture=(), document-domain=(), encrypted-media=(), execution-while-not-rendered=(), execution-while-out-of-viewport=(), fullscreen=(self), geolocation=(), gyroscope=(), keyboard-map=*, magnetometer=(), microphone=(), midi=(), navigation-override=(), payment=(), picture-in-picture=(), publickey-credentials-get=*, screen-wake-lock=(), sync-xhr=(self), usb=(), web-share=*, xr-spatial-tracking=()");
 
 //header("Access-Control-Allow-Origin: *");

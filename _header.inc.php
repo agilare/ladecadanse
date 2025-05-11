@@ -155,6 +155,14 @@ use Ladecadanse\UserLevel;
         <?php
     }
     ?>
+    <?php
+    if (DARKVISITORS_ENABLED)
+    {
+        ?>
+        <script src="https://darkvisitors.com/tracker.js?project_key=<?php echo DARKVISITORS_PROJECT_KEY ?>"></script>
+        <?php
+    }
+    ?>
 </head>
 
 <body>
