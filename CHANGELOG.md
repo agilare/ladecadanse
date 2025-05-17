@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.7.4] - Unreleased
+
+### Added
+- agenda : add 404 header if day has no results
+
+### Changed
+- home: refactoring
+
+# Removed
+- partners : Noctambus (discontinued)
+
 ## [3.7.3] - 2025-05-11
 
 ### Added
