@@ -14,7 +14,7 @@ class EvenementCollection extends Collection
         parent::__construct();
     }
 
-	function loadLieu(int $idL, $date_debut, $genre = ''): bool
+	function loadForLieu(int $idL, string $date_debut, string $genre = ''): bool
     {
 		$sql_genre = '';
 		if ($genre != '')
@@ -24,12 +24,12 @@ class EvenementCollection extends Collection
 
 		$sql = "SELECT idEvenement, idSalle, idPersonne, genre, titre, dateEvenement, nomLieu, description, flyer, image, horaire_debut, horaire_fin, horaire_complement, prix, dateAjout, statut
 	 FROM evenement
-	 WHERE idLieu=".$idL." AND dateEvenement >= '".$date_debut."' ".$sql_genre." AND statut NOT IN ('inactif', 'propose')
+	 WHERE idLieu=".(int)$idL." AND dateEvenement >= '".$date_debut."' ".$sql_genre." AND statut NOT IN ('inactif', 'propose')
 	 ORDER BY dateEvenement";
 
 		$req = $this->connector->query($sql);
 
-		if ($this->connector->getNumRows($req) == 0)
+		if ($this->connector->getNumRows($req) === 0)
 		{
 		  	return false;
 		}

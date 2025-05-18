@@ -594,7 +594,7 @@ if ($nb_pres > 0)
 
 	$evenements = new EvenementCollection($connector);
 
-	$evenements->loadLieu($get['idL'], $date_debut, $genre);
+	$evenements->loadForLieu($get['idL'], $date_debut, $genre);
 
 	echo '	<div id="prochains_evenements">';
 
@@ -624,7 +624,7 @@ if ($nb_pres > 0)
 			$menu_genre .= "<li";
 			if ($g == $get['genre_even'])
 			{
-				$menu_genre .= " class=\"ici\"><a href=\"/lieu.php?idL=".$get['idL']."&amp;genre_even=".urlencode($g)."#prochains_even\" title=\"".$g."\">";
+				$menu_genre .= " class=\"ici\"><a href=\"/lieu.php?idL=".$get['idL']."&amp;genre_even=".urlencode($g)."#prochains_even\" title=\"".$g."\" rel=\"nofollow\">";
 				if ($g == "fête")
 				{
 					$g .= "s";
@@ -653,7 +653,7 @@ if ($nb_pres > 0)
 			}
 			else
 			{
-				$menu_genre .= "><a href=\"/lieu.php?idL=".$get['idL']."&amp;genre_even=".$g."#prochains_even\" title=\"".$g."\">";
+				$menu_genre .= "><a href=\"/lieu.php?idL=".$get['idL']."&amp;genre_even=".$g."#prochains_even\" title=\"".$g."\" rel=\"nofollow\">";
 				if ($g == "fête")
 				{
 					$g .= "s";

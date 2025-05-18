@@ -193,12 +193,12 @@ while ($tab_even = $connector->fetchArray($req_even))
 		<div class="entete_contenu_navigation">
             <?php
             if ($url_prec != "") {
-                echo '<a href="' . $url_prec . '" style="border-radius:3px 0 0 3px;" rel="prev">' . $iconePrecedent . '&nbsp;<span class="event-navig-link">' . sanitizeForHtml($titre_prec) . '</span>';
+                echo '<a href="' . $url_prec . '" style="border-radius:3px 0 0 3px;" rel="prev nofollow">' . $iconePrecedent . '&nbsp;<span class="event-navig-link">' . sanitizeForHtml($titre_prec) . '</span>';
 
     echo '</a>';
         }
         if ($url_suiv != "") {
-            echo '<a href="' . $url_suiv . '" style="border-radius:0 3px 3px 0;margin-left:1px" rel="next"><span class="event-navig-link">' . sanitizeForHtml($titre_suiv) . '</span>&nbsp;' . $iconeSuivant . '</a>';
+            echo '<a href="' . $url_suiv . '" style="border-radius:0 3px 3px 0;margin-left:1px" rel="next nofollow"><span class="event-navig-link">' . sanitizeForHtml($titre_suiv) . '</span>&nbsp;' . $iconeSuivant . '</a>';
 }
         ?>
             <div class="spacer"></div>
@@ -569,7 +569,7 @@ $req_auteur = $connector->query($sql_auteur);
             <?php
             if ($url_prec != "")
             {
-                echo '<a href="' . $url_prec . '" rel="prev" style="border-radius:3px 0 0 3px;">' . $iconePrecedent;
+                echo '<a href="' . $url_prec . '" rel="prev nofollow" style="border-radius:3px 0 0 3px;">' . $iconePrecedent;
 
     echo '&nbsp;<span class="event-navig-link" style="width:110px">' . sanitizeForHtml($titre_prec) . '</span>';
 
@@ -577,7 +577,7 @@ $req_auteur = $connector->query($sql_auteur);
             }
             if ($url_suiv != "")
             {
-                echo '<a href="' . $url_suiv . '" rel="next" style="border-radius:0 3px 3px 0;margin-left:1px">';
+                echo '<a href="' . $url_suiv . '" rel="next nofollow" style="border-radius:0 3px 3px 0;margin-left:1px">';
 
     echo '<span class="event-navig-link" style="width:110px">' . sanitizeForHtml($titre_suiv) . '</span>&nbsp;';
 

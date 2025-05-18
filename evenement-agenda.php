@@ -99,11 +99,11 @@ if (is_numeric($annee_courant) && is_numeric($mois_courant) && is_numeric($jour_
             $entete_contenu = ucfirst($entete_contenu);
 
         $precedent = date("Y-m-d", mktime(0, 0, 0, (int) $mois_courant, (int) $jour_courant - 1, (int) $annee_courant));
-        $lien_precedent = "<a href=\"/evenement-agenda.php?".Utils::urlQueryArrayToString($get)."&amp;courant=".$precedent."\" style=\"border-radius:3px 0 0 3px;\">".$iconePrecedent."&nbsp;</a>";
+        $lien_precedent = "<a href=\"/evenement-agenda.php?".Utils::urlQueryArrayToString($get)."&amp;courant=".$precedent."\" style=\"border-radius:3px 0 0 3px;\" rel=\"nofollow\">".$iconePrecedent."&nbsp;</a>";
         $suivant = date("Y-m-d", mktime(0, 0, 0, (int) $mois_courant, (int) $jour_courant + 1, (int) $annee_courant));
 
         $suivant_nomjour_parts = explode(" ", (string) date_fr($suivant, "tout", "non", ""));
-        $lien_suivant = "<a href=\"/evenement-agenda.php?".Utils::urlQueryArrayToString($get)."&amp;courant=".$suivant."\" style=\"border-radius:0 3px 3px 0;background:#e4e4e4\" title=\"".$suivant_nomjour_parts[1]."\">".ucfirst($suivant_nomjour_parts[0])."<span class=desktop> ".$suivant_nomjour_parts[1]."</span>"."&nbsp;".$iconeSuivant."</a>";
+        $lien_suivant = "<a href=\"/evenement-agenda.php?".Utils::urlQueryArrayToString($get)."&amp;courant=".$suivant."\" style=\"border-radius:0 3px 3px 0;background:#e4e4e4\" title=\"".$suivant_nomjour_parts[1]."\" rel=\"nofollow\">".ucfirst($suivant_nomjour_parts[0])."<span class=desktop> ".$suivant_nomjour_parts[1]."</span>"."&nbsp;".$iconeSuivant."</a>";
     }
     else if ($get['sem'] == 1)
     {
@@ -112,10 +112,10 @@ if (is_numeric($annee_courant) && is_numeric($mois_courant) && is_numeric($jour_
 
         $entete_contenu .= date_fr($lundim[0], "non", "", "non") . " au " . date_fr($lundim[1], "annee", "", "non");
         $precedent = date("Y-m-d", mktime(0, 0, 0, (int) $mois_courant, (int) ($jour_courant - 7), (int) $annee_courant));
-        $lien_precedent = "<a href=\"/evenement-agenda.php?courant=".$precedent."&amp;sem=1&amp;genre=".$get['genre']."\" style=\"border-radius:3px 0 0 3px;background:#e4e4e4\">".$iconePrecedent."</a>";
+        $lien_precedent = "<a href=\"/evenement-agenda.php?courant=".$precedent."&amp;sem=1&amp;genre=".$get['genre']."\" style=\"border-radius:3px 0 0 3px;background:#e4e4e4\" rel=\"nofollow\">".$iconePrecedent."</a>";
 
         $suivant = date("Y-m-d", mktime(0, 0, 0, (int) $mois_courant, (int) $jour_courant + 7, (int) $annee_courant));
-        $lien_suivant = "<a href=\"/evenement-agenda.php?courant=" . $suivant . "&amp;sem=1&amp;genre=" . $get['genre'] . "\" style=\"border-radius:0 3px 3px 0;\">" . $iconeSuivant . "</a>";
+        $lien_suivant = "<a href=\"/evenement-agenda.php?courant=" . $suivant . "&amp;sem=1&amp;genre=" . $get['genre'] . "\" style=\"border-radius:0 3px 3px 0;\" rel=\"nofollow\">" . $iconeSuivant . "</a>";
     }
 }
 
@@ -126,6 +126,7 @@ $sql_tri_agenda = " dateEvenement, CASE `genre`
    WHEN 'théâtre' THEN 3
    WHEN 'expos' THEN 4
    WHEN 'divers' THEN 5 END, " . $sql_tri_agenda;
+
 if (isset($get['genre']) && $get['genre'] != '')
 {
 	$sql_genre = "genre='".$get['genre']."' AND";
@@ -194,6 +195,10 @@ if ($get['sem'])
     }
 }
 
+if ($total_even == 0)
+{
+    header($_SERVER["SERVER_PROTOCOL"] . " 404 Not Found");
+}
 
 include("_header.inc.php");
 ?>
