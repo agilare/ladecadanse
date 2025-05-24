@@ -199,7 +199,7 @@ echo '<div class="spacer"></div>';
 		echo "</td>";
 
 		if ($_SESSION['Sgroupe'] <= UserLevel::ADMIN) {
-			echo "<td><a href=\"/lieu-text-edit.php?action=editer&idL=" . $tab_desc['idLieu'] . "&idP=" . $tab_desc['idPersonne'] . "\" title=\"Éditer le lieu\">" . $iconeEditer . "</a></td>";
+			echo "<td><a href=\"/lieu-text-edit.php?action=editer&idL=" . (int) $tab_desc['idLieu'] . "&idP=" . (int) $tab_desc['idPersonne'] . "\" title=\"Éditer le lieu\">" . $iconeEditer . "</a></td>";
         }
 		echo "</tr>";
 
@@ -260,7 +260,7 @@ echo '<div class="spacer"></div>';
 			{
 				echo "<th>";
 			}
-			echo "<a href=\"?element=" . $get['element'] . "&page=" . $get['page'] . "&tri_gerer=" . $att . "&ordre=" . $ordre_inverse . "&nblignes=" . $get['nblignes'] . "\">" . $th . "</a></th>";
+			echo "<a href=\"?element=" . $get['element'] . "&page=" . (int) $get['page'] . "&tri_gerer=" . $att . "&ordre=" . $ordre_inverse . "&nblignes=" . (int) $get['nblignes'] . "\">" . $th . "</a></th>";
         }
 	}
 
@@ -285,7 +285,7 @@ echo '<div class="spacer"></div>';
 		}
 
 		echo "
-		<td>".$tab_lieux['idLieu']."</td>
+		<td>" . (int) $tab_lieux['idLieu'] . "</td>
 		<td><a href=\"/lieu.php?idL=".(int)$tab_lieux['idLieu']."\" title=\"Voir la fiche du lieu :".sanitizeForHtml($tab_lieux['nom'])."\">".sanitizeForHtml($tab_lieux['nom'])."</a></td>
 		<td class=\"tdleft\"><ul>";
 
@@ -304,7 +304,7 @@ echo '<div class="spacer"></div>';
 		}
 		echo "</td>";
 		echo "
-		<td>".$tabDes['total_desc']."</td>
+		<td>" . (int) $tabDes['total_desc'] . "</td>
 		<td>".date_iso2app($tab_lieux['dateAjout'])."</td>";
 
 		echo "<td>";
@@ -358,8 +358,8 @@ else if ($get['element'] == "organisateur")
 		echo '<li ';
 		if ($get['nblignes'] == $nbl) { echo 'class="ici"'; }
 
-		echo '><a href="/admin/gerer.php?'.Utils::urlQueryArrayToString($get, "nblignes").'&nblignes='.$nbl.'">'.$nbl.'</a></li>';
-	}
+		echo '><a href="/admin/gerer.php?' . Utils::urlQueryArrayToString($get, "nblignes") . '&nblignes=' . (int) $nbl . '">' . (int) $nbl . '</a></li>';
+    }
 	echo '</ul>';
 echo '<div class="spacer"></div>';
 	echo "
@@ -382,7 +382,7 @@ echo '<div class="spacer"></div>';
 			{
 				echo "<th>";
 			}
-			echo "<a href=\"?element=" . $get['element'] . "&page=" . $get['page'] . "&tri_gerer=" . $att . "&ordre=" . $ordre_inverse . "&nblignes=" . $get['nblignes'] . "\">" . $th . "</a></th>";
+			echo "<a href=\"?element=" . $get['element'] . "&page=" . (int) $get['page'] . "&tri_gerer=" . $att . "&ordre=" . $ordre_inverse . "&nblignes=" . (int) $get['nblignes'] . "\">" . $th . "</a></th>";
         }
 	}
 
@@ -403,7 +403,7 @@ echo '<div class="spacer"></div>';
 		}
 
 		echo "
-		<td>".$tab['idOrganisateur']."</td>
+		<td>" . (int) $tab['idOrganisateur'] . "</td>
 		<td><a href=\"/organisateur.php?idO=".(int)$tab['idOrganisateur']."\" title=\"Voir la fiche\">".sanitizeForHtml($tab['nom'])."</a></td>";
 
 		echo "
@@ -450,9 +450,9 @@ else if ($get['element'] == "personne")
 /* 	echo "<p>num_pers_total : $num_pers_total";
 	echo "<p>pers_total_page_max : $pers_total_page_max";	 */
 
-	$sql_pers .= " LIMIT ".($get['page'] - 1) * $get['nblignes'].",".$get['nblignes'];
+	$sql_pers .= " LIMIT " . ((int) $get['page'] - 1) * (int) $get['nblignes'] . "," . (int) $get['nblignes'];
 
-	$req_pers = $connector->query($sql_pers);
+    $req_pers = $connector->query($sql_pers);
 
 	$th_lieu = ["idPersonne" => "ID", "pseudo" => "Pseudo",  "email" => "E-mail",  "groupe" => "Groupe",
 	"dateAjout" => "Création",
@@ -478,8 +478,8 @@ else if ($get['element'] == "personne")
 	<?php
 
 	echo HtmlShrink::getPaginationString($num_pers_total, $get['page'], $get['nblignes'], 1, "",
-                "?element=".$get['element']."&tri_gerer=".$get['tri_gerer']."&ordre=".$get['ordre']."&nblignes=".$get['nblignes']."&terme=".$get['terme']."&page=");
-	echo '<ul class="menu_nb_res">';
+                "?element=" . $get['element'] . "&tri_gerer=" . $get['tri_gerer'] . "&ordre=" . $get['ordre'] . "&nblignes=" . (int) $get['nblignes'] . "&terme=" . $get['terme'] . "&page=");
+    echo '<ul class="menu_nb_res">';
 
 	foreach ($tab_nblignes as $nbl)
 	{
@@ -504,7 +504,7 @@ echo '<div class="spacer"></div>';
 		{
 			echo "<th>";
 		}
-		echo "<a href=\"?element=" . $get['element'] . "&page=" . $get['page'] . "&tri_gerer=" . $att . "&ordre=" . $ordre_inverse . "&nblignes=" . $get['nblignes'] . "\">" . $th . "</a></th>";
+		echo "<a href=\"?element=" . $get['element'] . "&page=" . (int) $get['page'] . "&tri_gerer=" . $att . "&ordre=" . $ordre_inverse . "&nblignes=" . (int) $get['nblignes'] . "\">" . $th . "</a></th>";
     }
 
 	echo "<th></th></tr>";
@@ -533,8 +533,8 @@ echo '<div class="spacer"></div>';
 		if ($pair % 2 != 0) { echo " class=\"impair\""; }
 
 		echo ">
-		<td>".$tab_pers ['idPersonne']."</td>
-		<td style='width:20%'><a href=\"/user.php?idP=".$tab_pers['idPersonne']."\" title=\"Voir le profile :".sanitizeForHtml($tab_pers['pseudo'])."\">".sanitizeForHtml($tab_pers['pseudo'])."</a></td>
+		<td>" . (int) $tab_pers ['idPersonne'] . "</td>
+		<td style='width:20%'><a href=\"/user.php?idP=" . (int) $tab_pers['idPersonne'] . "\" title=\"Voir le profile :" . sanitizeForHtml($tab_pers['pseudo']) . "\">" . sanitizeForHtml($tab_pers['pseudo']) . "</a></td>
 		<td><a href='mailto:".$tab_pers['email']."'>".$tab_pers['email']."</a></td>
 		<td>".$nom_groupe."</td>";
 		echo "

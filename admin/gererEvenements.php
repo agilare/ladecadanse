@@ -575,7 +575,7 @@ elseif (!empty($_POST['formulaire']))
 			*/
 			if ($req_update)
 			{
-				HtmlShrink::msgOk('Mise à jour de <a href="/evenement.php?idE='.$idEven_courant.'">'.$tab_even['titre'].'</a> le <a href="/evenement-agenda.php?courant='.$tab_even['dateEvenement'].'">'.date_fr($tab_even['dateEvenement'], "annee").'</a> réussie');
+				HtmlShrink::msgOk('Mise à jour de <a href="/evenement.php?idE='.(int)$idEven_courant.'">'.$tab_even['titre'].'</a> le <a href="/evenement-agenda.php?courant='.$tab_even['dateEvenement'].'">'.date_fr($tab_even['dateEvenement'], "annee").'</a> réussie');
 
 				$sql = "DELETE FROM evenement_organisateur WHERE idEvenement=".(int) $idEven_courant;
 				$req = $connector->query($sql);
@@ -794,7 +794,7 @@ while ($tab_even = $connector->fetchArray($req_evenement))
 	{
 		$req_lieu = $connector->query("SELECT nom FROM lieu WHERE idLieu=" . (int) $tab_even['idLieu']);
         $tabLieu = $connector->fetchArray($req_lieu);
-		$nomLieu = "<a href=\"/lieu.php?idL=" . (int) $tab_even['idLieu'] . "\" title=\"Voir la fiche du lieu : " . sanitizeForHtml($tabLieu['nom']) . " \">" . sanitizeForHtml($tabLieu['nom']) . "</a>";
+		$nomLieu = "<a href=\"/lieu.php?idL=" . (int) $tab_even['idLieu'] . "\">" . sanitizeForHtml($tabLieu['nom']) . "</a>";
     }
 
 
@@ -987,7 +987,7 @@ while ($lieuTrouve = $connector->fetchArray($req_lieux))
 		{
 			echo "selected=\"selected\" ";
 		}
-		echo " style=\"font-style:italic;color:#444;\" value=".$lieuTrouve['idLieu']."_".$tab_salle['idSalle'].">".$nom_lieu."&nbsp;– ".$tab_salle['nom']."</option>";
+		echo " style=\"font-style:italic;color:#444;\" value=".$lieuTrouve['idLieu']."_".$tab_salle['idSalle'].">".sanitizeForHtml($nom_lieu)."&nbsp;– ".sanitizeForHtml($tab_salle['nom'])."</option>";
 
 	}
 
@@ -1069,7 +1069,7 @@ while ($tab = $connector->fetchArray($req))
 		echo 'selected="selected" ';
 	}
 
-	echo "value=\"".$tab['id']."\">".$tab['localite']."</option>";
+	echo "value=\"".$tab['id']."\">".sanitizeForHtml($tab['localite'])."</option>";
 
     // Genève quartiers
     if ($tab['id'] == 44)
