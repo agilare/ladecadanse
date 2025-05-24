@@ -72,8 +72,36 @@ class HtmlShrink
                 {
                     $nb = $event_nb[$n];
                 }
-        ?><li>
-            <a href="?region=<?php echo $n; ?>&<?php echo Utils::urlQueryArrayToString($get, 'region'); ?>" class="<?php echo $class_region; ?><?php echo $ici; ?>"><?php echo $v; ?>&nbsp;<?php
+
+                $excludeFromQueryString = ['region'];
+                // HACK: don't transmit default values to allow crawling (see robots.txt)
+                if (empty($get['tri_agenda']) || $get['tri_agenda'] == "dateAjout")
+                {
+                    $excludeFromQueryString[] = 'tri_agenda';
+                }
+
+                if (empty($get['genre']))
+                {
+                    $excludeFromQueryString[] = 'genre';
+                }
+
+                if (empty($get['sem']))
+                {
+                    $excludeFromQueryString[] = 'sem';
+                }
+
+                if (!empty($get['page']) && $get['page'] == 1)
+                {
+                    $excludeFromQueryString[] = 'page';
+                }
+
+                if (!empty($get['nblignes']) && $get['nblignes'] == 50)
+                {
+                    $excludeFromQueryString[] = 'nblignes';
+                }
+
+                ?><li>
+            <a href="?region=<?php echo $n; ?>&<?php echo Utils::urlQueryArrayToString($get, $excludeFromQueryString); ?>" class="<?php echo $class_region; ?><?php echo $ici; ?>"><?php echo $v; ?>&nbsp;<?php
                                 if ($nb !== '')
                 {
         ?><span class="events-nb"><?php echo $nb; ?></span><?php } ?></a></li><?php

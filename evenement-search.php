@@ -505,7 +505,7 @@ if (!empty($get['mots']))
 
 
 					<td class="desc_even">
-					<h3><a href="/evenement.php?idE=<?php echo $tab_even['idEvenement'] ?>" title="Voir la fiche de l'événement"><?php echo $tab_even['titre'] ?></a></h3>
+					<h3><a href="/evenement.php?idE=<?php echo (int) $tab_even['idEvenement'] ?>" title="Voir la fiche de l'événement"><?php echo $tab_even['titre'] ?></a></h3>
 							<?php
 								$maxChar = Text::trouveMaxChar($tab_even['description'], 50, 4);
 								if (mb_strlen((string) $tab_even['description']) > $maxChar)

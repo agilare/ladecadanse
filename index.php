@@ -224,7 +224,6 @@ WHERE (region IN ('" . $connector->sanitize($_SESSION['region']) . "', " . $sql_
                             WHERE evenement_organisateur.idEvenement=" . (int) $tab_even['idEvenement'] . " AND
                              organisateur.idOrganisateur=evenement_organisateur.idOrganisateur
                              ORDER BY nom DESC";
-echo $sql_event_orga;
                 $req_event_orga = $connector->query($sql_event_orga);
 
                 // après le 1er even puis 1 item sur 2 : rappel

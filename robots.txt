@@ -1,5 +1,10 @@
 User-agent: *
 Crawl-delay: 15 # rule ignored by Google
+disallow: /*?*tri_agenda=
+disallow: /*?*genre=
+disallow: /*?*sem=
+disallow: /*?*nblignes=
+
 Disallow: /admin/
 Disallow: /app/
 Disallow: /librairies/
@@ -9,8 +14,36 @@ Disallow: /vendor/
 Disallow: /.git-ftp.log
 Disallow: /*.inc.php
 Disallow: /maintenance.php
+Disallow: /evenement-actions.php
+Disallow: /evenement-email.php
+Disallow: /evenement_ics.php
+Disallow: /evenement-report.php
+Disallow: /evenement-search.php
+
 # ignore years 2100, 2200...
 Disallow: /evenement-agenda.php?courant=21*
 Disallow: /evenement-agenda.php?courant=22*
 Disallow: /evenement-agenda.php?courant=23*
+
+Disallow: /web/uploads/evenements/s_*
+Disallow: /web/uploads/evenements/*/s_*
+Disallow: /web/uploads/lieux/s_*
+Disallow: /web/uploads/organisateurs/s_*
+
+
+User-agent: AhrefsBot
+Crawl-delay: 20
+
+User-agent: SemrushBot
+Crawl-delay: 20
+
+User-agent: meta-externalagent
+Crawl-delay: 30
+
+User-agent: bingbot
+Crawl-delay: 20
+
+User-agent: Barkrowler
+Crawl-delay: 20
+
 
