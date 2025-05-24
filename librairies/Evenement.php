@@ -17,7 +17,7 @@ class Evenement extends Element
         $this->table = "evenement";
     }
 
-    public static function nom_genre($nom): string
+    public static function nom_genre(string $nom): string
     {
         if ($nom == 'fête')
         {
@@ -27,10 +27,8 @@ class Evenement extends Element
         {
             return 'ciné';
         }
-        else
-        {
-            return $nom;
-        }
+
+        return $nom;
     }
 
     public static function titre_selon_statut(string $titre, string $statut): string

@@ -788,7 +788,7 @@ include("_header.inc.php");
 	 */
 	if ($get['action'] == 'update' || $get['action'] == 'editer')
 	{
-        $aff_titre .= '<h2>Modifier <a style="font-size:0.7em" href="/evenement.php?idE=' . $get['idE'] . '" title="Fiche de l\'événement" >' . sanitizeForHtml($champs['titre']) . '</a></h2>';
+        $aff_titre .= '<h2>Modifier <a style="font-size:0.7em" href="/evenement.php?idE=' . (int) $get['idE'] . '" title="Fiche de l\'événement" >' . sanitizeForHtml($champs['titre']) . '</a></h2>';
         $act = "update&amp;idE=".$get['idE'];
 	}
 	else

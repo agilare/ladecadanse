@@ -423,7 +423,7 @@ if ($evenements->getNbElements() > 0)
 		<td>
             <h3>
             <?php
-            $titre_url = '<a href="/evenement.php?idE='.$even->getValue('idEvenement').'" title="Voir la fiche de l\'événement">'.Evenement::titre_selon_statut(sanitizeForHtml($even->getValue('titre')), $even->getValue('statut')).'</a>';
+            $titre_url = '<a href="/evenement.php?idE='.(int)$even->getValue('idEvenement').'" title="Voir la fiche de l\'événement">'.Evenement::titre_selon_statut(sanitizeForHtml($even->getValue('titre')), $even->getValue('statut')).'</a>';
             echo $titre_url; ?>
             </h3>
             <p class="description"><?php echo $presentation; ?></p>

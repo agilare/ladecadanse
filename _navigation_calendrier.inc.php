@@ -1,251 +1,168 @@
 <?php
+// reset to default
 
-//$get ?? [];
-
-if (empty($get['courant'])) {
+if (empty($get['courant']))
+{
     $get['courant'] = $glo_auj_6h;
 }
 
-if (empty($get['genre'])) {
+if (empty($get['genre']))
+{
     $get['genre'] = '';
 }
 
-if (empty($get['tri_agenda'])) {
+if (empty($get['tri_agenda']))
+{
     $get['tri_agenda'] = "dateAjout";
 }
 
-if (empty($get['sem'])) {
-    $get['sem'] = 0;
-}
+$get['sem'] = (int) ($get['sem'] ?? 0);
 
-$tab_date_courant = explode("-", (string) $get['courant']);
+$dateCourant = new DateTime($get['courant']);
 
-$jour_courant = $tab_date_courant[2];
-$mois_courant = $tab_date_courant[1];
-$annee_courant = (int) $tab_date_courant[0];
+// Trouver le premier jour du mois
+$firstDayOfMonth = (clone $dateCourant)->modify('first day of this month');
+// Trouver le dernier jour du mois
+$lastDayOfMonth = (clone $dateCourant)->modify('last day of this month');
+// Aller au dimanche de la semaine ISO contenant ce jour
+$sundayOfLastWeek = (clone $lastDayOfMonth)->modify('sunday this week');
 
-$nb_jours_mois = (int) date("t", mktime(0, 0, 0, $mois_courant, $jour_courant, $annee_courant));
+$dateToday = new DateTime();
 
-$jour_mois_prec = $jour_mois_suiv = $jour_courant;
-if ((int) $jour_courant === $nb_jours_mois)
-{
-	$jour_mois_prec = date("t", mktime(0, 0, 0, (int) $mois_courant - 1, 1, $annee_courant));
-    $jour_mois_suiv = date("t", mktime(0, 0, 0, (int) $mois_courant + 1, 1, $annee_courant));
-}
-$mois_prec = date("Y-m-d", mktime(0, 0, 0, (int) $mois_courant - 1, $jour_mois_prec, $annee_courant));
-$mois_suiv = date("Y-m-d", mktime(0, 0, 0, (int) $mois_courant + 1, $jour_mois_suiv, $annee_courant));
+// nb of ALL events after this month, published and in current region
+$sql_eventsNextmonthsCount = "SELECT COUNT(idEvenement) AS nb "
+    . " FROM evenement e "
+    . "JOIN localite l ON e.localite_id = l.id WHERE dateEvenement > '".$lastDayOfMonth->format('Y-m-d')."' AND statut NOT IN ('inactif', 'propose') AND (region IN ('" . $connector->sanitize($_SESSION['region']) . "', " . ($_SESSION['region'] == 'ge' ? "'rf'," : "") . " 'hs') OR FIND_IN_SET ('" . $connector->sanitize($_SESSION['region']) . "', l.regions_covered))  ";
+$req_eventsNextmonthsCount = $connector->query($sql_eventsNextmonthsCount);
+$res_eventsNextmonths = $connector->fetchArray($req_eventsNextmonthsCount);
+$eventsNextmonthsCount = (int) $res_eventsNextmonths['nb'];
+
+$urlForwardedParameters = ($get['genre'] !== '' ? "&amp;genre=" . $get['genre'] : "") . (!empty($get['sem']) ? "&amp;sem=" . $get['sem'] : "") . ($get['tri_agenda'] !== 'dateAjout' ? "&amp;tri_agenda=" . $get['tri_agenda'] : "");
 ?>
 
 <div id="navigation_calendrier" >
-
     <table id="calendrier">
-<!--        <caption>Calendrier pour choisir une date du mois</caption>-->
-        <tr id="mois">
-		<th>
-		<?php
-		if (mktime(0, 0, 0, (int) $mois_courant, $jour_courant, $annee_courant) > mktime(12, 0, 0, 9, 1, 2005))
+        <thead>
+            <tr id="mois">
+                <th>
+                    <?php
+                    // agenda started in sept. 2005
+                    if ($dateCourant > new DateTime("2005-09-01"))
+                    {
+                        $dateMoisPrecDernierJour = (clone $dateCourant)->modify('last day of -1 month')->format('Y-m-d');
+                        ?>
+                        <a href="/evenement-agenda.php?<?php echo $url_query_region_et . "courant=" . $dateMoisPrecDernierJour . $urlForwardedParameters ?>" title="Mois précédent" ><i class="fa fa-backward"></i></a>
+                        <?php
+                    }
+                    ?>
+                </th>
+                <th id="mois_courant" colspan="6"><?php echo ucfirst((string) mois2fr($dateCourant->format('n'))) . " " . $dateCourant->format('Y') ?></th>
+                <th>
+                    <?php
+                    if ($eventsNextmonthsCount > 0)
+                    {
+                        $dateMoisSuivPremierJour = (clone $dateCourant)->modify('first day of +1 month')->format('Y-m-d');
+                        ?>
+                        <a href="/evenement-agenda.php?<?php echo $url_query_region_et . "courant=" . $dateMoisSuivPremierJour . $urlForwardedParameters ?>" title="Mois suivant"><i class="fa fa-forward"></i></a>
+                    <?php } ?>
+                </th>
+            </tr>
+
+            <tr id="jours">
+                <th></th><th>lun</th><th>mar</th><th>mer</th><th>jeu</th><th>ven</th><th>sam</th><th>dim</th>
+            </tr>
+        </thead>
+        <tbody>
+        <?php
+        // Créer la période de dates jour par jour
+        $period = new DatePeriod((clone $firstDayOfMonth)->modify('monday this week'), new DateInterval('P1D'), (clone $lastDayOfMonth)->modify('sunday this week')->modify('+1 day'));
+        foreach ($period as $day)
         {
-		?>
-            <a href="<?php echo "/evenement-agenda.php?" . $url_query_region_et . "courant=" . $mois_prec . "&amp;genre=" . $get['genre'] . "&amp;sem=" . $get['sem'] . "&amp;tri_agenda=" . $get['tri_agenda']; ?>" title="mois précédent" >
-                    <i class="fa fa-backward"></i></a>
-		<?php
-		}
-		?>
-		</th>
-        <th id="mois_courant" colspan="6">
-            <?php echo ucfirst((string) mois2fr($mois_courant)) . " " . $annee_courant ?>
-        </th>
-        <th>
-            <a href="<?php echo "/evenement-agenda.php?" . $url_query_region_et . "courant=" . $mois_suiv . "&amp;sem=" . $get['sem'] . "&amp;genre=" . $get['genre'] . "&amp;tri_agenda=" . $get['tri_agenda']; ?>" title="mois suivant" >
-                <i class="fa fa-forward"></i></a>
-        </th>
-    </tr>
-
-	<tr id="jours">
-        <th style="height: 18px;"></th>
-        <th>lun</th><th>mar</th><th>mer</th><th>jeu</th><th>ven</th><th>sam</th><th>dim</th>
-    </tr>
-
-	<?php
-	$nb_jours_mois = (int) date("t", mktime(0, 0, 0, (int) $mois_courant, 01, $annee_courant));
-
-    $no_premier_jour_sem = date("w", mktime(0, 0, 0, (int) $mois_courant, 01, $annee_courant));
-if ($no_premier_jour_sem == 0)
-	{
-		$no_premier_jour_sem = 7;
-	}
-
-	$no_dernier_jour_sem = date("w", mktime(0, 0, 0, (int) $mois_courant, $nb_jours_mois, $annee_courant));
-
-if ($no_dernier_jour_sem == 0)
-	{
-		$no_dernier_jour_sem = 7;
-	}
-
-	$no_prem_sem_mois = date("W", mktime(0, 0, 0, (int) $mois_courant, 01, $annee_courant));
-$no_dern_sem_mois = date("W", mktime(0,0,0,$mois_courant,$nb_jours_mois,$annee_courant));
-
-
-    $tab_no_jour_sem = ["0", "1", "2", "3", "4", "5", "6", "0"];
-
-	$pas = 1;
-	$no_jour = "01";
-	$cpt_sem = 1;
-	$nb_jour_mois_avant = date("t", mktime(0, 0, 0, (int) $mois_courant - 1, 01, $annee_courant));
-$b = $no_premier_jour_sem - 2;
-
-	while ($pas <= $nb_jours_mois)
-	{
-
-		$classe ="";
-		if ($cpt_sem == 1)
-		{
-            $pas_jour = $pas < 10 ? "0" . $pas : $pas;
-        $date_deb_sem = $annee_courant . "-" . $mois_courant . "-" . $pas_jour;
-
-        $lundim_cour = date_iso2lundim($get['courant']);
-        $lundim_pas = date_iso2lundim($annee_courant . "-" . $mois_courant . "-" . $pas_jour);
-
-        echo "<tr";
-			//if (($get['sem'] == 1 && ($date_deb_sem >= $lundim_cour[0] && $date_deb_sem <= $lundim_cour[1])))
-			if ($get['sem'] == 1 && $lundim_cour[0] == $lundim_pas[0] && $lundim_cour[1] == $lundim_pas[1])
-			{
-				echo " class=\"semaine semaine_ici\"";
-			}
-			else
-			{
-				echo " class=\"semaine\"";
-			}
-
-			echo "><td><a href=\"/evenement-agenda.php?" . $url_query_region_et . "courant=" . $date_deb_sem . "&amp;sem=1&amp;tri_agenda=" . $get['tri_agenda'] . "\" title=\"Semaine\"><i class=\"fa fa-caret-right\"></i>
-</a></td>";
-
-		}
-
-	    if (Date("w", mktime(0, 0, 0, $mois_courant, $pas, $annee_courant)) == $tab_no_jour_sem[$cpt_sem])
-	    {
-			$afficheJour = Date("j", mktime(0, 0, 0, $mois_courant, $pas, $annee_courant));
-
-			if (Date("Y-m-d", mktime(0, 0, 0, $mois_courant, $pas, $annee_courant)) == Date("Y-m-d"))
+            // lundi : prefixé d'un <td></td> contenant lien pour voir la semaine
+            if ($day->format('N') == 1)
             {
-            	$classe = ' class="auj';
-            	//echo Date("Y-m-d", mktime(0, 0, 0, $mois_courant, $pas, $annee_courant));
+                ?>
+                <tr class="semaine <?php if ($get['sem'] == 1 && $dateCourant->format('oW') === $day->format('oW')) { echo " semaine_ici"; } ?>">
+                    <td><a href="/evenement-agenda.php?<?php echo $url_query_region_et ?>courant=<?php echo $day->format('Y-m-d'). "&amp;sem=1" . ($get['tri_agenda'] !== 'dateAjout' ? "&amp;tri_agenda=" . $get['tri_agenda'] : " ") ?>" title="Toute la semaine"><i class="fa fa-caret-right"></i></a>
+                    </td>
+            <?php
             }
 
-            if (Date("w", mktime(0, 0, 0, $mois_courant, $pas, $annee_courant)) == 6 || Date("w", mktime(0, 0, 0, $mois_courant, $pas, $annee_courant)) == 0) {
-            if ($classe != '') {
-					$classe .= ' sam';
-				}
-				else
-				{
-					$classe .= ' class="sam';
-				}
-				//echo Date("w", mktime(0, 0, 0, $mois_courant, $pas, $annee_courant));
-			}
-
-        if (date("Y-m-d", mktime(0, 0, 0, $mois_courant, $pas, $annee_courant)) < date("Y-m-d")) {
-            if ($classe != '') {
-                $classe .= ' past';
+            // mark past, today, current, week end, other month dates
+            $jour_classes = [];
+            $jour_ici = "";
+            if ($day->format("Y-m-d") < $dateToday->format("Y-m-d"))
+            {
+                $jour_classes[] = 'past';
             }
-            else {
-                $classe .= ' class="past';
+
+            if ($day->format("Y-m-d") == $dateToday->format("Y-m-d"))
+            {
+                $jour_classes[] = 'auj';
+            }
+
+            if (in_array($day->format('w'), [6, 0]))
+            {
+                $jour_classes[] = 'sam';
+            }
+
+            if ($day < $firstDayOfMonth || $day > $lastDayOfMonth)
+            {
+                $jour_classes[] = 'autre_mois';
+            }
+
+            if ($day == $dateCourant && $get['sem'] != 1)
+            {
+                $jour_ici = ' id="cal_ici"';
+            }
+            ?>
+            <td <?= $jour_ici ?> class="<?= implode(" ", $jour_classes) ?>">
+                <?php
+                // à partir du mois suivants il n'y a plus du tout d'événements : lien inutile
+                if ($day > $lastDayOfMonth && $eventsNextmonthsCount == 0)
+                {
+                    ?>
+                    <span class="day-without-events"><?= $day->format('j') ?></span>
+                <?php }
+                else
+                { ?>
+                    <a href="/evenement-agenda.php?<?php echo $url_query_region_et . "courant=" . $day->format('Y-m-d') . ($get['tri_agenda'] !== 'dateAjout' ? "&amp;tri_agenda=" . $get['tri_agenda'] : " ") . ($get['genre'] !== '' ? "&amp;genre=" . $get['genre'] : "") ?>"><?= $day->format('j') ?></a>
+                <?php } ?>
+            </td>
+            <?php
+            if ($day->format('N') == 7)
+            {
+            ?>
+                </tr>
+            <?php
             }
         }
-
-        if ($classe != '')
-			{
-				$classe .= '"';
-			}
-
-
-
-        if (date("Y-m-d", mktime(0, 0, 0, $mois_courant, $pas, $annee_courant)) == date("Y-m-d", mktime(0, 0, 0, $mois_courant, $jour_courant, $annee_courant)) && $get['sem'] != 1) {
-				$classe .= ' id="cal_ici"';
-            }
-
-			$proch_date = Date("Y-m-d", mktime(0, 0, 0, $mois_courant, $pas, $annee_courant));
-
-			echo "<td".$classe.">";
-			echo "<a href=\"/evenement-agenda.php?" . $url_query_region_et . "courant=" . $proch_date . "&amp;sem=0&amp;tri_agenda=" . $get['tri_agenda'] . "\" title=\"" . date_fr($proch_date, "annee", "", "", false) . "\">" . $pas . "</a></td>";
-
-        $pas++;
-    	}
-    	else
-    	{
-			$jour_mois_avant = $nb_jour_mois_avant - $b;
-
-			$proch_date = Date("Y-m-d", mktime(0, 0, 0, (int) $mois_courant - 1, $jour_mois_avant, $annee_courant));
-        echo '<td class="autre_mois';
-    		if (Date("w", mktime(0, 0, 0, (int) $mois_courant - 1, $jour_mois_avant, $annee_courant)) == 6)
-        {
-				echo ' sam';
-    		}
-    		echo '">';
-			echo "<a href=\"/evenement-agenda.php?" . $url_query_region_et . "courant=" . $proch_date . "&amp;genre=" . $get['genre'] . "&amp;sem=0&amp;tri_agenda=" . $get['tri_agenda'] . "\" title=\"\">" . $jour_mois_avant . "</a>";
-        echo  "</td>";
-    		$b--;
-    	}
-
-		if ($pas > $nb_jours_mois)
-		{
-			$i = $cpt_sem;
-			$n = 1;
-			while ($i < 7)
-			{
-				$proch_date = Date("Y-m-d", mktime(0, 0, 0, (int) $mois_courant + 1, $n, $annee_courant));
-            echo '<td class="autre_mois';
-	    		$no_jour_sem_suiv = Date("w", mktime(0, 0, 0, (int) $mois_courant + 1, $n, $annee_courant));
-            if ($no_jour_sem_suiv == 6 || $no_jour_sem_suiv == 0)
-	    		{
-					echo ' sam';
-	    		}
-	    		echo '">';
-				echo "<a href=\"/evenement-agenda.php?".$url_query_region_et."courant=".$proch_date."&amp;genre=".$get['genre']."&amp;sem=0&amp;tri_agenda=".$get['tri_agenda']."\" title=\"\">".$n."</a>";
-				echo  "</td>\n";
-				$i++;
-				$n++;
-			}
-			echo "</tr>\n";
-
-		}
-		 if ($cpt_sem == 7 && $pas <= $nb_jours_mois)
-		 {
-		 	echo "</tr>\n";
-		 	$cpt_sem = 1;
-		 }
-		 else
-		 {
-		 	$cpt_sem++;
-		 }
-	}
-
-
-	?>
-
+        ?>
+        <tbody>
     </table>
 
     <ul id="menu_calendrier">
         <li id="demain">
-            <?php $tab_auj = explode("-", (string) $glo_auj); ?>
-            <a href="<?php echo "/evenement-agenda.php?" . $url_query_region_et . "courant=" . date("Y-m-d", mktime(12, 0, 0, $tab_auj[1], ((int) $tab_auj[2]) + 1, $tab_auj[0])) . "&amp;genre=" . $get['genre'] . "&amp;tri_agenda=" . $get['tri_agenda'] ?>" >Demain</a>
+            <a href="/evenement-agenda.php?<?php echo $url_query_region_et . "courant=" . (clone $dateToday)->modify('+1 day')->format('Y-m-d'). $urlForwardedParameters ?>">Demain</a>
         </li>
         <li id="cette_semaine">
-            <a href="<?php echo "/evenement-agenda.php?" . $url_query_region_et . "courant=" . $auj . "&amp;genre=" . $get['genre'] . "&amp;tri_agenda=" . $get['tri_agenda'] . "&amp;sem=1" ?>" >
-                Cette semaine
-            </a>
+            <a href="/evenement-agenda.php?
+            <?php echo $url_query_region_et
+            . "courant=" . $dateToday->format('Y-m-d')
+            . ($get['genre'] !== '' ? "&amp;genre=" . $get['genre'] : "")
+            . "&amp;sem=1" . ($get['tri_agenda'] !== 'dateAjout' ? "&amp;tri_agenda=". $get['tri_agenda'] : " ")
+            ?>">Cette semaine</a>
         </li>
         <li>
-            <form action="/evenement-agenda.php" method="get" >
-                <fieldset>
-                    <input type="hidden" name="genre" value="<?php echo $get['genre'] ?>" />
-                    <input type="hidden" name="sem" value="<?php echo $get['sem'] ?>" />
-                    <input type="hidden" name="tri_agenda" value="<?php echo $get['tri_agenda'] ?>" />
-
-                <input type="text" name="courant" size="8" placeholder="jj.mm.aaaa" style="width:6em;" /><input type="submit" class="submit" name="formulaire" value="OK" />
-
-            </fieldset>
+            <form action="/evenement-agenda.php" method="get">
+                <?php if ($get['tri_agenda'] !== 'dateAjout')
+                {
+                    ?>
+                    <input type="hidden" name="tri_agenda" value="<?= $get['tri_agenda'] ?>" />
+                <?php } ?>
+                <input type="date" name="courant" size="12" /><input type="submit" class="submit" name="formulaire" value="OK" />
             </form>
-            </li>
+        </li>
     </ul>
 
     <div class="spacer"></div>

@@ -8,8 +8,8 @@ use Ladecadanse\Utils\Text;
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\Utils\Utils;
 
-$page_titre = "Agenda";
-$page_description = "Événements culturels et festifs à Genève et Lausanne : concerts, soirées, films, théâtre, expos...";
+$page_titre = "Agenda d'événements";
+$page_description = "Événements culturels et festifs à Genève et Lausanne : concerts, soirées, films, théâtre, expos... ";
 
 /* DATE COURANTE : _navigation_calendrier, agenda, evenement-edit */
 $get['courant'] = $glo_auj_6h;
@@ -22,24 +22,16 @@ if (!empty($_GET['courant'])) {
     }
 }
 
-$get['sem'] = 0;
-if (!empty($_GET['sem']) && is_numeric($_GET['sem'])) {
-    $get['sem'] = $_GET['sem'];
-}
+$get['sem'] = (int) ($_GET['sem'] ?? 0);
 
 $page_titre .= " du " . date_fr($get['courant'], "annee", "", "", false);
-if ($get['sem'] == 1) {
+if ($get['sem'] === 1) {
     $lundim = date_iso2lundim($get['courant']);
-    $page_titre .= " du " . date_fr($lundim[0], "annee", "", "", false) . " au " . date_fr($lundim[1], "annee", "", "", false);
+    $page_titre = "Semaine du " . date_fr($lundim[0], "annee", "", "", false) . " au " . date_fr($lundim[1], "annee", "", "", false);
 }
 
-$page_titre .= " à Genève";
-if ($_SESSION['region'] == 'vd') {
-    $page_titre .= " à Lausanne";
-}
-elseif ($_SESSION['region'] == 'fr') {
-    $page_titre .= " à Fribourg";
-}
+$page_titre .= " à ".$glo_regions[$_SESSION['region']];
+$page_description .= $page_titre;
 
 $get['genre'] = "";
 if (!empty($_GET['genre']) && array_key_exists(urldecode((string) $_GET['genre']), $glo_tab_genre)) {
@@ -73,7 +65,7 @@ if (isset($get['date_deb']) && isset($get['date_fin']))
 {
 	$sql_date_evenement = ">= '".date_app2iso($get['date_deb'])."' AND dateEvenement <= '".date_app2iso($get['date_fin'])."'";
 }
-else if ($get['sem'] == 1)
+else if ($get['sem'] === 1)
 {
 	$lundim = date_iso2lundim($get['courant']);
     $sql_date_evenement = ">= '" . $lundim[0] . "' AND dateEvenement <= '" . $lundim[1] . "'";
@@ -105,7 +97,7 @@ if (is_numeric($annee_courant) && is_numeric($mois_courant) && is_numeric($jour_
         $suivant_nomjour_parts = explode(" ", (string) date_fr($suivant, "tout", "non", ""));
         $lien_suivant = "<a href=\"/evenement-agenda.php?".Utils::urlQueryArrayToString($get)."&amp;courant=".$suivant."\" style=\"border-radius:0 3px 3px 0;background:#e4e4e4\" title=\"".$suivant_nomjour_parts[1]."\" rel=\"nofollow\">".ucfirst($suivant_nomjour_parts[0])."<span class=desktop> ".$suivant_nomjour_parts[1]."</span>"."&nbsp;".$iconeSuivant."</a>";
     }
-    else if ($get['sem'] == 1)
+    else if ($get['sem'] === 1)
     {
         if ($genre_titre == 'Tout')
             $entete_contenu = ucfirst($entete_contenu);
@@ -132,7 +124,7 @@ if (isset($get['genre']) && $get['genre'] != '')
 	$sql_genre = "genre='".$get['genre']."' AND";
 	$sql_tri_agenda = 'dateEvenement, '.$sql_tri_agenda;
 }
-else if ($get['sem'] == 0)
+else if ($get['sem'] === 0)
 {
 	$sql_tri_agenda = " CASE `genre`
        WHEN 'fête' THEN 1
@@ -173,7 +165,8 @@ $sql_even = $sql_even.$limite;
 $req_even = $connector->query($sql_even);
 $nb_evenements = $connector->getNumRows($req_even);
 
-if ($get['sem'])
+// liste des 7 jours de la semaine
+if ($get['sem'] === 1)
 {
     $sql_genre = '';
     if ($get['genre'] != '')
@@ -397,7 +390,7 @@ else
 
 		$maxChar = Text::trouveMaxChar($listeEven['description'], 70, 8);
 
-		$titre_url = '<a class="url" href="/evenement.php?idE=' . $listeEven['idEvenement'] . '&amp;tri_agenda=' . $get['tri_agenda'] . '&amp;courant=' . $get['courant'] . '">' . sanitizeForHtml($listeEven['titre']) . '</a>';
+		$titre_url = '<a class="url" href="/evenement.php?idE=' . (int)$listeEven['idEvenement'] . ($get['tri_agenda'] !== 'dateAjout' ? '&amp;tri_agenda=' . $get['tri_agenda'] : '' ) . '&amp;courant=' . $get['courant'] . '">' . sanitizeForHtml($listeEven['titre']) . '</a>';
         $titre = Evenement::titre_selon_statut($titre_url, $listeEven['statut']);
 
 		$lien_flyer = "";
@@ -414,7 +407,7 @@ else
 		{
 			$description = Text::texteHtmlReduit(Text::wikiToHtml(sanitizeForHtml($listeEven['description'])), $maxChar);
             $description .= "<span class=\"continuer\">
-			<a href=\"/evenement.php?idE=" . $listeEven['idEvenement'] . "&amp;tri_agenda=" . $get['tri_agenda'] . "\"> Lire la suite</a></span>";
+			<a href=\"/evenement.php?idE=" . (int)$listeEven['idEvenement'] . ($get['tri_agenda'] !== 'dateAjout' ? '&amp;tri_agenda=' . $get['tri_agenda'] : '' ) . "\"> Lire la suite</a></span>";
         }
 		else
 		{

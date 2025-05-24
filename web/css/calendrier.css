@@ -1,108 +1,106 @@
 #navigation_agenda
 {
-	background:#eaeaff;
-	color:#5C7378;
+    background:#eaeaff;
+    color:#5C7378;
 }
 
 /* calendrier */
 
 #navigation_agenda ul#menu_mois
 {
-	width:200px;
-	margin:0;
-	background:white;
-	text-align:center;
+    width:200px;
+    margin:0;
+    background:white;
+    text-align:center;
 }
 
 #navigation_agenda ul#menu_mois li
 {
-	display:inline;
-	padding:1em;
+    display:inline;
+    padding:1em;
 }
 
 #navigation_agenda ul#menu_mois li#mois_courant
 {
-	font-weight:bold;
+    font-weight:bold;
 }
 table#calendrier tr#mois th#mois_courant
 {
-	font-size: 1em;
-	padding: 0.6em;
+    font-size: 1em;
+    padding: 0.6em;
 }
 
 
 table#calendrier
 {
-	float:left;
+    float:left;
 
-	border-spacing:0px;
-	border-collapse:collapse;
+    border-spacing:0px;
+    border-collapse:collapse;
 
-	/*width:180px;*/
-	width:100%; /* plus responsive qu'en px*/
+    /*width:180px;*/
+    width:100%; /* plus responsive qu'en px*/
 }
 
 
 table#calendrier tr#mois th
 {
-	font-size:1em;
-	font-weight:bold;
-	text-align:center;
-		vertical-align:middle;
-	background-color:#FACA1A;
+    font-size:1em;
+    font-weight:bold;
+    text-align:center;
+    background-color:#FACA1A;
 }
 
 table#calendrier tr#jours th
 {
-	height:1em;
-	font-size:0.8em;
-	text-align:center;
-	vertical-align:middle;
-	background-color:#eaeaea;
-	padding: 0.1em 0;
-	color: #333;
+    height: 18px;
+    font-size:0.8em;
+    text-align:center;
+    background-color:#eaeaea;
+    padding: 0.1em 0;
+    color: #333;
 }
 
 
 table#calendrier th#janvier
 {
-	background:#fefefe;
+    background:#fefefe;
 }
 
 table#calendrier th#fevrier
 {
-	background:#dedede;
+    background:#dedede;
 }
 
 
 
 table#calendrier #semaines
 {
-text-align:center;
-height:0.6em;
-font-size:0.2em;
+    text-align:center;
+    height:0.6em;
+    font-size:0.2em;
 
-border-right:1px solid gray;
-background:#eaeaea;
+    border-right:1px solid gray;
+    background:#eaeaea;
 }
 
 table#calendrier tr.semaine
 {
-	background:#fafafa;
-	border-bottom:#e0e0e0 1px solid;
+    background:#fafafa;
+    border-bottom:#e0e0e0 1px solid;
 }
 
 table#calendrier tr.semaine_ici
 {
-	border:3px solid #6a6a6a;
+    border:3px solid #6a6a6a;
 
 }
 
 table#calendrier tr.semaine td
 {
-	text-align:center;
-	height:25px;
-	vertical-align:middle;
+    text-align:center;
+    height:25px;
+    vertical-align:middle;
 }
 
 /*
@@ -124,19 +122,23 @@ table#calendrier tr.semaine td a
 
 table#calendrier tr#mois th a
 {
-	color:#444;
+    color:#444;
 }
 
 table#calendrier tr.semaine td a:hover, table#calendrier tr.semaine td a:active
 {
-	background:#eaeaea;
+    background:#eaeaea;
 
 }
-
 
 table#calendrier tr.semaine td.autre_mois a
 {
     color:#d8d8f7;
+}
+
+table#calendrier tr.semaine td.autre_mois .day-without-events
+{
+    color:#777
 }
 
 
@@ -153,37 +155,37 @@ table#calendrier td.past a, table#calendrier tr.semaine td.past a
 
 table#calendrier #debut_sem_cour
 {
-border:1px solid black;
+    border:1px solid black;
 }
 
 table#calendrier #fin_sem_cour
 {
-border:1px solid black;
+    border:1px solid black;
 }
 
 table#calendrier #cal_ici
 {
-border:2px solid gray;
+    border:2px solid gray;
 }
 
 table#calendrier #cette_sem
 {
-background:white;
+    background:white;
 }
 
 table#calendrier .deb_sem
 {
-border-left:black 1px solid;
+    border-left:black 1px solid;
 }
 
 table#calendrier td.autre_mois
 {
-color:red;
+    color:red;
 }
 
 table#calendrier td.auj
 {
-	background-color:yellow;
+    background-color:yellow;
 }
 
 
@@ -191,58 +193,58 @@ table#calendrier td.auj
 ul#menu_calendrier
 {
     list-style-type: none;
-	margin:1em 0;
-	padding:0 0 0 1em;
-	float:left;
-	font-size:0.9em;
+    margin:1em 0;
+    padding:0 0 0 1em;
+    float:left;
+    font-size:0.9em;
 }
 
 ul#menu_calendrier li
 {
-	margin:0.4em 0;
-	padding:0.2em 0 0.2em 18px;
+    margin:0.4em 0;
+    padding:0.2em 0 0.2em 8px;
 }
 
 ul#menu_calendrier li form input
 {
-	border:1px solid gray;
-	font-size:1em;
-	padding:0.2em 0.2em;
+    border:1px solid gray;
+    font-size:1em;
+    padding:0.2em 0.2em;
 
 }
 
 ul#menu_calendrier li form input.submit
 {
-	border-top:1px solid gray;
-	border-right:1px solid gray;
-	border-bottom:1px solid gray;
-	border-left:none;
-	font-size:0.9em;
-	padding: 0.2em 0.3em 0.25em 0.3em;
+    border-top:1px solid gray;
+    border-right:1px solid gray;
+    border-bottom:1px solid gray;
+    border-left:none;
+    font-size:0.9em;
+    padding: 0.2em 0.3em 0.25em 0.3em;
 
 }
 
 @media screen and (-webkit-min-device-pixel-ratio:0)
 {
 
-	ul#menu_calendrier li form input.submit
-	{
-		padding: 0.4em 0.3em 0.2em 0.3em;
-	}
+    ul#menu_calendrier li form input.submit
+    {
+        padding: 0.4em 0.3em 0.3em 0.3em;
+    }
 }
 
 @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
-	ul#menu_calendrier li form input.submit
-	{
-		padding: 0.3em 0.3em 0.3em 0.3em;
-	}
+    ul#menu_calendrier li form input.submit
+    {
+        padding: 0.3em 0.3em 0.3em 0.3em;
+    }
 }
 
 ul#menu_calendrier li form p
 {
-	color:#5C7378;
-	font-size:0.8em;
-	height:1em;
-	padding:0.2em 0em;
+    color:#5C7378;
+    font-size:0.8em;
+    height:1em;
+    padding:0.2em 0em;
 }
 /* Fin calendrier  */

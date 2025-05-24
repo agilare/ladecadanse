@@ -41,8 +41,7 @@ echo "<p><a href=\"/evenement-agenda.php?courant=".$evenement['dateEvenement']."
 
 	$maxChar = Text::trouveMaxChar($evenement['description'], 60, 9);
 
-	echo '<a href="/evenement.php?idE='.$evenement['idEvenement'].'"
-	title="Voir la fiche complète de l\'événement">' . sanitizeForHtml(Evenement::titre_selon_statut($evenement['titre'], $evenement['statut'])) . '</a>';
+	echo '<a href="/evenement.php?idE='.(int)$evenement['idEvenement'].'" title="Voir la fiche complète de l\'événement">' . sanitizeForHtml(Evenement::titre_selon_statut($evenement['titre'], $evenement['statut'])) . '</a>';
     ?>
 	</span>
     <span class="right"><?php echo $nom_lieu ?></span>
@@ -82,7 +81,7 @@ if (mb_strlen((string) $evenement['description']) > $maxChar)
 {
 	echo Text::texteHtmlReduit(Text::wikiToHtml(sanitizeForHtml($evenement['description'])),
 	$maxChar,
-	" <a href=\"/evenement.php?idE=".$evenement['idEvenement']."\" title=\"Voir la fiche complète de l'événement\"> Lire la suite".$iconeSuite."</a>");
+	" <a href=\"/evenement.php?idE=".(int)$evenement['idEvenement']."\" title=\"Voir la fiche complète de l'événement\"> Lire la suite".$iconeSuite."</a>");
 }
 else
 {

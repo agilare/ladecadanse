@@ -3,13 +3,21 @@
 ## [3.7.4] - Unreleased
 
 ### Added
-- agenda : add 404 header if day has no results
+- agenda, SEO : add 404 header if day has no results
+- calendar, SEO : disable browsing to next months if there is no events in the future
+- SEO : in robots.txt exclude some pages, agenda faceted navigation params, thumbnails images and increase Crawl-delay of some bots
+- SEO : add nofollow to prev/next links
 
 ### Changed
 - home: refactoring
+- calendar : refactoring with use of DateTime and remove useless query string parameters
 
-# Removed
+## Security
+- admin: sanitize some html display in admin pages
+
+## Removed
 - partners : Noctambus (discontinued)
+
 
 ## [3.7.3] - 2025-05-11
 

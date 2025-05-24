@@ -218,8 +218,12 @@ class Text
      * @see trouveMaxChar, index.php, lieux.php
      * @return string Texte reduit avec $lienSuite
      */
-    public static function texteHtmlReduit($texteHtml, $limChar, $lienSuite = "")
+    public static function texteHtmlReduit($texteHtml, $limChar, $lienSuite = ""): string
     {
+        if (mb_strlen((string) $texteHtml) <= $limChar)
+        {
+            return $texteHtml;
+        }
 
         //"-13" pour tenir compte du lien "lire la suite"
         //$limChar -= 13;
