@@ -55,10 +55,13 @@ define("DATE_DEFAULT_TIMEZONE", 'Europe/Zurich');
 
 $glo_auj = date("Y-m-d");
 $auj = date("Y-m-d");
-$glo_auj_6h = date("Y-m-d", time() - 14400); // 4h
+$glo_auj_6h = date("Y-m-d", time() - 21_600); // -6h
 
 $glo_regions = ["ge" => "Genève", "vd" => "Lausanne", "rf" => "France", "hs" => "Autre"]; //  "fr" => "Fribourg",
 $glo_moisF = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
+
+// region selected by user is extended to arounding regions
+$glo_regions_coverage = ['ge' => ['ge', 'rf', 'hs'], 'vd' => ['vd', 'hs']];
 
 //// TIME & REGIONS END
 

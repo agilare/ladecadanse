@@ -191,12 +191,18 @@
 
 #prochains_evenements .genre .genre-jump
 {
-
     margin:0.2em 0.2em;
     float: right;
     padding: 0.4em 0.8em;
+    font-size:0.9em;
+    color: #6086B1;
     background:#f0f0f0;
     border-radius: 3px;
+}
+
+#prochains_evenements .genre .genre-jump
+{
+
 }
 
 #prochains_evenements .genre .genre-jump:hover
@@ -207,9 +213,10 @@
 #prochains_evenements h3
 {
     float: left;
+    margin-top:0.3em;
     padding:0 1%;
     color:#777;
-    font-size:1.25em;
+    font-size:1.3em;
 }
 
 #prochains_evenements h4

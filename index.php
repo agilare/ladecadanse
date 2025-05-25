@@ -20,21 +20,12 @@ $page_description = "Programme des prochains événements festifs et culturels �
 
 include("_header.inc.php");
 
-// TODO: config.php : Agenda::TODAY_TIME_DECALAGE_S
-$get['auj'] = date("Y-m-d", time() - 21_600); // 6h
-
-// TODO: Agenda::wholeRegionsCoveredFor : ge => 'ge', 'rf', 'hs', vd => 'vd', 'hs' then Agenda::wholeRegionsCoveredFor[$_SESSION['region']]
-// include France when in GE
-$sql_rf = "";
-if ($_SESSION['region'] == 'ge')
-    $sql_rf = " 'rf', ";
-
 // eventsTodayPusblishedInRegionscoveredOrderByCategory
 $sqlEv = "SELECT idEvenement, genre, idLieu, idSalle, nomLieu, adresse, quartier, localite.localite AS localite, urlLieu, statut,
  titre, idPersonne, dateEvenement, ref, flyer, image, description, horaire_debut, horaire_fin,
  horaire_complement, prix, prelocations
  FROM evenement, localite
- WHERE evenement.localite_id=localite.id AND dateEvenement LIKE '" . $get['auj'] . "%' AND statut NOT IN ('inactif', 'propose') AND (region IN ('" . $connector->sanitize($_SESSION['region']) . "', " . $sql_rf . " 'hs') OR FIND_IN_SET ('" . $connector->sanitize($_SESSION['region']) . "', localite.regions_covered))
+ WHERE evenement.localite_id=localite.id AND dateEvenement LIKE '" . $glo_auj_6h . "%' AND statut NOT IN ('inactif', 'propose') AND (region IN ('" . implode("', '", $glo_regions_coverage[$_SESSION['region']]) ."') OR FIND_IN_SET ('" . $connector->sanitize($_SESSION['region']) . "', localite.regions_covered))
  ORDER BY CASE `genre`
         WHEN 'fête' THEN 1
         WHEN 'cinéma' THEN 2
@@ -42,20 +33,19 @@ $sqlEv = "SELECT idEvenement, genre, idLieu, idSalle, nomLieu, adresse, quartier
         WHEN 'expos' THEN 4
         WHEN 'divers' THEN 5
         END, dateAjout DESC";
-//echo $sqlEv;
 $req_even = $connector->query($sqlEv);
 
 // countEventsTodayPusblishedInRegionGe
 $event_count = ['ge' => 0, 'vd' => 0];
 $req_even_ge_nb = $connector->query("SELECT COUNT(idEvenement) AS nb
  FROM evenement, localite
- WHERE evenement.localite_id=localite.id AND dateEvenement LIKE '" . $get['auj'] . "%' AND statut NOT IN ('inactif', 'propose') AND (region IN ('ge', 'rf', 'hs') OR FIND_IN_SET ('ge', localite.regions_covered))");
+ WHERE evenement.localite_id=localite.id AND dateEvenement LIKE '" . $glo_auj_6h . "%' AND statut NOT IN ('inactif', 'propose') AND (region IN ('" . implode("', '", $glo_regions_coverage['vd']) ."') OR FIND_IN_SET ('ge', localite.regions_covered))");
 $event_count['ge'] = $connector->fetchAll($req_even_ge_nb)[0]['nb'];
 
 //countEventsTodayPusblishedInRegionGe
 $req_even_vd_nb = $connector->query("SELECT COUNT(idEvenement) AS nb
  FROM evenement, localite
- WHERE evenement.localite_id=localite.id AND dateEvenement LIKE '" . $get['auj'] . "%' AND statut NOT IN ('inactif', 'propose') AND (region IN ('vd', 'hs') OR FIND_IN_SET ('vd', localite.regions_covered))");
+ WHERE evenement.localite_id=localite.id AND dateEvenement LIKE '" . $glo_auj_6h . "%' AND statut NOT IN ('inactif', 'propose') AND (region IN ('" . implode("', '", $glo_regions_coverage['vd']) ."') OR FIND_IN_SET ('vd', localite.regions_covered))");
 $event_count['vd'] = $connector->fetchAll($req_even_vd_nb)[0]['nb'];
 
 // tenLastestPublishedEventsInRegioncoveredOrderByCreationDesc
@@ -63,7 +53,7 @@ $req_dern_even = $connector->query("
 SELECT idEvenement, titre, dateEvenement, dateAjout, nomLieu, idLieu, idSalle, flyer, image, statut
 FROM evenement
 JOIN localite l on evenement.localite_id = l.id
-WHERE (region IN ('" . $connector->sanitize($_SESSION['region']) . "', " . $sql_rf . " 'hs') OR FIND_IN_SET ('" . $connector->sanitize($_SESSION['region']) . "', l.regions_covered) ) AND statut NOT IN ('inactif', 'propose') ORDER BY dateAjout DESC LIMIT 0, 10
+WHERE (region IN ('" . implode("', '", $glo_regions_coverage['ge']) ."') OR FIND_IN_SET ('" . $connector->sanitize($_SESSION['region']) . "', l.regions_covered) ) AND statut NOT IN ('inactif', 'propose') ORDER BY dateAjout DESC LIMIT 0, 10
 ");
 ?>
 
@@ -107,9 +97,9 @@ WHERE (region IN ('" . $connector->sanitize($_SESSION['region']) . "', " . $sql_
     <!-- TODO: <h1> englobant les 2 <h2> ? -->
     <div id="entete_contenu">
         <h2 class="accueil">Aujourd’hui <a href="/rss.php?type=evenements_auj" title="Flux RSS des événements du jour" class="desktop"><i class="fa fa-rss fa-lg"></i></a></h2>
-        <?php HtmlShrink::getMenuRegions($glo_regions, $get, $event_count); ?>
+        <?php HtmlShrink::getMenuRegions($glo_regions, ['auj' => $glo_auj_6h], $event_count); ?>
         <div class="spacer"></div>
-        <h2 id="today-date"><small><?php echo ucfirst((string) date_fr($get['auj'])); ?></small></h2>
+        <h2 id="today-date"><small><?php echo ucfirst((string) date_fr($glo_auj_6h)); ?></small></h2>
     </div>
 
     <div class="spacer"><!-- --></div>
@@ -122,14 +112,6 @@ WHERE (region IN ('" . $connector->sanitize($_SESSION['region']) . "', " . $sql_
             HtmlShrink::msgInfo("Pas d’événement prévu aujourd’hui");
         }
 
-        $dateCourante = ' ';
-
-        $categoriesToIterateForAnchors = $glo_tab_genre;
-        $genre_courant = '';
-        $genre_prec = '';
-        $currentCategoryTrans = "";
-        $i = 0;
-
         //
         // array categoriesIndexOfResults, par ex. : [0 => fetes, 1 => cine, 2 => expos] (pas de théatre ni divers)
         // start j=0
@@ -137,53 +119,45 @@ WHERE (region IN ('" . $connector->sanitize($_SESSION['region']) . "', " . $sql_
         // if newCategory : j++
         //
         // tab_even[genre]
+        $categoriesToIterateForAnchors = $glo_tab_genre;
+        $genre_courant = '';
         while ($tab_even = $connector->fetchArray($req_even))
         {
             if ($tab_even['genre'] != $genre_courant)
             {
+                $genre_even_nb = 0;
                 // cloture d'une categorie
                 if ($genre_courant != '')
                 {
-                    $genre_prec = Text::stripAccents($categoriesToIterateForAnchors[$genre_courant]);
                     echo "</div>";
-                    $i = 0;
                 }
 
-                $currentCategoryTrans = ucfirst((string) $glo_tab_genre[$tab_even['genre']]);
-
-                $proch = '';
-                if ($np = next($categoriesToIterateForAnchors))
-                {
-                    $proch = Text::stripAccents($np);
-                }
                 ?>
 
                 <div class="genre">
 
                     <div class="genre-titre">
-                        <h3 id="<?php echo mb_strtolower(Text::stripAccents($currentCategoryTrans)); ?>"><?php echo $currentCategoryTrans; ?></h3>
 
+                        <h3 id="<?php echo Text::stripAccents($glo_tab_genre[$tab_even['genre']]); ?>"><?php echo ucfirst($glo_tab_genre[$tab_even['genre']]); ?></h3>
                         <?php
-                        if ($tab_even['genre'] != 'divers')
+                        $genre_proch = next($categoriesToIterateForAnchors);
+                        if ($genre_proch)
                         {
-                            ?>
-                            <a class="genre-jump" href="#<?php echo $proch; ?>"><i class="fa fa-long-arrow-down"></i></a>
-                            <?php
+                        ?>
+                            <a class="genre-jump" href="#<?php echo Text::stripAccents($genre_proch); ?>"><?php echo $genre_proch; ?>&nbsp;<i class="fa fa-long-arrow-down"></i></a>
+                        <?php
                         }
-                        else
-                        {
-                            ?>
-                            <span style="float: right;margin: 0.2em;padding: 0.4em 0.8em;">&nbsp;</span>
-                        <?php } ?>
-                        <?php
-                        if ($tab_even['genre'] != 'fête')
-                        {
-                            ?>
-                            <a class="genre-jump" href="#<?php echo $genre_prec; ?>"><i class="fa fa-long-arrow-up"></i></a>
-                        <?php } ?>
-
+                        ?>
                         <div class="spacer"></div>
                     </div>
+                <?php
+                }
+
+                // après le 1er even puis 1 item sur 2 : rappel
+                if ($genre_even_nb > 1 && ($genre_even_nb % 2 != 0))
+                {
+                    ?>
+                    <p class="rappel_date"><?php echo $glo_regions[$_SESSION['region']]; ?>, aujourd’hui, <?php echo $glo_tab_genre[$tab_even['genre']]; ?></p>
                     <?php
                 }
 
@@ -226,14 +200,6 @@ WHERE (region IN ('" . $connector->sanitize($_SESSION['region']) . "', " . $sql_
                              ORDER BY nom DESC";
                 $req_event_orga = $connector->query($sql_event_orga);
 
-                // après le 1er even puis 1 item sur 2 : rappel
-
-                if ($i > 1 && ($i % 2 != 0))
-                {
-                    ?>
-                    <p class="rappel_date"><?php echo $glo_regions[$_SESSION['region']]; ?>, aujourd’hui, <?php echo mb_strtolower($currentCategoryTrans); ?></p>
-                    <?php
-                }
                 ?>
 
                 <article class="evenement">
@@ -350,10 +316,10 @@ WHERE (region IN ('" . $connector->sanitize($_SESSION['region']) . "', " . $sql_
                 <div class="spacer"></div>
 
                 <?php
-                $i++;
+                $genre_even_nb++;
             } //while
 
-            // closes <div class="genre">
+            // closes last <div class="genre">
             if ($genre_courant != '')
             {
                 echo "</div> ";
