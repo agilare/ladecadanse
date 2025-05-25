@@ -46,4 +46,5 @@ Crawl-delay: 20
 User-agent: Barkrowler
 Crawl-delay: 20
 
-
+User-agent: GPTBot
+Crawl-delay: 30
