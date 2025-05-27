@@ -728,30 +728,6 @@
         ["xpath=//div/div/a", "xpath:position"]
       ],
       "value": ""
-    }, {
-      "id": "4e403ec4-19fb-480e-af6a-94a520d68927",
-      "comment": "click 3d arrow up",
-      "command": "click",
-      "target": "css=.genre:nth-child(3) .genre-jump:nth-child(3)",
-      "targets": [
-        ["css=.genre:nth-child(3) .genre-jump:nth-child(3)", "css:finder"],
-        ["xpath=//section[@id='prochains_evenements']/div[3]/div/a[2]", "xpath:idRelative"],
-        ["xpath=(//a[contains(@href, '#cine')])[2]", "xpath:href"],
-        ["xpath=//div[3]/div/a[2]", "xpath:position"]
-      ],
-      "value": ""
-    }, {
-      "id": "646f68ce-a779-4267-808d-05a5a6ae2e3c",
-      "comment": "click 2nd arrow up",
-      "command": "click",
-      "target": "css=.genre:nth-child(2) .genre-jump:nth-child(3)",
-      "targets": [
-        ["css=.genre:nth-child(2) .genre-jump:nth-child(3)", "css:finder"],
-        ["xpath=//section[@id='prochains_evenements']/div[2]/div/a[2]", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '#fetes')]", "xpath:href"],
-        ["xpath=//a[2]", "xpath:position"]
-      ],
-      "value": ""
     }]
   }, {
     "id": "f7075d90-d631-4aa3-ad62-6344bb052890",
