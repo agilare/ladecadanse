@@ -39,7 +39,7 @@ $req_even = $connector->query($sqlEv);
 $event_count = ['ge' => 0, 'vd' => 0];
 $req_even_ge_nb = $connector->query("SELECT COUNT(idEvenement) AS nb
  FROM evenement, localite
- WHERE evenement.localite_id=localite.id AND dateEvenement LIKE '" . $glo_auj_6h . "%' AND statut NOT IN ('inactif', 'propose') AND (region IN ('" . implode("', '", $glo_regions_coverage['vd']) ."') OR FIND_IN_SET ('ge', localite.regions_covered))");
+ WHERE evenement.localite_id=localite.id AND dateEvenement LIKE '" . $glo_auj_6h . "%' AND statut NOT IN ('inactif', 'propose') AND (region IN ('" . implode("', '", $glo_regions_coverage['ge']) ."') OR FIND_IN_SET ('ge', localite.regions_covered))");
 $event_count['ge'] = $connector->fetchAll($req_even_ge_nb)[0]['nb'];
 
 //countEventsTodayPusblishedInRegionGe
@@ -53,7 +53,7 @@ $req_dern_even = $connector->query("
 SELECT idEvenement, titre, dateEvenement, dateAjout, nomLieu, idLieu, idSalle, flyer, image, statut
 FROM evenement
 JOIN localite l on evenement.localite_id = l.id
-WHERE (region IN ('" . implode("', '", $glo_regions_coverage['ge']) ."') OR FIND_IN_SET ('" . $connector->sanitize($_SESSION['region']) . "', l.regions_covered) ) AND statut NOT IN ('inactif', 'propose') ORDER BY dateAjout DESC LIMIT 0, 10
+WHERE (region IN ('" . implode("', '", $glo_regions_coverage[$_SESSION['region']]) ."') OR FIND_IN_SET ('" . $connector->sanitize($_SESSION['region']) . "', l.regions_covered) ) AND statut NOT IN ('inactif', 'propose') ORDER BY dateAjout DESC LIMIT 0, 10
 ");
 ?>
 
