@@ -1,22 +1,31 @@
 # Changelog
 
+## [3.7.5] - Unreleased
+
+### Added
+- SEO : meta tag noindex, nofollow for some irrelevant events pages
+
+### Changed
+- donate : move description below the payment methods
+- SEO : in robots.txt exclude Scrapy, delay for SemrushBot and meta-externalagent
+
+
 ## [3.7.4] - 2025-05-25
 
 ### Added
-- agenda, SEO : add 404 header if day has no results
+- agenda, SEO : add 404 header if day has no results, nofollow to prev/next links
 - calendar, SEO : disable browsing to next months if there is no events in the future
 - SEO : in robots.txt exclude some pages, agenda faceted navigation params, thumbnails images and increase Crawl-delay of some bots
-- SEO : add nofollow to prev/next links
 - À propos : link to article on GBNews.ch
 
 ### Changed
 - home: refactoring; categories navigation : rm prev, add label to next
 - calendar : refactoring with use of DateTime and remove useless query string parameters
 
-## Security
+### Security
 - admin: sanitize some html display in admin pages
 
-## Removed
+### Removed
 - partners : Noctambus (discontinued)
 
 
