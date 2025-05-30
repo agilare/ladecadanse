@@ -35,10 +35,10 @@ User-agent: AhrefsBot
 Crawl-delay: 20
 
 User-agent: SemrushBot
-Crawl-delay: 20
+Crawl-delay: 40
 
 User-agent: meta-externalagent
-Crawl-delay: 30
+Crawl-delay: 40
 
 User-agent: bingbot
 Crawl-delay: 20
@@ -47,4 +47,7 @@ User-agent: Barkrowler
 Crawl-delay: 20
 
 User-agent: GPTBot
-Crawl-delay: 30
+Crawl-delay: 40
+
+User-agent: Scrapy
+Disallow: /
