@@ -63,6 +63,17 @@ class Text
         }, $input);
     }
 
+    public static function getUrlWithName(string $url): array
+    {
+        $urlComplete = $url;
+        if (!preg_match("/^https?:\/\//", $url))
+        {
+            $urlComplete = 'http://' . $url;
+        }
+
+        return ['url' => $urlComplete, 'urlName' => rtrim(preg_replace("(^https?://)", "", $url), "/")];
+    }
+
 
     public static function formatbytes($val, int $digits = 3, $mode = "SI", $bB = "B"): string
     { //$mode == "SI"|"IEC", $bB == "b"|"B"

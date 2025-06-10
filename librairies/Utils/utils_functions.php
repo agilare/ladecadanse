@@ -320,9 +320,6 @@ function horaire2heure($horaire_complet, $date_evenement)
 
 function afficher_debut_fin($horaire_debut, $horaire_fin, $date_evenement): string
 {
-
-    $afficher = "";
-
     $afficher = horaire2heure($horaire_debut, $date_evenement);
     if ($horaire_fin != date_lendemain($date_evenement) . " 06:00:01" && $horaire_fin != "0000-00-00 00:00:00" && $horaire_debut != date_lendemain($date_evenement) . " 06:00:01" && $horaire_debut != "0000-00-00 00:00:00") {
         $afficher .= " – ";

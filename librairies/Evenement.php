@@ -17,6 +17,42 @@ class Evenement extends Element
         $this->table = "evenement";
     }
 
+    /**
+     * Affichage du lieu selon son existence ou non dans la base
+     * @param array $event
+     * @return array
+     */
+    public static function getLieu(array $event): array
+    {
+        if ($event['e_idLieu'] != 0)
+        {
+            $result =
+            [
+                'idLieu' => $event['e_idLieu'],
+                'nom' => $event['l_nom'],
+                'adresse' => $event['l_adresse'],
+                'quartier' => $event['l_quartier'],
+                'localite' => $event['ll_localite'],
+                'url' => $event['l_URL'],
+            ];
+
+            if ($event['s_nom'])
+            {
+                $result['nom'] .= " - " . sanitizeForHtml($event['s_nom']);
+            }
+
+            return $result;
+        }
+
+        return [
+                'nom' => $event['e_nomLieu'],
+                'adresse' => $event['e_adresse'],
+                'quartier' => $event['e_quartier'],
+                'localite' => $event['e_localite'],
+                'url' => $event['e_urlLieu'],
+            ];
+    }
+
     public static function nom_genre(string $nom): string
     {
         if ($nom == 'fête')

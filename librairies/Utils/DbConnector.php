@@ -54,6 +54,11 @@ class DbConnector extends SystemComponent
        return $return;
     }
 
+    public function fetchAllAssoc(\mysqli_result $result): array
+    {
+       return $result->fetch_all(MYSQLI_ASSOC);
+    }
+
     public function close(): void
     {
         mysqli_close($this->dbConnection);
