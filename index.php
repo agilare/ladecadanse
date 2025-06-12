@@ -168,7 +168,10 @@ include("_header.inc.php");
             HtmlShrink::msgInfo("Pas d’événement prévu aujourd’hui");
         }
 
-        //
+        ?>
+        <section class="genre">
+
+        <?php
         // array categoriesIndexOfResults, par ex. : [0 => fetes, 1 => cine, 2 => expos] (pas de théatre ni divers)
         // start j=0
         // next : +1, prev : -1 (if exists) or current index +1 -1
@@ -177,17 +180,18 @@ include("_header.inc.php");
         // tab_even[genre]
         $categoriesToIterateForAnchors = $glo_tab_genre;
         $genre_courant = '';
+        $genre_even_nb = 0;
         foreach ($tab_events_today_in_region_order_by_category as $tab_even)
         {
-            if ($tab_even['e_genre'] != $genre_courant)
+            // nouvelle catégorie
+            if ($tab_even['e_genre'] != $genre_courant )
             {
-                $genre_even_nb = 0;
-                // cloture d'une categorie
                 if ($genre_courant != '')
-                { ?>
-                   </section>
-                <?php }
+                {
+                    $genre_even_nb = 0;
                 ?>
+                    </section>
+                <?php } ?>
 
                 <section class="genre">
 
@@ -209,13 +213,13 @@ include("_header.inc.php");
             }
 
             // après le 1er even puis 1 item sur 2 : rappel
-            if ($genre_even_nb > 1 && ($genre_even_nb % 2 != 0))
+            if (($genre_even_nb % 2 != 0))
             {
                 ?>
                 <p class="rappel_date"><?php echo $glo_regions[$_SESSION['region']]; ?>, aujourd’hui, <?php echo $glo_tab_genre[$tab_even['e_genre']]; ?></p>
                 <?php
             }
-
+            $genre_even_nb++;
             $genre_courant = $tab_even['e_genre'];
             ?>
 
@@ -336,17 +340,8 @@ include("_header.inc.php");
             </article> <!-- evenement -->
 
             <div class="spacer"></div>
-
-            <?php
-            $genre_even_nb++;
-        } //while
-
-        // closes last <div class="genre">
-        if ($genre_courant != '')
-        {
-            echo "</section> ";
-        }
-        ?>
+        <?php } // foreach ?>
+        </section>
     </div> <!-- prochains_evenements -->
 
 </main>
