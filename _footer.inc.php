@@ -4,7 +4,7 @@
 <footer id="pied-wrapper">
 
     <!-- Début pied -->
-    <div id="pied">
+    <nav id="pied">
 
         <ul class="menu_pied">
 
@@ -29,7 +29,7 @@
                 <li><a href="/articles/charte-editoriale.php">Charte éditoriale</a></li>
                 <li><a href="/articles/liens.php">Liens</a></li>
         </ul>
-    </div>
+    </nav>
     <!-- Fin Pied -->
 
 </footer>

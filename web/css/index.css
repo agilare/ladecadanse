@@ -179,6 +179,11 @@
     overflow:hidden;
 }
 
+.evenement .description p
+{
+    margin:0;
+}
+
 .evenement .description .event_orga
 {
     list-style-type:none;

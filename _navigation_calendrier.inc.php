@@ -40,7 +40,7 @@ $eventsNextmonthsCount = (int) $res_eventsNextmonths['nb'];
 $urlForwardedParameters = ($get['genre'] !== '' ? "&amp;genre=" . $get['genre'] : "") . (!empty($get['sem']) ? "&amp;sem=" . $get['sem'] : "") . ($get['tri_agenda'] !== 'dateAjout' ? "&amp;tri_agenda=" . $get['tri_agenda'] : "");
 ?>
 
-<div id="navigation_calendrier" >
+<nav id="navigation_calendrier" >
     <table id="calendrier">
         <thead>
             <tr id="mois">
@@ -51,7 +51,7 @@ $urlForwardedParameters = ($get['genre'] !== '' ? "&amp;genre=" . $get['genre'] 
                     {
                         $dateMoisPrecDernierJour = (clone $dateCourant)->modify('last day of -1 month')->format('Y-m-d');
                         ?>
-                        <a href="/evenement-agenda.php?<?php echo $url_query_region_et . "courant=" . $dateMoisPrecDernierJour . $urlForwardedParameters ?>" title="Mois précédent" ><i class="fa fa-backward"></i></a>
+                        <a href="/evenement-agenda.php?<?php echo $url_query_region_et . "courant=" . $dateMoisPrecDernierJour . $urlForwardedParameters ?>" title="Mois précédent" aria-label="Mois précédent"><i class="fa fa-backward"></i></a>
                         <?php
                     }
                     ?>
@@ -63,7 +63,7 @@ $urlForwardedParameters = ($get['genre'] !== '' ? "&amp;genre=" . $get['genre'] 
                     {
                         $dateMoisSuivPremierJour = (clone $dateCourant)->modify('first day of +1 month')->format('Y-m-d');
                         ?>
-                        <a href="/evenement-agenda.php?<?php echo $url_query_region_et . "courant=" . $dateMoisSuivPremierJour . $urlForwardedParameters ?>" title="Mois suivant"><i class="fa fa-forward"></i></a>
+                        <a href="/evenement-agenda.php?<?php echo $url_query_region_et . "courant=" . $dateMoisSuivPremierJour . $urlForwardedParameters ?>" title="Mois suivant" aria-label="Mois suivant"><i class="fa fa-forward"></i></a>
                     <?php } ?>
                 </th>
             </tr>
@@ -146,8 +146,7 @@ $urlForwardedParameters = ($get['genre'] !== '' ? "&amp;genre=" . $get['genre'] 
             <a href="/evenement-agenda.php?<?php echo $url_query_region_et . "courant=" . (clone $dateToday)->modify('+1 day')->format('Y-m-d'). $urlForwardedParameters ?>">Demain</a>
         </li>
         <li id="cette_semaine">
-            <a href="/evenement-agenda.php?
-            <?php echo $url_query_region_et
+            <a href="/evenement-agenda.php?<?php echo $url_query_region_et
             . "courant=" . $dateToday->format('Y-m-d')
             . ($get['genre'] !== '' ? "&amp;genre=" . $get['genre'] : "")
             . "&amp;sem=1" . ($get['tri_agenda'] !== 'dateAjout' ? "&amp;tri_agenda=". $get['tri_agenda'] : " ")
@@ -158,14 +157,14 @@ $urlForwardedParameters = ($get['genre'] !== '' ? "&amp;genre=" . $get['genre'] 
                 <?php if ($get['tri_agenda'] !== 'dateAjout')
                 {
                     ?>
-                    <input type="hidden" name="tri_agenda" value="<?= $get['tri_agenda'] ?>" />
+                    <input type="hidden" name="tri_agenda" value="<?= $get['tri_agenda'] ?>" >
                 <?php } ?>
-                <input type="date" name="courant" size="12" /><input type="submit" class="submit" name="formulaire" value="OK" />
+                <input type="date" name="courant" size="12" aria-label="Date"><input type="submit" class="submit" name="formulaire" value="OK" aria-label="Aller à cette date du calendrier">
             </form>
         </li>
     </ul>
 
     <div class="spacer"></div>
 
-</div>
+</nav>
 <!-- Fin navigation_calendrier -->

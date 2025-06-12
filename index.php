@@ -112,7 +112,7 @@ WHERE $sql_even_in_status_and_region ORDER BY e.dateAjout DESC LIMIT 0, 10");
 include("_header.inc.php");
 ?>
 
-<div id="contenu" class="colonne">
+<main id="contenu" class="colonne">
 
     <?php
     // header banners & flash messages
@@ -150,17 +150,17 @@ include("_header.inc.php");
     }
     ?>
 
-    <div id="entete_contenu">
+    <header id="entete_contenu">
         <h1 class="accueil">Aujourd’hui <a href="/rss.php?type=evenements_auj" title="Flux RSS des événements du jour" class="desktop"><i class="fa fa-rss fa-lg"></i></a><br>
             <small><?php echo ucfirst((string) date_fr($glo_auj_6h)); ?></small>
         </h1>
         <?php HtmlShrink::getMenuRegions($glo_regions, ['auj' => $glo_auj_6h], [$_SESSION['region'] => $count_events_today_in_region]); ?>
         <div class="spacer"></div>
-    </div>
+    </header>
 
     <div class="spacer"><!-- --></div>
 
-    <section id="prochains_evenements" >
+    <div id="prochains_evenements" >
 
         <?php
         if ($count_events_today_in_region == 0)
@@ -185,13 +185,13 @@ include("_header.inc.php");
                 // cloture d'une categorie
                 if ($genre_courant != '')
                 { ?>
-                   </div>
+                   </section>
                 <?php }
                 ?>
 
-                <div class="genre">
+                <section class="genre">
 
-                    <div class="genre-titre">
+                    <header class="genre-titre">
 
                         <h2 id="<?php echo Text::stripAccents($glo_tab_genre[$tab_even['e_genre']]); ?>"><?php echo ucfirst($glo_tab_genre[$tab_even['e_genre']]); ?></h2>
                         <?php
@@ -204,7 +204,7 @@ include("_header.inc.php");
                         }
                         ?>
                         <div class="spacer"></div>
-                    </div>
+                    </header>
             <?php
             }
 
@@ -221,8 +221,8 @@ include("_header.inc.php");
 
             <article class="evenement">
 
-                <div class="titre">
-                    <span class="left"><?= Evenement::titre_selon_statut('<a href="/evenement.php?idE=' . (int) $tab_even['e_idEvenement'] . '">' . sanitizeForHtml($tab_even['e_titre']) . '</a>', $tab_even['e_statut']) ?></span>
+                <header class="titre">
+                    <h3 class="left"><?= Evenement::titre_selon_statut('<a href="/evenement.php?idE=' . (int) $tab_even['e_idEvenement'] . '">' . sanitizeForHtml($tab_even['e_titre']) . '</a>', $tab_even['e_statut']) ?></h3>
                     <span class="right">
                         <!-- TODO: Lieu::htmlLinkName($tab_even) -->
                         <?php
@@ -235,33 +235,35 @@ include("_header.inc.php");
                         <?php } ?>
                     </span>
                     <div class="spacer"></div>
-                </div> <!-- titre -->
+                </header> <!-- titre -->
 
-                <div class="flyer">
+                <figure class="flyer">
                 <?php
                 // Even::getLinkImageHtml($tab_even)
                 if (!empty($tab_even['e_flyer'])) { ?>
                     <a href="<?php echo Evenement::getFileHref(Evenement::getFilePath($tab_even['e_flyer'])) ?>" class="magnific-popup">
-                        <img src="<?php echo Evenement::getFileHref(Evenement::getFilePath($tab_even['e_flyer'], "s_"), true) ?>" alt="Flyer" width="100" />
+                        <img src="<?php echo Evenement::getFileHref(Evenement::getFilePath($tab_even['e_flyer'], "s_"), true) ?>" alt="Flyer" width="100" >
                     </a>
                 <?php } else if (!empty($tab_even['e_image'])) { ?>
                     <a href="<?php echo Evenement::getFileHref(Evenement::getFilePath($tab_even['e_image'])) ?>" class="magnific-popup">
-                        <img src="<?php echo Evenement::getFileHref(Evenement::getFilePath($tab_even['e_image'], "s_"), true) ?>" alt="Photo" width="100" />
+                        <img src="<?php echo Evenement::getFileHref(Evenement::getFilePath($tab_even['e_image'], "s_"), true) ?>" alt="Photo" width="100" >
                     </a>
                 <?php } ?>
-                </div>
+                </figure>
 
                 <div class="description">
+                    <p>
                     <?= Text::texteHtmlReduit(Text::wikiToHtml(sanitizeForHtml($tab_even['e_description'])), Text::trouveMaxChar($tab_even['e_description'], 60, 6), " <a class=\"continuer\" href=\"/evenement.php?idE=" . (int) $tab_even['e_idEvenement'] . "\" title=\"Voir la fiche complète de l'événement\"> Lire la suite</a>"); ?>
+                    </p>
                     <?php if (!empty($tab_events_today_in_region_orgas[$tab_even['e_idEvenement']])) { ?>
-                    <ul class="event_orga">
-                        <?php foreach ($tab_events_today_in_region_orgas[$tab_even['e_idEvenement']] as $eo) { ?>
-                            <li>
-                                <a href="/organisateur.php?idO=<?php echo (int) $eo['idOrganisateur']; ?>"><?php echo sanitizeForHtml($eo['nom']); ?></a><?php if (!empty($eo['url'])) { $organisateurUrl = Text::getUrlWithName($eo['url']); ?> -&nbsp;<a href="<?php echo sanitizeForHtml($organisateurUrl['url']); ?>" title="Site web de l'organisateur" class="lien_ext" target="_blank"><?php echo sanitizeForHtml($organisateurUrl['urlName']); ?></a>
-                                <?php } ?>
-                            </li>
-                        <?php } ?>
-                    </ul>
+                        <ul class="event_orga" aria-label="Organisateurs">
+                            <?php foreach ($tab_events_today_in_region_orgas[$tab_even['e_idEvenement']] as $eo) { ?>
+                                <li>
+                                    <a href="/organisateur.php?idO=<?php echo (int) $eo['idOrganisateur']; ?>"><?php echo sanitizeForHtml($eo['nom']); ?></a><?php if (!empty($eo['url'])) { $organisateurUrl = Text::getUrlWithName($eo['url']); ?> -&nbsp;<a href="<?php echo sanitizeForHtml($organisateurUrl['url']); ?>" title="Site web de l'organisateur" class="lien_ext" target="_blank"><?php echo sanitizeForHtml($organisateurUrl['urlName']); ?></a>
+                                    <?php } ?>
+                                </li>
+                            <?php } ?>
+                        </ul>
                     <?php } ?>
                 </div> <!-- description -->
 
@@ -287,7 +289,7 @@ include("_header.inc.php");
                     <div class="spacer"></div>
                 </div> <!-- fin pratique -->
 
-                <div class="edition">
+                <footer class="edition">
 
                     <ul class="menu_action">
                         <li><a href="/evenement-report.php?idE=<?php echo (int) $tab_even['e_idEvenement']; ?>" class="signaler" title="Signaler une erreur"><i class="fa fa-flag-o fa-lg"></i></a></li>
@@ -301,9 +303,9 @@ include("_header.inc.php");
                         isset($_SESSION['Sgroupe'])
                         && ($_SESSION['Sgroupe'] <= UserLevel::AUTHOR || $_SESSION['SidPersonne'] == $tab_even['e_idPersonne'])
 
-                        || (isset($_SESSION['Saffiliation_lieu']) && !empty($tab_even['idLieu']) && $tab_even['e_idLieu'] == $_SESSION['Saffiliation_lieu'])
+                        || (isset($_SESSION['Saffiliation_lieu']) && $tab_even['e_idLieu'] == $_SESSION['Saffiliation_lieu'])
                         || isset($_SESSION['SidPersonne']) && $authorization->isPersonneInEvenementByOrganisateur($_SESSION['SidPersonne'], $tab_even['e_idEvenement'])
-                        || isset($_SESSION['SidPersonne']) && $tab_even['e_idLieu'] != 0 && $authorization->isPersonneInLieuByOrganisateur($_SESSION['SidPersonne'], $tab_even['e_idLieu'])
+                        || isset($_SESSION['SidPersonne']) && $authorization->isPersonneInLieuByOrganisateur($_SESSION['SidPersonne'], $tab_even['e_idLieu'])
                     )
                     {
                         ?>
@@ -316,7 +318,7 @@ include("_header.inc.php");
                             <a href="/evenement-edit.php?action=editer&amp;idE=<?= (int) $tab_even['e_idEvenement'] ?>" title="Modifier l'événement">Modifier</a>
                         </li>
                         <li class="action_depublier">
-                            <a href="#" id="btn_event_unpublish_<?= (int) $tab_even['e_idEvenement'] ?>" class="btn_event_unpublish" data-id="<?= (int) $tab_even['idEvenement'] ?>">Dépublier</a>
+                            <a href="#" id="btn_event_unpublish_<?= (int) $tab_even['e_idEvenement'] ?>" class="btn_event_unpublish" data-id="<?= (int) $tab_even['e_idEvenement'] ?>">Dépublier</a>
                         </li>
                         <?php if ($_SESSION['Sgroupe'] <= UserLevel::AUTHOR) { ?>
                         <li>
@@ -327,7 +329,7 @@ include("_header.inc.php");
 
                     <?php } ?>
 
-                </div> <!-- fin edition -->
+                </footer> <!-- fin edition -->
 
                 <div class="spacer"></div>
 
@@ -342,12 +344,12 @@ include("_header.inc.php");
         // closes last <div class="genre">
         if ($genre_courant != '')
         {
-            echo "</div> ";
+            echo "</section> ";
         }
         ?>
-    </section> <!-- prochains_evenements -->
+    </div> <!-- prochains_evenements -->
 
-</div>
+</main>
 <!-- fin contenu -->
 
 
@@ -355,7 +357,7 @@ include("_header.inc.php");
 
     <?php include("_navigation_calendrier.inc.php"); ?>
 
-    <section class="secondaire">
+    <div class="secondaire">
 
         <ul class="autour">
             <li><a href="https://www.facebook.com/ladecadanse" aria-label="Watch agilare/ladecadanse on GitHub" style="font-size:1em" target="_blank"><i class="fa fa-facebook fa-2x" aria-hidden="true"></i></a></li>
@@ -365,17 +367,17 @@ include("_header.inc.php");
             </li>
         </ul>
 
-        <div class="partenaires">
+        <section class="partenaires">
             <h2>Partenaires</h2>
             <ul class="autour">
-                <li><a href="https://olivedks.ch/" target="_blank"><img src="/web/content/debout-les-braves.jpg" alt="Debout les braves - Visions de la scène genevoise et d'ailleurs" title="Debout les braves - Visions de la scène genevoise et d'ailleurs" width="150" /></a></li>
-                <li><a href="https://culture-accessible.ch/" target="_blank"><img src="/web/content/culture-accessible-geneve.svg" alt="Culture accessible Genève" width="150" /></a></li>
-                <li><a href="https://epic-magazine.ch/" target="_blank"><img src="/web/content/EPIC_noir.png" alt="EPIC Magazine" width="150" /></a></li>
-                <li><a href="https://www.radiovostok.ch/" target="_blank"><img src="/web/content/radio_vostok.png" alt="Radio Vostok" width="150" height="59" /></a></li>
-                <li><a href="https://www.darksite.ch/" target="_blank"><img src="/web/content/darksite.png" alt="Darksite" width="150" height="43"  /></a></li>
+                <li><a href="https://olivedks.ch/" target="_blank"><img src="/web/content/debout-les-braves.jpg" alt="Debout les braves - Visions de la scène genevoise et d'ailleurs" title="Debout les braves - Visions de la scène genevoise et d'ailleurs" width="150" ></a></li>
+                <li><a href="https://culture-accessible.ch/" target="_blank"><img src="/web/content/culture-accessible-geneve.svg" alt="Culture accessible Genève" width="150" ></a></li>
+                <li><a href="https://epic-magazine.ch/" target="_blank"><img src="/web/content/EPIC_noir.png" alt="EPIC Magazine" width="150" ></a></li>
+                <li><a href="https://www.radiovostok.ch/" target="_blank"><img src="/web/content/radio_vostok.png" alt="Radio Vostok" width="150" height="59" ></a></li>
+                <li><a href="https://www.darksite.ch/" target="_blank"><img src="/web/content/darksite.png" alt="Darksite" width="150" height="43"  ></a></li>
             </ul>
-        </div>
-    </section>
+        </section>
+    </div>
 
 </aside>
 <!-- Fin Colonnegauche -->
@@ -383,9 +385,9 @@ include("_header.inc.php");
 
 <aside id="colonne_droite" class="colonne">
 
-    <div class="secondaire">
+    <section class="secondaire">
 
-        <span class="lien_rss"><a href="/rss.php?type=evenements_ajoutes"><i class="fa fa-rss fa-lg"></i></a></span>
+        <span class="lien_rss"><a href="/rss.php?type=evenements_ajoutes" aria-label="Flux RSS des derniers événements"><i class="fa fa-rss fa-lg"></i></a></span>
 
         <h2>Derniers événements ajoutés</h2>
 
@@ -398,27 +400,27 @@ include("_header.inc.php");
                 ?>
                 <div class="dernier_evenement">
 
-                    <div class="flyer">
+                    <figure class="flyer">
                     <?php if (!empty($tab_even['e_flyer'])) { ?>
                         <a href="<?php echo Evenement::getFileHref(Evenement::getFilePath($tab_even['e_flyer'])) ?>" class="magnific-popup">
-                            <img src="<?php echo Evenement::getFileHref(Evenement::getFilePath($tab_even['e_flyer'], "s_"), true) ?>" alt="Flyer" width="60" />
+                            <img src="<?php echo Evenement::getFileHref(Evenement::getFilePath($tab_even['e_flyer'], "s_"), true) ?>" alt="Flyer" width="60" >
                         </a>
                     <?php } else if (!empty($tab_even['e_image'])) { ?>
                         <a href="<?php echo Evenement::getFileHref(Evenement::getFilePath($tab_even['e_image'])) ?>" class="magnific-popup">
-                            <img src="<?php echo Evenement::getFileHref(Evenement::getFilePath($tab_even['e_image'], "s_"), true) ?>" alt="Photo" width="60" />
+                            <img src="<?php echo Evenement::getFileHref(Evenement::getFilePath($tab_even['e_image'], "s_"), true) ?>" alt="Photo" width="60" >
                         </a>
                     <?php } ?>
-                    </div>
+                    </figure>
 
                     <h3><?= Evenement::titre_selon_statut('<a href="/evenement.php?idE=' . (int) $tab_even['e_idEvenement'] . '">' . sanitizeForHtml($tab_even['e_titre']) . '</a>', $tab_even['e_statut']) ?>
                     </h3>
-                    <h4>
+                    <span>
                     <?php if ($tab_even['e_idLieu']) { ?>
                         <a href="/lieu.php?idL=<?= (int) $even_lieu['idLieu'] ?>"><?= sanitizeForHtml($even_lieu['nom']) ?></a>
                     <?php } else { ?>
                         <?= sanitizeForHtml($even_lieu['nom']) ?>
                     <?php } ?>
-                    </h4>
+                    </span>
 
                     <p>le&nbsp;<a href="/evenement-agenda.php?courant=<?= urlencode($tab_even['e_dateEvenement']) ?>"><?= date_fr($tab_even['e_dateEvenement']) ?></a></p>
                     <div class="spacer"></div>
@@ -432,7 +434,7 @@ include("_header.inc.php");
 
         </div> <!-- Fin derniers_evenements -->
 
-    </div> <!-- fin dernieres -->
+    </section> <!-- fin dernieres -->
 
 </aside> <!-- Fin colonne_droite -->
 

@@ -335,15 +335,15 @@ class HtmlShrink
         if ($nom_page == "index")
         {
         ?>
-            <link rel="alternate" type="application/rss+xml" title="Événements du jour" href="/rss.php?type=evenements_auj" />
-            <link rel="alternate" type="application/rss+xml" title="Derniers événements ajoutés" href="/rss.php?type=evenements_ajoutes" />
+            <link rel="alternate" type="application/rss+xml" title="Événements du jour" href="/rss.php?type=evenements_auj">
+            <link rel="alternate" type="application/rss+xml" title="Derniers événements ajoutés" href="/rss.php?type=evenements_ajoutes">
         <?php
         }
 
         if ($nom_page == "lieu")
         {
         ?>
-            <link rel="alternate" type="application/rss+xml" title="Prochains événements dans ce lieu" href="/rss.php?type=lieu_evenements&amp;id=<?php echo intval($_GET['idL']) ?>" />
+            <link rel="alternate" type="application/rss+xml" title="Prochains événements dans ce lieu" href="/rss.php?type=lieu_evenements&amp;id=<?php echo intval($_GET['idL']) ?>">
                         <?php
         }
     }
@@ -352,7 +352,7 @@ class HtmlShrink
     {
             ?>
         	<a href="<?php echo $aHref ?>" class="<?php echo $aClasses ?>" target="_blank">
-        		<img src="<?php echo $imgSrc ?>" width="<?php echo $imgWidth ?>"  alt="<?php echo $imgAlt ?>" />
+        		<img src="<?php echo $imgSrc ?>" width="<?php echo $imgWidth ?>"  alt="<?php echo $imgAlt ?>">  
         	</a>
         <?php
     }
