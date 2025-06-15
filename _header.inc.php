@@ -70,11 +70,11 @@ use Ladecadanse\UserLevel;
     <link rel="stylesheet" type="text/css" href="/web/css/global.css?<?php echo time() ?>">
     <link rel="stylesheet" type="text/css" href="/web/css/calendrier.css" media="screen">
     <?php
-    $cssFilePath = "/web/css/{$nom_page}.css";
-    if (file_exists(__ROOT__ . $cssFilePath))
+    $css_file_path = "/web/css/{$nom_page}.css";
+    if (file_exists(__ROOT__ . $css_file_path))
     {
         ?>
-        <link rel="stylesheet" type="text/css" href="<?php echo $cssFilePath; ?>" media="screen" >
+        <link rel="stylesheet" type="text/css" href="<?php echo $css_file_path; ?>" media="screen" >
     <?php } ?>
         <link rel="stylesheet" type="text/css" href="/web/css/diggstyle.css" media="screen">
         <link href="/vendor/select2/select2/dist/css/select2.min.css" rel="stylesheet">
@@ -245,8 +245,8 @@ use Ladecadanse\UserLevel;
                     else
                     {
                         if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= UserLevel::ACTOR)) {
-        $ici = '';
-                                if (strstr((string) $_SERVER['PHP_SELF'], "evenement-edit.php") )
+                            $ici = '';
+                            if (strstr((string) $_SERVER['PHP_SELF'], "evenement-edit.php") )
                             {
                                 $ici = " class=\"ici\"";
                             }
@@ -263,8 +263,8 @@ use Ladecadanse\UserLevel;
                             $ici = " class=\"ici\"";
                         }
                         ?>
-                                <li <?php echo $ici; ?>><a href="/user.php?idP=<?php echo $_SESSION['SidPersonne']; ?>"><?php echo sanitizeForHtml($_SESSION['user']); ?></a></li>
-                                <li><a href="/user-logout.php" >Sortir</a></li>
+                            <li <?php echo $ici; ?>><a href="/user.php?idP=<?php echo $_SESSION['SidPersonne']; ?>"><?php echo sanitizeForHtml($_SESSION['user']); ?></a></li>
+                            <li><a href="/user-logout.php" >Sortir</a></li>
 
                         <?php
                         if ($_SESSION['Sgroupe'] <= 4) {

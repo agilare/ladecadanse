@@ -225,7 +225,7 @@ include("_header.inc.php");
                 <header class="titre">
                     <h3 class="left"><?= Evenement::titre_selon_statut('<a href="/evenement.php?idE=' . (int) $tab_even['e_idEvenement'] . '">' . sanitizeForHtml($tab_even['e_titre']) . '</a>', $tab_even['e_statut']) ?></h3>
                     <span class="right">
-                        <!-- TODO: Lieu::htmlLinkName($tab_even) -->
+                        <!-- TODO: Lieu::getLinkNameHtml($tab_even) -->
                         <?php
                         $even_lieu = Evenement::getLieu($tab_even);
                         if ($tab_even['e_idLieu']) {
@@ -240,7 +240,7 @@ include("_header.inc.php");
 
                 <figure class="flyer">
                 <?php
-                // Even::getLinkImageHtml($tab_even)
+                // TODO: getFlyerHtml(path, smallWidth)
                 if (!empty($tab_even['e_flyer'])) { ?>
                     <a href="<?php echo Evenement::getFileHref(Evenement::getFilePath($tab_even['e_flyer'])) ?>" class="magnific-popup">
                         <img src="<?php echo Evenement::getFileHref(Evenement::getFilePath($tab_even['e_flyer'], "s_"), true) ?>" alt="Flyer de <?= sanitizeForHtml($tab_even['e_titre'])?>" width="100" height="<?= ImageDriver2::getProportionalHeightFromGivenWidth(Evenement::getSystemFilePath(Evenement::getFilePath($tab_even['e_flyer'], "s_")), 100); ?>">
