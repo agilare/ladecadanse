@@ -334,4 +334,16 @@ class ImageDriver2 extends SystemComponent {
         return $this->erreur;
     }
 
+    public static function getProportionalHeightFromGivenWidth(string $filename, int $width): ?int
+    {
+        $imgSize = getimagesize($filename);
+
+        if (empty($imgSize[0]) || empty($imgSize[1]))
+        {
+            return null;
+        }
+
+        return round((($imgSize[1] * $width) / $imgSize[0]));
+    }
+
 } //class

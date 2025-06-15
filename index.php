@@ -13,6 +13,7 @@ use Ladecadanse\Utils\Text;
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\Evenement;
 use Ladecadanse\UserLevel;
+use Ladecadanse\Utils\ImageDriver2;
 
 // used for meta tags, opengraph
 $page_titre = " agenda de sorties à " . $glo_regions[$_SESSION['region']] . ", prochains événements : concerts, soirées, films, théâtre, expos, bars, cinémas";
@@ -168,10 +169,6 @@ include("_header.inc.php");
             HtmlShrink::msgInfo("Pas d’événement prévu aujourd’hui");
         }
 
-        ?>
-        <section class="genre">
-
-        <?php
         // array categoriesIndexOfResults, par ex. : [0 => fetes, 1 => cine, 2 => expos] (pas de théatre ni divers)
         // start j=0
         // next : +1, prev : -1 (if exists) or current index +1 -1
@@ -246,11 +243,11 @@ include("_header.inc.php");
                 // Even::getLinkImageHtml($tab_even)
                 if (!empty($tab_even['e_flyer'])) { ?>
                     <a href="<?php echo Evenement::getFileHref(Evenement::getFilePath($tab_even['e_flyer'])) ?>" class="magnific-popup">
-                        <img src="<?php echo Evenement::getFileHref(Evenement::getFilePath($tab_even['e_flyer'], "s_"), true) ?>" alt="Flyer" width="100" >
+                        <img src="<?php echo Evenement::getFileHref(Evenement::getFilePath($tab_even['e_flyer'], "s_"), true) ?>" alt="Flyer de <?= sanitizeForHtml($tab_even['e_titre'])?>" width="100" height="<?= ImageDriver2::getProportionalHeightFromGivenWidth(Evenement::getSystemFilePath(Evenement::getFilePath($tab_even['e_flyer'], "s_")), 100); ?>">
                     </a>
                 <?php } else if (!empty($tab_even['e_image'])) { ?>
                     <a href="<?php echo Evenement::getFileHref(Evenement::getFilePath($tab_even['e_image'])) ?>" class="magnific-popup">
-                        <img src="<?php echo Evenement::getFileHref(Evenement::getFilePath($tab_even['e_image'], "s_"), true) ?>" alt="Photo" width="100" >
+                        <img src="<?php echo Evenement::getFileHref(Evenement::getFilePath($tab_even['e_image'], "s_"), true) ?>" alt="Illustration de <?= sanitizeForHtml($tab_even['e_titre'])?>" width="100" height="<?= ImageDriver2::getProportionalHeightFromGivenWidth(Evenement::getSystemFilePath(Evenement::getFilePath($tab_even['e_image'], "s_")), 100); ?>">
                     </a>
                 <?php } ?>
                 </figure>
@@ -300,20 +297,7 @@ include("_header.inc.php");
                         <li><a href="/evenement_ics.php?idE=<?php echo (int) $tab_even['e_idEvenement']; ?>" class="ical" title="Exporter au format iCalendar dans votre agenda"><i class="fa fa-calendar-plus-o fa-lg"></i></a></li>
                     </ul>
 
-                    <?php
-                    // TODO: isAllowedToEdit($_Session, $tab_even...)
-                    //Peut ètre édité par les 'auteurs' sinon par le propre publicateur de cet événement
-                    if (
-                        isset($_SESSION['Sgroupe'])
-                        && ($_SESSION['Sgroupe'] <= UserLevel::AUTHOR || $_SESSION['SidPersonne'] == $tab_even['e_idPersonne'])
-
-                        || (isset($_SESSION['Saffiliation_lieu']) && $tab_even['e_idLieu'] == $_SESSION['Saffiliation_lieu'])
-                        || isset($_SESSION['SidPersonne']) && $authorization->isPersonneInEvenementByOrganisateur($_SESSION['SidPersonne'], $tab_even['e_idEvenement'])
-                        || isset($_SESSION['SidPersonne']) && $authorization->isPersonneInLieuByOrganisateur($_SESSION['SidPersonne'], $tab_even['e_idLieu'])
-                    )
-                    {
-                        ?>
-
+                    <?php if ($authorization->isPersonneAllowedToEditEvenement($_SESSION, $tab_even)) : ?>
                     <ul class="menu_edition">
                         <li class="action_copier">
                             <a href="/evenement-copy.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>" title="Copier l'événement">Copier vers d'autres dates</a>
@@ -324,14 +308,13 @@ include("_header.inc.php");
                         <li class="action_depublier">
                             <a href="#" id="btn_event_unpublish_<?= (int) $tab_even['e_idEvenement'] ?>" class="btn_event_unpublish" data-id="<?= (int) $tab_even['e_idEvenement'] ?>">Dépublier</a>
                         </li>
-                        <?php if ($_SESSION['Sgroupe'] <= UserLevel::AUTHOR) { ?>
+                        <?php if ($authorization->isPersonneAllowedToManageEvenement($_SESSION, $tab_even)) : ?>
                         <li>
                             <a href="/user.php?idP=<?= (int) $tab_even['e_idPersonne'] ?>"><?= $icone['personne'] ?></a>
                         </li>
-                        <?php }?>
+                        <?php endif; ?>
                     </ul>
-
-                    <?php } ?>
+                    <?php endif; ?>
 
                 </footer> <!-- fin edition -->
 
@@ -355,7 +338,7 @@ include("_header.inc.php");
     <div class="secondaire">
 
         <ul class="autour">
-            <li><a href="https://www.facebook.com/ladecadanse" aria-label="Watch agilare/ladecadanse on GitHub" style="font-size:1em" target="_blank"><i class="fa fa-facebook fa-2x" aria-hidden="true"></i></a></li>
+            <li><a href="https://www.facebook.com/ladecadanse" aria-label="Page Facebook" style="font-size:1em" target="_blank"><i class="fa fa-facebook fa-2x" aria-hidden="true"></i></a></li>
             <li style="margin-left:10px;font-size:1em"><a href="https://github.com/agilare/ladecadanse/" aria-label="Watch agilare/ladecadanse on GitHub" target="_blank"><i class="fa fa-github fa-2x" aria-hidden="true"></i></a>
             </li>
             <li id="faireundon_btn" class="clear_mobile_important"><a href="/articles/faireUnDon.php">Faire un don</a>
@@ -365,11 +348,11 @@ include("_header.inc.php");
         <section class="partenaires">
             <h2>Partenaires</h2>
             <ul class="autour">
-                <li><a href="https://olivedks.ch/" target="_blank"><img src="/web/content/debout-les-braves.jpg" alt="Debout les braves - Visions de la scène genevoise et d'ailleurs" title="Debout les braves - Visions de la scène genevoise et d'ailleurs" width="150" ></a></li>
-                <li><a href="https://culture-accessible.ch/" target="_blank"><img src="/web/content/culture-accessible-geneve.svg" alt="Culture accessible Genève" width="150" ></a></li>
-                <li><a href="https://epic-magazine.ch/" target="_blank"><img src="/web/content/EPIC_noir.png" alt="EPIC Magazine" width="150" ></a></li>
-                <li><a href="https://www.radiovostok.ch/" target="_blank"><img src="/web/content/radio_vostok.png" alt="Radio Vostok" width="150" height="59" ></a></li>
-                <li><a href="https://www.darksite.ch/" target="_blank"><img src="/web/content/darksite.png" alt="Darksite" width="150" height="43"  ></a></li>
+                <li><a href="https://olivedks.ch/" target="_blank"><img src="/web/content/debout-les-braves-s.jpg" alt="Debout les braves - Visions de la scène genevoise et d'ailleurs" title="Debout les braves - Visions de la scène genevoise et d'ailleurs" width="150" height="63"></a></li>
+                <li><a href="https://culture-accessible.ch/" target="_blank"><img src="/web/content/culture-accessible-geneve.svg" alt="Culture accessible Genève" width="150" height="46"></a></li>
+                <li><a href="https://epic-magazine.ch/" target="_blank"><img src="/web/content/EPIC_noir.png" alt="EPIC Magazine" width="150" height="94"></a></li>
+                <li><a href="https://www.radiovostok.ch/" target="_blank"><img src="/web/content/radio_vostok.png" alt="Radio Vostok" width="150" height="59"></a></li>
+                <li><a href="https://www.darksite.ch/" target="_blank"><img src="/web/content/darksite.png" alt="Darksite" width="150" height="43"></a></li>
             </ul>
         </section>
     </div>
@@ -398,11 +381,11 @@ include("_header.inc.php");
                     <figure class="flyer">
                     <?php if (!empty($tab_even['e_flyer'])) { ?>
                         <a href="<?php echo Evenement::getFileHref(Evenement::getFilePath($tab_even['e_flyer'])) ?>" class="magnific-popup">
-                            <img src="<?php echo Evenement::getFileHref(Evenement::getFilePath($tab_even['e_flyer'], "s_"), true) ?>" alt="Flyer" width="60" >
+                            <img src="<?php echo Evenement::getFileHref(Evenement::getFilePath($tab_even['e_flyer'], "s_"), true) ?>" alt="Flyer de <?= sanitizeForHtml($tab_even['e_titre']) ?>" width="60" height="<?= ImageDriver2::getProportionalHeightFromGivenWidth(Evenement::getSystemFilePath(Evenement::getFilePath($tab_even['e_flyer'], "s_")), 60); ?>">
                         </a>
                     <?php } else if (!empty($tab_even['e_image'])) { ?>
                         <a href="<?php echo Evenement::getFileHref(Evenement::getFilePath($tab_even['e_image'])) ?>" class="magnific-popup">
-                            <img src="<?php echo Evenement::getFileHref(Evenement::getFilePath($tab_even['e_image'], "s_"), true) ?>" alt="Photo" width="60" >
+                            <img src="<?php echo Evenement::getFileHref(Evenement::getFilePath($tab_even['e_image'], "s_"), true) ?>" alt="Illustration de <?= sanitizeForHtml($tab_even['e_titre']) ?>" width="60" height="<?= ImageDriver2::getProportionalHeightFromGivenWidth(Evenement::getSystemFilePath(Evenement::getFilePath($tab_even['e_image'], "s_")), 60); ?>">
                         </a>
                     <?php } ?>
                     </figure>
