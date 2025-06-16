@@ -168,4 +168,5 @@ $logger->log('global', 'api', "GET ".count($events)." item(s) for ".$get['entity
 
 header('Content-Disposition: inline; filename=' . $get['entity'] . '.json');
 header('Content-Type: application/json; charset=UTF-8');
+header('X-Robots-Tag: noindex');
 echo json_encode($result);

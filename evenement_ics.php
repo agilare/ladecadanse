@@ -128,6 +128,7 @@ if ($even->getValue('statut') == "annule" || $even->getValue('statut')  == "inac
 // 1. Set the correct headers for this file
 header('Content-type: text/calendar; charset=utf-8');
 header('Content-Disposition: attachment; filename=' . $filename);
+header('X-Robots-Tag: noindex');
 
 // 2. Define helper functions
 // Converts a unix timestamp to an ics-friendly format

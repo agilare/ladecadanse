@@ -1,9 +1,9 @@
 User-agent: *
 Crawl-delay: 15 # rule ignored by Google
-disallow: /*?*tri_agenda=
-disallow: /*?*genre=
-disallow: /*?*sem=
-disallow: /*?*nblignes=
+# disallow: /*?*tri_agenda=
+# disallow: /*?*genre=
+# disallow: /*?*sem=
+# disallow: /*?*page=
 
 Disallow: /admin/
 Disallow: /app/
@@ -13,17 +13,17 @@ Disallow: /var/
 Disallow: /vendor/
 Disallow: /.git-ftp.log
 Disallow: /*.inc.php
-Disallow: /maintenance.php
-Disallow: /evenement-actions.php
-Disallow: /evenement-email.php
-Disallow: /evenement_ics.php
-Disallow: /evenement-report.php
-Disallow: /evenement-search.php
+# Disallow: /maintenance.php
+# Disallow: /evenement-actions.php
+# Disallow: /evenement-email.php
+# Disallow: /evenement_ics.php
+# Disallow: /evenement-report.php
+# Disallow: /evenement-search.php
 
 # ignore years 2100, 2200...
-Disallow: /evenement-agenda.php?courant=21*
-Disallow: /evenement-agenda.php?courant=22*
-Disallow: /evenement-agenda.php?courant=23*
+# Disallow: /evenement-agenda.php?courant=21*
+# Disallow: /evenement-agenda.php?courant=22*
+# Disallow: /evenement-agenda.php?courant=23*
 
 Disallow: /web/uploads/evenements/s_*
 Disallow: /web/uploads/evenements/*/s_*
