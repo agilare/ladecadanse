@@ -96,10 +96,10 @@ $aff_menulieux = '<div id="menu_lieux">';
 				<ul id="tranches">
 				<li';
 				if ($get['tranche'] == "ak") { $aff_menulieux .= " class=\"ici\""; }
-				$aff_menulieux .= '><a href="?' . $url_query_region_et . 'statut=' . $get['statut'] . '&amp;vue=az' . $url_idOrganisateur . '&amp;tranche=ak" title="Liste alphabétique">a-k</a></li>
+				$aff_menulieux .= '><a href="?' . $url_query_region_et . 'statut=' . $get['statut'] . '&amp;vue=az' . $url_idOrganisateur . '&amp;tranche=ak" title="Liste alphabétique" rel="nofollow">a-k</a></li>
 				<li';
 				if ($get['tranche'] == "lz") { $aff_menulieux .= " class=\"ici\""; }
-				$aff_menulieux .= '><a href="?' . $url_query_region_et . 'statut=' . $get['statut'] . '&amp;vue=az' . $url_idOrganisateur . '&amp;tranche=lz" title="Liste alphabétique">l-z</a></li>
+				$aff_menulieux .= '><a href="?' . $url_query_region_et . 'statut=' . $get['statut'] . '&amp;vue=az' . $url_idOrganisateur . '&amp;tranche=lz" title="Liste alphabétique" rel="nofollow">l-z</a></li>
 				<li';
 				if ($get['tranche'] == "tout") { $aff_menulieux .= " class=\"ici\""; }
 				$aff_menulieux .= '><a href="?' . $url_query_region_et . 'statut=' . $get['statut'] . '&amp;vue=az' . $url_idOrganisateur . '&amp;tranche=tout" title="Liste alphabétique">tout</a></li>

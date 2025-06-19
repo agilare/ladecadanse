@@ -100,6 +100,11 @@ class HtmlShrink
                     $excludeFromQueryString[] = 'nblignes';
                 }
 
+                if (empty($get['idL']))
+                {
+                    $excludeFromQueryString[] = 'idL';
+                }
+
                 ?><li>
             <a href="?region=<?php echo $n; ?>&<?php echo Utils::urlQueryArrayToString($get, $excludeFromQueryString); ?>" class="<?php echo $class_region; ?><?php echo $ici; ?>"><?php echo $v; ?>&nbsp;<?php
                                 if ($nb !== '')

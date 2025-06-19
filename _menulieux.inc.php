@@ -101,10 +101,10 @@ else
     }
 }
 
-$url_tranche = "&amp;tranche=" . $get['tranche'];
+$url_tranche = !empty($get['tranche']) ? "&amp;tranche=" . $get['tranche'] : '';
 
 $url_idLieu = "";
-if (isset($get['idL']))
+if (!empty($get['idL']))
 {
     $url_idLieu = "&amp;idL=" . $get['idL'];
 }
@@ -115,12 +115,12 @@ if ($get['statut'] == "actif")
 {
     $aff_menulieux .= " class=\"ici\"";
 }
-$aff_menulieux .= '><a href="?' . $url_query_region_et . 'statut=actif&amp;vue=az' . $url_idLieu . '">Actuels</a></li><li';
+$aff_menulieux .= '><a href="?' . $url_query_region_et . 'statut=actif' . $url_idLieu . '">Actuels</a></li><li';
 if ($get['statut'] == "ancien")
 {
     $aff_menulieux .= " class=\"ici\"";
 }
-$aff_menulieux .= '><a href="?' . $url_query_region_et . 'statut=ancien&amp;vue=az' . $url_idLieu . '" >Anciens</a></li>';
+$aff_menulieux .= '><a href="?' . $url_query_region_et . 'statut=ancien' . $url_idLieu . '" >Anciens</a></li>';
 
 $aff_menulieux .= '
 <div class="spacer"><!-- --></div></ul>
@@ -133,12 +133,12 @@ if ($get['vue'] == "az")
 {
     $aff_menulieux .= " class=\"ici\"";
 }
-$aff_menulieux .= '><a href="?' . $url_query_region_et . 'statut=' . $get['statut'] . '&amp;vue=az' . $url_idLieu . '" title="Liste alphabétique">A-Z</a></li><li';
+$aff_menulieux .= '><a href="?' . $url_query_region_et . ($get['statut'] != 'actif' ? 'statut=' . $get['statut'] : '') . $url_idLieu . '" title="Liste alphabétique">A-Z</a></li><li';
 if ($get['vue'] == "genre")
 {
     $aff_menulieux .= " class=\"ici\"";
 }
-$aff_menulieux .= '><a href="?' . $url_query_region_et . 'statut=' . $get['statut'] . '&amp;vue=genre' . $url_idLieu . '" title="Liste par genre">Type</a></li>';
+$aff_menulieux .= '><a href="?' . $url_query_region_et . ($get['statut'] != 'actif' ? 'statut=' . $get['statut'] : '') . '&amp;vue=genre' . $url_idLieu . '" title="Liste par genre" rel="nofollow">Type</a></li>';
 
 $aff_menulieux .= '
 <div class="spacer"><!-- --></div></ul>
@@ -155,13 +155,13 @@ if ($get['vue'] == "az")
     {
         $aff_menulieux .= " class=\"ici\"";
     }
-    $aff_menulieux .= '><a href="?' . $url_query_region_et . 'statut=' . $get['statut'] . '&amp;vue=az' . $url_idLieu . '&amp;tranche=ak" title="Liste alphabétique">a-k</a></li>
+    $aff_menulieux .= '><a href="?' . $url_query_region_et . 'statut=' . $get['statut'] . '&amp;vue=az' . $url_idLieu . '&amp;tranche=ak" title="Liste alphabétique" rel="nofollow">a-k</a></li>
 				<li';
     if ($get['tranche'] == "lz")
     {
         $aff_menulieux .= " class=\"ici\"";
     }
-    $aff_menulieux .= '><a href="?' . $url_query_region_et . 'statut=' . $get['statut'] . '&amp;vue=az' . $url_idLieu . '&amp;tranche=lz" title="Liste alphabétique">l-z</a></li>
+    $aff_menulieux .= '><a href="?' . $url_query_region_et . 'statut=' . $get['statut'] . '&amp;vue=az' . $url_idLieu . '&amp;tranche=lz" title="Liste alphabétique" rel="nofollow">l-z</a></li>
 				<li';
     if ($get['tranche'] == "tout")
     {

@@ -146,8 +146,7 @@ $urlForwardedParameters = ($get['genre'] !== '' ? "&amp;genre=" . $get['genre'] 
             <a href="/evenement-agenda.php?<?php echo $url_query_region_et . "courant=" . (clone $dateToday)->modify('+1 day')->format('Y-m-d'). $urlForwardedParameters ?>">Demain</a>
         </li>
         <li id="cette_semaine">
-            <a href="/evenement-agenda.php?
-            <?php echo $url_query_region_et
+            <a href="/evenement-agenda.php?<?php echo $url_query_region_et
             . "courant=" . $dateToday->format('Y-m-d')
             . ($get['genre'] !== '' ? "&amp;genre=" . $get['genre'] : "")
             . "&amp;sem=1" . ($get['tri_agenda'] !== 'dateAjout' ? "&amp;tri_agenda=". $get['tri_agenda'] : " ")
