@@ -32,7 +32,7 @@ class Evenement extends Element
                 'nom' => $event['l_nom'],
                 'adresse' => $event['l_adresse'],
                 'quartier' => $event['l_quartier'],
-                'localite' => $event['ll_localite'],
+                'localite' => $event['lloc_localite'],
                 'url' => $event['l_URL'],
             ];
 

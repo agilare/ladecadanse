@@ -11,6 +11,7 @@ use Ladecadanse\Evenement;
 use Ladecadanse\Security\Authorization;
 use Ladecadanse\Security\Sentry;
 use Ladecadanse\Utils\DbConnector;
+use Ladecadanse\Utils\DbConnectorPdo;
 use Ladecadanse\Utils\Logger;
 use Ladecadanse\Utils\RegionConfig;
 use Ladecadanse\Utils\Utils;
@@ -42,6 +43,7 @@ $regionConfig = new RegionConfig($glo_regions);
 $logger = new Logger(__DIR__ . "/../var/logs/");
 
 $connector = new DbConnector(DB_HOST, DB_NAME, DB_USERNAME, DB_PASSWORD);
+$connectorPdo = DbConnectorPdo::getInstance();
 
 $authorization = new Authorization();
 

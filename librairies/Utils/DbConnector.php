@@ -3,6 +3,7 @@
 namespace Ladecadanse\Utils;
 
 use Ladecadanse\Utils\SystemComponent;
+use mysqli_result;
 
 class DbConnector extends SystemComponent
 {
@@ -54,7 +55,7 @@ class DbConnector extends SystemComponent
        return $return;
     }
 
-    public function fetchAllAssoc(\mysqli_result $result): array
+    public function fetchAllAssoc(mysqli_result $result): array
     {
        return $result->fetch_all(MYSQLI_ASSOC);
     }

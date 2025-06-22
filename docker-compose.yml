@@ -34,6 +34,7 @@ services:
       - ${PWD}:/var/www/html/
       - ${PWD}/docker/apache/ladecadanse.conf:/etc/apache2/sites-enabled/000-default.conf
       - ${PWD}/docker/env/env.php:/var/www/html/app/env.php
+      - ${PWD}/docker/env/db.config.php:/var/www/html/app/db.config.php
     ports:
       - "127.0.0.1:7777:80"
     networks:
