@@ -148,10 +148,20 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 		}
 	}
 
-	if (in_array($champs['newPass'], $g_mauvais_mdp))
-	{
-		$verif->setErreur("nouveaux_pass", "Veuillez choisir un meilleur mot de passe");
-	}
+    if ($fp = fopen("resources/bad_p.txt", "r"))
+    {
+        while(!feof($fp))
+        {
+            $Ligne = fgets($fp, 255);
+            $mauvais_mdp[] = trim($Ligne);
+        }
+        fclose($fp);
+
+        if (in_array($champs['newPass'], $mauvais_mdp))
+        {
+            $verif->setErreur("nouveaux_pass", "Veuillez choisir un meilleur mot de passe");
+        }
+    }
 
 	$verif->valider($champs['email'], "email", "email", 4, 250, 1);
     $verif->valider($champs['affiliation'], "affiliation", "texte", 2, 60, 0);
