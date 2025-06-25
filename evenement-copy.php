@@ -339,13 +339,13 @@ include("_header.inc.php");
             include("_evenement.inc.php");
         }
         else {
-            HtmlShrink::msgErreur("Aucun événement n'est associé à " . $get['idE']);
+            HtmlShrink::msgErreur("Aucun événement n'est associé à " . (int) $get['idE']);
             exit;
         }
     } // if isset idE
     ?>
 
-    <form method="post" id="ajouter_editer" style="width: 94%;margin: 0em auto 0em auto;background:#efefef;padding: 1em 0;border-radius: 4px;" enctype="multipart/form-data" action="<?php echo basename(__FILE__) . "?action=coller&amp;idE=" . $get['idE']; ?>">
+    <form method="post" id="ajouter_editer" style="width: 94%;margin: 0em auto 0em auto;background:#efefef;padding: 1em 0;border-radius: 4px;" enctype="multipart/form-data" action="<?php echo basename(__FILE__) . "?action=coller&amp;idE=" . (int) $get['idE']; ?>">
         <h3 style="font-size:1em;margin-left:.3em">Copier l'événement ci-dessus vers les dates suivantes (1 par jour)</h3><p style="margin-left:.3em" >Dans la page suivante vous pourrez si besoin modifier ou supprimer chaque événement un par un</p>
         <label for="from" style="float:none">du </label><input type="text" name="from" size="9" id="date-from" class="datepicker_from" placeholder="jj.mm.aaaa" required value="<?php echo $date_du; ?>">
         <span style="position:relative"><label for="date-to" style="float:none">au </label><input type="text" name="to" size="9" id="date-to" class="datepicker_to" placeholder="jj.mm.aaaa"></span>

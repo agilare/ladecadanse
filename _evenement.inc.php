@@ -10,7 +10,7 @@ if ($evenement['idLieu'] != 0)
 	$connector->query("SELECT nom, adresse, quartier, localite.localite AS localite, region, URL, lat, lng FROM lieu, localite
 		WHERE localite_id=localite.id AND idlieu='" . (int) $evenement['idLieu'] . "'"));
 
-    $nom_lieu = "<a href=\"/lieu.php?idL=" . (int) $evenement['idLieu'] . "\" title=\"Voir la fiche du lieu\" >" . sanitizeForHtml($listeLieu['nom']) . "</a>";
+    $nom_lieu = "<a href=\"/lieu.php?idL=" . (int) $evenement['idLieu'] . "\">" . sanitizeForHtml($listeLieu['nom']) . "</a>";
 
     if ($evenement['idSalle'] != 0)
 	{
@@ -31,23 +31,15 @@ else
 $adresse = HtmlShrink::getAdressFitted(null, $listeLieu['localite'], $listeLieu['quartier'], $listeLieu['adresse']);
 
 echo '<div id="evenements">';
-echo "<p><a href=\"/evenement-agenda.php?courant=".$evenement['dateEvenement']."\" title=\"Agenda\">".ucfirst((string) date_fr($evenement['dateEvenement'], "annee"))."</a></p>";
+echo "<p><a href=\"/evenement-agenda.php?courant=".$evenement['dateEvenement']."\">".ucfirst((string) date_fr($evenement['dateEvenement'], "annee"))."</a></p>";
 ?>
 <div class="evenement">
 
 <div class="titre">
-	<span class="left">
-	<?php
-
-	$maxChar = Text::trouveMaxChar($evenement['description'], 60, 9);
-
-	echo '<a href="/evenement.php?idE='.(int)$evenement['idEvenement'].'" title="Voir la fiche complète de l\'événement">' . sanitizeForHtml(Evenement::titre_selon_statut($evenement['titre'], $evenement['statut'])) . '</a>';
-    ?>
-	</span>
+	<span class="left"><a href="/evenement.php?idE=<?= (int) $evenement['idEvenement'] ?>"><?= Evenement::titreSelonStatutHtml(sanitizeForHtml($evenement['titre']), $evenement['statut']) ?></a></span>
     <span class="right"><?php echo $nom_lieu ?></span>
     <div class="spacer"></div>
 </div>
-<!-- fin titre -->
 
 <div class="flyer">
 <?php
@@ -76,12 +68,10 @@ if (!empty($evenement['flyer']))
 
 <?php
 //reduction de la description pour la caser dans la boite "desc"
-
+$maxChar = Text::trouveMaxChar($evenement['description'], 60, 9);
 if (mb_strlen((string) $evenement['description']) > $maxChar)
 {
-	echo Text::texteHtmlReduit(Text::wikiToHtml(sanitizeForHtml($evenement['description'])),
-	$maxChar,
-	" <a href=\"/evenement.php?idE=".(int)$evenement['idEvenement']."\" title=\"Voir la fiche complète de l'événement\"> Lire la suite".$iconeSuite."</a>");
+	echo Text::texteHtmlReduit(Text::wikiToHtml(sanitizeForHtml($evenement['description'])), $maxChar, " <a href=\"/evenement.php?idE=".(int)$evenement['idEvenement']."\"> Lire la suite".$iconeSuite."</a>");
 }
 else
 {

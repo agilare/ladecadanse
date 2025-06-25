@@ -210,7 +210,7 @@ include("_header.inc.php");
 
     <div class="spacer"><!-- --></div>
 
-    <div id="prochains_evenements" >
+    <div id="prochains_evenements">
 
         <?php
         if ($count_events_today_in_region == 0)
@@ -218,13 +218,7 @@ include("_header.inc.php");
             HtmlShrink::msgInfo("Pas d’événement prévu aujourd’hui");
         }
 
-        // array categoriesIndexOfResults, par ex. : [0 => fetes, 1 => cine, 2 => expos] (pas de théatre ni divers)
-        // start j=0
-        // next : +1, prev : -1 (if exists) or current index +1 -1
-        // if newCategory : j++
-        $categoriesToIterateForAnchors = $glo_tab_genre;
         $genres_today = array_keys($tab_events_today_in_region_by_category);
-        //dump($tab_events_today_in_region_order_by_category);
         foreach ($tab_events_today_in_region_by_category as $genre => $tab_genre_events)
         {
             $genre_even_nb = 0;
@@ -235,9 +229,9 @@ include("_header.inc.php");
                         <h2 id="<?php echo Text::stripAccents($glo_tab_genre[$genre]); ?>"><?php echo ucfirst($glo_tab_genre[$genre]); ?></h2>
                         <?php
                         $genre_proch = next($genres_today);
-                        if (isset($tab_events_today_in_region_by_category[$genre_proch])) { ?>
+                        if (isset($tab_events_today_in_region_by_category[$genre_proch])) : ?>
                             <a class="genre-jump" href="#<?php echo Text::stripAccents($glo_tab_genre[$genre_proch]); ?>"><?php echo $glo_tab_genre[$genre_proch]; ?>&nbsp;<i class="fa fa-long-arrow-down"></i></a>
-                        <?php } ?>
+                        <?php endif; ?>
                         <div class="spacer"></div>
                     </header>
 
@@ -254,9 +248,9 @@ include("_header.inc.php");
                         <article class="evenement">
 
                             <header class="titre">
-                                <h3 class="left"><?= Evenement::titre_selon_statut('<a href="/evenement.php?idE=' . (int) $tab_even['e_idEvenement'] . '">' . sanitizeForHtml($tab_even['e_titre']) . '</a>', $tab_even['e_statut']) ?></h3>
+                                <h3 class="left"><a href="/evenement.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>"><?= Evenement::titreSelonStatutHtml(sanitizeForHtml($tab_even['e_titre']), $tab_even['e_statut']) ?></a></h3>
                                 <span class="right">
-                                    <!-- TODO: Lieu::getLinkNameHtml($tab_even) -->
+                                    <!-- TODO: Lieu::getLinkNameHtml(idLieu, nom) -->
                                     <?php
                                     $even_lieu = Evenement::getLieu($tab_even);
                                     if ($tab_even['e_idLieu']) { ?>
@@ -270,7 +264,7 @@ include("_header.inc.php");
 
                             <figure class="flyer">
                             <?php
-                            // TODO: getFlyerHtml(path, smallWidth)
+                            // TODO: Evenement::getFlyerFigureHtml(flyer, image, titre, smallWidth)
                             if (!empty($tab_even['e_flyer'])) { ?>
                                 <a href="<?php echo Evenement::getFileHref(Evenement::getFilePath($tab_even['e_flyer'])) ?>" class="magnific-popup">
                                     <img src="<?php echo Evenement::getFileHref(Evenement::getFilePath($tab_even['e_flyer'], "s_"), true) ?>" alt="Flyer de <?= sanitizeForHtml($tab_even['e_titre'])?>" width="100" height="<?= ImageDriver2::getProportionalHeightFromGivenWidth(Evenement::getSystemFilePath(Evenement::getFilePath($tab_even['e_flyer'], "s_")), 100); ?>">
@@ -286,7 +280,9 @@ include("_header.inc.php");
                         <p>
                         <?= Text::texteHtmlReduit(Text::wikiToHtml(sanitizeForHtml($tab_even['e_description'])), Text::trouveMaxChar($tab_even['e_description'], 60, 6), " <a class=\"continuer\" href=\"/evenement.php?idE=" . (int) $tab_even['e_idEvenement'] . "\" title=\"Voir la fiche complète de l'événement\"> Lire la suite</a>"); ?>
                         </p>
-                        <?php if (!empty($tab_events_today_in_region_orgas[$tab_even['e_idEvenement']])) { ?>
+                        <?php
+                        // TODO: Organisateur::getLinksListHtml($tab_events_today_in_region_orgas[$tab_even['e_idEvenement']])
+                        if (!empty($tab_events_today_in_region_orgas[$tab_even['e_idEvenement']])) { ?>
                             <ul class="event_orga" aria-label="Organisateurs">
                                 <?php foreach ($tab_events_today_in_region_orgas[$tab_even['e_idEvenement']] as $eo) { ?>
                                     <li>
@@ -301,9 +297,10 @@ include("_header.inc.php");
                     <div class="spacer"></div>
 
                     <div class="pratique">
-
+                        <!-- TODO: Lieu::getCompactAdress($lieu) -->
                         <span class="left"><?= sanitizeForHtml(HtmlShrink::getAdressFitted(null, $even_lieu['localite'], $even_lieu['quartier'], $even_lieu['adresse'])); ?></span>
                         <span class="right"><?php
+                            // TODO: Evenement::getScheduleString($tab_even);
                             $horaire_complet = afficher_debut_fin($tab_even['e_horaire_debut'], $tab_even['e_horaire_fin'], $tab_even['e_dateEvenement'])." " . sanitizeForHtml($tab_even['e_horaire_complement']);
                             echo $horaire_complet;
                             // TODO: try echo implode(", ", [$horaire_complet, $tab_even['e_prix']]);
@@ -425,15 +422,11 @@ include("_header.inc.php");
                     <?php } ?>
                     </figure>
 
-                    <h3><?= Evenement::titre_selon_statut('<a href="/evenement.php?idE=' . (int) $tab_even['e_idEvenement'] . '">' . sanitizeForHtml($tab_even['e_titre']) . '</a>', $tab_even['e_statut']) ?>
-                    </h3>
-                    <span>
-                    <?php if ($tab_even['e_idLieu']) { ?>
+                    <h3><a href="/evenement.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>"><?= Evenement::titreSelonStatutHtml(sanitizeForHtml($tab_even['e_titre']), $tab_even['e_statut']) ?></a></h3><span><?php if ($tab_even['e_idLieu']) { ?>
                         <a href="/lieu.php?idL=<?= (int) $even_lieu['idLieu'] ?>"><?= sanitizeForHtml($even_lieu['nom']) ?></a>
                     <?php } else { ?>
                         <?= sanitizeForHtml($even_lieu['nom']) ?>
-                    <?php } ?>
-                    </span>
+                    <?php } ?></span>
 
                     <p>le&nbsp;<a href="/evenement-agenda.php?courant=<?= urlencode($tab_even['e_dateEvenement']) ?>"><?= date_fr($tab_even['e_dateEvenement']) ?></a></p>
                     <div class="spacer"></div>

@@ -784,7 +784,7 @@ if ($nb_pres > 0)
 			<td>
 			<h3 class="summary">
 			<?php
-			$titre_url = '<a class="url" href="/evenement.php?idE='.(int)$even->getValue('idEvenement').'" title="Voir la fiche de l\'événement">'.Evenement::titre_selon_statut(sanitizeForHtml($even->getValue('titre')), $even->getValue('statut')).'</a>';
+			$titre_url = '<a class="url" href="/evenement.php?idE='.(int)$even->getValue('idEvenement').'" title="Voir la fiche de l\'événement">'.Evenement::titreSelonStatutHtml(sanitizeForHtml($even->getValue('titre')), $even->getValue('statut')).'</a>';
 			echo $titre_url; ?>
 			</h3>
 

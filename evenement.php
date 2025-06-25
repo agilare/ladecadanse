@@ -231,7 +231,7 @@ while ($tab_even = $connector->fetchArray($resEventsInTheSameDayAndRegion))
 
             <div class="titre">
 
-                <h3 class="left summary"><?php echo Evenement::titre_selon_statut(sanitizeForHtml($even->getValue('titre')), $even->getValue('statut')); ?>
+                <h3 class="left summary"><?php echo Evenement::titreSelonStatutHtml(sanitizeForHtml($even->getValue('titre')), $even->getValue('statut')); ?>
                     <?php echo $even_status; ?>
                 </h3>
 

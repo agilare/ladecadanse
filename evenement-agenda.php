@@ -390,8 +390,7 @@ else
 
 		$maxChar = Text::trouveMaxChar($listeEven['description'], 70, 8);
 
-		$titre_url = '<a class="url" href="/evenement.php?idE=' . (int)$listeEven['idEvenement'] . ($get['tri_agenda'] !== 'dateAjout' ? '&amp;tri_agenda=' . $get['tri_agenda'] : '' ) . '&amp;courant=' . $get['courant'] . '">' . sanitizeForHtml($listeEven['titre']) . '</a>';
-        $titre = Evenement::titre_selon_statut($titre_url, $listeEven['statut']);
+        $titre = '<a href="/evenement.php?idE=' . (int)$listeEven['idEvenement'] . ($get['tri_agenda'] !== 'dateAjout' ? '&amp;tri_agenda=' . $get['tri_agenda'] : '' ) . '&amp;courant=' . $get['courant'] . '" class="url">' .Evenement::titreSelonStatutHtml(sanitizeForHtml($listeEven['titre']), $listeEven['statut']). '</a>';
 
 		$lien_flyer = "";
 		if (!empty($listeEven['flyer']))

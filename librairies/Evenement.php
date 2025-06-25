@@ -67,20 +67,18 @@ class Evenement extends Element
         return $nom;
     }
 
-    public static function titre_selon_statut(string $titre, string $statut): string
+    public static function titreSelonStatutHtml(string $titreHtml, string $statut): string
     {
-        $titre_avec_statut = $titre;
-
         if ($statut == "annule")
         {
-            $titre_avec_statut = '<strike>' . $titre . '</strike> <span class="even-statut-badge ' . $statut . '">ANNULÉ</span>';
+            return '<strike>' . $titreHtml . '</strike> <span class="even-statut-badge ' . $statut . '">ANNULÉ</span>';
         }
         if ($statut == "complet")
         {
-            $titre_avec_statut = '<em>' . $titre . '</em> <span class="even-statut-badge ' . $statut . '">COMPLET</span>';
+            return '<em>' . $titreHtml . '</em> <span class="even-statut-badge ' . $statut . '">COMPLET</span>';
         }
 
-        return $titre_avec_statut;
+        return $titreHtml;
     }
 
     public static function rmImageAndItsMiniature(string $fileName): void
