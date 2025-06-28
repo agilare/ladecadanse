@@ -1,4 +1,5 @@
 app/env.php
+app/db.config.php
 /nbproject
 /var/*
 !/var/logs

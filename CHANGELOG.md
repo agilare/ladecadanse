@@ -4,6 +4,7 @@
 
 ### Added
 - SEO : meta tag noindex, nofollow for some irrelevant events pages
+- database : composite index on evenement table
 
 ### Changed
 - donate : move description below the payment methods

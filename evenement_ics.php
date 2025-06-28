@@ -98,7 +98,7 @@ if ($even->getValue('description') != '')
 
 $filename = "evenement.ics";
 
-$address = HtmlShrink::getAdressFitted(null, $listeLieu['localite'], $listeLieu['quartier'], $listeLieu['adresse']);
+$address = HtmlShrink::adresseCompacteSelonContexte(null, $listeLieu['localite'], $listeLieu['quartier'], $listeLieu['adresse']);
 
 $dateend = '';
 if ($even->getValue('horaire_fin') != "0000-00-00 00:00:00")

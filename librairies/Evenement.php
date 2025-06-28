@@ -4,6 +4,7 @@
 namespace Ladecadanse;
 
 use Ladecadanse\Element;
+use Ladecadanse\Utils\ImageDriver2;
 
 class Evenement extends Element
 {
@@ -15,6 +16,40 @@ class Evenement extends Element
 
         parent::__construct();
         $this->table = "evenement";
+    }
+
+    /**
+     * Affichage du lieu selon son existence ou non dans la base
+     * @param array $event
+     * @return array
+     */
+    public static function getLieu(array $event): array
+    {
+        if ($event['e_idLieu'] != 0)
+        {
+            $result =
+            [
+                'idLieu' => $event['e_idLieu'],
+                'nom' => $event['l_nom'],
+                'adresse' => $event['l_adresse'],
+                'quartier' => $event['l_quartier'],
+                'localite' => $event['lloc_localite'],
+                'url' => $event['l_URL'],
+                'salle' => $event['s_nom'] ?? null,
+            ];
+
+            return $result;
+        }
+
+        return [
+                'idLieu' => null,
+                'nom' => $event['e_nomLieu'],
+                'adresse' => $event['e_adresse'],
+                'quartier' => $event['e_quartier'],
+                'localite' => $event['e_localite'],
+                'url' => $event['e_urlLieu'],
+                'salle' => null
+            ];
     }
 
     public static function nom_genre(string $nom): string
@@ -31,20 +66,37 @@ class Evenement extends Element
         return $nom;
     }
 
-    public static function titre_selon_statut(string $titre, string $statut): string
+    public static function titreSelonStatutHtml(string $titreHtml, string $statut): string
     {
-        $titre_avec_statut = $titre;
-
         if ($statut == "annule")
         {
-            $titre_avec_statut = '<strike>' . $titre . '</strike> <span class="even-statut-badge ' . $statut . '">ANNULÉ</span>';
+            return '<strike>' . $titreHtml . '</strike> <span class="even-statut-badge ' . $statut . '">ANNULÉ</span>';
         }
         if ($statut == "complet")
         {
-            $titre_avec_statut = '<em>' . $titre . '</em> <span class="even-statut-badge ' . $statut . '">COMPLET</span>';
+            return '<em>' . $titreHtml . '</em> <span class="even-statut-badge ' . $statut . '">COMPLET</span>';
         }
 
-        return $titre_avec_statut;
+        return $titreHtml;
+    }
+
+    public static function figureHtml(string $flyer, string $image, string $titre, int $smallWidth): string
+    {
+        ob_start();
+
+        if (!empty($flyer)) { ?>
+            <a href="<?php echo self::getFileHref(self::getFilePath($flyer)) ?>" class="magnific-popup">
+                <img src="<?php echo self::getFileHref(self::getFilePath($flyer, "s_"), true) ?>" alt="Flyer de <?= sanitizeForHtml($titre)?>" width="<?= $smallWidth ?>" height="<?= ImageDriver2::getProportionalHeightFromGivenWidth(self::getSystemFilePath(self::getFilePath($flyer, "s_")), $smallWidth); ?>">
+            </a>
+        <?php } elseif (!empty($image)) { ?>
+            <a href="<?php echo self::getFileHref(self::getFilePath($image)) ?>" class="magnific-popup">
+                <img src="<?php echo self::getFileHref(self::getFilePath($image, "s_"), true) ?>" alt="Illustration de <?= sanitizeForHtml($titre)?>" width="<?= $smallWidth ?>" height="<?= ImageDriver2::getProportionalHeightFromGivenWidth(self::getSystemFilePath(self::getFilePath($image, "s_")), $smallWidth); ?>">
+            </a>
+        <?php
+        }
+        $result = ob_get_contents();
+        ob_clean();
+        return $result;
     }
 
     public static function rmImageAndItsMiniature(string $fileName): void

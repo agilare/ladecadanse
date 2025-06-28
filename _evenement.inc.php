@@ -4,101 +4,68 @@ use Ladecadanse\Utils\Text;
 use Ladecadanse\Evenement;
 
 //Affichage du lieu selon son existence ou non dans la base
-if ($evenement['idLieu'] != 0)
+if ($evenement['e_idLieu'] != 0)
 {
 	$listeLieu = $connector->fetchArray(
 	$connector->query("SELECT nom, adresse, quartier, localite.localite AS localite, region, URL, lat, lng FROM lieu, localite
-		WHERE localite_id=localite.id AND idlieu='" . (int) $evenement['idLieu'] . "'"));
+		WHERE localite_id=localite.id AND idlieu='" . (int) $evenement['e_idLieu'] . "'"));
 
-    $nom_lieu = "<a href=\"/lieu.php?idL=" . (int) $evenement['idLieu'] . "\" title=\"Voir la fiche du lieu\" >" . sanitizeForHtml($listeLieu['nom']) . "</a>";
+    $nom_lieu = "<a href=\"/lieu.php?idL=" . (int) $evenement['e_idLieu'] . "\">" . sanitizeForHtml($listeLieu['nom']) . "</a>";
 
-    if ($evenement['idSalle'] != 0)
+    if ($evenement['e_idSalle'] != 0)
 	{
 		$req_salle = $connector->query("SELECT nom, emplacement FROM salle
-		WHERE idSalle='" . (int) $evenement['idSalle'] . "'");
+		WHERE idSalle='" . (int) $evenement['e_idSalle'] . "'");
         $tab_salle = $connector->fetchArray($req_salle);
 		$nom_lieu .=  " - ".$tab_salle['nom'];
 	}
 }
 else
 {
-	$nom_lieu = $listeLieu['nom'] = sanitizeForHtml($evenement['nomLieu']);
-    $listeLieu['adresse'] = sanitizeForHtml($evenement['adresse']);
-    $listeLieu['quartier'] = sanitizeForHtml($evenement['quartier']);
+	$nom_lieu = $listeLieu['nom'] = sanitizeForHtml($evenement['e_nomLieu']);
+    $listeLieu['adresse'] = sanitizeForHtml($evenement['e_adresse']);
+    $listeLieu['quartier'] = sanitizeForHtml($evenement['e_quartier']);
     $listeLieu['localite'] = "";
 }
 
-$adresse = HtmlShrink::getAdressFitted(null, $listeLieu['localite'], $listeLieu['quartier'], $listeLieu['adresse']);
+$adresse = HtmlShrink::adresseCompacteSelonContexte(null, $listeLieu['localite'], $listeLieu['quartier'], $listeLieu['adresse']);
 
 echo '<div id="evenements">';
-echo "<p><a href=\"/evenement-agenda.php?courant=".$evenement['dateEvenement']."\" title=\"Agenda\">".ucfirst((string) date_fr($evenement['dateEvenement'], "annee"))."</a></p>";
+echo "<p><a href=\"/evenement-agenda.php?courant=".$evenement['e_dateEvenement']."\">".ucfirst((string) date_fr($evenement['e_dateEvenement'], "annee"))."</a></p>";
 ?>
 <div class="evenement">
 
 <div class="titre">
-	<span class="left">
-	<?php
-
-	$maxChar = Text::trouveMaxChar($evenement['description'], 60, 9);
-
-	echo '<a href="/evenement.php?idE='.(int)$evenement['idEvenement'].'" title="Voir la fiche complète de l\'événement">' . sanitizeForHtml(Evenement::titre_selon_statut($evenement['titre'], $evenement['statut'])) . '</a>';
-    ?>
-	</span>
+	<span class="left"><a href="/evenement.php?idE=<?= (int) $evenement['e_idEvenement'] ?>"><?= Evenement::titreSelonStatutHtml(sanitizeForHtml($evenement['e_titre']), $evenement['e_statut']) ?></a></span>
     <span class="right"><?php echo $nom_lieu ?></span>
     <div class="spacer"></div>
 </div>
-<!-- fin titre -->
 
-<div class="flyer">
-<?php
-if (!empty($evenement['flyer']))
-{
-?>
-	<a href="<?php echo Evenement::getFileHref(Evenement::getFilePath($evenement['flyer']), true) ?>" class="magnific-popup" target="_blank">
-
-		<img src="<?php echo Evenement::getFileHref(Evenement::getFilePath($evenement['flyer'], 's_'), true) ?>" alt="Flyer de cet événement" width="100" />
-	</a>
-<?php
-	}
-	else if (!empty($evenement['image']))
-	{
-	?>
-	<a href="<?php echo Evenement::getFileHref(Evenement::getFilePath($evenement['image']), true) ?>" class="magnific-popup" target="_blank">
-
-		<img src="<?php echo Evenement::getFileHref(Evenement::getFilePath($evenement['image'], 's_'), true) ?>" alt="Photo pour cet événement" width="100" />
-	</a>
-	<?php
-	}
-	?>
-</div>
-
+<figure class="flyer"><?= Evenement::figureHtml($evenement['e_flyer'], $evenement['e_image'], $evenement['e_titre'], 100) ?></figure>
 <div class="description">
+    <?php
+    //reduction de la description pour la caser dans la boite "desc"
+    $maxChar = Text::trouveMaxChar($evenement['e_description'], 60, 9);
+    if (mb_strlen((string) $evenement['e_description']) > $maxChar)
+    {
+        echo Text::texteHtmlReduit(Text::wikiToHtml(sanitizeForHtml($evenement['e_description'])), $maxChar, " <a href=\"/evenement.php?idE=".(int)$evenement['e_idEvenement']."\"> Lire la suite".$iconeSuite."</a>");
+    }
+    else
+    {
+        echo Text::wikiToHtml(sanitizeForHtml($evenement['e_description']));
+    }
 
-<?php
-//reduction de la description pour la caser dans la boite "desc"
-
-if (mb_strlen((string) $evenement['description']) > $maxChar)
-{
-	echo Text::texteHtmlReduit(Text::wikiToHtml(sanitizeForHtml($evenement['description'])),
-	$maxChar,
-	" <a href=\"/evenement.php?idE=".(int)$evenement['idEvenement']."\" title=\"Voir la fiche complète de l'événement\"> Lire la suite".$iconeSuite."</a>");
-}
-else
-{
-	echo Text::wikiToHtml(sanitizeForHtml($evenement['description']));
-}
-
-echo "</div>
-<div class=\"spacer\"></div>\n";
-echo "
-<div class=\"pratique\">\n
-<span class=\"left\">".$adresse."</span>";
-echo "
-<span class=\"right\">".afficher_debut_fin($evenement['horaire_debut'], $evenement['horaire_fin'], $evenement['dateEvenement'])." ".sanitizeForHtml($evenement['horaire_complement'])
-." ".sanitizeForHtml($evenement['prix']);
-?>
-</span>
-<div class="spacer"></div>
+    echo "</div>
+    <div class=\"spacer\"></div>\n";
+    echo "
+    <div class=\"pratique\">\n
+    <span class=\"left\">".$adresse."</span>";
+    echo "
+    <span class=\"right\">".afficher_debut_fin($evenement['e_horaire_debut'], $evenement['e_horaire_fin'], $evenement['e_dateEvenement'])." ".sanitizeForHtml($evenement['e_horaire_complement'])
+    ." ".sanitizeForHtml($evenement['e_prix']);
+    ?>
+    </span>
+    <div class="spacer"></div>
 </div>
 <!-- fin pratique -->
 

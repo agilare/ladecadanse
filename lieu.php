@@ -89,7 +89,7 @@ $req_lieu_localite = $connector->query($sql_lieu_localite);
 
 $lieu_localite = $connector->fetchAssoc($req_lieu_localite);
 
-$page_titre = $lieu->getValue('nom').HtmlShrink::getAdressFitted($lieu->getValue('region'), $lieu_localite['localite'], $lieu->getValue('quartier'), '' );
+$page_titre = $lieu->getValue('nom').HtmlShrink::adresseCompacteSelonContexte($lieu->getValue('region'), $lieu_localite['localite'], $lieu->getValue('quartier'), '' );
 
 
 $page_description = $page_titre." : accès, horaires, description, photos et prochains événements";
@@ -292,7 +292,7 @@ if ($lieu->getValue('logo'))
             }
         }
 
-        $adresse = HtmlShrink::getAdressFitted($lieu->getValue('region'), $lieu_localite['localite'], $lieu->getValue('quartier'), $lieu->getValue('adresse') );
+        $adresse = HtmlShrink::adresseCompacteSelonContexte($lieu->getValue('region'), $lieu_localite['localite'], $lieu->getValue('quartier'), $lieu->getValue('adresse') );
 
 		$carte = '';
 
@@ -510,7 +510,7 @@ if ($nb_pres > 0)
                         )
                 {
                     $editer = '<span class="right">';
-                    $editer .= '<a href="/lieu-text-edit.php?action=editer&amp;type=' . $type . '&amp;idL=' . $get['idL'] . '&amp;idP=' . $des->getValue('idPersonne') . '">' . $iconeEditer . 'Modifier</a>';
+                    $editer .= '<a href="/lieu-text-edit.php?action=editer&amp;type=' . $type . '&amp;idL=' . (int)$get['idL'] . '&amp;idP=' .(int) $des->getValue('idPersonne') . '">' . $iconeEditer . 'Modifier</a>';
                 $editer .= '</span>';
 
                     if ($_SESSION['SidPersonne'] == $des->getValue('idPersonne'))
@@ -555,14 +555,14 @@ if ($nb_pres > 0)
 	// un rédacteur qui n'a pas déjà écrit une description
 	if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 6 && !in_array($_SESSION['SidPersonne'], $auteurs_de_desc))
 	{
-		echo "<a href=\"/lieu-text-edit.php?idL=" . $get['idL'] . "&amp;type=description\">" . $icone['ajouter_texte'] . " Ajouter une description (avis)</a><br>";
+		echo "<a href=\"/lieu-text-edit.php?idL=" . (int)$get['idL'] . "&amp;type=description\">" . $icone['ajouter_texte'] . " Ajouter une description (avis)</a><br>";
 }
 
 	if (isset($_SESSION['Sgroupe']) &&
             ($_SESSION['Sgroupe'] <= 6 || ($_SESSION['Sgroupe'] == 8 && ($authorization->isPersonneAffiliatedWithLieu($_SESSION['SidPersonne'], $get['idL']) || $authorization->isPersonneInLieuByOrganisateur($_SESSION['SidPersonne'], $get['idL']))))
             && $nb_pres == 0)
 	{
-		echo "<a href=\"/lieu-text-edit.php?idL=" . $get['idL'] . "&amp;type=presentation\">" . $icone['ajouter_texte'] . " Ajouter une présentation</a>";
+		echo "<a href=\"/lieu-text-edit.php?idL=" . (int)$get['idL'] . "&amp;type=presentation\">" . $icone['ajouter_texte'] . " Ajouter une présentation</a>";
 }
 	?>
 
@@ -624,7 +624,7 @@ if ($nb_pres > 0)
 			$menu_genre .= "<li";
 			if ($g == $get['genre_even'])
 			{
-				$menu_genre .= " class=\"ici\"><a href=\"/lieu.php?idL=".$get['idL']."&amp;genre_even=".urlencode($g)."#prochains_even\" title=\"".$g."\" rel=\"nofollow\">";
+				$menu_genre .= " class=\"ici\"><a href=\"/lieu.php?idL=".(int)$get['idL']."&amp;genre_even=".urlencode($g)."#prochains_even\" title=\"".$g."\" rel=\"nofollow\">";
 				if ($g == "fête")
 				{
 					$g .= "s";
@@ -744,9 +744,9 @@ if ($nb_pres > 0)
 
 		<tr class="<?php if ($date_debut == $even->getValue('dateEvenement')) { echo "ici"; } ?> vevent evenement">
 
-			<td class="dtstart"><?php echo date2nomJour($even->getValue('dateEvenement')); ?>
-
-                            <span class="value-title" title="<?php echo $even->getValue('dateEvenement').$vcard_starttime; ?>"></span>
+			<td class="dtstart">
+                <?php echo date2nomJour($even->getValue('dateEvenement')); ?>
+                <span class="value-title" title="<?php echo $even->getValue('dateEvenement').$vcard_starttime; ?>"></span>
 			</td>
 
 			<td><?php echo date2jour($even->getValue('dateEvenement'));  ?>
@@ -754,38 +754,14 @@ if ($nb_pres > 0)
 			</td>
 
 			<td class="flyer photo">
-			<?php
-		if ($even->getValue('flyer') != '')
-		{
-                            ?>
-                <a href="<?php echo Evenement::getFileHref(Evenement::getFilePath($even->getValue('flyer')), true) ?>" class="magnific-popup" target="_blank">
-
-                                            <img src="<?php echo Evenement::getFileHref(Evenement::getFilePath($even->getValue('flyer'), 's_'), true) ?>" alt="Flyer" width="60" />
-                                        </a>
-
-                            <?php
-
-
-		}
-		else if ($even->getValue('image') != '')
-		{
-                            ?>
-                <a href="<?php echo Evenement::getFileHref(Evenement::getFilePath($even->getValue('image')), true) ?>" class="magnific-popup" target="_blank">
-
-                                <img src="<?php echo Evenement::getFileHref(Evenement::getFilePath($even->getValue('image'), 's_'), true) ?>" alt="Photo" width="60" />
-                            </a>
-                            <?php
-
-		}
-?>
-
-                    </td>
+                <?= Evenement::figureHtml($even->getValue('flyer'), $even->getValue('image'), $even->getValue('titre'), 60) ?>
+            </td>
 
 			<td>
 			<h3 class="summary">
-			<?php
-			$titre_url = '<a class="url" href="/evenement.php?idE='.(int)$even->getValue('idEvenement').'" title="Voir la fiche de l\'événement">'.Evenement::titre_selon_statut(sanitizeForHtml($even->getValue('titre')), $even->getValue('statut')).'</a>';
-			echo $titre_url; ?>
+                <?php
+                $titre_url = '<a class="url" href="/evenement.php?idE='.(int)$even->getValue('idEvenement').'" title="Voir la fiche de l\'événement">'.Evenement::titreSelonStatutHtml(sanitizeForHtml($even->getValue('titre')), $even->getValue('statut')).'</a>';
+                echo $titre_url; ?>
 			</h3>
 
 

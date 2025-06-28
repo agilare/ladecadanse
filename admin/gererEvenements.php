@@ -714,8 +714,8 @@ echo '</ul>';
 	<form method="get" action="" id="ajouter_editer" style="margin:0;">
 
 		<input type="hidden" name="filtre_genre" value="<?php echo $get['filtre_genre']; ?>" />
-		<input type="hidden" name="page" value="<?php echo $get['page']; ?>" />
-		<input type="hidden" name="nblignes" value="<?php echo $get['nblignes']; ?>" />
+		<input type="hidden" name="page" value="<?php echo (int)$get['page']; ?>" />
+		<input type="hidden" name="nblignes" value="<?php echo (int)$get['nblignes']; ?>" />
 		<input type="hidden" name="tri_gerer" value="<?php echo $get['tri_gerer']; ?>" />
 		<input type="hidden" name="element" value="<?php echo $get['element']; ?>" />
 		<input type="hidden" name="ordre" value="<?php echo $get['ordre']; ?>" />
@@ -975,9 +975,9 @@ while ($lieuTrouve = $connector->fetchArray($req_lieux))
 		echo "selected=\"selected\" ";
 	}
 
-	echo "value=\"" . $lieuTrouve['idLieu'] . "\">" . sanitizeForHtml($nom_lieu) . "</option>";
+	echo "value=\"" . (int)$lieuTrouve['idLieu'] . "\">" . sanitizeForHtml($nom_lieu) . "</option>";
 
-    $sql_salle = "select * from salle where idLieu=".$lieuTrouve['idLieu']. " AND salle.status='actif' ";
+    $sql_salle = "select * from salle where idLieu=".(int)$lieuTrouve['idLieu']. " AND salle.status='actif' ";
 	$req_salle = $connector->query($sql_salle);
 	while ($tab_salle = $connector->fetchArray($req_salle))
 
@@ -987,7 +987,7 @@ while ($lieuTrouve = $connector->fetchArray($req_lieux))
 		{
 			echo "selected=\"selected\" ";
 		}
-		echo " style=\"font-style:italic;color:#444;\" value=".$lieuTrouve['idLieu']."_".$tab_salle['idSalle'].">".sanitizeForHtml($nom_lieu)."&nbsp;– ".sanitizeForHtml($tab_salle['nom'])."</option>";
+		echo " style=\"font-style:italic;color:#444;\" value=".(int)$lieuTrouve['idLieu']."_".(int)$tab_salle['idSalle'].">".sanitizeForHtml($nom_lieu)."&nbsp;– ".sanitizeForHtml($tab_salle['nom'])."</option>";
 
 	}
 
@@ -1069,7 +1069,7 @@ while ($tab = $connector->fetchArray($req))
 		echo 'selected="selected" ';
 	}
 
-	echo "value=\"".$tab['id']."\">".sanitizeForHtml($tab['localite'])."</option>";
+	echo "value=\"".(int)$tab['id']."\">".sanitizeForHtml($tab['localite'])."</option>";
 
     // Genève quartiers
     if ($tab['id'] == 44)
@@ -1115,7 +1115,7 @@ while ($tab = $connector->fetchArray($req))
                    echo ' selected="selected" ';
            }
 
-           echo " value=\"" . $id . "\">" . sanitizeForHtml($nom) . "</option>";
+           echo " value=\"" . (int)$id . "\">" . sanitizeForHtml($nom) . "</option>";
 }
 ?>
 
@@ -1203,7 +1203,7 @@ echo $verif->getHtmlErreur('description');
 
 		echo "<option ";
 
-		echo "value=\"" . $tab['idOrganisateur'] . "\">" . sanitizeForHtml($tab['nom']) . "</option>";
+		echo "value=\"" . (int)$tab['idOrganisateur'] . "\">" . sanitizeForHtml($tab['nom']) . "</option>";
 }
 ?>
 </select>

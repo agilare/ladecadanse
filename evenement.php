@@ -84,7 +84,7 @@ $tab_localite = $connector->fetchArray($req_localite);
 
 $page_titre_localite = " – ";
 
-$page_titre = $even->getValue('titre')." ".$determinant_lieu.$even->getValue('nomLieu').$even_salle.", ".HtmlShrink::getAdressFitted($even->getValue('region'), $tab_localite['localite'], $even->getValue('quartier'), $even->getValue('adresse'))."; le ".date_fr($even->getValue('dateEvenement'), "annee", "", "", false);
+$page_titre = $even->getValue('titre')." ".$determinant_lieu.$even->getValue('nomLieu').$even_salle.", ".HtmlShrink::adresseCompacteSelonContexte($even->getValue('region'), $tab_localite['localite'], $even->getValue('quartier'), $even->getValue('adresse'))."; le ".date_fr($even->getValue('dateEvenement'), "annee", "", "", false);
 $page_description = $even->getValue('titre')." ".$determinant_lieu.$even->getValue('nomLieu').
 " le ".date_fr($even->getValue('dateEvenement'), "annee", "", "", false)." ".
 afficher_debut_fin($even->getValue('horaire_debut'), $even->getValue('horaire_fin'), $even->getValue('dateEvenement'));
@@ -231,7 +231,7 @@ while ($tab_even = $connector->fetchArray($resEventsInTheSameDayAndRegion))
 
             <div class="titre">
 
-                <h3 class="left summary"><?php echo Evenement::titre_selon_statut(sanitizeForHtml($even->getValue('titre')), $even->getValue('statut')); ?>
+                <h3 class="left summary"><?php echo Evenement::titreSelonStatutHtml(sanitizeForHtml($even->getValue('titre')), $even->getValue('statut')); ?>
                     <?php echo $even_status; ?>
                 </h3>
 
@@ -271,8 +271,7 @@ while ($tab_even = $connector->fetchArray($resEventsInTheSameDayAndRegion))
                     $nom_lieu = $lieu;
                 }
 
-                $adresse = HtmlShrink::getAdressFitted($listeLieu['region'], sanitizeForHtml($listeLieu['localite'] ?? ""), sanitizeForHtml($listeLieu['quartier']), sanitizeForHtml($listeLieu['adresse']));
-?>
+            ?>
 
 
 				<div class="right location vcard">
@@ -286,27 +285,25 @@ while ($tab_even = $connector->fetchArray($resEventsInTheSameDayAndRegion))
 }
 					?></h4>
 					<ul style="list-style-type: none;">
-						<li class="adr">
-
-                            <?php echo $adresse; ?></li>
+						<li class="adr"><?= sanitizeForHtml(HtmlShrink::adresseCompacteSelonContexte($listeLieu['region'], $listeLieu['localite'] ?? "", $listeLieu['quartier'], $listeLieu['adresse'])) ?></li>
+                        
                         <?php
                         if (!empty((float) $listeLieu['lat']) && !empty((float) $listeLieu['lng']))
                         {
                         ?>
-
                             <li>
-                                    <a href="#" class="dropdown map-dropdown-link" data-target="plan"><?php echo $icone['plan']; ?> Voir sur le plan <i class="fa fa-caret-down" aria-hidden="true"></i></a>
+                                <a href="#" class="dropdown map-dropdown-link" data-target="plan"><?php echo $icone['plan']; ?> Voir sur le plan <i class="fa fa-caret-down" aria-hidden="true"></i></a>
                                 </li>
                     <?php
                         }
+
 						if (!empty($listeLieu['URL']))
 						{?>
-                            <li><a class="url lien_ext" href="<?php
-                                       if (!preg_match("/^https?:\/\//", (string) $listeLieu['URL']))
+                            <li><a class="url lien_ext" href="<?php  if (!preg_match("/^https?:\/\//", (string) $listeLieu['URL']))
 						{
 							echo 'http://' . $listeLieu['URL'];
-    }
-    else
+                        }
+                        else
 						{
 							echo $listeLieu['URL'];
 						}
@@ -333,38 +330,15 @@ while ($tab_even = $connector->fetchArray($resEventsInTheSameDayAndRegion))
             </div>
 			<!-- Fin titre -->
 
-
-
 			<div id="complement">
 
 				<ul id="images">
                     <li id="flyer" >
-
-                        <?php
-					$image_pour_flyer = false;
-                        if ($even->getValue('flyer') != '')
-					{
-                            ?>
-                        <a href="<?php echo Evenement::getFileHref(Evenement::getFilePath($even->getValue('flyer')), true) ?>" class="magnific-popup">
-                                <img src="<?php echo Evenement::getFileHref(Evenement::getFilePath($even->getValue('flyer')), true) ?>" alt="Flyer de cet événement" width="160" />
-                            </a>
-                            <?php
-                        }
-					else if ($even->getValue('image') != '')
-					{
-						$image_pour_flyer = true;
-                            ?>
-                        <a href="<?php echo Evenement::getFileHref(Evenement::getFilePath($even->getValue('image')), true) ?>" class="magnific-popup">
-                                <img src="<?php echo Evenement::getFileHref(Evenement::getFilePath($even->getValue('image')), true) ?>" alt="Photo pour cet événement" width="160" />
-                            </a>
-                            <?php
-                        }
-                        ?>
+                        <?= Evenement::figureHtml($even->getValue('flyer'), $even->getValue('image'), $even->getValue('titre'), 160) ?>
                     </li>
-
                     <li id="photo">
                         <?php
-                        if ($even->getValue('image') != '' && !$image_pour_flyer)
+                        if ($even->getValue('image') != '' && $even->getValue('flyer') != '' )
                         {
                             ?>
                         <a href="<?php echo Evenement::getFileHref(Evenement::getFilePath($even->getValue('image')), true) ?>" class="magnific-popup">
@@ -373,7 +347,6 @@ while ($tab_even = $connector->fetchArray($resEventsInTheSameDayAndRegion))
                             <?php
                         }
                         ?>
-
                     </li>
 				</ul>
 

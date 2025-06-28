@@ -2,9 +2,35 @@
 
 namespace Ladecadanse\Security;
 
+use Ladecadanse\UserLevel;
 
 class Authorization
 {
+    /**
+     * is
+     * EDITOR (AUTHOR)
+     * author of event
+     * lieu manager
+     * in organizers
+     * or in lieu organizers
+     */
+    public function isPersonneAllowedToEditEvenement(array $sessionToReadonly, array $eventWidthIds): bool
+    {
+        return (isset($sessionToReadonly['Sgroupe'])
+                        && (
+                        $sessionToReadonly['Sgroupe'] <= UserLevel::AUTHOR
+                        || $sessionToReadonly['SidPersonne'] == $eventWidthIds['e_idPersonne']
+                        || (isset($sessionToReadonly['Saffiliation_lieu']) && $eventWidthIds['e_idLieu'] == $sessionToReadonly['Saffiliation_lieu'])
+                        || isset($sessionToReadonly['SidPersonne']) && $this->isPersonneInEvenementByOrganisateur($sessionToReadonly['SidPersonne'], $eventWidthIds['e_idEvenement'])
+                        || isset($sessionToReadonly['SidPersonne']) && $this->isPersonneInLieuByOrganisateur($sessionToReadonly['SidPersonne'], $eventWidthIds['e_idLieu'])
+                )
+            );
+    }
+
+    public function isPersonneAllowedToManageEvenement(array $sessionToReadonly, array $eventWidthIds): bool
+    {
+        return (isset($sessionToReadonly['Sgroupe']) && $sessionToReadonly['Sgroupe'] <= UserLevel::AUTHOR && !empty($eventWidthIds['e_idPersonne']));
+    }
 
     /**
      * Vérifie dans la base si une personne est bien l'auteur d'un événement,
@@ -20,7 +46,9 @@ class Authorization
     {
         global $connector;
 
-        $sql_auteur = "SELECT idPersonne FROM " . $table . " WHERE id" . ucfirst($table) . "=" . $id . " AND idPersonne=" . $idP;
+        $tableSanitized = $connector->sanitize($table);
+
+        $sql_auteur = "SELECT idPersonne FROM " . $tableSanitized . " WHERE id" . ucfirst($tableSanitized) . "=" . (int) $id . " AND idPersonne=" . (int) $idP;
 
         $getP = $connector->query($sql_auteur);
 
@@ -32,12 +60,11 @@ class Authorization
         return false;
     }
 
-
     public function isPersonneInOrganisateur(int $idP, int $idO): bool
     {
         global $connector;
 
-        $sql = "SELECT idPersonne FROM personne_organisateur WHERE idOrganisateur=" . $idO . " AND idPersonne=" . $idP;
+        $sql = "SELECT idPersonne FROM personne_organisateur WHERE idOrganisateur=" . (int) $idO . " AND idPersonne=" . (int) $idP;
 
         $getP = $connector->query($sql);
 
@@ -46,8 +73,7 @@ class Authorization
             return true;
         }
 
-            return false;
-
+        return false;
     }
 
     function isPersonneInLieuByOrganisateur(int $idP, int $idL): bool
@@ -56,7 +82,7 @@ class Authorization
 
         $sql = "SELECT idPersonne FROM personne_organisateur, lieu_organisateur
         WHERE personne_organisateur.idOrganisateur=lieu_organisateur.idOrganisateur AND
-        lieu_organisateur.idLieu=" . $idL . " AND idPersonne=" . $idP;
+        lieu_organisateur.idLieu=" . (int) $idL . " AND idPersonne=" . (int) $idP;
 
         $getP = $connector->query($sql);
 
@@ -74,7 +100,7 @@ class Authorization
 
         $sql = "SELECT idPersonne FROM personne_organisateur, evenement_organisateur
         WHERE personne_organisateur.idOrganisateur=evenement_organisateur.idOrganisateur AND
-        evenement_organisateur.idEvenement=" . $idE . " AND idPersonne=" . $idP;
+        evenement_organisateur.idEvenement=" . (int) $idE . " AND idPersonne=" . (int) $idP;
 
         $getP = $connector->query($sql);
 

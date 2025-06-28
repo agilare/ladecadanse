@@ -390,8 +390,7 @@ else
 
 		$maxChar = Text::trouveMaxChar($listeEven['description'], 70, 8);
 
-		$titre_url = '<a class="url" href="/evenement.php?idE=' . (int)$listeEven['idEvenement'] . ($get['tri_agenda'] !== 'dateAjout' ? '&amp;tri_agenda=' . $get['tri_agenda'] : '' ) . '&amp;courant=' . $get['courant'] . '">' . sanitizeForHtml($listeEven['titre']) . '</a>';
-        $titre = Evenement::titre_selon_statut($titre_url, $listeEven['statut']);
+        $titre = '<a href="/evenement.php?idE=' . (int)$listeEven['idEvenement'] . ($get['tri_agenda'] !== 'dateAjout' ? '&amp;tri_agenda=' . $get['tri_agenda'] : '' ) . '&amp;courant=' . $get['courant'] . '" class="url">' .Evenement::titreSelonStatutHtml(sanitizeForHtml($listeEven['titre']), $listeEven['statut']). '</a>';
 
 		$lien_flyer = "";
 		if (!empty($listeEven['flyer']))
@@ -422,7 +421,6 @@ else
 
         $req_event_orga = $connector->query($sql_event_orga);
 
-		$adresse = HtmlShrink::getAdressFitted(null, sanitizeForHtml($listeLieu['localite'] ?? ""), sanitizeForHtml($listeLieu['quartier']), sanitizeForHtml($listeLieu['adresse']));
 
         $horaire = afficher_debut_fin($listeEven['horaire_debut'], $listeEven['horaire_fin'], $listeEven['dateEvenement']);
 
@@ -489,7 +487,7 @@ else
                     </ul>
                 </div>
             </div>
-			<div class="pratique"><span class="left"><?php echo $adresse; ?></span><span class="right"><?php echo $horaire; ?></span>
+			<div class="pratique"><span class="left"><?= sanitizeForHtml(HtmlShrink::adresseCompacteSelonContexte(null, $listeLieu['localite'] ?? "", $listeLieu['quartier'], $listeLieu['adresse'])) ?></span><span class="right"><?php echo $horaire; ?></span>
 				<div class="spacer"></div>
 			</div> <!-- fin pratique -->
 			<div class="spacer"></div>

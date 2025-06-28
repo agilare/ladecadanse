@@ -9,59 +9,164 @@
 global $connector;
 require_once("app/bootstrap.php");
 
-use Ladecadanse\Utils\Text;
-use Ladecadanse\HtmlShrink;
 use Ladecadanse\Evenement;
+use Ladecadanse\HtmlShrink;
+use Ladecadanse\Lieu;
+use Ladecadanse\Organisateur;
 use Ladecadanse\UserLevel;
+use Ladecadanse\Utils\Text;
 
 // used for meta tags, opengraph
 $page_titre = " agenda de sorties à " . $glo_regions[$_SESSION['region']] . ", prochains événements : concerts, soirées, films, théâtre, expos, bars, cinémas";
 $page_description = "Programme des prochains événements festifs et culturels à Genève et Lausanne : fêtes, concerts et soirées, cinéma, théâtre, expositions, vernissages, conférences, lieux culturels et alternatifs";
 
+
+list($regionInClause, $regionInParams) = $connectorPdo->buildInClause('e.region', $glo_regions_coverage[$_SESSION['region']]);
+
+$sql_even_in_status_and_region_clause = " e.statut NOT IN ('inactif', 'propose') AND ($regionInClause OR FIND_IN_SET (:region, loc.regions_covered)) ";
+$sql_even_in_status_and_region_params = array_merge([':region' => $_SESSION['region']], $regionInParams);
+
+
+$sql_events_today_in_region_order_by_category = "SELECT
+
+  e.genre AS e_genre,
+  e.idEvenement AS e_idEvenement,
+  e.titre AS e_titre,
+  e.statut AS e_statut,
+  e.idPersonne AS e_idPersonne,
+  e.dateEvenement AS e_dateEvenement,
+  e.ref AS e_ref,
+  e.flyer AS e_flyer,
+  e.image AS e_image,
+  e.description AS e_description,
+  e.horaire_debut AS e_horaire_debut,
+  e.horaire_fin AS e_horaire_fin,
+  e.horaire_complement AS e_horaire_complement,
+  e.prix AS e_prix,
+  e.prelocations AS e_prelocations,
+  e.idLieu AS e_idLieu,
+  e.idSalle AS e_idSalle,
+  e.nomLieu AS e_nomLieu,
+  e.adresse AS e_adresse,
+  e.quartier AS e_quartier,
+  loc.localite AS e_localite,
+  e.urlLieu AS e_urlLieu,
+
+  l.nom AS l_nom,
+  l.adresse AS l_adresse,
+  l.quartier AS l_quartier,
+  l.URL AS l_URL    ,
+  lloc.localite AS lloc_localite,
+
+  s.nom AS s_nom
+
+FROM evenement e
+JOIN localite loc ON e.localite_id = loc.id
+LEFT JOIN lieu l ON e.idLieu = l.idLieu
+LEFT JOIN localite lloc ON l.localite_id = lloc.id
+LEFT JOIN salle s ON e.idSalle = s.idSalle
+WHERE
+  e.dateEvenement = :date AND $sql_even_in_status_and_region_clause
+ORDER BY
+  CASE e.genre
+    WHEN 'fête' THEN 1
+    WHEN 'cinéma' THEN 2
+    WHEN 'théâtre' THEN 3
+    WHEN 'expos' THEN 4
+    WHEN 'divers' THEN 5
+  END,
+  e.dateAjout DESC";
+
+$stmt = $connectorPdo->prepare($sql_events_today_in_region_order_by_category);
+$stmt->execute(array_merge([':date' => $glo_auj_6h], $sql_even_in_status_and_region_params));
+
+$tab_events_today_in_region_by_category = $stmt->fetchAll(PDO::FETCH_GROUP);
+$count_events_today_in_region = $stmt->rowCount();
+
+// from all events ids build an array of their organizers
+$tab_events_today_ids = [];
+foreach ($tab_events_today_in_region_by_category as $g => $events) {
+    $tab_events_today_ids = [...$tab_events_today_ids, ...array_column($events, 'e_idEvenement')];
+}
+
+$tab_events_today_in_region_orgas = [];
+if (!empty($tab_events_today_ids))
+{
+    list($eventsTodayIdsInClause, $eventsTodayIdsParams) = $connectorPdo->buildInClause('eo.idEvenement', $tab_events_today_ids);
+
+    $stmt = $connectorPdo->prepare("SELECT
+
+    eo.idEvenement AS idEvenement,
+    o.idOrganisateur AS o_idOrganisateur,
+    o.nom AS o_nom,
+    o.URL AS o_URL
+
+    FROM evenement_organisateur eo
+    JOIN organisateur o ON eo.idOrganisateur = o.idOrganisateur AND $eventsTodayIdsInClause
+    ORDER BY nom DESC");
+
+    $stmt->execute($eventsTodayIdsParams);
+
+    $tab_orgas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    foreach ($tab_orgas AS $eo)
+    {
+        $tab_events_today_in_region_orgas[$eo['idEvenement']][] = [
+            'idOrganisateur' => $eo['o_idOrganisateur'],
+            'nom' => $eo['o_nom'],
+            'url' => $eo['o_URL']
+        ];
+    }
+}
+
+// ten latest events added
+$stmt = $connectorPdo->prepare("SELECT
+
+  e.idEvenement as e_idEvenement,
+  e.titre as e_titre,
+  e.dateEvenement as e_dateEvenement,
+  e.dateAjout as e_dateAjout,
+  e.idLieu AS e_idLieu,
+  e.idSalle AS e_idSalle,
+  e.nomLieu AS e_nomLieu,
+  e.adresse AS e_adresse,
+  e.quartier AS e_quartier,
+  loc.localite AS e_localite,
+  e.urlLieu AS e_urlLieu,
+  e.flyer e_flyer,
+  e.image e_image,
+  e.statut e_statut,
+
+  l.nom AS l_nom,
+  l.adresse AS l_adresse,
+  l.quartier AS l_quartier,
+  l.URL AS l_URL    ,
+  lloc.localite AS lloc_localite,
+
+  s.nom AS s_nom
+
+FROM evenement e
+LEFT JOIN lieu l ON e.idLieu = l.idLieu
+LEFT JOIN localite lloc ON l.localite_id = lloc.id
+LEFT JOIN salle s ON e.idSalle = s.idSalle
+JOIN localite loc on e.localite_id = loc.id
+WHERE $sql_even_in_status_and_region_clause ORDER BY e.dateAjout DESC LIMIT 0, 10");
+
+$stmt->execute($sql_even_in_status_and_region_params);
+
+$tab_ten_latest_events_in_region = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+$stmt = null;
+
 include("_header.inc.php");
-
-// eventsTodayPusblishedInRegionscoveredOrderByCategory
-$sqlEv = "SELECT idEvenement, genre, idLieu, idSalle, nomLieu, adresse, quartier, localite.localite AS localite, urlLieu, statut,
- titre, idPersonne, dateEvenement, ref, flyer, image, description, horaire_debut, horaire_fin,
- horaire_complement, prix, prelocations
- FROM evenement, localite
- WHERE evenement.localite_id=localite.id AND dateEvenement LIKE '" . $glo_auj_6h . "%' AND statut NOT IN ('inactif', 'propose') AND (region IN ('" . implode("', '", $glo_regions_coverage[$_SESSION['region']]) ."') OR FIND_IN_SET ('" . $connector->sanitize($_SESSION['region']) . "', localite.regions_covered))
- ORDER BY CASE `genre`
-        WHEN 'fête' THEN 1
-        WHEN 'cinéma' THEN 2
-        WHEN 'théâtre' THEN 3
-        WHEN 'expos' THEN 4
-        WHEN 'divers' THEN 5
-        END, dateAjout DESC";
-$req_even = $connector->query($sqlEv);
-
-// countEventsTodayPusblishedInRegionGe
-$event_count = ['ge' => 0, 'vd' => 0];
-$req_even_ge_nb = $connector->query("SELECT COUNT(idEvenement) AS nb
- FROM evenement, localite
- WHERE evenement.localite_id=localite.id AND dateEvenement LIKE '" . $glo_auj_6h . "%' AND statut NOT IN ('inactif', 'propose') AND (region IN ('" . implode("', '", $glo_regions_coverage['ge']) ."') OR FIND_IN_SET ('ge', localite.regions_covered))");
-$event_count['ge'] = $connector->fetchAll($req_even_ge_nb)[0]['nb'];
-
-//countEventsTodayPusblishedInRegionGe
-$req_even_vd_nb = $connector->query("SELECT COUNT(idEvenement) AS nb
- FROM evenement, localite
- WHERE evenement.localite_id=localite.id AND dateEvenement LIKE '" . $glo_auj_6h . "%' AND statut NOT IN ('inactif', 'propose') AND (region IN ('" . implode("', '", $glo_regions_coverage['vd']) ."') OR FIND_IN_SET ('vd', localite.regions_covered))");
-$event_count['vd'] = $connector->fetchAll($req_even_vd_nb)[0]['nb'];
-
-// tenLastestPublishedEventsInRegioncoveredOrderByCreationDesc
-$req_dern_even = $connector->query("
-SELECT idEvenement, titre, dateEvenement, dateAjout, nomLieu, idLieu, idSalle, flyer, image, statut
-FROM evenement
-JOIN localite l on evenement.localite_id = l.id
-WHERE (region IN ('" . implode("', '", $glo_regions_coverage[$_SESSION['region']]) ."') OR FIND_IN_SET ('" . $connector->sanitize($_SESSION['region']) . "', l.regions_covered) ) AND statut NOT IN ('inactif', 'propose') ORDER BY dateAjout DESC LIMIT 0, 10
-");
 ?>
 
-<div id="contenu" class="colonne">
+<main id="contenu" class="colonne">
 
     <?php
     // header banners & flash messages
-    // banner enabled (by admin) and not yet closed (by user)
+
+    // public banner enabled (by admin) and not yet closed (by user)
     if (HOME_TMP_BANNER_ENABLED && !isset($_COOKIE['home_tmp_banner']))
     {
         ?>
@@ -74,7 +179,7 @@ WHERE (region IN ('" . implode("', '", $glo_regions_coverage[$_SESSION['region']
     ?>
 
     <?php
-    // private banner
+    // private banner enabled (by admin) and not yet closed (by user)
     if ($videur->checkGroup(UserLevel::ACTOR) && HOME_TMP_BACK_BANNER_ENABLED && !isset($_COOKIE['home_tmp_back_banner']))
     {
         ?>
@@ -94,240 +199,133 @@ WHERE (region IN ('" . implode("', '", $glo_regions_coverage[$_SESSION['region']
     }
     ?>
 
-    <!-- TODO: <h1> englobant les 2 <h2> ? -->
-    <div id="entete_contenu">
-        <h2 class="accueil">Aujourd’hui <a href="/rss.php?type=evenements_auj" title="Flux RSS des événements du jour" class="desktop"><i class="fa fa-rss fa-lg"></i></a></h2>
-        <?php HtmlShrink::getMenuRegions($glo_regions, ['auj' => $glo_auj_6h], $event_count); ?>
+    <header id="entete_contenu">
+        <h1 class="accueil">Aujourd’hui <a href="/rss.php?type=evenements_auj" title="Flux RSS des événements du jour" class="desktop"><i class="fa fa-rss fa-lg"></i></a><br>
+            <small><?php echo ucfirst((string) date_fr($glo_auj_6h)); ?></small>
+        </h1>
+        <?php HtmlShrink::getMenuRegions($glo_regions, ['auj' => $glo_auj_6h], [$_SESSION['region'] => $count_events_today_in_region]); ?>
         <div class="spacer"></div>
-        <h2 id="today-date"><small><?php echo ucfirst((string) date_fr($glo_auj_6h)); ?></small></h2>
-    </div>
+    </header>
 
     <div class="spacer"><!-- --></div>
 
-    <section id="prochains_evenements" >
+    <div id="prochains_evenements">
 
         <?php
-        if ($event_count[$_SESSION['region']] == 0)
+        if ($count_events_today_in_region == 0)
         {
             HtmlShrink::msgInfo("Pas d’événement prévu aujourd’hui");
         }
 
-        //
-        // array categoriesIndexOfResults, par ex. : [0 => fetes, 1 => cine, 2 => expos] (pas de théatre ni divers)
-        // start j=0
-        // next : +1, prev : -1 (if exists) or current index +1 -1
-        // if newCategory : j++
-        //
-        // tab_even[genre]
-        $categoriesToIterateForAnchors = $glo_tab_genre;
-        $genre_courant = '';
-        while ($tab_even = $connector->fetchArray($req_even))
+        $genres_today = array_keys($tab_events_today_in_region_by_category);
+        foreach ($tab_events_today_in_region_by_category as $genre => $tab_genre_events)
         {
-            if ($tab_even['genre'] != $genre_courant)
-            {
-                $genre_even_nb = 0;
-                // cloture d'une categorie
-                if ($genre_courant != '')
-                {
-                    echo "</div>";
-                }
+            $genre_even_nb = 0;
+            ?>
+                <section class="genre">
 
-                ?>
-
-                <div class="genre">
-
-                    <div class="genre-titre">
-
-                        <h3 id="<?php echo Text::stripAccents($glo_tab_genre[$tab_even['genre']]); ?>"><?php echo ucfirst($glo_tab_genre[$tab_even['genre']]); ?></h3>
+                    <header class="genre-titre">
+                        <h2 id="<?php echo Text::stripAccents($glo_tab_genre[$genre]); ?>"><?php echo ucfirst($glo_tab_genre[$genre]); ?></h2>
                         <?php
-                        $genre_proch = next($categoriesToIterateForAnchors);
-                        if ($genre_proch)
-                        {
-                        ?>
-                            <a class="genre-jump" href="#<?php echo Text::stripAccents($genre_proch); ?>"><?php echo $genre_proch; ?>&nbsp;<i class="fa fa-long-arrow-down"></i></a>
-                        <?php
-                        }
-                        ?>
+                        $genre_proch = next($genres_today);
+                        if (isset($tab_events_today_in_region_by_category[$genre_proch])) : ?>
+                            <a class="genre-jump" href="#<?php echo Text::stripAccents($glo_tab_genre[$genre_proch]); ?>"><?php echo $glo_tab_genre[$genre_proch]; ?>&nbsp;<i class="fa fa-long-arrow-down"></i></a>
+                        <?php endif; ?>
                         <div class="spacer"></div>
-                    </div>
-                <?php
-                }
+                    </header>
 
-                // après le 1er even puis 1 item sur 2 : rappel
-                if ($genre_even_nb > 1 && ($genre_even_nb % 2 != 0))
-                {
-                    ?>
-                    <p class="rappel_date"><?php echo $glo_regions[$_SESSION['region']]; ?>, aujourd’hui, <?php echo $glo_tab_genre[$tab_even['genre']]; ?></p>
                     <?php
-                }
-
-                $genre_courant = $tab_even['genre'];
-
-                // Affichage du lieu selon son existence ou non dans la base
-                // TODO: left join & lieu_nom, lieu_adresse...
-                // TODO: function Event::getLieu($tab_even)
-                // TODO: idLieu !== null
-                // Lieu::htmlLinkName($tab_even)
-                // Lieu::htmlAdresse($tab_even)
-                // TODO: left join salle
-                if ($tab_even['idLieu'] != 0)
-                {
-                    $listeLieu = $connector->fetchArray(
-                        $connector->query("SELECT nom, adresse, quartier, localite.localite AS localite, URL FROM lieu, localite WHERE lieu.localite_id=localite.id AND idlieu='" . (int) $tab_even['idLieu'] . "'"));
-
-                    $evenLieuNomHtml = "<a href=\"/lieu.php?idL=" . (int) $tab_even['idLieu'] . "\" >" . sanitizeForHtml($listeLieu['nom']) . "</a>";
-
-                    if ($tab_even['idSalle'])
+                    foreach ($tab_genre_events as $tab_even)
                     {
-                        $req_salle = $connector->query("SELECT nom FROM salle WHERE idSalle='" . (int) $tab_even['idSalle'] . "'");
-                        $tab_salle = $connector->fetchArray($req_salle);
-                        $evenLieuNomHtml .= " - " . sanitizeForHtml($tab_salle['nom']);
-                    }
-                }
-                else
-                {
-                    $listeLieu['nom'] = sanitizeForHtml($tab_even['nomLieu']);
-                    $evenLieuNomHtml = sanitizeForHtml($tab_even['nomLieu']);
-                    $listeLieu['adresse'] = sanitizeForHtml($tab_even['adresse']);
-                    $listeLieu['quartier'] = sanitizeForHtml($tab_even['quartier']);
-                    $listeLieu['localite'] = sanitizeForHtml($tab_even['localite']);
-                }
-                // TODO: select distinct idOrganisateur, ... from organisateur join evenement_organisateur eo where eo.idE IN (idE1, idE2...)
-                // TODO: eventsOrganisateurs[idEvenement][orga1, orga2, ...]
-                $sql_event_orga = "SELECT organisateur.idOrganisateur, nom, URL FROM organisateur, evenement_organisateur
-                            WHERE evenement_organisateur.idEvenement=" . (int) $tab_even['idEvenement'] . " AND
-                             organisateur.idOrganisateur=evenement_organisateur.idOrganisateur
-                             ORDER BY nom DESC";
-                $req_event_orga = $connector->query($sql_event_orga);
+                        $genre_even_nb++;
 
-                ?>
+                        $even_lieu = Evenement::getLieu($tab_even);
 
-                <article class="evenement">
+                        // après le 1er even puis 1 item sur 2 : rappel
+                        if (($genre_even_nb % 2 != 0)) : ?>
+                            <p class="rappel_date"><?php echo $glo_regions[$_SESSION['region']]; ?>, aujourd’hui, <?php echo $glo_tab_genre[$genre]; ?></p>
+                        <?php endif; ?>
 
-                    <div class="titre">
-                        <span class="left">
-                            <?php
-                            echo Evenement::titre_selon_statut('<a href="/evenement.php?idE=' . (int) $tab_even['idEvenement'] . '">' . sanitizeForHtml($tab_even['titre']) . '</a>', $tab_even['statut']);
-                            ?>
-                        </span>
-                        <span class="right"><?php echo $evenLieuNomHtml ?></span>
-                        <div class="spacer"></div>
-                    </div>
+                        <article class="evenement">
 
-                    <div class="flyer">
-                    <?php
-                    // Even::getLinkImageHtml($tab_even)
-                    if (!empty($tab_even['flyer'])) { ?>
-                        <a href="<?php echo Evenement::getFileHref(Evenement::getFilePath($tab_even['flyer'])) ?>" class="magnific-popup">
-                            <img src="<?php echo Evenement::getFileHref(Evenement::getFilePath($tab_even['flyer'], "s_"), true) ?>" alt="Flyer" width="100" />
-                        </a>
-                    <?php } else if (!empty($tab_even['image'])) { ?>
-                        <a href="<?php echo Evenement::getFileHref(Evenement::getFilePath($tab_even['image'])) ?>" class="magnific-popup">
-                            <img src="<?php echo Evenement::getFileHref(Evenement::getFilePath($tab_even['image'], "s_"), true) ?>" alt="Photo" width="100" />
-                        </a>
-                    <?php } ?>
-                    </div>
+                            <header class="titre">
+                                <h3 class="left"><a href="/evenement.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>"><?= Evenement::titreSelonStatutHtml(sanitizeForHtml($tab_even['e_titre']), $tab_even['e_statut']) ?></a></h3>
+                                <span class="right"><?= Lieu::getLinkNameHtml($even_lieu['nom'], $even_lieu['idLieu'], $even_lieu['salle']) ?></span>
+                                <div class="spacer"></div>
+                            </header> <!-- titre -->
 
-                    <div class="description">
-                        <?= Text::texteHtmlReduit(Text::wikiToHtml(sanitizeForHtml($tab_even['description'])), Text::trouveMaxChar($tab_even['description'], 60, 6), " <a class=\"continuer\" href=\"/evenement.php?idE=" . (int) $tab_even['idEvenement'] . "\" title=\"Voir la fiche complète de l'événement\"> Lire la suite</a>"); ?>
-                        <ul class="event_orga">
-                            <?php
-                            // TODO: getOrgaNameAndLink() // nom url urlraccourci
-                            while ($tab = $connector->fetchArray($req_event_orga)) {
-                                $org_url = $tab['URL'];
-                                $org_url_nom = rtrim(preg_replace("(^https?://)", "", (string) $tab['URL']), "/");
-                                if (!preg_match("/^https?:\/\//", (string) $tab['URL']))
-                                {
-                                    $org_url = 'http://' . $tab['URL'];
-                                }
-                                ?>
-                                <li><a href="/organisateur.php?idO=<?php echo (int) $tab['idOrganisateur']; ?>"><?php echo sanitizeForHtml($tab['nom']); ?></a>
+                            <figure class="flyer"><?= Evenement::figureHtml($tab_even['e_flyer'], $tab_even['e_image'], $tab_even['e_titre'], 100) ?></figure>
+
+                            <div class="description">
+                                <p>
+                                <?= Text::texteHtmlReduit(Text::wikiToHtml(sanitizeForHtml($tab_even['e_description'])), Text::trouveMaxChar($tab_even['e_description'], 60, 6), ' <a class="continuer" href="/evenement.php?idE=' . (int) $tab_even['e_idEvenement'] . '"> Lire la suite</a>'); ?>
+                                </p>
+                                <?php if (!empty($tab_events_today_in_region_orgas[$tab_even['e_idEvenement']])): ?>
+                                    <?= Organisateur::getListLinkedHtml($tab_events_today_in_region_orgas[$tab_even['e_idEvenement']]) ?>
+                                <?php endif; ?>
+                            </div> <!-- description -->
+
+                            <div class="spacer"></div>
+
+                            <div class="pratique">
+                                <span class="left"><?= sanitizeForHtml(HtmlShrink::adresseCompacteSelonContexte(null, $even_lieu['localite'], $even_lieu['quartier'], $even_lieu['adresse'])); ?></span>
+                                <span class="right">
                                     <?php
-                                    if (!empty($tab['URL']))
+                                    $horaire_complet = afficher_debut_fin($tab_even['e_horaire_debut'], $tab_even['e_horaire_fin'], $tab_even['e_dateEvenement'])." " . sanitizeForHtml($tab_even['e_horaire_complement']);
+                                    echo $horaire_complet;
+                                    if (!empty($horaire_complet))
                                     {
-                                        ?>
-                                        <a href="<?php echo sanitizeForHtml($org_url); ?>" title="Site web de l'organisateur" class="lien_ext" target="_blank"><?php echo sanitizeForHtml($org_url_nom); ?></a>
-                                    <?php } ?>
-                                </li>
-                                <?php
-                            }
-                            ?>
-                        </ul>
-                    </div> <!-- description -->
+                                        echo ", ";
+                                    }
+                                    echo sanitizeForHtml($tab_even['e_prix']);
+                                    ?>
+                                </span>
+                                <div class="spacer"></div>
+                            </div> <!-- fin pratique -->
 
-                    <div class="spacer"></div>
+                            <footer class="edition">
 
-                    <div class="pratique">
-                        <span class="left"><?= sanitizeForHtml(HtmlShrink::getAdressFitted(null, $listeLieu['localite'], $listeLieu['quartier'], $listeLieu['adresse'])); ?></span>
-                        <span class="right"><?php
-                            echo afficher_debut_fin($tab_even['horaire_debut'], $tab_even['horaire_fin'], $tab_even['dateEvenement'])." " . sanitizeForHtml($tab_even['horaire_complement']);
-                            // TODO: getPrix
-                            if (!empty($tab_even['prix']))
-                            {
-                                if (!empty($tab_even['horaire_debut']) || !empty($tab_even['horaire_fin']) || !empty($tab_even['horaire_complement']))
-                                {
-                                    echo ", ";
-                                }
-                                echo sanitizeForHtml($tab_even['prix']);
-                            }
-                            ?>
-                        </span>
+                                <ul class="menu_action">
+                                    <li><a href="/evenement-report.php?idE=<?php echo (int) $tab_even['e_idEvenement']; ?>" class="signaler" title="Signaler une erreur"><i class="fa fa-flag-o fa-lg"></i></a></li>
+                                    <li><a href="/evenement_ics.php?idE=<?php echo (int) $tab_even['e_idEvenement']; ?>" class="ical" title="Exporter au format iCalendar dans votre agenda"><i class="fa fa-calendar-plus-o fa-lg"></i></a></li>
+                                </ul>
+
+                                <?php if ($authorization->isPersonneAllowedToEditEvenement($_SESSION, $tab_even)) : ?>
+                                <ul class="menu_edition">
+                                    <li class="action_copier">
+                                        <a href="/evenement-copy.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>" title="Copier l'événement">Copier vers d'autres dates</a>
+                                    </li>
+                                    <li class="action_editer">
+                                        <a href="/evenement-edit.php?action=editer&amp;idE=<?= (int) $tab_even['e_idEvenement'] ?>" title="Modifier l'événement">Modifier</a>
+                                    </li>
+                                    <li class="action_depublier">
+                                        <a href="#" id="btn_event_unpublish_<?= (int) $tab_even['e_idEvenement'] ?>" class="btn_event_unpublish" data-id="<?= (int) $tab_even['e_idEvenement'] ?>">Dépublier</a>
+                                    </li>
+                                    <?php if ($authorization->isPersonneAllowedToManageEvenement($_SESSION, $tab_even)) : ?>
+                                    <li>
+                                        <a href="/user.php?idP=<?= (int) $tab_even['e_idPersonne'] ?>"><?= $icone['personne'] ?></a>
+                                    </li>
+                                    <?php endif; ?>
+                                </ul>
+                                <?php endif; ?>
+
+                            </footer> <!-- fin edition -->
+
                         <div class="spacer"></div>
-                    </div> <!-- fin pratique -->
-
-                    <div class="edition">
-
-                        <ul class="menu_action">
-                            <li><a href="/evenement-report.php?idE=<?php echo (int) $tab_even['idEvenement']; ?>" class="signaler" title="Signaler une erreur"><i class="fa fa-flag-o fa-lg"></i></a></li>
-                            <li><a href="/evenement_ics.php?idE=<?php echo (int) $tab_even['idEvenement']; ?>" class="ical" title="Exporter au format iCalendar dans votre agenda"><i class="fa fa-calendar-plus-o fa-lg"></i></a></li>
-                        </ul>
-
-                        <?php
-                        // TODO: isAllowedToEdit($_Session, $tab_even...)
-                        //Peut ètre édité par les 'auteurs' sinon par le propre publicateur de cet événement
-                        if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 6 || $_SESSION['SidPersonne'] == $tab_even['idPersonne']) || (isset($_SESSION['Saffiliation_lieu']) && !empty($tab_even['idLieu']) && $tab_even['idLieu'] == $_SESSION['Saffiliation_lieu']) || isset($_SESSION['SidPersonne']) && $authorization->isPersonneInEvenementByOrganisateur($_SESSION['SidPersonne'], $tab_even['idEvenement']) || isset($_SESSION['SidPersonne']) && $tab_even['idLieu'] != 0 && $authorization->isPersonneInLieuByOrganisateur($_SESSION['SidPersonne'], $tab_even['idLieu'])
-                        )
-                        {
-                            ?>
-
-                        <ul class="menu_edition">
-                            <li class="action_copier">
-                                <a href="/evenement-copy.php?idE=<?= (int) $tab_even['idEvenement'] ?>" title="Copier l'événement">Copier vers d'autres dates</a>
-                            </li>
-                            <li class="action_editer">
-                                <a href="/evenement-edit.php?action=editer&amp;idE=<?= (int) $tab_even['idEvenement'] ?>" title="Modifier l'événement">Modifier</a>
-                            </li>
-                            <li class="action_depublier">
-                                <a href="#" id="btn_event_unpublish_<?= (int) $tab_even['idEvenement'] ?>" class="btn_event_unpublish" data-id="<?= (int) $tab_even['idEvenement'] ?>">Dépublier</a>
-                            </li>
-                            <li>
-                                <a href="/user.php?idP=<?= (int) $tab_even['idPersonne'] ?>"><?= $icone['personne'] ?></a>
-                            </li>
-                        </ul>
-
-                        <?php } ?>
-
-                    </div> <!-- fin edition -->
-
-                    <div class="spacer"></div>
 
                 </article> <!-- evenement -->
 
                 <div class="spacer"></div>
 
-                <?php
-                $genre_even_nb++;
-            } //while
+            <?php } // foreach events ?>
 
-            // closes last <div class="genre">
-            if ($genre_courant != '')
-            {
-                echo "</div> ";
-            }
-            ?>
-    </section> <!-- prochains_evenements -->
+        </section>
 
-</div>
+       <?php } // foreach ?>
+
+    </div> <!-- prochains_evenements -->
+
+</main>
 <!-- fin contenu -->
 
 
@@ -335,27 +333,27 @@ WHERE (region IN ('" . implode("', '", $glo_regions_coverage[$_SESSION['region']
 
     <?php include("_navigation_calendrier.inc.php"); ?>
 
-    <section class="dernieres">
+    <div class="secondaire">
 
         <ul class="autour">
-            <li><a href="https://www.facebook.com/ladecadanse" aria-label="Watch agilare/ladecadanse on GitHub" style="font-size:1em" target="_blank"><i class="fa fa-facebook fa-2x" aria-hidden="true"></i></a></li>
+            <li><a href="https://www.facebook.com/ladecadanse" aria-label="Page Facebook" style="font-size:1em" target="_blank"><i class="fa fa-facebook fa-2x" aria-hidden="true"></i></a></li>
             <li style="margin-left:10px;font-size:1em"><a href="https://github.com/agilare/ladecadanse/" aria-label="Watch agilare/ladecadanse on GitHub" target="_blank"><i class="fa fa-github fa-2x" aria-hidden="true"></i></a>
             </li>
             <li id="faireundon_btn" class="clear_mobile_important"><a href="/articles/faireUnDon.php">Faire un don</a>
             </li>
         </ul>
 
-        <div class="partenaires">
+        <section class="partenaires">
             <h2>Partenaires</h2>
             <ul class="autour">
-                <li><a href="https://olivedks.ch/" target="_blank"><img src="/web/content/debout-les-braves.jpg" alt="Debout les braves - Visions de la scène genevoise et d'ailleurs" title="Debout les braves - Visions de la scène genevoise et d'ailleurs" width="150" /></a></li>
-                <li><a href="https://culture-accessible.ch/" target="_blank"><img src="/web/content/culture-accessible-geneve.svg" alt="Culture accessible Genève" width="150" /></a></li>
-                <li><a href="https://epic-magazine.ch/" target="_blank"><img src="/web/content/EPIC_noir.png" alt="EPIC Magazine" width="150" /></a></li>
-                <li><a href="https://www.radiovostok.ch/" target="_blank"><img src="/web/content/radio_vostok.png" alt="Radio Vostok" width="150" height="59" /></a></li>
-                <li><a href="https://www.darksite.ch/" target="_blank"><img src="/web/content/darksite.png" alt="Darksite" width="150" height="43"  /></a></li>
+                <li><a href="https://olivedks.ch/" target="_blank"><img src="/web/content/debout-les-braves-s.jpg" alt="Debout les braves - Visions de la scène genevoise et d'ailleurs" title="Debout les braves - Visions de la scène genevoise et d'ailleurs" width="150" height="63"></a></li>
+                <li><a href="https://culture-accessible.ch/" target="_blank"><img src="/web/content/culture-accessible-geneve.svg" alt="Culture accessible Genève" width="150" height="46"></a></li>
+                <li><a href="https://epic-magazine.ch/" target="_blank"><img src="/web/content/EPIC_noir.png" alt="EPIC Magazine" width="150" height="94"></a></li>
+                <li><a href="https://www.radiovostok.ch/" target="_blank"><img src="/web/content/radio_vostok.png" alt="Radio Vostok" width="150" height="59"></a></li>
+                <li><a href="https://www.darksite.ch/" target="_blank"><img src="/web/content/darksite.png" alt="Darksite" width="150" height="43"></a></li>
             </ul>
-        </div>
-    </section>
+        </section>
+    </div>
 
 </aside>
 <!-- Fin Colonnegauche -->
@@ -363,63 +361,39 @@ WHERE (region IN ('" . implode("', '", $glo_regions_coverage[$_SESSION['region']
 
 <aside id="colonne_droite" class="colonne">
 
-    <div class="dernieres">
+    <section class="secondaire">
 
-        <span class="lien_rss"><a href="/rss.php?type=evenements_ajoutes"><i class="fa fa-rss fa-lg"></i></a></span>
+        <span class="lien_rss"><a href="/rss.php?type=evenements_ajoutes" aria-label="Flux RSS des derniers événements"><i class="fa fa-rss fa-lg"></i></a></span>
 
         <h2>Derniers événements ajoutés</h2>
 
         <div id="derniers_evenements">
 
             <?php
-            $date_ajout_courante = "";
-            while ($tab_dern_even = $connector->fetchArray($req_dern_even))
+            foreach ($tab_ten_latest_events_in_region as $tab_even)
             {
-                $date_ajout = mb_substr((string) $tab_dern_even['dateAjout'], 0, 10);
-
-                $evenLieuNomHtml = sanitizeForHtml($tab_dern_even['nomLieu']);
-                if ($tab_dern_even['idLieu'] != 0)
-                {
-                    $evenLieuNomHtml = "<a href=\"/lieu.php?idL=" . (int) $tab_dern_even['idLieu'] . "\">" . sanitizeForHtml($tab_dern_even['nomLieu']) . "</a>";
-                    if ($tab_dern_even['idSalle'] != 0)
-                    {
-                        $req_salle = $connector->query("SELECT nom, emplacement FROM salle WHERE idSalle='" . (int) $tab_dern_even['idSalle'] . "'");
-                        $tab_salle = $connector->fetchArray($req_salle);
-                        $evenLieuNomHtml .= " - " . sanitizeForHtml($tab_salle['nom']);
-                    }
-                }
+                $even_lieu = Evenement::getLieu($tab_even);
                 ?>
                 <div class="dernier_evenement">
 
-                    <div class="flyer">
-                    <?php if (!empty($tab_dern_even['flyer'])) { ?>
-                        <a href="<?php echo Evenement::getFileHref(Evenement::getFilePath($tab_dern_even['flyer'])) ?>" class="magnific-popup">
-                            <img src="<?php echo Evenement::getFileHref(Evenement::getFilePath($tab_dern_even['flyer'], "s_"), true) ?>" alt="Flyer" width="60" />
-                        </a>
-                    <?php } else if (!empty($tab_dern_even['image'])) { ?>
-                        <a href="<?php echo Evenement::getFileHref(Evenement::getFilePath($tab_dern_even['image'])) ?>" class="magnific-popup">
-                            <img src="<?php echo Evenement::getFileHref(Evenement::getFilePath($tab_dern_even['image'], "s_"), true) ?>" alt="Photo" width="60" />
-                        </a>
-                    <?php } ?>
-                    </div>
+                    <figure class="flyer"><?= Evenement::figureHtml($tab_even['e_flyer'], $tab_even['e_image'], $tab_even['e_titre'], 60) ?></figure>
 
-                    <h4><?= Evenement::titre_selon_statut('<a href="/evenement.php?idE=' . (int) $tab_dern_even['idEvenement'] . '" title="">' . sanitizeForHtml($tab_dern_even['titre']) . '</a>', $tab_dern_even['statut']) ?></h4>
-                    <h5><?= $evenLieuNomHtml ?></h5>
+                    <h3><a href="/evenement.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>"><?= Evenement::titreSelonStatutHtml(sanitizeForHtml($tab_even['e_titre']), $tab_even['e_statut']) ?></a></h3>
+                    <span><?= Lieu::getLinkNameHtml($even_lieu['nom'], $even_lieu['idLieu'], $even_lieu['salle']) ?></span>
 
-                    <p>le&nbsp;<a href="/evenement-agenda.php?courant=<?= urlencode($tab_dern_even['dateEvenement']) ?>"><?= date_fr($tab_dern_even['dateEvenement']) ?></a></p>
+                    <p>le&nbsp;<a href="/evenement-agenda.php?courant=<?= urlencode($tab_even['e_dateEvenement']) ?>"><?= date_fr($tab_even['e_dateEvenement']) ?></a></p>
                     <div class="spacer"></div>
                 </div> <!-- dernier_evenement -->
 
                 <div class="spacer"><!-- --></div>
 
-                <?php
-                $date_ajout_courante = $date_ajout;
-                }
+            <?php
+            }
             ?>
 
         </div> <!-- Fin derniers_evenements -->
 
-    </div> <!-- fin dernieres -->
+    </section> <!-- fin dernieres -->
 
 </aside> <!-- Fin colonne_droite -->
 

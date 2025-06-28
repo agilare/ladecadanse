@@ -57,6 +57,7 @@ $glo_auj = date("Y-m-d");
 $auj = date("Y-m-d");
 $glo_auj_6h = date("Y-m-d", time() - 21_600); // -6h
 
+// TODO: rn to $glo_regions_fr
 $glo_regions = ["ge" => "Genève", "vd" => "Lausanne", "rf" => "France", "hs" => "Autre"]; //  "fr" => "Fribourg",
 $glo_moisF = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
 
@@ -72,7 +73,6 @@ $glo_regions_coverage = ['ge' => ['ge', 'rf', 'hs'], 'vd' => ['vd', 'hs']];
 
 //// USERS
 $glo_statuts_personne = ['demande', 'actif', 'inactif'];
-$g_mauvais_mdp = ['123456', 'password', 'soleil', 'genève', 'coucou', 'boubou', 'bonheur', 'vacances', 'doudou', 'papillon', 'bonjour', 'cheval', 'capitainne', 'Mathilde', 'caramel', 'garfield', 'friends', 'simba12', 'reslabol', 'shaka00', '1254321', 'xydney', 'caline', 'licorne', 'mjdc10435410', '280195', 'freesurf', 'musique', 'jfdodolaure', '333333', 'rochet88', 'jennifer', 'motdepasse', 'maison', '123soleil', 'chocolat', '123123', 'nicolas', '888888', 'othello1', 'carpediem', 'multipass', 'berocl69', '166459', 'sofia10mag', 'chonchon', 'Camille', 'joelle', '654321', '12345678', 'qwertz', '12345', 'football', 'ladecadanse', '111111', 'abc123' ];
 
 //// EVENTS
 $glo_tab_genre = ["fête" => "fêtes", "cinéma" => "ciné", "théâtre" => "théâtre", "expos" => "expos", "divers" => "divers"];

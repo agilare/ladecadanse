@@ -642,12 +642,11 @@
       "id": "f15ca5b7-44b0-4674-bae2-6a3ce11f1f76",
       "comment": "",
       "command": "click",
-      "target": "css=.genre:nth-child(1) > .evenement:nth-child(2) img",
+      "target": "css=.genre:nth-child(1) > .evenement:nth-child(5) > .flyer img",
       "targets": [
-        ["css=.genre:nth-child(1) > .evenement:nth-child(2) img", "css:finder"],
-        ["xpath=//img[@alt='Flyer']", "xpath:img"],
-        ["xpath=//section[@id='prochains_evenements']/div/article/div[2]/a/img", "xpath:idRelative"],
-        ["xpath=//div[2]/a/img", "xpath:position"]
+        ["css=.genre:nth-child(1) > .evenement:nth-child(5) > .flyer", "css:finder"],
+        ["xpath=//div[@id='prochains_evenements']/section/article[2]/figure", "xpath:idRelative"],
+        ["xpath=//article[2]/figure", "xpath:position"]
       ],
       "value": ""
     }, {
@@ -666,12 +665,11 @@
       "id": "5e2afd96-318f-424f-ab21-08bfb49c21c3",
       "comment": "Signaler link of first event",
       "command": "click",
-      "target": "css=.evenement:nth-child(2) .signaler",
+      "target": "css=.genre:nth-child(1) > .evenement:nth-child(3) .signaler > .fa",
       "targets": [
-        ["css=.evenement:nth-child(4) .signaler", "css:finder"],
-        ["xpath=//section[@id='prochains_evenements']/div/article[2]/div[6]/ul/li/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/evenement-report.php?idE=31')]", "xpath:href"],
-        ["xpath=//article[2]/div[6]/ul/li/a", "xpath:position"]
+        ["css=.genre:nth-child(1) > .evenement:nth-child(3) .signaler > .fa", "css:finder"],
+        ["xpath=//div[@id='prochains_evenements']/section/article/footer/ul/li/a/i", "xpath:idRelative"],
+        ["xpath=//footer/ul/li/a/i", "xpath:position"]
       ],
       "value": ""
     }, {
@@ -1681,15 +1679,15 @@
       "id": "d40e547a-959b-465b-961b-34ea130358d9",
       "comment": "click 2e événement de la liste",
       "command": "click",
-      "target": "css=.evenement:nth-child(4) .left > a",
+      "target": "css=.genre:nth-child(1) > .evenement:nth-child(5) .left > a",
       "targets": [
-        ["linkText=Fête de la bière et de la choucroute", "linkText"],
-        ["css=.evenement:nth-child(4) .left > a", "css:finder"],
-        ["xpath=//a[contains(text(),'Fête de la bière et de la choucroute')]", "xpath:link"],
-        ["xpath=//section[@id='prochains_evenements']/div/article[2]/div/span/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/evenement.php?idE=33')]", "xpath:href"],
-        ["xpath=//article[2]/div/span/a", "xpath:position"],
-        ["xpath=//a[contains(.,'Fête de la bière et de la choucroute')]", "xpath:innerText"]
+        ["linkText=Fête du mont Freundler", "linkText"],
+        ["css=.genre:nth-child(1) > .evenement:nth-child(5) .left > a", "css:finder"],
+        ["xpath=//a[contains(text(),'Fête du mont Freundler')]", "xpath:link"],
+        ["xpath=//div[@id='prochains_evenements']/section/article[2]/header/h3/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '/evenement.php?idE=1852')]", "xpath:href"],
+        ["xpath=//article[2]/header/h3/a", "xpath:position"],
+        ["xpath=//a[contains(.,'Fête du mont Freundler')]", "xpath:innerText"]
       ],
       "value": ""
     }, {

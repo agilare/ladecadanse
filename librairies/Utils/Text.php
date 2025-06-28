@@ -63,6 +63,17 @@ class Text
         }, $input);
     }
 
+    public static function getUrlWithName(string $url): array
+    {
+        $urlComplete = $url;
+        if (!preg_match("/^https?:\/\//", $url))
+        {
+            $urlComplete = 'http://' . $url;
+        }
+
+        return ['url' => $urlComplete, 'urlName' => rtrim(preg_replace("(^https?://)", "", $url), "/")];
+    }
+
 
     public static function formatbytes($val, int $digits = 3, $mode = "SI", $bB = "B"): string
     { //$mode == "SI"|"IEC", $bB == "b"|"B"
@@ -167,20 +178,16 @@ class Text
      * @see function texteHtmlReduit
      * @todo Tenir compte des autres balises wiki
      */
-    public static function trouveMaxChar(string $texte, int $charsLigne, int $maxLignes)
+    public static function trouveMaxChar(string $texte, int $charsLigne, int $maxLignes): int
     {
-
         $i = 0;
         $j = 0;
         $lignes = 1;
         $tailleTexte = mb_strlen($texte);
 
-        /*
-         * Compte jusqu'? la fin du texte ou si le nombre max de lignes a ?t? atteint
-         */
+        // Compte jusqu'à la fin du texte ou si le nombre max de lignes a ?t? atteint
         while ($i < $tailleTexte && $lignes < $maxLignes)
         {
-
             //si la fin d'une ligne a ?t? atteinte ou si un saut de ligne est lu
             if ($j == $charsLigne || $texte[$i] == "\n")
             {
@@ -189,11 +196,11 @@ class Text
             }
 
             //si une balise wiki de titre h2 est lue, compte pour une ligne
-            if ($i != ($tailleTexte - 1) && ($texte[$i] == '=' && $texte[$i + 1] == '='))
-            {
-                $lignes++;
-                $j = 0;
-            }
+//            if ($i != ($tailleTexte - 1) && ($texte[$i] == '=' && $texte[$i + 1] == '='))
+//            {
+//                $lignes++;
+//                $j = 0;
+//            }
 
             /*
               if ($i != ($tailleTexte - 1) && ($texte[$i] == '\'' && $texte[$i+1] == '\'')) {

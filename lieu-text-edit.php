@@ -231,13 +231,13 @@ echo '<div id="entete_contenu">';
 if ($get['action'] == 'editer' || $get['action'] == 'update')
 {
 
-	$act = "update&type=".$get['type']."&idL=".$get['idL'];
+	$act = "update&type=".$get['type']."&idL=".(int)$get['idL'];
 
-	$req_lieu = $connector->query("SELECT nom, adresse, quartier, categorie, URL FROM lieu WHERE idLieu=".$get['idL']);
+	$req_lieu = $connector->query("SELECT nom, adresse, quartier, categorie, URL FROM lieu WHERE idLieu=".(int)$get['idL']);
  	$detailsLieu = $connector->fetchArray($req_lieu);
 
 	echo '
-	<h2>Modifier la '.$get['type'].' sur <a href="/lieu.php?idL='.$get['idL'].'" title="Fiche du lieu '.sanitizeForHtml($detailsLieu['nom']).'">'.sanitizeForHtml($detailsLieu['nom']).'</a></h2>';
+	<h2>Modifier la '.$get['type'].' sur <a href="/lieu.php?idL='.(int)$get['idL'].'" title="Fiche du lieu '.sanitizeForHtml($detailsLieu['nom']).'">'.sanitizeForHtml($detailsLieu['nom']).'</a></h2>';
 
 
 }

@@ -11,41 +11,46 @@ use Ladecadanse\Utils\Utils;
 class HtmlShrink
 {
 
-    public static function getAdressFitted($region, $localite, $quartier, $adr)
+    public static function adresseCompacteSelonContexte(?string $region, string $localite, string $quartier, string $adresse): string
     {
-        $adresse = '';
+        $result = $adresse;
 
-        if (!empty($adr))
-            $adresse .= $adr;
-
+        // (Plainpalais) "autre" is unecessary
         if (!empty($quartier) && $quartier != 'autre')
-            $adresse .= " (" . $quartier . ") ";
+        {
+            $result .= " (" . $quartier . ") ";
+        }
 
-        if (!empty($localite) && $localite != 'Autre' && $localite != $quartier)
-            $adresse .= " - " . $localite;
+        // avoid unecessary "Autre" and redundancy of quartier "Genève" and localite "Genève"
+        if (!empty($localite) && $localite != 'Autre' && $quartier != $localite)
+        {
+            $result .= " - " . $localite;
+        }
 
+        if ($region == 'ge' && $localite != 'Genève')
+        {
+            $result .= " - Genève";
+        }
+        elseif ($region == 'vd')
+        {
+            $result .= " - Vaud";
+        }
+        elseif ($region == 'rf')
+        {
+            $result .= " - France";
+        }
 
-        if ($localite != 'Genève' && $region == 'ge')
-            $adresse .= " - Genève";
-
-        if ($region == 'vd')
-            $adresse .= " - Vaud";
-
-
-        if ($region == 'rf')
-            $adresse .= " - France";
-
-        return $adresse;
+        return $result;
     }
 
     public static function getMenuRegions(array $glo_regions, $get, $event_nb = []): string
     {
         ob_start();
         //
-?>
+        ?>
         <ul class="menu_region">
-            <?php
-            $class_region = 'ge';
+        <?php
+        $class_region = 'ge';
         foreach ($glo_regions as $n => $v)
         {
             if ($n == 'ge' || $n == 'vd') //|| $n == 'fr'
@@ -66,12 +71,6 @@ class HtmlShrink
                 $ici = '';
                 if ($n == $_SESSION['region'])
                     $ici = ' ici';
-
-                $nb = '';
-                if (!empty($event_nb))
-                {
-                    $nb = $event_nb[$n];
-                }
 
                 $excludeFromQueryString = ['region'];
                 // HACK: don't transmit default values to allow crawling (see robots.txt)
@@ -107,10 +106,10 @@ class HtmlShrink
 
                 ?><li>
             <a href="?region=<?php echo $n; ?>&<?php echo Utils::urlQueryArrayToString($get, $excludeFromQueryString); ?>" class="<?php echo $class_region; ?><?php echo $ici; ?>"><?php echo $v; ?>&nbsp;<?php
-                                if ($nb !== '')
+                if (!empty($event_nb[$n]))
                 {
-        ?><span class="events-nb"><?php echo $nb; ?></span><?php } ?></a></li><?php
-            }
+                    ?><span class="events-nb"><?php echo $event_nb[$n]; ?></span><?php } ?></a></li><?php
+                }
         }
         ?></ul>
         <?php
@@ -346,15 +345,15 @@ class HtmlShrink
         if ($nom_page == "index")
         {
         ?>
-            <link rel="alternate" type="application/rss+xml" title="Événements du jour" href="/rss.php?type=evenements_auj" />
-            <link rel="alternate" type="application/rss+xml" title="Derniers événements ajoutés" href="/rss.php?type=evenements_ajoutes" />
+            <link rel="alternate" type="application/rss+xml" title="Événements du jour" href="/rss.php?type=evenements_auj">
+            <link rel="alternate" type="application/rss+xml" title="Derniers événements ajoutés" href="/rss.php?type=evenements_ajoutes">
         <?php
         }
 
         if ($nom_page == "lieu")
         {
         ?>
-            <link rel="alternate" type="application/rss+xml" title="Prochains événements dans ce lieu" href="/rss.php?type=lieu_evenements&amp;id=<?php echo intval($_GET['idL']) ?>" />
+            <link rel="alternate" type="application/rss+xml" title="Prochains événements dans ce lieu" href="/rss.php?type=lieu_evenements&amp;id=<?php echo intval($_GET['idL']) ?>">
                         <?php
         }
     }
@@ -363,7 +362,7 @@ class HtmlShrink
     {
             ?>
         	<a href="<?php echo $aHref ?>" class="<?php echo $aClasses ?>" target="_blank">
-        		<img src="<?php echo $imgSrc ?>" width="<?php echo $imgWidth ?>"  alt="<?php echo $imgAlt ?>" />
+        		<img src="<?php echo $imgSrc ?>" width="<?php echo $imgWidth ?>"  alt="<?php echo $imgAlt ?>">
         	</a>
         <?php
     }
