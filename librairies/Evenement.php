@@ -4,6 +4,7 @@
 namespace Ladecadanse;
 
 use Ladecadanse\Element;
+use Ladecadanse\Utils\ImageDriver2;
 
 class Evenement extends Element
 {
@@ -34,22 +35,20 @@ class Evenement extends Element
                 'quartier' => $event['l_quartier'],
                 'localite' => $event['lloc_localite'],
                 'url' => $event['l_URL'],
+                'salle' => $event['s_nom'] ?? null,
             ];
-
-            if ($event['s_nom'])
-            {
-                $result['nom'] .= " - " . sanitizeForHtml($event['s_nom']);
-            }
 
             return $result;
         }
 
         return [
+                'idLieu' => null,
                 'nom' => $event['e_nomLieu'],
                 'adresse' => $event['e_adresse'],
                 'quartier' => $event['e_quartier'],
                 'localite' => $event['e_localite'],
                 'url' => $event['e_urlLieu'],
+                'salle' => null
             ];
     }
 
@@ -79,6 +78,25 @@ class Evenement extends Element
         }
 
         return $titreHtml;
+    }
+
+    public static function figureHtml(string $flyer, string $image, string $titre, int $smallWidth): string
+    {
+        ob_start();
+
+        if (!empty($flyer)) { ?>
+            <a href="<?php echo self::getFileHref(self::getFilePath($flyer)) ?>" class="magnific-popup">
+                <img src="<?php echo self::getFileHref(self::getFilePath($flyer, "s_"), true) ?>" alt="Flyer de <?= sanitizeForHtml($titre)?>" width="<?= $smallWidth ?>" height="<?= ImageDriver2::getProportionalHeightFromGivenWidth(self::getSystemFilePath(self::getFilePath($flyer, "s_")), $smallWidth); ?>">
+            </a>
+        <?php } elseif (!empty($image)) { ?>
+            <a href="<?php echo self::getFileHref(self::getFilePath($image)) ?>" class="magnific-popup">
+                <img src="<?php echo self::getFileHref(self::getFilePath($image, "s_"), true) ?>" alt="Illustration de <?= sanitizeForHtml($titre)?>" width="<?= $smallWidth ?>" height="<?= ImageDriver2::getProportionalHeightFromGivenWidth(self::getSystemFilePath(self::getFilePath($image, "s_")), $smallWidth); ?>">
+            </a>
+        <?php
+        }
+        $result = ob_get_contents();
+        ob_clean();
+        return $result;
     }
 
     public static function rmImageAndItsMiniature(string $fileName): void

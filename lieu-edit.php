@@ -66,7 +66,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] == 'ok')
 	if ($form->traitement($_POST, $_FILES))
 	{
 		$_SESSION['lieu_flash_msg']  = $form->getMessage();
-        header("Location: lieu.php?idL=".$form->id); die();
+        header("Location: lieu.php?idL=".(int)$form->id); die();
 	}
 }
 else if ($get['action'] == 'editer')

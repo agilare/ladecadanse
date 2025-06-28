@@ -9,11 +9,12 @@
 global $connector;
 require_once("app/bootstrap.php");
 
-use Ladecadanse\Utils\Text;
-use Ladecadanse\HtmlShrink;
 use Ladecadanse\Evenement;
+use Ladecadanse\HtmlShrink;
+use Ladecadanse\Lieu;
+use Ladecadanse\Organisateur;
 use Ladecadanse\UserLevel;
-use Ladecadanse\Utils\ImageDriver2;
+use Ladecadanse\Utils\Text;
 
 // used for meta tags, opengraph
 $page_titre = " agenda de sorties à " . $glo_regions[$_SESSION['region']] . ", prochains événements : concerts, soirées, films, théâtre, expos, bars, cinémas";
@@ -92,8 +93,6 @@ $tab_events_today_in_region_orgas = [];
 if (!empty($tab_events_today_ids))
 {
     list($eventsTodayIdsInClause, $eventsTodayIdsParams) = $connectorPdo->buildInClause('eo.idEvenement', $tab_events_today_ids);
-//    dump($eventsTodayIdsInClause);
-//    dump($eventsTodayIdsParams);
 
     $stmt = $connectorPdo->prepare("SELECT
 
@@ -240,6 +239,8 @@ include("_header.inc.php");
                     {
                         $genre_even_nb++;
 
+                        $even_lieu = Evenement::getLieu($tab_even);
+
                         // après le 1er even puis 1 item sur 2 : rappel
                         if (($genre_even_nb % 2 != 0)) : ?>
                             <p class="rappel_date"><?php echo $glo_regions[$_SESSION['region']]; ?>, aujourd’hui, <?php echo $glo_tab_genre[$genre]; ?></p>
@@ -249,103 +250,68 @@ include("_header.inc.php");
 
                             <header class="titre">
                                 <h3 class="left"><a href="/evenement.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>"><?= Evenement::titreSelonStatutHtml(sanitizeForHtml($tab_even['e_titre']), $tab_even['e_statut']) ?></a></h3>
-                                <span class="right">
-                                    <!-- TODO: Lieu::getLinkNameHtml(idLieu, nom) -->
-                                    <?php
-                                    $even_lieu = Evenement::getLieu($tab_even);
-                                    if ($tab_even['e_idLieu']) { ?>
-                                        <a href="/lieu.php?idL=<?= (int) $even_lieu['idLieu'] ?>"><?= sanitizeForHtml($even_lieu['nom']) ?></a>
-                                    <?php } else { ?>
-                                        <?= sanitizeForHtml($even_lieu['nom']) ?>
-                                    <?php } ?>
-                                </span>
+                                <span class="right"><?= Lieu::getLinkNameHtml($even_lieu['nom'], $even_lieu['idLieu'], $even_lieu['salle']) ?></span>
                                 <div class="spacer"></div>
                             </header> <!-- titre -->
 
-                            <figure class="flyer">
-                            <?php
-                            // TODO: Evenement::getFlyerFigureHtml(flyer, image, titre, smallWidth)
-                            if (!empty($tab_even['e_flyer'])) { ?>
-                                <a href="<?php echo Evenement::getFileHref(Evenement::getFilePath($tab_even['e_flyer'])) ?>" class="magnific-popup">
-                                    <img src="<?php echo Evenement::getFileHref(Evenement::getFilePath($tab_even['e_flyer'], "s_"), true) ?>" alt="Flyer de <?= sanitizeForHtml($tab_even['e_titre'])?>" width="100" height="<?= ImageDriver2::getProportionalHeightFromGivenWidth(Evenement::getSystemFilePath(Evenement::getFilePath($tab_even['e_flyer'], "s_")), 100); ?>">
-                                </a>
-                            <?php } else if (!empty($tab_even['e_image'])) { ?>
-                                <a href="<?php echo Evenement::getFileHref(Evenement::getFilePath($tab_even['e_image'])) ?>" class="magnific-popup">
-                                    <img src="<?php echo Evenement::getFileHref(Evenement::getFilePath($tab_even['e_image'], "s_"), true) ?>" alt="Illustration de <?= sanitizeForHtml($tab_even['e_titre'])?>" width="100" height="<?= ImageDriver2::getProportionalHeightFromGivenWidth(Evenement::getSystemFilePath(Evenement::getFilePath($tab_even['e_image'], "s_")), 100); ?>">
-                                </a>
-                            <?php } ?>
-                            </figure>
+                            <figure class="flyer"><?= Evenement::figureHtml($tab_even['e_flyer'], $tab_even['e_image'], $tab_even['e_titre'], 100) ?></figure>
 
-                    <div class="description">
-                        <p>
-                        <?= Text::texteHtmlReduit(Text::wikiToHtml(sanitizeForHtml($tab_even['e_description'])), Text::trouveMaxChar($tab_even['e_description'], 60, 6), " <a class=\"continuer\" href=\"/evenement.php?idE=" . (int) $tab_even['e_idEvenement'] . "\" title=\"Voir la fiche complète de l'événement\"> Lire la suite</a>"); ?>
-                        </p>
-                        <?php
-                        // TODO: Organisateur::getLinksListHtml($tab_events_today_in_region_orgas[$tab_even['e_idEvenement']])
-                        if (!empty($tab_events_today_in_region_orgas[$tab_even['e_idEvenement']])) { ?>
-                            <ul class="event_orga" aria-label="Organisateurs">
-                                <?php foreach ($tab_events_today_in_region_orgas[$tab_even['e_idEvenement']] as $eo) { ?>
-                                    <li>
-                                        <a href="/organisateur.php?idO=<?php echo (int) $eo['idOrganisateur']; ?>"><?php echo sanitizeForHtml($eo['nom']); ?></a><?php if (!empty($eo['url'])) { $organisateurUrl = Text::getUrlWithName($eo['url']); ?> -&nbsp;<a href="<?php echo sanitizeForHtml($organisateurUrl['url']); ?>" title="Site web de l'organisateur" class="lien_ext" target="_blank"><?php echo sanitizeForHtml($organisateurUrl['urlName']); ?></a>
-                                        <?php } ?>
+                            <div class="description">
+                                <p>
+                                <?= Text::texteHtmlReduit(Text::wikiToHtml(sanitizeForHtml($tab_even['e_description'])), Text::trouveMaxChar($tab_even['e_description'], 60, 6), ' <a class="continuer" href="/evenement.php?idE=' . (int) $tab_even['e_idEvenement'] . '"> Lire la suite</a>'); ?>
+                                </p>
+                                <?php if (!empty($tab_events_today_in_region_orgas[$tab_even['e_idEvenement']])): ?>
+                                    <?= Organisateur::getListLinkedHtml($tab_events_today_in_region_orgas[$tab_even['e_idEvenement']]) ?>
+                                <?php endif; ?>
+                            </div> <!-- description -->
+
+                            <div class="spacer"></div>
+
+                            <div class="pratique">
+                                <span class="left"><?= sanitizeForHtml(HtmlShrink::adresseCompacteSelonContexte(null, $even_lieu['localite'], $even_lieu['quartier'], $even_lieu['adresse'])); ?></span>
+                                <span class="right">
+                                    <?php
+                                    $horaire_complet = afficher_debut_fin($tab_even['e_horaire_debut'], $tab_even['e_horaire_fin'], $tab_even['e_dateEvenement'])." " . sanitizeForHtml($tab_even['e_horaire_complement']);
+                                    echo $horaire_complet;
+                                    if (!empty($horaire_complet))
+                                    {
+                                        echo ", ";
+                                    }
+                                    echo sanitizeForHtml($tab_even['e_prix']);
+                                    ?>
+                                </span>
+                                <div class="spacer"></div>
+                            </div> <!-- fin pratique -->
+
+                            <footer class="edition">
+
+                                <ul class="menu_action">
+                                    <li><a href="/evenement-report.php?idE=<?php echo (int) $tab_even['e_idEvenement']; ?>" class="signaler" title="Signaler une erreur"><i class="fa fa-flag-o fa-lg"></i></a></li>
+                                    <li><a href="/evenement_ics.php?idE=<?php echo (int) $tab_even['e_idEvenement']; ?>" class="ical" title="Exporter au format iCalendar dans votre agenda"><i class="fa fa-calendar-plus-o fa-lg"></i></a></li>
+                                </ul>
+
+                                <?php if ($authorization->isPersonneAllowedToEditEvenement($_SESSION, $tab_even)) : ?>
+                                <ul class="menu_edition">
+                                    <li class="action_copier">
+                                        <a href="/evenement-copy.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>" title="Copier l'événement">Copier vers d'autres dates</a>
                                     </li>
-                                <?php } ?>
-                            </ul>
-                        <?php } ?>
-                    </div> <!-- description -->
+                                    <li class="action_editer">
+                                        <a href="/evenement-edit.php?action=editer&amp;idE=<?= (int) $tab_even['e_idEvenement'] ?>" title="Modifier l'événement">Modifier</a>
+                                    </li>
+                                    <li class="action_depublier">
+                                        <a href="#" id="btn_event_unpublish_<?= (int) $tab_even['e_idEvenement'] ?>" class="btn_event_unpublish" data-id="<?= (int) $tab_even['e_idEvenement'] ?>">Dépublier</a>
+                                    </li>
+                                    <?php if ($authorization->isPersonneAllowedToManageEvenement($_SESSION, $tab_even)) : ?>
+                                    <li>
+                                        <a href="/user.php?idP=<?= (int) $tab_even['e_idPersonne'] ?>"><?= $icone['personne'] ?></a>
+                                    </li>
+                                    <?php endif; ?>
+                                </ul>
+                                <?php endif; ?>
 
-                    <div class="spacer"></div>
+                            </footer> <!-- fin edition -->
 
-                    <div class="pratique">
-                        <!-- TODO: Lieu::getCompactAdress($lieu) -->
-                        <span class="left"><?= sanitizeForHtml(HtmlShrink::getAdressFitted(null, $even_lieu['localite'], $even_lieu['quartier'], $even_lieu['adresse'])); ?></span>
-                        <span class="right"><?php
-                            // TODO: Evenement::getScheduleString($tab_even);
-                            $horaire_complet = afficher_debut_fin($tab_even['e_horaire_debut'], $tab_even['e_horaire_fin'], $tab_even['e_dateEvenement'])." " . sanitizeForHtml($tab_even['e_horaire_complement']);
-                            echo $horaire_complet;
-                            // TODO: try echo implode(", ", [$horaire_complet, $tab_even['e_prix']]);
-                            if (!empty($tab_even['e_prix']))
-                            {
-                                if (!empty($tab_even['e_horaire_debut']) || !empty($tab_even['e_horaire_fin']) || !empty($tab_even['e_horaire_complement']))
-                                {
-                                    echo ", ";
-                                }
-                                echo sanitizeForHtml($tab_even['e_prix']);
-                            }
-                            ?>
-                        </span>
                         <div class="spacer"></div>
-                    </div> <!-- fin pratique -->
-
-                    <footer class="edition">
-
-                        <ul class="menu_action">
-                            <li><a href="/evenement-report.php?idE=<?php echo (int) $tab_even['e_idEvenement']; ?>" class="signaler" title="Signaler une erreur"><i class="fa fa-flag-o fa-lg"></i></a></li>
-                            <li><a href="/evenement_ics.php?idE=<?php echo (int) $tab_even['e_idEvenement']; ?>" class="ical" title="Exporter au format iCalendar dans votre agenda"><i class="fa fa-calendar-plus-o fa-lg"></i></a></li>
-                        </ul>
-
-                        <?php if ($authorization->isPersonneAllowedToEditEvenement($_SESSION, $tab_even)) : ?>
-                        <ul class="menu_edition">
-                            <li class="action_copier">
-                                <a href="/evenement-copy.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>" title="Copier l'événement">Copier vers d'autres dates</a>
-                            </li>
-                            <li class="action_editer">
-                                <a href="/evenement-edit.php?action=editer&amp;idE=<?= (int) $tab_even['e_idEvenement'] ?>" title="Modifier l'événement">Modifier</a>
-                            </li>
-                            <li class="action_depublier">
-                                <a href="#" id="btn_event_unpublish_<?= (int) $tab_even['e_idEvenement'] ?>" class="btn_event_unpublish" data-id="<?= (int) $tab_even['e_idEvenement'] ?>">Dépublier</a>
-                            </li>
-                            <?php if ($authorization->isPersonneAllowedToManageEvenement($_SESSION, $tab_even)) : ?>
-                            <li>
-                                <a href="/user.php?idP=<?= (int) $tab_even['e_idPersonne'] ?>"><?= $icone['personne'] ?></a>
-                            </li>
-                            <?php endif; ?>
-                        </ul>
-                        <?php endif; ?>
-
-                    </footer> <!-- fin edition -->
-
-                    <div class="spacer"></div>
 
                 </article> <!-- evenement -->
 
@@ -410,23 +376,10 @@ include("_header.inc.php");
                 ?>
                 <div class="dernier_evenement">
 
-                    <figure class="flyer">
-                    <?php if (!empty($tab_even['e_flyer'])) { ?>
-                        <a href="<?php echo Evenement::getFileHref(Evenement::getFilePath($tab_even['e_flyer'])) ?>" class="magnific-popup">
-                            <img src="<?php echo Evenement::getFileHref(Evenement::getFilePath($tab_even['e_flyer'], "s_"), true) ?>" alt="Flyer de <?= sanitizeForHtml($tab_even['e_titre']) ?>" width="60" height="<?= ImageDriver2::getProportionalHeightFromGivenWidth(Evenement::getSystemFilePath(Evenement::getFilePath($tab_even['e_flyer'], "s_")), 60); ?>">
-                        </a>
-                    <?php } else if (!empty($tab_even['e_image'])) { ?>
-                        <a href="<?php echo Evenement::getFileHref(Evenement::getFilePath($tab_even['e_image'])) ?>" class="magnific-popup">
-                            <img src="<?php echo Evenement::getFileHref(Evenement::getFilePath($tab_even['e_image'], "s_"), true) ?>" alt="Illustration de <?= sanitizeForHtml($tab_even['e_titre']) ?>" width="60" height="<?= ImageDriver2::getProportionalHeightFromGivenWidth(Evenement::getSystemFilePath(Evenement::getFilePath($tab_even['e_image'], "s_")), 60); ?>">
-                        </a>
-                    <?php } ?>
-                    </figure>
+                    <figure class="flyer"><?= Evenement::figureHtml($tab_even['e_flyer'], $tab_even['e_image'], $tab_even['e_titre'], 60) ?></figure>
 
-                    <h3><a href="/evenement.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>"><?= Evenement::titreSelonStatutHtml(sanitizeForHtml($tab_even['e_titre']), $tab_even['e_statut']) ?></a></h3><span><?php if ($tab_even['e_idLieu']) { ?>
-                        <a href="/lieu.php?idL=<?= (int) $even_lieu['idLieu'] ?>"><?= sanitizeForHtml($even_lieu['nom']) ?></a>
-                    <?php } else { ?>
-                        <?= sanitizeForHtml($even_lieu['nom']) ?>
-                    <?php } ?></span>
+                    <h3><a href="/evenement.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>"><?= Evenement::titreSelonStatutHtml(sanitizeForHtml($tab_even['e_titre']), $tab_even['e_statut']) ?></a></h3>
+                    <span><?= Lieu::getLinkNameHtml($even_lieu['nom'], $even_lieu['idLieu'], $even_lieu['salle']) ?></span>
 
                     <p>le&nbsp;<a href="/evenement-agenda.php?courant=<?= urlencode($tab_even['e_dateEvenement']) ?>"><?= date_fr($tab_even['e_dateEvenement']) ?></a></p>
                     <div class="spacer"></div>

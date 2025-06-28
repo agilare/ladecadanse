@@ -977,7 +977,7 @@ if ($verif->nbErreurs() > 0)
                             echo "selected=\"selected\" ";
                         }
 
-            echo "value=\"" . $lieuTrouve['idLieu'] . "\">" . sanitizeForHtml($nom_lieu) . "</option>";
+            echo "value=\"" . (int)$lieuTrouve['idLieu'] . "\">" . sanitizeForHtml($nom_lieu) . "</option>";
 
             $sql_salle = "select * from salle where idLieu=" . $lieuTrouve['idLieu'] . " AND salle.status='actif' ";
                         $req_salle = $connector->query($sql_salle);
@@ -988,7 +988,7 @@ if ($verif->nbErreurs() > 0)
                 {
                     echo "selected=\"selected\" ";
                 }
-                echo " style=\"font-style:italic;color:#444;\" value=" . $lieuTrouve['idLieu'] . "_" . $tab_salle['idSalle'] . ">" . sanitizeForHtml($nom_lieu) . "&nbsp;– " . sanitizeForHtml($tab_salle['nom']) . "</option>";
+                echo " style=\"font-style:italic;color:#444;\" value=" . (int)$lieuTrouve['idLieu'] . "_" . (int)$tab_salle['idSalle'] . ">" . sanitizeForHtml($nom_lieu) . "&nbsp;– " . sanitizeForHtml($tab_salle['nom']) . "</option>";
             }
                     }
         ?>
@@ -1061,7 +1061,7 @@ if ($verif->nbErreurs() > 0)
                 echo 'selected="selected" ';
             }
 
-            echo "value=\"".$tab['id']."\">".$tab['localite']."</option>";
+            echo "value=\"".(int)$tab['id']."\">".$tab['localite']."</option>";
 
             // Genève quartiers
             if ($tab['id'] == 44)
@@ -1205,7 +1205,7 @@ if ($verif->nbErreurs() > 0)
             {
                 echo 'selected="selected" ';
             }
-            echo "value=\"" . $tab['idOrganisateur'] . "\">" . sanitizeForHtml($tab['nom']) . "</option>";
+            echo "value=\"" . (int) $tab['idOrganisateur'] . "\">" . sanitizeForHtml($tab['nom']) . "</option>";
                                 }
         ?></select>
                 <div class="guideChamp">L’événement figurera dans la page de ces <a href="/organisateurs.php" target="_blank">organisateurs</a>. Si vous souhaitez que votre organisation soit listée, <a href="/contacteznous.php" target='_blank'>demandez-nous</a> (avec des infos : texte, liens...)</div>

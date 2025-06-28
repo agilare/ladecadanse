@@ -276,7 +276,7 @@ while ([$id, $nom] = mysqli_fetch_row($req_lieux))
 
 
     $aff_menulieux .= ">
-	<td><a href=\"/lieu.php?idL=" . $id . "&amp;" . Utils::urlQueryArrayToString($get, ["idL", "type_description"]) . "\">";
+	<td><a href=\"/lieu.php?idL=" . (int) $id . "&amp;" . Utils::urlQueryArrayToString($get, ["idL", "type_description"]) . "\">";
 
     if (preg_match("/^(Le |La |Les |L')(.*)/", (string) $nomDuLieu, $matches))
     {
@@ -299,7 +299,7 @@ while ([$id, $nom] = mysqli_fetch_row($req_lieux))
 	<td class=\"nb_even_lieu\">" . $nb_aff . "</td>
 	</tr>";
 
-    $prec = "/lieu.php?vue=" . $get['vue'] . "&amp;idL=" . $id . $url_tranche . "";
+    $prec = "/lieu.php?vue=" . $get['vue'] . "&amp;idL=" . (int)$id . $url_tranche . "";
 
     if ($id_passe && $url_suiv == "" && $id != $get['idL'])
     {

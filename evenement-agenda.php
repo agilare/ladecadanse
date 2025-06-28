@@ -421,7 +421,6 @@ else
 
         $req_event_orga = $connector->query($sql_event_orga);
 
-		$adresse = HtmlShrink::getAdressFitted(null, sanitizeForHtml($listeLieu['localite'] ?? ""), sanitizeForHtml($listeLieu['quartier']), sanitizeForHtml($listeLieu['adresse']));
 
         $horaire = afficher_debut_fin($listeEven['horaire_debut'], $listeEven['horaire_fin'], $listeEven['dateEvenement']);
 
@@ -488,7 +487,7 @@ else
                     </ul>
                 </div>
             </div>
-			<div class="pratique"><span class="left"><?php echo $adresse; ?></span><span class="right"><?php echo $horaire; ?></span>
+			<div class="pratique"><span class="left"><?= sanitizeForHtml(HtmlShrink::adresseCompacteSelonContexte(null, $listeLieu['localite'] ?? "", $listeLieu['quartier'], $listeLieu['adresse'])) ?></span><span class="right"><?php echo $horaire; ?></span>
 				<div class="spacer"></div>
 			</div> <!-- fin pratique -->
 			<div class="spacer"></div>

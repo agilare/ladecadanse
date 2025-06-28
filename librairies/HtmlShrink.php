@@ -11,31 +11,36 @@ use Ladecadanse\Utils\Utils;
 class HtmlShrink
 {
 
-    public static function getAdressFitted($region, $localite, $quartier, $adr)
+    public static function adresseCompacteSelonContexte(?string $region, string $localite, string $quartier, string $adresse): string
     {
-        $adresse = '';
+        $result = $adresse;
 
-        if (!empty($adr))
-            $adresse .= $adr;
-
+        // (Plainpalais) "autre" is unecessary
         if (!empty($quartier) && $quartier != 'autre')
-            $adresse .= " (" . $quartier . ") ";
+        {
+            $result .= " (" . $quartier . ") ";
+        }
 
-        if (!empty($localite) && $localite != 'Autre' && $localite != $quartier)
-            $adresse .= " - " . $localite;
+        // avoid unecessary "Autre" and redundancy of quartier "Genève" and localite "Genève"
+        if (!empty($localite) && $localite != 'Autre' && $quartier != $localite)
+        {
+            $result .= " - " . $localite;
+        }
 
+        if ($region == 'ge' && $localite != 'Genève')
+        {
+            $result .= " - Genève";
+        }
+        elseif ($region == 'vd')
+        {
+            $result .= " - Vaud";
+        }
+        elseif ($region == 'rf')
+        {
+            $result .= " - France";
+        }
 
-        if ($localite != 'Genève' && $region == 'ge')
-            $adresse .= " - Genève";
-
-        if ($region == 'vd')
-            $adresse .= " - Vaud";
-
-
-        if ($region == 'rf')
-            $adresse .= " - France";
-
-        return $adresse;
+        return $result;
     }
 
     public static function getMenuRegions(array $glo_regions, $get, $event_nb = []): string
@@ -352,7 +357,7 @@ class HtmlShrink
     {
             ?>
         	<a href="<?php echo $aHref ?>" class="<?php echo $aClasses ?>" target="_blank">
-        		<img src="<?php echo $imgSrc ?>" width="<?php echo $imgWidth ?>"  alt="<?php echo $imgAlt ?>">  
+        		<img src="<?php echo $imgSrc ?>" width="<?php echo $imgWidth ?>"  alt="<?php echo $imgAlt ?>">
         	</a>
         <?php
     }

@@ -144,9 +144,28 @@ if (!$action_terminee)
  */
 if (isset($get['idE']))
 {
-	$req_getEven = $connector->query("SELECT idEvenement, idLieu, idSalle, idPersonne, titre, genre, dateEvenement,
-	 nomLieu, adresse, quartier, urlLieu, description, flyer, prix, horaire_debut,horaire_fin, horaire_complement, ref, prelocations, statut
-	  FROM evenement WHERE idEvenement =".$get['idE']);
+	$req_getEven = $connector->query("SELECT
+  e.genre AS e_genre,
+  e.idEvenement AS e_idEvenement,
+  e.titre AS e_titre,
+  e.statut AS e_statut,
+  e.idPersonne AS e_idPersonne,
+  e.dateEvenement AS e_dateEvenement,
+  e.ref AS e_ref,
+  e.flyer AS e_flyer,
+  e.image AS e_image,
+  e.description AS e_description,
+  e.horaire_debut AS e_horaire_debut,
+  e.horaire_fin AS e_horaire_fin,
+  e.horaire_complement AS e_horaire_complement,
+  e.prix AS e_prix,
+  e.prelocations AS e_prelocations,
+  e.idLieu AS e_idLieu,
+  e.idSalle AS e_idSalle,
+  e.nomLieu AS e_nomLieu,
+  e.adresse AS e_adresse,
+  e.quartier AS e_quartier
+	  FROM evenement e WHERE idEvenement =".(int)$get['idE']);
 
 	if ($affEven = $connector->fetchArray($req_getEven))
 	{
@@ -155,7 +174,7 @@ if (isset($get['idE']))
 	}
 	else
 	{
-		HtmlShrink::msgErreur("Aucun événement n'est associé à ".$get['idE']);
+		HtmlShrink::msgErreur("Aucun événement n'est associé à cet id");
 		exit;
 	} // if fetchArray
 

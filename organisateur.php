@@ -58,7 +58,7 @@ include("_menuorganisateurs.inc.php");
 $action_ajouter = '';
 if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= UserLevel::ACTOR) || isset($_SESSION['SidPersonne']) && $authorization->isPersonneInOrganisateur($_SESSION['SidPersonne'], $get['idO']))
 {
-	$action_ajouter = '<li class="action_ajouter"><a href="/evenement-edit.php?idO=' . $get['idO'] . '">Ajouter un événement de cet organisateur</a></li>';
+	$action_ajouter = '<li class="action_ajouter"><a href="/evenement-edit.php?idO=' . (int)$get['idO'] . '">Ajouter un événement de cet organisateur</a></li>';
 }
 
 $action_editer = '';
@@ -66,7 +66,7 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 6
 || (isset($_SESSION['SidPersonne']) && $authorization->isPersonneInOrganisateur($_SESSION['SidPersonne'], $get['idO']) && $_SESSION['Sgroupe'] <= 8))
 )
 {
-	$action_editer = '<li class="action_editer"><a href="/organisateur-edit.php?action=editer&amp;idO=' . $get['idO'] . '">Modifier cet organisateur</a></li>';
+	$action_editer = '<li class="action_editer"><a href="/organisateur-edit.php?action=editer&amp;idO=' .(int) $get['idO'] . '">Modifier cet organisateur</a></li>';
 }
 
 ?>
@@ -165,7 +165,7 @@ $req = $connector->query($sql);
 
 			while ($tab = $connector->fetchArray($req))
 			{
-				$lieux .= '<li><a href="/lieu.php?idL=' . $tab['idLieu'] . '">' . sanitizeForHtml($tab['nom']) . "</a></li>";
+				$lieux .= '<li><a href="/lieu.php?idL=' . (int)$tab['idLieu'] . '">' . sanitizeForHtml($tab['nom']) . "</a></li>";
     }
 			$lieux .= '</ul></li>';
 		}
@@ -223,7 +223,7 @@ $req = $connector->query($sql);
         ?>
 
         <ul id="menu_descriptions">
-                <li class="ici"><h3><a href="<?php echo basename(__FILE__); ?>?idO=<?php echo $get['idO'] ?>">L'organisateur se présente</a></h3></li>
+                <li class="ici"><h3><a href="<?php echo basename(__FILE__); ?>?idO=<?php echo (int)$get['idO'] ?>">L'organisateur se présente</a></h3></li>
             </ul>
         <?php
 	}
@@ -241,7 +241,7 @@ $req = $connector->query($sql);
 <div class="spacer"></div>
 
 <?php
-	$lien_rss_evenements = '<a href="/rss.php?type=organisateur_evenements&amp;id='.$get['idO'].'" title="Flux RSS des prochains événements"><i class="fa fa-rss fa-lg" style="color:#f5b045"></i></a>';
+	$lien_rss_evenements = '<a href="/rss.php?type=organisateur_evenements&amp;id='.(int)$get['idO'].'" title="Flux RSS des prochains événements"><i class="fa fa-rss fa-lg" style="color:#f5b045"></i></a>';
 ?>
 
 <ul id="menu_complement">
@@ -289,7 +289,7 @@ if ($evenements->getNbElements() > 0)
 		$menu_genre .= "<li";
 		if ($g == $get['genre_even'])
 		{
-			$menu_genre .= " class=\"ici\"><a href=\"/organisateur.php?idO=".$get['idO']."&amp;genre_even=".urlencode($g)."#prochains_even\" title=\"".$g."\">";
+			$menu_genre .= " class=\"ici\"><a href=\"/organisateur.php?idO=".(int)$get['idO']."&amp;genre_even=".urlencode($g)."#prochains_even\" title=\"".$g."\">";
 			if ($g == "fête")
 			{
 				$g .= "s";
@@ -305,7 +305,7 @@ if ($evenements->getNbElements() > 0)
 		}
 		else
 		{
-			$menu_genre .= "><a href=\"/organisateur.php?idO=".$get['idO']."&amp;genre_even=".$g."#prochains_even\" title=\"".$g."\">".$g;
+			$menu_genre .= "><a href=\"/organisateur.php?idO=".(int)$get['idO']."&amp;genre_even=".$g."#prochains_even\" title=\"".$g."\">".$g;
 			$menu_genre .= " (".$nb_even_genre.")";
 			$menu_genre .= "</a>";
 		}
@@ -378,7 +378,7 @@ if ($evenements->getNbElements() > 0)
 			$tab_lieu = $connector->fetchArray(
 			$connector->query("SELECT nom FROM lieu WHERE idlieu='" . (int) $even->getValue('idLieu') . "'"));
 
-            $nom_lieu = "<a href=\"/lieu.php?idL=" . $even->getValue('idLieu') . "\" title=\"Voir la fiche du lieu : " . sanitizeForHtml($tab_lieu['nom']) . "\" >" . sanitizeForHtml($tab_lieu['nom']) . "</a>";
+            $nom_lieu = "<a href=\"/lieu.php?idL=" . (int)$even->getValue('idLieu') . "\" title=\"Voir la fiche du lieu : " . sanitizeForHtml($tab_lieu['nom']) . "\" >" . sanitizeForHtml($tab_lieu['nom']) . "</a>";
         }
 		else
 		{
@@ -393,31 +393,7 @@ if ($evenements->getNbElements() > 0)
 		<td><?php echo date2jour($even->getValue('dateEvenement')) ?></td>
 
 		<td class="flyer">
-            <?php
-            if ($even->getValue('flyer') != '')
-            {
-                        ?>
-                        <a href="<?php echo Evenement::getFileHref(Evenement::getFilePath($even->getValue('flyer')), true) ?>" class="magnific-popup" target="_blank">
-
-                <img src="<?php echo Evenement::getFileHref(Evenement::getFilePath($even->getValue('flyer'), 's_'), true) ?>" alt="Flyer" width="60" />
-                        </a>
-                        <?php
-
-
-            }
-            else if ($even->getValue('image') != '')
-            {
-
-                ?>
-            <a href="<?php echo Evenement::getFileHref(Evenement::getFilePath($even->getValue('image')), true) ?>" class="magnific-popup" target="_blank">
-
-                            <img src="<?php echo Evenement::getFileHref(Evenement::getFilePath($even->getValue('image'), 's_'), true) ?>" alt="Photo" width="60" />
-                        </a>
-
-                <?php
-
-            }
-            ?>
+            <?= Evenement::figureHtml($even->getValue('flyer'), $even->getValue('image'), $even->getValue('titre'), 60) ?>
 		</td>
 
 		<td>
@@ -447,9 +423,9 @@ if ($evenements->getNbElements() > 0)
             ?>
             <ul>
 
-                <li ><a href="/evenement-copy.php?idE=<?php echo $even->getValue('idEvenement') ?>" title="Copier cet événement"><?php echo $iconeCopier ?></a></li>
-                <li ><a href="/evenement-edit.php?action=editer&amp;idE=<?php echo $even->getValue('idEvenement') ?>" title="Éditer cet événement"><?php echo $iconeEditer ?></a></li>
-                <li class=""><a href="#" id="btn_event_unpublish_<?php echo $even->getValue('idEvenement'); ?>" class="btn_event_unpublish" data-id="<?php echo $even->getValue('idEvenement') ?>"><?php echo $icone['depublier']; ?></a></li>
+                <li ><a href="/evenement-copy.php?idE=<?php echo (int)$even->getValue('idEvenement') ?>" title="Copier cet événement"><?php echo $iconeCopier ?></a></li>
+                <li ><a href="/evenement-edit.php?action=editer&amp;idE=<?php echo (int)$even->getValue('idEvenement') ?>" title="Éditer cet événement"><?php echo $iconeEditer ?></a></li>
+                <li class=""><a href="#" id="btn_event_unpublish_<?php echo (int)$even->getValue('idEvenement'); ?>" class="btn_event_unpublish" data-id="<?php echo (int)$even->getValue('idEvenement') ?>"><?php echo $icone['depublier']; ?></a></li>
             </ul>
             <?php
             }
