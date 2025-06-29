@@ -29,10 +29,74 @@ RewriteBase /
 
 Header set Strict-Transport-Security "max-age=86400" env=HTTPS
 
+# Prevent directory browsing; implicit filename pattern match, and choose from amongst the results
+Options -MultiViews
+
+# allow ajax (fetch, XMLHttpRequest, etc.), websockets from externals
+SetEnvIf Origin "^(https://noctambus.ch|https://www.noctambus.ch|https://maps.googleapis.com|https://browser.sentry-cdn.com)$" AccessControlAllowOrigin=$0
+Header set Access-Control-Allow-Origin %{AccessControlAllowOrigin}e env=AccessControlAllowOrigin
+
+# Block access to backup and source files that may be left by some text editors and can pose a security risk when anyone has access to them
+<FilesMatch "(^#.*#|\.(bak|conf|dist|env|fla|in[ci]|log|md|old|orig|psd|sh|sql|sw[op]|tmp)|~)$">
+	Require all denied
+</FilesMatch>
+
+# block public access to individual sensible files
+<FilesMatch "(composer\.json|composer\.lock)$">
+    Require all denied
+</FilesMatch>
+
+# protect http public access but not inclusions
+RewriteCond %{REQUEST_URI} ^/(var|app|librairies|resources)
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^(var|app|librairies|resources) - [F,L]
+
+# uploads/ can only allow access of images
+RewriteCond %{REQUEST_URI} ^/web/uploads/ [NC]
+RewriteCond %{REQUEST_URI} !\.(jpg|jpeg|png|gif|webp)$ [NC]
+RewriteRule .* - [F]
+
+# exclude a web scraper
+RewriteCond %{HTTP_USER_AGENT} ^Scrapy [NC]
+RewriteRule ^.* - [F,L]
+
+Header set Permissions-Policy "accelerometer=(), ambient-light-sensor=(), autoplay=(), battery=(), camera=(), cross-origin-isolated=(), display-capture=(), document-domain=(), encrypted-media=(), execution-while-not-rendered=(), execution-while-out-of-viewport=(), fullscreen=('self'), geolocation=(), gyroscope=(), keyboard-map=*, magnetometer=(), microphone=(), midi=(), navigation-override=(), payment=(), picture-in-picture=(), publickey-credentials-get=*, screen-wake-lock=(), sync-xhr=('self'), usb=(), web-share=*, xr-spatial-tracking=()"
+
+
+## MISC
+
+# Redirection pour favicon
+Redirect 301 /favicon.ico /web/interface/favicon.png
+
+# Redirections pour apple-touch-icons
+Redirect 301 /apple-touch-icon.png /web/interface/apple-icon.png
+Redirect 301 /apple-touch-icon-precomposed.png /web/interface/apple-icon.png
+Redirect 301 /apple-touch-icon-120x120-precomposed.png /web/interface/apple-icon-120x120.png
+Redirect 301 /apple-touch-icon-120x120.png /web/interface/apple-icon-120x120.png
+Redirect 301 /apple-touch-icon-76x76.png /web/interface/apple-icon-76x76.png
+
+Redirect 301 /images/interface/radio_vostok.png /web/content/radio_vostok.png
+
+
+## APPLICATION
+
+# shortcuts
+RewriteRule ^lausanne /index.php?region=vd [NC,R=301,L]
+RewriteRule ^fribourg /index.php?region=fr [NC,R=301,L]
+RewriteRule ^geneve /index.php?region=ge [NC,R=301,L]
+# old name to new
+RewriteRule ^agenda.php /evenement-agenda.php [NC,R=301,L]
+
 # apart if file exists, accesses of files in years 2005 to 2023, directly under evenements/ are redirected to evenements/{year}/
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^web/uploads/evenements/(s_)?(\d+)_(200[5-9]|201[0-9]|202[0-3])-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])(.*)\.(jpe?g?|png|gif)$ /web/uploads/evenements/$3/$1$2_$3-$4-$5$6.$7 [NC,R=301,L]
 
+# SEO
+<IfModule mod_headers.c>
+  <If "%{REQUEST_URI} =~ m#/web/uploads/(evenements|lieux|organisateurs)(/[^/]+)?/s_.*\.(jpg|jpeg|png|webp|gif)$#">
+    Header set X-Robots-Tag "noindex"
+  </If>
+</IfModule>
 
 ErrorDocument 404 /articles/error.php
 ErrorDocument 429 /articles/error.php
