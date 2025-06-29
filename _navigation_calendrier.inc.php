@@ -147,7 +147,7 @@ $url_forwarded_parameters = ($get['genre'] !== '' ? "&amp;genre=" . $get['genre'
         </li>
         <li id="cette_semaine">
             <a href="/evenement-agenda.php?<?php echo $url_query_region_et
-            . "courant=" . $dateToday->format('Y-m-d')
+            . "courant=" . $date_today->format('Y-m-d')
             . ($get['genre'] !== '' ? "&amp;genre=" . $get['genre'] : "")
             . "&amp;sem=1" . ($get['tri_agenda'] !== 'dateAjout' ? "&amp;tri_agenda=". $get['tri_agenda'] : " ")
             ?>">Cette semaine</a>
