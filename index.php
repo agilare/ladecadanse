@@ -254,7 +254,7 @@ include("_header.inc.php");
                                 <div class="spacer"></div>
                             </header> <!-- titre -->
 
-                            <figure class="flyer"><?= Evenement::figureHtml($tab_even['e_flyer'], $tab_even['e_image'], $tab_even['e_titre'], 100) ?></figure>
+                            <figure class="flyer"><?= Evenement::mainFigureHtml($tab_even['e_flyer'], $tab_even['e_image'], $tab_even['e_titre'], 100) ?></figure>
 
                             <div class="description">
                                 <p>
@@ -376,7 +376,7 @@ include("_header.inc.php");
                 ?>
                 <div class="dernier_evenement">
 
-                    <figure class="flyer"><?= Evenement::figureHtml($tab_even['e_flyer'], $tab_even['e_image'], $tab_even['e_titre'], 60) ?></figure>
+                    <figure class="flyer"><?= Evenement::mainFigureHtml($tab_even['e_flyer'], $tab_even['e_image'], $tab_even['e_titre'], 60) ?></figure>
 
                     <h3><a href="/evenement.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>"><?= Evenement::titreSelonStatutHtml(sanitizeForHtml($tab_even['e_titre']), $tab_even['e_statut']) ?></a></h3>
                     <span><?= Lieu::getLinkNameHtml($even_lieu['nom'], $even_lieu['idLieu'], $even_lieu['salle']) ?></span>

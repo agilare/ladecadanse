@@ -334,7 +334,7 @@ while ($tab_even = $connector->fetchArray($resEventsInTheSameDayAndRegion))
 
 				<ul id="images">
                     <li id="flyer" >
-                        <?= Evenement::figureHtml($even->getValue('flyer'), $even->getValue('image'), $even->getValue('titre'), 160) ?>
+                        <?= Evenement::mainFigureHtml($even->getValue('flyer'), $even->getValue('image'), $even->getValue('titre'), 160) ?>
                     </li>
                     <li id="photo">
                         <?php

@@ -393,7 +393,7 @@ if ($evenements->getNbElements() > 0)
 		<td><?php echo date2jour($even->getValue('dateEvenement')) ?></td>
 
 		<td class="flyer">
-            <?= Evenement::figureHtml($even->getValue('flyer'), $even->getValue('image'), $even->getValue('titre'), 60) ?>
+            <?= Evenement::mainFigureHtml($even->getValue('flyer'), $even->getValue('image'), $even->getValue('titre'), 60) ?>
 		</td>
 
 		<td>

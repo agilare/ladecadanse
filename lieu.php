@@ -754,7 +754,7 @@ if ($nb_pres > 0)
 			</td>
 
 			<td class="flyer photo">
-                <?= Evenement::figureHtml($even->getValue('flyer'), $even->getValue('image'), $even->getValue('titre'), 60) ?>
+                <?= Evenement::mainFigureHtml($even->getValue('flyer'), $even->getValue('image'), $even->getValue('titre'), 60) ?>
             </td>
 
 			<td>

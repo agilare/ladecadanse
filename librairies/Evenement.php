@@ -80,20 +80,45 @@ class Evenement extends Element
         return $titreHtml;
     }
 
-    public static function figureHtml(string $flyer, string $image, string $titre, int $smallWidth): string
+    public static function mainFigureHtml(string $flyer, string $image, string $titre, int $smallWidth): string
     {
         ob_start();
 
-        if (!empty($flyer)) { ?>
-            <a href="<?php echo self::getFileHref(self::getFilePath($flyer)) ?>" class="magnific-popup">
-                <img src="<?php echo self::getFileHref(self::getFilePath($flyer, "s_"), true) ?>" alt="Flyer de <?= sanitizeForHtml($titre)?>" width="<?= $smallWidth ?>" height="<?= ImageDriver2::getProportionalHeightFromGivenWidth(self::getSystemFilePath(self::getFilePath($flyer, "s_")), $smallWidth); ?>">
-            </a>
-        <?php } elseif (!empty($image)) { ?>
-            <a href="<?php echo self::getFileHref(self::getFilePath($image)) ?>" class="magnific-popup">
-                <img src="<?php echo self::getFileHref(self::getFilePath($image, "s_"), true) ?>" alt="Illustration de <?= sanitizeForHtml($titre)?>" width="<?= $smallWidth ?>" height="<?= ImageDriver2::getProportionalHeightFromGivenWidth(self::getSystemFilePath(self::getFilePath($image, "s_")), $smallWidth); ?>">
-            </a>
-        <?php
+        // by default display small version
+        $imgSmallFilePathPrefix = "s_";
+        // 120 : max width when saving small version of uploaded flyers
+        // if container width exceeds width of small version, choose big version
+        if ($smallWidth > 120)
+        {
+            $imgSmallFilePathPrefix = '';
         }
+
+        if (empty($flyer) && empty($image))
+        {
+            return '';
+        }
+
+        if (!empty($flyer))
+        {
+            $href = self::getFileHref(self::getFilePath($flyer));
+            $imgSrc = self::getFileHref(self::getFilePath($flyer, $imgSmallFilePathPrefix), true);
+            $imgAlt = "Flyer de ". sanitizeForHtml($titre);
+            $imgHeight = ImageDriver2::getProportionalHeightFromGivenWidth(self::getSystemFilePath(self::getFilePath($flyer, $imgSmallFilePathPrefix)), $smallWidth);
+        }
+        elseif (!empty($image))
+        {
+            $href = self::getFileHref(self::getFilePath($image));
+            $imgSrc = self::getFileHref(self::getFilePath($image, $imgSmallFilePathPrefix), true);
+            $imgAlt = "Illustration de ". sanitizeForHtml($titre);
+            $imgHeight = ImageDriver2::getProportionalHeightFromGivenWidth(self::getSystemFilePath(self::getFilePath($image, $imgSmallFilePathPrefix)), $smallWidth);
+        }
+        ?>
+
+        <a href="<?= $href ?>" class="magnific-popup">
+            <img src="<?= $imgSrc ?>" alt="<?= $imgAlt ?>" width="<?= $smallWidth ?>" height="<?= $imgHeight ?>">
+        </a>
+
+        <?php
         $result = ob_get_contents();
         ob_clean();
         return $result;

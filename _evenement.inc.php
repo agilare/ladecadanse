@@ -41,7 +41,7 @@ echo "<p><a href=\"/evenement-agenda.php?courant=".$evenement['e_dateEvenement']
     <div class="spacer"></div>
 </div>
 
-<figure class="flyer"><?= Evenement::figureHtml($evenement['e_flyer'], $evenement['e_image'], $evenement['e_titre'], 100) ?></figure>
+<figure class="flyer"><?= Evenement::mainFigureHtml($evenement['e_flyer'], $evenement['e_image'], $evenement['e_titre'], 100) ?></figure>
 <div class="description">
     <?php
     //reduction de la description pour la caser dans la boite "desc"
