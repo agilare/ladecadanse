@@ -295,7 +295,7 @@ figure
 	form.recherche input.mots
 	{
 		width:14em;
-		height:16px;
+		height:20px;
 		border:1px solid #8a8a8a;
 		color:#8a8a8a;
 		background-position: 0px 50%;
@@ -319,7 +319,7 @@ figure
 
    	form.recherche input.mots
 	{
-		height:16px;
+		height:20px;
 	}
 
  	form.recherche input.submit

@@ -48,22 +48,15 @@ use Ladecadanse\UserLevel;
     <meta property="og:locale" content="fr">
     <meta property="og:title" content="<?php echo sanitizeForHtml($page_titre) . " — La décadanse"; ?>">
     <meta property="og:description" content="<?php echo sanitizeForHtml(($page_description ?? '')) ?>">
-    <?php
-    if (!empty($page_url))
-    {
-        ?>
+    <?php if (!empty($page_url)) : ?>
         <meta property="og:url" content="<?php echo $site_full_url . $page_url; ?>">
-    <?php } ?>
+    <?php endif; ?>
+    <?php if (!empty($page_image)) : ?>
+        <meta property="og:image" content="<?= $site_full_url . $page_image ?>">
+        <meta property="og:image:alt" content="Flyer">
+    <?php endif; ?>
 
-    <?php
-    if (!empty($page_image))
-    {
-        ?>
-        <meta property="og:image" content="<?php echo $site_full_url . $page_image ?>">
-            <meta property="og:image:alt" content="Flyer">
-        <?php } ?>
-
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 
     <link rel="stylesheet" type="text/css" href="/web/css/normalize.css">
     <link rel="stylesheet" type="text/css" href="/web/css/imprimer.css" media="print">
@@ -339,8 +332,7 @@ use Ladecadanse\UserLevel;
                 <div class="clear_mobile"></div>
                 <search>
                     <form class="recherche_mobile" action="/evenement-search.php" method="get" enctype="application/x-www-form-urlencoded">
-                        <input type="search" class="mots" name="mots" size="35" maxlength="100" placeholder="Rechercher un événement" aria-label="Rechercher un événement">
-                        <input type="submit" class="submit" name="formulaire" value="OK" aria-label="Lancer la recherche">
+                        <input type="search" class="mots" name="mots" size="35" maxlength="100" placeholder="Rechercher un événement" aria-label="Rechercher un événement"><input type="submit" class="submit" name="formulaire" value="OK" aria-label="Lancer la recherche">
                         <input type="text" name="name_as" value="" class="name_as" >
                     </form>
                 </search>
