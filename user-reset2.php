@@ -128,10 +128,20 @@ if ($connector->getNumRows($req_temp) == 1)
 				$verif->setErreur("motdepasse_inegaux", 'Les 2 mots de passe doivent être identiques.');
 			}
 
-			if (in_array($champs['motdepasse'], $g_mauvais_mdp))
-			{
-				$verif->setErreur("motdepasse", "Veuillez choisir un meilleur mot de passe");
-			}
+            if ($fp = fopen("resources/bad_p.txt", "r"))
+            {
+                while(!feof($fp))
+                {
+                    $Ligne = fgets($fp, 255);
+                    $mauvais_mdp[] = trim($Ligne);
+                }
+                fclose($fp);
+
+                if (in_array($champs['motdepasse'], $mauvais_mdp))
+                {
+                    $verif->setErreur("motdepasse", "Veuillez choisir un meilleur mot de passe");
+                }
+            }
 
 
 			if (!empty($champs['motdepasse'])&& !preg_match("/[0-9]/", (string) $champs['motdepasse']))
