@@ -71,6 +71,7 @@ export const AppGlobal =
         $('#btn_search').on('click', function toggleSearchField()
         {
             $('.recherche_mobile').toggle(FADE_SPEED_MEDIUM_IN_MS);
+            $('form.recherche_mobile').find('input[type="search"]').focus();
             //return false;
         });
     }
