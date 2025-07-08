@@ -2,561 +2,343 @@
 
 require_once("app/bootstrap.php");
 
-use Ladecadanse\UserLevel;
 use Ladecadanse\Evenement;
-use Ladecadanse\Utils\Text;
 use Ladecadanse\HtmlShrink;
+use Ladecadanse\Lieu;
+use Ladecadanse\Organisateur;
+use Ladecadanse\UserLevel;
+use Ladecadanse\Utils\Text;
 use Ladecadanse\Utils\Validateur;
 
-if (isset($_GET['idE']))
-{
-    try {
-        $get['idE'] = Validateur::validateUrlQueryValue($_GET['idE'], "int", 1);
-    }
-    catch (Exception)
-    {
-        header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
-        exit;
-    }
-}
-else
+if (empty($_GET['idE']) || !is_numeric($_GET['idE']))
 {
     header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
     exit;
 }
 
-$even = new Evenement();
-$even->setId($get['idE']);
-$even->load();
+$get['idE'] = (int) $_GET['idE'];
 
-$even_status = '';
 
-// si idE ne correspond à aucune entrée dans la table
-if (!$even->getValues() || in_array($even->getValue('statut'), ['inactif', 'propose']) )
- {
-    // le staff, ainsi que l'auteur et les personnes liées par organisateur peuvent voir l'even dépublié
-	if (
-	isset($_SESSION['Sgroupe']) &&
-	(
-	$_SESSION['Sgroupe'] <= 6
-	||
-	$authorization->isAuthor("evenement", $_SESSION['SidPersonne'], $get['idE']) ||
-	$authorization->isPersonneInEvenementByOrganisateur($_SESSION['SidPersonne'], $get['idE'])
-	)
+// EVENT AND APPENDIXES
+$sql_event = "SELECT
 
-	)
-	{
-		$even_status = " <span class='even-statut-badge ".$even->getValue('statut')."'>".$statuts_evenement[$even->getValue('statut')]."</span>";
-	}
-	else
-	{
-		header("HTTP/1.1 404 Not Found");
-        exit;
-	}
-}
+  e.genre AS e_genre,
+  e.idEvenement AS e_idEvenement,
+  e.titre AS e_titre,
+  e.statut AS e_statut,
+  e.idPersonne AS e_idPersonne,
+  e.dateEvenement AS e_dateEvenement,
+  e.ref AS e_ref,
+  e.flyer AS e_flyer,
+  e.image AS e_image,
+  e.description AS e_description,
+  e.ref AS e_ref,
+  e.horaire_debut AS e_horaire_debut,
+  e.horaire_fin AS e_horaire_fin,
+  e.horaire_complement AS e_horaire_complement,
+  e.prix AS e_prix,
+  e.prelocations AS e_prelocations,
+  e.idLieu AS e_idLieu,
+  e.idSalle AS e_idSalle,
+  e.nomLieu AS e_nomLieu,
+  e.adresse AS e_adresse,
+  e.quartier AS e_quartier,
+  loc.localite AS e_localite,
+  e.region AS e_region,
+  e.urlLieu AS e_urlLieu,
+  e.dateAjout AS e_dateAjout,
 
-$determinant_lieu = "- ";
-if (!empty($even->getValue('idLieu'))) {
-    $req_deter = $connector->query("SELECT determinant FROM lieu WHERE idLieu=" . (int) $even->getValue('idLieu'));
-    $tab_deter = $connector->fetchArray($req_deter);
+  l.nom AS l_nom,
+  l.determinant AS l_determinant,
+  l.adresse AS l_adresse,
+  l.quartier AS l_quartier,
+  l.lat AS l_lat,
+  l.lng AS l_lng,
+  l.URL AS l_URL,
+  lloc.localite AS lloc_localite,
+  l.region AS l_region,
 
-    if ($connector->getNumRows($req_deter) && !empty($tab_deter['determinant'])) {
-        $determinant_lieu = $tab_deter['determinant'];
-        if ($tab_deter['determinant'] != trim("l'") && $tab_deter['determinant'] != trim("à l'")) {
-            $determinant_lieu .= " ";
-        }
-    }
-}
+  s.nom AS s_nom
 
-$even_salle = '';
-if ($even->getValue('idSalle') != 0)
+FROM evenement e
+JOIN localite loc ON e.localite_id = loc.id
+LEFT JOIN lieu l ON e.idLieu = l.idLieu
+LEFT JOIN localite lloc ON l.localite_id = lloc.id
+LEFT JOIN salle s ON e.idSalle = s.idSalle
+WHERE e.idEvenement = :idE";
+
+$stmt = $connectorPdo->prepare($sql_event);
+$stmt->execute([':idE' => $get['idE']]);
+$tab_even = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (empty($tab_even))
 {
-	$req_salle = $connector->query("SELECT nom, emplacement FROM salle
-	WHERE idSalle='" . (int) $even->getValue('idSalle') . "'");
-    $tab_salle = $connector->fetchArray($req_salle);
-	$even_salle = " - ".$tab_salle['nom'];
-
+    header($_SERVER["SERVER_PROTOCOL"] . " 404 Not Found");
+    exit;
 }
 
+$isPersonneAllowedToEdit = $authorization->isPersonneAllowedToEditEvenement($_SESSION, $tab_even);
 
-$req_localite = $connector->query("SELECT localite FROM localite WHERE  id='" . (int) $even->getValue('localite_id') . "'");
-$tab_localite = $connector->fetchArray($req_localite);
-
-$page_titre_localite = " – ";
-
-$page_titre = $even->getValue('titre')." ".$determinant_lieu.$even->getValue('nomLieu').$even_salle.", ".HtmlShrink::adresseCompacteSelonContexte($even->getValue('region'), $tab_localite['localite'], $even->getValue('quartier'), $even->getValue('adresse'))."; le ".date_fr($even->getValue('dateEvenement'), "annee", "", "", false);
-$page_description = $even->getValue('titre')." ".$determinant_lieu.$even->getValue('nomLieu').
-" le ".date_fr($even->getValue('dateEvenement'), "annee", "", "", false)." ".
-afficher_debut_fin($even->getValue('horaire_debut'), $even->getValue('horaire_fin'), $even->getValue('dateEvenement'));
-
-if (!empty($even->getValue('flyer')))
+if (!$isPersonneAllowedToEdit && in_array($tab_even['e_statut'], ['propose', 'inactif']))
 {
-    $page_image = Evenement::getFileHref(Evenement::getFilePath($even->getValue('flyer')), true);
+    header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
+    exit;
 }
-$page_url = "evenement.php?idE=" . (int) $get['idE'];
-include("_header.inc.php");
 
+// lieu, organisateurs and author details
+$even_lieu = Evenement::getLieu($tab_even);
+$preposition_lieu = Lieu::prepositionToPutInSentence($tab_even['l_determinant']);
 
-// current user agenda order leads prev/next navigation
-// sent by 2 links in evenement-agenda.php (event title and "read more" link) and prev/next links
+$stmtOrgas = $connectorPdo->prepare("SELECT
+o.idOrganisateur AS o_idOrganisateur,
+o.nom AS o_nom,
+o.URL AS o_URL
+FROM evenement_organisateur eo
+JOIN organisateur o ON eo.idOrganisateur = o.idOrganisateur AND eo.idEvenement = :idE
+ORDER BY nom DESC");
+$stmtOrgas->execute([':idE' => $get['idE']]);
+$res_even_orgas = $stmtOrgas->fetchAll(PDO::FETCH_ASSOC);
+foreach ($res_even_orgas AS $o)
+{
+    $tab_even_orgas[] = [
+        'idOrganisateur' => $o['o_idOrganisateur'],
+        'nom' => $o['o_nom'],
+        'url' => $o['o_URL']
+    ];
+}
+
+$stmtAuthor = $connectorPdo->prepare("SELECT pseudo, affiliation, signature, avec_affiliation FROM personne WHERE idPersonne= :idP");
+$stmtAuthor->execute([':idP' => $tab_even['e_idPersonne']]);
+$even_author = $stmtAuthor->fetch(PDO::FETCH_ASSOC);
+// END EVENT AND APPENDIXES
+
+// HEAD metas
+$page_titre = $tab_even['e_titre'] . " " . $preposition_lieu . $even_lieu['nom'] . " (" . $even_lieu['localite'] . ") le " . date_fr($tab_even['e_dateEvenement'], "annee", "", "", false);
+$page_description = "Événement \"" . $tab_even['e_titre'] . "\" " . $preposition_lieu . $even_lieu['nom'] . " " . $even_lieu['salle'] . ", " . HtmlShrink::adresseCompacteSelonContexte($even_lieu['region'], $even_lieu['localite'], $even_lieu['quartier'], $even_lieu['adresse']).", le " . date_fr($tab_even['e_dateEvenement'], "annee", "", "", false) . " - " . afficher_debut_fin($tab_even['e_horaire_debut'], $tab_even['e_horaire_fin'], $tab_even['e_dateEvenement']). " " . sanitizeForHtml($tab_even['e_horaire_complement']);
+if (!empty($tab_even['e_flyer']))
+{
+    $page_image = Evenement::getFileHref(Evenement::getFilePath($tab_even['e_flyer']), true);
+}
+elseif (!empty($tab_even['e_image']))
+{
+    $page_image = Evenement::getFileHref(Evenement::getFilePath($tab_even['e_image']), true);
+}
+$page_url = "evenement.php?idE=" .  $get['idE'];
+// END HEAD metas
+
+// current events order in index.php leads prev/next navigation
+// TODO: mv tri_agenda to $_SESSION:user>settings>tri_agenda
 $get['tri_agenda'] = "dateAjout";
 if (isset($_GET['tri_agenda']))
 {
     $get['tri_agenda'] = Validateur::validateUrlQueryValue($_GET['tri_agenda'], "enum", 1, $tab_tri_agenda);
 }
 
-$sqlEventsInTheSameDayAndRegion = "
- SELECT idEvenement, titre
- FROM evenement
- JOIN localite l on evenement.localite_id = l.id
- WHERE  dateEvenement='" . $even->getValue('dateEvenement') . "'
- AND statut NOT IN ('inactif', 'propose')
-     AND (region='" . $even->getValue('region') . "' OR FIND_IN_SET ('" . $even->getValue('region')  . "', l.regions_covered) )
- ORDER BY dateEvenement,
-     CASE `genre`
-     WHEN 'fête' THEN 1
-     WHEN 'cinéma' THEN 2
-     WHEN 'théâtre' THEN 3
-     WHEN 'expos' THEN 4
-     WHEN 'divers' THEN 5
-     END,
-    " . $get['tri_agenda'] . " DESC"; // genre='".$even->getValue('genre')."' AND
+// PREV-NEXT NAVIGATION
+$sql_events_of_day = "
+SELECT
+idEvenement, titre, CASE WHEN (e.idLieu IS NULL OR e.idLieu = '') THEN e.nomLieu ELSE l.nom END AS lieu_nom
+FROM evenement e
+LEFT JOIN lieu l ON e.idLieu = l.idLieu
+WHERE
+  e.dateEvenement = :date
+ORDER BY
+  CASE e.genre
+    WHEN 'fête' THEN 1
+    WHEN 'cinéma' THEN 2
+    WHEN 'théâtre' THEN 3
+    WHEN 'expos' THEN 4
+    WHEN 'divers' THEN 5
+  END,
+  e." . $get['tri_agenda'] . " DESC";
 
-$resEventsInTheSameDayAndRegion = $connector->query($sqlEventsInTheSameDayAndRegion);
+$stmtDayEvents = $connectorPdo->prepare($sql_events_of_day);
+$stmtDayEvents->execute([':date' => $tab_even['e_dateEvenement']]);
+$events_of_day = $stmtDayEvents->fetchAll(PDO::FETCH_ASSOC);
 
-$i = 0;
-$courant = "";
-$url_prec = "";
-$url_suiv = "";
-$id_passe = 0;
-$titre = '';
-
-while ($tab_even = $connector->fetchArray($resEventsInTheSameDayAndRegion))
-{
-    if ($tab_even['idEvenement'] == $get['idE']) {
-        $url_prec = $courant;
-        $titre_prec = $titre;
-        $id_passe = 1;
+foreach ($events_of_day as $i => $e) {
+    if ($e['idEvenement'] == $get['idE']) {
+        $index = $i;
+        break;
     }
-
-    $courant = "/evenement.php?idE=" . (int) $tab_even['idEvenement'] . ($get['tri_agenda'] !== 'dateAjout' ? "&amp;tri_agenda=" . $get['tri_agenda'] : '');
-
-    $titre = $tab_even['titre'];
-
-    // préc déjà trouvé, suiv pas encore, pas l'actuel, donc c'est le suivant
-    if ($id_passe && $url_suiv == "" && $tab_even['idEvenement'] != $get['idE']) {
-        if ($i != $connector->getNumRows($resEventsInTheSameDayAndRegion)) {
-            $url_suiv = $courant;
-            $titre_suiv = $titre;
-        }
-    }
-    $i++;
 }
+
+$events_siblings = [$events_of_day[$index - 1] ?? null, $events_of_day[$index + 1] ?? null];
+// END PREV-NEXT NAVIGATION
+
+
+include("_header.inc.php");
 ?>
 
-<div id="contenu" class="colonne vevent">
+<main id="contenu" class="colonne vevent">
 
-    <?php
-    if (!empty($_SESSION['evenement-edit_flash_msg']))
-    {
+    <?php if (!empty($_SESSION['evenement-edit_flash_msg'])) :
         HtmlShrink::msgOk($_SESSION['evenement-edit_flash_msg']);
         unset($_SESSION['evenement-edit_flash_msg']);
-    }
-    ?>
+    endif; ?>
 
-    <div id="entete_contenu">
+    <header id="entete_contenu">
 
-        <h2 id="entete_contenu_titre" <?php
-            if ($even->getValue('dateEvenement') < $glo_auj)
-            {
-                echo ' class="ancien"';
-            }
-            ?>>
+        <p id="entete_contenu_titre" <?php if ($tab_even['e_dateEvenement'] < $glo_auj) { echo ' class="ancien"'; } ?>>
+            <span class="category"><?= sanitizeForHtml(ucfirst(Evenement::nom_genre($tab_even['e_genre']))); ?></span>, <a href="/evenement-agenda.php?courant=<?= $tab_even['e_dateEvenement'] ?>"><time datetime="<?= $tab_even['e_dateEvenement'] ?>"><?= date_fr($tab_even['e_dateEvenement'], "annee", "", "", true) ?></time></a>
+        </p>
 
-            <span class="category">
-            <?php echo sanitizeForHtml(ucfirst(Evenement::nom_genre($even->getValue('genre')))); ?></span>, <?php echo '<a href="/evenement-agenda.php?courant=' . $even->getValue('dateEvenement') . '"><time datetime="' . $even->getValue('dateEvenement') . '">' . date_fr($even->getValue('dateEvenement'), "annee", "", "", false) . '</time></a>';
-            ?>
-        </h2>
-        <div class="entete_contenu_navigation">
-            <?php
-            if ($url_prec != "")
-            {
-                echo '<a href="' . $url_prec . '" style="border-radius:3px 0 0 3px;" rel="prev nofollow">' . $iconePrecedent . '&nbsp;<span class="event-navig-link">' . sanitizeForHtml($titre_prec) . '</span>';
+        <?php if (!empty($events_siblings[0])) : ?>
+            <div class="entete_contenu_navigation"><a href="/evenement.php?idE=<?= $events_siblings[0]['idEvenement'] . ($get['tri_agenda'] !== 'dateAjout' ? "&amp;tri_agenda=" . $get['tri_agenda'] : '') ?>" rel="prev nofollow"><span class="event-navig-link"><span class="nav_titre"><?= sanitizeForHtml($events_siblings[0]['titre']) ?></span> - <?= sanitizeForHtml($events_siblings[0]['lieu_nom']) ?>&nbsp;<i class="fa fa-arrow-up"></i></span></a></div>
+        <?php endif; ?>
+        <div class="spacer"></div>
 
-                echo '</a>';
-            }
-            if ($url_suiv != "")
-            {
-                echo '<a href="' . $url_suiv . '" style="border-radius:0 3px 3px 0;margin-left:1px" rel="next nofollow"><span class="event-navig-link">' . sanitizeForHtml($titre_suiv) . '</span>&nbsp;' . $iconeSuivant . '</a>';
-            }
-            ?>
+    </header>
+
+
+    <nav>
+        <ul class="menu_actions_evenement">
+            <?php if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= UserLevel::MEMBER)) : ?>
+                <li><a href="/evenement-email.php?idE=<?= (int) $get['idE'] ?>"><?= $icone['envoi_email'] ?>&nbsp;Envoyer à un ami</a></li>
+            <?php endif; ?>
+            <?php if ($isPersonneAllowedToEdit) : ?>
+                <li><a href="/evenement-copy.php?idE=<?= (int) $get['idE'] ?>"><?= $iconeCopier ?>&nbsp;Copier vers d'autres dates</a></li>
+                <li><a href="/evenement-edit.php?action=editer&amp;idE=<?= (int) $get['idE'] ?>"><?= $iconeEditer ?>&nbsp;Modifier</a></li>
+            <?php endif; ?>
+                <li><a href="/evenement_ics.php?idE=<?= (int) $get['idE'] ?>" title="Exporter au format iCalendar dans votre agenda"><i class="fa fa-calendar-plus-o fa-lg"></i>&nbsp;iCal</a></li>
+        </ul>
+    </nav>
+
+    <article id="evenement">
+
+        <div class="dtstart">
+            <span class="value-title" title="<?= $tab_even['e_dateEvenement'] ?>T<?= mb_substr((string) $tab_even['e_horaire_debut'], 11, 5); ?>:00"></span>
+        </div>
+
+        <header class="titre">
+
+            <h1 class="left summary"><?= Evenement::titreSelonStatutHtml($tab_even['e_titre'], $tab_even['e_statut'], $isPersonneAllowedToEdit) ?></h1>
+
+            <div class="right location vcard">
+
+                <div class="fn org"><?= Lieu::getLinkNameHtml($even_lieu['nom'], $even_lieu['idLieu'], $even_lieu['salle']) ?></div>
+
+                <ul style="list-style-type: none;">
+                    <li class="adr">
+                        <?= sanitizeForHtml(HtmlShrink::adresseCompacteSelonContexte($even_lieu['region'], $even_lieu['localite'], $even_lieu['quartier'], $even_lieu['adresse'])); ?>
+                    </li>
+                    <?php if (!empty((float) $even_lieu['lat']) && !empty((float) $even_lieu['lng'])) : ?>
+                        <li>
+                            <a href="#" class="dropdown map-dropdown-link" data-target="plan"><?= $icone['plan'] ?>&nbsp;Voir sur le plan&nbsp;<i class="fa fa-caret-down fa-lg" aria-hidden="true"></i></a>
+                        </li>
+                    <?php endif; ?>
+                    <?php if (!empty($even_lieu['url'])) : $lieu_url = Text::getUrlWithName($even_lieu['url']); ?>
+                        <li><a class="url lien_ext" href="<?= $lieu_url['url'] ?>" target="_blank"><?= $lieu_url['urlName']?></a>
+                        <?php if ($tab_even['e_idLieu'] == 13) : // exception pour idLieu=13 (Le Rez - Usine) ?>
+                            <a href="https://rez-usine.ch" class="url lien_ext" target="_blank">rez-usine.ch</a><br>
+                            <a href="http://www.ptrnet.ch" class="url lien_ext" target="_blank">ptrnet.ch</a>
+                        <?php endif; ?>
+                        </li>
+                    <?php endif; ?>
+                </ul>
+            </div>
+            <div class="spacer"></div>
+
+            <?php if (!empty((float) $even_lieu['lat']) && !empty((float) $even_lieu['lng'])) : ?>
+                <div id="plan" style="display:none">
+                    <div id="lieu-map-infowindow" style="display:none"><?= sanitizeForHtml($even_lieu['nom']) ?></div>
+                    <div id="lieu-map" data-lat="<?= $even_lieu['lat'] ?>" data-lng="<?= $even_lieu['lng'] ?>"></div>
+                </div>
+            <?php endif; ?>
+        </header>
+
+        <figure id="illustrations">
+            <?= Evenement::mainFigureHtml($tab_even['e_flyer'], $tab_even['e_image'], $tab_even['e_titre']) ?>
+                <?php if ($tab_even['e_flyer'] != '' && $tab_even['e_image'] != '' ) : ?>
+                <a href="<?= Evenement::getFileHref(Evenement::getFilePath($tab_even['e_image']), true) ?>" class="magnific-popup"><img src="<?= Evenement::getFileHref(Evenement::getFilePath($tab_even['e_image']), true) ?>" alt="Illustration pour cet événement" width="160" /></a>
+                <?php endif; ?>
+        </figure>
+
+        <div id="description">
+            <p><?= Text::wikiToHtml(sanitizeForHtml($tab_even['e_description'])) ?></p>
+            <?php if (!empty($tab_even['e_ref'])) : ?>
+                <?php if (!empty($tab_even['e_description'])) : ?><hr><?php endif; ?>
+                <ul class="references left" style="margin:10px 0">
+                    <?= Evenement::getRefListHtml($tab_even['e_ref']) ?>
+                </ul>
+             <?php endif; ?>
+
+            <?php if (!empty($tab_even_orgas)): ?>
+                <?= Organisateur::getListLinkedHtml($tab_even_orgas) ?>
+            <?php endif; ?>
             <div class="spacer"></div>
         </div>
-        <div class="spacer"></div>
-    </div>
-    <div class="spacer"><!-- --></div>
-    <ul class="menu_actions_evenement">
 
-        <?php
-        if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= UserLevel::MEMBER))
-        {
-            echo '<li><a href="/evenement-email.php?idE=' . (int) $get['idE'] . '" title="Envoyer l\'événement par email">' . $icone['envoi_email'] . 'Envoyer à un ami</a></li>';
-        }
-        if (
-            (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 6) || (isset($_SESSION['SidPersonne'])) && $_SESSION['SidPersonne'] == $even->getValue('idPersonne') || (isset($_SESSION['Saffiliation_lieu']) && $even->getValue('idLieu') != '' && $even->getValue('idLieu') == $_SESSION['Saffiliation_lieu']) || isset($_SESSION['SidPersonne']) && $authorization->isPersonneInEvenementByOrganisateur($_SESSION['SidPersonne'], $even->getId()) || isset($_SESSION['SidPersonne']) && $even->getValue('idLieu') != 0 && $authorization->isPersonneInLieuByOrganisateur($_SESSION['SidPersonne'], $even->getValue('idLieu'))
-        )
-        {
-            ?>
-            <li><a href="/evenement-copy.php?idE=<?php echo (int) $get['idE'] ?>"><?php echo $iconeCopier ?>Copier vers d'autres dates</a></li>
+        <div id="pratique">
+            <table class="left" >
+                <tr>
+                    <th scope="row"><i class="fa fa-clock-o fa-lg" aria-label="Horaires"></i></th>
+                    <td><strong><?= afficher_debut_fin($tab_even['e_horaire_debut'], $tab_even['e_horaire_fin'], $tab_even['e_dateEvenement']) ?></strong>
+                        <br /><?= sanitizeForHtml($tab_even['e_horaire_complement']) ?></td>
+                </tr>
+                <tr>
+                    <th scope="row"><i class="fa fa-money fa-lg" aria-label="Prix"></i></th><td><?= sanitizeForHtml($tab_even['e_prix']) ?></td>
+                </tr>
+                <tr>
+                    <th scope="row"><i class="fa fa-ticket fa-lg" aria-label="Prélocations"></i></th><td><?= Text::linkify(sanitizeForHtml($tab_even['e_prelocations'])) ?></td>
+                </tr>
+            </table>
+            <div class="spacer"></div>
+        </div>
+        <!-- Fin pratique -->
+
+        <footer id="auteur">
             <?php
-        }
-        if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 6) || (isset($_SESSION['SidPersonne'])) && $_SESSION['SidPersonne'] == $even->getValue('idPersonne') || (isset($_SESSION['Saffiliation_lieu']) && $even->getValue('idLieu') != '' && $even->getValue('idLieu') == $_SESSION['Saffiliation_lieu']) || isset($_SESSION['SidPersonne']) && $authorization->isPersonneInEvenementByOrganisateur($_SESSION['SidPersonne'], $even->getId()) || isset($_SESSION['SidPersonne']) && $even->getValue('idLieu') != 0 && $authorization->isPersonneInLieuByOrganisateur($_SESSION['SidPersonne'], $even->getValue('idLieu'))
-        )
-        {
-            ?>
-            <li><a href="/evenement-edit.php?action=editer&amp;idE=<?php echo (int) $get['idE'] ?>"><?php echo $iconeEditer ?>Modifier</a></li>
-            <?php
-        }
-        ?>
 
-        <li><a href="/evenement_ics.php?idE=<?php echo (int) $get['idE'] ?>" title="Exporter au format iCalendar dans votre agenda"><i class="fa fa-calendar-plus-o fa-lg"></i>iCal</a></li>
-
-    </ul>
-
-	<div class="spacer"></div>
-
-    <div id="evenement">
-
-        <div class="dtstart"><span class="value-title" title="<?php echo $even->getValue('dateEvenement'); ?>T<?php echo mb_substr((string) $even->getValue('horaire_debut'), 11, 5); ?>:00"></span></div>
-
-            <div class="titre">
-
-                <h3 class="left summary"><?php echo Evenement::titreSelonStatutHtml(sanitizeForHtml($even->getValue('titre')), $even->getValue('statut')); ?>
-                    <?php echo $even_status; ?>
-                </h3>
-
-                <?php
-                //si le lieu est dans la base, affichage des détails du lieu,
-                //$lieu contient un lien vers la fiche du lieu
-                $lien_gmaps = "";
-
-                if ($even->getValue('idLieu') != 0)
+            // TODO: Personne::getSignature(idPersonne, signature, avec_affiliation
+            $signature_auteur = "";
+            if (!empty($even_author))
+            {
+                if ($even_author['signature'] == 'pseudo')
                 {
-                    $req_lieu = $connector->query("SELECT nom, adresse, quartier, localite.localite AS localite, region, URL, lat, lng FROM lieu, localite
-                                                        WHERE localite_id=localite.id AND idlieu='" . (int) $even->getValue('idLieu') . "'");
-                    $listeLieu = $connector->fetchArray($req_lieu);
-                    $lieu = "<a href=\"//lieu.php?idLieu=" . (int) $even->getValue('idLieu') . "\">" . sanitizeForHtml($listeLieu['nom']) . "</a>";
-
-                    $nom_lieu = '<a href="/lieu.php?idL=' . (int) $even->getValue('idLieu') . '" >
-                                                        ' . sanitizeForHtml($even->getValue('nomLieu')) . '</a>';
-                }
-                else
-                {
-                    $listeLieu['nom'] = sanitizeForHtml($even->getValue('nomLieu'));
-                    $lieu = sanitizeForHtml($even->getValue('nomLieu'));
-                    $listeLieu['adresse'] = $even->getValue('adresse');
-                    $listeLieu['quartier'] = $even->getValue('quartier');
-
-                    $req_localite = $connector->query("SELECT  localite FROM localite
-                                                                        WHERE  id='" . (int) $even->getValue('localite_id') . "'");
-                    $tab_localite = $connector->fetchArray($req_localite);
-
-                    $listeLieu['localite'] = $tab_localite[0] ?? "";
-
-                    $listeLieu['region'] = $even->getValue('region');
-                    $listeLieu['lat'] = 0;
-                    $listeLieu['lng'] = 0;
-                    $listeLieu['URL'] = sanitizeForHtml($even->getValue('urlLieu'));
-
-                    $nom_lieu = $lieu;
+                    $signature_auteur = "<strong>" . sanitizeForHtml($even_author['pseudo']) . "</strong> ";
                 }
 
-            ?>
-
-
-				<div class="right location vcard">
-					<h4 class="fn org"><?php echo $nom_lieu ?>
-					<?php
-					if ($even->getValue('idSalle') != 0)
-					{
-                        $req_salle = $connector->query("SELECT nom, emplacement FROM salle WHERE idSalle='" . (int) $even->getValue('idSalle') . "'");
-    $tab_salle = $connector->fetchArray($req_salle);
-					echo '<br><span style="font-size:0.9em">' . sanitizeForHtml($tab_salle['nom']) . "</span>";
-}
-					?></h4>
-					<ul style="list-style-type: none;">
-						<li class="adr"><?= sanitizeForHtml(HtmlShrink::adresseCompacteSelonContexte($listeLieu['region'], $listeLieu['localite'] ?? "", $listeLieu['quartier'], $listeLieu['adresse'])) ?></li>
-                        
-                        <?php
-                        if (!empty((float) $listeLieu['lat']) && !empty((float) $listeLieu['lng']))
-                        {
-                        ?>
-                            <li>
-                                <a href="#" class="dropdown map-dropdown-link" data-target="plan"><?php echo $icone['plan']; ?> Voir sur le plan <i class="fa fa-caret-down" aria-hidden="true"></i></a>
-                                </li>
-                    <?php
-                        }
-
-						if (!empty($listeLieu['URL']))
-						{?>
-                            <li><a class="url lien_ext" href="<?php  if (!preg_match("/^https?:\/\//", (string) $listeLieu['URL']))
-						{
-							echo 'http://' . $listeLieu['URL'];
-                        }
-                        else
-						{
-							echo $listeLieu['URL'];
-						}
-						?>" target="_blank"><?php echo $listeLieu['URL'] ?></a></li>
-    <?php
-}
-						?>
-                        <?php if ($even->getValue('idLieu') == 13) { // exception pour le Rez ?>
-                        <a href="http://kalvingrad.com" class="url lien_ext" target="_blank">kalvingrad.com</a><br>
-                            <a href="http://www.ptrnet.ch" class="url lien_ext" target="_blank">ptrnet.ch</a>
-                        <?php } ?>
-					</ul>
-				</div>
-			<div class="spacer"></div>
-            	<?php
-                if (!empty((float) $listeLieu['lat']) && !empty((float) $listeLieu['lng']))
+                if ($even_author['avec_affiliation'] == 'oui')
                 {
-                ?>
-                <div id="plan" style="display:none">
-                        <div id="lieu-map-infowindow" style="display:none"><?php echo sanitizeForHtml($listeLieu['nom']) ?></div>
-                        <div id="lieu-map" data-lat="<?php echo $listeLieu['lat'] ?>" data-lng="<?php echo $listeLieu['lng'] ?>"></div>
-                </div>
-                <?php } ?>
-            </div>
-			<!-- Fin titre -->
+                    $nom_affiliation = $even_author['affiliation'];
 
-			<div id="complement">
-
-				<ul id="images">
-                    <li id="flyer" >
-                        <?= Evenement::mainFigureHtml($even->getValue('flyer'), $even->getValue('image'), $even->getValue('titre'), 160) ?>
-                    </li>
-                    <li id="photo">
-                        <?php
-                        if ($even->getValue('image') != '' && $even->getValue('flyer') != '' )
-                        {
-                            ?>
-                        <a href="<?php echo Evenement::getFileHref(Evenement::getFilePath($even->getValue('image')), true) ?>" class="magnific-popup">
-                                <img src="<?php echo Evenement::getFileHref(Evenement::getFilePath($even->getValue('image')), true) ?>" alt="Photo pour cet événement" width="160" />
-                            </a>
-                            <?php
-                        }
-                        ?>
-                    </li>
-				</ul>
-
-			</div>
-			<!-- Fin complement -->
-
-			<div id="description">
-                <a name="borne_description"></a>
-                <?php
-                if ($even->getValue('description') != '') {
-                    echo Text::wikiToHtml(sanitizeForHtml($even->getValue('description'))) . "\n";
-}
-                else {
-                    echo "&nbsp;";
-                }
-                ?>
-            </div>
-			<!-- Fin description -->
-
-			<div class="spacer"></div>
-
-
-			<div id="pratique">
-
-				<?php
-				echo "<ul class=\"left\">";
-					$sql = "SELECT organisateur.idOrganisateur, nom, URL
-				FROM organisateur, evenement_organisateur
-				WHERE evenement_organisateur.idEvenement=" . (int) $get['idE'] . " AND
-				 organisateur.idOrganisateur=evenement_organisateur.idOrganisateur
-				 ORDER BY nom DESC";
-
-				 $req = $connector->query($sql);
-					while ($tab = $connector->fetchArray($req))
-					{
-						$url_org = $tab['URL'];
-                        $nom_url = $tab['URL'];
-						if (!preg_match("/^https?:\/\//", (string) $tab['URL']))
-						{
-							$url_org = 'http://'.$tab['URL'];
-						}
-
-						echo '<li><strong><a href="/organisateur.php?idO=' . (int) $tab['idOrganisateur'] . '">' . sanitizeForHtml($tab['nom']) . '</strong></a>';
-    if ( $tab['URL'] != '')
-						{
-
-							echo ' : <a href="' . sanitizeForHtml($url_org) . '" class="lien_ext" target="_blank">' . sanitizeForHtml($nom_url) . '</a>'; //$icone['url_externe']
-    }
-						echo '</li>';
-					}
-
-					$tab_ref = explode(";", strip_tags((string) $even->getValue('ref')));
-
-foreach ($tab_ref as $r)
-					{
-						$r = trim($r);
-						$r_aff = $r;
-
-						if (mb_substr($r, 0, 3) == "www")
-						{
-
-							$r = "http://".$r;
-
-						//echo "ok";
-						}
-
-						if (preg_match('#^(https?\\:\\/\\/)[a-z0-9_-]+\.([a-z0-9_-]+\.)?[a-zA-Z]{2,3}#i', $r))
-						{
-							echo "<li><a href=\"" . sanitizeForHtml($r) . "\" target='_blank' class=\"lien_ext\">";
-        if (preg_match('/^https?:\/\/www/', $r))
-							{
-								echo wordwrap($r_aff, 30, "<br />", true);
-        }
-							else if (!empty($r))
-							{
-								echo wordwrap($r_aff, 30, "<br />", true);
-        }
-							echo "</a></li>";
-						}
-						else
-						{
-							echo "<li>" . sanitizeForHtml($r) . "<!-- --></li>";
-    }
-					}
-					echo "</ul>";
-					?>
-
-					<table class="right" summary="Informations pratiques">
-						<tr>
-						<th><i class="fa fa-clock-o fa-lg"></i></th>
-						<td>
-						<?php
-						echo afficher_debut_fin($even->getValue('horaire_debut'), $even->getValue('horaire_fin'), $even->getValue('dateEvenement')) . "<br />" . sanitizeForHtml($even->getValue('horaire_complement'));
-                            ?>
-
-						</td>
-
-						</tr>
-						<tr>
-                            <th><i class="fa fa-money fa-lg"></i></i></th><td><?php echo sanitizeForHtml($even->getValue('prix')) ?></td>
-                        </tr>
-						<tr>
-                            <th><i class="fa fa-ticket fa-lg"></th><td><?php echo Text::linkify(sanitizeForHtml($even->getValue('prelocations'))); ?></td>
-                        </tr>
-
-					</table>
-					<div class="spacer"></div>
-			</div>
-			<!-- Fin pratique -->
-
-
-			<div class="spacer"><!-- --></div>
-
-			<div id="auteur">
-
-                <a class="signaler" href="/evenement-report.php?idE=<?php echo $get['idE'] ?>" ><i class="fa fa-flag-o fa-lg"></i> Signaler une erreur</a>
-
-
-		Ajouté
-		<?php
-
-				$signature_auteur = "";
-				$sql_auteur = "SELECT pseudo, affiliation, signature, avec_affiliation FROM personne WHERE idPersonne=" . (int) $even->getValue('idPersonne') . "";
-
-$req_auteur = $connector->query($sql_auteur);
-        $tab_auteur = $connector->fetchArray($req_auteur);
-
-                if (!empty($tab_auteur))
-                {
-                    if ($tab_auteur['signature'] == 'pseudo')
+                    $stmtAuthorAffiliationLieuNom = $connectorPdo->prepare("SELECT l.nom FROM affiliation a JOIN lieu l ON a.idAffiliation = l.idLieu AND a.genre = 'lieu' WHERE a.idPersonne= :idP");
+                    $stmtAuthorAffiliationLieuNom->execute([':idP' => $tab_even['e_idPersonne']]);
+                    $author_affiliation_lieu_nom = $stmtAuthorAffiliationLieuNom->fetch(PDO::FETCH_ASSOC);
+                    if (!empty($author_affiliation_lieu_nom))
                     {
-                        $signature_auteur = " par <strong>" . sanitizeForHtml($tab_auteur['pseudo']) . "</strong> ";
-            }
+                        $nom_affiliation = $author_affiliation_lieu_nom['nom'];
+                    }
 
-                    if ($tab_auteur['avec_affiliation'] == 'oui')
-            {
-                        $nom_affiliation = "";
-                        $req_aff = $connector->query("SELECT idAffiliation FROM affiliation WHERE
-         idPersonne=" . (int) $even->getValue('idPersonne') . " AND genre='lieu'");
-
-        if (!empty($tab_auteur['affiliation']))
-                        {
-                            $nom_affiliation = $tab_auteur['affiliation'];
-                        }
-                        else if ($tab_aff = $connector->fetchArray($req_aff))
-                        {
-                            $req_lieu_aff = $connector->query("SELECT nom FROM lieu WHERE idLieu=" . (int) $tab_aff['idAffiliation']);
-            $tab_lieu_aff = $connector->fetchArray($req_lieu_aff);
-                            $nom_affiliation = $tab_lieu_aff['nom'];
-                        }
-
-                        $signature_auteur .= " (" . sanitizeForHtml($nom_affiliation) . ") ";
-            }
+                    $signature_auteur .= "(" . sanitizeForHtml($nom_affiliation) . ")";
                 }
-
-
-			if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 4)
-			{
-			?>
-            <a href="/user.php?idP=<?php echo (int) $even->getValue('idPersonne') ?>"><?php echo!empty($signature_auteur) ? $signature_auteur : "par " . $icone['personne']; ?></a>
-            <?php
-			}
-			else
-			{
-				 echo $signature_auteur;
-}
-			?>
-            le&nbsp;<?php echo date_fr($even->getValue('dateAjout'), "annee", "", "non") ?>
-            </div>
-
-		</div>
-		<div style="color: #5c7378;    margin: 0em auto 0;    vertical-align: middle;width: 94%;">
-            <div class="entete_contenu_navigation only-mobile" >
-            <?php
-            if ($url_prec != "")
-            {
-                echo '<a href="' . $url_prec . '" rel="prev nofollow" style="border-radius:3px 0 0 3px;">' . $iconePrecedent;
-
-    echo '&nbsp;<span class="event-navig-link" style="width:110px">' . sanitizeForHtml($titre_prec) . '</span>';
-
-    echo '</a>';
             }
-            if ($url_suiv != "")
-            {
-                echo '<a href="' . $url_suiv . '" rel="next nofollow" style="border-radius:0 3px 3px 0;margin-left:1px">';
+			?>
 
-    echo '<span class="event-navig-link" style="width:110px">' . sanitizeForHtml($titre_suiv) . '</span>&nbsp;';
+            <a class="signaler" href="/evenement-report.php?idE=<?= (int) $get['idE'] ?>"><i class="fa fa-flag-o fa-lg"></i>&nbsp;Signaler une erreur</a> Ajouté <?php echo ((!empty($signature_auteur)) ? "par&nbsp;" : "") . $signature_auteur ?> le&nbsp;<?= date_fr($tab_even['e_dateAjout'], "annee", "", "non") ?>
+            <?php if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= UserLevel::ADMIN && !empty($tab_even['e_idPersonne'])) : ?><a href="/user.php?idP=<?= (int) $tab_even['e_idPersonne'] ?>"><?= $icone['personne'] ?></a><?php endif; ?>
+        </footer> <!-- auteur -->
 
-    echo $iconeSuivant.'</a>';
-            }
+    </article>
 
-            ?>
-                <div class="spacer"></div>
-            </div>
-		</div>
-
-		<!-- Fin Evenement -->
-
+    <?php if (!empty($events_siblings[1])) : ?>
+    <div id="footer_navigation">
+        <div class="entete_contenu_navigation">
+            <a href="/evenement.php?idE=<?= $events_siblings[1]['idEvenement'] . ($get['tri_agenda'] !== 'dateAjout' ? "&amp;tri_agenda=" . $get['tri_agenda'] : '') ?>" rel="next nofollow"><span class="event-navig-link"><?= sanitizeForHtml($events_siblings[1]['titre']) ?> - <?= sanitizeForHtml($events_siblings[1]['lieu_nom']) ?>&nbsp;<i class="fa fa-arrow-down"></i></span></a>
+        </div>
         <div class="spacer"><!-- --></div>
+    </div>
+    <?php endif; ?>
 
-</div>
-<!-- fin contenu -->
+    <div class="spacer"><!-- --></div>
+</main>
 
 <div id="colonne_gauche" class="colonne">
-
     <?php
-    $get['courant'] = $even->getValue('dateEvenement');
+    $get['courant'] = $tab_even['e_dateEvenement'];
     include("_navigation_calendrier.inc.php");
     ?>
-
 </div>
 
 <div class="spacer"><!-- --></div>

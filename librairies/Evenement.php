@@ -5,12 +5,14 @@ namespace Ladecadanse;
 
 use Ladecadanse\Element;
 use Ladecadanse\Utils\ImageDriver2;
+use Ladecadanse\Utils\Text;
 
 class Evenement extends Element
 {
 
     static $systemDirPath;
     static $urlDirPath;
+    static $statuts_evenement = ['propose' => 'Proposé', 'actif' => '', 'complet' => 'Complet', 'annule' => 'Annulé', 'inactif' => 'Dépublié'];
 
     function __construct() {
 
@@ -27,18 +29,18 @@ class Evenement extends Element
     {
         if ($event['e_idLieu'] != 0)
         {
-            $result =
-            [
+            return [
                 'idLieu' => $event['e_idLieu'],
                 'nom' => $event['l_nom'],
                 'adresse' => $event['l_adresse'],
                 'quartier' => $event['l_quartier'],
+                'lat' => $event['l_lat'] ?? "",
+                'lng' => $event['l_lng'] ?? "",
                 'localite' => $event['lloc_localite'],
+                'region' => $event['l_region'] ?? "",
                 'url' => $event['l_URL'],
-                'salle' => $event['s_nom'] ?? null,
+                'salle' => $event['s_nom'] ?? "",
             ];
-
-            return $result;
         }
 
         return [
@@ -46,9 +48,12 @@ class Evenement extends Element
                 'nom' => $event['e_nomLieu'],
                 'adresse' => $event['e_adresse'],
                 'quartier' => $event['e_quartier'],
+                'lat' => '',
+                'lng' => '',
                 'localite' => $event['e_localite'],
+                'region' => $event['e_region'] ?? "",
                 'url' => $event['e_urlLieu'],
-                'salle' => null
+                'salle' => ""
             ];
     }
 
@@ -66,21 +71,65 @@ class Evenement extends Element
         return $nom;
     }
 
-    public static function titreSelonStatutHtml(string $titreHtml, string $statut): string
+    public static function titreSelonStatutHtml(string $titreHtml, string $statut, bool $isPersonneAllowedToEdit = false): string
     {
+        $result = $titreHtml;
+        $badge = ' <span class="even-statut-badge ' . $statut . '">' . mb_strtoupper(self::$statuts_evenement[$statut]) . '</span>';
+
+        if ($statut == 'actif' || (in_array($statut, ['inactif', 'propose']) && !$isPersonneAllowedToEdit))
+        {
+            $badge = '';
+        }
+
         if ($statut == "annule")
         {
-            return '<strike>' . $titreHtml . '</strike> <span class="even-statut-badge ' . $statut . '">ANNULÉ</span>';
+            $result = '<strike>' . $titreHtml . '</strike>';
         }
+
         if ($statut == "complet")
         {
-            return '<em>' . $titreHtml . '</em> <span class="even-statut-badge ' . $statut . '">COMPLET</span>';
+            $result = '<em>' . $titreHtml . '</em>';
         }
 
-        return $titreHtml;
+        return $result . $badge;
     }
 
-    public static function mainFigureHtml(string $flyer, string $image, string $titre, int $smallWidth): string
+    public static function getRefListHtml(string $refCsv): string
+    {
+        ob_start();
+        $tab_ref = explode(";", strip_tags($refCsv));
+        foreach ($tab_ref as $r)
+        {
+            $r = trim($r);
+            if (mb_substr($r, 0, 3) == "www")
+            {
+                $r = "http://".$r;
+            }
+            ?>
+            <li>
+                <?php
+                // it's an URL
+                if (preg_match('#^(https?\\:\\/\\/)[a-z0-9_-]+\.([a-z0-9_-]+\.)?[a-zA-Z]{2,3}#i', $r))
+                {
+                    $url_with_name = Text::getUrlWithName($r);
+                ?>
+                    <i class="fa fa-hand-o-right" aria-hidden="true"></i>&nbsp;<a href="<?= sanitizeForHtml($url_with_name['url']) ?>" target='_blank' class="lien_ext"><?= sanitizeForHtml($url_with_name['urlName']) ?></a>
+                <?php
+                }
+                else
+                {
+                    echo sanitizeForHtml($r);
+                }
+                ?>
+            </li>
+            <?php
+        }
+        $result = ob_get_contents();
+        ob_clean();
+        return $result;
+    }
+
+    public static function mainFigureHtml(string $flyer, string $image, string $titre, ?int $smallWidth = null): string
     {
         ob_start();
 
@@ -88,7 +137,7 @@ class Evenement extends Element
         $imgSmallFilePathPrefix = "s_";
         // 120 : max width when saving small version of uploaded flyers
         // if container width exceeds width of small version, choose big version
-        if ($smallWidth > 120)
+        if (empty($smallWidth) || (!empty($smallWidth) && $smallWidth > 120))
         {
             $imgSmallFilePathPrefix = '';
         }
@@ -103,19 +152,22 @@ class Evenement extends Element
             $href = self::getFileHref(self::getFilePath($flyer));
             $imgSrc = self::getFileHref(self::getFilePath($flyer, $imgSmallFilePathPrefix), true);
             $imgAlt = "Flyer de ". sanitizeForHtml($titre);
-            $imgHeight = ImageDriver2::getProportionalHeightFromGivenWidth(self::getSystemFilePath(self::getFilePath($flyer, $imgSmallFilePathPrefix)), $smallWidth);
+            //$imgHeight = ImageDriver2::getProportionalHeightFromGivenWidth(self::getSystemFilePath(self::getFilePath($flyer, $imgSmallFilePathPrefix)), $smallWidth);
         }
         elseif (!empty($image))
         {
             $href = self::getFileHref(self::getFilePath($image));
             $imgSrc = self::getFileHref(self::getFilePath($image, $imgSmallFilePathPrefix), true);
             $imgAlt = "Illustration de ". sanitizeForHtml($titre);
-            $imgHeight = ImageDriver2::getProportionalHeightFromGivenWidth(self::getSystemFilePath(self::getFilePath($image, $imgSmallFilePathPrefix)), $smallWidth);
+            //$imgHeight = ImageDriver2::getProportionalHeightFromGivenWidth(self::getSystemFilePath(self::getFilePath($image, $imgSmallFilePathPrefix)), $smallWidth);
         }
         ?>
 
         <a href="<?= $href ?>" class="magnific-popup">
-            <img src="<?= $imgSrc ?>" alt="<?= $imgAlt ?>" width="<?= $smallWidth ?>" height="<?= $imgHeight ?>">
+            <img src="<?= $imgSrc ?>" alt="<?= $imgAlt ?>"
+                 <?php if (!empty($smallWidth)) : ?>
+                 width="<?= $smallWidth ?>" height="<?= $imgHeight ?>" <?php endif; ?>
+                 >
         </a>
 
         <?php

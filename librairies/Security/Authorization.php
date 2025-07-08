@@ -16,6 +16,7 @@ class Authorization
      */
     public function isPersonneAllowedToEditEvenement(array $sessionToReadonly, array $eventWidthIds): bool
     {
+        // even : idPersonne, idLieu, idEvenement, 
         return (isset($sessionToReadonly['Sgroupe'])
                         && (
                         $sessionToReadonly['Sgroupe'] <= UserLevel::AUTHOR

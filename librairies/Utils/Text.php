@@ -121,6 +121,10 @@ class Text
      */
     public static function wikiToHtml(string $temp): string
     {
+        if (empty($temp))
+        {
+            return "";
+        }
 
         //$temp = preg_replace("/'''(('?[^\n'])*)'''/", "<strong>\\1</strong>", $temp);
 

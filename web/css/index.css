@@ -202,6 +202,13 @@
     border-radius:3px;
 }
 
+.evenement .description .event_orga .lien_ext
+{
+    font-size: 0.9em;
+}
+
+
+
 .evenement .description h2
 {
     font-size:1em;

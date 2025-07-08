@@ -13,6 +13,23 @@ class Lieu extends Element
         $this->table = "lieu";
     }
 
+    public static function prepositionToPutInSentence($preposition): string
+    {
+        $result = $preposition;
+
+        if ($preposition == '')
+        {
+            return "- ";
+        }
+
+        // if "au", "chez", etc. add a separation
+        if (!in_array(trim($preposition), ["l'", "à l'"]))
+        {
+            $result .= " ";
+        }
+        return $result;
+    }
+
     public static function getLinkNameHtml(string $nom, ?int $idLieu, ?string $salle = null): string
     {
         $result = sanitizeForHtml($nom);

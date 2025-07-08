@@ -173,7 +173,6 @@ float: left;
 
 #evenement .titre
 {
-
 	min-height: 6em;
 }
 
@@ -195,7 +194,6 @@ float: left;
 #evenement #description
 {
 	margin-left: 160px;
-	font-size: 0.98em;
 }
 
 /* agenda */
