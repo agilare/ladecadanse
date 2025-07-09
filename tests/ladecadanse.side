@@ -21,18 +21,6 @@
       "targets": [],
       "value": ""
     }, {
-      "id": "cd93e014-6530-4edf-a78e-9e244c556f6b",
-      "comment": "",
-      "command": "mouseOver",
-      "target": "css=li:nth-child(3) img",
-      "targets": [
-        ["css=li:nth-child(3) img", "css:finder"],
-        ["xpath=//img[@alt='EPIC Magazine']", "xpath:img"],
-        ["xpath=//section[@id='dernieres']/ul[2]/li[3]/a/img", "xpath:idRelative"],
-        ["xpath=//li[3]/a/img", "xpath:position"]
-      ],
-      "value": ""
-    }, {
       "id": "9791ce8c-b8f5-44ab-a613-340963baece4",
       "comment": "",
       "command": "click",
@@ -1764,12 +1752,13 @@
       "id": "0c192c67-ecb5-4240-854d-89bc0f57302d",
       "comment": "",
       "command": "click",
-      "target": "css=#flyer img",
+      "target": "css=#illustrations .magnific-popup > img",
       "targets": [
-        ["css=#flyer img", "css:finder"],
-        ["xpath=//img[@alt='Flyer de cet événement']", "xpath:img"],
-        ["xpath=//li[@id='flyer']/a/img", "xpath:idRelative"],
-        ["xpath=//div[3]/ul/li/a/img", "xpath:position"]
+        ["id=illustrations", "id"],
+        ["css=#illustrations", "css:finder"],
+        ["xpath=//figure[@id='illustrations']", "xpath:attributes"],
+        ["xpath=//article[@id='evenement']/figure", "xpath:idRelative"],
+        ["xpath=//figure", "xpath:position"]
       ],
       "value": ""
     }, {
@@ -1842,12 +1831,14 @@
       "id": "fa0e30e4-b0c6-4457-9f05-e7113d9347cb",
       "comment": "",
       "command": "click",
-      "target": "css=.entete_contenu_navigation:nth-child(2) > a:nth-child(1) > .event-navig-link",
+      "target": "css=.entete_contenu_navigation:nth-child(2) > a",
       "targets": [
-        ["css=.entete_contenu_navigation:nth-child(2) > a:nth-child(1) > .event-navig-link", "css:finder"],
-        ["xpath=//div[@id='entete_contenu']/div/a/span", "xpath:idRelative"],
-        ["xpath=//a/span", "xpath:position"],
-        ["xpath=//span[contains(.,'test')]", "xpath:innerText"]
+        ["linkText=NOCTAMBAR REOPENING w/ YÀNKOV & NILOU - Bar à Gland", "linkText"],
+        ["css=.entete_contenu_navigation:nth-child(2) > a", "css:finder"],
+        ["xpath=//header[@id='entete_contenu']/div/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '/evenement.php?idE=1997')]", "xpath:href"],
+        ["xpath=//main/header/div/a", "xpath:position"],
+        ["xpath=//a[contains(.,'NOCTAMBAR REOPENING w/ YÀNKOV & NILOU - Bar à Gland ')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
@@ -1866,12 +1857,12 @@
       "id": "72273e82-5ecc-4cbd-9b28-67a47a364b36",
       "comment": "",
       "command": "click",
-      "target": "css=.entete_contenu_navigation:nth-child(2) .event-navig-link",
+      "target": "xpath=//div[@id='footer_navigation']/div/a",
       "targets": [
-        ["css=.entete_contenu_navigation:nth-child(2) .event-navig-link", "css:finder"],
-        ["xpath=//div[@id='entete_contenu']/div/a/span", "xpath:idRelative"],
+        ["css=.event-navig-link", "css:finder"],
+        ["xpath=//div[@id='footer_navigation']/div/a/span", "xpath:idRelative"],
         ["xpath=//a/span", "xpath:position"],
-        ["xpath=//span[contains(.,'Fête de la bière et de la choucroute')]", "xpath:innerText"]
+        ["xpath=//span[contains(.,'Fête du mont Freundler - Conservatoire de Musique de Genève ')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
@@ -6775,7 +6766,7 @@
         ["xpath=//form[@id='ajouter_editer']/fieldset/p/input", "xpath:idRelative"],
         ["xpath=//p/input", "xpath:position"]
       ],
-      "value": "admintest"
+      "value": "admin"
     }, {
       "id": "bf70931d-e3e8-4ca8-a8d2-8e5739c7031b",
       "comment": "",
@@ -6789,7 +6780,7 @@
         ["xpath=//form[@id='ajouter_editer']/fieldset/input", "xpath:idRelative"],
         ["xpath=//fieldset/input", "xpath:position"]
       ],
-      "value": "admin_dev"
+      "value": "Yaq12wsx"
     }, {
       "id": "32bd03ab-b8c8-45c7-ab73-03d325852344",
       "comment": "",
