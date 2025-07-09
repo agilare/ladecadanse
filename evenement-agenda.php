@@ -12,6 +12,8 @@ $page_titre = "Agenda d'événements";
 $page_description = "Événements culturels et festifs à Genève et Lausanne : concerts, soirées, films, théâtre, expos... ";
 
 /* DATE COURANTE : _navigation_calendrier, agenda, evenement-edit */
+
+// filter & overwrite date
 $get['courant'] = $glo_auj_6h;
 if (!empty($_GET['courant'])) {
     if (preg_match("/^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}$/", trim((string) $_GET['courant']))) {
@@ -24,6 +26,7 @@ if (!empty($_GET['courant'])) {
 
 $get['sem'] = (int) ($_GET['sem'] ?? 0);
 
+// complete meta title
 $page_titre .= " du " . date_fr($get['courant'], "annee", "", "", false);
 if ($get['sem'] === 1) {
     $lundim = date_iso2lundim($get['courant']);
@@ -31,8 +34,10 @@ if ($get['sem'] === 1) {
 }
 
 $page_titre .= " à ".$glo_regions[$_SESSION['region']];
+// add meta title to description
 $page_description .= $page_titre;
 
+// filter eventual user genre filtering
 $get['genre'] = "";
 if (!empty($_GET['genre']) && array_key_exists(urldecode((string) $_GET['genre']), $glo_tab_genre)) {
     $get['genre'] = urldecode((string) $_GET['genre']);
@@ -47,6 +52,7 @@ else {
 }
 
 /* TRI : index, _navigation_calendrier, agenda */
+// filter eventual user sorting
 $get['tri_agenda'] = "dateAjout";
 if (!empty($_GET['tri_agenda']) && in_array($_GET['tri_agenda'], $tab_tri_agenda)) {
 
@@ -60,6 +66,7 @@ if ($get['tri_agenda'] == "horaire_debut")
 	$sql_tri_agenda = "horaire_debut ASC";
 }
 
+// sql dateEvenement selected
 $sql_date_evenement = "LIKE '" . $get['courant'] . "%'";
 if (isset($get['date_deb']) && isset($get['date_fin']))
 {
@@ -71,16 +78,16 @@ else if ($get['sem'] === 1)
     $sql_date_evenement = ">= '" . $lundim[0] . "' AND dateEvenement <= '" . $lundim[1] . "'";
 }
 
-
+// h1
 $entete_contenu = "";
 if ($genre_titre != 'Tout')
 	$entete_contenu =  ucfirst((string) $genre_titre)." du ";
 
 [$annee_courant, $mois_courant, $jour_courant] = explode('-', (string) $get['courant']);
 
+// date navigation : prev, next
 $lien_precedent = '';
 $lien_suivant = '';
-
 if (is_numeric($annee_courant) && is_numeric($mois_courant) && is_numeric($jour_courant))
 {
     if ($get['sem'] == 0)
@@ -92,8 +99,8 @@ if (is_numeric($annee_courant) && is_numeric($mois_courant) && is_numeric($jour_
 
         $precedent = date("Y-m-d", mktime(0, 0, 0, (int) $mois_courant, (int) $jour_courant - 1, (int) $annee_courant));
         $lien_precedent = "<a href=\"/evenement-agenda.php?courant=".$precedent."&amp;".Utils::urlQueryArrayToString($get, 'courant')."\" style=\"border-radius:3px 0 0 3px;\" rel=\"nofollow\">".$iconePrecedent."&nbsp;</a>";
-        $suivant = date("Y-m-d", mktime(0, 0, 0, (int) $mois_courant, (int) $jour_courant + 1, (int) $annee_courant));
 
+        $suivant = date("Y-m-d", mktime(0, 0, 0, (int) $mois_courant, (int) $jour_courant + 1, (int) $annee_courant));
         $suivant_nomjour_parts = explode(" ", (string) date_fr($suivant, "tout", "non", ""));
         $lien_suivant = "<a href=\"/evenement-agenda.php?courant=".$suivant."&amp;".Utils::urlQueryArrayToString($get, 'courant')."\" style=\"border-radius:0 3px 3px 0;background:#e4e4e4\" title=\"".$suivant_nomjour_parts[1]."\" rel=\"nofollow\">".ucfirst($suivant_nomjour_parts[0])."<span class=desktop> ".$suivant_nomjour_parts[1]."</span>"."&nbsp;".$iconeSuivant."</a>";
     }
