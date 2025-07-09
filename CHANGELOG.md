@@ -1,14 +1,25 @@
 # Changelog
 
-## [3.7.5] - Unreleased
+## [3.8.0] - Unreleased
 
 ### Added
+- PDO config & connector
+- database : composite index on evenement table for perf
 - SEO : meta tag noindex, nofollow for some irrelevant events pages
-- database : composite index on evenement table
+- event : add width for img tags of thumbnail flyer when possible
+- search : in mobile focus in input search after click search button
 
 ### Changed
-- donate : move description below the payment methods
-- SEO : in robots.txt exclude Scrapy, delay for SemrushBot and meta-externalagent
+- home : refactoring with n+1 removing, PDO, mv to methods, rm duplications, extended usage of html5
+- event : refactoring evenement page with PDO, factorization, extended usage of html5
+- donate : move description under the payment methods
+- SEO : in robots.txt exclude Scrapy, increase delay for SemrushBot and meta-externalagent
+- SEO : rm some rules in robots.txt partly in favor of noindex
+- refresh .htaccess.example
+- security : mv bad pwd list to a file, list refreshed
+
+### Removed
+- SEO : useless vars in query string in agenda, menus lieux & orgas
 
 
 ## [3.7.4] - 2025-05-25
