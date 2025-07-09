@@ -13,7 +13,7 @@
 - home : refactoring with n+1 removing, PDO, mv to methods, rm duplications, extended usage of html5
 - event : refactoring evenement page with PDO, factorization, extended usage of html5
 - donate : move description under the payment methods
-- SEO : in robots.txt exclude Scrapy, increase delay for SemrushBot and meta-externalagent
+- SEO : in robots.txt exclude Scrapy, increase delay for SemrushBot and meta-externalagent, restore exclusion of some annoying URL parameters
 - SEO : rm some rules in robots.txt partly in favor of noindex
 - refresh .htaccess.example
 - security : mv bad pwd list to a file, list refreshed

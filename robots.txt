@@ -1,9 +1,9 @@
 User-agent: *
 Crawl-delay: 15 # rule ignored by Google
-# disallow: /*?*tri_agenda=
-# disallow: /*?*genre=
-# disallow: /*?*sem=
-# disallow: /*?*page=
+disallow: /*?*tri_agenda=
+disallow: /*?*genre=
+disallow: /*?*sem=
+disallow: /*?*page=
 
 Disallow: /admin/
 Disallow: /app/
