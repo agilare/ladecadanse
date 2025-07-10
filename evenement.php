@@ -141,7 +141,7 @@ idEvenement, titre, CASE WHEN (e.idLieu IS NULL OR e.idLieu = '') THEN e.nomLieu
 FROM evenement e
 LEFT JOIN lieu l ON e.idLieu = l.idLieu
 WHERE
-  e.dateEvenement = :date
+  e.dateEvenement = :date AND e.statut NOT IN ('inactif', 'propose')
 ORDER BY
   CASE e.genre
     WHEN 'fête' THEN 1
