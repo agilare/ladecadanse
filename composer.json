@@ -30,10 +30,10 @@
         "ext-mysqli": "*",
         "ext-mbstring": "*",
         "ext-gd": "*",
-        "dimsemenov/magnific-popup": "^1.1",
-        "fortawesome/font-awesome": "4.7",
-        "phpmailer/phpmailer": "^6.7",
-        "vlucas/phpdotenv": "^5.5",
+        "dimsemenov/magnific-popup": "^1.2",
+        "fortawesome/font-awesome": "4.7|^4.7",
+        "phpmailer/phpmailer": "^6.10",
+        "vlucas/phpdotenv": "^5.6",
         "select2/select2": "^4.0"
     },
     "autoload": {
@@ -60,20 +60,21 @@
         "test:api": "vendor/bin/codecept run"
     },
     "require-dev": {
-        "squizlabs/php_codesniffer": "^3.7",
+        "squizlabs/php_codesniffer": "^3.13",
         "phpcompatibility/php-compatibility": "^9.3",
-        "phpstan/phpstan": "^2.0",
-        "filp/whoops": "^2.14",
-        "symfony/var-dumper": "7.*",
-        "codeception/codeception": "^5.0",
-        "codeception/module-rest": "^3.0",
+        "phpstan/phpstan": "^2.1",
+        "filp/whoops": "^2.18",
+        "symfony/var-dumper": "^7.2",
+        "codeception/codeception": "^5.3",
+        "codeception/module-rest": "^3.4",
         "codeception/module-phpbrowser": "^3.0",
-        "codeception/module-asserts": "^3.0",
+        "codeception/module-asserts": "^3.2",
         "phpstan/phpstan-deprecation-rules": "^2.0",
-        "spaze/phpstan-disallowed-calls": "^4.3",
+        "spaze/phpstan-disallowed-calls": "^4.5",
         "rector/rector": "^2.0",
         "phan/phan": "^5.4",
-        "vimeo/psalm": "^6.0",
-        "orklah/psalm-insane-comparison": "^2.4"
+        "vimeo/psalm": "^6.7",
+        "orklah/psalm-insane-comparison": "^2.4",
+        "rector/jack": "^0.2.6"
     }
 }

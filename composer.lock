@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d36887240313f228d5afe819d698a01e",
+    "content-hash": "b2a79c8613cf45ef6d529bf645ad0c5b",
     "packages": [
         {
             "name": "dimsemenov/magnific-popup",
@@ -5243,6 +5243,53 @@
                 "source": "https://github.com/ralouphie/getallheaders/tree/develop"
             },
             "time": "2019-03-08T08:55:37+00:00"
+        },
+        {
+            "name": "rector/jack",
+            "version": "0.2.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/rectorphp/jack.git",
+                "reference": "b840a376d19c3b4d693b400e8638e5f3246bd634"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/rectorphp/jack/zipball/b840a376d19c3b4d693b400e8638e5f3246bd634",
+                "reference": "b840a376d19c3b4d693b400e8638e5f3246bd634",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2"
+            },
+            "bin": [
+                "bin/jack"
+            ],
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Rector\\SwissKnife\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Swiss knife in pocket of every upgrade architect",
+            "support": {
+                "issues": "https://github.com/rectorphp/jack/issues",
+                "source": "https://github.com/rectorphp/jack/tree/0.2.6"
+            },
+            "funding": [
+                {
+                    "url": "https://www.paypal.me/rectorphp",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/tomasvotruba",
+                    "type": "github"
+                }
+            ],
+            "time": "2025-06-30T09:54:26+00:00"
         },
         {
             "name": "rector/rector",
