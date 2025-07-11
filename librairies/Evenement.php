@@ -147,6 +147,7 @@ class Evenement extends Element
             return '';
         }
 
+        $imgHeight = '';
         if (!empty($flyer))
         {
             $href = self::getFileHref(self::getFilePath($flyer));
@@ -164,10 +165,7 @@ class Evenement extends Element
         ?>
 
         <a href="<?= $href ?>" class="magnific-popup">
-            <img src="<?= $imgSrc ?>" alt="<?= $imgAlt ?>"
-                 <?php if (!empty($smallWidth)) : ?>
-                 width="<?= $smallWidth ?>" height="<?= $imgHeight ?>" <?php endif; ?>
-                 >
+            <img src="<?= $imgSrc ?>" alt="<?= $imgAlt ?>" <?php if (!empty($smallWidth)) : ?> width="<?= $smallWidth ?>" height="<?= $imgHeight ?>" <?php endif; ?>>
         </a>
 
         <?php
