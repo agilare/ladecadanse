@@ -30,7 +30,9 @@
 
 #entete_contenu h1 small
 {
-    font-size: .7em;
+    display: inline-block;
+    margin-top: 0.5em;
+    font-size: .8em;
     color: #888;
 }
 

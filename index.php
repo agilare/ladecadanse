@@ -20,6 +20,19 @@ use Ladecadanse\Utils\Text;
 $page_titre = " agenda de sorties à " . $glo_regions[$_SESSION['region']] . ", prochains événements : concerts, soirées, films, théâtre, expos, bars, cinémas";
 $page_description = "Programme des prochains événements festifs et culturels à Genève et Lausanne : fêtes, concerts et soirées, cinéma, théâtre, expositions, vernissages, conférences, lieux culturels et alternatifs";
 
+// filter & overwrite date
+$get['courant'] = $glo_auj_6h;
+if (!empty($_GET['courant']) && preg_match("/^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}$/", trim((string) $_GET['courant'])))
+{
+    $get['courant'] = $_GET['courant'];
+    $page_titre = "Agenda d'événements du " . date_fr($get['courant'], "annee", "", "", false);
+    $page_description = "Événements culturels et festifs à Genève et Lausanne : concerts, soirées, films, théâtre, expos... ";
+}
+
+$courant_year = (new DateTime($get['courant']))->format("Y");
+
+$page_titre .= " à Genève, Nyon, Lausanne, Pays de Gex, Annemasse...";
+$page_description .= "";
 
 list($regionInClause, $regionInParams) = $connectorPdo->buildInClause('e.region', $glo_regions_coverage[$_SESSION['region']]);
 
@@ -50,6 +63,7 @@ $sql_events_today_in_region_order_by_category = "SELECT
   e.adresse AS e_adresse,
   e.quartier AS e_quartier,
   loc.localite AS e_localite,
+  e.region AS e_region,
   e.urlLieu AS e_urlLieu,
 
   l.nom AS l_nom,
@@ -57,7 +71,7 @@ $sql_events_today_in_region_order_by_category = "SELECT
   l.quartier AS l_quartier,
   l.URL AS l_URL    ,
   lloc.localite AS lloc_localite,
-
+  l.region AS l_region,
   s.nom AS s_nom
 
 FROM evenement e
@@ -78,7 +92,7 @@ ORDER BY
   e.dateAjout DESC";
 
 $stmt = $connectorPdo->prepare($sql_events_today_in_region_order_by_category);
-$stmt->execute(array_merge([':date' => $glo_auj_6h], $sql_even_in_status_and_region_params));
+$stmt->execute(array_merge([':date' => $get['courant']], $sql_even_in_status_and_region_params));
 
 $tab_events_today_in_region_by_category = $stmt->fetchAll(PDO::FETCH_GROUP);
 $count_events_today_in_region = $stmt->rowCount();
@@ -200,10 +214,12 @@ include("_header.inc.php");
     ?>
 
     <header id="entete_contenu">
-        <h1 class="accueil">Aujourd’hui <a href="/rss.php?type=evenements_auj" title="Flux RSS des événements du jour" class="desktop"><i class="fa fa-rss fa-lg"></i></a><br>
-            <small><?php echo ucfirst((string) date_fr($glo_auj_6h)); ?></small>
+        <h1 class="accueil"><?php echo ucfirst((string) date_fr($get['courant'])); ?>
+            <?php if ($courant_year !== date("Y")) { echo $courant_year; } ?>
+            <?php if (empty($get['courant']) || $get['courant'] == $glo_auj_6h) : ?><br>
+                <small>Aujourd’hui <a href="/rss.php?type=evenements_auj" title="Flux RSS des événements du jour" class="desktop"><i class="fa fa-rss fa-lg"></i></a></small><?php endif; ?>
         </h1>
-        <?php HtmlShrink::getMenuRegions($glo_regions, ['auj' => $glo_auj_6h], [$_SESSION['region'] => $count_events_today_in_region]); ?>
+        <?php HtmlShrink::getMenuRegions($glo_regions, ['auj' => $get['courant']], [$_SESSION['region'] => $count_events_today_in_region]); ?>
         <div class="spacer"></div>
     </header>
 
@@ -268,7 +284,7 @@ include("_header.inc.php");
                             <div class="spacer"></div>
 
                             <div class="pratique">
-                                <span class="left"><?= sanitizeForHtml(HtmlShrink::adresseCompacteSelonContexte(null, $even_lieu['localite'], $even_lieu['quartier'], $even_lieu['adresse'])); ?></span>
+                                <span class="left"><?= sanitizeForHtml(HtmlShrink::adresseCompacteSelonContexte($even_lieu['region'], $even_lieu['localite'], $even_lieu['quartier'], $even_lieu['adresse'])); ?></span>
                                 <span class="right">
                                     <?php
                                     $horaire_complet = afficher_debut_fin($tab_even['e_horaire_debut'], $tab_even['e_horaire_fin'], $tab_even['e_dateEvenement'])." " . sanitizeForHtml($tab_even['e_horaire_complement']);
