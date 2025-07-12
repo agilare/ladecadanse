@@ -18,7 +18,7 @@ class HtmlShrink
         // (Plainpalais) "autre" is unecessary
         if (!empty($quartier) && $quartier != 'autre')
         {
-            $result .= " (" . $quartier . ") ";
+            $result .= " (" . $quartier . ")";
         }
 
         // avoid unecessary "Autre" and redundancy of quartier "Genève" and localite "Genève"

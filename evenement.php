@@ -113,7 +113,7 @@ $even_author = $stmtAuthor->fetch(PDO::FETCH_ASSOC);
 // END EVENT AND APPENDIXES
 
 // HEAD metas
-$page_titre = $tab_even['e_titre'] . " " . $preposition_lieu . $even_lieu['nom'] . " (" . $even_lieu['localite'] . ") le " . date_fr($tab_even['e_dateEvenement'], "annee", "", "", false);
+$page_titre = $tab_even['e_titre'] . " " . $preposition_lieu . $even_lieu['nom'] . HtmlShrink::adresseCompacteSelonContexte($even_lieu['region'], $even_lieu['localite'], $even_lieu['quartier'], "") . ", le " . date_fr($tab_even['e_dateEvenement'], "annee", "", "", false);
 $page_description = "Événement \"" . $tab_even['e_titre'] . "\" " . $preposition_lieu . $even_lieu['nom'] . " " . $even_lieu['salle'] . ", " . HtmlShrink::adresseCompacteSelonContexte($even_lieu['region'], $even_lieu['localite'], $even_lieu['quartier'], $even_lieu['adresse']).", le " . date_fr($tab_even['e_dateEvenement'], "annee", "", "", false) . " - " . afficher_debut_fin($tab_even['e_horaire_debut'], $tab_even['e_horaire_fin'], $tab_even['e_dateEvenement']). " " . sanitizeForHtml($tab_even['e_horaire_complement']);
 if (!empty($tab_even['e_flyer']))
 {
@@ -255,7 +255,7 @@ include("_header.inc.php");
         </figure>
 
         <div id="description">
-            <p><?= Text::wikiToHtml(sanitizeForHtml($tab_even['e_description'])) ?></p>
+            <p class="description"><?= Text::wikiToHtml(sanitizeForHtml($tab_even['e_description'])) ?></p>
             <?php if (!empty($tab_even['e_ref'])) : ?>
                 <?php if (!empty($tab_even['e_description'])) : ?><hr><?php endif; ?>
                 <ul class="references left" style="margin:10px 0">
