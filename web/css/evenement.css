@@ -3,6 +3,7 @@
     float:left;
     width: 50%;
     margin-top:0;
+    margin-bottom:0em;
     font-size:1.2em;
 }
 
@@ -83,9 +84,10 @@ ul.menu_actions_evenement li img
 #evenement
 {
     width:94%;
-    padding :0px;
+    padding:0px;
     margin:0.4em auto 1em auto;
     background-color: #f4f4f4;
+    border-radius: 3px;
     overflow-x: hidden;
 }
 

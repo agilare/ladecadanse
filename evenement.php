@@ -250,6 +250,7 @@ include("_header.inc.php");
         <figure id="illustrations">
             <?= Evenement::mainFigureHtml($tab_even['e_flyer'], $tab_even['e_image'], $tab_even['e_titre']) ?>
                 <?php if ($tab_even['e_flyer'] != '' && $tab_even['e_image'] != '' ) : ?>
+                <br><br>
                 <a href="<?= Evenement::getFileHref(Evenement::getFilePath($tab_even['e_image']), true) ?>" class="magnific-popup"><img src="<?= Evenement::getFileHref(Evenement::getFilePath($tab_even['e_image']), true) ?>" alt="Illustration pour cet événement" width="160" /></a>
                 <?php endif; ?>
         </figure>
