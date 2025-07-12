@@ -29,6 +29,10 @@ if (!empty($_GET['courant']) && preg_match("/^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}$/",
     $page_description = "Événements culturels et festifs à Genève et Lausanne : concerts, soirées, films, théâtre, expos... ";
 }
 
+$is_courant_today = (empty($get['courant']) || $get['courant'] == $glo_auj_6h);
+
+$day_label = !$is_courant_today ? date_fr($get['courant']) : "aujourd'hui";
+
 $courant_year = (new DateTime($get['courant']))->format("Y");
 
 $page_titre .= " à Genève, Nyon, Lausanne, Pays de Gex, Annemasse...";
@@ -216,7 +220,7 @@ include("_header.inc.php");
     <header id="entete_contenu">
         <h1 class="accueil"><?php echo ucfirst((string) date_fr($get['courant'])); ?>
             <?php if ($courant_year !== date("Y")) { echo $courant_year; } ?>
-            <?php if (empty($get['courant']) || $get['courant'] == $glo_auj_6h) : ?><br>
+            <?php if ($is_courant_today) : ?><br>
                 <small>Aujourd’hui <a href="/rss.php?type=evenements_auj" title="Flux RSS des événements du jour" class="desktop"><i class="fa fa-rss fa-lg"></i></a></small><?php endif; ?>
         </h1>
         <?php HtmlShrink::getMenuRegions($glo_regions, ['auj' => $get['courant']], [$_SESSION['region'] => $count_events_today_in_region]); ?>
@@ -259,7 +263,7 @@ include("_header.inc.php");
 
                         // après le 1er even puis 1 item sur 2 : rappel
                         if (($genre_even_nb % 2 != 0)) : ?>
-                            <p class="rappel_date"><?php echo $glo_regions[$_SESSION['region']]; ?>, aujourd’hui, <?php echo $glo_tab_genre[$genre]; ?></p>
+                            <p class="rappel_date"><?php echo $glo_regions[$_SESSION['region']]; ?>, <?= ucfirst($day_label) ?>, <?php echo $glo_tab_genre[$genre]; ?></p>
                         <?php endif; ?>
 
                         <article class="evenement">
@@ -348,68 +352,72 @@ include("_header.inc.php");
 <aside id="colonne_gauche" class="colonne">
 
     <?php include("_navigation_calendrier.inc.php"); ?>
+    <?php if ($is_courant_today) : ?>
+        <div class="secondaire">
 
-    <div class="secondaire">
-
-        <ul class="autour">
-            <li><a href="https://www.facebook.com/ladecadanse" aria-label="Page Facebook" style="font-size:1em" target="_blank"><i class="fa fa-facebook fa-2x" aria-hidden="true"></i></a></li>
-            <li style="margin-left:10px;font-size:1em"><a href="https://github.com/agilare/ladecadanse/" aria-label="Watch agilare/ladecadanse on GitHub" target="_blank"><i class="fa fa-github fa-2x" aria-hidden="true"></i></a>
-            </li>
-            <li id="faireundon_btn" class="clear_mobile_important"><a href="/articles/faireUnDon.php">Faire un don</a>
-            </li>
-        </ul>
-
-        <section class="partenaires">
-            <h2>Partenaires</h2>
             <ul class="autour">
-                <li><a href="https://olivedks.ch/" target="_blank"><img src="/web/content/debout-les-braves-s.jpg" alt="Debout les braves - Visions de la scène genevoise et d'ailleurs" title="Debout les braves - Visions de la scène genevoise et d'ailleurs" width="150" height="63"></a></li>
-                <li><a href="https://culture-accessible.ch/" target="_blank"><img src="/web/content/culture-accessible-geneve.svg" alt="Culture accessible Genève" width="150" height="46"></a></li>
-                <li><a href="https://epic-magazine.ch/" target="_blank"><img src="/web/content/EPIC_noir.png" alt="EPIC Magazine" width="150" height="94"></a></li>
-                <li><a href="https://www.radiovostok.ch/" target="_blank"><img src="/web/content/radio_vostok.png" alt="Radio Vostok" width="150" height="59"></a></li>
-                <li><a href="https://www.darksite.ch/" target="_blank"><img src="/web/content/darksite.png" alt="Darksite" width="150" height="43"></a></li>
+                <li><a href="https://www.facebook.com/ladecadanse" aria-label="Page Facebook" style="font-size:1em" target="_blank"><i class="fa fa-facebook fa-2x" aria-hidden="true"></i></a></li>
+                <li style="margin-left:10px;font-size:1em"><a href="https://github.com/agilare/ladecadanse/" aria-label="Watch agilare/ladecadanse on GitHub" target="_blank"><i class="fa fa-github fa-2x" aria-hidden="true"></i></a>
+                </li>
+                <li id="faireundon_btn" class="clear_mobile_important"><a href="/articles/faireUnDon.php">Faire un don</a>
+                </li>
             </ul>
-        </section>
-    </div>
 
+            <section class="partenaires">
+                <h2>Partenaires</h2>
+                <ul class="autour">
+                    <li><a href="https://olivedks.ch/" target="_blank"><img src="/web/content/debout-les-braves-s.jpg" alt="Debout les braves - Visions de la scène genevoise et d'ailleurs" title="Debout les braves - Visions de la scène genevoise et d'ailleurs" width="150" height="63"></a></li>
+                    <li><a href="https://culture-accessible.ch/" target="_blank"><img src="/web/content/culture-accessible-geneve.svg" alt="Culture accessible Genève" width="150" height="46"></a></li>
+                    <li><a href="https://epic-magazine.ch/" target="_blank"><img src="/web/content/EPIC_noir.png" alt="EPIC Magazine" width="150" height="94"></a></li>
+                    <li><a href="https://www.radiovostok.ch/" target="_blank"><img src="/web/content/radio_vostok.png" alt="Radio Vostok" width="150" height="59"></a></li>
+                    <li><a href="https://www.darksite.ch/" target="_blank"><img src="/web/content/darksite.png" alt="Darksite" width="150" height="43"></a></li>
+                </ul>
+            </section>
+        </div>
+    <?php endif; ?>
 </aside>
 <!-- Fin Colonnegauche -->
 
 
 <aside id="colonne_droite" class="colonne">
 
-    <section class="secondaire">
+    <?php if ($is_courant_today) : ?>
 
-        <span class="lien_rss"><a href="/rss.php?type=evenements_ajoutes" aria-label="Flux RSS des derniers événements"><i class="fa fa-rss fa-lg"></i></a></span>
+        <section class="secondaire">
 
-        <h2>Derniers événements ajoutés</h2>
+            <span class="lien_rss"><a href="/rss.php?type=evenements_ajoutes" aria-label="Flux RSS des derniers événements"><i class="fa fa-rss fa-lg"></i></a></span>
 
-        <div id="derniers_evenements">
+            <h2>Derniers événements ajoutés</h2>
 
-            <?php
-            foreach ($tab_ten_latest_events_in_region as $tab_even)
-            {
-                $even_lieu = Evenement::getLieu($tab_even);
+            <div id="derniers_evenements">
+
+                <?php
+                foreach ($tab_ten_latest_events_in_region as $tab_even)
+                {
+                    $even_lieu = Evenement::getLieu($tab_even);
+                    ?>
+                    <div class="dernier_evenement">
+
+                        <figure class="flyer"><?= Evenement::mainFigureHtml($tab_even['e_flyer'], $tab_even['e_image'], $tab_even['e_titre'], 60) ?></figure>
+
+                        <h3><a href="/evenement.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>"><?= Evenement::titreSelonStatutHtml(sanitizeForHtml($tab_even['e_titre']), $tab_even['e_statut']) ?></a></h3>
+                        <span><?= Lieu::getLinkNameHtml($even_lieu['nom'], $even_lieu['idLieu'], $even_lieu['salle']) ?></span>
+
+                        <p>le&nbsp;<a href="/evenement-agenda.php?courant=<?= urlencode($tab_even['e_dateEvenement']) ?>"><?= date_fr($tab_even['e_dateEvenement']) ?></a></p>
+                        <div class="spacer"></div>
+                    </div> <!-- dernier_evenement -->
+
+                    <div class="spacer"><!-- --></div>
+
+                <?php
+                }
                 ?>
-                <div class="dernier_evenement">
 
-                    <figure class="flyer"><?= Evenement::mainFigureHtml($tab_even['e_flyer'], $tab_even['e_image'], $tab_even['e_titre'], 60) ?></figure>
+            </div> <!-- Fin derniers_evenements -->
 
-                    <h3><a href="/evenement.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>"><?= Evenement::titreSelonStatutHtml(sanitizeForHtml($tab_even['e_titre']), $tab_even['e_statut']) ?></a></h3>
-                    <span><?= Lieu::getLinkNameHtml($even_lieu['nom'], $even_lieu['idLieu'], $even_lieu['salle']) ?></span>
+        </section> <!-- fin dernieres -->
 
-                    <p>le&nbsp;<a href="/evenement-agenda.php?courant=<?= urlencode($tab_even['e_dateEvenement']) ?>"><?= date_fr($tab_even['e_dateEvenement']) ?></a></p>
-                    <div class="spacer"></div>
-                </div> <!-- dernier_evenement -->
-
-                <div class="spacer"><!-- --></div>
-
-            <?php
-            }
-            ?>
-
-        </div> <!-- Fin derniers_evenements -->
-
-    </section> <!-- fin dernieres -->
+    <?php endif; ?>
 
 </aside> <!-- Fin colonne_droite -->
 
