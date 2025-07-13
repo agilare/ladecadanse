@@ -126,15 +126,13 @@ elseif (!empty($tab_even['e_image']))
 $page_url = "evenement.php?idE=" .  $get['idE'];
 // END HEAD metas
 
-// current events order in index.php leads prev/next navigation
-// TODO: mv tri_agenda to $_SESSION:user>settings>tri_agenda
-$get['tri_agenda'] = "dateAjout";
-if (isset($_GET['tri_agenda']))
+// build SQL
+$sql_user_prefs_agenda_order = "e." . $_SESSION['user_prefs_agenda_order'] . " DESC";
+if ($_SESSION['user_prefs_agenda_order'] == "horaire_debut")
 {
-    $get['tri_agenda'] = Validateur::validateUrlQueryValue($_GET['tri_agenda'], "enum", 1, $tab_tri_agenda);
+	$sql_user_prefs_agenda_order = "e.horaire_debut ASC";
 }
 
-// PREV-NEXT NAVIGATION
 $sql_events_of_day = "
 SELECT
 idEvenement, titre, CASE WHEN (e.idLieu IS NULL OR e.idLieu = '') THEN e.nomLieu ELSE l.nom END AS lieu_nom
@@ -150,7 +148,7 @@ ORDER BY
     WHEN 'expos' THEN 4
     WHEN 'divers' THEN 5
   END,
-  e." . $get['tri_agenda'] . " DESC";
+  $sql_user_prefs_agenda_order";
 
 $stmtDayEvents = $connectorPdo->prepare($sql_events_of_day);
 $stmtDayEvents->execute([':date' => $tab_even['e_dateEvenement']]);
@@ -184,7 +182,7 @@ include("_header.inc.php");
         </p>
 
         <?php if (!empty($events_siblings[0])) : ?>
-            <div class="entete_contenu_navigation"><a href="/evenement.php?idE=<?= $events_siblings[0]['idEvenement'] . ($get['tri_agenda'] !== 'dateAjout' ? "&amp;tri_agenda=" . $get['tri_agenda'] : '') ?>" rel="prev nofollow"><span class="event-navig-link"><span class="nav_titre"><?= sanitizeForHtml($events_siblings[0]['titre']) ?></span> - <?= sanitizeForHtml($events_siblings[0]['lieu_nom']) ?>&nbsp;<i class="fa fa-arrow-up"></i></span></a></div>
+            <div class="entete_contenu_navigation"><a href="/evenement.php?idE=<?= $events_siblings[0]['idEvenement'] ?>" rel="prev nofollow"><span class="event-navig-link"><span class="nav_titre"><?= sanitizeForHtml($events_siblings[0]['titre']) ?></span> - <?= sanitizeForHtml($events_siblings[0]['lieu_nom']) ?>&nbsp;<i class="fa fa-arrow-up"></i></span></a></div>
         <?php endif; ?>
         <div class="spacer"></div>
 
@@ -326,7 +324,7 @@ include("_header.inc.php");
     <?php if (!empty($events_siblings[1])) : ?>
     <div id="footer_navigation">
         <div class="entete_contenu_navigation">
-            <a href="/evenement.php?idE=<?= $events_siblings[1]['idEvenement'] . ($get['tri_agenda'] !== 'dateAjout' ? "&amp;tri_agenda=" . $get['tri_agenda'] : '') ?>" rel="next nofollow"><span class="event-navig-link"><?= sanitizeForHtml($events_siblings[1]['titre']) ?> - <?= sanitizeForHtml($events_siblings[1]['lieu_nom']) ?>&nbsp;<i class="fa fa-arrow-down"></i></span></a>
+            <a href="/evenement.php?idE=<?= $events_siblings[1]['idEvenement'] ?>" rel="next nofollow"><span class="event-navig-link"><?= sanitizeForHtml($events_siblings[1]['titre']) ?> - <?= sanitizeForHtml($events_siblings[1]['lieu_nom']) ?>&nbsp;<i class="fa fa-arrow-down"></i></span></a>
         </div>
         <div class="spacer"><!-- --></div>
     </div>

@@ -40,6 +40,8 @@ session_start(['cookie_secure' => true, 'cookie_httponly' => true, 'cookie_sames
 $regionConfig = new RegionConfig($glo_regions);
 [$url_query_region, $url_query_region_et, $url_query_region_1er] = $regionConfig->getAppVars();
 
+$_SESSION['user_prefs_agenda_order'] = $_SESSION['user_prefs_agenda_order'] ?? 'dateAjout';
+
 $logger = new Logger(__DIR__ . "/../var/logs/");
 
 $connector = new DbConnector(DB_HOST, DB_NAME, DB_USERNAME, DB_PASSWORD);

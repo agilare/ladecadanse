@@ -84,6 +84,46 @@ header#entete_contenu ul.entete_contenu_navigation li img
     margin: 0.2em auto 0 auto;
 }
 
+#order_navigation
+{
+    margin-top: 0.2em;
+}
+
+#order_navigation ul
+{
+    float: right;
+    display:inline-block;
+    margin:0.2em 0;
+    padding:0;
+    list-style-type: none;
+}
+
+#order_navigation li
+{
+    display:inline-block;
+}
+
+#order_navigation li:nth-child(1)
+{
+    color:#555;
+}
+
+#order_navigation li a
+{
+    padding: 0.3em;
+    border-radius:3px;
+}
+
+#order_navigation li .selected
+{
+    background:#eee;
+}
+
+#order_navigation li a:hover
+{
+    background:#d4d4d4;
+}
+
 #prochains_evenements section.genre
 {
     background:#f8f8f8;

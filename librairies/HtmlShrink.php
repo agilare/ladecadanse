@@ -73,11 +73,6 @@ class HtmlShrink
                     $ici = ' ici';
 
                 $excludeFromQueryString = ['region'];
-                // HACK: don't transmit default values to allow crawling (see robots.txt)
-                if (empty($get['tri_agenda']) || $get['tri_agenda'] == "dateAjout")
-                {
-                    $excludeFromQueryString[] = 'tri_agenda';
-                }
 
                 if (empty($get['genre']))
                 {

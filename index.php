@@ -17,16 +17,16 @@ use Ladecadanse\UserLevel;
 use Ladecadanse\Utils\Text;
 
 // used for meta tags, opengraph
-$page_titre = " agenda de sorties à " . $glo_regions[$_SESSION['region']] . ", prochains événements : concerts, soirées, films, théâtre, expos, bars, cinémas";
-$page_description = "Programme des prochains événements festifs et culturels à Genève et Lausanne : fêtes, concerts et soirées, cinéma, théâtre, expositions, vernissages, conférences, lieux culturels et alternatifs";
+$page_titre = " agenda de sorties à Genève, Nyon, Lausanne, Pays de Gex, Annemasse...; prochains événements : concerts, soirées, films, théâtre, expos, bars, cinémas";
+$page_description = "Programme des prochains événements festifs et culturels à Genève, Nyon, Lausanne, Pays de Gex, Annemasse... : fêtes, concerts et soirées, cinéma, théâtre, expositions, vernissages, conférences, lieux culturels et alternatifs";
 
 // filter & overwrite date
 $get['courant'] = $glo_auj_6h;
 if (!empty($_GET['courant']) && preg_match("/^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}$/", trim((string) $_GET['courant'])))
 {
     $get['courant'] = $_GET['courant'];
-    $page_titre = "Agenda d'événements du " . date_fr($get['courant'], "annee", "", "", false);
-    $page_description = "Événements culturels et festifs à Genève et Lausanne : concerts, soirées, films, théâtre, expos... ";
+    $page_titre = "Agenda d'événements du " . date_fr($get['courant'], "annee", "", "", false) . " à Genève, Nyon, Lausanne, Pays de Gex, Annemasse...";
+    $page_description = "Événements culturels et festifs du " . date_fr($get['courant'], "annee", "", "", false). " à Genève, Nyon, Lausanne, Pays de Gex, Annemasse... : concerts, soirées, films, théâtre, expos... ";
 }
 
 $is_courant_today = (empty($get['courant']) || $get['courant'] == $glo_auj_6h);
@@ -35,27 +35,21 @@ $day_label = !$is_courant_today ? date_fr($get['courant']) : "aujourd'hui";
 
 $courant_year = (new DateTime($get['courant']))->format("Y");
 
-$page_titre .= " à Genève, Nyon, Lausanne, Pays de Gex, Annemasse...";
-$page_description .= "";
-
 list($regionInClause, $regionInParams) = $connectorPdo->buildInClause('e.region', $glo_regions_coverage[$_SESSION['region']]);
 
 $sql_even_in_status_and_region_clause = " e.statut NOT IN ('inactif', 'propose') AND ($regionInClause OR FIND_IN_SET (:region, loc.regions_covered)) ";
 $sql_even_in_status_and_region_params = array_merge([':region' => $_SESSION['region']], $regionInParams);
 
-//// filter eventual user sorting
-//$get['tri_agenda'] = "dateAjout";
-//if (!empty($_GET['tri_agenda']) && in_array($_GET['tri_agenda'], $tab_tri_agenda)) {
-//
-//    $get['tri_agenda'] = $_GET['tri_agenda'];
-//}
-//
-//// build SQL
-//$sql_tri_agenda = "e.".$get['tri_agenda'] . " DESC";
-//if ($get['tri_agenda'] == "horaire_debut")
-//{
-//	$sql_tri_agenda = "e.horaire_debut ASC";
-//}
+if (isset($_GET['tri_agenda']) && in_array($_GET['tri_agenda'], $tab_tri_agenda))
+{
+   $_SESSION['user_prefs_agenda_order'] = $_GET['tri_agenda'];
+}
+// build SQL
+$sql_user_prefs_agenda_order = "e." . $_SESSION['user_prefs_agenda_order'] . " DESC";
+if ($_SESSION['user_prefs_agenda_order'] == "horaire_debut")
+{
+	$sql_user_prefs_agenda_order = "e.horaire_debut ASC";
+}
 
 $sql_events_today_in_region_order_by_category = "SELECT
 
@@ -106,8 +100,8 @@ ORDER BY
     WHEN 'expos' THEN 4
     WHEN 'divers' THEN 5
   END,
-  e.dateAjout DESC";
-//$sql_tri_agenda
+  $sql_user_prefs_agenda_order";
+
 $stmt = $connectorPdo->prepare($sql_events_today_in_region_order_by_category);
 $stmt->execute(array_merge([':date' => $get['courant']], $sql_even_in_status_and_region_params));
 
@@ -237,16 +231,16 @@ include("_header.inc.php");
 
     <div id="prochains_evenements">
 
-<!--        <div style="">
-            <div style="float: right;margin:0.2em 0;">
-                <span style="text-align:bottom"><?= $icone['date'] ?></span>
-                <ul style="list-style-type: none;display:inline-block;margin:0;padding:0">
-                    <li style="display:inline-block;"><a href="?dateAjout<?= ($get['tri_agenda'] !== 'dateAjout' ? '&amp;tri_agenda=' . $get['tri_agenda'] : '' ) ?>" class="<?php if ($get['tri_agenda'] == 'dateAjout') { ?>selected<?php } ?>">dernier ajouté</a></li>
-                    <li style="display:inline-block;"><a href="?horaire_debut<?= ($get['tri_agenda'] !== 'dateAjout' ? '&amp;tri_agenda=' . $get['tri_agenda'] : '' ) ?>" class="<?php if ($get['tri_agenda'] == 'horaire_debut') { ?>selected<?php } ?>">heure de début</a></li>
-                </ul>
-            </div>
+        <div id="order_navigation">
+            <ul>
+                <li><i class="fa fa-sort-amount-asc" aria-hidden="true"></i></li>
+                <li>
+                    <a href="index.php?tri_agenda=dateAjout<?= (!$is_courant_today ? '&amp;courant=' . $get['courant'] : '' ); ?>" class="<?php if ($_SESSION['user_prefs_agenda_order'] == 'dateAjout') : ?>selected<?php endif; ?>" rel="nofollow">Dernier ajouté</a></li>
+                <li>
+                    <a href="index.php?tri_agenda=horaire_debut<?= (!$is_courant_today ? '&amp;courant=' . $get['courant'] : '' ) ?>" class="<?php if ($_SESSION['user_prefs_agenda_order'] == 'horaire_debut') : ?>selected<?php endif; ?>" rel="nofollow">Heure de début</a></li>
+            </ul>
             <div class="spacer"></div>
-        </div>-->
+        </div>
 
         <?php
         if ($count_events_today_in_region == 0)
