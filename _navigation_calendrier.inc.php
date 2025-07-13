@@ -27,7 +27,7 @@ $date_today = new DateTime();
 // nb of ALL events after this month, published and in current region
 $sql_eventsNextmonthsCount = "SELECT COUNT(idEvenement) AS nb "
     . " FROM evenement e "
-    . "JOIN localite l ON e.localite_id = l.id WHERE dateEvenement > '".$last_day_of_month->format('Y-m-d')."' AND statut NOT IN ('inactif', 'propose') AND (region IN ('" . $connector->sanitize($_SESSION['region']) . "', " . ($_SESSION['region'] == 'ge' ? "'rf'," : "") . " 'hs') OR FIND_IN_SET ('" . $connector->sanitize($_SESSION['region']) . "', l.regions_covered))  ";
+    . "JOIN localite l ON e.localite_id = l.id WHERE dateEvenement > '".$last_day_of_month->format('Y-m-d')."' AND statut NOT IN ('inactif', 'propose')"; // USELESS REGION FILTERING DISABLED: AND (region IN ('" . $connector->sanitize($_SESSION['region']) . "', " . ($_SESSION['region'] == 'ge' ? "'rf'," : "") . " 'hs') OR FIND_IN_SET ('" . $connector->sanitize($_SESSION['region']) . "', l.regions_covered))  ";
 $req_eventsNextmonthsCount = $connector->query($sql_eventsNextmonthsCount);
 $res_eventsNextmonths = $connector->fetchArray($req_eventsNextmonthsCount);
 $events_next_months_count = (int) $res_eventsNextmonths['nb'];

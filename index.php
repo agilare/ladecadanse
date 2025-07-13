@@ -35,10 +35,10 @@ $day_label = !$is_courant_today ? date_fr($get['courant']) : "aujourd'hui";
 
 $courant_year = (new DateTime($get['courant']))->format("Y");
 
-list($regionInClause, $regionInParams) = $connectorPdo->buildInClause('e.region', $glo_regions_coverage[$_SESSION['region']]);
+// USELESS REGION FILTERING DISABLED: list($regionInClause, $regionInParams) = $connectorPdo->buildInClause('e.region', $glo_regions_coverage[$_SESSION['region']]);
 
-$sql_even_in_status_and_region_clause = " e.statut NOT IN ('inactif', 'propose') AND ($regionInClause OR FIND_IN_SET (:region, loc.regions_covered)) ";
-$sql_even_in_status_and_region_params = array_merge([':region' => $_SESSION['region']], $regionInParams);
+$sql_even_in_status_and_region_clause = " e.statut NOT IN ('inactif', 'propose') "; // USELESS REGION FILTERING DISABLED: AND ($regionInClause OR FIND_IN_SET (:region, loc.regions_covered)) ";
+// USELESS REGION FILTERING DISABLED: $sql_even_in_status_and_region_params = array_merge([':region' => $_SESSION['region']], $regionInParams);
 
 if (isset($_GET['tri_agenda']) && in_array($_GET['tri_agenda'], $tab_tri_agenda))
 {
@@ -103,7 +103,7 @@ ORDER BY
   $sql_user_prefs_agenda_order";
 
 $stmt = $connectorPdo->prepare($sql_events_today_in_region_order_by_category);
-$stmt->execute(array_merge([':date' => $get['courant']], $sql_even_in_status_and_region_params));
+$stmt->execute(array_merge([':date' => $get['courant']])); // USELESS REGION FILTERING DISABLED: , $sql_even_in_status_and_region_params
 
 $tab_events_today_in_region_by_category = $stmt->fetchAll(PDO::FETCH_GROUP);
 $count_events_today_in_region = $stmt->rowCount();
@@ -177,7 +177,7 @@ LEFT JOIN salle s ON e.idSalle = s.idSalle
 JOIN localite loc on e.localite_id = loc.id
 WHERE $sql_even_in_status_and_region_clause ORDER BY e.dateAjout DESC LIMIT 0, 10");
 
-$stmt->execute($sql_even_in_status_and_region_params);
+$stmt->execute(); // $sql_even_in_status_and_region_params
 
 $tab_ten_latest_events_in_region = $stmt->fetchAll(PDO::FETCH_ASSOC);
 

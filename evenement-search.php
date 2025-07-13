@@ -54,7 +54,7 @@ include("_header.inc.php");
 
 <div id="contenu" class="colonne rechercher">
 	<div id="entete_contenu">
-        <h2>Rechercher un événement</h2><?php HtmlShrink::getMenuRegions($glo_regions, $get); ?>
+        <h2>Rechercher un événement</h2><?php // HtmlShrink::getMenuRegions($glo_regions, $get); ?>
 		<div class="spacer"></div>
 	</div>
 
@@ -132,7 +132,10 @@ if (!empty($get['mots']))
         flyer, prix, horaire_debut, horaire_complement, dateAjout
         FROM evenement
         JOIN localite on evenement.localite_id = localite.id
-        WHERE statut='actif' AND (region IN ('" . $connector->sanitize($_SESSION['region']) . "', 'rf', 'hs') OR FIND_IN_SET ('". $connector->sanitize($_SESSION['region']) ."', localite.regions_covered)) AND ";
+        WHERE statut NOT IN ('inactif', 'propose') ";
+        // USELESS REGION FILTERING DISABLED: AND (region IN ('" . $connector->sanitize($_SESSION['region']) . "', 'rf', 'hs') OR FIND_IN_SET ('". $connector->sanitize($_SESSION['region']) ."', localite.regions_covered))  ";
+
+        $sql_select .= " AND ";
 
         $sql_select .= "( ";
 
