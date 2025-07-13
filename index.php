@@ -414,7 +414,7 @@ include("_header.inc.php");
                         <h3><a href="/evenement.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>"><?= Evenement::titreSelonStatutHtml(sanitizeForHtml($tab_even['e_titre']), $tab_even['e_statut']) ?></a></h3>
                         <span><?= Lieu::getLinkNameHtml($even_lieu['nom'], $even_lieu['idLieu'], $even_lieu['salle']) ?></span>
 
-                        <p>le&nbsp;<a href="/evenement-agenda.php?courant=<?= urlencode($tab_even['e_dateEvenement']) ?>"><?= date_fr($tab_even['e_dateEvenement']) ?></a></p>
+                        <p>le&nbsp;<a href="index.php?courant=<?= urlencode($tab_even['e_dateEvenement']) ?>"><?= date_fr($tab_even['e_dateEvenement']) ?></a></p>
                         <div class="spacer"></div>
                     </div> <!-- dernier_evenement -->
 

@@ -123,12 +123,8 @@ $iconeAjouterEv = "<img src=\"" . $url_images_interface_icons . "page_white_add.
 $iconeAjouterLieu = "<img src=\"" . $url_images_interface_icons . "building_add.png\" alt=\"Ajouter\" />";
 $iconeRecherche = "<img src=\"" . $url_images_interface_icons . "zoom.png\" alt=\"Rechercher\" />";
 $iconeRSS = "<img src=\"" . $url_images_interface_icons . "feed.png\" alt=\"RSS\" width=\"16\" height=\"16\" />";
-$iconeHoraire = "<img src=\"" . $url_images_interface_icons . "time.png\" alt=\"horaire\" title=\"horaire\" width=\"16\" height=\"16\" />";
-$iconeEntree = "<img src=\"" . $url_images_interface_icons . "money.png\" alt=\"Entrée\" title=\"Entrée\" width=\"16\" height=\"16\"/>";
-$iconePrelocations = "<img src=\"" . $url_images_interface_icons . "ticket.gif\" alt=\"Prélocations, réservation\" title=\"Prélocations, réservations\" />";
 $iconePrecedent = "<img src=\"" . $url_images_interface_icons . "resultset_previous.png\" alt=\"Précédent\" width=\"16\" height=\"16\" />";
 $iconeSuivant = "<img src=\"" . $url_images_interface_icons . "resultset_next.png\" alt=\"Suivant\" width=\"16\" height=\"16\"/>";
-$iconeImprimer = "<img src=\"" . $url_images_interface_icons . "printer.png\" alt=\"Imprimer\" width=\"16\" height=\"16\"/>";
 $icone['connexion'] = "<img src=\"" . $url_images_interface_icons . "user_go.png\" alt=\"Connexion\" width=\"16\" height=\"16\" />";
 $icone['information'] = "<img src=\"" . $url_images_interface_icons . "information.png\" alt=\"\" />";
 $icone['monter'] = "<img src=\"" . $url_images_interface_icons . "bullet_arrow_top.png\" alt=\"\" />";
@@ -141,11 +137,8 @@ $icone['asc'] = '<img src="' . $url_images_interface_icons . 'bullet_arrow_up.pn
 $icone['desc'] = '<img src="' . $url_images_interface_icons . 'bullet_arrow_down.png" alt="" />';
 $icone['liste'] = '<img src="' . $url_images_interface_icons . 'application_view_list.png" alt="Liste" />';
 $icone['galerie'] = '<img src="' . $url_images_interface_icons . 'application_view_tile.png" alt="Galerie" />';
-$icone['mode_condense'] = '<img src="' . $url_images_interface_icons . 'mode_condense.png" alt="Affichage condensé" width="16" height="16" />';
-$icone['mode_etendu'] = '<img src="' . $url_images_interface_icons . 'mode_etendu.png" alt="Affichage étendu" width="16" height="16" />';
 $icone['recherche'] = '<img src="' . $url_images_interface_icons . 'search.png" alt="Recherche" />';
 $icone['voir_lieux'] = '<img src="' . $url_images_interface_icons . 'building_go.png" alt="Voir lieux" width="16" height="16" />';
-$icone['voir_semaine'] = '<img src="' . $url_images_interface_icons . 'bullet_go.png" alt="Voir semaine" width="16" height="16" />';
 $icone['envoi_email'] = '<img src="' . $url_images_interface_icons . 'email_go.png" alt="Envoi e-mail" width="16" height="16" />';
 $icone['ajouts'] = '<img src="' . $url_images_interface_icons . 'add.png" alt="" width="16" height="16" />';
 $icone['accepter'] = '<img src="' . $url_images_interface_icons . 'accept.png" alt="Accepter" width="16" height="16" />';
@@ -157,7 +150,6 @@ $icone['date'] = '<img src="' . $url_images_interface_icons . 'date.png" alt="" 
 $icone['ajouter_date'] = '<img src="' . $url_images_interface_icons . 'date_add.png" alt="Exporter au format iCalendar" />';
 $icone['supprimer_date'] = '<img src="' . $url_images_interface_icons . 'date_delete.png" alt="" />';
 $icone['plan'] = '<img src="' . $url_images_interface_icons . 'map.png" alt="Plan" width="16" height="16" style="vertical-align: top;" />';
-$icone['drapeau'] = '<img src="' . $url_images_interface_icons . 'flag_yellow.png" alt="" width="16" height="16" />';
 $icone['ajouter_texte'] = '<img src="' . $url_images_interface_icons . 'pencil.png" alt="Ajouter texte" width="16" height="16" />';
 $icone['organisateur'] = '<img src="' . $url_images_interface_icons . 'group.png" alt="" />';
 $icone['url_externe'] = '<img src="' . $url_images_interface_icons . 'house_go.png" alt="Lien externe" />';
@@ -167,13 +159,6 @@ $icone['jpg'] = "<img src=\"" . $url_images_interface_icons . "page_white_pictur
 $icone['jpeg'] = "<img src=\"" . $url_images_interface_icons . "page_white_picture.png\" alt=\"\" />";
 $icone['gif'] = "<img src=\"" . $url_images_interface_icons . "page_white_picture.png\" alt=\"\" />";
 $icone['png'] = "<img src=\"" . $url_images_interface_icons . "page_white_picture.png\" alt=\"\" />";
-$icone['pdf'] = "<img src=\"" . $url_images_interface_icons . "page_white_acrobat.png\" alt=\"\" />";
-$icone['doc'] = "<img src=\"" . $url_images_interface_icons . "page_white_word.png\" alt=\"\" />";
-$icone['rtf'] = "<img src=\"" . $url_images_interface_icons . "page_white_text.png\" alt=\"\" />";
-$icone['xls'] = "<img src=\"" . $url_images_interface_icons . "page_white_excel.png\" alt=\"\" />";
-$icone['svg'] = "<img src=\"" . $url_images_interface_icons . "page_white_picture.png\" alt=\"\" />";
-$icone['zip'] = "<img src=\"" . $url_images_interface_icons . "page_white_zip.png\" alt=\"\" />";
-$icone['tar'] = "<img src=\"" . $url_images_interface_icons . "page_white_zip.png\" alt=\"\" />";
 $icones_fichiers = ["text" => "text.png"];
 
 $tab_icones_statut = ["actif" => "<div style='display:inline-block;background:green;width:12px;height:12px;border-radius:50%' title='Publié'>&nbsp;</div>",

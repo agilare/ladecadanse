@@ -31,7 +31,7 @@ else
 $adresse = HtmlShrink::adresseCompacteSelonContexte(null, $listeLieu['localite'], $listeLieu['quartier'], $listeLieu['adresse']);
 
 echo '<div id="evenements">';
-echo "<p><a href=\"/evenement-agenda.php?courant=".$evenement['e_dateEvenement']."\">".ucfirst((string) date_fr($evenement['e_dateEvenement'], "annee"))."</a></p>";
+echo "<p><a href=\"index.php?courant=".$evenement['e_dateEvenement']."\">".ucfirst((string) date_fr($evenement['e_dateEvenement'], "annee"))."</a></p>";
 ?>
 <div class="evenement">
 

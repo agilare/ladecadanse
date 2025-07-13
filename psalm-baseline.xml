@@ -19,11 +19,6 @@
       <code><![CDATA[global $connector, $tab_icones_statut;]]></code>
     </InvalidGlobal>
   </file>
-  <file src="evenement-agenda.php">
-    <InvalidGlobal>
-      <code><![CDATA[global $connector;]]></code>
-    </InvalidGlobal>
-  </file>
   <file src="evenement-email.php">
     <UndefinedClass>
       <code><![CDATA[Exception]]></code>

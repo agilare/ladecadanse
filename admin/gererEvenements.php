@@ -575,7 +575,7 @@ elseif (!empty($_POST['formulaire']))
 			*/
 			if ($req_update)
 			{
-				HtmlShrink::msgOk('Mise à jour de <a href="/evenement.php?idE='.(int)$idEven_courant.'">'.$tab_even['titre'].'</a> le <a href="/evenement-agenda.php?courant='.$tab_even['dateEvenement'].'">'.date_fr($tab_even['dateEvenement'], "annee").'</a> réussie');
+				HtmlShrink::msgOk('Mise à jour de <a href="/evenement.php?idE='.(int)$idEven_courant.'">'.$tab_even['titre'].'</a> le <a href="/index.php?courant='.$tab_even['dateEvenement'].'">'.date_fr($tab_even['dateEvenement'], "annee").'</a> réussie');
 
 				$sql = "DELETE FROM evenement_organisateur WHERE idEvenement=".(int) $idEven_courant;
 				$req = $connector->query($sql);

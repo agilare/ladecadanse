@@ -21,9 +21,9 @@ Disallow: /*.inc.php
 # Disallow: /evenement-search.php
 
 # ignore years 2100, 2200...
-# Disallow: /evenement-agenda.php?courant=21*
-# Disallow: /evenement-agenda.php?courant=22*
-# Disallow: /evenement-agenda.php?courant=23*
+# Disallow: /index.php?courant=21*
+# Disallow: /index.php?courant=22*
+# Disallow: /index.php?courant=23*
 
 Disallow: /web/uploads/evenements/s_*
 Disallow: /web/uploads/evenements/*/s_*

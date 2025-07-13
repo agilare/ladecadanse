@@ -424,7 +424,7 @@ if (!empty($get['mots']))
 								echo "<p>".$infosLieu."</p>";
 							?>
 							</td>
-							<td><a href="/evenement-agenda.php?courant=<?php echo $tab_even['dateEvenement']; ?>"><?php echo date_iso2app($tab_even['dateEvenement']) ?></a></td>
+							<td><a href="index.php?courant=<?php echo $tab_even['dateEvenement']; ?>"><?php echo date_iso2app($tab_even['dateEvenement']) ?></a></td>
 							<td><?php echo $glo_tab_genre[$tab_even['genre']] ?></td>
 
 							<?php if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 1) { ?>
@@ -523,7 +523,7 @@ if (!empty($get['mots']))
 							echo "<p>".$infosLieu."</p>";
 							?>
 					</td>
-					<td><a href="/evenement-agenda.php?courant=<?php echo $tab_even['dateEvenement']; ?>"><?php echo date_iso2app($tab_even['dateEvenement']) ?></a></td>
+					<td><a href="index.php?courant=<?php echo $tab_even['dateEvenement']; ?>"><?php echo date_iso2app($tab_even['dateEvenement']) ?></a></td>
 					<td><?php echo $tab_even['genre'] ?></td>
 					<td>
 					<?php

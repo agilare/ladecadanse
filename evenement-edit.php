@@ -447,14 +447,14 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 			{
 				$req_id = $connector->getInsertId();
 
-				$_SESSION['evenement-edit_flash_msg'] = "L'événement a été créé. <a href='/evenement-agenda.php?courant=".$champs['dateEvenement']."#event-".$req_id."'>Voir dans l'agenda</a>";
+				$_SESSION['evenement-edit_flash_msg'] = "L'événement a été créé. <a href='index.php?courant=".$champs['dateEvenement']."#event-".(int)$req_id."'>Voir dans l'agenda</a>";
 
                 if (!isset($_SESSION['Sgroupe']))
                 {
                     $_SESSION['evenement-edit_flash_msg'] = "Merci pour votre proposition. Nous allons l'examiner et vous aurez une réponse dès qu'elle sera traitée (cela peut prendre quelques jours)";
                     $subject = "Nouvelle proposition d'événement : \"".$champs['titre']."\" le ".date_fr($champs['dateEvenement'], "annee", "", "", false)." à ".$champs['nomLieu'];
                     $contenu_message = "Merci de vérifier cet événement et l'accepter (statut : publié) ou le refuser (status : dépublié) : ";
-                    $contenu_message .= $site_full_url."evenement.php?idE=".$req_id;
+                    $contenu_message .= $site_full_url."evenement.php?idE=".(int)$req_id;
                     $contenu_message .= "\n\n";
                     $contenu_message .= "Par : ".$champs['user_email'];
                     $contenu_message .= "\n\nRemarque :\n".$champs['remarque'];
@@ -605,7 +605,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
                     }
                 }
 
-                $_SESSION['evenement-edit_flash_msg'] = "L'événement a été modifié.$confirmation_flash_msg<br><a href='/evenement-agenda.php?courant=".$champs['dateEvenement']."#event-".$req_id."'>Voir dans l'agenda</a>";
+                $_SESSION['evenement-edit_flash_msg'] = "L'événement a été modifié.$confirmation_flash_msg<br><a href='/index.php?courant=".$champs['dateEvenement']."#event-".$req_id."'>Voir dans l'agenda</a>";
 
 				$get['action'] = 'editer';
 
@@ -830,7 +830,7 @@ if ($verif->nbErreurs() > 0)
         <?php } ?>
         <p>Veillez svp à ce que votre événement</p>
         <ul style="line-height:1.2em">
-            <li style="margin:6px 2px;">n’est pas déjà présent dans l’<a href="/evenement-agenda.php" target="_blank">agenda</a></li>
+            <li style="margin:6px 2px;">n’est pas déjà présent dans l’<a href="index.php" target="_blank">agenda</a></li>
             <li style="margin:6px 2px;">respecte notre <a href="/articles/charte-editoriale.php" target="_blank">charte&nbsp;éditoriale</a></li>
         </ul>
     </div>

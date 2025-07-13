@@ -148,60 +148,6 @@ function date2nomJour($date)
     return $Jour[date("w", $t)];
 }
 
-/**
- * Renvoie le no de semaine d'une date, 0: courante, 1: prochaine, 2: suivante
- *
- * @param string $date Date Ã  évaluer
- * @return int $sem No semaine de la date (0, 1, 2), -1 si la date n'est pas dans ces semaines
- */
-function date2sem($date)
-{
-
-    //Jour de la semaine actuel
-    $jourSem = date("w");
-
-    //date Unix de $date
-    $aaaammjj = explode("-", $date);
-    $dateU = mktime(0, 0, 0, $aaaammjj[1], $aaaammjj[2], $aaaammjj[0]);
-
-    //date Unix d'aujourd'hui
-    $auj = mktime(1, 0, 0, date("m"), date("d"), date("Y"));
-
-    //recherche du lundi de la semaine courante
-    $lun0 = $auj;
-    while ($jourSem != 1)
-    {
-        $lun0 -= 86400;
-        $jourSem = date("w", $lun0);
-    }
-
-    //dimanche de la semaine courante
-    $dim0 = $lun0 + (6 * 86400);
-
-    // Parcours les semaines 0, 1 et 2, et compare chacun des jours de la semaine avec la date
-    for ($sem = 0; $sem < 3; $sem++)
-    {
-
-        /* parcours les jours de la semaine courante et les compare avec la date Ã  évaluer
-         * renvoie le numéro ce la semaine courante si une égalité est trouvée
-         */
-        for ($dateCour = $lun0; $dateCour <= $dim0; $dateCour += 86400)
-        {
-
-            //si la date Ã  vérifier est le mÃªme jour que la date courante
-            if (date("d", $dateCour) == date("d", $dateU))
-            {
-                return $sem;
-            }
-        }
-
-        //actualise le lundi et le dimanche vers la semaine prochaine
-        $lun0 = $dim0 + 86400;
-        $dim0 = $lun0 + (6 * 86400);
-    }
-
-    return -1;
-}
 
 function date_iso2app($date)
 {

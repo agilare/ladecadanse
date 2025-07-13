@@ -79,11 +79,6 @@ class HtmlShrink
                     $excludeFromQueryString[] = 'genre';
                 }
 
-                if (empty($get['sem']))
-                {
-                    $excludeFromQueryString[] = 'sem';
-                }
-
                 if (!empty($get['page']) && $get['page'] == 1)
                 {
                     $excludeFromQueryString[] = 'page';

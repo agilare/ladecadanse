@@ -11,7 +11,6 @@ if (empty($get['genre']))
     $get['genre'] = '';
 }
 
-$get['sem'] = (int) ($get['sem'] ?? 0);
 
 $date_courante = new DateTime($get['courant']);
 
@@ -45,25 +44,25 @@ $events_next_months_count = (int) $res_eventsNextmonths['nb'];
                     {
                         $date_prev_month_last_day = (clone $date_courante)->modify('last day of -1 month')->format('Y-m-d');
                         ?>
-                        <a href="/evenement-agenda.php?<?php echo $url_query_region_et . "courant=" . $date_prev_month_last_day  ?>" title="Mois précédent" aria-label="Mois précédent"><i class="fa fa-backward"></i></a>
+                        <a href="/index.php?<?php echo $url_query_region_et . "courant=" . $date_prev_month_last_day  ?>" title="Mois précédent" aria-label="Mois précédent"><i class="fa fa-backward"></i></a>
                         <?php
                     }
                     ?>
                 </th>
-                <th id="mois_courant" colspan="6"><?php echo ucfirst((string) mois2fr($date_courante->format('n'))) . " " . $date_courante->format('Y') ?></th>
+                <th id="mois_courant" colspan="5"><?php echo ucfirst((string) mois2fr($date_courante->format('n'))) . " " . $date_courante->format('Y') ?></th>
                 <th>
                     <?php
                     if ($events_next_months_count > 0)
                     {
                         $date_next_month_first_day = (clone $date_courante)->modify('first day of +1 month')->format('Y-m-d');
                         ?>
-                        <a href="/evenement-agenda.php?<?php echo $url_query_region_et . "courant=" . $date_next_month_first_day ?>" title="Mois suivant" aria-label="Mois suivant"><i class="fa fa-forward"></i></a>
+                        <a href="/index.php?<?php echo $url_query_region_et . "courant=" . $date_next_month_first_day ?>" title="Mois suivant" aria-label="Mois suivant"><i class="fa fa-forward"></i></a>
                     <?php } ?>
                 </th>
             </tr>
 
             <tr id="jours">
-                <th></th><th>lun</th><th>mar</th><th>mer</th><th>jeu</th><th>ven</th><th>sam</th><th>dim</th>
+                <th>lun</th><th>mar</th><th>mer</th><th>jeu</th><th>ven</th><th>sam</th><th>dim</th>
             </tr>
         </thead>
         <tbody>
@@ -76,9 +75,7 @@ $events_next_months_count = (int) $res_eventsNextmonths['nb'];
             if ($day->format('N') == 1)
             {
                 ?>
-                <tr class="semaine <?php if ($get['sem'] == 1 && $date_courante->format('oW') === $day->format('oW')) { echo " semaine_ici"; } ?>">
-                    <td><a href="/evenement-agenda.php?<?php echo $url_query_region_et ?>courant=<?php echo $day->format('Y-m-d'). "&amp;sem=1" ?>" title="Toute la semaine"><i class="fa fa-caret-right"></i></a>
-                    </td>
+                <tr class="semaine">
             <?php
             }
 
@@ -105,7 +102,7 @@ $events_next_months_count = (int) $res_eventsNextmonths['nb'];
                 $jour_classes[] = 'autre_mois';
             }
 
-            if ($day == $date_courante && $get['sem'] != 1)
+            if ($day == $date_courante)
             {
                 $jour_ici = ' id="cal_ici"';
             }
@@ -120,7 +117,7 @@ $events_next_months_count = (int) $res_eventsNextmonths['nb'];
                 <?php }
                 else
                 { ?>
-                    <a href="/evenement-agenda.php?<?php echo $url_query_region_et . "courant=" . $day->format('Y-m-d') . ($get['genre'] !== '' ? "&amp;genre=" . $get['genre'] : "") ?>"><?= $day->format('j') ?></a>
+                    <a href="/index.php?<?php echo $url_query_region_et . "courant=" . $day->format('Y-m-d') . ($get['genre'] !== '' ? "&amp;genre=" . $get['genre'] : "") ?>"><?= $day->format('j') ?></a>
                 <?php } ?>
             </td>
             <?php
@@ -136,17 +133,8 @@ $events_next_months_count = (int) $res_eventsNextmonths['nb'];
     </table>
 
     <ul id="menu_calendrier">
-        <li id="demain">
-            <a href="/evenement-agenda.php?<?php echo $url_query_region_et . "courant=" . (clone $date_today)->modify('+1 day')->format('Y-m-d') ?>">Demain</a>
-        </li>
-        <li id="cette_semaine">
-            <a href="/evenement-agenda.php?<?php echo $url_query_region_et
-            . "courant=" . $date_today->format('Y-m-d')
-            . ($get['genre'] !== '' ? "&amp;genre=" . $get['genre'] : "")
-            . "&amp;sem=1" ?>">Cette semaine</a>
-        </li>
         <li>
-            <form action="/evenement-agenda.php" method="get">
+            <form action="/index.php" method="get">
                 <input type="date" name="courant" size="12" aria-label="Date"><input type="submit" class="submit" name="formulaire" value="OK" aria-label="Aller à cette date du calendrier">
             </form>
         </li>
