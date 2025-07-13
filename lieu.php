@@ -143,7 +143,7 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= UserLevel::ACTOR)) {
 $action_editer = '';
 if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 6 || $authorization->isPersonneAffiliatedWithLieu($_SESSION['SidPersonne'], $get['idL']) || $authorization->isPersonneInLieuByOrganisateur($_SESSION['SidPersonne'], $get['idL'])))
 {
-	$action_editer = '<li class="action_editer"><a href="/lieu-edit.php?action=editer&amp;idL='.$get['idL'].'">Modifier ce lieu</a></li>';
+	$action_editer = '<li class="action_editer"><a href="/lieu-edit.php?action=editer&amp;idL='.(int)$get['idL'].'">Modifier ce lieu</a></li>';
 }
 
 $req_nb_des = $connector->query("SELECT idPersonne FROM descriptionlieu WHERE descriptionlieu.idLieu=" . (int) $get['idL']);
@@ -336,7 +336,7 @@ if ($lieu->getValue('logo'))
 
         if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 6)
 				{
-					$salles .= '<a href="/lieu-salle-edit.php?action=editer&amp;idS='.$tab_salle['idSalle'].'">'.$iconeEditer.'</a>';
+					$salles .= '<a href="/lieu-salle-edit.php?action=editer&amp;idS='.(int)$tab_salle['idSalle'].'">'.$iconeEditer.'</a>';
 				}
 
 				$salles .= '</li>';
@@ -346,7 +346,7 @@ if ($lieu->getValue('logo'))
 		}
 		if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 6)
 		{
-			$salles .= '<a href="/lieu-salle-edit.php?idL='.$get['idL'].'">'.$icone['ajouts'].'ajouter une salle</a>';
+			$salles .= '<a href="/lieu-salle-edit.php?idL='.(int)$get['idL'].'">'.$icone['ajouts'].'ajouter une salle</a>';
 		}
 
 

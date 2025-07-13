@@ -25,7 +25,7 @@ class EvenementCollection extends Collection
 		$sql = "SELECT idEvenement, idSalle, idPersonne, genre, titre, dateEvenement, nomLieu, description, flyer, image, horaire_debut, horaire_fin, horaire_complement, prix, dateAjout, statut
 	 FROM evenement
 	 WHERE idLieu=".(int)$idL." AND dateEvenement >= '".$date_debut."' ".$sql_genre." AND statut NOT IN ('inactif', 'propose')
-	 ORDER BY dateEvenement";
+	 ORDER BY dateEvenement LIMIT 1000";
 
 		$req = $this->connector->query($sql);
 

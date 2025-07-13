@@ -100,7 +100,7 @@ ORDER BY
     WHEN 'expos' THEN 4
     WHEN 'divers' THEN 5
   END,
-  $sql_user_prefs_agenda_order";
+  $sql_user_prefs_agenda_order  LIMIT 300";
 
 $stmt = $connectorPdo->prepare($sql_events_today_in_region_order_by_category);
 $stmt->execute(array_merge([':date' => $get['courant']])); // USELESS REGION FILTERING DISABLED: , $sql_even_in_status_and_region_params
@@ -175,7 +175,7 @@ LEFT JOIN lieu l ON e.idLieu = l.idLieu
 LEFT JOIN localite lloc ON l.localite_id = lloc.id
 LEFT JOIN salle s ON e.idSalle = s.idSalle
 JOIN localite loc on e.localite_id = loc.id
-WHERE $sql_even_in_status_and_region_clause ORDER BY e.dateAjout DESC LIMIT 0, 10");
+WHERE $sql_even_in_status_and_region_clause ORDER BY e.dateAjout DESC LIMIT 0, 12");
 
 $stmt->execute(); // $sql_even_in_status_and_region_params
 

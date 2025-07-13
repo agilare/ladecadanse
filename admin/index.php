@@ -59,7 +59,7 @@ $troisJoursAvant = date("Y-m-d H:i:s", time() - (3*86400));
 
 $req_get = $connector->query("SELECT idPersonne, pseudo, groupe, affiliation, email, dateAjout
  FROM personne WHERE dateAjout >= DATE_SUB(CURDATE(), INTERVAL 3 DAY)
- ORDER BY dateAjout DESC, pseudo ASC");
+ ORDER BY dateAjout DESC, pseudo ASC LIMIT 200");
 
 $pair = 0;
 while($tab_pers = $connector->fetchArray($req_get))
@@ -76,7 +76,7 @@ while($tab_pers = $connector->fetchArray($req_get))
 	$datetime_dateajout = date_iso2app($tab_pers['dateAjout']);
 	$tab_datetime_dateajout = explode(" ", (string) $datetime_dateajout);
 	echo "<td>".$tab_datetime_dateajout[1]."</td><td>".$tab_datetime_dateajout[0]."</td>
-	<td><a href=\"/user.php?idP=".$tab_pers['idPersonne']."\" >".sanitizeForHtml($tab_pers['pseudo'])."</a></td>
+	<td><a href=\"/user.php?idP=".(int)$tab_pers['idPersonne']."\" >".sanitizeForHtml($tab_pers['pseudo'])."</a></td>
 	<td><a href='mailto:".$tab_pers['email']."'>".$tab_pers['email']."</a></td>
 	<td>".$tab_pers['groupe']."</td>
 	<td>" . sanitizeForHtml($tab_pers['affiliation']) . "</td>
@@ -84,7 +84,7 @@ while($tab_pers = $connector->fetchArray($req_get))
 	";
 
 	if ($_SESSION['Sgroupe'] < UserLevel::SUPERADMIN) {
-		echo "<td><a href=\"/user-edit.php?action=editer&amp;idP=".$tab_pers['idPersonne']."\" title=\"Modifier\">".$iconeEditer."</a></td>";
+		echo "<td><a href=\"/user-edit.php?action=editer&amp;idP=".(int)$tab_pers['idPersonne']."\" title=\"Modifier\">".$iconeEditer."</a></td>";
 	}
 	echo "</tr>";
 
@@ -116,7 +116,7 @@ if (!empty( $_SESSION['region_admin']))
 $sql_even = "SELECT idEvenement, idLieu, idPersonne, titre,
  dateEvenement, horaire_debut, horaire_fin, genre, nomLieu, adresse, statut, flyer, dateAjout
  FROM evenement WHERE dateAjout >= DATE_SUB(CURDATE(), INTERVAL 3 DAY) ".$sql_region."
- ORDER BY dateAjout DESC, idEvenement DESC";
+ ORDER BY dateAjout DESC, idEvenement DESC LIMIT 500";
 
 //echo $sql_even;
 
@@ -183,13 +183,13 @@ while($tab_even = $connector->fetchArray($req_getEvenement))
 
 	if ($tab_auteur = $connector->fetchArray($connector->query("SELECT pseudo FROM personne WHERE idPersonne=".(int) $tab_even['idPersonne'])))
 	{
-		$nom_auteur = "<a href=\"/user.php?idP=".$tab_even['idPersonne']."\"
+		$nom_auteur = "<a href=\"/user.php?idP=".(int)$tab_even['idPersonne']."\"
 		title=\"Voir le profile de la personne\">".sanitizeForHtml($tab_auteur['pseudo'])."</a>";
 	}
 	echo "<td>".$nom_auteur."</td>";
 
 	if ($_SESSION['Sgroupe'] <= UserLevel::ADMIN) {
-		echo "<td><a href=\"/evenement-edit.php?action=editer&amp;idE=".$tab_even['idEvenement']."\" title=\"Éditer l'événement\">".$iconeEditer."</a></td>";
+		echo "<td><a href=\"/evenement-edit.php?action=editer&amp;idE=".(int)$tab_even['idEvenement']."\" title=\"Éditer l'événement\">".$iconeEditer."</a></td>";
 	}
 	echo "</tr>";
 
@@ -265,7 +265,7 @@ while ($tab_desc = $connector->fetchArray($req_getDes))
 	echo "<td>".$tab_desc['type']."</td>";
 	echo "<td>".$nom_auteur."</td>";
 	if ($_SESSION['Sgroupe'] <= UserLevel::ADMIN) {
-		echo "<td><a href=\"/lieu-text-edit.php?action=editer&amp;idL=" . $tab_desc['idLieu'] . "&amp;idP=" . $tab_desc['idPersonne'] . "&type=" . $tab_desc['type'] . "\" title=\"Éditer le lieu\">" . $iconeEditer . "</a></td>";
+		echo "<td><a href=\"/lieu-text-edit.php?action=editer&amp;idL=" . (int)$tab_desc['idLieu'] . "&amp;idP=" .(int) $tab_desc['idPersonne'] . "&type=" . $tab_desc['type'] . "\" title=\"Éditer le lieu\">" . $iconeEditer . "</a></td>";
         }
 	echo "</tr>";
 
