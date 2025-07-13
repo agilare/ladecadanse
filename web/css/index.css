@@ -1,34 +1,27 @@
-#entete_contenu h1
+header#entete_contenu h1
 {
-    font-size: 1.5em;
-    width:55%
-}
-
-#entete_contenu h1.accueil
-{
-    margin: 0;
     float:left;
+    width:56%;
+    margin: 0.1em 0 0 0;
+    font-size: 1.5em;
 }
 
-#entete_contenu h1.accueil a
+/* rss link */
+header#entete_contenu h1.accueil a
 {
     font-size:12px;
     vertical-align: top;
-}
-
-#entete_contenu h1 a .fa-rss
-{
     color:#f5b045
 }
 
-#entete_contenu h1#today-date
+/*#entete_contenu h1#today-date
 {
     width:65%;
     font-size: 1.4em;
     margin-top: 0;
-}
+}*/
 
-#entete_contenu h1 small
+header#entete_contenu h1 small
 {
     display: inline-block;
     margin-top: 0.5em;
@@ -36,14 +29,51 @@
     color: #888;
 }
 
+header#entete_contenu ul.entete_contenu_navigation
+{
+    float:right;
+    width:44%;
+    margin: 0;
+    padding-left: 0;
+    text-align:right;
+}
+
+header#entete_contenu ul.entete_contenu_navigation li
+{
+    display:inline;
+    vertical-align:bottom;
+}
+
+header#entete_contenu ul.entete_contenu_navigation li a
+{
+    padding: 0.6em
+}
+
+header#entete_contenu ul.entete_contenu_navigation li:nth-child(1) a
+{
+    border-radius:3px 0 0 3px;
+}
+
+header#entete_contenu ul.entete_contenu_navigation li:nth-child(2) a
+{
+    border-radius: 0 3px 3px 0;
+    background:#e4e4e4;
+}
+
+header#entete_contenu ul.entete_contenu_navigation li:nth-child(2) a:hover
+{
+    background:#d4d4d4;
+}
+
+header#entete_contenu ul.entete_contenu_navigation li img
+{
+    vertical-align:top;
+}
+
+
 .home_banner p
 {
     line-height:18px
-}
-
-.menu_region
-{
-    margin: 0;
 }
 
 
@@ -51,22 +81,22 @@
 #prochains_evenements
 {
     width:94%;
-    margin: 1em auto 0 auto;
+    margin: 0.2em auto 0 auto;
 }
 
-#prochains_evenements .genre
+#prochains_evenements section.genre
 {
     background:#f8f8f8;
     margin: 0 0 2em 0;
 }
 
-#prochains_evenements .genre .genre-titre
+#prochains_evenements section.genre .genre-titre
 {
     border-top:solid 1px #aeaeae;
     margin: 10px 0;
 }
 
-#prochains_evenements .genre .genre-jump
+#prochains_evenements section.genre .genre-jump
 {
     margin:0.2em 0.2em;
     float: right;
@@ -77,10 +107,12 @@
     border-radius: 3px;
 }
 
-#prochains_evenements .genre .genre-jump:hover
+#prochains_evenements section.genre .genre-jump:hover
 {
     background:#ddd;
 }
+
+
 
 #prochains_evenements h2
 {

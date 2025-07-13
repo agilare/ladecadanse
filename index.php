@@ -43,6 +43,19 @@ list($regionInClause, $regionInParams) = $connectorPdo->buildInClause('e.region'
 $sql_even_in_status_and_region_clause = " e.statut NOT IN ('inactif', 'propose') AND ($regionInClause OR FIND_IN_SET (:region, loc.regions_covered)) ";
 $sql_even_in_status_and_region_params = array_merge([':region' => $_SESSION['region']], $regionInParams);
 
+//// filter eventual user sorting
+//$get['tri_agenda'] = "dateAjout";
+//if (!empty($_GET['tri_agenda']) && in_array($_GET['tri_agenda'], $tab_tri_agenda)) {
+//
+//    $get['tri_agenda'] = $_GET['tri_agenda'];
+//}
+//
+//// build SQL
+//$sql_tri_agenda = "e.".$get['tri_agenda'] . " DESC";
+//if ($get['tri_agenda'] == "horaire_debut")
+//{
+//	$sql_tri_agenda = "e.horaire_debut ASC";
+//}
 
 $sql_events_today_in_region_order_by_category = "SELECT
 
@@ -94,7 +107,7 @@ ORDER BY
     WHEN 'divers' THEN 5
   END,
   e.dateAjout DESC";
-
+//$sql_tri_agenda
 $stmt = $connectorPdo->prepare($sql_events_today_in_region_order_by_category);
 $stmt->execute(array_merge([':date' => $get['courant']], $sql_even_in_status_and_region_params));
 
@@ -176,6 +189,9 @@ $tab_ten_latest_events_in_region = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 $stmt = null;
 
+$date_prev = (new DateTime($get['courant']))->modify('-1 day')->format("Y-m-d");
+$date_next = (new DateTime($get['courant']))->modify('+1 day')->format("Y-m-d");
+
 include("_header.inc.php");
 ?>
 
@@ -185,56 +201,57 @@ include("_header.inc.php");
     // header banners & flash messages
 
     // public banner enabled (by admin) and not yet closed (by user)
-    if (HOME_TMP_BANNER_ENABLED && !isset($_COOKIE['home_tmp_banner']))
-    {
-        ?>
+    if (HOME_TMP_BANNER_ENABLED && !isset($_COOKIE['home_tmp_banner'])) : ?>
         <div id="home_tmp_banner" class="alert-warn">
-            <h2><?php echo HOME_TMP_BANNER_TITLE; ?></h2><a href="#" class="js-alert-close-btn close">&times;</a>
-            <p><?php echo HOME_TMP_BANNER_CONTENT; ?></p>
+            <h2><?= HOME_TMP_BANNER_TITLE; ?></h2><a href="#" class="js-alert-close-btn close">&times;</a>
+            <p><?= HOME_TMP_BANNER_CONTENT; ?></p>
         </div>
-        <?php
-    }
-    ?>
+    <?php endif; ?>
 
     <?php
     // private banner enabled (by admin) and not yet closed (by user)
-    if ($videur->checkGroup(UserLevel::ACTOR) && HOME_TMP_BACK_BANNER_ENABLED && !isset($_COOKIE['home_tmp_back_banner']))
-    {
-        ?>
+    if ($videur->checkGroup(UserLevel::ACTOR) && HOME_TMP_BACK_BANNER_ENABLED && !isset($_COOKIE['home_tmp_back_banner'])) : ?>
         <div id="home_tmp_back_banner" class="alert-info">
-            <h2><?php echo HOME_TMP_BACK_BANNER_TITLE; ?></h2><a href="#" class="js-alert-close-btn close">&times;</a>
-            <p><?php echo HOME_TMP_BACK_BANNER_CONTENT; ?></p>
+            <h2><?= HOME_TMP_BACK_BANNER_TITLE; ?></h2><a href="#" class="js-alert-close-btn close">&times;</a>
+            <p><?= HOME_TMP_BACK_BANNER_CONTENT; ?></p>
         </div>
-        <?php
-    }
-    ?>
+    <?php endif; ?>
 
-    <?php
-    if (!empty($_SESSION['evenement-edit_flash_msg']))
-    {
+    <?php if (!empty($_SESSION['evenement-edit_flash_msg'])) :
         HtmlShrink::msgOk($_SESSION['evenement-edit_flash_msg']);
         unset($_SESSION['evenement-edit_flash_msg']);
-    }
-    ?>
+    endif; ?>
 
     <header id="entete_contenu">
-        <h1 class="accueil"><?php echo ucfirst((string) date_fr($get['courant'])); ?>
+        <h1 class="accueil"><?= ucfirst((string) date_fr($get['courant'])); ?>
             <?php if ($courant_year !== date("Y")) { echo $courant_year; } ?>
             <?php if ($is_courant_today) : ?><br>
                 <small>Aujourd’hui <a href="/rss.php?type=evenements_auj" title="Flux RSS des événements du jour" class="desktop"><i class="fa fa-rss fa-lg"></i></a></small><?php endif; ?>
         </h1>
-        <?php HtmlShrink::getMenuRegions($glo_regions, ['auj' => $get['courant']], [$_SESSION['region'] => $count_events_today_in_region]); ?>
+        <ul class="entete_contenu_navigation">
+            <li><a href="index.php?courant=<?= $date_prev ?>" rel="nofollow"><?= $iconePrecedent ?></a></li><li><a href="index.php?courant=<?= $date_next ?>" rel="nofollow"><?= ucfirst(date_fr($date_next, "tout", "non", "")).$iconeSuivant ?></a></li>
+        </ul>
         <div class="spacer"></div>
     </header>
 
-    <div class="spacer"><!-- --></div>
 
     <div id="prochains_evenements">
+
+<!--        <div style="">
+            <div style="float: right;margin:0.2em 0;">
+                <span style="text-align:bottom"><?= $icone['date'] ?></span>
+                <ul style="list-style-type: none;display:inline-block;margin:0;padding:0">
+                    <li style="display:inline-block;"><a href="?dateAjout<?= ($get['tri_agenda'] !== 'dateAjout' ? '&amp;tri_agenda=' . $get['tri_agenda'] : '' ) ?>" class="<?php if ($get['tri_agenda'] == 'dateAjout') { ?>selected<?php } ?>">dernier ajouté</a></li>
+                    <li style="display:inline-block;"><a href="?horaire_debut<?= ($get['tri_agenda'] !== 'dateAjout' ? '&amp;tri_agenda=' . $get['tri_agenda'] : '' ) ?>" class="<?php if ($get['tri_agenda'] == 'horaire_debut') { ?>selected<?php } ?>">heure de début</a></li>
+                </ul>
+            </div>
+            <div class="spacer"></div>
+        </div>-->
 
         <?php
         if ($count_events_today_in_region == 0)
         {
-            HtmlShrink::msgInfo("Pas d’événement prévu aujourd’hui");
+            HtmlShrink::msgInfo("Pas d’événement prévu ce jour");
         }
 
         $genres_today = array_keys($tab_events_today_in_region_by_category);
@@ -245,11 +262,11 @@ include("_header.inc.php");
                 <section class="genre">
 
                     <header class="genre-titre">
-                        <h2 id="<?php echo Text::stripAccents($glo_tab_genre[$genre]); ?>"><?php echo ucfirst($glo_tab_genre[$genre]); ?></h2>
+                        <h2 id="<?= Text::stripAccents($glo_tab_genre[$genre]); ?>"><?= ucfirst($glo_tab_genre[$genre]); ?></h2>
                         <?php
                         $genre_proch = next($genres_today);
                         if (isset($tab_events_today_in_region_by_category[$genre_proch])) : ?>
-                            <a class="genre-jump" href="#<?php echo Text::stripAccents($glo_tab_genre[$genre_proch]); ?>"><?php echo $glo_tab_genre[$genre_proch]; ?>&nbsp;<i class="fa fa-long-arrow-down"></i></a>
+                            <a class="genre-jump" href="#<?= Text::stripAccents($glo_tab_genre[$genre_proch]); ?>"><?= $glo_tab_genre[$genre_proch]; ?>&nbsp;<i class="fa fa-long-arrow-down"></i></a>
                         <?php endif; ?>
                         <div class="spacer"></div>
                     </header>
@@ -262,8 +279,8 @@ include("_header.inc.php");
                         $even_lieu = Evenement::getLieu($tab_even);
 
                         // après le 1er even puis 1 item sur 2 : rappel
-                        if (($genre_even_nb % 2 != 0)) : ?>
-                            <p class="rappel_date"><?php echo $glo_regions[$_SESSION['region']]; ?>, <?= ucfirst($day_label) ?>, <?php echo $glo_tab_genre[$genre]; ?></p>
+                        if (($genre_even_nb % 2 != 0) && $genre_even_nb > 1) : ?>
+                            <p class="rappel_date"><?= ucfirst($day_label) ?>, <?= $glo_tab_genre[$genre]; ?></p>
                         <?php endif; ?>
 
                         <article class="evenement">
@@ -272,7 +289,7 @@ include("_header.inc.php");
                                 <h3 class="left"><a href="/evenement.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>"><?= Evenement::titreSelonStatutHtml(sanitizeForHtml($tab_even['e_titre']), $tab_even['e_statut']) ?></a></h3>
                                 <span class="right"><?= Lieu::getLinkNameHtml($even_lieu['nom'], $even_lieu['idLieu'], $even_lieu['salle']) ?></span>
                                 <div class="spacer"></div>
-                            </header> <!-- titre -->
+                            </header>
 
                             <figure class="flyer"><?= Evenement::mainFigureHtml($tab_even['e_flyer'], $tab_even['e_image'], $tab_even['e_titre'], 100) ?></figure>
 
@@ -283,7 +300,7 @@ include("_header.inc.php");
                                 <?php if (!empty($tab_events_today_in_region_orgas[$tab_even['e_idEvenement']])): ?>
                                     <?= Organisateur::getListLinkedHtml($tab_events_today_in_region_orgas[$tab_even['e_idEvenement']]) ?>
                                 <?php endif; ?>
-                            </div> <!-- description -->
+                            </div>
 
                             <div class="spacer"></div>
 
@@ -306,8 +323,8 @@ include("_header.inc.php");
                             <footer class="edition">
 
                                 <ul class="menu_action">
-                                    <li><a href="/evenement-report.php?idE=<?php echo (int) $tab_even['e_idEvenement']; ?>" class="signaler" title="Signaler une erreur"><i class="fa fa-flag-o fa-lg"></i></a></li>
-                                    <li><a href="/evenement_ics.php?idE=<?php echo (int) $tab_even['e_idEvenement']; ?>" class="ical" title="Exporter au format iCalendar dans votre agenda"><i class="fa fa-calendar-plus-o fa-lg"></i></a></li>
+                                    <li><a href="/evenement-report.php?idE=<?= (int) $tab_even['e_idEvenement']; ?>" class="signaler" title="Signaler une erreur"><i class="fa fa-flag-o fa-lg"></i></a></li>
+                                    <li><a href="/evenement_ics.php?idE=<?= (int) $tab_even['e_idEvenement']; ?>" class="ical" title="Exporter au format iCalendar dans votre agenda"><i class="fa fa-calendar-plus-o fa-lg"></i></a></li>
                                 </ul>
 
                                 <?php if ($authorization->isPersonneAllowedToEditEvenement($_SESSION, $tab_even)) : ?>
