@@ -29,43 +29,43 @@ header#entete_contenu h1 small
     color: #888;
 }
 
-header#entete_contenu ul.entete_contenu_navigation
+ul.entete_contenu_navigation
 {
     float:right;
-    width:44%;
+    width:43%;
     margin: 0;
     padding-left: 0;
     text-align:right;
 }
 
-header#entete_contenu ul.entete_contenu_navigation li
+ul.entete_contenu_navigation li
 {
     display:inline;
     vertical-align:bottom;
 }
 
-header#entete_contenu ul.entete_contenu_navigation li a
+ul.entete_contenu_navigation li a
 {
     padding: 0.6em
 }
 
-header#entete_contenu ul.entete_contenu_navigation li:nth-child(1) a
+ul.entete_contenu_navigation li:nth-child(1) a
 {
     border-radius:3px 0 0 3px;
 }
 
-header#entete_contenu ul.entete_contenu_navigation li:nth-child(2) a
+ul.entete_contenu_navigation li:nth-child(2) a
 {
     border-radius: 0 3px 3px 0;
     background:#e4e4e4;
 }
 
-header#entete_contenu ul.entete_contenu_navigation li:nth-child(2) a:hover
+ul.entete_contenu_navigation li:nth-child(2) a:hover
 {
     background:#d4d4d4;
 }
 
-header#entete_contenu ul.entete_contenu_navigation li img
+ul.entete_contenu_navigation li img
 {
     vertical-align:top;
 }
@@ -86,7 +86,7 @@ header#entete_contenu ul.entete_contenu_navigation li img
 
 #order_navigation
 {
-    margin-top: 0.2em;
+    margin-top: 0.6em;
 }
 
 #order_navigation ul

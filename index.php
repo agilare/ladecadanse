@@ -233,11 +233,7 @@ include("_header.inc.php");
 
         <div id="order_navigation">
             <ul>
-                <li><i class="fa fa-sort-amount-asc" aria-hidden="true"></i></li>
-                <li>
-                    <a href="index.php?tri_agenda=dateAjout<?= (!$is_courant_today ? '&amp;courant=' . $get['courant'] : '' ); ?>" class="<?php if ($_SESSION['user_prefs_agenda_order'] == 'dateAjout') : ?>selected<?php endif; ?>" rel="nofollow">Dernier ajouté</a></li>
-                <li>
-                    <a href="index.php?tri_agenda=horaire_debut<?= (!$is_courant_today ? '&amp;courant=' . $get['courant'] : '' ) ?>" class="<?php if ($_SESSION['user_prefs_agenda_order'] == 'horaire_debut') : ?>selected<?php endif; ?>" rel="nofollow">Heure de début</a></li>
+                <li style="margin-right:5px" ><i class="fa fa-sort-amount-asc" aria-hidden="true"></i></li><li style="margin-right:2px" ><a href="index.php?tri_agenda=dateAjout<?= (!$is_courant_today ? '&amp;courant=' . $get['courant'] : '' ); ?>" class="<?php if ($_SESSION['user_prefs_agenda_order'] == 'dateAjout') : ?>selected<?php endif; ?>" rel="nofollow">Dernier ajouté</a></li><li><a href="index.php?tri_agenda=horaire_debut<?= (!$is_courant_today ? '&amp;courant=' . $get['courant'] : '' ) ?>" class="<?php if ($_SESSION['user_prefs_agenda_order'] == 'horaire_debut') : ?>selected<?php endif; ?>" rel="nofollow">Heure de début</a></li>
             </ul>
             <div class="spacer"></div>
         </div>
@@ -354,10 +350,14 @@ include("_header.inc.php");
 
        <?php } // foreach ?>
 
+        <ul class="entete_contenu_navigation">
+            <li><a href="index.php?courant=<?= $date_prev ?>" rel="nofollow"><?= $iconePrecedent ?></a></li><li><a href="index.php?courant=<?= $date_next ?>" rel="nofollow"><?= ucfirst(date_fr($date_next, "tout", "non", "")).$iconeSuivant ?></a></li>
+        </ul>
+
+
     </div> <!-- prochains_evenements -->
 
 </main>
-<!-- fin contenu -->
 
 
 <aside id="colonne_gauche" class="colonne">
