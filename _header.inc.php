@@ -1,8 +1,6 @@
 <?php
-
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\UserLevel;
-
 ?>
 
 <!doctype html>
@@ -12,35 +10,16 @@ use Ladecadanse\UserLevel;
 
     <meta charset="utf-8" >
 
-    <?php
-    if (
-        ($nom_page == 'evenement-agenda' && isset($_GET['courant']) && ($_GET['courant'] < date("Y-m-d") || (isset($total_even) && $total_even == 0 && $_GET['courant'] > date('Y-m-d', strtotime('+1 year')))))
+    <?php if (
+        ($nom_page == 'index' && isset($_GET['courant']) && ($_GET['courant'] < date("Y-m-d") || (isset($total_even) && $total_even == 0 && $_GET['courant'] > date('Y-m-d', strtotime('+1 year')))))
         || in_array($nom_page, ['evenement-report', 'evenement-email', 'evenement-search'])
-        )
-    {
-        ?>
+        ) : ?>
         <meta name="robots" content="noindex, nofollow" >
-    <?php } ?>
+    <?php endif; ?>
 
-	<title>
-        <?php
-        if (ENV !== 'prod')
-        {
-            echo '['.ENV.'] ';
-        }
+	<title><?= (ENV !== 'prod') ? '['.ENV.'] ' : '' ?><?= ($nom_page == 'index' && !isset($_GET['courant']) ? "La décadanse — " : "") . sanitizeForHtml($page_titre) . ($nom_page === 'index' && isset($_GET['courant']) ? " — La décadanse " : ""); ?></title>
 
-        if ($nom_page != "index")
-        {
-            echo sanitizeForHtml($page_titre) . " — La décadanse";
-        }
-        else
-        {
-            echo "La décadanse — " . sanitizeForHtml($page_titre);
-        }
-        ?>
-	</title>
-
-        <meta name="description" content="<?php echo sanitizeForHtml(($page_description ?? '')) ?>">
+    <meta name="description" content="<?php echo sanitizeForHtml(($page_description ?? '')) ?>">
 
     <meta property="og:site_name" content="La décadanse">
     <meta property="og:logo" content="/web/interface/apple-icon-152x152.png">
@@ -64,22 +43,18 @@ use Ladecadanse\UserLevel;
     <link rel="stylesheet" type="text/css" href="/web/css/calendrier.css" media="screen">
     <?php
     $css_file_path = "/web/css/{$nom_page}.css";
-    if (file_exists(__ROOT__ . $css_file_path))
-    {
-        ?>
+    if (file_exists(__ROOT__ . $css_file_path)) { ?>
         <link rel="stylesheet" type="text/css" href="<?php echo $css_file_path; ?>" media="screen" >
     <?php } ?>
-        <link rel="stylesheet" type="text/css" href="/web/css/diggstyle.css" media="screen">
-        <link href="/vendor/select2/select2/dist/css/select2.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/web/css/diggstyle.css" media="screen">
+    <link href="/vendor/select2/select2/dist/css/select2.min.css" rel="stylesheet">
     <?php
-    if (isset($extra_css) && is_array($extra_css)) {
-        foreach ($extra_css as $import)
-        {
-            ?>
-                    <link rel="stylesheet" type="text/css" href="/web/css/<?php echo $import ?>.css" media="screen" title="Normal">
+    if (isset($extra_css) && is_array($extra_css)) :
+        foreach ($extra_css as $import) : ?>
+            <link rel="stylesheet" type="text/css" href="/web/css/<?php echo $import ?>.css" media="screen" title="Normal">
         <?php
-    }
-    }
+        endforeach;
+    endif;
     ?>
 
     <link rel="stylesheet" type="text/css" media="screen and (min-width:800px)"  href="/web/css/desktop.css">
@@ -97,68 +72,43 @@ use Ladecadanse\UserLevel;
     <link rel="apple-touch-icon" sizes="76x76" href="/web/interface/apple-icon-76x76.png">
     <link rel="apple-touch-icon" sizes="152x152" href="/web/interface/apple-icon-152x152.png">
 
-    <?php
-    if (GLITCHTIP_ENABLED)
-    {
-        ?>
-    <script src="https://browser.sentry-cdn.com/9.14.0/bundle.min.js" crossorigin="anonymous"></script>
-        <script nonce="<?php echo CSP_NONCE ?>">
+    <?php if (GLITCHTIP_ENABLED) : ?>
+        <script src="https://browser.sentry-cdn.com/9.14.0/bundle.min.js" crossorigin="anonymous"></script>
+        <script nonce="<?= CSP_NONCE ?>">
                 Sentry.init({
-              dsn: "<?php echo GLITCHTIP_DSN ?>",
+              dsn: "<?= GLITCHTIP_DSN ?>",
               tracesSampleRate: 0.01,
         });
         </script>
-        <?php
-    }
-    ?>
+    <?php endif; ?>
 
-        <?php
-        if (MATOMO_ENABLED) {
-    ?>
-        <!-- Matomo -->
-        <script nonce="<?php echo CSP_NONCE ?>">
+    <?php if (MATOMO_ENABLED) : ?>
+        <script nonce="<?= CSP_NONCE ?>">
             'use strict';
-              var _paq = window._paq = window._paq || [];
-                <?php
-                if (isset($_SESSION['SidPersonne']))
-                {
-                    ?>
-        _paq.push(['setUserId', <?php echo json_encode($_SESSION['user']) ?>]);
-                    <?php
-                }
-                ?>
-                <?php
-                if (!isset($_SESSION['SidPersonne']) && !empty($_COOKIE['just_logged_out']))
-                {
-                    ?>
-        _paq.push(['resetUserId']);
-                    <?php
-                }
-                ?>
-                      /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
-              _paq.push(['trackPageView']);
-              _paq.push(['enableLinkTracking']);
-              (function() {
-                    var u="//<?php echo MATOMO_URL; ?>";
-                    _paq.push(['setTrackerUrl', u+'matomo.php']);
-                    _paq.push(['setSiteId', '<?php echo MATOMO_SITE_ID; ?>']);
-                    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-                g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+            var _paq = window._paq = window._paq || [];
+              <?php if (isset($_SESSION['SidPersonne'])) : ?>
+                  _paq.push(['setUserId', <?= json_encode($_SESSION['user']) ?>]);
+              <?php endif; ?>
+              <?php if (!isset($_SESSION['SidPersonne']) && !empty($_COOKIE['just_logged_out'])) : ?>
+                  _paq.push(['resetUserId']);
+              <?php endif; ?>
+            /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+            _paq.push(['trackPageView']);
+            _paq.push(['enableLinkTracking']);
+            (function() {
+                  var u="//<?= MATOMO_URL; ?>";
+                  _paq.push(['setTrackerUrl', u+'matomo.php']);
+                  _paq.push(['setSiteId', '<?= MATOMO_SITE_ID; ?>']);
+                  var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+              g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
               })();
-            </script>
-    <noscript><p><img referrerpolicy="no-referrer-when-downgrade" src="https://<?php echo MATOMO_URL; ?>matomo.php?idsite=<?php echo MATOMO_SITE_ID; ?>&amp;rec=1" style="border:0;" alt=""></p></noscript>
+        </script>
+        <noscript><p><img referrerpolicy="no-referrer-when-downgrade" src="https://<?= MATOMO_URL; ?>matomo.php?idsite=<?= MATOMO_SITE_ID; ?>&amp;rec=1" style="border:0;" alt=""></p></noscript>
     <!-- End Matomo Code -->
-        <?php
-    }
-    ?>
-    <?php
-    if (DARKVISITORS_ENABLED)
-    {
-        ?>
-        <script src="https://darkvisitors.com/tracker.js?project_key=<?php echo DARKVISITORS_PROJECT_KEY ?>"></script>
-        <?php
-    }
-    ?>
+    <?php endif; ?>
+    <?php if (DARKVISITORS_ENABLED) : ?>
+        <script src="https://darkvisitors.com/tracker.js?project_key=<?= DARKVISITORS_PROJECT_KEY ?>"></script>
+    <?php endif; ?>
 </head>
 
 <body>
@@ -170,7 +120,7 @@ use Ladecadanse\UserLevel;
         <header id="entete">
 
             <div id="titre_site">
-                <a href="/<?php echo $url_query_region_1er ?>"><img src="/web/interface/logo_titre.jpg" alt="La décadanse" width="180" height="35"></a>
+                <a href="/<?= $url_query_region_1er ?>"><img src="/web/interface/logo_titre.jpg" alt="La décadanse" width="180" height="35"></a>
             </div>
 
             <div id="entete_haut">
@@ -180,23 +130,20 @@ use Ladecadanse\UserLevel;
                 <nav id="menu_pratique">
 
                     <ul>
-                       <li><a href="https://github.com/agilare/ladecadanse/" aria-label="Watch agilare/ladecadanse on GitHub" style="font-size:1em" target="_blank"><i class="fa fa-github" aria-hidden="true"></i>
-            </a>
+                       <li><a href="https://github.com/agilare/ladecadanse/" aria-label="Watch agilare/ladecadanse on GitHub" style="font-size:1em" target="_blank"><i class="fa fa-github" aria-hidden="true"></i></a>
                        </li>
-                    <?php
-                    foreach ($glo_menu_pratique as $nom => $lien)
-                    {
-                        $menu_pratique_li = '';
-                        if ($nom == "Faire un don")
-                             $menu_pratique_li = ' style="background: #ffe771;border-radius: 0 0 3px 3px;padding:2px 0;" ';
+                        <?php foreach ($glo_menu_pratique as $nom => $lien) {
+                            $menu_pratique_li = '';
+                            if ($nom == "Faire un don")
+                                 $menu_pratique_li = ' style="background: #ffe771;border-radius: 0 0 3px 3px;padding:2px 0;" ';
 
-                            $ici = '';
-                        if (strstr((string) $_SERVER['PHP_SELF'], (string) $lien) )
-                        {
-                            $ici = " class=\"ici\"";
-                        }
-                        ?>
-                        <li <?php echo $ici; ?> <?php echo $menu_pratique_li; ?>><a href="<?php echo $lien; ?>" <?php echo $ici; ?>><?php echo $nom; ?></a></li>
+                                $ici = '';
+                            if (strstr((string) $_SERVER['PHP_SELF'], (string) $lien) )
+                            {
+                                $ici = " class=\"ici\"";
+                            }
+                            ?>
+                            <li <?php echo $ici; ?> <?php echo $menu_pratique_li; ?>><a href="<?php echo $lien; ?>" <?php echo $ici; ?>><?php echo $nom; ?></a></li>
                         <?php
                         }
 
@@ -208,63 +155,57 @@ use Ladecadanse\UserLevel;
                                 $ici = ' ici ';
                             }
                         ?>
-
-                            <li class="<?php echo $ici; ?>" ><a href="/articles/annoncerEvenement.php">Annoncer un événement</a></li>
+                            <li class="<?php echo $ici; ?>"><a href="/articles/annoncerEvenement.php">Annoncer un événement</a></li>
                             <li class="<?php echo $ici; ?> only-mobile" ><a href="/articles/charte-editoriale.php">Charte éditoriale</a></li>
-
-                    <?php
-                    }
-
-                    if (!isset($_SESSION['SidPersonne']))
-                    {
-                        $ici = '';
-                        $ici_login = '';
-                        if (strstr((string) $_SERVER['PHP_SELF'], "user-login.php") )
-                        {
-                            $ici_login = " class=\"ici\"";
+                        <?php
                         }
 
-                        if ( strstr((string) $_SERVER['PHP_SELF'], "user-register.php"))
+                        if (!isset($_SESSION['SidPersonne']))
                         {
-                            $ici = " class=\"ici\"";
-                        }
-                        ?>
-
-                        <li <?php echo $ici; ?>><a href="/user-register.php" title="Créer un compte"><strong>Inscription</strong></a></li>
-                        <li <?php echo $ici_login; ?> rel="nofollow"><a href="/user-login.php" title="Se connecter au site">Connexion</a></li>
-
-                    <?php
-                    }
-                    else
-                    {
-                        if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= UserLevel::ACTOR)) {
                             $ici = '';
-                            if (strstr((string) $_SERVER['PHP_SELF'], "evenement-edit.php") )
+                            $ici_login = '';
+                            if (strstr((string) $_SERVER['PHP_SELF'], "user-login.php") )
+                            {
+                                $ici_login = " class=\"ici\"";
+                            }
+
+                            if ( strstr((string) $_SERVER['PHP_SELF'], "user-register.php"))
                             {
                                 $ici = " class=\"ici\"";
                             }
                             ?>
 
-                            <li <?php echo $ici; ?>><a href="/evenement-edit.php?action=ajouter">Ajouter un événement</a></li>
-
-                            <?php
-                        }
-
-                        $ici = '';
-                        if (strstr((string) $_SERVER['PHP_SELF'], "user.php") )
-                        {
-                            $ici = " class=\"ici\"";
-                        }
-                        ?>
-                            <li <?php echo $ici; ?>><a href="/user.php?idP=<?php echo $_SESSION['SidPersonne']; ?>"><?php echo sanitizeForHtml($_SESSION['user']); ?></a></li>
-                            <li><a href="/user-logout.php" >Sortir</a></li>
+                            <li <?php echo $ici; ?>><a href="/user-register.php" title="Créer un compte"><strong>Inscription</strong></a></li>
+                            <li <?php echo $ici_login; ?> rel="nofollow"><a href="/user-login.php" title="Se connecter au site">Connexion</a></li>
 
                         <?php
-                        if ($_SESSION['Sgroupe'] <= 4) {
-                                echo '<li><a href="/admin/index.php" title="Administration" >Admin</a></li>';
+                        }
+                        else
+                        {
+                            if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= UserLevel::ACTOR))
+                            {
+                                $ici = '';
+                                if (strstr((string) $_SERVER['PHP_SELF'], "evenement-edit.php") )
+                                {
+                                    $ici = " class=\"ici\"";
+                                }
+                                ?>
+                                <li <?php echo $ici; ?>><a href="/evenement-edit.php?action=ajouter">Ajouter un événement</a></li>
+                            <?php
                             }
-                    }
-                    ?>
+
+                            $ici = '';
+                            if (strstr((string) $_SERVER['PHP_SELF'], "user.php") )
+                            {
+                                $ici = " class=\"ici\"";
+                            }
+                            ?>
+                                <li <?= $ici; ?>><a href="/user.php?idP=<?= (int) $_SESSION['SidPersonne']; ?>"><?= sanitizeForHtml($_SESSION['user']); ?></a></li>
+                                <li><a href="/user-logout.php" >Sortir</a></li>
+                            <?php if ($_SESSION['Sgroupe'] <= UserLevel::ADMIN) : ?>
+                                <li><a href="/admin/index.php" title="Administration" >Admin</a></li>
+                            <?php endif; ?>
+                        <?php } ?>
                     </ul>
 
                 </nav> <!-- menu pratique -->
@@ -277,41 +218,29 @@ use Ladecadanse\UserLevel;
 
                 <ul>
                     <?php
-                    $menu_principal = ["Agenda" => "evenement-agenda.php", "Lieux" => "lieux.php", "Organisateurs" => "organisateurs.php"];
-
-                    foreach ($menu_principal as $nom => $lien)
-                    {
+                    $menu_principal = ["Agenda" => "index.php", "Lieux" => "lieux.php", "Organisateurs" => "organisateurs.php"];
+                    foreach ($menu_principal as $nom => $lien) {
                         $ici = '';
                         if (strstr((string) $_SERVER['PHP_SELF'], $lien)
                         || ($lien == "/lieux.php" && strstr((string) $_SERVER['PHP_SELF'], "lieu.php"))
                         || ($lien == "/organisateurs.php" && strstr((string) $_SERVER['PHP_SELF'], "organisateur.php"))
-                        || ($lien == "/evenement-agenda.php" && strstr((string) $_SERVER['PHP_SELF'], "agenda.php"))
                         )
                         {
                             $ici = ' class="ici" ';
                         }
-                    ?>
-
-                        <li <?php  echo $ici; ?>
-
-                      <?php
-                        if ($nom == "Agenda")
-                        {
                         ?>
+
+                        <li <?= $ici; ?>
+
+                        <?php if ($nom == "Agenda") { ?>
                             id="bouton_agenda">
-                            <?php
-                            echo "<a href=\"/" . $lien . "?" . $url_query_region_et . "\">" . $nom . "</a>";
-                                    ?>
-                                </li>
+                            <?= "<a href=\"/" . $lien . "?" . $url_query_region_et . "\">" . $nom . "</a>" ?>
+                            </li>
                             <li id="bouton_calendrier">
-                                        <a href="#" id="btn_calendrier" class="mobile" aria-label="Calendrier"><img src="<?php echo $url_images_interface_icons ?>calendar_view_week.png" alt="Calendrier" width="16" height="16"></a>
-                                    </li>
-                    <?php
-                        }
-                        else
-                        {
-                        ?>
-                        ><a href="/<?php echo $lien."?".$url_query_region; ?>"><?php echo $nom; ?></a></li>
+                                <a href="#" id="btn_calendrier" class="mobile" aria-label="Calendrier"><img src="<?= $url_images_interface_icons ?>calendar_view_week.png" alt="Calendrier" width="16" height="16"></a>
+                            </li>
+                        <?php } else { ?>
+                            ><a href="/<?= $lien."?".$url_query_region; ?>"><?= $nom; ?></a></li>
                         <?php
                         }
                     }
@@ -336,14 +265,11 @@ use Ladecadanse\UserLevel;
                         <input type="text" name="name_as" value="" class="name_as" >
                     </form>
                 </search>
-            </nav>
-            <!-- Fin Menu-->
+            </nav> <!-- Fin Menu -->
 
         </header>
-        <!-- Fin entete -->
 
         <div class="spacer"><!-- --></div>
 
-        <!-- Début Conteneur -->
-        <div id="conteneur" <?php if (strstr(dirname((string) $_SERVER['PHP_SELF']), 'admin') || in_array($nom_page, ['evenement-edit', 'evenement-report', 'lieu-edit', 'lieu-text-edit', 'organisateur-edit', 'contacteznous', 'user-login', 'user-edit', 'user-register'])) { ?>style="padding-right: 5px" <?php } ?> >
+        <div id="conteneur" <?php if (strstr(dirname((string) $_SERVER['PHP_SELF']), 'admin') || in_array($nom_page, ['evenement-edit', 'evenement-report', 'lieu-edit', 'lieu-text-edit', 'organisateur-edit', 'contacteznous', 'user-login', 'user-edit', 'user-register'])) : ?>style="padding-right: 5px" <?php endif; ?> >
 
