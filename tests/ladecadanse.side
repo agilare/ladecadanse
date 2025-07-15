@@ -22,7 +22,7 @@
       "value": ""
     }, {
       "id": "9791ce8c-b8f5-44ab-a613-340963baece4",
-      "comment": "",
+      "comment": "hamburger menu",
       "command": "click",
       "target": "css=.fa-bars",
       "targets": [
@@ -33,7 +33,7 @@
       "value": ""
     }, {
       "id": "8ae424a3-1bfb-4a35-9ebd-69ac1c47a203",
-      "comment": "",
+      "comment": "page Contactez-nous",
       "command": "click",
       "target": "linkText=Contact",
       "targets": [
@@ -109,7 +109,7 @@
       "value": ""
     }, {
       "id": "c78ef636-1a05-4ce1-936e-8f965689c28f",
-      "comment": "",
+      "comment": "page À propos",
       "command": "click",
       "target": "linkText=À propos",
       "targets": [
@@ -160,7 +160,7 @@
       "value": ""
     }, {
       "id": "e635339a-7ba8-4308-951f-c4093b82a048",
-      "comment": "",
+      "comment": "page Faire un don",
       "command": "click",
       "target": "linkText=Faire un don",
       "targets": [
@@ -225,7 +225,7 @@
       "value": ""
     }, {
       "id": "8d464be7-748b-43f1-b9e3-e6bf9fccaf8c",
-      "comment": "",
+      "comment": "page Annoncer un événement",
       "command": "click",
       "target": "linkText=Annoncer un événement",
       "targets": [
@@ -263,7 +263,7 @@
       "value": ""
     }, {
       "id": "19a9dfdc-2554-4857-a7f9-690fb93d9798",
-      "comment": "",
+      "comment": "page Charte éditoriale",
       "command": "click",
       "target": "linkText=Charte éditoriale",
       "targets": [
@@ -301,7 +301,7 @@
       "value": ""
     }, {
       "id": "c90e2196-9c19-4607-9d5a-b3b52b45dcdb",
-      "comment": "",
+      "comment": "page Inscription",
       "command": "click",
       "target": "linkText=Inscription",
       "targets": [
@@ -351,7 +351,7 @@
       "value": ""
     }, {
       "id": "bc52303e-45f8-4d25-979c-a8f8ba14ffe2",
-      "comment": "",
+      "comment": "page Connexion",
       "command": "click",
       "target": "linkText=Connexion",
       "targets": [
@@ -407,7 +407,7 @@
       "value": ""
     }, {
       "id": "0552d514-ca0f-445d-9116-e76672b84908",
-      "comment": "",
+      "comment": "page Lieux ",
       "command": "click",
       "target": "linkText=Lieux",
       "targets": [
@@ -434,7 +434,7 @@
       "value": ""
     }, {
       "id": "3f29fca5-3dc7-47db-a7d0-c265fe35eb7c",
-      "comment": "",
+      "comment": "page Organisateurs",
       "command": "click",
       "target": "linkText=Organisateurs",
       "targets": [
@@ -492,57 +492,18 @@
       "targets": [],
       "value": ""
     }, {
-      "id": "772f8bd8-e858-4183-95ee-f67a37b6f197",
-      "comment": "",
-      "command": "click",
-      "target": "css=.vd",
-      "targets": [
-        ["css=.msg_info", "css:finder"],
-        ["xpath=//section[@id='prochains_evenements']/div", "xpath:idRelative"],
-        ["xpath=//section/div", "xpath:position"]
-      ],
-      "value": ""
-    }, {
-      "id": "7d455b69-0418-4851-9b73-efd9fcca12c9",
-      "comment": "",
-      "command": "assertElementPresent",
-      "target": "css=#prochains_evenements",
-      "targets": [],
-      "value": ""
-    }, {
-      "id": "f4442d42-f2fc-441c-b9f0-f794ff80df68",
-      "comment": "",
-      "command": "click",
-      "target": "css=.ge",
-      "targets": [
-        ["linkText=Genève 45", "linkText"],
-        ["css=.ge", "css:finder"],
-        ["xpath=//div[@id='entete_contenu']/ul/li/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '?region=ge&auj=2023-03-12')]", "xpath:href"],
-        ["xpath=//div[2]/ul/li/a", "xpath:position"],
-        ["xpath=//a[contains(.,'Genève 45')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "cd7133b2-77c9-42cb-9ccb-d3d12ad4f7ae",
-      "comment": "",
-      "command": "assertElementPresent",
-      "target": "css=#prochains_evenements",
-      "targets": [],
-      "value": ""
-    }, {
       "id": "614d6f5e-567e-4551-b611-b0ba2d9920f0",
-      "comment": "",
+      "comment": "Fêtes > 2e even",
       "command": "click",
-      "target": "css=.genre:nth-child(1) > .evenement:nth-child(2) .left > a",
+      "target": "css=.genre:nth-child(2) > .evenement:nth-child(4) .left > a",
       "targets": [
-        ["linkText=JOURNÉE DE SOUTIEN ULTRA RECUP + ATTENTION LE TAPIS PREND FEU + CLARA LE MEUR", "linkText"],
-        ["css=.genre:nth-child(1) > .evenement:nth-child(2) .left > a", "css:finder"],
-        ["xpath=//a[contains(text(),'JOURNÉE DE SOUTIEN ULTRA RECUP + ATTENTION LE TAPIS PREND FEU + CLARA LE MEUR')]", "xpath:link"],
-        ["xpath=//section[@id='prochains_evenements']/div/article/div/span/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/evenement.php?idE=395257')]", "xpath:href"],
-        ["xpath=//span/a", "xpath:position"],
-        ["xpath=//a[contains(.,'JOURNÉE DE SOUTIEN ULTRA RECUP + ATTENTION LE TAPIS PREND FEU + CLARA LE MEUR')]", "xpath:innerText"]
+        ["linkText=Fête du mont Freundler", "linkText"],
+        ["css=.genre:nth-child(2) > .evenement:nth-child(4) .left > a", "css:finder"],
+        ["xpath=//a[contains(text(),'Fête du mont Freundler')]", "xpath:link"],
+        ["xpath=//div[@id='prochains_evenements']/section/article[2]/header/h3/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '/evenement.php?idE=1869')]", "xpath:href"],
+        ["xpath=//article[2]/header/h3/a", "xpath:position"],
+        ["xpath=//a[contains(.,'Fête du mont Freundler')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
@@ -596,15 +557,15 @@
       "id": "dabddf0d-b7f0-4e97-be41-dd9d994d096f",
       "comment": "Lieu link of first event",
       "command": "click",
-      "target": "css=.genre:nth-child(1) > .evenement:nth-child(2) .right > a",
+      "target": "css=.genre:nth-child(2) > .evenement:nth-child(4) .right > a",
       "targets": [
-        ["linkText=Le Sagittario", "linkText"],
-        ["css=.right > a", "css:finder"],
-        ["xpath=//a[contains(text(),'Le Sagittario')]", "xpath:link"],
-        ["xpath=//section[@id='prochains_evenements']/div/article/div/span[2]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/lieu.php?idL=1')]", "xpath:href"],
-        ["xpath=//span[2]/a", "xpath:position"],
-        ["xpath=//a[contains(.,'Le Sagittario')]", "xpath:innerText"]
+        ["linkText=Conservatoire de Musique de Genève", "linkText"],
+        ["css=.genre:nth-child(2) > .evenement:nth-child(4) .right > a", "css:finder"],
+        ["xpath=//a[contains(text(),'Conservatoire de Musique de Genève')]", "xpath:link"],
+        ["xpath=//div[@id='prochains_evenements']/section/article[2]/header/span/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '/lieu.php?idL=4')]", "xpath:href"],
+        ["xpath=//article[2]/header/span/a", "xpath:position"],
+        ["xpath=//a[contains(.,'Conservatoire de Musique de Genève')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
@@ -630,11 +591,12 @@
       "id": "f15ca5b7-44b0-4674-bae2-6a3ce11f1f76",
       "comment": "",
       "command": "click",
-      "target": "css=.genre:nth-child(1) > .evenement:nth-child(5) > .flyer img",
+      "target": "xpath=//div[@id='prochains_evenements']/section/article[4]/figure/a/img",
       "targets": [
-        ["css=.genre:nth-child(1) > .evenement:nth-child(5) > .flyer", "css:finder"],
-        ["xpath=//div[@id='prochains_evenements']/section/article[2]/figure", "xpath:idRelative"],
-        ["xpath=//article[2]/figure", "xpath:position"]
+        ["css=.genre:nth-child(2) > .evenement:nth-child(9) img", "css:finder"],
+        ["xpath=(//img[@alt='Flyer de NOCTAMBAR REOPENING w/ YÀNKOV & NILOU'])[2]", "xpath:img"],
+        ["xpath=//div[@id='prochains_evenements']/section/article[4]/figure/a/img", "xpath:idRelative"],
+        ["xpath=//article[4]/figure/a/img", "xpath:position"]
       ],
       "value": ""
     }, {
@@ -653,9 +615,9 @@
       "id": "5e2afd96-318f-424f-ab21-08bfb49c21c3",
       "comment": "Signaler link of first event",
       "command": "click",
-      "target": "css=.genre:nth-child(1) > .evenement:nth-child(3) .signaler > .fa",
+      "target": "xpath=//div[@id='prochains_evenements']/section/article/footer/ul/li/a/i",
       "targets": [
-        ["css=.genre:nth-child(1) > .evenement:nth-child(3) .signaler > .fa", "css:finder"],
+        ["css=.genre:nth-child(2) > .evenement:nth-child(2) .signaler > .fa", "css:finder"],
         ["xpath=//div[@id='prochains_evenements']/section/article/footer/ul/li/a/i", "xpath:idRelative"],
         ["xpath=//footer/ul/li/a/i", "xpath:position"]
       ],
@@ -685,516 +647,155 @@
       ],
       "value": ""
     }, {
-      "id": "16864106-dee7-4da1-b101-2f37e916c3ec",
-      "comment": "iCal link of first event",
-      "command": "//click",
-      "target": "css=.evenement:nth-child(2) .ical > .fa",
-      "targets": [],
-      "value": ""
-    }, {
-      "id": "bf4c38e4-ac67-4fbd-b7e3-76c172926bc2",
-      "comment": "click first genre arrow down",
-      "command": "click",
-      "target": "css=.genre:nth-child(1) > .genre-titre .fa",
-      "targets": [
-        ["css=.genre:nth-child(1) > .genre-titre .fa", "css:finder"],
-        ["xpath=//section[@id='prochains_evenements']/div/div/a/i", "xpath:idRelative"],
-        ["xpath=//div/div/a/i", "xpath:position"]
-      ],
-      "value": ""
-    }, {
-      "id": "2e8c4e28-6748-4170-b938-02df148bb109",
+      "id": "28061c2d-0e14-4ac4-8b10-619bdc678716",
       "comment": "",
       "command": "click",
-      "target": "css=.genre:nth-child(1) .genre-jump",
+      "target": "xpath=//div[@id='prochains_evenements']/section/header/a",
       "targets": [
-        ["css=.genre:nth-child(1) .genre-jump", "css:finder"],
-        ["xpath=//section[@id='prochains_evenements']/div/div/a", "xpath:idRelative"],
+        ["linkText=ciné", "linkText"],
+        ["css=.genre:nth-child(2) .genre-jump", "css:finder"],
+        ["xpath=//a[contains(text(),'ciné')]", "xpath:link"],
+        ["xpath=//div[@id='prochains_evenements']/section/header/a", "xpath:idRelative"],
         ["xpath=//a[contains(@href, '#cine')]", "xpath:href"],
-        ["xpath=//div/div/a", "xpath:position"]
+        ["xpath=//header/a", "xpath:position"],
+        ["xpath=//a[contains(.,'ciné ')]", "xpath:innerText"]
       ],
       "value": ""
-    }]
-  }, {
-    "id": "f7075d90-d631-4aa3-ad62-6344bb052890",
-    "name": "agenda small - to Sat. of 1st week (vars)",
-    "commands": [{
-      "id": "326de392-50bf-40d6-8246-9eacd69b014e",
-      "comment": "",
-      "command": "open",
-      "target": "/",
-      "targets": [],
-      "value": ""
     }, {
-      "id": "e0a3305c-5290-4c63-aa03-e74ae3093464",
+      "id": "2826849e-2abe-423d-baf9-7572cf3d9c85",
       "comment": "",
-      "command": "setWindowSize",
-      "target": "360x760",
-      "targets": [],
-      "value": ""
-    }, {
-      "id": "94c8fb1b-f0f8-419c-80de-15a5c6f79714",
-      "comment": "click calendar btn",
       "command": "click",
-      "target": "css=#btn_calendrier > img",
+      "target": "xpath=//div[@id='prochains_evenements']/section[2]/header/a",
       "targets": [
-        ["css=#btn_calendrier > img", "css:finder"],
-        ["xpath=//img[@alt='Calendrier']", "xpath:img"],
-        ["xpath=//a[@id='btn_calendrier']/img", "xpath:idRelative"],
-        ["xpath=//li[2]/a/img", "xpath:position"]
+        ["linkText=théâtre", "linkText"],
+        ["css=.genre:nth-child(3) .genre-jump", "css:finder"],
+        ["xpath=//a[contains(text(),'théâtre')]", "xpath:link"],
+        ["xpath=//div[@id='prochains_evenements']/section[2]/header/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '#theatre')]", "xpath:href"],
+        ["xpath=//section[2]/header/a", "xpath:position"],
+        ["xpath=//a[contains(.,'théâtre ')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
-      "id": "abc11e52-8da5-4802-b814-9905d1dfe415",
+      "id": "6cb8d45f-676d-4cd4-8875-f1a740ceb6ee",
+      "comment": "",
+      "command": "click",
+      "target": "xpath=//div[@id='order_navigation']/ul/li[3]/a",
+      "targets": [
+        ["linkText=Heure de début", "linkText"],
+        ["css=#order_navigation li:nth-child(3) > a", "css:finder"],
+        ["xpath=//a[contains(text(),'Heure de début')]", "xpath:link"],
+        ["xpath=//div[@id='order_navigation']/ul/li[3]/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, 'index.php?tri_agenda=horaire_debut')]", "xpath:href"],
+        ["xpath=//div/ul/li[3]/a", "xpath:position"],
+        ["xpath=//a[contains(.,'Heure de début')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "ab698987-7277-4abe-aeb0-38f4a989b39b",
+      "comment": "",
+      "command": "assertElementPresent",
+      "target": "xpath=//div[@id='prochains_evenements']/section/article/header/h3",
+      "targets": [
+        ["css=.genre:nth-child(2) > .evenement:nth-child(2) > .titre > .left", "css:finder"],
+        ["xpath=//div[@id='prochains_evenements']/section/article/header/h3", "xpath:idRelative"],
+        ["xpath=//h3", "xpath:position"],
+        ["xpath=//h3[contains(.,'NOCTAMBAR REOPENING w/ YÀNKOV & NILOU')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "09e1a62d-ac62-4707-b1eb-71b2bb49d2c3",
+      "comment": "",
+      "command": "click",
+      "target": "xpath=//header[@id='entete_contenu']/ul/li[2]/a",
+      "targets": [
+        ["linkText=Mercredi 16", "linkText"],
+        ["css=.entete_contenu_navigation:nth-child(2) > li:nth-child(2) > a", "css:finder"],
+        ["xpath=//a[contains(text(),'Mercredi 16')]", "xpath:link"],
+        ["xpath=//header[@id='entete_contenu']/ul/li[2]/a", "xpath:idRelative"],
+        ["xpath=(//a[contains(@href, 'index.php?courant=2025-07-16')])[2]", "xpath:href"],
+        ["xpath=//header/ul/li[2]/a", "xpath:position"],
+        ["xpath=//a[contains(.,'Mercredi 16 ')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "54863d6e-57f2-4e19-9345-c4c659c7f3c7",
+      "comment": "",
+      "command": "assertElementPresent",
+      "target": "xpath=//div[@id='prochains_evenements']/section/article/header/h3",
+      "targets": [
+        ["css=.genre:nth-child(2) > .evenement:nth-child(2) > .titre > .left", "css:finder"],
+        ["xpath=//div[@id='prochains_evenements']/section/article/header/h3", "xpath:idRelative"],
+        ["xpath=//h3", "xpath:position"],
+        ["xpath=//h3[contains(.,'NOCTAMBAR REOPENING w/ YÀNKOV & NILOU')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "9c3c3022-004c-423e-a391-d723b3a2d06f",
+      "comment": "",
+      "command": "click",
+      "target": "xpath=//header[@id='entete_contenu']/ul/li/a",
+      "targets": [
+        ["css=.entete_contenu_navigation:nth-child(2) > li:nth-child(1) > a", "css:finder"],
+        ["xpath=//header[@id='entete_contenu']/ul/li/a", "xpath:idRelative"],
+        ["xpath=(//a[contains(@href, 'index.php?courant=2025-07-15')])[2]", "xpath:href"],
+        ["xpath=//header/ul/li/a", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "fb41d212-079a-4b2a-8595-ca06ac8c7e30",
+      "comment": "",
+      "command": "assertElementPresent",
+      "target": "xpath=//div[@id='prochains_evenements']/section/article/header/h3",
+      "targets": [
+        ["css=.genre:nth-child(2) > .evenement:nth-child(2) > .titre > .left", "css:finder"],
+        ["xpath=//div[@id='prochains_evenements']/section/article/header/h3", "xpath:idRelative"],
+        ["xpath=//h3", "xpath:position"],
+        ["xpath=//h3[contains(.,'NOCTAMBAR REOPENING w/ YÀNKOV & NILOU')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "f0efaf24-b872-484f-be81-c001926483f5",
+      "comment": "",
+      "command": "click",
+      "target": "id=btn_calendrier",
+      "targets": [
+        ["id=btn_calendrier", "id"],
+        ["css=#btn_calendrier", "css:finder"],
+        ["xpath=//a[@id='btn_calendrier']", "xpath:attributes"],
+        ["xpath=//li[@id='bouton_calendrier']/a", "xpath:idRelative"],
+        ["xpath=(//a[contains(@href, '#')])[3]", "xpath:href"],
+        ["xpath=//header/nav/ul/li[2]/a", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "ca5de247-8a00-4f85-be65-69ff8b72ebe0",
       "comment": "click Saturday of 5rd week",
       "command": "click",
-      "target": "css=.semaine:nth-child(7) > .sam:nth-child(7) > a",
+      "target": "xpath=//table[@id='calendrier']/tbody/tr[5]/td[6]/a",
       "targets": [
-        ["linkText=3", "linkText"],
-        ["css=.semaine:nth-child(3) > .sam:nth-child(7) > a", "css:finder"],
-        ["xpath=(//a[contains(text(),'3')])[3]", "xpath:link"],
-        ["xpath=//table[@id='calendrier']/tbody/tr[3]/td[7]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/evenement-agenda.php?courant=2024-02-03&sem=0&tri_agenda=dateAjout')]", "xpath:href"],
-        ["xpath=//td[7]/a", "xpath:position"]
+        ["css=.autre_mois:nth-child(6) > a", "css:finder"],
+        ["xpath=(//a[contains(text(),'2')])[13]", "xpath:link"],
+        ["xpath=//table[@id='calendrier']/tbody/tr[5]/td[6]/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '/index.php?courant=2025-08-02')]", "xpath:href"],
+        ["xpath=//tr[5]/td[6]/a", "xpath:position"]
       ],
       "value": ""
     }, {
-      "id": "d2f286c7-8efb-468e-b7df-9e5e7a4e60ee",
-      "comment": "is title with current date present",
-      "command": "assertElementPresent",
-      "target": "css=h3",
-      "targets": [
-        ["css=h2", "css:finder"],
-        ["xpath=//div[@id='entete_contenu']/h2", "xpath:idRelative"],
-        ["xpath=//h2", "xpath:position"],
-        ["xpath=//h2[contains(.,'Agenda')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "82e03dd5-b393-4ac9-8752-5021e7624bee",
+      "id": "8ebb0355-c53c-49d5-a431-f0a4d636eb1c",
       "comment": "",
-      "command": "click",
-      "target": "css=.vd",
-      "targets": [
-        ["linkText=Lausanne", "linkText"],
-        ["css=.vd", "css:finder"],
-        ["xpath=//a[contains(text(),'Lausanne')]", "xpath:link"],
-        ["xpath=//div[@id='entete_contenu']/ul/li[2]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '?region=vd&courant=2023-03-02&sem=0&genre=&tri_agenda=dateAjout&page=1&nblignes=50')]", "xpath:href"],
-        ["xpath=//div[2]/ul/li[2]/a", "xpath:position"],
-        ["xpath=//a[contains(.,'Lausanne ')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "096303a3-f5be-4bab-9c12-b91fa4a3dcad",
-      "comment": "is title with current date present",
       "command": "assertElementPresent",
-      "target": "css=h3",
+      "target": "xpath=//div[@id='prochains_evenements']/section/article/header/h3",
       "targets": [
-        ["css=h3", "css:finder"],
-        ["xpath=//div[@id='entete_contenu']/div[2]/h3", "xpath:idRelative"],
+        ["css=.genre:nth-child(2) > .evenement:nth-child(2) > .titre > .left", "css:finder"],
+        ["xpath=//div[@id='prochains_evenements']/section/article/header/h3", "xpath:idRelative"],
         ["xpath=//h3", "xpath:position"],
-        ["xpath=//h3[contains(.,'Vendredi 31 mars 2023')]", "xpath:innerText"]
+        ["xpath=//h3[contains(.,'NOCTAMBAR REOPENING w/ YÀNKOV & NILOU')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
-      "id": "09b4daed-bbcb-4b95-b0b4-79dbd1bb0499",
+      "id": "6f2ba983-ee6b-4704-8899-6e2a3f7f7d82",
       "comment": "",
-      "command": "click",
-      "target": "css=.ge",
-      "targets": [
-        ["linkText=Genève", "linkText"],
-        ["css=.ge", "css:finder"],
-        ["xpath=//a[contains(text(),'Genève')]", "xpath:link"],
-        ["xpath=//div[@id='entete_contenu']/ul/li/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '?region=ge&courant=2023-03-02&sem=0&genre=&tri_agenda=dateAjout&page=1&nblignes=50')]", "xpath:href"],
-        ["xpath=//div[2]/ul/li/a", "xpath:position"],
-        ["xpath=//a[contains(.,'Genève ')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "0c52c105-1749-441f-b3fb-33e1c7e5dd86",
-      "comment": "",
-      "command": "click",
-      "target": "id=select_genre",
-      "targets": [
-        ["id=select_genre", "id"],
-        ["css=#select_genre", "css:finder"],
-        ["xpath=//select[@id='select_genre']", "xpath:attributes"],
-        ["xpath=//div[@id='contenu']/div[4]/form/div/select", "xpath:idRelative"],
-        ["xpath=//select", "xpath:position"]
-      ],
-      "value": ""
-    }, {
-      "id": "80b412a0-02fb-4bca-a45f-53276361097a",
-      "comment": "",
-      "command": "select",
-      "target": "id=select_genre",
-      "targets": [
-        ["css=.genre:nth-child(2) > .genre-titre", "css:finder"],
-        ["xpath=//div[@id='evenements']/div[2]/h4", "xpath:idRelative"],
-        ["xpath=//h4", "xpath:position"],
-        ["xpath=//h4[contains(.,'Fêtes')]", "xpath:innerText"]
-      ],
-      "value": "label=Fêtes"
-    }, {
-      "id": "b7c69df1-a82b-4c31-b0cc-c2867847f538",
-      "comment": "",
-      "command": "assertElementNotPresent",
-      "target": "css=.genre:nth-child(2) > .genre-titre",
-      "targets": [
-        ["css=.genre:nth-child(2) > .genre-titre", "css:finder"],
-        ["xpath=//div[@id='evenements']/div[2]/h4", "xpath:idRelative"],
-        ["xpath=//h4", "xpath:position"],
-        ["xpath=//h4[contains(.,'Fêtes')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "75dd332e-f2a3-4e98-ba62-de88476b0c88",
-      "comment": "",
-      "command": "click",
-      "target": "id=select_genre",
-      "targets": [
-        ["id=select_genre", "id"],
-        ["css=#select_genre", "css:finder"],
-        ["xpath=//select[@id='select_genre']", "xpath:attributes"],
-        ["xpath=//div[@id='contenu']/div[4]/form/div/select", "xpath:idRelative"],
-        ["xpath=//select", "xpath:position"]
-      ],
-      "value": ""
-    }, {
-      "id": "f06fbe20-1147-43ba-a851-9f05d53a93bb",
-      "comment": "",
-      "command": "select",
-      "target": "id=select_genre",
-      "targets": [],
-      "value": "label=Ciné"
-    }, {
-      "id": "665a9a82-60a2-4e42-b4fe-941199903301",
-      "comment": "",
-      "command": "assertElementNotPresent",
-      "target": "css=.genre:nth-child(2) > .genre-titre",
-      "targets": [
-        ["css=.genre:nth-child(2) > .genre-titre", "css:finder"],
-        ["xpath=//div[@id='evenements']/div[2]/h4", "xpath:idRelative"],
-        ["xpath=//h4", "xpath:position"],
-        ["xpath=//h4[contains(.,'Fêtes')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "5ad8554b-fdd9-4f74-b928-859d20b12ef3",
-      "comment": "",
-      "command": "click",
-      "target": "css=option:nth-child(3)",
-      "targets": [
-        ["css=option:nth-child(3)", "css:finder"],
-        ["xpath=//option[@value='cinéma']", "xpath:attributes"],
-        ["xpath=//select[@id='select_genre']/option[3]", "xpath:idRelative"],
-        ["xpath=//option[3]", "xpath:position"],
-        ["xpath=//option[contains(.,'Ciné')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "fe39833d-491d-4723-9c59-6224be5f99ec",
-      "comment": "",
-      "command": "click",
-      "target": "id=select_genre",
-      "targets": [
-        ["id=select_genre", "id"],
-        ["css=#select_genre", "css:finder"],
-        ["xpath=//select[@id='select_genre']", "xpath:attributes"],
-        ["xpath=//div[@id='contenu']/div[4]/form/div/select", "xpath:idRelative"],
-        ["xpath=//select", "xpath:position"]
-      ],
-      "value": ""
-    }, {
-      "id": "57e69091-367b-40e4-b780-7ea206de7775",
-      "comment": "",
-      "command": "select",
-      "target": "id=select_genre",
-      "targets": [],
-      "value": "label=Divers"
-    }, {
-      "id": "cb547cb1-b2cd-4ac6-878f-c7d397e60132",
-      "comment": "",
-      "command": "assertElementNotPresent",
-      "target": "css=.genre:nth-child(2) > .genre-titre",
-      "targets": [
-        ["css=.genre:nth-child(2) > .genre-titre", "css:finder"],
-        ["xpath=//div[@id='evenements']/div[2]/h4", "xpath:idRelative"],
-        ["xpath=//h4", "xpath:position"],
-        ["xpath=//h4[contains(.,'Fêtes')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "8f4467db-5528-41f8-ad18-5d112ebf1ea3",
-      "comment": "",
-      "command": "click",
-      "target": "css=option:nth-child(6)",
-      "targets": [
-        ["css=option:nth-child(6)", "css:finder"],
-        ["xpath=//option[@value='divers']", "xpath:attributes"],
-        ["xpath=//select[@id='select_genre']/option[6]", "xpath:idRelative"],
-        ["xpath=//option[6]", "xpath:position"],
-        ["xpath=//option[contains(.,'Divers')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "66c1363c-c71e-4c10-904c-933965385354",
-      "comment": "",
-      "command": "click",
-      "target": "id=select_genre",
-      "targets": [
-        ["id=select_genre", "id"],
-        ["css=#select_genre", "css:finder"],
-        ["xpath=//select[@id='select_genre']", "xpath:attributes"],
-        ["xpath=//div[@id='contenu']/div[4]/form/div/select", "xpath:idRelative"],
-        ["xpath=//select", "xpath:position"]
-      ],
-      "value": ""
-    }, {
-      "id": "3905a6df-9071-49fa-adef-27e79318f5cc",
-      "comment": "",
-      "command": "select",
-      "target": "id=select_genre",
-      "targets": [],
-      "value": "label=Filtre"
-    }, {
-      "id": "5a0f13a3-cea4-493f-b2a3-2519056e4ab2",
-      "comment": "",
-      "command": "assertElementPresent",
-      "target": "css=.genre:nth-child(2) > .genre-titre",
-      "targets": [
-        ["css=.genre:nth-child(2) > .genre-titre", "css:finder"],
-        ["xpath=//div[@id='evenements']/div[2]/h4", "xpath:idRelative"],
-        ["xpath=//h4", "xpath:position"],
-        ["xpath=//h4[contains(.,'Fêtes')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "79574ec4-60d3-4c52-a8f9-344e53e7aa55",
-      "comment": "",
-      "command": "click",
-      "target": "css=#select_genre > option:nth-child(1)",
-      "targets": [
-        ["css=#select_genre > option:nth-child(1)", "css:finder"],
-        ["xpath=//option[@value='']", "xpath:attributes"],
-        ["xpath=//select[@id='select_genre']/option", "xpath:idRelative"],
-        ["xpath=//option", "xpath:position"],
-        ["xpath=//option[contains(.,'Filtre')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "750e1201-2726-4816-a87b-f37736a643f7",
-      "comment": "",
-      "command": "click",
-      "target": "id=select_order",
-      "targets": [
-        ["id=select_order", "id"],
-        ["css=#select_order", "css:finder"],
-        ["xpath=//select[@id='select_order']", "xpath:attributes"],
-        ["xpath=//div[@id='contenu']/div[4]/form/div[2]/select", "xpath:idRelative"],
-        ["xpath=//div[2]/select", "xpath:position"]
-      ],
-      "value": ""
-    }, {
-      "id": "14ef8ab9-7119-4a8e-83ff-acff1eefdab8",
-      "comment": "",
-      "command": "select",
-      "target": "id=select_order",
-      "targets": [],
-      "value": "label=heure de début"
-    }, {
-      "id": "31483883-cd6b-4d81-ab16-06625fbae84a",
-      "comment": "",
-      "command": "click",
-      "target": "css=#select_order > option:nth-child(2)",
-      "targets": [
-        ["css=#select_order > option:nth-child(2)", "css:finder"],
-        ["xpath=//option[@value='horaire_debut']", "xpath:attributes"],
-        ["xpath=//select[@id='select_order']/option[2]", "xpath:idRelative"],
-        ["xpath=//div[2]/select/option[2]", "xpath:position"],
-        ["xpath=//option[contains(.,'heure de début')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "f31ffe4b-63b9-422c-9add-c81d982c754d",
-      "comment": "go to next day",
-      "command": "click",
-      "target": "css=.entete_contenu_navigation a:nth-child(2)",
-      "targets": [
-        ["css=.entete_contenu_navigation a:nth-child(2)", "css:finder"],
-        ["xpath=//div[@id='entete_contenu']/div[2]/ul/li/a[2]", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/evenement-agenda.php?courant=2023-03-02&sem=0&genre=&tri_agenda=horaire_debut&courant=2023-03-03')]", "xpath:href"],
-        ["xpath=//a[2]", "xpath:position"]
-      ],
-      "value": ""
-    }, {
-      "id": "567d0429-32ac-4cba-9e2f-7a07b3315926",
-      "comment": "is title with current date present",
-      "command": "assertElementPresent",
-      "target": "css=h3",
-      "targets": [
-        ["css=h2", "css:finder"],
-        ["xpath=//div[@id='entete_contenu']/h2", "xpath:idRelative"],
-        ["xpath=//h2", "xpath:position"],
-        ["xpath=//h2[contains(.,'Agenda')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "886de4d1-053a-4789-98cf-ea1b69c7a9a1",
-      "comment": "go to prev day",
-      "command": "click",
-      "target": "css=div:nth-child(4) > .entete_contenu_navigation a:nth-child(1)",
-      "targets": [
-        ["css=div:nth-child(4) > .entete_contenu_navigation a:nth-child(1)", "css:finder"],
-        ["xpath=//div[@id='entete_contenu']/div[2]/ul/li/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/evenement-agenda.php?courant=2023-03-03&sem=0&genre=&tri_agenda=horaire_debut&courant=2023-03-02')]", "xpath:href"],
-        ["xpath=//div[2]/div[2]/ul/li/a", "xpath:position"]
-      ],
-      "value": ""
-    }, {
-      "id": "1c8c88f0-c819-42ac-94b0-5738ab089c6f",
-      "comment": "is title with current date present",
-      "command": "assertElementPresent",
-      "target": "css=h3",
-      "targets": [
-        ["css=h2", "css:finder"],
-        ["xpath=//div[@id='entete_contenu']/h2", "xpath:idRelative"],
-        ["xpath=//h2", "xpath:position"],
-        ["xpath=//h2[contains(.,'Agenda')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "befaaaf3-75cb-4918-a698-e79dfa549940",
-      "comment": "open flyer lightbox",
-      "command": "click",
-      "target": "css=#evenements div.genre .evenement .flyer a img",
-      "targets": [
-        ["css=#event-140 img", "css:finder"],
-        ["xpath=//img[@alt='Flyer']", "xpath:img"],
-        ["xpath=//div[@id='event-140']/div[4]/div/a/img", "xpath:idRelative"],
-        ["xpath=//div[4]/div/a/img", "xpath:position"]
-      ],
-      "value": ""
-    }, {
-      "id": "2ac4ed3a-6801-424b-a30c-1cf2a05bbffd",
-      "comment": "close flyer lightbox",
-      "command": "click",
-      "target": "css=.mfp-close",
-      "targets": [
-        ["css=.mfp-close", "css:finder"],
-        ["xpath=//button[@type='button']", "xpath:attributes"],
-        ["xpath=//button", "xpath:position"],
-        ["xpath=//button[contains(.,'×')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "342e9943-7eab-47cb-86ff-d6bc4f6f8f6e",
-      "comment": "go to event page",
-      "command": "click",
-      "target": "css=#evenements div.genre .evenement .titre a.url",
-      "targets": [
-        ["linkText=test", "linkText"],
-        ["css=#event-140 .url", "css:finder"],
-        ["xpath=//a[contains(text(),'test')]", "xpath:link"],
-        ["xpath=//div[@id='event-140']/div[2]/span/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/evenement.php?idE=140&tri_agenda=horaire_debut&courant=2023-03-01')]", "xpath:href"],
-        ["xpath=//span/a", "xpath:position"],
-        ["xpath=//a[contains(.,'test')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "170b5695-abf0-409f-8932-0ff55c283f69",
-      "comment": "is event title present",
-      "command": "assertElementPresent",
-      "target": "css=.summary",
-      "targets": [
-        ["css=.summary", "css:finder"],
-        ["xpath=//div[@id='evenement']/div[2]/h3", "xpath:idRelative"],
-        ["xpath=//h3", "xpath:position"],
-        ["xpath=//h3[contains(.,'test')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "952a7280-9d96-43de-930f-df8686b29d21",
-      "comment": "",
-      "command": "executeScript",
-      "target": "history.back()",
-      "targets": [],
-      "value": ""
-    }, {
-      "id": "8b045ad1-3070-40c3-aeb5-0a126595f42c",
-      "comment": "go to event venue page",
-      "command": "click",
-      "target": "css=#evenements div.genre .evenement .titre .location a",
-      "targets": [
-        ["linkText=L'Oasis Bar", "linkText"],
-        ["css=#event-140 .right > a", "css:finder"],
-        ["xpath=//div[@id='event-140']/div[2]/span[2]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/lieu.php?idL=2')]", "xpath:href"],
-        ["xpath=//span[2]/a", "xpath:position"]
-      ],
-      "value": ""
-    }, {
-      "id": "c53c1138-974c-4f31-95b2-0ac1cb83a9a7",
-      "comment": "is venue title present",
-      "command": "assertElementPresent",
-      "target": "css=.fn",
-      "targets": [
-        ["css=.fn", "css:finder"],
-        ["xpath=//div[@id='entete_contenu']/h2", "xpath:idRelative"],
-        ["xpath=//h2", "xpath:position"]
-      ],
-      "value": ""
-    }, {
-      "id": "07305d4c-1a32-4ba2-a19a-e9e3271ee04a",
-      "comment": "",
-      "command": "executeScript",
-      "target": "history.back()",
-      "targets": [],
-      "value": ""
-    }, {
-      "id": "4aea319e-15ff-4876-8531-1ab5f382bb64",
-      "comment": "go to signal error page form",
-      "command": "click",
-      "target": "css=#evenements div.genre .evenement .signaler > .fa",
-      "targets": [
-        ["css=#event-506 .signaler > .fa", "css:finder"],
-        ["xpath=//div[@id='event-506']/div[7]/ul/li/a/i", "xpath:idRelative"],
-        ["xpath=//div[7]/ul/li/a/i", "xpath:position"]
-      ],
-      "value": ""
-    }, {
-      "id": "1340d470-a34f-4aac-a5d4-e056550ecf8d",
-      "comment": "",
-      "command": "assertElementPresent",
-      "target": "css=.submit-big",
-      "targets": [
-        ["css=.submit-big", "css:finder"],
-        ["xpath=//input[@value='Envoyer']", "xpath:attributes"],
-        ["xpath=//form[@id='ajouter_editer']/p[3]/input[2]", "xpath:idRelative"],
-        ["xpath=//p[3]/input[2]", "xpath:position"]
-      ],
-      "value": ""
-    }, {
-      "id": "255ab807-a233-486b-8e56-a974d861ffba",
-      "comment": "",
-      "command": "click",
-      "target": "css=#evenements p a",
-      "targets": [
-        ["linkText=Vendredi 3 mars 2023", "linkText"],
-        ["css=p > a", "css:finder"],
-        ["xpath=//a[contains(text(),'Vendredi 3 mars 2023')]", "xpath:link"],
-        ["xpath=//div[@id='evenements']/p/a", "xpath:idRelative"],
-        ["xpath=(//a[contains(@href, '/evenement-agenda.php?courant=2023-03-03')])[2]", "xpath:href"],
-        ["xpath=//p/a", "xpath:position"],
-        ["xpath=//a[contains(.,'Vendredi 3 mars 2023')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "e05a84c6-68e4-424b-8834-64dc2e74695e",
-      "comment": "open calendar",
       "command": "click",
       "target": "id=btn_calendrier",
       "targets": [
@@ -1202,144 +803,64 @@
         ["css=#btn_calendrier", "css:finder"],
         ["xpath=//a[@id='btn_calendrier']", "xpath:attributes"],
         ["xpath=//li[@id='bouton_calendrier']/a", "xpath:idRelative"],
-        ["xpath=(//a[contains(@href, '#')])[2]", "xpath:href"],
+        ["xpath=(//a[contains(@href, '#')])[3]", "xpath:href"],
         ["xpath=//header/nav/ul/li[2]/a", "xpath:position"]
       ],
       "value": ""
     }, {
-      "id": "1e42f161-c282-4ac7-a112-13622e4fc46b",
-      "comment": "click write a date field",
+      "id": "1c47fbf2-4c29-4217-836f-c5b6c6864486",
+      "comment": "",
       "command": "click",
-      "target": "name=courant",
+      "target": "xpath=//ul[@id='menu_calendrier']/li/form/input",
       "targets": [
         ["name=courant", "name"],
-        ["css=fieldset > input:nth-child(4)", "css:finder"],
+        ["css=li > form > input:nth-child(1)", "css:finder"],
         ["xpath=//input[@name='courant']", "xpath:attributes"],
-        ["xpath=//ul[@id='menu_calendrier']/li[3]/form/fieldset/input[4]", "xpath:idRelative"],
-        ["xpath=//input[4]", "xpath:position"]
+        ["xpath=//ul[@id='menu_calendrier']/li/form/input", "xpath:idRelative"],
+        ["xpath=//li/form/input", "xpath:position"]
       ],
       "value": ""
     }, {
-      "id": "275ce037-f2b1-4126-bfcf-51277c3edab2",
+      "id": "e6da221a-d723-4f56-8ad2-9937359d8656",
       "comment": "",
       "command": "type",
-      "target": "name=courant",
-      "targets": [
-        ["name=courant", "name"],
-        ["css=fieldset > input:nth-child(4)", "css:finder"],
-        ["xpath=//input[@name='courant']", "xpath:attributes"],
-        ["xpath=//ul[@id='menu_calendrier']/li[3]/form/fieldset/input[4]", "xpath:idRelative"],
-        ["xpath=//input[4]", "xpath:position"]
-      ],
-      "value": "01.04.2023"
+      "target": "xpath=//ul[@id='menu_calendrier']/li/form/input",
+      "targets": [],
+      "value": "14.07.2025"
     }, {
-      "id": "7631b56f-ab9e-4302-b17e-b5323407cf20",
+      "id": "9784176e-dbe1-4152-9a36-b5c61403fb21",
       "comment": "",
       "command": "click",
-      "target": "css=.submit:nth-child(5)",
+      "target": "xpath=//ul[@id='menu_calendrier']/li/form/input[2]",
       "targets": [
-        ["css=.submit:nth-child(5)", "css:finder"],
+        ["css=li > form > .submit", "css:finder"],
         ["xpath=(//input[@name='formulaire'])[3]", "xpath:attributes"],
-        ["xpath=//ul[@id='menu_calendrier']/li[3]/form/fieldset/input[5]", "xpath:idRelative"],
-        ["xpath=//input[5]", "xpath:position"]
+        ["xpath=//ul[@id='menu_calendrier']/li/form/input[2]", "xpath:idRelative"],
+        ["xpath=//li/form/input[2]", "xpath:position"]
       ],
       "value": ""
     }, {
-      "id": "6eab4350-7511-406a-ba8a-35b82d63e051",
-      "comment": "is title with current date present",
-      "command": "assertElementPresent",
-      "target": "css=h3",
-      "targets": [
-        ["css=h2", "css:finder"],
-        ["xpath=//div[@id='entete_contenu']/h2", "xpath:idRelative"],
-        ["xpath=//h2", "xpath:position"],
-        ["xpath=//h2[contains(.,'Agenda')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "9c7271cb-bafc-4414-b378-bad24c00b4d5",
-      "comment": "open calendar",
-      "command": "click",
-      "target": "id=btn_calendrier",
-      "targets": [
-        ["id=btn_calendrier", "id"],
-        ["css=#btn_calendrier", "css:finder"],
-        ["xpath=//a[@id='btn_calendrier']", "xpath:attributes"],
-        ["xpath=//li[@id='bouton_calendrier']/a", "xpath:idRelative"],
-        ["xpath=(//a[contains(@href, '#')])[2]", "xpath:href"],
-        ["xpath=//header/nav/ul/li[2]/a", "xpath:position"]
-      ],
-      "value": ""
-    }, {
-      "id": "dee7069e-5e4a-438e-9bcc-41d761bd12eb",
+      "id": "2dba9f06-28fd-4344-ba52-a26f04ed7da1",
       "comment": "",
-      "command": "click",
-      "target": "css=.semaine:nth-child(4) > td:nth-child(1) > a",
-      "targets": [
-        ["css=.semaine:nth-child(3) > td:nth-child(1) > a", "css:finder"],
-        ["xpath=//table[@id='calendrier']/tbody/tr[3]/td/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/evenement-agenda.php?courant=2023-3-1&sem=1&tri_agenda=dateAjout')]", "xpath:href"],
-        ["xpath=//td/a", "xpath:position"]
-      ],
-      "value": ""
-    }, {
-      "id": "7833f5de-1709-479a-b4ee-fc9126951763",
-      "comment": "is title with current date present",
       "command": "assertElementPresent",
-      "target": "css=h3",
+      "target": "xpath=//header[@id='entete_contenu']/h1",
       "targets": [
-        ["css=h2", "css:finder"],
-        ["xpath=//div[@id='entete_contenu']/h2", "xpath:idRelative"],
-        ["xpath=//h2", "xpath:position"],
-        ["xpath=//h2[contains(.,'Agenda')]", "xpath:innerText"]
+        ["css=.accueil", "css:finder"],
+        ["xpath=//header[@id='entete_contenu']/h1", "xpath:idRelative"],
+        ["xpath=//h1", "xpath:position"],
+        ["xpath=//h1[contains(.,'Lundi 14 juillet')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
-      "id": "7af82638-a9c4-4345-84f6-675e13f97ae0",
-      "comment": "go to next day",
+      "id": "16864106-dee7-4da1-b101-2f37e916c3ec",
+      "comment": "iCal link of first event (loose focus of main viewport)",
       "command": "click",
-      "target": "css=div:nth-child(4) > .entete_contenu_navigation a:nth-child(2)",
+      "target": "xpath=//div[@id='prochains_evenements']/section/article/footer/ul/li[2]/a",
       "targets": [
-        ["css=div:nth-child(4) > .entete_contenu_navigation a:nth-child(2)", "css:finder"],
-        ["xpath=//div[@id='entete_contenu']/div[2]/ul/li/a[2]", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/evenement-agenda.php?courant=2023-03-08&sem=1&genre=')]", "xpath:href"],
-        ["xpath=//a[2]", "xpath:position"]
-      ],
-      "value": ""
-    }, {
-      "id": "8f17c061-f22d-4e13-8574-d3a5f6cc61db",
-      "comment": "is title with current date present",
-      "command": "assertElementPresent",
-      "target": "css=h3",
-      "targets": [
-        ["css=h2", "css:finder"],
-        ["xpath=//div[@id='entete_contenu']/h2", "xpath:idRelative"],
-        ["xpath=//h2", "xpath:position"],
-        ["xpath=//h2[contains(.,'Agenda')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "e9f558af-012a-4d82-8490-a2ffe245e756",
-      "comment": "go to prev day",
-      "command": "click",
-      "target": "css=div:nth-child(4) > .entete_contenu_navigation a:nth-child(1) > img",
-      "targets": [
-        ["css=div:nth-child(4) > .entete_contenu_navigation a:nth-child(1) > img", "css:finder"],
-        ["xpath=//img[@alt='Précédent']", "xpath:img"],
-        ["xpath=//div[@id='entete_contenu']/div[2]/ul/li/a/img", "xpath:idRelative"],
-        ["xpath=//div[2]/ul/li/a/img", "xpath:position"]
-      ],
-      "value": ""
-    }, {
-      "id": "10870434-3c26-491d-b6ce-9fcace3e5907",
-      "comment": "is title with current date present",
-      "command": "assertElementPresent",
-      "target": "css=h3",
-      "targets": [
-        ["css=h2", "css:finder"],
-        ["xpath=//div[@id='entete_contenu']/h2", "xpath:idRelative"],
-        ["xpath=//h2", "xpath:position"],
-        ["xpath=//h2[contains(.,'Agenda')]", "xpath:innerText"]
+        ["css=.genre:nth-child(2) > .evenement:nth-child(2) .ical", "css:finder"],
+        ["xpath=//div[@id='prochains_evenements']/section/article/footer/ul/li[2]/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '/evenement_ics.php?idE=1775')]", "xpath:href"],
+        ["xpath=//footer/ul/li[2]/a", "xpath:position"]
       ],
       "value": ""
     }]
@@ -8063,7 +7584,7 @@
     "persistSession": false,
     "parallel": false,
     "timeout": 300,
-    "tests": ["1c4e0b1a-ecd3-4bee-b216-8448f663e804", "5b25e806-0e1c-44d8-8740-8fea9c4ef72b", "f7075d90-d631-4aa3-ad62-6344bb052890", "fcd88d4b-aaaf-4bab-9cb8-bc1bcaceae08", "ef663861-84a7-4224-83ef-4ae3c2041edf", "64a632a5-6285-43db-bcd2-b3023732989d", "d279109f-52b6-4b17-aa36-5704240df41e", "c3060854-829d-4124-9885-e36d67bed18d", "557f8f3f-f10b-4fec-be4e-5cda336aaa94", "3ebd99c9-ee10-47ff-b262-faa2f02ad87d", "82a5cf0c-2c0b-4baf-8545-45193e3ca01e", "1936c9ce-4dcc-4002-b874-9230988f6c99", "6785a2a4-47e6-4ae8-809e-4b01fd72e204"]
+    "tests": ["1c4e0b1a-ecd3-4bee-b216-8448f663e804", "5b25e806-0e1c-44d8-8740-8fea9c4ef72b", "fcd88d4b-aaaf-4bab-9cb8-bc1bcaceae08", "ef663861-84a7-4224-83ef-4ae3c2041edf", "64a632a5-6285-43db-bcd2-b3023732989d", "d279109f-52b6-4b17-aa36-5704240df41e", "c3060854-829d-4124-9885-e36d67bed18d", "557f8f3f-f10b-4fec-be4e-5cda336aaa94", "3ebd99c9-ee10-47ff-b262-faa2f02ad87d", "82a5cf0c-2c0b-4baf-8545-45193e3ca01e", "1936c9ce-4dcc-4002-b874-9230988f6c99", "6785a2a4-47e6-4ae8-809e-4b01fd72e204"]
   }, {
     "id": "573974f0-13b4-4a75-857c-b375bb627729",
     "name": "user actor",
