@@ -1,8 +1,9 @@
 # Changelog
 
-## [3.8.0] - Unreleased
+## [3.8.0] - 2025-07-18
 
 ### Added
+- home : takeover of agenda features (prev/next navig, sort menu)
 - PDO config & connector
 - database : composite index on evenement table for perf
 - SEO : meta tag noindex, nofollow for some irrelevant events pages
@@ -20,6 +21,7 @@
 
 ### Removed
 - SEO : useless vars in query string in agenda, menus lieux & orgas
+- event : agenda page (replaced by home)
 
 
 ## [3.7.4] - 2025-05-25
