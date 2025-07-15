@@ -23,11 +23,13 @@
 #navigation_agenda ul#menu_mois li#mois_courant
 {
     font-weight:bold;
+
 }
 table#calendrier tr#mois th#mois_courant
 {
     font-size: 1em;
     padding: 0.6em;
+        color: #333;
 }
 
 
@@ -208,7 +210,7 @@ ul#menu_calendrier li
 ul#menu_calendrier li form input
 {
     border:1px solid gray;
-    font-size:1em;
+    font-size:1.1em;
     padding:0.2em 0.2em;
 
 }
@@ -229,7 +231,7 @@ ul#menu_calendrier li form input.submit
 
     ul#menu_calendrier li form input.submit
     {
-        padding: 0.4em 0.3em 0.3em 0.3em;
+        padding: 0.4em 0.5em 0.5em 0.5em;
     }
 }
 

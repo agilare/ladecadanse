@@ -1,4 +1,3 @@
-
 #entete #titre_site {
     height: 35px;
     overflow: hidden;
@@ -136,6 +135,22 @@ ul#menu_tri li
 .dernieres
 {
     float:left;
+}
+
+table#calendrier tr#jours th
+{
+    font-size: 1em;
+}
+
+table#calendrier tr#mois th#mois_courant {
+  font-size: 1.2em;
+  padding: 0.8em;
+}
+
+table#calendrier tr.semaine td
+{
+    font-size:1.1em;
+    height:35px;
 }
 
 table#calendrier tr.semaine td a, table#calendrier tr#mois th a, table#calendrier tr#jours th {
