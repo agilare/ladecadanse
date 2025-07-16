@@ -588,6 +588,13 @@
       "targets": [],
       "value": ""
     }, {
+      "id": "7a0edfcf-e787-460a-afab-c5320ce45adb",
+      "comment": "",
+      "command": "",
+      "target": "",
+      "targets": [],
+      "value": ""
+    }, {
       "id": "f15ca5b7-44b0-4674-bae2-6a3ce11f1f76",
       "comment": "",
       "command": "click",
@@ -2851,7 +2858,7 @@
       "id": "e26e3155-5d97-4359-95a2-c68084b1d5d5",
       "comment": "",
       "command": "assertElementPresent",
-      "target": "css=.evenement .url",
+      "target": "css=.evenement",
       "targets": [
         ["linkText=Le Mai 68 genevois et le mouvement de libération des Femmes", "linkText"],
         ["css=#event-538 .url", "css:finder"],
@@ -3452,15 +3459,12 @@
       "id": "a0e0b593-68e4-4b4d-a582-4851047e4d6a",
       "comment": "",
       "command": "click",
-      "target": "css=.genre:nth-child(1) .left > a",
+      "target": "css=.genre:nth-child(2) > .evenement:nth-child(2) > .titre > .left",
       "targets": [
-        ["linkText=SANS FILTRE de Ruben Östlund", "linkText"],
-        ["css=.genre:nth-child(1) .left > a", "css:finder"],
-        ["xpath=//a[contains(text(),'SANS FILTRE de Ruben Östlund')]", "xpath:link"],
-        ["xpath=//section[@id='prochains_evenements']/div/article/div/span/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/evenement.php?idE=278')]", "xpath:href"],
-        ["xpath=//span/a", "xpath:position"],
-        ["xpath=//a[contains(.,'SANS FILTRE de Ruben Östlund')]", "xpath:innerText"]
+        ["css=.genre:nth-child(2) > .evenement:nth-child(2) > .titre > .left", "css:finder"],
+        ["xpath=//div[@id='prochains_evenements']/section/article/header/h3", "xpath:idRelative"],
+        ["xpath=//h3", "xpath:position"],
+        ["xpath=//h3[contains(.,'NOCTAMBAR REOPENING w/ YÀNKOV & NILOU')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
@@ -7497,7 +7501,7 @@
       "id": "c33f0d30-341a-4c0f-9112-a9dbb916ad95",
       "comment": "click on unpublish",
       "command": "click",
-      "target": "xpath=//a[normalize-space(text())='evenementfugace']/ancestor::div[contains(@class, 'evenement')]/descendant::a[contains(@class, 'btn_event_unpublish')]",
+      "target": "xpath=//a[normalize-space(text())='evenementfugace']/ancestor::article[contains(@class, 'evenement')]/descendant::a[contains(@class, 'btn_event_unpublish')]",
       "targets": [],
       "value": ""
     }, {
