@@ -44,7 +44,7 @@ use Ladecadanse\UserLevel;
     <?php
     $css_file_path = "/web/css/{$nom_page}.css";
     if (file_exists(__ROOT__ . $css_file_path)) { ?>
-        <link rel="stylesheet" type="text/css" href="<?php echo $css_file_path; ?>" media="screen" >
+        <link rel="stylesheet" type="text/css" href="<?php echo $css_file_path; ?>?<?php echo time() ?>" media="screen" >
     <?php } ?>
     <link rel="stylesheet" type="text/css" href="/web/css/diggstyle.css" media="screen">
     <link href="/vendor/select2/select2/dist/css/select2.min.css" rel="stylesheet">
