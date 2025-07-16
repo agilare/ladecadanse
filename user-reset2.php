@@ -55,7 +55,7 @@ if ($connector->getNumRows($req_temp) == 1)
 {
 	$tab_temp = $connector->fetchArray($req_temp);
 
-	if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok'  && empty($_POST['as_nom']))
+	if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 	{
 		foreach ($champs as $c => $v)
 		{
