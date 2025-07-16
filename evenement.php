@@ -154,6 +154,7 @@ $stmtDayEvents = $connectorPdo->prepare($sql_events_of_day);
 $stmtDayEvents->execute([':date' => $tab_even['e_dateEvenement']]);
 $events_of_day = $stmtDayEvents->fetchAll(PDO::FETCH_ASSOC);
 
+$index = 1;
 foreach ($events_of_day as $i => $e) {
     if ($e['idEvenement'] == $get['idE']) {
         $index = $i;

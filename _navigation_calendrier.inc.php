@@ -6,12 +6,6 @@ if (empty($get['courant']))
     $get['courant'] = $glo_auj_6h;
 }
 
-if (empty($get['genre']))
-{
-    $get['genre'] = '';
-}
-
-
 $date_courante = new DateTime($get['courant']);
 
 // Trouver le premier jour du mois
@@ -117,7 +111,7 @@ $events_next_months_count = (int) $res_eventsNextmonths['nb'];
                 <?php }
                 else
                 { ?>
-                    <a href="/index.php?<?php echo $url_query_region_et . "courant=" . $day->format('Y-m-d') . ($get['genre'] !== '' ? "&amp;genre=" . $get['genre'] : "") ?>"><?= $day->format('j') ?></a>
+                    <a href="/index.php?<?php echo $url_query_region_et . "courant=" . $day->format('Y-m-d') ?>"><?= $day->format('j') ?></a>
                 <?php } ?>
             </td>
             <?php

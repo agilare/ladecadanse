@@ -683,7 +683,7 @@ $sql_evenement = "
 SELECT idEvenement, idLieu, idPersonne, statut, idPersonne, genre, titre, dateEvenement, horaire_debut, horaire_fin, nomLieu, flyer, dateAjout,
  date_derniere_modif
 FROM evenement ".$where."
-ORDER BY ".$get['tri_gerer']." ".$get['ordre']." LIMIT ".($sql_page - 1) * (int)$get['nblignes'].",".(int)$get['nblignes'];
+ORDER BY ".$get['tri_gerer']." ".$get['ordre']." LIMIT ".(int)($sql_page - 1) * (int)$get['nblignes'].",".(int)$get['nblignes'];
 
 //echo $sql_evenement;
 $req_evenement = $connector->query($sql_evenement);

@@ -12,7 +12,7 @@ class Utils
         {
             foreach ($get as $nom => $valeur)
             {
-                if ($nom != $sauf && !($nom == 'tri_agenda' && in_array($valeur, ['', 'dateAjout'])) && !($nom == 'genre' && empty($valeur)))
+                if ($nom != $sauf && !($nom == 'tri_agenda' && in_array($valeur, ['', 'dateAjout'])))
                 {
                     $afficher .= $nom . "=" . $valeur . "&";
                 }
@@ -22,7 +22,7 @@ class Utils
         {
             foreach ($get as $nom => $valeur)
             {
-                if (!in_array($nom, $sauf) && !($nom == 'tri_agenda' && in_array($valeur, ['', 'dateAjout'])) && !($nom == 'genre' && empty($valeur)))
+                if (!in_array($nom, $sauf) && !($nom == 'tri_agenda' && in_array($valeur, ['', 'dateAjout'])))
                 {
                     $afficher .= $nom . "=" . $valeur . "&";
                 }

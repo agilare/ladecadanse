@@ -134,7 +134,7 @@ if ($get['element'] == "description")
 		echo '<li ';
 		if ($get['nblignes'] == $nbl) { echo 'class="ici"'; }
 
-		echo '><a href="/admin/gerer.php?'.Utils::urlQueryArrayToString($get, "nblignes").'&nblignes='.$nbl.'">'.$nbl.'</a></li>';
+		echo '><a href="/admin/gerer.php?'.Utils::urlQueryArrayToString($get, "nblignes").'&nblignes='.(int)$nbl.'">'.(int)$nbl.'</a></li>';
 	}
 	echo '</ul>';
 echo '<div class="spacer"></div>';
@@ -156,7 +156,7 @@ echo '<div class="spacer"></div>';
 				echo "<th>";
 			}
 
-			echo "<a href=\"?element=" . $get['element'] . "&page=" . $get['page'] . "&tri_gerer=" . $att . "&ordre=" . $ordre_inverse . "&nblignes=" . $get['nblignes'] . "\">" . $th . "</a></th>";
+			echo "<a href=\"?element=" . $get['element'] . "&page=" . (int)$get['page'] . "&tri_gerer=" . $att . "&ordre=" . $ordre_inverse . "&nblignes=" . (int)$get['nblignes'] . "\">" . $th . "</a></th>";
             }
 	}
 	echo "<th>&nbsp;</th></tr>";
@@ -236,7 +236,7 @@ else if ($get['element'] == "lieu")
 		echo '<li ';
 		if ($get['nblignes'] == $nbl) { echo 'class="ici"'; }
 
-		echo '><a href="/admin/gerer.php?'.Utils::urlQueryArrayToString($get, "nblignes").'&nblignes='.$nbl.'">'.$nbl.'</a></li>';
+		echo '><a href="/admin/gerer.php?'.Utils::urlQueryArrayToString($get, "nblignes").'&nblignes='.(int)$nbl.'">'.(int)$nbl.'</a></li>';
 	}
 	echo '</ul>';
 echo '<div class="spacer"></div>';
@@ -463,8 +463,8 @@ else if ($get['element'] == "personne")
 
 	<form method="get" action="" id="ajouter_editer">
 
-		<input type="hidden" name="page" value="<?php echo $get['page']; ?>" />
-		<input type="hidden" name="nblignes" value="<?php echo $get['nblignes']; ?>" />
+		<input type="hidden" name="page" value="<?php echo (int)$get['page']; ?>" />
+		<input type="hidden" name="nblignes" value="<?php echo (int)$get['nblignes']; ?>" />
 		<input type="hidden" name="tri_gerer" value="<?php echo $get['tri_gerer']; ?>" />
 		<input type="hidden" name="element" value="<?php echo $get['element']; ?>" />
 		<input type="hidden" name="ordre" value="<?php echo $get['ordre']; ?>" />
@@ -535,7 +535,7 @@ echo '<div class="spacer"></div>';
 		echo ">
 		<td>" . (int) $tab_pers ['idPersonne'] . "</td>
 		<td style='width:20%'><a href=\"/user.php?idP=" . (int) $tab_pers['idPersonne'] . "\" title=\"Voir le profile :" . sanitizeForHtml($tab_pers['pseudo']) . "\">" . sanitizeForHtml($tab_pers['pseudo']) . "</a></td>
-		<td><a href='mailto:".$tab_pers['email']."'>".$tab_pers['email']."</a></td>
+		<td><a href='mailto:".sanitizeForHtml($tab_pers['email'])."'>".sanitizeForHtml($tab_pers['email'])."</a></td>
 		<td>".$nom_groupe."</td>";
 		echo "
 
