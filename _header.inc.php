@@ -10,55 +10,57 @@ use Ladecadanse\UserLevel;
 
     <meta charset="utf-8" >
 
-    <?php if (
+    <?php
+    // TODO: replace by a "page_robots_noindex" var in concerned page : index, evenement-report, etc.
+    if (
         ($nom_page == 'index' && isset($_GET['courant']) && ($_GET['courant'] < date("Y-m-d") || (isset($total_even) && $total_even == 0 && $_GET['courant'] > date('Y-m-d', strtotime('+1 year')))))
         || in_array($nom_page, ['evenement-report', 'evenement-email', 'evenement-search'])
         ) : ?>
-        <meta name="robots" content="noindex, nofollow" >
+        <meta name="robots" content="noindex, nofollow">
     <?php endif; ?>
 
-	<title><?= (ENV !== 'prod') ? '['.ENV.'] ' : '' ?><?= ($nom_page == 'index' && !isset($_GET['courant']) ? "La décadanse — " : "") . sanitizeForHtml($page_titre) . ($nom_page === 'index' && isset($_GET['courant']) ? " — La décadanse " : ""); ?></title>
+	<title><?= (ENV !== 'prod') ? '['.ENV.'] ' : '' ?><?= ($nom_page == 'index' && !isset($_GET['courant']) ? "La décadanse — " : "") . sanitizeForHtml($page_titre) . (!($nom_page === 'index' && isset($_GET['courant'])) ? " — La décadanse" : ""); ?></title>
 
-    <meta name="description" content="<?php echo sanitizeForHtml(($page_description ?? '')) ?>">
+    <meta name="description" content="<?= sanitizeForHtml(($page_description ?? '')) ?>">
 
     <meta property="og:site_name" content="La décadanse">
     <meta property="og:logo" content="/web/interface/apple-icon-152x152.png">
     <meta property="og:type" content="article">
     <meta property="og:locale" content="fr">
-    <meta property="og:title" content="<?php echo sanitizeForHtml($page_titre) . " — La décadanse"; ?>">
-    <meta property="og:description" content="<?php echo sanitizeForHtml(($page_description ?? '')) ?>">
+    <meta property="og:title" content="<?= sanitizeForHtml($page_titre) . " — La décadanse"; ?>">
+    <meta property="og:description" content="<?= sanitizeForHtml(($page_description ?? '')) ?>">
     <?php if (!empty($page_url)) : ?>
-        <meta property="og:url" content="<?php echo $site_full_url . $page_url; ?>">
+        <meta property="og:url" content="<?= $site_full_url . $page_url; ?>">
     <?php endif; ?>
     <?php if (!empty($page_image)) : ?>
         <meta property="og:image" content="<?= $site_full_url . $page_image ?>">
-        <meta property="og:image:alt" content="Flyer">
+        <meta property="og:image:alt" content="Affiche/flyer">
     <?php endif; ?>
 
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 
     <link rel="stylesheet" type="text/css" href="/web/css/normalize.css">
     <link rel="stylesheet" type="text/css" href="/web/css/imprimer.css" media="print">
-    <link rel="stylesheet" type="text/css" href="/web/css/global.css?<?php echo time() ?>">
+    <link rel="stylesheet" type="text/css" href="/web/css/global.css?<?= time() ?>">
     <link rel="stylesheet" type="text/css" href="/web/css/calendrier.css" media="screen">
     <?php
     $css_file_path = "/web/css/{$nom_page}.css";
     if (file_exists(__ROOT__ . $css_file_path)) { ?>
-        <link rel="stylesheet" type="text/css" href="<?php echo $css_file_path; ?>?<?php echo time() ?>" media="screen" >
+        <link rel="stylesheet" type="text/css" href="<?= $css_file_path; ?>?<?= time() ?>" media="screen">
     <?php } ?>
     <link rel="stylesheet" type="text/css" href="/web/css/diggstyle.css" media="screen">
     <link href="/vendor/select2/select2/dist/css/select2.min.css" rel="stylesheet">
     <?php
     if (isset($extra_css) && is_array($extra_css)) :
         foreach ($extra_css as $import) : ?>
-            <link rel="stylesheet" type="text/css" href="/web/css/<?php echo $import ?>.css" media="screen" title="Normal">
+            <link rel="stylesheet" type="text/css" href="/web/css/<?= $import ?>.css" media="screen" title="Normal">
         <?php
         endforeach;
     endif;
     ?>
 
-    <link rel="stylesheet" type="text/css" media="screen and (min-width:800px)"  href="/web/css/desktop.css">
-    <link rel="stylesheet" type="text/css" media="screen and (max-width:800px)"  href="/web/css/mobile.css">
+    <link rel="stylesheet" type="text/css" media="screen and (min-width:800px)"  href="/web/css/desktop.css?<?= time() ?>">
+    <link rel="stylesheet" type="text/css" media="screen and (max-width:800px)"  href="/web/css/mobile.css?<?= time() ?>">
     <link rel="stylesheet" type="text/css" media="print" href="/web/css/imprimer.css" title="Imprimer">
     <link rel="stylesheet" type="text/css" href="/vendor/fortawesome/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="/vendor/dimsemenov/magnific-popup/dist/magnific-popup.css">
@@ -203,7 +205,7 @@ use Ladecadanse\UserLevel;
                                 <li <?= $ici; ?>><a href="/user.php?idP=<?= (int) $_SESSION['SidPersonne']; ?>"><?= sanitizeForHtml($_SESSION['user']); ?></a></li>
                                 <li><a href="/user-logout.php" >Sortir</a></li>
                             <?php if ($_SESSION['Sgroupe'] <= UserLevel::ADMIN) : ?>
-                                <li><a href="/admin/index.php" title="Administration" >Admin</a></li>
+                                <li><a href="/admin/index.php" title="Administration">Admin</a></li>
                             <?php endif; ?>
                         <?php } ?>
                     </ul>

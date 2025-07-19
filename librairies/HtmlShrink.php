@@ -339,7 +339,7 @@ class HtmlShrink
         {
         ?>
             <link rel="alternate" type="application/rss+xml" title="Prochains événements dans ce lieu" href="/rss.php?type=lieu_evenements&amp;id=<?php echo intval($_GET['idL']) ?>">
-                        <?php
+        <?php
         }
     }
 
