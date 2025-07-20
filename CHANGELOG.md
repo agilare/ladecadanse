@@ -1,6 +1,6 @@
 # Changelog
 
-## [3.8.0] - 2025-07-18
+## [3.8.0] - 2025-07-20
 
 ### Added
 - home : takeover of agenda features (prev/next navig, sort menu)
@@ -9,6 +9,8 @@
 - SEO : meta tag noindex, nofollow for some irrelevant events pages
 - event : add width for img tags of thumbnail flyer when possible
 - search : in mobile focus in input search after click search button
+- users : password reset form
+- styles : anti browser cache for some important css files
 
 ### Changed
 - home : refactoring with n+1 removing, PDO, mv to methods, rm duplications, extended usage of html5
