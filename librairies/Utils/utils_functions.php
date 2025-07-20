@@ -237,15 +237,9 @@ function date_iso2lundim($date)
     return [$lundi, $dimanche];
 }
 
-function date_lendemain($date)
+function date_lendemain(string $date): string
 {
-    $tab_date = explode("-", (string) $date);
-
-    if (count($tab_date) < 3) {
-        return $date;
-    }
-
-    return date('Y-m-d', mktime(0, 0, 0, $tab_date[1], (int) $tab_date[2] + 1, $tab_date[0])); // $annee."-".$mois."-".$annee;
+    return (new DateTime($date))->modify('+1 day')->format("Y-m-d");
 }
 
 function horaire2heure($horaire_complet, $date_evenement)

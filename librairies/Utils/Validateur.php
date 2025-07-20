@@ -518,7 +518,7 @@ class Validateur
         }
     }
 
-    public static function validateUrlQueryValue($get, $type, $statut, $tab = '')
+    public static function validateUrlQueryValue($get, string $type, $statut, $tab = '')
     {
         $erreur = "";
 

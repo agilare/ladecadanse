@@ -221,7 +221,6 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 	else
 	{
 		$date_iso = date_app2iso($champs['dateEvenement']);
-        $lendemain_evenement = date_lendemain($date_iso);
 
 		$tab_date = explode('.', (string) $champs['dateEvenement']);
 		if (!checkdate((int) $tab_date[1], (int) $tab_date[0], (int) $tab_date[2])) {
@@ -293,18 +292,20 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 			$champs['urlLieu'] = "http://".$champs['urlLieu'];
 		}
 
+        // 23:59, 00:00, 06:00
 		// conversion de l'heure indiquée en datetime
+        $date_next_day = date_lendemain($date_iso);
+        // les événements sans heure de début sont relegués au lendemain à 06:00:01 afin qu'ils soient affichés (artificiellement) en dernier dans l'agenda
 		if (!empty($champs['horaire_debut']))
 		{
 			$tab_horaire_debut = explode(":", (string) $champs['horaire_debut']);
-			//print_r($tab_horaire_debut);
 			$sec_horaire_debut = (int) $tab_horaire_debut[0] * 3600 + (int) $tab_horaire_debut[1] * 60;
-            //TEST
-			//echo "sec_H:".$sec_horaire_debut;
-			//
-			if ($sec_horaire_debut >= 0 && $sec_horaire_debut <= 21600)
+
+            // si nb de secondes après minuit < 6h augmenter la date au lendemain, sinon rester au jour indiqué
+            // entre 0h et 6h la date sera le lendemain, entre 6h et 23:59 ça reste à la date de dateEvenement
+			if ($sec_horaire_debut >= 0 && $sec_horaire_debut <= 21_600) // 6h
 			{
-				$champs['horaire_debut'] = $lendemain_evenement." ".$champs['horaire_debut'].":00";
+				$champs['horaire_debut'] = $date_next_day." ".$champs['horaire_debut'].":00";
 			}
 			else
 			{
@@ -313,18 +314,17 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 		}
 		else
 		{
-			$champs['horaire_debut'] = $lendemain_evenement." 06:00:01";
+			$champs['horaire_debut'] = $date_next_day." 06:00:01";
 		}
 
-		// conversion de l'heure indiquée en datetime
 		if (!empty($champs['horaire_fin']))
 		{
 			$tab_horaire_fin = explode(":", (string) $champs['horaire_fin']);
 			$sec_horaire_fin = (int) $tab_horaire_fin[0] * 3600 + (int) $tab_horaire_fin[1] * 60;
 
-			if ($sec_horaire_fin >= 0 && $sec_horaire_fin <= 21600)
+			if ($sec_horaire_fin >= 0 && $sec_horaire_fin <= 21_600) // TODO: || (!empty($champs['horaire_debut']) && date($champs['horaire_debut']) == $date_next_day)
 			{
-				$champs['horaire_fin'] = $lendemain_evenement." ".$champs['horaire_fin'].":00";
+				$champs['horaire_fin'] = $date_next_day." ".$champs['horaire_fin'].":00";
 			}
 			else
 			{
@@ -333,7 +333,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 		}
 		else
 		{
-			$champs['horaire_fin'] = $lendemain_evenement." 06:00:01";
+			$champs['horaire_fin'] = $date_next_day." 06:00:01";
 		}
 
 		//dedoublonne la liste des orgas et nettoye avec string -> int
