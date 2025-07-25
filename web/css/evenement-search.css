@@ -1,16 +1,21 @@
-h3.res
-{
-    margin: 1em auto;
-    width: 94%;
-    font-size: 1em;
-    color:#5C7378;
-}
 
 #contenu p.titre
 {
-color:#5C7378;
-width:94%;
-margin:1em auto 1em auto;
+    color:#5C7378;
+    width:94%;
+    margin:1em auto 1em auto;
+}
+
+h1
+{
+    margin-top: 0.2em;
+    font-size:1.2em;
+    font-weight:bold;
+}
+
+h1 em
+{
+    font-style:italic;
 }
 
 #res_recherche
@@ -19,75 +24,99 @@ margin:1em auto 1em auto;
     margin:0 auto 0 auto;
 }
 
-#res_recherche h2 
+h2
 {
-
-	font-size:1.2em;
-	font-weight:bold;
+    margin: 0.4em 0;
+    font-size:1em;
+    font-weight:normal;
+    color:#5C7378;
 }
 
-#res_recherche h2 em
+
+#nb_resultats
 {
-
-
-font-style:italic;
+    color:#5C7378;
 }
 
-#res_recherche strong
+
+ul#menu_periode
 {
-
-
-font-weight:bold;
+    padding:0;
 }
+
+ul#menu_periode li
+{
+    display:inline-block;
+    margin:0.4em 0;
+}
+
+ul#menu_periode li a
+{
+    display:block;
+    padding:0.4em 1em;
+}
+
+ul#menu_periode li.tous
+{
+}
+
+/*ul#menu_periode li.ancien
+{
+    background-color:#f2f2f2;
+}*/
+
+ul#menu_periode li.futur
+{
+    background-color:#fff;
+}
+
+ul#menu_periode li.ici a
+{
+   font-weight: bold;
+}
+
 
 ul#menu_tri
 {
-	float:left;
-	margin:1em 0;
+    float:left;
+    margin:1em 0;
     padding:0;
     list-style-type: none;
 }
 
-	ul#menu_tri li
-	{
-	}
+ul#menu_tri li.ici a
+{
+    font-weight: bold;
+}
 
-	ul#menu_tri li#ici a
-	{
-		background:#ff3;
-	}
-	
-	ul#menu_tri li a
-	{	
-        padding:0.2em 0.4em;
-        margin:0 0.2em;
-		display:block;
-	}
-	
+ul#menu_tri li a
+{
+    padding:0.2em 0.4em;
+    margin:0 0.2em;
+    display:block;
+}
+
+
+
 #res_recherche table
 {
-	width:100%;
-	border-collapse:collapse;
-}	
-
-#res_recherche tr
-{
-
+    width:100%;
+    border-collapse:collapse;
 }
 
 #res_recherche tr.ancien
 {
-background-color:#f2f2f2;
+    background-color:#f2f2f2;
 }
 
 #res_recherche tr.auj
 {
-background-color:#fff;
+    background-color:#ff3;
 }
 
 #res_recherche tr.futur
 {
-background-color:#fff;
+    background-color:#fff;
 }
 
 #res_recherche tr td
@@ -100,8 +129,8 @@ background-color:#fff;
 
 #res_recherche tr td h3
 {
-font-weight:bold;
-font-size:1.1em;
+    font-weight:bold;
+    font-size:1.1em;
 }
 
 #res_recherche tr td p
@@ -113,47 +142,4 @@ font-size:1.1em;
 {
     margin:0.4em 0;
     font-size:0.9em;
-}
-
-#nb_resultats
-{
-color:#5C7378;
-}
-
-
-ul#menu_periode
-{
-    padding:0;
-}
-
-ul#menu_periode li
-{
-	display:block;
-	margin:0.4em 0;
-}
-
-ul#menu_periode li a
-{
-	display:block;
-	padding:0.4em 1em;
-}
-
-
-ul#menu_periode li.tous
-{
-}
-
-ul#menu_periode li.ancien
-{
-	background-color:#f2f2f2;
-}
-
-ul#menu_periode li.futur
-{
-	background-color:#fff;
-}
-
-ul#menu_periode li.ici a
-{
-	background:#ff3;
 }

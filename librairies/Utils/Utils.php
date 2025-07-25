@@ -44,4 +44,24 @@ class Utils
         // 3. append domain name
         return $full_url . $_SERVER["SERVER_NAME"];
     }
+
+    public static function listFileToArray($filepath): array
+    {
+        $result = [];
+        if (!$fp = fopen($filepath, "r"))
+        {
+            echo "Echec de l'ouverture du fichier";
+            return $result;
+        }
+
+        while(!feof($fp))
+        {
+            $Ligne = fgets($fp, 255);
+            $result[] = trim($Ligne);
+        }
+
+        fclose($fp);
+
+        return $result;
+    }
 }

@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.8.1] - Unreleased
+
+### Fixed
+- events : resource sql file name (adding index) for v3.8.0
+
+### Added
+
+### Changed
+- search : refactoring with fulltext index (replacing LIKEs & php postprocess), PDO, cleaning, layout, html5...
+
+
 ## [3.8.0] - 2025-07-20
 
 ### Fixed
