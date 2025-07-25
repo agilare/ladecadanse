@@ -61,33 +61,6 @@ if ($nb_mots_sans_les_mots_vides === 0)
     header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); echo "Veuillez saisir un texte pertinent à rechercher"; exit;
 }
 
-// legacy method with LIKE (September 2007 - July 2025)
-//$champs_a_rechercher = ["titre", "nomLieu", "description"];
-//
-//$sql_select = "
-//    SELECT SQL_CALC_FOUND_ROWS
-//    idEvenement, idPersonne, titre, idLieu, idSalle, nomLieu, description, genre, dateEvenement, flyer, prix, horaire_debut, horaire_complement, dateAjout
-//    FROM evenement
-//    JOIN localite on evenement.localite_id = localite.id
-//    WHERE statut NOT IN ('inactif', 'propose')  AND ( ";
-//    // USELESS REGION FILTERING DISABLED: AND (region IN ('" . $connector->sanitize($_SESSION['region']) . "', 'rf', 'hs') OR FIND_IN_SET ('". $connector->sanitize($_SESSION['region']) ."', localite.regions_covered))  ";
-//
-//$tabChampsTermesSql = [];
-//foreach ($champs_a_rechercher as $champ)
-//{
-//    $tabChampLikes = [];
-//    foreach ($tab_mots_sans_les_mots_vides as $mot)
-//    {
-//        $tabChampLikes[] = $connector->sanitize($champ) . " LIKE '%" . $connector->sanitize($mot) . "%'";
-//    }
-//
-//    $tabChampsTermesSql[] = "(".implode(($champ == "nomLieu") ? " OR " : " AND ", $tabChampLikes).") ";
-//}
-//
-//$sql_select .= implode(" OR ", $tabChampsTermesSql);
-//$sql_select .= ") ";
-// END legacy method with LIKE (September 2007 - July 2025)
-
 $sql_select = "SELECT
 
   e.genre AS e_genre,
@@ -150,27 +123,9 @@ if ($get['periode'] != "tous")
 $sql_select .= ' ORDER BY ' . (($get['tri'] == "dateAjout" || $get['tri'] == "dateEvenement") ? "e." . $get['tri'] : 'score') . ' DESC';
 $sql_select .= " LIMIT " . (int) (($get['page'] - 1) * $results_per_page) . ", " . (int) (($get['page'] - 1) * $results_per_page + $results_per_page);
 
-
-//echo $sql_select;
-// legacy method with LIKE (September 2007 - July 2025)
-//$req_even = $connector->query($sql_select);
-//$nb_even = $connector->getNumRows($req_even);
-// END legacy method with LIKE (September 2007 - July 2025)
-
 $stmt = $connectorPdo->prepare($sql_select);
 $stmt->execute(array_fill(0, 8, implode(' ', $tab_mots_sans_les_mots_vides)));
 $page_results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-//dump($page_results);
-//if ($get['tri'] == "pertinence")
-//{
-//    foreach($page_results_without_weighting as $r)
-//    {
-//
-//    }
-//    $page_results;
-//}
-
-
 
 $sql_select_all =
     "SELECT count(*) AS nb
@@ -190,62 +145,12 @@ if ($get['periode'] != "tous")
     $sql_select_all .= " AND e.dateEvenement $sql_periode_operator '" . $glo_auj . "'";
 }
 //echo $sql_select_all;
+
 $stmtAll = $connectorPdo->prepare($sql_select_all);
 $stmtAll->execute(array_fill(0, 4, implode(' ', $tab_mots_sans_les_mots_vides)));
 $all_results_nb = $stmtAll->fetchColumn();
-//$page_results2 = $stmtAll->fetchAll(PDO::FETCH_ASSOC);
-// dump($all_results_nb);
-//$all_results_nb = count($page_results2);
-// legacy method with LIKE (September 2007 - July 2025)
-//if ($get['tri'] == "pertinence")
-//{
-//    $events_with_score = [];
-//    while ($tab_even = $connector->fetchArray($req_even))
-//    {
-//        $events_with_score[$tab_even['idEvenement']] = 0;
-//        /**
-//        $even_points[$p][0] = $tab_even['idEvenement'];
-//        $even_points[$p][1] = 0;
-//        print_r($tab_even);
-//        echo "<br>";
-//        */
-//        for ($i = $nb_mots_sans_les_mots_vides; $i >= 1; $i--)
-//        {
-//            $dep_max = $nb_mots_sans_les_mots_vides - $i;
-//            for ($m = 0; $m <= $dep_max; $m++)
-//            {
-//                $sous_phrase = "";
-//                for ($n = $m; $n < $m + $i; $n++)
-//                {
-//                    $sous_phrase .= $tab_mots_sans_les_mots_vides[$n]." ";
-//                }
-//                $sous_phrase = mb_substr($sous_phrase, 0, -1);
-//
-//                $nb_titre = 0;
-//                $nb_nomLieu = 0;
-//                $nb_desc = 0;
-//
-//                if (mb_strlen($sous_phrase) > 0)
-//                {
-//                    $nb_titre = mb_substr_count(mb_strtolower((string) $tab_even['titre']), $sous_phrase);
-//                    $nb_nomLieu = mb_substr_count(mb_strtolower((string) $tab_even['nomLieu']), $sous_phrase);
-//                    $nb_desc = mb_substr_count(mb_strtolower((string) $tab_even['description']), $sous_phrase);
-//                }
-//
-//                $events_with_score[$tab_even['idEvenement']] += ($nb_titre * $i) * 5;
-//                $events_with_score[$tab_even['idEvenement']] += ($nb_nomLieu * $i) * 5;
-//                $events_with_score[$tab_even['idEvenement']] += $nb_desc * $i;
-//            }
-//        }
-//    }
-//    //$tab_res = $connector->fetchAll($req_even);
-//    arsort($events_with_score);
-//}
-// END legacy method with LIKE (September 2007 - July 2025)
-
 
 $logger->log('global', 'activity', "[recherche] \"" . urlencode($get['mots']) .  "\" with " . $all_results_nb . " events found in " . $get['periode'] . " sorted by " . $get['tri'] . ", page " . $get['page'], Logger::GRAN_YEAR);
-
 
 // prepare mots to be transmitted in links (menus order, filters, pagination)
 $get['mots'] = urlencode($get['mots']);
@@ -297,16 +202,6 @@ include("_header.inc.php");
             <table>
                 <tbody>
                     <?php
-                    // legacy method with LIKE (September 2007 - July 2025)
-        //            $no_score = 0;
-        //            if ($get['tri'] == "pertinence")
-        //            {
-        //                echo HtmlShrink::getSearchByPertinenceList($events_with_score, $no_score, $results_per_page, '', $get);
-
-        //            } //tri Pertinence
-        //            else
-        //            {
-                    // END legacy method with LIKE (September 2007 - July 2025)
                     foreach ($page_results as $tab_even) :
                         $even_periode = match (true) {
                             $tab_even['e_dateEvenement'] > $glo_auj_6h => "futur",
@@ -329,11 +224,7 @@ include("_header.inc.php");
                             <td><?= round($tab_even['score'], 5) ?></td>
                             <?php endif; ?>
                         </tr>
-                    <?php endforeach;
-                    // legacy method with LIKE (September 2007 - July 2025)
-                    // }
-                    // END legacy method with LIKE (September 2007 - July 2025)
-                    ?>
+                    <?php endforeach; ?>
                     </tbody>
                 </table>
 
