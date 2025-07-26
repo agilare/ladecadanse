@@ -50,7 +50,8 @@ $tab_tous_mots = explode(" ", $mots);
 
 $mots_vides = Utils::listFileToArray(__ROOT__."/resources/stopwords_list.txt");
 $tab_mots_sans_les_mots_vides = array_values(array_diff($tab_tous_mots, $mots_vides));
-$tab_mots_sans_les_mots_vides = array_filter($tab_mots_sans_les_mots_vides, function($v) {
+$tab_mots_sans_les_mots_vides = array_filter($tab_mots_sans_les_mots_vides, function($v)
+{
     return (mb_strlen($v) > 1);
 });
 
@@ -95,10 +96,10 @@ $sql_select = "SELECT
   l.region AS l_region,
   s.nom AS s_nom,
     (
-      MATCH(e.titre) AGAINST(? IN NATURAL LANGUAGE MODE) * 5 +
-      MATCH(e.nomLieu) AGAINST(? IN NATURAL LANGUAGE MODE) * 3 +
-      MATCH(l.nom) AGAINST(? IN NATURAL LANGUAGE MODE) * 3 +
-      MATCH(e.description) AGAINST(? IN NATURAL LANGUAGE MODE) * 1
+      MATCH(e.titre) AGAINST(? IN BOOLEAN MODE) * 5 +
+      MATCH(e.nomLieu) AGAINST(? IN BOOLEAN MODE) * 3 +
+      MATCH(l.nom) AGAINST(? IN BOOLEAN MODE) * 3 +
+      MATCH(e.description) AGAINST(? IN BOOLEAN MODE) * 1
     ) AS score
 
 FROM evenement e
@@ -108,7 +109,7 @@ LEFT JOIN localite lloc ON l.localite_id = lloc.id
 LEFT JOIN salle s ON e.idSalle = s.idSalle
 WHERE
     e.statut NOT IN ('inactif', 'propose') AND (
-    MATCH(e.titre) AGAINST(? IN NATURAL LANGUAGE MODE) OR MATCH(e.nomLieu) AGAINST(? IN NATURAL LANGUAGE MODE) OR MATCH(e.description) AGAINST(? IN NATURAL LANGUAGE MODE) OR MATCH(l.nom) AGAINST(? IN NATURAL LANGUAGE MODE) )";
+    MATCH(e.titre) AGAINST(? IN BOOLEAN MODE) OR MATCH(e.nomLieu) AGAINST(? IN BOOLEAN MODE) OR MATCH(e.description) AGAINST(? IN BOOLEAN MODE) OR MATCH(l.nom) AGAINST(? IN BOOLEAN MODE) )";
 
 if ($get['periode'] != "tous")
 {
@@ -124,7 +125,7 @@ $sql_select .= ' ORDER BY ' . (($get['tri'] == "dateAjout" || $get['tri'] == "da
 $sql_select .= " LIMIT " . (int) (($get['page'] - 1) * $results_per_page) . ", " . (int) (($get['page'] - 1) * $results_per_page + $results_per_page);
 
 $stmt = $connectorPdo->prepare($sql_select);
-$stmt->execute(array_fill(0, 8, implode(' ', $tab_mots_sans_les_mots_vides)));
+$stmt->execute(array_fill(0, 8, implode(' ', array_map(fn($t) => $t . '*', $tab_mots_sans_les_mots_vides))));
 $page_results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 $sql_select_all =
@@ -133,7 +134,7 @@ FROM evenement e
 LEFT JOIN lieu l ON e.idLieu = l.idLieu
 WHERE
     e.statut NOT IN ('inactif', 'propose') AND (
-    MATCH(e.titre) AGAINST(? IN NATURAL LANGUAGE MODE) OR MATCH(e.nomLieu) AGAINST(? IN NATURAL LANGUAGE MODE) OR MATCH(e.description) AGAINST(? IN NATURAL LANGUAGE MODE) OR MATCH(l.nom) AGAINST(? IN NATURAL LANGUAGE MODE) )";
+    MATCH(e.titre) AGAINST(? IN BOOLEAN MODE) OR MATCH(e.nomLieu) AGAINST(? IN BOOLEAN MODE) OR MATCH(e.description) AGAINST(? IN BOOLEAN MODE) OR MATCH(l.nom) AGAINST(? IN BOOLEAN MODE) )";
 
 if ($get['periode'] != "tous")
 {
@@ -147,7 +148,7 @@ if ($get['periode'] != "tous")
 //echo $sql_select_all;
 
 $stmtAll = $connectorPdo->prepare($sql_select_all);
-$stmtAll->execute(array_fill(0, 4, implode(' ', $tab_mots_sans_les_mots_vides)));
+$stmtAll->execute(array_fill(0, 4, implode(' ', array_map(fn($t) => $t . '*', $tab_mots_sans_les_mots_vides))));
 $all_results_nb = $stmtAll->fetchColumn();
 
 $logger->log('global', 'activity', "[recherche] \"" . urlencode($get['mots']) .  "\" with " . $all_results_nb . " events found in " . $get['periode'] . " sorted by " . $get['tri'] . ", page " . $get['page'], Logger::GRAN_YEAR);
