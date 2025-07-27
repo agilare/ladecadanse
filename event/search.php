@@ -2,7 +2,7 @@
 
 global $connector, $glo_regions, $glo_auj, $iconeEditer, $glo_auj_6h;
 
-require_once("app/bootstrap.php");
+require_once("../app/bootstrap.php");
 
 use Ladecadanse\Utils\Logger;
 use Ladecadanse\HtmlShrink;
@@ -157,7 +157,8 @@ $logger->log('global', 'activity', "[recherche] \"" . urlencode($get['mots']) . 
 $get['mots'] = urlencode($get['mots']);
 
 $page_titre = "Rechercher des événements " . strtolower($tab_menu_periodes[$get['periode']]) . " par " . strtolower($tab_menu_tri[$get['tri']]);
-include("_header.inc.php");
+$nom_page = "event/evenement-search";
+include("../_header.inc.php");
 ?>
 
 <main id="contenu" class="colonne rechercher">
@@ -213,7 +214,7 @@ include("_header.inc.php");
                         ?>
                         <tr class="<?= $even_periode ?>">
                             <td class="desc_even">
-                                <h3><a href="/evenement.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>"><?= sanitizeForHtml($tab_even['e_titre']) ?></a></h3><?= sanitizeForHtml($tab_even['e_genre']) ?>
+                                <h3><a href="/event/evenement.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>"><?= sanitizeForHtml($tab_even['e_titre']) ?></a></h3><?= sanitizeForHtml($tab_even['e_genre']) ?>
                             </td>
                             <td><?= Lieu::getLinkNameHtml($even_lieu['nom'], $even_lieu['idLieu'], $even_lieu['salle']) ?></td>
                             <td><?php if ($authorization->isPersonneAllowedToEditEvenement($_SESSION, $tab_even)) : ?>
@@ -243,9 +244,9 @@ include("_header.inc.php");
 </main>
 
 <div id="colonne_gauche" class="colonne">
-    <?php include("_navigation_calendrier.inc.php"); ?>
+    <?php include("../event/_navigation_calendrier.inc.php"); ?>
 </div>
 
 <!--<div id="colonne_droite" class="colonne"></div>-->
 
-<?php include("_footer.inc.php"); ?>
+<?php include("../_footer.inc.php"); ?>

@@ -164,11 +164,11 @@ else if (!empty($_POST['formulaire']) && !empty($_POST['supprimerSerie']))
 elseif (!empty($_POST['formulaire']))
 {
 
-	foreach ($champs as $c => $v)
+	foreach ($champs as $i => $v)
 	{
-        if (isset($_POST[$c]))
+        if (isset($_POST[$i]))
         {
-            $champs[$c] = trim((string) $_POST[$c]);
+            $champs[$i] = trim((string) $_POST[$i]);
         }
     }
 
@@ -548,12 +548,12 @@ elseif (!empty($_POST['formulaire']))
 
 			$sql_update = "UPDATE evenement SET ";
 
-			foreach ($champs as $c => $v)
+			foreach ($champs as $i => $v)
 			{
-                            if ((!empty($v) && $c != "idPersonne" && $c != "organisateurs") || (($c == "idLieu" || $c == "urlLieu" || $c == "quartier" || $c == "localite_id" || $c == "region") && $lieu_modifie == true )
+                            if ((!empty($v) && $i != "idPersonne" && $i != "organisateurs") || (($i == "idLieu" || $i == "urlLieu" || $i == "quartier" || $i == "localite_id" || $i == "region") && $lieu_modifie == true )
                             )
                             {
-                                    $sql_update .= $c."='".$connector->sanitize($v)."', ";
+                                    $sql_update .= $i."='".$connector->sanitize($v)."', ";
                             }
 			}
 
@@ -575,7 +575,7 @@ elseif (!empty($_POST['formulaire']))
 			*/
 			if ($req_update)
 			{
-				HtmlShrink::msgOk('Mise à jour de <a href="/evenement.php?idE='.(int)$idEven_courant.'">'.$tab_even['titre'].'</a> le <a href="/index.php?courant='.$tab_even['dateEvenement'].'">'.date_fr($tab_even['dateEvenement'], "annee").'</a> réussie');
+				HtmlShrink::msgOk('Mise à jour de <a href="/event/evenement.php?idE='.(int)$idEven_courant.'">'.$tab_even['titre'].'</a> le <a href="/index.php?courant='.$tab_even['dateEvenement'].'">'.date_fr($tab_even['dateEvenement'], "annee").'</a> réussie');
 
 				$sql = "DELETE FROM evenement_organisateur WHERE idEvenement=".(int) $idEven_courant;
 				$req = $connector->query($sql);
@@ -643,9 +643,9 @@ elseif (!empty($_POST['formulaire']))
 
 		unset($_POST);
 		unset($_FILES);
-		foreach ($champs as $c => $v)
+		foreach ($champs as $i => $v)
 		{
-			$champs[$c] = '';
+			$champs[$i] = '';
 		}
 	}
 
@@ -807,7 +807,7 @@ while ($tab_even = $connector->fetchArray($req_evenement))
 		echo "<tr class=\"impair\" >";
     }
 
-	echo "	<td><a href=\"/evenement.php?idE=" . (int) $tab_even['idEvenement'] . "\" title=\"Voir la fiche de l'événement\" class='titre'>" . sanitizeForHtml($tab_even['titre']) . "</a></td>	<td>" . $nomLieu . "</td>
+	echo "	<td><a href=\"/event/evenement.php?idE=" . (int) $tab_even['idEvenement'] . "\" title=\"Voir la fiche de l'événement\" class='titre'>" . sanitizeForHtml($tab_even['titre']) . "</a></td>	<td>" . $nomLieu . "</td>
 	<td>".date_iso2app($tab_even['dateEvenement'])."</td>
 	<td>".ucfirst((string) $glo_tab_genre[$tab_even['genre']])."</td>
 

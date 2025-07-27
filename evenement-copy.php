@@ -14,7 +14,7 @@ if (!$videur->checkGroup(UserLevel::ACTOR)) {
 }
 
 $page_titre = "copier un événement vers d'autres dates";
-$extra_css = ["formulaires", "evenement_inc"];
+$extra_css = ["formulaires", "event/evenement_inc"];
 
 /*
 * action choisie, ID si collage
@@ -149,7 +149,7 @@ FROM evenement WHERE idEvenement=".(int)$get['idE'])));
 		$dateIncrUnix = $dateEUnix;
 		$dateIncrUnixOld = $dateIncrUnix;
 
-		$_SESSION['copierEvenement_flash_msg']['msg'] = '<p style="margin:4px 0">L\'événement <a href="/evenement.php?idE=' .(int)$get['idE'] . '"><strong>' . sanitizeForHtml($tab_champs['titre']) . '</strong> du ' . date_fr($tab_lieu['dateEvenement']) . '</a> a été copié vers les dates suivantes :</p>';
+		$_SESSION['copierEvenement_flash_msg']['msg'] = '<p style="margin:4px 0">L\'événement <a href="/event/evenement.php?idE=' .(int)$get['idE'] . '"><strong>' . sanitizeForHtml($tab_champs['titre']) . '</strong> du ' . date_fr($tab_lieu['dateEvenement']) . '</a> a été copié vers les dates suivantes :</p>';
         $_SESSION['copierEvenement_flash_msg']['table'] = '';
 
 		/*
@@ -245,7 +245,7 @@ FROM evenement WHERE idEvenement=".(int)$get['idE'])));
                 if (!empty($tab_champs['horaire_complement']))
                     $hor_compl = "<br>" . sanitizeForHtml($tab_champs['horaire_complement']);
 
-                $_SESSION['copierEvenement_flash_msg']['table'] .= '<tr><td><a href="/evenement.php?idE=' . (int) $nouv_id . '">' . sanitizeForHtml($tab_champs['titre']) . "<br>" . date_fr(date('Y-m-d', $dateIncrUnix)) . '</a></td><td>' . $hor_debfin . $hor_compl . '</td><td><a class="action_editer" href="/evenement-edit.php?action=editer&idE=' . (int) $nouv_id . '" title="Modifier cet événement">Modifier</a>&nbsp;&nbsp;<a href="/evenement-edit.php?action=editer&idE=' . (int) $nouv_id . '" title="Modifier cet événement dans un nouvel onglet" target="_blank"><i class="fa fa-external-link" aria-hidden="true"></i></a>&nbsp;&nbsp;&nbsp;<a href="#" id="btn_event_del_' . (int) $nouv_id . '" class="btn_event_del action_supprimer" data-id=' . (int) $nouv_id . '>Supprimer</a></td></tr>';
+                $_SESSION['copierEvenement_flash_msg']['table'] .= '<tr><td><a href="/event/evenement.php?idE=' . (int) $nouv_id . '">' . sanitizeForHtml($tab_champs['titre']) . "<br>" . date_fr(date('Y-m-d', $dateIncrUnix)) . '</a></td><td>' . $hor_debfin . $hor_compl . '</td><td><a class="action_editer" href="/evenement-edit.php?action=editer&idE=' . (int) $nouv_id . '" title="Modifier cet événement">Modifier</a>&nbsp;&nbsp;<a href="/evenement-edit.php?action=editer&idE=' . (int) $nouv_id . '" title="Modifier cet événement dans un nouvel onglet" target="_blank"><i class="fa fa-external-link" aria-hidden="true"></i></a>&nbsp;&nbsp;&nbsp;<a href="#" id="btn_event_del_' . (int) $nouv_id . '" class="btn_event_del action_supprimer" data-id=' . (int) $nouv_id . '>Supprimer</a></td></tr>';
 
                 if (!empty($tab_champs['flyer']))
 				{
@@ -356,7 +356,7 @@ include("_header.inc.php");
 
             $evenement = $affEven;
 
-            include("_evenement.inc.php");
+            include("event/_evenement.inc.php");
         }
         else {
             HtmlShrink::msgErreur("Aucun événement n'est associé à " . (int) $get['idE']);
@@ -380,7 +380,7 @@ include("_header.inc.php");
 </div> <!-- fin contenu -->
 
 <div id="colonne_gauche" class="colonne">
-    <?php include("_navigation_calendrier.inc.php"); ?>
+    <?php include("event/_navigation_calendrier.inc.php"); ?>
 </div>
 
 <?php

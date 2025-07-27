@@ -233,7 +233,7 @@ include("_header.inc.php");
 
         <div id="order_navigation">
             <ul>
-                <li style="margin-right:5px" ><i class="fa fa-sort-amount-asc" aria-hidden="true"></i></li><li style="margin-right:2px" ><a href="index.php?tri_agenda=dateAjout<?= (!$is_courant_today ? '&amp;courant=' . $get['courant'] : '' ); ?>" class="<?php if ($_SESSION['user_prefs_agenda_order'] == 'dateAjout') : ?>selected<?php endif; ?>" rel="nofollow">Dernier ajouté</a></li><li><a href="index.php?tri_agenda=horaire_debut<?= (!$is_courant_today ? '&amp;courant=' . $get['courant'] : '' ) ?>" class="<?php if ($_SESSION['user_prefs_agenda_order'] == 'horaire_debut') : ?>selected<?php endif; ?>" rel="nofollow">Heure de début</a></li>
+                <li style="margin-right:5px"><i class="fa fa-sort-amount-asc" aria-hidden="true"></i></li><li style="margin-right:2px"><a href="index.php?tri_agenda=dateAjout<?= (!$is_courant_today ? '&amp;courant=' . $get['courant'] : '' ); ?>" class="<?php if ($_SESSION['user_prefs_agenda_order'] == 'dateAjout') : ?>selected<?php endif; ?>" rel="nofollow">Dernier ajouté</a></li><li><a href="index.php?tri_agenda=horaire_debut<?= (!$is_courant_today ? '&amp;courant=' . $get['courant'] : '' ) ?>" class="<?php if ($_SESSION['user_prefs_agenda_order'] == 'horaire_debut') : ?>selected<?php endif; ?>" rel="nofollow">Heure de début</a></li>
             </ul>
             <div class="spacer"></div>
         </div>
@@ -276,7 +276,7 @@ include("_header.inc.php");
                         <article class="evenement">
 
                             <header class="titre">
-                                <h3 class="left"><a href="/evenement.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>"><?= Evenement::titreSelonStatutHtml(sanitizeForHtml($tab_even['e_titre']), $tab_even['e_statut']) ?></a></h3>
+                                <h3 class="left"><a href="/event/evenement.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>"><?= Evenement::titreSelonStatutHtml(sanitizeForHtml($tab_even['e_titre']), $tab_even['e_statut']) ?></a></h3>
                                 <span class="right"><?= Lieu::getLinkNameHtml($even_lieu['nom'], $even_lieu['idLieu'], $even_lieu['salle']) ?></span>
                                 <div class="spacer"></div>
                             </header>
@@ -285,7 +285,7 @@ include("_header.inc.php");
 
                             <div class="description">
                                 <p>
-                                <?= Text::texteHtmlReduit(Text::wikiToHtml(sanitizeForHtml($tab_even['e_description'])), Text::trouveMaxChar($tab_even['e_description'], 60, 6), ' <a class="continuer" href="/evenement.php?idE=' . (int) $tab_even['e_idEvenement'] . '"> Lire la suite</a>'); ?>
+                                <?= Text::texteHtmlReduit(Text::wikiToHtml(sanitizeForHtml($tab_even['e_description'])), Text::trouveMaxChar($tab_even['e_description'], 60, 6), ' <a class="continuer" href="/event/evenement.php?idE=' . (int) $tab_even['e_idEvenement'] . '"> Lire la suite</a>'); ?>
                                 </p>
                                 <?php if (!empty($tab_events_today_in_region_orgas[$tab_even['e_idEvenement']])): ?>
                                     <?= Organisateur::getListLinkedHtml($tab_events_today_in_region_orgas[$tab_even['e_idEvenement']]) ?>
@@ -298,9 +298,8 @@ include("_header.inc.php");
                                 <span class="left"><?= sanitizeForHtml(HtmlShrink::adresseCompacteSelonContexte($even_lieu['region'], $even_lieu['localite'], $even_lieu['quartier'], $even_lieu['adresse'])); ?></span>
                                 <span class="right">
                                     <?php
-                                    $horaire_complet = afficher_debut_fin($tab_even['e_horaire_debut'], $tab_even['e_horaire_fin'], $tab_even['e_dateEvenement'])." " . sanitizeForHtml($tab_even['e_horaire_complement']);
-                                    echo $horaire_complet;
-                                    if (!empty($horaire_complet))
+                                    $horaire_complet = afficher_debut_fin($tab_even['e_horaire_debut'], $tab_even['e_horaire_fin'], $tab_even['e_dateEvenement'])." " . sanitizeForHtml($tab_even['e_horaire_complement']);echo $horaire_complet;
+                                    if (!empty($horaire_complet) && !empty($tab_even['e_prix']))
                                     {
                                         echo ", ";
                                     }
@@ -362,7 +361,7 @@ include("_header.inc.php");
 
 <aside id="colonne_gauche" class="colonne">
 
-    <?php include("_navigation_calendrier.inc.php"); ?>
+    <?php include("event/_navigation_calendrier.inc.php"); ?>
     <?php if ($is_courant_today) : ?>
         <div class="secondaire">
 
@@ -411,7 +410,7 @@ include("_header.inc.php");
 
                         <figure class="flyer"><?= Evenement::mainFigureHtml($tab_even['e_flyer'], $tab_even['e_image'], $tab_even['e_titre'], 60) ?></figure>
 
-                        <h3><a href="/evenement.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>"><?= Evenement::titreSelonStatutHtml(sanitizeForHtml($tab_even['e_titre']), $tab_even['e_statut']) ?></a></h3>
+                        <h3><a href="/event/evenement.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>"><?= Evenement::titreSelonStatutHtml(sanitizeForHtml($tab_even['e_titre']), $tab_even['e_statut']) ?></a></h3>
                         <span><?= Lieu::getLinkNameHtml($even_lieu['nom'], $even_lieu['idLieu'], $even_lieu['salle']) ?></span>
 
                         <p>le&nbsp;<a href="index.php?courant=<?= urlencode($tab_even['e_dateEvenement']) ?>"><?= date_fr($tab_even['e_dateEvenement']) ?></a></p>

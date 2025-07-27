@@ -501,7 +501,7 @@
         ["css=.genre:nth-child(2) > .evenement:nth-child(4) .left > a", "css:finder"],
         ["xpath=//a[contains(text(),'Fête du mont Freundler')]", "xpath:link"],
         ["xpath=//div[@id='prochains_evenements']/section/article[2]/header/h3/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/evenement.php?idE=1869')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/event/evenement.php?idE=1869')]", "xpath:href"],
         ["xpath=//article[2]/header/h3/a", "xpath:position"],
         ["xpath=//a[contains(.,'Fête du mont Freundler')]", "xpath:innerText"]
       ],
@@ -1008,7 +1008,7 @@
         ["css=.ancien > a", "css:finder"],
         ["xpath=//a[contains(text(),'Anciens')]", "xpath:link"],
         ["xpath=//ul[@id='menu_periode']/li[2]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, 'evenement-search.php?tri=pertinence&page=1&mots=f%C3%AAte&periode=ancien')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/event/search.php?tri=pertinence&page=1&mots=f%C3%AAte&periode=ancien')]", "xpath:href"],
         ["xpath=//div[3]/ul/li[2]/a", "xpath:position"],
         ["xpath=//a[contains(.,'Anciens')]", "xpath:innerText"]
       ],
@@ -1030,7 +1030,7 @@
         ["css=.tous > a", "css:finder"],
         ["xpath=//a[contains(text(),'Tous')]", "xpath:link"],
         ["xpath=//ul[@id='menu_periode']/li[3]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, 'evenement-search.php?tri=pertinence&page=1&mots=f%C3%AAte&periode=tous')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/event/search.php?tri=pertinence&page=1&mots=f%C3%AAte&periode=tous')]", "xpath:href"],
         ["xpath=//div[3]/ul/li[3]/a", "xpath:position"],
         ["xpath=//a[contains(.,'Tous')]", "xpath:innerText"]
       ],
@@ -1052,7 +1052,7 @@
         ["css=.futur > a", "css:finder"],
         ["xpath=//a[contains(text(),'Futurs')]", "xpath:link"],
         ["xpath=//ul[@id='menu_periode']/li/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, 'evenement-search.php?tri=pertinence&page=1&mots=f%C3%AAte&periode=futur')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/event/search.php?tri=pertinence&page=1&mots=f%C3%AAte&periode=futur')]", "xpath:href"],
         ["xpath=//div[3]/ul/li/a", "xpath:position"],
         ["xpath=//a[contains(.,'Futurs')]", "xpath:innerText"]
       ],
@@ -1074,7 +1074,7 @@
         ["css=#menu_tri > li:nth-child(2) > a", "css:finder"],
         ["xpath=//a[contains(text(),'Date')]", "xpath:link"],
         ["xpath=//ul[@id='menu_tri']/li[2]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, 'evenement-search.php?page=1&periode=futur&mots=f%C3%AAte&tri=dateEvenement')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/event/search.php?page=1&periode=futur&mots=f%C3%AAte&tri=dateEvenement')]", "xpath:href"],
         ["xpath=//ul[2]/li[2]/a", "xpath:position"],
         ["xpath=//a[contains(.,'Date')]", "xpath:innerText"]
       ],
@@ -1095,7 +1095,7 @@
         ["linkText=Date d'ajout", "linkText"],
         ["css=#menu_tri > li:nth-child(3) > a", "css:finder"],
         ["xpath=//ul[@id='menu_tri']/li[3]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, 'evenement-search.php?page=1&periode=futur&mots=f%C3%AAte&tri=dateAjout')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/event/search.php?page=1&periode=futur&mots=f%C3%AAte&tri=dateAjout')]", "xpath:href"],
         ["xpath=//ul[2]/li[3]/a", "xpath:position"]
       ],
       "value": ""
@@ -1116,7 +1116,7 @@
         ["css=#menu_tri > li:nth-child(1) > a", "css:finder"],
         ["xpath=//a[contains(text(),'Pertinence')]", "xpath:link"],
         ["xpath=//ul[@id='menu_tri']/li/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, 'evenement-search.php?page=1&periode=futur&mots=f%C3%AAte&tri=pertinence')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/event/search.php?page=1&periode=futur&mots=f%C3%AAte&tri=pertinence')]", "xpath:href"],
         ["xpath=//ul[2]/li/a", "xpath:position"],
         ["xpath=//a[contains(.,'Pertinence')]", "xpath:innerText"]
       ],
@@ -1138,7 +1138,7 @@
         ["css=.pagination:nth-child(5) > a:nth-child(3)", "css:finder"],
         ["xpath=(//a[contains(text(),'2')])[16]", "xpath:link"],
         ["xpath=//div[@id='res_recherche']/div[3]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, 'evenement-search.php?tri=pertinence&periode=futur&mots=f%C3%AAte&page=2')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/event/search.php?tri=pertinence&periode=futur&mots=f%C3%AAte&page=2')]", "xpath:href"],
         ["xpath=//div[3]/a", "xpath:position"]
       ],
       "value": ""
@@ -1161,7 +1161,7 @@
         ["xpath=//a[contains(text(),'préc')]", "xpath:link"],
         ["xpath=//a[@id='prec']", "xpath:attributes"],
         ["xpath=//div[@id='res_recherche']/div[3]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, 'evenement-search.php?tri=pertinence&periode=futur&mots=f%C3%AAte&page=1')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/event/search.php?tri=pertinence&periode=futur&mots=f%C3%AAte&page=1')]", "xpath:href"],
         ["xpath=//div[3]/a", "xpath:position"],
         ["xpath=//a[contains(.,'préc')]", "xpath:innerText"]
       ],
@@ -1201,7 +1201,7 @@
         ["css=.genre:nth-child(1) > .evenement:nth-child(5) .left > a", "css:finder"],
         ["xpath=//a[contains(text(),'Fête du mont Freundler')]", "xpath:link"],
         ["xpath=//div[@id='prochains_evenements']/section/article[2]/header/h3/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/evenement.php?idE=1852')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/event/evenement.php?idE=1852')]", "xpath:href"],
         ["xpath=//article[2]/header/h3/a", "xpath:position"],
         ["xpath=//a[contains(.,'Fête du mont Freundler')]", "xpath:innerText"]
       ],
@@ -1338,7 +1338,7 @@
         ["css=.left > a", "css:finder"],
         ["xpath=//a[contains(text(),'Fête de la bière et de la choucroute')]", "xpath:link"],
         ["xpath=//div[@id='evenements']/div/div/span/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/evenement.php?idE=33')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/event/evenement.php?idE=33')]", "xpath:href"],
         ["xpath=//span/a", "xpath:position"],
         ["xpath=//a[contains(.,'Fête de la bière et de la choucroute')]", "xpath:innerText"]
       ],
@@ -1364,7 +1364,7 @@
         ["linkText=NOCTAMBAR REOPENING w/ YÀNKOV & NILOU - Bar à Gland", "linkText"],
         ["css=.entete_contenu_navigation:nth-child(2) > a", "css:finder"],
         ["xpath=//header[@id='entete_contenu']/div/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/evenement.php?idE=1997')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/event/evenement.php?idE=1997')]", "xpath:href"],
         ["xpath=//main/header/div/a", "xpath:position"],
         ["xpath=//a[contains(.,'NOCTAMBAR REOPENING w/ YÀNKOV & NILOU - Bar à Gland ')]", "xpath:innerText"]
       ],
@@ -1475,7 +1475,7 @@
       "targets": [
         ["css=.only-mobile > a:nth-child(2)", "css:finder"],
         ["xpath=//div[@id='contenu']/div[6]/div/a[2]", "xpath:idRelative"],
-        ["xpath=(//a[contains(@href, '/evenement.php?idE=276&tri=dateAjout')])[2]", "xpath:href"],
+        ["xpath=(//a[contains(@href, '/event/evenement.php?idE=276&tri=dateAjout')])[2]", "xpath:href"],
         ["xpath=//div[6]/div/a[2]", "xpath:position"]
       ],
       "value": ""
@@ -2864,7 +2864,7 @@
         ["css=#event-538 .url", "css:finder"],
         ["xpath=//a[contains(text(),'Le Mai 68 genevois et le mouvement de libération des Femmes')]", "xpath:link"],
         ["xpath=//div[@id='event-538']/div[2]/span/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/evenement.php?idE=538&tri_agenda=dateAjout&courant=2023-05-06')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/event/evenement.php?idE=538&tri_agenda=dateAjout&courant=2023-05-06')]", "xpath:href"],
         ["xpath=//span/a", "xpath:position"],
         ["xpath=//a[contains(.,'Le Mai 68 genevois et le mouvement de libération des Femmes')]", "xpath:innerText"]
       ],
@@ -2969,7 +2969,7 @@
         ["css=.left > a", "css:finder"],
         ["xpath=//a[contains(text(),'21e édition du FIFDH')]", "xpath:link"],
         ["xpath=//section[@id='prochains_evenements']/div/article/div/span/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/evenement.php?idE=849')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/event/evenement.php?idE=849')]", "xpath:href"],
         ["xpath=//span/a", "xpath:position"],
         ["xpath=//a[contains(.,'21e édition du FIFDH')]", "xpath:innerText"]
       ],
@@ -3023,7 +3023,7 @@
         ["css=.left > a", "css:finder"],
         ["xpath=//a[contains(text(),'SANS FILTRE de Ruben Östlund')]", "xpath:link"],
         ["xpath=//div[@id='evenements']/div/div/span/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/evenement.php?idE=278')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/event/evenement.php?idE=278')]", "xpath:href"],
         ["xpath=//span/a", "xpath:position"],
         ["xpath=//a[contains(.,'SANS FILTRE de Ruben Östlund')]", "xpath:innerText"]
       ],
@@ -3065,7 +3065,7 @@
         ["css=.left > a", "css:finder"],
         ["xpath=//a[contains(text(),'SANS FILTRE de Ruben Östlund')]", "xpath:link"],
         ["xpath=//div[@id='evenements']/div/div/span/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/evenement.php?idE=278')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/event/evenement.php?idE=278')]", "xpath:href"],
         ["xpath=//span/a", "xpath:position"],
         ["xpath=//a[contains(.,'SANS FILTRE de Ruben Östlund')]", "xpath:innerText"]
       ],
@@ -3108,7 +3108,7 @@
         ["css=h2 > a", "css:finder"],
         ["xpath=//a[contains(text(),'SANS FILTRE de Ruben Östlund')]", "xpath:link"],
         ["xpath=//div[@id='entete_contenu']/h2/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/evenement.php?idE=278')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/event/evenement.php?idE=278')]", "xpath:href"],
         ["xpath=//h2/a", "xpath:position"],
         ["xpath=//a[contains(.,'SANS FILTRE de Ruben Östlund')]", "xpath:innerText"]
       ],
@@ -3146,7 +3146,7 @@
         ["css=.genre:nth-child(1) > .evenement:nth-child(4) .left > a", "css:finder"],
         ["xpath=//a[contains(text(),'Fête de la bière et de la choucroute')]", "xpath:link"],
         ["xpath=//section[@id='prochains_evenements']/div/article[2]/div/span/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/evenement.php?idE=35')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/event/evenement.php?idE=35')]", "xpath:href"],
         ["xpath=//article[2]/div/span/a", "xpath:position"],
         ["xpath=//a[contains(.,'Fête de la bière et de la choucroute')]", "xpath:innerText"]
       ],
@@ -3398,7 +3398,7 @@
         ["css=tr:nth-child(2) > td:nth-child(3) > a", "css:finder"],
         ["xpath=//a[contains(text(),'mardi au vendredi de 14h à 19h et samedi de 13h à 17hmardi au vendredi de 14h à')]", "xpath:link"],
         ["xpath=//table[@id='ajouts']/tbody/tr[2]/td[3]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/evenement.php?idE=511')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/event/evenement.php?idE=511')]", "xpath:href"],
         ["xpath=//td[3]/a", "xpath:position"],
         ["xpath=//a[contains(.,'mardi au vendredi de 14h à 19h et samedi de 13h à 17hmardi au vendredi de 14h à')]", "xpath:innerText"]
       ],
@@ -5835,7 +5835,7 @@
         ["css=tr:nth-child(2) > td:nth-child(3) > a", "css:finder"],
         ["xpath=//a[contains(text(),'mardi au vendredi de 14h à 19h et samedi de 13h à 17hmardi au vendredi de 14h à')]", "xpath:link"],
         ["xpath=//table[@id='ajouts']/tbody/tr[2]/td[3]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/evenement.php?idE=517')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/event/evenement.php?idE=517')]", "xpath:href"],
         ["xpath=//td[3]/a", "xpath:position"],
         ["xpath=//a[contains(.,'mardi au vendredi de 14h à 19h et samedi de 13h à 17hmardi au vendredi de 14h à')]", "xpath:innerText"]
       ],
@@ -6152,7 +6152,7 @@
         ["css=tr:nth-child(2) > td:nth-child(3) > a", "css:finder"],
         ["xpath=//a[contains(text(),'21e édition du FIFDH')]", "xpath:link"],
         ["xpath=//table[@id='ajouts']/tbody/tr[2]/td[3]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/evenement.php?idE=539')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/event/evenement.php?idE=539')]", "xpath:href"],
         ["xpath=//td[3]/a", "xpath:position"],
         ["xpath=//a[contains(.,'21e édition du FIFDH')]", "xpath:innerText"]
       ],
@@ -6477,7 +6477,7 @@
         ["css=tr:nth-child(2) .titre", "css:finder"],
         ["xpath=//a[contains(text(),'21e édition du FIFDH')]", "xpath:link"],
         ["xpath=//table[@id='derniers_evenements_ajoutes']/tbody/tr[2]/td/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/evenement.php?idE=525')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/event/evenement.php?idE=525')]", "xpath:href"],
         ["xpath=//table[2]/tbody/tr[2]/td/a", "xpath:position"],
         ["xpath=//a[contains(.,'21e édition du FIFDH')]", "xpath:innerText"]
       ],

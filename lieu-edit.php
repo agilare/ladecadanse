@@ -94,7 +94,7 @@ if (($get['action'] == 'editer' || $get['action'] == 'update'))
 		{
 			$titre_actions = '<ul class="entete_contenu_menu">';
 			$titre_actions .= "<li class=\"action_supprimer\">
-			<a href=\"/multi-suppr.php?type=lieu&amp;id=".$get['idL']."&token=".SecurityToken::getToken()."\">Supprimer</a></li>";
+			<a href=\"/multi-suppr.php?type=lieu&amp;id=".(int)$get['idL']."&token=".SecurityToken::getToken()."\">Supprimer</a></li>";
 			$titre_actions .= '</ul>';
 		}
 
@@ -384,7 +384,7 @@ echo $form->getHtmlErreur("quartier");
 
             }
 
-            echo "value=\"" . $tab['idOrganisateur'] . "\">" . sanitizeForHtml($tab['nom']) . "</option>";
+            echo "value=\"" . (int)$tab['idOrganisateur'] . "\">" . sanitizeForHtml($tab['nom']) . "</option>";
         }
         ?>
         </select>
@@ -536,7 +536,7 @@ echo $form->getHtmlErreur("quartier");
 
             $sql_galerie = "SELECT fichierrecu.idFichierrecu AS idFichierrecu, description, mime, extension, dateAjout
         FROM fichierrecu, lieu_fichierrecu
-        WHERE lieu_fichierrecu.idLieu=".$get['idL']." AND type='image' AND fichierrecu.idFichierrecu=lieu_fichierrecu.idFichierrecu
+        WHERE lieu_fichierrecu.idLieu=".(int)$get['idL']." AND type='image' AND fichierrecu.idFichierrecu=lieu_fichierrecu.idFichierrecu
          ORDER BY dateAjout DESC";
 
             $req_galerie = $connector->query($sql_galerie);
@@ -549,7 +549,7 @@ echo $form->getHtmlErreur("quartier");
                     $nom_fichier = $tab_galerie['idFichierrecu'].".".$tab_galerie['extension'];
                     echo "<tr><td><img src=\"".$url_uploads_lieux_galeries."s_".$nom_fichier."\" /></td>
                     <td>".date_iso2app($tab_galerie['dateAjout'])."</td>
-                    <td><input type=\"checkbox\" name=\"supprimer_galerie[]\" value=\"".$tab_galerie['idFichierrecu'].".".$tab_galerie['extension']."\" /></td></tr>";
+                    <td><input type=\"checkbox\" name=\"supprimer_galerie[]\" value=\"".(int)$tab_galerie['idFichierrecu'].".".$tab_galerie['extension']."\" /></td></tr>";
                 }
                 echo "</table>";
             }
@@ -625,7 +625,7 @@ echo $form->getHtmlErreur("quartier");
 
 <div id="colonne_gauche" class="colonne">
 
-<?php include("_navigation_calendrier.inc.php"); ?>
+<?php include("event/_navigation_calendrier.inc.php"); ?>
 </div>
 <!-- Fin Colonne gauche -->
 

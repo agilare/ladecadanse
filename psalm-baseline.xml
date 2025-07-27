@@ -24,7 +24,7 @@
       <code><![CDATA[Exception]]></code>
     </UndefinedClass>
   </file>
-  <file src="evenement-search.php">
+  <file src="event/search.php">
     <InvalidGlobal>
       <code><![CDATA[global $connector, $glo_regions, $glo_auj, $iconeEditer, $glo_auj_6h;]]></code>
     </InvalidGlobal>

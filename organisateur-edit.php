@@ -77,11 +77,8 @@ else if ($get['action'] == 'editer')
   	$form->loadValues($get['idO']);
 }
 
-
-
 $titre_form = "";
 $titre_actions = '';
-
 
 //menu d'actions (activation et suppression)  pour l'auteur > 6 ou l'admin
 if (($get['action'] == 'editer' || $get['action'] == 'update'))
@@ -97,7 +94,7 @@ if (($get['action'] == 'editer' || $get['action'] == 'update'))
 		{
 			$titre_actions = '<ul class="entete_contenu_menu">';
 			$titre_actions .= "<li class=\"action_supprimer\">
-			<a href=\"/multi-suppr.php?type=organisateur&amp;id=".$get['idO']."&token=".SecurityToken::getToken()."\">Supprimer</a></li>";
+			<a href=\"/multi-suppr.php?type=organisateur&amp;id=".(int)$get['idO']."&token=".SecurityToken::getToken()."\">Supprimer</a></li>";
 			$titre_actions .= '</ul>';
 		}
 
@@ -137,7 +134,7 @@ if ($afficher_form)
 
 <fieldset>
 <input type="hidden" name="date_ajout" value="<?php echo $form->getValeur('date_ajout') ?>" />
-<input type="hidden" name="idOrganisateur" value="<?php echo $get['idO'] ?>" />
+<input type="hidden" name="idOrganisateur" value="<?php echo (int)$get['idO'] ?>" />
 <legend>Infos pratiques</legend>
 
 <!-- Nom (text) -->
@@ -332,7 +329,7 @@ else
 
 <div id="colonne_gauche" class="colonne">
 
-<?php include("_navigation_calendrier.inc.php"); ?>
+<?php include("event/_navigation_calendrier.inc.php"); ?>
 </div>
 <!-- Fin Colonne gauche -->
 

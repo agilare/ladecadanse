@@ -56,7 +56,13 @@ $site_full_url = Utils::getBaseUrl()."/";
 Evenement::$systemDirPath = $rep_images_even;
 Evenement::$urlDirPath = $url_uploads_events;
 
-$nom_page = basename((string) $_SERVER["SCRIPT_FILENAME"], '.php');
+//$nom_page = basename((string) $_SERVER["SCRIPT_FILENAME"], '.php');
+$pathinfo = pathinfo($_SERVER['SCRIPT_NAME']);
+//dump($pathinfo);
+//( strlen($pathinfo['dirname']) > 1 ? $pathinfo['dirname'] . '/' : "/")
+$nom_page = ltrim($pathinfo['dirname'] . '/' . $pathinfo['filename'], '\\/');
+//echo $_SERVER["SCRIPT_FILENAME"]."<br>";
+//echo $nom_page;
 
 if (DARKVISITORS_ENABLED)
 {

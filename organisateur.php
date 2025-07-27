@@ -335,7 +335,7 @@ if ($evenements->getNbElements() > 0)
 
 			if (mb_strlen((string) $even->getValue('description')) > $maxChar)
 			{
-				//$continuer = "<span class=\"continuer\"><a href=\"/evenement.php?idE=".$even->getValue('idEvenement')."\" title=\"Voir la fiche complète de l'événement\"> Lire la suite</a></span>";
+				//$continuer = "<span class=\"continuer\"><a href=\"/event/evenement.php?idE=".$even->getValue('idEvenement')."\" title=\"Voir la fiche complète de l'événement\"> Lire la suite</a></span>";
 				$presentation = Text::texteHtmlReduit(Text::wikiToHtml(sanitizeForHtml($even->getValue('description'))), $maxChar);
             }
 			else
@@ -398,7 +398,7 @@ if ($evenements->getNbElements() > 0)
 
 		<td>
             <h3>
-                <a href="/evenement.php?idE=<?= (int)$even->getValue('idEvenement') ?>"><?= Evenement::titreSelonStatutHtml(sanitizeForHtml($even->getValue('titre')), $even->getValue('statut')) ?></a>
+                <a href="/event/evenement.php?idE=<?= (int)$even->getValue('idEvenement') ?>"><?= Evenement::titreSelonStatutHtml(sanitizeForHtml($even->getValue('titre')), $even->getValue('statut')) ?></a>
             </h3>
             <p class="description"><?php echo $presentation; ?></p>
 
@@ -474,7 +474,7 @@ echo '</div>';
 
 
 <?php
-include("_navigation_calendrier.inc.php");
+include("event/_navigation_calendrier.inc.php");
  ?>
 
 </div>

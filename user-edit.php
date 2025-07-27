@@ -856,7 +856,7 @@ else
 </div> <!-- fin contenu  -->
 
 <div id="colonne_gauche" class="colonne">
-<?php include("_navigation_calendrier.inc.php"); ?>
+<?php include("event/_navigation_calendrier.inc.php"); ?>
 </div><!-- Fin Colonne gauche -->
 
 <?php

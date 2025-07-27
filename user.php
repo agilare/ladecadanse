@@ -198,7 +198,7 @@ $detailsAff = $connector->fetchArray($req_affPers);
 
 	<li <?php if ($get['elements'] == "evenement") { echo ' class="ici" '; } ?>>
 	<img src="/web/interface/icons/calendar.png" />
-        <a href="?idP=<?php echo $get['idP'] . "&nblignes=" . $get['nblignes'] . "&elements=evenement" ?>">événements</a>
+        <a href="?idP=<?php echo (int)$get['idP'] . "&nblignes=" . (int)$get['nblignes'] . "&elements=evenement" ?>">événements</a>
         </li>
 	<?php
 	}
@@ -208,7 +208,7 @@ $detailsAff = $connector->fetchArray($req_affPers);
 	?>
 	<li <?php if ($get['elements'] == "lieu") { echo ' class="ici" '; } ?>>
 	<img src="/web/interface/icons/building.png" />
-        <a href="?idP=<?php echo $get['idP'] . "&nblignes=" . $get['nblignes'] . "&elements=lieu" ?>">lieux</a>
+        <a href="?idP=<?php echo (int)$get['idP'] . "&nblignes=" . (int)$get['nblignes'] . "&elements=lieu" ?>">lieux</a>
         </li>
 	<?php
 	}
@@ -218,7 +218,7 @@ $detailsAff = $connector->fetchArray($req_affPers);
 	?>
 	<li <?php if ($get['elements'] == "organisateur") { echo ' class="ici" '; } ?>>
 	<img src="/web/interface/icons/group.png" />
-        <a href="?idP=<?php echo $get['idP'] . "&nblignes=" . $get['nblignes'] . "&elements=organisateur" ?>">organisateurs</a>
+        <a href="?idP=<?php echo (int)$get['idP'] . "&nblignes=" . (int)$get['nblignes'] . "&elements=organisateur" ?>">organisateurs</a>
         </li>
 	<?php
 	}
@@ -228,7 +228,7 @@ $detailsAff = $connector->fetchArray($req_affPers);
 	?>
 	<li <?php if ($get['elements'] == "description") { echo ' class="ici" '; } ?>>
 	<img src="/web/interface/icons/page_white_text.png" />
-        <a href="?idP=<?php echo $get['idP'] . "&nblignes=" . $get['nblignes'] . "&elements=description" ?>">textes</a>
+        <a href="?idP=<?php echo (int)$get['idP'] . "&nblignes=" . (int)$get['nblignes'] . "&elements=description" ?>">textes</a>
         </li>
 	<?php
 	}
@@ -264,7 +264,7 @@ $detailsAff = $connector->fetchArray($req_affPers);
 				echo '<li ';
 				if ($get['nblignes'] == $nbl) { echo 'class="ici"'; }
 
-				echo '><a href="?' . Utils::urlQueryArrayToString($get, "nblignes") . '&nblignes=' . $nbl . '">' . $nbl . '</a></li>';
+				echo '><a href="?' . Utils::urlQueryArrayToString($get, "nblignes") . '&nblignes=' . (int)$nbl . '">' . (int)$nbl . '</a></li>';
         }
 			echo '</ul>';
 			echo '<div class="spacer"><!-- --></div>';
@@ -290,7 +290,7 @@ $detailsAff = $connector->fetchArray($req_affPers);
 						echo "<th>";
 					}
 
-					echo "<a href=\"?idP=" . $get['idP'] . "&elements=" . $get['elements'] . "&page=" . $get['page'] . "&tri=" . $att . "&ordre=" . $ordre_inverse . "&nblignes=" . $get['nblignes'] . "\">" . $th . "</a></th>";
+					echo "<a href=\"?idP=" . (int)$get['idP'] . "&elements=" . $get['elements'] . "&page=" .(int) $get['page'] . "&tri=" . $att . "&ordre=" . $ordre_inverse . "&nblignes=" . $get['nblignes'] . "\">" . $th . "</a></th>";
             }
 			}
 
@@ -323,7 +323,7 @@ $detailsAff = $connector->fetchArray($req_affPers);
 				echo "
 				<td>".date_iso2app($tab_even['dateEvenement'])."</td>
 				<td>".$nomLieu."</td>
-				<td><a href=\"/evenement.php?idE=".$tab_even['idEvenement']."\" title=\"Voir la fiche de l'événement\">".sanitizeForHtml($tab_even['titre'])."</a></td>";
+				<td><a href=\"/event/evenement.php?idE=".(int)$tab_even['idEvenement']."\" title=\"Voir la fiche de l'événement\">".sanitizeForHtml($tab_even['titre'])."</a></td>";
 				/*echo "<td>";
 				if (!empty($tab_even['flyer']))
 				{
@@ -337,7 +337,7 @@ $detailsAff = $connector->fetchArray($req_affPers);
 
 				if ($_SESSION['SidPersonne'] == $detailsPersonne['idPersonne'] || $_SESSION['Sgroupe'] <= 4)
 				{
-					echo "<td><a href=\"/evenement-edit.php?action=editer&idE=".$tab_even['idEvenement']."\" title=\"Éditer l'événement\">".$iconeEditer."</a></td>";
+					echo "<td><a href=\"/evenement-edit.php?action=editer&idE=".(int)$tab_even['idEvenement']."\" title=\"Éditer l'événement\">".$iconeEditer."</a></td>";
 				}
 				echo "</tr>";
 
@@ -361,15 +361,15 @@ $detailsAff = $connector->fetchArray($req_affPers);
 		// DESCRIPTIONS DE LIEUX
 
 		$req_des = $connector->query("SELECT idLieu, idPersonne, dateAjout, contenu, type
-		FROM descriptionlieu WHERE idPersonne=".(int)$get['idP']. " ORDER BY ".$get['tri']." ".$get['ordre']." LIMIT ".($get['page'] - 1) * (int)$get['nblignes'].",".(int)$get['nblignes']);
+		FROM descriptionlieu WHERE idPersonne=".(int)$get['idP']. " ORDER BY ".$get['tri']." ".$get['ordre']." LIMIT ".(int)($get['page'] - 1) * (int)$get['nblignes'].",".(int)$get['nblignes']);
 
-		$req_nbdesc = $connector->query("SELECT COUNT(*) AS total FROM descriptionlieu WHERE idPersonne=".$get['idP']);
+		$req_nbdesc = $connector->query("SELECT COUNT(*) AS total FROM descriptionlieu WHERE idPersonne=".(int)$get['idP']);
 		$tab_nbdesc = $connector->fetchArray($req_nbdesc);
 		$tot_elements = $tab_nbdesc['total'];
 
 
 
-		echo HtmlShrink::getPaginationString($tot_elements, $get['page'], $get['nblignes'], 1, "", "?idP=" . $get['idP'] . "&elements=" . $get['elements'] . "&tri=" . $get['tri'] . "&ordre=" . $get['ordre'] . "&nblignes=" . $get['nblignes'] . "&page=");
+		echo HtmlShrink::getPaginationString($tot_elements, $get['page'], $get['nblignes'], 1, "", "?idP=" . (int)$get['idP'] . "&elements=" . $get['elements'] . "&tri=" . $get['tri'] . "&ordre=" . $get['ordre'] . "&nblignes=" . $get['nblignes'] . "&page=");
 
     if ($connector->getNumRows($req_des) > 0)
 		{
@@ -379,7 +379,7 @@ $detailsAff = $connector->fetchArray($req_affPers);
 				echo '<li ';
 				if ($get['nblignes'] == $nbl) { echo 'class="ici"'; }
 
-				echo '><a href="?' . Utils::urlQueryArrayToString($get, "nblignes") . '&nblignes=' . $nbl . '">' . $nbl . '</a></li>';
+				echo '><a href="?' . Utils::urlQueryArrayToString($get, "nblignes") . '&nblignes=' . (int)$nbl . '">' . (int)$nbl . '</a></li>';
         }
 			echo '</ul>';
 			echo '<div class="spacer"><!-- --></div>';
@@ -404,7 +404,7 @@ $detailsAff = $connector->fetchArray($req_affPers);
 						echo "<th>";
 					}
 
-					echo "<a href=\"?idP=" . (int)$get['idP'] . "&elements=" . $get['elements'] . "&page=" . $get['page'] . "&tri=" . $att . "&ordre=" . $ordre_inverse . "&nblignes=" . $get['nblignes'] . "\">" . $th . "</a></th>";
+					echo "<a href=\"?idP=" . (int)$get['idP'] . "&elements=" . $get['elements'] . "&page=" . (int)$get['page'] . "&tri=" . $att . "&ordre=" . $ordre_inverse . "&nblignes=" .(int) $get['nblignes'] . "\">" . $th . "</a></th>";
             }
 			}
 			echo "<th></th></tr>";
@@ -419,7 +419,7 @@ $detailsAff = $connector->fetchArray($req_affPers);
 
 				$req_lieu = $connector->query("SELECT nom FROM lieu WHERE idLieu=".(int)$tab_desc['idLieu']);
 				$tabLieu = $connector->fetchArray($req_lieu);
-				$nomLieu = "<a href=\"/lieu.php?idL=".$tab_desc['idLieu']."\" title=\"Éditer le lieu\">".sanitizeForHtml($tabLieu['nom'])."</a>";
+				$nomLieu = "<a href=\"/lieu.php?idL=".(int)$tab_desc['idLieu']."\" title=\"Éditer le lieu\">".sanitizeForHtml($tabLieu['nom'])."</a>";
 
 
 				if ($pair % 2 == 0)
@@ -442,7 +442,7 @@ $detailsAff = $connector->fetchArray($req_affPers);
 				echo "<td>".mb_substr((string) date_iso2app($tab_desc['dateAjout']), 8)."</td>";
 				if ($_SESSION['SidPersonne'] == $detailsPersonne['idPersonne'] || $_SESSION['Sgroupe'] <= 4)
 				{
-					echo "<td><a href=\"/lieu-text-edit.php?action=editer&idL=" . $tab_desc['idLieu'] . "&idP=" . $tab_desc['idPersonne'] . "&type=" . $tab_desc['type'] . "\" title=\"Éditer le lieu\">" . $iconeEditer . "</a></td>";
+					echo "<td><a href=\"/lieu-text-edit.php?action=editer&idL=" . (int)$tab_desc['idLieu'] . "&idP=" . (int)$tab_desc['idPersonne'] . "&type=" . $tab_desc['type'] . "\" title=\"Éditer le lieu\">" . $iconeEditer . "</a></td>";
                 }
 				echo "</tr>";
 
@@ -467,7 +467,7 @@ $detailsAff = $connector->fetchArray($req_affPers);
 
 	$req_lieux = $connector->query("SELECT idLieu, idPersonne, nom, quartier,
 	 categorie, URL, dateAjout FROM lieu
-	 WHERE idPersonne=".(int)$get['idP']." ORDER BY ".$get['tri']." ".$get['ordre']." LIMIT ".($get['page'] - 1) * $get['nblignes'].",".$get['nblignes']);
+	 WHERE idPersonne=".(int)$get['idP']." ORDER BY ".$get['tri']." ".$get['ordre']." LIMIT ".((int)$get['page'] - 1) * (int)$get['nblignes'].",".(int)$get['nblignes']);
 
 	$req_count = $connector->query("SELECT COUNT(*) AS total FROM lieu WHERE idPersonne=".(int)$get['idP']);
 	$tab_count = $connector->fetchArray($req_count);
@@ -512,7 +512,7 @@ $detailsAff = $connector->fetchArray($req_affPers);
 					echo "<th>";
 				}
 
-				echo "<a href=\"?idP=" . (int)$get['idP'] . "&elements=" . $get['elements'] . "&page=" . $get['page'] . "&tri=" . $att . "&ordre=" . $ordre_inverse . "&nblignes=" . (int)$get['nblignes'] . "\">" . $th . "</a></th>";
+				echo "<a href=\"?idP=" . (int)$get['idP'] . "&elements=" . $get['elements'] . "&page=" . (int)$get['page'] . "&tri=" . $att . "&ordre=" . $ordre_inverse . "&nblignes=" . (int)$get['nblignes'] . "\">" . $th . "</a></th>";
             }
 		}
 
@@ -580,13 +580,13 @@ else if ($get['elements'] == "organisateur")
 	}
 
 	$req_lieux = $connector->query("SELECT * FROM organisateur
-	 WHERE idPersonne=".(int)$get['idP']." ORDER BY ".$get['tri']." ".$get['ordre']." LIMIT ".($get['page'] - 1) * (int)$get['nblignes'].",".(int)$get['nblignes']);
+	 WHERE idPersonne=".(int)$get['idP']." ORDER BY ".$get['tri']." ".$get['ordre']." LIMIT ".((int)$get['page'] - 1) * (int)$get['nblignes'].",".(int)$get['nblignes']);
 
 	$req_count = $connector->query("SELECT COUNT(*) AS total FROM organisateur WHERE idPersonne=".(int)$get['idP']);
 	$tab_count = $connector->fetchArray($req_count);
 	$tot_elements = $tab_count['total'];
 
-	echo HtmlShrink::getPaginationString($tot_elements, $get['page'], $get['nblignes'], 1, "", "?idP=" . $get['idP'] . "&elements=" . $get['elements'] . "&tri=" . $get['tri'] . "&ordre=" . $get['ordre'] . "&nblignes=" . $get['nblignes'] . "&page=");
+	echo HtmlShrink::getPaginationString($tot_elements, $get['page'], $get['nblignes'], 1, "", "?idP=" . $get['idP'] . "&elements=" . $get['elements'] . "&tri=" . $get['tri'] . "&ordre=" . $get['ordre'] . "&nblignes=" . (int)$get['nblignes'] . "&page=");
 
     if ($connector->getNumRows($req_lieux) > 0)
 	{
@@ -599,7 +599,7 @@ else if ($get['elements'] == "organisateur")
 			echo '<li ';
 			if ($get['nblignes'] == $nbl) { echo 'class="ici"'; }
 
-			echo '><a href="?' . Utils::urlQueryArrayToString($get, "nblignes") . '&nblignes=' . $nbl . '">' . $nbl . '</a></li>';
+			echo '><a href="?' . Utils::urlQueryArrayToString($get, "nblignes") . '&nblignes=' . (int)$nbl . '">' . (int)$nbl . '</a></li>';
         }
 		echo '</ul>';
 		echo '<div class="spacer"><!-- --></div>';
@@ -623,7 +623,7 @@ else if ($get['elements'] == "organisateur")
 					echo "<th>";
 				}
 
-				echo "<a href=\"?idP=" . $get['idP'] . "&elements=" . $get['elements'] . "&page=" . $get['page'] . "&tri=" . $att . "&ordre=" . $ordre_inverse . "&nblignes=" . $get['nblignes'] . "\">" . $th . "</a></th>";
+				echo "<a href=\"?idP=" . $get['idP'] . "&elements=" . $get['elements'] . "&page=" . (int)$get['page'] . "&tri=" . $att . "&ordre=" . $ordre_inverse . "&nblignes=" . (int)$get['nblignes'] . "\">" . $th . "</a></th>";
             }
 		}
 
@@ -684,7 +684,7 @@ echo HtmlShrink::getPaginationString($tot_elements, $get['page'], $get['nblignes
 
 <div id="colonne_gauche" class="colonne">
 <?php
-include("_navigation_calendrier.inc.php");
+include("event/_navigation_calendrier.inc.php");
 ?>
 </div>
 <!-- Fin Colonnegauche -->

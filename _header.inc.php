@@ -14,7 +14,7 @@ use Ladecadanse\UserLevel;
     // TODO: replace by a "page_robots_noindex" var in concerned page : index, evenement-report, etc.
     if (
         ($nom_page == 'index' && isset($_GET['courant']) && ($_GET['courant'] < date("Y-m-d") || (isset($total_even) && $total_even == 0 && $_GET['courant'] > date('Y-m-d', strtotime('+1 year')))))
-        || in_array($nom_page, ['evenement-report', 'evenement-email', 'evenement-search'])
+        || in_array($nom_page, ['evenement-report', 'evenement-email', 'event/search'])
         ) : ?>
         <meta name="robots" content="noindex, nofollow">
     <?php endif; ?>
@@ -251,7 +251,7 @@ use Ladecadanse\UserLevel;
                     <li class="form_recherche">
                         <search>
                             <a href="#" id="btn_search" aria-label="Rechercher un événement"><i class="fa fa-search" aria-hidden="true"></i></a>
-                            <form class="recherche" action="/evenement-search.php" method="get" enctype="application/x-www-form-urlencoded">
+                            <form class="recherche" action="/event/search.php" method="get" enctype="application/x-www-form-urlencoded">
                                 <input type="search" class="mots" name="mots" size="22" maxlength="100" required placeholder="Rechercher un événement" aria-label="Rechercher un événement"><input type="submit" class="submit" name="formulaire" value="">
                                 <input type="text" name="name_as" value="" class="name_as" >
                             </form>
@@ -262,16 +262,14 @@ use Ladecadanse\UserLevel;
 
                 <div class="clear_mobile"></div>
                 <search>
-                    <form class="recherche_mobile" action="/evenement-search.php" method="get" enctype="application/x-www-form-urlencoded">
+                    <form class="recherche_mobile" action="/event/search.php" method="get" enctype="application/x-www-form-urlencoded">
                         <input type="search" class="mots" name="mots" size="35" required maxlength="100" placeholder="Rechercher un événement" aria-label="Rechercher un événement"><input type="submit" class="submit" name="formulaire" value="OK" aria-label="Lancer la recherche">
                         <input type="text" name="name_as" value="" class="name_as" >
                     </form>
                 </search>
             </nav> <!-- Fin Menu -->
-
+            <div class="spacer"><!-- --></div>
         </header>
-
-        <div class="spacer"><!-- --></div>
 
         <div id="conteneur" <?php if (strstr(dirname((string) $_SERVER['PHP_SELF']), 'admin') || in_array($nom_page, ['evenement-edit', 'evenement-report', 'lieu-edit', 'lieu-text-edit', 'organisateur-edit', 'contacteznous', 'user-login', 'user-edit', 'user-register'])) : ?>style="padding-right: 5px" <?php endif; ?> >
 

@@ -16,7 +16,7 @@ if (!$videur->checkGroup(6)) {
 
 $page_titre = "supprimer un élément";
 $page_description = "Suppression d'un élément";
-$extra_css = ["evenement_inc", "lieu_inc", "descriptionlieu_inc"];
+$extra_css = ["event/evenement_inc", "lieu_inc", "descriptionlieu_inc"];
 include("_header.inc.php");
 
 $tab_types = ["evenement", "lieu", "descriptionlieu", "personne", "salle", "organisateur"];
@@ -325,7 +325,7 @@ else if ($get['action'] == 'suppression') {
 
             if ($tab_even = $connector->fetchArray($req_even)) {
                 $evenement = $tab_even;
-                include("_evenement.inc.php");
+                include("event/_evenement.inc.php");
             }
             else {
                 HtmlShrink::msgErreur("La requète select a échoué");
@@ -450,7 +450,7 @@ else if ($get['action'] == 'suppression') {
 
 <div id="colonne_gauche" class="colonne">
 <?php
-include("_navigation_calendrier.inc.php");
+include("event/_navigation_calendrier.inc.php");
 ?>
 </div>
 <!-- Fin Colonnegauche -->

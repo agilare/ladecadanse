@@ -1,6 +1,6 @@
 <?php
 
-require_once("app/bootstrap.php");
+require_once("../app/bootstrap.php");
 
 use Ladecadanse\Evenement;
 use Ladecadanse\HtmlShrink;
@@ -123,7 +123,7 @@ elseif (!empty($tab_even['e_image']))
 {
     $page_image = Evenement::getFileHref(Evenement::getFilePath($tab_even['e_image']), true);
 }
-$page_url = "evenement.php?idE=" .  $get['idE'];
+$page_url = "event/evenement.php?idE=" .  $get['idE'];
 // END HEAD metas
 
 // build SQL
@@ -166,7 +166,7 @@ $events_siblings = [$events_of_day[$index - 1] ?? null, $events_of_day[$index + 
 // END PREV-NEXT NAVIGATION
 
 
-include("_header.inc.php");
+include("../_header.inc.php");
 ?>
 
 <main id="contenu" class="colonne vevent">
@@ -183,7 +183,7 @@ include("_header.inc.php");
         </p>
 
         <?php if (!empty($events_siblings[0])) : ?>
-            <div class="entete_contenu_navigation"><a href="/evenement.php?idE=<?= $events_siblings[0]['idEvenement'] ?>" rel="prev nofollow"><span class="event-navig-link"><span class="nav_titre"><?= sanitizeForHtml($events_siblings[0]['titre']) ?></span> - <?= sanitizeForHtml($events_siblings[0]['lieu_nom']) ?>&nbsp;<i class="fa fa-arrow-up"></i></span></a></div>
+            <div class="entete_contenu_navigation"><a href="/event/evenement.php?idE=<?= $events_siblings[0]['idEvenement'] ?>" rel="prev nofollow"><span class="event-navig-link"><span class="nav_titre"><?= sanitizeForHtml($events_siblings[0]['titre']) ?></span> - <?= sanitizeForHtml($events_siblings[0]['lieu_nom']) ?>&nbsp;<i class="fa fa-arrow-up"></i></span></a></div>
         <?php endif; ?>
         <div class="spacer"></div>
 
@@ -325,7 +325,7 @@ include("_header.inc.php");
     <?php if (!empty($events_siblings[1])) : ?>
     <div id="footer_navigation">
         <div class="entete_contenu_navigation">
-            <a href="/evenement.php?idE=<?= $events_siblings[1]['idEvenement'] ?>" rel="next nofollow"><span class="event-navig-link"><?= sanitizeForHtml($events_siblings[1]['titre']) ?> - <?= sanitizeForHtml($events_siblings[1]['lieu_nom']) ?>&nbsp;<i class="fa fa-arrow-down"></i></span></a>
+            <a href="/event/evenement.php?idE=<?= (int)$events_siblings[1]['idEvenement'] ?>" rel="next nofollow"><span class="event-navig-link"><?= sanitizeForHtml($events_siblings[1]['titre']) ?> - <?= sanitizeForHtml($events_siblings[1]['lieu_nom']) ?>&nbsp;<i class="fa fa-arrow-down"></i></span></a>
         </div>
         <div class="spacer"><!-- --></div>
     </div>
@@ -337,12 +337,12 @@ include("_header.inc.php");
 <div id="colonne_gauche" class="colonne">
     <?php
     $get['courant'] = $tab_even['e_dateEvenement'];
-    include("_navigation_calendrier.inc.php");
+    include("../event/_navigation_calendrier.inc.php");
     ?>
 </div>
 
 <div class="spacer"><!-- --></div>
 
 <?php
-include("_footer.inc.php");
+include("../_footer.inc.php");
 ?>

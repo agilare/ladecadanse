@@ -82,12 +82,10 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' && empty($_POST
 }
 else
 {
-
 	if (!empty($get['msg']) && $get['msg'] == "faux")
 	{
 		$verif->setErreur("connexion", "Votre identifiant et/ou votre mot de passe ne sont pas corrects. Veuillez également vérifier que vous avez bien saisi votre <b>identifiant</b> (celui que vous avez choisi à l'inscription), qui est distinct de l'email");
 	}
-
 }
 
 $page_titre = "Connexion";
@@ -97,73 +95,60 @@ include("_header.inc.php");
 
 <div id="contenu" class="colonne">
 
-<div id="entete_contenu">
-<h2>Connexion</h2>
-	<div class="spacer"></div>
-</div>
+    <div id="entete_contenu">
+        <h2>Connexion</h2>
+        <div class="spacer"></div>
+    </div>
 
-<?php
-
-if ($verif->nbErreurs() > 0)
-{
-	HtmlShrink::msgErreur("Il y a ".$verif->nbErreurs()." erreur(s)");
-}
+    <?php
+    if ($verif->nbErreurs() > 0) :
+        HtmlShrink::msgErreur("Il y a ".$verif->nbErreurs()." erreur(s)");
+    endif;
     $_SESSION[$formTokenName] = bin2hex(random_bytes(32));
     ?>
 
-
     <form id="ajouter_editer" action="/user-login.php" method="post">
 
-        <?php
-echo $verif->getHtmlErreur("connexion");
-?>
+        <?= $verif->getHtmlErreur("connexion") ?>
 
-<input type="text" class="name_as" name="login_as">
-<input type="hidden" name="<?php echo $formTokenName; ?>" value="<?php echo $_SESSION[$formTokenName]; ?>">
+        <input type="text" class="name_as" name="login_as">
+        <input type="hidden" name="<?php echo $formTokenName; ?>" value="<?php echo $_SESSION[$formTokenName]; ?>">
 
-<fieldset>
-<legend class="btn_toggle">Authentification</legend>
-<p>
-<label for="pseudo" id="login_pseudo">Identifiant</label>
-<input type="text" name="pseudo" id="pseudo" value="<?php echo sanitizeForHtml($champs['pseudo']) ?>" size="30" />
-<div style="margin: 0 1em 1em 6em;font-size: 0.8em;line-height: 1.1em;padding: 0;"></div>
-<?php
-echo $verif->getHtmlErreur("pseudo");
-?>
-<label for="motdepasse" id="login_motdepasse">Mot de Passe</label>
-<input type="password" name="motdepasse" id="motdepasse" value="" size="30" />
-<?php
-echo $verif->getHtmlErreur("motdepasse");
-?>
+        <fieldset>
+            <legend class="btn_toggle">Authentification</legend>
+            <p>
+                <label for="pseudo" id="login_pseudo">Login</label>
+                <input type="text" name="pseudo" id="pseudo" value="<?= sanitizeForHtml($champs['pseudo']) ?>" size="30" />
+                <div style="margin: 0 1em 1em 6em;font-size: 0.8em;line-height: 1.1em;padding: 0;"></div>
+                <?= $verif->getHtmlErreur("pseudo") ?>
 
+                <label for="motdepasse" id="login_motdepasse">Mot de Passe</label>
+                <input type="password" name="motdepasse" id="motdepasse" value="" size="30" />
+                <?= $verif->getHtmlErreur("motdepasse") ?>
 
-<p class="memoriser" id="login_memoriser">
-<label for="memoriser">Se souvenir de moi</label>
-<input type="checkbox" name="memoriser" id="memoriser" value="1" title="" />
-</p>
+            <p class="memoriser" id="login_memoriser">
+                <label for="memoriser">Se souvenir de moi</label>
+                <input type="checkbox" name="memoriser" id="memoriser" value="1" title="" />
+            </p>
 
-<p class="mdp_oublie"><a href="/user-reset.php" >Mot de passe oublié ?</a></p>
-<p class="mdp_oublie"><a href="/user-register.php" >Pas de compte ?</a></p>
+            <p class="mdp_oublie"><a href="/user-reset.php" >Mot de passe oublié ?</a></p>
+            <p class="mdp_oublie"><a href="/user-register.php" >Pas de compte ?</a></p>
 
-<p class="piedForm">
-    <input type="hidden" id="origine" name="origine" value="" />
+            <p class="piedForm">
+                <input type="hidden" id="origine" name="origine" value="" />
+                <input type="hidden" name="formulaire" value="ok" />
+                <input type="submit" name="Submit" value="Se connecter" class="submit submit-big" />
+            </p>
 
-    <input type="hidden" name="formulaire" value="ok" />
-    <input type="submit" name="Submit" value="Se connecter" class="submit submit-big" />
-</p>
+        </fieldset>
 
-</fieldset>
-
-
-</form>
-
-
+    </form>
 
 </div>
 <!-- fin  -->
 <div id="colonne_gauche" class="colonne">
 <?php
-include("_navigation_calendrier.inc.php");
+include("event/_navigation_calendrier.inc.php");
 ?>
 </div>
 <!-- Fin Colonne gauche -->

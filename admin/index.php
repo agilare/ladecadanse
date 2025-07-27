@@ -162,7 +162,7 @@ while($tab_even = $connector->fetchArray($req_getEvenement))
 	}
 
 
-	echo "<td><a href=\"/evenement.php?idE=".(int)$tab_even['idEvenement']."\" title=\"Voir la fiche de l'événement\" class='titre'>".sanitizeForHtml($tab_even['titre'])."</a></td>
+	echo "<td><a href=\"/event/evenement.php?idE=".(int)$tab_even['idEvenement']."\" title=\"Voir la fiche de l'événement\" class='titre'>".sanitizeForHtml($tab_even['titre'])."</a></td>
 	<td>".$nomLieu."</td>
 	<td>".date_iso2app($tab_even['dateEvenement'])."</td>";
 

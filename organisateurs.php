@@ -50,7 +50,7 @@ $pair = 0;
 <div id="colonne_gauche" class="colonne">
 
 <?php
-include("_navigation_calendrier.inc.php");
+include("event/_navigation_calendrier.inc.php");
 ?>
 
 

@@ -86,18 +86,18 @@ if ($get['type'] == "evenements_auj") {
 			$genre_even = "ciné";
 		}
 		$items .= "<title>".ucfirst((string) date_fr($tab_even['dateEvenement'], "", "", "", false))." - ".$genre_even." : ".sanitizeForHtml($tab_even['titre'])."</title>\n";
-		$items .= "<link>".$site_full_url."/evenement.php?idE=".$tab_even['idEvenement']."</link>\n";
+		$items .= "<link>".$site_full_url."/event/evenement.php?idE=".(int)$tab_even['idEvenement']."</link>\n";
 		$items .= "<description><![CDATA[";
 
         if ($tab_even['idLieu'] != 0)
 		{
-			$nom_lieu = "<a href=\"".$site_full_url."/lieu.php?idL=".$tab_even['idLieu']."\"
+			$nom_lieu = "<a href=\"".$site_full_url."/lieu.php?idL=".(int)$tab_even['idLieu']."\"
 			title=\"Voir la fiche du lieu : ".sanitizeForHtml($tab_even['nomLieu'])."\" >
 			".sanitizeForHtml($tab_even['nomLieu'])."</a>";
 
 			if ($tab_even['idSalle'])
 			{
-				$sql_salle = "SELECT nom FROM salle WHERE idSalle=".$tab_even['idSalle'];
+				$sql_salle = "SELECT nom FROM salle WHERE idSalle=".(int)$tab_even['idSalle'];
 				$req = $connector->query($sql_salle);
 				$tab = $connector->fetchArray($req);
 				$nom_lieu .= " - ".$tab['nom'];
@@ -132,7 +132,7 @@ if ($get['type'] == "evenements_auj") {
 
 		$items .= "]]></description>\n";
 		//$items .= "<enclosure url=\"".$IMGeven.$tab_even['flyer']."\" type="image/jpeg" length="2441"></enclosure>
-		$items .= "<guid isPermaLink=\"false\">".$tab_even['idEvenement']."</guid>\n";
+		$items .= "<guid isPermaLink=\"false\">".(int)$tab_even['idEvenement']."</guid>\n";
 		$items .= "<pubDate>".date("r")."</pubDate>\n";
 		$items .= "</item>\n";
 
@@ -148,7 +148,7 @@ else if ($get['type'] == "lieu_evenements")
 	$tab_lieu = $connector->fetchArray($req_lieu);
 
 	$channel = '<title>La décadanse : Événements '.$tab_lieu['determinant'].' '.$tab_lieu['nom'].'</title>';
-	$channel .= '<link>'.$site_full_url.'/lieu.php?idL='.$get['id'].'</link>';
+	$channel .= '<link>'.$site_full_url.'/lieu.php?idL='.(int)$get['id'].'</link>';
 	$channel .= '<description>Événements '.$tab_lieu['determinant'].' '.$tab_lieu['nom'].'</description>';
 	//$channel .= "<pubDate>".date("r",  mktime(0, 0, 0, date("m")  , date("d") - 7, date("Y")))."</pubDate>\n";
 	$channel .= "<language>fr</language>\n";
@@ -168,7 +168,7 @@ else if ($get['type'] == "lieu_evenements")
 
 		$items .= "<item>\n";
 		$items .= "<title>".sanitizeForHtml($tab_even['titre'])."</title>\n";
-		$items .= "<link>".$site_full_url."/evenement.php?idE=".$tab_even['idEvenement']."</link>\n";
+		$items .= "<link>".$site_full_url."/event/evenement.php?idE=".$tab_even['idEvenement']."</link>\n";
 		$items .= "<description><![CDATA[";
         $items .= $css;
 		 $items .= '<h2 style="padding:0.2em 0.1em;border-bottom:1px solid #aeaeae;">'.date_fr($tab_even['dateEvenement']).'</h2>';
@@ -177,7 +177,7 @@ else if ($get['type'] == "lieu_evenements")
 
 		if ($tab_even['idSalle'])
 		{
-			$sql_salle = "SELECT nom FROM salle WHERE idSalle=".$tab_even['idSalle'];
+			$sql_salle = "SELECT nom FROM salle WHERE idSalle=".(int)$tab_even['idSalle'];
 			$req = $connector->query($sql_salle);
 			$tab = $connector->fetchArray($req);
 			$items .= "<h4>".$tab['nom']."</h4>";
@@ -204,7 +204,7 @@ else if ($get['type'] == "lieu_evenements")
 
 		$items .= "]]></description>\n";
 		//$items .= "<enclosure url=\"".$IMGeven.$tab_even['flyer']."\" type="image/jpeg" length="2441"></enclosure>
-		$items .= "<guid isPermaLink=\"false\">".$tab_even['idEvenement']."</guid>\n";
+		$items .= "<guid isPermaLink=\"false\">".(int)$tab_even['idEvenement']."</guid>\n";
 		$items .= "<pubDate>".date("r", datetime_iso2time($tab_even['dateAjout']))."</pubDate>\n";
 		$items .= "</item>\n";
 
@@ -240,7 +240,7 @@ else if ($get['type'] == "organisateur_evenements")
 
 		$items .= "<item>\n";
 		$items .= "<title>".sanitizeForHtml($tab_even['titre'])."</title>\n";
-		$items .= "<link>".$site_full_url."/evenement.php?idE=".$tab_even['idEvenement']."</link>\n";
+		$items .= "<link>".$site_full_url."/event/evenement.php?idE=".$tab_even['idEvenement']."</link>\n";
 		$items .= "<description><![CDATA[";
         $items .= $css;
 		 $items .= '<h2 style="padding:0.2em 0.1em;border-bottom:1px solid #aeaeae;">'.date_fr($tab_even['dateEvenement']).'</h2>';
@@ -289,7 +289,7 @@ else if ($get['type'] == "organisateur_evenements")
 
 		$items .= "]]></description>\n";
 		//$items .= "<enclosure url=\"".$IMGeven.$tab_even['flyer']."\" type="image/jpeg" length="2441"></enclosure>
-		$items .= "<guid isPermaLink=\"false\">".$tab_even['idEvenement']."</guid>\n";
+		$items .= "<guid isPermaLink=\"false\">".(int)$tab_even['idEvenement']."</guid>\n";
 		$items .= "<pubDate>".date("r", datetime_iso2time($tab_even['dateAjout']))."</pubDate>\n";
 		$items .= "</item>\n";
 
@@ -322,7 +322,7 @@ else if ($get['type'] == "evenements_ajoutes")
 
 		$items .= "<item>\n";
 		$items .= "<title>".sanitizeForHtml($tab_even['titre'])."</title>\n";
-		$items .= "<link>".$site_full_url."/evenement.php?idE=".$tab_even['idEvenement']."</link>\n";
+		$items .= "<link>".$site_full_url."/event/evenement.php?idE=".$tab_even['idEvenement']."</link>\n";
 		$items .= "<description><![CDATA[";
         $items .= $css;
 		 $items .= '<h2 style="padding:0.1em 0.1em;border-bottom:1px dotted #aeaeae;">'.ucfirst((string) date_fr($tab_even['dateEvenement'], 'annee')).'</h2>';

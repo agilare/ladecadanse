@@ -15,7 +15,7 @@ if (!$videur->checkGroup(UserLevel::MEMBER)) {
 }
 
 $page_titre = "Envoyer un événement";
-$extra_css = ["formulaires", "evenement_inc", "email_evenement_formulaire"];
+$extra_css = ["formulaires", "event/evenement_inc", "email_evenement_formulaire"];
 include("_header.inc.php");
 
 
@@ -76,13 +76,13 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 
 		$req_getEven = $connector->query("SELECT idEvenement, idLieu, idSalle, idPersonne, titre, genre, dateEvenement,
 		 nomLieu, adresse, quartier, urlLieu, description, flyer, prix, horaire_debut,horaire_fin, horaire_complement, ref, prelocations, statut
-		  FROM evenement WHERE idEvenement =".$get['idE']);
+		  FROM evenement WHERE idEvenement =".(int)$get['idE']);
 
 		if ($tab_even = $connector->fetchArray($req_getEven))
         {
 			$contenu_message .= $tab_even['titre']."\n\n";
 			$contenu_message .= ucfirst(html_entity_decode((string) date_fr($tab_even['dateEvenement'], "annee", "", "", false))) . "\n\n";
-            $contenu_message .= $site_full_url.'/evenement.php?idE='.$get['idE']."\n\n";
+            $contenu_message .= $site_full_url.'/event/evenement.php?idE='.$get['idE']."\n\n";
 
 			$contenu_message .= $tab_even['nomLieu']."\n";
 			$contenu_message .= $tab_even['adresse']." - ".$tab_even['quartier']."\n\n";
@@ -110,12 +110,12 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
             if ($mailer->toUser($champs['email_destinataire'], $subject, $contenu_message, ['email' => $_SESSION['Semail'], 'name' => $_SESSION['user'] ]))
             {
                 HtmlShrink::msgOk('Événement <strong>' . sanitizeForHtml($tab_even['titre']) . '</strong> envoyé à ' . sanitizeForHtml($champs['email_destinataire']));
-                $logger->log('global', 'activity', "[evenement-email] event ".$tab_even['titre']." (idE ".$get['idE'].") sent from ".$_SESSION['user']." to ".$champs['email_destinataire'], Logger::GRAN_YEAR);
+                $logger->log('global', 'activity', "[evenement-email] event ".$tab_even['titre']." (idE ".(int)$get['idE'].") sent from ".$_SESSION['user']." to ".$champs['email_destinataire'], Logger::GRAN_YEAR);
             }
 		}
 		else
 		{
-			HtmlShrink::msgErreur("Aucun événement n'est associé à ".$get['idE']);
+			HtmlShrink::msgErreur("Aucun événement n'est associé à ".(int)$get['idE']);
 			exit;
 		} // if fetchArray
 
@@ -170,7 +170,7 @@ if (isset($get['idE']))
 	if ($affEven = $connector->fetchArray($req_getEven))
 	{
 		$evenement = $affEven;
-		include("_evenement.inc.php");
+		include("event/_evenement.inc.php");
 	}
 	else
 	{
@@ -232,8 +232,7 @@ if ($verif->nbErreurs() > 0)
 <!-- fin Evenements -->
 
 <div id="colonne_gauche" class="colonne">
-
-<?php include("_navigation_calendrier.inc.php"); ?>
+    <?php include("event/_navigation_calendrier.inc.php"); ?>
 </div>
 <!-- Fin Colonne gauche -->
 

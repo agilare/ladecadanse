@@ -100,13 +100,13 @@ parameters:
 			message: '#^Comparison operation "\>" between int\<1, max\> and 0 is always true\.$#'
 			identifier: greater.alwaysTrue
 			count: 1
-			path: evenement-search.php
+			path: event/search.php
 
 		-
 			message: '#^If condition is always true\.$#'
 			identifier: if.alwaysTrue
 			count: 1
-			path: evenement-search.php
+			path: event/search.php
 
 		-
 			message: '#^Left side of && is always false\.$#'

@@ -21,7 +21,7 @@ if (isset($_SESSION['Sgroupe']))
     $page_description = "Formulaire d'ajout/modification d'un événement dans l'agenda";
 }
 
-$extra_css = ["formulaires", "evenement_inc"];
+$extra_css = ["formulaires", "event/evenement_inc"];
 // ...template
 // Request query : action, idE, idL, idO
 $get['action'] = "ajouter";
@@ -454,7 +454,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
                     $_SESSION['evenement-edit_flash_msg'] = "Merci pour votre proposition. Nous allons l'examiner et vous aurez une réponse dès qu'elle sera traitée (cela peut prendre quelques jours)";
                     $subject = "Nouvelle proposition d'événement : \"".$champs['titre']."\" le ".date_fr($champs['dateEvenement'], "annee", "", "", false)." à ".$champs['nomLieu'];
                     $contenu_message = "Merci de vérifier cet événement et l'accepter (statut : publié) ou le refuser (status : dépublié) : ";
-                    $contenu_message .= $site_full_url."evenement.php?idE=".(int)$req_id;
+                    $contenu_message .= $site_full_url."event/evenement.php?idE=".(int)$req_id;
                     $contenu_message .= "\n\n";
                     $contenu_message .= "Par : ".$champs['user_email'];
                     $contenu_message .= "\n\nRemarque :\n".$champs['remarque'];
@@ -594,7 +594,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
                         $subject = "Votre événement \"".$champs['titre']."\" sur La décadanse a été publié";
                         $contenu_message = "Bonjour,\n\n";
                         $contenu_message .= "Merci de nous avoir proposé un événement, nous venons de le publier : ";
-                        $contenu_message .= $site_full_url."evenement.php?idE=".$req_id;
+                        $contenu_message .= $site_full_url."event/evenement.php?idE=".$req_id;
                         $contenu_message .= "\n\n";
                         $contenu_message .= "La décadanse";
 
@@ -687,11 +687,11 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 		}
 
 		unset($_POST); // ?
-        $logger->log('global', 'activity', "[evenement-edit] " . $get['action'] . " of \"" . $champs['titre'] . "\" in " . $champs['nomLieu'] . " /evenement.php?idE=" . (int) $evenement['idEvenement'], Logger::GRAN_YEAR);
+        $logger->log('global', 'activity', "[evenement-edit] " . $get['action'] . " of \"" . $champs['titre'] . "\" in " . $champs['nomLieu'] . " /event/evenement.php?idE=" . (int) $evenement['idEvenement'], Logger::GRAN_YEAR);
 
         if (isset($_SESSION['Sgroupe']))
         {
-            header("Location: /evenement.php?idE=" . (int) $req_id);
+            header("Location: /event/evenement.php?idE=" . (int) $req_id);
             die();
         }
         else
@@ -788,7 +788,7 @@ include("_header.inc.php");
 	 */
 	if ($get['action'] == 'update' || $get['action'] == 'editer')
 	{
-        $aff_titre .= '<h2>Modifier <a style="font-size:0.7em" href="/evenement.php?idE=' . (int) $get['idE'] . '" title="Fiche de l\'événement" >' . sanitizeForHtml($champs['titre']) . '</a></h2>';
+        $aff_titre .= '<h2>Modifier <a style="font-size:0.7em" href="/event/evenement.php?idE=' . (int) $get['idE'] . '" title="Fiche de l\'événement" >' . sanitizeForHtml($champs['titre']) . '</a></h2>';
         $act = "update&amp;idE=".$get['idE'];
 	}
 	else
@@ -1373,7 +1373,7 @@ else
 
 <div id="colonne_gauche" class="colonne">
 
-<?php include("_navigation_calendrier.inc.php"); ?>
+<?php include("event/_navigation_calendrier.inc.php"); ?>
 </div>
 <!-- Fin Colonnegauche -->
 

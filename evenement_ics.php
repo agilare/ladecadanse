@@ -115,7 +115,7 @@ if ($even->getValue('horaire_debut') != "0000-00-00 00:00:00")
 
 $uniqueid = $get['idE'];
 
-$uri = $site_full_url . "/evenement.php?idE=" . (int) $get['idE'];
+$uri = $site_full_url . "/event/evenement.php?idE=" . (int) $get['idE'];
 
 $summary = sanitizeForHtml($even->getValue('titre'));
 

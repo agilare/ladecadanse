@@ -698,7 +698,7 @@ if ($nb_pres > 0)
 
 			if (mb_strlen((string) $even->getValue('description')) > $maxChar)
 			{
-				//$continuer = "<span class=\"continuer\"><a href=\"/evenement.php?idE=".$even->getValue('idEvenement')."\" title=\"Voir la fiche complète de l'événement\"> Lire la suite</a></span>";
+				//$continuer = "<span class=\"continuer\"><a href=\"/event/evenement.php?idE=".$even->getValue('idEvenement')."\" title=\"Voir la fiche complète de l'événement\"> Lire la suite</a></span>";
 				$description = Text::texteHtmlReduit(Text::wikiToHtml(sanitizeForHtml($even->getValue('description'))), $maxChar);
                     }
 			else
@@ -760,7 +760,7 @@ if ($nb_pres > 0)
 			<td>
 			<h3 class="summary">
                 <?php
-                $titre_url = '<a class="url" href="/evenement.php?idE='.(int)$even->getValue('idEvenement').'" title="Voir la fiche de l\'événement">'.Evenement::titreSelonStatutHtml(sanitizeForHtml($even->getValue('titre')), $even->getValue('statut')).'</a>';
+                $titre_url = '<a class="url" href="/event/evenement.php?idE='.(int)$even->getValue('idEvenement').'" title="Voir la fiche de l\'événement">'.Evenement::titreSelonStatutHtml(sanitizeForHtml($even->getValue('titre')), $even->getValue('statut')).'</a>';
                 echo $titre_url; ?>
 			</h3>
 
@@ -844,7 +844,7 @@ if ($nb_pres > 0)
 
 
 <div id="colonne_gauche" class="colonne">
-    <?php include("_navigation_calendrier.inc.php");?>
+    <?php include("event/_navigation_calendrier.inc.php");?>
 </div>
 <!-- Fin Colonnegauche -->
 

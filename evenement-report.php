@@ -24,7 +24,7 @@ else
 }
 
 $page_titre = "Signaler une erreur";
-$extra_css = ["formulaires", "evenement_inc"];
+$extra_css = ["formulaires", "event/evenement_inc"];
 include("_header.inc.php");
 ?>
 
@@ -90,7 +90,7 @@ include("_header.inc.php");
             }
 
             $subject = "Rapport d'erreur sur un événement : " . $tab_type_erreur[$champs['type_erreur']];
-            $contenu_message = "Événement : " . $site_full_url . "/evenement.php?idE=" . (int) $champs['idEvenement'];
+            $contenu_message = "Événement : " . $site_full_url . "/event/evenement.php?idE=" . (int) $champs['idEvenement'];
             $contenu_message .= "\n\n";
             $contenu_message .= "Message :\n\n" . $champs['message'] . "\n\n";
             if (isset($_SESSION['user']))
@@ -102,7 +102,7 @@ include("_header.inc.php");
             if ($mailer->toAdmin($subject, $contenu_message, $from))
             {
                 HtmlShrink::msgOk("Merci d'avoir signalé cette erreur, je m'en occupe dès que possible");
-                $logger->log('global', 'activity', "[evenement-report] by " . $from . " for /evenement.php?idE=" . (int) $champs['idEvenement'], Logger::GRAN_YEAR);
+                $logger->log('global', 'activity', "[evenement-report] by " . $from . " for /event/evenement.php?idE=" . (int) $champs['idEvenement'], Logger::GRAN_YEAR);
             }
 
             unset($_POST);
@@ -152,7 +152,7 @@ include("_header.inc.php");
         if ($affEven = $connector->fetchArray($req_getEven))
             {
                 $evenement = $affEven;
-                include("_evenement.inc.php");
+                include("event/_evenement.inc.php");
             }
             else
             {
@@ -240,7 +240,7 @@ include("_header.inc.php");
 <!-- fin Evenements -->
 
 <div id="colonne_gauche" class="colonne">
-    <?php include("_navigation_calendrier.inc.php"); ?>
+    <?php include("event/_navigation_calendrier.inc.php"); ?>
 </div>
 <!-- Fin Colonne gauche -->
 
