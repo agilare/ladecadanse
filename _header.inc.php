@@ -248,15 +248,8 @@ use Ladecadanse\UserLevel;
                     }
                     ?>
 
-                    <li class="form_recherche">
-                        <search>
-                            <a href="#" id="btn_search" aria-label="Rechercher un événement"><i class="fa fa-search" aria-hidden="true"></i></a>
-                            <form class="recherche" action="/event/search.php" method="get" enctype="application/x-www-form-urlencoded">
-                                <input type="search" class="mots" name="mots" size="22" maxlength="100" required placeholder="Rechercher un événement" aria-label="Rechercher un événement"><input type="submit" class="submit" name="formulaire" value="">
-                                <input type="text" name="name_as" value="" class="name_as" >
-                            </form>
-                        </search>
-                    </li>
+                    <li class="form_recherche"><search><a href="#" id="btn_search" aria-label="Rechercher un événement"><i class="fa fa-search" aria-hidden="true"></i></a><form class="recherche" action="/event/search.php" method="get" enctype="application/x-www-form-urlencoded"><input type="search" class="mots" name="mots" size="22" maxlength="100" required placeholder="Rechercher un événement" aria-label="Rechercher un événement"><button type="submit" class="submit" name="formulaire" value=""><i class="fa fa-search" aria-hidden="true" style="color: #5C7378"></i></button><input type="text" name="name_as" value="" class="name_as"></form>
+                        </search></li>
 
                 </ul>
 

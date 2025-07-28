@@ -14,7 +14,7 @@ use Ladecadanse\UserLevel;
 
 
 $tab_menu_tri = ["pertinence" => "Pertinence", "dateEvenement" => "Date", "dateAjout" => "Date d'ajout"];
-$tab_menu_periodes = ["futur" => "Prochains", "ancien" => "Passés"]; //, "tous" => "Tous"
+$tab_menu_periodes = ["ancien" => "Passés", "futur" => "Prochains"]; //, "tous" => "Tous"
 
 $get = [];
 
@@ -157,18 +157,17 @@ $logger->log('global', 'activity', "[recherche] \"" . urlencode($get['mots']) . 
 $get['mots'] = urlencode($get['mots']);
 
 $page_titre = "Rechercher des événements " . strtolower($tab_menu_periodes[$get['periode']]) . " par " . strtolower($tab_menu_tri[$get['tri']]);
-$nom_page = "event/evenement-search";
 include("../_header.inc.php");
 ?>
 
 <main id="contenu" class="colonne rechercher">
 
 	<header id="entete_contenu">
-        <h1 style="float:left; width: 50%">Rechercher des événements pour <em><?= sanitizeForHtml($mots) ?></em></h1>
+        <h1>Rechercher des événements pour <em><?= sanitizeForHtml($mots) ?></em></h1>
         <?php // HtmlShrink::getMenuRegions($glo_regions, $get); ?>
 
         <!-- menu tous | futurs | anciens -->
-        <ul id="menu_periode" style="float:right; width: 49%">
+        <ul id="menu_periode">
             <?php foreach ($tab_menu_periodes as $k => $label) : ?>
                 <li class="<?= $k ?><?php if ($get['periode'] == $k) : ?> ici<?php endif; ?>">
                     <a href="?<?= Utils::urlQueryArrayToString($get, ['periode', 'page']) ?>&amp;periode=<?= $k ?>"><?= $label ?></a>
@@ -182,9 +181,12 @@ include("../_header.inc.php");
     <div id="res_recherche">
 
         <?php if ($all_results_nb > 0) : ?>
+
+            <h2 class="res"><strong><?= (int)$all_results_nb ?></strong> événement<?= $all_results_nb > 1 ? "s" : "" ?> trouvé<?= $all_results_nb > 1 ? "s" : "" ?></h2>
+
             <div>
                 <!-- menu tri pertinence | date ajout | début -->
-                <ul id="menu_tri" > <!-- style="float:right; width: 45%" -->
+                <ul id="menu_tri">
                     <li style="margin-right:5px"><i class="fa fa-sort-amount-asc" aria-hidden="true"></i></li>
                     <?php foreach ($tab_menu_tri as $k => $label) : ?>
                         <li class="<?= $k ?><?php if ($get['tri'] == $k) : ?> ici<?php endif; ?>">
@@ -196,8 +198,6 @@ include("../_header.inc.php");
             </div>
 
             <div class="spacer"></div>
-
-            <h2 class="res"><strong><?= (int)$all_results_nb ?></strong> événement<?= $all_results_nb > 1 ? "s" : "" ?> trouvé<?= $all_results_nb > 1 ? "s" : "" ?></h2>
 
             <?= HtmlShrink::getPaginationString($all_results_nb, $get['page'], $results_per_page, 1, basename(__FILE__), "?" . Utils::urlQueryArrayToString($get, "page") . "&amp;page=") ?>
 
@@ -214,16 +214,16 @@ include("../_header.inc.php");
                         ?>
                         <tr class="<?= $even_periode ?>">
                             <td class="desc_even">
-                                <h3><a href="/event/evenement.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>"><?= sanitizeForHtml($tab_even['e_titre']) ?></a></h3><?= sanitizeForHtml($tab_even['e_genre']) ?>
+                                <h3><a href="/event/evenement.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>"><?= sanitizeForHtml($tab_even['e_titre']) ?></a></h3>
+                                <p><?= $glo_tab_genre[$tab_even['e_genre']] ?></p>
                             </td>
                             <td><?= Lieu::getLinkNameHtml($even_lieu['nom'], $even_lieu['idLieu'], $even_lieu['salle']) ?></td>
-                            <td><?php if ($authorization->isPersonneAllowedToEditEvenement($_SESSION, $tab_even)) : ?>
-                                <a href="/evenement-edit.php?action=editer&amp;idE=<?= (int) $tab_even['e_idEvenement'] ?>"><?= $iconeEditer; ?></a>
-                                <?php endif; ?>
-                            </td>
-                            <td><a href="index.php?courant=<?= sanitizeForHtml($tab_even['e_dateEvenement']); ?>"><?= date_fr($tab_even['e_dateEvenement'], 'annee') ?></a></td>
+                            <td class="date"><a href="index.php?courant=<?= sanitizeForHtml($tab_even['e_dateEvenement']); ?>"><?= date_fr($tab_even['e_dateEvenement'], 'annee') ?></a></td>
                             <?php if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] == UserLevel::SUPERADMIN)) : ?>
                             <td><?= round($tab_even['score'], 5) ?></td>
+                            <?php endif; ?>
+                            <?php if ($authorization->isPersonneAllowedToEditEvenement($_SESSION, $tab_even)) : ?>
+                                <td><a href="/evenement-edit.phpaction=editer&amp;idE=<?= (int) $tab_even['e_idEvenement'] ?>"><?= $iconeEditer; ?></a></td>
                             <?php endif; ?>
                         </tr>
                     <?php endforeach; ?>

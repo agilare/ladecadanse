@@ -302,7 +302,7 @@ form.recherche input.mots
     background-position: 0px 50%;
 }
 
-form.recherche input.submit
+form.recherche button.submit
 {
     width:2em;
     border-top:1px solid #8a8a8a;
@@ -310,7 +310,7 @@ form.recherche input.submit
     border-right:1px solid #8a8a8a;
     border-left:none;
     background-color:#eaeaea;
-    background-image:url(../interface/icons/search.png);
+/*    background-image:url(../interface/icons/search.png);*/
     background-repeat:no-repeat;
     background-position:2px;
 
@@ -320,12 +320,12 @@ form.recherche input.submit
 
    	form.recherche input.mots
     {
-        height:20px;
+        height:22px;
     }
 
-    form.recherche input.submit
+    form.recherche button.submit
     {
-        height:20px;
+        height:22px;
     }
 }
 
