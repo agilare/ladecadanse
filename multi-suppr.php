@@ -79,7 +79,7 @@ if (isset($_GET['idP'])) {
             if ((($authorization->isAuthor($get['type'], $_SESSION['SidPersonne'], $get['id']) && $_SESSION['Sgroupe'] <= 6) || $_SESSION['Sgroupe'] < 2))
         {
                 $req_im = $connector->query("SELECT titre, flyer, image, idLieu, genre, dateEvenement
-			FROM evenement WHERE idEvenement=" . $get['id']);
+			FROM evenement WHERE idEvenement=" . (int)$get['id']);
 
                 $val_even = $connector->fetchArray($req_im);
                 $titreSup = $val_even['titre']; //pour le message apres suppression
@@ -94,7 +94,7 @@ if (isset($_GET['idP'])) {
 
                 if ($connector->query("DELETE FROM evenement WHERE idEvenement=" . $get['id'])) {
                     HtmlShrink::msgOk('L\'événement "' . sanitizeForHtml($titreSup) . '" a été supprimé');
-                    $logger->log('global', 'activity', "[supprimer] event \"$titreSup\" (" . $get['id'] . ") deleted", Logger::GRAN_YEAR);
+                    $logger->log('global', 'activity', "[supprimer] event \"$titreSup\" (" . (int) $get['id'] . ") deleted", Logger::GRAN_YEAR);
                 }
             }
             else {
@@ -106,12 +106,12 @@ if (isset($_GET['idP'])) {
              * EN CAS DE SUPPRESSION ou DESACTIVATION affiche dans un tableau les événements à supprimer d'abord
              */
             $req_evLieu = $connector->query("SELECT idEvenement, dateEvenement, idPersonne, titre, dateAjout
-		FROM evenement WHERE dateEvenement >= CURDATE() AND idLieu=" . $get['id']);
+		FROM evenement WHERE dateEvenement >= CURDATE() AND idLieu=" .(int) $get['id']);
 
             $nbEvLieu = $connector->getNumRows($req_evLieu);
 
             $req_desLieu = $connector->query("SELECT idPersonne,dateAjout,contenu
-		FROM descriptionlieu WHERE idLieu=" . $get['id']);
+		FROM descriptionlieu WHERE idLieu=" .(int) $get['id']);
 
             $nbDesLieu = $connector->getNumRows($req_desLieu);
 
@@ -131,9 +131,9 @@ if (isset($_GET['idP'])) {
                 {
 
                     echo "<tr>
-				<td>" . $tab_even['idEvenement'] . "</td>
+				<td>" . (int)$tab_even['idEvenement'] . "</td>
 				<td>" . $tab_even['dateEvenement'] . "</td>
-				<td><a href=\"//user.php?idP=" . $tab_even['idPersonne'] . "\" title=\"Voir le profile de la personne\">" . $tab_even['idPersonne'] . "</a></td>
+				<td><a href=\"//user.php?idP=" . (int)$tab_even['idPersonne'] . "\" title=\"Voir le profile de la personne\">" . (int)$tab_even['idPersonne'] . "</a></td>
 				<td>" . sanitizeForHtml($tab_even['titre']) . "</td>
 				<td>" . $tab_even['dateAjout'] . "</td>
 				</tr>";
@@ -156,7 +156,7 @@ if (isset($_GET['idP'])) {
                 while ([$idPersonne, $dateAjout, $contenu] = $connector->fetchArray($req_desLieu))
                 {
                     echo "<tr>
-				<td><a href=\"/user.php?idP=" . $idPersonne . "\" title=\"Voir le profile de la personne\">" . $idPersonne . "</a></td>";
+				<td><a href=\"/user.php?idP=" . (int)$idPersonne . "\" title=\"Voir le profile de la personne\">" . (int)$idPersonne . "</a></td>";
                     if (strlen((string) $contenu) > 200) {
                         $contenu = mb_substr((string) $contenu, 0, 200) . " [...]";
                     }
@@ -171,7 +171,7 @@ if (isset($_GET['idP'])) {
                 if ((($authorization->isAuthor($get['type'], $_SESSION['SidPersonne'], $get['id']) && $_SESSION['Sgroupe'] < 7) || $_SESSION['Sgroupe'] < 2))
             {
                 //supression des images
-                    $req_imLieu = $connector->query("SELECT nom, photo1, logo FROM lieu WHERE idLieu=" . $get['id']);
+                    $req_imLieu = $connector->query("SELECT nom, photo1, logo FROM lieu WHERE idLieu=" . (int)$get['id']);
                     $im = $connector->fetchArray($req_imLieu);
 
                     if (!empty($im['photo1'])) {
@@ -186,7 +186,7 @@ if (isset($_GET['idP'])) {
 
                     $sql_docu = "SELECT fichierrecu.idFichierrecu AS idFichierrecu, description, mime, extension, dateAjout
 FROM fichierrecu, lieu_fichierrecu
-WHERE lieu_fichierrecu.idLieu=" . $get['id'] . " AND type='image' AND
+WHERE lieu_fichierrecu.idLieu=" . (int)$get['id'] . " AND type='image' AND
  fichierrecu.idFichierrecu=lieu_fichierrecu.idFichierrecu";
 
                     $req_docu = $connector->query($sql_docu);
@@ -200,15 +200,15 @@ WHERE lieu_fichierrecu.idLieu=" . $get['id'] . " AND type='image' AND
                         if (unlink($rep_uploads_lieux_galeries . "s_" . $nom_fichier)) {
                             echo "s_" . $nom_fichier . " supprimé<br>";
                         }
-                        $connector->query("DELETE FROM fichierrecu WHERE idFichierrecu=" . $tab_docu['idFichierrecu']);
+                        $connector->query("DELETE FROM fichierrecu WHERE idFichierrecu=" . (int)$tab_docu['idFichierrecu']);
                     }
 
-                $connector->query("DELETE FROM lieu_fichierrecu WHERE idLieu=" . $get['id']);
+                $connector->query("DELETE FROM lieu_fichierrecu WHERE idLieu=" . (int)$get['id']);
 
-                    $connector->query("DELETE FROM salle WHERE idLieu=" . $get['id']);
+                    $connector->query("DELETE FROM salle WHERE idLieu=" . (int)$get['id']);
 
                     //supression du lieu
-                    if ($connector->query("DELETE FROM lieu WHERE idLieu=" . $get['id'])) {
+                    if ($connector->query("DELETE FROM lieu WHERE idLieu=" . (int)$get['id'])) {
                         HtmlShrink::msgOk("Le lieu a été supprimé");
                     }
                     else {
@@ -222,11 +222,11 @@ WHERE lieu_fichierrecu.idLieu=" . $get['id'] . " AND type='image' AND
         }
         else if ($get['type'] == "descriptionlieu") {
             if ($_SESSION['Sgroupe'] < 2) {
-                $req_delDes = $connector->query("DELETE FROM descriptionlieu WHERE idLieu=" . $get['id'] . " AND idPersonne=" . $get['idP']);
+                $req_delDes = $connector->query("DELETE FROM descriptionlieu WHERE idLieu=" . (int)$get['id'] . " AND idPersonne=" .(int) $get['idP']);
 
                 if ($req_delDes) {
                     HtmlShrink::msgOk("La description a été supprimée");
-                    $logger->log('global', 'activity', "[supprimer] description of lieu (" . $get['id'] . ") deleted", Logger::GRAN_YEAR);
+                    $logger->log('global', 'activity', "[supprimer] description of lieu (" . (int)$get['id'] . ") deleted", Logger::GRAN_YEAR);
             }
                 else {
                     HtmlShrink::msgErreur("La requète DELETE a échoué");
@@ -238,12 +238,12 @@ WHERE lieu_fichierrecu.idLieu=" . $get['id'] . " AND type='image' AND
         }
     else if ($get['type'] == "salle") {
             if ($_SESSION['Sgroupe'] <= 6) {
-                $req = $connector->query("SELECT idSalle FROM evenement WHERE idSalle=" . $get['id']);
+                $req = $connector->query("SELECT idSalle FROM evenement WHERE idSalle=" .(int) $get['id']);
 
                 if ($connector->getNumRows($req) == 0) {
-                    if ($connector->query("DELETE FROM " . $get['type'] . " WHERE idSalle=" . $get['id'])) {
+                    if ($connector->query("DELETE FROM " . $get['type'] . " WHERE idSalle=" . (int)$get['id'])) {
                         HtmlShrink::msgOk("La salle a été supprimée");
-                        $logger->log('global', 'activity', "[supprimer] " . $get['type'] . " (" . $get['id'] . ") deleted", Logger::GRAN_YEAR);
+                        $logger->log('global', 'activity', "[supprimer] " . $get['type'] . " (" .(int) $get['id'] . ") deleted", Logger::GRAN_YEAR);
                         exit;
                     }
                     else {
@@ -264,28 +264,28 @@ WHERE lieu_fichierrecu.idLieu=" . $get['id'] . " AND type='image' AND
              * EN CAS DE SUPPRESSION ou DESACTIVATION affiche dans un tableau les événements à supprimer d'abord
              */
             $req_ev = $connector->query("SELECT evenement.idEvenement AS idE
-		FROM evenement_organisateur, evenement WHERE evenement.idEvenement=evenement_organisateur.idEvenement AND dateEvenement >= CURDATE() AND idOrganisateur=" . $get['id']);
+		FROM evenement_organisateur, evenement WHERE evenement.idEvenement=evenement_organisateur.idEvenement AND dateEvenement >= CURDATE() AND idOrganisateur=" .(int) $get['id']);
 
             $nb_ev = $connector->getNumRows($req_ev);
             echo $nb_ev;
             $req_lieu = $connector->query("SELECT *
-		FROM lieu_organisateur WHERE idOrganisateur=" . $get['id']);
+		FROM lieu_organisateur WHERE idOrganisateur=" .(int) $get['id']);
 
             $nb_lieu = $connector->getNumRows($req_lieu);
 
             if ($nb_ev > 0) {
-                HtmlShrink::msgErreur('Il y a encore ' . $nb_ev . ' événement(s) de cet organisateur.');
+                HtmlShrink::msgErreur('Il y a encore ' . (int)$nb_ev . ' événement(s) de cet organisateur.');
             }
             else if ($nb_lieu > 0) {
-                HtmlShrink::msgErreur('Il y a encore ' . $nb_lieu . ' lieu(x) géré(s) par cet organisateur.');
+                HtmlShrink::msgErreur('Il y a encore ' . (int)$nb_lieu . ' lieu(x) géré(s) par cet organisateur.');
             }
             else {
 
                 if ($_SESSION['Sgroupe'] <= 6) {
 
-                    if ($connector->query("DELETE FROM " . $get['type'] . " WHERE idOrganisateur=" . $get['id'])) {
+                    if ($connector->query("DELETE FROM " . $get['type'] . " WHERE idOrganisateur=" .(int) $get['id'])) {
                         HtmlShrink::msgOk("L'organisateur a été supprimé");
-                        $logger->log('global', 'activity', "[supprimer] organizer " . $get['id'] . " deleted", Logger::GRAN_YEAR);
+                        $logger->log('global', 'activity', "[supprimer] organizer " . (int)$get['id'] . " deleted", Logger::GRAN_YEAR);
                         exit;
                     }
                     else {
@@ -300,9 +300,9 @@ WHERE lieu_fichierrecu.idLieu=" . $get['id'] . " AND type='image' AND
     }
 else if ($get['action'] == 'suppression') {
 
-        $act = "confirmation&amp;type=" . $get['type'] . "&amp;id=" . $get['id'];
+        $act = "confirmation&amp;type=" . $get['type'] . "&amp;id=" . (int)$get['id'];
         if (isset($get['idP'])) {
-            $act .= "&amp;idP=" . $get['idP'];
+            $act .= "&amp;idP=" . (int)$get['idP'];
         }
     }
 
@@ -321,7 +321,7 @@ else if ($get['action'] == 'suppression') {
         if ($get['type'] == "evenement") {
             $req_even = $connector->query("SELECT idEvenement, idLieu, idSalle, idPersonne, titre, genre,
 		dateEvenement, nomLieu, adresse, quartier, urlLieu, description, flyer, image, prix, horaire_debut, horaire_fin, horaire_complement,
-		ref, prelocations FROM " . $get['type'] . " WHERE idEvenement =" . $get['id']);
+		ref, prelocations FROM " . $get['type'] . " WHERE idEvenement =" . (int)$get['id']);
 
             if ($tab_even = $connector->fetchArray($req_even)) {
                 $evenement = $tab_even;
@@ -336,7 +336,7 @@ else if ($get['action'] == 'suppression') {
         }
         else if ($get['type'] == "lieu") {
             //récolte des détails sur le lieu
-            $req_lieu = $connector->query("SELECT idLieu, nom, adresse, quartier, horaire_general, categorie, URL, photo1, logo, dateAjout, date_derniere_modif FROM lieu WHERE idLieu=" . $get['id']);
+            $req_lieu = $connector->query("SELECT idLieu, nom, adresse, quartier, horaire_general, categorie, URL, photo1, logo, dateAjout, date_derniere_modif FROM lieu WHERE idLieu=" . (int)$get['id']);
 
         if ($tab_lieu = $connector->fetchArray($req_lieu)) {
 
@@ -353,7 +353,7 @@ else if ($get['action'] == 'suppression') {
             $req_desc = $connector->query("SELECT descriptionlieu.idLieu, contenu, descriptionlieu.dateAjout, pseudo, groupe, descriptionlieu.idPersonne AS auteur, descriptionlieu.date_derniere_modif
 		FROM descriptionlieu
 		INNER JOIN personne ON descriptionlieu.idPersonne = personne.idPersonne
-		WHERE descriptionlieu.idLieu =" . $get['id'] . " AND personne.idPersonne=" . $get['idP'] . " ORDER BY descriptionlieu.dateAjout");
+		WHERE descriptionlieu.idLieu =" . (int)$get['id'] . " AND personne.idPersonne=" .(int) $get['idP'] . " ORDER BY descriptionlieu.dateAjout");
 
             if ($res_desc = $connector->fetchArray($req_desc)) {
                 $descriptionlieu = $res_desc;
@@ -377,7 +377,7 @@ else if ($get['action'] == 'suppression') {
                                     <div class="auteur">
                                         <span class="left"><?php echo $ajoute; ?><br /><?php echo $dern_modif; ?></span>
                                         <span class="right action_editer">
-                                                        <a href="/lieu-text-edit.php?action=editer&amp;idL=<?php echo $descriptionlieu['idLieu'] ?>&amp;idP=<?php echo $descriptionlieu['auteur'] ?>">
+                                                        <a href="/lieu-text-edit.php?action=editer&amp;idL=<?php echo (int)$descriptionlieu['idLieu'] ?>&amp;idP=<?php echo $descriptionlieu['auteur'] ?>">
                                                             Modifier</a>
                                         </span>
 
@@ -392,8 +392,8 @@ else if ($get['action'] == 'suppression') {
 
                         @mysqli_free_result($req_desc);
                     }
-    else if ($get['type'] == "salle") {
-                        $req = $connector->query("SELECT * FROM salle WHERE idSalle =" . $get['id']);
+                    else if ($get['type'] == "salle") {
+                        $req = $connector->query("SELECT * FROM salle WHERE idSalle =" . (int)$get['id']);
 
                         if ($salle = $connector->fetchArray($req)) {
                             ?>
@@ -410,7 +410,7 @@ else if ($get['action'] == 'suppression') {
                     }
                     else if ($get['type'] == "organisateur") {
 
-                        $req = $connector->query("SELECT idOrganisateur, nom, presentation FROM organisateur WHERE idOrganisateur=" . $get['id']);
+                        $req = $connector->query("SELECT idOrganisateur, nom, presentation FROM organisateur WHERE idOrganisateur=" . (int)$get['id']);
 
                         if ($organisateur = $connector->fetchArray($req)) {
                             ?>
