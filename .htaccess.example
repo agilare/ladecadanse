@@ -87,6 +87,8 @@ RewriteRule ^geneve /index.php?region=ge [NC,R=301,L]
 # old name to new
 RewriteRule ^agenda.php /index.php [NC,R=301,L]
 RewriteRule ^evenement-agenda.php /index.php [NC,R=301,L]
+RewriteRule ^evenement-search.php /event/search.php [NC,R=301,L]
+RewriteRule ^evenement.php /event/evenement.php [NC,R=301,L]
 
 # apart if file exists, accesses of files in years 2005 to 2023, directly under evenements/ are redirected to evenements/{year}/
 RewriteCond %{REQUEST_FILENAME} !-f
