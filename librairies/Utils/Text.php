@@ -109,6 +109,48 @@ class Text
     }
 
     /**
+     * Used by event/to-ics.php
+     * 
+     * @param string $string
+     * @return string
+     */
+    public static function escapeAndFoldString(string $string): string
+    {
+        // Échappement selon RFC 5545
+        $escaped = strtr($string, [
+            '\\' => '\\\\',
+            "\r" => '',
+            "\n" => '\\n',
+            ','  => '\,',
+            ';'  => '\;',
+        ]);
+
+        // Découpage UTF-8-safe
+        $lines = [];
+        $line = '';
+        $bytes = 0;
+
+        foreach (preg_split('//u', $escaped, -1, PREG_SPLIT_NO_EMPTY) as $char) {
+            $charBytes = strlen($char);
+
+            if ($bytes + $charBytes > 75) {
+                $lines[] = $line;
+                $line = ' ' . $char;
+                $bytes = 1 + $charBytes;
+            } else {
+                $line .= $char;
+                $bytes += $charBytes;
+            }
+        }
+
+        $lines[] = $line;
+
+        return implode("\r\n", $lines);
+    }
+
+
+
+    /**
      * Remplace tous les tags wiki d'un texte par des balises HTML
      * ==texte== -> h2
      * Retrurn -> br

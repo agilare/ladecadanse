@@ -4,7 +4,6 @@
 namespace Ladecadanse;
 
 use Ladecadanse\Element;
-use Ladecadanse\Utils\ImageDriver2;
 use Ladecadanse\Utils\Text;
 
 class Evenement extends Element
@@ -172,6 +171,32 @@ class Evenement extends Element
         $result = ob_get_contents();
         ob_clean();
         return $result;
+    }
+
+    /**
+     * id
+     * horaire_debut, horaire_fin
+     * region, localite, quartier, adresse
+     * url
+     * titre
+     * description
+     *
+     * @param array<string, string> $event
+     * @param string global const site domain
+     */
+    public static function getIcsValues(array $event, string $site_full_url): array
+    {
+        $even_lieu = Evenement::getLieu($event);
+        return [
+            'UID' => (int) $event['e_idEvenement'],
+            'URI' => $site_full_url . "event/evenement.php?idE=" . (int) $event['e_idEvenement'],
+            'DTSTAMP' => date('Ymd\THis', time()),
+            'DTSTART' => date('Ymd\THis', date("U", strtotime((($event['e_horaire_debut'] != "0000-00-00 00:00:00") ? $event['e_horaire_debut'] : $event['e_dateEvenement'])))),
+            'DTEND' => ($event['e_horaire_fin'] != "0000-00-00 00:00:00") ? date('Ymd\THis', date("U", strtotime($event['e_horaire_fin']))) : "",
+            'LOCATION' => Text::escapeAndFoldString($even_lieu['nom'] . " - " . HtmlShrink::adresseCompacteSelonContexte($even_lieu['region'], $even_lieu['localite'], $even_lieu['quartier'], $even_lieu['adresse'])),
+            'SUMMARY' => Text::escapeAndFoldString($event['e_titre']),
+            'DESCRIPTION' => Text::escapeAndFoldString($event['e_description']),
+        ];
     }
 
     public static function rmImageAndItsMiniature(string $fileName): void

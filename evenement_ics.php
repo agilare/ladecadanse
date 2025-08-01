@@ -33,133 +33,97 @@ https://www.ietf.org/rfc/rfc5545.txt
 
 require_once("app/bootstrap.php");
 
-
 use Ladecadanse\Evenement;
-use Ladecadanse\HtmlShrink;
-use Ladecadanse\Utils\Validateur;
 
-
-if (isset($_GET['idE']))
-{
-    try {
-        $get['idE'] = Validateur::validateUrlQueryValue($_GET['idE'], "int", 1);
-    } catch (Exception) { header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); exit; }
-}
-else
+if (empty($_GET['idE']) || !is_numeric($_GET['idE']))
 {
     header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
     exit;
 }
 
-$even = new Evenement();
-$even->setId($get['idE']);
+$get['idE'] = (int) $_GET['idE'];
 
-$even->load();
 
-// si idE ne correspond ࡡucune entrꥠdans la table
-if (!$even->getValues() || in_array($even->getValue('statut'), ['propose', 'inactif']))
+// EVENT AND APPENDIXES
+$sql_event = "SELECT
+
+  e.genre AS e_genre,
+  e.idEvenement AS e_idEvenement,
+  e.titre AS e_titre,
+  e.statut AS e_statut,
+  e.idPersonne AS e_idPersonne,
+  e.dateEvenement AS e_dateEvenement,
+  e.ref AS e_ref,
+  e.flyer AS e_flyer,
+  e.image AS e_image,
+  e.description AS e_description,
+  e.ref AS e_ref,
+  e.horaire_debut AS e_horaire_debut,
+  e.horaire_fin AS e_horaire_fin,
+  e.horaire_complement AS e_horaire_complement,
+  e.prix AS e_prix,
+  e.prelocations AS e_prelocations,
+  e.idLieu AS e_idLieu,
+  e.idSalle AS e_idSalle,
+  e.nomLieu AS e_nomLieu,
+  e.adresse AS e_adresse,
+  e.quartier AS e_quartier,
+  loc.localite AS e_localite,
+  e.region AS e_region,
+  e.urlLieu AS e_urlLieu,
+  e.dateAjout AS e_dateAjout,
+
+  l.nom AS l_nom,
+  l.determinant AS l_determinant,
+  l.adresse AS l_adresse,
+  l.quartier AS l_quartier,
+  l.lat AS l_lat,
+  l.lng AS l_lng,
+  l.URL AS l_URL,
+  lloc.localite AS lloc_localite,
+  l.region AS l_region,
+
+  s.nom AS s_nom
+
+FROM evenement e
+JOIN localite loc ON e.localite_id = loc.id
+LEFT JOIN lieu l ON e.idLieu = l.idLieu
+LEFT JOIN localite lloc ON l.localite_id = lloc.id
+LEFT JOIN salle s ON e.idSalle = s.idSalle
+WHERE e.idEvenement = :idE";
+
+$stmt = $connectorPdo->prepare($sql_event);
+$stmt->execute([':idE' => $get['idE']]);
+$tab_even = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$authorization->isPersonneAllowedToEditEvenement($_SESSION, $tab_even) && in_array($tab_even['e_statut'], ['propose', 'inactif']))
 {
-
-    header("HTTP/1.1 404 Not Found");
+    header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
     exit;
-
 }
 
-if ($even->getValue('idLieu') != 0)
-{
-	$req_lieu = $connector->query("SELECT nom, adresse, quartier, localite, region, URL, lat, lng FROM lieu, localite
-	WHERE lieu.localite_id=localite.id AND idlieu='" . (int) $even->getValue('idLieu') . "'");
-    $listeLieu = $connector->fetchArray($req_lieu);
-	$lieu = sanitizeForHtml($listeLieu['nom']);
+$even_ics = Evenement::getIcsValues($tab_even, $site_full_url);
 
-}
-else
-{
-	$listeLieu['nom'] = sanitizeForHtml($even->getValue('nomLieu'));
-	$lieu = sanitizeForHtml($even->getValue('nomLieu'));
-	$listeLieu['adresse'] = sanitizeForHtml($even->getValue('adresse'));
-	$listeLieu['quartier'] = sanitizeForHtml($even->getValue('quartier'));
-        $req_localite = $connector->query("SELECT  localite FROM localite WHERE  id='" . (int) $even->getValue('localite_id') . "'");
-    $tab_localite = $connector->fetchArray($req_localite);
-
-        $listeLieu['localite'] = sanitizeForHtml($tab_localite[0] ?? "");
-    $listeLieu['URL'] = sanitizeForHtml($even->getValue('urlLieu'));
-
-	$nom_lieu = $lieu;
-}
-
-$description = '';
-if ($even->getValue('description') != '')
-{
-	$description = str_replace("\r\n", "\\n", $even->getValue('description'));
-}
-
-
-
-$filename = "evenement.ics";
-
-$address = HtmlShrink::adresseCompacteSelonContexte(null, $listeLieu['localite'], $listeLieu['quartier'], $listeLieu['adresse']);
-
-$dateend = '';
-if ($even->getValue('horaire_fin') != "0000-00-00 00:00:00")
-{
-	$dateend = date("U", strtotime((string) $even->getValue('horaire_fin')));
-}
-
-$datestart = date("U", strtotime((string) $even->getValue('dateEvenement')));
-if ($even->getValue('horaire_debut') != "0000-00-00 00:00:00")
-{
-	$datestart = date("U", strtotime((string) $even->getValue('horaire_debut')));
-}
-
-
-$uniqueid = $get['idE'];
-
-$uri = $site_full_url . "/event/evenement.php?idE=" . (int) $get['idE'];
-
-$summary = sanitizeForHtml($even->getValue('titre'));
-
-if ($even->getValue('statut') == "annule" || $even->getValue('statut')  == "inactif" || $even->getValue('statut')  == "complet")
-{
-	$summary .= " - ".$even->getValue('statut') ;
-}
-
-
-// 1. Set the correct headers for this file
 header('Content-type: text/calendar; charset=utf-8');
-header('Content-Disposition: attachment; filename=' . $filename);
+header('Content-Disposition: attachment; filename=' . "evenement-" . $get['idE'] . "-" . $tab_even['e_dateEvenement'] .  ".ics");
 header('X-Robots-Tag: noindex');
-
-// 2. Define helper functions
-// Converts a unix timestamp to an ics-friendly format
-// NOTE: "Z" means that this timestamp is a UTC timestamp. If you need
-// to set a locale, remove the "\Z" and modify DTEND, DTSTAMP and DTSTART
-// with TZID properties (see RFC 5545 section 3.3.5 for info)
-//
-// Also note that we are using "H" instead of "g" because iCalendar's Time format
-// requires 24-hour time (see RFC 5545 section 3.3.12 for info).
-function dateToCal($timestamp) {
-return date('Ymd\THis', $timestamp);
-}
-// Escapes a string of characters
-function escapeString($string) {
-return preg_replace('/([\,;])/','\\\$1', (string) $string);
-}
-
-// 3. Echo out the ics file's contents
 ?>
 BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//hacksw/handcal//NONSGML v1.0//EN
 CALSCALE:GREGORIAN
 BEGIN:VEVENT
-<?php if (!empty($dateend)) echo "DTEND:".dateToCal($dateend)."\n"; ?>
-UID:<?php echo $uniqueid."\n"; ?>
-DTSTAMP:<?php echo dateToCal(time())."Z\n"; ?>
-LOCATION:<?php echo escapeString($address)."\n"; ?>
-DESCRIPTION:<?php echo escapeString($description)."\n"; ?>
-URL;VALUE=URI:<?php echo escapeString($uri)."\n"; ?>
-SUMMARY:<?php echo escapeString($summary)."\n"; ?>
-DTSTART:<?php echo dateToCal($datestart)."\n"; ?>
+<?php if (!empty($even_ics['DTEND']))
+{
+    echo "DTEND:" . $even_ics['DTEND'] . "\n";
+}
+?>
+UID:<?= $even_ics['UID']."\n"; ?>
+DTSTAMP:<?= $even_ics['DTSTAMP']."Z\n"; ?>
+LOCATION:<?= $even_ics['LOCATION']."\n"; ?>
+DESCRIPTION:<?= $even_ics['DESCRIPTION']."\n"; ?>
+URL;VALUE=URI:<?= $even_ics['URI']."\n"; ?>
+SUMMARY:<?= $even_ics['SUMMARY']."\n"; ?>
+DTSTART:<?= $even_ics['DTSTART']."\n"; ?>
 END:VEVENT
 END:VCALENDAR
