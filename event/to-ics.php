@@ -31,7 +31,7 @@ to set, including alarms, invitees, busy status, etc.
 https://www.ietf.org/rfc/rfc5545.txt
  */
 
-require_once("app/bootstrap.php");
+require_once("../app/bootstrap.php");
 
 use Ladecadanse\Evenement;
 

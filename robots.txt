@@ -16,7 +16,7 @@ Disallow: /*.inc.php
 # Disallow: /maintenance.php
 # Disallow: /evenement-actions.php
 # Disallow: /evenement-email.php
-# Disallow: /evenement_ics.php
+# Disallow: /event/to-ics.php
 # Disallow: /evenement-report.php
 # Disallow: /event/search.php
 

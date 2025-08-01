@@ -8,7 +8,6 @@ use Ladecadanse\Lieu;
 use Ladecadanse\Organisateur;
 use Ladecadanse\UserLevel;
 use Ladecadanse\Utils\Text;
-use Ladecadanse\Utils\Validateur;
 
 if (empty($_GET['idE']) || !is_numeric($_GET['idE']))
 {
@@ -199,7 +198,7 @@ include("../_header.inc.php");
                 <li><a href="/evenement-copy.php?idE=<?= (int) $get['idE'] ?>"><?= $iconeCopier ?>&nbsp;Copier vers d'autres dates</a></li>
                 <li><a href="/evenement-edit.php?action=editer&amp;idE=<?= (int) $get['idE'] ?>"><?= $iconeEditer ?>&nbsp;Modifier</a></li>
             <?php endif; ?>
-                <li><a href="/evenement_ics.php?idE=<?= (int) $get['idE'] ?>" title="Exporter au format iCalendar dans votre agenda"><i class="fa fa-calendar-plus-o fa-lg"></i>&nbsp;iCal</a></li>
+                <li><a href="/event/to-ics.php?idE=<?= (int) $get['idE'] ?>" title="Exporter au format iCalendar dans votre agenda"><i class="fa fa-calendar-plus-o fa-lg"></i>&nbsp;iCal</a></li>
         </ul>
     </nav>
 

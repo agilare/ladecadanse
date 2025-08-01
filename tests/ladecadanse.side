@@ -866,7 +866,7 @@
       "targets": [
         ["css=.genre:nth-child(2) > .evenement:nth-child(2) .ical", "css:finder"],
         ["xpath=//div[@id='prochains_evenements']/section/article/footer/ul/li[2]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/evenement_ics.php?idE=1775')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/event/to-ics.php?idE=1775')]", "xpath:href"],
         ["xpath=//footer/ul/li[2]/a", "xpath:position"]
       ],
       "value": ""
