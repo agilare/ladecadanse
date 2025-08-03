@@ -955,50 +955,6 @@
       "targets": [],
       "value": ""
     }, {
-      "id": "d928e3b9-cf8e-45fd-8d49-16d1c8ff594c",
-      "comment": "",
-      "command": "click",
-      "target": "css=.vd",
-      "targets": [
-        ["linkText=Lausanne", "linkText"],
-        ["css=.vd", "css:finder"],
-        ["xpath=//a[contains(text(),'Lausanne')]", "xpath:link"],
-        ["xpath=//div[@id='entete_contenu']/ul/li[2]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '?region=vd&tri=pertinence&page=1&periode=futur&mots=fête')]", "xpath:href"],
-        ["xpath=//div[2]/ul/li[2]/a", "xpath:position"],
-        ["xpath=//a[contains(.,'Lausanne ')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "1b96a7f7-9b83-4c77-af89-4a29399d9f28",
-      "comment": "",
-      "command": "assertElementPresent",
-      "target": "css=#res_recherche",
-      "targets": [],
-      "value": ""
-    }, {
-      "id": "c29ddacc-5803-4253-82da-6ad235178e47",
-      "comment": "",
-      "command": "click",
-      "target": "css=.ge",
-      "targets": [
-        ["linkText=Genève", "linkText"],
-        ["css=.ge", "css:finder"],
-        ["xpath=//a[contains(text(),'Genève')]", "xpath:link"],
-        ["xpath=//div[@id='entete_contenu']/ul/li/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '?region=ge&tri=pertinence&page=1&periode=futur&mots=fête')]", "xpath:href"],
-        ["xpath=//div[2]/ul/li/a", "xpath:position"],
-        ["xpath=//a[contains(.,'Genève ')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "62c6a2a1-cc87-4fe9-9ec4-61a42453ff1b",
-      "comment": "",
-      "command": "assertElementPresent",
-      "target": "css=#res_recherche",
-      "targets": [],
-      "value": ""
-    }, {
       "id": "195ede52-b3ac-4e6f-aa31-74588688a58d",
       "comment": "",
       "command": "click",
@@ -1015,28 +971,6 @@
       "value": ""
     }, {
       "id": "475e3cb0-3347-4fc8-8ef9-fc768ca2774a",
-      "comment": "",
-      "command": "assertElementPresent",
-      "target": "css=#res_recherche",
-      "targets": [],
-      "value": ""
-    }, {
-      "id": "4dec0520-5c57-4261-ba98-53985db3bf2d",
-      "comment": "",
-      "command": "click",
-      "target": "css=.tous > a",
-      "targets": [
-        ["linkText=Tous", "linkText"],
-        ["css=.tous > a", "css:finder"],
-        ["xpath=//a[contains(text(),'Tous')]", "xpath:link"],
-        ["xpath=//ul[@id='menu_periode']/li[3]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/event/search.php?tri=pertinence&page=1&mots=f%C3%AAte&periode=tous')]", "xpath:href"],
-        ["xpath=//div[3]/ul/li[3]/a", "xpath:position"],
-        ["xpath=//a[contains(.,'Tous')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "6b4775fe-2cdf-455d-93ca-2513371af483",
       "comment": "",
       "command": "assertElementPresent",
       "target": "css=#res_recherche",
@@ -1132,14 +1066,14 @@
       "id": "802a8f6a-b4e1-434b-b593-59eb4a9adda0",
       "comment": "",
       "command": "click",
-      "target": "css=.pagination:nth-child(5) > a:nth-child(3)",
+      "target": "css=.pagination:nth-child(4) > a:nth-child(4)",
       "targets": [
-        ["linkText=2", "linkText"],
-        ["css=.pagination:nth-child(5) > a:nth-child(3)", "css:finder"],
-        ["xpath=(//a[contains(text(),'2')])[16]", "xpath:link"],
-        ["xpath=//div[@id='res_recherche']/div[3]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/event/search.php?tri=pertinence&periode=futur&mots=f%C3%AAte&page=2')]", "xpath:href"],
-        ["xpath=//div[3]/a", "xpath:position"]
+        ["linkText=3", "linkText"],
+        ["css=.pagination:nth-child(4) > a:nth-child(4)", "css:finder"],
+        ["xpath=(//a[contains(text(),'3')])[8]", "xpath:link"],
+        ["xpath=//div[@id='res_recherche']/div[3]/a[2]", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, 'search.php?mots=f%C3%AAte&tri=pertinence&periode=futur&page=3')]", "xpath:href"],
+        ["xpath=//a[2]", "xpath:position"]
       ],
       "value": ""
     }, {
