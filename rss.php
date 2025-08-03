@@ -4,395 +4,234 @@ global $site_full_url, $glo_auj_6h, $connector, $auj, $glo_tab_genre;
 require_once("app/bootstrap.php");
 
 use Ladecadanse\Evenement;
-use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\Text;
+use Ladecadanse\Lieu;
 
-$tab_types = ["evenements_auj", "lieu_evenements", 'organisateur_evenements', 'evenements_ajoutes'];
+$tab_feeds_types = ["evenements_auj", "lieu_evenements", 'organisateur_evenements', 'evenements_ajoutes'];
 
 $get['type'] = '';
-if (isset($_GET['type']))
+if (!in_array($_GET['type'], $tab_feeds_types))
 {
-    try {
-        $get['type'] =  Validateur::validateUrlQueryValue($_GET['type'], "enum", 1, $tab_types);
-    } catch (Exception)
-    {
-        header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
-        exit;
-    }
+    header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
+    exit;
+}
+$get['type'] = $_GET['type'];
+
+if (in_array($get['type'], ["lieu_evenements", 'organisateur_evenements']) && empty($_GET['id']))
+{
+    header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
+    exit;
 }
 
 $get['id'] = '';
 if (isset($_GET['id']))
 {
-    try {
-        $get['id'] =  Validateur::validateUrlQueryValue($_GET['id'], "int", 1);
-    } catch (Exception)
+    if (!is_numeric($_GET['id']))
     {
         header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
         exit;
     }
+
+    $get['id'] = (int) $_GET['id'];
 }
 
-$xml = '<?xml version="1.0" encoding="utf-8" ?><rss version="2.0">';
-$xml .= "<channel>";
 
-$items = "";
-$channel = '';
+$channel = [];
+$channel['link'] = $site_full_url;
 
-if ($get['type'] == "evenements_auj") {
+$join = "";
+$where = "";
+$params = [];
 
-	$genres_c = ["fête", "cinéma", "théâtre", "expos", "divers"];
-
-	$channel = '<title>La décadanse : événements du jour</title>';
-	$channel .= '<link>'.$site_full_url.'</link>';
-	$channel .= '<description>Événements quotidiens, actualité culturelle à Genève</description>';
-	$channel .= '<ttl>1440</ttl>';
-	$channel .= "<pubDate>".date("r",  mktime(0, 0, 0, date("m")  , date("d") , date("Y")))."</pubDate>\n";
-	$channel .= "<language>fr</language>\n";
-	$der_dateAjout = time();
-	$items = "";
-	$sem_derniere = time() - (7 * 24 * 60 * 60);
-
-	$sql = "SELECT idEvenement, idLieu, idSalle, genre, nomLieu, adresse, quartier, urlLieu,
-	 titre, idPersonne, dateEvenement, ref, flyer, description, horaire_debut, horaire_fin, horaire_complement,
-	 prix, prelocations, dateAjout, date_derniere_modif
-	 FROM evenement
-	 JOIN localite l on evenement.localite_id = l.id
-	 WHERE dateEvenement='".$glo_auj_6h."' AND statut NOT IN ('inactif', 'propose') AND (region IN ('".$connector->sanitize($_SESSION['region'])."', 'rf', 'hs') OR FIND_IN_SET ('". $connector->sanitize($_SESSION['region']) ."', l.regions_covered))
-	 ORDER BY CASE `genre`
-       WHEN 'fête' THEN 1
-       WHEN 'cinéma' THEN 2
-       WHEN 'théâtre' THEN 3
-       WHEN 'expos' THEN 4
-       WHEN 'divers' THEN 5 END, dateAjout DESC";
-
-	$req_even = $connector->query($sql);
-
-
-	$prec_genre = "";
-	$prec_date = "";
-
-	while($tab_even = $connector->fetchArray($req_even))
-	{
-		$items .= "<item>\n";
-
-		$genre_even = $tab_even['genre'];
-		if ($tab_even['genre'] == "fête")
-		{
-			$genre_even = "fêtes";
-		}
-		else if ($tab_even['genre'] == "cinéma")
-		{
-			$genre_even = "ciné";
-		}
-		$items .= "<title>".ucfirst((string) date_fr($tab_even['dateEvenement'], "", "", "", false))." - ".$genre_even." : ".sanitizeForHtml($tab_even['titre'])."</title>\n";
-		$items .= "<link>".$site_full_url."/event/evenement.php?idE=".(int)$tab_even['idEvenement']."</link>\n";
-		$items .= "<description><![CDATA[";
-
-        if ($tab_even['idLieu'] != 0)
-		{
-			$nom_lieu = "<a href=\"".$site_full_url."/lieu.php?idL=".(int)$tab_even['idLieu']."\"
-			title=\"Voir la fiche du lieu : ".sanitizeForHtml($tab_even['nomLieu'])."\" >
-			".sanitizeForHtml($tab_even['nomLieu'])."</a>";
-
-			if ($tab_even['idSalle'])
-			{
-				$sql_salle = "SELECT nom FROM salle WHERE idSalle=".(int)$tab_even['idSalle'];
-				$req = $connector->query($sql_salle);
-				$tab = $connector->fetchArray($req);
-				$nom_lieu .= " - ".$tab['nom'];
-			}
-		}
-		else
-		{
-			$nom_lieu = sanitizeForHtml($tab_even['nomLieu']);
-		}
-
-		$items .= '<h3>'.$nom_lieu.'</h3>';
-			//si un flyer existe
-		if (!empty($tab_even['flyer']))
-		{
-			$items .= "<div class=\"flyer\"><img src=\"" . Evenement::getFileHref(Evenement::getFilePath($tab_even['flyer'], "s_")) . "\"  alt=\"Flyer\" /></div>";
-        }
-
-		$maxChar = Text::trouveMaxChar($tab_even['description'], 60, 5);
-		if (mb_strlen((string) $tab_even['description']) > $maxChar)
-		{
-			$items .= Text::texteHtmlReduit(Text::wikiToHtml(sanitizeForHtml($tab_even['description'])), $maxChar, "");
-		}
-		else
-		{
-			$items .= Text::wikiToHtml(sanitizeForHtml($tab_even['description']));
-		}
-
-
-		$items .= "<p>".afficher_debut_fin($tab_even['horaire_debut'], $tab_even['horaire_fin'], $tab_even['dateEvenement'])."
-		".sanitizeForHtml($tab_even['horaire_complement'])."</p>";
-		$items .= "<p>".sanitizeForHtml($tab_even['prix'])."</p>";
-
-		$items .= "]]></description>\n";
-		//$items .= "<enclosure url=\"".$IMGeven.$tab_even['flyer']."\" type="image/jpeg" length="2441"></enclosure>
-		$items .= "<guid isPermaLink=\"false\">".(int)$tab_even['idEvenement']."</guid>\n";
-		$items .= "<pubDate>".date("r")."</pubDate>\n";
-		$items .= "</item>\n";
-
-		$der_dateAjout = date_iso2time($tab_even['dateAjout']);
-
-	} //while
-
-	//$channel .= "<pubDate>".date("r")."</pubDate>\n";
-}
-else if ($get['type'] == "lieu_evenements")
+switch($get['type'])
 {
-	$req_lieu = $connector->query("SELECT nom, determinant FROM lieu WHERE idLieu=".(int) $get['id']);
-	$tab_lieu = $connector->fetchArray($req_lieu);
+    case "evenements_auj":
 
-	$channel = '<title>La décadanse : Événements '.$tab_lieu['determinant'].' '.$tab_lieu['nom'].'</title>';
-	$channel .= '<link>'.$site_full_url.'/lieu.php?idL='.(int)$get['id'].'</link>';
-	$channel .= '<description>Événements '.$tab_lieu['determinant'].' '.$tab_lieu['nom'].'</description>';
-	//$channel .= "<pubDate>".date("r",  mktime(0, 0, 0, date("m")  , date("d") - 7, date("Y")))."</pubDate>\n";
-	$channel .= "<language>fr</language>\n";
+        $channel['title'] = "La décadanse : événements aujourd'hui";
 
-	$der_dateAjout = time();
+        $where = " WHERE dateEvenement=?";
+        $params = [$glo_auj_6h];
+        $order_by = " ORDER BY CASE e.genre
+            WHEN 'fête' THEN 1
+            WHEN 'cinéma' THEN 2
+            WHEN 'théâtre' THEN 3
+            WHEN 'expos' THEN 4
+            WHEN 'divers' THEN 5
+          END, e.dateAjout DESC";
 
-	$req_even = $connector->query("SELECT idEvenement, idPersonne, idSalle, genre, titre, dateEvenement,
-		 nomLieu, description, flyer, horaire_debut, horaire_fin, horaire_complement, prix, dateAjout
-		 FROM evenement WHERE idLieu=".(int)$get['id']." AND dateEvenement >= '".$auj."' AND statut NOT IN ('inactif', 'propose') ORDER BY dateAjout DESC");
+        break;
 
-	$items = "";
-	$css = "<style> .flyer { float:left; } h1, h2, h3, h4, p { margin: 1em 0.1em 0.6em 0.1em} .desc { margin: 0.4em 0.1em } .clean {clear:both;}</style>";
+    case "lieu_evenements":
 
+        $channel['title'] = 'La décadanse : prochains événements';
+        $channel['link'] .= 'lieu.php?idL='.(int)$get['id'];
 
-	while ($tab_even = $connector->fetchArray($req_even))
-	{
+        $where = " WHERE e.idLieu = ? AND dateEvenement >= ?";
+        $params = [$get['id'], $glo_auj_6h];
+        $order_by = " ORDER BY e.dateAjout DESC";
 
-		$items .= "<item>\n";
-		$items .= "<title>".sanitizeForHtml($tab_even['titre'])."</title>\n";
-		$items .= "<link>".$site_full_url."/event/evenement.php?idE=".$tab_even['idEvenement']."</link>\n";
-		$items .= "<description><![CDATA[";
-        $items .= $css;
-		 $items .= '<h2 style="padding:0.2em 0.1em;border-bottom:1px solid #aeaeae;">'.date_fr($tab_even['dateEvenement']).'</h2>';
+        break;
 
-		 $items .= "<h3>".$tab_even['genre']."</h3>";
+    case "organisateur_evenements":
 
-		if ($tab_even['idSalle'])
-		{
-			$sql_salle = "SELECT nom FROM salle WHERE idSalle=".(int)$tab_even['idSalle'];
-			$req = $connector->query($sql_salle);
-			$tab = $connector->fetchArray($req);
-			$items .= "<h4>".$tab['nom']."</h4>";
-		}
-			//si un flyer existe
-		if (!empty($tab_even['flyer']))
-		{
-			$items .= "<div class=\"flyer\"><img src=\"" . Evenement::getFileHref(Evenement::getFilePath($tab_even['flyer'], "s_")) . "\"  alt=\"Flyer\" /></div>";
-        }
+        $channel['title'] = 'La décadanse : prochains événements organisateur';
+        $channel['link'] .= 'organisateur.php?idO='.(int)$get['id'];
 
-		$maxChar = Text::trouveMaxChar($tab_even['description'], 60, 5);
-		if (mb_strlen((string) $tab_even['description']) > $maxChar)
-		{
-			$items .= Text::texteHtmlReduit(Text::wikiToHtml(sanitizeForHtml($tab_even['description'])), $maxChar, "");
-        }
-		else
-		{
-			$items .= Text::wikiToHtml(sanitizeForHtml($tab_even['description']));
-        }
+        $join = ' LEFT JOIN evenement_organisateur eo ON e.idEvenement = eo.idEvenement ';
+        $where = " WHERE eo.idOrganisateur = ? AND dateEvenement >= ?";
+        $params = [$get['id'], $glo_auj_6h];
+        $order_by = " ORDER BY e.dateAjout DESC";
 
+        break;
 
-		$items .= "<p>".afficher_debut_fin($tab_even['horaire_debut'], $tab_even['horaire_fin'], $tab_even['dateEvenement'])." ".sanitizeForHtml($tab_even['horaire_complement'])."</p>";
-		$items .= "<p>".sanitizeForHtml($tab_even['prix'])."</p>";
+    case "evenements_ajoutes":
 
-		$items .= "]]></description>\n";
-		//$items .= "<enclosure url=\"".$IMGeven.$tab_even['flyer']."\" type="image/jpeg" length="2441"></enclosure>
-		$items .= "<guid isPermaLink=\"false\">".(int)$tab_even['idEvenement']."</guid>\n";
-		$items .= "<pubDate>".date("r", datetime_iso2time($tab_even['dateAjout']))."</pubDate>\n";
-		$items .= "</item>\n";
+        $channel['title'] = "La décadanse : derniers événements ajoutés";
 
+        $order_by = " ORDER BY e.dateAjout DESC LIMIT 0, 20";
 
-		$der_dateAjout = date_iso2time($tab_even['dateAjout']);
+        break;
 
-	}
-
-	$channel .= "<pubDate>".date("r", $der_dateAjout)."</pubDate>\n";
+    default:
+        header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
+        exit;
 }
-else if ($get['type'] == "organisateur_evenements")
+
+$sql_events = "SELECT
+
+  e.genre AS e_genre,
+  e.idEvenement AS e_idEvenement,
+  e.titre AS e_titre,
+  e.statut AS e_statut,
+  e.idPersonne AS e_idPersonne,
+  e.dateEvenement AS e_dateEvenement,
+  e.ref AS e_ref,
+  e.flyer AS e_flyer,
+  e.image AS e_image,
+  e.description AS e_description,
+  e.horaire_debut AS e_horaire_debut,
+  e.horaire_fin AS e_horaire_fin,
+  e.horaire_complement AS e_horaire_complement,
+  e.prix AS e_prix,
+  e.prelocations AS e_prelocations,
+  e.idLieu AS e_idLieu,
+  e.idSalle AS e_idSalle,
+  e.nomLieu AS e_nomLieu,
+  e.adresse AS e_adresse,
+  e.quartier AS e_quartier,
+  loc.localite AS e_localite,
+  e.region AS e_region,
+  e.urlLieu AS e_urlLieu,
+  e.dateAjout AS e_dateAjout,
+
+  l.nom AS l_nom,
+  l.adresse AS l_adresse,
+  l.quartier AS l_quartier,
+  l.URL AS l_URL,
+  lloc.localite AS lloc_localite,
+  l.region AS l_region,
+  s.nom AS s_nom
+
+FROM evenement e
+JOIN localite loc ON e.localite_id = loc.id
+LEFT JOIN lieu l ON e.idLieu = l.idLieu
+LEFT JOIN localite lloc ON l.localite_id = lloc.id
+LEFT JOIN salle s ON e.idSalle = s.idSalle
+
+$join
+
+$where $order_by";
+
+//echo $sql_events;
+
+$stmt = $connectorPdo->prepare($sql_events);
+$stmt->execute($params);
+$tab_events = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+
+$items = [];
+$der_dateAjout = time();
+$title_lieu = '';
+foreach ($tab_events as $tab_even)
 {
-	$req = $connector->query("SELECT nom FROM organisateur WHERE idOrganisateur=".(int) $get['id']);
-	$tab = $connector->fetchArray($req);
+    $even_lieu = Evenement::getLieu($tab_even);
 
-	$channel = '<title>La décadanse : événements pour '.$tab['nom'].'</title>';
-	$channel .= '<link>'.$site_full_url.'/organisateur.php?idO='.(int) $get['id'].'</link>';
-	$channel .= '<description>'.$tab['nom'].'</description>';
-	$channel .= "<language>fr</language>\n";
+    $item['title'] = ucfirst((string) date_fr($tab_even['e_dateEvenement'], "", "", "", false))." - ".$tab_even['e_genre']." : ".$tab_even['e_titre'];
+    $item['link'] = $site_full_url."event/evenement.php?idE=".(int)$tab_even['e_idEvenement'];
 
-	$der_dateAjout = time();
+     // item > description
+    $item['nom_lieu'] = Lieu::getLinkNameHtml($even_lieu['nom'], $even_lieu['idLieu'], $even_lieu['salle']);
+    // complete channel title for feed type "lieu_evenements"
+    $title_lieu = $even_lieu['nom'];
 
-	$req_even = $connector->query("SELECT evenement.idEvenement AS idEvenement, idPersonne, idLieu, nomLieu, adresse, quartier, idSalle, genre, titre, dateEvenement,
-		 nomLieu, description, flyer, horaire_debut, horaire_fin, horaire_complement, prix, dateAjout
-		 FROM evenement, evenement_organisateur WHERE evenement.idEvenement=evenement_organisateur.idEvenement AND idOrganisateur=".(int) $get['id']." AND dateEvenement >= '".$auj."' AND statut NOT IN ('inactif', 'propose') ORDER BY dateAjout DESC");
+    if (!empty($tab_even['e_flyer']))
+    {
+        $item['image'] = Evenement::getFileHref(Evenement::getFilePath($tab_even['e_flyer']), true);
+    }
+    elseif (!empty($tab_even['e_image']))
+    {
+        $item['image'] = Evenement::getFileHref(Evenement::getFilePath($tab_even['e_image']), true);
+    }
 
-	$items = "";
-	$css = "<style> .flyer { float:left; } h1, h2, h3, h4, p { margin: 1em 0.1em 0.6em 0.1em} .desc { margin: 0.4em 0.1em } .clean {clear:both;}</style>";
+    $item['description'] = Text::texteHtmlReduit(Text::wikiToHtml(sanitizeForHtml($tab_even['e_description'])), Text::trouveMaxChar($tab_even['e_description'], 60, 5), "");
+    $item['horaire'] = afficher_debut_fin($tab_even['e_horaire_debut'], $tab_even['e_horaire_fin'], $tab_even['e_dateEvenement'])." ".$tab_even['e_horaire_complement'];
+    $item['prix'] =  $tab_even['e_prix'];
 
+    $item['guid'] = (int)$tab_even['e_idEvenement'];
+    $item['pubDate'] = date("r", datetime_iso2time($tab_even['e_dateAjout']));
 
-	while ($tab_even = $connector->fetchArray($req_even))
-	{
-
-		$items .= "<item>\n";
-		$items .= "<title>".sanitizeForHtml($tab_even['titre'])."</title>\n";
-		$items .= "<link>".$site_full_url."/event/evenement.php?idE=".$tab_even['idEvenement']."</link>\n";
-		$items .= "<description><![CDATA[";
-        $items .= $css;
-		 $items .= '<h2 style="padding:0.2em 0.1em;border-bottom:1px solid #aeaeae;">'.date_fr($tab_even['dateEvenement']).'</h2>';
-
-		 $items .= "<h3>".$tab_even['genre']."</h3>";
-
-		if ($tab_even['idLieu'] != 0)
-		{
-			$nom_lieu = "<a href=\"".$site_full_url."/lieu.php?idL=".(int) $tab_even['idLieu']."\"
-			title=\"Voir la fiche du lieu : ".sanitizeForHtml($tab_even['nomLieu'])."\" >
-			".sanitizeForHtml($tab_even['nomLieu'])."</a>";
-
-			if ($tab_even['idSalle'])
-			{
-				$sql_salle = "SELECT nom FROM salle WHERE idSalle=".(int) $tab_even['idSalle'];
-				$req = $connector->query($sql_salle);
-				$tab = $connector->fetchArray($req);
-				$nom_lieu .= " - ".$tab['nom'];
-			}
-		}
-		else
-		{
-			$nom_lieu = sanitizeForHtml($tab_even['nomLieu']);
-		}
-
-		$items .= $nom_lieu;
-			//si un flyer existe
-		if (!empty($tab_even['flyer']))
-		{
-			$items .= "<div class=\"flyer\"><img src=\"" . Evenement::getFileHref(Evenement::getFilePath($tab_even['flyer'], "s_")) . "\"  alt=\"Flyer\" /></div>";
-        }
-
-		$maxChar = Text::trouveMaxChar($tab_even['description'], 60, 5);
-		if (mb_strlen((string) $tab_even['description']) > $maxChar)
-		{
-			$items .= Text::texteHtmlReduit(Text::wikiToHtml(sanitizeForHtml($tab_even['description'])), $maxChar, "");
-        }
-		else
-		{
-			$items .= Text::wikiToHtml(sanitizeForHtml($tab_even['description']));
-        }
-
-
-		$items .= "<p>".afficher_debut_fin($tab_even['horaire_debut'], $tab_even['horaire_fin'], $tab_even['dateEvenement'])." ".sanitizeForHtml($tab_even['horaire_complement'])."</p>";
-		$items .= "<p>".sanitizeForHtml($tab_even['prix'])."</p>";
-
-		$items .= "]]></description>\n";
-		//$items .= "<enclosure url=\"".$IMGeven.$tab_even['flyer']."\" type="image/jpeg" length="2441"></enclosure>
-		$items .= "<guid isPermaLink=\"false\">".(int)$tab_even['idEvenement']."</guid>\n";
-		$items .= "<pubDate>".date("r", datetime_iso2time($tab_even['dateAjout']))."</pubDate>\n";
-		$items .= "</item>\n";
-
-		$der_dateAjout = datetime_iso2time($tab_even['dateAjout']);
-	}
-	$channel .= "<pubDate>".date("r", $der_dateAjout)."</pubDate>\n";
+    $items[] = $item;
+    $der_dateAjout = date_iso2time($tab_even['e_dateAjout']);
 }
-else if ($get['type'] == "evenements_ajoutes")
+
+if ($get['type'] == 'lieu_evenements')
 {
-
-	$channel = '<title>La décadanse : derniers événements ajoutés</title>';
-	$channel .= '<link>'.$site_full_url.'</link>';
-	$channel .= '<description>Derniers événements ajoutés</description>';
-	$channel .= "<pubDate>".date("r")."</pubDate>\n";
-	$channel .= "<language>fr</language>\n";
-
-
-	$der_dateAjout = time();
-
-	$req_even = $connector->query("SELECT idEvenement, idPersonne, idSalle, genre, titre, dateEvenement,
-		 idLieu, nomLieu, adresse, quartier, description, flyer, image, horaire_debut, horaire_fin, horaire_complement, prix, dateAjout
-		 FROM evenement WHERE statut NOT IN ('inactif', 'propose') ORDER BY dateAjout DESC LIMIT 0, 20");
-
-	$items = "";
-	$css = "<style> .flyer { float:left; } h1, h2, h3, h4, p { margin: 1em 0.1em 0.6em 0.1em} .desc { margin: 0.4em 0.1em } .clean {clear:both;}</style>";
-
-
-	while ($tab_even = $connector->fetchArray($req_even))
-	{
-
-		$items .= "<item>\n";
-		$items .= "<title>".sanitizeForHtml($tab_even['titre'])."</title>\n";
-		$items .= "<link>".$site_full_url."/event/evenement.php?idE=".$tab_even['idEvenement']."</link>\n";
-		$items .= "<description><![CDATA[";
-        $items .= $css;
-		 $items .= '<h2 style="padding:0.1em 0.1em;border-bottom:1px dotted #aeaeae;">'.ucfirst((string) date_fr($tab_even['dateEvenement'], 'annee')).'</h2>';
-
-
-
-		if ($tab_even['idLieu'] != 0)
-		{
-			$nom_lieu = "<a href=\"".$site_full_url."/lieu.php?idL=".(int) $tab_even['idLieu']."\"
-			title=\"Voir la fiche du lieu : ".sanitizeForHtml($tab_even['nomLieu'])."\" >
-			".sanitizeForHtml($tab_even['nomLieu'])."</a>";
-
-			if ($tab_even['idSalle'])
-			{
-				$sql_salle = "SELECT nom FROM salle WHERE idSalle=".(int) $tab_even['idSalle'];
-				$req = $connector->query($sql_salle);
-				$tab = $connector->fetchArray($req);
-				$nom_lieu .= " - ".$tab['nom'];
-			}
-		}
-		else
-		{
-			$nom_lieu = sanitizeForHtml($tab_even['nomLieu']);
-		}
-
-		$items .= "<h3>".$nom_lieu."</h3>";
-		$items .= "<p>".$tab_even['adresse']." - ".$tab_even['quartier']."</p>";
-		$items .= "<h4>".ucfirst((string) $glo_tab_genre[$tab_even['genre']])."</h4>";
-
-			//si un flyer existe
-		if (!empty($tab_even['flyer']))
-		{
-			$items .= "<div class=\"flyer\"><img src=\"" . Evenement::getFileHref(Evenement::getFilePath($tab_even['flyer'], "s_")) . "\"  alt=\"Flyer\" /></div>";
-        }
-		else if (!empty($tab_even['image']))
-		{
-			$items .= "<div class=\"flyer\"><img src=\"" . Evenement::getFileHref(Evenement::getFilePath($tab_even['image'], "s_")) . "\"  alt=\"Photo\" /></div>";
-        }
-
-
-
-		$items .= "<div class=\"desc\">";
-		$maxChar = Text::trouveMaxChar($tab_even['description'], 60, 8);
-		if (mb_strlen((string) $tab_even['description']) > $maxChar)
-		{
-			$items .= Text::texteHtmlReduit(Text::wikiToHtml(sanitizeForHtml($tab_even['description'])), $maxChar, "");
-        }
-		else
-		{
-			$items .= Text::wikiToHtml(sanitizeForHtml($tab_even['description']));
-        }
-		$items .= "</div>";
-
-		$items .= "<p>".afficher_debut_fin($tab_even['horaire_debut'], $tab_even['horaire_fin'], $tab_even['dateEvenement'])." ".sanitizeForHtml($tab_even['horaire_complement'])."</p>";
-		$items .= "<p>".sanitizeForHtml($tab_even['prix'])."</p>";
-
-		$items .= "]]></description>\n";
-		//$items .= "<enclosure url=\"".$IMGeven.$tab_even['flyer']."\" type="image/jpeg" length="2441"></enclosure>
-		$items .= "<guid isPermaLink=\"false\">".(int) $tab_even['idEvenement']."</guid>\n";
-		$items .= "<pubDate>".date("r", datetime_iso2time($tab_even['dateAjout']))."</pubDate>\n";
-		$items .= "</item>\n";
-
-
-
-		$der_dateAjout = datetime_iso2time($tab_even['dateAjout']);
-
-	}
-
+    $channel['title'] .= ' de '.$title_lieu;
 }
+
+// TODO: $channel['title'] .= ' de '.$organisateur;
 
 header('Content-Disposition: inline; filename=' . $get['type'] . '.xml');
 header('Content-Type: text/xml');
-echo $xml . $channel . $items . "</channel></rss>";
+?>
+<?xml version="1.0" encoding="utf-8" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <atom:link href="<?= sanitizeForHtml($site_full_url.ltrim($_SERVER['REQUEST_URI'], '/')) ?>" rel="self" type="application/rss+xml" />
+        <title><?= sanitizeForHtml($channel['title']) ?></title>
+        <link><?= sanitizeForHtml($channel['link']) ?></link>
+        <description></description>
+        <ttl>1440</ttl>
+        <pubDate><?= date("r", $der_dateAjout) ?></pubDate>
+        <language>fr</language>
+
+        <?php foreach ($items as $item) : ?>
+        <item>
+            <title><?= sanitizeForHtml($item['title']) ?></title>
+            <link><?= sanitizeForHtml($item['link']) ?></link>
+            <description>
+                <![CDATA[
+                    <style>
+                        .flyer { float:left; }
+                        h1, h2, h3, h4, p { margin: 1em 0.1em 0.6em 0.1em }
+                        h2 { font-size:1.2em; padding:0.2em 0.1em;border-bottom:1px solid #aeaeae; }
+                        .desc { margin: 0.4em 0.2em }
+                        .clean { clear:both; }
+                    </style>
+                    <h2><?= $item['nom_lieu'] ?></h2> <!-- relative url -->
+                    <?php if (!empty($item['image'])) : ?>
+                        <figure class="flyer">
+                            <img src="<?= $site_full_url.$item['image'] ?>" alt="Affiche ou illustration de <?= sanitizeForHtml($item['title']) ?>" width="300">
+                        </figure>
+                    <?php endif; ?>
+                    <p><?= $item['description'] ?></p>
+                    <p><?= sanitizeForHtml($item['horaire']) ?></p>
+                    <p><?= sanitizeForHtml($item['prix']) ?></p>
+                ]]>
+            </description>
+            <guid isPermaLink="false"><?= $item['guid'] ?></guid>
+        </item>
+        <?php endforeach; ?>
+
+    </channel>
+</rss>
