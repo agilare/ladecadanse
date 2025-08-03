@@ -36,15 +36,8 @@ if (isset($_GET['idL']))
 {
 	$get['idL'] = (int)$_GET['idL'];
 }
-
-
 ?>
-
-
-
-<!-- D?t Contenu -->
 <div id="contenu" class="colonne">
-
 
 <?php
 
@@ -72,20 +65,15 @@ $action_terminee = false;
 
 if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 {
-
 	/*
 	 * Copie des champs envoyê³ par POST
 	 */
 	foreach ($champs as $c => $v)
 	{
-
 		$champs[$c] = $_POST[$c];
-
 	}
 
-
 	$verif->valider($champs['idLieu'], "idLieu", "texte", 1, 60, 1);
-
 	$verif->valider($champs['nom'], "nom", "texte", 2, 100, 1);
 	$verif->valider($champs['emplacement'], "emplacement", "texte", 2, 100, 0);
 
@@ -96,8 +84,6 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 	{
 			$verif->setErreur("idLieu", "Ce lieu n'est pas dans la liste");
 	}
-
-
 
 	/*
 	 * Pas d'erreur, donc ajout ou update executés
@@ -136,7 +122,6 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 			{
 
 				HtmlShrink::msgOk("Salle <em>".sanitizeForHtml($champs['nom'])."</em> ajoutée");
-
 				$action_terminee = true;
 			}
 			else
@@ -155,11 +140,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 
 			$sql_update = "UPDATE salle SET
 			nom='".$connector->sanitize($champs['nom'])."', emplacement='".$connector->sanitize($champs['emplacement'])."', date_derniere_modif='".$champs['date_derniere_modif']."'
-			WHERE idSalle=".$get['idS'];
-
-			//TEST
-			//echo "<p>".$sql_update."</p>";
-			//
+			WHERE idSalle=".(int)$get['idS'];
 
 			$req_update = $connector->query($sql_update);
 
@@ -167,7 +148,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 			if ($req_update)
 			{
 
-				HtmlShrink::msgOk('Salle du <a href="/lieu.php?idL='.$champs['idLieu'].'" title="Fiche du lieu">lieu</a> modifiée');
+				HtmlShrink::msgOk('Salle du <a href="/lieu.php?idL='.(int)$champs['idLieu'].'" title="Fiche du lieu">lieu</a> modifiée');
 
 				$get['action'] = 'editer';
 				$action_terminee = true;
@@ -197,17 +178,14 @@ echo '<div id="entete_contenu">';
  */
 if ($get['action'] == 'editer' || $get['action'] == 'update')
 {
-
-	$act = "update&idS=".$get['idS'];
-
-	$req_lieu = $connector->query("SELECT * FROM salle WHERE idSalle=".$get['idS']);
+	$act = "update&idS=".(int)$get['idS'];
+	$req_lieu = $connector->query("SELECT * FROM salle WHERE idSalle=".(int)$get['idS']);
  	$detailsLieu = $connector->fetchArray($req_lieu);
-
-        echo '<h2>Modifier</h2>';
-    }
+    echo '<h2>Modifier</h2>';
+}
 else
 {
-        $act = "insert";
+    $act = "insert";
 	echo "<h2>Ajouter une salle à un lieu</h2>";
 }
 
@@ -220,7 +198,7 @@ else
 if ($get['action'] == 'editer' && isset($get['idS']))
 {
 
-	$sql = "SELECT * FROM salle WHERE idSalle=".$get['idS'];
+	$sql = "SELECT * FROM salle WHERE idSalle=".(int)$get['idS'];
 	//echo $sql;
 	$req_desc = $connector->query($sql);
 
@@ -231,12 +209,6 @@ if ($get['action'] == 'editer' && isset($get['idS']))
 				$champs[$c] = $v;
 			}
 	}
-
-	echo '<ul class="entete_contenu_menu">';
-	echo "<li class=\"action_supprimer\">
-	<a href=\"/multi-suppr.php?type=salle&id=".$get['idS']."&token=".SecurityToken::getToken()."\" title=\"Supprimer la salle\">Supprimer</a></li>";
-	echo "</ul>";
-
 } // if GET action
 
 echo '<div class="spacer"></div></div>';

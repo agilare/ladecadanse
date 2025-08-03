@@ -77,7 +77,6 @@ else if ($get['action'] == 'editer')
 
 
 $titre_form = "";
-$titre_actions = '';
 
 
 //menu d'actions (activation et suppression)  pour l'auteur > 6 ou l'admin
@@ -89,15 +88,6 @@ if (($get['action'] == 'editer' || $get['action'] == 'update'))
 
 	if ($_SESSION['Sgroupe'] <= 6 || $authorization->isPersonneAffiliatedWithLieu($_SESSION['SidPersonne'], $get['idL']) || $authorization->isPersonneInLieuByOrganisateur($_SESSION['SidPersonne'], $get['idL']))
 	{
-		//Menu d'actions
-		if ($_SESSION['Sgroupe'] < 2)
-		{
-			$titre_actions = '<ul class="entete_contenu_menu">';
-			$titre_actions .= "<li class=\"action_supprimer\">
-			<a href=\"/multi-suppr.php?type=lieu&amp;id=".(int)$get['idL']."&token=".SecurityToken::getToken()."\">Supprimer</a></li>";
-			$titre_actions .= '</ul>';
-		}
-
 	}
 	else
 	{
@@ -117,8 +107,7 @@ include("_header.inc.php");
 <div id="contenu" class="colonne">
 
 <div id="entete_contenu">
-    <h2><?php echo $titre_form; ?> un lieu</h2>
-    <?php echo $titre_actions; ?>
+    <h2><?= $titre_form; ?> un lieu</h2>
     <div class="spacer"></div>
 </div>
 

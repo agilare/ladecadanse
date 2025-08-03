@@ -3,7 +3,6 @@
 require_once("app/bootstrap.php");
 
 use Ladecadanse\Utils\Validateur;
-use Ladecadanse\Security\SecurityToken;
 use Ladecadanse\Utils\Logger;
 use Ladecadanse\HtmlShrink;
 
@@ -163,7 +162,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 				$descriptionlieu = $champs;
 				$descriptionlieu['auteur'] = $get['idP'];
 				$descriptionlieu['date_derniere_modif'] = date("Y-m-d H:i:s");
-                $logger->log('global', 'activity', "[lieu-text-edit] insert of " . $get['type'] . " for idL " . $get['idL'] . " by user " . $_SESSION['user'], Logger::GRAN_YEAR);
+                $logger->log('global', 'activity', "[lieu-text-edit] insert of " . $get['type'] . " for idL " . (int)$get['idL'] . " by user " . $_SESSION['user'], Logger::GRAN_YEAR);
 
                 $action_terminee = true;
 			}
@@ -178,7 +177,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 
 			$sql_update = "UPDATE descriptionlieu SET
 			contenu='".$connector->sanitize($champs['contenu'])."', date_derniere_modif='".$champs['date_derniere_modif']."'
-			WHERE idPersonne=".$get['idP']." AND idLieu=".$get['idL']." AND type='".$champs['type']."'";
+			WHERE idPersonne=".(int)$get['idP']." AND idLieu=".(int)$get['idL']." AND type='".$champs['type']."'";
 
 			//TEST
 			//echo "<p>".$sql_update."</p>";
@@ -193,7 +192,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 				$descriptionlieu = $champs;
 				$descriptionlieu['auteur'] = $get['idP'];
 				$get['action'] = 'editer';
-                $logger->log('global', 'activity', "[lieu-text-edit] update of " . $get['type'] . " for idL " . $get['idL'] . " by user " . $_SESSION['user'], Logger::GRAN_YEAR);
+                $logger->log('global', 'activity', "[lieu-text-edit] update of " . $get['type'] . " for idL " . (int)$get['idL'] . " by user " . $_SESSION['user'], Logger::GRAN_YEAR);
                 $action_terminee = true;
 			}
 			else
@@ -203,7 +202,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 
 		} //if action
 
-        header("Location: /lieu.php?idL=".$champs['idLieu']); die();
+        header("Location: /lieu.php?idL=".(int)$champs['idLieu']); die();
 
 	} // if erreurs == 0
 } // if POST != ""
@@ -257,7 +256,7 @@ else
 if ($get['action'] == 'editer' && isset($get['idL']) && isset($get['idP']))
 {
     $sql = "SELECT idPersonne, idLieu, contenu, type, dateAjout
-    FROM descriptionlieu WHERE idLieu =".$get['idL']." AND idPersonne=".$get['idP']." AND type='".$get['type']."'";
+    FROM descriptionlieu WHERE idLieu =".(int)$get['idL']." AND idPersonne=".(int)$get['idP']." AND type='".$get['type']."'";
     $req_desc = $connector->query($sql);
 
     if ($tabDesc = $connector->fetchArray($req_desc))
@@ -269,15 +268,6 @@ if ($get['action'] == 'editer' && isset($get['idL']) && isset($get['idP']))
     }
 
     @mysqli_free_result($req_desc);
-
-        if ($_SESSION['Sgroupe'] <= 4)
-        {
-        echo '<ul class="entete_contenu_menu">';
-        echo "<li class=\"action_supprimer\">
-        <a href=\"/multi-suppr.php?type=descriptionlieu&id=".$get['idL']."&idP=".$get['idP']."&token=".SecurityToken::getToken()."\">Supprimer</a></li>";
-        echo "</ul>";
-    }
-
 } // if GET action
 
 echo '<div class="spacer"></div></div>';
@@ -312,7 +302,7 @@ if (($get['action'] == 'editer' || $get['action'] == 'update') && isset($get['id
 {
 
 	echo "<input type=\"hidden\" name=\"idLieu\" value=\"".$get['idL']."\" />
-	<input type=\"hidden\" name=\"idP\" value=\"".$get['idP']."\" />";
+	<input type=\"hidden\" name=\"idP\" value=\"".(int)$get['idP']."\" />";
 }
     else
 {
@@ -328,7 +318,7 @@ if (($get['action'] == 'editer' || $get['action'] == 'update') && isset($get['id
 		{
 		  	echo " selected=\"selected\"";
 		}
-		echo " value=\"" . $lieuTrouve['idLieu'] . "\">" . sanitizeForHtml($lieuTrouve['nom']) . "</option>";
+		echo " value=\"" . (int)$lieuTrouve['idLieu'] . "\">" . sanitizeForHtml($lieuTrouve['nom']) . "</option>";
         }
     ?>
     </select></p>
