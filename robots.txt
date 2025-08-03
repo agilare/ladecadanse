@@ -1,9 +1,6 @@
 User-agent: *
 Crawl-delay: 15 # rule ignored by Google
-disallow: /*?*tri_agenda=
 disallow: /*?*genre=
-disallow: /*?*sem=
-disallow: /*?*page=
 
 Disallow: /admin/
 Disallow: /app/
@@ -13,6 +10,7 @@ Disallow: /var/
 Disallow: /vendor/
 Disallow: /.git-ftp.log
 Disallow: /*.inc.php
+# following scripts send noindex in their headers
 # Disallow: /maintenance.php
 # Disallow: /evenement-actions.php
 # Disallow: /evenement-email.php
