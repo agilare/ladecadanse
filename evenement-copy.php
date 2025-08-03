@@ -38,7 +38,7 @@ else
 }
 
 
-$req_lieu = $connector->query("SELECT idLieu, dateEvenement FROM evenement WHERE idEvenement=".$get['idE']);
+$req_lieu = $connector->query("SELECT idLieu, dateEvenement FROM evenement WHERE idEvenement=".(int)$get['idE']);
 $tab_lieu = $connector->fetchArray($req_lieu);
 
 
@@ -155,8 +155,14 @@ FROM evenement WHERE idEvenement=".(int)$get['idE'])));
 		/*
 		 * Collage de l'événement entre la date de début et la date de fin
 		 */
+        $i = 0;
 		while ($dateIncrUnix <= $dateEUnix2)
 		{
+            if ($i > 100)
+            {
+                $_SESSION['copierEvenement_flash_msg']['msg'] .= "<p><strong>L'événement n'a pas été copié vers plus de 100 dates (afin de ménager les ressources du systmème), veuillez répéter l'opération pour les suivantes</strong></p>";
+                break;
+            }
 			/*
 			 *S'il y a un flyer création du nom de sa copie avec
 			* l'ID du prochain événement inséré, la date courante et le suffixe
@@ -278,11 +284,13 @@ FROM evenement WHERE idEvenement=".(int)$get['idE'])));
 			{
 				$dateIncrUnix += 3600;
 			}
+
+            $i++;
 		} //while date
 
         $logger->log('global', 'activity', "[copierEvenement] event \"" . $tab_champs['titre'] . "\" of " . $tab_champs['dateEvenement'] . " copied to " . $dateEvenement . " - " . $dateEvenement2, Logger::GRAN_YEAR);
 
-        header("Location: ?idE=".$get['idE']); die();
+        header("Location: ?idE=".(int)$get['idE']); die();
 	} //if nberreur = 0
 } // if POST != ""
 
