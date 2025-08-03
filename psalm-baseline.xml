@@ -44,7 +44,7 @@
       <code><![CDATA[global $logger;]]></code>
     </InvalidGlobal>
   </file>
-  <file src="rss.php">
+  <file src="event/rss.php">
     <InvalidGlobal>
       <code><![CDATA[global $site_full_url, $glo_auj_6h, $connector, $auj, $glo_tab_genre;]]></code>
     </InvalidGlobal>

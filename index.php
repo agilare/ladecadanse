@@ -80,7 +80,7 @@ $sql_events_today_in_region_order_by_category = "SELECT
   l.nom AS l_nom,
   l.adresse AS l_adresse,
   l.quartier AS l_quartier,
-  l.URL AS l_URL    ,
+  l.URL AS l_URL,
   lloc.localite AS lloc_localite,
   l.region AS l_region,
   s.nom AS s_nom
@@ -220,7 +220,7 @@ include("_header.inc.php");
         <h1 class="accueil"><?= ucfirst((string) date_fr($get['courant'])); ?>
             <?php if ($courant_year !== date("Y")) { echo $courant_year; } ?>
             <?php if ($is_courant_today) : ?><br>
-                <small>Aujourd’hui <a href="/rss.php?type=evenements_auj" title="Flux RSS des événements du jour" class="desktop"><i class="fa fa-rss fa-lg"></i></a></small><?php endif; ?>
+                <small>Aujourd’hui <a href="/event/rss.php?type=evenements_auj" title="Flux RSS des événements du jour" class="desktop"><i class="fa fa-rss fa-lg"></i></a></small><?php endif; ?>
         </h1>
         <ul class="entete_contenu_navigation">
             <li><a href="index.php?courant=<?= $date_prev ?>" rel="nofollow"><?= $iconePrecedent ?></a></li><li><a href="index.php?courant=<?= $date_next ?>" rel="nofollow"><?= ucfirst(date_fr($date_next, "tout", "non", "")).$iconeSuivant ?></a></li>
@@ -298,7 +298,12 @@ include("_header.inc.php");
                                 <span class="left"><?= sanitizeForHtml(HtmlShrink::adresseCompacteSelonContexte($even_lieu['region'], $even_lieu['localite'], $even_lieu['quartier'], $even_lieu['adresse'])); ?></span>
                                 <span class="right">
                                     <?php
-                                    $horaire_complet = afficher_debut_fin($tab_even['e_horaire_debut'], $tab_even['e_horaire_fin'], $tab_even['e_dateEvenement'])." " . sanitizeForHtml($tab_even['e_horaire_complement']);echo $horaire_complet;
+                                    $horaire_complet = afficher_debut_fin($tab_even['e_horaire_debut'], $tab_even['e_horaire_fin'], $tab_even['e_dateEvenement']);
+                                    if (!empty($tab_even['e_horaire_complement']))
+                                    {
+                                        $horaire_complet .= " ".$tab_even['e_horaire_complement'];
+                                    }
+                                    echo sanitizeForHtml($horaire_complet);
                                     if (!empty($horaire_complet) && !empty($tab_even['e_prix']))
                                     {
                                         echo ", ";
@@ -395,7 +400,7 @@ include("_header.inc.php");
 
         <section class="secondaire">
 
-            <span class="lien_rss"><a href="/rss.php?type=evenements_ajoutes" aria-label="Flux RSS des derniers événements"><i class="fa fa-rss fa-lg"></i></a></span>
+            <span class="lien_rss"><a href="/event/rss.php?type=evenements_ajoutes" aria-label="Flux RSS des derniers événements"><i class="fa fa-rss fa-lg"></i></a></span>
 
             <h2>Derniers événements ajoutés</h2>
 

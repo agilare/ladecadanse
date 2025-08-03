@@ -241,7 +241,7 @@ $req = $connector->query($sql);
 <div class="spacer"></div>
 
 <?php
-	$lien_rss_evenements = '<a href="/rss.php?type=organisateur_evenements&amp;id='.(int)$get['idO'].'" title="Flux RSS des prochains événements"><i class="fa fa-rss fa-lg" style="color:#f5b045"></i></a>';
+	$lien_rss_evenements = '<a href="/event/rss.php?type=organisateur_evenements&amp;id='.(int)$get['idO'].'" title="Flux RSS des prochains événements"><i class="fa fa-rss fa-lg" style="color:#f5b045"></i></a>';
 ?>
 
 <ul id="menu_complement">
