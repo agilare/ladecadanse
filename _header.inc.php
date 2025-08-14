@@ -11,10 +11,10 @@ use Ladecadanse\UserLevel;
     <meta charset="utf-8" >
 
     <?php
-    // TODO: replace by a "page_robots_noindex" var in concerned page : index, evenement-report, etc.
+    // TODO: replace by a "page_robots_noindex" var in concerned page : index, event/send, etc.
     if (
         ($nom_page == 'index' && isset($_GET['courant']) && ($_GET['courant'] < date("Y-m-d") || (isset($total_even) && $total_even == 0 && $_GET['courant'] > date('Y-m-d', strtotime('+1 year')))))
-        || in_array($nom_page, ['evenement-report', 'evenement-email', 'event/search'])
+        || in_array($nom_page, ['event/send', 'event/search'])
         ) : ?>
         <meta name="robots" content="noindex, nofollow">
     <?php endif; ?>
@@ -42,7 +42,7 @@ use Ladecadanse\UserLevel;
     <link rel="stylesheet" type="text/css" href="/web/css/normalize.css">
     <link rel="stylesheet" type="text/css" href="/web/css/imprimer.css" media="print">
     <link rel="stylesheet" type="text/css" href="/web/css/global.css?<?= time() ?>">
-    <link rel="stylesheet" type="text/css" href="/web/css/calendrier.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="/web/css/event/calendrier.css" media="screen">
     <?php
     $css_file_path = "/web/css/{$nom_page}.css";
     if (file_exists(__ROOT__ . $css_file_path)) { ?>
@@ -264,5 +264,5 @@ use Ladecadanse\UserLevel;
             <div class="spacer"><!-- --></div>
         </header>
 
-        <div id="conteneur" <?php if (strstr(dirname((string) $_SERVER['PHP_SELF']), 'admin') || in_array($nom_page, ['evenement-edit', 'evenement-report', 'lieu-edit', 'lieu-text-edit', 'organisateur-edit', 'contacteznous', 'user-login', 'user-edit', 'user-register'])) : ?>style="padding-right: 5px" <?php endif; ?> >
+        <div id="conteneur" <?php if (strstr(dirname((string) $_SERVER['PHP_SELF']), 'admin') || in_array($nom_page, ['evenement-edit', 'event/copy', 'event/send', 'lieu-edit', 'lieu-text-edit', 'organisateur-edit', 'contacteznous', 'user-login', 'user-edit', 'user-register'])) : ?>style="padding-right: 5px" <?php endif; ?> >
 

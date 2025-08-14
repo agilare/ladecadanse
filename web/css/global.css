@@ -741,6 +741,217 @@ table tr td.small
     background: rgba(236, 226, 111, .7);
 }
 
+/* article */
+
+.evenement-short
+{
+    color:#59787A;
+    margin: 0.6em 0 1.4em;
+    border-top:1px dotted gray;
+    width:100%;
+}
+
+    .evenement-short .flyer
+    {
+        float:left;
+        width:100px;
+        height:140px;
+        background:#efefef;
+        overflow:hidden;
+        margin-top:6px;
+    }
+
+    .evenement-short .titre
+    {
+        padding: 0.4em 0 0.1em;
+        font-size:1em;
+        font-weight:bold;
+        line-height:1.2em;
+
+        -width:90%;
+        /*
+        border-bottom:1px solid black;
+        */
+    }
+
+        .evenement-short .titre .left
+        {
+            float:left;
+            line-height: 1.25em;
+            width:58%;
+            text-align:left;
+            margin:0;
+            padding-left:0.1em;
+            /*
+                    background-color:yellow;
+            */
+        }
+
+        .evenement-short .titre .left a:visited {
+            color:#0f4786; /* #105199 #104d91*/
+        }
+
+
+        .evenement-short .titre .right
+        {
+            float:right;
+            width:40%;
+            padding:0;
+            padding:0 0.2em 0 0 ;
+            text-align:right;
+            line-height: 1.25em;
+            /*
+                background-color:aqua;
+            */
+        }
+
+        .evenement-short .titre #titre, #nom_lieu
+        {
+            display:block;
+            background-color:#FDD017;
+        }
+
+
+    .evenement-short .description
+    {
+        min-height:72px;
+        padding:0.4em 0 0.4em 0.5em;
+        margin:0;
+        color:#3e5355;
+        font-size:0.9em;
+        background-color:#F9F9F9;
+        line-height:1.4em;
+        overflow:hidden;
+    }
+
+        .evenement-short .description p
+        {
+            margin:0;
+        }
+
+        .evenement-short .description .event_orga
+        {
+            list-style-type:none;
+            margin:0.8em 0 0.6em 0;
+            padding:0.1em;
+            position:relative;
+            bottom:0
+        }
+
+.event_orga li
+{
+    margin: 0.3em 0.1em 0.1em 0.1em;
+    padding:0.2em;
+    display:inline-block;
+    background:#efefef;
+    border-radius:3px;
+}
+
+.evenement-short .description .event_orga .lien_ext
+{
+    font-size: 0.9em;
+}
+
+
+
+.evenement-short .adresse
+{
+    background:#E6EDF7;
+}
+
+.evenement-short .pratique
+{
+    background:#E6EDF7;
+    font-size:0.8em;
+    border:1px solid #eaeaea;
+    padding:0.4em 0.2em;
+    line-height: 1.3em;
+}
+
+.evenement-short .pratique .left
+{
+    float:left;
+    padding:0 0 0 0.2em;
+    width:59%;
+    text-align:left;
+}
+
+.evenement-short .pratique .right
+{
+    float:right;
+    width:39%;
+    padding:0 0.2em 0 0;
+    text-align:right;
+}
+
+.evenement-short .edition
+{
+    height:1.6em;
+    font-size:0.9em;
+}
+
+ul.menu_action
+{
+    float:left;
+    height:1.6em;
+    margin:.3em 0 0 0;
+    padding: 0;
+    display:inline;
+}
+
+ul.menu_action li
+{
+    height:1.6em;
+    display:inline;
+    margin:.8em .3em;
+}
+
+ul.menu_action li a
+{
+    padding:.3em;
+}
+
+ul.menu_action li a.signaler, ul.menu_action li a.ical
+{
+    color:#a6a5a5;
+}
+
+ul.menu_action li a.signaler:hover, ul.menu_action li a.signaler:active,
+ul.menu_action li a.ical:hover, ul.menu_action li a.ical:active
+{
+    color:#1569C7;
+}
+
+
+ul.menu_action li img
+{
+    vertical-align: middle;
+}
+
+ul.menu_edition
+{
+    float:right;
+    height:1.6em;
+    text-align:right;
+    padding:0.4em 0;
+    margin:0;
+}
+
+ul.menu_edition li
+{
+    height:1.6em;
+    display:inline;
+    margin:0 0.2em;
+}
+
+ul.menu_edition li img
+{
+    vertical-align: middle;
+}
+
+/* fin article */
+
+
 .recherche_mobile
 {
     display:none;

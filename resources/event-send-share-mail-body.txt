@@ -1,0 +1,14 @@
+Message envoyé depuis www.ladecadanse.ch par %username% (%user_email%) :
+
+%message%
+
+------------------
+
+%titre_complet%
+
+%description%
+
+%horaire_complet%, %prix%
+
+
+%url%

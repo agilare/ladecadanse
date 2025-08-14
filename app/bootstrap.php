@@ -15,6 +15,8 @@ use Ladecadanse\Utils\DbConnectorPdo;
 use Ladecadanse\Utils\Logger;
 use Ladecadanse\Utils\RegionConfig;
 use Ladecadanse\Utils\Utils;
+use Ladecadanse\TemplateEngine;
+use Ladecadanse\Translator;
 use Whoops\Handler\PrettyPageHandler;
 
 require_once __DIR__ . '/config.php';
@@ -50,6 +52,10 @@ $connectorPdo = DbConnectorPdo::getInstance();
 $authorization = new Authorization();
 
 $videur = new Sentry();
+
+$tplEngine = new TemplateEngine(__DIR__ . "/../resources/");
+
+$translator = new Translator(__DIR__ . '/../resources/messages.yml');
 
 $site_full_url = Utils::getBaseUrl()."/";
 

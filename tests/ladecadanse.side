@@ -1245,7 +1245,7 @@
         ["css=.signaler", "css:finder"],
         ["xpath=//a[contains(text(),'Signaler une erreur')]", "xpath:link"],
         ["xpath=//div[@id='auteur']/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/evenement-report.php?idE=33')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/event/send.php?action=report&idE=33')]", "xpath:href"],
         ["xpath=//div[8]/a", "xpath:position"],
         ["xpath=//a[contains(.,' Signaler une erreur')]", "xpath:innerText"]
       ],
@@ -2823,7 +2823,7 @@
         ["linkText=Copier vers d'autres dates", "linkText"],
         ["css=.genre:nth-child(1) .action_copier > a", "css:finder"],
         ["xpath=//section[@id='prochains_evenements']/div/article/div[6]/ul[2]/li/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/evenement-copy.php?idE=278')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/event/copy.php?idE=278')]", "xpath:href"],
         ["xpath=//ul[2]/li/a", "xpath:position"]
       ],
       "value": ""
@@ -2930,7 +2930,7 @@
         ["css=.menu_actions_evenement > li:nth-child(1) > a", "css:finder"],
         ["xpath=//a[contains(text(),'Envoyer à un ami')]", "xpath:link"],
         ["xpath=//div[@id='contenu']/ul/li/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/evenement-email.php?idE=278')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/event/send.php?action=share&idE=278')]", "xpath:href"],
         ["xpath=//div/ul/li/a", "xpath:position"],
         ["xpath=//a[contains(.,'Envoyer à un ami')]", "xpath:innerText"]
       ],
@@ -2971,7 +2971,7 @@
         ["linkText=Copier vers d'autres dates", "linkText"],
         ["css=.menu_actions_evenement > li:nth-child(2) > a", "css:finder"],
         ["xpath=//div[@id='contenu']/ul/li[2]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/evenement-copy.php?idE=278')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/event/copy.php?idE=278')]", "xpath:href"],
         ["xpath=//div/ul/li[2]/a", "xpath:position"]
       ],
       "value": ""
@@ -3346,7 +3346,7 @@
         ["linkText=Copier vers d'autres dates", "linkText"],
         ["css=.menu_actions_evenement > li:nth-child(2) > a", "css:finder"],
         ["xpath=//div[@id='contenu']/ul/li[2]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/evenement-copy.php?idE=511')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/event/copy.php?idE=511')]", "xpath:href"],
         ["xpath=//div/ul/li[2]/a", "xpath:position"]
       ],
       "value": ""
@@ -3423,7 +3423,7 @@
         ["css=.menu_actions_evenement > li:nth-child(1) > a", "css:finder"],
         ["xpath=//a[contains(text(),'Envoyer à un ami')]", "xpath:link"],
         ["xpath=//div[@id='contenu']/ul/li/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/evenement-email.php?idE=278')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/event/send.php?action=share&idE=278')]", "xpath:href"],
         ["xpath=//div/ul/li/a", "xpath:position"],
         ["xpath=//a[contains(.,'Envoyer à un ami')]", "xpath:innerText"]
       ],
@@ -6112,7 +6112,7 @@
         ["linkText=Copier vers d'autres dates", "linkText"],
         ["css=.menu_actions_evenement > li:nth-child(2) > a", "css:finder"],
         ["xpath=//div[@id='contenu']/ul/li[2]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/evenement-copy.php?idE=539')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/event/copy.php?idE=539')]", "xpath:href"],
         ["xpath=//div/ul/li[2]/a", "xpath:position"]
       ],
       "value": ""

@@ -5,6 +5,8 @@ namespace Ladecadanse;
 
 use Ladecadanse\Element;
 use Ladecadanse\Utils\Text;
+use Ladecadanse\Lieu;
+use Ladecadanse\Organisateur;
 
 class Evenement extends Element
 {
@@ -31,6 +33,7 @@ class Evenement extends Element
             return [
                 'idLieu' => $event['e_idLieu'],
                 'nom' => $event['l_nom'],
+                'determinant' => $event['l_determinant'] ?? "",
                 'adresse' => $event['l_adresse'],
                 'quartier' => $event['l_quartier'],
                 'lat' => $event['l_lat'] ?? "",
@@ -173,6 +176,62 @@ class Evenement extends Element
         return $result;
     }
 
+
+    public static function eventShortArticleHtml(array $tab_even, array $tab_events_today_in_region_orgas = []): string
+    {
+        $even_lieu = self::getLieu($tab_even);
+
+        ob_start();
+        ?>
+
+        <article class="evenement-short">
+
+            <header class="titre">
+                <h3 class="left"><a href="/event/evenement.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>"><?= self::titreSelonStatutHtml(sanitizeForHtml($tab_even['e_titre']), $tab_even['e_statut']) ?></a></h3>
+                <span class="right"><?= Lieu::getLinkNameHtml($even_lieu['nom'], $even_lieu['idLieu'], $even_lieu['salle']) ?></span>
+                <div class="spacer"></div>
+            </header>
+
+            <figure class="flyer"><?= self::mainFigureHtml($tab_even['e_flyer'], $tab_even['e_image'], $tab_even['e_titre'], 100) ?></figure>
+
+            <div class="description">
+                <p>
+                <?= Text::texteHtmlReduit(Text::wikiToHtml(sanitizeForHtml($tab_even['e_description'])), Text::trouveMaxChar($tab_even['e_description'], 60, 6), ' <a class="continuer" href="/event/evenement.php?idE=' . (int) $tab_even['e_idEvenement'] . '"> Lire la suite</a>'); ?>
+                </p>
+                <?php if (!empty($tab_events_today_in_region_orgas[$tab_even['e_idEvenement']])): ?>
+                    <?= Organisateur::getListLinkedHtml($tab_events_today_in_region_orgas[$tab_even['e_idEvenement']]) ?>
+                <?php endif; ?>
+            </div>
+
+            <div class="spacer"></div>
+
+            <div class="pratique">
+                <span class="left"><?= sanitizeForHtml(HtmlShrink::adresseCompacteSelonContexte($even_lieu['region'], $even_lieu['localite'], $even_lieu['quartier'], $even_lieu['adresse'])); ?></span>
+                <span class="right">
+                    <?php
+                    $horaire_complet = afficher_debut_fin($tab_even['e_horaire_debut'], $tab_even['e_horaire_fin'], $tab_even['e_dateEvenement']);
+                    if (!empty($tab_even['e_horaire_complement']))
+                    {
+                        $horaire_complet .= " ".$tab_even['e_horaire_complement'];
+                    }
+                    echo sanitizeForHtml($horaire_complet);
+                    if (!empty($horaire_complet) && !empty($tab_even['e_prix']))
+                    {
+                        echo ", ";
+                    }
+                    echo sanitizeForHtml($tab_even['e_prix']);
+                    ?>
+                </span>
+                <div class="spacer"></div>
+            </div> <!-- fin pratique -->
+
+
+        <?php
+        $result = ob_get_contents();
+        ob_clean();
+        return $result;
+    }
+
     /**
      * id
      * horaire_debut, horaire_fin
@@ -186,7 +245,7 @@ class Evenement extends Element
      */
     public static function getIcsValues(array $event, string $site_full_url): array
     {
-        $even_lieu = Evenement::getLieu($event);
+        $even_lieu = self::getLieu($event);
         return [
             'UID' => (int) $event['e_idEvenement'],
             'URI' => $site_full_url . "event/evenement.php?idE=" . (int) $event['e_idEvenement'],

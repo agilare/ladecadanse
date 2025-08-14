@@ -192,10 +192,10 @@ include("../_header.inc.php");
     <nav>
         <ul class="menu_actions_evenement">
             <?php if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= UserLevel::MEMBER)) : ?>
-                <li><a href="/evenement-email.php?idE=<?= (int) $get['idE'] ?>"><?= $icone['envoi_email'] ?>&nbsp;Envoyer à un ami</a></li>
+                <li><a href="/event/send.php?action=share&idE=<?= (int) $get['idE'] ?>"><?= $icone['envoi_email'] ?>&nbsp;Envoyer à un ami</a></li>
             <?php endif; ?>
             <?php if ($isPersonneAllowedToEdit) : ?>
-                <li><a href="/evenement-copy.php?idE=<?= (int) $get['idE'] ?>"><?= $iconeCopier ?>&nbsp;Copier vers d'autres dates</a></li>
+                <li><a href="/event/copy.php?idE=<?= (int) $get['idE'] ?>"><?= $iconeCopier ?>&nbsp;Copier vers d'autres dates</a></li>
                 <li><a href="/evenement-edit.php?action=editer&amp;idE=<?= (int) $get['idE'] ?>"><?= $iconeEditer ?>&nbsp;Modifier</a></li>
             <?php endif; ?>
                 <li><a href="/event/to-ics.php?idE=<?= (int) $get['idE'] ?>" title="Exporter au format iCalendar dans votre agenda"><i class="fa fa-calendar-plus-o fa-lg"></i>&nbsp;iCal</a></li>
@@ -315,7 +315,7 @@ include("../_header.inc.php");
             }
 			?>
 
-            <a class="signaler" href="/evenement-report.php?idE=<?= (int) $get['idE'] ?>"><i class="fa fa-flag-o fa-lg"></i>&nbsp;Signaler une erreur</a> Ajouté <?php echo ((!empty($signature_auteur)) ? "par&nbsp;" : "") . $signature_auteur ?> le&nbsp;<?= date_fr($tab_even['e_dateAjout'], "annee", "", "non") ?>
+            <a class="signaler" href="/event/send.php?action=report&idE=<?= (int) $get['idE'] ?>"><i class="fa fa-flag-o fa-lg"></i>&nbsp;Signaler une erreur</a> Ajouté <?php echo ((!empty($signature_auteur)) ? "par&nbsp;" : "") . $signature_auteur ?> le&nbsp;<?= date_fr($tab_even['e_dateAjout'], "annee", "", "non") ?>
             <?php if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= UserLevel::ADMIN && !empty($tab_even['e_idPersonne'])) : ?><a href="/user.php?idP=<?= (int) $tab_even['e_idPersonne'] ?>"><?= $icone['personne'] ?></a><?php endif; ?>
         </footer> <!-- auteur -->
 

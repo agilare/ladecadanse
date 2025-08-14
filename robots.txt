@@ -13,9 +13,8 @@ Disallow: /*.inc.php
 # following scripts send noindex in their headers
 # Disallow: /maintenance.php
 # Disallow: /evenement-actions.php
-# Disallow: /evenement-email.php
 # Disallow: /event/to-ics.php
-# Disallow: /evenement-report.php
+# Disallow: /event/send.php
 # Disallow: /event/search.php
 
 # ignore years 2100, 2200...

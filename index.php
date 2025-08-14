@@ -266,6 +266,7 @@ include("_header.inc.php");
                     {
                         $genre_even_nb++;
 
+                        // event
                         $even_lieu = Evenement::getLieu($tab_even);
 
                         // après le 1er even puis 1 item sur 2 : rappel
@@ -273,58 +274,19 @@ include("_header.inc.php");
                             <p class="rappel_date"><?= ucfirst($day_label) ?>, <?= $glo_tab_genre[$genre]; ?></p>
                         <?php endif; ?>
 
-                        <article class="evenement">
-
-                            <header class="titre">
-                                <h3 class="left"><a href="/event/evenement.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>"><?= Evenement::titreSelonStatutHtml(sanitizeForHtml($tab_even['e_titre']), $tab_even['e_statut']) ?></a></h3>
-                                <span class="right"><?= Lieu::getLinkNameHtml($even_lieu['nom'], $even_lieu['idLieu'], $even_lieu['salle']) ?></span>
-                                <div class="spacer"></div>
-                            </header>
-
-                            <figure class="flyer"><?= Evenement::mainFigureHtml($tab_even['e_flyer'], $tab_even['e_image'], $tab_even['e_titre'], 100) ?></figure>
-
-                            <div class="description">
-                                <p>
-                                <?= Text::texteHtmlReduit(Text::wikiToHtml(sanitizeForHtml($tab_even['e_description'])), Text::trouveMaxChar($tab_even['e_description'], 60, 6), ' <a class="continuer" href="/event/evenement.php?idE=' . (int) $tab_even['e_idEvenement'] . '"> Lire la suite</a>'); ?>
-                                </p>
-                                <?php if (!empty($tab_events_today_in_region_orgas[$tab_even['e_idEvenement']])): ?>
-                                    <?= Organisateur::getListLinkedHtml($tab_events_today_in_region_orgas[$tab_even['e_idEvenement']]) ?>
-                                <?php endif; ?>
-                            </div>
-
-                            <div class="spacer"></div>
-
-                            <div class="pratique">
-                                <span class="left"><?= sanitizeForHtml(HtmlShrink::adresseCompacteSelonContexte($even_lieu['region'], $even_lieu['localite'], $even_lieu['quartier'], $even_lieu['adresse'])); ?></span>
-                                <span class="right">
-                                    <?php
-                                    $horaire_complet = afficher_debut_fin($tab_even['e_horaire_debut'], $tab_even['e_horaire_fin'], $tab_even['e_dateEvenement']);
-                                    if (!empty($tab_even['e_horaire_complement']))
-                                    {
-                                        $horaire_complet .= " ".$tab_even['e_horaire_complement'];
-                                    }
-                                    echo sanitizeForHtml($horaire_complet);
-                                    if (!empty($horaire_complet) && !empty($tab_even['e_prix']))
-                                    {
-                                        echo ", ";
-                                    }
-                                    echo sanitizeForHtml($tab_even['e_prix']);
-                                    ?>
-                                </span>
-                                <div class="spacer"></div>
-                            </div> <!-- fin pratique -->
+                        <?= Evenement::eventShortArticleHtml($tab_even); ?>
 
                             <footer class="edition">
 
                                 <ul class="menu_action">
-                                    <li><a href="/evenement-report.php?idE=<?= (int) $tab_even['e_idEvenement']; ?>" class="signaler" title="Signaler une erreur"><i class="fa fa-flag-o fa-lg"></i></a></li>
+                                    <li><a href="/event/send.php?action=report&idE=<?= (int) $tab_even['e_idEvenement']; ?>" class="signaler" title="Signaler une erreur"><i class="fa fa-flag-o fa-lg"></i></a></li>
                                     <li><a href="/event/to-ics.php?idE=<?= (int) $tab_even['e_idEvenement']; ?>" class="ical" title="Exporter au format iCalendar dans votre agenda"><i class="fa fa-calendar-plus-o fa-lg"></i></a></li>
                                 </ul>
 
                                 <?php if ($authorization->isPersonneAllowedToEditEvenement($_SESSION, $tab_even)) : ?>
                                 <ul class="menu_edition">
                                     <li class="action_copier">
-                                        <a href="/evenement-copy.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>" title="Copier l'événement">Copier vers d'autres dates</a>
+                                        <a href="/event/copy.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>" title="Copier l'événement">Copier vers d'autres dates</a>
                                     </li>
                                     <li class="action_editer">
                                         <a href="/evenement-edit.php?action=editer&amp;idE=<?= (int) $tab_even['e_idEvenement'] ?>" title="Modifier l'événement">Modifier</a>
@@ -342,15 +304,15 @@ include("_header.inc.php");
 
                             </footer> <!-- fin edition -->
 
-                        <div class="spacer"></div>
+                            <div class="spacer"></div>
 
-                </article> <!-- evenement -->
+                        </article> <!-- evenement -->
 
-                <div class="spacer"></div>
+                    <div class="spacer"></div>
 
-            <?php } // foreach events ?>
+                <?php } // foreach events ?>
 
-        </section>
+            </section>
 
        <?php } // foreach ?>
 
