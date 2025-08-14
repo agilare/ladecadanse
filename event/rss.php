@@ -1,7 +1,7 @@
 <?php
 
 global $site_full_url, $glo_auj_6h, $connector, $auj, $glo_tab_genre;
-require_once("app/bootstrap.php");
+require_once("../app/bootstrap.php");
 
 use Ladecadanse\Evenement;
 use Ladecadanse\Utils\Text;
@@ -36,8 +36,7 @@ if (isset($_GET['id']))
 }
 
 
-$channel = [];
-$channel['link'] = $site_full_url;
+$channel = ['link' => $site_full_url, 'pubDate' => time()];
 
 $join = "";
 $where = "";
@@ -150,7 +149,6 @@ $tab_events = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
 $items = [];
-$der_dateAjout = time();
 $title_lieu = '';
 foreach ($tab_events as $tab_even)
 {
@@ -181,7 +179,7 @@ foreach ($tab_events as $tab_even)
     $item['pubDate'] = date("r", datetime_iso2time($tab_even['e_dateAjout']));
 
     $items[] = $item;
-    $der_dateAjout = date_iso2time($tab_even['e_dateAjout']);
+    $channel['pubDate'] = date_iso2time($tab_even['e_dateAjout']);
 }
 
 if ($get['type'] == 'lieu_evenements')
@@ -202,7 +200,7 @@ header('Content-Type: text/xml');
         <link><?= sanitizeForHtml($channel['link']) ?></link>
         <description></description>
         <ttl>1440</ttl>
-        <pubDate><?= date("r", $der_dateAjout) ?></pubDate>
+        <pubDate><?= $channel['pubDate'] ?></pubDate>
         <language>fr</language>
 
         <?php foreach ($items as $item) : ?>
