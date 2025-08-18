@@ -12,7 +12,7 @@ Disallow: /.git-ftp.log
 Disallow: /*.inc.php
 # following scripts send noindex in their headers
 # Disallow: /maintenance.php
-# Disallow: /evenement-actions.php
+# Disallow: /event/actions.php
 # Disallow: /event/to-ics.php
 # Disallow: /event/send.php
 # Disallow: /event/search.php

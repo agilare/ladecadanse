@@ -1,10 +1,9 @@
 <?php
 
-require_once("app/bootstrap.php");
+require_once("../app/bootstrap.php");
 
 use Ladecadanse\Evenement;
 use Ladecadanse\UserLevel;
-use Ladecadanse\HtmlShrink;
 
 if (!$videur->checkGroup(UserLevel::ACTOR)) {
 	header("Location: index.php"); die();

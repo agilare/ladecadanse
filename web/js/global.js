@@ -179,7 +179,7 @@ const Events = {
         {
             e.preventDefault();
             const event_id = $(this).data('id');
-            fetch(`/evenement-actions.php?action=delete&id=${event_id}`)
+            fetch(`/event/actions.php?action=delete&id=${event_id}`)
                 .then(response => $(`#btn_event_del_${event_id}`).closest('tr').fadeOut('fast'))
                 .catch(error => alert('Erreur : ' + error));
         });
@@ -188,8 +188,8 @@ const Events = {
         {
             e.preventDefault();
             const event_id = $(this).data('id');
-            fetch(`/evenement-actions.php?action=unpublish&id=${event_id}`)
-                .then(response => $(`#btn_event_unpublish_${event_id}`).closest('.evenement').fadeOut())
+            fetch(`/event/actions.php?action=unpublish&id=${event_id}`)
+                .then(response => $(`#btn_event_unpublish_${event_id}`).closest('.evenement-short').fadeOut())
                 .catch(error => alert('Erreur : ' + error));
         });
 
