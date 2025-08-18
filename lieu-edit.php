@@ -14,7 +14,7 @@ if (!$videur->checkGroup(8))
 }
 
 $page_titre = "ajouter/éditer un lieu";
-$extra_css = ["formulaires", "lieu_inc"];
+$extra_css = ["formulaires"];
 
 $tab_actions = ["ajouter", "insert", "editer", "update"];
 $get['action'] = "ajouter";
@@ -104,25 +104,26 @@ else
 include("_header.inc.php");
 ?>
 
-<div id="contenu" class="colonne">
+<main id="contenu" class="colonne">
 
-<div id="entete_contenu">
-    <h2><?= $titre_form; ?> un lieu</h2>
-    <div class="spacer"></div>
-</div>
+    <header id="entete_contenu">
+        <h1><?= $titre_form; ?> un lieu</h1>
+        <div class="spacer"></div>
+    </header>
 
-<?php
-echo $message_ok;
+    <?php
+    echo $message_ok;
 
-if ($afficher_form)
-{
-?>
+    if ($afficher_form)
+    {
+    ?>
 
-<form  method="post" enctype="multipart/form-data" id="ajouter_editer" class="js-submit-freeze-wait" action="<?php echo basename(__FILE__)."?action=".$act; ?>">
+    <form  method="post" enctype="multipart/form-data" id="ajouter_editer" class="js-submit-freeze-wait" action="<?php echo basename(__FILE__)."?action=".$act; ?>">
 
-<p>* indique un champ obligatoire</p>
-<p>Si vous souhaitez modifier le nom du lieu, ses catégories, ses organisateurs ou les photos de la galerie, merci de nous <a href="/contacteznous.php">contacter</a></p>
-<fieldset>
+    <p>* indique un champ obligatoire</p>
+    <p>Si vous souhaitez modifier le nom du lieu, ses catégories, ses organisateurs ou les photos de la galerie, merci de nous <a href="/contacteznous.php">contacter</a></p>
+
+    <fieldset>
 
     <legend>Infos pratiques</legend>
 
@@ -598,9 +599,9 @@ echo $form->getHtmlErreur("quartier");
     <input type="hidden" name="idLieu" value="<?php echo $get['idL'] ?>" />
 
 <p class="piedForm">
-<input type="hidden" name="formulaire" value="ok" />
-<input type="hidden" name="token" value="<?php echo SecurityToken::getToken(); ?>" />
-<input type="submit" value="Enregistrer" tabindex="20" title="Enregistrer le lieu" class="submit submit-big" />
+    <input type="hidden" name="formulaire" value="ok" />
+    <input type="hidden" name="token" value="<?php echo SecurityToken::getToken(); ?>" />
+    <input type="submit" value="Enregistrer" tabindex="20" title="Enregistrer le lieu" class="submit submit-big" />
 </p>
 </form>
 
@@ -609,7 +610,7 @@ echo $form->getHtmlErreur("quartier");
 ?>
 
 
-</div>
+</main>
 <!-- fin contenu  -->
 
 <div id="colonne_gauche" class="colonne">

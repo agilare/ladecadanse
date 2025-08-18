@@ -89,40 +89,40 @@ ul.entete_contenu_navigation li img
     margin-top: 0.6em;
 }
 
-#order_navigation ul
-{
-    float: right;
-    display:inline-block;
-    margin:0.2em 0;
-    padding:0;
-    list-style-type: none;
-}
+    #order_navigation ul
+    {
+        float: right;
+        display:inline-block;
+        margin:0.2em 0;
+        padding:0;
+        list-style-type: none;
+    }
 
-#order_navigation li
-{
-    display:inline-block;
-}
+    #order_navigation li
+    {
+        display:inline-block;
+    }
 
-#order_navigation li:nth-child(1)
-{
-    color:#555;
-}
+    #order_navigation li:nth-child(1)
+    {
+        color:#555;
+    }
 
-#order_navigation li a
-{
-    padding: 0.3em;
-    border-radius:3px;
-}
+    #order_navigation li a
+    {
+        padding: 0.3em;
+        border-radius:3px;
+    }
 
-#order_navigation li .selected
-{
-    background:#eee;
-}
+    #order_navigation li .selected
+    {
+        background:#eee;
+    }
 
-#order_navigation li a:hover
-{
-    background:#d4d4d4;
-}
+    #order_navigation li a:hover
+    {
+        background:#d4d4d4;
+    }
 
 #prochains_evenements section.genre
 {
@@ -209,16 +209,16 @@ ul.entete_contenu_navigation li img
     width:95%;
 }
 
-#fetes_s .evenement
-{
+    #fetes_s .evenement
+    {
 
-}
+    }
 
-#fete_s .evenement .flyer
-{
-    width:80px;
-    height:120px;
-}
+    #fete_s .evenement .flyer
+    {
+        width:80px;
+        height:120px;
+    }
 
 .rappel_date
 {
@@ -226,9 +226,6 @@ ul.entete_contenu_navigation li img
     color: #888;
     font-size: 1em;
 }
-
-
-
 
 .secondaire
 {
@@ -239,49 +236,49 @@ ul.entete_contenu_navigation li img
     width: 100%;
 }
 
-.secondaire h2
-{
-    padding:0.2em 0;
+    .secondaire h2
+    {
+        padding:0.2em 0;
 
-    font-size:1em;
-    font-weight:bold;
-    line-height:1.2em;
-    margin:0em 0 0.4em 0.4em;
-}
+        font-size:1em;
+        font-weight:bold;
+        line-height:1.2em;
+        margin:0em 0 0.4em 0.4em;
+    }
 
-.secondaire ul.autour
-{
-    position:relative;
-    list-style-type: none;
-    padding-left:5px
-}
+    .secondaire ul.autour
+    {
+        position:relative;
+        list-style-type: none;
+        padding-left:5px
+    }
 
-.secondaire ul.autour.partenaires li
-{
-    margin:2px 0;
-    float:left;
-}
+    .secondaire ul.autour.partenaires li
+    {
+        margin:2px 0;
+        float:left;
+    }
 
-.secondaire ul.autour.partenaires li img
-{
-    border:1px solid #eaeaea;
-}
+    .secondaire ul.autour.partenaires li img
+    {
+        border:1px solid #eaeaea;
+    }
 
-.secondaire .autour li
-{
-    display:inline-block;
-}
+    .secondaire .autour li
+    {
+        display:inline-block;
+    }
 
-.secondaire .lien_rss
-{
-    float:right;
-    margin-top:0.4em;
-    padding:0.2em;
-}
-.secondaire .lien_rss .fa-rss
-{
-    color:#f5b045
-}
+    .secondaire .lien_rss
+    {
+        float:right;
+        margin-top:0.4em;
+        padding:0.2em;
+    }
+    .secondaire .lien_rss .fa-rss
+    {
+        color:#f5b045
+    }
 
 
 #derniers_evenements
@@ -300,35 +297,35 @@ ul.entete_contenu_navigation li img
     line-height:1.3em;
 }
 
-.dernier_evenement .flyer
-{
-    background:#f0f0f0;
-    float:left;
-    width:60px;
-    height:80px;
-    overflow:hidden;
-    margin-right:3px;
-}
+    .dernier_evenement .flyer
+    {
+        background:#f0f0f0;
+        float:left;
+        width:60px;
+        height:80px;
+        overflow:hidden;
+        margin-right:3px;
+    }
 
-.dernier_evenement h3
-{
-    font-size:1em;
-    font-weight:bold;
-    line-height:1.2em;
-    padding:0 0.1em 0.4em 0.1em;
-}
+    .dernier_evenement h3
+    {
+        font-size:1em;
+        font-weight:bold;
+        line-height:1.2em;
+        padding:0 0.1em 0.4em 0.1em;
+    }
 
-.dernier_evenement h3 a:visited {
-    color:#0f4786; /* #105199  #104d91*/
-}
+    .dernier_evenement h3 a:visited {
+        color:#0f4786; /* #105199  #104d91*/
+    }
 
-.dernier_evenement h3
-{
-    font-weight:bold;
-    font-size:1em;
-    color:#5C7378;
-    padding:0 0.1em 0.4em 0.1em;
-}
+    .dernier_evenement h3
+    {
+        font-weight:bold;
+        font-size:1em;
+        color:#5C7378;
+        padding:0 0.1em 0.4em 0.1em;
+    }
 
 
 #partenaires ul

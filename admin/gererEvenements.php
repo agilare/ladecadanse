@@ -18,7 +18,7 @@ if (!$videur->checkGroup(4))
 
 
 $page_titre = "gérer les événements";
-$extra_css = ["formulaires", "gerer"];
+$extra_css = ["formulaires", "admin/gerer"];
 require_once '../_header.inc.php';
 
 $tab_listes = ["evenement" => "Événements", "lieu" => "Lieux", "description" => "Descriptions", "personne" => "Personnes"];

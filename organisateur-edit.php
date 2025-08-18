@@ -104,77 +104,75 @@ else
 include("_header.inc.php");
 ?>
 
-<div id="contenu" class="colonne">
-<div id="entete_contenu">
-<h2><?php echo $titre_form; ?> un organisateur</h2>
-<div class="spacer"></div>
-</div>
-<?php
-if ($afficher_form)
-{
+<main id="contenu" class="colonne">
 
-
-?>
-
-        <form  method="post" enctype="multipart/form-data" id="ajouter_editer" class="js-submit-freeze-wait" action="<?php echo basename(__FILE__)."?action=".$act; ?>">
-
-<p>* indique un champ obligatoire</p>
-
-
-<fieldset>
-<input type="hidden" name="date_ajout" value="<?php echo $form->getValeur('date_ajout') ?>" />
-<input type="hidden" name="idOrganisateur" value="<?php echo (int)$get['idO'] ?>" />
-<legend>Infos pratiques</legend>
-
-<!-- Nom (text) -->
-<p>
-<label for="nom">Nom* :</label>
-    <input type="text" name="nom" id="nom" size="50" maxlength="80" value="<?php echo sanitizeForHtml($form->getValeur('nom')) ?>" required />
+    <header id="entete_contenu">
+        <h1><?php echo $titre_form; ?> un organisateur</h1>
+        <div class="spacer"></div>
+    </header>
     <?php
-echo $form->getHtmlErreur("nom");
-echo $form->getHtmlErreur("nom_existant");
-?>
-</p>
+    if ($afficher_form)
+    {
+    ?>
+
+    <form  method="post" enctype="multipart/form-data" id="ajouter_editer" class="js-submit-freeze-wait" action="<?php echo basename(__FILE__)."?action=".$act; ?>">
+
+    <p>* indique un champ obligatoire</p>
+
+    <fieldset>
+
+        <input type="hidden" name="date_ajout" value="<?php echo $form->getValeur('date_ajout') ?>" />
+        <input type="hidden" name="idOrganisateur" value="<?php echo (int)$get['idO'] ?>" />
+
+        <legend>Infos pratiques</legend>
+
+        <!-- Nom (text) -->
+        <p>
+        <label for="nom">Nom* :</label>
+            <input type="text" name="nom" id="nom" size="50" maxlength="80" value="<?php echo sanitizeForHtml($form->getValeur('nom')) ?>" required />
+            <?php
+        echo $form->getHtmlErreur("nom");
+        echo $form->getHtmlErreur("nom_existant");
+        ?>
+        </p>
 
 
-<!-- Adresse (text) -->
-<p>
-<label for="adresse">Adresse :</label>
-    <input type="text" name="adresse" id="adresse" size="50" maxlength="80" value="<?php echo sanitizeForHtml($form->getValeur('adresse')) ?>" />
-    <?php
-echo $form->getHtmlErreur("adresse");
-?>
-</p>
+        <!-- Adresse (text) -->
+        <p>
+        <label for="adresse">Adresse :</label>
+            <input type="text" name="adresse" id="adresse" size="50" maxlength="80" value="<?php echo sanitizeForHtml($form->getValeur('adresse')) ?>" />
+            <?php
+        echo $form->getHtmlErreur("adresse");
+        ?>
+        </p>
 
-    <div class="spacer"></div>
+        <div class="spacer"></div>
 
-<!-- URL (text) -->
-<p>
-<label for="URL">Site web :</label>
-    <input type="text" name="URL" id="URL" size="50" maxlength="80" value="<?php echo sanitizeForHtml($form->getValeur('URL')) ?>" />
-    <?php
-echo $form->getHtmlErreur("URL");
-?>
-</p>
+        <!-- URL (text) -->
+        <p>
+        <label for="URL">Site web :</label>
+            <input type="text" name="URL" id="URL" size="50" maxlength="80" value="<?php echo sanitizeForHtml($form->getValeur('URL')) ?>" />
+            <?php
+        echo $form->getHtmlErreur("URL");
+        ?>
+        </p>
 
-<p>
-<label for="email">Email :</label>
-<input type="text" name="email" id="email" size="40" maxlength="40"
-       value="<?php echo sanitizeForHtml($form->getValeur('email')) ?>" />
-    <?php
-echo $form->getHtmlErreur("email");
-?>
-</p>
-<p>
-    <label for="presentation">Présentation :</label><br><br>
-<textarea name="presentation" id="presentation" class="tinymce" rows="16" cols="50">
-        <?php echo sanitizeForHtml($form->getValeur('presentation')) ?></textarea>
-    <?php
-echo $form->getHtmlErreur("presentation");
-?>
-</p>
-</fieldset>
+        <p>
+        <label for="email">Email :</label>
+        <input type="text" name="email" id="email" size="40" maxlength="40"
+               value="<?php echo sanitizeForHtml($form->getValeur('email')) ?>" />
+            <?php
+        echo $form->getHtmlErreur("email");
+        ?>
+        </p>
 
+        <p>
+        <label for="presentation">Présentation :</label><br><br>
+        <textarea name="presentation" id="presentation" class="tinymce" rows="16" cols="50">
+            <?php echo sanitizeForHtml($form->getValeur('presentation')) ?></textarea>
+    <?php echo $form->getHtmlErreur("presentation"); ?>
+        </p>
+    </fieldset>
 
 <fieldset>
 <legend>Images</legend>
@@ -255,10 +253,10 @@ if (isset($get['idO']) && $form->getValeur('photo') != '' && $form->getErreur("p
 </p>
 
 
-</fieldset>
+    </fieldset>
 
 
-<fieldset>
+    <fieldset>
 <?php
 
 //menu d'actions (activation et suppression)  pour l'auteur > 6 ou l'admin
@@ -313,7 +311,7 @@ else
 ?>
 
 
-</div>
+</main>
 <!-- fin contenu  -->
 
 <div id="colonne_gauche" class="colonne">

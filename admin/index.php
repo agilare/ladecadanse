@@ -17,7 +17,7 @@ if ($_SESSION['Sgroupe'] >= UserLevel::ADMIN && !empty($_SESSION['Sregion'])) {
 }
 
 $page_titre = "administration";
-$extra_css = ["admin"];
+$extra_css = ["admin/index"];
 require_once '../_header.inc.php';
 ?>
 

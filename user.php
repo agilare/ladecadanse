@@ -15,7 +15,6 @@ if (!$videur->checkGroup(UserLevel::MEMBER)) {
 $page_titre = "profil";
 include("_header.inc.php");
 
-
 $tab_elements = ["evenement" => "Événements", "lieu" => "Lieux", 'organisateur' => 'Organisateurs', "description" => "Descriptions"];
 
 $tab_type_elements = ["ajouts" => "ajoutés"];
@@ -134,19 +133,14 @@ FROM affiliation INNER JOIN lieu ON affiliation.idAffiliation=lieu.idLieu
  WHERE affiliation.idPersonne=".(int)$get['idP']." AND affiliation.genre='lieu'");
 
 $detailsAff = $connector->fetchArray($req_affPers);
-
-
 ?>
 
+<main id="contenu" class="colonne personne">
 
-
-<!-- Deb Contenu -->
-<div id="contenu" class="colonne personne">
-
-	<div id="entete_contenu">
-		<h2>Profil</h2>
+	<header id="entete_contenu">
+		<h1>Profil</h1>
 		<div class="spacer"></div>
-	</div>
+	</header>
 
 	<div class="spacer"></div>
 
@@ -173,7 +167,7 @@ $detailsAff = $connector->fetchArray($req_affPers);
             while ($tab = $connector->fetchArray($req))
             {
                 echo '<a href="/organisateur.php?idO=' . (int)$tab['idOrganisateur'] . '">' . sanitizeForHtml($tab['nom']) . '</a><br />';
-}
+            }
             ?>
 
                 </td></tr>
@@ -182,7 +176,6 @@ $detailsAff = $connector->fetchArray($req_affPers);
         <a href="/user-edit.php?idP=<?php echo (int)$get['idP'] ?>&action=editer"><img src="/web/interface/icons/user_edit.png" alt="" />Modifier</a><?php } ?>
     </div> <!-- Fin profile -->
 
-
 	<ul id="menu_principal">
         <li <?php if ($get['type_elements'] == "ajouts") { echo ' class="ici" '; } ?>>
         <a href="/user.php?idP=<?php echo (int)$get['idP'] ?>&type_elements=ajouts">
@@ -190,11 +183,9 @@ $detailsAff = $connector->fetchArray($req_affPers);
     </ul>
 
     <ul id="menu_ajouts">
-
 	<?php
 	if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= UserLevel::ACTOR)) {
 	?>
-
 
 	<li <?php if ($get['elements'] == "evenement") { echo ' class="ici" '; } ?>>
 	<img src="/web/interface/icons/calendar.png" />
@@ -202,8 +193,7 @@ $detailsAff = $connector->fetchArray($req_affPers);
         </li>
 	<?php
 	}
-
-        if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 6))
+    if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 6))
 	{
 	?>
 	<li <?php if ($get['elements'] == "lieu") { echo ' class="ici" '; } ?>>
@@ -678,22 +668,15 @@ else if ($get['elements'] == "organisateur")
 echo HtmlShrink::getPaginationString($tot_elements, $get['page'], $get['nblignes'], 1, "", "?idP=" . (int)$get['idP'] . "&elements=" . $get['elements'] . "&tri=" . $get['tri'] . "&ordre=" . $get['ordre'] . "&nblignes=" . (int)$get['nblignes'] . "&page=");
 ?>
 	</table>
-
-</div>
-<!-- fin Contenu -->
+</main>
 
 <div id="colonne_gauche" class="colonne">
 <?php
 include("event/_navigation_calendrier.inc.php");
 ?>
 </div>
-<!-- Fin Colonnegauche -->
-
 
 <div id="colonne_droite" class="colonne personne"></div>
-<!-- Fin colonne_droite -->
-
-
 
 <?php
 include("_footer.inc.php");

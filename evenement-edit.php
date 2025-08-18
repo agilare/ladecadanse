@@ -21,7 +21,7 @@ if (isset($_SESSION['Sgroupe']))
     $page_description = "Formulaire d'ajout/modification d'un événement dans l'agenda";
 }
 
-$extra_css = ["formulaires", "event/evenement_inc"];
+$extra_css = ["formulaires"];
 // ...template
 // Request query : action, idE, idL, idO
 $get['action'] = "ajouter";
@@ -718,7 +718,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 include("_header.inc.php");
 ?>
 
-<div id="contenu" class="colonne evenement-edit">
+<main id="contenu" class="colonne evenement-edit">
 
     <?php
 // first display or redisplay (failed validation)
@@ -763,7 +763,6 @@ include("_header.inc.php");
                     // $nomLieu = $affEven['nomLieu'];
                     // $adresse = $affEven['adresse'];
                 // }
-
             }
             else
             {
@@ -779,29 +778,19 @@ include("_header.inc.php");
 
     } // action editer
 
-	$aff_titre = '<div id="entete_contenu">';
+    $aff_titre .= !isset($_SESSION['Sgroupe']) ? 'Proposer un événement':'Ajouter un événement';
+    $act = 'insert';
 
-	$act = '';
-	/*
-	 * PREPARATION DES URLS SELON LES ACTIONS,
-	 * update et idE en cas d'édition, insert pour ajout
-	 */
 	if ($get['action'] == 'update' || $get['action'] == 'editer')
 	{
-        $aff_titre .= '<h2>Modifier <a style="font-size:0.7em" href="/event/evenement.php?idE=' . (int) $get['idE'] . '" title="Fiche de l\'événement" >' . sanitizeForHtml($champs['titre']) . '</a></h2>';
-        $act = "update&amp;idE=".$get['idE'];
+        $aff_titre .= 'Modifier <a style="font-size:0.7em" href="/event/evenement.php?idE=' . (int) $get['idE'] . '">' . sanitizeForHtml($champs['titre']) . '</a>';
+        $act = "update&amp;idE=".(int)$get['idE'];
 	}
-	else
-	{
-        $aff_titre .= !isset($_SESSION['Sgroupe']) ? '<h2>Proposer un événement</h2>':'<h2>Ajouter un événement</h2>';
-		$act = 'insert';
-	}
-
-    echo $aff_titre.$aff_actions;
 ?>
-
-    <div class="spacer"></div>
-</div>
+    <header id="entete_contenu">
+        <h1><?php echo $aff_titre.$aff_actions; ?></h1>
+        <div class="spacer"></div>
+    </header>
 
 <?php
 if ($verif->nbErreurs() > 0)
@@ -834,12 +823,13 @@ if ($verif->nbErreurs() > 0)
             <li style="margin:6px 2px;">respecte notre <a href="/articles/charte-editoriale.php" target="_blank">charte&nbsp;éditoriale</a></li>
         </ul>
     </div>
-        <p>Les événements annoncés sur La décadanse sont également visibles sur <a href="https://epic-magazine.ch/" target="_blank">EPIC-Magazine</a> </p>
-        <details style="margin-top:-11px">
+        <p style="margin:1em;">Les événements annoncés sur La décadanse sont également visibles sur <a href="https://epic-magazine.ch/" target="_blank">EPIC-Magazine</a> </p>
+        <details style="margin-left:15px;margin-top:-11px">
             <summary>Détails</summary>
             <ul><li><b>EPIC-Magazine</b> - webmagazine qui met en avant la culture locale et émergente à Genève et dans ses environs&nbsp;: intégration de l'agenda dans la <a href="https://epic-magazine.ch/lieux/" target="_blank">page Cartographie</a>
                 </li>
         </details>
+        <br>
         <h2 style="margin:20px 0 5px 0;">L’événement</h2>
     <p style="margin:5px 0;">* indique un champ obligatoire</p>
 
@@ -1365,9 +1355,7 @@ else
 } // if action_terminee
 ?>
 
-
-
-</div>
+</main>
 <!-- fin contenu  -->
 
 

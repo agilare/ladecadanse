@@ -1,11 +1,11 @@
 form#ajouter_editer
 {
-	margin: 1em 0em 1em 1em;
-	 background:#fafafa;
-	 padding:0.2em;
+	margin: 0em 0em 1em 1em;
+	background:#fafafa;
+	padding:0.2em;
  	color:#505a5a;
- font-size:1em;
- line-height: 1.3em;
+    font-size:1em;
+    line-height: 1.3em;
 }
 
 	form#ajouter_editer fieldset
@@ -28,7 +28,6 @@ form#ajouter_editer
 		width:100%;
 		padding: 0;
 	}
-
 
 
 form#ajouter_editer label
@@ -96,7 +95,12 @@ form#ajouter_editer input.select2-search__field
     padding:0;
 }
 
-form#ajouter_editer  ul.radio
+form#ajouter_editer ul
+{
+    margin:0;
+}
+
+form#ajouter_editer ul.radio
 {
     padding:0;
 	vertical-align:middle;

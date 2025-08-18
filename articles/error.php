@@ -12,29 +12,25 @@ $statusErrors = [
         ]
 ?>
 
-<div id="contenu" class="colonne">
+<main id="contenu" class="colonne">
 
     <div class="rubrique" style="margin-left:20px">
-        <h2 style="margin:120px 0 20px 0;font-size:2.4em;color:#5C7378;font-weight:bold;">Erreur <?php echo $_SERVER["REDIRECT_STATUS"] ?></h2>
-        <h3><?php
-            if (isset($statusErrors[$_SERVER["REDIRECT_STATUS"]][0]))
-            {
-                ?>
+        <h1 style="margin:120px 0 20px 0;font-size:2.4em;color:#5C7378;">Erreur <?php echo $_SERVER["REDIRECT_STATUS"] ?></h1>
+        <h2><?php if (isset($statusErrors[$_SERVER["REDIRECT_STATUS"]][0])) { ?>
                 <?php echo $statusErrors[$_SERVER["REDIRECT_STATUS"]][0] ?>
             <?php } ?>
-            </h3>
-            <?php if (isset($statusErrors[$_SERVER["REDIRECT_STATUS"]][1]))
-        { ?>
+        </h2>
+        <br>
+        <?php if (isset($statusErrors[$_SERVER["REDIRECT_STATUS"]][1])) { ?>
             <p><?php echo $statusErrors[$_SERVER["REDIRECT_STATUS"]][1] ?></p>
         <?php } ?>
         <p>&nbsp;</p>
         <p><a href="/">Revenir à l'accueil de La d&eacute;cadanse</a></p>
         <p>&nbsp;</p>
-
     </div>
-    <!-- Fin  -->
+    <!-- .rubrique -->
 
-</div>
+</main>
 <!-- fin Contenu -->
 
 <?php

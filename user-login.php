@@ -89,16 +89,16 @@ else
 }
 
 $page_titre = "Connexion";
-$extra_css = ["formulaires", "login"];
+$extra_css = ["formulaires", "user_login"];
 include("_header.inc.php");
 ?>
 
-<div id="contenu" class="colonne">
+<main id="contenu" class="colonne">
 
-    <div id="entete_contenu">
-        <h2>Connexion</h2>
+    <header id="entete_contenu">
+        <h1>Connexion</h1>
         <div class="spacer"></div>
-    </div>
+    </header>
 
     <?php
     if ($verif->nbErreurs() > 0) :
@@ -112,23 +112,22 @@ include("_header.inc.php");
         <?= $verif->getHtmlErreur("connexion") ?>
 
         <input type="text" class="name_as" name="login_as">
-        <input type="hidden" name="<?php echo $formTokenName; ?>" value="<?php echo $_SESSION[$formTokenName]; ?>">
+        <input type="hidden" name="<?= $formTokenName; ?>" value="<?= $_SESSION[$formTokenName]; ?>">
 
         <fieldset>
-            <legend class="btn_toggle">Authentification</legend>
+<!--            <legend class="btn_toggle">Authentification</legend>-->
             <p>
                 <label for="pseudo" id="login_pseudo">Login</label>
                 <input type="text" name="pseudo" id="pseudo" value="<?= sanitizeForHtml($champs['pseudo']) ?>" size="30" />
-                <div style="margin: 0 1em 1em 6em;font-size: 0.8em;line-height: 1.1em;padding: 0;"></div>
+<!--                <div style="margin: 0 1em 1em 6em;font-size: 0.8em;line-height: 1.1em;padding: 0;"></div>-->
                 <?= $verif->getHtmlErreur("pseudo") ?>
-
+</p><p>
                 <label for="motdepasse" id="login_motdepasse">Mot de Passe</label>
                 <input type="password" name="motdepasse" id="motdepasse" value="" size="30" />
                 <?= $verif->getHtmlErreur("motdepasse") ?>
-
+            </p>
             <p class="memoriser" id="login_memoriser">
-                <label for="memoriser">Se souvenir de moi</label>
-                <input type="checkbox" name="memoriser" id="memoriser" value="1" title="" />
+                <label for="memoriser">Se souvenir de moi</label><input type="checkbox" name="memoriser" id="memoriser" value="1" title="" />
             </p>
 
             <p class="mdp_oublie"><a href="/user-reset.php" >Mot de passe oublié ?</a></p>
@@ -144,14 +143,13 @@ include("_header.inc.php");
 
     </form>
 
-</div>
-<!-- fin  -->
+</main>
+
 <div id="colonne_gauche" class="colonne">
 <?php
 include("event/_navigation_calendrier.inc.php");
 ?>
 </div>
-<!-- Fin Colonne gauche -->
 
 <?php
 include("_footer.inc.php");

@@ -56,7 +56,7 @@ $extra_css = ["formulaires"];
 include("_header.inc.php");
 ?>
 
-<div id="contenu" class="colonne user-edit">
+<main id="contenu" class="colonne user-edit">
 
 <?php
 
@@ -76,7 +76,6 @@ $champs = [
     "avec_affiliation" => 'non',
     "statut" => '',
 ];
-
 
 
 $action_terminee = false;
@@ -107,7 +106,6 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 	 * Modification du mot de passe
 	 * Le mot de passe ancien doit être tapé
 	 */
-
 	if ($_SESSION['Sgroupe'] > UserLevel::SUPERADMIN) {
 		if ($get['action'] == "update" && (!empty($champs['newPass']) || !empty($champs['newPass2'])))
 		{
@@ -124,7 +122,6 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 			$verif->setErreur("motdepasse", "Vous devez entrer le mot de passe actuel");
 		}
 	}
-
 
 	/*
 	 * Pour un nouveau membre ou si un nouveau mot de passe a été tapé en update
@@ -398,7 +395,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 if (!$action_terminee)
 {
 
-echo '<div id="entete_contenu">';
+echo '<header id="entete_contenu">';
 
 if ($get['action'] == 'editer' && isset($get['idP']))
 {
@@ -435,17 +432,17 @@ if ($get['action'] == 'editer' && isset($get['idP']))
  */
 if ($get['action'] == 'editer' || $get['action'] == 'update')
 {
-	$act = "update&amp;idP=".$get['idP'];
-	echo "<h2>Modification du compte</h2>";
+	$act = "update&amp;idP=".(int)$get['idP'];
+	echo "<h1>Modification du compte</h1>";
 }
 else
 {
 	$act = 'insert';
 	echo '
-	<h2>Ajouter une personne</h2>';
+	<h1>Ajouter une personne</h1>';
 }
 
-echo '<div class="spacer"></div></div>';
+echo '<div class="spacer"></div></header>';
 
 if ($verif->nbErreurs() > 0)
 {
@@ -507,7 +504,7 @@ if ($verif->nbErreurs() > 0)
                 elseif (($get['action'] == 'ajouter' || $get['action'] == 'insert') && $id == UserLevel::ACTOR) {
                 echo "selected=\"selected\"";
                 }
-                echo " value=\"" . $id . "\">" . $id . " : " . sanitizeForHtml($nom) . "</option>";
+                echo " value=\"" .(int) $id . "\">" .(int) $id . " : " . sanitizeForHtml($nom) . "</option>";
         }
         echo "</select>";
         echo $verif->getHtmlErreur("groupe");
@@ -688,7 +685,7 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= UserLevel::ACTOR)) {
                 <p>
                 <label>Lieu</label>
                 <ul style="float:left;margin:0;padding-left:1em;">
-                                    <li><a href="/lieu.php?idL=<?php echo $champs['lieu']; ?>"><?php echo sanitizeForHtml($lieuTrouve['nom']); ?></a>
+                                    <li><a href="/lieu.php?idL=<?php echo (int)$champs['lieu']; ?>"><?php echo sanitizeForHtml($lieuTrouve['nom']); ?></a>
                                         <input type="hidden" name="lieu" value="<?php echo $champs['lieu'];?>">
                     </li>
                 </ul><div class="spacer"><!-- --></div>
@@ -715,8 +712,8 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= UserLevel::ACTOR)) {
                 while ($tab = $connector->fetchArray($req))
                 {
                     ?>
-                <li><a href="/organisateur.php?idO=<?php echo $tab['idOrganisateur']; ?>"><?php echo sanitizeForHtml($tab['nom']); ?></a>
-                                        <input type="hidden" name="organisateurs[]" value="<?php echo $tab['idOrganisateur']; ?>">
+                <li><a href="/organisateur.php?idO=<?php echo (int)$tab['idOrganisateur']; ?>"><?php echo sanitizeForHtml($tab['nom']); ?></a>
+                                        <input type="hidden" name="organisateurs[]" value="<?php echo (int)$tab['idOrganisateur']; ?>">
                     </li>
                     <?php
                 }
@@ -853,7 +850,7 @@ else
 <?php
 } // if action_terminee
 ?>
-</div> <!-- fin contenu  -->
+</main> <!-- fin contenu  -->
 
 <div id="colonne_gauche" class="colonne">
 <?php include("event/_navigation_calendrier.inc.php"); ?>

@@ -12,7 +12,6 @@ $get['action'] = "ajouter";
 
 if (isset($_GET['idP']))
 {
-
 	$get['idP'] = Validateur::validateUrlQueryValue($_GET['idP'], "int", 1);
 }
 
@@ -22,7 +21,7 @@ $extra_css = ["formulaires"];
 include("_header.inc.php");
 ?>
 
-<div id="contenu" class="colonne inscription">
+<main id="contenu" class="colonne inscription">
 
     <?php
     $formTokenName = 'form_token_user_register';
@@ -42,8 +41,8 @@ include("_header.inc.php");
 
     $action_terminee = false;
 
-if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
-{
+    if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
+    {
         // check token received == token initially set in form registered in session
         if (!isset($_SESSION[$formTokenName]) || $_POST[$formTokenName] !== $_SESSION[$formTokenName])
         {
@@ -107,8 +106,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 
             $verif->valider($champs['email'], "email", "email", 4, 250, 1);
 
-            $sql_existance = "SELECT email FROM personne
-        WHERE email='" . $connector->sanitize($champs['email']) . "'";
+            $sql_existance = "SELECT email FROM personne WHERE email='" . $connector->sanitize($champs['email']) . "'";
             $req_existance = $connector->query($sql_existance);
 
             if ($connector->getNumRows($req_existance) > 0)
@@ -135,12 +133,12 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
              * Si l'affiliation texte et l'affiliation lieu ont été choisies
              */
 
-        if (!empty($champs['lieu']) && !empty($champs['affiliation']))
-        {
-            $verif->setErreur("affiliation", "Vous ne pouvez pas choisir 2 affiliations");
-        }
+            if (!empty($champs['lieu']) && !empty($champs['affiliation']))
+            {
+                $verif->setErreur("affiliation", "Vous ne pouvez pas choisir 2 affiliations");
+            }
 
-        /*
+            /*
              * Si l'affiliation texte et l'affiliation lieu ont été choisies
              */
             if ($champs['groupe'] == 8 && (empty($champs['affiliation']) && empty($champs['lieu']) && count($champs['organisateurs']) == 0))
@@ -191,39 +189,30 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 
                 //si un lieu a été choisi comme affiliation
                 if (!empty($champs['lieu']))
-            {
-                    $req_insAff = $connector->query("INSERT INTO affiliation
-                (idPersonne, idAffiliation,
-                 genre) VALUES ('" . (int) $req_id . "','" . (int) $champs['lieu'] . "','lieu')");
-            }
+                {
+                    $req_insAff = $connector->query("INSERT INTO affiliation (idPersonne, idAffiliation, genre) VALUES ('" . (int) $req_id . "','" . (int) $champs['lieu'] . "','lieu')");
+                }
 
                 foreach ($champs['organisateurs'] as $idOrg)
                 {
                     if (!empty($idOrg))
                 {
                         $sql = "INSERT INTO personne_organisateur (idPersonne, idOrganisateur) VALUES (" . (int) $req_id . ", " . (int) $idOrg . ")";
-                    //echo $sql;
                         $connector->query($sql);
                     }
                 }
-
-
-
 
                 /*
                  * Insertion réussie, message OK, et RAZ des champs
                  */
                 if ($req_insert)
                 {
-
-
-
                     $req_pers = $connector->query("
                 SELECT pseudo, mot_de_passe, email, groupe
                 FROM personne
                 WHERE idPersonne=" . (int) $req_id);
 
-                $tab_pers = $connector->fetchArray($req_pers);
+                    $tab_pers = $connector->fetchArray($req_pers);
 
                     $champs = ['gds' => '', 'mot_de_passe' => ''];
 
@@ -286,32 +275,31 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 
 if (!$action_terminee)
 {
+    ?>
 
-?>
-<div id="entete_contenu">
-<h2>S'inscrire à La décadanse</h2>
-<div class="spacer"></div>
-</div>
+    <header id="entete_contenu">
+        <h1>S’inscrire</h1>
+        <div class="spacer"></div>
+    </header>
 
-<?php
-/*
- * PREPARATION DES URLS SELON LES ACTIONS,
- * update et idE en cas d'édition, insert pour ajout
- */
+    <?php
+    /*
+     * PREPARATION DES URLS SELON LES ACTIONS,
+     * update et idE en cas d'édition, insert pour ajout
+     */
 
-$act = 'insert';
+    $act = 'insert';
 
+    if ($verif->nbErreurs() > 0)
+    {
+        HtmlShrink::msgErreur("Il y a ".$verif->nbErreurs()." erreur(s).");
+    }
 
-if ($verif->nbErreurs() > 0)
-{
-	HtmlShrink::msgErreur("Il y a ".$verif->nbErreurs()." erreur(s).");
-}
-
-        $_SESSION[$formTokenName] = bin2hex(random_bytes(32));
-        ?>
+    $_SESSION[$formTokenName] = bin2hex(random_bytes(32));
+    ?>
 
 
-<!-- FORMULAIRE -->
+    <!-- FORMULAIRE -->
 
     <form method="post" id="ajouter_editer" class="js-submit-freeze-wait" action="?action=<?php echo $act ?>">
 
@@ -321,57 +309,53 @@ if ($verif->nbErreurs() > 0)
         <p>Avant de vous inscrire en tant qu'Organisateur, veillez svp à ce que les événements que vous souhaitez ajouter respectent notre <b><a href="/articles/charte-editoriale.php">charte&nbsp;éditoriale</a></b>.
         </p>
         <p>Les événements annoncés sur La décadanse sont également visibles sur <a href="https://epic-magazine.ch/" target="_blank">EPIC-Magazine</a></p>
-        <details style="margin-top:-11px">
+        <details style="margin-left:15px;margin-top:-11px">
             <summary>Détails</summary>
             <ul><li><b>EPIC-Magazine</b> - webmagazine qui met en avant la culture locale et émergente à Genève et dans ses environs&nbsp;: intégration de l'agenda dans la <a href="https://epic-magazine.ch/lieux/" target="_blank">page Cartographie</a>
                 </li>
         </details>
-
+        <br>
         <p>* indique un champ obligatoire</p>
 
-<fieldset>
-<legend>Avec :</legend>
+        <fieldset>
+<!--            <legend>Avec :</legend>-->
 
-<p>
-<label for="utilisateur">Identifiant*</label>
+            <p>
+                <label for="utilisateur">Login*</label>
+                <input type="text" name="utilisateur" id="utilisateur" size="40" maxlength="80" value="<?php echo sanitizeForHtml($champs['utilisateur']) ?>" />
+                <div class="guide_champ">&#9888; C'est avec celui-ci que vous vous connecterez au site, pas l'email ci-dessous</div>
+                <?php
+                echo $verif->getHtmlErreur('utilisateur');
+                echo $verif->getHtmlErreur("utilisateur_existant");
+                ?>
+        </p>
+            <p>
+            <label for="motdepasse">Mot de passe*</label>
+            <input type="password" name="motdepasse" id="motdepasse" size="20" maxlength="30" value="" />
+            <?php echo $verif->getHtmlErreur("motdepasse");?>
+            </p>
 
-    <input type="text" name="utilisateur" id="utilisateur" size="40" maxlength="80" value="<?php echo sanitizeForHtml($champs['utilisateur']) ?>" />
-    <div class="guide_champ">&#9888; C'est avec celui-ci que vous vous connecterez au site, pas l'email ci-dessous</div>
-<?php
-echo $verif->getHtmlErreur('utilisateur');
-echo $verif->getHtmlErreur("utilisateur_existant");
-?>
+            <!-- Nouveau mot de passe* à confirmation en cas de mise à jour -->
+            <p>
+            <label for="motdepasse2">Confirmer le mot de passe*</label>
+            <input type="password" name="motdepasse2" id="motdepasse2" size="20" maxlength="30" value="" />
+            <?php echo $verif->getHtmlErreur("motdepasse2");?>
+            </p>
 
+            <div class="guide_champ">Le mot de passe doit faire au minimum 8 caractères et comporter au moins un chiffre</div>
+            <?php echo $verif->getHtmlErreur("motdepasse_inegaux");?>
 
-<p>
-<label for="motdepasse">Mot de passe*</label>
-<input type="password" name="motdepasse" id="motdepasse" size="20" maxlength="30" value="" />
-<?php echo $verif->getHtmlErreur("motdepasse");?>
-</p>
+            <!-- Email* (text) -->
+            <p>
+            <label for="email">E-mail*</label>
+                <input type="email" name="email" id="email" size="35" maxlength="80" value="<?php echo sanitizeForHtml($champs['email']) ?>" />
+                <?php echo $verif->getHtmlErreur("email"); echo $verif->getHtmlErreur("email_identique");?>
+            </p>
+        </fieldset>
 
-<!-- Nouveau mot de passe* à confirmation en cas de mise à jour -->
-<p>
-<label for="motdepasse2">Confirmer le mot de passe*</label>
-<input type="password" name="motdepasse2" id="motdepasse2" size="20" maxlength="30" value="" />
-<?php echo $verif->getHtmlErreur("motdepasse2");?>
-</p>
-<div class="guide_champ">Le mot de passe doit faire au minimum 8 caractères et comporter au moins un chiffre</div>
-<?php echo $verif->getHtmlErreur("motdepasse_inegaux");?>
+        <fieldset>
 
-<!-- Email* (text) -->
-<p>
-<label for="email">E-mail*</label>
-    <input type="email" name="email" id="email" size="35" maxlength="80" value="<?php echo sanitizeForHtml($champs['email']) ?>" />
-    <?php echo $verif->getHtmlErreur("email");
-echo $verif->getHtmlErreur("email_identique");?>
-</p>
-</fieldset>
-
-
-
-<fieldset>
-
-    <input type="hidden" name="groupe" id="user-register_organisateur" value="<?php echo UserLevel::ACTOR ?> " />
+        <input type="hidden" name="groupe" id="user-register_organisateur" value="<?php echo UserLevel::ACTOR ?> " />
 
 
 	<!-- Affiliation (text) -->
@@ -437,8 +421,8 @@ echo $verif->getHtmlErreur("email_identique");?>
 
 
 
-</fieldset>
-</fieldset>
+    </fieldset>
+    </fieldset>
 
     <p class="piedForm">
         <input type="hidden" name="formulaire" value="ok" />
@@ -452,18 +436,16 @@ echo $verif->getHtmlErreur("email_identique");?>
 <?php
 } // if action_terminee
 ?>
-</div>
+</main>
 <!-- fin contenu  -->
 
 
 <div id="colonne_gauche" class="colonne">
-
 <?php include("event/_navigation_calendrier.inc.php"); ?>
-
 </div>
 <!-- Fin Colonne gauche -->
-<div id="colonne_droite" class="colonne">
 
+<div id="colonne_droite" class="colonne">
 </div>
 <?php
 include("_footer.inc.php");

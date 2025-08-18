@@ -13,19 +13,18 @@ if ($videur->checkGroup(UserLevel::MEMBER)) {
 }
 
 $page_titre = "Mot de passe oublié";
-$extra_css = ["formulaires", "login"];
+$extra_css = ["formulaires", "user_login"];
 include("_header.inc.php");
 
 $tab_messages = ['faux'];
-
 ?>
 
-<div id="contenu" class="colonne">
+<main id="contenu" class="colonne">
 
-<div id="entete_contenu">
-<h2>Mot de passe oublié</h2>
-	<div class="spacer"></div>
-</div>
+    <header id="entete_contenu">
+        <h1>Mot de passe oublié</h1>
+        <div class="spacer"></div>
+    </header>
 
 
 <?php
@@ -144,39 +143,36 @@ if (!$termine)
     }
     ?>
 
-<form id="ajouter_editer" class="js-submit-freeze-wait" action="" method="post">
-    <span class="mr_as"><label for="mr_as">Ne pas remplir ce champ</label><input type="text" name="name_as"></span>
-        <input type="hidden" name="<?php echo $formTokenName; ?>" value="<?php echo $_SESSION[$formTokenName]; ?>">
+    <form id="ajouter_editer" class="js-submit-freeze-wait" action="" method="post">
+        <span class="mr_as"><label for="mr_as">Ne pas remplir ce champ</label><input type="text" name="name_as"></span>
+            <input type="hidden" name="<?php echo $formTokenName; ?>" value="<?php echo $_SESSION[$formTokenName]; ?>">
 
-        <p>
-        <label for="pseudo" id="login_pseudo">Identifiant ou e-mail du compte</label>
-        <input type="text" name="pseudo_email" id="pseudo_email" value="" size="30" />
-        <?php
-        echo $verif->getHtmlErreur("pseudo_email");
-        ?>
-    </p>
+            <p>
+            <label for="pseudo" id="login_pseudo">Identifiant ou e-mail du compte</label>
+            <input type="text" name="pseudo_email" id="pseudo_email" value="" size="30" />
+            <?php
+            echo $verif->getHtmlErreur("pseudo_email");
+            ?>
+        </p>
 
-    <p class="piedForm">
-        <input type="hidden" name="formulaire" value="ok" />
-        <input type="submit" name="Submit" value="Envoyer la demande" class="submit" />
-    </p>
-</form>
+        <p class="piedForm">
+            <input type="hidden" name="formulaire" value="ok" />
+            <input type="submit" name="Submit" value="Envoyer la demande" class="submit" />
+        </p>
+    </form>
 
 <?php } ?>
 
-</div>
-<!-- fin  -->
+</main>
+
 <div id="colonne_gauche" class="colonne">
-<?php
-include("event/_navigation_calendrier.inc.php");
-?>
+    <?php
+    include("event/_navigation_calendrier.inc.php");
+    ?>
 </div>
-<!-- Fin Colonne gauche -->
 
 <div id="colonne_droite" class="colonne">
-
 </div>
-
 
 <?php
 include("_footer.inc.php");

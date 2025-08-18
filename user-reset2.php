@@ -34,13 +34,12 @@ $champs = ["idPersonne" => '',
 $action_terminee = false;
 ?>
 
-<!-- Deb Contenu -->
-<div id="contenu" class="colonne">
+<main id="contenu" class="colonne">
 
-<div id="entete_contenu">
-<h2>Réinitialisation du mot de passe</h2>
-<div class="spacer"></div>
-</div>
+<header id="entete_contenu">
+    <h1>Réinitialisation du mot de passe</h1>
+    <div class="spacer"></div>
+</header>
 
 
 <?php
@@ -208,84 +207,76 @@ if ($connector->getNumRows($req_temp) == 1)
 <?php
 if (!$action_terminee)
 {
+    $act = 'insert';
 
-$act = 'insert';
+    if ($verif->nbErreurs() > 0)
+    {
+        HtmlShrink::msgErreur("Il y a ".$verif->nbErreurs()." erreur(s).");
+    }
+    ?>
+    <form method="post" id="ajouter_editer"  class="js-submit-freeze-wait" action="?token=<?php echo $get['token'] ?>">
 
+    <fieldset>
 
-if ($verif->nbErreurs() > 0)
-{
-	HtmlShrink::msgErreur("Il y a ".$verif->nbErreurs()." erreur(s).");
-	//echo $verif->listErreurs();
-}
-?>
+        <span class="mr_as">
+            <label for="mr_as">Ne pas remplir ce champ</label><input name="as_nom" id="as_nom" type="text">
+        </span>
+        <?php
+        if (count($tab_comptes) > 1) {
+        ?>
+        <p>
+        <label for="idPersonne"  class="large">Lequel de votre compte ?</label>
+        <select name="idPersonne" id="idPersonne" >
 
+            <?php
+            foreach ($tab_comptes as $c)
+            {
+                $selected = '';
+                if (isset($_POST['idPersonne']) && $c['idPersonne'] == $_POST['idPersonne'])
+                    $selected = " selected";
+            ?>
 
-<!-- FORMULAIRE -->
+            <option value="<?php echo $c['idPersonne']; ?>" <?php echo $selected; ?>><?php echo sanitizeForHtml($c['pseudo']); ?></option>
 
-        <form method="post" id="ajouter_editer"  class="js-submit-freeze-wait" action="?token=<?php echo $get['token'] ?>">
+            <?php } ?>
+        </select>
+        <?php echo $verif->getHtmlErreur("auth");?>
+        </p>
+        <?php
+        }
+        else if (count($tab_comptes) == 1)
+        {
+        ?>
+        <input type="hidden" name="idPersonne" value="<?php echo $tab_comptes[0]['idPersonne']; ?>" />
 
+        <?php
+        }
+        ?>
 
-<fieldset>
-<span class="mr_as">
-	<label for="mr_as">Ne pas remplir ce champ</label><input name="as_nom" id="as_nom" type="text">
-</span>
-<?php
-if (count($tab_comptes) > 1) {
-?>
-<p>
-<label for="idPersonne"  class="large">Lequel de votre compte ?</label>
-<select name="idPersonne" id="idPersonne" >
+        <!-- Nouveau mot de passe* en cas de mise à jour -->
+        <p>
+        <label for="motdepasse" class="large">Nouveau mot de passe</label>
+        <input type="password" name="motdepasse" id="motdepasse" size="20" maxlength="20" value="" />
+        <?php echo $verif->getHtmlErreur("motdepasse");?>
+        </p>
 
-	<?php
-	foreach ($tab_comptes as $c)
-	{
-		$selected = '';
-		if (isset($_POST['idPersonne']) && $c['idPersonne'] == $_POST['idPersonne'])
-			$selected = " selected";
-	?>
+        <!-- Nouveau mot de passe* à confirmation en cas de mise à jour -->
+        <p>
+        <label for="motdepasse2" class="large">Confirmer le nouveau mot de passe</label>
+        <input type="password" name="motdepasse2" id="motdepasse2" size="20" maxlength="20" value="" />
+        <?php echo $verif->getHtmlErreur("motdepasse2");?>
+        </p>
+        <div class="guideChamp">Le mot de passe doit faire au minimum 6 caractères et comporter au moins un chiffre</div>
+        <?php echo $verif->getHtmlErreur("motdepasse_inegaux");?>
 
-    <option value="<?php echo $c['idPersonne']; ?>" <?php echo $selected; ?>><?php echo sanitizeForHtml($c['pseudo']); ?></option>
+        </fieldset>
 
-	<?php } ?>
-</select>
-<?php echo $verif->getHtmlErreur("auth");?>
-</p>
-<?php
-}
-else if (count($tab_comptes) == 1)
-{
-?>
-<input type="hidden" name="idPersonne" value="<?php echo $tab_comptes[0]['idPersonne']; ?>" />
+        <p class="piedForm">
+            <input type="hidden" name="formulaire" value="ok" />
+            <input type="submit" value="Envoyer" class="submit" />
+        </p>
 
-<?php
-}
-?>
-
-<!-- Nouveau mot de passe* en cas de mise à jour -->
-<p>
-<label for="motdepasse" class="large">Nouveau mot de passe</label>
-<input type="password" name="motdepasse" id="motdepasse" size="20" maxlength="20" value="" />
-<?php echo $verif->getHtmlErreur("motdepasse");?>
-</p>
-
-<!-- Nouveau mot de passe* à confirmation en cas de mise à jour -->
-<p>
-<label for="motdepasse2" class="large">Confirmer le nouveau mot de passe</label>
-<input type="password" name="motdepasse2" id="motdepasse2" size="20" maxlength="20" value="" />
-<?php echo $verif->getHtmlErreur("motdepasse2");?>
-</p>
-<div class="guideChamp">Le mot de passe doit faire au minimum 6 caractères et comporter au moins un chiffre</div>
-<?php echo $verif->getHtmlErreur("motdepasse_inegaux");?>
-
-</fieldset>
-
-
-<p class="piedForm">
-<input type="hidden" name="formulaire" value="ok" />
-<input type="submit" value="Envoyer" class="submit" />
-</p>
-
-</form>
+    </form>
 
 <?php
 } // if action
@@ -294,22 +285,13 @@ else if (count($tab_comptes) == 1)
 else
 {
 	HtmlShrink::msgErreur("Cette demande n'est pas valable");
-
 }
-
 ?>
-
-
-
-
-</div>
-<!-- #contenu -->
+</main>
 
 <div id="colonne_gauche" class="colonne">
-
 <?php include("event/_navigation_calendrier.inc.php"); ?>
 </div>
-<!-- Fin Colonne gauche -->
 
 <?php
 include("_footer.inc.php");

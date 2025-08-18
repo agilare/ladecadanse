@@ -12,7 +12,7 @@ if (!$videur->checkGroup(8))
 }
 
 $page_titre = "ajouter/modifier une description/présentation de lieu";
-$extra_css = ["formulaires", "description"];
+$extra_css = ["formulaires"];
 
 /*
 * action choisie, idL et idP si édition
@@ -86,9 +86,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 {
 	foreach ($champs as $c => $v)
 	{
-
 			$champs[$c] = $_POST[$c];
-
 	}
 
 	if (isset($_POST['idP']))
@@ -210,42 +208,32 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 include("_header.inc.php");
 ?>
 
-
-<div id="contenu" class="colonne">
+<main id="contenu" class="colonne">
 
 <?php
 
-
-
 if (!$action_terminee)
 {
+    echo '<header id="entete_contenu">';
 
-echo '<div id="entete_contenu">';
+    /*
+     * PREPARATION DES URLS SELON LES ACTIONS,
+     * update et idB en cas d'édition, insert pour ajout
+     */
+    if ($get['action'] == 'editer' || $get['action'] == 'update')
+    {
+        $act = "update&type=".$get['type']."&idL=".(int)$get['idL'];
 
+        $req_lieu = $connector->query("SELECT nom, adresse, quartier, categorie, URL FROM lieu WHERE idLieu=".(int)$get['idL']);
+        $detailsLieu = $connector->fetchArray($req_lieu);
 
-/*
- * PREPARATION DES URLS SELON LES ACTIONS,
- * update et idB en cas d'édition, insert pour ajout
- */
-if ($get['action'] == 'editer' || $get['action'] == 'update')
-{
-
-	$act = "update&type=".$get['type']."&idL=".(int)$get['idL'];
-
-	$req_lieu = $connector->query("SELECT nom, adresse, quartier, categorie, URL FROM lieu WHERE idLieu=".(int)$get['idL']);
- 	$detailsLieu = $connector->fetchArray($req_lieu);
-
-	echo '
-	<h2>Modifier la '.$get['type'].' sur <a href="/lieu.php?idL='.(int)$get['idL'].'" title="Fiche du lieu '.sanitizeForHtml($detailsLieu['nom']).'">'.sanitizeForHtml($detailsLieu['nom']).'</a></h2>';
-
-
-}
-else
-{
-
-	$act = "insert&type=".$get['type'];
-	echo "<h2>Ajouter une ".$get['type']."</h2>";
-}
+        echo '<h1>Modifier la '.$get['type'].' sur <a href="/lieu.php?idL='.(int)$get['idL'].'" title="Fiche du lieu '.sanitizeForHtml($detailsLieu['nom']).'">'.sanitizeForHtml($detailsLieu['nom']).'</a></h1>';
+    }
+    else
+    {
+        $act = "insert&type=".$get['type'];
+        echo "<h1>Ajouter une ".$get['type']."</h1>";
+    }
 
 /*
 * POUR EDITER UNE DESCRIPTION, ALLER CHERCHER SES VALEURS DANS LA BASE
@@ -270,7 +258,7 @@ if ($get['action'] == 'editer' && isset($get['idL']) && isset($get['idP']))
     @mysqli_free_result($req_desc);
 } // if GET action
 
-echo '<div class="spacer"></div></div>';
+echo '<div class="spacer"></div></header>';
 
 if ($verif->nbErreurs() > 0)
 {
@@ -352,11 +340,10 @@ echo $verif->getHtmlErreur('contenu');
 } // if action_terminee
 ?>
 
-</div>
+</main>
 <!-- fin contenu  -->
 
 <div id="colonne_gauche" class="colonne">
-
 <?php include("event/_navigation_calendrier.inc.php"); ?>
 </div>
 <!-- Fin Colonne gauche -->

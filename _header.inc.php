@@ -42,13 +42,11 @@ use Ladecadanse\UserLevel;
     <link rel="stylesheet" type="text/css" href="/web/css/normalize.css">
     <link rel="stylesheet" type="text/css" href="/web/css/imprimer.css" media="print">
     <link rel="stylesheet" type="text/css" href="/web/css/global.css?<?= time() ?>">
-    <link rel="stylesheet" type="text/css" href="/web/css/event/calendrier.css" media="screen">
     <?php
     $css_file_path = "/web/css/{$nom_page}.css";
     if (file_exists(__ROOT__ . $css_file_path)) { ?>
         <link rel="stylesheet" type="text/css" href="<?= $css_file_path; ?>?<?= time() ?>" media="screen">
     <?php } ?>
-    <link rel="stylesheet" type="text/css" href="/web/css/diggstyle.css" media="screen">
     <link href="/vendor/select2/select2/dist/css/select2.min.css" rel="stylesheet">
     <?php
     if (isset($extra_css) && is_array($extra_css)) :

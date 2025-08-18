@@ -2,7 +2,6 @@
 
 require_once("app/bootstrap.php");
 
-use Ladecadanse\Security\SecurityToken;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\HtmlShrink;
 
@@ -10,10 +9,6 @@ if (!$videur->checkGroup(8))
 {
 	header("Location: index.php"); die();
 }
-
-$page_titre = "ajouter/modifier une salle";
-$extra_css = ["formulaires", "description"];
-include("_header.inc.php");
 
 /*
 * action choisie, idL et idP si édition
@@ -36,8 +31,13 @@ if (isset($_GET['idL']))
 {
 	$get['idL'] = (int)$_GET['idL'];
 }
+
+$page_titre = "ajouter/modifier une salle";
+$extra_css = ["formulaires"];
+include("_header.inc.php");
 ?>
-<div id="contenu" class="colonne">
+
+<main id="contenu" class="colonne">
 
 <?php
 
@@ -169,7 +169,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 if (!$action_terminee)
 {
 
-echo '<div id="entete_contenu">';
+echo '<header id="entete_contenu">';
 
 
 /*
@@ -181,12 +181,12 @@ if ($get['action'] == 'editer' || $get['action'] == 'update')
 	$act = "update&idS=".(int)$get['idS'];
 	$req_lieu = $connector->query("SELECT * FROM salle WHERE idSalle=".(int)$get['idS']);
  	$detailsLieu = $connector->fetchArray($req_lieu);
-    echo '<h2>Modifier</h2>';
+    echo '<h1>Modifier</h1>';
 }
 else
 {
     $act = "insert";
-	echo "<h2>Ajouter une salle à un lieu</h2>";
+	echo "<h1>Ajouter une salle à un lieu</h1>";
 }
 
 /*
@@ -211,7 +211,7 @@ if ($get['action'] == 'editer' && isset($get['idS']))
 	}
 } // if GET action
 
-echo '<div class="spacer"></div></div>';
+echo '<div class="spacer"></div></header>';
 
 
 
@@ -282,10 +282,10 @@ echo $verif->getErreur('nom');
 
 </fieldset>
 
-<p class="piedForm">
-<input type="hidden" name="formulaire" value="ok" />
-<input type="submit" value="Enregistrer" class="submit submit-big" />
-</p>
+    <p class="piedForm">
+    <input type="hidden" name="formulaire" value="ok" />
+    <input type="submit" value="Enregistrer" class="submit submit-big" />
+    </p>
 
 
 </form>
@@ -294,7 +294,7 @@ echo $verif->getErreur('nom');
 } // if action_terminee
 ?>
 
-</div>
+</main>
 <!-- fin contenu  -->
 
 <div id="colonne_gauche" class="colonne">

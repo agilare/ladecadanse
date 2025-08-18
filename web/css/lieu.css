@@ -99,11 +99,12 @@ ul.menu_actions_lieu li
 		{
 			list-style-type: none;
             padding:0.2em;
+            margin:0;
 		}
 
 			#fiche #pratique ul li
 			{
-				margin:0.4em 0.2em 0.5em 0.2em;
+				margin:0.2em 0.2em 0.2em 0.2em;
 			}
 
 		#fiche #pratique .liste
@@ -287,26 +288,26 @@ ul.menu_actions_lieu li
 	color:#5C7378;
 }
 
-#fiche #medias #photo
-{
-	float: right;
-	min-height: 200px;
-	min-width: 200px;
-	text-align: right;
-}
+    #fiche #medias #photo
+    {
+        float: right;
+        min-height: 200px;
+        min-width: 200px;
+        text-align: right;
+    }
 
-#fiche #medias .section
-{
-	margin:1em 0;
-}
+    #fiche #medias .section
+    {
+        margin:1em 0;
+    }
 
-#fiche #medias .section h3
-{
-	font-size:1em;
-	font-weight:bold;
-	padding: 0.4em 0;
-	/* background:#fafafa; */
-}
+        #fiche #medias .section h3
+        {
+            font-size:1em;
+            font-weight:bold;
+            padding: 0.4em 0;
+            /* background:#fafafa; */
+        }
 
 .icone
 {
@@ -330,7 +331,7 @@ ul.menu_actions_lieu li
 
 .galerie
 {
- margin: 2px 6px 2px 0;
+    margin: 2px 6px 2px 0;
 }
 
 

@@ -177,9 +177,9 @@ include("../_header.inc.php");
 
     <header id="entete_contenu">
 
-        <p id="entete_contenu_titre" <?php if ($tab_even['e_dateEvenement'] < $glo_auj) { echo ' class="ancien"'; } ?>>
+        <div id="entete_contenu_titre" <?php if ($tab_even['e_dateEvenement'] < $glo_auj) { echo ' class="ancien"'; } ?>>
             <span class="category"><?= sanitizeForHtml(ucfirst(Evenement::nom_genre($tab_even['e_genre']))); ?></span>, <a href="index.php?courant=<?= $tab_even['e_dateEvenement'] ?>"><time datetime="<?= $tab_even['e_dateEvenement'] ?>"><?= date_fr($tab_even['e_dateEvenement'], "annee", "", "", true) ?></time></a>
-        </p>
+        </div>
 
         <?php if (!empty($events_siblings[0])) : ?>
             <div class="entete_contenu_navigation"><a href="/event/evenement.php?idE=<?= $events_siblings[0]['idEvenement'] ?>" rel="prev nofollow"><span class="event-navig-link"><span class="nav_titre"><?= sanitizeForHtml($events_siblings[0]['titre']) ?></span> - <?= sanitizeForHtml($events_siblings[0]['lieu_nom']) ?>&nbsp;<i class="fa fa-arrow-up"></i></span></a></div>
