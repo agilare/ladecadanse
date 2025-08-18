@@ -50,7 +50,7 @@ $organisateur->load();
 $page_titre = $organisateur->getValue('nom');
 $page_description = "Page de présentation de " . $organisateur->getValue('nom') . " : informations pratiques, description et prochains événements";
 
-$extra_css = ["menu_lieux"];
+$extra_css = ["lieux_menu"];
 
 include("_header.inc.php");
 include("_menuorganisateurs.inc.php");
@@ -423,7 +423,7 @@ if ($evenements->getNbElements() > 0)
             ?>
             <ul>
 
-                <li ><a href="/evenement-copy.php?idE=<?php echo (int)$even->getValue('idEvenement') ?>" title="Copier cet événement"><?php echo $iconeCopier ?></a></li>
+                <li ><a href="/event/copy.php?idE=<?= (int)$even->getValue('idEvenement') ?>" title="Copier cet événement"><?php echo $iconeCopier ?></a></li>
                 <li ><a href="/evenement-edit.php?action=editer&amp;idE=<?php echo (int)$even->getValue('idEvenement') ?>" title="Éditer cet événement"><?php echo $iconeEditer ?></a></li>
                 <li class=""><a href="#" id="btn_event_unpublish_<?php echo (int)$even->getValue('idEvenement'); ?>" class="btn_event_unpublish" data-id="<?php echo (int)$even->getValue('idEvenement') ?>"><?php echo $icone['depublier']; ?></a></li>
             </ul>
