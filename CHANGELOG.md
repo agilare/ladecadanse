@@ -4,11 +4,21 @@
 
 ### Fixed
 - events : resource sql file name (adding index) for v3.8.0
-
-### Added
+- events : in copy form limit paste to 100 dates to avoid user errors and then overload of ressources
 
 ### Changed
-- search : refactoring with fulltext index (replacing LIKEs & php postprocess), PDO, cleaning, layout, html5...
+- events : search refactored with fulltext index (replacing LIKEs & php postprocess), PDO, cleaning, layout, html5...
+- events : to ICS format refactored and moved under event/
+- events : rss feeds refactored and moved under event/
+- events : report and email refactored, merged into send and moved under event/
+- events : copy refactored and moved under event/
+- events : actions moved under event/
+- css : refactor (remove obsolete, useless files)
+- build : php lib upgrade
+
+### Removed
+- SEO: some "disallows" in robots.txt no longer useful
+- useless multi-suppr script
 
 
 ## [3.8.0] - 2025-07-20
