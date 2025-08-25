@@ -5,33 +5,30 @@
 	margin-bottom:1em;
 }
 
-#entete_contenu h2
-{
-	float:none;
-	line-height:1.2em;
-}
+    #entete_contenu h1
+    {
+        width: 55%;
+        line-height:1.2em;
+    }
 
+    #entete_contenu p
+    {
+        float:left;
+    }
 
-#entete_contenu p
-{
-float:left;
-}
+    #entete_contenu img
+    {
+        float:right;
+        margin-top: 1em;
+        max-width:45%;
+    }
 
-
-#entete_contenu img
-{
-	float:right;
-	max-width:45%;
-}
-
-
-#entete_contenu .info
-{
-
-	margin:10px 0 0;
-	padding:2px 0 0 18px;
-	font-weight:bold;
-}
+    #entete_contenu .info
+    {
+        margin:10px 0 0;
+        padding:2px 0 0 18px;
+        font-weight:bold;
+    }
 
 
 #titre_contenu
@@ -47,17 +44,17 @@ ul.menu_actions
 	padding:0;
 }
 
-ul.menu_actions li
-{
-	display:inline;
-	padding:0.2em 0.2em;
+    ul.menu_actions li
+    {
+        display:inline;
+        padding:0.2em 0.2em;
 
-}
+    }
 
 
 
 .embleme {
-float:right;
+    float:right;
 	margin: 0px 0px 0px 0px;
 }
 
@@ -80,10 +77,11 @@ ul.menu_actions_lieu li
 
 #fiche
 {
-	width:94%;
+	width:96%;
 	margin: 0em auto 0.4em auto;
-	max-width:60em;
-	min-height:320px;
+	max-width: 60em;
+	min-height: 320px;
+    border-radius: 3px;
 	color:#5C7378;
 	background-color: #F7F7F5;
 }
@@ -104,7 +102,7 @@ ul.menu_actions_lieu li
 
 			#fiche #pratique ul li
 			{
-				margin:0.2em 0.2em 0.2em 0.2em;
+				margin:0.2em 0.2em 0.4em 0.2em;
 			}
 
 		#fiche #pratique .liste
@@ -114,25 +112,10 @@ ul.menu_actions_lieu li
 			background: #F9F9F9;
 		}
 
-			#fiche #pratique .liste ul
-			{
-				padding:10px 5px 10px 5px;
-				list-style:none;
-
-			}
-
-			#fiche #pratique .liste li
-			{
-				list-style:none;
-				line-height:1.2em;
-				margin:2px 0px 2px 0px;
-			}
-
 			#fiche #pratique ul li ul.salles
 			{
 				display:inline;
 				border-bottom: none;
-
 			}
 
 			#fiche #pratique ul li ul.salles li
@@ -172,7 +155,7 @@ ul.menu_actions_lieu li
 		color:#5C7378;
 		border-bottom:1px dotted #5C7378;
 		text-align:center;
-        padding: 0;
+        padding: 0.6em 0 0.8em 0;
 	}
 
 	ul#menu_descriptions li

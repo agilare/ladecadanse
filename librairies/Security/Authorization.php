@@ -6,6 +6,11 @@ use Ladecadanse\UserLevel;
 
 class Authorization
 {
+
+    public function isPersonneEditor(array $sessionToReadonly): bool
+    {
+        return (isset($sessionToReadonly['Sgroupe']) && $sessionToReadonly['Sgroupe'] <= UserLevel::AUTHOR);
+    }
     /**
      * is
      * EDITOR (AUTHOR)
@@ -16,7 +21,7 @@ class Authorization
      */
     public function isPersonneAllowedToEditEvenement(array $sessionToReadonly, array $eventWidthIds): bool
     {
-        // even : idPersonne, idLieu, idEvenement, 
+        // even : idPersonne, idLieu, idEvenement,
         return (isset($sessionToReadonly['Sgroupe'])
                         && (
                         $sessionToReadonly['Sgroupe'] <= UserLevel::AUTHOR
@@ -30,7 +35,7 @@ class Authorization
 
     public function isPersonneAllowedToManageEvenement(array $sessionToReadonly, array $eventWidthIds): bool
     {
-        return (isset($sessionToReadonly['Sgroupe']) && $sessionToReadonly['Sgroupe'] <= UserLevel::AUTHOR && !empty($eventWidthIds['e_idPersonne']));
+        return ($this->isPersonneEditor($sessionToReadonly) && !empty($eventWidthIds['e_idPersonne']));
     }
 
     /**
