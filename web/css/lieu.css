@@ -52,6 +52,22 @@ ul.menu_actions
     }
 
 
+#statut_lieux
+{
+    margin:1em 0 1em 0;
+    padding:0 0.2em;
+}
+
+
+.voir_lieux
+{
+	text-align:left;
+	padding:0 0px 0 0;
+	background-image:url(../web/interface/icons/building_go.png);
+	background-repeat:no-repeat;
+	background-position: 85% 50%;
+}
+
 
 .embleme {
     float:right;
@@ -90,6 +106,7 @@ ul.menu_actions_lieu li
 	{
 		background-color: #F7CF45;
 		color:#2C2328;
+        border-radius: 3px 0 0 0;
 		border-bottom: 1px dotted Gray;
 	}
 
@@ -195,6 +212,7 @@ ul.menu_actions_lieu li
 			background-color: #F7F7F5;
 			color:#3E5355;
 			padding:5px 0.4em 5px 0.4em;
+            border-radius: 0 0 0 3px;
 			line-height:1.4em;
 		}
 
@@ -268,6 +286,7 @@ ul.menu_actions_lieu li
 	float:right;
 	margin:0px 0px 0px 5px;
 	width:200px;
+    border-radius: 0 3px 0 0;
 	color:#5C7378;
 }
 
@@ -276,7 +295,13 @@ ul.menu_actions_lieu li
         float: right;
         min-height: 200px;
         min-width: 200px;
+        border-radius: 0 3px 0 0;
         text-align: right;
+    }
+
+    #fiche #medias #photo img
+    {
+        border-radius: 0 3px 0 0;
     }
 
     #fiche #medias .section
@@ -317,11 +342,6 @@ ul.menu_actions_lieu li
     margin: 2px 6px 2px 0;
 }
 
-
-
-
-
-
 ul#menu_complement
 {
 
@@ -333,7 +353,6 @@ ul#menu_complement
 color:#5C7378;
 	border-bottom:1px dotted #5C7378;
 		text-align:center;
-
 }
 
 ul#menu_complement li
@@ -342,9 +361,7 @@ ul#menu_complement li
 		display:block;
 		text-align:center;
 		padding:0 0.3em;
-
 }
-
 
 	ul#menu_complement li a
 	{
@@ -354,15 +371,12 @@ ul#menu_complement li
 
 	ul#menu_complement li.ici a
 	{
-
 		color:#5e5e5e;
 		font-weight:800;
 		border-top:1px dotted #5C7378;
 		border-left:1px dotted #5C7378;
 		border-right:1px dotted #5C7378;
-
 		background:#fefefe;
-
 		padding:0.3em 0.5em 0.4em 0.5em;
 	}
 
@@ -372,194 +386,123 @@ ul#menu_complement .rss
 	width:5%;
 	text-align:right;
 	float:right;
-
 }
-
-
-
 
 
 /* Prochains evenements */
 #prochains_evenements
 {
-	margin:0em auto 2em auto;
+	margin: 2em auto 2em auto;
 	width:94%;
 	color:#5C7378;
-
 }
 
-#prochains_evenements ul#menu_genre
-{
-	margin:0;
-    padding: 0;
-}
+    #prochains_evenements header
+    {
+        margin:1em 0
+    }
 
-	#prochains_evenements ul#menu_genre li
-	{
-		display:inline;
-		margin:0;
-		padding:0.2em 1em 0.4em 1em;
-	}
+        #prochains_evenements header h2
+        {
+            float:left;
+            width:45%;
+            font-size:1.4em;
+            margin:0;
+        }
 
-	#prochains_evenements #menu_genre  li.ici
-	{
-		background-color:#F7F7F5;
-	}
+        #prochains_evenements .pagination
+        {
+            margin:1em 0;
+            padding-left: 0;
+        }
 
-	#prochains_evenements #menu_genre  li.rien
-	{
-		display:inline;
-		margin:0px 0px 2px 0px;
-		color:lightgray;
-	}
+        #prochains_evenements table
+        {
+            margin-top:0;
+            width:100%;
+            border-collapse:collapse;
+            color:#5C7378;
+            background:#F7F7F5;
+        }
 
-#prochains_evenements table
-{
-	margin-top:0;
-	width:100%;
-	border-collapse:collapse;
-	color:#5C7378;
-	background:#F7F7F5;
+        #prochains_evenements table tr.ici
+        {
+            background-color:#ff3;
+        }
 
-}
+            #prochains_evenements table td.mois
+            {
+                font-weight:bold;
+                border:none;
+                padding: 0.5em 0.3em;
+                font-size: 1.1em;
+                line-height: 1.3em;
+            }
 
-#prochains_evenements table tr.ici
-{
-	background-color:#ff3;
-}
+            #prochains_evenements table tr td
+            {
+                text-align:left;
+                padding:0.4em;
+                vertical-align:top;
+                border-top:1px dotted #5C7378;
+            }
 
-#prochains_evenements table tr th
-{
+            #prochains_evenements table td a:visited
+            {
+                 color:#0f4786; /* #105199  #104d91*/
+            }
 
-	text-align:left;
-	background-color:#e0e0e0;
-}
+            #prochains_evenements table td .pratique
+            {
+                margin-top:0.5em;
+                font-size:0.8em;
+                padding:0.2em 0.2em 0 0;
+            }
 
+            #prochains_evenements table td.flyer
+            {
+                width:50px;
+                height:80px;
+                overflow:hidden;
+            }
 
-#prochains_evenements table tr td
-{
-	text-align:left;
-	padding:0.4em;
-	vertical-align:top;
-	border-top:1px dotted #5C7378;
-}
+            #prochains_evenements table td .category
+            {
+                display: inline-block;
+                margin-top:0.4em;
+            }
 
-#prochains_evenements table tr td img
-{
+            #prochains_evenements table td.flyer img
+            {
+                overflow:hidden;
+            }
 
+            /*
+            #prochains_evenements table tr.ici td p.pratique
+            {
+                background-color:transparent;
+                font-weight:bold;
+            }
 
-}
+            #prochains_evenements table tr.ici td.flyer
+            {
+            width:50px;
+            background-color:transparent;
+            }*/
 
+            #prochains_evenements table td.lieu_actions_evenement
+            {
+                width:60px
+            }
 
+                #prochains_evenements table td.lieu_actions_evenement ul
+                {
+                    padding: 0;
+                    margin:0;
+                }
 
-#prochains_evenements table td h3
-{
-	font-weight:bold;
-	line-height: 1.3em;
-}
+                    #prochains_evenements table td.lieu_actions_evenement ul li
+                    {
+                        display:inline;
 
-#prochains_evenements table td h3 a:visited {
-     color:#0f4786; /* #105199  #104d91*/
-}
-
-#prochains_evenements table td.mois
-{
-	font-weight:bold;
-	border:none;
-	padding: 0.5em 0.3em;
-	font-size: 1.1em;
-	line-height: 1.3em;
-}
-
-#prochains_evenements p
-{
-line-height:1.3em;
-}
-
-#prochains_evenements table td.flyer
-{
-width:50px;
-height:80px;
-overflow:hidden;
-}
-
-#prochains_evenements table td.flyer img
-{
-
-overflow:hidden;
-}
-
-
-#prochains_evenements table td p.pratique
-{
-	margin-top:0.5em;
-	font-size:0.8em;
-	padding:0.2em;
-	background-color:#EFEFEF;
-
-}
-
-#prochains_evenements table tr.ici td p.pratique
-{
-	background-color:transparent;
-    font-weight:bold;
-}
-
-#prochains_evenements table tr.ici td.flyer
-{
-width:50px;
-background-color:transparent;
-}
-
-#prochains_evenements table td.lieu_actions_evenement
-{
-    width:60px
-}
-
-#prochains_evenements table td.lieu_actions_evenement ul
-{
-    padding: 0;
-    margin:0;
-}
-
-#prochains_evenements table td.lieu_actions_evenement ul li
-{
-	display:inline;
-
-}
-
-#prochains_evenements table td p.description {
-font-size: 0.95em;
-}
-
-.menu_wikicode
-{
-padding-left:13em;
-text-align:right;
-}
-
-.menu_wikicode input
-{
-
-width:55px;
-font-weight:bold;
-font-family:Georgia;
-border:1px solid gray;
-}
-
-#statut_lieux
-{
-
-margin:1em 0 1em 0;
-padding:0 0.2em;
-}
-
-
-.voir_lieux
-{
-	text-align:left;
-	padding:0 0px 0 0;
-	background-image:url(../web/interface/icons/building_go.png);
-	background-repeat:no-repeat;
-	background-position: 85% 50%;
-}
+                    }

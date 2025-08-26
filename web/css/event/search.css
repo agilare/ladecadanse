@@ -38,49 +38,6 @@ h2
     color:#5C7378;
 }
 
-ul#menu_periode
-{
-    float: right;
-    width: 49%;
-    margin:0;
-    padding:0;
-    text-align: right;
-    list-style-type: none;
-}
-    ul#menu_periode li
-    {
-        display: inline;
-        vertical-align: bottom;
-    }
-
-
-    ul#menu_periode li a
-    {
-        display: inline-block;
-        padding: 0.6em;
-        border-radius:3px;
-        background: none;
-    }
-
-    ul#menu_periode li.ici a
-    {
-        background: #e4e4e4;
-    }
-/*    ul#menu_periode li:nth-child(1) a
-    {
-        border-radius:3px 0 0 3px;
-    }*/
-
-/*    ul#menu_periode li:nth-child(2) a
-    {
-        border-radius: 0 3px 3px 0;
-        background:#e4e4e4;
-    }*/
-
-    ul#menu_periode li a:hover
-    {
-        background:#d4d4d4;
-    }
 
 ul#menu_tri
 {
