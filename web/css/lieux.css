@@ -1,8 +1,7 @@
-
-button[type=submit]
+.table-filters button[type=submit]
 {
-    padding: 0.4em 0.4em;
-
+    font-size:0.9em;
+    padding: 0.5em 0.4em 0.6em 0.4em;
     border-radius: 3px;
     background-color: #f9f9f9;
     font-weight: bold;
@@ -31,8 +30,13 @@ button[type=submit]
     margin-left:5px;top:2px
 }
 
-
 #order_navigation
 {
     float:right;
+}
+
+div.pagination
+{
+    margin: 1em 0;
+  padding-left: 0;
 }

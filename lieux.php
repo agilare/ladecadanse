@@ -44,7 +44,14 @@ if (isset($_GET['order']) && in_array($_GET['order'], $tab_order))
    $_SESSION['user_prefs_lieux_order'] = $_GET['order'];
 }
 
-$lieux = Lieu::getLieux($filters, $_SESSION['user_prefs_lieux_order']);
+$get['page'] = !empty($_GET['page']) ? Validateur::validateUrlQueryValue($_GET['page'], "int", 1) : 1;
+
+
+$lieux_page = Lieu::getLieux($filters, $_SESSION['user_prefs_lieux_order'], $get['page']);
+$lieux_all = Lieu::getLieux($filters, $_SESSION['user_prefs_lieux_order'], null);
+//dump($lieux_all);
+$all_results_nb = count($lieux_all);
+
 
 $regions_localites = Localite::getListByRegion();
 
@@ -123,7 +130,7 @@ include("_header.inc.php");
             <div class="spacer"></div>
         </div>
 
-<!--        <p>PAGINATION</p>-->
+        <?= HtmlShrink::getPaginationString($all_results_nb, $get['page'], Lieu::RESULTS_PER_PAGE, 1, basename(__FILE__), "?" . Utils::urlQueryArrayToString($get, "page") . "&amp;page=") ?>
 
         <table id="derniers_lieux">
             <thead>
@@ -132,7 +139,7 @@ include("_header.inc.php");
                 </tr>
             </thead>
             <tbody>
-            <?php foreach ($lieux as $lieu) : ?>
+            <?php foreach ($lieux_page as $lieu) : ?>
                 <tr>
                     <td style="max-width:60px;overflow: hidden;">
                         <?php if ($lieu['logo']) : ?>
@@ -170,6 +177,10 @@ include("_header.inc.php");
             <?php endforeach; ?>
             </tbody>
         </table>
+
+        <?php if (count($lieux_page) > 8) : ?>
+            <?= HtmlShrink::getPaginationString($all_results_nb, $get['page'], Lieu::RESULTS_PER_PAGE, 1, basename(__FILE__), "?" . Utils::urlQueryArrayToString($get, "page") . "&amp;page=") ?>
+        <?php endif; ?>
 
     </section>
 

@@ -1,39 +1,39 @@
-</div> <!-- fin conteneur -->
+        </div> <!-- fin conteneur -->
 
-<footer id="pied-wrapper">
-    <nav id="pied">
+        <footer id="pied-wrapper">
+            <nav id="pied">
 
-        <ul class="menu_pied">
-            <?php
-            foreach ($glo_menu_pratique as $nom => $lien)
-            {
-                $highlightLink = '';
-                if (strstr((string) $_SERVER['PHP_SELF'], (string) $lien))
-                {
-                    $ici = " class=\"ici\"";
-                }
+                <ul class="menu_pied">
+                    <?php
+                    foreach ($glo_menu_pratique as $nom => $lien)
+                    {
+                        $highlightLink = '';
+                        if (strstr((string) $_SERVER['PHP_SELF'], (string) $lien))
+                        {
+                            $ici = " class=\"ici\"";
+                        }
 
-                if ($nom == "Faire un don") {
-                    $highlightLink = ' style="background: #ffe771;border-radius: 0 0 3px 4px;padding: 5px 4px;" ';
-                }
-                ?>
+                        if ($nom == "Faire un don") {
+                            $highlightLink = ' style="background: #ffe771;border-radius: 0 0 3px 4px;padding: 5px 4px;" ';
+                        }
+                        ?>
 
-            <li <?= $highlightLink; ?>><a href="<?= $lien; ?>" title="<?= $nom; ?>" <?= $ici; ?>><?= $nom; ?></a></li>
-            <?php } ?>
-            <li><a href="/articles/charte-editoriale.php">Charte éditoriale</a></li>
-            <li><a href="/articles/liens.php">Liens</a></li>
-        </ul>
-    </nav> <!-- Fin Pied -->
-</footer>
+                    <li <?= $highlightLink; ?>><a href="<?= $lien; ?>" title="<?= $nom; ?>" <?= $ici; ?>><?= $nom; ?></a></li>
+                    <?php } ?>
+                    <li><a href="/articles/charte-editoriale.php">Charte éditoriale</a></li>
+                    <li><a href="/articles/liens.php">Liens</a></li>
+                </ul>
+            </nav> <!-- Fin Pied -->
+        </footer>
 
-</div> <!-- Fin Global -->
+    </div> <!-- Fin Global -->
 
 
-<?php
-$pages_formulaires = ["evenement-edit", "event/copy", "lieu-edit", "lieu-salle-edit", "user-register", "gererEvenements", "user-edit", "lieux", "lieu-text-edit", "organisateur-edit"];
-$pages_tinymce = ["lieu-text-edit", "organisateur-edit"];
-$pages_lieumap = ["lieu", "evenement"];
-?>
+    <?php
+    $pages_formulaires = ["evenement-edit", "event/copy", "lieu-edit", "lieu-salle-edit", "user-register", "gererEvenements", "user-edit", "lieux", "lieu-text-edit", "organisateur-edit"];
+    $pages_tinymce = ["lieu-text-edit", "organisateur-edit"];
+    $pages_lieumap = ["lieu", "evenement"];
+    ?>
 
     <!-- used by ZebraDatepicker, MagnificPopup, checkboxes, custom in _footer.inc.php, browser.js, global.js -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>

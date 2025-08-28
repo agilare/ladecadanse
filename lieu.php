@@ -120,10 +120,6 @@ include("_header.inc.php");
 
 <main id="contenu" class="colonne">
 
-	<p id="btn_listelieux" class="mobile" >
-        <button href="#"><i class="fa fa-list fa-lg"></i>&nbsp;Liste des lieux</button>
-	</p>
-
     <?php
     if (!empty($_SESSION['lieu_flash_msg']))
     {

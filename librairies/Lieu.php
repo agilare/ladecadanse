@@ -10,6 +10,8 @@ class Lieu extends Element
     static $systemDirPath;
     static $urlDirPath;
 
+    const int RESULTS_PER_PAGE = 100;
+
     function __construct()
 	{
 		parent::__construct();
@@ -90,7 +92,7 @@ class Lieu extends Element
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public static function getLieux(array $filters, string $order = 'dateAjout', int $offset = 1): array
+    public static function getLieux(array $filters, string $order = 'dateAjout', ?int $page = 1): array
     {
         global $connectorPdo;
 
@@ -133,8 +135,13 @@ class Lieu extends Element
         }
 
         $sql_event .= " AND (l.region IN (:region, 'rf', 'hs')  )"; // OR FIND_IN_SET (:region, loc.regions_covered)
-
         $sql_event .= " ORDER BY $sql_order";
+
+        if (!empty($page))
+        {
+            $sql_event .= " LIMIT " . (int) (($page - 1) * self::RESULTS_PER_PAGE) . ", " . (int) (($page - 1) * self::RESULTS_PER_PAGE + self::RESULTS_PER_PAGE);
+        }
+
         //echo $sql_event;
         $stmt = $connectorPdo->prepare($sql_event);
         $stmt->execute($params);
