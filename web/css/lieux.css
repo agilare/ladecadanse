@@ -1,0 +1,38 @@
+
+button[type=submit]
+{
+    padding: 0.4em 0.4em;
+
+    border-radius: 3px;
+    background-color: #f9f9f9;
+    font-weight: bold;
+    border: 1px solid black;
+    color: rgba(0, 0, 0, 1);
+    -webkit-text-fill-color: rgba(0, 0, 0, 1);
+}
+
+.table-filters
+{
+    position:relative;
+    float:left;
+    width:550px
+}
+
+.table-filters form
+{
+    display:inline-block;
+    max-width:400px;
+}
+
+.table-filters .menu_tab
+{
+    display:inline-block;
+    position:absolute;
+    margin-left:5px;top:2px
+}
+
+
+#order_navigation
+{
+    float:right;
+}

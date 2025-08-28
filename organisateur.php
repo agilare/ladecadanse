@@ -50,7 +50,7 @@ $organisateur->load();
 $page_titre = $organisateur->getValue('nom');
 $page_description = "Page de présentation de " . $organisateur->getValue('nom') . " : informations pratiques, description et prochains événements";
 
-$extra_css = ["lieux_menu"];
+$extra_css = ["organisateurs_menu"];
 
 include("_header.inc.php");
 include("_menuorganisateurs.inc.php");

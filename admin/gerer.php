@@ -118,7 +118,7 @@ if ($get['element'] == "description")
 	$req_des = $connector->query("
 	SELECT idLieu, idPersonne, dateAjout, contenu, date_derniere_modif
 	FROM descriptionlieu
-	ORDER BY ".$get['tri_gerer']." ".$get['ordre']." LIMIT ".($get['page'] - 1) * $get['nblignes'].",".$get['nblignes']);
+	ORDER BY ".$get['tri_gerer']." ".$get['ordre']." LIMIT ".((int)$get['page'] - 1) * (int)$get['nblignes'].",".(int)$get['nblignes']);
 
 	$req_nbdesc = $connector->query("SELECT COUNT(*) AS total FROM descriptionlieu");
 	$tab_nbdesc = $connector->fetchArray($req_nbdesc);
@@ -219,7 +219,7 @@ else if ($get['element'] == "lieu")
 	FROM lieu
         ".$sql_where_region."
 	ORDER BY ".$get['tri_gerer']." ".$get['ordre']."
-	LIMIT ".($get['page'] - 1) * $get['nblignes'].",".$get['nblignes']);
+	LIMIT ".((int)$get['page'] - 1) * (int)$get['nblignes'].",".(int)$get['nblignes']);
 
 	$req_count = $connector->query("SELECT COUNT(*) AS total FROM lieu");
 	$tab_count = $connector->fetchArray($req_count);

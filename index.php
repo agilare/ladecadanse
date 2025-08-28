@@ -12,7 +12,6 @@ require_once("app/bootstrap.php");
 use Ladecadanse\Evenement;
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\Lieu;
-use Ladecadanse\Organisateur;
 use Ladecadanse\UserLevel;
 use Ladecadanse\Utils\Text;
 
@@ -104,7 +103,6 @@ ORDER BY
 
 $stmt = $connectorPdo->prepare($sql_events_today_in_region_order_by_category);
 $stmt->execute(array_merge([':date' => $get['courant']])); // USELESS REGION FILTERING DISABLED: , $sql_even_in_status_and_region_params
-
 $tab_events_today_in_region_by_category = $stmt->fetchAll(PDO::FETCH_GROUP);
 $count_events_today_in_region = $stmt->rowCount();
 

@@ -633,3 +633,21 @@ form#ajouter_editer p.memoriser label, form#ajouter_editer p.mdp_oublie
     margin-top: 1em !important;
 }
 
+
+/* lieux.php */
+.table-filters form
+{
+
+}
+
+.table-filters .menu_tab {
+  display: block;
+  text-align: left;
+  position: static;
+  margin-top: 5px;
+  margin-left: 5px;
+}
+
+#order_navigation {
+  float: left;
+}

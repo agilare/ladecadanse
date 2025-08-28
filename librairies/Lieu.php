@@ -90,6 +90,57 @@ class Lieu extends Element
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    public static function getLieux(array $filters, string $order = 'dateAjout', int $offset = 1): array
+    {
+        global $connectorPdo;
+
+        $params = [':region' => $filters['region'], ':statut' => $filters['statut']];
+
+        if (!empty($filters['localite']))
+        {
+            $params[':localite'] = $filters['localite'];
+        }
+
+        if (!empty($filters['categorie']))
+        {
+            $params[':categorie'] = $filters['categorie'];
+        }
+
+        // build SQL
+        $sql_order = "l." . $order . " DESC";
+        if ($order == "nom")
+        {
+            $sql_order = "l.nom ASC";
+        }
+
+        $sql_event = "SELECT
+          l.*,
+          loc.localite AS loc_localite,
+          loc.canton AS loc_canton,
+          loc.commune AS loc_commune
+        FROM lieu l
+        JOIN localite loc ON l.localite_id = loc.id
+        WHERE l.statut = :statut";
+
+        if (!empty($filters['localite']))
+        {
+            $sql_event .= " AND l.localite_id = :localite";
+        }
+
+        if (!empty($filters['categorie']))
+        {
+            $sql_event .= " AND FIND_IN_SET (:categorie, categorie)";
+        }
+
+        $sql_event .= " AND (l.region IN (:region, 'rf', 'hs')  )"; // OR FIND_IN_SET (:region, loc.regions_covered)
+
+        $sql_event .= " ORDER BY $sql_order";
+        //echo $sql_event;
+        $stmt = $connectorPdo->prepare($sql_event);
+        $stmt->execute($params);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
 
     public static function getActivesSalles(int $idLieu): array
     {

@@ -113,17 +113,8 @@ $stmtAll = $connectorPdo->prepare($sql_select_all);
 $stmtAll->execute([$get['idL']]);
 $all_results_nb = $stmtAll->fetchColumn();
 
-
-$deb_nom_lieu = mb_strtolower(mb_substr((string) $lieu['nom'], 0, 1));
-if (!isset($_GET['tranche']) && $deb_nom_lieu > "l" && $deb_nom_lieu < "z")
-{
-	$_GET['tranche'] = "lz";
-}
-include_once "_menulieux.inc.php";
-
 $page_titre = $lieu['nom']. " - ".HtmlShrink::adresseCompacteSelonContexte($lieu['loc_canton'], $lieu['loc_localite'], $lieu['quartier'], $lieu['adresse']);
 $page_description = $page_titre." : accès, horaires, description, photos et prochains événements";
-$extra_css = ["lieux_menu"];
 include("_header.inc.php");
 ?>
 
@@ -145,7 +136,7 @@ include("_header.inc.php");
 
         <header id="entete_contenu">
 
-            <h1 class="fn org"><?= $lieu['nom']; ?></h1>
+            <h1 class="fn org"><?= sanitizeForHtml($lieu['nom']); ?></h1>
 
             <?php if ($lieu['statut'] == 'ancien') : ?>
                 <p class="info">Ce lieu n'existe plus</p>
@@ -203,7 +194,7 @@ include("_header.inc.php");
             <div id="pratique">
 
                 <ul>
-                    <li><?= $categories_fr; ?></li>
+                    <li><?= sanitizeForHtml($categories_fr); ?></li>
 
                     <li class="adr"><?= sanitizeForHtml(HtmlShrink::adresseCompacteSelonContexte($lieu['loc_canton'], $lieu['loc_localite'], $lieu['quartier'], $lieu['adresse'])) ?></li>
                     <?php if (!empty((float) $lieu['lat']) && !empty((float) $lieu['lng'])) : ?>
@@ -235,7 +226,7 @@ include("_header.inc.php");
                     <li><?= Text::wikiToHtml(sanitizeForHtml($lieu['horaire_general'])); ?></li>
 
                     <?php if (!empty($lieu['URL'])) : $lieu_url = Text::getUrlWithName($lieu['URL']); ?>
-                        <li class="sitelieu"><a class="url lien_ext" href="<?= $lieu_url['url'] ?>" target="_blank"><?= $lieu_url['urlName']?></a>
+                        <li class="sitelieu"><a class="url lien_ext" href="<?= sanitizeForHtml($lieu_url['url']) ?>" target="_blank"><?= sanitizeForHtml($lieu_url['urlName']) ?></a>
                         <?php if ($get['idL'] == 13) : // exception pour idLieu=13 (Le Rez - Usine) ?>
                             <a href="https://rez-usine.ch" class="url lien_ext" target="_blank">rez-usine.ch</a><br>
                             <a href="http://www.ptrnet.ch" class="url lien_ext" target="_blank">ptrnet.ch</a>
@@ -304,7 +295,9 @@ include("_header.inc.php");
                                 endif;
                                 ?>
 
-                                <?= $des_contenu ?>
+                                <div class="js-read-smore" data-read-smore-words="50">
+                                    <?= $des_contenu ?>
+                                </div>
 
                                 <?php if ($type == 'description') : ?>
                                     <p><?= HtmlShrink::authorSignatureForHtml($des['idPersonne']) ?></p>
@@ -416,14 +409,13 @@ include("_header.inc.php");
                             <span class="category"><?= $glo_tab_genre[$e['e_genre']]; ?></span>
                         </td>
                         <td class="location">
-                           <?= $e['s_nom'] ?>
+                            <?= sanitizeForHtml($e['s_nom']) ?>
                             <div class="location">
-                                <span class="value-title" title="<?= $e['s_nom']; ?>"></span>
+                                <span class="value-title" title="<?= sanitizeForHtml($e['s_nom']); ?>"></span>
                             </div>
                         </td>
                         <?php if ($authorization->isPersonneAllowedToEditEvenement($_SESSION, $tab_even)) : ?>
                         <td class="lieu_actions_evenement">
-
                             <ul>
                                 <li><a href="/event/copy.php?idE=<?= (int) $e['e_idEvenement'] ?>" title="Copier cet événement"><?= $iconeCopier ?></a></li>
                                 <li><a href="/evenement-edit.php?action=editer&amp;idE=<?= (int) $e['e_idEvenement'] ?>" title="Modifier cet événement"><?= $iconeEditer ?></a></li>
@@ -455,7 +447,6 @@ include("_header.inc.php");
 </div> <!-- Fin Colonnegauche -->
 
 <div id="colonne_droite" class="colonne">
-    <?= $aff_menulieux; ?>
 </div> <!-- #colonne_droite -->
 
 <div class="spacer"><!-- --></div>

@@ -30,7 +30,7 @@
 
 
 <?php
-$pages_formulaires = ["evenement-edit", "event/copy", "lieu-edit", "lieu-salle-edit", "user-register", "gererEvenements", "user-edit", "lieu-text-edit", "organisateur-edit"];
+$pages_formulaires = ["evenement-edit", "event/copy", "lieu-edit", "lieu-salle-edit", "user-register", "gererEvenements", "user-edit", "lieux", "lieu-text-edit", "organisateur-edit"];
 $pages_tinymce = ["lieu-text-edit", "organisateur-edit"];
 $pages_lieumap = ["lieu", "evenement"];
 ?>
@@ -38,6 +38,7 @@ $pages_lieumap = ["lieu", "evenement"];
     <!-- used by ZebraDatepicker, MagnificPopup, checkboxes, custom in _footer.inc.php, browser.js, global.js -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="/vendor/dimsemenov/magnific-popup/dist/jquery.magnific-popup.js"></script>
+    <script src="https://unpkg.com/read-smore@2.0.4/dist/index.umd.js"></script>
 
     <?php if (in_array($nom_page, $pages_lieumap)) { ?>
         <script async defer src="https://maps.googleapis.com/maps/api/js?key=<?= GOOGLE_API_KEY; ?>&callback=initLieuMap"></script>
