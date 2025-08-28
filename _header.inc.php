@@ -222,8 +222,8 @@ use Ladecadanse\UserLevel;
                     foreach ($menu_principal as $nom => $lien) {
                         $ici = '';
                         if (strstr((string) $_SERVER['PHP_SELF'], $lien)
-                        || ($lien == "/lieux.php" && strstr((string) $_SERVER['PHP_SELF'], "lieu.php"))
-                        || ($lien == "/organisateurs.php" && strstr((string) $_SERVER['PHP_SELF'], "organisateur.php"))
+                        || ($lien == "lieux.php" && strstr((string) $_SERVER['PHP_SELF'], "lieu.php"))
+                        || ($lien == "organisateurs.php" && strstr((string) $_SERVER['PHP_SELF'], "organisateur.php"))
                         )
                         {
                             $ici = ' class="ici" ';
