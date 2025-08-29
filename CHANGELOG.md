@@ -1,10 +1,18 @@
 # Changelog
 
-## [3.8.1] - Unreleased
+## [3.9.0] - 2025-08-31
 
 ### Fixed
 - events : resource sql file name (adding index) for v3.8.0
 - events : in copy form limit paste to 100 dates to avoid user errors and then overload of ressources
+- events : fade out of event after action unpublish was broken
+- layout : menu link highlighted when in lieu or organisateur page
+
+### Added
+- lieux : table with navigation
+- lieu : passed/incoming events menu, with pagination
+- lieu : texts truncated and Readmore link with read-smore JS lib
+- more semantic html
 
 ### Changed
 - events : search refactored with fulltext index (replacing LIKEs & php postprocess), PDO, cleaning, layout, html5...
@@ -13,12 +21,16 @@
 - events : report and email refactored, merged into send and moved under event/
 - events : copy refactored and moved under event/
 - events : actions moved under event/
+- events : in edit form, field Remarque label more accurate
+- lieu : page refactored, cleaned
+- lieux : pages lieux and lieu moved under lieu/
 - css : refactor (remove obsolete, useless files)
 - build : php lib upgrade
 
 ### Removed
 - SEO: some "disallows" in robots.txt no longer useful
 - useless multi-suppr script
+- lieux right menu
 
 
 ## [3.8.0] - 2025-07-20
