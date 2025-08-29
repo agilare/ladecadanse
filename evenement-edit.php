@@ -447,7 +447,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 			{
 				$req_id = $connector->getInsertId();
 
-				$_SESSION['evenement-edit_flash_msg'] = "L'événement a été créé. <a href='index.php?courant=".$champs['dateEvenement']."#event-".(int)$req_id."'>Voir dans l'agenda</a>";
+				$_SESSION['evenement-edit_flash_msg'] = "L'événement a été créé. <a href='/index.php?courant=".$champs['dateEvenement']."#event-".(int)$req_id."'>Voir dans l'agenda</a>";
 
                 if (!isset($_SESSION['Sgroupe']))
                 {
@@ -783,7 +783,7 @@ include("_header.inc.php");
 
 	if ($get['action'] == 'update' || $get['action'] == 'editer')
 	{
-        $aff_titre .= 'Modifier <a style="font-size:0.7em" href="/event/evenement.php?idE=' . (int) $get['idE'] . '">' . sanitizeForHtml($champs['titre']) . '</a>';
+        $aff_titre = 'Modifier <a style="font-size:0.7em" href="/event/evenement.php?idE=' . (int) $get['idE'] . '">' . sanitizeForHtml($champs['titre']) . '</a>';
         $act = "update&amp;idE=".(int)$get['idE'];
 	}
 ?>
