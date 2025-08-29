@@ -915,7 +915,7 @@ if ($verif->nbErreurs() > 0)
     <?php } ?>
 
                     <div style="margin-top:1.3em">
-                        <label for="horaire_complement">Complément</label>
+                        <label for="horaire_complement">Complément d'horaire</label>
                             <input type="text" name="horaire_complement" id="horaire_complement" size="60" maxlength="200" value="<?php echo sanitizeForHtml($champs['horaire_complement']) ?>" />
                             <?php
             echo $verif->getHtmlErreur('horaire_complement');
@@ -1107,7 +1107,7 @@ if ($verif->nbErreurs() > 0)
         </p>
 
         <p>
-            <label for="urlLieu">Site web</label>
+            <label for="urlLieu">Site web du lieu</label>
             <input type="text" name="urlLieu" id="urlLieu" size="40" maxlength="80" title="URL du lieu" value="<?php if (empty($champs['idLieu'])) { echo sanitizeForHtml($champs['urlLieu']); } ?>" />
         <?php
         echo $verif->getHtmlErreur("urlLieu");
