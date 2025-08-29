@@ -1,7 +1,6 @@
 <?php
 
-global $connector;
-require_once("app/bootstrap.php");
+require_once("../app/bootstrap.php");
 
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\Lieu;
@@ -15,21 +14,21 @@ $get = [];
 
 $filters['region'] = $_SESSION['region'];
 
-$_SESSION['user_prefs_lieux_categorie'] ?? '';
+$_SESSION['user_prefs_lieux_categorie'] ??= '';
 if (isset($_GET['categorie']))
 {
    $_SESSION['user_prefs_lieux_categorie'] = $_GET['categorie'];
 }
 $filters['categorie'] = $_SESSION['user_prefs_lieux_categorie'];
 
-$_SESSION['user_prefs_lieux_localite'] ?? '';
+$_SESSION['user_prefs_lieux_localite'] ??= '';
 if (isset($_GET['localite']))
 {
     $_SESSION['user_prefs_lieux_localite']  = (int) $_GET['localite'];
 }
 $filters['localite'] = $_SESSION['user_prefs_lieux_localite'];
 
-$_SESSION['user_prefs_lieux_statut'] ?? 'actif';
+$_SESSION['user_prefs_lieux_statut'] ??= 'actif';
 $tab_statuts = ['actif' => 'Actifs', 'inactif' => 'Inactifs', 'ancien' => 'Anciens'];
 if (isset($_GET['statut']) && Validateur::validateUrlQueryValue($_GET['statut'], "enum", 1, array_keys($tab_statuts)))
 {
@@ -38,7 +37,7 @@ if (isset($_GET['statut']) && Validateur::validateUrlQueryValue($_GET['statut'],
 $filters['statut'] = $_SESSION['user_prefs_lieux_statut'];
 
 $tab_order = ["dateAjout", "nom"];
-$_SESSION['user_prefs_lieux_order'] ?? 'dateAjout';
+$_SESSION['user_prefs_lieux_order'] ??= 'dateAjout';
 if (isset($_GET['order']) && in_array($_GET['order'], $tab_order))
 {
    $_SESSION['user_prefs_lieux_order'] = $_GET['order'];
@@ -49,7 +48,6 @@ $get['page'] = !empty($_GET['page']) ? Validateur::validateUrlQueryValue($_GET['
 
 $lieux_page = Lieu::getLieux($filters, $_SESSION['user_prefs_lieux_order'], $get['page']);
 $lieux_all = Lieu::getLieux($filters, $_SESSION['user_prefs_lieux_order'], null);
-//dump($lieux_all);
 $all_results_nb = count($lieux_all);
 
 
@@ -81,7 +79,7 @@ $lieux_even = $stmt->fetchAll(PDO::FETCH_GROUP);
 //dump($lieux_even);
 
 $page_titre = "Lieux de sorties à ".$glo_regions[$_SESSION['region']]." : bistrots, salles, bars, restaurants, cinémas, théâtres, galeries, boutiques, musées...";
-include("_header.inc.php");
+include("../_header.inc.php");
 ?>
 
 <main id="contenu" class="colonne">
@@ -110,6 +108,7 @@ include("_header.inc.php");
                 </form>
                 <ul class="menu_tab">
                     <?php foreach ($tab_statuts as $k => $label) : ?>
+                        <?php if ($k == "inactif" && !$authorization->isPersonneEditor($_SESSION)) { continue; } ?>
                         <li class="<?= $k ?><?php if ($_SESSION['user_prefs_lieux_statut'] == $k) : ?> ici<?php endif; ?>">
                             <a href="?<?= Utils::urlQueryArrayToString($get, ['statut', 'page']) ?>&amp;statut=<?= $k ?>"><?= $label ?></a>
                         </li>
@@ -130,56 +129,62 @@ include("_header.inc.php");
             <div class="spacer"></div>
         </div>
 
-        <?= HtmlShrink::getPaginationString($all_results_nb, $get['page'], Lieu::RESULTS_PER_PAGE, 1, basename(__FILE__), "?" . Utils::urlQueryArrayToString($get, "page") . "&amp;page=") ?>
+        <?php if ($all_results_nb === 0) : ?>
+            <p style="margin-top:2em;">Pas de lieu correspondant à ces critères</p>
+        <?php else : ?>
 
-        <table id="derniers_lieux">
-            <thead>
-                <tr>
-                    <th colspan="3"></th><th></th><th><i class="fa fa-comment-o" aria-hidden="true"></i></th><th><img src="/web/interface/icons/calendar.png" alt="Nombre d'événements agendés" title="Nombre d'événements agendés" /></th>
-                </tr>
-            </thead>
-            <tbody>
-            <?php foreach ($lieux_page as $lieu) : ?>
-                <tr>
-                    <td style="max-width:60px;overflow: hidden;">
-                        <?php if ($lieu['logo']) : ?>
-                        <a href="<?= Lieu::getFileHref(Lieu::getFilePath($lieu['logo']), true) ?>" class="magnific-popup"><img src="<?= Lieu::getFileHref(Lieu::getFilePath($lieu['logo'], "s_"), true) ?>" alt="Logo" class="logo" height="<?= ImageDriver2::getProportionalHeightFromGivenWidth(Lieu::getSystemFilePath(Lieu::getFilePath($lieu['logo'], "s_")), 40) ?>"></a>
-                        <?php elseif ($lieu['photo1'] != '') : ?>
-                            <a href="<?= Lieu::getFileHref(Lieu::getFilePath($lieu['photo1']), true) ?>" class="gallery-item"><img src="<?= Lieu::getFileHref(Lieu::getFilePath($lieu['photo1'], "s_"), true) ?>" alt="Photo du lieu" height="<?= ImageDriver2::getProportionalHeightFromGivenWidth(Lieu::getSystemFilePath(Lieu::getFilePath($lieu['photo1'], "s_")), 40) ?>"></a>
-                        <?php else : ?>
-                            <div style="width:60px;height:40px;background: #fafafa"></div>
-                        <?php endif; ?>
-                    </td>
-                    <td>
-                        <a href="/lieu.php?idL=<?= (int)$lieu['idLieu']; ?>"><strong><?= sanitizeForHtml($lieu['nom']); ?></strong></a>
-                        <?php  if (0) : // if (!empty($lieux_salles[$lieu['idLieu']])) : ?>
-                            <?php foreach ($lieux_salles[$lieu['idLieu']] as $s) : ?>
-                                <br><?= sanitizeForHtml($s['nom']) ?>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
-                    </td>
-                    <td><?= sanitizeForHtml(implode(", ", array_map(fn ($cat) : string => $glo_categories_lieux[$cat], explode(",", str_replace(" ", "", $lieu['categorie']))))) ?></td>
-                    <td>
-                        <?= sanitizeForHtml($lieu['loc_localite']) ?>
-                        <p style="font-size:0.8em"><?= sanitizeForHtml(HtmlShrink::adresseCompacteSelonContexte('', '', $lieu['quartier'], $lieu['adresse'])); ?></p>
-                    </td>
-                    <td>
-                        <?php if (!empty($lieux_desc[$lieu['idLieu']])) : ?>
-                            <?= $lieux_desc[$lieu['idLieu']][0]['nb'] ?>
-                        <?php endif; ?>
-                    </td>
-                    <td>
-                        <?php if (!empty($lieux_even[$lieu['idLieu']])) : ?>
-                            <strong><?= $lieux_even[$lieu['idLieu']][0]['nb'] ?></strong>
-                        <?php endif; ?>
-                    </td>
-                </tr>
-            <?php endforeach; ?>
-            </tbody>
-        </table>
-
-        <?php if (count($lieux_page) > 8) : ?>
             <?= HtmlShrink::getPaginationString($all_results_nb, $get['page'], Lieu::RESULTS_PER_PAGE, 1, basename(__FILE__), "?" . Utils::urlQueryArrayToString($get, "page") . "&amp;page=") ?>
+
+            <table id="derniers_lieux">
+                <thead>
+                    <tr>
+                        <th colspan="3"></th><th></th><th><i class="fa fa-comment-o" aria-hidden="true"></i></th><th><img src="/web/interface/icons/calendar.png" alt="Nombre d'événements agendés" title="Nombre d'événements agendés" /></th>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php foreach ($lieux_page as $lieu) : ?>
+                    <tr>
+                        <td style="max-width:60px;overflow: hidden;">
+                            <?php if ($lieu['logo']) : ?>
+                            <a href="<?= Lieu::getFileHref(Lieu::getFilePath($lieu['logo']), true) ?>" class="magnific-popup"><img src="<?= Lieu::getFileHref(Lieu::getFilePath($lieu['logo'], "s_"), true) ?>" alt="Logo" class="logo" height="<?= ImageDriver2::getProportionalHeightFromGivenWidth(Lieu::getSystemFilePath(Lieu::getFilePath($lieu['logo'], "s_")), 40) ?>"></a>
+                            <?php elseif ($lieu['photo1'] != '') : ?>
+                                <a href="<?= Lieu::getFileHref(Lieu::getFilePath($lieu['photo1']), true) ?>" class="gallery-item"><img src="<?= Lieu::getFileHref(Lieu::getFilePath($lieu['photo1'], "s_"), true) ?>" alt="Photo du lieu" height="<?= ImageDriver2::getProportionalHeightFromGivenWidth(Lieu::getSystemFilePath(Lieu::getFilePath($lieu['photo1'], "s_")), 40) ?>"></a>
+                            <?php else : ?>
+                                <div style="width:60px;height:40px;background: #fafafa"></div>
+                            <?php endif; ?>
+                        </td>
+                        <td>
+                            <a href="lieu.php?idL=<?= (int)$lieu['idLieu']; ?>"><strong><?= sanitizeForHtml($lieu['nom']); ?></strong></a>
+                            <?php  if (0) : // if (!empty($lieux_salles[$lieu['idLieu']])) : ?>
+                                <?php foreach ($lieux_salles[$lieu['idLieu']] as $s) : ?>
+                                    <br><?= sanitizeForHtml($s['nom']) ?>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </td>
+                        <td><?= sanitizeForHtml(implode(", ", array_map(fn ($cat) : string => $glo_categories_lieux[$cat], explode(",", str_replace(" ", "", $lieu['categorie']))))) ?></td>
+                        <td>
+                            <?= sanitizeForHtml($lieu['loc_localite']) ?>
+                            <p style="font-size:0.8em"><?= sanitizeForHtml(HtmlShrink::adresseCompacteSelonContexte('', '', $lieu['quartier'], $lieu['adresse'])); ?></p>
+                        </td>
+                        <td>
+                            <?php if (!empty($lieux_desc[$lieu['idLieu']])) : ?>
+                                <?= $lieux_desc[$lieu['idLieu']][0]['nb'] ?>
+                            <?php endif; ?>
+                        </td>
+                        <td>
+                            <?php if (!empty($lieux_even[$lieu['idLieu']])) : ?>
+                                <strong><?= $lieux_even[$lieu['idLieu']][0]['nb'] ?></strong>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+
+            <?php if (count($lieux_page) > 8) : ?>
+                <?= HtmlShrink::getPaginationString($all_results_nb, $get['page'], Lieu::RESULTS_PER_PAGE, 1, basename(__FILE__), "?" . Utils::urlQueryArrayToString($get, "page") . "&amp;page=") ?>
+            <?php endif; ?>
+
         <?php endif; ?>
 
     </section>
@@ -189,7 +194,7 @@ include("_header.inc.php");
 </main>
 
 <div id="colonne_gauche" class="colonne">
-    <?php include("event/_navigation_calendrier.inc.php"); ?>
+    <?php include("../event/_navigation_calendrier.inc.php"); ?>
 </div>
 
 <div id="colonne_droite" class="colonne">
@@ -198,5 +203,5 @@ include("_header.inc.php");
 <div class="spacer"><!-- --></div>
 
 <?php
-include("_footer.inc.php");
+include("../_footer.inc.php");
 ?>

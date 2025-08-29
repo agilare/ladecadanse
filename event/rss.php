@@ -63,7 +63,7 @@ switch($get['type'])
     case "lieu_evenements":
 
         $channel['title'] = 'La décadanse : prochains événements';
-        $channel['link'] .= 'lieu.php?idL='.(int)$get['id'];
+        $channel['link'] .= '/lieu/lieu.php?idL='.(int)$get['id'];
 
         $where = " WHERE e.idLieu = ? AND dateEvenement >= ?";
         $params = [$get['id'], $glo_auj_6h];

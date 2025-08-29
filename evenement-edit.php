@@ -578,7 +578,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 
 				$lienLieu = '';
 				if (!empty($lieu))
-					$lienLieu = " au <a href=\"/lieu.php?idLieu=".$lieu."\"> lieu ".$lieu."</a>";
+					$lienLieu = " au <a href=\"/lieu/lieu.php?idLieu=".$lieu."\"> lieu ".$lieu."</a>";
 
 				$sql = "DELETE FROM evenement_organisateur WHERE idEvenement=" . (int) $get['idE'];
                 $req = $connector->query($sql);

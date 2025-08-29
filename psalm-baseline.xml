@@ -29,7 +29,7 @@
       <code><![CDATA[global $connector;]]></code>
     </InvalidGlobal>
   </file>
-  <file src="lieux.php">
+  <file src="lieu/lieux.php">
     <InvalidGlobal>
       <code><![CDATA[global $connector;]]></code>
     </InvalidGlobal>

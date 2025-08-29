@@ -1,11 +1,10 @@
 <?php
 
-require_once("app/bootstrap.php");
+require_once("../app/bootstrap.php");
 
 use Ladecadanse\UserLevel;
 use Ladecadanse\Lieu;
 use Ladecadanse\Evenement;
-use Ladecadanse\EvenementCollection;
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\Utils\Text;
 use Ladecadanse\Utils\Utils;
@@ -115,7 +114,7 @@ $all_results_nb = $stmtAll->fetchColumn();
 
 $page_titre = $lieu['nom']. " - ".HtmlShrink::adresseCompacteSelonContexte($lieu['loc_canton'], $lieu['loc_localite'], $lieu['quartier'], $lieu['adresse']);
 $page_description = $page_titre." : accès, horaires, description, photos et prochains événements";
-include("_header.inc.php");
+include("../_header.inc.php");
 ?>
 
 <main id="contenu" class="colonne">
@@ -431,7 +430,7 @@ include("_header.inc.php");
 
         <?php if (!empty($lieu['URL'])) :
             $url_with_name = Text::getUrlWithName($lieu['URL'])     ?>
-            <p>Pour des informations complémentaires veuillez consulter <a href="<?= $url_with_name['url'] ?>" target='_blank'><?= sanitizeForHtml($url_with_name['urlName']) ?></a></p>
+            <p><br>Pour des informations complémentaires veuillez consulter <a href="<?= $url_with_name['url'] ?>" target='_blank'><?= sanitizeForHtml($url_with_name['urlName']) ?></a></p>
         <?php endif; ?>
 
     </section> <!-- #prochains_evenenents -->
@@ -439,7 +438,7 @@ include("_header.inc.php");
 </main>
 
 <div id="colonne_gauche" class="colonne">
-    <?php include("event/_navigation_calendrier.inc.php");?>
+    <?php include("../event/_navigation_calendrier.inc.php");?>
 </div> <!-- Fin Colonnegauche -->
 
 <div id="colonne_droite" class="colonne">
@@ -447,5 +446,5 @@ include("_header.inc.php");
 
 <div class="spacer"><!-- --></div>
 <?php
-include("_footer.inc.php");
+include("../_footer.inc.php");
 ?>

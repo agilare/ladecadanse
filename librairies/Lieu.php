@@ -41,7 +41,7 @@ class Lieu extends Element
 
         if ($idLieu)
         {
-            $result = '<a href="/lieu.php?idL=' . $idLieu . '">' . $result . '</a>';
+            $result = '<a href="/lieu/lieu.php?idL=' . $idLieu . '">' . $result . '</a>';
             if ($salle)
             {
                 $result .= " - " . sanitizeForHtml($salle);

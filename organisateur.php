@@ -165,7 +165,7 @@ $req = $connector->query($sql);
 
 			while ($tab = $connector->fetchArray($req))
 			{
-				$lieux .= '<li><a href="/lieu.php?idL=' . (int)$tab['idLieu'] . '">' . sanitizeForHtml($tab['nom']) . "</a></li>";
+				$lieux .= '<li><a href="/lieu/lieu.php?idL=' . (int)$tab['idLieu'] . '">' . sanitizeForHtml($tab['nom']) . "</a></li>";
     }
 			$lieux .= '</ul></li>';
 		}
@@ -378,7 +378,7 @@ if ($evenements->getNbElements() > 0)
 			$tab_lieu = $connector->fetchArray(
 			$connector->query("SELECT nom FROM lieu WHERE idlieu='" . (int) $even->getValue('idLieu') . "'"));
 
-            $nom_lieu = "<a href=\"/lieu.php?idL=" . (int)$even->getValue('idLieu') . "\" title=\"Voir la fiche du lieu : " . sanitizeForHtml($tab_lieu['nom']) . "\" >" . sanitizeForHtml($tab_lieu['nom']) . "</a>";
+            $nom_lieu = "<a href=\"/lieu/lieu.php?idL=" . (int)$even->getValue('idLieu') . "\" title=\"Voir la fiche du lieu : " . sanitizeForHtml($tab_lieu['nom']) . "\" >" . sanitizeForHtml($tab_lieu['nom']) . "</a>";
         }
 		else
 		{

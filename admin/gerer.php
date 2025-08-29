@@ -8,16 +8,15 @@ use Ladecadanse\HtmlShrink;
 use Ladecadanse\Utils\Utils;
 use Ladecadanse\Utils\Text;
 
-if (!$videur->checkGroup(4))
+if (!$videur->checkGroup(UserLevel::ADMIN))
 {
 	header("Location: /user-login.php"); die();
 }
 
-
 $page_titre = "gérer";
 require_once '../_header.inc.php';
 
-$tab_listes = ["evenement" => "Événements", "lieu" => "Lieux", "organisateur" => "Organisateurs", "description" => "Descriptions", "personne" => "Personnes"];
+$tab_listes = ["evenement" => "Événements", "organisateur" => "Organisateurs", "description" => "Descriptions", "personne" => "Personnes"];
 
 $get = [];
 
@@ -96,14 +95,11 @@ $titre_region = '';
 if (!empty($_SESSION['region_admin']))
 {
     $sql_where_region = " WHERE region='".$connector->sanitize($_SESSION['region_admin'])."' ";
-
-
-        $titre_region = " - ".$glo_regions[$_SESSION['region_admin']];
+    $titre_region = " - ".$glo_regions[$_SESSION['region_admin']];
 }
 
 ?>
 
-<!-- Deb Contenu -->
 <div id="contenu" class="colonne">
 
 	<div id="entete_contenu">
@@ -171,7 +167,7 @@ echo '<div class="spacer"></div>';
 
 		$req_lieu = $connector->query("SELECT nom FROM lieu WHERE idLieu=".(int) $tab_desc['idLieu']);
 		$tabLieu = $connector->fetchArray($req_lieu);
-		$nomLieu = "<a href=\"/lieu.php?idL=".(int)$tab_desc['idLieu']."\" title=\"Éditer le lieu\">".sanitizeForHtml($tabLieu['nom'])."</a>";
+		$nomLieu = "<a href=\"/lieu/lieu.php?idL=".(int)$tab_desc['idLieu']."\" title=\"Éditer le lieu\">".sanitizeForHtml($tabLieu['nom'])."</a>";
 
 		if ($pair % 2 == 0)
 		{
@@ -208,124 +204,6 @@ echo '<div class="spacer"></div>';
 
 	echo "</table>";
 
-
-
-
-}
-else if ($get['element'] == "lieu")
-{
-	$req_lieux = $connector->query("
-	SELECT idLieu, idPersonne, nom, quartier, categorie, URL, statut, dateAjout, date_derniere_modif
-	FROM lieu
-        ".$sql_where_region."
-	ORDER BY ".$get['tri_gerer']." ".$get['ordre']."
-	LIMIT ".((int)$get['page'] - 1) * (int)$get['nblignes'].",".(int)$get['nblignes']);
-
-	$req_count = $connector->query("SELECT COUNT(*) AS total FROM lieu");
-	$tab_count = $connector->fetchArray($req_count);
-	$tot_elements = $tab_count['total'];
-
-	$th_lieu = ["idLieu" => "ID",  "nom" => "Nom", "categorie" => "Catégorie", "URL" => "URL",
-	"description" => "Desc", "dateAjout" => "Créé", "date_derniere_modif" => "Modifié", "statut" => "Statut"];
-
-	echo HtmlShrink::getPaginationString($tot_elements, $get['page'], $get['nblignes'], 1, "", "?element=" . $get['element'] . "&tri_gerer=" . $get['tri_gerer'] . "&ordre=" . $get['ordre'] . "&page=");
-
-        echo '<ul class="menu_nb_res">';
-	foreach ($tab_nblignes as $nbl)
-	{
-		echo '<li ';
-		if ($get['nblignes'] == $nbl) { echo 'class="ici"'; }
-
-		echo '><a href="/admin/gerer.php?'.Utils::urlQueryArrayToString($get, "nblignes").'&nblignes='.(int)$nbl.'">'.(int)$nbl.'</a></li>';
-	}
-	echo '</ul>';
-echo '<div class="spacer"></div>';
-	echo "
-	<table id=\"ajouts\">
-	<tr>";
-
-	foreach ($th_lieu as $att => $th)
-	{
-		if ($att == "adresse" || $att == "categorie" || $att == "URL" || $att == "description")
-		{
-			echo "<th>".$th."</th>";
-		}
-		else
-		{
-			if ($att == $get['tri_gerer'])
-			{
-				echo "<th class=\"ici\">".$icone[$get['ordre']];
-			}
-			else
-			{
-				echo "<th>";
-			}
-			echo "<a href=\"?element=" . $get['element'] . "&page=" . (int) $get['page'] . "&tri_gerer=" . $att . "&ordre=" . $ordre_inverse . "&nblignes=" . (int) $get['nblignes'] . "\">" . $th . "</a></th>";
-        }
-	}
-
-	echo "<th></th></tr>";
-
-	$pair = 0;
-
-	while($tab_lieux = $connector->fetchArray($req_lieux))
-	{
-
-		$req_nbDes = $connector->query("SELECT COUNT(*) AS total_desc FROM descriptionlieu WHERE idLieu=".(int) $tab_lieux['idLieu']);
-		$tabDes = $connector->fetchArray($req_nbDes);
-
-
-		if ($pair % 2 == 0)
-		{
-			echo "<tr>";
-		}
-		else
-		{
-			echo "<tr class=\"impair\" >";
-		}
-
-		echo "
-		<td>" . (int) $tab_lieux['idLieu'] . "</td>
-		<td><a href=\"/lieu.php?idL=".(int)$tab_lieux['idLieu']."\" title=\"Voir la fiche du lieu :".sanitizeForHtml($tab_lieux['nom'])."\">".sanitizeForHtml($tab_lieux['nom'])."</a></td>
-		<td class=\"tdleft\"><ul>";
-
-		$listeCat = explode(",", (string) $tab_lieux['categorie']);
-
-		for ($i = 0, $totalCat = count($listeCat); $i<$totalCat; $i++)
-		{
-			echo "<li>".$listeCat[$i]."</li>";
-		}
-
-		echo "</ul></td>";
-		echo "<td>";
-		if (!empty($tab_lieux['URL']))
-		{
-			echo "<a href=\"http://".$tab_lieux['URL']."\" title=\"Aller sur le site du lieu\">".$iconeURL."</a>\n";
-		}
-		echo "</td>";
-		echo "
-		<td>" . (int) $tabDes['total_desc'] . "</td>
-		<td>".date_iso2app($tab_lieux['dateAjout'])."</td>";
-
-		echo "<td>";
-		if ($tab_lieux['date_derniere_modif'] != "0000-00-00 00:00:00")
-		{
-			echo date_iso2app($tab_lieux['date_derniere_modif']);
-		}
-		echo "</td>
-		<td>".$tab_icones_statut[$tab_lieux['statut']]."</td>";
-
-		//Edition pour l'admin ou l'auteur
-		if ($_SESSION['Sgroupe'] <= UserLevel::ADMIN) {
-			echo "<td><a href=\"/lieu-edit.php?action=editer&idL=".(int)$tab_lieux['idLieu']."\" title=\"Éditer le lieu\">".$iconeEditer."</a></td>";
-		}
-		echo "</tr>";
-
-		$pair++;
-
-	}
-
-	echo "</table>";
 
 
 

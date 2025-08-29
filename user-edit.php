@@ -685,7 +685,7 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= UserLevel::ACTOR)) {
                 <p>
                 <label>Lieu</label>
                 <ul style="float:left;margin:0;padding-left:1em;">
-                                    <li><a href="/lieu.php?idL=<?php echo (int)$champs['lieu']; ?>"><?php echo sanitizeForHtml($lieuTrouve['nom']); ?></a>
+                                    <li><a href="/lieu/lieu.php?idL=<?php echo (int)$champs['lieu']; ?>"><?php echo sanitizeForHtml($lieuTrouve['nom']); ?></a>
                                         <input type="hidden" name="lieu" value="<?php echo $champs['lieu'];?>">
                     </li>
                 </ul><div class="spacer"><!-- --></div>

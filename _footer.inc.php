@@ -30,7 +30,7 @@
 
 
     <?php
-    $pages_formulaires = ["evenement-edit", "event/copy", "lieu-edit", "lieu-salle-edit", "user-register", "gererEvenements", "user-edit", "lieux", "lieu-text-edit", "organisateur-edit"];
+    $pages_formulaires = ["evenement-edit", "event/copy", "lieu-edit", "lieu-salle-edit", "user-register", "gererEvenements", "user-edit", "lieu/lieux", "lieu-text-edit", "organisateur-edit"];
     $pages_tinymce = ["lieu-text-edit", "organisateur-edit"];
     $pages_lieumap = ["lieu", "evenement"];
     ?>
