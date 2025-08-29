@@ -32,12 +32,14 @@
     <?php
     $pages_formulaires = ["evenement-edit", "event/copy", "lieu-edit", "lieu-salle-edit", "user-register", "gererEvenements", "user-edit", "lieu/lieux", "lieu-text-edit", "organisateur-edit"];
     $pages_tinymce = ["lieu-text-edit", "organisateur-edit"];
-    $pages_lieumap = ["lieu", "evenement"];
+    $pages_lieumap = ["lieu/lieu", "event/evenement"];
     ?>
 
     <!-- used by ZebraDatepicker, MagnificPopup, checkboxes, custom in _footer.inc.php, browser.js, global.js -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="/vendor/dimsemenov/magnific-popup/dist/jquery.magnific-popup.js"></script>
+    <script src="/vendor/select2/select2/dist/js/select2.min.js"></script>
+    <script src="/vendor/select2/select2/dist/js/i18n/fr.js"></script>
     <script src="https://unpkg.com/read-smore@2.0.4/dist/index.umd.js"></script>
 
     <?php if (in_array($nom_page, $pages_lieumap)) { ?>
@@ -47,8 +49,6 @@
 
     <?php if (in_array($nom_page, $pages_formulaires)) : ?>
 
-        <script src="/vendor/select2/select2/dist/js/select2.min.js"></script>
-        <script src="/vendor/select2/select2/dist/js/i18n/fr.js"></script>
         <script src="/web/js/libs/Zebra_datepicker/zebra_datepicker.min.js"></script>
         <script src="/web/js/forms.js?<?= time() ?>"></script>
 
