@@ -648,6 +648,6 @@ form#ajouter_editer p.memoriser label, form#ajouter_editer p.mdp_oublie
   margin-left: 5px;
 }
 
-#order_navigation {
+#default #order_navigation {
   float: left;
 }
