@@ -20,9 +20,6 @@ use Ladecadanse\UserLevel;
             <a href="/admin/gererEvenements.php"><img src="<?php echo $url_images_interface_icons ?>calendar.png" alt="" />les événements</a>
 		</li>
 		<li>
-            <a href="/admin/gerer.php?element=lieu"><img src="<?php echo $url_images_interface_icons ?>building.png" alt="" />les lieux</a>
-		</li>
-		<li>
             <a href="/admin/gerer.php?element=organisateur"><img src="<?php echo $url_images_interface_icons ?>group.png" alt="" />les organisateurs</a>
 		</li>
 
@@ -31,11 +28,6 @@ use Ladecadanse\UserLevel;
             <a href="/admin/gerer.php?element=personne"><img src="<?php echo $url_images_interface_icons ?>user.png" alt="" />les personnes</a>
 		</li>
         <?php } ?>
-    </ul>
-    <ul style="list-style-type:none">
-        <li>
-            <a href="https://tools.ladecadanse.ch/doc/Administration/index.html" class="url lien_ext" target="_blank">Documentation (privé)</a>
-        </li>
     </ul>
 </div>
 <!-- Fin gestion -->

@@ -30,12 +30,16 @@ export const AppGlobal =
 
         $('#show-description-btn').on('click', function showDescription()
         {
+            $('#show-presentation-btn a').removeClass('actif');
+            $(this).addClass('actif');
             showhide('description', 'presentation');
             return false;
         });
 
         $('#show-presentation-btn').on('click', function showPresentation()
         {
+            $('#show-description-btn a').removeClass('actif');
+            $(this).addClass('actif');
             showhide('presentation', 'description');
             return false;
         });

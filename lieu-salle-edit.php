@@ -148,7 +148,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 			if ($req_update)
 			{
 
-				HtmlShrink::msgOk('Salle du <a href="/lieu.php?idL='.(int)$champs['idLieu'].'" title="Fiche du lieu">lieu</a> modifiée');
+				HtmlShrink::msgOk('Salle du <a href="/lieu/lieu.php?idL='.(int)$champs['idLieu'].'">lieu</a> modifiée');
 
 				$get['action'] = 'editer';
 				$action_terminee = true;

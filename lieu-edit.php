@@ -66,7 +66,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] == 'ok')
 	if ($form->traitement($_POST, $_FILES))
 	{
 		$_SESSION['lieu_flash_msg']  = $form->getMessage();
-        header("Location: lieu.php?idL=".(int)$form->id); die();
+        header("Location: /lieu/lieu.php?idL=".(int)$form->id); die();
 	}
 }
 else if ($get['action'] == 'editer')
@@ -157,100 +157,87 @@ include("_header.inc.php");
     </p>
 
 <p>
-        <label for="localite">Localité/quartier*</label>&nbsp;<select name="localite_id" id="localite" class="js-select2-options-with-style" style="max-width:300px;" required data-placeholder="Tapez le nom...">
+    <label for="localite">Localité/quartier*</label>&nbsp;
+    <select name="localite_id" id="localite" class="js-select2-options-with-style" style="max-width:300px;" required data-placeholder="Tapez le nom...">
+        <option value=""></option>
+        <?php
+        $sql_prov = '';
+        if ($get['action'] == 'ajouter' || $get['action'] == 'insert')
+        {
+            $sql_prov = " AND canton != 'fr' ";
+        }
+
+        $req = $connector->query("SELECT id, localite, canton FROM localite WHERE id!=1 ".$sql_prov." ORDER BY canton, localite ");
+
+        $select_canton = '';
+        while ($tab = $connector->fetchArray($req))
+        {
+            if ($tab['canton'] != $select_canton)
+            {
+                if (!empty($select_canton))
+                {
+                    echo "</optgroup>";
+                }
+                echo "<optgroup label=''>"; // ".$glo_regions[strtolower($tab['canton'])]."
+            }
+            echo "<option ";
+
+            if (($form->getValeur('localite_id') == $tab['id'] && empty($form->getValeur('quartier'))) || ((isset($_POST['localite_id']) && $tab['id'] == $_POST['localite_id'])))
+            {
+                echo 'selected="selected" ';
+            }
+
+            echo "value=\"".$tab['id']."\">".$tab['localite']."</option>";
+
+            // Genève (44) : quartiers
+            if ($tab['id'] == 44)
+            {
+               // si erreur formulaire
+                $champs_quartier = '';
+                $loc_qua = explode("_", (string) $form->getValeur('localite_id'));
+                if (!empty($loc_qua[1]))
+                {
+                    $champs_quartier = $loc_qua[1];
+                }
+
+                // si chargement even existant
+                if (!empty($form->getValeur('quartier')))
+                {
+                    $champs_quartier = $form->getValeur('quartier');
+                }
+
+                foreach ($glo_tab_quartiers2['ge'] as $no => $quartier)
+                {
+                    echo "<option ";
+                    if ($champs_quartier == $quartier)
+                    {
+                            echo 'selected="selected" ';
+                    }
+                    echo " value=\"44_".$quartier."\">Genève - ".$quartier."</option>";
+                }
+            }
+            $select_canton = $tab['canton'];
+        }
+        ?>
+            <optgroup label="Ailleurs">
             <?php
-echo "<option value=\"\"></option>";
+            foreach ($glo_tab_ailleurs as $id => $nom)
+            {
+                   echo "<option ";
 
-$sql_prov = '';
-if ($get['action'] == 'ajouter' || $get['action'] == 'insert')
-{
-    $sql_prov = " AND canton != 'fr' ";
-}
-
-
-$req = $connector->query("
-SELECT id, localite, canton FROM localite WHERE id!=1 ".$sql_prov." ORDER BY canton, localite "
- );
-
-
-
-$select_canton = '';
-while ($tab = $connector->fetchArray($req))
-{
-
-    if ($tab['canton'] != $select_canton)
-    {
-        if (!empty($select_canton))
-            echo "</optgroup>";
-
-        echo "<optgroup label=''>"; // ".$glo_regions[strtolower($tab['canton'])]."
-    }
-
-
-
-
-	echo "<option ";
-
-	if (($form->getValeur('localite_id') == $tab['id'] && empty($form->getValeur('quartier'))) || ((isset($_POST['localite_id']) && $tab['id'] == $_POST['localite_id'])))
-	{
-		echo 'selected="selected" ';
-	}
-
-	echo "value=\"".$tab['id']."\">".$tab['localite']."</option>";
-
-    // Genève quartiers
-    if ($tab['id'] == 44)
-    {
-
-       // si erreur formulaire
-        $champs_quartier = '';
-        $loc_qua = explode("_", (string) $form->getValeur('localite_id'));
-        if (!empty($loc_qua[1]))
-           $champs_quartier = $loc_qua[1];
-
-        // si chargement even existant
-        if (!empty($form->getValeur('quartier')))
-            $champs_quartier = $form->getValeur('quartier');
-
-        foreach ($glo_tab_quartiers2['ge'] as $no => $quartier)
-       {
-               echo "<option ";
-
-               if ($champs_quartier == $quartier)
-               {
-                       echo 'selected="selected" ';
-               }
-
-               echo " value=\"44_".$quartier."\">Genève - ".$quartier."</option>";
-
-       }
-
-    }
-
-     $select_canton = $tab['canton'];
-}
-?>
-    <optgroup label="Ailleurs">
-<?php
-    foreach ($glo_tab_ailleurs as $id => $nom)
-   {
-           echo "<option ";
-
-           if (($form->getValeur('region') == $id) || ((isset($_POST['localite_id']) && $id == $_POST['localite_id']))
-                  ) // $form->getValeur('quartier')
-           {
-                   echo ' selected="selected" ';
+                   if (($form->getValeur('region') == $id) || ((isset($_POST['localite_id']) && $id == $_POST['localite_id']))
+                          ) // $form->getValeur('quartier')
+                   {
+                           echo ' selected="selected" ';
+                   }
+                   echo " value=\"".$id."\">".$nom."</option>";
            }
-
-           echo " value=\"".$id."\">".$nom."</option>";
-
-   }
-?>
-    </optgroup>
-</select>
-<?php
-echo $form->getHtmlErreur("localite_id");
-?>
+            ?>
+        </optgroup>
+    </select>
+    <?php
+    echo $form->getHtmlErreur("localite_id");
+    ?>
 </p>
 
 

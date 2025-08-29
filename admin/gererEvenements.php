@@ -794,7 +794,7 @@ while ($tab_even = $connector->fetchArray($req_evenement))
 	{
 		$req_lieu = $connector->query("SELECT nom FROM lieu WHERE idLieu=" . (int) $tab_even['idLieu']);
         $tabLieu = $connector->fetchArray($req_lieu);
-		$nomLieu = "<a href=\"/lieu.php?idL=" . (int) $tab_even['idLieu'] . "\">" . sanitizeForHtml($tabLieu['nom']) . "</a>";
+		$nomLieu = "<a href=\"/lieu/lieu.php?idL=" . (int) $tab_even['idLieu'] . "\">" . sanitizeForHtml($tabLieu['nom']) . "</a>";
     }
 
 

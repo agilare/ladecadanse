@@ -415,7 +415,7 @@
         ["css=#menu li:nth-child(3) > a", "css:finder"],
         ["xpath=//a[contains(text(),'Lieux')]", "xpath:link"],
         ["xpath=//nav[@id='menu']/ul/li[3]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/lieux.php?')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/lieu/lieux.php?')]", "xpath:href"],
         ["xpath=//header/nav/ul/li[3]/a", "xpath:position"],
         ["xpath=//a[contains(.,'Lieux')]", "xpath:innerText"]
       ],
@@ -563,7 +563,7 @@
         ["css=.genre:nth-child(2) > .evenement:nth-child(4) .right > a", "css:finder"],
         ["xpath=//a[contains(text(),'Conservatoire de Musique de Genève')]", "xpath:link"],
         ["xpath=//div[@id='prochains_evenements']/section/article[2]/header/span/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/lieu.php?idL=4')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/lieu/lieu.php?idL=4')]", "xpath:href"],
         ["xpath=//article[2]/header/span/a", "xpath:position"],
         ["xpath=//a[contains(.,'Conservatoire de Musique de Genève')]", "xpath:innerText"]
       ],
@@ -3554,7 +3554,7 @@
         ["css=#menu li:nth-child(3) > a", "css:finder"],
         ["xpath=//a[contains(text(),'Lieux')]", "xpath:link"],
         ["xpath=//nav[@id='menu']/ul/li[3]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/lieux.php?')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/lieu/lieux.php?')]", "xpath:href"],
         ["xpath=//header/nav/ul/li[3]/a", "xpath:position"],
         ["xpath=//a[contains(.,'Lieux')]", "xpath:innerText"]
       ],
@@ -3635,7 +3635,7 @@
         ["css=h3:nth-child(2) > a", "css:finder"],
         ["xpath=(//a[contains(text(),'Bibliothèque de Carouge')])[2]", "xpath:link"],
         ["xpath=//div[@id='derniers_lieux']/h3/a", "xpath:idRelative"],
-        ["xpath=(//a[contains(@href, '/lieu.php?idL=3')])[2]", "xpath:href"],
+        ["xpath=(//a[contains(@href, '/lieu/lieu.php?idL=3')])[2]", "xpath:href"],
         ["xpath=//h3/a", "xpath:position"]
       ],
       "value": ""
@@ -3661,7 +3661,7 @@
         ["css=#menu li:nth-child(3) > a", "css:finder"],
         ["xpath=//a[contains(text(),'Lieux')]", "xpath:link"],
         ["xpath=//nav[@id='menu']/ul/li[3]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/lieux.php?')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/lieu/lieux.php?')]", "xpath:href"],
         ["xpath=//header/nav/ul/li[3]/a", "xpath:position"],
         ["xpath=//a[contains(.,'Lieux')]", "xpath:innerText"]
       ],
@@ -3700,7 +3700,7 @@
         ["css=.selon:nth-child(1) > li:nth-child(2) > a", "css:finder"],
         ["xpath=//a[contains(text(),'Anciens')]", "xpath:link"],
         ["xpath=//div[@id='menu_lieux']/ul/li[2]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/lieux.php?statut=ancien&vue=az&idL=')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/lieu/lieux.php?statut=ancien&vue=az&idL=')]", "xpath:href"],
         ["xpath=//div[2]/div[2]/ul/li[2]/a", "xpath:position"],
         ["xpath=//a[contains(.,'Anciens')]", "xpath:innerText"]
       ],
@@ -3727,7 +3727,7 @@
         ["css=.selon:nth-child(1) > li:nth-child(1) > a", "css:finder"],
         ["xpath=//a[contains(text(),'Actuels')]", "xpath:link"],
         ["xpath=//div[@id='menu_lieux']/ul/li/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/lieux.php?statut=actif&vue=az')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/lieu/lieux.php?statut=actif&vue=az')]", "xpath:href"],
         ["xpath=//div[2]/div[2]/ul/li/a", "xpath:position"],
         ["xpath=//a[contains(.,'Actuels')]", "xpath:innerText"]
       ],
@@ -3754,7 +3754,7 @@
         ["css=#tranches > li:nth-child(2) > a", "css:finder"],
         ["xpath=//a[contains(text(),'l-z')]", "xpath:link"],
         ["xpath=//ul[@id='tranches']/li[2]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/lieux.php?statut=actif&vue=az&idL=&tranche=lz')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/lieu/lieux.php?statut=actif&vue=az&idL=&tranche=lz')]", "xpath:href"],
         ["xpath=//ul[3]/li[2]/a", "xpath:position"],
         ["xpath=//a[contains(.,'l-z')]", "xpath:innerText"]
       ],
@@ -3781,7 +3781,7 @@
         ["css=#tranches > li:nth-child(3) > a", "css:finder"],
         ["xpath=//a[contains(text(),'tout')]", "xpath:link"],
         ["xpath=//ul[@id='tranches']/li[3]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/lieux.php?statut=actif&vue=az&tranche=tout')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/lieu/lieux.php?statut=actif&vue=az&tranche=tout')]", "xpath:href"],
         ["xpath=//ul[3]/li[3]/a", "xpath:position"],
         ["xpath=//a[contains(.,'tout')]", "xpath:innerText"]
       ],
@@ -3808,7 +3808,7 @@
         ["css=#tranches > li:nth-child(1) > a", "css:finder"],
         ["xpath=//a[contains(text(),'a-k')]", "xpath:link"],
         ["xpath=//ul[@id='tranches']/li/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/lieux.php?statut=actif&vue=az&idL=&tranche=ak')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/lieu/lieux.php?statut=actif&vue=az&idL=&tranche=ak')]", "xpath:href"],
         ["xpath=//ul[3]/li/a", "xpath:position"],
         ["xpath=//a[contains(.,'a-k')]", "xpath:innerText"]
       ],
@@ -3861,7 +3861,7 @@
         ["css=#menu li:nth-child(3) > a", "css:finder"],
         ["xpath=//a[contains(text(),'Lieux')]", "xpath:link"],
         ["xpath=//nav[@id='menu']/ul/li[3]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/lieux.php?')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/lieu/lieux.php?')]", "xpath:href"],
         ["xpath=//header/nav/ul/li[3]/a", "xpath:position"],
         ["xpath=//a[contains(.,'Lieux')]", "xpath:innerText"]
       ],
@@ -4137,7 +4137,7 @@
         ["css=#menu li:nth-child(3) > a", "css:finder"],
         ["xpath=//a[contains(text(),'Lieux')]", "xpath:link"],
         ["xpath=//nav[@id='menu']/ul/li[3]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/lieux.php?')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/lieu/lieux.php?')]", "xpath:href"],
         ["xpath=//header/nav/ul/li[3]/a", "xpath:position"],
         ["xpath=//a[contains(.,'Lieux')]", "xpath:innerText"]
       ],
@@ -4152,7 +4152,7 @@
         ["css=h3:nth-child(2) > a", "css:finder"],
         ["xpath=//a[contains(text(),'Urgence Disk')]", "xpath:link"],
         ["xpath=//div[@id='derniers_lieux']/h3/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/lieu.php?idL=6')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/lieu/lieu.php?idL=6')]", "xpath:href"],
         ["xpath=//h3/a", "xpath:position"],
         ["xpath=//a[contains(.,'Urgence Disk')]", "xpath:innerText"]
       ],
@@ -4500,7 +4500,7 @@
         ["css=#menu li:nth-child(3) > a", "css:finder"],
         ["xpath=//a[contains(text(),'Lieux')]", "xpath:link"],
         ["xpath=//nav[@id='menu']/ul/li[3]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/lieux.php?')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/lieu/lieux.php?')]", "xpath:href"],
         ["xpath=//header/nav/ul/li[3]/a", "xpath:position"],
         ["xpath=//a[contains(.,'Lieux')]", "xpath:innerText"]
       ],
@@ -4515,7 +4515,7 @@
         ["css=h3:nth-child(2) > a", "css:finder"],
         ["xpath=//a[contains(text(),'Urgence Disk')]", "xpath:link"],
         ["xpath=//div[@id='derniers_lieux']/h3/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/lieu.php?idL=6')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/lieu/lieu.php?idL=6')]", "xpath:href"],
         ["xpath=//h3/a", "xpath:position"],
         ["xpath=//a[contains(.,'Urgence Disk')]", "xpath:innerText"]
       ],
@@ -4617,7 +4617,7 @@
         ["css=#menu li:nth-child(3) > a", "css:finder"],
         ["xpath=//a[contains(text(),'Lieux')]", "xpath:link"],
         ["xpath=//nav[@id='menu']/ul/li[3]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/lieux.php?')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/lieu/lieux.php?')]", "xpath:href"],
         ["xpath=//header/nav/ul/li[3]/a", "xpath:position"],
         ["xpath=//a[contains(.,'Lieux')]", "xpath:innerText"]
       ],
@@ -4632,7 +4632,7 @@
         ["css=h3:nth-child(2) > a", "css:finder"],
         ["xpath=//a[contains(text(),'Urgence Disk')]", "xpath:link"],
         ["xpath=//div[@id='derniers_lieux']/h3/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/lieu.php?idL=6')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/lieu/lieu.php?idL=6')]", "xpath:href"],
         ["xpath=//h3/a", "xpath:position"],
         ["xpath=//a[contains(.,'Urgence Disk')]", "xpath:innerText"]
       ],
@@ -4695,7 +4695,7 @@
         ["xpath=//body[@id='tinymce']", "xpath:attributes"],
         ["xpath=//body", "xpath:position"]
       ],
-      "value": "<p>Le lieu ouvre en mars 1990 dans l’antre de <a href=\"https://www.usine.ch/\" target=\"_blank\" rel=\"noopener\" data-mce-href=\"https://www.usine.ch/\">l’Usine</a> avec un concept unique en Suisse bar, magasin de disques, expositions, concerts et label avec bientôt 200 sorties! Mémoire vivante et archives des nombreux concerts de l’Usine. Consultation sur demande des livre d’Or du KAB, <a href=\"https://ladecadanse.darksite.ch/organisateur.php?idO=2\" data-mce-href=\"https://ladecadanse.darksite.ch/organisateur.php?idO=2\">PTR</a> et Urgence Disk. Organisateur des 1re fêtes de la musique de 1991 à 1993 avec <a href=\"https://ladecadanse.darksite.ch/lieu.php?idL=205\" data-mce-href=\"https://ladecadanse.darksite.ch/lieu.php?idL=205\">Papier Gras</a>, plus de 5000 manifestations programmés à Genève, Suisse, France, Belgique... <br><br>Depuis 2010 le lieu est passé des quelques concerts par années à 8 à 20 showcases par mois. Les concerts sont tous inscrits sur la décadanse. Pour toutes informations sur les heures d’ouvertures &amp; rendez-vous, écrire à electrodark@bluewin.ch. Attention les concerts sont prix libre pour les artistes donc aucune entrée payante dans ce lieu. Le bar est un service pour les clients à un prix très faible avec une sélection de boissons suivant les saisons et l’humeur du responsable. Nous refusons certaines multi-nationales comme Coca, Nestlé , Danone et les marques qui sont complices de Monsanto. <br><br>À titre de renseignement demandez votre carte de membre pour bénéficier de nombreux avantages sur les concerts organisés hors des murs et sur des rabais du shop et autres lieux sur Genève.</p>"
+      "value": "<p>Le lieu ouvre en mars 1990 dans l’antre de <a href=\"https://www.usine.ch/\" target=\"_blank\" rel=\"noopener\" data-mce-href=\"https://www.usine.ch/\">l’Usine</a> avec un concept unique en Suisse bar, magasin de disques, expositions, concerts et label avec bientôt 200 sorties! Mémoire vivante et archives des nombreux concerts de l’Usine. Consultation sur demande des livre d’Or du KAB, <a href=\"https://ladecadanse.darksite.ch/organisateur.php?idO=2\" data-mce-href=\"https://ladecadanse.darksite.ch/organisateur.php?idO=2\">PTR</a> et Urgence Disk. Organisateur des 1re fêtes de la musique de 1991 à 1993 avec <a href=\"https://ladecadanse.darksite.ch/lieu/lieu.php?idL=205\" data-mce-href=\"https://ladecadanse.darksite.ch/lieu/lieu.php?idL=205\">Papier Gras</a>, plus de 5000 manifestations programmés à Genève, Suisse, France, Belgique... <br><br>Depuis 2010 le lieu est passé des quelques concerts par années à 8 à 20 showcases par mois. Les concerts sont tous inscrits sur la décadanse. Pour toutes informations sur les heures d’ouvertures &amp; rendez-vous, écrire à electrodark@bluewin.ch. Attention les concerts sont prix libre pour les artistes donc aucune entrée payante dans ce lieu. Le bar est un service pour les clients à un prix très faible avec une sélection de boissons suivant les saisons et l’humeur du responsable. Nous refusons certaines multi-nationales comme Coca, Nestlé , Danone et les marques qui sont complices de Monsanto. <br><br>À titre de renseignement demandez votre carte de membre pour bénéficier de nombreux avantages sur les concerts organisés hors des murs et sur des rabais du shop et autres lieux sur Genève.</p>"
     }, {
       "id": "d557b05c-dd05-4643-a259-006b967e8a4e",
       "comment": "",
@@ -6806,7 +6806,7 @@
         ["css=tr:nth-child(2) > td:nth-child(2) > a", "css:finder"],
         ["xpath=//a[contains(text(),'Urgence Disk 2')]", "xpath:link"],
         ["xpath=//table[@id='ajouts']/tbody/tr[2]/td[2]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/lieu.php?idL=6')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/lieu/lieu.php?idL=6')]", "xpath:href"],
         ["xpath=//td[2]/a", "xpath:position"],
         ["xpath=//a[contains(.,'Urgence Disk 2')]", "xpath:innerText"]
       ],

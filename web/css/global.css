@@ -114,6 +114,12 @@ figure
         line-height:1.4em;
     }
 
+    #contenu #default
+    {
+        width:94%;
+        margin:0 auto 0 auto;
+    }
+
     #contenu .rubrique
     {
         width: 96%;
@@ -159,7 +165,6 @@ figure
 
     #contenu p
     {
-
         margin:0em 1em 1em 0.1em;
     }
 
@@ -567,7 +572,7 @@ figure
 }
 
 /*liens & icones*/
-.continuer
+.continuer, .read-smore__link
 {
     text-align:right;
     padding:0 15px 0 0;
@@ -576,6 +581,11 @@ figure
     background-position: 100% 50%;
     _background-image:none;
     _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='images/interface/icons/resultset_next.png', sizingMethod='crop');
+}
+
+.read-smore__link[data-clicked="true"]
+{
+    background-image:url(../interface/icons/bullet_arrow_up.png);
 }
 
 .action_ajouter
@@ -1042,21 +1052,96 @@ ul.menu_edition
     margin:0;
 }
 
-ul.menu_edition li
-{
-    height:1.6em;
-    display:inline;
-    margin:0 0.2em;
-}
+    ul.menu_edition li
+    {
+        height:1.6em;
+        display:inline;
+        margin:0 0.2em;
+    }
 
-ul.menu_edition li img
-{
-    vertical-align: middle;
-}
+        ul.menu_edition li img
+        {
+            vertical-align: middle;
+        }
 
 /* fin article */
 
+ul.menu_tab
+{
+    margin:0;
+    padding:0;
+    text-align: right;
+    list-style-type: none;
+}
 
+    ul.menu_tab li
+    {
+        display: inline;
+        vertical-align: bottom;
+    }
+
+    ul.menu_tab li a
+    {
+        display: inline-block;
+        padding: 0.6em;
+        border-radius:3px;
+        background: none;
+    }
+
+    ul.menu_tab li.ici a
+    {
+        background: #e4e4e4;
+    }
+
+    ul.menu_tab li a:hover
+    {
+        background:#d4d4d4;
+    }
+
+
+ul#menu_periode
+{
+    float: right;
+    width: 49%;
+    margin:0;
+    padding:0;
+    text-align: right;
+    list-style-type: none;
+}
+    ul#menu_periode li
+    {
+        display: inline;
+        vertical-align: bottom;
+    }
+
+
+    ul#menu_periode li a
+    {
+        display: inline-block;
+        padding: 0.6em;
+        border-radius:3px;
+        background: none;
+    }
+
+    ul#menu_periode li.ici a
+    {
+        background: #e4e4e4;
+    }
+/*    ul#menu_periode li:nth-child(1) a
+    {
+        border-radius:3px 0 0 3px;
+    }*/
+
+/*    ul#menu_periode li:nth-child(2) a
+    {
+        border-radius: 0 3px 3px 0;
+        background:#e4e4e4;
+    }*/
+
+    ul#menu_periode li a:hover
+    {
+        background:#d4d4d4;
+    }
 
 
 .recherche_mobile
@@ -1135,6 +1220,10 @@ div.pagination {
     padding: 3px;
     margin: 1em 2%;
 }
+
+    div.pagination a, div.pagination span {
+        border-radius: 2px;
+    }
 
     div.pagination a {
         padding: 2px 5px 2px 5px;
@@ -1443,6 +1532,14 @@ ul#menu_calendrier li form p
     background-color:#ffffff;
 }
 
+#derniers_lieux td
+{
+text-align: left;
+  padding: 0.4em;
+  vertical-align: top;
+  border-top: 1px dotted #5C7378;
+}
+
 #derniers_lieux h2
 {
 	margin:1em 0em 0.4em 0em;
@@ -1482,3 +1579,42 @@ ul#menu_calendrier li form p
     margin:0.4em 0.2em 0.4em 0.2em;
 }
 
+#order_navigation
+{
+    margin-top: 0.6em;
+}
+
+    #order_navigation ul
+    {
+        float: right;
+        display:inline-block;
+        margin:0.2em 0;
+        padding:0;
+        list-style-type: none;
+    }
+
+    #order_navigation li
+    {
+        display:inline-block;
+    }
+
+    #order_navigation li:nth-child(1)
+    {
+        color:#555;
+    }
+
+    #order_navigation li a
+    {
+        padding: 0.3em;
+        border-radius:3px;
+    }
+
+    #order_navigation li .selected
+    {
+        background:#eee;
+    }
+
+    #order_navigation li a:hover
+    {
+        background:#d4d4d4;
+    }

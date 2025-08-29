@@ -67,7 +67,7 @@ include("../_header.inc.php");
         <p>Les lieux peuvent avoir différents niveaux de facilité d’accès, d’une entrée totalement libre à une entrée avec attente, fouille, exigence de tenue vestimentaire… Dans le même esprit que les autres critères, nous privilégions un accès aisé et un contrôle raisonnable, par contre ceux exigeant des critères stricts (tenue correcte, voire plus) ne sont pas publiés.</p>
 
         <h2><a id="LES_LIEUX_53"></a>Les lieux</h2>
-        <p>Les lieux ayant une vocation commerciale trop prononcée ne sont pas souhaités (night-clubs, casinos, cabarets, multiplexes…). Pour pouvoir figurer dans la rubrique <a href="/lieux.php">Lieux</a>, des événements doivent être organisés régulièrement et ceux-ci doivent suivre les critères déjà présentés ci-dessus. Nous apprécions les lieux avec une programmation de qualité, un esprit désintéressé, se rapprochant de l’autogestion et avec un certain degré d’éthique.</p>
+        <p>Les lieux ayant une vocation commerciale trop prononcée ne sont pas souhaités (night-clubs, casinos, cabarets, multiplexes…). Pour pouvoir figurer dans la rubrique <a href="/lieu/lieux.php">Lieux</a>, des événements doivent être organisés régulièrement et ceux-ci doivent suivre les critères déjà présentés ci-dessus. Nous apprécions les lieux avec une programmation de qualité, un esprit désintéressé, se rapprochant de l’autogestion et avec un certain degré d’éthique.</p>
 
         <p>Août 2016, mis à jour en mars 2025</p>
 

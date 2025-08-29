@@ -10,7 +10,6 @@ use Ladecadanse\Organisateur;
 
 class Evenement extends Element
 {
-
     static $systemDirPath;
     static $urlDirPath;
     static $statuts_evenement = ['propose' => 'Proposé', 'actif' => '', 'complet' => 'Complet', 'annule' => 'Annulé', 'inactif' => 'Dépublié'];

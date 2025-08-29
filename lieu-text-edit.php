@@ -200,7 +200,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 
 		} //if action
 
-        header("Location: /lieu.php?idL=".(int)$champs['idLieu']); die();
+        header("Location: /lieu/lieu.php?idL=".(int)$champs['idLieu']); die();
 
 	} // if erreurs == 0
 } // if POST != ""
@@ -227,7 +227,7 @@ if (!$action_terminee)
         $req_lieu = $connector->query("SELECT nom, adresse, quartier, categorie, URL FROM lieu WHERE idLieu=".(int)$get['idL']);
         $detailsLieu = $connector->fetchArray($req_lieu);
 
-        echo '<h1>Modifier la '.$get['type'].' sur <a href="/lieu.php?idL='.(int)$get['idL'].'" title="Fiche du lieu '.sanitizeForHtml($detailsLieu['nom']).'">'.sanitizeForHtml($detailsLieu['nom']).'</a></h1>';
+        echo '<h1>Modifier la '.$get['type'].' sur <a href="/lieu/lieu.php?idL='.(int)$get['idL'].'" title="Fiche du lieu '.sanitizeForHtml($detailsLieu['nom']).'">'.sanitizeForHtml($detailsLieu['nom']).'</a></h1>';
     }
     else
     {

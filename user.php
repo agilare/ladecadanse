@@ -155,7 +155,7 @@ $detailsAff = $connector->fetchArray($req_affPers);
             //si l'affiliation est un lieu, crée un lien vers ce lieu
             if ($connector->getNumRows($req_affPers) > 0)
             {
-                echo "<a href=\"/lieu.php?idL=".sanitizeForHtml($detailsAff['idLieu'])."\" title=\"Voir la fiche du lieu : ".sanitizeForHtml($detailsAff['idLieu'])."\" >".sanitizeForHtml($detailsAff['nom'])."</a>";
+                echo "<a href=\"/lieu/lieu.php?idL=".sanitizeForHtml($detailsAff['idLieu'])."\" title=\"Voir la fiche du lieu : ".sanitizeForHtml($detailsAff['idLieu'])."\" >".sanitizeForHtml($detailsAff['nom'])."</a>";
             }
             else
             {
@@ -297,7 +297,7 @@ $detailsAff = $connector->fetchArray($req_affPers);
 				{
 					$req_lieu = $connector->query("SELECT nom FROM lieu WHERE idLieu=".(int)$tab_even['idLieu']);
 					$tabLieu = $connector->fetchArray($req_lieu);
-					$nomLieu = "<a href=\"/lieu.php?idL=".(int)$tab_even['idLieu']."\" title=\"Voir la fiche du lieu : ".sanitizeForHtml($tabLieu['nom'])." \">".sanitizeForHtml($tabLieu['nom'])."</a>";
+					$nomLieu = "<a href=\"/lieu/lieu.php?idL=".(int)$tab_even['idLieu']."\" title=\"Voir la fiche du lieu : ".sanitizeForHtml($tabLieu['nom'])." \">".sanitizeForHtml($tabLieu['nom'])."</a>";
 				}
 
 
@@ -409,7 +409,7 @@ $detailsAff = $connector->fetchArray($req_affPers);
 
 				$req_lieu = $connector->query("SELECT nom FROM lieu WHERE idLieu=".(int)$tab_desc['idLieu']);
 				$tabLieu = $connector->fetchArray($req_lieu);
-				$nomLieu = "<a href=\"/lieu.php?idL=".(int)$tab_desc['idLieu']."\" title=\"Éditer le lieu\">".sanitizeForHtml($tabLieu['nom'])."</a>";
+				$nomLieu = "<a href=\"/lieu/lieu.php?idL=".(int)$tab_desc['idLieu']."\" title=\"Éditer le lieu\">".sanitizeForHtml($tabLieu['nom'])."</a>";
 
 
 				if ($pair % 2 == 0)
@@ -529,7 +529,7 @@ $detailsAff = $connector->fetchArray($req_affPers);
 
 			echo "
 			<td>".$idLieu."</td>
-			<td><a href=\"/lieu.php?idL=".(int)$idLieu."\" title=\"Voir la fiche du lieu :".sanitizeForHtml($nom)."\">".sanitizeForHtml($nom)."</a></td>
+			<td><a href=\"/lieu/lieu.php?idL=".(int)$idLieu."\" title=\"Voir la fiche du lieu :".sanitizeForHtml($nom)."\">".sanitizeForHtml($nom)."</a></td>
 			<td class=\"tdleft\"><ul>";
 
 

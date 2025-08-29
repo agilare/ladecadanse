@@ -207,24 +207,22 @@ table#calendrier tr#mois th a
     display:none !important;
 }
 
-#btn_listelieux, #btn_listeorganisateurs
+#contenu #btn_listelieux, #btn_listeorganisateurs
 {
-    width:94%;
-    margin:1em 0;
-
+    width:96%;
+    margin: 1em 0.2em;
 }
+
 #btn_listelieux button, #btn_listeorganisateurs button
 {
-
     padding:0.4em;
-
 }
-
 
 #btn_listelieux img
 {
     vertical-align: bottom;
 }
+
 /* index */
 
 #entete_contenu ul.entete_contenu_menu li.format_imprimable {
@@ -420,11 +418,11 @@ form#ajouter_editer .guideChamp {
 }
 
 
-#fiche #pratique ul li {
+/*#fiche #pratique ul li {
     line-height:1.1em;
     margin:0.4em 0;
     font-size:0.9em;
-}
+}*/
 
 #fiche #pratique ul li.sitelieu {
 
@@ -487,7 +485,6 @@ form#ajouter_editer .guideChamp {
 ul#menu_descriptions
 {
     margin-top:0;
-    padding: 0 0 0.6em 0;
 }
 
 ul#menu_descriptions li.ici a, ul#menu_descriptions li a
@@ -636,3 +633,21 @@ form#ajouter_editer p.memoriser label, form#ajouter_editer p.mdp_oublie
     margin-top: 1em !important;
 }
 
+
+/* lieux.php */
+.table-filters form
+{
+
+}
+
+.table-filters .menu_tab {
+  display: block;
+  text-align: left;
+  position: static;
+  margin-top: 5px;
+  margin-left: 5px;
+}
+
+#order_navigation {
+  float: left;
+}

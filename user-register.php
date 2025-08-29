@@ -362,7 +362,7 @@ if (!$action_terminee)
 	<fieldset class="affiliation" id="user-register_references" >
 
 		<legend>Affiliation</legend>
-            <div class="guide_affiliation">Si vous êtes un <b>Acteur culturel</b>, merci d'indiquer à quel association, collectif, lieu, etc. vous appartenez.<br>Ainsi, une fois votre compte créé, vous pourrez modifier les informations du <a href="/lieux.php" target="_blank">Lieu</a> et/ou <a href="/organisateurs.php" target="_blank">Organisateur</a> sur La décadanse (données pratiques, images, présentations)</div>
+            <div class="guide_affiliation">Si vous êtes un <b>Acteur culturel</b>, merci d'indiquer à quel association, collectif, lieu, etc. vous appartenez.<br>Ainsi, une fois votre compte créé, vous pourrez modifier les informations du <a href="/lieu/lieux.php" target="_blank">Lieu</a> et/ou <a href="/organisateurs.php" target="_blank">Organisateur</a> sur La décadanse (données pratiques, images, présentations)</div>
             <p>
             <label for="lieu" class="affil">Lieu&nbsp;</label>
             <select name="lieu" id="lieu" class="js-select2-options-with-style" data-placeholder="Tapez le nom..." style="max-width:350px">
