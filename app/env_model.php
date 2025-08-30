@@ -47,6 +47,7 @@ define("DARKVISITORS_ACCESS_TOKEN", '');
 define("PAYPAL_HOSTED_BUTTON_ID", "");
 
 // to allow access to events API (api.php)
+define("LADECADANSE_API_ENABLED", false);
 define("LADECADANSE_API_USER", '');
 define("LADECADANSE_API_KEY", '');
 

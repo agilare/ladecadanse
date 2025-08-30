@@ -1,12 +1,12 @@
 <?php
 
-require_once 'app/bootstrap.php';
+require_once '../app/bootstrap.php';
 
 use Ladecadanse\Evenement;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\Logger;
 
-if (empty($_SERVER['PHP_AUTH_USER']) || empty($_SERVER['PHP_AUTH_PW']) || !($_SERVER['PHP_AUTH_USER'] == LADECADANSE_API_USER && $_SERVER['PHP_AUTH_PW'] == LADECADANSE_API_KEY))
+if (!LADECADANSE_API_ENABLED || empty($_SERVER['PHP_AUTH_USER']) || empty($_SERVER['PHP_AUTH_PW']) || !($_SERVER['PHP_AUTH_USER'] == LADECADANSE_API_USER && $_SERVER['PHP_AUTH_PW'] == LADECADANSE_API_KEY))
 {
     header('WWW-Authenticate: Basic realm="La décadanse"');
     header($_SERVER['SERVER_PROTOCOL'] . ' 401 Unauthorized');

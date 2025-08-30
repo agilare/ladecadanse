@@ -38,7 +38,7 @@ Si vous ne connaissez pas encore bien le code, vous pouvez commencer par une **_
 
 #### Tests
 
-Il y a des tests automatisés qui couvrent les fonctionnalités de base et ils peuvent être améliorés. Si cela vous intéresse, je vous invite à consulter leur [README](tests/README.md) qui décrit la stratégie suivie et les 2 types de tests existants : [E2E](https://github.com/agilare/ladecadanse/tree/master/tests#end-to-end-user-application) (avec [Selenium IDE](https://www.selenium.dev/selenium-ide/)) et [fonctionnels](https://github.com/agilare/ladecadanse/tree/master/tests#end-to-end-user-application) pour l'[API](https://github.com/agilare/ladecadanse/blob/master/api.php) (avec [Codeception](https://codeception.com/))
+Il y a des tests automatisés qui couvrent les fonctionnalités de base et ils peuvent être améliorés. Si cela vous intéresse, je vous invite à consulter leur [README](tests/README.md) qui décrit la stratégie suivie et les 2 types de tests existants : [E2E](https://github.com/agilare/ladecadanse/tree/master/tests#end-to-end-user-application) (avec [Selenium IDE](https://www.selenium.dev/selenium-ide/)) et [fonctionnels](https://github.com/agilare/ladecadanse/tree/master/tests#end-to-end-user-application) pour l'[API](https://github.com/agilare/ladecadanse/blob/master/event/api.php) (avec [Codeception](https://codeception.com/))
 
 ### Démarrage
 

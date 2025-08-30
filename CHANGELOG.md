@@ -22,6 +22,7 @@
 - events : copy refactored and moved under event/
 - events : actions moved under event/
 - events : in edit form, field Remarque label more accurate
+- events : api with enabled flag and file moved under event/
 - lieu : page refactored, cleaned
 - lieux : pages lieux and lieu moved under lieu/
 - css : refactor (remove obsolete, useless files)
