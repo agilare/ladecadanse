@@ -44,17 +44,17 @@
 
     <?php if (in_array($nom_page, $pages_lieumap)) { ?>
         <script async defer src="https://maps.googleapis.com/maps/api/js?key=<?= GOOGLE_API_KEY; ?>&callback=initLieuMap"></script>
-        <script src="/web/js/map.js?<?= time() ?>"></script>
+        <script src="<?= $assets->get("js/map.js"); ?>"></script>
     <?php } ?>
 
     <?php if (in_array($nom_page, $pages_formulaires)) : ?>
 
         <script src="/web/js/libs/Zebra_datepicker/zebra_datepicker.min.js"></script>
-        <script src="/web/js/forms.js?<?= time() ?>"></script>
+        <script src="<?= $assets->get("js/forms.js"); ?>"></script>
 
         <?php if (in_array($nom_page, $pages_tinymce)) : ?>
             <script src="https://cdn.tiny.cloud/1/<?= TINYMCE_API_KEY; ?>/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>;
-            <script src="/web/js/edition.js?<?= time() ?>"></script>
+            <script src="<?= $assets->get("js/edition.js"); ?>"></script>
         <?php endif; ?>
 
         <?php if ($nom_page == "gererEvenements") : ?>
@@ -76,7 +76,7 @@
             document.getElementById("contacteznous-email-info").innerHTML = atob("<?= base64_encode(EMAIL_ADMIN); ?>");
         </script>
     <?php endif; ?>
-    <script type="module" src="/web/js/main.js?<?= time() ?>"></script>
+    <script type="module" src="<?= $assets->get("js/main.js"); ?>"></script>
 
 </body>
 

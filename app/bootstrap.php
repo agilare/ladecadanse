@@ -19,6 +19,7 @@ use Ladecadanse\Utils\Utils;
 use Ladecadanse\TemplateEngine;
 use Ladecadanse\Translator;
 use Whoops\Handler\PrettyPageHandler;
+use Ladecadanse\Utils\AssetManager;
 
 require_once __DIR__ . '/config.php';
 
@@ -73,9 +74,10 @@ $nom_page = ltrim($pathinfo['dirname'] . '/' . $pathinfo['filename'], '\\/');
 //echo $_SERVER["SCRIPT_FILENAME"]."<br>";
 //echo $nom_page;
 
+$assets = new AssetManager(__ROOT__ . "/web", "/web");
+
 if (DARKVISITORS_ENABLED)
 {
-
     function trackVisitAsync(array $data, string $accessToken): void
     {
         $ch = curl_init('https://api.darkvisitors.com/visits');
