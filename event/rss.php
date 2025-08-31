@@ -191,8 +191,7 @@ if ($get['type'] == 'lieu_evenements')
 
 header('Content-Disposition: inline; filename=' . $get['type'] . '.xml');
 header('Content-Type: text/xml');
-?>
-<?xml version="1.0" encoding="utf-8" ?>
+?><?xml version="1.0" encoding="utf-8" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
         <atom:link href="<?= sanitizeForHtml($site_full_url.ltrim($_SERVER['REQUEST_URI'], '/')) ?>" rel="self" type="application/rss+xml" />
