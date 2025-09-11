@@ -5957,7 +5957,7 @@
     }]
   }, {
     "id": "d7da26ab-7b0b-4969-8469-1f4a8137a946",
-    "name": "user (actor) event copy 1 day (dev, r)",
+    "name": "user (actor) event copy 1 day and edit (dev, r)",
     "commands": [{
       "id": "846225a4-7457-4e29-97af-b93568535783",
       "comment": "",
@@ -6064,11 +6064,39 @@
       ],
       "value": ""
     }, {
-      "id": "442e74f5-104e-41ee-95aa-d650442ec1b5",
+      "id": "62af8430-15fa-4974-91d0-3e06f987a651",
       "comment": "",
       "command": "assertElementPresent",
       "target": "css=.msg_ok_copy",
       "targets": [],
+      "value": ""
+    }, {
+      "id": "8b5f0f53-a2a5-408e-b153-cf20b3ab0591",
+      "comment": "",
+      "command": "click",
+      "target": "xpath=//main[@id='contenu']/div/table/tbody/tr/td[4]/a",
+      "targets": [
+        ["linkText=Modifier", "linkText"],
+        ["css=.table tr:nth-child(1) a:nth-child(1)", "css:finder"],
+        ["xpath=//a[contains(text(),'Modifier')]", "xpath:link"],
+        ["xpath=//main[@id='contenu']/div/table/tbody/tr/td[4]/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '/evenement-edit.php?action=editer&idE=2868')]", "xpath:href"],
+        ["xpath=//td[4]/a", "xpath:position"],
+        ["xpath=//a[contains(.,'Modifier')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "442e74f5-104e-41ee-95aa-d650442ec1b5",
+      "comment": "",
+      "command": "assertElementPresent",
+      "target": "xpath=//form[@id='ajouter_editer']",
+      "targets": [
+        ["id=ajouter_editer", "id"],
+        ["css=#ajouter_editer", "css:finder"],
+        ["xpath=//form[@id='ajouter_editer']", "xpath:attributes"],
+        ["xpath=//main[@id='contenu']/form", "xpath:idRelative"],
+        ["xpath=//main/form", "xpath:position"]
+      ],
       "value": ""
     }]
   }, {
