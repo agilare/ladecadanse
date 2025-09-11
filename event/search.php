@@ -18,11 +18,11 @@ $tab_menu_periodes = ["ancien" => "Passés", "futur" => "Prochains"]; //, "tous"
 
 $get = [];
 
-$get['mots'] = $_GET['mots'];
-if (empty($get['mots']) || !empty($_GET['name_as']))
+if (empty($_GET['mots']) || !empty($_GET['name_as']))
 {
     header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); echo "Veuillez saisir un texte à rechercher"; exit;
 }
+$get['mots'] = $_GET['mots'];
 
 $get['tri'] = "pertinence";
 if (!empty($_GET['tri']) && Validateur::validateUrlQueryValue($_GET['tri'], "enum", 1, array_keys($tab_menu_tri)))
