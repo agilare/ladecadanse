@@ -160,7 +160,7 @@ if (!empty($_POST['submit']))
 		$dateIncrUnix = $dateEUnix;
 		$dateIncrUnixOld = $dateIncrUnix;
 
-		$_SESSION['copierEvenement_flash_msg']['msg'] = '<p style="margin:4px 0">L\'événement <a href="/event/evenement.php?idE=' .(int)$get['idE'] . '"><strong>' . sanitizeForHtml($tab_event_copied['titre']) . '</strong> du ' . date_fr($tab_even['e_dateEvenement']) . '</a> a été copié vers les dates suivantes :</p>';
+		$_SESSION['copierEvenement_flash_msg']['msg'] = '<p style="margin:4px 0 10px 0; font-size: 1.1em">L\'événement <a href="/event/evenement.php?idE=' .(int)$get['idE'] . '"><strong>' . sanitizeForHtml($tab_event_copied['titre']) . '</strong> du ' . date_fr($tab_even['e_dateEvenement']) . '</a> a été copié vers les dates suivantes :</p>';
 
 		// Collage de l'événement entre la date de début et la date de fin
         $i = 0;
@@ -249,16 +249,16 @@ if (!empty($_POST['submit']))
 				$edition = "";
 				$nouv_id = $connector->getInsertId();
 
-				$edition = " <a href=\"/evenement-edit.php?action=editer&idE=".(int)$nouv_id."\" title=\"Éditer l'événement\">".$iconeEditer."</a>";
+				$edition = " <a href=\"/evenement-edit.php?action=editer&idE=".(int)$nouv_id."\" title=\"Éditer l'événement\">".$iconeEditer."Modifier</a>";
 
                 $hor_compl = '';
                 if (!empty($tab_event_copied['horaire_complement']))
                     $hor_compl = "<br>" . sanitizeForHtml($tab_event_copied['horaire_complement']);
 
                 $_SESSION['copierEvenement_flash_msg']['table'] .= '<tr>'
-                    . '<td style="max-width:250px">' . sanitizeForHtml($tab_event_copied['titre']) . "</td>"
+                    . '<td style="max-width:220px">' . sanitizeForHtml($tab_event_copied['titre']) . "</td>"
                     . "<td><strong>" . date_fr(date('Y-m-d', $dateIncrUnix)) . '</strong></td><td>' .  afficher_debut_fin($tab_event_copied['horaire_debut'], $tab_event_copied['horaire_fin'], $tab_event_copied['dateEvenement']) . $hor_compl . '</td>'
-                    . '<td><a href="/evenement-edit.php?action=editer&idE=' . (int) $nouv_id . '" title="Modifier cet événement" target="_blank">Modifier <i class="fa fa-external-link" aria-hidden="true"></i></a>&nbsp;&nbsp;&nbsp;<a href="#" id="btn_event_del_' . (int) $nouv_id . '" class="action_supprimer" data-id=' . (int) $nouv_id . '>Supprimer</a></td>'
+                    . '<td>' . $edition . '<a href="/evenement-edit.php?action=editer&idE=' . (int) $nouv_id . '" title="Modifier cet événement" target="_blank">&nbsp;&nbsp;<i class="fa fa-external-link" aria-hidden="true"></i></a>&nbsp;&nbsp;&nbsp;<a href="#" id="btn_event_del_' . (int) $nouv_id . '" class="action_supprimer" data-id=' . (int) $nouv_id . '>Supprimer</a></td>'
                     . '</tr>';
 
                 if (!empty($tab_event_copied['flyer']))
@@ -318,7 +318,7 @@ include("../_header.inc.php");
         if (!empty($_SESSION['copierEvenement_flash_msg'])) : ?>
             <div class="msg_ok_copy">
                 <?= $_SESSION['copierEvenement_flash_msg']['msg']; ?>
-                <table class="table">
+                <table class="table" style="width:100%">
                     <thead><tr><th>Événement</th><th>Date</th><th>Horaire</th><th></th></tr></thead>
                     <tbody><?= $_SESSION['copierEvenement_flash_msg']['table'] ?></tbody>
                 </table>
@@ -347,7 +347,7 @@ include("../_header.inc.php");
         }
         ?>
 
-        <form method="post" id="ajouter_editer" style="background:#efefef;border-radius: 4px;" enctype="multipart/form-data" action="<?=  basename(__FILE__) . "?action=coller&amp;idE=" . (int) $get['idE']; ?>">
+        <form method="post" id="ajouter_editer" style="margin:0;background:#efefef;border-radius: 4px;" enctype="multipart/form-data" action="<?=  basename(__FILE__) . "?action=coller&amp;idE=" . (int) $get['idE']; ?>">
 
             <fieldset>
                 <legend style="font-size:1em;margin-left:-1em">Copier l’événement ci-dessus vers les dates suivantes (1 par jour)</legend>

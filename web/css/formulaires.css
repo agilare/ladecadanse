@@ -409,16 +409,16 @@ font-family:Georgia;
 
 .msg_ok_copy
 {
-	width:90%;
+	width:94%;
 	margin:2em auto;
-	padding:1em 0% 1em 6%;
+	padding:1em 1% 1em 1%;
 	border-top:1px solid green;
 	border-bottom:1px solid green;
 	background-color: #dbe1db;
 	background-image:url(../web/interface/icons/tick.png);
 	background-repeat:no-repeat;
 	background-position: 15px 17px;
-	line-height:1.3em;
+	line-height:1.5em;
 }
 
 .readonly
