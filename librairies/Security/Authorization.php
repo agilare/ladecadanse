@@ -25,10 +25,10 @@ class Authorization
         return (isset($sessionToReadonly['Sgroupe'])
                         && (
                         $sessionToReadonly['Sgroupe'] <= UserLevel::AUTHOR
-                        || $sessionToReadonly['SidPersonne'] == $eventWidthIds['e_idPersonne']
-                        || (isset($sessionToReadonly['Saffiliation_lieu']) && $eventWidthIds['e_idLieu'] == $sessionToReadonly['Saffiliation_lieu'])
-                        || isset($sessionToReadonly['SidPersonne']) && $this->isPersonneInEvenementByOrganisateur($sessionToReadonly['SidPersonne'], $eventWidthIds['e_idEvenement'])
-                        || isset($sessionToReadonly['SidPersonne']) && $this->isPersonneInLieuByOrganisateur($sessionToReadonly['SidPersonne'], $eventWidthIds['e_idLieu'])
+                        || (!empty($eventWidthIds['e_idPersonne']) && $sessionToReadonly['SidPersonne'] == $eventWidthIds['e_idPersonne'])
+                        || (!empty($eventWidthIds['e_idLieu']) && isset($sessionToReadonly['Saffiliation_lieu']) && $eventWidthIds['e_idLieu'] == $sessionToReadonly['Saffiliation_lieu'])
+                        || (!empty($eventWidthIds['e_idPersonne']) && isset($sessionToReadonly['SidPersonne']) && $this->isPersonneInEvenementByOrganisateur($sessionToReadonly['SidPersonne'], $eventWidthIds['e_idEvenement']))
+                        || (!empty($eventWidthIds['e_idLieu']) && isset($sessionToReadonly['SidPersonne']) && $this->isPersonneInLieuByOrganisateur($sessionToReadonly['SidPersonne'], $eventWidthIds['e_idLieu']))
                 )
             );
     }
