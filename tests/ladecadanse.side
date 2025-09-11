@@ -7374,6 +7374,62 @@
       ],
       "value": ""
     }]
+  }, {
+    "id": "1e32da4f-4dcb-4195-8dee-81a2afc12a3f",
+    "name": "user (admin) search",
+    "commands": [{
+      "id": "6f128ced-e453-4fb5-a925-4dbc9e460425",
+      "comment": "",
+      "command": "open",
+      "target": "/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "dfacc59b-7e6a-46ff-a6a3-ddd13c502925",
+      "comment": "",
+      "command": "type",
+      "target": "xpath=//input[@name='mots']",
+      "targets": [
+        ["name=mots", "name"],
+        ["css=.recherche > .mots", "css:finder"],
+        ["xpath=//input[@name='mots']", "xpath:attributes"],
+        ["xpath=//nav[@id='menu']/ul/li[5]/search/form/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "evenement"
+    }, {
+      "id": "9b049d51-742e-47cb-8e42-db905894795e",
+      "comment": "",
+      "command": "click",
+      "target": "xpath=//button[@class='submit']",
+      "targets": [
+        ["css=.fa-search", "css:finder"],
+        ["xpath=//a[@id='btn_search']/i", "xpath:idRelative"],
+        ["xpath=//li[5]/a/i", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "0c893c84-8089-46ab-82ae-893d0be66e23",
+      "comment": "",
+      "command": "assertElementPresent",
+      "target": "css=#res_recherche",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "c8b7ca23-e30e-4a2c-bb07-5ec09cd39030",
+      "comment": "",
+      "command": "click",
+      "target": "xpath=//div/div/main/div/table/tbody/tr[1]/td[5]/a",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "28d318d5-0b27-4a90-b808-a0595c659c44",
+      "comment": "",
+      "command": "assertElementPresent",
+      "target": "css=#ajouter_editer",
+      "targets": [],
+      "value": ""
+    }]
   }],
   "suites": [{
     "id": "e598238f-e9bc-40f6-9876-6274e4bf1e3f",
@@ -7395,7 +7451,7 @@
     "persistSession": false,
     "parallel": false,
     "timeout": 300,
-    "tests": ["fa4a12b8-1f55-4435-8fe1-3fe8294be63a", "d5d4f0bd-52d5-4cd9-8fd2-b38ee992812d", "5c790b97-c4b1-4056-a004-daa889c1a3ee", "2422f54c-2560-4fa2-ad65-b10fe0deba9e", "b4c14c81-4533-4742-8d96-526b91077359", "1e0fa7b9-f784-4860-a139-b7be9b393fc0", "8f01a9a0-9f4c-4f52-825e-a54eba6fcb27", "92d58e15-7bbd-49aa-8440-5c14b4554622", "7f6cb209-b243-4a0e-889f-097dd12be52d", "602346d1-62ed-43a5-9bfd-b78a52eaaa59", "816a221b-9428-4767-9d1b-cf51dc2f8fb4", "1b3cabfb-9a16-44ae-b21b-2356228e88f1"]
+    "tests": ["fa4a12b8-1f55-4435-8fe1-3fe8294be63a", "d5d4f0bd-52d5-4cd9-8fd2-b38ee992812d", "5c790b97-c4b1-4056-a004-daa889c1a3ee", "2422f54c-2560-4fa2-ad65-b10fe0deba9e", "1e32da4f-4dcb-4195-8dee-81a2afc12a3f", "b4c14c81-4533-4742-8d96-526b91077359", "1e0fa7b9-f784-4860-a139-b7be9b393fc0", "8f01a9a0-9f4c-4f52-825e-a54eba6fcb27", "92d58e15-7bbd-49aa-8440-5c14b4554622", "7f6cb209-b243-4a0e-889f-097dd12be52d", "602346d1-62ed-43a5-9bfd-b78a52eaaa59", "816a221b-9428-4767-9d1b-cf51dc2f8fb4", "1b3cabfb-9a16-44ae-b21b-2356228e88f1"]
   }],
   "urls": ["https://ladecadanse.darksite.ch/", "http://ladecadanse.local/", "https://ladecadanse.local/"],
   "plugins": []

@@ -13,6 +13,7 @@
 - lieu : passed/incoming events menu, with pagination
 - lieu : texts truncated and Readmore link with read-smore JS lib
 - more semantic html
+- tests : in search event edit link
 
 ### Changed
 - events : search refactored with fulltext index (replacing LIKEs & php postprocess), PDO, cleaning, layout, html5...

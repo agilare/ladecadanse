@@ -223,7 +223,7 @@ include("../_header.inc.php");
                             <td><?= round($tab_even['score'], 5) ?></td>
                             <?php endif; ?>
                             <?php if ($authorization->isPersonneAllowedToEditEvenement($_SESSION, $tab_even)) : ?>
-                                <td><a href="/evenement-edit.phpaction=editer&amp;idE=<?= (int) $tab_even['e_idEvenement'] ?>"><?= $iconeEditer; ?></a></td>
+                                <td><a href="/evenement-edit.php?action=editer&amp;idE=<?= (int) $tab_even['e_idEvenement'] ?>"><?= $iconeEditer; ?></a></td>
                             <?php endif; ?>
                         </tr>
                     <?php endforeach; ?>
