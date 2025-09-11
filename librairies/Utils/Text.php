@@ -59,7 +59,7 @@ class Text
                 $text = $m[4];
             }
 
-            return "<a href='" . sanitizeForHtml($url) . "'>" . sanitizeForHtml($text) . "</a>";
+            return "<a href='" . sanitizeForHtml($url) . "' class='lien_ext'>" . sanitizeForHtml($text) . "</a>";
         }, $input);
     }
 
@@ -110,7 +110,7 @@ class Text
 
     /**
      * Used by event/to-ics.php
-     * 
+     *
      * @param string $string
      * @return string
      */

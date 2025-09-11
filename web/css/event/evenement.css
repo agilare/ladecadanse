@@ -383,7 +383,6 @@ ul#menu_actions
     background-image:url(../web/interface/icons/bullet_arrow_bottom.png);
     background-repeat:no-repeat;
     background-position: 0% 30%;
-
 }
 
 ul.selection li.evenement_s
@@ -404,12 +403,6 @@ ul.selection li.evenement_s h4
     border:none;
     margin:0.1em 0 0.6em 0;
 }
-
-#evenement #pratique .lien_ext
-{
-    font-size:0.85em;
-}
-
 
 #evenement .location ul li
 {
