@@ -258,7 +258,7 @@ if (!empty($_POST['submit']))
                 $_SESSION['copierEvenement_flash_msg']['table'] .= '<tr>'
                     . '<td style="max-width:220px">' . sanitizeForHtml($tab_event_copied['titre']) . "</td>"
                     . "<td><strong>" . date_fr(date('Y-m-d', $dateIncrUnix)) . '</strong></td><td>' .  afficher_debut_fin($tab_event_copied['horaire_debut'], $tab_event_copied['horaire_fin'], $tab_event_copied['dateEvenement']) . $hor_compl . '</td>'
-                    . '<td>' . $edition . '<a href="/evenement-edit.php?action=editer&idE=' . (int) $nouv_id . '" title="Modifier cet événement" target="_blank">&nbsp;&nbsp;<i class="fa fa-external-link" aria-hidden="true"></i></a>&nbsp;&nbsp;&nbsp;<a href="#" id="btn_event_del_' . (int) $nouv_id . '" class="action_supprimer" data-id=' . (int) $nouv_id . '>Supprimer</a></td>'
+                    . '<td>' . $edition . '<a href="/evenement-edit.php?action=editer&idE=' . (int) $nouv_id . '" title="Modifier cet événement" target="_blank">&nbsp;&nbsp;<i class="fa fa-external-link" aria-hidden="true"></i></a>&nbsp;&nbsp;&nbsp;<a href="#" id="btn_event_del_' . (int) $nouv_id . '" class="btn_event_del action_supprimer" data-id=' . (int) $nouv_id . '>Supprimer</a></td>'
                     . '</tr>';
 
                 if (!empty($tab_event_copied['flyer']))
