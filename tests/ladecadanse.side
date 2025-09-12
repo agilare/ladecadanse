@@ -6036,6 +6036,41 @@
       ],
       "value": ""
     }, {
+      "id": "d799e1d3-f891-45af-a1eb-4b2c2cc8a4cf",
+      "comment": "",
+      "command": "//click",
+      "target": "css=.dp_hover",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "6ff533f1-c1d6-47f6-8794-c068aedff425",
+      "comment": "",
+      "command": "executeScript",
+      "target": "return (new Date().getDate().toString().padStart(2, '0')) + \".\" + ((new Date().getMonth() + 1).toString().padStart(2, '0')) + \".\" + ((new Date()).getFullYear() )",
+      "targets": [],
+      "value": "today"
+    }, {
+      "id": "767204a8-7e87-477c-bf23-0254455ee145",
+      "comment": "",
+      "command": "type",
+      "target": "css=#date-from",
+      "targets": [],
+      "value": "${today}"
+    }, {
+      "id": "c79160d2-c7f9-4de2-be7e-6c9356dcbd40",
+      "comment": "",
+      "command": "executeScript",
+      "target": "var d = new Date(); d.setDate(d.getDate() + 1); return d.getDate().toString().padStart(2, '0') + \".\" +        (d.getMonth() + 1).toString().padStart(2, '0') + \".\" +        d.getFullYear();",
+      "targets": [],
+      "value": "tomorrow"
+    }, {
+      "id": "5992c0ce-a8c1-4c0e-a16e-16c3e2cf4ef5",
+      "comment": "",
+      "command": "type",
+      "target": "css=#date-to",
+      "targets": [],
+      "value": "${tomorrow}"
+    }, {
       "id": "b37c31f6-7d08-4324-a357-c8de4f685332",
       "comment": "",
       "command": "assertElementPresent",
@@ -6071,8 +6106,34 @@
       "targets": [],
       "value": ""
     }, {
-      "id": "8b5f0f53-a2a5-408e-b153-cf20b3ab0591",
+      "id": "e48d845c-01ab-4759-91ec-16ddbd5537c0",
+      "comment": "click Supprimer 2e evenement",
+      "command": "click",
+      "target": "xpath=//main[@id='contenu']/div/table/tbody/tr[2]/td[4]/a[3]",
+      "targets": [
+        ["id=btn_event_del_2908", "id"],
+        ["css=#btn_event_del_2908", "css:finder"],
+        ["xpath=(//a[contains(text(),'Supprimer')])[2]", "xpath:link"],
+        ["xpath=//a[@id='btn_event_del_2908']", "xpath:attributes"],
+        ["xpath=//main[@id='contenu']/div/table/tbody/tr[2]/td[4]/a[3]", "xpath:idRelative"],
+        ["xpath=(//a[contains(@href, '#')])[6]", "xpath:href"],
+        ["xpath=//tr[2]/td[4]/a[3]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "118ecb5d-89dc-4e64-83fb-7a5add1acff7",
       "comment": "",
+      "command": "waitForElementNotVisible",
+      "target": "xpath=//main[@id='contenu']/div/table/tbody/tr[2]",
+      "targets": [
+        ["css=.table tr:nth-child(2) > td:nth-child(1)", "css:finder"],
+        ["xpath=//main[@id='contenu']/div/table/tbody/tr[2]/td", "xpath:idRelative"],
+        ["xpath=//tr[2]/td", "xpath:position"]
+      ],
+      "value": "3000"
+    }, {
+      "id": "8b5f0f53-a2a5-408e-b153-cf20b3ab0591",
+      "comment": "click Modifier of 1st event",
       "command": "click",
       "target": "xpath=//main[@id='contenu']/div/table/tbody/tr/td[4]/a",
       "targets": [
