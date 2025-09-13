@@ -5957,7 +5957,7 @@
     }]
   }, {
     "id": "d7da26ab-7b0b-4969-8469-1f4a8137a946",
-    "name": "user (actor) event copy 1 day and edit (dev, r)",
+    "name": "user (actor) event copy 2 days and edit, delete (dev, r)",
     "commands": [{
       "id": "846225a4-7457-4e29-97af-b93568535783",
       "comment": "",
@@ -7519,6 +7519,63 @@
       "targets": [],
       "value": ""
     }]
+  }, {
+    "id": "9c8c7ca0-0ac3-496e-b84b-bfedbc01230b",
+    "name": "user (admin) lieu event unpublish",
+    "commands": [{
+      "id": "b86cf6ca-9e38-407c-8ab0-44154095399b",
+      "comment": "",
+      "command": "open",
+      "target": "/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "139cfa91-742e-41f2-b6ca-141aa7cdebae",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1440x900",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "22d005d8-08ff-4939-9723-827b1c1ccf85",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=Lieux",
+      "targets": [
+        ["linkText=Lieux", "linkText"],
+        ["css=#menu li:nth-child(3) > a", "css:finder"],
+        ["xpath=//a[contains(text(),'Lieux')]", "xpath:link"],
+        ["xpath=//nav[@id='menu']/ul/li[3]/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '/lieu/lieux.php?')]", "xpath:href"],
+        ["xpath=//header/nav/ul/li[3]/a", "xpath:position"],
+        ["xpath=//a[contains(.,'Lieux')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "eee848a6-3bf5-49fb-a4bf-20a6a10cacc8",
+      "comment": "",
+      "command": "click",
+      "target": "xpath=//table[@id='derniers_lieux']/tbody/tr/td[2]/a",
+      "targets": [
+        ["css=tr:nth-child(1) a > strong", "css:finder"],
+        ["xpath=//table[@id='derniers_lieux']/tbody/tr/td[2]/a/strong", "xpath:idRelative"],
+        ["xpath=//strong", "xpath:position"],
+        ["xpath=//strong[contains(.,'Martoni')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "c4f348ff-ec48-4ce0-882b-8ebfd7b0d92b",
+      "comment": "",
+      "command": "click",
+      "target": "xpath=//section[@id='prochains_evenements']/table/tbody/tr[3]/td[5]/ul/li[3]/a",
+      "targets": [
+        ["css=#btn_event_unpublish_2912 > img", "css:finder"],
+        ["xpath=(//img[@alt='Dépublier'])[2]", "xpath:img"],
+        ["xpath=//a[@id='btn_event_unpublish_2912']/img", "xpath:idRelative"],
+        ["xpath=//tr[3]/td[5]/ul/li[3]/a/img", "xpath:position"]
+      ],
+      "value": ""
+    }]
   }],
   "suites": [{
     "id": "e598238f-e9bc-40f6-9876-6274e4bf1e3f",
@@ -7540,7 +7597,7 @@
     "persistSession": false,
     "parallel": false,
     "timeout": 300,
-    "tests": ["fa4a12b8-1f55-4435-8fe1-3fe8294be63a", "d5d4f0bd-52d5-4cd9-8fd2-b38ee992812d", "5c790b97-c4b1-4056-a004-daa889c1a3ee", "2422f54c-2560-4fa2-ad65-b10fe0deba9e", "1e32da4f-4dcb-4195-8dee-81a2afc12a3f", "b4c14c81-4533-4742-8d96-526b91077359", "1e0fa7b9-f784-4860-a139-b7be9b393fc0", "8f01a9a0-9f4c-4f52-825e-a54eba6fcb27", "92d58e15-7bbd-49aa-8440-5c14b4554622", "7f6cb209-b243-4a0e-889f-097dd12be52d", "602346d1-62ed-43a5-9bfd-b78a52eaaa59", "816a221b-9428-4767-9d1b-cf51dc2f8fb4", "1b3cabfb-9a16-44ae-b21b-2356228e88f1"]
+    "tests": ["fa4a12b8-1f55-4435-8fe1-3fe8294be63a", "d5d4f0bd-52d5-4cd9-8fd2-b38ee992812d", "5c790b97-c4b1-4056-a004-daa889c1a3ee", "2422f54c-2560-4fa2-ad65-b10fe0deba9e", "1e32da4f-4dcb-4195-8dee-81a2afc12a3f", "b4c14c81-4533-4742-8d96-526b91077359", "1e0fa7b9-f784-4860-a139-b7be9b393fc0", "8f01a9a0-9f4c-4f52-825e-a54eba6fcb27", "92d58e15-7bbd-49aa-8440-5c14b4554622", "7f6cb209-b243-4a0e-889f-097dd12be52d", "9c8c7ca0-0ac3-496e-b84b-bfedbc01230b", "602346d1-62ed-43a5-9bfd-b78a52eaaa59", "816a221b-9428-4767-9d1b-cf51dc2f8fb4", "1b3cabfb-9a16-44ae-b21b-2356228e88f1"]
   }],
   "urls": ["https://ladecadanse.darksite.ch/", "http://ladecadanse.local/", "https://ladecadanse.local/"],
   "plugins": []

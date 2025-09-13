@@ -193,7 +193,7 @@ const Events = {
             e.preventDefault();
             const event_id = $(this).data('id');
             fetch(`/event/actions.php?action=unpublish&id=${event_id}`)
-                .then(response => $(`#btn_event_unpublish_${event_id}`).closest('.evenement-short').fadeOut())
+                .then(response => $(`#btn_event_unpublish_${event_id}`).closest('tr.evenement, article.evenement-short').fadeOut('fast'))
                 .catch(error => alert('Erreur : ' + error));
         });
 
