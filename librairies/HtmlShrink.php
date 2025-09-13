@@ -101,23 +101,22 @@ class HtmlShrink
         return ob_get_contents();
     }
 
-    public static function getLocalitesSelect(array $regions_localites, array $glo_regions, array $glo_tab_ailleurs): string
+    public static function getLocalitesSelect(array $regions_localites, array $glo_regions, array $glo_tab_ailleurs, array $localitesWithLieux = []): string
     {
         ob_start();
         ?>
-        <select  name="localite" class="js-select2-options-with-style" data-placeholder="Localité">
+        <select  name="localite" class="js-select2-options-with-style" data-placeholder="Localité" style="width:100px">
             <option value=""></option>
             <?php foreach ($regions_localites as $region => $localites) : ?>
                 <optgroup label="<?= $glo_regions[$region] ?>">
                     <?php foreach ($localites as $loc) : ?>
+                        <?php if (!empty($localitesWithLieux) && !in_array($loc['id'], $localitesWithLieux)) { continue; }?>
                         <option value="<?= $loc['id'] ?>" <?php if ($_SESSION['user_prefs_lieux_localite'] == $loc['id']) : ?>selected="selected"<?php endif; ?>><?= $loc['localite'] ?></option>
                     <?php endforeach; ?>
                 </optgroup>
             <?php endforeach; ?>
             <optgroup label="Ailleurs">
-                <?php foreach ($glo_tab_ailleurs as $id => $nom) : ?>
-                    <option value="<?= $id ?>" <?php if ($_SESSION['user_prefs_lieux_localite'] == $loc['id']) : ?>selected="selected"<?php endif; ?>><?= $nom ?></option>
-               <?php endforeach ?>
+                <option value="1" <?php if ($_SESSION['user_prefs_lieux_localite'] == 1) : ?>selected="selected"<?php endif; ?>><?= "France" ?></option>
             </optgroup>
         </select>
         <?php

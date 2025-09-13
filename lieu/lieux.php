@@ -45,10 +45,12 @@ if (isset($_GET['order']) && in_array($_GET['order'], $tab_order))
 
 $get['page'] = !empty($_GET['page']) ? Validateur::validateUrlQueryValue($_GET['page'], "int", 1) : 1;
 
+// used to build localite filter Select (exclude localites without lieu)
+$lieux_region_localite_ids = array_values(array_unique(array_column(Lieu::getLieux(filters: ['region' => $filters['region'], 'statut' => $filters['statut']], page: null), 'localite_id')));
 
-$lieux_page = Lieu::getLieux($filters, $_SESSION['user_prefs_lieux_order'], $get['page']);
-$lieux_all = Lieu::getLieux($filters, $_SESSION['user_prefs_lieux_order'], null);
-$all_results_nb = count($lieux_all);
+$lieux_page_current = Lieu::getLieux($filters, $_SESSION['user_prefs_lieux_order'], $get['page']);
+$lieux_page_all = Lieu::getLieux($filters, $_SESSION['user_prefs_lieux_order'], null);
+$all_results_nb = count($lieux_page_all);
 
 
 $regions_localites = Localite::getListByRegion();
@@ -97,13 +99,13 @@ include("../_header.inc.php");
         <div>
             <div class="table-filters">
                 <form action="" method="get">
-                    <select name="categorie" class="js-select2-options-with-style" data-placeholder="Catégorie" style="width:100px">
+                    <select name="categorie" class="js-select2-options-with-style" data-placeholder="Catégorie" style="width:80px">
                          <option value="" placeholder="type"></option>
                         <?php foreach ($glo_categories_lieux as $k => $label) : ?>
                             <option value="<?= $k ?>" <?php if ($_SESSION['user_prefs_lieux_categorie'] == $k) : ?>selected="selected"<?php endif; ?>><?= sanitizeForHtml($label) ?></option>
                         <?php endforeach; ?>
                     </select>
-                    <?= HtmlShrink::getLocalitesSelect($regions_localites, $glo_regions, $glo_tab_ailleurs); ?>
+                    <?= HtmlShrink::getLocalitesSelect($regions_localites, $glo_regions, $glo_tab_ailleurs, $lieux_region_localite_ids); ?>
                     <button type="submit" style="margin-top:2px">OK</button>
                 </form>
                 <ul class="menu_tab">
@@ -142,7 +144,7 @@ include("../_header.inc.php");
                     </tr>
                 </thead>
                 <tbody>
-                <?php foreach ($lieux_page as $lieu) : ?>
+                <?php foreach ($lieux_page_current as $lieu) : ?>
                     <tr>
                         <td style="max-width:60px;overflow: hidden;">
                             <?php if ($lieu['logo']) : ?>
@@ -163,8 +165,10 @@ include("../_header.inc.php");
                         </td>
                         <td><?= sanitizeForHtml(implode(", ", array_map(fn ($cat) : string => $glo_categories_lieux[$cat], explode(",", str_replace(" ", "", $lieu['categorie']))))) ?></td>
                         <td>
-                            <?= sanitizeForHtml($lieu['loc_localite']) ?>
-                            <p style="font-size:0.8em"><?= sanitizeForHtml(HtmlShrink::adresseCompacteSelonContexte('', '', $lieu['quartier'], $lieu['adresse'])); ?></p>
+                            <?php
+                            // HACK: all lieux in localite.id=1 (localite.canton="") are actually in France
+                            if (empty($lieu['loc_canton'])) : ?>France<?php else: ?><?= sanitizeForHtml($lieu['loc_localite']) ?><?php endif;?>
+                            <p style="font-size:0.8em"><?= sanitizeForHtml(HtmlShrink::adresseCompacteSelonContexte(region: "", localite:"", quartier: $lieu['quartier'], adresse: $lieu['adresse'])); ?></p>
                         </td>
                         <td>
                             <?php if (!empty($lieux_desc[$lieu['idLieu']])) : ?>
@@ -181,7 +185,7 @@ include("../_header.inc.php");
                 </tbody>
             </table>
 
-            <?php if (count($lieux_page) > 8) : ?>
+            <?php if (count($lieux_page_current) > 8) : ?>
                 <?= HtmlShrink::getPaginationString($all_results_nb, $get['page'], Lieu::RESULTS_PER_PAGE, 1, basename(__FILE__), "?" . Utils::urlQueryArrayToString($get, "page") . "&amp;page=") ?>
             <?php endif; ?>
 
