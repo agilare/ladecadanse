@@ -131,16 +131,17 @@ include("../_header.inc.php");
 
         <header id="entete_contenu">
 
-            <h1 class="fn org"><?= sanitizeForHtml($lieu['nom']); ?></h1>
-
-            <?php if ($lieu['statut'] == 'ancien') : ?>
-                <p class="info">Ce lieu n'existe plus</p>
-            <?php endif; ?>
+            <h1 class="fn org">
+                <?= sanitizeForHtml($lieu['nom']); ?>
+            </h1>
 
             <?php if ($lieu['logo']) : ?>
                 <a href="<?= Lieu::getFileHref(Lieu::getFilePath($lieu['logo']), true) ?>" class="magnific-popup"><img src="<?= Lieu::getFileHref(Lieu::getFilePath($lieu['logo'], "s_"), true) ?>" alt="Logo" class="logo" /></a>
             <?php endif; ?>
 
+            <?php if ($lieu['statut'] == 'ancien') : ?>
+                <p class="alert-warn"><strong>Ce lieu n'existe plus</strong></p>
+            <?php endif; ?>
             <div class="spacer"></div>
 
         </header>
