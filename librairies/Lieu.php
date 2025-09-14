@@ -98,6 +98,11 @@ class Lieu extends Element
 
         $params = [':region' => $filters['region'], ':statut' => $filters['statut']];
 
+        if (!empty($filters['nom']))
+        {
+            $params[':nom'] = "%" . $filters['nom'] . "%";
+        }
+
         if (!empty($filters['localite']))
         {
             $params[':localite'] = $filters['localite'];
@@ -123,6 +128,11 @@ class Lieu extends Element
         FROM lieu l
         JOIN localite loc ON l.localite_id = loc.id
         WHERE l.statut = :statut";
+
+        if (!empty($filters['nom']))
+        {
+            $sql_event .= " AND l.nom LIKE :nom";
+        }
 
         if (!empty($filters['localite']))
         {

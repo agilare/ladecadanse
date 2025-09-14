@@ -14,6 +14,13 @@ $get = [];
 
 $filters['region'] = $_SESSION['region'];
 
+$_SESSION['user_prefs_lieux_nom'] ??= '';
+if (isset($_GET['nom']))
+{
+   $_SESSION['user_prefs_lieux_nom'] = $_GET['nom'];
+}
+$filters['nom'] = $_SESSION['user_prefs_lieux_nom'];
+
 $_SESSION['user_prefs_lieux_categorie'] ??= '';
 if (isset($_GET['categorie']))
 {
@@ -52,6 +59,13 @@ $lieux_page_current = Lieu::getLieux($filters, $_SESSION['user_prefs_lieux_order
 $lieux_page_all = Lieu::getLieux($filters, $_SESSION['user_prefs_lieux_order'], null);
 $all_results_nb = count($lieux_page_all);
 
+// TODO: lieux with 1+ event today; then below if in_array($idLieu, $lieux_with_events_today) : class="auj"
+// list($regionInClause, $regionInParams) = $connectorPdo->buildInClause('e.idLieu', $lieux_page_current_ids]);
+// $lieux_page_current_ids = array_column('idLieu', $lieux_page_current)
+//$lieux_with_events_today_sql = "SELECT idLieu FROM evenement e WHERE e.statut NOT IN ('inactif', 'propose') AND $regionInClause and dateEvenement = :date"
+//$stmt = $connectorPdo->prepare($lieux_with_events_today_sql);
+//$stmt->execute(array_merge([':date' => $glo_auj_6h, ...$regionInParams]]));
+//$tab_events_today_in_region_by_category = $stmt->fetchAll(PDO::FETCH_GROUP);
 
 $regions_localites = Localite::getListByRegion();
 
@@ -99,6 +113,7 @@ include("../_header.inc.php");
         <div>
             <div class="table-filters">
                 <form action="" method="get">
+                    <input type="search" name="nom" value="<?= $_SESSION['user_prefs_lieux_nom'] ?>" placeholder="Nom" aria-label="Nom">
                     <select name="categorie" class="js-select2-options-with-style" data-placeholder="Catégorie" style="width:80px">
                          <option value="" placeholder="type"></option>
                         <?php foreach ($glo_categories_lieux as $k => $label) : ?>

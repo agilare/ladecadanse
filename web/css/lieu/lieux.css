@@ -1,3 +1,8 @@
+table#derniers_lieux
+{
+    width: 100%;
+}
+
 .table-filters button[type=submit]
 {
     font-size:0.9em;
@@ -23,11 +28,21 @@
     max-width:400px;
 }
 
+.table-filters form input[name="nom"]
+{
+    width:100px;
+    height:27px;
+    padding: 4px 3px 6px 3px;
+    border-radius:4px;
+    border: 1px solid #aaa;
+}
+
 .table-filters .menu_tab
 {
     display:inline-block;
     position:absolute;
-    margin-left:5px;top:2px
+    margin-left:5px;
+    top:2px
 }
 
 #order_navigation
@@ -38,5 +53,5 @@
 div.pagination
 {
     margin: 1em 0;
-  padding-left: 0;
+    padding-left: 0;
 }
