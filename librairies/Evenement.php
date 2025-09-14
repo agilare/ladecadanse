@@ -183,7 +183,7 @@ class Evenement extends Element
         ob_start();
         ?>
 
-        <article class="evenement-short">
+        <article id="event-<?= (int) $tab_even['e_idEvenement'] ?>" class="evenement-short">
 
             <header class="titre">
                 <h3 class="left"><a href="/event/evenement.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>"><?= self::titreSelonStatutHtml(sanitizeForHtml($tab_even['e_titre']), $tab_even['e_statut']) ?></a></h3>
