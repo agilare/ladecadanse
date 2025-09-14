@@ -272,7 +272,7 @@ include("_header.inc.php");
                             <p class="rappel_date"><?= ucfirst($day_label) ?>, <?= $glo_tab_genre[$genre]; ?></p>
                         <?php endif; ?>
 
-                        <?= Evenement::eventShortArticleHtml($tab_even); ?>
+                        <?= Evenement::eventShortArticleHtml($tab_even, $tab_events_today_in_region_orgas); ?>
 
                             <footer class="edition">
 
