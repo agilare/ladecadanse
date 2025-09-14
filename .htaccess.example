@@ -121,4 +121,6 @@ php_flag display_errors on
 # E_ERROR : 1
 # E_ALL & ~E_DEPRECATED & ~E_NOTICE : (best suitable for production)
 php_value error_reporting -1
+# set in local env to match Infomaniak (default) config
+# php_value short_open_tag Off
 # end .user.ini
