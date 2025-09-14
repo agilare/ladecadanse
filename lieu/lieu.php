@@ -34,13 +34,18 @@ if ($lieu['statut'] == 'inactif' && !((isset($_SESSION['Sgroupe']) && $_SESSION[
 
 $tab_menu_periodes = ["ancien" => "Passés", "futur" => "Prochains"]; //, "tous" => "Tous"
 $get['periode'] = "futur";
+$sql_periode_operator = ">=";
 if (!empty($_GET['periode']) && Validateur::validateUrlQueryValue($_GET['periode'], "enum", 1, array_keys($tab_menu_periodes)))
 {
     $get['periode'] = $_GET['periode'];
+    if ($get['periode'] == "ancien")
+    {
+        $sql_periode_operator = "<";
+    }
 }
 
 $get['page'] = !empty($_GET['page']) ? Validateur::validateUrlQueryValue($_GET['page'], "int", 1) : 1;
-$results_per_page = 20;
+$results_per_page = 50;
 
 $categories_fr = implode(", ", array_map(fn ($cat) : string => $glo_categories_lieux[$cat], explode(",", str_replace(" ", "", $lieu['categorie']))));
 $lieu_salles = Lieu::getActivesSalles((int) $get['idL']);
@@ -51,7 +56,6 @@ $presentations_nb = isset($lieu_descriptions['presentation']) ? count($lieu_desc
 $descriptions_nb = isset($lieu_descriptions['description']) ? count($lieu_descriptions['description']) : 0;
 
 $sql_select = "SELECT
-  DATE_FORMAT(e.dateEvenement, '%Y-%m-01') AS yearmonth,
   e.genre AS e_genre,
   e.idEvenement AS e_idEvenement,
   e.titre AS e_titre,
@@ -82,18 +86,20 @@ LEFT JOIN salle s ON e.idSalle = s.idSalle
 WHERE
     e.statut NOT IN ('inactif', 'propose') AND e.idLieu = ?";
 
-$sql_periode_operator = ">=";
-if ($get['periode'] == "ancien")
-{
-    $sql_periode_operator = "<";
-}
 $sql_select .= " AND e.dateEvenement $sql_periode_operator '" . $glo_auj . "'";
 $sql_select .= ' ORDER BY dateEvenement ASC';
 $sql_select .= " LIMIT " . (int) (($get['page'] - 1) * $results_per_page) . ", " . (int) (($get['page'] - 1) * $results_per_page + $results_per_page);
 //echo $sql_select;
 $stmt = $connectorPdo->prepare($sql_select);
 $stmt->execute([$get['idL']]);
-$page_results = $stmt->fetchAll(PDO::FETCH_GROUP);
+$page_results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$page_results_grouped_by_yearmonth = [];
+foreach ($page_results as $event) {
+    $yearmonth = date('Y-m-01', strtotime($event['e_dateEvenement']));
+    $page_results_grouped_by_yearmonth[$yearmonth][] = $event;
+}
+
+//dump($page_results_grouped_by_yearmonth);
 
 $sql_select_all =
     "SELECT count(*) AS nb
@@ -101,11 +107,6 @@ $sql_select_all =
     WHERE
     e.statut NOT IN ('inactif', 'propose') AND e.idLieu = ?";
 
-$sql_periode_operator = ">=";
-if ($get['periode'] == "ancien")
-{
-    $sql_periode_operator = "<";
-}
 $sql_select_all .= " AND e.dateEvenement $sql_periode_operator '" . $glo_auj . "'";
 //echo $sql_select_all;
 $stmtAll = $connectorPdo->prepare($sql_select_all);
@@ -381,7 +382,7 @@ include("../_header.inc.php");
 
             <?= HtmlShrink::getPaginationString($all_results_nb, $get['page'], $results_per_page, 1, basename(__FILE__), "?" . Utils::urlQueryArrayToString($get, "page") . "&amp;page=") ?>
             <table>
-            <?php foreach ($page_results as $yearmonth => $tab_even) : ?>
+            <?php foreach ($page_results_grouped_by_yearmonth as $yearmonth => $tab_even) : ?>
                 <tr>
                     <td colspan="5" class="mois"><?= ucfirst((string) mois2fr(date2mois($yearmonth))) ?>
                     <?php if (date2annee($yearmonth) != date('Y')) : echo date2annee($yearmonth); endif; ?>
