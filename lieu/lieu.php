@@ -256,73 +256,76 @@ include("../_header.inc.php");
 
             <div class="spacer only-mobile"></div>
 
-            <ul id="menu_descriptions">
-                <?php if ($descriptions_nb > 0) : ?>
-                    <li class="btn-description ici">
-                        <h2><a href="#description" id="show-description-btn">Description</a></h2>
-                    </li>
-                <?php endif; ?>
-
-                <?php if ($presentations_nb > 0) : ?>
-                    <li class="btn-presentation<?php if ($descriptions_nb === 0) : ?> ici<?php endif; ?>">
-                        <h2><a href="#presentation" id="show-presentation-btn">Le lieu se présente</a></h2>
-                    </li>
-                 <?php endif; ?>
-            </ul>
-
             <div id="descriptions">
 
                 <?php
                 $idPersonne_authors_of_desc = [];
-                foreach ($lieu_descriptions as $type => $descriptions) :
+                if (count($lieu_descriptions) > 0) : ?>
 
-                    $idPersonne_authors_of_desc = [$idPersonne_authors_of_desc, ...array_column($descriptions, 'idPersonne')];
-                    ?>
+                    <ul id="menu_descriptions">
+                        <?php if ($descriptions_nb > 0) : ?>
+                            <li class="btn-description ici">
+                                <h2><a href="#description" id="show-description-btn">Description</a></h2>
+                            </li>
+                        <?php endif; ?>
 
-                    <div class="type-<?= $type; ?>" <?php if ($type === 'presentation' && $descriptions_nb > 0) : ?>style="display:none"<?php endif; ?>>
+                        <?php if ($presentations_nb > 0) : ?>
+                            <li class="btn-presentation<?php if ($descriptions_nb === 0) : ?> ici<?php endif; ?>">
+                                <h2><a href="#presentation" id="show-presentation-btn">Le lieu se présente</a></h2>
+                            </li>
+                         <?php endif; ?>
+                    </ul>
 
-                        <?php foreach ($descriptions as $des) : ?>
+                    <?php foreach ($lieu_descriptions as $type => $descriptions) :
+                        $idPersonne_authors_of_desc = [$idPersonne_authors_of_desc, ...array_column($descriptions, 'idPersonne')];
+                        ?>
 
-                            <div class="description">
-                                <?php
-                                // HACK: before oct 2009 text "wiki" formated
-                                $des_contenu = $des['contenu'];
-                                if (datetime_iso2time($des['date_derniere_modif']) <= datetime_iso2time("2009-10-12 12:00:00")) :
-                                    $des_contenu = "<p>".Text::wikiToHtml(sanitizeForHtml($des['contenu']))."</p>";
-                                endif;
-                                ?>
+                        <div class="type-<?= $type; ?>" <?php if ($type === 'presentation' && $descriptions_nb > 0) : ?>style="display:none"<?php endif; ?>>
 
-                                <div class="js-read-smore" data-read-smore-words="50">
-                                    <?= $des_contenu ?>
-                                </div>
+                            <?php foreach ($descriptions as $des) : ?>
 
-                                <?php if ($type == 'description') : ?>
-                                    <p><?= HtmlShrink::authorSignatureForHtml($des['idPersonne']) ?></p>
-                                <?php endif; ?>
+                                <div class="description">
+                                    <?php
+                                    // HACK: before oct 2009 text "wiki" formated
+                                    $des_contenu = $des['contenu'];
+                                    if (datetime_iso2time($des['date_derniere_modif']) <= datetime_iso2time("2009-10-12 12:00:00")) :
+                                        $des_contenu = "<p>".Text::wikiToHtml(sanitizeForHtml($des['contenu']))."</p>";
+                                    endif;
+                                    ?>
 
-                                <div class="auteur">
-                                    <span class="left">
-                                        <?= ucfirst((string) date_fr($des['dateAjout'], 'annee', '', 'non')) ?><?php if ($des['date_derniere_modif'] != "0000-00-00 00:00:00" && $des['date_derniere_modif'] != $des['dateAjout']) : ?>, modifié le <?= date_fr($des['date_derniere_modif'], 'annee', '', 'non') ?><?php endif; ?>
-                                    </span>
-                                    <?php if (isset($_SESSION['Sgroupe']) && (
-                                                $_SESSION['Sgroupe'] <= UserLevel::ADMIN
-                                                || ($type == 'description' && $_SESSION['Sgroupe'] <= UserLevel::AUTHOR && $_SESSION['SidPersonne'] == $des['idPersonne'])
-                                                || ($type == 'presentation' &&
-                                                ($_SESSION['Sgroupe'] <= UserLevel::AUTHOR)
-                                                    || ($_SESSION['Sgroupe'] <= UserLevel::ACTOR && ($authorization->isPersonneInLieuByOrganisateur($_SESSION['SidPersonne'], $get['idL']) || $authorization->isPersonneAffiliatedWithLieu($_SESSION['SidPersonne'], $get['idL']))))
-                                            )) : ?>
-                                            <span class="right">
-                                                <a href="/lieu-text-edit.php?action=editer&amp;type=<?= $type ?>&amp;idL=<?= (int)$get['idL'] ?>&amp;idP=<?= (int) $des['idPersonne'] ?>"><?= $iconeEditer ?> Modifier</a>
-                                            </span>
+                                    <div class="js-read-smore" data-read-smore-words="50">
+                                        <?= $des_contenu ?>
+                                    </div>
+
+                                    <?php if ($type == 'description') : ?>
+                                        <p><?= HtmlShrink::authorSignatureForHtml($des['idPersonne']) ?></p>
                                     <?php endif; ?>
-                                    <div class="spacer"><!-- --></div>
-                                </div> <!-- .auteur -->
 
-                            </div> <!-- .description -->
+                                    <div class="auteur">
+                                        <span class="left">
+                                            <?= ucfirst((string) date_fr($des['dateAjout'], 'annee', '', 'non')) ?><?php if ($des['date_derniere_modif'] != "0000-00-00 00:00:00" && $des['date_derniere_modif'] != $des['dateAjout']) : ?>, modifié le <?= date_fr($des['date_derniere_modif'], 'annee', '', 'non') ?><?php endif; ?>
+                                        </span>
+                                        <?php if (isset($_SESSION['Sgroupe']) && (
+                                                    $_SESSION['Sgroupe'] <= UserLevel::ADMIN
+                                                    || ($type == 'description' && $_SESSION['Sgroupe'] <= UserLevel::AUTHOR && $_SESSION['SidPersonne'] == $des['idPersonne'])
+                                                    || ($type == 'presentation' &&
+                                                    ($_SESSION['Sgroupe'] <= UserLevel::AUTHOR)
+                                                        || ($_SESSION['Sgroupe'] <= UserLevel::ACTOR && ($authorization->isPersonneInLieuByOrganisateur($_SESSION['SidPersonne'], $get['idL']) || $authorization->isPersonneAffiliatedWithLieu($_SESSION['SidPersonne'], $get['idL']))))
+                                                )) : ?>
+                                                <span class="right">
+                                                    <a href="/lieu-text-edit.php?action=editer&amp;type=<?= $type ?>&amp;idL=<?= (int)$get['idL'] ?>&amp;idP=<?= (int) $des['idPersonne'] ?>"><?= $iconeEditer ?> Modifier</a>
+                                                </span>
+                                        <?php endif; ?>
+                                        <div class="spacer"><!-- --></div>
+                                    </div> <!-- .auteur -->
 
-                        <?php endforeach; ?>
-                    </div> <!-- .type-... -->
-                <?php endforeach; ?>
+                                </div> <!-- .description -->
+
+                            <?php endforeach; ?>
+                        </div> <!-- .type-... -->
+                    <?php endforeach; ?>
+
+                <?php endif; ?>
 
                 <?php
                 // add description :
