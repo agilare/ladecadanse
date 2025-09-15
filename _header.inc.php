@@ -182,29 +182,23 @@ use Ladecadanse\UserLevel;
                         }
                         else
                         {
-                            if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= UserLevel::ACTOR))
-                            {
-                                $ici = '';
-                                if (strstr((string) $_SERVER['PHP_SELF'], "evenement-edit.php") )
-                                {
-                                    $ici = " class=\"ici\"";
-                                }
-                                ?>
-                                <li <?php echo $ici; ?>><a href="/evenement-edit.php?action=ajouter">Ajouter un événement</a></li>
-                            <?php
-                            }
+                            if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= UserLevel::ACTOR)) { ?>
+                                <li <?php if (strstr((string) $_SERVER['PHP_SELF'], "evenement-edit.php")) : ?>class="ici"<?php endif; ?>>
+                                    <a href="/evenement-edit.php?action=ajouter">Ajouter un événement</a>
+                                </li>
+                            <?php } ?>
 
-                            $ici = '';
-                            if (strstr((string) $_SERVER['PHP_SELF'], "user.php") )
-                            {
-                                $ici = " class=\"ici\"";
-                            }
-                            ?>
-                                <li <?= $ici; ?>><a href="/user.php?idP=<?= (int) $_SESSION['SidPersonne']; ?>"><?= sanitizeForHtml($_SESSION['user']); ?></a></li>
-                                <li><a href="/user-logout.php" >Sortir</a></li>
-                            <?php if ($_SESSION['Sgroupe'] <= UserLevel::ADMIN) : ?>
-                                <li><a href="/admin/index.php" title="Administration">Admin</a></li>
-                            <?php endif; ?>
+                                <li <?php if (strstr((string) $_SERVER['PHP_SELF'], "user.php")) : ?>class="ici"<?php endif; ?> style="background: #ffda54;padding: 2px 0 0.2em 0.4em;border-radius: 3px 0 0 3px;">
+                                    <a href="/user.php?idP=<?= (int) $_SESSION['SidPersonne']; ?>"><?= sanitizeForHtml($_SESSION['user']); ?></a>
+
+                                <?php if ($_SESSION['Sgroupe'] <= UserLevel::ADMIN) : ?>
+
+                                        <a href="/admin/index.php"><i class="fa fa-tachometer" aria-hidden="true"></i></a>
+                                        <a href="/admin/gererEvenements.php"><i class="fa fa-calendar-o" aria-hidden="true"></i></a>
+                                        <a href="/admin/gerer.php?element=personne"><i class="fa fa-user" aria-hidden="true"></i></a>
+
+                                <?php endif; ?>
+                                <a href="/user-logout.php">Sortir</a></li>
                         <?php } ?>
                     </ul>
 
