@@ -29,6 +29,11 @@ if (isset($_GET['categorie']))
 $filters['categorie'] = $_SESSION['user_prefs_lieux_categorie'];
 
 $_SESSION['user_prefs_lieux_localite'] ??= '';
+// passing to another region needs to reset a stored localité belonging to the previous region
+if (!empty($_GET['region']))
+{
+    $_SESSION['user_prefs_lieux_localite'] = '';
+}
 if (isset($_GET['localite']))
 {
     $_SESSION['user_prefs_lieux_localite']  = (int) $_GET['localite'];
