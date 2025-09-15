@@ -6,7 +6,7 @@ table#derniers_lieux
 .table-filters button[type=submit]
 {
     font-size:0.9em;
-    padding: 0.5em 0.4em 0.6em 0.4em;
+    padding: 0.4em 0.4em 0.6em 0.4em;
     border-radius: 3px;
     background-color: #f9f9f9;
     font-weight: bold;
@@ -41,8 +41,8 @@ table#derniers_lieux
 {
     display:inline-block;
     position:absolute;
-    margin-left:5px;
-    top:2px
+    margin-left:10px;
+/*    top:2px*/
 }
 
 #order_navigation
