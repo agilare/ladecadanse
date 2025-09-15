@@ -25,21 +25,27 @@ $('.gallery-item').magnificPopup({
     }
 });
 
+$('.js-select2').select2(
+{
+    language: "fr",
+    allowClear: false
+});
+
 $('.js-select2-options-with-style').select2(
-        {
-            language: "fr",
-            allowClear: true,
-            templateResult: select2ApplyOptionInlineStyle,
-            templateSelection: select2ApplyOptionInlineStyle
-        });
+{
+    language: "fr",
+    allowClear: true,
+    templateResult: select2ApplyOptionInlineStyle,
+    templateSelection: select2ApplyOptionInlineStyle
+});
 
 $('.js-select2-options-with-complement').select2(
-        {
-            language: "fr",
-            allowClear: true,
-            templateResult: select2OptionWithComplement,
-            templateSelection: select2OptionWithComplement
-        });
+{
+    language: "fr",
+    allowClear: true,
+    templateResult: select2OptionWithComplement,
+    templateSelection: select2OptionWithComplement
+});
 
 function select2ApplyOptionInlineStyle(item)
 {

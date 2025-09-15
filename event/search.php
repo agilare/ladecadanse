@@ -36,6 +36,13 @@ if (!empty($_GET['periode']) && Validateur::validateUrlQueryValue($_GET['periode
     $get['periode'] = $_GET['periode'];
 }
 
+$get['years'] ??= date('Y');
+if (isset($_GET['years']))
+{
+   $get['years'] = $_GET['years'];
+}
+
+//dump($_GET);
 $get['page'] = !empty($_GET['page']) ? Validateur::validateUrlQueryValue($_GET['page'], "int", 1) : 1;
 $results_per_page = 20;
 
@@ -111,6 +118,8 @@ WHERE
     e.statut NOT IN ('inactif', 'propose') AND (
     MATCH(e.titre) AGAINST(? IN BOOLEAN MODE) OR MATCH(e.nomLieu) AGAINST(? IN BOOLEAN MODE) OR MATCH(e.description) AGAINST(? IN BOOLEAN MODE) OR MATCH(l.nom) AGAINST(? IN BOOLEAN MODE) )";
 
+
+$sql_params = array_fill(0, 8, implode(' ', array_map(fn($t) => $t . '*', $tab_mots_sans_les_mots_vides)));
 if ($get['periode'] != "tous")
 {
     $sql_periode_operator = ">=";
@@ -121,13 +130,21 @@ if ($get['periode'] != "tous")
     $sql_select .= " AND e.dateEvenement $sql_periode_operator '" . $glo_auj . "'";
 }
 
+if (!empty($get['years']))
+{
+    $sql_select .= " AND YEAR(e.dateEvenement) = ? ";
+    $sql_params[] = $get['years'];
+}
+
 $sql_select .= ' ORDER BY ' . (($get['tri'] == "dateAjout" || $get['tri'] == "dateEvenement") ? "e." . $get['tri'] : 'score') . ' DESC';
 $sql_select .= " LIMIT " . (int) (($get['page'] - 1) * $results_per_page) . ", " . (int) (($get['page'] - 1) * $results_per_page + $results_per_page);
-
+//dump($sql_params);
 $stmt = $connectorPdo->prepare($sql_select);
-$stmt->execute(array_fill(0, 8, implode(' ', array_map(fn($t) => $t . '*', $tab_mots_sans_les_mots_vides))));
+$stmt->execute($sql_params);
 $page_results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+
+$sql_params_all = array_fill(0, 4, implode(' ', array_map(fn($t) => $t . '*', $tab_mots_sans_les_mots_vides)));
 $sql_select_all =
     "SELECT count(*) AS nb
 FROM evenement e
@@ -145,10 +162,17 @@ if ($get['periode'] != "tous")
     }
     $sql_select_all .= " AND e.dateEvenement $sql_periode_operator '" . $glo_auj . "'";
 }
+
+if (!empty($get['years']))
+{
+    $sql_select_all .= " AND YEAR(e.dateEvenement) = ? ";
+    $sql_params_all[] = $get['years'];
+}
+
 //echo $sql_select_all;
 
 $stmtAll = $connectorPdo->prepare($sql_select_all);
-$stmtAll->execute(array_fill(0, 4, implode(' ', array_map(fn($t) => $t . '*', $tab_mots_sans_les_mots_vides))));
+$stmtAll->execute($sql_params_all);
 $all_results_nb = $stmtAll->fetchColumn();
 
 $logger->log('global', 'activity', "[recherche] \"" . urlencode($get['mots']) .  "\" with " . $all_results_nb . " events found in " . $get['periode'] . " sorted by " . $get['tri'] . ", page " . $get['page'], Logger::GRAN_YEAR);
@@ -158,6 +182,8 @@ $get['mots'] = urlencode($get['mots']);
 
 $page_titre = "Rechercher des événements " . strtolower($tab_menu_periodes[$get['periode']]) . " par " . strtolower($tab_menu_tri[$get['tri']]);
 include("../_header.inc.php");
+
+$agenda_years = range((int)date("Y"), Evenement::AGENDA_START_YEAR);
 ?>
 
 <main id="contenu" class="colonne rechercher">
@@ -170,7 +196,7 @@ include("../_header.inc.php");
         <ul id="menu_periode">
             <?php foreach ($tab_menu_periodes as $k => $label) : ?>
                 <li class="<?= $k ?><?php if ($get['periode'] == $k) : ?> ici<?php endif; ?>">
-                    <a href="?<?= Utils::urlQueryArrayToString($get, ['periode', 'page']) ?>&amp;periode=<?= $k ?>"><?= $label ?></a>
+                    <a href="?<?= Utils::urlQueryArrayToString($get, ['periode', 'page', 'years']) ?>&amp;periode=<?= $k ?>"><?= $label ?></a>
                 </li>
             <?php endforeach; ?>
             <div class="spacer"></div>
@@ -179,6 +205,21 @@ include("../_header.inc.php");
 	</header>
 
     <div id="res_recherche">
+
+        <?php if ($get['periode'] == 'ancien') : ?>
+            <form id="years-select" action="" method="get">
+                <input type="hidden" name="mots" value="<?= urldecode($get['mots']) ?>">
+                <input type="hidden" name="periode" value="<?= $get['periode'] ?>">
+                <input type="hidden" name="tri" value="<?= $get['tri'] ?>">
+                <label for="years">Année</label>
+                <select name="years" id="years" class="js-select2 js-auto-submiter" style="min-width:100px">
+                    <?php foreach ($agenda_years as $year): ?>
+                        <option value="<?= $year ?>" <?php if ($year == $get['years']) : ?>selected<?php endif; ?>><?= $year ?></option>
+                    <?php endforeach; ?>
+                </select>
+<!--                <button type="submit" style="margin-top:2px">OK</button>-->
+            </form>
+        <?php endif; ?>
 
         <?php if ($all_results_nb > 0) : ?>
 
@@ -247,6 +288,6 @@ include("../_header.inc.php");
     <?php include("../event/_navigation_calendrier.inc.php"); ?>
 </div>
 
-<!--<div id="colonne_droite" class="colonne"></div>-->
+<div id="colonne_droite" class="colonne"></div>
 
 <?php include("../_footer.inc.php"); ?>

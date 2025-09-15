@@ -43,6 +43,11 @@ export const AppGlobal =
             showhide('presentation', 'description');
             return false;
         });
+
+        $('.js-auto-submiter').on('change', function autosubmit()
+        {
+            this.form.submit();
+        });
     },
     /**
      * only used in mobile view
@@ -124,11 +129,6 @@ const Forms = {
             if (currentLength >= maxLength) {
                 alert(`Le texte dans ce champ ne peut dépasser la longueur maximale de ${maxLength} caractères`);
             }
-        });
-
-        $('.js-auto-submiter').on('change', function autosubmit()
-        {
-            this.form.submit();
         });
     }
 };

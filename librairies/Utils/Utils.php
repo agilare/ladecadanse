@@ -12,7 +12,7 @@ class Utils
         {
             foreach ($get as $nom => $valeur)
             {
-                if ($nom != $sauf)
+                if ($nom != $sauf && !is_array($valeur))
                 {
                     $afficher .= $nom . "=" . $valeur . "&";
                 }

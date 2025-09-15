@@ -14,6 +14,8 @@ class Evenement extends Element
     static $urlDirPath;
     static $statuts_evenement = ['propose' => 'Proposé', 'actif' => '', 'complet' => 'Complet', 'annule' => 'Annulé', 'inactif' => 'Dépublié'];
 
+    public const int AGENDA_START_YEAR = 2005;
+
     function __construct() {
 
         parent::__construct();
