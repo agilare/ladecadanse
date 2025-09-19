@@ -362,7 +362,8 @@ elseif (!empty($_POST['formulaire']))
 
 
 		$compteur_evenements = 0;
-
+        $srcFlyer = '';
+        $src_image = '';
 		foreach ($evenements as $idEven_courant)
 		{
 
@@ -477,7 +478,7 @@ elseif (!empty($_POST['formulaire']))
 					if (!empty($affFly['flyer']))
 					{
                         Evenement::rmImageAndItsMiniature($affFly['flyer']);
-                        echo "<div class=\"msg\">Ancien flyer ".$affFly['flyer']." supprimé</div>";
+                        //echo "<div class=\"msg\">Ancien flyer ".$affFly['flyer']." supprimé</div>";
 					}
 				}
 
@@ -599,15 +600,13 @@ elseif (!empty($_POST['formulaire']))
 				$erreur_image[] = $imD2->processImage($_FILES['flyer'], $champs['flyer'], 400, 400);
 				$erreur_image[] = $imD2->processImage($_FILES['flyer'], "s_" . $champs['flyer'], 120, 190, '', 1);
 
-                if (!empty($msg2))
-					$champs['flyer'] = '';
-
 				$srcFlyer = $champs['flyer'];
 			}
 			elseif (!empty($fichiers['flyer']['name']))
 			{
-                copy(Evenement::getFilePath($srcFlyer), Evenement::getFilePath($champs['flyer']));
-                copy(Evenement::getFilePath($srcFlyer, "s_"), Evenement::getFilePath($champs['flyer'], "s_"));
+                //echo $srcFlyer."<br>";
+                copy(Evenement::getSystemFilePath(Evenement::getFilePath($srcFlyer)), Evenement::getSystemFilePath(Evenement::getFilePath($champs['flyer'])));
+                copy(Evenement::getSystemFilePath(Evenement::getFilePath($srcFlyer, "s_")), Evenement::getSystemFilePath(Evenement::getFilePath($champs['flyer'], "s_")));
             }
 
             if (!empty($fichiers['image']['name']) && $compteur_evenements == 0)
@@ -618,28 +617,25 @@ elseif (!empty($_POST['formulaire']))
 				$erreur_image[] = $imD2->processImage($_FILES['image'], $champs['image'], 400, 400);
 				$erreur_image[] = $imD2->processImage($_FILES['image'], "s_" . $champs['image'], 120, 190, '', 1);
 
-                if (!empty($msg2))
-					$champs['image'] = '';
-
 				$src_image = $champs['image'];
 			}
 			elseif (!empty($fichiers['image']['name']))
 			{
-                copy(Evenement::getFilePath($src_image), Evenement::getFilePath($champs['image']));
-                copy(Evenement::getFilePath($src_image, "s_"), Evenement::getFilePath($champs['image'], "s_"));
+                copy(Evenement::getSystemFilePath(Evenement::getFilePath($src_image)), Evenement::getSystemFilePath(Evenement::getFilePath($champs['image'])));
+                copy(Evenement::getSystemFilePath(Evenement::getFilePath($src_image, "s_")), Evenement::getSystemFilePath(Evenement::getFilePath($champs['image'], "s_")));
             }
 
-				foreach ($champs['organisateurs'] as $no => $idOrg)
-				{
-					if (!empty($idOrg))
+            foreach ($champs['organisateurs'] as $no => $idOrg)
+            {
+                if (!empty($idOrg))
                 {
-						$sql = "INSERT INTO evenement_organisateur (idEvenement, idOrganisateur) VALUES (" . (int) $idEven_courant . ", " . (int) $idOrg . ")";
+                    $sql = "INSERT INTO evenement_organisateur (idEvenement, idOrganisateur) VALUES (" . (int) $idEven_courant . ", " . (int) $idOrg . ")";
                     $connector->query($sql);
                 }
-				}
+            }
 
 			$compteur_evenements++;
-		}
+		} // foreach
 
 		unset($_POST);
 		unset($_FILES);
@@ -648,22 +644,16 @@ elseif (!empty($_POST['formulaire']))
 			$champs[$i] = '';
 		}
 	}
-
-
 }
 
 if ($verif->nbErreurs() > 0)
 {
 	HtmlShrink::msgErreur("Il y a ".$verif->nbErreurs()." erreur(s).");
-
-	//print_r($verif->getErreurs());
 }
-
 
 /*
  * AFFICHAGE DE LA TABLE ET SON MENU DE NAVIGATION
  */
-
 $sql_nbeven = "SELECT COUNT(*) AS nbeven FROM evenement ".$where;
 
 $req_nbeven = $connector->query($sql_nbeven);
@@ -673,7 +663,6 @@ $tot_elements = $tab_nbeven['nbeven'];
 $total_page_max = ceil($tot_elements / $get['nblignes']);
 if ($get['page'] > $total_page_max)
 	$get['page'] = $total_page_max;
-
 
 $sql_page = $get['page'];
 if ($get['page'] < 1)
@@ -807,7 +796,7 @@ while ($tab_even = $connector->fetchArray($req_evenement))
 		echo "<tr class=\"impair\" >";
     }
 
-	echo "	<td><a href=\"/event/evenement.php?idE=" . (int) $tab_even['idEvenement'] . "\" title=\"Voir la fiche de l'événement\" class='titre'>" . sanitizeForHtml($tab_even['titre']) . "</a></td>	<td>" . $nomLieu . "</td>
+	echo "	<td><a href=\"/event/evenement.php?idE=" . (int) $tab_even['idEvenement'] . "\" class='titre'>" . sanitizeForHtml($tab_even['titre']) . "</a></td>	<td>" . $nomLieu . "</td>
 	<td>".date_iso2app($tab_even['dateEvenement'])."</td>
 	<td>".ucfirst((string) $glo_tab_genre[$tab_even['genre']])."</td>
 
