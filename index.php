@@ -215,7 +215,7 @@ include("_header.inc.php");
     endif; ?>
 
     <header id="entete_contenu">
-        <h1 class="accueil"><?= ucfirst((string) date_fr($get['courant'])); ?>
+        <h1 class="accueil"><?= ucfirst((string) date_fr($get['courant'])); ?><?php if ($authorization->isPersonneEditor($_SESSION)) :?><sup style="font-size:0.6em;color:#999"><?= $count_events_today_in_region ?></sup><?php endif; ?>
             <?php if ($courant_year !== date("Y")) { echo $courant_year; } ?>
             <?php if ($is_courant_today) : ?><br>
                 <small>Aujourd’hui <a href="/event/rss.php?type=evenements_auj" title="Flux RSS des événements du jour" class="desktop"><i class="fa fa-rss fa-lg"></i></a></small><?php endif; ?>
