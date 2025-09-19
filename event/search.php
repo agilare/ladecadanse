@@ -120,15 +120,13 @@ WHERE
 
 
 $sql_params = array_fill(0, 8, implode(' ', array_map(fn($t) => $t . '*', $tab_mots_sans_les_mots_vides)));
-if ($get['periode'] != "tous")
+
+$sql_periode_operator = ">=";
+if ($get['periode'] == "ancien")
 {
-    $sql_periode_operator = ">=";
-    if ($get['periode'] == "ancien")
-    {
-        $sql_periode_operator = "<";
-    }
-    $sql_select .= " AND e.dateEvenement $sql_periode_operator '" . $glo_auj . "'";
+    $sql_periode_operator = "<";
 }
+$sql_select .= " AND e.dateEvenement $sql_periode_operator '" . $glo_auj . "'";
 
 if (!empty($get['years']))
 {
@@ -153,15 +151,12 @@ WHERE
     e.statut NOT IN ('inactif', 'propose') AND (
     MATCH(e.titre) AGAINST(? IN BOOLEAN MODE) OR MATCH(e.nomLieu) AGAINST(? IN BOOLEAN MODE) OR MATCH(e.description) AGAINST(? IN BOOLEAN MODE) OR MATCH(l.nom) AGAINST(? IN BOOLEAN MODE) )";
 
-if ($get['periode'] != "tous")
+$sql_periode_operator = ">=";
+if ($get['periode'] == "ancien")
 {
-    $sql_periode_operator = ">=";
-    if ($get['periode'] == "ancien")
-    {
-        $sql_periode_operator = "<";
-    }
-    $sql_select_all .= " AND e.dateEvenement $sql_periode_operator '" . $glo_auj . "'";
+    $sql_periode_operator = "<";
 }
+$sql_select_all .= " AND e.dateEvenement $sql_periode_operator '" . $glo_auj . "'";
 
 if (!empty($get['years']))
 {
@@ -175,7 +170,7 @@ $stmtAll = $connectorPdo->prepare($sql_select_all);
 $stmtAll->execute($sql_params_all);
 $all_results_nb = $stmtAll->fetchColumn();
 
-$logger->log('global', 'activity', "[recherche] \"" . urlencode($get['mots']) .  "\" with " . $all_results_nb . " events found in " . $get['periode'] . " sorted by " . $get['tri'] . ", page " . $get['page'], Logger::GRAN_YEAR);
+$logger->log('global', 'activity', "[recherche] \"" . urlencode($get['mots']) .  "\" with " . $all_results_nb . " events found in " . $get['periode'] . " (".$get['years'].") sorted by " . $get['tri'] . ", page " . $get['page'], Logger::GRAN_YEAR);
 
 // prepare mots to be transmitted in links (menus order, filters, pagination)
 $get['mots'] = urlencode($get['mots']);
