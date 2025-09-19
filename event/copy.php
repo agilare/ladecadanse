@@ -161,7 +161,8 @@ if (!empty($_POST['submit']))
 		$dateIncrUnixOld = $dateIncrUnix;
 
 		$_SESSION['copierEvenement_flash_msg']['msg'] = '<p style="margin:4px 0 10px 0; font-size: 1.1em">L\'événement <a href="/event/evenement.php?idE=' .(int)$get['idE'] . '"><strong>' . sanitizeForHtml($tab_event_copied['titre']) . '</strong> du ' . date_fr($tab_even['e_dateEvenement']) . '</a> a été copié vers les dates suivantes :</p>';
-
+        $_SESSION['copierEvenement_flash_msg']['table'] = '';
+        
 		// Collage de l'événement entre la date de début et la date de fin
         $i = 0;
 		while ($dateIncrUnix <= $dateEUnix2)
