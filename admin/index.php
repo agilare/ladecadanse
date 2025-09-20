@@ -31,26 +31,29 @@ $troisJoursAvant = date("Y-m-d H:i:s", time() - (3*86400));
 
 ?>
 
-<div id="entete_contenu">
-	<h2>Tableau de bord</h2>
+<header id="entete_contenu">
+	<h1>Tableau de bord</h1>
 	<div class="spacer"></div>
-</div>
+</header>
 
 <div id="tableaux">
 
     <?php if ($_SESSION['Sgroupe'] < UserLevel::ADMIN) { ?>
 
-<h3 style="padding:0.4em 0">Inscriptions de ces 3 derniers jours</h3>
-<table summary="Dernières inscriptions">
-<tr>
-    <th colspan="2">Date</th>
-    <th>Identifiant</th>
-    <th>E-mail</th>
-    <th>Groupe</th>
-    <th>Affiliation</th>
-    <th>&nbsp;</th>
-</tr>
-<?php
+    <h2 style="padding:0.4em 0">Inscriptions de ces 3 derniers jours</h2>
+
+    <table summary="Dernières inscriptions">
+
+    <tr>
+        <th colspan="2">Date</th>
+        <th>Identifiant</th>
+        <th>E-mail</th>
+        <th>Groupe</th>
+        <th>Affiliation</th>
+        <th>&nbsp;</th>
+    </tr>
+    
+    <?php
 
 
 /* PERSONNES
@@ -283,7 +286,7 @@ while ($tab_desc = $connector->fetchArray($req_getDes))
 
 <div id="colonne_gauche" class="colonne">
     <?php
-    include("_menuAdmin.inc.php");
+    //include("_menuAdmin.inc.php");
     ?>
 </div>
 

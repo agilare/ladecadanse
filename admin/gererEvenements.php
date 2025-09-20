@@ -115,10 +115,10 @@ if (!empty($_SESSION['region_admin']))
 <!-- Deb Contenu -->
 <div id="contenu" class="colonne">
 
-	<div id="entete_contenu">
-		<h2>Gérer les événements <?php echo $titre_region ?></h2>
+	<header id="entete_contenu">
+		<h1>Gérer les événements <?php echo $titre_region ?></h1>
         <div class="spacer"></div>
-	</div>
+	</header>
 
 <?php
 $evenements = [];
@@ -1333,7 +1333,7 @@ if (isset($get_idE) && !empty($champs['image']) && !$verif->getErreur('image'))
 
 <div id="colonne_gauche" class="colonne">
     <?php
-    include("_menuAdmin.inc.php");
+    //include("_menuAdmin.inc.php");
     ?>
 </div>
 

@@ -102,9 +102,9 @@ if (!empty($_SESSION['region_admin']))
 
 <div id="contenu" class="colonne">
 
-	<div id="entete_contenu">
-		<h2>Gérer les <?php echo $tab_listes[$get['element']].$titre_region; ?></h2>
-	</div>
+	<header id="entete_contenu">
+		<h1>Gérer les <?php echo $tab_listes[$get['element']].$titre_region; ?></h1>
+	</header>
 
 	<div class="spacer"></div>
 
@@ -454,7 +454,7 @@ echo '<div class="spacer"></div>';
 
 <div id="colonne_gauche" class="colonne">
     <?php
-    include("_menuAdmin.inc.php");
+    // include("_menuAdmin.inc.php");
     ?>
 </div>
 
