@@ -40,26 +40,24 @@ use Ladecadanse\UserLevel;
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 
     <link rel="stylesheet" type="text/css" href="/web/css/normalize.css">
-    <link rel="stylesheet" type="text/css" href="/web/css/imprimer.css" media="print">
-    <link rel="stylesheet" type="text/css" href="/web/css/global.css?<?= time() ?>">
-    <?php
-    $css_file_path = "/web/css/{$nom_page}.css";
-    if (file_exists(__ROOT__ . $css_file_path)) { ?>
-        <link rel="stylesheet" type="text/css" href="<?= $css_file_path; ?>?<?= time() ?>" media="screen">
-    <?php } ?>
+    <link rel="stylesheet" type="text/css" href="<?= $assets->get("css/imprimer.css"); ?>" media="print">
+    <link rel="stylesheet" type="text/css" href="<?= $assets->get('css/global.css') ?>">
+    <?php if (file_exists(__ROOT__ . "/web/css/{$nom_page}.css")) : ?>
+        <link rel="stylesheet" type="text/css" href="<?= $assets->get("css/{$nom_page}.css"); ?>" media="screen">
+    <?php endif; ?>
     <link href="/vendor/select2/select2/dist/css/select2.min.css" rel="stylesheet">
     <?php
     if (isset($extra_css) && is_array($extra_css)) :
         foreach ($extra_css as $import) : ?>
-            <link rel="stylesheet" type="text/css" href="/web/css/<?= $import ?>.css" media="screen" title="Normal">
+            <link rel="stylesheet" type="text/css" href="<?= $assets->get("css/{$import}.css"); ?>" media="screen" title="Normal">
         <?php
         endforeach;
     endif;
     ?>
 
-    <link rel="stylesheet" type="text/css" media="screen and (min-width:800px)"  href="/web/css/desktop.css?<?= time() ?>">
-    <link rel="stylesheet" type="text/css" media="screen and (max-width:800px)"  href="/web/css/mobile.css?<?= time() ?>">
-    <link rel="stylesheet" type="text/css" media="print" href="/web/css/imprimer.css" title="Imprimer">
+    <link rel="stylesheet" type="text/css" media="screen and (min-width:800px)"  href="<?= $assets->get("css/desktop.css"); ?>">
+    <link rel="stylesheet" type="text/css" media="screen and (max-width:800px)"  href="<?= $assets->get("css/mobile.css"); ?>">
+    <link rel="stylesheet" type="text/css" media="print" href="<?= $assets->get("css/imprimer.css"); ?>" title="Imprimer">
     <link rel="stylesheet" type="text/css" href="/vendor/fortawesome/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="/vendor/dimsemenov/magnific-popup/dist/magnific-popup.css">
     <link rel="stylesheet" type="text/css" href="/web/js/libs/Zebra_datepicker/css/default/zebra_datepicker.min.css">
@@ -188,17 +186,17 @@ use Ladecadanse\UserLevel;
                                 </li>
                             <?php } ?>
 
-                                <li <?php if (strstr((string) $_SERVER['PHP_SELF'], "user.php")) : ?>class="ici"<?php endif; ?> style="background: #ffda54;padding: 2px 0 0.2em 0.4em;border-radius: 3px 0 0 3px;">
+                                <li <?php if (strstr((string) $_SERVER['PHP_SELF'], "user.php")) : ?>class="ici"<?php endif; ?>>
                                     <a href="/user.php?idP=<?= (int) $_SESSION['SidPersonne']; ?>"><?= sanitizeForHtml($_SESSION['user']); ?></a>
-
-                                <?php if ($_SESSION['Sgroupe'] <= UserLevel::ADMIN) : ?>
-
+                                </li>
+                                <li <?php if (strstr((string) $_SERVER['PHP_SELF'], "admin/")) : ?>class="ici"<?php endif; ?> style="background: #ffda54;padding: 2px 0 0.4em 0.4em;border-radius: 3px 0 0 3px;">
+                                    <?php if ($_SESSION['Sgroupe'] <= UserLevel::ADMIN) : ?>
                                         <a href="/admin/index.php"><i class="fa fa-tachometer" aria-hidden="true"></i></a>
                                         <a href="/admin/gererEvenements.php"><i class="fa fa-calendar-o" aria-hidden="true"></i></a>
                                         <a href="/admin/gerer.php?element=personne"><i class="fa fa-user" aria-hidden="true"></i></a>
-
-                                <?php endif; ?>
-                                <a href="/user-logout.php">Sortir</a></li>
+                                    <?php endif; ?>
+                                    <a href="/user-logout.php">Sortir</a>
+                                </li>
                         <?php } ?>
                     </ul>
 
@@ -240,9 +238,7 @@ use Ladecadanse\UserLevel;
                     }
                     ?>
 
-                    <li class="form_recherche"><search><a href="#" id="btn_search" aria-label="Rechercher un événement"><i class="fa fa-search" aria-hidden="true"></i></a><form class="recherche" action="/event/search.php" method="get" enctype="application/x-www-form-urlencoded"><input type="search" class="mots" name="mots" size="22" maxlength="100" required placeholder="Rechercher un événement" aria-label="Rechercher un événement"><button type="submit" class="submit" name="formulaire" value=""><i class="fa fa-search" aria-hidden="true" style="color: #5C7378"></i></button><input type="text" name="name_as" value="" class="name_as"></form>
-                        </search></li>
-
+                    <li class="form_recherche"><search><a href="#" id="btn_search" aria-label="Rechercher un événement"><i class="fa fa-search" aria-hidden="true"></i></a><form class="recherche" action="/event/search.php" method="get" enctype="application/x-www-form-urlencoded"><input type="search" class="mots" name="mots" size="22" maxlength="100" required placeholder="Rechercher un événement" aria-label="Rechercher un événement"><button type="submit" class="submit" name="formulaire" value=""><i class="fa fa-search" aria-hidden="true" style="color: #5C7378"></i></button><input type="text" name="name_as" value="" class="name_as"></form></search></li>
                 </ul>
 
                 <div class="clear_mobile"></div>
