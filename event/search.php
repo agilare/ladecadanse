@@ -103,10 +103,18 @@ $sql_select = "SELECT
   l.region AS l_region,
   s.nom AS s_nom,
     (
-      MATCH(e.titre) AGAINST(? IN BOOLEAN MODE) * 5 +
-      MATCH(e.nomLieu) AGAINST(? IN BOOLEAN MODE) * 3 +
-      MATCH(l.nom) AGAINST(? IN BOOLEAN MODE) * 3 +
+      ## search exact : +disco
+      MATCH(e.titre) AGAINST(? IN BOOLEAN MODE) * 3 +
+      MATCH(e.nomLieu) AGAINST(? IN BOOLEAN MODE) * 2 +
+      MATCH(l.nom) AGAINST(? IN BOOLEAN MODE) * 2 +
+      MATCH(e.description) AGAINST(? IN BOOLEAN MODE) * 2 +
+
+      # search prefix : disco*
+      MATCH(e.titre) AGAINST(? IN BOOLEAN MODE) * 2 +
+      MATCH(e.nomLieu) AGAINST(? IN BOOLEAN MODE) * 1 +
+      MATCH(l.nom) AGAINST(? IN BOOLEAN MODE) * 1 +
       MATCH(e.description) AGAINST(? IN BOOLEAN MODE) * 1
+
     ) AS score
 
 FROM evenement e
@@ -118,8 +126,14 @@ WHERE
     e.statut NOT IN ('inactif', 'propose') AND (
     MATCH(e.titre) AGAINST(? IN BOOLEAN MODE) OR MATCH(e.nomLieu) AGAINST(? IN BOOLEAN MODE) OR MATCH(e.description) AGAINST(? IN BOOLEAN MODE) OR MATCH(l.nom) AGAINST(? IN BOOLEAN MODE) )";
 
+// v1 only search prefix
+//$sql_params = array_fill(0, 8, implode(' ', array_map(fn($t) => $t . '*', $tab_mots_sans_les_mots_vides)));
 
-$sql_params = array_fill(0, 8, implode(' ', array_map(fn($t) => $t . '*', $tab_mots_sans_les_mots_vides)));
+$search_exact = implode(' ', array_map(fn($t) => "+" . $t, $tab_mots_sans_les_mots_vides));
+$search_prefix = implode(' ', array_map(fn($t) => $t . '*', $tab_mots_sans_les_mots_vides));
+
+$sql_params = [...array_fill(0, 5, $search_exact), ...array_fill(0, 7, $search_prefix)];
+
 
 $sql_periode_operator = ">=";
 if ($get['periode'] == "ancien")
@@ -142,7 +156,7 @@ $stmt->execute($sql_params);
 $page_results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
-$sql_params_all = array_fill(0, 4, implode(' ', array_map(fn($t) => $t . '*', $tab_mots_sans_les_mots_vides)));
+$sql_params_all = array_fill(0, 4, $search_prefix);
 $sql_select_all =
     "SELECT count(*) AS nb
 FROM evenement e
