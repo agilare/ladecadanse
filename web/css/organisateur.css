@@ -91,7 +91,7 @@ ul.menu_actions_lieu li {
 
 		#fiche #pratique ul
 		{
-            margin:0;   
+            margin:0;
 			padding:2px 2px 2px 2px;
 			border-bottom: 1px dashed Gray;
 			list-style-type: none;
@@ -396,30 +396,24 @@ ul#menu_complement .rss
 
 }
 
-#prochains_evenements ul#menu_genre
-{
-	margin:0;
-    padding: 0;
-}
+    #prochains_evenements header
+    {
+        margin:1em 0
+    }
 
-	#prochains_evenements ul#menu_genre li
-	{
-		display:inline;
-		margin:0;
-		padding:0.2em 1em 0.4em 1em;
-	}
+        #prochains_evenements header h2
+        {
+            float:left;
+            width:45%;
+            font-size:1.4em;
+            margin:0;
+        }
 
-	#prochains_evenements #menu_genre  li.ici
-	{
-		background-color:#F7F7F5;
-	}
-
-	#prochains_evenements #menu_genre  li.rien
-	{
-		display:inline;
-		margin:0px 0px 2px 0px;
-		color:lightgray;
-	}
+        #prochains_evenements .pagination
+        {
+            margin:1em 0;
+            padding-left: 0;
+        }
 
 #prochains_evenements table
 {
