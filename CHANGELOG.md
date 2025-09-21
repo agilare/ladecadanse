@@ -1,18 +1,24 @@
 # Changelog
 
-## [3.9.0] - 2025-08-31
+## [3.9.0] - 2025-09-21
 
 ### Fixed
 - events : resource sql file name (adding index) for v3.8.0
 - events : in copy form limit paste to 100 dates to avoid user errors and then overload of ressources
 - events : fade out of event after action unpublish was broken
 - layout : menu link highlighted when in lieu or organisateur page
+- links : add missing class="lien_ext", including Text::linkify
+- add php commented short_open_tag = Off in .htaccess.example
+- admin : in events form, replacing of images was broken
 
 ### Added
-- lieux : table with navigation
+- lieux : table with navigation, filters
 - lieu : passed/incoming events menu, with pagination
 - lieu : texts truncated and Readmore link with read-smore JS lib
+- admin : direct pages links in header menu
+- home : nb events per day for authors only
 - more semantic html
+- assets management versioning for custom css and js files
 - tests : in search event edit link
 
 ### Changed
@@ -26,6 +32,7 @@
 - events : api with enabled flag and file moved under event/
 - lieu : page refactored, cleaned
 - lieux : pages lieux and lieu moved under lieu/
+- admin : rm obsolete left col, improve admin menu in head
 - css : refactor (remove obsolete, useless files)
 - build : php lib upgrade
 
