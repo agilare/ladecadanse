@@ -5,6 +5,7 @@ require_once("app/bootstrap.php");
 use Ladecadanse\UserLevel;
 use Ladecadanse\Organisateur;
 use Ladecadanse\Evenement;
+use Ladecadanse\Personne;
 use Ladecadanse\EvenementCollection;
 use Ladecadanse\Utils\Text;
 use Ladecadanse\HtmlShrink;
@@ -26,21 +27,18 @@ if (empty($organisateur))
     exit;
 }
 
-//if ($lieu['statut'] == 'inactif' && !((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= UserLevel::AUTHOR)))
-//{
-//    header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
-//    exit;
-//}
+if ($organisateur->getValue('statut') == 'inactif' && !((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= UserLevel::AUTHOR)))
+{
+    header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
+    exit;
+}
 
-$sql_orga_lieux = "SELECT nom, lieu.idLieu AS idLieu FROM lieu_organisateur, lieu WHERE lieu_organisateur.idLieu=lieu.idLieu AND idOrganisateur=" . (int) $get['idO'];
-$req_orga_lieux = $connector->query($sql_orga_lieux);
 
-$sql_orga_users = "SELECT pseudo, personne.idPersonne AS idPersonne FROM personne_organisateur, personne WHERE personne_organisateur.idPersonne=personne.idPersonne AND idOrganisateur=" . (int) $get['idO'];
-$req_orga_users = $connector->query($sql_orga_users);
+$orga_lieux = Organisateur::getActivesLieux($get['idO']);
+$orga_personnes = Personne::getPersonnesOfOrganisateur($get['idO']);
 
-$date_debut = date("Y-m-d", time() - 21600);
 $evenements = new EvenementCollection($connector);
-$evenements->loadOrganisateur($get['idO'], $date_debut, "");
+$evenements->loadOrganisateur($get['idO'], $glo_auj_6h, "");
 
 $extra_css = ["organisateurs_menu"];
 $page_titre = $organisateur->getValue('nom');
@@ -106,25 +104,23 @@ include("_menuorganisateurs.inc.php");
                             <a class="url lien_ext" href="<?= sanitizeForHtml($lieu_url['url']) ?>" target="_blank"><?= sanitizeForHtml($lieu_url['urlName']) ?></a>
                         </li>
                     <?php endif; ?>
-                    <?php if ($connector->getNumRows($req_orga_lieux) > 0) : ?>
+                    <?php if (count($orga_lieux) > 0) : ?>
                         <li>Lieu(x) géré(s) :
                             <ul class="salles">
-                                <?php while ($tab = $connector->fetchArray($req_orga_lieux)) : ?>
-                                   <li><a href="/lieu/lieu.php?idL=<?= (int)$tab['idLieu'] ?>"><?= sanitizeForHtml($tab['nom']) ?></a></li>
-                                <?php endwhile; ?>
+                                <?php foreach ($orga_lieux as $l) : ?>
+                                   <li><a href="/lieu/lieu.php?idL=<?= (int)$l['idLieu'] ?>"><?= sanitizeForHtml($l['nom']) ?></a></li>
+                                <?php endforeach; ?>
                             </ul>
                         </li>
                     <?php endif; ?>
-                    <?php if ($connector->getNumRows($req_orga_users) > 0) : ?>
-                        <?php if (isset($_SESSION['SidPersonne']) && ($authorization->isAuthor("organisateur", $_SESSION['SidPersonne'], $get['idO']) || $authorization->isPersonneInOrganisateur($_SESSION['SidPersonne'], $get['idO']))) : ?>
-                            <li>Utilisateurs affiliés :
-                                <ul class="salles">
-                                    <?php while ($tab = $connector->fetchArray($req)) { ?>
-                                        <li><?= sanitizeForHtml($tab['pseudo']) ?></li>
-                                    <?php } ?>
-                                </ul>
-                            </li>
-                        <?php endif; ?>
+                    <?php if (isset($_SESSION['SidPersonne']) && ($authorization->isAuthor("organisateur", $_SESSION['SidPersonne'], $get['idO']) || $authorization->isPersonneInOrganisateur($_SESSION['SidPersonne'], $get['idO'])) && count($orga_personnes) > 0) : ?>
+                        <li>Membres :
+                            <ul class="salles">
+                                <?php foreach ($orga_personnes as $op) : ?>
+                                <li><a href="/user.php?idP=<?= (int)$op['idPersonne'] ?>"><?= sanitizeForHtml($op['pseudo']) ?></a>&nbsp;<small><?= sanitizeForHtml($op['email']) ?></small></li>
+                                <?php endforeach ?>
+                            </ul>
+                        </li>
                     <?php endif; ?>
                 </ul>
             </div> <!-- pratique -->
@@ -135,7 +131,7 @@ include("_menuorganisateurs.inc.php");
                         <li class="ici"><h2>L'organisateur se présente</h2></li>
                     </ul>
                     <div class="description">
-                        <p><?= $organisateur->getValue('presentation') ?></p>
+                        <?= $organisateur->getValue('presentation') ?>
                     </div>
                 <?php endif ?>
             </div>
@@ -152,7 +148,7 @@ include("_menuorganisateurs.inc.php");
     <section id="prochains_evenements">
 
         <header>
-            <h2>Événements <?php echo '<a href="/event/rss.php?type=organisateur_evenements&amp;id='.(int)$get['idO'].'" title="Flux RSS des prochains événements"><i class="fa fa-rss fa-lg" style="font-size:0.9em;color:#f5b045"></i></a>'; ?></h2>
+            <h2>Événements <a href="/event/rss.php?type=organisateur_evenements&amp;id=<?= (int)$get['idO'] ?>" title="Flux RSS des prochains événements"><i class="fa fa-rss fa-lg" style="font-size:0.9em;color:#f5b045"></i></a></h2>
             <!-- menu tous | futurs | anciens -->
             <div class="spacer"><!-- --></div>
 
@@ -233,11 +229,11 @@ include("_menuorganisateurs.inc.php");
             }
 
         ?>
-        <tr <?php if ($date_debut == $even->getValue('dateEvenement')) { echo "class=\"ici\""; } ?> class="evenement">
+        <tr <?php if ($glo_auj_6h == $even->getValue('dateEvenement')) { echo "class=\"ici\""; } ?> class="evenement">
 
-            <td><?php echo date2nomJour($even->getValue('dateEvenement')) ?></td>
+            <td><?= date2nomJour($even->getValue('dateEvenement')) ?></td>
 
-            <td><?php echo date2jour($even->getValue('dateEvenement')) ?></td>
+            <td><?= date2jour($even->getValue('dateEvenement')) ?></td>
 
             <td class="flyer">
                 <?= Evenement::mainFigureHtml($even->getValue('flyer'), $even->getValue('image'), $even->getValue('titre'), 60) ?>
@@ -247,13 +243,13 @@ include("_menuorganisateurs.inc.php");
                 <h3>
                     <a href="/event/evenement.php?idE=<?= (int)$even->getValue('idEvenement') ?>"><?= Evenement::titreSelonStatutHtml(sanitizeForHtml($even->getValue('titre')), $even->getValue('statut')) ?></a>
                 </h3>
-                <p class="description"><?php echo $presentation; ?></p>
+                <p class="description"><?= $presentation; ?></p>
 
-                        <p class="pratique"><?php echo afficher_debut_fin($even->getValue('horaire_debut'), $even->getValue('horaire_fin'), $even->getValue('dateEvenement')) . " " . sanitizeForHtml($even->getValue('prix')) ?></p>
+                        <p class="pratique"><?= afficher_debut_fin($even->getValue('horaire_debut'), $even->getValue('horaire_fin'), $even->getValue('dateEvenement')) . " " . sanitizeForHtml($even->getValue('prix')) ?></p>
                     </td>
 
-            <td><?php echo $nom_lieu; ?></td>
-            <td><?php echo $glo_tab_genre[$even->getValue('genre')] ?></td>
+            <td><?= $nom_lieu; ?></td>
+            <td><?= $glo_tab_genre[$even->getValue('genre')] ?></td>
 
             <td class="lieu_actions_evenement">
                 <?php
@@ -270,9 +266,9 @@ include("_menuorganisateurs.inc.php");
                 ?>
                 <ul>
 
-                    <li ><a href="/event/copy.php?idE=<?= (int)$even->getValue('idEvenement') ?>" title="Copier cet événement"><?php echo $iconeCopier ?></a></li>
-                    <li ><a href="/evenement-edit.php?action=editer&amp;idE=<?php echo (int)$even->getValue('idEvenement') ?>" title="Éditer cet événement"><?php echo $iconeEditer ?></a></li>
-                    <li class=""><a href="#" id="btn_event_unpublish_<?php echo (int)$even->getValue('idEvenement'); ?>" class="btn_event_unpublish" data-id="<?php echo (int)$even->getValue('idEvenement') ?>"><?php echo $icone['depublier']; ?></a></li>
+                    <li ><a href="/event/copy.php?idE=<?= (int)$even->getValue('idEvenement') ?>" title="Copier cet événement"><?= $iconeCopier ?></a></li>
+                    <li ><a href="/evenement-edit.php?action=editer&amp;idE=<?= (int)$even->getValue('idEvenement') ?>" title="Éditer cet événement"><?= $iconeEditer ?></a></li>
+                    <li class=""><a href="#" id="btn_event_unpublish_<?= (int)$even->getValue('idEvenement'); ?>" class="btn_event_unpublish" data-id="<?= (int)$even->getValue('idEvenement') ?>"><?= $icone['depublier']; ?></a></li>
                 </ul>
                 <?php
                 }
@@ -304,7 +300,7 @@ include("_menuorganisateurs.inc.php");
     <?php include("event/_navigation_calendrier.inc.php"); ?>
 </div>
 <div id="colonne_droite" class="colonne">
-    <?php echo $aff_menulieux; ?>
+    <?= $aff_menulieux; ?>
 </div>
 
 <div class="spacer"><!-- --></div>

@@ -4,7 +4,7 @@ namespace Ladecadanse;
 
 use Ladecadanse\Element;
 use Ladecadanse\Utils\Text;
-
+use PDO;
 
 class Organisateur extends Element
 {
@@ -58,5 +58,17 @@ class Organisateur extends Element
     public static function getSystemFilePath(string $filePath): string
     {
         return self::$systemDirPath . $filePath;
+    }
+
+    public static function getActivesLieux(int $idOrga): array
+    {
+        global $connectorPdo;
+
+        $stmt = $connectorPdo->prepare("SELECT l.idLieu AS idLieu, l.nom AS nom
+            FROM lieu_organisateur lo
+            JOIN lieu l ON lo.idLieu = l.idLieu AND l.statut = 'actif'
+            WHERE lo.idOrganisateur=?");
+        $stmt->execute([$idOrga]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
