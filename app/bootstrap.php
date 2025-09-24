@@ -9,6 +9,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use Ladecadanse\Evenement;
 use Ladecadanse\Lieu;
+use Ladecadanse\Organisateur;
 use Ladecadanse\Security\Authorization;
 use Ladecadanse\Security\Sentry;
 use Ladecadanse\Utils\DbConnector;
@@ -65,6 +66,8 @@ Evenement::$systemDirPath = $rep_images_even;
 Evenement::$urlDirPath = $url_uploads_events;
 Lieu::$systemDirPath = $rep_uploads_lieux;
 Lieu::$urlDirPath = $url_uploads_lieux;
+Organisateur::$systemDirPath = $rep_uploads_organisateurs;
+Organisateur::$urlDirPath = $url_uploads_organisateurs;
 
 //$nom_page = basename((string) $_SERVER["SCRIPT_FILENAME"], '.php');
 $pathinfo = pathinfo($_SERVER['SCRIPT_NAME']);

@@ -32,14 +32,19 @@ if (empty($organisateur))
 //    exit;
 //}
 
+$sql_orga_lieux = "SELECT nom, lieu.idLieu AS idLieu FROM lieu_organisateur, lieu WHERE lieu_organisateur.idLieu=lieu.idLieu AND idOrganisateur=" . (int) $get['idO'];
+$req_orga_lieux = $connector->query($sql_orga_lieux);
+
+$sql_orga_users = "SELECT pseudo, personne.idPersonne AS idPersonne FROM personne_organisateur, personne WHERE personne_organisateur.idPersonne=personne.idPersonne AND idOrganisateur=" . (int) $get['idO'];
+$req_orga_users = $connector->query($sql_orga_users);
+
 $date_debut = date("Y-m-d", time() - 21600);
 $evenements = new EvenementCollection($connector);
 $evenements->loadOrganisateur($get['idO'], $date_debut, "");
 
 $extra_css = ["organisateurs_menu"];
 $page_titre = $organisateur->getValue('nom');
-$page_description = $organisateur->getValue('nom') . " : informations pratiques, description et prochains événements";
-
+$page_description = $organisateur->getValue('nom') . " : informations pratiques, présentation et événements";
 include("_header.inc.php");
 include("_menuorganisateurs.inc.php");
 ?>
@@ -63,9 +68,10 @@ include("_menuorganisateurs.inc.php");
         <header id="entete_contenu">
 
             <h1 class="fn org"><?= $organisateur->getHtmlValue('nom'); ?></h1>
-            <?php if ($organisateur->getValue('logo') != '') { ?>
-                <a href="<?php echo $url_uploads_organisateurs.$organisateur->getValue('logo').'?'.filemtime($rep_uploads_organisateurs.$organisateur->getValue('logo')) ?>" class="magnific-popup"><img src="<?php echo $url_uploads_organisateurs."s_".$organisateur->getValue('logo')."?".filemtime($rep_uploads_organisateurs."s_".$organisateur->getValue('logo')); ?>" alt="Logo" height="60" class="logo" /></a>
-            <?php } ?>
+
+            <?php if ($organisateur->getValue('logo') != '') : ?>
+                <a href="<?= Organisateur::getWebPath(Organisateur::getFilePath($organisateur->getValue('logo')), true) ?>" class="magnific-popup"><img src="<?= Organisateur::getWebPath(Organisateur::getFilePath($organisateur->getValue('logo'), "s_"), true) ?>" alt="Logo" class="logo" /></a>
+            <?php endif ?>
             <div class="spacer"></div>
         </header>
 
@@ -83,83 +89,55 @@ include("_menuorganisateurs.inc.php");
         <article id="fiche">
 
             <div id="medias">
-                <div id="photo">
-                    <?php
-                    $photo_principale = '';
-                    if ($organisateur->getValue('photo') != '')
-                    {
-                    ?>
-                        <a href="<?php echo $url_uploads_organisateurs.$organisateur->getValue('photo').'?'.filemtime($rep_uploads_organisateurs.$organisateur->getValue('photo')) ?>" class="magnific-popup">
-                            <img src="<?php echo $url_uploads_organisateurs."s_".$organisateur->getValue('photo')."?".filemtime($rep_uploads_organisateurs."s_".$organisateur->getValue('photo')); ?>" alt="Photo"  />
+                <figure id="photo">
+                    <?php if ($organisateur->getValue('photo') != '') : ?>
+                        <a href="<?= Organisateur::getWebPath(Organisateur::getFilePath($organisateur->getValue('photo')), true) ?>" class="magnific-popup">
+                            <img src="<?= Organisateur::getWebPath(Organisateur::getFilePath($organisateur->getValue('photo'), "s_"), true) ?>" alt="Photo" />
                         </a>
-                    <?php
-                    }
-                    ?>
-                </div>
+                    <?php endif; ?>
+                </figure>
                 <div class="spacer"><!-- --></div>
             </div>
-
-            <?php
-            $sql = "SELECT nom, lieu.idLieu AS idLieu FROM lieu_organisateur, lieu WHERE lieu_organisateur.idLieu=lieu.idLieu AND idOrganisateur=" . (int) $get['idO'];
-            $req = $connector->query($sql);
-            $lieux = '';
-            if ($connector->getNumRows($req) > 0)
-            {
-                $lieux .= '<li>Lieu(x) gérés :';
-                $lieux .= '<ul class="salles"> ';
-
-                while ($tab = $connector->fetchArray($req))
-                {
-                    $lieux .= '<li><a href="/lieu/lieu.php?idL=' . (int)$tab['idLieu'] . '">' . sanitizeForHtml($tab['nom']) . "</a></li>";
-                }
-                $lieux .= '</ul></li>';
-            }
-
-            $sql = "SELECT pseudo, personne.idPersonne AS idPersonne FROM personne_organisateur, personne WHERE personne_organisateur.idPersonne=personne.idPersonne AND idOrganisateur=" . (int) $get['idO'];
-            $req = $connector->query($sql);
-            $membres = '';
-            if ($connector->getNumRows($req) > 0)
-            {
-                if (isset($_SESSION['SidPersonne']) &&
-                        ($authorization->isAuthor("organisateur", $_SESSION['SidPersonne'], $get['idO']) || $authorization->isPersonneInOrganisateur($_SESSION['SidPersonne'], $get['idO'])
-                        )
-                    )
-                {
-                    $membres .= '<li>Membre(s) :';
-                    $membres .= '<ul class="salles"> ';
-
-                    while ($tab = $connector->fetchArray($req))
-                    {
-                        $membres .= '<li>' . sanitizeForHtml($tab['pseudo']) . '</li>';
-                    }
-                    $membres .= '</ul></li>';
-                }
-            }
-            ?>
 
             <div id="pratique">
                 <ul>
                     <?php if (!empty($organisateur->getValue('URL'))) : $lieu_url = Text::getUrlWithName($organisateur->getValue('URL')); ?>
-                        <li class="sitelieu"><a class="url lien_ext" href="<?= sanitizeForHtml($lieu_url['url']) ?>" target="_blank"><?= sanitizeForHtml($lieu_url['urlName']) ?></a>
+                        <li class="sitelieu">
+                            <a class="url lien_ext" href="<?= sanitizeForHtml($lieu_url['url']) ?>" target="_blank"><?= sanitizeForHtml($lieu_url['urlName']) ?></a>
                         </li>
                     <?php endif; ?>
-                    <?php echo $lieux; ?>
-                    <?php echo $membres; ?>
+                    <?php if ($connector->getNumRows($req_orga_lieux) > 0) : ?>
+                        <li>Lieu(x) géré(s) :
+                            <ul class="salles">
+                                <?php while ($tab = $connector->fetchArray($req_orga_lieux)) : ?>
+                                   <li><a href="/lieu/lieu.php?idL=<?= (int)$tab['idLieu'] ?>"><?= sanitizeForHtml($tab['nom']) ?></a></li>
+                                <?php endwhile; ?>
+                            </ul>
+                        </li>
+                    <?php endif; ?>
+                    <?php if ($connector->getNumRows($req_orga_users) > 0) : ?>
+                        <?php if (isset($_SESSION['SidPersonne']) && ($authorization->isAuthor("organisateur", $_SESSION['SidPersonne'], $get['idO']) || $authorization->isPersonneInOrganisateur($_SESSION['SidPersonne'], $get['idO']))) : ?>
+                            <li>Utilisateurs affiliés :
+                                <ul class="salles">
+                                    <?php while ($tab = $connector->fetchArray($req)) { ?>
+                                        <li><?= sanitizeForHtml($tab['pseudo']) ?></li>
+                                    <?php } ?>
+                                </ul>
+                            </li>
+                        <?php endif; ?>
+                    <?php endif; ?>
                 </ul>
-            </div>
-
-            <?php if ( mb_strlen($organisateur->getHtmlValue('presentation')) > 0) { ?>
-                <ul id="menu_descriptions">
-                    <li class="ici">
-                        <h3><a href="<?php echo basename(__FILE__); ?>?idO=<?php echo (int)$get['idO'] ?>">L'organisateur se présente</a></h3>
-                    </li>
-                </ul>
-                <?php } ?>
+            </div> <!-- pratique -->
 
             <div id="descriptions">
-                <div class="description">
-                    <p><?php echo $organisateur->getValue('presentation'); ?></p>
-                </div>
+                <?php if (mb_strlen($organisateur->getHtmlValue('presentation')) > 0) : ?>
+                    <ul id="menu_descriptions">
+                        <li class="ici"><h2>L'organisateur se présente</h2></li>
+                    </ul>
+                    <div class="description">
+                        <p><?= $organisateur->getValue('presentation') ?></p>
+                    </div>
+                <?php endif ?>
             </div>
 
             <div class="spacer"></div>
@@ -174,11 +152,8 @@ include("_menuorganisateurs.inc.php");
     <section id="prochains_evenements">
 
         <header>
-
             <h2>Événements <?php echo '<a href="/event/rss.php?type=organisateur_evenements&amp;id='.(int)$get['idO'].'" title="Flux RSS des prochains événements"><i class="fa fa-rss fa-lg" style="font-size:0.9em;color:#f5b045"></i></a>'; ?></h2>
-
             <!-- menu tous | futurs | anciens -->
-
             <div class="spacer"><!-- --></div>
 
         </header>

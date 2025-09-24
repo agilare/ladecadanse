@@ -8,6 +8,10 @@ use Ladecadanse\Utils\Text;
 
 class Organisateur extends Element
 {
+    static $systemDirPath;
+    static $urlDirPath;
+
+    const int RESULTS_PER_PAGE = 100;
 
     function __construct()
 	{
@@ -32,5 +36,27 @@ class Organisateur extends Element
         $result = ob_get_contents();
         ob_clean();
         return $result;
+    }
+
+    public static function getFilePath(string $fileName, string $fileNamePrefix = '', string $fileNameSuffix = ''): string
+    {
+        return $fileNamePrefix . $fileName . $fileNameSuffix;
+    }
+
+    public static function getWebPath(string $filePath, bool $isWithAntiCache = false): string
+    {
+	    $result = self::$urlDirPath . $filePath;
+        $systemFilePath = self::getSystemFilePath($filePath);
+        if ($isWithAntiCache && file_exists($systemFilePath))
+        {
+            $result .= "?" . filemtime($systemFilePath);
+        }
+
+	    return $result;
+    }
+
+    public static function getSystemFilePath(string $filePath): string
+    {
+        return self::$systemDirPath . $filePath;
     }
 }
