@@ -58,17 +58,6 @@ ul.menu_actions
     padding:0 0.2em;
 }
 
-
-.voir_lieux
-{
-	text-align:left;
-	padding:0 0px 0 0;
-	background-image:url(../web/interface/icons/building_go.png);
-	background-repeat:no-repeat;
-	background-position: 85% 50%;
-}
-
-
 .embleme {
     float:right;
 	margin: 0px 0px 0px 0px;
@@ -350,43 +339,43 @@ ul#menu_complement
 	width:94%;
 	height:1.4em;
 	font-size:1.15em;
-color:#5C7378;
+    color:#5C7378;
 	border-bottom:1px dotted #5C7378;
 		text-align:center;
 }
 
-ul#menu_complement li
-{
-		float:left;
-		display:block;
-		text-align:center;
-		padding:0 0.3em;
-}
+    ul#menu_complement li
+    {
+            float:left;
+            display:block;
+            text-align:center;
+            padding:0 0.3em;
+    }
 
-	ul#menu_complement li a
-	{
-		width:40%;
-		height:2em;
-	}
+        ul#menu_complement li a
+        {
+            width:40%;
+            height:2em;
+        }
 
-	ul#menu_complement li.ici a
-	{
-		color:#5e5e5e;
-		font-weight:800;
-		border-top:1px dotted #5C7378;
-		border-left:1px dotted #5C7378;
-		border-right:1px dotted #5C7378;
-		background:#fefefe;
-		padding:0.3em 0.5em 0.4em 0.5em;
-	}
+        ul#menu_complement li.ici a
+        {
+            color:#5e5e5e;
+            font-weight:800;
+            border-top:1px dotted #5C7378;
+            border-left:1px dotted #5C7378;
+            border-right:1px dotted #5C7378;
+            background:#fefefe;
+            padding:0.3em 0.5em 0.4em 0.5em;
+        }
 
 
-ul#menu_complement .rss
-{
-	width:5%;
-	text-align:right;
-	float:right;
-}
+    ul#menu_complement .rss
+    {
+        width:5%;
+        text-align:right;
+        float:right;
+    }
 
 
 /* Prochains evenements */

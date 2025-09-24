@@ -56,7 +56,7 @@ class Lieu extends Element
         return $fileNamePrefix . $fileName . $fileNameSuffix;
     }
 
-    public static function getFileHref(string $filePath, bool $isWithAntiCache = false): string
+    public static function getWebPath(string $filePath, bool $isWithAntiCache = false): string
     {
 	    $result = self::$urlDirPath . $filePath;
         $systemFilePath = self::getSystemFilePath($filePath);
