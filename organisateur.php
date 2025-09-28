@@ -214,10 +214,12 @@ include("_menuorganisateurs.inc.php");
             <div id="descriptions">
                 <?php if (mb_strlen($organisateur->getHtmlValue('presentation')) > 0) : ?>
                     <ul id="menu_descriptions">
-                        <li class="ici"><h2>L'organisateur se présente</h2></li>
+                        <li class="btn-description ici"><h2>L'organisateur se présente</h2></li>
                     </ul>
                     <div class="description">
+                        <div class="js-read-smore" data-read-smore-words="50">
                         <?= $organisateur->getValue('presentation') ?>
+                        </div>
                     </div>
                 <?php endif ?>
             </div>
