@@ -5,6 +5,13 @@ use Ladecadanse\Utils\Validateur;
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\Utils\Mailing;
 
+$fields_prefilled = ['sujet' => '', 'contenu' => ''];
+if (isset($_GET['pre']))
+{
+    $fields_prefilled['sujet'] = "Demande d'ajout d'organisateur";
+    $fields_prefilled['contenu'] = $tplEngine->render("contact-prefill-mail-body", []);
+}
+
 $page_titre = "Contact";
 $page_description = "Formulaire pour envoyer un email au webmaster de La décadanse";
 $extra_css = ["formulaires"];
@@ -136,12 +143,12 @@ include("_header.inc.php");
 
                 <p>
                     <label for="sujet" id="label_sujet">Sujet* </label>
-                    <input name="sujet" id="sujet" type="text" size="38" maxlength="120"  tabindex="4" value="<?= sanitizeForHtml($champs['sujet']) ?>" />
+                    <input name="sujet" id="sujet" type="text" size="38" maxlength="120"  tabindex="4" value="<?= sanitizeForHtml($champs['sujet'] . $fields_prefilled['sujet']) ?>" />
                     <?= $verif->getErreur("sujet"); ?>
                 </p>
 
                 <p>
-                    <label for="contenu" id="label_contenu">Contenu* </label><textarea name="contenu" id="message" rows="14" tabindex="5"><?= sanitizeForHtml($champs['contenu']) ?></textarea>
+                    <label for="contenu" id="label_contenu">Contenu* </label><textarea name="contenu" id="message" rows="14" tabindex="5"><?= sanitizeForHtml($champs['contenu'] . $fields_prefilled['contenu']) ?></textarea>
                     <?= $verif->getErreur("contenu"); ?>
                 </p>
 

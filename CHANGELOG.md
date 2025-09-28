@@ -5,12 +5,15 @@
 ### Fixed
 - pagination : lieu and search pages had wrong items per page because of an error in sql
 - admin : restore jquery-checkboxes in gererEvenements
+- organisateur : restore link to preselected orga in event form
 
 ### Changed
 - organisateur : page refactored, cleaned, modernized
 
 ### Added
 - organisateur : passed/incoming events menu, with pagination
+- organisateur : in event edit form link to Contactez-nous prefills contact form
+
 
 ## [3.9.0] - 2025-09-21
 
