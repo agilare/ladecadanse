@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.9.1] - Unreleased
+
+### Fixed
+- pagination : lieu and search pages had wrong items per page because of an error in sql
+- admin : restore jquery-checkboxes in gererEvenements
+
+### Changed
+- organisateur : page refactored, cleaned, modernized
+
+### Added
+- organisateur : passed/incoming events menu, with pagination
+
 ## [3.9.0] - 2025-09-21
 
 ### Fixed

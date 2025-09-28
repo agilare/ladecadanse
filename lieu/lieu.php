@@ -86,13 +86,14 @@ LEFT JOIN salle s ON e.idSalle = s.idSalle
 WHERE
     e.statut NOT IN ('inactif', 'propose') AND e.idLieu = ?";
 
-$sql_select .= " AND e.dateEvenement $sql_periode_operator '" . $glo_auj . "'";
+$sql_select .= " AND e.dateEvenement $sql_periode_operator ?";
 $sql_select .= ' ORDER BY dateEvenement ASC';
-$sql_select .= " LIMIT " . (int) (($get['page'] - 1) * $results_per_page) . ", " . (int) (($get['page'] - 1) * $results_per_page + $results_per_page);
+$sql_select .= " LIMIT " . (int) (($get['page'] - 1) * $results_per_page) . ", " . (int) ($results_per_page); // ($get['page'] - 1) * $results_per_page +
 //echo $sql_select;
 $stmt = $connectorPdo->prepare($sql_select);
-$stmt->execute([$get['idL']]);
+$stmt->execute([$get['idL'], $glo_auj]);
 $page_results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+//echo " <BR>NB RES:" . count($page_results);
 $page_results_grouped_by_yearmonth = [];
 foreach ($page_results as $event) {
     $yearmonth = date('Y-m-01', strtotime($event['e_dateEvenement']));
@@ -107,10 +108,10 @@ $sql_select_all =
     WHERE
     e.statut NOT IN ('inactif', 'propose') AND e.idLieu = ?";
 
-$sql_select_all .= " AND e.dateEvenement $sql_periode_operator '" . $glo_auj . "'";
+$sql_select_all .= " AND e.dateEvenement $sql_periode_operator ?";
 //echo $sql_select_all;
 $stmtAll = $connectorPdo->prepare($sql_select_all);
-$stmtAll->execute([$get['idL']]);
+$stmtAll->execute([$get['idL'], $glo_auj]);
 $all_results_nb = $stmtAll->fetchColumn();
 
 $page_titre = $lieu['nom']. " - ".HtmlShrink::adresseCompacteSelonContexte($lieu['loc_canton'], $lieu['loc_localite'], $lieu['quartier'], $lieu['adresse']);
@@ -379,7 +380,7 @@ include("../_header.inc.php");
         <?php
         if ($all_results_nb == 0) :  ?>
 
-            <p><?= $translator->get("lieu-events-{$get['periode']}-none") ?> <?= Lieu::prepositionToPutInSentence($lieu['determinant']) ?><strong><?= $lieu['nom'] ?></strong></p>
+            <p><?= $translator->get("lieu-events-{$get['periode']}-none") ?> <?= Lieu::prepositionToPutInSentence($lieu['determinant']) ?><strong><?= sanitizeForHtml($lieu['nom']) ?></strong></p>
 
         <?php else : ?>
 

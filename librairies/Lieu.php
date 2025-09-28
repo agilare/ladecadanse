@@ -149,7 +149,7 @@ class Lieu extends Element
 
         if (!empty($page))
         {
-            $sql_event .= " LIMIT " . (int) (($page - 1) * self::RESULTS_PER_PAGE) . ", " . (int) (($page - 1) * self::RESULTS_PER_PAGE + self::RESULTS_PER_PAGE);
+            $sql_event .= " LIMIT " . (int) (($page - 1) * self::RESULTS_PER_PAGE) . ", " . (int) self::RESULTS_PER_PAGE; // (($page - 1) * self::RESULTS_PER_PAGE +
         }
 
         //echo $sql_event;
