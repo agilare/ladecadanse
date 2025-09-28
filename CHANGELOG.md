@@ -9,6 +9,7 @@
 
 ### Changed
 - organisateur : page refactored, cleaned, modernized
+- home : update Radio Vostok partner logo
 
 ### Added
 - organisateur : passed/incoming events menu, with pagination
