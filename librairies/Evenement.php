@@ -233,6 +233,61 @@ class Evenement extends Element
         return $result;
     }
 
+    public static function eventTableRowHtml(array $tab_even, array $tab_events_today_in_region_orgas = []): string
+    {
+        $even_lieu = self::getLieu($tab_even);
+
+        ob_start();
+        ?>
+
+        <article id="event-<?= (int) $tab_even['e_idEvenement'] ?>" class="evenement-short">
+
+            <header class="titre">
+                <h3 class="left"><a href="/event/evenement.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>"><?= self::titreSelonStatutHtml(sanitizeForHtml($tab_even['e_titre']), $tab_even['e_statut']) ?></a></h3>
+                <span class="right"><?= Lieu::getLinkNameHtml($even_lieu['nom'], $even_lieu['idLieu'], $even_lieu['salle']) ?></span>
+                <div class="spacer"></div>
+            </header>
+
+            <figure class="flyer"><?= self::mainFigureHtml($tab_even['e_flyer'], $tab_even['e_image'], $tab_even['e_titre'], 100) ?></figure>
+
+            <div class="description">
+                <p>
+                <?= Text::texteHtmlReduit(Text::wikiToHtml(sanitizeForHtml($tab_even['e_description'])), Text::trouveMaxChar($tab_even['e_description'], 60, 6), ' <a class="continuer" href="/event/evenement.php?idE=' . (int) $tab_even['e_idEvenement'] . '"> Lire la suite</a>'); ?>
+                </p>
+                <?php if (!empty($tab_events_today_in_region_orgas[$tab_even['e_idEvenement']])): ?>
+                    <?= Organisateur::getListLinkedHtml($tab_events_today_in_region_orgas[$tab_even['e_idEvenement']]) ?>
+                <?php endif; ?>
+            </div>
+
+            <div class="spacer"></div>
+
+            <div class="pratique">
+                <span class="left"><?= sanitizeForHtml(HtmlShrink::adresseCompacteSelonContexte($even_lieu['region'], $even_lieu['localite'], $even_lieu['quartier'], $even_lieu['adresse'])); ?></span>
+                <span class="right">
+                    <?php
+                    $horaire_complet = afficher_debut_fin($tab_even['e_horaire_debut'], $tab_even['e_horaire_fin'], $tab_even['e_dateEvenement']);
+                    if (!empty($tab_even['e_horaire_complement']))
+                    {
+                        $horaire_complet .= " ".$tab_even['e_horaire_complement'];
+                    }
+                    echo sanitizeForHtml($horaire_complet);
+                    if (!empty($horaire_complet) && !empty($tab_even['e_prix']))
+                    {
+                        echo ", ";
+                    }
+                    echo sanitizeForHtml($tab_even['e_prix']);
+                    ?>
+                </span>
+                <div class="spacer"></div>
+            </div> <!-- fin pratique -->
+
+
+        <?php
+        $result = ob_get_contents();
+        ob_clean();
+        return $result;
+    }
+
     /**
      * id
      * horaire_debut, horaire_fin

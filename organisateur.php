@@ -5,10 +5,12 @@ require_once("app/bootstrap.php");
 use Ladecadanse\UserLevel;
 use Ladecadanse\Organisateur;
 use Ladecadanse\Evenement;
+use Ladecadanse\Lieu;
 use Ladecadanse\Personne;
-use Ladecadanse\EvenementCollection;
 use Ladecadanse\Utils\Text;
 use Ladecadanse\HtmlShrink;
+use Ladecadanse\Utils\Utils;
+use Ladecadanse\Utils\Validateur;
 
 if (empty($_GET['idO']) || !is_numeric($_GET['idO']))
 {
@@ -33,12 +35,96 @@ if ($organisateur->getValue('statut') == 'inactif' && !((isset($_SESSION['Sgroup
     exit;
 }
 
+$tab_menu_periodes = ["ancien" => "Passés", "futur" => "Prochains"];
+$get['periode'] = "futur";
+$sql_periode_operator = ">=";
+if (!empty($_GET['periode']) && Validateur::validateUrlQueryValue($_GET['periode'], "enum", 1, array_keys($tab_menu_periodes)))
+{
+    $get['periode'] = $_GET['periode'];
+    if ($get['periode'] == "ancien")
+    {
+        $sql_periode_operator = "<";
+    }
+}
+
+$get['page'] = !empty($_GET['page']) ? Validateur::validateUrlQueryValue($_GET['page'], "int", 1) : 1;
+$results_per_page = 50;
 
 $orga_lieux = Organisateur::getActivesLieux($get['idO']);
 $orga_personnes = Personne::getPersonnesOfOrganisateur($get['idO']);
 
-$evenements = new EvenementCollection($connector);
-$evenements->loadOrganisateur($get['idO'], $glo_auj_6h, "");
+//$evenements = new EvenementCollection($connector);
+//$evenements->loadOrganisateur($get['idO'], $glo_auj_6h, "");
+
+$sql_select = "SELECT
+    e.genre AS e_genre,
+    e.idEvenement AS e_idEvenement,
+    e.titre AS e_titre,
+    e.statut AS e_statut,
+    e.idPersonne AS e_idPersonne,
+    e.dateEvenement AS e_dateEvenement,
+    e.ref AS e_ref,
+    e.flyer AS e_flyer,
+    e.image AS e_image,
+    e.description AS e_description,
+    e.horaire_debut AS e_horaire_debut,
+    e.horaire_fin AS e_horaire_fin,
+    e.horaire_complement AS e_horaire_complement,
+    e.prix AS e_prix,
+    e.prelocations AS e_prelocations,
+    e.idLieu AS e_idLieu,
+    e.idSalle AS e_idSalle,
+    e.nomLieu AS e_nomLieu,
+    e.adresse AS e_adresse,
+    e.quartier AS e_quartier,
+    loc.localite AS e_localite,
+    e.region AS e_region,
+    e.urlLieu AS e_urlLieu,
+
+    l.nom AS l_nom,
+    l.adresse AS l_adresse,
+    l.quartier AS l_quartier,
+    l.URL AS l_URL    ,
+    lloc.localite AS lloc_localite,
+    l.region AS l_region,
+
+    s.nom AS s_nom
+
+    FROM evenement e
+    JOIN evenement_organisateur eo ON e.idEvenement = eo.idEvenement
+    JOIN localite loc ON e.localite_id = loc.id
+    LEFT JOIN lieu l ON e.idLieu = l.idLieu
+    LEFT JOIN localite lloc ON l.localite_id = lloc.id
+    LEFT JOIN salle s ON e.idSalle = s.idSalle
+    WHERE
+    e.statut NOT IN ('inactif', 'propose') AND eo.idOrganisateur = ?";
+
+$sql_select .= " AND e.dateEvenement $sql_periode_operator ?";
+$sql_select .= ' ORDER BY dateEvenement ASC';
+$sql_select .= " LIMIT " . (int) (($get['page'] - 1) * $results_per_page) . ", " . (int) ($results_per_page); // ($get['page'] - 1) * $results_per_page +
+//echo $sql_select;
+$stmt = $connectorPdo->prepare($sql_select);
+$stmt->execute([$get['idO'], $glo_auj]);
+$page_results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+//echo " <BR>NB RES:" . count($page_results);
+$page_results_grouped_by_yearmonth = [];
+foreach ($page_results as $event) {
+    $yearmonth = date('Y-m-01', strtotime($event['e_dateEvenement']));
+    $page_results_grouped_by_yearmonth[$yearmonth][] = $event;
+}
+
+//dump($page_results_grouped_by_yearmonth);
+
+$sql_select_all =
+    "SELECT count(*) AS nb
+    FROM evenement e
+    JOIN evenement_organisateur eo ON e.idEvenement = eo.idEvenement
+    WHERE
+    e.statut NOT IN ('inactif', 'propose') AND eo.idOrganisateur = ? AND e.dateEvenement $sql_periode_operator ?";
+// echo $sql_select_all;
+$stmtAll = $connectorPdo->prepare($sql_select_all);
+$stmtAll->execute([$get['idO'], $glo_auj]);
+$all_results_nb = $stmtAll->fetchColumn();
 
 $extra_css = ["organisateurs_menu"];
 $page_titre = $organisateur->getValue('nom');
@@ -149,150 +235,85 @@ include("_menuorganisateurs.inc.php");
 
         <header>
             <h2>Événements <a href="/event/rss.php?type=organisateur_evenements&amp;id=<?= (int)$get['idO'] ?>" title="Flux RSS des prochains événements"><i class="fa fa-rss fa-lg" style="font-size:0.9em;color:#f5b045"></i></a></h2>
-            <!-- menu tous | futurs | anciens -->
+            <ul id="menu_periode" class="entete_contenu_navigation">
+                <?php foreach ($tab_menu_periodes as $k => $label) : ?>
+                    <li class="<?= $k ?><?php if ($get['periode'] == $k) : ?> ici<?php endif; ?>">
+                        <a href="?<?= Utils::urlQueryArrayToString($get, ['periode', 'page']) ?>&amp;periode=<?= $k ?>"><?= $label ?></a>
+                    </li>
+                <?php endforeach; ?>
+                <div class="spacer"></div>
+            </ul>
             <div class="spacer"><!-- --></div>
-
         </header>
 
-        <?php
-        if ($evenements->getNbElements() == 0)
-        {
-            echo "<p>Pas d'événement actuellement annoncé pour <strong>".$organisateur->getHtmlValue('nom')."</strong></p>";
-        }
-        else
-        {
-        ?>
+        <?php if ($all_results_nb == 0) : ?>
 
-        <table>
+            <p><?= $translator->get("lieu-events-{$get['periode']}-none") ?> pour<strong><?= $organisateur->getHtmlValue('nom') ?></strong></p>
 
-        <?php
+        <?php else : ?>
 
-        $nbMois = 0;
-        $moisCourant = 0;
-        foreach ($evenements->getElements() as $id => $even)
-        {
-            $presentation = '';
-            if ($even->getValue('description') != '')
-            {
-                $maxChar = Text::trouveMaxChar($even->getValue('description'), 50, 2);
+            <?= HtmlShrink::getPaginationString($all_results_nb, $get['page'], $results_per_page, 1, basename(__FILE__), "?" . Utils::urlQueryArrayToString($get, "page") . "&amp;page=") ?>
 
-                if (mb_strlen((string) $even->getValue('description')) > $maxChar)
-                {
-                    //$continuer = "<span class=\"continuer\"><a href=\"/event/evenement.php?idE=".$even->getValue('idEvenement')."\" title=\"Voir la fiche complète de l'événement\"> Lire la suite</a></span>";
-                    $presentation = Text::texteHtmlReduit(Text::wikiToHtml(sanitizeForHtml($even->getValue('description'))), $maxChar);
-                }
-                else
-                {
-                    $presentation = Text::wikiToHtml(sanitizeForHtml($even->getValue('description')));
-                }
-            }
-            if ($nbMois == 0)
-            {
-                $moisCourant = date2mois($even->getValue('dateEvenement'));
-                echo "<tr><td colspan=\"3\" class=\"mois\">".ucfirst((string) mois2fr($moisCourant))."</td></tr>";
-            }
+            <table>
 
-            if (date2mois($even->getValue('dateEvenement')) != $moisCourant)
-            {
-                echo "<tr><td colspan=\"3\" class=\"mois\">".ucfirst((string) mois2fr(date2mois($even->getValue('dateEvenement'))));
-
-                if (date2mois($even->getValue('dateEvenement')) == "01")
-                {
-                    echo " ".date2annee($even->getValue('dateEvenement'));
-                }
-
-                echo "</td></tr>";
-            }
-
-            $salle = '';
-            $sql_salle = "SELECT nom FROM salle WHERE idSalle=" . (int) $even->getValue('idSalle');
-
-            $req_salle = $connector->query($sql_salle);
-
-            if ($connector->getNumRows($req_salle) > 0)
-            {
-                $tab_salle = $connector->fetchArray($req_salle);
-                $salle = $tab_salle['nom'];
-            }
-
-            $nom_lieu = '';
-            if ($even->getValue('idLieu') != 0)
-            {
-                $tab_lieu = $connector->fetchArray(
-                $connector->query("SELECT nom FROM lieu WHERE idlieu='" . (int) $even->getValue('idLieu') . "'"));
-
-                $nom_lieu = "<a href=\"/lieu/lieu.php?idL=" . (int)$even->getValue('idLieu') . "\" title=\"Voir la fiche du lieu : " . sanitizeForHtml($tab_lieu['nom']) . "\" >" . sanitizeForHtml($tab_lieu['nom']) . "</a>";
-            }
-            else
-            {
-                $nom_lieu = sanitizeForHtml($even->getValue('nomLieu'));
-            }
-
-        ?>
-        <tr <?php if ($glo_auj_6h == $even->getValue('dateEvenement')) { echo "class=\"ici\""; } ?> class="evenement">
-
-            <td><?= date2nomJour($even->getValue('dateEvenement')) ?></td>
-
-            <td><?= date2jour($even->getValue('dateEvenement')) ?></td>
-
-            <td class="flyer">
-                <?= Evenement::mainFigureHtml($even->getValue('flyer'), $even->getValue('image'), $even->getValue('titre'), 60) ?>
-            </td>
-
-            <td>
-                <h3>
-                    <a href="/event/evenement.php?idE=<?= (int)$even->getValue('idEvenement') ?>"><?= Evenement::titreSelonStatutHtml(sanitizeForHtml($even->getValue('titre')), $even->getValue('statut')) ?></a>
-                </h3>
-                <p class="description"><?= $presentation; ?></p>
-
-                        <p class="pratique"><?= afficher_debut_fin($even->getValue('horaire_debut'), $even->getValue('horaire_fin'), $even->getValue('dateEvenement')) . " " . sanitizeForHtml($even->getValue('prix')) ?></p>
+            <?php foreach ($page_results_grouped_by_yearmonth as $yearmonth => $tab_even) : ?>
+                <tr>
+                    <td colspan="5" class="mois"><?= ucfirst((string) mois2fr(date2mois($yearmonth))) ?>
+                    <?php if (date2annee($yearmonth) != date('Y')) : echo date2annee($yearmonth); endif; ?>
                     </td>
+                </tr>
+                <?php foreach ($tab_even as $e) :
+                    $even_lieu = Evenement::getLieu($e);
+                    $vcard_starttime = '';
+                    if (mb_substr((string) $e['e_horaire_debut'], 11, 5) != '06:00')
+                        $vcard_starttime = "T".mb_substr((string)$e['e_horaire_debut'], 11, 5).":00";
+                            ?>
+                    <tr class="<?php if ($glo_auj_6h == $e['e_dateEvenement']) { echo "ici"; } ?> vevent evenement">
+                        <td class="dtstart">
+                            <?= date2nomJour($e['e_dateEvenement']); ?>&nbsp;<?= date2jour($e['e_dateEvenement']); ?><span class="value-title" title="<?= $e['e_dateEvenement'].$vcard_starttime; ?>"></span><br>
+                            <span class="pratique"><?= afficher_debut_fin($e['e_horaire_debut'], $e['e_horaire_fin'], $e['e_dateEvenement']) ?></span>
+                        </td>
+                        <td class="flyer photo">
+                            <?= Evenement::mainFigureHtml($e['e_flyer'], $e['e_image'], $e['e_titre'], 60) ?>
+                        </td>
+                        <td>
+                            <a class="url" href="/event/evenement.php?idE=<?= (int)$e['e_idEvenement' ]?>"><strong class="summary"><?= Evenement::titreSelonStatutHtml(sanitizeForHtml($e['e_titre']), $e['e_statut']) ?></strong></a><br>
+                            <span class="category"><?= $glo_tab_genre[$e['e_genre']]; ?></span>
+                        </td>
+                        <td class="location">
+                            <?= Lieu::getLinkNameHtml($even_lieu['nom'], $even_lieu['idLieu'], $even_lieu['salle']) ?>
+                            <div class="location">
+                                <span class="value-title" title="<?= sanitizeForHtml($e['s_nom']); ?>"></span>
+                            </div>
+                        </td>
+                        <?php if ($authorization->isPersonneAllowedToEditEvenement($_SESSION, $tab_even)) : ?>
+                        <td class="lieu_actions_evenement">
+                            <ul>
+                                <li><a href="/event/copy.php?idE=<?= (int) $e['e_idEvenement'] ?>" title="Copier cet événement"><?= $iconeCopier ?></a></li>
+                                <li><a href="/evenement-edit.php?action=editer&amp;idE=<?= (int) $e['e_idEvenement'] ?>" title="Modifier cet événement"><?= $iconeEditer ?></a></li>
+                                <li class=""><a href="#" id="btn_event_unpublish_<?= (int) $e['e_idEvenement'] ?>" class="btn_event_unpublish" data-id="<?= (int) $e['e_idEvenement'] ?>"><?= $icone['depublier']; ?></a></li>
+                            </ul>
 
-            <td><?= $nom_lieu; ?></td>
-            <td><?= $glo_tab_genre[$even->getValue('genre')] ?></td>
+                        </td>
+                        <?php endif; ?>
+                    </tr>
 
-            <td class="lieu_actions_evenement">
-                <?php
-                if (
-                (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= 6
-                || $_SESSION['SidPersonne'] == $even->getValue('idPersonne'))
-                )
-                ||  (isset($_SESSION['Saffiliation_lieu']) && !empty($get['idL']) && $get['idL'] == $_SESSION['Saffiliation_lieu'])
-                ||  (isset($_SESSION['SidPersonne']) && $authorization->isPersonneInOrganisateur($_SESSION['SidPersonne'], $get['idO']))
-                || (isset($_SESSION['SidPersonne']) && $authorization->isPersonneInEvenementByOrganisateur($_SESSION['SidPersonne'], $id))
-                || (isset($_SESSION['SidPersonne']) && $even->getValue('idLieu') != 0 && $authorization->isPersonneInLieuByOrganisateur($_SESSION['SidPersonne'], $even->getValue('idLieu')))
-                )
-                {
-                ?>
-                <ul>
+                <?php endforeach; ?>
 
-                    <li ><a href="/event/copy.php?idE=<?= (int)$even->getValue('idEvenement') ?>" title="Copier cet événement"><?= $iconeCopier ?></a></li>
-                    <li ><a href="/evenement-edit.php?action=editer&amp;idE=<?= (int)$even->getValue('idEvenement') ?>" title="Éditer cet événement"><?= $iconeEditer ?></a></li>
-                    <li class=""><a href="#" id="btn_event_unpublish_<?= (int)$even->getValue('idEvenement'); ?>" class="btn_event_unpublish" data-id="<?= (int)$even->getValue('idEvenement') ?>"><?= $icone['depublier']; ?></a></li>
-                </ul>
-                <?php
-                }
-                ?>
-            </td>
-        </tr>
+            <?php endforeach; ?>
 
-        <?php
+            </table>
 
-            $moisCourant = date2mois($even->getValue('dateEvenement'));
-            $nbMois++;
-        }
-        ?>
+            <?= HtmlShrink::getPaginationString($all_results_nb, $get['page'], $results_per_page, 1, basename(__FILE__), "?" . Utils::urlQueryArrayToString($get, "page") . "&amp;page=") ?>
 
-        </table>
-
-        <?php } // nb even ?>
+        <?php endif; // nb even ?>
 
         <?php if (!empty($organisateur->getValue('URL'))) :
             $url_with_name = Text::getUrlWithName($organisateur->getValue('URL'))     ?>
             <p><br>Pour des informations complémentaires veuillez consulter <a href="<?= $url_with_name['url'] ?>" target='_blank'><?= sanitizeForHtml($url_with_name['urlName']) ?></a></p>
         <?php endif; ?>
 
-    </section> <!-- evenements -->
+    </section> <!-- #prochains_evenements -->
 
 </main>
 
