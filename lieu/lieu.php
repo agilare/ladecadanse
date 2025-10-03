@@ -386,48 +386,17 @@ include("../_header.inc.php");
 
             <?= HtmlShrink::getPaginationString($all_results_nb, $get['page'], $results_per_page, 1, basename(__FILE__), "?" . Utils::urlQueryArrayToString($get, "page") . "&amp;page=") ?>
             <table>
-            <?php foreach ($page_results_grouped_by_yearmonth as $yearmonth => $tab_even) : ?>
-                <tr>
-                    <td colspan="5" class="mois"><?= ucfirst((string) mois2fr(date2mois($yearmonth))) ?>
-                    <?php if (date2annee($yearmonth) != date('Y')) : echo date2annee($yearmonth); endif; ?>
-                    </td>
-                </tr>
-                <?php foreach ($tab_even as $e) :
-                    $vcard_starttime = '';
-                    if (mb_substr((string) $e['e_horaire_debut'], 11, 5) != '06:00')
-                        $vcard_starttime = "T".mb_substr((string)$e['e_horaire_debut'], 11, 5).":00";
-                            ?>
-                    <tr class="<?php if ($glo_auj_6h == $e['e_dateEvenement']) { echo "ici"; } ?> vevent evenement">
-                        <td class="dtstart">
-                            <?= date2nomJour($e['e_dateEvenement']); ?>&nbsp;<?= date2jour($e['e_dateEvenement']); ?><span class="value-title" title="<?= $e['e_dateEvenement'].$vcard_starttime; ?>"></span><br>
-                            <span class="pratique"><?= afficher_debut_fin($e['e_horaire_debut'], $e['e_horaire_fin'], $e['e_dateEvenement']) ?></span>
+                <?php foreach ($page_results_grouped_by_yearmonth as $yearmonth => $tab_month_events) : ?>
+                    <tr>
+                        <td colspan="5" class="mois"><?= ucfirst((string) mois2fr(date2mois($yearmonth))) ?><?php if (date2annee($yearmonth) != date('Y')) : echo "&nbsp;".date2annee($yearmonth); endif; ?>
                         </td>
-                        <td class="flyer photo">
-                            <?= Evenement::mainFigureHtml($e['e_flyer'], $e['e_image'], $e['e_titre'], 60) ?>
-                        </td>
-                        <td>
-                            <a class="url" href="/event/evenement.php?idE=<?= (int)$e['e_idEvenement' ]?>"><strong class="summary"><?= Evenement::titreSelonStatutHtml(sanitizeForHtml($e['e_titre']), $e['e_statut']) ?></strong></a><br>
-                            <span class="category"><?= $glo_tab_genre[$e['e_genre']]; ?></span>
-                        </td>
-                        <td class="location">
-                            <?= sanitizeForHtml($e['s_nom']) ?>
-                            <div class="location">
-                                <span class="value-title" title="<?= sanitizeForHtml($e['s_nom']); ?>"></span>
-                            </div>
-                        </td>
-                        <?php if ($authorization->isPersonneAllowedToEditEvenement($_SESSION, $tab_even)) : ?>
-                        <td class="lieu_actions_evenement">
-                            <ul>
-                                <li><a href="/event/copy.php?idE=<?= (int) $e['e_idEvenement'] ?>" title="Copier cet événement"><?= $iconeCopier ?></a></li>
-                                <li><a href="/evenement-edit.php?action=editer&amp;idE=<?= (int) $e['e_idEvenement'] ?>" title="Modifier cet événement"><?= $iconeEditer ?></a></li>
-                                <li class=""><a href="#" id="btn_event_unpublish_<?= (int) $e['e_idEvenement'] ?>" class="btn_event_unpublish" data-id="<?= (int) $e['e_idEvenement'] ?>"><?= $icone['depublier']; ?></a></li>
-                            </ul>
-
-                        </td>
-                        <?php endif; ?>
                     </tr>
+                    <?php
+                    foreach ($tab_month_events as $tab_event) :
+                        echo Evenement::eventTableRowHtml($tab_event, $authorization, isWithLieu: false);
+                    endforeach;
+                    ?>
                 <?php endforeach; ?>
-            <?php endforeach; ?>
             </table>
 
             <?= HtmlShrink::getPaginationString($all_results_nb, $get['page'], $results_per_page, 1, basename(__FILE__), "?" . Utils::urlQueryArrayToString($get, "page") . "&amp;page=") ?>

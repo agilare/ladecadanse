@@ -14,6 +14,7 @@
 ### Added
 - organisateur : passed/incoming events menu, with pagination
 - organisateur : in event edit form link to Contactez-nous prefills contact form
+- events : method to display an event in a html table
 
 
 ## [3.9.0] - 2025-09-21

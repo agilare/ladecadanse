@@ -7,6 +7,7 @@ use Ladecadanse\Element;
 use Ladecadanse\Utils\Text;
 use Ladecadanse\Lieu;
 use Ladecadanse\Organisateur;
+use Ladecadanse\Security\Authorization;
 
 class Evenement extends Element
 {
@@ -233,54 +234,58 @@ class Evenement extends Element
         return $result;
     }
 
-    public static function eventTableRowHtml(array $tab_even, array $tab_events_today_in_region_orgas = []): string
+    public static function eventTableRowHtml(array $tab_even, Authorization $authorization, bool $isWithLieu): string
     {
-        $even_lieu = self::getLieu($tab_even);
+        // TODO: mv $glo_tab_genre to a class constant; $icone... to... ?
+        global $glo_tab_genre, $glo_auj_6h, $iconeCopier, $iconeEditer, $icone;
+
+        $vcard_starttime = '';
+        if (mb_substr((string) $tab_even['e_horaire_debut'], 11, 5) != '06:00')
+            $vcard_starttime = "T".mb_substr((string)$tab_even['e_horaire_debut'], 11, 5).":00";
+
+        // depending on rendering in lieu or organisateur page
+        $location = sanitizeForHtml($tab_even['s_nom']);
+        if ($isWithLieu)
+        {
+            $even_lieu = self::getLieu($tab_even);
+            $location = Lieu::getLinkNameHtml($even_lieu['nom'], $even_lieu['idLieu'], $even_lieu['salle']);
+        }
 
         ob_start();
         ?>
 
-        <article id="event-<?= (int) $tab_even['e_idEvenement'] ?>" class="evenement-short">
+        <tr class="<?php if ($glo_auj_6h == $tab_even['e_dateEvenement']) { echo "ici"; } ?> vevent evenement">
 
-            <header class="titre">
-                <h3 class="left"><a href="/event/evenement.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>"><?= self::titreSelonStatutHtml(sanitizeForHtml($tab_even['e_titre']), $tab_even['e_statut']) ?></a></h3>
-                <span class="right"><?= Lieu::getLinkNameHtml($even_lieu['nom'], $even_lieu['idLieu'], $even_lieu['salle']) ?></span>
-                <div class="spacer"></div>
-            </header>
+            <td class="dtstart">
+                <?= date2nomJour($tab_even['e_dateEvenement']); ?>&nbsp;<?= date2jour($tab_even['e_dateEvenement']); ?><span class="value-title" title="<?= $tab_even['e_dateEvenement'].$vcard_starttime; ?>"></span><br>
+                <span class="pratique"><?= afficher_debut_fin($tab_even['e_horaire_debut'], $tab_even['e_horaire_fin'], $tab_even['e_dateEvenement']) ?></span>
+            </td>
+            <td class="flyer photo">
+                <?= self::mainFigureHtml($tab_even['e_flyer'], $tab_even['e_image'], $tab_even['e_titre'], 60) ?>
+            </td>
+            <td>
+                <a class="url" href="/event/evenement.php?idE=<?= (int)$tab_even['e_idEvenement']?>">
+                    <strong class="summary"><?= self::titreSelonStatutHtml(sanitizeForHtml($tab_even['e_titre']), $tab_even['e_statut']) ?></strong>
+                </a><br>
+                <span class="category"><?= $glo_tab_genre[$tab_even['e_genre']]; ?></span>
+            </td>
+            <td class="location">
+                <?= $location ?>
+                <div class="location">
+                    <span class="value-title" title="<?= sanitizeForHtml($even_lieu['nom']); ?>"></span>
+                </div>
+            </td>
+            <?php if ($authorization->isPersonneAllowedToEditEvenement($_SESSION, $tab_even)) : ?>
+            <td class="lieu_actions_evenement">
+                <ul>
+                    <li><a href="/event/copy.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>" title="Copier cet événement"><?= $iconeCopier ?></a></li>
+                    <li><a href="/evenement-edit.php?action=editer&amp;idE=<?= (int) $tab_even['e_idEvenement'] ?>" title="Modifier cet événement"><?= $iconeEditer ?></a></li>
+                    <li class=""><a href="#" id="btn_event_unpublish_<?= (int) $tab_even['e_idEvenement'] ?>" class="btn_event_unpublish" data-id="<?= (int) $tab_even['e_idEvenement'] ?>"><?= $icone['depublier']; ?></a></li>
+                </ul>
 
-            <figure class="flyer"><?= self::mainFigureHtml($tab_even['e_flyer'], $tab_even['e_image'], $tab_even['e_titre'], 100) ?></figure>
-
-            <div class="description">
-                <p>
-                <?= Text::texteHtmlReduit(Text::wikiToHtml(sanitizeForHtml($tab_even['e_description'])), Text::trouveMaxChar($tab_even['e_description'], 60, 6), ' <a class="continuer" href="/event/evenement.php?idE=' . (int) $tab_even['e_idEvenement'] . '"> Lire la suite</a>'); ?>
-                </p>
-                <?php if (!empty($tab_events_today_in_region_orgas[$tab_even['e_idEvenement']])): ?>
-                    <?= Organisateur::getListLinkedHtml($tab_events_today_in_region_orgas[$tab_even['e_idEvenement']]) ?>
-                <?php endif; ?>
-            </div>
-
-            <div class="spacer"></div>
-
-            <div class="pratique">
-                <span class="left"><?= sanitizeForHtml(HtmlShrink::adresseCompacteSelonContexte($even_lieu['region'], $even_lieu['localite'], $even_lieu['quartier'], $even_lieu['adresse'])); ?></span>
-                <span class="right">
-                    <?php
-                    $horaire_complet = afficher_debut_fin($tab_even['e_horaire_debut'], $tab_even['e_horaire_fin'], $tab_even['e_dateEvenement']);
-                    if (!empty($tab_even['e_horaire_complement']))
-                    {
-                        $horaire_complet .= " ".$tab_even['e_horaire_complement'];
-                    }
-                    echo sanitizeForHtml($horaire_complet);
-                    if (!empty($horaire_complet) && !empty($tab_even['e_prix']))
-                    {
-                        echo ", ";
-                    }
-                    echo sanitizeForHtml($tab_even['e_prix']);
-                    ?>
-                </span>
-                <div class="spacer"></div>
-            </div> <!-- fin pratique -->
-
+            </td>
+            <?php endif; ?>
+        </tr>
 
         <?php
         $result = ob_get_contents();
