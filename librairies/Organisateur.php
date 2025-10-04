@@ -5,9 +5,12 @@ namespace Ladecadanse;
 use Ladecadanse\Element;
 use Ladecadanse\Utils\Text;
 use PDO;
+use Ladecadanse\HasDocuments;
 
 class Organisateur extends Element
 {
+    use HasDocuments;
+
     static $systemDirPath;
     static $urlDirPath;
 
@@ -38,11 +41,6 @@ class Organisateur extends Element
         return $result;
     }
 
-    public static function getFilePath(string $fileName, string $fileNamePrefix = '', string $fileNameSuffix = ''): string
-    {
-        return $fileNamePrefix . $fileName . $fileNameSuffix;
-    }
-
     public static function getWebPath(string $filePath, bool $isWithAntiCache = false): string
     {
 	    $result = self::$urlDirPath . $filePath;
@@ -53,11 +51,6 @@ class Organisateur extends Element
         }
 
 	    return $result;
-    }
-
-    public static function getSystemFilePath(string $filePath): string
-    {
-        return self::$systemDirPath . $filePath;
     }
 
     public static function getActivesLieux(int $idOrga): array

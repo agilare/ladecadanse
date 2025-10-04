@@ -4,9 +4,12 @@ namespace Ladecadanse;
 
 use Ladecadanse\Element;
 use PDO;
+use Ladecadanse\HasDocuments;
 
 class Lieu extends Element
 {
+    use HasDocuments;
+
     static $systemDirPath;
     static $urlDirPath;
 
@@ -51,10 +54,6 @@ class Lieu extends Element
         return $result;
     }
 
-    public static function getFilePath(string $fileName, string $fileNamePrefix = '', string $fileNameSuffix = ''): string
-    {
-        return $fileNamePrefix . $fileName . $fileNameSuffix;
-    }
 
     public static function getWebPath(string $filePath, bool $isWithAntiCache = false): string
     {
@@ -66,11 +65,6 @@ class Lieu extends Element
         }
 
 	    return $result;
-    }
-
-    public static function getSystemFilePath(string $filePath): string
-    {
-        return self::$systemDirPath . $filePath;
     }
 
     public static function getLieu(int $idLieu): array

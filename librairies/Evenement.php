@@ -8,9 +8,12 @@ use Ladecadanse\Utils\Text;
 use Ladecadanse\Lieu;
 use Ladecadanse\Organisateur;
 use Ladecadanse\Security\Authorization;
+use Ladecadanse\HasDocuments;
 
 class Evenement extends Element
 {
+    use HasDocuments;
+
     static $systemDirPath;
     static $urlDirPath;
     static $statuts_evenement = ['propose' => 'Proposé', 'actif' => '', 'complet' => 'Complet', 'annule' => 'Annulé', 'inactif' => 'Dépublié'];
@@ -356,8 +359,4 @@ class Evenement extends Element
 	    return $result;
     }
 
-    public static function getSystemFilePath(string $filePath): string
-    {
-        return self::$systemDirPath . $filePath;
-    }
 }
