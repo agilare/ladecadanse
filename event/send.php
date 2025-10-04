@@ -187,7 +187,7 @@ include("../_header.inc.php");
 
     <?php if ($verif->nbErreurs() > 0) { HtmlShrink::msgErreur("Il y a " . $verif->nbErreurs() . " erreur(s)."); } ?>
 
-    <?= Evenement::eventShortArticleHtml($tab_even); ?>
+    <?= Ladecadanse\EvenementRenderer::eventShortArticleHtml($tab_even); ?>
     </article>
 
     <form method="post" id="ajouter_editer" class="js-submit-freeze-wait" action="<?= basename(__FILE__) . "?action=".$get['action']."&idE=" . (int) $get['idE']; ?>">

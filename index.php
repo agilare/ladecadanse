@@ -272,7 +272,7 @@ include("_header.inc.php");
                             <p class="rappel_date"><?= ucfirst($day_label) ?>, <?= $glo_tab_genre[$genre]; ?></p>
                         <?php endif; ?>
 
-                        <?= Evenement::eventShortArticleHtml($tab_even, $tab_events_today_in_region_orgas); ?>
+                        <?= Ladecadanse\EvenementRenderer::eventShortArticleHtml($tab_even, $tab_events_today_in_region_orgas); ?>
 
                             <footer class="edition">
 
@@ -373,9 +373,9 @@ include("_header.inc.php");
                     ?>
                     <div class="dernier_evenement">
 
-                        <figure class="flyer"><?= Evenement::mainFigureHtml($tab_even['e_flyer'], $tab_even['e_image'], $tab_even['e_titre'], 60) ?></figure>
+                        <figure class="flyer"><?= Ladecadanse\EvenementRenderer::mainFigureHtml($tab_even['e_flyer'], $tab_even['e_image'], $tab_even['e_titre'], 60) ?></figure>
 
-                        <h3><a href="/event/evenement.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>"><?= Evenement::titreSelonStatutHtml(sanitizeForHtml($tab_even['e_titre']), $tab_even['e_statut']) ?></a></h3>
+                        <h3><a href="/event/evenement.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>"><?= Ladecadanse\EvenementRenderer::titreSelonStatutHtml(sanitizeForHtml($tab_even['e_titre']), $tab_even['e_statut']) ?></a></h3>
                         <span><?= Lieu::getLinkNameHtml($even_lieu['nom'], $even_lieu['idLieu'], $even_lieu['salle']) ?></span>
 
                         <p>le&nbsp;<a href="index.php?courant=<?= urlencode($tab_even['e_dateEvenement']) ?>"><?= date_fr($tab_even['e_dateEvenement']) ?></a></p>

@@ -2,5 +2,10 @@ event-send-report-mail-subject : "Rapport d'erreur sur un événement :"
 event-send-share-mail-subject : "📅"
 event-send-report-success-msg : Merci d'avoir signalé cette erreur, je m'en occupe dès que possible
 event-send-share-success-msg : L'événement a été envoyé
-lieu-events-ancien-none: Pas d'événenment passés 
+lieu-events-ancien-none: Pas d'événenment passés
 lieu-events-futur-none: Pas de prochains événements
+event-category-fête: Fêtes
+event-category-cinéma: Ciné
+event-category-théâtre: Théâtre
+event-category-expos: Expos
+event-category-divers: Divers

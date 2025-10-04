@@ -393,7 +393,7 @@ include("../_header.inc.php");
                     </tr>
                     <?php
                     foreach ($tab_month_events as $tab_event) :
-                        echo Evenement::eventTableRowHtml($tab_event, $authorization, isWithLieu: false);
+                        echo Ladecadanse\EvenementRenderer::eventTableRowHtml($tab_event, $authorization, isWithLieu: false);
                     endforeach;
                     ?>
                 <?php endforeach; ?>

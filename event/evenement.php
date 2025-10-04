@@ -178,7 +178,7 @@ include("../_header.inc.php");
     <header id="entete_contenu">
 
         <div id="entete_contenu_titre" <?php if ($tab_even['e_dateEvenement'] < $glo_auj) { echo ' class="ancien"'; } ?>>
-            <span class="category"><?= sanitizeForHtml(ucfirst(Evenement::nom_genre($tab_even['e_genre']))); ?></span>, <a href="/index.php?courant=<?= $tab_even['e_dateEvenement'] ?>"><time datetime="<?= $tab_even['e_dateEvenement'] ?>"><?= date_fr($tab_even['e_dateEvenement'], "annee", "", "", true) ?></time></a>
+            <span class="category"><?= sanitizeForHtml($translator->get("event-category-".$tab_even['e_genre'])); ?></span>, <a href="/index.php?courant=<?= $tab_even['e_dateEvenement'] ?>"><time datetime="<?= $tab_even['e_dateEvenement'] ?>"><?= date_fr($tab_even['e_dateEvenement'], "annee", "", "", true) ?></time></a>
         </div>
 
         <?php if (!empty($events_siblings[0])) : ?>
@@ -210,7 +210,7 @@ include("../_header.inc.php");
 
         <header class="titre">
 
-            <h1 class="left summary"><?= Evenement::titreSelonStatutHtml($tab_even['e_titre'], $tab_even['e_statut'], $isPersonneAllowedToEdit) ?></h1>
+            <h1 class="left summary"><?= Ladecadanse\EvenementRenderer::titreSelonStatutHtml($tab_even['e_titre'], $tab_even['e_statut'], $isPersonneAllowedToEdit) ?></h1>
 
             <div class="right location vcard">
 
@@ -246,7 +246,7 @@ include("../_header.inc.php");
         </header>
 
         <figure id="illustrations">
-            <?= Evenement::mainFigureHtml($tab_even['e_flyer'], $tab_even['e_image'], $tab_even['e_titre']) ?>
+            <?= Ladecadanse\EvenementRenderer::mainFigureHtml($tab_even['e_flyer'], $tab_even['e_image'], $tab_even['e_titre']) ?>
                 <?php if ($tab_even['e_flyer'] != '' && $tab_even['e_image'] != '' ) : ?>
                 <br><br>
                 <a href="<?= Evenement::getWebPath(Evenement::getFilePath($tab_even['e_image']), isWithAntiCache: true) ?>" class="magnific-popup"><img src="<?= Evenement::getWebPath(Evenement::getFilePath($tab_even['e_image']), isWithAntiCache: true) ?>" alt="Illustration pour cet événement" width="160" /></a>
@@ -258,7 +258,7 @@ include("../_header.inc.php");
             <?php if (!empty($tab_even['e_ref'])) : ?>
                 <?php if (!empty($tab_even['e_description'])) : ?><hr><?php endif; ?>
                 <ul class="references left" style="margin:10px 0">
-                    <?= Evenement::getRefListHtml($tab_even['e_ref']) ?>
+                    <?= Ladecadanse\EvenementRenderer::getRefListHtml($tab_even['e_ref']) ?>
                 </ul>
              <?php endif; ?>
 

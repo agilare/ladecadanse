@@ -265,7 +265,7 @@ include("_menuorganisateurs.inc.php");
                     </tr>
                     <?php
                     foreach ($tab_month_events as $tab_event) :
-                        echo Evenement::eventTableRowHtml($tab_event, $authorization, isWithLieu: true);
+                        echo Ladecadanse\EvenementRenderer::eventTableRowHtml($tab_event, $authorization, isWithLieu: true);
                     endforeach;
                     ?>
                 <?php endforeach; ?>
