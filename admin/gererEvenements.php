@@ -1277,7 +1277,7 @@ echo $verif->getErreur("flyer");
 if (isset($get_idE) && !empty($champs['flyer']) && !$verif->getErreur($champs['flyer']))
 {
 	echo '<div class="supImg">';
-    $iconeImage = '<img src="' . Evenement::getFileHref(Evenement::getFilePath($champs['flyer'], "s_")) . ' " alt="Flyer" />';
+    $iconeImage = '<img src="' . Evenement::getWebPath(Evenement::getFilePath($champs['flyer'], "s_")) . ' " alt="Flyer" />';
     ?>
 
 	<div><label for="sup_flyer" class="continu">Supprimer</label>
@@ -1305,7 +1305,7 @@ echo $verif->getErreur("image");
 //affichage du flyer, et du bouton pour supprimer
 if (isset($get_idE) && !empty($champs['image']) && !$verif->getErreur('image'))
 {
-    $iconeImage = "<img src=\"" . Evenement::getFileHref(Evenement::getFilePath($champs['image'], "s_")) . "\"  alt=\"Photo\" />";
+    $iconeImage = "<img src=\"" . Evenement::getWebPath(Evenement::getFilePath($champs['image'], "s_")) . "\"  alt=\"Photo\" />";
 
     echo "<div><label for=\"sup_image\" class=\"continu\">Supprimer</label><input type=\"checkbox\" name=\"sup_image\" id=\"sup_image\" value=\"image\" class=\"checkbox\" ";
 

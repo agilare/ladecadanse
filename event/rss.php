@@ -164,11 +164,11 @@ foreach ($tab_events as $tab_even)
 
     if (!empty($tab_even['e_flyer']))
     {
-        $item['image'] = Evenement::getFileHref(Evenement::getFilePath($tab_even['e_flyer']), true);
+        $item['image'] = Evenement::getWebPath(Evenement::getFilePath($tab_even['e_flyer']), true);
     }
     elseif (!empty($tab_even['e_image']))
     {
-        $item['image'] = Evenement::getFileHref(Evenement::getFilePath($tab_even['e_image']), true);
+        $item['image'] = Evenement::getWebPath(Evenement::getFilePath($tab_even['e_image']), true);
     }
 
     $item['description'] = Text::texteHtmlReduit(Text::wikiToHtml(sanitizeForHtml($tab_even['e_description'])), Text::trouveMaxChar($tab_even['e_description'], 60, 5), "");

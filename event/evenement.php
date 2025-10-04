@@ -116,11 +116,11 @@ $page_titre = $tab_even['e_titre'] . " " . $preposition_lieu . $even_lieu['nom']
 $page_description = "Événement \"" . $tab_even['e_titre'] . "\" " . $preposition_lieu . $even_lieu['nom'] . " " . $even_lieu['salle'] . ", " . HtmlShrink::adresseCompacteSelonContexte($even_lieu['region'], $even_lieu['localite'], $even_lieu['quartier'], $even_lieu['adresse']).", le " . date_fr($tab_even['e_dateEvenement'], "annee", "", "", false) . " - " . afficher_debut_fin($tab_even['e_horaire_debut'], $tab_even['e_horaire_fin'], $tab_even['e_dateEvenement']). " " . sanitizeForHtml($tab_even['e_horaire_complement']);
 if (!empty($tab_even['e_flyer']))
 {
-    $page_image = Evenement::getFileHref(Evenement::getFilePath($tab_even['e_flyer']), true);
+    $page_image = Evenement::getWebPath(Evenement::getFilePath($tab_even['e_flyer']), true);
 }
 elseif (!empty($tab_even['e_image']))
 {
-    $page_image = Evenement::getFileHref(Evenement::getFilePath($tab_even['e_image']), true);
+    $page_image = Evenement::getWebPath(Evenement::getFilePath($tab_even['e_image']), true);
 }
 $page_url = "event/evenement.php?idE=" .  $get['idE'];
 // END HEAD metas
@@ -249,7 +249,7 @@ include("../_header.inc.php");
             <?= Evenement::mainFigureHtml($tab_even['e_flyer'], $tab_even['e_image'], $tab_even['e_titre']) ?>
                 <?php if ($tab_even['e_flyer'] != '' && $tab_even['e_image'] != '' ) : ?>
                 <br><br>
-                <a href="<?= Evenement::getFileHref(Evenement::getFilePath($tab_even['e_image']), true) ?>" class="magnific-popup"><img src="<?= Evenement::getFileHref(Evenement::getFilePath($tab_even['e_image']), true) ?>" alt="Illustration pour cet événement" width="160" /></a>
+                <a href="<?= Evenement::getWebPath(Evenement::getFilePath($tab_even['e_image']), true) ?>" class="magnific-popup"><img src="<?= Evenement::getWebPath(Evenement::getFilePath($tab_even['e_image']), true) ?>" alt="Illustration pour cet événement" width="160" /></a>
                 <?php endif; ?>
         </figure>
 

@@ -154,15 +154,15 @@ class Evenement extends Element
         $imgHeight = '';
         if (!empty($flyer))
         {
-            $href = self::getFileHref(self::getFilePath($flyer));
-            $imgSrc = self::getFileHref(self::getFilePath($flyer, $imgSmallFilePathPrefix), true);
+            $href = self::getWebPath(self::getFilePath($flyer));
+            $imgSrc = self::getWebPath(self::getFilePath($flyer, $imgSmallFilePathPrefix), true);
             $imgAlt = "Flyer de ". sanitizeForHtml($titre);
             //$imgHeight = ImageDriver2::getProportionalHeightFromGivenWidth(self::getSystemFilePath(self::getFilePath($flyer, $imgSmallFilePathPrefix)), $smallWidth);
         }
         elseif (!empty($image))
         {
-            $href = self::getFileHref(self::getFilePath($image));
-            $imgSrc = self::getFileHref(self::getFilePath($image, $imgSmallFilePathPrefix), true);
+            $href = self::getWebPath(self::getFilePath($image));
+            $imgSrc = self::getWebPath(self::getFilePath($image, $imgSmallFilePathPrefix), true);
             $imgAlt = "Illustration de ". sanitizeForHtml($titre);
             //$imgHeight = ImageDriver2::getProportionalHeightFromGivenWidth(self::getSystemFilePath(self::getFilePath($image, $imgSmallFilePathPrefix)), $smallWidth);
         }
@@ -344,7 +344,7 @@ class Evenement extends Element
 	    return $filePath;
     }
 
-    public static function getFileHref(string $filePath, bool $isWithAntiCache = false): string
+    public static function getWebPath(string $filePath, bool $isWithAntiCache = false): string
     {
 	    $result = self::$urlDirPath . $filePath;
         $systemFilePath = self::getSystemFilePath($filePath);
