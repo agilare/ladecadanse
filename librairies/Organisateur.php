@@ -4,10 +4,17 @@ namespace Ladecadanse;
 
 use Ladecadanse\Element;
 use Ladecadanse\Utils\Text;
-
+use PDO;
+use Ladecadanse\HasDocuments;
 
 class Organisateur extends Element
 {
+    use HasDocuments;
+
+    static $systemDirPath;
+    static $urlDirPath;
+
+    const int RESULTS_PER_PAGE = 100;
 
     function __construct()
 	{
@@ -32,5 +39,17 @@ class Organisateur extends Element
         $result = ob_get_contents();
         ob_clean();
         return $result;
+    }
+
+    public static function getActivesLieux(int $idOrga): array
+    {
+        global $connectorPdo;
+
+        $stmt = $connectorPdo->prepare("SELECT l.idLieu AS idLieu, l.nom AS nom
+            FROM lieu_organisateur lo
+            JOIN lieu l ON lo.idLieu = l.idLieu AND l.statut = 'actif'
+            WHERE lo.idOrganisateur=?");
+        $stmt->execute([$idOrga]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }

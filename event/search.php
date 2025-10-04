@@ -148,8 +148,8 @@ if (!empty($get['years']))
     $sql_params[] = $get['years'];
 }
 
-$sql_select .= ' ORDER BY ' . (($get['tri'] == "dateAjout" || $get['tri'] == "dateEvenement") ? "e." . $get['tri'] : 'score') . ' DESC'.($get['tri'] != "dateEvenement" ? ", e.dateEvenement ASC" : '');
-$sql_select .= " LIMIT " . (int) (($get['page'] - 1) * $results_per_page) . ", " . (int) (($get['page'] - 1) * $results_per_page + $results_per_page);
+$sql_select .= ' ORDER BY ' . (($get['tri'] == "dateAjout" || $get['tri'] == "dateEvenement") ? "e." . $get['tri'] : 'score') . ' DESC'.($get['tri'] != "dateEvenement" ? ", e.dateEvenement DESC" : '');
+$sql_select .= " LIMIT " . (int) (($get['page'] - 1) * $results_per_page) . ", " . (int) $results_per_page;
 //dump($sql_params);
 $stmt = $connectorPdo->prepare($sql_select);
 $stmt->execute($sql_params);

@@ -1,28 +1,35 @@
 #entete_contenu
 {
-	min-height:50px;
-	padding:0.1em 1% 0.1em 1%;
+	height:auto;
+/* 	padding:0.1em 1% 0.1em 1%; */
 	margin-bottom:1em;
 }
 
-#entete_contenu h2
-{
-	width:58%;
-	font-size:1.6em;
-	line-height:1.2em;
-	vertical-align:middle;
-}
+    #entete_contenu h1
+    {
+        width: 55%;
+        line-height:1.2em;
+    }
 
-#entete_contenu p
-{
-	float:left;
-}
+    #entete_contenu p
+    {
+        float:left;
+    }
 
+    #entete_contenu img
+    {
+        float:right;
+        margin-top: 1em;
+        max-width:45%;
+    }
 
-#entete_contenu img
-{
-	float:right;
-}
+    #entete_contenu .info
+    {
+        margin:10px 0 0;
+        padding:2px 0 0 18px;
+        font-weight:bold;
+    }
+
 
 #titre_contenu
 {
@@ -31,22 +38,21 @@
 
 ul.menu_actions
 {
- font-size: 0.9em;
-    margin: 0 auto 0.3em;
-    text-align: right;
-    width: 94%;
-    list-style-type: none;
+	margin:0em auto 0 auto;
+	width:94%;
+	text-align:right;
+	padding:0;
 }
 
-ul.menu_actions li
-{
-	display:inline;
-	padding:0.2em 0.2em;
-}
+    ul.menu_actions li
+    {
+        display:inline;
+        padding:0.2em 0.2em;
 
+    }
 
 .embleme {
-float:right;
+    float:right;
 	margin: 0px 0px 0px 0px;
 }
 
@@ -59,54 +65,42 @@ ul.menu_actions_lieu
     width: 94%;
 }
 
-
-ul.menu_actions_lieu li {
-    display: inline;
-    margin: 0 0.2em;
-}
-
+    ul.menu_actions_lieu li {
+        display: inline;
+        margin: 0 0.2em;
+    }
 
 
-/* FICHE */
 #fiche
 {
-	width:94%;
+	width:96%;
 	margin: 0em auto 0.4em auto;
-	max-width:60em;
-	min-width:25em;
+	max-width: 60em;
+	min-height: 320px;
+    border-radius: 3px;
 	color:#5C7378;
 	background-color: #F7F7F5;
-}
-
-.vide
-{
-	min-height:300px;
 }
 
 	#fiche #pratique
 	{
 		background-color: #F7CF45;
 		color:#2C2328;
+        border-radius: 3px 0 0 0;
+		border-bottom: 1px dotted Gray;
 	}
 
 		#fiche #pratique ul
 		{
-            margin:0;   
-			padding:2px 2px 2px 2px;
-			border-bottom: 1px dashed Gray;
 			list-style-type: none;
+            padding:0.2em;
+            margin:0;
 		}
 
 			#fiche #pratique ul li
 			{
-				margin: 0.4em 0;
+				margin:0.2em 0.2em 0.4em 0.2em;
 			}
-
-			#fiche #pratique ul li#lieux_lies
-			{
-				background:#FFDF5A;
-			}
-
 
 		#fiche #pratique .liste
 		{
@@ -115,24 +109,10 @@ ul.menu_actions_lieu li {
 			background: #F9F9F9;
 		}
 
-			#fiche #pratique .liste ul
-			{
-				padding:10px 5px 10px 5px;
-				list-style:none;
-			}
-
-			#fiche #pratique .liste li
-			{
-				list-style:none;
-				margin:2px 0px 2px 0px;
-			}
-
-
 			#fiche #pratique ul li ul.salles
 			{
 				display:inline;
 				border-bottom: none;
-
 			}
 
 			#fiche #pratique ul li ul.salles li
@@ -142,12 +122,31 @@ ul.menu_actions_lieu li {
 
 			}
 
+            p.adresse
+            {
+                margin:0.4em 0.2em;
+                padding-left:0.2em;
+            }
 
-	#fiche #descriptions
-	{
+            .details
+            {
+                font-size:0.9em;
+                background-color:#f2f2f2;
+                height:80px;
+            }
 
-		max-width:372px;
-	}
+            #fiche #lieu-map
+            {
+				width: 60%;
+				height: 300px;
+				margin:5px;
+			}
+
+            #fiche #descriptions
+            {
+
+                max-width:372px;
+            }
 
 
 	ul#menu_descriptions
@@ -202,41 +201,26 @@ ul.menu_actions_lieu li {
 		#fiche #descriptions .description
 		{
 			background-color: #F7F7F5;
-			color: #59787A;
+			color:#3E5355;
 			padding:5px 0.4em 5px 0.4em;
-			line-height:1.3em;
+            border-radius: 0 0 0 3px;
+			line-height:1.4em;
 		}
 
 		#fiche  #descriptions .description p
 		{
-			color: #5C7378;
-			margin:0em 1em 1em 0.4em;
+			margin:1em 1em 0em 0;
 		}
 
-		#fiche #descriptions  .description h1
+		#fiche #descriptions .description h1
 		{
 			text-align:left;
 			font-size: 1.2em;
 		}
 
-		#fiche #descriptions  .description h2
+		#fiche #descriptions .description h2
 		{
 			font-size: 1em;
-		}
-
-		#fiche #descriptions  .description h4
-		{
-			font-size: 1.05em;
-            font-weight:bold;
-            margin:0;
-            border:none
-		}
-
-		#fiche #descriptions blockquote
-		{
-            margin-left:0.5em;
-            font-style: italic;
-            border-left: 1px solid #bbb;
 		}
 
 		#fiche #descriptions  .description pre
@@ -244,24 +228,39 @@ ul.menu_actions_lieu li {
 			font-size:1em;
 		}
 
+		#fiche #descriptions .description h4
+		{
+			font-size: 1.05em;
+            font-weight:bold;
+            margin:0.4em;
+			border:none
+		}
+
+		#fiche #descriptions .description blockquote
+		{
+            margin-left:0.5em;
+            font-style: italic;
+            border-left: 1px solid #bbb;
+		}
+
 		#fiche #descriptions .description .auteur
 		{
 			height:4em;
 			vertical-align:middle;
-			font-size: 1em;
+			font-size: 0.8em;
 			color: Gray;
-			background: #F0F0FA;
-			padding:2px 10px 2px 0;
-			margin:0;
+			/* background: #eaeaea; */
+			padding:0.4em;
+			margin: 0 0 0  0.2em;
+			font-style:italic;
 		}
+
 
 		#fiche #descriptions .description .auteur .left
 		{
 
 			float : left;
-			text-align : left;
 			vertical-align:middle;
-			width : 59%;
 		}
 
 		#fiche #descriptions .description .auteur .right
@@ -279,101 +278,79 @@ ul.menu_actions_lieu li {
 	color: #6E9CCF;
 }
 
+
 #fiche #medias
 {
 	float:right;
-	background-color:#eaeaea;
 	margin:0px 0px 0px 5px;
 	width:200px;
-	height:300px;
+    border-radius: 0 3px 0 0;
 	color:#5C7378;
 }
 
-#fiche #medias #photo
-{
-min-height:200px;
-}
+    #fiche #medias #photo
+    {
+        float: right;
+        min-height: 200px;
+        min-width: 200px;
+        border-radius: 0 3px 0 0;
+        text-align: right;
+    }
 
-#fiche #medias .section
-{
-	border:1px solid #aeaeae;
-	margin:1em 0;
-}
+    #fiche #medias #photo img
+    {
+        border-radius: 0 3px 0 0;
+    }
 
-#fiche #medias .section h3
-{
-	font-size:1em;
-	font-weight:bold;
-	background:#fafafa;
-}
+    #fiche #medias .section
+    {
+        margin:1em 0;
+    }
 
-.icone
-{
-	width : 100px;
-	height : 100px;
-	background : #EDEDED;
-}
-
-/* Galerie d'images */
-#galerie
-{
-	width:90%;
-	background:#aeaeae;
-	margin:1em 1em 1em 2em;
-}
-
-#photo2
-{
-	margin:2px 2px 2px 0px;
-}
-
-.galerie
-{
-margin:0 2px 0 2px;
-}
-
-
-
-
+        #fiche #medias .section h3
+        {
+            font-size:1em;
+            font-weight:bold;
+            padding: 0.4em 0;
+            /* background:#fafafa; */
+        }
 
 
 ul#menu_complement
 {
-
 	display:block;
 	margin:1em auto 1em auto;
 	width:94%;
 	height:1.4em;
 	font-size:1.2em;
-color:#5C7378;
+    color:#5C7378;
 	border-bottom:1px dotted #5C7378;
-		text-align:center;
-        padding:0;
-
+    text-align:center;
+    padding:0;
 }
 
-ul#menu_complement li
-{
-		float:left;
-		display:block;
-		text-align:center;
-		padding:0 0.4em;
-		/* border:1px solid red; */
-}
+    ul#menu_complement li
+    {
+            float:left;
+            display:block;
+            text-align:center;
+            padding:0 0.4em;
+            /* border:1px solid red; */
+    }
 
 
-	ul#menu_complement li a
-	{
-		width:40%;
-		height:2em;
-	}
+        ul#menu_complement li a
+        {
+            width:40%;
+            height:2em;
+        }
 
-	ul#menu_complement li.ici a
-	{
+        ul#menu_complement li.ici a
+        {
 
-		color:#5e5e5e;
-		font-weight:800;
-	}
+            color:#5e5e5e;
+            font-weight:800;
+        }
 
 
 ul#menu_complement .rss
@@ -383,169 +360,120 @@ ul#menu_complement .rss
 	float:right;
 }
 
-
-
-
-
 /* Prochains evenements */
 #prochains_evenements
 {
-	margin:0em auto 2em auto;
+	margin: 2em auto 2em auto;
 	width:94%;
 	color:#5C7378;
-
 }
 
-#prochains_evenements ul#menu_genre
-{
-	margin:0;
-    padding: 0;
-}
+    #prochains_evenements header
+    {
+        margin:1em 0
+    }
 
-	#prochains_evenements ul#menu_genre li
-	{
-		display:inline;
-		margin:0;
-		padding:0.2em 1em 0.4em 1em;
-	}
+        #prochains_evenements header h2
+        {
+            float:left;
+            width:45%;
+            font-size:1.4em;
+            margin:0;
+        }
 
-	#prochains_evenements #menu_genre  li.ici
-	{
-		background-color:#F7F7F5;
-	}
+        #prochains_evenements .pagination
+        {
+            margin:1em 0;
+            padding-left: 0;
+        }
 
-	#prochains_evenements #menu_genre  li.rien
-	{
-		display:inline;
-		margin:0px 0px 2px 0px;
-		color:lightgray;
-	}
+        #prochains_evenements table
+        {
+            margin-top:0;
+            width:100%;
+            border-collapse:collapse;
+            color:#5C7378;
+            background:#F7F7F5;
+        }
 
-#prochains_evenements table
-{
-	margin-top:0;
-	width:100%;
-	border-collapse:collapse;
-	color:#5C7378;
-	background:#F7F7F5;
-line-height:1.3em;
-}
+        #prochains_evenements table tr.ici
+        {
+            background-color:#ff3;
+        }
 
-#prochains_evenements table tr.ici
-{
-	background-color:#ff3;
-}
+            #prochains_evenements table td.mois
+            {
+                font-weight:bold;
+                border:none;
+                padding: 0.5em 0.3em;
+                font-size: 1.1em;
+                line-height: 1.3em;
+            }
 
-#prochains_evenements table tr th
-{
+            #prochains_evenements table tr td
+            {
+                text-align:left;
+                padding:0.4em;
+                vertical-align:top;
+                border-top:1px dotted #5C7378;
+            }
 
-	text-align:left;
-	background-color:#e0e0e0;
-}
+            #prochains_evenements table td a:visited
+            {
+                 color:#0f4786; /* #105199  #104d91*/
+            }
 
+            #prochains_evenements table td .pratique
+            {
+                margin-top:0.5em;
+                font-size:0.8em;
+                padding:0.2em 0.2em 0 0;
+            }
 
-#prochains_evenements table tr td
-{
-	text-align:left;
-	padding:0.4em;
-	vertical-align:top;
-	border-top:1px dotted #5C7378;
-}
+            #prochains_evenements table td.flyer
+            {
+                width:50px;
+                height:80px;
+                overflow:hidden;
+            }
 
-#prochains_evenements table tr td img
-{
+            #prochains_evenements table td .category
+            {
+                display: inline-block;
+                margin-top:0.4em;
+            }
 
+            #prochains_evenements table td.flyer img
+            {
+                overflow:hidden;
+            }
 
-}
+            /*
+            #prochains_evenements table tr.ici td p.pratique
+            {
+                background-color:transparent;
+                font-weight:bold;
+            }
 
+            #prochains_evenements table tr.ici td.flyer
+            {
+            width:50px;
+            background-color:transparent;
+            }*/
 
+            #prochains_evenements table td.lieu_actions_evenement
+            {
+                width:60px
+            }
 
-#prochains_evenements table td h3
-{
-font-weight:bold;
+                #prochains_evenements table td.lieu_actions_evenement ul
+                {
+                    padding: 0;
+                    margin:0;
+                }
 
-}
+                    #prochains_evenements table td.lieu_actions_evenement ul li
+                    {
+                        display:inline;
 
-#prochains_evenements table td h3 a:visited {
-     color:#0f4786; /* #105199  #104d91*/
-}
-
-#prochains_evenements table td.mois
-{
-	font-weight:bold;
-	border:none;
-	padding: 0.5em 0.3em;
-	font-size: 1.1em;
-	line-height: 1.3em;
-}
-
-
-#prochains_evenements table td.flyer
-{
-width:50px;
-height:80px;
-overflow:hidden;
-
-}
-
-#prochains_evenements table td p.description {
-    font-size: 0.95em;
-}
-
-#prochains_evenements table td p.pratique {
-
-    font-size: 0.8em;
-    margin-top: 0.5em;
-    padding: 0.2em;
-}
-
-
-#prochains_evenements table td.lieu_actions_evenement
-{
-    width:60px
-}
-
-#prochains_evenements table td.lieu_actions_evenement ul
-{
-    padding: 0;
-    margin:0;
-}
-
-#prochains_evenements table td.lieu_actions_evenement ul li
-{
-	display:inline;
-
-}
-
-
-.menu_wikicode
-{
-padding-left:13em;
-text-align:right;
-}
-
-.menu_wikicode input
-{
-
-width:55px;
-font-weight:bold;
-font-family:Georgia;
-border:1px solid gray;
-}
-
-#statut_lieux
-{
-
-margin:1em 0 1em 0;
-padding:0 0.2em;
-}
-
-
-.voir_lieux
-{
-	text-align:left;
-	padding:0 0px 0 0;
-	background-image:url(../web/interface/icons/building_go.png);
-	background-repeat:no-repeat;
-	background-position: 85% 50%;
-}
+                    }

@@ -148,40 +148,34 @@ include("_header.inc.php");
 
         <div class="spacer"></div>
 
-        <!-- URL (text) -->
         <p>
-        <label for="URL">Site web :</label>
+            <label for="URL">Site web :</label>
             <input type="text" name="URL" id="URL" size="50" maxlength="80" value="<?php echo sanitizeForHtml($form->getValeur('URL')) ?>" />
-            <?php
-        echo $form->getHtmlErreur("URL");
-        ?>
+            <?= $form->getHtmlErreur("URL") ?>
         </p>
 
         <p>
-        <label for="email">Email :</label>
-        <input type="text" name="email" id="email" size="40" maxlength="40"
-               value="<?php echo sanitizeForHtml($form->getValeur('email')) ?>" />
-            <?php
-        echo $form->getHtmlErreur("email");
-        ?>
+            <label for="email">Email :</label>
+            <input type="text" name="email" id="email" size="40" maxlength="40" value="<?php echo sanitizeForHtml($form->getValeur('email')) ?>" />
+            <?= $form->getHtmlErreur("email") ?>
         </p>
 
         <p>
-        <label for="presentation">Présentation :</label><br><br>
-        <textarea name="presentation" id="presentation" class="tinymce" rows="16" cols="50">
-            <?php echo sanitizeForHtml($form->getValeur('presentation')) ?></textarea>
-    <?php echo $form->getHtmlErreur("presentation"); ?>
+            <label for="presentation">Présentation :</label><br><br>
+            <textarea name="presentation" id="presentation" class="tinymce" rows="16" cols="50"><?= sanitizeForHtml($form->getValeur('presentation')) ?></textarea>
+            <?= $form->getHtmlErreur("presentation"); ?>
         </p>
+
     </fieldset>
 
-<fieldset>
-<legend>Images</legend>
-<input type="hidden" name="<?php echo UPLOAD_MAX_FILESIZE ?>" value="2097152" /> <!-- 2 Mo -->
-<div class="guideForm">Formats JPEG, PNG ou GIF, max. 2 Mo</div>
-<!-- Logo (file) -->
-<p>
-<label for="Logo">Logo</label>
-<input type="file" name="logo" id="Logo" class="js-file-upload-size-max" tabindex="18" title="Logo qui s'affichera à gauche du titre" size="25" />
+    <fieldset>
+        <legend>Images</legend>
+        <input type="hidden" name="<?php echo UPLOAD_MAX_FILESIZE ?>" value="2097152" /> <!-- 2 Mo -->
+        <div class="guideForm">Formats JPEG, PNG ou GIF, max. 2 Mo</div>
+        <!-- Logo (file) -->
+        <p>
+        <label for="Logo">Logo</label>
+        <input type="file" name="logo" id="Logo" class="js-file-upload-size-max" tabindex="18" title="Logo qui s'affichera à gauche du titre" size="25" />
 
 <?php
 echo $form->getHtmlErreur("logo");

@@ -86,13 +86,14 @@ LEFT JOIN salle s ON e.idSalle = s.idSalle
 WHERE
     e.statut NOT IN ('inactif', 'propose') AND e.idLieu = ?";
 
-$sql_select .= " AND e.dateEvenement $sql_periode_operator '" . $glo_auj . "'";
+$sql_select .= " AND e.dateEvenement $sql_periode_operator ?";
 $sql_select .= ' ORDER BY dateEvenement ASC';
-$sql_select .= " LIMIT " . (int) (($get['page'] - 1) * $results_per_page) . ", " . (int) (($get['page'] - 1) * $results_per_page + $results_per_page);
+$sql_select .= " LIMIT " . (int) (($get['page'] - 1) * $results_per_page) . ", " . (int) ($results_per_page); // ($get['page'] - 1) * $results_per_page +
 //echo $sql_select;
 $stmt = $connectorPdo->prepare($sql_select);
-$stmt->execute([$get['idL']]);
+$stmt->execute([$get['idL'], $glo_auj]);
 $page_results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+//echo " <BR>NB RES:" . count($page_results);
 $page_results_grouped_by_yearmonth = [];
 foreach ($page_results as $event) {
     $yearmonth = date('Y-m-01', strtotime($event['e_dateEvenement']));
@@ -107,10 +108,10 @@ $sql_select_all =
     WHERE
     e.statut NOT IN ('inactif', 'propose') AND e.idLieu = ?";
 
-$sql_select_all .= " AND e.dateEvenement $sql_periode_operator '" . $glo_auj . "'";
+$sql_select_all .= " AND e.dateEvenement $sql_periode_operator ?";
 //echo $sql_select_all;
 $stmtAll = $connectorPdo->prepare($sql_select_all);
-$stmtAll->execute([$get['idL']]);
+$stmtAll->execute([$get['idL'], $glo_auj]);
 $all_results_nb = $stmtAll->fetchColumn();
 
 $page_titre = $lieu['nom']. " - ".HtmlShrink::adresseCompacteSelonContexte($lieu['loc_canton'], $lieu['loc_localite'], $lieu['quartier'], $lieu['adresse']);
@@ -137,7 +138,7 @@ include("../_header.inc.php");
             </h1>
 
             <?php if ($lieu['logo']) : ?>
-                <a href="<?= Lieu::getFileHref(Lieu::getFilePath($lieu['logo']), true) ?>" class="magnific-popup"><img src="<?= Lieu::getFileHref(Lieu::getFilePath($lieu['logo'], "s_"), true) ?>" alt="Logo" class="logo" /></a>
+                <a href="<?= Lieu::getWebPath(Lieu::getFilePath($lieu['logo']), isWithAntiCache: true) ?>" class="magnific-popup"><img src="<?= Lieu::getWebPath(Lieu::getFilePath($lieu['logo'], "s_"), isWithAntiCache: true) ?>" alt="Logo" class="logo" /></a>
             <?php endif; ?>
 
             <?php if ($lieu['statut'] == 'ancien') : ?>
@@ -167,7 +168,7 @@ include("../_header.inc.php");
                 <figure id="photo">
 
                     <?php if ($lieu['photo1'] != '') { ?>
-                        <a href="<?= Lieu::getFileHref(Lieu::getFilePath($lieu['photo1']), true) ?>" class="gallery-item"><img src="<?= Lieu::getFileHref(Lieu::getFilePath($lieu['photo1'], "s_"), true) ?>" alt="Photo du lieu"></a>
+                        <a href="<?= Lieu::getWebPath(Lieu::getFilePath($lieu['photo1']), isWithAntiCache: true) ?>" class="gallery-item"><img src="<?= Lieu::getWebPath(Lieu::getFilePath($lieu['photo1'], "s_"), isWithAntiCache: true) ?>" alt="Photo du lieu"></a>
                     <?php } elseif (empty($_SESSION['Sgroupe'])) { ?>
                         <p style="background: #eaeaea;font-size:0.9em;padding:2em 0.5em;line-height:1.2em">Vous gérez ce lieu ? <a href="/user-register.php">Inscrivez-vous</a> pour pouvoir ajouter ou modifier les informations et des photos</p>
                     <?php } ?>
@@ -180,7 +181,7 @@ include("../_header.inc.php");
                         <?php foreach ($lieu_images as $img) :
                               $image_filename = $img['idFichierrecu'] . "." . $img['extension'];
                             ?>
-                            <a href="<?= Lieu::getFileHref(Lieu::getFilePath($image_filename, "galeries/"), true) ?>" class="gallery-item"><img src="<?= Lieu::getFileHref(Lieu::getFilePath($image_filename, "galeries/s_"), true) ?>" alt="Photo du lieu"></a>
+                            <a href="<?= Lieu::getWebPath(Lieu::getFilePath($image_filename, "galeries/"), isWithAntiCache: true) ?>" class="gallery-item"><img src="<?= Lieu::getWebPath(Lieu::getFilePath($image_filename, "galeries/s_"), isWithAntiCache: true) ?>" alt="Photo du lieu"></a>
                         <?php endforeach; ?>
                     </figure>
                     <div class="spacer"></div>
@@ -379,54 +380,23 @@ include("../_header.inc.php");
         <?php
         if ($all_results_nb == 0) :  ?>
 
-            <p><?= $translator->get("lieu-events-{$get['periode']}-none") ?> <?= Lieu::prepositionToPutInSentence($lieu['determinant']) ?><strong><?= $lieu['nom'] ?></strong></p>
+            <p><?= $translator->get("lieu-events-{$get['periode']}-none") ?> <?= Lieu::prepositionToPutInSentence($lieu['determinant']) ?><strong><?= sanitizeForHtml($lieu['nom']) ?></strong></p>
 
         <?php else : ?>
 
             <?= HtmlShrink::getPaginationString($all_results_nb, $get['page'], $results_per_page, 1, basename(__FILE__), "?" . Utils::urlQueryArrayToString($get, "page") . "&amp;page=") ?>
             <table>
-            <?php foreach ($page_results_grouped_by_yearmonth as $yearmonth => $tab_even) : ?>
-                <tr>
-                    <td colspan="5" class="mois"><?= ucfirst((string) mois2fr(date2mois($yearmonth))) ?>
-                    <?php if (date2annee($yearmonth) != date('Y')) : echo date2annee($yearmonth); endif; ?>
-                    </td>
-                </tr>
-                <?php foreach ($tab_even as $e) :
-                    $vcard_starttime = '';
-                    if (mb_substr((string) $e['e_horaire_debut'], 11, 5) != '06:00')
-                        $vcard_starttime = "T".mb_substr((string)$e['e_horaire_debut'], 11, 5).":00";
-                            ?>
-                    <tr class="<?php if ($glo_auj_6h == $e['e_dateEvenement']) { echo "ici"; } ?> vevent evenement">
-                        <td class="dtstart">
-                            <?= date2nomJour($e['e_dateEvenement']); ?>&nbsp;<?= date2jour($e['e_dateEvenement']); ?><span class="value-title" title="<?= $e['e_dateEvenement'].$vcard_starttime; ?>"></span><br>
-                            <span class="pratique"><?= afficher_debut_fin($e['e_horaire_debut'], $e['e_horaire_fin'], $e['e_dateEvenement']) ?></span>
+                <?php foreach ($page_results_grouped_by_yearmonth as $yearmonth => $tab_month_events) : ?>
+                    <tr>
+                        <td colspan="5" class="mois"><?= ucfirst((string) mois2fr(date2mois($yearmonth))) ?><?php if (date2annee($yearmonth) != date('Y')) : echo "&nbsp;".date2annee($yearmonth); endif; ?>
                         </td>
-                        <td class="flyer photo">
-                            <?= Evenement::mainFigureHtml($e['e_flyer'], $e['e_image'], $e['e_titre'], 60) ?>
-                        </td>
-                        <td>
-                            <a class="url" href="/event/evenement.php?idE=<?= (int)$e['e_idEvenement' ]?>"><strong class="summary"><?= Evenement::titreSelonStatutHtml(sanitizeForHtml($e['e_titre']), $e['e_statut']) ?></strong></a><br>
-                            <span class="category"><?= $glo_tab_genre[$e['e_genre']]; ?></span>
-                        </td>
-                        <td class="location">
-                            <?= sanitizeForHtml($e['s_nom']) ?>
-                            <div class="location">
-                                <span class="value-title" title="<?= sanitizeForHtml($e['s_nom']); ?>"></span>
-                            </div>
-                        </td>
-                        <?php if ($authorization->isPersonneAllowedToEditEvenement($_SESSION, $tab_even)) : ?>
-                        <td class="lieu_actions_evenement">
-                            <ul>
-                                <li><a href="/event/copy.php?idE=<?= (int) $e['e_idEvenement'] ?>" title="Copier cet événement"><?= $iconeCopier ?></a></li>
-                                <li><a href="/evenement-edit.php?action=editer&amp;idE=<?= (int) $e['e_idEvenement'] ?>" title="Modifier cet événement"><?= $iconeEditer ?></a></li>
-                                <li class=""><a href="#" id="btn_event_unpublish_<?= (int) $e['e_idEvenement'] ?>" class="btn_event_unpublish" data-id="<?= (int) $e['e_idEvenement'] ?>"><?= $icone['depublier']; ?></a></li>
-                            </ul>
-
-                        </td>
-                        <?php endif; ?>
                     </tr>
+                    <?php
+                    foreach ($tab_month_events as $tab_event) :
+                        echo Ladecadanse\EvenementRenderer::eventTableRowHtml($tab_event, $authorization, isWithLieu: false);
+                    endforeach;
+                    ?>
                 <?php endforeach; ?>
-            <?php endforeach; ?>
             </table>
 
             <?= HtmlShrink::getPaginationString($all_results_nb, $get['page'], $results_per_page, 1, basename(__FILE__), "?" . Utils::urlQueryArrayToString($get, "page") . "&amp;page=") ?>

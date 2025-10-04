@@ -4,9 +4,12 @@ namespace Ladecadanse;
 
 use Ladecadanse\Element;
 use PDO;
+use Ladecadanse\HasDocuments;
 
 class Lieu extends Element
 {
+    use HasDocuments;
+
     static $systemDirPath;
     static $urlDirPath;
 
@@ -41,7 +44,7 @@ class Lieu extends Element
 
         if ($idLieu)
         {
-            $result = '<a href="/lieu/lieu.php?idL=' . $idLieu . '">' . $result . '</a>';
+            $result = '<a href="/lieu/lieu.php?idL=' . (int) $idLieu . '">' . $result . '</a>';
             if ($salle)
             {
                 $result .= " - " . sanitizeForHtml($salle);
@@ -49,28 +52,6 @@ class Lieu extends Element
         }
 
         return $result;
-    }
-
-    public static function getFilePath(string $fileName, string $fileNamePrefix = '', string $fileNameSuffix = ''): string
-    {
-        return $fileNamePrefix . $fileName . $fileNameSuffix;
-    }
-
-    public static function getFileHref(string $filePath, bool $isWithAntiCache = false): string
-    {
-	    $result = self::$urlDirPath . $filePath;
-        $systemFilePath = self::getSystemFilePath($filePath);
-        if ($isWithAntiCache && file_exists($systemFilePath))
-        {
-            $result .= "?" . filemtime($systemFilePath);
-        }
-
-	    return $result;
-    }
-
-    public static function getSystemFilePath(string $filePath): string
-    {
-        return self::$systemDirPath . $filePath;
     }
 
     public static function getLieu(int $idLieu): array
@@ -149,7 +130,7 @@ class Lieu extends Element
 
         if (!empty($page))
         {
-            $sql_event .= " LIMIT " . (int) (($page - 1) * self::RESULTS_PER_PAGE) . ", " . (int) (($page - 1) * self::RESULTS_PER_PAGE + self::RESULTS_PER_PAGE);
+            $sql_event .= " LIMIT " . (int) (($page - 1) * self::RESULTS_PER_PAGE) . ", " . (int) self::RESULTS_PER_PAGE; // (($page - 1) * self::RESULTS_PER_PAGE +
         }
 
         //echo $sql_event;

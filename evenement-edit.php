@@ -1159,7 +1159,7 @@ if ($verif->nbErreurs() > 0)
 
             $sql = "SELECT organisateur.idOrganisateur, nom
         FROM organisateur, evenement_organisateur
-        WHERE evenement_organisateur.idEvenement=".$get['idE']." AND
+        WHERE evenement_organisateur.idEvenement=".(int)$get['idE']." AND
          organisateur.idOrganisateur=evenement_organisateur.idOrganisateur
          ORDER BY date_ajout DESC";
 
@@ -1188,17 +1188,18 @@ if ($verif->nbErreurs() > 0)
 
         while ($tab = $connector->fetchArray($req))
         {
-                        ?><option data-nom="<?php echo sanitizeForHtml($tab['nom']); ?>" data-complement="<?php echo sanitizeForHtml($tab['URL']); ?>"
-
-                                    <?php
-                                    if ((isset($_POST['organisateurs']) && in_array($tab['idOrganisateur'], $_POST['organisateurs'])) || in_array($tab['idOrganisateur'], $tab_organisateurs_even))
+        ?><option data-nom="<?php echo sanitizeForHtml($tab['nom']); ?>" data-complement="<?php echo sanitizeForHtml($tab['URL']); ?>"
+        <?php if ((isset($_POST['organisateurs']) && in_array($tab['idOrganisateur'], $_POST['organisateurs'])) || in_array($tab['idOrganisateur'], $tab_organisateurs_even) || (!empty($get['idO']) && $get['idO'] == $tab['idOrganisateur']))
             {
                 echo 'selected="selected" ';
             }
-            echo "value=\"" . (int) $tab['idOrganisateur'] . "\">" . sanitizeForHtml($tab['nom']) . "</option>";
-                                }
-        ?></select>
-                <div class="guideChamp">L’événement figurera dans la page de ces <a href="/organisateurs.php" target="_blank">organisateurs</a>. Si vous souhaitez que votre organisation soit listée, <a href="/contacteznous.php" target='_blank'>demandez-nous</a> (avec des infos : texte, liens...)</div>
+            ?>
+            value="<?= (int) $tab['idOrganisateur'] ?>"><?= sanitizeForHtml($tab['nom']) ?></option>
+        <?php
+        }
+        ?>
+        </select>
+        <div class="guideChamp">L’événement figurera dans la page de ces <a href="/organisateurs.php" target="_blank" class="lien_ext">organisateurs</a>. Si vous souhaitez que votre organisation soit listée, <a href="/contacteznous.php?pre=req-orga" target='_blank' class="lien_ext">demandez-nous</a> (avec des infos : texte, liens...)</div>
         </p>
     </fieldset>
 
@@ -1241,8 +1242,8 @@ if ($verif->nbErreurs() > 0)
             {
         ?>
         <div class="supImg">
-            <a href="<?php echo Evenement::getFileHref(Evenement::getFilePath($champs['flyer']), true) ?>" class="magnific-popup" target="_blank">
-                        <img src="<?php echo Evenement::getFileHref(Evenement::getFilePath($champs['flyer'], 's_'), true) ?>" alt="Flyer de cet événement" width="100" />
+            <a href="<?php echo Evenement::getWebPath(Evenement::getFilePath($champs['flyer']), true) ?>" class="magnific-popup" target="_blank">
+                        <img src="<?php echo Evenement::getWebPath(Evenement::getFilePath($champs['flyer'], 's_'), true) ?>" alt="Flyer de cet événement" width="100" />
                     </a>
                     <div>
                         <label for="sup_flyer" class="continu">Supprimer</label><input type="checkbox" name="sup_flyer" id="sup_flyer" value="flyer" class="checkbox"
@@ -1276,8 +1277,8 @@ if ($verif->nbErreurs() > 0)
         {
                 echo "<div class=\"supImg\">";
             ?>
-        <a href="<?php echo Evenement::getFileHref(Evenement::getFilePath($champs['image']), true) ?>" class="magnific-popup" target="_blank">
-                    <img src="<?php echo Evenement::getFileHref(Evenement::getFilePath($champs['image'], 's_'), true) ?>" alt="Photo" width="100" />
+        <a href="<?php echo Evenement::getWebPath(Evenement::getFilePath($champs['image']), true) ?>" class="magnific-popup" target="_blank">
+                    <img src="<?php echo Evenement::getWebPath(Evenement::getFilePath($champs['image'], 's_'), true) ?>" alt="Photo" width="100" />
                 </a>
                 <?php
             echo "<div><label for=\"sup_image\" class=\"continu\">Supprimer</label><input type=\"checkbox\" name=\"sup_image\" id=\"sup_image\" value=\"image\" class=\"checkbox\" ";

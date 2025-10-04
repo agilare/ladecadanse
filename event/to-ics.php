@@ -102,7 +102,7 @@ if (!$authorization->isPersonneAllowedToEditEvenement($_SESSION, $tab_even) && i
     exit;
 }
 
-$even_ics = Evenement::getIcsValues($tab_even, $site_full_url);
+$even_ics = Ladecadanse\EvenementRenderer::getIcsValues($tab_even, $site_full_url);
 
 header('Content-type: text/calendar; charset=utf-8');
 header('Content-Disposition: attachment; filename=' . "evenement-" . $get['idE'] . "-" . $tab_even['e_dateEvenement'] .  ".ics");

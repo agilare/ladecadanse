@@ -230,7 +230,7 @@ $detailsAff = $connector->fetchArray($req_affPers);
 	<?php
 	// EVENEMENTS ANNONCES
 
-	$limite = 20;
+	$limite = 30;
 
 	if ($get['elements'] == "evenement")
 	{

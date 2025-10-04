@@ -1,5 +1,22 @@
 # Changelog
 
+## [3.9.1] - Unreleased
+
+### Fixed
+- pagination : lieu and search pages had wrong items per page because of an error in sql
+- admin : restore jquery-checkboxes in gererEvenements
+- organisateur : restore link to preselected orga in event form
+
+### Changed
+- organisateur : page refactored, cleaned, modernized
+- home : update Radio Vostok partner logo
+
+### Added
+- organisateur : passed/incoming events menu, with pagination
+- organisateur : in event edit form link to Contactez-nous prefills contact form
+- events : method to display an event in a html table
+
+
 ## [3.9.0] - 2025-09-21
 
 ### Fixed
