@@ -17,7 +17,7 @@ trait HasDocuments
 //    abstract protected function getSystemDirPath(): string;
 //    abstract protected function getBaseUrl(): string;
 //
-//    public function getDocumentUrl(string $filename): string
+//    public function getWebPath(string $filename): string
 //    {
 //        return $this->getBaseUrl() . '/' . $filename;
 //    }
@@ -28,8 +28,32 @@ trait HasDocuments
         return self::$systemDirPath . $filePath;
     }
 
+    /**
+     *
+     * @param string $fileNamePrefix "s_"
+     * @param string $fileNameSuffix "img", "logo"...
+     * @return string
+     */
     public static function getFilePath(string $fileName, string $fileNamePrefix = '', string $fileNameSuffix = ''): string
     {
         return $fileNamePrefix . $fileName . $fileNameSuffix;
+    }
+
+    public static function getWebPath(string $filePath, bool $isWithAntiCache = false): string
+    {
+	    $result = self::$urlDirPath . $filePath;
+        $systemFilePath = self::getSystemFilePath($filePath);
+        if ($isWithAntiCache && file_exists($systemFilePath))
+        {
+            $result .= "?" . filemtime($systemFilePath);
+        }
+
+	    return $result;
+    }
+
+    public static function rmImageAndItsMiniature(string $fileName): void
+    {
+        unlink(self::getSystemFilePath(self::getFilePath($fileName)));
+        unlink(self::getSystemFilePath(self::getFilePath($fileName, "s_")));
     }
 }

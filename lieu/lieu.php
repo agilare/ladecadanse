@@ -138,7 +138,7 @@ include("../_header.inc.php");
             </h1>
 
             <?php if ($lieu['logo']) : ?>
-                <a href="<?= Lieu::getWebPath(Lieu::getFilePath($lieu['logo']), true) ?>" class="magnific-popup"><img src="<?= Lieu::getWebPath(Lieu::getFilePath($lieu['logo'], "s_"), true) ?>" alt="Logo" class="logo" /></a>
+                <a href="<?= Lieu::getWebPath(Lieu::getFilePath($lieu['logo']), isWithAntiCache: true) ?>" class="magnific-popup"><img src="<?= Lieu::getWebPath(Lieu::getFilePath($lieu['logo'], "s_"), isWithAntiCache: true) ?>" alt="Logo" class="logo" /></a>
             <?php endif; ?>
 
             <?php if ($lieu['statut'] == 'ancien') : ?>
@@ -168,7 +168,7 @@ include("../_header.inc.php");
                 <figure id="photo">
 
                     <?php if ($lieu['photo1'] != '') { ?>
-                        <a href="<?= Lieu::getWebPath(Lieu::getFilePath($lieu['photo1']), true) ?>" class="gallery-item"><img src="<?= Lieu::getWebPath(Lieu::getFilePath($lieu['photo1'], "s_"), true) ?>" alt="Photo du lieu"></a>
+                        <a href="<?= Lieu::getWebPath(Lieu::getFilePath($lieu['photo1']), isWithAntiCache: true) ?>" class="gallery-item"><img src="<?= Lieu::getWebPath(Lieu::getFilePath($lieu['photo1'], "s_"), isWithAntiCache: true) ?>" alt="Photo du lieu"></a>
                     <?php } elseif (empty($_SESSION['Sgroupe'])) { ?>
                         <p style="background: #eaeaea;font-size:0.9em;padding:2em 0.5em;line-height:1.2em">Vous gérez ce lieu ? <a href="/user-register.php">Inscrivez-vous</a> pour pouvoir ajouter ou modifier les informations et des photos</p>
                     <?php } ?>
@@ -181,7 +181,7 @@ include("../_header.inc.php");
                         <?php foreach ($lieu_images as $img) :
                               $image_filename = $img['idFichierrecu'] . "." . $img['extension'];
                             ?>
-                            <a href="<?= Lieu::getWebPath(Lieu::getFilePath($image_filename, "galeries/"), true) ?>" class="gallery-item"><img src="<?= Lieu::getWebPath(Lieu::getFilePath($image_filename, "galeries/s_"), true) ?>" alt="Photo du lieu"></a>
+                            <a href="<?= Lieu::getWebPath(Lieu::getFilePath($image_filename, "galeries/"), isWithAntiCache: true) ?>" class="gallery-item"><img src="<?= Lieu::getWebPath(Lieu::getFilePath($image_filename, "galeries/s_"), isWithAntiCache: true) ?>" alt="Photo du lieu"></a>
                         <?php endforeach; ?>
                     </figure>
                     <div class="spacer"></div>

@@ -158,14 +158,14 @@ class Evenement extends Element
         if (!empty($flyer))
         {
             $href = self::getWebPath(self::getFilePath($flyer));
-            $imgSrc = self::getWebPath(self::getFilePath($flyer, $imgSmallFilePathPrefix), true);
+            $imgSrc = self::getWebPath(self::getFilePath($flyer, $imgSmallFilePathPrefix), isWithAntiCache: true);
             $imgAlt = "Flyer de ". sanitizeForHtml($titre);
             //$imgHeight = ImageDriver2::getProportionalHeightFromGivenWidth(self::getSystemFilePath(self::getFilePath($flyer, $imgSmallFilePathPrefix)), $smallWidth);
         }
         elseif (!empty($image))
         {
             $href = self::getWebPath(self::getFilePath($image));
-            $imgSrc = self::getWebPath(self::getFilePath($image, $imgSmallFilePathPrefix), true);
+            $imgSrc = self::getWebPath(self::getFilePath($image, $imgSmallFilePathPrefix), isWithAntiCache: true);
             $imgAlt = "Illustration de ". sanitizeForHtml($titre);
             //$imgHeight = ImageDriver2::getProportionalHeightFromGivenWidth(self::getSystemFilePath(self::getFilePath($image, $imgSmallFilePathPrefix)), $smallWidth);
         }
@@ -322,12 +322,6 @@ class Evenement extends Element
         ];
     }
 
-    public static function rmImageAndItsMiniature(string $fileName): void
-    {
-        unlink(self::getSystemFilePath(self::getFilePath($fileName)));
-        unlink(self::getSystemFilePath(self::getFilePath($fileName, "s_")));
-    }
-
     public static function getFilePath(string $fileName, string $fileNamePrefix = '', string $fileNameSuffix = ''): string
     {
         $filePath = $fileNamePrefix . $fileName . $fileNameSuffix;
@@ -346,17 +340,4 @@ class Evenement extends Element
         }
 	    return $filePath;
     }
-
-    public static function getWebPath(string $filePath, bool $isWithAntiCache = false): string
-    {
-	    $result = self::$urlDirPath . $filePath;
-        $systemFilePath = self::getSystemFilePath($filePath);
-        if ($isWithAntiCache && file_exists($systemFilePath))
-        {
-            $result .= "?" . filemtime($systemFilePath);
-        }
-
-	    return $result;
-    }
-
 }

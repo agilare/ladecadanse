@@ -54,19 +54,6 @@ class Lieu extends Element
         return $result;
     }
 
-
-    public static function getWebPath(string $filePath, bool $isWithAntiCache = false): string
-    {
-	    $result = self::$urlDirPath . $filePath;
-        $systemFilePath = self::getSystemFilePath($filePath);
-        if ($isWithAntiCache && file_exists($systemFilePath))
-        {
-            $result .= "?" . filemtime($systemFilePath);
-        }
-
-	    return $result;
-    }
-
     public static function getLieu(int $idLieu): array
     {
         global $connectorPdo;

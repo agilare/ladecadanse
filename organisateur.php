@@ -154,7 +154,7 @@ include("_menuorganisateurs.inc.php");
             <h1 class="fn org"><?= $organisateur->getHtmlValue('nom'); ?></h1>
 
             <?php if ($organisateur->getValue('logo') != '') : ?>
-                <a href="<?= Organisateur::getWebPath(Organisateur::getFilePath($organisateur->getValue('logo')), true) ?>" class="magnific-popup"><img src="<?= Organisateur::getWebPath(Organisateur::getFilePath($organisateur->getValue('logo'), "s_"), true) ?>" alt="Logo" class="logo" /></a>
+            <a href="<?= Organisateur::getWebPath(Organisateur::getFilePath($organisateur->getValue('logo')), isWithAntiCache: true) ?>" class="magnific-popup"><img src="<?= Organisateur::getWebPath(Organisateur::getFilePath($organisateur->getValue('logo'), "s_"), true) ?>" alt="Logo" class="logo" /></a>
             <?php endif ?>
             <div class="spacer"></div>
         </header>
@@ -175,8 +175,8 @@ include("_menuorganisateurs.inc.php");
             <div id="medias">
                 <figure id="photo">
                     <?php if ($organisateur->getValue('photo') != '') : ?>
-                        <a href="<?= Organisateur::getWebPath(Organisateur::getFilePath($organisateur->getValue('photo')), true) ?>" class="magnific-popup">
-                            <img src="<?= Organisateur::getWebPath(Organisateur::getFilePath($organisateur->getValue('photo'), "s_"), true) ?>" alt="Photo" />
+                        <a href="<?= Organisateur::getWebPath(Organisateur::getFilePath($organisateur->getValue('photo')), isWithAntiCache: true) ?>" class="magnific-popup">
+                            <img src="<?= Organisateur::getWebPath(Organisateur::getFilePath($organisateur->getValue('photo'), "s_"), isWithAntiCache: true) ?>" alt="Photo" />
                         </a>
                     <?php endif; ?>
                 </figure>
