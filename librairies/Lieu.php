@@ -10,10 +10,10 @@ class Lieu extends Element
 {
     use HasDocuments;
 
-    static $systemDirPath;
-    static $urlDirPath;
+    public static $systemDirPath;
+    public static $urlDirPath;
 
-    const int RESULTS_PER_PAGE = 100;
+    public const int RESULTS_PER_PAGE = 100;
 
     function __construct()
 	{
