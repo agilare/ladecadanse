@@ -10,6 +10,7 @@ use Ladecadanse\EvenementCollection;
 use Ladecadanse\UserLevel;
 use Ladecadanse\Utils\Utils;
 use Ladecadanse\HtmlShrink;
+use Ladecadanse\EvenementRenderer;
 
 if (!$videur->checkGroup(UserLevel::ADMIN))
 {
@@ -790,7 +791,7 @@ while ($tab_even = $connector->fetchArray($req_evenement))
 	echo afficher_debut_fin($tab_even['horaire_debut'], $tab_even['horaire_fin'], $tab_even['dateEvenement']);
 
 
-	echo "</td><td>".$tab_icones_statut[$tab_even['statut']]."</td>";
+	echo "</td><td>".EvenementRenderer::$iconStatus[$tab_even['statut']]."</td>";
 	$datetime_dateajout = date_iso2app($tab_even['dateAjout']);
 	$tab_datetime_dateajout = explode(" ", (string) $datetime_dateajout);
 	echo "<td>".$tab_datetime_dateajout[1]." ".$tab_datetime_dateajout[0]."</td>";

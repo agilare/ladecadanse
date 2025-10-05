@@ -1,11 +1,11 @@
 <?php
 
-global $connector, $tab_icones_statut;
+global $connector;
 require_once("../app/bootstrap.php");
 
 use Ladecadanse\Utils\Text;
-use Ladecadanse\HtmlShrink;
 use Ladecadanse\UserLevel;
+use Ladecadanse\EvenementRenderer;
 
 if (!$videur->checkGroup(UserLevel::ADMIN)) {
 	header("Location: /user-login.php"); die();
@@ -52,7 +52,7 @@ $troisJoursAvant = date("Y-m-d H:i:s", time() - (3*86400));
         <th>Affiliation</th>
         <th>&nbsp;</th>
     </tr>
-    
+
     <?php
 
 
@@ -165,7 +165,7 @@ while($tab_even = $connector->fetchArray($req_getEvenement))
 	}
 
 
-	echo "<td><a href=\"/event/evenement.php?idE=".(int)$tab_even['idEvenement']."\" title=\"Voir la fiche de l'événement\" class='titre'>".sanitizeForHtml($tab_even['titre'])."</a></td>
+	echo "<td><a href=\"/event/evenement.php?idE=".(int)$tab_even['idEvenement']."\" class='titre'>".sanitizeForHtml($tab_even['titre'])."</a></td>
 	<td>".$nomLieu."</td>
 	<td>".date_iso2app($tab_even['dateEvenement'])."</td>";
 
@@ -176,7 +176,7 @@ while($tab_even = $connector->fetchArray($req_getEvenement))
 	echo afficher_debut_fin($tab_even['horaire_debut'], $tab_even['horaire_fin'], $tab_even['dateEvenement']);
 
 	echo "</td>
-	<td style='text-align: center;'>".$tab_icones_statut[$tab_even['statut']]."</td>";
+	<td style='text-align: center;'>".EvenementRenderer::$iconStatus[$tab_even['statut']]."</td>";
 
 	$datetime_dateajout = date_iso2app($tab_even['dateAjout']);
 	$tab_datetime_dateajout = explode(" ", (string) $datetime_dateajout);
@@ -262,7 +262,7 @@ while ($tab_desc = $connector->fetchArray($req_getDes))
 
         if ($tab_auteur = $connector->fetchArray($connector->query("SELECT pseudo FROM personne WHERE idPersonne=".(int) $tab_desc['idPersonne'])))
 	{
-		$nom_auteur = "<a href=\"/user.php?idP=".$tab_desc['idPersonne']."\"
+		$nom_auteur = "<a href=\"/user.php?idP=".(int) $tab_desc['idPersonne']."\"
 		title=\"Voir le profile de la personne\">".sanitizeForHtml($tab_auteur['pseudo'])."</a>";
 	}
 	echo "<td>".$tab_desc['type']."</td>";

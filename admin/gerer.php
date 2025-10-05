@@ -7,6 +7,7 @@ use Ladecadanse\Utils\Validateur;
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\Utils\Utils;
 use Ladecadanse\Utils\Text;
+use Ladecadanse\EvenementRenderer;
 
 if (!$videur->checkGroup(UserLevel::ADMIN))
 {
@@ -293,7 +294,7 @@ echo '<div class="spacer"></div>';
 			echo date_iso2app($tab['date_derniere_modif']);
 		}
 		echo "</td>
-		<td>".$tab_icones_statut[$tab['statut']]."</td>";
+		<td>".EvenementRenderer::$iconStatus[$tab['statut']]."</td>";
 
 		//Edition pour l'admin ou l'auteur
 		if ($_SESSION['Sgroupe'] <= UserLevel::ADMIN) {
@@ -420,7 +421,7 @@ echo '<div class="spacer"></div>';
 		<td>".date_iso2app($tab_pers['dateAjout'])."</td>";
 
 
-		echo "<td>".$tab_icones_statut[$tab_pers['statut']]."</td>";
+		echo "<td>".EvenementRenderer::$iconStatus[$tab_pers['statut']]."</td>";
 
 
 

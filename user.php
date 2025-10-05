@@ -7,6 +7,7 @@ use Ladecadanse\HtmlShrink;
 use Ladecadanse\Utils\Utils;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\Text;
+use Ladecadanse\EvenementRenderer;
 
 if (!$videur->checkGroup(UserLevel::MEMBER)) {
 	header("Location: /user-login.php"); die();
@@ -323,7 +324,7 @@ $detailsAff = $connector->fetchArray($req_affPers);
 				echo "</td>
 				*/
 				echo "
-				<td>".mb_substr((string) date_iso2app($tab_even['dateAjout']), 9)."</td><td>".$tab_icones_statut[$tab_even['statut']]."</td>";
+				<td>".mb_substr((string) date_iso2app($tab_even['dateAjout']), 9)."</td><td>".EvenementRenderer::$iconStatus[$tab_even['statut']]."</td>";
 
 				if ($_SESSION['SidPersonne'] == $detailsPersonne['idPersonne'] || $_SESSION['Sgroupe'] <= 4)
 				{

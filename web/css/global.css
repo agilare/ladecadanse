@@ -831,6 +831,12 @@ table tr td.small
     background:red;
 }
 
+.even-statut-badge.actif
+{
+    color:#fff;
+    background:green;
+}
+
 .even-statut-badge.propose
 {
     background:lightblue;
@@ -846,7 +852,13 @@ table tr td.small
     background: rgba(236, 226, 111, .7);
 }
 
-
+.even-icon-status-round
+{
+    display:inline-block;
+    width:12px;
+    height:12px;
+    border-radius:50%;
+}
 
 /* article */
 

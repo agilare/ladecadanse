@@ -84,16 +84,22 @@ $tab_tri_agenda = ["dateAjout", "horaire_debut"];
 $statuts_lieu = ['actif', 'ancien', 'inactif'];
 $glo_categories_lieux = ['bistrot' => 'bistrot', 'salle' => 'salle', 'restaurant' => 'restaurant', 'cinema' => 'cinéma', 'theatre' => 'théâtre', 'galerie' => 'galerie', 'boutique' => 'boutique', 'musee' => 'musée', 'autre' => 'autre'];
 
-$glo_tab_quartiers = ["geneve", "Champel", "Charmilles", "Centre", "Cornavin", "Grottes", "Jonction", "Nations", "Pâquis", "Plainpalais", "Saint-Gervais", "Saint-Jean", "Servette",
-    "communes", "Aire-la-Ville", "Anières", "Avully", "Avusy", "Bardonnex", "Bellevue", "Bernex", "Carouge", "Cartigny", "Céligny",
-    "Chancy", "Chêne-Bougeries", "Chêne-Bourg", "Choulex", "Collex-Bossy", "Collonge-Bellerive", "Cologny", "Confignon", "Corsier",
-    "Dardagny", "Genthod", "Gy", "Hermance", "Jussy", "Laconnex", "Lancy", "Le Grand-Saconnex", "Meinier", "Meyrin", "Onex", "Perly-Certoux",
-    "Plan-les-Ouates", "Pregny-Chambésy", "Presinge", "Puplinge", "Russin", "Satigny", "Soral", "Thônex", "Troinex", "Vandoeuvre",
-    "Vernier", "Versoix", "Veyrier", "ailleurs", "Nyon", "Vaud", "France", "autre"];
+$glo_tab_quartiers = [
+    "geneve",
+        "Champel", "Charmilles", "Centre", "Cornavin", "Grottes", "Jonction", "Nations", "Pâquis", "Plainpalais", "Saint-Gervais", "Saint-Jean", "Servette",
+    "communes",
+        "Aire-la-Ville", "Anières", "Avully", "Avusy", "Bardonnex", "Bellevue", "Bernex", "Carouge", "Cartigny", "Céligny",
+        "Chancy", "Chêne-Bougeries", "Chêne-Bourg", "Choulex", "Collex-Bossy", "Collonge-Bellerive", "Cologny", "Confignon", "Corsier",
+        "Dardagny", "Genthod", "Gy", "Hermance", "Jussy", "Laconnex", "Lancy", "Le Grand-Saconnex", "Meinier", "Meyrin", "Onex", "Perly-Certoux",
+        "Plan-les-Ouates", "Pregny-Chambésy", "Presinge", "Puplinge", "Russin", "Satigny", "Soral", "Thônex", "Troinex", "Vandoeuvre",
+        "Vernier", "Versoix", "Veyrier",
+    "ailleurs",
+        "Nyon", "Vaud", "France", "autre"];
+
 $glo_tab_quartiers2 = [
-            "ge" =>
-            ["Champel", "Charmilles", "Centre", "Cornavin", "Grottes", "Jonction", "Nations", "Pâquis", "Petit-Saconnex", "Saint-Gervais", "Saint-Jean", "Servette"]
+    "ge" => ["Champel", "Charmilles", "Centre", "Cornavin", "Grottes", "Jonction", "Nations", "Pâquis", "Petit-Saconnex", "Saint-Gervais", "Saint-Jean", "Servette"]
 ];
+
 $glo_tab_quartiers_hors_geneve = ["Nyon", "Vaud", "France", "autre"];
 $glo_tab_ailleurs = ["rf" => "France", "hs" => "Autre"];
 
@@ -160,12 +166,3 @@ $icone['jpeg'] = "<img src=\"" . $url_images_interface_icons . "page_white_pictu
 $icone['gif'] = "<img src=\"" . $url_images_interface_icons . "page_white_picture.png\" alt=\"\" />";
 $icone['png'] = "<img src=\"" . $url_images_interface_icons . "page_white_picture.png\" alt=\"\" />";
 $icones_fichiers = ["text" => "text.png"];
-
-$tab_icones_statut = ["actif" => "<div style='display:inline-block;background:green;width:12px;height:12px;border-radius:50%' title='Publié'>&nbsp;</div>",
-    "inactif" => "<div style='display:inline-block;background:red;width:12px;height:12px;border-radius:50%' title='Dépublié'>&nbsp;</div>",
-    "annule" => "<div style='display:inline-block;background:orange;width:12px;height:12px;border-radius:50%' title='Annulé'>&nbsp;</div>",
-    "complet" => "<div style='display:inline-block;background:darkorange;width:12px;height:12px;border-radius:50%' title='Complet'>&nbsp;</div>",
-    "ancien" => "<div style='display:inline-block;background:lightgray;width:12px;height:12px;border-radius:50%' title='Ancien'>&nbsp;</div>",
-    "propose" => "<div style='display:inline-block;background:lightblue;width:12px;height:12px;border-radius:50%' title='Proposé'>&nbsp;</div>",
-    "demande" => "dem"
-];
