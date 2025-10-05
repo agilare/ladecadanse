@@ -23,12 +23,13 @@ use Ladecadanse\Utils\Text;
 class EvenementRenderer
 {
     public static $iconStatus = [
-        "actif" => "<div class='even-icon-status-round' title='Publié'>&nbsp;</div>",
-        "inactif" => "<div class='even-icon-status-round' title='Dépublié'>&nbsp;</div>",
-        "annule" => "<div class='even-icon-status-round' title='Annulé'>&nbsp;</div>",
-        "complet" => "<div class='even-icon-status-round' title='Complet'>&nbsp;</div>",
-        "ancien" => "<div class='even-icon-status-round' title='Ancien'>&nbsp;</div>",
-        "propose" => "<div class='even-icon-status-round' title='Proposé'>&nbsp;</div>"
+        "actif" => "<div class='even-icon-status-round statut-actif' title='Publié'>&nbsp;</div>",
+        "inactif" => "<div class='even-icon-status-round statut-inactif' title='Dépublié'>&nbsp;</div>",
+        "annule" => "<div class='even-icon-status-round statut-annule' title='Annulé'>&nbsp;</div>",
+        "complet" => "<div class='even-icon-status-round statut-complet' title='Complet'>&nbsp;</div>",
+        "ancien" => "<div class='even-icon-status-round statut-ancien' title='Ancien'>&nbsp;</div>",
+        "propose" => "<div class='even-icon-status-round statut-propose' title='Proposé'>&nbsp;</div>",
+        "demande" => "demande"
     ];
 
 

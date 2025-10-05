@@ -15,6 +15,7 @@ use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Security\SecurityToken;
 use Ladecadanse\Utils\Logger;
 use Ladecadanse\HtmlShrink;
+use Ladecadanse\Personne;
 
 if (!$videur->checkGroup(UserLevel::ACTOR)) {
     header("Location: /user-login.php"); die();
@@ -805,29 +806,19 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= UserLevel::ACTOR)) {
 </fieldset>
 
 
-<?php
-
-if ($_SESSION['Sgroupe'] == UserLevel::SUPERADMIN && ($get['action'] == "editer" || $get['action'] == "update") && isset($get['idP'])) {
-?>
-<fieldset>
-<legend>Statut</legend>
-<ul class="radio">
-<?php
-foreach ($glo_statuts_personne as $s)
-{
-	$coche = '';
-	if ($s == $champs['statut'])
-	{
-		$coche = 'checked="checked"';
-	}
-	echo '<li class="listehoriz"><input type="radio" name="statut" value="'.$s.'" '.$coche.' id="statut_'.$s.'" title="statut de l\'événement" class="radio_horiz" />
-	<label class="continu" for="statut_'.$s.'">'.$s.'</label></li>';
-}
-?>
-</ul>
-<?php
-echo $verif->getHtmlErreur("statut");
-?>
+<?php if ($_SESSION['Sgroupe'] == UserLevel::SUPERADMIN && ($get['action'] == "editer" || $get['action'] == "update") && isset($get['idP'])) { ?>
+    <fieldset>
+    <legend>Statut</legend>
+        <ul class="radio">
+        <?php foreach (Personne::$statuts as $s) : ?>
+            <li class="listehoriz">
+                <input type="radio" name="statut" value="<?= sanitizeForHtml($s) ?>" <?php if ($s == $champs['statut']) { ?> checked="checked" <?php } ?> id="statut_<?= sanitizeForHtml($s) ?>" class="radio_horiz" />
+                <label class="continu" for="statut_<?= sanitizeForHtml($s) ?>"><?= sanitizeForHtml($s) ?></label></li>
+        <?php endforeach ?>
+        </ul>
+    <?php
+    echo $verif->getHtmlErreur("statut");
+    ?>
 </fieldset>
 <?php
 }

@@ -15,6 +15,7 @@ use PDO;
  */
 class Personne
 {
+    public static $statuts = ['demande', 'actif', 'inactif'];
 
     public static function getPersonnesOfOrganisateur(int $idOrga): array
     {

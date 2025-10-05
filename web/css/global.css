@@ -825,29 +825,29 @@ table tr td.small
     border-radius:6px
 }
 
-.even-statut-badge.inactif
+.statut-inactif
 {
     color:#fff;
     background:red;
 }
 
-.even-statut-badge.actif
+.statut-actif
 {
     color:#fff;
     background:green;
 }
 
-.even-statut-badge.propose
+.statut-propose
 {
     background:lightblue;
 }
 
-.even-statut-badge.annule
+.statut-annule
 {
     background: rgba(238, 180, 41, .6)
 }
 
-.even-statut-badge.complet
+.statut-complet
 {
     background: rgba(236, 226, 111, .7);
 }

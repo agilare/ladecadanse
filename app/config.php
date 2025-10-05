@@ -71,9 +71,6 @@ $glo_regions_coverage = ['ge' => ['ge', 'rf', 'hs'], 'vd' => ['vd', 'hs']];
 
 // DOMAIN
 
-//// USERS
-$glo_statuts_personne = ['demande', 'actif', 'inactif'];
-
 //// EVENTS
 $glo_tab_genre = ["fête" => "fêtes", "cinéma" => "ciné", "théâtre" => "théâtre", "expos" => "expos", "divers" => "divers"];
 $statuts_evenement = ['propose' => 'Proposé', 'actif' => 'Proposé', 'complet' => 'Complet', 'annule' => 'Annulé', 'inactif' => 'Dépublié'];
