@@ -6,10 +6,14 @@
 - pagination : lieu and search pages had wrong items per page because of an error in sql
 - admin : restore jquery-checkboxes in gererEvenements
 - organisateur : restore link to preselected orga in event form
+- tests : in Selenium some regressions after lieux and admin menu redesign
 
 ### Changed
 - organisateur : page refactored, cleaned, modernized
 - home : update Radio Vostok partner logo
+- event : mv global to a static var in class
+- users : mv global to a static var in class
+- tests : in Selenium replace some CSS selectors (slow) by xpath
 
 ### Added
 - organisateur : passed/incoming events menu, with pagination
