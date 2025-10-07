@@ -80,7 +80,7 @@ $url_tranche = "&amp;tranche=".$get['tranche'];
 $url_idOrganisateur = "";
 if (isset($get['idO']))
 {
-	$url_idOrganisateur = "&amp;idO=".$get['idO'];
+	$url_idOrganisateur = "&amp;idO=".(int)$get['idO'];
 }
 else {
     $get['idO'] = '';
@@ -88,65 +88,60 @@ else {
 
 $aff_menulieux = '<div id="menu_lieux">';
 
-			$sql_vue = "";
+$sql_vue = "";
 
-			if ($get['vue'] == "az")
-			{
-				$aff_menulieux .= '
-				<ul id="tranches">
-				<li';
-				if ($get['tranche'] == "ak") { $aff_menulieux .= " class=\"ici\""; }
-				$aff_menulieux .= '><a href="?' . $url_query_region_et . 'statut=' . $get['statut'] . '&amp;vue=az' . $url_idOrganisateur . '&amp;tranche=ak" title="Liste alphabétique" rel="nofollow">a-k</a></li>
-				<li';
-				if ($get['tranche'] == "lz") { $aff_menulieux .= " class=\"ici\""; }
-				$aff_menulieux .= '><a href="?' . $url_query_region_et . 'statut=' . $get['statut'] . '&amp;vue=az' . $url_idOrganisateur . '&amp;tranche=lz" title="Liste alphabétique" rel="nofollow">l-z</a></li>
-				<li';
-				if ($get['tranche'] == "tout") { $aff_menulieux .= " class=\"ici\""; }
-				$aff_menulieux .= '><a href="?' . $url_query_region_et . 'statut=' . $get['statut'] . '&amp;vue=az' . $url_idOrganisateur . '&amp;tranche=tout" title="Liste alphabétique">tout</a></li>
-				</ul>';
+if ($get['vue'] == "az")
+{
+    $aff_menulieux .= '
+    <ul id="tranches">
+    <li';
+    if ($get['tranche'] == "ak") { $aff_menulieux .= " class=\"ici\""; }
+    $aff_menulieux .= '><a href="?' . $url_query_region_et . 'statut=' . $get['statut'] . '&amp;vue=az' . $url_idOrganisateur . '&amp;tranche=ak" title="Liste alphabétique" rel="nofollow">a-k</a></li>
+    <li';
+    if ($get['tranche'] == "lz") { $aff_menulieux .= " class=\"ici\""; }
+    $aff_menulieux .= '><a href="?' . $url_query_region_et . 'statut=' . $get['statut'] . '&amp;vue=az' . $url_idOrganisateur . '&amp;tranche=lz" title="Liste alphabétique" rel="nofollow">l-z</a></li>
+    <li';
+    if ($get['tranche'] == "tout") { $aff_menulieux .= " class=\"ici\""; }
+    $aff_menulieux .= '><a href="?' . $url_query_region_et . 'statut=' . $get['statut'] . '&amp;vue=az' . $url_idOrganisateur . '&amp;tranche=tout" title="Liste alphabétique">tout</a></li>
+    </ul>';
 
-				$sql_vue = "AND TRIM(LEADING 'l\'' FROM (TRIM(LEADING 'les ' FROM (TRIM(LEADING 'la ' FROM (TRIM(LEADING 'le ' FROM LOWER(nom)))))))) >=  LOWER('".$de."%')";
+    $sql_vue = "AND TRIM(LEADING 'l\'' FROM (TRIM(LEADING 'les ' FROM (TRIM(LEADING 'la ' FROM (TRIM(LEADING 'le ' FROM LOWER(nom)))))))) >=  LOWER('".$de."%')";
 
-				if ($get['tranche'] == 'ak')
-				{
-				$sql_vue .= "AND TRIM(LEADING 'l\'' FROM (TRIM(LEADING 'les ' FROM (TRIM(LEADING 'la ' FROM (TRIM(LEADING 'le ' FROM lower(nom)))))))) <= LOWER('".$vers."%')";
-				}
-			}
-			else if ($get['vue'] == "genre")
-			{
-				$aff_menulieux .= "
-				<form action=\"\" method=\"get\">
-				<fieldset>
-				<input type=\"hidden\" name=\"vue\" value=\"genre\" />
-				<input type=\"hidden\" name=\"idO\" value=\"".$get['idO']."\" />
-				<input type=\"hidden\" name=\"statut\" value=\"".$get['statut']."\" />
-				<select name=\"tranche\" class=\"js-auto-submiter\">";
-                foreach ($categoriesVal as $c)
+    if ($get['tranche'] == 'ak')
     {
+    $sql_vue .= "AND TRIM(LEADING 'l\'' FROM (TRIM(LEADING 'les ' FROM (TRIM(LEADING 'la ' FROM (TRIM(LEADING 'le ' FROM lower(nom)))))))) <= LOWER('".$vers."%')";
+    }
+}
+else if ($get['vue'] == "genre")
+{
+    $aff_menulieux .= "
+    <form action=\"\" method=\"get\">
+    <fieldset>
+    <input type=\"hidden\" name=\"vue\" value=\"genre\" />
+    <input type=\"hidden\" name=\"idO\" value=\"".(int)$get['idO']."\" />
+    <input type=\"hidden\" name=\"statut\" value=\"".$get['statut']."\" />
+    <select name=\"tranche\" class=\"js-auto-submiter\">";
+    foreach ($categoriesVal as $c)
+    {
+        $aff_menulieux .= "<option value=\"".$c."\"";
+        if ($c == $get['tranche'])
+        {
+            $aff_menulieux .= " selected=\"selected\"";
+        }
+        $aff_menulieux .= ">".$c."</option>";
+    }
+    $aff_menulieux .= "</select><input class=\"submit\" type=\"submit\" value=\"ok\" size=\"1\" />
+
+    </fieldset></form>";
+
+    $sql_vue .= "AND categorie LIKE '%".$get['tranche']."%'";
+}
+
+$aff_menulieux .= '<div class="spacer"><!-- --></div>';
+$aff_menulieux .= '<table summary="Menu des organisateurs"><tr><th>';
 
 
-					$aff_menulieux .= "<option value=\"".$c."\"";
-					if ($c == $get['tranche'])
-					{
-						$aff_menulieux .= " selected=\"selected\"";
-					}
-					$aff_menulieux .= ">".$c."</option>";
-				}
-				$aff_menulieux .= "</select><input class=\"submit\" type=\"submit\" value=\"ok\" size=\"1\" />
-
-				</fieldset></form>";
-
-				$sql_vue .= "AND categorie LIKE '%".$get['tranche']."%'";
-
-			}
-
-	$aff_menulieux .= '<div class="spacer"><!-- --></div>';
-	$aff_menulieux .= '<table summary="Menu des organisateurs"><tr><th>';
-
-
-		$aff_menulieux .= '</th>
-		<th>&nbsp;</th>
-		<th><img src="'.$url_images_interface_icons .'calendar.png" alt="Nombre d\'événements agendés" /></th></tr>';
+$aff_menulieux .= '</th></tr>';
 
 /*
 * Requète SQL vers table 'lieu' selon choix de listage (AK ou LZ) et pour les lieux
@@ -156,7 +151,7 @@ $aff_menulieux = '<div id="menu_lieux">';
 $sql_menu = "
 SELECT idOrganisateur, nom, presentation
 FROM organisateur
-WHERE statut='".$get['statut']."' ".$sql_vue."
+WHERE statut='".$connector->sanitize($get['statut'])."' ".$sql_vue."
 ORDER BY TRIM(LEADING 'l\'' FROM (TRIM(LEADING 'les ' FROM (TRIM(LEADING 'la ' FROM (TRIM(LEADING 'le ' FROM lower(nom)))))))) COLLATE utf8mb4_unicode_ci";
 
 $req = $connector->query($sql_menu);
@@ -183,17 +178,9 @@ while ([$id, $nom, $presentation] = mysqli_fetch_row($req))
        $aumoins1des = "*";
     } */
 
-	$sql_even = "SELECT titre FROM evenement, evenement_organisateur WHERE evenement.idEvenement=evenement_organisateur.idEvenement AND idOrganisateur=".$id." AND dateEvenement >= '".date("Y-m-d")."' AND statut='actif'";
-
-	//echo $sql_even;
-
-    $req_even = $connector->query($sql_even);
-	// Précision pour dire si le lieu a une ou plusieurs presentations
-
-    $nb_evenements = $connector->getNumRows($req_even);
-
-
-
+//	$sql_even = "SELECT titre FROM evenement, evenement_organisateur WHERE evenement.idEvenement=evenement_organisateur.idEvenement AND idOrganisateur=".(int)$id." AND dateEvenement >= '".date("Y-m-d")."' AND statut='actif'";
+//    $req_even = $connector->query($sql_even);
+//    $nb_evenements = $connector->getNumRows($req_even);
 
 	$aff_menulieux .=  "<tr ";
 	if ($id == $get['idO'])
@@ -208,10 +195,7 @@ while ([$id, $nom, $presentation] = mysqli_fetch_row($req))
 		$aff_menulieux .=  "class=\"impair\"";
 	}
 
-
-
-	$aff_menulieux .= ">
-	<td><a href=\"/organisateur.php?".Utils::urlQueryArrayToString($get, ["idO", "type_description"])."&amp;idO=".$id."\">";
+	$aff_menulieux .= "><td><a href=\"/organisateur.php?idO=".(int)$id."&amp;".Utils::urlQueryArrayToString($get, ["idO", "type_description"])."\">";
 
 	if (preg_match("/^(Le |La |Les |L')(.*)/", (string) $nomDuLieu, $matches))
 	{
@@ -223,18 +207,9 @@ while ([$id, $nom, $presentation] = mysqli_fetch_row($req))
 		$aff_menulieux .= sanitizeForHtml($nomDuLieu);
     }
 
-	$aff_menulieux .= "</a></td>
-	<td class=\"nb_desc_lieu\">".$aumoins1des."</td>";
-	$nb_aff = "";
-	if ($nb_evenements > 0)
-	{
-		$nb_aff = $nb_evenements;
-	}
-	$aff_menulieux .= "
-	<td class=\"nb_even_lieu\">".$nb_aff."</td>
-	</tr>";
+	$aff_menulieux .= "</a></td></tr>";
 
-	$prec = "/organisateur.php?vue=".$get['vue']."&amp;idO=".$id.$url_tranche."";
+	$prec = "/organisateur.php?idO=".(int)$id."&amp;vue=".$get['vue']."&amp;".$url_tranche."";
 
 	if ($id_passe && $url_suiv == "" && $id != $get['idO'])
 	{
