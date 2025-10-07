@@ -230,9 +230,11 @@ class EvenementRenderer
             </td>
             <td class="location">
                 <?= $location ?>
-                <div class="location">
-                    <span class="value-title" title="<?= sanitizeForHtml($even_lieu['nom']); ?>"></span>
-                </div>
+                <?php if (!empty($even_lieu['nom'])) : ?>
+                    <div class="location">
+                        <span class="value-title" title="<?= sanitizeForHtml($even_lieu['nom']); ?>"></span>
+                    </div>
+                <?php endif; ?>
             </td>
             <?php if ($authorization->isPersonneAllowedToEditEvenement($_SESSION, $tab_even)) : ?>
             <td class="lieu_actions_evenement">
