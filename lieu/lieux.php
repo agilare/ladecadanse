@@ -86,16 +86,23 @@ $stmt = $connectorPdo->prepare("SELECT
 idLieu,
 count(*) as nb
 FROM descriptionlieu
-WHERE type = 'description' group by idLieu");
+WHERE type = 'description' GROUP BY idLieu");
 $stmt->execute();
 $lieux_desc = $stmt->fetchAll(PDO::FETCH_GROUP);
 
-$stmt = $connectorPdo->prepare("SELECT
-idLieu,
-count(*) as nb
+define("LIEUX_LOW_ACTIVITY_MONTHS_NB", 6);
+define("LIEUX_VERY_LOW_ACTIVITY_MONTHS_NB", 12);
+
+// for each lieu report futur and past events
+$stmt = $connectorPdo->prepare("
+SELECT
+    idLieu,
+    count(CASE WHEN e.dateEvenement >= ? THEN 1 END) AS events_futur_nb,
+    MAX(e.dateEvenement) AS latest_event_date,
+    TIMESTAMPDIFF(MONTH, MAX(e.dateEvenement), CURDATE()) AS latest_event_months_nb
 FROM evenement e
-WHERE e.statut NOT IN ('inactif', 'propose') AND e.dateEvenement >= '" . $glo_auj . "' group by idLieu");
-$stmt->execute();
+WHERE e.statut NOT IN ('inactif', 'propose') GROUP BY idLieu ORDER BY idLieu ASC");
+$stmt->execute([$glo_auj]);
 $lieux_even = $stmt->fetchAll(PDO::FETCH_GROUP);
 //dump($lieux_even);
 
@@ -160,7 +167,9 @@ include("../_header.inc.php");
             <table id="derniers_lieux">
                 <thead>
                     <tr>
-                        <th colspan="3"></th><th></th><th><i class="fa fa-comment-o" aria-hidden="true"></i></th><th><img src="/web/interface/icons/calendar.png" alt="Nombre d'événements agendés" title="Nombre d'événements agendés" /></th>
+                        <th colspan="3"></th>
+                        <th class="td-align-center"><i class="fa fa-comment-o" aria-hidden="true"></i></th>
+                        <th class="td-align-center"><img src="/web/interface/icons/calendar.png" alt="Nombre d'événements agendés" title="Nombre d'événements agendés" /></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -176,14 +185,15 @@ include("../_header.inc.php");
                             <?php endif; ?>
                         </td>
                         <td>
-                            <a href="lieu.php?idL=<?= (int)$lieu['idLieu']; ?>"><strong><?= sanitizeForHtml($lieu['nom']); ?></strong></a>
+                            <a href="lieu.php?idL=<?= (int)$lieu['idLieu']; ?>" ><strong><?= sanitizeForHtml($lieu['nom']); ?></strong></a>
                             <?php  if (0) : // if (!empty($lieux_salles[$lieu['idLieu']])) : ?>
                                 <?php foreach ($lieux_salles[$lieu['idLieu']] as $s) : ?>
                                     <br><?= sanitizeForHtml($s['nom']) ?>
                                 <?php endforeach; ?>
                             <?php endif; ?>
+                                <br><small><?= sanitizeForHtml(implode(", ", array_map(fn ($cat) : string => $glo_categories_lieux[$cat], explode(",", str_replace(" ", "", $lieu['categorie']))))) ?></small>
                         </td>
-                        <td><?= sanitizeForHtml(implode(", ", array_map(fn ($cat) : string => $glo_categories_lieux[$cat], explode(",", str_replace(" ", "", $lieu['categorie']))))) ?></td>
+
                         <td>
                             <?php
                             // HACK: all lieux in localite.id=1 (localite.canton="") are actually in France
@@ -196,8 +206,13 @@ include("../_header.inc.php");
                             <?php endif; ?>
                         </td>
                         <td>
-                            <?php if (!empty($lieux_even[$lieu['idLieu']])) : ?>
-                                <strong><?= $lieux_even[$lieu['idLieu']][0]['nb'] ?></strong>
+                            <?php if (!empty($lieux_even[$lieu['idLieu']][0]) ) : ?>
+                                <?php if ($lieux_even[$lieu['idLieu']][0]['events_futur_nb'] > 0) : ?>
+                            <strong><a href="lieu.php?idL=<?= (int)$lieu['idLieu'] ?>#prochains_evenements"><?= $lieux_even[$lieu['idLieu']][0]['events_futur_nb'] ?></a></strong>
+                                <?php endif; ?>
+                                <?php if ($authorization->isPersonneEditor($_SESSION) && $lieux_even[$lieu['idLieu']][0]['latest_event_months_nb'] > LIEUX_LOW_ACTIVITY_MONTHS_NB) : ?>
+                                    <small style="<?php if ($lieux_even[$lieu['idLieu']][0]['latest_event_months_nb'] > LIEUX_VERY_LOW_ACTIVITY_MONTHS_NB) : ?>color:red;<?php else : ?>color:darkorange; <?php endif ?>"><?= (new DateTime($lieux_even[$lieu['idLieu']][0]['latest_event_date']))->format('m.Y') ?></small>
+                                <?php endif; ?>
                             <?php endif; ?>
                         </td>
                     </tr>

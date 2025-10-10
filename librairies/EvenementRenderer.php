@@ -216,7 +216,7 @@ class EvenementRenderer
         <tr class="<?php if ($glo_auj_6h == $tab_even['e_dateEvenement']) { echo "ici"; } ?> vevent evenement">
 
             <td class="dtstart">
-                <?= date2nomJour($tab_even['e_dateEvenement']); ?>&nbsp;<?= date2jour($tab_even['e_dateEvenement']); ?><span class="value-title" title="<?= $tab_even['e_dateEvenement'].$vcard_starttime; ?>"></span><br>
+                <a href="/index.php?courant=<?= sanitizeForHtml($tab_even['e_dateEvenement']) ?>"><?= date2nomJour($tab_even['e_dateEvenement']); ?>&nbsp;<?= date2jour($tab_even['e_dateEvenement']); ?><span class="value-title" title="<?= $tab_even['e_dateEvenement'].$vcard_starttime; ?>"></span></a><br>
                 <span class="pratique"><?= afficher_debut_fin($tab_even['e_horaire_debut'], $tab_even['e_horaire_fin'], $tab_even['e_dateEvenement']) ?></span>
             </td>
             <td class="flyer photo">

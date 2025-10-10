@@ -10,15 +10,19 @@
 
 ### Changed
 - organisateur : page refactored, cleaned, modernized
+- lieux : in index catégories mv from col to below lieu name
+- lieu : in events table, date links to agenda
 - home : update Radio Vostok partner logo
 - event : mv global to a static var in class
 - users : mv global to a static var in class
 - tests : in Selenium replace some CSS selectors (slow) by xpath
 
+
 ### Added
 - organisateur : passed/incoming events menu, with pagination
 - organisateur : in event edit form link to Contactez-nous prefills contact form
 - events : method to display an event in a html table
+- lieux : in index show to editors latest event date of inactive lieux
 
 
 ## [3.9.0] - 2025-09-21
