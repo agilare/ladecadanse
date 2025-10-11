@@ -3,7 +3,6 @@
 require_once("../app/bootstrap.php");
 
 $page_titre = "Annoncer un événement";
-$extra_css = ["articles/apropos"];
 include("../_header.inc.php");
 ?>
 
