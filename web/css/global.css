@@ -61,6 +61,10 @@ table
     border-collapse: collapse;
 }
 
+table tr.ici, table td.ici {
+  background-color: #ff3;
+}
+
 figure
 {
     margin: 0;

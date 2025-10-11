@@ -413,12 +413,6 @@ ul#menu_complement
             color:#5C7378;
             background:#F7F7F5;
         }
-
-        #prochains_evenements table tr.ici
-        {
-            background-color:#ff3;
-        }
-
             #prochains_evenements table td.mois
             {
                 font-weight:bold;

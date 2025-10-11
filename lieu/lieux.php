@@ -99,7 +99,8 @@ SELECT
     idLieu,
     count(CASE WHEN e.dateEvenement >= ? THEN 1 END) AS events_futur_nb,
     MAX(e.dateEvenement) AS latest_event_date,
-    TIMESTAMPDIFF(MONTH, MAX(e.dateEvenement), CURDATE()) AS latest_event_months_nb
+    TIMESTAMPDIFF(MONTH, MAX(e.dateEvenement), CURDATE()) AS latest_event_months_nb,
+    (SUM(CASE WHEN e.dateEvenement = CURDATE() THEN 1 ELSE 0 END) > 0) AS has_today_event
 FROM evenement e
 WHERE e.statut NOT IN ('inactif', 'propose') GROUP BY idLieu ORDER BY idLieu ASC");
 $stmt->execute([$glo_auj]);
@@ -174,7 +175,7 @@ include("../_header.inc.php");
                 </thead>
                 <tbody>
                 <?php foreach ($lieux_page_current as $lieu) : ?>
-                    <tr>
+                    <tr >
                         <td style="max-width:70px;overflow: hidden;">
                             <?php if ($lieu['logo']) : ?>
                             <a href="<?= Lieu::getWebPath(Lieu::getFilePath($lieu['logo']), true) ?>" class="magnific-popup"><img src="<?= Lieu::getWebPath(Lieu::getFilePath($lieu['logo'], "s_"), true) ?>" alt="Logo" class="logo" height="<?= ImageDriver2::getProportionalHeightFromGivenWidth(Lieu::getSystemFilePath(Lieu::getFilePath($lieu['logo'], "s_")), 50) ?>"></a>
@@ -205,7 +206,7 @@ include("../_header.inc.php");
                                 <?= $lieux_desc[$lieu['idLieu']][0]['nb'] ?>
                             <?php endif; ?>
                         </td>
-                        <td>
+                        <td class="<?php if (!empty($lieux_even[$lieu['idLieu']][0]['has_today_event']) ) { echo "ici"; } ?>">
                             <?php if (!empty($lieux_even[$lieu['idLieu']][0]) ) : ?>
                                 <?php if ($lieux_even[$lieu['idLieu']][0]['events_futur_nb'] > 0) : ?>
                             <strong><a href="lieu.php?idL=<?= (int)$lieu['idLieu'] ?>#prochains_evenements"><?= $lieux_even[$lieu['idLieu']][0]['events_futur_nb'] ?></a></strong>

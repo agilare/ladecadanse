@@ -250,7 +250,7 @@ include("_menuorganisateurs.inc.php");
 
         <?php if ($all_results_nb == 0) : ?>
 
-            <p><?= $translator->get("lieu-events-{$get['periode']}-none") ?> pour<strong><?= $organisateur->getHtmlValue('nom') ?></strong></p>
+            <p><?= $translator->get("lieu-events-{$get['periode']}-none") ?> pour <strong><?= $organisateur->getHtmlValue('nom') ?></strong></p>
 
         <?php else : ?>
 
