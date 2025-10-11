@@ -1,28 +1,30 @@
 # Changelog
 
-## [3.9.1] - Unreleased
+## [3.9.1] - 2025-10-11
 
 ### Fixed
 - pagination : lieu and search pages had wrong items per page because of an error in sql
+- organisateurs : in Organisateur page restore link to preselected orga in event form
 - admin : restore jquery-checkboxes in gererEvenements
-- organisateur : restore link to preselected orga in event form
-- tests : in Selenium some regressions after lieux and admin menu redesign
+- tests (Selenium) : some regressions after lieux and admin menu redesign
 
 ### Changed
 - organisateur : page refactored, cleaned, modernized
 - lieux : in index catégories mv from col to below lieu name
 - lieu : in events table, date links to agenda
 - home : update Radio Vostok partner logo
-- event : mv global to a static var in class
+- events : mv global to a static var in class
 - users : mv global to a static var in class
-- tests : in Selenium replace some CSS selectors (slow) by xpath
-
+- tests (Selenium) : update to new Organisateur page; replace some CSS selectors (slow) by xpath
 
 ### Added
 - organisateur : passed/incoming events menu, with pagination
 - organisateur : in event edit form link to Contactez-nous prefills contact form
 - events : method to display an event in a html table
-- lieux : in index show to editors latest event date of inactive lieux
+- lieux : in index highlight when there is an event today, show to editors latest event date of inactive lieux
+
+### Removed
+- organisateur : heavy db query for events count in menu (that will be replaced in a next version), reduce pages load from 3s to less than 1s
 
 
 ## [3.9.0] - 2025-09-21
