@@ -5049,6 +5049,158 @@
       ],
       "value": ""
     }, {
+      "id": "37d41854-6f79-4736-be01-365b7b465d2e",
+      "comment": "",
+      "command": "executeScript",
+      "target": "return document.querySelector(\"#prochains_evenements tr.evenement\") !== null;",
+      "targets": [],
+      "value": "elementFound"
+    }, {
+      "id": "73c3b766-8e01-48c9-9790-defdc142d70f",
+      "comment": "",
+      "command": "if",
+      "target": "${elementFound}",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "fef35290-f2de-4117-8230-76e38306392f",
+      "comment": "",
+      "command": "assertElementPresent",
+      "target": "xpath=//section[@id='prochains_evenements']/table/tbody/tr[2]/td[3]/a/strong",
+      "targets": [
+        ["css=.ici .summary", "css:finder"],
+        ["xpath=//section[@id='prochains_evenements']/table/tbody/tr[2]/td[3]/a/strong", "xpath:idRelative"],
+        ["xpath=//td[3]/a/strong", "xpath:position"],
+        ["xpath=//strong[contains(.,'Aubes Musicales 2025 - The Woodgies – Indie folk pop')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "59116685-fcb2-42d6-bce7-f246243aba1a",
+      "comment": "",
+      "command": "click",
+      "target": "xpath=//section[@id='prochains_evenements']/table/tbody/tr[2]/td/a",
+      "targets": [
+        ["linkText=samedi 11", "linkText"],
+        ["css=.ici > .dtstart > a", "css:finder"],
+        ["xpath=//a[contains(text(),'samedi 11')]", "xpath:link"],
+        ["xpath=//section[@id='prochains_evenements']/table/tbody/tr[2]/td/a", "xpath:idRelative"],
+        ["xpath=(//a[contains(@href, '/index.php?courant=2025-10-11')])[2]", "xpath:href"],
+        ["xpath=//section[2]/table/tbody/tr[2]/td/a", "xpath:position"],
+        ["xpath=//a[contains(.,'samedi 11')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "2c021668-867c-493b-81fa-e11a822e7cdb",
+      "comment": "",
+      "command": "assertElementPresent",
+      "target": "xpath=//article/header",
+      "targets": [
+        ["css=#event-2955 > .titre", "css:finder"],
+        ["xpath=//article[@id='event-2955']/header", "xpath:idRelative"],
+        ["xpath=//article/header", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "4b41313f-82ca-4e68-9468-153f1d789d88",
+      "comment": "",
+      "command": "executeScript",
+      "target": "window.history.go(-1)",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "5243bb7f-ef49-42d0-9c4b-d4ea55531e11",
+      "comment": "",
+      "command": "click",
+      "target": "xpath=//section[@id='prochains_evenements']/table/tbody/tr[2]/td[3]/a",
+      "targets": [
+        ["css=.ici .summary", "css:finder"],
+        ["xpath=//section[@id='prochains_evenements']/table/tbody/tr[2]/td[3]/a/strong", "xpath:idRelative"],
+        ["xpath=//td[3]/a/strong", "xpath:position"],
+        ["xpath=//strong[contains(.,'Sissi and the Three Old Men')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "08a1a57c-9cd5-4907-85c8-8a4e545ef2aa",
+      "comment": "",
+      "command": "assertElementPresent",
+      "target": "xpath=//article[@id='evenement']/header/h1",
+      "targets": [
+        ["css=.summary", "css:finder"],
+        ["xpath=//article[@id='evenement']/header/h1", "xpath:idRelative"],
+        ["xpath=//h1", "xpath:position"],
+        ["xpath=//h1[contains(.,'Sissi and the Three Old Men')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "ecf1e585-0fb0-41f1-b5ba-8a324f7735ed",
+      "comment": "",
+      "command": "executeScript",
+      "target": "window.history.go(-1)",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "ec5109c3-7126-4301-bba1-2e349b56fb71",
+      "comment": "",
+      "command": "end",
+      "target": "",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "e247e2d5-f7be-45b4-9d4a-c727133bbb3e",
+      "comment": "",
+      "command": "click",
+      "target": "xpath=//ul[@id='menu_periode']/li/a",
+      "targets": [
+        ["linkText=Passés", "linkText"],
+        ["css=.ancien > a", "css:finder"],
+        ["xpath=//a[contains(text(),'Passés')]", "xpath:link"],
+        ["xpath=//ul[@id='menu_periode']/li/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '?idO=8&statut=actif&vue=az&tranche=ak&periode=ancien')]", "xpath:href"],
+        ["xpath=//header/ul/li/a", "xpath:position"],
+        ["xpath=//a[contains(.,'Passés')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "0fe1425c-ea6b-46d1-b12e-c8ddd119e85d",
+      "comment": "",
+      "command": "executeScript",
+      "target": "return document.querySelector(\"#prochains_evenements tr.evenement\") !== null;",
+      "targets": [],
+      "value": "elementFound"
+    }, {
+      "id": "f848b78d-09fa-4ff4-9c41-62a415228f58",
+      "comment": "",
+      "command": "if",
+      "target": "${elementFound}",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "1c780b4d-135c-47e5-9166-e5102257f465",
+      "comment": "",
+      "command": "click",
+      "target": "xpath=//section[@id='prochains_evenements']/table/tbody/tr[2]/td[3]/a",
+      "targets": [
+        ["css=.vevent:nth-child(2) .summary", "css:finder"],
+        ["xpath=//section[@id='prochains_evenements']/table/tbody/tr[2]/td[3]/a/strong", "xpath:idRelative"],
+        ["xpath=//td[3]/a/strong", "xpath:position"],
+        ["xpath=//strong[contains(.,'21e édition du FIFDH')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "3dee12e1-378a-4af3-bb61-4fffea0fe9e0",
+      "comment": "",
+      "command": "executeScript",
+      "target": "window.history.go(-1)",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "367bc8bd-c498-4750-98eb-a1d1e24e8a17",
+      "comment": "",
+      "command": "end",
+      "target": "",
+      "targets": [],
+      "value": ""
+    }, {
       "id": "15640b38-c2b2-44db-88c2-f2a2614cdde9",
       "comment": "",
       "command": "assertElementPresent",
@@ -5116,72 +5268,6 @@
       "value": ""
     }, {
       "id": "ca3a738e-1f51-4065-a478-e744dc8f7857",
-      "comment": "",
-      "command": "assertElementPresent",
-      "target": "xpath=//h1",
-      "targets": [
-        ["css=h2", "css:finder"],
-        ["xpath=//div[@id='entete_contenu']/h2", "xpath:idRelative"],
-        ["xpath=//h2", "xpath:position"],
-        ["xpath=//h2[contains(.,'test')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "721a79b7-983f-4643-aa6c-aaf8c3951e16",
-      "comment": "",
-      "command": "click",
-      "target": "xpath=//p[@id='btn_listelieux']/button",
-      "targets": [
-        ["css=button", "css:finder"],
-        ["xpath=//p[@id='btn_listelieux']/button", "xpath:idRelative"],
-        ["xpath=//button", "xpath:position"],
-        ["xpath=//button[contains(.,' Liste des organisateurs')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "4e2e4754-f230-4a08-bb9b-f935e8c1d9cf",
-      "comment": "",
-      "command": "click",
-      "target": "xpath=//a[contains(text(),'tout')]",
-      "targets": [
-        ["linkText=tout", "linkText"],
-        ["css=#tranches > li:nth-child(3) > a", "css:finder"],
-        ["xpath=//a[contains(text(),'tout')]", "xpath:link"],
-        ["xpath=//ul[@id='tranches']/li[3]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/organisateur.php?statut=actif&vue=az&idO=2&tranche=tout')]", "xpath:href"],
-        ["xpath=//div[2]/ul/li[3]/a", "xpath:position"],
-        ["xpath=//a[contains(.,'tout')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "fce4fd9e-a502-47de-bf0a-da861285e105",
-      "comment": "",
-      "command": "click",
-      "target": "xpath=//p[@id='btn_listelieux']/button",
-      "targets": [
-        ["css=button", "css:finder"],
-        ["xpath=//p[@id='btn_listelieux']/button", "xpath:idRelative"],
-        ["xpath=//button", "xpath:position"],
-        ["xpath=//button[contains(.,' Liste des organisateurs')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "39351ca0-c365-4f89-b176-1d539a7cb8b5",
-      "comment": "",
-      "command": "click",
-      "target": "xpath=//div[@id='menu_lieux']/table/tbody/tr[2]/td/a",
-      "targets": [
-        ["linkText=Bureau culturel", "linkText"],
-        ["css=tr:nth-child(2) > td:nth-child(1) > a", "css:finder"],
-        ["xpath=//a[contains(text(),'Bureau culturel')]", "xpath:link"],
-        ["xpath=//div[@id='menu_lieux']/table/tbody/tr[2]/td/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/organisateur.php?genre_even=tous&complement=evenements&statut=actif&vue=az&tranche=tout&idO=1')]", "xpath:href"],
-        ["xpath=//tr[2]/td/a", "xpath:position"],
-        ["xpath=//a[contains(.,'Bureau culturel')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "e5adc4c5-43fb-4045-9c65-6ccc1e40e285",
       "comment": "",
       "command": "assertElementPresent",
       "target": "xpath=//h1",
@@ -5724,6 +5810,20 @@
         ["xpath=//a[contains(@href, '/user-edit.php?idP=2&action=editer')]", "xpath:href"],
         ["xpath=//div[3]/a", "xpath:position"],
         ["xpath=//a[contains(.,'Modifier')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "5df4bd64-bfed-43d1-82bd-209e4fc8aa31",
+      "comment": "",
+      "command": "type",
+      "target": "id=motdepasse",
+      "targets": [
+        ["id=motdepasse", "id"],
+        ["name=motdepasse", "name"],
+        ["css=#motdepasse", "css:finder"],
+        ["xpath=//input[@id='motdepasse']", "xpath:attributes"],
+        ["xpath=//form[@id='ajouter_editer']/fieldset[2]/p/input", "xpath:idRelative"],
+        ["xpath=//fieldset[2]/p/input", "xpath:position"]
       ],
       "value": ""
     }, {
