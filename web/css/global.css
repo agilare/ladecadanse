@@ -126,7 +126,7 @@ figure
 
     #contenu .rubrique
     {
-        width: 96%;
+        width: 94%;
         margin:1em auto 0.2em auto;
         color:#5E5E5F;
         line-height:1.4em;
@@ -138,7 +138,6 @@ figure
             font-size:1.2em;
             font-weight:bold;
             margin:1em 0 0.4em 0em;
-
         }
 
         #contenu .rubrique h4
