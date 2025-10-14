@@ -70,6 +70,13 @@ figure
     margin: 0;
 }
 
+hr
+{
+    height: 0px;
+    background: #ddd;
+    color: #ddd;
+    border:1px solid;
+}
 
 .spacer
 {
@@ -129,7 +136,7 @@ figure
         width: 94%;
         margin:1em auto 0.2em auto;
         color:#5E5E5F;
-        line-height:1.4em;
+        line-height:1.5em;
         background:#fefefe;
     }
 

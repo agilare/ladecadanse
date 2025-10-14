@@ -1,4 +1,8 @@
-        </div> <!-- fin conteneur -->
+<?php
+use Ladecadanse\UserLevel;
+?>
+
+</div> <!-- fin conteneur -->
 
         <footer id="pied-wrapper">
             <nav id="pied">
@@ -7,6 +11,11 @@
                     <?php
                     foreach ($glo_menu_pratique as $nom => $lien)
                     {
+                        if ($lien == "/articles/mises-a-jour.php" && !(isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= UserLevel::AUTHOR))
+                        {
+                            continue;
+                        }
+
                         $highlightLink = '';
                         if (strstr((string) $_SERVER['PHP_SELF'], (string) $lien))
                         {

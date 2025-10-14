@@ -128,9 +128,15 @@ use Ladecadanse\UserLevel;
                 <nav id="menu_pratique">
 
                     <ul>
-                       <li><a href="https://github.com/agilare/ladecadanse/" aria-label="Watch agilare/ladecadanse on GitHub" style="font-size:1em" target="_blank"><i class="fa fa-github" aria-hidden="true"></i></a>
+                       <li><a href="https://github.com/agilare/ladecadanse/" aria-label="Watch agilare/ladecadanse on GitHub" style="font-size:1.2em" target="_blank"><i class="fa fa-github" aria-hidden="true"></i></a>
                        </li>
                         <?php foreach ($glo_menu_pratique as $nom => $lien) {
+
+                            if ($lien == "/articles/mises-a-jour.php" && !(isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= UserLevel::AUTHOR))
+                            {
+                                continue;
+                            }
+
                             $menu_pratique_li = '';
                             if ($nom == "Faire un don")
                                  $menu_pratique_li = ' style="background: #ffe771;border-radius: 0 0 3px 3px;padding:2px 0;" ';
