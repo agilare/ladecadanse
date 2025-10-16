@@ -29,7 +29,7 @@ $sql_select = "SELECT
     LEFT JOIN affiliation a ON p.idPersonne = a.idPersonne AND a.genre = 'lieu'
     LEFT JOIN lieu l ON a.idAffiliation = l.idLieu
     WHERE
-    p.dateAjout >= DATE_SUB(CURDATE(), INTERVAL 60 DAY)
+    p.dateAjout >= DATE_SUB(CURDATE(), INTERVAL 3 DAY)
     ORDER BY p.dateAjout DESC, p_dateAjout ASC LIMIT 100";
 
 //echo $sql_select;
