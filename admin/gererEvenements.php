@@ -1316,9 +1316,6 @@ if (isset($get_idE) && !empty($champs['image']) && !$verif->getErreur('image'))
 <!-- Fin contenu -->
 
 <div id="colonne_gauche" class="colonne">
-    <?php
-    //include("_menuAdmin.inc.php");
-    ?>
 </div>
 
 <div class="spacer"><!-- --></div>

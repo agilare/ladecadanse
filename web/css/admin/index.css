@@ -53,8 +53,15 @@ ul#menu_panneaux li
 {
 	border:1px solid #aeaeae;
 	width:100%;
-        font-size: .9em;
+    font-size: .9em;
+    display: block;
+    max-height:400px;
+    overflow-y: scroll;
+}
 
+#tableaux table tr
+{
+    width:100%;
 }
 
 #tableaux table tr th
@@ -65,10 +72,11 @@ ul#menu_panneaux li
 }
 
 
-#tableaux table tr.impair
-{
-background-color:#f0f0ff;
+tr:nth-child(even) {
+    background-color: #f2f2fe;
 }
+
+
 
 #tableaux table tr td
 {
@@ -81,13 +89,11 @@ background-color:#f0f0ff;
 
 }
 
-
 #frequentation
 {
-float:left;
-width:50%;
-
-background:#efefef;
+    float:left;
+    width:50%;
+    background:#efefef;
 }
 
 #ajouts
@@ -192,7 +198,7 @@ table.graph_vert td.valeur
 	padding:0;
 	border-bottom:none;
 	background-color:transparent;
-	
+
 }
 
 table.graph_vert td
@@ -210,5 +216,5 @@ margin:5px 5px 5px 0px;
 
 
 #derniers_evenements_ajoutes a.titre:visited {
-    color:#105199; /*  #104d91*/   
+    color:#105199; /*  #104d91*/
 }

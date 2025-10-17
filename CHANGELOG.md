@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.9.2] - Unreleased
+
+### Fixed
+
+### Changed
+
+### Added
+- admin : dashboard completed with more pertinent data, refactoring
+- mise à jour : new page, a simplified changelog
+
+
 ## [3.9.1] - 2025-10-11
 
 ### Fixed

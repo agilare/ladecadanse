@@ -63,7 +63,7 @@ require_once '../_header.inc.php';
 
         <?php if ($_SESSION['Sgroupe'] < UserLevel::ADMIN) { ?>
 
-        <h2 style="padding:0.4em 0">Inscriptions de ces 3 derniers jours</h2>
+        <h2 style="padding:0.4em 0">Inscriptions des 3 derniers jours</h2>
 
         <table summary="Dernières inscriptions">
             <thead>
@@ -87,7 +87,7 @@ require_once '../_header.inc.php';
                                 <td><?= (new DateTime($u['p_dateAjout']))->modify('+1 day')->format("H:i")?></td>
                                 <td>
                                     <a href="/user.php?idP=<?= (int)$u['idPersonne'] ?>"><?= sanitizeForHtml($u['pseudo']) ?></a>
-                                    <?php if ($u['groupe'] != UserLevel::ACTOR) { echo "(".$u['groupe'].")"; } ?>
+                                    <?php if ($u['groupe'] != UserLevel::ACTOR) { echo "(".sanitizeForHtml($u['groupe']).")"; } ?>
                                 </td>
                                 <td><?= $u['email'] ?></td>
                                 <td><?= sanitizeForHtml($u['affiliation']) ?></td>
@@ -119,7 +119,7 @@ require_once '../_header.inc.php';
         <h3><?php echo $glo_regions[$_SESSION['region_admin']]; ?></h3>
     <?php } ?>
 
-    <h4 style="padding:0.4em 0">Événements ajoutés ces 3 derniers jours</h4>
+    <h2 style="padding:0.4em 0">Événements ajoutés ces 3 derniers jours</h2>
 
     <?php
 
@@ -141,7 +141,7 @@ require_once '../_header.inc.php';
     if ($connector->getNumRows($req_getEvenement) > 0)
     {
     ?>
-        <table summary="Derniers événements ajoutés" id="derniers_evenements_ajoutes">
+        <table summary="Derniers événements ajoutés" id="derniers_evenements_ajoutes" style="max-height:500px;">
         <tr>
             <th>Titre</th>
             <th>Lieu</th>
@@ -154,8 +154,6 @@ require_once '../_header.inc.php';
             <th>&nbsp;</th>
         </tr>
     <?php
-
-    $pair = 0;
     while($tab_even = $connector->fetchArray($req_getEvenement))
     {
         $nomLieu = sanitizeForHtml($tab_even['nomLieu']);
@@ -164,19 +162,8 @@ require_once '../_header.inc.php';
         {
             $req_lieu = $connector->query("SELECT nom FROM lieu WHERE idLieu=".(int) $tab_even['idLieu']);
             $tabLieu = $connector->fetchArray($req_lieu);
-            $nomLieu = "<a href=\"/lieu/lieu.php?idL=".(int) $tab_even['idLieu']."\" title=\"Voir la fiche du lieu : ".sanitizeForHtml($tabLieu['nom'])." \">".sanitizeForHtml($tabLieu['nom'])."</a>";
+            $nomLieu = "<a href=\"/lieu/lieu.php?idL=".(int) $tab_even['idLieu']."\">".sanitizeForHtml($tabLieu['nom'])."</a>";
         }
-
-
-        if ($pair % 2 == 0)
-        {
-            echo "<tr>";
-        }
-        else
-        {
-            echo "<tr class=\"impair\">";
-        }
-
 
         echo "<td><a href=\"/event/evenement.php?idE=".(int)$tab_even['idEvenement']."\" class='titre'>".sanitizeForHtml($tab_even['titre'])."</a></td>
         <td>".$nomLieu."</td>
@@ -196,20 +183,16 @@ require_once '../_header.inc.php';
         echo "<td>".$tab_datetime_dateajout[1]." ".$tab_datetime_dateajout[0]."</td>";
 
         $nom_auteur = "-";
-
         if ($tab_auteur = $connector->fetchArray($connector->query("SELECT pseudo FROM personne WHERE idPersonne=".(int) $tab_even['idPersonne'])))
         {
-            $nom_auteur = "<a href=\"/user.php?idP=".(int)$tab_even['idPersonne']."\"
-            title=\"Voir le profile de la personne\">".sanitizeForHtml($tab_auteur['pseudo'])."</a>";
+            $nom_auteur = "<a href=\"/user.php?idP=".(int)$tab_even['idPersonne']."\">".sanitizeForHtml($tab_auteur['pseudo'])."</a>";
         }
         echo "<td>".$nom_auteur."</td>";
 
         if ($_SESSION['Sgroupe'] <= UserLevel::ADMIN) {
-            echo "<td><a href=\"/evenement-edit.php?action=editer&amp;idE=".(int)$tab_even['idEvenement']."\" title=\"Éditer l'événement\">".$iconeEditer."</a></td>";
+            echo "<td><a href=\"/evenement-edit.php?action=editer&amp;idE=".(int)$tab_even['idEvenement']."\">".$iconeEditer."</a></td>";
         }
         echo "</tr>";
-
-        $pair++;
     }
 
     ?>
@@ -217,90 +200,77 @@ require_once '../_header.inc.php';
     <?php } else { ?>
     Rien
     <?php } ?>
-    <p><a href="/admin/gererEvenements.php">Gérer les événements</a></p>
 
     <?php if ($_SESSION['Sgroupe'] < UserLevel::ADMIN) { ?>
 
-        <h3 style="padding:0.2em">Derniers textes ajoutés</h3>
+        <h3 style="padding:0.2em">Derniers textes ajoutés à des lieux</h3>
 
-    <table summary="Derniers textes ajoutés">
-    <tr>
-        <th colspan="2">Ajouté le</th>
-        <th>Lieu</th>
-        <th>Contenu</th>
-        <th>Type</th>
-        <th>par</th>
-        <th>&nbsp;</th>
-    </tr>
+        <table summary="Derniers textes ajoutés" style="max-height:200px;">
 
-    <?php
+            <tr>
+                <th>Type</th>
+                <th>Lieu</th>
+                <th>Contenu</th>
+                <th>par</th>
+                <th colspan="2">le</th>
+                <th>&nbsp;</th>
+            </tr>
 
-    $sql_req = "SELECT descriptionlieu.idLieu AS idLieu, descriptionlieu.idPersonne, descriptionlieu.dateAjout, contenu, type
-    FROM descriptionlieu, lieu WHERE descriptionlieu.idLieu=lieu.idLieu ".$sql_region."  ORDER BY descriptionlieu.dateAjout DESC LIMIT 5";
+            <?php
 
-    //echo $sql_req;
-    $req_getDes = $connector->query($sql_req);
-    $pair = 0;
-    while ($tab_desc = $connector->fetchArray($req_getDes))
-    {
+            $sql_req = "SELECT descriptionlieu.idLieu AS idLieu, descriptionlieu.idPersonne, descriptionlieu.dateAjout, contenu, type
+            FROM descriptionlieu, lieu WHERE descriptionlieu.idLieu=lieu.idLieu ".$sql_region."  ORDER BY descriptionlieu.dateAjout DESC LIMIT 5";
 
-        $req_auteur = $connector->query("SELECT pseudo FROM personne WHERE idPersonne=".(int) $tab_desc['idPersonne']);
-        $tabAuteur = $connector->fetchArray($req_auteur);
+            $req_getDes = $connector->query($sql_req);
+            while ($tab_desc = $connector->fetchArray($req_getDes))
+            {
 
-        $req_lieu = $connector->query("SELECT nom FROM lieu WHERE idLieu=".(int) $tab_desc['idLieu']);
-        $tabLieu = $connector->fetchArray($req_lieu);
-        $nomLieu = "<a href=\"/lieu/lieu.php?idL=".(int)$tab_desc['idLieu']."\" title=\"Éditer le lieu\">".sanitizeForHtml($tabLieu['nom'])."</a>";
+                $req_auteur = $connector->query("SELECT pseudo FROM personne WHERE idPersonne=".(int) $tab_desc['idPersonne']);
+                $tabAuteur = $connector->fetchArray($req_auteur);
+
+                $req_lieu = $connector->query("SELECT nom FROM lieu WHERE idLieu=".(int) $tab_desc['idLieu']);
+                $tabLieu = $connector->fetchArray($req_lieu);
+                $nomLieu = "<a href=\"/lieu/lieu.php?idL=".(int)$tab_desc['idLieu']."\">".sanitizeForHtml($tabLieu['nom'])."</a>";
 
 
-        if ($pair % 2 == 0)
-        {
-            echo "<tr>";
-        }
-        else
-        {
-            echo "<tr class=\"impair\">";
-        }
+                echo "<tr>";
 
-        $datetime_dateajout = date_iso2app($tab_desc['dateAjout']);
-        $tab_datetime_dateajout = explode(" ", (string) $datetime_dateajout);
-        echo "<td>".$tab_datetime_dateajout[1]."</td><td>".$tab_datetime_dateajout[0]."</td>";
+                $datetime_dateajout = date_iso2app($tab_desc['dateAjout']);
+                $tab_datetime_dateajout = explode(" ", (string) $datetime_dateajout);
+                echo "<td>".sanitizeForHtml($tab_desc['type'])."</td>";
+                echo "<td>".$nomLieu."</td>";
+                if (mb_strlen((string) $tab_desc['contenu']) > 200)
+                {
+                    $tab_desc['contenu'] = mb_substr((string) $tab_desc['contenu'], 0, 200)." [...]";
+                }
+                echo "<td class=\"tdleft small\">" . Text::html_substr($tab_desc['contenu']) . "</td>";
 
-        echo "<td>".$nomLieu."</td>";
-        if (mb_strlen((string) $tab_desc['contenu']) > 200)
-        {
-            $tab_desc['contenu'] = mb_substr((string) $tab_desc['contenu'], 0, 200)." [...]";
-        }
-        echo "<td class=\"tdleft small\">" . Text::html_substr($tab_desc['contenu']) . "</td>";
-            $nom_auteur = "<i>Ancien membre</i>";
+                $nom_auteur = "<i>Ancien membre</i>";
+                if ($tab_auteur = $connector->fetchArray($connector->query("SELECT pseudo FROM personne WHERE idPersonne=".(int) $tab_desc['idPersonne'])))
+                {
+                    $nom_auteur = "<a href=\"/user.php?idP=".(int) $tab_desc['idPersonne']."\">".sanitizeForHtml($tab_auteur['pseudo'])."</a>";
+                }
+                echo "<td>".$nom_auteur."</td>";
 
-            if ($tab_auteur = $connector->fetchArray($connector->query("SELECT pseudo FROM personne WHERE idPersonne=".(int) $tab_desc['idPersonne'])))
-        {
-            $nom_auteur = "<a href=\"/user.php?idP=".(int) $tab_desc['idPersonne']."\"
-            title=\"Voir le profile de la personne\">".sanitizeForHtml($tab_auteur['pseudo'])."</a>";
-        }
-        echo "<td>".$tab_desc['type']."</td>";
-        echo "<td>".$nom_auteur."</td>";
-        if ($_SESSION['Sgroupe'] <= UserLevel::ADMIN) {
-            echo "<td><a href=\"/lieu-text-edit.php?action=editer&amp;idL=" . (int)$tab_desc['idLieu'] . "&amp;idP=" .(int) $tab_desc['idPersonne'] . "&type=" . $tab_desc['type'] . "\" title=\"Éditer le lieu\">" . $iconeEditer . "</a></td>";
+                echo "<td>".$tab_datetime_dateajout[1]."</td>";
+                if ($_SESSION['Sgroupe'] <= UserLevel::ADMIN)
+                {
+                    echo "<td><a href=\"/lieu-text-edit.php?action=editer&amp;idL=" . (int)$tab_desc['idLieu'] . "&amp;idP=" .(int) $tab_desc['idPersonne'] . "&type=" . $tab_desc['type'] . "\">" . $iconeEditer . "</a></td>";
+                }
+
+                echo "</tr>";
             }
-        echo "</tr>";
 
-        $pair++;
-    }
-
-    ?>
+            ?>
     </table>
 
     <?php } ?>
 
-    </div><!-- fin tableaux -->
+    </div><!-- #tableaux -->
 
-</main><!-- fin contenu -->
+</main>
 
 <div id="colonne_gauche" class="colonne">
-    <?php
-    //include("_menuAdmin.inc.php");
-    ?>
 </div>
 
 
