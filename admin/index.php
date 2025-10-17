@@ -20,16 +20,21 @@ $sql_select = "SELECT
 
     DATE(p.dateAjout),
     p.idPersonne, pseudo, groupe, affiliation, p.email, p.dateAjout AS p_dateAjout,
+    o.idOrganisateur AS idO,
     o.nom AS o_nom,
-    l.nom AS l_nom
+    l.idLieu AS idL,
+    l.nom AS l_nom,
+    e.idEvenement AS idE,
+    e.titre AS e_titre
 
     FROM personne p
     LEFT JOIN personne_organisateur po ON p.idPersonne = po.idPersonne
     LEFT JOIN organisateur o ON po.idOrganisateur = o.idOrganisateur
     LEFT JOIN affiliation a ON p.idPersonne = a.idPersonne AND a.genre = 'lieu'
     LEFT JOIN lieu l ON a.idAffiliation = l.idLieu
+    LEFT JOIN evenement e ON p.idPersonne = e.idPersonne
     WHERE
-    p.dateAjout >= DATE_SUB(CURDATE(), INTERVAL 3 DAY)
+    p.dateAjout >= DATE_SUB(CURDATE(), INTERVAL 2 DAY)
     ORDER BY p.dateAjout DESC, p_dateAjout ASC LIMIT 100";
 
 //echo $sql_select;
@@ -67,13 +72,14 @@ require_once '../_header.inc.php';
                     <th>Pseudo</th>
                     <th>E-mail</th>
                     <th colspan="3">Affiliations (libre, lieu, organisateur)</th>
+                    <th>Dernier éven. ajouté</th>
                 </tr>
             </thead>
             <tbody>
                 <?php foreach ($page_results as $date => $users) : ?>
 
                     <tr>
-                        <td colspan="6" style="background:#f3f3f3"><?= date_fr($date) ?></td>
+                        <td colspan="7" style="background:#f3f3f3"><?= date_fr($date) ?></td>
                     </tr>
 
                         <?php foreach ($users as $u): ?>
@@ -85,8 +91,21 @@ require_once '../_header.inc.php';
                                 </td>
                                 <td><?= $u['email'] ?></td>
                                 <td><?= sanitizeForHtml($u['affiliation']) ?></td>
-                                <td><?= sanitizeForHtml($u['l_nom']) ?></td>
-                                <td><?= sanitizeForHtml($u['o_nom']) ?></td>
+                                <td>
+                                    <?php if ($u['idL']) : ?>
+                                        <a href="/lieu/lieu.php?idL=<?= (int) $u['idL'] ?>"><?= sanitizeForHtml($u['l_nom']) ?></a>
+                                    <?php endif; ?>
+                                </td>
+                                <td>
+                                    <?php if ($u['idO']) : ?>
+                                        <a href="/organisateur.php?idO=<?= (int) $u['idO'] ?>"><?= sanitizeForHtml($u['o_nom']) ?></a>
+                                    <?php endif; ?>
+                                </td>
+                                <td>
+                                    <?php if ($u['idE']) : ?>
+                                        <a href="/event/evenement.php?idE=<?= (int) $u['idE'] ?>"><?= sanitizeForHtml($u['e_titre']) ?></a>
+                                    <?php endif; ?>
+                                </td>
                             </tr>
                         <?php endforeach; ?>
 
