@@ -6,6 +6,8 @@ require_once("../app/bootstrap.php");
 use Ladecadanse\Utils\Text;
 use Ladecadanse\UserLevel;
 use Ladecadanse\EvenementRenderer;
+use Ladecadanse\Evenement;
+use Ladecadanse\Lieu;
 
 if (!$videur->checkGroup(UserLevel::ADMIN)) {
 	header("Location: /user-login.php"); die();
@@ -42,10 +44,59 @@ $stmt = $connectorPdo->prepare($sql_select);
 $stmt->execute();
 $page_results = $stmt->fetchAll(PDO::FETCH_GROUP);
 
+
+$sql_region = '';
+if (!empty($_SESSION['region_admin']))
+{
+    $sql_region = " AND region='" . $connector->sanitize($_SESSION['region_admin']) . "'";
+}
+
+
+$stmt = $connectorPdo->prepare("SELECT
+  DATE(e.dateAjout) as e_dateAjout_day,
+  e.idEvenement as e_idEvenement,
+  e.titre as e_titre,
+  e.genre AS e_genre,
+  e.dateEvenement as e_dateEvenement,
+  e.horaire_debut as e_horaire_debut,
+  e.horaire_fin as e_horaire_fin,
+  e.dateAjout as e_dateAjout,
+  e.idLieu AS e_idLieu,
+  e.idSalle AS e_idSalle,
+  e.nomLieu AS e_nomLieu,
+  e.adresse AS e_adresse,
+  e.quartier AS e_quartier,
+  loc.localite AS e_localite,
+  e.urlLieu AS e_urlLieu,
+  e.flyer e_flyer,
+  e.image e_image,
+  e.statut e_statut,
+
+  l.nom AS l_nom,
+  l.adresse AS l_adresse,
+  l.quartier AS l_quartier,
+  l.URL AS l_URL    ,
+  lloc.localite AS lloc_localite,
+
+  s.nom AS s_nom,
+
+  p.idPersonne AS idPersonne,
+  p.pseudo AS pseudo
+
+FROM evenement e
+JOIN personne p ON e.idPersonne = p.idPersonne
+LEFT JOIN lieu l ON e.idLieu = l.idLieu
+LEFT JOIN localite lloc ON l.localite_id = lloc.id
+LEFT JOIN salle s ON e.idSalle = s.idSalle
+JOIN localite loc on e.localite_id = loc.id
+WHERE e.dateAjout >= DATE_SUB(CURDATE(), INTERVAL 2 DAY) ".$sql_region." ORDER BY e.dateAjout DESC LIMIT 0, 200");
+
+$stmt->execute();
+$tab_latest_events = $stmt->fetchAll(PDO::FETCH_GROUP);
+
+
 //les dates au delà de 2 jours sont dispo pour être archivées
 define("JOUR_LIM", 2);
-
-$troisJoursAvant = date("Y-m-d H:i:s", time() - (3*86400));
 
 $page_titre = "administration";
 $extra_css = ["admin/index"];
@@ -84,7 +135,7 @@ require_once '../_header.inc.php';
 
                         <?php foreach ($users as $u): ?>
                             <tr>
-                                <td><?= (new DateTime($u['p_dateAjout']))->modify('+1 day')->format("H:i")?></td>
+                                <td><?= (new DateTime($u['p_dateAjout']))->format("H:i")?></td>
                                 <td>
                                     <a href="/user.php?idP=<?= (int)$u['idPersonne'] ?>"><?= sanitizeForHtml($u['pseudo']) ?></a>
                                     <?php if ($u['groupe'] != UserLevel::ACTOR) { echo "(".sanitizeForHtml($u['groupe']).")"; } ?>
@@ -116,90 +167,56 @@ require_once '../_header.inc.php';
     <?php } ?>
 
     <?php if (!empty($_SESSION['region_admin'])) { ?>
-        <h3><?php echo $glo_regions[$_SESSION['region_admin']]; ?></h3>
+        <p><?php echo $glo_regions[$_SESSION['region_admin']]; ?></p>
     <?php } ?>
 
     <h2 style="padding:0.4em 0">Événements ajoutés ces 3 derniers jours</h2>
 
-    <?php
-
-    $troisJoursAvant = date("Y-m-d H:i:s", time() - (3*86400));
-
-    $sql_region = '';
-    if (!empty( $_SESSION['region_admin']))
-        $sql_region = " AND region='".$connector->sanitize( $_SESSION['region_admin'])."'";
-
-    $sql_even = "SELECT idEvenement, idLieu, idPersonne, titre,
-     dateEvenement, horaire_debut, horaire_fin, genre, nomLieu, adresse, statut, flyer, dateAjout
-     FROM evenement WHERE dateAjout >= DATE_SUB(CURDATE(), INTERVAL 3 DAY) ".$sql_region."
-     ORDER BY dateAjout DESC, idEvenement DESC LIMIT 500";
-
-    //echo $sql_even;
-
-    $req_getEvenement = $connector->query($sql_even);
-
-    if ($connector->getNumRows($req_getEvenement) > 0)
-    {
-    ?>
         <table summary="Derniers événements ajoutés" id="derniers_evenements_ajoutes" style="max-height:500px;">
-        <tr>
-            <th>Titre</th>
-            <th>Lieu</th>
-            <th>Date</th>
-            <th>Catégorie</th>
-            <th>Horaire</th>
-            <th>Statut</th>
-            <th>Ajouté</th>
-            <th>par</th>
-            <th>&nbsp;</th>
-        </tr>
-    <?php
-    while($tab_even = $connector->fetchArray($req_getEvenement))
-    {
-        $nomLieu = sanitizeForHtml($tab_even['nomLieu']);
+            <thead>
+                <tr>
+                    <th>Heure</th>
+                    <th>Titre</th>
+                    <th>Lieu</th>
+                    <th>Date</th>
+                    <th>Catégorie</th>
+                    <th style="width:100px">Horaire</th>
+                    <th>Statut</th>
+                    <th>par</th>
+                    <th>&nbsp;</th>
+                </tr>
+            </thead>
+            <tbody>
 
-        if ($tab_even['idLieu'] != 0)
-        {
-            $req_lieu = $connector->query("SELECT nom FROM lieu WHERE idLieu=".(int) $tab_even['idLieu']);
-            $tabLieu = $connector->fetchArray($req_lieu);
-            $nomLieu = "<a href=\"/lieu/lieu.php?idL=".(int) $tab_even['idLieu']."\">".sanitizeForHtml($tabLieu['nom'])."</a>";
-        }
+                <?php foreach ($tab_latest_events as $date => $events) : ?>
 
-        echo "<td><a href=\"/event/evenement.php?idE=".(int)$tab_even['idEvenement']."\" class='titre'>".sanitizeForHtml($tab_even['titre'])."</a></td>
-        <td>".$nomLieu."</td>
-        <td>".date_iso2app($tab_even['dateEvenement'])."</td>";
+                    <tr>
+                        <td colspan="10" style="background:#f3f3f3"><?= date_fr($date) ?></td>
+                    </tr>
 
-            echo "<td>".ucfirst((string) $glo_tab_genre[$tab_even['genre']])."</td>";
+                    <?php foreach ($events as $event) :
+                        $even_lieu = Evenement::getLieu($event);
+                        ?>
+                    <tr>
+                        <td><?= (new DateTime($event['e_dateAjout']))->format("H:i") ?></td>
+                        <td><a href="/event/evenement.php?idE=<?= (int)$event['e_idEvenement'] ?>" class='titre'><?= sanitizeForHtml($event['e_titre']) ?></a></td>
+                        <td><?= Lieu::getLinkNameHtml($even_lieu['nom'], $even_lieu['idLieu'], $even_lieu['salle']) ?></td>
+                        <td><a href="/index.php?courant=<?= sanitizeForHtml($event['e_dateEvenement']) ?>"><?= date_iso2app($event['e_dateEvenement']) ?></a></td>
+                        <td><?= ucfirst($glo_tab_genre[$event['e_genre']]) ?></td>
+                        <td><?= afficher_debut_fin($event['e_horaire_debut'], $event['e_horaire_fin'], $event['e_dateEvenement']) ?></td>
+                        <td style='text-align: center;'><?= EvenementRenderer::$iconStatus[$event['e_statut']] ?></td>
+                        <td><a href="/user.php?idP=<?= (int)$event['idPersonne'] ?>"><?= sanitizeForHtml($event['pseudo']) ?></a></td>
+                        <td>
+                            <?php if ($_SESSION['Sgroupe'] <= UserLevel::ADMIN) : ?>
+                                <a href="/evenement-edit.php?idE=<?= (int)$event['e_idEvenement'] ?>&amp;action=editer"><?= $iconeEditer ?></a>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            <?php endforeach; ?>
 
-            echo "<td>";
-
-        echo afficher_debut_fin($tab_even['horaire_debut'], $tab_even['horaire_fin'], $tab_even['dateEvenement']);
-
-        echo "</td>
-        <td style='text-align: center;'>".EvenementRenderer::$iconStatus[$tab_even['statut']]."</td>";
-
-        $datetime_dateajout = date_iso2app($tab_even['dateAjout']);
-        $tab_datetime_dateajout = explode(" ", (string) $datetime_dateajout);
-        echo "<td>".$tab_datetime_dateajout[1]." ".$tab_datetime_dateajout[0]."</td>";
-
-        $nom_auteur = "-";
-        if ($tab_auteur = $connector->fetchArray($connector->query("SELECT pseudo FROM personne WHERE idPersonne=".(int) $tab_even['idPersonne'])))
-        {
-            $nom_auteur = "<a href=\"/user.php?idP=".(int)$tab_even['idPersonne']."\">".sanitizeForHtml($tab_auteur['pseudo'])."</a>";
-        }
-        echo "<td>".$nom_auteur."</td>";
-
-        if ($_SESSION['Sgroupe'] <= UserLevel::ADMIN) {
-            echo "<td><a href=\"/evenement-edit.php?action=editer&amp;idE=".(int)$tab_even['idEvenement']."\">".$iconeEditer."</a></td>";
-        }
-        echo "</tr>";
-    }
-
-    ?>
-    </table>
-    <?php } else { ?>
-    Rien
-    <?php } ?>
+            </tbody>
+        </table>
 
     <?php if ($_SESSION['Sgroupe'] < UserLevel::ADMIN) { ?>
 
