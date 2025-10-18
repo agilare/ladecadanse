@@ -133,7 +133,7 @@ include("_header.inc.php");
 include("_menuorganisateurs.inc.php");
 ?>
 
-<main id="contenu" class="colonne">
+    <main id="contenu" class="colonne">
 
 	<p id="btn_listelieux" class="mobile">
         <button href="#"><i class="fa fa-list fa-lg"></i>&nbsp;Liste des organisateurs</button>

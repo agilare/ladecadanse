@@ -52,4 +52,46 @@ class Organisateur extends Element
         $stmt->execute([$idOrga]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+
+    public static function getOrganisateurs(array $filters, string $order = 'date_ajout', ?int $page = 1): array
+    {
+        global $connectorPdo;
+
+        $params = [':statut' => $filters['statut']];
+
+        if (!empty($filters['nom']))
+        {
+            $params[':nom'] = "%" . $filters['nom'] . "%";
+        }
+
+        // build SQL
+        $sql_order = "o." . $order . " DESC";
+        if ($order == "nom")
+        {
+            $sql_order = "o.nom ASC";
+        }
+
+        $sql_event = "SELECT
+          o.*
+        FROM organisateur o
+        WHERE o.statut = :statut";
+
+        if (!empty($filters['nom']))
+        {
+            $sql_event .= " AND o.nom LIKE :nom";
+        }
+
+        $sql_event .= " ORDER BY $sql_order";
+
+        if (!empty($page))
+        {
+            $sql_event .= " LIMIT " . (int) (($page - 1) * self::RESULTS_PER_PAGE) . ", " . (int) self::RESULTS_PER_PAGE; // (($page - 1) * self::RESULTS_PER_PAGE +
+        }
+
+        //echo $sql_event;
+        $stmt = $connectorPdo->prepare($sql_event);
+        $stmt->execute($params);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

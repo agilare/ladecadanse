@@ -4,11 +4,13 @@
 
 ### Fixed
 
-### Changed
-
 ### Added
+- organisateurs : table with navigation, filters
 - admin : dashboard completed with more pertinent data, refactoring
 - mise à jour : new page, a simplified changelog
+
+### Changed
+- organisateurs : pages organisateurs and organisateur moved under organisateur/
 
 
 ## [3.9.1] - 2025-10-11
