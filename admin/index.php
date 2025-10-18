@@ -95,8 +95,25 @@ $stmt->execute();
 $tab_latest_events = $stmt->fetchAll(PDO::FETCH_GROUP);
 
 
-//les dates au delà de 2 jours sont dispo pour être archivées
-define("JOUR_LIM", 2);
+$lieux_desc_latest = [];
+if ($_SESSION['Sgroupe'] < UserLevel::ADMIN) {
+    $stmt = $connectorPdo->prepare("
+        SELECT
+        dl.idLieu AS idLieu,
+        dl.idPersonne,
+        DATE(dl.dateAjout) AS dateAjout,
+        contenu,
+        type,
+        l.nom AS l_nom,
+        p.pseudo AS pseudo
+        FROM descriptionlieu dl
+        JOIN lieu l ON dl.idLieu = l.idLieu
+        JOIN personne p ON dl.idPersonne = p.idPersonne
+        WHERE 1 ".$sql_region." ORDER BY dl.dateAjout DESC LIMIT 5");
+
+    $stmt->execute();
+    $lieux_desc_latest = $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 
 $page_titre = "administration";
 $extra_css = ["admin/index"];
@@ -229,56 +246,26 @@ require_once '../_header.inc.php';
                 <th>Lieu</th>
                 <th>Contenu</th>
                 <th>par</th>
-                <th colspan="2">le</th>
+                <th>le</th>
                 <th>&nbsp;</th>
             </tr>
 
-            <?php
-
-            $sql_req = "SELECT descriptionlieu.idLieu AS idLieu, descriptionlieu.idPersonne, descriptionlieu.dateAjout, contenu, type
-            FROM descriptionlieu, lieu WHERE descriptionlieu.idLieu=lieu.idLieu ".$sql_region."  ORDER BY descriptionlieu.dateAjout DESC LIMIT 5";
-
-            $req_getDes = $connector->query($sql_req);
-            while ($tab_desc = $connector->fetchArray($req_getDes))
-            {
-
-                $req_auteur = $connector->query("SELECT pseudo FROM personne WHERE idPersonne=".(int) $tab_desc['idPersonne']);
-                $tabAuteur = $connector->fetchArray($req_auteur);
-
-                $req_lieu = $connector->query("SELECT nom FROM lieu WHERE idLieu=".(int) $tab_desc['idLieu']);
-                $tabLieu = $connector->fetchArray($req_lieu);
-                $nomLieu = "<a href=\"/lieu/lieu.php?idL=".(int)$tab_desc['idLieu']."\">".sanitizeForHtml($tabLieu['nom'])."</a>";
-
-
-                echo "<tr>";
-
-                $datetime_dateajout = date_iso2app($tab_desc['dateAjout']);
-                $tab_datetime_dateajout = explode(" ", (string) $datetime_dateajout);
-                echo "<td>".sanitizeForHtml($tab_desc['type'])."</td>";
-                echo "<td>".$nomLieu."</td>";
-                if (mb_strlen((string) $tab_desc['contenu']) > 200)
+            <?php foreach ($lieux_desc_latest as $desc) :
+                if (mb_strlen((string) $desc['contenu']) > 200)
                 {
-                    $tab_desc['contenu'] = mb_substr((string) $tab_desc['contenu'], 0, 200)." [...]";
+                    $desc['contenu'] = mb_substr((string) $desc['contenu'], 0, 200)." [...]";
                 }
-                echo "<td class=\"tdleft small\">" . Text::html_substr($tab_desc['contenu']) . "</td>";
+                ?>
 
-                $nom_auteur = "<i>Ancien membre</i>";
-                if ($tab_auteur = $connector->fetchArray($connector->query("SELECT pseudo FROM personne WHERE idPersonne=".(int) $tab_desc['idPersonne'])))
-                {
-                    $nom_auteur = "<a href=\"/user.php?idP=".(int) $tab_desc['idPersonne']."\">".sanitizeForHtml($tab_auteur['pseudo'])."</a>";
-                }
-                echo "<td>".$nom_auteur."</td>";
-
-                echo "<td>".$tab_datetime_dateajout[1]."</td>";
-                if ($_SESSION['Sgroupe'] <= UserLevel::ADMIN)
-                {
-                    echo "<td><a href=\"/lieu-text-edit.php?action=editer&amp;idL=" . (int)$tab_desc['idLieu'] . "&amp;idP=" .(int) $tab_desc['idPersonne'] . "&type=" . $tab_desc['type'] . "\">" . $iconeEditer . "</a></td>";
-                }
-
-                echo "</tr>";
-            }
-
-            ?>
+                <tr>
+                    <td><?= sanitizeForHtml($desc['type']) ?></td>
+                    <td><a href="/lieu/lieu.php?idL=<?= (int)$desc['idLieu'] ?>"><?= sanitizeForHtml($desc['l_nom']) ?></a></td>
+                    <td class="tdleft small"><?= Text::html_substr($desc['contenu']) ?></td>
+                    <td><a href="/user.php?idP=<?= (int) $desc['idPersonne'] ?>"><?= sanitizeForHtml($desc['pseudo']) ?></a></td>
+                    <td><?= date_fr($desc['dateAjout']) ?></td>
+                    <td><a href="/lieu-text-edit.php?action=editer&amp;idL=<?= (int)$desc['idLieu'] ?>&amp;idP=<?= (int) $desc['idPersonne'] ?>&amp;type=<?= $desc['type'] ?>"><?= $iconeEditer ?></a></td>
+               </tr>
+            <?php endforeach; ?>
     </table>
 
     <?php } ?>
