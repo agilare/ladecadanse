@@ -11,11 +11,10 @@ use Ladecadanse\EvenementRenderer;
 
 if (!$videur->checkGroup(UserLevel::ADMIN))
 {
+    header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
 	header("Location: /user-login.php"); die();
 }
 
-$page_titre = "gérer";
-require_once '../_header.inc.php';
 
 $tab_listes = ["evenement" => "Événements", "organisateur" => "Organisateurs", "description" => "Descriptions", "personne" => "Personnes"];
 
@@ -37,6 +36,11 @@ if (!empty($_GET['element']))
 else
 {
 	$get['element'] = "evenements";
+}
+
+if ($get['element'] != 'personne')
+{
+    header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); exit;
 }
 
 
@@ -99,359 +103,104 @@ if (!empty($_SESSION['region_admin']))
     $titre_region = " - ".$glo_regions[$_SESSION['region_admin']];
 }
 
+$sql_terme = '';
+if (!empty($get['terme']))
+    $sql_terme = " WHERE ( LOWER(pseudo) like LOWER('%".$connector->sanitize($get['terme'])."%') OR LOWER(email) like LOWER('%".$connector->sanitize($get['terme'])."%')) ";
+
+$sql_pers = "
+SELECT
+    idPersonne, pseudo, email, groupe, affiliation, statut, DATE(dateAjout) AS dateAjout, date_derniere_modif, DATE(last_login) AS last_login
+FROM personne
+".$sql_terme."
+ORDER BY ".$get['tri_gerer']." ".$get['ordre'];
+
+$req_pers_total = $connector->query($sql_pers);
+$num_pers_total = $connector->getNumRows($req_pers_total);
+
+$pers_total_page_max = ceil($num_pers_total / $get['nblignes']);
+if ($pers_total_page_max > 0 && $get['page'] > $pers_total_page_max)
+    $get['page'] = $pers_total_page_max;
+
+$sql_pers .= " LIMIT " . ((int) $get['page'] - 1) * (int) $get['nblignes'] . ", " . (int) $get['nblignes'];
+
+$req_pers = $connector->query($sql_pers);
+
+$th_lieu = ["pseudo" => "Pseudo",  "email" => "E-mail",  "groupe" => "Groupe",
+    "affiliations" => "Affiliations",
+    "nbeven" => "Nb even",
+    "date_dern_even" => "Date dern. éven.",
+    "dateAjout" => "Création",
+    "statut" => "Statut",
+    "last_login" => "Dern. login"];
+
+$page_titre = "Gérer les ". lcfirst($tab_listes[$get['element']]);
+require_once '../_header.inc.php';
 ?>
 
-<div id="contenu" class="colonne">
+<main id="contenu" class="colonne">
 
 	<header id="entete_contenu">
-		<h1>Gérer les <?php echo $tab_listes[$get['element']].$titre_region; ?></h1>
+		<h1>Gérer les <?= $tab_listes[$get['element']].$titre_region; ?></h1>
+        <div class="spacer"></div>
 	</header>
 
-	<div class="spacer"></div>
-
-<?php
-if ($get['element'] == "description")
-{
-	$req_des = $connector->query("
-	SELECT idLieu, idPersonne, dateAjout, contenu, date_derniere_modif
-	FROM descriptionlieu
-	ORDER BY ".$get['tri_gerer']." ".$get['ordre']." LIMIT ".((int)$get['page'] - 1) * (int)$get['nblignes'].",".(int)$get['nblignes']);
-
-	$req_nbdesc = $connector->query("SELECT COUNT(*) AS total FROM descriptionlieu");
-	$tab_nbdesc = $connector->fetchArray($req_nbdesc);
-	$tot_elements = $tab_nbdesc['total'];
-
-	$th_descriptions = ["idLieu" => "Lieu",  "contenu" => "Contenu", "dateAjout" => "Date d'ajout", "date_derniere_modif" => "m-à-j"];
-
-	echo HtmlShrink::getPaginationString($tot_elements, $get['page'], $get['nblignes'], 1, "", "?" . Utils::urlQueryArrayToString($get, "page") . "&page=");
-
-        echo '<ul class="menu_nb_res">';
-	foreach ($tab_nblignes as $nbl)
-	{
-		echo '<li ';
-		if ($get['nblignes'] == $nbl) { echo 'class="ici"'; }
-
-		echo '><a href="/admin/gerer.php?'.Utils::urlQueryArrayToString($get, "nblignes").'&nblignes='.(int)$nbl.'">'.(int)$nbl.'</a></li>';
-	}
-	echo '</ul>';
-echo '<div class="spacer"></div>';
-	echo "<table id=\"ajouts\"><tr>";
-	foreach ($th_descriptions as $att => $th)
-	{
-		if ($att == "idLieu" || $att == "idPersonne" || $att == "contenu")
-		{
-			echo "<th>".$th."</th>";
-		}
-		else
-		{
-			if ($att == $get['tri_gerer'])
-			{
-				echo "<th class=\"ici\">".$icone[$get['ordre']];
-			}
-			else
-			{
-				echo "<th>";
-			}
-
-			echo "<a href=\"?element=" . $get['element'] . "&page=" . (int)$get['page'] . "&tri_gerer=" . $att . "&ordre=" . $ordre_inverse . "&nblignes=" . (int)$get['nblignes'] . "\">" . $th . "</a></th>";
-            }
-	}
-	echo "<th>&nbsp;</th></tr>";
-
-	$pair = 0;
-
-	while($tab_desc = $connector->fetchArray($req_des))
-	{
-
-		$req_auteur = $connector->query("SELECT pseudo FROM personne WHERE idPersonne=".(int) $tab_desc['idPersonne']);
-		$tabAuteur = $connector->fetchArray($req_auteur);
-
-		$req_lieu = $connector->query("SELECT nom FROM lieu WHERE idLieu=".(int) $tab_desc['idLieu']);
-		$tabLieu = $connector->fetchArray($req_lieu);
-		$nomLieu = "<a href=\"/lieu/lieu.php?idL=".(int)$tab_desc['idLieu']."\" title=\"Éditer le lieu\">".sanitizeForHtml($tabLieu['nom'])."</a>";
-
-		if ($pair % 2 == 0)
-		{
-			echo "<tr>";
-		}
-		else
-		{
-			echo "<tr class=\"impair\" >";
-		}
-
-		echo "<td>".$nomLieu."</td>";
-
-		if (mb_strlen((string) $tab_desc['contenu']) > 50)
-		{
-			$tab_desc['contenu'] = mb_substr((string) $tab_desc['contenu'], 0, 50)." [...]";
-		}
-		echo "<td class=\"tdleft\">".Text::wikiToHtml(sanitizeForHtml($tab_desc['contenu']))."</td>";
-		echo "<td>".date_iso2app($tab_desc['dateAjout'])."</td>";
-
-		echo "<td>";
-		if ($tab_desc['date_derniere_modif'] != "0000-00-00 00:00:00")
-		{
-			echo date_iso2app($tab_desc['date_derniere_modif']);
-		}
-		echo "</td>";
-
-		if ($_SESSION['Sgroupe'] <= UserLevel::ADMIN) {
-			echo "<td><a href=\"/lieu-text-edit.php?action=editer&idL=" . (int) $tab_desc['idLieu'] . "&idP=" . (int) $tab_desc['idPersonne'] . "\" title=\"Éditer le lieu\">" . $iconeEditer . "</a></td>";
-        }
-		echo "</tr>";
-
-		$pair++;
-	} // while
-
-	echo "</table>";
-
-
-
-
-}
-else if ($get['element'] == "organisateur")
-{
-	if ($get['tri_gerer'] == 'dateAjout')
-	{
-		$get['tri_gerer'] = 'date_ajout';
-	}
-
-	$req_lieux = $connector->query("
-	SELECT *
-	FROM organisateur
-	ORDER BY ".$get['tri_gerer']." ".$get['ordre']."
-	LIMIT ".($get['page'] - 1) * $get['nblignes'].",".$get['nblignes']);
-
-	$req_count = $connector->query("SELECT COUNT(*) AS total FROM organisateur");
-	$tab_count = $connector->fetchArray($req_count);
-	$tot_elements = $tab_count['total'];
-
-	$th_lieu = ["idOrganisateur" => "ID",  "nom" => "Nom",
-	 "date_ajout" => "Créé", "date_derniere_modif" => "Modifié", "statut" => "Statut"];
-
-	echo HtmlShrink::getPaginationString($tot_elements, $get['page'], $get['nblignes'], 1, "", "?element=" . $get['element'] . "&tri_gerer=" . $get['tri_gerer'] . "&ordre=" . $get['ordre'] . "&page=");
-
-        echo '<ul class="menu_nb_res">';
-	foreach ($tab_nblignes as $nbl)
-	{
-		echo '<li ';
-		if ($get['nblignes'] == $nbl) { echo 'class="ici"'; }
-
-		echo '><a href="/admin/gerer.php?' . Utils::urlQueryArrayToString($get, "nblignes") . '&nblignes=' . (int) $nbl . '">' . (int) $nbl . '</a></li>';
-    }
-	echo '</ul>';
-echo '<div class="spacer"></div>';
-	echo "
-	<table id=\"ajouts\">
-	<tr>";
-
-	foreach ($th_lieu as $att => $th)
-	{
-		if ( $att == "URL")
-		{
-			echo "<th>".$th."</th>";
-		}
-		else
-		{
-			if ($att == $get['tri_gerer'])
-			{
-				echo "<th class=\"ici\">".$icone[$get['ordre']];
-			}
-			else
-			{
-				echo "<th>";
-			}
-			echo "<a href=\"?element=" . $get['element'] . "&page=" . (int) $get['page'] . "&tri_gerer=" . $att . "&ordre=" . $ordre_inverse . "&nblignes=" . (int) $get['nblignes'] . "\">" . $th . "</a></th>";
-        }
-	}
-
-	echo "<th></th></tr>";
-
-	$pair = 0;
-
-	while($tab = $connector->fetchArray($req_lieux))
-	{
-
-		if ($pair % 2 == 0)
-		{
-			echo "<tr>";
-		}
-		else
-		{
-			echo "<tr class=\"impair\" >";
-		}
-
-		echo "
-		<td>" . (int) $tab['idOrganisateur'] . "</td>
-		<td><a href=\"/organisateur/organisateur.php?idO=".(int)$tab['idOrganisateur']."\" title=\"Voir la fiche\">".sanitizeForHtml($tab['nom'])."</a></td>";
-
-		echo "
-		<td>".date_iso2app($tab['date_ajout'])."</td>";
-
-		echo "<td>";
-		if ($tab['date_derniere_modif'] != "0000-00-00 00:00:00")
-		{
-			echo date_iso2app($tab['date_derniere_modif']);
-		}
-		echo "</td>
-		<td>".EvenementRenderer::$iconStatus[$tab['statut']]."</td>";
-
-		//Edition pour l'admin ou l'auteur
-		if ($_SESSION['Sgroupe'] <= UserLevel::ADMIN) {
-			echo "<td><a href=\"/organisateur-edit.php?action=editer&idO=".(int)$tab['idOrganisateur']."\" title=\"Éditer\">".$iconeEditer."</a></td>";
-		}
-		echo "</tr>";
-
-		$pair++;
-
-	}
-	echo "</table>";
-}
-else if ($get['element'] == "personne")
-{
-	$sql_terme = '';
-	if (!empty($get['terme']))
-		$sql_terme = " WHERE ( LOWER(pseudo) like LOWER('%".$connector->sanitize($get['terme'])."%') OR LOWER(email) like LOWER('%".$connector->sanitize($get['terme'])."%')) ";
-
-	$sql_pers = "
-	SELECT idPersonne, pseudo, email, groupe, affiliation, statut, dateAjout, date_derniere_modif
-	FROM personne
-	".$sql_terme."
-	ORDER BY ".$get['tri_gerer']." ".$get['ordre'];
-
-	$req_pers_total = $connector->query($sql_pers);
-	$num_pers_total = $connector->getNumRows($req_pers_total);
-
-	$pers_total_page_max = ceil($num_pers_total / $get['nblignes']);
-	if ($pers_total_page_max > 0 && $get['page'] > $pers_total_page_max)
-		$get['page'] = $pers_total_page_max;
-
-/* 	echo "<p>num_pers_total : $num_pers_total";
-	echo "<p>pers_total_page_max : $pers_total_page_max";	 */
-
-	$sql_pers .= " LIMIT " . ((int) $get['page'] - 1) * (int) $get['nblignes'] . "," . (int) $get['nblignes'];
-
-    $req_pers = $connector->query($sql_pers);
-
-	$th_lieu = ["idPersonne" => "ID", "pseudo" => "Pseudo",  "email" => "E-mail",  "groupe" => "Groupe",
-	"dateAjout" => "Création",
-	"statut" => "Statut"
-	];
-
-	?>
-
-	<form method="get" action="" id="ajouter_editer">
-
-		<input type="hidden" name="page" value="<?php echo (int)$get['page']; ?>" />
-		<input type="hidden" name="nblignes" value="<?php echo (int)$get['nblignes']; ?>" />
-		<input type="hidden" name="tri_gerer" value="<?php echo $get['tri_gerer']; ?>" />
-		<input type="hidden" name="element" value="<?php echo $get['element']; ?>" />
-		<input type="hidden" name="ordre" value="<?php echo $get['ordre']; ?>" />
-
-
-		<input type="text" name="terme" value="<?php echo $get['terme']; ?>" placeholder="pseudo ou email" size="20" />
-		<input type="submit" name="submit" value="Filtrer" />
-
-	</form>
-
-	<?php
-
-	echo HtmlShrink::getPaginationString($num_pers_total, $get['page'], $get['nblignes'], 1, "",
-                "?element=" . $get['element'] . "&tri_gerer=" . $get['tri_gerer'] . "&ordre=" . $get['ordre'] . "&nblignes=" . (int) $get['nblignes'] . "&terme=" . $get['terme'] . "&page=");
-    echo '<ul class="menu_nb_res">';
-
-	foreach ($tab_nblignes as $nbl)
-	{
-		echo '<li ';
-		if ($get['nblignes'] == $nbl) { echo 'class="ici"'; }
-
-		echo '><a href="/admin/gerer.php?'.Utils::urlQueryArrayToString($get, "nblignes").'&nblignes='.(int)$nbl.'">'.(int)$nbl.'</a></li>';
-	}
-	echo '</ul>';
-echo '<div class="spacer"></div>';
-	echo "<table id=\"ajouts\">
-	<tr>";
-
-	foreach ($th_lieu as $att => $th)
-	{
-
-		if ($att == $get['tri_gerer'])
-		{
-			echo "<th class=\"ici\">".$icone[$get['ordre']];
-		}
-		else
-		{
-			echo "<th>";
-		}
-		echo "<a href=\"?element=" . $get['element'] . "&page=" . (int) $get['page'] . "&tri_gerer=" . $att . "&ordre=" . $ordre_inverse . "&nblignes=" . (int) $get['nblignes'] . "\">" . $th . "</a></th>";
-    }
-
-	echo "<th></th></tr>";
-
-	$pair = 0;
-
-	while ($tab_pers = $connector->fetchArray($req_pers))
-	{
-		$nom_groupe = $tab_pers['groupe'];
-		if ($nom_groupe == UserLevel::ACTOR) {
-			$nom_groupe = 'Acteur culturel';
-		}
-		else if ($nom_groupe == UserLevel::MEMBER) {
-            $nom_groupe = "Membre";
-        }
-        else if ($nom_groupe == UserLevel::AUTHOR) {
-            $nom_groupe = "Rédacteur";
-		}
-		else if ($nom_groupe == UserLevel::ADMIN) {
-			$nom_groupe = "Admin";
-		}
-
-
-		echo "<tr";
-
-		if ($pair % 2 != 0) { echo " class=\"impair\""; }
-
-		echo ">
-		<td>" . (int) $tab_pers ['idPersonne'] . "</td>
-		<td style='width:20%'><a href=\"/user.php?idP=" . (int) $tab_pers['idPersonne'] . "\" title=\"Voir le profile :" . sanitizeForHtml($tab_pers['pseudo']) . "\">" . sanitizeForHtml($tab_pers['pseudo']) . "</a></td>
-		<td><a href='mailto:".sanitizeForHtml($tab_pers['email'])."'>".sanitizeForHtml($tab_pers['email'])."</a></td>
-		<td>".$nom_groupe."</td>";
-		echo "
-
-		<td>".date_iso2app($tab_pers['dateAjout'])."</td>";
-
-
-		echo "<td>".EvenementRenderer::$iconStatus[$tab_pers['statut']]."</td>";
-
-
-
-
-
-
-		//Edition pour l'admin ou l'auteur
-		if ( $_SESSION['Sgroupe'] < 2)
-		{
-			echo "<td><a href=\"/user-edit.php?action=editer&idP=".(int)$tab_pers['idPersonne']."\" title=\"Éditer\">".$iconeEditer."</a></td>";
-		}
-		echo "</tr>";
-
-		$pair++;
-
-	}
-
-	echo "</table>";
-
-	echo HtmlShrink::getPaginationString($num_pers_total, $get['page'], $get['nblignes'], 1, "", "?element=" . $get['element'] . "&tri_gerer=" . $get['tri_gerer'] . "&ordre=" . $get['ordre'] . "&nblignes=" . $get['nblignes'] . "&terme=" . $get['terme'] . "&page=");
-}
-
-
-
-?>
-	</table>
-
-</div>
-<!-- fin Contenu -->
-
+    <section id="default">
+
+        <div>
+            <form method="get" action="" id="ajouter_editer" style="float:left;width:40%;">
+                <input type="hidden" name="page" value="<?= (int)$get['page']; ?>" />
+                <input type="hidden" name="nblignes" value="<?= (int)$get['nblignes']; ?>" />
+                <input type="hidden" name="tri_gerer" value="<?= sanitizeForHtml($get['tri_gerer']) ?>" />
+                <input type="hidden" name="element" value="<?= sanitizeForHtml($get['element']) ?>" />
+                <input type="hidden" name="ordre" value="<?= sanitizeForHtml($get['ordre']) ?>" />
+                <input type="text" name="terme" value="<?= sanitizeForHtml($get['terme']) ?>" placeholder="pseudo ou email" size="20" />
+                <input type="submit" name="submit" value="Filtrer" />
+            </form>
+
+            <ul class="menu_nb_res">
+                <?php foreach ($tab_nblignes as $nb) : ?>
+                    <li <?php if ($nb == $get['nblignes']) : ?>class="ici"<?php endif; ?>><a href="/admin/gerer.php?<?= Utils::urlQueryArrayToString($get, "nblignes") ?>&amp;nblignes=<?= (int)$nb ?>"  ><?= (int)$nb ?></a></li>
+                <?php endforeach; ?>
+            </ul>
+            <div class="spacer"></div>
+        </div>
+
+        <div class="spacer"></div>
+
+        <?= HtmlShrink::getPaginationString($num_pers_total, $get['page'], $get['nblignes'], 1, "", "?element=" . $get['element'] . "&tri_gerer=" . $get['tri_gerer'] . "&ordre=" . $get['ordre'] . "&nblignes=" . (int) $get['nblignes'] . "&terme=" . $get['terme'] . "&page=") ?>
+
+        <table id="ajouts">
+            <tr>
+                <?php foreach ($th_lieu as $att => $th) : ?>
+                    <th <?php if ($att == $get['tri_gerer']) : ?>class="ici" <?php $icone[$get['ordre']]; endif; ?>>
+                        <a href="?element=personne&amp;page=<?= (int) $get['page'] ?>&amp;tri_gerer=<?= $att ?>&amp;ordre=<?= $ordre_inverse ?>&amp;nblignes=<?= (int) $get['nblignes'] ?>"><?= $th ?></a>
+                </th>
+                <?php endforeach; ?>
+                <th></th>
+            </tr>
+
+            <?php while ($tab_pers = $connector->fetchArray($req_pers)) : ?>
+            <tr>
+                <td style='width:20%'><a href="/user.php?idP=<?= (int) $tab_pers['idPersonne'] ?>"><?= sanitizeForHtml($tab_pers['pseudo']) ?></a></td>
+                <td><a href="mailto:<?= sanitizeForHtml($tab_pers['email']) ?>"><?= sanitizeForHtml($tab_pers['email']) ?></a></td>
+                <td><?= $tab_pers['groupe'] ?></td>
+                <td><?= $tab_pers['affiliation'] ?></td>
+                <td><?= "-" ?></td>
+                <td><?= "-" ?></td>
+                <td><?= date_iso2app($tab_pers['dateAjout']) ?></td>
+                <td><?= EvenementRenderer::$iconStatus[$tab_pers['statut']] ?></td>
+                <td><?= date_iso2app($tab_pers['last_login']) ?></td>
+                <td><a href="/user-edit.php?action=editer&amp;idP=<?= (int)$tab_pers['idPersonne'] ?>"><?= $iconeEditer ?></a></td>
+            </tr>
+            <?php endwhile; ?>
+
+        </table>
+
+        <?= HtmlShrink::getPaginationString($num_pers_total, $get['page'], $get['nblignes'], 1, "", "?element=" . $get['element'] . "&tri_gerer=" . $get['tri_gerer'] . "&ordre=" . $get['ordre'] . "&nblignes=" . $get['nblignes'] . "&terme=" . $get['terme'] . "&page="); ?>
+
+    </section>
+
+</main>
 
 <div id="colonne_gauche" class="colonne">
 </div>
