@@ -34,10 +34,15 @@ $sql_select = "SELECT
     LEFT JOIN organisateur o ON po.idOrganisateur = o.idOrganisateur
     LEFT JOIN affiliation a ON p.idPersonne = a.idPersonne AND a.genre = 'lieu'
     LEFT JOIN lieu l ON a.idAffiliation = l.idLieu
-    LEFT JOIN evenement e ON p.idPersonne = e.idPersonne
+    LEFT JOIN evenement e ON e.idEvenement = (
+        SELECT MAX(e2.idEvenement)
+        FROM evenement e2
+        WHERE e2.idPersonne = p.idPersonne
+    )
     WHERE
     p.dateAjout >= DATE_SUB(CURDATE(), INTERVAL 2 DAY)
-    ORDER BY p.dateAjout DESC, p_dateAjout ASC LIMIT 100";
+    GROUP BY p.idPersonne
+    ORDER BY p.dateAjout DESC, e.dateAjout DESC LIMIT 100";
 
 //echo $sql_select;
 $stmt = $connectorPdo->prepare($sql_select);
