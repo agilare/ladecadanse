@@ -74,7 +74,7 @@ switch($get['type'])
     case "organisateur_evenements":
 
         $channel['title'] = 'La décadanse : prochains événements organisateur';
-        $channel['link'] .= 'organisateur.php?idO='.(int)$get['id'];
+        $channel['link'] .= 'organisateur/organisateur.php?idO='.(int)$get['id'];
 
         $join = ' LEFT JOIN evenement_organisateur eo ON e.idEvenement = eo.idEvenement ';
         $where = " WHERE eo.idOrganisateur = ? AND dateEvenement >= ?";

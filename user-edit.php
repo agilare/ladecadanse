@@ -713,7 +713,7 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= UserLevel::ACTOR)) {
                 while ($tab = $connector->fetchArray($req))
                 {
                     ?>
-                <li><a href="/organisateur.php?idO=<?php echo (int)$tab['idOrganisateur']; ?>"><?php echo sanitizeForHtml($tab['nom']); ?></a>
+                <li><a href="/organisateur/organisateur.php?idO=<?php echo (int)$tab['idOrganisateur']; ?>"><?php echo sanitizeForHtml($tab['nom']); ?></a>
                                         <input type="hidden" name="organisateurs[]" value="<?php echo (int)$tab['idOrganisateur']; ?>">
                     </li>
                     <?php

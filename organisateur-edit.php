@@ -69,7 +69,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] == 'ok')
 	if ($form->traitement($_POST, $_FILES))
 	{
 		$_SESSION['organisateur_flash_msg'] = $form->getMessage();
-        header("Location: /organisateur.php?idO=".$form->id); die();
+        header("Location: /organisateur/organisateur.php?idO=".$form->id); die();
 	}
 }
 else if ($get['action'] == 'editer')

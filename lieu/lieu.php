@@ -236,7 +236,7 @@ include("../_header.inc.php");
                         <li>Organisateur<?php if (count($lieu_orgas) > 1) : ?>s<?php endif; ?>&nbsp;:
                             <ul class="salles">
                             <?php foreach ($lieu_orgas as $o) : ?>
-                                <li><a href="/organisateur.php?idO=<?= (int)$o['idOrganisateur'] ?>"><?= sanitizeForHtml($o['nom']) ?></a></li>
+                                <li><a href="/organisateur/organisateur.php?idO=<?= (int)$o['idOrganisateur'] ?>"><?= sanitizeForHtml($o['nom']) ?></a></li>
                             <?php endforeach; ?>
                             </ul>
                         </li>

@@ -1199,7 +1199,7 @@ if ($verif->nbErreurs() > 0)
         }
         ?>
         </select>
-        <div class="guideChamp">L’événement figurera dans la page de ces <a href="/organisateurs.php" target="_blank" class="lien_ext">organisateurs</a>. Si vous souhaitez que votre organisation soit listée, <a href="/contacteznous.php?pre=req-orga" target='_blank' class="lien_ext">demandez-nous</a> (avec des infos : texte, liens...)</div>
+        <div class="guideChamp">L’événement figurera dans la page de ces <a href="/organisateur/organisateurs.php" target="_blank" class="lien_ext">organisateurs</a>. Si vous souhaitez que votre organisation soit listée, <a href="/contacteznous.php?pre=req-orga" target='_blank' class="lien_ext">demandez-nous</a> (avec des infos : texte, liens...)</div>
         </p>
     </fieldset>
 

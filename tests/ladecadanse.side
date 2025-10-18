@@ -443,7 +443,7 @@
         ["css=#menu li:nth-child(4) > a", "css:finder"],
         ["xpath=//a[contains(text(),'Organisateurs')]", "xpath:link"],
         ["xpath=//nav[@id='menu']/ul/li[4]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/organisateurs.php?')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/organisateur/organisateurs.php?')]", "xpath:href"],
         ["xpath=//header/nav/ul/li[4]/a", "xpath:position"],
         ["xpath=//a[contains(.,'Organisateurs')]", "xpath:innerText"]
       ],
@@ -4659,7 +4659,7 @@
         ["css=#menu li:nth-child(4) > a", "css:finder"],
         ["xpath=//a[contains(text(),'Organisateurs')]", "xpath:link"],
         ["xpath=//nav[@id='menu']/ul/li[4]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/organisateurs.php?')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/organisateur/organisateurs.php?')]", "xpath:href"],
         ["xpath=//header/nav/ul/li[4]/a", "xpath:position"],
         ["xpath=//a[contains(.,'Organisateurs')]", "xpath:innerText"]
       ],
@@ -4686,7 +4686,7 @@
         ["css=h3:nth-child(2) > a", "css:finder"],
         ["xpath=//a[contains(text(),'La fanzinothèque genevoise')]", "xpath:link"],
         ["xpath=//div[@id='derniers_lieux']/h3/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/organisateur.php?idO=305')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/organisateur/organisateur.php?idO=305')]", "xpath:href"],
         ["xpath=//h3/a", "xpath:position"],
         ["xpath=//a[contains(.,'La fanzinothèque genevoise')]", "xpath:innerText"]
       ],
@@ -4713,7 +4713,7 @@
         ["css=#menu li:nth-child(4) > a", "css:finder"],
         ["xpath=//a[contains(text(),'Organisateurs')]", "xpath:link"],
         ["xpath=//nav[@id='menu']/ul/li[4]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/organisateurs.php?')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/organisateur/organisateurs.php?')]", "xpath:href"],
         ["xpath=//header/nav/ul/li[4]/a", "xpath:position"],
         ["xpath=//a[contains(.,'Organisateurs')]", "xpath:innerText"]
       ],
@@ -4728,7 +4728,7 @@
         ["css=h3:nth-child(3) > a", "css:finder"],
         ["xpath=//a[contains(text(),'Off-Nite')]", "xpath:link"],
         ["xpath=//div[@id='derniers_lieux']/h3[2]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/organisateur.php?idO=304')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/organisateur/organisateur.php?idO=304')]", "xpath:href"],
         ["xpath=//h3[2]/a", "xpath:position"],
         ["xpath=//a[contains(.,'Off-Nite')]", "xpath:innerText"]
       ],
@@ -4755,7 +4755,7 @@
         ["css=#menu li:nth-child(4) > a", "css:finder"],
         ["xpath=//a[contains(text(),'Organisateurs')]", "xpath:link"],
         ["xpath=//nav[@id='menu']/ul/li[4]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/organisateurs.php?')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/organisateur/organisateurs.php?')]", "xpath:href"],
         ["xpath=//header/nav/ul/li[4]/a", "xpath:position"],
         ["xpath=//a[contains(.,'Organisateurs')]", "xpath:innerText"]
       ],
@@ -4770,7 +4770,7 @@
         ["css=h3:nth-child(7) > a", "css:finder"],
         ["xpath=//a[contains(text(),'La gouaille')]", "xpath:link"],
         ["xpath=//div[@id='derniers_lieux']/h3[6]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/organisateur.php?idO=300')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/organisateur/organisateur.php?idO=300')]", "xpath:href"],
         ["xpath=//h3[6]/a", "xpath:position"],
         ["xpath=//a[contains(.,'La gouaille')]", "xpath:innerText"]
       ],
@@ -4797,7 +4797,7 @@
         ["css=#menu li:nth-child(4) > a", "css:finder"],
         ["xpath=//a[contains(text(),'Organisateurs')]", "xpath:link"],
         ["xpath=//nav[@id='menu']/ul/li[4]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/organisateurs.php?')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/organisateur/organisateurs.php?')]", "xpath:href"],
         ["xpath=//header/nav/ul/li[4]/a", "xpath:position"],
         ["xpath=//a[contains(.,'Organisateurs')]", "xpath:innerText"]
       ],
@@ -4824,7 +4824,7 @@
         ["css=tr:nth-child(2) a", "css:finder"],
         ["xpath=//a[contains(text(),'360° fever')]", "xpath:link"],
         ["xpath=//div[@id='menu_lieux']/table/tbody/tr[2]/td/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/organisateur.php?courant=2023-03-17&genre=&tri_agenda=dateAjout&sem=0&statut=actif&vue=az&tranche=ak&idO=6')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/organisateur/organisateur.php?courant=2023-03-17&genre=&tri_agenda=dateAjout&sem=0&statut=actif&vue=az&tranche=ak&idO=6')]", "xpath:href"],
         ["xpath=//tr[2]/td/a", "xpath:position"],
         ["xpath=//a[contains(.,'360° fever')]", "xpath:innerText"]
       ],
@@ -4863,7 +4863,7 @@
         ["css=#tranches > li:nth-child(2) > a", "css:finder"],
         ["xpath=//a[contains(text(),'l-z')]", "xpath:link"],
         ["xpath=//ul[@id='tranches']/li[2]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/organisateur.php?statut=actif&vue=az&idO=6&tranche=lz')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/organisateur/organisateur.php?statut=actif&vue=az&idO=6&tranche=lz')]", "xpath:href"],
         ["xpath=//div[2]/ul/li[2]/a", "xpath:position"],
         ["xpath=//a[contains(.,'l-z')]", "xpath:innerText"]
       ],
@@ -4890,7 +4890,7 @@
         ["css=tr:nth-child(2) a", "css:finder"],
         ["xpath=//a[contains(text(),'Largescalestudios')]", "xpath:link"],
         ["xpath=//div[@id='menu_lieux']/table/tbody/tr[2]/td/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/organisateur.php?genre_even=tous&complement=evenements&statut=actif&vue=az&tranche=lz&idO=201')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/organisateur/organisateur.php?genre_even=tous&complement=evenements&statut=actif&vue=az&tranche=lz&idO=201')]", "xpath:href"],
         ["xpath=//tr[2]/td/a", "xpath:position"],
         ["xpath=//a[contains(.,'Largescalestudios')]", "xpath:innerText"]
       ],
@@ -4929,7 +4929,7 @@
         ["css=#tranches > li:nth-child(3) > a", "css:finder"],
         ["xpath=//a[contains(text(),'tout')]", "xpath:link"],
         ["xpath=//ul[@id='tranches']/li[3]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/organisateur.php?statut=actif&vue=az&idO=201&tranche=tout')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/organisateur/organisateur.php?statut=actif&vue=az&idO=201&tranche=tout')]", "xpath:href"],
         ["xpath=//div[2]/ul/li[3]/a", "xpath:position"],
         ["xpath=//a[contains(.,'tout')]", "xpath:innerText"]
       ],
@@ -4944,7 +4944,7 @@
         ["css=#menu li:nth-child(4) > a", "css:finder"],
         ["xpath=//a[contains(text(),'Organisateurs')]", "xpath:link"],
         ["xpath=//nav[@id='menu']/ul/li[4]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/organisateurs.php?')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/organisateur/organisateurs.php?')]", "xpath:href"],
         ["xpath=//header/nav/ul/li[4]/a", "xpath:position"],
         ["xpath=//a[contains(.,'Organisateurs')]", "xpath:innerText"]
       ],
@@ -4977,7 +4977,7 @@
         ["css=#menu li:nth-child(4) > a", "css:finder"],
         ["xpath=//a[contains(text(),'Organisateurs')]", "xpath:link"],
         ["xpath=//nav[@id='menu']/ul/li[4]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/organisateurs.php?')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/organisateur/organisateurs.php?')]", "xpath:href"],
         ["xpath=//header/nav/ul/li[4]/a", "xpath:position"],
         ["xpath=//a[contains(.,'Organisateurs')]", "xpath:innerText"]
       ],
@@ -5004,7 +5004,7 @@
         ["css=h3:nth-child(2) > a", "css:finder"],
         ["xpath=//a[contains(text(),'Université Populaire Africaine en Suisse')]", "xpath:link"],
         ["xpath=//div[@id='derniers_lieux']/h3/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/organisateur.php?idO=2')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/organisateur/organisateur.php?idO=2')]", "xpath:href"],
         ["xpath=//h3/a", "xpath:position"],
         ["xpath=//a[contains(.,'Université Populaire Africaine en Suisse')]", "xpath:innerText"]
       ],
@@ -5043,7 +5043,7 @@
         ["css=tr:nth-child(2) > td:nth-child(1) > a", "css:finder"],
         ["xpath=//a[contains(text(),'Bureau culturel')]", "xpath:link"],
         ["xpath=//div[@id='menu_lieux']/table/tbody/tr[2]/td/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/organisateur.php?genre_even=tous&complement=evenements&statut=actif&vue=az&tranche=ak&idO=1')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/organisateur/organisateur.php?genre_even=tous&complement=evenements&statut=actif&vue=az&tranche=ak&idO=1')]", "xpath:href"],
         ["xpath=//tr[2]/td/a", "xpath:position"],
         ["xpath=//a[contains(.,'Bureau culturel')]", "xpath:innerText"]
       ],
@@ -5234,7 +5234,7 @@
         ["css=#tranches > li:nth-child(2) > a", "css:finder"],
         ["xpath=//a[contains(text(),'l-z')]", "xpath:link"],
         ["xpath=//ul[@id='tranches']/li[2]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/organisateur.php?statut=actif&vue=az&idO=1&tranche=lz')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/organisateur/organisateur.php?statut=actif&vue=az&idO=1&tranche=lz')]", "xpath:href"],
         ["xpath=//div[2]/ul/li[2]/a", "xpath:position"],
         ["xpath=//a[contains(.,'l-z')]", "xpath:innerText"]
       ],
@@ -5261,7 +5261,7 @@
         ["css=tr:nth-child(2) a", "css:finder"],
         ["xpath=//a[contains(text(),'Université Populaire Africaine en Suisse')]", "xpath:link"],
         ["xpath=//div[@id='menu_lieux']/table/tbody/tr[2]/td/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/organisateur.php?genre_even=tous&complement=evenements&statut=actif&vue=az&tranche=lz&idO=2')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/organisateur/organisateur.php?genre_even=tous&complement=evenements&statut=actif&vue=az&tranche=lz&idO=2')]", "xpath:href"],
         ["xpath=//tr[2]/td/a", "xpath:position"],
         ["xpath=//a[contains(.,'Université Populaire Africaine en Suisse')]", "xpath:innerText"]
       ],
@@ -5299,7 +5299,7 @@
         ["css=#menu li:nth-child(4) > a", "css:finder"],
         ["xpath=//a[contains(text(),'Organisateurs')]", "xpath:link"],
         ["xpath=//nav[@id='menu']/ul/li[4]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/organisateurs.php?')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/organisateur/organisateurs.php?')]", "xpath:href"],
         ["xpath=//header/nav/ul/li[4]/a", "xpath:position"],
         ["xpath=//a[contains(.,'Organisateurs')]", "xpath:innerText"]
       ],

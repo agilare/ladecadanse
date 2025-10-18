@@ -283,7 +283,7 @@ echo '<div class="spacer"></div>';
 
 		echo "
 		<td>" . (int) $tab['idOrganisateur'] . "</td>
-		<td><a href=\"/organisateur.php?idO=".(int)$tab['idOrganisateur']."\" title=\"Voir la fiche\">".sanitizeForHtml($tab['nom'])."</a></td>";
+		<td><a href=\"/organisateur/organisateur.php?idO=".(int)$tab['idOrganisateur']."\" title=\"Voir la fiche\">".sanitizeForHtml($tab['nom'])."</a></td>";
 
 		echo "
 		<td>".date_iso2app($tab['date_ajout'])."</td>";

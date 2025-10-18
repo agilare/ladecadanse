@@ -216,12 +216,12 @@ use Ladecadanse\UserLevel;
 
                 <ul>
                     <?php
-                    $menu_principal = ["Agenda" => "index.php", "Lieux" => "lieu/lieux.php", "Organisateurs" => "organisateurs.php"];
+                    $menu_principal = ["Agenda" => "index.php", "Lieux" => "lieu/lieux.php", "Organisateurs" => "organisateur/organisateurs.php"];
                     foreach ($menu_principal as $nom => $lien) {
                         $ici = '';
                         if (strstr((string) $_SERVER['PHP_SELF'], $lien)
                         || ($lien == "lieu/lieux.php" && strstr((string) $_SERVER['PHP_SELF'], "lieu/lieu.php"))
-                        || ($lien == "organisateurs.php" && strstr((string) $_SERVER['PHP_SELF'], "organisateur.php"))
+                        || ($lien == "organisateur/organisateurs.php" && strstr((string) $_SERVER['PHP_SELF'], "organisateur/organisateur.php"))
                         )
                         {
                             $ici = ' class="ici" ';
@@ -259,7 +259,7 @@ use Ladecadanse\UserLevel;
         </header>
 
         <div id="conteneur" style="
-            <?php if (strstr(dirname((string) $_SERVER['PHP_SELF']), 'admin') || in_array($nom_page, ['evenement-edit', 'event/copy', 'event/send', 'event/search', 'lieu/lieux', 'lieu-edit', 'lieu-text-edit', 'organisateurs', 'organisateur-edit', 'contacteznous', 'user-login', 'user-edit', 'user-register'])) : ?>padding-right: 5px; <?php endif; ?>
+            <?php if (strstr(dirname((string) $_SERVER['PHP_SELF']), 'admin') || in_array($nom_page, ['evenement-edit', 'event/copy', 'event/send', 'event/search', 'lieu/lieux', 'lieu-edit', 'lieu-text-edit', 'organisateur/organisateurs', 'organisateur-edit', 'contacteznous', 'user-login', 'user-edit', 'user-register'])) : ?>padding-right: 5px; <?php endif; ?>
             <?php if (strstr(dirname((string) $_SERVER['PHP_SELF']), 'admin')) : ?>padding-left: 5px <?php endif; ?>
             ">
 

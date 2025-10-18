@@ -1,6 +1,6 @@
 <?php
 
-require_once("app/bootstrap.php");
+require_once("../app/bootstrap.php");
 
 use Ladecadanse\UserLevel;
 use Ladecadanse\Organisateur;
@@ -129,15 +129,10 @@ $all_results_nb = $stmtAll->fetchColumn();
 $extra_css = ["organisateurs_menu"];
 $page_titre = $organisateur->getValue('nom');
 $page_description = $organisateur->getValue('nom') . " : informations pratiques, présentation et événements";
-include("_header.inc.php");
-include("_menuorganisateurs.inc.php");
+include("../_header.inc.php");
 ?>
 
-    <main id="contenu" class="colonne">
-
-	<p id="btn_listelieux" class="mobile">
-        <button href="#"><i class="fa fa-list fa-lg"></i>&nbsp;Liste des organisateurs</button>
-	</p>
+<main id="contenu" class="colonne">
 
     <?php
     if (!empty($_SESSION['organisateur_flash_msg']))
@@ -285,13 +280,12 @@ include("_menuorganisateurs.inc.php");
 </main>
 
 <div id="colonne_gauche" class="colonne">
-    <?php include("event/_navigation_calendrier.inc.php"); ?>
+    <?php include("../event/_navigation_calendrier.inc.php"); ?>
 </div>
 <div id="colonne_droite" class="colonne">
-    <?= $aff_menulieux; ?>
 </div>
 
 <div class="spacer"><!-- --></div>
 <?php
-include("_footer.inc.php");
+include("../_footer.inc.php");
 ?>

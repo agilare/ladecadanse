@@ -167,7 +167,7 @@ $detailsAff = $connector->fetchArray($req_affPers);
             $req = $connector->query($sql);
             while ($tab = $connector->fetchArray($req))
             {
-                echo '<a href="/organisateur.php?idO=' . (int)$tab['idOrganisateur'] . '">' . sanitizeForHtml($tab['nom']) . '</a><br />';
+                echo '<a href="/organisateur/organisateur.php?idO=' . (int)$tab['idOrganisateur'] . '">' . sanitizeForHtml($tab['nom']) . '</a><br />';
             }
             ?>
 
@@ -636,7 +636,7 @@ else if ($get['elements'] == "organisateur")
 
 			echo "
 			<td>".$tab['idOrganisateur']."</td>
-			<td><a href=\"/organisateur.php?idO=".(int)$tab['idOrganisateur']."\" title=\"Voir la fiche\">".sanitizeForHtml($tab['nom'])."</a></td>
+			<td><a href=\"/organisateur/organisateur.php?idO=".(int)$tab['idOrganisateur']."\" title=\"Voir la fiche\">".sanitizeForHtml($tab['nom'])."</a></td>
 	</td>";
 			echo "<td>";
 			if (!empty($tab['URL'])) {

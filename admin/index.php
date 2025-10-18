@@ -112,7 +112,7 @@ require_once '../_header.inc.php';
 
     <div id="tableaux">
 
-        <?php if ($_SESSION['Sgroupe'] < UserLevel::ADMIN) { ?>
+        <?php if ($_SESSION['Sgroupe'] < UserLevel::ADMIN) : ?>
 
         <h2 style="padding:0.4em 0">Inscriptions des 3 derniers jours</h2>
 
@@ -130,7 +130,7 @@ require_once '../_header.inc.php';
                 <?php foreach ($page_results as $date => $users) : ?>
 
                     <tr>
-                        <td colspan="7" style="background:#f3f3f3"><?= date_fr($date) ?></td>
+                        <td colspan="7" style="background:#f3f3f3;font-weight: bold"><?= date_fr($date) ?></td>
                     </tr>
 
                         <?php foreach ($users as $u): ?>
@@ -149,7 +149,7 @@ require_once '../_header.inc.php';
                                 </td>
                                 <td>
                                     <?php if ($u['idO']) : ?>
-                                        <a href="/organisateur.php?idO=<?= (int) $u['idO'] ?>"><?= sanitizeForHtml($u['o_nom']) ?></a>
+                                        <a href="/organisateur/organisateur.php?idO=<?= (int) $u['idO'] ?>"><?= sanitizeForHtml($u['o_nom']) ?></a>
                                     <?php endif; ?>
                                 </td>
                                 <td>
@@ -164,7 +164,7 @@ require_once '../_header.inc.php';
             </tbody>
         </table>
 
-    <?php } ?>
+    <?php endif; ?>
 
     <?php if (!empty($_SESSION['region_admin'])) { ?>
         <p><?php echo $glo_regions[$_SESSION['region_admin']]; ?></p>
@@ -191,7 +191,7 @@ require_once '../_header.inc.php';
                 <?php foreach ($tab_latest_events as $date => $events) : ?>
 
                     <tr>
-                        <td colspan="10" style="background:#f3f3f3"><?= date_fr($date) ?></td>
+                        <td colspan="10" style="background:#f3f3f3;font-weight: bold"><?= date_fr($date) ?></td>
                     </tr>
 
                     <?php foreach ($events as $event) :
@@ -220,7 +220,7 @@ require_once '../_header.inc.php';
 
     <?php if ($_SESSION['Sgroupe'] < UserLevel::ADMIN) { ?>
 
-        <h3 style="padding:0.2em">Derniers textes ajoutés à des lieux</h3>
+        <h2 style="padding:0.2em">Derniers textes ajoutés à des lieux</h2>
 
         <table summary="Derniers textes ajoutés" style="max-height:200px;">
 

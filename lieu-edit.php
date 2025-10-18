@@ -327,7 +327,7 @@ echo $form->getHtmlErreur("quartier");
             while ($tab = $connector->fetchArray($req))
             {
                 $lieu_organisateurs[] = $tab['idOrganisateur'];
-    /* 			echo "<tr><td><a href=\"/organisateur.php?idO=".$tab['idOrganisateur']."\">"
+    /* 			echo "<tr><td><a href=\"/organisateur/organisateur.php?idO=".$tab['idOrganisateur']."\">"
                 .$tab['nom']."</a>
                 </td>
                 <td><input type=\"checkbox\" name=\"sup_organisateur[]\" value=\"".$tab['idOrganisateur']."\" /></td></tr>"; */

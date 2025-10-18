@@ -20,7 +20,7 @@ include("../_header.inc.php");
         <p>Les acteurs culturels (organisateurs, gérants, artistes et al.) ont la possibilité d'ajouter gratuitement leurs propres événements.<br>
             Pour faire figurer un événement sur le site, l'inscription n'est pas obligatoire, même si elle est encouragée dès qu'il y en a un certain nombre à ajouter ; cela est résumé dans <a href="annoncerEvenement.php">cette page</a>.</p>
         <p>
-            Les rubriques <a href="/lieu/lieux.php">Lieux</a> et <a href="/organisateurs.php">Organisateurs</a> répertorient ces acteurs, avec pour chacun une fiche, si possible accompagnée d'un descriptif et d'illustrations.</p>
+            Les rubriques <a href="/lieu/lieux.php">Lieux</a> et <a href="/organisateur/organisateurs.php">Organisateurs</a> répertorient ces acteurs, avec pour chacun une fiche, si possible accompagnée d'un descriptif et d'illustrations.</p>
         <p>Le site est mis à jour quotidiennement par les contributeurs et par nous même</p>
         <p><a href="https://www.gbnews.ch/ladecadanse-ch-un-bouche-a-oreille-en-ligne/" class="lien_ext" target="_blank">Article "ladecadanse.ch, un bouche à oreille en ligne" sur GBNnews.ch (2015)</a></p>
 
