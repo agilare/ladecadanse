@@ -1,6 +1,13 @@
 <?php
 require_once("../app/bootstrap.php");
 
+use Ladecadanse\UserLevel;
+
+if (!$videur->checkGroup(UserLevel::ACTOR)) {
+    header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
+	header("Location: /user-login.php"); die();
+}
+
 $page_titre = "Mises à jour";
 $page_description = "Mises à jour logicielles";
 include("../_header.inc.php");

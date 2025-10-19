@@ -7,7 +7,7 @@
 ### Added
 - organisateurs : table with navigation, filters
 - admin : dashboard completed with more pertinent data, refactoring
-- mise à jour : new page, a simplified changelog
+- mise à jour : new page (for logged in users), a simplified changelog
 - lieux, organisateurs : show month of latest event also when < 6 month away
 
 ### Changed

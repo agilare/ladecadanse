@@ -132,7 +132,7 @@ use Ladecadanse\UserLevel;
                        </li>
                         <?php foreach ($glo_menu_pratique as $nom => $lien) {
 
-                            if ($lien == "/articles/mises-a-jour.php" && !(isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= UserLevel::AUTHOR))
+                            if ($lien == "/articles/mises-a-jour.php" && !(isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= UserLevel::ACTOR))
                             {
                                 continue;
                             }
