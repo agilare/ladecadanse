@@ -89,7 +89,7 @@ $stmt = $connectorPdo->prepare("SELECT
   p.pseudo AS pseudo
 
 FROM evenement e
-JOIN personne p ON e.idPersonne = p.idPersonne
+LEFT JOIN personne p ON e.idPersonne = p.idPersonne
 LEFT JOIN lieu l ON e.idLieu = l.idLieu
 LEFT JOIN localite lloc ON l.localite_id = lloc.id
 LEFT JOIN salle s ON e.idSalle = s.idSalle
@@ -142,8 +142,7 @@ require_once '../_header.inc.php';
             <thead>
                 <tr>
                     <th>Heure</th>
-                    <th>Pseudo</th>
-                    <th>E-mail</th>
+                    <th>Compte</th>
                     <th colspan="3">Affiliations (libre, lieu, organisateur)</th>
                     <th>Dernier éven. ajouté</th>
                 </tr>
@@ -152,7 +151,7 @@ require_once '../_header.inc.php';
                 <?php foreach ($page_results as $date => $users) : ?>
 
                     <tr>
-                        <td colspan="7" style="background:#f3f3f3;font-weight: bold"><?= date_fr($date) ?></td>
+                        <td colspan="6" style="background:#f3f3f3;font-weight: bold"><?= date_fr($date) ?></td>
                     </tr>
 
                         <?php foreach ($users as $u): ?>
@@ -161,8 +160,8 @@ require_once '../_header.inc.php';
                                 <td>
                                     <a href="/user.php?idP=<?= (int)$u['idPersonne'] ?>"><?= sanitizeForHtml($u['pseudo']) ?></a>
                                     <?php if ($u['groupe'] != UserLevel::ACTOR) { echo "(".sanitizeForHtml($u['groupe']).")"; } ?>
+                                    <br><small><?= $u['email'] ?></small>
                                 </td>
-                                <td><?= $u['email'] ?></td>
                                 <td><?= sanitizeForHtml($u['affiliation']) ?></td>
                                 <td>
                                     <?php if ($u['idL']) : ?>
@@ -194,7 +193,7 @@ require_once '../_header.inc.php';
 
     <h2 style="padding:0.4em 0">Événements ajoutés ces 3 derniers jours</h2>
 
-        <table summary="Derniers événements ajoutés" id="derniers_evenements_ajoutes" style="max-height:500px;">
+        <table summary="Derniers événements ajoutés" id="derniers_evenements_ajoutes" style="max-height:600px;">
             <thead>
                 <tr>
                     <th>Heure</th>
@@ -213,7 +212,7 @@ require_once '../_header.inc.php';
                 <?php foreach ($tab_latest_events as $date => $events) : ?>
 
                     <tr>
-                        <td colspan="10" style="background:#f3f3f3;font-weight: bold"><?= date_fr($date) ?></td>
+                        <td colspan="10" style="background:#efefef;font-weight: bold"><?= date_fr($date) ?></td>
                     </tr>
 
                     <?php foreach ($events as $event) :
