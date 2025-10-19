@@ -50,6 +50,14 @@ $results_per_page = 50;
 $categories_fr = implode(", ", array_map(fn ($cat) : string => $glo_categories_lieux[$cat], explode(",", str_replace(" ", "", $lieu['categorie']))));
 $lieu_salles = Lieu::getActivesSalles((int) $get['idL']);
 $lieu_orgas = Lieu::getActivesOrganisateurs((int) $get['idL']);
+
+$lieu_affiliates = [];
+if ($authorization->isPersonneEditor($_SESSION))
+{
+    $lieu_affiliates = Lieu::getActivesAffiliates((int) $get['idL']);
+}
+
+
 $lieu_images = Lieu::getImagesUploaded((int) $get['idL']);
 $lieu_descriptions = Lieu::getDescriptions((int) $get['idL']);
 $presentations_nb = isset($lieu_descriptions['presentation']) ? count($lieu_descriptions['presentation']) : 0;
@@ -234,9 +242,22 @@ include("../_header.inc.php");
 
                     <?php if (count($lieu_orgas) > 0) : ?>
                         <li>Organisateur<?php if (count($lieu_orgas) > 1) : ?>s<?php endif; ?>&nbsp;:
-                            <ul class="salles">
+                            <ul>
                             <?php foreach ($lieu_orgas as $o) : ?>
                                 <li><a href="/organisateur/organisateur.php?idO=<?= (int)$o['idOrganisateur'] ?>"><?= sanitizeForHtml($o['nom']) ?></a></li>
+                            <?php endforeach; ?>
+                            </ul>
+                        </li>
+                    <?php endif; ?>
+
+                    <?php if ($authorization->isPersonneEditor($_SESSION) && count($lieu_affiliates) > 0) : ?>
+                        <li>Affiliés&nbsp;:<br>
+                            <ul>
+                            <?php foreach ($lieu_affiliates as $a) : ?>
+                                <li>
+                                    <a href="/user.php?idP=<?= (int)$a['idPersonne'] ?>"><?= sanitizeForHtml($a['pseudo']) ?></a>
+                                    <small><?= sanitizeForHtml($a['email']) ?> <?= date_iso2app($a['p_dateAjout']) ?></small>
+                                </li>
                             <?php endforeach; ?>
                             </ul>
                         </li>

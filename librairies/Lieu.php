@@ -161,6 +161,18 @@ class Lieu extends Element
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public static function getActivesAffiliates(int $idLieu): array
+    {
+        global $connectorPdo;
+
+        $stmt = $connectorPdo->prepare("SELECT p.idPersonne AS idPersonne, pseudo, email, DATE(p.dateAjout) AS p_dateAjout
+            FROM affiliation a
+            LEFT JOIN personne p ON a.idPersonne = p.idPersonne AND p.statut = 'actif'
+            WHERE a.genre = 'lieu' AND a.idAffiliation = ? ORDER BY p_dateAjout DESC");
+        $stmt->execute([$idLieu]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public static function getImagesUploaded(int $idLieu): array
     {
         global $connectorPdo;

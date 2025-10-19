@@ -10,6 +10,7 @@ use Ladecadanse\Evenement;
 use Ladecadanse\Lieu;
 
 if (!$videur->checkGroup(UserLevel::ADMIN)) {
+    header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
 	header("Location: /user-login.php"); die();
 }
 
