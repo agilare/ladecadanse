@@ -139,13 +139,21 @@ include("../_header.inc.php");
                             <a href="/organisateur/organisateur.php?idO=<?= (int)$orga['idOrganisateur']; ?>"><strong><?= sanitizeForHtml($orga['nom']); ?></strong></a>
                         </td>
 
-                        <td class="<?php if (!empty($orgas_even[$orga['idOrganisateur']][0]['has_today_event']) ) { echo "ici"; } ?>">
+                        <td class="td-align-center<?php if (!empty($orgas_even[$orga['idOrganisateur']][0]['has_today_event']) ) { echo " ici"; } ?>">
+
                             <?php if (!empty($orgas_even[$orga['idOrganisateur']][0]) ) : ?>
+
                                 <?php if ($orgas_even[$orga['idOrganisateur']][0]['events_futur_nb'] > 0) : ?>
-                            <strong><a href="/organisateur/organisateur.php?idO=<?= (int)$orga['idOrganisateur'] ?>#prochains_evenements"><?= $orgas_even[$orga['idOrganisateur']][0]['events_futur_nb'] ?></a></strong>
-                                <?php endif; ?>
-                                <?php if ($authorization->isPersonneEditor($_SESSION) && $orgas_even[$orga['idOrganisateur']][0]['latest_event_months_nb'] > ORGAS_LOW_ACTIVITY_MONTHS_NB) : ?>
+
+                                    <strong><a href="/organisateur/organisateur.php?idO=<?= (int)$orga['idOrganisateur'] ?>#prochains_evenements"><?= $orgas_even[$orga['idOrganisateur']][0]['events_futur_nb'] ?></a></strong>
+
+                                <?php elseif ($authorization->isPersonneEditor($_SESSION)) : ?>
+
+                                <?php if ($orgas_even[$orga['idOrganisateur']][0]['latest_event_months_nb'] > ORGAS_LOW_ACTIVITY_MONTHS_NB) : ?>
                                     <small style="<?php if ($orgas_even[$orga['idOrganisateur']][0]['latest_event_months_nb'] > ORGAS_VERY_LOW_ACTIVITY_MONTHS_NB) : ?>color:red;<?php else : ?>color:darkorange; <?php endif ?>"><?= (new DateTime($orgas_even[$orga['idOrganisateur']][0]['latest_event_date']))->format('m.Y') ?></small>
+                                <?php else : ?>
+                                    <small style="color:lightsteelblue"><?= (new DateTime($orgas_even[$orga['idOrganisateur']][0]['latest_event_date']))->format('m.Y') ?></small>
+                                    <?php endif; ?>
                                 <?php endif; ?>
                             <?php endif; ?>
                         </td>

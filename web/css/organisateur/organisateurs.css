@@ -4,6 +4,11 @@ table#derniers_lieux
     margin-top: 10px;
 }
 
+table td
+{
+    text-align: left;
+}
+
 .table-filters button[type=submit]
 {
     font-size:0.9em;

@@ -201,18 +201,26 @@ include("../_header.inc.php");
                             if (empty($lieu['loc_canton'])) : ?>France<?php else: ?><?= sanitizeForHtml($lieu['loc_localite']) ?><?php endif;?>
                             <p style="font-size:0.8em"><?= sanitizeForHtml(HtmlShrink::adresseCompacteSelonContexte(region: "", localite:"", quartier: $lieu['quartier'], adresse: $lieu['adresse'])); ?></p>
                         </td>
-                        <td>
+                        <td class="td-align-center">
                             <?php if (!empty($lieux_desc[$lieu['idLieu']])) : ?>
                                 <?= $lieux_desc[$lieu['idLieu']][0]['nb'] ?>
                             <?php endif; ?>
                         </td>
-                        <td class="<?php if (!empty($lieux_even[$lieu['idLieu']][0]['has_today_event']) ) { echo "ici"; } ?>">
+                        <td class="td-align-center<?php if (!empty($lieux_even[$lieu['idLieu']][0]['has_today_event']) ) { echo " ici"; } ?>">
+
                             <?php if (!empty($lieux_even[$lieu['idLieu']][0]) ) : ?>
+
                                 <?php if ($lieux_even[$lieu['idLieu']][0]['events_futur_nb'] > 0) : ?>
-                            <strong><a href="lieu.php?idL=<?= (int)$lieu['idLieu'] ?>#prochains_evenements"><?= $lieux_even[$lieu['idLieu']][0]['events_futur_nb'] ?></a></strong>
-                                <?php endif; ?>
-                                <?php if ($authorization->isPersonneEditor($_SESSION) && $lieux_even[$lieu['idLieu']][0]['latest_event_months_nb'] > LIEUX_LOW_ACTIVITY_MONTHS_NB) : ?>
-                                    <small style="<?php if ($lieux_even[$lieu['idLieu']][0]['latest_event_months_nb'] > LIEUX_VERY_LOW_ACTIVITY_MONTHS_NB) : ?>color:red;<?php else : ?>color:darkorange; <?php endif ?>"><?= (new DateTime($lieux_even[$lieu['idLieu']][0]['latest_event_date']))->format('m.Y') ?></small>
+                                    <strong><a href="lieu.php?idL=<?= (int)$lieu['idLieu'] ?>#prochains_evenements"><?= $lieux_even[$lieu['idLieu']][0]['events_futur_nb'] ?></a></strong>
+
+                                <?php elseif ($authorization->isPersonneEditor($_SESSION)) : ?>
+
+                                    <?php if ($lieux_even[$lieu['idLieu']][0]['latest_event_months_nb'] > LIEUX_LOW_ACTIVITY_MONTHS_NB) : ?>
+                                        <small style="<?php if ($lieux_even[$lieu['idLieu']][0]['latest_event_months_nb'] > LIEUX_VERY_LOW_ACTIVITY_MONTHS_NB) : ?>color:red;<?php else : ?>color:orange; <?php endif ?>"><?= (new DateTime($lieux_even[$lieu['idLieu']][0]['latest_event_date']))->format('m.Y') ?></small>
+
+                                    <?php else : ?>
+                                        <small style="color:lightsteelblue"><?= (new DateTime($lieux_even[$lieu['idLieu']][0]['latest_event_date']))->format('m.Y') ?></small>
+                                    <?php endif; ?>
                                 <?php endif; ?>
                             <?php endif; ?>
                         </td>

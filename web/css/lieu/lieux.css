@@ -2,7 +2,11 @@ table#derniers_lieux
 {
     width: 100%;
     margin-top: 10px;
+}
 
+table td
+{
+    text-align: left;
 }
 
 .table-filters button[type=submit]
