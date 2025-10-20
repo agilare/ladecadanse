@@ -46,7 +46,7 @@ include("../_header.inc.php");
         <ul>
             <li><a href="/lieu/lieux.php">page Lieux</a>
                 <ul>
-                    <li>lorsque le lieu a un événement aujourd'hui c'est <span style="background:yellow">mise en évidence</span></li>
+                    <li>lorsque le lieu a un événement aujourd'hui c'est <span style="background:yellow">mis en évidence</span></li>
                     <li>tableau plus clair avec les Catégories déplacées vers le nom</li>
                 </ul>
             <li>lieu : dans la liste des événements chaque date mène maintenant à l'agenda</li>
@@ -88,7 +88,7 @@ include("../_header.inc.php");
         <h3>Lieux</h3>
 
         <ul>
-            <li><b>nouvelle <a href="/lieu/lieux.php">page Lieux</a></b> : ableau des lieux avec filtres, tri et pagination</li>
+            <li><b>nouvelle <a href="/lieu/lieux.php">page Lieux</a></b> : tableau des lieux avec filtres, tri et pagination</li>
             <li>page Lieu :
                 <ul>
                     <li>possibilité de voir les <b>anciens événements</b></li>
@@ -101,11 +101,11 @@ include("../_header.inc.php");
         <h3>Divers</h3>
 
         <ul>
-            <li>affichage des page un peu plus rapide (en autorisant la mise en cache par le navigateur des fichiers de style et de scripts)</li>
+            <li>affichage des page un peu plus rapide (en permettant la mise en cache par le navigateur des fichiers de style et de scripts)</li>
             <li>boutons Organisateurs et Lieu actifs lorsqu'on est dans ces rubriques</li>
             <li>tous les liens extérieurs ont une <span class="lien_ext">icône explicite</span></li>
             <li>davantage d'HTML sémantique</li>
-            <li>nombreuses améliorations techniques (nettoyage du code, mises à jour infrastructure)</li>
+            <li>nombreuses améliorations techniques (nettoyage du code, mises à jour de l'infrastructure)</li>
         </ul>
 
         <p><a href="https://github.com/agilare/ladecadanse/releases/tag/v3.9.0" class="lien_ext" target="_blank">Détails</a></p>
@@ -167,15 +167,15 @@ include("../_header.inc.php");
         <h3>Page d'accueil</h3>
 
         <ul>
-            <li>partenaires : ôté <a href="https://fr.wikipedia.org/wiki/Noctambus_(Gen%C3%A8ve)" class="lien_ext" target="_blank">Noctambus</a> (remplacé par le réseau nocturne tpg)
-            <li>les liens permettant d'aller vers la catégorie suivante plux explicites
+            <li>partenaires : ôté <a href="https://fr.wikipedia.org/wiki/Noctambus_(Gen%C3%A8ve)" class="lien_ext" target="_blank">Noctambus</a> (intégré au réseau nocturne TPG)
+            <li>les liens permettant d'aller vers la catégorie suivante sont plus explicites
             <li>nettoyage du code
         </ul>
 
         <h3>Divers</h3>
 
         <ul>
-            <li><a href="/articles/apropos.php">À propos</a> lien vers l'<a href="https://www.gbnews.ch/ladecadanse-ch-un-bouche-a-oreille-en-ligne/" class="lien_ext" target="_blank">article GBNews.ch au sujet de La décadanse</a>
+            <li><a href="/articles/apropos.php">À propos</a> : lien vers l'<a href="https://www.gbnews.ch/ladecadanse-ch-un-bouche-a-oreille-en-ligne/" class="lien_ext" target="_blank">article GBNews.ch au sujet de La décadanse</a>
             <li>améliorations du référencement
             <li>refactoring
         </ul>
@@ -197,7 +197,7 @@ include("../_header.inc.php");
         <h3>Événements</h3>
 
         <ul>
-            <li>Meilleure intégration des événements dans dans les sites externes (Facebook, etc.) grâce à balises Opengraph
+            <li>meilleure intégration des événements dans les sites externes (Facebook, etc.) grâce aux balises Opengraph
         </ul>
 
         <h3>Page <a href="/articles/faireUnDon.php">Faire un don</a></h3>
@@ -217,8 +217,113 @@ include("../_header.inc.php");
 
     </article>
 
+    <hr>
 
+    <article class="rubrique">
 
+        <header>
+            <h2>3.7.2</h2>
+            <br>
+            <p>27 avril 2025</p>
+        </header>
+
+        <h3>Divers</h3>
+
+        <ul>
+            <li>remplacement de Google Analytics par le plus éthique <a href="https://matomo.org" class="lien_ext" target="_blank">Matomo</a>
+            <li>amélioration de la sécurité
+        </ul>
+
+        <p><a href="https://github.com/agilare/ladecadanse/releases/tag/v3.7.2" class="lien_ext" target="_blank">Détails</a></p>
+
+    </article>
+
+    <hr>
+
+    <article class="rubrique">
+
+        <header>
+            <h2>3.7.1</h2>
+            <br>
+            <p>21 avril 2025</p>
+        </header>
+
+        <h3>Page d'accueil</h3>
+
+        <ul>
+            <li>l'horaire de chaque événement est maintenant affiché entièrement
+        </ul>
+
+        <h3>Événements</h3>
+
+        <ul>
+            <li>le statut particulier des événements (complet, annulé...) est mieux mis en évidence
+        </ul>
+
+        <h3>Lieux</h3>
+
+        <ul>
+            <li>la carte Google Maps n'est plus affichée si un lieu n'a pas de coordonnées (sinon il était localisé dans l'océan Atlantique...)
+        </ul>
+
+        <h3>Page <a href="/articles/faireUnDon.php">Faire un don</a></h3>
+
+        <ul>
+            <li>rétablissement du lien Paypal
+            <li>ajout de <a href="https://liberapay.com/michelg/donate" class="lien_ext" target="_blank">Liberapay</a>
+        </ul>
+
+        <h3>Divers</h3>
+
+        <ul>
+            <li>les champs de liste déroulantes fonctionnent mieux
+            <li>Mailing : configuration SMTP plus flexible
+        </ul>
+
+        <p><a href="https://github.com/agilare/ladecadanse/releases/tag/v3.7.1" class="lien_ext" target="_blank">Détails</a></p>
+
+    </article>
+
+    <hr>
+
+    <article class="rubrique">
+
+        <header>
+            <h2>3.7.0</h2>
+            <br>
+            <p>23 mars 2025</p>
+        </header>
+
+        <h3>Page d'accueil</h3>
+
+<!--        <ul>
+            <li>les horaires des événements sont maintenant affichés intégralement
+        </ul>-->
+
+        <h3>Agenda</h3>
+
+        <ul>
+            <li>les régions GE et VD ne sont plus hermétiques : les <b>événements du district de Nyon</b> apparaissent désormais dans la partie Genevoise
+        </ul>
+
+        <h3>Divers</h3>
+
+        <ul>
+            <li><a href="/articles/faireUnDon.php">Faire un don</a> : lifting de la page et ajout d'un texte explicatif
+            <li>ajout d'une bannière à l'intention des utilisateurs connectés
+            <li>ajout de FUNDING.yml indiquant les moyens de faire un don
+            <li><a href="/articles/charte-editoriale.php">Charte éditoriale</a> : actualisation du texe (qui datait de 2015)
+            <li>renforcement de la sécurité (ajout du <a href="https://perishablepress.com/8g-firewall/" class="lien_ext" target="_blank">firewall 8G</a>)
+            <li>mise à jour de l'infrastructure
+        </ul>
+
+        <p><a href="https://github.com/agilare/ladecadanse/releases/tag/v3.7.0" class="lien_ext" target="_blank">Détails</a></p>
+
+    </article>
+    <hr>
+    <br>
+
+    <p><a href="https://github.com/agilare/ladecadanse/releases" class="lien_ext" target="_blank">Mises à jour de 2019 à mars 2025 en détail</a></p>
 
 </main>
 

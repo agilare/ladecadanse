@@ -7,11 +7,15 @@
 ### Added
 - organisateurs : table with navigation, filters
 - admin : dashboard completed with more pertinent data, refactoring
+- lieu : add affiliates users to editors profiles
 - mise à jour : new page (for logged in users), a simplified changelog
 - lieux, organisateurs : show month of latest event also when < 6 month away
 
 ### Changed
 - organisateurs : pages organisateurs and organisateur moved under organisateur/
+
+### Removed
+- organisateurs right menu
 
 
 ## [3.9.1] - 2025-10-11
