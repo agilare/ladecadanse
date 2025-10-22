@@ -6,21 +6,9 @@ RUN \
     apt-get install -y --no-install-recommends automake git libpng-dev libzip-dev unzip wget zlib1g-dev zip && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
-
     # Install PHP extensions
-    docker-php-ext-install mysqli && \
-    docker-php-ext-install gd && \
-    docker-php-ext-install zip && \
-
-    # Install Xdebug according to wizard instruction (https://xdebug.org/wizard)
-    wget https://xdebug.org/files/xdebug-3.4.2.tgz && \
-    tar -xvzf xdebug-3.4.2.tgz && \
-    cd xdebug-3.4.2 && \
-    phpize && \
-    ./configure && \
-    make && \
-    cp modules/xdebug.so /usr/local/lib/php/extensions/no-debug-non-zts-20230831/ && \
-    echo zend_extension=xdebug > /usr/local/etc/php/conf.d/99-xdebug.ini && \
-    echo xdebug.mode=debug >> /usr/local/etc/php/conf.d/99-xdebug.ini && \
-    echo xdebug.client_host=host.docker.internal >> /usr/local/etc/php/conf.d/99-xdebug.ini && \
-    echo xdebug.client_port=9000 >> /usr/local/etc/php/conf.d/99-xdebug.ini
+    docker-php-ext-install pdo pdo_mysql mysqli gd zip && \
+    # Install Xdebug via PECL
+    pecl install xdebug-3.4.2 && \
+    docker-php-ext-enable xdebug && \
+    printf "xdebug.mode=debug\nxdebug.client_host=host.docker.internal\nxdebug.client_port=9000\n" > /usr/local/etc/php/conf.d/99-xdebug.ini
