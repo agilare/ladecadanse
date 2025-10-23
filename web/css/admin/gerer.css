@@ -32,8 +32,9 @@ ul.menu_sections li
 
 ul.menu_nb_res
 {
+    float: right;
+    width:50%;
     font-size:0.95em;
-    width:94%;
     margin:0 auto 0.2em auto;
 }
 
@@ -101,6 +102,11 @@ table#ajouts tr th
     padding:0.4em 0.2em;
 }
 
+table#ajouts tr th:nth-child(1)
+{
+    text-align:left;
+}
+
 table#ajouts tr th.ici
 {
     background:#fafafa;
@@ -113,6 +119,12 @@ table#ajouts tr td
     font-size:0.85em;
     padding:0.4em 0.2em;
 }
+
+table#ajouts tr td:nth-child(1)
+{
+    text-align:left;
+}
+
 
 table#ajouts td a.titre:visited {
     color:#105199; /*  #104d91*/

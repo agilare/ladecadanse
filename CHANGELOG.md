@@ -6,13 +6,15 @@
 
 ### Added
 - organisateurs : table with navigation, filters
-- admin : dashboard completed with more pertinent data, refactoring
+- admin : dashboard completed with more pertinent data, better layout, refactoring
 - lieu : add affiliates users to editors profiles
 - mise à jour : new page (for logged in users), a simplified changelog
 - lieux, organisateurs : show month of latest event also when < 6 month away
+- in 2 db connection setups add set of sql mode for session
 
 ### Changed
 - organisateurs : pages organisateurs and organisateur moved under organisateur/
+- admin : users page refactored, store most of browsing params in session
 
 ### Removed
 - organisateurs right menu

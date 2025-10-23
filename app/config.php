@@ -104,7 +104,7 @@ $glo_tab_ailleurs = ["rf" => "France", "hs" => "Autre"];
 
 // VIEW "Mises à jour" => "/articles/mises-a-jour.php",
 $glo_menu_pratique = [ "Contact" => "/contacteznous.php", "À propos" => "/articles/apropos.php", "Mises à jour" => "/articles/mises-a-jour.php", "Faire un don" => "/articles/faireUnDon.php"];
-$tab_nblignes = [50, 100, 250, 500]; // nb lignes de resultats de listes
+$tab_nblignes = [10, 20, 50, 100, 250, 500]; // nb lignes de resultats de listes
 $actions = ["ajouter", "insert", "update", "editer"];
 
 $iconeSupprimer = "<img src=\"" . $url_images_interface_icons . "delete.png\" alt=\"Supprimer\" title=\"Supprimer\" />";
@@ -136,8 +136,8 @@ $icone['evenement'] = '<img src="' . $url_images_interface_icons . 'calendar.png
 $icone['lieu'] = '<img src="' . $url_images_interface_icons . 'building.png" alt="Lieu" width="16" height="16" />';
 $icone['description'] = '<img src="' . $url_images_interface_icons . 'page_white.png" alt="Description" />';
 $icone['personne'] = '<img src="' . $url_images_interface_icons . 'user.png" alt="Personne" />';
-$icone['asc'] = '<img src="' . $url_images_interface_icons . 'bullet_arrow_up.png" alt="" />';
-$icone['desc'] = '<img src="' . $url_images_interface_icons . 'bullet_arrow_down.png" alt="" />';
+$icone['asc'] = '<i class="fa fa-sort-asc fa-lg" aria-hidden="true"></i>';
+$icone['desc'] = '<i class="fa fa-sort-desc fa-lg" aria-hidden="true"></i>';
 $icone['liste'] = '<img src="' . $url_images_interface_icons . 'application_view_list.png" alt="Liste" />';
 $icone['galerie'] = '<img src="' . $url_images_interface_icons . 'application_view_tile.png" alt="Galerie" />';
 $icone['recherche'] = '<img src="' . $url_images_interface_icons . 'search.png" alt="Recherche" />';
