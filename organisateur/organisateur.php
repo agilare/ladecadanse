@@ -186,8 +186,8 @@ include("../_header.inc.php");
                         </li>
                     <?php endif; ?>
                     <?php if (count($orga_lieux) > 0) : ?>
-                        <li>Lieu(x) géré(s) :
-                            <ul class="salles">
+                        <li>Lieu<?php if (count($orga_lieux) > 1) : ?>x<?php endif; ?>&nbsp;:
+                            <ul>
                                 <?php foreach ($orga_lieux as $l) : ?>
                                    <li><a href="/lieu/lieu.php?idL=<?= (int)$l['idLieu'] ?>"><?= sanitizeForHtml($l['nom']) ?></a></li>
                                 <?php endforeach; ?>
@@ -195,12 +195,15 @@ include("../_header.inc.php");
                         </li>
                     <?php endif; ?>
                     <?php if (isset($_SESSION['SidPersonne']) && ($authorization->isAuthor("organisateur", $_SESSION['SidPersonne'], $get['idO']) || $authorization->isPersonneInOrganisateur($_SESSION['SidPersonne'], $get['idO'])) && count($orga_personnes) > 0) : ?>
-                        <li>Membres :
-                            <ul class="salles">
-                                <?php foreach ($orga_personnes as $op) : ?>
-                                <li><a href="/user.php?idP=<?= (int)$op['idPersonne'] ?>"><?= sanitizeForHtml($op['pseudo']) ?></a>&nbsp;<small><?= sanitizeForHtml($op['email']) ?></small></li>
-                                <?php endforeach ?>
-                            </ul>
+                        <li>
+                            <details>
+                                <summary>Membres (<?= count($orga_personnes) ?>)&nbsp;:</summary>
+                                <ul>
+                                    <?php foreach ($orga_personnes as $op) : ?>
+                                        <li><a href="/user.php?idP=<?= (int)$op['idPersonne'] ?>"><?= sanitizeForHtml($op['pseudo']) ?></a>&nbsp;<small><?= sanitizeForHtml($op['email']) ?></small></li>
+                                    <?php endforeach ?>
+                                </ul>
+                            </details>
                         </li>
                     <?php endif; ?>
                 </ul>

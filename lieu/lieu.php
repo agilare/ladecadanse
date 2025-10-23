@@ -4,7 +4,6 @@ require_once("../app/bootstrap.php");
 
 use Ladecadanse\UserLevel;
 use Ladecadanse\Lieu;
-use Ladecadanse\Evenement;
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\Utils\Text;
 use Ladecadanse\Utils\Utils;
@@ -251,15 +250,18 @@ include("../_header.inc.php");
                     <?php endif; ?>
 
                     <?php if ($authorization->isPersonneEditor($_SESSION) && count($lieu_affiliates) > 0) : ?>
-                        <li>Affiliés&nbsp;:<br>
-                            <ul>
-                            <?php foreach ($lieu_affiliates as $a) : ?>
-                                <li>
-                                    <a href="/user.php?idP=<?= (int)$a['idPersonne'] ?>"><?= sanitizeForHtml($a['pseudo']) ?></a>
-                                    <small><?= sanitizeForHtml($a['email']) ?> <?= date_iso2app($a['p_dateAjout']) ?></small>
-                                </li>
-                            <?php endforeach; ?>
-                            </ul>
+                        <li>
+                            <details>
+                                <summary>Affiliés (<?= count($lieu_affiliates) ?>)&nbsp;:</summary>
+                                <ul>
+                                <?php foreach ($lieu_affiliates as $a) : ?>
+                                    <li>
+                                        <a href="/user.php?idP=<?= (int)$a['idPersonne'] ?>"><?= sanitizeForHtml($a['pseudo']) ?></a>
+                                        <small><?= sanitizeForHtml($a['email']) ?> <?= date_iso2app($a['p_dateAjout']) ?></small>
+                                    </li>
+                                <?php endforeach; ?>
+                                </ul>
+                            </details>
                         </li>
                     <?php endif; ?>
 

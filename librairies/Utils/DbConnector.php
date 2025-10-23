@@ -15,6 +15,10 @@ class DbConnector extends SystemComponent
         $this->dbConnection = mysqli_connect($host, $user, $pass, $db);
 
         mysqli_set_charset($this->dbConnection, 'utf8mb4');
+        mysqli_query($this->dbConnection, "SET SESSION sql_mode = 'IGNORE_SPACE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION'");
+//        $result = mysqli_query($this->dbConnection, "SELECT @@SESSION.sql_mode");
+//        $row = mysqli_fetch_row($result);
+//        echo "SQL_MODE actif : " . $row[0];
         //enregistre la méthode "close" pour qu'elle soit executée une fois le script terminé
         register_shutdown_function([&$this, 'close']);
     }
