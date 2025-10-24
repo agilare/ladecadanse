@@ -23,6 +23,7 @@ class DbConnectorPdo
 
         try {
             $this->pdo = new PDO($dsn, $config['user'], $config['password'], $options);
+            $this->pdo->exec("SET SESSION sql_mode = 'IGNORE_SPACE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION'");
         } catch (PDOException $e) {
             // Gérer proprement les erreurs
             throw new Exception("Connection failed: " . $e->getMessage());
