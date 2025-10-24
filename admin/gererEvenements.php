@@ -14,12 +14,13 @@ use Ladecadanse\EvenementRenderer;
 
 if (!$videur->checkGroup(UserLevel::ADMIN))
 {
-	header("Location: /user-login.php"); die();
+    header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
+    exit;
 }
 
 
-$page_titre = "gérer les événements";
-$extra_css = ["formulaires", "admin/gerer"];
+$page_titre = "Gérer les événements";
+$extra_css = ["formulaires", "admin/tables"];
 require_once '../_header.inc.php';
 
 $tab_listes = ["evenement" => "Événements", "lieu" => "Lieux", "description" => "Descriptions", "personne" => "Personnes"];

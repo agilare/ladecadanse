@@ -199,7 +199,7 @@ use Ladecadanse\UserLevel;
                                     <?php if ($_SESSION['Sgroupe'] <= UserLevel::ADMIN) : ?>
                                         <a href="/admin/index.php"><i class="fa fa-tachometer" aria-hidden="true"></i></a>
                                         <a href="/admin/gererEvenements.php"><i class="fa fa-calendar-o" aria-hidden="true"></i></a>
-                                        <a href="/admin/gerer.php?element=personne"><i class="fa fa-user" aria-hidden="true"></i></a>
+                                        <a href="/admin/users.php"><i class="fa fa-user" aria-hidden="true"></i></a>
                                     <?php endif; ?>
                                     <a href="/user-logout.php">Sortir</a>
                                 </li>

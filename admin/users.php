@@ -127,6 +127,7 @@ $col_fields = [
     "last_login" => "Dern. login"];
 
 $page_titre = "Gérer les utilisateurs";
+$extra_css = ["admin/tables"];
 require_once '../_header.inc.php';
 ?>
 

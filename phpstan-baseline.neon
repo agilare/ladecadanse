@@ -40,19 +40,19 @@ parameters:
 			message: '#^Loose comparison using \=\= between ''categorie''\|''date_derniere_modif''\|''dateAjout''\|''description''\|''idLieu''\|''nom''\|''statut''\|''URL'' and ''adresse'' will always evaluate to false\.$#'
 			identifier: equal.alwaysFalse
 			count: 1
-			path: admin/gerer.php
+			path: admin/users.php
 
 		-
 			message: '#^Loose comparison using \=\= between ''contenu''\|''date_derniere_modif''\|''dateAjout'' and ''idPersonne'' will always evaluate to false\.$#'
 			identifier: equal.alwaysFalse
 			count: 1
-			path: admin/gerer.php
+			path: admin/users.php
 
 		-
 			message: '#^Loose comparison using \=\= between ''date_ajout''\|''date_derniere_modif''\|''idOrganisateur''\|''nom''\|''statut'' and ''URL'' will always evaluate to false\.$#'
 			identifier: equal.alwaysFalse
 			count: 1
-			path: admin/gerer.php
+			path: admin/users.php
 
 		-
 			message: '#^Loose comparison using \!\= between ''adresse''\|''description''\|''flyer''\|''genre''\|''horaire_complement''\|''horaire_debut''\|''horaire_fin''\|''idLieu''\|''idSalle''\|''image''\|''localite_id''\|''nomLieu''\|''organisateurs''\|''prelocations''\|''prix''\|''quartier''\|''ref''\|''region''\|''statut''\|''titre''\|''urlLieu'' and ''idPersonne'' will always evaluate to true\.$#'
