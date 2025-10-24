@@ -53,7 +53,18 @@ Ces instructions vous permettront de mettre en place une copie du projet sur vot
 
 Une configuration Docker est fournie pour exécuter le site en environnement local ou en production.
 
-L’utilisation de Make simplifie la gestion des conteneurs. Les principales actions (build, start, stop, logs, etc.) sont accessibles via des cibles prédéfinies dans le Makefile.
+L'utilisation de Make simplifie la gestion des conteneurs. Les principales actions (build, start, stop, logs, etc.) sont accessibles via des cibles prédéfinies dans le Makefile.
+
+#### Configuration des environnements
+
+Le projet utilise un fichier unique `docker/env/env.php` pour tous les environnements. Les paramètres spécifiques à l'environnement (développement ou production) sont définis via des variables d'environnement Docker :
+
+- **Développement** : `APP_ENV=dev` et `APP_DEBUG=true`
+- **Production** : `APP_ENV=prod` et `APP_DEBUG=false`
+
+Ces variables sont automatiquement configurées dans `docker-compose.yml` selon le profil Docker utilisé.
+
+**Important** : Avant de déployer en production, assurez-vous de configurer les valeurs sensibles dans `docker/env/env.php` (clés API, identifiants SMTP, etc.).
 
 #### Développement
 ```sh

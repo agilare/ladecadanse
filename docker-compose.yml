@@ -52,6 +52,9 @@ services:
         condition: service_started
       composer-dev:
         condition: service_completed_successfully
+    environment:
+      - APP_ENV=dev
+      - APP_DEBUG=true
     volumes:
       - ${PWD}:/var/www/html/
       - ${PWD}/docker/apache/ladecadanse.conf:/etc/apache2/sites-enabled/000-default.conf
@@ -80,6 +83,9 @@ services:
         condition: service_started
       composer-prod:
         condition: service_completed_successfully
+    environment:
+      - APP_ENV=prod
+      - APP_DEBUG=false
     volumes:
       - ${PWD}:/var/www/html/
       - ${PWD}/docker/env/env.php:/var/www/html/app/env.php
