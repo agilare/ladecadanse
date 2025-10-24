@@ -20,13 +20,14 @@ Les principales sections du site sont :
 
 Ces instructions vous permettront de mettre en place une copie du projet sur votre machine locale à des fins de développement et de test. Voir [déploiement](README.md#déploiement) pour des notes sur la façon de déployer le projet sur un système actif.
 
-### Prérequis
+### Installation sans Docker
+#### Prérequis
 - Apache 2.4
 - PHP 8.3 (avec les extensions `fileinfo`, `mysqli`, `mbstring`, `gd`)
 - Composer
 - MariaDB 10.6/MySQL 5.7 (with `sql_mode` containing `ALLOW_INVALID_DATES`)
 
-### Manuelle
+#### Étapes
 1. cloner la branche `master`
 1. `composer install`
 1. base de données
@@ -48,12 +49,32 @@ Ces instructions vous permettront de mettre en place une copie du projet sur vot
 1. `cp app/env_model.php app/env.php` ainsi que `cp app/db.config_model.php app/db.config.php` et y saisir les valeurs de votre environnement (davantage d'explications et exemples se trouvent dans les fichiers même), avec au minimum les informations de connexion à la base de données
 1. `cp .htaccess.example .htaccess` si vous voulez implémenter une configuration PHP et Apache de base pour le développement en local
 
-### Par Docker
-Lancer la commande suivante à la racine du projet :
+### Installation avec Docker
+
+Une configuration Docker est fournie pour exécuter le site en environnement local ou en production.
+
+L’utilisation de Make simplifie la gestion des conteneurs. Les principales actions (build, start, stop, logs, etc.) sont accessibles via des cibles prédéfinies dans le Makefile.
+
+#### Développement
 ```sh
-docker compose up -d
+make dev                    # Démarrer l'environnement de développement
+make logs-dev               # Voir les logs
+make shell-dev              # Ouvrir un shell dans le conteneur
 ```
-Le site ladecadanse est déployé sur localhost:7777. Le mot de passe, par défaut, pour l'utilisateur `admin` est `admin_dev`.
+
+#### Production
+```sh
+make prod                   # Démarrer l'environnement de production
+make logs-prod              # Voir les logs
+make shell-prod             # Ouvrir un shell dans le conteneur
+```
+
+#### Commandes disponibles
+```sh
+make help                   # Afficher toutes les commandes disponibles
+```
+
+Le site ladecadanse est déployé sur localhost:7777 (dev) ou localhost:8080 (prod). Le mot de passe, par défaut, pour l'utilisateur `admin` est `admin_dev`.
 
 ### Usage
 Une fois le site fonctionnel, se connecter avec le login *admin* (créé ci-dessus) permet d'ajouter et modifier des événements, lieux, etc. (partie publique) et de les gérer largement (partie back-office)

@@ -1,34 +1,56 @@
 services:
+  # Database service - shared between dev and prod
   db:
     image: mariadb:10.6
     container_name: ladecadanse_db
     environment:
       MYSQL_DATABASE: ladecadanse
-      MYSQL_ROOT_PASSWORD: dev
-      MYSQL_USER: dev
-      MYSQL_PASSWORD: dev
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-dev}
+      MYSQL_USER: ${DB_USER:-dev}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-dev}
     volumes:
+      - ladecadanse_db_data:/var/lib/mysql
       - ${PWD}/resources/ladecadanse.sql:/docker-entrypoint-initdb.d/001_ladecadanse.sql
       - ${PWD}/docker/env/create-admin.sql:/docker-entrypoint-initdb.d/002_create-admin.sql
     ports:
-      - "127.0.0.1:9906:3306"
+      - "127.0.0.1:${DB_PORT:-9906}:3306"
     networks:
       - ladecadanse_net
-  install-dep:
-    build:
-      dockerfile: ./docker/php/Dockerfile
-    container_name: ladecadanse_install_dep
-    command: ./docker/php/install_dep.sh
+    profiles:
+      - dev
+      - prod
+
+  # Composer services
+  composer-dev:
+    image: composer:2.7
+    container_name: ladecadanse_composer_dev
+    command: install --optimize-autoloader --ignore-platform-reqs
     volumes:
-      - ${PWD}:/var/www/html/
-  web:
+      - ${PWD}:/app
+    working_dir: /app
+    profiles:
+      - dev
+
+  composer-prod:
+    image: composer:2.7
+    container_name: ladecadanse_composer_prod
+    command: install --no-dev --optimize-autoloader --no-scripts --ignore-platform-reqs
+    volumes:
+      - ${PWD}:/app
+    working_dir: /app
+    profiles:
+      - prod
+
+  web-dev:
     build:
+      context: .
       dockerfile: ./docker/php/Dockerfile
-    container_name: ladecadanse_php
+      target: development
+    container_name: ladecadanse_php_dev
     depends_on:
       db:
         condition: service_started
-      install-dep:
+      composer-dev:
         condition: service_completed_successfully
     volumes:
       - ${PWD}:/var/www/html/
@@ -36,12 +58,42 @@ services:
       - ${PWD}/docker/env/env.php:/var/www/html/app/env.php
       - ${PWD}/docker/env/db.config.php:/var/www/html/app/db.config.php
     ports:
-      - "127.0.0.1:7777:80"
+      - "127.0.0.1:${WEB_PORT:-7777}:80"
     networks:
       - ladecadanse_net
     extra_hosts:
-       - host.docker.internal:host-gateway
+      - host.docker.internal:host-gateway
     stdin_open: true
     tty: true
+    profiles:
+      - dev
+
+  # Production services
+  web-prod:
+    build:
+      context: .
+      dockerfile: ./docker/php/Dockerfile
+      target: production
+    container_name: ladecadanse_php_prod
+    depends_on:
+      db:
+        condition: service_started
+      composer-prod:
+        condition: service_completed_successfully
+    volumes:
+      - ${PWD}:/var/www/html/
+      - ${PWD}/docker/env/env.php:/var/www/html/app/env.php
+      - ${PWD}/docker/env/db.config.php:/var/www/html/app/db.config.php
+    ports:
+      - "127.0.0.1:${WEB_PORT:-8080}:80"
+    networks:
+      - ladecadanse_net
+    restart: unless-stopped
+    profiles:
+      - prod
+
 networks:
   ladecadanse_net:
+
+volumes:
+  ladecadanse_db_data:
