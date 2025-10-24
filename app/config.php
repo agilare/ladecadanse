@@ -104,7 +104,7 @@ $glo_tab_ailleurs = ["rf" => "France", "hs" => "Autre"];
 
 // VIEW "Mises à jour" => "/articles/mises-a-jour.php",
 $glo_menu_pratique = [ "Contact" => "/contacteznous.php", "À propos" => "/articles/apropos.php", "Mises à jour" => "/articles/mises-a-jour.php", "Faire un don" => "/articles/faireUnDon.php"];
-$tab_nblignes = [10, 20, 50, 100, 250, 500]; // nb lignes de resultats de listes
+$tab_nblignes = [50, 100, 250, 500]; // nb lignes de resultats de listes
 $actions = ["ajouter", "insert", "update", "editer"];
 
 $iconeSupprimer = "<img src=\"" . $url_images_interface_icons . "delete.png\" alt=\"Supprimer\" title=\"Supprimer\" />";

@@ -66,9 +66,9 @@ if (isset($_GET['nblignes']) && Validateur::validateUrlQueryValue($_GET['nbligne
 
 //dump($_SESSION);
 
-$users_page_current = Personne::getActivesPersonnes($filters, $_SESSION['user_prefs_users_order_by'], $_SESSION['user_prefs_users_order_asc'], $get['page'], $_SESSION['user_prefs_users_nblignes']);
+$users_page_current = Personne::getPersonnes($filters, $_SESSION['user_prefs_users_order_by'], $_SESSION['user_prefs_users_order_asc'], $get['page'], $_SESSION['user_prefs_users_nblignes']);
 //dump($users_page_current);
-$users_page_all = Personne::getActivesPersonnes($filters, $_SESSION['user_prefs_users_order_by'], $_SESSION['user_prefs_users_order_asc']);
+$users_page_all = Personne::getPersonnes($filters, $_SESSION['user_prefs_users_order_by'], $_SESSION['user_prefs_users_order_asc']);
 $all_results_nb = count($users_page_all);
 
 
@@ -151,7 +151,6 @@ require_once '../_header.inc.php';
         <div id="filters">
 
             <form method="get" action="" id="ajouter_editer" style="float:left;width:40%;">
-                <input type="hidden" name="page" value="<?= (int)$get['page']; ?>" />
                 <input type="text" name="terme" value="<?= sanitizeForHtml($filters['terme']) ?>" placeholder="pseudo ou email" size="20" />
                 <input type="submit" name="submit" value="Filtrer" />
             </form>

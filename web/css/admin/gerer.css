@@ -34,6 +34,7 @@ ul.menu_nb_res
 {
     float: right;
     width:50%;
+    text-align: right;
     font-size:0.95em;
     margin:0 auto 0.2em auto;
 }

@@ -30,50 +30,43 @@ class Personne
     }
 
 
-    public static function getActivesPersonnes(array $filters, string $orderBy = 'dateAjout', string $order = 'asc', ?int $page = null, ?int $nbLignes = null): array
+    public static function getPersonnes(array $filters, string $orderBy = 'dateAjout', string $order = 'DESC', ?int $page = null, ?int $nbLignes = null): array
     {
         global $connectorPdo;
 
-        $sql_event = "SELECT
-          p.*,
-           dateAjout,
-          DATE(last_login) AS last_login
-          FROM personne p
-          WHERE p.statut = 'actif'";
+        // TODO: $params = [':statut' => $filters['statut']];
+        $params = [];
 
+        $where = '';
         if (!empty($filters['terme']))
         {
-            $sql_event .= " AND (p.pseudo LIKE :terme OR p.email LIKE :terme2)";
+            $where = " WHERE (p.pseudo LIKE :terme OR p.email LIKE :terme2)";
+            $params[':terme'] = "%" . $filters['terme'] . "%";
+            $params[':terme2'] = "%" . $filters['terme'] . "%";
         }
 
-        $sql_event .= " ORDER BY $orderBy $order ";
-
+        $limit = '';
+        if (!empty($page))
+        {
         // TODO
 //        $pers_total_page_max = ceil($num_pers_total / $nbLignes);
 //        if ($pers_total_page_max > 0 && $page > $pers_total_page_max)
 //        {
 //            $page = $pers_total_page_max;
 //        }
-
-        if (!empty($page))
-        {
-            $sql_event .= " LIMIT " . (int) (($page - 1) * (int) $nbLignes) . ", " . (int) $nbLignes;
+            $limit = " LIMIT " . (int) (($page - 1) * (int) $nbLignes) . ", " . (int) $nbLignes;
         }
+
+        $sql_event = "SELECT
+          p.*,
+          DATE(dateAjout) AS dateAjout,
+          DATE(last_login) AS last_login
+          FROM personne p
+          $where ORDER BY $orderBy $order $limit
+           ";
 
         //echo $sql_event;
         $stmt = $connectorPdo->prepare($sql_event);
-
-        $params = [];
-        // TODO: $params = [':statut' => $filters['statut']];
-
-        if (!empty($filters['terme']))
-        {
-            $params[':terme'] = "%" . $filters['terme'] . "%";
-            $params[':terme2'] = "%" . $filters['terme'] . "%";
-        }
-
-        //$params[':orderBy'] = $orderBy;
-//dump($params);
         $stmt->execute($params);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
