@@ -78,11 +78,10 @@ shell: ## Open shell in web container
 	$(DC) exec $(WEB_CONTAINER) /bin/bash
 
 clean: ## Clean environment
-	@echo "$(YELLOW)[WARN]$(NC) This will remove all $(PROFILE) containers, images, and volumes."
+	@echo "$(YELLOW)[WARN]$(NC) This will remove $(PROFILE) containers, images, and volumes for this project only."
 	@read -p "Are you sure? (y/N): " confirm && [ "$$confirm" = "y" ] || exit 1
 	@echo "$(GREEN)[INFO]$(NC) Cleaning $(PROFILE) environment..."
-	$(DC) down -v --rmi all
-	docker system prune -f
+	$(DC) down -v --rmi local
 	@echo "$(GREEN)[INFO]$(NC) $(PROFILE) environment cleaned!"
 
 status: ## Show service status
