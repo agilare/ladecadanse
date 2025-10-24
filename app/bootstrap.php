@@ -40,7 +40,21 @@ if (ENV === 'dev') {
 // FIXME: seems to not work on current depl server (darksite.ch)
 // session_save_path(__ROOT__ . "/var/sessions");
 // ini_set('session.gc_probability', 1); // to enable auto clean of old session in Debian https://www.php.net/manual/en/function.session-save-path.php#98106
-session_start(['cookie_secure' => true, 'cookie_httponly' => true, 'cookie_samesite' => 'Lax']);
+
+// Enable cookie_secure only when using HTTPS to allow docker config without SSL enable
+$isHttps =
+    (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ||
+    (isset($_SERVER['SERVER_PORT']) && (int)$_SERVER['SERVER_PORT'] === 443) ||
+    (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https') ||
+    (!empty($_SERVER['HTTP_X_FORWARDED_SSL']) && strtolower($_SERVER['HTTP_X_FORWARDED_SSL']) === 'on');
+
+session_start([
+    'cookie_secure'   => $isHttps,
+    'cookie_httponly' => true,
+    'cookie_samesite' => 'Lax',
+]);
+
+
 
 $regionConfig = new RegionConfig($glo_regions);
 [$url_query_region, $url_query_region_et, $url_query_region_1er] = $regionConfig->getAppVars();
