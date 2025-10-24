@@ -41,34 +41,26 @@ $filters['terme'] = $_SESSION['user_prefs_users_terme'];
 
 // order
 $_SESSION['user_prefs_users_order_by'] ??= 'dateAjout';
-$tab_order_by = ["pseudo", "groupe", "statut", "dateAjout", "date_derniere_modif", "last_login"];
-if (isset($_GET['order_by']) && in_array($_GET['order_by'], $tab_order_by))
+$fields_to_order_by = ["pseudo", "groupe", "statut", "dateAjout", "date_derniere_modif", "last_login"];
+if (isset($_GET['order_by']) && in_array($_GET['order_by'], $fields_to_order_by))
 {
    $_SESSION['user_prefs_users_order_by'] = $_GET['order_by'];
 }
+$_SESSION['user_prefs_users_order_dir'] = !empty($_GET['order_dir']) ? Validateur::validateUrlQueryValue($_GET['order_dir'], "alpha_numeric", 1) : 'desc';
 
-$_SESSION['user_prefs_users_order_asc'] ??= 'desc';
-if (isset($_GET['order_asc']))
-{
-   $_SESSION['user_prefs_users_order_asc'] = $_GET['order_asc'];
-}
 
 $get = [];
 
 // pagination
 $get['page'] = !empty($_GET['page']) ? Validateur::validateUrlQueryValue($_GET['page'], "int", 1) : 1;
+$_SESSION['user_prefs_users_nblignes'] = !empty($_GET['nblignes']) ? Validateur::validateUrlQueryValue($_GET['nblignes'], "int", 1) : $tab_nblignes[0];
 
-$_SESSION['user_prefs_users_nblignes'] ??= 20;
-if (isset($_GET['nblignes']) && Validateur::validateUrlQueryValue($_GET['nblignes'], "int", 0))
-{
-   $_SESSION['user_prefs_users_nblignes'] = $_GET['nblignes'];
-}
 
 //dump($_SESSION);
 
-$users_page_current = Personne::getPersonnes($filters, $_SESSION['user_prefs_users_order_by'], $_SESSION['user_prefs_users_order_asc'], $get['page'], $_SESSION['user_prefs_users_nblignes']);
+$users_page_current = Personne::getPersonnes($filters, $_SESSION['user_prefs_users_order_by'], $_SESSION['user_prefs_users_order_dir'], $get['page'], $_SESSION['user_prefs_users_nblignes']);
 //dump($users_page_current);
-$users_page_all = Personne::getPersonnes($filters, $_SESSION['user_prefs_users_order_by'], $_SESSION['user_prefs_users_order_asc']);
+$users_page_all = Personne::getPersonnes($filters, $_SESSION['user_prefs_users_order_by'], $_SESSION['user_prefs_users_order_dir']);
 $all_results_nb = count($users_page_all);
 
 
@@ -176,12 +168,11 @@ require_once '../_header.inc.php';
                 <?php foreach ($col_fields as $field => $label) : ?>
 
                     <th <?php if ($field == $_SESSION['user_prefs_users_order_by']) : ?>class="ici"<?php endif; ?>>
-
-                        <?php if (in_array($field, $tab_order_by)) : ?>
-                            <?php if ($field == $_SESSION['user_prefs_users_order_by']) : ?>
-                                <a href="?order_asc=<?php if ($_SESSION['user_prefs_users_order_asc'] == 'asc' ) : ?>desc<?php else: ?>asc<?php endif; ?>&amp;page=<?= (int) $get['page'] ?>"><?= $icone[$_SESSION['user_prefs_users_order_asc']]; ?></a>
-                            <?php endif; ?>
+                        <?php if (in_array($field, $fields_to_order_by)) : ?>
                             <a href="?order_by=<?= $field ?>&amp;page=<?= (int) $get['page'] ?>"><?= $label ?></a>
+                            <?php if ($field == $_SESSION['user_prefs_users_order_by']) : ?>
+                                <a href="?order_dir=<?php if ($_SESSION['user_prefs_users_order_dir'] == 'asc' ) : ?>desc<?php else: ?>asc<?php endif; ?>&amp;page=<?= (int) $get['page'] ?>"><?= $icone[$_SESSION['user_prefs_users_order_dir']]; ?></a>
+                            <?php endif; ?>
                         <?php else: ?>
                             <?= $label ?>
                         <?php endif; ?>
