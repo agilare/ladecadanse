@@ -5,11 +5,12 @@ require_once("../app/bootstrap.php");
 use Ladecadanse\Evenement;
 use Ladecadanse\UserLevel;
 
-if (!$videur->checkGroup(UserLevel::ACTOR)) {
-	header("Location: index.php"); die();
-}
-
 header('X-Robots-Tag: noindex');
+
+if (!$videur->checkGroup(UserLevel::ACTOR)) {
+	header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
+    die();
+}
 
 $get['id'] = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
 $get['action'] = strip_tags((string) $_GET['action']);

@@ -3,6 +3,7 @@
 ## [3.9.2] - Unreleased
 
 ### Fixed
+- events: add auth requirement in actions
 
 ### Added
 - organisateurs : table with navigation, filters
@@ -18,6 +19,7 @@
 
 ### Removed
 - organisateurs right menu
+- readme : in db config rm requirement of ALLOW_INVALID_DATES
 
 
 ## [3.9.1] - 2025-10-11
