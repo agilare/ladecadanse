@@ -66,23 +66,47 @@ Ces variables sont automatiquement configurées dans `docker-compose.yml` selon 
 
 **Important** : Avant de déployer en production, assurez-vous de configurer les valeurs sensibles dans `docker/env/env.php` (clés API, identifiants SMTP, etc.).
 
-#### Développement
+#### Utilisation
+
+Toutes les commandes acceptent le paramètre `PROFILE=dev` ou `PROFILE=prod` (par défaut : `dev`).
+
+**Développement** (utilise le profil par défaut) :
 ```sh
-make dev                    # Démarrer l'environnement de développement
-make logs-dev               # Voir les logs
-make shell-dev              # Ouvrir un shell dans le conteneur
+make start                  # Démarrer l'environnement de développement
+make logs                   # Voir les logs
+make shell                  # Ouvrir un shell dans le conteneur
+make stop                   # Arrêter les services
 ```
 
-#### Production
+**Production** (spécifier `PROFILE=prod`) :
 ```sh
-make prod                   # Démarrer l'environnement de production
-make logs-prod              # Voir les logs
-make shell-prod             # Ouvrir un shell dans le conteneur
+make start PROFILE=prod     # Démarrer l'environnement de production
+make logs PROFILE=prod      # Voir les logs
+make shell PROFILE=prod     # Ouvrir un shell dans le conteneur
+make stop PROFILE=prod      # Arrêter les services
+```
+
+**Raccourcis pratiques** :
+```sh
+make dev                    # Équivalent à : make start
+make prod                   # Équivalent à : make start PROFILE=prod
 ```
 
 #### Commandes disponibles
+
 ```sh
 make help                   # Afficher toutes les commandes disponibles
+make build [PROFILE=...]    # Construire les images Docker
+make start [PROFILE=...]    # Démarrer les services
+make stop [PROFILE=...]     # Arrêter les services
+make restart [PROFILE=...]  # Redémarrer les services
+make logs [PROFILE=...]     # Afficher les logs (mode suivi)
+make shell [PROFILE=...]    # Ouvrir un shell dans le conteneur web
+make status [PROFILE=...]   # Afficher le statut des services
+make clean [PROFILE=...]    # Nettoyer l'environnement (conteneurs, images, volumes)
+make install-deps [PROFILE=...]     # Installer les dépendances PHP
+make composer-update [PROFILE=...]  # Mettre à jour les dépendances Composer
+make composer-require PACKAGE=...   # Ajouter un package Composer
 ```
 
 Le site ladecadanse est déployé sur localhost:7777 (dev) ou localhost:8080 (prod). Le mot de passe, par défaut, pour l'utilisateur `admin` est `admin_dev`.
