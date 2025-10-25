@@ -25,7 +25,6 @@ $extra_css = ["formulaires", "admin/tables"];
 require_once '../_header.inc.php';
 
 $tab_listes = ["evenement" => "Événements", "lieu" => "Lieux", "description" => "Descriptions", "personne" => "Personnes"];
-$tab_nblignes = [100, 250, 500];
 
 $get = [];
 
@@ -183,17 +182,12 @@ elseif (!empty($_POST['formulaire']))
 	if (isset($_POST['organisateurs']))
 		$champs['organisateurs'] = $_POST['organisateurs'];
 
-	//TEST
-	//printr($_FILES);
-	//
 	$fichiers['flyer'] = $_FILES['flyer'];
 	$fichiers['image'] = $_FILES['image'];
-
 
 	/*
 	 * VERIFICATION DES CHAMPS ENVOYES par POST
 	 */
-
 	$totalEv = count($evenements);
 	foreach ($evenements as $idEv)
 	{
@@ -202,7 +196,6 @@ elseif (!empty($_POST['formulaire']))
 			$verif->setErreur('evenements', "Un des ID d'événements choisi n'est pas un nombre");
 		}
 	}
-
 
 	$verif->valider($champs['genre'], "genre", "texte", 1, 200, 0);
 	if (!empty($champs['genre']) && !array_key_exists($champs['genre'], $glo_tab_genre))
@@ -225,7 +218,6 @@ elseif (!empty($_POST['formulaire']))
 	{
 		$verif->setErreur("localite_id", "La localité est obligatoire");
 	}
-
 
 	if (!empty($champs['idLieu']) && ($champs['nomLieu'] != "" || $champs['adresse'] != ""))
     {
@@ -266,7 +258,6 @@ elseif (!empty($_POST['formulaire']))
 	$verif->valider($champs['horaire_complement'], "horaire_complement", "texte", 1, 100, 0);
 	$verif->valider($champs['prix'], "prix", "texte", 1, 100, 0);
 	$verif->valider($champs['prelocations'], "prelocations", "texte", 1, 100, 0);
-
 
 
 	if ($verif->nbErreurs() === 0)
@@ -338,25 +329,6 @@ elseif (!empty($_POST['formulaire']))
                     $lieu_modifie = true;
                 }
 
-                /*
-		if ($champs['idLieu'] != "" && $champs['idLieu'] != 0)
-		{
-			$sql_lieu = "SELECT nom, adresse, quartier, URL FROM lieu WHERE idLieu=".$champs['idLieu'];
-			$req_lieu = $connector->query($sql_lieu);
-			$tab_lieu = $connector->fetchArray($req_lieu);
-			$champs['nomLieu'] = $tab_lieu['nom'];
-			$champs['adresse'] = $tab_lieu['adresse'];
-			$champs['quartier'] = $tab_lieu['quartier'];
-			$champs['urlLieu'] = $tab_lieu['URL'];
-			$lieu_modifie = true;
-		}
-		else if ($champs['nomLieu'] != "")
-		{
-			$champs['idLieu'] = "0";
-			$lieu_modifie = true;
-		}
-                */
-
 		//dedoublonne
 		if (count($champs['organisateurs']) > 0)
 		{
@@ -417,31 +389,6 @@ elseif (!empty($_POST['formulaire']))
 				}
 			}
 
-			/*
-			$req_even_jg = $connector->query("
-			SELECT titre, idLieu, idSalle, nomLieu, adresse, dateEvenement
-			FROM evenement
-			WHERE dateEvenement='".$tab_even['dateEvenement']."' AND genre='".$nouv_genre."'");
-
-			$erreursEv = '';
-
-			while ($tab_even_jg = $connector->fetchArray($req_even_jg))
-			{
-
-				if ($tab_even_jg['titre'] == $champs['titre'])
-				{
-					$erreursEv = "L'événement s'appelant '".$tab_even_jg['titre']."' du même genre a lieu à la même date";
-				}
-
-				if ($tab_even_jg['idLieu'] != 0 && $champs['idLieu'] == $tab_even_jg['idLieu'] && $champs['idSalle'] == $tab_even_jg['idSalle'])
-				{
-					$erreursEv = "L'événement \"".$tab_even_jg['titre'] ."\" a déjà lieu à cette endroit";
-				}
-
-
-			}
-			*/
-
 			if (!empty($erreursEv))
 			{
 				HtmlShrink::msgErreur($erreursEv);
@@ -476,17 +423,13 @@ elseif (!empty($_POST['formulaire']))
 					if (!empty($affFly['flyer']))
 					{
                         Evenement::rmImageAndItsMiniature($affFly['flyer']);
-                        //echo "<div class=\"msg\">Ancien flyer ".$affFly['flyer']." supprimé</div>";
 					}
 				}
-
-
-			//si le champ "supprimer le flyer" est coché sans qu'un nouveau flyer soit remplacant
+                //si le champ "supprimer le flyer" est coché sans qu'un nouveau flyer soit remplacant
 			}
 
 			if (!empty($supprimer['flyer']))
 			{
-
 				$sql_flyer = ", flyer=''";
 				$req_flyer = $connector->query("SELECT flyer FROM evenement WHERE idEvenement=".(int)$idEven_courant);
 
@@ -500,7 +443,6 @@ elseif (!empty($_POST['formulaire']))
                         Evenement::rmImageAndItsMiniature($affFly['flyer']);
 					}
 				}
-
 			} //elseif supprimer flyer
 
 			$sql_image = ""; // champ SQL pour l'image
@@ -508,7 +450,6 @@ elseif (!empty($_POST['formulaire']))
 			//si un nouveau flyer
 			if (!empty($champs['image']))
 			{
-
 				$sql_image = ", image='".$champs['image']."'";
 				$req_image = $connector->query("SELECT image FROM evenement WHERE idEvenement=".(int)$idEven_courant);
 
@@ -522,13 +463,11 @@ elseif (!empty($_POST['formulaire']))
                         Evenement::rmImageAndItsMiniature($affImg['image']);
 					}
 				}
-
-			//si le champ "supprimer le flyer" est coché¡³ans qu'un nouveau flyer soit remplacant
+    			//si le champ "supprimer le flyer" est coché¡³ans qu'un nouveau flyer soit remplacant
 			}
 
 			if (!empty($supprimer['image']))
 			{
-
 				$sql_image = ", image=''";
 				$req_image = $connector->query("SELECT image FROM evenement WHERE idEvenement=".(int)$idEven_courant);
 
@@ -542,7 +481,6 @@ elseif (!empty($_POST['formulaire']))
                         Evenement::rmImageAndItsMiniature($affImg['image']);
 					}
 				}
-
 			} //if supprimer image
 
 			$sql_update = "UPDATE evenement SET ";
@@ -555,15 +493,10 @@ elseif (!empty($_POST['formulaire']))
                         $sql_update .= $i."='".$connector->sanitize($v)."', ";
                 }
 			}
-                        //(($v == "" && ($c == "urlLieu" || $c == "quartier")) || $v != "") &&
 
 			$sql_update .= "date_derniere_modif='".date("Y-m-d H:i:s")."'";
 			$sql_update .= $sql_flyer.$sql_image."
 			WHERE idEvenement=".(int) $idEven_courant;
-
-
-				//echo "<p>".$sql_update."</p>";
-
 
 			$req_update = $connector->query($sql_update);
 
@@ -579,17 +512,12 @@ elseif (!empty($_POST['formulaire']))
 
 				$action_terminee = true;
             }
-			else
-			{
-				HtmlShrink::msgErreur("La requête UPDATE de la table evenement a échoué");
-			}
 
 			/*
 			* TRAITEMENT DE L'IMAGE UPLOADEE
 			*/
 			if (!empty($fichiers['flyer']['name']) && $compteur_evenements == 0)
 			{
-
 				$imD2 = new ImageDriver2("evenement");
 				$erreur_image = [];
 				$erreur_image[] = $imD2->processImage($_FILES['flyer'], $champs['flyer'], 400, 400);
@@ -599,7 +527,6 @@ elseif (!empty($_POST['formulaire']))
 			}
 			elseif (!empty($fichiers['flyer']['name']))
 			{
-                //echo $srcFlyer."<br>";
                 copy(Evenement::getSystemFilePath(Evenement::getFilePath($srcFlyer)), Evenement::getSystemFilePath(Evenement::getFilePath($champs['flyer'])));
                 copy(Evenement::getSystemFilePath(Evenement::getFilePath($srcFlyer, "s_")), Evenement::getSystemFilePath(Evenement::getFilePath($champs['flyer'], "s_")));
             }
@@ -641,10 +568,6 @@ elseif (!empty($_POST['formulaire']))
 	}
 }
 
-if ($verif->nbErreurs() > 0)
-{
-	HtmlShrink::msgErreur("Il y a ".$verif->nbErreurs()." erreur(s).");
-}
 
 /*
  * AFFICHAGE DE LA TABLE ET SON MENU DE NAVIGATION
@@ -752,13 +675,19 @@ if (!empty($events_ids))
         ];
     }
 }
+?>
 
+
+<?php
+if ($verif->nbErreurs() > 0)
+{
+	HtmlShrink::msgErreur("Il y a ".$verif->nbErreurs()." erreur(s).");
+}
 ?>
 
 <section id="default">
 
     <div>
-
 
         <ul class="menu_filtre" style="float:left;width:60%">
             <li <?php if ($get['filtre_genre'] == 'tous') { echo 'class="ici"'; } ?>>
@@ -844,7 +773,15 @@ if (!empty($events_ids))
                 <td><?= Lieu::getLinkNameHtml($even_lieu['nom'], $even_lieu['idLieu'], $even_lieu['salle']) ?> (<?= $even_lieu['localite'] ?>)</td>
                 <td><a href="/index.php?courant=<?= sanitizeForHtml($tab_even['e_dateEvenement']) ?>"><?= date_iso2app($tab_even['e_dateEvenement']) ?></a></td>
                 <td><?= ucfirst((string) $glo_tab_genre[$tab_even['e_genre']]) ?></td>
-                <td><?= afficher_debut_fin($tab_even['e_horaire_debut'], $tab_even['e_horaire_fin'], $tab_even['e_dateEvenement']) ?></td>
+                <td>
+                    <?= afficher_debut_fin($tab_even['e_horaire_debut'], $tab_even['e_horaire_fin'], $tab_even['e_dateEvenement']) ?>
+                    <?php
+                    if (!empty($tab_even['e_horaire_complement']))
+                    {
+                        echo "<br><i>".sanitizeForHtml(substr($tab_even['e_horaire_complement'], 0, 20))."</i>";
+                    }
+                    ?>
+                </td>
                 <td>
                     <?php if (!empty($events_orgas[$tab_even['e_idEvenement']])): ?>
                         <?= Organisateur::getListLinkedHtml($events_orgas[$tab_even['e_idEvenement']], isWithOrganisateurUrl: false) ?>
