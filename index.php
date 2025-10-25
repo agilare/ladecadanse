@@ -221,7 +221,7 @@ include("_header.inc.php");
                 <small>Aujourd’hui <a href="/event/rss.php?type=evenements_auj" title="Flux RSS des événements du jour" class="desktop"><i class="fa fa-rss fa-lg"></i></a></small><?php endif; ?>
         </h1>
         <ul class="entete_contenu_navigation">
-            <li><a href="index.php?courant=<?= $date_prev ?>" rel="nofollow"><?= $iconePrecedent ?></a></li><li><a href="index.php?courant=<?= $date_next ?>" rel="nofollow"><?= ucfirst(date_fr($date_next, "tout", "non", "")).$iconeSuivant ?></a></li>
+            <li><a href="index.php?courant=<?= $date_prev ?>" rel="prev nofollow"><?= $iconePrecedent ?></a></li><li><a href="index.php?courant=<?= $date_next ?>" rel="next nofollow"><?= ucfirst(date_fr($date_next, "tout", "non", "")).$iconeSuivant ?></a></li>
         </ul>
         <div class="spacer"></div>
     </header>
@@ -315,7 +315,7 @@ include("_header.inc.php");
        <?php } // foreach ?>
 
         <ul class="entete_contenu_navigation">
-            <li><a href="index.php?courant=<?= $date_prev ?>" rel="nofollow"><?= $iconePrecedent ?></a></li><li><a href="index.php?courant=<?= $date_next ?>" rel="nofollow"><?= ucfirst(date_fr($date_next, "tout", "non", "")).$iconeSuivant ?></a></li>
+            <li><a href="index.php?courant=<?= $date_prev ?>" rel="prev nofollow"><?= $iconePrecedent ?></a></li><li><a href="index.php?courant=<?= $date_next ?>" rel="next nofollow"><?= ucfirst(date_fr($date_next, "tout", "non", "")).$iconeSuivant ?></a></li>
         </ul>
 
 

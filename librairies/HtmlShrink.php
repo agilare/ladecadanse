@@ -167,7 +167,7 @@ class HtmlShrink
 
             //previous button
             if ($page > 1)
-                $pagination .= "<a id=\"prec\" href=\"$targetpage$pagestring$prev\">préc</a>";
+                $pagination .= "<a id=\"prec\" href=\"$targetpage$pagestring$prev\" rel=\"prev\">préc</a>";
             else
                 $pagination .= "<span class=\"disabled\">préc</span>";
 
@@ -233,7 +233,7 @@ class HtmlShrink
 
             //next button
             if ($page < $counter - 1)
-                $pagination .= "<a id=\"suiv\"  href=\"$targetpage$pagestring$next\">suiv</a>";
+                $pagination .= "<a id=\"suiv\"  href=\"$targetpage$pagestring$next\" rel=\"next\">suiv</a>";
             else
                 $pagination .= "<span class=\"disabled\">suiv</span>";
             $pagination .= "</div>\n";
