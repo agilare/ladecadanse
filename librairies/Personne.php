@@ -16,7 +16,7 @@ use PDO;
 class Personne
 {
     public static $statuts = ['demande', 'actif', 'inactif'];
-  
+
     public const int LOW_ACTIVITY_MONTHS_NB = 12;
     public const int VERY_LOW_ACTIVITY_MONTHS_NB = 24;
 
@@ -55,11 +55,16 @@ class Personne
         }
 
         // TODO: sanitize $orderBy $orderDir
+        // FIXME: replace left join with affiliation and lieu temp; create a separate query
         $sql_event = "SELECT
           p.*,
-          DATE(dateAjout) AS dateAjout,
-          DATE(last_login) AS last_login
+          l.idLieu AS idLieu,
+          l.nom AS l_nom,
+          DATE(p.dateAjout) AS dateAjout,
+          DATE(p.last_login) AS last_login
           FROM personne p
+          LEFT JOIN affiliation a ON p.idPersonne = a.idPersonne
+          LEFT JOIN lieu l ON a.idAffiliation = l.idLieu
           $where ORDER BY $orderBy $orderDir $limit
            ";
 

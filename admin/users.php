@@ -8,6 +8,7 @@ use Ladecadanse\HtmlShrink;
 use Ladecadanse\Utils\Utils;
 use Ladecadanse\Personne;
 use Ladecadanse\EvenementRenderer;
+use Ladecadanse\Organisateur;
 
 if (!$videur->checkGroup(UserLevel::ADMIN))
 {
@@ -119,6 +120,37 @@ $stmt = $connectorPdo->prepare($sql);
 $stmt->execute($idsParams);
 $users_even = $stmt->fetchAll(PDO::FETCH_GROUP);
 
+$users_orgas = [];
+if (!empty($page_users_ids))
+{
+    list($idsClause, $idsParams) = $connectorPdo->buildInClause('po.idPersonne', $page_users_ids);
+    $stmt = $connectorPdo->prepare("SELECT
+
+    po.idPersonne AS idPersonne,
+    o.idOrganisateur AS o_idOrganisateur,
+    o.nom AS o_nom,
+    o.URL AS o_URL
+
+    FROM personne_organisateur po
+    JOIN organisateur o ON po.idOrganisateur = o.idOrganisateur AND $idsClause
+    ORDER BY nom DESC");
+
+    $stmt->execute($idsParams);
+
+    $tab_orgas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    //dump($tab_orgas);
+    foreach ($tab_orgas AS $eo)
+    {
+        $users_orgas[$eo['idPersonne']][] = [
+            'idOrganisateur' => $eo['o_idOrganisateur'],
+            'nom' => $eo['o_nom'],
+            'url' => $eo['o_URL']
+        ];
+    }
+}
+
+//dump($users_orgas);
+
 $col_fields = [
     "pseudo" => "Pseudo",
     "groupe" => "Groupe",
@@ -173,12 +205,12 @@ require_once '../_header.inc.php';
 
                     <th <?php if ($field == $_SESSION['user_prefs_users_order_by']) : ?>class="ici"<?php endif; ?>  <?php if ($field == 'affiliations'): ?>colspan="3"<?php endif; ?>>
                         <?php if (in_array($field, $fields_to_order_by)) : ?>
-                            <a href="?order_by=<?= $field ?>&amp;page=<?= (int) $get['page'] ?>"><?= $label ?></a>
+                            <a href="?order_by=<?= $field ?>&amp;page=<?= (int) $get['page'] ?>"><?= sanitizeForHtml($label) ?></a>
                             <?php if ($field == $_SESSION['user_prefs_users_order_by']) : ?>
                                 <a href="?order_dir=<?php if ($_SESSION['user_prefs_users_order_dir'] == 'asc' ) : ?>desc<?php else: ?>asc<?php endif; ?>&amp;page=<?= (int) $get['page'] ?>"><?= $icone[$_SESSION['user_prefs_users_order_dir']]; ?></a>
                             <?php endif; ?>
                         <?php else: ?>
-                            <?= $label ?>
+                            <?= sanitizeForHtml($label) ?>
                         <?php endif; ?>
                     </th>
                 <?php endforeach; ?>
@@ -190,14 +222,22 @@ require_once '../_header.inc.php';
                 <?php $ue = isset($users_even[$u['idPersonne']]) ? $users_even[$u['idPersonne']][0] : null; ?>
                 <tr>
                     <td style="width:20%">
-                        <a href="/user.php?idP=<?= (int) $u['idPersonne'] ?>"><?= sanitizeForHtml($u['pseudo']) ?></a>
-                        <br><small><a href="mailto:<?= sanitizeForHtml($u['email']) ?>"><?= sanitizeForHtml($u['email']) ?></a></small>
+                        <a href="/user.php?idP=<?= (int)$u['idPersonne'] ?>" style="font-size:1.1em"><?= sanitizeForHtml($u['pseudo']) ?></a>
+                        <br><a href="mailto:<?= sanitizeForHtml($u['email']) ?>"><?= sanitizeForHtml($u['email']) ?></a>
                     </td>
-                    <td><?= $u['groupe'] ?></td>
-                    <td><?= $u['affiliation'] ?></td>
-                    <td>lieux</td>
-                    <td>orgas</td>
-                    <td><?php if ($ue != null) : ?><?= $ue['nb_even'] ?>&nbsp;<span style="color:lightsteelblue">(<?= $ue['events_annual_avg'] ?>/an)</span><?php endif; ?></td>
+                    <td><?= (int)$u['groupe'] ?></td>
+                    <td><?= sanitizeForHtml($u['affiliation']) ?></td>
+                    <td>
+                        <?php if ($u['idLieu']) : ?>
+                            <a href="/lieu/lieu.php?idL=<?= (int) $u['idLieu'] ?>"><?= sanitizeForHtml($u['l_nom']) ?></a>
+                        <?php endif; ?>
+                    </td>
+                    <td>
+                        <?php if (!empty($users_orgas[$u['idPersonne']])): ?>
+                            <?= Organisateur::getListLinkedHtml($users_orgas[$u['idPersonne']], isWithOrganisateurUrl: false) ?>
+                        <?php endif; ?>
+                    </td>
+                    <td><?php if ($ue != null) : ?><?= (int)$ue['nb_even'] ?><br><span style="color:lightsteelblue">(<?= sanitizeForHtml($ue['events_annual_avg']) ?>/an)</span><?php endif; ?></td>
                     <td><?php if ($ue != null) : ?>
                         <?php if ($ue['latest_event_months_nb'] > Personne::LOW_ACTIVITY_MONTHS_NB) : ?>
                             <span style="<?php if ($ue['latest_event_months_nb'] > Personne::VERY_LOW_ACTIVITY_MONTHS_NB) : ?>color:red;<?php else : ?>color:orange;<?php endif ?>"><?= (new DateTime($ue['latest_event_date']))->format('m.Y') ?></span>
