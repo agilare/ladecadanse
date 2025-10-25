@@ -222,7 +222,7 @@ require_once '../_header.inc.php';
                     <tr>
                         <td><?= (new DateTime($event['e_dateAjout']))->format("H:i") ?></td>
                         <td><a href="/event/evenement.php?idE=<?= (int)$event['e_idEvenement'] ?>" class='titre'><?= sanitizeForHtml($event['e_titre']) ?></a></td>
-                        <td><?= Lieu::getLinkNameHtml($even_lieu['nom'], $even_lieu['idLieu'], $even_lieu['salle']) ?></td>
+                        <td><?= Lieu::getLinkNameHtml($even_lieu['nom'], $even_lieu['idLieu'], $even_lieu['salle']) ?> (<?= $even_lieu['localite'] ?>)</td>
                         <td><a href="/index.php?courant=<?= sanitizeForHtml($event['e_dateEvenement']) ?>"><?= date_iso2app($event['e_dateEvenement']) ?></a></td>
                         <td><?= ucfirst($glo_tab_genre[$event['e_genre']]) ?></td>
                         <td><?= afficher_debut_fin($event['e_horaire_debut'], $event['e_horaire_fin'], $event['e_dateEvenement']) ?></td>

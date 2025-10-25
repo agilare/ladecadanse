@@ -11,6 +11,7 @@ use Ladecadanse\UserLevel;
 use Ladecadanse\Utils\Utils;
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\EvenementRenderer;
+use Ladecadanse\Lieu;
 
 if (!$videur->checkGroup(UserLevel::ADMIN))
 {
@@ -44,7 +45,7 @@ if (isset($_GET['page']))
 $get['tri_gerer'] = "dateAjout";
 if (isset($_GET['tri_gerer']))
 {
-	$get['tri_gerer'] = Validateur::validateUrlQueryValue($_GET['tri_gerer'], "enum", 1, ["dateAjout", "date_derniere_modif", "statut", "date_debut","id", "titre", "genre"]);
+	$get['tri_gerer'] = Validateur::validateUrlQueryValue($_GET['tri_gerer'], "enum", 1, ["dateAjout", "date_derniere_modif", "statut", "date_debut", "id", "titre", "genre"]);
 }
 
 $tab_ordre = ["asc", "desc"];
@@ -81,9 +82,8 @@ $get['terme'] = '';
 if (!empty($_GET['terme']))
 {
 	$get['terme'] = $_GET['terme'];
-	$where .= " ( LOWER(titre) like LOWER('%".$connector->sanitize($get['terme'])."%')) ";
+	$where .= " ( LOWER(e.titre) LIKE LOWER('%".$connector->sanitize($get['terme'])."%')) ";
 }
-
 
 $get['filtre_genre'] = "tous";
 if (isset($_GET['filtre_genre']) && $_GET['filtre_genre'] != 'tous')
@@ -94,7 +94,7 @@ if (isset($_GET['filtre_genre']) && $_GET['filtre_genre'] != 'tous')
 	if (!empty($_GET['terme']))
 		$where .= " AND ";
 
-	$where .= " genre='".$connector->sanitize($_GET['filtre_genre'])."' ";
+	$where .= " e.genre='".$connector->sanitize($_GET['filtre_genre'])."' ";
 }
 
 $verif = new Validateur();
@@ -106,7 +106,7 @@ if (!empty($_SESSION['region_admin']))
     	if ((!empty($_GET['filtre_genre']) && $_GET['filtre_genre'] != 'tous') || !empty($_GET['terme']))
 		$where .= " AND ";
 
-        $where .=  " region='".$connector->sanitize($_SESSION['region_admin'])."' ";
+        $where .=  " e.region='".$connector->sanitize($_SESSION['region_admin'])."' ";
 
         $titre_region = " - ".$glo_regions[$_SESSION['region_admin']];
 }
@@ -644,7 +644,7 @@ if ($verif->nbErreurs() > 0)
 /*
  * AFFICHAGE DE LA TABLE ET SON MENU DE NAVIGATION
  */
-$sql_nbeven = "SELECT COUNT(*) AS nbeven FROM evenement ".$where;
+$sql_nbeven = "SELECT COUNT(*) AS nbeven FROM evenement e ".$where;
 
 $req_nbeven = $connector->query($sql_nbeven);
 $tab_nbeven = $connector->fetchArray($req_nbeven);
@@ -659,10 +659,48 @@ if ($get['page'] < 1)
     $sql_page = 1;
 
 $sql_evenement = "
-SELECT idEvenement, idLieu, idPersonne, statut, idPersonne, genre, titre, dateEvenement, horaire_debut, horaire_fin, nomLieu, flyer, dateAjout,
- date_derniere_modif
-FROM evenement ".$where."
-ORDER BY ".$get['tri_gerer']." ".$get['ordre']." LIMIT ".(int)($sql_page - 1) * (int)$get['nblignes'].",".(int)$get['nblignes'];
+SELECT
+
+  e.genre AS e_genre,
+  e.idEvenement AS e_idEvenement,
+  e.titre AS e_titre,
+  e.statut AS e_statut,
+  e.idPersonne AS e_idPersonne,
+  e.dateEvenement AS e_dateEvenement,
+  e.ref AS e_ref,
+  e.flyer AS e_flyer,
+  e.image AS e_image,
+  e.description AS e_description,
+  e.horaire_debut AS e_horaire_debut,
+  e.horaire_fin AS e_horaire_fin,
+  e.horaire_complement AS e_horaire_complement,
+  e.prix AS e_prix,
+  e.prelocations AS e_prelocations,
+  e.idLieu AS e_idLieu,
+  e.idSalle AS e_idSalle,
+  e.nomLieu AS e_nomLieu,
+  e.adresse AS e_adresse,
+  e.quartier AS e_quartier,
+  loc.localite AS e_localite,
+  e.region AS e_region,
+  e.urlLieu AS e_urlLieu,
+  e.dateAjout AS e_dateAjout,
+
+  l.nom AS l_nom,
+  l.adresse AS l_adresse,
+  l.quartier AS l_quartier,
+  l.URL AS l_URL,
+  lloc.localite AS lloc_localite,
+  l.region AS l_region,
+  s.nom AS s_nom
+
+FROM evenement e
+JOIN localite loc ON e.localite_id = loc.id
+LEFT JOIN lieu l ON e.idLieu = l.idLieu
+LEFT JOIN localite lloc ON l.localite_id = lloc.id
+LEFT JOIN salle s ON e.idSalle = s.idSalle
+ ".$where."
+ORDER BY e.".$get['tri_gerer']." ".$get['ordre']." LIMIT ".(int)($sql_page - 1) * (int)$get['nblignes'].",".(int)$get['nblignes'];
 
 //echo $sql_evenement;
 $req_evenement = $connector->query($sql_evenement);
@@ -671,36 +709,36 @@ $req_evenement = $connector->query($sql_evenement);
 <div style="width:94%;margin:0 auto">
 
     <ul class="menu_filtre" style="float:left;width:60%">
-    <li
-    <?php
-    if ($get['filtre_genre'] == 'tous') { echo 'class="ici"'; }
+        <li <?php if ($get['filtre_genre'] == 'tous') { echo 'class="ici"'; } ?>>
+            <a href="?<?= Utils::urlQueryArrayToString($get, "filtre_genre")?>&amp;filtre_genre=tous">Tous</a></li>
+        <?php
+        foreach ($glo_tab_genre as $ng => $nl)
+        {
+            echo '<li ';
+            if ($get['filtre_genre'] == $ng) { echo 'class="ici"'; }
+                $nom = $ng;
+                if ($ng == 'cinéma')
+                    $nom = 'ciné';
 
-    echo '><a href="?'.Utils::urlQueryArrayToString($get, "filtre_genre").'&filtre_genre=tous">Tous</a></li>';
+            echo '><a href="?'.Utils::urlQueryArrayToString($get, "filtre_genre").'&filtre_genre='.$ng.'">'.ucfirst((string) $nom).'</a>';
 
-    foreach ($glo_tab_genre as $ng => $nl)
-    {
-        echo '<li ';
-        if ($get['filtre_genre'] == $ng) { echo 'class="ici"'; }
-            $nom = $ng;
-            if ($ng == 'cinéma')
-                $nom = 'ciné';
-
-        echo '><a href="?'.Utils::urlQueryArrayToString($get, "filtre_genre").'&filtre_genre='.$ng.'">'.ucfirst((string) $nom).'</a></li>';
-    }
-
-    ?>
+            ?>
+            </li>
+          <?php } ?>
     </ul>
+
     <div class="spacer"></div>
-	<form method="get" action="" id="ajouter_editer" style="margin:0;">
 
-		<input type="hidden" name="filtre_genre" value="<?php echo sanitizeForHtml($get['filtre_genre']); ?>" />
-		<input type="hidden" name="page" value="<?php echo (int)$get['page']; ?>" />
-		<input type="hidden" name="nblignes" value="<?php echo (int)$get['nblignes']; ?>" />
-		<input type="hidden" name="tri_gerer" value="<?php echo sanitizeForHtml($get['tri_gerer']); ?>" />
-		<input type="hidden" name="element" value="<?php echo sanitizeForHtml($get['element']); ?>" />
-		<input type="hidden" name="ordre" value="<?php echo sanitizeForHtml($get['ordre']); ?>" />
+    <form method="get" action="" id="ajouter_editer" style="margin:0;">
 
-		<input type="text" name="terme" value="<?php echo sanitizeForHtml($get['terme']); ?>" placeholder="Titre" size="30" />
+		<input type="hidden" name="filtre_genre" value="<?= sanitizeForHtml($get['filtre_genre']); ?>" />
+		<input type="hidden" name="page" value="<?= (int)$get['page']; ?>" />
+		<input type="hidden" name="nblignes" value="<?= (int)$get['nblignes']; ?>" />
+		<input type="hidden" name="tri_gerer" value="<?= sanitizeForHtml($get['tri_gerer']); ?>" />
+		<input type="hidden" name="element" value="<?= sanitizeForHtml($get['element']); ?>" />
+		<input type="hidden" name="ordre" value="<?= sanitizeForHtml($get['ordre']); ?>" />
+
+		<input type="search" name="terme" value="<?= sanitizeForHtml($get['terme']); ?>" placeholder="Titre" size="20" />
 		<input type="submit" name="submit" value="Filtrer" />
 
 	</form>
@@ -708,199 +746,151 @@ $req_evenement = $connector->query($sql_evenement);
 
 <div class="spacer"></div>
 
-<div id="gerer-even-pagination">
+    <div id="gerer-even-pagination">
+        <?= HtmlShrink::getPaginationString($tot_elements, $get['page'], $get['nblignes'], 1, "", "?element=" . $get['element'] . "&tri_gerer=" . $get['tri_gerer'] . "&ordre=" . $get['ordre'] . "&nblignes=" . $get['nblignes'] . "&filtre_genre=" . $get['filtre_genre'] . "&terme=" . $get['terme'] . "&page=") ?>
 
-    <?php
-    echo HtmlShrink::getPaginationString($tot_elements, $get['page'], $get['nblignes'], 1, "", "?element=" . $get['element'] . "&tri_gerer=" . $get['tri_gerer'] . "&ordre=" . $get['ordre'] . "&nblignes=" . $get['nblignes'] . "&filtre_genre=" . $get['filtre_genre'] . "&terme=" . $get['terme'] . "&page=");
-
-    echo '<ul class="menu_nb_res" style="float:right;margin: 1em auto 1.4em;width:35%;text-align:right">';
-    foreach ($tab_nblignes as $nbl)
-    {
-        echo '<li ';
-        if ($get['nblignes'] == $nbl) { echo 'class="ici"'; }
-
-        echo '><a href="/admin/gererEvenements.php?'.Utils::urlQueryArrayToString($get, "nblignes").'&nblignes='.(int)$nbl.'">'.(int)$nbl.'</a></li>';
-    }
-    echo '</ul>';
-    ?>
-
-</div>
+            <ul class="menu_nb_res" style="float:right;margin: 1em auto 1.4em;width:35%;text-align:right">
+            <?php foreach ($tab_nblignes as $nbl) : ?>
+            <li <?php if ($get['nblignes'] == $nbl) { echo 'class="ici"'; } ?>>
+                <a href="?<?= Utils::urlQueryArrayToString($get, "nblignes")?>&amp;nblignes=<?= (int)$nbl ?>"><?= (int)$nbl ?></a>
+            </li>
+        <?php endforeach; ?>
+        </ul>
+        <div class="spacer"></div>
+    </div>
 
 <?php
-
-echo '<div class="spacer"></div>';
-$th_evenements = ["titre" => "Titre", "idLieu" => "Lieu", "dateEvenement" => "Date", "genre" => "Catégorie", "horaire" => "Horaire", "statut" => "Statut",
+$th_evenements = ["titre" => "Titre", "idLieu" => "Lieu", "dateEvenement" => "Date", "genre" => "Catég.", "horaire" => "Horaire", "statut" => "Statut",
 "dateAjout" => "Ajouté"];
-
-echo "<form method=\"post\" id=\"formGererEvenements\" class='js-submit-freeze-wait' enctype=\"multipart/form-data\" action=\"/admin/gererEvenements.php\">";
-
-echo "<table id=\"ajouts\" class=\"jquery-checkboxes\"><tr>";
-
-foreach ($th_evenements as $att => $th)
-{
-	if ($att == "idLieu" || $att == "flyer")
-	{
-		echo "<th>".$th."</th>";
-	}
-	else
-	{
-		if ($att == $get['tri_gerer'])
-		{
-			echo "<th class=\"ici\">".$icone[$get['ordre']];
-		}
-		else
-		{
-			echo "<th>";
-		}
-
-		echo "<a href=\"?".Utils::urlQueryArrayToString($get, "ordre")."&ordre=".$ordre_inverse."\">".$th."</a></th>";
-	}
-}
-
-echo "<th colspan=2></th></tr>";
-
-$pair = 0;
-
-while ($tab_even = $connector->fetchArray($req_evenement))
-{
-	$nomLieu = sanitizeForHtml($tab_even['nomLieu']);
-
-	if ($tab_even['idLieu'] != 0)
-	{
-		$req_lieu = $connector->query("SELECT nom FROM lieu WHERE idLieu=" . (int) $tab_even['idLieu']);
-        $tabLieu = $connector->fetchArray($req_lieu);
-		$nomLieu = "<a href=\"/lieu/lieu.php?idL=" . (int) $tab_even['idLieu'] . "\">" . sanitizeForHtml($tabLieu['nom']) . "</a>";
-    }
-
-
-	if ($pair % 2 == 0)
-	{
-		echo "<tr>";
-    }
-	else
-	{
-		echo "<tr class=\"impair\" >";
-    }
-
-	echo "	<td><a href=\"/event/evenement.php?idE=" . (int) $tab_even['idEvenement'] . "\" class='titre'>" . sanitizeForHtml($tab_even['titre']) . "</a></td>	<td>" . $nomLieu . "</td>
-	<td>".date_iso2app($tab_even['dateEvenement'])."</td>
-	<td>".ucfirst((string) $glo_tab_genre[$tab_even['genre']])."</td>
-
-
-	<td>";
-
-	echo afficher_debut_fin($tab_even['horaire_debut'], $tab_even['horaire_fin'], $tab_even['dateEvenement']);
-
-
-	echo "</td><td>".EvenementRenderer::$iconStatus[$tab_even['statut']]."</td>";
-	$datetime_dateajout = date_iso2app($tab_even['dateAjout']);
-	$tab_datetime_dateajout = explode(" ", (string) $datetime_dateajout);
-	echo "<td>".$tab_datetime_dateajout[1]." ".$tab_datetime_dateajout[0]."</td>";
-
-
-	if ($_SESSION['Sgroupe'] <= UserLevel::ADMIN) {
-		echo '<td style="text-align:center"><a href="/evenement-edit.php?action=editer&idE=' . (int) $tab_even['idEvenement'] . '" title="Éditer l\'événement">' . $iconeEditer . '</a></td>';
-    }
-	echo '<td style="text-align:center"><input type="checkbox" name="evenements[]" value="' . (int) $tab_even['idEvenement'] . '" /></td></tr>';
-
-    $pair++;
-
-} // fin while
-
-
-echo "</table>";
-echo $verif->getErreur("evenements");
 ?>
 
-<div style="margin: 0 auto;width: 94%;">
+<form method="post" id="formGererEvenements" class='js-submit-freeze-wait' enctype="multipart/form-data" action="">
 
-    <h2 style="font-size:1.3em;margin:10px 0;">Remplacer les données des événements sélectionnés ci-dessus par :</h2>
-    <p><span style="background:yellow">Attention :</span><b>toutes</b> les données existantes seront écrasées</p>
-    <p>Seuls les champs non vides écrasent les champs existants</p>
+    <table id="ajouts" class="jquery-checkboxes">
 
-</div>
-<!--
-<p class="piedForm">
-<input type="submit" value="Remplacer" tabindex="19" class="submit" />
-</p>
--->
-<div id="ajouter_editer">
+        <tr>
+            <?php foreach ($th_evenements as $field => $label) : ?>
+            <th <?php if ($field == $get['tri_gerer']) : ?>class="ici"<?php endif; ?>>
+                <?php if (!in_array($field, ['idLieu', 'flyer'])) : ?>
+                    <a href="?<?= Utils::urlQueryArrayToString($get, "ordre")."&ordre=".$ordre_inverse ?>"><?= sanitizeForHtml($label) ?></a>
+                    <?php if ($field == $get['tri_gerer']) : echo $icone[$get['ordre']]; endif; ?>
+                <?php else : ?>
+                    <?= sanitizeForHtml($label) ?>
+                <?php endif; ?>
+            </th>
+            <?php endforeach; ?>
 
-<p class="piedForm">
-    <input type="hidden" name="formulaire" value="ok" />
+            <th colspan=2></th>
+        </tr>
+
+        <?php while ($tab_even = $connector->fetchArray($req_evenement)) {
+            $even_lieu = Evenement::getLieu($tab_even);
+            $datetime_dateajout = date_iso2app($tab_even['e_dateAjout']);
+            $tab_datetime_dateajout = explode(" ", (string) $datetime_dateajout);
+            ?>
+        <tr>
+            <td><a href="/event/evenement.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>" class='titre'><?= sanitizeForHtml($tab_even['e_titre']) ?></a></td>
+            <td><?= Lieu::getLinkNameHtml($even_lieu['nom'], $even_lieu['idLieu'], $even_lieu['salle']) ?> (<?= $even_lieu['localite'] ?>)</td>
+            <td><a href="/index.php?courant=<?= sanitizeForHtml($tab_even['e_dateEvenement']) ?>"><?= date_iso2app($tab_even['e_dateEvenement']) ?></a></td>
+            <td><?= ucfirst((string) $glo_tab_genre[$tab_even['e_genre']]) ?></td>
+            <td><?= afficher_debut_fin($tab_even['e_horaire_debut'], $tab_even['e_horaire_fin'], $tab_even['e_dateEvenement']) ?></td>
+            <td><?= EvenementRenderer::$iconStatus[$tab_even['e_statut']] ?></td>
+            <td><?= $tab_datetime_dateajout[1]." ".substr($tab_datetime_dateajout[0], 0, -3) ?></td>
+            <?php if ($_SESSION['Sgroupe'] <= UserLevel::ADMIN) : ?>
+                <td style="text-align:center"><a href="/evenement-edit.php?action=editer&idE=<?= (int) $tab_even['e_idEvenement'] ?>"><?= $iconeEditer ?></a></td>
+            <?php endif; ?>
+            <td style="text-align:center"><input type="checkbox" name="evenements[]" value="<?= (int) $tab_even['e_idEvenement'] ?>" /></td>
+        </tr>
+
+        <?php } // fin while ?>
+
+    </table>
+
+    <?= $verif->getErreur("evenements") ?>
+
+    <div style="margin: 0 auto;width: 94%;">
+        <h2 style="font-size:1.3em;margin:10px 0;">Remplacer les données des événements sélectionnés ci-dessus par :</h2>
+        <p><span style="background:yellow">Attention :</span><b>toutes</b> les données existantes seront écrasées</p>
+        <p>Seuls les champs non vides écrasent les champs existants</p>
+    </div>
+    <!--
+    <p class="piedForm">
     <input type="submit" value="Remplacer" tabindex="19" class="submit" />
-</p>
+    </p>
+    -->
+    <div id="ajouter_editer">
+        <p class="piedForm">
+            <input type="hidden" name="formulaire" value="ok" />
+            <input type="submit" value="Remplacer" tabindex="19" class="submit" />
+        </p>
 
-<!-- DEB STATUT -->
-<fieldset>
-<legend>Statut</legend>
-<!--
-<ul class="radio">
-<?php
-foreach (Evenement::$statuts_evenement as $s => $v)
-{
-	$coche = '';
-	if (strcmp((string) $s, $champs['statut']) == 0)
-	{
-		$coche = 'checked="1"';
-	}
-	echo '<li class="listehoriz"><input type="radio" name="statut" value="'.sanitizeForHtml($s).'" '.$coche.' id="genre_'.sanitizeForHtml($s).'" class="radio_horiz" /><label class="continu" for="genre_'.sanitizeForHtml($s).'">'.sanitizeForHtml($v).'</label></li>';
-}
-?>
-</ul>
--->
-<ul class="radio">
-    <?php
-
-    $statuts = ['actif' => '<strong>publié</strong> (visible sur le site)',  'complet' => '<strong>complet</strong> (visible sur le site mais marqué comme étant complet)', 'annule' => '<strong>annulé</strong> (visible sur le site mais marqué comme étant annulé)', 'inactif' => '<strong>dépublié</strong> (non visible sur le site)'];
-    foreach ($statuts as $s => $n)
-    {
-        $coche = '';
-        if (strcmp($s, $champs['statut']) == 0)
+    <!-- DEB STATUT -->
+    <fieldset>
+        <legend>Statut</legend>
+        <!--
+        <ul class="radio">
+        <?php
+        foreach (Evenement::$statuts_evenement as $s => $v)
         {
-            $coche = 'checked="checked"';
+            $coche = '';
+            if (strcmp((string) $s, $champs['statut']) == 0)
+            {
+                $coche = 'checked="1"';
+            }
+            echo '<li class="listehoriz"><input type="radio" name="statut" value="'.sanitizeForHtml($s).'" '.$coche.' id="genre_'.sanitizeForHtml($s).'" class="radio_horiz" /><label class="continu" for="genre_'.sanitizeForHtml($s).'">'.sanitizeForHtml($v).'</label></li>';
         }
-        echo '<li style="display:block">
-        <input type="radio" name="statut" value="'.$s.'" '.$coche.' id="statut_'.$s.'" title="statut de l\'événement" class="radio_horiz" />
-        <label class="continu" for="statut_'.$s.'">'.$n.'</label></li>';
-    }
-    ?>
-</ul>
+        ?>
+        </ul>
+        -->
+        <ul class="radio">
+            <?php
 
-<?php
-echo $verif->getErreur("statut");
-?>
+            $statuts = ['actif' => '<strong>publié</strong> (visible sur le site)',  'complet' => '<strong>complet</strong> (visible sur le site mais marqué comme étant complet)', 'annule' => '<strong>annulé</strong> (visible sur le site mais marqué comme étant annulé)', 'inactif' => '<strong>dépublié</strong> (non visible sur le site)'];
+            foreach ($statuts as $s => $n)
+            {
+                $coche = '';
+                if (strcmp($s, $champs['statut']) == 0)
+                {
+                    $coche = 'checked="checked"';
+                }
+                echo '<li style="display:block">
+                <input type="radio" name="statut" value="'.$s.'" '.$coche.' id="statut_'.$s.'" title="statut de l\'événement" class="radio_horiz" />
+                <label class="continu" for="statut_'.$s.'">'.$n.'</label></li>';
+            }
+            ?>
+        </ul>
 
-<p><input type="checkbox" name="supprimerSerie" value="ok" /><label><strong>Supprimer</strong></label></p>
+        <?php
+        echo $verif->getErreur("statut");
+        ?>
 
-</fieldset>
+        <p><input type="checkbox" name="supprimerSerie" value="ok" /><label><strong>Supprimer</strong></label></p>
 
-<fieldset>
-    <legend>Catégorie</legend>
-    <ul class="radio">
-    <?php
-    foreach ($glo_tab_genre as $na => $la)
-    {
-        $coche = '';
-        if ($na == $get['filtre_genre'])
+    </fieldset>
+
+    <fieldset>
+        <legend>Catégorie</legend>
+        <ul class="radio">
+        <?php
+        foreach ($glo_tab_genre as $na => $la)
         {
-            $coche = 'checked="1"';
+            $coche = '';
+            if ($na == $get['filtre_genre'])
+            {
+                $coche = 'checked="1"';
+            }
+            echo '<li class="horiz">
+            <input type="radio" name="genre" value="'.$na.'" '.$coche.' id="genre_'.$na.'" title="" class="radio_horiz" />
+            <label class="continu" for="genre_'.$na.'">'.sanitizeForHtml($la).'</label></li>';
         }
-        echo '<li class="horiz">
-        <input type="radio" name="genre" value="'.$na.'" '.$coche.' id="genre_'.$na.'" title="" class="radio_horiz" />
-        <label class="continu" for="genre_'.$na.'">'.sanitizeForHtml($la).'</label></li>';
-    }
-    ?>
-    </ul>
+        ?>
+        </ul>
 
-    <?php
-    echo $verif->getErreur("genre");
-    ?>
-</fieldset>
+        <?php
+        echo $verif->getErreur("genre");
+        ?>
+    </fieldset>
 
-
-
-<!-- DEB LIEU -->
 <fieldset>
 <legend>Lieu*</legend>
 <p>
