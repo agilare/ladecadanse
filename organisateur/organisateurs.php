@@ -42,9 +42,6 @@ $orgas_page_current = Organisateur::getOrganisateurs($filters, $_SESSION['user_p
 $orgas_page_all = Organisateur::getOrganisateurs($filters, $_SESSION['user_prefs_orgas_order'], null);
 $all_results_nb = count($orgas_page_all);
 
-define("ORGAS_LOW_ACTIVITY_MONTHS_NB", 6);
-define("ORGAS_VERY_LOW_ACTIVITY_MONTHS_NB", 12);
-
 // for each orga report futur and past events
 $stmt = $connectorPdo->prepare("
 SELECT
@@ -149,8 +146,8 @@ include("../_header.inc.php");
 
                                 <?php elseif ($authorization->isPersonneEditor($_SESSION)) : ?>
 
-                                <?php if ($orgas_even[$orga['idOrganisateur']][0]['latest_event_months_nb'] > ORGAS_LOW_ACTIVITY_MONTHS_NB) : ?>
-                                    <small style="<?php if ($orgas_even[$orga['idOrganisateur']][0]['latest_event_months_nb'] > ORGAS_VERY_LOW_ACTIVITY_MONTHS_NB) : ?>color:red;<?php else : ?>color:darkorange; <?php endif ?>"><?= (new DateTime($orgas_even[$orga['idOrganisateur']][0]['latest_event_date']))->format('m.Y') ?></small>
+                                <?php if ($orgas_even[$orga['idOrganisateur']][0]['latest_event_months_nb'] > Organisateur::LOW_ACTIVITY_MONTHS_NB) : ?>
+                                    <small style="<?php if ($orgas_even[$orga['idOrganisateur']][0]['latest_event_months_nb'] > Organisateur::VERY_LOW_ACTIVITY_MONTHS_NB) : ?>color:red;<?php else : ?>color:darkorange; <?php endif ?>"><?= (new DateTime($orgas_even[$orga['idOrganisateur']][0]['latest_event_date']))->format('m.Y') ?></small>
                                 <?php else : ?>
                                     <small style="color:lightsteelblue"><?= (new DateTime($orgas_even[$orga['idOrganisateur']][0]['latest_event_date']))->format('m.Y') ?></small>
                                     <?php endif; ?>

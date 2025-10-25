@@ -74,6 +74,7 @@ $all_results_nb = count($lieux_page_all);
 
 $regions_localites = Localite::getListByRegion();
 
+// get lieux salles
 $stmt = $connectorPdo->prepare("SELECT
 idLieu,
 s.*
@@ -82,6 +83,7 @@ ORDER BY nom DESC");
 $stmt->execute();
 $lieux_salles = $stmt->fetchAll(PDO::FETCH_GROUP);
 
+// get lieux descriptions
 $stmt = $connectorPdo->prepare("SELECT
 idLieu,
 count(*) as nb
@@ -89,9 +91,6 @@ FROM descriptionlieu
 WHERE type = 'description' GROUP BY idLieu");
 $stmt->execute();
 $lieux_desc = $stmt->fetchAll(PDO::FETCH_GROUP);
-
-define("LIEUX_LOW_ACTIVITY_MONTHS_NB", 6);
-define("LIEUX_VERY_LOW_ACTIVITY_MONTHS_NB", 12);
 
 // for each lieu report futur and past events
 $stmt = $connectorPdo->prepare("
@@ -118,8 +117,6 @@ include("../_header.inc.php");
         <?php HtmlShrink::getMenuRegions($glo_regions, $get); ?>
         <div class="spacer"></div>
     </header>
-
-    <div class="spacer"></div>
 
     <section id="default">
 
@@ -215,8 +212,8 @@ include("../_header.inc.php");
 
                                 <?php elseif ($authorization->isPersonneEditor($_SESSION)) : ?>
 
-                                    <?php if ($lieux_even[$lieu['idLieu']][0]['latest_event_months_nb'] > LIEUX_LOW_ACTIVITY_MONTHS_NB) : ?>
-                                        <small style="<?php if ($lieux_even[$lieu['idLieu']][0]['latest_event_months_nb'] > LIEUX_VERY_LOW_ACTIVITY_MONTHS_NB) : ?>color:red;<?php else : ?>color:orange; <?php endif ?>"><?= (new DateTime($lieux_even[$lieu['idLieu']][0]['latest_event_date']))->format('m.Y') ?></small>
+                                    <?php if ($lieux_even[$lieu['idLieu']][0]['latest_event_months_nb'] > Lieu::LOW_ACTIVITY_MONTHS_NB) : ?>
+                                        <small style="<?php if ($lieux_even[$lieu['idLieu']][0]['latest_event_months_nb'] > Lieu::VERY_LOW_ACTIVITY_MONTHS_NB) : ?>color:red;<?php else : ?>color:orange; <?php endif ?>"><?= (new DateTime($lieux_even[$lieu['idLieu']][0]['latest_event_date']))->format('m.Y') ?></small>
 
                                     <?php else : ?>
                                         <small style="color:lightsteelblue"><?= (new DateTime($lieux_even[$lieu['idLieu']][0]['latest_event_date']))->format('m.Y') ?></small>

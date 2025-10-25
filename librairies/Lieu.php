@@ -13,6 +13,8 @@ class Lieu extends Element
     public static $systemDirPath;
     public static $urlDirPath;
 
+    public const int LOW_ACTIVITY_MONTHS_NB = 6;
+    public const int VERY_LOW_ACTIVITY_MONTHS_NB = 12;
     public const int RESULTS_PER_PAGE = 100;
 
     function __construct()
