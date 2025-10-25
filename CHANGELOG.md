@@ -16,6 +16,8 @@
 ### Changed
 - organisateurs : pages organisateurs and organisateur moved under organisateur/
 - admin : users page refactored, store most of browsing params in session
+- admin : evenements pages with more useful columns (orgas, events reporting...); refactoring
+- semantic : implement widely rel=exernal in replacement of lien_ext class
 
 ### Removed
 - organisateurs right menu

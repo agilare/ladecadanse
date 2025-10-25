@@ -22,7 +22,7 @@ include("../_header.inc.php");
         <p>
             Les rubriques <a href="/lieu/lieux.php">Lieux</a> et <a href="/organisateur/organisateurs.php">Organisateurs</a> répertorient ces acteurs, avec pour chacun une fiche, si possible accompagnée d'un descriptif et d'illustrations.</p>
         <p>Le site est mis à jour quotidiennement par les contributeurs et par nous même</p>
-        <p><a href="https://www.gbnews.ch/ladecadanse-ch-un-bouche-a-oreille-en-ligne/" class="lien_ext" target="_blank">Article "ladecadanse.ch, un bouche à oreille en ligne" sur GBNnews.ch (2015)</a></p>
+        <p><a href="https://www.gbnews.ch/ladecadanse-ch-un-bouche-a-oreille-en-ligne/" rel="external" target="_blank">Article "ladecadanse.ch, un bouche à oreille en ligne" sur GBNnews.ch (2015)</a></p>
 
         <dl>
             <!--

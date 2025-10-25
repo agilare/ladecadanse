@@ -315,14 +315,6 @@ $detailsAff = $connector->fetchArray($req_affPers);
 				<td>".date_iso2app($tab_even['dateEvenement'])."</td>
 				<td>".$nomLieu."</td>
 				<td><a href=\"/event/evenement.php?idE=".(int)$tab_even['idEvenement']."\" title=\"Voir la fiche de l'événement\">".sanitizeForHtml($tab_even['titre'])."</a></td>";
-				/*echo "<td>";
-				if (!empty($tab_even['flyer']))
-				{
-					$imgInfo = @getimagesize($rep_images_even.$tab_even['flyer']);
-					echo lien_popup($IMGeven.$tab_even['flyer']."?".@filemtime($rep_images_even.$tab_even['flyer']), "Flyer", $imgInfo[0]+20,$imgInfo[1]+20, $iconeImage);
-				}
-				echo "</td>
-				*/
 				echo "
 				<td>".mb_substr((string) date_iso2app($tab_even['dateAjout']), 9)."</td><td>".EvenementRenderer::$iconStatus[$tab_even['statut']]."</td>";
 

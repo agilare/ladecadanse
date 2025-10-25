@@ -59,7 +59,7 @@ class Text
                 $text = $m[4];
             }
 
-            return "<a href='" . sanitizeForHtml($url) . "' class='lien_ext'>" . sanitizeForHtml($text) . "</a>";
+            return "<a href='" . sanitizeForHtml($url) . "' rel='external'>" . sanitizeForHtml($text) . "</a>";
         }, $input);
     }
 

@@ -75,7 +75,7 @@ class EvenementRenderer
                 {
                     $url_with_name = Text::getUrlWithName($r);
                 ?>
-                    <i class="fa fa-hand-o-right" aria-hidden="true"></i>&nbsp;<a href="<?= sanitizeForHtml($url_with_name['url']) ?>" target='_blank' class="lien_ext"><?= sanitizeForHtml($url_with_name['urlName']) ?></a>
+                    <i class="fa fa-hand-o-right" aria-hidden="true"></i>&nbsp;<a href="<?= sanitizeForHtml($url_with_name['url']) ?>" rel="external" target='_blank'><?= sanitizeForHtml($url_with_name['urlName']) ?></a>
                 <?php
                 }
                 else

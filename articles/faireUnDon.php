@@ -50,7 +50,7 @@ include("../_header.inc.php");
             <!--            <li><b>Twint, virement</b> (<a href="/contacteznous.php">contactez-moi</a>)</li>-->
         </ul>
         <br>
-        <p>La décadanse est un site entièrement gratuit sur un code <a href="https://github.com/agilare/ladecadanse/" class="lien_ext" target="_blank">open source</a>, que je développe et gère bénévolement depuis une vingtaine d'années, avec parfois l'aide d'autres personnes.</p>
+        <p>La décadanse est un site entièrement gratuit sur un code <a href="https://github.com/agilare/ladecadanse/" rel="external" target="_blank">open source</a>, que je développe et gère bénévolement depuis une vingtaine d'années, avec parfois l'aide d'autres personnes.</p>
         <p>En dehors des frais qui sont assez modestes (hébergement, flyers...), le site me demande un certain investissement en temps :</p>
         <ul style="margin-left:0.4em;list-style-type: none">
             <li>✅ <b>maintenance</b> : assurer sa disponibilité, sa sécurité ; garder à jour, chasser les bugs</li>

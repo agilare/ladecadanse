@@ -182,7 +182,7 @@ include("../_header.inc.php");
                 <ul>
                     <?php if (!empty($organisateur->getValue('URL'))) : $lieu_url = Text::getUrlWithName($organisateur->getValue('URL')); ?>
                         <li class="sitelieu">
-                            <a class="url lien_ext" href="<?= sanitizeForHtml($lieu_url['url']) ?>" target="_blank"><?= sanitizeForHtml($lieu_url['urlName']) ?></a>
+                            <a class="url" href="<?= sanitizeForHtml($lieu_url['url']) ?>" rel="external" target="_blank"><?= sanitizeForHtml($lieu_url['urlName']) ?></a>
                         </li>
                     <?php endif; ?>
                     <?php if (count($orga_lieux) > 0) : ?>

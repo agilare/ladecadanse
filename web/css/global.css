@@ -655,7 +655,7 @@ hr
     height:2em;
 }
 
-.lien_ext
+.lien_ext, a[rel="external"]
 {
     padding:0em 15px 0em 0px;
     background-image:url(../interface/lien_ext.gif);

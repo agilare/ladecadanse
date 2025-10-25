@@ -156,10 +156,5 @@ $icone['plan'] = '<img src="' . $url_images_interface_icons . 'map.png" alt="Pla
 $icone['ajouter_texte'] = '<img src="' . $url_images_interface_icons . 'pencil.png" alt="Ajouter texte" width="16" height="16" />';
 $icone['organisateur'] = '<img src="' . $url_images_interface_icons . 'group.png" alt="" />';
 $icone['url_externe'] = '<img src="' . $url_images_interface_icons . 'house_go.png" alt="Lien externe" />';
-$icone['popup'] = '<img src="/web/interface/lien_ext.gif" alt="Nouvel onglet" />';
 $icone['depublier'] = '<img src="' . $url_images_interface_icons . 'calendar_delete.png" alt="Dépublier" />';
-$icone['jpg'] = "<img src=\"" . $url_images_interface_icons . "page_white_picture.png\" alt=\"\" />";
-$icone['jpeg'] = "<img src=\"" . $url_images_interface_icons . "page_white_picture.png\" alt=\"\" />";
-$icone['gif'] = "<img src=\"" . $url_images_interface_icons . "page_white_picture.png\" alt=\"\" />";
-$icone['png'] = "<img src=\"" . $url_images_interface_icons . "page_white_picture.png\" alt=\"\" />";
 $icones_fichiers = ["text" => "text.png"];

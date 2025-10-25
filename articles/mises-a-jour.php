@@ -65,7 +65,7 @@ include("../_header.inc.php");
             <li>partenaires : nouveau logo Radio Vostok</li>
         </ul>
 
-        <p><a href="https://github.com/agilare/ladecadanse/releases/tag/v3.9.1" class="lien_ext" target="_blank">Détails</a></p>
+        <p><a href="https://github.com/agilare/ladecadanse/releases/tag/v3.9.1" rel="external" target="_blank">Détails</a></p>
 
     </article>
     <hr>
@@ -103,12 +103,12 @@ include("../_header.inc.php");
         <ul>
             <li>affichage des page un peu plus rapide (en permettant la mise en cache par le navigateur des fichiers de style et de scripts)</li>
             <li>boutons Organisateurs et Lieu actifs lorsqu'on est dans ces rubriques</li>
-            <li>tous les liens extérieurs ont une <span class="lien_ext">icône explicite</span></li>
+            <li>tous les liens extérieurs ont une <span rel="external">icône explicite</span></li>
             <li>davantage d'HTML sémantique</li>
             <li>nombreuses améliorations techniques (nettoyage du code, mises à jour de l'infrastructure)</li>
         </ul>
 
-        <p><a href="https://github.com/agilare/ladecadanse/releases/tag/v3.9.0" class="lien_ext" target="_blank">Détails</a></p>
+        <p><a href="https://github.com/agilare/ladecadanse/releases/tag/v3.9.0" rel="external" target="_blank">Détails</a></p>
 
     </article>
 
@@ -150,7 +150,7 @@ include("../_header.inc.php");
             <li>amélioration du référencement</li>
         </ul>
 
-        <p><a href="https://github.com/agilare/ladecadanse/releases/tag/v3.8.0" class="lien_ext" target="_blank">Détails</a></p>
+        <p><a href="https://github.com/agilare/ladecadanse/releases/tag/v3.8.0" rel="external" target="_blank">Détails</a></p>
 
     </article>
 
@@ -167,7 +167,7 @@ include("../_header.inc.php");
         <h3>Page d'accueil</h3>
 
         <ul>
-            <li>partenaires : ôté <a href="https://fr.wikipedia.org/wiki/Noctambus_(Gen%C3%A8ve)" class="lien_ext" target="_blank">Noctambus</a> (intégré au réseau nocturne TPG)
+            <li>partenaires : ôté <a href="https://fr.wikipedia.org/wiki/Noctambus_(Gen%C3%A8ve)" rel="external" target="_blank">Noctambus</a> (intégré au réseau nocturne TPG)
             <li>les liens permettant d'aller vers la catégorie suivante sont plus explicites
             <li>nettoyage du code
         </ul>
@@ -175,12 +175,12 @@ include("../_header.inc.php");
         <h3>Divers</h3>
 
         <ul>
-            <li><a href="/articles/apropos.php">À propos</a> : lien vers l'<a href="https://www.gbnews.ch/ladecadanse-ch-un-bouche-a-oreille-en-ligne/" class="lien_ext" target="_blank">article GBNews.ch au sujet de La décadanse</a>
+            <li><a href="/articles/apropos.php">À propos</a> : lien vers l'<a href="https://www.gbnews.ch/ladecadanse-ch-un-bouche-a-oreille-en-ligne/" rel="external" target="_blank">article GBNews.ch au sujet de La décadanse</a>
             <li>améliorations du référencement
             <li>refactoring
         </ul>
 
-        <p><a href="https://github.com/agilare/ladecadanse/releases/tag/v3.7.4" class="lien_ext" target="_blank">Détails</a></p>
+        <p><a href="https://github.com/agilare/ladecadanse/releases/tag/v3.7.4" rel="external" target="_blank">Détails</a></p>
 
     </article>
 
@@ -203,7 +203,7 @@ include("../_header.inc.php");
         <h3>Page <a href="/articles/faireUnDon.php">Faire un don</a></h3>
 
         <ul>
-            <li>Widget <a href="https://wemakeit.com/?locale=fr" class="lien_ext" target="_blank">We make it</a>
+            <li>Widget <a href="https://wemakeit.com/?locale=fr" rel="external" target="_blank">We make it</a>
         </ul>
 
         <h3>Divers</h3>
@@ -213,7 +213,7 @@ include("../_header.inc.php");
             <li>Mise à jour de l'infrastructure
         </ul>
 
-        <p><a href="https://github.com/agilare/ladecadanse/releases/tag/v3.7.3" class="lien_ext" target="_blank">Détails</a></p>
+        <p><a href="https://github.com/agilare/ladecadanse/releases/tag/v3.7.3" rel="external" target="_blank">Détails</a></p>
 
     </article>
 
@@ -230,11 +230,11 @@ include("../_header.inc.php");
         <h3>Divers</h3>
 
         <ul>
-            <li>remplacement de Google Analytics par le plus éthique <a href="https://matomo.org" class="lien_ext" target="_blank">Matomo</a>
+            <li>remplacement de Google Analytics par le plus éthique <a href="https://matomo.org" rel="external" target="_blank">Matomo</a>
             <li>amélioration de la sécurité
         </ul>
 
-        <p><a href="https://github.com/agilare/ladecadanse/releases/tag/v3.7.2" class="lien_ext" target="_blank">Détails</a></p>
+        <p><a href="https://github.com/agilare/ladecadanse/releases/tag/v3.7.2" rel="external" target="_blank">Détails</a></p>
 
     </article>
 
@@ -270,7 +270,7 @@ include("../_header.inc.php");
 
         <ul>
             <li>rétablissement du lien Paypal
-            <li>ajout de <a href="https://liberapay.com/michelg/donate" class="lien_ext" target="_blank">Liberapay</a>
+            <li>ajout de <a href="https://liberapay.com/michelg/donate" rel="external" target="_blank">Liberapay</a>
         </ul>
 
         <h3>Divers</h3>
@@ -280,7 +280,7 @@ include("../_header.inc.php");
             <li>Mailing : configuration SMTP plus flexible
         </ul>
 
-        <p><a href="https://github.com/agilare/ladecadanse/releases/tag/v3.7.1" class="lien_ext" target="_blank">Détails</a></p>
+        <p><a href="https://github.com/agilare/ladecadanse/releases/tag/v3.7.1" rel="external" target="_blank">Détails</a></p>
 
     </article>
 
@@ -313,17 +313,17 @@ include("../_header.inc.php");
             <li>ajout d'une bannière à l'intention des utilisateurs connectés
             <li>ajout de FUNDING.yml indiquant les moyens de faire un don
             <li><a href="/articles/charte-editoriale.php">Charte éditoriale</a> : actualisation du texe (qui datait de 2015)
-            <li>renforcement de la sécurité (ajout du <a href="https://perishablepress.com/8g-firewall/" class="lien_ext" target="_blank">firewall 8G</a>)
+            <li>renforcement de la sécurité (ajout du <a href="https://perishablepress.com/8g-firewall/" rel="external" target="_blank">firewall 8G</a>)
             <li>mise à jour de l'infrastructure
         </ul>
 
-        <p><a href="https://github.com/agilare/ladecadanse/releases/tag/v3.7.0" class="lien_ext" target="_blank">Détails</a></p>
+        <p><a href="https://github.com/agilare/ladecadanse/releases/tag/v3.7.0" rel="external" target="_blank">Détails</a></p>
 
     </article>
     <hr>
     <br>
 
-    <p><a href="https://github.com/agilare/ladecadanse/releases" class="lien_ext" target="_blank">Mises à jour de 2019 à mars 2025 en détail</a></p>
+    <p><a href="https://github.com/agilare/ladecadanse/releases" rel="external" target="_blank">Mises à jour de 2019 à mars 2025 en détail</a></p>
 
 </main>
 

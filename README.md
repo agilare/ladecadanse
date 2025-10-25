@@ -24,7 +24,7 @@ Ces instructions vous permettront de mettre en place une copie du projet sur vot
 - Apache 2.4
 - PHP 8.3 (avec les extensions `fileinfo`, `mysqli`, `mbstring`, `gd`)
 - [Composer](https://getcomposer.org/)
-- MariaDB 10.6/MySQL 5.7
+- MariaDB 10.6/MySQL 5.7 (with `innodb_ft_min_token_size=3` and `ft_min_word_len=3`, for better events search)
 
 ### Manuelle
 1. cloner la branche `master`

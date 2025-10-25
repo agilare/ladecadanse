@@ -33,7 +33,7 @@ class Organisateur extends Element
             <?php foreach ($organisateurs as $eo) : ?>
                 <li>
                     <a href="/organisateur/organisateur.php?idO=<?= (int) $eo['idOrganisateur']; ?>"><?= sanitizeForHtml($eo['nom']); ?></a>
-                        <?php if ($isWithOrganisateurUrl && !empty($eo['url'])) { $organisateurUrl = Text::getUrlWithName($eo['url']); ?> -&nbsp;<a href="<?= sanitizeForHtml($organisateurUrl['url']); ?>" title="Site web de l'organisateur" class="lien_ext" target="_blank"><?= sanitizeForHtml($organisateurUrl['urlName']); ?></a>
+                        <?php if ($isWithOrganisateurUrl && !empty($eo['url'])) { $organisateurUrl = Text::getUrlWithName($eo['url']); ?> -&nbsp;<a href="<?= sanitizeForHtml($organisateurUrl['url']); ?>" title="Site web de l'organisateur" rel="external" target="_blank"><?= sanitizeForHtml($organisateurUrl['urlName']); ?></a>
                     <?php } ?>
                 </li>
             <?php endforeach; ?>

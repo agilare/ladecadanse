@@ -226,10 +226,10 @@ include("../_header.inc.php");
                         </li>
                     <?php endif; ?>
                     <?php if (!empty($even_lieu['url'])) : $lieu_url = Text::getUrlWithName($even_lieu['url']); ?>
-                        <li><a class="url lien_ext" href="<?= $lieu_url['url'] ?>" target="_blank"><?= $lieu_url['urlName']?></a>
+                        <li><a class="url" href="<?= $lieu_url['url'] ?>" rel="external" target="_blank"><?= $lieu_url['urlName']?></a>
                         <?php if ($tab_even['e_idLieu'] == 13) : // exception pour idLieu=13 (Le Rez - Usine) ?>
-                            <a href="https://rez-usine.ch" class="url lien_ext" target="_blank">rez-usine.ch</a><br>
-                            <a href="http://www.ptrnet.ch" class="url lien_ext" target="_blank">ptrnet.ch</a>
+                            <a href="https://rez-usine.ch" class="url" rel="external" target="_blank">rez-usine.ch</a><br>
+                            <a href="http://www.ptrnet.ch" class="url" rel="external" target="_blank">ptrnet.ch</a>
                         <?php endif; ?>
                         </li>
                     <?php endif; ?>

@@ -231,10 +231,10 @@ include("../_header.inc.php");
                     <li><?= Text::wikiToHtml(sanitizeForHtml($lieu['horaire_general'])); ?></li>
 
                     <?php if (!empty($lieu['URL'])) : $lieu_url = Text::getUrlWithName($lieu['URL']); ?>
-                        <li class="sitelieu"><a class="url lien_ext" href="<?= sanitizeForHtml($lieu_url['url']) ?>" target="_blank"><?= sanitizeForHtml($lieu_url['urlName']) ?></a>
+                        <li class="sitelieu"><a class="url" href="<?= sanitizeForHtml($lieu_url['url']) ?>" rel="external" target="_blank"><?= sanitizeForHtml($lieu_url['urlName']) ?></a>
                         <?php if ($get['idL'] == 13) : // exception pour idLieu=13 (Le Rez - Usine) ?>
-                            <a href="https://rez-usine.ch" class="url lien_ext" target="_blank">rez-usine.ch</a><br>
-                            <a href="http://www.ptrnet.ch" class="url lien_ext" target="_blank">ptrnet.ch</a>
+                            <a href="https://rez-usine.ch" class="url" rel="external" target="_blank">rez-usine.ch</a><br>
+                            <a href="http://www.ptrnet.ch" class="url" rel="external" target="_blank">ptrnet.ch</a>
                         <?php endif; ?>
                         </li>
                     <?php endif; ?>
