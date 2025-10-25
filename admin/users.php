@@ -112,7 +112,7 @@ SELECT
     COUNT(e.idEvenement) AS nb_even,
     MAX(e.dateEvenement) AS latest_event_date,
     TIMESTAMPDIFF(MONTH, MAX(e.dateEvenement), CURDATE()) AS latest_event_months_nb,
-    ROUND(COUNT(e.idEvenement) / COUNT(DISTINCT YEAR(e.dateEvenement)), 1) AS events_annual_avg
+    ROUND(COUNT(e.idEvenement) / COUNT(DISTINCT YEAR(e.dateEvenement)), 0) AS events_annual_avg
 FROM evenement e
 WHERE $idsClause AND e.statut NOT IN ('inactif', 'propose') GROUP BY idPersonne ORDER BY idPersonne ASC";
 $stmt = $connectorPdo->prepare($sql);
@@ -201,9 +201,9 @@ require_once '../_header.inc.php';
                     <td><?php if ($ue != null) : ?>
                         <?php if ($ue['latest_event_months_nb'] > Personne::LOW_ACTIVITY_MONTHS_NB) : ?>
                             <span style="<?php if ($ue['latest_event_months_nb'] > Personne::VERY_LOW_ACTIVITY_MONTHS_NB) : ?>color:red;<?php else : ?>color:orange;<?php endif ?>"><?= (new DateTime($ue['latest_event_date']))->format('m.Y') ?></span>
-                        <?php else : ?>
+                            <?php else : ?>
                             <span style="color:lightsteelblue"><?= (new DateTime($ue['latest_event_date']))->format('m.Y') ?></span>
-                        <?php endif; ?>
+                            <?php endif; ?>
                         <?php endif; ?>
                     </td>
                     <td><?= EvenementRenderer::$iconStatus[$u['statut']] ?></td>
