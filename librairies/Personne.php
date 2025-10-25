@@ -16,6 +16,9 @@ use PDO;
 class Personne
 {
     public static $statuts = ['demande', 'actif', 'inactif'];
+  
+    public const int LOW_ACTIVITY_MONTHS_NB = 12;
+    public const int VERY_LOW_ACTIVITY_MONTHS_NB = 24;
 
     public static function getPersonnesOfOrganisateur(int $idOrga): array
     {
@@ -30,7 +33,7 @@ class Personne
     }
 
 
-    public static function getPersonnes(array $filters, string $orderBy = 'dateAjout', string $order = 'DESC', ?int $page = null, ?int $nbLignes = null): array
+    public static function getPersonnes(array $filters, string $orderBy = 'dateAjout', string $orderDir = 'DESC', ?int $page = null, ?int $nbLignes = null): array
     {
         global $connectorPdo;
 
@@ -48,21 +51,16 @@ class Personne
         $limit = '';
         if (!empty($page))
         {
-        // TODO
-//        $pers_total_page_max = ceil($num_pers_total / $nbLignes);
-//        if ($pers_total_page_max > 0 && $page > $pers_total_page_max)
-//        {
-//            $page = $pers_total_page_max;
-//        }
             $limit = " LIMIT " . (int) (($page - 1) * (int) $nbLignes) . ", " . (int) $nbLignes;
         }
 
+        // TODO: sanitize $orderBy $orderDir
         $sql_event = "SELECT
           p.*,
           DATE(dateAjout) AS dateAjout,
           DATE(last_login) AS last_login
           FROM personne p
-          $where ORDER BY $orderBy $order $limit
+          $where ORDER BY $orderBy $orderDir $limit
            ";
 
         //echo $sql_event;

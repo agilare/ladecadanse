@@ -55,19 +55,34 @@ $get = [];
 $get['page'] = !empty($_GET['page']) ? Validateur::validateUrlQueryValue($_GET['page'], "int", 1) : 1;
 $_SESSION['user_prefs_users_nblignes'] = !empty($_GET['nblignes']) ? Validateur::validateUrlQueryValue($_GET['nblignes'], "int", 1) : $tab_nblignes[0];
 
-
 //dump($_SESSION);
 
-$users_page_current = Personne::getPersonnes($filters, $_SESSION['user_prefs_users_order_by'], $_SESSION['user_prefs_users_order_dir'], $get['page'], $_SESSION['user_prefs_users_nblignes']);
-//dump($users_page_current);
 $users_page_all = Personne::getPersonnes($filters, $_SESSION['user_prefs_users_order_by'], $_SESSION['user_prefs_users_order_dir']);
 $all_results_nb = count($users_page_all);
+// TODO: calculate max page no according to all results no to avoid overflow (currently replaced by reset to page 1)
+//$pers_total_page_max = ceil($num_pers_total / $nbLignes);
+//if ($pers_total_page_max > 0 && $page > $pers_total_page_max)
+//{
+//  $page = $pers_total_page_max;
+//}
+$users_page_current = Personne::getPersonnes($filters, $_SESSION['user_prefs_users_order_by'], $_SESSION['user_prefs_users_order_dir'], $get['page'], $_SESSION['user_prefs_users_nblignes']);
 
+$page_users_ids = array_column($users_page_current, 'idPersonne');
 
-// TODO: nb events and date latest event added
+// TODO: from users ids of this page build an array of their lieux and organizers
+//list($idsClause, $idsParams) = $connectorPdo->buildInClause('p.idPersonne', $tab_users_ids);
 //$sql_select = "SELECT
 //
-//    idPersonne, pseudo, email, groupe, affiliation, statut, DATE(dateAjout) AS dateAjout, date_derniere_modif, DATE(last_login) AS last_login
+//    p.idPersonne, pseudo, groupe, affiliation, p.email, p.dateAjout AS p_dateAjout,
+//
+//    o.idOrganisateur AS idO,
+//    o.nom AS o_nom,
+//
+//    l.idLieu AS idL,
+//    l.nom AS l_nom,
+//
+//    e.idEvenement AS idE,
+//    e.titre AS e_titre
 //
 //    FROM personne p
 //    LEFT JOIN personne_organisateur po ON p.idPersonne = po.idPersonne
@@ -80,48 +95,35 @@ $all_results_nb = count($users_page_all);
 //        WHERE e2.idPersonne = p.idPersonne
 //    )
 //    WHERE
-//    p.dateAjout >= DATE_SUB(CURDATE(), INTERVAL 2 DAY)
-//    GROUP BY p.idPersonne
-//    ORDER BY p.dateAjout DESC, e.dateAjout DESC LIMIT 100";
+//    $idsClause
+//    GROUP BY p.idPersonne";
 //
 ////echo $sql_select;
 //$stmt = $connectorPdo->prepare($sql_select);
-//$stmt->execute();
-//$page_results = $stmt->fetchAll(PDO::FETCH_GROUP);
+//$stmt->execute($idsParams);
+//$page_results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
-// TODO: from users ids of this page build an array of their lieux and organizers
-//$tab_users_ids = array_column($tab_users_ids, 'idPersonne');
-//
-//$users_events = [];
-//if (!empty($tab_users_ids))
-//{
-//    list($usersIdsInClause, $usersTodayIdsParams) = $connectorPdo->buildInClause('e.idPersonne', $tab_users_ids);
-//
-//    $stmt = $connectorPdo->prepare("SELECT dateAjout FROM evenement where $eventsTodayIdsInClause
-//    ORDER BY idevenement DESC");
-//
-//    $stmt->execute($usersTodayIdsParams);
-//
-//    $users_events = $stmt->fetchAll(PDO::FETCH_GROUP);
-//
-////    foreach ($tab_orgas AS $eo)
-////    {
-////        $tab_events_today_in_region_orgas[$eo['idEvenement']][] = [
-////            'idOrganisateur' => $eo['o_idOrganisateur'],
-////            'nom' => $eo['o_nom'],
-////            'url' => $eo['o_URL']
-////        ];
-////    }
-//}
-
+// nb even added, date latest event added and latest event months count
+list($idsClause, $idsParams) = $connectorPdo->buildInClause('e.idPersonne', $page_users_ids);
+$sql = "
+SELECT
+    idPersonne,
+    COUNT(e.idEvenement) AS nb_even,
+    MAX(e.dateEvenement) AS latest_event_date,
+    TIMESTAMPDIFF(MONTH, MAX(e.dateEvenement), CURDATE()) AS latest_event_months_nb
+FROM evenement e
+WHERE $idsClause AND e.statut NOT IN ('inactif', 'propose') GROUP BY idPersonne ORDER BY idPersonne ASC";
+$stmt = $connectorPdo->prepare($sql);
+$stmt->execute($idsParams);
+$users_even = $stmt->fetchAll(PDO::FETCH_GROUP);
 
 $col_fields = [
     "pseudo" => "Pseudo",
     "groupe" => "Groupe",
     "affiliations" => "Affiliations",
-    "nbeven" => "Nb even",
-    "date_dern_even" => "Date dern. éven.",
+    "nbeven" => "Nb évén.",
+    "date_dern_even" => "Dern. évén.",
     "statut" => "Statut",
     "dateAjout" => "Création",
     "last_login" => "Dern. login"];
@@ -144,7 +146,7 @@ require_once '../_header.inc.php';
         <div id="filters">
 
             <form method="get" action="" id="ajouter_editer" style="float:left;width:40%;">
-                <input type="text" name="terme" value="<?= sanitizeForHtml($filters['terme']) ?>" placeholder="pseudo ou email" size="20" />
+                <input type="search" name="terme" value="<?= sanitizeForHtml($filters['terme']) ?>" placeholder="pseudo ou email" size="20" />
                 <input type="submit" name="submit" value="Filtrer" />
             </form>
 
@@ -168,7 +170,7 @@ require_once '../_header.inc.php';
             <tr>
                 <?php foreach ($col_fields as $field => $label) : ?>
 
-                    <th <?php if ($field == $_SESSION['user_prefs_users_order_by']) : ?>class="ici"<?php endif; ?>>
+                    <th <?php if ($field == $_SESSION['user_prefs_users_order_by']) : ?>class="ici"<?php endif; ?>  <?php if ($field == 'affiliations'): ?>colspan="3"<?php endif; ?>>
                         <?php if (in_array($field, $fields_to_order_by)) : ?>
                             <a href="?order_by=<?= $field ?>&amp;page=<?= (int) $get['page'] ?>"><?= $label ?></a>
                             <?php if ($field == $_SESSION['user_prefs_users_order_by']) : ?>
@@ -183,20 +185,31 @@ require_once '../_header.inc.php';
             </tr>
 
             <?php foreach ($users_page_current as $u) : ?>
-            <tr>
-                <td style="width:20%">
-                    <a href="/user.php?idP=<?= (int) $u['idPersonne'] ?>"><?= sanitizeForHtml($u['pseudo']) ?></a>
-                    <br><small><a href="mailto:<?= sanitizeForHtml($u['email']) ?>"><?= sanitizeForHtml($u['email']) ?></a></small>
-                </td>
-                <td><?= $u['groupe'] ?></td>
-                <td><?= $u['affiliation'] ?></td>
-                <td><?= "-" ?></td>
-                <td><?= "-" ?></td>
-                <td><?= EvenementRenderer::$iconStatus[$u['statut']] ?></td>
-                <td><?= date_iso2app($u['dateAjout']) ?></td>
-                <td><?= date_iso2app($u['last_login']) ?></td>
-                <td><a href="/user-edit.php?action=editer&amp;idP=<?= (int)$u['idPersonne'] ?>"><?= $iconeEditer ?></a></td>
-            </tr>
+
+                <?php $ue = isset($users_even[$u['idPersonne']]) ? $users_even[$u['idPersonne']][0] : null; ?>
+                <tr>
+                    <td style="width:20%">
+                        <a href="/user.php?idP=<?= (int) $u['idPersonne'] ?>"><?= sanitizeForHtml($u['pseudo']) ?></a>
+                        <br><small><a href="mailto:<?= sanitizeForHtml($u['email']) ?>"><?= sanitizeForHtml($u['email']) ?></a></small>
+                    </td>
+                    <td><?= $u['groupe'] ?></td>
+                    <td><?= $u['affiliation'] ?></td>
+                    <td>lieux</td>
+                    <td>orgas</td>
+                    <td><?php if ($ue != null) : ?><?= $ue['nb_even'] ?><?php endif; ?></td>
+                    <td><?php if ($ue != null) : ?>
+                        <?php if ($ue['latest_event_months_nb'] > Personne::LOW_ACTIVITY_MONTHS_NB) : ?>
+                            <span style="<?php if ($ue['latest_event_months_nb'] > Personne::VERY_LOW_ACTIVITY_MONTHS_NB) : ?>color:red;<?php else : ?>color:orange;<?php endif ?>"><?= (new DateTime($ue['latest_event_date']))->format('m.Y') ?></span>
+                        <?php else : ?>
+                            <span style="color:lightsteelblue"><?= (new DateTime($ue['latest_event_date']))->format('m.Y') ?></span>
+                        <?php endif; ?>
+                        <?php endif; ?>
+                    </td>
+                    <td><?= EvenementRenderer::$iconStatus[$u['statut']] ?></td>
+                    <td><?= date_iso2app($u['dateAjout']) ?></td>
+                    <td><?= date_iso2app($u['last_login']) ?></td>
+                    <td><a href="/user-edit.php?action=editer&amp;idP=<?= (int)$u['idPersonne'] ?>"><?= $iconeEditer ?></a></td>
+                </tr>
             <?php endforeach; ?>
 
         </table>
