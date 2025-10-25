@@ -215,7 +215,7 @@ include("_header.inc.php");
     endif; ?>
 
     <header id="entete_contenu">
-        <h1 class="accueil"><?= ucfirst((string) date_fr($get['courant'])); ?><?php if ($authorization->isPersonneEditor($_SESSION)) :?><sup style="font-size:0.6em;color:#999"><?= $count_events_today_in_region ?></sup><?php endif; ?>
+        <h1 class="accueil"><?= ucfirst((string) date_fr($get['courant'])); ?><sup style="font-size:0.6em;color:#999"><?= $count_events_today_in_region ?></sup>
             <?php if ($courant_year !== date("Y")) { echo $courant_year; } ?>
             <?php if ($is_courant_today) : ?><br>
                 <small>Aujourd’hui <a href="/event/rss.php?type=evenements_auj" title="Flux RSS des événements du jour" class="desktop"><i class="fa fa-rss fa-lg"></i></a></small><?php endif; ?>
@@ -263,9 +263,6 @@ include("_header.inc.php");
                     foreach ($tab_genre_events as $tab_even)
                     {
                         $genre_even_nb++;
-
-                        // event
-                        $even_lieu = Evenement::getLieu($tab_even);
 
                         // après le 1er even puis 1 item sur 2 : rappel
                         if (($genre_even_nb % 2 != 0) && $genre_even_nb > 1) : ?>
