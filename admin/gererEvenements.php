@@ -689,28 +689,7 @@ if ($verif->nbErreurs() > 0)
 
     <div>
 
-        <ul class="menu_filtre" style="float:left;width:60%">
-            <li <?php if ($get['filtre_genre'] == 'tous') { echo 'class="ici"'; } ?>>
-                <a href="?<?= Utils::urlQueryArrayToString($get, "filtre_genre")?>&amp;filtre_genre=tous">Tous</a></li>
-            <?php
-            foreach ($glo_tab_genre as $ng => $nl)
-            {
-                echo '<li ';
-                if ($get['filtre_genre'] == $ng) { echo 'class="ici"'; }
-                    $nom = $ng;
-                    if ($ng == 'cinéma')
-                        $nom = 'ciné';
-
-                echo '><a href="?'.Utils::urlQueryArrayToString($get, "filtre_genre").'&filtre_genre='.$ng.'">'.ucfirst((string) $nom).'</a>';
-
-                ?>
-                </li>
-              <?php } ?>
-        </ul>
-
-        <div class="spacer"></div>
-
-        <form method="get" action="" id="ajouter_editer" style="margin:0;">
+        <form method="get" action="" id="ajouter_editer" style="float:left;width:35%;margin:0;">
 
             <input type="hidden" name="filtre_genre" value="<?= sanitizeForHtml($get['filtre_genre']); ?>" />
             <input type="hidden" name="page" value="<?= (int)$get['page']; ?>" />
@@ -724,6 +703,19 @@ if ($verif->nbErreurs() > 0)
 
         </form>
 
+        <ul class="menu_filtre" style="float:left;width:50%;margin:0">
+            <li <?php if ($get['filtre_genre'] == 'tous') : ?>class="ici"<?php endif; ?>>
+                <a href="?<?= Utils::urlQueryArrayToString($get, ['filtre_genre', 'page'])?>&amp;filtre_genre=tous">Tous</a></li>
+            <?php foreach ($glo_tab_genre as $ng => $nl) : ?>
+                <li <?php if ($get['filtre_genre'] == $ng) : ?> class="ici"<?php endif; ?>>
+                    <a href="?<?= Utils::urlQueryArrayToString($get, ['filtre_genre', 'page']) ?>&amp;filtre_genre=<?= $ng ?>"><?= ucfirst($nl) ?></a>
+                </li>
+              <?php endforeach; ?>
+        </ul>
+
+        <div class="spacer"></div>
+
+
         <div id="gerer-even-pagination">
             <?= HtmlShrink::getPaginationString($tot_elements, $get['page'], $get['nblignes'], 1, "", "?element=" . $get['element'] . "&tri_gerer=" . $get['tri_gerer'] . "&ordre=" . $get['ordre'] . "&nblignes=" . $get['nblignes'] . "&filtre_genre=" . $get['filtre_genre'] . "&terme=" . $get['terme'] . "&page=") ?>
 
@@ -734,9 +726,11 @@ if ($verif->nbErreurs() > 0)
                 </li>
             <?php endforeach; ?>
             </ul>
-
+            <div class="spacer"></div>
         </div>
+
         <div class="spacer"></div>
+
     </div>
 
 

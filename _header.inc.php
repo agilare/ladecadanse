@@ -195,11 +195,11 @@ use Ladecadanse\UserLevel;
                                 <li <?php if (strstr((string) $_SERVER['PHP_SELF'], "user.php")) : ?>class="ici"<?php endif; ?>>
                                     <a href="/user.php?idP=<?= (int) $_SESSION['SidPersonne']; ?>"><?= sanitizeForHtml($_SESSION['user']); ?></a>
                                 </li>
-                                <li <?php if (strstr((string) $_SERVER['PHP_SELF'], "admin/")) : ?>class="ici"<?php endif; ?> style="background: #ffda54;padding: 2px 0 0.4em 0.4em;border-radius: 3px 0 0 3px;">
+                                <li style="background: #ffda54;padding: 2px 0 0.4em 0.4em;border-radius: 3px 0 0 3px;">
                                     <?php if ($_SESSION['Sgroupe'] <= UserLevel::ADMIN) : ?>
-                                        <a href="/admin/index.php"><i class="fa fa-tachometer" aria-hidden="true"></i></a>
-                                        <a href="/admin/gererEvenements.php"><i class="fa fa-calendar-o" aria-hidden="true"></i></a>
-                                        <a href="/admin/users.php"><i class="fa fa-user" aria-hidden="true"></i></a>
+                                        <a href="/admin/index.php" <?php if (strstr((string) $_SERVER['PHP_SELF'], "admin/index.php")) : ?>class="ici"<?php endif; ?>><i class="fa fa-tachometer" aria-hidden="true"></i></a>
+                                        <a href="/admin/gererEvenements.php" <?php if (strstr((string) $_SERVER['PHP_SELF'], "admin/gererEvenements.php")) : ?>class="ici"<?php endif; ?> ><i class="fa fa-calendar-o" aria-hidden="true"></i></a>
+                                        <a href="/admin/users.php" <?php if (strstr((string) $_SERVER['PHP_SELF'], "admin/users.php")) : ?>class="ici"<?php endif; ?>><i class="fa fa-user" aria-hidden="true"></i></a>
                                     <?php endif; ?>
                                     <a href="/user-logout.php">Sortir</a>
                                 </li>

@@ -306,6 +306,11 @@ hr
             background:#F5EBC7;
         }
 
+        #entete_haut #menu_pratique ul li a.ici
+        {
+            background:#F5EBC7;
+        }
+
 
 /*principal*/
 #menu

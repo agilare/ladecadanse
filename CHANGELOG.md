@@ -3,7 +3,8 @@
 ## [3.9.2] - Unreleased
 
 ### Fixed
-- events: add auth requirement in actions
+- events : add auth requirement in actions
+- admin : current page highlight in menu pratique
 
 ### Added
 - organisateurs : table with navigation, filters
@@ -25,6 +26,9 @@
 - organisateurs right menu
 - readme : in db config rm requirement of ALLOW_INVALID_DATES
 
+### Removed
+- organisateurs right menu
+- readme : in db config rm requirement of ALLOW_INVALID_DATES
 
 ## [3.9.1] - 2025-10-11
 
