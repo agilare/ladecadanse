@@ -7,6 +7,13 @@ use Ladecadanse\Security\SecurityToken;
 use Ladecadanse\Utils\Logger;
 use Ladecadanse\Utils\Validateur;
 
+if (!$videur->checkGroup(8))
+{
+    header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
+    header("Location: /user-login.php"); die();
+}
+
+
 $get['action'] = "";
 if (isset($_GET['action']))
 {

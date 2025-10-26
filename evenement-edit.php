@@ -89,6 +89,7 @@ if ($get['action'] != "ajouter" && $get['action'] != "insert")
             )
     )
     {
+        header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
         HtmlShrink::msgErreur("Vous ne pouvez pas modifier cet événement car vous n'avez pas les droits suffisants ou vous n'êtes pas (ou plus) connecté");
         exit;
     }

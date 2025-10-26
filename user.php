@@ -9,8 +9,11 @@ use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\Text;
 use Ladecadanse\EvenementRenderer;
 
-if (!$videur->checkGroup(UserLevel::MEMBER)) {
-	header("Location: /user-login.php"); die();
+if (!$videur->checkGroup(UserLevel::MEMBER))
+{
+    header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
+	header("Location: /user-login.php");
+    die();
 }
 
 $page_titre = "profil";

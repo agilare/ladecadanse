@@ -23,6 +23,13 @@ if (empty($_GET['action']) || !in_array($_GET['action'], array_keys($tab_action)
 }
 $get['action'] = $_GET['action'];
 
+if ($get['action'] == 'share' && !$videur->checkGroup(12))
+{
+    header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
+    header("Location: /user-login.php");
+    die();
+}
+
 // EVENT AND APPENDIXES
 $sql_event = "SELECT
 

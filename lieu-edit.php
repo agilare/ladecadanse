@@ -10,7 +10,9 @@ use Ladecadanse\HtmlShrink;
 
 if (!$videur->checkGroup(8))
 {
-	header("Location: index.php"); die();
+    header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
+	header("Location: /user-login.php");
+    die();
 }
 
 $page_titre = "ajouter/éditer un lieu";

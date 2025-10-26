@@ -18,7 +18,9 @@ use Ladecadanse\HtmlShrink;
 use Ladecadanse\Personne;
 
 if (!$videur->checkGroup(UserLevel::ACTOR)) {
-    header("Location: /user-login.php"); die();
+    header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
+    header("Location: /user-login.php");
+    die();
 }
 
 $get['action'] = "ajouter";
