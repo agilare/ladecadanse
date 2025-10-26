@@ -452,12 +452,11 @@
       "id": "95c45f15-639f-4672-8544-1c3998527769",
       "comment": "",
       "command": "assertElementPresent",
-      "target": "css=#derniers_lieux > h2",
+      "target": "css=table#derniers_lieux",
       "targets": [
-        ["css=#entete_contenu > h2", "css:finder"],
-        ["xpath=//div[@id='entete_contenu']/h2", "xpath:idRelative"],
-        ["xpath=//h2", "xpath:position"],
-        ["xpath=//h2[contains(.,'Organisateurs')]", "xpath:innerText"]
+        ["css=#derniers_lieux th:nth-child(1)", "css:finder"],
+        ["xpath=//table[@id='derniers_lieux']/thead/tr/th", "xpath:idRelative"],
+        ["xpath=//section/table/thead/tr/th", "xpath:position"]
       ],
       "value": ""
     }, {
@@ -4633,326 +4632,8 @@
       "value": ""
     }]
   }, {
-    "id": "64a632a5-6285-43db-bcd2-b3023732989d",
-    "name": "organizer home small",
-    "commands": [{
-      "id": "7253023f-41bd-413f-a14f-9486472f01e1",
-      "comment": "",
-      "command": "open",
-      "target": "/",
-      "targets": [],
-      "value": ""
-    }, {
-      "id": "e25065df-80f3-4436-89ce-c95122a135d4",
-      "comment": "",
-      "command": "setWindowSize",
-      "target": "360x720",
-      "targets": [],
-      "value": ""
-    }, {
-      "id": "4edde6ac-f55f-400d-b3a4-ec556db9efa8",
-      "comment": "",
-      "command": "click",
-      "target": "linkText=Organisateurs",
-      "targets": [
-        ["linkText=Organisateurs", "linkText"],
-        ["css=#menu li:nth-child(4) > a", "css:finder"],
-        ["xpath=//a[contains(text(),'Organisateurs')]", "xpath:link"],
-        ["xpath=//nav[@id='menu']/ul/li[4]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/organisateur/organisateurs.php?')]", "xpath:href"],
-        ["xpath=//header/nav/ul/li[4]/a", "xpath:position"],
-        ["xpath=//a[contains(.,'Organisateurs')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "86163a39-f7ad-439c-b7ee-bc139752b6b8",
-      "comment": "",
-      "command": "assertElementPresent",
-      "target": "xpath=//div[@id='derniers_lieux']/h2",
-      "targets": [
-        ["css=#derniers_lieux > h2", "css:finder"],
-        ["xpath=//div[@id='derniers_lieux']/h2", "xpath:idRelative"],
-        ["xpath=//div[4]/h2", "xpath:position"],
-        ["xpath=//h2[contains(.,'Derniers organisateurs ajoutés')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "6b1491b1-44bf-4e48-bbd5-bc88c493f783",
-      "comment": "",
-      "command": "click",
-      "target": "xpath=//div[@id='derniers_lieux']/h3/a",
-      "targets": [
-        ["linkText=La fanzinothèque genevoise", "linkText"],
-        ["css=h3:nth-child(2) > a", "css:finder"],
-        ["xpath=//a[contains(text(),'La fanzinothèque genevoise')]", "xpath:link"],
-        ["xpath=//div[@id='derniers_lieux']/h3/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/organisateur/organisateur.php?idO=305')]", "xpath:href"],
-        ["xpath=//h3/a", "xpath:position"],
-        ["xpath=//a[contains(.,'La fanzinothèque genevoise')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "3b758678-d29d-4f00-9326-dfab0edd4fad",
-      "comment": "",
-      "command": "assertElementPresent",
-      "target": "xpath=//h1",
-      "targets": [
-        ["css=h2", "css:finder"],
-        ["xpath=//div[@id='entete_contenu']/h2", "xpath:idRelative"],
-        ["xpath=//h2", "xpath:position"],
-        ["xpath=//h2[contains(.,'test')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "d796064e-bde3-49b8-89e5-895a1522d3cd",
-      "comment": "",
-      "command": "click",
-      "target": "xpath=//a[contains(text(),'Organisateurs')]",
-      "targets": [
-        ["linkText=Organisateurs", "linkText"],
-        ["css=#menu li:nth-child(4) > a", "css:finder"],
-        ["xpath=//a[contains(text(),'Organisateurs')]", "xpath:link"],
-        ["xpath=//nav[@id='menu']/ul/li[4]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/organisateur/organisateurs.php?')]", "xpath:href"],
-        ["xpath=//header/nav/ul/li[4]/a", "xpath:position"],
-        ["xpath=//a[contains(.,'Organisateurs')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "8cae5285-484d-42f8-9052-2ad113244c0d",
-      "comment": "",
-      "command": "click",
-      "target": "xpath=//div[@id='derniers_lieux']/h3[2]/a",
-      "targets": [
-        ["linkText=Off-Nite", "linkText"],
-        ["css=h3:nth-child(3) > a", "css:finder"],
-        ["xpath=//a[contains(text(),'Off-Nite')]", "xpath:link"],
-        ["xpath=//div[@id='derniers_lieux']/h3[2]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/organisateur/organisateur.php?idO=304')]", "xpath:href"],
-        ["xpath=//h3[2]/a", "xpath:position"],
-        ["xpath=//a[contains(.,'Off-Nite')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "617df58a-3711-4e56-9d96-09cd3a11e4e9",
-      "comment": "",
-      "command": "assertElementPresent",
-      "target": "xpath=//h1",
-      "targets": [
-        ["css=h2", "css:finder"],
-        ["xpath=//div[@id='entete_contenu']/h2", "xpath:idRelative"],
-        ["xpath=//h2", "xpath:position"],
-        ["xpath=//h2[contains(.,'test')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "38cf66e3-52f0-4df1-852d-27a23b1914e4",
-      "comment": "",
-      "command": "click",
-      "target": "xpath=//a[contains(text(),'Organisateurs')]",
-      "targets": [
-        ["linkText=Organisateurs", "linkText"],
-        ["css=#menu li:nth-child(4) > a", "css:finder"],
-        ["xpath=//a[contains(text(),'Organisateurs')]", "xpath:link"],
-        ["xpath=//nav[@id='menu']/ul/li[4]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/organisateur/organisateurs.php?')]", "xpath:href"],
-        ["xpath=//header/nav/ul/li[4]/a", "xpath:position"],
-        ["xpath=//a[contains(.,'Organisateurs')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "da7112a0-f635-45b2-ae6a-cef9ec691301",
-      "comment": "",
-      "command": "click",
-      "target": "xpath=//div[@id='derniers_lieux']/h3[6]/a",
-      "targets": [
-        ["linkText=La gouaille", "linkText"],
-        ["css=h3:nth-child(7) > a", "css:finder"],
-        ["xpath=//a[contains(text(),'La gouaille')]", "xpath:link"],
-        ["xpath=//div[@id='derniers_lieux']/h3[6]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/organisateur/organisateur.php?idO=300')]", "xpath:href"],
-        ["xpath=//h3[6]/a", "xpath:position"],
-        ["xpath=//a[contains(.,'La gouaille')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "582fecc4-60bf-48e7-b286-446636ac3c03",
-      "comment": "",
-      "command": "assertElementPresent",
-      "target": "xpath=//h1",
-      "targets": [
-        ["css=h2", "css:finder"],
-        ["xpath=//div[@id='entete_contenu']/h2", "xpath:idRelative"],
-        ["xpath=//h2", "xpath:position"],
-        ["xpath=//h2[contains(.,'test')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "e4f50aa7-42d9-4604-9c5c-637c1b29c3af",
-      "comment": "",
-      "command": "click",
-      "target": "xpath=//a[contains(text(),'Organisateurs')]",
-      "targets": [
-        ["linkText=Organisateurs", "linkText"],
-        ["css=#menu li:nth-child(4) > a", "css:finder"],
-        ["xpath=//a[contains(text(),'Organisateurs')]", "xpath:link"],
-        ["xpath=//nav[@id='menu']/ul/li[4]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/organisateur/organisateurs.php?')]", "xpath:href"],
-        ["xpath=//header/nav/ul/li[4]/a", "xpath:position"],
-        ["xpath=//a[contains(.,'Organisateurs')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "0ee8d011-9d09-4dba-8daa-b27fa2619b85",
-      "comment": "",
-      "command": "click",
-      "target": "xpath=//p[@id='btn_listelieux']/button",
-      "targets": [
-        ["css=button", "css:finder"],
-        ["xpath=//p[@id='btn_listelieux']/button", "xpath:idRelative"],
-        ["xpath=//button", "xpath:position"],
-        ["xpath=//button[contains(.,' Liste des organisateurs')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "35904de2-c054-4f9e-9652-280820a85f2e",
-      "comment": "",
-      "command": "click",
-      "target": "xpath=//div[@id='menu_lieux']/table/tbody/tr[2]/td/a",
-      "targets": [
-        ["linkText=360° fever", "linkText"],
-        ["css=tr:nth-child(2) a", "css:finder"],
-        ["xpath=//a[contains(text(),'360° fever')]", "xpath:link"],
-        ["xpath=//div[@id='menu_lieux']/table/tbody/tr[2]/td/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/organisateur/organisateur.php?courant=2023-03-17&genre=&tri_agenda=dateAjout&sem=0&statut=actif&vue=az&tranche=ak&idO=6')]", "xpath:href"],
-        ["xpath=//tr[2]/td/a", "xpath:position"],
-        ["xpath=//a[contains(.,'360° fever')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "0ba941df-3a89-4b09-976b-88773f385e49",
-      "comment": "",
-      "command": "assertElementPresent",
-      "target": "xpath=//h1",
-      "targets": [
-        ["css=h2", "css:finder"],
-        ["xpath=//div[@id='entete_contenu']/h2", "xpath:idRelative"],
-        ["xpath=//h2", "xpath:position"],
-        ["xpath=//h2[contains(.,'test')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "611af281-0c26-4df7-bd7b-43f3b5047a4e",
-      "comment": "",
-      "command": "click",
-      "target": "xpath=//p[@id='btn_listelieux']/button",
-      "targets": [
-        ["css=button", "css:finder"],
-        ["xpath=//p[@id='btn_listelieux']/button", "xpath:idRelative"],
-        ["xpath=//button", "xpath:position"],
-        ["xpath=//button[contains(.,' Liste des organisateurs')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "5d07132a-238e-4a9f-be1b-024a41bb4850",
-      "comment": "",
-      "command": "click",
-      "target": "linkText=l-z",
-      "targets": [
-        ["linkText=l-z", "linkText"],
-        ["css=#tranches > li:nth-child(2) > a", "css:finder"],
-        ["xpath=//a[contains(text(),'l-z')]", "xpath:link"],
-        ["xpath=//ul[@id='tranches']/li[2]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/organisateur/organisateur.php?statut=actif&vue=az&idO=6&tranche=lz')]", "xpath:href"],
-        ["xpath=//div[2]/ul/li[2]/a", "xpath:position"],
-        ["xpath=//a[contains(.,'l-z')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "09eec9b4-1f08-42f3-a599-b4c3a378ffc5",
-      "comment": "",
-      "command": "click",
-      "target": "xpath=//p[@id='btn_listelieux']/button",
-      "targets": [
-        ["css=button", "css:finder"],
-        ["xpath=//p[@id='btn_listelieux']/button", "xpath:idRelative"],
-        ["xpath=//button", "xpath:position"],
-        ["xpath=//button[contains(.,' Liste des organisateurs')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "a6a049a0-7b54-4ace-b7be-0e8b72c8de91",
-      "comment": "",
-      "command": "click",
-      "target": "xpath=//div[@id='menu_lieux']/table/tbody/tr[2]/td/a",
-      "targets": [
-        ["linkText=Largescalestudios", "linkText"],
-        ["css=tr:nth-child(2) a", "css:finder"],
-        ["xpath=//a[contains(text(),'Largescalestudios')]", "xpath:link"],
-        ["xpath=//div[@id='menu_lieux']/table/tbody/tr[2]/td/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/organisateur/organisateur.php?genre_even=tous&complement=evenements&statut=actif&vue=az&tranche=lz&idO=201')]", "xpath:href"],
-        ["xpath=//tr[2]/td/a", "xpath:position"],
-        ["xpath=//a[contains(.,'Largescalestudios')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "9c1cbc23-159d-4fa2-b5bc-af409aa38d5a",
-      "comment": "",
-      "command": "assertElementPresent",
-      "target": "xpath=//h1",
-      "targets": [
-        ["css=h2", "css:finder"],
-        ["xpath=//div[@id='entete_contenu']/h2", "xpath:idRelative"],
-        ["xpath=//h2", "xpath:position"],
-        ["xpath=//h2[contains(.,'test')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "8e55b502-2796-4c59-8eeb-943f22205f05",
-      "comment": "",
-      "command": "click",
-      "target": "xpath=//p[@id='btn_listelieux']/button",
-      "targets": [
-        ["css=button", "css:finder"],
-        ["xpath=//p[@id='btn_listelieux']/button", "xpath:idRelative"],
-        ["xpath=//button", "xpath:position"],
-        ["xpath=//button[contains(.,' Liste des organisateurs')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "515b786c-e53d-410e-900c-f400ec3c5be2",
-      "comment": "",
-      "command": "click",
-      "target": "xpath=//a[contains(text(),'tout')]",
-      "targets": [
-        ["linkText=tout", "linkText"],
-        ["css=#tranches > li:nth-child(3) > a", "css:finder"],
-        ["xpath=//a[contains(text(),'tout')]", "xpath:link"],
-        ["xpath=//ul[@id='tranches']/li[3]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/organisateur/organisateur.php?statut=actif&vue=az&idO=201&tranche=tout')]", "xpath:href"],
-        ["xpath=//div[2]/ul/li[3]/a", "xpath:position"],
-        ["xpath=//a[contains(.,'tout')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "f84355f7-e0aa-4e2e-90ba-1db5da0464ae",
-      "comment": "",
-      "command": "click",
-      "target": "xpath=//a[contains(text(),'Organisateurs')]",
-      "targets": [
-        ["linkText=Organisateurs", "linkText"],
-        ["css=#menu li:nth-child(4) > a", "css:finder"],
-        ["xpath=//a[contains(text(),'Organisateurs')]", "xpath:link"],
-        ["xpath=//nav[@id='menu']/ul/li[4]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/organisateur/organisateurs.php?')]", "xpath:href"],
-        ["xpath=//header/nav/ul/li[4]/a", "xpath:position"],
-        ["xpath=//a[contains(.,'Organisateurs')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }]
-  }, {
     "id": "d279109f-52b6-4b17-aa36-5704240df41e",
-    "name": "organizer small",
+    "name": "organizers small",
     "commands": [{
       "id": "bff890e4-f3fe-4a7c-a2c4-36bfe3537e21",
       "comment": "",
@@ -4968,7 +4649,7 @@
       "targets": [],
       "value": ""
     }, {
-      "id": "695b5761-ec2e-474e-8ab5-1321f0e15701",
+      "id": "fb034ac3-0af0-4d53-857e-a43709734320",
       "comment": "",
       "command": "click",
       "target": "xpath=//a[contains(text(),'Organisateurs')]",
@@ -4983,10 +4664,10 @@
       ],
       "value": ""
     }, {
-      "id": "bf68fab3-92fb-4da0-b7aa-47f853b0a9b7",
-      "comment": "",
+      "id": "7f3c9689-5e6c-496e-8e14-6085cd618261",
+      "comment": "orgas table is present",
       "command": "assertElementPresent",
-      "target": "xpath=//div[@id='derniers_lieux']/h2",
+      "target": "xpath=//table[@id='derniers_lieux']",
       "targets": [
         ["css=#derniers_lieux > h2", "css:finder"],
         ["xpath=//div[@id='derniers_lieux']/h2", "xpath:idRelative"],
@@ -4996,17 +4677,14 @@
       "value": ""
     }, {
       "id": "a9028ca0-c072-497b-8ce2-ae92525a441a",
-      "comment": "",
+      "comment": "click first orga",
       "command": "click",
-      "target": "xpath=//div[@id='derniers_lieux']/h3/a",
+      "target": "xpath=//table[@id='derniers_lieux']/tbody/tr/td[2]/a",
       "targets": [
-        ["linkText=Université Populaire Africaine en Suisse", "linkText"],
-        ["css=h3:nth-child(2) > a", "css:finder"],
-        ["xpath=//a[contains(text(),'Université Populaire Africaine en Suisse')]", "xpath:link"],
-        ["xpath=//div[@id='derniers_lieux']/h3/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/organisateur/organisateur.php?idO=2')]", "xpath:href"],
-        ["xpath=//h3/a", "xpath:position"],
-        ["xpath=//a[contains(.,'Université Populaire Africaine en Suisse')]", "xpath:innerText"]
+        ["css=tr:nth-child(1) strong", "css:finder"],
+        ["xpath=//table[@id='derniers_lieux']/tbody/tr/td[2]/a/strong", "xpath:idRelative"],
+        ["xpath=//td[2]/a/strong", "xpath:position"],
+        ["xpath=//strong[contains(.,'test')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
@@ -5019,33 +4697,6 @@
         ["xpath=//div[@id='entete_contenu']/h2", "xpath:idRelative"],
         ["xpath=//h2", "xpath:position"],
         ["xpath=//h2[contains(.,'test')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "becc1fbe-7a42-4000-bc5e-e5630ddfd624",
-      "comment": "",
-      "command": "click",
-      "target": "xpath=//p[@id='btn_listelieux']/button",
-      "targets": [
-        ["css=button", "css:finder"],
-        ["xpath=//p[@id='btn_listelieux']/button", "xpath:idRelative"],
-        ["xpath=//button", "xpath:position"],
-        ["xpath=//button[contains(.,' Liste des organisateurs')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "9ca4b613-aa85-46a7-9ed1-e92a886f12db",
-      "comment": "",
-      "command": "click",
-      "target": "xpath=//div[@id='menu_lieux']/table/tbody/tr[2]/td/a",
-      "targets": [
-        ["linkText=Bureau culturel", "linkText"],
-        ["css=tr:nth-child(2) > td:nth-child(1) > a", "css:finder"],
-        ["xpath=//a[contains(text(),'Bureau culturel')]", "xpath:link"],
-        ["xpath=//div[@id='menu_lieux']/table/tbody/tr[2]/td/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/organisateur/organisateur.php?genre_even=tous&complement=evenements&statut=actif&vue=az&tranche=ak&idO=1')]", "xpath:href"],
-        ["xpath=//tr[2]/td/a", "xpath:position"],
-        ["xpath=//a[contains(.,'Bureau culturel')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
@@ -5146,136 +4797,110 @@
       "targets": [],
       "value": ""
     }, {
+      "id": "695b5761-ec2e-474e-8ab5-1321f0e15701",
+      "comment": "",
+      "command": "click",
+      "target": "xpath=//a[contains(text(),'Organisateurs')]",
+      "targets": [
+        ["linkText=Organisateurs", "linkText"],
+        ["css=#menu li:nth-child(4) > a", "css:finder"],
+        ["xpath=//a[contains(text(),'Organisateurs')]", "xpath:link"],
+        ["xpath=//nav[@id='menu']/ul/li[4]/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '/organisateur/organisateurs.php?')]", "xpath:href"],
+        ["xpath=//header/nav/ul/li[4]/a", "xpath:position"],
+        ["xpath=//a[contains(.,'Organisateurs')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
       "id": "e247e2d5-f7be-45b4-9d4a-c727133bbb3e",
-      "comment": "",
+      "comment": "click sort by Nom",
       "command": "click",
-      "target": "xpath=//ul[@id='menu_periode']/li/a",
+      "target": "xpath=//div[@id='order_navigation']/ul/li[3]/a",
       "targets": [
-        ["linkText=Passés", "linkText"],
-        ["css=.ancien > a", "css:finder"],
-        ["xpath=//a[contains(text(),'Passés')]", "xpath:link"],
-        ["xpath=//ul[@id='menu_periode']/li/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '?idO=8&statut=actif&vue=az&tranche=ak&periode=ancien')]", "xpath:href"],
-        ["xpath=//header/ul/li/a", "xpath:position"],
-        ["xpath=//a[contains(.,'Passés')]", "xpath:innerText"]
+        ["linkText=Nom", "linkText"],
+        ["css=#order_navigation li:nth-child(3) > a", "css:finder"],
+        ["xpath=//a[contains(text(),'Nom')]", "xpath:link"],
+        ["xpath=//div[@id='order_navigation']/ul/li[3]/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '?order=nom')]", "xpath:href"],
+        ["xpath=//div[2]/ul/li[3]/a", "xpath:position"],
+        ["xpath=//a[contains(.,'Nom')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
-      "id": "0fe1425c-ea6b-46d1-b12e-c8ddd119e85d",
-      "comment": "",
-      "command": "executeScript",
-      "target": "return document.querySelector(\"#prochains_evenements tr.evenement\") !== null;",
-      "targets": [],
-      "value": "elementFound"
-    }, {
-      "id": "f848b78d-09fa-4ff4-9c41-62a415228f58",
-      "comment": "",
-      "command": "if",
-      "target": "${elementFound}",
-      "targets": [],
-      "value": ""
-    }, {
-      "id": "1c780b4d-135c-47e5-9166-e5102257f465",
-      "comment": "",
-      "command": "click",
-      "target": "xpath=//section[@id='prochains_evenements']/table/tbody/tr[2]/td[3]/a",
-      "targets": [
-        ["css=.vevent:nth-child(2) .summary", "css:finder"],
-        ["xpath=//section[@id='prochains_evenements']/table/tbody/tr[2]/td[3]/a/strong", "xpath:idRelative"],
-        ["xpath=//td[3]/a/strong", "xpath:position"],
-        ["xpath=//strong[contains(.,'21e édition du FIFDH')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "3dee12e1-378a-4af3-bb61-4fffea0fe9e0",
-      "comment": "",
-      "command": "executeScript",
-      "target": "window.history.go(-1)",
-      "targets": [],
-      "value": ""
-    }, {
-      "id": "367bc8bd-c498-4750-98eb-a1d1e24e8a17",
-      "comment": "",
-      "command": "end",
-      "target": "",
-      "targets": [],
-      "value": ""
-    }, {
-      "id": "15640b38-c2b2-44db-88c2-f2a2614cdde9",
+      "id": "a82f5a8e-a0a6-4f41-9b11-838c8b9ca1e3",
       "comment": "",
       "command": "assertElementPresent",
-      "target": "xpath=//h1",
+      "target": "xpath=//table[@id='derniers_lieux']",
       "targets": [
-        ["css=h2", "css:finder"],
-        ["xpath=//div[@id='entete_contenu']/h2", "xpath:idRelative"],
-        ["xpath=//h2", "xpath:position"],
-        ["xpath=//h2[contains(.,'test')]", "xpath:innerText"]
+        ["css=#derniers_lieux > h2", "css:finder"],
+        ["xpath=//div[@id='derniers_lieux']/h2", "xpath:idRelative"],
+        ["xpath=//div[4]/h2", "xpath:position"],
+        ["xpath=//h2[contains(.,'Derniers organisateurs ajoutés')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
-      "id": "ad7c2582-9034-4b35-a142-f314ffdbfad5",
-      "comment": "",
+      "id": "b8c8b4ad-1f02-4688-a66d-9ae49e34b153",
+      "comment": "click sort by Dernier ajouté",
       "command": "click",
-      "target": "xpath=//p[@id='btn_listelieux']/button",
+      "target": "xpath=//div[@id='order_navigation']/ul/li[2]/a",
       "targets": [
-        ["css=button:nth-child(1)", "css:finder"],
-        ["xpath=//p[@id='btn_listelieux']/button", "xpath:idRelative"],
-        ["xpath=//p/button", "xpath:position"],
-        ["xpath=//button[contains(.,' Liste des organisateurs')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "5036fcea-0926-442a-a73e-9033b0782db9",
-      "comment": "",
-      "command": "click",
-      "target": "linkText=l-z",
-      "targets": [
-        ["linkText=l-z", "linkText"],
-        ["css=#tranches > li:nth-child(2) > a", "css:finder"],
-        ["xpath=//a[contains(text(),'l-z')]", "xpath:link"],
-        ["xpath=//ul[@id='tranches']/li[2]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/organisateur/organisateur.php?statut=actif&vue=az&idO=1&tranche=lz')]", "xpath:href"],
+        ["linkText=Dernier ajouté", "linkText"],
+        ["css=#order_navigation li:nth-child(2) > a", "css:finder"],
+        ["xpath=//a[contains(text(),'Dernier ajouté')]", "xpath:link"],
+        ["xpath=//div[@id='order_navigation']/ul/li[2]/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '?order=date_ajout')]", "xpath:href"],
         ["xpath=//div[2]/ul/li[2]/a", "xpath:position"],
-        ["xpath=//a[contains(.,'l-z')]", "xpath:innerText"]
+        ["xpath=//a[contains(.,'Dernier ajouté')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
-      "id": "14b68a2f-25b4-4343-a15e-49e67e8f2e86",
-      "comment": "",
-      "command": "click",
-      "target": "xpath=//p[@id='btn_listelieux']/button",
-      "targets": [
-        ["css=button", "css:finder"],
-        ["xpath=//p[@id='btn_listelieux']/button", "xpath:idRelative"],
-        ["xpath=//button", "xpath:position"],
-        ["xpath=//button[contains(.,' Liste des organisateurs')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "0461cf79-d85a-4793-9d61-828ad576e6b2",
-      "comment": "",
-      "command": "click",
-      "target": "xpath=//div[@id='menu_lieux']/table/tbody/tr[2]/td/a",
-      "targets": [
-        ["linkText=Université Populaire Africaine en Suisse", "linkText"],
-        ["css=tr:nth-child(2) a", "css:finder"],
-        ["xpath=//a[contains(text(),'Université Populaire Africaine en Suisse')]", "xpath:link"],
-        ["xpath=//div[@id='menu_lieux']/table/tbody/tr[2]/td/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/organisateur/organisateur.php?genre_even=tous&complement=evenements&statut=actif&vue=az&tranche=lz&idO=2')]", "xpath:href"],
-        ["xpath=//tr[2]/td/a", "xpath:position"],
-        ["xpath=//a[contains(.,'Université Populaire Africaine en Suisse')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "ca3a738e-1f51-4065-a478-e744dc8f7857",
+      "id": "bf68fab3-92fb-4da0-b7aa-47f853b0a9b7",
       "comment": "",
       "command": "assertElementPresent",
-      "target": "xpath=//h1",
+      "target": "xpath=//table[@id='derniers_lieux']",
       "targets": [
-        ["css=h2", "css:finder"],
-        ["xpath=//div[@id='entete_contenu']/h2", "xpath:idRelative"],
-        ["xpath=//h2", "xpath:position"],
-        ["xpath=//h2[contains(.,'test')]", "xpath:innerText"]
+        ["css=#derniers_lieux > h2", "css:finder"],
+        ["xpath=//div[@id='derniers_lieux']/h2", "xpath:idRelative"],
+        ["xpath=//div[4]/h2", "xpath:position"],
+        ["xpath=//h2[contains(.,'Derniers organisateurs ajoutés')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "9e9b42ad-4cf2-443f-a114-88004b939057",
+      "comment": "type \"asso\" in search",
+      "command": "type",
+      "target": "xpath=//input[@name='nom']",
+      "targets": [
+        ["name=nom", "name"],
+        ["css=.table-filters input", "css:finder"],
+        ["xpath=//input[@name='nom']", "xpath:attributes"],
+        ["xpath=//section[@id='default']/div/div/form/input", "xpath:idRelative"],
+        ["xpath=//div/form/input", "xpath:position"]
+      ],
+      "value": "asso"
+    }, {
+      "id": "571509d4-934f-48c4-a32c-73182b0af432",
+      "comment": "submit search",
+      "command": "click",
+      "target": "xpath=(//button[@type='submit'])[2]",
+      "targets": [
+        ["css=form:nth-child(1) > button", "css:finder"],
+        ["xpath=(//button[@type='submit'])[2]", "xpath:attributes"],
+        ["xpath=//section[@id='default']/div/div/form/button", "xpath:idRelative"],
+        ["xpath=//div/form/button", "xpath:position"],
+        ["xpath=//button[contains(.,'OK')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "d8707d38-451e-4757-b54e-98d5839b2d16",
+      "comment": "",
+      "command": "assertElementPresent",
+      "target": "xpath=//table[@id='derniers_lieux']/tbody/tr/td[2]/a",
+      "targets": [
+        ["css=tr:nth-child(1) strong", "css:finder"],
+        ["xpath=//table[@id='derniers_lieux']/tbody/tr/td[2]/a/strong", "xpath:idRelative"],
+        ["xpath=//td[2]/a/strong", "xpath:position"],
+        ["xpath=//strong[contains(.,'Musée international de la Croix-Rouge et du Croissant-Rouge')]", "xpath:innerText"]
       ],
       "value": ""
     }]
@@ -7545,7 +7170,7 @@
     "persistSession": false,
     "parallel": false,
     "timeout": 300,
-    "tests": ["1c4e0b1a-ecd3-4bee-b216-8448f663e804", "5b25e806-0e1c-44d8-8740-8fea9c4ef72b", "fcd88d4b-aaaf-4bab-9cb8-bc1bcaceae08", "ef663861-84a7-4224-83ef-4ae3c2041edf", "64a632a5-6285-43db-bcd2-b3023732989d", "d279109f-52b6-4b17-aa36-5704240df41e", "c3060854-829d-4124-9885-e36d67bed18d", "557f8f3f-f10b-4fec-be4e-5cda336aaa94", "3ebd99c9-ee10-47ff-b262-faa2f02ad87d", "82a5cf0c-2c0b-4baf-8545-45193e3ca01e", "1936c9ce-4dcc-4002-b874-9230988f6c99", "6785a2a4-47e6-4ae8-809e-4b01fd72e204"]
+    "tests": ["1c4e0b1a-ecd3-4bee-b216-8448f663e804", "5b25e806-0e1c-44d8-8740-8fea9c4ef72b", "fcd88d4b-aaaf-4bab-9cb8-bc1bcaceae08", "ef663861-84a7-4224-83ef-4ae3c2041edf", "d279109f-52b6-4b17-aa36-5704240df41e", "c3060854-829d-4124-9885-e36d67bed18d", "557f8f3f-f10b-4fec-be4e-5cda336aaa94", "3ebd99c9-ee10-47ff-b262-faa2f02ad87d", "82a5cf0c-2c0b-4baf-8545-45193e3ca01e", "1936c9ce-4dcc-4002-b874-9230988f6c99", "6785a2a4-47e6-4ae8-809e-4b01fd72e204"]
   }, {
     "id": "573974f0-13b4-4a75-857c-b375bb627729",
     "name": "user actor",

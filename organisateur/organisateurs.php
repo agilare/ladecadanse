@@ -69,9 +69,6 @@ include("../_header.inc.php");
         <h1 style="width: 35%;line-height: 1.2em;margin:0">Organisateurs</h1><?php if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 6)
 { ?><a href="/organisateur-edit.php?action=ajouter" style="float: left;padding: 5px 1px;"><img src="/web/interface/icons/add.png" alt="" style="vertical-align:bottom" /> Ajouter un organisateur</a><?php } ?>
         <div class="spacer"></div>
-        <p class="mobile" id="btn_listelieux">
-            <button href="#"><i class="fa fa-list fa-lg"></i>&nbsp;Liste des organisateurs</button>
-        </p>
     </header>
 
     <section id="default">
