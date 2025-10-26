@@ -6019,51 +6019,66 @@
       "id": "b9c3eb8c-5760-4ad6-a9a0-7e3cf00d1277",
       "comment": "",
       "command": "assertElementPresent",
-      "target": "css=h4",
+      "target": "css=table:nth-child(2) th:nth-child(1)",
       "targets": [
-        ["css=h4", "css:finder"],
-        ["xpath=//div[@id='tableaux']/h4", "xpath:idRelative"],
-        ["xpath=//h4", "xpath:position"],
-        ["xpath=//h4[contains(.,'Événements ajoutés ces 3 derniers jours')]", "xpath:innerText"]
+        ["css=table:nth-child(2) th:nth-child(1)", "css:finder"],
+        ["xpath=//div[@id='tableaux']/table/thead/tr/th", "xpath:idRelative"],
+        ["xpath=//th", "xpath:position"],
+        ["xpath=//th[contains(.,'Heure')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
-      "id": "d8336218-e627-4631-9dde-223e83d32dcc",
-      "comment": "",
-      "command": "click",
-      "target": "css=.fa-user",
-      "targets": [
-        ["css=.fa-user", "css:finder"],
-        ["xpath=//nav[@id='menu_pratique']/ul/li[7]/a[3]/i", "xpath:idRelative"],
-        ["xpath=//a[3]/i", "xpath:position"]
-      ],
-      "value": ""
-    }, {
-      "id": "fe077763-2680-49db-9015-6d916d2a7764",
+      "id": "d95f6bdb-9896-4dd7-9a58-adda58c8d307",
       "comment": "",
       "command": "assertElementPresent",
-      "target": "id=ajouts",
+      "target": "css=#derniers_evenements_ajoutes th:nth-child(1)",
       "targets": [
-        ["id=ajouts", "id"],
-        ["css=#ajouts", "css:finder"],
-        ["xpath=//table[@id='ajouts']", "xpath:attributes"],
-        ["xpath=//div[@id='contenu']/table", "xpath:idRelative"],
-        ["xpath=//table", "xpath:position"]
+        ["css=#derniers_evenements_ajoutes th:nth-child(1)", "css:finder"],
+        ["xpath=//table[@id='derniers_evenements_ajoutes']/thead/tr/th", "xpath:idRelative"],
+        ["xpath=//table[2]/thead/tr/th", "xpath:position"]
       ],
       "value": ""
     }, {
-      "id": "65a40fdf-e0da-4f3c-a399-d3caf8c3cff9",
+      "id": "94efb50d-09fa-456a-8332-47de10af94f5",
       "comment": "",
-      "command": "click",
-      "target": "css=.fa-tachometer",
+      "command": "assertElementPresent",
+      "target": "xpath=//div[@id='tableaux']/table[3]/tbody/tr/th",
       "targets": [
-        ["css=.fa-tachometer", "css:finder"],
-        ["xpath=//nav[@id='menu_pratique']/ul/li[7]/a/i", "xpath:idRelative"],
-        ["xpath=//li[7]/a/i", "xpath:position"]
+        ["css=tbody th:nth-child(1)", "css:finder"],
+        ["xpath=//div[@id='tableaux']/table[3]/tbody/tr/th", "xpath:idRelative"],
+        ["xpath=//tbody/tr/th", "xpath:position"],
+        ["xpath=//th[contains(.,'Type')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
       "id": "3011f5d2-407d-45d3-83c4-74ee0e0399bb",
+      "comment": "click link Identifiant under \"Inscriptions de ces 3 derniers jours\"",
+      "command": "click",
+      "target": "xpath=//div[@id='tableaux']/table/tbody/tr[2]/td[2]/a",
+      "targets": [
+        ["linkText=eqfc251rszm", "linkText"],
+        ["css=table:nth-child(2) a", "css:finder"],
+        ["xpath=//a[contains(text(),'eqfc251rszm')]", "xpath:link"],
+        ["xpath=//div[@id='tableaux']/table/tbody/tr[2]/td[2]/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '/user.php?idP=67')]", "xpath:href"],
+        ["xpath=//td[2]/a", "xpath:position"],
+        ["xpath=//a[contains(.,'eqfc251rszm')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "f3c14700-61d4-4a9d-bd24-aca7e07f3ad7",
+      "comment": "",
+      "command": "assertElementPresent",
+      "target": "xpath=//div[@id='profile']/table/tbody/tr/td",
+      "targets": [
+        ["css=tbody:nth-child(1) > tr:nth-child(1) > td", "css:finder"],
+        ["xpath=//div[@id='profile']/table/tbody/tr/td", "xpath:idRelative"],
+        ["xpath=//div[2]/table/tbody/tr/td", "xpath:position"],
+        ["xpath=//td[contains(.,'eqfc251rszm')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "f186bde0-d680-46c2-adf1-81d8c78bf53f",
       "comment": "",
       "command": "click",
       "target": "css=.fa-tachometer",
@@ -6078,30 +6093,30 @@
       ],
       "value": ""
     }, {
-      "id": "44657770-7d19-4a74-a6ac-d18334a1dd48",
-      "comment": "click link Identifiant under \"Inscriptions de ces 3 derniers jours\"",
+      "id": "044a67e2-6af6-477b-8f09-aff3e05ecf19",
+      "comment": "",
       "command": "click",
-      "target": "xpath=//div[@id='tableaux']/table/tbody/tr[2]/td[3]/a",
+      "target": "xpath=//table[@id='derniers_evenements_ajoutes']/tbody/tr[2]/td[2]/a",
       "targets": [
-        ["linkText=test6", "linkText"],
-        ["css=table:nth-child(2) tr:nth-child(2) > td:nth-child(3) > a", "css:finder"],
-        ["xpath=//a[contains(text(),'test6')]", "xpath:link"],
-        ["xpath=//div[@id='tableaux']/table/tbody/tr[2]/td[3]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/user.php?idP=10')]", "xpath:href"],
-        ["xpath=//td[3]/a", "xpath:position"],
-        ["xpath=//a[contains(.,'test6')]", "xpath:innerText"]
+        ["linkText=Watoo festival BD", "linkText"],
+        ["css=tr:nth-child(2) .titre", "css:finder"],
+        ["xpath=//a[contains(text(),'Watoo festival BD')]", "xpath:link"],
+        ["xpath=//table[@id='derniers_evenements_ajoutes']/tbody/tr[2]/td[2]/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '/event/evenement.php?idE=3045')]", "xpath:href"],
+        ["xpath=//table[2]/tbody/tr[2]/td[2]/a", "xpath:position"],
+        ["xpath=//a[contains(.,'Watoo festival BD')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
-      "id": "b9d987db-1d7d-4305-9313-9cd201644084",
-      "comment": "Profil : row \"Identifiant\" is present",
+      "id": "9b12b680-2203-4b1e-89cb-39d3f0ecbd34",
+      "comment": "",
       "command": "assertElementPresent",
-      "target": "css=#profile tr:nth-child(1) > th",
+      "target": "xpath=//article[@id='evenement']/header/h1",
       "targets": [
-        ["css=#profile tr:nth-child(1) > th", "css:finder"],
-        ["xpath=//div[@id='profile']/table/tbody/tr/th", "xpath:idRelative"],
-        ["xpath=//th", "xpath:position"],
-        ["xpath=//th[contains(.,'Identifiant')]", "xpath:innerText"]
+        ["css=.summary", "css:finder"],
+        ["xpath=//article[@id='evenement']/header/h1", "xpath:idRelative"],
+        ["xpath=//h1", "xpath:position"],
+        ["xpath=//h1[contains(.,'Watoo festival BD')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
@@ -6120,75 +6135,33 @@
       ],
       "value": ""
     }, {
-      "id": "4b366630-3a88-4ba0-b33d-7e682acf6416",
+      "id": "e64f1659-38d3-41d1-ad24-73ffe163e05c",
       "comment": "",
       "command": "click",
-      "target": "xpath=//table[@id='derniers_evenements_ajoutes']/tbody/tr[2]/td/a",
+      "target": "xpath=//table[@id='derniers_evenements_ajoutes']/tbody/tr[2]/td[9]/a/img",
       "targets": [
-        ["linkText=21e édition du FIFDH", "linkText"],
-        ["css=tr:nth-child(2) .titre", "css:finder"],
-        ["xpath=//a[contains(text(),'21e édition du FIFDH')]", "xpath:link"],
-        ["xpath=//table[@id='derniers_evenements_ajoutes']/tbody/tr[2]/td/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/event/evenement.php?idE=525')]", "xpath:href"],
-        ["xpath=//table[2]/tbody/tr[2]/td/a", "xpath:position"],
-        ["xpath=//a[contains(.,'21e édition du FIFDH')]", "xpath:innerText"]
+        ["css=tr:nth-child(2) > td:nth-child(9) img", "css:finder"],
+        ["xpath=//img[@alt='Éditer']", "xpath:img"],
+        ["xpath=//table[@id='derniers_evenements_ajoutes']/tbody/tr[2]/td[9]/a/img", "xpath:idRelative"],
+        ["xpath=//td[9]/a/img", "xpath:position"]
       ],
       "value": ""
     }, {
-      "id": "487cacf9-8685-46c3-9c4e-df43ca62a397",
-      "comment": "",
-      "command": "click",
-      "target": "css=.fa-tachometer",
-      "targets": [
-        ["linkText=Admin", "linkText"],
-        ["css=li:nth-child(8) > a", "css:finder"],
-        ["xpath=//a[contains(text(),'Admin')]", "xpath:link"],
-        ["xpath=//nav[@id='menu_pratique']/ul/li[8]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/admin/index.php')]", "xpath:href"],
-        ["xpath=//li[8]/a", "xpath:position"],
-        ["xpath=//a[contains(.,'Admin')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "5530d177-fc7f-450a-9f23-be662792a3f2",
+      "id": "01f09fe9-40ed-4dc0-b5a4-54ba6454f7f7",
       "comment": "",
       "command": "assertElementPresent",
-      "target": "css=#derniers_evenements_ajoutes th:nth-child(1)",
+      "target": "xpath=//input[@value='Enregistrer']",
       "targets": [
-        ["css=#derniers_evenements_ajoutes th:nth-child(1)", "css:finder"],
-        ["xpath=//table[@id='derniers_evenements_ajoutes']/tbody/tr/th", "xpath:idRelative"],
-        ["xpath=//table[2]/tbody/tr/th", "xpath:position"],
-        ["xpath=//th[contains(.,'Titre')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "caa4f2bb-b167-471a-a7a4-ee0f42c92f6d",
-      "comment": "",
-      "command": "click",
-      "target": "css=.fa-calendar-o",
-      "targets": [
-        ["css=.fa-calendar-o", "css:finder"],
-        ["xpath=//nav[@id='menu_pratique']/ul/li[7]/a[2]/i", "xpath:idRelative"],
-        ["xpath=//a[2]/i", "xpath:position"]
-      ],
-      "value": ""
-    }, {
-      "id": "c059b4c1-754b-4e8a-993c-f8e9bcb4a381",
-      "comment": "",
-      "command": "assertElementPresent",
-      "target": "id=ajouts",
-      "targets": [
-        ["id=ajouts", "id"],
-        ["css=#ajouts", "css:finder"],
-        ["xpath=//table[@id='ajouts']", "xpath:attributes"],
-        ["xpath=//form[@id='formGererEvenements']/table", "xpath:idRelative"],
-        ["xpath=//table", "xpath:position"]
+        ["css=.submit-big:nth-child(2)", "css:finder"],
+        ["xpath=//input[@value='Enregistrer']", "xpath:attributes"],
+        ["xpath=//form[@id='ajouter_editer']/p[3]/input[2]", "xpath:idRelative"],
+        ["xpath=//p[3]/input[2]", "xpath:position"]
       ],
       "value": ""
     }]
   }, {
     "id": "816a221b-9428-4767-9d1b-cf51dc2f8fb4",
-    "name": "user (admin) manage",
+    "name": "user (admin) manage events",
     "commands": [{
       "id": "b1c8b11a-2e8c-4399-abeb-8a0f5a99c8f2",
       "comment": "",
@@ -6211,15 +6184,30 @@
       "id": "ffe92652-3e67-4ee6-b9e4-a83b48237740",
       "comment": "",
       "command": "click",
-      "target": "linkText=Fête",
+      "target": "linkText=Fêtes",
       "targets": [
-        ["linkText=Fête", "linkText"],
+        ["linkText=Fêtes", "linkText"],
         ["css=.menu_filtre > li:nth-child(2) > a", "css:finder"],
-        ["xpath=//a[contains(text(),'Fête')]", "xpath:link"],
-        ["xpath=//div[@id='contenu']/div[2]/ul/li[2]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '?element=evenement&page=1&tri_gerer=dateAjout&ordre=desc&nblignes=100&terme=&filtre_genre=fête')]", "xpath:href"],
-        ["xpath=//div[2]/ul/li[2]/a", "xpath:position"],
-        ["xpath=//a[contains(.,'Fête')]", "xpath:innerText"]
+        ["xpath=//a[contains(text(),'Fêtes')]", "xpath:link"],
+        ["xpath=//section[@id='default']/div/ul/li[2]/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '?element=evenement&tri_gerer=dateAjout&ordre=desc&nblignes=50&terme=&filtre_genre=fête')]", "xpath:href"],
+        ["xpath=//div/ul/li[2]/a", "xpath:position"],
+        ["xpath=//a[contains(.,'Fêtes')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "7d7dea20-8a3e-42d1-b5e4-879a7e9e8015",
+      "comment": "",
+      "command": "assertElementPresent",
+      "target": "xpath=//table[@id='ajouts']/tbody/tr[2]/td/a",
+      "targets": [
+        ["linkText=Watoo festival BD", "linkText"],
+        ["css=tr:nth-child(2) .titre", "css:finder"],
+        ["xpath=//a[contains(text(),'Watoo festival BD')]", "xpath:link"],
+        ["xpath=//table[@id='ajouts']/tbody/tr[2]/td/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '/event/evenement.php?idE=3045')]", "xpath:href"],
+        ["xpath=//td/a", "xpath:position"],
+        ["xpath=//a[contains(.,'Watoo festival BD')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
@@ -6238,6 +6226,21 @@
       ],
       "value": ""
     }, {
+      "id": "214f0b23-827f-4b82-a914-509f0261bb7a",
+      "comment": "",
+      "command": "assertElementPresent",
+      "target": "xpath=//table[@id='ajouts']/tbody/tr[2]/td/a",
+      "targets": [
+        ["linkText=Watoo festival BD", "linkText"],
+        ["css=tr:nth-child(2) .titre", "css:finder"],
+        ["xpath=//a[contains(text(),'Watoo festival BD')]", "xpath:link"],
+        ["xpath=//table[@id='ajouts']/tbody/tr[2]/td/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '/event/evenement.php?idE=3045')]", "xpath:href"],
+        ["xpath=//td/a", "xpath:position"],
+        ["xpath=//a[contains(.,'Watoo festival BD')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
       "id": "fe5c870b-b049-4077-b748-cf195b070377",
       "comment": "",
       "command": "click",
@@ -6250,6 +6253,21 @@
         ["xpath=//a[contains(@href, '?element=evenement&page=1&tri_gerer=dateAjout&ordre=desc&nblignes=100&terme=&filtre_genre=théâtre')]", "xpath:href"],
         ["xpath=//div[2]/ul/li[4]/a", "xpath:position"],
         ["xpath=//a[contains(.,'Théâtre')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "ac275452-5044-4f82-8fb9-3ca4d0a3ec49",
+      "comment": "",
+      "command": "assertElementPresent",
+      "target": "xpath=//table[@id='ajouts']/tbody/tr[2]/td/a",
+      "targets": [
+        ["linkText=Watoo festival BD", "linkText"],
+        ["css=tr:nth-child(2) .titre", "css:finder"],
+        ["xpath=//a[contains(text(),'Watoo festival BD')]", "xpath:link"],
+        ["xpath=//table[@id='ajouts']/tbody/tr[2]/td/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '/event/evenement.php?idE=3045')]", "xpath:href"],
+        ["xpath=//td/a", "xpath:position"],
+        ["xpath=//a[contains(.,'Watoo festival BD')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
@@ -6268,6 +6286,21 @@
       ],
       "value": ""
     }, {
+      "id": "19e56498-5638-41bb-8bc6-a76d3611d7bf",
+      "comment": "",
+      "command": "assertElementPresent",
+      "target": "xpath=//table[@id='ajouts']/tbody/tr[2]/td/a",
+      "targets": [
+        ["linkText=Watoo festival BD", "linkText"],
+        ["css=tr:nth-child(2) .titre", "css:finder"],
+        ["xpath=//a[contains(text(),'Watoo festival BD')]", "xpath:link"],
+        ["xpath=//table[@id='ajouts']/tbody/tr[2]/td/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '/event/evenement.php?idE=3045')]", "xpath:href"],
+        ["xpath=//td/a", "xpath:position"],
+        ["xpath=//a[contains(.,'Watoo festival BD')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
       "id": "ba956733-7aaa-469a-b1fa-1fc8505d3937",
       "comment": "",
       "command": "click",
@@ -6280,6 +6313,21 @@
         ["xpath=//a[contains(@href, '?element=evenement&page=0&tri_gerer=dateAjout&ordre=desc&nblignes=100&terme=&filtre_genre=divers')]", "xpath:href"],
         ["xpath=//div[2]/ul/li[6]/a", "xpath:position"],
         ["xpath=//a[contains(.,'Divers')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "c8d5e83c-a92b-4bef-a605-ae1d54832e5d",
+      "comment": "",
+      "command": "assertElementPresent",
+      "target": "xpath=//table[@id='ajouts']/tbody/tr[2]/td/a",
+      "targets": [
+        ["linkText=Watoo festival BD", "linkText"],
+        ["css=tr:nth-child(2) .titre", "css:finder"],
+        ["xpath=//a[contains(text(),'Watoo festival BD')]", "xpath:link"],
+        ["xpath=//table[@id='ajouts']/tbody/tr[2]/td/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '/event/evenement.php?idE=3045')]", "xpath:href"],
+        ["xpath=//td/a", "xpath:position"],
+        ["xpath=//a[contains(.,'Watoo festival BD')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
@@ -6298,7 +6346,22 @@
       ],
       "value": ""
     }, {
-      "id": "077cefaa-6ec9-455d-bed4-a220ecca1fd1",
+      "id": "af3fe9ce-923b-4369-8a3a-ed1b24dffe86",
+      "comment": "",
+      "command": "assertElementPresent",
+      "target": "xpath=//table[@id='ajouts']/tbody/tr[2]/td/a",
+      "targets": [
+        ["linkText=Watoo festival BD", "linkText"],
+        ["css=tr:nth-child(2) .titre", "css:finder"],
+        ["xpath=//a[contains(text(),'Watoo festival BD')]", "xpath:link"],
+        ["xpath=//table[@id='ajouts']/tbody/tr[2]/td/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '/event/evenement.php?idE=3045')]", "xpath:href"],
+        ["xpath=//td/a", "xpath:position"],
+        ["xpath=//a[contains(.,'Watoo festival BD')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "736fc86b-03fb-4ed8-aebb-7933e6e1da32",
       "comment": "",
       "command": "click",
       "target": "name=terme",
@@ -6308,6 +6371,47 @@
         ["xpath=//input[@name='terme']", "xpath:attributes"],
         ["xpath=//form[@id='ajouter_editer']/input[7]", "xpath:idRelative"],
         ["xpath=//input[7]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "1a8801ad-d688-463f-aa33-e57dc2da65c5",
+      "comment": "",
+      "command": "type",
+      "target": "name=terme",
+      "targets": [
+        ["name=terme", "name"],
+        ["css=input:nth-child(7)", "css:finder"],
+        ["xpath=//input[@name='terme']", "xpath:attributes"],
+        ["xpath=//form[@id='ajouter_editer']/input[7]", "xpath:idRelative"],
+        ["xpath=//input[7]", "xpath:position"]
+      ],
+      "value": "karaoke"
+    }, {
+      "id": "beeeb5cd-2ce6-425a-9cfb-ab2e3bd8461c",
+      "comment": "",
+      "command": "submit",
+      "target": "xpath=//form[@id='ajouter_editer']",
+      "targets": [
+        ["id=ajouter_editer", "id"],
+        ["css=div > #ajouter_editer", "css:finder"],
+        ["xpath=//form[@id='ajouter_editer']", "xpath:attributes"],
+        ["xpath=//section[@id='default']/div/form", "xpath:idRelative"],
+        ["xpath=//div/form", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "1d62b380-7b0a-4aa5-bde9-4e9fce02d85e",
+      "comment": "",
+      "command": "assertElementPresent",
+      "target": "xpath=//table[@id='ajouts']/tbody/tr[2]/td/a",
+      "targets": [
+        ["linkText=Watoo festival BD", "linkText"],
+        ["css=tr:nth-child(2) .titre", "css:finder"],
+        ["xpath=//a[contains(text(),'Watoo festival BD')]", "xpath:link"],
+        ["xpath=//table[@id='ajouts']/tbody/tr[2]/td/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '/event/evenement.php?idE=3045')]", "xpath:href"],
+        ["xpath=//td/a", "xpath:position"],
+        ["xpath=//a[contains(.,'Watoo festival BD')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
@@ -6322,129 +6426,128 @@
         ["xpath=//form[@id='ajouter_editer']/input[7]", "xpath:idRelative"],
         ["xpath=//input[7]", "xpath:position"]
       ],
-      "value": "karaoke"
+      "value": ""
     }, {
-      "id": "7036ba69-39f8-4e05-b239-f73f6044c9fe",
+      "id": "db79734b-fd9f-49cd-ab96-6f76e03d738b",
       "comment": "",
-      "command": "sendKeys",
-      "target": "name=terme",
+      "command": "submit",
+      "target": "xpath=//form[@id='ajouter_editer']",
       "targets": [
-        ["name=terme", "name"],
-        ["css=input:nth-child(7)", "css:finder"],
-        ["xpath=//input[@name='terme']", "xpath:attributes"],
-        ["xpath=//form[@id='ajouter_editer']/input[7]", "xpath:idRelative"],
-        ["xpath=//input[7]", "xpath:position"]
-      ],
-      "value": "${KEY_ENTER}"
-    }, {
-      "id": "b912e6c2-829c-40fd-ae26-1a5a0f0cf32a",
-      "comment": "",
-      "command": "click",
-      "target": "name=terme",
-      "targets": [
-        ["name=terme", "name"],
-        ["css=input:nth-child(7)", "css:finder"],
-        ["xpath=//input[@name='terme']", "xpath:attributes"],
-        ["xpath=//form[@id='ajouter_editer']/input[7]", "xpath:idRelative"],
-        ["xpath=//input[7]", "xpath:position"]
+        ["id=ajouter_editer", "id"],
+        ["css=div > #ajouter_editer", "css:finder"],
+        ["xpath=//form[@id='ajouter_editer']", "xpath:attributes"],
+        ["xpath=//section[@id='default']/div/form", "xpath:idRelative"],
+        ["xpath=//div/form", "xpath:position"]
       ],
       "value": ""
     }, {
-      "id": "accebe40-b658-4189-a5b3-aa7fd4ce9bfe",
+      "id": "9f93fb01-e93b-4cf7-80d8-86545be5ecec",
       "comment": "",
-      "command": "type",
-      "target": "name=terme",
+      "command": "assertElementPresent",
+      "target": "xpath=//table[@id='ajouts']/tbody/tr[2]/td/a",
       "targets": [
-        ["name=terme", "name"],
-        ["css=input:nth-child(7)", "css:finder"],
-        ["xpath=//input[@name='terme']", "xpath:attributes"],
-        ["xpath=//form[@id='ajouter_editer']/input[7]", "xpath:idRelative"],
-        ["xpath=//input[7]", "xpath:position"]
+        ["linkText=Watoo festival BD", "linkText"],
+        ["css=tr:nth-child(2) .titre", "css:finder"],
+        ["xpath=//a[contains(text(),'Watoo festival BD')]", "xpath:link"],
+        ["xpath=//table[@id='ajouts']/tbody/tr[2]/td/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '/event/evenement.php?idE=3045')]", "xpath:href"],
+        ["xpath=//td/a", "xpath:position"],
+        ["xpath=//a[contains(.,'Watoo festival BD')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
       "id": "ea24fbce-12b5-4c3f-a8dc-4279c431e8d7",
       "comment": "",
       "command": "click",
-      "target": "id=suiv",
+      "target": "xpath=//a[@id='suiv']",
       "targets": [
         ["id=suiv", "id"],
         ["linkText=suiv", "linkText"],
-        ["css=#suiv", "css:finder"],
+        ["css=.pagination:nth-child(1) > #suiv", "css:finder"],
         ["xpath=//a[contains(text(),'suiv')]", "xpath:link"],
         ["xpath=//a[@id='suiv']", "xpath:attributes"],
-        ["xpath=//div[@id='gerer-even-pagination']/div/a[6]", "xpath:idRelative"],
-        ["xpath=(//a[contains(@href, '/admin/gererEvenements.php?element=evenement&tri_gerer=dateAjout&ordre=desc&nblignes=100&filtre_genre=tous&terme=&page=2')])[2]", "xpath:href"],
-        ["xpath=//a[6]", "xpath:position"],
+        ["xpath=//div[@id='gerer-even-pagination']/div/a[7]", "xpath:idRelative"],
+        ["xpath=(//a[contains(@href, '?element=evenement&tri_gerer=dateAjout&ordre=desc&nblignes=50&filtre_genre=tous&terme=&page=2')])[2]", "xpath:href"],
+        ["xpath=//a[7]", "xpath:position"],
         ["xpath=//a[contains(.,'suiv')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "588d71d6-ecf3-454f-9c0f-edf90847786c",
+      "comment": "",
+      "command": "assertElementPresent",
+      "target": "xpath=//table[@id='ajouts']/tbody/tr[2]/td/a",
+      "targets": [
+        ["linkText=Watoo festival BD", "linkText"],
+        ["css=tr:nth-child(2) .titre", "css:finder"],
+        ["xpath=//a[contains(text(),'Watoo festival BD')]", "xpath:link"],
+        ["xpath=//table[@id='ajouts']/tbody/tr[2]/td/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '/event/evenement.php?idE=3045')]", "xpath:href"],
+        ["xpath=//td/a", "xpath:position"],
+        ["xpath=//a[contains(.,'Watoo festival BD')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
       "id": "7359b48a-b2f6-4d85-a440-6c29eb795b9b",
       "comment": "",
       "command": "click",
-      "target": "linkText=250",
+      "target": "xpath=//div[@id='gerer-even-pagination']/ul/li[2]/a",
       "targets": [
-        ["linkText=250", "linkText"],
+        ["linkText=100", "linkText"],
         ["css=.menu_nb_res > li:nth-child(2) > a", "css:finder"],
-        ["xpath=//a[contains(text(),'250')]", "xpath:link"],
+        ["xpath=//a[contains(text(),'100')]", "xpath:link"],
         ["xpath=//div[@id='gerer-even-pagination']/ul/li[2]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/admin/gererEvenements.php?element=evenement&page=2&tri_gerer=dateAjout&ordre=desc&terme=&filtre_genre=tous&nblignes=250')]", "xpath:href"],
-        ["xpath=//div[4]/ul/li[2]/a", "xpath:position"],
-        ["xpath=//a[contains(.,'250')]", "xpath:innerText"]
+        ["xpath=//a[contains(@href, '?element=evenement&page=1&tri_gerer=dateAjout&ordre=desc&terme=&filtre_genre=tous&nblignes=100')]", "xpath:href"],
+        ["xpath=//div[2]/ul/li[2]/a", "xpath:position"],
+        ["xpath=//a[contains(.,'100')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
-      "id": "56b81c8b-8a0c-42a5-a34a-eae421c70ffe",
+      "id": "82480c85-325f-4321-9acf-c8f91d1bbbba",
+      "comment": "",
+      "command": "assertElementPresent",
+      "target": "xpath=//table[@id='ajouts']/tbody/tr[2]/td/a",
+      "targets": [
+        ["linkText=Watoo festival BD", "linkText"],
+        ["css=tr:nth-child(2) .titre", "css:finder"],
+        ["xpath=//a[contains(text(),'Watoo festival BD')]", "xpath:link"],
+        ["xpath=//table[@id='ajouts']/tbody/tr[2]/td/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '/event/evenement.php?idE=3045')]", "xpath:href"],
+        ["xpath=//td/a", "xpath:position"],
+        ["xpath=//a[contains(.,'Watoo festival BD')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "8cc7121c-8ac3-46d0-9ed1-a881143804cf",
       "comment": "",
       "command": "click",
-      "target": "css=.fa-user",
+      "target": "xpath=//div[@id='gerer-even-pagination']/div/a",
       "targets": [
-        ["css=.fa-user", "css:finder"],
-        ["xpath=//nav[@id='menu_pratique']/ul/li[7]/a[3]/i", "xpath:idRelative"],
-        ["xpath=//a[3]/i", "xpath:position"]
+        ["id=prec", "id"],
+        ["linkText=préc", "linkText"],
+        ["css=.pagination:nth-child(1) > #prec", "css:finder"],
+        ["xpath=//a[contains(text(),'préc')]", "xpath:link"],
+        ["xpath=//a[@id='prec']", "xpath:attributes"],
+        ["xpath=//div[@id='gerer-even-pagination']/div/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '?element=evenement&tri_gerer=dateAjout&ordre=desc&nblignes=50&filtre_genre=tous&terme=&page=1')]", "xpath:href"],
+        ["xpath=//div[2]/div/a", "xpath:position"],
+        ["xpath=//a[contains(.,'préc')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
-      "id": "90884749-7c45-4589-a6a3-d39b006639d6",
+      "id": "a32b1701-f379-48c6-8196-79c797866351",
       "comment": "",
-      "command": "click",
-      "target": "css=tr:nth-child(2) > td:nth-child(2) > a",
+      "command": "assertElementPresent",
+      "target": "xpath=//table[@id='ajouts']/tbody/tr[2]/td/a",
       "targets": [
-        ["linkText=test6", "linkText"],
-        ["css=tr:nth-child(2) > td:nth-child(2) > a", "css:finder"],
-        ["xpath=//a[contains(text(),'test6')]", "xpath:link"],
-        ["xpath=//table[@id='ajouts']/tbody/tr[2]/td[2]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/user.php?idP=10')]", "xpath:href"],
-        ["xpath=//td[2]/a", "xpath:position"],
-        ["xpath=//a[contains(.,'test6')]", "xpath:innerText"]
+        ["linkText=Watoo festival BD", "linkText"],
+        ["css=tr:nth-child(2) .titre", "css:finder"],
+        ["xpath=//a[contains(text(),'Watoo festival BD')]", "xpath:link"],
+        ["xpath=//table[@id='ajouts']/tbody/tr[2]/td/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '/event/evenement.php?idE=3045')]", "xpath:href"],
+        ["xpath=//td/a", "xpath:position"],
+        ["xpath=//a[contains(.,'Watoo festival BD')]", "xpath:innerText"]
       ],
-      "value": ""
-    }, {
-      "id": "e3fb4ca9-31b1-42d4-8b48-ac4b1a158918",
-      "comment": "",
-      "command": "executeScript",
-      "target": "history.back()",
-      "targets": [],
-      "value": ""
-    }, {
-      "id": "2b1cc7ea-fe16-485d-8e04-7e758d8a69f5",
-      "comment": "",
-      "command": "click",
-      "target": "css=tr:nth-child(2) > td:nth-child(7) > a",
-      "targets": [
-        ["css=tr:nth-child(2) > td:nth-child(7) > a", "css:finder"],
-        ["xpath=//table[@id='ajouts']/tbody/tr[2]/td[7]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/user-edit.php?action=editer&idP=10')]", "xpath:href"],
-        ["xpath=//td[7]/a", "xpath:position"]
-      ],
-      "value": ""
-    }, {
-      "id": "05722428-5e10-4d32-9a22-bc6b51e6ec38",
-      "comment": "",
-      "command": "executeScript",
-      "target": "history.back()",
-      "targets": [],
       "value": ""
     }]
   }, {
