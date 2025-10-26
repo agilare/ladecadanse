@@ -47,14 +47,23 @@ if (isset($_GET['order_by']) && in_array($_GET['order_by'], $fields_to_order_by)
 {
    $_SESSION['user_prefs_users_order_by'] = $_GET['order_by'];
 }
-$_SESSION['user_prefs_users_order_dir'] = !empty($_GET['order_dir']) ? Validateur::validateUrlQueryValue($_GET['order_dir'], "alpha_numeric", 1) : 'desc';
 
+$_SESSION['user_prefs_users_order_dir'] ??= 'desc';
+if (!empty($_GET['order_dir']) && Validateur::validateUrlQueryValue($_GET['order_dir'], "alpha_numeric", 1))
+{
+   $_SESSION['user_prefs_users_order_dir'] = $_GET['order_dir'];
+}
 
 $get = [];
 
 // pagination
 $get['page'] = !empty($_GET['page']) ? Validateur::validateUrlQueryValue($_GET['page'], "int", 1) : 1;
-$_SESSION['user_prefs_users_nblignes'] = !empty($_GET['nblignes']) ? Validateur::validateUrlQueryValue($_GET['nblignes'], "int", 1) : $tab_nblignes[0];
+
+$_SESSION['user_prefs_users_nblignes'] ??= $tab_nblignes[0];
+if (!empty($_GET['nblignes']) && in_array($_GET['nblignes'], $tab_nblignes))
+{
+   $_SESSION['user_prefs_users_nblignes'] = $_GET['nblignes'];
+}
 
 //dump($_SESSION);
 
