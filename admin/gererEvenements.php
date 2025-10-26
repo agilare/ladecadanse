@@ -41,10 +41,14 @@ if (isset($_GET['page']))
 	$get['page'] = Validateur::validateUrlQueryValue($_GET['page'], "int", 1);
 }
 
+$th_evenements = ["titre" => "Titre", "idLieu" => "Lieu", "dateEvenement" => "Date", "genre" => "Catég.", "horaire" => "Horaire", "organisateurs" => "Orga.", "statut" => "Statut", "dateAjout" => "Ajouté", "pseudo" => "par"];
+
+$orders = ["dateAjout", "date_derniere_modif", "statut", "dateEvenement", "titre", "genre"];
+
 $get['tri_gerer'] = "dateAjout";
-if (isset($_GET['tri_gerer']))
+if (isset($_GET['tri_gerer']) && in_array($_GET['tri_gerer'], $orders))
 {
-	$get['tri_gerer'] = Validateur::validateUrlQueryValue($_GET['tri_gerer'], "enum", 1, ["dateAjout", "date_derniere_modif", "statut", "date_debut", "id", "titre", "genre"]);
+	$get['tri_gerer'] = $_GET['tri_gerer'];
 }
 
 $tab_ordre = ["asc", "desc"];
@@ -692,7 +696,6 @@ if ($verif->nbErreurs() > 0)
         <form method="get" action="" id="ajouter_editer" style="float:left;width:35%;margin:0;">
 
             <input type="hidden" name="filtre_genre" value="<?= sanitizeForHtml($get['filtre_genre']); ?>" />
-            <input type="hidden" name="page" value="<?= (int)$get['page']; ?>" />
             <input type="hidden" name="nblignes" value="<?= (int)$get['nblignes']; ?>" />
             <input type="hidden" name="tri_gerer" value="<?= sanitizeForHtml($get['tri_gerer']); ?>" />
             <input type="hidden" name="element" value="<?= sanitizeForHtml($get['element']); ?>" />
@@ -733,11 +736,6 @@ if ($verif->nbErreurs() > 0)
 
     </div>
 
-
-    <?php
-    $th_evenements = ["titre" => "Titre", "idLieu" => "Lieu", "dateEvenement" => "Date", "genre" => "Catég.", "horaire" => "Horaire", "organisateurs" => "Orga.", "statut" => "Statut", "dateAjout" => "Ajouté", "pseudo" => "par"];
-    ?>
-
     <form method="post" id="formGererEvenements" class='js-submit-freeze-wait' enctype="multipart/form-data" action="">
 
         <table id="ajouts" class="jquery-checkboxes">
@@ -745,8 +743,8 @@ if ($verif->nbErreurs() > 0)
             <tr>
                 <?php foreach ($th_evenements as $field => $label) : ?>
                 <th <?php if ($field == $get['tri_gerer']) : ?>class="ici"<?php endif; ?> <?php if ($field == 'horaire') : ?>style="width:100px"<?php endif; ?>>
-                    <?php if (!in_array($field, ['idLieu', 'flyer'])) : ?>
-                        <a href="?<?= Utils::urlQueryArrayToString($get, "ordre")."&ordre=".$ordre_inverse ?>"><?= sanitizeForHtml($label) ?></a>
+                    <?php if (in_array($field, $orders)) : ?>
+                        <a href="?<?= Utils::urlQueryArrayToString($get, ['tri_gerer', 'ordre'])."&amp;tri_gerer=".$field."&amp;ordre=".$ordre_inverse ?>"><?= sanitizeForHtml($label) ?></a>
                         <?php if ($field == $get['tri_gerer']) : echo $icone[$get['ordre']]; endif; ?>
                     <?php else : ?>
                         <?= sanitizeForHtml($label) ?>
