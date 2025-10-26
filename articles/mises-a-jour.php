@@ -257,7 +257,7 @@ include("../_header.inc.php");
         <h3>Événements</h3>
 
         <ul>
-            <li>le statut particulier des événements (complet, annulé...) est mieux mis en évidence
+            <li>les statuts des événements (complet, annulé...) sont mieux mis en évidence
         </ul>
 
         <h3>Lieux</h3>
@@ -313,7 +313,7 @@ include("../_header.inc.php");
             <li>ajout d'une bannière à l'intention des utilisateurs connectés
             <li>ajout de FUNDING.yml indiquant les moyens de faire un don
             <li><a href="/articles/charte-editoriale.php">Charte éditoriale</a> : actualisation du texe (qui datait de 2015)
-            <li>renforcement de la sécurité (ajout du <a href="https://perishablepress.com/8g-firewall/" rel="external" target="_blank">firewall 8G</a>)
+            <li>renforcement de la sécurité (ajout du firewall 8G)
             <li>mise à jour de l'infrastructure
         </ul>
 
