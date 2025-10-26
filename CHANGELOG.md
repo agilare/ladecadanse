@@ -3,8 +3,8 @@
 ## [3.9.2] - Unreleased
 
 ### Fixed
-- events : add auth requirement in actions
 - admin : current page highlight in menu pratique
+- texts : for textarea with TinyMCE adjust config to avoid relative paths
 
 ### Added
 - organisateurs : table with navigation, filters
@@ -15,20 +15,22 @@
 - lieux, organisateurs : show month of latest event also when < 6 month away
 - in 2 db connection setups add set of sql mode for session
 - readme : db config requirement for full text search
+- updates : add for this version
 
 ### Changed
 - organisateurs : pages organisateurs and organisateur moved under organisateur/
 - admin : users page with more useful columns, refactored, store most of browsing params in session
 - admin : evenements pages with more useful columns (orgas, events reporting...); refactoring
 - semantic : implement widely rel=exernal in replacement of lien_ext class
+- tests : adapt Selenium tets to new Organisateurs and admin pages
 
 ### Removed
 - organisateurs right menu
 - readme : in db config rm requirement of ALLOW_INVALID_DATES
 
-### Removed
-- organisateurs right menu
-- readme : in db config rm requirement of ALLOW_INVALID_DATES
+### Security
+- add missing auth and 403 response to some pages
+
 
 ## [3.9.1] - 2025-10-11
 
