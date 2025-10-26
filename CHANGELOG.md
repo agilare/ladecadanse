@@ -7,15 +7,17 @@
 
 ### Added
 - organisateurs : table with navigation, filters
+- events : in home publish daily events counter
 - admin : dashboard completed with more pertinent data, better layout, refactoring
 - lieu : add affiliates users to editors profiles
 - mise à jour : new page (for logged in users), a simplified changelog
 - lieux, organisateurs : show month of latest event also when < 6 month away
 - in 2 db connection setups add set of sql mode for session
+- readme : db config requirement for full text search
 
 ### Changed
 - organisateurs : pages organisateurs and organisateur moved under organisateur/
-- admin : users page refactored, store most of browsing params in session
+- admin : users page with more useful columns, refactored, store most of browsing params in session
 - admin : evenements pages with more useful columns (orgas, events reporting...); refactoring
 - semantic : implement widely rel=exernal in replacement of lien_ext class
 
