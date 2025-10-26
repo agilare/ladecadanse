@@ -23,6 +23,48 @@ include("../_header.inc.php");
     <article class="rubrique">
 
         <header>
+            <h2>3.9.2</h2>
+            <br>
+            <p>octobre 2025</p>
+        </header>
+
+        <h3>Organisateurs</h3>
+
+        <ul>
+            <li><b>nouvelle <a href="/organisateur/organisateurs.php">page Organisateurs</a></b> : tableau des organisateurs avec filtres, tri et pagination</li>
+        </ul>
+
+        <h3>Événements</h3>
+
+        <ul>
+            <li>Page d'accueil : chaque jour affiche le nb de ses événements</li>
+        </ul>
+
+        <h3>Admin</h3>
+
+        <ul>
+            <li>Pages tableau de bord, utilisateurs et événement améliorées et rénovées</li>
+            <li>Pages lieux, organisateurs : dates des derniers événements ajoutés</li>
+        </ul>
+
+        <h3>Divers</h3>
+
+        <ul>
+            <li>Cette page, un changelog simplifié</li>
+            <li>La configuration de base de données (<code>sql_mode</code>) est désormais intégrée à la session</li>
+            <li>Liens externes plus sémantiques avec l'attribut <code>rel="external"</code></li>
+            <li>Corrections de bugs</li>
+        </ul>
+
+        <p><a href="https://github.com/agilare/ladecadanse/releases/tag/v3.9.2" rel="external" target="_blank">Détails</a></p>
+
+    </article>
+    
+    <hr>
+
+    <article class="rubrique">
+
+        <header>
             <h2>3.9.1</h2>
             <br>
             <p>12 octobre 2025</p>
