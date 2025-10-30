@@ -215,11 +215,13 @@ include("_header.inc.php");
     endif; ?>
 
     <header id="entete_contenu">
-        <h1 class="accueil"><?= ucfirst((string) date_fr($get['courant'])); ?><sup style="font-size:0.6em;color:#999"><?= $count_events_today_in_region ?></sup>
-            <?php if ($courant_year !== date("Y")) { echo $courant_year; } ?>
-            <?php if ($is_courant_today) : ?><br>
-                <small>Aujourd’hui <a href="/event/rss.php?type=evenements_auj" title="Flux RSS des événements du jour" class="desktop"><i class="fa fa-rss fa-lg"></i></a></small><?php endif; ?>
-        </h1>
+        <hgroup>
+            <h1 class="accueil"><?= ucfirst((string) date_fr($get['courant'])); ?><sup style="font-size:0.6em;color:#999"><?= $count_events_today_in_region ?></sup>
+                <?php if ($courant_year !== date("Y")) { echo $courant_year; } ?>
+                <?php if ($is_courant_today) : ?><br>
+                    <small>Aujourd’hui <a href="/event/rss.php?type=evenements_auj" title="Flux RSS des événements du jour" class="desktop"><i class="fa fa-rss fa-lg"></i></a></small><?php endif; ?>
+            </h1>
+        </hgroup>
         <ul class="entete_contenu_navigation">
             <li><a href="index.php?courant=<?= $date_prev ?>" rel="prev nofollow"><?= $iconePrecedent ?></a></li><li><a href="index.php?courant=<?= $date_next ?>" rel="next nofollow"><?= ucfirst(date_fr($date_next, "tout", "non", "")).$iconeSuivant ?></a></li>
         </ul>
