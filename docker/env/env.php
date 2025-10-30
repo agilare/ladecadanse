@@ -1,8 +1,11 @@
 <?php
-// make a copy of this file with name 'env.php'
+// Environment configuration
+// ENV and MODE_DEBUG are set via Docker environment variables
+// All other settings remain in this single file
 
-define("ENV", "dev"); // or "prod"
-define("MODE_DEBUG", true); // display errors
+// Read from environment variables, with dev as default
+define("ENV", getenv('APP_ENV') ?: "dev"); // or "prod"
+define("MODE_DEBUG", filter_var(getenv('APP_DEBUG') ?: "true", FILTER_VALIDATE_BOOLEAN)); // display errors
 
 // database connection
 define("DB_HOST", 'ladecadanse_db');
@@ -31,7 +34,7 @@ define("TINYMCE_API_KEY", ''); // rich text editor for presentations of lieux an
 
 define("GOOGLE_API_KEY", ''); // use Google Maps library to display maps of venues https://developers.google.com/maps/documentation/javascript/get-api-key
 
-define("MATOMO_ENABLED", false); // statistics tool (enabled only in prod)
+define("MATOMO_ENABLED", ENV === "prod"); // statistics tool (enabled only in prod)
 define("MATOMO_URL", '');
 define("MATOMO_SITE_ID", '');
 

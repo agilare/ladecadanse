@@ -20,13 +20,14 @@ Les principales sections du site sont :
 
 Ces instructions vous permettront de mettre en place une copie du projet sur votre machine locale à des fins de développement et de test. Voir [déploiement](README.md#déploiement) pour des notes sur la façon de déployer le projet sur un système actif.
 
-### Prérequis
+### Installation sans Docker
+#### Prérequis
 - Apache 2.4
 - PHP 8.3 (avec les extensions `fileinfo`, `mysqli`, `mbstring`, `gd`)
 - [Composer](https://getcomposer.org/)
 - MariaDB 10.6/MySQL 5.7 (with `innodb_ft_min_token_size=3` and `ft_min_word_len=3`, for better events search)
 
-### Manuelle
+#### Étapes
 1. cloner la branche `master`
 1. `composer install`
 1. base de données
@@ -48,12 +49,67 @@ Ces instructions vous permettront de mettre en place une copie du projet sur vot
 1. `cp app/env_model.php app/env.php` ainsi que `cp app/db.config_model.php app/db.config.php` et y saisir les valeurs de votre environnement (davantage d'explications et exemples se trouvent dans les fichiers même), avec au minimum les informations de connexion à la base de données
 1. `cp .htaccess.example .htaccess` si vous voulez implémenter une configuration PHP et Apache de base pour le développement en local
 
-### Par Docker
-Lancer la commande suivante à la racine du projet :
+### Installation avec Docker
+
+Une configuration Docker est fournie pour exécuter le site en environnement local ou en production.
+
+L'utilisation de Make simplifie la gestion des conteneurs. Les principales actions (build, start, stop, logs, etc.) sont accessibles via des cibles prédéfinies dans le Makefile.
+
+#### Configuration des environnements
+
+Le projet utilise un fichier unique `docker/env/env.php` pour tous les environnements. Les paramètres spécifiques à l'environnement (développement ou production) sont définis via des variables d'environnement Docker :
+
+- **Développement** : `APP_ENV=dev` et `APP_DEBUG=true`
+- **Production** : `APP_ENV=prod` et `APP_DEBUG=false`
+
+Ces variables sont automatiquement configurées dans `docker-compose.yml` selon le profil Docker utilisé.
+
+**Important** : Avant de déployer en production, assurez-vous de configurer les valeurs sensibles dans `docker/env/env.php` (clés API, identifiants SMTP, etc.).
+
+#### Utilisation
+
+Toutes les commandes acceptent le paramètre `PROFILE=dev` ou `PROFILE=prod` (par défaut : `dev`).
+
+**Développement** (utilise le profil par défaut) :
 ```sh
-docker compose up -d
+make start                  # Démarrer l'environnement de développement
+make logs                   # Voir les logs
+make shell                  # Ouvrir un shell dans le conteneur
+make stop                   # Arrêter les services
 ```
-Le site ladecadanse est déployé sur localhost:7777. Le mot de passe, par défaut, pour l'utilisateur `admin` est `admin_dev`.
+
+**Production** (spécifier `PROFILE=prod`) :
+```sh
+make start PROFILE=prod     # Démarrer l'environnement de production
+make logs PROFILE=prod      # Voir les logs
+make shell PROFILE=prod     # Ouvrir un shell dans le conteneur
+make stop PROFILE=prod      # Arrêter les services
+```
+
+**Raccourcis pratiques** :
+```sh
+make dev                    # Équivalent à : make start
+make prod                   # Équivalent à : make start PROFILE=prod
+```
+
+#### Commandes disponibles
+
+```sh
+make help                   # Afficher toutes les commandes disponibles
+make build [PROFILE=...]    # Construire les images Docker
+make start [PROFILE=...]    # Démarrer les services
+make stop [PROFILE=...]     # Arrêter les services
+make restart [PROFILE=...]  # Redémarrer les services
+make logs [PROFILE=...]     # Afficher les logs (mode suivi)
+make shell [PROFILE=...]    # Ouvrir un shell dans le conteneur web
+make status [PROFILE=...]   # Afficher le statut des services
+make clean [PROFILE=...]    # Nettoyer l'environnement (conteneurs, images, volumes)
+make install-deps [PROFILE=...]     # Installer les dépendances PHP
+make composer-update [PROFILE=...]  # Mettre à jour les dépendances Composer
+make composer-require PACKAGE=...   # Ajouter un package Composer
+```
+
+Le site ladecadanse est déployé sur localhost:7777 (dev) ou localhost:8080 (prod). Le mot de passe, par défaut, pour l'utilisateur `admin` est `admin_dev`.
 
 ### Usage
 Une fois le site fonctionnel, se connecter avec le login *admin* (créé ci-dessus) permet d'ajouter et modifier des événements, lieux, etc. (partie publique) et de les gérer largement (partie back-office)
