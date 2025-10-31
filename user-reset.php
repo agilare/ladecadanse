@@ -149,7 +149,7 @@ if (!$termine)
 
             <p>
             <label for="pseudo" id="login_pseudo">Identifiant ou e-mail du compte</label>
-            <input type="text" name="pseudo_email" id="pseudo_email" value="" size="30" />
+            <input type="text" name="pseudo_email" id="pseudo_email" value="" size="30" autofocus />
             <?php
             echo $verif->getHtmlErreur("pseudo_email");
             ?>

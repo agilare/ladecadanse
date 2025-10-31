@@ -23,6 +23,7 @@
 - admin : evenements pages with more useful columns (orgas, events reporting...); refactoring
 - semantic : implement widely rel=exernal in replacement of lien_ext class
 - tests : adapt Selenium tets to new Organisateurs and admin pages
+- users : rm left col in login; add autofocus in 1st fields
 
 ### Removed
 - organisateurs right menu
