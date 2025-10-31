@@ -147,7 +147,7 @@ include("_header.inc.php");
 
 <div id="colonne_gauche" class="colonne">
 <?php
-include("event/_navigation_calendrier.inc.php");
+//include("event/_navigation_calendrier.inc.php");
 ?>
 </div>
 
