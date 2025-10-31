@@ -28,6 +28,7 @@
 ### Removed
 - organisateurs right menu
 - readme : in db config rm requirement of ALLOW_INVALID_DATES
+- nG_log.php
 
 ### Security
 - add missing auth and 403 response to some pages
