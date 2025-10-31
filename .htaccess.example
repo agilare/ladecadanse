@@ -19,9 +19,9 @@ RewriteBase /
 	RewriteCond %{HTTP_REFERER} (100dollars|best-seo|blue\spill|cocaine|ejaculat|erectile|erections|hoodia|huronriveracres|impotence|levitra|libido|lipitor|mopub\.com|phentermin) [NC,OR]
 	RewriteCond %{HTTP_REFERER} (pornhelm|pro[sz]ac|sandyauer|semalt\.com|social-buttions|todaperfeita|tramadol|troyhamby|ultram|unicauca|valium|viagra|vicodin|xanax|ypxaieo) [NC]
 
-	# RewriteRule .* - [F]
+	RewriteRule .* - [F]
 
-	RewriteRule .* /nG_log.php?log [END,NE,E=nG_HTTP_REFERRER:%1]
+	# RewriteRule .* /nG_log.php?log [END,NE,E=nG_HTTP_REFERRER:%1]
 
 </IfModule>
 
