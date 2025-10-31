@@ -123,7 +123,7 @@ include("_header.inc.php");
     <form  method="post" enctype="multipart/form-data" id="ajouter_editer" class="js-submit-freeze-wait" action="<?php echo basename(__FILE__)."?action=".$act; ?>">
 
     <p>* indique un champ obligatoire</p>
-    <p>Si vous souhaitez modifier le nom du lieu, ses catégories, ses organisateurs ou les photos de la galerie, merci de nous <a href="/contacteznous.php">contacter</a></p>
+    <p>Si vous souhaitez modifier le nom du lieu, ses catégories, ses organisateurs ou les photos de la galerie, merci de nous <a href="/misc/contacteznous.php">contacter</a></p>
 
     <fieldset>
 

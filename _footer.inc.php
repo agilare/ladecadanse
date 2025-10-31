@@ -79,7 +79,7 @@ use Ladecadanse\UserLevel;
 
     <?php endif; ?>
 
-    <?php if ($nom_page == "contacteznous"): ?>
+    <?php if ($nom_page == "misc/contacteznous"): ?>
         <script nonce="<?= CSP_NONCE ?>">
             'use strict';
             document.getElementById("contacteznous-email-info").innerHTML = atob("<?= base64_encode(EMAIL_ADMIN); ?>");

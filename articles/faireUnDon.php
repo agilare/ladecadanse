@@ -47,7 +47,7 @@ include("../_header.inc.php");
                 </div>
             </li>
             <li style="margin-top:-0.6em"><b>Liberapay</b> (compte requis, dons récurrents)<script src="https://liberapay.com/michelg/widgets/button.js"></script><noscript><a href="https://liberapay.com/michelg/donate"><img alt="Donate using Liberapay" src="https://liberapay.com/assets/widgets/donate.svg"></a></noscript></li>
-            <!--            <li><b>Twint, virement</b> (<a href="/contacteznous.php">contactez-moi</a>)</li>-->
+            <!--            <li><b>Twint, virement</b> (<a href="/misc/contacteznous.php">contactez-moi</a>)</li>-->
         </ul>
         <br>
         <p>La décadanse est un site entièrement gratuit sur un code <a href="https://github.com/agilare/ladecadanse/" rel="external" target="_blank">open source</a>, que je développe et gère bénévolement depuis une vingtaine d'années, avec parfois l'aide d'autres personnes.</p>

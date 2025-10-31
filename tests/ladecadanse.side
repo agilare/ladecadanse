@@ -41,7 +41,7 @@
         ["css=#menu_pratique li:nth-child(2) > a", "css:finder"],
         ["xpath=//a[contains(text(),'Contact')]", "xpath:link"],
         ["xpath=//nav[@id='menu_pratique']/ul/li[2]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/contacteznous.php')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/misc/contacteznous.php')]", "xpath:href"],
         ["xpath=//li[2]/a", "xpath:position"],
         ["xpath=//a[contains(.,'Contact')]", "xpath:innerText"]
       ],
@@ -5512,7 +5512,7 @@
         ["css=#menu_pratique li:nth-child(2) > a", "css:finder"],
         ["xpath=//a[contains(text(),'Contact')]", "xpath:link"],
         ["xpath=//nav[@id='menu_pratique']/ul/li[2]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/contacteznous.php')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/misc/contacteznous.php')]", "xpath:href"],
         ["xpath=//li[2]/a", "xpath:position"],
         ["xpath=//a[contains(.,'Contact')]", "xpath:innerText"]
       ],
@@ -7132,7 +7132,7 @@
         ["css=a:nth-child(2)", "css:finder"],
         ["xpath=//a[contains(text(),'contactez-moi')]", "xpath:link"],
         ["xpath=//ul[@id='payment-modes']/li[3]/a", "xpath:idRelative"],
-        ["xpath=(//a[contains(@href, '/contacteznous.php')])[2]", "xpath:href"],
+        ["xpath=(//a[contains(@href, '/misc/contacteznous.php')])[2]", "xpath:href"],
         ["xpath=//ul[2]/li[3]/a", "xpath:position"],
         ["xpath=//a[contains(.,'contactez-moi')]", "xpath:innerText"]
       ],

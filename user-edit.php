@@ -571,7 +571,7 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= UserLevel::ACTOR)) {
 <!-- Affiliation (text) -->
 <fieldset id="references">
     <legend>Affiliation(s)</legend>
-    <div class="guideForm">Si vous souhaitez modifier ces informations merci de nous <a href="/contacteznous.php">contacter</a></div>
+    <div class="guideForm">Si vous souhaitez modifier ces informations merci de nous <a href="/misc/contacteznous.php">contacter</a></div>
 
     <?php
     $req_lieux = $connector->query("

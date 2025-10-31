@@ -868,7 +868,7 @@ if ($verif->nbErreurs() > 0)
         ?>
             </ul>
         <div class="guideChamp" style="margin-top:1em">
-                Merci de choisir la catégorie pertinente; si vous n'êtes pas sûr, vous pouvez <a href="/contacteznous.php" target="_blank">nous demander</a>
+                Merci de choisir la catégorie pertinente; si vous n'êtes pas sûr, vous pouvez <a href="/misc/contacteznous.php" target="_blank">nous demander</a>
             </div>
             <?php
         echo $verif->getHtmlErreur("genre");
@@ -1200,7 +1200,7 @@ if ($verif->nbErreurs() > 0)
         }
         ?>
         </select>
-        <div class="guideChamp">L’événement figurera dans la page de ces <a href="/organisateur/organisateurs.php" target="_blank" rel="external">organisateurs</a>. Si vous souhaitez que votre organisation soit listée, <a href="/contacteznous.php?pre=req-orga" target='_blank' rel="external">demandez-nous</a> (avec des infos : texte, liens...)</div>
+        <div class="guideChamp">L’événement figurera dans la page de ces <a href="/organisateur/organisateurs.php" target="_blank" rel="external">organisateurs</a>. Si vous souhaitez que votre organisation soit listée, <a href="/misc/contacteznous.php?pre=req-orga" target='_blank' rel="external">demandez-nous</a> (avec des infos : texte, liens...)</div>
         </p>
     </fieldset>
 

@@ -103,7 +103,7 @@ $glo_tab_ailleurs = ["rf" => "France", "hs" => "Autre"];
 // DOMAIN END
 
 // VIEW "Mises à jour" => "/articles/mises-a-jour.php",
-$glo_menu_pratique = [ "Contact" => "/contacteznous.php", "À propos" => "/articles/apropos.php", "Mises à jour" => "/articles/mises-a-jour.php", "Faire un don" => "/articles/faireUnDon.php"];
+$glo_menu_pratique = [ "Contact" => "/misc/contacteznous.php", "À propos" => "/articles/apropos.php", "Mises à jour" => "/articles/mises-a-jour.php", "Faire un don" => "/articles/faireUnDon.php"];
 $tab_nblignes = [50, 100, 250, 500]; // nb lignes de resultats de listes
 $actions = ["ajouter", "insert", "update", "editer"];
 

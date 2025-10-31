@@ -24,6 +24,7 @@
 - semantic : implement widely rel=exernal in replacement of lien_ext class
 - tests : adapt Selenium tets to new Organisateurs and admin pages
 - users : rm left col in login; add autofocus in 1st fields
+- error, contacteznous, error, maintenance pages moved under misc/
 
 ### Removed
 - organisateurs right menu

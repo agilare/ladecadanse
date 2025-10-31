@@ -259,7 +259,7 @@ use Ladecadanse\UserLevel;
         </header>
 
         <div id="conteneur" style="
-            <?php if (strstr(dirname((string) $_SERVER['PHP_SELF']), 'admin') || in_array($nom_page, ['evenement-edit', 'event/copy', 'event/send', 'event/search', 'lieu/lieux', 'lieu-edit', 'lieu-text-edit', 'organisateur/organisateurs', 'organisateur-edit', 'contacteznous', 'user-login', 'user-edit', 'user-register'])) : ?>padding-right: 5px; <?php endif; ?>
+            <?php if (strstr(dirname((string) $_SERVER['PHP_SELF']), 'admin') || in_array($nom_page, ['evenement-edit', 'event/copy', 'event/send', 'event/search', 'lieu/lieux', 'lieu-edit', 'lieu-text-edit', 'organisateur/organisateurs', 'organisateur-edit', 'misc/contacteznous', 'user-login', 'user-edit', 'user-register'])) : ?>padding-right: 5px; <?php endif; ?>
             <?php if (strstr(dirname((string) $_SERVER['PHP_SELF']), 'admin') || in_array($nom_page, ['user-login']) ) : ?>padding-left: 5px <?php endif; ?>
             ">
 

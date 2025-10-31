@@ -103,15 +103,15 @@ RewriteRule ^web/uploads/evenements/(s_)?(\d+)_(200[5-9]|201[0-9]|202[0-3])-(0[1
   </If>
 </IfModule>
 
-ErrorDocument 404 /articles/error.php
-ErrorDocument 429 /articles/error.php
-ErrorDocument 500 /articles/error.php
+ErrorDocument 404 /misc/error.php
+ErrorDocument 429 /misc/error.php
+ErrorDocument 500 /misc/error.php
 
 # MAINTENANCE-PAGE REDIRECT mg: 92.106.49.248
 # RewriteCond %{REMOTE_ADDR} !^127\.0\.0\.1
 # RewriteCond %{REQUEST_URI} !/maintenance.php [NC]
 # RewriteCond %{REQUEST_URI} !\.(jpe?g?|png|gif) [NC]
-# RewriteRule .* /maintenance.php [R=302,L]
+# RewriteRule .* /misc/maintenance.php [R=302,L]
 
 # .user.ini - equivalent .user.ini on prod (because Infomaniak server API is FPM/FastCGI)
 php_flag display_startup_errors off

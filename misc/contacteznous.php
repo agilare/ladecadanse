@@ -1,5 +1,5 @@
 <?php
-require_once("app/bootstrap.php");
+require_once("../app/bootstrap.php");
 
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\HtmlShrink;
@@ -16,7 +16,7 @@ $page_titre = "Contact";
 $page_description = "Formulaire pour envoyer un email au webmaster de La décadanse";
 $extra_css = ["formulaires"];
 
-include("_header.inc.php");
+include("../_header.inc.php");
 ?>
 
 <main id="contenu" class="colonne">
@@ -169,12 +169,12 @@ include("_header.inc.php");
 <!-- fin contenu -->
 
 <div id="colonne_gauche" class="colonne">
-    <?php include("event/_navigation_calendrier.inc.php"); ?>
+    <?php include("../event/_navigation_calendrier.inc.php"); ?>
 </div>
 
 <div id="colonne_droite" class="colonne">
 </div>
 
 <?php
-include("_footer.inc.php");
+include("../_footer.inc.php");
 ?>

@@ -35,7 +35,7 @@ include("../_header.inc.php");
             <dt>Participer</dt>
             <ul>
                 <li><a href="/user-register.php">Inscrivez-vous</a> pour annoncer des événements</li>
-                <li>ou écrivez-nous via le <a href="/contacteznous.php">formulaire de contact</a>.</li>
+                <li>ou écrivez-nous via le <a href="/misc/contacteznous.php">formulaire de contact</a>.</li>
                 <li>ou <a href="/articles/faireUnDon.php">faites un don</a>.</li>
             </ul>
         </dl>
