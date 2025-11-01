@@ -5,6 +5,7 @@
 ### Fixed
 - admin : current page highlight in menu pratique
 - texts : for textarea with TinyMCE adjust config to avoid relative paths
+- header : less overflows in menu pratique
 
 ### Added
 - organisateurs : table with navigation, filters
@@ -22,7 +23,7 @@
 - admin : users page with more useful columns, refactored, store most of browsing params in session
 - admin : evenements pages with more useful columns (orgas, events reporting...); refactoring
 - semantic : implement widely rel=exernal in replacement of lien_ext class
-- tests : adapt Selenium tets to new Organisateurs and admin pages
+- tests : adapt Selenium tests to new Organisateurs and admin pages
 - users : rm left col in login; add autofocus in 1st fields
 - error, contacteznous, error, maintenance pages moved under misc/
 

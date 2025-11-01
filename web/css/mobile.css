@@ -49,12 +49,12 @@
 #entete_haut #menu_pratique ul li
 {
     display:block;
-    padding:0.8em 0.1em 0.8em 0.1em;
+    padding:0.8em 0em 0.8em 0.4em;
 }
 
 #entete_haut #menu_pratique ul li a
 {
-    padding:0.8em 0.4em 0.8em 0.1em;
+/*    padding:0.8em 0.4em 0.8em 0.1em;*/
 }
 
 #menu li#bouton_calendrier
@@ -180,8 +180,7 @@ table#calendrier tr#mois th a
 #menu_pratique
 {
     display:none;
-    width:130px;
-
+    width:200px;
 }
 
 #btn_calendrier
