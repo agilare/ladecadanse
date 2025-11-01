@@ -8,6 +8,7 @@ use Ladecadanse\UserLevel;
             <nav id="pied">
 
                 <ul class="menu_pied">
+                    <li><a href="/articles/apropos.php">À propos</a></li>
                     <?php
                     foreach ($glo_menu_pratique as $nom => $lien)
                     {
@@ -29,6 +30,7 @@ use Ladecadanse\UserLevel;
 
                     <li <?= $highlightLink; ?>><a href="<?= $lien; ?>" title="<?= $nom; ?>" <?= $ici; ?>><?= $nom; ?></a></li>
                     <?php } ?>
+
                     <li><a href="/articles/charte-editoriale.php">Charte éditoriale</a></li>
                     <li><a href="/articles/liens.php">Liens</a></li>
                 </ul>

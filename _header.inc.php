@@ -128,7 +128,9 @@ use Ladecadanse\UserLevel;
                 <nav id="menu_pratique">
 
                     <ul>
-                       <li><a href="https://github.com/agilare/ladecadanse/" aria-label="Watch agilare/ladecadanse on GitHub" style="font-size:1.2em" target="_blank"><i class="fa fa-github" aria-hidden="true"></i></a>
+                       <li><a href="https://github.com/agilare/ladecadanse/" aria-label="Watch agilare/ladecadanse on GitHub" style="font-size:1.2em;vertical-align:top" target="_blank"><i class="fa fa-github" aria-hidden="true"></i></a>
+                       </li>
+                       <li><a href="https://github.com/agilare/ladecadanse/blob/master/CONTRIBUTING.md" target="_blank">Participer</a>
                        </li>
                         <?php foreach ($glo_menu_pratique as $nom => $lien) {
 
