@@ -1,15 +1,14 @@
 # Contribuer
 
-Merci de vous intéresser à ce projet qui est d'une assez grande utilité dans la **communication des événements de la région genevoise et ses environs**. Les contributions sont bienvenues car il y a actuellement pas mal à faire, surtout dans la rénovation. Les informations ici vous permettront de savoir plus clairement de quelle manière vous pouvez aider à l'amélioration du site.
+Merci de vous intéresser à ce projet qui est d'une assez grande utilité dans la pour **faire connaitre les événements de la région genevoise et ses environs**. Les contributions sont bienvenues car il y a actuellement pas mal à faire, surtout dans la rénovation technique. Les informations ici vous permettront de savoir plus clairement de quelle manière vous pouvez aider à l'amélioration du site.
 
-Vous pouvez contribuer de plusieurs manières :
-- [reporter des bugs](https://github.com/agilare/ladecadanse/issues)
-- participer aux tests après que des changements ont été faits ([me contacter](https://github.com/agilare/ladecadanse?tab=readme-ov-file#contact))
-- aider à l'administration du [site actuel](https://www.ladecadanse.ch/) ([me contacter](https://github.com/agilare/ladecadanse?tab=readme-ov-file#contact))
-- [faire un don](https://www.ladecadanse.ch/articles/faireUnDon.php)
+Vous pouvez aider de plusieurs manières :
+- participer à la gestion du [site actuel](https://www.ladecadanse.ch/), ce qui me permettrait d'avoir davantages de temps pour les tâches techniques ([me contacter](https://github.com/agilare/ladecadanse?tab=readme-ov-file#contact))
+- [faire un don](https://www.ladecadanse.ch/articles/faireUnDon.php) pour nous encourager, régler les charges courantes
+- tester les changements qui ont été faits ([me contacter](https://github.com/agilare/ladecadanse?tab=readme-ov-file#contact))
 
-et spécifiquement, si vous êtes développeur :
-- résoudre ou proposer des [Issues](https://github.com/agilare/ladecadanse/issues) (corrections, améliorations...); une [sélection commentée de développements](https://github.com/agilare/ladecadanse/wiki/Les-prochains-d%C3%A9veloppements-sugg%C3%A9r%C3%A9s) est à disposition
+et spécifiquement, si vous êtes intéressés en tant que **développeur** :
+- résoudre ou proposer des [Issues](https://github.com/agilare/ladecadanse/issues) (corrections, améliorations...); voici des [suggestions commentées de développements](https://github.com/agilare/ladecadanse/wiki/Les-prochains-d%C3%A9veloppements-sugg%C3%A9r%C3%A9s)
 - signaler voire corriger des vulnérabilités : voire les modalités dans la [politique de sécurité](SECURITY.md)
 - compléter la documentation : le [README](README.md), le [Wiki](https://github.com/agilare/ladecadanse/wiki)...
 
@@ -17,11 +16,15 @@ et spécifiquement, si vous êtes développeur :
 
 À côté du travail régulier de gestion du [site actuellement en ligne](https://ladecadanse.ch/) (contenu et technique), ce projet demande une maintenance classique (mises à jour, documentation, etc.), essentiellement effectuée par son auteur, durant son temps libre et bénévolement. Quand du temps est davantage disponible, je fais des mises à jour plus conséquentes comme des corrections, du refactoring voire des améliorations.
 
-Je m'occupe donc de gérer ce projet dans son ensemble et décide des lignes directrices à suivre. J'essaie de réagir promptement aux diverses demandes, mais en raison du peu de temps dont je dispose, cela peut demander un certain délai.
+Je m'occupe donc de gérer ce projet dans son ensemble et décide des lignes directrices à suivre. J'essaie de réagir promptement aux diverses demandes, mais en raison du temps limité dont je dispose, cela peut demander un certain délai.
 
 ## Développer
 
-La version actuelle a été créée en 2008 (avec un modeste niveau de programmation, essayant de suivre les standards de l'époque) et est aujourd'hui assez **legacy**, malgré quelques modernisations et nettoyages effectués ces dernières années (voir le [CHANGELOG](CHANGELOG.md)). Aujourd'hui le but principal est de réduire cette dette technique afin de reprendre sur de bonnes bases l'amélioration de l'application. À cet effet, le **[projet de modernisation](https://github.com/users/agilare/projects/2/views/1)** a été conçu pour résorber pas à pas les parties les plus obsolètes.
+La version actuelle a été créée en 2008 (avec un modeste niveau de programmation, en essayant de suivre les standards de l'époque) et est aujourd'hui assez **legacy**, malgré quelques modernisations et nettoyages effectués ces dernières années (voir le [CHANGELOG](CHANGELOG.md)). Aujourd'hui le but principal est de réduire cette dette technique afin de reprendre sur de bonnes bases l'amélioration de l'application. À cet effet, 2 étapes successives de **modernisation** ont été conçues pour résorber pas à pas les parties les plus obsolètes :
+
+1. [nettoyage, factorisation](https://github.com/users/agilare/projects/2/views/1)
+2. [POO, patterns, architecture](https://github.com/users/agilare/projects/4/views/1)
+
 Le **mode de développement actuel du projet** est brièvement décrit dans la section idoine du [Wiki](https://github.com/agilare/ladecadanse/wiki#organisation)
 
 ### Tâches
@@ -31,10 +34,11 @@ Vous pouvez reprendre des [Issues](https://github.com/agilare/ladecadanse/issues
 - reproduire, cerner des bugs ou vulnérabilités
 - développer et tester
 
-Il est aussi possible de proposer des fonctionnalités, bien qu'en ce moment l'accent est mis surtout sur la résolution de _[bugs](https://github.com/agilare/ladecadanse/issues?q=is%3Aissue+is%3Aopen+label%3Abug)_ et le _[refactoring](https://github.com/agilare/ladecadanse/labels/refactoring)_ (notamment au sein du projet de modernisation) pour les raisons décrites ci-dessus.
-Si vous ne connaissez pas encore bien le code, vous pouvez commencer par une **_[Good first issue](https://github.com/agilare/ladecadanse/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22)_**. Deux autres labels précisent leur domaine d'application :
-- _[improve-information](https://github.com/agilare/ladecadanse/labels/improve-information) : amélioration du contenu (sa diffusion, sa disponibilité)
-- _[edition](https://github.com/agilare/ladecadanse/labels/edition) : amélioration du "back-office", donc surtout pour les utilisateurs qui ajoutent des événements
+Il est aussi possible de proposer des fonctionnalités, bien qu'en ce moment l'accent est mis surtout sur la résolution de _[bugs](https://github.com/agilare/ladecadanse/issues?q=is%3Aissue+is%3Aopen+label%3Abug)_ et le _[refactoring](https://github.com/agilare/ladecadanse/labels/refactoring)_ (notamment au sein des projets de modernisation) pour les raisons décrites ci-dessus.
+Si vous ne connaissez pas encore bien le code, vous pouvez commencer par une **_[Good first issue](https://github.com/agilare/ladecadanse/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22)_**.
+Deux autres labels précisent leur domaine d'application :
+- _[improve-information](https://github.com/agilare/ladecadanse/labels/improve-information)_ : amélioration du contenu (sa diffusion, sa disponibilité)
+- _[edition](https://github.com/agilare/ladecadanse/labels/edition)_ : amélioration du "back-office", donc surtout pour les utilisateurs qui ajoutent des événements
 
 #### Tests
 
