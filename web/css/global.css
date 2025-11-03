@@ -51,7 +51,7 @@ input.read-only, input.read-only:hover, form#ajouter_editer input.read-only:focu
 }
 
 sup {
-    vertical-align: super;
+/*    vertical-align: super;*/
     font-size: smaller;
     line-height:0;
 }
@@ -304,11 +304,60 @@ hr
         #entete_haut #menu_pratique ul li.ici a
         {
             background:#F5EBC7;
+            border-radius: 3px;
         }
 
         #entete_haut #menu_pratique ul li a.ici
         {
             background:#F5EBC7;
+        }
+
+#entete_haut #menu_pratique2
+{
+    position: relative;
+    top: -3px;
+    display:inline-block;
+    color:#fff;
+    font-size:0.9em;
+}
+
+    #entete_haut #menu_pratique2 ul
+    {
+
+        margin:0em;
+        line-height: 1.3em;
+        padding:0;
+    }
+
+    #entete_haut #menu_pratique2 ul li
+    {
+        display:inline-block;
+    }
+
+        #entete_haut #menu_pratique2 ul li a
+        {
+            display:inline;
+            text-align:center;
+            vertical-align: top;
+            height:1em;
+            padding:0em 0.3em;
+        }
+
+        #entete_haut #menu_pratique2 ul li a:hover
+        {
+            color:#1784e8;
+        }
+
+        #entete_haut #menu_pratique2 ul li.ici a
+        {
+            background:#F5EBC7;
+
+        }
+
+        #entete_haut #menu_pratique2 ul li a.ici
+        {
+            background:#F5EBC7;
+            border-radius: 3px;
         }
 
 

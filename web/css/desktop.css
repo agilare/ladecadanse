@@ -63,6 +63,11 @@
 			text-align:center;
 		}
 
+	#entete_haut #menu_pratique2
+	{
+        display:none;
+    }
+
 #entete_haut #soutien {
 	display:none;
 }
@@ -140,12 +145,12 @@ table#calendrier tr#jours th {
 */
 #btn_menu_pratique
 {
-display:none;
+    display:none;
 }
 
 #btn_calendrier
 {
-display:none;
+    display:none;
 }
 
 #pied

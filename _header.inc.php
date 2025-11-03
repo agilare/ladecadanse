@@ -123,15 +123,23 @@ use Ladecadanse\UserLevel;
 
             <div id="entete_haut">
 
+                <nav id="menu_pratique2">
+                    <ul>
+                       <li><a href="https://github.com/agilare/ladecadanse/" aria-label="Watch agilare/ladecadanse on GitHub" style="font-size:1.2em;vertical-align:top" target="_blank"><i class="fa fa-github" aria-hidden="true"></i></a>
+                       </li>
+                       <li><a href="/articles/contributing.php" <?php if (strstr((string) $_SERVER['PHP_SELF'], "/articles/contributing.php") ) : ?>class="ici"<?php endif; ?>>Participer</a>
+<!--                       <li><a href="/articles/faireUnDon.php">Faire un don</a>-->
+                    </ul>
+                </nav>
+
                 <a id="btn_menu_pratique" href="#" title="Menu"><i class="fa fa-bars" aria-hidden="true"></i></a>
 
                 <nav id="menu_pratique">
 
                     <ul>
-                       <li><a href="https://github.com/agilare/ladecadanse/" aria-label="Watch agilare/ladecadanse on GitHub" style="font-size:1.2em;vertical-align:top" target="_blank"><i class="fa fa-github" aria-hidden="true"></i></a>
-                       </li>
-                       <li><a href="https://github.com/agilare/ladecadanse/blob/master/CONTRIBUTING.md" target="_blank">Participer</a>
-                       </li>
+                       <li class="mobile-hidden"><a href="https://github.com/agilare/ladecadanse/" aria-label="Watch agilare/ladecadanse on GitHub" style="font-size:1.2em;vertical-align:top" target="_blank"><i class="fa fa-github" aria-hidden="true"></i></a>
+                       </li >
+                       <li class="mobile-hidden"><a href="/articles/contributing.php" <?php if (strstr((string) $_SERVER['PHP_SELF'], "/articles/contributing.php") ) : ?>class="ici"<?php endif; ?>>Participer</a></li>
                         <?php foreach ($glo_menu_pratique as $nom => $lien) {
 
                             if ($lien == "/articles/mises-a-jour.php" && !(isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= UserLevel::ACTOR))

@@ -9,6 +9,10 @@
     padding:0.6em 0.8em;
 }
 
+.mobile-hidden
+{
+    display:none !important;
+}
 
 #conteneur > #colonne_gauche, #conteneur .colonne
 {
