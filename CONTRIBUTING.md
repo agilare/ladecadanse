@@ -1,6 +1,6 @@
 # Contribuer
 
-Merci de vous intéresser à ce projet qui est d'une assez grande utilité dans la pour **faire connaitre les événements de la région genevoise et ses environs**. Les contributions sont bienvenues car il y a actuellement pas mal à faire, surtout dans la rénovation technique. Les informations ici vous permettront de savoir plus clairement de quelle manière vous pouvez aider à l'amélioration du site.
+Merci de vous intéresser à ce projet qui est d'une assez grande utilité pour **faire connaître les événements de la région genevoise et ses environs**. Les contributions sont bienvenues car il y a actuellement pas mal à faire, surtout dans la rénovation technique. Les informations ici vous permettront de savoir plus clairement de quelle manière vous pouvez aider à l'amélioration du site.
 
 Vous pouvez aider de plusieurs manières :
 - participer à la gestion du [site actuel](https://www.ladecadanse.ch/), ce qui me permettrait d'avoir davantages de temps pour les tâches techniques ([me contacter](https://github.com/agilare/ladecadanse?tab=readme-ov-file#contact))
@@ -8,7 +8,7 @@ Vous pouvez aider de plusieurs manières :
 - tester les changements qui ont été faits ([me contacter](https://github.com/agilare/ladecadanse?tab=readme-ov-file#contact))
 
 et spécifiquement, si vous êtes intéressés en tant que **développeur** :
-- résoudre ou proposer des [Issues](https://github.com/agilare/ladecadanse/issues) (corrections, améliorations...); voici des [suggestions commentées de développements](https://github.com/agilare/ladecadanse/wiki/Les-prochains-d%C3%A9veloppements-sugg%C3%A9r%C3%A9s)
+- ajouter ou résoudre des [Issues](https://github.com/agilare/ladecadanse/issues) (corrections, améliorations...); je propose une [suggestion de développements](https://github.com/agilare/ladecadanse/wiki/Les-prochains-d%C3%A9veloppements-sugg%C3%A9r%C3%A9s)
 - signaler voire corriger des vulnérabilités : voire les modalités dans la [politique de sécurité](SECURITY.md)
 - compléter la documentation : le [README](README.md), le [Wiki](https://github.com/agilare/ladecadanse/wiki)...
 
