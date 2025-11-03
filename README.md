@@ -2,16 +2,16 @@
 📅 Agenda culturel local
 
 > [!WARNING]
-> En raison d'une grande partie de code legacy, et pour des raisons de sécurité, ne déployez pas cette application sur des serveurs publics. La [modernisation est en cours](https://github.com/users/agilare/projects/2/views/1), vous pouvez [contribuer](README.md#contribuer)
+> En raison d'une grande partie de code legacy, et pour des raisons de sécurité, ne déployez pas cette application sur des serveurs publics. La [modernisation est en cours](https://github.com/users/agilare/projects/4/views/1), vous pouvez [contribuer](README.md#contribuer)
 
-La décadanse est un site web qui présente aux visiteurs une sélection d'événements culturels locaux et accessibles. Il est actuellement [déployé pour Genève et Lausanne](https://www.ladecadanse.ch/)
+La décadanse est un site web qui présente aux visiteurs une sélection d'événements culturels locaux et accessibles. Il est actuellement [déployé pour Genève et les environs](https://www.ladecadanse.ch/)
 
 ![La décadanse - page d'accueil](./web/interface/ladecadanse-home-example.png)
 
-Les organisateurs d'événements ont la possibilité de s'inscrire puis de se présenter et annoncer leurs événements.
+Les organisateurs d'événements ont la possibilité de s'inscrire puis annoncer leurs événements et enfin se présenter.
 
 Les principales sections du site sont :
-- un **agenda d'événements**, chacun de ceux-ci ayant sa fiche détaillée accompagnée de quelques services (signaler une erreur, format iCal...)
+- un **agenda d'événements**, chacun de ceux-ci ayant sa fiche détaillée accompagnée de quelques petits services (signaler une erreur, partager...)
 - un répertoire des **Lieux** où se déroulent des événements, avec détails, présentation, photos
 - un répertoire des **Organisateurs d'événements**, similaire aux Lieux
 - un **back-office** permettant de gérer les diverses entités du site : utilisateurs, événements, lieux, organisateurs, etc.
@@ -21,11 +21,12 @@ Les principales sections du site sont :
 Ces instructions vous permettront de mettre en place une copie du projet sur votre machine locale à des fins de développement et de test. Voir [déploiement](README.md#déploiement) pour des notes sur la façon de déployer le projet sur un système actif.
 
 ### Installation sans Docker
+
 #### Prérequis
 - Apache 2.4
 - PHP 8.3 (avec les extensions `fileinfo`, `mysqli`, `mbstring`, `gd`)
 - [Composer](https://getcomposer.org/)
-- MariaDB 10.6/MySQL 5.7 (with `innodb_ft_min_token_size=3` and `ft_min_word_len=3`, for better events search)
+- MariaDB 10.6/MySQL 5.7 (si possible avec `innodb_ft_min_token_size=3` et `ft_min_word_len=3`, pour de meilleurs résultats dans la recherche d'événements)
 
 #### Étapes
 1. cloner la branche `master`
@@ -41,12 +42,14 @@ Ces instructions vous permettront de mettre en place une copie du projet sur vot
         GRANT USAGE ON *.* TO 'ladecadanse'@'localhost';
         GRANT SELECT, INSERT, DELETE, UPDATE  ON `ladecadanse`.* TO 'ladecadanse'@'localhost';
         ```
-    1. importer dans la base de données `resources/ladecadanse.sql` (la structure, et les données utiles pour la table `localite`)
+    1. dans la base de données, exécuter les fichiers sous `resources/` :
+        1. création de la structure et les données utiles pour la table `localite` avec `ladecadanse.sql`
+        1. mises à jour avec `v3-6-3_localite-add-regions_covered.sql`, etc.
     1. ajouter un 1er utilisateur, l'*admin* (groupe 1) qui vous servira à gérer le site (mot de passe : `admin_dev`) :
         ```mysql
         INSERT INTO `personne` (`idPersonne`, `pseudo`, `mot_de_passe`, `cookie`, `groupe`, `statut`, `affiliation`, `region`, `email`,  `signature`, `avec_affiliation`, `gds`, `actif`, `dateAjout`, `date_derniere_modif`) VALUES (NULL, 'admin', '$2y$10$34Z0QxaycAgPFQGtiVzPbeoZFN1kwLEdWDEBI1kEOJGK4A3xRJtMa', '', '1', 'actif', '', 'ge', '', 'pseudo', 'non', '', '1', '0000-00-00 00:00:00.000000', '0000-00-00 00:00:00.000000');
         ```
-1. `cp app/env_model.php app/env.php` ainsi que `cp app/db.config_model.php app/db.config.php` et y saisir les valeurs de votre environnement (davantage d'explications et exemples se trouvent dans les fichiers même), avec au minimum les informations de connexion à la base de données
+1. créer vos fichiers de configuration en faisant `cp app/env_model.php app/env.php` ainsi que `cp app/db.config_model.php app/db.config.php` et y saisir les valeurs de votre environnement (davantage d'explications et exemples se trouvent dans les fichiers même), avec au minimum les informations de connexion à la base de données
 1. `cp .htaccess.example .htaccess` si vous voulez implémenter une configuration PHP et Apache de base pour le développement en local
 
 ### Installation avec Docker
@@ -112,7 +115,7 @@ make composer-require PACKAGE=...   # Ajouter un package Composer
 Le site ladecadanse est déployé sur localhost:7777 (dev) ou localhost:8080 (prod). Le mot de passe, par défaut, pour l'utilisateur `admin` est `admin_dev`.
 
 ### Usage
-Une fois le site fonctionnel, se connecter avec le login *admin* (créé ci-dessus) permet d'ajouter et modifier des événements, lieux, etc. (partie publique) et de les gérer largement (partie back-office)
+Une fois le site fonctionnel, se connecter avec le login *admin* (créé ci-dessus) permet d'ajouter et modifier des événements, lieux, etc. (partie publique) et de les gérer (partie back-office)
 
 ## Tests
 
@@ -133,6 +136,9 @@ Un espace sur un serveur avec l'infrastructure prérequise, une timezone défini
     $ git config git-ftp.prod.url "ftp://le-serveur.ch/web"
     $ git config git-ftp.prod.password 'le-mot-de-passe'
     ```
+
+> [!NOTE]
+> Pour voir sa config git ftp : `git config -l | grep git-ftp`
 
 #### Pour mettre en place
 1. premier envoi des fichiers
@@ -164,7 +170,7 @@ Erreurs nombreuses et peu importantes ignorées stockées dans `phpstan-baseline
 
 ### Rector
 
-Sans modification directe du code :
+Exécuter sans modifier directement les fichiers (aperçu) :
 ```sh
 $ composer rector:dry-run
 ```
@@ -190,6 +196,8 @@ cat phan80.txt | cut -d ' ' -f2 | sort | uniq -c | sort -n -r
 ### PHPCompatibility
 
 Dispo de PHP 8.0 à 8.4
+
+Pour 8.4 :
 
 ```sh
 $ composer sniffer:php84
