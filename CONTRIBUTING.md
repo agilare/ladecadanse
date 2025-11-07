@@ -1,16 +1,15 @@
 # Contribuer
 
-Merci de vous intéresser à ce projet qui est d'une assez grande utilité pour **faire connaître les événements de la région genevoise et ses environs**. Les contributions sont bienvenues car il y a actuellement pas mal à faire, surtout dans la rénovation technique. Les informations ici vous permettront de savoir plus clairement de quelle manière vous pouvez aider à l'amélioration du site.
+Merci de vous intéresser à ce projet qui est d'une assez grande utilité pour **faire connaître les événements de la région genevoise et ses environs**. Les contributions sont bienvenues car il y a actuellement pas mal à faire, notamment dans la rénovation technique et visuelle.
 
 Vous pouvez aider de plusieurs manières :
-- participer à la gestion du [site actuel](https://www.ladecadanse.ch/), ce qui me permettrait d'avoir davantages de temps pour les tâches techniques ([me contacter](https://github.com/agilare/ladecadanse?tab=readme-ov-file#contact))
-- [faire un don](https://www.ladecadanse.ch/articles/faireUnDon.php) pour nous encourager, régler les charges courantes
-- tester les changements qui ont été faits ([me contacter](https://github.com/agilare/ladecadanse?tab=readme-ov-file#contact))
+- 🧑‍💻 participer à la gestion du [site actuel](https://www.ladecadanse.ch/) (ajout d'événements, aide, modération), ce qui me permettrait d'avoir davantage de temps pour le développement ([me contacter](https://www.ladecadanse.ch/contacteznous.php))
+- 🪙 [faire un don](https://www.ladecadanse.ch/articles/faireUnDon.php) qui paierait les frais, soutiendrait mon travail
 
-et spécifiquement, si vous êtes intéressés en tant que **développeur** :
-- ajouter ou résoudre des [Issues](https://github.com/agilare/ladecadanse/issues) (corrections, améliorations...); je propose une [suggestion de développements](https://github.com/agilare/ladecadanse/wiki/Les-prochains-d%C3%A9veloppements-sugg%C3%A9r%C3%A9s)
-- signaler voire corriger des vulnérabilités : voire les modalités dans la [politique de sécurité](SECURITY.md)
-- compléter la documentation : le [README](README.md), le [Wiki](https://github.com/agilare/ladecadanse/wiki)...
+et spécifiquement, si vous êtes intéressé en tant que **développeur** :
+- ⌨️ ajouter ou réaliser des [Issues](https://github.com/agilare/ladecadanse/issues) (améliorations, refactoring, bugfixes...);
+👉 je propose une [suggestion de développements](https://github.com/agilare/ladecadanse/wiki/Les-prochains-d%C3%A9veloppements-sugg%C3%A9r%C3%A9s)
+- 🔫 [signaler voire corriger des vulnérabilités](https://github.com/agilare/ladecadanse/blob/master/SECURITY.md)
 
 ## Contexte
 
@@ -20,7 +19,7 @@ Je m'occupe donc de gérer ce projet dans son ensemble et décide des lignes dir
 
 ## Développer
 
-La version actuelle a été créée en 2008 (avec un modeste niveau de programmation, en essayant de suivre les standards de l'époque) et est aujourd'hui assez **legacy**, malgré quelques modernisations et nettoyages effectués ces dernières années (voir le [CHANGELOG](CHANGELOG.md)). Aujourd'hui le but principal est de réduire cette dette technique afin de reprendre sur de bonnes bases l'amélioration de l'application. À cet effet, 2 étapes successives de **modernisation** ont été conçues pour résorber pas à pas les parties les plus obsolètes :
+La version actuelle a été créée en 2008 (avec un modeste niveau de programmation, en essayant de suivre les standards de l'époque) et est aujourd'hui assez **legacy**, malgré quelques modernisations et nettoyages effectués ces dernières années (voir le [CHANGELOG](https://github.com/agilare/ladecadanse/blob/master/CHANGELOG.md)). Aujourd'hui le but principal est de réduire cette dette technique afin de reprendre sur de bonnes bases l'amélioration de l'application. À cet effet, 2 étapes successives de **modernisation** ont été conçues pour résorber pas à pas les parties les plus obsolètes :
 
 1. [nettoyage, factorisation](https://github.com/users/agilare/projects/2/views/1)
 2. [POO, patterns, architecture](https://github.com/users/agilare/projects/4/views/1)
