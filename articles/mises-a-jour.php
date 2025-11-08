@@ -56,7 +56,7 @@ include("../_header.inc.php");
             <li>Connexion, mot de passe oublié, inscription : autofocus</li>
             <li>La configuration de base de données (<code>sql_mode</code>) est désormais intégrée à la session</li>
             <li>Liens externes plus sémantiques avec l'attribut <code>rel="external"</code></li>
-            <li>Docker : configuration</li>
+            <li>Docker : modernisation de la configuration</li>
             <li>Diverses rénovations du code</li>
             <li>documentation : README, CONTRIBUTING</li>
             <li>Corrections de bugs</li>

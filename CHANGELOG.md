@@ -1,6 +1,6 @@
 # Changelog
 
-## [3.9.2] - Unreleased
+## [3.9.2] - 2025-11-09
 
 ### Fixed
 - admin : current page highlight in menu pratique
@@ -28,6 +28,7 @@
 - tests : adapt Selenium tests to new Organisateurs and admin pages
 - users : rm left col in login; add autofocus in 1st fields
 - error, contacteznous, error, maintenance pages moved under misc/
+- Docker configuration updated
 
 ### Removed
 - organisateurs right menu
