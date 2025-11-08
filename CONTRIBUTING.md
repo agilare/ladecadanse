@@ -8,7 +8,7 @@ Vous pouvez aider de plusieurs manières :
 
 et spécifiquement, si vous êtes intéressé en tant que **développeur** :
 - ⌨️ ajouter ou réaliser des [Issues](https://github.com/agilare/ladecadanse/issues) (améliorations, refactoring, bugfixes...);
-👉 je propose une [suggestion de développements](https://github.com/agilare/ladecadanse/wiki/Les-prochains-d%C3%A9veloppements-sugg%C3%A9r%C3%A9s)
+👉 je propose une [suggestion de développements utiles et intéressants](https://github.com/agilare/ladecadanse/wiki/Les-prochains-d%C3%A9veloppements-sugg%C3%A9r%C3%A9s)
 - 🔫 [signaler voire corriger des vulnérabilités](https://github.com/agilare/ladecadanse/blob/master/SECURITY.md)
 
 ## Contexte

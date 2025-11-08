@@ -24,11 +24,11 @@ include("../_header.inc.php");
         <p>et spécifiquement, si vous êtes intéressé en tant que <strong>développeur</strong> :</p>
         <ul>
         <li>⌨️ ajouter ou réaliser des <a href="https://github.com/agilare/ladecadanse/issues">Issues</a> (améliorations, refactoring, bugfixes...);
-            <br>👉 je propose une <a href="https://github.com/agilare/ladecadanse/wiki/Les-prochains-d%C3%A9veloppements-sugg%C3%A9r%C3%A9s">suggestion de développements</a></li>
+            <br>👉 je propose une <a href="https://github.com/agilare/ladecadanse/wiki/Les-prochains-d%C3%A9veloppements-sugg%C3%A9r%C3%A9s">suggestion de développements utiles et intéressants</a></li>
         <li>🔫 <a href="https://github.com/agilare/ladecadanse/blob/master/SECURITY.md">signaler voire corriger des vulnérabilités</a></li>
         </ul>
 
-        <p>La suite (pour les développeurs) sur le <a href="https://github.com/agilare/ladecadanse/blob/master/CONTRIBUTING.md#contexte" rel="external" target="_blank">CONTRIBUTING.md</a></p>
+        <p>La suite (pour les développeurs) sur le <a href="https://github.com/agilare/ladecadanse/blob/master/CONTRIBUTING.md#contexte" rel="external" target="_blank">CONTRIBUTING.md (contexte, développements, démarrage)</a></p>
 
     </article>
 
