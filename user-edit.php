@@ -538,14 +538,14 @@ if ($verif->nbErreurs() > 0)
     <!-- Nouveau mot de passe* en cas de mise à jour -->
     <p>
         <label for="newPass">Nouveau<?php if ($get['action'] != 'editer' || $get['action'] != 'update') { echo "*"; } ?></label>
-            <input type="password" name="newPass" id="newPass" size="30" value="" />
+            <input type="password" name="newPass" id="newPass" size="30" value="" autocomplete="new-password"  />
             <?php echo $verif->getHtmlErreur("newPass");?>
     </p>
 
     <!-- Nouveau mot de passe* à confirmation en cas de mise à jour -->
     <p>
         <label for="newPass2">Confirmer le nouveau<?php if ($get['action'] != 'editer' || $get['action'] != 'update') { echo "*"; } ?></label>
-            <input type="password" name="newPass2" id="newPass2" size="30" value="" />
+            <input type="password" name="newPass2" id="newPass2" size="30" value="" autocomplete="new-password" />
             <?php echo $verif->getHtmlErreur("newPass2");?>
     </p>
     <?php echo $verif->getHtmlErreur("nouveaux_pass");?>
