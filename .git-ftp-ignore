@@ -26,9 +26,10 @@ rector.php
 SECURITY.md
 package-lock.json
 package.json
-phpstan-baseline.neon
+phpstan-baseline.xml
 /.phan
 .phan/*
 .htaccess.example
 psalm.xml
 psalm-baseline.neon
+Makefile
