@@ -126,7 +126,6 @@ $stmtAll = $connectorPdo->prepare($sql_select_all);
 $stmtAll->execute([$get['idO'], $glo_auj]);
 $all_results_nb = $stmtAll->fetchColumn();
 
-$extra_css = ["organisateurs_menu"];
 $page_titre = $organisateur->getValue('nom');
 $page_description = $organisateur->getValue('nom') . " : informations pratiques, présentation et événements";
 include("../_header.inc.php");

@@ -59,7 +59,7 @@ $orgas_even = $stmt->fetchAll(PDO::FETCH_GROUP);
 
 $page_titre = "Organisateurs d'événements culturels à Genève et Lausanne : associations, labels, collectifs";
 $page_description = "";
-$extra_css = ["organisateurs_menu", "organisateur/organisateurs"];
+$extra_css = ["organisateur/organisateurs"];
 include("../_header.inc.php");
 ?>
 
