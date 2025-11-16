@@ -51,7 +51,7 @@ include("../_header.inc.php");
         </ul>
         <br>
         <p>La décadanse est un site entièrement gratuit sur un code <a href="https://github.com/agilare/ladecadanse/" rel="external" target="_blank">open source</a>, que je développe et gère bénévolement depuis une vingtaine d'années, avec parfois l'aide d'autres personnes.</p>
-        <p>À côté des frais qui sont assez modestes (hébergement, flyers...), le site me demande un certain investissement en temps :</p>
+        <p>À côté des frais qui sont assez modestes (hébergement, soutien aux technologies utilisées...), le site me demande un investissement temporel significatif&nbsp;:</p>
         <ul style="margin-left:0.4em;list-style-type: none">
             <li>✅ <b>maintenance</b> : assurer sa disponibilité, sa sécurité ; garder à jour, chasser les bugs</li>
             <li>✅ <b>amélioration continue</b> : ajout de nouvelles fonctionnalités et optimisations</li>
