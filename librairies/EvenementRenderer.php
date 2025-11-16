@@ -36,7 +36,12 @@ class EvenementRenderer
     public static function titreSelonStatutHtml(string $titreHtml, string $statut, bool $isPersonneAllowedToEdit = false): string
     {
         $result = $titreHtml;
-        $badge = ' <span class="even-statut-label statut-' . $statut . '">' . mb_strtoupper(Evenement::$statuts_evenement[$statut]) . '</span>';
+
+        $badge = '';
+        if (isset(Evenement::$statuts_evenement[$statut]))
+        {
+            $badge = ' <span class="even-statut-label statut-' . $statut . '">' . mb_strtoupper(Evenement::$statuts_evenement[$statut]) . '</span>';
+        }
 
         if ($statut == 'actif' || (in_array($statut, ['inactif', 'propose']) && !$isPersonneAllowedToEdit))
         {
