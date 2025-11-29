@@ -9,6 +9,7 @@ use Ladecadanse\UserLevel;
 
                 <ul class="menu_pied">
                     <li><a href="/articles/apropos.php">À propos</a></li>
+                    <li><a href="/articles/contributing.php" <?php if (strstr((string) $_SERVER['PHP_SELF'], "/articles/contributing.php") ) : ?>class="ici"<?php endif; ?>>Participer</a></li>
                     <?php
                     foreach ($glo_menu_pratique as $nom => $lien)
                     {

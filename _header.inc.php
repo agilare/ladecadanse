@@ -127,7 +127,7 @@ use Ladecadanse\UserLevel;
                     <ul>
                        <li><a href="https://github.com/agilare/ladecadanse/" aria-label="Watch agilare/ladecadanse on GitHub" style="font-size:1.2em;vertical-align:top" target="_blank"><i class="fa fa-github" aria-hidden="true"></i></a>
                        </li>
-                       <li><a href="/articles/contributing.php" <?php if (strstr((string) $_SERVER['PHP_SELF'], "/articles/contributing.php") ) : ?>class="ici"<?php endif; ?>>Participer</a>
+                       <li><a href="/articles/contributing.php" <?php if (strstr((string) $_SERVER['PHP_SELF'], "/articles/contributing.php") ) : ?>class="ici"<?php endif; ?>>Participer</a></li>
 <!--                       <li><a href="/articles/faireUnDon.php">Faire un don</a>-->
                     </ul>
                 </nav>
