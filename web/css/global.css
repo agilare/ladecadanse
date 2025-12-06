@@ -1700,3 +1700,17 @@ ul#menu_calendrier li form p
     {
         background:#d4d4d4;
     }
+
+#contenu .thumbnails
+{
+    list-style-type:none;
+    margin: 0;
+    padding: 0;
+}
+
+#contenu .thumbnails li
+{
+    display: inline-block;
+    margin:0 10px 5px 10px;
+    vertical-align: middle
+}
