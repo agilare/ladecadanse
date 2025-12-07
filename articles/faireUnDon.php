@@ -75,19 +75,16 @@ include("../_header.inc.php");
             <li><a href="/lieu/lieu.php?idL=222"><img src="/web/content/logocave12.jpg" alt="Cave12" width="150"></a></li>
             <li><a href="/lieu/lieu.php?idL=578"><img src="/web/uploads/lieux/578_logo.png" alt="La traboule" width="139" height="50"></a></li>
             <li><a href="/lieu/lieu.php?idL=255"><img src="/web/uploads/lieux/255_logo.png" alt="Am Stram Gram" width="160"></a></li>
-            <div class="spacer"></div>
 
             <li><a href="/lieu/lieu.php?idL=41"><img src="/web/uploads/lieux/41_logo.jpg" alt="La parfumerie" width="172" height="50"></a></li>
             <li><a href="/lieu/lieu.php?idL=640"><img src="/web/content/Gallery-Brulhart_Logo.png" alt="Gallery Brulhart" width="150" height="150"></a></li>
             <li><a href="https://www.perejakob.ch/"><img src="/web/content/pere-jakob.png" alt="Père Jakob" width="120"></a></li>
-            <div class="spacer"></div>
 
             <li><a href="/organisateur/organisateur.php?idO=99"><img src="/web/uploads/organisateurs/s_99_logo.png" alt="Archipel" width="160"></a></li>
             <li><a href="/organisateur/organisateur.php?idO=154"><img src="/web/uploads/organisateurs/s_154_logo.png" alt="Orchestre de chambre de Genève" width="160"></a></li>
             <li><a href="https://assemblages.ch/"><img src="/web/content/assemblages.png" alt="Assemblage's festival"  width="120"></a></li>
-            <div class="spacer"></div>
 
-            <li><a href="/organisateur/organisateur.php?idO=269"><img src="/web/uploads/organisateurs/s_269_logo.jpg?1731690307" alt="Les Créateliers" width="150"></a></li>
+<!--            <li><a href="/organisateur/organisateur.php?idO=269"><img src="/web/uploads/organisateurs/s_269_logo.jpg?1731690307" alt="Les Créateliers" width="150"></a></li>-->
             <li><a href="/lieu/lieu.php?idL=642"><img src="/web/uploads/lieux/642_logo.jpg" alt="Café de la pointe" width="150"></a></li>
             <li><a href="/lieu/lieu.php?idL=130"><img src="/web/uploads/lieux/s_130_logo.jpg?1765049481" alt="Centre photo Genève" width="170"></a></li>
         </ul>
