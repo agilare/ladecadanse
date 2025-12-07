@@ -83,7 +83,7 @@ include("../_header.inc.php");
             <div class="spacer"></div>
 
             <li><a href="/organisateur/organisateur.php?idO=99"><img src="/web/uploads/organisateurs/s_99_logo.png" alt="Archipel" width="160"></a></li>
-            <li><a href="/lieu/lieu.php?idL=154"><img src="/web/uploads/organisateurs/s_154_logo.png" alt="Orchestre de chambre de Genève" width="160"></a></li>
+            <li><a href="/organisateur/organisateur.php?idO=154"><img src="/web/uploads/organisateurs/s_154_logo.png" alt="Orchestre de chambre de Genève" width="160"></a></li>
             <li><a href="https://assemblages.ch/"><img src="/web/content/assemblages.png" alt="Assemblage's festival"  width="120"></a></li>
             <div class="spacer"></div>
 
