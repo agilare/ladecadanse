@@ -7257,6 +7257,166 @@
       ],
       "value": ""
     }]
+  }, {
+    "id": "a1b2c3d4-5678-90ab-cdef-lieu-salle-01",
+    "name": "admin lieu-salle add (vars r)",
+    "commands": [{
+      "id": "cmd-salle-000",
+      "comment": "Clear all cookies for fresh session",
+      "command": "executeScript",
+      "target": "document.cookie.split(';').forEach(c => document.cookie = c.trim().split('=')[0] + '=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/');",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "cmd-salle-000b",
+      "comment": "Navigate to logout page",
+      "command": "open",
+      "target": "/user-logout.php",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "cmd-salle-000c",
+      "comment": "Wait for logout to complete",
+      "command": "pause",
+      "target": "500",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "cmd-salle-001",
+      "comment": "Open homepage",
+      "command": "open",
+      "target": "/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "cmd-salle-002",
+      "comment": "Set window size",
+      "command": "setWindowSize",
+      "target": "1440x900",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "cmd-salle-003",
+      "comment": "Click login link",
+      "command": "click",
+      "target": "linkText=Connexion",
+      "targets": [
+        ["linkText=Connexion", "linkText"],
+        ["xpath=//a[contains(@href, '/user-login.php')]", "xpath:href"]
+      ],
+      "value": ""
+    }, {
+      "id": "cmd-salle-004",
+      "comment": "Enter admin username",
+      "command": "type",
+      "target": "id=pseudo",
+      "targets": [
+        ["id=pseudo", "id"],
+        ["name=pseudo", "name"]
+      ],
+      "value": "admin"
+    }, {
+      "id": "cmd-salle-005",
+      "comment": "Enter admin password",
+      "command": "type",
+      "target": "id=motdepasse",
+      "targets": [
+        ["id=motdepasse", "id"],
+        ["name=motdepasse", "name"]
+      ],
+      "value": "admin_dev"
+    }, {
+      "id": "cmd-salle-006",
+      "comment": "Submit login form",
+      "command": "click",
+      "target": "css=.submit-big",
+      "targets": [
+        ["css=.submit-big", "css:finder"],
+        ["xpath=//input[@value='Connexion']", "xpath:attributes"]
+      ],
+      "value": ""
+    }, {
+      "id": "cmd-salle-007",
+      "comment": "Wait for login",
+      "command": "pause",
+      "target": "1000",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "cmd-salle-008",
+      "comment": "Go directly to lieu-salle-edit page",
+      "command": "open",
+      "target": "/lieu-salle-edit.php",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "cmd-salle-009",
+      "comment": "Verify form is displayed",
+      "command": "assertElementPresent",
+      "target": "id=idLieu",
+      "targets": [
+        ["id=idLieu", "id"],
+        ["name=idLieu", "name"]
+      ],
+      "value": ""
+    }, {
+      "id": "cmd-salle-009b",
+      "comment": "Select lieu from dropdown (select2)",
+      "command": "select",
+      "target": "id=idLieu",
+      "targets": [
+        ["id=idLieu", "id"],
+        ["name=idLieu", "name"]
+      ],
+      "value": "value=999"
+    }, {
+      "id": "cmd-salle-011",
+      "comment": "Fill salle name",
+      "command": "type",
+      "target": "id=nom",
+      "targets": [
+        ["id=nom", "id"],
+        ["name=nom", "name"]
+      ],
+      "value": "Salle Test Selenium"
+    }, {
+      "id": "cmd-salle-012",
+      "comment": "Fill salle location",
+      "command": "type",
+      "target": "id=emplacement",
+      "targets": [
+        ["id=emplacement", "id"],
+        ["name=emplacement", "name"]
+      ],
+      "value": "1er étage"
+    }, {
+      "id": "cmd-salle-013",
+      "comment": "Submit form",
+      "command": "click",
+      "target": "css=.submit-big",
+      "targets": [
+        ["css=.submit-big", "css:finder"],
+        ["xpath=//input[@value='Enregistrer']", "xpath:attributes"]
+      ],
+      "value": ""
+    }, {
+      "id": "cmd-salle-014",
+      "comment": "Wait for redirect",
+      "command": "pause",
+      "target": "1000",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "cmd-salle-015",
+      "comment": "Verify success - salle appears in lieu page",
+      "command": "assertElementPresent",
+      "target": "xpath=//ul[@class='salles']//li[contains(text(), 'Salle Test Selenium')]",
+      "targets": [
+        ["xpath=//ul[@class='salles']//li[contains(text(), 'Salle Test Selenium')]", "xpath:innerText"],
+        ["css=.salles li", "css:finder"]
+      ],
+      "value": ""
+    }]
   }],
   "suites": [{
     "id": "e598238f-e9bc-40f6-9876-6274e4bf1e3f",
@@ -7278,7 +7438,7 @@
     "persistSession": false,
     "parallel": false,
     "timeout": 300,
-    "tests": ["fa4a12b8-1f55-4435-8fe1-3fe8294be63a", "d5d4f0bd-52d5-4cd9-8fd2-b38ee992812d", "5c790b97-c4b1-4056-a004-daa889c1a3ee", "2422f54c-2560-4fa2-ad65-b10fe0deba9e", "1e32da4f-4dcb-4195-8dee-81a2afc12a3f", "b4c14c81-4533-4742-8d96-526b91077359", "1e0fa7b9-f784-4860-a139-b7be9b393fc0", "8f01a9a0-9f4c-4f52-825e-a54eba6fcb27", "92d58e15-7bbd-49aa-8440-5c14b4554622", "7f6cb209-b243-4a0e-889f-097dd12be52d", "9c8c7ca0-0ac3-496e-b84b-bfedbc01230b", "602346d1-62ed-43a5-9bfd-b78a52eaaa59", "816a221b-9428-4767-9d1b-cf51dc2f8fb4", "1b3cabfb-9a16-44ae-b21b-2356228e88f1"]
+    "tests": ["fa4a12b8-1f55-4435-8fe1-3fe8294be63a", "d5d4f0bd-52d5-4cd9-8fd2-b38ee992812d", "5c790b97-c4b1-4056-a004-daa889c1a3ee", "2422f54c-2560-4fa2-ad65-b10fe0deba9e", "1e32da4f-4dcb-4195-8dee-81a2afc12a3f", "b4c14c81-4533-4742-8d96-526b91077359", "1e0fa7b9-f784-4860-a139-b7be9b393fc0", "8f01a9a0-9f4c-4f52-825e-a54eba6fcb27", "92d58e15-7bbd-49aa-8440-5c14b4554622", "7f6cb209-b243-4a0e-889f-097dd12be52d", "9c8c7ca0-0ac3-496e-b84b-bfedbc01230b", "602346d1-62ed-43a5-9bfd-b78a52eaaa59", "816a221b-9428-4767-9d1b-cf51dc2f8fb4", "1b3cabfb-9a16-44ae-b21b-2356228e88f1", "a1b2c3d4-5678-90ab-cdef-lieu-salle-01"]
   }],
   "urls": ["https://ladecadanse.darksite.ch/", "http://ladecadanse.local/", "https://ladecadanse.local/"],
   "plugins": []

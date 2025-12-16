@@ -12,6 +12,7 @@ services:
       - ladecadanse_db_data:/var/lib/mysql
       - ${PWD}/resources/ladecadanse.sql:/docker-entrypoint-initdb.d/001_ladecadanse.sql
       - ${PWD}/docker/env/create-admin.sql:/docker-entrypoint-initdb.d/002_create-admin.sql
+      - ${PWD}/docker/env/create-lieux.sql:/docker-entrypoint-initdb.d/003_create-lieux.sql
     ports:
       - "127.0.0.1:${DB_PORT:-9906}:3306"
     networks:
