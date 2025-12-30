@@ -44,8 +44,9 @@ if (isset($_GET['tri_agenda']) && in_array($_GET['tri_agenda'], $tab_tri_agenda)
    $_SESSION['user_prefs_agenda_order'] = $_GET['tri_agenda'];
 }
 // build SQL
+$is_chronological_order = ($_SESSION['user_prefs_agenda_order'] == "horaire_debut");
 $sql_user_prefs_agenda_order = "e." . $_SESSION['user_prefs_agenda_order'] . " DESC";
-if ($_SESSION['user_prefs_agenda_order'] == "horaire_debut")
+if ($is_chronological_order)
 {
 	$sql_user_prefs_agenda_order = "e.horaire_debut ASC";
 }
@@ -247,7 +248,6 @@ include("_header.inc.php");
         $genres_today = array_keys($tab_events_today_in_region_by_category);
         foreach ($tab_events_today_in_region_by_category as $genre => $tab_genre_events)
         {
-            $genre_even_nb = 0;
             ?>
                 <section class="genre">
 
@@ -262,16 +262,20 @@ include("_header.inc.php");
                     </header>
 
                     <?php
-                    foreach ($tab_genre_events as $tab_even)
+                    $events_collection = new Ladecadanse\EvenementWithSeparatorCollection($tab_genre_events, $is_chronological_order, $get['courant']);
+                    
+                    foreach ($events_collection as $event)
                     {
-                        $genre_even_nb++;
-
-                        // après le 1er even puis 1 item sur 2 : rappel
-                        if (($genre_even_nb % 2 != 0) && $genre_even_nb > 1) : ?>
-                            <p class="rappel_date"><?= ucfirst($day_label) ?>, <?= $glo_tab_genre[$genre]; ?></p>
+                        ?>
+                        
+                        <?php if ($separator = $event->shouldDisplaySeparator() ? $event->getCurrentSeparator() : null) : ?>
+                            <p class="rappel_date"><?= $separator->getLabel($day_label, $glo_tab_genre[$genre]); ?></p>
                         <?php endif; ?>
 
-                        <?= Ladecadanse\EvenementRenderer::eventShortArticleHtml($tab_even, $tab_events_today_in_region_orgas); ?>
+                        <?php
+                        $tab_even = $event->getEvent();
+                        echo Ladecadanse\EvenementRenderer::eventShortArticleHtml($tab_even, $tab_events_today_in_region_orgas);
+                        ?>
 
                             <footer class="edition">
 
