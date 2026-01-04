@@ -65,7 +65,7 @@ use Ladecadanse\UserLevel;
         <script src="<?= $assets->get("js/forms.js"); ?>"></script>
 
         <?php if (in_array($nom_page, $pages_tinymce)) : ?>
-            <script src="https://cdn.tiny.cloud/1/<?= TINYMCE_API_KEY; ?>/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>;
+            <script src="https://cdn.tiny.cloud/1/<?= TINYMCE_API_KEY; ?>/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>;
             <script src="<?= $assets->get("js/edition.js"); ?>"></script>
         <?php endif; ?>
 
