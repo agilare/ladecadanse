@@ -1182,9 +1182,9 @@
       "value": ""
     }, {
       "id": "621dff15-6732-48ac-9490-ce616ea1a802",
-      "comment": "is Google Map present",
+      "comment": "is Leaflet Map present",
       "command": "assertElementPresent",
-      "target": "css=.gm-style",
+      "target": "css=.leaflet-container",
       "targets": [],
       "value": ""
     }, {

@@ -29,8 +29,6 @@ define("EMAIL_ADMIN_NAME", 'La décadanse');
 // external services
 define("TINYMCE_API_KEY", ''); // rich text editor for presentations of lieux and organisateurs
 
-define("GOOGLE_API_KEY", ''); // use Google Maps library to display maps of venues https://developers.google.com/maps/documentation/javascript/get-api-key
-
 define("MATOMO_ENABLED", false); // statistics tool (enabled only in prod)
 define("MATOMO_URL", '');
 define("MATOMO_SITE_ID", '');
