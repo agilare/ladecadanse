@@ -84,9 +84,12 @@ include("../_header.inc.php");
             <li><a href="/organisateur/organisateur.php?idO=154"><img src="/web/uploads/organisateurs/s_154_logo.png" alt="Orchestre de chambre de Genève" width="160"></a></li>
             <li><a href="https://assemblages.ch/"><img src="/web/content/assemblages.png" alt="Assemblage's festival"  width="120"></a></li>
 
-<!--            <li><a href="/organisateur/organisateur.php?idO=269"><img src="/web/uploads/organisateurs/s_269_logo.jpg?1731690307" alt="Les Créateliers" width="150"></a></li>-->
             <li><a href="/lieu/lieu.php?idL=642"><img src="/web/uploads/lieux/642_logo.jpg" alt="Café de la pointe" width="150"></a></li>
-            <li><a href="/lieu/lieu.php?idL=130"><img src="/web/uploads/lieux/s_130_logo.jpg?1765049481" alt="Centre photo Genève" width="170"></a></li>
+            <li><a href="/lieu/lieu.php?idL=130"><img src="/web/uploads/lieux/s_130_logo.jpg" alt="Centre photo Genève" width="170"></a></li>
+            <li><a href="/organisateur/organisateur.php?idO=269"><img src="/web/uploads/organisateurs/269_logo.jpg?1768067036" alt="Les Créateliers" width="150"></a></li>
+            <li><a href="/lieu/lieu.php?idL=120"><img src="/web/uploads/lieux/120_logo.gif" alt="L'épicentre" width="170"></a></li>
+            <li><a href="/organisateur/organisateur.php?idO=458"><img src="/web/uploads/organisateurs/458_logo.png" alt="La Puce nanoéditions" width="150"></a></li>
+
         </ul>
 
     </article>
