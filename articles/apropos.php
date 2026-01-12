@@ -22,23 +22,20 @@ include("../_header.inc.php");
         <p>
             Les rubriques <a href="/lieu/lieux.php">Lieux</a> et <a href="/organisateur/organisateurs.php">Organisateurs</a> répertorient ces acteurs, avec pour chacun une fiche, si possible accompagnée d'un descriptif et d'illustrations.</p>
         <p>Le site est mis à jour quotidiennement par les contributeurs et par nous même</p>
-        <p><a href="https://www.gbnews.ch/ladecadanse-ch-un-bouche-a-oreille-en-ligne/" rel="external" target="_blank">Article "ladecadanse.ch, un bouche à oreille en ligne" sur GBNnews.ch (2015)</a></p>
 
-        <dl>
-            <!--
-                <dt>Webmasters</dt>
-                <dd>Michel</dd>
-                <dd>Sabrina</dd>
-                dd>Anne</dd>
-            -->
+        <h2>Références</h2>
+        <ul>
+        <li><a href="https://www.gbnews.ch/ladecadanse-ch-un-bouche-a-oreille-en-ligne/" rel="external" target="_blank">Article "ladecadanse.ch, un bouche à oreille en ligne" sur GBNnews.ch (2015)</a></li>
+        <li><a href="https://www.tdg.ch/la-decadanse-le-site-genevois-recense-les-sorties-depuis-vingt-trois-ans-925206183034" rel="external" target="_blank">Article "Depuis vingt-trois ans, Michel Gaudry partage les «bons plans de soirées» grâce à La Décadanse" de la Tribune de Genève (2025)</a></li>
+        </ul>
+        
+        <h2>Participer</h2>
 
-            <dt>Participer</dt>
-            <ul>
-                <li><a href="/user-register.php">Inscrivez-vous</a> pour annoncer des événements</li>
-                <li>ou écrivez-nous via le <a href="/misc/contacteznous.php">formulaire de contact</a>.</li>
-                <li>ou <a href="/articles/faireUnDon.php">faites un don</a>.</li>
-            </ul>
-        </dl>
+        <ul>
+            <li><a href="/user-register.php">Inscrivez-vous</a> pour annoncer des événements</li>
+            <li>ou <a href="/articles/contributing.php">contribuez au développement du site</a></li>
+        </ul>
+
     </article>
 
 </main>
