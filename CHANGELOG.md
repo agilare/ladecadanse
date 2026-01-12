@@ -1,5 +1,22 @@
 # Changelog
 
+## [3.9.3] - Unreleased
+
+### Added
+- faire un don : section "Soutiens" showing logos of supporting orgas
+
+### Fixed
+- events : in renderer titreSelonStatutHtml add status check
+- footer : add missing link to Participer
+
+### Changed
+- à propos : add TDG article link, update Participer section
+- contribuer : add "bénévole", small texts improvements
+- faire un don : describe better my work
+- edition : upgrade TinyMCE 6 to 7, fix title button (h4 -> h3)
+- deps-dev: bump js-yaml from 4.1.0 to 4.1.1
+
+
 ## [3.9.2] - 2025-11-09
 
 ### Fixed
@@ -37,6 +54,9 @@
 
 ### Security
 - add missing auth and 403 response to some pages
+
+### Removed
+- organisateurs right menu
 
 
 ## [3.9.1] - 2025-10-11
