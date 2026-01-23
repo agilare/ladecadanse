@@ -33,7 +33,7 @@ Header set Strict-Transport-Security "max-age=86400" env=HTTPS
 Options -MultiViews
 
 # allow ajax (fetch, XMLHttpRequest, etc.), websockets from externals
-SetEnvIf Origin "^(https://noctambus.ch|https://www.noctambus.ch|https://maps.googleapis.com|https://browser.sentry-cdn.com)$" AccessControlAllowOrigin=$0
+SetEnvIf Origin "^(https://noctambus.ch|https://www.noctambus.ch|https://browser.sentry-cdn.com)$" AccessControlAllowOrigin=$0
 Header set Access-Control-Allow-Origin %{AccessControlAllowOrigin}e env=AccessControlAllowOrigin
 
 # Block access to backup and source files that may be left by some text editors and can pose a security risk when anyone has access to them

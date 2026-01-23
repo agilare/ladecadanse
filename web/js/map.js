@@ -15,26 +15,25 @@ function initLieuMap()
         return;
     }
 
+    // Resize map on display as it was initialized hidden
+    $('.dropdown').click(function dropdownTarget(){
+        if ($(this).data('target') == "plan"){
+            setTimeout(() => lieuMap.invalidateSize(), 1);
+        }
+    });
     var myLatLng = {lat: parseFloat($('#lieu-map').data('lat')), lng: parseFloat($('#lieu-map').data('lng'))};
 
-    lieuMap = new google.maps.Map(document.getElementById('lieu-map'), {
-        center: myLatLng,
-        zoom: 14
-    });
+    lieuMap = L.map('lieu-map')
+        .setView(myLatLng, 14);
+    
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+		maxZoom: 19,
+		attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+	}).addTo(lieuMap);
 
-    var marker = new google.maps.Marker({
-        position: myLatLng,
-        map: lieuMap
-    });
-
-    var infowindow = new google.maps.InfoWindow({
-        content: $('#lieu-map-infowindow').html()
-    });
-
-    marker.addListener('click', function ()
-    {
-        infowindow.open(lieuMap, marker);
-    });
-
+    L.marker(myLatLng)
+        .addTo(lieuMap)
+        .bindPopup($('#lieu-map-infowindow').html());
 }
 
+initLieuMap();

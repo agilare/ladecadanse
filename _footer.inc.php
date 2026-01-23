@@ -55,7 +55,12 @@ use Ladecadanse\UserLevel;
     <script src="https://unpkg.com/read-smore@2.0.4/dist/index.umd.js"></script>
 
     <?php if (in_array($nom_page, $pages_lieumap)) { ?>
-        <script async defer src="https://maps.googleapis.com/maps/api/js?key=<?= GOOGLE_API_KEY; ?>&callback=initLieuMap"></script>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+            integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+            crossorigin=""/>
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+            crossorigin=""></script>
         <script src="<?= $assets->get("js/map.js"); ?>"></script>
     <?php } ?>
 
