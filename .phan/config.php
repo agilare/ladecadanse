@@ -139,24 +139,6 @@ return [
     // if Phan has the signatures.
     'ignore_undeclared_functions_with_known_signatures' => false,
 
-    // Backwards Compatibility Checking. This is slow
-    // and expensive, but you should consider running
-    // it before upgrading your version of PHP to a
-    // new version that has backward compatibility
-    // breaks.
-    //
-    // If you are migrating from PHP 5 to PHP 7,
-    // you should also look into using
-    // [php7cc (no longer maintained)](https://github.com/sstalle/php7cc)
-    // and [php7mar](https://github.com/Alexia/php7mar),
-    // which have different backwards compatibility checks.
-    //
-    // If you are still using versions of php older than 5.6,
-    // `PHP53CompatibilityPlugin` may be worth looking into if you are not running
-    // syntax checks for php 5.3 through another method such as
-    // `InvokePHPNativeSyntaxCheckPlugin` (see .phan/plugins/README.md).
-    'backward_compatibility_checks' => false,
-
     // If true, check to make sure the return type declared
     // in the doc-block (if any) matches the return type
     // declared in the method signature.

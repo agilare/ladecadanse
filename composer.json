@@ -73,9 +73,14 @@
         "phpstan/phpstan-deprecation-rules": "^2.0",
         "spaze/phpstan-disallowed-calls": "^4.5",
         "rector/rector": "^2.0",
-        "phan/phan": "^5.4",
+        "phan/phan": "6.0",
         "vimeo/psalm": "^6.7",
         "orklah/psalm-insane-comparison": "^2.4",
         "rector/jack": "^0.2.6"
+    },
+    "config": {
+        "allow-plugins": {
+            "cweagans/composer-patches": true
+        }
     }
 }
