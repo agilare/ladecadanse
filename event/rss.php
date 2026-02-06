@@ -39,7 +39,7 @@ if (isset($_GET['id']))
 $channel = ['link' => $site_full_url, 'pubDate' => time()];
 
 $join = "";
-$where = "";
+$where = " WHERE e.statut NOT IN ('inactif', 'propose') ";
 $params = [];
 
 switch($get['type'])
@@ -48,7 +48,7 @@ switch($get['type'])
 
         $channel['title'] = "La décadanse : événements aujourd'hui";
 
-        $where = " WHERE dateEvenement=?";
+        $where .= " AND dateEvenement=?";
         $params = [$glo_auj_6h];
         $order_by = " ORDER BY CASE e.genre
             WHEN 'fête' THEN 1
@@ -65,7 +65,7 @@ switch($get['type'])
         $channel['title'] = 'La décadanse : prochains événements';
         $channel['link'] .= '/lieu/lieu.php?idL='.(int)$get['id'];
 
-        $where = " WHERE e.idLieu = ? AND dateEvenement >= ?";
+        $where .= " AND e.idLieu = ? AND dateEvenement >= ?";
         $params = [$get['id'], $glo_auj_6h];
         $order_by = " ORDER BY e.dateAjout DESC";
 
@@ -77,7 +77,7 @@ switch($get['type'])
         $channel['link'] .= 'organisateur/organisateur.php?idO='.(int)$get['id'];
 
         $join = ' LEFT JOIN evenement_organisateur eo ON e.idEvenement = eo.idEvenement ';
-        $where = " WHERE eo.idOrganisateur = ? AND dateEvenement >= ?";
+        $where .= " AND eo.idOrganisateur = ? AND dateEvenement >= ?";
         $params = [$get['id'], $glo_auj_6h];
         $order_by = " ORDER BY e.dateAjout DESC";
 

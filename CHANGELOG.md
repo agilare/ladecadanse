@@ -1,12 +1,13 @@
 # Changelog
 
-## [3.9.3] - Unreleased
+## [3.10.0] - Unreleased
 
 ### Added
 - faire un don : section "Soutiens" showing logos of supporting orgas
 
 ### Fixed
 - events : in renderer titreSelonStatutHtml add status check
+- events : rss included unpublished events
 - footer : add missing link to Participer
 
 ### Changed
