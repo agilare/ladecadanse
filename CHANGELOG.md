@@ -4,6 +4,7 @@
 
 ### Added
 - faire un don : section "Soutiens" showing logos of supporting orgas
+- seo : set Open Graph default url and image, add to lieu & orga
 
 ### Fixed
 - events : in renderer titreSelonStatutHtml add status check
@@ -11,11 +12,14 @@
 - footer : add missing link to Participer
 
 ### Changed
+- lieux : replace Google Maps by Leaflet and Open Street Map #134 (thanks to @Biboba)
 - à propos : add TDG article link, update Participer section
 - contribuer : add "bénévole", small texts improvements
 - faire un don : describe better my work
 - edition : upgrade TinyMCE 6 to 7, fix title button (h4 -> h3)
 - deps-dev: bump js-yaml from 4.1.0 to 4.1.1
+- analyzers : update Phan 5.4 to 6.0
+- build: update PHPMailer 6 to 7
 
 
 ## [3.9.2] - 2025-11-09
@@ -31,7 +35,7 @@
 - admin : dashboard completed with more pertinent data, better layout, refactoring
 - lieu : add affiliates users to editors profiles
 - mise à jour : new page (for logged in users), a simplified changelog
-- particper : new page with start of CONTRIBUTING
+- participer : new page with start of CONTRIBUTING
 - lieux, organisateurs : show month of latest event also when < 6 month away
 - in 2 db connection setups add set of sql mode for session
 - readme : db config requirement for full text search
