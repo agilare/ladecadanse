@@ -29,12 +29,12 @@ use Ladecadanse\UserLevel;
     <meta property="og:locale" content="fr">
     <meta property="og:title" content="<?= sanitizeForHtml($page_titre) . " — La décadanse"; ?>">
     <meta property="og:description" content="<?= sanitizeForHtml(($page_description ?? '')) ?>">
-    <?php if (!empty($page_url)) : ?>
+    <?php if (isset($page_url)) : ?>
         <meta property="og:url" content="<?= $site_full_url . $page_url; ?>">
     <?php endif; ?>
     <?php if (!empty($page_image)) : ?>
         <meta property="og:image" content="<?= $site_full_url . $page_image ?>">
-        <meta property="og:image:alt" content="Affiche/flyer">
+<!--        <meta property="og:image:alt" content="Affiche/flyer">-->
     <?php endif; ?>
 
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">

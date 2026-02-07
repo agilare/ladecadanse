@@ -123,6 +123,12 @@ $all_results_nb = $stmtAll->fetchColumn();
 
 $page_titre = $lieu['nom']. " - ".HtmlShrink::adresseCompacteSelonContexte($lieu['loc_canton'], $lieu['loc_localite'], $lieu['quartier'], $lieu['adresse']);
 $page_description = $page_titre." : accès, horaires, description, photos et prochains événements";
+if ($lieu['logo'])
+{
+    $page_image = Lieu::getWebPath(Lieu::getFilePath($lieu['logo']), isWithAntiCache: true);
+}
+$page_url = "lieu/lieu.php?idL=" .  $get['idL'];
+
 include("../_header.inc.php");
 ?>
 

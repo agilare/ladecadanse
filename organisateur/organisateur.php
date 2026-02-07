@@ -128,6 +128,12 @@ $all_results_nb = $stmtAll->fetchColumn();
 
 $page_titre = $organisateur->getValue('nom');
 $page_description = $organisateur->getValue('nom') . " : informations pratiques, présentation et événements";
+if ($organisateur->getValue('logo'))
+{
+    $page_image = Organisateur::getWebPath(Organisateur::getFilePath($organisateur->getValue('logo')), true);
+}
+
+$page_url = "organisateur/organisateur.php?idO=" .  $get['idO'];
 include("../_header.inc.php");
 ?>
 
