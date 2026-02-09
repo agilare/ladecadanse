@@ -10,6 +10,7 @@
 - events : in renderer titreSelonStatutHtml add status check
 - events : rss included unpublished events
 - footer : add missing link to Participer
+- users : in register form don't show error if email is already used
 
 ### Changed
 - lieux : replace Google Maps by Leaflet and Open Street Map #134 (thanks to @Biboba)

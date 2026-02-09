@@ -63,13 +63,12 @@ include("_header.inc.php");
 
             $verif->valider($champs['utilisateur'], "utilisateur", "texte", 2, 50, 1);
 
-            $sql_existance = "SELECT pseudo FROM personne
-        WHERE pseudo='" . $connector->sanitize($champs['utilisateur']) . "'";
+            $sql_existance = "SELECT pseudo FROM personne WHERE pseudo='" . $connector->sanitize($champs['utilisateur']) . "'";
             $req_existance = $connector->query($sql_existance);
 
             if ($connector->getNumRows($req_existance) > 0)
             {
-                $verif->setErreur("utilisateur_existant", "Un membre avec cet identifiant existe déjà.");
+                $verif->setErreur("utilisateur_existant", "Un membre avec cet identifiant existe déjà, veuillez en choisir un autre");
             }
 
 
@@ -111,7 +110,10 @@ include("_header.inc.php");
 
             if ($connector->getNumRows($req_existance) > 0)
             {
+                // fail the process of user creation...
                 $verif->setErreur("email_identique", "Un compte avec cet email existe déjà.");
+                // and, to avoid "email enumeration vulnerability" : enable display of result msg, and disable redisplay of form (with this error text)
+                $action_terminee = true;
             }
 
 
@@ -239,7 +241,7 @@ include("_header.inc.php");
                         $contenu_message .= "\n\n";
                         $contenu_message .= "Vous pouvez compléter votre profil sur votre page de membre : ";
                         $contenu_message .= $site_full_url . "user.php?idP=" . (int) $req_id;
-                    $contenu_message .= "\n\n";
+                        $contenu_message .= "\n\n";
                         $contenu_message .= "Bonne visite";
                         $contenu_message .= "\n\n";
                         $contenu_message .= "La décadanse";
@@ -247,15 +249,8 @@ include("_header.inc.php");
                         $mailer = new Mailing();
                         $mailer->toUser($tab_pers['email'], $subject, $contenu_message);
 
-                        $compte_organisateur = "";
-                        if (isset($champs['organisateurs']) && count($champs['organisateurs']) > 0)
-                            $compte_organisateur = " en tant qu'acteur culturel";
-
-                        HtmlShrink::msgOk("<strong>Votre compte" . $compte_organisateur . " a été créé</strong>; vous pouvez maintenant vous <a href=\"/user-login.php\">connecter</a> avec l'identifiant et le mot de passe que vous venez de saisir.
-                    <br />Un e-mail de confirmation vous a été envoyé à l'adresse : " . sanitizeForHtml($tab_pers['email']));
-
                         $logger->log('global', 'activity', "[user-register] by " . $tab_pers['pseudo'] . " (" . $tab_pers['email'] . ") in group " . $tab_pers['groupe'] . " /user.php?idP=" . (int) $req_id, Logger::GRAN_YEAR);
-                }
+                    }
 
                     foreach ($champs as $k => $v)
                     {
@@ -264,12 +259,19 @@ include("_header.inc.php");
 
                     $action_terminee = true;
                 }
-                else
-                {
-                    HtmlShrink::msgErreur("La requête INSERT dans 'personne' a échoué");
-                }
+
             } // if erreurs == 0
+
+            if ($action_terminee)
+            {
+                $compte_organisateur = "";
+                if (isset($champs['organisateurs']) && count($champs['organisateurs']) > 0)
+                    $compte_organisateur = " en tant qu'acteur culturel";
+
+                HtmlShrink::msgOk("<p style='font-size:1.1em;line-height:1.5em'><strong>Votre compte" . $compte_organisateur . " a été créé</strong> (si l'adresse email fournie est valide); vous pouvez maintenant vous <a href=\"/user-login.php\">connecter</a> avec l'identifiant et le mot de passe que vous venez de saisir");
+            }
         }
+
     } // if POST != ""
 
 
