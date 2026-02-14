@@ -1,7 +1,7 @@
 services:
   # Database service - shared between dev and prod
   db:
-    image: mariadb:10.6
+    image: mariadb:10.11
     container_name: ladecadanse_db
     environment:
       MYSQL_DATABASE: ladecadanse
