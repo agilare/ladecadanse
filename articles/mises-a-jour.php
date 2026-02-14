@@ -23,6 +23,47 @@ include("../_header.inc.php");
     <article class="rubrique">
 
         <header>
+            <h2>3.9.3</h2>
+            <br>
+            <p>15 février 2026</p>
+        </header>
+
+        <h3>Événements</h3>
+
+        <ul>
+            <li>RSS : correction d'un bug qui affichait les événements non publiés</li>
+        </ul>
+
+        <h3>Lieux</h3>
+
+        <ul>
+            <li>Cartes : <a href="https://github.com/agilare/ladecadanse/issues/95" rel="external" target="_blank"  >remplacement de l'outil Google Maps par Open Street Map</a> (merci <a href="https://github.com/Biboba" rel="external" target="_blank">Biboba</a>)</li>
+        </ul>
+
+        <h3>Articles</h3>
+
+        <ul>
+            <li><a href="/articles/faireUnDon.php">Faire un don</a> : section Soutiens avec les entités qui ont fait un don significatif</li>
+            <li><a href="/articles/apropos.php">À propos</a> : mention de l'<a href="https://www.tdg.ch/la-decadanse-le-site-genevois-recense-les-sorties-depuis-vingt-trois-ans-925206183034" rel="external" target="_blank">article de la Tribune de Genève</a> sur La décadanse paru en décembre 2025</li>
+            <li>Corrections de quelques textes</li>
+        </ul>
+
+        <h3>Divers</h3>
+
+        <ul>
+            <li>Corrections de bugs concernant l'affichage</li>
+            <li>Mises à jour librairies, infrastructure</li>
+        </ul>
+
+        <p><a href="https://github.com/agilare/ladecadanse/releases/tag/v3.10.0" rel="external" target="_blank">Détails</a></p>
+
+    </article>
+
+    <hr>
+
+    <article class="rubrique">
+
+        <header>
             <h2>3.9.2</h2>
             <br>
             <p>9 novembre 2025</p>

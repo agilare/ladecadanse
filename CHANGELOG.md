@@ -20,7 +20,8 @@
 - edition : upgrade TinyMCE 6 to 7, fix title button (h4 -> h3)
 - deps-dev: bump js-yaml from 4.1.0 to 4.1.1
 - analyzers : update Phan 5.4 to 6.0
-- build: update PHPMailer 6 to 7
+- build : MariaDB requirement from 10.6 to 10.11
+- build : update PHPMailer 6 to 7
 
 
 ## [3.9.2] - 2025-11-09
