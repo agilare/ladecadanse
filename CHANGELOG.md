@@ -1,6 +1,6 @@
 # Changelog
 
-## [3.10.0] - Unreleased
+## [3.9.3] - 2026-02-15
 
 ### Added
 - faire un don : section "Soutiens" showing logos of supporting orgas
@@ -13,6 +13,7 @@
 - users : in register form don't show error if email is already used
 
 ### Changed
+- lieux : salle edition form modernized and cleaned #132 (thanks to @lambeletjp)
 - lieux : replace Google Maps by Leaflet and Open Street Map #134 (thanks to @Biboba)
 - à propos : add TDG article link, update Participer section
 - contribuer : add "bénévole", small texts improvements

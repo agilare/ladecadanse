@@ -38,6 +38,7 @@ include("../_header.inc.php");
 
         <ul>
             <li>Cartes : <a href="https://github.com/agilare/ladecadanse/issues/95" rel="external" target="_blank"  >remplacement de l'outil Google Maps par Open Street Map</a> (merci <a href="https://github.com/Biboba" rel="external" target="_blank">Biboba</a>)</li>
+            <li>Salles : <a href="https://github.com/agilare/ladecadanse/issues/116" rel="external" target="_blank">formulaire d'édition modernisé, structué</a> (merci <a href="https://github.com/Biboba" rel="external" target="_blank">lambeletjp</a>)</li>
         </ul>
 
         <h3>Articles</h3>
