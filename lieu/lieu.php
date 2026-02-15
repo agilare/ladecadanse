@@ -216,14 +216,14 @@ include("../_header.inc.php");
                         <li>Salles :
                             <ul class="salles">
                                 <?php foreach ($lieu_salles as $s) : ?>
-                                    <li><?= sanitizeForHtml($s['nom']) ?><?php if ($authorization->isPersonneEditor($_SESSION)) : ?><a href="/lieu-salle-edit.php?action=editer&amp;idS=<?= (int)$s['idSalle'] ?>"><?= $iconeEditer ?></a><?php endif ?></li>
+                                    <li><?= sanitizeForHtml($s['nom']) ?><?php if ($authorization->isPersonneEditor($_SESSION)) : ?><a href="/lieu/salle-edit.php?action=editer&amp;idS=<?= (int)$s['idSalle'] ?>"><?= $iconeEditer ?></a><?php endif ?></li>
                                 <?php endforeach; ?>
                             </ul>
                         </li>
                     <?php endif; ?>
 
                     <?php if ($authorization->isPersonneEditor($_SESSION)) : ?>
-                        <li><a href="/lieu-salle-edit.php?idL=<?= (int)$get['idL'] ?>"><?= $icone['ajouts'] ?>ajouter une salle</a></li>
+                        <li><a href="/lieu/salle-edit.php?idL=<?= (int)$get['idL'] ?>"><?= $icone['ajouts'] ?>ajouter une salle</a></li>
                     <?php endif; ?>
 
                     <?php

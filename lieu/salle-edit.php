@@ -1,6 +1,6 @@
 <?php
 
-require_once("app/bootstrap.php");
+require_once("../app/bootstrap.php");
 
 use Ladecadanse\Security\SecurityToken;
 use Ladecadanse\SalleEdition;
@@ -63,7 +63,7 @@ $lieux = $salleForm->getLieux();
 
 $page_titre = "ajouter/modifier une salle";
 $extra_css = ["formulaires"];
-include("_header.inc.php");
+include("../_header.inc.php");
 ?>
 
 <main id="contenu" class="colonne">
@@ -122,11 +122,11 @@ include("_header.inc.php");
 </main>
 
 <div id="colonne_gauche" class="colonne">
-<?php include("event/_navigation_calendrier.inc.php"); ?>
+<?php include("../event/_navigation_calendrier.inc.php"); ?>
 </div>
 
 <div id="colonne_droite" class="colonne">
 </div>
 
 <?php
-include("_footer.inc.php");
+include("../_footer.inc.php");

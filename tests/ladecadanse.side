@@ -4450,7 +4450,7 @@
         ["css=ul > a", "css:finder"],
         ["xpath=//a[contains(text(),'ajouter une salle')]", "xpath:link"],
         ["xpath=//div[@id='pratique']/ul/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/lieu-salle-edit.php?idL=6')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/lieu/salle-edit.php?idL=6')]", "xpath:href"],
         ["xpath=//ul/a", "xpath:position"],
         ["xpath=//a[contains(.,'ajouter une salle')]", "xpath:innerText"]
       ],
@@ -7346,7 +7346,7 @@
       "id": "cmd-salle-008",
       "comment": "Go directly to lieu-salle-edit page",
       "command": "open",
-      "target": "/lieu-salle-edit.php",
+      "target": "/lieu/salle-edit.php",
       "targets": [],
       "value": ""
     }, {
