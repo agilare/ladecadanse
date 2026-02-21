@@ -1,6 +1,6 @@
 # Changelog
 
-## [3.9.3] - 2026-02-15
+## [3.9.3] - 2026-02-22
 
 ### Added
 - faire un don : section "Soutiens" showing logos of supporting orgas
@@ -23,6 +23,9 @@
 - analyzers : update Phan 5.4 to 6.0
 - build : MariaDB requirement from 10.6 to 10.11
 - build : update PHPMailer 6 to 7
+
+### Security
+- small fixes concerning database, headers, cookies, emails
 
 
 ## [3.9.2] - 2025-11-09
