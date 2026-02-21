@@ -52,11 +52,11 @@ include("../_header.inc.php");
         <h3>Divers</h3>
 
         <ul>
-            <li>Corrections de bugs concernant l'affichage</li>
+            <li>Corrections de bugs concernant la sécurité, l'affichage</li>
             <li>Mises à jour librairies, infrastructure</li>
         </ul>
 
-        <p><a href="https://github.com/agilare/ladecadanse/releases/tag/v3.10.0" rel="external" target="_blank">Détails</a></p>
+        <p><a href="https://github.com/agilare/ladecadanse/releases/tag/v3.9.3" rel="external" target="_blank">Détails</a></p>
 
     </article>
 
