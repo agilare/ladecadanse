@@ -35,6 +35,7 @@ class Mailing {
 
         $this->mail->Subject 	= "[La décadanse] ".$title;
         $this->mail->Body = $body;
+        $this->mail->IsHTML(false);
         $this->mail->AddAddress(EMAIL_ADMIN, EMAIL_ADMIN_NAME);
         try
         {
@@ -63,6 +64,7 @@ class Mailing {
 
         $this->mail->Subject = $title;
         $this->mail->Body = $body;
+        $this->mail->IsHTML(false);
 
         if (!empty($attachementPath))
         {
