@@ -26,15 +26,11 @@ class DbConnector extends SystemComponent
     public function query(string $requete)
     {
         $this->sql = $requete;
-        if (MODE_DEBUG)
-        {
-            $result = mysqli_query($this->dbConnection, $requete) or die(mysqli_error($this->dbConnection). "\nquery : " . $requete);
+        $result = mysqli_query($this->dbConnection, $requete);
+        if ($result === false) {
+            // Le message détaillé va dans les logs PHP, jamais affiché
+            throw new \RuntimeException("Erreur SQL : " . mysqli_error($this->dbConnection) . " | Query : " . $requete);
         }
-        else
-        {
-            $result = mysqli_query($this->dbConnection, $requete) or die();
-        }
-
         return $result;
     }
 
