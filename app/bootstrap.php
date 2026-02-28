@@ -176,7 +176,7 @@ $permissions = implode(', ', [
 header("Permissions-Policy: $permissions");
 
 //header("Access-Control-Allow-Origin: *");
-header('X-Frame-Options:    SAMEORIGIN');
+//header('X-Frame-Options:    SAMEORIGIN');
 header('Referrer-Policy: no-referrer-when-downgrade'); // This sends complete URL information to a potentially trustworthy URL from modern HTTPS State or from not modern HTTPS state to any origin . Information is sent for HTTPS -> HTTPS and HTTP -> HTTPS transition . This is the default Referrer-Policy
 
 header("Cache-Control: no-store, no-cache, must-revalidate");
