@@ -84,7 +84,7 @@ $titre_form = "";
 //menu d'actions (activation et suppression)  pour l'auteur > 6 ou l'admin
 if (($get['action'] == 'editer' || $get['action'] == 'update'))
 {
-	$act = "editer&amp;idL=".$get['idL'];
+	$act = "editer&idL=".$get['idL'];
 	$titre_form = "Modifier";
 	$nom_submit = "Modifier";
 
