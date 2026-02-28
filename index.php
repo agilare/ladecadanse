@@ -268,7 +268,7 @@ include("_header.inc.php");
                     {
                         ?>
                         
-                        <?php if ($separator = $event->shouldDisplaySeparator() ? $event->getCurrentSeparator() : null) : ?>
+                        <?php if ($separator = $event->getSeparator()) : ?>
                             <p class="rappel_date"><?= $separator->getLabel($day_label, $glo_tab_genre[$genre]); ?></p>
                         <?php endif; ?>
 
