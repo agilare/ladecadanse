@@ -123,7 +123,7 @@ include("../_header.inc.php");
         <div>
             <div class="table-filters">
                 <form action="" method="get">
-                    <input type="search" name="nom" value="<?= $_SESSION['user_prefs_lieux_nom'] ?>" placeholder="Nom" aria-label="Nom">
+                    <input type="search" name="nom" value="<?= sanitizeForHtml($_SESSION['user_prefs_lieux_nom']) ?>" placeholder="Nom" aria-label="Nom">
                     <select name="categorie" class="js-select2-options-with-style" data-placeholder="Catégorie" style="width:80px">
                          <option value="" placeholder="type"></option>
                         <?php foreach ($glo_categories_lieux as $k => $label) : ?>
@@ -175,9 +175,9 @@ include("../_header.inc.php");
                     <tr >
                         <td style="max-width:70px;overflow: hidden;">
                             <?php if ($lieu['logo']) : ?>
-                            <a href="<?= Lieu::getWebPath(Lieu::getFilePath($lieu['logo']), true) ?>" class="magnific-popup"><img src="<?= Lieu::getWebPath(Lieu::getFilePath($lieu['logo'], "s_"), true) ?>" alt="Logo" class="logo" height="<?= ImageDriver2::getProportionalHeightFromGivenWidth(Lieu::getSystemFilePath(Lieu::getFilePath($lieu['logo'], "s_")), 50) ?>"></a>
+                            <a href="<?= sanitizeForHtml(Lieu::getWebPath(Lieu::getFilePath($lieu['logo']), true)) ?>" class="magnific-popup"><img src="<?= sanitizeForHtml(Lieu::getWebPath(Lieu::getFilePath($lieu['logo'], "s_"), true)) ?>" alt="Logo" class="logo" height="<?= ImageDriver2::getProportionalHeightFromGivenWidth(Lieu::getSystemFilePath(Lieu::getFilePath($lieu['logo'], "s_")), 50) ?>"></a>
                             <?php elseif ($lieu['photo1'] != '') : ?>
-                                <a href="<?= Lieu::getWebPath(Lieu::getFilePath($lieu['photo1']), true) ?>" class="gallery-item"><img src="<?= Lieu::getWebPath(Lieu::getFilePath($lieu['photo1'], "s_"), true) ?>" alt="Photo du lieu" height="<?= ImageDriver2::getProportionalHeightFromGivenWidth(Lieu::getSystemFilePath(Lieu::getFilePath($lieu['photo1'], "s_")), 50) ?>"></a>
+                                <a href="<?= sanitizeForHtml(Lieu::getWebPath(Lieu::getFilePath($lieu['photo1']), true)) ?>" class="gallery-item"><img src="<?= sanitizeForHtml(Lieu::getWebPath(Lieu::getFilePath($lieu['photo1'], "s_"), true)) ?>" alt="Photo du lieu" height="<?= ImageDriver2::getProportionalHeightFromGivenWidth(Lieu::getSystemFilePath(Lieu::getFilePath($lieu['photo1'], "s_")), 50) ?>"></a>
                             <?php else : ?>
                                 <div style="width:60px;height:40px;background: #fafafa"></div>
                             <?php endif; ?>

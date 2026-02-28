@@ -77,7 +77,7 @@ include("../_header.inc.php");
     <?php HtmlShrink::msgErreur("Il y a " . $salleForm->getErrorCount() . " erreur(s)."); ?>
 <?php endif; ?>
 
-<form method="post" id="ajouter_editer" enctype="multipart/form-data" class="js-submit-freeze-wait" action="<?= basename(__FILE__) ?>?action=<?= $act ?>">
+    <form method="post" id="ajouter_editer" enctype="multipart/form-data" class="js-submit-freeze-wait" action="<?= basename(__FILE__) ?>?action=<?= sanitizeForHtml($act) ?>">
 
 <p>* indique un champ obligatoire</p>
 

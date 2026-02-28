@@ -229,12 +229,12 @@ if (!$action_terminee)
         $req_lieu = $connector->query("SELECT nom, adresse, quartier, categorie, URL FROM lieu WHERE idLieu=".(int)$get['idL']);
         $detailsLieu = $connector->fetchArray($req_lieu);
 
-        echo '<h1>Modifier la '.$get['type'].' sur <a href="/lieu/lieu.php?idL='.(int)$get['idL'].'" title="Fiche du lieu '.sanitizeForHtml($detailsLieu['nom']).'">'.sanitizeForHtml($detailsLieu['nom']).'</a></h1>';
+        echo '<h1>Modifier la '.sanitizeForHtml($get['type']).' sur <a href="/lieu/lieu.php?idL='.(int)$get['idL'].'">'.sanitizeForHtml($detailsLieu['nom']).'</a></h1>';
     }
     else
     {
         $act = "insert&type=".$get['type'];
-        echo "<h1>Ajouter une ".$get['type']."</h1>";
+        echo "<h1>Ajouter une ".sanitizeForHtml($get['type'])."</h1>";
     }
 
 /*
@@ -270,7 +270,7 @@ if ($verif->nbErreurs() > 0)
 ?>
 
 <!-- FORMULAIRE POUR UNE DESCRIPTION -->
-    <form method="post" id="ajouter_editer" class="js-submit-freeze-wait" enctype="multipart/form-data" action="<?php echo basename(__FILE__) . "?action=" . $act; ?>">
+    <form method="post" id="ajouter_editer" class="js-submit-freeze-wait" enctype="multipart/form-data" action="<?php echo basename(__FILE__) . "?action=" . sanitizeForHtml($act); ?>">
         <?php
 if ($get['type'] == 'presentation')
 {
@@ -284,14 +284,14 @@ if ($get['type'] == 'presentation')
 <fieldset>
 <!-- Select liste des lieux -->
 
-<input type="hidden" name="type" value="<?php echo $get['type']; ?>" />
+<input type="hidden" name="type" value="<?= sanitizeForHtml($get['type']); ?>" />
 
 
 <?php
 if (($get['action'] == 'editer' || $get['action'] == 'update') && isset($get['idL']))
 {
 
-	echo "<input type=\"hidden\" name=\"idLieu\" value=\"".$get['idL']."\" />
+	echo "<input type=\"hidden\" name=\"idLieu\" value=\"".(int)$get['idL']."\" />
 	<input type=\"hidden\" name=\"idP\" value=\"".(int)$get['idP']."\" />";
 }
     else

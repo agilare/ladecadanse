@@ -249,9 +249,9 @@ require_once '../_header.inc.php';
                     <td><?php if ($ue != null) : ?><?= (int)$ue['nb_even'] ?><br><span style="color:lightsteelblue">(<?= sanitizeForHtml($ue['events_annual_avg']) ?>/an)</span><?php endif; ?></td>
                     <td><?php if ($ue != null) : ?>
                         <?php if ($ue['latest_event_months_nb'] > Personne::LOW_ACTIVITY_MONTHS_NB) : ?>
-                            <span style="<?php if ($ue['latest_event_months_nb'] > Personne::VERY_LOW_ACTIVITY_MONTHS_NB) : ?>color:red;<?php else : ?>color:orange;<?php endif ?>"><?= (new DateTime($ue['latest_event_date']))->format('m.Y') ?></span>
+                            <span style="<?php if ($ue['latest_event_months_nb'] > Personne::VERY_LOW_ACTIVITY_MONTHS_NB) : ?>color:red;<?php else : ?>color:orange;<?php endif ?>"><?= sanitizeForHtml((new DateTime($ue['latest_event_date']))->format('m.Y')) ?></span>
                             <?php else : ?>
-                            <span style="color:lightsteelblue"><?= (new DateTime($ue['latest_event_date']))->format('m.Y') ?></span>
+                            <span style="color:lightsteelblue"><?= sanitizeForHtml((new DateTime($ue['latest_event_date']))->format('m.Y')) ?></span>
                             <?php endif; ?>
                         <?php endif; ?>
                     </td>

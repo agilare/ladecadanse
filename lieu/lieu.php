@@ -409,7 +409,7 @@ include("../_header.inc.php");
         <?php
         if ($all_results_nb == 0) :  ?>
 
-            <p><?= $translator->get("lieu-events-{$get['periode']}-none") ?> <?= Lieu::prepositionToPutInSentence($lieu['determinant']) ?><strong><?= sanitizeForHtml($lieu['nom']) ?></strong></p>
+        <p><?= sanitizeForHtml($translator->get("lieu-events-{$get['periode']}-none")) ?> <?= sanitizeForHtml(Lieu::prepositionToPutInSentence($lieu['determinant'])) ?><strong><?= sanitizeForHtml($lieu['nom']) ?></strong></p>
 
         <?php else : ?>
 

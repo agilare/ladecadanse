@@ -809,7 +809,7 @@ if ($verif->nbErreurs() > 0)
     <form method="post" id="ajouter_editer" class="js-submit-freeze-wait" enctype="multipart/form-data" action="<?php echo basename(__FILE__) . "?action=" . $act ?>">
 
             <input type="text" name="name_as" value="" class="name_as" /><?php echo $verif->getHtmlErreur('name_as'); ?>
-            <input type="hidden" name="<?php echo $formTokenName; ?>" value="<?php echo $_SESSION[$formTokenName]; ?>">
+            <input type="hidden" name="<?php echo $formTokenName; ?>" value="<?php echo sanitizeForHtml($_SESSION[$formTokenName]); ?>">
 
             <div class="alert-warn">
                     <?php if (!in_array($get['action'], ['editer', 'update'])) { ?>
@@ -1243,8 +1243,8 @@ if ($verif->nbErreurs() > 0)
             {
         ?>
         <div class="supImg">
-            <a href="<?php echo Evenement::getWebPath(Evenement::getFilePath($champs['flyer']), true) ?>" class="magnific-popup" target="_blank">
-                        <img src="<?php echo Evenement::getWebPath(Evenement::getFilePath($champs['flyer'], 's_'), true) ?>" alt="Flyer de cet événement" width="100" />
+            <a href="<?= sanitizeForHtml(Evenement::getWebPath(Evenement::getFilePath($champs['flyer']), true)) ?>" class="magnific-popup" target="_blank">
+                        <img src="<?= sanitizeForHtml(Evenement::getWebPath(Evenement::getFilePath($champs['flyer'], 's_'), true)) ?>" alt="Flyer de cet événement" width="100" />
                     </a>
                     <div>
                         <label for="sup_flyer" class="continu">Supprimer</label><input type="checkbox" name="sup_flyer" id="sup_flyer" value="flyer" class="checkbox"
@@ -1278,8 +1278,8 @@ if ($verif->nbErreurs() > 0)
         {
                 echo "<div class=\"supImg\">";
             ?>
-        <a href="<?php echo Evenement::getWebPath(Evenement::getFilePath($champs['image']), true) ?>" class="magnific-popup" target="_blank">
-                    <img src="<?php echo Evenement::getWebPath(Evenement::getFilePath($champs['image'], 's_'), true) ?>" alt="Photo" width="100" />
+        <a href="<?= sanitizeForHtml(Evenement::getWebPath(Evenement::getFilePath($champs['image']), true)) ?>" class="magnific-popup" target="_blank">
+                    <img src="<?= sanitizeForHtml(Evenement::getWebPath(Evenement::getFilePath($champs['image'], 's_'), true)) ?>" alt="Photo" width="100" />
                 </a>
                 <?php
             echo "<div><label for=\"sup_image\" class=\"continu\">Supprimer</label><input type=\"checkbox\" name=\"sup_image\" id=\"sup_image\" value=\"image\" class=\"checkbox\" ";

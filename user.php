@@ -284,7 +284,7 @@ $detailsAff = $connector->fetchArray($req_affPers);
 						echo "<th>";
 					}
 
-					echo "<a href=\"?idP=" . (int)$get['idP'] . "&elements=" . $get['elements'] . "&page=" .(int) $get['page'] . "&tri=" . $att . "&ordre=" . $ordre_inverse . "&nblignes=" . $get['nblignes'] . "\">" . $th . "</a></th>";
+					echo "<a href=\"?idP=" . (int)$get['idP'] . "&elements=" . sanitizeForHtml($get['elements']) . "&page=" .(int) $get['page'] . "&tri=" . sanitizeForHtml($att) . "&ordre=" . sanitizeForHtml($ordre_inverse) . "&nblignes=" . (int)$get['nblignes'] . "\">" . $th . "</a></th>";
             }
 			}
 
@@ -335,7 +335,7 @@ $detailsAff = $connector->fetchArray($req_affPers);
 		}
 		else
 		{
-			echo '<p>Aucun '.$get['elements'].' ajouté pour le moment</p>';
+			echo '<p>Aucun '.sanitizeForHtml($get['elements']).' ajouté pour le moment</p>';
 		}//if nbrows evenements
 
 		@mysqli_free_result($req_evenement);
@@ -390,7 +390,7 @@ $detailsAff = $connector->fetchArray($req_affPers);
 						echo "<th>";
 					}
 
-					echo "<a href=\"?idP=" . (int)$get['idP'] . "&elements=" . $get['elements'] . "&page=" . (int)$get['page'] . "&tri=" . $att . "&ordre=" . $ordre_inverse . "&nblignes=" .(int) $get['nblignes'] . "\">" . $th . "</a></th>";
+					echo "<a href=\"?idP=" . (int)$get['idP'] . "&elements=" . sanitizeForHtml($get['elements']) . "&page=" . (int)$get['page'] . "&tri=" . sanitizeForHtml($att) . "&ordre=" . sanitizeForHtml($ordre_inverse) . "&nblignes=" .(int) $get['nblignes'] . "\">" . $th . "</a></th>";
             }
 			}
 			echo "<th></th></tr>";
@@ -498,7 +498,7 @@ $detailsAff = $connector->fetchArray($req_affPers);
 					echo "<th>";
 				}
 
-				echo "<a href=\"?idP=" . (int)$get['idP'] . "&elements=" . $get['elements'] . "&page=" . (int)$get['page'] . "&tri=" . $att . "&ordre=" . $ordre_inverse . "&nblignes=" . (int)$get['nblignes'] . "\">" . $th . "</a></th>";
+				echo "<a href=\"?idP=" . (int)$get['idP'] . "&elements=" . sanitizeForHtml($get['elements']) . "&page=" . (int)$get['page'] . "&tri=" . sanitizeForHtml($att) . "&ordre=" . sanitizeForHtml($ordre_inverse). "&nblignes=" . (int)$get['nblignes'] . "\">" . $th . "</a></th>";
             }
 		}
 
@@ -609,7 +609,7 @@ else if ($get['elements'] == "organisateur")
 					echo "<th>";
 				}
 
-				echo "<a href=\"?idP=" . $get['idP'] . "&elements=" . $get['elements'] . "&page=" . (int)$get['page'] . "&tri=" . $att . "&ordre=" . $ordre_inverse . "&nblignes=" . (int)$get['nblignes'] . "\">" . $th . "</a></th>";
+				echo "<a href=\"?idP=" . (int)$get['idP'] . "&elements=" . sanitizeForHtml($get['elements']) . "&page=" . (int)$get['page'] . "&tri=" . sanitizeForHtml($att) . "&ordre=" . sanitizeForHtml($ordre_inverse) . "&nblignes=" . (int)$get['nblignes'] . "\">" . $th . "</a></th>";
             }
 		}
 
@@ -656,7 +656,7 @@ else if ($get['elements'] == "organisateur")
 	}
 	else
 	{
-		echo '<p>Aucun '.$get['elements'].' ajouté pour le moment</p>';
+		echo '<p>Aucun '. sanitizeForHtml($get['elements']).' ajouté pour le moment</p>';
 	}
 
 }

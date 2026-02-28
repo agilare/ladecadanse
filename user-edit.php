@@ -268,7 +268,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 			*/
 			if ($req_insert)
 			{
-				HtmlShrink::msgOk("Personne ajoutée dans le groupe " . $champs['groupe']);
+				HtmlShrink::msgOk("Personne ajoutée dans le groupe " . sanitizeForHtml($champs['groupe']));
                 foreach ($champs as $k => $v)
 				{
 					$champs[$k] = '';
@@ -414,7 +414,7 @@ if ($get['action'] == 'editer' && isset($get['idP']))
 	}
 	else
 	{
-		HtmlShrink::msgErreur("La personne ".$get['idP']." n'existe pas");
+		HtmlShrink::msgErreur("La personne ". (int)$get['idP']." n'existe pas");
 		exit;
 	}
 
@@ -689,7 +689,7 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= UserLevel::ACTOR)) {
                 <label>Lieu</label>
                 <ul style="float:left;margin:0;padding-left:1em;">
                                     <li><a href="/lieu/lieu.php?idL=<?php echo (int)$champs['lieu']; ?>"><?php echo sanitizeForHtml($lieuTrouve['nom']); ?></a>
-                                        <input type="hidden" name="lieu" value="<?php echo $champs['lieu'];?>">
+                                        <input type="hidden" name="lieu" value="<?php echo sanitizeForHtml($champs['lieu']);?>">
                     </li>
                 </ul><div class="spacer"><!-- --></div>
             </p>

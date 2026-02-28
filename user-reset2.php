@@ -214,7 +214,7 @@ if (!$action_terminee)
         HtmlShrink::msgErreur("Il y a ".$verif->nbErreurs()." erreur(s).");
     }
     ?>
-    <form method="post" id="ajouter_editer"  class="js-submit-freeze-wait" action="?token=<?php echo $get['token'] ?>">
+    <form method="post" id="ajouter_editer"  class="js-submit-freeze-wait" action="?token=<?= sanitizeForHtml($get['token']) ?>">
 
     <fieldset>
 

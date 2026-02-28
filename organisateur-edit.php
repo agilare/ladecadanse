@@ -117,7 +117,7 @@ include("_header.inc.php");
     {
     ?>
 
-    <form  method="post" enctype="multipart/form-data" id="ajouter_editer" class="js-submit-freeze-wait" action="<?php echo basename(__FILE__)."?action=".$act; ?>">
+    <form  method="post" enctype="multipart/form-data" id="ajouter_editer" class="js-submit-freeze-wait" action="<?php echo basename(__FILE__)."?action=". sanitizeForHtml($act); ?>">
 
     <p>* indique un champ obligatoire</p>
 

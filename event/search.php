@@ -218,8 +218,8 @@ $agenda_years = range((int)date("Y"), Evenement::AGENDA_START_YEAR);
         <?php if ($get['periode'] == 'ancien') : ?>
             <form id="years-select" action="" method="get">
                 <input type="hidden" name="mots" value="<?= urldecode($get['mots']) ?>">
-                <input type="hidden" name="periode" value="<?= $get['periode'] ?>">
-                <input type="hidden" name="tri" value="<?= $get['tri'] ?>">
+                <input type="hidden" name="periode" value="<?= sanitizeForHtml($get['periode']) ?>">
+                <input type="hidden" name="tri" value="<?= sanitizeForHtml($get['tri']) ?>">
                 <label for="years">Année</label>
                 <select name="years" id="years" class="js-select2 js-auto-submiter" style="min-width:100px">
                     <?php foreach ($agenda_years as $year): ?>
