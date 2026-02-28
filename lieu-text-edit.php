@@ -6,6 +6,9 @@ use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\Logger;
 use Ladecadanse\HtmlShrink;
 
+use Symfony\Component\HtmlSanitizer\HtmlSanitizer;
+use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
+
 if (!$videur->checkGroup(8))
 {
     header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
@@ -130,6 +133,18 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 		//creation/nettoyage des valeurs à insérer dans la table
 		$pers = $_SESSION['SidPersonne'];
 		$champs['type'] = $get['type'];
+        
+        $htmlSanitizer = new HtmlSanitizer((new HtmlSanitizerConfig())
+            ->allowSafeElements()
+            ->allowElement('h3')
+            ->allowElement('blockquote')
+            ->allowElement('a', ['href', 'title', 'target'])
+            ->allowRelativeLinks(false)
+            ->allowLinkSchemes(['https', 'http', 'mailto'])
+            ->forceAttribute('a', 'rel', 'noopener noreferrer'));          
+        
+		$champs['contenu'] = $htmlSanitizer->sanitize($champs['contenu']);
+        
 
 		if ($get['action'] == 'insert')
 		{

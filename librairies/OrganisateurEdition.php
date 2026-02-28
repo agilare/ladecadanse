@@ -9,6 +9,10 @@ use Ladecadanse\Utils\ImageDriver2;
 use Ladecadanse\Document;
 use Ladecadanse\HtmlShrink;
 
+use Symfony\Component\HtmlSanitizer\HtmlSanitizer;
+use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
+
+
 class OrganisateurEdition extends Edition
 {
 
@@ -21,6 +25,7 @@ class OrganisateurEdition extends Edition
     public $verif;
     public $action;
     public $connector;
+    public $htmlSanitizer;
 
     function __construct(public $nom, public $valeurs, public $fichiers)
     {
@@ -30,6 +35,16 @@ class OrganisateurEdition extends Edition
 
         $this->erreurs = array_merge($this->valeurs, $this->fichiers);
         $this->erreurs['nom_existant'] = '';
+
+        $this->htmlSanitizer = new HtmlSanitizer((new HtmlSanitizerConfig())
+            ->allowSafeElements()
+            ->allowElement('h3')
+            ->allowElement('blockquote')
+            ->allowElement('a', ['href', 'title', 'target'])
+            ->allowRelativeLinks(false)
+            ->allowLinkSchemes(['https', 'http', 'mailto'])
+            ->forceAttribute('a', 'rel', 'noopener noreferrer'));        
+
     }
 
     #[\Override]
@@ -135,6 +150,8 @@ class OrganisateurEdition extends Edition
         $organisateur->setValues($this->valeurs);
 
         $organisateur->setValue('idpersonne', $_SESSION['SidPersonne']);
+        
+        $organisateur->setValue('presentation', $this->htmlSanitizer->sanitize($organisateur->getValue('presentation')));
 
 //		echo "enreg:";
 //		printr($lieu->getValues());
