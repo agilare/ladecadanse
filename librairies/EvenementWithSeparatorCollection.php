@@ -19,67 +19,73 @@ class EvenementWithSeparatorCollection implements \IteratorAggregate
         $this->date_next_day = date_lendemain($date_current);
     }
 
+    /**
+     * Iterates over events, wrapping each in EventWithSeparator.
+     * In chronological mode: inserts a time separator when the hour changes
+     * (e.g. 18h, 19h, 20h) and a special separator for events without a start time.
+     * In non-chronological mode: inserts a visual separator every 2 events.
+     */
     public function getIterator(): \Traversable
     {
-        $previous_even_hour = null;
-        $has_shown_autres_horaires = false;
-        $genre_even_nb = 0;
-        
+        $previous_hour = null;
+        $has_shown_no_time_separator = false;
+        $event_count = 0;
+
         foreach ($this->events as $event)
         {
-            $genre_even_nb++;
-            $show_separator = false;
-            $separator_hour = null;
-            $is_autres_horaires = false;
-            
+            $event_count++;
+            $separator = null;
+            $is_no_time = false;
+
             if (!$this->is_chronological_order)
             {
-                if (($genre_even_nb % 2 != 0) && $genre_even_nb > 1)
+                if (($event_count % 2 != 0) && $event_count > 1)
                 {
-                    $show_separator = true;
+                    $separator = new Separator(null, false);
                 }
-                
-                yield new EventWithSeparator($event, $show_separator, $separator_hour, $is_autres_horaires);
+
+                yield new EventWithSeparator($event, $separator);
                 continue;
             }
-            
+
             $horaire_debut = $event['e_horaire_debut'];
             $is_no_time = ($horaire_debut == self::NO_TIME_VALUE || $horaire_debut == $this->date_next_day . self::NO_TIME_SUFFIX);
-            
+
             if ($is_no_time)
             {
-                if (!$has_shown_autres_horaires)
+                if (!$has_shown_no_time_separator)
                 {
-                    $show_separator = true;
-                    $is_autres_horaires = true;
-                    $has_shown_autres_horaires = true;
+                    $separator = new Separator(null, true);
+                    $has_shown_no_time_separator = true;
                 }
-                
-                yield new EventWithSeparator($event, $show_separator, $separator_hour, $is_autres_horaires);
+
+                yield new EventWithSeparator($event, $separator);
                 continue;
             }
-            
-            $even_hour = $this->calculateEvenHour($horaire_debut);
-            
-            if ($previous_even_hour !== null && $even_hour != $previous_even_hour)
+
+            $hour = $this->getHour($horaire_debut);
+
+            if ($previous_hour !== null && $hour != $previous_hour)
             {
-                $show_separator = true;
-                $separator_hour = $even_hour;
+                $separator = new Separator($hour, false);
             }
-            
-            $previous_even_hour = $even_hour;
-            
-            yield new EventWithSeparator($event, $show_separator, $separator_hour, $is_autres_horaires);
+
+            $previous_hour = $hour;
+
+            yield new EventWithSeparator($event, $separator);
         }
     }
 
-    private function calculateEvenHour(string $horaire_debut): int
+    /**
+     * Extracts the hour from a datetime string.
+     * e.g. "2024-01-15 19:30:00" -> 19
+     */
+    private function getHour(string $horaire_debut): int
     {
         $time_part = mb_substr($horaire_debut, 11, 5);
         $time_parts = explode(":", $time_part);
-        $hour = (int) $time_parts[0];
-        
-        return $hour - ($hour % 2);
+
+        return (int) $time_parts[0];
     }
 }
 

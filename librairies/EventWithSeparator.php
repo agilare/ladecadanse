@@ -1,39 +1,29 @@
 <?php
 namespace Ladecadanse;
 
+/**
+ * Wraps an event array with an optional Separator for display in the agenda view.
+ * Used by EvenementWithSeparatorCollection to pair each event with its separator
+ * when iterating over a day's events grouped by time blocks.
+ */
 class EventWithSeparator
 {
     private array $event;
-    private bool $show_separator;
-    private ?int $separator_hour;
-    private bool $is_autres_horaires;
-    private ?Separator $separator = null;
+    private ?Separator $separator;
 
-    public function __construct(array $event, bool $show_separator, ?int $separator_hour, bool $is_autres_horaires)
+    public function __construct(array $event, ?Separator $separator = null)
     {
         $this->event = $event;
-        $this->show_separator = $show_separator;
-        $this->separator_hour = $separator_hour;
-        $this->is_autres_horaires = $is_autres_horaires;
+        $this->separator = $separator;
     }
 
     public function shouldDisplaySeparator(): bool
     {
-        return $this->show_separator;
+        return $this->separator !== null;
     }
 
-    public function getCurrentSeparator(): ?Separator
+    public function getSeparator(): ?Separator
     {
-        if (!$this->show_separator)
-        {
-            return null;
-        }
-
-        if ($this->separator === null)
-        {
-            $this->separator = new Separator($this->separator_hour, $this->is_autres_horaires);
-        }
-
         return $this->separator;
     }
 
@@ -42,4 +32,3 @@ class EventWithSeparator
         return $this->event;
     }
 }
-
