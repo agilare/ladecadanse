@@ -21,7 +21,6 @@ $get = [
     'idL' => (int)($_GET['idL'] ?? 0),
 ];
 
-$isAddMode = in_array($get['action'], ['ajouter', 'insert']);
 $isEditMode = in_array($get['action'], ['editer', 'update']);
 
 if ($isEditMode && $_SESSION['Sgroupe'] > UserLevel::ADMIN) {
@@ -40,20 +39,20 @@ if ($get['action'] === 'editer' && $get['idS'] > 0) {
     $salleForm->setValeur('idLieu', $get['idL']);
 }
 
+$tokenError = false;
 if (($_POST['formulaire'] ?? '') === 'ok') {
     if (!SecurityToken::check($_POST['token'] ?? '', $_SESSION['token'] ?? '')) {
-        echo "Le système de sécurité du site n'a pu authentifier votre action. Veuillez réafficher ce formulaire et réessayer";
-        exit;
-    }
+        $tokenError = true;
+    } else {
+        if ($salleForm->traitement($_POST, [])) {
+            $_SESSION['lieu_flash_msg'] = $salleForm->getMessage();
+            header("Location: /lieu/lieu.php?idL=" . (int)$salleForm->getValeur('idLieu'));
+            die();
+        }
 
-    if ($salleForm->traitement($_POST, [])) {
-        $_SESSION['lieu_flash_msg'] = $salleForm->getMessage();
-        header("Location: /lieu/lieu.php?idL=" . (int)$salleForm->getValeur('idLieu'));
-        die();
-    }
-
-    if (!$salleForm->hasErrors()) {
-        HtmlShrink::msgErreur("La requête a échoué");
+        if (!$salleForm->hasErrors()) {
+            HtmlShrink::msgErreur("La requête a échoué");
+        }
     }
 }
 
@@ -73,7 +72,9 @@ include("../_header.inc.php");
     <div class="spacer"></div>
 </header>
 
-<?php if ($salleForm->hasErrors()): ?>
+<?php if ($tokenError): ?>
+    <?php HtmlShrink::msgErreur("Le système de sécurité du site n'a pu authentifier votre action. Veuillez réafficher ce formulaire et réessayer."); ?>
+<?php elseif ($salleForm->hasErrors()): ?>
     <?php HtmlShrink::msgErreur("Il y a " . $salleForm->getErrorCount() . " erreur(s)."); ?>
 <?php endif; ?>
 

@@ -7361,14 +7361,14 @@
       "value": ""
     }, {
       "id": "cmd-salle-009b",
-      "comment": "Select lieu from dropdown (select2)",
+      "comment": "Select first available lieu from dropdown",
       "command": "select",
       "target": "id=idLieu",
       "targets": [
         ["id=idLieu", "id"],
         ["name=idLieu", "name"]
       ],
-      "value": "value=999"
+      "value": "index=1"
     }, {
       "id": "cmd-salle-011",
       "comment": "Fill salle name",
