@@ -289,6 +289,7 @@ include("_header.inc.php");
                                     include("event/_calendar_export.inc.php");
                                     unset($calExportCompact, $calExportId);
                                     ?>
+                                    <li><a href="#" class="js-favorite-toggle favorite-btn" data-event-id="<?= (int) $tab_even['e_idEvenement'] ?>" title="Favori"><i class="fa fa-heart-o fa-lg"></i></a></li>
                                 </ul>
 
                                 <?php if ($authorization->isPersonneAllowedToEditEvenement($_SESSION, $tab_even)) : ?>

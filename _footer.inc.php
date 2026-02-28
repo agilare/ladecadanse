@@ -98,6 +98,7 @@ use Ladecadanse\UserLevel;
         </script>
     <?php endif; ?>
     <?= $assets->getImportMap(['js/browser.js', 'js/global.js']); ?>
+    <script nonce="<?= CSP_NONCE ?>">window.__LADECADANSE = { isLoggedIn: <?= json_encode(!empty($_SESSION['logged'])) ?> };</script>
     <script type="module" src="<?= $assets->get("js/main.js"); ?>"></script>
 
 </body>
