@@ -142,7 +142,9 @@ $csp = implode('; ', [
     "base-uri 'self'",
     "worker-src 'none'",
 ]);
-header("Content-Security-Policy: $csp");
+if (ENV !== 'dev') {
+    header("Content-Security-Policy: $csp");
+}
 
 $permissions = implode(', ', [
     'accelerometer=()',
