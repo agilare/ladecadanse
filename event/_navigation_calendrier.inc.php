@@ -38,7 +38,7 @@ $events_next_months_count = (int) $res_eventsNextmonths['nb'];
                     {
                         $date_prev_month_last_day = (clone $date_courante)->modify('last day of -1 month')->format('Y-m-d');
                         ?>
-                        <a href="/index.php?<?php echo $url_query_region_et . "courant=" . $date_prev_month_last_day  ?>" rel="prev" title="Mois précédent" aria-label="Mois précédent"><i class="fa fa-backward"></i></a>
+                        <a href="/index.php?<?php echo $url_query_region_et . "courant=" . $date_prev_month_last_day  ?>" rel="prev" title="Mois précédent" aria-label="Mois précédent" class="js-calendar-nav" data-courant="<?= $date_prev_month_last_day ?>"><i class="fa fa-backward"></i></a>
                         <?php
                     }
                     ?>
@@ -50,7 +50,7 @@ $events_next_months_count = (int) $res_eventsNextmonths['nb'];
                     {
                         $date_next_month_first_day = (clone $date_courante)->modify('first day of +1 month')->format('Y-m-d');
                         ?>
-                        <a href="/index.php?<?php echo $url_query_region_et . "courant=" . $date_next_month_first_day ?>" rel="next" title="Mois suivant" aria-label="Mois suivant"><i class="fa fa-forward"></i></a>
+                        <a href="/index.php?<?php echo $url_query_region_et . "courant=" . $date_next_month_first_day ?>" rel="next" title="Mois suivant" aria-label="Mois suivant" class="js-calendar-nav" data-courant="<?= $date_next_month_first_day ?>"><i class="fa fa-forward"></i></a>
                     <?php } ?>
                 </th>
             </tr>
@@ -96,7 +96,7 @@ $events_next_months_count = (int) $res_eventsNextmonths['nb'];
                 $jour_classes[] = 'autre_mois';
             }
 
-            if ($day == $date_courante)
+            if (empty($calendar_no_selection) && $day == $date_courante)
             {
                 $jour_ici = ' id="cal_ici"';
             }

@@ -1553,7 +1553,7 @@ ul#menu_calendrier
 {
     list-style-type: none;
     margin:1em 0;
-    padding:0 0 0 1em;
+    padding:0;
     float:left;
     font-size:0.9em;
 }
@@ -1564,23 +1564,30 @@ ul#menu_calendrier li
     padding:0.2em 0 0.2em 8px;
 }
 
+ul#menu_calendrier li form
+{
+    display: flex;
+    justify-content: center;
+    gap: 0.3em;
+}
+
 ul#menu_calendrier li form input
 {
     border:1px solid gray;
     font-size:1.1em;
     padding:0.2em 0.2em;
+    box-sizing: border-box;
+}
 
+ul#menu_calendrier li form input[type="date"]
+{
+    min-width: 0;
 }
 
 ul#menu_calendrier li form input.submit
 {
-    border-top:1px solid gray;
-    border-right:1px solid gray;
-    border-bottom:1px solid gray;
-    border-left:none;
     font-size:0.9em;
-    padding: 0.2em 0.3em 0.25em 0.3em;
-
+    cursor: pointer;
 }
 
 @media screen and (-webkit-min-device-pixel-ratio:0)
@@ -1589,13 +1596,6 @@ ul#menu_calendrier li form input.submit
     ul#menu_calendrier li form input.submit
     {
         padding: 0.4em 0.5em 0.5em 0.5em;
-    }
-}
-
-@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
-    ul#menu_calendrier li form input.submit
-    {
-        padding: 0.3em 0.3em 0.3em 0.3em;
     }
 }
 
