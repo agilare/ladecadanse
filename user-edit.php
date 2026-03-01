@@ -682,7 +682,7 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= UserLevel::ACTOR)) {
 
         if (!empty($champs['lieu']))
         {
-            $req_lieux = $connector->query("SELECT nom FROM lieu WHERE idLieu=".$champs['lieu']);
+            $req_lieux = $connector->query("SELECT nom FROM lieu WHERE idLieu=".(int)$champs['lieu']);
             $lieuTrouve = $connector->fetchArray($req_lieux);
             ?>
                 <p>

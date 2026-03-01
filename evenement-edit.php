@@ -566,8 +566,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 
 
 			$sql_update .= "date_derniere_modif='".date("Y-m-d H:i:s")."'";
-			$sql_update .= $sql_flyer.$sql_image."
-			WHERE idEvenement=".$get['idE'];
+			$sql_update .= $sql_flyer.$sql_image." WHERE idEvenement=".(int)$get['idE'];
 
 			$req_update = $connector->query($sql_update);
 
@@ -579,7 +578,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 
 				$lienLieu = '';
 				if (!empty($lieu))
-					$lienLieu = " au <a href=\"/lieu/lieu.php?idLieu=".$lieu."\"> lieu ".$lieu."</a>";
+					$lienLieu = " au <a href=\"/lieu/lieu.php?idLieu=".(int)$lieu."\"> lieu ".$lieu."</a>";
 
 				$sql = "DELETE FROM evenement_organisateur WHERE idEvenement=" . (int) $get['idE'];
                 $req = $connector->query($sql);

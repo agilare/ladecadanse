@@ -317,7 +317,7 @@ echo $form->getHtmlErreur("quartier");
 
         $sql = "SELECT organisateur.idOrganisateur, nom
     FROM organisateur, lieu_organisateur
-    WHERE lieu_organisateur.idLieu=".$get['idL']." AND
+    WHERE lieu_organisateur.idLieu=".(int)$get['idL']." AND
      organisateur.idOrganisateur=lieu_organisateur.idOrganisateur
      ORDER BY date_ajout DESC";
 

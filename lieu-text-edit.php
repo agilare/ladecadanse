@@ -133,7 +133,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 		//creation/nettoyage des valeurs à insérer dans la table
 		$pers = $_SESSION['SidPersonne'];
 		$champs['type'] = $get['type'];
-        
+
         $htmlSanitizer = new HtmlSanitizer((new HtmlSanitizerConfig())
             ->allowSafeElements()
             ->allowElement('h3')
@@ -141,10 +141,10 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
             ->allowElement('a', ['href', 'title', 'target'])
             ->allowRelativeLinks(false)
             ->allowLinkSchemes(['https', 'http', 'mailto'])
-            ->forceAttribute('a', 'rel', 'noopener noreferrer'));          
-        
+            ->forceAttribute('a', 'rel', 'noopener noreferrer'));
+
 		$champs['contenu'] = $htmlSanitizer->sanitize($champs['contenu']);
-        
+
 
 		if ($get['action'] == 'insert')
 		{
@@ -337,7 +337,7 @@ echo $verif->getErreur('nom');
 <!-- Description Texte -->
 <p>
     <label for="contenu" style="display:block;text-align:left;float:none;">La description*&nbsp;:</label>
-        <textarea style="float:left" id="contenu" name="contenu" cols="45" rows="16" class="tinymce"><?php echo $champs['contenu']; ?></textarea>
+        <textarea style="float:left" id="contenu" name="contenu" cols="45" rows="16" class="tinymce"><?= sanitizeForHtml($champs['contenu']) ?></textarea>
 <?php
 echo $verif->getHtmlErreur('contenu');
 ?>

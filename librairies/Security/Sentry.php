@@ -268,7 +268,7 @@ class Sentry extends SystemComponent
         if ($init)
         {
             $sql = "UPDATE personne
-			SET cookie='" . $connector->sanitize($cookie) . "' WHERE idPersonne=" . $this->userdata['idPersonne'];
+			SET cookie='" . $connector->sanitize($cookie) . "' WHERE idPersonne=" . (int)$this->userdata['idPersonne'];
             //echo $sql;
             $connector->query($sql);
         }
