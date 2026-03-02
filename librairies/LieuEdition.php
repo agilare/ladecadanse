@@ -203,7 +203,7 @@ class LieuEdition extends Edition
             }
             else
             {
-                $sql_lieu = "SELECT canton FROM localite WHERE id=" . $this->connector->sanitize($this->valeurs['localite_id']);
+                $sql_lieu = "SELECT canton FROM localite WHERE id=" . (int) $this->connector->sanitize($this->valeurs['localite_id']);
                 $req_lieu = $this->connector->query($sql_lieu);
                 $tab_lieu = $this->connector->fetchArray($req_lieu);
                 $champs['region'] = $tab_lieu['canton'];
