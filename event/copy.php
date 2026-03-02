@@ -242,7 +242,7 @@ if (!empty($_POST['submit']))
 
 			foreach ($tab_event_copied as $c => $v)
 			{
-				$sql_insert_attributs .= $c.", ";
+				$sql_insert_attributs .= $connector->sanitize($c).", ";
 				$sql_insert_valeurs .= "'".$connector->sanitize($v)."', ";
 			}
 
