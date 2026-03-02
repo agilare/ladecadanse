@@ -1,3 +1,44 @@
+#genre_tab_navigation
+{
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: #fff;
+    padding: 0.6em 0;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px dotted #ccc;
+    margin-bottom: 0.8em;
+}
+
+#genre_tab_navigation ul
+{
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+#genre_tab_navigation li
+{
+    display: inline;
+}
+
+#genre_tab_navigation li + li::before
+{
+    content: " | ";
+    color: #aaa;
+}
+
+#genre_tab_navigation li a
+{
+    color: #6086B1;
+}
+
+#genre_tab_navigation li.ici a
+{
+    color: #333;
+    font-weight: bold;
+}
+
 header#entete_contenu h1
 {
     float:left;
