@@ -260,7 +260,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 			if (!empty($champs['lieu']))
             {
 				$req_insAff = $connector->query("INSERT INTO affiliation
-				(idPersonne, idAffiliation, genre) VALUES ('" . (int) $req_id . "','" . $champs['lieu'] . "','lieu')");
+				(idPersonne, idAffiliation, genre) VALUES ('" . (int) $req_id . "','" . (int)$champs['lieu'] . "','lieu')");
             }
 
 			/*
@@ -290,7 +290,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 			{
 				if ($c != "motdepasse" && $c != "newPass" && $c != "newPass2" && $c != "lieu" && $c != 'organisateurs')
 				{
-					$sql_update .= $c."='".$connector->sanitize($v)."', ";
+					$sql_update .= $connector->sanitize($c)."='".$connector->sanitize($v)."', ";
 				}
 			}
 

@@ -158,7 +158,7 @@ if ($connector->getNumRows($req_temp) == 1)
             $champs['motdepasse'] = sha1($champs['gds'].sha1((string) $champs['motdepasse']));
 
 
-			$sql_update = "UPDATE personne SET mot_de_passe='".$connector->sanitize($champs['motdepasse'])."', gds='".$connector->sanitize($champs['gds'])."', date_derniere_modif=NOW() WHERE idPersonne=".$idPersonne;
+			$sql_update = "UPDATE personne SET mot_de_passe='".$connector->sanitize($champs['motdepasse'])."', gds='".$connector->sanitize($champs['gds'])."', date_derniere_modif=NOW() WHERE idPersonne=".(int)$idPersonne;
 
 			//TEST
 			//echo "<p>".$sql_update."</p>";

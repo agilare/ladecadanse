@@ -239,7 +239,7 @@ $detailsAff = $connector->fetchArray($req_affPers);
 	if ($get['elements'] == "evenement")
 	{
 		$sql_evenement = "SELECT idEvenement, idLieu, statut, idPersonne, genre,titre, dateEvenement, nomLieu, flyer, dateAjout
-		 FROM evenement WHERE idPersonne=".(int)$get['idP']." ORDER BY ".$get['tri']." ".$get['ordre']." LIMIT ".((int)$get['page'] - 1) * (int)$get['nblignes'].",".$get['nblignes'];
+		 FROM evenement WHERE idPersonne=".(int)$get['idP']." ORDER BY ".$connector->sanitize($get['tri'])." ".$connector->sanitize($get['ordre'])." LIMIT ".((int)$get['page'] - 1) * (int)$get['nblignes'].",".(int)$get['nblignes'];
 
 
 		$req_evenement = $connector->query($sql_evenement);
@@ -453,7 +453,7 @@ $detailsAff = $connector->fetchArray($req_affPers);
 
 	$req_lieux = $connector->query("SELECT idLieu, idPersonne, nom, quartier,
 	 categorie, URL, dateAjout FROM lieu
-	 WHERE idPersonne=".(int)$get['idP']." ORDER BY ".$get['tri']." ".$get['ordre']." LIMIT ".((int)$get['page'] - 1) * (int)$get['nblignes'].",".(int)$get['nblignes']);
+	 WHERE idPersonne=".(int)$get['idP']." ORDER BY ".$connector->sanitize($get['tri'])." ".$connector->sanitize($get['ordre'])." LIMIT ".((int)$get['page'] - 1) * (int)$get['nblignes'].",".(int)$get['nblignes']);
 
 	$req_count = $connector->query("SELECT COUNT(*) AS total FROM lieu WHERE idPersonne=".(int)$get['idP']);
 	$tab_count = $connector->fetchArray($req_count);
@@ -566,7 +566,7 @@ else if ($get['elements'] == "organisateur")
 	}
 
 	$req_lieux = $connector->query("SELECT * FROM organisateur
-	 WHERE idPersonne=".(int)$get['idP']." ORDER BY ".$get['tri']." ".$get['ordre']." LIMIT ".((int)$get['page'] - 1) * (int)$get['nblignes'].",".(int)$get['nblignes']);
+	 WHERE idPersonne=".(int)$get['idP']." ORDER BY ".$connector->sanitize($get['tri'])." ".$connector->sanitize($get['ordre'])." LIMIT ".((int)$get['page'] - 1) * (int)$get['nblignes'].",".(int)$get['nblignes']);
 
 	$req_count = $connector->query("SELECT COUNT(*) AS total FROM organisateur WHERE idPersonne=".(int)$get['idP']);
 	$tab_count = $connector->fetchArray($req_count);

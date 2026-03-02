@@ -101,7 +101,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' && empty($_POST
                 $token = hash('sha256', $salt . random_int(0, 1000) . $hash);
 
                 //création de demande avec nouveau token
-                $sql = "INSERT INTO user_reset_requests (idPersonne, email, token, expiration) VALUES (" . $idPersonne . ", '" . $email . "', '" . $token . "', NOW() + INTERVAL 1 DAY)";
+                $sql = "INSERT INTO user_reset_requests (idPersonne, email, token, expiration) VALUES (" . (int)$idPersonne . ", '" . $connector->sanitize($email) . "', '" . $connector->sanitize($token) . "', NOW() + INTERVAL 1 DAY)";
 
                 $connector->query($sql);
 
