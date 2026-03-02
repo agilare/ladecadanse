@@ -111,7 +111,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
     // fill default empty fields with received values
     foreach ($champs as $c => $v)
     {
-        if (isset($_POST[$c]) && !in_array($c, 'flyer', 'image'))
+        if (isset($_POST[$c]) && !in_array($c, ['flyer', 'image']))
         {
             $champs[$c] = $_POST[$c];
         }

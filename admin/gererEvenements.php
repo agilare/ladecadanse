@@ -173,7 +173,7 @@ elseif (!empty($_POST['formulaire']))
 
 	foreach ($champs as $i => $v)
 	{
-        if (isset($_POST[$i]) && !in_array($i, 'flyer', 'image'))
+        if (isset($_POST[$i]) && !in_array($i, ['flyer', 'image']))
         {
             $champs[$i] = trim((string) $_POST[$i]);
         }
