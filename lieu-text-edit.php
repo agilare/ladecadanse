@@ -105,7 +105,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 	/*
 	 * Nom du lieu obligatoire et vê³©f si le lieu dê´©gné¡°ar idL existe bien dans la table lieu
 	 */
-	if ($connector->getNumRows($connector->query("SELECT idLieu FROM lieu WHERE idLieu=".$connector->sanitize($champs['idLieu']))) < 1)
+	if ($connector->getNumRows($connector->query("SELECT idLieu FROM lieu WHERE idLieu=".(int)$champs['idLieu'])) < 1)
 	{
 			$verif->setErreur("idLieu", "Ce lieu n'est pas dans la liste");
 	}
@@ -116,12 +116,12 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 	 */
 	if ($get['action'] == 'insert')
 	{
-		if ($connector->getNumRows($connector->query("SELECT * FROM descriptionlieu WHERE idPersonne=".$_SESSION['SidPersonne']." AND idLieu=".$connector->sanitize($champs['idLieu'])." > 0 AND type='".$get['type']."'") ))
+		if ($connector->getNumRows($connector->query("SELECT * FROM descriptionlieu WHERE idPersonne=".(int)$_SESSION['SidPersonne']." AND idLieu=".(int)$champs['idLieu']." > 0 AND type='".$connector->sanitize($get['type'])."'") ))
 		{
 			$verif->setErreur('doublon', "Vous avez déjà écrit une <a href=\"".basename(__FILE__)."?action=editer&idL=".sanitizeForHtml($champs['idLieu'])."&idP=".$_SESSION['SidPersonne']."\"  title=\"Voir la description de ".$_SESSION['user']."\">description</a> pour ce lieu");
 
 		}
-		else if ($get['type'] == 'presentation' && $connector->getNumRows($connector->query("SELECT * FROM descriptionlieu WHERE idLieu=".$connector->sanitize($champs['idLieu'])." > 0 AND type='presentation'") ))
+		else if ($get['type'] == 'presentation' && $connector->getNumRows($connector->query("SELECT * FROM descriptionlieu WHERE idLieu=".(int)$champs['idLieu']." > 0 AND type='presentation'") ))
 		{
 			$verif->setErreur('doublon', "Il y a déjà une présentation pour ce lieu.");
 
@@ -154,7 +154,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 
 			foreach ($champs as $c => $v)
 			{
-				$sql_insert_attributs .= $c.", ";
+				$sql_insert_attributs .= $connector->sanitize($c).", ";
 				$sql_insert_valeurs .= "'".$connector->sanitize($v)."', ";
 			}
 
@@ -191,8 +191,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 			$champs['date_derniere_modif'] = date("Y-m-d H:i:s");
 
 			$sql_update = "UPDATE descriptionlieu SET
-			contenu='".$connector->sanitize($champs['contenu'])."', date_derniere_modif='".$champs['date_derniere_modif']."'
-			WHERE idPersonne=".(int)$get['idP']." AND idLieu=".(int)$get['idL']." AND type='".$champs['type']."'";
+			contenu='".$connector->sanitize($champs['contenu'])."', date_derniere_modif='".$connector->sanitize($champs['date_derniere_modif'])."'
+			WHERE idPersonne=".(int)$get['idP']." AND idLieu=".(int)$get['idL']." AND type='".$connector->sanitize($champs['type'])."'";
 
 			//TEST
 			//echo "<p>".$sql_update."</p>";
@@ -261,7 +261,7 @@ if (!$action_terminee)
 if ($get['action'] == 'editer' && isset($get['idL']) && isset($get['idP']))
 {
     $sql = "SELECT idPersonne, idLieu, contenu, type, dateAjout
-    FROM descriptionlieu WHERE idLieu =".(int)$get['idL']." AND idPersonne=".(int)$get['idP']." AND type='".$get['type']."'";
+    FROM descriptionlieu WHERE idLieu =".(int)$get['idL']." AND idPersonne=".(int)$get['idP']." AND type='".$connector->sanitize($get['type'])."'";
     $req_desc = $connector->query($sql);
 
     if ($tabDesc = $connector->fetchArray($req_desc))
