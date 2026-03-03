@@ -347,7 +347,7 @@ $detailsAff = $connector->fetchArray($req_affPers);
 		// DESCRIPTIONS DE LIEUX
 
 		$req_des = $connector->query("SELECT idLieu, idPersonne, dateAjout, contenu, type
-		FROM descriptionlieu WHERE idPersonne=".(int)$get['idP']. " ORDER BY ".$get['tri']." ".$get['ordre']." LIMIT ".(int)($get['page'] - 1) * (int)$get['nblignes'].",".(int)$get['nblignes']);
+		FROM descriptionlieu WHERE idPersonne=".(int)$get['idP']. " ORDER BY ".$connector->sanitize($get['tri'])." ".$connector->sanitize($get['ordre'])." LIMIT ".(int)($get['page'] - 1) * (int)$get['nblignes'].",".(int)$get['nblignes']);
 
 		$req_nbdesc = $connector->query("SELECT COUNT(*) AS total FROM descriptionlieu WHERE idPersonne=".(int)$get['idP']);
 		$tab_nbdesc = $connector->fetchArray($req_nbdesc);
