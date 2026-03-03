@@ -53,7 +53,19 @@ trait HasDocuments
 
     public static function rmImageAndItsMiniature(string $fileName): void
     {
-        unlink(self::getSystemFilePath(self::getFilePath($fileName)));
-        unlink(self::getSystemFilePath(self::getFilePath($fileName, "s_")));
+        $safeName = basename($fileName);
+        if ($safeName === '') {
+            return;
+        }
+        $safeDir = realpath(self::$systemDirPath);
+        if ($safeDir === false) {
+            return;
+        }
+        foreach ([$safeName, 's_' . $safeName] as $name) {
+            $resolvedPath = realpath($safeDir . DIRECTORY_SEPARATOR . $name);
+            if ($resolvedPath !== false && str_starts_with($resolvedPath, $safeDir . DIRECTORY_SEPARATOR)) {
+                unlink($resolvedPath);
+            }
+        }
     }
 }

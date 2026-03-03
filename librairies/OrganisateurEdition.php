@@ -204,10 +204,7 @@ class OrganisateurEdition extends Edition
                 // suppression des fichiers de l'ancienne image
                 if ($organisateur->getValue('logo') != '')
                 {
-                    unlink($rep_uploads_organisateurs . $organisateur->getValue('logo'));
-                    unlink($rep_uploads_organisateurs . "s_" . $organisateur->getValue('logo'));
-
-                    //echo "<div class=\"msg\">Ancienne image supprimée</div>";
+                    $this->safeUnlinkImageAndThumb($rep_uploads_organisateurs, $organisateur->getValue('logo'));
                 }
 
                 $organisateur->setValue('logo', Document::getFilename($this->fichiers['logo']['name'], $organisateur->getId(), 'logo', ''));
@@ -217,8 +214,7 @@ class OrganisateurEdition extends Edition
                 // suppression des fichiers de l'image, s'il elle est effectivement enregistrée
                 if ($organisateur->getValue('logo') != '')
                 {
-                    unlink($rep_uploads_organisateurs . $organisateur->getValue('logo'));
-                    unlink($rep_uploads_organisateurs . "s_" . $organisateur->getValue('logo'));
+                    $this->safeUnlinkImageAndThumb($rep_uploads_organisateurs, $organisateur->getValue('logo'));
                 }
 
                 $organisateur->setValue('logo', '');
@@ -229,10 +225,7 @@ class OrganisateurEdition extends Edition
                 // suppression des fichiers de l'ancienne image
                 if ($organisateur->getValue('photo') != '')
                 {
-                    unlink($rep_uploads_organisateurs . $organisateur->getValue('photo'));
-                    unlink($rep_uploads_organisateurs . "s_" . $organisateur->getValue('photo'));
-
-                    //echo "<div class=\"msg\">Ancienne image supprimée</div>";
+                    $this->safeUnlinkImageAndThumb($rep_uploads_organisateurs, $organisateur->getValue('photo'));
                 }
 
                 $organisateur->setValue('photo', Document::getFilename($this->fichiers['photo']['name'], $organisateur->getId(), 'photo', ''));
@@ -245,8 +238,7 @@ class OrganisateurEdition extends Edition
                 // suppression des fichiers de l'image, s'il elle est effectivement enregistrée
                 if ($organisateur->getValue('photo') != '')
                 {
-                    unlink($rep_uploads_organisateurs . $organisateur->getValue('photo'));
-                    unlink($rep_uploads_organisateurs . "s_" . $organisateur->getValue('photo'));
+                    $this->safeUnlinkImageAndThumb($rep_uploads_organisateurs, $organisateur->getValue('photo'));
                 }
 
                 $organisateur->setValue('photo', '');
