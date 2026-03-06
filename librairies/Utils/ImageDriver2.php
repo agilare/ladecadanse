@@ -148,7 +148,12 @@ class ImageDriver2 extends SystemComponent {
        if ($this->IMGtype != "evenement" && $this->IMGtype != "")
            $slash = "/";
 
-       $cheminImage = $this->IMGracine.$this->IMGtype.$slash.$imageCreated;
+       $safeImageCreated = basename($imageCreated);
+       if ($safeImageCreated === '') {
+           $this->erreur = "Nom de fichier invalide";
+           return false;
+       }
+       $cheminImage = $this->IMGracine.$this->IMGtype.$slash.$safeImageCreated;
        $mime_type = mime_content_type($imageSource['tmp_name']);
         $originaltransparentcolor = -1;
 
