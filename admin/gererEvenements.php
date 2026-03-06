@@ -531,8 +531,7 @@ elseif (!empty($_POST['formulaire']))
 			}
 			elseif (!empty($fichiers['flyer']['name']))
 			{
-                copy(Evenement::getSystemFilePath(Evenement::getFilePath($srcFlyer)), Evenement::getSystemFilePath(Evenement::getFilePath($champs['flyer'])));
-                copy(Evenement::getSystemFilePath(Evenement::getFilePath($srcFlyer, "s_")), Evenement::getSystemFilePath(Evenement::getFilePath($champs['flyer'], "s_")));
+                Evenement::safeCopyWithMiniature($srcFlyer, $champs['flyer']);
             }
 
             if (!empty($fichiers['image']['name']) && $compteur_evenements == 0)
@@ -547,8 +546,7 @@ elseif (!empty($_POST['formulaire']))
 			}
 			elseif (!empty($fichiers['image']['name']))
 			{
-                copy(Evenement::getSystemFilePath(Evenement::getFilePath($src_image)), Evenement::getSystemFilePath(Evenement::getFilePath($champs['image'])));
-                copy(Evenement::getSystemFilePath(Evenement::getFilePath($src_image, "s_")), Evenement::getSystemFilePath(Evenement::getFilePath($champs['image'], "s_")));
+                Evenement::safeCopyWithMiniature($src_image, $champs['image']);
             }
 
             foreach ($champs['organisateurs'] as $no => $idOrg)

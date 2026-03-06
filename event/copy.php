@@ -271,15 +271,13 @@ if (!empty($_POST['submit']))
 
                 if (!empty($tab_event_copied['flyer']))
 				{
-                    copy(Evenement::getSystemFilePath(Evenement::getFilePath($flyer_orig)), Evenement::getSystemFilePath(Evenement::getFilePath($tab_event_copied['flyer'])));
-                    copy(Evenement::getSystemFilePath(Evenement::getFilePath($flyer_orig, "s_")), Evenement::getSystemFilePath(Evenement::getFilePath($tab_event_copied['flyer'], "s_")));
+                    Evenement::safeCopyWithMiniature($flyer_orig, $tab_event_copied['flyer']);
                     $flyer = '';
 		        }
 
 				if (!empty($tab_event_copied['image']))
 				{
-                    copy(Evenement::getSystemFilePath(Evenement::getFilePath($image_orig)), Evenement::getSystemFilePath(Evenement::getFilePath($tab_event_copied['image'])));
-                    copy(Evenement::getSystemFilePath(Evenement::getFilePath($image_orig, "s_")), Evenement::getSystemFilePath(Evenement::getFilePath($tab_event_copied['image'], "s_")));
+                    Evenement::safeCopyWithMiniature($image_orig, $tab_event_copied['image']);
                 }
 
                 $req_orga = $connector->query("SELECT idOrganisateur FROM evenement_organisateur WHERE idEvenement=".(int)$get['idE']);

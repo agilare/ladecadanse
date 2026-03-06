@@ -51,6 +51,36 @@ trait HasDocuments
 	    return $result;
     }
 
+    public static function safeCopyWithMiniature(string $srcFileName, string $destFileName): void
+    {
+        $safeDir = realpath(self::$systemDirPath);
+        if ($safeDir === false) {
+            return;
+        }
+
+        $safeSrc = basename($srcFileName);
+        $safeDest = basename($destFileName);
+        if ($safeSrc === '' || $safeDest === '') {
+            return;
+        }
+
+        foreach (['', 's_'] as $prefix) {
+            $srcFullPath = realpath($safeDir . DIRECTORY_SEPARATOR . static::getFilePath($safeSrc, $prefix));
+            if ($srcFullPath === false || !str_starts_with($srcFullPath, $safeDir . DIRECTORY_SEPARATOR)) {
+                continue;
+            }
+
+            $destFilePath = static::getFilePath($safeDest, $prefix);
+            $destFullPath = $safeDir . DIRECTORY_SEPARATOR . $destFilePath;
+            $destDirPath = realpath(dirname($destFullPath));
+            if ($destDirPath === false || !str_starts_with($destDirPath . DIRECTORY_SEPARATOR, $safeDir . DIRECTORY_SEPARATOR)) {
+                continue;
+            }
+
+            copy($srcFullPath, $destFullPath);
+        }
+    }
+
     public static function rmImageAndItsMiniature(string $fileName): void
     {
         $safeName = basename($fileName);
