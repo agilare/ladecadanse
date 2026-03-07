@@ -202,9 +202,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 
 		$tab_user = $connector->fetchArray($getUser);
 
-		//print_r($tab_user);
 		//Si au moins un enregistrement de personne est trouvé
-		if (sha1($tab_user['gds'].sha1((string) $champs['motdepasse'])) != $tab_user['mot_de_passe'])
+        if ((sha1($tab_user['gds'] . sha1($champs['motdepasse'])) != $tab_user['mot_de_passe']) && !password_verify($champs['motdepasse'], $tab_user['mot_de_passe']))
 		{
 			$verif->setErreur("motdepasse", "Faux mot de passe");
 		}
@@ -215,15 +214,12 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
         $verif->setErreur("pseudo", "Le système de sécurité du site n'a pu authentifier votre action. Veuillez réafficher ce formulaire et réessayer");
     }
 
-	/*
-	 * PAS D'ERREUR, donc ajout ou update executés
-	 */
 	if ($verif->nbErreurs() === 0)
 	{
 		if (!empty($champs['newPass']))
 		{
-			$champs['gds'] = mb_substr(sha1(uniqid((string) random_int(0, mt_getrandmax()), true)), 0, 5);
-            $champs['mot_de_passe'] = sha1($champs['gds'].sha1((string) $champs['newPass']));
+			$champs['gds'] = '';
+            $champs['mot_de_passe'] = password_hash($champs['newPass'], PASSWORD_DEFAULT);
 		}
 
 		if ($_SESSION['Sgroupe'] > UserLevel::SUPERADMIN) {

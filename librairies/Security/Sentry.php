@@ -137,16 +137,31 @@ class Sentry extends SystemComponent
             {
                 $this->userdata = $connector->fetchArray($getUser);
 
-                // exception pour admin
-                if ($this->userdata['groupe'] == UserLevel::SUPERADMIN)
-                    $goodRedirect = "admin/index.php";
+                $isPassCorrectOldMethod = sha1($this->userdata['gds'] . sha1($pass)) === $this->userdata['mot_de_passe'];
+                $isPassCorrectNewMethod = password_verify($pass, $this->userdata['mot_de_passe']);
 
-                if ((sha1($this->userdata['gds'] . sha1($pass)) == $this->userdata['mot_de_passe']) || password_verify($pass, (string) $this->userdata['mot_de_passe']))
+                // pass matches one of the 2 methods
+                if ($isPassCorrectOldMethod || $isPassCorrectNewMethod)
                 {
-                    $connector->query("UPDATE personne SET last_login = now() WHERE idPersonne=".(int)$this->userdata['idPersonne']);
+                    $sql_update_pass = '';
+                    if ($isPassCorrectOldMethod || password_needs_rehash($this->userdata['mot_de_passe'], PASSWORD_DEFAULT)) //
+                    {
+                        $newPassHash = password_hash($pass, PASSWORD_DEFAULT);
+                        $sql_update_pass =  ", mot_de_passe = '". $newPassHash. "',  gds=''";
+                        $this->userdata['mot_de_passe'] = $newPassHash;
+                    }
+
+                    $connector->query("UPDATE personne SET last_login = now() $sql_update_pass WHERE idPersonne=".(int)$this->userdata['idPersonne']);
                     session_regenerate_id(true); // to avoid session fixation attack
                     $this->_setSession($this->userdata, $memoriser);
                     $logger->log('global', 'activity', "[Sentry] login of " . $_SESSION["user"], Logger::GRAN_YEAR);
+
+
+                    // exception pour admin
+                    if ($this->userdata['groupe'] == UserLevel::SUPERADMIN)
+                    {
+                        $goodRedirect = "admin/index.php";
+                    }
 
                     if ($goodRedirect)
                     {

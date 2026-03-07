@@ -97,8 +97,6 @@ if ($connector->getNumRows($req_temp) == 1)
 				// un seul row donc
 				$tab_auth = $connector->fetchArray($req_auth);
 			}
-
-
 		}
 
 		$idPersonne = '';
@@ -149,20 +147,12 @@ if ($connector->getNumRows($req_temp) == 1)
 			}
 		}
 
-		/*
-		 * PAS D'ERREUR
-		 */
 		if ($verif->nbErreurs() === 0)
 		{
-			$champs['gds'] = mb_substr(sha1(uniqid((string) random_int(0, mt_getrandmax()), true)), 0, 5);
-            $champs['motdepasse'] = sha1($champs['gds'].sha1((string) $champs['motdepasse']));
-
+			$champs['gds'] = '';
+            $champs['motdepasse'] = password_hash($champs['motdepasse'], PASSWORD_DEFAULT);
 
 			$sql_update = "UPDATE personne SET mot_de_passe='".$connector->sanitize($champs['motdepasse'])."', gds='".$connector->sanitize($champs['gds'])."', date_derniere_modif=NOW() WHERE idPersonne=".(int)$idPersonne;
-
-			//TEST
-			//echo "<p>".$sql_update."</p>";
-			//
 
 			$sql_delete = "DELETE FROM user_reset_requests WHERE token='" . $connector->sanitize($get['token']) . "'";
 
