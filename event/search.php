@@ -148,7 +148,8 @@ if (!empty($get['years']))
     $sql_params[] = $get['years'];
 }
 
-$sql_select .= ' ORDER BY ' . (($get['tri'] == "dateAjout" || $get['tri'] == "dateEvenement") ? "e." . $get['tri'] : 'score') . ' DESC'.($get['tri'] != "dateEvenement" ? ", e.dateEvenement DESC" : '');
+$triToColumn = ["pertinence" => "score", "dateEvenement" => "e.dateEvenement", "dateAjout" => "e.dateAjout"];
+$sql_select .= ' ORDER BY ' . ($triToColumn[$get['tri']] ?? 'score') . ' DESC' . ($get['tri'] != "dateEvenement" ? ", e.dateEvenement DESC" : '');
 $sql_select .= " LIMIT " . (int) (($get['page'] - 1) * $results_per_page) . ", " . (int) $results_per_page;
 //dump($sql_params);
 $stmt = $connectorPdo->prepare($sql_select);
