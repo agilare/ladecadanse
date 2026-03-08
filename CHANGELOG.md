@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.9.4] - 2026-03-08
+
+### Security
+- authentication : bcrypt password hash handling, auto-migration when user sign in #46
+- various html outpouts sanitized
+- add Symfony Html Sanitizer to clean rich texts inputs of lieux and organizers
+- add sanitizing against sql injections in events, lieux, orgas, users
+- prevent path traversal from http or DB input when processing flyers, images, logo... of event, lieux, orgas
+- add headers & attachments sanitizations in Mailing
+- removed obsolete X-Frame-Options header
+- deps-dev : bump minimatch from 3.1.2 to 3.1.5
+
 ## [3.9.3] - 2026-02-22
 
 ### Added
