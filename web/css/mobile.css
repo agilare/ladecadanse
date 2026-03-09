@@ -323,6 +323,18 @@ ul.menu_actions_evenement li.format_imprimable, #entete_contenu ul li.format_imp
     display:none;
 }
 
+ul.menu_action li a,
+ul.menu_actions_evenement .calendar-export-wrapper a.dropdown
+{
+    padding: 0.5em;
+    font-size: 1.2em;
+}
+
+.calendar-export-menu li a
+{
+    padding: 0.6em 1em;
+}
+
 a.url, #evenement #pratique .lien_ext
 {
     word-wrap: break-word;
