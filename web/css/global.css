@@ -1402,8 +1402,8 @@ table#calendrier
 
     /*width:180px;*/
     width:100%; /* plus responsive qu'en px*/
+    table-layout: fixed;
 }
-
 
 table#calendrier tr#mois th
 {
@@ -1548,6 +1548,23 @@ table#calendrier td.auj
     background-color:yellow;
 }
 
+
+a.calendar-back-today
+{
+    display: block;
+    text-align: center;
+    padding: 0.3em 0.4em;
+    font-size: 0.85em;
+    color: #333;
+    background-color: #eaeaea;
+    border: 1px solid gray;
+}
+
+a.calendar-back-today:hover
+{
+    background-color: #d5d5d5;
+    color: #111;
+}
 
 ul#menu_calendrier
 {

@@ -21,6 +21,15 @@ if (!empty($courant_input) && preg_match("/^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}$/", $
     $get['courant'] = $courant_input;
 }
 
-$calendar_no_selection = true;
+// Allow highlighting the page's current date when it falls in the displayed month
+$page_courant_input = trim((string) ($_GET['page_courant'] ?? ''));
+if (!empty($page_courant_input) && preg_match("/^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}$/", $page_courant_input))
+{
+    $calendar_page_courant = $page_courant_input;
+}
+else
+{
+    $calendar_no_selection = true;
+}
 
 include("_navigation_calendrier.inc.php");

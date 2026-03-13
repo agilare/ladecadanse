@@ -232,6 +232,8 @@ const HomePage =
 
 const Calendar =
 {
+    pageCourant : '',
+
     init : function bindCalendarNavigation()
     {
         const $container = $('#navigation_calendrier');
@@ -239,6 +241,8 @@ const Calendar =
         {
             return;
         }
+
+        Calendar.pageCourant = $container.data('page-courant') || '';
 
         $container.on('click', '.js-calendar-nav', function handleCalendarNav(e)
         {
@@ -250,7 +254,8 @@ const Calendar =
 
     loadMonth : function fetchAndReplaceCalendar(courant)
     {
-        fetch(`/event/calendrier-ajax.php?courant=${encodeURIComponent(courant)}`, {
+        const pageCourant = Calendar.pageCourant || '';
+        fetch(`/event/calendrier-ajax.php?courant=${encodeURIComponent(courant)}&page_courant=${encodeURIComponent(pageCourant)}`, {
                 headers: { 'X-Requested-With': 'XMLHttpRequest' }
             })
             .then(function handleResponse(response)
