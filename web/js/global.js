@@ -13,6 +13,7 @@ export const AppGlobal =
         Events.init();
         Lieux.init();
         HomePage.init();
+        Calendar.init();
     },
     commonInteractions : function bindEventsOfVariousInteractions()
     {
@@ -227,6 +228,60 @@ const HomePage =
     }
 };
 
+
+
+const Calendar =
+{
+    pageCourant : '',
+
+    init : function bindCalendarNavigation()
+    {
+        const $container = $('#navigation_calendrier');
+        if ($container.length === 0)
+        {
+            return;
+        }
+
+        Calendar.pageCourant = $container.data('page-courant') || '';
+
+        $container.on('click', '.js-calendar-nav', function handleCalendarNav(e)
+        {
+            e.preventDefault();
+            const courant = $(this).data('courant');
+            Calendar.loadMonth(courant);
+        });
+    },
+
+    loadMonth : function fetchAndReplaceCalendar(courant)
+    {
+        const pageCourant = Calendar.pageCourant || '';
+        fetch(`/event/calendrier-ajax.php?courant=${encodeURIComponent(courant)}&page_courant=${encodeURIComponent(pageCourant)}`, {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            })
+            .then(function handleResponse(response)
+            {
+                if (!response.ok)
+                {
+                    throw new Error('Network response was not ok');
+                }
+                return response.text();
+            })
+            .then(function replaceCalendarHtml(html)
+            {
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = html;
+                const newNav = tempDiv.querySelector('#navigation_calendrier');
+                if (newNav)
+                {
+                    $('#navigation_calendrier').html(newNav.innerHTML);
+                }
+            })
+            .catch(function fallbackToFullNavigation()
+            {
+                window.location.href = `/index.php?courant=${encodeURIComponent(courant)}`;
+            });
+    }
+};
 
 
 function showhide(show, hide)
