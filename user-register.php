@@ -223,7 +223,7 @@ include("_header.inc.php");
                     if (!empty($tab_pers['mot_de_passe']))
                     {
                         $champs['gds'] = '';
-                        $champs['mot_de_passe'] = password_hash($champs['mot_de_passe'], PASSWORD_DEFAULT);
+                        $champs['mot_de_passe'] = password_hash($tab_pers['mot_de_passe'], PASSWORD_DEFAULT);
                     }
 
                     $sql_update = "UPDATE personne SET mot_de_passe='" . $champs['mot_de_passe'] . "', gds='" . $champs['gds'] . "', statut='actif' WHERE idPersonne=" . (int) $req_id;
