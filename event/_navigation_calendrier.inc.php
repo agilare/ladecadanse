@@ -12,9 +12,6 @@ $date_courante = new DateTime($get['courant']);
 $first_day_of_month = (clone $date_courante)->modify('first day of this month');
 // Trouver le dernier jour du mois
 $last_day_of_month = (clone $date_courante)->modify('last day of this month');
-// Aller au dimanche de la semaine ISO contenant ce jour
-$sunday_of_last_week = (clone $last_day_of_month)->modify('sunday this week');
-
 $date_today = new DateTime();
 
 // nb of ALL events after this month, published and in current region
@@ -27,7 +24,7 @@ $events_next_months_count = (int) $res_eventsNextmonths['nb'];
 
 ?>
 
-<nav id="navigation_calendrier" >
+<nav id="navigation_calendrier" data-page-courant="<?= htmlspecialchars($get['courant']) ?>">
     <table id="calendrier">
         <thead>
             <tr id="mois">
@@ -38,7 +35,7 @@ $events_next_months_count = (int) $res_eventsNextmonths['nb'];
                     {
                         $date_prev_month_last_day = (clone $date_courante)->modify('last day of -1 month')->format('Y-m-d');
                         ?>
-                        <a href="/index.php?<?php echo $url_query_region_et . "courant=" . $date_prev_month_last_day  ?>" rel="prev" title="Mois précédent" aria-label="Mois précédent"><i class="fa fa-backward"></i></a>
+                        <a href="/index.php?<?php echo $url_query_region_et . "courant=" . $date_prev_month_last_day  ?>" rel="prev" title="Mois précédent" aria-label="Mois précédent" class="js-calendar-nav" data-courant="<?= $date_prev_month_last_day ?>"><i class="fa fa-backward"></i></a>
                         <?php
                     }
                     ?>
@@ -50,7 +47,7 @@ $events_next_months_count = (int) $res_eventsNextmonths['nb'];
                     {
                         $date_next_month_first_day = (clone $date_courante)->modify('first day of +1 month')->format('Y-m-d');
                         ?>
-                        <a href="/index.php?<?php echo $url_query_region_et . "courant=" . $date_next_month_first_day ?>" rel="next" title="Mois suivant" aria-label="Mois suivant"><i class="fa fa-forward"></i></a>
+                        <a href="/index.php?<?php echo $url_query_region_et . "courant=" . $date_next_month_first_day ?>" rel="next" title="Mois suivant" aria-label="Mois suivant" class="js-calendar-nav" data-courant="<?= $date_next_month_first_day ?>"><i class="fa fa-forward"></i></a>
                     <?php } ?>
                 </th>
             </tr>
@@ -61,8 +58,11 @@ $events_next_months_count = (int) $res_eventsNextmonths['nb'];
         </thead>
         <tbody>
         <?php
-        // Créer la période de dates jour par jour
-        $period = new DatePeriod((clone $first_day_of_month)->modify('monday this week'), new DateInterval('P1D'), (clone $last_day_of_month)->modify('sunday this week')->modify('+1 day'));
+        // Créer la période de dates jour par jour (always 6 rows = 42 days to prevent layout jumps)
+        $period_start = (clone $first_day_of_month)->modify('monday this week');
+        $period_end = (clone $period_start)->modify('+42 days');
+        $period = new DatePeriod($period_start, new DateInterval('P1D'), $period_end);
+        $selection_date = !empty($calendar_page_courant) ? new DateTime($calendar_page_courant) : $date_courante;
         foreach ($period as $day)
         {
             // lundi : prefixé d'un <td></td> contenant lien pour voir la semaine
@@ -96,7 +96,7 @@ $events_next_months_count = (int) $res_eventsNextmonths['nb'];
                 $jour_classes[] = 'autre_mois';
             }
 
-            if ($day == $date_courante)
+            if (empty($calendar_no_selection) && $day->format('Y-m-d') == $selection_date->format('Y-m-d'))
             {
                 $jour_ici = ' id="cal_ici"';
             }
@@ -123,10 +123,23 @@ $events_next_months_count = (int) $res_eventsNextmonths['nb'];
             }
         }
         ?>
-        <tbody>
+        </tbody>
     </table>
 
     <ul id="menu_calendrier">
+        <?php if ($date_courante->format('Y-m') !== $selection_date->format('Y-m')) {
+            $selection_is_before = $selection_date < $date_courante;
+            $selection_date_formatted = $selection_date->format('Y-m-d');
+            $selection_date_label = $selection_date->format('j') . ' ' . mois2fr($selection_date->format('n')) . ' ' . $selection_date->format('Y');
+            $arrow_icon = $selection_is_before ? '<i class="fa fa-chevron-left"></i> ' : '';
+            $arrow_icon_after = $selection_is_before ? '' : ' <i class="fa fa-chevron-right"></i>';
+        ?>
+            <li>
+                <a href="/index.php?<?= $url_query_region_et ?>courant=<?= $selection_date_formatted ?>"
+                   class="js-calendar-nav calendar-back-today"
+                   data-courant="<?= $selection_date_formatted ?>"><?= $arrow_icon . $selection_date_label . $arrow_icon_after ?></a>
+            </li>
+        <?php } ?>
         <li>
             <form action="/index.php" method="get">
                 <input type="date" name="courant" size="12" aria-label="Date"><input type="submit" class="submit" name="formulaire" value="OK" aria-label="Aller à cette date du calendrier">
