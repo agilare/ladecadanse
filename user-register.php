@@ -222,12 +222,11 @@ include("_header.inc.php");
 
                     if (!empty($tab_pers['mot_de_passe']))
                     {
-                        $champs['gds'] = mb_substr(sha1(uniqid((string) random_int(0, mt_getrandmax()), true)), 0, 5);
-                    $champs['mot_de_passe'] = sha1($champs['gds'] . sha1((string) $tab_pers['mot_de_passe']));
+                        $champs['gds'] = '';
+                        $champs['mot_de_passe'] = password_hash($champs['mot_de_passe'], PASSWORD_DEFAULT);
                     }
 
-                    $sql_update = "UPDATE personne SET mot_de_passe='" . $champs['mot_de_passe'] . "', gds='" . $champs['gds'] . "',
-                statut='actif' WHERE idPersonne=" . (int) $req_id;
+                    $sql_update = "UPDATE personne SET mot_de_passe='" . $champs['mot_de_passe'] . "', gds='" . $champs['gds'] . "', statut='actif' WHERE idPersonne=" . (int) $req_id;
 
                 //message résultat et réinit
                     if ($connector->query($sql_update))

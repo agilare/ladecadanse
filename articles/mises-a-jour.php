@@ -19,6 +19,29 @@ include("../_header.inc.php");
         <h1>Mises à jour</h1>
         <div class="spacer"></div>
     </header>
+    <article class="rubrique">
+
+        <header>
+            <h2>3.9.4</h2>
+            <br>
+            <p>8 mars 2026</p>
+        </header>
+
+        <h3>Sécurité</h3>
+
+        <ul>
+            <li>Utilisateurs : renforcement du cryptage des mots de passe</li>
+            <li>Protection étendue contre les tentatives malveillants de modifier l'affichage et le comportement du site</li>
+            <li>Multiples sécurisations des accès au système et à la base de données</li>
+            <li>Les emails envoyés depuis le site sont mieux protégés contre les hacks</li>
+            <li>Diverses autres mesures</li>
+        </ul>
+
+        <p><a href="https://github.com/agilare/ladecadanse/releases/tag/v3.9.4" rel="external" target="_blank">Détails</a></p>
+
+    </article>
+
+    <hr>
 
     <article class="rubrique">
 

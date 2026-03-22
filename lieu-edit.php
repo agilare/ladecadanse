@@ -84,7 +84,7 @@ $titre_form = "";
 //menu d'actions (activation et suppression)  pour l'auteur > 6 ou l'admin
 if (($get['action'] == 'editer' || $get['action'] == 'update'))
 {
-	$act = "editer&amp;idL=".$get['idL'];
+	$act = "editer&idL=".$get['idL'];
 	$titre_form = "Modifier";
 	$nom_submit = "Modifier";
 
@@ -120,7 +120,7 @@ include("_header.inc.php");
     {
     ?>
 
-    <form  method="post" enctype="multipart/form-data" id="ajouter_editer" class="js-submit-freeze-wait" action="<?php echo basename(__FILE__)."?action=".$act; ?>">
+    <form  method="post" enctype="multipart/form-data" id="ajouter_editer" class="js-submit-freeze-wait" action="<?php echo basename(__FILE__)."?action=".sanitizeForHtml($act); ?>">
 
     <p>* indique un champ obligatoire</p>
     <p>Si vous souhaitez modifier le nom du lieu, ses catégories, ses organisateurs ou les photos de la galerie, merci de nous <a href="/misc/contacteznous.php">contacter</a></p>
@@ -317,7 +317,7 @@ echo $form->getHtmlErreur("quartier");
 
         $sql = "SELECT organisateur.idOrganisateur, nom
     FROM organisateur, lieu_organisateur
-    WHERE lieu_organisateur.idLieu=".$get['idL']." AND
+    WHERE lieu_organisateur.idLieu=".(int)$get['idL']." AND
      organisateur.idOrganisateur=lieu_organisateur.idOrganisateur
      ORDER BY date_ajout DESC";
 
@@ -585,7 +585,7 @@ echo $form->getHtmlErreur("quartier");
 
     <input type="hidden" name="dateAjout" value="<?php echo $form->getValeur('dateAjout') ?>" />
     <input type="hidden" name="idPersonne" value="<?php  echo $form->getValeur('idpersonne') ?>" />
-    <input type="hidden" name="idLieu" value="<?php echo $get['idL'] ?>" />
+    <input type="hidden" name="idLieu" value="<?php echo (int) $get['idL'] ?>" />
 
 <p class="piedForm">
     <input type="hidden" name="formulaire" value="ok" />

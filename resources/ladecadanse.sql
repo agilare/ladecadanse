@@ -1230,7 +1230,7 @@ DROP TABLE IF EXISTS `personne`;
 CREATE TABLE `personne` (
   `idPersonne` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `pseudo` varchar(80) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `mot_de_passe` varchar(60) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `mot_de_passe` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `cookie` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
   `groupe` tinyint(4) unsigned NOT NULL,
   `statut` enum('actif','inactif','demande') COLLATE utf8mb4_unicode_ci NOT NULL,

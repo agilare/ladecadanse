@@ -217,13 +217,13 @@ include("_header.inc.php");
     <header id="entete_contenu">
         <hgroup>
             <h1 class="accueil"><?= ucfirst((string) date_fr($get['courant'])); ?><sup style="font-size:0.7em;color:#999"><?= $count_events_today_in_region ?></sup>
-                <?php if ($courant_year !== date("Y")) { echo $courant_year; } ?>
+                <?php if ($courant_year !== date("Y")) { echo (int) $courant_year; } ?>
                 <?php if ($is_courant_today) : ?><br>
                     <small>Aujourd’hui <a href="/event/rss.php?type=evenements_auj" title="Flux RSS des événements du jour" class="desktop"><i class="fa fa-rss fa-lg"></i></a></small><?php endif; ?>
             </h1>
         </hgroup>
         <ul class="entete_contenu_navigation">
-            <li><a href="index.php?courant=<?= $date_prev ?>" rel="prev nofollow"><?= $iconePrecedent ?></a></li><li><a href="index.php?courant=<?= $date_next ?>" rel="next nofollow"><?= ucfirst(date_fr($date_next, "tout", "non", "")).$iconeSuivant ?></a></li>
+            <li><a href="index.php?courant=<?= sanitizeForHtml($date_prev) ?>" rel="prev nofollow"><?= $iconePrecedent ?></a></li><li><a href="index.php?courant=<?= sanitizeForHtml($date_next) ?>" rel="next nofollow"><?= ucfirst(date_fr($date_next, "tout", "non", "")).$iconeSuivant ?></a></li>
         </ul>
         <div class="spacer"></div>
     </header>
@@ -233,7 +233,7 @@ include("_header.inc.php");
 
         <div id="order_navigation">
             <ul>
-                <li style="margin-right:5px"><i class="fa fa-sort-amount-asc" aria-hidden="true"></i></li><li style="margin-right:2px"><a href="index.php?tri_agenda=dateAjout<?= (!$is_courant_today ? '&amp;courant=' . $get['courant'] : '' ); ?>" class="<?php if ($_SESSION['user_prefs_agenda_order'] == 'dateAjout') : ?>selected<?php endif; ?>" rel="nofollow">Dernier ajouté</a></li><li><a href="index.php?tri_agenda=horaire_debut<?= (!$is_courant_today ? '&amp;courant=' . $get['courant'] : '' ) ?>" class="<?php if ($_SESSION['user_prefs_agenda_order'] == 'horaire_debut') : ?>selected<?php endif; ?>" rel="nofollow">Heure de début</a></li>
+                <li style="margin-right:5px"><i class="fa fa-sort-amount-asc" aria-hidden="true"></i></li><li style="margin-right:2px"><a href="index.php?tri_agenda=dateAjout<?= (!$is_courant_today ? '&amp;courant=' . sanitizeForHtml($get['courant']) : '' ); ?>" class="<?php if ($_SESSION['user_prefs_agenda_order'] == 'dateAjout') : ?>selected<?php endif; ?>" rel="nofollow">Dernier ajouté</a></li><li><a href="index.php?tri_agenda=horaire_debut<?= (!$is_courant_today ? '&amp;courant=' . sanitizeForHtml($get['courant']) : '' ) ?>" class="<?php if ($_SESSION['user_prefs_agenda_order'] == 'horaire_debut') : ?>selected<?php endif; ?>" rel="nofollow">Heure de début</a></li>
             </ul>
             <div class="spacer"></div>
         </div>
@@ -314,7 +314,7 @@ include("_header.inc.php");
        <?php } // foreach ?>
 
         <ul class="entete_contenu_navigation">
-            <li><a href="index.php?courant=<?= $date_prev ?>" rel="prev nofollow"><?= $iconePrecedent ?></a></li><li><a href="index.php?courant=<?= $date_next ?>" rel="next nofollow"><?= ucfirst(date_fr($date_next, "tout", "non", "")).$iconeSuivant ?></a></li>
+            <li><a href="index.php?courant=<?= sanitizeForHtml($date_prev) ?>" rel="prev nofollow"><?= $iconePrecedent ?></a></li><li><a href="index.php?courant=<?= sanitizeForHtml($date_next) ?>" rel="next nofollow"><?= ucfirst(date_fr($date_next, "tout", "non", "")).$iconeSuivant ?></a></li>
         </ul>
 
 

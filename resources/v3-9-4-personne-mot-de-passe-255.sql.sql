@@ -1,0 +1,1 @@
+ALTER TABLE `personne` CHANGE COLUMN `mot_de_passe` `mot_de_passe` VARCHAR(255) NOT NULL DEFAULT '' COLLATE 'utf8mb4_unicode_ci' AFTER `pseudo`;

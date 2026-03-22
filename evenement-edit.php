@@ -111,7 +111,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
     // fill default empty fields with received values
     foreach ($champs as $c => $v)
     {
-        if (isset($_POST[$c]))
+        if (isset($_POST[$c]) && !in_array($c, ['flyer', 'image']))
         {
             $champs[$c] = $_POST[$c];
         }
@@ -566,8 +566,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 
 
 			$sql_update .= "date_derniere_modif='".date("Y-m-d H:i:s")."'";
-			$sql_update .= $sql_flyer.$sql_image."
-			WHERE idEvenement=".$get['idE'];
+			$sql_update .= $sql_flyer.$sql_image." WHERE idEvenement=".(int)$get['idE'];
 
 			$req_update = $connector->query($sql_update);
 
@@ -579,7 +578,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 
 				$lienLieu = '';
 				if (!empty($lieu))
-					$lienLieu = " au <a href=\"/lieu/lieu.php?idLieu=".$lieu."\"> lieu ".$lieu."</a>";
+					$lienLieu = " au <a href=\"/lieu/lieu.php?idLieu=".(int)$lieu."\"> lieu ".$lieu."</a>";
 
 				$sql = "DELETE FROM evenement_organisateur WHERE idEvenement=" . (int) $get['idE'];
                 $req = $connector->query($sql);
@@ -809,7 +808,7 @@ if ($verif->nbErreurs() > 0)
     <form method="post" id="ajouter_editer" class="js-submit-freeze-wait" enctype="multipart/form-data" action="<?php echo basename(__FILE__) . "?action=" . $act ?>">
 
             <input type="text" name="name_as" value="" class="name_as" /><?php echo $verif->getHtmlErreur('name_as'); ?>
-            <input type="hidden" name="<?php echo $formTokenName; ?>" value="<?php echo $_SESSION[$formTokenName]; ?>">
+            <input type="hidden" name="<?php echo $formTokenName; ?>" value="<?php echo sanitizeForHtml($_SESSION[$formTokenName]); ?>">
 
             <div class="alert-warn">
                     <?php if (!in_array($get['action'], ['editer', 'update'])) { ?>
@@ -1243,8 +1242,8 @@ if ($verif->nbErreurs() > 0)
             {
         ?>
         <div class="supImg">
-            <a href="<?php echo Evenement::getWebPath(Evenement::getFilePath($champs['flyer']), true) ?>" class="magnific-popup" target="_blank">
-                        <img src="<?php echo Evenement::getWebPath(Evenement::getFilePath($champs['flyer'], 's_'), true) ?>" alt="Flyer de cet événement" width="100" />
+            <a href="<?= sanitizeForHtml(Evenement::getWebPath(Evenement::getFilePath($champs['flyer']), true)) ?>" class="magnific-popup" target="_blank">
+                        <img src="<?= sanitizeForHtml(Evenement::getWebPath(Evenement::getFilePath($champs['flyer'], 's_'), true)) ?>" alt="Flyer de cet événement" width="100" />
                     </a>
                     <div>
                         <label for="sup_flyer" class="continu">Supprimer</label><input type="checkbox" name="sup_flyer" id="sup_flyer" value="flyer" class="checkbox"
@@ -1278,8 +1277,8 @@ if ($verif->nbErreurs() > 0)
         {
                 echo "<div class=\"supImg\">";
             ?>
-        <a href="<?php echo Evenement::getWebPath(Evenement::getFilePath($champs['image']), true) ?>" class="magnific-popup" target="_blank">
-                    <img src="<?php echo Evenement::getWebPath(Evenement::getFilePath($champs['image'], 's_'), true) ?>" alt="Photo" width="100" />
+        <a href="<?= sanitizeForHtml(Evenement::getWebPath(Evenement::getFilePath($champs['image']), true)) ?>" class="magnific-popup" target="_blank">
+                    <img src="<?= sanitizeForHtml(Evenement::getWebPath(Evenement::getFilePath($champs['image'], 's_'), true)) ?>" alt="Photo" width="100" />
                 </a>
                 <?php
             echo "<div><label for=\"sup_image\" class=\"continu\">Supprimer</label><input type=\"checkbox\" name=\"sup_image\" id=\"sup_image\" value=\"image\" class=\"checkbox\" ";

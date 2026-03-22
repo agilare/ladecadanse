@@ -148,7 +148,8 @@ if (!empty($get['years']))
     $sql_params[] = $get['years'];
 }
 
-$sql_select .= ' ORDER BY ' . (($get['tri'] == "dateAjout" || $get['tri'] == "dateEvenement") ? "e." . $get['tri'] : 'score') . ' DESC'.($get['tri'] != "dateEvenement" ? ", e.dateEvenement DESC" : '');
+$triToColumn = ["pertinence" => "score", "dateEvenement" => "e.dateEvenement", "dateAjout" => "e.dateAjout"];
+$sql_select .= ' ORDER BY ' . ($triToColumn[$get['tri']] ?? 'score') . ' DESC' . ($get['tri'] != "dateEvenement" ? ", e.dateEvenement DESC" : '');
 $sql_select .= " LIMIT " . (int) (($get['page'] - 1) * $results_per_page) . ", " . (int) $results_per_page;
 //dump($sql_params);
 $stmt = $connectorPdo->prepare($sql_select);
@@ -217,9 +218,9 @@ $agenda_years = range((int)date("Y"), Evenement::AGENDA_START_YEAR);
 
         <?php if ($get['periode'] == 'ancien') : ?>
             <form id="years-select" action="" method="get">
-                <input type="hidden" name="mots" value="<?= urldecode($get['mots']) ?>">
-                <input type="hidden" name="periode" value="<?= $get['periode'] ?>">
-                <input type="hidden" name="tri" value="<?= $get['tri'] ?>">
+                <input type="hidden" name="mots" value="<?= sanitizeForHtml(urldecode($get['mots'])) ?>">
+                <input type="hidden" name="periode" value="<?= sanitizeForHtml($get['periode']) ?>">
+                <input type="hidden" name="tri" value="<?= sanitizeForHtml($get['tri']) ?>">
                 <label for="years">Année</label>
                 <select name="years" id="years" class="js-select2 js-auto-submiter" style="min-width:100px">
                     <?php foreach ($agenda_years as $year): ?>

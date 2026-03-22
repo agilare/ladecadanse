@@ -51,9 +51,51 @@ trait HasDocuments
 	    return $result;
     }
 
+    public static function safeCopyWithMiniature(string $srcFileName, string $destFileName): void
+    {
+        $safeDir = realpath(self::$systemDirPath);
+        if ($safeDir === false) {
+            return;
+        }
+
+        $safeSrc = basename($srcFileName);
+        $safeDest = basename($destFileName);
+        if ($safeSrc === '' || $safeDest === '') {
+            return;
+        }
+
+        foreach (['', 's_'] as $prefix) {
+            $srcFullPath = realpath($safeDir . DIRECTORY_SEPARATOR . static::getFilePath($safeSrc, $prefix));
+            if ($srcFullPath === false || !str_starts_with($srcFullPath, $safeDir . DIRECTORY_SEPARATOR)) {
+                continue;
+            }
+
+            $destFilePath = static::getFilePath($safeDest, $prefix);
+            $destFullPath = $safeDir . DIRECTORY_SEPARATOR . $destFilePath;
+            $destDirPath = realpath(dirname($destFullPath));
+            if ($destDirPath === false || !str_starts_with($destDirPath . DIRECTORY_SEPARATOR, $safeDir . DIRECTORY_SEPARATOR)) {
+                continue;
+            }
+
+            copy($srcFullPath, $destFullPath);
+        }
+    }
+
     public static function rmImageAndItsMiniature(string $fileName): void
     {
-        unlink(self::getSystemFilePath(self::getFilePath($fileName)));
-        unlink(self::getSystemFilePath(self::getFilePath($fileName, "s_")));
+        $safeName = basename($fileName);
+        if ($safeName === '') {
+            return;
+        }
+        $safeDir = realpath(self::$systemDirPath);
+        if ($safeDir === false) {
+            return;
+        }
+        foreach ([$safeName, 's_' . $safeName] as $name) {
+            $resolvedPath = realpath($safeDir . DIRECTORY_SEPARATOR . $name);
+            if ($resolvedPath !== false && str_starts_with($resolvedPath, $safeDir . DIRECTORY_SEPARATOR)) {
+                unlink($resolvedPath);
+            }
+        }
     }
 }

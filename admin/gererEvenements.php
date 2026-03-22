@@ -43,20 +43,27 @@ if (isset($_GET['page']))
 
 $th_evenements = ["titre" => "Titre", "idLieu" => "Lieu", "dateEvenement" => "Date", "genre" => "Catég.", "horaire" => "Horaire", "organisateurs" => "Orga.", "statut" => "Statut", "dateAjout" => "Ajouté", "pseudo" => "par"];
 
-$orders = ["dateAjout", "date_derniere_modif", "statut", "dateEvenement", "titre", "genre"];
+$orderByColumns = [
+	"dateAjout"           => "e.dateAjout",
+	"date_derniere_modif" => "e.date_derniere_modif",
+	"statut"              => "e.statut",
+	"dateEvenement"       => "e.dateEvenement",
+	"titre"               => "e.titre",
+	"genre"               => "e.genre",
+];
 
 $get['tri_gerer'] = "dateAjout";
-if (isset($_GET['tri_gerer']) && in_array($_GET['tri_gerer'], $orders))
+if (isset($_GET['tri_gerer']) && array_key_exists($_GET['tri_gerer'], $orderByColumns))
 {
 	$get['tri_gerer'] = $_GET['tri_gerer'];
 }
 
-$tab_ordre = ["asc", "desc"];
+$orderDirections = ["asc" => "ASC", "desc" => "DESC"];
 $get['ordre'] = "desc";
 $ordre_inverse = "asc";
 if (isset($_GET['ordre']))
 {
-	$get['ordre'] = Validateur::validateUrlQueryValue($_GET['ordre'], "enum", 1, $tab_ordre);
+	$get['ordre'] = Validateur::validateUrlQueryValue($_GET['ordre'], "enum", 1, array_keys($orderDirections));
 	if ($get['ordre'] == "asc")
 	{
 		$ordre_inverse = "desc";
@@ -173,7 +180,7 @@ elseif (!empty($_POST['formulaire']))
 
 	foreach ($champs as $i => $v)
 	{
-        if (isset($_POST[$i]))
+        if (isset($_POST[$i]) && !in_array($i, ['flyer', 'image']))
         {
             $champs[$i] = trim((string) $_POST[$i]);
         }
@@ -531,8 +538,7 @@ elseif (!empty($_POST['formulaire']))
 			}
 			elseif (!empty($fichiers['flyer']['name']))
 			{
-                copy(Evenement::getSystemFilePath(Evenement::getFilePath($srcFlyer)), Evenement::getSystemFilePath(Evenement::getFilePath($champs['flyer'])));
-                copy(Evenement::getSystemFilePath(Evenement::getFilePath($srcFlyer, "s_")), Evenement::getSystemFilePath(Evenement::getFilePath($champs['flyer'], "s_")));
+                Evenement::safeCopyWithMiniature($srcFlyer, $champs['flyer']);
             }
 
             if (!empty($fichiers['image']['name']) && $compteur_evenements == 0)
@@ -547,8 +553,7 @@ elseif (!empty($_POST['formulaire']))
 			}
 			elseif (!empty($fichiers['image']['name']))
 			{
-                copy(Evenement::getSystemFilePath(Evenement::getFilePath($src_image)), Evenement::getSystemFilePath(Evenement::getFilePath($champs['image'])));
-                copy(Evenement::getSystemFilePath(Evenement::getFilePath($src_image, "s_")), Evenement::getSystemFilePath(Evenement::getFilePath($champs['image'], "s_")));
+                Evenement::safeCopyWithMiniature($src_image, $champs['image']);
             }
 
             foreach ($champs['organisateurs'] as $no => $idOrg)
@@ -641,7 +646,7 @@ LEFT JOIN localite lloc ON l.localite_id = lloc.id
 LEFT JOIN salle s ON e.idSalle = s.idSalle
 LEFT JOIN personne p ON e.idPersonne = p.idPersonne
  ".$where."
-ORDER BY e.".$get['tri_gerer']." ".$get['ordre']." LIMIT ".(int)($sql_page - 1) * (int)$get['nblignes'].",".(int)$get['nblignes'];
+ORDER BY ".$orderByColumns[$get['tri_gerer']]." ".($orderDirections[$get['ordre']] ?? 'DESC')." LIMIT ".(int)($sql_page - 1) * (int)$get['nblignes'].",".(int)$get['nblignes'];
 
 $stmt = $connectorPdo->prepare($sql_evenement);
 $stmt->execute($query_params);
@@ -743,7 +748,7 @@ if ($verif->nbErreurs() > 0)
             <tr>
                 <?php foreach ($th_evenements as $field => $label) : ?>
                 <th <?php if ($field == $get['tri_gerer']) : ?>class="ici"<?php endif; ?> <?php if ($field == 'horaire') : ?>style="width:100px"<?php endif; ?>>
-                    <?php if (in_array($field, $orders)) : ?>
+                    <?php if (array_key_exists($field, $orderByColumns)) : ?>
                         <a href="?<?= Utils::urlQueryArrayToString($get, ['tri_gerer', 'ordre'])."&amp;tri_gerer=".$field."&amp;ordre=".$ordre_inverse ?>"><?= sanitizeForHtml($label) ?></a>
                         <?php if ($field == $get['tri_gerer']) : echo $icone[$get['ordre']]; endif; ?>
                     <?php else : ?>

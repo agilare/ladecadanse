@@ -197,9 +197,9 @@ include("../_header.inc.php");
     <?= Ladecadanse\EvenementRenderer::eventShortArticleHtml($tab_even); ?>
     </article>
 
-    <form method="post" id="ajouter_editer" class="js-submit-freeze-wait" action="<?= basename(__FILE__) . "?action=".$get['action']."&idE=" . (int) $get['idE']; ?>">
+    <form method="post" id="ajouter_editer" class="js-submit-freeze-wait" action="<?= basename(__FILE__) . "?action=".sanitizeForHtml($get['action'])."&idE=" . (int) $get['idE']; ?>">
 
-        <input type="hidden" name="<?= $formTokenName; ?>" value="<?= $_SESSION[$formTokenName]; ?>">
+        <input type="hidden" name="<?= $formTokenName; ?>" value="<?= sanitizeForHtml($_SESSION[$formTokenName]); ?>">
         <div class="mr_as">
             <label for="name_as">nom</label>
             <input type="text" name="name">

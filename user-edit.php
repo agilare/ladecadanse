@@ -202,9 +202,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 
 		$tab_user = $connector->fetchArray($getUser);
 
-		//print_r($tab_user);
 		//Si au moins un enregistrement de personne est trouvé
-		if (sha1($tab_user['gds'].sha1((string) $champs['motdepasse'])) != $tab_user['mot_de_passe'])
+        if ((sha1($tab_user['gds'] . sha1($champs['motdepasse'])) != $tab_user['mot_de_passe']) && !password_verify($champs['motdepasse'], $tab_user['mot_de_passe']))
 		{
 			$verif->setErreur("motdepasse", "Faux mot de passe");
 		}
@@ -215,15 +214,12 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
         $verif->setErreur("pseudo", "Le système de sécurité du site n'a pu authentifier votre action. Veuillez réafficher ce formulaire et réessayer");
     }
 
-	/*
-	 * PAS D'ERREUR, donc ajout ou update executés
-	 */
 	if ($verif->nbErreurs() === 0)
 	{
 		if (!empty($champs['newPass']))
 		{
-			$champs['gds'] = mb_substr(sha1(uniqid((string) random_int(0, mt_getrandmax()), true)), 0, 5);
-            $champs['mot_de_passe'] = sha1($champs['gds'].sha1((string) $champs['newPass']));
+			$champs['gds'] = '';
+            $champs['mot_de_passe'] = password_hash($champs['newPass'], PASSWORD_DEFAULT);
 		}
 
 		if ($_SESSION['Sgroupe'] > UserLevel::SUPERADMIN) {
@@ -260,7 +256,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 			if (!empty($champs['lieu']))
             {
 				$req_insAff = $connector->query("INSERT INTO affiliation
-				(idPersonne, idAffiliation, genre) VALUES ('" . (int) $req_id . "','" . $champs['lieu'] . "','lieu')");
+				(idPersonne, idAffiliation, genre) VALUES ('" . (int) $req_id . "','" . (int)$champs['lieu'] . "','lieu')");
             }
 
 			/*
@@ -268,7 +264,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 			*/
 			if ($req_insert)
 			{
-				HtmlShrink::msgOk("Personne ajoutée dans le groupe " . $champs['groupe']);
+				HtmlShrink::msgOk("Personne ajoutée dans le groupe " . sanitizeForHtml($champs['groupe']));
                 foreach ($champs as $k => $v)
 				{
 					$champs[$k] = '';
@@ -290,7 +286,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 			{
 				if ($c != "motdepasse" && $c != "newPass" && $c != "newPass2" && $c != "lieu" && $c != 'organisateurs')
 				{
-					$sql_update .= $c."='".$connector->sanitize($v)."', ";
+					$sql_update .= $connector->sanitize($c)."='".$connector->sanitize($v)."', ";
 				}
 			}
 
@@ -414,7 +410,7 @@ if ($get['action'] == 'editer' && isset($get['idP']))
 	}
 	else
 	{
-		HtmlShrink::msgErreur("La personne ".$get['idP']." n'existe pas");
+		HtmlShrink::msgErreur("La personne ". (int)$get['idP']." n'existe pas");
 		exit;
 	}
 
@@ -682,14 +678,14 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= UserLevel::ACTOR)) {
 
         if (!empty($champs['lieu']))
         {
-            $req_lieux = $connector->query("SELECT nom FROM lieu WHERE idLieu=".$champs['lieu']);
+            $req_lieux = $connector->query("SELECT nom FROM lieu WHERE idLieu=".(int)$champs['lieu']);
             $lieuTrouve = $connector->fetchArray($req_lieux);
             ?>
                 <p>
                 <label>Lieu</label>
                 <ul style="float:left;margin:0;padding-left:1em;">
                                     <li><a href="/lieu/lieu.php?idL=<?php echo (int)$champs['lieu']; ?>"><?php echo sanitizeForHtml($lieuTrouve['nom']); ?></a>
-                                        <input type="hidden" name="lieu" value="<?php echo $champs['lieu'];?>">
+                                        <input type="hidden" name="lieu" value="<?php echo sanitizeForHtml($champs['lieu']);?>">
                     </li>
                 </ul><div class="spacer"><!-- --></div>
             </p>

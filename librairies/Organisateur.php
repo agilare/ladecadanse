@@ -69,11 +69,10 @@ class Organisateur extends Element
         }
 
         // build SQL
-        $sql_order = "o." . $order . " DESC";
-        if ($order == "nom")
-        {
-            $sql_order = "o.nom ASC";
-        }
+        $orderMap = [
+            'date_ajout' => 'o.date_ajout DESC',
+            'nom'        => 'o.nom ASC',
+        ];
 
         $sql_event = "SELECT
           o.*
@@ -85,7 +84,7 @@ class Organisateur extends Element
             $sql_event .= " AND o.nom LIKE :nom";
         }
 
-        $sql_event .= " ORDER BY $sql_order";
+        $sql_event .= " ORDER BY ". $orderMap[$order] ?? $orderMap['date_ajout'];
 
         if (!empty($page))
         {

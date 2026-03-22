@@ -239,7 +239,7 @@ $detailsAff = $connector->fetchArray($req_affPers);
 	if ($get['elements'] == "evenement")
 	{
 		$sql_evenement = "SELECT idEvenement, idLieu, statut, idPersonne, genre,titre, dateEvenement, nomLieu, flyer, dateAjout
-		 FROM evenement WHERE idPersonne=".(int)$get['idP']." ORDER BY ".$get['tri']." ".$get['ordre']." LIMIT ".((int)$get['page'] - 1) * (int)$get['nblignes'].",".$get['nblignes'];
+		 FROM evenement WHERE idPersonne=".(int)$get['idP']." ORDER BY ".$connector->sanitize($get['tri'])." ".$connector->sanitize($get['ordre'])." LIMIT ".((int)$get['page'] - 1) * (int)$get['nblignes'].",".(int)$get['nblignes'];
 
 
 		$req_evenement = $connector->query($sql_evenement);
@@ -284,7 +284,7 @@ $detailsAff = $connector->fetchArray($req_affPers);
 						echo "<th>";
 					}
 
-					echo "<a href=\"?idP=" . (int)$get['idP'] . "&elements=" . $get['elements'] . "&page=" .(int) $get['page'] . "&tri=" . $att . "&ordre=" . $ordre_inverse . "&nblignes=" . $get['nblignes'] . "\">" . $th . "</a></th>";
+					echo "<a href=\"?idP=" . (int)$get['idP'] . "&elements=" . sanitizeForHtml($get['elements']) . "&page=" .(int) $get['page'] . "&tri=" . sanitizeForHtml($att) . "&ordre=" . sanitizeForHtml($ordre_inverse) . "&nblignes=" . (int)$get['nblignes'] . "\">" . $th . "</a></th>";
             }
 			}
 
@@ -335,7 +335,7 @@ $detailsAff = $connector->fetchArray($req_affPers);
 		}
 		else
 		{
-			echo '<p>Aucun '.$get['elements'].' ajouté pour le moment</p>';
+			echo '<p>Aucun '.sanitizeForHtml($get['elements']).' ajouté pour le moment</p>';
 		}//if nbrows evenements
 
 		@mysqli_free_result($req_evenement);
@@ -347,7 +347,7 @@ $detailsAff = $connector->fetchArray($req_affPers);
 		// DESCRIPTIONS DE LIEUX
 
 		$req_des = $connector->query("SELECT idLieu, idPersonne, dateAjout, contenu, type
-		FROM descriptionlieu WHERE idPersonne=".(int)$get['idP']. " ORDER BY ".$get['tri']." ".$get['ordre']." LIMIT ".(int)($get['page'] - 1) * (int)$get['nblignes'].",".(int)$get['nblignes']);
+		FROM descriptionlieu WHERE idPersonne=".(int)$get['idP']. " ORDER BY ".$connector->sanitize($get['tri'])." ".$connector->sanitize($get['ordre'])." LIMIT ".(int)($get['page'] - 1) * (int)$get['nblignes'].",".(int)$get['nblignes']);
 
 		$req_nbdesc = $connector->query("SELECT COUNT(*) AS total FROM descriptionlieu WHERE idPersonne=".(int)$get['idP']);
 		$tab_nbdesc = $connector->fetchArray($req_nbdesc);
@@ -390,7 +390,7 @@ $detailsAff = $connector->fetchArray($req_affPers);
 						echo "<th>";
 					}
 
-					echo "<a href=\"?idP=" . (int)$get['idP'] . "&elements=" . $get['elements'] . "&page=" . (int)$get['page'] . "&tri=" . $att . "&ordre=" . $ordre_inverse . "&nblignes=" .(int) $get['nblignes'] . "\">" . $th . "</a></th>";
+					echo "<a href=\"?idP=" . (int)$get['idP'] . "&elements=" . sanitizeForHtml($get['elements']) . "&page=" . (int)$get['page'] . "&tri=" . sanitizeForHtml($att) . "&ordre=" . sanitizeForHtml($ordre_inverse) . "&nblignes=" .(int) $get['nblignes'] . "\">" . $th . "</a></th>";
             }
 			}
 			echo "<th></th></tr>";
@@ -453,7 +453,7 @@ $detailsAff = $connector->fetchArray($req_affPers);
 
 	$req_lieux = $connector->query("SELECT idLieu, idPersonne, nom, quartier,
 	 categorie, URL, dateAjout FROM lieu
-	 WHERE idPersonne=".(int)$get['idP']." ORDER BY ".$get['tri']." ".$get['ordre']." LIMIT ".((int)$get['page'] - 1) * (int)$get['nblignes'].",".(int)$get['nblignes']);
+	 WHERE idPersonne=".(int)$get['idP']." ORDER BY ".$connector->sanitize($get['tri'])." ".$connector->sanitize($get['ordre'])." LIMIT ".((int)$get['page'] - 1) * (int)$get['nblignes'].",".(int)$get['nblignes']);
 
 	$req_count = $connector->query("SELECT COUNT(*) AS total FROM lieu WHERE idPersonne=".(int)$get['idP']);
 	$tab_count = $connector->fetchArray($req_count);
@@ -498,7 +498,7 @@ $detailsAff = $connector->fetchArray($req_affPers);
 					echo "<th>";
 				}
 
-				echo "<a href=\"?idP=" . (int)$get['idP'] . "&elements=" . $get['elements'] . "&page=" . (int)$get['page'] . "&tri=" . $att . "&ordre=" . $ordre_inverse . "&nblignes=" . (int)$get['nblignes'] . "\">" . $th . "</a></th>";
+				echo "<a href=\"?idP=" . (int)$get['idP'] . "&elements=" . sanitizeForHtml($get['elements']) . "&page=" . (int)$get['page'] . "&tri=" . sanitizeForHtml($att) . "&ordre=" . sanitizeForHtml($ordre_inverse). "&nblignes=" . (int)$get['nblignes'] . "\">" . $th . "</a></th>";
             }
 		}
 
@@ -566,7 +566,7 @@ else if ($get['elements'] == "organisateur")
 	}
 
 	$req_lieux = $connector->query("SELECT * FROM organisateur
-	 WHERE idPersonne=".(int)$get['idP']." ORDER BY ".$get['tri']." ".$get['ordre']." LIMIT ".((int)$get['page'] - 1) * (int)$get['nblignes'].",".(int)$get['nblignes']);
+	 WHERE idPersonne=".(int)$get['idP']." ORDER BY ".$connector->sanitize($get['tri'])." ".$connector->sanitize($get['ordre'])." LIMIT ".((int)$get['page'] - 1) * (int)$get['nblignes'].",".(int)$get['nblignes']);
 
 	$req_count = $connector->query("SELECT COUNT(*) AS total FROM organisateur WHERE idPersonne=".(int)$get['idP']);
 	$tab_count = $connector->fetchArray($req_count);
@@ -609,7 +609,7 @@ else if ($get['elements'] == "organisateur")
 					echo "<th>";
 				}
 
-				echo "<a href=\"?idP=" . $get['idP'] . "&elements=" . $get['elements'] . "&page=" . (int)$get['page'] . "&tri=" . $att . "&ordre=" . $ordre_inverse . "&nblignes=" . (int)$get['nblignes'] . "\">" . $th . "</a></th>";
+				echo "<a href=\"?idP=" . (int)$get['idP'] . "&elements=" . sanitizeForHtml($get['elements']) . "&page=" . (int)$get['page'] . "&tri=" . sanitizeForHtml($att) . "&ordre=" . sanitizeForHtml($ordre_inverse) . "&nblignes=" . (int)$get['nblignes'] . "\">" . $th . "</a></th>";
             }
 		}
 
@@ -656,7 +656,7 @@ else if ($get['elements'] == "organisateur")
 	}
 	else
 	{
-		echo '<p>Aucun '.$get['elements'].' ajouté pour le moment</p>';
+		echo '<p>Aucun '. sanitizeForHtml($get['elements']).' ajouté pour le moment</p>';
 	}
 
 }

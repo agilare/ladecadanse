@@ -203,7 +203,7 @@ class LieuEdition extends Edition
             }
             else
             {
-                $sql_lieu = "SELECT canton FROM localite WHERE id=" . $this->connector->sanitize($this->valeurs['localite_id']);
+                $sql_lieu = "SELECT canton FROM localite WHERE id=" . (int) $this->connector->sanitize($this->valeurs['localite_id']);
                 $req_lieu = $this->connector->query($sql_lieu);
                 $tab_lieu = $this->connector->fetchArray($req_lieu);
                 $champs['region'] = $tab_lieu['canton'];
@@ -269,10 +269,7 @@ class LieuEdition extends Edition
                 // suppression des fichiers de l'ancienne image
                 if (!empty($lieu->getValue('logo')))
                 {
-                    unlink($rep_uploads_lieux . $lieu->getValue('logo'));
-                    unlink($rep_uploads_lieux . "s_" . $lieu->getValue('logo'));
-
-                    //echo "<div class=\"msg\">Ancienne image supprimée</div>";
+                    $this->safeUnlinkImageAndThumb($rep_uploads_lieux, $lieu->getValue('logo'));
                 }
 
                 $lieu->setValue('logo', Document::getFilename($this->fichiers['logo']['name'], $lieu->getId(), 'logo', ''));
@@ -288,8 +285,7 @@ class LieuEdition extends Edition
                 // suppression des fichiers de l'image, s'il elle est effectivement enregistrée
                 if (!empty($lieu->getValue('logo')))
                 {
-                    unlink($rep_uploads_lieux . $lieu->getValue('logo'));
-                    unlink($rep_uploads_lieux . "s_" . $lieu->getValue('logo'));
+                    $this->safeUnlinkImageAndThumb($rep_uploads_lieux, $lieu->getValue('logo'));
                 }
 
                 $lieu->setValue('logo', '');
@@ -300,10 +296,7 @@ class LieuEdition extends Edition
                 // suppression des fichiers de l'ancienne image
                 if ($lieu->getValue('photo1') != '')
                 {
-                    unlink($rep_uploads_lieux . $lieu->getValue('photo1'));
-                    unlink($rep_uploads_lieux . "s_" . $lieu->getValue('photo1'));
-
-                    //echo "<div class=\"msg\">Ancienne image supprimée</div>";
+                    $this->safeUnlinkImageAndThumb($rep_uploads_lieux, $lieu->getValue('photo1'));
                 }
 
                 $lieu->setValue('photo1', Document::getFilename($this->fichiers['photo1']['name'], $lieu->getId(), 'photo1', ''));
@@ -316,8 +309,7 @@ class LieuEdition extends Edition
                 // suppression des fichiers de l'image, s'il elle est effectivement enregistrée
                 if ($lieu->getValue('photo1') != '')
                 {
-                    unlink($rep_uploads_lieux . $lieu->getValue('photo1'));
-                    unlink($rep_uploads_lieux . "s_" . $lieu->getValue('photo1'));
+                    $this->safeUnlinkImageAndThumb($rep_uploads_lieux, $lieu->getValue('photo1'));
                 }
 
                 $lieu->setValue('photo1', '');
@@ -329,8 +321,7 @@ class LieuEdition extends Edition
                 //echo $idF;
                 $this->connector->query("DELETE FROM lieu_fichierrecu WHERE idLieu=" . $lieu->getId() . " AND idFichierrecu=" . $idF);
                 $this->connector->query("DELETE FROM fichierrecu WHERE idFichierrecu=" . $idF);
-                unlink($rep_uploads_lieux_galeries . $nom_fichier);
-                unlink($rep_uploads_lieux_galeries . "s_" . $nom_fichier);
+                $this->safeUnlinkImageAndThumb($rep_uploads_lieux_galeries, $nom_fichier);
             }
 
 

@@ -131,8 +131,8 @@ $csp = implode('; ', [
     "default-src 'self'",
     "script-src 'self' 'nonce-" . CSP_NONCE . "' https://unpkg.com https://tools.ladecadanse.ch/ https://code.jquery.com https://darkvisitors.com https://browser.sentry-cdn.com https://www.paypalobjects.com https://liberapay.com https://wemakeit.com https://assets.wemakeit.com https://cdn.tiny.cloud",
     "img-src 'self' https://tile.openstreetmap.org https://tools.ladecadanse.ch/ https://unpkg.com https://www.paypalobjects.com https://sp.tinymce.com data:",
-    "style-src 'self' 'unsafe-inline' https://unpkg.com https://cdn.tiny.cloud https://www.tiny.cloud https://wemakeit.com https://assets.wemakeit.com/",
-    "font-src 'self' https://www.tiny.cloud https://assets.wemakeit.com",
+    "style-src 'self' 'unsafe-inline' https://unpkg.com https://cdn.tiny.cloud https://www.tiny.cloud https://wemakeit.com https://assets.wemakeit.com/ https://fonts.googleapis.com",
+    "font-src 'self' https://www.tiny.cloud https://assets.wemakeit.com https://fonts.gstatic.com",
     "connect-src 'self' https://tools.ladecadanse.ch/ https://cdn.tiny.cloud https://unpkg.com https://wemakeit.com",
     "frame-ancestors 'self' https://epic-magazine.ch",
     "frame-src 'none'",
@@ -178,7 +178,7 @@ $permissions = implode(', ', [
 header("Permissions-Policy: $permissions");
 
 //header("Access-Control-Allow-Origin: *");
-header('X-Frame-Options:    SAMEORIGIN');
+//header('X-Frame-Options:    SAMEORIGIN');
 header('Referrer-Policy: no-referrer-when-downgrade'); // This sends complete URL information to a potentially trustworthy URL from modern HTTPS State or from not modern HTTPS state to any origin . Information is sent for HTTPS -> HTTPS and HTTP -> HTTPS transition . This is the default Referrer-Policy
 
 header("Cache-Control: no-store, no-cache, must-revalidate");

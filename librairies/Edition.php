@@ -165,4 +165,29 @@ namespace Ladecadanse;
 		return $this->valeurs;
 	}
 
+    /**
+     * Supprime un fichier image et sa miniature (préfixe "s_") de manière sécurisée.
+     *
+     * Neutralise toute tentative de path traversal provenant d'une valeur issue de la BD :
+     * - basename() supprime les composants de répertoire du nom de fichier
+     * - realpath() + str_starts_with() garantit que le chemin résolu reste dans $dir
+     */
+    protected function safeUnlinkImageAndThumb(string $dir, string $filename): void
+    {
+        $safeName = basename($filename);
+        if ($safeName === '') {
+            return;
+        }
+        $safeDir = realpath($dir);
+        if ($safeDir === false) {
+            return;
+        }
+        foreach ([$safeName, 's_' . $safeName] as $name) {
+            $resolvedPath = realpath($safeDir . DIRECTORY_SEPARATOR . $name);
+            if ($resolvedPath !== false && str_starts_with($resolvedPath, $safeDir . DIRECTORY_SEPARATOR)) {
+                unlink($resolvedPath);
+            }
+        }
+    }
+
 }
