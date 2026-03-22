@@ -15542,7 +15542,7 @@
         },
         {
           "id": "cmd-salle-009b",
-          "comment": "Select lieu from dropdown (select2)",
+          "comment": "Select first available lieu from dropdown",
           "command": "select",
           "target": "id=idLieu",
           "targets": [
@@ -15555,7 +15555,7 @@
               "name"
             ]
           ],
-          "value": "value=999"
+          "value": "index=1"
         },
         {
           "id": "cmd-salle-011",
