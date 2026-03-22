@@ -5,8 +5,7 @@
     z-index: 10;
     background: #fff;
     padding: 0.6em 0;
-    border-top: 1px solid #ccc;
-    border-bottom: 1px dotted #ccc;
+    margin-top: 0.8em;
     margin-bottom: 0.8em;
 }
 
@@ -19,25 +18,27 @@
 
 #genre_tab_navigation li
 {
-    display: inline;
-}
-
-#genre_tab_navigation li + li::before
-{
-    content: " | ";
-    color: #aaa;
+    display: inline-block;
+    padding-left:0.2em;
+    padding-right:0.2em;
 }
 
 #genre_tab_navigation li a
 {
-    color: #6086B1;
+    padding: 0.3em;
+    border-radius:3px;
+}
+
+#genre_tab_navigation li a:hover
+{
+    background: #d4d4d4
 }
 
 #genre_tab_navigation li.ici a
 {
-    color: #333;
-    font-weight: bold;
+    background: #eee;
 }
+
 
 header#entete_contenu h1
 {

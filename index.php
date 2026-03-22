@@ -50,6 +50,7 @@ if (isset($_GET['genre_tab']) && in_array($_GET['genre_tab'], $valid_genre_tabs,
 }
 $current_genre_tab = $_SESSION['user_prefs_agenda_genre'] ?? 'tous';
 
+// determine wether adding to url query courant and order
 $default_tri_agenda = reset($tab_tri_agenda);
 $url_courant_param = (!$is_courant_today ? '&amp;courant=' . sanitizeForHtml($get['courant']) : '');
 $url_tri_param = ($_SESSION['user_prefs_agenda_order'] !== $default_tri_agenda ? '&amp;tri_agenda=' . sanitizeForHtml($_SESSION['user_prefs_agenda_order']) : '');
@@ -250,15 +251,20 @@ include("_header.inc.php");
             <div class="spacer"></div>
         </div>
 
-        <nav id="genre_tab_navigation">
+        <div id="genre_tab_navigation">
             <ul>
-                <li class="<?= $current_genre_tab === 'tous' ? 'ici' : '' ?>"><a href="index.php?genre_tab=tous<?= $url_filter_params ?>">Tous</a></li>
+                <li class="all">
+                    <i class="fa fa-filter" aria-hidden="true"></i>
+                    <?php if ($current_genre_tab !== 'tous') : ?>
+                        <a href="index.php?genre_tab=tous<?= $url_filter_params ?>"><i class="fa fa-times" aria-hidden="true"></i></a>
+                    <?php endif; ?>
+                </li>
                 <?php foreach ($glo_tab_genre as $key => $label) : ?>
                     <?php if (!array_key_exists($key, $tab_events_today_in_region_by_category)) : continue; endif; ?>
                     <li class="<?= $current_genre_tab === $key ? 'ici' : '' ?>"><a href="index.php?genre_tab=<?= urlencode($key) ?><?= $url_filter_params ?>"><?= ucfirst($label) ?></a></li>
                 <?php endforeach; ?>
             </ul>
-        </nav>
+        </div>
 
         <?php
         if ($count_events_today_in_region == 0)
@@ -279,10 +285,10 @@ include("_header.inc.php");
                     <header class="genre-titre">
                         <h2 id="<?= Text::stripAccents($glo_tab_genre[$genre]); ?>"><?= ucfirst($glo_tab_genre[$genre]); ?></h2>
                         <?php if ($current_genre_tab === 'tous') : ?>
-                        <?php $genre_proch = next($genres_today); ?>
-                        <?php if (isset($tab_events_today_in_region_by_category[$genre_proch])) : ?>
-                            <a class="genre-jump" href="#<?= Text::stripAccents($glo_tab_genre[$genre_proch]); ?>"><?= $glo_tab_genre[$genre_proch]; ?>&nbsp;<i class="fa fa-long-arrow-down"></i></a>
-                        <?php endif; ?>
+                            <?php $genre_proch = next($genres_today); ?>
+                            <?php if (isset($tab_events_today_in_region_by_category[$genre_proch])) : ?>
+                                <a class="genre-jump" href="#<?= Text::stripAccents($glo_tab_genre[$genre_proch]); ?>"><?= $glo_tab_genre[$genre_proch]; ?>&nbsp;<i class="fa fa-long-arrow-down"></i></a>
+                            <?php endif; ?>
                         <?php endif; ?>
                         <div class="spacer"></div>
                     </header>
