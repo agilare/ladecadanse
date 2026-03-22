@@ -142,8 +142,7 @@ $csp = implode('; ', [
     "base-uri 'self'",
     "worker-src 'none'",
 ]);
-if (ENV !== "dev")
-{
+if (ENV !== 'dev') {
     header("Content-Security-Policy: $csp");
 }
 
