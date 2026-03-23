@@ -1233,7 +1233,7 @@ if ($verif->nbErreurs() > 0)
     <p>
     <label for="flyer">Flyer :</label>
     <input type="file" name="flyer" id="flyer" class="js-file-upload-size-max" size="25"
-    accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif" tabindex="12" class="fichier" />
+    accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif,image/webp" tabindex="12" class="fichier" />
     </p>
 
     <div class="spacer"></div>
@@ -1262,7 +1262,7 @@ if ($verif->nbErreurs() > 0)
 
         <p>
         <label for="image">Image :</label>
-        <input type="file" name="image" id="flyer" class="js-file-upload-size-max" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif" class="fichier" />
+        <input type="file" name="image" id="flyer" class="js-file-upload-size-max" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif,image/webp" class="fichier" />
         </p>
         <div class="guideChamp">Seul les formats JPEG, PNG et GIF sont acceptés.</div>
     <div class="spacer"></div>

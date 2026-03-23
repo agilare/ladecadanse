@@ -1229,11 +1229,11 @@ if ($verif->nbErreurs() > 0)
 
     <fieldset>
         <legend>Images</legend>
-        <div style="margin-left: 0.8em;font-weight: bold">Formats JPEG, PNG ou GIF; max. 2 Mo</div>
+        <div style="margin-left: 0.8em;font-weight: bold">Formats JPEG, PNG, GIF ou WebP; max. 2 Mo</div>
         <p>
             <label for="flyer">Affiche/flyer</label>
             <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo UPLOAD_MAX_FILESIZE ?>" /> <!-- 2 Mo -->
-            <input type="file" name="flyer" id="flyer" class="js-file-upload-size-max" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif" class="fichier" />
+            <input type="file" name="flyer" id="flyer" class="js-file-upload-size-max" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif,image/webp" class="fichier" />
             <?php
             echo $verif->getHtmlErreur("flyer");
 
@@ -1265,7 +1265,7 @@ if ($verif->nbErreurs() > 0)
             <label for="image"><span class="tooltip">Photo <i class="fa fa-info-circle" aria-hidden="true"></i>
 <span class="tooltiptext"> S’affiche à la place du flyer s’il n’y a pas de flyer, sinon en dessous de celui-ci</span></span></label>
             <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo UPLOAD_MAX_FILESIZE ?>" /> <!-- 2 Mo -->
-            <input type="file" name="image" id="image" class="js-file-upload-size-max" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif" class="fichier" />
+            <input type="file" name="image" id="image" class="js-file-upload-size-max" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif,image/webp" class="fichier" />
             <div class="guideChamp">Photo des artistes, de leurs œuvres, du lieu, etc.</div>
         </p>
         <div class="spacer"></div>

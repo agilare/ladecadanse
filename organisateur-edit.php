@@ -173,11 +173,11 @@ include("_header.inc.php");
     <fieldset>
         <legend>Images</legend>
         <input type="hidden" name="<?php echo UPLOAD_MAX_FILESIZE ?>" value="2097152" /> <!-- 2 Mo -->
-        <div class="guideForm">Formats JPEG, PNG ou GIF, max. 2 Mo</div>
+        <div class="guideForm">Formats JPEG, PNG, GIF ou WebP, max. 2 Mo</div>
         <!-- Logo (file) -->
         <p>
         <label for="Logo">Logo</label>
-        <input type="file" name="logo" id="Logo" class="js-file-upload-size-max" tabindex="18" title="Logo qui s'affichera à gauche du titre" size="25" />
+        <input type="file" name="logo" id="Logo" class="js-file-upload-size-max" tabindex="18" title="Logo qui s'affichera à gauche du titre" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif,image/webp" />
 
 <?php
 echo $form->getHtmlErreur("logo");
@@ -215,7 +215,7 @@ if (isset($get['idO']) && $form->getValeur('logo') != '' && $form->getErreur("lo
 <!-- photo (file) -->
 <p>
 <label for="photo">Photo</label>
-<input type="file" name="photo" id="photo" class="js-file-upload-size-max" tabindex="16" title="Photo qui s'affichera en haut à droite" size="25" />
+<input type="file" name="photo" id="photo" class="js-file-upload-size-max" tabindex="16" title="Photo qui s'affichera en haut à droite" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif,image/webp" />
 
 
 <?php

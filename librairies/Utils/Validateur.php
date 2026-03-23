@@ -364,7 +364,7 @@ class Validateur
      */
     function validerImage($imageSource, $description = '')
     {
-        $allowedmime = ["image/jpeg", "image/pjpeg", "image/gif", "image/png", "image/x-png"];
+        $allowedmime = ["image/jpeg", "image/pjpeg", "image/gif", "image/png", "image/x-png", "image/webp"];
 
         if (in_array($imageSource['type'], $allowedmime))
         {

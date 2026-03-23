@@ -426,11 +426,11 @@ echo $form->getHtmlErreur("quartier");
     <fieldset>
         <legend>Images</legend>
         <input type="hidden" name="MAX_FILE_SIZE" value="<?php UPLOAD_MAX_FILESIZE ?>" />
-        <div style="margin-left: 0.8em;font-weight: bold">Formats JPEG, PNG ou GIF; max. 2 Mo</div>
+        <div style="margin-left: 0.8em;font-weight: bold">Formats JPEG, PNG, GIF ou WebP; max. 2 Mo</div>
 
         <p>
             <label for="Logo">Logo</label>
-            <input type="file" name="logo" id="Logo" class="js-file-upload-size-max" tabindex="18" title="Logo du lieu qui s'affichera à gauche du titre" size="25" />
+            <input type="file" name="logo" id="Logo" class="js-file-upload-size-max" tabindex="18" title="Logo du lieu qui s'affichera à gauche du titre" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif,image/webp" />
 
             <?php
             echo $form->getHtmlErreur("logo");
@@ -465,7 +465,7 @@ echo $form->getHtmlErreur("quartier");
         <!-- Photo1 (file) -->
         <p>
         <label for="photo1">Photo</label>
-        <input type="file" name="photo1" id="photo1" class="js-file-upload-size-max" tabindex="16" title="Photo qui s'affichera en haut à droite" size="25" />
+        <input type="file" name="photo1" id="photo1" class="js-file-upload-size-max" tabindex="16" title="Photo qui s'affichera en haut à droite" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif,image/webp" />
 
 
         <?php
@@ -504,7 +504,7 @@ echo $form->getHtmlErreur("quartier");
         ?>
         <p>
             <label for="image_galerie">Galerie</label>
-            <input type="file" name="image_galerie" id="image_galerie" class="js-file-upload-size-max" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif"  class="fichier" />
+            <input type="file" name="image_galerie" id="image_galerie" class="js-file-upload-size-max" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif,image/webp"  class="fichier" />
         </p>
         <div class="spacer"></div>
         <?php

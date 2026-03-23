@@ -102,7 +102,7 @@ class ApiCest
                     'idevenement' => 'string:>0:ladecadanse-notempty',
                     'statut' => 'string:ladecadanse-event-statut',
                     'titre' => 'string:ladecadanse-notempty',
-                    'image' => 'string:regex(/(|\.jpg|\.jpeg|\.png|\.gif)$/)',
+                    'image' => 'string:regex(/(|\.jpg|\.jpeg|\.png|\.gif|\.webp)$/)',
                     'description' => 'string',
                     'references' => 'string',
                     'horaire' => [

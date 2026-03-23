@@ -34,16 +34,16 @@ $page_image = 'web/interface/ladecadanse-695x672.jpeg';
 $page_url = ltrim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
 
 $glo_mimes_documents_acceptes = [
-    "image/jpeg", "image/pjpeg", "image/gif", "image/png", "image/x-png",
+    "image/jpeg", "image/pjpeg", "image/gif", "image/png", "image/x-png", "image/webp",
     "application/pdf",
     "application/msword",
     "text/richtext", "application/rtf", "image/svg+xml", "application/gzip",
     "application/zip", "multipart/x-zip", "multipart/x-gzip", "application/x-tar"
 ];
-$glo_mimes_images_acceptees = ["image/jpeg", "image/pjpeg", "image/gif", "image/png", "image/x-png"];
-$mimes_images_acceptes = ["image/jpeg", "image/pjpeg", "image/gif", "image/png", "image/x-png"];
+$glo_mimes_images_acceptees = ["image/jpeg", "image/pjpeg", "image/gif", "image/png", "image/x-png", "image/webp"];
+$mimes_images_acceptes = ["image/jpeg", "image/pjpeg", "image/gif", "image/png", "image/x-png", "image/webp"];
 $mimes_documents_acceptes = [
-    "image/jpeg", "image/pjpeg", "image/gif", "image/png", "image/x-png",
+    "image/jpeg", "image/pjpeg", "image/gif", "image/png", "image/x-png", "image/webp",
     "application/pdf",
     "application/msword", "application/msexcel",
     "text/richtext", "application/rtf", "image/svg+xml", "application/gzip",

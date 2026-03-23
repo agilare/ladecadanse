@@ -56,7 +56,7 @@ class ImageDriver2 extends SystemComponent {
         //
         $this->IMGlieux = $this->IMGracine."lieux/";
         $this->IMGlieuxGaleries = $this->IMGlieux."galeries/";
-        $this->formats = ['image/jpeg', 'image/pjpeg','image/gif','image/png', 'image/x-png'];
+        $this->formats = ['image/jpeg', 'image/pjpeg','image/gif','image/png', 'image/x-png', 'image/webp'];
 
         if ($IMGtype == "evenement")
         {
@@ -178,6 +178,15 @@ class ImageDriver2 extends SystemComponent {
        elseif ($mime_type == "image/png")
        {
            $img = ImageCreateFrompng($imageSource['tmp_name']);
+       }
+       elseif ($mime_type == "image/webp")
+       {
+           $img = imagecreatefromwebp($imageSource['tmp_name']);
+           if ($img === false)
+           {
+               $this->erreur = "webp non créé";
+               return false;
+           }
        }
        else
        {
@@ -323,6 +332,15 @@ class ImageDriver2 extends SystemComponent {
            if (!imagepng($img2, $cheminImage))
            {
                $this->erreur = "Erreur dans la création du fichier PNG";
+           }
+           return true;
+       }
+       elseif ($mime_type == "image/webp")
+       {
+           if (!imagewebp($img2, $cheminImage))
+           {
+               $this->erreur = "Erreur dans la création du fichier WebP";
+               return false;
            }
            return true;
        }
