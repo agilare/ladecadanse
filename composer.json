@@ -35,8 +35,8 @@
         "phpmailer/phpmailer": "^7.0",
         "vlucas/phpdotenv": "^5.6",
         "select2/select2": "^4.0",
-        "symfony/yaml": "^7.3",
-        "symfony/html-sanitizer": "^7.4"
+        "symfony/yaml": "^8.0",
+        "symfony/html-sanitizer": "^8.0"
     },
     "autoload": {
         "psr-4": {
@@ -66,7 +66,7 @@
         "phpcompatibility/php-compatibility": "^9.3",
         "phpstan/phpstan": "^2.1",
         "filp/whoops": "^2.18",
-        "symfony/var-dumper": "^7.2",
+        "symfony/var-dumper": "^8.0",
         "codeception/codeception": "^5.3",
         "codeception/module-rest": "^3.4",
         "codeception/module-phpbrowser": "^3.0",
