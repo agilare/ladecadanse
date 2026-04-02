@@ -1,5 +1,24 @@
 # Changelog
 
+## [3.10.0] - Unreleased
+
+### Added
+- events calendar : when changing month, instead of loading all the page, update only the calendar #104 (thanks to @lambeletjp)
+- events : add export to Google, Outlook, Microsoft 365, Yahoo cale… #142 (thanks to @lambeletjp)
+- images : add handling upload of images format webp #32
+
+### Fixed
+- users : in register form, wrong field was used to hash password
+- tests : in Selenium add missing "pause" commands to avoid fails
+
+### Changed
+- PHP 8.4 compatibility #94
+- update Symfony, Codeception, phpunit...
+
+### Security
+- deps-dev : bump flatted from 3.2.9 to 3.4.2
+
+
 ## [3.9.4] - 2026-03-08
 
 ### Security
