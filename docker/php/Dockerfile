@@ -1,5 +1,5 @@
 # Base stage with common dependencies
-FROM php:8.3-apache AS base
+FROM php:8.4-apache AS base
 
 # Install system dependencies in a single layer for better caching
 RUN apt-get update && \
