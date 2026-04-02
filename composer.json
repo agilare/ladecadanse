@@ -69,7 +69,7 @@
         "symfony/var-dumper": "^8.0",
         "codeception/codeception": "^5.3",
         "codeception/module-rest": "^3.4",
-        "codeception/module-phpbrowser": "^3.0",
+        "codeception/module-phpbrowser": "4.*",
         "codeception/module-asserts": "^3.2",
         "phpstan/phpstan-deprecation-rules": "^2.0",
         "spaze/phpstan-disallowed-calls": "^4.5",
