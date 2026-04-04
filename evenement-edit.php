@@ -105,6 +105,7 @@ $supprimer = [];
 $show_form = true;
 $formTokenName = 'form_token_evenement_edit';
 $verif = new Validateur();
+$fichiers = ['flyer' => ['name' => '', 'size' => 0], 'image' => ['name' => '', 'size' => 0]];
 
 if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 {
@@ -795,7 +796,11 @@ include("_header.inc.php");
 <?php
 if ($verif->nbErreurs() > 0)
 {
-	HtmlShrink::msgErreur("Il y a ".$verif->nbErreurs()." erreur(s).");
+    $msg_err = "<strong>Il y a ".$verif->nbErreurs()." erreur(s)</strong>";
+    if (!empty($fichiers['flyer']['name']) || !empty($fichiers['image']['name'])) {
+        $msg_err .= " <br>Pensez à resélectionner votre flyer ou image ci-dessous (ils ont été retirés du formulaire par sécurité)";
+    }
+    HtmlShrink::msgErreur($msg_err);
     if (!empty($verif->getHtmlErreur("global")))
     {
         echo $verif->getHtmlErreur("global");
@@ -1234,6 +1239,9 @@ if ($verif->nbErreurs() > 0)
             <label for="flyer">Affiche/flyer</label>
             <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo UPLOAD_MAX_FILESIZE ?>" /> <!-- 2 Mo -->
             <input type="file" name="flyer" id="flyer" class="js-file-upload-size-max" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif,image/webp" class="fichier" />
+            <?php if ($verif->nbErreurs() > 0 && !empty($fichiers['flyer']['name'])): ?>
+                <div class="msg">Le fichier sélectionné a été retiré du formulaire par le navigateur (sécurité). Veuillez le sélectionner à nouveau.</div>
+            <?php endif; ?>
             <?php
             echo $verif->getHtmlErreur("flyer");
 
@@ -1269,6 +1277,9 @@ if ($verif->nbErreurs() > 0)
             <div class="guideChamp">Photo des artistes, de leurs œuvres, du lieu, etc.</div>
         </p>
         <div class="spacer"></div>
+        <?php if ($verif->nbErreurs() > 0 && !empty($fichiers['image']['name'])): ?>
+            <div class="msg">Le fichier sélectionné a été retiré du formulaire par le navigateur (sécurité). Veuillez le sélectionner à nouveau</div>
+        <?php endif; ?>
         <?php
         echo $verif->getHtmlErreur("image");
 
