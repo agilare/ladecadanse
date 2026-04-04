@@ -25,7 +25,8 @@ class Sentry extends SystemComponent
         {
             $this->sessionDefaults();
         }
-        else if ($_SESSION['logged'])
+
+        if ($_SESSION['logged'])
         {
             $this->checkSession();
         }
