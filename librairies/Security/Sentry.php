@@ -126,12 +126,39 @@ class Sentry extends SystemComponent
 
         if (count($erreurs) === 0)
         {
-            $sql = "
-			SELECT idPersonne, pseudo, mot_de_passe, cookie, groupe, region, email, gds
-			FROM personne
-			WHERE pseudo = '" . $connector->sanitize($user) . "' AND groupe <= " . $group . " AND statut='actif'";
+            $isEmail = filter_var($user, FILTER_VALIDATE_EMAIL) !== false;
 
-            $getUser = $connector->query($sql);
+            if ($isEmail)
+            {
+                $safeUser = $connector->sanitize($user);
+                $sql = "
+				SELECT idPersonne, pseudo, mot_de_passe, cookie, groupe, region, email, gds
+				FROM personne
+				WHERE (pseudo = '$safeUser' OR email = '$safeUser') AND groupe <= " . $group . " AND statut='actif'";
+
+                $getUser = $connector->query($sql);
+
+                if ($connector->getNumRows($getUser) > 1)
+                {
+                    $logger->log('global', 'activity', "[Sentry] login failed, ambiguous email " . $user, Logger::GRAN_YEAR);
+                    unset($this->userdata);
+                    if ($badRedirect)
+                    {
+                        $redirectAmbigu = preg_replace('/msg=[^&]*/', 'msg=email_ambigu', $badRedirect);
+                        header("Location: " . $redirectAmbigu);
+                    }
+                    return false;
+                }
+            }
+            else
+            {
+                $sql = "
+				SELECT idPersonne, pseudo, mot_de_passe, cookie, groupe, region, email, gds
+				FROM personne
+				WHERE pseudo = '" . $connector->sanitize($user) . "' AND groupe <= " . $group . " AND statut='actif'";
+
+                $getUser = $connector->query($sql);
+            }
 
             if ($connector->getNumRows($getUser) == 1)
             {

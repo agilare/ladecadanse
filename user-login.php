@@ -10,7 +10,7 @@ if ($videur->checkGroup(UserLevel::MEMBER)) {
 	header("Location: index.php"); die();
 }
 
-$tab_messages = ['faux'];
+$tab_messages = ['faux', 'email_ambigu'];
 
 /**
 * Valeur auto-reçue en cas d'échec dans la vérification du login
@@ -49,7 +49,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' && empty($_POST
         }
 
 
-        $verif->valider($champs['pseudo'], "pseudo", "texte", 2, 50, 1);
+        $verif->valider($champs['pseudo'], "pseudo", "texte", 2, 100, 1);
         $verif->valider($champs['motdepasse'], "motdepasse", "texte", 4, 30, 1);
 
         if (!empty($champs['memoriser']) && $champs['memoriser'] != 1)
@@ -82,9 +82,13 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' && empty($_POST
 }
 else
 {
-	if (!empty($get['msg']) && $get['msg'] == "faux")
+	if (!empty($get['msg']) && $get['msg'] === "faux")
 	{
-		$verif->setErreur("connexion", "Votre identifiant et/ou votre mot de passe ne sont pas corrects. Veuillez également vérifier que vous avez bien saisi votre <b>identifiant</b> (celui que vous avez choisi à l'inscription), qui est distinct de l'email");
+		$verif->setErreur("connexion", "Votre identifiant (ou email) et/ou votre mot de passe ne sont pas corrects.");
+	}
+	elseif (!empty($get['msg']) && $get['msg'] === "email_ambigu")
+	{
+		$verif->setErreur("connexion", "Plusieurs comptes correspondent à cet email. Veuillez vous connecter avec votre <b>identifiant</b> (login). Contactez-nous si vous ne vous en souvenez pas.");
 	}
 }
 
@@ -117,7 +121,7 @@ include("_header.inc.php");
         <fieldset>
 <!--            <legend class="btn_toggle">Authentification</legend>-->
             <p>
-                <label for="pseudo" id="login_pseudo">Login</label>
+                <label for="pseudo" id="login_pseudo">Login ou email</label>
                 <input type="text" name="pseudo" id="pseudo" value="<?= sanitizeForHtml($champs['pseudo']) ?>" size="30" autofocus />
 <!--                <div style="margin: 0 1em 1em 6em;font-size: 0.8em;line-height: 1.1em;padding: 0;"></div>-->
                 <?= $verif->getHtmlErreur("pseudo") ?>
