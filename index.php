@@ -357,7 +357,7 @@ include("_header.inc.php");
 
     <?php if ($is_courant_today) : ?>
 
-        <section class="secondaire">
+        <section id="latests_events" class="secondaire">
 
             <span class="lien_rss"><a href="/event/rss.php?type=evenements_ajoutes" aria-label="Flux RSS des derniers événements"><i class="fa fa-rss fa-lg"></i></a></span>
 

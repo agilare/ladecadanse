@@ -92,10 +92,16 @@
 	{
 		float:right;
 	}
+
 	#menu ul li #btn_search
 	{
 		display:none;
 	}
+
+    #menu ul li#bouton_latests_events
+    {
+        display:none;
+    }
 
 .rechercher #entete_contenu h2
 {

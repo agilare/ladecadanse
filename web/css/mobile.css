@@ -40,10 +40,14 @@
 
 #menu ul li#bouton_agenda a
 {
-
     padding: 0.5em 0.7em;
 }
 
+#menu ul li#bouton_calendrier a,
+#menu ul li#bouton_latests_events a
+{
+    padding: 0.5em 0.9em;
+}
 
 #entete_haut #menu_pratique {
     font-size: 0.9em;
@@ -198,6 +202,17 @@ table#calendrier tr#mois th a
     background-color: #FACA1A;
     float: right;
     text-align: right;
+}
+
+#latests_events h2
+{
+    margin-top:1em;
+    font-size:1.3em;
+}
+
+#latests_events h3
+{
+    font-size:1.1em;
 }
 
 .clear_mobile

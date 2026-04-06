@@ -249,7 +249,10 @@ use Ladecadanse\UserLevel;
                             <?= "<a href=\"/" . $lien . "?" . $url_query_region_et . "\">" . $nom . "</a>" ?>
                             </li>
                             <li id="bouton_calendrier">
-                                <a href="#" id="btn_calendrier" class="mobile" aria-label="Calendrier"><img src="<?= $url_images_interface_icons ?>calendar_view_week.png" alt="Calendrier" width="16" height="16"></a>
+                                <a href="#" id="btn_calendrier" class="mobile" aria-label="Calendrier"><i class="fa fa-calendar" aria-hidden="true"></i></a>
+                            </li>
+                            <li id="bouton_latests_events">
+                                <a href="/index.php#latests_events"><i class="fa fa-bell" aria-hidden="true"></i></a>
                             </li>
                         <?php } else { ?>
                             ><a href="/<?= $lien."?".$url_query_region; ?>"><?= $nom; ?></a></li>
