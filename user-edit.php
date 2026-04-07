@@ -13,7 +13,6 @@ require_once("app/bootstrap.php");
 use Ladecadanse\UserLevel;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Security\SecurityToken;
-use Ladecadanse\Utils\Logger;
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\Personne;
 
@@ -362,7 +361,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 					HtmlShrink::msgOk("Le profil a été modifié");
                 }
 
-                $logger->log('global', 'activity', "[user-edit] user " . $champs['pseudo'] . " updated by " . $_SESSION["user"] . "; details : personne $sql_update and affiliation : " . ($aff ?? "-" ), Logger::GRAN_YEAR);
+                $logger->info('[user-edit] user updated', ['pseudo' => $champs['pseudo'], 'by' => $_SESSION["user"]]);
 
                 $sqld = "DELETE FROM personne_organisateur WHERE idPersonne=" . (int) $get['idP'];
                 $connector->query($sqld);
@@ -384,7 +383,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
                     $connector->query($sql);
 				}
 			}
-            $logger->log('global', 'activity', "[user-edit] user " . $champs['pseudo'] . " organisateurs updated; idOrganisateurs inserted : " . implode(", ", $champs['organisateurs']), Logger::GRAN_YEAR);
+            $logger->info('[user-edit] organisateurs updated', ['pseudo' => $champs['pseudo'], 'idOrganisateurs' => $champs['organisateurs']]);
         }
 
 	} // if erreurs == 0

@@ -3,7 +3,6 @@
 require_once("app/bootstrap.php");
 
 use Ladecadanse\Utils\Validateur;
-use Ladecadanse\Utils\Logger;
 use Ladecadanse\Utils\Mailing;
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\UserLevel;
@@ -119,11 +118,11 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' && empty($_POST
                 $mailer = new Mailing();
                 $mailer->toUser($email_envoi, $subject, $contenu_message);
 
-                $logger->log('global', 'activity', "[user-reset] request by " . $email_envoi . " user.php?idP=" . $idPersonne, Logger::GRAN_YEAR);
+                $logger->info('[user-reset] request', ['email' => $email_envoi, 'idP' => $idPersonne]);
             }
             else
             {
-                $logger->log('global', 'activity', "[motdepasse_demande] request failed for pseudo/email " . $champs['pseudo_email'], Logger::GRAN_YEAR);
+                $logger->warning('[user-reset] request failed, user not found', ['pseudo_email' => $champs['pseudo_email']]);
             }
 
             HtmlShrink::msgOk("Si l'identifiant ou email que vous avez fourni existe comme compte sur La décadanse, un email contenant un lien pour réinitialiser le mot de passe vous a été envoyé");

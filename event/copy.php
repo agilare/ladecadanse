@@ -4,7 +4,6 @@ require_once("../app/bootstrap.php");
 
 use Ladecadanse\Evenement;
 use Ladecadanse\Security\SecurityToken;
-use Ladecadanse\Utils\Logger;
 use Ladecadanse\Utils\Validateur;
 
 if (!$videur->checkGroup(8))
@@ -300,7 +299,7 @@ if (!empty($_POST['submit']))
             $i++;
 		} //while date
 
-        $logger->log('global', 'activity', "[copierEvenement] event \"" . $tab_event_copied['titre'] . "\" of " . $tab_event_copied['dateEvenement'] . " copied to " . $dateEvenement . " - " . $dateEvenement2, Logger::GRAN_YEAR);
+        $logger->info('[copierEvenement]', ['titre' => $tab_event_copied['titre'], 'from' => $tab_event_copied['dateEvenement'], 'to' => "$dateEvenement - $dateEvenement2"]);
 
         header("Location: ?idE=".(int)$get['idE']); die();
 	} //if nberreur = 0

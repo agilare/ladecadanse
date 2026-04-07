@@ -4,7 +4,6 @@ require_once '../app/bootstrap.php';
 
 use Ladecadanse\Evenement;
 use Ladecadanse\Utils\Validateur;
-use Ladecadanse\Utils\Logger;
 
 if (!LADECADANSE_API_ENABLED || empty($_SERVER['PHP_AUTH_USER']) || empty($_SERVER['PHP_AUTH_PW']) || !($_SERVER['PHP_AUTH_USER'] == LADECADANSE_API_USER && $_SERVER['PHP_AUTH_PW'] == LADECADANSE_API_KEY))
 {
@@ -164,7 +163,7 @@ if ($get['entity'] == 'event')
     ];
 }//end if
 
-$logger->log('global', 'api', "GET ".count($events)." item(s) for ".$get['entity']." ".$get['category']." in ". $get['region']." the ".$get['date']." until ".$get['endtime']." by user ".LADECADANSE_API_USER, Logger::GRAN_YEAR);
+$loggerApi->info('GET', ['count' => count($events), 'entity' => $get['entity'], 'category' => $get['category'], 'region' => $get['region'], 'date' => $get['date'], 'endtime' => $get['endtime'], 'user' => LADECADANSE_API_USER]);
 
 header('Content-Disposition: inline; filename=' . $get['entity'] . '.json');
 header('Content-Type: application/json; charset=UTF-8');

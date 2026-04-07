@@ -5,7 +5,6 @@ namespace Ladecadanse\Security;
 use Ladecadanse\UserLevel;
 use Ladecadanse\Utils\SystemComponent;
 use Ladecadanse\Utils\Validateur;
-use Ladecadanse\Utils\Logger;
 
 /**
  * Lance la session et vérifie le login du visiteur
@@ -141,7 +140,7 @@ class Sentry extends SystemComponent
 
                 if ($connector->getNumRows($getUser) > 1)
                 {
-                    $logger->log('global', 'activity', "[Sentry] login failed, ambiguous email " . $user, Logger::GRAN_YEAR);
+                    $logger->warning('[Sentry] login failed, ambiguous email', ['email' => $user]);
                     unset($this->userdata);
                     if ($badRedirect)
                     {
@@ -182,7 +181,7 @@ class Sentry extends SystemComponent
                     $connector->query("UPDATE personne SET last_login = now() $sql_update_pass WHERE idPersonne=".(int)$this->userdata['idPersonne']);
                     session_regenerate_id(true); // to avoid session fixation attack
                     $this->_setSession($this->userdata, $memoriser);
-                    $logger->log('global', 'activity', "[Sentry] login of " . $_SESSION["user"], Logger::GRAN_YEAR);
+                    $logger->info('[Sentry] login', ['user' => $_SESSION["user"]]);
 
 
                     // exception pour admin
@@ -201,7 +200,7 @@ class Sentry extends SystemComponent
                 }
                 else
                 {
-                    $logger->log('global', 'activity', "[Sentry] login failed, wrong password by user " . $this->userdata['pseudo'], Logger::GRAN_YEAR);
+                    $logger->warning('[Sentry] login failed, wrong password', ['user' => $this->userdata['pseudo']]);
 
                     unset($this->userdata);
 
@@ -214,7 +213,7 @@ class Sentry extends SystemComponent
             }
             else
             {
-                $logger->log('global', 'activity', "[Sentry] login failed, user " . $user . " not found", Logger::GRAN_YEAR);
+                $logger->warning('[Sentry] login failed, user not found', ['user' => $user]);
 
                 unset($this->userdata);
 
@@ -258,7 +257,7 @@ class Sentry extends SystemComponent
             $this->userdata = $connector->fetchArray($getUser);
             session_regenerate_id(true); // to avoid session fixation attack
             $this->_setSession($this->userdata, true, true);
-            $logger->log('global', 'activity', "[Sentry] remembered access of " . $_SESSION["user"] . " (" . $_SESSION['Semail'] . ")", Logger::GRAN_YEAR);
+            $logger->info('[Sentry] remembered access', ['user' => $_SESSION["user"], 'email' => $_SESSION['Semail']]);
             return true;
         }
         else

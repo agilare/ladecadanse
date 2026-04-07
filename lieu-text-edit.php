@@ -3,7 +3,6 @@
 require_once("app/bootstrap.php");
 
 use Ladecadanse\Utils\Validateur;
-use Ladecadanse\Utils\Logger;
 use Ladecadanse\HtmlShrink;
 
 use Symfony\Component\HtmlSanitizer\HtmlSanitizer;
@@ -177,7 +176,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 				$descriptionlieu = $champs;
 				$descriptionlieu['auteur'] = $get['idP'];
 				$descriptionlieu['date_derniere_modif'] = date("Y-m-d H:i:s");
-                $logger->log('global', 'activity', "[lieu-text-edit] insert of " . $get['type'] . " for idL " . (int)$get['idL'] . " by user " . $_SESSION['user'], Logger::GRAN_YEAR);
+                $logger->info('[lieu-text-edit] insert', ['type' => $get['type'], 'idL' => (int)$get['idL'], 'user' => $_SESSION['user']]);
 
                 $action_terminee = true;
 			}
@@ -207,7 +206,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 				$descriptionlieu = $champs;
 				$descriptionlieu['auteur'] = $get['idP'];
 				$get['action'] = 'editer';
-                $logger->log('global', 'activity', "[lieu-text-edit] update of " . $get['type'] . " for idL " . (int)$get['idL'] . " by user " . $_SESSION['user'], Logger::GRAN_YEAR);
+                $logger->info('[lieu-text-edit] update', ['type' => $get['type'], 'idL' => (int)$get['idL'], 'user' => $_SESSION['user']]);
                 $action_terminee = true;
 			}
 			else

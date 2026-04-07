@@ -2,7 +2,6 @@
 require_once("../app/bootstrap.php");
 
 use Ladecadanse\Utils\Validateur;
-use Ladecadanse\Utils\Logger;
 use Ladecadanse\Utils\Mailing;
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\Evenement;
@@ -171,7 +170,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
             if ($mailer->toUser($to, $subject, $body, ['email' => $champs['email'], 'name' => $_SESSION['user'] ?? '']))
             {
 				$_SESSION['evenement-edit_flash_msg'] = $translator->get("event-send-{$get['action']}-success-msg");
-                $logger->log('global', 'activity', "[event-send] {$get['action']} by {$champs['email']} to $to of /event/evenement.php?idE=" . (int) $get['idE'], Logger::GRAN_YEAR);
+                $logger->info('[event-send]', ['action' => $get['action'], 'from' => $champs['email'], 'to' => $to, 'idE' => (int) $get['idE']]);
                 header("Location: /event/evenement.php?idE=" . (int) $get['idE']);
             }
         }

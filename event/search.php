@@ -4,7 +4,6 @@ global $connector, $glo_regions, $glo_auj, $iconeEditer, $glo_auj_6h;
 
 require_once("../app/bootstrap.php");
 
-use Ladecadanse\Utils\Logger;
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\Utils\Utils;
 use Ladecadanse\Utils\Validateur;
@@ -185,7 +184,7 @@ $stmtAll = $connectorPdo->prepare($sql_select_all);
 $stmtAll->execute($sql_params_all);
 $all_results_nb = $stmtAll->fetchColumn();
 
-$logger->log('global', 'activity', "[recherche] \"" . urlencode($get['mots']) .  "\" with " . $all_results_nb . " events found in " . $get['periode'] . " (".$get['years'].") sorted by " . $get['tri'] . ", page " . $get['page'], Logger::GRAN_YEAR);
+$logger->info('[recherche]', ['mots' => $get['mots'], 'nb' => $all_results_nb, 'periode' => $get['periode'], 'years' => $get['years'], 'tri' => $get['tri'], 'page' => $get['page']]);
 
 // prepare mots to be transmitted in links (menus order, filters, pagination)
 $get['mots'] = urlencode($get['mots']);

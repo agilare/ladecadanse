@@ -14,7 +14,8 @@ use Ladecadanse\Security\Authorization;
 use Ladecadanse\Security\Sentry;
 use Ladecadanse\Utils\DbConnector;
 use Ladecadanse\Utils\DbConnectorPdo;
-use Ladecadanse\Utils\Logger;
+use Monolog\Logger;
+use Monolog\Handler\RotatingFileHandler;
 use Ladecadanse\Utils\RegionConfig;
 use Ladecadanse\Utils\Utils;
 use Ladecadanse\TemplateEngine;
@@ -61,7 +62,27 @@ $regionConfig = new RegionConfig($glo_regions);
 
 $_SESSION['user_prefs_agenda_order'] = $_SESSION['user_prefs_agenda_order'] ?? 'dateAjout';
 
-$logger = new Logger(__DIR__ . "/../var/logs/");
+$logger = new Logger('activity');
+$logger->pushHandler(new RotatingFileHandler(
+    __DIR__ . '/../var/logs/activity.log',
+    36,
+    \Monolog\Level::Debug,
+    true,
+    null,
+    false,
+    'Y-m'
+));
+
+$loggerApi = new Logger('api');
+$loggerApi->pushHandler(new RotatingFileHandler(
+    __DIR__ . '/../var/logs/api.log',
+    36,
+    \Monolog\Level::Debug,
+    true,
+    null,
+    false,
+    'Y-m'
+));
 
 $connector = new DbConnector(DB_HOST, DB_NAME, DB_USERNAME, DB_PASSWORD);
 $connectorPdo = DbConnectorPdo::getInstance();

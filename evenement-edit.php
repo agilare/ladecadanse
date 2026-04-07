@@ -6,7 +6,6 @@ use Ladecadanse\Utils\Validateur; // forms
 use Ladecadanse\Utils\ImageDriver2; // files
 use Ladecadanse\Security\SecurityToken;
 use Ladecadanse\Evenement; // domain
-use Ladecadanse\Utils\Logger; // container
 use Ladecadanse\Utils\Mailing;
 use Ladecadanse\HtmlShrink; // template
 use Ladecadanse\UserLevel; // domain
@@ -688,7 +687,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 		}
 
 		unset($_POST); // ?
-        $logger->log('global', 'activity', "[evenement-edit] " . $get['action'] . " of \"" . $champs['titre'] . "\" in " . $champs['nomLieu'] . " /event/evenement.php?idE=" . (int) $evenement['idEvenement'], Logger::GRAN_YEAR);
+        $logger->info('[evenement-edit]', ['action' => $get['action'], 'titre' => $champs['titre'], 'lieu' => $champs['nomLieu'], 'idE' => (int) $evenement['idEvenement']]);
 
         if (isset($_SESSION['Sgroupe']))
         {

@@ -4,7 +4,6 @@ require_once("app/bootstrap.php");
 
 use Ladecadanse\UserLevel;
 use Ladecadanse\Utils\Validateur;
-use Ladecadanse\Utils\Logger;
 use Ladecadanse\HtmlShrink;
 
 if ($videur->checkGroup(UserLevel::MEMBER)) {
@@ -159,7 +158,7 @@ if ($connector->getNumRows($req_temp) == 1)
             if ($connector->query($sql_update) && $connector->query($sql_delete))
 			{
 				HtmlShrink::msgOk("Le mot de passe a été mis à jour, vous pouvez maintenant vous <a href='/user-login.php'>connecter</a> avec votre identifiant et ce nouveau mot de passe");
-                $logger->log('global', 'activity', "[user-reset2] success by user idP ".$idPersonne, Logger::GRAN_YEAR);
+                $logger->info('[user-reset2] password reset success', ['idP' => $idPersonne]);
 			}
 			else
 			{

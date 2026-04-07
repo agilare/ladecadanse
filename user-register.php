@@ -4,7 +4,6 @@ require_once("app/bootstrap.php");
 
 use Ladecadanse\UserLevel;
 use Ladecadanse\Utils\Validateur;
-use Ladecadanse\Utils\Logger;
 use Ladecadanse\Utils\Mailing;
 use Ladecadanse\HtmlShrink;
 
@@ -248,7 +247,7 @@ include("_header.inc.php");
                         $mailer = new Mailing();
                         $mailer->toUser($tab_pers['email'], $subject, $contenu_message);
 
-                        $logger->log('global', 'activity', "[user-register] by " . $tab_pers['pseudo'] . " (" . $tab_pers['email'] . ") in group " . $tab_pers['groupe'] . " /user.php?idP=" . (int) $req_id, Logger::GRAN_YEAR);
+                        $logger->info('[user-register]', ['pseudo' => $tab_pers['pseudo'], 'email' => $tab_pers['email'], 'groupe' => $tab_pers['groupe'], 'idP' => (int) $req_id]);
                     }
 
                     foreach ($champs as $k => $v)
