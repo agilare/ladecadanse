@@ -5,23 +5,23 @@ import { AppGlobal } from './global.js';
 // used everywhere : home, events, lieux, user...
 $('.magnific-popup').magnificPopup({
     type: 'image',
-    tClose: 'Fermer (Esc)', // Alt text on close button
+    tClose: 'Fermer (Esc)',
     tLoading: 'Chargement...', // Text that is displayed during loading. Can contain %curr% and %total
     image: {
-        tError: "L'image n'a pas pu être chargée" // Error message when image could not be loaded
+        tError: "L'image n'a pas pu être chargée"
     }
 });
 
 // used in lieu
 $('.gallery-item').magnificPopup({
     type: 'image',
-    tClose: 'Fermer (Esc)', // Alt text on close button
+    tClose: 'Fermer (Esc)',
     tLoading: 'Chargement...', // Text that is displayed during loading. Can contain %curr% and %total
     gallery: {
         enabled: true,
-        tPrev: 'Pr&eacute;c&eacute;dente (bouton gauche)', // title for left button
-        tNext: 'Suivante (bouton droit)', // title for right button
-        tCounter: '%curr% de %total%' // markup of counter
+        tPrev: 'Pr&eacute;c&eacute;dente (bouton gauche)',
+        tNext: 'Suivante (bouton droit)',
+        tCounter: '%curr% de %total%'
     }
 });
 
