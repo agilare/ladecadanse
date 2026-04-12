@@ -39,11 +39,6 @@ trait HasDocuments
         return $fileNamePrefix . $fileName . $fileNameSuffix;
     }
 
-    public static function getWebPath(string $filePath): string
-    {
-        return ASSETS_DIR . self::$urlDirPath . $filePath;
-    }
-
     /**
      * Retourne le chemin relatif à ASSETS_DIR, utilisable directement avec $assets->get().
      * Ex : /uploads/evenements/ + s_flyer.jpg → /uploads/evenements/s_flyer.jpg
