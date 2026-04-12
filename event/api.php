@@ -106,11 +106,11 @@ if ($get['entity'] == 'event')
         // image : if flyer empty, image; add path
         if (!empty($row['image']))
         {
-            $event['image'] = Evenement::getWebPath(Evenement::getFilePath($row['image']));
+            $event['image'] = $assets->get(Evenement::getAssetPath(Evenement::getFilePath($row['image'])));
         }
         elseif (!empty($row['flyer']))
         {
-            $event['image'] = Evenement::getWebPath(Evenement::getFilePath($row['flyer']));
+            $event['image'] = $assets->get(Evenement::getAssetPath(Evenement::getFilePath($row['flyer'])));
         }
 
         $event['description'] = $row['description'];

@@ -118,14 +118,14 @@ class EvenementRenderer
         $imgHeight = '';
         if (!empty($flyer))
         {
-            $href = Evenement::getWebPath(Evenement::getFilePath($flyer));
+            $href = $assets->get(Evenement::getAssetPath(Evenement::getFilePath($flyer)));
             $imgSrc = $assets->get(Evenement::getAssetPath(Evenement::getFilePath($flyer, $imgSmallFilePathPrefix)));
             $imgAlt = "Flyer de ". sanitizeForHtml($titre);
             //$imgHeight = ImageDriver2::getProportionalHeightFromGivenWidth(self::getSystemFilePath(self::getFilePath($flyer, $imgSmallFilePathPrefix)), $smallWidth);
         }
         elseif (!empty($image))
         {
-            $href = Evenement::getWebPath(Evenement::getFilePath($image));
+            $href = $assets->get(Evenement::getAssetPath(Evenement::getFilePath($image)));
             $imgSrc = $assets->get(Evenement::getAssetPath(Evenement::getFilePath($image, $imgSmallFilePathPrefix)));
             $imgAlt = "Illustration de ". sanitizeForHtml($titre);
             //$imgHeight = ImageDriver2::getProportionalHeightFromGivenWidth(self::getSystemFilePath(self::getFilePath($image, $imgSmallFilePathPrefix)), $smallWidth);
