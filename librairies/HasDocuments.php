@@ -39,16 +39,18 @@ trait HasDocuments
         return $fileNamePrefix . $fileName . $fileNameSuffix;
     }
 
-    public static function getWebPath(string $filePath, bool $isWithAntiCache = false): string
+    public static function getWebPath(string $filePath): string
     {
-	    $result = self::$urlDirPath . $filePath;
-        $systemFilePath = self::getSystemFilePath($filePath);
-        if ($isWithAntiCache && file_exists($systemFilePath))
-        {
-            $result .= "?" . filemtime($systemFilePath);
-        }
+        return ASSETS_DIR . self::$urlDirPath . $filePath;
+    }
 
-	    return $result;
+    /**
+     * Retourne le chemin relatif à ASSETS_DIR, utilisable directement avec $assets->get().
+     * Ex : /uploads/evenements/ + s_flyer.jpg → /uploads/evenements/s_flyer.jpg
+     */
+    public static function getAssetPath(string $filePath): string
+    {
+        return self::$urlDirPath . $filePath;
     }
 
     public static function safeCopyWithMiniature(string $srcFileName, string $destFileName): void

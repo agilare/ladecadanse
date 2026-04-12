@@ -13,19 +13,20 @@ ini_set('max_file_uploads', 3);
 
 // DIR
 define('__ROOT__', dirname(__FILE__, 2)); // full path to dir, for ex. /users/michel/hosts/ladecadanse
+define('ASSETS_DIR', '/web'); // racine URL et suffixe système pour tous les assets (css, js, uploads…)
 
 
-$rep_images_even = __ROOT__ . "/web/uploads/evenements/";
-$rep_uploads_lieux = __ROOT__ . "/web/uploads/lieux/";
-$rep_uploads_lieux_galeries = __ROOT__ . "/web/uploads/lieux/galeries/";
-$rep_uploads_organisateurs = __ROOT__ . "/web/uploads/organisateurs/";
-$rep_fichiers_lieu = __ROOT__ . "/web/uploads/fichiers/lieux/";
+$rep_images_even = __ROOT__ . ASSETS_DIR . "/uploads/evenements/";
+$rep_uploads_lieux = __ROOT__ . ASSETS_DIR . "/uploads/lieux/";
+$rep_uploads_lieux_galeries = __ROOT__ . ASSETS_DIR . "/uploads/lieux/galeries/";
+$rep_uploads_organisateurs = __ROOT__ . ASSETS_DIR . "/uploads/organisateurs/";
+$rep_fichiers_lieu = __ROOT__ . ASSETS_DIR . "/uploads/fichiers/lieux/";
 
-// PATHS
-$url_uploads_events = "/web/uploads/evenements/";
-$url_uploads_lieux = "/web/uploads/lieux/";
-$url_uploads_lieux_galeries = "/web/uploads/lieux/galeries/";
-$url_uploads_organisateurs = "/web/uploads/organisateurs/";
+// PATHS — chemins relatifs à ASSETS_DIR, utilisables directement avec AssetManager::get()
+$url_uploads_events = "/uploads/evenements/";
+$url_uploads_lieux = "/uploads/lieux/";
+$url_uploads_lieux_galeries = "/uploads/lieux/galeries/";
+$url_uploads_organisateurs = "/uploads/organisateurs/";
 
 $url_images_interface_icons = "/web/interface/icons/";
 

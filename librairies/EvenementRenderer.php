@@ -98,6 +98,7 @@ class EvenementRenderer
 
     public static function mainFigureHtml(string $flyer, string $image, string $titre, ?int $smallWidth = null): string
     {
+        global $assets;
         ob_start();
 
         // by default display small version
@@ -118,14 +119,14 @@ class EvenementRenderer
         if (!empty($flyer))
         {
             $href = Evenement::getWebPath(Evenement::getFilePath($flyer));
-            $imgSrc = Evenement::getWebPath(Evenement::getFilePath($flyer, $imgSmallFilePathPrefix), isWithAntiCache: true);
+            $imgSrc = $assets->get(Evenement::getAssetPath(Evenement::getFilePath($flyer, $imgSmallFilePathPrefix)));
             $imgAlt = "Flyer de ". sanitizeForHtml($titre);
             //$imgHeight = ImageDriver2::getProportionalHeightFromGivenWidth(self::getSystemFilePath(self::getFilePath($flyer, $imgSmallFilePathPrefix)), $smallWidth);
         }
         elseif (!empty($image))
         {
             $href = Evenement::getWebPath(Evenement::getFilePath($image));
-            $imgSrc = Evenement::getWebPath(Evenement::getFilePath($image, $imgSmallFilePathPrefix), isWithAntiCache: true);
+            $imgSrc = $assets->get(Evenement::getAssetPath(Evenement::getFilePath($image, $imgSmallFilePathPrefix)));
             $imgAlt = "Illustration de ". sanitizeForHtml($titre);
             //$imgHeight = ImageDriver2::getProportionalHeightFromGivenWidth(self::getSystemFilePath(self::getFilePath($image, $imgSmallFilePathPrefix)), $smallWidth);
         }

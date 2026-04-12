@@ -175,9 +175,9 @@ include("../_header.inc.php");
                     <tr >
                         <td style="max-width:70px;overflow: hidden;">
                             <?php if ($lieu['logo']) : ?>
-                            <a href="<?= sanitizeForHtml(Lieu::getWebPath(Lieu::getFilePath($lieu['logo']), true)) ?>" class="magnific-popup"><img src="<?= sanitizeForHtml(Lieu::getWebPath(Lieu::getFilePath($lieu['logo'], "s_"), true)) ?>" alt="Logo" class="logo" height="<?= ImageDriver2::getProportionalHeightFromGivenWidth(Lieu::getSystemFilePath(Lieu::getFilePath($lieu['logo'], "s_")), 50) ?>"></a>
+                            <a href="<?= sanitizeForHtml($assets->get(Lieu::getAssetPath(Lieu::getFilePath($lieu['logo'])))) ?>" class="magnific-popup"><img src="<?= sanitizeForHtml($assets->get(Lieu::getAssetPath(Lieu::getFilePath($lieu['logo'], "s_")))) ?>" alt="Logo" class="logo" height="<?= ImageDriver2::getProportionalHeightFromGivenWidth(Lieu::getSystemFilePath(Lieu::getFilePath($lieu['logo'], "s_")), 50) ?>"></a>
                             <?php elseif ($lieu['photo1'] != '') : ?>
-                                <a href="<?= sanitizeForHtml(Lieu::getWebPath(Lieu::getFilePath($lieu['photo1']), true)) ?>" class="gallery-item"><img src="<?= sanitizeForHtml(Lieu::getWebPath(Lieu::getFilePath($lieu['photo1'], "s_"), true)) ?>" alt="Photo du lieu" height="<?= ImageDriver2::getProportionalHeightFromGivenWidth(Lieu::getSystemFilePath(Lieu::getFilePath($lieu['photo1'], "s_")), 50) ?>"></a>
+                                <a href="<?= sanitizeForHtml($assets->get(Lieu::getAssetPath(Lieu::getFilePath($lieu['photo1'])))) ?>" class="gallery-item"><img src="<?= sanitizeForHtml($assets->get(Lieu::getAssetPath(Lieu::getFilePath($lieu['photo1'], "s_")))) ?>" alt="Photo du lieu" height="<?= ImageDriver2::getProportionalHeightFromGivenWidth(Lieu::getSystemFilePath(Lieu::getFilePath($lieu['photo1'], "s_")), 50) ?>"></a>
                             <?php else : ?>
                                 <div style="width:60px;height:40px;background: #fafafa"></div>
                             <?php endif; ?>

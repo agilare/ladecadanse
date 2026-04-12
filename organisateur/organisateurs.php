@@ -122,9 +122,9 @@ include("../_header.inc.php");
                     <tr>
                         <td style="max-width:70px;overflow: hidden;">
                             <?php if ($orga['logo']) : ?>
-                            <a href="<?= Organisateur::getWebPath(Organisateur::getFilePath($orga['logo']), true) ?>" class="magnific-popup"><img src="<?= Organisateur::getWebPath(Organisateur::getFilePath($orga['logo'], "s_"), true) ?>" alt="Logo" class="logo" height="<?= ImageDriver2::getProportionalHeightFromGivenWidth(Organisateur::getSystemFilePath(Organisateur::getFilePath($orga['logo'], "s_")), 50) ?>"></a>
+                            <a href="<?= $assets->get(Organisateur::getAssetPath(Organisateur::getFilePath($orga['logo']))) ?>" class="magnific-popup"><img src="<?= $assets->get(Organisateur::getAssetPath(Organisateur::getFilePath($orga['logo'], "s_"))) ?>" alt="Logo" class="logo" height="<?= ImageDriver2::getProportionalHeightFromGivenWidth(Organisateur::getSystemFilePath(Organisateur::getFilePath($orga['logo'], "s_")), 50) ?>"></a>
                             <?php elseif ($orga['photo'] != '') : ?>
-                                <a href="<?= Organisateur::getWebPath(Organisateur::getFilePath($orga['photo']), true) ?>" class="gallery-item"><img src="<?= Organisateur::getWebPath(Organisateur::getFilePath($orga['photo'], "s_"), true) ?>" alt="Photo" height="<?= ImageDriver2::getProportionalHeightFromGivenWidth(Organisateur::getSystemFilePath(Organisateur::getFilePath($orga['photo'], "s_")), 50) ?>"></a>
+                                <a href="<?= $assets->get(Organisateur::getAssetPath(Organisateur::getFilePath($orga['photo']))) ?>" class="gallery-item"><img src="<?= $assets->get(Organisateur::getAssetPath(Organisateur::getFilePath($orga['photo'], "s_"))) ?>" alt="Photo" height="<?= ImageDriver2::getProportionalHeightFromGivenWidth(Organisateur::getSystemFilePath(Organisateur::getFilePath($orga['photo'], "s_")), 50) ?>"></a>
                             <?php else : ?>
                                 <div style="width:60px;height:40px;background: #fafafa"></div>
                             <?php endif; ?>

@@ -130,7 +130,7 @@ $page_titre = $organisateur->getValue('nom');
 $page_description = $organisateur->getValue('nom') . " : informations pratiques, présentation et événements";
 if ($organisateur->getValue('logo'))
 {
-    $page_image = Organisateur::getWebPath(Organisateur::getFilePath($organisateur->getValue('logo')), true);
+    $page_image = $assets->get(Organisateur::getAssetPath(Organisateur::getFilePath($organisateur->getValue('logo'))));
 }
 
 $page_url = "organisateur/organisateur.php?idO=" .  $get['idO'];
@@ -154,7 +154,7 @@ include("../_header.inc.php");
             <h1 class="fn org"><?= $organisateur->getHtmlValue('nom'); ?></h1>
 
             <?php if ($organisateur->getValue('logo') != '') : ?>
-            <a href="<?= Organisateur::getWebPath(Organisateur::getFilePath($organisateur->getValue('logo')), isWithAntiCache: true) ?>" class="magnific-popup"><img src="<?= Organisateur::getWebPath(Organisateur::getFilePath($organisateur->getValue('logo'), "s_"), true) ?>" alt="Logo" class="logo" /></a>
+            <a href="<?= $assets->get(Organisateur::getAssetPath(Organisateur::getFilePath($organisateur->getValue('logo')))) ?>" class="magnific-popup"><img src="<?= $assets->get(Organisateur::getAssetPath(Organisateur::getFilePath($organisateur->getValue('logo'), "s_"))) ?>" alt="Logo" class="logo" /></a>
             <?php endif ?>
             <div class="spacer"></div>
         </header>
@@ -175,8 +175,8 @@ include("../_header.inc.php");
             <div id="medias">
                 <figure id="photo">
                     <?php if ($organisateur->getValue('photo') != '') : ?>
-                        <a href="<?= Organisateur::getWebPath(Organisateur::getFilePath($organisateur->getValue('photo')), isWithAntiCache: true) ?>" class="magnific-popup">
-                            <img src="<?= Organisateur::getWebPath(Organisateur::getFilePath($organisateur->getValue('photo'), "s_"), isWithAntiCache: true) ?>" alt="Photo" />
+                        <a href="<?= $assets->get(Organisateur::getAssetPath(Organisateur::getFilePath($organisateur->getValue('photo')))) ?>" class="magnific-popup">
+                            <img src="<?= $assets->get(Organisateur::getAssetPath(Organisateur::getFilePath($organisateur->getValue('photo'), "s_"))) ?>" alt="Photo" />
                         </a>
                     <?php endif; ?>
                 </figure>
