@@ -16,6 +16,7 @@ use Ladecadanse\Utils\DbConnector;
 use Ladecadanse\Utils\DbConnectorPdo;
 use Monolog\Logger;
 use Monolog\Handler\RotatingFileHandler;
+use Monolog\Formatter\LineFormatter;
 use Ladecadanse\Utils\RegionConfig;
 use Ladecadanse\Utils\Utils;
 use Ladecadanse\TemplateEngine;
@@ -62,8 +63,9 @@ $regionConfig = new RegionConfig($glo_regions);
 
 $_SESSION['user_prefs_agenda_order'] = $_SESSION['user_prefs_agenda_order'] ?? 'dateAjout';
 
-$logger = new Logger('activity');
-$logger->pushHandler(new RotatingFileHandler(
+$logFormatter = new LineFormatter(null, 'Y-m-d H:i:sP');
+
+$activityHandler = new RotatingFileHandler(
     __DIR__ . '/../var/logs/activity.log',
     36,
     \Monolog\Level::Debug,
@@ -71,10 +73,12 @@ $logger->pushHandler(new RotatingFileHandler(
     null,
     false,
     'Y-m'
-));
+);
+$activityHandler->setFormatter($logFormatter);
+$logger = new Logger('activity');
+$logger->pushHandler($activityHandler);
 
-$loggerApi = new Logger('api');
-$loggerApi->pushHandler(new RotatingFileHandler(
+$apiHandler = new RotatingFileHandler(
     __DIR__ . '/../var/logs/api.log',
     36,
     \Monolog\Level::Debug,
@@ -82,7 +86,10 @@ $loggerApi->pushHandler(new RotatingFileHandler(
     null,
     false,
     'Y-m'
-));
+);
+$apiHandler->setFormatter($logFormatter);
+$loggerApi = new Logger('api');
+$loggerApi->pushHandler($apiHandler);
 
 $connector = new DbConnector(DB_HOST, DB_NAME, DB_USERNAME, DB_PASSWORD);
 $connectorPdo = DbConnectorPdo::getInstance();
