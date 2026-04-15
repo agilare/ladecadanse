@@ -2,6 +2,7 @@
 
 require_once("app/bootstrap.php");
 
+use Ladecadanse\Organisateur;
 use Ladecadanse\Security\SecurityToken;
 use Ladecadanse\OrganisateurEdition;
 use Ladecadanse\Utils\Validateur;
@@ -198,7 +199,7 @@ if (isset($get['idO']) && $form->getValeur('logo') != '' && $form->getErreur("lo
 
 	<input type="hidden" name="logo_existant" value="<?php echo $form->getValeur('logo'); ?>" />
 	<div class="supImg">
-                <?php echo "<img src=\"" . $url_uploads_organisateurs . "s_" . $form->getValeur('logo') . "?" . filemtime($rep_uploads_organisateurs . $form->getValeur('logo')) . "\" alt=\"Logo pour " . sanitizeForHtml($form->getValeur('nom')) . "\" />"; ?>
+                <?php echo "<img src=\"" . $assets->get(Organisateur::getAssetPath(Organisateur::getFilePath($form->getValeur('logo'), "s_"))) . "\" alt=\"Logo pour " . sanitizeForHtml($form->getValeur('nom')) . "\" />"; ?>
                 <div>
 		<label for="supprimer_logo" class="continu">Supprimer</label>
 		<input type="checkbox" name="supprimer[]" id="supprimer_logo" value="logo" class="checkbox" <?php echo $checked; ?> />
@@ -235,7 +236,7 @@ if (isset($get['idO']) && $form->getValeur('photo') != '' && $form->getErreur("p
 
 	<input type="hidden" name="photo_existant" value="<?php echo $form->getValeur('photo'); ?>" />
 	<div class="supImg">
-                <?php echo "<img src=\"" . $url_uploads_organisateurs . "s_" . $form->getValeur('photo') . "?" . filemtime($rep_uploads_organisateurs . $form->getValeur('photo')) . "\" alt=\"photo pour " . sanitizeForHtml($form->getValeur('nom')) . "\" />"; ?>
+                <?php echo "<img src=\"" . $assets->get(Organisateur::getAssetPath(Organisateur::getFilePath($form->getValeur('photo'), "s_"))) . "\" alt=\"photo pour " . sanitizeForHtml($form->getValeur('nom')) . "\" />"; ?>
                 <div>
 		<label for="supprimer_photo" class="continu">Supprimer</label>
 		<input type="checkbox" name="supprimer[]" id="supprimer_photo" value="photo" class="checkbox" <?php echo $checked; ?> />

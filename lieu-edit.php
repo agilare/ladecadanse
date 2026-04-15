@@ -2,6 +2,7 @@
 
 require_once("app/bootstrap.php");
 
+use Ladecadanse\Lieu;
 use Ladecadanse\Security\SecurityToken;
 use Ladecadanse\LieuEdition;
 use Ladecadanse\Utils\Text;
@@ -450,7 +451,7 @@ echo $form->getHtmlErreur("quartier");
 
                 <input type="hidden" name="logo_existant" value="<?php echo $form->getValeur('logo'); ?>" />
                 <div class="supImg">
-                            <?php echo "<img src=\"" . $url_uploads_lieux . "s_" . $form->getValeur('logo') . "?" . filemtime($rep_uploads_lieux . $form->getValeur('logo')) . "\" />"; ?>
+                            <?php echo "<img src=\"" . $assets->get(Lieu::getAssetPath(Lieu::getFilePath($form->getValeur('logo'), "s_"))) . "\" />"; ?>
                             <div>
                     <label for="supprimer_logo" class="continu">Supprimer</label>
                     <input type="checkbox" name="supprimer[]" id="supprimer_logo" value="logo" class="checkbox" <?php echo $checked; ?> />
@@ -485,7 +486,7 @@ echo $form->getHtmlErreur("quartier");
 
             <input type="hidden" name="photo1_existant" value="<?php echo $form->getValeur('photo1'); ?>" />
             <div class="supImg">
-                        <?php echo "<img src=\"" . $url_uploads_lieux . "s_" . $form->getValeur('photo1') . "?" . filemtime($rep_uploads_lieux . $form->getValeur('photo1')) . "\" />"; ?>
+                        <?php echo "<img src=\"" . $assets->get(Lieu::getAssetPath(Lieu::getFilePath($form->getValeur('photo1'), "s_"))) . "\" />"; ?>
                         <div>
                 <label for="supprimer_photo1" class="continu">Supprimer</label>
                 <input type="checkbox" name="supprimer[]" id="supprimer_photo1" value="photo1" class="checkbox" <?php echo $checked; ?> />
@@ -526,7 +527,7 @@ echo $form->getHtmlErreur("quartier");
                 while ($tab_galerie = $connector->fetchArray($req_galerie))
                 {
                     $nom_fichier = $tab_galerie['idFichierrecu'].".".$tab_galerie['extension'];
-                    echo "<tr><td><img src=\"".$url_uploads_lieux_galeries."s_".$nom_fichier."\" /></td>
+                    echo "<tr><td><img src=\"".$assets->get(Lieu::getAssetPath(Lieu::getFilePath($nom_fichier, "galeries/s_")))."\" /></td>
                     <td>".date_iso2app($tab_galerie['dateAjout'])."</td>
                     <td><input type=\"checkbox\" name=\"supprimer_galerie[]\" value=\"".(int)$tab_galerie['idFichierrecu'].".".$tab_galerie['extension']."\" /></td></tr>";
                 }
