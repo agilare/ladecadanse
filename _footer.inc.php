@@ -93,6 +93,7 @@ use Ladecadanse\UserLevel;
             document.getElementById("contacteznous-email-info").innerHTML = atob("<?= base64_encode(EMAIL_ADMIN); ?>");
         </script>
     <?php endif; ?>
+    <script nonce="<?= CSP_NONCE ?>">window.__LADECADANSE = { isLoggedIn: <?= json_encode(!empty($_SESSION['logged'])) ?> };</script>
     <script type="module" src="<?= $assets->get("js/main.js"); ?>"></script>
 
 </body>

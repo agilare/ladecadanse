@@ -91,8 +91,7 @@ class EvenementRenderer
             </li>
             <?php
         }
-        $result = ob_get_contents();
-        ob_clean();
+        $result = ob_get_clean();
         return $result;
     }
 
@@ -112,6 +111,7 @@ class EvenementRenderer
 
         if (empty($flyer) && empty($image))
         {
+            ob_end_clean();
             return '';
         }
 
@@ -137,8 +137,7 @@ class EvenementRenderer
         </a>
 
         <?php
-        $result = ob_get_contents();
-        ob_clean();
+        $result = ob_get_clean();
         return $result;
     }
 
@@ -150,7 +149,7 @@ class EvenementRenderer
         ob_start();
         ?>
 
-        <article id="event-<?= (int) $tab_even['e_idEvenement'] ?>" class="evenement-short">
+        <article id="event-<?= (int) $tab_even['e_idEvenement'] ?>" class="evenement-short" data-event-id="<?= (int) $tab_even['e_idEvenement'] ?>">
 
             <header class="titre">
                 <h3 class="left"><a href="/event/evenement.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>"><?= self::titreSelonStatutHtml(sanitizeForHtml($tab_even['e_titre']), $tab_even['e_statut']) ?></a></h3>
@@ -193,8 +192,7 @@ class EvenementRenderer
 
 
         <?php
-        $result = ob_get_contents();
-        ob_clean();
+        $result = ob_get_clean();
         return $result;
     }
 
@@ -219,7 +217,7 @@ class EvenementRenderer
         ob_start();
         ?>
 
-        <tr class="<?php if ($glo_auj_6h == $tab_even['e_dateEvenement']) { echo "ici"; } ?> vevent evenement">
+        <tr class="<?php if ($glo_auj_6h == $tab_even['e_dateEvenement']) { echo "ici"; } ?> vevent evenement" data-event-id="<?= (int) $tab_even['e_idEvenement'] ?>">
 
             <td class="dtstart">
                 <a href="/index.php?courant=<?= sanitizeForHtml($tab_even['e_dateEvenement']) ?>"><?= date2nomJour($tab_even['e_dateEvenement']); ?>&nbsp;<?= date2jour($tab_even['e_dateEvenement']); ?><span class="value-title" title="<?= $tab_even['e_dateEvenement'].$vcard_starttime; ?>"></span></a><br>
@@ -255,8 +253,7 @@ class EvenementRenderer
         </tr>
 
         <?php
-        $result = ob_get_contents();
-        ob_clean();
+        $result = ob_get_clean();
         return $result;
     }
 

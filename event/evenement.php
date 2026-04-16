@@ -199,6 +199,7 @@ include("../_header.inc.php");
                 <li><a href="/evenement-edit.php?action=editer&amp;idE=<?= (int) $get['idE'] ?>"><?= $iconeEditer ?>&nbsp;Modifier</a></li>
             <?php endif; ?>
                 <li><a href="/event/to-ics.php?idE=<?= (int) $get['idE'] ?>" title="Exporter au format iCalendar dans votre agenda"><i class="fa fa-calendar-plus-o fa-lg"></i>&nbsp;iCal</a></li>
+                <li><a href="#" class="js-favorite-toggle favorite-btn" data-event-id="<?= (int) $get['idE'] ?>" title="Favori"><i class="fa fa-heart-o fa-lg"></i>&nbsp;Favori</a></li>
         </ul>
     </nav>
 
