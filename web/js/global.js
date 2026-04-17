@@ -49,6 +49,20 @@ export const AppGlobal =
         {
             this.form.submit();
         });
+
+        const backToTopBtn = document.getElementById('back-to-top');
+        if (backToTopBtn) {
+            window.addEventListener('scroll', function ()
+            {
+                backToTopBtn.classList.toggle('is-visible', window.scrollY > 300);
+            }, { passive: true });
+
+            backToTopBtn.addEventListener('click', function (e)
+            {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        }
     },
     /**
      * only used in mobile view

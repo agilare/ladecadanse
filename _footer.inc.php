@@ -38,6 +38,10 @@ use Ladecadanse\UserLevel;
             </nav> <!-- Fin Pied -->
         </footer>
 
+    <a id="back-to-top" href="#haut" aria-label="Retour en haut de page">
+        <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    </a>
+
     </div> <!-- Fin Global -->
 
 

@@ -1731,3 +1731,31 @@ ul#menu_calendrier li form p
     margin:0 10px 5px 10px;
     vertical-align: middle
 }
+
+#back-to-top {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    background: rgba(250, 202, 26, 0.85);
+    border-radius: 50%;
+    color: #333;
+    text-decoration: none;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s, visibility 0.2s;
+    z-index: 100;
+}
+#back-to-top.is-visible {
+    opacity: 1;
+    visibility: visible;
+}
+#back-to-top:hover,
+#back-to-top:focus {
+    background: #FACA1A;
+    outline: 2px solid #333;
+}
