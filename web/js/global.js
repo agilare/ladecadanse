@@ -52,10 +52,12 @@ export const AppGlobal =
 
         const backToTopBtn = document.getElementById('back-to-top');
         if (backToTopBtn) {
-            window.addEventListener('scroll', function ()
+            function updateBackToTop()
             {
                 backToTopBtn.classList.toggle('is-visible', window.scrollY > 300);
-            }, { passive: true });
+            }
+            window.addEventListener('scroll', updateBackToTop, { passive: true });
+            updateBackToTop();
 
             backToTopBtn.addEventListener('click', function (e)
             {
