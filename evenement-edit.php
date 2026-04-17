@@ -834,7 +834,19 @@ if ($verif->nbErreurs() > 0)
                 </li>
         </details>
         <br>
-        <h2 style="margin:20px 0 5px 0;">L’événement</h2>
+
+    <?php if (!isset($_SESSION['Sgroupe']) || !empty($champs['user_email'])) { ?>
+    <fieldset>
+        <p>
+            <label for="user_email">Votre email*</label>
+            <input type="email" id="user_email" name="user_email" value="<?php echo sanitizeForHtml($champs['user_email']) ?>" required size="30" <?php echo (isset($_SESSION['Sgroupe']) && !empty($champs['user_email'])) ? 'readonly class="readonly" ': ''; ?> maxlength="120">
+        </p>
+        <?php if (!isset($_SESSION['Sgroupe'])) { ?>
+        <p>Déjà un compte ? <a href="/user-login.php">Connectez-vous</a>, ajoutez votre événement et il sera immédiatement publié</p>
+        <?php } ?>
+    </fieldset>
+    <?php } ?>
+    <h2 style="margin:20px 0 5px 0;">L’événement</h2>
     <p style="margin:5px 0;">* indique un champ obligatoire</p>
 
     <?php if ($get['action'] == "editer" || $get['action'] == "update")
@@ -1120,18 +1132,6 @@ if ($verif->nbErreurs() > 0)
         </div>
     </fieldset>
 
-    <?php if (!isset($_SESSION[‘Sgroupe’]) || !empty($champs[‘user_email’])) { ?>
-    <fieldset>
-        <p>
-            <label for="user_email">Votre email*</label>
-            <input type="email" id="user_email" name="user_email" value="<?php echo sanitizeForHtml($champs[‘user_email’]) ?>" required size="25" <?php echo (isset($_SESSION[‘Sgroupe’]) && !empty($champs[‘user_email’])) ? ‘readonly class="readonly" ‘: ‘’; ?> maxlength="80">
-        </p>
-        <?php if (!isset($_SESSION[‘Sgroupe’])) { ?>
-        <p>Déjà un compte ? <a href="/user-login.php">Connectez-vous</a>, ajoutez votre événement et il sera immédiatement publié.</p>
-        <?php } ?>
-    </fieldset>
-    <?php } ?>
-
     <fieldset>
         <legend>L’événement</legend>
 
@@ -1316,7 +1316,7 @@ if ($verif->nbErreurs() > 0)
 
     <?php if (!isset($_SESSION['Sgroupe']) || !empty($champs['user_email'])) { ?>
     <fieldset>
-        <p><label for="remarque">Remarque (non publiée)</label><textarea name="remarque" id="remarque" cols="20" rows="6" <?php echo (isset($_SESSION['Sgroupe']) && !empty($champs['user_email'])) ? 'readonly class="readonly" ': ''; ?>><?php echo sanitizeForHtml($champs['remarque']) ?></textarea></p>
+        <p><label for="remarque">Remarque à l'administrateur (non publiée)</label><textarea name="remarque" id="remarque" cols="20" rows="6" <?php echo (isset($_SESSION['Sgroupe']) && !empty($champs['user_email'])) ? 'readonly class="readonly" ': ''; ?>><?php echo sanitizeForHtml($champs['remarque']) ?></textarea></p>
     </fieldset>
     <?php } ?>
 <?php
