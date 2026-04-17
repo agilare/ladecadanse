@@ -1741,9 +1741,9 @@ ul#menu_calendrier li form p
     justify-content: center;
     width: 2.5rem;
     height: 2.5rem;
-    background: rgba(250, 202, 26, 0.85);
+    background: rgba(92, 115, 120, 0.5);
     border-radius: 50%;
-    color: #333;
+    color: #fff;
     text-decoration: none;
     opacity: 0;
     visibility: hidden;
@@ -1756,6 +1756,6 @@ ul#menu_calendrier li form p
 }
 #back-to-top:hover,
 #back-to-top:focus {
-    background: #FACA1A;
-    outline: 2px solid #333;
+    background: rgba(92, 115, 120, 0.85);
+    outline: 2px solid #fff;
 }
