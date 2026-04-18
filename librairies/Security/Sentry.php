@@ -69,15 +69,17 @@ class Sentry extends SystemComponent
             {
                 unset($this->userdata);
                 $message = "Erreur de session (pass) : " . $_SESSION['user'] . ", sid:" . session_id();
-                throw new \RuntimeException($message);
+                return false;
+                // throw new \RuntimeException($message);
             } // if pass
         }
         else
         {
 
             $message = "Erreur de session (requete) : " . $_SESSION['user'] . ", sid:" . session_id();
-            throw new \RuntimeException($message);
+            // throw new \RuntimeException($message);
             unset($this->userdata);
+            return false;
         } //if num rows
     }
 
