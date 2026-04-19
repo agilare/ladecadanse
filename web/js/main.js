@@ -31,6 +31,7 @@ $('.js-select2').select2(
     allowClear: false
 });
 
+// used for Localité, Category, lieu categorie...
 $('.js-select2-options-with-style').select2(
 {
     language: "fr",
@@ -39,6 +40,7 @@ $('.js-select2-options-with-style').select2(
     templateSelection: select2ApplyOptionInlineStyle
 });
 
+// used for Organisateurs
 $('.js-select2-options-with-complement').select2(
 {
     language: "fr",
