@@ -47,6 +47,13 @@
       ],
       "value": ""
     }, {
+      "id": "2b8612de-5561-40f0-bfb4-185cc19a1f74",
+      "comment": "",
+      "command": "pause",
+      "target": "3000",
+      "targets": [],
+      "value": ""
+    }, {
       "id": "9f7132bd-4b1e-4d9d-ba99-89aa176eff89",
       "comment": "",
       "command": "assertElementPresent",
@@ -449,6 +456,13 @@
       ],
       "value": ""
     }, {
+      "id": "957b1dc5-33b7-406c-aead-bc9d524cf094",
+      "comment": "",
+      "command": "pause",
+      "target": "2000",
+      "targets": [],
+      "value": ""
+    }, {
       "id": "95c45f15-639f-4672-8544-1c3998527769",
       "comment": "",
       "command": "assertElementPresent",
@@ -567,6 +581,13 @@
         ["xpath=//article[2]/header/span/a", "xpath:position"],
         ["xpath=//a[contains(.,'Conservatoire de Musique de Genève')]", "xpath:innerText"]
       ],
+      "value": ""
+    }, {
+      "id": "b74695cc-e0c0-40a5-83ae-4ced5a13b244",
+      "comment": "",
+      "command": "pause",
+      "target": "2000",
+      "targets": [],
       "value": ""
     }, {
       "id": "260a7886-1285-4b15-9e60-2a67d9cb9f56",
@@ -748,6 +769,13 @@
         ["xpath=(//a[contains(@href, 'index.php?courant=2025-07-15')])[2]", "xpath:href"],
         ["xpath=//header/ul/li/a", "xpath:position"]
       ],
+      "value": ""
+    }, {
+      "id": "6d79f6b5-8c6f-4710-8031-8419ed3cf9b1",
+      "comment": "",
+      "command": "pause",
+      "target": "2000",
+      "targets": [],
       "value": ""
     }, {
       "id": "fb41d212-079a-4b2a-8595-ca06ac8c7e30",
@@ -947,6 +975,13 @@
       ],
       "value": ""
     }, {
+      "id": "dc81f6aa-6897-430b-856d-7a176ea6f3fd",
+      "comment": "",
+      "command": "pause",
+      "target": "2000",
+      "targets": [],
+      "value": ""
+    }, {
       "id": "b6f2dc69-a9a8-4e6b-9201-be8790f5d811",
       "comment": "",
       "command": "assertElementPresent",
@@ -967,6 +1002,13 @@
         ["xpath=//div[3]/ul/li[2]/a", "xpath:position"],
         ["xpath=//a[contains(.,'Anciens')]", "xpath:innerText"]
       ],
+      "value": ""
+    }, {
+      "id": "636d0943-092b-4dd2-89a0-c807343bc984",
+      "comment": "",
+      "command": "pause",
+      "target": "2000",
+      "targets": [],
       "value": ""
     }, {
       "id": "475e3cb0-3347-4fc8-8ef9-fc768ca2774a",
@@ -1074,6 +1116,13 @@
         ["xpath=//a[contains(@href, 'search.php?mots=f%C3%AAte&tri=pertinence&periode=futur&page=3')]", "xpath:href"],
         ["xpath=//a[2]", "xpath:position"]
       ],
+      "value": ""
+    }, {
+      "id": "a70b79d1-7d11-42fa-8f78-5d3cf4cf40db",
+      "comment": "",
+      "command": "pause",
+      "target": "1000",
+      "targets": [],
       "value": ""
     }, {
       "id": "e7df2f00-9d55-445f-8dac-1f931ca88cf5",
@@ -1524,6 +1573,34 @@
         ["xpath=//a[contains(.,'Envoyez nous les infos via ce formulaire')]", "xpath:innerText"]
       ],
       "value": ""
+    }, {
+      "id": "f764151b-dc38-4548-a5d7-9843650d431b",
+      "comment": "",
+      "command": "click",
+      "target": "id=user_email",
+      "targets": [
+        ["id=user_email", "id"],
+        ["name=user_email", "name"],
+        ["css=#user_email", "css:finder"],
+        ["xpath=//input[@id='user_email']", "xpath:attributes"],
+        ["xpath=//form[@id='ajouter_editer']/fieldset[8]/p[2]/input", "xpath:idRelative"],
+        ["xpath=//fieldset[8]/p[2]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "9c8f34f6-dc11-485b-9be3-52d297b9dda1",
+      "comment": "",
+      "command": "type",
+      "target": "id=user_email",
+      "targets": [
+        ["id=user_email", "id"],
+        ["name=user_email", "name"],
+        ["css=#user_email", "css:finder"],
+        ["xpath=//input[@id='user_email']", "xpath:attributes"],
+        ["xpath=//form[@id='ajouter_editer']/fieldset[8]/p[2]/input", "xpath:idRelative"],
+        ["xpath=//fieldset[8]/p[2]/input", "xpath:position"]
+      ],
+      "value": "agilare@gmail.com"
     }, {
       "id": "33195ae7-69ea-4c83-8a7e-dfb770e408a8",
       "comment": "",
@@ -1985,34 +2062,6 @@
       ],
       "value": "Inauguration le jeudi 30 mars de 18h à 22h. Ouverture des portes les samedi et dimanche 1er et 2 avril de 14h à 18h ainsi que le mercredi 5 avril de 18h à 21h."
     }, {
-      "id": "f764151b-dc38-4548-a5d7-9843650d431b",
-      "comment": "",
-      "command": "click",
-      "target": "id=user_email",
-      "targets": [
-        ["id=user_email", "id"],
-        ["name=user_email", "name"],
-        ["css=#user_email", "css:finder"],
-        ["xpath=//input[@id='user_email']", "xpath:attributes"],
-        ["xpath=//form[@id='ajouter_editer']/fieldset[8]/p[2]/input", "xpath:idRelative"],
-        ["xpath=//fieldset[8]/p[2]/input", "xpath:position"]
-      ],
-      "value": ""
-    }, {
-      "id": "9c8f34f6-dc11-485b-9be3-52d297b9dda1",
-      "comment": "",
-      "command": "type",
-      "target": "id=user_email",
-      "targets": [
-        ["id=user_email", "id"],
-        ["name=user_email", "name"],
-        ["css=#user_email", "css:finder"],
-        ["xpath=//input[@id='user_email']", "xpath:attributes"],
-        ["xpath=//form[@id='ajouter_editer']/fieldset[8]/p[2]/input", "xpath:idRelative"],
-        ["xpath=//fieldset[8]/p[2]/input", "xpath:position"]
-      ],
-      "value": "agilare@gmail.com"
-    }, {
       "id": "44db1410-9bf1-44e0-8802-eab12b36cc47",
       "comment": "",
       "command": "click",
@@ -2029,7 +2078,7 @@
       "id": "e14f3302-731a-49d5-9ac0-539807530655",
       "comment": "",
       "command": "pause",
-      "target": "3000",
+      "target": "2000",
       "targets": [],
       "value": ""
     }, {
@@ -7113,6 +7162,13 @@
       "comment": "click on unpublish",
       "command": "click",
       "target": "xpath=//a[normalize-space(text())='evenementfugace']/ancestor::article[contains(@class, 'evenement')]/descendant::a[contains(@class, 'btn_event_unpublish')]",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "a06cd62f-ebec-45bd-8730-ffff033225c7",
+      "comment": "",
+      "command": "pause",
+      "target": "2000",
       "targets": [],
       "value": ""
     }, {
