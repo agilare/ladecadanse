@@ -20,6 +20,7 @@
 
 ### Changed
 - PHP 8.4 compatibility #94
+- PHP : update phpunit, rector, phpstan...
 - update Symfony, Codeception, phpunit...
 - logger : replace custom Logger with Monolog #64
 - assets : use AssetManager for entity image cache busting (events, lieux, orgas) #109
