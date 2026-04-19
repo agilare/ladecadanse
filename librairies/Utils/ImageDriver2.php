@@ -352,6 +352,22 @@ class ImageDriver2 extends SystemComponent {
 
    }
 
+    /**
+     * Processes an image from a local file path (e.g. a temp file from a URL fetch).
+     * Equivalent to processImage() but does not require a $_FILES array.
+     */
+    public function processImageFromPath(string $filePath, string $imageCreated, int $maxWidth = 0, int $maxHeigth = 0, string $selon = '', int $rognage = 0): bool
+    {
+        $imageSource = [
+            'tmp_name' => $filePath,
+            'size'     => filesize($filePath),
+            'type'     => mime_content_type($filePath),
+            'error'    => UPLOAD_ERR_OK,
+            'name'     => basename($imageCreated),
+        ];
+        return $this->processImage($imageSource, $imageCreated, $maxWidth, $maxHeigth, $selon, $rognage);
+    }
+
     function getErreur()
     {
         return $this->erreur;

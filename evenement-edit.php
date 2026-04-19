@@ -4,6 +4,7 @@ require_once("app/bootstrap.php");
 
 use Ladecadanse\Utils\Validateur; // forms
 use Ladecadanse\Utils\ImageDriver2; // files
+use Ladecadanse\Utils\ImageUrlFetcher; // url import
 use Ladecadanse\Security\SecurityToken;
 use Ladecadanse\Evenement; // domain
 use Ladecadanse\Utils\Mailing;
@@ -100,6 +101,10 @@ $champs = ["statut" => "", "genre" => "", "titre" => "", "dateEvenement" => "", 
   "horaire_debut" => "", "horaire_fin" => "", "horaire_complement" => "", "price_type" => "", "prix" => "", "prelocations" => "", "user_email" => "", "remarque" => ""];
 $fichiers = ['flyer' => '', 'image' => ''];
 $supprimer = [];
+$url_flyer = '';
+$url_image = '';
+$fetched_flyer = null;
+$fetched_image = null;
 
 $show_form = true;
 $formTokenName = 'form_token_evenement_edit';
@@ -143,6 +148,11 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 
 	$fichiers['flyer'] = $_FILES['flyer'];
     $fichiers['image'] = $_FILES['image'];
+
+    if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= UserLevel::ADMIN) {
+        $url_flyer = trim($_POST['flyer_url'] ?? '');
+        $url_image = trim($_POST['image_url'] ?? '');
+    }
 
     // ?
     // not set, null, '' or 0 => 0
@@ -240,6 +250,30 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
     {
         $verif->validerFichier($fichiers['flyer'], "flyer", $glo_mimes_images_acceptees, 0);
         $verif->validerFichier($fichiers['image'], "image", $glo_mimes_images_acceptees, 0);
+    }
+
+    // URL import (admin only) : mutual exclusion + format + fetch
+    if (!empty($fichiers['flyer']['name']) && !empty($url_flyer)) {
+        $verif->setErreur('flyer_url', "Veuillez saisir un fichier OU une URL, pas les deux.");
+    } elseif (!empty($url_flyer)) {
+        if ($verif->validerURL('flyer_url', $url_flyer)) {
+            $fetched_flyer = ImageUrlFetcher::fetch($url_flyer, $glo_mimes_images_acceptees);
+            if ($fetched_flyer['error'] !== null) {
+                $verif->setErreur('flyer_url', $fetched_flyer['error']);
+                $fetched_flyer = null;
+            }
+        }
+    }
+    if (!empty($fichiers['image']['name']) && !empty($url_image)) {
+        $verif->setErreur('image_url', "Veuillez saisir un fichier OU une URL, pas les deux.");
+    } elseif (!empty($url_image)) {
+        if ($verif->validerURL('image_url', $url_image)) {
+            $fetched_image = ImageUrlFetcher::fetch($url_image, $glo_mimes_images_acceptees);
+            if ($fetched_image['error'] !== null) {
+                $verif->setErreur('image_url', $fetched_image['error']);
+                $fetched_image = null;
+            }
+        }
     }
 
     // at least debut or complement
@@ -398,7 +432,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 		 * Préparation du nom du flyer et de l'image, par ex 3047_2006-02-20.jpg
 		 * en cas d'ajout, obtention de l'ID du nouvel événement
 		 */
-		if (!empty($fichiers['flyer']['name']) || !empty($fichiers['image']['name']))
+		if (!empty($fichiers['flyer']['name']) || !empty($fichiers['image']['name']) || $fetched_flyer !== null || $fetched_image !== null)
 		{
 
 			$nouv_idE = 0;
@@ -418,10 +452,30 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 			{
 				$champs['flyer'] = $nouv_idE."_".$champs['dateEvenement'].mb_strrchr((string) $fichiers['flyer']['name'], '.');
 			}
+			elseif ($fetched_flyer !== null)
+			{
+				$ext = match($fetched_flyer['mime']) {
+					'image/png', 'image/x-png' => '.png',
+					'image/gif' => '.gif',
+					'image/webp' => '.webp',
+					default => '.jpg',
+				};
+				$champs['flyer'] = $nouv_idE."_".$champs['dateEvenement'].$ext;
+			}
 
 			if (!empty($fichiers['image']['name']))
 			{
 				$champs['image'] = $nouv_idE."_".$champs['dateEvenement']."_img".mb_strrchr((string) $fichiers['image']['name'], '.');
+			}
+			elseif ($fetched_image !== null)
+			{
+				$ext = match($fetched_image['mime']) {
+					'image/png', 'image/x-png' => '.png',
+					'image/gif' => '.gif',
+					'image/webp' => '.webp',
+					default => '.jpg',
+				};
+				$champs['image'] = $nouv_idE."_".$champs['dateEvenement']."_img".$ext;
 			}
 		}
 
@@ -642,6 +696,32 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 
             if (!empty($msg2))
                 $champs['image'] = '';
+		}
+
+		if ($fetched_flyer !== null && !empty($champs['flyer']))
+		{
+			$tmp_flyer = tempnam(sys_get_temp_dir(), 'ldd_img_');
+			try {
+				file_put_contents($tmp_flyer, $fetched_flyer['data']);
+				$imD2 = new ImageDriver2("evenement");
+				$imD2->processImageFromPath($tmp_flyer, $champs['flyer'], 600, 600);
+				$imD2->processImageFromPath($tmp_flyer, "s_" . $champs['flyer'], 120, 190, '', 0);
+			} finally {
+				@unlink($tmp_flyer);
+			}
+		}
+
+		if ($fetched_image !== null && !empty($champs['image']))
+		{
+			$tmp_image = tempnam(sys_get_temp_dir(), 'ldd_img_');
+			try {
+				file_put_contents($tmp_image, $fetched_image['data']);
+				$imD2 = new ImageDriver2("evenement");
+				$imD2->processImageFromPath($tmp_image, $champs['image'], 600, 600);
+				$imD2->processImageFromPath($tmp_image, "s_" . $champs['image'], 120, 190, '', 0);
+			} finally {
+				@unlink($tmp_image);
+			}
 		}
 
 		if (isset($_POST['organisateurs']) && is_array($champs['organisateurs']))
@@ -1245,52 +1325,75 @@ if ($verif->nbErreurs() > 0)
 
     <fieldset>
         <legend>Images</legend>
-        <div style="margin-left: 0.8em;font-weight: bold">Formats JPEG, PNG, GIF ou WebP; max. 2 Mo</div>
+
+        <div style="margin-left: 0.8em;margin-bottom:1.2em;">Formats JPEG, PNG, GIF ou WebP; max. 2 Mo</div>
+
+        <p style="margin-left: 0.8em;margin-bottom:1.2em;font-weight: bold">Affiche/flyer</p>
+
         <p>
-            <label for="flyer">Affiche/flyer</label>
+            <label for="flyer">Envoyer</label>
             <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo UPLOAD_MAX_FILESIZE ?>" /> <!-- 2 Mo -->
             <input type="file" name="flyer" id="flyer" class="js-file-upload-size-max" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif,image/webp" class="fichier" />
             <?php if ($verif->nbErreurs() > 0 && !empty($fichiers['flyer']['name'])): ?>
                 <div class="msg">Le fichier sélectionné a été retiré du formulaire par le navigateur (sécurité). Veuillez le sélectionner à nouveau.</div>
             <?php endif; ?>
-            <?php
-            echo $verif->getHtmlErreur("flyer");
 
-            //affichage du flyer precedent, et du bouton pour supprimer
+            <?php if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= UserLevel::ADMIN): ?>
+                <div class="clear"></div>
+                <label for="flyer_url" class="ou-separateur">ou coller une URL</label>
+                <input type="url" name="flyer_url" id="flyer_url" value="<?= sanitizeForHtml($url_flyer) ?>" placeholder="https://…" maxlength="2000" size="50">
+                <?php echo $verif->getHtmlErreur('flyer_url'); ?>
+            <?php endif; ?>
+
+            <?php echo $verif->getHtmlErreur("flyer"); ?>
+
+            <?php
+            // affichage du flyer precedent, et du bouton pour supprimer
             if (isset($get['idE']) && !empty($champs['flyer']) && !$verif->getErreur($champs['flyer']))
             {
-        ?>
-        <div class="supImg">
-            <a href="<?= sanitizeForHtml($assets->get(Evenement::getAssetPath(Evenement::getFilePath($champs['flyer'])))) ?>" class="magnific-popup" target="_blank">
-                        <img src="<?= sanitizeForHtml($assets->get(Evenement::getAssetPath(Evenement::getFilePath($champs['flyer'], 's_')))) ?>" alt="Flyer de cet événement" width="100" />
-                    </a>
-                    <div>
-                        <label for="sup_flyer" class="continu">Supprimer</label><input type="checkbox" name="sup_flyer" id="sup_flyer" value="flyer" class="checkbox"
-                        <?php
-                        if (!empty($supprimer['flyer']) && $verif->nbErreurs() > 0)
-                        {
-                            echo 'checked="checked"';
-                        }
-                        ?>
-                                                                                       />
+            ?>
+            <div class="supImg">
+                <a href="<?= sanitizeForHtml($assets->get(Evenement::getAssetPath(Evenement::getFilePath($champs['flyer'])))) ?>" class="magnific-popup" target="_blank">
+                            <img src="<?= sanitizeForHtml($assets->get(Evenement::getAssetPath(Evenement::getFilePath($champs['flyer'], 's_')))) ?>" alt="Flyer de cet événement" width="100" />
+                        </a>
+                        <div>
+                            <label for="sup_flyer" class="continu">Supprimer</label><input type="checkbox" name="sup_flyer" id="sup_flyer" value="flyer" class="checkbox"
+                            <?php
+                            if (!empty($supprimer['flyer']) && $verif->nbErreurs() > 0)
+                            {
+                                echo 'checked="checked"';
+                            }
+                            ?>
+                                                                                           />
+                        </div>
                     </div>
-                </div>
-                <?php
-            }
-        ?>
+                    <?php
+                }
+            ?>
         </p>
             <div class="spacer"></div>
+
+        <p style="margin-left: 0.8em;margin-bottom:1.2em;font-weight: bold"><span class="tooltip">Photo <i class="fa fa-info-circle" aria-hidden="true"></i>
+            <span class="tooltiptext"> S’affiche à la place du flyer s’il n’y a pas de flyer, sinon en dessous de celui-ci</span></span></p>
         <p>
-            <label for="image"><span class="tooltip">Photo <i class="fa fa-info-circle" aria-hidden="true"></i>
-<span class="tooltiptext"> S’affiche à la place du flyer s’il n’y a pas de flyer, sinon en dessous de celui-ci</span></span></label>
+            <label for="image">Envoyer</label>
             <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo UPLOAD_MAX_FILESIZE ?>" /> <!-- 2 Mo -->
             <input type="file" name="image" id="image" class="js-file-upload-size-max" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif,image/webp" class="fichier" />
+            <div class="spacer"></div>
+            <?php if ($verif->nbErreurs() > 0 && !empty($fichiers['image']['name'])): ?>
+                <div class="msg">Le fichier sélectionné a été retiré du formulaire par le navigateur (sécurité). Veuillez le sélectionner à nouveau</div>
+            <?php endif; ?>
+
+            <?php if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= UserLevel::ADMIN): ?>
+                <div class="clear"></div>
+                <label for="image_url" class="ou-separateur">ou coller une URL</label>
+                <input type="url" name="image_url" id="image_url" value="<?= sanitizeForHtml($url_image) ?>" placeholder="https://…" maxlength="2000" size="50">
+                <?php echo $verif->getHtmlErreur('image_url'); ?>
+            <?php endif; ?>
+
             <div class="guideChamp">Photo des artistes, de leurs œuvres, du lieu, etc.</div>
         </p>
-        <div class="spacer"></div>
-        <?php if ($verif->nbErreurs() > 0 && !empty($fichiers['image']['name'])): ?>
-            <div class="msg">Le fichier sélectionné a été retiré du formulaire par le navigateur (sécurité). Veuillez le sélectionner à nouveau</div>
-        <?php endif; ?>
+
         <?php
         echo $verif->getHtmlErreur("image");
 
@@ -1312,7 +1415,7 @@ if ($verif->nbErreurs() > 0)
             echo "/></div></div>";
         }
         ?>
-    </fieldset><?php  ?>
+    </fieldset>
 
     <?php if (!isset($_SESSION['Sgroupe']) || !empty($champs['user_email'])) { ?>
     <fieldset>
