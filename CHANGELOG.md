@@ -4,16 +4,25 @@
 
 ### Added
 - events calendar : when changing month, instead of loading all the page, update only the calendar #104 (thanks to @lambeletjp)
-- events : add export to Google, Outlook, Microsoft 365, Yahoo cale… #142 (thanks to @lambeletjp)
+- events edit : move email contact field before event details fieldset #147
+- events edit : add handle of flyer/image from url
 - images : add handling upload of images format webp #32
+- ui : add back-to-top button on long pages #99
+- agenda : for small screens, add anchor link to latest events in menu
+- auth : allow login with email address #103
 
 ### Fixed
 - users : in register form, wrong field was used to hash password
+- auth : restore broken "Remember me" feature #83
+- events : in edit form, warn to avoid resubmit without preselected file
+- edition : restore Google fonts URL in CSP for TinyMCE
 - tests : in Selenium add missing "pause" commands to avoid fails
 
 ### Changed
 - PHP 8.4 compatibility #94
 - update Symfony, Codeception, phpunit...
+- logger : replace custom Logger with Monolog #64
+- assets : use AssetManager for entity image cache busting (events, lieux, orgas) #109
 
 ### Security
 - deps-dev : bump flatted from 3.2.9 to 3.4.2
