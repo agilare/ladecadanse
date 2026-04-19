@@ -22,6 +22,56 @@ include("../_header.inc.php");
     <article class="rubrique">
 
         <header>
+            <h2>3.10.0</h2>
+            <br>
+            <p>19 avril 2026</p>
+        </header>
+
+        <h3>Calendrier</h3>
+
+        <ul>
+            <li><a href="https://github.com/agilare/ladecadanse/issues/104" rel="external" target="_blank">navigation entre les mois sans rechargement de la page</a> (merci <a href="https://github.com/lambeletjp" rel="external" target="_blank">lambeletjp</a>)</li>
+        </ul>
+
+        <h3>Événements</h3>
+
+        <ul>
+<!--            <li><a href="https://github.com/agilare/ladecadanse/issues/142" rel="external" target="_blank">export vers Google Calendar, Outlook, Microsoft 365, Yahoo Calendar</a> (merci <a href="https://github.com/lambeletjp" rel="external" target="_blank">lambeletjp</a>)</li>-->
+<!--            <li>formulaire d'édition : flyer et image peuvent venir d'une URL</li>-->
+            <li>formulaire d'édition : champ email de contact repositionné, plus visible</li>
+            <li>formulaire d'édition : avertissement si on risque de soumettre le formulaire sans le fichier préalablement sélectionné</li>
+        </ul>
+
+        <h3>Connexion</h3>
+
+        <ul>
+            <li>connexion possible avec l'adresse email en plus du pseudo</li>
+            <li>correction du bug de la fonctionnalité "Se souvenir de moi"</li>
+        </ul>
+
+        <h3>Interface</h3>
+
+        <ul>
+            <li>bouton retour en haut de page sur les pages longues</li>
+            <li>mobile : lien direct vers les prochains événements dans le menu</li>
+        </ul>
+
+        <h3>Divers</h3>
+
+        <ul>
+            <li>images : support du format webp pour les événements, lieux et organisateurs</li>
+            <li>mises à jour de l'infrastructure (PHP 8.4, librairies...)</li>
+        </ul>
+
+<!--        <p><a href="https://github.com/agilare/ladecadanse/releases/tag/v3.10.0" rel="external" target="_blank">Détails</a></p>-->
+
+    </article>
+
+    <hr>
+
+    <article class="rubrique">
+
+        <header>
             <h2>3.9.4</h2>
             <br>
             <p>8 mars 2026</p>
