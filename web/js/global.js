@@ -22,6 +22,16 @@ export const AppGlobal =
             return false;
         });
 
+        document.addEventListener('toggle', function positionCalendarPopover(e)
+        {
+            if (!e.target.classList.contains('calendar-export-menu') || e.newState !== 'open') return;
+            const trigger = document.querySelector('[popovertarget="' + e.target.id + '"]');
+            if (!trigger) return;
+            const rect = trigger.getBoundingClientRect();
+            e.target.style.top = (rect.bottom + 4) + 'px';
+            e.target.style.left = rect.left + 'px';
+        }, true);
+
         $('.btn_toggle').on('click', function toggleTarget()
         {
             $('.element_toggle').toggle();

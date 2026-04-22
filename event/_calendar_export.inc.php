@@ -11,11 +11,11 @@ $menuId = 'calendar-export-menu' . (!empty($calExportId) ? '-' . $calExportId : 
 ?>
 <li class="calendar-export-wrapper">
     <?php if (!empty($calExportCompact)) : ?>
-        <a href="#" class="ical dropdown" data-target="<?= $menuId ?>" title="Ajouter à un agenda"><i class="fa fa-calendar-plus-o fa-lg"></i></a>
+        <button type="button" class="ical calendar-export-trigger" popovertarget="<?= $menuId ?>" title="Ajouter à un agenda"><i class="fa fa-calendar-plus-o fa-lg" aria-hidden="true"></i></button>
     <?php else : ?>
-        <a href="#" class="dropdown" data-target="<?= $menuId ?>"><i class="fa fa-calendar-plus-o fa-lg"></i>&nbsp;Ajouter à un agenda&nbsp;<i class="fa fa-caret-down" aria-hidden="true"></i></a>
+        <button type="button" class="calendar-export-trigger" popovertarget="<?= $menuId ?>"><i class="fa fa-calendar-plus-o fa-lg" aria-hidden="true"></i>&nbsp;Ajouter à un agenda&nbsp;<i class="fa fa-caret-down" aria-hidden="true"></i></button>
     <?php endif; ?>
-    <ul id="<?= $menuId ?>" class="calendar-export-menu" style="display:none;">
+    <ul id="<?= $menuId ?>" class="calendar-export-menu" popover>
         <li><a href="<?= $calLinks['google'] ?>" target="_blank" rel="noopener"><i class="fa fa-google fa-fw"></i>&nbsp;Google Calendar</a></li>
         <li><a href="<?= $calLinks['outlook'] ?>" target="_blank" rel="noopener"><i class="fa fa-windows fa-fw"></i>&nbsp;Outlook.com</a></li>
         <li><a href="<?= $calLinks['office365'] ?>" target="_blank" rel="noopener"><i class="fa fa-building-o fa-fw"></i>&nbsp;Microsoft 365</a></li>
