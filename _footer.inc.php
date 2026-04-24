@@ -97,6 +97,7 @@ use Ladecadanse\UserLevel;
             document.getElementById("contacteznous-email-info").innerHTML = atob("<?= base64_encode(EMAIL_ADMIN); ?>");
         </script>
     <?php endif; ?>
+    <?= $assets->getImportMap(['js/browser.js', 'js/global.js']); ?>
     <script type="module" src="<?= $assets->get("js/main.js"); ?>"></script>
 
 </body>

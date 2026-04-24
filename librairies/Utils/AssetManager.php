@@ -23,9 +23,20 @@ class AssetManager
     }
 
     /**
-     * @param string $relativePath
+     * @param string $relativePaths
      * @return string base base url + relative path + hash
      */
+    public function getImportMap(array $relativePaths): string
+    {
+        $imports = [];
+        foreach ($relativePaths as $path) {
+            $path = '/' . ltrim($path, '/');
+            $originalUrl = $this->baseUrl . $path;
+            $imports[$originalUrl] = $this->get($path);
+        }
+        return '<script type="importmap">' . json_encode(['imports' => $imports], JSON_UNESCAPED_SLASHES) . '</script>';
+    }
+
     public function get(string $relativePath): string
     {
         // Chemin relatif normalisé
