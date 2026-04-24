@@ -23,33 +23,40 @@ export const AppGlobal =
             return false;
         });
 
-        // Position the calendar export popover below its trigger button.
+        // Position each calendar export popover below its trigger button.
         // The Popover API renders the element in the top layer (position: fixed),
         // so getBoundingClientRect() gives the viewport coords we need.
+        // We listen directly on each element rather than capturing on document,
+        // which is more reliable on Safari iOS.
         // We also re-run setPos on scroll so the menu tracks the button while the
         // page scrolls, and clean up the listener when the popover closes.
-        document.addEventListener('toggle', function positionCalendarPopover(e)
+        document.querySelectorAll('.calendar-export-menu').forEach(function(menu)
         {
-            if (!e.target.classList.contains('calendar-export-menu')) return;
-            const menu = e.target;
             const trigger = document.querySelector('[popovertarget="' + menu.id + '"]');
             if (!trigger) return;
 
-            if (e.newState === 'open') {
-                function setPos() {
-                    const rect = trigger.getBoundingClientRect();
-                    menu.style.top = (rect.bottom + 4) + 'px';
-                    menu.style.left = rect.left + 'px';
-                }
-                setPos();
-                // Store the reference so we can pass the exact same function to removeEventListener.
-                menu._scrollHandler = setPos;
-                window.addEventListener('scroll', setPos, { passive: true });
-            } else if (menu._scrollHandler) {
-                window.removeEventListener('scroll', menu._scrollHandler);
-                delete menu._scrollHandler;
+            function setPos()
+            {
+                const rect = trigger.getBoundingClientRect();
+                menu.style.top = (rect.bottom + 4) + 'px';
+                menu.style.left = rect.left + 'px';
             }
-        }, true);
+
+            menu.addEventListener('toggle', function(e)
+            {
+                // e.newState may be absent in early Safari; fall back to :popover-open check.
+                const isOpen = e.newState === 'open' || (e.newState === undefined && menu.matches(':popover-open'));
+                if (isOpen) {
+                    setPos();
+                    // Store the reference so we can pass the exact same function to removeEventListener.
+                    menu._scrollHandler = setPos;
+                    window.addEventListener('scroll', setPos, { passive: true });
+                } else if (menu._scrollHandler) {
+                    window.removeEventListener('scroll', menu._scrollHandler);
+                    delete menu._scrollHandler;
+                }
+            });
+        });
 
         $('.btn_toggle').on('click', function toggleTarget()
         {

@@ -1154,23 +1154,36 @@ ul.menu_action
     margin: 0;
     min-width: 13em;
     text-align: left;
-    opacity: 0;
-    transform: translateY(-4px);
-    transition: opacity .15s ease, transform .15s ease, display .15s allow-discrete;
 }
 
-.calendar-export-menu:popover-open
+/*
+ * Progressive enhancement: animate open/close only where allow-discrete is supported
+ * (Chrome 117+, Firefox 129+, Safari 17.4+).
+ * Without this guard, opacity: 0 would permanently hide the element on Safari < 17.4
+ * because the display: none → display: block transition never fires there.
+ */
+@supports (transition-behavior: allow-discrete)
 {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-@starting-style
-{
-    .calendar-export-menu:popover-open
+    .calendar-export-menu
     {
         opacity: 0;
         transform: translateY(-4px);
+        transition: opacity .15s ease, transform .15s ease, display .15s allow-discrete;
+    }
+
+    .calendar-export-menu:popover-open
+    {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    @starting-style
+    {
+        .calendar-export-menu:popover-open
+        {
+            opacity: 0;
+            transform: translateY(-4px);
+        }
     }
 }
 
