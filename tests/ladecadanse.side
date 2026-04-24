@@ -21,10 +21,32 @@
       "targets": [],
       "value": ""
     }, {
+      "id": "ae353b54-b802-449b-a61a-4cd7119df2dc",
+      "comment": "",
+      "command": "click",
+      "target": "xpath=//li[@id='bouton_latests_events']/a/i",
+      "targets": [
+        ["css=.fa-bell", "css:finder"],
+        ["xpath=//li[@id='bouton_latests_events']/a/i", "xpath:idRelative"],
+        ["xpath=//li[3]/a/i", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "ec250210-276a-43ef-ad5a-0b81c142a3a2",
+      "comment": "",
+      "command": "click",
+      "target": "xpath=//a[@id='back-to-top']/i",
+      "targets": [
+        ["css=.fa-arrow-up", "css:finder"],
+        ["xpath=//a[@id='back-to-top']/i", "xpath:idRelative"],
+        ["xpath=//a[2]/i", "xpath:position"]
+      ],
+      "value": ""
+    }, {
       "id": "9791ce8c-b8f5-44ab-a613-340963baece4",
       "comment": "hamburger menu",
       "command": "click",
-      "target": "css=.fa-bars",
+      "target": "xpath=//a[@id='btn_menu_pratique']/i",
       "targets": [
         ["css=.fa-bars", "css:finder"],
         ["xpath=//a[@id='btn_menu_pratique']/i", "xpath:idRelative"],
@@ -428,6 +450,13 @@
       ],
       "value": ""
     }, {
+      "id": "411d977a-467b-4719-92a4-bd13a6c0a09b",
+      "comment": "",
+      "command": "pause",
+      "target": "2000",
+      "targets": [],
+      "value": ""
+    }, {
       "id": "79b58e69-f61f-45fe-8117-5253be931f2c",
       "comment": "",
       "command": "assertElementPresent",
@@ -637,6 +666,32 @@
         ["xpath=//button[@type='button']", "xpath:attributes"],
         ["xpath=//button", "xpath:position"],
         ["xpath=//button[contains(.,'×')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "6433c26f-c2d9-448e-a051-8396dee3e3e3",
+      "comment": "",
+      "command": "click",
+      "target": "xpath=//div[@id='prochains_evenements']/section/article/footer/ul/li[2]/button",
+      "targets": [
+        ["css=#event-3872 .ical > .fa", "css:finder"],
+        ["xpath=//article[@id='event-3872']/footer/ul/li[2]/button/i", "xpath:idRelative"],
+        ["xpath=//li[2]/button/i", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "c0c02892-f4d6-4358-a793-b5e20f93785f",
+      "comment": "",
+      "command": "assertElementPresent",
+      "target": "xpath=//a[contains(text(),'Google Calendar')]",
+      "targets": [
+        ["linkText=Google Calendar", "linkText"],
+        ["css=#calendar-export-menu-3872 > li:nth-child(1) > a", "css:finder"],
+        ["xpath=//a[contains(text(),'Google Calendar')]", "xpath:link"],
+        ["xpath=//ul[@id='calendar-export-menu-3872']/li/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=evenementfugace&dates=20260424T183000%2F20260424T230000&location=Urgence%20Disk%20-%204%2C%20place%20des%20Volontaires%20%28Jonction%29%20-%20Gen%C3%A8ve&details=%0A%0Ahttps%3A%2F%2Fladecadanse.local%2Fevent%2Fevenement.php%3FidE%3D3872')]", "xpath:href"],
+        ["xpath=//li[2]/ul/li/a", "xpath:position"],
+        ["xpath=//a[contains(.,' Google Calendar')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
@@ -883,18 +938,6 @@
         ["css=.accueil", "css:finder"],
         ["xpath=//header[@id='entete_contenu']/hgroup/h1", "xpath:idRelative"],
         ["xpath=//h1", "xpath:position"]
-      ],
-      "value": ""
-    }, {
-      "id": "16864106-dee7-4da1-b101-2f37e916c3ec",
-      "comment": "iCal link of first event (loose focus of main viewport)",
-      "command": "click",
-      "target": "xpath=//div[@id='prochains_evenements']/section/article/footer/ul/li[2]/a",
-      "targets": [
-        ["css=.genre:nth-child(2) > .evenement:nth-child(2) .ical", "css:finder"],
-        ["xpath=//div[@id='prochains_evenements']/section/article/footer/ul/li[2]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/event/to-ics.php?idE=1775')]", "xpath:href"],
-        ["xpath=//footer/ul/li[2]/a", "xpath:position"]
       ],
       "value": ""
     }]
@@ -3330,7 +3373,7 @@
       "id": "d53012ec-8d07-4b56-b5d2-a456521e625c",
       "comment": "",
       "command": "click",
-      "target": "css=fieldset:nth-child(12) li:nth-child(5) > .continu",
+      "target": "xpath=//form[@id='ajouter_editer']/fieldset[8]/ul/li[5]/label",
       "targets": [
         ["css=fieldset:nth-child(12) li:nth-child(5) > .continu", "css:finder"],
         ["xpath=//form[@id='ajouter_editer']/fieldset[8]/ul/li[5]/label", "xpath:idRelative"],
@@ -3338,6 +3381,20 @@
         ["xpath=//label[contains(.,'dépublié (non visible sur le site)')]", "xpath:innerText"]
       ],
       "value": ""
+    }, {
+      "id": "4df2fa0c-d0fa-4ecf-94d9-cf10c86e4178",
+      "comment": "",
+      "command": "type",
+      "target": "xpath=//input[@id='flyer_url']",
+      "targets": [
+        ["id=flyer_url", "id"],
+        ["name=flyer_url", "name"],
+        ["css=#flyer_url", "css:finder"],
+        ["xpath=//input[@id='flyer_url']", "xpath:attributes"],
+        ["xpath=//form[@id='ajouter_editer']/fieldset[7]/input", "xpath:idRelative"],
+        ["xpath=//fieldset[7]/input", "xpath:position"]
+      ],
+      "value": "https://www.ladecadanse.ch/web/uploads/evenements/510072_2026-04-24.png"
     }, {
       "id": "fbd1d957-795f-447b-9ae3-699252aa55b1",
       "comment": "",
@@ -6668,7 +6725,7 @@
       "id": "5a804ec2-8356-487d-9e4e-e862709a997d",
       "comment": "",
       "command": "pause",
-      "target": "3000",
+      "target": "2000",
       "targets": [],
       "value": ""
     }, {
@@ -7694,6 +7751,180 @@
       ],
       "value": ""
     }]
+  }, {
+    "id": "7cbaa9a9-70bf-4812-af0a-7935df36f2a0",
+    "name": "user (admin) login with email (vars)",
+    "commands": [{
+      "id": "9aa11c33-2268-4e57-a0cf-f8811212e0d5",
+      "comment": "",
+      "command": "open",
+      "target": "/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "a13617b1-acce-44fe-86c9-d51ece979801",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1440x900",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "f60f220f-03a6-4a59-8d15-d1687c5fd4aa",
+      "comment": "",
+      "command": "assertElementNotPresent",
+      "target": "linkText=Sortir",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "34e6c25b-41fd-4480-b180-5464a874f0db",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=Connexion",
+      "targets": [
+        ["linkText=Connexion", "linkText"],
+        ["css=li:nth-child(8) > a", "css:finder"],
+        ["xpath=//a[contains(text(),'Connexion')]", "xpath:link"],
+        ["xpath=//nav[@id='menu_pratique']/ul/li[8]/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '/user-login.php')]", "xpath:href"],
+        ["xpath=//li[8]/a", "xpath:position"],
+        ["xpath=//a[contains(.,'Connexion')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "425d61c6-4b34-4a82-99ba-021eb16b7937",
+      "comment": "",
+      "command": "pause",
+      "target": "2000",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "cbec5292-ebe0-40c8-a965-85a42a686aaa",
+      "comment": "",
+      "command": "assertElementPresent",
+      "target": "name=Submit",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "dfee1d73-7f46-4bf0-b908-c0653973c8ba",
+      "comment": "",
+      "command": "click",
+      "target": "id=pseudo",
+      "targets": [
+        ["id=pseudo", "id"],
+        ["name=pseudo", "name"],
+        ["css=#pseudo", "css:finder"],
+        ["xpath=//input[@id='pseudo']", "xpath:attributes"],
+        ["xpath=//form[@id='ajouter_editer']/fieldset/p/input", "xpath:idRelative"],
+        ["xpath=//p/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "2c69e657-bd58-4327-bab8-925cc425d177",
+      "comment": "",
+      "command": "type",
+      "target": "id=pseudo",
+      "targets": [
+        ["id=pseudo", "id"],
+        ["name=pseudo", "name"],
+        ["css=#pseudo", "css:finder"],
+        ["xpath=//input[@id='pseudo']", "xpath:attributes"],
+        ["xpath=//form[@id='ajouter_editer']/fieldset/p/input", "xpath:idRelative"],
+        ["xpath=//p/input", "xpath:position"]
+      ],
+      "value": "test@ladecadanse.ch"
+    }, {
+      "id": "2b3f1711-0a78-4a8d-9500-cdef3e9e383f",
+      "comment": "",
+      "command": "type",
+      "target": "id=motdepasse",
+      "targets": [
+        ["id=motdepasse", "id"],
+        ["name=motdepasse", "name"],
+        ["css=#motdepasse", "css:finder"],
+        ["xpath=//input[@id='motdepasse']", "xpath:attributes"],
+        ["xpath=//form[@id='ajouter_editer']/fieldset/input", "xpath:idRelative"],
+        ["xpath=//fieldset/input", "xpath:position"]
+      ],
+      "value": "Yaq12wsx"
+    }, {
+      "id": "b4f65876-ec11-45b1-9575-49a3ad4ca139",
+      "comment": "",
+      "command": "click",
+      "target": "css=#ajouter_editer > fieldset",
+      "targets": [
+        ["css=#ajouter_editer > fieldset", "css:finder"],
+        ["xpath=//form[@id='ajouter_editer']/fieldset", "xpath:idRelative"],
+        ["xpath=//fieldset", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "58577993-92e7-4979-a004-d99bc7013952",
+      "comment": "",
+      "command": "click",
+      "target": "name=Submit",
+      "targets": [
+        ["name=Submit", "name"],
+        ["css=.submit-big", "css:finder"],
+        ["xpath=//input[@name='Submit']", "xpath:attributes"],
+        ["xpath=//form[@id='ajouter_editer']/fieldset/p[5]/input[4]", "xpath:idRelative"],
+        ["xpath=//input[4]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "5563c644-1085-4310-a652-1d70ab7d507c",
+      "comment": "",
+      "command": "pause",
+      "target": "2000",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "e914991d-fd12-4c2c-a5a1-cbf5da9fd766",
+      "comment": "",
+      "command": "waitForElementPresent",
+      "target": "css=h1",
+      "targets": [
+        ["css=h1", "css:finder"],
+        ["xpath=//header[@id='entete_contenu']/h1", "xpath:idRelative"],
+        ["xpath=//h1", "xpath:position"],
+        ["xpath=//h1[contains(.,'Tableau de bord')]", "xpath:innerText"]
+      ],
+      "value": "3000"
+    }, {
+      "id": "976af46a-e954-47f7-94b8-a45afd798393",
+      "comment": "",
+      "command": "assertElementPresent",
+      "target": "linkText=Sortir",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "eb4ebdd8-ef76-4ffa-b829-b4de70ff194a",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=Sortir",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "08b44af2-8f02-4045-b20f-6e94be4402f6",
+      "comment": "",
+      "command": "pause",
+      "target": "2000",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "fa060962-3eaf-43be-8b2a-a766a6d8a1c9",
+      "comment": "",
+      "command": "assertElementPresent",
+      "target": "linkText=Connexion",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "85b9ed0c-0cc5-433f-a6e6-619c1287e051",
+      "comment": "",
+      "command": "close",
+      "target": "",
+      "targets": [],
+      "value": ""
+    }]
   }],
   "suites": [{
     "id": "e598238f-e9bc-40f6-9876-6274e4bf1e3f",
@@ -7715,7 +7946,7 @@
     "persistSession": false,
     "parallel": false,
     "timeout": 300,
-    "tests": ["fa4a12b8-1f55-4435-8fe1-3fe8294be63a", "d5d4f0bd-52d5-4cd9-8fd2-b38ee992812d", "5c790b97-c4b1-4056-a004-daa889c1a3ee", "2422f54c-2560-4fa2-ad65-b10fe0deba9e", "1e32da4f-4dcb-4195-8dee-81a2afc12a3f", "b4c14c81-4533-4742-8d96-526b91077359", "1e0fa7b9-f784-4860-a139-b7be9b393fc0", "8f01a9a0-9f4c-4f52-825e-a54eba6fcb27", "92d58e15-7bbd-49aa-8440-5c14b4554622", "7f6cb209-b243-4a0e-889f-097dd12be52d", "9c8c7ca0-0ac3-496e-b84b-bfedbc01230b", "602346d1-62ed-43a5-9bfd-b78a52eaaa59", "816a221b-9428-4767-9d1b-cf51dc2f8fb4", "1b3cabfb-9a16-44ae-b21b-2356228e88f1", "a1b2c3d4-5678-90ab-cdef-lieu-salle-01"]
+    "tests": ["fa4a12b8-1f55-4435-8fe1-3fe8294be63a", "d5d4f0bd-52d5-4cd9-8fd2-b38ee992812d", "5c790b97-c4b1-4056-a004-daa889c1a3ee", "2422f54c-2560-4fa2-ad65-b10fe0deba9e", "1e32da4f-4dcb-4195-8dee-81a2afc12a3f", "b4c14c81-4533-4742-8d96-526b91077359", "1e0fa7b9-f784-4860-a139-b7be9b393fc0", "8f01a9a0-9f4c-4f52-825e-a54eba6fcb27", "92d58e15-7bbd-49aa-8440-5c14b4554622", "7f6cb209-b243-4a0e-889f-097dd12be52d", "9c8c7ca0-0ac3-496e-b84b-bfedbc01230b", "602346d1-62ed-43a5-9bfd-b78a52eaaa59", "816a221b-9428-4767-9d1b-cf51dc2f8fb4", "1b3cabfb-9a16-44ae-b21b-2356228e88f1", "a1b2c3d4-5678-90ab-cdef-lieu-salle-01", "0ae3b38b-98d6-4dfd-92c9-d26b5a4b768e", "7cbaa9a9-70bf-4812-af0a-7935df36f2a0"]
   }],
   "urls": ["https://ladecadanse.darksite.ch/", "http://ladecadanse.local/", "https://ladecadanse.local/"],
   "plugins": []
