@@ -1107,13 +1107,15 @@ ul.menu_action
             padding:.3em;
         }
 
-        ul.menu_action li a.signaler, ul.menu_action li a.ical
+        ul.menu_action li a.signaler, ul.menu_action li a.ical,
+        ul.menu_action li button.ical
         {
             color:#a6a5a5;
         }
 
         ul.menu_action li a.signaler:hover, ul.menu_action li a.signaler:active,
-        ul.menu_action li a.ical:hover, ul.menu_action li a.ical:active
+        ul.menu_action li a.ical:hover, ul.menu_action li a.ical:active,
+        ul.menu_action li button.ical:hover, ul.menu_action li button.ical:active
         {
             color:#1569C7;
         }
@@ -1123,7 +1125,77 @@ ul.menu_action
             vertical-align: middle;
         }
 
+.calendar-export-wrapper
+{
+    position: relative;
+    display: inline-block;
+}
 
+.calendar-export-trigger
+{
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font: inherit;
+    color: inherit;
+}
+
+.calendar-export-menu
+{
+    position: fixed;
+    inset: unset;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    box-shadow: 0 4px 12px rgba(0,0,0,.15);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    min-width: 13em;
+    text-align: left;
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: opacity .15s ease, transform .15s ease, display .15s allow-discrete;
+}
+
+.calendar-export-menu:popover-open
+{
+    opacity: 1;
+    transform: translateY(0);
+}
+
+@starting-style
+{
+    .calendar-export-menu:popover-open
+    {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+}
+
+.calendar-export-wrapper ul.calendar-export-menu li
+{
+    display: block;
+    margin: 0;
+    padding: 0;
+    height: auto;
+    width: auto;
+    line-height: 1;
+}
+
+.calendar-export-wrapper ul.calendar-export-menu li a
+{
+    display: block;
+    padding: 0.9em 1.2em;
+    white-space: nowrap;
+    text-decoration: none;
+}
+
+.calendar-export-wrapper ul.calendar-export-menu li a:hover
+{
+    background: #f0f0f0;
+}
 
 
 ul.menu_edition

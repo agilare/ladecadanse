@@ -81,6 +81,11 @@ ul.menu_actions_evenement li img
     vertical-align: bottom
 }
 
+ul.menu_actions_evenement .calendar-export-trigger
+{
+    color: #1569C7;
+}
+
 #evenement
 {
     width:94%;

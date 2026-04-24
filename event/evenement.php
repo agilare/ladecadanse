@@ -198,7 +198,10 @@ include("../_header.inc.php");
                 <li><a href="/event/copy.php?idE=<?= (int) $get['idE'] ?>"><?= $iconeCopier ?>&nbsp;Copier vers d'autres dates</a></li>
                 <li><a href="/evenement-edit.php?action=editer&amp;idE=<?= (int) $get['idE'] ?>"><?= $iconeEditer ?>&nbsp;Modifier</a></li>
             <?php endif; ?>
-                <li><a href="/event/to-ics.php?idE=<?= (int) $get['idE'] ?>" title="Exporter au format iCalendar dans votre agenda"><i class="fa fa-calendar-plus-o fa-lg"></i>&nbsp;iCal</a></li>
+                <?php
+                $calLinks = (new Ladecadanse\EvenementCalendarRenderer($tab_even, $site_full_url))->getLinks();
+                include("_calendar_export.inc.php");
+                ?>
         </ul>
     </nav>
 
