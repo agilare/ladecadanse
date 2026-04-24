@@ -100,6 +100,7 @@ function select2OptionWithComplement(item)
     return $(result);
 };
 
+// used in lieu, organisateur
 const ReadSmore = window.readSmore;
 const readMoreEls = document.querySelectorAll('.js-read-smore');
 ReadSmore(readMoreEls, {
