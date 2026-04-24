@@ -36,7 +36,7 @@ include("../_header.inc.php");
         <h3>Événements</h3>
 
         <ul>
-<!--            <li><a href="https://github.com/agilare/ladecadanse/issues/142" rel="external" target="_blank">export vers Google Calendar, Outlook, Microsoft 365, Yahoo Calendar</a> (merci <a href="https://github.com/lambeletjp" rel="external" target="_blank">lambeletjp</a>)</li>-->
+           <li><a href="https://github.com/agilare/ladecadanse/issues/142" rel="external" target="_blank">export vers Google Calendar, Outlook, Microsoft 365, Yahoo Calendar</a> (merci <a href="https://github.com/lambeletjp" rel="external" target="_blank">lambeletjp</a>)</li>
 <!--            <li>formulaire d'édition : flyer et image peuvent venir d'une URL</li>-->
             <li>formulaire d'édition : champ email de contact repositionné, plus visible</li>
             <li>formulaire d'édition : avertissement si on risque de soumettre le formulaire sans le fichier préalablement sélectionné</li>
@@ -63,7 +63,7 @@ include("../_header.inc.php");
             <li>mises à jour de l'infrastructure (PHP 8.4, librairies...)</li>
         </ul>
 
-<!--        <p><a href="https://github.com/agilare/ladecadanse/releases/tag/v3.10.0" rel="external" target="_blank">Détails</a></p>-->
+        <p><a href="https://github.com/agilare/ladecadanse/releases/tag/v3.10.0" rel="external" target="_blank">Détails</a></p>
 
     </article>
 

@@ -1,15 +1,18 @@
 # Changelog
 
-## [3.10.0] - Unreleased
+## [3.10.0] - 2026-04-24
 
 ### Added
 - events calendar : when changing month, instead of loading all the page, update only the calendar #104 (thanks to @lambeletjp)
+- events : add export to more calendars #57 (thanks to @lambeletjp)
 - events edit : move email contact field before event details fieldset #147
 - events edit : add handle of flyer/image from url
 - images : add handling upload of images format webp #32
 - ui : add back-to-top button on long pages #99
 - agenda : for small screens, add anchor link to latest events in menu
 - auth : allow login with email address #103
+- assets : use AssetManager for entity image cache busting (events, lieux, orgas) #109
+- tests : Selenium cases for this release
 
 ### Fixed
 - users : in register form, wrong field was used to hash password
@@ -23,7 +26,6 @@
 - PHP : update phpunit, rector, phpstan...
 - update Symfony, Codeception, phpunit...
 - logger : replace custom Logger with Monolog #64
-- assets : use AssetManager for entity image cache busting (events, lieux, orgas) #109
 
 ### Security
 - deps-dev : bump flatted from 3.2.9 to 3.4.2
