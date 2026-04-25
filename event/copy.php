@@ -5,6 +5,7 @@ require_once("../app/bootstrap.php");
 use Ladecadanse\Evenement;
 use Ladecadanse\EvenementRenderer;
 use Ladecadanse\Security\SecurityToken;
+use Ladecadanse\Utils\DateHelper;
 use Ladecadanse\Utils\Validateur;
 
 if (!$videur->checkGroup(8))
@@ -208,7 +209,7 @@ if (!empty($_POST['submit']))
             {
                 if (mb_substr((string) $tab_event_copied['horaire_debut'], 0, 10) > $date_originale)
                 {
-                    $tab_event_copied['horaire_debut'] = dateIsoToNextDayDateIso($tab_event_copied['dateEvenement']) . " " . mb_substr((string) $tab_event_copied['horaire_debut'], 11);
+                    $tab_event_copied['horaire_debut'] = DateHelper::isoToNextDay($tab_event_copied['dateEvenement']) . " " . mb_substr((string) $tab_event_copied['horaire_debut'], 11);
                 }
                 else
                 {
@@ -217,7 +218,7 @@ if (!empty($_POST['submit']))
 			}
 			else
 			{
-				$tab_event_copied['horaire_debut'] = dateIsoToNextDayDateIso($tab_event_copied['dateEvenement']) . " 06:00:01";
+				$tab_event_copied['horaire_debut'] = DateHelper::isoToNextDay($tab_event_copied['dateEvenement']) . " 06:00:01";
             }
 
 			//echo date_lendemain($tab_champs['dateEvenement'])." 06:00:01";
@@ -225,7 +226,7 @@ if (!empty($_POST['submit']))
             {   // echo $date_originale;
                 if (mb_substr((string) $tab_event_copied['horaire_fin'], 0, 10) > $date_originale)
                 {   // echo $tab_champs['horaire_fin'];
-                    $tab_event_copied['horaire_fin'] = dateIsoToNextDayDateIso($tab_event_copied['dateEvenement']) . " " . mb_substr((string) $tab_event_copied['horaire_fin'], 11);
+                    $tab_event_copied['horaire_fin'] = DateHelper::isoToNextDay($tab_event_copied['dateEvenement']) . " " . mb_substr((string) $tab_event_copied['horaire_fin'], 11);
                 }
                 else
                 {
@@ -234,7 +235,7 @@ if (!empty($_POST['submit']))
 			}
 			else
 			{
-				$tab_event_copied['horaire_fin'] = dateIsoToNextDayDateIso($tab_event_copied['dateEvenement']) . " 06:00:01";
+				$tab_event_copied['horaire_fin'] = DateHelper::isoToNextDay($tab_event_copied['dateEvenement']) . " 06:00:01";
             }
 
 			$sql_insert_attributs = "";

@@ -5,6 +5,7 @@ require_once("../app/bootstrap.php");
 use Ladecadanse\UserLevel;
 use Ladecadanse\Lieu;
 use Ladecadanse\HtmlShrink;
+use Ladecadanse\Utils\DateHelper;
 use Ladecadanse\Utils\Text;
 use Ladecadanse\Utils\Utils;
 use Ladecadanse\Utils\Validateur;
@@ -263,7 +264,7 @@ include("../_header.inc.php");
                                 <?php foreach ($lieu_affiliates as $a) : ?>
                                     <li>
                                         <a href="/user.php?idP=<?= (int)$a['idPersonne'] ?>"><?= sanitizeForHtml($a['pseudo']) ?></a>
-                                        <small><?= sanitizeForHtml($a['email']) ?> <?= date_iso2app($a['p_dateAjout']) ?></small>
+                                        <small><?= sanitizeForHtml($a['email']) ?> <?= DateHelper::isoToApp($a['p_dateAjout']) ?></small>
                                     </li>
                                 <?php endforeach; ?>
                                 </ul>
@@ -318,7 +319,7 @@ include("../_header.inc.php");
                                     <?php
                                     // HACK: before oct 2009 text "wiki" formated
                                     $des_contenu = $des['contenu'];
-                                    if (datetime_iso2time($des['date_derniere_modif']) <= datetime_iso2time("2009-10-12 12:00:00")) :
+                                    if (new \DateTime($des['date_derniere_modif']) <= new \DateTime("2009-10-12")) :
                                         $des_contenu = "<p>".Text::wikiToHtml(sanitizeForHtml($des['contenu']))."</p>";
                                     endif;
                                     ?>
@@ -417,7 +418,7 @@ include("../_header.inc.php");
             <table>
                 <?php foreach ($page_results_grouped_by_yearmonth as $yearmonth => $tab_month_events) : ?>
                     <tr>
-                        <td colspan="5" class="mois"><?= ucfirst((string) mois2fr(date2mois($yearmonth))) ?><?php if (date2annee($yearmonth) != date('Y')) : echo "&nbsp;".date2annee($yearmonth); endif; ?>
+                        <td colspan="5" class="mois"><?= ucfirst((string) mois2fr((new \DateTime($yearmonth))->format('m'))) ?><?php if ((new \DateTime($yearmonth))->format('Y') != date('Y')) : echo "&nbsp;".(new \DateTime($yearmonth))->format('Y'); endif; ?>
                         </td>
                     </tr>
                     <?php

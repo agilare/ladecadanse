@@ -5,6 +5,7 @@ require_once("app/bootstrap.php");
 use Ladecadanse\Lieu;
 use Ladecadanse\Security\SecurityToken;
 use Ladecadanse\LieuEdition;
+use Ladecadanse\Utils\DateHelper;
 use Ladecadanse\Utils\Text;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\HtmlShrink;
@@ -528,7 +529,7 @@ echo $form->getHtmlErreur("quartier");
                 {
                     $nom_fichier = $tab_galerie['idFichierrecu'].".".$tab_galerie['extension'];
                     echo "<tr><td><img src=\"".$assets->get(Lieu::getAssetPath(Lieu::getFilePath($nom_fichier, "galeries/s_")))."\" /></td>
-                    <td>".date_iso2app($tab_galerie['dateAjout'])."</td>
+                    <td>".DateHelper::isoToApp($tab_galerie['dateAjout'])."</td>
                     <td><input type=\"checkbox\" name=\"supprimer_galerie[]\" value=\"".(int)$tab_galerie['idFichierrecu'].".".$tab_galerie['extension']."\" /></td></tr>";
                 }
                 echo "</table>";

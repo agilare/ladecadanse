@@ -11,6 +11,7 @@ use Ladecadanse\EvenementRenderer; // presentation
 use Ladecadanse\Utils\Mailing;
 use Ladecadanse\HtmlShrink; // template
 use Ladecadanse\UserLevel; // domain
+use Ladecadanse\Utils\DateHelper;
 
 // template...
 $page_titre = "Proposer un événement";
@@ -232,7 +233,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 	}
 	else
 	{
-		$date_iso = date_app2iso($champs['dateEvenement']);
+		$date_iso = DateHelper::appToIso($champs['dateEvenement']);
 
 		$tab_date = explode('.', (string) $champs['dateEvenement']);
 		if (!checkdate((int) $tab_date[1], (int) $tab_date[0], (int) $tab_date[2])) {
@@ -313,7 +314,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 		//creation/nettoyage des valeurs à insérer dans la table
 
 		$champs['idPersonne'] = $_SESSION['SidPersonne'] ?? 0;
-		$champs['dateEvenement'] = date_app2iso($champs['dateEvenement']);
+		$champs['dateEvenement'] = DateHelper::appToIso($champs['dateEvenement']);
 
 		$descriptionOrig = $champs['description'];
 
@@ -330,7 +331,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 
         // 23:59, 00:00, 06:00
 		// conversion de l'heure indiquée en datetime
-        $date_next_day = dateIsoToNextDayDateIso($date_iso);
+        $date_next_day = DateHelper::isoToNextDay($date_iso);
         // les événements sans heure de début sont relegués au lendemain à 06:00:01 afin qu'ils soient affichés (artificiellement) en dernier dans l'agenda
 		if (!empty($champs['horaire_debut']))
 		{
@@ -830,7 +831,7 @@ include("_header.inc.php");
                     $champs[$c] = $v;
                 }
 
-                $champs['dateEvenement'] = date_iso2app($champs['dateEvenement']);
+                $champs['dateEvenement'] = DateHelper::isoToApp($champs['dateEvenement']);
                 $champs['horaire_debut'] = EvenementRenderer::datetimeToHhMm($affEven['horaire_debut'], $affEven['dateEvenement']);
                 $champs['horaire_fin'] = EvenementRenderer::datetimeToHhMm($affEven['horaire_fin'], $affEven['dateEvenement']);
             }

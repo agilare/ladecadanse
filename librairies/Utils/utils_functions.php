@@ -95,22 +95,6 @@ function date_fr($d, $format = "", $affMois = "", $jour_sem = "", $html = true)
     return $hhmmss;
 }
 
-function date2mois($date)
-{
-    $temps = explode(" ", (string) $date);
-    $tabDate = explode("-", $temps[0]);
-
-    return $tabDate[1];
-}
-
-function date2annee($date)
-{
-    $temps = explode(" ", (string) $date);
-    $tabDate = explode("-", $temps[0]);
-
-    return $tabDate[0];
-}
-
 function mois2fr($mois)
 {
     $Mois = ["", "janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
@@ -121,20 +105,6 @@ function mois2fr($mois)
     }
 
     return $Mois[$mois];
-}
-
-function date2jour($date)
-{
-    $temps = explode(" ", (string) $date);
-    $tabDate = explode("-", $temps[0]);
-    $noJour = $tabDate[2];
-
-    if ($noJour[0] == "0")
-    {
-        $noJour = mb_substr($noJour, 1, 1);
-    }
-
-    return $noJour;
 }
 
 function date2nomJour($date)
@@ -149,63 +119,22 @@ function date2nomJour($date)
 }
 
 
-function date_iso2app($date)
+/** @deprecated Use \Ladecadanse\Utils\DateHelper::isoToApp() instead */
+function date_iso2app($date): string
 {
-    if (empty($date))
-        return '';
-
-    if (mb_strlen((string) $date) > 10)
-    {
-        $tab_date = explode(" ", (string) $date);
-
-        $tab_jour = explode("-", $tab_date[0]);
-        //$tab_heure = explode(":", $tab_date[1]);
-
-        return $tab_date[1] . " " . $tab_jour[2] . "." . $tab_jour[1] . "." . $tab_jour[0];
-    }
-    else
-    {
-        $tab_date = explode("-", (string) $date);
-        return $tab_date[2] . "." . $tab_date[1] . "." . $tab_date[0];
-    }
+    return \Ladecadanse\Utils\DateHelper::isoToApp($date !== null ? (string) $date : null);
 }
 
-function date_app2iso($date)
+/** @deprecated Use \Ladecadanse\Utils\DateHelper::appToIso() instead */
+function date_app2iso($date): string
 {
-    if (mb_strlen((string) $date) > 10)
-    {
-        return $date;
-    }
-
-    $tab_date = explode(".", (string) $date);
-
-    if (count($tab_date) < 3) {
-        return '';
-    }
-
-    return $tab_date[2] . "-" . $tab_date[1] . "-" . $tab_date[0];
+    return \Ladecadanse\Utils\DateHelper::appToIso((string) $date);
 }
 
-function date_iso2time($date)
-{
-    $tab_datetime = explode(" ", (string) $date);
-    $tab_date = explode("-", $tab_datetime[0]);
-
-    return mktime(0, 0, 0, $tab_date[1], $tab_date[2], $tab_date[0]);
-}
-
-function datetime_iso2time($date)
-{
-    $tab_date = explode(" ", (string) $date);
-    $tab_jour = explode("-", $tab_date[0]);
-    $tab_heure = explode(":", $tab_date[1]);
-
-    return mktime($tab_heure[0], $tab_heure[1], $tab_heure[2], $tab_jour[1], $tab_jour[2], $tab_jour[0]);
-}
-
+/** @deprecated Use \Ladecadanse\Utils\DateHelper::isoToNextDay() instead */
 function dateIsoToNextDayDateIso(string $date): string
 {
-    return (new DateTime($date))->modify('+1 day')->format("Y-m-d");
+    return \Ladecadanse\Utils\DateHelper::isoToNextDay($date);
 }
 
 /**

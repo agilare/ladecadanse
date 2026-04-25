@@ -13,6 +13,7 @@ use Ladecadanse\HtmlShrink;
 use Ladecadanse\Lieu;
 use Ladecadanse\Organisateur;
 use Ladecadanse\Security\Authorization;
+use Ladecadanse\Utils\DateHelper;
 use Ladecadanse\Utils\Text;
 
 /**
@@ -71,14 +72,14 @@ class EvenementRenderer
     {
         $result = self::datetimeToHhMm($horaire_debut, $date_evenement);
         // both times exists : add separator
-        if ($horaire_fin != dateIsoToNextDayDateIso($date_evenement) . " 06:00:01" && $horaire_fin != "0000-00-00 00:00:00"
-            && $horaire_debut != dateIsoToNextDayDateIso($date_evenement) . " 06:00:01" && $horaire_debut != "0000-00-00 00:00:00")
+        if ($horaire_fin != DateHelper::isoToNextDay($date_evenement) . " 06:00:01" && $horaire_fin != "0000-00-00 00:00:00"
+            && $horaire_debut != DateHelper::isoToNextDay($date_evenement) . " 06:00:01" && $horaire_debut != "0000-00-00 00:00:00")
         {
             $result .= " – ";
         }
         // (rare)
-        if ($horaire_fin != dateIsoToNextDayDateIso($date_evenement) . " 06:00:01" && $horaire_fin != "0000-00-00 00:00:00"
-            && $horaire_debut == dateIsoToNextDayDateIso($date_evenement) . " 06:00:01")
+        if ($horaire_fin != DateHelper::isoToNextDay($date_evenement) . " 06:00:01" && $horaire_fin != "0000-00-00 00:00:00"
+            && $horaire_debut == DateHelper::isoToNextDay($date_evenement) . " 06:00:01")
         {
             $result .= "fin : ";
         }
@@ -95,7 +96,7 @@ class EvenementRenderer
      */
     public static function datetimeToHhMm(string $datetime, string $date_evenement): string
     {
-        if ($datetime > dateIsoToNextDayDateIso($date_evenement) . " 06:00:00" || $datetime == "0000-00-00 00:00:00"
+        if ($datetime > DateHelper::isoToNextDay($date_evenement) . " 06:00:00" || $datetime == "0000-00-00 00:00:00"
             || empty($datetime)
             )
         {
@@ -266,7 +267,7 @@ class EvenementRenderer
         <tr class="<?php if ($glo_auj_6h == $tab_even['e_dateEvenement']) { echo "ici"; } ?> vevent evenement">
 
             <td class="dtstart">
-                <a href="/index.php?courant=<?= sanitizeForHtml($tab_even['e_dateEvenement']) ?>"><?= date2nomJour($tab_even['e_dateEvenement']); ?>&nbsp;<?= date2jour($tab_even['e_dateEvenement']); ?><span class="value-title" title="<?= $tab_even['e_dateEvenement'].$vcard_starttime; ?>"></span></a><br>
+                <a href="/index.php?courant=<?= sanitizeForHtml($tab_even['e_dateEvenement']) ?>"><?= date2nomJour($tab_even['e_dateEvenement']); ?>&nbsp;<?= (new \DateTime($tab_even['e_dateEvenement']))->format('j') ?><span class="value-title" title="<?= $tab_even['e_dateEvenement'].$vcard_starttime; ?>"></span></a><br>
                 <span class="pratique"><?= self::schedulesToHhMm($tab_even['e_horaire_debut'], $tab_even['e_horaire_fin'], $tab_even['e_dateEvenement']) ?></span>
             </td>
             <td class="flyer photo">

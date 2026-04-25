@@ -3,6 +3,7 @@
 require_once("../app/bootstrap.php");
 
 use Ladecadanse\UserLevel;
+use Ladecadanse\Utils\DateHelper;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\Utils\Utils;
@@ -256,8 +257,8 @@ require_once '../_header.inc.php';
                         <?php endif; ?>
                     </td>
                     <td><?= EvenementRenderer::$iconStatus[$u['statut']] ?></td>
-                    <td><?= date_iso2app($u['dateAjout']) ?></td>
-                    <td><?= date_iso2app($u['last_login']) ?></td>
+                    <td><?= DateHelper::isoToApp($u['dateAjout']) ?></td>
+                    <td><?= DateHelper::isoToApp($u['last_login']) ?></td>
                     <td><a href="/user-edit.php?action=editer&amp;idP=<?= (int)$u['idPersonne'] ?>"><?= $iconeEditer ?></a></td>
                 </tr>
             <?php endforeach; ?>

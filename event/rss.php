@@ -177,10 +177,10 @@ foreach ($tab_events as $tab_even)
     $item['prix'] =  $tab_even['e_prix'];
 
     $item['guid'] = (int)$tab_even['e_idEvenement'];
-    $item['pubDate'] = date("r", datetime_iso2time($tab_even['e_dateAjout']));
+    $item['pubDate'] = (new \DateTime($tab_even['e_dateAjout']))->format(\DateTime::RFC2822);
 
     $items[] = $item;
-    $channel['pubDate'] = date_iso2time($tab_even['e_dateAjout']);
+    $channel['pubDate'] = (new \DateTime($tab_even['e_dateAjout']))->format(\DateTime::RFC2822);
 }
 
 if ($get['type'] == 'lieu_evenements')

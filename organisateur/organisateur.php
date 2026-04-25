@@ -263,7 +263,7 @@ include("../_header.inc.php");
                 <?php foreach ($page_results_grouped_by_yearmonth as $yearmonth => $tab_month_events) : ?>
                     <tr>
                         <td colspan="5" class="mois">
-                            <?= ucfirst((string) mois2fr(date2mois($yearmonth))) ?><?php if (date2annee($yearmonth) != date('Y')) : echo "&nbsp;".date2annee($yearmonth); endif; ?>
+                            <?= ucfirst((string) mois2fr((new \DateTime($yearmonth))->format('m'))) ?><?php if ((new \DateTime($yearmonth))->format('Y') != date('Y')) : echo "&nbsp;".(new \DateTime($yearmonth))->format('Y'); endif; ?>
                         </td>
                     </tr>
                     <?php

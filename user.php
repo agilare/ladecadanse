@@ -4,6 +4,7 @@ require_once("app/bootstrap.php");
 
 use Ladecadanse\UserLevel;
 use Ladecadanse\HtmlShrink;
+use Ladecadanse\Utils\DateHelper;
 use Ladecadanse\Utils\Utils;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\Text;
@@ -315,11 +316,11 @@ $detailsAff = $connector->fetchArray($req_affPers);
 				}
 
 				echo "
-				<td>".date_iso2app($tab_even['dateEvenement'])."</td>
+				<td>".DateHelper::isoToApp($tab_even['dateEvenement'])."</td>
 				<td>".$nomLieu."</td>
 				<td><a href=\"/event/evenement.php?idE=".(int)$tab_even['idEvenement']."\" title=\"Voir la fiche de l'événement\">".sanitizeForHtml($tab_even['titre'])."</a></td>";
 				echo "
-				<td>".mb_substr((string) date_iso2app($tab_even['dateAjout']), 9)."</td><td>".EvenementRenderer::$iconStatus[$tab_even['statut']]."</td>";
+				<td>".mb_substr(DateHelper::isoToApp($tab_even['dateAjout']), 9)."</td><td>".EvenementRenderer::$iconStatus[$tab_even['statut']]."</td>";
 
 				if ($_SESSION['SidPersonne'] == $detailsPersonne['idPersonne'] || $_SESSION['Sgroupe'] <= 4)
 				{
@@ -425,7 +426,7 @@ $detailsAff = $connector->fetchArray($req_affPers);
 
 				echo "<td class=\"tdleft\" style=\"width:150px\">".Text::wikiToHtml(sanitizeForHtml($tab_desc['contenu']))."</td>";
 				echo '<td>'.$tab_desc['type'].'</td>';
-				echo "<td>".mb_substr((string) date_iso2app($tab_desc['dateAjout']), 8)."</td>";
+				echo "<td>".mb_substr(DateHelper::isoToApp($tab_desc['dateAjout']), 8)."</td>";
 				if ($_SESSION['SidPersonne'] == $detailsPersonne['idPersonne'] || $_SESSION['Sgroupe'] <= 4)
 				{
 					echo "<td><a href=\"/lieu-text-edit.php?action=editer&idL=" . (int)$tab_desc['idLieu'] . "&idP=" . (int)$tab_desc['idPersonne'] . "&type=" . $tab_desc['type'] . "\" title=\"Éditer le lieu\">" . $iconeEditer . "</a></td>";
@@ -541,7 +542,7 @@ $detailsAff = $connector->fetchArray($req_affPers);
 			echo "</td>";
 			echo "
 			<td>".$tabDes['COUNT(*)']."</td>
-			<td>".date_iso2app($dateAjout)."</td>";
+			<td>".DateHelper::isoToApp($dateAjout)."</td>";
 			//Edition pour l'admin ou l'auteur
 			if ($_SESSION['SidPersonne'] == $detailsPersonne['idPersonne'] || $_SESSION['Sgroupe'] <= 4)
 			{
@@ -639,7 +640,7 @@ else if ($get['elements'] == "organisateur")
             }
 			echo "</td>";
 			echo "
-			<td>".date_iso2app($tab['date_ajout'])."</td>";
+			<td>".DateHelper::isoToApp($tab['date_ajout'])."</td>";
 			//Edition pour l'admin ou l'auteur
 			if ($_SESSION['SidPersonne'] == $detailsPersonne['idPersonne'] || $_SESSION['Sgroupe'] <= 4)
 			{

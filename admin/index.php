@@ -3,6 +3,7 @@
 global $connector;
 require_once("../app/bootstrap.php");
 
+use Ladecadanse\Utils\DateHelper;
 use Ladecadanse\Utils\Text;
 use Ladecadanse\UserLevel;
 use Ladecadanse\EvenementRenderer;
@@ -223,7 +224,7 @@ require_once '../_header.inc.php';
                         <td><?= (new DateTime($event['e_dateAjout']))->format("H:i") ?></td>
                         <td><a href="/event/evenement.php?idE=<?= (int)$event['e_idEvenement'] ?>" class='titre'><?= sanitizeForHtml($event['e_titre']) ?></a></td>
                         <td><?= Lieu::getLinkNameHtml($even_lieu['nom'], $even_lieu['idLieu'], $even_lieu['salle']) ?><br><span style="color:lightsteelblue"><?= $even_lieu['localite'] ?></span></td>
-                        <td><a href="/index.php?courant=<?= sanitizeForHtml($event['e_dateEvenement']) ?>"><?= date_iso2app($event['e_dateEvenement']) ?></a></td>
+                        <td><a href="/index.php?courant=<?= sanitizeForHtml($event['e_dateEvenement']) ?>"><?= DateHelper::isoToApp($event['e_dateEvenement']) ?></a></td>
                         <td><?= ucfirst($glo_tab_genre[$event['e_genre']]) ?></td>
                         <td><?= EvenementRenderer::schedulesToHhMm($event['e_horaire_debut'], $event['e_horaire_fin'], $event['e_dateEvenement']) ?></td>
                         <td style='text-align: center;'><?= EvenementRenderer::$iconStatus[$event['e_statut']] ?></td>

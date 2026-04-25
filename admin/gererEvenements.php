@@ -4,6 +4,7 @@ global $connector, $glo_regions, $mimes_images_acceptes, $glo_tab_ailleurs, $glo
 require_once("../app/bootstrap.php");
 
 use Ladecadanse\Evenement;
+use Ladecadanse\Utils\DateHelper;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\ImageDriver2;
 use Ladecadanse\EvenementCollection;
@@ -362,7 +363,7 @@ elseif (!empty($_POST['formulaire']))
 			$champs['horaire_debut'] = $_POST['horaire_debut'];
 
 			/*  Adaptation pour horaire_debut */
-			$lendemain_evenement = dateIsoToNextDayDateIso($tab_even['dateEvenement']);
+			$lendemain_evenement = DateHelper::isoToNextDay($tab_even['dateEvenement']);
 
 			if (!empty($champs['horaire_debut']))
 			{
@@ -762,13 +763,13 @@ if ($verif->nbErreurs() > 0)
 
             <?php foreach ($tab_events as $tab_even) :
                 $even_lieu = Evenement::getLieu($tab_even);
-                $datetime_dateajout = date_iso2app($tab_even['e_dateAjout']);
+                $datetime_dateajout = DateHelper::isoToApp($tab_even['e_dateAjout']);
                 $tab_datetime_dateajout = explode(" ", (string) $datetime_dateajout);
                 ?>
             <tr>
                 <td><a href="/event/evenement.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>" class='titre'><?= sanitizeForHtml($tab_even['e_titre']) ?></a></td>
                 <td><?= Lieu::getLinkNameHtml($even_lieu['nom'], $even_lieu['idLieu'], $even_lieu['salle']) ?><br><span style="color:lightsteelblue"><?= $even_lieu['localite'] ?></span></td>
-                <td><a href="/index.php?courant=<?= sanitizeForHtml($tab_even['e_dateEvenement']) ?>"><?= date_iso2app($tab_even['e_dateEvenement']) ?></a></td>
+                <td><a href="/index.php?courant=<?= sanitizeForHtml($tab_even['e_dateEvenement']) ?>"><?= DateHelper::isoToApp($tab_even['e_dateEvenement']) ?></a></td>
                 <td><?= ucfirst((string) $glo_tab_genre[$tab_even['e_genre']]) ?></td>
                 <td>
                     <?= EvenementRenderer::schedulesToHhMm($tab_even['e_horaire_debut'], $tab_even['e_horaire_fin'], $tab_even['e_dateEvenement']) ?>
