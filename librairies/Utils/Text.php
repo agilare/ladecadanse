@@ -75,80 +75,6 @@ class Text
     }
 
 
-    public static function formatbytes($val, int $digits = 3, $mode = "SI", $bB = "B"): string
-    { //$mode == "SI"|"IEC", $bB == "b"|"B"
-        $si = ["", "k", "M", "G", "T", "P", "E", "Z", "Y"];
-        $iec = ["", "Ki", "Mi", "Gi", "Ti", "Pi", "Ei", "Zi", "Yi"];
-        switch (mb_strtoupper((string) $mode))
-        {
-            case "SI" : $factor = 1000;
-                $symbols = $si;
-                break;
-            case "IEC" : $factor = 1024;
-                $symbols = $iec;
-                break;
-            default : $factor = 1000;
-                $symbols = $si;
-                break;
-        }
-        switch ($bB)
-        {
-            case "b" : $val *= 8;
-                break;
-            default : $bB = "B";
-                break;
-        }
-        for ($i = 0; $i < count($symbols) - 1 && $val >= $factor; $i++)
-            $val /= $factor;
-        $p = mb_strpos((string) $val, ".");
-        if ($p !== false && $p > $digits)
-            $val = round($val);
-        elseif ($p !== false)
-            $val = round($val, $digits - $p);
-        return round($val, $digits) . " " . $symbols[$i] . $bB;
-    }
-
-    /**
-     * Used by event/to-ics.php
-     *
-     * @param string $string
-     * @return string
-     */
-    public static function escapeAndFoldString(string $string): string
-    {
-        // Échappement selon RFC 5545
-        $escaped = strtr($string, [
-            '\\' => '\\\\',
-            "\r" => '',
-            "\n" => '\\n',
-            ','  => '\,',
-            ';'  => '\;',
-        ]);
-
-        // Découpage UTF-8-safe
-        $lines = [];
-        $line = '';
-        $bytes = 0;
-
-        foreach (preg_split('//u', $escaped, -1, PREG_SPLIT_NO_EMPTY) as $char) {
-            $charBytes = strlen($char);
-
-            if ($bytes + $charBytes > 75) {
-                $lines[] = $line;
-                $line = ' ' . $char;
-                $bytes = 1 + $charBytes;
-            } else {
-                $line .= $char;
-                $bytes += $charBytes;
-            }
-        }
-
-        $lines[] = $line;
-
-        return implode("\r\n", $lines);
-    }
-
-
 
     /**
      * Remplace tous les tags wiki d'un texte par des balises HTML
@@ -189,29 +115,29 @@ class Text
 
 
 
-    public static function wikiToText($temp)
-    {
-
-        $temp = preg_replace("/'''(('?[^\n'])*)'''/", "\\1", (string) $temp);
-        $temp = preg_replace("/(\r|\n)*==(('?[^\n'])*)==( |\n|\r)*/", "\\2 ", $temp);
-        $temp = preg_replace("/([^*]{2}|)\r\n/", "\\1 <br />", $temp);
-        //$temp = preg_replace("/([^*]{2}|)(\r|\n)/", "\\1 ", $temp);
-
-        $temp = preg_replace("/''(('?[^\n'])*)''/", "<i>\\1</i>", $temp);
-
-        //$temp = preg_replace("/\*\*(.*?)\*\*/", "<blockquote>\\1</blockquote>", $temp);
-        //$temp = str_replace("----", " ", $temp);
-
-        $temp = preg_replace("/(([^[]|^)(http)+(s)?:(\/\/)|([^\[\/]|^)(www\.))((\w|\.|\-|_)+)(\/)?(\S+)?/i", "\\2\\6<a href=\"http\\4://\\7\\8\\10\\11\" title=\"\\0\">\\7\\8</a>", $temp);
-        //[
-        $temp = preg_replace("/\[(http[s]?:\/\/)([-a-z0-9_]{2,}\.[-a-z0-9.]{2,}[-a-z0-9\/&\?=.;~_%]*) (.+?)\]/i",
-                "<a href=\"\\1\\2\" title=\"\\1\\2\">\\3</a>", $temp);
-
-        $temp = preg_replace("/\[www\.([-a-z0-9.]{2,}[-a-z0-9\/&\?=.~_%]*) (.+?)\]/i",
-                "<a href=\"http://www.\\1\" title=\"www.\\1\">\\2</a>", $temp);
-
-        return $temp;
-    }
+//    public static function wikiToText($temp)
+//    {
+//
+//        $temp = preg_replace("/'''(('?[^\n'])*)'''/", "\\1", (string) $temp);
+//        $temp = preg_replace("/(\r|\n)*==(('?[^\n'])*)==( |\n|\r)*/", "\\2 ", $temp);
+//        $temp = preg_replace("/([^*]{2}|)\r\n/", "\\1 <br />", $temp);
+//        //$temp = preg_replace("/([^*]{2}|)(\r|\n)/", "\\1 ", $temp);
+//
+//        $temp = preg_replace("/''(('?[^\n'])*)''/", "<i>\\1</i>", $temp);
+//
+//        //$temp = preg_replace("/\*\*(.*?)\*\*/", "<blockquote>\\1</blockquote>", $temp);
+//        //$temp = str_replace("----", " ", $temp);
+//
+//        $temp = preg_replace("/(([^[]|^)(http)+(s)?:(\/\/)|([^\[\/]|^)(www\.))((\w|\.|\-|_)+)(\/)?(\S+)?/i", "\\2\\6<a href=\"http\\4://\\7\\8\\10\\11\" title=\"\\0\">\\7\\8</a>", $temp);
+//        //[
+//        $temp = preg_replace("/\[(http[s]?:\/\/)([-a-z0-9_]{2,}\.[-a-z0-9.]{2,}[-a-z0-9\/&\?=.;~_%]*) (.+?)\]/i",
+//                "<a href=\"\\1\\2\" title=\"\\1\\2\">\\3</a>", $temp);
+//
+//        $temp = preg_replace("/\[www\.([-a-z0-9.]{2,}[-a-z0-9\/&\?=.~_%]*) (.+?)\]/i",
+//                "<a href=\"http://www.\\1\" title=\"www.\\1\">\\2</a>", $temp);
+//
+//        return $temp;
+//    }
 
     /**
      * D?termine le nombre de caract?res max d'un texte selon le nombre moyen de charact?re
@@ -503,9 +429,33 @@ class Text
         return $posttext;
     }
 
-    public static function reverseMbStrrchr($haystack, $needle)
+    /**
+     * Retourne la portion de chaîne située AVANT la dernière occurrence d'un caractère.
+     *
+     * Équivalent multibyte de strrchr(), mais retourne la partie gauche plutôt que droite.
+     * Exemple : reverseMbStrrchr('foo/bar/baz', '/') => 'foo/bar'
+     *
+     * @param string|\Stringable $haystack La chaîne dans laquelle chercher.
+     * @param string|\Stringable $needle   Le caractère ou la sous-chaîne à rechercher.
+     *
+     * @return string|false La sous-chaîne avant la dernière occurrence de $needle,
+     *                      ou false si $needle est absent (position 0 incluse).
+     */
+    public static function reverseMbStrrchr(string|\Stringable $haystack, string|\Stringable $needle): string|false
     {
-        return mb_strrpos((string) $haystack, (string) $needle) ? mb_substr((string) $haystack, 0, mb_strrpos((string) $haystack, (string) $needle)) : false;
+        $haystack = (string) $haystack;
+        $needle   = (string) $needle;
+
+        // Recherche la position de la dernière occurrence (de droite à gauche)
+        $pos = mb_strrpos($haystack, $needle);
+
+        // mb_strrpos retourne false si non trouvé, ou 0 si en début de chaîne.
+        // Dans les deux cas on ne peut pas retourner de partie "avant" significative.
+        if ($pos === false || $pos === 0) {
+            return false;
+        }
+
+        return mb_substr($haystack, 0, $pos);
     }
 
 

@@ -325,9 +325,42 @@ class EvenementRenderer
             'DTSTAMP' => date('Ymd\THis', time()),
             'DTSTART' => date('Ymd\THis', date("U", strtotime((($event['e_horaire_debut'] != "0000-00-00 00:00:00") ? $event['e_horaire_debut'] : $event['e_dateEvenement'])))),
             'DTEND' => ($event['e_horaire_fin'] != "0000-00-00 00:00:00") ? date('Ymd\THis', date("U", strtotime($event['e_horaire_fin']))) : "",
-            'LOCATION' => Text::escapeAndFoldString($even_lieu['nom'] . " - " . HtmlShrink::adresseCompacteSelonContexte($even_lieu['region'], $even_lieu['localite'], $even_lieu['quartier'], $even_lieu['adresse'])),
-            'SUMMARY' => Text::escapeAndFoldString($event['e_titre']),
-            'DESCRIPTION' => Text::escapeAndFoldString($event['e_description']),
+            'LOCATION' => self::escapeAndFoldString($even_lieu['nom'] . " - " . HtmlShrink::adresseCompacteSelonContexte($even_lieu['region'], $even_lieu['localite'], $even_lieu['quartier'], $even_lieu['adresse'])),
+            'SUMMARY' => self::escapeAndFoldString($event['e_titre']),
+            'DESCRIPTION' => self::escapeAndFoldString($event['e_description']),
         ];
+    }
+
+    /** Escape and fold an iCalendar property value per RFC 5545 §3.1 and §3.3.11. */
+    private static function escapeAndFoldString(string $string): string
+    {
+        $escaped = strtr($string, [
+            '\\' => '\\\\',
+            "\r" => '',
+            "\n" => '\\n',
+            ','  => '\,',
+            ';'  => '\;',
+        ]);
+
+        $lines = [];
+        $line  = '';
+        $bytes = 0;
+
+        foreach (mb_str_split($escaped) as $char) {
+            $charBytes = strlen($char);
+
+            if ($bytes + $charBytes > 75) {
+                $lines[] = $line;
+                $line    = ' ' . $char;
+                $bytes   = 1 + $charBytes;
+            } else {
+                $line  .= $char;
+                $bytes += $charBytes;
+            }
+        }
+
+        $lines[] = $line;
+
+        return implode("\r\n", $lines);
     }
 }
