@@ -1187,6 +1187,28 @@ ul.menu_action
     }
 }
 
+/*
+ * Fallback for browsers without the Popover API (Safari < 17, etc.).
+ * JS adds --fallback on init; --open is toggled on click.
+ * position: absolute within .calendar-export-wrapper (position: relative)
+ * avoids any JS-based coordinate calculation.
+ */
+.calendar-export-menu--fallback
+{
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: auto;
+    bottom: auto;
+    display: none;
+    z-index: 999;
+}
+
+.calendar-export-menu--fallback.calendar-export-menu--open
+{
+    display: block;
+}
+
 .calendar-export-wrapper ul.calendar-export-menu li
 {
     display: block;
