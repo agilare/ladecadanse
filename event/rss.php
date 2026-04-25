@@ -4,6 +4,7 @@ global $site_full_url, $glo_auj_6h, $connector, $auj, $glo_tab_genre;
 require_once("../app/bootstrap.php");
 
 use Ladecadanse\Evenement;
+use Ladecadanse\EvenementRenderer;
 use Ladecadanse\Utils\Text;
 use Ladecadanse\Lieu;
 
@@ -172,7 +173,7 @@ foreach ($tab_events as $tab_even)
     }
 
     $item['description'] = Text::texteHtmlReduit(Text::wikiToHtml(sanitizeForHtml($tab_even['e_description'])), Text::trouveMaxChar($tab_even['e_description'], 60, 5), "");
-    $item['horaire'] = afficher_debut_fin($tab_even['e_horaire_debut'], $tab_even['e_horaire_fin'], $tab_even['e_dateEvenement'])." ".$tab_even['e_horaire_complement'];
+    $item['horaire'] = EvenementRenderer::schedulesToHhMm($tab_even['e_horaire_debut'], $tab_even['e_horaire_fin'], $tab_even['e_dateEvenement'])." ".$tab_even['e_horaire_complement'];
     $item['prix'] =  $tab_even['e_prix'];
 
     $item['guid'] = (int)$tab_even['e_idEvenement'];

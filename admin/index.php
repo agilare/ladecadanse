@@ -225,7 +225,7 @@ require_once '../_header.inc.php';
                         <td><?= Lieu::getLinkNameHtml($even_lieu['nom'], $even_lieu['idLieu'], $even_lieu['salle']) ?><br><span style="color:lightsteelblue"><?= $even_lieu['localite'] ?></span></td>
                         <td><a href="/index.php?courant=<?= sanitizeForHtml($event['e_dateEvenement']) ?>"><?= date_iso2app($event['e_dateEvenement']) ?></a></td>
                         <td><?= ucfirst($glo_tab_genre[$event['e_genre']]) ?></td>
-                        <td><?= afficher_debut_fin($event['e_horaire_debut'], $event['e_horaire_fin'], $event['e_dateEvenement']) ?></td>
+                        <td><?= EvenementRenderer::schedulesToHhMm($event['e_horaire_debut'], $event['e_horaire_fin'], $event['e_dateEvenement']) ?></td>
                         <td style='text-align: center;'><?= EvenementRenderer::$iconStatus[$event['e_statut']] ?></td>
                         <td><a href="/user.php?idP=<?= (int)$event['idPersonne'] ?>"><?= sanitizeForHtml($event['pseudo']) ?></a></td>
                         <td>

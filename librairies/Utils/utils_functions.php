@@ -203,78 +203,10 @@ function datetime_iso2time($date)
     return mktime($tab_heure[0], $tab_heure[1], $tab_heure[2], $tab_jour[1], $tab_jour[2], $tab_jour[0]);
 }
 
-function date_iso2lundim($date)
-{
-    $tab_date = explode("-", (string) $date);
-
-    $i = 0;
-    $ds = date("w", mktime(0, 0, 0, $tab_date[1], $tab_date[2], $tab_date[0]));
-
-    while ($ds != 1)
-    {
-        $ds = date("w", mktime(0, 0, 0, $tab_date[1], (int) $tab_date[2] - $i, $tab_date[0]));
-        $i++;
-        //echo "i:".$i." ";
-    }
-
-    if ($i > 0)
-        $i--;
-
-    $lundi = date("Y-m-d", mktime(0, 0, 0, $tab_date[1], (int) $tab_date[2] - $i, $tab_date[0]));
-
-    //echo "lundi:".$lundi."<br>";
-
-    $j = 0;
-    while ($ds != 0)
-    {
-        $ds = date("w", mktime(0, 0, 0, $tab_date[1], (int) $tab_date[2] + $j, $tab_date[0]));
-        $j++;
-    }
-
-    $dimanche = date("Y-m-d", mktime(0, 0, 0, $tab_date[1], (int) $tab_date[2] + $j - 1, $tab_date[0]));
-    //echo "dimanche:".$dimanche."<br>";
-
-    return [$lundi, $dimanche];
-}
-
-function date_lendemain(string $date): string
+function dateIsoToNextDayDateIso(string $date): string
 {
     return (new DateTime($date))->modify('+1 day')->format("Y-m-d");
 }
-
-function horaire2heure($horaire_complet, $date_evenement)
-{
-    $horaire_heure = $horaire_complet;
-
-    $fin_jour = date_lendemain($date_evenement) . " 06:00:00";
-    //echo "fin jour :".$fin_jour."<br>";
-    if ($horaire_heure > $fin_jour || $horaire_heure == "0000-00-00 00:00:00")
-    {
-        $horaire_heure = "";
-    }
-
-    //	echo "hor heure:".$horaire_heure;
-
-    return mb_substr((string) $horaire_heure, 11, -3);
-}
-
-function afficher_debut_fin($horaire_debut, $horaire_fin, $date_evenement): string
-{
-    $afficher = horaire2heure($horaire_debut, $date_evenement);
-    if ($horaire_fin != date_lendemain($date_evenement) . " 06:00:01" && $horaire_fin != "0000-00-00 00:00:00" && $horaire_debut != date_lendemain($date_evenement) . " 06:00:01" && $horaire_debut != "0000-00-00 00:00:00") {
-        $afficher .= " – ";
-    }
-
-    if ($horaire_fin != date_lendemain($date_evenement) . " 06:00:01" && $horaire_fin != "0000-00-00 00:00:00" && $horaire_debut == date_lendemain($date_evenement) . " 06:00:01")
-    {
-        $afficher .= "fin : ";
-    }
-
-    $afficher .= horaire2heure($horaire_fin, $date_evenement);
-
-    return $afficher;
-}
-
 
 /**
  * FIXME: mv to Text class

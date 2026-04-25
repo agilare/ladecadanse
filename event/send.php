@@ -5,6 +5,7 @@ use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\Mailing;
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\Evenement;
+use Ladecadanse\EvenementRenderer;
 use Ladecadanse\Lieu;
 
 if (empty($_GET['idE']) || !is_numeric($_GET['idE']))
@@ -146,7 +147,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
             {
                 $to = $champs['email_destinataire'];
 
-                $horaire_complet = afficher_debut_fin($tab_even['e_horaire_debut'], $tab_even['e_horaire_fin'], $tab_even['e_dateEvenement']);
+                $horaire_complet = EvenementRenderer::schedulesToHhMm($tab_even['e_horaire_debut'], $tab_even['e_horaire_fin'], $tab_even['e_dateEvenement']);
                 if (!empty($tab_even['e_horaire_complement']))
                 {
                     $horaire_complet .= " ".$tab_even['e_horaire_complement'];

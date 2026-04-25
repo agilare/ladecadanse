@@ -8,6 +8,7 @@ use Ladecadanse\Lieu;
 use Ladecadanse\Organisateur;
 use Ladecadanse\UserLevel;
 use Ladecadanse\Utils\Text;
+use Ladecadanse\EvenementRenderer;
 
 if (empty($_GET['idE']) || !is_numeric($_GET['idE']))
 {
@@ -113,7 +114,7 @@ $even_author = $stmtAuthor->fetch(PDO::FETCH_ASSOC);
 
 // HEAD metas
 $page_titre = $tab_even['e_titre'] . " " . $preposition_lieu . $even_lieu['nom'] . HtmlShrink::adresseCompacteSelonContexte($even_lieu['region'], $even_lieu['localite'], $even_lieu['quartier'], "") . ", le " . date_fr($tab_even['e_dateEvenement'], "annee", "", "", false);
-$page_description = "Événement \"" . $tab_even['e_titre'] . "\" " . $preposition_lieu . $even_lieu['nom'] . " " . $even_lieu['salle'] . ", " . HtmlShrink::adresseCompacteSelonContexte($even_lieu['region'], $even_lieu['localite'], $even_lieu['quartier'], $even_lieu['adresse']).", le " . date_fr($tab_even['e_dateEvenement'], "annee", "", "", false) . " - " . afficher_debut_fin($tab_even['e_horaire_debut'], $tab_even['e_horaire_fin'], $tab_even['e_dateEvenement']). " " . sanitizeForHtml($tab_even['e_horaire_complement']);
+$page_description = "Événement \"" . $tab_even['e_titre'] . "\" " . $preposition_lieu . $even_lieu['nom'] . " " . $even_lieu['salle'] . ", " . HtmlShrink::adresseCompacteSelonContexte($even_lieu['region'], $even_lieu['localite'], $even_lieu['quartier'], $even_lieu['adresse']).", le " . date_fr($tab_even['e_dateEvenement'], "annee", "", "", false) . " - " . EvenementRenderer::schedulesToHhMm($tab_even['e_horaire_debut'], $tab_even['e_horaire_fin'], $tab_even['e_dateEvenement']). " " . sanitizeForHtml($tab_even['e_horaire_complement']);
 if (!empty($tab_even['e_flyer']))
 {
     $page_image = $assets->get(Evenement::getAssetPath(Evenement::getFilePath($tab_even['e_flyer'])));
@@ -275,7 +276,7 @@ include("../_header.inc.php");
             <table class="left" >
                 <tr>
                     <th scope="row"><i class="fa fa-clock-o fa-lg" aria-label="Horaires"></i></th>
-                    <td><strong><?= afficher_debut_fin($tab_even['e_horaire_debut'], $tab_even['e_horaire_fin'], $tab_even['e_dateEvenement']) ?></strong>
+                    <td><strong><?= EvenementRenderer::schedulesToHhMm($tab_even['e_horaire_debut'], $tab_even['e_horaire_fin'], $tab_even['e_dateEvenement']) ?></strong>
                         <br /><?= sanitizeForHtml($tab_even['e_horaire_complement']) ?></td>
                 </tr>
                 <tr>

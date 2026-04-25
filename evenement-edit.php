@@ -7,6 +7,7 @@ use Ladecadanse\Utils\ImageDriver2; // files
 use Ladecadanse\Utils\ImageUrlFetcher; // url import
 use Ladecadanse\Security\SecurityToken;
 use Ladecadanse\Evenement; // domain
+use Ladecadanse\EvenementRenderer; // presentation
 use Ladecadanse\Utils\Mailing;
 use Ladecadanse\HtmlShrink; // template
 use Ladecadanse\UserLevel; // domain
@@ -329,7 +330,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 
         // 23:59, 00:00, 06:00
 		// conversion de l'heure indiquée en datetime
-        $date_next_day = date_lendemain($date_iso);
+        $date_next_day = dateIsoToNextDayDateIso($date_iso);
         // les événements sans heure de début sont relegués au lendemain à 06:00:01 afin qu'ils soient affichés (artificiellement) en dernier dans l'agenda
 		if (!empty($champs['horaire_debut']))
 		{
@@ -828,21 +829,10 @@ include("_header.inc.php");
                 {
                     $champs[$c] = $v;
                 }
-                //printr($champs);
 
                 $champs['dateEvenement'] = date_iso2app($champs['dateEvenement']);
-    /*			$tab = explode("-", $affEven['dateEvenement']);
-                $annee = $tab[0];
-                $mois = $tab[1];
-                $jour = $tab[2];*/
-                $champs['horaire_debut'] = horaire2heure($affEven['horaire_debut'], $affEven['dateEvenement']);
-                $champs['horaire_fin'] = horaire2heure($affEven['horaire_fin'], $affEven['dateEvenement']);
-                // if (!empty($affEven['idLieu'])) {
-                    // $lieu = $affEven['idLieu'];
-                // } else {
-                    // $nomLieu = $affEven['nomLieu'];
-                    // $adresse = $affEven['adresse'];
-                // }
+                $champs['horaire_debut'] = EvenementRenderer::datetimeToHhMm($affEven['horaire_debut'], $affEven['dateEvenement']);
+                $champs['horaire_fin'] = EvenementRenderer::datetimeToHhMm($affEven['horaire_fin'], $affEven['dateEvenement']);
             }
             else
             {

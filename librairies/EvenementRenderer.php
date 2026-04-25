@@ -61,6 +61,50 @@ class EvenementRenderer
         return $result . $badge;
     }
 
+    /**
+     * @param string $horaire_debut datetime
+     * @param string $horaire_fin datetime
+     * @param string $date_evenement date
+     * @return string 21:00 or 21:00 - 01:00 or fin : 01:00
+     */
+    public static function schedulesToHhMm(string $horaire_debut, string $horaire_fin, string $date_evenement): string
+    {
+        $result = self::datetimeToHhMm($horaire_debut, $date_evenement);
+        // both times exists : add separator
+        if ($horaire_fin != dateIsoToNextDayDateIso($date_evenement) . " 06:00:01" && $horaire_fin != "0000-00-00 00:00:00"
+            && $horaire_debut != dateIsoToNextDayDateIso($date_evenement) . " 06:00:01" && $horaire_debut != "0000-00-00 00:00:00")
+        {
+            $result .= " – ";
+        }
+        // (rare)
+        if ($horaire_fin != dateIsoToNextDayDateIso($date_evenement) . " 06:00:01" && $horaire_fin != "0000-00-00 00:00:00"
+            && $horaire_debut == dateIsoToNextDayDateIso($date_evenement) . " 06:00:01")
+        {
+            $result .= "fin : ";
+        }
+
+        $result .= self::datetimeToHhMm($horaire_fin, $date_evenement);
+
+        return $result;
+    }
+
+    /**
+     * @param string $datetime 2026-04-28 09:30:00
+     * @param string $date_evenement 2026-04-28
+     * @return string 09:30 or empty if $datetime is beyond event day time
+     */
+    public static function datetimeToHhMm(string $datetime, string $date_evenement): string
+    {
+        if ($datetime > dateIsoToNextDayDateIso($date_evenement) . " 06:00:00" || $datetime == "0000-00-00 00:00:00"
+            || empty($datetime)
+            )
+        {
+            return "";
+        }
+
+        return mb_substr($datetime, 11, -3);
+    }
+
     public static function getRefListHtml(string $refCsv): string
     {
         ob_start();
@@ -175,7 +219,7 @@ class EvenementRenderer
                 <span class="left"><?= sanitizeForHtml(HtmlShrink::adresseCompacteSelonContexte($even_lieu['region'], $even_lieu['localite'], $even_lieu['quartier'], $even_lieu['adresse'])); ?></span>
                 <span class="right">
                     <?php
-                    $horaire_complet = afficher_debut_fin($tab_even['e_horaire_debut'], $tab_even['e_horaire_fin'], $tab_even['e_dateEvenement']);
+                    $horaire_complet = EvenementRenderer::schedulesToHhMm($tab_even['e_horaire_debut'], $tab_even['e_horaire_fin'], $tab_even['e_dateEvenement']);
                     if (!empty($tab_even['e_horaire_complement']))
                     {
                         $horaire_complet .= " ".$tab_even['e_horaire_complement'];
@@ -223,7 +267,7 @@ class EvenementRenderer
 
             <td class="dtstart">
                 <a href="/index.php?courant=<?= sanitizeForHtml($tab_even['e_dateEvenement']) ?>"><?= date2nomJour($tab_even['e_dateEvenement']); ?>&nbsp;<?= date2jour($tab_even['e_dateEvenement']); ?><span class="value-title" title="<?= $tab_even['e_dateEvenement'].$vcard_starttime; ?>"></span></a><br>
-                <span class="pratique"><?= afficher_debut_fin($tab_even['e_horaire_debut'], $tab_even['e_horaire_fin'], $tab_even['e_dateEvenement']) ?></span>
+                <span class="pratique"><?= self::schedulesToHhMm($tab_even['e_horaire_debut'], $tab_even['e_horaire_fin'], $tab_even['e_dateEvenement']) ?></span>
             </td>
             <td class="flyer photo">
                 <?= self::mainFigureHtml($tab_even['e_flyer'], $tab_even['e_image'], $tab_even['e_titre'], 60) ?>

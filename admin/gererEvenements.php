@@ -362,7 +362,7 @@ elseif (!empty($_POST['formulaire']))
 			$champs['horaire_debut'] = $_POST['horaire_debut'];
 
 			/*  Adaptation pour horaire_debut */
-			$lendemain_evenement = date_lendemain($tab_even['dateEvenement']);
+			$lendemain_evenement = dateIsoToNextDayDateIso($tab_even['dateEvenement']);
 
 			if (!empty($champs['horaire_debut']))
 			{
@@ -771,7 +771,7 @@ if ($verif->nbErreurs() > 0)
                 <td><a href="/index.php?courant=<?= sanitizeForHtml($tab_even['e_dateEvenement']) ?>"><?= date_iso2app($tab_even['e_dateEvenement']) ?></a></td>
                 <td><?= ucfirst((string) $glo_tab_genre[$tab_even['e_genre']]) ?></td>
                 <td>
-                    <?= afficher_debut_fin($tab_even['e_horaire_debut'], $tab_even['e_horaire_fin'], $tab_even['e_dateEvenement']) ?>
+                    <?= EvenementRenderer::schedulesToHhMm($tab_even['e_horaire_debut'], $tab_even['e_horaire_fin'], $tab_even['e_dateEvenement']) ?>
                     <?php
                     if (!empty($tab_even['e_horaire_complement']))
                     {
