@@ -2309,6 +2309,13 @@
       ],
       "value": ""
     }, {
+      "id": "8ba88ee3-070d-4d48-b5fd-7bd2a08e2f28",
+      "comment": "",
+      "command": "pause",
+      "target": "1000",
+      "targets": [],
+      "value": ""
+    }, {
       "id": "881a0ad1-4b22-4d85-bf23-419fdb50e378",
       "comment": "",
       "command": "assertElementPresent",
@@ -3696,6 +3703,13 @@
       ],
       "value": ""
     }, {
+      "id": "c1b93a7f-4e3c-4677-95d1-ad908a671480",
+      "comment": "",
+      "command": "pause",
+      "target": "1000",
+      "targets": [],
+      "value": ""
+    }, {
       "id": "c3036573-dff0-43f7-b7e7-dd40845f64fe",
       "comment": "",
       "command": "assertElementPresent",
@@ -4795,6 +4809,13 @@
         ["xpath=//header/nav/ul/li[4]/a", "xpath:position"],
         ["xpath=//a[contains(.,'Organisateurs')]", "xpath:innerText"]
       ],
+      "value": ""
+    }, {
+      "id": "3faead78-4e09-4c17-8769-18b00e101797",
+      "comment": "",
+      "command": "pause",
+      "target": "2000",
+      "targets": [],
       "value": ""
     }, {
       "id": "7f3c9689-5e6c-496e-8e14-6085cd618261",
