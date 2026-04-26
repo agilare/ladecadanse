@@ -1,6 +1,6 @@
 # Changelog
 
-## [3.10.0] - 2026-04-24
+## [3.10.0] - 2026-04-26
 
 ### Added
 - events calendar : when changing month, instead of loading all the page, update only the calendar #104 (thanks to @lambeletjp)
@@ -26,6 +26,7 @@
 - PHP : update phpunit, rector, phpstan...
 - update Symfony, Codeception, phpunit...
 - logger : replace custom Logger with Monolog #64
+- refactor Utils
 
 ### Security
 - deps-dev : bump flatted from 3.2.9 to 3.4.2

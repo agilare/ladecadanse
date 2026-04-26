@@ -24,7 +24,7 @@ include("../_header.inc.php");
         <header>
             <h2>3.10.0</h2>
             <br>
-            <p>19 avril 2026</p>
+            <p>26 avril 2026</p>
         </header>
 
         <h3>Calendrier</h3>
