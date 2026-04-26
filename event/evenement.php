@@ -7,6 +7,7 @@ use Ladecadanse\HtmlShrink;
 use Ladecadanse\Lieu;
 use Ladecadanse\Organisateur;
 use Ladecadanse\UserLevel;
+use Ladecadanse\Utils\DateHelper;
 use Ladecadanse\Utils\Text;
 use Ladecadanse\EvenementRenderer;
 
@@ -113,8 +114,8 @@ $even_author = $stmtAuthor->fetch(PDO::FETCH_ASSOC);
 // END EVENT AND APPENDIXES
 
 // HEAD metas
-$page_titre = $tab_even['e_titre'] . " " . $preposition_lieu . $even_lieu['nom'] . HtmlShrink::adresseCompacteSelonContexte($even_lieu['region'], $even_lieu['localite'], $even_lieu['quartier'], "") . ", le " . date_fr($tab_even['e_dateEvenement'], "annee", "", "", false);
-$page_description = "Événement \"" . $tab_even['e_titre'] . "\" " . $preposition_lieu . $even_lieu['nom'] . " " . $even_lieu['salle'] . ", " . HtmlShrink::adresseCompacteSelonContexte($even_lieu['region'], $even_lieu['localite'], $even_lieu['quartier'], $even_lieu['adresse']).", le " . date_fr($tab_even['e_dateEvenement'], "annee", "", "", false) . " - " . EvenementRenderer::schedulesToHhMm($tab_even['e_horaire_debut'], $tab_even['e_horaire_fin'], $tab_even['e_dateEvenement']). " " . sanitizeForHtml($tab_even['e_horaire_complement']);
+$page_titre = $tab_even['e_titre'] . " " . $preposition_lieu . $even_lieu['nom'] . HtmlShrink::adresseCompacteSelonContexte($even_lieu['region'], $even_lieu['localite'], $even_lieu['quartier'], "") . ", le " . DateHelper::isoToFr($tab_even['e_dateEvenement'], 'annee', html: false);
+$page_description = "Événement \"" . $tab_even['e_titre'] . "\" " . $preposition_lieu . $even_lieu['nom'] . " " . $even_lieu['salle'] . ", " . HtmlShrink::adresseCompacteSelonContexte($even_lieu['region'], $even_lieu['localite'], $even_lieu['quartier'], $even_lieu['adresse']).", le " . DateHelper::isoToFr($tab_even['e_dateEvenement'], 'annee', html: false) . " - " . EvenementRenderer::schedulesToHhMm($tab_even['e_horaire_debut'], $tab_even['e_horaire_fin'], $tab_even['e_dateEvenement']). " " . sanitizeForHtml($tab_even['e_horaire_complement']);
 if (!empty($tab_even['e_flyer']))
 {
     $page_image = $assets->get(Evenement::getAssetPath(Evenement::getFilePath($tab_even['e_flyer'])));
@@ -179,7 +180,7 @@ include("../_header.inc.php");
     <header id="entete_contenu">
 
         <div id="entete_contenu_titre" <?php if ($tab_even['e_dateEvenement'] < $glo_auj) { echo ' class="ancien"'; } ?>>
-            <span class="category"><?= sanitizeForHtml($translator->get("event-category-".$tab_even['e_genre'])); ?></span>, <a href="/index.php?courant=<?= $tab_even['e_dateEvenement'] ?>"><time datetime="<?= $tab_even['e_dateEvenement'] ?>"><?= date_fr($tab_even['e_dateEvenement'], "annee", "", "", true) ?></time></a>
+            <span class="category"><?= sanitizeForHtml($translator->get("event-category-".$tab_even['e_genre'])); ?></span>, <a href="/index.php?courant=<?= $tab_even['e_dateEvenement'] ?>"><time datetime="<?= $tab_even['e_dateEvenement'] ?>"><?= DateHelper::isoToFr($tab_even['e_dateEvenement'], 'annee') ?></time></a>
         </div>
 
         <?php if (!empty($events_siblings[0])) : ?>
@@ -319,7 +320,7 @@ include("../_header.inc.php");
             }
 			?>
 
-            <a class="signaler" href="/event/send.php?action=report&idE=<?= (int) $get['idE'] ?>"><i class="fa fa-flag-o fa-lg"></i>&nbsp;Signaler une erreur</a> Ajouté <?php echo ((!empty($signature_auteur)) ? "par&nbsp;" : "") . $signature_auteur ?> le&nbsp;<?= date_fr($tab_even['e_dateAjout'], "annee", "", "non") ?>
+            <a class="signaler" href="/event/send.php?action=report&idE=<?= (int) $get['idE'] ?>"><i class="fa fa-flag-o fa-lg"></i>&nbsp;Signaler une erreur</a> Ajouté <?php echo ((!empty($signature_auteur)) ? "par&nbsp;" : "") . $signature_auteur ?> le&nbsp;<?= DateHelper::isoToFr($tab_even['e_dateAjout'], 'annee', showDayOfWeek: false) ?>
             <?php if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= UserLevel::ADMIN && !empty($tab_even['e_idPersonne'])) : ?><a href="/user.php?idP=<?= (int) $tab_even['e_idPersonne'] ?>"><?= $icone['personne'] ?></a><?php endif; ?>
         </footer> <!-- auteur -->
 

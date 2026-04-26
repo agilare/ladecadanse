@@ -267,7 +267,7 @@ class EvenementRenderer
         <tr class="<?php if ($glo_auj_6h == $tab_even['e_dateEvenement']) { echo "ici"; } ?> vevent evenement">
 
             <td class="dtstart">
-                <a href="/index.php?courant=<?= sanitizeForHtml($tab_even['e_dateEvenement']) ?>"><?= date2nomJour($tab_even['e_dateEvenement']); ?>&nbsp;<?= (new \DateTime($tab_even['e_dateEvenement']))->format('j') ?><span class="value-title" title="<?= $tab_even['e_dateEvenement'].$vcard_starttime; ?>"></span></a><br>
+                <a href="/index.php?courant=<?= sanitizeForHtml($tab_even['e_dateEvenement']) ?>"><?= DateHelper::isoToDayName($tab_even['e_dateEvenement']); ?>&nbsp;<?= (new \DateTime($tab_even['e_dateEvenement']))->format('j') ?><span class="value-title" title="<?= $tab_even['e_dateEvenement'].$vcard_starttime; ?>"></span></a><br>
                 <span class="pratique"><?= self::schedulesToHhMm($tab_even['e_horaire_debut'], $tab_even['e_horaire_fin'], $tab_even['e_dateEvenement']) ?></span>
             </td>
             <td class="flyer photo">

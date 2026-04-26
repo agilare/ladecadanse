@@ -1,6 +1,7 @@
 <?php
 require_once("../app/bootstrap.php");
 
+use Ladecadanse\Utils\DateHelper;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\Mailing;
 use Ladecadanse\HtmlShrink;
@@ -139,7 +140,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
             $to = EMAIL_ADMIN;
 
             $even_lieu = Evenement::getLieu($tab_even);
-            $subject = $translator->get("event-send-{$get['action']}-mail-subject") . " {$tab_even['e_titre']} " . Lieu::prepositionToPutInSentence($even_lieu['determinant'])."{$even_lieu['nom']} {$even_lieu['localite']} le ".date_fr($tab_even['e_dateEvenement'], "annee", "", "", false);
+            $subject = $translator->get("event-send-{$get['action']}-mail-subject") . " {$tab_even['e_titre']} " . Lieu::prepositionToPutInSentence($even_lieu['determinant'])."{$even_lieu['nom']} {$even_lieu['localite']} le ".DateHelper::isoToFr($tab_even['e_dateEvenement'], 'annee', html: false);
 
             $body_tpl_parameters = ['idE' => $get['idE'], 'url' => "{$site_full_url}event/evenement.php?idE={$get['idE']}", 'message' => $champs['message']];
 

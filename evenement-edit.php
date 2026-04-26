@@ -509,7 +509,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
                 if (!isset($_SESSION['Sgroupe']))
                 {
                     $_SESSION['evenement-edit_flash_msg'] = "Merci pour votre proposition. Nous allons l'examiner et vous aurez une réponse dès qu'elle sera traitée (cela peut prendre quelques jours)";
-                    $subject = "Nouvelle proposition d'événement : \"".$champs['titre']."\" le ".date_fr($champs['dateEvenement'], "annee", "", "", false)." à ".$champs['nomLieu'];
+                    $subject = "Nouvelle proposition d'événement : \"".$champs['titre']."\" le ".DateHelper::isoToFr($champs['dateEvenement'], 'annee', html: false)." à ".$champs['nomLieu'];
                     $contenu_message = "Merci de vérifier cet événement et l'accepter (statut : publié) ou le refuser (status : dépublié) : ";
                     $contenu_message .= $site_full_url."event/evenement.php?idE=".(int)$req_id;
                     $contenu_message .= "\n\n";

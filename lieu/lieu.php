@@ -334,7 +334,7 @@ include("../_header.inc.php");
 
                                     <div class="auteur">
                                         <span class="left">
-                                            <?= ucfirst((string) date_fr($des['dateAjout'], 'annee', '', 'non')) ?><?php if ($des['date_derniere_modif'] != "0000-00-00 00:00:00" && $des['date_derniere_modif'] != $des['dateAjout']) : ?>, modifié le <?= date_fr($des['date_derniere_modif'], 'annee', '', 'non') ?><?php endif; ?>
+                                            <?= ucfirst(DateHelper::isoToFr($des['dateAjout'], 'annee', showDayOfWeek: false)) ?><?php if ($des['date_derniere_modif'] != "0000-00-00 00:00:00" && $des['date_derniere_modif'] != $des['dateAjout']) : ?>, modifié le <?= DateHelper::isoToFr($des['date_derniere_modif'], 'annee', showDayOfWeek: false) ?><?php endif; ?>
                                         </span>
                                         <?php if (isset($_SESSION['Sgroupe']) && (
                                                     $_SESSION['Sgroupe'] <= UserLevel::ADMIN
@@ -418,7 +418,7 @@ include("../_header.inc.php");
             <table>
                 <?php foreach ($page_results_grouped_by_yearmonth as $yearmonth => $tab_month_events) : ?>
                     <tr>
-                        <td colspan="5" class="mois"><?= ucfirst((string) mois2fr((new \DateTime($yearmonth))->format('m'))) ?><?php if ((new \DateTime($yearmonth))->format('Y') != date('Y')) : echo "&nbsp;".(new \DateTime($yearmonth))->format('Y'); endif; ?>
+                        <td colspan="5" class="mois"><?= ucfirst((string) DateHelper::monthName((int)(new \DateTime($yearmonth))->format('m'))) ?><?php if ((new \DateTime($yearmonth))->format('Y') != date('Y')) : echo "&nbsp;".(new \DateTime($yearmonth))->format('Y'); endif; ?>
                         </td>
                     </tr>
                     <?php

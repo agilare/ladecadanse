@@ -7,6 +7,7 @@ use Ladecadanse\Organisateur;
 use Ladecadanse\Evenement;
 use Ladecadanse\Lieu;
 use Ladecadanse\Personne;
+use Ladecadanse\Utils\DateHelper;
 use Ladecadanse\Utils\Text;
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\Utils\Utils;
@@ -263,7 +264,7 @@ include("../_header.inc.php");
                 <?php foreach ($page_results_grouped_by_yearmonth as $yearmonth => $tab_month_events) : ?>
                     <tr>
                         <td colspan="5" class="mois">
-                            <?= ucfirst((string) mois2fr((new \DateTime($yearmonth))->format('m'))) ?><?php if ((new \DateTime($yearmonth))->format('Y') != date('Y')) : echo "&nbsp;".(new \DateTime($yearmonth))->format('Y'); endif; ?>
+                            <?= ucfirst((string) DateHelper::monthName((int)(new \DateTime($yearmonth))->format('m'))) ?><?php if ((new \DateTime($yearmonth))->format('Y') != date('Y')) : echo "&nbsp;".(new \DateTime($yearmonth))->format('Y'); endif; ?>
                         </td>
                     </tr>
                     <?php

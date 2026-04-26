@@ -13,6 +13,7 @@ use Ladecadanse\Evenement;
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\Lieu;
 use Ladecadanse\UserLevel;
+use Ladecadanse\Utils\DateHelper;
 use Ladecadanse\Utils\Text;
 
 // used for meta tags, opengraph
@@ -24,13 +25,13 @@ $get['courant'] = $glo_auj_6h;
 if (!empty($_GET['courant']) && preg_match("/^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}$/", trim((string) $_GET['courant'])))
 {
     $get['courant'] = $_GET['courant'];
-    $page_titre = "Agenda d'événements du " . date_fr($get['courant'], "annee", "", "", false) . " à Genève, Nyon, Lausanne, Pays de Gex, Annemasse...";
-    $page_description = "Événements culturels et festifs du " . date_fr($get['courant'], "annee", "", "", false). " à Genève, Nyon, Lausanne, Pays de Gex, Annemasse... : concerts, soirées, films, théâtre, expos... ";
+    $page_titre = "Agenda d'événements du " . DateHelper::isoToFr($get['courant'], 'annee', html: false) . " à Genève, Nyon, Lausanne, Pays de Gex, Annemasse...";
+    $page_description = "Événements culturels et festifs du " . DateHelper::isoToFr($get['courant'], 'annee', html: false). " à Genève, Nyon, Lausanne, Pays de Gex, Annemasse... : concerts, soirées, films, théâtre, expos... ";
 }
 
 $is_courant_today = (empty($get['courant']) || $get['courant'] == $glo_auj_6h);
 
-$day_label = !$is_courant_today ? date_fr($get['courant']) : "aujourd'hui";
+$day_label = !$is_courant_today ? DateHelper::isoToFr($get['courant']) : "aujourd'hui";
 
 $courant_year = (new DateTime($get['courant']))->format("Y");
 
@@ -216,14 +217,14 @@ include("_header.inc.php");
 
     <header id="entete_contenu">
         <hgroup>
-            <h1 class="accueil"><?= ucfirst((string) date_fr($get['courant'])); ?><sup style="font-size:0.7em;color:#999"><?= $count_events_today_in_region ?></sup>
+            <h1 class="accueil"><?= ucfirst((string) DateHelper::isoToFr($get['courant'])); ?><sup style="font-size:0.7em;color:#999"><?= $count_events_today_in_region ?></sup>
                 <?php if ($courant_year !== date("Y")) { echo (int) $courant_year; } ?>
                 <?php if ($is_courant_today) : ?><br>
                     <small>Aujourd’hui <a href="/event/rss.php?type=evenements_auj" title="Flux RSS des événements du jour" class="desktop"><i class="fa fa-rss fa-lg"></i></a></small><?php endif; ?>
             </h1>
         </hgroup>
         <ul class="entete_contenu_navigation">
-            <li><a href="index.php?courant=<?= sanitizeForHtml($date_prev) ?>" rel="prev nofollow"><?= $iconePrecedent ?></a></li><li><a href="index.php?courant=<?= sanitizeForHtml($date_next) ?>" rel="next nofollow"><?= ucfirst(date_fr($date_next, "tout", "non", "")).$iconeSuivant ?></a></li>
+            <li><a href="index.php?courant=<?= sanitizeForHtml($date_prev) ?>" rel="prev nofollow"><?= $iconePrecedent ?></a></li><li><a href="index.php?courant=<?= sanitizeForHtml($date_next) ?>" rel="next nofollow"><?= ucfirst(DateHelper::isoToFr($date_next, 'tout', false)).$iconeSuivant ?></a></li>
         </ul>
         <div class="spacer"></div>
     </header>
@@ -320,7 +321,7 @@ include("_header.inc.php");
        <?php } // foreach ?>
 
         <ul class="entete_contenu_navigation">
-            <li><a href="index.php?courant=<?= sanitizeForHtml($date_prev) ?>" rel="prev nofollow"><?= $iconePrecedent ?></a></li><li><a href="index.php?courant=<?= sanitizeForHtml($date_next) ?>" rel="next nofollow"><?= ucfirst(date_fr($date_next, "tout", "non", "")).$iconeSuivant ?></a></li>
+            <li><a href="index.php?courant=<?= sanitizeForHtml($date_prev) ?>" rel="prev nofollow"><?= $iconePrecedent ?></a></li><li><a href="index.php?courant=<?= sanitizeForHtml($date_next) ?>" rel="next nofollow"><?= ucfirst(DateHelper::isoToFr($date_next, 'tout', false)).$iconeSuivant ?></a></li>
         </ul>
 
 
@@ -383,7 +384,7 @@ include("_header.inc.php");
                         <h3><a href="/event/evenement.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>"><?= Ladecadanse\EvenementRenderer::titreSelonStatutHtml(sanitizeForHtml($tab_even['e_titre']), $tab_even['e_statut']) ?></a></h3>
                         <span><?= Lieu::getLinkNameHtml($even_lieu['nom'], $even_lieu['idLieu'], $even_lieu['salle']) ?></span>
 
-                        <p>le&nbsp;<a href="index.php?courant=<?= urlencode($tab_even['e_dateEvenement']) ?>"><?= date_fr($tab_even['e_dateEvenement']) ?></a></p>
+                        <p>le&nbsp;<a href="index.php?courant=<?= urlencode($tab_even['e_dateEvenement']) ?>"><?= DateHelper::isoToFr($tab_even['e_dateEvenement']) ?></a></p>
                         <div class="spacer"></div>
                     </div> <!-- dernier_evenement -->
 

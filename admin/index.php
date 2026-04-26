@@ -153,7 +153,7 @@ require_once '../_header.inc.php';
                 <?php foreach ($page_results as $date => $users) : ?>
 
                     <tr>
-                        <td colspan="6" style="background:#f3f3f3;font-weight: bold"><?= date_fr($date) ?></td>
+                        <td colspan="6" style="background:#f3f3f3;font-weight: bold"><?= DateHelper::isoToFr($date) ?></td>
                     </tr>
 
                         <?php foreach ($users as $u): ?>
@@ -214,7 +214,7 @@ require_once '../_header.inc.php';
                 <?php foreach ($tab_latest_events as $date => $events) : ?>
 
                     <tr>
-                        <td colspan="10" style="background:#efefef;font-weight: bold"><?= date_fr($date) ?></td>
+                        <td colspan="10" style="background:#efefef;font-weight: bold"><?= DateHelper::isoToFr($date) ?></td>
                     </tr>
 
                     <?php foreach ($events as $event) :
@@ -268,7 +268,7 @@ require_once '../_header.inc.php';
                     <td><a href="/lieu/lieu.php?idL=<?= (int)$desc['idLieu'] ?>"><?= sanitizeForHtml($desc['l_nom']) ?></a></td>
                     <td class="tdleft small"><?= Text::html_substr($desc['contenu']) ?></td>
                     <td><a href="/user.php?idP=<?= (int) $desc['idPersonne'] ?>"><?= sanitizeForHtml($desc['pseudo']) ?></a></td>
-                    <td><?= date_fr($desc['dateAjout']) ?></td>
+                    <td><?= DateHelper::isoToFr($desc['dateAjout']) ?></td>
                     <td><a href="/lieu-text-edit.php?action=editer&amp;idL=<?= (int)$desc['idLieu'] ?>&amp;idP=<?= (int) $desc['idPersonne'] ?>&amp;type=<?= $desc['type'] ?>"><?= $iconeEditer ?></a></td>
                </tr>
             <?php endforeach; ?>

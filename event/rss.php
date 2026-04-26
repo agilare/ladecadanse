@@ -5,6 +5,7 @@ require_once("../app/bootstrap.php");
 
 use Ladecadanse\Evenement;
 use Ladecadanse\EvenementRenderer;
+use Ladecadanse\Utils\DateHelper;
 use Ladecadanse\Utils\Text;
 use Ladecadanse\Lieu;
 
@@ -155,7 +156,7 @@ foreach ($tab_events as $tab_even)
 {
     $even_lieu = Evenement::getLieu($tab_even);
 
-    $item['title'] = ucfirst((string) date_fr($tab_even['e_dateEvenement'], "", "", "", false))." - ".$tab_even['e_genre']." : ".$tab_even['e_titre'];
+    $item['title'] = ucfirst((string) DateHelper::isoToFr($tab_even['e_dateEvenement'], html: false))." - ".$tab_even['e_genre']." : ".$tab_even['e_titre'];
     $item['link'] = $site_full_url."event/evenement.php?idE=".(int)$tab_even['e_idEvenement'];
 
      // item > description

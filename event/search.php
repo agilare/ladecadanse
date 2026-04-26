@@ -5,6 +5,7 @@ global $connector, $glo_regions, $glo_auj, $iconeEditer, $glo_auj_6h;
 require_once("../app/bootstrap.php");
 
 use Ladecadanse\HtmlShrink;
+use Ladecadanse\Utils\DateHelper;
 use Ladecadanse\Utils\Utils;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Evenement;
@@ -268,7 +269,7 @@ $agenda_years = range((int)date("Y"), Evenement::AGENDA_START_YEAR);
                                 <p><?= $glo_tab_genre[$tab_even['e_genre']] ?></p>
                             </td>
                             <td><?= Lieu::getLinkNameHtml($even_lieu['nom'], $even_lieu['idLieu'], $even_lieu['salle']) ?></td>
-                            <td class="date"><a href="/index.php?courant=<?= sanitizeForHtml($tab_even['e_dateEvenement']); ?>"><?= date_fr($tab_even['e_dateEvenement'], 'annee') ?></a></td>
+                            <td class="date"><a href="/index.php?courant=<?= sanitizeForHtml($tab_even['e_dateEvenement']); ?>"><?= DateHelper::isoToFr($tab_even['e_dateEvenement'], 'annee') ?></a></td>
                             <?php if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] == UserLevel::SUPERADMIN)) : ?>
                             <td><?= round($tab_even['score'], 5) ?></td>
                             <?php endif; ?>

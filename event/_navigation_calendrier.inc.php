@@ -40,7 +40,7 @@ $events_next_months_count = (int) $res_eventsNextmonths['nb'];
                     }
                     ?>
                 </th>
-                <th id="mois_courant" colspan="5"><?php echo ucfirst((string) mois2fr($date_courante->format('n'))) . " " . $date_courante->format('Y') ?></th>
+                <th id="mois_courant" colspan="5"><?php echo ucfirst((string) \Ladecadanse\Utils\DateHelper::monthName((int)$date_courante->format('n'))) . " " . $date_courante->format('Y') ?></th>
                 <th>
                     <?php
                     if ($events_next_months_count > 0)
@@ -130,7 +130,7 @@ $events_next_months_count = (int) $res_eventsNextmonths['nb'];
         <?php if ($date_courante->format('Y-m') !== $selection_date->format('Y-m')) {
             $selection_is_before = $selection_date < $date_courante;
             $selection_date_formatted = $selection_date->format('Y-m-d');
-            $selection_date_label = $selection_date->format('j') . ' ' . mois2fr($selection_date->format('n')) . ' ' . $selection_date->format('Y');
+            $selection_date_label = $selection_date->format('j') . ' ' . \Ladecadanse\Utils\DateHelper::monthName((int)$selection_date->format('n')) . ' ' . $selection_date->format('Y');
             $arrow_icon = $selection_is_before ? '<i class="fa fa-chevron-left"></i> ' : '';
             $arrow_icon_after = $selection_is_before ? '' : ' <i class="fa fa-chevron-right"></i>';
         ?>
