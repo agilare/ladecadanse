@@ -266,7 +266,7 @@ require_once '../_header.inc.php';
                 <tr>
                     <td><?= sanitizeForHtml($desc['type']) ?></td>
                     <td><a href="/lieu/lieu.php?idL=<?= (int)$desc['idLieu'] ?>"><?= sanitizeForHtml($desc['l_nom']) ?></a></td>
-                    <td class="tdleft small"><?= Text::html_substr($desc['contenu']) ?></td>
+                    <td class="tdleft small"><?= Text::texteHtmlReduit($desc['contenu']) ?></td>
                     <td><a href="/user.php?idP=<?= (int) $desc['idPersonne'] ?>"><?= sanitizeForHtml($desc['pseudo']) ?></a></td>
                     <td><?= DateHelper::isoToFr($desc['dateAjout']) ?></td>
                     <td><a href="/lieu-text-edit.php?action=editer&amp;idL=<?= (int)$desc['idLieu'] ?>&amp;idP=<?= (int) $desc['idPersonne'] ?>&amp;type=<?= $desc['type'] ?>"><?= $iconeEditer ?></a></td>

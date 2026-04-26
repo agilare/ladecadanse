@@ -424,7 +424,7 @@ $detailsAff = $connector->fetchArray($req_affPers);
 					$tab_desc['contenu'] = mb_substr((string) $tab_desc['contenu'], 0, 200)." [...]";
 				}
 
-				echo "<td class=\"tdleft\" style=\"width:150px\">".Text::wikiToHtml(sanitizeForHtml($tab_desc['contenu']))."</td>";
+				echo "<td class=\"tdleft\" style=\"width:150px\">".Text::lnAndUrlToHtml(sanitizeForHtml($tab_desc['contenu']))."</td>";
 				echo '<td>'.$tab_desc['type'].'</td>';
 				echo "<td>".mb_substr(DateHelper::isoToApp($tab_desc['dateAjout']), 8)."</td>";
 				if ($_SESSION['SidPersonne'] == $detailsPersonne['idPersonne'] || $_SESSION['Sgroupe'] <= 4)

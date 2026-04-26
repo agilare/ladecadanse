@@ -11,6 +11,9 @@ use Ladecadanse\Utils\Utils;
 class HtmlShrink
 {
 
+    /**
+     * TODO: mv to a LieuRenderer
+     */
     public static function adresseCompacteSelonContexte(?string $region, string $localite, string $quartier, string $adresse): string
     {
         $result = $adresse;
@@ -318,32 +321,16 @@ class HtmlShrink
         return $aff;
     }
 
-    /**
-     * Affiche un texte dans une balise div de la classe "msg" et une icone
-     *
-     * @param string $message Texte ? afficher
-     */
     public static function msgInfo(string $message): void
     {
         echo '<div class="msg_info">' . $message . '</div>';
     }
 
-    /**
-     * Affiche un texte dans une balise  de la classe "msg" et une icone OK
-     *
-     * @param string $message Texte ? afficher
-     */
     public static function msgOk(string $message): void
     {
         echo '<div class="msg_ok">' . $message . '</div>';
     }
 
-
-    /**
-     * Affiche un texte dans une balise DIV de la classe "msg" et une icone d'erreur
-     *
-     * @param string $message Texte ? afficher
-     */
     public static function msgErreur(string $message): void
     {
         echo '<div class="msg_erreur">' . $message . '</div>';
@@ -365,14 +352,5 @@ class HtmlShrink
             <link rel="alternate" type="application/rss+xml" title="Prochains événements dans ce lieu" href="/event/rss.php?type=lieu_evenements&amp;id=<?php echo intval($_GET['idL']) ?>">
         <?php
         }
-    }
-
-    public static function getLinkAroundImg($aHref, $aClasses, $imgSrc, $imgWidth, $imgAlt)
-    {
-            ?>
-        	<a href="<?php echo $aHref ?>" class="<?php echo $aClasses ?>" target="_blank">
-        		<img src="<?php echo $imgSrc ?>" width="<?php echo $imgWidth ?>"  alt="<?php echo $imgAlt ?>">
-        	</a>
-        <?php
     }
 }

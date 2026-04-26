@@ -173,7 +173,7 @@ foreach ($tab_events as $tab_even)
         $item['image'] = $assets->get(Evenement::getAssetPath(Evenement::getFilePath($tab_even['e_image'])));
     }
 
-    $item['description'] = Text::texteHtmlReduit(Text::wikiToHtml(sanitizeForHtml($tab_even['e_description'])), Text::trouveMaxChar($tab_even['e_description'], 60, 5), "");
+    $item['description'] = Text::texteHtmlReduit(Text::lnAndUrlToHtml(sanitizeForHtml($tab_even['e_description'])), Text::trouveMaxChar($tab_even['e_description'], 60, 5), "");
     $item['horaire'] = EvenementRenderer::schedulesToHhMm($tab_even['e_horaire_debut'], $tab_even['e_horaire_fin'], $tab_even['e_dateEvenement'])." ".$tab_even['e_horaire_complement'];
     $item['prix'] =  $tab_even['e_prix'];
 

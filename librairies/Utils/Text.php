@@ -4,6 +4,9 @@ namespace Ladecadanse\Utils;
 
 class Text
 {
+    /**
+     * Used only to get html names (id, class...) from french words
+     */
     public static function stripAccents(string $str): string
     {
         // ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401 is the default value since php 8.1
@@ -12,6 +15,9 @@ class Text
         return html_entity_decode((string) $str, ENT_COMPAT | ENT_SUBSTITUTE | ENT_HTML401, "UTF-8");
     }
 
+    /**
+     * Used only in evenement.php for prelocations
+     */
     public static function linkify(string $input): string
     {
         $re = <<<'REGEX'
@@ -63,6 +69,11 @@ class Text
         }, $input);
     }
 
+    /**
+     *
+     * @param string $url https://www.test.ch
+     * @return array ['https://www.test.ch', 'www.test.ch']
+     */
     public static function getUrlWithName(string $url): array
     {
         $urlComplete = $url;
@@ -87,7 +98,7 @@ class Text
      * @param  string $temp Texte avec les balises wiki
      * @return string Texte avec balises HTML
      */
-    public static function wikiToHtml(string $temp): string
+    public static function lnAndUrlToHtml(string $temp): string
     {
         if (empty($temp))
         {
@@ -102,7 +113,8 @@ class Text
         //$temp = preg_replace("/\*\*(.*?)\*\*/", "<blockquote>\\1</blockquote>", $temp);
         //$temp = str_replace("----", "<hr />", $temp);
 
-        $temp = preg_replace("/(([^[]|^)(http)+(s)?:(\/\/)|([^\[\/]|^)(www\.))((\w|\.|\-|_)+)(\/)?(\S+)?/i", "\\2\\6<a href=\"http\\4://\\7\\8\\10\\11\" title=\"\\0\">\\7\\8</a>", (string) $temp);
+        $temp = preg_replace("/(([^[]|^)(http)+(s)?:(\/\/)|([^\[\/]|^)(www\.))((\w|\.|\-|_)+)(\/)?(\S+)?/i",
+            "\\2\\6<a href=\"http\\4://\\7\\8\\10\\11\" title=\"\\0\">\\7\\8</a>", (string) $temp);
         //[
         $temp = preg_replace("/\[(http[s]?:\/\/)([-a-z0-9_]{2,}\.[-a-z0-9.]{2,}[-a-z0-9\/&\?=.;~_%]*) (.+?)\]/i",
                 "<a href=\"\\1\\2\" title=\"\\1\\2\">\\3</a>", (string) $temp);
@@ -166,19 +178,6 @@ class Text
                 $lignes++;
                 $j = 0;
             }
-
-            //si une balise wiki de titre h2 est lue, compte pour une ligne
-//            if ($i != ($tailleTexte - 1) && ($texte[$i] == '=' && $texte[$i + 1] == '='))
-//            {
-//                $lignes++;
-//                $j = 0;
-//            }
-
-            /*
-              if ($i != ($tailleTexte - 1) && ($texte[$i] == '\'' && $texte[$i+1] == '\'')) {
-              $i++;
-              continue;
-              } */
 
             $i++;
             $j++;
@@ -331,102 +330,6 @@ class Text
 
         //renvoie le texte reduit, les balises fermantes et le lien vers la suite
         return $texteHtmlCourt . $cloture . $lienSuite;
-    }
-
-
-    /**
-     * @param $posttext texte
-     * @param $minimum_length Longeur minimum souhait?e du texte r?duit
-     * @param $length_offset Marge
-     * @param $cut_words
-     * @param $dots
-     */
-    public static function html_substr($posttext, $minimum_length = 200, $length_offset = 20, $cut_words = FALSE, $dots = TRUE)
-    {
-
-        // $minimum_length:
-        // The approximate length you want the concatenated text to be
-        // $length_offset:
-        // The variation in how long the text can be in this example text
-        // length will be between 200 and 200-20=180 characters and the
-        // character where the last tag ends
-        // Reset tag counter & quote checker
-        $tag_counter = 0;
-        $quotes_on = FALSE;
-        // Check if the text is too long
-        if (mb_strlen((string) $posttext) > $minimum_length)
-        {
-            // Reset the tag_counter and pass through (part of) the entire text
-            $c = 0;
-            for ($i = 0; $i < mb_strlen((string) $posttext); $i++)
-            {
-                // Load the current character and the next one
-                // if the string has not arrived at the last character
-                $current_char = mb_substr((string) $posttext, $i, 1);
-                if ($i < mb_strlen((string) $posttext) - 1)
-                {
-                    $next_char = mb_substr((string) $posttext, $i + 1, 1);
-                }
-                else
-                {
-                    $next_char = "";
-                }
-                // First check if quotes are on
-                if (!$quotes_on)
-                {
-                    // Check if it's a tag
-                    // On a "<" add 3 if it's an opening tag (like <a href...)
-                    // or add only 1 if it's an ending tag (like </a>)
-                    if ($current_char == '<')
-                    {
-                        if ($next_char == '/')
-                        {
-                            $tag_counter += 1;
-                        }
-                        else
-                        {
-                            $tag_counter += 3;
-                        }
-                    }
-                    // Slash signifies an ending (like </a> or ... />)
-                    // substract 2
-                    if ($current_char == '/' && $tag_counter <> 0)
-                        $tag_counter -= 2;
-                    // On a ">" substract 1
-                    if ($current_char == '>')
-                        $tag_counter -= 1;
-                    // If quotes are encountered, start ignoring the tags
-                    // (for directory slashes)
-                    if ($current_char == '"')
-                        $quotes_on = TRUE;
-                }
-                else
-                {
-                    // IF quotes are encountered again, turn it back off
-                    if ($current_char == '"')
-                        $quotes_on = FALSE;
-                }
-
-                // Count only the chars outside html tags
-                if ($tag_counter == 2 || $tag_counter == 0)
-                {
-                    $c++;
-                }
-
-                // Check if the counter has reached the minimum length yet,
-                // then wait for the tag_counter to become 0, and chop the string there
-                if ($c > $minimum_length - $length_offset && $tag_counter == 0 && ($next_char == ' ' || $cut_words == TRUE))
-                {
-                    $posttext = mb_substr((string) $posttext, 0, $i + 1);
-                    if ($dots)
-                    {
-                        $posttext .= '...';
-                    }
-                    return $posttext;
-                }
-            }
-        }
-        return $posttext;
     }
 
     /**

@@ -259,7 +259,7 @@ include("../_header.inc.php");
         </figure>
 
         <div id="description">
-            <p class="description"><?= Text::wikiToHtml(sanitizeForHtml($tab_even['e_description'])) ?></p>
+            <p class="description"><?= Text::lnAndUrlToHtml(sanitizeForHtml($tab_even['e_description'])) ?></p>
             <?php if (!empty($tab_even['e_ref'])) : ?>
                 <?php if (!empty($tab_even['e_description'])) : ?><hr><?php endif; ?>
                 <ul class="references left" style="margin:10px 0">
