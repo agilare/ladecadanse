@@ -323,7 +323,6 @@ if (!$action_terminee)
             <p>
                 <label for="utilisateur">Login*</label>
                 <input type="text" name="utilisateur" id="utilisateur" size="40" maxlength="80" value="<?php echo sanitizeForHtml($champs['utilisateur']) ?>" autofocus />
-                <div class="guide_champ">&#9888; C'est avec celui-ci que vous vous connecterez au site, pas l'email ci-dessous</div>
                 <?php
                 echo $verif->getHtmlErreur('utilisateur');
                 echo $verif->getHtmlErreur("utilisateur_existant");
