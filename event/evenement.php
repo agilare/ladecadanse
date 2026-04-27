@@ -196,14 +196,15 @@ include("../_header.inc.php");
             <?php if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= UserLevel::MEMBER)) : ?>
                 <li><a href="/event/send.php?action=share&idE=<?= (int) $get['idE'] ?>"><?= $icone['envoi_email'] ?>&nbsp;Envoyer à un ami</a></li>
             <?php endif; ?>
+            <?php
+            $calLinks = (new Ladecadanse\EvenementCalendarRenderer($tab_even, $site_full_url))->getLinks();
+            include("_calendar_export.inc.php");
+            ?>
             <?php if ($isPersonneAllowedToEdit) : ?>
                 <li><a href="/event/copy.php?idE=<?= (int) $get['idE'] ?>"><?= $iconeCopier ?>&nbsp;Copier vers d'autres dates</a></li>
                 <li><a href="/evenement-edit.php?action=editer&amp;idE=<?= (int) $get['idE'] ?>"><?= $iconeEditer ?>&nbsp;Modifier</a></li>
             <?php endif; ?>
-                <?php
-                $calLinks = (new Ladecadanse\EvenementCalendarRenderer($tab_even, $site_full_url))->getLinks();
-                include("_calendar_export.inc.php");
-                ?>
+
         </ul>
     </nav>
 
