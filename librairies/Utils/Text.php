@@ -5,7 +5,7 @@ namespace Ladecadanse\Utils;
 class Text
 {
     /**
-     * Used only to get html names (id, class...) from french words
+     * only used  to get html names (id, class...) from french words
      */
     public static function stripAccents(string $str): string
     {
@@ -16,7 +16,7 @@ class Text
     }
 
     /**
-     * Used only in evenement.php for prelocations
+     * Only used in evenement.php to display prelocations
      */
     public static function linkify(string $input): string
     {
@@ -71,18 +71,18 @@ class Text
 
     /**
      *
-     * @param string $url https://www.test.ch
+     * @param string $urlOrPath https://www.test.ch or path
      * @return array ['https://www.test.ch', 'www.test.ch']
      */
-    public static function getUrlWithName(string $url): array
+    public static function getUrlWithName(string $urlOrPath): array
     {
-        $urlComplete = $url;
-        if (!preg_match("/^https?:\/\//", $url))
+        $urlComplete = $urlOrPath;
+        if (!preg_match("/^https?:\/\//", $urlOrPath))
         {
-            $urlComplete = 'http://' . $url;
+            $urlComplete = 'http://' . $urlOrPath;
         }
 
-        return ['url' => $urlComplete, 'urlName' => rtrim(preg_replace("(^https?://)", "", $url), "/")];
+        return ['url' => $urlComplete, 'urlName' => rtrim(preg_replace("(^https?://)", "", $urlOrPath), "/")];
     }
 
 
