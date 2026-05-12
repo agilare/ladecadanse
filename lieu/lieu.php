@@ -87,9 +87,18 @@ $sql_select = "SELECT
   e.region AS e_region,
   e.urlLieu AS e_urlLieu,
 
+  l.nom AS l_nom,
+  l.adresse AS l_adresse,
+  l.quartier AS l_quartier,
+  l.URL AS l_URL,
+  l.region AS l_region,
+  lloc.localite AS lloc_localite,
+
   s.nom AS s_nom
 
 FROM evenement e
+LEFT JOIN lieu l ON e.idLieu = l.idLieu
+LEFT JOIN localite lloc ON l.localite_id = lloc.id
 LEFT JOIN salle s ON e.idSalle = s.idSalle
 WHERE
     e.statut NOT IN ('inactif', 'propose') AND e.idLieu = ?";

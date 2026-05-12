@@ -1,9 +1,10 @@
 <?php
 
-global $connector, $glo_regions, $glo_auj, $iconeEditer, $glo_auj_6h;
+global $connector, $glo_regions, $glo_auj, $iconeEditer, $glo_auj_6h, $site_full_url;
 
 require_once("../app/bootstrap.php");
 
+use Ladecadanse\EvenementCalendarRenderer;
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\Utils\DateHelper;
 use Ladecadanse\Utils\Utils;
@@ -273,8 +274,21 @@ $agenda_years = range((int)date("Y"), Evenement::AGENDA_START_YEAR);
                             <?php if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] == UserLevel::SUPERADMIN)) : ?>
                             <td><?= round($tab_even['score'], 5) ?></td>
                             <?php endif; ?>
-                            <?php if ($authorization->isPersonneAllowedToEditEvenement($_SESSION, $tab_even)) : ?>
-                                <td><a href="/evenement-edit.php?action=editer&amp;idE=<?= (int) $tab_even['e_idEvenement'] ?>"><?= $iconeEditer; ?></a></td>
+                            <?php
+                            $isFutureEvent = $even_periode !== 'ancien';
+                            $isAllowedToEdit = $authorization->isPersonneAllowedToEditEvenement($_SESSION, $tab_even);
+                            ?>
+                            <?php if ($isFutureEvent || $isAllowedToEdit) : ?>
+                                <td class="lieu_actions_evenement">
+                                    <ul>
+                                        <?php if ($isFutureEvent) : ?>
+                                            <?= EvenementCalendarRenderer::renderMenuHtml($tab_even, $site_full_url, compact: true) ?>
+                                        <?php endif; ?>
+                                        <?php if ($isAllowedToEdit) : ?>
+                                            <li><a href="/evenement-edit.php?action=editer&amp;idE=<?= (int) $tab_even['e_idEvenement'] ?>"><?= $iconeEditer; ?></a></li>
+                                        <?php endif; ?>
+                                    </ul>
+                                </td>
                             <?php endif; ?>
                         </tr>
                     <?php endforeach; ?>
