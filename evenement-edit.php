@@ -1041,11 +1041,6 @@ if ($verif->nbErreurs() > 0)
 
 
             $nom_lieu = $lieuTrouve['nom'];
-            if (preg_match("/^(Le |La |Les |L')(.*)/", (string) $lieuTrouve['nom'], $matches))
-            {
-                $nom_lieu = $matches[2].', '.$matches[1];
-
-            }
 
             echo '<option  ';
 

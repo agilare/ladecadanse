@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.10.1] - Unreleased
+
+### Changed
+- events : in forms, lieux select options values are displayed as is
+
+
 ## [3.10.0] - 2026-04-26
 
 ### Added

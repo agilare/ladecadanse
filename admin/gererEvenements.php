@@ -924,11 +924,6 @@ if ($verif->nbErreurs() > 0)
         echo "<option ";
 
         $nom_lieu = $lieuTrouve['nom'];
-        if (preg_match("/^(Le |La |Les |L')(.*)/", (string) $lieuTrouve['nom'], $matches))
-        {
-            $nom_lieu = $matches[2].', '.$matches[1];
-
-        }
 
         if ($lieuTrouve['idLieu'] == $champs['idLieu'])
         {
