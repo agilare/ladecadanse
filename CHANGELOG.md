@@ -2,6 +2,9 @@
 
 ## [3.10.1] - Unreleased
 
+### Fixed
+- events : hide calendar-export-menu by default for browsers without Popover API or JS
+
 ### Changed
 - events : in forms, lieux select options values are displayed as is
 

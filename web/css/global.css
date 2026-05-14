@@ -1143,6 +1143,7 @@ ul.menu_action
 
 .calendar-export-menu
 {
+    display: none; /* hidden by default; browsers without Popover API and without JS (e.g. Opera Mini) must not show this */
     position: fixed;
     inset: unset;
     background: #fff;
@@ -1154,6 +1155,12 @@ ul.menu_action
     margin: 0;
     min-width: 13em;
     text-align: left;
+}
+
+/* Override the display: none above when the popover is open (ignored by browsers that don't support :popover-open) */
+.calendar-export-menu:popover-open
+{
+    display: block;
 }
 
 /*
