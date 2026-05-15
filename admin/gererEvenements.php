@@ -895,31 +895,26 @@ if ($verif->nbErreurs() > 0)
     //Menu des lieux actifs de la base
     echo "<option value=\"\">&nbsp;</option>";
     $req_lieux = $connector->query("
-    SELECT idLieu, nom FROM lieu
-    WHERE statut='actif'
-    ORDER BY TRIM(LEADING 'L\'' FROM (TRIM(LEADING 'Les ' FROM (TRIM(LEADING 'La ' FROM (TRIM(LEADING 'Le ' FROM nom)))))))
-    COLLATE utf8mb4_unicode_ci"
+    SELECT lieu.idLieu, lieu.nom, COALESCE(localite.canton, '') AS canton
+    FROM lieu
+    LEFT JOIN localite ON lieu.localite_id = localite.id
+    WHERE lieu.statut='actif'
+    ORDER BY
+      CASE COALESCE(localite.canton, '') WHEN 'ge' THEN 0 WHEN 'vd' THEN 1 WHEN 'fr' THEN 2 ELSE 3 END,
+      TRIM(LEADING 'L\'' FROM (TRIM(LEADING 'Les ' FROM (TRIM(LEADING 'La ' FROM (TRIM(LEADING 'Le ' FROM lieu.nom)))))))
+      COLLATE utf8mb4_unicode_ci"
      );
 
-
-    /* while ($lieuTrouve = $connector->fetchArray($req_lieux))
-    {
-        echo "<option ";
-        echo "value=\"".$lieuTrouve['idLieu']."\">".$lieuTrouve['nom']."</option>";
-
-        $sql_salle = "select * from salle where idLieu=".$lieuTrouve['idLieu'];
-        $req_salle = $connector->query($sql_salle);
-        while ($tab_salle = $connector->fetchArray($req_salle))
-
-        {
-            echo "<option ";
-            echo " style=\"font-style:italic;padding-left:1em;\" value=".$lieuTrouve['idLieu']."_".$tab_salle['idSalle'].">".$tab_salle['nom']."</option>";
-
-        }
-    } */
-
+    $canton_labels = ['ge' => 'Genève', 'vd' => 'Vaud', 'fr' => 'Fribourg', '' => 'France'];
+    $current_canton = null;
     while ($lieuTrouve = $connector->fetchArray($req_lieux))
     {
+        $canton = $lieuTrouve['canton'];
+        if ($canton !== $current_canton) {
+            if ($current_canton !== null) echo '</optgroup>';
+            echo '<optgroup label="' . ($canton_labels[$canton] ?? sanitizeForHtml($canton)) . '">';
+            $current_canton = $canton;
+        }
 
         echo "<option ";
 
@@ -945,9 +940,8 @@ if ($verif->nbErreurs() > 0)
             echo " style=\"font-style:italic;color:#444;\" value=".(int)$lieuTrouve['idLieu']."_".(int)$tab_salle['idSalle'].">".sanitizeForHtml($nom_lieu)."&nbsp;– ".sanitizeForHtml($tab_salle['nom'])."</option>";
 
         }
-
-
     }
+    if ($current_canton !== null) echo '</optgroup>';
     ?>
     ?>
     </select>

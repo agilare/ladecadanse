@@ -5,11 +5,21 @@
 ### Fixed
 - events : hide calendar-export-menu by default for browsers without Popover API or JS
 
+### Added
+- events : in forms add <optgroup> by canton for lieux select
+
 ### Changed
 - events : in forms, lieux select options values are displayed as is
 
 
 ## [3.10.0] - 2026-04-26
+
+### Fixed
+- users : in register form, wrong field was used to hash password
+- auth : restore broken "Remember me" feature #83
+- events : in edit form, warn to avoid resubmit without preselected file
+- edition : restore Google fonts URL in CSP for TinyMCE
+- tests : in Selenium add missing "pause" commands to avoid fails
 
 ### Added
 - events calendar : when changing month, instead of loading all the page, update only the calendar #104 (thanks to @lambeletjp)
@@ -22,13 +32,6 @@
 - auth : allow login with email address #103
 - assets : use AssetManager for entity image cache busting (events, lieux, orgas) #109
 - tests : Selenium cases for this release
-
-### Fixed
-- users : in register form, wrong field was used to hash password
-- auth : restore broken "Remember me" feature #83
-- events : in edit form, warn to avoid resubmit without preselected file
-- edition : restore Google fonts URL in CSP for TinyMCE
-- tests : in Selenium add missing "pause" commands to avoid fails
 
 ### Changed
 - PHP 8.4 compatibility #94
@@ -55,15 +58,15 @@
 
 ## [3.9.3] - 2026-02-22
 
-### Added
-- faire un don : section "Soutiens" showing logos of supporting orgas
-- seo : set Open Graph default url and image, add to lieu & orga
-
 ### Fixed
 - events : in renderer titreSelonStatutHtml add status check
 - events : rss included unpublished events
 - footer : add missing link to Participer
 - users : in register form don't show error if email is already used
+
+### Added
+- faire un don : section "Soutiens" showing logos of supporting orgas
+- seo : set Open Graph default url and image, add to lieu & orga
 
 ### Changed
 - lieux : salle edition form modernized and cleaned #132 (thanks to @lambeletjp)
@@ -131,6 +134,12 @@
 - admin : restore jquery-checkboxes in gererEvenements
 - tests (Selenium) : some regressions after lieux and admin menu redesign
 
+### Added
+- organisateur : passed/incoming events menu, with pagination
+- organisateur : in event edit form link to Contactez-nous prefills contact form
+- events : method to display an event in a html table
+- lieux : in index highlight when there is an event today, show to editors latest event date of inactive lieux
+
 ### Changed
 - organisateur : page refactored, cleaned, modernized
 - lieux : in index catégories mv from col to below lieu name
@@ -139,12 +148,6 @@
 - events : mv global to a static var in class
 - users : mv global to a static var in class
 - tests (Selenium) : update to new Organisateur page; replace some CSS selectors (slow) by xpath
-
-### Added
-- organisateur : passed/incoming events menu, with pagination
-- organisateur : in event edit form link to Contactez-nous prefills contact form
-- events : method to display an event in a html table
-- lieux : in index highlight when there is an event today, show to editors latest event date of inactive lieux
 
 ### Removed
 - organisateur : heavy db query for events count in menu (that will be replaced in a next version), reduce pages load from 3s to less than 1s
@@ -269,7 +272,7 @@
 ### Security
 - secure lieu sql queries in affiliation table
 
-# Removed
+### Removed
 - statistics : Google Analytics tracking (#92)
 
 
