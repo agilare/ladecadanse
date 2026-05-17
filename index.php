@@ -278,13 +278,7 @@ include("_header.inc.php");
 
                                 <ul class="menu_action">
                                     <li><a href="/event/send.php?action=report&idE=<?= (int) $tab_even['e_idEvenement']; ?>" class="signaler" title="Signaler une erreur"><i class="fa fa-flag-o fa-lg"></i></a></li>
-                                    <?php
-                                    $calLinks = (new Ladecadanse\EvenementCalendarRenderer($tab_even, $site_full_url))->getLinks();
-                                    $calExportCompact = true;
-                                    $calExportId = (int) $tab_even['e_idEvenement'];
-                                    include("event/_calendar_export.inc.php");
-                                    unset($calExportCompact, $calExportId);
-                                    ?>
+                                    <?= Ladecadanse\EvenementCalendarRenderer::renderMenuHtml($tab_even, $site_full_url, compact: true) ?>
                                 </ul>
 
                                 <?php if ($authorization->isPersonneAllowedToEditEvenement($_SESSION, $tab_even)) : ?>
