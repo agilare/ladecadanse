@@ -1,3 +1,45 @@
+#genre_tab_navigation
+{
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: #fff;
+    padding: 0.6em 0;
+    margin-top: 0.8em;
+    margin-bottom: 0.8em;
+}
+
+#genre_tab_navigation ul
+{
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+#genre_tab_navigation li
+{
+    display: inline-block;
+    padding-left:0.2em;
+    padding-right:0.2em;
+}
+
+#genre_tab_navigation li a
+{
+    padding: 0.3em;
+    border-radius:3px;
+}
+
+#genre_tab_navigation li a:hover
+{
+    background: #d4d4d4
+}
+
+#genre_tab_navigation li.ici a
+{
+    background: #eee;
+}
+
+
 header#entete_contenu h1
 {
     float:left;
