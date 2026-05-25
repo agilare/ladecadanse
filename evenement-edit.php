@@ -112,6 +112,7 @@ $show_form = true;
 $formTokenName = 'form_token_evenement_edit';
 $verif = new Validateur();
 $fichiers = ['flyer' => ['name' => '', 'size' => 0], 'image' => ['name' => '', 'size' => 0]];
+$similarEvenements = [];
 
 if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 {
@@ -308,8 +309,21 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
         $verif->valider($champs['description'], "description", "texte", 4, 10000, 0);
     }
 
-    // valide : insert or update
-    if ($verif->nbErreurs() === 0)
+    if ($verif->nbErreurs() === 0
+        && empty($_POST['confirm_duplicate'])
+        && $get['action'] === 'insert'
+        && isset($date_iso)
+    )
+    {
+        $similarEvenements = Evenement::findSimilarEvenements(
+            (string) $champs['titre'],
+            (int) $champs['idLieu'],
+            (string) $champs['nomLieu'],
+            $date_iso,
+        );
+    }
+
+    if ($verif->nbErreurs() === 0 && empty($similarEvenements))
 	{
 		//creation/nettoyage des valeurs à insérer dans la table
 
@@ -884,6 +898,42 @@ if ($verif->nbErreurs() > 0)
 
             <input type="text" name="name_as" value="" class="name_as" /><?php echo $verif->getHtmlErreur('name_as'); ?>
             <input type="hidden" name="<?php echo $formTokenName; ?>" value="<?php echo sanitizeForHtml($_SESSION[$formTokenName]); ?>">
+
+            <?php if (!empty($similarEvenements)) : ?>
+            <aside class="duplicate-warning">
+                <h2>Cet événement existe peut&#8209;être déjà</h2>
+                <p>Un ou plusieurs événements similaires ont déjà été créés à ce lieu pour cette date&nbsp;:</p>
+                <ul class="duplicate-list">
+                    <?php foreach ($similarEvenements as $similar) :
+                        $horaireSimilar = EvenementRenderer::schedulesToHhMm(
+                            $similar['horaire_debut'],
+                            $similar['horaire_fin'],
+                            $similar['dateEvenement']
+                        );
+                        ?>
+                        <li>
+                            <a href="/event/evenement.php?idE=<?= (int) $similar['idEvenement'] ?>" target="_blank">
+                                «&nbsp;<?= sanitizeForHtml($similar['titre']) ?>&nbsp;»
+                            </a>
+                            <?php if (!empty($horaireSimilar)) : ?>
+                                <span class="horaire"><?= sanitizeForHtml($horaireSimilar) ?></span>
+                            <?php endif; ?>
+                            <?php if (!empty($similar['statut']) && $similar['statut'] !== 'actif') : ?>
+                                <span class="statut">[<?= sanitizeForHtml($similar['statut']) ?>]</span>
+                            <?php endif; ?>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+                <p>Si c’est la même chose, <strong>modifiez l’événement existant</strong> en cliquant sur son titre ci&#8209;dessus.</p>
+                <div class="confirm-row">
+                    <label class="confirm-label">
+                        <input type="checkbox" name="confirm_duplicate" value="1">
+                        <span>Il s’agit bien d’un autre événement, je confirme la création.</span>
+                    </label>
+                    <input type="submit" value="Confirmer" class="submit submit-big confirm-submit">
+                </div>
+            </aside>
+            <?php endif; ?>
 
             <div class="alert-warn">
                     <?php if (!in_array($get['action'], ['editer', 'update'])) { ?>

@@ -109,6 +109,9 @@ Evaluation of feature :
     - redir to event page
     - success msg
     - event displayed = changes
+    - duplicate detection on add (same date + same lieu + title within Levenshtein 5)
+        - warning block, list of similar events
+        - confirm checkbox + button to override
 
 - (u) delete (c2)
   - confirm js

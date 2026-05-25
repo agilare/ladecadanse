@@ -7946,6 +7946,276 @@
       "targets": [],
       "value": ""
     }]
+  }, {
+    "id": "de2e2d23-e992-4f76-a3c0-663b485ed1f9",
+    "name": "user (admin) event add duplicate detection (r)",
+    "commands": [{
+      "id": "dfd7375f-c499-4528-8be9-120d34f63f2d",
+      "comment": "Start fresh at home",
+      "command": "open",
+      "target": "/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "de863460-cca6-4e17-bc86-085bb8aee197",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=Ajouter un événement",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "543271a2-df47-4b66-9227-6522e6997f48",
+      "comment": "Form loaded",
+      "command": "assertElementPresent",
+      "target": "id=ajouter_editer",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "76fc7f43-5323-4c5c-8db5-4fa89049157e",
+      "comment": "Today as DD.MM.YYYY",
+      "command": "executeScript",
+      "target": "return (new Date().getDate().toString().padStart(2, '0')) + \".\" + ((new Date().getMonth() + 1).toString().padStart(2, '0')) + \".\" + ((new Date()).getFullYear() )",
+      "targets": [],
+      "value": "eventDate"
+    }, {
+      "id": "0f69d033-1408-4fd3-9a1f-581b0fff3ae3",
+      "comment": "Create first event",
+      "command": "click",
+      "target": "id=genre_divers",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "e90fc050-b408-4242-b1a7-ae32234caa44",
+      "comment": "",
+      "command": "type",
+      "target": "id=titre",
+      "targets": [],
+      "value": "Selenium doublon detection"
+    }, {
+      "id": "46037b17-5c69-4ef3-a70c-55b53552e3a8",
+      "comment": "",
+      "command": "type",
+      "target": "id=dateEvenement",
+      "targets": [],
+      "value": "${eventDate}"
+    }, {
+      "id": "11eb1b11-5c6b-4abb-82f0-e33f9540fa02",
+      "comment": "",
+      "command": "type",
+      "target": "id=description",
+      "targets": [],
+      "value": "Test Selenium pour la detection de doublons."
+    }, {
+      "id": "7deb9517-7f47-4f1a-839c-8feaf1f0f679",
+      "comment": "",
+      "command": "type",
+      "target": "id=horaire_debut",
+      "targets": [],
+      "value": "20:00"
+    }, {
+      "id": "f2e46ccc-708b-48b1-a413-2ef602135ded",
+      "comment": "",
+      "command": "type",
+      "target": "id=horaire_fin",
+      "targets": [],
+      "value": "22:00"
+    }, {
+      "id": "71933457-e189-4aa2-ba80-f553f1633894",
+      "comment": "Select existing lieu (sets idLieu, avoids adresse/localite_id requirement)",
+      "command": "select",
+      "target": "id=idLieu",
+      "targets": [],
+      "value": "label=Lieu Test Selenium"
+    }, {
+      "id": "08748364-c233-433b-beed-1f3bb289cb37",
+      "comment": "",
+      "command": "type",
+      "target": "id=prix",
+      "targets": [],
+      "value": "Libre"
+    }, {
+      "id": "318d7332-e75b-4f3b-a0d5-933c3bc4b13f",
+      "comment": "",
+      "command": "click",
+      "target": "name=submit",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "d682babd-7e5b-4e64-9779-81215f731581",
+      "comment": "",
+      "command": "pause",
+      "target": "3000",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "5ccfbafd-cfb1-4ace-9385-df6ef7ca6c49",
+      "comment": "First event created",
+      "command": "assertElementPresent",
+      "target": "css=.msg_ok",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "25390779-5987-483b-b498-096812147ae3",
+      "comment": "Capture idE of first event for cleanup",
+      "command": "executeScript",
+      "target": "return new URLSearchParams(window.location.search).get('idE');",
+      "targets": [],
+      "value": "firstEventId"
+    }, {
+      "id": "f07878bb-9c66-4917-94b5-611a2b2ea308",
+      "comment": "Try to add a near-duplicate",
+      "command": "open",
+      "target": "/evenement-edit.php?action=ajouter",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "57416fa6-64b6-4b92-8f76-bb727eac2720",
+      "comment": "",
+      "command": "click",
+      "target": "id=genre_divers",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "dbb702a2-f26a-4600-ad42-51e920d3e721",
+      "comment": "Title with extra 's' (Levenshtein 1)",
+      "command": "type",
+      "target": "id=titre",
+      "targets": [],
+      "value": "Selenium doublon detections"
+    }, {
+      "id": "4e62b899-b8b0-43dd-86e5-72d4d4e0dbff",
+      "comment": "",
+      "command": "type",
+      "target": "id=dateEvenement",
+      "targets": [],
+      "value": "${eventDate}"
+    }, {
+      "id": "bc71a27f-0d0a-4db7-b345-39b67c084f2f",
+      "comment": "",
+      "command": "type",
+      "target": "id=description",
+      "targets": [],
+      "value": "Tentative de creation d'un doublon."
+    }, {
+      "id": "54b563ce-8b1f-4d2a-9c3e-5316ca9681e9",
+      "comment": "",
+      "command": "type",
+      "target": "id=horaire_debut",
+      "targets": [],
+      "value": "20:30"
+    }, {
+      "id": "ee709369-f5ef-4174-a20a-c8bc0b6ce3da",
+      "comment": "",
+      "command": "type",
+      "target": "id=horaire_fin",
+      "targets": [],
+      "value": "22:30"
+    }, {
+      "id": "6eb07bc7-e56b-4177-822f-1572fff5481d",
+      "comment": "Same lieu",
+      "command": "select",
+      "target": "id=idLieu",
+      "targets": [],
+      "value": "label=Lieu Test Selenium"
+    }, {
+      "id": "02d74738-301b-49fb-a5de-4909617f2680",
+      "comment": "",
+      "command": "type",
+      "target": "id=prix",
+      "targets": [],
+      "value": "Libre"
+    }, {
+      "id": "4d5d89fe-f5eb-4451-9bd7-e1580fca6fba",
+      "comment": "",
+      "command": "click",
+      "target": "name=submit",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "25813c70-8319-47c7-8d42-a496703ae57d",
+      "comment": "",
+      "command": "pause",
+      "target": "2000",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "41ee0983-392b-43da-80d9-1117565f1f42",
+      "comment": "Duplicate warning is shown",
+      "command": "assertElementPresent",
+      "target": "css=.duplicate-warning",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "5d5a02e9-bcfa-4b16-ab42-0fff074f21d1",
+      "comment": "Confirm checkbox is present",
+      "command": "assertElementPresent",
+      "target": "css=input[name='confirm_duplicate']",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "f732e510-bcad-4dc6-b4f0-1762dcaa5ec6",
+      "comment": "Confirm submit button is present",
+      "command": "assertElementPresent",
+      "target": "css=.confirm-submit",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "96485ebd-8bfa-46f3-92cc-d60347af0dad",
+      "comment": "Tick confirm checkbox",
+      "command": "click",
+      "target": "name=confirm_duplicate",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "0b46882a-9d3b-4684-9bce-f3eb882e1ea6",
+      "comment": "Submit via the warning's Confirmer button",
+      "command": "click",
+      "target": "css=.confirm-submit",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "84483d44-628a-421d-85e1-13a0befc02a0",
+      "comment": "",
+      "command": "pause",
+      "target": "3000",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "6ff13b4c-bd29-4974-b664-3aa3e44357e2",
+      "comment": "Second event created after confirmation",
+      "command": "assertElementPresent",
+      "target": "css=.msg_ok",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "f03c76b8-c9b7-4bd0-9f1e-957c071592af",
+      "comment": "Capture idE of second event for cleanup",
+      "command": "executeScript",
+      "target": "return new URLSearchParams(window.location.search).get('idE');",
+      "targets": [],
+      "value": "secondEventId"
+    }, {
+      "id": "f83d4225-fdd5-4077-88f5-5aadb894b54d",
+      "comment": "Cleanup: delete first event",
+      "command": "open",
+      "target": "/event/actions.php?action=delete&id=${firstEventId}",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "1c27bb80-1725-4cca-9cd0-4d13f528761c",
+      "comment": "Cleanup: delete second event",
+      "command": "open",
+      "target": "/event/actions.php?action=delete&id=${secondEventId}",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "68da1cef-9251-4df4-b768-d68c51836a41",
+      "comment": "Return to home page",
+      "command": "open",
+      "target": "/",
+      "targets": [],
+      "value": ""
+    }]
   }],
   "suites": [{
     "id": "e598238f-e9bc-40f6-9876-6274e4bf1e3f",
@@ -7967,7 +8237,7 @@
     "persistSession": false,
     "parallel": false,
     "timeout": 300,
-    "tests": ["fa4a12b8-1f55-4435-8fe1-3fe8294be63a", "d5d4f0bd-52d5-4cd9-8fd2-b38ee992812d", "5c790b97-c4b1-4056-a004-daa889c1a3ee", "2422f54c-2560-4fa2-ad65-b10fe0deba9e", "1e32da4f-4dcb-4195-8dee-81a2afc12a3f", "b4c14c81-4533-4742-8d96-526b91077359", "1e0fa7b9-f784-4860-a139-b7be9b393fc0", "8f01a9a0-9f4c-4f52-825e-a54eba6fcb27", "92d58e15-7bbd-49aa-8440-5c14b4554622", "7f6cb209-b243-4a0e-889f-097dd12be52d", "9c8c7ca0-0ac3-496e-b84b-bfedbc01230b", "602346d1-62ed-43a5-9bfd-b78a52eaaa59", "816a221b-9428-4767-9d1b-cf51dc2f8fb4", "1b3cabfb-9a16-44ae-b21b-2356228e88f1", "a1b2c3d4-5678-90ab-cdef-lieu-salle-01", "0ae3b38b-98d6-4dfd-92c9-d26b5a4b768e", "7cbaa9a9-70bf-4812-af0a-7935df36f2a0"]
+    "tests": ["fa4a12b8-1f55-4435-8fe1-3fe8294be63a", "d5d4f0bd-52d5-4cd9-8fd2-b38ee992812d", "5c790b97-c4b1-4056-a004-daa889c1a3ee", "2422f54c-2560-4fa2-ad65-b10fe0deba9e", "1e32da4f-4dcb-4195-8dee-81a2afc12a3f", "b4c14c81-4533-4742-8d96-526b91077359", "de2e2d23-e992-4f76-a3c0-663b485ed1f9", "1e0fa7b9-f784-4860-a139-b7be9b393fc0", "8f01a9a0-9f4c-4f52-825e-a54eba6fcb27", "92d58e15-7bbd-49aa-8440-5c14b4554622", "7f6cb209-b243-4a0e-889f-097dd12be52d", "9c8c7ca0-0ac3-496e-b84b-bfedbc01230b", "602346d1-62ed-43a5-9bfd-b78a52eaaa59", "816a221b-9428-4767-9d1b-cf51dc2f8fb4", "1b3cabfb-9a16-44ae-b21b-2356228e88f1", "a1b2c3d4-5678-90ab-cdef-lieu-salle-01", "0ae3b38b-98d6-4dfd-92c9-d26b5a4b768e", "7cbaa9a9-70bf-4812-af0a-7935df36f2a0"]
   }],
   "urls": ["https://ladecadanse.darksite.ch/", "http://ladecadanse.local/", "https://ladecadanse.local/"],
   "plugins": []
