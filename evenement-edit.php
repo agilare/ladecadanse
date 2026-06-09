@@ -899,7 +899,9 @@ if ($verif->nbErreurs() > 0)
             <input type="text" name="name_as" value="" class="name_as" /><?php echo $verif->getHtmlErreur('name_as'); ?>
             <input type="hidden" name="<?php echo $formTokenName; ?>" value="<?php echo sanitizeForHtml($_SESSION[$formTokenName]); ?>">
 
-            <?php if (!empty($similarEvenements)) : ?>
+            <?php if (!empty($similarEvenements)) :
+                $someSimilarEditable = false;
+                $someSimilarNotEditable = false; ?>
             <aside class="duplicate-warning">
                 <h2>Cet événement existe peut&#8209;être déjà</h2>
                 <p>Un ou plusieurs événements similaires ont déjà été créés à ce lieu pour cette date&nbsp;:</p>
@@ -910,11 +912,24 @@ if ($verif->nbErreurs() > 0)
                             $similar['horaire_fin'],
                             $similar['dateEvenement']
                         );
+                        $canEditSimilar = $authorization->isPersonneAllowedToEditEvenement($_SESSION, [
+                            'e_idEvenement' => $similar['idEvenement'],
+                            'e_idLieu' => $similar['idLieu'],
+                            'e_idPersonne' => $similar['idPersonne'],
+                        ]);
+                        if ($canEditSimilar) {
+                            $someSimilarEditable = true;
+                        } else {
+                            $someSimilarNotEditable = true;
+                        }
                         ?>
                         <li>
                             <a href="/event/evenement.php?idE=<?= (int) $similar['idEvenement'] ?>" target="_blank">
                                 «&nbsp;<?= sanitizeForHtml($similar['titre']) ?>&nbsp;»
                             </a>
+                            <?php if ($canEditSimilar) : ?>
+                                <a class="duplicate-edit" href="/evenement-edit.php?action=editer&amp;idE=<?= (int) $similar['idEvenement'] ?>" title="Éditer l’événement"><?= $iconeEditer ?></a>
+                            <?php endif; ?>
                             <?php if (!empty($horaireSimilar)) : ?>
                                 <span class="horaire"><?= sanitizeForHtml($horaireSimilar) ?></span>
                             <?php endif; ?>
@@ -924,7 +939,12 @@ if ($verif->nbErreurs() > 0)
                         </li>
                     <?php endforeach; ?>
                 </ul>
-                <p>Si c’est la même chose, <strong>modifiez l’événement existant</strong> en cliquant sur son titre ci&#8209;dessus.</p>
+                <?php if ($someSimilarEditable) : ?>
+                <p>S’il s’agit d’un duplicat, <strong>modifiez l’événement existant</strong> à l’aide de l’icône d’édition à côté de son titre.</p>
+                <?php endif; ?>
+                <?php if ($someSimilarNotEditable) : ?>
+                <p>Vous n’avez pas les droits pour modifier certains de ces événements&nbsp;: contactez l’organisateur qui l’a ajouté, ou en dernier recours les webmasters de La décadanse.</p>
+                <?php endif; ?>
                 <div class="confirm-row">
                     <label class="confirm-label">
                         <input type="checkbox" name="confirm_duplicate" value="1">

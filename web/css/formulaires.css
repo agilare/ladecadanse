@@ -468,6 +468,16 @@ font-family:Georgia;
             color: #1b4f8a;
         }
 
+        #contenu .duplicate-warning .duplicate-list .duplicate-edit
+        {
+            margin-left: 0.4em;
+        }
+
+            #contenu .duplicate-warning .duplicate-list .duplicate-edit img
+            {
+                vertical-align: middle;
+            }
+
         #contenu .duplicate-warning .duplicate-list .horaire
         {
             color: #5b2a05;
@@ -495,6 +505,15 @@ font-family:Georgia;
     .duplicate-warning .confirm-submit
     {
         margin-left: auto;
+    }
+
+    form#ajouter_editer .submit:disabled
+    {
+        background-color: #ece4d7;
+        border-color: #b9a98f;
+        color: #9c8f78;
+        -webkit-text-fill-color: #9c8f78;
+        cursor: not-allowed;
     }
 
 form#ajouter_editer .duplicate-warning .confirm-label

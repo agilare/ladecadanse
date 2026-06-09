@@ -108,6 +108,8 @@ class Evenement extends Element
 
         $sql = "SELECT
             e.idEvenement,
+            e.idLieu,
+            e.idPersonne,
             e.titre,
             e.dateEvenement,
             e.horaire_debut,
@@ -118,7 +120,7 @@ class Evenement extends Element
         FROM evenement e
         LEFT JOIN lieu l ON e.idLieu = l.idLieu
         WHERE e.dateEvenement = :date
-            AND e.statut <> 'ancien'
+            AND e.statut NOT IN ('inactif', 'propose')
             AND e.idEvenement <> :excludeIdE
             AND $lieuClause";
 
