@@ -42,6 +42,11 @@ define("DARKVISITORS_ENABLED", false);
 define("DARKVISITORS_PROJECT_KEY", '');
 define("DARKVISITORS_ACCESS_TOKEN", '');
 
+// suivi interne des bots et IP suspectes (table bot_monitor + admin/bots.php)
+// créer la table (resources/v3-10-1_bot_monitor-create-table.sql) avant d'activer
+define("BOT_MONITORING_ENABLED", false);
+define("BOT_MONITORING_SUSPECT_THRESHOLD", 150); // seuil de hits pour "humains suspects" dans le dashboard
+
 define("PAYPAL_HOSTED_BUTTON_ID", "");
 
 // to allow access to events API (api.php)

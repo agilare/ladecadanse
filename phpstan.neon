@@ -23,6 +23,9 @@ parameters:
     phpVersion: 80400 # 8.0 80000 7.4 70400 7.1 70100
     inferPrivatePropertyTypeFromConstructor: true
     checkMissingTypehints: true
+    # constantes de configuration dont la valeur dépend de l'environnement (env.php)
+    dynamicConstantNames:
+        - BOT_MONITORING_ENABLED
     ignoreErrors:
         -
             identifier: variable.undefined

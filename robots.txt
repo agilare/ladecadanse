@@ -3,6 +3,7 @@ Crawl-delay: 15 # rule ignored by Google
 disallow: /*?*genre=
 
 Disallow: /admin/
+Disallow: /annuaire-membres.php
 Disallow: /app/
 Disallow: /librairies/
 Disallow: /resources/

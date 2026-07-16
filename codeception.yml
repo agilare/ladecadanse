@@ -5,7 +5,7 @@ support_namespace: Support
 suites:
     api:
         actor: ApiTester
-        path: .
+        path: Api
         modules:
             enabled:
                 - REST:
@@ -15,6 +15,14 @@ suites:
                 - Asserts
         step_decorators:
             - \Codeception\Step\AsJson
+    site:
+        actor: SiteTester
+        path: Site
+        modules:
+            enabled:
+                - PhpBrowser:
+                    url: '%LADECADANSE_SITE_URL%'
+                - Asserts
 
 paths:
     tests: tests

@@ -36,6 +36,11 @@ use Ladecadanse\UserLevel;
                     <li><a href="/articles/liens.php">Liens</a></li>
                 </ul>
             </nav> <!-- Fin Pied -->
+
+            <?php if (defined('BOT_MONITORING_ENABLED') && BOT_MONITORING_ENABLED) : ?>
+                <?php /* piège à scrapers : lien invisible pour les humains (hors écran, ignoré des lecteurs d'écran et du clavier), interdit dans robots.txt */ ?>
+                <a href="/annuaire-membres.php" class="hp-link" aria-hidden="true" tabindex="-1" rel="nofollow">Annuaire des membres</a>
+            <?php endif; ?>
         </footer>
 
     <a id="back-to-top" href="#haut" aria-label="Retour en haut de page">
