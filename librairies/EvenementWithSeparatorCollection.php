@@ -16,7 +16,7 @@ class EvenementWithSeparatorCollection implements \IteratorAggregate
         $this->events = $events;
         $this->is_chronological_order = $is_chronological_order;
         $this->date_current = $date_current;
-        $this->date_next_day = date_lendemain($date_current);
+        $this->date_next_day = dateIsoToNextDayDateIso($date_current);
     }
 
     /**
