@@ -1,12 +1,13 @@
 /* Dashboard de monitoring des bots (admin/bots.php) */
 
-.bots-totaux {
+#conteneur .bots-totaux {
     display: flex;
     flex-wrap: wrap;
     gap: 0.8em;
     list-style: none;
     margin: 0 0 1em 0;
     padding: 0;
+    list-style-type: none;
 }
 
 .bots-totaux li {
