@@ -17,12 +17,12 @@ include("../_header.inc.php");
 
 <!--        <p>Vous pouvez contribuer (une seule fois ou de manière récurrente, selon vos possibilités) via :</p>-->
 
-        <script src="https://wemakeit.com/static-assets/widgets/donation_box.js" async="async"></script>
-        <wemakeit-donation-box color="blue" locale="fr" slug="soutenir-la-decadanse" type="card" nonce="<?php echo CSP_NONCE ?>" style="margin: 1em 1em 1em 1em"></wemakeit-donation-box>
+        <p>Votre don aidera à financer le bon fonctionnement et l'évolution de La décadanse, et m'encouragera dans mon travail. Merci&nbsp;!</p>
+
+<!--        <script src="https://wemakeit.com/static-assets/widgets/donation_box.js" async="async"></script>-->
+<!--        <wemakeit-donation-box color="blue" locale="fr" slug="soutenir-la-decadanse" type="card" nonce="<?php echo CSP_NONCE ?>" style="margin: 1em 1em 1em 1em"></wemakeit-donation-box>-->
 <!--        <p>Carte de crédit(, Paypal)</p>-->
 <!--        <script src="https://donorbox.org/widget.js" paypalExpress="true"></script> <iframe src="https://donorbox.org/embed/la-decadanse?default_interval=o" name="donorbox" allowpaymentrequest="allowpaymentrequest" seamless="seamless" frameborder="0" scrolling="no" height="900px" width="100%" style="margin-left:3em;max-width: 500px; min-width: 250px; max-height:none!important" allow="payment"></iframe>-->
-
-        <p>Autres moyens possibles&nbsp;: </p>
 
         <ul id="payment-modes">
             <li>
