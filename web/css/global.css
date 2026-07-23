@@ -1346,6 +1346,42 @@ ul#menu_periode
     display:none;
 }
 
+/* Bouton "vider + relancer la recherche" accolé à un champ input[type=search] */
+.js-clear-search-field
+{
+    display:inline-block;
+    border:1px solid #aaa;
+    border-radius:50%;
+    background:#f4f4f4;
+    cursor:pointer;
+    width:20px;
+    height:20px;
+    line-height:18px;
+    font-size:0.9em;
+    color:#666;
+    padding:0;
+    margin-left:2px;
+    vertical-align:middle;
+    text-align:center;
+}
+
+.js-clear-search-field:hover
+{
+    background:#e4e4e4;
+    color:#333;
+}
+
+input[type="search"]:placeholder-shown + .js-clear-search-field
+{
+    display:none;
+}
+
+input[type="search"]::-webkit-search-cancel-button
+{
+    -webkit-appearance:none;
+    appearance:none;
+}
+
 .name_as
 {
     display:none;
