@@ -354,7 +354,7 @@ include("../_header.inc.php");
         }
         ?>
 
-        <form method="post" id="ajouter_editer" style="margin:0;background:#efefef;border-radius: 4px;" enctype="multipart/form-data" action="<?=  basename(__FILE__) . "?action=coller&amp;idE=" . (int) $get['idE']; ?>">
+        <form method="post" id="ajouter_editer" class="js-submit-freeze-wait" style="margin:0;background:#efefef;border-radius: 4px;" enctype="multipart/form-data" action="<?=  basename(__FILE__) . "?action=coller&amp;idE=" . (int) $get['idE']; ?>">
 
             <fieldset>
                 <legend style="font-size:1em;margin-left:-1em">Copier l’événement ci-dessus vers les dates suivantes (1 par jour)</legend>
