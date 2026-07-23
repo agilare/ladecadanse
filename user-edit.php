@@ -373,7 +373,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 			}
 		} //if action
 
-		if (isset($champs['organisateurs']) && is_array($champs['organisateurs']))
+		if (is_array($champs['organisateurs']))
 		{
 			foreach ($champs['organisateurs'] as $idOrg)
 			{

@@ -10,6 +10,11 @@
 
 ### Changed
 - events : in forms, lieux select options values are displayed as is
+- deps-dev : update phpmailer, phpstan, rector, rector/jack, select2, vlucas/phpdotenv, phan, psalm, spaze/phpstan-disallowed-calls
+- user-edit : remove redundant isset() check on always-present `organisateurs` field
+
+### Security
+- deps : bump guzzlehttp/guzzle, guzzlehttp/psr7, symfony/dom-crawler, symfony/html-sanitizer, symfony/yaml to fix 20 known security advisories (cookie handling, CRLF/host-confusion injection, XSS bypass, XXE, ReDoS/DoS)
 
 
 ## [3.10.0] - 2026-04-26

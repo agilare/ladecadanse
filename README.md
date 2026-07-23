@@ -175,6 +175,15 @@ Exécuter sans modifier directement les fichiers (aperçu) :
 $ composer rector:dry-run
 ```
 
+### Rector Jack
+
+Aide à repérer et mettre à jour les dépendances Composer obsolètes (`rector/jack`, séparé de Rector) :
+```sh
+$ ./vendor/bin/jack list
+```
+
+Commandes utiles : `breakpoint` (échoue si trop de paquets majeurs sont en retard, utile en CI), `open-versions` (assouplit les contraintes de version vers la version suivante), `raise-to-installed` (aligne `composer.json` sur les versions installées).
+
 ### Psalm
 
 ```sh
@@ -202,6 +211,9 @@ Pour 8.4 :
 ```sh
 $ composer sniffer:php84
 ```
+
+> [!NOTE]
+> `squizlabs/php_codesniffer` reste volontairement sur la branche `^3.13` : la version 4.0 n'est pour l'instant supportée que par une version alpha de `phpcompatibility/php-compatibility` (`10.0.0-alpha2`). À réévaluer quand une version stable sortira.
 
 ## Changelog
 Voir le [changelog](CHANGELOG.md) et les [releases sur GitHub](https://github.com/agilare/ladecadanse/releases)
