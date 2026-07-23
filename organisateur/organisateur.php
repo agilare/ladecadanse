@@ -48,8 +48,21 @@ if (!empty($_GET['periode']) && Validateur::validateUrlQueryValue($_GET['periode
     }
 }
 
-$get['page'] = !empty($_GET['page']) ? Validateur::validateUrlQueryValue($_GET['page'], "int", 1) : 1;
 $results_per_page = 50;
+
+$sql_select_all =
+    "SELECT count(*) AS nb
+    FROM evenement e
+    JOIN evenement_organisateur eo ON e.idEvenement = eo.idEvenement
+    WHERE
+    e.statut NOT IN ('inactif', 'propose') AND eo.idOrganisateur = ? AND e.dateEvenement $sql_periode_operator ?";
+// echo $sql_select_all;
+$stmtAll = $connectorPdo->prepare($sql_select_all);
+$stmtAll->execute([$get['idO'], $glo_auj]);
+$all_results_nb = $stmtAll->fetchColumn();
+
+$default_page = $get['periode'] == "ancien" ? (int) max(1, ceil($all_results_nb / $results_per_page)) : 1;
+$get['page'] = !empty($_GET['page']) ? Validateur::validateUrlQueryValue($_GET['page'], "int", 1) : $default_page;
 
 $orga_lieux = Organisateur::getActivesLieux($get['idO']);
 $orga_personnes = Personne::getPersonnesOfOrganisateur($get['idO']);
@@ -115,17 +128,6 @@ foreach ($page_results as $event) {
 }
 
 //dump($page_results_grouped_by_yearmonth);
-
-$sql_select_all =
-    "SELECT count(*) AS nb
-    FROM evenement e
-    JOIN evenement_organisateur eo ON e.idEvenement = eo.idEvenement
-    WHERE
-    e.statut NOT IN ('inactif', 'propose') AND eo.idOrganisateur = ? AND e.dateEvenement $sql_periode_operator ?";
-// echo $sql_select_all;
-$stmtAll = $connectorPdo->prepare($sql_select_all);
-$stmtAll->execute([$get['idO'], $glo_auj]);
-$all_results_nb = $stmtAll->fetchColumn();
 
 $page_titre = $organisateur->getValue('nom');
 $page_description = $organisateur->getValue('nom') . " : informations pratiques, présentation et événements";
