@@ -12,6 +12,7 @@ class EvenementCollection extends Collection
     function __construct($connector)
 	{
         parent::__construct();
+        $this->connector = $connector;
     }
 
 	function loadForLieu(int $idL, string $date_debut, string $genre = ''): bool

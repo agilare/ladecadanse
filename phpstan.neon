@@ -16,23 +16,63 @@ parameters:
         - vendor
         - var
         - tests
+        - node_modules (?)
     fileExtensions:
         - php
-    tmpDir: var/cache/ecs
-    level: 4 # 5+ trop d'erreurs (because vieux code); aller jusqu'à 7 pour compat avec php 8.0 (?)
-    phpVersion: 80400 # 8.0 80000 7.4 70400 7.1 70100
+    tmpDir: var/cache/phpstan
+    level: 4 # 5+ trop d'erreurs (because vieux code) ; prochain objectif : 5 (types des arguments)
+    phpVersion: 80400
+    bootstrapFiles:
+        # constantes définies au runtime (app/config.php, app/bootstrap.php)
+        - phpstan-constants.php
+    # constantes de app/env.php qui varient selon l'environnement : sans cette
+    # liste, PHPStan fige leur valeur locale et signale de faux "always true/false"
+    dynamicConstantNames:
+        - ENV
+        - MODE_DEBUG
+        - EMAIL_SMTPAUTH
+        - MATOMO_ENABLED
+        - GLITCHTIP_ENABLED
+        - DARKVISITORS_ENABLED
+        - LADECADANSE_API_ENABLED
+        - HOME_TMP_BANNER_ENABLED
+        - HOME_TMP_BACK_BANNER_ENABLED
+        - PARTIAL_EDIT_MODE
     inferPrivatePropertyTypeFromConstructor: true
     checkMissingTypehints: true
     ignoreErrors:
+        # Pattern legacy : les pages comptent sur des variables définies par les
+        # fichiers qui les incluent (bootstrap, _header). Ignoré seulement hors de
+        # librairies/, où le code OOP doit rester propre.
         -
             identifier: variable.undefined
-        -
-            identifier: constant.notFound
-        -
-            identifier: phpDoc.parseError
-        -
-            identifier: constructor.unusedParameter
+            reportUnmatched: false
+            paths:
+                - admin
+                - app
+                - articles
+                - event
+                - lieu
+                - misc
+                - organisateur
+                - _footer.inc.php
+                - _header.inc.php
+                - evenement-edit.php
+                - index.php
+                - lieu-edit.php
+                - lieu-text-edit.php
+                - organisateur-edit.php
+                - user.php
+                - user-edit.php
+                - user-login.php
+                - user-logout.php
+                - user-register.php
+                - user-reset.php
+                - user-reset2.php
 includes:
     - vendor/phpstan/phpstan-deprecation-rules/rules.neon
     - vendor/spaze/phpstan-disallowed-calls/extension.neon
+    - vendor/spaze/phpstan-disallowed-calls/disallowed-dangerous-calls.neon
+    - vendor/spaze/phpstan-disallowed-calls/disallowed-execution-calls.neon
+    - vendor/spaze/phpstan-disallowed-calls/disallowed-insecure-calls.neon
     - phpstan-baseline.neon

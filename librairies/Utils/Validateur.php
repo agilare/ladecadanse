@@ -75,8 +75,9 @@ class Validateur
     /**
      * Vérifie qu'une chaine soit uniquement composée de texte, de chiffres et d'espaces (sans accents)
 
-     * @param string Texte à vérifier
-     * @param string Message d'erreur à afficher en cas d'échec
+     * @param string $nom Nom du champ
+     * @param string $theInput Texte à vérifier
+     * @param string $description Message d'erreur à afficher en cas d'échec
      * @return boolean Validation réussie ou non
      * @access public
      */
@@ -99,8 +100,9 @@ class Validateur
     /**
      * Vérifie qu'une chaine soit uniquement composée de texte, de chiffres et d'espaces (sans accents)
 
-     * @param string Texte à vérifier
-     * @param string Message d'erreur à afficher en cas d'échec
+     * @param string $nom Nom du champ
+     * @param string $theInput Texte à vérifier
+     * @param string $description Message d'erreur à afficher en cas d'échec
      * @return boolean Validation réussie ou non
      * @access public
      */
@@ -123,8 +125,9 @@ class Validateur
     /**
      * Vérifie qu'une chaine soit uniquement composée de texte, de chiffres et d'espaces (sans accents)
 
-     * @param string Texte à vérifier
-     * @param string Message d'erreur à afficher en cas d'échec
+     * @param string $nom Nom du champ
+     * @param string $theInput Texte à vérifier
+     * @param string $description Message d'erreur à afficher en cas d'échec
      * @return boolean Validation réussie ou non
      * @access public
      */
@@ -147,7 +150,8 @@ class Validateur
     /**
      * Vérifie qu'un texte ne dépasse pas un max et soit d'au moins de taille min
 
-     * @param string Texte à vérifier
+     * @param string $nom Nom du champ
+     * @param string $theInput Texte à vérifier
      * @param int $min Taille minimale que le texte doit avoir
      * @param int $max Taille maximale que le texte doit avoir
      * @access public
@@ -177,8 +181,8 @@ class Validateur
     /**
      * Vérifie qu'une adresse email soit au bon format
      *
-     * @param string Adresse à vérifier
-     * @param string Message d'erreur à afficher en cas d'échec
+     * @param string $nom Nom du champ
+     * @param string $theInput Adresse à vérifier
      * @return boolean Validation réussie ou non
      * @access public
      */
@@ -199,8 +203,8 @@ class Validateur
     /**
      * Vérifie qu'une valeur soit un nombre
      *
-     * @param string Valeur à vérifier
-     * @param string Message d'erreur à afficher en cas d'échec
+     * @param string $nom Nom du champ
+     * @param string|int|float $theInput Valeur à vérifier
      * @return boolean Validation réussie ou non
      * @access public
      */
@@ -223,8 +227,8 @@ class Validateur
     /**
      * Vérifie qu'une date est valable, au format américain
      *
-     * @param string Adresse à vérifier
-     * @param string Message d'erreur à afficher en cas d'échec
+     * @param string $nom Nom du champ
+     * @param string $date Date à vérifier
      * @return boolean Validation réussie ou non
      * @access public
      */
@@ -265,8 +269,8 @@ class Validateur
     /**
      * Vérifie qu'une URL est au bon format, accepte les URL complexes
      *
-     * @param string Adresse à vérifier
-     * @param string Message d'erreur à afficher en cas d'échec
+     * @param string $nom Nom du champ
+     * @param string $url Adresse à vérifier
      * @return boolean Validation réussie ou non
      * @access public
      */
@@ -296,8 +300,8 @@ class Validateur
      * Vérifie qu'un fichier uploadé ne soit pas d'un type dangereux et qu'il a bien été
      * reçu sur le serveur. Si ce n'est pas le cas détecte l'erreur qui a été engendrée
      *
-     * @param array Nom du fichier à vérifier
-     * @param string Message d'erreur à afficher en cas d'échec
+     * @param array $fileinfo Fichier à vérifier (entrée de $_FILES)
+     * @param string $nom Nom du champ
      * @return boolean Validation réussie ou non
      * @access public
      */
@@ -357,8 +361,8 @@ class Validateur
     /**
      * Vérifie qu'une image uploadée soit d'un type de fichier autorisé
      *
-     * @param array Fichier à vérifier
-     * @param string Message d'erreur à afficher en cas d'échec
+     * @param array $imageSource Fichier à vérifier (entrée de $_FILES)
+     * @param string $description Message d'erreur à afficher en cas d'échec
      * @return boolean Validation réussie ou non
      * @access public
      */
@@ -381,8 +385,8 @@ class Validateur
      * Vérifie qu'une chaine correspond à un no de téléphone valable, c-à-d est composée
      * seulement de nombres et soit de max 8 car.
      *
-     * @param string No à vérifier
-     * @param string Message d'erreur à afficher en cas d'échec
+     * @param string $nom Nom du champ
+     * @param string $str No à vérifier
      * @return boolean Validation réussie ou non
      * @access public
      */

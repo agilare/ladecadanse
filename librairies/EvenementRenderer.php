@@ -314,7 +314,7 @@ class EvenementRenderer
      * description
      *
      * @param array<string, string> $event
-     * @param string global const site domain
+     * @param string $site_full_url Domaine complet du site (constante globale)
      */
     public static function getIcsValues(array $event, string $site_full_url): array
     {
