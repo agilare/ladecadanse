@@ -12,6 +12,7 @@ parameters:
     paths:
         - .
     excludePaths:
+        - .claude
         - web
         - vendor
         - var
