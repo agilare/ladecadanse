@@ -7,6 +7,7 @@
 
 ### Added
 - events : in forms add <optgroup> by canton for lieux select
+- lieux, organisateurs, gererEvenements, users : add button next to search fields to clear and resubmit the filter in one click
 
 ### Changed
 - events : in forms, lieux select options values are displayed as is

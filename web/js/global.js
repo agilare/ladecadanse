@@ -189,6 +189,13 @@ const Forms = {
             return true;
         });
 
+        $('.js-clear-search-field').on('click', function clearAndSubmitSearchField()
+        {
+            const $form = $(this).closest('form');
+            $form.find('input[type="search"]').val('');
+            $form.trigger('submit');
+        });
+
 //        $('form#ajouter_editer #titre').on('paste', function(e)
 //        {
 //            // Récupère le texte collé

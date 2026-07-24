@@ -190,6 +190,7 @@ require_once '../_header.inc.php';
 
             <form method="get" action="" id="ajouter_editer" style="float:left;width:40%;">
                 <input type="search" name="terme" value="<?= sanitizeForHtml($filters['terme']) ?>" placeholder="pseudo ou email" size="20" />
+                <button type="button" class="js-clear-search-field" aria-label="Vider et relancer la recherche" title="Vider et relancer la recherche">&times;</button>
                 <input type="submit" name="submit" value="Filtrer" />
             </form>
 
