@@ -44,8 +44,22 @@ if (!empty($_GET['periode']) && Validateur::validateUrlQueryValue($_GET['periode
     }
 }
 
-$get['page'] = !empty($_GET['page']) ? Validateur::validateUrlQueryValue($_GET['page'], "int", 1) : 1;
 $results_per_page = 50;
+
+$sql_select_all =
+    "SELECT count(*) AS nb
+    FROM evenement e
+    WHERE
+    e.statut NOT IN ('inactif', 'propose') AND e.idLieu = ?";
+
+$sql_select_all .= " AND e.dateEvenement $sql_periode_operator ?";
+//echo $sql_select_all;
+$stmtAll = $connectorPdo->prepare($sql_select_all);
+$stmtAll->execute([$get['idL'], $glo_auj]);
+$all_results_nb = $stmtAll->fetchColumn();
+
+$default_page = $get['periode'] == "ancien" ? (int) max(1, ceil($all_results_nb / $results_per_page)) : 1;
+$get['page'] = !empty($_GET['page']) ? Validateur::validateUrlQueryValue($_GET['page'], "int", 1) : $default_page;
 
 $categories_fr = implode(", ", array_map(fn ($cat) : string => $glo_categories_lieux[$cat], explode(",", str_replace(" ", "", $lieu['categorie']))));
 $lieu_salles = Lieu::getActivesSalles((int) $get['idL']);
@@ -109,18 +123,6 @@ foreach ($page_results as $event) {
 }
 
 //dump($page_results_grouped_by_yearmonth);
-
-$sql_select_all =
-    "SELECT count(*) AS nb
-    FROM evenement e
-    WHERE
-    e.statut NOT IN ('inactif', 'propose') AND e.idLieu = ?";
-
-$sql_select_all .= " AND e.dateEvenement $sql_periode_operator ?";
-//echo $sql_select_all;
-$stmtAll = $connectorPdo->prepare($sql_select_all);
-$stmtAll->execute([$get['idL'], $glo_auj]);
-$all_results_nb = $stmtAll->fetchColumn();
 
 $page_titre = $lieu['nom']. " - ".HtmlShrink::adresseCompacteSelonContexte($lieu['loc_canton'], $lieu['loc_localite'], $lieu['quartier'], $lieu['adresse']);
 $page_description = $page_titre." : accès, horaires, description, photos et prochains événements";
