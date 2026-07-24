@@ -103,7 +103,7 @@ $mois2 = '';
 $annee2 = '';
 
 $tab_event_copied = [];
-if (!empty($_POST['submit']))
+if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 {
     $date_from = strip_tags((string) $_POST['from']);
     $date_to = strip_tags((string) $_POST['to']);
@@ -354,7 +354,7 @@ include("../_header.inc.php");
         }
         ?>
 
-        <form method="post" id="ajouter_editer" style="margin:0;background:#efefef;border-radius: 4px;" enctype="multipart/form-data" action="<?=  basename(__FILE__) . "?action=coller&amp;idE=" . (int) $get['idE']; ?>">
+        <form method="post" id="ajouter_editer" class="js-submit-freeze-wait" style="margin:0;background:#efefef;border-radius: 4px;" enctype="multipart/form-data" action="<?=  basename(__FILE__) . "?action=coller&amp;idE=" . (int) $get['idE']; ?>">
 
             <fieldset>
                 <legend style="font-size:1em;margin-left:-1em">Copier l’événement ci-dessus vers les dates suivantes (1 par jour)</legend>
@@ -370,6 +370,7 @@ include("../_header.inc.php");
 
             <div style="margin: 0px 0 10px 30px;font-style: italic;color: #777;">Laissez la 2<sup>e</sup> date vide si vous ne collez l'événement que vers un seul jour.</div>
             <?= $verif->getHtmlErreur('dateEvenement') ?>
+            <input type="hidden" name="formulaire" value="ok" />
             <input type="hidden" name="token" value="<?=  SecurityToken::getToken(); ?>" />
         </form>
     </div>
