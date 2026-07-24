@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="6.7.0@11a32693fb9e33d4f0505de17af41c8fcac698a7">
+<files psalm-version="6.16.1@f1f5de594dc76faf8784e02d3dc4716c91c6f6ac">
   <file src="admin/gererEvenements.php">
     <InvalidGlobal>
       <code><![CDATA[global $connector, $glo_regions, $mimes_images_acceptes, $glo_tab_ailleurs, $glo_tab_quartiers2;]]></code>
@@ -13,6 +13,12 @@
     <InvalidGlobal>
       <code><![CDATA[global $connector;]]></code>
     </InvalidGlobal>
+  </file>
+  <file src="evenement-edit.php">
+    <InsaneComparison>
+      <code><![CDATA[$champs['region'] == $id]]></code>
+      <code><![CDATA[$champs['statut'] != 'propose']]></code>
+    </InsaneComparison>
   </file>
   <file src="event/rss.php">
     <InvalidGlobal>
@@ -28,10 +34,5 @@
     <InvalidGlobal>
       <code><![CDATA[global $connector;]]></code>
     </InvalidGlobal>
-  </file>
-  <file src="librairies/EvenementWithSeparatorCollection.php">
-    <MissingTemplateParam>
-      <code><![CDATA[\IteratorAggregate]]></code>
-    </MissingTemplateParam>
   </file>
 </files>

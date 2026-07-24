@@ -80,6 +80,9 @@ class DbConnector extends SystemComponent
         return mysqli_affected_rows($this->dbConnection);
     }
 
+    /**
+     * @psalm-taint-escape sql
+     */
     public function sanitize(string $escapestr): string
     {
         return mysqli_real_escape_string ($this->dbConnection, $escapestr);

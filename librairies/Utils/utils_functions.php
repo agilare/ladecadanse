@@ -48,6 +48,8 @@ function dateIsoToNextDayDateIso(string $date): string
  * FIXME: mv to Text class
  * @param ?string $chaine dirty
  * @return string clean
+ * @psalm-taint-escape html
+ * @psalm-taint-escape has_quotes
  */
 function sanitizeForHtml(?string $chaine): string
 {

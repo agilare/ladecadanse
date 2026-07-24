@@ -143,7 +143,6 @@ class OrganisateurEdition extends Edition
     function enregistrer()
     {
         global $rep_uploads_organisateurs;
-        global $rep_templates;
 
 
         $organisateur = new Organisateur();

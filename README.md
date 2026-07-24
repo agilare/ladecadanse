@@ -190,6 +190,29 @@ Commandes utiles : `breakpoint` (échoue si trop de paquets majeurs sont en reta
 $ composer psalm
 ```
 
+Doit rester vert : les problèmes connus sont dans `psalm-baseline.xml`, à régénérer avec
+`./vendor/bin/psalm --set-baseline=psalm-baseline.xml` après une montée de version.
+
+Les globales du legacy (`$connector`, `$glo_*`, `$rep_*`…) sont déclarées dans la section
+`<globals>` de `psalm.xml` ; l'ajouter d'une nouvelle globale dans `app/config.php` ou
+`app/bootstrap.php` implique de l'y déclarer aussi.
+
+Analyse de teinte (recherche de données utilisateur atteignant un point sensible : SQL,
+`include`, en-têtes, requêtes réseau…). Complémentaire de PHPStan, qui ne fait pas ce type
+d'analyse :
+```sh
+$ composer psalm:taint
+```
+
+Attention au bruit : l'essentiel des résultats est du `TaintedHtml`/`TaintedTextWithQuotes`
+sur le vieux code d'affichage. Les catégories à regarder en priorité sont `TaintedSql`,
+`TaintedFile`, `TaintedSSRF`, `TaintedHeader` et `TaintedCookie`.
+
+L'unique `TaintedSql` restant (rapporté sur `DbConnector::query()`, tracé jusqu'à
+`user-edit.php`) est un faux positif documenté dans le code : Psalm teinte les *clés* de
+`$champs` alors que seules les valeurs viennent de `$_POST`. Il n'est pas supprimable via
+`@psalm-suppress` puisque l'erreur est ancrée sur le sink et non sur le site d'appel.
+
 ### Phan
 
 ```sh

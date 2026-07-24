@@ -52,12 +52,6 @@ parameters:
 			path: librairies/EvenementWithSeparatorCollection.php
 
 		-
-			message: '#^Class Ladecadanse\\EvenementWithSeparatorCollection implements generic interface IteratorAggregate but does not specify its types\: TKey, TValue$#'
-			identifier: missingType.generics
-			count: 1
-			path: librairies/EvenementWithSeparatorCollection.php
-
-		-
 			message: '#^Property Ladecadanse\\EvenementWithSeparatorCollection\:\:\$date_current is never read, only written\.$#'
 			identifier: property.onlyWritten
 			count: 1

@@ -1,6 +1,9 @@
 <?php
 namespace Ladecadanse;
 
+/**
+ * @implements \IteratorAggregate<int, EventWithSeparator>
+ */
 class EvenementWithSeparatorCollection implements \IteratorAggregate
 {
     private const NO_TIME_VALUE = "0000-00-00 00:00:00";

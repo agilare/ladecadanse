@@ -14,7 +14,8 @@
 >
     <projectFiles>
         <directory name="."/>
-        <ignoreFiles>
+        <!-- allowMissingFiles : node_modules/vendor n'existent pas dans un worktree frais -->
+        <ignoreFiles allowMissingFiles="true">
             <directory name=".claude"/>
             <directory name="docker"/>
             <directory name="node_modules"/>
@@ -25,29 +26,65 @@
             <directory name="vendor"/>
         </ignoreFiles>
     </projectFiles>
-    <!--    <plugins>
+    <plugins>
         <pluginClass class="Orklah\PsalmInsaneComparison\Plugin"/>
-    </plugins>-->
+    </plugins>
+    <!--
+    Globales du legacy : définies par app/config.php et app/bootstrap.php, puis
+    récupérées via `global $x;` dans les pages. Sans cette liste Psalm les voit
+    comme UndefinedGlobalVariable. Garder synchronisé avec ces deux fichiers.
+    -->
     <globals>
-        <var name="glo_auj_6h" type="string" />
-        <var name="glo_auj" type="string" />
-        <var name="glo_categories_lieux" type="array"/>
-        <var name="glo_tab_quartiers" type="array"/>
-        <var name="glo_menu_pratique" type="array"/>
+        <!-- app/bootstrap.php : objets de service -->
         <var name="connector" type="Ladecadanse\Utils\DbConnector"/>
-        <var name="url_query_region_et" type="string" />
-        <var name="url_images_interface_icons"  type="string"/>
-        <var name="url_query_region"    type="string"/>
-        <var name="url_query_region_1er" type="string"/>
-        <var name="page_titre" type="string"/>
-        <var name="nom_page" type="string"/>
-        <var name="auj" type="string"/>
-        <var name="evenement" type="array"/>
-        <var name="iconeSuite" type="string"/>
+        <var name="connectorPdo" type="Ladecadanse\Utils\DbConnectorPdo"/>
+        <var name="authorization" type="Ladecadanse\Security\Authorization"/>
+        <var name="videur" type="Ladecadanse\Security\Sentry"/>
+        <var name="tplEngine" type="Ladecadanse\TemplateEngine"/>
+        <var name="translator" type="Ladecadanse\Translator"/>
         <var name="assets" type="Ladecadanse\Utils\AssetManager"/>
+        <var name="logger" type="Monolog\Logger"/>
+        <var name="loggerApi" type="Monolog\Logger"/>
         <var name="site_full_url" type="string"/>
+        <var name="nom_page" type="string"/>
+
+        <!-- app/config.php : dates -->
+        <var name="auj" type="string"/>
+        <var name="glo_auj" type="string"/>
+        <var name="glo_auj_6h" type="string"/>
+
+        <!-- app/config.php : tableaux du domaine -->
+        <var name="glo_regions" type="array&lt;string, string&gt;"/>
+        <var name="glo_categories_lieux" type="array&lt;string, string&gt;"/>
+        <var name="glo_menu_pratique" type="array&lt;string, string&gt;"/>
+        <var name="glo_tab_genre" type="array&lt;string, string&gt;"/>
+        <var name="glo_tab_ailleurs" type="array&lt;string, string&gt;"/>
+        <var name="glo_tab_quartiers" type="list&lt;string&gt;"/>
+        <var name="glo_tab_quartiers2" type="array&lt;string, list&lt;string&gt;&gt;"/>
+        <var name="mimes_images_acceptes" type="list&lt;string&gt;"/>
+        <var name="mimes_documents_acceptes" type="list&lt;string&gt;"/>
+
+        <!-- app/config.php : chemins d'upload -->
+        <var name="rep_images_even" type="string"/>
+        <var name="rep_uploads_lieux" type="string"/>
+        <var name="rep_uploads_lieux_galeries" type="string"/>
+        <var name="rep_uploads_organisateurs" type="string"/>
+        <var name="rep_fichiers_lieu" type="string"/>
+
+        <!-- app/config.php : URLs et fragments d'interface -->
+        <var name="url_images_interface_icons" type="string"/>
+        <var name="url_query_region" type="string"/>
+        <var name="url_query_region_et" type="string"/>
+        <var name="url_query_region_1er" type="string"/>
+        <var name="icone" type="array&lt;string, string&gt;"/>
+        <var name="iconeEditer" type="string"/>
+        <var name="iconeCopier" type="string"/>
+        <var name="iconeSuite" type="string"/>
+
+        <!-- définies par les pages elles-mêmes avant inclusion de _header/_footer -->
+        <var name="page_titre" type="string"/>
+        <var name="evenement" type="array"/>
         <var name="calLinks" type="array"/>
-        <!--        <var name="logger" type="Logger"/>-->
     </globals>
 </psalm>
 <!--

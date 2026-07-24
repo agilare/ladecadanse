@@ -169,7 +169,6 @@ class LieuEdition extends Edition
     function enregistrer()
     {
         global $rep_uploads_lieux;
-        global $rep_templates;
         global $rep_fichiers_lieu;
         global $rep_uploads_lieux_galeries;
         global $glo_tab_quartiers2;
