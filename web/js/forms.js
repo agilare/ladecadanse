@@ -22,7 +22,14 @@ let ZebraDatepickerBasicConfig = {
 };
 
 const inputDatepickerConfig = {direction: [eventEditStartDate, false]};
-$('input.datepicker').Zebra_DatePicker({...ZebraDatepickerBasicConfig, ...inputDatepickerConfig});
+$('input.datepicker:not(.datepicker-always-visible)').Zebra_DatePicker({...ZebraDatepickerBasicConfig, ...inputDatepickerConfig});
+
+// POC (réservé aux SUPERADMIN) : calendrier "always visible" affiché en permanence sous le champ date
+// cf. https://stefangabos.github.io/Zebra_Datepicker/#always-visible
+if ($('input.datepicker-always-visible').length && $('#calendarDiv').length) {
+    const inputDatepickerAlwaysVisibleConfig = {direction: [eventEditStartDate, false], always_visible: $('#calendarDiv')};
+    $('input.datepicker-always-visible').Zebra_DatePicker({...ZebraDatepickerBasicConfig, ...inputDatepickerAlwaysVisibleConfig});
+}
 
 const inputDatepickerFromConfig = {direction: [eventEditStartDate, false], pair: $('input.datepicker_to'), readonly_element: false};
 $('input.datepicker_from').Zebra_DatePicker({...ZebraDatepickerBasicConfig, ...inputDatepickerFromConfig});

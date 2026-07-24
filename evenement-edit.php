@@ -964,11 +964,17 @@ if ($verif->nbErreurs() > 0)
     <fieldset>
         <legend>Date & horaire</legend>
 
+            <?php
+            // POC : calendrier "always visible" (Zebra_DatePicker) sous le champ date, réservé au niveau SUPERADMIN
+            $poc_calendrier_toujours_visible = isset($_SESSION['Sgroupe']) && (int) $_SESSION['Sgroupe'] === UserLevel::SUPERADMIN;
+            ?>
             <div style="display: inline-block;">
-                <label for="dateEvenement">Date*</label><input type="text" name="dateEvenement" id="dateEvenement" size="9" value="<?php echo sanitizeForHtml($champs['dateEvenement']); ?>" class="datepicker" placeholder="jj.mm.aaaa" required />
+                <label for="dateEvenement">Date*</label><input type="text" name="dateEvenement" id="dateEvenement" size="9" value="<?php echo sanitizeForHtml($champs['dateEvenement']); ?>" class="datepicker<?php echo $poc_calendrier_toujours_visible ? ' datepicker-always-visible' : ''; ?>" placeholder="jj.mm.aaaa" required />
                     <?php
                     echo $verif->getHtmlErreur('dateEvenement');
+                    if ($poc_calendrier_toujours_visible) {
                     ?><div id="calendarDiv"></div>
+                    <?php } ?>
                 </div>
 
 
