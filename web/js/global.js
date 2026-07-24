@@ -14,6 +14,7 @@ export const AppGlobal =
         Lieux.init();
         HomePage.init();
         Calendar.init();
+        Shortcuts.init();
     },
     commonInteractions : function bindEventsOfVariousInteractions()
     {
@@ -370,6 +371,119 @@ const Calendar =
             {
                 window.location.href = `/index.php?courant=${encodeURIComponent(courant)}`;
             });
+    }
+};
+
+
+/**
+ * Global keyboard shortcuts (issue #112). Keys are matched on event.key (never
+ * event.code) so they keep working whatever the visitor's keyboard layout is
+ * (AZERTY, QWERTZ, QWERTY...) - what changes between layouts is which physical
+ * key/modifier combo produces a given character, not the character itself.
+ * shiftKey is deliberately never used to filter out a shortcut, since some
+ * layouts require Shift to produce a character we bind to (e.g. "/" via
+ * Shift+7 on a Swiss keyboard).
+ */
+const Shortcuts =
+{
+    init : function bindKeyboardShortcuts()
+    {
+        document.addEventListener('keydown', Shortcuts.handleKeydown);
+    },
+
+    handleKeydown : function handleKeydown(e)
+    {
+        if (e.ctrlKey || e.altKey || e.metaKey || e.isComposing)
+        {
+            return;
+        }
+
+        const target = e.target;
+        if (target && (target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName)))
+        {
+            return;
+        }
+
+        const page = document.body.dataset.page;
+        let handled = false;
+
+        switch (e.key.toLowerCase())
+        {
+        case 'h':
+            handled = Shortcuts.activate('#titre_site a');
+            break;
+        case 's':
+            handled = Shortcuts.focusSearch();
+            break;
+        case 'a':
+            handled = Shortcuts.activate('a[href^="/evenement-edit.php?action=ajouter"]');
+            break;
+        }
+
+        if (!handled && page === 'index')
+        {
+            if (e.key === 'ArrowLeft')
+            {
+                handled = Shortcuts.activate('ul.entete_contenu_navigation a[rel~="prev"]');
+            }
+            else if (e.key === 'ArrowRight')
+            {
+                handled = Shortcuts.activate('ul.entete_contenu_navigation a[rel~="next"]');
+            }
+        }
+        else if (!handled && page === 'event/evenement')
+        {
+            if (e.key.toLowerCase() === 'f')
+            {
+                handled = Shortcuts.activate('#illustrations a.magnific-popup');
+            }
+            else if (e.key.toLowerCase() === 'e')
+            {
+                handled = Shortcuts.activate('a[href*="evenement-edit.php?action=editer"]');
+            }
+        }
+        else if (!handled && page === 'lieu/lieux' && e.key === '/')
+        {
+            handled = Shortcuts.focusElement('.table-filters input[name="nom"]');
+        }
+
+        if (handled)
+        {
+            e.preventDefault();
+        }
+    },
+
+    activate : function activate(selector)
+    {
+        const el = document.querySelector(selector);
+        if (!el)
+        {
+            return false;
+        }
+        el.click();
+        return true;
+    },
+
+    focusElement : function focusElement(selector)
+    {
+        const el = document.querySelector(selector);
+        if (!el)
+        {
+            return false;
+        }
+        el.focus();
+        return true;
+    },
+
+    focusSearch : function focusSearch()
+    {
+        const btnSearch = document.getElementById('btn_search');
+        if (btnSearch && btnSearch.offsetParent !== null)
+        {
+            btnSearch.click();
+            return true;
+        }
+        return Shortcuts.focusElement('form.recherche input.mots');
     }
 };
 
