@@ -33,6 +33,17 @@ class Personne
     }
 
 
+    public static function getPersonneById(int $idPersonne): ?array
+    {
+        global $connectorPdo;
+
+        $stmt = $connectorPdo->prepare("SELECT idPersonne, pseudo, email, groupe FROM personne WHERE idPersonne = ?");
+        $stmt->execute([$idPersonne]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result === false ? null : $result;
+    }
+
+
     public static function getPersonnes(array $filters, string $orderBy = 'dateAjout', string $orderDir = 'DESC', ?int $page = null, ?int $nbLignes = null): array
     {
         global $connectorPdo;
