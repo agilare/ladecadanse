@@ -928,6 +928,49 @@ if ($verif->nbErreurs() > 0)
     </p>
     <?php } ?>
 
+    <?php
+    if (($get['action'] == "editer" || $get['action'] == "update") && isset($get['idE']))
+    {
+    ?>
+
+    <fieldset>
+        <legend>Statut de l’événement</legend>
+        <ul class="radio">
+        <?php
+
+        $statuts = ['propose' => '<strong>proposé</strong> (non visible)', 'actif' => '<strong>publié</strong>', 'complet' => '<strong>publié</strong> mais <span class="even-statut-label statut-complet">COMPLET</span>', 'annule' => '<strong>publié</strong> mais <span class="even-statut-label statut-annule">ANNULÉ</span>', 'inactif' => '<strong>dépublié</strong>'];
+        foreach ($statuts as $s => $n)
+        {
+            if ($s === 'propose' && ($_SESSION['Sgroupe'] > 6 || (!empty($champs['user_email']) && $champs['statut'] != 'propose')))
+                continue;
+
+            $coche = '';
+            if (strcmp($s, (string) $champs['statut']) == 0)
+            {
+                $coche = 'checked="checked"';
+            }
+            echo '<li class="listehoriz">
+            <input type="radio" name="statut" value="'.$s.'" '.$coche.' id="statut_'.$s.'" title="statut de l\'événement" class="radio_horiz"
+        ';
+        echo '/>
+            <label class="continu" for="statut_'.$s.'">'.$n.'</label></li>';
+        }
+        ?>
+        </ul>
+        <?php
+        echo $verif->getHtmlErreur("statut");
+        ?>
+    </fieldset>
+    <?php
+    }
+    else
+    {
+    ?>
+        <input type="hidden" name="statut" value="actif" id="statut_actif" title="statut" />
+    <?php
+    }
+    ?>
+
     <fieldset>
         <legend>Catégorie*</legend>
 
@@ -1428,48 +1471,6 @@ if ($verif->nbErreurs() > 0)
         <p><label for="remarque">Remarque à l'administrateur (non publiée)</label><textarea name="remarque" id="remarque" cols="20" rows="6" <?php echo (isset($_SESSION['Sgroupe']) && !empty($champs['user_email'])) ? 'readonly class="readonly" ': ''; ?>><?php echo sanitizeForHtml($champs['remarque']) ?></textarea></p>
     </fieldset>
     <?php } ?>
-<?php
-if (($get['action'] == "editer" || $get['action'] == "update") && isset($get['idE']))
-{
-?>
-
-<fieldset>
-    <legend>Statut de l’événement</legend>
-    <ul class="radio">
-    <?php
-
-    $statuts = ['propose' => '<strong>proposé</strong> (non visible sur le site)', 'actif' => '<strong>publié</strong> (visible sur le site)',  'complet' => '<strong>complet</strong> (visible sur le site mais marqué comme étant complet)', 'annule' => '<strong>annulé</strong> (visible sur le site mais marqué comme étant annulé)', 'inactif' => '<strong>dépublié</strong> (non visible sur le site)'];
-    foreach ($statuts as $s => $n)
-    {
-        if ($s === 'propose' && ($_SESSION['Sgroupe'] > 6 || (!empty($champs['user_email']) && $champs['statut'] != 'propose')))
-            continue;
-
-        $coche = '';
-        if (strcmp($s, (string) $champs['statut']) == 0)
-        {
-            $coche = 'checked="checked"';
-        }
-        echo '<li style="display:block">
-        <input type="radio" name="statut" value="'.$s.'" '.$coche.' id="statut_'.$s.'" title="statut de l\'événement" class="radio_horiz"
-    ';
-    echo '/>
-        <label class="continu" for="statut_'.$s.'">'.$n.'</label></li>';
-    }
-    ?>
-    </ul>
-    <?php
-    echo $verif->getHtmlErreur("statut");
-    ?>
-</fieldset>
-<?php
-}
-else
-{
-?>
-        <input type="hidden" name="statut" value="actif" id="statut_actif" title="statut" />
-<?php
-}
-?>
 
 <p class="piedForm">
         <input type="hidden" name="formulaire" value="ok" />
