@@ -418,6 +418,9 @@ const Shortcuts =
         case 'a':
             handled = Shortcuts.activate('a[href^="/evenement-edit.php?action=ajouter"]');
             break;
+        case 'd':
+            handled = Shortcuts.activate('a[href="/admin/index.php"]');
+            break;
         }
 
         if (!handled && page === 'index')
@@ -441,10 +444,18 @@ const Shortcuts =
             {
                 handled = Shortcuts.activate('a[href*="evenement-edit.php?action=editer"]');
             }
+            else if (e.key.toLowerCase() === 'c')
+            {
+                handled = Shortcuts.activate('a[href^="/event/copy.php"]');
+            }
         }
         else if (!handled && page === 'lieu/lieux' && e.key === '/')
         {
             handled = Shortcuts.focusElement('.table-filters input[name="nom"]');
+        }
+        else if (!handled && (page === 'lieu/lieu' || page === 'organisateur/organisateur') && e.key.toLowerCase() === 'e')
+        {
+            handled = Shortcuts.activate('.action_editer a');
         }
 
         if (handled)
