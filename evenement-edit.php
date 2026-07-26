@@ -1002,7 +1002,7 @@ if ($verif->nbErreurs() > 0)
     ?>
 
     <fieldset style="padding-top:0.1em">
-        <legend>Statut de l’événement</legend>
+        <legend style="display:inline-block;margin-left:0;margin-top:0.5em;margin-bottom:0.5em">Statut de l’événement</legend>
         <ul class="radio">
         <?php
 
