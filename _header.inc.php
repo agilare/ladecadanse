@@ -109,7 +109,7 @@ use Ladecadanse\UserLevel;
     <?php endif; ?>
 </head>
 
-<body>
+<body data-page="<?= sanitizeForHtml($nom_page) ?>">
     <a id="main-shortcut" href="#contenu" aria-label="Aller au contenu principal"></a>
     <div id="global">
 
