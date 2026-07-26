@@ -253,25 +253,30 @@ include("_header.inc.php");
             <div class="spacer"></div>
         </div>
 
+        <?php if ($count_events_today_in_region > 0) : ?>
         <div id="genre_tab_navigation">
             <ul>
-                <li class="all">
-                    <i class="fa fa-filter" aria-hidden="true"></i>
-                    <?php if ($current_genre_tab !== 'tous') : ?>
-                        <a href="index.php?genre_tab=tous<?= $url_filter_params ?>"><i class="fa fa-times" aria-hidden="true"></i></a>
-                    <?php endif; ?>
-                </li>
+                <li class="all"><i class="fa fa-filter" aria-hidden="true"></i></li>
                 <?php foreach ($glo_tab_genre as $key => $label) : ?>
-                    <?php if (!array_key_exists($key, $tab_events_today_in_region_by_category)) : continue; endif; ?>
-                    <li class="<?= $current_genre_tab === $key ? 'ici' : '' ?>"><a href="index.php?genre_tab=<?= urlencode($key) ?><?= $url_filter_params ?>"><?= ucfirst($label) ?></a></li>
+                    <?php if (!array_key_exists($key, $tab_events_today_in_region_by_category) && $current_genre_tab !== $key) : continue; endif; ?>
+                    <?php if ($current_genre_tab === $key) : ?>
+                        <li class="ici"><a href="index.php?genre_tab=tous<?= $url_filter_params ?>" title="Retirer le filtre"><?= ucfirst($label) ?>&nbsp;<i class="fa fa-times" aria-hidden="true"></i></a></li>
+                    <?php else : ?>
+                        <li><a href="index.php?genre_tab=<?= urlencode($key) ?><?= $url_filter_params ?>"><?= ucfirst($label) ?></a></li>
+                    <?php endif; ?>
                 <?php endforeach; ?>
             </ul>
         </div>
+        <?php endif; ?>
 
         <?php
         if ($count_events_today_in_region == 0)
         {
             HtmlShrink::msgInfo("Pas d’événement prévu ce jour");
+        }
+        elseif ($current_genre_tab !== 'tous' && !array_key_exists($current_genre_tab, $tab_events_today_in_region_by_category))
+        {
+            HtmlShrink::msgInfo("Pas d’événement « " . ucfirst($glo_tab_genre[$current_genre_tab]) . " » prévu ce jour");
         }
 
         $genres_today = array_keys($tab_events_today_in_region_by_category);
