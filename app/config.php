@@ -80,6 +80,15 @@ $glo_tab_genre = ["fête" => "fêtes", "cinéma" => "ciné", "théâtre" => "th�
 $statuts_evenement = ['propose' => 'Proposé', 'actif' => 'Proposé', 'complet' => 'Complet', 'annule' => 'Annulé', 'inactif' => 'Dépublié'];
 $price_types = ['unknown' => 'inconnu', 'gratis' => 'entrée libre', 'asyouwish' => 'prix libre', 'chargeable' => 'payant'];
 $tab_tri_agenda = ["dateAjout", "horaire_debut"];
+$glo_motifs_notification_auteur = [
+    'depublie_charte'     => "l'événement a été dépublié car il enfreint la charte éditoriale",
+    'depublie_doublon'    => "l'événement a été dépublié car il existe déjà dans l'agenda",
+    'categorie_deplacee'  => "l'événement a été déplacé dans une catégorie plus appropriée",
+    'erreurs_corrigees'   => "une ou plusieurs erreurs ont été corrigées",
+    'lieu_remplace'       => "le lieu écrit manuellement a été remplacé par le lieu équivalent enregistré sur La décadanse",
+    'organisateur_ajoute' => "un organisateur manquant a été ajouté",
+    'image_ajoutee'       => "une image de l'événement a été ajoutée ou changée",
+];
 
 //// PLACES
 $statuts_lieu = ['actif', 'ancien', 'inactif'];
