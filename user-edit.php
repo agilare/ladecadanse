@@ -248,6 +248,11 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 
 			$sql_insert =  "INSERT INTO personne (".$sql_insert_attributs.") VALUES (".$sql_insert_valeurs.")";
 
+			// composer psalm:taint signale ici un TaintedSql : c'est un faux positif. Les
+			// noms de colonnes viennent des clés littérales de $champs (déclarées en haut
+			// de ce fichier), jamais de $_POST — seules les *valeurs* sont écrasées, et
+			// elles passent par sanitize(). Psalm ne distingue pas clé et valeur dans
+			// `$champs[$c] = $_POST[$c]` et teinte donc aussi les clés.
 			$req_insert = $connector->query($sql_insert);
 			$req_id = $connector->getInsertId();
 
