@@ -1240,22 +1240,14 @@ ul.menu_action
 }
 
 /* Favorites */
-ul.menu_action li a.favorite-btn,
-ul.menu_actions_evenement li a.favorite-btn
+a.favorite-btn
 {
     color: #a6a5a5;
 }
 
-ul.menu_action li a.favorite-btn:hover,
-ul.menu_action li a.favorite-btn:active,
-ul.menu_actions_evenement li a.favorite-btn:hover,
-ul.menu_actions_evenement li a.favorite-btn:active
-{
-    color: #e74c3c;
-}
-
-ul.menu_action li a.favorite-btn.is-favorite,
-ul.menu_actions_evenement li a.favorite-btn.is-favorite
+a.favorite-btn:hover,
+a.favorite-btn:active,
+a.favorite-btn.is-favorite
 {
     color: #e74c3c;
 }
@@ -1292,6 +1284,106 @@ ul.menu_actions_evenement li a.favorite-btn.is-favorite
         margin-left: 0.5em;
     }
 
+#favoris_filter_navigation
+{
+    margin-top: 0.6em;
+}
+
+    #favoris_filter_navigation ul
+    {
+        display: inline-block;
+        margin: 0.2em 0;
+        padding: 0;
+        list-style-type: none;
+    }
+
+#agenda_filters
+{
+    display: flex;
+    align-items: center;
+    margin-top: 0.6em;
+}
+
+#prochains_evenements > header
+{
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+    section#prochains_evenements > header h2
+    {
+        margin-right: auto;
+    }
+
+    #prochains_evenements > header #favoris_filter_navigation
+    {
+        margin: 0 0.25em 0 0;
+    }
+
+    #prochains_evenements > header #favoris_filter_navigation li a
+    {
+        padding: 0.6em;
+    }
+
+    #prochains_evenements > header #favoris_filter_navigation li.ici a
+    {
+        background: #e4e4e4;
+    }
+
+section#prochains_evenements table td.lieu_actions_evenement,
+td.favori_action
+{
+    width: 1%;
+    white-space: nowrap;
+}
+
+    #prochains_evenements > header ul#menu_periode
+    {
+        float: none;
+        width: auto;
+    }
+
+    #agenda_filters #favoris_filter_navigation,
+    #agenda_filters #order_navigation,
+    #agenda_filters #favoris_filter_navigation ul,
+    #agenda_filters #order_navigation ul
+    {
+        float: none;
+        margin: 0;
+    }
+
+    #agenda_filters #order_navigation
+    {
+        margin-left: auto;
+    }
+
+    #favoris_filter_navigation li
+    {
+        display: inline-block;
+    }
+
+    #favoris_filter_navigation li a
+    {
+        display: inline-block;
+        padding: 0.3em;
+        border-radius: 3px;
+    }
+
+    #favoris_filter_navigation li a .fa-heart
+    {
+        color: #e74c3c;
+    }
+
+    #favoris_filter_navigation li.ici a
+    {
+        background: #eee;
+    }
+
+    #favoris_filter_navigation li a:hover
+    {
+        background: #d4d4d4;
+    }
 
 ul.menu_edition
 {

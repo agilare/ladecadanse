@@ -24,6 +24,12 @@
     max-width: 100%;
 }
 
+#conteneur main.colonne
+{
+    float: none;
+    width: auto;
+}
+
 #menu ul li
 {
     float:left;
@@ -679,4 +685,32 @@ form#ajouter_editer p.memoriser label, form#ajouter_editer p.mdp_oublie
 
 #default #order_navigation {
   float: left;
+}
+
+#agenda_filters {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  row-gap: 0.4em;
+}
+
+#agenda_filters #favoris_filter_navigation,
+#agenda_filters #order_navigation {
+  flex-shrink: 0;
+}
+
+#prochains_evenements > header h2 {
+  flex-basis: 100%;
+  margin-right: 0;
+}
+
+#prochains_evenements > header #favoris_filter_navigation {
+  margin: 0 0.25em 0 auto;
+}
+
+#prochains_evenements > header ul#menu_periode {
+  margin: 0;
+}
+
+#prochains_evenements > header #favoris_filter_navigation[hidden] + ul#menu_periode {
+  margin-left: auto;
 }

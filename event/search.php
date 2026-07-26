@@ -9,6 +9,7 @@ use Ladecadanse\Utils\DateHelper;
 use Ladecadanse\Utils\Utils;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Evenement;
+use Ladecadanse\EvenementRenderer;
 use Ladecadanse\Lieu;
 use Ladecadanse\UserLevel;
 
@@ -263,13 +264,14 @@ $agenda_years = range((int)date("Y"), Evenement::AGENDA_START_YEAR);
                         };
                         $even_lieu = Evenement::getLieu($tab_even);
                         ?>
-                        <tr class="<?= $even_periode ?>">
+                        <tr class="<?= $even_periode ?>" data-event-id="<?= (int) $tab_even['e_idEvenement'] ?>">
                             <td class="desc_even">
                                 <h3><a href="evenement.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>"><?= sanitizeForHtml($tab_even['e_titre']) ?></a></h3>
                                 <p><?= $glo_tab_genre[$tab_even['e_genre']] ?></p>
                             </td>
                             <td><?= Lieu::getLinkNameHtml($even_lieu['nom'], $even_lieu['idLieu'], $even_lieu['salle']) ?></td>
                             <td class="date"><a href="/index.php?courant=<?= sanitizeForHtml($tab_even['e_dateEvenement']); ?>"><?= DateHelper::isoToFr($tab_even['e_dateEvenement'], 'annee') ?></a></td>
+                            <td class="favori_action"><?= EvenementRenderer::favoriteButtonHtml((int) $tab_even['e_idEvenement']) ?></td>
                             <?php if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] == UserLevel::SUPERADMIN)) : ?>
                             <td><?= round($tab_even['score'], 5) ?></td>
                             <?php endif; ?>

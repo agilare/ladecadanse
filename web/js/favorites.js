@@ -6,26 +6,26 @@ const FavoritesStore =
     isLoggedIn: false,
     _cache: new Set(),
 
-    init: async function initStore(isLoggedIn)
+    init: async function initStore(isLoggedIn, inlineIds)
     {
         this.isLoggedIn = isLoggedIn;
 
-        if (this.isLoggedIn)
-        {
-            const guestFavs = this._localGet();
-            if (guestFavs.length > 0)
-            {
-                await this._apiSync(guestFavs);
-                localStorage.removeItem(STORAGE_KEY);
-            }
-
-            const serverIds = await this._apiList();
-            this._cache = new Set(serverIds);
-        }
-        else
+        if (!this.isLoggedIn)
         {
             this._cache = new Set(this._localGet());
+            return;
         }
+
+        const guestFavs = this._localGet();
+        if (guestFavs.length > 0)
+        {
+            await this._apiSync(guestFavs);
+            localStorage.removeItem(STORAGE_KEY);
+            this._cache = new Set(await this._apiList());
+            return;
+        }
+
+        this._cache = new Set(Array.isArray(inlineIds) ? inlineIds : await this._apiList());
     },
 
     toggle: async function toggleFavorite(eventId)
@@ -63,11 +63,6 @@ const FavoritesStore =
     has: function hasFavorite(eventId)
     {
         return this._cache.has(parseInt(eventId, 10));
-    },
-
-    count: function countFavorites()
-    {
-        return this._cache.size;
     },
 
     getAll: function getAllFavorites()
@@ -143,29 +138,40 @@ export const Favorites =
         }
 
         const config = window.__LADECADANSE || {};
-        await FavoritesStore.init(!!config.isLoggedIn);
+        if (!config.favoritesEnabled)
+        {
+            return;
+        }
+
+        this._bindEvents();
+        await FavoritesStore.init(!!config.isLoggedIn, config.favoriteIds);
 
         this._hydrateButtons();
-        this._bindEvents();
         this._loadGuestFavorisPage();
+        this._applyFavorisFilter();
+    },
+
+    _setButtonState: function setButtonState($btn, isFavorite)
+    {
+        $btn.toggleClass('is-favorite', isFavorite);
+        $btn.find('i.fa').toggleClass('fa-heart', isFavorite).toggleClass('fa-heart-o', !isFavorite);
     },
 
     _hydrateButtons: function hydrateButtons()
     {
-        const store = FavoritesStore;
+        const self = this;
         $('.js-favorite-toggle').each(function ()
         {
-            const eventId = $(this).data('event-id');
-            if (store.has(eventId))
+            if (FavoritesStore.has($(this).data('event-id')))
             {
-                $(this).addClass('is-favorite');
-                $(this).find('i.fa').removeClass('fa-heart-o').addClass('fa-heart');
+                self._setButtonState($(this), true);
             }
         });
     },
 
     _bindEvents: function bindEvents()
     {
+        const self = this;
         const $content = $('#contenu');
 
         $content.on('click', '.js-favorite-toggle', async function (e)
@@ -174,18 +180,15 @@ export const Favorites =
             const $btn = $(this);
             const eventId = $btn.data('event-id');
             const isNowFavorite = await FavoritesStore.toggle(eventId);
+            self._setButtonState($btn, isNowFavorite);
+            self._renderFilter();
+        });
 
-            const $icon = $btn.find('i.fa');
-            if (isNowFavorite)
-            {
-                $btn.addClass('is-favorite');
-                $icon.removeClass('fa-heart-o').addClass('fa-heart');
-            }
-            else
-            {
-                $btn.removeClass('is-favorite');
-                $icon.removeClass('fa-heart').addClass('fa-heart-o');
-            }
+        $content.on('click', '.js-favoris-filter', function (e)
+        {
+            e.preventDefault();
+            self._setFilter($(this).data('filter'));
+            self._applyFavorisFilter();
         });
 
         if (localStorage.getItem(DISMISS_KEY) === '1')
@@ -205,41 +208,6 @@ export const Favorites =
     {
         const params = new URLSearchParams(window.location.search);
         return params.get(name);
-    },
-
-    _buildPaginationHtml: function buildPaginationHtml(page, totalPages)
-    {
-        if (totalPages <= 1)
-        {
-            return '';
-        }
-
-        let html = '<div class="pagination">';
-
-        if (page > 1)
-        {
-            html += '<a id="prec" href="/favoris.php?view=passes&amp;page=' + (page - 1) + '" rel="prev">préc</a>';
-        }
-
-        for (let i = 1; i <= totalPages; i++)
-        {
-            if (i === page)
-            {
-                html += '<span class="current">' + i + '</span>';
-            }
-            else
-            {
-                html += '<a href="/favoris.php?view=passes&amp;page=' + i + '">' + i + '</a>';
-            }
-        }
-
-        if (page < totalPages)
-        {
-            html += '<a id="suiv" href="/favoris.php?view=passes&amp;page=' + (page + 1) + '" rel="next">suiv</a>';
-        }
-
-        html += '</div>';
-        return html;
     },
 
     _buildGuestSidebar: function buildGuestSidebar(months)
@@ -307,9 +275,8 @@ export const Favorites =
 
                 if (view === 'passes')
                 {
-                    const paginationHtml = this._buildPaginationHtml(data.page, data.totalPages);
-                    $paginationTop.html(paginationHtml);
-                    $pagination.html(paginationHtml);
+                    $paginationTop.html(data.paginationHtml || '');
+                    $pagination.html(data.paginationHtml || '');
                 }
             }
             else
@@ -328,5 +295,110 @@ export const Favorites =
         {
             $loading.text('Erreur lors du chargement des favoris.');
         }
+    },
+
+    _FILTER_KEY: 'ladecadanse_favorites_filter',
+
+    _getFilter: function getFilter()
+    {
+        return localStorage.getItem(this._FILTER_KEY) === 'favoris' ? 'favoris' : 'tous';
+    },
+
+    _setFilter: function setFilter(value)
+    {
+        localStorage.setItem(this._FILTER_KEY, value === 'favoris' ? 'favoris' : 'tous');
+    },
+
+    _eventElements: function eventElements()
+    {
+        return $('article.evenement-short[data-event-id], tr.evenement[data-event-id]');
+    },
+
+    _displayFilter: 'tous',
+
+    _markActiveTab: function markActiveTab(filter)
+    {
+        $('#favoris_filter_navigation .js-favoris-filter').each(function ()
+        {
+            $(this).closest('li').toggleClass('ici', $(this).data('filter') === filter);
+        });
+    },
+
+    _renderFilter: function renderFilter()
+    {
+        const $nav = $('#favoris_filter_navigation');
+        if ($nav.length === 0)
+        {
+            return;
+        }
+
+        const store = FavoritesStore;
+        const favorisMode = this._displayFilter === 'favoris';
+        const $events = this._eventElements();
+        let favInList = 0;
+
+        $events.each(function ()
+        {
+            const isFav = store.has(parseInt($(this).data('event-id'), 10));
+            if (isFav)
+            {
+                favInList++;
+            }
+            $(this).toggle(!favorisMode || isFav);
+        });
+
+        if (favInList === 0)
+        {
+            $nav.attr('hidden', 'hidden');
+            this._displayFilter = 'tous';
+            $events.show();
+            this._syncGroupHeaders(false);
+            return;
+        }
+
+        $nav.removeAttr('hidden');
+        $nav.find('.js-favoris-count').text('(' + favInList + ')');
+        this._markActiveTab(this._displayFilter);
+        this._syncGroupHeaders(favorisMode);
+    },
+
+    _applyFavorisFilter: function applyFavorisFilter()
+    {
+        this._displayFilter = this._getFilter();
+        this._renderFilter();
+    },
+
+    _syncGroupHeaders: function syncGroupHeaders(favorisMode)
+    {
+        const $genres = $('#prochains_evenements section.genre');
+        const $monthRows = $('#prochains_evenements tr').has('td.mois');
+
+        if (!favorisMode)
+        {
+            $genres.show();
+            $monthRows.show();
+            return;
+        }
+
+        $genres.each(function ()
+        {
+            $(this).toggle($(this).find('article.evenement-short:visible').length > 0);
+        });
+
+        $monthRows.each(function ()
+        {
+            let $row = $(this).next();
+            let hasVisible = false;
+            while ($row.length && $row.find('td.mois').length === 0)
+            {
+                if ($row.is('.evenement') && $row.is(':visible'))
+                {
+                    hasVisible = true;
+                    break;
+                }
+                $row = $row.next();
+            }
+            $(this).toggle(hasVisible);
+        });
     }
 };

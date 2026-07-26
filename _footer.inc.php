@@ -98,7 +98,16 @@ use Ladecadanse\UserLevel;
         </script>
     <?php endif; ?>
     <?= $assets->getImportMap(['js/browser.js', 'js/global.js']); ?>
-    <script nonce="<?= CSP_NONCE ?>">window.__LADECADANSE = { isLoggedIn: <?= json_encode(!empty($_SESSION['logged'])) ?> };</script>
+    <?php
+    $ladecadanseJsConfig = ['isLoggedIn' => !empty($_SESSION['logged']), 'favoritesEnabled' => isFavoritesEnabled()];
+    if ($ladecadanseJsConfig['favoritesEnabled'] && $ladecadanseJsConfig['isLoggedIn'] && isset($connectorPdo))
+    {
+        $favoriteIdsStmt = $connectorPdo->prepare("SELECT idEvenement FROM personne_evenement WHERE idPersonne = ?");
+        $favoriteIdsStmt->execute([(int) $_SESSION['SidPersonne']]);
+        $ladecadanseJsConfig['favoriteIds'] = array_map('intval', $favoriteIdsStmt->fetchAll(PDO::FETCH_COLUMN));
+    }
+    ?>
+    <script nonce="<?= CSP_NONCE ?>">window.__LADECADANSE = <?= json_encode($ladecadanseJsConfig) ?>;</script>
     <script type="module" src="<?= $assets->get("js/main.js"); ?>"></script>
 
 </body>

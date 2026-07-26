@@ -233,11 +233,14 @@ include("_header.inc.php");
 
     <div id="prochains_evenements">
 
-        <div id="order_navigation">
-            <ul>
-                <li style="margin-right:5px"><i class="fa fa-sort-amount-asc" aria-hidden="true"></i></li><li style="margin-right:2px"><a href="index.php?tri_agenda=dateAjout<?= (!$is_courant_today ? '&amp;courant=' . sanitizeForHtml($get['courant']) : '' ); ?>" class="<?php if ($_SESSION['user_prefs_agenda_order'] == 'dateAjout') : ?>selected<?php endif; ?>" rel="nofollow">Dernier ajouté</a></li><li><a href="index.php?tri_agenda=horaire_debut<?= (!$is_courant_today ? '&amp;courant=' . sanitizeForHtml($get['courant']) : '' ) ?>" class="<?php if ($_SESSION['user_prefs_agenda_order'] == 'horaire_debut') : ?>selected<?php endif; ?>" rel="nofollow">Heure de début</a></li>
-            </ul>
-            <div class="spacer"></div>
+        <div id="agenda_filters">
+            <?php include("_favoris_filter_navigation.inc.php"); ?>
+
+            <div id="order_navigation">
+                <ul>
+                    <li style="margin-right:5px"><i class="fa fa-sort-amount-asc" aria-hidden="true"></i></li><li style="margin-right:2px"><a href="index.php?tri_agenda=dateAjout<?= (!$is_courant_today ? '&amp;courant=' . sanitizeForHtml($get['courant']) : '' ); ?>" class="<?php if ($_SESSION['user_prefs_agenda_order'] == 'dateAjout') : ?>selected<?php endif; ?>" rel="nofollow">Dernier ajouté</a></li><li><a href="index.php?tri_agenda=horaire_debut<?= (!$is_courant_today ? '&amp;courant=' . sanitizeForHtml($get['courant']) : '' ) ?>" class="<?php if ($_SESSION['user_prefs_agenda_order'] == 'horaire_debut') : ?>selected<?php endif; ?>" rel="nofollow">Heure de début</a></li>
+                </ul>
+            </div>
         </div>
 
         <?php
@@ -289,7 +292,7 @@ include("_header.inc.php");
                                     include("event/_calendar_export.inc.php");
                                     unset($calExportCompact, $calExportId);
                                     ?>
-                                    <li><a href="#" class="js-favorite-toggle favorite-btn" data-event-id="<?= (int) $tab_even['e_idEvenement'] ?>" title="Favori"><i class="fa fa-heart-o fa-lg"></i></a></li>
+                                    <li><?= Ladecadanse\EvenementRenderer::favoriteButtonHtml((int) $tab_even['e_idEvenement']) ?></li>
                                 </ul>
 
                                 <?php if ($authorization->isPersonneAllowedToEditEvenement($_SESSION, $tab_even)) : ?>
