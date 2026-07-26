@@ -421,6 +421,12 @@ const Shortcuts =
         case 'd':
             handled = Shortcuts.activate('a[href="/admin/index.php"]');
             break;
+        case 'l':
+            handled = Shortcuts.activate('a[href^="/lieu/lieux.php"]');
+            break;
+        case 'o':
+            handled = Shortcuts.activate('a[href^="/organisateur/organisateurs.php"]');
+            break;
         }
 
         if (!handled && page === 'index')
