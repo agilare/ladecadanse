@@ -1001,7 +1001,7 @@ if ($verif->nbErreurs() > 0)
     {
     ?>
 
-    <fieldset>
+    <fieldset style="padding-top:0.3em">
         <legend>Statut de l’événement</legend>
         <ul class="radio">
         <?php
@@ -1017,7 +1017,7 @@ if ($verif->nbErreurs() > 0)
             {
                 $coche = 'checked="checked"';
             }
-            $ligne = in_array($s, ['propose', 'actif', 'inactif'], true) ? ' style="display:block"' : '';
+            $ligne = in_array($s, ['propose', 'inactif'], true) ? ' style="display:block"' : '';
             echo '<li class="listehoriz"'.$ligne.'>
             <input type="radio" name="statut" value="'.$s.'" '.$coche.' id="statut_'.$s.'" title="statut de l\'événement" class="radio_horiz"
         ';
