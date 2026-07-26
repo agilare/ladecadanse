@@ -41,6 +41,9 @@ parameters:
         - PARTIAL_EDIT_MODE
     inferPrivatePropertyTypeFromConstructor: true
     checkMissingTypehints: true
+    # constantes de configuration dont la valeur dépend de l'environnement (env.php)
+    dynamicConstantNames:
+        - BOT_MONITORING_ENABLED
     ignoreErrors:
         # Pattern legacy : les pages comptent sur des variables définies par les
         # fichiers qui les incluent (bootstrap, _header). Ignoré seulement hors de

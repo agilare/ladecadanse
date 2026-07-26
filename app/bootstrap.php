@@ -153,6 +153,15 @@ if (DARKVISITORS_ENABLED)
     });
 }
 
+// suivi léger des bots et IP suspectes (voir librairies/BotMonitor.php) ;
+// exécuté au shutdown pour ne pas ralentir le rendu ; utilisateurs connectés exclus ;
+// le garde defined() protège si le env.php de prod n'a pas encore la constante
+if (defined('BOT_MONITORING_ENABLED') && BOT_MONITORING_ENABLED && empty($_SESSION['logged'])) {
+    register_shutdown_function(function () use ($connectorPdo, $logger) {
+        (new \Ladecadanse\BotMonitor($connectorPdo->getPDO(), $logger))->track();
+    });
+}
+
 header('X-Content-Type-Options: nosniff');
 define("CSP_NONCE", bin2hex(openssl_random_pseudo_bytes(32)));
 $csp = implode('; ', [

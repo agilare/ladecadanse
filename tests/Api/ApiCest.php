@@ -5,7 +5,7 @@ use Tests\Support\ApiTester;
 use Codeception\Util\HttpCode;
 use Codeception\Util\JsonType;
 
-require_once __DIR__ . '/../app/env.php';
+require_once __DIR__ . '/../../app/env.php';
 
 class ApiCest
 {
@@ -16,7 +16,7 @@ class ApiCest
 
     public function _before(ApiTester $I)
     {
-        $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+        $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
         $dotenv->load();
         $this->validRequestParams['date'] = $_ENV['LADECADANSE_API_KEY_QUERY_DATE'];
         $this->validRequestParams['endtime'] = $_ENV['LADECADANSE_API_KEY_QUERY_ENDTIME'];

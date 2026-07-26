@@ -1909,3 +1909,9 @@ ul#menu_calendrier li form p
     background: rgba(92, 115, 120, 0.85);
     outline: 2px solid #fff;
 }
+/* piège à scrapers (voir _footer.inc.php) : lien positionné hors écran
+   plutôt que display:none, que certains scrapers savent filtrer */
+.hp-link {
+    position: absolute;
+    left: -9999px;
+}

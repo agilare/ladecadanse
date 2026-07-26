@@ -8,6 +8,8 @@
 ### Added
 - events : in forms add <optgroup> by canton for lieux select
 - lieux, organisateurs, gererEvenements, users : add button next to search fields to clear and resubmit the filter in one click
+- bots : internal monitoring of bots and suspicious IPs (table `bot_monitor`, honeypot, admin dashboard) ; before enabling `BOT_MONITORING_ENABLED`, complete `app/env.php` (see `env_model.php`) and create the table (`resources/v3-10-1_bot_monitor-create-table.sql`)
+- tests : new Codeception `site` suite (PhpBrowser) with functional tests for the bots honeypot ; set `LADECADANSE_SITE_URL` in `tests/.env`
 
 ### Changed
 - events : in forms, lieux select options values are displayed as is

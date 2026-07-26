@@ -1,0 +1,64 @@
+/* Dashboard de monitoring des bots (admin/bots.php) */
+
+#conteneur .bots-totaux {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8em;
+    list-style: none;
+    margin: 0 0 1em 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+.bots-totaux li {
+    background: #f4f4f4;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    padding: 0.4em 0.8em;
+}
+
+.bots-tabs {
+    margin: 0 0 1em 0;
+    border-bottom: 1px solid #ccc;
+}
+
+.bots-tabs a {
+    display: inline-block;
+    padding: 0.5em 1em;
+    text-decoration: none;
+    border: 1px solid transparent;
+    border-bottom: none;
+    border-radius: 3px 3px 0 0;
+}
+
+.bots-tabs a.ici {
+    background: #fff;
+    border-color: #ccc;
+    font-weight: bold;
+    position: relative;
+    top: 1px;
+}
+
+.bots-avertissement {
+    color: #856404;
+    background: #fff3cd;
+    border: 1px solid #ffeeba;
+    border-radius: 3px;
+    padding: 0.5em 0.8em;
+    max-width: 45em;
+}
+
+/* la table défile dans son conteneur plutôt que d'élargir la page */
+.bots-table-wrapper {
+    overflow-x: auto;
+}
+
+.bots-ip {
+    font-family: monospace;
+    white-space: nowrap;
+}
+
+.bots-ua {
+    word-break: break-all;
+    max-width: 30em;
+}
