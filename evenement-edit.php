@@ -9,9 +9,11 @@ use Ladecadanse\Security\SecurityToken;
 use Ladecadanse\Evenement; // domain
 use Ladecadanse\EvenementRenderer; // presentation
 use Ladecadanse\Utils\Mailing;
+use Ladecadanse\Utils\AuteurNotifier;
 use Ladecadanse\HtmlShrink; // template
 use Ladecadanse\UserLevel; // domain
 use Ladecadanse\Utils\DateHelper;
+use Ladecadanse\Personne;
 
 // template...
 $page_titre = "Proposer un événement";
@@ -82,7 +84,7 @@ if (isset($_GET['idO']))
 // autorization to edit : author, 'admin' level, member of lieu, member of organisateur, member of lieu's organisateur
 if ($get['action'] != "ajouter" && $get['action'] != "insert")
 {
-    $res_even_lieu = $connector->query("SELECT idLieu, statut FROM evenement WHERE idEvenement=" . (int) $get['idE']);
+    $res_even_lieu = $connector->query("SELECT idLieu, statut, idPersonne, user_email, dateAjout FROM evenement WHERE idEvenement=" . (int) $get['idE']);
     $tab_even_lieu = $connector->fetchArray($res_even_lieu);
 
     if (
@@ -97,6 +99,34 @@ if ($get['action'] != "ajouter" && $get['action'] != "insert")
     }
 }
 
+// Résolution de l'auteur original de l'événement, pour le fieldset "E-mail à l'auteur" (issue #149)
+// (ne pas utiliser $champs['idPersonne'] plus bas : il est écrasé par l'idPersonne de la session courante)
+$original_author_groupe     = null; // null = soumission anonyme, traitée comme non-admin
+$original_author_email      = null;
+$original_author_name       = '';
+$original_author_idPersonne = null;
+if (!empty($tab_even_lieu['idPersonne']))
+{
+    $auteur = Personne::getPersonneById((int) $tab_even_lieu['idPersonne']);
+    if ($auteur)
+    {
+        $original_author_groupe     = (int) $auteur['groupe'];
+        $original_author_email      = $auteur['email'];
+        $original_author_name       = $auteur['pseudo'];
+        $original_author_idPersonne = (int) $auteur['idPersonne'];
+    }
+}
+elseif (!empty($tab_even_lieu['user_email']))
+{
+    $original_author_email = $tab_even_lieu['user_email'];
+}
+
+$can_notify_auteur =
+    isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= UserLevel::ADMIN
+    && ($get['action'] === "editer" || $get['action'] === "update") && isset($get['idE'])
+    && !empty($original_author_email)
+    && ($original_author_groupe === null || $original_author_groupe >= UserLevel::AUTHOR);
+
 // form values received
 $champs = ["statut" => "", "genre" => "", "titre" => "", "dateEvenement" => "", "idLieu" => 0,
  "idSalle" => 0, "nomLieu" => "", "adresse" => "", "quartier" => "",  "localite_id" => "", "region" => "", "urlLieu" => "", 'organisateurs' => '', "description" => "", "ref" => "",
@@ -107,6 +137,8 @@ $url_flyer = '';
 $url_image = '';
 $fetched_flyer = null;
 $fetched_image = null;
+$notif_motifs = [];
+$notif_message = '';
 
 $show_form = true;
 $formTokenName = 'form_token_evenement_edit';
@@ -300,6 +332,19 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 	$verif->valider($champs['horaire_complement'], "horaire_complement", "texte", 1, 200, 0);
     $verif->valider($champs['prix'], "prix", "texte", 1, 100, 0);
 	$verif->valider($champs['prelocations'], "prelocations", "texte", 1, 200, 0);
+
+    // "E-mail à l'auteur" (issue #149) : ne pas mettre dans $champs, ce ne sont pas des colonnes de evenement
+    $notif_motifs = [];
+    if ($can_notify_auteur && isset($_POST['notif_motifs']) && is_array($_POST['notif_motifs']))
+    {
+        $notif_motifs = array_values(array_intersect($_POST['notif_motifs'], array_keys($glo_motifs_notification_auteur)));
+    }
+    $notif_message = $can_notify_auteur ? trim((string) ($_POST['notif_message'] ?? '')) : '';
+    if ($can_notify_auteur)
+    {
+        // le message est obligatoire seulement si aucun motif n'a été sélectionné
+        $verif->valider($notif_message, "notif_message", "texte", 0, 2000, empty($notif_motifs) ? 1 : 0);
+    }
 
     // public : email (required) and remark
     if (!isset($_SESSION['Sgroupe']))
@@ -658,6 +703,29 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 
                         $mailer = new Mailing();
                         $mailer->toUser($champs['user_email'], $subject, $contenu_message);
+                    }
+                }
+
+                // E-mail à l'auteur (issue #149)
+                if ($can_notify_auteur && (!empty($notif_motifs) || $notif_message !== ''))
+                {
+                    $notifier = new AuteurNotifier($tplEngine, new Mailing());
+                    $sent = $notifier->notify(
+                        $original_author_email,
+                        $original_author_name,
+                        $champs['titre'],
+                        $champs['dateEvenement'],
+                        $tab_even_lieu['dateAjout'] ?? '',
+                        $site_full_url . "event/evenement.php?idE=" . $req_id,
+                        $_SESSION['Semail'] ?? EMAIL_ADMIN,
+                        $_SESSION['user'] ?? '',
+                        $notif_motifs,
+                        $notif_message,
+                        $glo_motifs_notification_auteur
+                    );
+                    if ($sent)
+                    {
+                        $confirmation_flash_msg .= " Un message a été envoyé à l'auteur de l'événement.";
                     }
                 }
 
@@ -1471,6 +1539,33 @@ if ($verif->nbErreurs() > 0)
         <p><label for="remarque">Remarque à l'administrateur (non publiée)</label><textarea name="remarque" id="remarque" cols="20" rows="6" <?php echo (isset($_SESSION['Sgroupe']) && !empty($champs['user_email'])) ? 'readonly class="readonly" ': ''; ?>><?php echo sanitizeForHtml($champs['remarque']) ?></textarea></p>
     </fieldset>
     <?php } ?>
+
+<?php if ($can_notify_auteur): ?>
+<fieldset>
+    <legend>E-mail à l’auteur</legend>
+    <p>
+        <label>Pour</label>
+        <?php if (!empty($original_author_idPersonne)) { ?>
+        <a href="/user.php?idP=<?php echo $original_author_idPersonne ?>"><?php echo sanitizeForHtml($original_author_name) ?></a> —
+        <?php } ?>
+        <a href="mailto:<?php echo sanitizeForHtml($original_author_email) ?>"><?php echo sanitizeForHtml($original_author_email) ?></a>
+    </p>
+    <p>
+        <label for="notif_motifs">Motif(s)</label>
+        <select name="notif_motifs[]" id="notif_motifs" multiple data-placeholder="Choisissez un ou plusieurs motifs (optionnel)">
+            <?php foreach ($glo_motifs_notification_auteur as $key => $label) { ?>
+            <option value="<?php echo sanitizeForHtml($key) ?>" <?php echo in_array($key, $notif_motifs, true) ? 'selected="selected"' : '' ?>><?php echo sanitizeForHtml($label) ?></option>
+            <?php } ?>
+        </select>
+        <?php echo $verif->getHtmlErreur('notif_motifs'); ?>
+    </p>
+    <p>
+        <label for="notif_message">Message<?php echo empty($notif_motifs) ? ' *' : '' ?></label>
+        <textarea name="notif_message" id="notif_message" cols="20" rows="6" maxlength="2000"><?php echo sanitizeForHtml($notif_message) ?></textarea>
+        <?php echo $verif->getHtmlErreur('notif_message'); ?>
+    </p>
+</fieldset>
+<?php endif; ?>
 
 <p class="piedForm">
         <input type="hidden" name="formulaire" value="ok" />
