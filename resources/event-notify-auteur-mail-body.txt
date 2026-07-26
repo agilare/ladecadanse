@@ -1,8 +1,6 @@
 Bonjour,
 
-L'événement que vous avez ajouté le %date_creation% a été modifié par l'administrateur%motif_clause%
-
-%message%
+%corps%
 
 Meilleures salutations
 

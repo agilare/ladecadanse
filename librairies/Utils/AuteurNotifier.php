@@ -36,6 +36,7 @@ class AuteurNotifier
         string $eventTitre,
         string $eventDateEvenement,
         string $eventDateCreation,
+        string $eventUrl,
         string $adminEmail,
         string $adminName,
         array $motifKeys,
@@ -45,14 +46,24 @@ class AuteurNotifier
         $motifLabels = array_values(array_intersect_key($motifsCatalogue, array_flip($motifKeys)));
 
         $dateFr = DateHelper::isoToFr($eventDateEvenement, 'annee', true, false, false);
-        $subject = "La décadanse : votre événement \"{$eventTitre}\" du {$dateFr} a été modifié par l'administrateur";
+        $subject = "La décadanse : votre événement \"{$eventTitre}\" du {$dateFr}";
 
-        $motifClause = empty($motifLabels) ? '.' : ' : ' . implode(', ', $motifLabels) . '.';
+        $corps = "Concernant l'événement \"{$eventTitre}\" {$eventUrl} que vous avez ajouté le "
+            . DateHelper::isoToFr($eventDateCreation, 'annee', true, false, false) . " :";
+
+        foreach ($motifLabels as $label)
+        {
+            $corps .= "\n - {$label}";
+        }
+
+        $message = trim($message);
+        if ($message !== '')
+        {
+            $corps .= "\n\n{$message}";
+        }
 
         $body = $this->templateEngine->render('event-notify-auteur-mail-body', [
-            'date_creation' => DateHelper::isoToFr($eventDateCreation, 'annee', true, false, false),
-            'motif_clause'  => $motifClause,
-            'message'       => trim($message),
+            'corps' => $corps,
         ]);
 
         return $this->mailing->toUser($authorEmail, $subject, $body, ['email' => $adminEmail, 'name' => $adminName]);
