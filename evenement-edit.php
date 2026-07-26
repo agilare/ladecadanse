@@ -968,14 +968,19 @@ if ($verif->nbErreurs() > 0)
             // POC : calendrier "always visible" (Zebra_DatePicker) sous le champ date, réservé au niveau SUPERADMIN
             $poc_calendrier_toujours_visible = isset($_SESSION['Sgroupe']) && (int) $_SESSION['Sgroupe'] === UserLevel::SUPERADMIN;
             ?>
-            <div style="display: inline-block;">
-                <label for="dateEvenement">Date*</label><input type="text" name="dateEvenement" id="dateEvenement" size="9" value="<?php echo sanitizeForHtml($champs['dateEvenement']); ?>" class="datepicker<?php echo $poc_calendrier_toujours_visible ? ' datepicker-always-visible' : ''; ?>" placeholder="jj.mm.aaaa" required />
+            <div style="display: flex; align-items: flex-start; gap: 6px; flex-wrap: wrap;">
+                <label for="dateEvenement" style="white-space: nowrap;">Date*</label>
+                <div style="display: flex; flex-direction: column; align-items: flex-start;">
+                    <input type="text" name="dateEvenement" id="dateEvenement" size="9" value="<?php echo sanitizeForHtml($champs['dateEvenement']); ?>" class="datepicker<?php echo $poc_calendrier_toujours_visible ? ' datepicker-always-visible' : ''; ?>" placeholder="jj.mm.aaaa" required />
                     <?php
                     echo $verif->getHtmlErreur('dateEvenement');
                     if ($poc_calendrier_toujours_visible) {
-                    ?><div id="calendarDiv"></div>
+                    // le calendrier est positionné en absolu par la librairie ; on réserve sa hauteur ici
+                    // pour qu'il occupe sa place dans le flux au lieu de recouvrir les champs suivants
+                    ?><div id="calendarDiv" style="position: relative; height: 340px; margin-top: 6px;"></div>
                     <?php } ?>
                 </div>
+            </div>
 
 
 
