@@ -1087,9 +1087,10 @@ if ($verif->nbErreurs() > 0)
                     <?php
                     echo $verif->getHtmlErreur('dateEvenement');
                     if ($poc_calendrier_toujours_visible) {
-                    // le calendrier est positionné en absolu par la librairie ; on réserve sa hauteur ici
-                    // pour qu'il occupe sa place dans le flux au lieu de recouvrir les champs suivants
-                    ?><div id="calendarDiv" style="position: relative; height: 340px; margin-top: 6px;"></div>
+                    // le calendrier est positionné en absolu par la librairie ; on réserve sa place dans le flux
+                    // (au lieu de recouvrir les champs suivants) via position:relative, la hauteur exacte étant
+                    // ajustée dynamiquement en JS (forms.js) selon le nombre de semaines du mois et la largeur d'écran
+                    ?><div id="calendarDiv" style="position: relative; margin-top: 6px;"></div>
                     <?php } ?>
                 </div>
             </div>
