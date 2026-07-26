@@ -29,6 +29,19 @@ $('input.datepicker:not(.datepicker-always-visible)').Zebra_DatePicker({...Zebra
 if ($('input.datepicker-always-visible').length && $('#calendarDiv').length) {
     const inputDatepickerAlwaysVisibleConfig = {direction: [eventEditStartDate, false], always_visible: $('#calendarDiv')};
     $('input.datepicker-always-visible').Zebra_DatePicker({...ZebraDatepickerBasicConfig, ...inputDatepickerAlwaysVisibleConfig});
+
+    // le calendrier de la librairie est en position:absolute ; on ajuste dynamiquement la hauteur
+    // du conteneur (position:relative) sur celle réellement rendue, pour éviter tout espace vide
+    // résiduel (le nombre de semaines affichées varie selon le mois, et la largeur/le retour à la
+    // ligne du pied de page varient entre desktop et mobile)
+    const calendarDiv = document.getElementById('calendarDiv');
+    const syncCalendarHeight = () => {
+        const calendar = calendarDiv.querySelector('.Zebra_DatePicker');
+        calendarDiv.style.height = calendar ? calendar.offsetHeight + 'px' : '';
+    };
+    new MutationObserver(syncCalendarHeight).observe(calendarDiv, {childList: true, subtree: true});
+    window.addEventListener('resize', syncCalendarHeight);
+    syncCalendarHeight();
 }
 
 const inputDatepickerFromConfig = {direction: [eventEditStartDate, false], pair: $('input.datepicker_to'), readonly_element: false};
