@@ -1346,32 +1346,72 @@ ul#menu_periode
     display:none;
 }
 
-/* Bouton "vider + relancer la recherche" accolé à un champ input[type=search] */
-.js-clear-search-field
+/* Champ de recherche avec bouton "vider + relancer la recherche" intégré au champ */
+.search-field
 {
+    position:relative;
     display:inline-block;
+    vertical-align:middle;
+}
+
+.search-field input[type="search"]
+{
+    box-sizing:border-box;
+    padding-right:22px;
+}
+
+.search-field .js-clear-search-field
+{
+    position:absolute;
+    top:50%;
+    right:3px;
+    transform:translateY(-50%);
+    width:16px;
+    height:16px;
+    padding:0;
     border:1px solid #aaa;
     border-radius:50%;
     background:#f4f4f4;
     cursor:pointer;
-    width:20px;
-    height:20px;
-    line-height:18px;
-    font-size:0.9em;
-    color:#666;
-    padding:0;
-    margin-left:2px;
-    vertical-align:middle;
-    text-align:center;
+    color:transparent;
 }
 
-.js-clear-search-field:hover
+/* croix dessinée en CSS (2 barres croisées) plutôt qu'un glyphe de police,
+   pour un centrage pixel-perfect indépendant des métriques de la fonte */
+.search-field .js-clear-search-field::before,
+.search-field .js-clear-search-field::after
+{
+    content:"";
+    position:absolute;
+    top:50%;
+    left:50%;
+    width:8px;
+    height:1px;
+    background:#666;
+}
+
+.search-field .js-clear-search-field::before
+{
+    transform:translate(-50%, -50%) rotate(45deg);
+}
+
+.search-field .js-clear-search-field::after
+{
+    transform:translate(-50%, -50%) rotate(-45deg);
+}
+
+.search-field .js-clear-search-field:hover
 {
     background:#e4e4e4;
-    color:#333;
 }
 
-input[type="search"]:placeholder-shown + .js-clear-search-field
+.search-field .js-clear-search-field:hover::before,
+.search-field .js-clear-search-field:hover::after
+{
+    background:#333;
+}
+
+.search-field input[type="search"]:placeholder-shown + .js-clear-search-field
 {
     display:none;
 }

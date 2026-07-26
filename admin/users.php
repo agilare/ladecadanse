@@ -189,8 +189,10 @@ require_once '../_header.inc.php';
         <div id="filters">
 
             <form method="get" action="" id="ajouter_editer" style="float:left;width:40%;">
-                <input type="search" name="terme" value="<?= sanitizeForHtml($filters['terme']) ?>" placeholder="pseudo ou email" size="20" />
-                <button type="button" class="js-clear-search-field" aria-label="Vider et relancer la recherche" title="Vider et relancer la recherche">&times;</button>
+                <span class="search-field">
+                    <input type="search" name="terme" value="<?= sanitizeForHtml($filters['terme']) ?>" placeholder="pseudo ou email" size="24" />
+                    <button type="button" class="js-clear-search-field" aria-label="Vider et relancer la recherche" title="Vider et relancer la recherche"></button>
+                </span>
                 <input type="submit" name="submit" value="Filtrer" />
             </form>
 

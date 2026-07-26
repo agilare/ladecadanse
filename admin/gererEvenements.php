@@ -707,8 +707,10 @@ if ($verif->nbErreurs() > 0)
             <input type="hidden" name="element" value="<?= sanitizeForHtml($get['element']); ?>" />
             <input type="hidden" name="ordre" value="<?= sanitizeForHtml($get['ordre']); ?>" />
 
-            <input type="search" name="terme" value="<?= sanitizeForHtml($get['terme']); ?>" placeholder="Titre" size="20" />
-            <button type="button" class="js-clear-search-field" aria-label="Vider et relancer la recherche" title="Vider et relancer la recherche">&times;</button>
+            <span class="search-field">
+                <input type="search" name="terme" value="<?= sanitizeForHtml($get['terme']); ?>" placeholder="Titre" size="24" />
+                <button type="button" class="js-clear-search-field" aria-label="Vider et relancer la recherche" title="Vider et relancer la recherche"></button>
+            </span>
             <input type="submit" name="submit" value="Filtrer" />
 
         </form>

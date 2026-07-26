@@ -76,8 +76,10 @@ include("../_header.inc.php");
         <div>
             <div class="table-filters">
                 <form action="" method="get">
-                    <input type="search" name="nom" value="<?= sanitizeForHtml($_SESSION['user_prefs_orgas_nom']) ?>" placeholder="Nom" aria-label="Nom">
-                    <button type="button" class="js-clear-search-field" aria-label="Vider et relancer la recherche" title="Vider et relancer la recherche">&times;</button>
+                    <span class="search-field">
+                        <input type="search" name="nom" value="<?= sanitizeForHtml($_SESSION['user_prefs_orgas_nom']) ?>" placeholder="Nom" aria-label="Nom">
+                        <button type="button" class="js-clear-search-field" aria-label="Vider et relancer la recherche" title="Vider et relancer la recherche"></button>
+                    </span>
                     <button type="submit" style="margin-top:2px">OK</button>
                 </form>
                 <ul class="menu_tab">

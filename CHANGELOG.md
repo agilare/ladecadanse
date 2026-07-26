@@ -10,7 +10,7 @@
 
 ### Added
 - events : in forms add <optgroup> by canton for lieux select
-- lieux, organisateurs, gererEvenements, users : add button next to search fields to clear and resubmit the filter in one click
+- lieux, organisateurs, gererEvenements, users : add button inside search fields to clear and resubmit the filter in one click
 - bots : internal monitoring of bots and suspicious IPs (table `bot_monitor`, honeypot, admin dashboard) ; before enabling `BOT_MONITORING_ENABLED`, complete `app/env.php` (see `env_model.php`) and create the table (`resources/v3-10-1_bot_monitor-create-table.sql`)
 - tests : new Codeception `site` suite (PhpBrowser) with functional tests for the bots honeypot ; set `LADECADANSE_SITE_URL` in `tests/.env`
 - ui : keyboard shortcuts for the most common actions #112 : h (accueil), s (recherche), a (ajouter un événement), l (lieux), o (organisateurs), d (dashboard admin), e (edit current event/lieu/organisateur), f (flyer), c (copy event), arrow keys for agenda day navigation, / to focus the search field ; bindings match on `event.key` so they work whatever the keyboard layout (AZERTY, QWERTZ, QWERTY...)
