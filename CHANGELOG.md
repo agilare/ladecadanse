@@ -4,17 +4,28 @@
 
 ### Fixed
 - events : hide calendar-export-menu by default for browsers without Popover API or JS
+- home : restore render broken by a call to the removed `date_lendemain()` (time-based event separators, PR #133)
+- events : protect the copy form ("Coller") submit button against double-click
+- lieux, organisateurs : "Passés" tab now opens on the most recent past events instead of the oldest ones
 
 ### Added
 - events : in forms add <optgroup> by canton for lieux select
 - lieux, organisateurs, gererEvenements, users : add button next to search fields to clear and resubmit the filter in one click
 - bots : internal monitoring of bots and suspicious IPs (table `bot_monitor`, honeypot, admin dashboard) ; before enabling `BOT_MONITORING_ENABLED`, complete `app/env.php` (see `env_model.php`) and create the table (`resources/v3-10-1_bot_monitor-create-table.sql`)
 - tests : new Codeception `site` suite (PhpBrowser) with functional tests for the bots honeypot ; set `LADECADANSE_SITE_URL` in `tests/.env`
+- ui : keyboard shortcuts for the most common actions #112 : h (accueil), s (recherche), a (ajouter un événement), l (lieux), o (organisateurs), d (dashboard admin), e (edit current event/lieu/organisateur), f (flyer), c (copy event), arrow keys for agenda day navigation, / to focus the search field ; bindings match on `event.key` so they work whatever the keyboard layout (AZERTY, QWERTZ, QWERTY...)
+- events : admins can notify the event author by email of the changes made, picking pre-written motifs and/or writing a free-text message #149
+- events edit : POC of an always-visible Zebra Datepicker calendar under the date field, for SUPERADMIN only (other users keep the current popup datepicker)
 
 ### Changed
 - events : in forms, lieux select options values are displayed as is
 - deps-dev : update phpmailer, phpstan, rector, rector/jack, select2, vlucas/phpdotenv, phan, psalm, spaze/phpstan-disallowed-calls
 - user-edit : remove redundant isset() check on always-present `organisateurs` field
+- events edit : move the "Statut de l'événement" fieldset before "Catégorie", lay its radio options on one line on desktop, shorten the labels and reuse the site badge style for the "complet"/"annulé" states
+- don : disable the wemakeit widget (unavailable from July 31) and replace the "Autres moyens possibles" line with an intro paragraph
+- analyzers : finalise the Psalm configuration (globals declared from `app/config.php` and `app/bootstrap.php`, `@psalm-taint-escape` on `sanitize()`/`sanitizeForHtml()`, insane-comparison plugin enabled, `.claude/` worktrees excluded, baseline regenerated) and add the `composer psalm:taint` script
+- analyzers : fix PHPStan config gaps (exclude node_modules and `.claude/`, declare runtime constants and `app/env.php` feature flags, enable the disallowed-calls presets, scope the `variable.undefined` ignore to legacy pages) and regenerate the stale baseline
+- docs : add AGENTS.md as the single source of project guidance for coding agents, CLAUDE.md now points to it
 
 ### Security
 - deps : bump guzzlehttp/guzzle, guzzlehttp/psr7, symfony/dom-crawler, symfony/html-sanitizer, symfony/yaml to fix 20 known security advisories (cookie handling, CRLF/host-confusion injection, XSS bypass, XXE, ReDoS/DoS)
