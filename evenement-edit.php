@@ -1006,7 +1006,7 @@ if ($verif->nbErreurs() > 0)
         <ul class="radio">
         <?php
 
-        $statuts = ['propose' => '<strong>proposé</strong> (non visible)', 'actif' => '<strong>publié</strong>', 'complet' => '<strong>publié</strong> mais <span class="even-statut-label statut-complet">COMPLET</span>', 'annule' => '<strong>publié</strong> mais <span class="even-statut-label statut-annule">ANNULÉ</span>', 'inactif' => '<strong>dépublié</strong>'];
+        $statuts = ['propose' => '<strong>proposé</strong> (non visible)', 'actif' => '<strong>publié</strong>', 'complet' => '<strong>publié</strong> marqué <span class="even-statut-label statut-complet">COMPLET</span>', 'annule' => '<strong>publié</strong> marqué <span class="even-statut-label statut-annule">ANNULÉ</span>', 'inactif' => '<strong>dépublié</strong> (non visible)'];
         foreach ($statuts as $s => $n)
         {
             if ($s === 'propose' && ($_SESSION['Sgroupe'] > 6 || (!empty($champs['user_email']) && $champs['statut'] != 'propose')))
@@ -1017,7 +1017,8 @@ if ($verif->nbErreurs() > 0)
             {
                 $coche = 'checked="checked"';
             }
-            echo '<li class="listehoriz">
+            $ligne = in_array($s, ['propose', 'actif', 'inactif'], true) ? ' style="display:block"' : '';
+            echo '<li class="listehoriz"'.$ligne.'>
             <input type="radio" name="statut" value="'.$s.'" '.$coche.' id="statut_'.$s.'" title="statut de l\'événement" class="radio_horiz"
         ';
         echo '/>
