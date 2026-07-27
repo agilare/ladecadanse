@@ -695,7 +695,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
                         $subject = "Votre événement \"".$champs['titre']."\" sur La décadanse a été publié";
                         $contenu_message = "Bonjour,\n\n";
                         $contenu_message .= "Merci de nous avoir proposé un événement, nous venons de le publier : ";
-                        $contenu_message .= $site_full_url."event/evenement.php?idE=".$req_id;
+                        $contenu_message .= $site_full_url."event/evenement.php?idE=". (int)$req_id;
                         $contenu_message .= "\n\n";
                         $contenu_message .= "La décadanse";
 
@@ -716,7 +716,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
                         $champs['titre'],
                         $champs['dateEvenement'],
                         $tab_even_lieu['dateAjout'] ?? '',
-                        $site_full_url . "event/evenement.php?idE=" . $req_id,
+                        $site_full_url . "event/evenement.php?idE=" . (int) $req_id,
                         $_SESSION['Semail'] ?? EMAIL_ADMIN,
                         $_SESSION['user'] ?? '',
                         $notif_motifs,
@@ -729,7 +729,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
                     }
                 }
 
-                $_SESSION['evenement-edit_flash_msg'] = "L'événement a été modifié.$confirmation_flash_msg<br><a href='/index.php?courant=".$champs['dateEvenement']."#event-".$req_id."'>Voir dans l'agenda</a>";
+                $_SESSION['evenement-edit_flash_msg'] = "L'événement a été modifié.$confirmation_flash_msg<br><a href='/index.php?courant=".$champs['dateEvenement']."#event-".(int) $req_id."'>Voir dans l'agenda</a>";
 
 				$get['action'] = 'editer';
 
@@ -1002,8 +1002,8 @@ if ($verif->nbErreurs() > 0)
     ?>
 
     <fieldset style="padding-top:0.1em">
-        <legend style="display:inline-block;margin-left:0;margin-top:0.5em;margin-bottom:0.5em">Statut de l’événement</legend>
-        <ul class="radio">
+        <legend >Statut de l’événement</legend>
+        <ul class="radio" style="display:inline-block;margin-left:0;margin-top:0.7em;margin-bottom:0.7em">
         <?php
 
         $statuts = ['propose' => '<strong>proposé</strong> (non visible)', 'actif' => '<strong>publié</strong>', 'complet' => '<strong>publié</strong> marqué <span class="even-statut-label statut-complet">COMPLET</span>', 'annule' => '<strong>publié</strong> marqué <span class="even-statut-label statut-annule">ANNULÉ</span>', 'inactif' => '<strong>dépublié</strong> (non visible)'];
@@ -1552,10 +1552,12 @@ if ($verif->nbErreurs() > 0)
     <legend>E-mail à l’auteur</legend>
     <p>
         <label>Pour</label>
-        <?php if (!empty($original_author_idPersonne)) { ?>
-        <a href="/user.php?idP=<?php echo $original_author_idPersonne ?>"><?php echo sanitizeForHtml($original_author_name) ?></a> —
-        <?php } ?>
-        <a href="mailto:<?php echo sanitizeForHtml($original_author_email) ?>"><?php echo sanitizeForHtml($original_author_email) ?></a>
+            <span style="display:inline-block;margin:0.3em 0 0em 0;">
+                <?php if (!empty($original_author_idPersonne)) { ?>
+                <a href="/user.php?idP=<?php echo $original_author_idPersonne ?>"><?php echo sanitizeForHtml($original_author_name) ?></a> —
+                <?php } ?>
+                <a href="mailto:<?php echo sanitizeForHtml($original_author_email) ?>"><?php echo sanitizeForHtml($original_author_email) ?></a>
+            </span>
     </p>
     <p>
         <label for="notif_motifs">Motif(s)</label>
