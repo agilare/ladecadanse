@@ -184,11 +184,33 @@ const Forms = {
             }
         });
 
+        const dirtyForms = new Set();
+
         $('form.js-submit-freeze-wait').submit(function disableSubmit()
         {
+            dirtyForms.delete(this);
             $('input[type="submit"]', this).val('Envoi...').attr('disabled', 'disabled');
             return true;
         });
+
+        // 1re itération : limité au formulaire d'édition d'événement (evenement-edit.php)
+        if (document.body.dataset.page === 'evenement-edit')
+        {
+            $('form.js-submit-freeze-wait').on('input change', function markFormDirty()
+            {
+                dirtyForms.add(this);
+            });
+
+            window.addEventListener('beforeunload', function warnOnUnsavedFormChanges(e)
+            {
+                if (dirtyForms.size === 0)
+                {
+                    return;
+                }
+                e.preventDefault();
+                e.returnValue = '';
+            });
+        }
 
         $('.js-clear-search-field').on('click', function clearAndSubmitSearchField()
         {
