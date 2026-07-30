@@ -7,7 +7,9 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         automake \
         git \
+        libjpeg-dev \
         libpng-dev \
+        libwebp-dev \
         libzip-dev \
         unzip \
         wget \
@@ -17,7 +19,11 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Install PHP extensions
-RUN docker-php-ext-install pdo pdo_mysql mysqli gd zip
+# GD doit être configuré explicitement pour JPEG et WebP : sans cela il ne gère
+# que PNG/GIF, et imagejpeg()/imagewebp() n'existent tout simplement pas, ce qui
+# fait échouer l'enregistrement des flyers (voir ImageDriver2::redimensionner).
+RUN docker-php-ext-configure gd --with-jpeg --with-webp && \
+    docker-php-ext-install pdo pdo_mysql mysqli gd zip
 
 # Configure PHP for better performance
 RUN { \

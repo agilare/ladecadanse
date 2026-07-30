@@ -26,6 +26,11 @@ services:
     image: composer:2.7
     container_name: ladecadanse_composer_dev
     command: install --optimize-autoloader --ignore-platform-reqs
+    environment:
+      # vendor/ est sur le bind mount : extraire des milliers de petits fichiers
+      # y est lent (surtout sous Docker Desktop) et dépasse le timeout de 300 s
+      # par défaut de Composer, ce qui fait échouer l'install.
+      COMPOSER_PROCESS_TIMEOUT: 1800
     volumes:
       - .:/app
     working_dir: /app
@@ -36,6 +41,8 @@ services:
     image: composer:2.7
     container_name: ladecadanse_composer_prod
     command: install --no-dev --optimize-autoloader --no-scripts --ignore-platform-reqs
+    environment:
+      COMPOSER_PROCESS_TIMEOUT: 1800
     volumes:
       - .:/app
     working_dir: /app
