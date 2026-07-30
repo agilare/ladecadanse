@@ -61,7 +61,9 @@
         "rector:dry-run": "vendor/bin/rector process --dry-run",
         "psalm": "vendor/bin/psalm",
         "psalm:taint": "vendor/bin/psalm --taint-analysis --ignore-baseline",
-        "test:api": "vendor/bin/codecept run"
+        "test": "vendor/bin/codecept run",
+        "test:api": "vendor/bin/codecept run api",
+        "test:site": "vendor/bin/codecept run site"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "^3.13",

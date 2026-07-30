@@ -109,6 +109,14 @@ Evaluation of feature :
     - redir to event page
     - success msg
     - event displayed = changes
+    - permissions : author, admin (group <= 6), member of lieu/organisateur
+    - statut : radios in edit (admin), hidden "actif" in add, "proposé" reserved to group <= 6
+    - (admin) e-mail to author (a2)
+        - fieldset visible only in edit, for an event of another author
+        - motif(s) from the catalogue, or message (one of both required)
+        - mail to author with motifs and message
+    - keyboard shortcuts (b2) : must work on all European keyboard layouts
+    - leaving the form with unsaved changes : confirmation
 
 - (u) delete (c2)
   - confirm js
@@ -238,6 +246,12 @@ Evaluation of feature :
 - lieux...
 - organisateurs...
 - users...
+
+#### Bots monitoring (bots.php)
+
+- access reserved to admins (group <= 4)
+- views : proven scrapers (honeypot), suspect humans (with threshold filter), official bots stats
+- honeypot : 204 response, invisible link in footer, disallowed in robots.txt
 
 ### API (api.php)
 
