@@ -1,6 +1,10 @@
 # Auto detect text files and perform LF normalization
 * text=auto
 
+# Les scripts shell doivent conserver des fins de ligne LF : en CRLF, le shebang
+# devient invalide et le script est inexécutable dans les conteneurs Linux
+*.sh text eol=lf
+
 # Custom for Visual Studio
 *.cs     diff=csharp
 

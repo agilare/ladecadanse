@@ -69,6 +69,22 @@ Ces variables sont automatiquement configurées dans `docker-compose.yml` selon 
 
 **Important** : Avant de déployer en production, assurez-vous de configurer les valeurs sensibles dans `docker/env/env.php` (clés API, identifiants SMTP, etc.).
 
+#### Permissions sur les répertoires inscriptibles (hôtes Linux)
+
+Le code source est monté dans le conteneur depuis l'hôte. Sur un hôte Linux, les fichiers appartiennent à votre utilisateur alors qu'Apache écrit en `www-data` : sans alignement, l'application ne peut écrire ni les logs (`var/logs`) ni les images téléversées (`web/uploads`).
+
+Créez un fichier `.env` à la racine du projet, lu automatiquement par Docker Compose :
+
+```sh
+printf 'UID=%s\nGID=%s\n' "$(id -u)" "$(id -g)" > .env
+```
+
+Puis reconstruisez l'image : `make build`.
+
+Sous Docker Desktop (Windows et macOS) cette étape est inutile : les montages sont déjà permissifs et les valeurs par défaut conviennent.
+
+Dans tous les cas, l'entrypoint du conteneur (`docker/php/docker-entrypoint.sh`) crée au démarrage les répertoires inscriptibles manquants et corrige leurs permissions si nécessaire.
+
 #### Utilisation
 
 Toutes les commandes acceptent le paramètre `PROFILE=dev` ou `PROFILE=prod` (par défaut : `dev`).
