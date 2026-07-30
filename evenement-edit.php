@@ -180,8 +180,11 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
     if (isset($_POST['organisateurs']))
 		$champs['organisateurs'] = $_POST['organisateurs'];
 
-	$fichiers['flyer'] = $_FILES['flyer'];
-    $fichiers['image'] = $_FILES['image'];
+    // un navigateur envoie toujours les champs fichier, même vides ; un client qui
+    // ne le fait pas (tests fonctionnels, POST scripté) ne doit pas déclencher
+    // d'erreur : on retombe alors sur le "fichier vide" défini plus haut
+	$fichiers['flyer'] = $_FILES['flyer'] ?? $fichiers['flyer'];
+    $fichiers['image'] = $_FILES['image'] ?? $fichiers['image'];
 
     if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= UserLevel::ADMIN) {
         $url_flyer = trim($_POST['flyer_url'] ?? '');
