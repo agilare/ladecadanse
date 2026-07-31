@@ -21,14 +21,29 @@ let ZebraDatepickerBasicConfig = {
     show_select_today: 'Aujourd’hui'
 };
 
-const inputDatepickerConfig = {direction: [eventEditStartDate, false]};
+// readonly_element: false => le champ reste saisissable au clavier, le calendrier Zebra n'étant pas
+// navigable au clavier (pas de tabindex ni de gestion des flèches dans la lib).
+// Pas de `strict` : il viderait le champ à l'init pour un événement passé (date désactivée par
+// `direction`) ; la validation de la date est faite côté serveur (evenement-edit.php)
+const inputDatepickerConfig = {direction: [eventEditStartDate, false], readonly_element: false};
 $('input.datepicker:not(.datepicker-always-visible)').Zebra_DatePicker({...ZebraDatepickerBasicConfig, ...inputDatepickerConfig});
 
 // POC (réservé aux SUPERADMIN) : calendrier "always visible" affiché en permanence sous le champ date
 // cf. https://stefangabos.github.io/Zebra_Datepicker/#always-visible
 if ($('input.datepicker-always-visible').length && $('#calendarDiv').length) {
-    const inputDatepickerAlwaysVisibleConfig = {direction: [eventEditStartDate, false], always_visible: $('#calendarDiv')};
+    const inputDatepickerAlwaysVisibleConfig = {direction: [eventEditStartDate, false], always_visible: $('#calendarDiv'), readonly_element: false};
     $('input.datepicker-always-visible').Zebra_DatePicker({...ZebraDatepickerBasicConfig, ...inputDatepickerAlwaysVisibleConfig});
+
+    // le calendrier permanent ne se redessine pas quand on tape une date : set_date() n'appelle que
+    // Ft(), qui se limite à propager la date au datepicker `pair` (inexistant ici). Seul show() relit
+    // la valeur de l'input pour recalculer mois/année/jour et repeindre — c'est l'idiome interne de la
+    // lib, qu'elle utilise elle-même à l'init du mode always_visible et pour rafraîchir un pair.
+    $('input.datepicker-always-visible').on('change', function () {
+        const datepicker = $(this).data('Zebra_DatePicker');
+        if (datepicker && this.value.trim() !== '') {
+            datepicker.show();
+        }
+    });
 
     // le calendrier de la librairie est en position:absolute ; on ajuste dynamiquement la hauteur
     // du conteneur (position:relative) sur celle réellement rendue, pour éviter tout espace vide
