@@ -342,8 +342,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
     $notif_message = $can_notify_auteur ? trim((string) ($_POST['notif_message'] ?? '')) : '';
     if ($can_notify_auteur)
     {
-        // le message est obligatoire seulement si aucun motif n'a été sélectionné
-        $verif->valider($notif_message, "notif_message", "texte", 0, 2000, empty($notif_motifs) ? 1 : 0);
+        $verif->valider($notif_message, "notif_message", "texte", 0, 2000, 0);
     }
 
     // public : email (required) and remark
@@ -1569,7 +1568,7 @@ if ($verif->nbErreurs() > 0)
         <?php echo $verif->getHtmlErreur('notif_motifs'); ?>
     </p>
     <p>
-        <label for="notif_message">Message<?php echo empty($notif_motifs) ? ' *' : '' ?></label>
+        <label for="notif_message">Message</label>
         <textarea name="notif_message" id="notif_message" cols="20" rows="6" maxlength="2000"><?php echo sanitizeForHtml($notif_message) ?></textarea>
         <?php echo $verif->getHtmlErreur('notif_message'); ?>
     </p>
