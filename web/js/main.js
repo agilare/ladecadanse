@@ -84,20 +84,24 @@ function select2OptionWithComplement(item)
     }
 
     // Nettoyer complement si c'est une URL (on enlève http:// ou https://)
-    let complementAffiche = complement ? complement.replace(/^https?:\/\//, '') : '';
+    let complementAffiche = complement ? String(complement).replace(/^https?:\/\//, '') : '';
 
-    let result = '<span>';
+    // .data() renvoie la valeur *décodée* de l'attribut data-* : l'interpoler dans une
+    // chaîne HTML fait exécuter le balisage venant de la base (XSS stocké — un nom
+    // d'organisateur contenant <script> se déclenchait à l'ouverture de la liste).
+    // On assemble donc des noeuds DOM avec .text().
+    const $result = $('<span>');
     if (nom)
     {
-        result += `<span>${nom}</span>`;
+        $result.append($('<span>').text(nom));
     }
     if (complementAffiche)
     {
-        result += ` <span style="font-size: 0.9em; color: #888;">${complementAffiche}</span>`;
+        $result.append(document.createTextNode(' '));
+        $result.append($('<span>').css({'font-size': '0.9em', 'color': '#888'}).text(complementAffiche));
     }
-    result += '</span>';
 
-    return $(result);
+    return $result;
 };
 
 // used in lieu, organisateur
