@@ -447,6 +447,11 @@ table#ajouts tr:nth-child(even) {
 form .supImg img
 {
     border:1px solid gray;
+    /* aperçu de l'image existante : version normale (pas la miniature "s_"), bornée */
+    width:auto;
+    height:auto;
+    max-width:250px;
+    max-height:300px;
 }
 
 /* Evenements */

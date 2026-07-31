@@ -1488,7 +1488,7 @@ if ($verif->nbErreurs() > 0)
             ?>
             <div class="supImg">
                 <a href="<?= sanitizeForHtml($assets->get(Evenement::getAssetPath(Evenement::getFilePath($champs['flyer'])))) ?>" class="magnific-popup" target="_blank">
-                            <img src="<?= sanitizeForHtml($assets->get(Evenement::getAssetPath(Evenement::getFilePath($champs['flyer'], 's_')))) ?>" alt="Flyer de cet événement" width="150" />
+                            <img src="<?= sanitizeForHtml($assets->get(Evenement::getAssetPath(Evenement::getFilePath($champs['flyer'])))) ?>" alt="Flyer de cet événement" />
                         </a>
                         <div>
                             <label for="sup_flyer" class="continu">Supprimer</label><input type="checkbox" name="sup_flyer" id="sup_flyer" value="flyer" class="checkbox"
@@ -1537,7 +1537,7 @@ if ($verif->nbErreurs() > 0)
                 echo "<div class=\"supImg\">";
             ?>
                 <a href="<?= sanitizeForHtml($assets->get(Evenement::getAssetPath(Evenement::getFilePath($champs['image'])))) ?>" class="magnific-popup" target="_blank">
-                    <img src="<?= sanitizeForHtml($assets->get(Evenement::getAssetPath(Evenement::getFilePath($champs['image'], 's_')))) ?>" alt="Photo" width="150" />
+                    <img src="<?= sanitizeForHtml($assets->get(Evenement::getAssetPath(Evenement::getFilePath($champs['image'])))) ?>" alt="Photo" />
                 </a>
                 <?php
             echo "<div><label for=\"sup_image\" class=\"continu\">Supprimer</label><input type=\"checkbox\" name=\"sup_image\" id=\"sup_image\" value=\"image\" class=\"checkbox\" ";
