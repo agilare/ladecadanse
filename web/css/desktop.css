@@ -386,7 +386,7 @@ form#ajouter_editer table.fichiers_associes {
 
 }
 
-form#ajouter_editer textarea, form#ajouter_editer #ref
+form#ajouter_editer textarea
 {
     width:600px;
 }

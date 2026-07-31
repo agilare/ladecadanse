@@ -13,6 +13,7 @@ use Ladecadanse\Utils\AuteurNotifier;
 use Ladecadanse\HtmlShrink; // template
 use Ladecadanse\UserLevel; // domain
 use Ladecadanse\Utils\DateHelper;
+use Ladecadanse\Utils\RefList;
 use Ladecadanse\Personne;
 
 // template...
@@ -155,6 +156,12 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
             $champs[$c] = $_POST[$c];
         }
     }
+
+    // le champ Références est saisi à raison d'une URL par ligne, mais stocké (et exposé par l'API)
+    // sous forme de liste séparée par des points-virgules : on repasse tout de suite au format
+    // canonique, pour que la validation, l'INSERT/UPDATE et le ré-affichage après erreur travaillent
+    // tous sur la même valeur — une chaîne, que les boucles de génération SQL puissent sanitizer
+    $champs['ref'] = RefList::toStorage($champs['ref']);
 
     // public form : check
     if (!isset($_SESSION['Sgroupe']))
@@ -1367,9 +1374,10 @@ if ($verif->nbErreurs() > 0)
         <legend>Références</legend>
         <p>
             <label for="ref">Sites web</label>
-            <input type="text" name="ref" id="ref" value="<?php echo sanitizeForHtml($champs['ref']); ?>" placeholder="URL1;URL2; etc." />
+            <?php // pas de saut de ligne entre la balise ouvrante et la valeur : un textarea rend son contenu littéralement ?>
+            <textarea name="ref" id="ref" rows="3" maxlength="1000" placeholder="https://exemple.ch/concert&#10;https://facebook.com/events/123"><?php echo sanitizeForHtml(RefList::toTextarea($champs['ref'])); ?></textarea>
         </p>
-        <div class="guideChamp">Site de l’événement, de l’organisateur (s’il n’est pas présent ci-dessous), de la page Facebook... Séparer chaque élément par un point-virgule.</div>
+        <div class="guideChamp">Site de l’événement, de l’organisateur (s’il n’est pas présent ci-dessous), de la page Facebook... Une URL par ligne.</div>
             <?php
             echo $verif->getHtmlErreur('ref');
             ?>
