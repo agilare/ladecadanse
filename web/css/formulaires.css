@@ -320,6 +320,12 @@ form#ajouter_editer .complete
 		{
 			border:1px solid gray;
             border-radius:3px;
+            /* aperçu de l'image existante : on affiche la version normale (pas la miniature "s_"),
+               bornée pour ne pas déformer le formulaire */
+            width:auto;
+            height:auto;
+            max-width:250px;
+            max-height:300px;
 		}
 
 /* Evenements */
@@ -365,6 +371,14 @@ form#ajouter_editer table.fichiers_associes td
 vertical-align:middle;
 padding:0.1em;
 border-top:dotted 1px #eaeaea;
+}
+
+form#ajouter_editer table.fichiers_associes img
+{
+    width:auto;
+    height:auto;
+    max-width:120px;
+    max-height:120px;
 }
 
 .menu_wikicode

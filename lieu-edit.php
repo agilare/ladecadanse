@@ -452,7 +452,7 @@ echo $form->getHtmlErreur("quartier");
 
                 <input type="hidden" name="logo_existant" value="<?php echo $form->getValeur('logo'); ?>" />
                 <div class="supImg">
-                            <?php echo "<img src=\"" . $assets->get(Lieu::getAssetPath(Lieu::getFilePath($form->getValeur('logo'), "s_"))) . "\" />"; ?>
+                            <?php echo "<img src=\"" . $assets->get(Lieu::getAssetPath(Lieu::getFilePath($form->getValeur('logo')))) . "\" />"; ?>
                             <div>
                     <label for="supprimer_logo" class="continu">Supprimer</label>
                     <input type="checkbox" name="supprimer[]" id="supprimer_logo" value="logo" class="checkbox" <?php echo $checked; ?> />
@@ -487,7 +487,7 @@ echo $form->getHtmlErreur("quartier");
 
             <input type="hidden" name="photo1_existant" value="<?php echo $form->getValeur('photo1'); ?>" />
             <div class="supImg">
-                        <?php echo "<img src=\"" . $assets->get(Lieu::getAssetPath(Lieu::getFilePath($form->getValeur('photo1'), "s_"))) . "\" />"; ?>
+                        <?php echo "<img src=\"" . $assets->get(Lieu::getAssetPath(Lieu::getFilePath($form->getValeur('photo1')))) . "\" />"; ?>
                         <div>
                 <label for="supprimer_photo1" class="continu">Supprimer</label>
                 <input type="checkbox" name="supprimer[]" id="supprimer_photo1" value="photo1" class="checkbox" <?php echo $checked; ?> />
@@ -528,7 +528,7 @@ echo $form->getHtmlErreur("quartier");
                 while ($tab_galerie = $connector->fetchArray($req_galerie))
                 {
                     $nom_fichier = $tab_galerie['idFichierrecu'].".".$tab_galerie['extension'];
-                    echo "<tr><td><img src=\"".$assets->get(Lieu::getAssetPath(Lieu::getFilePath($nom_fichier, "galeries/s_")))."\" /></td>
+                    echo "<tr><td><img src=\"".$assets->get(Lieu::getAssetPath(Lieu::getFilePath($nom_fichier, "galeries/")))."\" /></td>
                     <td>".DateHelper::isoToApp($tab_galerie['dateAjout'])."</td>
                     <td><input type=\"checkbox\" name=\"supprimer_galerie[]\" value=\"".(int)$tab_galerie['idFichierrecu'].".".$tab_galerie['extension']."\" /></td></tr>";
                 }
