@@ -14,6 +14,7 @@ use Ladecadanse\Lieu;
 use Ladecadanse\Organisateur;
 use Ladecadanse\Security\Authorization;
 use Ladecadanse\Utils\DateHelper;
+use Ladecadanse\Utils\RefList;
 use Ladecadanse\Utils\Text;
 
 /**
@@ -109,7 +110,7 @@ class EvenementRenderer
     public static function getRefListHtml(string $refCsv): string
     {
         ob_start();
-        $tab_ref = explode(";", strip_tags($refCsv));
+        $tab_ref = RefList::split(strip_tags($refCsv));
         foreach ($tab_ref as $r)
         {
             $r = trim($r);
