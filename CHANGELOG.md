@@ -9,6 +9,7 @@
 - lieux, organisateurs : "Passés" tab now opens on the most recent past events instead of the oldest ones
 
 ### Added
+- lieux edit : optional latitude/longitude fields under "Localité/quartier", so the map coordinates can be set from the site instead of directly in the database (a map picker will come later)
 - events : in forms add <optgroup> by canton for lieux select
 - lieux, organisateurs, gererEvenements, users : add button inside search fields to clear and resubmit the filter in one click
 - bots : internal monitoring of bots and suspicious IPs (table `bot_monitor`, honeypot, admin dashboard) ; before enabling `BOT_MONITORING_ENABLED`, complete `app/env.php` (see `env_model.php`) and create the table (`resources/v3-10-1_bot_monitor-create-table.sql`)
@@ -18,6 +19,7 @@
 - events edit : POC of an always-visible Zebra Datepicker calendar under the date field, for SUPERADMIN only (other users keep the current popup datepicker)
 
 ### Changed
+- lieux : store `lat`/`lng` as `DECIMAL(10,7)` instead of `FLOAT(10,6)`, whose single precision lost about 0.5 m on Geneva coordinates ; apply `resources/v3-10-1_lieu-lat-lng-decimal.sql`
 - events : in forms, lieux select options values are displayed as is
 - deps-dev : update phpmailer, phpstan, rector, rector/jack, select2, vlucas/phpdotenv, phan, psalm, spaze/phpstan-disallowed-calls
 - user-edit : remove redundant isset() check on always-present `organisateurs` field

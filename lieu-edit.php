@@ -50,7 +50,7 @@ else if ($_SESSION['Sgroupe'] > 6)
     exit;
 }
 
-$champs = ['idpersonne' => '', 'statut' => '', 'nom' => '', 'determinant' => '', 'adresse' => '', 'localite_id' => '', 'region' => '', 'horaire_general' => '', 'organisateurs' => '', 'categorie' => '', 'URL' => '', "dateAjout" => ""];
+$champs = ['idpersonne' => '', 'statut' => '', 'nom' => '', 'determinant' => '', 'adresse' => '', 'localite_id' => '', 'region' => '', 'lat' => '', 'lng' => '', 'horaire_general' => '', 'organisateurs' => '', 'categorie' => '', 'URL' => '', "dateAjout" => ""];
 $fichiers = ['logo' => '', 'photo1' => '', 'image_galerie' => ''];
 $supprimer = ['image_galerie' => ''];
 
@@ -242,6 +242,40 @@ include("_header.inc.php");
     <?php
     echo $form->getHtmlErreur("localite_id");
     ?>
+</p>
+
+<?php
+/*
+ * Coordonnées : 0 en base = pas de coordonnées, on affiche alors un champ vide.
+ * Une saisie non numérique est réaffichée telle quelle, à côté de son message d'erreur.
+ */
+$afficherCoordonnee = static function ($valeur): string
+{
+    $valeur = str_replace(',', '.', trim((string) $valeur));
+
+    if (!is_numeric($valeur))
+    {
+        return $valeur;
+    }
+
+    return ((float) $valeur == 0.0) ? '' : (string) (float) $valeur;
+};
+?>
+<p>
+    <label for="lat">Latitude</label>
+        <input type="text" name="lat" id="lat" size="14" maxlength="12" inputmode="decimal" placeholder="46.2043907" title="Latitude du lieu, en degrés décimaux" value="<?php echo sanitizeForHtml($afficherCoordonnee($form->getValeur('lat'))) ?>" />
+        <?php
+    echo $form->getHtmlErreur("lat");
+    ?>
+</p>
+
+<p>
+    <label for="lng">Longitude</label>
+        <input type="text" name="lng" id="lng" size="14" maxlength="12" inputmode="decimal" placeholder="6.1431577" title="Longitude du lieu, en degrés décimaux" value="<?php echo sanitizeForHtml($afficherCoordonnee($form->getValeur('lng'))) ?>" />
+        <?php
+    echo $form->getHtmlErreur("lng");
+    ?>
+    <div class="guideChamp">Coordonnées qui permettent d’afficher le plan du lieu. Pour les obtenir : sur <a href="https://www.openstreetmap.org" rel="external" target="_blank">openstreetmap.org</a>, faites un clic droit sur l’emplacement du lieu puis choisissez « Afficher l’adresse » ; les deux nombres apparaissent en haut à gauche. Laissez les deux champs vides si vous ne les connaissez pas.</div>
 </p>
 
 

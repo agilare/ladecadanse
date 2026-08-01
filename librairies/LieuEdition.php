@@ -119,6 +119,28 @@ class LieuEdition extends Edition
         $verif->valider($this->valeurs['horaire_general'], "horaire_general", "texte", 2, 200, 0);
         $verif->valider($this->valeurs['URL'], "URL", "url", 2, 100, 0);
         /*
+         * Coordonnées (latitude, longitude) : facultatives, mais les deux ensemble,
+         * le plan n'étant affiché que si les deux sont renseignées
+         */
+        $lat = self::normaliserCoordonnee($this->valeurs['lat']);
+        $lng = self::normaliserCoordonnee($this->valeurs['lng']);
+
+        if (($lat === '') !== ($lng === ''))
+        {
+            $verif->setErreur(($lat === '') ? 'lat' : 'lng', "Veuillez indiquer la latitude et la longitude, ou laisser les deux champs vides");
+        }
+
+        if ($lat !== '' && (!is_numeric($lat) || abs((float) $lat) > 90))
+        {
+            $verif->setErreur('lat', "La latitude doit être un nombre entre -90 et 90 (ex. 46.2043907)");
+        }
+
+        if ($lng !== '' && (!is_numeric($lng) || abs((float) $lng) > 180))
+        {
+            $verif->setErreur('lng', "La longitude doit être un nombre entre -180 et 180 (ex. 6.1431577)");
+        }
+
+        /*
          * Catégorie (salle, cinéma, bistrot, etc.)
          */
         if (!empty($this->valeurs['categorie']))
@@ -153,6 +175,15 @@ class LieuEdition extends Edition
         }
     }
 
+    /**
+     * Normalise une coordonnée saisie : espaces superflus et virgule décimale,
+     * produite par les pavés numériques de la plupart des claviers européens
+     */
+    private static function normaliserCoordonnee($valeur): string
+    {
+        return str_replace(',', '.', trim((string) $valeur));
+    }
+
     function loadValeurs(int $id): void
     {
         $lieu = new Lieu();
@@ -177,6 +208,16 @@ class LieuEdition extends Edition
         $lieu->setValues($this->valeurs);
 
         $lieu->setValue('idpersonne', $_SESSION['SidPersonne']);
+
+        /*
+         * Colonnes DECIMAL NOT NULL : un champ laissé vide doit être enregistré comme 0
+         * (= pas de coordonnées), une chaine vide ferait échouer la requête
+         */
+        foreach (['lat', 'lng'] as $coordonnee)
+        {
+            $valeur = self::normaliserCoordonnee($this->valeurs[$coordonnee] ?? '');
+            $lieu->setValue($coordonnee, is_numeric($valeur) ? $valeur : '0');
+        }
 
         $loc_qua = explode("_", (string) $this->valeurs['localite_id']);
 
