@@ -138,7 +138,9 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
             ->allowElement('h3')
             ->allowElement('blockquote')
             ->allowElement('a', ['href', 'title', 'target'])
-            ->allowRelativeLinks(false)
+            // TinyMCE (remove_script_host) écrit les liens internes en relatif (/lieu/lieu.php?idL=1),
+            // sans ceci le href serait supprimé
+            ->allowRelativeLinks(true)
             ->allowLinkSchemes(['https', 'http', 'mailto'])
             ->forceAttribute('a', 'rel', 'noopener noreferrer'));
 
