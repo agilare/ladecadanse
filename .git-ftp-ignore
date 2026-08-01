@@ -26,10 +26,13 @@ rector.php
 SECURITY.md
 package-lock.json
 package.json
-phpstan-baseline.xml
+phpstan-baseline.neon
+phpstan-constants.php
 /.phan
 .phan/*
 .htaccess.example
 psalm.xml
-psalm-baseline.neon
+psalm-baseline.xml
 Makefile
+AGENTS.md
+CLAUDE.md
