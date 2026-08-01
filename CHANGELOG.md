@@ -1,6 +1,6 @@
 # Changelog
 
-## [3.10.1] - Unreleased
+## [3.11.0] - Unreleased
 
 ### Fixed
 - events : hide calendar-export-menu by default for browsers without Popover API or JS
@@ -13,14 +13,14 @@
 - lieux edit : optional latitude/longitude fields under "Localité/quartier", so the map coordinates can be set from the site instead of directly in the database (a map picker will come later)
 - events : in forms add <optgroup> by canton for lieux select
 - lieux, organisateurs, gererEvenements, users : add button inside search fields to clear and resubmit the filter in one click
-- bots : internal monitoring of bots and suspicious IPs (table `bot_monitor`, honeypot, admin dashboard) ; before enabling `BOT_MONITORING_ENABLED`, complete `app/env.php` (see `env_model.php`) and create the table (`resources/v3-10-1_bot_monitor-create-table.sql`)
+- bots : internal monitoring of bots and suspicious IPs (table `bot_monitor`, honeypot, admin dashboard) ; before enabling `BOT_MONITORING_ENABLED`, complete `app/env.php` (see `env_model.php`) and create the table (`resources/v3-11-0_bot_monitor-create-table.sql`)
 - tests : new Codeception `site` suite (PhpBrowser) with functional tests for the bots honeypot ; set `LADECADANSE_SITE_URL` in `tests/.env`
 - ui : keyboard shortcuts for the most common actions #112 : h (accueil), s (recherche), a (ajouter un événement), l (lieux), o (organisateurs), d (dashboard admin), e (edit current event/lieu/organisateur), f (flyer), c (copy event), arrow keys for agenda day navigation, / to focus the search field ; bindings match on `event.key` so they work whatever the keyboard layout (AZERTY, QWERTZ, QWERTY...)
 - events : admins can notify the event author by email of the changes made, picking pre-written motifs and/or writing a free-text message #149
 - events edit : POC of an always-visible Zebra Datepicker calendar under the date field, for SUPERADMIN only (other users keep the current popup datepicker)
 
 ### Changed
-- lieux : store `lat`/`lng` as `DECIMAL(10,7)` instead of `FLOAT(10,6)`, whose single precision lost about 0.5 m on Geneva coordinates ; apply `resources/v3-10-1_lieu-lat-lng-decimal.sql`
+- lieux : store `lat`/`lng` as `DECIMAL(10,7)` instead of `FLOAT(10,6)`, whose single precision lost about 0.5 m on Geneva coordinates ; apply `resources/v3-11-0_lieu-lat-lng-decimal.sql`
 - events : in forms, lieux select options values are displayed as is
 - deps-dev : update phpmailer, phpstan, rector, rector/jack, select2, vlucas/phpdotenv, phan, psalm, spaze/phpstan-disallowed-calls
 - user-edit : remove redundant isset() check on always-present `organisateurs` field
