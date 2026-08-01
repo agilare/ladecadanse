@@ -25,6 +25,7 @@ include("../_header.inc.php");
 <!--        <script src="https://donorbox.org/widget.js" paypalExpress="true"></script> <iframe src="https://donorbox.org/embed/la-decadanse?default_interval=o" name="donorbox" allowpaymentrequest="allowpaymentrequest" seamless="seamless" frameborder="0" scrolling="no" height="900px" width="100%" style="margin-left:3em;max-width: 500px; min-width: 250px; max-height:none!important" allow="payment"></iframe>-->
 
         <ul id="payment-modes">
+            <li><b>Twint, Postfinance</b> : envoyez-moi <a href="/misc/contacteznous.php">un message</a></li>
             <li>
                 <b style="vertical-align: top"><!--Carte de crédit, compte--> Paypal </b>
                 <div style="display:inline-block">
@@ -46,7 +47,7 @@ include("../_header.inc.php");
                 </div>
             </li>
             <li style="margin-top:-0.6em"><b>Liberapay</b> (compte requis, dons récurrents)<script src="https://liberapay.com/michelg/widgets/button.js"></script><noscript><a href="https://liberapay.com/michelg/donate"><img alt="Donate using Liberapay" src="https://liberapay.com/assets/widgets/donate.svg"></a></noscript></li>
-            <!--            <li><b>Twint, virement</b> (<a href="/misc/contacteznous.php">contactez-moi</a>)</li>-->
+
         </ul>
         <br>
         <hr>
@@ -88,8 +89,8 @@ include("../_header.inc.php");
             <li><a href="/lieu/lieu.php?idL=130"><img src="/web/uploads/lieux/s_130_logo.jpg" alt="Centre photo Genève" width="170"></a></li>
             <li><a href="/organisateur/organisateur.php?idO=269"><img src="/web/uploads/organisateurs/269_logo.jpg?1768067036" alt="Les Créateliers" width="150"></a></li>
             <li><a href="/lieu/lieu.php?idL=120"><img src="/web/uploads/lieux/120_logo.gif" alt="L'épicentre" width="170"></a></li>
-            <li><a href="/organisateur/organisateur.php?idO=458"><img src="/web/uploads/organisateurs/458_logo.png" alt="La Puce nanoéditions" width="150"></a></li>
-
+            <li><a href="/organisateur/organisateur.php?idO=458"><img src="/web/uploads/organisateurs/458_logo.png" alt="La Puce nanoéditions" width="140"></a></li>
+            <li><a href="https://www.bernex.ch/"><img src="/web/content/bernex-logo-s.png" alt="Commune de Bernex" width="160"></a></li>
         </ul>
 
     </article>
