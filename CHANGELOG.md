@@ -7,6 +7,7 @@
 - home : restore render broken by a call to the removed `date_lendemain()` (time-based event separators, PR #133)
 - events : protect the copy form ("Coller") submit button against double-click
 - lieux, organisateurs : "Passés" tab now opens on the most recent past events instead of the oldest ones
+- edition : in TinyMCE texts, links to the site itself lost their `href`, the sanitizer rejecting the relative URLs produced by `remove_script_host` ; texts saved before this fix must be edited again to restore their links
 
 ### Added
 - lieux edit : optional latitude/longitude fields under "Localité/quartier", so the map coordinates can be set from the site instead of directly in the database (a map picker will come later)
