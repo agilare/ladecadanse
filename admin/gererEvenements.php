@@ -750,6 +750,7 @@ if ($verif->nbErreurs() > 0)
         <table id="ajouts" class="jquery-checkboxes">
 
             <tr>
+                <th></th>
                 <?php foreach ($th_evenements as $field => $label) : ?>
                 <th <?php if ($field == $get['tri_gerer']) : ?>class="ici"<?php endif; ?> <?php if ($field == 'horaire') : ?>style="width:100px"<?php endif; ?>>
                     <?php if (array_key_exists($field, $orderByColumns)) : ?>
@@ -761,7 +762,7 @@ if ($verif->nbErreurs() > 0)
                 </th>
                 <?php endforeach; ?>
 
-                <th colspan=2></th>
+                <th></th>
             </tr>
 
             <?php foreach ($tab_events as $tab_even) :
@@ -770,7 +771,8 @@ if ($verif->nbErreurs() > 0)
                 $tab_datetime_dateajout = explode(" ", (string) $datetime_dateajout);
                 ?>
             <tr>
-                <td><a href="/event/evenement.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>" class='titre'><?= sanitizeForHtml($tab_even['e_titre']) ?></a></td>
+                <td style="text-align:center"><input type="checkbox" name="evenements[]" value="<?= (int) $tab_even['e_idEvenement'] ?>" /></td>
+                <td style="text-align:left"><a href="/event/evenement.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>" class='titre'><?= sanitizeForHtml($tab_even['e_titre']) ?></a></td>
                 <td><?= Lieu::getLinkNameHtml($even_lieu['nom'], $even_lieu['idLieu'], $even_lieu['salle']) ?><br><span style="color:lightsteelblue"><?= $even_lieu['localite'] ?></span></td>
                 <td><a href="/index.php?courant=<?= sanitizeForHtml($tab_even['e_dateEvenement']) ?>"><?= DateHelper::isoToApp($tab_even['e_dateEvenement']) ?></a></td>
                 <td><?= ucfirst((string) $glo_tab_genre[$tab_even['e_genre']]) ?></td>
@@ -794,7 +796,6 @@ if ($verif->nbErreurs() > 0)
                 <?php if ($_SESSION['Sgroupe'] <= UserLevel::ADMIN) : ?>
                     <td style="text-align:center"><a href="/evenement-edit.php?action=editer&idE=<?= (int) $tab_even['e_idEvenement'] ?>"><?= $iconeEditer ?></a></td>
                 <?php endif; ?>
-                <td style="text-align:center"><input type="checkbox" name="evenements[]" value="<?= (int) $tab_even['e_idEvenement'] ?>" /></td>
             </tr>
 
             <?php endforeach; ?>
