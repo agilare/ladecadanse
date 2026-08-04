@@ -2,6 +2,21 @@
 
 This file provides guidance to AI coding agents (Claude Code, Codex, Cursor, etc.) when working with code in this repository.
 
+## Replies
+
+Use short, direct, full sentences in reasoning and replies. Keep only the context needed for clarity and precision. Avoid filler, hedging, repetition, and obvious detail.
+
+## Token-aware polling
+
+Avoid token-wasteful polling for long-running background work.
+
+- Do not use watch/stream modes that repeatedly emit unchanged status, such as `gh pr checks --watch`, unless actively debugging a failure
+- For CI or background jobs, check once. If still pending or running, wait with `sleep 120` or `sleep 180`, then check once again
+- Increase the wait interval when the job is running normally
+- Do not send user updates for unchanged pending/running states
+- Fetch detailed logs only after a check fails
+- Prefer meaningful updates only: pushed, CI started, CI failed, CI passed
+
 ## Project overview
 
 La décadanse is a PHP 8.4 cultural events agenda for Geneva and surroundings. It is a legacy codebase undergoing active modernization toward OOP and better architecture.
@@ -9,6 +24,8 @@ La décadanse is a PHP 8.4 cultural events agenda for Geneva and surroundings. I
 ## Commands
 
 Static analysis and test commands are defined as `composer` scripts (see `composer.json`); Docker targets are in the `Makefile` (`make help` lists them).
+
+Use Eslint to check JS code
 
 E2E tests use Selenium IDE — open `tests/ladecadanse.side` in the browser extension. Copy `tests/.env_model` to `tests/.env` before running API tests.
 
