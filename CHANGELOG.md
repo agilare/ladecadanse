@@ -25,6 +25,7 @@
 - events : in forms, lieux select options values are displayed as is
 - deps-dev : update phpmailer, phpstan, rector, rector/jack, select2, vlucas/phpdotenv, phan, psalm, spaze/phpstan-disallowed-calls
 - user-edit : remove redundant isset() check on always-present `organisateurs` field
+- events edit : the "E-mail à l'auteur" fieldset now previews the message that will be sent — a disabled "Objet" field, the opening lines above the motifs, the closing lines below the message ; the preview text is built by `AuteurNotifier` itself so it cannot drift from the mail actually sent
 - events edit : move the "Statut de l'événement" fieldset before "Catégorie", lay its radio options on one line on desktop, shorten the labels and reuse the site badge style for the "complet"/"annulé" states
 - don : disable the wemakeit widget (unavailable from July 31) and replace the "Autres moyens possibles" line with an intro paragraph
 - analyzers : finalise the Psalm configuration (globals declared from `app/config.php` and `app/bootstrap.php`, `@psalm-taint-escape` on `sanitize()`/`sanitizeForHtml()`, insane-comparison plugin enabled, `.claude/` worktrees excluded, baseline regenerated) and add the `composer psalm:taint` script

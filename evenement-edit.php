@@ -1557,7 +1557,21 @@ if ($verif->nbErreurs() > 0)
     </fieldset>
     <?php } ?>
 
-<?php if ($can_notify_auteur): ?>
+<?php if ($can_notify_auteur):
+    // Aperçu du mail : mêmes valeurs que celles utilisées à l'envoi (plus haut),
+    // reconstruites par AuteurNotifier pour ne pas pouvoir diverger du mail réel.
+    // Les motifs cochés et le message viennent s'intercaler entre les deux blocs,
+    // exactement là où le formulaire place le <select> et le <textarea>.
+    $notif_objet = AuteurNotifier::buildSubject($champs['titre'], $champs['dateEvenement']);
+    $notif_intro = AuteurNotifier::buildIntro(
+        $champs['titre'],
+        $site_full_url . "event/evenement.php?idE=" . (int) $get['idE'],
+        $tab_even_lieu['dateAjout'] ?? ''
+    );
+    [$notif_avant, $notif_apres] = AuteurNotifier::buildTemplateParts($tplEngine);
+    $notif_debut = trim($notif_avant) . "\n\n" . $notif_intro;
+    $notif_fin = trim($notif_apres);
+?>
 <fieldset>
     <legend>E-mail à l’auteur</legend>
     <p>
@@ -1569,6 +1583,12 @@ if ($verif->nbErreurs() > 0)
                 <a href="mailto:<?php echo sanitizeForHtml($original_author_email) ?>"><?php echo sanitizeForHtml($original_author_email) ?></a>
             </span>
     </p>
+    <p>
+        <label for="notif_objet">Objet</label>
+        <input type="text" id="notif_objet" value="<?php echo sanitizeForHtml($notif_objet) ?>" size="60" disabled class="readonly" />
+        <div class="guideChamp">Reprend le titre et la date enregistrés</div>
+    </p>
+    <p class="notif-apercu"><?php echo sanitizeForHtml($notif_debut) ?></p>
     <p>
         <label for="notif_motifs">Motif(s)</label>
         <select name="notif_motifs[]" id="notif_motifs" multiple data-placeholder="Choisissez un ou plusieurs motifs (optionnel)">
@@ -1583,6 +1603,7 @@ if ($verif->nbErreurs() > 0)
         <textarea name="notif_message" id="notif_message" cols="20" rows="6" maxlength="2000"><?php echo sanitizeForHtml($notif_message) ?></textarea>
         <?php echo $verif->getHtmlErreur('notif_message'); ?>
     </p>
+    <p class="notif-apercu"><?php echo sanitizeForHtml($notif_fin) ?></p>
 </fieldset>
 <?php endif; ?>
 

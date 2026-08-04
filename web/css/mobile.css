@@ -618,6 +618,11 @@ form#ajouter_editer .supImg
     margin-left:1em;
 }
 
+form#ajouter_editer p.notif-apercu
+{
+    margin-left:0.4em;
+}
+
 /* personne */
 
 .personne #actions

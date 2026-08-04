@@ -60,6 +60,30 @@ class EvenementNotifierAuteurCest
     }
 
     /**
+     * L'aperçu du mail encadre les champs de saisie : objet non modifiable,
+     * puis le texte fixe du début, puis (après le message) la signature.
+     * Le contenu vient de AuteurNotifier, donc ces assertions vérifient
+     * surtout que l'aperçu est bien rendu et reste non soumissible.
+     */
+    public function apercuDuMailEstAffiche(SiteTester $I)
+    {
+        $I->loginAsAdmin();
+        $I->amOnPage($this->editUrl(TestEnv::getInt('LADECADANSE_TEST_EVENT_ID_AUTEUR')));
+
+        $I->seeResponseCodeIs(HttpCode::OK);
+
+        // objet : affiché, désactivé, et sans name pour ne jamais être posté
+        $I->seeElement('#notif_objet[disabled]');
+        $I->dontSeeElement('#notif_objet[name]');
+        $I->seeElement('#notif_objet[value^="La décadanse : votre événement"]');
+
+        // début avant le select des motifs, fin après le textarea du message
+        $I->see('Bonjour,', '(//p[@class="notif-apercu"])[1]');
+        $I->see("Concernant l'événement", '(//p[@class="notif-apercu"])[1]');
+        $I->see('Meilleures salutations', '(//p[@class="notif-apercu"])[2]');
+    }
+
+    /**
      * En création, il n'y a pas d'auteur à prévenir : le fieldset ne doit pas
      * apparaître ($can_notify_auteur exige action=editer|update, evenement-edit.php:124).
      */

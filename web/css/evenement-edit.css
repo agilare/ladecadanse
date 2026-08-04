@@ -22,3 +22,15 @@ p.action_ajouter
     background:#e1e1e1;
     max-width: 500px;
 }
+
+/* Aperçu du texte fixe de l'e-mail à l'auteur, autour des champs Motif(s) et Message */
+form#ajouter_editer p.notif-apercu
+{
+    margin-left:8em;
+    width:auto;
+    max-width: 600px;
+    padding: 0.2em 0 0.2em 0.6em;
+    border-left: 3px solid #d5d5d5;
+    color:#767676;
+    white-space: pre-line;
+}
