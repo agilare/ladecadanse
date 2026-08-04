@@ -95,6 +95,29 @@ table#ajouts
     line-height:1.2em;
 }
 
+/* hauteur figée + ascenseur, comme les tableaux du dashboard admin (css/admin/index.css) */
+table.table-hauteur-figee
+{
+    display:block;
+    width:100%;
+    max-height:70vh;
+    overflow-y:auto;
+}
+
+/* le tableau étant en display:block, les lignes ne s'étirent plus toutes seules */
+table.table-hauteur-figee tr
+{
+    width:100%;
+}
+
+/* en-têtes visibles pendant le défilement */
+table.table-hauteur-figee tr th
+{
+    position:sticky;
+    top:0;
+    z-index:1;
+}
+
 table#ajouts tr th
 {
     text-align:center;
