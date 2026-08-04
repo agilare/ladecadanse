@@ -747,7 +747,7 @@ if ($verif->nbErreurs() > 0)
 
     <form method="post" id="formGererEvenements" class='js-submit-freeze-wait' enctype="multipart/form-data" action="">
 
-        <table id="ajouts" class="jquery-checkboxes">
+        <table id="ajouts" class="jquery-checkboxes table-hauteur-figee">
 
             <tr>
                 <th></th>

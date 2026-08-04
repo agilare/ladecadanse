@@ -20,6 +20,7 @@
 - events edit : POC of an always-visible Zebra Datepicker calendar under the date field, for SUPERADMIN only (other users keep the current popup datepicker)
 
 ### Changed
+- admin : in gererEvenements, the events list gets a fixed height (70vh) with its own scrollbar and sticky column headers, like the dashboard tables
 - lieux : store `lat`/`lng` as `DECIMAL(10,7)` instead of `FLOAT(10,6)`, whose single precision lost about 0.5 m on Geneva coordinates ; apply `resources/v3-11-0_lieu-lat-lng-decimal.sql`
 - events : in forms, lieux select options values are displayed as is
 - deps-dev : update phpmailer, phpstan, rector, rector/jack, select2, vlucas/phpdotenv, phan, psalm, spaze/phpstan-disallowed-calls
