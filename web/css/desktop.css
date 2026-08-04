@@ -418,3 +418,10 @@ form#ajouter_editer textarea
    padding:0.2em 0.2em;
    font-size:0.8em
 }
+
+/* on garde le bouton dans le coin de #global (max-width 960px) et non dans celui
+   de l'écran, où son fond gris transparent se confond avec celui du body */
+#back-to-top
+{
+    right: max(1.5rem, calc(50% - 480px + 1.5rem));
+}
