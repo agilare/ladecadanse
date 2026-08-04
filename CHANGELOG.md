@@ -29,6 +29,7 @@
 - analyzers : finalise the Psalm configuration (globals declared from `app/config.php` and `app/bootstrap.php`, `@psalm-taint-escape` on `sanitize()`/`sanitizeForHtml()`, insane-comparison plugin enabled, `.claude/` worktrees excluded, baseline regenerated) and add the `composer psalm:taint` script
 - analyzers : fix PHPStan config gaps (exclude node_modules and `.claude/`, declare runtime constants and `app/env.php` feature flags, enable the disallowed-calls presets, scope the `variable.undefined` ignore to legacy pages) and regenerate the stale baseline
 - docs : add AGENTS.md as the single source of project guidance for coding agents, CLAUDE.md now points to it
+- ui : on desktop, align the back-to-top button with the `#global` container corner instead of the screen corner, where its translucent grey background blended into the identical body background
 
 ### Security
 - deps : bump guzzlehttp/guzzle, guzzlehttp/psr7, symfony/dom-crawler, symfony/html-sanitizer, symfony/yaml to fix 20 known security advisories (cookie handling, CRLF/host-confusion injection, XSS bypass, XXE, ReDoS/DoS)
