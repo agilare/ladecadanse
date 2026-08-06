@@ -96,6 +96,12 @@ $stmt = $connectorPdo->prepare($sql_event);
 $stmt->execute([':idE' => $get['idE']]);
 $tab_even = $stmt->fetch(PDO::FETCH_ASSOC);
 
+if (empty($tab_even))
+{
+    header($_SERVER["SERVER_PROTOCOL"] . " 404 Not Found");
+    exit;
+}
+
 if (!$authorization->isPersonneAllowedToEditEvenement($_SESSION, $tab_even) && in_array($tab_even['e_statut'], ['propose', 'inactif']))
 {
     header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");

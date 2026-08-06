@@ -8,6 +8,7 @@
 - events : protect the copy form ("Coller") submit button against double-click
 - lieux, organisateurs : "Passés" tab now opens on the most recent past events instead of the oldest ones
 - edition : in TinyMCE texts, links to the site itself lost their `href`, the sanitizer rejecting the relative URLs produced by `remove_script_host` ; texts saved before this fix must be edited again to restore their links
+- events : `/event/to-ics.php?idE=` with an unknown id crashed (fatal `TypeError` on `isPersonneAllowedToEditEvenement()`) instead of answering 404 like the other event pages
 - events edit : `/evenement-edit.php?action=editer` (or `update`) without an `idE` now answers 400 instead of running the authorization check on a missing id and logging undefined key warnings
 - search, lieux, organisateurs, admin : an unexpected value in an optional url parameter (`periode=tous` from links predating the removal of that option, `statut`, `tri`, `order_dir`, `seuil`) threw an uncaught exception instead of falling back on the default ; these guards now use the new non-throwing `Validateur::isAcceptedUrlQueryValue()`
 - lieux : `/lieu/lieu.php?idL=` with an unknown id crashed (fatal `TypeError`, `Lieu::getLieu()` returning PDO's `false`) instead of answering the 404 the page already had ready
