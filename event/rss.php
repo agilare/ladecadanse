@@ -12,7 +12,8 @@ use Ladecadanse\Lieu;
 $tab_feeds_types = ["evenements_auj", "lieu_evenements", 'organisateur_evenements', 'evenements_ajoutes'];
 
 $get['type'] = '';
-if (!in_array($_GET['type'], $tab_feeds_types))
+// no type at all : a bot or a hand written url, answer 400 without filling the log
+if (!in_array($_GET['type'] ?? '', $tab_feeds_types, true))
 {
     header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
     exit;
