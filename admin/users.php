@@ -50,7 +50,7 @@ if (isset($_GET['order_by']) && in_array($_GET['order_by'], $fields_to_order_by)
 }
 
 $_SESSION['user_prefs_users_order_dir'] ??= 'desc';
-if (!empty($_GET['order_dir']) && Validateur::validateUrlQueryValue($_GET['order_dir'], "alpha_numeric", 1))
+if (!empty($_GET['order_dir']) && Validateur::isAcceptedUrlQueryValue($_GET['order_dir'], "alpha_numeric"))
 {
    $_SESSION['user_prefs_users_order_dir'] = $_GET['order_dir'];
 }

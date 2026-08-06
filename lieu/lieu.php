@@ -35,7 +35,7 @@ if ($lieu['statut'] == 'inactif' && !((isset($_SESSION['Sgroupe']) && $_SESSION[
 $tab_menu_periodes = ["ancien" => "Passés", "futur" => "Prochains"]; //, "tous" => "Tous"
 $get['periode'] = "futur";
 $sql_periode_operator = ">=";
-if (!empty($_GET['periode']) && Validateur::validateUrlQueryValue($_GET['periode'], "enum", 1, array_keys($tab_menu_periodes)))
+if (!empty($_GET['periode']) && Validateur::isAcceptedUrlQueryValue($_GET['periode'], "enum", array_keys($tab_menu_periodes)))
 {
     $get['periode'] = $_GET['periode'];
     if ($get['periode'] == "ancien")

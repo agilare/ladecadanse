@@ -25,13 +25,13 @@ if (empty($_GET['mots']) || !empty($_GET['name_as']))
 $get['mots'] = $_GET['mots'];
 
 $get['tri'] = "pertinence";
-if (!empty($_GET['tri']) && Validateur::validateUrlQueryValue($_GET['tri'], "enum", 1, array_keys($tab_menu_tri)))
+if (!empty($_GET['tri']) && Validateur::isAcceptedUrlQueryValue($_GET['tri'], "enum", array_keys($tab_menu_tri)))
 {
     $get['tri'] = $_GET['tri'];
 }
 
 $get['periode'] = "futur";
-if (!empty($_GET['periode']) && Validateur::validateUrlQueryValue($_GET['periode'], "enum", 1, array_keys($tab_menu_periodes)))
+if (!empty($_GET['periode']) && Validateur::isAcceptedUrlQueryValue($_GET['periode'], "enum", array_keys($tab_menu_periodes)))
 {
     $get['periode'] = $_GET['periode'];
 }

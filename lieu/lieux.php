@@ -42,7 +42,7 @@ $filters['localite'] = $_SESSION['user_prefs_lieux_localite'];
 
 $_SESSION['user_prefs_lieux_statut'] ??= 'actif';
 $tab_statuts = ['actif' => 'Actifs', 'inactif' => 'Inactifs', 'ancien' => 'Anciens'];
-if (isset($_GET['statut']) && Validateur::validateUrlQueryValue($_GET['statut'], "enum", 1, array_keys($tab_statuts)))
+if (isset($_GET['statut']) && Validateur::isAcceptedUrlQueryValue($_GET['statut'], "enum", array_keys($tab_statuts)))
 {
    $_SESSION['user_prefs_lieux_statut'] = $_GET['statut'];
 }

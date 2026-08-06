@@ -522,6 +522,27 @@ class Validateur
         }
     }
 
+    /**
+     * Variante non bloquante de validateUrlQueryValue()
+     *
+     * Pour les paramètres d'url facultatifs, dont l'appelant garde simplement
+     * sa valeur par défaut : une vieille url ou un passage de bot ne doit pas
+     * finir en exception non rattrapée
+     */
+    public static function isAcceptedUrlQueryValue($get, string $type, $tab = ''): bool
+    {
+        try
+        {
+            self::validateUrlQueryValue($get, $type, 1, $tab);
+        }
+        catch (\Exception)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
     public static function validateUrlQueryValue($get, string $type, $statut, $tab = '')
     {
         $erreur = "";

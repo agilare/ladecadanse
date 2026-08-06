@@ -23,7 +23,7 @@ $view = isset($_GET['view']) && isset($views[$_GET['view']]) ? $_GET['view'] : '
 
 // seuil de hits pour la vue "humains suspects", modifiable par filtre
 $suspect_threshold = defined('BOT_MONITORING_SUSPECT_THRESHOLD') ? BOT_MONITORING_SUSPECT_THRESHOLD : 150;
-if (!empty($_GET['seuil']) && Validateur::validateUrlQueryValue($_GET['seuil'], "int", 1))
+if (!empty($_GET['seuil']) && Validateur::isAcceptedUrlQueryValue($_GET['seuil'], "int"))
 {
     $suspect_threshold = (int) $_GET['seuil'];
 }
