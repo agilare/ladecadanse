@@ -18,6 +18,7 @@
 - ui : keyboard shortcuts for the most common actions #112 : h (accueil), s (recherche), a (ajouter un événement), l (lieux), o (organisateurs), d (dashboard admin), e (edit current event/lieu/organisateur), f (flyer), c (copy event), arrow keys for agenda day navigation, / to focus the search field ; bindings match on `event.key` so they work whatever the keyboard layout (AZERTY, QWERTZ, QWERTY...)
 - events : admins can notify the event author by email of the changes made, picking pre-written motifs and/or writing a free-text message #149
 - events edit : POC of an always-visible Zebra Datepicker calendar under the date field, for SUPERADMIN only (other users keep the current popup datepicker)
+- events edit : the flyer and the photo can be added by pasting an image URL instead of uploading a file ; available to every logged-in user (was admins only), not on the public "Proposer un événement" form
 
 ### Changed
 - admin : in gererEvenements, the events list gets a fixed height (70vh) with its own scrollbar and sticky column headers, like the dashboard tables

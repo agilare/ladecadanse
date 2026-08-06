@@ -128,6 +128,10 @@ $can_notify_auteur =
     && !empty($original_author_email)
     && ($original_author_groupe === null || $original_author_groupe >= UserLevel::AUTHOR);
 
+// Import d'image par URL : réservé aux utilisateurs connectés (tous niveaux),
+// donc indisponible sur le formulaire public "Proposer un événement"
+$can_import_image_url = isset($_SESSION['Sgroupe']);
+
 // form values received
 $champs = ["statut" => "", "genre" => "", "titre" => "", "dateEvenement" => "", "idLieu" => 0,
  "idSalle" => 0, "nomLieu" => "", "adresse" => "", "quartier" => "",  "localite_id" => "", "region" => "", "urlLieu" => "", 'organisateurs' => '', "description" => "", "ref" => "",
@@ -193,7 +197,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 	$fichiers['flyer'] = $_FILES['flyer'] ?? $fichiers['flyer'];
     $fichiers['image'] = $_FILES['image'] ?? $fichiers['image'];
 
-    if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= UserLevel::ADMIN) {
+    if ($can_import_image_url) {
         $url_flyer = trim($_POST['flyer_url'] ?? '');
         $url_image = trim($_POST['image_url'] ?? '');
     }
@@ -296,7 +300,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
         $verif->validerFichier($fichiers['image'], "image", $glo_mimes_images_acceptees, 0);
     }
 
-    // URL import (admin only) : mutual exclusion + format + fetch
+    // URL import (utilisateurs connectés) : mutual exclusion + format + fetch
     if (!empty($fichiers['flyer']['name']) && !empty($url_flyer)) {
         $verif->setErreur('flyer_url', "Veuillez saisir un fichier OU une URL, pas les deux.");
     } elseif (!empty($url_flyer)) {
@@ -1472,7 +1476,7 @@ if ($verif->nbErreurs() > 0)
                 <div class="msg">Le fichier sélectionné a été retiré du formulaire par le navigateur (sécurité). Veuillez le sélectionner à nouveau.</div>
             <?php endif; ?>
 
-            <?php if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= UserLevel::ADMIN): ?>
+            <?php if ($can_import_image_url): ?>
                 <div class="clear"></div>
                 <label for="flyer_url" class="ou-separateur">ou coller une URL</label>
                 <input type="url" name="flyer_url" id="flyer_url" value="<?= sanitizeForHtml($url_flyer) ?>" placeholder="https://…" maxlength="2000" size="50">
@@ -1518,7 +1522,7 @@ if ($verif->nbErreurs() > 0)
                 <div class="msg">Le fichier sélectionné a été retiré du formulaire par le navigateur (sécurité). Veuillez le sélectionner à nouveau</div>
             <?php endif; ?>
 
-            <?php if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= UserLevel::ADMIN): ?>
+            <?php if ($can_import_image_url): ?>
                 <div class="clear"></div>
                 <label for="image_url" class="ou-separateur">ou coller une URL</label>
                 <input type="url" name="image_url" id="image_url" value="<?= sanitizeForHtml($url_image) ?>" placeholder="https://…" maxlength="2000" size="50">
