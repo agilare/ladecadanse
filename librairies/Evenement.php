@@ -29,7 +29,9 @@ class Evenement extends Element
      */
     public static function getLieu(array $event): array
     {
-        if ($event['e_idLieu'] != 0)
+        // l_nom is null when the LEFT JOIN found no lieu : the event references a
+        // deleted lieu, fall back on the free text location stored in the event
+        if ($event['e_idLieu'] != 0 && isset($event['l_nom']))
         {
             return [
                 'idLieu' => $event['e_idLieu'],
