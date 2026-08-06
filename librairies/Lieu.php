@@ -72,7 +72,9 @@ class Lieu extends Element
 
         $stmt = $connectorPdo->prepare($sql_event);
         $stmt->execute([$idLieu]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+
+        // fetch() returns false for an unknown id, callers expect an empty array
+        return $stmt->fetch(PDO::FETCH_ASSOC) ?: [];
     }
 
     public static function getLieux(array $filters, string $order = 'dateAjout', ?int $page = 1): array

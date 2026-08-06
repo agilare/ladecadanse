@@ -8,6 +8,7 @@
 - events : protect the copy form ("Coller") submit button against double-click
 - lieux, organisateurs : "Passés" tab now opens on the most recent past events instead of the oldest ones
 - edition : in TinyMCE texts, links to the site itself lost their `href`, the sanitizer rejecting the relative URLs produced by `remove_script_host` ; texts saved before this fix must be edited again to restore their links
+- lieux : `/lieu/lieu.php?idL=` with an unknown id crashed (fatal `TypeError`, `Lieu::getLieu()` returning PDO's `false`) instead of answering the 404 the page already had ready
 - rss : `/event/rss.php` called without a `type` parameter logged an undefined key warning before returning its 400
 - events : an event whose `genre` is no longer one of the configured genres crashed the home page (fatal `TypeError` on `Text::stripAccents()`) and logged undefined key warnings in the admin, search and lieu/organisateur lists ; such genres now display as "divers" through the new `Evenement::genreLabel()`
 - events : an event referencing a deleted lieu crashed the pages listing it (fatal `TypeError` on `Lieu::getLinkNameHtml()`, filling the PHP error log) ; its location now falls back on the free text fields stored in the event
