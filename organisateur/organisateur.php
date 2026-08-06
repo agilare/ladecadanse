@@ -24,7 +24,8 @@ $organisateur = new Organisateur();
 $organisateur->setId($get['idO']);
 $organisateur->load();
 
-if (empty($organisateur))
+// the object always exists, only its values tell whether the row was found
+if (empty($organisateur->getValues()))
 {
     header($_SERVER["SERVER_PROTOCOL"] . " 404 Not Found");
     exit;
