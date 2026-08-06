@@ -119,7 +119,7 @@ $nom_page = ltrim($pathinfo['dirname'] . '/' . $pathinfo['filename'], '\\/');
 //echo $_SERVER["SCRIPT_FILENAME"]."<br>";
 //echo $nom_page;
 
-$assets = new AssetManager(__ROOT__ . ASSETS_DIR, ASSETS_DIR);
+$assets = new AssetManager(__ROOT__ . ASSETS_DIR, ASSETS_DIR, $logger);
 
 if (DARKVISITORS_ENABLED)
 {

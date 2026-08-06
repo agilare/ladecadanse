@@ -29,6 +29,7 @@
 - events edit : the flyer and the photo can be added by pasting an image URL instead of uploading a file ; available to every logged-in user (was admins only), not on the public "Proposer un événement" form
 
 ### Changed
+- assets : a missing file (a lost upload, an old event whose thumbnail was never generated) is now reported as a warning in `var/logs/activity.log` instead of the PHP error log, which it was filling one line per page view — the information is kept, it just moves where application events belong
 - admin : in gererEvenements, the events list gets a fixed height (70vh) with its own scrollbar and sticky column headers, like the dashboard tables
 - lieux : store `lat`/`lng` as `DECIMAL(10,7)` instead of `FLOAT(10,6)`, whose single precision lost about 0.5 m on Geneva coordinates ; apply `resources/v3-11-0_lieu-lat-lng-decimal.sql`
 - events : in forms, lieux select options values are displayed as is
