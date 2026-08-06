@@ -85,6 +85,14 @@ if (isset($_GET['idO']))
 // autorization to edit : author, 'admin' level, member of lieu, member of organisateur, member of lieu's organisateur
 if ($get['action'] != "ajouter" && $get['action'] != "insert")
 {
+    // "editer" and "update" both work on an existing event : without its id
+    // there is nothing to authorize, and every link of the site carries it
+    if (!isset($get['idE']))
+    {
+        header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
+        exit;
+    }
+
     $res_even_lieu = $connector->query("SELECT idLieu, statut, idPersonne, user_email, dateAjout FROM evenement WHERE idEvenement=" . (int) $get['idE']);
     $tab_even_lieu = $connector->fetchArray($res_even_lieu);
 
