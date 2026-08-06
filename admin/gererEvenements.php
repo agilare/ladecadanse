@@ -775,7 +775,7 @@ if ($verif->nbErreurs() > 0)
                 <td style="text-align:left"><a href="/event/evenement.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>" class='titre'><?= sanitizeForHtml($tab_even['e_titre']) ?></a></td>
                 <td><?= Lieu::getLinkNameHtml($even_lieu['nom'], $even_lieu['idLieu'], $even_lieu['salle']) ?><br><span style="color:lightsteelblue"><?= $even_lieu['localite'] ?></span></td>
                 <td><a href="/index.php?courant=<?= sanitizeForHtml($tab_even['e_dateEvenement']) ?>"><?= DateHelper::isoToApp($tab_even['e_dateEvenement']) ?></a></td>
-                <td><?= ucfirst((string) $glo_tab_genre[$tab_even['e_genre']]) ?></td>
+                <td><?= ucfirst(Evenement::genreLabel($tab_even['e_genre'])) ?></td>
                 <td>
                     <?= EvenementRenderer::schedulesToHhMm($tab_even['e_horaire_debut'], $tab_even['e_horaire_fin'], $tab_even['e_dateEvenement']) ?>
                     <?php

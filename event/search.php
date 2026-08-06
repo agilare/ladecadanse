@@ -266,7 +266,7 @@ $agenda_years = range((int)date("Y"), Evenement::AGENDA_START_YEAR);
                         <tr class="<?= $even_periode ?>">
                             <td class="desc_even">
                                 <h3><a href="evenement.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>"><?= sanitizeForHtml($tab_even['e_titre']) ?></a></h3>
-                                <p><?= $glo_tab_genre[$tab_even['e_genre']] ?></p>
+                                <p><?= Evenement::genreLabel($tab_even['e_genre']) ?></p>
                             </td>
                             <td><?= Lieu::getLinkNameHtml($even_lieu['nom'], $even_lieu['idLieu'], $even_lieu['salle']) ?></td>
                             <td class="date"><a href="/index.php?courant=<?= sanitizeForHtml($tab_even['e_dateEvenement']); ?>"><?= DateHelper::isoToFr($tab_even['e_dateEvenement'], 'annee') ?></a></td>

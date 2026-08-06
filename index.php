@@ -253,11 +253,11 @@ include("_header.inc.php");
                 <section class="genre">
 
                     <header class="genre-titre">
-                        <h2 id="<?= Text::stripAccents($glo_tab_genre[$genre]); ?>"><?= ucfirst($glo_tab_genre[$genre]); ?></h2>
+                        <h2 id="<?= Text::stripAccents(Evenement::genreLabel($genre)); ?>"><?= ucfirst(Evenement::genreLabel($genre)); ?></h2>
                         <?php
                         $genre_proch = next($genres_today);
                         if (isset($tab_events_today_in_region_by_category[$genre_proch])) : ?>
-                            <a class="genre-jump" href="#<?= Text::stripAccents($glo_tab_genre[$genre_proch]); ?>"><?= $glo_tab_genre[$genre_proch]; ?>&nbsp;<i class="fa fa-long-arrow-down"></i></a>
+                            <a class="genre-jump" href="#<?= Text::stripAccents(Evenement::genreLabel($genre_proch)); ?>"><?= Evenement::genreLabel($genre_proch); ?>&nbsp;<i class="fa fa-long-arrow-down"></i></a>
                         <?php endif; ?>
                         <div class="spacer"></div>
                     </header>
@@ -270,7 +270,7 @@ include("_header.inc.php");
                         ?>
                         
                         <?php if ($separator = $event->getSeparator()) : ?>
-                            <p class="rappel_date"><?= $separator->getLabel($day_label, $glo_tab_genre[$genre]); ?></p>
+                            <p class="rappel_date"><?= $separator->getLabel($day_label, Evenement::genreLabel($genre)); ?></p>
                         <?php endif; ?>
 
                         <?php

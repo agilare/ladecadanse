@@ -15,11 +15,27 @@ class Evenement extends Element
     public static $statuts_evenement = ['propose' => 'Proposé', 'actif' => '', 'complet' => 'Complet', 'annule' => 'Annulé', 'inactif' => 'Dépublié'];
 
     public const int AGENDA_START_YEAR = 2005;
+    // evenement.genre default value in database
+    public const string GENRE_DEFAULT = 'divers';
 
     function __construct() {
 
         parent::__construct();
         $this->table = "evenement";
+    }
+
+    /**
+     * Libellé d'affichage d'un genre
+     *
+     * Les genres sont stockés en varchar : d'anciens événements peuvent porter
+     * un genre qui n'est plus dans $glo_tab_genre, on retombe alors sur "divers"
+     * plutôt que d'afficher (ou pire, de passer plus loin) une valeur nulle
+     */
+    public static function genreLabel(?string $genre): string
+    {
+        global $glo_tab_genre;
+
+        return $glo_tab_genre[$genre] ?? $glo_tab_genre[self::GENRE_DEFAULT] ?? self::GENRE_DEFAULT;
     }
 
     /**

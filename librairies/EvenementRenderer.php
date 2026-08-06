@@ -247,8 +247,8 @@ class EvenementRenderer
 
     public static function eventTableRowHtml(array $tab_even, Authorization $authorization, bool $isWithLieu): string
     {
-        // TODO: mv $glo_tab_genre to a class constant; $icone... to... ?
-        global $glo_tab_genre, $glo_auj_6h, $iconeCopier, $iconeEditer, $icone;
+        // TODO: mv $icone... to... ?
+        global $glo_auj_6h, $iconeCopier, $iconeEditer, $icone;
 
         $vcard_starttime = '';
         if (mb_substr((string) $tab_even['e_horaire_debut'], 11, 5) != '06:00')
@@ -278,7 +278,7 @@ class EvenementRenderer
                 <a class="url" href="/event/evenement.php?idE=<?= (int)$tab_even['e_idEvenement']?>">
                     <strong class="summary"><?= self::titreSelonStatutHtml(sanitizeForHtml($tab_even['e_titre']), $tab_even['e_statut']) ?></strong>
                 </a><br>
-                <span class="category"><?= $glo_tab_genre[$tab_even['e_genre']]; ?></span>
+                <span class="category"><?= Evenement::genreLabel($tab_even['e_genre']); ?></span>
             </td>
             <td class="location">
                 <?= $location ?>
