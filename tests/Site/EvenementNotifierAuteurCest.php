@@ -9,8 +9,9 @@ use Codeception\Util\HttpCode;
  * Fieldset « E-mail à l'auteur » de evenement-edit.php (issue #149) :
  * qui le voit, et quelles règles de validation le serveur impose.
  *
- * Aucun cas n'écrit en base ni n'envoie de mail : les POST sont volontairement
- * invalides, donc `$verif->nbErreurs() > 0` et l'UPDATE n'est jamais atteint.
+ * Aucun cas n'écrit en base ni n'envoie de mail : chaque POST vide le titre,
+ * donc `$verif->nbErreurs() > 0` et l'UPDATE n'est jamais atteint. Ne pas
+ * soumettre de formulaire valide ici : la suite `site` est en lecture seule.
  */
 class EvenementNotifierAuteurCest
 {
@@ -85,7 +86,7 @@ class EvenementNotifierAuteurCest
 
     /**
      * En création, il n'y a pas d'auteur à prévenir : le fieldset ne doit pas
-     * apparaître ($can_notify_auteur exige action=editer|update, evenement-edit.php:124).
+     * apparaître ($can_notify_auteur exige action=editer|update, evenement-edit.php:133).
      */
     public function fieldsetHiddenOnAjouter(SiteTester $I)
     {
@@ -120,40 +121,70 @@ class EvenementNotifierAuteurCest
     }
 
     /**
-     * Règle métier non évidente (evenement-edit.php:346) : quand l'admin peut
-     * notifier l'auteur, il doit soit cocher un motif, soit écrire un message —
-     * il ne peut pas enregistrer en silence. Facile à casser lors d'un refactor
-     * de la validation, d'où ce test explicite.
+     * Notifier l'auteur est facultatif : l'admin peut enregistrer sans cocher de
+     * motif ni écrire de message (evenement-edit.php:367, obligatoire = 0).
+     * Une version antérieure rendait le message obligatoire quand aucun motif
+     * n'était coché ; ce test verrouille l'abandon de cette règle.
+     *
+     * Le titre est vidé pour garantir une erreur ailleurs dans le formulaire :
+     * on observe la validation des champs de notification sans rien enregistrer.
      */
-    public function messageRequiredWhenNoMotif(SiteTester $I)
-    {
-        $I->loginAsAdmin();
-        $I->amOnPage($this->editUrl(TestEnv::getInt('LADECADANSE_TEST_EVENT_ID_AUTEUR')));
-        $I->seeElement('#notif_message');
-
-        // resoumission à l'identique, sans motif ni message
-        $I->submitForm('#ajouter_editer', ['notif_message' => '']);
-
-        $this->seeNotifMessageIsRequired($I);
-    }
-
-    /**
-     * Contrôle anti-contournement du cas précédent : une clé de motif forgée est
-     * filtrée par l'array_intersect sur le catalogue (evenement-edit.php:340),
-     * donc le message redevient obligatoire. Sans ce filtre, le POST passerait.
-     */
-    public function unknownMotifKeysAreRejected(SiteTester $I)
+    public function notifIsOptional(SiteTester $I)
     {
         $I->loginAsAdmin();
         $I->amOnPage($this->editUrl(TestEnv::getInt('LADECADANSE_TEST_EVENT_ID_AUTEUR')));
         $I->seeElement('#notif_message');
 
         $I->submitForm('#ajouter_editer', [
-            'notif_motifs' => ['cle_forgee'],
+            'titre' => '', // titre est obligatoire (evenement-edit.php:247) : erreur garantie
             'notif_message' => '',
         ]);
 
-        $this->seeNotifMessageIsRequired($I);
+        $I->seeElement('#ajouter_editer');
+
+        // pas d'astérisque : le champ n'est jamais signalé comme obligatoire
+        $I->see('Message', 'label[for=notif_message]');
+        $I->dontSee('*', 'label[for=notif_message]');
+
+        // et aucune erreur portée par le fieldset, malgré motif et message vides
+        $this->dontSeeNotifError($I);
+    }
+
+    /**
+     * Le <select> des motifs est rendu depuis le catalogue serveur
+     * ($glo_motifs_notification_auteur), jamais depuis le POST : une clé forgée
+     * n'est ni proposée, ni sélectionnée, ni réfléchie ailleurs dans la page.
+     * Le motif valide soumis en même temps prouve que le <select> se repeuple
+     * bien, donc que l'absence de la clé forgée est significative.
+     *
+     * Portée : ce test ne couvre PAS l'array_intersect d'evenement-edit.php:362.
+     * Vérifié par mutation le 2026-08-07 — retirer ce filtre ne change rien à la
+     * réponse HTTP : les motifs retenus ne servent qu'à composer le mail, envoyé
+     * seulement sur un enregistrement valide, hors de portée d'une suite en
+     * lecture seule. Couvrir ce filtre demanderait de l'extraire dans une classe
+     * testable unitairement (AuteurNotifier).
+     */
+    public function forgedMotifKeyIsNeverEchoedBack(SiteTester $I)
+    {
+        $I->loginAsAdmin();
+        $I->amOnPage($this->editUrl(TestEnv::getInt('LADECADANSE_TEST_EVENT_ID_AUTEUR')));
+        $I->seeElement('#notif_message');
+
+        $I->submitForm('#ajouter_editer', [
+            'titre' => '', // titre est obligatoire (evenement-edit.php:247) : erreur garantie
+            'notif_motifs' => ['erreurs_corrigees', 'cle_forgee'],
+            'notif_message' => '',
+        ]);
+
+        $I->seeElement('#ajouter_editer');
+
+        // la clé forgée est absente du catalogue rendu, et n'est pas sélectionnée
+        $I->dontSeeElement('#notif_motifs option[value="cle_forgee"]');
+        $I->seeElement('#notif_motifs option[value="erreurs_corrigees"][selected]');
+        $I->seeNumberOfElements('#notif_motifs option[selected]', 1);
+
+        // ni réfléchie ailleurs (attribut, script, message d'erreur…)
+        $I->dontSee('cle_forgee');
     }
 
     /**
@@ -169,7 +200,7 @@ class EvenementNotifierAuteurCest
         $I->seeElement('#notif_message');
 
         $I->submitForm('#ajouter_editer', [
-            'titre' => '', // titre est obligatoire (evenement-edit.php:225) : erreur garantie
+            'titre' => '', // titre est obligatoire (evenement-edit.php:247) : erreur garantie
             'notif_motifs' => ['erreurs_corrigees'],
             'notif_message' => $message,
         ]);
@@ -185,22 +216,14 @@ class EvenementNotifierAuteurCest
     }
 
     /**
-     * Le formulaire est réaffiché avec l'erreur portée par notif_message :
-     * la validation a échoué, donc rien n'a été enregistré ni envoyé.
+     * Aucune erreur de validation n'est portée par le fieldset de notification.
+     *
+     * XPath plutôt que "#notif_message + .msg" : le <div class="msg"> est écrit
+     * dans le <p> du champ, mais un <div> ferme implicitement un <p>, donc le
+     * parseur HTML le remonte au niveau du fieldset.
      */
-    private function seeNotifMessageIsRequired(SiteTester $I): void
+    private function dontSeeNotifError(SiteTester $I): void
     {
-        // formulaire réaffiché => l'UPDATE n'a pas eu lieu
-        $I->seeElement('#ajouter_editer');
-
-        // l'astérisque du label n'est rendue que si aucun motif n'a été retenu
-        $I->see('Message *', 'label[for=notif_message]');
-        $I->dontSeeElement('#notif_motifs option[selected]');
-
-        // XPath plutôt que "#notif_message + .msg" : le <div class="msg"> est écrit
-        // dans le <p> du champ, mais un <div> ferme implicitement un <p>, donc le
-        // parseur HTML le remonte au niveau du fieldset
-        $I->seeElement('//fieldset[.//textarea[@id="notif_message"]]//div[@class="msg"]');
-        $I->see('Ce champ est obligatoire');
+        $I->dontSeeElement('//fieldset[.//textarea[@id="notif_message"]]//div[@class="msg"]');
     }
 }
