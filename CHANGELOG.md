@@ -7,45 +7,64 @@
 - home : restore render broken by a call to the removed `date_lendemain()` (time-based event separators, PR #133)
 - events : protect the copy form ("Coller") submit button against double-click
 - lieux, organisateurs : "Passés" tab now opens on the most recent past events instead of the oldest ones
-- edition : in TinyMCE texts, links to the site itself lost their `href`, the sanitizer rejecting the relative URLs produced by `remove_script_host` ; texts saved before this fix must be edited again to restore their links
-- organisateurs : `/organisateur/organisateur.php?idO=` with an unknown id returned an empty page with a 200, its 404 guard testing the object itself (never empty) instead of the values loaded from database
-- events : `/event/to-ics.php?idE=` with an unknown id crashed (fatal `TypeError` on `isPersonneAllowedToEditEvenement()`) instead of answering 404 like the other event pages
-- events edit : `/evenement-edit.php?action=editer` (or `update`) without an `idE` now answers 400 instead of running the authorization check on a missing id and logging undefined key warnings
-- search, lieux, organisateurs, admin : an unexpected value in an optional url parameter (`periode=tous` from links predating the removal of that option, `statut`, `tri`, `order_dir`, `seuil`) threw an uncaught exception instead of falling back on the default ; these guards now use the new non-throwing `Validateur::isAcceptedUrlQueryValue()`
-- lieux : `/lieu/lieu.php?idL=` with an unknown id crashed (fatal `TypeError`, `Lieu::getLieu()` returning PDO's `false`) instead of answering the 404 the page already had ready
-- rss : `/event/rss.php` called without a `type` parameter logged an undefined key warning before returning its 400
-- events : an event whose `genre` is no longer one of the configured genres crashed the home page (fatal `TypeError` on `Text::stripAccents()`) and logged undefined key warnings in the admin, search and lieu/organisateur lists ; such genres now display as "divers" through the new `Evenement::genreLabel()`
-- events : an event referencing a deleted lieu crashed the pages listing it (fatal `TypeError` on `Lieu::getLinkNameHtml()`, filling the PHP error log) ; its location now falls back on the free text fields stored in the event
+- edition : in TinyMCE texts, links to the site itself lost their `href` (relative URLs rejected by the sanitizer) ; texts saved before this fix must be edited again to restore their links
+- lieux, organisateurs, events : an unknown id returned an empty 200 or a fatal error instead of the 404 the pages already had ready (`lieu.php?idL=`, `organisateur.php?idO=`, `to-ics.php?idE=`) ; `evenement-edit.php?action=editer|update` without `idE` now answers 400
+- search, lieux, organisateurs, admin, events : an unexpected value in an optional url parameter (`periode`, `statut`, `tri`, `order_dir`, `seuil`, `action`) threw an uncaught exception or logged a warning instead of falling back on the default ; guards now use the new non-throwing `Validateur::isAcceptedUrlQueryValue()`
+- rss : `/event/rss.php` called without a `type` parameter logged a warning before returning its 400
+- events : a `genre` absent from the configuration crashed the home page and logged warnings in the listings ; it now displays as "divers" through the new `Evenement::genreLabel()`
+- events : an event referencing a deleted lieu crashed the pages listing it ; its location now falls back on the free text fields stored in the event
+- csp : two scripts blocked in production — the bots tracker (darkvisitors.com now redirects to knownagents.com) and the AssetManager import map, an inline tag missing its nonce
+- forms : the date field is usable with the keyboard again
+- events edit : no longer assumes the file fields are present in `$_FILES`
+- admin : in index, "Latest texts added" called `texteHtmlReduit` with a missing argument
+- auth : remove the obsolete warning about email in the login field
+- lieu : typo on the lieu page when there is no incoming event
+- header : spacing and alignment of the search area
+- events : on the event page, move "Ajouter à un agenda" left to the action links
+- tests : adapt the Selenium cases to the changes of this release
 
 ### Added
-- lieux edit : optional latitude/longitude fields under "Localité/quartier", so the map coordinates can be set from the site instead of directly in the database (a map picker will come later)
+- lieux edit : optional latitude/longitude fields, so the map coordinates can be set from the site instead of directly in the database (a map picker will come later)
 - events : in forms add <optgroup> by canton for lieux select
 - lieux, organisateurs, gererEvenements, users : add button inside search fields to clear and resubmit the filter in one click
 - bots : internal monitoring of bots and suspicious IPs (table `bot_monitor`, honeypot, admin dashboard) ; before enabling `BOT_MONITORING_ENABLED`, complete `app/env.php` (see `env_model.php`) and create the table (`resources/v3-11-0_bot_monitor-create-table.sql`)
-- tests : new Codeception `site` suite (PhpBrowser) with functional tests for the bots honeypot ; set `LADECADANSE_SITE_URL` in `tests/.env`
-- ui : keyboard shortcuts for the most common actions #112 : h (accueil), s (recherche), a (ajouter un événement), l (lieux), o (organisateurs), d (dashboard admin), e (edit current event/lieu/organisateur), f (flyer), c (copy event), arrow keys for agenda day navigation, / to focus the search field ; bindings match on `event.key` so they work whatever the keyboard layout (AZERTY, QWERTZ, QWERTY...)
+- ui : keyboard shortcuts for the most common actions #112 : h (accueil), s (recherche), a (ajout), l (lieux), o (organisateurs), d (dashboard), e (édition), f (flyer), c (copie), arrows for day navigation, / to focus the search field ; bindings match on `event.key`, so they work whatever the keyboard layout
 - events : admins can notify the event author by email of the changes made, picking pre-written motifs and/or writing a free-text message #149
-- events edit : POC of an always-visible Zebra Datepicker calendar under the date field, for SUPERADMIN only (other users keep the current popup datepicker)
-- events edit : the flyer and the photo can be added by pasting an image URL instead of uploading a file ; available to every logged-in user (was admins only), not on the public "Proposer un événement" form
-- events : the ajax "Dépublier" button, so far limited to the home page, lieu and organisateur listings, is now available on the event page (SUPERADMIN only), the user profile, gererEvenements and the search results ; on listings the event fades out, on the management tables the status dot turns red in place, on the event page the page reloads with its "dépublié" badge
+- events : the ajax "Dépublier" button, so far limited to the home, lieu and organisateur listings, is now also on the event page, the user profile, gererEvenements and the search results (SUPERADMIN only)
+- events edit : POC of an always-visible Zebra Datepicker calendar under the date field, for SUPERADMIN only
+- events edit : the flyer and the photo can be added by pasting an image URL ; open to every logged-in user (was admins only), not on the public "Proposer un événement" form
+- events edit : confirm before leaving the form with unsaved changes
+- events edit : the "Références" field becomes a textarea, one URL per line (stored format unchanged)
+- search : the results page keeps the query in the header field and offers a "Copier" button on each result ; on mobile the search field stays open on that page
+- home : time-based separators in the events list #105 (PR #133)
+- don : add Postfinance and Twint payment methods, add Bernex to "Soutiens"
+- tests : new Codeception `site` suite (PhpBrowser) covering the bots honeypot, the author notification, permissions, statuses and the bots dashboard ; set `LADECADANSE_SITE_URL` in `tests/.env`
+- tests : Vitest setup and first JS unit tests (`npm test`)
 
 ### Changed
-- assets : a missing file (a lost upload, an old event whose thumbnail was never generated) is now reported as a warning in `var/logs/activity.log` instead of the PHP error log, which it was filling one line per page view — the information is kept, it just moves where application events belong
-- admin : in gererEvenements, the events list gets a fixed height (70vh) with its own scrollbar and sticky column headers, like the dashboard tables
+- assets : a missing file is now reported as a warning in `var/logs/activity.log` instead of the PHP error log, which it was filling one line per page view
+- admin : in gererEvenements, the events list gets a fixed height (70vh) with its own scrollbar and sticky column headers ; checkboxes column moved first
+- events : in the listing tables, action icons aligned right so single-icon cells line up with the others
 - lieux : store `lat`/`lng` as `DECIMAL(10,7)` instead of `FLOAT(10,6)`, whose single precision lost about 0.5 m on Geneva coordinates ; apply `resources/v3-11-0_lieu-lat-lng-decimal.sql`
 - events : in forms, lieux select options values are displayed as is
-- deps-dev : update phpmailer, phpstan, rector, rector/jack, select2, vlucas/phpdotenv, phan, psalm, spaze/phpstan-disallowed-calls
-- user-edit : remove redundant isset() check on always-present `organisateurs` field
-- events edit : the "E-mail à l'auteur" fieldset now previews the message that will be sent — a disabled "Objet" field, the opening lines above the motifs, the closing lines below the message ; the preview text is built by `AuteurNotifier` itself so it cannot drift from the mail actually sent
-- events edit : move the "Statut de l'événement" fieldset before "Catégorie", lay its radio options on one line on desktop, shorten the labels and reuse the site badge style for the "complet"/"annulé" states
+- edition : larger image previews in the edit forms, using the normal version of the file instead of the thumbnail
+- events edit : the "E-mail à l'auteur" fieldset previews the message that will be sent, built by `AuteurNotifier` so it cannot drift from the actual mail ; the free-text message is optional
+- events edit : move the "Statut de l'événement" fieldset before "Catégorie", radio options on one line on desktop, shorter labels, site badge style for "complet"/"annulé"
+- events edit : temporarily disable the announce about organisateur registration
 - don : disable the wemakeit widget (unavailable from July 31) and replace the "Autres moyens possibles" line with an intro paragraph
-- analyzers : finalise the Psalm configuration (globals declared from `app/config.php` and `app/bootstrap.php`, `@psalm-taint-escape` on `sanitize()`/`sanitizeForHtml()`, insane-comparison plugin enabled, `.claude/` worktrees excluded, baseline regenerated) and add the `composer psalm:taint` script
-- analyzers : fix PHPStan config gaps (exclude node_modules and `.claude/`, declare runtime constants and `app/env.php` feature flags, enable the disallowed-calls presets, scope the `variable.undefined` ignore to legacy pages) and regenerate the stale baseline
+- analyzers : finalise the Psalm configuration (globals, taint escapes, insane-comparison plugin, baseline regenerated) and add the `composer psalm:taint` script
+- analyzers : fix PHPStan config gaps (exclusions, runtime constants and feature flags, disallowed-calls presets) and regenerate the stale baseline
+- build : declare the required Node version via `engines`, name the npm package, document `npm install` and `npm test`
+- deps-dev : update phpmailer, phpstan, rector, rector/jack, select2, vlucas/phpdotenv, phan, psalm, spaze/phpstan-disallowed-calls
+- deploy : update git-ftp-ignore for the agents and analyzers files
 - docs : add AGENTS.md as the single source of project guidance for coding agents, CLAUDE.md now points to it
-- ui : on desktop, align the back-to-top button with the `#global` container corner instead of the screen corner, where its translucent grey background blended into the identical body background
+- ui : on desktop, align the back-to-top button with the `#global` container corner instead of the screen corner, where it blended into the identical body background
+- user-edit : remove redundant isset() check on always-present `organisateurs` field
 
 ### Security
+- events edit : stored XSS in the "Organisateur(s)" select2 list, whose renderer interpolated decoded values into an HTML string ; the template is now built as DOM nodes
 - deps : bump guzzlehttp/guzzle, guzzlehttp/psr7, symfony/dom-crawler, symfony/html-sanitizer, symfony/yaml to fix 20 known security advisories (cookie handling, CRLF/host-confusion injection, XSS bypass, XXE, ReDoS/DoS)
+- deps-dev : bump js-yaml, brace-expansion
 
 
 ## [3.10.0] - 2026-04-26
@@ -157,9 +176,6 @@
 
 ### Security
 - add missing auth and 403 response to some pages
-
-### Removed
-- organisateurs right menu
 
 
 ## [3.9.1] - 2025-10-11
