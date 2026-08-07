@@ -93,7 +93,7 @@ if ($get['action'] != "ajouter" && $get['action'] != "insert")
         exit;
     }
 
-    $res_even_lieu = $connector->query("SELECT idLieu, statut, idPersonne, user_email, dateAjout FROM evenement WHERE idEvenement=" . (int) $get['idE']);
+    $res_even_lieu = $connector->query("SELECT idLieu, statut, idPersonne, user_email, dateAjout, dateEvenement, horaire_fin FROM evenement WHERE idEvenement=" . (int) $get['idE']);
     $tab_even_lieu = $connector->fetchArray($res_even_lieu);
 
     if (
@@ -104,6 +104,19 @@ if ($get['action'] != "ajouter" && $get['action'] != "insert")
     {
         header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
         HtmlShrink::msgErreur("Vous ne pouvez pas modifier cet événement car vous n'avez pas les droits suffisants ou vous n'êtes pas (ou plus) connecté");
+        exit;
+    }
+
+    // Un événement passé est une archive : le rouvrir pour en changer la date écraserait
+    // l'événement d'origine, et l'agenda historique y perdrait. Les éditeurs gardent la main,
+    // les autres peuvent le copier vers de nouvelles dates ou le dépublier.
+    // Ce bloc couvre "editer" comme "update" : l'affichage du formulaire et sa soumission.
+    if (!$authorization->isPersonneEditor($_SESSION)
+        && DateHelper::isEvenementPast($tab_even_lieu['dateEvenement'], $tab_even_lieu['horaire_fin']))
+    {
+        header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
+        HtmlShrink::msgErreur("Cet événement est passé : il est archivé et ne peut plus être modifié. "
+            . "Pour le reprogrammer, <a href=\"/event/copy.php?idE=" . (int) $get['idE'] . "\">copiez-le vers d'autres dates</a>.");
         exit;
     }
 }

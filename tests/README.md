@@ -95,13 +95,18 @@ In `tests/.env` (copied from `tests/.env_model`), fill in:
 - `LADECADANSE_TEST_EVENT_ID_AUTEUR` — an event submitted by an author (`groupe` >= 6) or anonymously, i.e. one for which the "E-mail à l'auteur" fieldset shows up
 - `LADECADANSE_TEST_EVENT_ID_ACTOR_OWN` — an event whose author is the actor account
 - `LADECADANSE_TEST_EVENT_ID_FOREIGN` — an event the actor account may not edit
+- `LADECADANSE_TEST_EVENT_ID_ACTOR_OWN_PAST` — a **past** event whose author is the actor account
+
+A past event is a read-only archive for anyone below `groupe` 6, so the first three fixtures must
+point at **future** events — a past one would make the "can edit" tests fail for the wrong reason.
+An event counts as past once `06:00:00` has struck on the day after `dateEvenement`.
 
 Tests whose variables are left empty are reported as **skipped**, not failed.
 
 #### The tests
 
 - `EvenementNotifierAuteurCest` — "E-mail à l'auteur" (issue #149): who sees the fieldset, the fact that motif and message are both optional, and that forged motif keys are never echoed back
-- `EvenementEditPermissionsCest` — who may edit an event (anonymous, actor, admin)
+- `EvenementEditPermissionsCest` — who may edit an event (anonymous, actor, admin), and when: a past event is a read-only archive below `groupe` 6, though Copier and Dépublier stay available
 - `EvenementStatutCest` — which status radios are rendered, and to whom
 - `AdminBotsCest` — the three views of the bot dashboard and its access control
 - `FormulairesRegressionCest` — server-side contract of the recent JS: `body[data-page]`, the `formulaire=ok` hidden field of `event/copy.php`, the clear-search button

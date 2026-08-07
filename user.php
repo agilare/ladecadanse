@@ -239,7 +239,7 @@ $detailsAff = $connector->fetchArray($req_affPers);
 
 	if ($get['elements'] == "evenement")
 	{
-		$sql_evenement = "SELECT idEvenement, idLieu, statut, idPersonne, genre,titre, dateEvenement, nomLieu, flyer, dateAjout
+		$sql_evenement = "SELECT idEvenement, idLieu, statut, idPersonne, genre,titre, dateEvenement, horaire_fin, nomLieu, flyer, dateAjout
 		 FROM evenement WHERE idPersonne=".(int)$get['idP']." ORDER BY ".$connector->sanitize($get['tri'])." ".$connector->sanitize($get['ordre'])." LIMIT ".((int)$get['page'] - 1) * (int)$get['nblignes'].",".(int)$get['nblignes'];
 
 
@@ -305,15 +305,22 @@ $detailsAff = $connector->fetchArray($req_affPers);
 					$nomLieu = "<a href=\"/lieu/lieu.php?idL=".(int)$tab_even['idLieu']."\" title=\"Voir la fiche du lieu : ".sanitizeForHtml($tabLieu['nom'])." \">".sanitizeForHtml($tabLieu['nom'])."</a>";
 				}
 
+				// un événement passé est une archive : non modifiable (sauf par un éditeur),
+				// et sa ligne est atténuée pour que la disparition du bouton Éditer se comprenne
+				$is_even_ancien = DateHelper::isEvenementPast($tab_even['dateEvenement'], $tab_even['horaire_fin']);
+				$can_edit_even = !$is_even_ancien || $authorization->isPersonneEditor($_SESSION);
 
-				if ($pair % 2 == 0)
+				$tr_classes = [];
+				if ($pair % 2 != 0)
 				{
-					echo "<tr>";
+					$tr_classes[] = "impair";
 				}
-				else
+				if ($is_even_ancien)
 				{
-					echo "<tr class=\"impair\" >";
+					$tr_classes[] = "ancien";
 				}
+
+				echo $tr_classes === [] ? "<tr>" : "<tr class=\"" . implode(" ", $tr_classes) . "\">";
 
 				echo "
 				<td>".DateHelper::isoToApp($tab_even['dateEvenement'])."</td>
@@ -329,9 +336,16 @@ $detailsAff = $connector->fetchArray($req_affPers);
 					{
 						$depublier = EvenementRenderer::unpublishLinkHtml((int)$tab_even['idEvenement'], $icone['depublier'], EvenementRenderer::UNPUBLISH_THEN_STATUS)."&nbsp;";
 					}
+					// Éditer disparaît sur les événements passés ; Dépublier reste toujours disponible
+					$editer = "";
+					if ($can_edit_even)
+					{
+						$editer = "<a href=\"/evenement-edit.php?action=editer&idE=".(int)$tab_even['idEvenement']."\" title=\"Éditer l'événement\">".$iconeEditer."</a>";
+					}
+
 					// nowrap : Dépublier et Modifier restent côte à côte, jamais l'une sous l'autre
 					// aligné à droite : les cellules à une seule icône restent dans l'axe des autres
-					echo "<td style=\"white-space:nowrap;text-align:right\">".$depublier."<a href=\"/evenement-edit.php?action=editer&idE=".(int)$tab_even['idEvenement']."\" title=\"Éditer l'événement\">".$iconeEditer."</a></td>";
+					echo "<td style=\"white-space:nowrap;text-align:right\">".$depublier.$editer."</td>";
 				}
 				echo "</tr>";
 

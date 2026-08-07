@@ -14,6 +14,15 @@ use DateTime;
  */
 class DateHelper
 {
+    /** Dernier instant d'une journée d'agenda : le jour D va de D 06:00:01 à D+1 06:00:00 inclus */
+    public const string AGENDA_DAY_END_TIME = '06:00:00';
+
+    /** Suffixe de la sentinelle « horaire non renseigné » : {lendemain} 06:00:01 */
+    private const string NO_TIME_SUFFIX = ' 06:00:01';
+
+    /** Valeur d'horaire héritée signifiant « non renseigné » */
+    private const string NO_TIME_VALUE = '0000-00-00 00:00:00';
+
     // -------------------------------------------------------------------------
     // Component extraction
     // -------------------------------------------------------------------------
@@ -179,5 +188,58 @@ class DateHelper
     public static function isoToRfc2822(string $date): string
     {
         return (new DateTime($date))->format(DateTime::RFC2822);
+    }
+
+    // -------------------------------------------------------------------------
+    // Journée d'agenda
+    // -------------------------------------------------------------------------
+
+    /**
+     * Fin réelle d'un événement, au sens de la journée décadanse.
+     *
+     * Une journée d'agenda D va de D 06:00:01 à D+1 06:00:00 inclus : une soirée
+     * qui se termine à 02:00 appartient encore au jour de l'événement. C'est la
+     * règle qu'applique evenement-edit.php en stockant les horaires (une heure
+     * <= 06:00 est reportée au lendemain), et que reflète l'aide de saisie du
+     * formulaire : « jusqu'à 06:00, le début sera considéré faisant partie du
+     * jour de l'événement ».
+     *
+     * Sans horaire de fin renseigné, l'événement se termine donc à 06:00:00 le
+     * lendemain. Un horaire de fin ne peut jamais raccourcir la journée : il ne
+     * la prolonge que s'il la dépasse, ce que l'invariant de stockage interdit
+     * en principe mais que d'anciennes lignes pourraient violer.
+     *
+     * @param string      $dateEvenement ISO date (YYYY-MM-DD)
+     * @param string|null $horaireFin    ISO datetime, ou null/sentinelle si non renseigné
+     * @return string ISO datetime (YYYY-MM-DD HH:MM:SS)
+     */
+    public static function evenementEnd(string $dateEvenement, ?string $horaireFin = null): string
+    {
+        $nextDay = self::isoToNextDay($dateEvenement);
+        $dayEnd  = $nextDay . ' ' . self::AGENDA_DAY_END_TIME;
+
+        // sentinelle « horaire non renseigné » : la première seconde hors du jour de l'événement,
+        // choisie pour que ces événements trient en dernier (cf. evenement-edit.php)
+        if (empty($horaireFin)
+            || $horaireFin === $nextDay . self::NO_TIME_SUFFIX
+            || $horaireFin === self::NO_TIME_VALUE)
+        {
+            return $dayEnd;
+        }
+
+        return max($horaireFin, $dayEnd);
+    }
+
+    /**
+     * Un événement est « passé » quand sa fin est dépassée : c'est alors une
+     * archive, que seuls les éditeurs peuvent encore modifier.
+     *
+     * @param string      $dateEvenement ISO date (YYYY-MM-DD)
+     * @param string|null $horaireFin    ISO datetime, ou null/sentinelle si non renseigné
+     * @param string|null $now           ISO datetime, injectable pour les tests ; défaut : maintenant
+     */
+    public static function isEvenementPast(string $dateEvenement, ?string $horaireFin = null, ?string $now = null): bool
+    {
+        return ($now ?? date('Y-m-d H:i:s')) > self::evenementEnd($dateEvenement, $horaireFin);
     }
 }

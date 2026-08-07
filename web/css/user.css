@@ -162,6 +162,23 @@ background-color:#f0f0ff;
 
 }
 
+/*
+ * Événements passés : archives non modifiables, atténuées pour que l'absence
+ * du bouton Éditer se comprenne. L'opacité revient au survol (et au focus
+ * clavier) pour que l'information reste lisible à la demande.
+ */
+table#ajouts tr.ancien
+{
+	opacity:0.6;
+	transition:opacity 0.15s ease-in-out;
+}
+
+table#ajouts tr.ancien:hover,
+table#ajouts tr.ancien:focus-within
+{
+	opacity:1;
+}
+
 
 
 

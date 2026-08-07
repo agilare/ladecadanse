@@ -296,9 +296,11 @@ include("_header.inc.php");
                                     <li class="action_copier">
                                         <a href="/event/copy.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>" title="Copier l'événement">Copier vers d'autres dates</a>
                                     </li>
+                                    <?php if ($authorization->isPersonneAllowedToEditEvenementNow($_SESSION, $tab_even)) : ?>
                                     <li class="action_editer">
                                         <a href="/evenement-edit.php?action=editer&amp;idE=<?= (int) $tab_even['e_idEvenement'] ?>" title="Modifier l'événement">Modifier</a>
                                     </li>
+                                    <?php endif; ?>
                                     <li class="action_depublier">
                                         <?= Ladecadanse\EvenementRenderer::unpublishLinkHtml((int) $tab_even['e_idEvenement'], 'Dépublier') ?>
                                     </li>

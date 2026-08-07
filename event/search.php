@@ -279,7 +279,11 @@ $agenda_years = range((int)date("Y"), Evenement::AGENDA_START_YEAR);
                             <?php endif; ?>
                             <?php if ($authorization->isPersonneAllowedToEditEvenement($_SESSION, $tab_even)) : ?>
                                 <td><a href="/event/copy.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>" title="Copier cet événement"><?= $iconeCopier; ?></a></td>
+                                <?php if ($authorization->isPersonneAllowedToEditEvenementNow($_SESSION, $tab_even)) : ?>
                                 <td><a href="/evenement-edit.php?action=editer&amp;idE=<?= (int) $tab_even['e_idEvenement'] ?>" title="Modifier cet événement"><?= $iconeEditer; ?></a></td>
+                                <?php else : ?>
+                                <td></td><?php // cellule vide : garde l'alignement des colonnes sur les lignes archivées ?>
+                                <?php endif; ?>
                                 <td><?= EvenementRenderer::unpublishLinkHtml((int) $tab_even['e_idEvenement'], $icone['depublier']) ?></td>
                             <?php endif; ?>
                         </tr>

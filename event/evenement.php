@@ -79,6 +79,9 @@ if (empty($tab_even))
 }
 
 $isPersonneAllowedToEdit = $authorization->isPersonneAllowedToEditEvenement($_SESSION, $tab_even);
+// distinct de $isPersonneAllowedToEdit, qui gouverne aussi la visibilité des événements
+// 'propose'/'inactif' et l'accès à la copie : un événement passé reste visible et copiable
+$canEditEvenement = $authorization->isPersonneAllowedToEditEvenementNow($_SESSION, $tab_even);
 
 if (!$isPersonneAllowedToEdit && in_array($tab_even['e_statut'], ['propose', 'inactif']))
 {
@@ -202,7 +205,9 @@ include("../_header.inc.php");
             ?>
             <?php if ($isPersonneAllowedToEdit) : ?>
                 <li><a href="/event/copy.php?idE=<?= (int) $get['idE'] ?>"><?= $iconeCopier ?>&nbsp;Copier vers d'autres dates</a></li>
-                <li><a href="/evenement-edit.php?action=editer&amp;idE=<?= (int) $get['idE'] ?>"><?= $iconeEditer ?>&nbsp;Modifier</a></li>
+                <?php if ($canEditEvenement) : ?>
+                    <li><a href="/evenement-edit.php?action=editer&amp;idE=<?= (int) $get['idE'] ?>"><?= $iconeEditer ?>&nbsp;Modifier</a></li>
+                <?php endif; ?>
                 <?php if ($tab_even['e_statut'] != 'inactif' && isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= UserLevel::SUPERADMIN) : ?>
                     <li><?= EvenementRenderer::unpublishLinkHtml((int) $get['idE'], $icone['depublier'] . '&nbsp;Dépublier', EvenementRenderer::UNPUBLISH_THEN_RELOAD) ?></li>
                 <?php endif; ?>

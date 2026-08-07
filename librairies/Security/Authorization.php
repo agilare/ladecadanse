@@ -3,6 +3,7 @@
 namespace Ladecadanse\Security;
 
 use Ladecadanse\UserLevel;
+use Ladecadanse\Utils\DateHelper;
 
 class Authorization
 {
@@ -31,6 +32,32 @@ class Authorization
                         || (!empty($eventWidthIds['e_idLieu']) && isset($sessionToReadonly['SidPersonne']) && $this->isPersonneInLieuByOrganisateur($sessionToReadonly['SidPersonne'], $eventWidthIds['e_idLieu']))
                 )
             );
+    }
+
+    /**
+     * Droit d'édition effectif : droit de principe, et événement pas encore archivé.
+     *
+     * Un événement passé est une archive : le rouvrir pour en changer la date reviendrait
+     * à écraser l'événement d'origine. Seuls les éditeurs (Sgroupe <= AUTHOR) peuvent
+     * encore le modifier ; les autres gardent Copier — le geste correct pour reprogrammer —
+     * et Dépublier.
+     *
+     * À ne pas confondre avec isPersonneAllowedToEditEvenement(), qui gouverne aussi la
+     * visibilité des événements 'propose'/'inactif' et l'accès à la copie : ces deux
+     * usages ne doivent PAS être restreints par la date.
+     *
+     * @param array $eventWidthIds en plus des clés attendues par isPersonneAllowedToEditEvenement() :
+     *                             e_dateEvenement, et e_horaire_fin si disponible
+     */
+    public function isPersonneAllowedToEditEvenementNow(array $sessionToReadonly, array $eventWidthIds): bool
+    {
+        if (!$this->isPersonneAllowedToEditEvenement($sessionToReadonly, $eventWidthIds))
+        {
+            return false;
+        }
+
+        return $this->isPersonneEditor($sessionToReadonly)
+            || !DateHelper::isEvenementPast($eventWidthIds['e_dateEvenement'], $eventWidthIds['e_horaire_fin'] ?? null);
     }
 
     public function isPersonneAllowedToManageEvenement(array $sessionToReadonly, array $eventWidthIds): bool
