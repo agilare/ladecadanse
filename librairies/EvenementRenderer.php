@@ -137,8 +137,7 @@ class EvenementRenderer
             </li>
             <?php
         }
-        $result = ob_get_contents();
-        ob_clean();
+        $result = ob_get_clean();
         return $result;
     }
 
@@ -158,6 +157,7 @@ class EvenementRenderer
 
         if (empty($flyer) && empty($image))
         {
+            ob_end_clean();
             return '';
         }
 
@@ -183,8 +183,7 @@ class EvenementRenderer
         </a>
 
         <?php
-        $result = ob_get_contents();
-        ob_clean();
+        $result = ob_get_clean();
         return $result;
     }
 
@@ -196,7 +195,7 @@ class EvenementRenderer
         ob_start();
         ?>
 
-        <article id="event-<?= (int) $tab_even['e_idEvenement'] ?>" class="evenement-short">
+        <article id="event-<?= (int) $tab_even['e_idEvenement'] ?>" class="evenement-short" data-event-id="<?= (int) $tab_even['e_idEvenement'] ?>">
 
             <header class="titre">
                 <h3 class="left"><a href="/event/evenement.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>"><?= self::titreSelonStatutHtml(sanitizeForHtml($tab_even['e_titre']), $tab_even['e_statut']) ?></a></h3>
@@ -239,11 +238,60 @@ class EvenementRenderer
 
 
         <?php
-        $result = ob_get_contents();
-        ob_clean();
+        $result = ob_get_clean();
         return $result;
     }
 
+    public static function favoriteButtonHtml(int $idEvenement, bool $isFavorite = false, string $label = ''): string
+    {
+        if (!isFavoritesEnabled())
+        {
+            return '';
+        }
+        $icon = $isFavorite ? 'fa-heart' : 'fa-heart-o';
+        $title = $isFavorite ? 'Retirer des favoris' : 'Favori';
+        $labelHtml = $label !== '' ? '&nbsp;' . $label : '';
+        return '<a href="#" class="js-favorite-toggle favorite-btn' . ($isFavorite ? ' is-favorite' : '') . '" data-event-id="' . $idEvenement . '" title="' . $title . '"><i class="fa ' . $icon . ' fa-lg"></i>' . $labelHtml . '</a>';
+    }
+
+    /**
+     * @param array<array<string, string>> $events
+     * @return array{html: string, months: array<array{key: string, label: string}>}
+     */
+    public static function favoritesListHtml(array $events): array
+    {
+        $html = '';
+        $months = [];
+        $lastDate = null;
+        $lastMonth = null;
+
+        foreach ($events as $tab_even)
+        {
+            $date = $tab_even['e_dateEvenement'];
+            $monthKey = substr($date, 0, 7);
+            if ($monthKey !== $lastMonth)
+            {
+                $lastMonth = $monthKey;
+                $label = ucfirst(DateHelper::monthName((int) substr($date, 5, 2))) . ' ' . substr($date, 0, 4);
+                $months[] = ['key' => $monthKey, 'label' => $label];
+                $html .= '<header class="genre-titre" id="favoris-mois-' . $monthKey . '"><h2>' . $label . '</h2><div class="spacer"></div></header>';
+            }
+            if ($date !== $lastDate)
+            {
+                $lastDate = $date;
+                $html .= '<div><p class="rappel_date">' . ucfirst(DateHelper::isoToFr($date)) . '</p></div>';
+            }
+
+            $html .= self::eventShortArticleHtml($tab_even);
+            $html .= '<footer class="edition"><ul class="menu_action">'
+                . '<li><a href="/event/send.php?action=report&idE=' . (int) $tab_even['e_idEvenement'] . '" class="signaler" title="Signaler une erreur"><i class="fa fa-flag-o fa-lg"></i></a></li>'
+                . '<li><a href="/event/to-ics.php?idE=' . (int) $tab_even['e_idEvenement'] . '" class="ical" title="Exporter au format iCalendar dans votre agenda"><i class="fa fa-calendar-plus-o fa-lg"></i></a></li>'
+                . '<li>' . self::favoriteButtonHtml((int) $tab_even['e_idEvenement'], true) . '</li>'
+                . '</ul><div class="spacer"></div></footer></article>';
+        }
+
+        return ['html' => $html, 'months' => $months];
+    }
 
     public static function eventTableRowHtml(array $tab_even, Authorization $authorization, bool $isWithLieu): string
     {
@@ -265,7 +313,7 @@ class EvenementRenderer
         ob_start();
         ?>
 
-        <tr class="<?php if ($glo_auj_6h == $tab_even['e_dateEvenement']) { echo "ici"; } ?> vevent evenement">
+        <tr class="<?php if ($glo_auj_6h == $tab_even['e_dateEvenement']) { echo "ici"; } ?> vevent evenement" data-event-id="<?= (int) $tab_even['e_idEvenement'] ?>">
 
             <td class="dtstart">
                 <a href="/index.php?courant=<?= sanitizeForHtml($tab_even['e_dateEvenement']) ?>"><?= DateHelper::isoToDayName($tab_even['e_dateEvenement']); ?>&nbsp;<?= (new \DateTime($tab_even['e_dateEvenement']))->format('j') ?><span class="value-title" title="<?= $tab_even['e_dateEvenement'].$vcard_starttime; ?>"></span></a><br>
@@ -288,21 +336,21 @@ class EvenementRenderer
                     </div>
                 <?php endif; ?>
             </td>
-            <?php if ($authorization->isPersonneAllowedToEditEvenement($_SESSION, $tab_even)) : ?>
             <td class="lieu_actions_evenement">
                 <ul>
+                    <li><?= self::favoriteButtonHtml((int) $tab_even['e_idEvenement']) ?></li>
+                    <?php if ($authorization->isPersonneAllowedToEditEvenement($_SESSION, $tab_even)) : ?>
                     <li><a href="/event/copy.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>" title="Copier cet événement"><?= $iconeCopier ?></a></li>
                     <li><a href="/evenement-edit.php?action=editer&amp;idE=<?= (int) $tab_even['e_idEvenement'] ?>" title="Modifier cet événement"><?= $iconeEditer ?></a></li>
                     <li class=""><a href="#" id="btn_event_unpublish_<?= (int) $tab_even['e_idEvenement'] ?>" class="btn_event_unpublish" data-id="<?= (int) $tab_even['e_idEvenement'] ?>"><?= $icone['depublier']; ?></a></li>
+                    <?php endif; ?>
                 </ul>
 
             </td>
-            <?php endif; ?>
         </tr>
 
         <?php
-        $result = ob_get_contents();
-        ob_clean();
+        $result = ob_get_clean();
         return $result;
     }
 

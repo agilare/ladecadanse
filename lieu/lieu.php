@@ -395,6 +395,8 @@ include("../_header.inc.php");
 
             <h2>Événements</h2>
 
+            <?php include("../_favoris_filter_navigation.inc.php"); ?>
+
             <!-- menu tous | futurs | anciens -->
             <ul id="menu_periode" class="entete_contenu_navigation">
                 <?php foreach ($tab_menu_periodes as $k => $label) : ?>

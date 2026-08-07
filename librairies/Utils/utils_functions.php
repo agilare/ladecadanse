@@ -44,6 +44,15 @@ function dateIsoToNextDayDateIso(string $date): string
     return \Ladecadanse\Utils\DateHelper::isoToNextDay($date);
 }
 
+function isFavoritesEnabled(): bool
+{
+    if (isset($_GET['favoris_beta']) && $_GET['favoris_beta'] === FAVORITES_BETA_SECRET)
+    {
+        return true;
+    }
+    return !empty($_COOKIE['favoris_beta']);
+}
+
 /**
  * FIXME: mv to Text class
  * @param ?string $chaine dirty

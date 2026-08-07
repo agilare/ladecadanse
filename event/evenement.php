@@ -204,7 +204,7 @@ include("../_header.inc.php");
                 <li><a href="/event/copy.php?idE=<?= (int) $get['idE'] ?>"><?= $iconeCopier ?>&nbsp;Copier vers d'autres dates</a></li>
                 <li><a href="/evenement-edit.php?action=editer&amp;idE=<?= (int) $get['idE'] ?>"><?= $iconeEditer ?>&nbsp;Modifier</a></li>
             <?php endif; ?>
-
+                <li><?= Ladecadanse\EvenementRenderer::favoriteButtonHtml((int) $get['idE'], label: 'Favori') ?></li>
         </ul>
     </nav>
 

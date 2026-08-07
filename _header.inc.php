@@ -231,7 +231,9 @@ use Ladecadanse\UserLevel;
 
                 <ul>
                     <?php
-                    $menu_principal = ["Agenda" => "index.php", "Lieux" => "lieu/lieux.php", "Organisateurs" => "organisateur/organisateurs.php"];
+                    $menu_principal = isFavoritesEnabled()
+                        ? ["Agenda" => "index.php", "Favoris" => "favoris.php", "Lieux" => "lieu/lieux.php", "Organisateurs" => "organisateur/organisateurs.php"]
+                        : ["Agenda" => "index.php", "Lieux" => "lieu/lieux.php", "Organisateurs" => "organisateur/organisateurs.php"];
                     foreach ($menu_principal as $nom => $lien) {
                         $ici = '';
                         if (strstr((string) $_SERVER['PHP_SELF'], $lien)
