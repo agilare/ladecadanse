@@ -44,6 +44,19 @@ if (isset($_GET['tri_agenda']) && in_array($_GET['tri_agenda'], $tab_tri_agenda)
 {
    $_SESSION['user_prefs_agenda_order'] = $_GET['tri_agenda'];
 }
+
+$valid_genre_tabs = array_merge(['tous'], array_keys($glo_tab_genre));
+if (isset($_GET['genre_tab']) && in_array($_GET['genre_tab'], $valid_genre_tabs, true)) {
+    $_SESSION['user_prefs_agenda_genre'] = $_GET['genre_tab'];
+}
+$current_genre_tab = $_SESSION['user_prefs_agenda_genre'] ?? 'tous';
+
+// determine wether adding to url query courant and order
+$default_tri_agenda = reset($tab_tri_agenda);
+$url_courant_param = (!$is_courant_today ? '&amp;courant=' . sanitizeForHtml($get['courant']) : '');
+$url_tri_param = ($_SESSION['user_prefs_agenda_order'] !== $default_tri_agenda ? '&amp;tri_agenda=' . sanitizeForHtml($_SESSION['user_prefs_agenda_order']) : '');
+$url_filter_params = $url_courant_param . $url_tri_param;
+
 // build SQL
 $is_chronological_order = ($_SESSION['user_prefs_agenda_order'] == "horaire_debut");
 $sql_user_prefs_agenda_order = "e." . $_SESSION['user_prefs_agenda_order'] . " DESC";
@@ -240,24 +253,48 @@ include("_header.inc.php");
             <div class="spacer"></div>
         </div>
 
+        <?php if ($count_events_today_in_region > 0) : ?>
+        <div id="genre_tab_navigation">
+            <ul>
+                <li class="all"><i class="fa fa-filter" aria-hidden="true"></i></li>
+                <?php foreach ($glo_tab_genre as $key => $label) : ?>
+                    <?php if (!array_key_exists($key, $tab_events_today_in_region_by_category) && $current_genre_tab !== $key) : continue; endif; ?>
+                    <?php if ($current_genre_tab === $key) : ?>
+                        <li class="ici"><a href="index.php?genre_tab=tous<?= $url_filter_params ?>" title="Retirer le filtre"><?= ucfirst($label) ?>&nbsp;<i class="fa fa-times" aria-hidden="true"></i></a></li>
+                    <?php else : ?>
+                        <li><a href="index.php?genre_tab=<?= urlencode($key) ?><?= $url_filter_params ?>"><?= ucfirst($label) ?></a></li>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+        <?php endif; ?>
+
         <?php
         if ($count_events_today_in_region == 0)
         {
             HtmlShrink::msgInfo("Pas d’événement prévu ce jour");
         }
+        elseif ($current_genre_tab !== 'tous' && !array_key_exists($current_genre_tab, $tab_events_today_in_region_by_category))
+        {
+            HtmlShrink::msgInfo("Pas d’événement « " . ucfirst($glo_tab_genre[$current_genre_tab]) . " » prévu ce jour");
+        }
 
         $genres_today = array_keys($tab_events_today_in_region_by_category);
         foreach ($tab_events_today_in_region_by_category as $genre => $tab_genre_events)
         {
+            if ($current_genre_tab !== 'tous' && $genre !== $current_genre_tab) {
+                continue;
+            }
             ?>
                 <section class="genre">
 
                     <header class="genre-titre">
                         <h2 id="<?= Text::stripAccents($glo_tab_genre[$genre]); ?>"><?= ucfirst($glo_tab_genre[$genre]); ?></h2>
-                        <?php
-                        $genre_proch = next($genres_today);
-                        if (isset($tab_events_today_in_region_by_category[$genre_proch])) : ?>
-                            <a class="genre-jump" href="#<?= Text::stripAccents($glo_tab_genre[$genre_proch]); ?>"><?= $glo_tab_genre[$genre_proch]; ?>&nbsp;<i class="fa fa-long-arrow-down"></i></a>
+                        <?php if ($current_genre_tab === 'tous') : ?>
+                            <?php $genre_proch = next($genres_today); ?>
+                            <?php if (isset($tab_events_today_in_region_by_category[$genre_proch])) : ?>
+                                <a class="genre-jump" href="#<?= Text::stripAccents($glo_tab_genre[$genre_proch]); ?>"><?= $glo_tab_genre[$genre_proch]; ?>&nbsp;<i class="fa fa-long-arrow-down"></i></a>
+                            <?php endif; ?>
                         <?php endif; ?>
                         <div class="spacer"></div>
                     </header>
