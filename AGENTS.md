@@ -39,10 +39,15 @@ E2E tests use Selenium IDE — open `tests/ladecadanse.side` in the browser exte
 
 ```sh
 composer install
+npm install                             # ESLint + Vitest — required for `npm run lint` and `npm test`
 cp app/env_model.php app/env.php        # Configure DB, SMTP, API keys
 cp app/db.config_model.php app/db.config.php
 cp .htaccess.example .htaccess
 ```
+
+`npm install` is only needed to lint and test: no JS build step exists, and the site runs without
+`node_modules` (assets are served as-is via `<script type="module">` and an import map). Requires
+Node 20.19+, 22.13+ or 24+ (the binding constraint is jsdom).
 
 ## Architecture
 
