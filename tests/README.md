@@ -100,7 +100,7 @@ Tests whose variables are left empty are reported as **skipped**, not failed.
 
 #### The tests
 
-- `EvenementNotifierAuteurCest` — "E-mail à l'auteur" (issue #149): who sees the fieldset, the "motif or message" rule, and the rejection of forged motif keys
+- `EvenementNotifierAuteurCest` — "E-mail à l'auteur" (issue #149): who sees the fieldset, the fact that motif and message are both optional, and that forged motif keys are never echoed back
 - `EvenementEditPermissionsCest` — who may edit an event (anonymous, actor, admin)
 - `EvenementStatutCest` — which status radios are rendered, and to whom
 - `AdminBotsCest` — the three views of the bot dashboard and its access control
