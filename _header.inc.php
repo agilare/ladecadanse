@@ -262,13 +262,13 @@ use Ladecadanse\UserLevel;
                     }
                     ?>
 
-                    <li class="form_recherche"><search><a href="#" id="btn_search" aria-label="Rechercher un événement"><i class="fa fa-search" aria-hidden="true"></i></a><form class="recherche" action="/event/search.php" method="get" enctype="application/x-www-form-urlencoded"><input type="search" class="mots" name="mots" size="22" maxlength="100" required placeholder="Rechercher un événement" aria-label="Rechercher un événement"><button type="submit" class="submit" name="formulaire" value=""><i class="fa fa-search" aria-hidden="true" style="color: #5C7378"></i></button><input type="text" name="name_as" value="" class="name_as"></form></search></li>
+                    <li class="form_recherche"><search><a href="#" id="btn_search" aria-label="Rechercher un événement"><i class="fa fa-search" aria-hidden="true"></i></a><form class="recherche" action="/event/search.php" method="get" enctype="application/x-www-form-urlencoded"><input type="search" class="mots" name="mots" size="22" maxlength="100" required placeholder="Rechercher un événement" aria-label="Rechercher un événement" value="<?= sanitizeForHtml($page_recherche_mots ?? '') ?>"><button type="submit" class="submit" name="formulaire" value=""><i class="fa fa-search" aria-hidden="true" style="color: #5C7378"></i></button><input type="text" name="name_as" value="" class="name_as"></form></search></li>
                 </ul>
 
                 <div class="clear_mobile"></div>
                 <search>
                     <form class="recherche_mobile" action="/event/search.php" method="get" enctype="application/x-www-form-urlencoded">
-                        <input type="search" class="mots" name="mots" size="35" required maxlength="100" placeholder="Rechercher un événement" aria-label="Rechercher un événement"><input type="submit" class="submit" name="formulaire" value="OK" aria-label="Lancer la recherche">
+                        <input type="search" class="mots" name="mots" size="35" required maxlength="100" placeholder="Rechercher un événement" aria-label="Rechercher un événement" value="<?= sanitizeForHtml($page_recherche_mots ?? '') ?>"><input type="submit" class="submit" name="formulaire" value="OK" aria-label="Lancer la recherche">
                         <input type="text" name="name_as" value="" class="name_as" >
                     </form>
                 </search>

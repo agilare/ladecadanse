@@ -1,6 +1,6 @@
 <?php
 
-global $connector, $glo_regions, $glo_auj, $iconeEditer, $glo_auj_6h;
+global $connector, $glo_regions, $glo_auj, $iconeCopier, $iconeEditer, $glo_auj_6h;
 
 require_once("../app/bootstrap.php");
 
@@ -187,6 +187,9 @@ $all_results_nb = $stmtAll->fetchColumn();
 
 $logger->info('[recherche]', ['mots' => $get['mots'], 'nb' => $all_results_nb, 'periode' => $get['periode'], 'years' => $get['years'], 'tri' => $get['tri'], 'page' => $get['page']]);
 
+// keep the search field filled with the submitted terms (see _header.inc.php)
+$page_recherche_mots = $get['mots'];
+
 // prepare mots to be transmitted in links (menus order, filters, pagination)
 $get['mots'] = urlencode($get['mots']);
 
@@ -274,7 +277,8 @@ $agenda_years = range((int)date("Y"), Evenement::AGENDA_START_YEAR);
                             <td><?= round($tab_even['score'], 5) ?></td>
                             <?php endif; ?>
                             <?php if ($authorization->isPersonneAllowedToEditEvenement($_SESSION, $tab_even)) : ?>
-                                <td><a href="/evenement-edit.php?action=editer&amp;idE=<?= (int) $tab_even['e_idEvenement'] ?>"><?= $iconeEditer; ?></a></td>
+                                <td><a href="/event/copy.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>" title="Copier cet événement"><?= $iconeCopier; ?></a></td>
+                                <td><a href="/evenement-edit.php?action=editer&amp;idE=<?= (int) $tab_even['e_idEvenement'] ?>" title="Modifier cet événement"><?= $iconeEditer; ?></a></td>
                             <?php endif; ?>
                         </tr>
                     <?php endforeach; ?>
