@@ -516,6 +516,14 @@ const Shortcuts =
 
     focusSearch : function focusSearch()
     {
+        // champ mobile déjà ouvert (page de résultats) : le focuser plutôt que de le refermer
+        const mobileField = document.querySelector('form.recherche_mobile input.mots');
+        if (mobileField && mobileField.offsetParent !== null)
+        {
+            mobileField.focus();
+            return true;
+        }
+
         const btnSearch = document.getElementById('btn_search');
         if (btnSearch && btnSearch.offsetParent !== null)
         {

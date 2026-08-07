@@ -98,6 +98,12 @@
     overflow:hidden; /* contient les deux flottants ci-dessous */
 }
 
+/* dans les résultats de recherche, le champ reste ouvert pour affiner la recherche */
+body[data-page="event/search"] .recherche_mobile
+{
+    display:block;
+}
+
 /* champ et bouton flottés plutôt qu'en flex : jQuery .toggle() pose un display:block
    en ligne sur le formulaire à l'ouverture, qui écraserait un display:flex.
    Largeurs complémentaires en rem plutôt que dimensionnement implicite par size="35",
