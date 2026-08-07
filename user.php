@@ -330,7 +330,8 @@ $detailsAff = $connector->fetchArray($req_affPers);
 						$depublier = EvenementRenderer::unpublishLinkHtml((int)$tab_even['idEvenement'], $icone['depublier'], EvenementRenderer::UNPUBLISH_THEN_STATUS)."&nbsp;";
 					}
 					// nowrap : Dépublier et Modifier restent côte à côte, jamais l'une sous l'autre
-					echo "<td style=\"white-space:nowrap\">".$depublier."<a href=\"/evenement-edit.php?action=editer&idE=".(int)$tab_even['idEvenement']."\" title=\"Éditer l'événement\">".$iconeEditer."</a></td>";
+					// aligné à droite : les cellules à une seule icône restent dans l'axe des autres
+					echo "<td style=\"white-space:nowrap;text-align:right\">".$depublier."<a href=\"/evenement-edit.php?action=editer&idE=".(int)$tab_even['idEvenement']."\" title=\"Éditer l'événement\">".$iconeEditer."</a></td>";
 				}
 				echo "</tr>";
 
