@@ -327,9 +327,10 @@ $detailsAff = $connector->fetchArray($req_affPers);
 					$depublier = "";
 					if ($tab_even['statut'] != 'inactif')
 					{
-						$depublier = "&nbsp;" . EvenementRenderer::unpublishLinkHtml((int)$tab_even['idEvenement'], $icone['depublier'], EvenementRenderer::UNPUBLISH_THEN_STATUS);
+						$depublier = EvenementRenderer::unpublishLinkHtml((int)$tab_even['idEvenement'], $icone['depublier'], EvenementRenderer::UNPUBLISH_THEN_STATUS)."&nbsp;";
 					}
-					echo "<td><a href=\"/evenement-edit.php?action=editer&idE=".(int)$tab_even['idEvenement']."\" title=\"Éditer l'événement\">".$iconeEditer."</a>".$depublier."</td>";
+					// nowrap : Dépublier et Modifier restent côte à côte, jamais l'une sous l'autre
+					echo "<td style=\"white-space:nowrap\">".$depublier."<a href=\"/evenement-edit.php?action=editer&idE=".(int)$tab_even['idEvenement']."\" title=\"Éditer l'événement\">".$iconeEditer."</a></td>";
 				}
 				echo "</tr>";
 
