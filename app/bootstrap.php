@@ -166,11 +166,11 @@ header('X-Content-Type-Options: nosniff');
 define("CSP_NONCE", bin2hex(openssl_random_pseudo_bytes(32)));
 $csp = implode('; ', [
     "default-src 'self'",
-    "script-src 'self' 'nonce-" . CSP_NONCE . "' https://unpkg.com https://tools.ladecadanse.ch/ https://code.jquery.com https://darkvisitors.com https://browser.sentry-cdn.com https://www.paypalobjects.com https://liberapay.com https://wemakeit.com https://assets.wemakeit.com https://cdn.tiny.cloud",
+    "script-src 'self' 'nonce-" . CSP_NONCE . "' https://unpkg.com https://tools.ladecadanse.ch/ https://code.jquery.com https://knownagents.com https://browser.sentry-cdn.com https://www.paypalobjects.com https://liberapay.com https://wemakeit.com https://assets.wemakeit.com https://cdn.tiny.cloud",
     "img-src 'self' https://tile.openstreetmap.org https://tools.ladecadanse.ch/ https://unpkg.com https://www.paypalobjects.com https://sp.tinymce.com data:",
     "style-src 'self' 'unsafe-inline' https://unpkg.com https://cdn.tiny.cloud https://www.tiny.cloud https://wemakeit.com https://assets.wemakeit.com/ https://fonts.googleapis.com",
     "font-src 'self' https://www.tiny.cloud https://assets.wemakeit.com https://fonts.gstatic.com",
-    "connect-src 'self' https://tools.ladecadanse.ch/ https://cdn.tiny.cloud https://unpkg.com https://wemakeit.com",
+    "connect-src 'self' https://tools.ladecadanse.ch/ https://cdn.tiny.cloud https://unpkg.com https://wemakeit.com https://knownagents.com",
     "frame-ancestors 'self' https://epic-magazine.ch",
     "frame-src 'none'",
     "object-src 'none'",
