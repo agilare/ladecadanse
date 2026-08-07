@@ -27,7 +27,7 @@
 - events : admins can notify the event author by email of the changes made, picking pre-written motifs and/or writing a free-text message #149
 - events edit : POC of an always-visible Zebra Datepicker calendar under the date field, for SUPERADMIN only (other users keep the current popup datepicker)
 - events edit : the flyer and the photo can be added by pasting an image URL instead of uploading a file ; available to every logged-in user (was admins only), not on the public "Proposer un événement" form
-- events : the ajax "Dépublier" button, so far limited to the home page, lieu and organisateur listings, is now available on the event page, the user profile, gererEvenements and the search results ; on listings the event fades out, on the management tables the status dot turns red in place, on the event page the page reloads with its "dépublié" badge
+- events : the ajax "Dépublier" button, so far limited to the home page, lieu and organisateur listings, is now available on the event page (SUPERADMIN only), the user profile, gererEvenements and the search results ; on listings the event fades out, on the management tables the status dot turns red in place, on the event page the page reloads with its "dépublié" badge
 
 ### Changed
 - assets : a missing file (a lost upload, an old event whose thumbnail was never generated) is now reported as a warning in `var/logs/activity.log` instead of the PHP error log, which it was filling one line per page view — the information is kept, it just moves where application events belong

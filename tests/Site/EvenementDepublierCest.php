@@ -6,14 +6,17 @@ use Tests\Support\TestEnv;
 use Codeception\Util\HttpCode;
 
 /**
- * Lien ajax « Dépublier » sur la fiche événement
- * (event/evenement.php, rendu par EvenementRenderer::unpublishLinkHtml()).
+ * Lien ajax « Dépublier », rendu par EvenementRenderer::unpublishLinkHtml().
  *
  * Tests en lecture seule : on vérifie le rendu du lien et qui y a droit,
  * jamais la dépublication elle-même, qui écrirait en base.
  *
  * `LADECADANSE_TEST_EVENT_ID_AUTEUR` doit désigner un événement publié :
  * le lien est volontairement absent d'un événement déjà au statut `inactif`.
+ *
+ * Sur la fiche événement le lien est réservé au SUPERADMIN, niveau qu'aucun
+ * compte de `tests/.env` ne garantit : côté connecté on teste donc
+ * `admin/gererEvenements.php`, ouvert à tout ADMIN.
  */
 class EvenementDepublierCest
 {
@@ -35,20 +38,20 @@ class EvenementDepublierCest
     }
 
     /**
-     * Un admin dispose du lien, avec les attributs attendus par le handler
-     * de web/js/global.js : data-id pour l'appel, data-on-success pour la suite.
+     * Un admin dispose du lien dans le tableau de gestion, avec les attributs
+     * attendus par le handler de web/js/global.js : data-id pour l'appel,
+     * data-on-success pour la suite (ici `status`, le tableau listant aussi
+     * les événements dépubliés).
      */
-    public function adminSeesUnpublishLink(SiteTester $I)
+    public function adminSeesUnpublishLinkOnGererEvenements(SiteTester $I)
     {
         $I->skipUnlessConfigured('LADECADANSE_SITE_ADMIN_USER', 'LADECADANSE_SITE_ADMIN_PASS');
 
-        $idEvenement = TestEnv::getInt('LADECADANSE_TEST_EVENT_ID_AUTEUR');
-
         $I->loginAsAdmin();
-        $I->amOnPage($this->evenementUrl($idEvenement));
+        $I->amOnPage('/admin/gererEvenements.php');
 
         $I->seeResponseCodeIs(HttpCode::OK);
-        $I->seeElement('a.btn_event_unpublish[data-id=' . $idEvenement . '][data-on-success=reload]');
+        $I->seeElement('a.btn_event_unpublish[data-on-success=status]');
     }
 
     private function evenementUrl(int $idEvenement): string

@@ -203,7 +203,7 @@ include("../_header.inc.php");
             <?php if ($isPersonneAllowedToEdit) : ?>
                 <li><a href="/event/copy.php?idE=<?= (int) $get['idE'] ?>"><?= $iconeCopier ?>&nbsp;Copier vers d'autres dates</a></li>
                 <li><a href="/evenement-edit.php?action=editer&amp;idE=<?= (int) $get['idE'] ?>"><?= $iconeEditer ?>&nbsp;Modifier</a></li>
-                <?php if ($tab_even['e_statut'] != 'inactif') : ?>
+                <?php if ($tab_even['e_statut'] != 'inactif' && isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= UserLevel::SUPERADMIN) : ?>
                     <li><?= EvenementRenderer::unpublishLinkHtml((int) $get['idE'], $icone['depublier'] . '&nbsp;Dépublier', EvenementRenderer::UNPUBLISH_THEN_RELOAD) ?></li>
                 <?php endif; ?>
             <?php endif; ?>

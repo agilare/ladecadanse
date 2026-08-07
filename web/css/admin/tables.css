@@ -149,6 +149,14 @@ table#ajouts tr td:nth-child(1)
     text-align:left;
 }
 
+/* colonne d'actions : icônes toujours côte à côte, et à l'écart de l'ascenseur de .table-hauteur-figee */
+table#ajouts tr td.actions-even
+{
+    text-align:center;
+    white-space:nowrap;
+    padding-right:1.4em;
+}
+
 
 table#ajouts td a.titre:visited {
     color:#105199; /*  #104d91*/
