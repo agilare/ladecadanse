@@ -1,8 +1,12 @@
 {
     "scripts": {
-        "lint": "eslint ./web/js/"
+        "lint": "eslint ./web/js/",
+        "test": "vitest run",
+        "test:watch": "vitest"
     },
     "devDependencies": {
-        "eslint": "^8.56.0"
+        "eslint": "^8.56.0",
+        "jsdom": "^29.1.1",
+        "vitest": "^4.1.10"
     }
 }
