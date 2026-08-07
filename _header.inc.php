@@ -55,8 +55,11 @@ use Ladecadanse\UserLevel;
     endif;
     ?>
 
+    <?php /* les deux bornes ne doivent pas se recouvrir : à exactement 800px les deux feuilles
+             s'appliquaient, mobile.css masquait le formulaire de recherche et desktop.css sa
+             loupe de remplacement, ne laissant aucun moyen de chercher */ ?>
     <link rel="stylesheet" type="text/css" media="screen and (min-width:800px)"  href="<?= $assets->get("css/desktop.css"); ?>">
-    <link rel="stylesheet" type="text/css" media="screen and (max-width:800px)"  href="<?= $assets->get("css/mobile.css"); ?>">
+    <link rel="stylesheet" type="text/css" media="screen and (max-width:799.98px)"  href="<?= $assets->get("css/mobile.css"); ?>">
     <link rel="stylesheet" type="text/css" media="print" href="<?= $assets->get("css/imprimer.css"); ?>" title="Imprimer">
     <link rel="stylesheet" type="text/css" href="/vendor/fortawesome/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="/vendor/dimsemenov/magnific-popup/dist/magnific-popup.css">
