@@ -70,6 +70,13 @@ figure
     margin: 0;
 }
 
+/* les navigateurs antérieurs à fin 2023 ne connaissent pas <search> et le rendent
+   en inline : on impose le rendu bloc prévu par la spécification */
+search
+{
+    display: block;
+}
+
 hr
 {
     height: 0px;
@@ -441,18 +448,41 @@ hr
                 #menu ul li.form_recherche
                 {
                     border:none;
-                    margin-right:2%;
+                    /* gouttière fixe : en % elle variait avec la largeur de l'écran et la loupe
+                       ne tombait jamais sous le bouton de menu de l'en-tête */
+                    margin-right:0.25em;
+                }
+
+                /* le li et le <search> qu'il contient centrent la loupe (mobile) ou le
+                   formulaire (bureau) dans la barre, quelle que soit leur hauteur propre */
+                #menu ul li.form_recherche,
+                #menu ul li.form_recherche > search
+                {
+                    display:flex;
+                    align-items:center;
                 }
 
             form.recherche
             {
-                padding:0.45em 0 0.45em 0;
+                /* le champ et le bouton sont posés en flex : hauteurs identiques par
+                   construction, sans dépendre de l'alignement sur la ligne de base ni des
+                   espaces entre balises, qui variaient d'un moteur de rendu à l'autre.
+                   (.recherche_mobile ne peut pas faire pareil, cf. mobile.css) */
+                display:flex;
+                align-items:stretch;
+                justify-content:flex-end;
             }
 
                 form.recherche input.mots
                 {
-                    width:14em;
-                    height:20px;
+                    /* box-sizing et height explicites : les feuilles de style par défaut
+                       des navigateurs ne s'accordent ni sur l'un ni sur l'autre */
+                    box-sizing:border-box;
+                    flex:0 1 15em; /* le libellé "Rechercher un événement" tient sans être rogné */
+                    min-width:0; /* le champ rétrécit au lieu de faire déborder le menu */
+                    height:1.8em;
+                    padding:0 0.4em;
+                    line-height:normal;
                     border:1px solid #8a8a8a;
                     color:#8a8a8a;
                     background-position: 0px 50%;
@@ -460,10 +490,12 @@ hr
 
                 form.recherche button.submit
                 {
+                    box-sizing:border-box;
+                    flex:0 0 auto; /* la hauteur suit celle du champ via align-items:stretch */
                     width:2em;
-                    border-top:1px solid #8a8a8a;
-                    border-bottom:1px solid #8a8a8a;
-                    border-right:1px solid #8a8a8a;
+                    padding:0;
+                    line-height:normal;
+                    border:1px solid #8a8a8a;
                     border-left:none;
                     background-color:#eaeaea;
                 /*    background-image:url(../interface/icons/search.png);*/
@@ -471,26 +503,6 @@ hr
                     background-position:2px;
 
                 }
-
-            @media screen and (-webkit-min-device-pixel-ratio:0) {
-
-                form.recherche input.mots
-                {
-                    height:22px;
-                }
-
-                form.recherche button.submit
-                {
-                    height:22px;
-                }
-            }
-
-            @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
-                form.recherche input.submit
-                {
-                    height:20px;
-                }
-            }
 
 /*header            */
 #entete_contenu
@@ -1414,6 +1426,15 @@ ul#menu_periode
 .search-field input[type="search"]:placeholder-shown + .js-clear-search-field
 {
     display:none;
+}
+
+/* sans ça Safari impose au champ de recherche sa hauteur, ses coins arrondis et son
+   propre modèle de boîte, et ignore les hauteurs posées plus haut */
+input[type="search"]
+{
+    -webkit-appearance:textfield;
+    appearance:textfield;
+    border-radius:0;
 }
 
 input[type="search"]::-webkit-search-cancel-button

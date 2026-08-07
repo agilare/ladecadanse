@@ -91,6 +91,10 @@
 	#menu ul li.form_recherche
 	{
 		float:right;
+		/* même hauteur que la barre (#menu ci-dessus) : le champ y est alors centré
+		   verticalement au lieu de flotter en haut, comme les autres onglets */
+		min-height:2.6em;
+		margin-right:1em;
 	}
 
 	#menu ul li #btn_search
@@ -118,11 +122,6 @@
 	#menu ul li#bouton_agenda.ici a
 	{
 		background: none;
-	}
-
-	form.recherche
-	{
-		text-align:right;
 	}
 
 #navigation_calendrier

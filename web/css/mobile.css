@@ -95,21 +95,38 @@
 {
     display:none;
     margin:0.6em;
-    font-size:0.9em;
+    overflow:hidden; /* contient les deux flottants ci-dessous */
 }
 
-/*.recherche_mobile .mots
+/* champ et bouton flottés plutôt qu'en flex : jQuery .toggle() pose un display:block
+   en ligne sur le formulaire à l'ouverture, qui écraserait un display:flex.
+   Largeurs complémentaires en rem plutôt que dimensionnement implicite par size="35",
+   qui débordait de l'écran en dessous de ~360px et laissait un grand vide au-delà. */
+.recherche_mobile .mots
 {
-    border: solid 1px #888;
-    height:1.5em;
-}*/
+    float:left;
+    box-sizing:border-box;
+    width:calc(100% - 3.4rem);
+    height:2.2rem;
+    padding:0 0.4em;
+    /* en dessous de 16px, iOS zoome la page à la mise au point du champ */
+    font-size:1rem;
+    line-height:normal;
+    border:solid 1px #888;
+}
 
 .recherche_mobile .submit
 {
-    padding:0.2em;
+    float:left;
+    box-sizing:border-box;
+    width:3.4rem;
+    height:2.2rem;
+    padding:0;
+    font-size:1rem;
+    line-height:normal;
     background:#aaa;
-    border: solid 1px #888;
-    height: 1.73em;
+    border:solid 1px #888;
+    border-left:none;
 }
 
 .rechercher #entete_contenu h2
