@@ -1,4 +1,6 @@
 {
+    "name": "ladecadanse",
+    "private": true,
     "scripts": {
         "lint": "eslint ./web/js/",
         "test": "vitest run",
