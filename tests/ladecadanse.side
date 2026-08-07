@@ -3148,15 +3148,11 @@
       "id": "9e1622e0-3cd8-4800-afbf-45fc9095991c",
       "comment": "",
       "command": "click",
-      "target": "css=h1 > a",
+      "target": "xpath=//h3",
       "targets": [
-        ["linkText=SANS FILTRE de Ruben Östlund", "linkText"],
-        ["css=h2 > a", "css:finder"],
-        ["xpath=//a[contains(text(),'SANS FILTRE de Ruben Östlund')]", "xpath:link"],
-        ["xpath=//div[@id='entete_contenu']/h2/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/event/evenement.php?idE=278')]", "xpath:href"],
-        ["xpath=//h2/a", "xpath:position"],
-        ["xpath=//a[contains(.,'SANS FILTRE de Ruben Östlund')]", "xpath:innerText"]
+        ["css=.titre > .left", "css:finder"],
+        ["xpath=//article[@id='event-4381']/header/h3", "xpath:idRelative"],
+        ["xpath=//h3", "xpath:position"]
       ],
       "value": ""
     }, {
@@ -3201,7 +3197,7 @@
       "id": "3e374ddb-9cc1-41a5-8a8c-24ccc133416d",
       "comment": "",
       "command": "click",
-      "target": "css=.menu_actions_evenement > li:nth-child(3) > a",
+      "target": "css=.menu_actions_evenement > li:nth-child(4) > a",
       "targets": [
         ["linkText=Modifier", "linkText"],
         ["css=.menu_actions_evenement > li:nth-child(3) > a", "css:finder"],
@@ -3210,18 +3206,6 @@
         ["xpath=//a[contains(@href, '/evenement-edit.php?action=editer&idE=35')]", "xpath:href"],
         ["xpath=//div/ul/li[3]/a", "xpath:position"],
         ["xpath=//a[contains(.,'Modifier')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "d0ebf96f-1a58-4567-9bbf-dafc20adb907",
-      "comment": "",
-      "command": "click",
-      "target": "css=.listehoriz:nth-child(2) > .continu",
-      "targets": [
-        ["css=.listehoriz:nth-child(2) > .continu", "css:finder"],
-        ["xpath=//form[@id='ajouter_editer']/fieldset/ul/li[2]/label", "xpath:idRelative"],
-        ["xpath=//li[2]/label", "xpath:position"],
-        ["xpath=//label[contains(.,'ciné')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
@@ -3234,7 +3218,7 @@
     }, {
       "id": "65abf7ec-0c45-4310-9707-d8f09f8ca893",
       "comment": "",
-      "command": "sendKeys",
+      "command": "type",
       "target": "id=dateEvenement",
       "targets": [],
       "value": "${eventDate}"
@@ -3376,18 +3360,6 @@
         ["xpath=//fieldset[5]/p/input", "xpath:position"]
       ],
       "value": "https://test.ch"
-    }, {
-      "id": "d53012ec-8d07-4b56-b5d2-a456521e625c",
-      "comment": "",
-      "command": "click",
-      "target": "xpath=//form[@id='ajouter_editer']/fieldset[8]/ul/li[5]/label",
-      "targets": [
-        ["css=fieldset:nth-child(12) li:nth-child(5) > .continu", "css:finder"],
-        ["xpath=//form[@id='ajouter_editer']/fieldset[8]/ul/li[5]/label", "xpath:idRelative"],
-        ["xpath=//fieldset[8]/ul/li[5]/label", "xpath:position"],
-        ["xpath=//label[contains(.,'dépublié (non visible sur le site)')]", "xpath:innerText"]
-      ],
-      "value": ""
     }, {
       "id": "4df2fa0c-d0fa-4ecf-94d9-cf10c86e4178",
       "comment": "",
@@ -4706,15 +4678,15 @@
       "id": "87c81fa4-113c-4fce-86a4-0257b182f167",
       "comment": "",
       "command": "click",
-      "target": "xpath=(//a[contains(text(),'Modifier')])[2]",
+      "target": "linkText=Ajouter une présentation",
       "targets": [
-        ["linkText=Modifier", "linkText"],
-        ["css=.right > a", "css:finder"],
-        ["xpath=(//a[contains(text(),'Modifier')])[2]", "xpath:link"],
-        ["xpath=//div[@id='descriptions']/div/div/div[2]/span[2]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/lieu-text-edit.php?action=editer&type=description&idL=43&idP=1')]", "xpath:href"],
-        ["xpath=//span[2]/a", "xpath:position"],
-        ["xpath=//a[contains(.,' Modifier')]", "xpath:innerText"]
+        ["linkText=Ajouter une présentation", "linkText"],
+        ["css=#descriptions > a:nth-child(3)", "css:finder"],
+        ["xpath=//a[contains(text(),'Ajouter une présentation')]", "xpath:link"],
+        ["xpath=//div[@id='descriptions']/a[2]", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '/lieu-text-edit.php?idL=1005&type=presentation')]", "xpath:href"],
+        ["xpath=//div[4]/a[2]", "xpath:position"],
+        ["xpath=//a[contains(.,' Ajouter une présentation')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
