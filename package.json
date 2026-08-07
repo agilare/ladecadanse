@@ -1,4 +1,6 @@
 {
+    "name": "ladecadanse",
+    "private": true,
     "scripts": {
         "lint": "eslint ./web/js/",
         "test": "vitest run",
@@ -8,5 +10,8 @@
         "eslint": "^8.56.0",
         "jsdom": "^29.1.1",
         "vitest": "^4.1.10"
+    },
+    "engines": {
+        "node": "^20.19.0 || ^22.13.0 || >=24.0.0"
     }
 }
