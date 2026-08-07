@@ -108,7 +108,9 @@ use Ladecadanse\UserLevel;
     <!-- End Matomo Code -->
     <?php endif; ?>
     <?php if (DARKVISITORS_ENABLED) : ?>
-        <script src="https://darkvisitors.com/tracker.js?project_key=<?= DARKVISITORS_PROJECT_KEY ?>"></script>
+        <?php // darkvisitors.com redirige (301) vers knownagents.com : on cible directement
+              // le nouveau domaine, sinon la CSP bloque le script après la redirection ?>
+        <script src="https://knownagents.com/tracker.js?project_key=<?= DARKVISITORS_PROJECT_KEY ?>"></script>
     <?php endif; ?>
 </head>
 

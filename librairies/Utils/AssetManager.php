@@ -28,10 +28,11 @@ class AssetManager
     }
 
     /**
-     * @param string $relativePaths
+     * @param array $relativePaths
+     * @param string|null $nonce nonce CSP : sans lui la balise inline est bloquée en prod
      * @return string base base url + relative path + hash
      */
-    public function getImportMap(array $relativePaths): string
+    public function getImportMap(array $relativePaths, ?string $nonce = null): string
     {
         $imports = [];
         foreach ($relativePaths as $path) {
@@ -39,7 +40,9 @@ class AssetManager
             $originalUrl = $this->baseUrl . $path;
             $imports[$originalUrl] = $this->get($path);
         }
-        return '<script type="importmap">' . json_encode(['imports' => $imports], JSON_UNESCAPED_SLASHES) . '</script>';
+        $nonceAttr = $nonce !== null ? ' nonce="' . htmlspecialchars($nonce, ENT_QUOTES) . '"' : '';
+
+        return '<script type="importmap"' . $nonceAttr . '>' . json_encode(['imports' => $imports], JSON_UNESCAPED_SLASHES) . '</script>';
     }
 
     public function get(string $relativePath): string
