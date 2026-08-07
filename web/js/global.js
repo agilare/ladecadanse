@@ -435,7 +435,7 @@ const Calendar =
  * layouts require Shift to produce a character we bind to (e.g. "/" via
  * Shift+7 on a Swiss keyboard).
  */
-const Shortcuts =
+export const Shortcuts =
 {
     init : function bindKeyboardShortcuts()
     {

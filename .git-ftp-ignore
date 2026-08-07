@@ -26,6 +26,7 @@ rector.php
 SECURITY.md
 package-lock.json
 package.json
+vitest.config.js
 phpstan-baseline.neon
 phpstan-constants.php
 /.phan
