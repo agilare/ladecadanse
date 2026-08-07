@@ -794,7 +794,12 @@ if ($verif->nbErreurs() > 0)
                 <td><?= $tab_datetime_dateajout[1]." ".substr($tab_datetime_dateajout[0], 0, -3) ?></td>
                 <td><a href="/user.php?idP=<?= (int)$tab_even['idPersonne'] ?>"><?= sanitizeForHtml($tab_even['pseudo']) ?></a></td>
                 <?php if ($_SESSION['Sgroupe'] <= UserLevel::ADMIN) : ?>
-                    <td style="text-align:center"><a href="/evenement-edit.php?action=editer&idE=<?= (int) $tab_even['e_idEvenement'] ?>"><?= $iconeEditer ?></a></td>
+                    <td style="text-align:center">
+                        <a href="/evenement-edit.php?action=editer&idE=<?= (int) $tab_even['e_idEvenement'] ?>"><?= $iconeEditer ?></a>
+                        <?php if ($tab_even['e_statut'] != 'inactif') : ?>
+                            <?= EvenementRenderer::unpublishLinkHtml((int) $tab_even['e_idEvenement'], $icone['depublier'], EvenementRenderer::UNPUBLISH_THEN_STATUS) ?>
+                        <?php endif; ?>
+                    </td>
                 <?php endif; ?>
             </tr>
 
