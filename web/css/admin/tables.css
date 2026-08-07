@@ -149,10 +149,12 @@ table#ajouts tr td:nth-child(1)
     text-align:left;
 }
 
-/* colonne d'actions : icônes toujours côte à côte, et à l'écart de l'ascenseur de .table-hauteur-figee */
+/* colonne d'actions : icônes toujours côte à côte, alignées à droite pour que
+   les cellules à une seule icône restent dans l'axe, et à l'écart de
+   l'ascenseur de .table-hauteur-figee */
 table#ajouts tr td.actions-even
 {
-    text-align:center;
+    text-align:right;
     white-space:nowrap;
     padding-right:1.4em;
 }
