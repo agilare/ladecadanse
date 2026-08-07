@@ -9,6 +9,7 @@ use Ladecadanse\Utils\DateHelper;
 use Ladecadanse\Utils\Utils;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Evenement;
+use Ladecadanse\EvenementRenderer;
 use Ladecadanse\Lieu;
 use Ladecadanse\UserLevel;
 
@@ -279,6 +280,7 @@ $agenda_years = range((int)date("Y"), Evenement::AGENDA_START_YEAR);
                             <?php if ($authorization->isPersonneAllowedToEditEvenement($_SESSION, $tab_even)) : ?>
                                 <td><a href="/event/copy.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>" title="Copier cet événement"><?= $iconeCopier; ?></a></td>
                                 <td><a href="/evenement-edit.php?action=editer&amp;idE=<?= (int) $tab_even['e_idEvenement'] ?>" title="Modifier cet événement"><?= $iconeEditer; ?></a></td>
+                                <td><?= EvenementRenderer::unpublishLinkHtml((int) $tab_even['e_idEvenement'], $icone['depublier']) ?></td>
                             <?php endif; ?>
                         </tr>
                     <?php endforeach; ?>

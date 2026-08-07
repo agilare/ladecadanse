@@ -302,12 +302,41 @@ const Events = {
                 .catch(error => alert('Erreur : ' + error));
         });
 
+        // data-on-success sur le lien décide de ce qu'on fait de l'événement dépublié :
+        // 'hide' (défaut) sur les listes d'agenda, 'status' sur les tableaux de gestion
+        // qui affichent aussi les événements dépubliés, 'reload' sur la fiche événement.
         $content.on('click', '.btn_event_unpublish', function requestUnpublishEvent(e)
         {
             e.preventDefault();
-            const event_id = $(this).data('id');
+            const $btn = $(this);
+            const event_id = $btn.data('id');
             fetch(`/event/actions.php?action=unpublish&id=${event_id}`)
-                .then(response => $(`#btn_event_unpublish_${event_id}`).closest('tr.evenement, article.evenement-short').fadeOut('fast'))
+                .then(function unpublishDone(response)
+                {
+                    if (!response.ok)
+                    {
+                        throw new Error(`dépublication refusée (${response.status})`);
+                    }
+
+                    const onSuccess = $btn.attr('data-on-success');
+
+                    if (onSuccess === 'reload')
+                    {
+                        window.location.reload();
+                    }
+                    else if (onSuccess === 'status')
+                    {
+                        $btn.closest('tr')
+                            .find('.even-icon-status-round')
+                            .attr('class', 'even-icon-status-round statut-inactif')
+                            .attr('title', 'Dépublié');
+                        $btn.fadeOut(FADE_SPEED_SHORT_IN_MS);
+                    }
+                    else
+                    {
+                        $btn.closest('tr, article.evenement-short').fadeOut('fast');
+                    }
+                })
                 .catch(error => alert('Erreur : ' + error));
         });
 

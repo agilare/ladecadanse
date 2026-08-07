@@ -24,6 +24,13 @@ use Ladecadanse\Utils\Text;
  */
 class EvenementRenderer
 {
+    /** Comportement du lien de dépublication après succès : masque la ligne de l'événement */
+    public const UNPUBLISH_THEN_HIDE = 'hide';
+    /** Comportement du lien de dépublication après succès : met à jour la pastille de statut de la ligne */
+    public const UNPUBLISH_THEN_STATUS = 'status';
+    /** Comportement du lien de dépublication après succès : recharge la page */
+    public const UNPUBLISH_THEN_RELOAD = 'reload';
+
     public static $iconStatus = [
         "actif" => "<div class='even-icon-status-round statut-actif' title='Publié'>&nbsp;</div>",
         "inactif" => "<div class='even-icon-status-round statut-inactif' title='Dépublié'>&nbsp;</div>",
@@ -61,6 +68,23 @@ class EvenementRenderer
         }
 
         return $result . $badge;
+    }
+
+    /**
+     * Lien ajax de dépublication, traité par Events.init() dans web/js/global.js
+     *
+     * L'appelant est responsable du contrôle des droits d'édition ;
+     * event/actions.php les revérifie de son côté.
+     *
+     * @param int $idEvenement
+     * @param string $labelHtml contenu du lien : icône et/ou texte
+     * @param string $onSuccess une des constantes self::UNPUBLISH_THEN_*
+     */
+    public static function unpublishLinkHtml(int $idEvenement, string $labelHtml, string $onSuccess = self::UNPUBLISH_THEN_HIDE): string
+    {
+        return '<a href="#" id="btn_event_unpublish_' . $idEvenement . '" class="btn_event_unpublish"'
+            . ' data-id="' . $idEvenement . '" data-on-success="' . sanitizeForHtml($onSuccess) . '"'
+            . ' title="Dépublier cet événement">' . $labelHtml . '</a>';
     }
 
     /**
@@ -293,7 +317,7 @@ class EvenementRenderer
                 <ul>
                     <li><a href="/event/copy.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>" title="Copier cet événement"><?= $iconeCopier ?></a></li>
                     <li><a href="/evenement-edit.php?action=editer&amp;idE=<?= (int) $tab_even['e_idEvenement'] ?>" title="Modifier cet événement"><?= $iconeEditer ?></a></li>
-                    <li class=""><a href="#" id="btn_event_unpublish_<?= (int) $tab_even['e_idEvenement'] ?>" class="btn_event_unpublish" data-id="<?= (int) $tab_even['e_idEvenement'] ?>"><?= $icone['depublier']; ?></a></li>
+                    <li class=""><?= self::unpublishLinkHtml((int) $tab_even['e_idEvenement'], $icone['depublier']) ?></li>
                 </ul>
 
             </td>

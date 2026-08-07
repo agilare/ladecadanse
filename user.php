@@ -324,7 +324,12 @@ $detailsAff = $connector->fetchArray($req_affPers);
 
 				if ($_SESSION['SidPersonne'] == $detailsPersonne['idPersonne'] || $_SESSION['Sgroupe'] <= 4)
 				{
-					echo "<td><a href=\"/evenement-edit.php?action=editer&idE=".(int)$tab_even['idEvenement']."\" title=\"Éditer l'événement\">".$iconeEditer."</a></td>";
+					$depublier = "";
+					if ($tab_even['statut'] != 'inactif')
+					{
+						$depublier = "&nbsp;" . EvenementRenderer::unpublishLinkHtml((int)$tab_even['idEvenement'], $icone['depublier'], EvenementRenderer::UNPUBLISH_THEN_STATUS);
+					}
+					echo "<td><a href=\"/evenement-edit.php?action=editer&idE=".(int)$tab_even['idEvenement']."\" title=\"Éditer l'événement\">".$iconeEditer."</a>".$depublier."</td>";
 				}
 				echo "</tr>";
 
