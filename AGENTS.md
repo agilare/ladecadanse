@@ -47,7 +47,8 @@ cp .htaccess.example .htaccess
 
 `npm install` is only needed to lint and test: no JS build step exists, and the site runs without
 `node_modules` (assets are served as-is via `<script type="module">` and an import map). Requires
-Node 20.19+, 22.13+ or 24+ (the binding constraint is jsdom).
+Node 20.19+, 22.13+ or 24+ — declared as `engines` in `package.json`, so npm warns on an unsupported
+version. The binding constraint is jsdom; odd-numbered (non-LTS) Node lines are excluded.
 
 ## Architecture
 
