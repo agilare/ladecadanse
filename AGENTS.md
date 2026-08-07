@@ -25,7 +25,13 @@ La décadanse is a PHP 8.4 cultural events agenda for Geneva and surroundings. I
 
 Static analysis and test commands are defined as `composer` scripts (see `composer.json`); Docker targets are in the `Makefile` (`make help` lists them).
 
-Use Eslint to check JS code
+Use Eslint to check JS code (`npm run lint`).
+
+JS unit tests run on Vitest: `npm test` (or `npm run test:watch`). Tests live in `tests/js/`, not in
+`web/js/` — `web/` is the docroot, and `.git-ftp-ignore` already excludes `tests*` from deployment.
+They import the modules under test directly (`web/js/global.js` and `web/js/browser.js` have no
+import-time side effects), run under jsdom, and use explicit `vitest` imports rather than globals so
+no ESLint config change is needed.
 
 E2E tests use Selenium IDE — open `tests/ladecadanse.side` in the browser extension. Copy `tests/.env_model` to `tests/.env` before running API tests.
 
