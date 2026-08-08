@@ -168,6 +168,60 @@ class UserProfileCest
     }
 
     /**
+     * L'onglet Événements : compteur en exposant, filtre par titre, et les deux colonnes ajoutées.
+     *
+     * L'ordre des colonnes est vérifié parce que c'est une demande explicite de l'issue et que rien
+     * d'autre ne le protège : réordonner $colonnes sans réordonner les <td> passerait inaperçu, les
+     * cellules restant simplement décalées.
+     */
+    public function eventsTabHasCountFilterAndNewColumns(SiteTester $I)
+    {
+        $I->loginAsActor();
+        $this->grabMyProfileId($I);
+
+        $I->seeElement('h2.titre-liste sup');
+        $I->seeElement('form.filtre-liste input[type=search][name=terme]');
+        $I->seeElement('form.filtre-liste button.js-clear-search-field');
+
+        if ((int) $I->grabTextFrom('h2.titre-liste sup') === 0)
+        {
+            return;
+        }
+
+        $entetes = array_map('trim', $I->grabMultiple('table#ajouts thead th'));
+        $I->assertSame(['Titre', 'Lieu', 'Date', 'Catégorie', 'Horaire'], array_slice($entetes, 0, 5));
+    }
+
+    /**
+     * Le filtre atteint bien la requête, et le décompte le suit — sans quoi la pagination
+     * annoncerait des pages vides.
+     */
+    public function titleFilterReachesTheQuery(SiteTester $I)
+    {
+        $I->loginAsActor();
+        $idP = $this->grabMyProfileId($I);
+
+        $I->amOnPage('/user.php?idP=' . $idP . '&elements=evenement&terme=zzz-aucun-titre-ne-contient-ceci');
+        $I->see('Aucun événement ne correspond à ce titre');
+        $I->see('0', 'h2.titre-liste sup');
+    }
+
+    /**
+     * Le choix du nombre de lignes et le filtre sont propres aux événements : la liste des
+     * descriptions, courte par nature, s'en passe.
+     */
+    public function descriptionsTabHasNeitherRowCountMenuNorFilter(SiteTester $I)
+    {
+        $I->loginAsActor();
+        $idP = $this->grabMyProfileId($I);
+
+        $I->amOnPage('/user.php?idP=' . $idP . '&elements=description');
+        $I->seeResponseCodeIs(HttpCode::OK);
+        $I->dontSeeElement('#menu_nb_res');
+        $I->dontSeeElement('form.filtre-liste');
+    }
+
+    /**
      * Un acteur ne peut pas consulter le profil d'autrui — seuls le propriétaire et les
      * administrateurs y accèdent.
      */

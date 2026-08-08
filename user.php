@@ -11,7 +11,6 @@ use Ladecadanse\EvenementRenderer;
 use Ladecadanse\Lieu;
 use Ladecadanse\UserSettings;
 use Ladecadanse\Utils\DateHelper;
-use Ladecadanse\Utils\Utils;
 use Ladecadanse\Utils\Text;
 
 // =============================================================================
@@ -35,7 +34,14 @@ $tab_elements = ["evenement" => "Événements", "description" => "Descriptions"]
 // titre puis forcer ?elements=description produisait une erreur SQL. Les noms
 // sont qualifiés parce que dateAjout existe aussi dans lieu, joint plus bas.
 $tab_tri = [
-    "evenement" => ["dateEvenement" => "e.dateEvenement", "titre" => "e.titre", "dateAjout" => "e.dateAjout", "statut" => "e.statut"],
+    "evenement" => [
+        "titre" => "e.titre",
+        "dateEvenement" => "e.dateEvenement",
+        "genre" => "e.genre",
+        "horaire" => "e.horaire_debut",
+        "dateAjout" => "e.dateAjout",
+        "statut" => "e.statut",
+    ],
     "description" => ["dateAjout" => "d.dateAjout"],
 ];
 
@@ -60,6 +66,9 @@ if (isset($_GET['nblignes']) && in_array((int) $_GET['nblignes'], $tab_nblignes,
 {
     $get['nblignes'] = (int) $_GET['nblignes'];
 }
+
+// filtre par titre, propre à l'onglet Événements
+$get['terme'] = ($get['elements'] === "evenement" && isset($_GET['terme'])) ? trim((string) $_GET['terme']) : "";
 
 // Propriétaire ou administrateur. La page entière leur est réservée, donc le
 // même booléen commande l'accès, le lien Modifier et les actions des tableaux —
@@ -108,23 +117,35 @@ if ($erreur === null)
 
     if ($get['elements'] === "evenement")
     {
-        $stmt = $connectorPdo->prepare("SELECT COUNT(*) FROM evenement WHERE idPersonne = :idP");
-        $stmt->execute([':idP' => $get['idP']]);
+        // le filtre s'applique au décompte comme à la liste, sans quoi la
+        // pagination annoncerait des pages vides
+        $filtre_titre = $get['terme'] === "" ? "" : " AND LOWER(e.titre) LIKE LOWER(:terme)";
+        $params_titre = $get['terme'] === "" ? [] : [':terme' => "%" . $get['terme'] . "%"];
+
+        $stmt = $connectorPdo->prepare("SELECT COUNT(*) FROM evenement e WHERE e.idPersonne = :idP" . $filtre_titre);
+        $stmt->execute([':idP' => $get['idP']] + $params_titre);
         $tot_elements = (int) $stmt->fetchColumn();
 
         // le nom du lieu vient de la jointure, plus d'une requête par ligne ;
         // evenement.nomLieu reste le secours pour les lieux hors base
         $stmt = $connectorPdo->prepare("SELECT
-            e.idEvenement, e.idLieu, e.statut, e.titre, e.dateEvenement, e.horaire_fin, e.nomLieu, e.dateAjout,
+            e.idEvenement, e.idLieu, e.statut, e.titre, e.genre, e.dateEvenement,
+            e.horaire_debut, e.horaire_fin, e.nomLieu, e.dateAjout,
             l.nom AS lieu_nom
             FROM evenement e
             LEFT JOIN lieu l ON e.idLieu = l.idLieu
-            WHERE e.idPersonne = :idP
+            WHERE e.idPersonne = :idP" . $filtre_titre . "
             ORDER BY $order_by
             LIMIT :offset, :nblignes");
         $stmt->bindValue(':idP', $get['idP'], PDO::PARAM_INT);
         $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
         $stmt->bindValue(':nblignes', $get['nblignes'], PDO::PARAM_INT);
+
+        foreach ($params_titre as $nom_param => $valeur_param)
+        {
+            $stmt->bindValue($nom_param, $valeur_param, PDO::PARAM_STR);
+        }
+
         $stmt->execute();
         $tab_evens = $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -218,12 +239,22 @@ $icone_depublier = '<i class="fa fa-calendar-times-o" aria-hidden="true"></i>';
 $icones_onglets = ["evenement" => "fa-calendar-o", "description" => "fa-file-text-o"];
 
 $colonnes = $get['elements'] === "evenement"
-    ? ["dateEvenement" => "Date", "idLieu" => "Lieu", "titre" => "Titre", "dateAjout" => "Date d'ajout", "statut" => ""]
+    ? ["titre" => "Titre", "idLieu" => "Lieu", "dateEvenement" => "Date", "genre" => "Catégorie", "horaire" => "Horaire", "dateAjout" => "Date d'ajout", "statut" => "Statut"]
     : ["idLieu" => "Lieu", "contenu" => "Contenu", "type" => "Type", "dateAjout" => "Date d'ajout"];
 
-$url_base = "?idP=" . $get['idP'] . "&amp;elements=" . $get['elements'];
-$url_pagination = "?idP=" . $get['idP'] . "&elements=" . $get['elements'] . "&tri=" . $get['tri']
-    . "&ordre=" . $get['ordre'] . "&nblignes=" . $get['nblignes'] . "&page=";
+// Fragment commun à tous les liens de la page : identité, onglet, pagination et
+// filtre. Construit à la main plutôt qu'avec Utils::urlQueryArrayToString(), qui
+// n'encode pas les valeurs — un terme de recherche contenant & ou un espace
+// casserait les liens.
+$url_params = "idP=" . $get['idP'] . "&elements=" . $get['elements'] . "&nblignes=" . $get['nblignes'];
+
+if ($get['terme'] !== "")
+{
+    $url_params .= "&terme=" . urlencode($get['terme']);
+}
+
+// HtmlShrink::getPaginationString() concatène l'URL telle quelle dans le href
+$url_pagination = "?" . $url_params . "&tri=" . $get['tri'] . "&ordre=" . $get['ordre'] . "&page=";
 
 // =============================================================================
 // Rendu
@@ -290,20 +321,44 @@ if ($erreur !== null)
 	</nav>
 	<?php endif; ?>
 
+	<?php if ($get['elements'] === "evenement") : ?>
+
+	<h2 class="titre-liste">Événements<sup><?= $tot_elements ?></sup></h2>
+
+	<?php // l'état du tableau voyage en champs cachés : filtrer ne doit pas perdre le tri ni la pagination ?>
+	<form method="get" action="" class="filtre-liste">
+		<input type="hidden" name="idP" value="<?= (int) $get['idP'] ?>" />
+		<input type="hidden" name="elements" value="evenement" />
+		<input type="hidden" name="tri" value="<?= sanitizeForHtml($get['tri']) ?>" />
+		<input type="hidden" name="ordre" value="<?= sanitizeForHtml($get['ordre']) ?>" />
+		<input type="hidden" name="nblignes" value="<?= (int) $get['nblignes'] ?>" />
+		<span class="search-field">
+			<input type="search" name="terme" value="<?= sanitizeForHtml($get['terme']) ?>" placeholder="Titre" size="24" aria-label="Filtrer par titre" />
+			<button type="button" class="js-clear-search-field" aria-label="Vider et relancer la recherche" title="Vider et relancer la recherche"></button>
+		</span>
+		<input type="submit" name="submit" value="Filtrer" />
+	</form>
+	<div class="spacer"><!-- --></div>
+
+	<?php endif; ?>
+
 	<?= HtmlShrink::getPaginationString($tot_elements, $get['page'], $get['nblignes'], 1, "", $url_pagination) ?>
 
 	<?php if ($tot_elements === 0) : ?>
 
-		<p><?= $get['elements'] === "evenement" ? "Aucun événement ajouté pour le moment" : "Aucune description ajoutée pour le moment" ?></p>
+		<p><?php if ($get['elements'] !== "evenement") : ?>Aucune description ajoutée pour le moment<?php elseif ($get['terme'] !== "") : ?>Aucun événement ne correspond à ce titre<?php else : ?>Aucun événement ajouté pour le moment<?php endif; ?></p>
 
 	<?php else : ?>
 
+		<?php // le choix du nombre de lignes ne sert que sur les événements, seule liste qui peut être longue ?>
+		<?php if ($get['elements'] === "evenement") : ?>
 		<ul id="menu_nb_res">
 			<?php foreach ($tab_nblignes as $nbl) : ?>
-			<li<?= $get['nblignes'] === $nbl ? ' class="ici"' : '' ?>><a href="?<?= Utils::urlQueryArrayToString($get, "nblignes") ?>&amp;nblignes=<?= (int) $nbl ?>"><?= (int) $nbl ?></a></li>
+			<li<?= $get['nblignes'] === $nbl ? ' class="ici"' : '' ?>><a href="?idP=<?= (int) $get['idP'] ?>&amp;elements=<?= $get['elements'] ?>&amp;tri=<?= $get['tri'] ?>&amp;ordre=<?= $get['ordre'] ?><?= $get['terme'] === "" ? '' : '&amp;terme=' . urlencode($get['terme']) ?>&amp;nblignes=<?= (int) $nbl ?>"><?= (int) $nbl ?></a></li>
 			<?php endforeach; ?>
 		</ul>
 		<div class="spacer"><!-- --></div>
+		<?php endif; ?>
 
 		<table id="ajouts">
 			<thead>
@@ -312,7 +367,7 @@ if ($erreur !== null)
 						<?php if (!array_key_exists($att, $tab_tri[$get['elements']])) : ?>
 					<th><?= $libelle ?></th>
 						<?php else : ?>
-					<th<?= $att === $get['tri'] ? ' class="ici"' : '' ?>><?= $att === $get['tri'] ? $icone[$get['ordre']] : '' ?><a href="<?= $url_base ?>&amp;page=<?= $get['page'] ?>&amp;tri=<?= $att ?>&amp;ordre=<?= $ordre_inverse ?>&amp;nblignes=<?= $get['nblignes'] ?>"><?= $libelle ?></a></th>
+					<th<?= $att === $get['tri'] ? ' class="ici"' : '' ?>><?= $att === $get['tri'] ? $icone[$get['ordre']] : '' ?><a href="?<?= sanitizeForHtml($url_params) ?>&amp;page=<?= $get['page'] ?>&amp;tri=<?= $att ?>&amp;ordre=<?= $ordre_inverse ?>"><?= $libelle ?></a></th>
 						<?php endif; ?>
 					<?php endforeach; ?>
 					<th></th>
@@ -330,7 +385,7 @@ if ($erreur !== null)
 					$can_edit_even = !$is_even_ancien || $est_editeur;
 					?>
 				<tr<?= $is_even_ancien ? ' class="ancien"' : '' ?>>
-					<td><?= DateHelper::isoToApp($tab_even['dateEvenement']) ?></td>
+					<td class="tdleft"><a href="/event/evenement.php?idE=<?= (int) $tab_even['idEvenement'] ?>" title="Voir la fiche de l'événement"><?= sanitizeForHtml($tab_even['titre']) ?></a></td>
 					<td>
 						<?php if ((int) $tab_even['idLieu'] !== 0 && $tab_even['lieu_nom'] !== null) : ?>
 						<a href="/lieu/lieu.php?idL=<?= (int) $tab_even['idLieu'] ?>" title="Voir la fiche du lieu : <?= sanitizeForHtml($tab_even['lieu_nom']) ?>"><?= sanitizeForHtml($tab_even['lieu_nom']) ?></a>
@@ -338,7 +393,9 @@ if ($erreur !== null)
 						<?= sanitizeForHtml($tab_even['nomLieu']) ?>
 						<?php endif; ?>
 					</td>
-					<td><a href="/event/evenement.php?idE=<?= (int) $tab_even['idEvenement'] ?>" title="Voir la fiche de l'événement"><?= sanitizeForHtml($tab_even['titre']) ?></a></td>
+					<td><?= DateHelper::isoToApp($tab_even['dateEvenement']) ?></td>
+					<td><?= sanitizeForHtml(Evenement::genreLabel($tab_even['genre'])) ?></td>
+					<td class="horaire"><?= EvenementRenderer::schedulesToHhMm((string) $tab_even['horaire_debut'], (string) $tab_even['horaire_fin'], (string) $tab_even['dateEvenement']) ?></td>
 					<td><?= DateHelper::isoToApp(mb_substr((string) $tab_even['dateAjout'], 0, 10)) ?></td>
 					<td><?= EvenementRenderer::$iconStatus[$tab_even['statut']] ?></td>
 					<td class="actions">
@@ -356,10 +413,13 @@ if ($erreur !== null)
 
 				<?php foreach ($tab_descs as $tab_desc) : ?>
 					<?php
-					$contenu = (string) $tab_desc['contenu'];
-					if (mb_strlen($contenu) > 200)
+					// les descriptions sont saisies en HTML : on n'en garde que le texte,
+					// sinon la cellule héritait de balises ouvertes et de mise en forme
+					$contenu = trim(html_entity_decode(strip_tags((string) $tab_desc['contenu']), ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+
+					if (mb_strlen($contenu) > 120)
 					{
-						$contenu = mb_substr($contenu, 0, 200) . " [...]";
+						$contenu = mb_substr($contenu, 0, 120) . " […]";
 					}
 					?>
 				<tr>

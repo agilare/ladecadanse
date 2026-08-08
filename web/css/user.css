@@ -80,6 +80,30 @@
 	margin:2em auto 0 auto;
 }
 
+/* titre de liste, avec le nombre d'éléments en exposant comme sur l'accueil */
+h2.titre-liste
+{
+	width:96%;
+	margin:1.5em auto 0.5em auto;
+	font-size:1.15em;
+	font-weight:bold;
+	color:#5C7392;
+}
+
+h2.titre-liste sup
+{
+	font-size:0.7em;
+	font-weight:normal;
+	color:#999;
+	margin-left:0.15em;
+}
+
+form.filtre-liste
+{
+	width:96%;
+	margin:0 auto 0.5em auto;
+}
+
 ul#menu_nb_res
 {
 	font-size:0.95em;
@@ -134,7 +158,13 @@ table#ajouts tr td
 
 table#ajouts td.contenu
 {
-	width:150px;
+	width:45%;
+}
+
+/* les horaires ne doivent pas se couper autour du tiret « 21:00 – 02:00 » */
+table#ajouts td.horaire
+{
+	white-space:nowrap;
 }
 
 /* zébrage : porté par le CSS depuis que le <tbody> existe, plus par un compteur PHP */
