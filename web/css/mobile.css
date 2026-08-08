@@ -646,18 +646,6 @@ form#ajouter_editer p.notif-apercu
     margin-left:0.4em;
 }
 
-/* personne */
-
-.personne #actions
-{
-    float:left;
-}
-
-
-ul#menu_ajouts li {
-    display: block;
-}
-
 .signaler-erreur form#ajouter_editer ul.radio_vert
 {
     margin:0;

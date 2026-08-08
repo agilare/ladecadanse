@@ -1,78 +1,75 @@
-ul#menu_ajouts
+/* Page de profil (user.php) */
+
+/*
+ * Le pseudo peut faire 80 caractères : le titre reste volontairement discret
+ * pour qu'un nom long ne casse pas l'en-tête.
+ */
+#entete_contenu h1
 {
-    width:96%;
-    margin:1em auto 2em auto;
-    padding: 0.4em;
+	font-size:1.3em;
+	line-height:1.3;
 }
 
-ul#menu_ajouts li
+#entete_contenu h1 em
 {
-    display:inline;
-    padding:0.4em 0.4em;
+	font-style:normal;
+	font-weight:bold;
 }
 
-ul#menu_ajouts li a
+.profil-groupe
 {
-    padding:0.4em 0;
+	font-size:0.75em;
+	font-weight:normal;
+	color:#8a8a8a;
+	vertical-align:middle;
 }
 
-ul#menu_ajouts li a img
+#profile
 {
-    vertical-align:bottom;
-    margin: 0 3px 0 0;
+	width:94%;
+	margin:1em auto 0 auto;
+	padding:0.4em;
+	color:#5C7392;
 }
 
-ul#menu_ajouts li.ici
+#profile table
 {
-    background-color:yellow;
-    border-radius:4px;
+	font-size:0.9em;
+	border-collapse:collapse;
+	margin:0.3em 0;
+	background:#f0f0fa;
+	border-radius:3px;
 }
 
-
-
-p {
-width:94%;
-margin:2em auto 0 auto;
+#profile table th
+{
+	font-weight:bold;
+	text-align:left;
 }
 
-
-#menu_affichage
+#profile th, #profile td
 {
-margin:1em 1em 0em 1em;
-background:yellow;
+	padding:0.5em;
 }
 
-
-#menu_affichage ul
+.profil-modifier
 {
-
-display:inline;
+	display:inline-block;
+	margin:0.6em 0 0 0.5em;
 }
 
-#menu_affichage ul li
+/* le paragraphe d'état vide des listes ; borné à la page, la règle fuyait sur tous les <p> */
+#contenu > p
 {
-
-display:inline;
-}
-
-ul.menu_sections
-{
-margin:0 0 0 1em;
-display:inline;
-background:#fff;
-}
-
-ul.menu_sections li
-{
-display:inline;
-
+	width:94%;
+	margin:2em auto 0 auto;
 }
 
 ul#menu_nb_res
 {
-font-size:0.95em;
-width:96%;
-margin:15px auto 5px auto;
+	font-size:0.95em;
+	width:96%;
+	margin:15px auto 5px auto;
 }
 
 ul#menu_nb_res li
@@ -86,7 +83,7 @@ ul#menu_nb_res li
 
 ul#menu_nb_res li.ici
 {
-border:1px solid #aeaeae;
+	border:1px solid #aeaeae;
 }
 
 table#ajouts
@@ -109,7 +106,7 @@ table#ajouts tr th
 
 table#ajouts tr th.ici
 {
-background:#fafafa;
+	background:#fafafa;
 }
 
 table#ajouts tr td
@@ -118,6 +115,11 @@ table#ajouts tr td
 	vertical-align:middle;
 	font-size:0.85em;
 	padding:0.4em 0.2em;
+}
+
+table#ajouts td.contenu
+{
+	width:150px;
 }
 
 /* zébrage : porté par le CSS depuis que le <tbody> existe, plus par un compteur PHP */
@@ -151,71 +153,4 @@ table#ajouts tr.ancien:hover,
 table#ajouts tr.ancien:focus-within
 {
 	opacity:1;
-}
-
-
-
-
-
-
-#actions
-{
-color:#5C7392;
-
-}
-
-#actions h2
-{
-font-weight:bold;
-font-size:1.1em;
-padding:0.2em;
-}
-
-#actions ul
-{
-
-}
-
-#actions ul li
-{
-margin:0.4em;
-
-}
-
-
-#profile
-{
-
-margin:1em 0 0 0;
-padding:0.2em;
-color:#5C7392;
-}
-
-#profile h2
-{
-font-weight:bold;
-font-size:1.1em;
-margin: 0 0 0.6em;
-}
-
-#profile table
-{
-    font-size:0.9em;
-    border-collapse:collapse;
-    margin: 0.3em 0;
-    background: #f0f0fa;
-    border-radius: 3px;
-}
-
-
-
-#profile table th
-{
-font-weight:bold;
-text-align:left;
-}
-
-.personne #profile th, .personne #profile td
-{
-	padding: 0.5em;
 }

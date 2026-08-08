@@ -45,7 +45,7 @@ class AdminBotsCest
         {
             $I->amOnPage('/admin/bots.php?view=' . $view);
             $I->seeResponseCodeIs(HttpCode::OK);
-            $I->seeElement('nav.bots-tabs a.ici[href="?view=' . $view . '"]');
+            $I->seeElement('nav.tabs a.ici[href="?view=' . $view . '"]');
             $I->seeElement('ul.bots-totaux');
         }
     }
@@ -78,6 +78,6 @@ class AdminBotsCest
         $I->amOnPage('/admin/bots.php?view=valeur_invalide');
 
         $I->seeResponseCodeIs(HttpCode::OK);
-        $I->seeElement('nav.bots-tabs a.ici[href="?view=scrapers"]');
+        $I->seeElement('nav.tabs a.ici[href="?view=scrapers"]');
     }
 }

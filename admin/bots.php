@@ -130,7 +130,7 @@ require_once '../_header.inc.php';
             <li><strong><?= (int) $totals['nb_honeypot'] ?></strong> piégées (honeypot)</li>
         </ul>
 
-        <nav class="bots-tabs">
+        <nav class="tabs">
             <?php foreach ($views as $view_key => $view_label) : ?>
                 <a href="?view=<?= $view_key ?>" <?php if ($view_key == $view) : ?>class="ici"<?php endif; ?>><?= sanitizeForHtml($view_label) ?></a>
             <?php endforeach; ?>

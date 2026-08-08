@@ -151,6 +151,16 @@ if ($erreur === null)
 // invariant : sorti de la boucle de rendu, où il était réévalué à chaque ligne
 $est_editeur = $authorization->isPersonneEditor($_SESSION);
 
+// le niveau n'est une information utile qu'à ceux qui peuvent le changer
+$voit_le_groupe = $_SESSION['Sgroupe'] <= UserLevel::ADMIN;
+
+// Icônes propres à la page, en Font Awesome comme le reste du site. Les
+// équivalents globaux ($iconeEditer, $icone['depublier']) restent des PNG
+// servis à d'autres pages : les migrer est un chantier distinct.
+$icone_editer = '<i class="fa fa-pencil" aria-hidden="true"></i>';
+$icone_depublier = '<i class="fa fa-calendar-times-o" aria-hidden="true"></i>';
+$icones_onglets = ["evenement" => "fa-calendar-o", "description" => "fa-file-text-o"];
+
 $colonnes = $get['elements'] === "evenement"
     ? ["dateEvenement" => "Date", "idLieu" => "Lieu", "titre" => "Titre", "dateAjout" => "Date d'ajout", "statut" => ""]
     : ["idLieu" => "Lieu", "contenu" => "Contenu", "type" => "Type", "dateAjout" => "Date d'ajout"];
@@ -168,7 +178,7 @@ include("_header.inc.php");
 
 if ($erreur !== null)
 {
-    echo '<main id="contenu" class="colonne personne">';
+    echo '<main id="contenu" class="colonne user">';
     HtmlShrink::msgErreur($erreur);
     echo '</main>';
     include("_footer.inc.php");
@@ -176,16 +186,16 @@ if ($erreur !== null)
 }
 ?>
 
-<main id="contenu" class="colonne personne">
+<main id="contenu" class="colonne user">
 
 	<header id="entete_contenu">
-		<h1>Profil</h1>
+		<h1>Compte de <em><?= sanitizeForHtml($profil['pseudo']) ?></em><?php if ($voit_le_groupe) : ?> <span class="profil-groupe">[<?= sanitizeForHtml(UserLevel::getName((int) $profil['groupe'])) ?>]</span><?php endif; ?><?php if ($profil['statut'] !== 'actif') : ?> <span class="even-statut-label statut-<?= sanitizeForHtml($profil['statut']) ?>"><?= mb_strtoupper(sanitizeForHtml($profil['statut'])) ?></span><?php endif; ?></h1>
 		<div class="spacer"></div>
 	</header>
 
 	<div class="spacer"></div>
 
-	<div id="profile" style="padding: 0.4em;width: 94%;margin: 0 auto 0 auto;">
+	<div id="profile">
 
 		<table>
 			<tr><th>Identifiant</th><td><?= sanitizeForHtml($profil['pseudo']) ?></td></tr>
@@ -203,21 +213,16 @@ if ($erreur !== null)
 			</td></tr>
 		</table>
 		<?php if ($peut_gerer) : ?>
-		<a href="/user-edit.php?idP=<?= (int) $get['idP'] ?>&amp;action=editer"><img src="/web/interface/icons/user_edit.png" alt="" />Modifier</a>
+		<a class="profil-modifier" href="/user-edit.php?idP=<?= (int) $get['idP'] ?>&amp;action=editer"><i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;Modifier</a>
 		<?php endif; ?>
 	</div>
 
 	<?php if ($_SESSION['Sgroupe'] <= UserLevel::ACTOR) : ?>
-	<ul id="menu_ajouts">
-		<li<?= $get['elements'] === "evenement" ? ' class="ici"' : '' ?>>
-			<img src="/web/interface/icons/calendar.png" alt="" />
-			<a href="?idP=<?= (int) $get['idP'] ?>&amp;nblignes=<?= $get['nblignes'] ?>&amp;elements=evenement">événements</a>
-		</li>
-		<li<?= $get['elements'] === "description" ? ' class="ici"' : '' ?>>
-			<img src="/web/interface/icons/page_white_text.png" alt="" />
-			<a href="?idP=<?= (int) $get['idP'] ?>&amp;nblignes=<?= $get['nblignes'] ?>&amp;elements=description">textes</a>
-		</li>
-	</ul>
+	<nav class="tabs" aria-label="Contenus ajoutés">
+		<?php foreach ($tab_elements as $cle_element => $libelle_element) : ?>
+		<a href="?idP=<?= (int) $get['idP'] ?>&amp;elements=<?= $cle_element ?>&amp;tri=<?= $get['tri'] ?>&amp;ordre=<?= $get['ordre'] ?>&amp;nblignes=<?= $get['nblignes'] ?>"<?= $get['elements'] === $cle_element ? ' class="ici"' : '' ?>><i class="fa <?= $icones_onglets[$cle_element] ?>" aria-hidden="true"></i>&nbsp;<?= $libelle_element ?></a>
+		<?php endforeach; ?>
+	</nav>
 	<?php endif; ?>
 
 	<?= HtmlShrink::getPaginationString($tot_elements, $get['page'], $get['nblignes'], 1, "", $url_pagination) ?>
@@ -273,10 +278,10 @@ if ($erreur !== null)
 					<td><?= EvenementRenderer::$iconStatus[$tab_even['statut']] ?></td>
 					<td class="actions">
 						<?php if ($tab_even['statut'] !== 'inactif') : ?>
-						<?= EvenementRenderer::unpublishLinkHtml((int) $tab_even['idEvenement'], $icone['depublier'], EvenementRenderer::UNPUBLISH_THEN_STATUS) ?>&nbsp;
+						<?= EvenementRenderer::unpublishLinkHtml((int) $tab_even['idEvenement'], $icone_depublier, EvenementRenderer::UNPUBLISH_THEN_STATUS) ?>&nbsp;
 						<?php endif; ?>
 						<?php if ($can_edit_even) : ?>
-						<a href="/evenement-edit.php?action=editer&amp;idE=<?= (int) $tab_even['idEvenement'] ?>" title="Éditer l'événement"><?= $iconeEditer ?></a>
+						<a href="/evenement-edit.php?action=editer&amp;idE=<?= (int) $tab_even['idEvenement'] ?>" title="Éditer l'événement"><?= $icone_editer ?></a>
 						<?php endif; ?>
 					</td>
 				</tr>
@@ -294,11 +299,11 @@ if ($erreur !== null)
 					?>
 				<tr>
 					<td><a href="/lieu/lieu.php?idL=<?= (int) $tab_desc['idLieu'] ?>" title="Voir la fiche du lieu"><?= sanitizeForHtml((string) $tab_desc['lieu_nom']) ?></a></td>
-					<td class="tdleft" style="width:150px"><?= Text::lnAndUrlToHtml(sanitizeForHtml($contenu)) ?></td>
+					<td class="tdleft contenu"><?= Text::lnAndUrlToHtml(sanitizeForHtml($contenu)) ?></td>
 					<td><?= sanitizeForHtml($tab_desc['type']) ?></td>
 					<td><?= DateHelper::isoToApp(mb_substr((string) $tab_desc['dateAjout'], 0, 10)) ?></td>
 					<td class="actions">
-						<a href="/lieu-text-edit.php?action=editer&amp;idL=<?= (int) $tab_desc['idLieu'] ?>&amp;idP=<?= (int) $get['idP'] ?>&amp;type=<?= sanitizeForHtml($tab_desc['type']) ?>" title="Éditer le texte"><?= $iconeEditer ?></a>
+						<a href="/lieu-text-edit.php?action=editer&amp;idL=<?= (int) $tab_desc['idLieu'] ?>&amp;idP=<?= (int) $get['idP'] ?>&amp;type=<?= sanitizeForHtml($tab_desc['type']) ?>" title="Éditer le texte"><?= $icone_editer ?></a>
 					</td>
 				</tr>
 				<?php endforeach; ?>
@@ -319,8 +324,6 @@ if ($erreur !== null)
 include("event/_navigation_calendrier.inc.php");
 ?>
 </div>
-
-<div id="colonne_droite" class="colonne personne"></div>
 
 <?php
 include("_footer.inc.php");

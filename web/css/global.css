@@ -1308,6 +1308,37 @@ ul.menu_tab
     }
 
 
+/*
+ * Onglets classiques : filet continu sous la rangée, onglet courant surélevé
+ * d'un pixel pour venir couvrir ce filet. Promu depuis admin/bots.css, où le
+ * motif était nommé .bots-tabs, pour servir aussi la page de profil.
+ */
+.tabs
+{
+    margin: 0 0 1em 0;
+    border-bottom: 1px solid #ccc;
+}
+
+.tabs a
+{
+    display: inline-block;
+    padding: 0.5em 1em;
+    text-decoration: none;
+    border: 1px solid transparent;
+    border-bottom: none;
+    border-radius: 3px 3px 0 0;
+}
+
+.tabs a.ici
+{
+    background: #fff;
+    border-color: #ccc;
+    font-weight: bold;
+    position: relative;
+    top: 1px;
+}
+
+
 ul#menu_periode
 {
     float: right;

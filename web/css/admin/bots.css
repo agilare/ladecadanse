@@ -17,27 +17,7 @@
     padding: 0.4em 0.8em;
 }
 
-.bots-tabs {
-    margin: 0 0 1em 0;
-    border-bottom: 1px solid #ccc;
-}
-
-.bots-tabs a {
-    display: inline-block;
-    padding: 0.5em 1em;
-    text-decoration: none;
-    border: 1px solid transparent;
-    border-bottom: none;
-    border-radius: 3px 3px 0 0;
-}
-
-.bots-tabs a.ici {
-    background: #fff;
-    border-color: #ccc;
-    font-weight: bold;
-    position: relative;
-    top: 1px;
-}
+/* les onglets de cette page utilisent .tabs, promu dans global.css */
 
 .bots-avertissement {
     color: #856404;

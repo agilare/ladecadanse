@@ -64,11 +64,46 @@ class UserProfileCest
         $I->loginAsActor();
         $this->grabMyProfileId($I);
 
-        $I->see('Profil', 'h1');
+        $I->see('Compte de', 'h1');
         $I->see('Identifiant');
         $I->see('E-mail');
         $I->see('Affiliations');
         $I->seeElement('a[href*="/user-edit.php"]');
+    }
+
+    /**
+     * Le niveau du compte n'a de sens que pour qui peut le changer : il est réservé aux
+     * administrateurs, y compris sur son propre profil.
+     */
+    public function groupIsShownToAdminsOnly(SiteTester $I)
+    {
+        $I->loginAsActor();
+        $this->grabMyProfileId($I);
+        $I->dontSeeElement('.profil-groupe');
+
+        $I->skipUnlessConfigured(
+            'LADECADANSE_SITE_ADMIN_USER',
+            'LADECADANSE_SITE_ADMIN_PASS'
+        );
+
+        $I->logout();
+        $I->loginAsAdmin();
+        $this->grabMyProfileId($I);
+        $I->seeElement('.profil-groupe');
+    }
+
+    /**
+     * La colonne de droite, vide sur cette page, réservait une gouttière de 180 px. Sa suppression
+     * ne tient que si 'user' figure aussi dans la liste de _header.inc.php qui retire le
+     * padding-right du conteneur : sans cela le contenu reste décalé face à du vide.
+     */
+    public function rightColumnIsGoneAndGutterReclaimed(SiteTester $I)
+    {
+        $I->loginAsActor();
+        $this->grabMyProfileId($I);
+
+        $I->dontSeeElement('#colonne_droite');
+        $I->seeElement('#conteneur[style*="padding-right: 5px"]');
     }
 
     /**
@@ -84,8 +119,8 @@ class UserProfileCest
         $I->dontSeeElement('a[href*="elements=lieu"]');
         $I->dontSeeElement('a[href*="elements=organisateur"]');
 
-        $I->seeElement('a[href*="elements=evenement"]');
-        $I->seeElement('a[href*="elements=description"]');
+        $I->seeElement('nav.tabs a[href*="elements=evenement"]');
+        $I->seeElement('nav.tabs a[href*="elements=description"]');
     }
 
     /**
