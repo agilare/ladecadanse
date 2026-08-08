@@ -300,12 +300,17 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 	}
 	else
 	{
-		$date_iso = DateHelper::appToIso($champs['dateEvenement']);
-
+		// La date doit être exactement au format jj.mm.aaaa : checkdate() seul, sur des morceaux
+		// castés en (int), laisse passer tout ce qui traîne derrière l'année ("12.05.2026<payload>"),
+		// et appToIso() renvoie telle quelle toute chaîne de plus de 10 caractères — la valeur polluée
+		// se retrouverait alors dans le message flash, rendu sans échappement
 		$tab_date = explode('.', (string) $champs['dateEvenement']);
-		if (!checkdate((int) $tab_date[1], (int) $tab_date[0], (int) $tab_date[2])) {
+		if (!preg_match('/^[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{4}$/', (string) $champs['dateEvenement'])
+			|| !checkdate((int) $tab_date[1], (int) $tab_date[0], (int) $tab_date[2])) {
 			$verif->setErreur('dateEvenement', "La date n'est pas correcte");
 		}
+
+		$date_iso = DateHelper::appToIso($champs['dateEvenement']);
 	}
 
 	$verif->valider($champs['description'], "description", "texte", 4, 10000, 0);
@@ -583,7 +588,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 			{
 				$req_id = $connector->getInsertId();
 
-				$_SESSION['evenement-edit_flash_msg'] = "L'événement a été créé. <a href='/index.php?courant=".$champs['dateEvenement']."#event-".(int)$req_id."'>Voir dans l'agenda</a>";
+				$_SESSION['evenement-edit_flash_msg'] = "L'événement a été créé. <a href='/index.php?courant=".urlencode((string) $champs['dateEvenement'])."#event-".(int)$req_id."'>Voir dans l'agenda</a>";
 
                 if (!isset($_SESSION['Sgroupe']))
                 {
@@ -733,7 +738,9 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
                         $contenu_message .= "\n\n";
                         $contenu_message .= "La décadanse";
 
-                        $confirmation_flash_msg = " Un email de confirmation a été envoyé à " . $champs['user_email'];
+                        // le message flash est rendu sans échappement (il contient du HTML voulu) :
+                        // l'e-mail, qui n'est validé que pour le formulaire public, est échappé ici
+                        $confirmation_flash_msg = " Un email de confirmation a été envoyé à " . sanitizeForHtml($champs['user_email']);
 
                         $mailer = new Mailing();
                         $mailer->toUser($champs['user_email'], $subject, $contenu_message);
@@ -763,7 +770,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
                     }
                 }
 
-                $_SESSION['evenement-edit_flash_msg'] = "L'événement a été modifié.$confirmation_flash_msg<br><a href='/index.php?courant=".$champs['dateEvenement']."#event-".(int) $req_id."'>Voir dans l'agenda</a>";
+                $_SESSION['evenement-edit_flash_msg'] = "L'événement a été modifié.$confirmation_flash_msg<br><a href='/index.php?courant=".urlencode((string) $champs['dateEvenement'])."#event-".(int) $req_id."'>Voir dans l'agenda</a>";
 
 				$get['action'] = 'editer';
 
