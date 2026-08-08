@@ -14,6 +14,7 @@
 - events : a `genre` absent from the configuration crashed the home page and logged warnings in the listings ; it now displays as "divers" through the new `Evenement::genreLabel()`
 - events : an event referencing a deleted lieu crashed the pages listing it ; its location now falls back on the free text fields stored in the event
 - csp : two scripts blocked in production — the bots tracker (darkvisitors.com now redirects to knownagents.com) and the AssetManager import map, an inline tag missing its nonce
+- csp : front-end errors never reached GlitchTip, the DSN host was missing from `connect-src` while only the CDN was allowed in `script-src`
 - forms : the date field is usable with the keyboard again
 - events edit : no longer assumes the file fields are present in `$_FILES`
 - admin : in index, "Latest texts added" called `texteHtmlReduit` with a missing argument
@@ -53,6 +54,7 @@
 - events edit : move the "Statut de l'événement" fieldset before "Catégorie", radio options on one line on desktop, shorter labels, site badge style for "complet"/"annulé"
 - events edit : temporarily disable the announce about organisateur registration
 - don : disable the wemakeit widget (unavailable from July 31) and replace the "Autres moyens possibles" line with an intro paragraph
+- monitoring : for GlitchTip upgrade the Sentry browser SDK from 9.14 to 10.69, pin the CDN bundle with an SRI `integrity` hash and drop `tracesSampleRate`, inert on the errors-only bundle
 - analyzers : finalise the Psalm configuration (globals, taint escapes, insane-comparison plugin, baseline regenerated) and add the `composer psalm:taint` script
 - analyzers : fix PHPStan config gaps (exclusions, runtime constants and feature flags, disallowed-calls presets) and regenerate the stale baseline
 - build : declare the required Node version via `engines`, name the npm package, document `npm install` and `npm test`

@@ -170,7 +170,7 @@ $csp = implode('; ', [
     "img-src 'self' https://tile.openstreetmap.org https://tools.ladecadanse.ch/ https://unpkg.com https://www.paypalobjects.com https://sp.tinymce.com data:",
     "style-src 'self' 'unsafe-inline' https://unpkg.com https://cdn.tiny.cloud https://www.tiny.cloud https://wemakeit.com https://assets.wemakeit.com/ https://fonts.googleapis.com",
     "font-src 'self' https://www.tiny.cloud https://assets.wemakeit.com https://fonts.gstatic.com",
-    "connect-src 'self' https://tools.ladecadanse.ch/ https://cdn.tiny.cloud https://unpkg.com https://wemakeit.com https://knownagents.com",
+    "connect-src 'self' https://tools.ladecadanse.ch/ https://cdn.tiny.cloud https://unpkg.com https://wemakeit.com https://knownagents.com https://app.glitchtip.com",
     "frame-ancestors 'self' https://epic-magazine.ch",
     "frame-src 'none'",
     "object-src 'none'",

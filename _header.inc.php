@@ -74,12 +74,13 @@ use Ladecadanse\UserLevel;
     <link rel="apple-touch-icon" sizes="152x152" href="/web/interface/apple-icon-152x152.png">
 
     <?php if (GLITCHTIP_ENABLED) : ?>
-        <script src="https://browser.sentry-cdn.com/9.14.0/bundle.min.js" crossorigin="anonymous"></script>
+        <script src="https://browser.sentry-cdn.com/10.69.0/bundle.min.js"
+                integrity="sha384-3CEt/dsT99DjKC3MgiUAiordZm0hoZjYMn6ioBvRKm+9A98CLWAUsQsk5XaPpjfU"
+                crossorigin="anonymous"></script>
         <script nonce="<?= CSP_NONCE ?>">
-                Sentry.init({
-              dsn: "<?= GLITCHTIP_DSN ?>",
-              tracesSampleRate: 0.01,
-        });
+            Sentry.init({
+                dsn: "<?= GLITCHTIP_DSN ?>",
+            });
         </script>
     <?php endif; ?>
 
