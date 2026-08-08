@@ -20,9 +20,7 @@ if (!$videur->checkGroup(UserLevel::MEMBER))
 $page_titre = "profil";
 include("_header.inc.php");
 
-$tab_elements = ["evenement" => "Événements", "lieu" => "Lieux", 'organisateur' => 'Organisateurs', "description" => "Descriptions"];
-
-$tab_type_elements = ["ajouts" => "ajoutés"];
+$tab_elements = ["evenement" => "Événements", "description" => "Descriptions"];
 
 if (isset($_GET['idP']))
 {
@@ -32,24 +30,6 @@ else
 {
 	HtmlShrink::msgErreur("id obligatoire");
 	exit;
-}
-
-if (isset($_GET['type_elements']))
-{
-
-	if (array_key_exists($_GET['type_elements'], $tab_type_elements))
-	{
-		$get['type_elements'] = $_GET['type_elements'];
-	}
-	else
-	{
-		HtmlShrink::msgErreur("type_elements faux");
-		exit;
-	}
-}
-else
-{
-		$get['type_elements'] = "ajouts";
 }
 
 
@@ -82,8 +62,8 @@ else
 	$get['page'] = 1;
 }
 
-$tab_tri = ["dateAjout", "idOrganisateur", "idEvenement", "idLieu", "dateEvenement", "date_derniere_modif", "statut",
-    "date_debut", "date_fin", "id", "titre", "groupe", "pseudo"];
+// seules les colonnes que les en-tetes des deux tables restantes savent emettre
+$tab_tri = ["dateAjout", "dateEvenement", "titre", "statut"];
 
 if (isset($_GET['tri']))
 {
@@ -181,12 +161,6 @@ $detailsAff = $connector->fetchArray($req_affPers);
         <a href="/user-edit.php?idP=<?php echo (int)$get['idP'] ?>&action=editer"><img src="/web/interface/icons/user_edit.png" alt="" />Modifier</a><?php } ?>
     </div> <!-- Fin profile -->
 
-	<ul id="menu_principal">
-        <li <?php if ($get['type_elements'] == "ajouts") { echo ' class="ici" '; } ?>>
-        <a href="/user.php?idP=<?php echo (int)$get['idP'] ?>&type_elements=ajouts">
-            <?php echo $icone['ajouts'] . "Éléments ajoutés" ?></a></li>
-    </ul>
-
     <ul id="menu_ajouts">
 	<?php
 	if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= UserLevel::ACTOR)) {
@@ -198,26 +172,6 @@ $detailsAff = $connector->fetchArray($req_affPers);
         </li>
 	<?php
 	}
-    if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 6))
-	{
-	?>
-	<li <?php if ($get['elements'] == "lieu") { echo ' class="ici" '; } ?>>
-	<img src="/web/interface/icons/building.png" />
-        <a href="?idP=<?php echo (int)$get['idP'] . "&nblignes=" . (int)$get['nblignes'] . "&elements=lieu" ?>">lieux</a>
-        </li>
-	<?php
-	}
-
-	if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 6))
-	{
-	?>
-	<li <?php if ($get['elements'] == "organisateur") { echo ' class="ici" '; } ?>>
-	<img src="/web/interface/icons/group.png" />
-        <a href="?idP=<?php echo (int)$get['idP'] . "&nblignes=" . (int)$get['nblignes'] . "&elements=organisateur" ?>">organisateurs</a>
-        </li>
-	<?php
-	}
-
 	if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 8))
 	{
 	?>
@@ -469,219 +423,6 @@ $detailsAff = $connector->fetchArray($req_affPers);
 
 
 	}
-	else if ($get['elements'] == "lieu")
-	{
-	// LIEUX
-
-	$req_lieux = $connector->query("SELECT idLieu, idPersonne, nom, quartier,
-	 categorie, URL, dateAjout FROM lieu
-	 WHERE idPersonne=".(int)$get['idP']." ORDER BY ".$connector->sanitize($get['tri'])." ".$connector->sanitize($get['ordre'])." LIMIT ".((int)$get['page'] - 1) * (int)$get['nblignes'].",".(int)$get['nblignes']);
-
-	$req_count = $connector->query("SELECT COUNT(*) AS total FROM lieu WHERE idPersonne=".(int)$get['idP']);
-	$tab_count = $connector->fetchArray($req_count);
-	$tot_elements = $tab_count['total'];
-
-
-	echo HtmlShrink::getPaginationString($tot_elements, $get['page'], $get['nblignes'], 1, "", "?idP=" . (int)$get['idP'] . "&elements=" . $get['elements'] . "&tri=" . $get['tri'] . "&ordre=" . $get['ordre'] . "&nblignes=" . (int)$get['nblignes'] . "&page=");
-
-    if ($connector->getNumRows($req_lieux) > 0)
-	{
-
-		$th_lieu = ["idLieu" => "ID",  "nom" => "Nom", "categorie" => "Catégorie", "URL" => "Site web", "description" => "Desc", "dateAjout" => "Date d'ajout"];
-
-		echo '<ul id="menu_nb_res">';
-		foreach ($tab_nblignes as $nbl)
-		{
-			echo '<li ';
-			if ($get['nblignes'] == $nbl) { echo 'class="ici"'; }
-
-			echo '><a href="?' . Utils::urlQueryArrayToString($get, "nblignes") . '&nblignes=' . (int)$nbl . '">' . (int)$nbl . '</a></li>';
-        }
-		echo '</ul>';
-			echo '<div class="spacer"><!-- --></div>';
-		echo "
-		<table id=\"ajouts\">
-		<tr>";
-
-		foreach ($th_lieu as $att => $th)
-		{
-			if ($att == "adresse" || $att == "categorie" || $att == "URL" || $att == "description")
-			{
-				echo "<th>".$th."</th>";
-			}
-			else
-			{
-				if ($att == $get['tri'])
-				{
-					echo "<th class=\"ici\">".$icone[$get['ordre']];
-				}
-				else
-				{
-					echo "<th>";
-				}
-
-				echo "<a href=\"?idP=" . (int)$get['idP'] . "&elements=" . sanitizeForHtml($get['elements']) . "&page=" . (int)$get['page'] . "&tri=" . sanitizeForHtml($att) . "&ordre=" . sanitizeForHtml($ordre_inverse). "&nblignes=" . (int)$get['nblignes'] . "\">" . $th . "</a></th>";
-            }
-		}
-
-		echo "<th></th></tr>";
-
-		$pair = 0;
-
-		while([$idLieu, $idPersonne, $nom, $quartier, $categorie, $URL, $dateAjout] = $connector->fetchArray($req_lieux))
-		{
-
-			$req_nbDes = $connector->query("SELECT COUNT(*) FROM descriptionlieu WHERE idLieu=".(int)$idLieu);
-			$tabDes = $connector->fetchArray($req_nbDes);
-
-			$listeCat = explode(",", (string) $categorie);
-
-			if ($pair % 2 == 0)
-			{
-				echo "<tr>";
-			}
-			else
-			{
-				echo "<tr class=\"impair\" >";
-			}
-
-			echo "
-			<td>".$idLieu."</td>
-			<td><a href=\"/lieu/lieu.php?idL=".(int)$idLieu."\" title=\"Voir la fiche du lieu :".sanitizeForHtml($nom)."\">".sanitizeForHtml($nom)."</a></td>
-			<td class=\"tdleft\"><ul>";
-
-
-			for ($i=0, $totalCat = count($listeCat); $i<$totalCat; $i++){
-				echo "<li>".$listeCat[$i]."</li>";
-			}
-
-			echo "</ul></td>";
-			echo "<td>";
-			if (!empty($URL)) {
-				echo "<a href=\"http://" . sanitizeForHtml($URL) . "\" title=\"Aller sur le site du lieu\">" . $iconeURL . "</a>\n";
-            }
-			echo "</td>";
-			echo "
-			<td>".$tabDes['COUNT(*)']."</td>
-			<td>".DateHelper::isoToApp($dateAjout)."</td>";
-			//Edition pour l'admin ou l'auteur
-			if ($_SESSION['SidPersonne'] == $detailsPersonne['idPersonne'] || $_SESSION['Sgroupe'] <= 4)
-			{
-				echo "<td><a href=\"/lieu-edit?action=editer&idL=".(int)$idLieu."\" title=\"Éditer le lieu\">".$iconeEditer."</a></td>";
-			}
-			echo "</tr>";
-
-			$pair++;
-
-		}
-
-		echo "</table>";
-
-	}
-	}
-else if ($get['elements'] == "organisateur")
-{
-
-	if ($get['tri'] == 'dateAjout')
-	{
-		$get['tri'] = 'date_ajout';
-	}
-
-	$req_lieux = $connector->query("SELECT * FROM organisateur
-	 WHERE idPersonne=".(int)$get['idP']." ORDER BY ".$connector->sanitize($get['tri'])." ".$connector->sanitize($get['ordre'])." LIMIT ".((int)$get['page'] - 1) * (int)$get['nblignes'].",".(int)$get['nblignes']);
-
-	$req_count = $connector->query("SELECT COUNT(*) AS total FROM organisateur WHERE idPersonne=".(int)$get['idP']);
-	$tab_count = $connector->fetchArray($req_count);
-	$tot_elements = $tab_count['total'];
-
-	echo HtmlShrink::getPaginationString($tot_elements, $get['page'], $get['nblignes'], 1, "", "?idP=" . $get['idP'] . "&elements=" . $get['elements'] . "&tri=" . $get['tri'] . "&ordre=" . $get['ordre'] . "&nblignes=" . (int)$get['nblignes'] . "&page=");
-
-    if ($connector->getNumRows($req_lieux) > 0)
-	{
-
-		$th_lieu = ["idOrganisateur" => "ID",  "nom" => "Nom", "URL" => "Site web", "dateAjout" => "Date d'ajout"];
-
-		echo '<ul id="menu_nb_res">';
-		foreach ($tab_nblignes as $nbl)
-		{
-			echo '<li ';
-			if ($get['nblignes'] == $nbl) { echo 'class="ici"'; }
-
-			echo '><a href="?' . Utils::urlQueryArrayToString($get, "nblignes") . '&nblignes=' . (int)$nbl . '">' . (int)$nbl . '</a></li>';
-        }
-		echo '</ul>';
-		echo '<div class="spacer"><!-- --></div>';
-		echo "<table id=\"ajouts\">
-		<tr>";
-
-		foreach ($th_lieu as $att => $th)
-		{
-			if ($att == "URL" || $att == "presentation")
-			{
-				echo "<th>".$th."</th>";
-			}
-			else
-			{
-				if ($att == $get['tri'])
-				{
-					echo "<th class=\"ici\">".$icone[$get['ordre']];
-				}
-				else
-				{
-					echo "<th>";
-				}
-
-				echo "<a href=\"?idP=" . (int)$get['idP'] . "&elements=" . sanitizeForHtml($get['elements']) . "&page=" . (int)$get['page'] . "&tri=" . sanitizeForHtml($att) . "&ordre=" . sanitizeForHtml($ordre_inverse) . "&nblignes=" . (int)$get['nblignes'] . "\">" . $th . "</a></th>";
-            }
-		}
-
-		echo "<th></th></tr>";
-
-		$pair = 0;
-
-		while ($tab = $connector->fetchArray($req_lieux))
-		{
-
-			if ($pair % 2 == 0)
-			{
-				echo "<tr>";
-			}
-			else
-			{
-				echo "<tr class=\"impair\" >";
-			}
-
-			echo "
-			<td>".$tab['idOrganisateur']."</td>
-			<td><a href=\"/organisateur/organisateur.php?idO=".(int)$tab['idOrganisateur']."\" title=\"Voir la fiche\">".sanitizeForHtml($tab['nom'])."</a></td>
-	</td>";
-			echo "<td>";
-			if (!empty($tab['URL'])) {
-				echo "<a href=\"http://" . sanitizeForHtml($tab['URL']) . "\" title=\"Aller sur le site du lieu\">" . $iconeURL . "</a>\n";
-            }
-			echo "</td>";
-			echo "
-			<td>".DateHelper::isoToApp($tab['date_ajout'])."</td>";
-			//Edition pour l'admin ou l'auteur
-			if ($_SESSION['SidPersonne'] == $detailsPersonne['idPersonne'] || $_SESSION['Sgroupe'] <= 4)
-			{
-				echo "<td><a href=\"/organisateur-edit.php?action=editer&idO=".(int)$tab['idOrganisateur']."\" title=\"Éditer le lieu\">".$iconeEditer."</a></td>";
-			}
-			echo "</tr>";
-
-			$pair++;
-
-		}
-
-		echo "</table>";
-
-	}
-	else
-	{
-		echo '<p>Aucun '. sanitizeForHtml($get['elements']).' ajouté pour le moment</p>';
-	}
-
-}
 
 echo HtmlShrink::getPaginationString($tot_elements, $get['page'], $get['nblignes'], 1, "", "?idP=" . (int)$get['idP'] . "&elements=" . $get['elements'] . "&tri=" . $get['tri'] . "&ordre=" . $get['ordre'] . "&nblignes=" . (int)$get['nblignes'] . "&page=");
 ?>
