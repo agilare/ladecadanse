@@ -1244,6 +1244,7 @@ CREATE TABLE `personne` (
   `dateAjout` datetime NOT NULL,
   `date_derniere_modif` datetime NOT NULL,
   `last_login` datetime NULL DEFAULT NULL,
+  `settings` text COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
   PRIMARY KEY (`idPersonne`),
   KEY `pseudo` (`pseudo`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

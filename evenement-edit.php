@@ -15,6 +15,7 @@ use Ladecadanse\UserLevel; // domain
 use Ladecadanse\Utils\DateHelper;
 use Ladecadanse\Utils\RefList;
 use Ladecadanse\Personne;
+use Ladecadanse\UserSettings;
 
 // template...
 $page_titre = "Proposer un événement";
@@ -165,6 +166,47 @@ $fetched_flyer = null;
 $fetched_image = null;
 $notif_motifs = [];
 $notif_message = '';
+
+/*
+* Préremplissage depuis les valeurs par défaut du profil (user-edit.php, fieldset « Événements »).
+*
+* Uniquement à l'ouverture du formulaire d'ajout : le formulaire poste vers ?action=insert, si bien
+* que le ré-affichage après une erreur de validation ne repasse jamais par « ajouter » — une saisie
+* en cours ne peut donc pas être écrasée. La condition sur la session écarte le formulaire public
+* « Proposer un événement », qui n'a pas d'utilisateur connecté.
+*/
+$ev_user_defaults = UserSettings::eventNewDefaults(null);
+$prefilled_from_user_defaults = false;
+
+if ($get['action'] === 'ajouter' && !empty($_SESSION['SidPersonne']))
+{
+    $ev_user_defaults = UserSettings::eventNewDefaults(
+        Personne::getSettingsJson((int) $_SESSION['SidPersonne'])
+    );
+
+    foreach (['genre', 'horaire_debut', 'horaire_fin', 'prix'] as $champ_defaut)
+    {
+        if ($ev_user_defaults[$champ_defaut] !== '')
+        {
+            $champs[$champ_defaut] = $ev_user_defaults[$champ_defaut];
+            $prefilled_from_user_defaults = true;
+        }
+    }
+
+    // ?idL= garde la priorité : le select des lieux teste les deux sources, et remplir les deux
+    // marquerait deux <option selected> dans un select simple.
+    if ($ev_user_defaults['idLieu'] > 0 && empty($get['idL']))
+    {
+        $champs['idLieu'] = $ev_user_defaults['idLieu'];
+        $prefilled_from_user_defaults = true;
+    }
+
+    // Les organisateurs sont présélectionnés plus bas, via $tab_organisateurs_even.
+    if ($ev_user_defaults['idOrganisateurs'] !== [] && empty($get['idO']))
+    {
+        $prefilled_from_user_defaults = true;
+    }
+}
 
 $show_form = true;
 $formTokenName = 'form_token_evenement_edit';
@@ -994,6 +1036,10 @@ if ($verif->nbErreurs() > 0)
             <input type="text" name="name_as" value="" class="name_as" /><?php echo $verif->getHtmlErreur('name_as'); ?>
             <input type="hidden" name="<?php echo $formTokenName; ?>" value="<?php echo sanitizeForHtml($_SESSION[$formTokenName]); ?>">
 
+            <?php if ($prefilled_from_user_defaults) { ?>
+            <div class="guideForm">Certains champs sont préremplis depuis vos valeurs par défaut &middot; <a href="/user-edit.php?action=editer&amp;idP=<?php echo (int) $_SESSION['SidPersonne']; ?>">Modifier mes valeurs</a></div>
+            <?php } ?>
+
             <div class="alert-warn">
                     <?php if (!in_array($get['action'], ['editer', 'update'])) { ?>
             <h2>Avant de commencer :</h2>
@@ -1416,6 +1462,15 @@ if ($verif->nbErreurs() > 0)
 
         <?php
         $tab_organisateurs_even = [];
+
+        // À la création, les organisateurs par défaut du profil alimentent la même variable que les
+        // organisateurs d'un événement existant : la boucle d'options plus bas les sélectionne sans
+        // rien changer. ?idO= reste prioritaire.
+        if ($get['action'] == "ajouter" && empty($get['idO']))
+        {
+            $tab_organisateurs_even = $ev_user_defaults['idOrganisateurs'];
+        }
+
         if ($get['action'] == "editer" || $get['action'] == "update")
         {
 

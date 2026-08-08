@@ -25,6 +25,7 @@
 - tests : adapt the Selenium cases to the changes of this release
 
 ### Added
+- users, events edit : personal default values for adding an event — category, start and end time, lieu, organisateur(s) and price, set in the profile ("Événements" fieldset) and applied to the "Ajouter un événement" form at creation only, where a discreet note links back to the settings. `?idL=` and `?idO=` still take precedence, editing an existing event is untouched, and a default pointing at a lieu or organisateur since deactivated is simply ignored. Settings live in a new JSON column `personne.settings` (`events > new_defaults`), so later preferences need no further migration ; create the column with `resources/v3-11-0_personne-add-settings.sql`
 - events : a past event is now a read-only archive below `groupe` 6 — its edit form and every "Éditer" button are gone, and deletion is refused, so an old event can no longer be recycled into a new one (which silently overwrote the original) ; Copier — the right way to reprogram it — and Dépublier stay available, and editors keep full access. An event counts as past once `06:00:00` has struck on the day after `dateEvenement`, its end time being taken into account when it is later. In the user page, archived rows are dimmed, at full opacity on hover
 - lieux edit : optional latitude/longitude fields, so the map coordinates can be set from the site instead of directly in the database (a map picker will come later)
 - events : in forms add <optgroup> by canton for lieux select

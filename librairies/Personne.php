@@ -44,6 +44,25 @@ class Personne
     }
 
 
+    /**
+     * Réglages personnels bruts (JSON), à passer à UserSettings.
+     *
+     * Lecture ciblée plutôt que mise en session : Sentry ne place en session que des scalaires, et
+     * y ajouter les réglages obligerait à toucher les trois requêtes de login tout en risquant de
+     * servir une valeur périmée après modification du profil.
+     */
+    public static function getSettingsJson(int $idPersonne): ?string
+    {
+        global $connectorPdo;
+
+        $stmt = $connectorPdo->prepare("SELECT settings FROM personne WHERE idPersonne = ?");
+        $stmt->execute([$idPersonne]);
+        $settings = $stmt->fetchColumn();
+
+        return is_string($settings) ? $settings : null;
+    }
+
+
     public static function getPersonnes(array $filters, string $orderBy = 'dateAjout', string $orderDir = 'DESC', ?int $page = null, ?int $nbLignes = null): array
     {
         global $connectorPdo;

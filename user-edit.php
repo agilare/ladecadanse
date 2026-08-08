@@ -14,7 +14,9 @@ use Ladecadanse\UserLevel;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Security\SecurityToken;
 use Ladecadanse\HtmlShrink;
+use Ladecadanse\Lieu;
 use Ladecadanse\Personne;
+use Ladecadanse\UserSettings;
 
 if (!$videur->checkGroup(UserLevel::ACTOR)) {
     header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
@@ -79,6 +81,16 @@ $champs = [
     "statut" => '',
 ];
 
+/*
+* Valeurs par défaut à l'ajout d'un événement (fieldset « Événements »).
+*
+* Volontairement tenues hors de $champs : les boucles qui construisent l'INSERT et l'UPDATE plus bas
+* écrivent une colonne par clé de $champs, et la boucle d'hydratation y recopie $_POST tel quel. Une
+* clé "settings" dans $champs reviendrait donc à écrire en base le JSON brut envoyé par le client.
+* La colonne n'est renseignée qu'en fin de validation, à partir de ces valeurs normalisées.
+*/
+$ev_defaults = UserSettings::eventNewDefaults(null);
+
 
 $action_terminee = false;
 
@@ -94,6 +106,28 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 
 	if (isset($_POST['organisateurs']))
 		$champs['organisateurs'] = $_POST['organisateurs'];
+
+	$ev_defaults = UserSettings::sanitizeEventNewDefaults([
+		'genre' => $_POST['ev_defaults_genre'] ?? '',
+		'horaire_debut' => $_POST['ev_defaults_horaire_debut'] ?? '',
+		'horaire_fin' => $_POST['ev_defaults_horaire_fin'] ?? '',
+		'idLieu' => $_POST['ev_defaults_idLieu'] ?? 0,
+		'idOrganisateurs' => $_POST['ev_defaults_organisateurs'] ?? [],
+		'prix' => $_POST['ev_defaults_prix'] ?? '',
+	], $glo_tab_genre);
+
+	// Les selects et les <input type="time"> n'offrent que des valeurs valides : sanitize ci-dessus
+	// ramène silencieusement à vide ce qui ne l'est pas. Les horaires font exception et sont
+	// signalés, parce qu'un navigateur sans support de type="time" laisse saisir n'importe quoi.
+	foreach (['horaire_debut' => 'de début', 'horaire_fin' => 'de fin'] as $cle => $libelle)
+	{
+		$horaire_saisi = isset($_POST['ev_defaults_' . $cle]) && is_string($_POST['ev_defaults_' . $cle]) ? trim($_POST['ev_defaults_' . $cle]) : '';
+
+		if (!UserSettings::estHoraireValide($horaire_saisi))
+		{
+			$verif->setErreur('ev_defaults_' . $cle, "L'horaire " . $libelle . " par défaut doit être au format hh:mm");
+		}
+	}
 
 	$verif->valider($champs['pseudo'], "pseudo", "texte", 2, 50, 0);
 
@@ -224,6 +258,18 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 		if ($_SESSION['Sgroupe'] > UserLevel::SUPERADMIN) {
 			$champs['groupe'] = $_SESSION['Sgroupe'];
 			$champs['pseudo'] = $_SESSION['user'];
+		}
+
+		// Le fieldset « Événements » n'est rendu qu'en édition : on ne touche à la colonne que là.
+		// Comme pour mot_de_passe et gds juste au-dessus, ajouter la clé à $champs suffit à ce que
+		// la boucle de génération de l'UPDATE écrive la colonne du même nom. La relecture préalable
+		// préserve les réglages d'un autre domaine que ce formulaire n'expose pas.
+		if ($get['action'] == 'update' && isset($get['idP']))
+		{
+			$champs['settings'] = UserSettings::withEventNewDefaults(
+				Personne::getSettingsJson((int) $get['idP']),
+				$ev_defaults
+			);
 		}
 
 		/*
@@ -417,6 +463,9 @@ if ($get['action'] == 'editer' && isset($get['idP']))
 		HtmlShrink::msgErreur("La personne ". (int)$get['idP']." n'existe pas");
 		exit;
 	}
+
+	// $champs vient de recevoir toutes les colonnes de personne, dont settings.
+	$ev_defaults = UserSettings::eventNewDefaults(is_string($champs['settings'] ?? null) ? $champs['settings'] : null);
 
 	$req_aff = $connector->query("SELECT idAffiliation FROM affiliation WHERE
 	 idPersonne=" . (int) $get['idP'] . " AND genre='lieu'");
@@ -806,6 +855,109 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= UserLevel::ACTOR)) {
 
 
 </fieldset>
+
+
+<?php
+/*
+* Réglages du formulaire d'ajout d'événement.
+*
+* Rendu en édition seulement : à la création d'un compte par un admin ces réglages n'ont pas de sens,
+* et cela évite deux requêtes inutiles. Aucune condition de groupe : la page est déjà réservée à
+* UserLevel::ACTOR, et tout utilisateur connecté peut ajouter un événement — contrairement au
+* fieldset Affiliation ci-dessus, réservé lui à UserLevel::AUTHOR.
+*
+* Tous les champs sont préfixés ev_defaults_ : le fieldset Affiliation occupe déjà les noms « lieu »
+* et « organisateurs[] », et les clés de $champs sont autant de colonnes de la table personne.
+*/
+if ($get['action'] == "editer" || $get['action'] == "update")
+{
+?>
+<fieldset>
+    <legend>Événements</legend>
+        <div class="guideForm">Valeurs par défaut à l'ajout d'un événement</div>
+
+    <p>
+    <label for="ev_defaults_genre">Catégorie</label>
+        <select name="ev_defaults_genre" id="ev_defaults_genre" style="max-width:350px">
+            <option value=""></option>
+            <?php foreach ($glo_tab_genre as $genre_cle => $genre_label) : ?>
+            <option value="<?= sanitizeForHtml($genre_cle) ?>" <?php if ((string) $genre_cle === $ev_defaults['genre']) { echo 'selected="selected"'; } ?>><?= sanitizeForHtml($genre_label) ?></option>
+            <?php endforeach ?>
+        </select>
+        <?php echo $verif->getHtmlErreur("ev_defaults_genre"); ?>
+    </p>
+
+    <p>
+    <label for="ev_defaults_horaire_debut">Début</label>
+        <input type="time" name="ev_defaults_horaire_debut" id="ev_defaults_horaire_debut" size="5" value="<?php echo sanitizeForHtml($ev_defaults['horaire_debut']); ?>" />
+        <?php echo $verif->getHtmlErreur("ev_defaults_horaire_debut"); ?>
+    </p>
+
+    <p>
+    <label for="ev_defaults_horaire_fin">Fin</label>
+        <input type="time" name="ev_defaults_horaire_fin" id="ev_defaults_horaire_fin" size="5" value="<?php echo sanitizeForHtml($ev_defaults['horaire_fin']); ?>" />
+        <?php echo $verif->getHtmlErreur("ev_defaults_horaire_fin"); ?>
+    </p>
+
+    <p>
+    <label for="ev_defaults_idLieu">Lieu</label>
+        <select name="ev_defaults_idLieu" id="ev_defaults_idLieu" class="js-select2-options-with-style" style="max-width:350px" data-placeholder="">
+            <option value=""></option>
+            <?php
+            // Requête à part : $req_lieux, plus haut, a été consommé jusqu'au bout par le select
+            // d'affiliation. Mêmes lieux et même tri que le formulaire d'ajout d'événement, sans
+            // les salles (le réglage se fait au niveau du lieu).
+            $canton_labels = ['ge' => 'Genève', 'vd' => 'Vaud', 'fr' => 'Fribourg', '' => 'France'];
+            $canton_courant = null;
+
+            foreach (Lieu::getActifsPourSelect() as $lieu_defaut)
+            {
+                $canton = (string) $lieu_defaut['canton'];
+
+                if ($canton !== $canton_courant)
+                {
+                    if ($canton_courant !== null) { echo '</optgroup>'; }
+                    echo '<optgroup label="' . ($canton_labels[$canton] ?? sanitizeForHtml($canton)) . '">';
+                    $canton_courant = $canton;
+                }
+
+                $selectionne = ((int) $lieu_defaut['idLieu'] === $ev_defaults['idLieu']) ? ' selected="selected"' : '';
+                echo '<option value="' . (int) $lieu_defaut['idLieu'] . '"' . $selectionne . '>' . sanitizeForHtml($lieu_defaut['nom']) . '</option>';
+            }
+
+            if ($canton_courant !== null) { echo '</optgroup>'; }
+            ?>
+        </select>
+        <?php echo $verif->getHtmlErreur("ev_defaults_idLieu"); ?>
+    </p>
+
+    <p>
+    <label for="ev_defaults_organisateurs">Organisateur(s)</label>
+        <select name="ev_defaults_organisateurs[]" id="ev_defaults_organisateurs" class="js-select2-options-with-style" multiple data-placeholder="Tapez les noms des organisateurs" style="max-width:350px;">
+            <?php
+            $req_orgas_defaut = $connector->query("
+            SELECT idOrganisateur, nom FROM organisateur WHERE statut='actif' ORDER BY TRIM(LEADING 'L\'' FROM (TRIM(LEADING 'Les ' FROM (TRIM(LEADING 'La ' FROM (TRIM(LEADING 'Le ' FROM nom))))))) COLLATE utf8mb4_unicode_ci"
+            );
+
+            while ($orga_defaut = $connector->fetchArray($req_orgas_defaut))
+            {
+                $selectionne = in_array((int) $orga_defaut['idOrganisateur'], $ev_defaults['idOrganisateurs'], true) ? ' selected="selected"' : '';
+                echo '<option value="' . (int) $orga_defaut['idOrganisateur'] . '"' . $selectionne . '>' . sanitizeForHtml($orga_defaut['nom']) . '</option>';
+            }
+            ?>
+        </select>
+        <?php echo $verif->getHtmlErreur("ev_defaults_organisateurs"); ?>
+    </p>
+
+    <p>
+    <label for="ev_defaults_prix">Prix</label>
+        <input type="text" name="ev_defaults_prix" id="ev_defaults_prix" size="45" maxlength="100" value="<?php echo sanitizeForHtml($ev_defaults['prix']); ?>" />
+        <?php echo $verif->getHtmlErreur("ev_defaults_prix"); ?>
+    </p>
+</fieldset>
+<?php
+}
+?>
 
 
 <?php if ($_SESSION['Sgroupe'] == UserLevel::SUPERADMIN && ($get['action'] == "editer" || $get['action'] == "update") && isset($get['idP'])) { ?>

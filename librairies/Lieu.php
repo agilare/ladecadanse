@@ -144,6 +144,39 @@ class Lieu extends Element
     }
 
 
+    /**
+     * Lieux actifs, prêts à peupler un <select> groupé par canton.
+     *
+     * Reprend le tri du select de evenement-edit.php : cantons dans l'ordre ge, vd, fr puis le
+     * reste, et à l'intérieur d'un canton les noms sans leur article initial, pour que « Le
+     * Sagittario » se range à S. La colonne `canton` sert à construire les <optgroup>.
+     *
+     * $exclureFrance reproduit le filtre que le formulaire d'ajout applique à la création : un lieu
+     * qu'on ne peut pas choisir en ajoutant un événement ne doit pas pouvoir être réglé comme lieu
+     * par défaut.
+     *
+     * Contrairement au select de evenement-edit.php, les salles ne sont pas jointes : les valeurs
+     * par défaut du profil se règlent au niveau du lieu.
+     *
+     * @return list<array{idLieu: int, nom: string, canton: string}>
+     */
+    public static function getActifsPourSelect(bool $exclureFrance = true): array
+    {
+        global $connectorPdo;
+
+        $where = $exclureFrance ? " AND lieu.region != 'fr' " : '';
+
+        $stmt = $connectorPdo->prepare("SELECT lieu.idLieu, lieu.nom, COALESCE(localite.canton, '') AS canton
+            FROM lieu
+            LEFT JOIN localite ON lieu.localite_id = localite.id
+            WHERE lieu.statut = 'actif' " . $where . "
+            ORDER BY
+              CASE COALESCE(localite.canton, '') WHEN 'ge' THEN 0 WHEN 'vd' THEN 1 WHEN 'fr' THEN 2 ELSE 3 END,
+              TRIM(LEADING 'L\'' FROM (TRIM(LEADING 'Les ' FROM (TRIM(LEADING 'La ' FROM (TRIM(LEADING 'Le ' FROM lieu.nom))))))) COLLATE utf8mb4_unicode_ci");
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public static function getActivesSalles(int $idLieu): array
     {
         global $connectorPdo;
