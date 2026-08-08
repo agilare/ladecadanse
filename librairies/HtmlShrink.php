@@ -246,47 +246,6 @@ class HtmlShrink
     }
 
 
-    public static function authorSignatureForHtml(int $idPersonne): string
-    {
-
-        global $connector;
-
-        $signature_auteur = "";
-        $sql_auteur = "SELECT pseudo, affiliation, signature, avec_affiliation
-        FROM personne WHERE idPersonne=" . $idPersonne . "";
-
-        $req_auteur = $connector->query($sql_auteur);
-        $tab_auteur = $connector->fetchArray($req_auteur);
-
-        if ($tab_auteur['signature'] == 'pseudo')
-        {
-            $signature_auteur = "<strong>" . sanitizeForHtml($tab_auteur['pseudo']) . "</strong>";
-        }
-
-        if ($tab_auteur['avec_affiliation'] == 'oui')
-        {
-            $nom_affiliation = "";
-            $req_aff = $connector->query("
-            SELECT idAffiliation FROM affiliation
-            WHERE idPersonne=" . $idPersonne . " AND genre='lieu'");
-
-            if (!empty($tab_auteur['affiliation']))
-            {
-                $nom_affiliation = $tab_auteur['affiliation'];
-            }
-            else if ($tab_aff = $connector->fetchArray($req_aff))
-            {
-                $req_lieu_aff = $connector->query("SELECT nom FROM lieu WHERE idLieu=" . (int) $tab_aff['idAffiliation']);
-                $tab_lieu_aff = $connector->fetchArray($req_lieu_aff);
-                $nom_affiliation = $tab_lieu_aff['nom'];
-            }
-
-            $signature_auteur .= " (" . sanitizeForHtml($nom_affiliation) . ")";
-        }
-
-        return $signature_auteur;
-    }
-
     public static function formLabel(array $tab_att, string $nom): string
     {
         $aff = "<label ";

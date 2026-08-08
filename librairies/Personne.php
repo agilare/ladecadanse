@@ -70,7 +70,7 @@ class Personne
     {
         global $connectorPdo;
 
-        $stmt = $connectorPdo->prepare("SELECT idPersonne, pseudo, email, affiliation, groupe, statut
+        $stmt = $connectorPdo->prepare("SELECT idPersonne, pseudo, email, affiliation, groupe, statut, dateAjout, settings
             FROM personne WHERE idPersonne = ?");
         $stmt->execute([$idPersonne]);
         $profil = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -115,6 +115,59 @@ class Personne
         $stmt->execute([$idPersonne]);
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
+    /**
+     * Signature d'auteur, telle qu'elle apparaît au bas d'un événement : « Juju (Bureau culturel) ».
+     *
+     * Le nom du lieu d'affiliation l'emporte sur le texte libre personne.affiliation. Cette méthode
+     * remplace deux implémentations qui divergeaient sur ce point précis : celle d'evenement.php,
+     * reprise ici, et HtmlShrink::authorSignatureForHtml(), supprimée, qui donnait la priorité au
+     * texte libre.
+     *
+     * personne.signature est un enum à quatre valeurs, mais la table n'a ni prénom ni nom :
+     * « prenom » et « nomcomplet » sont donc sans effet, comme « aucune ». Le code d'origine avait
+     * déjà ce comportement, sans le dire.
+     */
+    public static function getSignatureHtml(int $idPersonne): string
+    {
+        global $connectorPdo;
+
+        // LIMIT 1 : une personne peut avoir plusieurs affiliations, la signature n'en porte qu'une
+        $stmt = $connectorPdo->prepare("SELECT p.pseudo, p.affiliation, p.signature, p.avec_affiliation,
+            l.nom AS lieu_nom
+            FROM personne p
+            LEFT JOIN affiliation a ON a.idPersonne = p.idPersonne AND a.genre = 'lieu'
+            LEFT JOIN lieu l ON a.idAffiliation = l.idLieu
+            WHERE p.idPersonne = ?
+            LIMIT 1");
+        $stmt->execute([$idPersonne]);
+        $auteur = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($auteur === false)
+        {
+            return "";
+        }
+
+        $signature = "";
+
+        if ($auteur['signature'] === 'pseudo')
+        {
+            $signature = "<strong>" . sanitizeForHtml($auteur['pseudo']) . "</strong>";
+        }
+
+        if ($auteur['avec_affiliation'] === 'oui')
+        {
+            $nom_affiliation = $auteur['lieu_nom'] ?? $auteur['affiliation'];
+
+            if (!empty($nom_affiliation))
+            {
+                $signature .= ($signature === "" ? "" : " ") . "(" . sanitizeForHtml($nom_affiliation) . ")";
+            }
+        }
+
+        return $signature;
     }
 
 

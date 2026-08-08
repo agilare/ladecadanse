@@ -24,38 +24,53 @@
 	vertical-align:middle;
 }
 
+/*
+ * Le tableau occupe toute la largeur utile, cadré comme table#ajouts plus bas
+ * pour que les deux blocs de la page s'alignent.
+ */
 #profile
 {
-	width:94%;
+	width:96%;
 	margin:1em auto 0 auto;
-	padding:0.4em;
 	color:#5C7392;
 }
 
 #profile table
 {
+	width:100%;
 	font-size:0.9em;
-	border-collapse:collapse;
-	margin:0.3em 0;
 	background:#f0f0fa;
-	border-radius:3px;
-}
-
-#profile table th
-{
-	font-weight:bold;
-	text-align:left;
+	border:1px solid #dcdce8;
+	border-radius:6px;
+	/* separate, et non collapse : sinon les bords fusionnés mangent les coins arrondis */
+	border-collapse:separate;
+	border-spacing:0;
+	overflow:hidden;
 }
 
 #profile th, #profile td
 {
-	padding:0.5em;
+	padding:0.7em 0.9em;
+	text-align:left;
+	vertical-align:top;
+	border-top:1px solid #e2e2ee;
+}
+
+#profile tr:first-child th, #profile tr:first-child td
+{
+	border-top:none;
+}
+
+#profile th
+{
+	font-weight:bold;
+	width:17em;
 }
 
 .profil-modifier
 {
 	display:inline-block;
-	margin:0.6em 0 0 0.5em;
+	margin:0.7em 0 0 0;
 }
 
 /* le paragraphe d'état vide des listes ; borné à la page, la règle fuyait sur tous les <p> */

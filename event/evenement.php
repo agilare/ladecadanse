@@ -6,6 +6,7 @@ use Ladecadanse\Evenement;
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\Lieu;
 use Ladecadanse\Organisateur;
+use Ladecadanse\Personne;
 use Ladecadanse\UserLevel;
 use Ladecadanse\Utils\DateHelper;
 use Ladecadanse\Utils\Text;
@@ -111,9 +112,7 @@ foreach ($res_even_orgas AS $o)
     ];
 }
 
-$stmtAuthor = $connectorPdo->prepare("SELECT pseudo, affiliation, signature, avec_affiliation FROM personne WHERE idPersonne= :idP");
-$stmtAuthor->execute([':idP' => $tab_even['e_idPersonne']]);
-$even_author = $stmtAuthor->fetch(PDO::FETCH_ASSOC);
+$signature_auteur = empty($tab_even['e_idPersonne']) ? "" : Personne::getSignatureHtml((int) $tab_even['e_idPersonne']);
 // END EVENT AND APPENDIXES
 
 // HEAD metas
@@ -301,34 +300,6 @@ include("../_header.inc.php");
         <!-- Fin pratique -->
 
         <footer id="auteur">
-            <?php
-
-            // TODO: Personne::getSignature(idPersonne, signature, avec_affiliation
-            $signature_auteur = "";
-            if (!empty($even_author))
-            {
-                if ($even_author['signature'] == 'pseudo')
-                {
-                    $signature_auteur = "<strong>" . sanitizeForHtml($even_author['pseudo']) . "</strong> ";
-                }
-
-                if ($even_author['avec_affiliation'] == 'oui')
-                {
-                    $nom_affiliation = $even_author['affiliation'];
-
-                    $stmtAuthorAffiliationLieuNom = $connectorPdo->prepare("SELECT l.nom FROM affiliation a JOIN lieu l ON a.idAffiliation = l.idLieu AND a.genre = 'lieu' WHERE a.idPersonne= :idP");
-                    $stmtAuthorAffiliationLieuNom->execute([':idP' => $tab_even['e_idPersonne']]);
-                    $author_affiliation_lieu_nom = $stmtAuthorAffiliationLieuNom->fetch(PDO::FETCH_ASSOC);
-                    if (!empty($author_affiliation_lieu_nom))
-                    {
-                        $nom_affiliation = $author_affiliation_lieu_nom['nom'];
-                    }
-
-                    $signature_auteur .= "(" . sanitizeForHtml($nom_affiliation) . ")";
-                }
-            }
-			?>
-
             <a class="signaler" href="/event/send.php?action=report&idE=<?= (int) $get['idE'] ?>"><i class="fa fa-flag-o fa-lg"></i>&nbsp;Signaler une erreur</a> Ajouté <?php echo ((!empty($signature_auteur)) ? "par&nbsp;" : "") . $signature_auteur ?> le&nbsp;<?= DateHelper::isoToFr($tab_even['e_dateAjout'], 'annee', showDayOfWeek: false) ?>
             <?php if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= UserLevel::ADMIN && !empty($tab_even['e_idPersonne'])) : ?><a href="/user.php?idP=<?= (int) $tab_even['e_idPersonne'] ?>"><?= $icone['personne'] ?></a><?php endif; ?>
         </footer> <!-- auteur -->

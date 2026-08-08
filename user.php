@@ -6,7 +6,10 @@ use Ladecadanse\UserLevel;
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\Personne;
 use Ladecadanse\Organisateur;
+use Ladecadanse\Evenement;
 use Ladecadanse\EvenementRenderer;
+use Ladecadanse\Lieu;
+use Ladecadanse\UserSettings;
 use Ladecadanse\Utils\DateHelper;
 use Ladecadanse\Utils\Utils;
 use Ladecadanse\Utils\Text;
@@ -148,6 +151,59 @@ if ($erreur === null)
     }
 }
 
+// Valeurs par défaut du formulaire d'ajout d'événement, traduites en libellés lisibles.
+// UserSettings ne touche jamais la base, par conception : c'est ici que les identifiants de lieu et
+// d'organisateurs deviennent des noms.
+$defauts_evenement = [];
+
+if ($erreur === null)
+{
+    $defauts = UserSettings::eventNewDefaults($profil['settings']);
+
+    if ($defauts['genre'] !== '')
+    {
+        $defauts_evenement['Catégorie'] = Evenement::genreLabel($defauts['genre']);
+    }
+
+    if ($defauts['horaire_debut'] !== '')
+    {
+        $defauts_evenement['Début'] = $defauts['horaire_debut'];
+    }
+
+    if ($defauts['horaire_fin'] !== '')
+    {
+        $defauts_evenement['Fin'] = $defauts['horaire_fin'];
+    }
+
+    if ($defauts['idLieu'] > 0)
+    {
+        $lieu_defaut = Lieu::getLieu($defauts['idLieu']);
+
+        if ($lieu_defaut !== [])
+        {
+            $defauts_evenement['Lieu'] = $lieu_defaut['nom'];
+        }
+    }
+
+    if ($defauts['idOrganisateurs'] !== [])
+    {
+        list($orgas_clause, $orgas_params) = $connectorPdo->buildInClause('idOrganisateur', $defauts['idOrganisateurs']);
+        $stmt = $connectorPdo->prepare("SELECT nom FROM organisateur WHERE $orgas_clause ORDER BY nom");
+        $stmt->execute($orgas_params);
+        $noms_orgas = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+        if ($noms_orgas !== [])
+        {
+            $defauts_evenement['Organisateurs'] = implode(', ', $noms_orgas);
+        }
+    }
+
+    if ($defauts['prix'] !== '')
+    {
+        $defauts_evenement['Prix'] = $defauts['prix'];
+    }
+}
+
 // invariant : sorti de la boucle de rendu, où il était réévalué à chaque ligne
 $est_editeur = $authorization->isPersonneEditor($_SESSION);
 
@@ -204,13 +260,22 @@ if ($erreur !== null)
 				<?php foreach ($affiliations_lieux as $lieu_affilie) : ?>
 					<a href="/lieu/lieu.php?idL=<?= (int) $lieu_affilie['idLieu'] ?>" title="Voir la fiche du lieu : <?= sanitizeForHtml($lieu_affilie['nom']) ?>"><?= sanitizeForHtml($lieu_affilie['nom']) ?></a><br />
 				<?php endforeach; ?>
-				<?php if ($affiliations_lieux === [] && !empty($profil['affiliation'])) : ?>
+				<?php // le texte libre s'ajoute au lieu, il ne s'y substitue plus ?>
+				<?php if (!empty($profil['affiliation'])) : ?>
 					<?= sanitizeForHtml($profil['affiliation']) ?><br />
 				<?php endif; ?>
 				<?php if ($organisateurs !== []) : ?>
 					<?= Organisateur::getListLinkedHtml($organisateurs, isWithOrganisateurUrl: false) ?>
 				<?php endif; ?>
 			</td></tr>
+			<tr><th>Votre signature des événements ajoutés</th><td><?= Personne::getSignatureHtml((int) $profil['idPersonne']) ?: '<em>aucune</em>' ?></td></tr>
+			<?php if ($defauts_evenement !== []) : ?>
+			<tr><th>Événements, valeurs par défaut</th><td>
+				<?php $paires = []; foreach ($defauts_evenement as $intitule => $valeur) { $paires[] = $intitule . ' : ' . sanitizeForHtml($valeur); } ?>
+				<?= implode(', ', $paires) ?>
+			</td></tr>
+			<?php endif; ?>
+			<tr><th>Inscription</th><td><?= DateHelper::isoToFr(mb_substr((string) $profil['dateAjout'], 0, 10), 'annee', showDayOfWeek: false) ?></td></tr>
 		</table>
 		<?php if ($peut_gerer) : ?>
 		<a class="profil-modifier" href="/user-edit.php?idP=<?= (int) $get['idP'] ?>&amp;action=editer"><i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;Modifier</a>

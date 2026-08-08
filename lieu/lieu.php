@@ -5,6 +5,7 @@ require_once("../app/bootstrap.php");
 use Ladecadanse\UserLevel;
 use Ladecadanse\Lieu;
 use Ladecadanse\HtmlShrink;
+use Ladecadanse\Personne;
 use Ladecadanse\Utils\DateHelper;
 use Ladecadanse\Utils\Text;
 use Ladecadanse\Utils\Utils;
@@ -331,7 +332,7 @@ include("../_header.inc.php");
                                     </div>
 
                                     <?php if ($type == 'description') : ?>
-                                        <p><?= HtmlShrink::authorSignatureForHtml($des['idPersonne']) ?></p>
+                                        <p><?= Personne::getSignatureHtml((int) $des['idPersonne']) ?></p>
                                     <?php endif; ?>
 
                                     <div class="auteur">

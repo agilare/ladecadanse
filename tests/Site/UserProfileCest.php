@@ -72,6 +72,19 @@ class UserProfileCest
     }
 
     /**
+     * Les lignes ajoutées au tableau de profil. Celle des valeurs par défaut n'est pas testée : elle
+     * est masquée quand le compte n'en a aucune, et la suite ne peut pas en enregistrer.
+     */
+    public function profileTableShowsSignatureAndRegistration(SiteTester $I)
+    {
+        $I->loginAsActor();
+        $this->grabMyProfileId($I);
+
+        $I->see('Votre signature des événements ajoutés');
+        $I->see('Inscription');
+    }
+
+    /**
      * Le niveau du compte n'a de sens que pour qui peut le changer : il est réservé aux
      * administrateurs, y compris sur son propre profil.
      */
