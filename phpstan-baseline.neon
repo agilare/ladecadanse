@@ -106,12 +106,6 @@ parameters:
 			path: librairies/Utils/AssetManager.php
 
 		-
-			message: '#^PHPDoc tag @param for parameter \$relativePaths with type string is incompatible with native type array\.$#'
-			identifier: parameter.phpDocType
-			count: 1
-			path: librairies/Utils/AssetManager.php
-
-		-
 			message: '#^Calling mysqli_query\(\) is forbidden, use PDO\:\:prepare\(\) with variable binding/parametrized queries to prevent SQL Injection vulnerability\.$#'
 			identifier: disallowed.function
 			count: 2
@@ -214,12 +208,6 @@ parameters:
 			path: organisateur-edit.php
 
 		-
-			message: '#^Variable \$organisateur in empty\(\) always exists and is not falsy\.$#'
-			identifier: empty.variable
-			count: 1
-			path: organisateur/organisateur.php
-
-		-
 			message: '#^Calling sha1\(\) is forbidden, use hash\(\) with at least SHA\-256 for secure hash, or password_hash\(\) for passwords\.$#'
 			identifier: disallowed.function
 			count: 2
@@ -230,27 +218,3 @@ parameters:
 			identifier: isset.offset
 			count: 1
 			path: user-edit.php
-
-		-
-			message: '#^Loose comparison using \=\= between ''categorie''\|''dateAjout''\|''description''\|''idLieu''\|''nom''\|''URL'' and ''adresse'' will always evaluate to false\.$#'
-			identifier: equal.alwaysFalse
-			count: 1
-			path: user.php
-
-		-
-			message: '#^Loose comparison using \=\= between ''contenu''\|''dateAjout''\|''type'' and ''idPersonne'' will always evaluate to false\.$#'
-			identifier: equal.alwaysFalse
-			count: 1
-			path: user.php
-
-		-
-			message: '#^Loose comparison using \=\= between ''dateAjout''\|''dateEvenement''\|''statut''\|''titre'' and ''flyer'' will always evaluate to false\.$#'
-			identifier: equal.alwaysFalse
-			count: 1
-			path: user.php
-
-		-
-			message: '#^Loose comparison using \=\= between ''dateAjout''\|''idOrganisateur''\|''nom'' and ''presentation'' will always evaluate to false\.$#'
-			identifier: equal.alwaysFalse
-			count: 1
-			path: user.php

@@ -120,10 +120,20 @@ table#ajouts tr td
 	padding:0.4em 0.2em;
 }
 
-table#ajouts tr.impair
+/* zébrage : porté par le CSS depuis que le <tbody> existe, plus par un compteur PHP */
+table#ajouts tbody tr:nth-child(even)
 {
-background-color:#f0f0ff;
+	background-color:#f0f0ff;
+}
 
+/*
+ * nowrap : Dépublier et Modifier restent côte à côte, jamais l'une sous l'autre.
+ * Aligné à droite : les cellules à une seule icône restent dans l'axe des autres.
+ */
+table#ajouts td.actions
+{
+	white-space:nowrap;
+	text-align:right;
 }
 
 /*

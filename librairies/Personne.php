@@ -63,6 +63,61 @@ class Personne
     }
 
 
+    /**
+     * Fiche de profil telle que l'affiche user.php, en une requête.
+     */
+    public static function getProfil(int $idPersonne): ?array
+    {
+        global $connectorPdo;
+
+        $stmt = $connectorPdo->prepare("SELECT idPersonne, pseudo, email, affiliation, groupe, statut
+            FROM personne WHERE idPersonne = ?");
+        $stmt->execute([$idPersonne]);
+        $profil = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $profil === false ? null : $profil;
+    }
+
+
+    /**
+     * Tous les lieux auxquels la personne est affiliée.
+     *
+     * La page de profil n'en lisait qu'un seul, alors qu'une personne peut en avoir plusieurs.
+     */
+    public static function getAffiliationsLieux(int $idPersonne): array
+    {
+        global $connectorPdo;
+
+        $stmt = $connectorPdo->prepare("SELECT l.idLieu AS idLieu, l.nom AS nom
+            FROM affiliation a
+            JOIN lieu l ON a.idAffiliation = l.idLieu
+            WHERE a.idPersonne = ? AND a.genre = 'lieu'
+            ORDER BY l.nom");
+        $stmt->execute([$idPersonne]);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
+    /**
+     * Organisateurs dont la personne est membre, au format attendu par
+     * Organisateur::getListLinkedHtml() (clés idOrganisateur, nom, url).
+     */
+    public static function getOrganisateurs(int $idPersonne): array
+    {
+        global $connectorPdo;
+
+        $stmt = $connectorPdo->prepare("SELECT o.idOrganisateur AS idOrganisateur, o.nom AS nom, o.URL AS url
+            FROM personne_organisateur po
+            JOIN organisateur o ON po.idOrganisateur = o.idOrganisateur
+            WHERE po.idPersonne = ?
+            ORDER BY o.nom");
+        $stmt->execute([$idPersonne]);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
     public static function getPersonnes(array $filters, string $orderBy = 'dateAjout', string $orderDir = 'DESC', ?int $page = null, ?int $nbLignes = null): array
     {
         global $connectorPdo;
