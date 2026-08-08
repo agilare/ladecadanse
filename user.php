@@ -102,6 +102,7 @@ else
 
 $affiliations_lieux = [];
 $organisateurs = [];
+$signature = "";
 $tab_evens = [];
 $tab_descs = [];
 $tot_elements = 0;
@@ -110,6 +111,7 @@ if ($erreur === null)
 {
     $affiliations_lieux = Personne::getAffiliationsLieux($get['idP']);
     $organisateurs = Personne::getOrganisateurs($get['idP']);
+    $signature = Personne::getSignatureHtml($get['idP']);
 
     $offset = ($get['page'] - 1) * $get['nblignes'];
     // valeurs issues de la liste blanche $tab_tri, jamais de la requête
@@ -299,7 +301,7 @@ if ($erreur !== null)
 					<?= Organisateur::getListLinkedHtml($organisateurs, isWithOrganisateurUrl: false) ?>
 				<?php endif; ?>
 			</td></tr>
-			<tr><th>Votre signature des événements ajoutés</th><td><?= Personne::getSignatureHtml((int) $profil['idPersonne']) ?: '<em>aucune</em>' ?></td></tr>
+			<tr><th>Votre signature des événements ajoutés</th><td><?= $signature ?: '<em>aucune</em>' ?></td></tr>
 			<?php if ($defauts_evenement !== []) : ?>
 			<tr><th>Événements, valeurs par défaut</th><td>
 				<?php $paires = []; foreach ($defauts_evenement as $intitule => $valeur) { $paires[] = $intitule . ' : ' . sanitizeForHtml($valeur); } ?>
