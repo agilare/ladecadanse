@@ -27,6 +27,12 @@ if (!$videur->checkGroup(UserLevel::MEMBER))
     die();
 }
 
+// Message déposé par user-edit.php avant sa redirection. Lu et effacé dès le
+// traitement : une sortie en erreur plus bas ne doit pas le laisser en session,
+// où il resurgirait à la visite suivante.
+$flash_msg = (string) ($_SESSION['user_flash_msg'] ?? "");
+unset($_SESSION['user_flash_msg']);
+
 $tab_elements = ["evenement" => "Événements", "description" => "Descriptions"];
 
 // Colonnes triables par onglet, et leur nom qualifié dans la requête.
@@ -276,6 +282,10 @@ if ($erreur !== null)
 ?>
 
 <main id="contenu" class="colonne user">
+
+	<?php if ($flash_msg !== "") : ?>
+	<?php HtmlShrink::msgOk($flash_msg); ?>
+	<?php endif; ?>
 
 	<header id="entete_contenu">
 		<h1>Compte de <em><?= sanitizeForHtml($profil['pseudo']) ?></em><?php if ($voit_le_groupe) : ?> <span class="profil-groupe">[<?= sanitizeForHtml(UserLevel::getName((int) $profil['groupe'])) ?>]</span><?php endif; ?><?php if ($profil['statut'] !== 'actif') : ?> <span class="even-statut-label statut-<?= sanitizeForHtml($profil['statut']) ?>"><?= mb_strtoupper(sanitizeForHtml($profil['statut'])) ?></span><?php endif; ?></h1>
