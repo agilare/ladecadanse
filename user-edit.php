@@ -57,12 +57,14 @@ else
 
 $page_titre = $get['action'] . " une personne";
 $extra_css = ["formulaires"];
-include("_header.inc.php");
-?>
 
-<main id="contenu" class="colonne user-edit">
-
-<?php
+// =============================================================================
+// Traitement
+//
+// Tout se joue avant l'inclusion de _header.inc.php : un enregistrement réussi
+// se termine par une redirection vers la fiche du profil (POST/Redirect/GET),
+// qui suppose que rien n'a encore été envoyé au navigateur.
+// =============================================================================
 
 $verif = new Validateur();
 
@@ -91,8 +93,16 @@ $champs = [
 */
 $ev_defaults = UserSettings::eventNewDefaults(null);
 
-
-$action_terminee = false;
+/*
+* Sorties du traitement, rendues plus bas une fois l'en-tête inclus.
+*
+* Les requêtes en échec ne peuvent plus s'annoncer au fil de l'eau : elles s'accumulent ici.
+* Le succès, lui, voyage en session jusqu'à user.php — sauf si une de ces erreurs est survenue
+* en chemin, auquel cas la page reste affichée pour ne pas escamoter l'erreur.
+*/
+$erreurs_traitement = [];
+$message_succes = '';
+$idP_succes = 0;
 
 if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 {
@@ -310,21 +320,16 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
             }
 
 			/*
-			* Insertion réussie, message OK, et RAZ des champs
+			* Insertion réussie : message OK et redirection vers la fiche du nouveau profil
 			*/
 			if ($req_insert)
 			{
-				HtmlShrink::msgOk("Personne ajoutée dans le groupe " . sanitizeForHtml($champs['groupe']));
-                foreach ($champs as $k => $v)
-				{
-					$champs[$k] = '';
-				}
-
-				$action_terminee = true;
+				$message_succes = "Personne ajoutée dans le groupe " . sanitizeForHtml($champs['groupe']);
+				$idP_succes = (int) $req_id;
 			}
 			else
 			{
-				HtmlShrink::msgErreur("La requête INSERT dans 'personne' a échoué");
+				$erreurs_traitement[] = "La requête INSERT dans 'personne' a échoué";
 			}
 		}
 		elseif ($get['action'] == 'update')
@@ -364,7 +369,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 
 				if (!$connector->query($aff))
 				{
-					HtmlShrink::msgErreur("La requête INSERT ou UPDATE dans 'affiliation' a échoué");
+					$erreurs_traitement[] = "La requête INSERT ou UPDATE dans 'affiliation' a échoué";
 				}
 
 			//si la nouvelle affiliation n'est pas un lieu elle ira dans la table 'personne',
@@ -403,13 +408,11 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 						$_SESSION["Saffiliation_lieu"] = $champs['lieu'];
 					}
 
-					HtmlShrink::msgOk("Votre profil a été modifié");
-
-                    $action_terminee = true;
+					$message_succes = "Votre profil a été modifié";
 				}
 				else
 				{
-					HtmlShrink::msgOk("Le profil a été modifié");
+					$message_succes = "Le profil a été modifié";
                 }
 
                 $logger->info('[user-edit] user updated', ['pseudo' => $champs['pseudo'], 'by' => $_SESSION["user"]]);
@@ -417,10 +420,11 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
                 $sqld = "DELETE FROM personne_organisateur WHERE idPersonne=" . (int) $get['idP'];
                 $connector->query($sqld);
 				$req_id = $get['idP'];
+				$idP_succes = (int) $get['idP'];
 			}
 			else
 			{
-				HtmlShrink::msgErreur("La requête UPDATE dans 'personne' a échoué");
+				$erreurs_traitement[] = "La requête UPDATE dans 'personne' a échoué";
 			}
 		} //if action
 
@@ -437,12 +441,40 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
             $logger->info('[user-edit] organisateurs updated', ['pseudo' => $champs['pseudo'], 'idOrganisateurs' => $champs['organisateurs']]);
         }
 
+		/*
+		* Enregistrement terminé : le message part en session et l'utilisateur rejoint sa fiche.
+		* Placé après l'écriture des organisateurs, la dernière du traitement.
+		*/
+		if ($message_succes !== '' && $erreurs_traitement === [])
+		{
+			$_SESSION['user_flash_msg'] = $message_succes;
+			header("Location: /user.php?idP=" . $idP_succes);
+			die();
+		}
+
 	} // if erreurs == 0
 } // if POST != ""
 
+// =============================================================================
+// Rendu
+// =============================================================================
 
-if (!$action_terminee)
+include("_header.inc.php");
+?>
+
+<main id="contenu" class="colonne user-edit">
+
+<?php
+foreach ($erreurs_traitement as $erreur_traitement)
 {
+	HtmlShrink::msgErreur($erreur_traitement);
+}
+
+// n'arrive que si une erreur ci-dessus a retenu la redirection
+if ($message_succes !== '')
+{
+	HtmlShrink::msgOk($message_succes);
+}
 
 echo '<header id="entete_contenu">';
 
@@ -992,9 +1024,6 @@ else
 
 </form>
 
-<?php
-} // if action_terminee
-?>
 </main> <!-- fin contenu  -->
 
 <div id="colonne_gauche" class="colonne">
