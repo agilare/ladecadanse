@@ -20,17 +20,14 @@
 
 /*
  * Les blocs occupant désormais toute la largeur, la gouttière que chacun s'offrait par ses 2 à 6 %
- * revient au conteneur. Sur grand écran, #conteneur la fournit déjà (padding-left de la colonne
- * de gauche) ; sous 800 px, rien ne l'assure et le tableau collerait aux bords de l'écran.
+ * revient au conteneur — sans quoi le contenu touche le bord gauche et frôle le bord droit.
+ * Les 2 % reprennent l'écart qu'avaient les blocs centrés à 96 %.
  */
-@media screen and (max-width:799.98px)
+#contenu.user
 {
-	#contenu.user
-	{
-		box-sizing:border-box;
-		padding-left:2%;
-		padding-right:2%;
-	}
+	box-sizing:border-box;
+	padding-left:2%;
+	padding-right:2%;
 }
 
 /* l'en-tête n'a ici ni sous-titre ni navigation à espacer : ses marges se resserrent */
@@ -105,7 +102,8 @@
 #profile th
 {
 	font-weight:bold;
-	width:17em;
+	width:12em;
+	padding:0.5em 0.9em;
 }
 
 /*
@@ -186,16 +184,34 @@ form.filtre-liste input:focus
 	margin-right:0;
 }
 
-/* pagination à gauche, choix du nombre de lignes à droite, sur une même ligne */
+/*
+ * Pagination à gauche, choix du nombre de lignes à droite. En flex plutôt qu'en flottants : les
+ * deux menus n'ont ni la même hauteur de ligne ni les mêmes marges internes, et se retrouvaient
+ * décalés en hauteur. align-items les recentre l'un sur l'autre, margin-left:auto pousse le second
+ * à droite y compris quand la pagination manque — une seule page, et elle ne s'affiche pas.
+ */
+.liste-barre
+{
+	display:flex;
+	align-items:center;
+	flex-wrap:wrap;
+}
+
 .liste-barre div.pagination
 {
-	float:left;
+	float:none;
 	margin:0.8em 0 0.4em 0;
 }
 
 .liste-barre #order_navigation
 {
-	margin-top:0.8em;
+	margin:0.8em 0 0.4em auto;
+}
+
+.liste-barre #order_navigation ul
+{
+	float:none;
+	margin:0;
 }
 
 table#ajouts

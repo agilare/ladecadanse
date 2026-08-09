@@ -375,7 +375,6 @@ if ($erreur !== null)
 			</ul>
 		</div>
 		<?php endif; ?>
-		<div class="spacer"><!-- --></div>
 	</div>
 
 	<?php if ($tot_elements === 0) : ?>
