@@ -214,9 +214,13 @@ const Forms = {
 
         $('.js-clear-search-field').on('click', function clearAndSubmitSearchField()
         {
-            const $form = $(this).closest('form');
-            $form.find('input[type="search"]').val('');
-            $form.trigger('submit');
+            const form = $(this).closest('form')[0];
+            $(form).find('input[type="search"]').val('');
+
+            // Un champ nommé « submit » masque form.submit() : le formulaire expose ses champs
+            // comme propriétés, et jQuery, ne trouvant plus de fonction, n'envoyait rien. Passer
+            // par le prototype contourne cet écrasement.
+            HTMLFormElement.prototype.requestSubmit.call(form);
         });
 
 //        $('form#ajouter_editer #titre').on('paste', function(e)

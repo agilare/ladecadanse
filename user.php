@@ -60,9 +60,13 @@ if (isset($_GET['tri']) && array_key_exists($_GET['tri'], $tab_tri[$get['element
     $get['tri'] = $_GET['tri'];
 }
 
+// Le 50 de $tab_nblignes n'a pas de sens ici : la page en affiche déjà 100 par défaut,
+// et proposer moins que la valeur par défaut n'aide personne.
+$tab_nblignes_profil = [100, 250, 500];
+
 // borné à la liste du menu : une valeur libre laissait passer LIMIT 0, 999999
 $get['nblignes'] = 100;
-if (isset($_GET['nblignes']) && in_array((int) $_GET['nblignes'], $tab_nblignes, true))
+if (isset($_GET['nblignes']) && in_array((int) $_GET['nblignes'], $tab_nblignes_profil, true))
 {
     $get['nblignes'] = (int) $_GET['nblignes'];
 }
@@ -105,6 +109,9 @@ $organisateurs = [];
 $signature = "";
 $tab_evens = [];
 $tab_descs = [];
+// Total par onglet, filtre exclu : c'est le compteur porté par les onglets eux-mêmes, qui
+// annoncent ce que chacun contient. $tot_elements, lui, commande la pagination et suit le filtre.
+$totaux = ["evenement" => 0, "description" => 0];
 $tot_elements = 0;
 
 if ($erreur === null)
@@ -113,20 +120,33 @@ if ($erreur === null)
     $organisateurs = Personne::getOrganisateurs($get['idP']);
     $signature = Personne::getSignatureHtml($get['idP']);
 
+    $stmt = $connectorPdo->prepare("SELECT COUNT(*) FROM evenement WHERE idPersonne = :idP");
+    $stmt->execute([':idP' => $get['idP']]);
+    $totaux['evenement'] = (int) $stmt->fetchColumn();
+
+    $stmt = $connectorPdo->prepare("SELECT COUNT(*) FROM descriptionlieu WHERE idPersonne = :idP");
+    $stmt->execute([':idP' => $get['idP']]);
+    $totaux['description'] = (int) $stmt->fetchColumn();
+
+    $tot_elements = $totaux[$get['elements']];
+
     $offset = ($get['page'] - 1) * $get['nblignes'];
     // valeurs issues de la liste blanche $tab_tri, jamais de la requête
     $order_by = $tab_tri[$get['elements']][$get['tri']] . " " . $get['ordre'];
 
     if ($get['elements'] === "evenement")
     {
-        // le filtre s'applique au décompte comme à la liste, sans quoi la
-        // pagination annoncerait des pages vides
         $filtre_titre = $get['terme'] === "" ? "" : " AND LOWER(e.titre) LIKE LOWER(:terme)";
         $params_titre = $get['terme'] === "" ? [] : [':terme' => "%" . $get['terme'] . "%"];
 
-        $stmt = $connectorPdo->prepare("SELECT COUNT(*) FROM evenement e WHERE e.idPersonne = :idP" . $filtre_titre);
-        $stmt->execute([':idP' => $get['idP']] + $params_titre);
-        $tot_elements = (int) $stmt->fetchColumn();
+        // le filtre s'applique au décompte comme à la liste, sans quoi la
+        // pagination annoncerait des pages vides
+        if ($get['terme'] !== "")
+        {
+            $stmt = $connectorPdo->prepare("SELECT COUNT(*) FROM evenement e WHERE e.idPersonne = :idP" . $filtre_titre);
+            $stmt->execute([':idP' => $get['idP']] + $params_titre);
+            $tot_elements = (int) $stmt->fetchColumn();
+        }
 
         // le nom du lieu vient de la jointure, plus d'une requête par ligne ;
         // evenement.nomLieu reste le secours pour les lieux hors base
@@ -153,10 +173,6 @@ if ($erreur === null)
     }
     else
     {
-        $stmt = $connectorPdo->prepare("SELECT COUNT(*) FROM descriptionlieu WHERE idPersonne = :idP");
-        $stmt->execute([':idP' => $get['idP']]);
-        $tot_elements = (int) $stmt->fetchColumn();
-
         // jointure externe : une description dont le lieu a disparu reste listée
         $stmt = $connectorPdo->prepare("SELECT
             d.idLieu, d.dateAjout, d.contenu, d.type,
@@ -233,11 +249,11 @@ $est_editeur = $authorization->isPersonneEditor($_SESSION);
 // le niveau n'est une information utile qu'à ceux qui peuvent le changer
 $voit_le_groupe = $_SESSION['Sgroupe'] <= UserLevel::ADMIN;
 
-// Icônes propres à la page, en Font Awesome comme le reste du site. Les
-// équivalents globaux ($iconeEditer, $icone['depublier']) restent des PNG
-// servis à d'autres pages : les migrer est un chantier distinct.
-$icone_editer = '<i class="fa fa-pencil" aria-hidden="true"></i>';
-$icone_depublier = '<i class="fa fa-calendar-times-o" aria-hidden="true"></i>';
+// Les actions des tableaux reprennent les icônes globales, celles-là mêmes qu'affichent les autres
+// écrans de gestion (admin/gererEvenements.php) : même geste, même image. Les onglets, eux, sont
+// propres à la page et suivent le Font Awesome du reste du site.
+$icone_editer = $iconeEditer;
+$icone_depublier = $icone['depublier'];
 $icones_onglets = ["evenement" => "fa-calendar-o", "description" => "fa-file-text-o"];
 
 $colonnes = $get['elements'] === "evenement"
@@ -282,8 +298,6 @@ if ($erreur !== null)
 		<div class="spacer"></div>
 	</header>
 
-	<div class="spacer"></div>
-
 	<div id="profile">
 
 		<table>
@@ -318,14 +332,12 @@ if ($erreur !== null)
 	<?php if ($_SESSION['Sgroupe'] <= UserLevel::ACTOR) : ?>
 	<nav class="tabs" aria-label="Contenus ajoutés">
 		<?php foreach ($tab_elements as $cle_element => $libelle_element) : ?>
-		<a href="?idP=<?= (int) $get['idP'] ?>&amp;elements=<?= $cle_element ?>&amp;tri=<?= $get['tri'] ?>&amp;ordre=<?= $get['ordre'] ?>&amp;nblignes=<?= $get['nblignes'] ?>"<?= $get['elements'] === $cle_element ? ' class="ici"' : '' ?>><i class="fa <?= $icones_onglets[$cle_element] ?>" aria-hidden="true"></i>&nbsp;<?= $libelle_element ?></a>
+		<a href="?idP=<?= (int) $get['idP'] ?>&amp;elements=<?= $cle_element ?>&amp;tri=<?= $get['tri'] ?>&amp;ordre=<?= $get['ordre'] ?>&amp;nblignes=<?= $get['nblignes'] ?>"<?= $get['elements'] === $cle_element ? ' class="ici"' : '' ?>><i class="fa <?= $icones_onglets[$cle_element] ?>" aria-hidden="true"></i>&nbsp;<?= $libelle_element ?><sup><?= $totaux[$cle_element] ?></sup></a>
 		<?php endforeach; ?>
 	</nav>
 	<?php endif; ?>
 
 	<?php if ($get['elements'] === "evenement") : ?>
-
-	<h2 class="titre-liste">Événements<sup><?= $tot_elements ?></sup></h2>
 
 	<?php // l'état du tableau voyage en champs cachés : filtrer ne doit pas perdre le tri ni la pagination ?>
 	<form method="get" action="" class="filtre-liste">
@@ -338,29 +350,39 @@ if ($erreur !== null)
 			<input type="search" name="terme" value="<?= sanitizeForHtml($get['terme']) ?>" placeholder="Titre" size="24" aria-label="Filtrer par titre" />
 			<button type="button" class="js-clear-search-field" aria-label="Vider et relancer la recherche" title="Vider et relancer la recherche"></button>
 		</span>
-		<input type="submit" name="submit" value="Filtrer" />
+		<?php // sans name : un champ nommé « submit » masque form.submit(), et le bouton de vidage ne relançait alors plus la recherche ?>
+		<input type="submit" value="Filtrer" />
+		<?php // l'onglet annonce le total, le filtre annonce ce qu'il en retient ?>
+		<?php if ($get['terme'] !== "" && $tot_elements > 0) : ?>
+		<span class="filtre-resultat"><?= $tot_elements ?> sur <?= $totaux['evenement'] ?></span>
+		<?php endif; ?>
 	</form>
 	<div class="spacer"><!-- --></div>
 
 	<?php endif; ?>
 
-	<?= HtmlShrink::getPaginationString($tot_elements, $get['page'], $get['nblignes'], 1, "", $url_pagination) ?>
+	<?php // pagination et choix du nombre de lignes sur une même ligne, l'un à gauche, l'autre à droite ?>
+	<div class="liste-barre">
+		<?= HtmlShrink::getPaginationString($tot_elements, $get['page'], $get['nblignes'], 1, "", $url_pagination) ?>
+		<?php // le choix du nombre de lignes ne sert que sur les événements, seule liste qui peut être longue ?>
+		<?php if ($get['elements'] === "evenement" && $tot_elements > 0) : ?>
+		<div id="order_navigation">
+			<ul>
+				<li><i class="fa fa-list-ol" aria-hidden="true" title="Nombre de lignes"></i></li>
+				<?php foreach ($tab_nblignes_profil as $nbl) : ?>
+				<li><a href="?idP=<?= (int) $get['idP'] ?>&amp;elements=<?= $get['elements'] ?>&amp;tri=<?= $get['tri'] ?>&amp;ordre=<?= $get['ordre'] ?><?= $get['terme'] === "" ? '' : '&amp;terme=' . urlencode($get['terme']) ?>&amp;nblignes=<?= (int) $nbl ?>"<?= $get['nblignes'] === $nbl ? ' class="selected"' : '' ?> rel="nofollow"><?= (int) $nbl ?></a></li>
+				<?php endforeach; ?>
+			</ul>
+		</div>
+		<?php endif; ?>
+		<div class="spacer"><!-- --></div>
+	</div>
 
 	<?php if ($tot_elements === 0) : ?>
 
 		<p><?php if ($get['elements'] !== "evenement") : ?>Aucune description ajoutée pour le moment<?php elseif ($get['terme'] !== "") : ?>Aucun événement ne correspond à ce titre<?php else : ?>Aucun événement ajouté pour le moment<?php endif; ?></p>
 
 	<?php else : ?>
-
-		<?php // le choix du nombre de lignes ne sert que sur les événements, seule liste qui peut être longue ?>
-		<?php if ($get['elements'] === "evenement") : ?>
-		<ul id="menu_nb_res">
-			<?php foreach ($tab_nblignes as $nbl) : ?>
-			<li<?= $get['nblignes'] === $nbl ? ' class="ici"' : '' ?>><a href="?idP=<?= (int) $get['idP'] ?>&amp;elements=<?= $get['elements'] ?>&amp;tri=<?= $get['tri'] ?>&amp;ordre=<?= $get['ordre'] ?><?= $get['terme'] === "" ? '' : '&amp;terme=' . urlencode($get['terme']) ?>&amp;nblignes=<?= (int) $nbl ?>"><?= (int) $nbl ?></a></li>
-			<?php endforeach; ?>
-		</ul>
-		<div class="spacer"><!-- --></div>
-		<?php endif; ?>
 
 		<table id="ajouts">
 			<thead>

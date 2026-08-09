@@ -22,6 +22,9 @@ use Codeception\Util\HttpCode;
  */
 class UserProfileCest
 {
+    /** Le compteur d'éléments est porté par l'onglet lui-même, plus par un titre de liste. */
+    private const COMPTEUR_ONGLET_EVENEMENTS = 'nav.tabs a[href*="elements=evenement"] sup';
+
     public function _before(SiteTester $I)
     {
         $I->skipUnlessConfigured(
@@ -168,7 +171,7 @@ class UserProfileCest
     }
 
     /**
-     * L'onglet Événements : compteur en exposant, filtre par titre, et les deux colonnes ajoutées.
+     * L'onglet Événements : compteur porté par l'onglet, filtre par titre, et les colonnes ajoutées.
      *
      * L'ordre des colonnes est vérifié parce que c'est une demande explicite de l'issue et que rien
      * d'autre ne le protège : réordonner $colonnes sans réordonner les <td> passerait inaperçu, les
@@ -179,31 +182,62 @@ class UserProfileCest
         $I->loginAsActor();
         $this->grabMyProfileId($I);
 
-        $I->seeElement('h2.titre-liste sup');
+        $I->seeElement(self::COMPTEUR_ONGLET_EVENEMENTS);
         $I->seeElement('form.filtre-liste input[type=search][name=terme]');
         $I->seeElement('form.filtre-liste button.js-clear-search-field');
 
-        if ((int) $I->grabTextFrom('h2.titre-liste sup') === 0)
+        if ((int) $I->grabTextFrom(self::COMPTEUR_ONGLET_EVENEMENTS) === 0)
         {
             return;
         }
 
         $entetes = array_map('trim', $I->grabMultiple('table#ajouts thead th'));
         $I->assertSame(['Titre', 'Lieu', 'Date', 'Catégorie', 'Horaire'], array_slice($entetes, 0, 5));
+
+        // les actions reprennent les icônes globales, partagées avec les autres écrans de gestion
+        $I->seeElement('table#ajouts td.actions img');
     }
 
     /**
-     * Le filtre atteint bien la requête, et le décompte le suit — sans quoi la pagination
-     * annoncerait des pages vides.
+     * Le champ de recherche est habillé par un formulaire, pas par le navigateur : hors de
+     * form#ajouter_editer, aucune règle ne donne de bordure aux champs, et le filtre s'affichait
+     * avec les bords natifs. Le nom « submit » est proscrit sur le bouton : il masque
+     * form.submit(), et le bouton de vidage ne relançait alors plus la recherche.
+     */
+    public function filterFieldIsStyledAndClearableByScript(SiteTester $I)
+    {
+        $I->loginAsActor();
+        $this->grabMyProfileId($I);
+
+        $I->seeElement('form.filtre-liste input[type=submit]');
+        $I->dontSeeElement('form.filtre-liste input[name=submit]');
+    }
+
+    /**
+     * Le filtre atteint bien la requête, et le décompte de la pagination le suit — sans quoi elle
+     * annoncerait des pages vides. Le compteur des onglets, lui, reste le total du compte : il
+     * annonce ce que l'onglet contient, pas ce que le filtre en retient.
      */
     public function titleFilterReachesTheQuery(SiteTester $I)
     {
         $I->loginAsActor();
         $idP = $this->grabMyProfileId($I);
 
+        $total = (int) $I->grabTextFrom(self::COMPTEUR_ONGLET_EVENEMENTS);
+
         $I->amOnPage('/user.php?idP=' . $idP . '&elements=evenement&terme=zzz-aucun-titre-ne-contient-ceci');
         $I->see('Aucun événement ne correspond à ce titre');
-        $I->see('0', 'h2.titre-liste sup');
+        $I->see((string) $total, self::COMPTEUR_ONGLET_EVENEMENTS);
+
+        if ($total === 0)
+        {
+            return;
+        }
+
+        // preuve que le filtre a bien atteint le COUNT : sans lui, $tot_elements vaudrait le total
+        // du compte et la page afficherait encore son tableau et son menu du nombre de lignes
+        $I->dontSeeElement('table#ajouts');
+        $I->dontSeeElement('#order_navigation');
     }
 
     /**
@@ -217,7 +251,7 @@ class UserProfileCest
 
         $I->amOnPage('/user.php?idP=' . $idP . '&elements=description');
         $I->seeResponseCodeIs(HttpCode::OK);
-        $I->dontSeeElement('#menu_nb_res');
+        $I->dontSeeElement('#order_navigation');
         $I->dontSeeElement('form.filtre-liste');
     }
 

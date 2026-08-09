@@ -1,6 +1,47 @@
 /* Page de profil (user.php) */
 
 /*
+ * Un seul bord gauche et un seul bord droit pour toute la page. L'en-tête (94 %), la boîte de
+ * profil (96 %), les onglets (100 %) et la pagination (marges de 2 %) étaient chacun centrés sur
+ * une largeur différente : quatre décalages visibles les uns sous les autres.
+ */
+#contenu.user #entete_contenu,
+#contenu.user #profile,
+#contenu.user nav.tabs,
+#contenu.user form.filtre-liste,
+#contenu.user .liste-barre,
+#contenu.user table#ajouts,
+#contenu.user > p
+{
+	width:100%;
+	margin-left:0;
+	margin-right:0;
+}
+
+/*
+ * Les blocs occupant désormais toute la largeur, la gouttière que chacun s'offrait par ses 2 à 6 %
+ * revient au conteneur. Sur grand écran, #conteneur la fournit déjà (padding-left de la colonne
+ * de gauche) ; sous 800 px, rien ne l'assure et le tableau collerait aux bords de l'écran.
+ */
+@media screen and (max-width:799.98px)
+{
+	#contenu.user
+	{
+		box-sizing:border-box;
+		padding-left:2%;
+		padding-right:2%;
+	}
+}
+
+/* l'en-tête n'a ici ni sous-titre ni navigation à espacer : ses marges se resserrent */
+#contenu.user #entete_contenu
+{
+	margin-top:0.3em;
+	margin-bottom:0;
+	padding:0;
+}
+
+/*
  * Le pseudo peut faire 80 caractères : le titre reste volontairement discret
  * pour qu'un nom long ne casse pas l'en-tête.
  */
@@ -8,11 +49,12 @@
 {
 	font-size:1.3em;
 	line-height:1.3;
+	margin:0.2em 0;
 }
 
 #entete_contenu h1 em
 {
-	font-style:normal;
+	font-style:italic;
 	font-weight:bold;
 }
 
@@ -24,14 +66,18 @@
 	vertical-align:middle;
 }
 
-/*
- * Le tableau occupe toute la largeur utile, cadré comme table#ajouts plus bas
- * pour que les deux blocs de la page s'alignent.
- */
+/* le badge de statut accompagne le titre, il ne le concurrence pas */
+#entete_contenu h1 .even-statut-label
+{
+	font-size:0.6em;
+	padding:0.15em 0.45em;
+	vertical-align:middle;
+}
+
+/* arrondi et fond repris de l'article de event/evenement.php, sans bordure ni filets de lignes */
 #profile
 {
-	width:96%;
-	margin:1em auto 0 auto;
+	margin-top:0.6em;
 	color:#5C7392;
 }
 
@@ -40,8 +86,8 @@
 	width:100%;
 	font-size:0.9em;
 	background:#f0f0fa;
-	border:1px solid #dcdce8;
-	border-radius:6px;
+	border:none;
+	border-radius:3px;
 	/* separate, et non collapse : sinon les bords fusionnés mangent les coins arrondis */
 	border-collapse:separate;
 	border-spacing:0;
@@ -50,15 +96,10 @@
 
 #profile th, #profile td
 {
-	padding:0.7em 0.9em;
+	padding:0.55em 0.9em;
 	text-align:left;
 	vertical-align:top;
-	border-top:1px solid #e2e2ee;
-}
-
-#profile tr:first-child th, #profile tr:first-child td
-{
-	border-top:none;
+	border:none;
 }
 
 #profile th
@@ -67,68 +108,98 @@
 	width:17em;
 }
 
+/*
+ * Sans reset, le <ul> des organisateurs garde l'indentation par défaut du navigateur et la ligne
+ * Affiliations s'affiche en escalier : lieux à gauche, organisateurs 40 px plus loin.
+ */
+#profile .event_orga
+{
+	list-style-type:none;
+	margin:0.3em 0 0 0;
+	padding:0;
+}
+
+#profile .event_orga li
+{
+	margin:0 0.3em 0.2em 0;
+}
+
 .profil-modifier
 {
 	display:inline-block;
 	margin:0.7em 0 0 0;
 }
 
-/* le paragraphe d'état vide des listes ; borné à la page, la règle fuyait sur tous les <p> */
-#contenu > p
+/* respiration entre le bouton Modifier et la barre d'onglets */
+#contenu.user nav.tabs
 {
-	width:94%;
-	margin:2em auto 0 auto;
+	margin-top:1.8em;
 }
 
-/* titre de liste, avec le nombre d'éléments en exposant comme sur l'accueil */
-h2.titre-liste
+/* le compteur de l'onglet, à la manière des exposants de l'accueil */
+#contenu.user nav.tabs sup
 {
-	width:96%;
-	margin:1.5em auto 0.5em auto;
-	font-size:1.15em;
-	font-weight:bold;
-	color:#5C7392;
-}
-
-h2.titre-liste sup
-{
+	margin-left:0.35em;
 	font-size:0.7em;
 	font-weight:normal;
-	color:#999;
-	margin-left:0.15em;
+	color:#888;
 }
 
+/* le paragraphe d'état vide des listes ; borné à la page, la règle fuyait sur tous les <p> */
+#contenu.user > p
+{
+	margin-top:2em;
+}
+
+/*
+ * Hors de form#ajouter_editer, les champs n'héritent d'aucun style : le filtre s'affichait avec
+ * les bords natifs du navigateur, étrangers au reste du site.
+ */
 form.filtre-liste
 {
-	width:96%;
-	margin:0 auto 0.5em auto;
+	margin-bottom:0.5em;
 }
 
-ul#menu_nb_res
-{
-	font-size:0.95em;
-	width:96%;
-	margin:15px auto 5px auto;
-}
-
-ul#menu_nb_res li
-{
-	float:left;
-	text-align:center;
-	width:2em;
-	margin:0 1em 0 0em;
-	display:block;
-}
-
-ul#menu_nb_res li.ici
+form.filtre-liste input
 {
 	border:1px solid #aeaeae;
+	padding:0.3em;
+	border-radius:2px;
+}
+
+form.filtre-liste input:focus
+{
+	background-color:#ffc;
+}
+
+.filtre-resultat
+{
+	margin-left:0.6em;
+	font-size:0.9em;
+	color:#777;
+}
+
+/* la pagination du bas aussi : ses marges de 2 % la décalaient seule sous le tableau */
+#contenu.user div.pagination
+{
+	margin-left:0;
+	margin-right:0;
+}
+
+/* pagination à gauche, choix du nombre de lignes à droite, sur une même ligne */
+.liste-barre div.pagination
+{
+	float:left;
+	margin:0.8em 0 0.4em 0;
+}
+
+.liste-barre #order_navigation
+{
+	margin-top:0.8em;
 }
 
 table#ajouts
 {
-	width:96%;
-	margin:0em auto 0em auto;
 	border-collapse:collapse;
 	border:1px solid #aeaeae;
 	background:#fefefe;
@@ -153,7 +224,7 @@ table#ajouts tr td
 	text-align:center;
 	vertical-align:middle;
 	font-size:0.85em;
-	padding:0.4em 0.2em;
+	padding:0.55em 0.35em;
 }
 
 table#ajouts td.contenu
@@ -181,6 +252,12 @@ table#ajouts td.actions
 {
 	white-space:nowrap;
 	text-align:right;
+}
+
+/* les icônes d'action sont des images : sans ça elles reposent sur la ligne de base du texte */
+table#ajouts td.actions img
+{
+	vertical-align:middle;
 }
 
 /*
