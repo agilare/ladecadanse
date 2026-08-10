@@ -67,11 +67,14 @@ if (in_array($type, RSS_TYPES_AVEC_ID, true))
 
 $get = ['type' => $type, 'id' => $id];
 
-global $site_full_url, $glo_auj_6h, $connector, $auj, $glo_tab_genre;
+global $glo_auj_6h, $connector, $auj, $glo_tab_genre;
 require_once("../app/bootstrap.php");
 
 
-$channel = ['link' => $site_full_url, 'pubDate' => time()];
+// Tout ce qui est émis dans le flux s'appuie sur SITE_CANONICAL_URL et non sur $site_full_url :
+// un lecteur enregistre ces URL durablement, elles ne doivent pas dépendre de l'hôte par lequel
+// la requête est arrivée.
+$channel = ['link' => SITE_CANONICAL_URL . '/', 'description' => ''];
 
 $join = "";
 $where = " WHERE e.statut NOT IN ('inactif', 'propose') ";
@@ -82,6 +85,7 @@ switch($get['type'])
     case "evenements_auj":
 
         $channel['title'] = "La décadanse : événements aujourd'hui";
+        $channel['description'] = "Les événements culturels de la journée à Genève et alentours.";
 
         $where .= " AND dateEvenement=?";
         $params = [$glo_auj_6h];
@@ -98,7 +102,8 @@ switch($get['type'])
     case "lieu_evenements":
 
         $channel['title'] = 'La décadanse : prochains événements';
-        $channel['link'] .= '/lieu/lieu.php?idL='.(int)$get['id'];
+        $channel['description'] = "Les prochains événements annoncés dans ce lieu.";
+        $channel['link'] .= 'lieu/lieu.php?idL='.$get['id'];
 
         $where .= " AND e.idLieu = ? AND dateEvenement >= ?";
         $params = [$get['id'], $glo_auj_6h];
@@ -109,7 +114,8 @@ switch($get['type'])
     case "organisateur_evenements":
 
         $channel['title'] = 'La décadanse : prochains événements organisateur';
-        $channel['link'] .= 'organisateur/organisateur.php?idO='.(int)$get['id'];
+        $channel['description'] = "Les prochains événements annoncés par cet organisateur.";
+        $channel['link'] .= 'organisateur/organisateur.php?idO='.$get['id'];
 
         $join = ' LEFT JOIN evenement_organisateur eo ON e.idEvenement = eo.idEvenement ';
         $where .= " AND eo.idOrganisateur = ? AND dateEvenement >= ?";
@@ -121,6 +127,7 @@ switch($get['type'])
     case "evenements_ajoutes":
 
         $channel['title'] = "La décadanse : derniers événements ajoutés";
+        $channel['description'] = "Les derniers événements ajoutés à l'agenda de La décadanse.";
 
         $order_by = " ORDER BY e.dateAjout DESC LIMIT 0, 20";
 
@@ -185,15 +192,20 @@ $tab_events = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 $items = [];
 $title_lieu = '';
+$derniere_maj = null;
 foreach ($tab_events as $tab_even)
 {
+    // réinitialisation indispensable : sans elle, un événement sans flyer ni image héritait de
+    // l'illustration de l'événement précédent
+    $item = [];
+
     $even_lieu = Evenement::getLieu($tab_even);
 
     $item['title'] = ucfirst((string) DateHelper::isoToFr($tab_even['e_dateEvenement'], html: false))." - ".$tab_even['e_genre']." : ".$tab_even['e_titre'];
-    $item['link'] = $site_full_url."event/evenement.php?idE=".(int)$tab_even['e_idEvenement'];
+    $item['link'] = SITE_CANONICAL_URL."/event/evenement.php?idE=".(int)$tab_even['e_idEvenement'];
 
      // item > description
-    $item['nom_lieu'] = Lieu::getLinkNameHtml($even_lieu['nom'], $even_lieu['idLieu'], $even_lieu['salle']);
+    $item['nom_lieu'] = Lieu::getLinkNameHtml($even_lieu['nom'], $even_lieu['idLieu'], $even_lieu['salle'], SITE_CANONICAL_URL);
     // complete channel title for feed type "lieu_evenements"
     $title_lieu = $even_lieu['nom'];
 
@@ -211,11 +223,21 @@ foreach ($tab_events as $tab_even)
     $item['prix'] =  $tab_even['e_prix'];
 
     $item['guid'] = (int)$tab_even['e_idEvenement'];
-    $item['pubDate'] = (new \DateTime($tab_even['e_dateAjout']))->format(\DateTime::RFC2822);
+    $date_ajout = new \DateTime($tab_even['e_dateAjout']);
+    $item['pubDate'] = $date_ajout->format(\DateTime::RFC2822);
+
+    // le plus récent des ajouts, et non le dernier parcouru : l'affectation avait lieu dans la
+    // boucle, la date du channel valait donc celle de l'item le plus ancien
+    if ($derniere_maj === null || $date_ajout > $derniere_maj)
+    {
+        $derniere_maj = $date_ajout;
+    }
 
     $items[] = $item;
-    $channel['pubDate'] = (new \DateTime($tab_even['e_dateAjout']))->format(\DateTime::RFC2822);
 }
+
+// un flux vide reste daté de l'instant : le champ est obligatoire et doit rester en RFC 822
+$channel['pubDate'] = ($derniere_maj ?? new \DateTime())->format(\DateTime::RFC2822);
 
 if ($get['type'] == 'lieu_evenements')
 {
@@ -224,18 +246,24 @@ if ($get['type'] == 'lieu_evenements')
 
 // TODO: $channel['title'] .= ' de '.$organisateur;
 
+// URL canonique du flux, reconstruite à partir des paramètres validés. $_SERVER['REQUEST_URI']
+// reflétait tout paramètre parasite, donnant un rel="self" différent par variante d'URL.
+$channel['self'] = SITE_CANONICAL_URL . '/event/rss.php?type=' . $get['type']
+    . (in_array($get['type'], RSS_TYPES_AVEC_ID, true) ? '&amp;id=' . $get['id'] : '');
+
 header('Content-Disposition: inline; filename=' . $get['type'] . '.xml');
 header('Content-Type: text/xml');
 echo '<?xml version="1.0" encoding="utf-8" ?>';
 ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
-        <atom:link href="<?= sanitizeForHtml($site_full_url.ltrim($_SERVER['REQUEST_URI'], '/')) ?>" rel="self" type="application/rss+xml" />
+        <atom:link href="<?= $channel['self'] ?>" rel="self" type="application/rss+xml" />
         <title><?= sanitizeForHtml($channel['title']) ?></title>
         <link><?= sanitizeForHtml($channel['link']) ?></link>
-        <description></description>
+        <description><?= sanitizeForHtml($channel['description']) ?></description>
         <ttl>1440</ttl>
         <pubDate><?= $channel['pubDate'] ?></pubDate>
+        <lastBuildDate><?= $channel['pubDate'] ?></lastBuildDate>
         <language>fr</language>
 
         <?php foreach ($items as $item) : ?>
@@ -244,17 +272,10 @@ echo '<?xml version="1.0" encoding="utf-8" ?>';
             <link><?= sanitizeForHtml($item['link']) ?></link>
             <description>
                 <![CDATA[
-                    <style>
-                        .flyer { float:left; }
-                        h1, h2, h3, h4, p { margin: 1em 0.1em 0.6em 0.1em }
-                        h2 { font-size:1.2em; padding:0.2em 0.1em;border-bottom:1px solid #aeaeae; }
-                        .desc { margin: 0.4em 0.2em }
-                        .clean { clear:both; }
-                    </style>
-                    <h2><?= $item['nom_lieu'] ?></h2> <!-- relative url -->
+                    <h2><?= $item['nom_lieu'] ?></h2>
                     <?php if (!empty($item['image'])) : ?>
-                        <figure class="flyer">
-                            <img src="<?= $site_full_url.$item['image'] ?>" alt="Affiche ou illustration de <?= sanitizeForHtml($item['title']) ?>" width="300">
+                        <figure class="flyer" style="float:left">
+                            <img src="<?= SITE_CANONICAL_URL.$item['image'] ?>" alt="Affiche ou illustration de <?= sanitizeForHtml($item['title']) ?>" width="300">
                         </figure>
                     <?php endif; ?>
                     <p><?= $item['description'] ?></p>
@@ -262,6 +283,7 @@ echo '<?xml version="1.0" encoding="utf-8" ?>';
                     <p><?= sanitizeForHtml($item['prix']) ?></p>
                 ]]>
             </description>
+            <pubDate><?= $item['pubDate'] ?></pubDate>
             <guid isPermaLink="false"><?= $item['guid'] ?></guid>
         </item>
         <?php endforeach; ?>

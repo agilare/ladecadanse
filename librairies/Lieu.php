@@ -40,13 +40,17 @@ class Lieu extends Element
         return $result;
     }
 
-    public static function getLinkNameHtml(string $nom, ?int $idLieu, ?string $salle = null): string
+    /**
+     * @param string $baseUrl préfixe sans slash final, à fournir hors du site lui-même (flux RSS,
+     *                        courriels) où un href relatif ne se résout pas correctement
+     */
+    public static function getLinkNameHtml(string $nom, ?int $idLieu, ?string $salle = null, string $baseUrl = ''): string
     {
         $result = sanitizeForHtml($nom);
 
         if ($idLieu)
         {
-            $result = '<a href="/lieu/lieu.php?idL=' . (int) $idLieu . '">' . $result . '</a>';
+            $result = '<a href="' . $baseUrl . '/lieu/lieu.php?idL=' . (int) $idLieu . '">' . $result . '</a>';
             if ($salle)
             {
                 $result .= " - " . sanitizeForHtml($salle);
