@@ -430,7 +430,8 @@ if ($erreur !== null)
 					<td><?= sanitizeForHtml(Evenement::genreLabel($tab_even['genre'])) ?></td>
 					<td class="horaire"><?= EvenementRenderer::schedulesToHhMm((string) $tab_even['horaire_debut'], (string) $tab_even['horaire_fin'], (string) $tab_even['dateEvenement']) ?></td>
 					<td><?= DateHelper::isoToApp(mb_substr((string) $tab_even['dateAjout'], 0, 10)) ?></td>
-					<td><?= EvenementRenderer::$iconStatus[$tab_even['statut']] ?></td>
+					<?php // nommée pour que le CSS puisse l'exclure de l'atténuation des lignes passées ?>
+					<td class="statut"><?= EvenementRenderer::$iconStatus[$tab_even['statut']] ?></td>
 					<td class="actions">
 						<?php if ($tab_even['statut'] !== 'inactif') : ?>
 						<?= EvenementRenderer::unpublishLinkHtml((int) $tab_even['idEvenement'], $icone_depublier, EvenementRenderer::UNPUBLISH_THEN_STATUS) ?>&nbsp;

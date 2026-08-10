@@ -280,15 +280,31 @@ table#ajouts td.actions img
  * Événements passés : archives non modifiables, atténuées pour que l'absence
  * du bouton Éditer se comprenne. L'opacité revient au survol (et au focus
  * clavier) pour que l'information reste lisible à la demande.
+ *
+ * Elle porte sur les cellules et non sur la ligne : sur la ligne, elle crée un
+ * contexte d'empilement, et aucune cellule ne pourrait alors revenir à 1 —
+ * l'exception ci-dessous serait impossible à écrire.
  */
-table#ajouts tr.ancien
+table#ajouts tr.ancien td
 {
 	opacity:0.6;
 	transition:opacity 0.15s ease-in-out;
 }
 
-table#ajouts tr.ancien:hover,
-table#ajouts tr.ancien:focus-within
+/*
+ * Statut et Actions font exception : ce sont les seules cellules sur lesquelles
+ * on agit encore sur un événement passé. La pastille de statut garde sa couleur
+ * franche, Dépublier et Modifier restent des cibles nettes, sans avoir à
+ * survoler la ligne pour les distinguer.
+ */
+table#ajouts tr.ancien td.statut,
+table#ajouts tr.ancien td.actions
+{
+	opacity:1;
+}
+
+table#ajouts tr.ancien:hover td,
+table#ajouts tr.ancien:focus-within td
 {
 	opacity:1;
 }
