@@ -1,42 +1,74 @@
 <?php
 
-global $site_full_url, $glo_auj_6h, $connector, $auj, $glo_tab_genre;
-require_once("../app/bootstrap.php");
-
 use Ladecadanse\Evenement;
 use Ladecadanse\EvenementRenderer;
 use Ladecadanse\Utils\DateHelper;
 use Ladecadanse\Utils\Text;
 use Ladecadanse\Lieu;
 
-$tab_feeds_types = ["evenements_auj", "lieu_evenements", 'organisateur_evenements', 'evenements_ajoutes'];
+/*
+ * Validation du paramètre `type` AVANT le chargement de l'application : les scans et les flux
+ * retirés représentent la moitié du trafic de ce script, et bootstrap.php ouvre deux connexions
+ * à la base, démarre la session et monte les gestionnaires de log. Rien de tout cela n'est
+ * nécessaire pour répondre 400 ou 410.
+ */
 
-$get['type'] = '';
-// no type at all : a bot or a hand written url, answer 400 without filling the log
-if (!in_array($_GET['type'] ?? '', $tab_feeds_types, true))
+// Flux retirés du site. Le 410 (et non 404) signale une suppression définitive : les lecteurs
+// marquent l'abonnement en erreur, les crawlers retirent l'URL de leur index.
+// Ajouter un type retiré ne demande qu'une ligne.
+const RSS_TYPES_RETIRES = [
+    'evenement_commentaires' => "Ce flux a été supprimé en même temps que les commentaires du site.",
+];
+
+const RSS_TYPES_VALIDES = ['evenements_auj', 'lieu_evenements', 'organisateur_evenements', 'evenements_ajoutes'];
+
+// Flux portant sur une entité précise, qui attendent un identifiant.
+const RSS_TYPES_AVEC_ID = ['lieu_evenements', 'organisateur_evenements'];
+
+/**
+ * Réponse d'erreur minimale, émise avant tout chargement de l'application.
+ *
+ * Ne jamais réémettre la valeur reçue : le paramètre `type` est la cible d'un fuzzing constant
+ * et un endpoint qui réagit aux sondes continue d'attirer les scanners.
+ */
+function rssStop(int $code, string $message, int $maxAge = 0): never
 {
-    header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
+    http_response_code($code);
+    header('Content-Type: text/plain; charset=utf-8');
+    header('Cache-Control: ' . ($maxAge > 0 ? "public, max-age=$maxAge" : 'no-store'));
+    echo $message . "\n";
     exit;
 }
-$get['type'] = $_GET['type'];
 
-if (in_array($get['type'], ["lieu_evenements", 'organisateur_evenements']) && empty($_GET['id']))
+// `?type[]=x` fournirait un tableau, qui lèverait une erreur en clé de tableau plus bas
+$type = is_string($_GET['type'] ?? null) ? $_GET['type'] : '';
+
+if (isset(RSS_TYPES_RETIRES[$type]))
 {
-    header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
-    exit;
+    // 30 jours : la réponse ne changera jamais
+    rssStop(410, RSS_TYPES_RETIRES[$type], 2592000);
 }
 
-$get['id'] = '';
-if (isset($_GET['id']))
+if (!in_array($type, RSS_TYPES_VALIDES, true))
 {
-    if (!is_numeric($_GET['id']))
+    rssStop(400, "Paramètre type absent ou inconnu.");
+}
+
+$id = 0;
+if (in_array($type, RSS_TYPES_AVEC_ID, true))
+{
+    // is_numeric() acceptait « 1e3 », « 1.9 » ou « 12 » avec une espace initiale
+    $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+    if (!$id)
     {
-        header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
-        exit;
+        rssStop(400, "Paramètre id absent ou invalide.");
     }
-
-    $get['id'] = (int) $_GET['id'];
 }
+
+$get = ['type' => $type, 'id' => $id];
+
+global $site_full_url, $glo_auj_6h, $connector, $auj, $glo_tab_genre;
+require_once("../app/bootstrap.php");
 
 
 $channel = ['link' => $site_full_url, 'pubDate' => time()];
