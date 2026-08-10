@@ -25,6 +25,10 @@ const RSS_TYPES_VALIDES = ['evenements_auj', 'lieu_evenements', 'organisateur_ev
 // Flux portant sur une entité précise, qui attendent un identifiant.
 const RSS_TYPES_AVEC_ID = ['lieu_evenements', 'organisateur_evenements'];
 
+// Durée de vie du cache. Le conditional GET ne réduit pas la fréquence d'interrogation des
+// lecteurs, il réduit le coût de chaque visite : un 304 sans corps, sans requête SQL, sans rendu.
+const RSS_CACHE_TTL = 900;
+
 /**
  * Réponse d'erreur minimale, émise avant tout chargement de l'application.
  *
@@ -38,6 +42,129 @@ function rssStop(int $code, string $message, int $maxAge = 0): never
     header('Cache-Control: ' . ($maxAge > 0 ? "public, max-age=$maxAge" : 'no-store'));
     echo $message . "\n";
     exit;
+}
+
+/**
+ * Chemin du fichier de cache. Un couple type + identifiant suffit comme clé : depuis que le flux
+ * s'appuie sur SITE_CANONICAL_URL, sa sortie ne dépend plus de l'hôte par lequel on l'appelle.
+ */
+function rssCheminCache(string $type, int $id): string
+{
+    return __DIR__ . '/../var/cache/rss/' . $type . '-' . $id . '.xml';
+}
+
+/**
+ * Le lecteur a-t-il déjà cette version ? L'ETag prime sur la date, conformément à la RFC 9110.
+ */
+function rssClientAJour(string $etag, int $mtime): bool
+{
+    $ifNoneMatch = trim($_SERVER['HTTP_IF_NONE_MATCH'] ?? '');
+
+    if ($ifNoneMatch !== '')
+    {
+        $nu = trim($etag, '"');
+
+        foreach (explode(',', $ifNoneMatch) as $candidat)
+        {
+            // mod_deflate suffixe l'ETag des réponses compressées par « -gzip »
+            $candidat = trim(trim($candidat), '"');
+            $candidat = preg_replace('/^W\/"?|-(gzip|br)$/', '', $candidat);
+
+            if ($candidat === $nu)
+            {
+                return true;
+            }
+        }
+
+        // un ETag fourni mais différent tranche : ne pas retomber sur la date
+        return false;
+    }
+
+    $ifModifiedSince = $_SERVER['HTTP_IF_MODIFIED_SINCE'] ?? '';
+
+    return $ifModifiedSince !== '' && ($date = strtotime($ifModifiedSince)) !== false && $date >= $mtime;
+}
+
+/**
+ * Date du contenu, lue dans le pubDate du channel (le premier du document).
+ *
+ * Volontairement pas filemtime() : le cache est réécrit toutes les quinze minutes même quand
+ * rien n'a changé, et un Last-Modified qui avance alors ferait répondre 200 à tous les lecteurs
+ * n'envoyant que If-Modified-Since. Adossés au contenu, les deux validateurs restent stables
+ * tant que l'agenda ne bouge pas, ce qui est précisément le cas que l'on veut servir en 304.
+ */
+function rssDateContenu(string $xml): int
+{
+    if (preg_match('#<pubDate>(.*?)</pubDate>#', $xml, $correspondances))
+    {
+        $date = strtotime(trim($correspondances[1]));
+
+        if ($date !== false)
+        {
+            return $date;
+        }
+    }
+
+    return time();
+}
+
+/**
+ * Émet le flux, ou un 304 sans corps si le lecteur a déjà cette version.
+ */
+function rssServir(string $xml, string $type): never
+{
+    $etag = '"' . hash('xxh128', $xml) . '"';
+    $mtime = rssDateContenu($xml);
+
+    header('ETag: ' . $etag);
+    header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $mtime) . ' GMT');
+    // bootstrap.php impose no-store à toute réponse, ce qui n'a pas de sens pour un flux public
+    header('Cache-Control: public, max-age=' . RSS_CACHE_TTL);
+    header_remove('Pragma');
+
+    if (rssClientAJour($etag, $mtime))
+    {
+        http_response_code(304);
+        exit;
+    }
+
+    header('Content-Type: text/xml; charset=utf-8');
+    header('Content-Disposition: inline; filename=' . $type . '.xml');
+    header('Content-Length: ' . strlen($xml));
+    echo $xml;
+    exit;
+}
+
+/**
+ * Écriture atomique : fichier temporaire puis rename(). Pas de verrou ni d'anti-stampede, à une
+ * requête toutes les trente secondes la régénération concurrente est sans conséquence.
+ *
+ * @return bool false si le cache est indisponible ; l'appelant sert alors sans cache
+ */
+function rssEcrireCache(string $fichier, string $xml): bool
+{
+    $repertoire = dirname($fichier);
+
+    if (!is_dir($repertoire) && !@mkdir($repertoire, 0o775, true) && !is_dir($repertoire))
+    {
+        return false;
+    }
+
+    $temporaire = $fichier . '.' . getmypid() . '.tmp';
+
+    if (@file_put_contents($temporaire, $xml) === false)
+    {
+        return false;
+    }
+
+    if (!@rename($temporaire, $fichier))
+    {
+        @unlink($temporaire);
+
+        return false;
+    }
+
+    return true;
 }
 
 // `?type[]=x` fournirait un tableau, qui lèverait une erreur en clé de tableau plus bas
@@ -66,6 +193,20 @@ if (in_array($type, RSS_TYPES_AVEC_ID, true))
 }
 
 $get = ['type' => $type, 'id' => $id];
+
+// Cache encore valide : on répond sans charger l'application du tout.
+$fichierCache = rssCheminCache($type, $id);
+$mtimeCache = @filemtime($fichierCache);
+
+if ($mtimeCache !== false && $mtimeCache + RSS_CACHE_TTL > time())
+{
+    $xmlCache = @file_get_contents($fichierCache);
+
+    if ($xmlCache !== false)
+    {
+        rssServir($xmlCache, $type);
+    }
+}
 
 global $glo_auj_6h, $connector, $auj, $glo_tab_genre;
 require_once("../app/bootstrap.php");
@@ -251,10 +392,23 @@ if ($get['type'] == 'lieu_evenements')
 $channel['self'] = SITE_CANONICAL_URL . '/event/rss.php?type=' . $get['type']
     . (in_array($get['type'], RSS_TYPES_AVEC_ID, true) ? '&amp;id=' . $get['id'] : '');
 
-header('Content-Disposition: inline; filename=' . $get['type'] . '.xml');
-header('Content-Type: text/xml');
-echo '<?xml version="1.0" encoding="utf-8" ?>';
-?>
+$xml = rssGenerer($channel, $items);
+
+// un cache indisponible (répertoire non inscriptible en mutualisé, par exemple) ne doit pas
+// empêcher de répondre : on sert quand même, le conditional GET restant opérant puisque ses deux
+// validateurs sont tirés du contenu et non du fichier
+rssEcrireCache($fichierCache, $xml);
+
+rssServir($xml, $get['type']);
+
+/**
+ * Rend le flux et le retourne, au lieu de l'émettre : le résultat doit pouvoir être mis en cache.
+ */
+function rssGenerer(array $channel, array $items): string
+{
+    ob_start();
+    echo '<?xml version="1.0" encoding="utf-8" ?>';
+    ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
         <atom:link href="<?= $channel['self'] ?>" rel="self" type="application/rss+xml" />
@@ -290,3 +444,6 @@ echo '<?xml version="1.0" encoding="utf-8" ?>';
 
     </channel>
 </rss>
+    <?php
+    return (string) ob_get_clean();
+}
