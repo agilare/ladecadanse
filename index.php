@@ -221,7 +221,7 @@ include("_header.inc.php");
             <h1 class="accueil"><?= ucfirst((string) DateHelper::isoToFr($get['courant'])); ?><sup style="font-size:0.7em;color:#999"><?= $count_events_today_in_region ?></sup>
                 <?php if ($courant_year !== date("Y")) { echo (int) $courant_year; } ?>
                 <?php if ($is_courant_today) : ?><br>
-                    <small>Aujourd’hui <a href="/event/rss.php?type=evenements_auj" title="Flux RSS des événements du jour" class="desktop"><i class="fa fa-rss fa-lg"></i></a></small><?php endif; ?>
+                    <small>Aujourd’hui <a href="<?= SITE_CANONICAL_URL ?>/event/rss.php?type=evenements_auj" title="Flux RSS des événements du jour" class="desktop"><i class="fa fa-rss fa-lg"></i></a></small><?php endif; ?>
             </h1>
         </hgroup>
         <ul class="entete_contenu_navigation">
@@ -372,7 +372,7 @@ include("_header.inc.php");
 
         <section id="latests_events" class="secondaire">
 
-            <span class="lien_rss"><a href="/event/rss.php?type=evenements_ajoutes" aria-label="Flux RSS des derniers événements"><i class="fa fa-rss fa-lg"></i></a></span>
+            <span class="lien_rss"><a href="<?= SITE_CANONICAL_URL ?>/event/rss.php?type=evenements_ajoutes" aria-label="Flux RSS des derniers événements"><i class="fa fa-rss fa-lg"></i></a></span>
 
             <h2>Derniers événements ajoutés</h2>
 

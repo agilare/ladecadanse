@@ -243,7 +243,7 @@ include("../_header.inc.php");
     <section id="prochains_evenements">
 
         <header>
-            <h2>Événements <a href="/event/rss.php?type=organisateur_evenements&amp;id=<?= (int)$get['idO'] ?>" title="Flux RSS des prochains événements"><i class="fa fa-rss fa-lg" style="font-size:0.9em;color:#f5b045"></i></a></h2>
+            <h2>Événements <a href="<?= SITE_CANONICAL_URL ?>/event/rss.php?type=organisateur_evenements&amp;id=<?= (int)$get['idO'] ?>" title="Flux RSS des prochains événements"><i class="fa fa-rss fa-lg" style="font-size:0.9em;color:#f5b045"></i></a></h2>
             <ul id="menu_periode" class="entete_contenu_navigation">
                 <?php foreach ($tab_menu_periodes as $k => $label) : ?>
                     <li class="<?= $k ?><?php if ($get['periode'] == $k) : ?> ici<?php endif; ?>">

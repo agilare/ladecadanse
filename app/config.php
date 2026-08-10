@@ -15,6 +15,17 @@ ini_set('max_file_uploads', 3);
 define('__ROOT__', dirname(__FILE__, 2)); // full path to dir, for ex. /users/michel/hosts/ladecadanse
 define('ASSETS_DIR', '/web'); // racine URL et suffixe système pour tous les assets (css, js, uploads…)
 
+// URL canonique du site, sans slash final. Contrairement à $site_full_url, qui se déduit de
+// $_SERVER['SERVER_NAME'] et vaut donc « http://ladecadanse.ch » pour un visiteur arrivé en http,
+// cette constante ne varie pas selon la requête. Indispensable partout où une URL est enregistrée
+// durablement chez un tiers : un href relatif dans les balises d'autodiscovery RSS faisait
+// enregistrer les abonnements en http://, payés ensuite par une redirection 301 à chaque relève.
+// app/env.php, chargé avant ce fichier, peut la surcharger pour un environnement de développement.
+if (!defined('SITE_CANONICAL_URL'))
+{
+    define('SITE_CANONICAL_URL', 'https://www.ladecadanse.ch');
+}
+
 
 $rep_images_even = __ROOT__ . ASSETS_DIR . "/uploads/evenements/";
 $rep_uploads_lieux = __ROOT__ . ASSETS_DIR . "/uploads/lieux/";

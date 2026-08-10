@@ -300,15 +300,17 @@ class HtmlShrink
         if ($nom_page == "index")
         {
         ?>
-            <link rel="alternate" type="application/rss+xml" title="Événements du jour" href="/event/rss.php?type=evenements_auj">
-            <link rel="alternate" type="application/rss+xml" title="Derniers événements ajoutés" href="/event/rss.php?type=evenements_ajoutes">
+            <link rel="alternate" type="application/rss+xml" title="Événements du jour" href="<?= SITE_CANONICAL_URL ?>/event/rss.php?type=evenements_auj">
+            <link rel="alternate" type="application/rss+xml" title="Derniers événements ajoutés" href="<?= SITE_CANONICAL_URL ?>/event/rss.php?type=evenements_ajoutes">
         <?php
         }
 
-        if ($nom_page == "lieu")
+        // $nom_page vaut « dossier/fichier » (voir bootstrap.php) : la comparaison avec « lieu »
+        // n'a jamais été vraie, la balise du flux de lieu n'était donc pas émise
+        if ($nom_page == "lieu/lieu" && isset($_GET['idL']))
         {
         ?>
-            <link rel="alternate" type="application/rss+xml" title="Prochains événements dans ce lieu" href="/event/rss.php?type=lieu_evenements&amp;id=<?php echo intval($_GET['idL']) ?>">
+            <link rel="alternate" type="application/rss+xml" title="Prochains événements dans ce lieu" href="<?= SITE_CANONICAL_URL ?>/event/rss.php?type=lieu_evenements&amp;id=<?php echo intval($_GET['idL']) ?>">
         <?php
         }
     }
