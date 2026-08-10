@@ -75,7 +75,7 @@ Server-side tests of the user application, run with Codeception's `site` suite (
 
 They are **read-only**: every POST is deliberately invalid, so validation fails before any `UPDATE` and no mail is ever sent. The suite can be replayed indefinitely on the same instance.
 
-JavaScript is out of scope here (PhpBrowser does not execute it): keyboard shortcuts, the `beforeunload` guard and the datepicker remain covered by the Selenium IDE project.
+JavaScript is out of scope here (PhpBrowser does not execute it): the `beforeunload` guard and the datepicker remain covered by the Selenium IDE project, while the keyboard shortcuts and the mouseless mode have unit tests in `tests/js/` (vitest + jsdom, `npm test`).
 
 #### Prerequisites
 

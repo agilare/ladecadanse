@@ -1,6 +1,12 @@
 <?php
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\UserLevel;
+
+// Mode « mouseless » (entraînement aux raccourcis clavier) : réservé aux administrateurs,
+// qui sont ceux qui enchaînent le plus d'actions sur le site. Le mode n'ayant aucun enjeu
+// de sécurité, le verrou est purement au rendu : sans le script d'amorçage ci-dessous,
+// mouseless.js ne s'active jamais.
+$mouseless_allowed = isset($_SESSION['Sgroupe']) && (int) $_SESSION['Sgroupe'] <= UserLevel::ADMIN;
 ?>
 
 <!doctype html>
@@ -112,6 +118,29 @@ use Ladecadanse\UserLevel;
         <?php // darkvisitors.com redirige (301) vers knownagents.com : on cible directement
               // le nouveau domaine, sinon la CSP bloque le script après la redirection ?>
         <script src="https://knownagents.com/tracker.js?project_key=<?= DARKVISITORS_PROJECT_KEY ?>"></script>
+    <?php endif; ?>
+    <?php if ($mouseless_allowed) : ?>
+        <?php // Amorçage du mode mouseless. Inline et dans le <head> parce que main.js est un
+              // module ES, donc différé : sans cela les liens s'afficheraient une fraction de
+              // seconde en état normal avant d'être neutralisés. mouseless.js prend le relais. ?>
+        <script nonce="<?= CSP_NONCE ?>">
+            (function activateMouselessMode() {
+                try {
+                    var param = new URLSearchParams(location.search).get('mouseless');
+                    var active = param === null
+                        ? localStorage.getItem('ladecadanse.mouseless') === '1'
+                        : (param === '1' || param === 'on');
+                    if (param !== null) {
+                        localStorage.setItem('ladecadanse.mouseless', active ? '1' : '0');
+                    }
+                    if (active) {
+                        document.documentElement.classList.add('mouseless');
+                    }
+                } catch (e) {
+                    // navigation privée, stockage refusé : on se passe simplement du mode
+                }
+            })();
+        </script>
     <?php endif; ?>
 </head>
 

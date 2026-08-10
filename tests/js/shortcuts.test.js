@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { Shortcuts } from '../../web/js/global.js';
+import { Shortcuts } from '../../web/js/shortcuts.js';
 
 // `handleKeydown` ne lit que quelques propriétés de l'événement : un objet littéral suffit,
 // et permet de forger des combinaisons qu'un vrai KeyboardEvent jsdom rendrait laborieuses.

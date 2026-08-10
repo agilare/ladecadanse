@@ -117,6 +117,14 @@ Le site ladecadanse est déployé sur localhost:7777 (dev) ou localhost:8080 (pr
 ### Usage
 Une fois le site fonctionnel, se connecter avec le login *admin* (créé ci-dessus) permet d'ajouter et modifier des événements, lieux, etc. (partie publique) et de les gérer (partie back-office)
 
+### Raccourcis clavier
+
+Sur tout le site : `h` accueil, `s` recherche, `a` ajouter un événement, `l` lieux, `o` organisateurs, `d` dashboard admin. Sur une fiche : `e` éditer, et sur un événement `f` flyer, `c` copier. Sur l'agenda : flèches gauche/droite pour changer de jour. Sur la liste des lieux : `/` pour filtrer par nom.
+
+Les raccourcis sont résolus sur `event.key`, jamais `event.code`, pour rester utilisables quel que soit le layout clavier du visiteur (AZERTY, QWERTZ, QWERTY...). Le registre est unique, dans `web/js/shortcuts.js`.
+
+**Mode mouseless** (ADMIN et SUPERADMIN) : `?mouseless=1` sur n'importe quelle page neutralise le clic de souris sur les éléments couverts par un raccourci et affiche la touche à côté de chacun — de quoi les faire entrer dans les doigts. Le mode suit la navigation (`localStorage`) et se quitte par Échap, par le lien du bandeau ou par `?mouseless=0`.
+
 ## Tests
 
 See [tests/README.md](tests/README.md)

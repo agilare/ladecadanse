@@ -2007,3 +2007,72 @@ ul#menu_calendrier li form p
     position: absolute;
     left: -9999px;
 }
+
+/* ---- Mode mouseless : entraînement aux raccourcis clavier (voir web/js/mouseless.js) ---- */
+
+/* badge de la touche, inséré après le lien concerné */
+.mouseless-key {
+    display: inline-block;
+    margin-left: 0.25em;
+    padding: 0 0.35em;
+    border: 1px solid #5C7378;
+    border-radius: 3px;
+    background: #fff;
+    color: #5C7378;
+    font-family: inherit;
+    font-size: 0.75em;
+    line-height: 1.6;
+    vertical-align: middle;
+}
+
+/* le clic est neutralisé par JS : autant que le curseur l'annonce avant l'essai */
+html.mouseless [aria-keyshortcuts] {
+    cursor: not-allowed;
+}
+
+/* rappel de la touche attendue quand un clic vient d'être bloqué */
+.mouseless-flash {
+    animation: mouseless-flash 400ms ease-out;
+}
+
+@keyframes mouseless-flash {
+    from {
+        background: #ffc94d;
+        border-color: #d99b00;
+        color: #333;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .mouseless-flash {
+        animation: none;
+        outline: 2px solid #d99b00;
+    }
+}
+
+/* sortie toujours accessible : ce lien n'est pas neutralisé */
+#mouseless-banner {
+    position: fixed;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    padding: 0.4em 1em;
+    border-radius: 1em;
+    background: rgba(92, 115, 120, 0.9);
+    color: #fff;
+    font-size: 0.8rem;
+    white-space: nowrap;
+}
+
+#mouseless-banner kbd {
+    padding: 0 0.3em;
+    border: 1px solid #fff;
+    border-radius: 3px;
+    font-family: inherit;
+}
+
+#mouseless-banner a {
+    color: #fff;
+    text-decoration: underline;
+}
