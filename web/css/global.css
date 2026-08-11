@@ -2095,9 +2095,16 @@ table#ajouts tr:focus-within > td {
     background: #eef4f5;
 }
 
-/* liseré en box-shadow interne et non en border-left, qui décalerait la colonne */
+/*
+ * Liseré en box-shadow interne et non en border-left, qui décalerait la colonne.
+ *
+ * Sur l'agenda il se limite au titre : un article fait plusieurs centaines de pixels de
+ * haut (flyer, description, pied d'édition), et une barre sur toute cette hauteur pesait
+ * plus qu'elle ne repérait. Le poser sur la ligne du lien focalisé suffit à désigner
+ * l'événement courant.
+ */
 #derniers_lieux tbody tr:focus-within > td:first-child,
 table#ajouts tr:focus-within > td:first-child,
-#contenu article.evenement-short:focus-within {
+#contenu article.evenement-short:focus-within > header.titre {
     box-shadow: inset 3px 0 0 #5C7378;
 }
