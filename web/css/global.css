@@ -2076,3 +2076,28 @@ html.mouseless [aria-keyshortcuts] {
     color: #fff;
     text-decoration: underline;
 }
+
+/* ---- Navigation j/k dans les listes (voir LISTS dans web/js/shortcuts.js) ---- */
+
+/*
+ * :focus-within plutôt qu'une classe posée en JS : rien à retirer quand le focus s'en va,
+ * et le repère suit aussi bien la navigation Tab que j/k.
+ *
+ * Le fond va sur les td et non sur le tr : admin/tables.css pose déjà un fond sur les
+ * lignes paires, qu'un fond de tr ne recouvrirait pas.
+ */
+#derniers_lieux tbody tr:focus-within > td,
+table#ajouts tr:focus-within > td {
+    background: #eef4f5;
+}
+
+#contenu article.evenement-short:focus-within {
+    background: #eef4f5;
+}
+
+/* liseré en box-shadow interne et non en border-left, qui décalerait la colonne */
+#derniers_lieux tbody tr:focus-within > td:first-child,
+table#ajouts tr:focus-within > td:first-child,
+#contenu article.evenement-short:focus-within {
+    box-shadow: inset 3px 0 0 #5C7378;
+}

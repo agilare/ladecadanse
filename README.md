@@ -121,6 +121,8 @@ Une fois le site fonctionnel, se connecter avec le login *admin* (créé ci-dess
 
 Sur tout le site : `h` accueil, `s` recherche, `a` ajouter un événement, `l` lieux, `o` organisateurs, `d` dashboard admin. Sur une fiche : `e` éditer, et sur un événement `f` flyer, `c` copier. Sur l'agenda : flèches gauche/droite pour changer de jour. Sur la liste des lieux : `/` pour filtrer par nom.
 
+Dans les listes d'entités — agenda, lieux, organisateurs, gérer les événements, utilisateurs — `j` passe à l'entité suivante et `k` à la précédente, à la manière de vi ; Entrée ouvre la fiche. Le parcours s'arrête aux extrémités et ne change pas de page. Chaque liste est décrite pour sa page dans le registre `LISTS`, à côté de celui des raccourcis.
+
 Les raccourcis sont résolus sur `event.key`, jamais `event.code`, pour rester utilisables quel que soit le layout clavier du visiteur (AZERTY, QWERTZ, QWERTY...). Le registre est unique, dans `web/js/shortcuts.js`.
 
 **Mode mouseless** (ADMIN et SUPERADMIN) : `?mouseless=1` sur n'importe quelle page neutralise le clic de souris sur les éléments couverts par un raccourci et affiche la touche à côté de chacun — de quoi les faire entrer dans les doigts. Le mode suit la navigation (`localStorage`) et se quitte par Échap, par le lien du bandeau ou par `?mouseless=0`.

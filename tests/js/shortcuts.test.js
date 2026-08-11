@@ -224,3 +224,161 @@ describe('Shortcuts.focusSearch', function ()
         expect(e.preventDefault).toHaveBeenCalled();
     });
 });
+
+describe('Shortcuts — parcours des listes avec j/k', function ()
+{
+    // jsdom ne calcule aucun layout et n'implémente pas scrollIntoView : sans ce bouchon,
+    // moveInList lèverait une TypeError avant même de déplacer le focus.
+    beforeEach(function stubScroll()
+    {
+        Element.prototype.scrollIntoView = vi.fn();
+    });
+
+    // La table des lieux, réduite à ce que les sélecteurs de LISTS regardent : un en-tête
+    // hors <tbody>, puis des lignes portant chacune deux liens vers la même fiche.
+    function listeLieux(noms)
+    {
+        const lignes = noms.map(function toRow(nom, i)
+        {
+            return '<tr>' +
+                '<td><a href="lieu.php?idL=' + (i + 1) + '">' + nom + '</a></td>' +
+                '<td><a href="lieu.php?idL=' + (i + 1) + '#prochains_evenements">3</a></td>' +
+                '</tr>';
+        }).join('');
+
+        document.body.dataset.page = 'lieu/lieux';
+        document.body.innerHTML =
+            '<table id="derniers_lieux">' +
+            '<thead><tr><th>Nom</th><th>Événements</th></tr></thead>' +
+            '<tbody>' + lignes + '</tbody>' +
+            '</table>';
+    }
+
+    function liensPrincipaux()
+    {
+        return Array.from(
+            document.querySelectorAll('#derniers_lieux tbody tr td:first-child a')
+        );
+    }
+
+    it('entre dans la liste par le premier élément avec j, par le dernier avec k', function ()
+    {
+        listeLieux(['Cave12', 'L’Usine', 'Le Zoo']);
+        const liens = liensPrincipaux();
+
+        Shortcuts.handleKeydown(keydown('j'));
+        expect(document.activeElement).toBe(liens[0]);
+
+        // blur() et non body.focus() : jsdom ne rend pas <body> focalisable, le focus
+        // resterait sur le lien et k se contenterait de reculer d'un cran
+        document.activeElement.blur();
+        Shortcuts.handleKeydown(keydown('k'));
+        expect(document.activeElement).toBe(liens[2]);
+    });
+
+    it('avance et recule d’un élément à la fois', function ()
+    {
+        listeLieux(['Cave12', 'L’Usine', 'Le Zoo']);
+        const liens = liensPrincipaux();
+
+        Shortcuts.handleKeydown(keydown('j'));
+        Shortcuts.handleKeydown(keydown('j'));
+        expect(document.activeElement).toBe(liens[1]);
+
+        Shortcuts.handleKeydown(keydown('k'));
+        expect(document.activeElement).toBe(liens[0]);
+    });
+
+    // Choix assumé : pas de bouclage, comme dans vi.
+    it('ne boucle pas aux extrémités', function ()
+    {
+        listeLieux(['Cave12', 'L’Usine']);
+        const liens = liensPrincipaux();
+
+        // sur le premier élément, k ne repart pas du dernier
+        liens[0].focus();
+        Shortcuts.handleKeydown(keydown('k'));
+        expect(document.activeElement).toBe(liens[0]);
+
+        // sur le dernier, j ne revient pas au premier
+        liens[1].focus();
+        Shortcuts.handleKeydown(keydown('j'));
+        expect(document.activeElement).toBe(liens[1]);
+    });
+
+    it('focalise le nom et non le second lien de la ligne', function ()
+    {
+        listeLieux(['Cave12']);
+
+        Shortcuts.handleKeydown(keydown('j'));
+
+        expect(document.activeElement.getAttribute('href')).toBe('lieu.php?idL=1');
+    });
+
+    // La ligne d'en-tête des tableaux du back-office est posée hors <tbody> : c'est son
+    // absence de lien principal, et non un sélecteur dédié, qui l'exclut du parcours.
+    it('saute les lignes dépourvues de lien principal', function ()
+    {
+        document.body.dataset.page = 'admin/users';
+        document.body.innerHTML =
+            '<table id="ajouts">' +
+            '<tr><th>Pseudo</th></tr>' +
+            '<tr><td><a href="/user.php?idP=1">alice</a></td></tr>' +
+            '</table>';
+
+        Shortcuts.handleKeydown(keydown('j'));
+
+        expect(document.activeElement).toBe(document.querySelector('a[href="/user.php?idP=1"]'));
+    });
+
+    // Le focus traîne souvent sur un lien secondaire (compteur, icône d'édition) : j doit
+    // repartir de cette ligne-là, pas du début de la liste.
+    it('repart de la ligne courante même depuis un lien secondaire', function ()
+    {
+        listeLieux(['Cave12', 'L’Usine', 'Le Zoo']);
+        const compteurPremiereLigne =
+            document.querySelector('#derniers_lieux tbody tr td:nth-child(2) a');
+        compteurPremiereLigne.focus();
+
+        Shortcuts.handleKeydown(keydown('j'));
+
+        expect(document.activeElement).toBe(liensPrincipaux()[1]);
+    });
+
+    it('rend la touche au navigateur sur une page sans liste', function ()
+    {
+        document.body.dataset.page = 'event/evenement';
+        document.body.innerHTML = '<a href="/lieu/lieu.php?idL=1">Un lieu</a>';
+
+        const e = keydown('j');
+        Shortcuts.handleKeydown(e);
+
+        expect(e.preventDefault).not.toHaveBeenCalled();
+        expect(document.activeElement).toBe(document.body);
+    });
+
+    it('rend la touche au navigateur quand la liste est vide', function ()
+    {
+        document.body.dataset.page = 'lieu/lieux';
+        document.body.innerHTML = '<table id="derniers_lieux"><tbody></tbody></table>';
+
+        const e = keydown('j');
+        Shortcuts.handleKeydown(e);
+
+        expect(e.preventDefault).not.toHaveBeenCalled();
+    });
+
+    // Sans cette garde, filtrer les lieux par « jura » sauterait de ligne en ligne.
+    it('laisse taper j et k dans le filtre de la liste', function ()
+    {
+        listeLieux(['Cave12', 'L’Usine']);
+        const filtre = document.createElement('input');
+        document.body.appendChild(filtre);
+
+        const e = keydown('j', { target: filtre });
+        Shortcuts.handleKeydown(e);
+
+        expect(e.preventDefault).not.toHaveBeenCalled();
+        expect(document.activeElement).toBe(document.body);
+    });
+});

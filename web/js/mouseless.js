@@ -240,6 +240,26 @@ export const Mouseless =
 
         const label = document.createElement('span');
         label.textContent = 'mode mouseless actif · ';
+        banner.append(label);
+
+        // j/k ne décorent aucune cible (leur `selectors` est vide) : le bandeau est le seul
+        // endroit où les annoncer, et seulement là où la page a effectivement une liste.
+        if (Shortcuts.listForPage(document.body.dataset.page))
+        {
+            const keyNext = document.createElement('kbd');
+            keyNext.textContent = 'j';
+
+            const keysSeparator = document.createElement('span');
+            keysSeparator.textContent = ' ';
+
+            const keyPrev = document.createElement('kbd');
+            keyPrev.textContent = 'k';
+
+            const listSuffix = document.createElement('span');
+            listSuffix.textContent = ' pour parcourir la liste · ';
+
+            banner.append(keyNext, keysSeparator, keyPrev, listSuffix);
+        }
 
         const key = document.createElement('kbd');
         key.textContent = 'Échap';
@@ -253,7 +273,7 @@ export const Mouseless =
         link.href = Mouseless.urlWithParam('0');
         link.textContent = 'désactiver';
 
-        banner.append(label, key, suffix, link);
+        banner.append(key, suffix, link);
         document.body.appendChild(banner);
     },
 
