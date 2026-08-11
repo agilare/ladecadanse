@@ -67,6 +67,23 @@ class SiteTester extends \Codeception\Actor
     }
 
     /**
+     * Lit un en-tête de la dernière réponse.
+     *
+     * PhpBrowser sait poser des en-têtes (`haveHttpHeader`) mais pas en lire : il n'expose ni
+     * `grabHttpHeader` ni `seeHttpHeader`, réservés au module REST. On passe donc par la réponse
+     * interne du client, seule voie pour tester la validation de cache (ETag, Last-Modified).
+     */
+    public function grabResponseHeader(string $name): string
+    {
+        /** @var \Codeception\Module\PhpBrowser $browser */
+        $browser = $this->getScenario()->current('modules')['PhpBrowser'];
+
+        $value = $browser->client->getInternalResponse()->getHeader($name);
+
+        return is_array($value) ? (string) reset($value) : (string) $value;
+    }
+
+    /**
      * Marque le test « skipped » plutôt qu'en échec quand l'instance testée
      * n'est pas décrite dans `tests/.env` (cf. `tests/.env_model`).
      */

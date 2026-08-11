@@ -11,6 +11,11 @@
 - lieux, organisateurs, events : an unknown id returned an empty 200 or a fatal error instead of the 404 the pages already had ready (`lieu.php?idL=`, `organisateur.php?idO=`, `to-ics.php?idE=`) ; `evenement-edit.php?action=editer|update` without `idE` now answers 400
 - search, lieux, organisateurs, admin, events : an unexpected value in an optional url parameter (`periode`, `statut`, `tri`, `order_dir`, `seuil`, `action`) threw an uncaught exception or logged a warning instead of falling back on the default ; guards now use the new non-throwing `Validateur::isAcceptedUrlQueryValue()`
 - rss : `/event/rss.php` called without a `type` parameter logged a warning before returning its 400
+- rss : the channel `pubDate` was assigned inside the items loop, so it kept the date of the *oldest* addition ; the "events today" feed announced a date five months old. It is now the most recent addition, and an empty feed falls back on the current time instead of a raw Unix timestamp, invalid as RFC 822. `lastBuildDate` added, and the channel `description`, left empty, is now filled
+- rss : the `$item` array was not reset between iterations, so an event without a flyer nor an image inherited the illustration of the previous one (2 of the 20 items of the "latest added" feed)
+- rss : autodiscovery `<link rel="alternate">` tags and links to the feeds used a relative `href`, resolved against the current page ; a visitor arriving on `http://` had their subscription recorded in `http://` and paid a 301 on every poll (39.7% of the feeds requests). They now use the new `SITE_CANONICAL_URL` constant, overridable from `app/env.php`
+- rss : the autodiscovery tag of a lieu feed was never emitted, `HtmlShrink::showLinkRss()` comparing `$nom_page` to `lieu` where `bootstrap.php` gives it the `folder/file` form
+- rss : links inside item descriptions (lieu page) and the `rel="self"` are now absolute ; the latter is rebuilt from the validated parameters instead of reflecting `REQUEST_URI`, which gave a different self-link per URL variant
 - events : a `genre` absent from the configuration crashed the home page and logged warnings in the listings ; it now displays as "divers" through the new `Evenement::genreLabel()`
 - events : an event referencing a deleted lieu crashed the pages listing it ; its location now falls back on the free text fields stored in the event
 - csp : two scripts blocked in production — the bots tracker (darkvisitors.com now redirects to knownagents.com) and the AssetManager import map, an inline tag missing its nonce
@@ -45,6 +50,7 @@
 - don : add Postfinance and Twint payment methods, add Bernex to "Soutiens"
 - tests : new Codeception `site` suite (PhpBrowser) covering the bots honeypot, the author notification, permissions, statuses and the bots dashboard ; set `LADECADANSE_SITE_URL` in `tests/.env`
 - tests : Vitest setup and first JS unit tests (`npm test`)
+- tests : new `RssCest` in the `site` suite covering the feed status contract (410 on retired feeds, 400 on unknown type or invalid id, no echo of the received value, no session started), the channel metadata, the canonical self-link, the absence of `<style>` and the conditional GET ; `SiteTester::grabResponseHeader()` added, PhpBrowser being able to set request headers but not to read response ones
 
 ### Changed
 - assets : a missing file is now reported as a warning in `var/logs/activity.log` instead of the PHP error log, which it was filling one line per page view
@@ -66,6 +72,9 @@
 - docs : add AGENTS.md as the single source of project guidance for coding agents, CLAUDE.md now points to it
 - ui : on desktop, align the back-to-top button with the `#global` container corner instead of the screen corner, where it blended into the identical body background
 - user-edit : remove redundant isset() check on always-present `organisateurs` field
+- rss : the `type` whitelist moved above `require_once bootstrap.php`, so the 400 and 410 answers no longer start a session nor open the two database connections ; they carry half of the script traffic. Retired feeds (`evenement_commentaires`, removed with the comments feature about three years ago, still 30.5% of the requests) answer `410 Gone` rather than 400, so readers flag the subscription in error and crawlers drop the URL. The id parameter moves from `is_numeric()` to `FILTER_VALIDATE_INT`, which rejects `1e3`, `1.9` and null or negative values
+- rss : responses are cached in `var/cache/rss/` for 900 s and served with `ETag` and `Last-Modified`, so a reader that comes back unchanged gets a 304 without body, without SQL query and without rendering — there was no 304 at all before. The cache is read before bootstrap, so a hit boots nothing ; both validators are derived from the content rather than from `filemtime()`, so they stay stable while the agenda does not move. A non-writable cache degrades to direct generation instead of a 500
+- rss : drop the `<style>` block embedded in every item description, dead weight for readers that sanitize HTML and, for the others, an unscoped selector leaking onto other feeds ; the lieu feed loses 22% of its size
 
 ### Security
 - events edit : stored XSS in the "Organisateur(s)" select2 list, whose renderer interpolated decoded values into an HTML string ; the template is now built as DOM nodes
