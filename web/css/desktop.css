@@ -53,7 +53,10 @@
 	#entete_haut #menu_pratique
 	{
 		float:right;
-		width:90%;
+		/* 100% et non 90% : le bloc flotte à droite, les 10% manquants n'étaient qu'un
+		   couloir vide à sa gauche. Les récupérer évite au menu d'un administrateur
+		   (dashboard + agenda + membres + bots + profil + Sortir) de passer sur deux lignes. */
+		width:100%;
 		height:1.4em;
 
 	}
@@ -62,6 +65,19 @@
 		{
 			text-align:center;
 		}
+
+	/* 19% = 182px pour un logo de 180px : le badge « H » du mode mouseless n'y tient pas et
+	   part à la ligne, hors de vue sous la barre de menu. On lui prend les deux points de
+	   pourcentage à #entete_haut, qui garde de la marge (menu le plus long mesuré : 704px). */
+	html.mouseless #entete #titre_site
+	{
+		width:21%;
+	}
+
+	html.mouseless #entete_haut
+	{
+		width:78%;
+	}
 
 	#entete_haut #menu_pratique2
 	{
