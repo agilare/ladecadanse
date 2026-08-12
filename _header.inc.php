@@ -126,8 +126,8 @@ $mouseless_allowed = isset($_SESSION['Sgroupe']) && (int) $_SESSION['Sgroupe'] <
         <script nonce="<?= CSP_NONCE ?>">
             (function activateMouselessMode() {
                 try {
-                    var param = new URLSearchParams(location.search).get('mouseless');
-                    var active = param === null
+                    const param = new URLSearchParams(location.search).get('mouseless');
+                    const active = param === null
                         ? localStorage.getItem('ladecadanse.mouseless') === '1'
                         : (param === '1' || param === 'on');
                     if (param !== null) {
