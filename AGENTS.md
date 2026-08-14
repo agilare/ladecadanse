@@ -91,6 +91,10 @@ Two connectors coexist:
 ## Key conventions
 
 - **Commits**: Follow [Conventional Commits](https://www.conventionalcommits.org/fr/v1.0.0/) (`fix:`, `feat:`, `refactor:`, etc.)
+- **JavaScript**: ES2015 (ES6) at minimum — `const`/`let` and never `var`, template literals rather than
+  `+` concatenation, `import`/`export` modules. This applies to the inline `<script>` blocks of PHP
+  templates too, which Eslint never sees. The `var` still found in `web/js/browser.js` and
+  `web/js/map.js` predates the rule; modernize such a file when you touch it, don't leave new `var` behind
 - **SQL**: Use `(int)` cast for integer IDs and `$connector->sanitize()` for strings in any raw query
 - **HTML output**: Use `sanitizeForHtml()` (from `librairies/Utils/utils_functions.php`) when echoing user data
 - **Legacy globals**: `$connector`, `$authorization`, `$videur`, `$logger` are available globally after bootstrap

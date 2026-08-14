@@ -144,7 +144,7 @@ export const Mouseless =
         if (target.tagName === 'INPUT')
         {
             target.dataset.mouselessPlaceholder = target.getAttribute('placeholder') || '';
-            target.placeholder = '« ' + entry.label + ' » ' + target.dataset.mouselessPlaceholder;
+            target.placeholder = `« ${entry.label} » ${target.dataset.mouselessPlaceholder}`;
             target.addEventListener('mousedown', Mouseless.onFieldPointer, true);
             target.addEventListener('touchstart', Mouseless.onFieldPointer, { capture: true, passive: false });
             Mouseless.fields.push(target);
@@ -293,7 +293,7 @@ export const Mouseless =
 
         url.searchParams.delete('mouseless');
         const query = url.searchParams.toString();
-        window.history.replaceState(null, '', url.pathname + (query ? '?' + query : '') + url.hash);
+        window.history.replaceState(null, '', `${url.pathname}${query ? `?${query}` : ''}${url.hash}`);
     },
 
     /** URL courante avec `mouseless` forcé à une valeur, les autres paramètres conservés. */
@@ -301,7 +301,7 @@ export const Mouseless =
     {
         const url = new URL(window.location.href);
         url.searchParams.set('mouseless', value);
-        return url.pathname + '?' + url.searchParams.toString() + url.hash;
+        return `${url.pathname}?${url.searchParams.toString()}${url.hash}`;
     },
 
     remember : function rememberMouselessState(active)
