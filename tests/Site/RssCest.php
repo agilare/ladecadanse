@@ -75,15 +75,25 @@ class RssCest
     /**
      * La valeur reçue n'est jamais réaffichée : un endpoint qui renvoie l'écho des sondes
      * continue d'attirer les scanners, et c'est la seule voie qui menait vers un en-tête HTTP.
+     *
+     * La charge évite `<script>` et `<svg>` : le pare-feu 8G du .htaccess refuse ces motifs dans
+     * la query string et répond 403 avant même d'atteindre PHP. Le test ne mesurerait alors plus
+     * le contrat du script mais celui d'Apache, et échouerait partout où le site est servi
+     * derrière lui. Une évasion d'attribut suivie d'une balise non filtrée passe, elle, jusqu'au
+     * script — c'est là que se joue l'assertion.
      */
     public function rejectedTypeIsNeverReflected(SiteTester $I)
     {
-        $charge = 'evenements_auj"><script>';
+        $charge = 'evenements_auj"><img src=x onerror=alert(1)>';
 
         $I->amOnPage('/event/rss.php?type=' . urlencode($charge));
         $I->seeResponseCodeIs(HttpCode::BAD_REQUEST);
-        $I->dontSee('script');
-        $I->dontSee('evenements_auj');
+
+        // sur la source, pas via dontSee() : ce dernier compare le texte rendu et laisserait
+        // passer une réflexion enfouie dans un attribut ou un commentaire
+        $source = $I->grabPageSource();
+        $I->assertStringNotContainsString('onerror', $source);
+        $I->assertStringNotContainsString('evenements_auj', $source);
     }
 
     /**
