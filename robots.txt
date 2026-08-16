@@ -1,9 +1,18 @@
-User-agent: *
-Crawl-delay: 15 # rule ignored by Google
-disallow: /*?*genre=
+# robots.txt — ladecadanse.ch
+#
+# RÈGLE DE LECTURE (source des erreurs les plus fréquentes) :
+# un robot applique UN SEUL groupe, le plus spécifique qui le concerne, et
+# ignore tous les autres — y compris "User-agent: *". Un groupe nommé qui ne
+# contient qu'un "Crawl-delay" perd donc TOUTES les règles Disallow.
+# C'est ce qui faisait tomber bingbot dans le piège à scrapers.
 
+# ============================================================================
+#  RÈGLES GÉNÉRALES
+# ============================================================================
+User-agent: *
+
+# --- Répertoires techniques -------------------------------------------------
 Disallow: /admin/
-Disallow: /annuaire-membres.php
 Disallow: /app/
 Disallow: /librairies/
 Disallow: /resources/
@@ -11,41 +20,174 @@ Disallow: /var/
 Disallow: /vendor/
 Disallow: /.git-ftp.log
 Disallow: /*.inc.php
-# following scripts send noindex in their headers
-# Disallow: /maintenance.php
-# Disallow: /event/actions.php
-# Disallow: /event/to-ics.php
-# Disallow: /event/send.php
-# Disallow: /event/search.php
 
-# ignore years 2100, 2200...
-# Disallow: /index.php?courant=21*
-# Disallow: /index.php?courant=22*
-# Disallow: /index.php?courant=23*
+# --- Piège à scrapers : les robots honnêtes ne doivent PAS y tomber ---------
+Disallow: /annuaire-membres.php
 
+# --- Navigation jour par jour : fenêtre bornée ------------------------------
+# index.php n'affiche QU'UN SEUL jour (e.dateEvenement = :date), et les
+# événements à venir ne sont atteignables que par ?courant=AAAA-M-J.
+# Interdire ce paramètre en bloc couperait la découverte du futur.
+# On borne donc la fenêtre : année en cours + suivante ouvertes, le reste
+# fermé. Ferme à la fois l'archive et la fuite en avant (courant=2099-...).
+#
+# >>> UNE LIGNE À AJOUTER CHAQUE 1er JANVIER <<<
+Disallow: /*?*courant=
+Allow: /index.php?courant=2026-
+Allow: /index.php?courant=2027-
+
+# --- Tris : même contenu, autant d'URL que de combinaisons ------------------
+Disallow: /*?*tri_agenda=
+Disallow: /*?*order=
+Disallow: /*?*genre=
+Disallow: /*&tri_agenda=
+Disallow: /*&order=
+
+# --- Scripts sans intérêt d'indexation --------------------------------------
+# search.php est fermé en entier : ses paramètres (tri, periode, years,
+# mots, page) n'ont donc pas besoin de règles propres.
+Disallow: /event/search.php
+Disallow: /event/to-ics.php
+Disallow: /event/send.php
+Disallow: /event/actions.php
+Disallow: /event/calendrier-ajax.php
+Disallow: /event/api.php
+
+# --- Vignettes --------------------------------------------------------------
 Disallow: /web/uploads/evenements/s_*
 Disallow: /web/uploads/evenements/*/s_*
 Disallow: /web/uploads/lieux/s_*
 Disallow: /web/uploads/organisateurs/s_*
 
+Crawl-delay: 15
+
+# NON interdits, volontairement — ce sont les chemins de découverte :
+#   /event/evenement.php?idE=N   fiches, jamais d'autre paramètre
+#   /lieu/lieu.php?idL=N         liste les événements à venir du lieu
+#   /organisateur/...?idO=N      idem
+#   /event/rss.php               20 derniers événements ajoutés
+#   ?page= sur les listes de lieux et d'organisateurs (pagination réelle)
+
+
+# ============================================================================
+#  REFUSÉS EN BLOC — aucun trafic apporté, volumes constatés en 16 jours
+# ============================================================================
+
+# 105 260 pages — 2e bot du site. Aucun visiteur en retour.
+User-agent: Amazonbot
+Disallow: /
+
+# 86 510 pages — outil SEO, se sert sans rien rendre.
+User-agent: SemrushBot
+Disallow: /
+User-agent: SemrushBot-BA
+Disallow: /
+
+# 84 062 pages — aucune audience chinoise pour un agenda genevois.
+User-agent: Baiduspider
+Disallow: /
+User-agent: Baiduspider-render
+Disallow: /
 
 User-agent: AhrefsBot
-Crawl-delay: 20
-
-User-agent: SemrushBot
-Crawl-delay: 40
-
-User-agent: meta-externalagent
-Crawl-delay: 40
-
-User-agent: bingbot
-Crawl-delay: 20
-
+Disallow: /
+User-agent: MJ12bot
+Disallow: /
+User-agent: DotBot
+Disallow: /
+User-agent: BLEXBot
+Disallow: /
 User-agent: Barkrowler
-Crawl-delay: 20
-
-User-agent: GPTBot
-Crawl-delay: 40
-
+Disallow: /
+User-agent: DataForSeoBot
+Disallow: /
+User-agent: LinkupBot
+Disallow: /
+User-agent: SleepBot
+Disallow: /
+User-agent: YouBot
+Disallow: /
+User-agent: Bytespider
+Disallow: /
 User-agent: Scrapy
 Disallow: /
+User-agent: CCBot
+Disallow: /
+
+# Repérés dans le monitoring du 16.08
+User-agent: GlobalParty-Event-Discovery
+Disallow: /
+User-agent: TrendizzPrefilter
+Disallow: /
+User-agent: jscrawler
+Disallow: /
+
+
+# ============================================================================
+#  ENTRAÎNEMENT DES IA — décision éditoriale, pas technique.
+#  Ces robots servent l'entraînement, pas la recherche : les bloquer ne coûte
+#  aucune visite. Supprimez les groupes que vous souhaitez autoriser.
+# ============================================================================
+User-agent: GPTBot
+Disallow: /
+User-agent: Google-Extended
+Disallow: /
+User-agent: Applebot-Extended
+Disallow: /
+User-agent: meta-externalagent
+Disallow: /
+User-agent: ClaudeBot
+Disallow: /
+User-agent: anthropic-ai
+Disallow: /
+User-agent: PerplexityBot
+Disallow: /
+
+
+# ============================================================================
+#  À GARDER IMPÉRATIVEMENT — ne pas ajouter à la liste ci-dessus
+# ============================================================================
+# facebookexternalhit : génère les APERÇUS de liens quand un visiteur partage
+#   un événement sur Facebook, WhatsApp ou Instagram. Le bloquer casse les
+#   partages. À ne pas confondre avec meta-externalagent, bloqué plus haut.
+# Applebot : alimente Siri, Spotlight et Safari. Applebot-Extended est l'IA.
+# OAI-SearchBot : résultats de recherche ChatGPT, peut amener des visiteurs.
+#   GPTBot, bloqué plus haut, ne sert qu'à l'entraînement.
+
+# bingbot a besoin de son propre groupe pour recevoir un Crawl-delay, donc
+# les règles générales sont recopiées ici : sans ça il les perdrait toutes.
+User-agent: bingbot
+Disallow: /admin/
+Disallow: /app/
+Disallow: /librairies/
+Disallow: /resources/
+Disallow: /var/
+Disallow: /vendor/
+Disallow: /.git-ftp.log
+Disallow: /*.inc.php
+Disallow: /annuaire-membres.php
+Disallow: /*?*courant=
+Allow: /index.php?courant=2026-
+Allow: /index.php?courant=2027-
+Disallow: /*?*tri_agenda=
+Disallow: /*?*order=
+Disallow: /*?*genre=
+Disallow: /*&tri_agenda=
+Disallow: /*&order=
+Disallow: /event/search.php
+Disallow: /event/to-ics.php
+Disallow: /event/send.php
+Disallow: /event/actions.php
+Disallow: /event/calendrier-ajax.php
+Disallow: /event/api.php
+Disallow: /web/uploads/evenements/s_*
+Disallow: /web/uploads/evenements/*/s_*
+Disallow: /web/uploads/lieux/s_*
+Disallow: /web/uploads/organisateurs/s_*
+Crawl-delay: 20
+
+# Googlebot n'a volontairement PAS de groupe : il hérite ainsi de "*".
+# Google ignore Crawl-delay ; sa fréquence se règle dans la Search Console,
+# et surtout par le noindex sur les événements passés.
+
+# Sitemap: https://www.ladecadanse.ch/sitemap.xml
