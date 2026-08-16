@@ -18,7 +18,6 @@ use Monolog\Logger;
 use Monolog\Handler\RotatingFileHandler;
 use Monolog\Formatter\LineFormatter;
 use Ladecadanse\Utils\RegionConfig;
-use Ladecadanse\Utils\Utils;
 use Ladecadanse\TemplateEngine;
 use Ladecadanse\Translator;
 use Whoops\Handler\PrettyPageHandler;
@@ -102,7 +101,8 @@ $tplEngine = new TemplateEngine(__DIR__ . "/../resources/");
 
 $translator = new Translator(__DIR__ . '/../resources/messages.yml');
 
-$site_full_url = Utils::getBaseUrl()."/";
+$site_scheme = (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] === "on") ? "https://" : "http://";
+$site_full_url = $site_scheme . $_SERVER["SERVER_NAME"] . "/";
 
 Evenement::$systemDirPath = $rep_images_even;
 Evenement::$urlDirPath = $url_uploads_events;

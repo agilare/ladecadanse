@@ -5,7 +5,6 @@ require_once("../app/bootstrap.php");
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\OrganisateurCollection;
 use Ladecadanse\Organisateur;
-use Ladecadanse\Utils\Utils;
 use Ladecadanse\Utils\ImageDriver2;
 use Ladecadanse\UserLevel;
 use Ladecadanse\Utils\Validateur;
@@ -86,7 +85,7 @@ include("../_header.inc.php");
                     <?php foreach ($tab_statuts as $k => $label) : ?>
                         <?php if ($k == "inactif" && !$authorization->isPersonneEditor($_SESSION)) { continue; } ?>
                         <li class="<?= $k ?><?php if ($_SESSION['user_prefs_orgas_statut'] == $k) : ?> ici<?php endif; ?>">
-                            <a href="?<?= Utils::urlQueryArrayToString($get, ['statut', 'page']) ?>&amp;statut=<?= $k ?>"><?= $label ?></a>
+                            <a href="?<?= HtmlShrink::urlQueryArrayToString($get, ['statut', 'page']) ?>&amp;statut=<?= $k ?>"><?= $label ?></a>
                         </li>
                     <?php endforeach; ?>
                     <div class="spacer"></div>
@@ -109,7 +108,7 @@ include("../_header.inc.php");
             <p style="margin-top:2em;">Pas d'organisateur correspondant à ces critères</p>
         <?php else : ?>
 
-            <?= HtmlShrink::getPaginationString($all_results_nb, $get['page'], Organisateur::RESULTS_PER_PAGE, 1, basename(__FILE__), "?" . Utils::urlQueryArrayToString($get, "page") . "&amp;page=") ?>
+            <?= HtmlShrink::getPaginationString($all_results_nb, $get['page'], Organisateur::RESULTS_PER_PAGE, 1, basename(__FILE__), "?" . HtmlShrink::urlQueryArrayToString($get, "page") . "&amp;page=") ?>
 
             <table id="derniers_lieux">
 
@@ -160,7 +159,7 @@ include("../_header.inc.php");
             </table>
 
             <?php if (count($orgas_page_current) > 8) : ?>
-                <?= HtmlShrink::getPaginationString($all_results_nb, $get['page'], Organisateur::RESULTS_PER_PAGE, 1, basename(__FILE__), "?" . Utils::urlQueryArrayToString($get, "page") . "&amp;page=") ?>
+                <?= HtmlShrink::getPaginationString($all_results_nb, $get['page'], Organisateur::RESULTS_PER_PAGE, 1, basename(__FILE__), "?" . HtmlShrink::urlQueryArrayToString($get, "page") . "&amp;page=") ?>
             <?php endif; ?>
 
         <?php endif; ?>

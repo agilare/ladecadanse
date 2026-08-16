@@ -6,7 +6,6 @@ use Ladecadanse\HtmlShrink;
 use Ladecadanse\Lieu;
 use Ladecadanse\Utils\ImageDriver2;
 use Ladecadanse\UserLevel;
-use Ladecadanse\Utils\Utils;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Localite;
 
@@ -140,7 +139,7 @@ include("../_header.inc.php");
                     <?php foreach ($tab_statuts as $k => $label) : ?>
                         <?php if ($k == "inactif" && !$authorization->isPersonneEditor($_SESSION)) { continue; } ?>
                         <li class="<?= $k ?><?php if ($_SESSION['user_prefs_lieux_statut'] == $k) : ?> ici<?php endif; ?>">
-                            <a href="?<?= Utils::urlQueryArrayToString($get, ['statut', 'page']) ?>&amp;statut=<?= $k ?>"><?= $label ?></a>
+                            <a href="?<?= HtmlShrink::urlQueryArrayToString($get, ['statut', 'page']) ?>&amp;statut=<?= $k ?>"><?= $label ?></a>
                         </li>
                     <?php endforeach; ?>
                     <div class="spacer"></div>
@@ -163,7 +162,7 @@ include("../_header.inc.php");
             <p style="margin-top:2em;">Pas de lieu correspondant à ces critères</p>
         <?php else : ?>
 
-            <?= HtmlShrink::getPaginationString($all_results_nb, $get['page'], Lieu::RESULTS_PER_PAGE, 1, basename(__FILE__), "?" . Utils::urlQueryArrayToString($get, "page") . "&amp;page=") ?>
+            <?= HtmlShrink::getPaginationString($all_results_nb, $get['page'], Lieu::RESULTS_PER_PAGE, 1, basename(__FILE__), "?" . HtmlShrink::urlQueryArrayToString($get, "page") . "&amp;page=") ?>
 
             <table id="derniers_lieux">
                 <thead>
@@ -230,7 +229,7 @@ include("../_header.inc.php");
             </table>
 
             <?php if (count($lieux_page_current) > 8) : ?>
-                <?= HtmlShrink::getPaginationString($all_results_nb, $get['page'], Lieu::RESULTS_PER_PAGE, 1, basename(__FILE__), "?" . Utils::urlQueryArrayToString($get, "page") . "&amp;page=") ?>
+                <?= HtmlShrink::getPaginationString($all_results_nb, $get['page'], Lieu::RESULTS_PER_PAGE, 1, basename(__FILE__), "?" . HtmlShrink::urlQueryArrayToString($get, "page") . "&amp;page=") ?>
             <?php endif; ?>
 
         <?php endif; ?>
