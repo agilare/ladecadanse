@@ -180,6 +180,60 @@ describe('Shortcuts — raccourcis propres à une page', function ()
         expect(clicked).toHaveBeenCalled();
     });
 
+    // Sur une fiche événement, j et k quittent la page pour l'événement voisin du même jour :
+    // le parcours de l'agenda poursuivi, là où ailleurs ils ne déplacent que le focus.
+    describe('j et k sur une fiche événement', function ()
+    {
+        const PRECEDENT = '<div class="entete_contenu_navigation">' +
+            '<a href="/event/evenement.php?idE=1" rel="prev nofollow">Événement précédent</a></div>';
+        const SUIVANT = '<div id="footer_navigation"><div class="entete_contenu_navigation">' +
+            '<a href="/event/evenement.php?idE=3" rel="next nofollow">Événement suivant</a></div></div>';
+        // le calendrier de la colonne gauche, qui porte les mêmes rel pour changer de mois
+        const CALENDRIER = '<nav id="navigation_calendrier">' +
+            '<a href="/index.php?courant=2026-07-31" rel="prev">Mois précédent</a>' +
+            '<a href="/index.php?courant=2026-09-01" rel="next">Mois suivant</a></nav>';
+
+        it('mène à l’événement suivant avec j et au précédent avec k', function ()
+        {
+            document.body.dataset.page = 'event/evenement';
+            document.body.innerHTML = PRECEDENT + SUIVANT + CALENDRIER;
+            const suivant = spyOnClick('#footer_navigation a[rel~="next"]');
+            const precedent = spyOnClick('.entete_contenu_navigation a[rel~="prev"]');
+
+            Shortcuts.handleKeydown(keydown('j'));
+            expect(suivant).toHaveBeenCalled();
+
+            Shortcuts.handleKeydown(keydown('k'));
+            expect(precedent).toHaveBeenCalled();
+        });
+
+        // Sans quoi j sauterait d'un mois sur l'agenda depuis une fiche.
+        it('ne suit jamais la navigation par mois du calendrier', function ()
+        {
+            document.body.dataset.page = 'event/evenement';
+            document.body.innerHTML = CALENDRIER;
+            const moisSuivant = spyOnClick('#navigation_calendrier a[rel~="next"]');
+
+            const e = keydown('j');
+            Shortcuts.handleKeydown(e);
+
+            expect(moisSuivant).not.toHaveBeenCalled();
+            expect(e.preventDefault).not.toHaveBeenCalled();
+        });
+
+        // Premier événement du jour : la fiche ne rend pas le lien « précédent ».
+        it('rend la touche au navigateur quand l’événement voisin n’existe pas', function ()
+        {
+            document.body.dataset.page = 'event/evenement';
+            document.body.innerHTML = SUIVANT;
+
+            const e = keydown('k');
+            Shortcuts.handleKeydown(e);
+
+            expect(e.preventDefault).not.toHaveBeenCalled();
+        });
+    });
+
     it('n’ouvre l’édition avec « e » que sur une fiche', function ()
     {
         document.body.innerHTML =

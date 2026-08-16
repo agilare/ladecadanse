@@ -107,6 +107,33 @@ export const SHORTCUTS = [
         action: 'activate',
         selectors: ['a[href^="/event/copy.php"]']
     },
+
+    // Sur une fiche, j et k enjambent la page : ils mènent à l'événement voisin du même jour,
+    // là où ailleurs ils déplacent le focus dans une liste. C'est le même parcours poursuivi —
+    // mêmes événements, même ordre que sur l'agenda — d'où les mêmes touches, et le sens
+    // reprend celui des icônes déjà en place (flèche bas pour le suivant, haut pour le
+    // précédent). Les flèches gauche/droite, elles, gardent partout leur unique sens : changer
+    // de jour ou de page, jamais d'élément.
+    //
+    // Ces deux entrées viennent après les j/k globaux, qui les précèdent dans le registre :
+    // moveInList() échoue faute de liste sur cette page et leur laisse la main.
+    //
+    // Le sélecteur reste sur .entete_contenu_navigation : le calendrier de la colonne gauche
+    // porte lui aussi des liens rel="prev"/"next", mais pour changer de mois.
+    {
+        key: 'j',
+        label: 'J',
+        pages: ['event/evenement'],
+        action: 'activate',
+        selectors: ['.entete_contenu_navigation a[rel~="next"]']
+    },
+    {
+        key: 'k',
+        label: 'K',
+        pages: ['event/evenement'],
+        action: 'activate',
+        selectors: ['.entete_contenu_navigation a[rel~="prev"]']
+    },
     {
         key: 'e',
         label: 'E',
