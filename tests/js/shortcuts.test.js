@@ -196,6 +196,150 @@ describe('Shortcuts — raccourcis propres à une page', function ()
     });
 });
 
+describe('Shortcuts — pagination aux flèches', function ()
+{
+    // Le bloc de HtmlShrink::getPaginationString(), réduit à ce que le sélecteur regarde :
+    // un lien aux extrémités atteignables, un <span class="disabled"> aux bornes.
+    function pagination(hasPrev, hasNext)
+    {
+        const prec = hasPrev
+            ? '<a id="prec" href="?page=1" rel="prev">préc</a>'
+            : '<span class="disabled">préc</span>';
+        const suiv = hasNext
+            ? '<a id="suiv" href="?page=3" rel="next">suiv</a>'
+            : '<span class="disabled">suiv</span>';
+
+        return `<div class="pagination">${prec}<span class="current">2</span>${suiv}</div>`;
+    }
+
+    const PAGES_PAGINEES = [
+        'event/search',
+        'lieu/lieux',
+        'organisateur/organisateurs',
+        'user',
+        'admin/gererEvenements',
+        'admin/users'
+    ];
+
+    it.each(PAGES_PAGINEES)('recule et avance d’une page sur %s', function (page)
+    {
+        document.body.dataset.page = page;
+        document.body.innerHTML = pagination(true, true);
+        const prec = spyOnClick('.pagination a[rel~="prev"]');
+        const suiv = spyOnClick('.pagination a[rel~="next"]');
+
+        Shortcuts.handleKeydown(keydown('ArrowLeft'));
+        expect(prec).toHaveBeenCalled();
+
+        Shortcuts.handleKeydown(keydown('ArrowRight'));
+        expect(suiv).toHaveBeenCalled();
+    });
+
+    // Sans quoi les flèches seraient avalées sur la dernière page, où elles doivent
+    // continuer de faire défiler la page.
+    it('rend la flèche au navigateur à la borne, où le lien devient un span', function ()
+    {
+        document.body.dataset.page = 'admin/users';
+        document.body.innerHTML = pagination(false, true);
+
+        const e = keydown('ArrowLeft');
+        Shortcuts.handleKeydown(e);
+
+        expect(e.preventDefault).not.toHaveBeenCalled();
+    });
+
+    it('ne branche les flèches que sur les pages à résultats', function ()
+    {
+        document.body.dataset.page = 'event/evenement';
+        document.body.innerHTML = pagination(true, true);
+        const suiv = spyOnClick('.pagination a[rel~="next"]');
+
+        const e = keydown('ArrowRight');
+        Shortcuts.handleKeydown(e);
+
+        expect(suiv).not.toHaveBeenCalled();
+        expect(e.preventDefault).not.toHaveBeenCalled();
+    });
+
+    // Ces pages affichent le même bloc avant et après le tableau : les deux liens mènent à la
+    // même page, mais un seul clic doit partir.
+    it('ne suit qu’un seul lien quand la page répète le bloc de pagination', function ()
+    {
+        document.body.dataset.page = 'lieu/lieux';
+        document.body.innerHTML = pagination(true, true) + '<table></table>' + pagination(true, true);
+        const liens = Array.from(document.querySelectorAll('.pagination a[rel~="next"]'));
+        const clics = liens.map(function spy(lien)
+        {
+            const clicked = vi.fn();
+            lien.addEventListener('click', function (e)
+            {
+                e.preventDefault();
+                clicked();
+            });
+            return clicked;
+        });
+
+        Shortcuts.handleKeydown(keydown('ArrowRight'));
+
+        expect(clics[0]).toHaveBeenCalled();
+        expect(clics[1]).not.toHaveBeenCalled();
+    });
+});
+
+describe('Shortcuts — back-office', function ()
+{
+    const MENU_ADMIN =
+        '<a href="/admin/index.php">Tableau de bord</a>' +
+        '<a href="/admin/gererEvenements.php">Événements</a>' +
+        '<a href="/admin/users.php">Comptes</a>';
+
+    it('ouvre la gestion des événements avec « b » et les comptes avec « u »', function ()
+    {
+        document.body.dataset.page = 'index';
+        document.body.innerHTML = MENU_ADMIN;
+        const evenements = spyOnClick('a[href="/admin/gererEvenements.php"]');
+        const comptes = spyOnClick('a[href="/admin/users.php"]');
+
+        Shortcuts.handleKeydown(keydown('b'));
+        expect(evenements).toHaveBeenCalled();
+
+        Shortcuts.handleKeydown(keydown('u'));
+        expect(comptes).toHaveBeenCalled();
+    });
+
+    // _header.inc.php ne rend ces liens qu'aux administrateurs : pour tous les autres visiteurs,
+    // les touches doivent rester celles du navigateur.
+    it('laisse « b » et « u » au navigateur sans menu d’administration', function ()
+    {
+        document.body.dataset.page = 'index';
+        document.body.innerHTML = '<div id="titre_site"><a>La décadanse</a></div>';
+
+        ['b', 'u'].forEach(function (touche)
+        {
+            const e = keydown(touche);
+            Shortcuts.handleKeydown(e);
+            expect(e.preventDefault).not.toHaveBeenCalled();
+        });
+    });
+
+    it.each(['admin/gererEvenements', 'admin/users'])(
+        'focalise le filtre de %s avec « / »',
+        function (page)
+        {
+            document.body.dataset.page = page;
+            document.body.innerHTML =
+                '<span class="search-field"><input type="search" name="terme"></span>';
+            const filtre = document.querySelector('.search-field input[name="terme"]');
+
+            const e = keydown('/');
+            Shortcuts.handleKeydown(e);
+
+            expect(document.activeElement).toBe(filtre);
+            expect(e.preventDefault).toHaveBeenCalled();
+        }
+    );
+});
+
 describe('Shortcuts.focusSearch', function ()
 {
     const RECHERCHE_MOBILE = '<form class="recherche_mobile"><input class="mots"></form>';
@@ -379,6 +523,88 @@ describe('Shortcuts — parcours des listes avec j/k', function ()
         Shortcuts.handleKeydown(e);
 
         expect(e.preventDefault).not.toHaveBeenCalled();
+    });
+
+    it('parcourt les résultats de recherche par leur titre', function ()
+    {
+        document.body.dataset.page = 'event/search';
+        document.body.innerHTML =
+            '<div id="res_recherche"><table><tbody>' +
+            '<tr><td class="desc_even"><h3><a href="evenement.php?idE=1">Concert</a></h3></td>' +
+            '<td class="date"><a href="/index.php?courant=2026-08-16">16 août</a></td></tr>' +
+            '<tr><td class="desc_even"><h3><a href="evenement.php?idE=2">Expo</a></h3></td>' +
+            '<td class="date"><a href="/index.php?courant=2026-08-17">17 août</a></td></tr>' +
+            '</tbody></table></div>';
+
+        Shortcuts.handleKeydown(keydown('j'));
+        expect(document.activeElement.getAttribute('href')).toBe('evenement.php?idE=1');
+
+        Shortcuts.handleKeydown(keydown('j'));
+        expect(document.activeElement.getAttribute('href')).toBe('evenement.php?idE=2');
+    });
+
+    // Le tableau d'événements d'une fiche : la première colonne mène à la journée d'agenda,
+    // c'est a.url qu'il faut focaliser. Les lignes de titre de mois n'ont aucun lien.
+    it.each(['lieu/lieu', 'organisateur/organisateur'])(
+        'parcourt le tableau d’événements de %s en sautant les titres de mois',
+        function (page)
+        {
+            document.body.dataset.page = page;
+            document.body.innerHTML =
+                '<section id="prochains_evenements"><table>' +
+                '<tr><td colspan="5" class="mois">Août</td></tr>' +
+                '<tr class="vevent evenement">' +
+                '<td class="dtstart"><a href="/index.php?courant=2026-08-16">sam 16</a></td>' +
+                '<td><a class="url" href="/event/evenement.php?idE=1"><strong>Concert</strong></a></td>' +
+                '</tr>' +
+                '<tr class="vevent evenement">' +
+                '<td class="dtstart"><a href="/index.php?courant=2026-09-02">mer 2</a></td>' +
+                '<td><a class="url" href="/event/evenement.php?idE=2"><strong>Expo</strong></a></td>' +
+                '</tr>' +
+                '</table></section>';
+
+            Shortcuts.handleKeydown(keydown('j'));
+            expect(document.activeElement.getAttribute('href')).toBe('/event/evenement.php?idE=1');
+
+            Shortcuts.handleKeydown(keydown('j'));
+            expect(document.activeElement.getAttribute('href')).toBe('/event/evenement.php?idE=2');
+        }
+    );
+
+    // Le tableau de bord empile trois tableaux dans #tableaux : le parcours les enchaîne, en
+    // écartant les en-têtes et les lignes de séparation de date, dépourvues de lien.
+    it('enchaîne les trois tableaux du tableau de bord', function ()
+    {
+        document.body.dataset.page = 'admin/index';
+        document.body.innerHTML =
+            '<div id="tableaux">' +
+            '<table><thead><tr><th>Heure</th><th>Compte</th></tr></thead><tbody>' +
+            '<tr><td colspan="6">jeudi 13 août</td></tr>' +
+            '<tr><td>18:02</td><td><a href="/user.php?idP=7">alice</a></td></tr>' +
+            '</tbody></table>' +
+            '<table id="derniers_evenements_ajoutes"><tbody>' +
+            '<tr><td>09:14</td><td><a class="titre" href="/event/evenement.php?idE=1">Concert</a></td></tr>' +
+            '</tbody></table>' +
+            '<table><tr><th>Type</th><th>Lieu</th></tr>' +
+            '<tr><td>presentation</td><td><a href="/lieu/lieu.php?idL=3">Cave12</a></td></tr>' +
+            '</table>' +
+            '</div>';
+
+        const attendus = [
+            '/user.php?idP=7',
+            '/event/evenement.php?idE=1',
+            '/lieu/lieu.php?idL=3'
+        ];
+
+        attendus.forEach(function (href)
+        {
+            Shortcuts.handleKeydown(keydown('j'));
+            expect(document.activeElement.getAttribute('href')).toBe(href);
+        });
+
+        // et le parcours revient en arrière d'un tableau à l'autre
+        Shortcuts.handleKeydown(keydown('k'));
+        expect(document.activeElement.getAttribute('href')).toBe('/event/evenement.php?idE=1');
     });
 
     // Sans cette garde, filtrer les lieux par « jura » sauterait de ligne en ligne.

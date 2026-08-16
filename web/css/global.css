@@ -2087,7 +2087,10 @@ html.mouseless [aria-keyshortcuts] {
  * lignes paires, qu'un fond de tr ne recouvrirait pas.
  */
 #derniers_lieux tbody tr:focus-within > td,
-table#ajouts tr:focus-within > td {
+table#ajouts tr:focus-within > td,
+#res_recherche tbody tr:focus-within > td,
+#prochains_evenements tr.evenement:focus-within > td,
+#tableaux tr:focus-within > td {
     background: #eef4f5;
 }
 
@@ -2105,6 +2108,9 @@ table#ajouts tr:focus-within > td {
  */
 #derniers_lieux tbody tr:focus-within > td:first-child,
 table#ajouts tr:focus-within > td:first-child,
+#res_recherche tbody tr:focus-within > td:first-child,
+#prochains_evenements tr.evenement:focus-within > td:first-child,
+#tableaux tr:focus-within > td:first-child,
 #contenu article.evenement-short:focus-within > header.titre {
     box-shadow: inset 3px 0 0 #5C7378;
 }

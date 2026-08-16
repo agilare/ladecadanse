@@ -35,6 +35,13 @@ export const SHORTCUTS = [
     },
     { key: 'a', label: 'A', action: 'activate', selectors: ['a[href^="/evenement-edit.php?action=ajouter"]'] },
     { key: 'd', label: 'D', action: 'activate', selectors: ['a[href="/admin/index.php"]'] },
+
+    // Back-office : rien à filtrer par page ni par niveau, _header.inc.php ne rend ces liens
+    // qu'aux administrateurs. Sans lien dans la page, activate() échoue et la touche garde son
+    // comportement natif — le raccourci n'existe donc que là où la cible existe.
+    { key: 'b', label: 'B', action: 'activate', selectors: ['a[href="/admin/gererEvenements.php"]'] },
+    { key: 'u', label: 'U', action: 'activate', selectors: ['a[href="/admin/users.php"]'] },
+
     { key: 'l', label: 'L', action: 'activate', selectors: ['a[href^="/lieu/lieux.php"]'] },
     { key: 'o', label: 'O', action: 'activate', selectors: ['a[href^="/organisateur/organisateurs.php"]'] },
 
@@ -59,6 +66,25 @@ export const SHORTCUTS = [
         pages: ['index'],
         action: 'activate',
         selectors: ['ul.entete_contenu_navigation a[rel~="next"]']
+    },
+    // Pagination des pages à résultats. Toutes affichent le bloc rendu par
+    // HtmlShrink::getPaginationString(), d'où un sélecteur unique : la borne atteinte y devient
+    // un <span class="disabled">, donc sans lien à activer la touche est rendue au navigateur.
+    // Le bloc est répété avant et après le tableau ; activate() ne retenant que le premier
+    // trouvé, c'est toujours le même lien qui est suivi.
+    {
+        key: 'ArrowLeft',
+        label: '←',
+        pages: ['event/search', 'lieu/lieux', 'organisateur/organisateurs', 'user', 'admin/gererEvenements', 'admin/users'],
+        action: 'activate',
+        selectors: ['.pagination a[rel~="prev"]']
+    },
+    {
+        key: 'ArrowRight',
+        label: '→',
+        pages: ['event/search', 'lieu/lieux', 'organisateur/organisateurs', 'user', 'admin/gererEvenements', 'admin/users'],
+        action: 'activate',
+        selectors: ['.pagination a[rel~="next"]']
     },
     {
         key: 'f',
@@ -96,12 +122,22 @@ export const SHORTCUTS = [
         pages: ['lieu/lieux', 'organisateur/organisateurs'],
         action: 'focus',
         selectors: ['.table-filters input[name="nom"]']
+    },
+    {
+        key: '/',
+        label: '/',
+        // le back-office nomme « terme » son champ de filtre (titre d'événement ici, pseudo ou
+        // e-mail là) : même balisage des deux côtés, une seule entrée suffit
+        pages: ['admin/gererEvenements', 'admin/users'],
+        action: 'focus',
+        selectors: ['.search-field input[name="terme"]']
     }
 ];
 
 
 /**
- * Listes parcourables aux touches j/k, une entrée par page.
+ * Listes parcourables aux touches j/k, une entrée par page — ou par groupe de pages, quand
+ * elles partagent le même balisage.
  *
  * - `pages` valeurs de body[data-page] concernées
  * - `items` sélecteur des éléments de la liste (ligne de tableau, article...)
@@ -128,6 +164,13 @@ export const LISTS = [
         link: 'header.titre h3 a'
     },
     {
+        pages: ['event/search'],
+        // le tableau de résultats n'a ni id ni classe : #res_recherche, son conteneur, est ce
+        // que la page offre de plus stable pour l'isoler
+        items: '#res_recherche tbody tr',
+        link: 'td.desc_even h3 a'
+    },
+    {
         pages: ['lieu/lieux'],
         items: '#derniers_lieux tbody tr',
         link: 'a[href^="lieu.php?idL="]'
@@ -136,6 +179,27 @@ export const LISTS = [
         pages: ['organisateur/organisateurs'],
         items: '#derniers_lieux tbody tr',
         link: 'a[href^="/organisateur/organisateur.php?idO="]'
+    },
+    {
+        // les deux fiches rendent leur tableau d'événements avec le même
+        // EvenementRenderer::eventTableRowHtml(), d'où des sélecteurs communs
+        pages: ['lieu/lieu', 'organisateur/organisateur'],
+        items: '#prochains_evenements tr.evenement',
+        // a.url et non le premier lien de la ligne : celui de la colonne de gauche mène à la
+        // journée d'agenda, pas à l'événement. Les lignes de titre de mois n'ont aucun lien et
+        // sortent du parcours d'elles-mêmes.
+        link: 'a.url'
+    },
+    {
+        pages: ['admin/index'],
+        // les trois tableaux du tableau de bord d'un coup : ils sont les seuls contenus de
+        // #tableaux, et se parcourent naturellement à la suite
+        items: '#tableaux tr',
+        // aucun lien principal commun aux trois (compte, titre d'événement, lieu) : le premier
+        // lien de la ligne est à chaque fois celui qui identifie l'entité, la colonne qui le
+        // précède ne portant que l'heure ou le type. Les lignes d'en-tête et de séparation de
+        // date, dépourvues de lien, sont écartées.
+        link: 'td a'
     },
     {
         pages: ['admin/gererEvenements'],
