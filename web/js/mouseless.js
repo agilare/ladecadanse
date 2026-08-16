@@ -22,6 +22,9 @@ const MODE_CLASS = 'mouseless';
 const FLASH_CLASS = 'mouseless-flash';
 const FLASH_DURATION_IN_MS = 400;
 const BANNER_ID = 'mouseless-banner';
+// délai entre les deux Échap de la sortie : assez large pour une frappe volontaire,
+// trop court pour réunir par hasard deux Échap tapés pour deux raisons différentes
+const DOUBLE_ESCAPE_DELAY_IN_MS = 700;
 
 export const Mouseless =
 {
@@ -33,6 +36,12 @@ export const Mouseless =
 
     /** @type {string} sélecteur combiné de toutes les cibles de la page */
     targetsSelector : '',
+
+    /** @type {number} date de la dernière frappe d'Échap, pour reconnaître la double frappe */
+    lastEscapeAt : 0,
+
+    /** @type {?Element} le « Échap » du bandeau, qu'on fait clignoter à la première frappe */
+    escapeKey : null,
 
     init : function initMouselessMode()
     {
@@ -121,6 +130,8 @@ export const Mouseless =
         {
             banner.remove();
         }
+        Mouseless.escapeKey = null;
+        Mouseless.lastEscapeAt = 0;
 
         Mouseless.targetsSelector = '';
         document.documentElement.classList.remove(MODE_CLASS);
@@ -208,11 +219,36 @@ export const Mouseless =
         e.preventDefault();
     },
 
+    /**
+     * Sortie à la double frappe d'Échap. Un seul appui ne suffit pas : Échap sert partout
+     * ailleurs — fermer la fenêtre du flyer, annuler une saisie, interrompre un chargement —
+     * et faisait quitter le mode par accident, alors qu'on le garde des jours durant.
+     *
+     * La première frappe fait clignoter le rappel du bandeau : de quoi comprendre qu'il en
+     * faut une seconde sans avoir à l'avoir lu avant.
+     */
     onKeydown : function onKeydown(e)
     {
-        if (e.key === 'Escape')
+        if (e.key !== 'Escape')
+        {
+            return;
+        }
+
+        const now = Date.now();
+        const isSecondPress = (now - Mouseless.lastEscapeAt) <= DOUBLE_ESCAPE_DELAY_IN_MS;
+        // une frappe isolée réamorce le compte, une double frappe le remet à zéro pour
+        // qu'une troisième ne se raccroche pas à la deuxième
+        Mouseless.lastEscapeAt = isSecondPress ? 0 : now;
+
+        if (isSecondPress)
         {
             Mouseless.disable();
+            return;
+        }
+
+        if (Mouseless.escapeKey)
+        {
+            Mouseless.flash(Mouseless.escapeKey);
         }
     },
 
@@ -263,9 +299,10 @@ export const Mouseless =
 
         const key = document.createElement('kbd');
         key.textContent = 'Échap';
+        Mouseless.escapeKey = key;
 
         const suffix = document.createElement('span');
-        suffix.textContent = ' pour quitter · ';
+        suffix.textContent = ' ×2 pour quitter · ';
 
         // ce lien n'appartient pas au registre, il reste donc cliquable : c'est la
         // garantie de ne jamais rester coincé dans le mode

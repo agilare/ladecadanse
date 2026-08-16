@@ -125,7 +125,7 @@ Dans les listes d'entités — agenda, lieux, organisateurs, gérer les événem
 
 Les raccourcis sont résolus sur `event.key`, jamais `event.code`, pour rester utilisables quel que soit le layout clavier du visiteur (AZERTY, QWERTZ, QWERTY...). Le registre est unique, dans `web/js/shortcuts.js`.
 
-**Mode mouseless** (ADMIN et SUPERADMIN) : `?mouseless=1` sur n'importe quelle page neutralise le clic de souris sur les éléments couverts par un raccourci et affiche la touche à côté de chacun — de quoi les faire entrer dans les doigts. Le mode suit la navigation (`localStorage`) et se quitte par Échap, par le lien du bandeau ou par `?mouseless=0`.
+**Mode mouseless** (ADMIN et SUPERADMIN) : `?mouseless=1` sur n'importe quelle page neutralise le clic de souris sur les éléments couverts par un raccourci et affiche la touche à côté de chacun — de quoi les faire entrer dans les doigts. Le mode suit la navigation (`localStorage`) et se quitte par une double frappe d'Échap — la touche sert à trop de choses par ailleurs pour qu'un appui isolé suffise —, par le lien du bandeau ou par `?mouseless=0`.
 
 ## Tests
 

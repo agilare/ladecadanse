@@ -67,7 +67,13 @@ afterEach(function leaveMode()
 {
     // les écouteurs sont posés sur `document`, qui survit au reset du body
     Mouseless.disable();
+    vi.useRealTimers();
 });
+
+function pressEscape()
+{
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+}
 
 describe('Mouseless — portail d’accès', function ()
 {
@@ -319,17 +325,49 @@ describe('Mouseless — affichage de la touche', function ()
 
 describe('Mouseless — sortie du mode', function ()
 {
-    it('quitte le mode sur Échap et rend le clic aux liens', function ()
+    it('quitte le mode sur une double frappe d’Échap et rend le clic aux liens', function ()
     {
         document.body.innerHTML = LIEN_LIEUX;
         makeVisible(document.querySelector('a'));
 
         activateMode();
-        document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+        pressEscape();
+        pressEscape();
 
         expect(document.documentElement.classList.contains('mouseless')).toBe(false);
         expect(clickOn('a').preventDefault).not.toHaveBeenCalled();
         expect(window.localStorage.getItem('ladecadanse.mouseless')).toBe('0');
+    });
+
+    // Échap sert partout ailleurs (fermer la fenêtre du flyer, annuler une saisie) : un
+    // appui isolé faisait quitter le mode par accident.
+    it('reste dans le mode sur un Échap isolé, et le signale', function ()
+    {
+        document.body.innerHTML = LIEN_LIEUX;
+        makeVisible(document.querySelector('a'));
+
+        activateMode();
+        pressEscape();
+
+        expect(document.documentElement.classList.contains('mouseless')).toBe(true);
+        expect(clickOn('a').preventDefault).toHaveBeenCalled();
+        // hors page à liste, le bandeau n'a que le rappel « Échap » : il clignote pour
+        // faire comprendre qu'une seconde frappe est attendue
+        expect(document.querySelector('#mouseless-banner kbd').classList.contains('mouseless-flash')).toBe(true);
+    });
+
+    it('reste dans le mode sur deux Échap trop espacés', function ()
+    {
+        vi.useFakeTimers();
+        document.body.innerHTML = LIEN_LIEUX;
+        makeVisible(document.querySelector('a'));
+
+        activateMode();
+        pressEscape();
+        vi.advanceTimersByTime(2000);
+        pressEscape();
+
+        expect(document.documentElement.classList.contains('mouseless')).toBe(true);
     });
 
     it('propose un lien de sortie qui conserve les autres paramètres d’URL', function ()
