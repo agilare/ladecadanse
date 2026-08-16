@@ -83,6 +83,7 @@
 - events edit : stored XSS in the "Organisateur(s)" select2 list, whose renderer interpolated decoded values into an HTML string ; the template is now built as DOM nodes
 - deps : bump guzzlehttp/guzzle, guzzlehttp/psr7, symfony/dom-crawler, symfony/html-sanitizer, symfony/yaml to fix 20 known security advisories (cookie handling, CRLF/host-confusion injection, XSS bypass, XXE, ReDoS/DoS)
 - deps-dev : bump js-yaml, brace-expansion
+- deps-dev : bump guzzlehttp/guzzle to 7.15.3 and squizlabs/php_codesniffer to 3.13.6 to fix 3 advisories (noncanonical host bypassing host-based checks CVE-2026-69246, noncanonical cookie domain keeping subdomain scope CVE-2026-69245, phpcs OS command injection CVE-2026-67434) ; both only reachable through the dev tree (Codeception's PhpBrowser, the `sniffer:*` scripts)
 
 
 ## [3.10.0] - 2026-04-26
