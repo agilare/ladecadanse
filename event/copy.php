@@ -301,7 +301,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
             $i++;
 		} //while date
 
-        $logger->info('[copierEvenement]', ['titre' => $tab_event_copied['titre'], 'from' => $tab_event_copied['dateEvenement'], 'to' => "$dateEvenement - $dateEvenement2"]);
+        $logger->info('[copierEvenement]', ['idE' => (int) $get['idE'], 'titre' => $tab_event_copied['titre'], 'from' => $tab_event_copied['dateEvenement'], 'to' => "$dateEvenement - $dateEvenement2", 'idP' => (int) ($_SESSION['SidPersonne'] ?? 0)]);
 
         header("Location: ?idE=".(int)$get['idE']); die();
 	} //if nberreur = 0

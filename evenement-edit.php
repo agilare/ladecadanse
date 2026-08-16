@@ -920,7 +920,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 		}
 
 		unset($_POST); // ?
-        $logger->info('[evenement-edit]', ['action' => $get['action'], 'titre' => $champs['titre'], 'lieu' => $champs['nomLieu'], 'idE' => (int) $evenement['idEvenement']]);
+        $logger->info('[evenement-edit]', ['action' => $get['action'], 'titre' => $champs['titre'], 'date' => $champs['dateEvenement'], 'genre' => $champs['genre'], 'idLieu' => (int) $champs['idLieu'], 'lieu' => $champs['nomLieu'], 'idE' => (int) $evenement['idEvenement'], 'idP' => (int) ($_SESSION['SidPersonne'] ?? 0)]);
 
         if (isset($_SESSION['Sgroupe']))
         {
