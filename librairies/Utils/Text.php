@@ -2,10 +2,18 @@
 
 namespace Ladecadanse\Utils;
 
+/**
+ * Manipulations de texte, dont plusieurs produisent du HTML.
+ *
+ * Ces dernières s'appuient sur la fonction globale sanitizeForHtml()
+ * (librairies/Utils/html_functions.php), résolue par le fallback global de
+ * PHP sur les fonctions. Ce couplage disparaîtra avec la classe Renderer
+ * prévue par l'issue #127.
+ */
 class Text
 {
     /**
-     * only used  to get html names (id, class...) from french words
+     * Uniquement pour dériver des noms HTML (id, class...) de mots français.
      */
     public static function stripAccents(string $str): string
     {
@@ -16,7 +24,11 @@ class Text
     }
 
     /**
-     * Only used in evenement.php to display prelocations
+     * Transforme URLs et adresses e-mail en liens, en laissant intactes les
+     * balises HTML déjà présentes.
+     *
+     * Uniquement utilisée par event/evenement.php pour les prélocations.
+     * Échappe elle-même les liens qu'elle produit via sanitizeForHtml().
      */
     public static function linkify(string $input): string
     {
@@ -70,9 +82,11 @@ class Text
     }
 
     /**
+     * Sépare une URL de son libellé d'affichage, en complétant le schéma si
+     * l'entrée n'en a pas.
      *
-     * @param string $urlOrPath https://www.test.ch or path
-     * @return array ['https://www.test.ch', 'www.test.ch']
+     * @param string $urlOrPath https://www.test.ch ou www.test.ch
+     * @return array{url: string, urlName: string} ['https://www.test.ch', 'www.test.ch']
      */
     public static function getUrlWithName(string $urlOrPath): array
     {
@@ -88,14 +102,17 @@ class Text
 
 
     /**
-     * Remplace tous les tags wiki d'un texte par des balises HTML
-     * ==texte== -> h2
-     * Retrurn -> br
-     * '''texte''' -> b
-     * ''texte'' -> i
-     * ---- -> hr
-     * http ou www -> a href
-     * @param  string $temp Texte avec les balises wiki
+     * Convertit en HTML les seules conventions de saisie encore reconnues :
+     * saut de ligne -> <br />, URL nue ou www. -> <a href>, et la forme
+     * [http://exemple.ch libellé] -> lien avec libellé.
+     *
+     * Le reste de l'ancienne syntaxe wiki (==titre==, '''gras''', ''italique'',
+     * ---- ) n'est plus interprété depuis longtemps.
+     *
+     * Attend du texte DÉJÀ échappé : la méthode produit du HTML sans échapper
+     * son entrée.
+     *
+     * @param  string $temp Texte échappé
      * @return string Texte avec balises HTML
      */
     public static function lnAndUrlToHtml(string $temp): string
@@ -105,13 +122,7 @@ class Text
             return "";
         }
 
-        //$temp = preg_replace("/'''(('?[^\n'])*)'''/", "<strong>\\1</strong>", $temp);
-
         $temp = preg_replace("/([^*]{2}|)\n/", "\\1<br />", $temp);
-
-        //$temp = preg_replace("/''(('?[^\n'])*)''/", "<em>\\1</em>", $temp);
-        //$temp = preg_replace("/\*\*(.*?)\*\*/", "<blockquote>\\1</blockquote>", $temp);
-        //$temp = str_replace("----", "<hr />", $temp);
 
         $temp = preg_replace("/(([^[]|^)(http)+(s)?:(\/\/)|([^\[\/]|^)(www\.))((\w|\.|\-|_)+)(\/)?(\S+)?/i",
             "\\2\\6<a href=\"http\\4://\\7\\8\\10\\11\" title=\"\\0\">\\7\\8</a>", (string) $temp);
@@ -124,32 +135,6 @@ class Text
 
         return $temp;
     }
-
-
-
-//    public static function wikiToText($temp)
-//    {
-//
-//        $temp = preg_replace("/'''(('?[^\n'])*)'''/", "\\1", (string) $temp);
-//        $temp = preg_replace("/(\r|\n)*==(('?[^\n'])*)==( |\n|\r)*/", "\\2 ", $temp);
-//        $temp = preg_replace("/([^*]{2}|)\r\n/", "\\1 <br />", $temp);
-//        //$temp = preg_replace("/([^*]{2}|)(\r|\n)/", "\\1 ", $temp);
-//
-//        $temp = preg_replace("/''(('?[^\n'])*)''/", "<i>\\1</i>", $temp);
-//
-//        //$temp = preg_replace("/\*\*(.*?)\*\*/", "<blockquote>\\1</blockquote>", $temp);
-//        //$temp = str_replace("----", " ", $temp);
-//
-//        $temp = preg_replace("/(([^[]|^)(http)+(s)?:(\/\/)|([^\[\/]|^)(www\.))((\w|\.|\-|_)+)(\/)?(\S+)?/i", "\\2\\6<a href=\"http\\4://\\7\\8\\10\\11\" title=\"\\0\">\\7\\8</a>", $temp);
-//        //[
-//        $temp = preg_replace("/\[(http[s]?:\/\/)([-a-z0-9_]{2,}\.[-a-z0-9.]{2,}[-a-z0-9\/&\?=.;~_%]*) (.+?)\]/i",
-//                "<a href=\"\\1\\2\" title=\"\\1\\2\">\\3</a>", $temp);
-//
-//        $temp = preg_replace("/\[www\.([-a-z0-9.]{2,}[-a-z0-9\/&\?=.~_%]*) (.+?)\]/i",
-//                "<a href=\"http://www.\\1\" title=\"www.\\1\">\\2</a>", $temp);
-//
-//        return $temp;
-//    }
 
     /**
      * Tronque un texte brut à $maxChars caractères sans couper le dernier mot.
