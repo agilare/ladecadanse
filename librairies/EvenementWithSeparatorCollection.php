@@ -1,6 +1,8 @@
 <?php
 namespace Ladecadanse;
 
+use Ladecadanse\Utils\DateHelper;
+
 /**
  * @implements \IteratorAggregate<int, EventWithSeparator>
  */
@@ -19,7 +21,7 @@ class EvenementWithSeparatorCollection implements \IteratorAggregate
         $this->events = $events;
         $this->is_chronological_order = $is_chronological_order;
         $this->date_current = $date_current;
-        $this->date_next_day = dateIsoToNextDayDateIso($date_current);
+        $this->date_next_day = DateHelper::isoToNextDay($date_current);
     }
 
     /**

@@ -43,15 +43,6 @@ parameters:
 			path: librairies/EvenementRenderer.php
 
 		-
-			message: '''
-				#^Call to deprecated function dateIsoToNextDayDateIso\(\)\:
-				Use \\Ladecadanse\\Utils\\DateHelper\:\:isoToNextDay\(\) instead$#
-			'''
-			identifier: function.deprecated
-			count: 1
-			path: librairies/EvenementWithSeparatorCollection.php
-
-		-
 			message: '#^Property Ladecadanse\\EvenementWithSeparatorCollection\:\:\$date_current is never read, only written\.$#'
 			identifier: property.onlyWritten
 			count: 1
