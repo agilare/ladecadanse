@@ -256,17 +256,12 @@ require_once '../_header.inc.php';
                 <th>&nbsp;</th>
             </tr>
 
-            <?php foreach ($lieux_desc_latest as $desc) :
-                if (mb_strlen((string) $desc['contenu']) > 200)
-                {
-                    $desc['contenu'] = mb_substr((string) $desc['contenu'], 0, 200)." [...]";
-                }
-                ?>
+            <?php foreach ($lieux_desc_latest as $desc) : ?>
 
                 <tr>
                     <td><?= sanitizeForHtml($desc['type']) ?></td>
                     <td><a href="/lieu/lieu.php?idL=<?= (int)$desc['idLieu'] ?>"><?= sanitizeForHtml($desc['l_nom']) ?></a></td>
-                    <td class="tdleft small"><?= Text::texteHtmlReduit($desc['contenu'], 100) ?></td>
+                    <td class="tdleft small"><?= Text::shortenToHtml((string) $desc['contenu'], 100) ?></td>
                     <td><a href="/user.php?idP=<?= (int) $desc['idPersonne'] ?>"><?= sanitizeForHtml($desc['pseudo']) ?></a></td>
                     <td><?= DateHelper::isoToFr($desc['dateAjout']) ?></td>
                     <td><a href="/lieu-text-edit.php?action=editer&amp;idL=<?= (int)$desc['idLieu'] ?>&amp;idP=<?= (int) $desc['idPersonne'] ?>&amp;type=<?= $desc['type'] ?>"><?= $iconeEditer ?></a></td>
