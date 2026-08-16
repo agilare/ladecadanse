@@ -91,7 +91,9 @@ export const SHORTCUTS = [
     {
         key: '/',
         label: '/',
-        pages: ['lieu/lieux'],
+        // les deux pages ont le même filtre par nom ; sans l'entrée, « / » retombe sur la
+        // recherche rapide native de Firefox (Quick Find), qui s'ouvre alors sur la page
+        pages: ['lieu/lieux', 'organisateur/organisateurs'],
         action: 'focus',
         selectors: ['.table-filters input[name="nom"]']
     }

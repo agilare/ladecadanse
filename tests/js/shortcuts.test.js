@@ -73,6 +73,19 @@ describe('Shortcuts — indépendance du layout clavier', function ()
         expect(e.preventDefault).toHaveBeenCalled();
     });
 
+    it('focalise aussi le filtre des organisateurs, qui partage le balisage des lieux', function ()
+    {
+        document.body.dataset.page = 'organisateur/organisateurs';
+        document.body.innerHTML = '<div class="table-filters"><input name="nom"></div>';
+        const filtre = document.querySelector('.table-filters input[name="nom"]');
+
+        const e = keydown('/');
+        Shortcuts.handleKeydown(e);
+
+        expect(document.activeElement).toBe(filtre);
+        expect(e.preventDefault).toHaveBeenCalled();
+    });
+
     it('ne filtre pas les lettres sur shiftKey', function ()
     {
         document.body.innerHTML = '<div id="titre_site"><a>La décadanse</a></div>';
