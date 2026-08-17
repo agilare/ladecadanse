@@ -1047,8 +1047,16 @@ table .td-align-center
             overflow:hidden;
         }
 
-        /* posé par PHP quand le texte est tronqué, révélé par le JS quand c'est le clamp qui coupe */
-        .evenement-short .description .continuer
+        /*
+         * Posé par PHP quand le texte est tronqué, révélé par le JS quand c'est
+         * le clamp qui coupe.
+         *
+         * Le :not([hidden]) n'est pas décoratif : sans lui, ce `display:block`
+         * (spécificité 0,3,0) écrase le `[hidden] { display:none }` de
+         * normalize.css (0,1,0) et le lien s'affiche sur toutes les cartes,
+         * attribut hidden ou pas.
+         */
+        .evenement-short .description .continuer:not([hidden])
         {
             display:block;
             margin-top:0.3em;
