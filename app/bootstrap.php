@@ -18,7 +18,7 @@ use Ladecadanse\Utils\DbConnectorPdo;
 use Monolog\Logger;
 use Monolog\Handler\RotatingFileHandler;
 use Monolog\Formatter\LineFormatter;
-use Ladecadanse\Utils\RegionConfig;
+use Ladecadanse\RegionConfig;
 use Ladecadanse\TemplateEngine;
 use Ladecadanse\Translator;
 use Whoops\Handler\PrettyPageHandler;
@@ -59,6 +59,7 @@ session_start([
 
 
 $regionConfig = new RegionConfig($glo_regions);
+$regionConfig->setPersistentRegion($_COOKIE, $_GET);
 [$url_query_region, $url_query_region_et, $url_query_region_1er] = $regionConfig->getAppVars();
 
 $_SESSION['user_prefs_agenda_order'] = $_SESSION['user_prefs_agenda_order'] ?? 'dateAjout';
