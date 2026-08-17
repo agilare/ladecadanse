@@ -73,7 +73,7 @@ $auj = date("Y-m-d");
 $glo_auj_6h = date("Y-m-d", time() - 21_600); // -6h
 
 // TODO: rn to $glo_regions_fr
-$glo_regions = ["ge" => "Genève", "vd" => "Lausanne", "rf" => "France", "hs" => "Autre"]; //  "fr" => "Fribourg",
+$glo_regions = ["ge" => "Genève", "vd" => "Vaud", "rf" => "France", "hs" => "Autre"]; //  "fr" => "Fribourg",
 $glo_moisF = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
 
 // region selected by user is extended to arounding regions

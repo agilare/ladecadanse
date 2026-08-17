@@ -100,7 +100,7 @@ class HtmlShrink
             {
                 if ($n == 'vd')
                 {
-                    $v = 'Lausanne';
+                    $v = 'Vaud';
                     $class_region = 'vd';
                 }
 
