@@ -9,7 +9,6 @@ use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\ImageDriver2;
 use Ladecadanse\EvenementCollection;
 use Ladecadanse\UserLevel;
-use Ladecadanse\Utils\Utils;
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\EvenementRenderer;
 use Ladecadanse\Lieu;
@@ -717,10 +716,10 @@ if ($verif->nbErreurs() > 0)
 
         <ul class="menu_filtre" style="float:left;width:50%;margin:0">
             <li <?php if ($get['filtre_genre'] == 'tous') : ?>class="ici"<?php endif; ?>>
-                <a href="?<?= Utils::urlQueryArrayToString($get, ['filtre_genre', 'page'])?>&amp;filtre_genre=tous">Tous</a></li>
+                <a href="?<?= HtmlShrink::urlQueryArrayToString($get, ['filtre_genre', 'page'])?>&amp;filtre_genre=tous">Tous</a></li>
             <?php foreach ($glo_tab_genre as $ng => $nl) : ?>
                 <li <?php if ($get['filtre_genre'] == $ng) : ?> class="ici"<?php endif; ?>>
-                    <a href="?<?= Utils::urlQueryArrayToString($get, ['filtre_genre', 'page']) ?>&amp;filtre_genre=<?= $ng ?>"><?= ucfirst($nl) ?></a>
+                    <a href="?<?= HtmlShrink::urlQueryArrayToString($get, ['filtre_genre', 'page']) ?>&amp;filtre_genre=<?= $ng ?>"><?= ucfirst($nl) ?></a>
                 </li>
               <?php endforeach; ?>
         </ul>
@@ -734,7 +733,7 @@ if ($verif->nbErreurs() > 0)
                 <ul class="menu_nb_res" style="float:right;margin: 1em auto 1.4em;width:35%;text-align:right">
                 <?php foreach ($tab_nblignes as $nbl) : ?>
                 <li <?php if ($get['nblignes'] == $nbl) { echo 'class="ici"'; } ?>>
-                    <a href="?<?= Utils::urlQueryArrayToString($get, "nblignes")?>&amp;nblignes=<?= (int)$nbl ?>"><?= (int)$nbl ?></a>
+                    <a href="?<?= HtmlShrink::urlQueryArrayToString($get, "nblignes")?>&amp;nblignes=<?= (int)$nbl ?>"><?= (int)$nbl ?></a>
                 </li>
             <?php endforeach; ?>
             </ul>
@@ -754,7 +753,7 @@ if ($verif->nbErreurs() > 0)
                 <?php foreach ($th_evenements as $field => $label) : ?>
                 <th <?php if ($field == $get['tri_gerer']) : ?>class="ici"<?php endif; ?> <?php if ($field == 'horaire') : ?>style="width:100px"<?php endif; ?>>
                     <?php if (array_key_exists($field, $orderByColumns)) : ?>
-                        <a href="?<?= Utils::urlQueryArrayToString($get, ['tri_gerer', 'ordre'])."&amp;tri_gerer=".$field."&amp;ordre=".$ordre_inverse ?>"><?= sanitizeForHtml($label) ?></a>
+                        <a href="?<?= HtmlShrink::urlQueryArrayToString($get, ['tri_gerer', 'ordre'])."&amp;tri_gerer=".$field."&amp;ordre=".$ordre_inverse ?>"><?= sanitizeForHtml($label) ?></a>
                         <?php if ($field == $get['tri_gerer']) : echo $icone[$get['ordre']]; endif; ?>
                     <?php else : ?>
                         <?= sanitizeForHtml($label) ?>

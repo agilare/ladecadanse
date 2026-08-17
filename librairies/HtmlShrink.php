@@ -6,10 +6,50 @@
 
 namespace Ladecadanse;
 
-use Ladecadanse\Utils\Utils;
-
 class HtmlShrink
 {
+    /**
+     * Reconstruit une query string à partir de $_GET, en excluant un ou
+     * plusieurs paramètres. Utilisée pour les liens de pagination et de tri,
+     * qui doivent conserver les autres critères de la page courante.
+     *
+     * Le résultat est échappé pour le HTML : il est destiné à un attribut href.
+     *
+     * Asymétrie connue : la branche "string" ignore les valeurs de type array,
+     * la branche "array" non (elle émettrait "param=Array" + un warning). Aucun
+     * appelant ne passe aujourd'hui de valeur array dans $get.
+     *
+     * @param array<string, mixed> $get
+     * @param array<string>|string $sauf Nom(s) de paramètre(s) à exclure
+     */
+    public static function urlQueryArrayToString(array $get, array|string $sauf = ""): string
+    {
+        $afficher = "";
+
+        if (!is_array($sauf))
+        {
+            foreach ($get as $nom => $valeur)
+            {
+                if ($nom != $sauf && !is_array($valeur))
+                {
+                    $afficher .= $nom . "=" . $valeur . "&";
+                }
+            }
+        }
+        else
+        {
+            foreach ($get as $nom => $valeur)
+            {
+                if (!in_array($nom, $sauf))
+                {
+                    $afficher .= $nom . "=" . $valeur . "&";
+                }
+            }
+        }
+
+        // -5 et non -1 : sanitizeForHtml() a transformé le "&" final en "&amp;"
+        return mb_substr(sanitizeForHtml($afficher), 0, -5);
+    }
 
     /**
      * TODO: mv to a LieuRenderer
@@ -93,7 +133,7 @@ class HtmlShrink
                 }
 
                 ?><li>
-            <a href="?region=<?php echo $n; ?>&<?php echo Utils::urlQueryArrayToString($get, $excludeFromQueryString); ?>" class="<?php echo $class_region; ?><?php echo $ici; ?>"><?php echo $v; ?>&nbsp;<?php
+            <a href="?region=<?php echo $n; ?>&<?php echo self::urlQueryArrayToString($get, $excludeFromQueryString); ?>" class="<?php echo $class_region; ?><?php echo $ici; ?>"><?php echo $v; ?>&nbsp;<?php
                 if (!empty($event_nb[$n]))
                 {
                     ?><span class="events-nb"><?php echo $event_nb[$n]; ?></span><?php } ?></a></li><?php

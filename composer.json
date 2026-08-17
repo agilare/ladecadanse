@@ -44,7 +44,7 @@
             "Ladecadanse\\": "librairies"
         },
         "files": [
-            "librairies/Utils/utils_functions.php"
+            "librairies/Utils/html_functions.php"
         ]
     },
     "autoload-dev": {

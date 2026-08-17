@@ -24,6 +24,12 @@ use Ladecadanse\Utils\Text;
  */
 class EvenementRenderer
 {
+    /**
+     * Plafond de charge utile de la description d'une carte d'événement.
+     * La hauteur du bloc, elle, est plafonnée par le line-clamp de global.css.
+     */
+    public const DESCRIPTION_MAX_CHARS = 60 * 6;
+
     /** Comportement du lien de dépublication après succès : masque la ligne de l'événement */
     public const UNPUBLISH_THEN_HIDE = 'hide';
     /** Comportement du lien de dépublication après succès : met à jour la pastille de statut de la ligne */
@@ -228,16 +234,24 @@ class EvenementRenderer
                 <div class="spacer"></div>
             </header>
 
+            <?php // flyer et description forment une rangée flex : le fond gris du flyer
+                  // s'étire ainsi jusqu'en bas de la description, organisateurs compris ?>
+            <div class="event-media">
+
             <figure class="flyer"><?= self::mainFigureHtml($tab_even['e_flyer'], $tab_even['e_image'], $tab_even['e_titre'], 100) ?></figure>
 
             <div class="description">
-                <p>
-                <?= Text::texteHtmlReduit(Text::lnAndUrlToHtml(sanitizeForHtml($tab_even['e_description'])), Text::trouveMaxChar($tab_even['e_description'], 60, 6), ' <a class="continuer" href="/event/evenement.php?idE=' . (int) $tab_even['e_idEvenement'] . '"> Lire la suite</a>'); ?>
+                <?php // le lien reste hors du <p> : le line-clamp du CSS le rognerait avec le texte ?>
+                <p class="js-description-clamp">
+                <?= Text::shortenToHtml((string) $tab_even['e_description'], self::DESCRIPTION_MAX_CHARS); ?>
                 </p>
+                <a class="continuer js-lire-la-suite" href="/event/evenement.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>"<?= Text::isCut((string) $tab_even['e_description'], self::DESCRIPTION_MAX_CHARS) ? '' : ' hidden' ?>>Lire la suite</a>
                 <?php if (!empty($tab_events_today_in_region_orgas[$tab_even['e_idEvenement']])): ?>
                     <?= Organisateur::getListLinkedHtml($tab_events_today_in_region_orgas[$tab_even['e_idEvenement']]) ?>
                 <?php endif; ?>
             </div>
+
+            </div> <!-- event-media -->
 
             <div class="spacer"></div>
 

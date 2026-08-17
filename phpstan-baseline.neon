@@ -43,15 +43,6 @@ parameters:
 			path: librairies/EvenementRenderer.php
 
 		-
-			message: '''
-				#^Call to deprecated function dateIsoToNextDayDateIso\(\)\:
-				Use \\Ladecadanse\\Utils\\DateHelper\:\:isoToNextDay\(\) instead$#
-			'''
-			identifier: function.deprecated
-			count: 1
-			path: librairies/EvenementWithSeparatorCollection.php
-
-		-
 			message: '#^Property Ladecadanse\\EvenementWithSeparatorCollection\:\:\$date_current is never read, only written\.$#'
 			identifier: property.onlyWritten
 			count: 1
@@ -130,26 +121,8 @@ parameters:
 			path: librairies/Utils/ImageUrlFetcher.php
 
 		-
-			message: '#^Call to function is_countable\(\) with string will always evaluate to false\.$#'
-			identifier: function.impossibleType
-			count: 1
-			path: librairies/Utils/Text.php
-
-		-
-			message: '#^Comparison operation "\<" between 0 and 0 is always false\.$#'
-			identifier: smaller.alwaysFalse
-			count: 1
-			path: librairies/Utils/Text.php
-
-		-
 			message: '#^If condition is always true\.$#'
 			identifier: if.alwaysTrue
-			count: 1
-			path: librairies/Utils/Text.php
-
-		-
-			message: '#^Offset \*NEVER\* on string in isset\(\) does not exist\.$#'
-			identifier: isset.offset
 			count: 1
 			path: librairies/Utils/Text.php
 

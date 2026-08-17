@@ -8,7 +8,6 @@ use Ladecadanse\HtmlShrink;
 use Ladecadanse\Personne;
 use Ladecadanse\Utils\DateHelper;
 use Ladecadanse\Utils\Text;
-use Ladecadanse\Utils\Utils;
 use Ladecadanse\Utils\Validateur;
 
 if (empty($_GET['idL']) || !is_numeric($_GET['idL']))
@@ -400,7 +399,7 @@ include("../_header.inc.php");
             <ul id="menu_periode" class="entete_contenu_navigation">
                 <?php foreach ($tab_menu_periodes as $k => $label) : ?>
                     <li class="<?= $k ?><?php if ($get['periode'] == $k) : ?> ici<?php endif; ?>">
-                        <a href="?<?= Utils::urlQueryArrayToString($get, ['periode', 'page']) ?>&amp;periode=<?= $k ?>"><?= $label ?></a>
+                        <a href="?<?= HtmlShrink::urlQueryArrayToString($get, ['periode', 'page']) ?>&amp;periode=<?= $k ?>"><?= $label ?></a>
                     </li>
                 <?php endforeach; ?>
                 <div class="spacer"></div>
@@ -417,7 +416,7 @@ include("../_header.inc.php");
 
         <?php else : ?>
 
-            <?= HtmlShrink::getPaginationString($all_results_nb, $get['page'], $results_per_page, 1, basename(__FILE__), "?" . Utils::urlQueryArrayToString($get, "page") . "&amp;page=") ?>
+            <?= HtmlShrink::getPaginationString($all_results_nb, $get['page'], $results_per_page, 1, basename(__FILE__), "?" . HtmlShrink::urlQueryArrayToString($get, "page") . "&amp;page=") ?>
             <table>
                 <?php foreach ($page_results_grouped_by_yearmonth as $yearmonth => $tab_month_events) : ?>
                     <tr>
@@ -432,7 +431,7 @@ include("../_header.inc.php");
                 <?php endforeach; ?>
             </table>
 
-            <?= HtmlShrink::getPaginationString($all_results_nb, $get['page'], $results_per_page, 1, basename(__FILE__), "?" . Utils::urlQueryArrayToString($get, "page") . "&amp;page=") ?>
+            <?= HtmlShrink::getPaginationString($all_results_nb, $get['page'], $results_per_page, 1, basename(__FILE__), "?" . HtmlShrink::urlQueryArrayToString($get, "page") . "&amp;page=") ?>
 
         <?php endif; ?>
 

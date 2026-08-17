@@ -2,10 +2,18 @@
 
 namespace Ladecadanse\Utils;
 
+/**
+ * Manipulations de texte, dont plusieurs produisent du HTML.
+ *
+ * Ces dernières s'appuient sur la fonction globale sanitizeForHtml()
+ * (librairies/Utils/html_functions.php), résolue par le fallback global de
+ * PHP sur les fonctions. Ce couplage disparaîtra avec la classe Renderer
+ * prévue par l'issue #127.
+ */
 class Text
 {
     /**
-     * only used  to get html names (id, class...) from french words
+     * Uniquement pour dériver des noms HTML (id, class...) de mots français.
      */
     public static function stripAccents(string $str): string
     {
@@ -16,7 +24,11 @@ class Text
     }
 
     /**
-     * Only used in evenement.php to display prelocations
+     * Transforme URLs et adresses e-mail en liens, en laissant intactes les
+     * balises HTML déjà présentes.
+     *
+     * Uniquement utilisée par event/evenement.php pour les prélocations.
+     * Échappe elle-même les liens qu'elle produit via sanitizeForHtml().
      */
     public static function linkify(string $input): string
     {
@@ -70,9 +82,11 @@ class Text
     }
 
     /**
+     * Sépare une URL de son libellé d'affichage, en complétant le schéma si
+     * l'entrée n'en a pas.
      *
-     * @param string $urlOrPath https://www.test.ch or path
-     * @return array ['https://www.test.ch', 'www.test.ch']
+     * @param string $urlOrPath https://www.test.ch ou www.test.ch
+     * @return array{url: string, urlName: string} ['https://www.test.ch', 'www.test.ch']
      */
     public static function getUrlWithName(string $urlOrPath): array
     {
@@ -88,14 +102,17 @@ class Text
 
 
     /**
-     * Remplace tous les tags wiki d'un texte par des balises HTML
-     * ==texte== -> h2
-     * Retrurn -> br
-     * '''texte''' -> b
-     * ''texte'' -> i
-     * ---- -> hr
-     * http ou www -> a href
-     * @param  string $temp Texte avec les balises wiki
+     * Convertit en HTML les seules conventions de saisie encore reconnues :
+     * saut de ligne -> <br />, URL nue ou www. -> <a href>, et la forme
+     * [http://exemple.ch libellé] -> lien avec libellé.
+     *
+     * Le reste de l'ancienne syntaxe wiki (==titre==, '''gras''', ''italique'',
+     * ---- ) n'est plus interprété depuis longtemps.
+     *
+     * Attend du texte DÉJÀ échappé : la méthode produit du HTML sans échapper
+     * son entrée.
+     *
+     * @param  string $temp Texte échappé
      * @return string Texte avec balises HTML
      */
     public static function lnAndUrlToHtml(string $temp): string
@@ -105,13 +122,7 @@ class Text
             return "";
         }
 
-        //$temp = preg_replace("/'''(('?[^\n'])*)'''/", "<strong>\\1</strong>", $temp);
-
         $temp = preg_replace("/([^*]{2}|)\n/", "\\1<br />", $temp);
-
-        //$temp = preg_replace("/''(('?[^\n'])*)''/", "<em>\\1</em>", $temp);
-        //$temp = preg_replace("/\*\*(.*?)\*\*/", "<blockquote>\\1</blockquote>", $temp);
-        //$temp = str_replace("----", "<hr />", $temp);
 
         $temp = preg_replace("/(([^[]|^)(http)+(s)?:(\/\/)|([^\[\/]|^)(www\.))((\w|\.|\-|_)+)(\/)?(\S+)?/i",
             "\\2\\6<a href=\"http\\4://\\7\\8\\10\\11\" title=\"\\0\">\\7\\8</a>", (string) $temp);
@@ -125,211 +136,67 @@ class Text
         return $temp;
     }
 
-
-
-//    public static function wikiToText($temp)
-//    {
-//
-//        $temp = preg_replace("/'''(('?[^\n'])*)'''/", "\\1", (string) $temp);
-//        $temp = preg_replace("/(\r|\n)*==(('?[^\n'])*)==( |\n|\r)*/", "\\2 ", $temp);
-//        $temp = preg_replace("/([^*]{2}|)\r\n/", "\\1 <br />", $temp);
-//        //$temp = preg_replace("/([^*]{2}|)(\r|\n)/", "\\1 ", $temp);
-//
-//        $temp = preg_replace("/''(('?[^\n'])*)''/", "<i>\\1</i>", $temp);
-//
-//        //$temp = preg_replace("/\*\*(.*?)\*\*/", "<blockquote>\\1</blockquote>", $temp);
-//        //$temp = str_replace("----", " ", $temp);
-//
-//        $temp = preg_replace("/(([^[]|^)(http)+(s)?:(\/\/)|([^\[\/]|^)(www\.))((\w|\.|\-|_)+)(\/)?(\S+)?/i", "\\2\\6<a href=\"http\\4://\\7\\8\\10\\11\" title=\"\\0\">\\7\\8</a>", $temp);
-//        //[
-//        $temp = preg_replace("/\[(http[s]?:\/\/)([-a-z0-9_]{2,}\.[-a-z0-9.]{2,}[-a-z0-9\/&\?=.;~_%]*) (.+?)\]/i",
-//                "<a href=\"\\1\\2\" title=\"\\1\\2\">\\3</a>", $temp);
-//
-//        $temp = preg_replace("/\[www\.([-a-z0-9.]{2,}[-a-z0-9\/&\?=.~_%]*) (.+?)\]/i",
-//                "<a href=\"http://www.\\1\" title=\"www.\\1\">\\2</a>", $temp);
-//
-//        return $temp;
-//    }
-
     /**
-     * D?termine le nombre de caract?res max d'un texte selon le nombre moyen de charact?re
-     * des lignes du texte et le nombre maximal de lignes accept?es.
+     * Tronque un texte brut à $maxChars caractères sans couper le dernier mot.
      *
-     * @param string $texte Texte ? ?valuer
-     * @param int $charsLigne Nombre moyen de charact?res par ligne
-     * @param int $maxLignes Nombre max de lignes du texte
-     * @return int $i Nombre maximal de car. pour ce texte dans l'espaces $charsLignes * $maxLignes
-     * @see function texteHtmlReduit
-     * @todo Tenir compte des autres balises wiki
+     * Ne renvoie pas de HTML, et c'est le point : la troncature doit précéder
+     * l'échappement. Compter les caractères d'un texte déjà échappé revient à
+     * facturer 6 caractères par apostrophe (&#039;) et 5 par esperluette
+     * (&amp;) — c'est ce qui faisait disparaître jusqu'à un tiers du texte.
+     *
+     * @see shortenToHtml() pour la composition complète
      */
-    public static function trouveMaxChar(string $texte, int $charsLigne, int $maxLignes): int
+    public static function truncateWords(string $text, int $maxChars): string
     {
-        $i = 0;
-        $j = 0;
-        $lignes = 1;
-        $tailleTexte = mb_strlen($texte);
-
-        // Compte jusqu'à la fin du texte ou si le nombre max de lignes a ?t? atteint
-        while ($i < $tailleTexte && $lignes < $maxLignes)
+        if (mb_strlen($text) <= $maxChars)
         {
-            //si la fin d'une ligne a ?t? atteinte ou si un saut de ligne est lu
-            if ($j == $charsLigne || $texte[$i] == "\n")
-            {
-                $lignes++;
-                $j = 0;
-            }
-
-            $i++;
-            $j++;
+            return $text;
         }
 
-        return $i;
+        $cut = mb_substr($text, 0, $maxChars);
+
+        // la coupe tombe pile en fin de mot : rien à reculer
+        if (preg_match('/^\s/u', mb_substr($text, $maxChars, 1)))
+        {
+            return rtrim($cut);
+        }
+
+        // sinon on recule jusqu'à la fin du dernier mot entier
+        $trimmed = rtrim((string) preg_replace('/\s+\S*$/u', '', $cut));
+
+        // un premier "mot" plus long que la limite : on coupe quand même
+        return $trimmed === '' ? $cut : $trimmed;
     }
 
     /**
-     * R?duit un texte selon un nombre max de caract?res, ?vite la coupure du dernier mot,
-     * ajoute un lien vers la suite du texte
+     * Texte brut -> HTML tronqué, prêt à être affiché.
      *
-     * @param string $texteHtml Texte avec balises html ? r?duire
-     * @param int $limChar Nombre max de car. calcul? par trouveMaxChar
-     * @param string $lienSuite Lien Html
-     * @see trouveMaxChar, index.php, lieux.php
-     * @return string Texte reduit avec $lienSuite
+     * L'ordre des opérations est imposé : tronquer, puis échapper, puis
+     * baliser. Le HTML étant produit après la coupe, aucune balise ne peut
+     * rester ouverte — d'où l'absence de toute machinerie de fermeture.
+     *
+     * $maxChars est un plafond de charge utile, pas un plafond de hauteur :
+     * le nombre de lignes réellement rendues dépend du retour à la ligne
+     * automatique, que PHP ne peut pas connaître. C'est le CSS (line-clamp)
+     * qui plafonne la hauteur là où il y en a un — voir isCut().
      */
-    public static function texteHtmlReduit($texteHtml, $limChar, $lienSuite = ""): string
+    public static function shortenToHtml(string $text, int $maxChars): string
     {
-        if (mb_strlen((string) $texteHtml) <= $limChar)
-        {
-            return $texteHtml;
-        }
+        $truncated = self::truncateWords($text, $maxChars);
+        $html = self::lnAndUrlToHtml(sanitizeForHtml($truncated));
 
-        //"-13" pour tenir compte du lien "lire la suite"
-        //$limChar -= 13;
-        //recoit le nouveau texte raccourci
-        $texteHtmlCourt = "";
+        return $truncated === $text ? $html : $html . '…';
+    }
 
-        //compteur
-        $i = 0;
-        //compteur des caract?res seulement, sans le html
-        $t = 0;
-        //1 si une balise html vient d'etre ouverte, 0 sinon
-        $ouvert = 0;
-        //pile stockant les tags htmls rencontre
-        $pileTags = [];
-        $nivPile = 0;
-
-        while ($t < $limChar)
-        {
-
-            //echo $texteHtml[$i];
-
-
-            if (isset($texteHtml[$i]) && isset($texteHtml[$i + 1]))
-            {
-                //si une balise ouvrante est trouve
-                if ($texteHtml[$i] == "<" && $texteHtml[$i + 1] != "/")
-                {
-                    $tag = "";
-                    $m = 0;
-
-                    //pour trouver quelle balise c'est, parcours du mot jusqu'a '>'
-                    for ($j = $i + 1; $texteHtml[$j] != " " && $texteHtml[$j] != ">"; $j++)
-                    {
-                        $tag[$m] = $texteHtml[$j];
-                        $m++;
-                    }
-
-                    //ajoute la balise ouvrante a la pile
-                    $pileTags[$nivPile] = $tag;
-                    //echo "Tag ajoute";
-                    //print_r($tag);
-                    $nivPile++;
-                    $ouvert = 1;
-                }
-
-                //si une balise fermante est trouve ('</' ou '/>')
-                if (($texteHtml[$i] == "<" && $texteHtml[$i + 1] == "/") || ($texteHtml[$i] == "/" && $texteHtml[$i + 1] == ">"))
-                {
-                    //la balise du dessus du tas est retiree, puisque fermee
-                    $nivPile--;
-                    //print_r($pileTags[$nivPile]);
-                    //echo " enleve";
-                    unset($pileTags[$nivPile]);
-
-                    //si c'est une balise fermante complete </ ...> et non <... />, ce sera du html ensuite
-                    if ($texteHtml[$i] == "<" && $texteHtml[$i + 1] == "/")
-                    {
-                        $ouvert = 1;
-                    }
-                }
-            }
-            //si un car. fermant est rencontre
-            if ($ouvert && $texteHtml[$i] == ">")
-            {
-                $ouvert = 0;
-            }
-
-            //si le car. evalue n'est pas du Html
-            if (!$ouvert)
-                $t++;
-
-
-            //ajout du car. au texte reduit
-            if (isset($texteHtml[$i]))
-                $texteHtmlCourt .= $texteHtml[$i];
-
-
-            $i++;
-        }
-
-        //echo "nivpile:".$nivPile;
-        //print_r($pileTags);
-        /*
-         * Continue le parcours du texte html jusqu'au prochain espace, la prochaine balise html ou la fin du texte
-         * et l'ajoute au texte reduit
-         */
-        $texteTaille = mb_strlen($texteHtml);
-        $t = 0;
-        $k = $i;
-    //	echo $texteTaille;
-    //	echo " ".$i;
-        while (isset($texteHtml[$k]) && $texteHtml[$k] != " " && $k < ($texteTaille - 1) && $texteHtml[$k] != "<")
-        {
-            $texteHtmlCourt .= $texteHtml[$k];
-            $t++;
-
-            $k++;
-
-            //echo "<p>".$k.":".$texteHtml[$k]."</p>";
-        }
-
-        $cloture = "...";
-
-        //verifie la pile de balises html et ajoute les balises fermantes manquantes
-        //echo "countpiletags:".count($pileTags);
-        $hauteur = count($pileTags) - 1;
-        //print_r($pileTags);
-        while ($hauteur >= 0)
-        {
-
-            $cloture .= "</";
-
-            //parcours le mot de balise courante de la pile et l'ajoute a $cloture
-
-            $pileTagsHauteurNb = count((is_countable($pileTags[$hauteur]) ? $pileTags[$hauteur] : []));
-            for ($n = 0, $pileTaille = $pileTagsHauteurNb; $n < $pileTaille; $n++)
-            {
-                if (isset($pileTags[$hauteur][$n]))
-                    $cloture .= $pileTags[$hauteur][$n];
-            }
-
-            $cloture .= ">";
-            //descent a la balise plus ancienne
-            $hauteur--;
-        }
-
-        //renvoie le texte reduit, les balises fermantes et le lien vers la suite
-        return $texteHtmlCourt . $cloture . $lienSuite;
+    /**
+     * shortenToHtml() a-t-elle coupé ce texte ?
+     *
+     * Permet de rendre côté serveur un lien « lire la suite » sans avoir à
+     * deviner en inspectant le HTML produit.
+     */
+    public static function isCut(string $text, int $maxChars): bool
+    {
+        return mb_strlen($text) > $maxChars;
     }
 
     /**

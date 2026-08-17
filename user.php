@@ -267,7 +267,7 @@ $colonnes = $get['elements'] === "evenement"
     : ["idLieu" => "Lieu", "contenu" => "Contenu", "type" => "Type", "dateAjout" => "Date d'ajout"];
 
 // Fragment commun à tous les liens de la page : identité, onglet, pagination et
-// filtre. Construit à la main plutôt qu'avec Utils::urlQueryArrayToString(), qui
+// filtre. Construit à la main plutôt qu'avec HtmlShrink::urlQueryArrayToString(), qui
 // n'encode pas les valeurs — un terme de recherche contenant & ou un espace
 // casserait les liens.
 $url_params = "idP=" . $get['idP'] . "&elements=" . $get['elements'] . "&nblignes=" . $get['nblignes'];

@@ -6,7 +6,6 @@ use Ladecadanse\UserLevel;
 use Ladecadanse\Utils\DateHelper;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\HtmlShrink;
-use Ladecadanse\Utils\Utils;
 use Ladecadanse\Personne;
 use Ladecadanse\EvenementRenderer;
 use Ladecadanse\Organisateur;
@@ -198,7 +197,7 @@ require_once '../_header.inc.php';
 
             <ul class="menu_nb_res">
                 <?php foreach ($tab_nblignes as $nb) : ?>
-                    <li <?php if ($nb == $_SESSION['user_prefs_users_nblignes']) : ?>class="ici"<?php endif; ?>><a href="?<?= Utils::urlQueryArrayToString($get, ['nblignes', 'page']) ?>&amp;nblignes=<?= (int)$nb ?>"><?= (int)$nb ?></a></li>
+                    <li <?php if ($nb == $_SESSION['user_prefs_users_nblignes']) : ?>class="ici"<?php endif; ?>><a href="?<?= HtmlShrink::urlQueryArrayToString($get, ['nblignes', 'page']) ?>&amp;nblignes=<?= (int)$nb ?>"><?= (int)$nb ?></a></li>
                 <?php endforeach; ?>
 
             </ul>

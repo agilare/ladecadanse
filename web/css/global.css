@@ -955,11 +955,24 @@ table .td-align-center
     width:100%;
 }
 
+    /*
+     * Flyer et description forment une rangée flex plutôt qu'un float suivi
+     * d'un bloc. L'étirement (align-items:stretch, la valeur par défaut) donne
+     * à la colonne du flyer la hauteur de la plus haute des deux : son fond gris
+     * descend donc jusqu'à .pratique quand la description déborde, liens
+     * d'organisateurs compris. En float, il s'arrêtait à sa hauteur fixe et
+     * laissait un trou blanc pouvant atteindre une centaine de pixels.
+     */
+    .evenement-short .event-media
+    {
+        display:flex;
+    }
+
     .evenement-short .flyer
     {
-        float:left;
+        flex:0 0 100px;
         width:100px;
-        height:140px;
+        min-height:140px; /* et non height : c'est ce qui autorise l'étirement */
         background:#efefef;
         overflow:hidden;
         margin-top:6px;
@@ -1018,6 +1031,14 @@ table .td-align-center
 
     .evenement-short .description
     {
+        flex:1 1 auto;
+        min-width:0; /* sans quoi un mot insécable empêcherait la colonne de rétrécir */
+        /*
+         * Seul le flyer s'étire : sans ce flex-start, la description hériterait
+         * elle aussi de align-items:stretch et son fond clair remplirait toute
+         * la rangée, ce qui change l'aspect des cartes à description courte.
+         */
+        align-self:flex-start;
         min-height:72px;
         padding:0.4em 0 0.4em 0.5em;
         margin:0;
@@ -1031,6 +1052,45 @@ table .td-align-center
         .evenement-short .description p
         {
             margin:0;
+
+            /*
+             * Plafonne la description à 5 lignes. C'est ici, et non en PHP, que
+             * la hauteur se décide : seul le navigateur connaît les lignes
+             * réellement rendues, celles des sauts de ligne comme celles du
+             * retour à la ligne automatique. Le plafond PHP
+             * (EvenementRenderer::DESCRIPTION_MAX_CHARS) ne borne que la charge
+             * utile envoyée, et reste volontairement plus généreux.
+             *
+             * 5 et non 6 : à 6 lignes le bloc atteignait 138 px pour un flyer de
+             * 140, donc le moindre lien d'organisateur étirait la colonne du
+             * flyer. La ligne rendue sert de tampon avant les organisateurs.
+             */
+            display:-webkit-box;
+            -webkit-box-orient:vertical;
+            -webkit-line-clamp:5;
+            line-clamp:5;
+            overflow:hidden;
+        }
+
+        /*
+         * Posé par PHP quand le texte est tronqué, révélé par le JS quand c'est
+         * le clamp qui coupe.
+         *
+         * Le :not([hidden]) n'est pas décoratif : sans lui, ce `display:block`
+         * (spécificité 0,3,0) écrase le `[hidden] { display:none }` de
+         * normalize.css (0,1,0) et le lien s'affiche sur toutes les cartes,
+         * attribut hidden ou pas.
+         */
+        .evenement-short .description .continuer:not([hidden])
+        {
+            /*
+             * inline-block, et non block : la boîte épouse son contenu, donc elle
+             * se pose à gauche tandis que la flèche de fond (background-position
+             * 100% 50%) reste collée au texte. En block, le lien s'alignait à
+             * droite du bloc et la flèche partait à l'autre bout.
+             */
+            display:inline-block;
+            margin-top:0.3em;
         }
 
         .evenement-short .description .event_orga

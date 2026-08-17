@@ -6,7 +6,6 @@ require_once("../app/bootstrap.php");
 
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\Utils\DateHelper;
-use Ladecadanse\Utils\Utils;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Evenement;
 use Ladecadanse\EvenementRenderer;
@@ -56,7 +55,7 @@ $mots = str_replace(",", " ", $mots);
 $mots = str_replace(":", " ", $mots);
 $tab_tous_mots = explode(" ", $mots);
 
-$mots_vides = Utils::listFileToArray(__ROOT__."/resources/stopwords_list.txt");
+$mots_vides = file(__ROOT__ . "/resources/stopwords_list.txt", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) ?: [];
 $tab_mots_sans_les_mots_vides = array_values(array_diff($tab_tous_mots, $mots_vides));
 $tab_mots_sans_les_mots_vides = array_filter($tab_mots_sans_les_mots_vides, function($v)
 {
@@ -210,7 +209,7 @@ $agenda_years = range((int)date("Y"), Evenement::AGENDA_START_YEAR);
         <ul id="menu_periode">
             <?php foreach ($tab_menu_periodes as $k => $label) : ?>
                 <li class="<?= $k ?><?php if ($get['periode'] == $k) : ?> ici<?php endif; ?>">
-                    <a href="?<?= Utils::urlQueryArrayToString($get, ['periode', 'page', 'years']) ?>&amp;periode=<?= $k ?>"><?= $label ?></a>
+                    <a href="?<?= HtmlShrink::urlQueryArrayToString($get, ['periode', 'page', 'years']) ?>&amp;periode=<?= $k ?>"><?= $label ?></a>
                 </li>
             <?php endforeach; ?>
             <div class="spacer"></div>
@@ -245,7 +244,7 @@ $agenda_years = range((int)date("Y"), Evenement::AGENDA_START_YEAR);
                     <li style="margin-right:5px"><i class="fa fa-sort-amount-asc" aria-hidden="true"></i></li>
                     <?php foreach ($tab_menu_tri as $k => $label) : ?>
                         <li class="<?= $k ?><?php if ($get['tri'] == $k) : ?> ici<?php endif; ?>">
-                            <a href="?<?= Utils::urlQueryArrayToString($get, ['tri', 'page']) ?>&amp;tri=<?= $k ?>"><?= $label ?></a>
+                            <a href="?<?= HtmlShrink::urlQueryArrayToString($get, ['tri', 'page']) ?>&amp;tri=<?= $k ?>"><?= $label ?></a>
                         </li>
                     <?php endforeach; ?>
                 </ul>
@@ -254,7 +253,7 @@ $agenda_years = range((int)date("Y"), Evenement::AGENDA_START_YEAR);
 
             <div class="spacer"></div>
 
-            <?= HtmlShrink::getPaginationString($all_results_nb, $get['page'], $results_per_page, 1, basename(__FILE__), "?" . Utils::urlQueryArrayToString($get, "page") . "&amp;page=") ?>
+            <?= HtmlShrink::getPaginationString($all_results_nb, $get['page'], $results_per_page, 1, basename(__FILE__), "?" . HtmlShrink::urlQueryArrayToString($get, "page") . "&amp;page=") ?>
 
             <table>
                 <tbody>
@@ -291,7 +290,7 @@ $agenda_years = range((int)date("Y"), Evenement::AGENDA_START_YEAR);
                     </tbody>
                 </table>
 
-                <?= HtmlShrink::getPaginationString($all_results_nb, $get['page'], $results_per_page, 1, basename(__FILE__), "?" . Utils::urlQueryArrayToString($get, "page") . "&amp;page="); ?>
+                <?= HtmlShrink::getPaginationString($all_results_nb, $get['page'], $results_per_page, 1, basename(__FILE__), "?" . HtmlShrink::urlQueryArrayToString($get, "page") . "&amp;page="); ?>
 
             <?php
             else:
