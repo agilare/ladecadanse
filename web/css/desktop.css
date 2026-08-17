@@ -230,7 +230,7 @@ float: left;
  * cette page, pour agrandir illustrations et description.
  * ------------------------------------------------------------------ */
 
-/* Le cadre et tous les blocs de la fiche calés à droite (en-tête avec la
+/* Le cadre, le message flash et les blocs calés à droite (en-tête avec la
    flèche « précédent », barre d'actions, navigation « suivant » du pied)
    débordent ensemble dans la colonne droite jusqu'au bord droit du bouton
    de recherche de l'en-tête, pour garder leurs bords droits alignés comme
@@ -238,6 +238,7 @@ float: left;
    -166px = largeur de la colonne droite (padding-right 180px de #conteneur)
    moins la gouttière de 1em (~14px) qui sépare ce bouton du bord de #global.
    Le bord gauche reste à 3% (aligné sur le titre). */
+.vevent-experimental .msg_ok,
 .vevent-experimental #entete_contenu,
 .vevent-experimental ul.menu_actions_evenement,
 .vevent-experimental #evenement,
