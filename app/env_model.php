@@ -31,6 +31,10 @@ define("EMAIL_SITE_NAME", 'La décadanse');
 define("EMAIL_ADMIN", ''); // recipient of site activity to watch, users requests (contact form, new event prop...) to process
 define("EMAIL_ADMIN_NAME", 'La décadanse');
 
+// envoie à EMAIL_ADMIN une copie de chaque mail adressé à un utilisateur, avec un sujet préfixé "[COPY]"
+// (destiné à de courtes périodes de monitoring : suivre la circulation des messages et leur rendu)
+define("EMAIL_COPY_TO_ADMIN", false);
+
 // external services
 define("TINYMCE_API_KEY", ''); // rich text editor for presentations of lieux and organisateurs
 

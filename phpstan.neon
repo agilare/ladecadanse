@@ -32,6 +32,7 @@ parameters:
         - ENV
         - MODE_DEBUG
         - EMAIL_SMTPAUTH
+        - EMAIL_COPY_TO_ADMIN
         - MATOMO_ENABLED
         - GLITCHTIP_ENABLED
         - DARKVISITORS_ENABLED
