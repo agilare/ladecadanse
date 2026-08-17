@@ -316,30 +316,6 @@ form#ajouter_editer .complete
         margin-left:115px;
 	}
 
-    /* Champs image (flyer / photo) : mise en page côte à côte, réservée aux admins.
-       Sans la classe .images-cote-a-cote, .champ-images reste un bloc et les éléments
-       s'empilent comme avant. */
-    form#ajouter_editer .images-cote-a-cote
-    {
-        display:flex;
-        flex-wrap:wrap;
-        align-items:flex-start;
-        column-gap:2em;
-    }
-
-        form#ajouter_editer .images-cote-a-cote .images-envoi
-        {
-            flex:1 1 320px;
-        }
-
-        /* dans la colonne de droite, l'aperçu n'a plus besoin de l'indentation qui l'alignait
-           sous les champs quand il était empilé */
-        form#ajouter_editer .images-cote-a-cote .supImg
-        {
-            margin-top:0;
-            margin-left:0;
-        }
-
 		form .supImg img
 		{
 			border:1px solid gray;

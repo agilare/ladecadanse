@@ -154,10 +154,6 @@ $can_notify_auteur =
 // donc indisponible sur le formulaire public "Proposer un événement"
 $can_import_image_url = isset($_SESSION['Sgroupe']);
 
-// Mise en page côte à côte des champs image (upload + URL à gauche, aperçu + suppression à droite),
-// réservée aux administrateurs (desktop) — expérimental
-$admin_images_cote_a_cote = isset($_SESSION['Sgroupe']) && (int) $_SESSION['Sgroupe'] <= UserLevel::ADMIN;
-
 // form values received
 $champs = ["statut" => "", "genre" => "", "titre" => "", "dateEvenement" => "", "idLieu" => 0,
  "idSalle" => 0, "nomLieu" => "", "adresse" => "", "quartier" => "",  "localite_id" => "", "region" => "", "urlLieu" => "", 'organisateurs' => '', "description" => "", "ref" => "",
@@ -1565,24 +1561,22 @@ if ($verif->nbErreurs() > 0)
 
         <p style="margin-left: 0.8em;margin-bottom:1.2em;font-weight: bold">Affiche/flyer</p>
 
-        <div class="champ-images<?php echo $admin_images_cote_a_cote ? ' images-cote-a-cote' : ''; ?>">
-            <div class="images-envoi">
-                <label for="flyer">Envoyer</label>
-                <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo UPLOAD_MAX_FILESIZE ?>" /> <!-- 2 Mo -->
-                <input type="file" name="flyer" id="flyer" class="js-file-upload-size-max" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif,image/webp" class="fichier" />
-                <?php if ($verif->nbErreurs() > 0 && !empty($fichiers['flyer']['name'])): ?>
-                    <div class="msg">Le fichier sélectionné a été retiré du formulaire par le navigateur (sécurité). Veuillez le sélectionner à nouveau.</div>
-                <?php endif; ?>
+        <p>
+            <label for="flyer">Envoyer</label>
+            <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo UPLOAD_MAX_FILESIZE ?>" /> <!-- 2 Mo -->
+            <input type="file" name="flyer" id="flyer" class="js-file-upload-size-max" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif,image/webp" class="fichier" />
+            <?php if ($verif->nbErreurs() > 0 && !empty($fichiers['flyer']['name'])): ?>
+                <div class="msg">Le fichier sélectionné a été retiré du formulaire par le navigateur (sécurité). Veuillez le sélectionner à nouveau.</div>
+            <?php endif; ?>
 
-                <?php if ($can_import_image_url): ?>
-                    <div class="clear"></div>
-                    <label for="flyer_url" class="ou-separateur">ou coller une URL</label>
-                    <input type="url" name="flyer_url" id="flyer_url" value="<?= sanitizeForHtml($url_flyer) ?>" placeholder="https://…" maxlength="2000" size="25">
-                    <?php echo $verif->getHtmlErreur('flyer_url'); ?>
-                <?php endif; ?>
+            <?php if ($can_import_image_url): ?>
+                <div class="clear"></div>
+                <label for="flyer_url" class="ou-separateur">ou coller une URL</label>
+                <input type="url" name="flyer_url" id="flyer_url" value="<?= sanitizeForHtml($url_flyer) ?>" placeholder="https://…" maxlength="2000" size="50">
+                <?php echo $verif->getHtmlErreur('flyer_url'); ?>
+            <?php endif; ?>
 
-                <?php echo $verif->getHtmlErreur("flyer"); ?>
-            </div>
+            <?php echo $verif->getHtmlErreur("flyer"); ?>
 
             <?php
             // affichage du flyer precedent, et du bouton pour supprimer
@@ -1607,44 +1601,49 @@ if ($verif->nbErreurs() > 0)
                     <?php
                 }
             ?>
-        </div>
+        </p>
             <div class="spacer"></div>
 
         <p style="margin-left: 0.8em;margin-bottom:0.3em;font-weight: bold">Photo</p>
         <div class="guideChamp" style="padding-left:0.8em;margin-top:0">Photo des artistes, de leurs œuvres, du lieu, etc.<br>Visible sous le flyer dans la page Événement</div>
-        <div class="champ-images<?php echo $admin_images_cote_a_cote ? ' images-cote-a-cote' : ''; ?>">
-            <div class="images-envoi">
-                <label for="image">Envoyer</label>
-                <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo UPLOAD_MAX_FILESIZE ?>" /> <!-- 2 Mo -->
-                <input type="file" name="image" id="image" class="js-file-upload-size-max" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif,image/webp" class="fichier" />
-                <div class="spacer"></div>
-                <?php if ($verif->nbErreurs() > 0 && !empty($fichiers['image']['name'])): ?>
-                    <div class="msg">Le fichier sélectionné a été retiré du formulaire par le navigateur (sécurité). Veuillez le sélectionner à nouveau</div>
-                <?php endif; ?>
+        <p>
+            <label for="image">Envoyer</label>
+            <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo UPLOAD_MAX_FILESIZE ?>" /> <!-- 2 Mo -->
+            <input type="file" name="image" id="image" class="js-file-upload-size-max" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif,image/webp" class="fichier" />
+            <div class="spacer"></div>
+            <?php if ($verif->nbErreurs() > 0 && !empty($fichiers['image']['name'])): ?>
+                <div class="msg">Le fichier sélectionné a été retiré du formulaire par le navigateur (sécurité). Veuillez le sélectionner à nouveau</div>
+            <?php endif; ?>
 
-                <?php if ($can_import_image_url): ?>
-                    <div class="clear"></div>
-                    <label for="image_url" class="ou-separateur">ou coller une URL</label>
-                    <input type="url" name="image_url" id="image_url" value="<?= sanitizeForHtml($url_image) ?>" placeholder="https://…" maxlength="2000" size="25">
-                    <?php echo $verif->getHtmlErreur('image_url'); ?>
-                <?php endif; ?>
+            <?php if ($can_import_image_url): ?>
+                <div class="clear"></div>
+                <label for="image_url" class="ou-separateur">ou coller une URL</label>
+                <input type="url" name="image_url" id="image_url" value="<?= sanitizeForHtml($url_image) ?>" placeholder="https://…" maxlength="2000" size="50">
+                <?php echo $verif->getHtmlErreur('image_url'); ?>
+            <?php endif; ?>
+        </p>
 
-                <?php echo $verif->getHtmlErreur("image"); ?>
-            </div>
+        <?php
+        echo $verif->getHtmlErreur("image");
 
-            <?php
-            //affichage de l'image et du bouton pour supprimer
-            if (isset($get['idE']) && !empty($champs['image']) && !$verif->getErreur('image'))
-            {
+        //affichage de l'image et du bouton pour supprimer
+        if (isset($get['idE']) && !empty($champs['image']) && !$verif->getErreur('image'))
+        {
+                echo "<div class=\"supImg\">";
             ?>
-            <div class="supImg">
                 <a href="<?= sanitizeForHtml($assets->get(Evenement::getAssetPath(Evenement::getFilePath($champs['image'])))) ?>" class="magnific-popup" target="_blank">
                     <img src="<?= sanitizeForHtml($assets->get(Evenement::getAssetPath(Evenement::getFilePath($champs['image'])))) ?>" alt="Photo" />
                 </a>
-                <div><label for="sup_image" class="continu">Supprimer</label><input type="checkbox" name="sup_image" id="sup_image" value="image" class="checkbox" <?php if (!empty($supprimer['image']) && $verif->nbErreurs() == 0) { echo 'checked="checked" '; } ?>/></div>
-            </div>
-            <?php } ?>
-        </div>
+                <?php
+            echo "<div><label for=\"sup_image\" class=\"continu\">Supprimer</label><input type=\"checkbox\" name=\"sup_image\" id=\"sup_image\" value=\"image\" class=\"checkbox\" ";
+
+            if (!empty($supprimer['image']) && $verif->nbErreurs() == 0)
+            {
+                echo 'checked="checked" ';
+            }
+            echo "/></div></div>";
+        }
+        ?>
     </fieldset>
 
     <?php if (!isset($_SESSION['Sgroupe']) || !empty($champs['user_email'])) { ?>
