@@ -27,7 +27,15 @@ class Sentry
 
         if ($_SESSION['logged'])
         {
-            $this->checkSession();
+            /*
+             * Une session qui ne se vérifie plus (compte désactivé ou supprimé, mot de
+             * passe changé ailleurs) doit être vidée : sans quoi elle conserve ses
+             * variables, et seul Authorization::checkGroup() barre encore la route.
+             */
+            if (!$this->checkSession())
+            {
+                $this->clearUserSession();
+            }
         }
         else if (!empty($_COOKIE['ladecadanse_remember']))
         {
@@ -35,49 +43,90 @@ class Sentry
         }
     }
 
+    /**
+     * Empreinte du mot de passe stockée en session.
+     *
+     * La session ne garde pas le hash lui-même : une empreinte suffit à détecter qu'il a
+     * changé, donc à invalider les sessions ouvertes ailleurs, sans exposer de quoi tenter
+     * une attaque hors ligne si le stockage des sessions venait à fuir.
+     *
+     * Publique : une page qui change le mot de passe de la personne connectée doit
+     * rafraîchir l'empreinte, sans quoi elle se déconnecterait elle-même (user-edit.php).
+     */
+    public static function passFingerprint(string $motDePasse): string
+    {
+        return hash('sha256', $motDePasse);
+    }
+
     /*
      * Si l'utilisateur est déjà loggé -> si la session est déjà remplie avec les valeurs de login
      */
     function checkSession(): bool
     {
+        if (empty($_SESSION['SidPersonne']) || empty($_SESSION['pass_fingerprint']))
+        {
+            return false;
+        }
+
         $sql_user = "
 		SELECT idPersonne, pseudo, mot_de_passe, cookie, groupe, region, email, gds
-		FROM personne WHERE
-		pseudo = '" . $this->connector->sanitize($_SESSION['user']) . "'
-				AND groupe = '" . $this->connector->sanitize($_SESSION['Sgroupe']) . "'
-				AND mot_de_passe='" . $this->connector->sanitize($_SESSION['pass']) . "'
-				 AND statut='actif'";
+		FROM personne
+		WHERE idPersonne = " . (int) $_SESSION['SidPersonne'] . " AND statut='actif'";
 
         $getUser = $this->connector->query($sql_user);
-        //	printr($this->userdata);
-        //Si au moins un enregistrement de personne est trouvé
-        if ($this->connector->getNumRows($getUser) == 1)
+
+        if ($this->connector->getNumRows($getUser) != 1)
         {
-            $this->userdata = $this->connector->fetchArray($getUser);
-
-            if ($_SESSION['pass'] == $this->userdata['mot_de_passe'])
-            {
-
-                $this->initSession(false, false);
-
-                return true;
-            }
-            else
-            {
-                unset($this->userdata);
-                $message = "Erreur de session (pass) : " . $_SESSION['user'] . ", sid:" . session_id();
-                return false;
-                // throw new \RuntimeException($message);
-            } // if pass
-        }
-        else
-        {
-
-            $message = "Erreur de session (requete) : " . $_SESSION['user'] . ", sid:" . session_id();
-            // throw new \RuntimeException($message);
             unset($this->userdata);
+
             return false;
-        } //if num rows
+        }
+
+        $userdata = $this->connector->fetchArray($getUser);
+
+        if (!hash_equals($_SESSION['pass_fingerprint'], self::passFingerprint($userdata['mot_de_passe'])))
+        {
+            unset($this->userdata);
+
+            return false;
+        }
+
+        $this->userdata = $userdata;
+
+        /*
+         * Rafraîchit groupe, e-mail, région et affiliation : un changement fait par
+         * un administrateur prend effet à la requête suivante.
+         */
+        $this->initSession(false, false);
+
+        return true;
+    }
+
+    /**
+     * Retire l'identité du visiteur de la session, sans toucher à ses préférences
+     * (région, tri de l'agenda...) ni poser le cookie de suivi propre à une
+     * déconnexion volontaire, que gère logout().
+     */
+    private function clearUserSession(): void
+    {
+        unset(
+            $this->userdata,
+            $_SESSION['SidPersonne'],
+            $_SESSION['user'],
+            $_SESSION['pass_fingerprint'],
+            $_SESSION['Sgroupe'],
+            $_SESSION['Semail'],
+            $_SESSION['Sregion'],
+            $_SESSION['Saffiliation_lieu']
+        );
+
+        // évite de conserver un identifiant de session périmé
+        if (session_status() === PHP_SESSION_ACTIVE)
+        {
+            session_regenerate_id(true);
+        }
+
+        $this->sessionDefaults();
     }
 
     /**
@@ -283,7 +332,7 @@ class Sentry
         //remplissage des variables de session
         $_SESSION["SidPersonne"] = $this->userdata["idPersonne"];
         $_SESSION["user"] = $this->userdata["pseudo"];
-        $_SESSION["pass"] = $this->userdata['mot_de_passe'];
+        $_SESSION['pass_fingerprint'] = self::passFingerprint($this->userdata['mot_de_passe']);
         $_SESSION["cookie"] = $this->userdata["cookie"];
         $_SESSION["logged"] = true;
 
