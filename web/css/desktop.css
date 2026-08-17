@@ -222,6 +222,72 @@ float: left;
 	margin-left: 160px;
 }
 
+/* ------------------------------------------------------------------ *
+ * Expérience admin : fiche événement élargie (desktop)
+ *
+ * Réservée aux administrateurs via la classe .vevent-experimental posée
+ * par event/evenement.php. But : occuper la colonne droite, vide sur
+ * cette page, pour agrandir illustrations et description.
+ * ------------------------------------------------------------------ */
+
+/* Le cadre et tous les blocs de la fiche calés à droite (en-tête avec la
+   flèche « précédent », barre d'actions, navigation « suivant » du pied)
+   débordent ensemble dans la colonne droite jusqu'au bord droit du bouton
+   de recherche de l'en-tête, pour garder leurs bords droits alignés comme
+   dans la mise en page normale.
+   -166px = largeur de la colonne droite (padding-right 180px de #conteneur)
+   moins la gouttière de 1em (~14px) qui sépare ce bouton du bord de #global.
+   Le bord gauche reste à 3% (aligné sur le titre). */
+.vevent-experimental #entete_contenu,
+.vevent-experimental ul.menu_actions_evenement,
+.vevent-experimental #evenement,
+.vevent-experimental #footer_navigation
+{
+	width: auto;
+	margin-left: 3%;
+	margin-right: -166px;
+}
+
+/* Colonne des illustrations et images élargies de 160 à 250px */
+.vevent-experimental #illustrations
+{
+	width: 250px;
+}
+
+.vevent-experimental #illustrations img
+{
+	width: auto; /* neutralise le width="160" de la 2e vignette */
+	max-width: 250px;
+}
+
+/* La description occupe le reste, ~500px : une douzaine de mots par ligne */
+.vevent-experimental #evenement #description
+{
+	margin-left: 250px;
+}
+
+/* Titre (catégorie + date) un peu plus grand ; width:auto pour qu'il ne
+   passe pas à la ligne à cette taille */
+.vevent-experimental #entete_contenu_titre
+{
+	width: auto;
+	font-size: 1.45em;
+}
+
+/* Bouton « événement précédent » réduit à sa seule flèche : le texte est
+   masqué (font-size:0) et l'icône rétablie. Ne vise que l'en-tête, pas la
+   navigation « suivant » du pied de page. Le libellé reste dans le DOM
+   pour les lecteurs d'écran. */
+.vevent-experimental #entete_contenu .entete_contenu_navigation .event-navig-link
+{
+	font-size: 0;
+}
+
+.vevent-experimental #entete_contenu .entete_contenu_navigation .event-navig-link .fa
+{
+	font-size: 1rem;
+}
+
 /* agenda */
 
 #evenements .evenement .description
