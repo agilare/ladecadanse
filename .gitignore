@@ -2,6 +2,9 @@ app/env.php
 app/db.config.php
 /nbproject
 /var/*
+!/var/cache
+/var/cache/*
+!var/cache/.gitkeep
 !/var/logs
 /var/logs/*
 !var/logs/.gitkeep
@@ -15,6 +18,11 @@ app/db.config.php
 !/web/uploads/evenements/
 /web/uploads/evenements/*
 !web/uploads/evenements/.gitkeep
+!/web/uploads/fichiers/
+/web/uploads/fichiers/*
+!/web/uploads/fichiers/lieux/
+/web/uploads/fichiers/lieux/*
+!web/uploads/fichiers/lieux/.gitkeep
 !/web/uploads/lieux/
 /web/uploads/lieux/*
 !web/uploads/lieux/.gitkeep
