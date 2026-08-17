@@ -11,6 +11,7 @@ use Ladecadanse\Evenement;
 use Ladecadanse\Lieu;
 use Ladecadanse\Organisateur;
 use Ladecadanse\Security\Authorization;
+use Ladecadanse\Security\AuthorizationRepository;
 use Ladecadanse\Security\Sentry;
 use Ladecadanse\Utils\DbConnector;
 use Ladecadanse\Utils\DbConnectorPdo;
@@ -93,7 +94,7 @@ $loggerApi->pushHandler($apiHandler);
 $connector = new DbConnector(DB_HOST, DB_NAME, DB_USERNAME, DB_PASSWORD);
 $connectorPdo = DbConnectorPdo::getInstance();
 
-$authorization = new Authorization();
+$authorization = new Authorization(new AuthorizationRepository($connectorPdo->getPDO()));
 
 $videur = new Sentry($connector);
 
