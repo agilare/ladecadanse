@@ -8,7 +8,7 @@ use Ladecadanse\Security\SecurityToken;
 use Ladecadanse\Utils\DateHelper;
 use Ladecadanse\Utils\Validateur;
 
-if (!$videur->checkGroup(8))
+if (!$authorization->checkGroup(8))
 {
     header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
     header("Location: /user-login.php"); die();

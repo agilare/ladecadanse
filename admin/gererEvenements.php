@@ -14,7 +14,7 @@ use Ladecadanse\EvenementRenderer;
 use Ladecadanse\Lieu;
 use Ladecadanse\Organisateur;
 
-if (!$videur->checkGroup(UserLevel::ADMIN))
+if (!$authorization->checkGroup(UserLevel::ADMIN))
 {
     header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
     exit;

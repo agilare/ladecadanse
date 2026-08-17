@@ -18,7 +18,7 @@ use Ladecadanse\Lieu;
 use Ladecadanse\Personne;
 use Ladecadanse\UserSettings;
 
-if (!$videur->checkGroup(UserLevel::ACTOR)) {
+if (!$authorization->checkGroup(UserLevel::ACTOR)) {
     header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
     header("Location: /user-login.php");
     die();

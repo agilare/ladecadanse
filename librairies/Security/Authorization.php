@@ -8,6 +8,30 @@ use Ladecadanse\Utils\DateHelper;
 class Authorization
 {
 
+    /**
+     * Le visiteur courant appartient-il à un groupe au moins aussi privilégié que $groupe ?
+     *
+     * Vient de Sentry, qui mêlait authentification et autorisation (#156). La requête est
+     * conservée telle quelle : elle revalide à chaque appel que le compte existe toujours
+     * et qu'il est actif, ce dont Sentry::checkSession() ne se charge pas (sa valeur de
+     * retour est ignorée par le constructeur).
+     */
+    public function checkGroup(int $groupe = UserLevel::MEMBER): bool
+    {
+        global $connector;
+
+        if (!isset($_SESSION['user'])) {
+            return false;
+        }
+
+        $getUser = $connector->query("
+        SELECT idPersonne, pseudo, mot_de_passe, cookie, groupe, email, gds
+        FROM personne
+        WHERE pseudo = '" . $connector->sanitize($_SESSION['user']) . "' AND groupe <= " . (int) $groupe . " AND statut='actif'");
+
+        return $connector->getNumRows($getUser) == 1;
+    }
+
     public function isPersonneEditor(array $sessionToReadonly): bool
     {
         return (isset($sessionToReadonly['Sgroupe']) && $sessionToReadonly['Sgroupe'] <= UserLevel::AUTHOR);

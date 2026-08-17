@@ -10,7 +10,7 @@ use Ladecadanse\Personne;
 use Ladecadanse\EvenementRenderer;
 use Ladecadanse\Organisateur;
 
-if (!$videur->checkGroup(UserLevel::ADMIN))
+if (!$authorization->checkGroup(UserLevel::ADMIN))
 {
     header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
 	header("Location: /user-login.php"); die();
