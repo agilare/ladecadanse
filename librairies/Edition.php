@@ -72,43 +72,33 @@ namespace Ladecadanse;
     }
 
 
-    function NextWizardPage() {}
-    //abstract
-
-    function Set($Name, $Value) {
-      $this->$Name = $Value;
-    }
-
-    function getErreur($champ)
+    function getErreur(string $champ): string
     {
-    	$erreur = $this->erreurs[$champ];
-    	return $erreur;
+    	$erreur = $this->erreurs[$champ] ?? '';
 
+    	return is_string($erreur) ? $erreur : '';
     }
 
+    /**
+     * Nombre de champs réellement en erreur.
+     *
+     * $erreurs est initialisé dans le constructeur avec toutes les clés de
+     * champs du formulaire, valeur vide ; seules celles que la vérification a
+     * remplies d'un message comptent comme des erreurs.
+     */
     function getNbErreurs(): int
     {
-
-    	return count($this->erreurs);
-
+    	return count(array_filter($this->erreurs, static fn($erreur): bool => !empty($erreur)));
     }
-    function getHtmlErreur($champ)
+
+    function getHtmlErreur(string $champ): ?string
     {
-    	if ($this->erreurs[$champ] != '')
+    	if (empty($this->erreurs[$champ]))
     	{
-    		return '<div class="msg">'.$this->erreurs[$champ].'</div>';
+    		return null;
     	}
-    }
 
-    function GetInitialValue($Name) {
-      if (isset($this->Values[$Name]))
-        return $this->Values[$Name];
-      else
-        return false;
-    }
-
-    function InitialValue($Name) {
-      echo $this->GetInitialValue($Name);
+    	return '<div class="msg">'.$this->erreurs[$champ].'</div>';
     }
 
     function setAction($action)
@@ -116,7 +106,7 @@ namespace Ladecadanse;
     	$this->action = $action;
     }
 
-    function getAction()
+    function getAction(): ?string
     {
     	return $this->action;
 
@@ -127,7 +117,7 @@ namespace Ladecadanse;
     	$this->message = $message;
     }
 
-    function getMessage()
+    function getMessage(): ?string
     {
     	return $this->message;
 
