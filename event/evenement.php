@@ -168,11 +168,16 @@ foreach ($events_of_day as $i => $e) {
 $events_siblings = [$events_of_day[$index - 1] ?? null, $events_of_day[$index + 1] ?? null];
 // END PREV-NEXT NAVIGATION
 
+// Expérience réservée aux administrateurs : mise en page élargie de la fiche en desktop.
+// Elle occupe la colonne droite, vide sur cette page. Tout le reste (largeur du cadre,
+// des illustrations, de la description, taille du titre, bouton « précédent ») est piloté
+// par la classe .vevent-experimental dans desktop.css, donc trivialement réversible.
+$evenementLayoutExperimental = isset($_SESSION['Sgroupe']) && (int) $_SESSION['Sgroupe'] <= UserLevel::ADMIN;
 
 include("../_header.inc.php");
 ?>
 
-<main id="contenu" class="colonne vevent">
+<main id="contenu" class="colonne vevent<?= $evenementLayoutExperimental ? ' vevent-experimental' : '' ?>">
 
     <?php if (!empty($_SESSION['evenement-edit_flash_msg'])) :
         HtmlShrink::msgOk($_SESSION['evenement-edit_flash_msg']);
