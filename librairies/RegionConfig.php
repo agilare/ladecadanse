@@ -26,14 +26,15 @@ class RegionConfig
      */
     public function setPersistentRegion(array $cookie, array $get): void
     {
-        // 1. défaut
-        if (empty($_SESSION['region']))
+        // 1. défaut — répare aussi une région invalide héritée d'une session existante
+        if (empty($_SESSION['region']) || !$this->isKnownRegion((string) $_SESSION['region']))
         {
             $_SESSION['region'] = self::DEFAULT;
         }
 
-        // 2. cookie
-        if (!empty($cookie['ladecadanse_region']))
+        // 2. cookie — validé comme la query string : un cookie trafiqué ne peut plus
+        //    injecter une région arbitraire en session
+        if (!empty($cookie['ladecadanse_region']) && $this->isKnownRegion((string) $cookie['ladecadanse_region']))
         {
             $_SESSION['region'] = $cookie['ladecadanse_region'];
         }
@@ -45,7 +46,7 @@ class RegionConfig
 
         // 3. query string
         $getRegion = strip_tags((string) $get['region']);
-        if (array_key_exists($getRegion, $this->regions))
+        if ($this->isKnownRegion($getRegion))
         {
             $_SESSION['region'] = $getRegion;
             $cookieOptions = [
@@ -59,6 +60,11 @@ class RegionConfig
 
             setcookie("ladecadanse_region", $getRegion, $cookieOptions);
         }
+    }
+
+    private function isKnownRegion(string $region): bool
+    {
+        return array_key_exists($region, $this->regions);
     }
 
     /**
