@@ -2,10 +2,9 @@
 
 namespace Ladecadanse\Utils;
 
-use Ladecadanse\Utils\SystemComponent;
 use mysqli_result;
 
-class DbConnector extends SystemComponent
+class DbConnector
 {
     private string $sql;
     private $dbConnection;

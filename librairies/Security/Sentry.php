@@ -3,13 +3,12 @@
 namespace Ladecadanse\Security;
 
 use Ladecadanse\UserLevel;
-use Ladecadanse\Utils\SystemComponent;
 use Ladecadanse\Utils\Validateur;
 
 /**
  * Lance la session et vérifie le login du visiteur
  */
-class Sentry extends SystemComponent
+class Sentry
 {
 
     /**
