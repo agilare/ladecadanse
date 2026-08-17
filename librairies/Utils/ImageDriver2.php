@@ -2,15 +2,13 @@
 
 namespace Ladecadanse\Utils;
 
-use Ladecadanse\Utils\SystemComponent;
-
 /**
  * Traite des images envoyées par upload via un champ 'file' de formulaire et
  * les stocke dans images/
  * Ce sont des flyers, photos et logos envoyés par les membres pour illustrer
  * un événement, une brêve ou un lieu
  */
-class ImageDriver2 extends SystemComponent {
+class ImageDriver2 {
 
     /**
      * La liste des formats d'images acceptés

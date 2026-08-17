@@ -11,13 +11,14 @@ use Ladecadanse\Evenement;
 use Ladecadanse\Lieu;
 use Ladecadanse\Organisateur;
 use Ladecadanse\Security\Authorization;
+use Ladecadanse\Security\AuthorizationRepository;
 use Ladecadanse\Security\Sentry;
 use Ladecadanse\Utils\DbConnector;
 use Ladecadanse\Utils\DbConnectorPdo;
 use Monolog\Logger;
 use Monolog\Handler\RotatingFileHandler;
 use Monolog\Formatter\LineFormatter;
-use Ladecadanse\Utils\RegionConfig;
+use Ladecadanse\RegionConfig;
 use Ladecadanse\TemplateEngine;
 use Ladecadanse\Translator;
 use Whoops\Handler\PrettyPageHandler;
@@ -58,6 +59,7 @@ session_start([
 
 
 $regionConfig = new RegionConfig($glo_regions);
+$regionConfig->setPersistentRegion($_COOKIE, $_GET);
 [$url_query_region, $url_query_region_et, $url_query_region_1er] = $regionConfig->getAppVars();
 
 $_SESSION['user_prefs_agenda_order'] = $_SESSION['user_prefs_agenda_order'] ?? 'dateAjout';
@@ -93,9 +95,9 @@ $loggerApi->pushHandler($apiHandler);
 $connector = new DbConnector(DB_HOST, DB_NAME, DB_USERNAME, DB_PASSWORD);
 $connectorPdo = DbConnectorPdo::getInstance();
 
-$authorization = new Authorization();
+$authorization = new Authorization(new AuthorizationRepository($connectorPdo->getPDO()));
 
-$videur = new Sentry();
+$videur = new Sentry($connector);
 
 $tplEngine = new TemplateEngine(__DIR__ . "/../resources/");
 

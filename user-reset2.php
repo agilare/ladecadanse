@@ -6,7 +6,7 @@ use Ladecadanse\UserLevel;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\HtmlShrink;
 
-if ($videur->checkGroup(UserLevel::MEMBER)) {
+if ($authorization->checkGroup(UserLevel::MEMBER)) {
 	header("Location: index.php"); die();
 }
 

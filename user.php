@@ -20,7 +20,7 @@ use Ladecadanse\Utils\Text;
 // laissaient auparavant un document tronqué, sans </main> ni pied de page.
 // =============================================================================
 
-if (!$videur->checkGroup(UserLevel::MEMBER))
+if (!$authorization->checkGroup(UserLevel::MEMBER))
 {
     header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
     header("Location: /user-login.php");

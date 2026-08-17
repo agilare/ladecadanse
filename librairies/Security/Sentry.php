@@ -3,13 +3,13 @@
 namespace Ladecadanse\Security;
 
 use Ladecadanse\UserLevel;
-use Ladecadanse\Utils\SystemComponent;
+use Ladecadanse\Utils\DbConnector;
 use Ladecadanse\Utils\Validateur;
 
 /**
  * Lance la session et vérifie le login du visiteur
  */
-class Sentry extends SystemComponent
+class Sentry
 {
 
     /**
@@ -18,7 +18,7 @@ class Sentry extends SystemComponent
      */
     private array $userdata;
 
-    function __construct()
+    function __construct(private readonly DbConnector $connector)
     {
         if (!isset($_SESSION['logged']))
         {
@@ -27,7 +27,15 @@ class Sentry extends SystemComponent
 
         if ($_SESSION['logged'])
         {
-            $this->checkSession();
+            /*
+             * Une session qui ne se vérifie plus (compte désactivé ou supprimé, mot de
+             * passe changé ailleurs) doit être vidée : sans quoi elle conserve ses
+             * variables, et seul Authorization::checkGroup() barre encore la route.
+             */
+            if (!$this->checkSession())
+            {
+                $this->clearUserSession();
+            }
         }
         else if (!empty($_COOKIE['ladecadanse_remember']))
         {
@@ -35,52 +43,90 @@ class Sentry extends SystemComponent
         }
     }
 
+    /**
+     * Empreinte du mot de passe stockée en session.
+     *
+     * La session ne garde pas le hash lui-même : une empreinte suffit à détecter qu'il a
+     * changé, donc à invalider les sessions ouvertes ailleurs, sans exposer de quoi tenter
+     * une attaque hors ligne si le stockage des sessions venait à fuir.
+     *
+     * Publique : une page qui change le mot de passe de la personne connectée doit
+     * rafraîchir l'empreinte, sans quoi elle se déconnecterait elle-même (user-edit.php).
+     */
+    public static function passFingerprint(string $motDePasse): string
+    {
+        return hash('sha256', $motDePasse);
+    }
+
     /*
      * Si l'utilisateur est déjà loggé -> si la session est déjà remplie avec les valeurs de login
      */
     function checkSession(): bool
     {
-
-        global $connector;
+        if (empty($_SESSION['SidPersonne']) || empty($_SESSION['pass_fingerprint']))
+        {
+            return false;
+        }
 
         $sql_user = "
 		SELECT idPersonne, pseudo, mot_de_passe, cookie, groupe, region, email, gds
-		FROM personne WHERE
-		pseudo = '" . $connector->sanitize($_SESSION['user']) . "'
-				AND groupe = '" . $connector->sanitize($_SESSION['Sgroupe']) . "'
-				AND mot_de_passe='" . $connector->sanitize($_SESSION['pass']) . "'
-				 AND statut='actif'";
+		FROM personne
+		WHERE idPersonne = " . (int) $_SESSION['SidPersonne'] . " AND statut='actif'";
 
-        $getUser = $connector->query($sql_user);
-        //	printr($this->userdata);
-        //Si au moins un enregistrement de personne est trouvé
-        if ($connector->getNumRows($getUser) == 1)
+        $getUser = $this->connector->query($sql_user);
+
+        if ($this->connector->getNumRows($getUser) != 1)
         {
-            $this->userdata = $connector->fetchArray($getUser);
-
-            if ($_SESSION['pass'] == $this->userdata['mot_de_passe'])
-            {
-
-                $this->_setSession($this->userdata, false, false);
-
-                return true;
-            }
-            else
-            {
-                unset($this->userdata);
-                $message = "Erreur de session (pass) : " . $_SESSION['user'] . ", sid:" . session_id();
-                return false;
-                // throw new \RuntimeException($message);
-            } // if pass
-        }
-        else
-        {
-
-            $message = "Erreur de session (requete) : " . $_SESSION['user'] . ", sid:" . session_id();
-            // throw new \RuntimeException($message);
             unset($this->userdata);
+
             return false;
-        } //if num rows
+        }
+
+        $userdata = $this->connector->fetchArray($getUser);
+
+        if (!hash_equals($_SESSION['pass_fingerprint'], self::passFingerprint($userdata['mot_de_passe'])))
+        {
+            unset($this->userdata);
+
+            return false;
+        }
+
+        $this->userdata = $userdata;
+
+        /*
+         * Rafraîchit groupe, e-mail, région et affiliation : un changement fait par
+         * un administrateur prend effet à la requête suivante.
+         */
+        $this->initSession(false, false);
+
+        return true;
+    }
+
+    /**
+     * Retire l'identité du visiteur de la session, sans toucher à ses préférences
+     * (région, tri de l'agenda...) ni poser le cookie de suivi propre à une
+     * déconnexion volontaire, que gère logout().
+     */
+    private function clearUserSession(): void
+    {
+        unset(
+            $this->userdata,
+            $_SESSION['SidPersonne'],
+            $_SESSION['user'],
+            $_SESSION['pass_fingerprint'],
+            $_SESSION['Sgroupe'],
+            $_SESSION['Semail'],
+            $_SESSION['Sregion'],
+            $_SESSION['Saffiliation_lieu']
+        );
+
+        // évite de conserver un identifiant de session périmé
+        if (session_status() === PHP_SESSION_ACTIVE)
+        {
+            session_regenerate_id(true);
+        }
+
+        $this->sessionDefaults();
     }
 
     /**
@@ -94,11 +140,8 @@ class Sentry extends SystemComponent
      * @return boolean True si les infos entrée en login OU si les données de session
      * 				se vérifient dans la base
      */
-    function checkLogin($user = '', $pass = '', $group = UserLevel::MEMBER, $goodRedirect = '', $badRedirect = '', $memoriser = false)
+    function checkLogin($user = '', $pass = '', $group = UserLevel::MEMBER, $goodRedirect = '', $badRedirect = '', $memoriser = false): bool
     {
-
-        /* Appel de l'instance de la classe d'accès à la BD */
-        global $connector;
         global $logger;
 
         $valide = new Validateur();
@@ -132,15 +175,15 @@ class Sentry extends SystemComponent
 
             if ($isEmail)
             {
-                $safeUser = $connector->sanitize($user);
+                $safeUser = $this->connector->sanitize($user);
                 $sql = "
 				SELECT idPersonne, pseudo, mot_de_passe, cookie, groupe, region, email, gds
 				FROM personne
 				WHERE (pseudo = '$safeUser' OR email = '$safeUser') AND groupe <= " . $group . " AND statut='actif'";
 
-                $getUser = $connector->query($sql);
+                $getUser = $this->connector->query($sql);
 
-                if ($connector->getNumRows($getUser) > 1)
+                if ($this->connector->getNumRows($getUser) > 1)
                 {
                     $logger->warning('[Sentry] login failed, ambiguous email', ['email' => $user]);
                     unset($this->userdata);
@@ -157,14 +200,14 @@ class Sentry extends SystemComponent
                 $sql = "
 				SELECT idPersonne, pseudo, mot_de_passe, cookie, groupe, region, email, gds
 				FROM personne
-				WHERE pseudo = '" . $connector->sanitize($user) . "' AND groupe <= " . $group . " AND statut='actif'";
+				WHERE pseudo = '" . $this->connector->sanitize($user) . "' AND groupe <= " . $group . " AND statut='actif'";
 
-                $getUser = $connector->query($sql);
+                $getUser = $this->connector->query($sql);
             }
 
-            if ($connector->getNumRows($getUser) == 1)
+            if ($this->connector->getNumRows($getUser) == 1)
             {
-                $this->userdata = $connector->fetchArray($getUser);
+                $this->userdata = $this->connector->fetchArray($getUser);
 
                 $isPassCorrectOldMethod = sha1($this->userdata['gds'] . sha1($pass)) === $this->userdata['mot_de_passe'];
                 $isPassCorrectNewMethod = password_verify($pass, $this->userdata['mot_de_passe']);
@@ -180,9 +223,9 @@ class Sentry extends SystemComponent
                         $this->userdata['mot_de_passe'] = $newPassHash;
                     }
 
-                    $connector->query("UPDATE personne SET last_login = now() $sql_update_pass WHERE idPersonne=".(int)$this->userdata['idPersonne']);
+                    $this->connector->query("UPDATE personne SET last_login = now() $sql_update_pass WHERE idPersonne=".(int)$this->userdata['idPersonne']);
                     session_regenerate_id(true); // to avoid session fixation attack
-                    $this->_setSession($this->userdata, $memoriser);
+                    $this->initSession($memoriser);
                     $logger->info('[Sentry] login', ['user' => $_SESSION["user"]]);
 
 
@@ -241,24 +284,23 @@ class Sentry extends SystemComponent
         } //if erreurs
     }
 
-    function checkRemembered($cookie)
+    function checkRemembered(string $cookie): bool
     {
-        global $connector;
         global $logger;
 
         $sql_getUser = "SELECT idPersonne, pseudo, mot_de_passe, cookie, groupe, region, email, gds
 						FROM personne
-						WHERE cookie='" . $connector->sanitize($cookie) . "'
+						WHERE cookie='" . $this->connector->sanitize($cookie) . "'
 						 AND statut='actif'";
 
-        $getUser = $connector->query($sql_getUser);
+        $getUser = $this->connector->query($sql_getUser);
 
-        if ($connector->getNumRows($getUser) > 0)
+        if ($this->connector->getNumRows($getUser) > 0)
         {
 
-            $this->userdata = $connector->fetchArray($getUser);
+            $this->userdata = $this->connector->fetchArray($getUser);
             session_regenerate_id(true); // to avoid session fixation attack
-            $this->_setSession($this->userdata, true, true);
+            $this->initSession(true, true);
             $logger->info('[Sentry] remembered access', ['user' => $_SESSION["user"], 'email' => $_SESSION['Semail']]);
             return true;
         }
@@ -272,21 +314,25 @@ class Sentry extends SystemComponent
 
 //function
 
-    function _setSession($valeurs, $memoriser, $init = true)
+    /**
+     * Remplit les variables de session à partir de $this->userdata.
+     *
+     * @param bool $memoriser pose le cookie « se souvenir de moi »
+     * @param bool $init      renouvelle le jeton opaque stocké en base
+     */
+    function initSession(bool $memoriser, bool $init = true): void
     {
-        global $connector;
-
-        $req_affiliation = $connector->query("
+        $req_affiliation = $this->connector->query("
 		SELECT idAffiliation
 		FROM affiliation
 		WHERE idPersonne='" . (int) $this->userdata["idPersonne"] . "' AND genre='lieu'");
 
-        $tab_affiliation = $connector->fetchArray($req_affiliation);
+        $tab_affiliation = $this->connector->fetchArray($req_affiliation);
 
         //remplissage des variables de session
         $_SESSION["SidPersonne"] = $this->userdata["idPersonne"];
         $_SESSION["user"] = $this->userdata["pseudo"];
-        $_SESSION["pass"] = $this->userdata['mot_de_passe'];
+        $_SESSION['pass_fingerprint'] = self::passFingerprint($this->userdata['mot_de_passe']);
         $_SESSION["cookie"] = $this->userdata["cookie"];
         $_SESSION["logged"] = true;
 
@@ -312,13 +358,13 @@ class Sentry extends SystemComponent
         if ($init)
         {
             $sql = "UPDATE personne
-			SET cookie='" . $connector->sanitize($cookie) . "' WHERE idPersonne=" . (int)$this->userdata['idPersonne'];
+			SET cookie='" . $this->connector->sanitize($cookie) . "' WHERE idPersonne=" . (int)$this->userdata['idPersonne'];
             //echo $sql;
-            $connector->query($sql);
+            $this->connector->query($sql);
         }
     }
 
-    function updateCookie($cookie, $sauvegarder)
+    function updateCookie(string $cookie, bool $sauvegarder): void
     {
         $_SESSION['cookie'] = $cookie;
 
@@ -340,7 +386,7 @@ class Sentry extends SystemComponent
           exit; */
     }
 
-    function sessionDefaults()
+    function sessionDefaults(): void
     {
         $_SESSION['logged'] = false;
         $_SESSION["memoriser"] = false;
@@ -348,41 +394,18 @@ class Sentry extends SystemComponent
         $_SESSION["groupe"] = 20;
     }
 
-    function checkGroup($groupe = UserLevel::MEMBER)
+    /**
+     * Jeton opaque de 32 caractères hexadécimaux, à la mesure de personne.cookie
+     */
+    function token(): string
     {
-        global $connector;
-
-        if (!isset($_SESSION['user'])) {
-            return false;
-        }
-
-        $getUser = $connector->query("
-        SELECT idPersonne, pseudo, mot_de_passe, cookie, groupe, email, gds
-        FROM personne
-        WHERE pseudo = '" . $connector->sanitize($_SESSION['user']) . "' AND groupe <= " . (int) $groupe . " AND statut='actif'");
-
-        if ($connector->getNumRows($getUser) == 1) {
-            return true;
-        }
-
-        return false;
-    }
-
-    function token()
-    {
-        // generate a random token
-        $seed = "";
-        for ($i = 1; $i < 33; $i++)
-        {
-            $seed .= chr(random_int(0, 255));
-        }
-        return md5($seed);
+        return bin2hex(random_bytes(16));
     }
 
     /**
      * Détruit les données d'utilisateur de l'objet, la session et stoppe le script
      */
-    function logout()
+    function logout(): void
     {
         unset($this->userdata);
         session_regenerate_id(true); // to avoid session fixation attack

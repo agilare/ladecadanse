@@ -204,7 +204,7 @@ include("_header.inc.php");
 
     <?php
     // private banner enabled (by admin) and not yet closed (by user)
-    if ($videur->checkGroup(UserLevel::ACTOR) && HOME_TMP_BACK_BANNER_ENABLED && !isset($_COOKIE['home_tmp_back_banner'])) : ?>
+    if ($authorization->checkGroup(UserLevel::ACTOR) && HOME_TMP_BACK_BANNER_ENABLED && !isset($_COOKIE['home_tmp_back_banner'])) : ?>
         <div id="home_tmp_back_banner" class="alert-info">
             <h2><?= HOME_TMP_BACK_BANNER_TITLE; ?></h2><a href="#" class="js-alert-close-btn close">&times;</a>
             <p><?= HOME_TMP_BACK_BANNER_CONTENT; ?></p>

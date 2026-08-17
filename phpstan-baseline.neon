@@ -1,5 +1,15 @@
 parameters:
 	ignoreErrors:
+		# getAppVars() est marqué @deprecated (#158) mais reste appelé ici : 8 usages
+		# dans les templates (_header.inc.php, _navigation_calendrier.inc.php) lisent
+		# encore les globales qu'il alimente. Appel intentionnel, migration suivie
+		# hors de #158 ; à retirer quand les liens seront composés depuis la région.
+		-
+			message: '#^Call to deprecated method getAppVars\(\) of class Ladecadanse\\RegionConfig\:#'
+			identifier: method.deprecated
+			count: 1
+			path: app/bootstrap.php
+
 		-
 			message: '#^Loose comparison using \!\= between ''adresse''\|''description''\|''flyer''\|''genre''\|''horaire_complement''\|''horaire_debut''\|''horaire_fin''\|''idLieu''\|''idSalle''\|''image''\|''localite_id''\|''nomLieu''\|''organisateurs''\|''prelocations''\|''prix''\|''quartier''\|''ref''\|''region''\|''statut''\|''titre''\|''urlLieu'' and ''idPersonne'' will always evaluate to true\.$#'
 			identifier: notEqual.alwaysTrue
@@ -77,12 +87,6 @@ parameters:
 			identifier: nullCoalesce.expr
 			count: 1
 			path: librairies/Organisateur.php
-
-		-
-			message: '#^Calling md5\(\) is forbidden, use hash\(\) with at least SHA\-256 for secure hash, or password_hash\(\) for passwords\.$#'
-			identifier: disallowed.function
-			count: 1
-			path: librairies/Security/Sentry.php
 
 		-
 			message: '#^Calling sha1\(\) is forbidden, use hash\(\) with at least SHA\-256 for secure hash, or password_hash\(\) for passwords\.$#'

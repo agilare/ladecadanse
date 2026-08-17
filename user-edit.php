@@ -13,12 +13,13 @@ require_once("app/bootstrap.php");
 use Ladecadanse\UserLevel;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Security\SecurityToken;
+use Ladecadanse\Security\Sentry;
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\Lieu;
 use Ladecadanse\Personne;
 use Ladecadanse\UserSettings;
 
-if (!$videur->checkGroup(UserLevel::ACTOR)) {
+if (!$authorization->checkGroup(UserLevel::ACTOR)) {
     header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
     header("Location: /user-login.php");
     die();
@@ -395,7 +396,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 
 					if (isset($champs['mot_de_passe']) && !empty($champs['mot_de_passe']))
 					{
-						$_SESSION["pass"] = $champs['mot_de_passe'];
+						// sans quoi checkSession() invaliderait la session à la requête suivante
+						$_SESSION['pass_fingerprint'] = Sentry::passFingerprint($champs['mot_de_passe']);
 					}
 
 					if (!empty($champs['groupe']))

@@ -8,7 +8,7 @@ use Ladecadanse\Utils\DateHelper;
 
 header('X-Robots-Tag: noindex');
 
-if (!$videur->checkGroup(UserLevel::ACTOR)) {
+if (!$authorization->checkGroup(UserLevel::ACTOR)) {
 	header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
     die();
 }

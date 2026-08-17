@@ -8,7 +8,7 @@ use Ladecadanse\OrganisateurEdition;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\HtmlShrink;
 
-if (!$videur->checkGroup(8))
+if (!$authorization->checkGroup(8))
 {
     header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
 	header("Location: /user-login.php");

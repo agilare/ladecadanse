@@ -8,7 +8,7 @@ use Ladecadanse\Utils\Validateur;
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\UserLevel;
 
-if (!$videur->checkGroup(UserLevel::ACTOR)) {
+if (!$authorization->checkGroup(UserLevel::ACTOR)) {
     header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
     header("Location: /user-login.php");
     die();
