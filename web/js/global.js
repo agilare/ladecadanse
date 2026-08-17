@@ -136,6 +136,64 @@ export const AppGlobal =
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             });
         }
+
+        this.readMoreOnClippedDescriptions();
+    },
+    /**
+     * Le CSS plafonne les descriptions des cartes d'événement à 6 lignes
+     * (line-clamp). PHP pose déjà le lien « Lire la suite » quand il a tronqué
+     * en caractères, mais il ne peut pas savoir si le navigateur a rogné le
+     * texte : cela dépend du retour à la ligne automatique, donc de la largeur
+     * de la colonne et de la taille de police. On révèle donc le lien sur les
+     * blocs réellement coupés, et on resynchronise au redimensionnement, où le
+     * nombre de lignes rendues change.
+     *
+     * Sans JS, seul le lien posé par PHP reste visible : c'est le comportement
+     * d'avant le line-clamp, pas une régression.
+     */
+    readMoreOnClippedDescriptions : function revealReadMoreLinkOnClippedDescriptions()
+    {
+        const descriptions = document.querySelectorAll('.evenement-short .description .js-description-clamp');
+        if (descriptions.length === 0)
+        {
+            return;
+        }
+
+        // mémorise la décision du serveur : elle ne doit jamais être défaite
+        descriptions.forEach(function memorizeServerDecision(paragraph)
+        {
+            const link = paragraph.parentNode.querySelector('.js-lire-la-suite');
+            if (link)
+            {
+                link.dataset.shownByServer = link.hidden ? '0' : '1';
+            }
+        });
+
+        function syncReadMoreLinks()
+        {
+            descriptions.forEach(function toggleOneLink(paragraph)
+            {
+                const link = paragraph.parentNode.querySelector('.js-lire-la-suite');
+                if (!link)
+                {
+                    return;
+                }
+
+                // 1px de marge : les hauteurs sous-pixel font mentir la comparaison stricte
+                const isClipped = paragraph.scrollHeight > paragraph.clientHeight + 1;
+
+                link.hidden = (link.dataset.shownByServer === '0' && !isClipped);
+            });
+        }
+
+        syncReadMoreLinks();
+
+        let resyncTimer = null;
+        window.addEventListener('resize', function scheduleResync()
+        {
+            window.clearTimeout(resyncTimer);
+            resyncTimer = window.setTimeout(syncReadMoreLinks, FADE_SPEED_SHORT_IN_MS);
+        }, { passive: true });
     },
     /**
      * only used in mobile view

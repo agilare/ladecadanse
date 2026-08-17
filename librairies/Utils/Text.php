@@ -175,19 +175,28 @@ class Text
      * baliser. Le HTML étant produit après la coupe, aucune balise ne peut
      * rester ouverte — d'où l'absence de toute machinerie de fermeture.
      *
-     * @param string $moreLink HTML ajouté seulement si le texte a été coupé
+     * $maxChars est un plafond de charge utile, pas un plafond de hauteur :
+     * le nombre de lignes réellement rendues dépend du retour à la ligne
+     * automatique, que PHP ne peut pas connaître. C'est le CSS (line-clamp)
+     * qui plafonne la hauteur là où il y en a un — voir isCut().
      */
-    public static function shortenToHtml(string $text, int $maxChars, string $moreLink = ''): string
+    public static function shortenToHtml(string $text, int $maxChars): string
     {
         $truncated = self::truncateWords($text, $maxChars);
         $html = self::lnAndUrlToHtml(sanitizeForHtml($truncated));
 
-        if ($truncated === $text)
-        {
-            return $html;
-        }
+        return $truncated === $text ? $html : $html . '…';
+    }
 
-        return $html . '…' . $moreLink;
+    /**
+     * shortenToHtml() a-t-elle coupé ce texte ?
+     *
+     * Permet de rendre côté serveur un lien « lire la suite » sans avoir à
+     * deviner en inspectant le HTML produit.
+     */
+    public static function isCut(string $text, int $maxChars): bool
+    {
+        return mb_strlen($text) > $maxChars;
     }
 
     /**

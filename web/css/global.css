@@ -1031,6 +1031,27 @@ table .td-align-center
         .evenement-short .description p
         {
             margin:0;
+
+            /*
+             * Plafonne la description à 6 lignes. C'est ici, et non en PHP, que
+             * la hauteur se décide : seul le navigateur connaît les lignes
+             * réellement rendues, celles des sauts de ligne comme celles du
+             * retour à la ligne automatique. Le plafond PHP
+             * (EvenementRenderer::DESCRIPTION_MAX_CHARS) ne borne que la charge
+             * utile envoyée.
+             */
+            display:-webkit-box;
+            -webkit-box-orient:vertical;
+            -webkit-line-clamp:6;
+            line-clamp:6;
+            overflow:hidden;
+        }
+
+        /* posé par PHP quand le texte est tronqué, révélé par le JS quand c'est le clamp qui coupe */
+        .evenement-short .description .continuer
+        {
+            display:block;
+            margin-top:0.3em;
         }
 
         .evenement-short .description .event_orga
