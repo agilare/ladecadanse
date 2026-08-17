@@ -314,7 +314,7 @@
         ["css=p:nth-child(2)", "css:finder"],
         ["xpath=//div[@id='contenu']/div[2]/p", "xpath:idRelative"],
         ["xpath=//p", "xpath:position"],
-        ["xpath=//p[contains(.,'La décadanse est un agenda culturel pour les régions de Genève et Lausanne composé d’une sélection d’événements. Ceux-ci, ainsi que les lieux et organisateurs publiés sur le site, doivent correspondre à certains critères qui définissent notre charte éditoriale.')]", "xpath:innerText"]
+        ["xpath=//p[contains(.,'La décadanse est un agenda culturel pour les régions de Genève et Vaud composé d’une sélection d’événements. Ceux-ci, ainsi que les lieux et organisateurs publiés sur le site, doivent correspondre à certains critères qui définissent cette charte éditoriale.')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
@@ -3697,15 +3697,15 @@
       "id": "e21aaf25-9f85-4a6e-99b3-efc5e8c42886",
       "comment": "",
       "command": "click",
-      "target": "linkText=Lausanne",
+      "target": "linkText=Vaud",
       "targets": [
-        ["linkText=Lausanne", "linkText"],
+        ["linkText=Vaud", "linkText"],
         ["css=.vd", "css:finder"],
-        ["xpath=//a[contains(text(),'Lausanne')]", "xpath:link"],
+        ["xpath=//a[contains(text(),'Vaud')]", "xpath:link"],
         ["xpath=//div[@id='entete_contenu']/ul/li[2]/a", "xpath:idRelative"],
         ["xpath=//a[contains(@href, '?region=vd&idL=')]", "xpath:href"],
         ["xpath=//div[2]/ul/li[2]/a", "xpath:position"],
-        ["xpath=//a[contains(.,'Lausanne ')]", "xpath:innerText"]
+        ["xpath=//a[contains(.,'Vaud ')]", "xpath:innerText"]
       ],
       "value": ""
     }, {

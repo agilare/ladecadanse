@@ -18,7 +18,7 @@ include("../_header.inc.php");
 
         <h2><a id="Gnralits_0"></a>Généralités</h2>
 
-        <p>La décadanse est un agenda culturel pour les régions de Genève et Lausanne composé d’une sélection d’événements. Ceux-ci, ainsi que les lieux et organisateurs publiés sur le site, doivent correspondre à certains critères qui définissent cette charte éditoriale.</p>
+        <p>La décadanse est un agenda culturel pour les régions de Genève et Vaud composé d’une sélection d’événements. Ceux-ci, ainsi que les lieux et organisateurs publiés sur le site, doivent correspondre à certains critères qui définissent cette charte éditoriale.</p>
         <p>Les contenus ajoutés par des tiers qui ne respectent pas cette charte sont corrigés ou dépubliés par un administrateur du site.</p>
 
         <p>Le souhait est de promouvoir en particulier les acteurs de la culture alternative, désintéressés, jouant un rôle social et culturel. En revanche le soin est laissé à d’autres agendas la diffusion les événements plus conventionnels et/ou à intention plus commerciale.</p>
