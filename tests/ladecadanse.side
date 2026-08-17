@@ -5506,15 +5506,14 @@
       "id": "aa61df0c-afeb-485a-be19-7b3fd156ef9f",
       "comment": "",
       "command": "assertElementPresent",
-      "target": "linkText=événements",
+      "target": "xpath=//main[@id='contenu']/nav/a",
       "targets": [
-        ["linkText=événements", "linkText"],
-        ["css=.ici:nth-child(1) > a:nth-child(2)", "css:finder"],
-        ["xpath=//a[contains(text(),'événements')]", "xpath:link"],
-        ["xpath=//ul[@id='menu_ajouts']/li/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/user.php?idP=11&nblignes=100&elements=evenement')]", "xpath:href"],
-        ["xpath=//ul[2]/li/a", "xpath:position"],
-        ["xpath=//a[contains(.,'événements')]", "xpath:innerText"]
+        ["linkText=Événements239", "linkText"],
+        ["css=.tabs > .ici", "css:finder"],
+        ["xpath=//main[@id='contenu']/nav/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '?idP=13&elements=evenement&tri=dateAjout&ordre=desc&nblignes=100')]", "xpath:href"],
+        ["xpath=//nav/a", "xpath:position"],
+        ["xpath=//a[contains(.,' Événements239')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
@@ -5547,15 +5546,14 @@
       "id": "4ddf14d3-4389-4ff2-a57b-08cf5c2e80f2",
       "comment": "",
       "command": "click",
-      "target": "linkText=textes",
+      "target": "xpath=//main[@id='contenu']/nav/a[2]",
       "targets": [
-        ["linkText=textes", "linkText"],
-        ["css=li:nth-child(2) > a:nth-child(2)", "css:finder"],
-        ["xpath=//a[contains(text(),'textes')]", "xpath:link"],
-        ["xpath=//ul[@id='menu_ajouts']/li[2]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/user.php?idP=2&nblignes=100&elements=description')]", "xpath:href"],
-        ["xpath=//ul[2]/li[2]/a", "xpath:position"],
-        ["xpath=//a[contains(.,'textes')]", "xpath:innerText"]
+        ["linkText=Descriptions0", "linkText"],
+        ["css=.tabs > a:nth-child(2)", "css:finder"],
+        ["xpath=//main[@id='contenu']/nav/a[2]", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '?idP=13&elements=description&tri=dateAjout&ordre=desc&nblignes=100')]", "xpath:href"],
+        ["xpath=//nav/a[2]", "xpath:position"],
+        ["xpath=//a[contains(.,' Descriptions0')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
@@ -5598,6 +5596,13 @@
         ["xpath=//form[@id='ajouter_editer']/p[2]/input[3]", "xpath:idRelative"],
         ["xpath=//p[2]/input[3]", "xpath:position"]
       ],
+      "value": ""
+    }, {
+      "id": "569c0fa1-d1e1-4f01-8717-146821605698",
+      "comment": "",
+      "command": "pause",
+      "target": "2000",
+      "targets": [],
       "value": ""
     }, {
       "id": "74013dfc-bd42-4ac6-908b-7c41401eb9bc",
@@ -5829,15 +5834,14 @@
       "id": "a75d553f-8669-4bf4-af60-313d13fbded6",
       "comment": "",
       "command": "assertElementPresent",
-      "target": "linkText=événements",
+      "target": "xpath=//main[@id='contenu']/nav/a",
       "targets": [
-        ["linkText=événements", "linkText"],
-        ["css=.ici:nth-child(1) > a:nth-child(2)", "css:finder"],
-        ["xpath=//a[contains(text(),'événements')]", "xpath:link"],
-        ["xpath=//ul[@id='menu_ajouts']/li/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/user.php?idP=11&nblignes=100&elements=evenement')]", "xpath:href"],
-        ["xpath=//ul[2]/li/a", "xpath:position"],
-        ["xpath=//a[contains(.,'événements')]", "xpath:innerText"]
+        ["linkText=Événements238", "linkText"],
+        ["css=.tabs > .ici", "css:finder"],
+        ["xpath=//main[@id='contenu']/nav/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '?idP=13&elements=evenement&tri=dateAjout&ordre=desc&nblignes=100')]", "xpath:href"],
+        ["xpath=//nav/a", "xpath:position"],
+        ["xpath=//a[contains(.,' Événements238')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
