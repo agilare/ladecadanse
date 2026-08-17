@@ -1054,17 +1054,21 @@ table .td-align-center
             margin:0;
 
             /*
-             * Plafonne la description à 6 lignes. C'est ici, et non en PHP, que
+             * Plafonne la description à 5 lignes. C'est ici, et non en PHP, que
              * la hauteur se décide : seul le navigateur connaît les lignes
              * réellement rendues, celles des sauts de ligne comme celles du
              * retour à la ligne automatique. Le plafond PHP
              * (EvenementRenderer::DESCRIPTION_MAX_CHARS) ne borne que la charge
-             * utile envoyée.
+             * utile envoyée, et reste volontairement plus généreux.
+             *
+             * 5 et non 6 : à 6 lignes le bloc atteignait 138 px pour un flyer de
+             * 140, donc le moindre lien d'organisateur étirait la colonne du
+             * flyer. La ligne rendue sert de tampon avant les organisateurs.
              */
             display:-webkit-box;
             -webkit-box-orient:vertical;
-            -webkit-line-clamp:6;
-            line-clamp:6;
+            -webkit-line-clamp:5;
+            line-clamp:5;
             overflow:hidden;
         }
 
