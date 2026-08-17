@@ -955,11 +955,24 @@ table .td-align-center
     width:100%;
 }
 
+    /*
+     * Flyer et description forment une rangée flex plutôt qu'un float suivi
+     * d'un bloc. L'étirement (align-items:stretch, la valeur par défaut) donne
+     * à la colonne du flyer la hauteur de la plus haute des deux : son fond gris
+     * descend donc jusqu'à .pratique quand la description déborde, liens
+     * d'organisateurs compris. En float, il s'arrêtait à sa hauteur fixe et
+     * laissait un trou blanc pouvant atteindre une centaine de pixels.
+     */
+    .evenement-short .event-media
+    {
+        display:flex;
+    }
+
     .evenement-short .flyer
     {
-        float:left;
+        flex:0 0 100px;
         width:100px;
-        height:140px;
+        min-height:140px; /* et non height : c'est ce qui autorise l'étirement */
         background:#efefef;
         overflow:hidden;
         margin-top:6px;
@@ -1018,6 +1031,14 @@ table .td-align-center
 
     .evenement-short .description
     {
+        flex:1 1 auto;
+        min-width:0; /* sans quoi un mot insécable empêcherait la colonne de rétrécir */
+        /*
+         * Seul le flyer s'étire : sans ce flex-start, la description hériterait
+         * elle aussi de align-items:stretch et son fond clair remplirait toute
+         * la rangée, ce qui change l'aspect des cartes à description courte.
+         */
+        align-self:flex-start;
         min-height:72px;
         padding:0.4em 0 0.4em 0.5em;
         margin:0;
@@ -1058,7 +1079,13 @@ table .td-align-center
          */
         .evenement-short .description .continuer:not([hidden])
         {
-            display:block;
+            /*
+             * inline-block, et non block : la boîte épouse son contenu, donc elle
+             * se pose à gauche tandis que la flèche de fond (background-position
+             * 100% 50%) reste collée au texte. En block, le lien s'alignait à
+             * droite du bloc et la flèche partait à l'autre bout.
+             */
+            display:inline-block;
             margin-top:0.3em;
         }
 

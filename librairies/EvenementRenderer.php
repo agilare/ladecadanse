@@ -234,6 +234,10 @@ class EvenementRenderer
                 <div class="spacer"></div>
             </header>
 
+            <?php // flyer et description forment une rangée flex : le fond gris du flyer
+                  // s'étire ainsi jusqu'en bas de la description, organisateurs compris ?>
+            <div class="event-media">
+
             <figure class="flyer"><?= self::mainFigureHtml($tab_even['e_flyer'], $tab_even['e_image'], $tab_even['e_titre'], 100) ?></figure>
 
             <div class="description">
@@ -246,6 +250,8 @@ class EvenementRenderer
                     <?= Organisateur::getListLinkedHtml($tab_events_today_in_region_orgas[$tab_even['e_idEvenement']]) ?>
                 <?php endif; ?>
             </div>
+
+            </div> <!-- event-media -->
 
             <div class="spacer"></div>
 
