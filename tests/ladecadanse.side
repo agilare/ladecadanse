@@ -2121,7 +2121,7 @@
       "id": "e14f3302-731a-49d5-9ac0-539807530655",
       "comment": "",
       "command": "pause",
-      "target": "2000",
+      "target": "3000",
       "targets": [],
       "value": ""
     }, {
@@ -2269,18 +2269,6 @@
         ["xpath=//fieldset/input", "xpath:position"]
       ],
       "value": "Yaq12wsx"
-    }, {
-      "id": "8a90fbbd-53bc-4f36-8d05-c71b1869a5f1",
-      "comment": "",
-      "command": "click",
-      "target": "css=.mdp_oublie:nth-child(8)",
-      "targets": [
-        ["css=.mdp_oublie:nth-child(8)", "css:finder"],
-        ["xpath=//form[@id='ajouter_editer']/fieldset/p[4]", "xpath:idRelative"],
-        ["xpath=//p[4]", "xpath:position"],
-        ["xpath=//p[contains(.,'Pas de compte ?')]", "xpath:innerText"]
-      ],
-      "value": ""
     }, {
       "id": "b8cd7b2b-25ea-4d22-9f01-12874722e338",
       "comment": "",
@@ -5404,14 +5392,14 @@
       "id": "2b5edc73-ea80-40e2-9d43-446a61cbcd80",
       "comment": "",
       "command": "click",
-      "target": "xpath=//form[@id='ajouter_editer']/fieldset/p[3]/a",
+      "target": "xpath=//form[@id='ajouter_editer']/fieldset/p[4]/a",
       "targets": [
         ["linkText=Mot de passe oublié ?", "linkText"],
-        ["css=.mdp_oublie:nth-child(7) > a", "css:finder"],
+        ["css=.liens_form > a:nth-child(1)", "css:finder"],
         ["xpath=//a[contains(text(),'Mot de passe oublié ?')]", "xpath:link"],
-        ["xpath=//form[@id='ajouter_editer']/fieldset/p[3]/a", "xpath:idRelative"],
+        ["xpath=//form[@id='ajouter_editer']/fieldset/p[4]/a", "xpath:idRelative"],
         ["xpath=//a[contains(@href, '/user-reset.php')]", "xpath:href"],
-        ["xpath=//p[3]/a", "xpath:position"],
+        ["xpath=//p[4]/a", "xpath:position"],
         ["xpath=//a[contains(.,'Mot de passe oublié ?')]", "xpath:innerText"]
       ],
       "value": ""
