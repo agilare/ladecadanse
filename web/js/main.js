@@ -104,14 +104,5 @@ function select2OptionWithComplement(item)
     return $result;
 };
 
-// used in lieu, organisateur
-const ReadSmore = window.readSmore;
-const readMoreEls = document.querySelectorAll('.js-read-smore');
-ReadSmore(readMoreEls, {
-            moreText : "Lire la suite ",
-            lessText : "Réduire",
-            isInline : true
-        }).init();
-
 responsiveSetup();
 AppGlobal.init();

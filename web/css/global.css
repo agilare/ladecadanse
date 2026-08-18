@@ -671,7 +671,7 @@ abbr.dtstart[title]
 }
 
 /*liens & icones*/
-.continuer, .read-smore__link
+.continuer
 {
     text-align:right;
     padding:0 15px 0 0;
@@ -680,11 +680,6 @@ abbr.dtstart[title]
     background-position: 100% 50%;
     _background-image:none;
     _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='images/interface/icons/resultset_next.png', sizingMethod='crop');
-}
-
-.read-smore__link[data-clicked="true"]
-{
-    background-image:url(../interface/icons/bullet_arrow_up.png);
 }
 
 .action_ajouter
@@ -1333,6 +1328,120 @@ ul.menu_action
 .calendar-export-wrapper ul.calendar-export-menu li a:hover
 {
     background: #f0f0f0;
+}
+
+
+/*
+ * Texte repliable des descriptions de lieu et d'organisateur (_texte_repliable.inc.php).
+ *
+ * Le plafond de hauteur est posé ici, et l'état replié est présent dès le HTML servi : le
+ * texte ne s'affiche jamais en entier avant de se raccourcir sous les yeux du visiteur.
+ * Même partage des rôles que le line-clamp des cartes d'événement, à ceci près qu'on plafonne
+ * une hauteur et non un nombre de lignes : le contenu est du HTML riche (titres, listes,
+ * citations) que line-clamp, limité à un seul bloc de texte, ne sait pas traiter.
+ *
+ * Tout le repli est conditionné à la classe .js posée dans le <head> : sans JS la bascule
+ * serait inerte, mieux vaut alors le texte entier qu'un texte tronqué sans recours.
+ */
+.texte-repliable
+{
+    --texte-repliable-hauteur:14em; /* ~10 lignes à line-height 1.4 */
+    --texte-repliable-fondu:3.2em;
+    --texte-repliable-fond:#F7F7F5; /* le fond de .description, pas du blanc */
+}
+
+:root.js .texte-repliable
+{
+    position:relative;
+    max-height:var(--texte-repliable-hauteur);
+    overflow:hidden;
+    transition:max-height 0.3s ease;
+}
+
+    /* le fondu annonce la suite du texte, là où une coupe franche ferait croire à une fin */
+    :root.js .texte-repliable::after
+    {
+        content:"";
+        position:absolute;
+        left:0;
+        right:0;
+        bottom:0;
+        height:var(--texte-repliable-fondu);
+        /* la couleur de départ doit rester celle de --texte-repliable-fond, en alpha 0 */
+        background:linear-gradient(to bottom, rgba(247, 247, 245, 0), var(--texte-repliable-fond));
+        pointer-events:none;
+        transition:opacity 0.25s ease;
+    }
+
+    /* déplié, ou finalement trop court pour être coupé : il n'y a plus de suite à annoncer */
+    :root.js .texte-repliable--deplie::after,
+    :root.js .texte-repliable--entier::after
+    {
+        opacity:0;
+    }
+
+/* même remise à zéro que .calendar-export-trigger, puis mise en forme propre à la bascule */
+.texte-repliable__bascule
+{
+    display:flex;
+    align-items:center;
+    gap:0.4em;
+    width:100%;
+    margin-top:0.2em;
+    padding:0.45em 0.2em;
+    border:none;
+    border-top:1px dotted #d4d4cd;
+    background:none;
+    font:inherit;
+    font-size:0.92em;
+    color:#5C7378;
+    text-align:left;
+    cursor:pointer;
+}
+
+/* sans JS le texte est déjà entier : la bascule n'a plus d'objet */
+:root:not(.js) .texte-repliable__bascule
+{
+    display:none;
+}
+
+    .texte-repliable__bascule:hover .texte-repliable__label,
+    .texte-repliable__bascule:focus-visible .texte-repliable__label
+    {
+        text-decoration:underline;
+    }
+
+    .texte-repliable__bascule .fa-chevron-down
+    {
+        transition:transform 0.25s ease;
+    }
+
+    .texte-repliable--deplie + .texte-repliable__bascule .fa-chevron-down
+    {
+        transform:rotate(180deg);
+    }
+
+    /*
+     * Le serveur a posé la bascule sur un texte que la mise en page ne coupe finalement pas ;
+     * global.js le constate une fois la page rendue et la retire.
+     *
+     * Une classe plutôt que l'attribut hidden : à spécificité égale, le display de la bascule
+     * l'emporterait sur le [hidden] de normalize.css, chargé avant - c'est le piège déjà
+     * rencontré sur .continuer dans les cartes d'événement.
+     */
+    .texte-repliable--entier + .texte-repliable__bascule
+    {
+        display:none;
+    }
+
+@media (prefers-reduced-motion: reduce)
+{
+    :root.js .texte-repliable,
+    :root.js .texte-repliable::after,
+    .texte-repliable__bascule .fa-chevron-down
+    {
+        transition:none;
+    }
 }
 
 

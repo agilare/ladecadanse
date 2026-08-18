@@ -338,9 +338,13 @@ include("../_header.inc.php");
                                     endif;
                                     ?>
 
-                                    <div class="js-read-smore" data-read-smore-words="50">
-                                        <?= $des_contenu ?>
-                                    </div>
+                                    <?php
+                                    $texteRepliableHtml = $des_contenu;
+                                    // une fiche peut porter plusieurs descriptions et une présentation :
+                                    // l'identifiant doit rester unique dans la page
+                                    $texteRepliableId = $type . '-' . (int) $des['idPersonne'];
+                                    include(__ROOT__ . "/_texte_repliable.inc.php");
+                                    ?>
 
                                     <?php if ($type == 'description') : ?>
                                         <p><?= Personne::getSignatureHtml((int) $des['idPersonne']) ?></p>
