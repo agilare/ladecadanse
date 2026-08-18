@@ -43,7 +43,7 @@ if (isset($_GET['years']))
 }
 
 //dump($_GET);
-$get['page'] = !empty($_GET['page']) ? QueryParamValidator::validateUrlQueryValue($_GET['page'], "int", 1) : 1;
+$get['page'] = QueryParamValidator::pageFromQuery($_GET['page'] ?? '');
 $results_per_page = 20;
 
 

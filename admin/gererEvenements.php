@@ -36,11 +36,7 @@ if ($_SESSION['Sgroupe'] >= UserLevel::ADMIN && !empty($_SESSION['Sregion'])) {
 
 $get['element'] = "evenement";
 
-$get['page'] = 1;
-if (isset($_GET['page']))
-{
-	$get['page'] = QueryParamValidator::validateUrlQueryValue($_GET['page'], "int", 1);
-}
+$get['page'] = QueryParamValidator::pageFromQuery($_GET['page'] ?? '');
 
 $th_evenements = ["titre" => "Titre", "idLieu" => "Lieu", "dateEvenement" => "Date", "genre" => "Catég.", "horaire" => "Horaire", "organisateurs" => "Orga.", "statut" => "Statut", "dateAjout" => "Ajouté", "pseudo" => "par"];
 

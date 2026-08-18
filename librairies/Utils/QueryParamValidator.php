@@ -36,6 +36,25 @@ final class QueryParamValidator
     }
 
     /**
+     * Numéro de page de pagination issu de la query string.
+     *
+     * Jamais bloquant : les bots suivent régulièrement des urls abîmées
+     * (« ?page=3&region=vd » recopié en « ?page=3®ion=vd »), ce qui finissait
+     * en fatale. Toute valeur non entière ou inférieure à 1 retombe sur $defaut.
+     */
+    public static function pageFromQuery(mixed $get, int $defaut = 1): int
+    {
+        // is_scalar() écarte "?page[]=3", qui sinon déclencherait une conversion
+        // de tableau en chaîne dans validateUrlQueryValue()
+        if (!is_scalar($get) || !self::isAcceptedUrlQueryValue($get, "int"))
+        {
+            return $defaut;
+        }
+
+        return max(1, (int) $get);
+    }
+
+    /**
      * Valide une valeur de query string selon le type attendu.
      *
      * @param mixed  $get    Valeur brute issue de $_GET
