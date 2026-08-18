@@ -67,6 +67,7 @@ class Evenement extends Element
         return [
                 'idLieu' => null,
                 'nom' => $event['e_nomLieu'],
+                'determinant' => "",
                 'adresse' => $event['e_adresse'],
                 'quartier' => $event['e_quartier'],
                 'lat' => '',
