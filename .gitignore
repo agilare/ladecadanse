@@ -37,3 +37,4 @@ app/db.config.php
 tests/.env
 /node_modules
 /.well-known
+/.claude
