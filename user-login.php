@@ -3,6 +3,7 @@
 require_once("app/bootstrap.php");
 
 use Ladecadanse\Utils\Validateur;
+use Ladecadanse\Utils\QueryParamValidator;
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\UserLevel;
 
@@ -17,7 +18,7 @@ $tab_messages = ['faux', 'email_ambigu'];
 */
 if (isset($_GET['msg']))
 {
-	$get['msg'] = Validateur::validateUrlQueryValue($_GET['msg'], "enum", 1, $tab_messages);
+	$get['msg'] = QueryParamValidator::validateUrlQueryValue($_GET['msg'], "enum", 1, $tab_messages);
 }
 
 $formTokenName = 'form_token_user_login';

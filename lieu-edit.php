@@ -7,7 +7,7 @@ use Ladecadanse\Security\SecurityToken;
 use Ladecadanse\LieuEdition;
 use Ladecadanse\Utils\DateHelper;
 use Ladecadanse\Utils\Text;
-use Ladecadanse\Utils\Validateur;
+use Ladecadanse\Utils\QueryParamValidator;
 use Ladecadanse\HtmlShrink;
 
 if (!$authorization->checkGroup(8))
@@ -25,12 +25,12 @@ $get['action'] = "ajouter";
 $get['idL'] = "idL";
 if (isset($_GET['action']))
 {
-	$get['action'] = Validateur::validateUrlQueryValue($_GET['action'], "enum", "ajouter", $actions);
+	$get['action'] = QueryParamValidator::validateUrlQueryValue($_GET['action'], "enum", "ajouter", $actions);
 }
 
 if (isset($_GET['idL']))
 {
-	$get['idL'] = Validateur::validateUrlQueryValue($_GET['idL'], "int", 1);
+	$get['idL'] = QueryParamValidator::validateUrlQueryValue($_GET['idL'], "int", 1);
 }
 
 /* VERIFICATION POUR MODIFICATION

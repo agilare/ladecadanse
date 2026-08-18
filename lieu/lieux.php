@@ -6,7 +6,7 @@ use Ladecadanse\HtmlShrink;
 use Ladecadanse\Lieu;
 use Ladecadanse\Utils\ImageDriver2;
 use Ladecadanse\UserLevel;
-use Ladecadanse\Utils\Validateur;
+use Ladecadanse\Utils\QueryParamValidator;
 use Ladecadanse\Localite;
 
 $get = [];
@@ -41,7 +41,7 @@ $filters['localite'] = $_SESSION['user_prefs_lieux_localite'];
 
 $_SESSION['user_prefs_lieux_statut'] ??= 'actif';
 $tab_statuts = ['actif' => 'Actifs', 'inactif' => 'Inactifs', 'ancien' => 'Anciens'];
-if (isset($_GET['statut']) && Validateur::isAcceptedUrlQueryValue($_GET['statut'], "enum", array_keys($tab_statuts)))
+if (isset($_GET['statut']) && QueryParamValidator::isAcceptedUrlQueryValue($_GET['statut'], "enum", array_keys($tab_statuts)))
 {
    $_SESSION['user_prefs_lieux_statut'] = $_GET['statut'];
 }
@@ -54,7 +54,7 @@ if (isset($_GET['order']) && in_array($_GET['order'], $tab_order))
    $_SESSION['user_prefs_lieux_order'] = $_GET['order'];
 }
 
-$get['page'] = !empty($_GET['page']) ? Validateur::validateUrlQueryValue($_GET['page'], "int", 1) : 1;
+$get['page'] = !empty($_GET['page']) ? QueryParamValidator::validateUrlQueryValue($_GET['page'], "int", 1) : 1;
 
 // used to build localite filter Select (exclude localites without lieu)
 $lieux_region_localite_ids = array_values(array_unique(array_column(Lieu::getLieux(filters: ['region' => $filters['region'], 'statut' => $filters['statut']], page: null), 'localite_id')));

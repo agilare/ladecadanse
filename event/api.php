@@ -3,7 +3,7 @@
 require_once '../app/bootstrap.php';
 
 use Ladecadanse\Evenement;
-use Ladecadanse\Utils\Validateur;
+use Ladecadanse\Utils\QueryParamValidator;
 
 if (!LADECADANSE_API_ENABLED || empty($_SERVER['PHP_AUTH_USER']) || empty($_SERVER['PHP_AUTH_PW']) || !($_SERVER['PHP_AUTH_USER'] == LADECADANSE_API_USER && $_SERVER['PHP_AUTH_PW'] == LADECADANSE_API_KEY))
 {
@@ -15,7 +15,7 @@ if (!LADECADANSE_API_ENABLED || empty($_SERVER['PHP_AUTH_USER']) || empty($_SERV
 $tab_entity = ['event'];
 try
 {
-    $get['entity'] = Validateur::validateUrlQueryValue($_GET['entity'], 'enum', 1, $tab_entity);
+    $get['entity'] = QueryParamValidator::validateUrlQueryValue($_GET['entity'], 'enum', 1, $tab_entity);
 } catch (Exception)
 {
     header($_SERVER['SERVER_PROTOCOL'] . ' 400 Bad Request');
@@ -33,7 +33,7 @@ $get['region'] = trim((string) $_GET['region']);
 
 try
 {
-    $get['date'] = Validateur::validateUrlQueryValue(trim((string) $_GET['date']), 'date', 1);
+    $get['date'] = QueryParamValidator::validateUrlQueryValue(trim((string) $_GET['date']), 'date', 1);
 } catch (Exception)
 {
     header($_SERVER['SERVER_PROTOCOL'] . ' 400 Bad Request');
@@ -57,7 +57,7 @@ $get['endtime'] = trim((string) $_GET['endtime']);
 ];
 try
 {
-    $get['category'] = Validateur::validateUrlQueryValue($_GET['category'], 'enum', 1, $eventCategories);
+    $get['category'] = QueryParamValidator::validateUrlQueryValue($_GET['category'], 'enum', 1, $eventCategories);
 } catch (Exception)
 {
     header($_SERVER['SERVER_PROTOCOL'] . ' 400 Bad Request');

@@ -10,7 +10,7 @@ use Ladecadanse\Personne;
 use Ladecadanse\Utils\DateHelper;
 use Ladecadanse\Utils\Text;
 use Ladecadanse\HtmlShrink;
-use Ladecadanse\Utils\Validateur;
+use Ladecadanse\Utils\QueryParamValidator;
 
 if (empty($_GET['idO']) || !is_numeric($_GET['idO']))
 {
@@ -39,7 +39,7 @@ if ($organisateur->getValue('statut') == 'inactif' && !((isset($_SESSION['Sgroup
 $tab_menu_periodes = ["ancien" => "Passés", "futur" => "Prochains"];
 $get['periode'] = "futur";
 $sql_periode_operator = ">=";
-if (!empty($_GET['periode']) && Validateur::isAcceptedUrlQueryValue($_GET['periode'], "enum", array_keys($tab_menu_periodes)))
+if (!empty($_GET['periode']) && QueryParamValidator::isAcceptedUrlQueryValue($_GET['periode'], "enum", array_keys($tab_menu_periodes)))
 {
     $get['periode'] = $_GET['periode'];
     if ($get['periode'] == "ancien")
@@ -62,7 +62,7 @@ $stmtAll->execute([$get['idO'], $glo_auj]);
 $all_results_nb = $stmtAll->fetchColumn();
 
 $default_page = $get['periode'] == "ancien" ? (int) max(1, ceil($all_results_nb / $results_per_page)) : 1;
-$get['page'] = !empty($_GET['page']) ? Validateur::validateUrlQueryValue($_GET['page'], "int", 1) : $default_page;
+$get['page'] = !empty($_GET['page']) ? QueryParamValidator::validateUrlQueryValue($_GET['page'], "int", 1) : $default_page;
 
 $orga_lieux = Organisateur::getActivesLieux($get['idO']);
 $orga_personnes = Personne::getPersonnesOfOrganisateur($get['idO']);

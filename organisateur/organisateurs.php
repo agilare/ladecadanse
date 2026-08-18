@@ -7,7 +7,7 @@ use Ladecadanse\OrganisateurCollection;
 use Ladecadanse\Organisateur;
 use Ladecadanse\Utils\ImageDriver2;
 use Ladecadanse\UserLevel;
-use Ladecadanse\Utils\Validateur;
+use Ladecadanse\Utils\QueryParamValidator;
 
 $_SESSION['user_prefs_orgas_nom'] ??= '';
 if (isset($_GET['nom']))
@@ -18,7 +18,7 @@ $filters['nom'] = $_SESSION['user_prefs_orgas_nom'];
 
 $_SESSION['user_prefs_orgas_statut'] ??= 'actif';
 $tab_statuts = ['actif' => 'Actifs', 'inactif' => 'Inactifs', 'ancien' => 'Anciens'];
-if (isset($_GET['statut']) && Validateur::isAcceptedUrlQueryValue($_GET['statut'], "enum", array_keys($tab_statuts)))
+if (isset($_GET['statut']) && QueryParamValidator::isAcceptedUrlQueryValue($_GET['statut'], "enum", array_keys($tab_statuts)))
 {
    $_SESSION['user_prefs_orgas_statut'] = $_GET['statut'];
 }
@@ -31,7 +31,7 @@ if (isset($_GET['order']) && in_array($_GET['order'], $tab_order))
    $_SESSION['user_prefs_orgas_order'] = $_GET['order'];
 }
 
-$get['page'] = !empty($_GET['page']) ? Validateur::validateUrlQueryValue($_GET['page'], "int", 1) : 1;
+$get['page'] = !empty($_GET['page']) ? QueryParamValidator::validateUrlQueryValue($_GET['page'], "int", 1) : 1;
 
 
 $col = new OrganisateurCollection();

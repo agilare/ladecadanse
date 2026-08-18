@@ -7,6 +7,7 @@ use Ladecadanse\EvenementRenderer;
 use Ladecadanse\Security\SecurityToken;
 use Ladecadanse\Utils\DateHelper;
 use Ladecadanse\Utils\Validateur;
+use Ladecadanse\Utils\QueryParamValidator;
 
 if (!$authorization->checkGroup(8))
 {
@@ -18,7 +19,7 @@ if (!$authorization->checkGroup(8))
 $get['action'] = "";
 if (isset($_GET['action']))
 {
-	$get['action'] = Validateur::validateUrlQueryValue($_GET['action'], "enum", 0, ["coller"]);
+	$get['action'] = QueryParamValidator::validateUrlQueryValue($_GET['action'], "enum", 0, ["coller"]);
 }
 
 if (empty($_GET['idE']) || !is_numeric($_GET['idE']))

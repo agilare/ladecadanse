@@ -3,6 +3,7 @@
 require_once("app/bootstrap.php");
 
 use Ladecadanse\Utils\Validateur;
+use Ladecadanse\Utils\QueryParamValidator;
 use Ladecadanse\HtmlShrink;
 
 use Symfony\Component\HtmlSanitizer\HtmlSanitizer;
@@ -25,12 +26,12 @@ $tab_actions = ["ajouter", "insert", "editer", "update"];
 $get['action'] = "ajouter";
 if (isset($_GET['action']))
 {
-	$get['action'] = Validateur::validateUrlQueryValue($_GET['action'], "enum", 0, $tab_actions);
+	$get['action'] = QueryParamValidator::validateUrlQueryValue($_GET['action'], "enum", 0, $tab_actions);
 }
 
 $tab_types = ["description", "presentation"];
 if (isset($_GET['type'])) {
-    $get['type'] = Validateur::validateUrlQueryValue($_GET['type'], "enum", 0, $tab_types);
+    $get['type'] = QueryParamValidator::validateUrlQueryValue($_GET['type'], "enum", 0, $tab_types);
 }
 else
 {

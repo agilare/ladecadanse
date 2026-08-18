@@ -4,7 +4,7 @@ require_once("../app/bootstrap.php");
 
 use Ladecadanse\Security\SecurityToken;
 use Ladecadanse\SalleEdition;
-use Ladecadanse\Utils\Validateur;
+use Ladecadanse\Utils\QueryParamValidator;
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\UserLevel;
 
@@ -16,7 +16,7 @@ if (!$authorization->checkGroup(UserLevel::ACTOR)) {
 
 $tab_actions = ["ajouter", "insert", "editer", "update"];
 $get = [
-    'action' => Validateur::validateUrlQueryValue($_GET['action'] ?? 'ajouter', "enum", 'ajouter', $tab_actions),
+    'action' => QueryParamValidator::validateUrlQueryValue($_GET['action'] ?? 'ajouter', "enum", 'ajouter', $tab_actions),
     'idS' => (int)($_GET['idS'] ?? 0),
     'idL' => (int)($_GET['idL'] ?? 0),
 ];
