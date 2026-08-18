@@ -6,6 +6,7 @@
 - lieux, organisateurs, search, admin : a malformed `page` url parameter threw an uncaught exception — bots follow urls where the unescaped `&region` of `?page=3&region=vd` has been read as the `&reg` html entity, giving `?page=3®ion=vd` ; the 8 pages paginating now go through the new non-throwing `QueryParamValidator::pageFromQuery()`, which also rejects a page below 1 or passed as an array
 - events send : sharing or reporting an event whose lieu was deleted, or whose location was typed as free text, logged a warning ; the fallback returned by `Evenement::getLieu()` was missing the `determinant` key
 - lieux edit : saving the form as ACTOR or MEMBER logged a warning ; `image_galerie` is declared as a file field although its input is only rendered from AUTHOR up, so it never reaches `$_FILES` for those levels
+- events : on mobile the action bar of an event scattered its labels across lines, the public actions and those reserved to logged-in users sharing a single right-aligned flow ; each group is now its own list, stacked and left-aligned, and the icons (16px images as well as Font Awesome glyphs) are centred on their label — "Envoyer à un ami" moves to a Font Awesome icon
 
 ## [3.11.0] - 2026-08-18
 
