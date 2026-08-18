@@ -6,11 +6,23 @@
  * cadre se décalaient visiblement l'un par rapport à l'autre. La gouttière revient au
  * conteneur, et chaque bloc occupe toute sa largeur.
  */
-#contenu.connexion
+/*
+ * Page sans colonne latérale : le bloc se centre dans la largeur disponible. Le float
+ * hérité de « #conteneur .colonne » doit tomber pour cela — un flottant ignore les marges
+ * auto et resterait collé à gauche.
+ *
+ * Le sélecteur nomme la balise pour passer devant « #conteneur .colonne { max-width:100% } »
+ * de mobile.css : à spécificité égale, cette feuille est chargée après celle-ci et le
+ * plafond de largeur sautait sous 800px, laissant le formulaire pleine page sur tablette.
+ */
+main#contenu.connexion
 {
 	box-sizing:border-box;
 	max-width:36em;
 	padding:0 1em;
+	float:none;
+	margin-left:auto;
+	margin-right:auto;
 }
 
 #contenu.connexion #entete_contenu,
@@ -167,6 +179,13 @@
 	#contenu.connexion form#ajouter_editer label
 	{
 		text-align:left;
+	}
+
+	/* la case et son libellé forment une seule ligne : les empiler n'a pas de sens */
+	#contenu.connexion form#ajouter_editer p.memoriser
+	{
+		grid-template-columns:auto auto;
+		justify-content:start;
 	}
 
 	#contenu.connexion form#ajouter_editer p.liens_form a
