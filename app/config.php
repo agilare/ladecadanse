@@ -91,6 +91,12 @@ $glo_tab_genre = ["fête" => "fêtes", "cinéma" => "ciné", "théâtre" => "th�
 $statuts_evenement = ['propose' => 'Proposé', 'actif' => 'Proposé', 'complet' => 'Complet', 'annule' => 'Annulé', 'inactif' => 'Dépublié'];
 $price_types = ['unknown' => 'inconnu', 'gratis' => 'entrée libre', 'asyouwish' => 'prix libre', 'chargeable' => 'payant'];
 $tab_tri_agenda = ["dateAjout", "horaire_debut"];
+// lieu/lieu.php et organisateur/organisateur.php, onglet « Passés » : sens du tri par date.
+// Les libellés ne sont pas affichés (les boutons sont des icônes) mais servent de title et d'aria-label.
+$tab_ordre_evenements_passes = [
+    "asc"  => ["icone" => "fa-sort-numeric-asc",  "titre" => "Du plus ancien au plus récent"],
+    "desc" => ["icone" => "fa-sort-numeric-desc", "titre" => "Du plus récent au plus ancien"],
+];
 $glo_motifs_notification_auteur = [
     'depublie_charte'     => "l'événement a été dépublié car il enfreint la charte éditoriale",
     'depublie_doublon'    => "l'événement a été dépublié car il existe déjà dans l'agenda",

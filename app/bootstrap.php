@@ -63,6 +63,8 @@ $regionConfig->setPersistentRegion($_COOKIE, $_GET);
 [$url_query_region, $url_query_region_et, $url_query_region_1er] = $regionConfig->getAppVars();
 
 $_SESSION['user_prefs_agenda_order'] = $_SESSION['user_prefs_agenda_order'] ?? 'dateAjout';
+// tri des événements passés sur les fiches lieu et organisateur, partagé par les deux pages
+$_SESSION['user_prefs_past_events_order'] ??= 'asc';
 
 $logFormatter = new LineFormatter(null, 'Y-m-d H:i:sP');
 

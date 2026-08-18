@@ -184,35 +184,7 @@ form.filtre-liste input:focus
 	margin-right:0;
 }
 
-/*
- * Pagination à gauche, choix du nombre de lignes à droite. En flex plutôt qu'en flottants : les
- * deux menus n'ont ni la même hauteur de ligne ni les mêmes marges internes, et se retrouvaient
- * décalés en hauteur. align-items les recentre l'un sur l'autre, margin-left:auto pousse le second
- * à droite y compris quand la pagination manque — une seule page, et elle ne s'affiche pas.
- */
-.liste-barre
-{
-	display:flex;
-	align-items:center;
-	flex-wrap:wrap;
-}
-
-.liste-barre div.pagination
-{
-	float:none;
-	margin:0.8em 0 0.4em 0;
-}
-
-.liste-barre #order_navigation
-{
-	margin:0.8em 0 0.4em auto;
-}
-
-.liste-barre #order_navigation ul
-{
-	float:none;
-	margin:0;
-}
+/* .liste-barre est dans global.css : les fiches lieu et organisateur s'en servent aussi */
 
 table#ajouts
 {
