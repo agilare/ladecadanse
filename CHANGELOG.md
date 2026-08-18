@@ -2,89 +2,77 @@
 
 ## [3.11.0] - Unreleased
 
-### Fixed
-- events : hide calendar-export-menu by default for browsers without Popover API or JS
-- home : restore render broken by a call to the removed `date_lendemain()` (time-based event separators, PR #133)
-- events : protect the copy form ("Coller") submit button against double-click
-- lieux, organisateurs : "Passés" tab now opens on the most recent past events instead of the oldest ones
-- edition : in TinyMCE texts, links to the site itself lost their `href` (relative URLs rejected by the sanitizer) ; texts saved before this fix must be edited again to restore their links
-- lieux, organisateurs, events : an unknown id returned an empty 200 or a fatal error instead of the 404 the pages already had ready (`lieu.php?idL=`, `organisateur.php?idO=`, `to-ics.php?idE=`) ; `evenement-edit.php?action=editer|update` without `idE` now answers 400
-- search, lieux, organisateurs, admin, events : an unexpected value in an optional url parameter (`periode`, `statut`, `tri`, `order_dir`, `seuil`, `action`) threw an uncaught exception or logged a warning instead of falling back on the default ; guards now use the new non-throwing `Validateur::isAcceptedUrlQueryValue()`
-- rss : `/event/rss.php` called without a `type` parameter logged a warning before returning its 400
-- rss : the channel `pubDate` was assigned inside the items loop, so it kept the date of the *oldest* addition ; the "events today" feed announced a date five months old. It is now the most recent addition, and an empty feed falls back on the current time instead of a raw Unix timestamp, invalid as RFC 822. `lastBuildDate` added, and the channel `description`, left empty, is now filled
-- rss : the `$item` array was not reset between iterations, so an event without a flyer nor an image inherited the illustration of the previous one (2 of the 20 items of the "latest added" feed)
-- rss : autodiscovery `<link rel="alternate">` tags and links to the feeds used a relative `href`, resolved against the current page ; a visitor arriving on `http://` had their subscription recorded in `http://` and paid a 301 on every poll (39.7% of the feeds requests). They now use the new `SITE_CANONICAL_URL` constant, overridable from `app/env.php`
-- rss : the autodiscovery tag of a lieu feed was never emitted, `HtmlShrink::showLinkRss()` comparing `$nom_page` to `lieu` where `bootstrap.php` gives it the `folder/file` form
-- rss : links inside item descriptions (lieu page) and the `rel="self"` are now absolute ; the latter is rebuilt from the validated parameters instead of reflecting `REQUEST_URI`, which gave a different self-link per URL variant
-- events : a `genre` absent from the configuration crashed the home page and logged warnings in the listings ; it now displays as "divers" through the new `Evenement::genreLabel()`
-- events : an event referencing a deleted lieu crashed the pages listing it ; its location now falls back on the free text fields stored in the event
-- csp : two scripts blocked in production — the bots tracker (darkvisitors.com now redirects to knownagents.com) and the AssetManager import map, an inline tag missing its nonce
-- csp : front-end errors never reached GlitchTip, the DSN host was missing from `connect-src` while only the CDN was allowed in `script-src`
-- forms : the date field is usable with the keyboard again
-- events edit : no longer assumes the file fields are present in `$_FILES`
-- admin : in index, "Latest texts added" called `texteHtmlReduit` with a missing argument
-- auth : remove the obsolete warning about email in the login field
-- lieu : typo on the lieu page when there is no incoming event
-- header : spacing and alignment of the search area
-- events : on the event page, move "Ajouter à un agenda" left to the action links
-- tests : adapt the Selenium cases to the changes of this release
+Upgrade steps (database, `app/env.php`, side effects) : [UPGRADE.md](UPGRADE.md).
+Feature documentation : [docs/](docs/).
 
 ### Added
-- mailing : optional monitoring of the messages sent to users — with `EMAIL_COPY_TO_ADMIN` enabled in `app/env.php` (see `env_model.php`), every mail addressed to a user is also sent to `EMAIL_ADMIN`, subject prefixed with `[COPY]` and original recipient carried in an `X-Original-To` header. The body is left untouched so the copy renders exactly like the original. Mails already addressed to the admin (contact form, event reports) are not duplicated, and a failing copy never affects the original send. Meant for short monitoring periods, off by default
-- users, events edit : personal default values for adding an event — category, start and end time, lieu, organisateur(s) and price, set in the profile ("Événements" fieldset) and applied to the "Ajouter un événement" form at creation only, where a discreet note links back to the settings. `?idL=` and `?idO=` still take precedence, editing an existing event is untouched, and a default pointing at a lieu or organisateur since deactivated is simply ignored. Settings live in a new JSON column `personne.settings` (`events > new_defaults`), so later preferences need no further migration ; create the column with `resources/v3-11-0_personne-add-settings.sql`
-- events : a past event is now a read-only archive below `groupe` 6 — its edit form and every "Éditer" button are gone, and deletion is refused, so an old event can no longer be recycled into a new one (which silently overwrote the original) ; Copier — the right way to reprogram it — and Dépublier stay available, and editors keep full access. An event counts as past once `06:00:00` has struck on the day after `dateEvenement`, its end time being taken into account when it is later. In the user page, archived rows are dimmed, at full opacity on hover
-- lieux edit : optional latitude/longitude fields, so the map coordinates can be set from the site instead of directly in the database (a map picker will come later)
-- events : in forms add <optgroup> by canton for lieux select
-- lieux, organisateurs, gererEvenements, users : add button inside search fields to clear and resubmit the filter in one click
-- bots : internal monitoring of bots and suspicious IPs (table `bot_monitor`, honeypot, admin dashboard) ; before enabling `BOT_MONITORING_ENABLED`, complete `app/env.php` (see `env_model.php`) and create the table (`resources/v3-11-0_bot_monitor-create-table.sql`)
-- ui : keyboard shortcuts for the most common actions #112 : h (accueil), s (recherche), a (ajout), l (lieux), o (organisateurs), d (dashboard), e (édition), f (flyer), c (copie), arrows for day navigation, / to focus the search field ; bindings match on `event.key`, so they work whatever the keyboard layout
-- ui : the arrows also page through the listings that carry a pagination block — search, lieux, organisateurs, user profile, gererEvenements and users. At the first or last page the link is a `<span class="disabled">`, so the arrow goes back to scrolling the page
-- ui : `/` focuses the filter field of gererEvenements and users, as it already did on lieux and organisateurs ; `b` and `u` open gererEvenements and users from anywhere. Both keys target the header links, which `_header.inc.php` only renders for admins : for every other visitor the key keeps its native behaviour
-- ui : "mouseless" mode to learn those shortcuts, for ADMIN and SUPERADMIN only. `?mouseless=1` turns it on (`?mouseless=0` off), it survives navigation through `localStorage`, and while active the elements a shortcut can reach no longer answer the mouse : each one displays its key in a `<kbd>` badge (in the placeholder for text fields), and a blocked click makes that badge flash. Keyboard navigation is untouched — Tab + Enter still follows a link — and a fixed banner offers Échap twice or a link to leave — twice because a single Échap belongs to everything else (closing the flyer window, cancelling an input) and dropped a mode meant to be kept for days ; the first press makes the banner reminder flash. Ignored on coarse pointers, where there is no physical keyboard. The shortcut list now lives in a single registry (`web/js/shortcuts.js`) shared by both features, so they cannot drift apart
+- events : a past event becomes a read-only archive — no edit form and no deletion, so it can no longer be recycled into a new one ; Copier and Dépublier stay available and editors keep full access — see [docs/evenements.md](docs/evenements.md)
+- users, events edit : personal default values for adding an event (category, start and end time, lieu, organisateur(s), price), set in the profile and applied at creation only ; stored in the new `personne.settings` column — see [docs/evenements.md](docs/evenements.md)
 - events : admins can notify the event author by email of the changes made, picking pre-written motifs and/or writing a free-text message #149
-- ui : `j` and `k` walk the entity listings one entity at a time — home agenda, search results, the event tables of a lieu and of an organisateur, the three tables of the admin dashboard in a row, lieux, organisateurs, gererEvenements and users — instead of tabbing through every secondary link of a row. They move the focus to the row's main link, so Enter opens it, screen readers announce it and Tab carries on from there ; the current row is highlighted through `:focus-within`. No wrap-around and no page jump : `j` on the last row of a paginated listing stays put. The listings are described per page in a `LISTS` registry next to the shortcut one (`web/js/shortcuts.js`). In mouseless mode the row links stay clickable and unbadged — badging fifty rows would drown the page — and the banner announces the two keys instead
-- ui : on an event page, where there is no listing to walk, `j` and `k` follow the links to the next and previous event of the same day, so the walk started on the agenda carries on inside the event. The left/right arrows keep their single meaning everywhere — change of day or of page, never of item
 - events : the ajax "Dépublier" button, so far limited to the home, lieu and organisateur listings, is now also on the event page, the user profile, gererEvenements and the search results (SUPERADMIN only)
-- events edit : POC of an always-visible Zebra Datepicker calendar under the date field, for SUPERADMIN only
-- events edit : the flyer and the photo can be added by pasting an image URL ; open to every logged-in user (was admins only), not on the public "Proposer un événement" form
+- events : in forms add `<optgroup>` by canton for lieux select
+- events edit : the flyer and the photo can be added by pasting an image URL, now open to every logged-in user (was admins only), not on the public "Proposer un événement" form
 - events edit : confirm before leaving the form with unsaved changes
 - events edit : the "Références" field becomes a textarea, one URL per line (stored format unchanged)
+- events edit : POC of an always-visible Zebra Datepicker calendar under the date field, for SUPERADMIN only
+- lieux edit : optional latitude/longitude fields, so the map coordinates can be set from the site instead of directly in the database (a map picker will come later) ; stored as `DECIMAL(10,7)` instead of `FLOAT(10,6)`
+- lieux, organisateurs, gererEvenements, users : add button inside search fields to clear and resubmit the filter in one click
 - search : the results page keeps the query in the header field and offers a "Copier" button on each result ; on mobile the search field stays open on that page
 - home : time-based separators in the events list #105 (PR #133)
+- ui : keyboard shortcuts for the most common actions #112 — pages, edition, flyer, copy, day navigation, pagination, `/` to focus a filter field, `j`/`k` to walk listings and events one by one — see [README](README.md#raccourcis-clavier)
+- ui : "mouseless" mode to learn those shortcuts, for ADMIN and SUPERADMIN only — `?mouseless=1` neutralises the mouse on the elements a shortcut can reach and badges each one with its key — see [README](README.md#raccourcis-clavier)
+- mailing : optional copy to the admin of the messages sent to users, for short monitoring periods, off by default (see `app/env_model.php`)
+- bots : internal monitoring of automated traffic, with an admin dashboard, off by default — see [docs/bots.md](docs/bots.md)
 - don : add Postfinance and Twint payment methods, add Bernex to "Soutiens"
-- tests : new Codeception `site` suite (PhpBrowser) covering the bots honeypot, the author notification, permissions, statuses and the bots dashboard ; set `LADECADANSE_SITE_URL` in `tests/.env`
+- tests : new Codeception `site` suite (PhpBrowser) covering the author notification, permissions, statuses, the bots dashboard and the rss feeds ; set `LADECADANSE_SITE_URL` in `tests/.env`
 - tests : Vitest setup and first JS unit tests (`npm test`)
-- tests : new `RssCest` in the `site` suite covering the feed status contract (410 on retired feeds, 400 on unknown type or invalid id, no echo of the received value, no session started), the channel metadata, the canonical self-link, the absence of `<style>` and the conditional GET ; `SiteTester::grabResponseHeader()` added, PhpBrowser being able to set request headers but not to read response ones
 
 ### Changed
+- rss : feeds are cached 900 s and answer `304` through `ETag`/`Last-Modified`, the `400`/`410` status contract is settled before bootstrap without session nor database, and the `<style>` block is dropped from item descriptions — see [docs/rss.md](docs/rss.md)
 - assets : a missing file is now reported as a warning in `var/logs/activity.log` instead of the PHP error log, which it was filling one line per page view
 - admin : in gererEvenements, the events list gets a fixed height (70vh) with its own scrollbar and sticky column headers ; checkboxes column moved first
 - events : in the listing tables, action icons aligned right so single-icon cells line up with the others
-- lieux : store `lat`/`lng` as `DECIMAL(10,7)` instead of `FLOAT(10,6)`, whose single precision lost about 0.5 m on Geneva coordinates ; apply `resources/v3-11-0_lieu-lat-lng-decimal.sql`
 - events : in forms, lieux select options values are displayed as is
-- edition : larger image previews in the edit forms, using the normal version of the file instead of the thumbnail
 - events edit : the "E-mail à l'auteur" fieldset previews the message that will be sent, built by `AuteurNotifier` so it cannot drift from the actual mail ; the free-text message is optional
 - events edit : move the "Statut de l'événement" fieldset before "Catégorie", radio options on one line on desktop, shorter labels, site badge style for "complet"/"annulé"
 - events edit : temporarily disable the announce about organisateur registration
+- edition : larger image previews in the edit forms, using the normal version of the file instead of the thumbnail
+- ui : on desktop, align the back-to-top button with the `#global` container corner instead of the screen corner, where it blended into the identical body background
+- user-edit : remove redundant isset() check on always-present `organisateurs` field
 - don : disable the wemakeit widget (unavailable from July 31) and replace the "Autres moyens possibles" line with an intro paragraph
 - monitoring : for GlitchTip upgrade the Sentry browser SDK from 9.14 to 10.69, pin the CDN bundle with an SRI `integrity` hash and drop `tracesSampleRate`, inert on the errors-only bundle
-- analyzers : finalise the Psalm configuration (globals, taint escapes, insane-comparison plugin, baseline regenerated) and add the `composer psalm:taint` script
-- analyzers : fix PHPStan config gaps (exclusions, runtime constants and feature flags, disallowed-calls presets) and regenerate the stale baseline
+- analyzers : finalise the Psalm configuration and fix the PHPStan config gaps, both baselines regenerated ; add the `composer psalm:taint` script
 - build : declare the required Node version via `engines`, name the npm package, document `npm install` and `npm test`
 - deps-dev : update phpmailer, phpstan, rector, rector/jack, select2, vlucas/phpdotenv, phan, psalm, spaze/phpstan-disallowed-calls
 - deploy : update git-ftp-ignore for the agents and analyzers files
 - docs : add AGENTS.md as the single source of project guidance for coding agents, CLAUDE.md now points to it
-- ui : on desktop, align the back-to-top button with the `#global` container corner instead of the screen corner, where it blended into the identical body background
-- user-edit : remove redundant isset() check on always-present `organisateurs` field
-- rss : the `type` whitelist moved above `require_once bootstrap.php`, so the 400 and 410 answers no longer start a session nor open the two database connections ; they carry half of the script traffic. Retired feeds (`evenement_commentaires`, removed with the comments feature about three years ago, still 30.5% of the requests) answer `410 Gone` rather than 400, so readers flag the subscription in error and crawlers drop the URL. The id parameter moves from `is_numeric()` to `FILTER_VALIDATE_INT`, which rejects `1e3`, `1.9` and null or negative values
-- rss : responses are cached in `var/cache/rss/` for 900 s and served with `ETag` and `Last-Modified`, so a reader that comes back unchanged gets a 304 without body, without SQL query and without rendering — there was no 304 at all before. The cache is read before bootstrap, so a hit boots nothing ; both validators are derived from the content rather than from `filemtime()`, so they stay stable while the agenda does not move. A non-writable cache degrades to direct generation instead of a 500
-- rss : drop the `<style>` block embedded in every item description, dead weight for readers that sanitize HTML and, for the others, an unscoped selector leaking onto other feeds ; the lieu feed loses 22% of its size
+- docs : move the upgrade steps to UPGRADE.md and the feature details to `docs/`, so this changelog stays scannable
+
+### Fixed
+- rss : wrong channel `pubDate`, illustrations leaking from one item to the next, missing lieu autodiscovery tag, relative feed URLs — now absolute through the new `SITE_CANONICAL_URL` — and a warning on a call without `type` — see [docs/rss.md](docs/rss.md)
+- lieux, organisateurs, events : an unknown id returned an empty 200 or a fatal error instead of the 404 the pages already had ready (`lieu.php?idL=`, `organisateur.php?idO=`, `to-ics.php?idE=`) ; `evenement-edit.php?action=editer|update` without `idE` now answers 400
+- search, lieux, organisateurs, admin, events : an unexpected value in an optional url parameter threw an uncaught exception or logged a warning instead of falling back on the default ; guards now use the new non-throwing `QueryParamValidator::isAcceptedUrlQueryValue()`
+- edition : in TinyMCE texts, links to the site itself lost their `href` (relative URLs rejected by the sanitizer) ; texts saved before this fix must be edited again — see [UPGRADE.md](UPGRADE.md)
+- events : a `genre` absent from the configuration crashed the home page and logged warnings in the listings ; it now displays as "divers" through the new `Evenement::genreLabel()`
+- events : an event referencing a deleted lieu crashed the pages listing it ; its location now falls back on the free text fields stored in the event
+- events : hide calendar-export-menu by default for browsers without Popover API or JS
+- events : protect the copy form ("Coller") submit button against double-click
+- events : on the event page, move "Ajouter à un agenda" left to the action links
+- events edit : no longer assumes the file fields are present in `$_FILES`
+- home : restore render broken by a call to the removed `date_lendemain()` (time-based event separators, PR #133)
+- lieux, organisateurs : "Passés" tab now opens on the most recent past events instead of the oldest ones
+- csp : unblock the bots tracker (darkvisitors.com now redirects to knownagents.com), the AssetManager import map (an inline tag missing its nonce) and the GlitchTip DSN host, missing from `connect-src`
+- forms : the date field is usable with the keyboard again
+- admin : in index, "Latest texts added" called `texteHtmlReduit` with a missing argument
+- auth : remove the obsolete warning about email in the login field
+- lieu : typo on the lieu page when there is no incoming event
+- header : spacing and alignment of the search area
+- tests : adapt the Selenium cases to the changes of this release
 
 ### Security
 - events edit : stored XSS in the "Organisateur(s)" select2 list, whose renderer interpolated decoded values into an HTML string ; the template is now built as DOM nodes
 - deps : bump guzzlehttp/guzzle, guzzlehttp/psr7, symfony/dom-crawler, symfony/html-sanitizer, symfony/yaml to fix 20 known security advisories (cookie handling, CRLF/host-confusion injection, XSS bypass, XXE, ReDoS/DoS)
-- deps-dev : bump js-yaml, brace-expansion
-- deps-dev : bump guzzlehttp/guzzle to 7.15.3 and squizlabs/php_codesniffer to 3.13.6 to fix 3 advisories (noncanonical host bypassing host-based checks CVE-2026-69246, noncanonical cookie domain keeping subdomain scope CVE-2026-69245, phpcs OS command injection CVE-2026-67434) ; both only reachable through the dev tree (Codeception's PhpBrowser, the `sniffer:*` scripts)
+- deps-dev : bump guzzlehttp/guzzle, squizlabs/php_codesniffer, js-yaml and brace-expansion to fix 3 advisories (CVE-2026-69246, CVE-2026-69245, CVE-2026-67434), all reachable only through the dev tree
 
 
 ## [3.10.0] - 2026-04-26
@@ -457,7 +445,7 @@
 - headers: add Permissions-Policy
 
 
-## [3.5.5] - 14.02.2025
+## [3.5.5] - 2025-02-14
 
 ### Fixed
 - features restored (remove from partial edit mode) and more detailed logging : password reset, user edit

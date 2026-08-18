@@ -37,3 +37,6 @@ psalm-baseline.xml
 Makefile
 AGENTS.md
 CLAUDE.md
+UPGRADE.md
+/docs
+docs/*
