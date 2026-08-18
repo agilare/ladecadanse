@@ -608,11 +608,11 @@ describe('Shortcuts — parcours des listes avec j/k', function ()
                 '<section id="prochains_evenements"><table>' +
                 '<tr><td colspan="5" class="mois">Août</td></tr>' +
                 '<tr class="vevent evenement">' +
-                '<td class="dtstart"><a href="/index.php?courant=2026-08-16">sam 16</a></td>' +
+                '<td class="date"><a href="/index.php?courant=2026-08-16"><abbr class="dtstart" title="2026-08-16T20:00:00">sam 16</abbr></a></td>' +
                 '<td><a class="url" href="/event/evenement.php?idE=1"><strong>Concert</strong></a></td>' +
                 '</tr>' +
                 '<tr class="vevent evenement">' +
-                '<td class="dtstart"><a href="/index.php?courant=2026-09-02">mer 2</a></td>' +
+                '<td class="date"><a href="/index.php?courant=2026-09-02"><abbr class="dtstart" title="2026-09-02T20:00:00">mer 2</abbr></a></td>' +
                 '<td><a class="url" href="/event/evenement.php?idE=2"><strong>Expo</strong></a></td>' +
                 '</tr>' +
                 '</table></section>';

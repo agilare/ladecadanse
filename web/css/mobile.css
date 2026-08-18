@@ -456,7 +456,7 @@ form#ajouter_editer .guideChamp {
 }
 
 
-#prochains_evenements table tr td.dtstart {
+#prochains_evenements table tr td.date {
     text-overflow:ellipsis;
     width:1em;
 }

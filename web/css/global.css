@@ -90,6 +90,30 @@ hr
     clear:both;
 }
 
+/* contenu retiré de la mise en page mais gardé pour les lecteurs d'écran et les
+   robots (valeur d'une propriété hCalendar que la page n'affiche pas) */
+.visually-hidden
+{
+    position:absolute;
+    width:1px;
+    height:1px;
+    margin:-1px;
+    padding:0;
+    overflow:hidden;
+    clip:rect(0 0 0 0);
+    white-space:nowrap;
+    border:0;
+}
+
+/* les abbr qui portent dtstart ne sont pas des abréviations : pas de soulignement
+   pointillé hérité de normalize.css */
+abbr.dtstart[title]
+{
+    text-decoration:none;
+    border-bottom:none;
+    cursor:inherit;
+}
+
 /*enveloppe header div#conteneur footer*/
 #global
 {

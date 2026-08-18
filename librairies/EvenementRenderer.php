@@ -137,6 +137,38 @@ class EvenementRenderer
         return mb_substr($datetime, 11, -3);
     }
 
+    /**
+     * Valeur ISO 8601 de la propriété hCalendar dtstart.
+     *
+     * Date seule quand l'événement n'a pas d'horaire (sentinelle 06:00:01), date et heure sinon.
+     * La date vient de horaire_debut et non de dateEvenement : un événement qui commence après
+     * minuit appartient à la journée d'agenda de la veille (borne des 6h, cf. datetimeToHhMm),
+     * son dtstart réel est donc le lendemain de dateEvenement.
+     *
+     * @param string $date_evenement 2026-04-28
+     * @param string|null $horaire_debut 2026-04-28 21:30:00
+     * @return string 2026-04-28T21:30:00 ou 2026-04-28
+     */
+    public static function dtstartIso(string $date_evenement, ?string $horaire_debut): string
+    {
+        $date = mb_substr($date_evenement, 0, 10);
+
+        if (empty($horaire_debut) || mb_substr($horaire_debut, 0, 10) == "0000-00-00"
+            || mb_substr($horaire_debut, 11, 5) == "06:00") // sentinelle « sans horaire »
+        {
+            return $date;
+        }
+
+        // une date d'horaire aberrante ne doit pas déplacer l'événement
+        $date_debut = mb_substr($horaire_debut, 0, 10);
+        if ($date_debut != $date && $date_debut != DateHelper::isoToNextDay($date))
+        {
+            $date_debut = $date;
+        }
+
+        return $date_debut . "T" . mb_substr($horaire_debut, 11, 5) . ":00";
+    }
+
     public static function getRefListHtml(string $refCsv): string
     {
         ob_start();
@@ -283,21 +315,31 @@ class EvenementRenderer
     }
 
 
-    public static function eventTableRowHtml(array $tab_even, Authorization $authorization, bool $isWithLieu): string
+    /**
+     * @param string|null $lieuName Nom du lieu quand la page en tient déjà lieu de contexte
+     *                              ($isWithLieu à false) : la colonne reste vide à l'écran mais
+     *                              la propriété hCalendar location doit avoir une valeur.
+     */
+    public static function eventTableRowHtml(array $tab_even, Authorization $authorization, bool $isWithLieu, ?string $lieuName = null): string
     {
         // TODO: mv $icone... to... ?
         global $glo_auj_6h, $iconeCopier, $iconeEditer, $icone;
 
-        $vcard_starttime = '';
-        if (mb_substr((string) $tab_even['e_horaire_debut'], 11, 5) != '06:00')
-            $vcard_starttime = "T".mb_substr((string)$tab_even['e_horaire_debut'], 11, 5).":00";
+        $dtstart_iso = self::dtstartIso($tab_even['e_dateEvenement'], $tab_even['e_horaire_debut']);
 
         // depending on rendering in lieu or organisateur page
         $location = sanitizeForHtml($tab_even['s_nom']);
+        $location_masquee = '';
         if ($isWithLieu)
         {
             $even_lieu = Evenement::getLieu($tab_even);
             $location = Lieu::getLinkNameHtml($even_lieu['nom'], $even_lieu['idLieu'], $even_lieu['salle']);
+        }
+        elseif (!empty($lieuName))
+        {
+            // sur une fiche lieu la colonne resterait vide : hCalendar n'a alors aucune valeur
+            // pour location (1760 erreurs « Champ location manquant » dans Search Console)
+            $location_masquee = $lieuName;
         }
 
         ob_start();
@@ -305,8 +347,14 @@ class EvenementRenderer
 
         <tr class="<?php if ($glo_auj_6h == $tab_even['e_dateEvenement']) { echo "ici"; } ?> vevent evenement">
 
-            <td class="dtstart">
-                <a href="/index.php?courant=<?= sanitizeForHtml($tab_even['e_dateEvenement']) ?>"><?= DateHelper::isoToDayName($tab_even['e_dateEvenement']); ?>&nbsp;<?= (new \DateTime($tab_even['e_dateEvenement']))->format('j') ?><span class="value-title" title="<?= $tab_even['e_dateEvenement'].$vcard_starttime; ?>"></span></a><br>
+            <?php
+            // hCalendar : la date lisible ne peut pas porter dtstart elle-même, d'où le abbr.
+            // Le motif <span class="value-title" title="..."> utilisé auparavant n'est pas compris
+            // par le parseur de Google, qui lit le texte de l'élément et signalait alors 1961 erreurs
+            // « dtstart non conforme à la norme ISO 8601 » dans Search Console.
+            ?>
+            <td class="date">
+                <a href="/index.php?courant=<?= sanitizeForHtml($tab_even['e_dateEvenement']) ?>"><abbr class="dtstart" title="<?= sanitizeForHtml($dtstart_iso) ?>"><?= DateHelper::isoToDayName($tab_even['e_dateEvenement']); ?>&nbsp;<?= (new \DateTime($tab_even['e_dateEvenement']))->format('j') ?></abbr></a><br>
                 <span class="pratique"><?= self::schedulesToHhMm($tab_even['e_horaire_debut'], $tab_even['e_horaire_fin'], $tab_even['e_dateEvenement']) ?></span>
             </td>
             <td class="flyer photo">
@@ -320,11 +368,7 @@ class EvenementRenderer
             </td>
             <td class="location">
                 <?= $location ?>
-                <?php if (!empty($even_lieu['nom'])) : ?>
-                    <div class="location">
-                        <span class="value-title" title="<?= sanitizeForHtml($even_lieu['nom']); ?>"></span>
-                    </div>
-                <?php endif; ?>
+                <?php if ($location_masquee !== '') : ?><span class="visually-hidden"><?= sanitizeForHtml($location_masquee) ?></span><?php endif; ?>
             </td>
             <?php if ($authorization->isPersonneAllowedToEditEvenement($_SESSION, $tab_even)) : ?>
             <td class="lieu_actions_evenement">

@@ -187,7 +187,7 @@ include("../_header.inc.php");
     <header id="entete_contenu">
 
         <div id="entete_contenu_titre" <?php if ($tab_even['e_dateEvenement'] < $glo_auj) { echo ' class="ancien"'; } ?>>
-            <span class="category"><?= sanitizeForHtml($translator->get("event-category-".$tab_even['e_genre'])); ?></span>, <a href="/index.php?courant=<?= $tab_even['e_dateEvenement'] ?>"><time datetime="<?= $tab_even['e_dateEvenement'] ?>"><?= DateHelper::isoToFr($tab_even['e_dateEvenement'], 'annee') ?></time></a>
+            <span class="category"><?= sanitizeForHtml($translator->get("event-category-".$tab_even['e_genre'])); ?></span>, <a href="/index.php?courant=<?= $tab_even['e_dateEvenement'] ?>"><abbr class="dtstart" title="<?= sanitizeForHtml(EvenementRenderer::dtstartIso($tab_even['e_dateEvenement'], $tab_even['e_horaire_debut'])) ?>"><?= DateHelper::isoToFr($tab_even['e_dateEvenement'], 'annee') ?></abbr></a>
         </div>
 
         <?php if (!empty($events_siblings[0])) : ?>
@@ -221,10 +221,6 @@ include("../_header.inc.php");
     </nav>
 
     <article id="evenement">
-
-        <div class="dtstart">
-            <span class="value-title" title="<?= $tab_even['e_dateEvenement'] ?>T<?= mb_substr((string) $tab_even['e_horaire_debut'], 11, 5); ?>:00"></span>
-        </div>
 
         <header class="titre">
 
