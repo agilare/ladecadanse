@@ -19,7 +19,7 @@
 <div id="order_navigation">
     <ul>
         <?php foreach ($tab_ordre_evenements_passes as $ordre_cle => $ordre) : ?>
-            <li><a href="?<?= \Ladecadanse\HtmlShrink::urlQueryArrayToString($get, ['ordre', 'page']) ?>&amp;ordre=<?= $ordre_cle ?>"<?php if ($_SESSION['user_prefs_past_events_order'] == $ordre_cle) : ?> class="selected"<?php endif; ?> title="<?= sanitizeForHtml($ordre['titre']) ?>" aria-label="<?= sanitizeForHtml($ordre['titre']) ?>" rel="nofollow"><i class="fa <?= $ordre['icone'] ?> fa-lg" aria-hidden="true"></i></a></li>
+            <li><a href="?<?= \Ladecadanse\HtmlShrink::urlQueryArrayToString($get, ['ordre', 'page']) ?>&amp;ordre=<?= $ordre_cle ?>"<?php if ($_SESSION['user_prefs_past_events_order'] == $ordre_cle) : ?> class="selected"<?php endif; ?> title="<?= sanitizeForHtml($ordre['titre']) ?>" aria-label="<?= sanitizeForHtml($ordre['titre']) ?>" rel="nofollow"><i class="fa <?= $ordre['icone'] ?>" aria-hidden="true"></i></a></li>
         <?php endforeach; ?>
     </ul>
 </div>
