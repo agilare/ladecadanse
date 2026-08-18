@@ -12,7 +12,7 @@ use Ladecadanse\Lieu;
 
 if (!$authorization->checkGroup(UserLevel::ADMIN)) {
     header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
-	header("Location: /user-login.php"); die();
+	header("Location: /user/login.php"); die();
 }
 
 $_SESSION['region_admin'] = '';
@@ -160,7 +160,7 @@ require_once '../_header.inc.php';
                             <tr>
                                 <td><?= (new DateTime($u['p_dateAjout']))->format("H:i")?></td>
                                 <td>
-                                    <a href="/user.php?idP=<?= (int)$u['idPersonne'] ?>"><?= sanitizeForHtml($u['pseudo']) ?></a>
+                                    <a href="/user/dashboard.php?idP=<?= (int)$u['idPersonne'] ?>"><?= sanitizeForHtml($u['pseudo']) ?></a>
                                     <?php if ($u['groupe'] != UserLevel::ACTOR) { echo "(".sanitizeForHtml($u['groupe']).")"; } ?>
                                     <br><small><?= $u['email'] ?></small>
                                 </td>
@@ -228,7 +228,7 @@ require_once '../_header.inc.php';
                         <td><?= ucfirst(Evenement::genreLabel($event['e_genre'])) ?></td>
                         <td><?= EvenementRenderer::schedulesToHhMm($event['e_horaire_debut'], $event['e_horaire_fin'], $event['e_dateEvenement']) ?></td>
                         <td style='text-align: center;'><?= EvenementRenderer::$iconStatus[$event['e_statut']] ?></td>
-                        <td><a href="/user.php?idP=<?= (int)$event['idPersonne'] ?>"><?= sanitizeForHtml($event['pseudo']) ?></a></td>
+                        <td><a href="/user/dashboard.php?idP=<?= (int)$event['idPersonne'] ?>"><?= sanitizeForHtml($event['pseudo']) ?></a></td>
                         <td>
                             <?php if ($_SESSION['Sgroupe'] <= UserLevel::ADMIN) : ?>
                                 <a href="/evenement-edit.php?idE=<?= (int)$event['e_idEvenement'] ?>&amp;action=editer"><?= $iconeEditer ?></a>
@@ -264,7 +264,7 @@ require_once '../_header.inc.php';
                     <?php // aperçu : le contenu est du HTML de confiance (rendu tel quel sur lieu.php),
                           // on le réduit à son texte pour une cellule de tableau ?>
                     <td class="tdleft small"><?= Text::shortenToHtml(strip_tags((string) $desc['contenu']), 100) ?></td>
-                    <td><a href="/user.php?idP=<?= (int) $desc['idPersonne'] ?>"><?= sanitizeForHtml($desc['pseudo']) ?></a></td>
+                    <td><a href="/user/dashboard.php?idP=<?= (int) $desc['idPersonne'] ?>"><?= sanitizeForHtml($desc['pseudo']) ?></a></td>
                     <td><?= DateHelper::isoToFr($desc['dateAjout']) ?></td>
                     <td><a href="/lieu-text-edit.php?action=editer&amp;idL=<?= (int)$desc['idLieu'] ?>&amp;idP=<?= (int) $desc['idPersonne'] ?>&amp;type=<?= $desc['type'] ?>"><?= $iconeEditer ?></a></td>
                </tr>

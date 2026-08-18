@@ -28,17 +28,17 @@ class SiteTester extends \Codeception\Actor
     /**
      * Ouvre une session sur le site testé.
      *
-     * `user-login.php` protège le formulaire par un token CSRF en session
+     * `user/login.php` protège le formulaire par un token CSRF en session
      * (`form_token_user_login`) et par un honeypot `login_as` qui doit rester
      * vide : `submitForm()` renvoie les champs cachés tels quels et PhpBrowser
      * conserve les cookies, il n'y a donc rien de particulier à faire ici.
      */
     public function login(string $user, string $password): void
     {
-        $this->amOnPage('/user-login.php');
+        $this->amOnPage('/user/login.php');
         $this->submitForm('#ajouter_editer', ['pseudo' => $user, 'motdepasse' => $password]);
 
-        // succès = redirection vers / ; échec = /user-login.php?msg=faux.
+        // succès = redirection vers / ; échec = /user/login.php?msg=faux.
         // On vérifie la session sur une page statique plutôt que sur la home,
         // qui peut échouer pour des raisons de données (cf. BotMonitoringCest)
         $this->amOnPage('/articles/apropos.php');

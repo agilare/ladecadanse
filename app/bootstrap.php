@@ -97,7 +97,7 @@ $connectorPdo = DbConnectorPdo::getInstance();
 
 $authorization = new Authorization(new AuthorizationRepository($connectorPdo->getPDO()));
 
-$videur = new Sentry($connector);
+$videur = new Sentry($connectorPdo->getPDO(), $logger);
 
 $tplEngine = new TemplateEngine(__DIR__ . "/../resources/");
 

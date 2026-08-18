@@ -158,7 +158,7 @@ if ($connector->getNumRows($req_temp) == 1)
 
             if ($connector->query($sql_update) && $connector->query($sql_delete))
 			{
-				HtmlShrink::msgOk("Le mot de passe a été mis à jour, vous pouvez maintenant vous <a href='/user-login.php'>connecter</a> avec votre identifiant et ce nouveau mot de passe");
+				HtmlShrink::msgOk("Le mot de passe a été mis à jour, vous pouvez maintenant vous <a href='/user/login.php'>connecter</a> avec votre identifiant et ce nouveau mot de passe");
                 $logger->info('[user-reset2] password reset success', ['idP' => $idPersonne]);
 			}
 			else

@@ -10,7 +10,7 @@ use Ladecadanse\UserLevel;
 
 if (!$authorization->checkGroup(UserLevel::ACTOR)) {
     header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
-    header("Location: /user-login.php");
+    header("Location: /user/login.php");
     die();
 }
 

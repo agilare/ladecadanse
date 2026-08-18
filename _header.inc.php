@@ -213,7 +213,7 @@ $mouseless_allowed = isset($_SESSION['Sgroupe']) && (int) $_SESSION['Sgroupe'] <
                         {
                             $ici = '';
                             $ici_login = '';
-                            if (strstr((string) $_SERVER['PHP_SELF'], "user-login.php") )
+                            if (strstr((string) $_SERVER['PHP_SELF'], "user/login.php") )
                             {
                                 $ici_login = " class=\"ici\"";
                             }
@@ -225,7 +225,7 @@ $mouseless_allowed = isset($_SESSION['Sgroupe']) && (int) $_SESSION['Sgroupe'] <
                             ?>
 
                             <li <?php echo $ici; ?>><a href="/user-register.php" title="Créer un compte"><strong>Inscription</strong></a></li>
-                            <li <?php echo $ici_login; ?> rel="nofollow"><a href="/user-login.php" title="Se connecter au site">Connexion</a></li>
+                            <li <?php echo $ici_login; ?> rel="nofollow"><a href="/user/login.php" title="Se connecter au site">Connexion</a></li>
 
                         <?php
                         }
@@ -247,7 +247,7 @@ $mouseless_allowed = isset($_SESSION['Sgroupe']) && (int) $_SESSION['Sgroupe'] <
                                         <a href="/admin/bots.php" title="Monitoring des bots" <?php if (strstr((string) $_SERVER['PHP_SELF'], "admin/bots.php")) : ?>class="ici"<?php endif; ?>><i class="fa fa-bug" aria-hidden="true"></i></a>
                                     <?php endif; ?>
 
-                                    <a href="/user.php?idP=<?= (int) $_SESSION['SidPersonne']; ?>" title="<?= sanitizeForHtml($_SESSION['user']); ?>" <?php if (strstr((string) $_SERVER['PHP_SELF'], "user.php")) : ?>class="ici"<?php endif; ?>>
+                                    <a href="/user/dashboard.php?idP=<?= (int) $_SESSION['SidPersonne']; ?>" title="<?= sanitizeForHtml($_SESSION['user']); ?>" <?php if (strstr((string) $_SERVER['PHP_SELF'], "user/dashboard.php")) : ?>class="ici"<?php endif; ?>>
                                         <i class="fa fa-user" aria-hidden="true"></i>
                                     </a>
 
@@ -312,7 +312,7 @@ $mouseless_allowed = isset($_SESSION['Sgroupe']) && (int) $_SESSION['Sgroupe'] <
         </header>
 
         <div id="conteneur" style="
-            <?php if (strstr(dirname((string) $_SERVER['PHP_SELF']), 'admin') || in_array($nom_page, ['evenement-edit', 'event/copy', 'event/send', 'event/search', 'lieu/lieux', 'lieu-edit', 'lieu-text-edit', 'organisateur/organisateurs', 'organisateur-edit', 'misc/contacteznous', 'user-login', 'user', 'user-edit', 'user-register'])) : ?>padding-right: 5px; <?php endif; ?>
-            <?php if (strstr(dirname((string) $_SERVER['PHP_SELF']), 'admin') || in_array($nom_page, ['user-login']) ) : ?>padding-left: 5px <?php endif; ?>
+            <?php if (strstr(dirname((string) $_SERVER['PHP_SELF']), 'admin') || in_array($nom_page, ['evenement-edit', 'event/copy', 'event/send', 'event/search', 'lieu/lieux', 'lieu-edit', 'lieu-text-edit', 'organisateur/organisateurs', 'organisateur-edit', 'misc/contacteznous', 'user/login', 'user/dashboard', 'user-edit', 'user-register'])) : ?>padding-right: 5px; <?php endif; ?>
+            <?php if (strstr(dirname((string) $_SERVER['PHP_SELF']), 'admin') || in_array($nom_page, ['user/login']) ) : ?>padding-left: 5px <?php endif; ?>
             ">
 

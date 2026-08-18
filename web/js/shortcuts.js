@@ -75,14 +75,14 @@ export const SHORTCUTS = [
     {
         key: 'ArrowLeft',
         label: '←',
-        pages: ['event/search', 'lieu/lieux', 'organisateur/organisateurs', 'user', 'admin/gererEvenements', 'admin/users'],
+        pages: ['event/search', 'lieu/lieux', 'organisateur/organisateurs', 'user/dashboard', 'admin/gererEvenements', 'admin/users'],
         action: 'activate',
         selectors: ['.pagination a[rel~="prev"]']
     },
     {
         key: 'ArrowRight',
         label: '→',
-        pages: ['event/search', 'lieu/lieux', 'organisateur/organisateurs', 'user', 'admin/gererEvenements', 'admin/users'],
+        pages: ['event/search', 'lieu/lieux', 'organisateur/organisateurs', 'user/dashboard', 'admin/gererEvenements', 'admin/users'],
         action: 'activate',
         selectors: ['.pagination a[rel~="next"]']
     },
@@ -236,7 +236,7 @@ export const LISTS = [
     {
         pages: ['admin/users'],
         items: '#ajouts tr',
-        link: 'a[href^="/user.php?idP="]'
+        link: 'a[href^="/user/dashboard.php?idP="]'
     }
 ];
 

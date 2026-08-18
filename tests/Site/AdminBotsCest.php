@@ -29,7 +29,7 @@ class AdminBotsCest
 
         $I->startFollowingRedirects();
         $I->amOnPage('/admin/bots.php');
-        $I->seeCurrentUrlEquals('/user-login.php');
+        $I->seeCurrentUrlEquals('/user/login.php');
     }
 
     /**

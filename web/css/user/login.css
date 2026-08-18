@@ -1,0 +1,176 @@
+/* Page de connexion (user/login.php) */
+
+/*
+ * Un seul bord gauche pour toute la page. L'en-tête (94 %, centré par ses marges auto) et
+ * le formulaire (margin-left:1em) partaient de deux verticales différentes : le titre et le
+ * cadre se décalaient visiblement l'un par rapport à l'autre. La gouttière revient au
+ * conteneur, et chaque bloc occupe toute sa largeur.
+ */
+#contenu.connexion
+{
+	box-sizing:border-box;
+	max-width:36em;
+	padding:0 1em;
+}
+
+#contenu.connexion #entete_contenu,
+#contenu.connexion .msg_erreur,
+#contenu.connexion form#ajouter_editer
+{
+	width:100%;
+	margin-left:0;
+	margin-right:0;
+}
+
+#contenu.connexion #entete_contenu
+{
+	margin-top:0.3em;
+	margin-bottom:0;
+	padding:0.4em 0;
+}
+
+#contenu.connexion form#ajouter_editer
+{
+	margin-top:0;
+	margin-bottom:1em;
+	padding:0;
+	background:none;
+}
+
+/* le même arrondi léger que les autres cadres du site (boutons, champs, encarts) */
+#contenu.connexion form#ajouter_editer fieldset
+{
+	margin:0;
+	padding:1.2em 1.2em 0 1.2em;
+	border-radius:4px;
+	/* la barre d'action déborde jusqu'aux bords : sans quoi ses angles droits dépassent l'arrondi */
+	overflow:hidden;
+}
+
+/*
+ * Libellé et champ sur deux colonnes fixes : les labels se calaient jusqu'ici par des
+ * padding-left choisis ligne par ligne (10em ici, 21em là), que le moindre changement de
+ * texte désalignait. La grille aligne du même coup la case à cocher et les liens.
+ */
+#contenu.connexion form#ajouter_editer p
+{
+	display:grid;
+	grid-template-columns:9em 1fr;
+	gap:0.3em 0.8em;
+	align-items:center;
+	width:100%;
+	margin:0 0 0.9em 0;
+}
+
+#contenu.connexion form#ajouter_editer label
+{
+	width:auto;
+	margin:0;
+	padding:0;
+	text-align:right;
+}
+
+/* même longueur pour les deux champs, quel que soit leur attribut size */
+#contenu.connexion form#ajouter_editer input[type="text"],
+#contenu.connexion form#ajouter_editer input[type="password"]
+{
+	box-sizing:border-box;
+	width:100%;
+	max-width:18em;
+}
+
+#contenu.connexion form#ajouter_editer input[type="checkbox"]
+{
+	justify-self:start;
+}
+
+/* le champ fautif est signalé à sa place, en plus du récapitulatif en haut de page */
+#contenu.connexion form#ajouter_editer input.champ_errone
+{
+	border-color:#c00;
+	background-color:#fff6f6;
+}
+
+/*
+ * Les liens secondaires se rangent dans la colonne des champs, l'un sous l'autre :
+ * ils prolongent la saisie plutôt que de flotter à leur propre marge.
+ */
+#contenu.connexion form#ajouter_editer p.liens_form
+{
+	gap:0.3em 0.8em;
+	margin-bottom:1.2em;
+}
+
+/*
+ * La réduction de corps porte sur les liens, pas sur le paragraphe : posée sur le
+ * paragraphe, elle rétrécissait ses colonnes en em et décalait les liens vers la gauche
+ * des champs, précisément ce qu'il s'agissait d'aligner.
+ */
+#contenu.connexion form#ajouter_editer p.liens_form a
+{
+	grid-column:2;
+	justify-self:start;
+	font-size:0.9em;
+}
+
+/* barre d'action : d'aplomb avec le cadre, dont elle épouse les coins bas */
+#contenu.connexion form#ajouter_editer p.piedForm
+{
+	display:block;
+	box-sizing:border-box;
+	width:auto;
+	margin:0 -1.2em;
+	padding:0.6em 1.2em;
+	border-left:none;
+	border-radius:0 0 4px 4px;
+}
+
+/*
+ * Récapitulatif des erreurs. L'icône se cale sur la première ligne : centrée, elle se
+ * retrouvait au milieu du vide dès que le bloc listait plusieurs erreurs.
+ */
+#contenu.connexion .msg_erreur
+{
+	box-sizing:border-box;
+	margin:0.4em 0 1em 0;
+	padding:0.9em 1em 0.9em 3em;
+	border:1px solid #e3a0a0;
+	border-radius:4px;
+	background-position:1em 1.1em;
+}
+
+#contenu.connexion .msg_erreur .msg_erreur_titre
+{
+	margin:0 0 0.4em 0;
+	font-weight:bold;
+}
+
+#contenu.connexion .msg_erreur ul
+{
+	margin:0;
+	padding-left:1.2em;
+}
+
+#contenu.connexion .msg_erreur li
+{
+	margin:0.2em 0;
+}
+
+/* trop étroit pour deux colonnes : le libellé passe au-dessus de son champ */
+@media screen and (max-width:29.99em)
+{
+	#contenu.connexion form#ajouter_editer p
+	{
+		grid-template-columns:1fr;
+	}
+
+	#contenu.connexion form#ajouter_editer label
+	{
+		text-align:left;
+	}
+
+	#contenu.connexion form#ajouter_editer p.liens_form a
+	{
+		grid-column:1;
+	}
+}

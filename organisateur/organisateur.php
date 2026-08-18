@@ -208,7 +208,7 @@ include("../_header.inc.php");
                                 <summary>Membres (<?= count($orga_personnes) ?>)&nbsp;:</summary>
                                 <ul>
                                     <?php foreach ($orga_personnes as $op) : ?>
-                                        <li><a href="/user.php?idP=<?= (int)$op['idPersonne'] ?>"><?= sanitizeForHtml($op['pseudo']) ?></a>&nbsp;<small><?= sanitizeForHtml($op['email']) ?></small></li>
+                                        <li><a href="/user/dashboard.php?idP=<?= (int)$op['idPersonne'] ?>"><?= sanitizeForHtml($op['pseudo']) ?></a>&nbsp;<small><?= sanitizeForHtml($op['email']) ?></small></li>
                                     <?php endforeach ?>
                                 </ul>
                             </details>

@@ -265,7 +265,7 @@ include("../_header.inc.php");
                                 <ul>
                                 <?php foreach ($lieu_affiliates as $a) : ?>
                                     <li>
-                                        <a href="/user.php?idP=<?= (int)$a['idPersonne'] ?>"><?= sanitizeForHtml($a['pseudo']) ?></a>
+                                        <a href="/user/dashboard.php?idP=<?= (int)$a['idPersonne'] ?>"><?= sanitizeForHtml($a['pseudo']) ?></a>
                                         <small><?= sanitizeForHtml($a['email']) ?> <?= DateHelper::isoToApp($a['p_dateAjout']) ?></small>
                                     </li>
                                 <?php endforeach; ?>

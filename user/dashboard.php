@@ -1,6 +1,6 @@
 <?php
 
-require_once("app/bootstrap.php");
+require_once("../app/bootstrap.php");
 
 use Ladecadanse\UserLevel;
 use Ladecadanse\HtmlShrink;
@@ -23,7 +23,7 @@ use Ladecadanse\Utils\Text;
 if (!$authorization->checkGroup(UserLevel::MEMBER))
 {
     header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
-    header("Location: /user-login.php");
+    header("Location: /user/login.php");
     die();
 }
 
@@ -285,14 +285,14 @@ $url_pagination = "?" . $url_params . "&tri=" . $get['tri'] . "&ordre=" . $get['
 // =============================================================================
 
 $page_titre = "profil";
-include("_header.inc.php");
+include("../_header.inc.php");
 
 if ($erreur !== null)
 {
     echo '<main id="contenu" class="colonne user">';
     HtmlShrink::msgErreur($erreur);
     echo '</main>';
-    include("_footer.inc.php");
+    include("../_footer.inc.php");
     exit;
 }
 ?>
@@ -480,10 +480,10 @@ if ($erreur !== null)
 
 <div id="colonne_gauche" class="colonne">
 <?php
-include("event/_navigation_calendrier.inc.php");
+include("../event/_navigation_calendrier.inc.php");
 ?>
 </div>
 
 <?php
-include("_footer.inc.php");
+include("../_footer.inc.php");
 ?>

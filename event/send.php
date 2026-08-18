@@ -27,7 +27,7 @@ $get['action'] = $_GET['action'];
 if ($get['action'] == 'share' && !$authorization->checkGroup(12))
 {
     header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
-    header("Location: /user-login.php");
+    header("Location: /user/login.php");
     die();
 }
 

@@ -306,7 +306,7 @@ include("../_header.inc.php");
 
         <footer id="auteur">
             <a class="signaler" href="/event/send.php?action=report&idE=<?= (int) $get['idE'] ?>"><i class="fa fa-flag-o fa-lg"></i>&nbsp;Signaler une erreur</a> Ajouté <?php echo ((!empty($signature_auteur)) ? "par&nbsp;" : "") . $signature_auteur ?> le&nbsp;<?= DateHelper::isoToFr($tab_even['e_dateAjout'], 'annee', showDayOfWeek: false) ?>
-            <?php if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= UserLevel::ADMIN && !empty($tab_even['e_idPersonne'])) : ?><a href="/user.php?idP=<?= (int) $tab_even['e_idPersonne'] ?>"><?= $icone['personne'] ?></a><?php endif; ?>
+            <?php if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= UserLevel::ADMIN && !empty($tab_even['e_idPersonne'])) : ?><a href="/user/dashboard.php?idP=<?= (int) $tab_even['e_idPersonne'] ?>"><?= $icone['personne'] ?></a><?php endif; ?>
         </footer> <!-- auteur -->
 
     </article>

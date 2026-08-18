@@ -30,13 +30,13 @@ class UserEventDefaultsCest
      * Ouvre l'édition du profil de l'utilisateur connecté.
      *
      * Par navigation plutôt que par une URL construite : l'identifiant de la personne dépend de
-     * l'instance testée, et tests/.env ne le décrit pas. Le menu du header pointe vers /user.php de
+     * l'instance testée, et tests/.env ne le décrit pas. Le menu du header pointe vers /user/dashboard.php de
      * l'utilisateur connecté, d'où part le lien « Modifier ».
      */
     private function amOnMyProfileEdit(SiteTester $I): void
     {
         $I->amOnPage('/articles/apropos.php');
-        $I->click('a[href^="/user.php?idP="]');
+        $I->click('a[href^="/user/dashboard.php?idP="]');
         $I->seeResponseCodeIs(HttpCode::OK);
 
         $I->click('a[href*="/user-edit.php"]');

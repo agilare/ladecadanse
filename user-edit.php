@@ -4,7 +4,7 @@
  * Un admin peut tout modifier, un membre seulement son profile
  *
  * @category   modification d'une table de la base
- * @see personne.php, user-login.php
+ * @see personne.php, user/login.php
  * @author     Michel Gaudry <michel@ladecadanse.ch>
  */
 
@@ -22,7 +22,7 @@ use Ladecadanse\UserSettings;
 
 if (!$authorization->checkGroup(UserLevel::ACTOR)) {
     header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
-    header("Location: /user-login.php");
+    header("Location: /user/login.php");
     die();
 }
 
@@ -99,7 +99,7 @@ $ev_defaults = UserSettings::eventNewDefaults(null);
 * Sorties du traitement, rendues plus bas une fois l'en-tête inclus.
 *
 * Les requêtes en échec ne peuvent plus s'annoncer au fil de l'eau : elles s'accumulent ici.
-* Le succès, lui, voyage en session jusqu'à user.php — sauf si une de ces erreurs est survenue
+* Le succès, lui, voyage en session jusqu'à user/dashboard.php — sauf si une de ces erreurs est survenue
 * en chemin, auquel cas la page reste affichée pour ne pas escamoter l'erreur.
 */
 $erreurs_traitement = [];
@@ -451,7 +451,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 		if ($message_succes !== '' && $erreurs_traitement === [])
 		{
 			$_SESSION['user_flash_msg'] = $message_succes;
-			header("Location: /user.php?idP=" . $idP_succes);
+			header("Location: /user/dashboard.php?idP=" . $idP_succes);
 			die();
 		}
 

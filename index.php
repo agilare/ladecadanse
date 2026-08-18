@@ -306,7 +306,7 @@ include("_header.inc.php");
                                     </li>
                                     <?php if ($authorization->isPersonneAllowedToManageEvenement($_SESSION, $tab_even)) : ?>
                                     <li>
-                                        <a href="/user.php?idP=<?= (int) $tab_even['e_idPersonne'] ?>"><?= $icone['personne'] ?></a>
+                                        <a href="/user/dashboard.php?idP=<?= (int) $tab_even['e_idPersonne'] ?>"><?= $icone['personne'] ?></a>
                                     </li>
                                     <?php endif; ?>
                                 </ul>
