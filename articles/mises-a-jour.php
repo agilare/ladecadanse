@@ -24,14 +24,16 @@ include("../_header.inc.php");
         <header>
             <h2>3.11.0</h2>
             <br>
-            <p>à venir</p>
+            <p>18 août 2026</p>
         </header>
 
         <h3>Événements</h3>
 
         <ul>
+            <li>agenda : en ordre chronologique <a href="https://github.com/agilare/ladecadanse/issues/105" rel="external" target="_blank">sépararateurs avec l'heure</a> "dès 19h, dès 20h..." (merci <a href="https://github.com/lambeletjp" rel="external" target="_blank">lambeletjp</a>)
             <li>les événements passés deviennent des <strong>archives</strong> : ils ne peuvent plus être modifiés ni supprimés, afin qu'un ancien événement ne soit plus transformé par mégarde en un nouveau</li>
-            <li>formulaire d'édition : le <strong>flyer et la photo</strong> peuvent être ajoutés en collant l'adresse d'une image trouvée sur le web, sans passer par un téléchargement</li>
+            <li>formulaire d'édition : le <strong>flyer et la photo</strong> peuvent être ajoutés <a href="https://github.com/agilare/ladecadanse/issues/26" rel="external" target="_blank">en collant l'adresse d'une image trouvée sur le web</a>, sans passer par un téléchargement</li>
+            <li>formulaire d'édition : champs permettant à l'admin de <a href="https://github.com/agilare/ladecadanse/issues/149" rel="external" target="_blank">notifier par email l'auteur de l'événement</a> d'infos, changements...</li>
         </ul>
 
         <h3>Lieux et organisateurs</h3>
@@ -44,7 +46,8 @@ include("../_header.inc.php");
         <h3>Interface</h3>
 
         <ul>
-            <li><a href="https://github.com/agilare/ladecadanse/issues/112" rel="external" target="_blank"><strong>raccourcis clavier</strong></a> pour les actions courantes : <kbd>h</kbd> accueil, <kbd>s</kbd> recherche, <kbd>a</kbd> ajouter un événement, <kbd>l</kbd> lieux, <kbd>o</kbd> organisateurs, <kbd>e</kbd> éditer une fiche</li>
+            <li><a href="https://github.com/agilare/ladecadanse/issues/112" rel="external" target="_blank"><strong>raccourcis clavier</strong></a> pour les actions courantes : <kbd>h</kbd> accueil, <kbd>s</kbd> recherche, <kbd>a</kbd> ajouter un événement, <kbd>l</kbd> lieux, <kbd>o</kbd> organisateurs, <kbd>e</kbd> éditer une fiche; mode <a href="index.php?mouseless=1">mouseless</a></li>
+            <li>diverses améliorations</li>
         </ul>
 
         <h3>Flux RSS</h3>

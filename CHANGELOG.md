@@ -1,6 +1,6 @@
 # Changelog
 
-## [3.11.0] - Unreleased
+## [3.11.0] - 2026-08-18
 
 Upgrade steps (database, `app/env.php`, side effects) : [UPGRADE.md](UPGRADE.md).
 Feature documentation : [docs/](docs/).
@@ -14,7 +14,7 @@ Feature documentation : [docs/](docs/).
 - events edit : confirm before leaving the form with unsaved changes
 - lieux edit : optional latitude/longitude fields, so the map coordinates can be set from the site instead of directly in the database (a map picker will come later) ; stored as `DECIMAL(10,7)` instead of `FLOAT(10,6)`
 - search : the results page keeps the query in the header field and offers a "Copier" button on each result ; on mobile the search field stays open on that page
-- home : time-based separators in the events list #105 (PR #133)
+- home : time-based separators in the events list #105 (PR #133) (thanks to @lambeletjp)
 - ui : keyboard shortcuts for the most common actions #112 — pages, edition, flyer, copy, day navigation, pagination, `/` to focus a filter field, `j`/`k` to walk listings and events one by one — see [README](README.md#raccourcis-clavier)
 - ui : "mouseless" mode to learn those shortcuts, for ADMIN and SUPERADMIN only — `?mouseless=1` neutralises the mouse on the elements a shortcut can reach and badges each one with its key — see [README](README.md#raccourcis-clavier)
 - mailing : optional copy to the admin of the messages sent to users, for short monitoring periods, off by default (see `app/env_model.php`)
