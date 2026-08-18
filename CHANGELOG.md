@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.11.1] - 2026-08-18
+
+### Fixed
+- lieux, organisateurs, search, admin : a malformed `page` url parameter threw an uncaught exception — bots follow urls where the unescaped `&region` of `?page=3&region=vd` has been read as the `&reg` html entity, giving `?page=3®ion=vd` ; the 8 pages paginating now go through the new non-throwing `QueryParamValidator::pageFromQuery()`, which also rejects a page below 1 or passed as an array
+- events send : sharing or reporting an event whose lieu was deleted, or whose location was typed as free text, logged a warning ; the fallback returned by `Evenement::getLieu()` was missing the `determinant` key
+- lieux edit : saving the form as ACTOR or MEMBER logged a warning ; `image_galerie` is declared as a file field although its input is only rendered from AUTHOR up, so it never reaches `$_FILES` for those levels
+
 ## [3.11.0] - 2026-08-18
 
 Upgrade steps (database, `app/env.php`, side effects) : [UPGRADE.md](UPGRADE.md).
