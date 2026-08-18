@@ -30,82 +30,33 @@ include("../_header.inc.php");
         <h3>Événements</h3>
 
         <ul>
-            <li>les événements passés deviennent des archives : ils ne peuvent plus être modifiés ni supprimés, afin qu'un ancien événement ne soit plus transformé par mégarde en un nouveau — ce qui effaçait l'original. Pour reprogrammer un événement passé, utilisez le bouton <em>Copier</em>, qui crée un nouvel événement en gardant vos informations</li>
-            <li>formulaire d'édition : le flyer et la photo peuvent être ajoutés en collant l'adresse d'une image trouvée sur le web, sans passer par un téléchargement</li>
-            <li>formulaire d'édition : une confirmation est demandée si vous quittez la page sans avoir enregistré vos modifications</li>
-            <li>formulaire d'édition : dans la liste des lieux, ceux-ci sont désormais regroupés par canton</li>
-            <li>formulaire d'édition : le champ <em>Références</em> accepte une adresse par ligne, plus lisible qu'une longue suite</li>
-            <li>formulaire d'édition : le statut de l'événement (complet, annulé) est placé plus haut et signalé par une pastille de couleur</li>
-            <li><a href="https://github.com/agilare/ladecadanse/issues/149" rel="external" target="_blank">l'auteur d'un événement peut être prévenu par email des modifications qui y sont apportées</a>, avec le motif du changement</li>
-        </ul>
-
-        <h3>Votre compte</h3>
-
-        <ul>
-            <li>vos valeurs par défaut pour l'ajout d'un événement : catégorie, heure de début et de fin, lieu, organisateur(s) et prix. Elles se règlent dans votre profil, section <em>Événements</em>, et remplissent d'avance le formulaire d'ajout — pratique si vous annoncez souvent des événements semblables. Elles ne touchent pas aux événements déjà enregistrés</li>
-        </ul>
-
-        <h3>Page d'accueil</h3>
-
-        <ul>
-            <li><a href="https://github.com/agilare/ladecadanse/issues/105" rel="external" target="_blank">séparateurs horaires dans la liste des événements</a> : la journée se lit d'un coup d'œil</li>
-        </ul>
-
-        <h3>Recherche</h3>
-
-        <ul>
-            <li>votre recherche reste affichée dans le champ après l'envoi, ce qui permet de l'ajuster sans la retaper</li>
-            <li>un bouton <em>Copier</em> sur chaque résultat</li>
-            <li>mobile : le champ de recherche reste ouvert sur la page des résultats</li>
+            <li>les événements passés deviennent des <strong>archives</strong> : ils ne peuvent plus être modifiés ni supprimés, afin qu'un ancien événement ne soit plus transformé par mégarde en un nouveau</li>
+            <li>formulaire d'édition : le <strong>flyer et la photo</strong> peuvent être ajoutés en collant l'adresse d'une image trouvée sur le web, sans passer par un téléchargement</li>
         </ul>
 
         <h3>Lieux et organisateurs</h3>
 
         <ul>
-            <li>l'onglet <em>Passés</em> s'ouvre sur les événements les plus récents, et non plus sur les plus anciens</li>
-            <li>un bouton dans les champs de filtre permet d'effacer la recherche et de revenir à la liste complète d'un seul clic</li>
-            <li>les coordonnées de la carte d'un lieu peuvent être saisies depuis le site, sans intervention technique</li>
+            <li>les <strong>coordonnées de la carte</strong> d'un lieu peuvent être saisies depuis le site</li>
         </ul>
 
         <h3>Interface</h3>
 
         <ul>
-            <li><a href="https://github.com/agilare/ladecadanse/issues/112" rel="external" target="_blank">raccourcis clavier</a> pour les actions courantes : <kbd>h</kbd> accueil, <kbd>s</kbd> recherche, <kbd>a</kbd> ajouter un événement, <kbd>l</kbd> lieux, <kbd>o</kbd> organisateurs, <kbd>e</kbd> éditer une fiche, <kbd>f</kbd> voir le flyer, <kbd>c</kbd> copier un événement, <kbd>/</kbd> pour filtrer une liste</li>
-            <li>les flèches gauche et droite changent de jour dans l'agenda, et de page dans les listes</li>
-            <li><kbd>j</kbd> et <kbd>k</kbd> parcourent une liste d'un événement à l'autre, <em>Entrée</em> ouvre la fiche</li>
-            <li>les raccourcis fonctionnent quel que soit votre type de clavier (AZERTY, QWERTZ, QWERTY...)</li>
-            <li>bouton retour en haut de page mieux positionné sur grand écran</li>
+            <li><a href="https://github.com/agilare/ladecadanse/issues/112" rel="external" target="_blank"><strong>raccourcis clavier</strong></a> pour les actions courantes : <kbd>h</kbd> accueil, <kbd>s</kbd> recherche, <kbd>a</kbd> ajouter un événement, <kbd>l</kbd> lieux, <kbd>o</kbd> organisateurs, <kbd>e</kbd> éditer une fiche</li>
         </ul>
 
         <h3>Flux RSS</h3>
 
         <ul>
-            <li>correction des dates annoncées par les flux, qui pouvaient être vieilles de plusieurs mois</li>
-            <li>correction des illustrations : un événement sans image reprenait celle de l'événement précédent</li>
-            <li>le flux d'un lieu est de nouveau détecté automatiquement par les lecteurs de flux depuis la page du lieu</li>
-            <li>flux plus rapides et allégés</li>
-        </ul>
-
-        <h3>Corrections</h3>
-
-        <ul>
-            <li>textes de présentation des lieux et des organisateurs : les liens pointant vers le site lui-même perdaient leur adresse à l'enregistrement. C'est corrigé, mais <strong>les textes enregistrés avant cette version doivent être ré-édités et ré-enregistrés</strong> pour que ces liens fonctionnent à nouveau</li>
-            <li>le champ de date est de nouveau utilisable au clavier</li>
-            <li>une adresse erronée mène à une vraie page « introuvable » au lieu d'une page vide ou d'une erreur</li>
-            <li>diverses corrections d'affichage : espacement de la zone de recherche, alignement des icônes dans les listes, aperçus d'images plus grands dans les formulaires</li>
-        </ul>
-
-        <h3>Sécurité</h3>
-
-        <ul>
-            <li>correction d'une faille dans la liste de sélection des organisateurs, qui pouvait permettre l'injection de code</li>
-            <li>mises à jour de sécurité des librairies utilisées par le site</li>
+            <li>corrections et optimisations</li>
         </ul>
 
         <h3>Divers</h3>
 
         <ul>
-            <li><a href="/articles/faireUnDon.php">Faire un don</a> : ajout de Postfinance et Twint comme moyens de paiement, et de Bernex dans les Soutiens</li>
+            <li><a href="/articles/faireUnDon.php">Faire un don</a> : ajout de <strong>Postfinance et Twint</strong> comme moyens de paiement, et de Bernex dans les Soutiens</li>
+            <li>diverses corrections (sécurité, fonctionnalités, affichage)</li>
         </ul>
 
         <p><a href="https://github.com/agilare/ladecadanse/releases/tag/v3.11.0" rel="external" target="_blank">Détails</a></p>
