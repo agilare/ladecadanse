@@ -2044,6 +2044,55 @@ ul#menu_calendrier li form p
         background:#d4d4d4;
     }
 
+/*
+ * Pagination à gauche, second menu à droite (nombre de lignes sur le tableau de bord, sens du tri
+ * sur les fiches lieu et organisateur). En flex plutôt qu'en flottants : les deux menus n'ont ni la
+ * même hauteur de ligne ni les mêmes marges internes, et se retrouvaient décalés en hauteur.
+ * align-items les recentre l'un sur l'autre, margin-left:auto pousse le second à droite y compris
+ * quand la pagination manque — une seule page, et elle ne s'affiche pas.
+ */
+.liste-barre
+{
+    display:flex;
+    align-items:center;
+    flex-wrap:wrap;
+}
+
+/*
+ * Marges verticales symétriques de part et d'autre : align-items centre la boîte de marge, un
+ * 0.8em en haut contre 0.4em en bas descendait donc le menu de droite sous la pagination. La
+ * valeur, elle, n'a pas à concorder — les fiches lieu et organisateur donnent à leur pagination
+ * ses propres marges (#prochains_evenements .pagination), plus spécifiques que celles-ci.
+ */
+.liste-barre div.pagination
+{
+    float:none;
+    margin:0.6em 0;
+}
+
+.liste-barre #order_navigation
+{
+    margin:0.6em 0 0.6em auto;
+}
+
+.liste-barre #order_navigation ul
+{
+    float:none;
+    margin:0;
+}
+
+/* le lien porte un padding : en inline, la pastille de fond du bouton actif déborde de la ligne */
+.liste-barre #order_navigation li a
+{
+    display:inline-block;
+}
+
+/* boutons sans libellé : l'icône tient lieu de texte, à peine plus grande que lui */
+.liste-barre #order_navigation li a .fa
+{
+    font-size:1.15em;
+}
+
 #contenu .thumbnails
 {
     list-style-type:none;

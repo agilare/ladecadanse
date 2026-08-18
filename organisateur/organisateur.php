@@ -48,6 +48,16 @@ if (!empty($_GET['periode']) && QueryParamValidator::isAcceptedUrlQueryValue($_G
     }
 }
 
+// sens du tri des événements passés, mémorisé en session comme user_prefs_agenda_order l'est
+// entre l'accueil et la fiche événement (cf. event/_events_order_menu.inc.php)
+if (!empty($_GET['ordre']) && QueryParamValidator::isAcceptedUrlQueryValue($_GET['ordre'], "enum", array_keys($tab_ordre_evenements_passes)))
+{
+    $_SESSION['user_prefs_past_events_order'] = $_GET['ordre'];
+}
+// l'onglet « Prochains » reste chronologique : le menu de tri n'y est pas proposé
+$is_past_events_desc = ($get['periode'] == "ancien" && $_SESSION['user_prefs_past_events_order'] == "desc");
+$sql_events_order_direction = $is_past_events_desc ? "DESC" : "ASC";
+
 $results_per_page = 50;
 
 $sql_select_all =
@@ -61,7 +71,9 @@ $stmtAll = $connectorPdo->prepare($sql_select_all);
 $stmtAll->execute([$get['idO'], $glo_auj]);
 $all_results_nb = $stmtAll->fetchColumn();
 
-$default_page = $get['periode'] == "ancien" ? (int) max(1, ceil($all_results_nb / $results_per_page)) : 1;
+// atterrir sur les événements passés les plus récents : ils sont en dernière page en tri
+// ascendant, en première page en tri descendant
+$default_page = ($get['periode'] == "ancien" && !$is_past_events_desc) ? (int) max(1, ceil($all_results_nb / $results_per_page)) : 1;
 $get['page'] = !empty($_GET['page']) ? QueryParamValidator::validateUrlQueryValue($_GET['page'], "int", 1) : $default_page;
 
 $orga_lieux = Organisateur::getActivesLieux($get['idO']);
@@ -114,7 +126,7 @@ $sql_select = "SELECT
     e.statut NOT IN ('inactif', 'propose') AND eo.idOrganisateur = ?";
 
 $sql_select .= " AND e.dateEvenement $sql_periode_operator ?";
-$sql_select .= ' ORDER BY dateEvenement ASC';
+$sql_select .= " ORDER BY dateEvenement $sql_events_order_direction";
 $sql_select .= " LIMIT " . (int) (($get['page'] - 1) * $results_per_page) . ", " . (int) ($results_per_page); // ($get['page'] - 1) * $results_per_page +
 //echo $sql_select;
 $stmt = $connectorPdo->prepare($sql_select);
@@ -260,7 +272,11 @@ include("../_header.inc.php");
 
         <?php else : ?>
 
-            <?= HtmlShrink::getPaginationString($all_results_nb, $get['page'], $results_per_page, 1, basename(__FILE__), "?" . HtmlShrink::urlQueryArrayToString($get, "page") . "&amp;page=") ?>
+            <?php // pagination à gauche, menu de tri à droite ; le tri ne concerne que les événements passés ?>
+            <div class="liste-barre">
+                <?= HtmlShrink::getPaginationString($all_results_nb, $get['page'], $results_per_page, 1, basename(__FILE__), "?" . HtmlShrink::urlQueryArrayToString($get, "page") . "&amp;page=") ?>
+                <?php if ($get['periode'] == "ancien") : include(__ROOT__ . "/event/_events_order_menu.inc.php"); endif; ?>
+            </div>
 
             <table>
                 <?php foreach ($page_results_grouped_by_yearmonth as $yearmonth => $tab_month_events) : ?>
