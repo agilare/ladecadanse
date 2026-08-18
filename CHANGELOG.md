@@ -10,13 +10,9 @@ Feature documentation : [docs/](docs/).
 - users, events edit : personal default values for adding an event (category, start and end time, lieu, organisateur(s), price), set in the profile and applied at creation only ; stored in the new `personne.settings` column — see [docs/evenements.md](docs/evenements.md)
 - events : admins can notify the event author by email of the changes made, picking pre-written motifs and/or writing a free-text message #149
 - events : the ajax "Dépublier" button, so far limited to the home, lieu and organisateur listings, is now also on the event page, the user profile, gererEvenements and the search results (SUPERADMIN only)
-- events : in forms add `<optgroup>` by canton for lieux select
 - events edit : the flyer and the photo can be added by pasting an image URL, now open to every logged-in user (was admins only), not on the public "Proposer un événement" form
 - events edit : confirm before leaving the form with unsaved changes
-- events edit : the "Références" field becomes a textarea, one URL per line (stored format unchanged)
-- events edit : POC of an always-visible Zebra Datepicker calendar under the date field, for SUPERADMIN only
 - lieux edit : optional latitude/longitude fields, so the map coordinates can be set from the site instead of directly in the database (a map picker will come later) ; stored as `DECIMAL(10,7)` instead of `FLOAT(10,6)`
-- lieux, organisateurs, gererEvenements, users : add button inside search fields to clear and resubmit the filter in one click
 - search : the results page keeps the query in the header field and offers a "Copier" button on each result ; on mobile the search field stays open on that page
 - home : time-based separators in the events list #105 (PR #133)
 - ui : keyboard shortcuts for the most common actions #112 — pages, edition, flyer, copy, day navigation, pagination, `/` to focus a filter field, `j`/`k` to walk listings and events one by one — see [README](README.md#raccourcis-clavier)
@@ -31,43 +27,25 @@ Feature documentation : [docs/](docs/).
 - rss : feeds are cached 900 s and answer `304` through `ETag`/`Last-Modified`, the `400`/`410` status contract is settled before bootstrap without session nor database, and the `<style>` block is dropped from item descriptions — see [docs/rss.md](docs/rss.md)
 - assets : a missing file is now reported as a warning in `var/logs/activity.log` instead of the PHP error log, which it was filling one line per page view
 - admin : in gererEvenements, the events list gets a fixed height (70vh) with its own scrollbar and sticky column headers ; checkboxes column moved first
-- events : in the listing tables, action icons aligned right so single-icon cells line up with the others
-- events : in forms, lieux select options values are displayed as is
-- events edit : the "E-mail à l'auteur" fieldset previews the message that will be sent, built by `AuteurNotifier` so it cannot drift from the actual mail ; the free-text message is optional
-- events edit : move the "Statut de l'événement" fieldset before "Catégorie", radio options on one line on desktop, shorter labels, site badge style for "complet"/"annulé"
-- events edit : temporarily disable the announce about organisateur registration
-- edition : larger image previews in the edit forms, using the normal version of the file instead of the thumbnail
-- ui : on desktop, align the back-to-top button with the `#global` container corner instead of the screen corner, where it blended into the identical body background
-- user-edit : remove redundant isset() check on always-present `organisateurs` field
+- events edit : the "E-mail à l'auteur" fieldset previews the message that will be sent, built by `AuteurNotifier` so it cannot drift from the actual mail
 - don : disable the wemakeit widget (unavailable from July 31) and replace the "Autres moyens possibles" line with an intro paragraph
 - monitoring : for GlitchTip upgrade the Sentry browser SDK from 9.14 to 10.69, pin the CDN bundle with an SRI `integrity` hash and drop `tracesSampleRate`, inert on the errors-only bundle
 - analyzers : finalise the Psalm configuration and fix the PHPStan config gaps, both baselines regenerated ; add the `composer psalm:taint` script
 - build : declare the required Node version via `engines`, name the npm package, document `npm install` and `npm test`
 - deps-dev : update phpmailer, phpstan, rector, rector/jack, select2, vlucas/phpdotenv, phan, psalm, spaze/phpstan-disallowed-calls
-- deploy : update git-ftp-ignore for the agents and analyzers files
 - docs : add AGENTS.md as the single source of project guidance for coding agents, CLAUDE.md now points to it
 - docs : move the upgrade steps to UPGRADE.md and the feature details to `docs/`, so this changelog stays scannable
 
 ### Fixed
 - rss : wrong channel `pubDate`, illustrations leaking from one item to the next, missing lieu autodiscovery tag, relative feed URLs — now absolute through the new `SITE_CANONICAL_URL` — and a warning on a call without `type` — see [docs/rss.md](docs/rss.md)
-- lieux, organisateurs, events : an unknown id returned an empty 200 or a fatal error instead of the 404 the pages already had ready (`lieu.php?idL=`, `organisateur.php?idO=`, `to-ics.php?idE=`) ; `evenement-edit.php?action=editer|update` without `idE` now answers 400
+- lieux, organisateurs, events : an unknown id returned an empty 200 or a fatal error instead of the 404 the pages already had ready ; `evenement-edit.php` without `idE` now answers 400
 - search, lieux, organisateurs, admin, events : an unexpected value in an optional url parameter threw an uncaught exception or logged a warning instead of falling back on the default ; guards now use the new non-throwing `QueryParamValidator::isAcceptedUrlQueryValue()`
 - edition : in TinyMCE texts, links to the site itself lost their `href` (relative URLs rejected by the sanitizer) ; texts saved before this fix must be edited again — see [UPGRADE.md](UPGRADE.md)
 - events : a `genre` absent from the configuration crashed the home page and logged warnings in the listings ; it now displays as "divers" through the new `Evenement::genreLabel()`
 - events : an event referencing a deleted lieu crashed the pages listing it ; its location now falls back on the free text fields stored in the event
-- events : hide calendar-export-menu by default for browsers without Popover API or JS
-- events : protect the copy form ("Coller") submit button against double-click
-- events : on the event page, move "Ajouter à un agenda" left to the action links
-- events edit : no longer assumes the file fields are present in `$_FILES`
-- home : restore render broken by a call to the removed `date_lendemain()` (time-based event separators, PR #133)
 - lieux, organisateurs : "Passés" tab now opens on the most recent past events instead of the oldest ones
 - csp : unblock the bots tracker (darkvisitors.com now redirects to knownagents.com), the AssetManager import map (an inline tag missing its nonce) and the GlitchTip DSN host, missing from `connect-src`
 - forms : the date field is usable with the keyboard again
-- admin : in index, "Latest texts added" called `texteHtmlReduit` with a missing argument
-- auth : remove the obsolete warning about email in the login field
-- lieu : typo on the lieu page when there is no incoming event
-- header : spacing and alignment of the search area
-- tests : adapt the Selenium cases to the changes of this release
 
 ### Security
 - events edit : stored XSS in the "Organisateur(s)" select2 list, whose renderer interpolated decoded values into an HTML string ; the template is now built as DOM nodes
