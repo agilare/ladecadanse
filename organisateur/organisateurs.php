@@ -31,7 +31,7 @@ if (isset($_GET['order']) && in_array($_GET['order'], $tab_order))
    $_SESSION['user_prefs_orgas_order'] = $_GET['order'];
 }
 
-$get['page'] = !empty($_GET['page']) ? QueryParamValidator::validateUrlQueryValue($_GET['page'], "int", 1) : 1;
+$get['page'] = QueryParamValidator::pageFromQuery($_GET['page'] ?? '');
 
 
 $col = new OrganisateurCollection();

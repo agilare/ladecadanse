@@ -57,7 +57,7 @@ if (!empty($_GET['order_dir']) && QueryParamValidator::isAcceptedUrlQueryValue($
 $get = [];
 
 // pagination
-$get['page'] = !empty($_GET['page']) ? QueryParamValidator::validateUrlQueryValue($_GET['page'], "int", 1) : 1;
+$get['page'] = QueryParamValidator::pageFromQuery($_GET['page'] ?? '');
 
 $_SESSION['user_prefs_users_nblignes'] ??= $tab_nblignes[0];
 if (!empty($_GET['nblignes']) && in_array($_GET['nblignes'], $tab_nblignes))

@@ -71,7 +71,7 @@ $all_results_nb = $stmtAll->fetchColumn();
 // atterrir sur les événements passés les plus récents : ils sont en dernière page en tri
 // ascendant, en première page en tri descendant
 $default_page = ($get['periode'] == "ancien" && !$is_past_events_desc) ? (int) max(1, ceil($all_results_nb / $results_per_page)) : 1;
-$get['page'] = !empty($_GET['page']) ? QueryParamValidator::validateUrlQueryValue($_GET['page'], "int", 1) : $default_page;
+$get['page'] = QueryParamValidator::pageFromQuery($_GET['page'] ?? '', $default_page);
 
 $categories_fr = implode(", ", array_map(fn ($cat) : string => $glo_categories_lieux[$cat], explode(",", str_replace(" ", "", $lieu['categorie']))));
 $lieu_salles = Lieu::getActivesSalles((int) $get['idL']);

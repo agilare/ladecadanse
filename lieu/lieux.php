@@ -54,7 +54,7 @@ if (isset($_GET['order']) && in_array($_GET['order'], $tab_order))
    $_SESSION['user_prefs_lieux_order'] = $_GET['order'];
 }
 
-$get['page'] = !empty($_GET['page']) ? QueryParamValidator::validateUrlQueryValue($_GET['page'], "int", 1) : 1;
+$get['page'] = QueryParamValidator::pageFromQuery($_GET['page'] ?? '');
 
 // used to build localite filter Select (exclude localites without lieu)
 $lieux_region_localite_ids = array_values(array_unique(array_column(Lieu::getLieux(filters: ['region' => $filters['region'], 'statut' => $filters['statut']], page: null), 'localite_id')));

@@ -94,4 +94,31 @@ final class QueryParamValidatorTest extends Unit
         $this->assertTrue(QueryParamValidator::isAcceptedUrlQueryValue('faux', 'enum', ['faux', 'email_ambigu']));
         $this->assertFalse(QueryParamValidator::isAcceptedUrlQueryValue('autre', 'enum', ['faux', 'email_ambigu']));
     }
+
+    public function testPageFromQueryReturnsInt(): void
+    {
+        $this->assertSame(3, QueryParamValidator::pageFromQuery('3'));
+    }
+
+    public function testPageFromQueryFallsBackOnGarbage(): void
+    {
+        // url abîmée par un bot : "?page=3&region=vd" recopié en "?page=3&reg;ion=vd"
+        $this->assertSame(1, QueryParamValidator::pageFromQuery("3\u{00AE}ion=vd"));
+        $this->assertSame(1, QueryParamValidator::pageFromQuery(''));
+        $this->assertSame(1, QueryParamValidator::pageFromQuery(null));
+        $this->assertSame(1, QueryParamValidator::pageFromQuery(['3']));
+    }
+
+    public function testPageFromQueryClampsToOne(): void
+    {
+        $this->assertSame(1, QueryParamValidator::pageFromQuery('0'));
+        $this->assertSame(1, QueryParamValidator::pageFromQuery('-4'));
+    }
+
+    public function testPageFromQueryUsesGivenDefault(): void
+    {
+        $this->assertSame(12, QueryParamValidator::pageFromQuery('', 12));
+        $this->assertSame(12, QueryParamValidator::pageFromQuery('abc', 12));
+        $this->assertSame(2, QueryParamValidator::pageFromQuery('2', 12));
+    }
 }
