@@ -545,6 +545,12 @@ ul#menu_descriptions li.ici a, ul#menu_descriptions li a
     line-height:1.6em;
 }
 
+/* écran étroit : un repli plus court, la liste des événements doit rester atteignable */
+.texte-repliable
+{
+    --texte-repliable-hauteur:10em; /* ~7 lignes */
+}
+
 /* email_evenement */
 
 .email_evenement form#ajouter_editer label {

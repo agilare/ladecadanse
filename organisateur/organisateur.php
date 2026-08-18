@@ -235,9 +235,11 @@ include("../_header.inc.php");
                         <li class="btn-description ici"><h2>L'organisateur se présente</h2></li>
                     </ul>
                     <div class="description">
-                        <div class="js-read-smore" data-read-smore-words="50">
-                        <?= $organisateur->getValue('presentation') ?>
-                        </div>
+                        <?php
+                        $texteRepliableHtml = $organisateur->getValue('presentation');
+                        $texteRepliableId = 'presentation';
+                        include(__ROOT__ . "/_texte_repliable.inc.php");
+                        ?>
                     </div>
                 <?php endif ?>
             </div>

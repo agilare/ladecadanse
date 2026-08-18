@@ -61,7 +61,6 @@ use Ladecadanse\UserLevel;
     <script src="/vendor/dimsemenov/magnific-popup/dist/jquery.magnific-popup.js"></script>
     <script src="/vendor/select2/select2/dist/js/select2.min.js"></script>
     <script src="/vendor/select2/select2/dist/js/i18n/fr.js"></script>
-    <script src="https://unpkg.com/read-smore@2.0.4/dist/index.umd.js"></script>
 
     <?php if (in_array($nom_page, $pages_lieumap)) { ?>
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"

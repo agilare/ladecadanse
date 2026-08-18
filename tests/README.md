@@ -98,6 +98,7 @@ In `tests/.env` (copied from `tests/.env_model`), fill in:
 - `LADECADANSE_TEST_EVENT_ID_ACTOR_OWN_PAST` — a **past** event whose author is the actor account
 - `LADECADANSE_TEST_LIEU_ID_WITH_PAST_EVENTS` — a lieu holding several past events, spread over several dates
 - `LADECADANSE_TEST_ORGA_ID_WITH_PAST_EVENTS` — an organisateur holding at least one past event
+- `LADECADANSE_TEST_LIEU_ID_WITH_LONG_TEXT` — a lieu whose description is long enough (over 550 characters) for the server to render it collapsed
 
 A past event is a read-only archive for anyone below `groupe` 6, so the first three fixtures must
 point at **future** events — a past one would make the "can edit" tests fail for the wrong reason.
@@ -114,6 +115,7 @@ Tests whose variables are left empty are reported as **skipped**, not failed.
 - `FormulairesRegressionCest` — server-side contract of the recent JS: `body[data-page]`, the `formulaire=ok` hidden field of `event/copy.php`, the clear-search button
 - `BotMonitoringCest` — honeypot (204, footer link, robots.txt)
 - `EvenementsPassesTriCest` — the sort menu of the "Passés" tab on the lieu and organisateur pages: which tab offers it, that both directions actually reorder the query, that either one lands on the most recent past events, and that the choice is remembered in session across both pages
+- `LieuTexteRepliableCest` — server-side contract of the collapsible descriptions: the text is served whole (never truncated in PHP), the toggle is a sibling of the capped block and wired to it by `aria-controls`, and the `js` marker that gates the whole collapse is in the `<head>`
 
 #### Running the tests on an instance
 

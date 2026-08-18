@@ -138,6 +138,7 @@ export const AppGlobal =
         }
 
         this.readMoreOnClippedDescriptions();
+        this.collapsibleTexts();
     },
     /**
      * Le CSS plafonne les descriptions des cartes d'événement à 6 lignes
@@ -194,6 +195,128 @@ export const AppGlobal =
             window.clearTimeout(resyncTimer);
             resyncTimer = window.setTimeout(syncReadMoreLinks, FADE_SPEED_SHORT_IN_MS);
         }, { passive: true });
+    },
+    /**
+     * Textes repliables des fiches lieu et organisateur (_texte_repliable.inc.php).
+     *
+     * Le repli n'est pas fait ici : il est posé par le serveur et plafonné par le CSS, pour
+     * que le texte ne s'affiche jamais en entier avant de se raccourcir sous les yeux du
+     * visiteur — c'est ce que faisait la librairie read-smore, remplacée par ce mécanisme.
+     * Ce JS n'a donc que deux rôles : basculer à la demande, et retirer la bascule quand le
+     * serveur l'a posée pour rien.
+     *
+     * Cette correction ne va que dans un sens, et c'est voulu : le serveur n'estime qu'une
+     * longueur en caractères, sans connaître la largeur de la colonne ni la taille de police.
+     * Quand il sous-estime, il ne rend aucun conteneur et le texte s'affiche entier ; le seul
+     * défaut possible est donc un texte plus long que prévu, jamais un texte tronqué sans
+     * moyen de le déplier.
+     *
+     * @returns {undefined}
+     */
+    collapsibleTexts : function bindCollapsibleTexts()
+    {
+        const toggles = document.querySelectorAll('.js-texte-repliable-bascule');
+        if (toggles.length === 0)
+        {
+            return;
+        }
+
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        toggles.forEach(function setupOneCollapsibleText(toggle)
+        {
+            const block = document.getElementById(toggle.getAttribute('aria-controls'));
+            if (!block)
+            {
+                return;
+            }
+
+            const content = block.querySelector('.texte-repliable__contenu');
+            const label = toggle.querySelector('.texte-repliable__label');
+
+            // Le fondu du ::after transitionne lui aussi, et son transitionend remonte sur le
+            // bloc. Une écoute posée à chaque clic avec `once` se faisait donc consommer par
+            // l'opacité, plus rapide, avant la fin de l'animation de hauteur : le plafond
+            // restait posé et rognait la dernière ligne du texte déplié. D'où cette écoute
+            // unique et permanente, filtrée sur la propriété et sur l'absence de pseudo-élément.
+            block.addEventListener('transitionend', function releaseMaxHeightOnceExpanded(event)
+            {
+                if (event.propertyName !== 'max-height' || event.pseudoElement)
+                {
+                    return;
+                }
+
+                // un repli déclenché avant la fin de l'ouverture ne doit pas être défait
+                if (block.classList.contains('texte-repliable--deplie'))
+                {
+                    block.style.maxHeight = 'none';
+                }
+            });
+
+            toggle.addEventListener('click', function toggleOneCollapsibleText()
+            {
+                const isExpanded = block.classList.toggle('texte-repliable--deplie');
+
+                toggle.setAttribute('aria-expanded', isExpanded ? 'true' : 'false');
+                label.textContent = isExpanded ? 'Réduire' : 'Lire la suite';
+
+                if (prefersReducedMotion)
+                {
+                    block.style.maxHeight = isExpanded ? 'none' : '';
+
+                    return;
+                }
+
+                // `auto` ne s'interpole pas : on anime vers une hauteur mesurée. On mesure le
+                // bloc et non le contenu : overflow:hidden en fait un contexte de formatage,
+                // donc la marge du premier paragraphe compte dans la hauteur du bloc mais pas
+                // dans celle du contenu, et le texte déplié se retrouvait rogné d'une ligne.
+                block.style.maxHeight = block.scrollHeight + 'px';
+
+                if (isExpanded)
+                {
+                    // le plafond sera relâché à la fin de l'animation, pour que le bloc suive
+                    // ensuite ses propres reflows
+                    return;
+                }
+
+                // repli : la hauteur mesurée vient d'être posée, sans quoi la transition
+                // partirait de `none` et le bloc se refermerait d'un coup
+                void block.offsetHeight; // force le recalcul avant de redescendre
+                // on retire le plafond en ligne plutôt que d'y réécrire une valeur mesurée :
+                // le CSS reprend la main, donc la hauteur repliée suit le passage desktop/mobile
+                block.style.maxHeight = '';
+            });
+
+            if (typeof window.ResizeObserver !== 'function')
+            {
+                return;
+            }
+
+            // On observe le contenu et non le bloc : la hauteur du bloc change à chaque
+            // bascule, l'observer ferait boucler la mesure. Le contenu, lui, garde sa hauteur
+            // naturelle. Cela couvre du même coup le redimensionnement de la fenêtre et le
+            // cas de l'onglet « Le lieu se présente », rendu en display:none et révélé plus
+            // tard : mesuré caché, il donnerait 0 et ferait disparaître la bascule à tort.
+            const observer = new window.ResizeObserver(function syncToggleVisibility()
+            {
+                if (block.classList.contains('texte-repliable--deplie') || content.offsetParent === null)
+                {
+                    return;
+                }
+
+                // On mesure le bloc et non le contenu : overflow:hidden en fait un contexte
+                // de formatage, donc les marges des paragraphes comptent dans sa hauteur mais
+                // pas dans celle du contenu. Comparer les deux boîtes laisserait passer une
+                // dernière ligne rognée sans bascule.
+                // 1px de marge : les hauteurs sous-pixel font mentir la comparaison stricte
+                const isClipped = block.scrollHeight > block.clientHeight + 1;
+
+                block.classList.toggle('texte-repliable--entier', !isClipped);
+            });
+
+            observer.observe(content);
+        });
     },
     /**
      * only used in mobile view

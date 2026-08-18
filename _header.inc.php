@@ -142,6 +142,15 @@ $mouseless_allowed = isset($_SESSION['Sgroupe']) && (int) $_SESSION['Sgroupe'] <
             })();
         </script>
     <?php endif; ?>
+
+    <?php // Marqueur « le JS est actif », lu par le CSS. Inline et dans le <head> pour la même
+          // raison que l'amorçage mouseless ci-dessus : main.js est un module ES, donc différé,
+          // et le repli des textes (.texte-repliable) doit être en place dès la première image
+          // peinte. Sans JS la classe est absente, et ces textes s'affichent en entier plutôt
+          // que tronqués sans moyen de les déplier. ?>
+    <script nonce="<?= CSP_NONCE ?>">
+        document.documentElement.classList.add('js');
+    </script>
 </head>
 
 <body data-page="<?= sanitizeForHtml($nom_page) ?>">
