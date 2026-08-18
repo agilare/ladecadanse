@@ -37,6 +37,7 @@ include("../_header.inc.php");
         <h3>Lieux et organisateurs</h3>
 
         <ul>
+            <li>les <strong>textes longs</strong> de présentation s'affichent d'emblée repliés, avec un lien pour les déplier : ils ne s'affichent plus en entier avant de se replier sous les yeux</li>
             <li>les <strong>coordonnées de la carte</strong> d'un lieu peuvent être saisies depuis le site</li>
         </ul>
 

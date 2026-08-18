@@ -20,11 +20,12 @@ Feature documentation : [docs/](docs/).
 - mailing : optional copy to the admin of the messages sent to users, for short monitoring periods, off by default (see `app/env_model.php`)
 - bots : internal monitoring of automated traffic, with an admin dashboard, off by default — see [docs/bots.md](docs/bots.md)
 - don : add Postfinance and Twint payment methods, add Bernex to "Soutiens"
-- tests : new Codeception `site` suite (PhpBrowser) covering the author notification, permissions, statuses, the bots dashboard and the rss feeds ; set `LADECADANSE_SITE_URL` in `tests/.env`
+- tests : new Codeception `site` suite (PhpBrowser) covering the author notification, permissions, statuses, the bots dashboard, the rss feeds and the collapsible texts ; set `LADECADANSE_SITE_URL` in `tests/.env`
 - tests : Vitest setup and first JS unit tests (`npm test`)
 
 ### Changed
 - rss : feeds are cached 900 s and answer `304` through `ETag`/`Last-Modified`, the `400`/`410` status contract is settled before bootstrap without session nor database, and the `<style>` block is dropped from item descriptions — see [docs/rss.md](docs/rss.md)
+- lieux, organisateurs : long descriptions and presentations are rendered already folded by the server instead of being collapsed by read-smore after the render, so they no longer flash at full length and stay readable without JS ; the read-smore CDN script is dropped, whose failure used to break `main.js`
 - assets : a missing file is now reported as a warning in `var/logs/activity.log` instead of the PHP error log, which it was filling one line per page view
 - admin : in gererEvenements, the events list gets a fixed height (70vh) with its own scrollbar and sticky column headers ; checkboxes column moved first
 - events edit : the "E-mail à l'auteur" fieldset previews the message that will be sent, built by `AuteurNotifier` so it cannot drift from the actual mail
