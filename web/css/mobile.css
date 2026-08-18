@@ -361,8 +361,30 @@ ul.menu_actions_evenement li.format_imprimable, #entete_contenu ul li.format_imp
     display:none;
 }
 
-ul.menu_action li a,
+/* Faute de place, les libellés se mélangeaient sur plusieurs lignes ferrées à
+   droite : chaque liste occupe sa propre ligne, calée à gauche, et chaque
+   action reste insécable. Le padding vertical seul (pas horizontal) garde les
+   deux listes alignées sur le même bord gauche. */
+ul.menu_actions_evenement
+{
+    text-align: left;
+}
+
+ul.menu_actions_evenement li
+{
+    display: inline-block;
+    margin: 0 1.2em 0 0;
+    white-space: nowrap;
+}
+
+ul.menu_actions_evenement li a,
 ul.menu_actions_evenement .calendar-export-wrapper .calendar-export-trigger
+{
+    display: inline-block;
+    padding: 0.5em 0;
+}
+
+ul.menu_action li a
 {
     padding: 0.5em;
 }

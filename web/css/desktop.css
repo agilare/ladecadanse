@@ -197,6 +197,16 @@ float: left;
 
 /* evenement */
 
+/* La place ne manque pas : les deux listes d'actions (publique et connectés)
+   restent côte à côte sur une seule ligne, calées à droite comme avant. */
+nav.menus_actions_evenement
+{
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-end;
+	column-gap: 1em;
+}
+
 #evenement .titre
 {
 	min-height: 6em;
@@ -240,7 +250,7 @@ float: left;
    Le bord gauche reste à 3% (aligné sur le titre). */
 .vevent-experimental .msg_ok,
 .vevent-experimental #entete_contenu,
-.vevent-experimental ul.menu_actions_evenement,
+.vevent-experimental nav.menus_actions_evenement,
 .vevent-experimental #evenement,
 .vevent-experimental #footer_navigation
 {

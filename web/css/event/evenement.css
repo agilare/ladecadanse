@@ -59,26 +59,36 @@
     padding:0 0.2em;
 }
 
-ul.menu_actions_evenement
+/* Barre d'actions : la liste publique et celle réservée aux connectés sont
+   deux <ul> distincts, empilés par défaut. La largeur et les marges portent
+   sur le <nav> pour que les deux listes partagent le même bord gauche. */
+nav.menus_actions_evenement
 {
     margin:0.8em auto .6em auto;
     width:94%;
-    text-align:right;
     font-size: 0.95em;
+}
+
+ul.menu_actions_evenement
+{
+    margin:0;
     padding:0;
+    list-style: none;
+    text-align:right;
 }
 
 ul.menu_actions_evenement li
 {
     display:inline;
-    width:100px;
     margin:0 0.1em;
     line-height: 1.5em;
 }
 
-ul.menu_actions_evenement li img
+/* Icônes (images 16px comme glyphes Font Awesome) centrées sur le libellé */
+ul.menu_actions_evenement li img,
+ul.menu_actions_evenement li .fa
 {
-    vertical-align: bottom
+    vertical-align: middle;
 }
 
 ul.menu_actions_evenement .calendar-export-trigger

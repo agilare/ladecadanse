@@ -83,6 +83,7 @@ $isPersonneAllowedToEdit = $authorization->isPersonneAllowedToEditEvenement($_SE
 // distinct de $isPersonneAllowedToEdit, qui gouverne aussi la visibilité des événements
 // 'propose'/'inactif' et l'accès à la copie : un événement passé reste visible et copiable
 $canEditEvenement = $authorization->isPersonneAllowedToEditEvenementNow($_SESSION, $tab_even);
+$isMembreConnecte = isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= UserLevel::MEMBER;
 
 if (!$isPersonneAllowedToEdit && in_array($tab_even['e_statut'], ['propose', 'inactif']))
 {
@@ -198,26 +199,32 @@ include("../_header.inc.php");
     </header>
 
 
-    <nav>
-        <ul class="menu_actions_evenement">
-            <?php if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= UserLevel::MEMBER)) : ?>
-                <li><a href="/event/send.php?action=share&idE=<?= (int) $get['idE'] ?>"><?= $icone['envoi_email'] ?>&nbsp;Envoyer à un ami</a></li>
-            <?php endif; ?>
+    <?php // Deux listes distinctes : les actions ouvertes à tous, puis celles réservées aux
+          // connectés. Empilées en mobile, remises sur une seule ligne en desktop. ?>
+    <nav class="menus_actions_evenement">
+        <ul class="menu_actions_evenement menu_actions_evenement--public">
             <?php
             $calLinks = (new Ladecadanse\EvenementCalendarRenderer($tab_even, $site_full_url))->getLinks();
             include("_calendar_export.inc.php");
             ?>
-            <?php if ($isPersonneAllowedToEdit) : ?>
-                <li><a href="/event/copy.php?idE=<?= (int) $get['idE'] ?>"><?= $iconeCopier ?>&nbsp;Copier vers d'autres dates</a></li>
-                <?php if ($canEditEvenement) : ?>
-                    <li><a href="/evenement-edit.php?action=editer&amp;idE=<?= (int) $get['idE'] ?>"><?= $iconeEditer ?>&nbsp;Modifier</a></li>
-                <?php endif; ?>
-                <?php if ($tab_even['e_statut'] != 'inactif' && isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= UserLevel::SUPERADMIN) : ?>
-                    <li><?= EvenementRenderer::unpublishLinkHtml((int) $get['idE'], $icone['depublier'] . '&nbsp;Dépublier', EvenementRenderer::UNPUBLISH_THEN_RELOAD) ?></li>
-                <?php endif; ?>
-            <?php endif; ?>
-
         </ul>
+
+        <?php if ($isMembreConnecte || $isPersonneAllowedToEdit) : ?>
+            <ul class="menu_actions_evenement menu_actions_evenement--connecte">
+                <?php if ($isMembreConnecte) : ?>
+                    <li><a href="/event/send.php?action=share&idE=<?= (int) $get['idE'] ?>"><?= $icone['envoi_email'] ?>&nbsp;Envoyer à un ami</a></li>
+                <?php endif; ?>
+                <?php if ($isPersonneAllowedToEdit) : ?>
+                    <li><a href="/event/copy.php?idE=<?= (int) $get['idE'] ?>"><?= $iconeCopier ?>&nbsp;Copier vers d'autres dates</a></li>
+                    <?php if ($canEditEvenement) : ?>
+                        <li><a href="/evenement-edit.php?action=editer&amp;idE=<?= (int) $get['idE'] ?>"><?= $iconeEditer ?>&nbsp;Modifier</a></li>
+                    <?php endif; ?>
+                    <?php if ($tab_even['e_statut'] != 'inactif' && isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= UserLevel::SUPERADMIN) : ?>
+                        <li><?= EvenementRenderer::unpublishLinkHtml((int) $get['idE'], $icone['depublier'] . '&nbsp;Dépublier', EvenementRenderer::UNPUBLISH_THEN_RELOAD) ?></li>
+                    <?php endif; ?>
+                <?php endif; ?>
+            </ul>
+        <?php endif; ?>
     </nav>
 
     <article id="evenement">

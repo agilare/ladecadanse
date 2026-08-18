@@ -172,7 +172,7 @@ $icone['liste'] = '<img src="' . $url_images_interface_icons . 'application_view
 $icone['galerie'] = '<img src="' . $url_images_interface_icons . 'application_view_tile.png" alt="Galerie" />';
 $icone['recherche'] = '<img src="' . $url_images_interface_icons . 'search.png" alt="Recherche" />';
 $icone['voir_lieux'] = '<img src="' . $url_images_interface_icons . 'building_go.png" alt="Voir lieux" width="16" height="16" />';
-$icone['envoi_email'] = '<img src="' . $url_images_interface_icons . 'email_go.png" alt="Envoi e-mail" width="16" height="16" />';
+$icone['envoi_email'] = '<i class="fa fa-paper-plane-o fa-lg" aria-hidden="true"></i>';
 $icone['ajouts'] = '<img src="' . $url_images_interface_icons . 'add.png" alt="" width="16" height="16" />';
 $icone['accepter'] = '<img src="' . $url_images_interface_icons . 'accept.png" alt="Accepter" width="16" height="16" />';
 $icone['refuser'] = '<img src="' . $url_images_interface_icons . 'decline.png" alt="Refuser" width="16" height="16" />';
