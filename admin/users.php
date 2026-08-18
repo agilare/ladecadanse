@@ -13,7 +13,7 @@ use Ladecadanse\Organisateur;
 if (!$authorization->checkGroup(UserLevel::ADMIN))
 {
     header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
-	header("Location: /user-login.php"); die();
+	header("Location: /user/login.php"); die();
 }
 
 // admin by region : suspended
@@ -234,7 +234,7 @@ require_once '../_header.inc.php';
                 <?php $ue = isset($users_even[$u['idPersonne']]) ? $users_even[$u['idPersonne']][0] : null; ?>
                 <tr>
                     <td style="width:20%">
-                        <a href="/user.php?idP=<?= (int)$u['idPersonne'] ?>" style="font-size:1.1em"><?= sanitizeForHtml($u['pseudo']) ?></a>
+                        <a href="/user/dashboard.php?idP=<?= (int)$u['idPersonne'] ?>" style="font-size:1.1em"><?= sanitizeForHtml($u['pseudo']) ?></a>
                         <br><a href="mailto:<?= sanitizeForHtml($u['email']) ?>"><?= sanitizeForHtml($u['email']) ?></a>
                     </td>
                     <td><?= (int)$u['groupe'] ?></td>

@@ -10,7 +10,7 @@ use Ladecadanse\HtmlShrink;
 if (!$authorization->checkGroup(UserLevel::ADMIN))
 {
     header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
-	header("Location: /user-login.php"); die();
+	header("Location: /user/login.php"); die();
 }
 
 // vues du dashboard : onglet courant via ?view=

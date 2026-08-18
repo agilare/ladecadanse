@@ -792,7 +792,7 @@ if ($verif->nbErreurs() > 0)
                 </td>
                 <td><?= EvenementRenderer::$iconStatus[$tab_even['e_statut']] ?></td>
                 <td><?= $tab_datetime_dateajout[1]." ".substr($tab_datetime_dateajout[0], 0, -3) ?></td>
-                <td><a href="/user.php?idP=<?= (int)$tab_even['idPersonne'] ?>"><?= sanitizeForHtml($tab_even['pseudo']) ?></a></td>
+                <td><a href="/user/dashboard.php?idP=<?= (int)$tab_even['idPersonne'] ?>"><?= sanitizeForHtml($tab_even['pseudo']) ?></a></td>
                 <?php if ($_SESSION['Sgroupe'] <= UserLevel::ADMIN) : ?>
                     <td class="actions-even">
                         <?php if ($tab_even['e_statut'] != 'inactif') : ?>

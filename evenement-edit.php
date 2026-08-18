@@ -1058,7 +1058,7 @@ if ($verif->nbErreurs() > 0)
             <h2>Avant de commencer :</h2>
         <?php } ?>
         <?php if (!isset($_SESSION['Sgroupe'])) { ?>
-            <p style="line-height: 1.6em;">Utilisez ce formulaire <strong>si vous n'avez pas déjà un compte sur La décadanse</strong>. L'événement sera publié (ou pas) après une validation de notre part, dans les prochains jours.<br>Sinon, veuillez <a href="/user-login.php">vous connecter</a> pour ajouter votre événement.</p>
+            <p style="line-height: 1.6em;">Utilisez ce formulaire <strong>si vous n'avez pas déjà un compte sur La décadanse</strong>. L'événement sera publié (ou pas) après une validation de notre part, dans les prochains jours.<br>Sinon, veuillez <a href="/user/login.php">vous connecter</a> pour ajouter votre événement.</p>
         <?php } ?>
         <p>Veillez svp à ce que votre événement n’est pas déjà présent dans l’<a href="index.php" target="_blank">agenda</a> et respecte notre <a href="/articles/charte-editoriale.php" target="_blank">charte&nbsp;éditoriale</a></p>
     </div>
@@ -1079,7 +1079,7 @@ if ($verif->nbErreurs() > 0)
             <input type="email" id="user_email" name="user_email" value="<?php echo sanitizeForHtml($champs['user_email']) ?>" required size="30" <?php echo (isset($_SESSION['Sgroupe']) && !empty($champs['user_email'])) ? 'readonly class="readonly" ': ''; ?> maxlength="120">
         </p>
         <?php if (!isset($_SESSION['Sgroupe'])) { ?>
-        <p>Déjà un compte ? <a href="/user-login.php">Connectez-vous</a>, ajoutez votre événement et il sera immédiatement publié</p>
+        <p>Déjà un compte ? <a href="/user/login.php">Connectez-vous</a>, ajoutez votre événement et il sera immédiatement publié</p>
         <?php } ?>
     </fieldset>
     <?php } ?>
@@ -1674,7 +1674,7 @@ if ($verif->nbErreurs() > 0)
         <label>Pour</label>
             <span style="display:inline-block;margin:0.3em 0 0em 0;">
                 <?php if (!empty($original_author_idPersonne)) { ?>
-                <a href="/user.php?idP=<?php echo $original_author_idPersonne ?>"><?php echo sanitizeForHtml($original_author_name) ?></a> —
+                <a href="/user/dashboard.php?idP=<?php echo $original_author_idPersonne ?>"><?php echo sanitizeForHtml($original_author_name) ?></a> —
                 <?php } ?>
                 <a href="mailto:<?php echo sanitizeForHtml($original_author_email) ?>"><?php echo sanitizeForHtml($original_author_email) ?></a>
             </span>

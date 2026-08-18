@@ -236,10 +236,10 @@ include("_header.inc.php");
                         $contenu_message = "Bonjour,\n\n";
                         $contenu_message .= "Merci de vous être inscrit-e sur www.ladecadanse.ch";
                         $contenu_message .= "\n\n";
-                        $contenu_message .= "Pour vous connecter : " . $site_full_url . "user-login.php";
+                        $contenu_message .= "Pour vous connecter : " . $site_full_url . "user/login.php";
                         $contenu_message .= "\n\n";
                         $contenu_message .= "Vous pouvez compléter votre profil sur votre page de membre : ";
-                        $contenu_message .= $site_full_url . "user.php?idP=" . (int) $req_id;
+                        $contenu_message .= $site_full_url . "user/dashboard.php?idP=" . (int) $req_id;
                         $contenu_message .= "\n\n";
                         $contenu_message .= "Bonne visite";
                         $contenu_message .= "\n\n";
@@ -267,7 +267,7 @@ include("_header.inc.php");
                 if (isset($champs['organisateurs']) && count($champs['organisateurs']) > 0)
                     $compte_organisateur = " en tant qu'acteur culturel";
 
-                HtmlShrink::msgOk("<p style='font-size:1.1em;line-height:1.5em'><strong>Votre compte" . $compte_organisateur . " a été créé</strong> (si l'adresse email fournie est valide); vous pouvez maintenant vous <a href=\"/user-login.php\">connecter</a> avec l'identifiant et le mot de passe que vous venez de saisir");
+                HtmlShrink::msgOk("<p style='font-size:1.1em;line-height:1.5em'><strong>Votre compte" . $compte_organisateur . " a été créé</strong> (si l'adresse email fournie est valide); vous pouvez maintenant vous <a href=\"/user/login.php\">connecter</a> avec l'identifiant et le mot de passe que vous venez de saisir");
             }
         }
 

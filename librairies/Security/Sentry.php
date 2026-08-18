@@ -3,22 +3,33 @@
 namespace Ladecadanse\Security;
 
 use Ladecadanse\UserLevel;
-use Ladecadanse\Utils\DbConnector;
-use Ladecadanse\Utils\Validateur;
+use PDO;
+use Psr\Log\LoggerInterface;
 
 /**
- * Lance la session et vérifie le login du visiteur
+ * Lance la session et vérifie le login du visiteur.
+ *
+ * Toutes les requêtes passent par PDO et des requêtes préparées (#122) : la classe
+ * n'échappe plus elle-même les valeurs, et le pilote se charge du typage.
  */
 class Sentry
 {
+    /**
+     * Colonnes du compte lues à chaque vérification. Listées une fois : les trois
+     * points d'entrée (session, formulaire, cookie) doivent remplir le même tableau,
+     * puisque tous trois débouchent sur initSession().
+     */
+    private const USER_COLUMNS = 'idPersonne, pseudo, mot_de_passe, cookie, groupe, region, email, gds';
 
     /**
      * Tableau contenant idPersonne, pseudo, mot_de_passe, groupe, email
      * Rempli dès qu'une personne se logue
+     *
+     * @var array<string, mixed>
      */
     private array $userdata;
 
-    function __construct(private readonly DbConnector $connector)
+    public function __construct(private readonly PDO $pdo, private readonly LoggerInterface $logger)
     {
         if (!isset($_SESSION['logged']))
         {
@@ -61,28 +72,27 @@ class Sentry
     /*
      * Si l'utilisateur est déjà loggé -> si la session est déjà remplie avec les valeurs de login
      */
-    function checkSession(): bool
+    public function checkSession(): bool
     {
         if (empty($_SESSION['SidPersonne']) || empty($_SESSION['pass_fingerprint']))
         {
             return false;
         }
 
-        $sql_user = "
-		SELECT idPersonne, pseudo, mot_de_passe, cookie, groupe, region, email, gds
-		FROM personne
-		WHERE idPersonne = " . (int) $_SESSION['SidPersonne'] . " AND statut='actif'";
+        $stmt = $this->pdo->prepare(
+            "SELECT " . self::USER_COLUMNS . "
+             FROM personne
+             WHERE idPersonne = :idP AND statut = 'actif'"
+        );
+        $stmt->execute([':idP' => (int) $_SESSION['SidPersonne']]);
+        $userdata = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        $getUser = $this->connector->query($sql_user);
-
-        if ($this->connector->getNumRows($getUser) != 1)
+        if ($userdata === false)
         {
             unset($this->userdata);
 
             return false;
         }
-
-        $userdata = $this->connector->fetchArray($getUser);
 
         if (!hash_equals($_SESSION['pass_fingerprint'], self::passFingerprint($userdata['mot_de_passe'])))
         {
@@ -130,204 +140,178 @@ class Sentry
     }
 
     /**
+     * Vérifie un couple identifiant / mot de passe saisi dans un formulaire, et ouvre
+     * la session si tout concorde.
      *
-     * @access public
-     * @param string $user Nom de membre à évaluer en cas de login
-     * @param string $pass Mot de passe de membre à évaluer en cas de login
-     * @param int $group (1 à 12) No de groupe auquel est accessible une page
+     * @param string $user         Nom de membre ou e-mail à évaluer
+     * @param string $pass         Mot de passe à évaluer
+     * @param int    $group        (1 à 12) Niveau de groupe le moins privilégié accepté
      * @param string $goodRedirect Lien en cas de login réussi
-     * @param string $badRedirect Lien en cas de login raté
-     * @return boolean True si les infos entrée en login OU si les données de session
-     * 				se vérifient dans la base
+     * @param string $badRedirect  Lien en cas de login raté
+     * @param bool   $memoriser    Poser le cookie de connexion persistante
      */
-    function checkLogin($user = '', $pass = '', $group = UserLevel::MEMBER, $goodRedirect = '', $badRedirect = '', $memoriser = false): bool
+    public function checkLogin(string $user = '', string $pass = '', int $group = UserLevel::MEMBER, string $goodRedirect = '', string $badRedirect = '', bool $memoriser = false): bool
     {
-        global $logger;
-
-        $valide = new Validateur();
-
-        $erreurs = [];
-        if ($memoriser)
+        // Bornes de sûreté : la validation fine des saisies revient au formulaire, ici on
+        // écarte seulement ce qui n'a aucune chance de correspondre à un compte.
+        if (mb_strlen($user) < 2 || mb_strlen($user) > 80 || mb_strlen($pass) < 4 || mb_strlen($pass) > 50)
         {
-            $memoriser = true;
-        }
-        /*
-         * Validation des données de la session : pseudo, mot de passe, groupe
-         */
-        if (!$valide->validerLongueurTexte('user', $user, 2, 80))
-        {
-            $erreurs['user'] = $valide->lastError();
-        }
-
-        if (!$valide->validerLongueurTexte('pass', $pass, 4, 50))
-        {
-            $erreurs['pass'] = $valide->lastError();
-        }
-
-        if (!$valide->validerNombre('group', $group))
-        {
-            $erreurs['group'] = $valide->lastError();
-        }
-
-        if (count($erreurs) === 0)
-        {
-            $isEmail = filter_var($user, FILTER_VALIDATE_EMAIL) !== false;
-
-            if ($isEmail)
-            {
-                $safeUser = $this->connector->sanitize($user);
-                $sql = "
-				SELECT idPersonne, pseudo, mot_de_passe, cookie, groupe, region, email, gds
-				FROM personne
-				WHERE (pseudo = '$safeUser' OR email = '$safeUser') AND groupe <= " . $group . " AND statut='actif'";
-
-                $getUser = $this->connector->query($sql);
-
-                if ($this->connector->getNumRows($getUser) > 1)
-                {
-                    $logger->warning('[Sentry] login failed, ambiguous email', ['email' => $user]);
-                    unset($this->userdata);
-                    if ($badRedirect)
-                    {
-                        $redirectAmbigu = preg_replace('/msg=[^&]*/', 'msg=email_ambigu', $badRedirect);
-                        header("Location: " . $redirectAmbigu);
-                    }
-                    return false;
-                }
-            }
-            else
-            {
-                $sql = "
-				SELECT idPersonne, pseudo, mot_de_passe, cookie, groupe, region, email, gds
-				FROM personne
-				WHERE pseudo = '" . $this->connector->sanitize($user) . "' AND groupe <= " . $group . " AND statut='actif'";
-
-                $getUser = $this->connector->query($sql);
-            }
-
-            if ($this->connector->getNumRows($getUser) == 1)
-            {
-                $this->userdata = $this->connector->fetchArray($getUser);
-
-                $isPassCorrectOldMethod = sha1($this->userdata['gds'] . sha1($pass)) === $this->userdata['mot_de_passe'];
-                $isPassCorrectNewMethod = password_verify($pass, $this->userdata['mot_de_passe']);
-
-                // pass matches one of the 2 methods
-                if ($isPassCorrectOldMethod || $isPassCorrectNewMethod)
-                {
-                    $sql_update_pass = '';
-                    if ($isPassCorrectOldMethod || password_needs_rehash($this->userdata['mot_de_passe'], PASSWORD_DEFAULT)) //
-                    {
-                        $newPassHash = password_hash($pass, PASSWORD_DEFAULT);
-                        $sql_update_pass =  ", mot_de_passe = '". $newPassHash. "',  gds=''";
-                        $this->userdata['mot_de_passe'] = $newPassHash;
-                    }
-
-                    $this->connector->query("UPDATE personne SET last_login = now() $sql_update_pass WHERE idPersonne=".(int)$this->userdata['idPersonne']);
-                    session_regenerate_id(true); // to avoid session fixation attack
-                    $this->initSession($memoriser);
-                    $logger->info('[Sentry] login', ['user' => $_SESSION["user"]]);
-
-
-                    // exception pour admin
-                    if ($this->userdata['groupe'] == UserLevel::SUPERADMIN)
-                    {
-                        $goodRedirect = "admin/index.php";
-                    }
-
-                    if ($goodRedirect)
-                    {
-                        header("Location: " . $goodRedirect);
-                        exit();
-                    }
-
-                    return true;
-                }
-                else
-                {
-                    $logger->warning('[Sentry] login failed, wrong password', ['user' => $this->userdata['pseudo']]);
-
-                    unset($this->userdata);
-
-                    if ($badRedirect)
-                    {
-                        header("Location: " . $badRedirect);
-                    }
-                    return false;
-                } // if pass
-            }
-            else
-            {
-                $logger->warning('[Sentry] login failed, user not found', ['user' => $user]);
-
-                unset($this->userdata);
-
-                if ($badRedirect)
-                {
-                    header("Location: " . $badRedirect);
-                }
-
-                return false;
-            } //if num rows
-        }
-        else
-        {
-
             unset($this->userdata);
-            //Redirection vers $badRedirect s'il existe
+
             if ($badRedirect)
             {
                 header("Location: " . $badRedirect);
             }
 
             return false;
-        } //if erreurs
-    }
+        }
 
-    function checkRemembered(string $cookie): bool
-    {
-        global $logger;
+        /*
+         * Une adresse e-mail peut être partagée par plusieurs comptes : elle n'identifie
+         * alors personne, et c'est l'identifiant qu'il faut saisir.
+         */
+        $estEmail = filter_var($user, FILTER_VALIDATE_EMAIL) !== false;
 
-        $sql_getUser = "SELECT idPersonne, pseudo, mot_de_passe, cookie, groupe, region, email, gds
-						FROM personne
-						WHERE cookie='" . $this->connector->sanitize($cookie) . "'
-						 AND statut='actif'";
+        // deux marqueurs pour la même valeur : les requêtes préparées natives (PDO est
+        // configuré sans émulation) refusent qu'un marqueur nommé serve deux fois
+        $stmt = $this->pdo->prepare(
+            "SELECT " . self::USER_COLUMNS . "
+             FROM personne
+             WHERE " . ($estEmail ? "(pseudo = :pseudo OR email = :email)" : "pseudo = :pseudo") . "
+               AND groupe <= :groupe AND statut = 'actif'"
+        );
 
-        $getUser = $this->connector->query($sql_getUser);
+        $params = [':pseudo' => $user, ':groupe' => $group];
 
-        if ($this->connector->getNumRows($getUser) > 0)
+        if ($estEmail)
         {
+            $params[':email'] = $user;
+        }
 
-            $this->userdata = $this->connector->fetchArray($getUser);
-            session_regenerate_id(true); // to avoid session fixation attack
-            $this->initSession(true, true);
-            $logger->info('[Sentry] remembered access', ['user' => $_SESSION["user"], 'email' => $_SESSION['Semail']]);
-            return true;
+        $stmt->execute($params);
+        $comptes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        if ($estEmail && count($comptes) > 1)
+        {
+            $this->logger->warning('[Sentry] login failed, ambiguous email', ['email' => $user]);
+            unset($this->userdata);
+
+            if ($badRedirect)
+            {
+                header("Location: " . preg_replace('/msg=[^&]*/', 'msg=email_ambigu', $badRedirect));
+            }
+
+            return false;
+        }
+
+        // pseudo est unique : plus d'une ligne ne peut venir que d'un e-mail, traité ci-dessus
+        if (count($comptes) !== 1)
+        {
+            $this->logger->warning('[Sentry] login failed, user not found', ['user' => $user]);
+            unset($this->userdata);
+
+            if ($badRedirect)
+            {
+                header("Location: " . $badRedirect);
+            }
+
+            return false;
+        }
+
+        $this->userdata = $comptes[0];
+
+        $isPassCorrectOldMethod = hash_equals((string) $this->userdata['mot_de_passe'], sha1($this->userdata['gds'] . sha1($pass)));
+        $isPassCorrectNewMethod = password_verify($pass, (string) $this->userdata['mot_de_passe']);
+
+        if (!$isPassCorrectOldMethod && !$isPassCorrectNewMethod)
+        {
+            $this->logger->warning('[Sentry] login failed, wrong password', ['user' => $this->userdata['pseudo']]);
+            unset($this->userdata);
+
+            if ($badRedirect)
+            {
+                header("Location: " . $badRedirect);
+            }
+
+            return false;
+        }
+
+        // le stockage historique (sha1 salé) et les hash devenus trop faibles sont remis à
+        // niveau ici, à la seule occasion où le mot de passe est connu en clair
+        if ($isPassCorrectOldMethod || password_needs_rehash((string) $this->userdata['mot_de_passe'], PASSWORD_DEFAULT))
+        {
+            $this->userdata['mot_de_passe'] = password_hash($pass, PASSWORD_DEFAULT);
+
+            $stmt = $this->pdo->prepare(
+                "UPDATE personne SET last_login = NOW(), mot_de_passe = :hash, gds = ''
+                 WHERE idPersonne = :idP"
+            );
+            $stmt->execute([':hash' => $this->userdata['mot_de_passe'], ':idP' => (int) $this->userdata['idPersonne']]);
         }
         else
+        {
+            $stmt = $this->pdo->prepare("UPDATE personne SET last_login = NOW() WHERE idPersonne = :idP");
+            $stmt->execute([':idP' => (int) $this->userdata['idPersonne']]);
+        }
+
+        session_regenerate_id(true); // to avoid session fixation attack
+        $this->initSession($memoriser);
+        $this->logger->info('[Sentry] login', ['user' => $_SESSION["user"]]);
+
+        // exception pour admin ; chemin absolu, sinon la destination dépend du dossier
+        // de la page de connexion (« user/admin/index.php » depuis user/login.php)
+        if ((int) $this->userdata['groupe'] === UserLevel::SUPERADMIN)
+        {
+            $goodRedirect = "/admin/index.php";
+        }
+
+        if ($goodRedirect)
+        {
+            header("Location: " . $goodRedirect);
+            exit();
+        }
+
+        return true;
+    }
+
+    public function checkRemembered(string $cookie): bool
+    {
+        $stmt = $this->pdo->prepare(
+            "SELECT " . self::USER_COLUMNS . "
+             FROM personne
+             WHERE cookie = :cookie AND statut = 'actif'"
+        );
+        $stmt->execute([':cookie' => $cookie]);
+        $userdata = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($userdata === false)
         {
             unset($this->userdata);
 
             return false;
-        } // if pass
-    }
+        }
 
-//function
+        $this->userdata = $userdata;
+        session_regenerate_id(true); // to avoid session fixation attack
+        $this->initSession(true, true);
+        $this->logger->info('[Sentry] remembered access', ['user' => $_SESSION["user"], 'email' => $_SESSION['Semail']]);
+
+        return true;
+    }
 
     /**
      * Remplit les variables de session à partir de $this->userdata.
      *
-     * @param bool $memoriser pose le cookie « se souvenir de moi »
+     * @param bool $memoriser pose le cookie « rester connecté-e »
      * @param bool $init      renouvelle le jeton opaque stocké en base
      */
-    function initSession(bool $memoriser, bool $init = true): void
+    public function initSession(bool $memoriser, bool $init = true): void
     {
-        $req_affiliation = $this->connector->query("
-		SELECT idAffiliation
-		FROM affiliation
-		WHERE idPersonne='" . (int) $this->userdata["idPersonne"] . "' AND genre='lieu'");
-
-        $tab_affiliation = $this->connector->fetchArray($req_affiliation);
+        $stmt = $this->pdo->prepare(
+            "SELECT idAffiliation FROM affiliation WHERE idPersonne = :idP AND genre = 'lieu'"
+        );
+        $stmt->execute([':idP' => (int) $this->userdata['idPersonne']]);
+        $idAffiliation = $stmt->fetchColumn();
 
         //remplissage des variables de session
         $_SESSION["SidPersonne"] = $this->userdata["idPersonne"];
@@ -339,11 +323,13 @@ class Sentry
         $_SESSION["Sgroupe"] = $this->userdata["groupe"];
         $_SESSION['Semail'] = $this->userdata['email'];
         $_SESSION['Sregion'] = $this->userdata['region'];
-        $_SESSION['Saffiliation_lieu'] = $tab_affiliation['idAffiliation'] ?? 0;
+        $_SESSION['Saffiliation_lieu'] = $idAffiliation === false ? 0 : $idAffiliation;
 
-        /* 	if ($_SESSION["user"] == 'agilare')
-          printr($_SESSION);exit; */
-
+        // un simple rafraîchissement de session ne renouvelle rien : inutile de tirer un jeton
+        if (!$memoriser && !$init)
+        {
+            return;
+        }
 
         $cookie = $this->token();
 
@@ -352,19 +338,14 @@ class Sentry
             $this->updateCookie($cookie, true);
         }
 
-        /* 	if ($_SESSION["user"] == 'agilare')
-          printr($_SESSION);exit; */
-
         if ($init)
         {
-            $sql = "UPDATE personne
-			SET cookie='" . $this->connector->sanitize($cookie) . "' WHERE idPersonne=" . (int)$this->userdata['idPersonne'];
-            //echo $sql;
-            $this->connector->query($sql);
+            $stmt = $this->pdo->prepare("UPDATE personne SET cookie = :cookie WHERE idPersonne = :idP");
+            $stmt->execute([':cookie' => $cookie, ':idP' => (int) $this->userdata['idPersonne']]);
         }
     }
 
-    function updateCookie(string $cookie, bool $sauvegarder): void
+    public function updateCookie(string $cookie, bool $sauvegarder): void
     {
         $_SESSION['cookie'] = $cookie;
 
@@ -379,14 +360,11 @@ class Sentry
                 'samesite' => 'Lax'
             ];
 
-            setcookie('ladecadanse_remember', (string) $cookie, $cookieOptions);
+            setcookie('ladecadanse_remember', $cookie, $cookieOptions);
         }
-
-        /* 	echo "Veuillez patienter...";
-          exit; */
     }
 
-    function sessionDefaults(): void
+    public function sessionDefaults(): void
     {
         $_SESSION['logged'] = false;
         $_SESSION["memoriser"] = false;
@@ -397,25 +375,23 @@ class Sentry
     /**
      * Jeton opaque de 32 caractères hexadécimaux, à la mesure de personne.cookie
      */
-    function token(): string
+    public function token(): string
     {
         return bin2hex(random_bytes(16));
     }
 
     /**
-     * Détruit les données d'utilisateur de l'objet, la session et stoppe le script
+     * Détruit les données d'utilisateur de l'objet et la session
      */
-    function logout(): void
+    public function logout(): void
     {
         unset($this->userdata);
         session_regenerate_id(true); // to avoid session fixation attack
         session_destroy();
         unset($_SESSION);
+
         if (isset($_COOKIE['ladecadanse_remember']))
         {
-            //setcookie('ladecadanse[username]', '', time() - 3600);
-            //setcookie('ladecadanse[cookie]', '', time() - 3600);
-            //setcookie('ladecadanse_remember', '', time() - 3600); // semble ne pas fonctionner
             unset($_COOKIE['ladecadanse_remember']);
 
             setcookie('ladecadanse_remember', '', ['expires' => 1, 'secure' => true, 'httponly' => true]);
@@ -430,5 +406,4 @@ class Sentry
             'samesite' => 'Lax'
         ]);
     }
-
 }

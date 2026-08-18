@@ -64,7 +64,7 @@ class Personne
 
 
     /**
-     * Fiche de profil telle que l'affiche user.php, en une requête.
+     * Fiche de profil telle que l'affiche user/dashboard.php, en une requête.
      */
     public static function getProfil(int $idPersonne): ?array
     {

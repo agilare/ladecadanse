@@ -270,7 +270,7 @@ describe('Shortcuts — pagination aux flèches', function ()
         'event/search',
         'lieu/lieux',
         'organisateur/organisateurs',
-        'user',
+        'user/dashboard',
         'admin/gererEvenements',
         'admin/users'
     ];
@@ -534,12 +534,12 @@ describe('Shortcuts — parcours des listes avec j/k', function ()
         document.body.innerHTML =
             '<table id="ajouts">' +
             '<tr><th>Pseudo</th></tr>' +
-            '<tr><td><a href="/user.php?idP=1">alice</a></td></tr>' +
+            '<tr><td><a href="/user/dashboard.php?idP=1">alice</a></td></tr>' +
             '</table>';
 
         Shortcuts.handleKeydown(keydown('j'));
 
-        expect(document.activeElement).toBe(document.querySelector('a[href="/user.php?idP=1"]'));
+        expect(document.activeElement).toBe(document.querySelector('a[href="/user/dashboard.php?idP=1"]'));
     });
 
     // Le focus traîne souvent sur un lien secondaire (compteur, icône d'édition) : j doit
@@ -634,7 +634,7 @@ describe('Shortcuts — parcours des listes avec j/k', function ()
             '<div id="tableaux">' +
             '<table><thead><tr><th>Heure</th><th>Compte</th></tr></thead><tbody>' +
             '<tr><td colspan="6">jeudi 13 août</td></tr>' +
-            '<tr><td>18:02</td><td><a href="/user.php?idP=7">alice</a></td></tr>' +
+            '<tr><td>18:02</td><td><a href="/user/dashboard.php?idP=7">alice</a></td></tr>' +
             '</tbody></table>' +
             '<table id="derniers_evenements_ajoutes"><tbody>' +
             '<tr><td>09:14</td><td><a class="titre" href="/event/evenement.php?idE=1">Concert</a></td></tr>' +
@@ -645,7 +645,7 @@ describe('Shortcuts — parcours des listes avec j/k', function ()
             '</div>';
 
         const attendus = [
-            '/user.php?idP=7',
+            '/user/dashboard.php?idP=7',
             '/event/evenement.php?idE=1',
             '/lieu/lieu.php?idL=3'
         ];

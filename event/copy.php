@@ -12,7 +12,7 @@ use Ladecadanse\Utils\QueryParamValidator;
 if (!$authorization->checkGroup(8))
 {
     header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
-    header("Location: /user-login.php"); die();
+    header("Location: /user/login.php"); die();
 }
 
 

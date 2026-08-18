@@ -12,7 +12,7 @@ if ($authorization->checkGroup(UserLevel::MEMBER)) {
 }
 
 $page_titre = "Mot de passe oublié";
-$extra_css = ["formulaires", "user_login"];
+$extra_css = ["formulaires"];
 include("_header.inc.php");
 
 $tab_messages = ['faux'];

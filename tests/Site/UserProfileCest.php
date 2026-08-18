@@ -5,7 +5,7 @@ use Tests\Support\SiteTester;
 use Codeception\Util\HttpCode;
 
 /**
- * Page de profil (user.php).
+ * Page de profil (user/dashboard.php).
  *
  * La page n'avait aucun test avant le refactor de l'issue #114, qui l'a réécrite de fond en comble :
  * requêtes préparées, suppression de trois onglets, contrôle d'accès unifié. Ce qui est verrouillé
@@ -43,7 +43,7 @@ class UserProfileCest
     private function grabMyProfileId(SiteTester $I): string
     {
         $I->amOnPage('/articles/apropos.php');
-        $I->click('a[href^="/user.php?idP="]');
+        $I->click('a[href^="/user/dashboard.php?idP="]');
         $I->seeResponseCodeIs(HttpCode::OK);
 
         return $I->grabFromCurrentUrl('~idP=(\d+)~');
@@ -55,8 +55,8 @@ class UserProfileCest
      */
     public function anonymousIsSentToLogin(SiteTester $I)
     {
-        $I->amOnPage('/user.php?idP=1');
-        $I->seeInCurrentUrl('/user-login.php');
+        $I->amOnPage('/user/dashboard.php?idP=1');
+        $I->seeInCurrentUrl('/user/login.php');
     }
 
     /**
@@ -153,7 +153,7 @@ class UserProfileCest
         $I->loginAsActor();
         $idP = $this->grabMyProfileId($I);
 
-        $I->amOnPage('/user.php?idP=' . $idP . '&elements=description&tri=titre');
+        $I->amOnPage('/user/dashboard.php?idP=' . $idP . '&elements=description&tri=titre');
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->seeElement('#colonne_gauche');
     }
@@ -165,7 +165,7 @@ class UserProfileCest
     {
         $I->loginAsActor();
 
-        $I->amOnPage('/user.php');
+        $I->amOnPage('/user/dashboard.php');
         $I->seeResponseCodeIs(HttpCode::BAD_REQUEST);
         $I->seeElement('#pied');
     }
@@ -225,7 +225,7 @@ class UserProfileCest
 
         $total = (int) $I->grabTextFrom(self::COMPTEUR_ONGLET_EVENEMENTS);
 
-        $I->amOnPage('/user.php?idP=' . $idP . '&elements=evenement&terme=zzz-aucun-titre-ne-contient-ceci');
+        $I->amOnPage('/user/dashboard.php?idP=' . $idP . '&elements=evenement&terme=zzz-aucun-titre-ne-contient-ceci');
         $I->see('Aucun événement ne correspond à ce titre');
         $I->see((string) $total, self::COMPTEUR_ONGLET_EVENEMENTS);
 
@@ -249,7 +249,7 @@ class UserProfileCest
         $I->loginAsActor();
         $idP = $this->grabMyProfileId($I);
 
-        $I->amOnPage('/user.php?idP=' . $idP . '&elements=description');
+        $I->amOnPage('/user/dashboard.php?idP=' . $idP . '&elements=description');
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->dontSeeElement('#order_navigation');
         $I->dontSeeElement('form.filtre-liste');
@@ -278,7 +278,7 @@ class UserProfileCest
             return;
         }
 
-        $I->amOnPage('/user.php?idP=' . $idAdmin);
+        $I->amOnPage('/user/dashboard.php?idP=' . $idAdmin);
         $I->seeResponseCodeIs(HttpCode::FORBIDDEN);
     }
 }

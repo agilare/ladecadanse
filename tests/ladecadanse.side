@@ -388,7 +388,7 @@
         ["css=li:nth-child(8) > a", "css:finder"],
         ["xpath=//a[contains(text(),'Connexion')]", "xpath:link"],
         ["xpath=//nav[@id='menu_pratique']/ul/li[8]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/user-login.php')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/user/login.php')]", "xpath:href"],
         ["xpath=//li[8]/a", "xpath:position"],
         ["xpath=//a[contains(.,'Connexion')]", "xpath:innerText"]
       ],
@@ -2170,7 +2170,7 @@
         ["css=li:nth-child(8) > a", "css:finder"],
         ["xpath=//a[contains(text(),'Connexion')]", "xpath:link"],
         ["xpath=//nav[@id='menu_pratique']/ul/li[8]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/user-login.php')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/user/login.php')]", "xpath:href"],
         ["xpath=//li[8]/a", "xpath:position"],
         ["xpath=//a[contains(.,'Connexion')]", "xpath:innerText"]
       ],
@@ -2366,7 +2366,7 @@
         ["css=li:nth-child(6) > a", "css:finder"],
         ["xpath=//a[contains(text(),'test')]", "xpath:link"],
         ["xpath=//nav[@id='menu_pratique']/ul/li[6]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/user.php?idP=2')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/user/dashboard.php?idP=2')]", "xpath:href"],
         ["xpath=//li[6]/a", "xpath:position"],
         ["xpath=//a[contains(.,'test')]", "xpath:innerText"]
       ],
@@ -3422,7 +3422,7 @@
         ["css=li:nth-child(6) > a", "css:finder"],
         ["xpath=//a[contains(text(),'test')]", "xpath:link"],
         ["xpath=//nav[@id='menu_pratique']/ul/li[6]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/user.php?idP=2')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/user/dashboard.php?idP=2')]", "xpath:href"],
         ["xpath=//li[6]/a", "xpath:position"],
         ["xpath=//a[contains(.,'test')]", "xpath:innerText"]
       ],
@@ -5395,7 +5395,7 @@
         ["css=li:nth-child(8) > a", "css:finder"],
         ["xpath=//a[contains(text(),'Connexion')]", "xpath:link"],
         ["xpath=//nav[@id='menu_pratique']/ul/li[8]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/user-login.php')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/user/login.php')]", "xpath:href"],
         ["xpath=//li[8]/a", "xpath:position"],
         ["xpath=//a[contains(.,'Connexion')]", "xpath:innerText"]
       ],
@@ -5497,7 +5497,7 @@
         ["css=li:nth-child(6) > a", "css:finder"],
         ["xpath=//a[contains(text(),'test')]", "xpath:link"],
         ["xpath=//nav[@id='menu_pratique']/ul/li[6]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/user.php?idP=2')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/user/dashboard.php?idP=2')]", "xpath:href"],
         ["xpath=//li[6]/a", "xpath:position"],
         ["xpath=//a[contains(.,'test')]", "xpath:innerText"]
       ],
@@ -6043,7 +6043,7 @@
         ["css=li:nth-child(8) > a", "css:finder"],
         ["xpath=//a[contains(text(),'Connexion')]", "xpath:link"],
         ["xpath=//nav[@id='menu_pratique']/ul/li[8]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/user-login.php')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/user/login.php')]", "xpath:href"],
         ["xpath=//li[8]/a", "xpath:position"],
         ["xpath=//a[contains(.,'Connexion')]", "xpath:innerText"]
       ],
@@ -6203,7 +6203,7 @@
         ["css=table:nth-child(2) a", "css:finder"],
         ["xpath=//a[contains(text(),'eqfc251rszm')]", "xpath:link"],
         ["xpath=//div[@id='tableaux']/table/tbody/tr[2]/td[2]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/user.php?idP=67')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/user/dashboard.php?idP=67')]", "xpath:href"],
         ["xpath=//td[2]/a", "xpath:position"],
         ["xpath=//a[contains(.,'eqfc251rszm')]", "xpath:innerText"]
       ],
@@ -7482,7 +7482,7 @@
       "target": "linkText=Connexion",
       "targets": [
         ["linkText=Connexion", "linkText"],
-        ["xpath=//a[contains(@href, '/user-login.php')]", "xpath:href"]
+        ["xpath=//a[contains(@href, '/user/login.php')]", "xpath:href"]
       ],
       "value": ""
     }, {
@@ -7782,7 +7782,7 @@
         ["css=li:nth-child(8) > a", "css:finder"],
         ["xpath=//a[contains(text(),'Connexion')]", "xpath:link"],
         ["xpath=//nav[@id='menu_pratique']/ul/li[8]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/user-login.php')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/user/login.php')]", "xpath:href"],
         ["xpath=//li[8]/a", "xpath:position"],
         ["xpath=//a[contains(.,'Connexion')]", "xpath:innerText"]
       ],

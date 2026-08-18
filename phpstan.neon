@@ -58,6 +58,7 @@ parameters:
                 - lieu
                 - misc
                 - organisateur
+                - user
                 - _footer.inc.php
                 - _header.inc.php
                 - annuaire-membres.php
@@ -66,9 +67,7 @@ parameters:
                 - lieu-edit.php
                 - lieu-text-edit.php
                 - organisateur-edit.php
-                - user.php
                 - user-edit.php
-                - user-login.php
                 - user-logout.php
                 - user-register.php
                 - user-reset.php
