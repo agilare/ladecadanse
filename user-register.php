@@ -4,6 +4,7 @@ require_once("app/bootstrap.php");
 
 use Ladecadanse\UserLevel;
 use Ladecadanse\Utils\Validateur;
+use Ladecadanse\Utils\QueryParamValidator;
 use Ladecadanse\Utils\Mailing;
 use Ladecadanse\HtmlShrink;
 
@@ -11,7 +12,7 @@ $get['action'] = "ajouter";
 
 if (isset($_GET['idP']))
 {
-	$get['idP'] = Validateur::validateUrlQueryValue($_GET['idP'], "int", 1);
+	$get['idP'] = QueryParamValidator::validateUrlQueryValue($_GET['idP'], "int", 1);
 }
 
 $page_titre = "Inscription";

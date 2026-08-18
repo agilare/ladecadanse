@@ -8,7 +8,7 @@ use Ladecadanse\HtmlShrink;
 use Ladecadanse\Personne;
 use Ladecadanse\Utils\DateHelper;
 use Ladecadanse\Utils\Text;
-use Ladecadanse\Utils\Validateur;
+use Ladecadanse\Utils\QueryParamValidator;
 
 if (empty($_GET['idL']) || !is_numeric($_GET['idL']))
 {
@@ -35,7 +35,7 @@ if ($lieu['statut'] == 'inactif' && !((isset($_SESSION['Sgroupe']) && $_SESSION[
 $tab_menu_periodes = ["ancien" => "Passés", "futur" => "Prochains"]; //, "tous" => "Tous"
 $get['periode'] = "futur";
 $sql_periode_operator = ">=";
-if (!empty($_GET['periode']) && Validateur::isAcceptedUrlQueryValue($_GET['periode'], "enum", array_keys($tab_menu_periodes)))
+if (!empty($_GET['periode']) && QueryParamValidator::isAcceptedUrlQueryValue($_GET['periode'], "enum", array_keys($tab_menu_periodes)))
 {
     $get['periode'] = $_GET['periode'];
     if ($get['periode'] == "ancien")
@@ -59,7 +59,7 @@ $stmtAll->execute([$get['idL'], $glo_auj]);
 $all_results_nb = $stmtAll->fetchColumn();
 
 $default_page = $get['periode'] == "ancien" ? (int) max(1, ceil($all_results_nb / $results_per_page)) : 1;
-$get['page'] = !empty($_GET['page']) ? Validateur::validateUrlQueryValue($_GET['page'], "int", 1) : $default_page;
+$get['page'] = !empty($_GET['page']) ? QueryParamValidator::validateUrlQueryValue($_GET['page'], "int", 1) : $default_page;
 
 $categories_fr = implode(", ", array_map(fn ($cat) : string => $glo_categories_lieux[$cat], explode(",", str_replace(" ", "", $lieu['categorie']))));
 $lieu_salles = Lieu::getActivesSalles((int) $get['idL']);

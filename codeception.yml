@@ -23,6 +23,12 @@ suites:
                 - PhpBrowser:
                     url: '%LADECADANSE_SITE_URL%'
                 - Asserts
+    unit:
+        actor: UnitTester
+        path: Unit
+        modules:
+            enabled:
+                - Asserts
 
 paths:
     tests: tests

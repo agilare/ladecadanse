@@ -5,7 +5,7 @@ require_once("app/bootstrap.php");
 use Ladecadanse\Organisateur;
 use Ladecadanse\Security\SecurityToken;
 use Ladecadanse\OrganisateurEdition;
-use Ladecadanse\Utils\Validateur;
+use Ladecadanse\Utils\QueryParamValidator;
 use Ladecadanse\HtmlShrink;
 
 if (!$authorization->checkGroup(8))
@@ -27,7 +27,7 @@ $get['action'] = "ajouter";
 $get['idO'] = "idO";
 if (isset($_GET['action']))
 {
-	$get['action'] = Validateur::validateUrlQueryValue($_GET['action'], "enum", "ajouter", $actions);
+	$get['action'] = QueryParamValidator::validateUrlQueryValue($_GET['action'], "enum", "ajouter", $actions);
 }
 
 if (isset($_GET['idO']))

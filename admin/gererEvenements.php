@@ -6,6 +6,7 @@ require_once("../app/bootstrap.php");
 use Ladecadanse\Evenement;
 use Ladecadanse\Utils\DateHelper;
 use Ladecadanse\Utils\Validateur;
+use Ladecadanse\Utils\QueryParamValidator;
 use Ladecadanse\Utils\ImageDriver2;
 use Ladecadanse\EvenementCollection;
 use Ladecadanse\UserLevel;
@@ -38,7 +39,7 @@ $get['element'] = "evenement";
 $get['page'] = 1;
 if (isset($_GET['page']))
 {
-	$get['page'] = Validateur::validateUrlQueryValue($_GET['page'], "int", 1);
+	$get['page'] = QueryParamValidator::validateUrlQueryValue($_GET['page'], "int", 1);
 }
 
 $th_evenements = ["titre" => "Titre", "idLieu" => "Lieu", "dateEvenement" => "Date", "genre" => "Catég.", "horaire" => "Horaire", "organisateurs" => "Orga.", "statut" => "Statut", "dateAjout" => "Ajouté", "pseudo" => "par"];
@@ -63,7 +64,7 @@ $get['ordre'] = "desc";
 $ordre_inverse = "asc";
 if (isset($_GET['ordre']))
 {
-	$get['ordre'] = Validateur::validateUrlQueryValue($_GET['ordre'], "enum", 1, array_keys($orderDirections));
+	$get['ordre'] = QueryParamValidator::validateUrlQueryValue($_GET['ordre'], "enum", 1, array_keys($orderDirections));
 	if ($get['ordre'] == "asc")
 	{
 		$ordre_inverse = "desc";
@@ -77,7 +78,7 @@ if (isset($_GET['ordre']))
 $get['nblignes'] = $tab_nblignes[0];
 if (!empty($_GET['nblignes']))
 {
-	$get['nblignes'] = Validateur::validateUrlQueryValue($_GET['nblignes'], "int", 1);
+	$get['nblignes'] = QueryParamValidator::validateUrlQueryValue($_GET['nblignes'], "int", 1);
 }
 
 

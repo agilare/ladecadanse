@@ -131,18 +131,6 @@ parameters:
 			path: librairies/Utils/Text.php
 
 		-
-			message: '#^Call to function is_string\(\) with string will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: librairies/Utils/Validateur.php
-
-		-
-			message: '#^Variable \$url in isset\(\) always exists and is not nullable\.$#'
-			identifier: isset.variable
-			count: 1
-			path: librairies/Utils/Validateur.php
-
-		-
 			message: '#^Expression "\\UPLOAD_MAX_FILESIZE" on a separate line does not do anything\.$#'
 			identifier: expr.resultUnused
 			count: 1

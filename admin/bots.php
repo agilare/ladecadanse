@@ -4,7 +4,7 @@ require_once("../app/bootstrap.php");
 
 use Ladecadanse\UserLevel;
 use Ladecadanse\Utils\DateHelper;
-use Ladecadanse\Utils\Validateur;
+use Ladecadanse\Utils\QueryParamValidator;
 use Ladecadanse\HtmlShrink;
 
 if (!$authorization->checkGroup(UserLevel::ADMIN))
@@ -23,14 +23,14 @@ $view = isset($_GET['view']) && isset($views[$_GET['view']]) ? $_GET['view'] : '
 
 // seuil de hits pour la vue "humains suspects", modifiable par filtre
 $suspect_threshold = defined('BOT_MONITORING_SUSPECT_THRESHOLD') ? BOT_MONITORING_SUSPECT_THRESHOLD : 150;
-if (!empty($_GET['seuil']) && Validateur::isAcceptedUrlQueryValue($_GET['seuil'], "int"))
+if (!empty($_GET['seuil']) && QueryParamValidator::isAcceptedUrlQueryValue($_GET['seuil'], "int"))
 {
     $suspect_threshold = (int) $_GET['seuil'];
 }
 
 // pagination
 $get = [];
-$get['page'] = !empty($_GET['page']) ? Validateur::validateUrlQueryValue($_GET['page'], "int", 1) : 1;
+$get['page'] = !empty($_GET['page']) ? QueryParamValidator::validateUrlQueryValue($_GET['page'], "int", 1) : 1;
 
 $_SESSION['user_prefs_bots_nblignes'] ??= $tab_nblignes[0];
 if (!empty($_GET['nblignes']) && in_array($_GET['nblignes'], $tab_nblignes))

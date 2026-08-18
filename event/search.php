@@ -6,7 +6,7 @@ require_once("../app/bootstrap.php");
 
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\Utils\DateHelper;
-use Ladecadanse\Utils\Validateur;
+use Ladecadanse\Utils\QueryParamValidator;
 use Ladecadanse\Evenement;
 use Ladecadanse\EvenementRenderer;
 use Ladecadanse\Lieu;
@@ -25,13 +25,13 @@ if (empty($_GET['mots']) || !empty($_GET['name_as']))
 $get['mots'] = $_GET['mots'];
 
 $get['tri'] = "pertinence";
-if (!empty($_GET['tri']) && Validateur::isAcceptedUrlQueryValue($_GET['tri'], "enum", array_keys($tab_menu_tri)))
+if (!empty($_GET['tri']) && QueryParamValidator::isAcceptedUrlQueryValue($_GET['tri'], "enum", array_keys($tab_menu_tri)))
 {
     $get['tri'] = $_GET['tri'];
 }
 
 $get['periode'] = "futur";
-if (!empty($_GET['periode']) && Validateur::isAcceptedUrlQueryValue($_GET['periode'], "enum", array_keys($tab_menu_periodes)))
+if (!empty($_GET['periode']) && QueryParamValidator::isAcceptedUrlQueryValue($_GET['periode'], "enum", array_keys($tab_menu_periodes)))
 {
     $get['periode'] = $_GET['periode'];
 }
@@ -43,7 +43,7 @@ if (isset($_GET['years']))
 }
 
 //dump($_GET);
-$get['page'] = !empty($_GET['page']) ? Validateur::validateUrlQueryValue($_GET['page'], "int", 1) : 1;
+$get['page'] = !empty($_GET['page']) ? QueryParamValidator::validateUrlQueryValue($_GET['page'], "int", 1) : 1;
 $results_per_page = 20;
 
 

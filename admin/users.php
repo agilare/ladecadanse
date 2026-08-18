@@ -4,7 +4,7 @@ require_once("../app/bootstrap.php");
 
 use Ladecadanse\UserLevel;
 use Ladecadanse\Utils\DateHelper;
-use Ladecadanse\Utils\Validateur;
+use Ladecadanse\Utils\QueryParamValidator;
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\Personne;
 use Ladecadanse\EvenementRenderer;
@@ -49,7 +49,7 @@ if (isset($_GET['order_by']) && in_array($_GET['order_by'], $fields_to_order_by)
 }
 
 $_SESSION['user_prefs_users_order_dir'] ??= 'desc';
-if (!empty($_GET['order_dir']) && Validateur::isAcceptedUrlQueryValue($_GET['order_dir'], "alpha_numeric"))
+if (!empty($_GET['order_dir']) && QueryParamValidator::isAcceptedUrlQueryValue($_GET['order_dir'], "alpha_numeric"))
 {
    $_SESSION['user_prefs_users_order_dir'] = $_GET['order_dir'];
 }
@@ -57,7 +57,7 @@ if (!empty($_GET['order_dir']) && Validateur::isAcceptedUrlQueryValue($_GET['ord
 $get = [];
 
 // pagination
-$get['page'] = !empty($_GET['page']) ? Validateur::validateUrlQueryValue($_GET['page'], "int", 1) : 1;
+$get['page'] = !empty($_GET['page']) ? QueryParamValidator::validateUrlQueryValue($_GET['page'], "int", 1) : 1;
 
 $_SESSION['user_prefs_users_nblignes'] ??= $tab_nblignes[0];
 if (!empty($_GET['nblignes']) && in_array($_GET['nblignes'], $tab_nblignes))

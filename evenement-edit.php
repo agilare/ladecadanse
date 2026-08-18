@@ -3,6 +3,7 @@
 require_once("app/bootstrap.php");
 
 use Ladecadanse\Utils\Validateur; // forms
+use Ladecadanse\Utils\QueryParamValidator; // query string
 use Ladecadanse\Utils\ImageDriver2; // files
 use Ladecadanse\Utils\ImageUrlFetcher; // url import
 use Ladecadanse\Security\SecurityToken;
@@ -35,7 +36,7 @@ if (isset($_GET['action']))
  {
     try
     {
-        $get['action'] = Validateur::validateUrlQueryValue($_GET['action'], "enum", "ajouter", $actions);
+        $get['action'] = QueryParamValidator::validateUrlQueryValue($_GET['action'], "enum", "ajouter", $actions);
     }
     catch (Exception)
     {
@@ -48,7 +49,7 @@ if (isset($_GET['idE']))
  {
     try
     {
-        $get['idE'] = Validateur::validateUrlQueryValue($_GET['idE'], "int", 1);
+        $get['idE'] = QueryParamValidator::validateUrlQueryValue($_GET['idE'], "int", 1);
     }
     catch (Exception)
     {
@@ -61,7 +62,7 @@ if (isset($_GET['idL']))
  {
     try
     {
-        $get['idL'] = Validateur::validateUrlQueryValue($_GET['idL'], "int", 1);
+        $get['idL'] = QueryParamValidator::validateUrlQueryValue($_GET['idL'], "int", 1);
     }
     catch (Exception)
     {
@@ -74,7 +75,7 @@ if (isset($_GET['idO']))
  {
     try
     {
-        $get['idO'] = Validateur::validateUrlQueryValue($_GET['idO'], "int", 1);
+        $get['idO'] = QueryParamValidator::validateUrlQueryValue($_GET['idO'], "int", 1);
     }
     catch (Exception)
     {

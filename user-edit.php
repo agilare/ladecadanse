@@ -12,6 +12,7 @@ require_once("app/bootstrap.php");
 
 use Ladecadanse\UserLevel;
 use Ladecadanse\Utils\Validateur;
+use Ladecadanse\Utils\QueryParamValidator;
 use Ladecadanse\Security\SecurityToken;
 use Ladecadanse\Security\Sentry;
 use Ladecadanse\HtmlShrink;
@@ -33,12 +34,12 @@ $get['action'] = "ajouter";
 if (isset($_GET['idP']))
 {
 
-	$get['idP'] = Validateur::validateUrlQueryValue($_GET['idP'], "int", 1);
+	$get['idP'] = QueryParamValidator::validateUrlQueryValue($_GET['idP'], "int", 1);
 }
 
 if (isset($_GET['action']))
 {
-	$get['action'] = Validateur::validateUrlQueryValue($_GET['action'], "enum", 1, $actions);
+	$get['action'] = QueryParamValidator::validateUrlQueryValue($_GET['action'], "enum", 1, $actions);
 
 	if (($_GET['action'] == "ajouter" || $_GET['action'] == 'insert') && $_SESSION['Sgroupe'] > UserLevel::SUPERADMIN) {
 		HtmlShrink::msgErreur("Vous n'avez pas le droit d'ajouter une personne");

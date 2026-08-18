@@ -4,6 +4,7 @@ require_once("app/bootstrap.php");
 
 use Ladecadanse\UserLevel;
 use Ladecadanse\Utils\Validateur;
+use Ladecadanse\Utils\QueryParamValidator;
 use Ladecadanse\HtmlShrink;
 
 if ($authorization->checkGroup(UserLevel::MEMBER)) {
@@ -21,7 +22,7 @@ if (empty($_GET['token']))
 	exit;
 }
 
-$get['token'] = Validateur::validateUrlQueryValue($_GET['token'], "alpha_numeric", 1);
+$get['token'] = QueryParamValidator::validateUrlQueryValue($_GET['token'], "alpha_numeric", 1);
 
 $verif = new Validateur();
 
