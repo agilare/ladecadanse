@@ -284,8 +284,15 @@ ul.entete_contenu_navigation li:nth-child(2) a:hover
 
 }
 
+/* Rangée flex plutôt qu'un flottant suivi de blocs : quand le texte dépasse la
+   hauteur de la vignette — la règle en colonne étroite — ses lignes ne
+   repassent plus sous elle mais restent à son côté, et l'étirement
+   (align-items:stretch, la valeur par défaut) prolonge le fond gris de la
+   vignette jusqu'en bas de la rangée. Même dispositif que
+   .evenement-short .event-media (global.css). */
 .dernier_evenement
 {
+    display:flex;
     border-bottom:1px dotted gray;
     margin:0.5em 0;
     padding:0 0 0.4em 0;
@@ -294,12 +301,38 @@ ul.entete_contenu_navigation li:nth-child(2) a:hover
 
     .dernier_evenement .flyer
     {
+        flex:0 0 60px;
         background:#f0f0f0;
-        float:left;
         width:60px;
-        height:80px;
+        min-height:80px; /* et non height : c'est ce qui autorise l'étirement */
         overflow:hidden;
         margin-right:3px;
+    }
+
+    /* Le rognage à 80px appartient au lien et non plus à la vignette : celle-ci
+       s'étire désormais sur toute la hauteur de la rangée, l'y laisser aurait
+       déplié les flyers portrait sur toute leur hauteur. */
+    .dernier_evenement .flyer a
+    {
+        display:block;
+        height:80px;
+        overflow:hidden;
+    }
+
+    .dernier_evenement .texte
+    {
+        flex:1 1 auto;
+        min-width:0; /* sans quoi un mot insécable empêcherait la colonne de rétrécir */
+    }
+
+    /* Ces <p> sont dans un <aside>, hors de #contenu : ils gardaient la marge
+       verticale de 1em du navigateur, qui détachait la date du lieu. 0.35em et
+       non les 0.4em du padding-bottom du h3 : la demi-interligne sous le lieu
+       compte déjà dans l'écart, les deux blancs se rejoignent ainsi à un demi
+       pixel près. */
+    .dernier_evenement .texte p
+    {
+        margin:0.35em 0 0 0;
     }
 
     .dernier_evenement h3
