@@ -95,6 +95,11 @@ form#ajouter_editer input.select2-search__field
     padding:0;
 }
 
+ form#ajouter_editer input[type="file"]
+ {
+     border:none;
+ }
+
 form#ajouter_editer ul
 {
     margin:0;
