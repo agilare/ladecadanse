@@ -173,6 +173,8 @@ $events_siblings = [$events_of_day[$index - 1] ?? null, $events_of_day[$index + 
 // Elle occupe la colonne droite, vide sur cette page. Tout le reste (largeur du cadre,
 // des illustrations, de la description, taille du titre, bouton « précédent ») est piloté
 // par la classe .vevent-experimental dans desktop.css, donc trivialement réversible.
+// La même classe pilote aussi, sous 450px, l'habillage de la description autour de la
+// colonne des images (palier en fin de section « evenement » dans mobile.css).
 $evenementLayoutExperimental = isset($_SESSION['Sgroupe']) && (int) $_SESSION['Sgroupe'] <= UserLevel::ADMIN;
 
 include("../_header.inc.php");

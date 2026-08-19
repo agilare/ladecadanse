@@ -356,6 +356,43 @@ form#ajouter_editer
     font-size:0.9em;
 }
 
+/* Sous ~450px, la colonne de droite ne fait plus que ~260px : la description
+   s'y étire en lignes courtes pendant que l'espace sous l'image reste vide.
+   Le texte enveloppe donc le flottant, et les lignes passées sous l'image
+   reprennent toute la largeur. Admin seulement (.vevent-experimental, posée
+   par event/evenement.php). */
+@media screen and (max-width:449.98px)
+{
+    .vevent-experimental #evenement #description
+    {
+        margin-left:0;
+        min-height:0; /* le plancher de 17em annulerait le gain de hauteur */
+    }
+
+    .vevent-experimental #evenement #illustrations
+    {
+        /* sans illustration mainFigureHtml() ne rend rien : hauteur nulle, le
+           flottant cesse alors de décaler quoi que ce soit */
+        min-height:0;
+    }
+
+    /* Le flottant traverse désormais le fond clair de #description : il reprend
+       à son compte le gris du cadre pour que la zone de l'image reste
+       visuellement distincte du texte. Le padding tient lieu de gouttière — une
+       marge, elle, laisserait passer le fond de la description entre l'image et
+       le texte. À droite et en bas seulement : l'image reste ainsi collée au
+       bord gauche du cadre comme aujourd'hui, et les lignes placées à côté
+       d'elle gardent exactement la largeur qu'avait la colonne de description
+       (les rogner reprendrait d'une main la hauteur gagnée de l'autre).
+       :has(img) évite de peindre une pastille sur un <figure> vide. */
+    .vevent-experimental #evenement #illustrations:has(img)
+    {
+        box-sizing:content-box; /* le padding s'ajoute aux 120px de l'image */
+        padding:0 0.6em 0.6em 0;
+        background-color:#f4f4f4; /* = fond de #evenement (event/evenement.css) */
+    }
+}
+
 ul.menu_actions_evenement li.format_imprimable, #entete_contenu ul li.format_imprimable
 {
     display:none;
