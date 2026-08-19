@@ -242,7 +242,8 @@ table#ajouts td.actions
 	text-align:right;
 }
 
-/* sans ça les glyphes reposent sur la ligne de base du texte */
+/* sans ça les icônes reposent sur la ligne de base du texte */
+table#ajouts td.actions img,
 table#ajouts td.actions .fa
 {
 	vertical-align:middle;

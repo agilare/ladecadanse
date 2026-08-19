@@ -39,6 +39,10 @@ $url_uploads_lieux = "/uploads/lieux/";
 $url_uploads_lieux_galeries = "/uploads/lieux/galeries/";
 $url_uploads_organisateurs = "/uploads/organisateurs/";
 
+// Icônes historiques conservées : leur dessin famfamfam n'a pas d'équivalent
+// Font Awesome jugé satisfaisant. Le reste du jeu Silk a été supprimé (#151).
+$url_images_interface_icons = "/web/interface/icons/";
+
 // default Open Graph tags values, overrided in some pages
 $page_image = 'web/interface/ladecadanse-695x672.jpeg';
 $page_url = ltrim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
@@ -135,13 +139,14 @@ $glo_menu_pratique = [ "Mises à jour" => "/articles/mises-a-jour.php", "Faire u
 $tab_nblignes = [50, 100, 250, 500]; // nb lignes de resultats de listes
 $actions = ["ajouter", "insert", "update", "editer"];
 
-// Icônes Font Awesome 4.7 réutilisées dans plusieurs pages.
+// Icônes réutilisées dans plusieurs pages, en glyphes Font Awesome 4.7 ou en
+// images héritées quand leur dessin famfamfam a été jugé préférable (#151).
 // Attention : ce sont des fragments HTML, ils sont échoés tels quels.
 // L'icône seule ne porte pas de nom accessible ; le lien qui la contient doit
 // fournir un title ou un aria-label lorsqu'aucun texte ne l'accompagne.
 $iconeSupprimer = '<i class="fa fa-trash-o" title="Supprimer" aria-label="Supprimer"></i>';
-$iconeEditer = '<i class="fa fa-pencil fa-lg" aria-hidden="true"></i>';
-$iconeCopier = '<i class="fa fa-files-o fa-lg" aria-hidden="true"></i>';
+$iconeEditer = '<img src="' . $url_images_interface_icons . 'page_white_edit.png" alt="Éditer" width="16" height="16" />';
+$iconeCopier = '<img src="' . $url_images_interface_icons . 'page_white_copy.png" alt="Copier" width="16" height="16" />';
 $iconePrecedent = '<i class="fa fa-chevron-left" aria-hidden="true"></i>';
 $iconeSuivant = '<i class="fa fa-chevron-right" aria-hidden="true"></i>';
 
@@ -151,5 +156,5 @@ $icone['envoi_email'] = '<i class="fa fa-paper-plane-o fa-lg" aria-hidden="true"
 $icone['ajouts'] = '<i class="fa fa-plus" aria-hidden="true"></i>';
 $icone['ajouter_texte'] = '<i class="fa fa-pencil" aria-hidden="true"></i>';
 $icone['personne'] = '<i class="fa fa-user fa-lg" aria-hidden="true"></i>';
-$icone['plan'] = '<i class="fa fa-map-marker fa-lg" aria-hidden="true"></i>';
-$icone['depublier'] = '<i class="fa fa-calendar-times-o fa-lg icone-depublier" aria-hidden="true"></i>';
+$icone['plan'] = '<img src="' . $url_images_interface_icons . 'map.png" alt="Plan" width="16" height="16" style="vertical-align: top;" />';
+$icone['depublier'] = '<img src="' . $url_images_interface_icons . 'calendar_delete.png" alt="Dépublier" />';

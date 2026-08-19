@@ -84,7 +84,8 @@ ul.menu_actions_evenement li
     line-height: 1.5em;
 }
 
-/* Glyphes Font Awesome centrés sur le libellé */
+/* Icônes centrées sur le libellé : images héritées 16px comme glyphes Font Awesome */
+ul.menu_actions_evenement li img,
 ul.menu_actions_evenement li .fa
 {
     vertical-align: middle;

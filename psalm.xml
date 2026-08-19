@@ -72,6 +72,7 @@
         <var name="rep_fichiers_lieu" type="string"/>
 
         <!-- app/config.php : URLs et fragments d'interface -->
+        <var name="url_images_interface_icons" type="string"/>
         <var name="url_query_region" type="string"/>
         <var name="url_query_region_et" type="string"/>
         <var name="url_query_region_1er" type="string"/>
