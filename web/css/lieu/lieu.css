@@ -472,27 +472,3 @@ ul#menu_complement
             width:50px;
             background-color:transparent;
             }*/
-
-            #prochains_evenements table td.lieu_actions_evenement
-            {
-                width:80px
-            }
-
-                #prochains_evenements table td.lieu_actions_evenement ul
-                {
-                    padding: 0;
-                    margin:0;
-                    white-space:nowrap;
-                }
-
-                    /* les glyphes Font Awesome se touchaient : un peu d'air entre eux */
-                    #prochains_evenements table td.lieu_actions_evenement ul li
-                    {
-                        display:inline-block;
-                        margin-left:0.45em;
-                    }
-
-                    #prochains_evenements table td.lieu_actions_evenement ul li:first-child
-                    {
-                        margin-left:0;
-                    }

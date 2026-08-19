@@ -9,6 +9,7 @@
 namespace Ladecadanse;
 
 use Ladecadanse\Evenement;
+use Ladecadanse\EvenementCalendarRenderer;
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\Lieu;
 use Ladecadanse\Organisateur;
@@ -323,7 +324,10 @@ class EvenementRenderer
     public static function eventTableRowHtml(array $tab_even, Authorization $authorization, bool $isWithLieu, ?string $lieuName = null): string
     {
         // TODO: mv $icone... to... ?
-        global $glo_auj_6h, $iconeCopier, $iconeEditer, $icone;
+        global $glo_auj_6h, $iconeCopier, $iconeEditer, $icone, $site_full_url;
+
+        $isFutureEvent = $tab_even['e_dateEvenement'] >= $glo_auj_6h;
+        $isAllowedToEdit = $authorization->isPersonneAllowedToEditEvenement($_SESSION, $tab_even);
 
         $dtstart_iso = self::dtstartIso($tab_even['e_dateEvenement'], $tab_even['e_horaire_debut']);
 
@@ -370,14 +374,19 @@ class EvenementRenderer
                 <?= $location ?>
                 <?php if ($location_masquee !== '') : ?><span class="visually-hidden"><?= sanitizeForHtml($location_masquee) ?></span><?php endif; ?>
             </td>
-            <?php if ($authorization->isPersonneAllowedToEditEvenement($_SESSION, $tab_even)) : ?>
+            <?php if ($isFutureEvent || $isAllowedToEdit) : ?>
             <td class="lieu_actions_evenement">
                 <ul>
-                    <li><a href="/event/copy.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>" title="Copier cet événement"><?= $iconeCopier ?></a></li>
-                    <?php if ($authorization->isPersonneAllowedToEditEvenementNow($_SESSION, $tab_even)) : ?>
-                    <li><a href="/evenement-edit.php?action=editer&amp;idE=<?= (int) $tab_even['e_idEvenement'] ?>" title="Modifier cet événement"><?= $iconeEditer ?></a></li>
+                    <?php if ($isFutureEvent) : ?>
+                        <?= EvenementCalendarRenderer::renderMenuHtml($tab_even, $site_full_url, compact: true) ?>
                     <?php endif; ?>
-                    <li class=""><?= self::unpublishLinkHtml((int) $tab_even['e_idEvenement'], $icone['depublier']) ?></li>
+                    <?php if ($isAllowedToEdit) : ?>
+                        <li><a href="/event/copy.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>" title="Copier cet événement"><?= $iconeCopier ?></a></li>
+                        <?php if ($authorization->isPersonneAllowedToEditEvenementNow($_SESSION, $tab_even)) : ?>
+                        <li><a href="/evenement-edit.php?action=editer&amp;idE=<?= (int) $tab_even['e_idEvenement'] ?>" title="Modifier cet événement"><?= $iconeEditer ?></a></li>
+                        <?php endif; ?>
+                        <li class=""><?= self::unpublishLinkHtml((int) $tab_even['e_idEvenement'], $icone['depublier']) ?></li>
+                    <?php endif; ?>
                 </ul>
 
             </td>

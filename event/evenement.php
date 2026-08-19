@@ -208,10 +208,7 @@ include("../_header.inc.php");
           // connectés. Empilées en mobile, remises sur une seule ligne en desktop. ?>
     <nav class="menus_actions_evenement">
         <ul class="menu_actions_evenement menu_actions_evenement--public">
-            <?php
-            $calLinks = (new Ladecadanse\EvenementCalendarRenderer($tab_even, $site_full_url))->getLinks();
-            include("_calendar_export.inc.php");
-            ?>
+            <?= Ladecadanse\EvenementCalendarRenderer::renderMenuHtml($tab_even, $site_full_url) ?>
         </ul>
 
         <?php if ($isMembreConnecte || $isPersonneAllowedToEdit) : ?>

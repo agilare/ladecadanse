@@ -1407,6 +1407,57 @@ ul.menu_action
     background: #f0f0f0;
 }
 
+td.lieu_actions_evenement
+{
+    width: 80px;
+}
+
+td.lieu_actions_evenement ul
+{
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    white-space: nowrap;
+}
+
+/* les glyphes Font Awesome se touchaient : un peu d'air entre eux */
+td.lieu_actions_evenement li
+{
+    display: inline-block;
+    margin-left: 0.45em;
+    vertical-align: middle;
+}
+
+td.lieu_actions_evenement li:first-child
+{
+    margin-left: 0;
+}
+
+td.lieu_actions_evenement li img
+{
+    vertical-align: middle;
+}
+
+td.lieu_actions_evenement .calendar-export-trigger
+{
+    display: inline-block;
+    line-height: 1;
+    vertical-align: middle;
+    color: #a6a5a5;
+}
+
+td.lieu_actions_evenement .calendar-export-trigger i
+{
+    display: block;
+    font-size: 16px;
+    line-height: 1;
+}
+
+td.lieu_actions_evenement .calendar-export-trigger:hover,
+td.lieu_actions_evenement .calendar-export-trigger:active
+{
+    color: #1569C7;
+}
 
 /*
  * Texte repliable des descriptions de lieu et d'organisateur (_texte_repliable.inc.php).
