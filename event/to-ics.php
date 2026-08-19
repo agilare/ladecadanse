@@ -31,15 +31,18 @@ to set, including alarms, invitees, busy status, etc.
 https://www.ietf.org/rfc/rfc5545.txt
  */
 
-require_once("../app/bootstrap.php");
-
-use Ladecadanse\Evenement;
-
+// Validation de l'identifiant AVANT le chargement de l'application : bootstrap.php ouvre deux
+// connexions à la base, démarre la session et monte les gestionnaires de log, dont rien n'est
+// nécessaire pour répondre 400 à une url malformée. Voir event/rss.php, même motif.
 if (empty($_GET['idE']) || !is_numeric($_GET['idE']))
 {
     header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
     exit;
 }
+
+require_once("../app/bootstrap.php");
+
+use Ladecadanse\Evenement;
 
 $get['idE'] = (int) $_GET['idE'];
 
