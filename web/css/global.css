@@ -637,11 +637,12 @@ li.action_supprimer > a::before, a.action_supprimer::before
 .msg_ok::before,
 .msg_email::before
 {
+    /* calé sur la première ligne : centré, il tombait entre les deux lignes
+       des messages qui en comptent plusieurs */
     position:absolute;
     left:15px;
-    top:50%;
-    transform:translateY(-50%);
-    font-size:1.2em;
+    top:1em;
+    line-height:1.3em;
 }
 
 .msg_erreur
@@ -745,7 +746,12 @@ li.action_supprimer > a::before, a.action_supprimer::before
  *
  * Copier, Éditer et Dépublier gardent leur image famfamfam d'origine (#151) :
  * en image de fond, elles n'ont pas de pseudo-élément et posent leur propre
- * padding sur le lien.
+ * padding sur le lien. Ce lien doit faire au moins 16px de haut, sinon
+ * l'image, centrée verticalement, se retrouve rognée en haut et en bas.
+ *
+ * Les glyphes, eux, s'écartent du libellé par une marge et non par une
+ * largeur de boîte : ces menus héritent de text-align:right, qui plaquerait
+ * le glyphe contre le texte au lieu de le laisser à gauche de sa boîte.
  */
 .action_ajouter,
 .action_supprimer,
@@ -765,14 +771,15 @@ li.action_ajouter > a::before,
 a.action_ajouter::before
 {
     content:"\f067";
-    width:18px;
+    margin-right:0.5em;
 }
 
 li.action_supprimer > a::before,
 a.action_supprimer::before
 {
     content:"\f014";
-    width:18px;
+    margin-right:0.5em;
+    color:#b3372c;
 }
 
 li.action_depublier > a,
@@ -783,7 +790,9 @@ li.action_editer > a,
 a.action_editer
 {
     display:inline-block;
-    padding-left:18px;
+    min-height:16px;
+    line-height:16px;
+    padding-left:22px;
     background-repeat:no-repeat;
     background-position:0 50%;
 }
