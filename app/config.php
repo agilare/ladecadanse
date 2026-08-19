@@ -140,8 +140,8 @@ $actions = ["ajouter", "insert", "update", "editer"];
 // L'icône seule ne porte pas de nom accessible ; le lien qui la contient doit
 // fournir un title ou un aria-label lorsqu'aucun texte ne l'accompagne.
 $iconeSupprimer = '<i class="fa fa-trash-o" title="Supprimer" aria-label="Supprimer"></i>';
-$iconeEditer = '<i class="fa fa-pencil" aria-hidden="true"></i>';
-$iconeCopier = '<i class="fa fa-files-o" aria-hidden="true"></i>';
+$iconeEditer = '<i class="fa fa-pencil fa-lg" aria-hidden="true"></i>';
+$iconeCopier = '<i class="fa fa-files-o fa-lg" aria-hidden="true"></i>';
 $iconePrecedent = '<i class="fa fa-chevron-left" aria-hidden="true"></i>';
 $iconeSuivant = '<i class="fa fa-chevron-right" aria-hidden="true"></i>';
 
@@ -150,6 +150,6 @@ $icone['desc'] = '<i class="fa fa-sort-desc fa-lg" aria-hidden="true"></i>';
 $icone['envoi_email'] = '<i class="fa fa-paper-plane-o fa-lg" aria-hidden="true"></i>';
 $icone['ajouts'] = '<i class="fa fa-plus" aria-hidden="true"></i>';
 $icone['ajouter_texte'] = '<i class="fa fa-pencil" aria-hidden="true"></i>';
-$icone['personne'] = '<i class="fa fa-user" aria-hidden="true"></i>';
-$icone['plan'] = '<i class="fa fa-map-marker" aria-hidden="true"></i>';
-$icone['depublier'] = '<i class="fa fa-calendar-times-o" aria-hidden="true"></i>';
+$icone['personne'] = '<i class="fa fa-user fa-lg" aria-hidden="true"></i>';
+$icone['plan'] = '<i class="fa fa-map-marker fa-lg" aria-hidden="true"></i>';
+$icone['depublier'] = '<i class="fa fa-calendar-times-o fa-lg icone-depublier" aria-hidden="true"></i>';

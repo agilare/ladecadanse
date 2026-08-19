@@ -3,7 +3,7 @@
 ## [3.11.1] - 2026-08-18
 
 ### Changed
-- ui : the legacy 2000's PNG icons (famfamfam Silk) are replaced by their Font Awesome equivalents, and `web/interface/icons/` — 1469 files, ~5 MB, of which only 49 were referenced — is deleted #151 ; the icon rules whose class is emitted nowhere (`.popup_gmaps`, `.icalendar`, `.probleme`, `.complete`, `.selection li.descendre`) are dropped rather than converted, and the "événement copié" banner recovers the check mark its stylesheet had been pointing at a wrong path for years
+- ui : the legacy 2000's PNG icons (famfamfam Silk) are replaced by their Font Awesome equivalents, and `web/interface/icons/` — 1469 files, ~5 MB, of which only 49 were referenced — is deleted #151 ; the icon rules whose class is emitted nowhere (`.popup_gmaps`, `.icalendar`, `.probleme`, `.complete`, `.selection li.descendre`) are dropped rather than converted, and the "événement copié" banner recovers the check mark its stylesheet had been pointing at a wrong path for years ; the Dépublier icon turns red, and in the action menus the icon becomes part of the link instead of sitting outside it
 
 ### Fixed
 - lieux, organisateurs, search, admin : a malformed `page` url parameter threw an uncaught exception — bots follow urls where the unescaped `&region` of `?page=3&region=vd` has been read as the `&reg` html entity, giving `?page=3®ion=vd` ; the 8 pages paginating now go through the new non-throwing `QueryParamValidator::pageFromQuery()`, which also rejects a page below 1 or passed as an array

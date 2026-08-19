@@ -229,7 +229,7 @@ require_once '../_header.inc.php';
                         <td><?= EvenementRenderer::schedulesToHhMm($event['e_horaire_debut'], $event['e_horaire_fin'], $event['e_dateEvenement']) ?></td>
                         <td style='text-align: center;'><?= EvenementRenderer::$iconStatus[$event['e_statut']] ?></td>
                         <td><a href="/user/dashboard.php?idP=<?= (int)$event['idPersonne'] ?>"><?= sanitizeForHtml($event['pseudo']) ?></a></td>
-                        <td>
+                        <td class="actions">
                             <?php if ($_SESSION['Sgroupe'] <= UserLevel::ADMIN) : ?>
                                 <a href="/evenement-edit.php?idE=<?= (int)$event['e_idEvenement'] ?>&amp;action=editer" title="Modifier cet événement" aria-label="Modifier cet événement"><?= $iconeEditer ?></a>
                             <?php endif; ?>
@@ -266,7 +266,7 @@ require_once '../_header.inc.php';
                     <td class="tdleft small"><?= Text::shortenToHtml(strip_tags((string) $desc['contenu']), 100) ?></td>
                     <td><a href="/user/dashboard.php?idP=<?= (int) $desc['idPersonne'] ?>"><?= sanitizeForHtml($desc['pseudo']) ?></a></td>
                     <td><?= DateHelper::isoToFr($desc['dateAjout']) ?></td>
-                    <td><a href="/lieu-text-edit.php?action=editer&amp;idL=<?= (int)$desc['idLieu'] ?>&amp;idP=<?= (int) $desc['idPersonne'] ?>&amp;type=<?= $desc['type'] ?>"><?= $iconeEditer ?></a></td>
+                    <td class="actions"><a href="/lieu-text-edit.php?action=editer&amp;idL=<?= (int)$desc['idLieu'] ?>&amp;idP=<?= (int) $desc['idPersonne'] ?>&amp;type=<?= $desc['type'] ?>" title="Modifier ce texte" aria-label="Modifier ce texte"><?= $iconeEditer ?></a></td>
                </tr>
             <?php endforeach; ?>
     </table>

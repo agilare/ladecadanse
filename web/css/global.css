@@ -612,11 +612,11 @@ abbr.dtstart[title]
 .msg_email::before,
 .info::before,
 .continuer::after,
-.action_ajouter::before,
-.action_supprimer::before,
-.action_depublier::before,
-.action_copier::before,
-.action_editer::before
+li.action_ajouter > a::before, a.action_ajouter::before,
+li.action_supprimer > a::before, a.action_supprimer::before,
+li.action_depublier > a::before, a.action_depublier::before,
+li.action_copier > a::before, a.action_copier::before,
+li.action_editer > a::before, a.action_editer::before
 {
     display:inline-block;
     font:normal normal normal 1em/1 FontAwesome;
@@ -741,48 +741,17 @@ abbr.dtstart[title]
     margin-left:0.4em;
 }
 
-.action_ajouter
-{
-    padding:5px 0;
-}
-
-.action_ajouter::before
-{
-    content:"\f067";
-    width:18px;
-}
-
-.action_supprimer
-{
-    padding:5px 0;
-}
-
-.action_supprimer::before
-{
-    content:"\f014";
-    width:18px;
-}
-
-.action_depublier
-{
-    padding:5px 0;
-}
-
-.action_depublier::before
-{
-    content:"\f273";
-    width:18px;
-}
-
+/*
+ * L'icône appartient au lien, pas à la puce : posée sur le <li>, elle restait
+ * hors de la zone cliquable. Les deux formes coexistent — la classe est sur le
+ * <li> dans les menus d'actions, sur le <a> lui-même dans event/copy.php.
+ */
+.action_ajouter,
+.action_supprimer,
+.action_depublier,
 .action_copier
 {
     padding:5px 0;
-}
-
-.action_copier::before
-{
-    content:"\f0c5";
-    width:18px;
 }
 
 .action_editer
@@ -791,10 +760,46 @@ abbr.dtstart[title]
     height:2em;
 }
 
-.action_editer::before
+li.action_ajouter > a::before,
+a.action_ajouter::before
+{
+    content:"\f067";
+    width:18px;
+}
+
+li.action_supprimer > a::before,
+a.action_supprimer::before
+{
+    content:"\f014";
+    width:18px;
+}
+
+li.action_depublier > a::before,
+a.action_depublier::before
+{
+    content:"\f273";
+    width:18px;
+    color:#c00;
+}
+
+li.action_copier > a::before,
+a.action_copier::before
+{
+    content:"\f0c5";
+    width:18px;
+}
+
+li.action_editer > a::before,
+a.action_editer::before
 {
     content:"\f040";
     width:18px;
+}
+
+/* Dépublier : rouge, c'est l'action destructrice des menus d'actions */
+.icone-depublier
+{
+    color:#c00;
 }
 
 .inscrivez
