@@ -147,8 +147,8 @@ $actions = ["ajouter", "insert", "update", "editer"];
 $iconeSupprimer = '<i class="fa fa-trash-o" title="Supprimer" aria-label="Supprimer"></i>';
 $iconeEditer = '<img src="' . $url_images_interface_icons . 'page_white_edit.png" alt="Éditer" width="16" height="16" />';
 $iconeCopier = '<img src="' . $url_images_interface_icons . 'page_white_copy.png" alt="Copier" width="16" height="16" />';
-$iconePrecedent = '<i class="fa fa-chevron-left" aria-hidden="true"></i>';
-$iconeSuivant = '<i class="fa fa-chevron-right" aria-hidden="true"></i>';
+$iconePrecedent = '<i class="fa fa-arrow-left" aria-hidden="true"></i>';
+$iconeSuivant = '<i class="fa fa-arrow-right" aria-hidden="true"></i>';
 
 $icone['asc'] = '<i class="fa fa-sort-asc fa-lg" aria-hidden="true"></i>';
 $icone['desc'] = '<i class="fa fa-sort-desc fa-lg" aria-hidden="true"></i>';
