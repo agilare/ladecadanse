@@ -522,9 +522,6 @@ abbr.dtstart[title]
                     border:1px solid #8a8a8a;
                     border-left:none;
                     background-color:#eaeaea;
-                /*    background-image:url(../interface/icons/search.png);*/
-                    background-repeat:no-repeat;
-                    background-position:2px;
 
                 }
 
@@ -605,6 +602,51 @@ abbr.dtstart[title]
 
 
 
+/* Icônes Font Awesome insérées en pseudo-éléments : FA 4.7 est une fonte et non
+   une image, le glyphe passe donc par content au lieu de background-image.
+   Les codes \fXXX ci-dessous devront être repris lors du passage à une version
+   maintenue de Font Awesome (issue #146). */
+.msg_erreur::before,
+.msg_info::before,
+.msg_ok::before,
+.msg_email::before,
+.info::before,
+.continuer::after,
+.action_ajouter::before,
+.action_supprimer::before,
+.action_depublier::before,
+.action_copier::before,
+.action_editer::before
+{
+    display:inline-block;
+    font:normal normal normal 1em/1 FontAwesome;
+    text-rendering:auto;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+}
+
+/* Bandeaux de message : le glyphe est calé à gauche et centré verticalement,
+   comme l'était l'image de fond qu'il remplace. */
+.msg_erreur,
+.msg_info,
+.msg_ok,
+.msg_email
+{
+    position:relative;
+}
+
+.msg_erreur::before,
+.msg_info::before,
+.msg_ok::before,
+.msg_email::before
+{
+    position:absolute;
+    left:15px;
+    top:50%;
+    transform:translateY(-50%);
+    font-size:1.2em;
+}
+
 .msg_erreur
 {
     width:90%;
@@ -613,10 +655,13 @@ abbr.dtstart[title]
     border-top:1px solid red;
     border-bottom:1px solid red;
     background-color:#ffefef;
-    background-image:url(../interface/icons/error.png);
-    background-repeat:no-repeat;
-    background-position: 15px 50%;
     line-height:1.3em;
+}
+
+.msg_erreur::before
+{
+    content:"\f057";
+    color:red;
 }
 
 .msg_info
@@ -627,10 +672,13 @@ abbr.dtstart[title]
     border-top:1px solid blue;
     border-bottom:1px solid blue;
     background-color:#eaeaff;
-    background-image:url(../interface/icons/information.png);
-    background-repeat:no-repeat;
-    background-position: 15px 50%;
     line-height:1.3em;
+}
+
+.msg_info::before
+{
+    content:"\f05a";
+    color:blue;
 }
 
 .msg_ok
@@ -641,10 +689,13 @@ abbr.dtstart[title]
     border-top:1px solid green;
     border-bottom:1px solid green;
     background-color:#eaf0ea;
-    background-image:url(../interface/icons/tick.png);
-    background-repeat:no-repeat;
-    background-position: 15px 50%;
     line-height:1.3em;
+}
+
+.msg_ok::before
+{
+    content:"\f00c";
+    color:green;
 }
 
 .msg_email
@@ -655,72 +706,95 @@ abbr.dtstart[title]
     border-top:1px solid blue;
     border-bottom:1px solid blue;
     background-color:#eaeaff;
-    background-image:url(../interface/icons/email.png);
-    background-repeat:no-repeat;
-    background-position: 15px 50%;
     line-height:1.3em;
+}
+
+.msg_email::before
+{
+    content:"\f003";
+    color:blue;
 }
 
 .info
 {
-    padding:0 0em 0 16px;
-    background-image:url(../interface/icons/information.png);
-    background-repeat:no-repeat;
-    background-position: 0 50%;
+    padding:0;
     line-height:1.3em;
+}
+
+.info::before
+{
+    content:"\f05a";
+    width:16px;
+    color:blue;
 }
 
 /*liens & icones*/
 .continuer
 {
     text-align:right;
-    padding:0 15px 0 0;
-    background-image:url(../interface/icons/resultset_next.png);
-    background-repeat:no-repeat;
-    background-position: 100% 50%;
-    _background-image:none;
-    _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='images/interface/icons/resultset_next.png', sizingMethod='crop');
+    padding:0;
+}
+
+.continuer::after
+{
+    content:"\f054";
+    margin-left:0.4em;
 }
 
 .action_ajouter
 {
-    padding:5px 0 5px 18px;
-    background-image:url(../interface/icons/page_white_add.png);
-    background-repeat:no-repeat;
-    background-position: 0 50%;
+    padding:5px 0;
+}
+
+.action_ajouter::before
+{
+    content:"\f067";
+    width:18px;
 }
 
 .action_supprimer
 {
-    padding:5px 0 5px 18px;
-    background-image:url(../interface/icons/delete.png);
-    background-repeat:no-repeat;
-    background-position: 0% 70%;
+    padding:5px 0;
+}
+
+.action_supprimer::before
+{
+    content:"\f014";
+    width:18px;
 }
 
 .action_depublier
 {
-    padding:5px 0 5px 18px;
-    background-image:url(../interface/icons/calendar_delete.png);
-    background-repeat:no-repeat;
-    background-position: 0% 30%;
+    padding:5px 0;
+}
+
+.action_depublier::before
+{
+    content:"\f273";
+    width:18px;
 }
 
 .action_copier
 {
-    padding:5px 0 5px 18px;
-    background-image:url(../interface/icons/page_white_copy.png);
-    background-repeat:no-repeat;
-    background-position: 0% 30%;
+    padding:5px 0;
+}
+
+.action_copier::before
+{
+    content:"\f0c5";
+    width:18px;
 }
 
 .action_editer
 {
-    padding:5px 0em 5px 18px;
-    background-image:url(../interface/icons/page_white_edit.png);
-    background-repeat:no-repeat;
-    background-position: 0% 30%;
+    padding:5px 0;
     height:2em;
+}
+
+.action_editer::before
+{
+    content:"\f040";
+    width:18px;
 }
 
 .inscrivez
@@ -731,14 +805,7 @@ abbr.dtstart[title]
     background-position: 50% 50%;
 }
 
-.popup_gmaps
-{
-    padding:0.1em 0em 0.1em 16px;
-    background-image:url(../interface/icons/map.png);
-    background-repeat:no-repeat;
-    background-position: 0% 30%;
-    height:2em;
-}
+
 
 .lien_ext, a[rel="external"]
 {
@@ -748,14 +815,6 @@ abbr.dtstart[title]
     background-position: 100% 50%;
 }
 
-.icalendar
-{
-    background-image: url("../images/interface/icons/date_add.png");
-    background-position: 0% 50%;
-    background-repeat: no-repeat;
-    padding-left:20px;
-
-}
 
 
 
@@ -1756,19 +1815,26 @@ div.pagination {
         color: #000;
     }
 
-    div.pagination #prec
+    div.pagination #prec::before,
+    div.pagination #suiv::after
     {
-        padding-left:16px;
-        background-image:url(../interface/icons/arrow_left.gif);
-        background-repeat:no-repeat;
-        background-position: 0 70%;
+        display:inline-block;
+        font:normal normal normal 1em/1 FontAwesome;
+        text-rendering:auto;
+        -webkit-font-smoothing:antialiased;
+        -moz-osx-font-smoothing:grayscale;
     }
 
-    div.pagination #suiv {
-        padding-right:16px;
-        background-image:url(../interface/icons/arrow_right.gif);
-        background-repeat:no-repeat;
-        background-position: 90% 70%;
+    div.pagination #prec::before
+    {
+        content:"\f053";
+        margin-right:0.4em;
+    }
+
+    div.pagination #suiv::after
+    {
+        content:"\f054";
+        margin-left:0.4em;
     }
 
     div.pagination span.current {

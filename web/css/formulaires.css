@@ -294,21 +294,6 @@ form#ajouter_editer .msg {
 	background:yellow;
 }
 
-form#ajouter_editer label.probleme
-{
-    text-align:right;
-    background-image: url(../web/interface/icons/exclamation.png);
-    background-repeat: no-repeat;
-    background-position: 3px 0px;
-}
-
-form#ajouter_editer .complete
-{
-    background-image: url(../web/interface/icons/tick.png);
-    background-repeat: no-repeat;
-    background-position: 3px 0px;
-}
-
 	form#ajouter_editer .supImg
 	{
         font-size:0.8em;
@@ -429,10 +414,19 @@ font-family:Georgia;
 	border-top:1px solid green;
 	border-bottom:1px solid green;
 	background-color: #dbe1db;
-	background-image:url(../web/interface/icons/tick.png);
-	background-repeat:no-repeat;
-	background-position: 15px 17px;
 	line-height:1.5em;
+}
+
+.msg_ok_copy::before
+{
+	display:inline-block;
+	font:normal normal normal 1.2em/1 FontAwesome;
+	text-rendering:auto;
+	-webkit-font-smoothing:antialiased;
+	-moz-osx-font-smoothing:grayscale;
+	content:"\f00c";
+	color:green;
+	margin-right:0.5em;
 }
 
 .readonly

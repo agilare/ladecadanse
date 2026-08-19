@@ -231,7 +231,7 @@ require_once '../_header.inc.php';
                         <td><a href="/user/dashboard.php?idP=<?= (int)$event['idPersonne'] ?>"><?= sanitizeForHtml($event['pseudo']) ?></a></td>
                         <td>
                             <?php if ($_SESSION['Sgroupe'] <= UserLevel::ADMIN) : ?>
-                                <a href="/evenement-edit.php?idE=<?= (int)$event['e_idEvenement'] ?>&amp;action=editer"><?= $iconeEditer ?></a>
+                                <a href="/evenement-edit.php?idE=<?= (int)$event['e_idEvenement'] ?>&amp;action=editer" title="Modifier cet événement" aria-label="Modifier cet événement"><?= $iconeEditer ?></a>
                             <?php endif; ?>
                         </td>
                     </tr>
