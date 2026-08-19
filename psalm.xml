@@ -79,7 +79,6 @@
         <var name="icone" type="array&lt;string, string&gt;"/>
         <var name="iconeEditer" type="string"/>
         <var name="iconeCopier" type="string"/>
-        <var name="iconeSuite" type="string"/>
 
         <!-- définies par les pages elles-mêmes avant inclusion de _header/_footer -->
         <var name="page_titre" type="string"/>

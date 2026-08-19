@@ -794,7 +794,7 @@ if ($verif->nbErreurs() > 0)
                         <?php if ($tab_even['e_statut'] != 'inactif') : ?>
                             <?= EvenementRenderer::unpublishLinkHtml((int) $tab_even['e_idEvenement'], $icone['depublier'], EvenementRenderer::UNPUBLISH_THEN_STATUS) ?>
                         <?php endif; ?>
-                        <a href="/evenement-edit.php?action=editer&idE=<?= (int) $tab_even['e_idEvenement'] ?>"><?= $iconeEditer ?></a>
+                        <a href="/evenement-edit.php?action=editer&idE=<?= (int) $tab_even['e_idEvenement'] ?>" title="Modifier cet événement" aria-label="Modifier cet événement"><?= $iconeEditer ?></a>
                     </td>
                 <?php endif; ?>
             </tr>

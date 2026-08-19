@@ -294,21 +294,6 @@ form#ajouter_editer .msg {
 	background:yellow;
 }
 
-form#ajouter_editer label.probleme
-{
-    text-align:right;
-    background-image: url(../web/interface/icons/exclamation.png);
-    background-repeat: no-repeat;
-    background-position: 3px 0px;
-}
-
-form#ajouter_editer .complete
-{
-    background-image: url(../web/interface/icons/tick.png);
-    background-repeat: no-repeat;
-    background-position: 3px 0px;
-}
-
 	form#ajouter_editer .supImg
 	{
         font-size:0.8em;
@@ -421,18 +406,36 @@ font-family:Georgia;
 }
 
 
+/*
+ * Le contenu commence par un <p> et se poursuit par un <table> : une coche
+ * en flux se serait mise sur sa propre ligne, au-dessus de la phrase. Elle
+ * est donc calée en absolu sur la première ligne, et le retrait à gauche du
+ * bandeau aligne la phrase et le tableau sur la même verticale.
+ */
 .msg_ok_copy
 {
+	position:relative;
 	width:94%;
 	margin:2em auto;
-	padding:1em 1% 1em 1%;
+	padding:1em 1% 1em 2.6em;
 	border-top:1px solid green;
 	border-bottom:1px solid green;
 	background-color: #dbe1db;
-	background-image:url(../web/interface/icons/tick.png);
-	background-repeat:no-repeat;
-	background-position: 15px 17px;
 	line-height:1.5em;
+}
+
+.msg_ok_copy::before
+{
+	position:absolute;
+	left:1em;
+	top:1em;
+	display:inline-block;
+	font:normal normal normal 1.1em/1.5em FontAwesome;
+	text-rendering:auto;
+	-webkit-font-smoothing:antialiased;
+	-moz-osx-font-smoothing:grayscale;
+	content:"\f00c";
+	color:green;
 }
 
 .readonly

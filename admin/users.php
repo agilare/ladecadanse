@@ -261,7 +261,7 @@ require_once '../_header.inc.php';
                     <td><?= EvenementRenderer::$iconStatus[$u['statut']] ?></td>
                     <td><?= DateHelper::isoToApp($u['dateAjout']) ?></td>
                     <td><?= DateHelper::isoToApp($u['last_login']) ?></td>
-                    <td><a href="/user-edit.php?action=editer&amp;idP=<?= (int)$u['idPersonne'] ?>"><?= $iconeEditer ?></a></td>
+                    <td><a href="/user-edit.php?action=editer&amp;idP=<?= (int)$u['idPersonne'] ?>" title="Modifier ce compte" aria-label="Modifier ce compte"><?= $iconeEditer ?></a></td>
                 </tr>
             <?php endforeach; ?>
 

@@ -84,7 +84,7 @@ ul.menu_actions_evenement li
     line-height: 1.5em;
 }
 
-/* Icônes (images 16px comme glyphes Font Awesome) centrées sur le libellé */
+/* Icônes centrées sur le libellé : images héritées 16px comme glyphes Font Awesome */
 ul.menu_actions_evenement li img,
 ul.menu_actions_evenement li .fa
 {
@@ -390,14 +390,6 @@ ul#menu_actions
 .selection p
 {
     margin:0em 0.2em 0em 0.2em;
-}
-
-.selection ul li.descendre
-{
-    padding:0.1em 0em 0.1em 16px;
-    background-image:url(../web/interface/icons/bullet_arrow_bottom.png);
-    background-repeat:no-repeat;
-    background-position: 0% 30%;
 }
 
 ul.selection li.evenement_s

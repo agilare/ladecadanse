@@ -453,23 +453,6 @@ table#ajouts tr:nth-child(even) {
     background:yellow;
 }
 
-#ajouter_editer label.probleme
-{
-    text-align:right;
-    background-image: url(../web/interface/icons/exclamation.png);
-    background-repeat: no-repeat;
-    background-position: 3px 0px;
-
-}
-
-#ajouter_editer .complete
-{
-    background-image: url(../web/interface/icons/tick.png);
-    background-repeat: no-repeat;
-    background-position: 3px 0px;
-
-}
-
 #ajouter_editer .supImg
 {
     font-size:0.8em;
@@ -543,15 +526,6 @@ form .supImg img
     font-weight:bold;
     font-family:Georgia;
 }
-
-/* #ajouter_editer #bouton_ajouter_champ
-{
-text-align:right;
-background-image: url(../web/interface/icons/add.png);
-background-repeat: no-repeat;
-background-position: 52% 2px;
-
-} */
 
 #gerer-even-pagination
 {

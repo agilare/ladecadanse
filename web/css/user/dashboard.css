@@ -242,8 +242,9 @@ table#ajouts td.actions
 	text-align:right;
 }
 
-/* les icônes d'action sont des images : sans ça elles reposent sur la ligne de base du texte */
-table#ajouts td.actions img
+/* sans ça les icônes reposent sur la ligne de base du texte */
+table#ajouts td.actions img,
+table#ajouts td.actions .fa
 {
 	vertical-align:middle;
 }

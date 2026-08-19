@@ -2,6 +2,9 @@
 
 ## [3.11.1] - 2026-08-18
 
+### Changed
+- ui : the legacy 2000's PNG icons (famfamfam Silk) give way to Font Awesome and `web/interface/icons/` drops from 1469 files (~5 MB, only 49 of them referenced) to the 4 kept on purpose — `page_white_edit`, `page_white_copy`, `calendar_delete` and `map`, whose drawing has no Font Awesome equivalent we liked #151 ; the icon rules whose class is emitted nowhere (`.popup_gmaps`, `.icalendar`, `.probleme`, `.complete`, `.selection li.descendre`) are dropped rather than converted, the "événement copié" banner recovers the check mark its stylesheet had been pointing at a wrong path for years, the pagination arrows become `fa-long-arrow-*`, and in the action menus the icon becomes part of the link instead of sitting outside it
+
 ### Fixed
 - lieux, organisateurs, search, admin : a malformed `page` url parameter threw an uncaught exception — bots follow urls where the unescaped `&region` of `?page=3&region=vd` has been read as the `&reg` html entity, giving `?page=3®ion=vd` ; the 8 pages paginating now go through the new non-throwing `QueryParamValidator::pageFromQuery()`, which also rejects a page below 1 or passed as an array
 - events send : sharing or reporting an event whose lieu was deleted, or whose location was typed as free text, logged a warning ; the fallback returned by `Evenement::getLieu()` was missing the `determinant` key

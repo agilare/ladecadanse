@@ -66,7 +66,7 @@ include("../_header.inc.php");
 
     <header id="entete_contenu" style="margin-bottom:1.5em">
         <h1 style="width: 35%;line-height: 1.2em;margin:0">Organisateurs</h1><?php if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 6)
-{ ?><a href="/organisateur-edit.php?action=ajouter" style="float: left;padding: 5px 1px;"><img src="/web/interface/icons/add.png" alt="" style="vertical-align:bottom" /> Ajouter un organisateur</a><?php } ?>
+{ ?><a href="/organisateur-edit.php?action=ajouter" style="float: left;padding: 5px 1px;"><i class="fa fa-plus" aria-hidden="true"></i> Ajouter un organisateur</a><?php } ?>
         <div class="spacer"></div>
     </header>
 
@@ -115,7 +115,7 @@ include("../_header.inc.php");
                 <thead>
                     <tr>
                         <th colspan="2"></th>
-                        <th class="td-align-center"><img src="/web/interface/icons/calendar.png" alt="Nombre d'événements agendés" title="Nombre d'événements agendés" /></th>
+                        <th class="td-align-center"><i class="fa fa-calendar-o" aria-label="Nombre d'événements agendés" title="Nombre d'événements agendés"></i></th>
                     </tr>
                 </thead>
 

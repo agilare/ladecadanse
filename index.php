@@ -225,7 +225,7 @@ include("_header.inc.php");
             </h1>
         </hgroup>
         <ul class="entete_contenu_navigation">
-            <li><a href="index.php?courant=<?= sanitizeForHtml($date_prev) ?>" rel="prev nofollow"><?= $iconePrecedent ?></a></li><li><a href="index.php?courant=<?= sanitizeForHtml($date_next) ?>" rel="next nofollow"><?= ucfirst(DateHelper::isoToFr($date_next, 'tout', false)).$iconeSuivant ?></a></li>
+            <li><a href="index.php?courant=<?= sanitizeForHtml($date_prev) ?>" rel="prev nofollow" title="Jour précédent" aria-label="Jour précédent"><?= $iconePrecedent ?></a></li><li><a href="index.php?courant=<?= sanitizeForHtml($date_next) ?>" rel="next nofollow"><?= ucfirst(DateHelper::isoToFr($date_next, 'tout', false)).$iconeSuivant ?></a></li>
         </ul>
         <div class="spacer"></div>
     </header>
@@ -306,7 +306,7 @@ include("_header.inc.php");
                                     </li>
                                     <?php if ($authorization->isPersonneAllowedToManageEvenement($_SESSION, $tab_even)) : ?>
                                     <li>
-                                        <a href="/user/dashboard.php?idP=<?= (int) $tab_even['e_idPersonne'] ?>"><?= $icone['personne'] ?></a>
+                                        <a href="/user/dashboard.php?idP=<?= (int) $tab_even['e_idPersonne'] ?>" title="Fiche de l'auteur" aria-label="Fiche de l'auteur"><?= $icone['personne'] ?></a>
                                     </li>
                                     <?php endif; ?>
                                 </ul>
@@ -327,7 +327,7 @@ include("_header.inc.php");
        <?php } // foreach ?>
 
         <ul class="entete_contenu_navigation">
-            <li><a href="index.php?courant=<?= sanitizeForHtml($date_prev) ?>" rel="prev nofollow"><?= $iconePrecedent ?></a></li><li><a href="index.php?courant=<?= sanitizeForHtml($date_next) ?>" rel="next nofollow"><?= ucfirst(DateHelper::isoToFr($date_next, 'tout', false)).$iconeSuivant ?></a></li>
+            <li><a href="index.php?courant=<?= sanitizeForHtml($date_prev) ?>" rel="prev nofollow" title="Jour précédent" aria-label="Jour précédent"><?= $iconePrecedent ?></a></li><li><a href="index.php?courant=<?= sanitizeForHtml($date_next) ?>" rel="next nofollow"><?= ucfirst(DateHelper::isoToFr($date_next, 'tout', false)).$iconeSuivant ?></a></li>
         </ul>
 
 
