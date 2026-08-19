@@ -9,7 +9,7 @@ class DbConnector
     private string $sql;
     private $dbConnection;
 
-    public function __construct($host, $db, $user, $pass)
+    public function __construct($host, $db, $user, #[\SensitiveParameter] $pass)
     {
         $this->dbConnection = mysqli_connect($host, $user, $pass, $db);
 
