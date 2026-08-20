@@ -228,13 +228,13 @@ $mouseless_allowed = isset($_SESSION['Sgroupe']) && (int) $_SESSION['Sgroupe'] <
                                 $ici_login = " class=\"ici\"";
                             }
 
-                            if ( strstr((string) $_SERVER['PHP_SELF'], "user-register.php"))
+                            if ( strstr((string) $_SERVER['PHP_SELF'], "user/register.php"))
                             {
                                 $ici = " class=\"ici\"";
                             }
                             ?>
 
-                            <li <?php echo $ici; ?>><a href="/user-register.php" title="Créer un compte"><strong>Inscription</strong></a></li>
+                            <li <?php echo $ici; ?>><a href="/user/register.php" title="Créer un compte"><strong>Inscription</strong></a></li>
                             <li <?php echo $ici_login; ?> rel="nofollow"><a href="/user/login.php" title="Se connecter au site">Connexion</a></li>
 
                         <?php
@@ -322,7 +322,7 @@ $mouseless_allowed = isset($_SESSION['Sgroupe']) && (int) $_SESSION['Sgroupe'] <
         </header>
 
         <div id="conteneur" style="
-            <?php if (strstr(dirname((string) $_SERVER['PHP_SELF']), 'admin') || in_array($nom_page, ['evenement-edit', 'event/copy', 'event/send', 'event/search', 'lieu/lieux', 'lieu-edit', 'lieu-text-edit', 'organisateur/organisateurs', 'organisateur-edit', 'misc/contacteznous', 'user/login', 'user/dashboard', 'user-edit', 'user-register'])) : ?>padding-right: 5px; <?php endif; ?>
+            <?php if (strstr(dirname((string) $_SERVER['PHP_SELF']), 'admin') || in_array($nom_page, ['evenement-edit', 'event/copy', 'event/send', 'event/search', 'lieu/lieux', 'lieu-edit', 'lieu-text-edit', 'organisateur/organisateurs', 'organisateur-edit', 'misc/contacteznous', 'user/login', 'user/dashboard', 'user-edit', 'user/register'])) : ?>padding-right: 5px; <?php endif; ?>
             <?php if (strstr(dirname((string) $_SERVER['PHP_SELF']), 'admin') || in_array($nom_page, ['user/login']) ) : ?>padding-left: 5px <?php endif; ?>
             ">
 

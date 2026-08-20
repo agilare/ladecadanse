@@ -43,7 +43,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' && empty($_POST
         unset($_SESSION[$formTokenName]);
 
         // is_scalar : le champ du formulaire est une valeur simple, un POST tableau ne
-        // doit pas se retrouver dans une validation (cf. user-register.php)
+        // doit pas se retrouver dans une validation (cf. user/register.php)
         $saisie = $_POST['login_ou_email'] ?? '';
         $champs['login_ou_email'] = is_scalar($saisie) ? trim((string) $saisie) : '';
 

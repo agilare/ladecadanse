@@ -337,7 +337,7 @@
         ["linkText=Inscription", "linkText"],
         ["css=li:nth-child(7) > a", "css:finder"],
         ["xpath=//nav[@id='menu_pratique']/ul/li[7]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/user-register.php')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/user/register.php')]", "xpath:href"],
         ["xpath=//li[7]/a", "xpath:position"],
         ["xpath=//a[contains(.,'Inscription')]", "xpath:innerText"]
       ],

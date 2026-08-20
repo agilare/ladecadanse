@@ -6,7 +6,7 @@ use Tests\Support\TestEnv;
 use Codeception\Util\HttpCode;
 
 /**
- * Inscription publique (user-register.php) : les gardes du formulaire et les
+ * Inscription publique (user/register.php) : les gardes du formulaire et les
  * règles de validation qui, si elles sautent, ouvrent la porte aux robots ou
  * cassent la création de compte sans bruit.
  *
@@ -21,7 +21,7 @@ use Codeception\Util\HttpCode;
  */
 class UserRegisterCest
 {
-    private const URL = '/user-register.php';
+    private const URL = '/user/register.php';
 
     /**
      * Mot de passe conforme aux règles (10 caractères, un chiffre, absent de

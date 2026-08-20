@@ -16,7 +16,7 @@ include("../_header.inc.php");
 	<article class="rubrique">
         <ul style="padding-left:.4em;">
             <li>
-                <h2 style="font-size:1.2em">vous avez des événements à&nbsp;ajouter régulièrement, <a href="/user-register.php">inscrivez-vous</a> (ou <a href="/user/login.php">connectez-vous</a> si vous avez déjà un compte)</h2>
+                <h2 style="font-size:1.2em">vous avez des événements à&nbsp;ajouter régulièrement, <a href="/user/register.php">inscrivez-vous</a> (ou <a href="/user/login.php">connectez-vous</a> si vous avez déjà un compte)</h2>
                 <p><strong>S'inscrire</strong></a> vous permettra aussitôt de&nbsp;:</p>
                 <ul style="list-style-type:circle">
                     <li>créer et modifier vos événements;</li>

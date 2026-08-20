@@ -1,6 +1,6 @@
 <?php
 
-require_once("app/bootstrap.php");
+require_once("../app/bootstrap.php");
 
 use Ladecadanse\UserLevel;
 use Ladecadanse\Utils\Validateur;
@@ -11,7 +11,7 @@ use Ladecadanse\HtmlShrink;
 $page_titre = "Inscription";
 $page_description = "Création d'un compte sur La décadanse";
 $extra_css = ["formulaires"];
-include("_header.inc.php");
+include("../_header.inc.php");
 ?>
 
 <main id="contenu" class="colonne inscription">
@@ -326,5 +326,5 @@ if (!$action_terminee)
 </div>
 
 <?php
-include("_footer.inc.php");
+include("../_footer.inc.php");
 ?>

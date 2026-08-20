@@ -32,7 +32,7 @@ include("../_header.inc.php");
         <h2>Participer</h2>
 
         <ul>
-            <li><a href="/user-register.php">Inscrivez-vous</a> pour annoncer des événements</li>
+            <li><a href="/user/register.php">Inscrivez-vous</a> pour annoncer des événements</li>
             <li>ou <a href="/articles/contributing.php">contribuez au développement du site</a></li>
         </ul>
 
