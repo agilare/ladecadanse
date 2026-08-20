@@ -1,0 +1,10 @@
+Bonjour,
+
+Un visiteur de La décadanse, probablement vous, a fait une demande pour choisir un nouveau mot de passe. Veuillez cliquer sur ce lien (valable 24 h) :
+
+%reset_url%
+
+Si vous avez besoin d'aide, vous pouvez nous contacter à info@ladecadanse.ch
+
+La décadanse
+www.ladecadanse.ch

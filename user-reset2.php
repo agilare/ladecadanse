@@ -27,8 +27,8 @@ $get['token'] = QueryParamValidator::validateUrlQueryValue($_GET['token'], "alph
 $verif = new Validateur();
 
 $champs = ["idPersonne" => '',
-"motdepasse" => '',
-"motdepasse2" => ''
+    "motdepasse" => '',
+    "motdepasse2" => ''
 ];
 
 $action_terminee = false;
@@ -36,29 +36,30 @@ $action_terminee = false;
 
 <main id="contenu" class="colonne">
 
-<header id="entete_contenu">
-    <h1>Réinitialisation du mot de passe</h1>
-    <div class="spacer"></div>
-</header>
+    <header id="entete_contenu">
+        <h1>Réinitialisation du mot de passe</h1>
+        <div class="spacer"></div>
+    </header>
 
 
 <?php
 // vérification en tous temps; un seul enregistrement accepté
+$stmt = $connectorPdo->prepare("SELECT idPersonne, email FROM user_reset_requests
+	WHERE token = :token AND expiration > NOW()");
+$stmt->execute([':token' => $get['token']]);
+$demandes = $stmt->fetchAll();
 
-$sql_temp = "SELECT * FROM user_reset_requests WHERE token='" . $connector->sanitize($get['token']) . "' AND expiration > NOW()";
-//echo $sql_temp;
-$req_temp = $connector->query($sql_temp);
-
-
-if ($connector->getNumRows($req_temp) == 1)
+if (count($demandes) === 1)
 {
-	$tab_temp = $connector->fetchArray($req_temp);
+	$tab_temp = $demandes[0];
 
 	if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 	{
 		foreach ($champs as $c => $v)
 		{
-            if (isset($_POST[$c]) )
+            // is_scalar : les champs du formulaire sont tous des valeurs simples,
+            // un POST tableau ne doit pas se retrouver dans une validation
+            if (isset($_POST[$c]) && is_scalar($_POST[$c]))
             {
                 $champs[$c] = $_POST[$c];
             }
@@ -69,33 +70,27 @@ if ($connector->getNumRows($req_temp) == 1)
 			$verif->setErreur("motdepasse", "Veuillez choisir un compte");
 		}
 
+		$tab_auth = null;
+
 		// si l'email avait été fourni, vérification qu'il correspond bien au compte choisi
 		if (!empty($tab_temp['email']) && !empty($champs['idPersonne']))
 		{
-			// retrouver user dans personne à partir de la demande
-			$sql_auth = "SELECT pseudo, idPersonne FROM personne WHERE ";
-
-			$tab_auth_where = [];
-
-			$tab_auth_where[] = " email='".$connector->sanitize($tab_temp['email'])."' ";
-			// si le demandeur a choisi un compte parmi plusieurs qui ont son email : et l'id du compte correspondant
-			$tab_auth_where[] = " idPersonne='".$connector->sanitize($champs['idPersonne'])."' ";
-
-			$sql_auth .= implode(" AND ", $tab_auth_where);
-
-			//echo $sql_auth;
-
-			$req_auth = $connector->query($sql_auth);
+			// retrouver user dans personne à partir de la demande ; si le demandeur a choisi un
+			// compte parmi plusieurs qui ont son email, l'id doit correspondre à cet email
+			$stmt = $connectorPdo->prepare("SELECT pseudo, idPersonne FROM personne
+				WHERE email = :email AND idPersonne = :idPersonne");
+			$stmt->execute([':email' => $tab_temp['email'], ':idPersonne' => (int) $champs['idPersonne']]);
+			$comptes_auth = $stmt->fetchAll();
 
 			// on doit obtenir un seul compte
-			if ($connector->getNumRows($req_auth) != 1)
+			if (count($comptes_auth) !== 1)
 			{
 				$verif->setErreur("auth", "Vous n'êtes pas autorisé à modifier ce compte");
 			}
 			else
 			{
 				// un seul row donc
-				$tab_auth = $connector->fetchArray($req_auth);
+				$tab_auth = $comptes_auth[0];
 			}
 		}
 
@@ -107,170 +102,149 @@ if ($connector->getNumRows($req_temp) == 1)
 		}
 		else if (!empty($tab_temp['email']))
 		{
-			$idPersonne = $tab_auth['idPersonne'];
+			$idPersonne = $tab_auth['idPersonne'] ?? '';
 		}
 		else
 		{
 			$verif->setErreur("motdepasse", "L'utilisateur n'a pu être retrouvé");
 		}
 
-		$verif->valider($champs['motdepasse'], "motdepasse", "texte", 6, 18, 1);
-		$verif->valider($champs['motdepasse2'], "motdepasse2", "texte", 6, 18, 1);
-
+		$verif->valider($champs['motdepasse'], "motdepasse", "texte", 10, 100, 1);
+		$verif->valider($champs['motdepasse2'], "motdepasse2", "texte", 10, 100, 1);
 
 		if (!empty($champs['motdepasse']) || !empty($champs['motdepasse2']))
 		{
 			if ($champs['motdepasse'] != $champs['motdepasse2'])
 			{
-				$verif->setErreur("motdepasse_inegaux", 'Les 2 mots de passe doivent être identiques.');
+				$verif->setErreur("motdepasse_inegaux", 'Les 2 mots de passe doivent être identiques');
 			}
 
-            if ($fp = fopen("resources/bad_p.txt", "r"))
+            $mauvais_mdp = file("resources/bad_p.txt", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+
+            if ($mauvais_mdp !== false && in_array($champs['motdepasse'], $mauvais_mdp, true))
             {
-                while(!feof($fp))
-                {
-                    $Ligne = fgets($fp, 255);
-                    $mauvais_mdp[] = trim($Ligne);
-                }
-                fclose($fp);
-
-                if (in_array($champs['motdepasse'], $mauvais_mdp))
-                {
-                    $verif->setErreur("motdepasse", "Veuillez choisir un meilleur mot de passe");
-                }
+                $verif->setErreur("motdepasse", "Veuillez choisir un meilleur mot de passe");
             }
-
 
 			if (!empty($champs['motdepasse'])&& !preg_match("/[0-9]/", (string) $champs['motdepasse']))
 			{
-				$verif->setErreur("motdepasse", 'Le mot de passe doit comporter au moins 1 chiffre.');
+				$verif->setErreur("motdepasse", 'Le mot de passe doit comporter au moins 1 chiffre');
 			}
 		}
 
 		if ($verif->nbErreurs() === 0)
 		{
-			$champs['gds'] = '';
-            $champs['motdepasse'] = password_hash($champs['motdepasse'], PASSWORD_DEFAULT);
-
-			$sql_update = "UPDATE personne SET mot_de_passe='".$connector->sanitize($champs['motdepasse'])."', gds='".$connector->sanitize($champs['gds'])."', date_derniere_modif=NOW() WHERE idPersonne=".(int)$idPersonne;
-
-			$sql_delete = "DELETE FROM user_reset_requests WHERE token='" . $connector->sanitize($get['token']) . "'";
-
-            if ($connector->query($sql_update) && $connector->query($sql_delete))
+			try
 			{
-				HtmlShrink::msgOk("Le mot de passe a été mis à jour, vous pouvez maintenant vous <a href='/user/login.php'>connecter</a> avec votre identifiant et ce nouveau mot de passe");
+				// gds : sel du stockage historique (sha1), vidé partout où le mot de passe change
+				$stmt = $connectorPdo->prepare("UPDATE personne
+					SET mot_de_passe = :hash, gds = '', date_derniere_modif = NOW()
+					WHERE idPersonne = :idPersonne");
+				$stmt->execute([
+					':hash' => password_hash($champs['motdepasse'], PASSWORD_DEFAULT),
+					':idPersonne' => (int) $idPersonne,
+				]);
+
+				$stmt = $connectorPdo->prepare("DELETE FROM user_reset_requests WHERE token = :token");
+				$stmt->execute([':token' => $get['token']]);
+
+				HtmlShrink::msgOk("Le mot de passe a été mis à jour, vous pouvez maintenant vous "
+                    . "<a href='/user/login.php'>connecter</a> avec ce nouveau mot de passe");
+
                 $logger->info('[user-reset2] password reset success', ['idP' => $idPersonne]);
 			}
-			else
+			// PDO est en ERRMODE_EXCEPTION : sans ce catch, un échec d'écriture n'afficherait
+			// plus rien à l'utilisateur
+			catch (PDOException $e)
 			{
 				HtmlShrink::msgErreur("La requête UPDATE a échoué, veuillez contacter le webmaster");
+
+				$logger->error('[user-reset2] password reset failed', ['idP' => $idPersonne, 'exception' => $e->getMessage()]);
 			}
 
 			$action_terminee = true;
-
-
 		} // if erreurs == 0
 	} // if POST != ""
 
 	// si l'email avait été fourni, retrouve le(s) compte(s) associé(s)
 	$tab_comptes = [];
-
 	if (empty($tab_temp['idPersonne']) && !empty($tab_temp['email']))
 	{
-		$sql_comptes = "SELECT * FROM personne WHERE email ='".$connector->sanitize($tab_temp['email'])."' AND actif='1'";
-		//echo $sql_comptes;
-		$req_comptes = $connector->query($sql_comptes);
-
-		if ($connector->getNumRows($req_comptes) > 0)
-		{
-
-			while ($tab_compte = $connector->fetchArray($req_comptes))
-			{
-				$tab_comptes[] = $tab_compte;
-			}
-		}
+		// statut : 'actif' et non '!= inactif', puisque Sentry n'accepte au login que les comptes actifs
+		$stmt = $connectorPdo->prepare("SELECT idPersonne, pseudo FROM personne
+			WHERE email = :email AND statut = 'actif'");
+		$stmt->execute([':email' => $tab_temp['email']]);
+		$tab_comptes = $stmt->fetchAll();
 	}
 
-	?>
-
-
-<?php
-if (!$action_terminee)
-{
-    $act = 'insert';
-
-    if ($verif->nbErreurs() > 0)
+    if (!$action_terminee)
     {
-        HtmlShrink::msgErreur("Il y a ".$verif->nbErreurs()." erreur(s).");
-    }
-    ?>
-    <form method="post" id="ajouter_editer"  class="js-submit-freeze-wait" action="?token=<?= sanitizeForHtml($get['token']) ?>">
-
-    <fieldset>
-
-        <span class="mr_as">
-            <label for="mr_as">Ne pas remplir ce champ</label><input name="as_nom" id="as_nom" type="text">
-        </span>
-        <?php
-        if (count($tab_comptes) > 1) {
-        ?>
-        <p>
-        <label for="idPersonne"  class="large">Lequel de votre compte ?</label>
-        <select name="idPersonne" id="idPersonne" >
-
-            <?php
-            foreach ($tab_comptes as $c)
-            {
-                $selected = '';
-                if (isset($_POST['idPersonne']) && $c['idPersonne'] == $_POST['idPersonne'])
-                    $selected = " selected";
-            ?>
-
-            <option value="<?php echo $c['idPersonne']; ?>" <?php echo $selected; ?>><?php echo sanitizeForHtml($c['pseudo']); ?></option>
-
-            <?php } ?>
-        </select>
-        <?php echo $verif->getHtmlErreur("auth");?>
-        </p>
-        <?php
-        }
-        else if (count($tab_comptes) == 1)
+        if ($verif->nbErreurs() > 0)
         {
-        ?>
-        <input type="hidden" name="idPersonne" value="<?php echo $tab_comptes[0]['idPersonne']; ?>" />
-
-        <?php
+            HtmlShrink::msgErreur("Il y a ".$verif->nbErreurs()." erreur(s).");
         }
         ?>
+        <form method="post" id="ajouter_editer"  class="js-submit-freeze-wait" action="?token=<?= sanitizeForHtml($get['token']) ?>">
 
-        <!-- Nouveau mot de passe* en cas de mise à jour -->
-        <p>
-        <label for="motdepasse" class="large">Nouveau mot de passe</label>
-        <input type="password" name="motdepasse" id="motdepasse" size="20" maxlength="20" value="" />
-        <?php echo $verif->getHtmlErreur("motdepasse");?>
-        </p>
+            <fieldset>
 
-        <!-- Nouveau mot de passe* à confirmation en cas de mise à jour -->
-        <p>
-        <label for="motdepasse2" class="large">Confirmer le nouveau mot de passe</label>
-        <input type="password" name="motdepasse2" id="motdepasse2" size="20" maxlength="20" value="" />
-        <?php echo $verif->getHtmlErreur("motdepasse2");?>
-        </p>
-        <div class="guideChamp">Le mot de passe doit faire au minimum 6 caractères et comporter au moins un chiffre</div>
-        <?php echo $verif->getHtmlErreur("motdepasse_inegaux");?>
+                <span class="mr_as">
+                    <label for="mr_as">Ne pas remplir ce champ</label><input name="as_nom" id="as_nom" type="text">
+                </span>
 
-        </fieldset>
+                <?php if (count($tab_comptes) > 1) { ?>
+                <p>
+                    <label for="idPersonne"  class="large">Lequel de votre compte ?</label>
+                    <select name="idPersonne" id="idPersonne" >
+                    <?php
+                    foreach ($tab_comptes as $c)
+                    {
+                        $selected = '';
+                        if (isset($_POST['idPersonne']) && $c['idPersonne'] == $_POST['idPersonne'])
+                            $selected = " selected";
+                    ?>
+                        <option value="<?= $c['idPersonne']; ?>" <?= $selected; ?>><?= sanitizeForHtml($c['pseudo']); ?></option>
+                    <?php } ?>
+                    </select>
+                    <?= $verif->getHtmlErreur("auth");?>
+                </p>
+                <?php
+                }
+                else if (count($tab_comptes) == 1)
+                {
+                ?>
 
-        <p class="piedForm">
-            <input type="hidden" name="formulaire" value="ok" />
-            <input type="submit" value="Envoyer" class="submit" />
-        </p>
+                <input type="hidden" name="idPersonne" value="<?= $tab_comptes[0]['idPersonne']; ?>" />
 
-    </form>
+                <?php } ?>
 
-<?php
-} // if action
+                <p>
+                    <label for="motdepasse" class="large">Nouveau mot de passe</label>
+                    <input type="password" name="motdepasse" id="motdepasse" size="20" minlength="10" maxlength="100" value="" required />
+                    <?= $verif->getHtmlErreur("motdepasse");?>
+                </p>
 
+                <p>
+                    <label for="motdepasse2" class="large">Confirmer le nouveau mot de passe</label>
+                    <input type="password" name="motdepasse2" id="motdepasse2" size="20" minlength="10" maxlength="100" value="" required />
+                    <?= $verif->getHtmlErreur("motdepasse2");?>
+                </p>
+
+                <div class="guideChamp">Le mot de passe doit faire au minimum 10 caractères et comporter au moins un chiffre</div>
+
+                <?= $verif->getHtmlErreur("motdepasse_inegaux");?>
+
+            </fieldset>
+
+            <p class="piedForm">
+                <input type="hidden" name="formulaire" value="ok" />
+                <input type="submit" value="Envoyer" class="submit" />
+            </p>
+
+        </form>
+
+    <?php
+    } // if action
 }
 else
 {

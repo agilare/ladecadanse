@@ -12,8 +12,9 @@ form#ajouter_editer
 	{
 		margin-top:5px;
 		margin-left:0.1em;
-		background-color:#f2f2f2;
 		padding:1em 0 1em 0.4em;
+        border-radius: 3px;
+		background-color:#f2f2f2;
 	}
 
 		form#ajouter_editer fieldset legend
@@ -50,6 +51,14 @@ form#ajouter_editer label.large {
     text-align: right;
     width: 16em;
 }
+
+	/* libellé plus long que les autres (user-reset.php) ; ciblé par [for] et non par
+	   #login_pseudo, que la page de connexion utilise aussi. À spécificité égale,
+	   mobile.css passe après et ramène la largeur à 10em sous 800px. */
+	form#ajouter_editer label[for="login_ou_email"]
+	{
+		width: 19em;
+	}
 
 form#ajouter_editer input
 {
