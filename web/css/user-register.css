@@ -1,6 +1,11 @@
+form#ajouter_editer
+{
+    margin-left: 2em;
+}
+
 form#ajouter_editer label
 {
-	width:13em;
+	width:14em;
 }
 
 .guide_champ
@@ -11,23 +16,12 @@ form#ajouter_editer label
 	padding:0 0 1em 0em;
 }
 
-.guide_groupe
-{
-    margin:0 0 1em 162em;
-    width:20em;
-}
-
 .guide_affiliation
 {
-	margin:0 1em 0 2em;
+	margin:0 1em;
     line-height:1.5em;
     font-size:0.9em;
 	padding:0 0 1em 0em;
-}
-
-form#ajouter_editer input.radio
-{
-    border:none;
 }
 
 .affiliation

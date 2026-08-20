@@ -75,6 +75,8 @@ Server-side tests of the user application, run with Codeception's `site` suite (
 
 They are **read-only**: every POST is deliberately invalid, so validation fails before any `UPDATE` and no mail is ever sent. The suite can be replayed indefinitely on the same instance.
 
+The one deliberate exception is `UserRegisterCest::potDeMielRempliBloqueInscription`, whose payload is valid except for the honeypot — the only way to prove that guard alone blocks the submission. If the honeypot ever disappears, that test fails *and* registers a `zz-codeception-pot-de-miel` account: delete it before replaying the suite.
+
 JavaScript is out of scope here (PhpBrowser does not execute it): the `beforeunload` guard and the datepicker remain covered by the Selenium IDE project, while the keyboard shortcuts and the mouseless mode have unit tests in `tests/js/` (vitest + jsdom, `npm test`).
 
 #### Prerequisites
@@ -115,6 +117,7 @@ Tests whose variables are left empty are reported as **skipped**, not failed.
 - `FormulairesRegressionCest` — server-side contract of the recent JS: `body[data-page]`, the `formulaire=ok` hidden field of `event/copy.php`, the clear-search button
 - `BotMonitoringCest` — honeypot (204, footer link, robots.txt)
 - `EvenementsPassesTriCest` — the sort menu of the "Passés" tab on the lieu and organisateur pages: which tab offers it, that both directions actually reorder the query, that either one lands on the most recent past events, and that the choice is remembered in session across both pages
+- `UserRegisterCest` — public registration: the form's guards (CSRF token, single use, honeypot, both affiliation selects), the password rules, an already taken login, and two malformed POSTs that used to raise a PHP warning (missing `organisateurs[]`, scalar fields posted as arrays). The "email already taken" branch — which renders the success message without inserting anything, to avoid email enumeration — is knowingly left uncovered: it would need a fixture address really present in the database, and a stale one would turn the test into an account creation
 - `LieuTexteRepliableCest` — server-side contract of the collapsible descriptions: the text is served whole (never truncated in PHP), the toggle is a sibling of the capped block and wired to it by `aria-controls`, and the `js` marker that gates the whole collapse is in the `<head>`
 
 #### Running the tests on an instance
