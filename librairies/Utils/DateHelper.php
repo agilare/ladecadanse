@@ -135,6 +135,21 @@ class DateHelper
     }
 
     /**
+     * Returns the abbreviated French month name from a month number.
+     *
+     * Fits a narrow table column, where the full name would not.
+     *
+     * @param int $month Month number (1–12)
+     * @return string e.g. 'avr'
+     */
+    public static function monthNameShort(int $month): string
+    {
+        static $names = ['', 'jan', 'fév', 'mar', 'avr', 'mai', 'juin',
+                         'juil', 'août', 'sep', 'oct', 'nov', 'déc'];
+        return $names[$month] ?? '';
+    }
+
+    /**
      * Converts an ISO date to a French long-form string.
      *
      * @param string $date          ISO date (YYYY-MM-DD or YYYY-MM-DD HH:MM:SS)

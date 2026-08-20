@@ -61,3 +61,53 @@ div.pagination
     margin: 1em 0;
     padding-left: 0;
 }
+
+/*
+ * Colonnes mensuelles (vue administrateur) : douze colonnes étroites, une par mois, qui donnent
+ * la silhouette de l'activité de l'organisateur.
+ */
+table#derniers_lieux th.mois,
+table#derniers_lieux td.mois
+{
+    width:1.7em;
+    padding:0 1px;
+    text-align:center;
+    font-size:0.85em;
+    font-weight:bold;
+}
+
+/* le mois en cours est le seul qui puisse encore bouger : les mois révolus s'effacent derrière lui,
+   comme les événements passés du tableau de bord (user/dashboard.css) */
+table#derniers_lieux td.mois-passe
+{
+    font-weight:normal;
+    opacity:0.6;
+}
+
+/*
+ * Le suivi mensuel a besoin de la largeur : en desktop la colonne de gauche disparaît de ces
+ * pages et le tableau occupe le conteneur. Le sélecteur passe par data-page pour l'emporter sur
+ * desktop.css, chargé après cette feuille. En dessous, la colonne reprend sa place sous le
+ * contenu et les colonnes mensuelles sont masquées faute de place.
+ */
+@media screen and (min-width:800px)
+{
+    body[data-page="organisateur/organisateurs"] #colonne_gauche
+    {
+        display:none;
+    }
+
+    body[data-page="organisateur/organisateurs"] #conteneur
+    {
+        padding-left:5px;
+    }
+}
+
+@media screen and (max-width:799.98px)
+{
+    table#derniers_lieux th.mois,
+    table#derniers_lieux td.mois
+    {
+        display:none;
+    }
+}

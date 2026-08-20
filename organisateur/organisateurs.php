@@ -8,6 +8,7 @@ use Ladecadanse\Organisateur;
 use Ladecadanse\Utils\ImageDriver2;
 use Ladecadanse\UserLevel;
 use Ladecadanse\Utils\QueryParamValidator;
+use Ladecadanse\Stats\MonthlyAddedEvents;
 
 $_SESSION['user_prefs_orgas_nom'] ??= '';
 if (isset($_GET['nom']))
@@ -55,6 +56,11 @@ WHERE e.statut NOT IN ('inactif', 'propose') GROUP BY idOrganisateur ORDER BY id
 $stmt->execute([$glo_auj]);
 $orgas_even = $stmt->fetchAll(PDO::FETCH_GROUP);
 //dump($lieux_even);
+
+// suivi de l'activité : réservé aux administrateurs, seuls à relancer un organisateur qui a cessé d'annoncer
+$show_monthly_counts = $authorization->isPersonneEditor($_SESSION);
+$months_keys = $show_monthly_counts ? MonthlyAddedEvents::monthKeys() : [];
+$orgas_monthly_counts = $show_monthly_counts ? MonthlyAddedEvents::forOrganisateurs() : [];
 
 $page_titre = "Organisateurs d'événements culturels à Genève et Vaud : associations, labels, collectifs";
 $page_description = "";
@@ -115,6 +121,7 @@ include("../_header.inc.php");
                 <thead>
                     <tr>
                         <th colspan="2"></th>
+                        <?php if ($show_monthly_counts) : ?><?= HtmlShrink::getMonthlyCountsHeaderCells($months_keys) ?><?php endif; ?>
                         <th class="td-align-center"><i class="fa fa-calendar-o" aria-label="Nombre d'événements agendés" title="Nombre d'événements agendés"></i></th>
                     </tr>
                 </thead>
@@ -135,6 +142,7 @@ include("../_header.inc.php");
                             <a href="/organisateur/organisateur.php?idO=<?= (int)$orga['idOrganisateur']; ?>"><strong><?= sanitizeForHtml($orga['nom']); ?></strong></a>
                         </td>
 
+                        <?php if ($show_monthly_counts) : ?><?= HtmlShrink::getMonthlyCountsCells($orgas_monthly_counts[$orga['idOrganisateur']] ?? [], $months_keys) ?><?php endif; ?>
                         <td class="td-align-center<?php if (!empty($orgas_even[$orga['idOrganisateur']][0]['has_today_event']) ) { echo " ici"; } ?>">
 
                             <?php if (!empty($orgas_even[$orga['idOrganisateur']][0]) ) : ?>

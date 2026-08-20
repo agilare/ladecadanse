@@ -28,6 +28,20 @@ table td
     width:550px
 }
 
+/*
+ * Le menu des statuts est en position absolue : sa deuxième ligne ne pousse rien et retombait
+ * sur l'en-tête du tableau. Tant que celui-ci ne portait que deux icônes, la collision passait
+ * inaperçue ; en face des douze colonnes mensuelles, « Anciens » se superpose aux noms de mois.
+ * La page occupant désormais toute la largeur, il y a de quoi tenir les trois statuts sur une ligne.
+ */
+@media screen and (min-width:800px)
+{
+    .table-filters
+    {
+        width:720px;
+    }
+}
+
 .table-filters form
 {
     display:inline-block;
@@ -60,4 +74,54 @@ div.pagination
 {
     margin: 1em 0;
     padding-left: 0;
+}
+
+/*
+ * Colonnes mensuelles (vue administrateur) : douze colonnes étroites, une par mois, qui donnent
+ * la silhouette de l'activité du lieu.
+ */
+table#derniers_lieux th.mois,
+table#derniers_lieux td.mois
+{
+    width:1.7em;
+    padding:0 1px;
+    text-align:center;
+    font-size:0.85em;
+    font-weight:bold;
+}
+
+/* le mois en cours est le seul qui puisse encore bouger : les mois révolus s'effacent derrière lui,
+   comme les événements passés du tableau de bord (user/dashboard.css) */
+table#derniers_lieux td.mois-passe
+{
+    font-weight:normal;
+    opacity:0.6;
+}
+
+/*
+ * Le suivi mensuel a besoin de la largeur : en desktop la colonne de gauche disparaît de ces
+ * pages et le tableau occupe le conteneur. Le sélecteur passe par data-page pour l'emporter sur
+ * desktop.css, chargé après cette feuille. En dessous, la colonne reprend sa place sous le
+ * contenu et les colonnes mensuelles sont masquées faute de place.
+ */
+@media screen and (min-width:800px)
+{
+    body[data-page="lieu/lieux"] #colonne_gauche
+    {
+        display:none;
+    }
+
+    body[data-page="lieu/lieux"] #conteneur
+    {
+        padding-left:5px;
+    }
+}
+
+@media screen and (max-width:799.98px)
+{
+    table#derniers_lieux th.mois,
+    table#derniers_lieux td.mois
+    {
+        display:none;
+    }
 }
