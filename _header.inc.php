@@ -48,10 +48,6 @@ $mouseless_allowed = isset($_SESSION['Sgroupe']) && (int) $_SESSION['Sgroupe'] <
     <link rel="stylesheet" type="text/css" href="/web/css/normalize.css">
     <link rel="stylesheet" type="text/css" href="<?= $assets->get("css/imprimer.css"); ?>" media="print">
     <link rel="stylesheet" type="text/css" href="<?= $assets->get('css/global.css') ?>">
-    <?php if (file_exists(__ROOT__ . "/web/css/{$nom_page}.css")) : ?>
-        <link rel="stylesheet" type="text/css" href="<?= $assets->get("css/{$nom_page}.css"); ?>" media="screen">
-    <?php endif; ?>
-    <link href="/vendor/select2/select2/dist/css/select2.min.css" rel="stylesheet">
     <?php
     if (isset($extra_css) && is_array($extra_css)) :
         foreach ($extra_css as $import) : ?>
@@ -60,6 +56,11 @@ $mouseless_allowed = isset($_SESSION['Sgroupe']) && (int) $_SESSION['Sgroupe'] <
         endforeach;
     endif;
     ?>
+    <?php if (file_exists(__ROOT__ . "/web/css/{$nom_page}.css")) : ?>
+        <link rel="stylesheet" type="text/css" href="<?= $assets->get("css/{$nom_page}.css"); ?>" media="screen">
+    <?php endif; ?>
+    <link href="/vendor/select2/select2/dist/css/select2.min.css" rel="stylesheet">
+
 
     <?php /* les deux bornes ne doivent pas se recouvrir : à exactement 800px les deux feuilles
              s'appliquaient, mobile.css masquait le formulaire de recherche et desktop.css sa
