@@ -1,0 +1,11 @@
+Bonjour,
+
+Merci de vous être inscrit-e sur %site_url%
+
+Pour vous connecter : %login_url%
+
+Vous pouvez consulter votre profil et modifier vos données (affiliations, signature, valeurs par défaut d'un événement...) sur %dashboard_url%
+
+Bonne visite
+
+La décadanse
