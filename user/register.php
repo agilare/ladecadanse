@@ -6,17 +6,14 @@ use Ladecadanse\UserLevel;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\PasswordPolicy;
 use Ladecadanse\Utils\Mailing;
-use Ladecadanse\HtmlShrink;
 
-$page_titre = "Inscription";
-$page_description = "Création d'un compte sur La décadanse";
-$extra_css = ["formulaires"];
-include("../_header.inc.php");
-?>
+// =============================================================================
+// Traitement
+//
+// Tout se joue avant l'inclusion de _header.inc.php : le message « formulaire
+// expiré » était émis pendant le traitement, donc avant le doctype.
+// =============================================================================
 
-<main id="contenu" class="colonne inscription">
-
-<?php
 $formTokenName = 'form_token_user_register';
 
 $verif = new Validateur();
@@ -36,20 +33,19 @@ $action_terminee = false;
 
 if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 {
-    // check token received == token initially set in form registered in session
-    if (!isset($_SESSION[$formTokenName]) || $_POST[$formTokenName] !== $_SESSION[$formTokenName])
+    // pot de miel : un champ masqué que seuls les robots remplissent
+    if (!empty($_POST['username_as']))
     {
-        HtmlShrink::msgErreur("Désolé, le formulaire est expiré, veuillez le saisir à nouveau");
+        $verif->setErreur("username_as", "Veuillez laisser vide le champ réservé aux robots.");
+    }
+    // le jeton reçu doit être celui déposé en session à l'affichage du formulaire
+    else if (empty($_SESSION[$formTokenName]) || !hash_equals($_SESSION[$formTokenName], (string) ($_POST[$formTokenName] ?? '')))
+    {
+        $verif->setErreur("formulaire", "Le formulaire a expiré, veuillez le saisir à nouveau.");
     }
     else
     {
         unset($_SESSION[$formTokenName]);
-
-        // pot de miel : un bot qui remplit ce champ est écarté avant toute requête
-        if (!empty($_POST['username_as']))
-        {
-            $verif->setErreur("username_as", "Veuillez laisser ce champ vide");
-        }
 
         foreach ($champs as $c => $v)
         {
@@ -77,13 +73,24 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
         };
 
 
-        // validation
+        /*
+         * Validation. Les messages sont écrits pour cette page plutôt que repris de
+         * Validateur, génériques et anglicisés (« Le texte est trop court : 1, min 2
+         * characters ») — et surtout indiscernables les uns des autres dans l'encart
+         * d'erreurs, qui les rassemble loin de leur champ.
+         */
 
-        $verif->valider($champs['login'], "login", "texte", 2, 80, true);
-
-        if ($existeDeja('pseudo', $champs['login']))
+        if ($champs['login'] === '')
         {
-            $verif->setErreur("login_existant", "Un membre avec cet identifiant existe déjà, veuillez en choisir un autre");
+            $verif->setErreur("login", "Veuillez choisir un login.");
+        }
+        else if (mb_strlen($champs['login']) < 2 || mb_strlen($champs['login']) > 80)
+        {
+            $verif->setErreur("login", "Votre login fait entre 2 et 80 caractères.");
+        }
+        else if ($existeDeja('pseudo', $champs['login']))
+        {
+            $verif->setErreur("login_existant", "Un membre avec ce login existe déjà, veuillez en choisir un autre.");
         }
 
         foreach (PasswordPolicy::erreurs($champs['motdepasse'], $champs['motdepasse2']) as $champ => $message)
@@ -91,8 +98,15 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
             $verif->setErreur($champ, $message);
         }
 
-
-        $verif->valider($champs['email'], "email", "email", 4, 100, true);
+        // borne haute alignée sur la colonne personne.email
+        if ($champs['email'] === '')
+        {
+            $verif->setErreur("email", "Veuillez saisir votre adresse e-mail.");
+        }
+        else if (filter_var($champs['email'], FILTER_VALIDATE_EMAIL) === false || mb_strlen($champs['email']) > 100)
+        {
+            $verif->setErreur("email", "Cette adresse e-mail n'est pas valable.");
+        }
 
         // feature temporarly disabled; let commented
 //        $verif->valider($champs['groupe'], "groupe", "int", 1, 2, 1);
@@ -105,101 +119,134 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 //            }
 //        }
 
-        $verif->valider($champs['affiliation'], "affiliation", "texte", 2, 250, obligatoire: false);
-
-        // set an error to fail the process of user insertion and, to avoid "email enumeration vulnerability" : enable display of
-        //  result msg, and disable redisplay of form (with this error text)
-        if ($verif->nbErreurs() === 0 && $existeDeja('email', $champs['email']))
+        if ($champs['affiliation'] !== '' && (mb_strlen($champs['affiliation']) < 2 || mb_strlen($champs['affiliation']) > 250))
         {
-            $verif->setErreur("email_identique", "-");
-            $action_terminee = true;
+            $verif->setErreur("affiliation", "Le nom de l'affiliation fait entre 2 et 250 caractères.");
         }
 
         if ($verif->nbErreurs() === 0)
         {
-            $maintenant = date("Y-m-d H:i:s");
-
-            $stmt = $connectorPdo->prepare("
-                INSERT INTO personne (pseudo, mot_de_passe, email, groupe, affiliation, region, cookie, statut, dateAjout, date_derniere_modif)
-                VALUES (:pseudo, :mot_de_passe, :email, :groupe, :affiliation, :region, '', 'actif', :dateAjout, :dateModif)");
-            $stmt->execute([
-                ':pseudo' => $champs['login'],
-                ':mot_de_passe' => password_hash($champs['motdepasse'], PASSWORD_DEFAULT),
-                ':email' => $champs['email'],
-                ':groupe' => $champs['groupe'],
-                ':affiliation' => $champs['affiliation'],
-                ':region' => $champs['region'],
-                ':dateAjout' => $maintenant,
-                ':dateModif' => $maintenant,
-            ]);
-
-            $new_user_id = (int) $connectorPdo->lastInsertId();
-
-            // si un lieu a été choisi comme affiliation
-            if (!empty($champs['lieu']))
+            /*
+             * Un e-mail déjà pris ne se dit pas : la page rend alors le même message de
+             * fin qu'une création réussie, sans rien insérer ni envoyer. L'annoncer
+             * ferait de ce formulaire un oracle d'existence de compte.
+             */
+            if (!$existeDeja('email', $champs['email']))
             {
-                $stmt = $connectorPdo->prepare("INSERT INTO affiliation (idPersonne, idAffiliation, genre)
-                    VALUES (:idPersonne, :idAffiliation, 'lieu')");
-                $stmt->execute([':idPersonne' => $new_user_id, ':idAffiliation' => (int) $champs['lieu']]);
-            }
+                $maintenant = date("Y-m-d H:i:s");
 
-            $stmt = $connectorPdo->prepare("INSERT INTO personne_organisateur (idPersonne, idOrganisateur)
-                VALUES (:idPersonne, :idOrganisateur)");
+                $stmt = $connectorPdo->prepare("
+                    INSERT INTO personne (pseudo, mot_de_passe, email, groupe, affiliation, region, cookie, statut, dateAjout, date_derniere_modif)
+                    VALUES (:pseudo, :mot_de_passe, :email, :groupe, :affiliation, :region, '', 'actif', :dateAjout, :dateModif)");
+                $stmt->execute([
+                    ':pseudo' => $champs['login'],
+                    ':mot_de_passe' => password_hash($champs['motdepasse'], PASSWORD_DEFAULT),
+                    ':email' => $champs['email'],
+                    ':groupe' => $champs['groupe'],
+                    ':affiliation' => $champs['affiliation'],
+                    ':region' => $champs['region'],
+                    ':dateAjout' => $maintenant,
+                    ':dateModif' => $maintenant,
+                ]);
 
-            foreach ($champs['organisateurs'] as $idOrg)
-            {
-                if (!empty($idOrg))
+                $new_user_id = (int) $connectorPdo->lastInsertId();
+
+                // si un lieu a été choisi comme affiliation
+                if (!empty($champs['lieu']))
                 {
-                    $stmt->execute([':idPersonne' => $new_user_id, ':idOrganisateur' => (int) $idOrg]);
+                    $stmt = $connectorPdo->prepare("INSERT INTO affiliation (idPersonne, idAffiliation, genre)
+                        VALUES (:idPersonne, :idAffiliation, 'lieu')");
+                    $stmt->execute([':idPersonne' => $new_user_id, ':idAffiliation' => (int) $champs['lieu']]);
                 }
+
+                $stmt = $connectorPdo->prepare("INSERT INTO personne_organisateur (idPersonne, idOrganisateur)
+                    VALUES (:idPersonne, :idOrganisateur)");
+
+                foreach ($champs['organisateurs'] as $idOrg)
+                {
+                    if (!empty($idOrg))
+                    {
+                        $stmt->execute([':idPersonne' => $new_user_id, ':idOrganisateur' => (int) $idOrg]);
+                    }
+                }
+
+                $mailer = new Mailing();
+                $mailer->toUser(
+                    $champs['email'],
+                    "Votre nouveau compte 👤 " . $champs['login'] . " sur La décadanse",
+                    $tplEngine->render("user-register-mail-body", [
+                        'site_url' => $site_full_url,
+                        'login_url' => $site_full_url . "user/login.php",
+                        'dashboard_url' => $site_full_url . "user/dashboard.php?idP=" . $new_user_id,
+                    ])
+                );
+
+                $logger->info('[user-register]', ['pseudo' => $champs['login'], 'email' => $champs['email'], 'groupe' => $champs['groupe'], 'idP' => $new_user_id]);
             }
-
-            $mailer = new Mailing();
-            $mailer->toUser(
-                $champs['email'],
-                "Votre nouveau compte 👤 " . $champs['login'] . " sur La décadanse",
-                $tplEngine->render("user-register-mail-body", [
-                    'site_url' => $site_full_url,
-                    'login_url' => $site_full_url . "user/login.php",
-                    'dashboard_url' => $site_full_url . "user/dashboard.php?idP=" . $new_user_id,
-                ])
-            );
-
-            $logger->info('[user-register]', ['pseudo' => $champs['login'], 'email' => $champs['email'], 'groupe' => $champs['groupe'], 'idP' => $new_user_id]);
 
             $action_terminee = true;
 
         } // if erreurs == 0
-
-        if ($action_terminee)
-        {
-            HtmlShrink::msgOk("<p style='font-size:1.1em;line-height:1.5em'><strong>Votre compte a été créé</strong> (si l'adresse email fournie est valide); vous pouvez maintenant vous <a href=\"/user/login.php\">connecter</a> avec le login et le mot de passe que vous venez de saisir");
-        }
     }
 
 } // if POST != ""
 
 
+// =============================================================================
+// Rendu
+// =============================================================================
+
+$page_titre = "Inscription";
+$page_description = "Création d'un compte sur La décadanse";
+// user/register.css est chargé automatiquement par _header.inc.php, d'après le nom de la page
+$extra_css = ["formulaires"];
+include("../_header.inc.php");
+
 if (!$action_terminee)
 {
+    // jeton renouvelé à chaque affichage du formulaire
     $_SESSION[$formTokenName] = bin2hex(random_bytes(32));
-    ?>
+}
+
+$erreurs = $verif->getErreurs();
+?>
+
+<main id="contenu" class="colonne inscription">
 
     <header id="entete_contenu">
         <h1>S’inscrire sur La décadanse</h1>
         <div class="spacer"></div>
     </header>
 
-    <?php
-    if ($verif->nbErreurs() > 0)
-    {
-        HtmlShrink::msgErreur("Il y a ".$verif->nbErreurs()." erreur(s).");
-    }
-    ?>
+<?php if ($action_terminee) : ?>
+
+    <div class="msg_ok" role="status">
+        <p><strong>Votre compte a été créé</strong> (si l'adresse e-mail fournie est valide).</p>
+        <p>Vous pouvez maintenant vous <a href="/user/login.php">connecter</a> avec le login et le
+            mot de passe que vous venez de saisir.</p>
+    </div>
+
+<?php else : ?>
+
+    <?php if ($erreurs !== []) : ?>
+    <?php // les messages sont écrits ici, jamais repris d'une saisie : ils peuvent porter du HTML ?>
+    <div class="msg_erreur" role="alert">
+        <?php if (count($erreurs) === 1) : ?>
+        <?= current($erreurs) ?>
+        <?php else : ?>
+        <p class="msg_erreur_titre"><?= $verif->getMsgNbErreurs() ?></p>
+        <ul>
+            <?php foreach ($erreurs as $message) : ?>
+            <li><?= $message ?></li>
+            <?php endforeach; ?>
+        </ul>
+        <?php endif; ?>
+    </div>
+    <?php endif; ?>
 
     <form method="post" id="ajouter_editer" class="js-submit-freeze-wait">
 
-        <input type="text" class="name_as" name="username_as">
+        <input type="text" class="name_as" name="username_as" tabindex="-1" autocomplete="off" aria-hidden="true">
         <input type="hidden" name="<?= $formTokenName; ?>" value="<?= $_SESSION[$formTokenName]; ?>">
 
         <div>Avant de vous inscrire, veillez svp :
@@ -225,31 +272,24 @@ if (!$action_terminee)
 
             <p>
                 <label for="login">Login*</label>
-                <input type="text" name="login" id="login" size="40" minlength="2" maxlength="80" value="<?= sanitizeForHtml($champs['login']) ?>" autofocus required />
-                <?= $verif->getHtmlErreur('login') ?>
-                <?= $verif->getHtmlErreur("login_existant") ?>
+                <input type="text" name="login" id="login" size="40" minlength="2" maxlength="80" value="<?= sanitizeForHtml($champs['login']) ?>" autocomplete="username" autofocus required<?= isset($erreurs['login']) || isset($erreurs['login_existant']) ? ' class="champ_errone" aria-invalid="true"' : '' ?>>
             </p>
 
             <p>
                 <label for="motdepasse">Mot de passe*</label>
-                <input type="password" name="motdepasse" id="motdepasse" size="20" minlength="<?= PasswordPolicy::LONGUEUR_MIN ?>" maxlength="<?= PasswordPolicy::LONGUEUR_MAX ?>" value="" required />
-                <?= $verif->getHtmlErreur("motdepasse") ?>
+                <input type="password" name="motdepasse" id="motdepasse" size="20" minlength="<?= PasswordPolicy::LONGUEUR_MIN ?>" maxlength="<?= PasswordPolicy::LONGUEUR_MAX ?>" value="" autocomplete="new-password" required<?= isset($erreurs['motdepasse']) ? ' class="champ_errone" aria-invalid="true"' : '' ?>>
             </p>
 
             <p>
                 <label for="motdepasse2">Confirmer le mot de passe*</label>
-                <input type="password" name="motdepasse2" id="motdepasse2" size="20" minlength="<?= PasswordPolicy::LONGUEUR_MIN ?>" maxlength="<?= PasswordPolicy::LONGUEUR_MAX ?>" value="" required />
-                <?= $verif->getHtmlErreur("motdepasse2") ?>
+                <input type="password" name="motdepasse2" id="motdepasse2" size="20" minlength="<?= PasswordPolicy::LONGUEUR_MIN ?>" maxlength="<?= PasswordPolicy::LONGUEUR_MAX ?>" value="" autocomplete="new-password" required<?= isset($erreurs['motdepasse_inegaux']) ? ' class="champ_errone" aria-invalid="true"' : '' ?>>
             </p>
 
             <div class="guide_champ">Le mot de passe doit faire au minimum <?= PasswordPolicy::LONGUEUR_MIN ?> caractères et comporter au moins un chiffre</div>
-            <?= $verif->getHtmlErreur("motdepasse_inegaux") ?>
 
             <p>
                 <label for="email">E-mail*</label>
-                <input type="email" name="email" id="email" size="35" maxlength="100" value="<?= sanitizeForHtml($champs['email']) ?>" required />
-                <?= $verif->getHtmlErreur("email") ?>
-                <?= $verif->getHtmlErreur("email_identique") ?>
+                <input type="email" name="email" id="email" size="35" maxlength="100" value="<?= sanitizeForHtml($champs['email']) ?>" autocomplete="email" required<?= isset($erreurs['email']) ? ' class="champ_errone" aria-invalid="true"' : '' ?>>
             </p>
 
 <!-- feature temporarly disabled; let commented           <input type="hidden" name="groupe" id="user-register_organisateur" value="8" />-->
@@ -304,9 +344,8 @@ if (!$action_terminee)
             <div class="spacer"></div>
             <p>
                 <label for="affiliation" class="affil">Nom&nbsp;</label>
-                <input type="text" name="affiliation" id="affiliation" size="30" maxlength="250" value="<?= sanitizeForHtml($champs['affiliation']); ?>" />
+                <input type="text" name="affiliation" id="affiliation" size="30" maxlength="250" value="<?= sanitizeForHtml($champs['affiliation']); ?>"<?= isset($erreurs['affiliation']) ? ' class="champ_errone" aria-invalid="true"' : '' ?>>
             </p>
-            <?= $verif->getHtmlErreur("affiliation"); ?>
         </fieldset>
 
         <p class="piedForm">
@@ -314,16 +353,10 @@ if (!$action_terminee)
             <input type="submit" value="S'inscrire" class="submit submit-big" />
         </p>
     </form>
-<?php
-} // if action_terminee
-?>
+
+<?php endif; ?>
+
 </main>
-
-<div id="colonne_gauche" class="colonne">
-</div>
-
-<div id="colonne_droite" class="colonne">
-</div>
 
 <?php
 include("../_footer.inc.php");

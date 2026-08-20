@@ -68,7 +68,7 @@ class UserRegisterCest
         ]);
 
         $I->seeResponseCodeIs(HttpCode::OK);
-        $I->see('le formulaire est expiré');
+        $I->see("Le formulaire a expiré");
         $I->dontSee('Votre compte a été créé');
     }
 
@@ -99,7 +99,7 @@ class UserRegisterCest
             'email' => 'zz-codeception-rejeu@example.com',
         ]);
 
-        $I->see('le formulaire est expiré');
+        $I->see("Le formulaire a expiré");
     }
 
     /**
@@ -129,7 +129,7 @@ class UserRegisterCest
             'email' => 'zz-codeception-mdp@example.com',
         ]);
 
-        $I->see('erreur(s)');
+        $I->see("Votre mot de passe fait entre");
         $I->dontSee('Votre compte a été créé');
     }
 
@@ -179,7 +179,9 @@ class UserRegisterCest
         ]);
 
         $I->seeResponseCodeIs(HttpCode::OK);
-        $I->see('Il y a 1 erreur(s)');
+        // une seule erreur : l'encart rend le message seul, sans le décompte
+        $I->see("Veuillez laisser vide le champ réservé aux robots");
+        $I->dontSee('Il y a');
         $I->dontSee('Votre compte a été créé');
     }
 
@@ -229,7 +231,7 @@ class UserRegisterCest
 
         // login et email retombent à leur valeur vide : deux champs obligatoires en défaut
         $I->seeResponseCodeIs(HttpCode::OK);
-        $I->see('Il y a 2 erreur(s)');
+        $I->see("Il y a 2 erreurs");
         $I->dontSee('Votre compte a été créé');
     }
 }
