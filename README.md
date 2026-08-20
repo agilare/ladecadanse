@@ -287,3 +287,7 @@ Michel Gaudry - michel@ladecadanse.ch
 
 ## Licence
 This work is licensed under AGPL-3.0-or-later
+
+The rejected password list `resources/bad_p.txt` comes from
+[tarraschk/richelieu](https://github.com/tarraschk/richelieu) (most common French passwords),
+licensed under CC BY 4.0.

@@ -12,6 +12,7 @@ require_once("app/bootstrap.php");
 
 use Ladecadanse\UserLevel;
 use Ladecadanse\Utils\Validateur;
+use Ladecadanse\Utils\PasswordPolicy;
 use Ladecadanse\Utils\QueryParamValidator;
 use Ladecadanse\Security\SecurityToken;
 use Ladecadanse\Security\Sentry;
@@ -193,19 +194,14 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 		}
 	}
 
-    if ($fp = fopen("resources/bad_p.txt", "r"))
+    /*
+     * Liste des mots de passe les plus courants (resources/bad_p.txt). Cette page garde
+     * ses propres bornes de longueur (8/30, contre 10/100 à l'inscription et à la
+     * réinitialisation) : les aligner est un changement de règle à traiter à part.
+     */
+    if (!empty($champs['newPass']) && PasswordPolicy::estRefuse((string) $champs['newPass']))
     {
-        while(!feof($fp))
-        {
-            $Ligne = fgets($fp, 255);
-            $mauvais_mdp[] = trim($Ligne);
-        }
-        fclose($fp);
-
-        if (in_array($champs['newPass'], $mauvais_mdp))
-        {
-            $verif->setErreur("nouveaux_pass", "Veuillez choisir un meilleur mot de passe");
-        }
+        $verif->setErreur("nouveaux_pass", "Ce mot de passe est trop courant, veuillez en choisir un autre.");
     }
 
 	$verif->valider($champs['email'], "email", "email", 4, 250, 1);

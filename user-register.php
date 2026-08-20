@@ -4,6 +4,7 @@ require_once("app/bootstrap.php");
 
 use Ladecadanse\UserLevel;
 use Ladecadanse\Utils\Validateur;
+use Ladecadanse\Utils\PasswordPolicy;
 use Ladecadanse\Utils\Mailing;
 use Ladecadanse\HtmlShrink;
 
@@ -85,24 +86,9 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
             $verif->setErreur("login_existant", "Un membre avec cet identifiant existe déjà, veuillez en choisir un autre");
         }
 
-        $verif->valider($champs['motdepasse'], "motdepasse", "texte", 10, 100, true);
-        $verif->valider($champs['motdepasse2'], "motdepasse2", "texte", 10, 100, true);
-
-        if ($champs['motdepasse'] != $champs['motdepasse2'])
+        foreach (PasswordPolicy::erreurs($champs['motdepasse'], $champs['motdepasse2']) as $champ => $message)
         {
-            $verif->setErreur("motdepasse_inegaux", 'Les 2 mots de passe doivent être identiques');
-        }
-
-        $mauvais_mdp = file("resources/bad_p.txt", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-
-        if ($mauvais_mdp !== false && in_array($champs['motdepasse'], $mauvais_mdp, true))
-        {
-            $verif->setErreur("motdepasse", "Veuillez choisir un meilleur mot de passe");
-        }
-
-        if (!empty($champs['motdepasse']) && !preg_match("/[0-9]/", (string) $champs['motdepasse']))
-        {
-            $verif->setErreur("motdepasse", 'Le mot de passe doit comporter au moins 1 chiffre');
+            $verif->setErreur($champ, $message);
         }
 
 
@@ -246,17 +232,17 @@ if (!$action_terminee)
 
             <p>
                 <label for="motdepasse">Mot de passe*</label>
-                <input type="password" name="motdepasse" id="motdepasse" size="20" minlength="10" maxlength="100" value="" required />
+                <input type="password" name="motdepasse" id="motdepasse" size="20" minlength="<?= PasswordPolicy::LONGUEUR_MIN ?>" maxlength="<?= PasswordPolicy::LONGUEUR_MAX ?>" value="" required />
                 <?= $verif->getHtmlErreur("motdepasse") ?>
             </p>
 
             <p>
                 <label for="motdepasse2">Confirmer le mot de passe*</label>
-                <input type="password" name="motdepasse2" id="motdepasse2" size="20" minlength="10" maxlength="100" value="" required />
+                <input type="password" name="motdepasse2" id="motdepasse2" size="20" minlength="<?= PasswordPolicy::LONGUEUR_MIN ?>" maxlength="<?= PasswordPolicy::LONGUEUR_MAX ?>" value="" required />
                 <?= $verif->getHtmlErreur("motdepasse2") ?>
             </p>
 
-            <div class="guide_champ">Le mot de passe doit faire au minimum 10 caractères et comporter au moins un chiffre</div>
+            <div class="guide_champ">Le mot de passe doit faire au minimum <?= PasswordPolicy::LONGUEUR_MIN ?> caractères et comporter au moins un chiffre</div>
             <?= $verif->getHtmlErreur("motdepasse_inegaux") ?>
 
             <p>
