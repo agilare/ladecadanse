@@ -1,26 +1,13 @@
 /* Page d'inscription (user/register.php) */
 
 /*
- * Page sans colonne latérale : le bloc se centre dans la largeur disponible, comme
- * la page de connexion. Le float hérité de « #conteneur .colonne » doit tomber pour
- * cela — un flottant ignore les marges auto et resterait collé à gauche.
+ * La page garde la largeur commune du site, à gauche : #conteneur réserve 180px de
+ * chaque côté pour les colonnes latérales, et #contenu occupe tout l'espace entre
+ * les deux. Ces gouttières subsistent même sans les <div> des colonnes, retirés
+ * d'ici — inutile donc de plafonner ou de centrer quoi que ce soit.
  *
- * Le sélecteur nomme la balise pour passer devant « #conteneur .colonne { max-width:100% } »
- * de mobile.css : à spécificité égale, cette feuille est chargée après celle-ci et le
- * plafond de largeur sautait sous 800px.
- *
- * Plus large que la connexion (36em) : le formulaire porte un texte d'introduction et
- * deux listes de noms de lieux et d'organisateurs, vite tronqués en dessous.
+ * C'est le seul écart avec la page de connexion, elle centrée dans un bloc étroit.
  */
-main#contenu.inscription
-{
-	box-sizing:border-box;
-	max-width:46em;
-	padding:0 1em;
-	float:none;
-	margin-left:auto;
-	margin-right:auto;
-}
 
 #contenu.inscription #entete_contenu,
 #contenu.inscription .msg_erreur,
@@ -215,13 +202,18 @@ main#contenu.inscription
 	margin:0.2em 0;
 }
 
+/*
+ * Message de fin, sur le même patron que l'encart d'erreur. global.css ne borde ces
+ * bandeaux qu'en haut et en bas, pour un bloc large de 90% centré : repris ici à
+ * pleine largeur, il donnait un cadre dont les deux bords semblaient coupés.
+ */
 #contenu.inscription .msg_ok
 {
 	box-sizing:border-box;
 	margin:0.4em 0 1em 0;
 	padding:0.9em 1em 0.9em 3em;
+	border:1px solid #9ebd9e;
 	border-radius:4px;
-	background-position:1em 1.1em;
 	line-height:1.5em;
 }
 
