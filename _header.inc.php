@@ -85,9 +85,13 @@ $mouseless_allowed = isset($_SESSION['Sgroupe']) && (int) $_SESSION['Sgroupe'] <
                 integrity="sha384-3CEt/dsT99DjKC3MgiUAiordZm0hoZjYMn6ioBvRKm+9A98CLWAUsQsk5XaPpjfU"
                 crossorigin="anonymous"></script>
         <script nonce="<?= CSP_NONCE ?>">
-            Sentry.init({
-                dsn: "<?= GLITCHTIP_DSN ?>",
-            });
+            // le bundle peut manquer (bloqueur de pub, CDN indisponible) : sans ce
+            // garde, la console de ces visiteurs affiche « Sentry is not defined »
+            if (window.Sentry) {
+                Sentry.init({
+                    dsn: "<?= GLITCHTIP_DSN ?>",
+                });
+            }
         </script>
     <?php endif; ?>
 
