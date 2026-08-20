@@ -233,11 +233,12 @@ nav.menus_actions_evenement
 }
 
 /* ------------------------------------------------------------------ *
- * Expérience admin : fiche événement élargie (desktop)
+ * Fiche événement élargie (desktop)
  *
- * Réservée aux administrateurs via la classe .vevent-experimental posée
- * par event/evenement.php. But : occuper la colonne droite, vide sur
- * cette page, pour agrandir illustrations et description.
+ * Pilotée par la classe .vevent-experimental posée par event/evenement.php
+ * (d'abord pour les seuls administrateurs, désormais pour tous). But :
+ * occuper la colonne droite, vide sur cette page, pour agrandir
+ * illustrations, description et titres.
  * ------------------------------------------------------------------ */
 
 /* Le cadre, le message flash et les blocs calés à droite (en-tête avec la
@@ -283,6 +284,15 @@ nav.menus_actions_evenement
 {
 	width: auto;
 	font-size: 1.45em;
+}
+
+/* Le cadre gagne ~166px : titre de l'événement et nom du lieu suivent d'un
+   cran (1.4em → 1.6em, soit ~14%). Le nom du lieu part de la taille réduite
+   de .titre .right (0.85em), il reste donc plus petit que le titre. */
+.vevent-experimental #evenement .titre .left,
+.vevent-experimental #evenement .titre .right .org
+{
+	font-size: 1.6em;
 }
 
 /* Bouton « événement précédent » réduit à sa seule flèche : le texte est
