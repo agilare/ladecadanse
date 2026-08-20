@@ -286,15 +286,6 @@ nav.menus_actions_evenement
 	font-size: 1.45em;
 }
 
-/* Le cadre gagne ~166px : titre de l'événement et nom du lieu suivent d'un
-   cran (1.4em → 1.6em, soit ~14%). Le nom du lieu part de la taille réduite
-   de .titre .right (0.85em), il reste donc plus petit que le titre. */
-.vevent-experimental #evenement .titre .left,
-.vevent-experimental #evenement .titre .right .org
-{
-	font-size: 1.6em;
-}
-
 /* Bouton « événement précédent » réduit à sa seule flèche : le texte est
    masqué (font-size:0) et l'icône rétablie. Ne vise que l'en-tête, pas la
    navigation « suivant » du pied de page. Le libellé reste dans le DOM
