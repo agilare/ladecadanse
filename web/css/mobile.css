@@ -700,44 +700,15 @@ ul#menu_descriptions li.ici a, ul#menu_descriptions li a
     margin:0.6em 0 0 0.4em;
 }
 
-/* user-register */
-
-.user-register form#ajouter_editer label
-{
-    float: none;
-    display:block;
-    text-align:left;
-}
-
-.user-register form#ajouter_editer input
-{
-    margin:0 0 0 0.4em;
-}
-.user-register .guide_champ, .user-register .guide_groupe
-{
-    margin:0 0 0 0.4em;
-    font-style:italic;
-    font-size:0.9em;
-}
-
-.user-register .affiliation
-{
-    padding:2em;
-}
-
-.user-register form#ajouter_editer .entreLabels
-{
-    padding:0;
-}
-
-.user-register form#ajouter_editer select, .user-edit form#ajouter_editer select
+/*
+ * Les règles « .user-register » qui vivaient ici ne s'appliquaient plus : aucune balise
+ * ne porte cette classe (le <main> de la page d'inscription a « colonne inscription »).
+ * La mise en page de la page vit dans web/css/user/register.css, avec sa propre requête
+ * de média. Seule la largeur des listes de user-edit.php est conservée.
+ */
+.user-edit form#ajouter_editer select
 {
     width:200px;
-}
-
-
-.user-register form#ajouter_editer .msg {
-    margin-left:0;
 }
 
 /* formulaires */

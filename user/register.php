@@ -249,6 +249,9 @@ $erreurs = $verif->getErreurs();
         <input type="text" class="name_as" name="username_as" tabindex="-1" autocomplete="off" aria-hidden="true">
         <input type="hidden" name="<?= $formTokenName; ?>" value="<?= $_SESSION[$formTokenName]; ?>">
 
+        <p>Un compte vous permettra d'ajouter vos événements sans délai de publication et de les
+            gérer aisément.</p>
+
         <div>Avant de vous inscrire, veillez svp :
             <ul>
                 <li>à ce que les événements que vous souhaitez ajouter respectent notre <b><a href="/articles/charte-editoriale.php">charte&nbsp;éditoriale</a></b> (pas tous les événements sont publiés)</li>
@@ -283,9 +286,10 @@ $erreurs = $verif->getErreurs();
             <p>
                 <label for="motdepasse2">Confirmer le mot de passe*</label>
                 <input type="password" name="motdepasse2" id="motdepasse2" size="20" minlength="<?= PasswordPolicy::LONGUEUR_MIN ?>" maxlength="<?= PasswordPolicy::LONGUEUR_MAX ?>" value="" autocomplete="new-password" required<?= isset($erreurs['motdepasse_inegaux']) ? ' class="champ_errone" aria-invalid="true"' : '' ?>>
+                <?php /* dans le même paragraphe que le champ : l'aide est ainsi une case de la
+                         grille, alignée sur la colonne des champs sans marge à recalculer */ ?>
+                <span class="guide_champ">Le mot de passe doit faire au minimum <?= PasswordPolicy::LONGUEUR_MIN ?> caractères et comporter au moins un chiffre</span>
             </p>
-
-            <div class="guide_champ">Le mot de passe doit faire au minimum <?= PasswordPolicy::LONGUEUR_MIN ?> caractères et comporter au moins un chiffre</div>
 
             <p>
                 <label for="email">E-mail*</label>

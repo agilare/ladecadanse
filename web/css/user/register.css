@@ -1,38 +1,271 @@
-form#ajouter_editer
+/* Page d'inscription (user/register.php) */
+
+/*
+ * Page sans colonne latérale : le bloc se centre dans la largeur disponible, comme
+ * la page de connexion. Le float hérité de « #conteneur .colonne » doit tomber pour
+ * cela — un flottant ignore les marges auto et resterait collé à gauche.
+ *
+ * Le sélecteur nomme la balise pour passer devant « #conteneur .colonne { max-width:100% } »
+ * de mobile.css : à spécificité égale, cette feuille est chargée après celle-ci et le
+ * plafond de largeur sautait sous 800px.
+ *
+ * Plus large que la connexion (36em) : le formulaire porte un texte d'introduction et
+ * deux listes de noms de lieux et d'organisateurs, vite tronqués en dessous.
+ */
+main#contenu.inscription
 {
-    margin-left: 2em;
+	box-sizing:border-box;
+	max-width:46em;
+	padding:0 1em;
+	float:none;
+	margin-left:auto;
+	margin-right:auto;
 }
 
-form#ajouter_editer label
+#contenu.inscription #entete_contenu,
+#contenu.inscription .msg_erreur,
+#contenu.inscription .msg_ok,
+#contenu.inscription form#ajouter_editer
 {
-	width:14em;
+	width:100%;
+	margin-left:0;
+	margin-right:0;
 }
 
-.guide_champ
+#contenu.inscription #entete_contenu
 {
-	margin:0 1em 0 12em;
-	font-size:0.85em;
-	line-height:1.2em;
-	padding:0 0 1em 0em;
+	margin-top:0.3em;
+	margin-bottom:0;
+	padding:0.4em 0;
 }
 
-.guide_affiliation
+#contenu.inscription form#ajouter_editer
 {
-	margin:0 1em;
-    line-height:1.5em;
-    font-size:0.9em;
-	padding:0 0 1em 0em;
+	margin-top:0;
+	margin-bottom:1em;
+	padding:0;
+	background:none;
 }
 
-.affiliation
+/* le même arrondi léger que les autres cadres du site (boutons, champs, encarts) */
+#contenu.inscription form#ajouter_editer fieldset
 {
-	padding:0 0 0 13em;
+	margin:0 0 1em 0;
+	padding:1.2em 1.2em 0 1.2em;
+	border-radius:4px;
+	/* la barre d'action déborde jusqu'aux bords : sans quoi ses angles droits dépassent l'arrondi */
+	overflow:hidden;
 }
 
-form#ajouter_editer .affiliation label.affil
+#contenu.inscription form#ajouter_editer fieldset:last-of-type
 {
+	margin-bottom:0;
+}
+
+/*
+ * Libellé et champ sur deux colonnes fixes, comme la page de connexion : les libellés
+ * se calaient par des largeurs choisies champ par champ (13em ici, 14em là), que le
+ * moindre changement de texte désalignait. La grille aligne du même coup les libellés
+ * de l'affiliation, qui vivaient dans leur propre décalage.
+ */
+#contenu.inscription form#ajouter_editer p
+{
+	display:grid;
+	grid-template-columns:12em 1fr;
+	gap:0.3em 0.8em;
+	align-items:center;
+	width:100%;
+	margin:0 0 0.9em 0;
+}
+
+/* les paragraphes de texte, hors champs, gardent le flux normal */
+#contenu.inscription form#ajouter_editer > p,
+#contenu.inscription form#ajouter_editer > div,
+#contenu.inscription form#ajouter_editer > details
+{
+	display:block;
+	margin:0 0 0.8em 0;
+}
+
+#contenu.inscription form#ajouter_editer label
+{
+	width:auto;
 	margin:0;
 	padding:0;
-	height:1.4em;
-	padding:0.2em 0;
+	text-align:right;
+}
+
+/* même longueur pour tous les champs de saisie, quel que soit leur attribut size */
+#contenu.inscription form#ajouter_editer input[type="text"],
+#contenu.inscription form#ajouter_editer input[type="password"],
+#contenu.inscription form#ajouter_editer input[type="email"]
+{
+	box-sizing:border-box;
+	width:100%;
+	max-width:22em;
+}
+
+/* le champ fautif est signalé à sa place, en plus du récapitulatif en haut de page */
+#contenu.inscription form#ajouter_editer input.champ_errone
+{
+	border-color:#c00;
+	background-color:#fff6f6;
+}
+
+/*
+ * L'aide du mot de passe est une case de la grille, sous son champ : la caler par une
+ * marge gauche demanderait de convertir la largeur de la colonne dans l'em du texte
+ * réduit, un calcul faux au premier changement de corps.
+ */
+#contenu.inscription form#ajouter_editer .guide_champ
+{
+	grid-column:2;
+	margin:0.1em 0 0 0;
+	padding:0;
+	font-size:0.85em;
+	line-height:1.35em;
+}
+
+/* celle de l'affiliation introduit tout le cadre : elle en prend la largeur */
+#contenu.inscription form#ajouter_editer .guide_affiliation
+{
+	margin:0 0 1.2em 0;
+	padding:0;
+	font-size:0.9em;
+	line-height:1.45em;
+}
+
+/* le cadre d'affiliation n'a plus de décalage propre : la grille s'en charge */
+#contenu.inscription form#ajouter_editer .affiliation
+{
+	padding:1.2em 1.2em 0 1.2em;
+}
+
+#contenu.inscription form#ajouter_editer .affiliation label.affil
+{
+	height:auto;
+	padding:0;
+}
+
+/* « sinon » sépare les deux façons de nommer son affiliation : dans la colonne des champs */
+#contenu.inscription form#ajouter_editer p.entreLabels
+{
+	grid-template-columns:12em 1fr;
+	margin:0 0 0.6em 0;
+	padding:0;
+}
+
+#contenu.inscription form#ajouter_editer p.entreLabels strong
+{
+	grid-column:2;
+	justify-self:start;
+}
+
+#contenu.inscription form#ajouter_editer select,
+#contenu.inscription form#ajouter_editer .select2-container
+{
+	box-sizing:border-box;
+	width:100% !important;
+	max-width:22em;
+}
+
+/*
+ * Barre d'action. Elle est ici sœur des deux cadres, non fille de l'un d'eux comme à
+ * la connexion : elle s'aligne donc sur leur largeur au lieu de la déborder.
+ */
+#contenu.inscription form#ajouter_editer p.piedForm
+{
+	display:block;
+	box-sizing:border-box;
+	width:100%;
+	margin:0;
+	padding:0.7em 1.2em;
+	border-left:none;
+	border-radius:4px;
+}
+
+/*
+ * Récapitulatif des erreurs. L'icône se cale sur la première ligne : centrée, elle se
+ * retrouvait au milieu du vide dès que le bloc listait plusieurs erreurs.
+ */
+#contenu.inscription .msg_erreur
+{
+	box-sizing:border-box;
+	margin:0.4em 0 1em 0;
+	padding:0.9em 1em 0.9em 3em;
+	border:1px solid #e3a0a0;
+	border-radius:4px;
+	background-position:1em 1.1em;
+}
+
+#contenu.inscription .msg_erreur .msg_erreur_titre
+{
+	margin:0 0 0.4em 0;
+	font-weight:bold;
+}
+
+#contenu.inscription .msg_erreur ul
+{
+	margin:0;
+	padding-left:1.2em;
+}
+
+#contenu.inscription .msg_erreur li
+{
+	margin:0.2em 0;
+}
+
+#contenu.inscription .msg_ok
+{
+	box-sizing:border-box;
+	margin:0.4em 0 1em 0;
+	padding:0.9em 1em 0.9em 3em;
+	border-radius:4px;
+	background-position:1em 1.1em;
+	line-height:1.5em;
+}
+
+#contenu.inscription .msg_ok p
+{
+	margin:0 0 0.5em 0;
+}
+
+/* trop étroit pour deux colonnes : le libellé passe au-dessus de son champ */
+@media screen and (max-width:34.99em)
+{
+	#contenu.inscription form#ajouter_editer p,
+	#contenu.inscription form#ajouter_editer p.entreLabels
+	{
+		grid-template-columns:1fr;
+	}
+
+	#contenu.inscription form#ajouter_editer label
+	{
+		text-align:left;
+	}
+
+	#contenu.inscription form#ajouter_editer p.entreLabels strong
+	{
+		grid-column:1;
+	}
+
+	/* une seule colonne : sans cela, grid-column:2 en créerait une deuxième, implicite */
+	#contenu.inscription form#ajouter_editer .guide_champ
+	{
+		grid-column:1;
+	}
+
+	#contenu.inscription form#ajouter_editer .guide_affiliation
+	{
+		margin-left:0;
+	}
+
+	#contenu.inscription form#ajouter_editer input[type="text"],
+	#contenu.inscription form#ajouter_editer input[type="password"],
+	#contenu.inscription form#ajouter_editer input[type="email"],
+	#contenu.inscription form#ajouter_editer select,
+	#contenu.inscription form#ajouter_editer .select2-container
+	{
+		max-width:100%;
+	}
 }
