@@ -438,8 +438,8 @@ body[data-page="index"] #colonne_gauche, body[data-page="index"] #colonne_droite
 /* Sous ~450px, la colonne de droite ne fait plus que ~260px : la description
    s'y étire en lignes courtes pendant que l'espace sous l'image reste vide.
    Le texte enveloppe donc le flottant, et les lignes passées sous l'image
-   reprennent toute la largeur. Admin seulement (.vevent-experimental, posée
-   par event/evenement.php). */
+   reprennent toute la largeur. Piloté par .vevent-experimental, posée par
+   event/evenement.php. */
 @media screen and (max-width:449.98px)
 {
     .vevent-experimental #evenement #description
