@@ -6,6 +6,8 @@
 
 namespace Ladecadanse;
 
+use Ladecadanse\Utils\DateHelper;
+
 class HtmlShrink
 {
     /**
@@ -318,6 +320,57 @@ class HtmlShrink
         $aff .= "/>";
 
         return $aff;
+    }
+
+    /**
+     * En-têtes des colonnes mensuelles des listes d'administration : « jan », « fév »…
+     *
+     * L'année n'apparaît qu'en infobulle : la fenêtre de douze mois chevauche deux années, et
+     * l'écrire dans chaque colonne mangerait la place que ces colonnes étroites n'ont pas.
+     *
+     * @param list<string> $monthKeys clés 'Y-m', voir Stats\MonthlyAddedEvents::monthKeys()
+     */
+    public static function getMonthlyCountsHeaderCells(array $monthKeys): string
+    {
+        $cells = "";
+
+        foreach ($monthKeys as $monthKey)
+        {
+            $month = (int) substr($monthKey, 5, 2);
+            $title = DateHelper::monthName($month) . " " . substr($monthKey, 0, 4);
+
+            $cells .= '<th class="mois" title="' . sanitizeForHtml($title) . '">'
+                . sanitizeForHtml(DateHelper::monthNameShort($month)) . '</th>';
+        }
+
+        return $cells;
+    }
+
+    /**
+     * Cellules mensuelles d'une ligne : le nombre d'événements ajoutés ce mois-là.
+     *
+     * Un mois sans ajout laisse la cellule vide plutôt que d'afficher « 0 » : dans une bande de
+     * douze colonnes, ce qu'on cherche est la silhouette de l'activité, que douze zéros brouillent.
+     *
+     * @param array<string, int> $countsByMonth clés 'Y-m', mois sans ajout absents
+     * @param list<string>       $monthKeys
+     */
+    public static function getMonthlyCountsCells(array $countsByMonth, array $monthKeys): string
+    {
+        $cells = "";
+        $currentMonthKey = end($monthKeys);
+
+        foreach ($monthKeys as $monthKey)
+        {
+            // les mois révolus sont atténués, comme les événements passés du tableau de bord :
+            // le mois en cours est le seul encore susceptible de bouger
+            $class = $monthKey === $currentMonthKey ? "mois" : "mois mois-passe";
+            $nb = $countsByMonth[$monthKey] ?? 0;
+
+            $cells .= '<td class="' . $class . '">' . ($nb > 0 ? (int) $nb : '') . '</td>';
+        }
+
+        return $cells;
     }
 
     public static function msgInfo(string $message): void

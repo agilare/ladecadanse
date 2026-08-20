@@ -8,6 +8,7 @@ use Ladecadanse\Utils\ImageDriver2;
 use Ladecadanse\UserLevel;
 use Ladecadanse\Utils\QueryParamValidator;
 use Ladecadanse\Localite;
+use Ladecadanse\Stats\MonthlyAddedEvents;
 
 $get = [];
 
@@ -105,6 +106,11 @@ $stmt->execute([$glo_auj]);
 $lieux_even = $stmt->fetchAll(PDO::FETCH_GROUP);
 //dump($lieux_even);
 
+// suivi de l'activité : réservé aux administrateurs, seuls à relancer un lieu qui a cessé d'annoncer
+$show_monthly_counts = $authorization->isPersonneEditor($_SESSION);
+$months_keys = $show_monthly_counts ? MonthlyAddedEvents::monthKeys() : [];
+$lieux_monthly_counts = $show_monthly_counts ? MonthlyAddedEvents::forLieux() : [];
+
 $page_titre = "Lieux de sorties à ".$glo_regions[$_SESSION['region']]." : bistrots, salles, bars, restaurants, cinémas, théâtres, galeries, boutiques, musées...";
 include("../_header.inc.php");
 ?>
@@ -169,6 +175,7 @@ include("../_header.inc.php");
                     <tr>
                         <th colspan="3"></th>
                         <th class="td-align-center"><i class="fa fa-comment-o" aria-hidden="true"></i></th>
+                        <?php if ($show_monthly_counts) : ?><?= HtmlShrink::getMonthlyCountsHeaderCells($months_keys) ?><?php endif; ?>
                         <th class="td-align-center"><i class="fa fa-calendar-o" aria-label="Nombre d'événements agendés" title="Nombre d'événements agendés"></i></th>
                     </tr>
                 </thead>
@@ -205,6 +212,7 @@ include("../_header.inc.php");
                                 <?= $lieux_desc[$lieu['idLieu']][0]['nb'] ?>
                             <?php endif; ?>
                         </td>
+                        <?php if ($show_monthly_counts) : ?><?= HtmlShrink::getMonthlyCountsCells($lieux_monthly_counts[$lieu['idLieu']] ?? [], $months_keys) ?><?php endif; ?>
                         <td class="td-align-center<?php if (!empty($lieux_even[$lieu['idLieu']][0]['has_today_event']) ) { echo " ici"; } ?>">
 
                             <?php if (!empty($lieux_even[$lieu['idLieu']][0]) ) : ?>
