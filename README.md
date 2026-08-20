@@ -42,7 +42,7 @@ Ces instructions vous permettront de mettre en place une copie du projet sur vot
         GRANT USAGE ON *.* TO 'ladecadanse'@'localhost';
         GRANT SELECT, INSERT, DELETE, UPDATE  ON `ladecadanse`.* TO 'ladecadanse'@'localhost';
         ```
-    1. dans la base de données, exécuter les fichiers sous `resources/` :
+    1. dans la base de données, exécuter les fichiers sous `resources/database/` :
         1. création de la structure et les données utiles pour la table `localite` avec `ladecadanse.sql`
         1. mises à jour avec `v3-6-3_localite-add-regions_covered.sql`, etc.
     1. ajouter un 1er utilisateur, l'*admin* (groupe 1) qui vous servira à gérer le site (mot de passe : `admin_dev`) :

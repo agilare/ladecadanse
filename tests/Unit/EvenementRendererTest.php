@@ -31,7 +31,7 @@ final class EvenementRendererTest extends Unit
     {
         // sentinelle « sans horaire » : lendemain 06:00:01
         $this->assertSame('2026-04-28', EvenementRenderer::dtstartIso('2026-04-28', '2026-04-29 06:00:01'));
-        // même sentinelle, variante posée le jour même (cf. resources/evenement-fix-horaires.sql)
+        // même sentinelle, variante posée le jour même (cf. resources/database/evenement-fix-horaires.sql)
         $this->assertSame('2026-04-28', EvenementRenderer::dtstartIso('2026-04-28', '2026-04-28 06:00:01'));
     }
 

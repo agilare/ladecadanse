@@ -10,7 +10,7 @@ services:
       MYSQL_PASSWORD: ${DB_PASSWORD:-dev}
     volumes:
       - ladecadanse_db_data:/var/lib/mysql
-      - ./resources/ladecadanse.sql:/docker-entrypoint-initdb.d/001_ladecadanse.sql
+      - ./resources/database/ladecadanse.sql:/docker-entrypoint-initdb.d/001_ladecadanse.sql
       - ./docker/env/create-admin.sql:/docker-entrypoint-initdb.d/002_create-admin.sql
       - ./docker/env/create-lieux.sql:/docker-entrypoint-initdb.d/003_create-lieux.sql
     ports:

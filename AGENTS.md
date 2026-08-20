@@ -86,7 +86,7 @@ Two connectors coexist:
 
 ### Template engine
 
-`TemplateEngine` renders `resources/*.txt` files replacing `%placeholder%` tokens. Used for email bodies. Not used for HTML pages, which mix PHP and HTML directly.
+`TemplateEngine` renders `resources/templates/*.txt` files replacing `%placeholder%` tokens. Used for email bodies. Not used for HTML pages, which mix PHP and HTML directly.
 
 ## Key conventions
 

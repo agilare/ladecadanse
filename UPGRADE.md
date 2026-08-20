@@ -8,7 +8,7 @@ Les versions sont listées de la plus récente à la plus ancienne.
 
 ### Base de données
 
-Exécuter, dans cet ordre, les fichiers du répertoire `resources/` :
+Exécuter, dans cet ordre, les fichiers du répertoire `resources/database/` :
 
 1. `v3-11-0_personne-add-settings.sql` — ajoute la colonne `personne.settings`, qui stocke les préférences personnelles au format JSON (aujourd'hui les valeurs par défaut d'ajout d'événement, sous la clé `events > new_defaults`). Les préférences ajoutées plus tard n'auront pas besoin d'une nouvelle migration
 2. `v3-11-0_lieu-lat-lng-decimal.sql` — passe `lieu.lat` et `lieu.lng` de `FLOAT(10,6)` à `DECIMAL(10,7)`. La simple précision perdait environ 50 cm sur des coordonnées genevoises

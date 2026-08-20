@@ -101,7 +101,7 @@ $authorization = new Authorization(new AuthorizationRepository($connectorPdo->ge
 
 $videur = new Sentry($connectorPdo->getPDO(), $logger);
 
-$tplEngine = new TemplateEngine(__DIR__ . "/../resources/");
+$tplEngine = new TemplateEngine(__DIR__ . "/../resources/templates/");
 
 $translator = new Translator(__DIR__ . '/../resources/messages.yml');
 
