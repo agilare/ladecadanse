@@ -153,8 +153,11 @@ class Sentry
     public function checkLogin(string $user = '', string $pass = '', int $group = UserLevel::MEMBER, string $goodRedirect = '', string $badRedirect = '', bool $memoriser = false): bool
     {
         // Bornes de sûreté : la validation fine des saisies revient au formulaire, ici on
-        // écarte seulement ce qui n'a aucune chance de correspondre à un compte.
-        if (mb_strlen($user) < 2 || mb_strlen($user) > 80 || mb_strlen($pass) < 4 || mb_strlen($pass) > 50)
+        // écarte seulement ce qui n'a aucune chance de correspondre à un compte. La borne
+        // haute du mot de passe doit rester >= à celle des formulaires qui en fixent un
+        // (user-register.php, user-reset2.php : 100), sinon on crée des comptes dont le
+        // mot de passe est refusé ici avant même d'être vérifié.
+        if (mb_strlen($user) < 2 || mb_strlen($user) > 80 || mb_strlen($pass) < 4 || mb_strlen($pass) > 100)
         {
             unset($this->userdata);
 
