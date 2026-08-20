@@ -19,6 +19,7 @@ use Ladecadanse\UserLevel;
                         }
 
                         $highlightLink = '';
+                        $ici = '';
                         if (strstr((string) $_SERVER['PHP_SELF'], (string) $lien))
                         {
                             $ici = " class=\"ici\"";
