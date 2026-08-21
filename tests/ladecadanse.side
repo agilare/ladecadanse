@@ -346,7 +346,7 @@
       "id": "82522d2c-a334-46ab-a563-9c6d83b9e578",
       "comment": "",
       "command": "assertElementPresent",
-      "target": "id=utilisateur",
+      "target": "id=login",
       "targets": [
         ["id=utilisateur", "id"],
         ["name=utilisateur", "name"],
@@ -648,12 +648,12 @@
       "id": "f15ca5b7-44b0-4674-bae2-6a3ce11f1f76",
       "comment": "",
       "command": "click",
-      "target": "xpath=//div[@id='prochains_evenements']/section/article[3]/figure/a/img",
+      "target": "xpath=//figure/a/img",
       "targets": [
-        ["css=.genre:nth-child(2) > .evenement:nth-child(9) img", "css:finder"],
-        ["xpath=(//img[@alt='Flyer de NOCTAMBAR REOPENING w/ YÀNKOV & NILOU'])[2]", "xpath:img"],
-        ["xpath=//div[@id='prochains_evenements']/section/article[4]/figure/a/img", "xpath:idRelative"],
-        ["xpath=//article[4]/figure/a/img", "xpath:position"]
+        ["css=#event-4600 img", "css:finder"],
+        ["xpath=//img[@alt='Flyer de COEO · MIKE ARTHUR LE TRÈFLE B2B KEIKOWASGREAT']", "xpath:img"],
+        ["xpath=//article[@id='event-4600']/div/figure/a/img", "xpath:idRelative"],
+        ["xpath=//figure/a/img", "xpath:position"]
       ],
       "value": ""
     }, {
@@ -5186,7 +5186,7 @@
       "id": "4d9245e2-c8ef-4345-8495-d850da8cbddc",
       "comment": "",
       "command": "click",
-      "target": "id=utilisateur",
+      "target": "id=login",
       "targets": [
         ["id=utilisateur", "id"],
         ["name=utilisateur", "name"],
@@ -5207,7 +5207,7 @@
       "id": "d4258e0e-2492-4da7-8b2f-66ab01fb7510",
       "comment": "",
       "command": "type",
-      "target": "id=utilisateur",
+      "target": "id=login",
       "targets": [
         ["id=utilisateur", "id"],
         ["name=utilisateur", "name"],
@@ -5244,7 +5244,7 @@
         ["xpath=//form[@id='ajouter_editer']/fieldset/p[2]/input", "xpath:idRelative"],
         ["xpath=//p[2]/input", "xpath:position"]
       ],
-      "value": "Yaq12wsx"
+      "value": "Yaq12wsx9jh8"
     }, {
       "id": "5d721f85-7dcd-4c4d-95a3-94c963127888",
       "comment": "",
@@ -5272,7 +5272,7 @@
         ["xpath=//form[@id='ajouter_editer']/fieldset/p[3]/input", "xpath:idRelative"],
         ["xpath=//p[3]/input", "xpath:position"]
       ],
-      "value": "Yaq12wsx"
+      "value": "Yaq12wsx9jh8"
     }, {
       "id": "5cc6985b-1706-4fdb-be46-0c4ca38624e8",
       "comment": "",
@@ -5420,7 +5420,7 @@
       "id": "c4245b1e-3a81-4bff-a1ad-3016a4057761",
       "comment": "",
       "command": "click",
-      "target": "xpath=//input[@id='pseudo_email']",
+      "target": "xpath=//input[@id='login_ou_email']",
       "targets": [
         ["id=pseudo_email", "id"],
         ["name=pseudo_email", "name"],
@@ -5434,7 +5434,7 @@
       "id": "3e36e4fb-6246-4de3-827b-3f8b681a0448",
       "comment": "",
       "command": "type",
-      "target": "xpath=//input[@id='pseudo_email']",
+      "target": "xpath=//input[@id='login_ou_email']",
       "targets": [
         ["id=pseudo_email", "id"],
         ["name=pseudo_email", "name"],
