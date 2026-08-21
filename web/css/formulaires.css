@@ -422,13 +422,16 @@ font-family:Georgia;
 
 /*
  * Le contenu commence par un <p> et se poursuit par un <table> : une coche
- * en flux se serait mise sur sa propre ligne, au-dessus de la phrase. Elle
- * est donc calée en absolu sur la première ligne, et le retrait à gauche du
- * bandeau aligne la phrase et le tableau sur la même verticale.
+ * en flux se serait mise sur sa propre ligne, au-dessus de la phrase. Elle est
+ * donc portée par la première ligne du <p> lui-même, et non calée en absolu sur
+ * le bandeau : partageant la boîte de ligne du texte, elle en partage la ligne
+ * de base. En absolu elle s'en écartait de ~3px, la fonte des icônes et celle
+ * du texte n'ayant pas les mêmes métriques verticales — écart qu'aucun réglage
+ * de `top` ne corrige durablement. Le retrait à gauche du bandeau aligne, lui,
+ * la phrase et le tableau sur la même verticale.
  */
 .msg_ok_copy
 {
-	position:relative;
 	width:94%;
 	margin:2em auto;
 	padding:1em 1% 1em 2.6em;
@@ -438,13 +441,19 @@ font-family:Georgia;
 	line-height:1.5em;
 }
 
-.msg_ok_copy::before
+.msg_ok_copy > p:first-child::before
 {
-	position:absolute;
-	left:1em;
-	top:1em;
+	/* Largeur nulle : le glyphe déborde dans la gouttière sans décaler le texte,
+	   qui reste aligné sur le tableau. -1.4545em = les 1.6em séparant le bord du
+	   bandeau du début du texte (2.6em de padding moins la gouttière de 1em),
+	   rapportés au font-size du <p>, que copy.php fixe à 1.1em. */
+	position:relative;
+	left:-1.4545em;
 	display:inline-block;
-	font:normal normal normal 1.1em/1.5em FontAwesome;
+	width:0;
+	font-family:FontAwesome;
+	font-style:normal;
+	font-weight:normal;
 	text-rendering:auto;
 	-webkit-font-smoothing:antialiased;
 	-moz-osx-font-smoothing:grayscale;
