@@ -46,7 +46,7 @@ ul.entete_contenu_navigation li
 
 ul.entete_contenu_navigation li a
 {
-    padding: 0.6em
+    padding: 0.6em 0.9em;
 }
 
 ul.entete_contenu_navigation li:nth-child(1) a

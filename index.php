@@ -225,7 +225,7 @@ include("_header.inc.php");
             </h1>
         </hgroup>
         <ul class="entete_contenu_navigation">
-            <li><a href="index.php?courant=<?= sanitizeForHtml($date_prev) ?>" rel="prev nofollow" title="Jour précédent" aria-label="Jour précédent"><?= $iconePrecedent ?></a></li><li><a href="index.php?courant=<?= sanitizeForHtml($date_next) ?>" rel="next nofollow"><?= ucfirst(DateHelper::isoToFr($date_next, 'tout', false)).$iconeSuivant ?></a></li>
+            <li><a href="index.php?courant=<?= sanitizeForHtml($date_prev) ?>" rel="prev nofollow" title="Jour précédent" aria-label="Jour précédent"><?= $iconePrecedent ?></a></li><li><a href="index.php?courant=<?= sanitizeForHtml($date_next) ?>" rel="next nofollow"><?php if ($is_courant_today) : ?>Demain<?php else : ?>Lendemain<?php endif; ?> <?= $iconeSuivant ?></a></li>
         </ul>
         <div class="spacer"></div>
     </header>
@@ -264,11 +264,11 @@ include("_header.inc.php");
 
                     <?php
                     $events_collection = new Ladecadanse\EvenementWithSeparatorCollection($tab_genre_events, $is_chronological_order, $get['courant']);
-                    
+
                     foreach ($events_collection as $event)
                     {
                         ?>
-                        
+
                         <?php if ($separator = $event->getSeparator()) : ?>
                             <p class="rappel_date"><?= $separator->getLabel($day_label, Evenement::genreLabel($genre)); ?></p>
                         <?php endif; ?>
