@@ -194,10 +194,10 @@ table#calendrier tr#mois th a
 }
 
 
-.msg_ok, .msg_erreur, .msg_info, .msg_email {
-    background-position: 5px 50%;
-    padding: 1em 0 1em 2em;
-}
+/* Le retrait gauche des bandeaux de message est celui de global.css : réduit ici
+   à 2em, il passait sous l'icône (calée à 1em, large de ~0.9em), qui chevauchait
+   alors le texte. Le `background-position` qui l'accompagnait datait de l'époque
+   où l'icône était une image de fond, remplacée depuis par un pseudo-élément. */
 
 /****/
 #btn_menu_pratique

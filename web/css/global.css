@@ -666,9 +666,13 @@ li.action_supprimer > a::before, a.action_supprimer::before
 .msg_email::before
 {
     /* calé sur la première ligne : centré, il tombait entre les deux lignes
-       des messages qui en comptent plusieurs */
+       des messages qui en comptent plusieurs.
+       Le retrait est exprimé en em, comme le padding gauche du bandeau : en px
+       face à un padding en %, le glyphe passait par-dessus le texte dès que le
+       bandeau était étroit (2.6em - 1em - ~0.9em de glyphe = ~0.7em de marge,
+       quelle que soit la largeur). */
     position:absolute;
-    left:15px;
+    left:1em;
     top:1em;
     line-height:1.3em;
 }
@@ -677,7 +681,7 @@ li.action_supprimer > a::before, a.action_supprimer::before
 {
     width:90%;
     margin:2em auto;
-    padding:1em 0% 1em 6%;
+    padding:1em 0% 1em 2.6em;
     border-top:1px solid red;
     border-bottom:1px solid red;
     background-color:#ffefef;
@@ -694,7 +698,7 @@ li.action_supprimer > a::before, a.action_supprimer::before
 {
     width:90%;
     margin:1em auto;
-    padding:1em 0% 1em 6%;
+    padding:1em 0% 1em 2.6em;
     border-top:1px solid blue;
     border-bottom:1px solid blue;
     background-color:#eaeaff;
@@ -711,7 +715,7 @@ li.action_supprimer > a::before, a.action_supprimer::before
 {
     width:90%;
     margin:2em auto;
-    padding:1em 0% 1em 6%;
+    padding:1em 0% 1em 2.6em;
     border-top:1px solid green;
     border-bottom:1px solid green;
     background-color:#eaf0ea;
@@ -728,7 +732,7 @@ li.action_supprimer > a::before, a.action_supprimer::before
 {
     width:90%;
     margin:1em auto;
-    padding:1em 0% 1em 6%;
+    padding:1em 0% 1em 2.6em;
     border-top:1px solid blue;
     border-bottom:1px solid blue;
     background-color:#eaeaff;

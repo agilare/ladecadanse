@@ -148,7 +148,6 @@ main#contenu.connexion
 	padding:0.9em 1em 0.9em 3em;
 	border:1px solid #e3a0a0;
 	border-radius:4px;
-	background-position:1em 1.1em;
 }
 
 #contenu.connexion .msg_erreur .msg_erreur_titre
