@@ -243,7 +243,9 @@ class LieuEdition extends Edition
             }
             else
             {
-                $sql_lieu = "SELECT canton FROM localite WHERE id=" . (int) $this->connector->sanitize($this->valeurs['localite_id']);
+                // hors quotes, sanitize() ne neutralise rien d'une charge utile numérique :
+                // c'est le cast qui protège, l'échappement ne faisait qu'entretenir l'illusion
+                $sql_lieu = "SELECT canton FROM localite WHERE id=" . (int) $this->valeurs['localite_id'];
                 $req_lieu = $this->connector->query($sql_lieu);
                 $tab_lieu = $this->connector->fetchArray($req_lieu);
                 $champs['region'] = $tab_lieu['canton'];
@@ -357,8 +359,16 @@ class LieuEdition extends Edition
 
             foreach ($this->supprimer_galerie as $nom_fichier)
             {
-                $idF = Text::reverseMbStrrchr($nom_fichier, '.');
-                //echo $idF;
+                // Le formulaire poste « <id>.<extension> », mais la valeur vient du POST et rien
+                // ne garantit sa forme : non castée, elle ouvrait une injection dans les deux
+                // DELETE ci-dessous.
+                $idF = (int) Text::reverseMbStrrchr($nom_fichier, '.');
+
+                if ($idF <= 0)
+                {
+                    continue;
+                }
+
                 $this->connector->query("DELETE FROM lieu_fichierrecu WHERE idLieu=" . $lieu->getId() . " AND idFichierrecu=" . $idF);
                 $this->connector->query("DELETE FROM fichierrecu WHERE idFichierrecu=" . $idF);
                 $this->safeUnlinkImageAndThumb($rep_uploads_lieux_galeries, $nom_fichier);
@@ -470,7 +480,11 @@ class LieuEdition extends Edition
 
         foreach ($this->organisateurs as $idOrg)
         {
-            if ($idOrg != 0)
+            // Valeurs d'un <select multiple>, donc entièrement forgeables : la comparaison lâche
+            // à 0 laissait passer n'importe quelle chaine jusqu'à la concaténation SQL.
+            $idOrg = is_scalar($idOrg) ? (int) $idOrg : 0;
+
+            if ($idOrg > 0)
             {
                 $sql = "INSERT INTO lieu_organisateur (idLieu, idOrganisateur) VALUES (" . $lieu->getId() . ", " . $idOrg . ")";
                 //echo $sql;

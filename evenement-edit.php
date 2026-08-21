@@ -532,7 +532,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 		// pour remplir les champs nomLieu, adresse, etc. de la table evenement
 		if (!empty($champs['idLieu']))
 		{
-			$sql_lieu = "SELECT nom, adresse, quartier, localite_id, region, URL FROM lieu WHERE idLieu=".$connector->sanitize($champs['idLieu']);
+			// cast et non sanitize() : hors quotes, l'échappement ne bloque pas « 1 OR … »
+			$sql_lieu = "SELECT nom, adresse, quartier, localite_id, region, URL FROM lieu WHERE idLieu=".(int) $champs['idLieu'];
 			$req_lieu = $connector->query($sql_lieu);
 			$tab_lieu = $connector->fetchArray($req_lieu);
 			$champs['nomLieu'] = $tab_lieu['nom'];
@@ -566,7 +567,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
                 }
                 else
                 {
-                    $sql_lieu = "SELECT canton FROM localite WHERE id=".$connector->sanitize($champs['localite_id']);
+                    // cast et non sanitize() : hors quotes, l'échappement ne bloque pas « 1 OR … »
+                    $sql_lieu = "SELECT canton FROM localite WHERE id=".(int) $champs['localite_id'];
                     $req_lieu = $connector->query($sql_lieu);
                     $tab_lieu = $connector->fetchArray($req_lieu);
                     $champs['region'] = $tab_lieu['canton'];
