@@ -275,7 +275,7 @@ $erreurs = $verif->getErreurs();
 
             <p>
                 <label for="login">Login*</label>
-                <input type="text" name="login" id="login" size="40" minlength="2" maxlength="80" value="<?= sanitizeForHtml($champs['login']) ?>" autocomplete="username" autofocus required<?= isset($erreurs['login']) || isset($erreurs['login_existant']) ? ' class="champ_errone" aria-invalid="true"' : '' ?>>
+                <input type="text" name="login" id="login" size="40" minlength="2" maxlength="80" value="<?= sanitizeForHtml($champs['login']) ?>" autocomplete="username" required<?= isset($erreurs['login']) || isset($erreurs['login_existant']) ? ' class="champ_errone" aria-invalid="true"' : '' ?>>
             </p>
 
             <p>
