@@ -69,7 +69,6 @@ parameters:
                 - lieu-text-edit.php
                 - organisateur-edit.php
                 - user-edit.php
-                - user-logout.php
                 - user-reset.php
                 - user-reset2.php
 includes:

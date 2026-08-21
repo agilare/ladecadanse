@@ -331,6 +331,30 @@ abbr.dtstart[title]
             color:#1784e8;
         }
 
+        /* « Sortir » déclenche un POST (cf. user/logout.php) : c'est donc un bouton dans un
+           formulaire, à qui l'on rend l'apparence des liens voisins du menu */
+        #entete_haut #menu_pratique ul li form.deconnexion
+        {
+            display:inline;
+        }
+
+        /* pas de height:1em comme sur les liens voisins : inerte sur la boîte inline d'un
+           lien, elle rognerait celle du bouton, que le navigateur sait dimensionner */
+        #entete_haut #menu_pratique ul li form.deconnexion button
+        {
+            padding:0.4em 0.4em;
+            border:0;
+            background:none;
+            font:inherit;
+            color:#1569C7;
+            cursor:pointer;
+        }
+
+        #entete_haut #menu_pratique ul li form.deconnexion button:hover
+        {
+            color:#1784e8;
+        }
+
 
         #entete_haut #menu_pratique ul li.ici a
         {

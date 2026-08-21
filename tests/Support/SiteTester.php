@@ -42,7 +42,7 @@ class SiteTester extends \Codeception\Actor
         // On vérifie la session sur une page statique plutôt que sur la home,
         // qui peut échouer pour des raisons de données (cf. BotMonitoringCest)
         $this->amOnPage('/articles/apropos.php');
-        $this->seeLink('Sortir');
+        $this->seeElement('#menu_pratique form.deconnexion');
     }
 
     public function loginAsAdmin(): void
@@ -61,9 +61,17 @@ class SiteTester extends \Codeception\Actor
         );
     }
 
+    /**
+     * Ferme la session ouverte sur le site testé.
+     *
+     * `user/logout.php` n'accepte que POST, avec le jeton CSRF déposé en session : il
+     * faut donc afficher une page rendue en session pour y trouver le bouton « Sortir »,
+     * dont `submitForm()` renvoie le champ caché tel quel.
+     */
     public function logout(): void
     {
-        $this->amOnPage('/user-logout.php');
+        $this->amOnPage('/articles/apropos.php');
+        $this->submitForm('#menu_pratique form.deconnexion', []);
     }
 
     /**

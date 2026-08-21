@@ -265,7 +265,22 @@ $mouseless_allowed = isset($_SESSION['Sgroupe']) && (int) $_SESSION['Sgroupe'] <
                                         <i class="fa fa-user" aria-hidden="true"></i>
                                     </a>
 
-                                    <a href="/user-logout.php">Sortir</a>
+                                    <?php
+                                    /*
+                                     * Jeton valable toute la session, et non renouvelé à chaque formulaire comme
+                                     * dans user/login.php : le bouton est rendu sur toutes les pages, donc dans
+                                     * tous les onglets ouverts, et un jeton à usage unique rendrait la déconnexion
+                                     * impossible depuis un onglet resté en arrière-plan.
+                                     */
+                                    if (empty($_SESSION['form_token_user_logout']))
+                                    {
+                                        $_SESSION['form_token_user_logout'] = bin2hex(random_bytes(32));
+                                    }
+                                    ?>
+                                    <form action="/user/logout.php" method="post" class="deconnexion">
+                                        <input type="hidden" name="form_token_user_logout" value="<?= $_SESSION['form_token_user_logout'] ?>">
+                                        <button type="submit">Sortir</button>
+                                    </form>
                                 </li>
                         <?php } ?>
                     </ul>

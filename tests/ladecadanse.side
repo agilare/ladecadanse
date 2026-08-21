@@ -2157,7 +2157,7 @@
       "id": "b64501a5-6b82-4dcc-9368-81bcf3897a42",
       "comment": "",
       "command": "assertElementNotPresent",
-      "target": "linkText=Sortir",
+      "target": "css=#menu_pratique form.deconnexion button",
       "targets": [],
       "value": ""
     }, {
@@ -2307,16 +2307,8 @@
       "id": "881a0ad1-4b22-4d85-bf23-419fdb50e378",
       "comment": "",
       "command": "assertElementPresent",
-      "target": "linkText=Sortir",
-      "targets": [
-        ["linkText=Sortir", "linkText"],
-        ["css=li:nth-child(7) > a", "css:finder"],
-        ["xpath=//a[contains(text(),'Sortir')]", "xpath:link"],
-        ["xpath=//nav[@id='menu_pratique']/ul/li[7]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/user-logout.php')]", "xpath:href"],
-        ["xpath=//li[7]/a", "xpath:position"],
-        ["xpath=//a[contains(.,'Sortir')]", "xpath:innerText"]
-      ],
+      "target": "css=#menu_pratique form.deconnexion button",
+      "targets": [],
       "value": ""
     }]
   }, {
@@ -6018,7 +6010,7 @@
       "id": "3e1a6a87-1d60-43e5-84ce-d6b5658f59e8",
       "comment": "",
       "command": "assertElementNotPresent",
-      "target": "linkText=Sortir",
+      "target": "css=#menu_pratique form.deconnexion button",
       "targets": [],
       "value": ""
     }, {
@@ -6132,7 +6124,7 @@
       "id": "c34202c6-985f-4799-a35c-246294033dc6",
       "comment": "",
       "command": "assertElementPresent",
-      "target": "linkText=Sortir",
+      "target": "css=#menu_pratique form.deconnexion button",
       "targets": [],
       "value": ""
     }]
@@ -6695,16 +6687,8 @@
       "id": "209dd077-c148-4a08-bf2b-2fe9151d085e",
       "comment": "",
       "command": "click",
-      "target": "linkText=Sortir",
-      "targets": [
-        ["linkText=Sortir", "linkText"],
-        ["css=li:nth-child(7) > a", "css:finder"],
-        ["xpath=//a[contains(text(),'Sortir')]", "xpath:link"],
-        ["xpath=//nav[@id='menu_pratique']/ul/li[7]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/user-logout.php')]", "xpath:href"],
-        ["xpath=//li[7]/a", "xpath:position"],
-        ["xpath=//a[contains(.,'Sortir')]", "xpath:innerText"]
-      ],
+      "target": "css=#menu_pratique form.deconnexion button",
+      "targets": [],
       "value": ""
     }, {
       "id": "5a804ec2-8356-487d-9e4e-e862709a997d",
@@ -7437,9 +7421,9 @@
       "value": ""
     }, {
       "id": "cmd-salle-000b",
-      "comment": "Navigate to logout page",
+      "comment": "Reload after clearing cookies, which already dropped the session",
       "command": "open",
-      "target": "/user-logout.php",
+      "target": "/",
       "targets": [],
       "value": ""
     }, {
@@ -7757,7 +7741,7 @@
       "id": "f60f220f-03a6-4a59-8d15-d1687c5fd4aa",
       "comment": "",
       "command": "assertElementNotPresent",
-      "target": "linkText=Sortir",
+      "target": "css=#menu_pratique form.deconnexion button",
       "targets": [],
       "value": ""
     }, {
@@ -7878,14 +7862,14 @@
       "id": "976af46a-e954-47f7-94b8-a45afd798393",
       "comment": "",
       "command": "assertElementPresent",
-      "target": "linkText=Sortir",
+      "target": "css=#menu_pratique form.deconnexion button",
       "targets": [],
       "value": ""
     }, {
       "id": "eb4ebdd8-ef76-4ffa-b829-b4de70ff194a",
       "comment": "",
       "command": "click",
-      "target": "linkText=Sortir",
+      "target": "css=#menu_pratique form.deconnexion button",
       "targets": [],
       "value": ""
     }, {
