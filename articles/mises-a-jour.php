@@ -168,7 +168,7 @@ include("../_header.inc.php");
 
         <ul>
             <li><a href="/articles/faireUnDon.php">Faire un don</a> : section Soutiens avec les entités qui ont fait un don significatif</li>
-            <li><a href="/articles/apropos.php">À propos</a> : mention de l'<a href="https://www.tdg.ch/la-decadanse-le-site-genevois-recense-les-sorties-depuis-vingt-trois-ans-925206183034" rel="external" target="_blank">article de la Tribune de Genève</a> sur La décadanse paru en décembre 2025</li>
+            <li><a href="/articles/apropos.php">À propos</a> : mention de l'<a href="https://www.tdg.ch/la-decadanse-le-site-genevois-recense-les-sorties-depuis-vingt-trois-ans-925206183034" rel="external" target="_blank">article de la Tribune de Genève</a> sur La&nbsp;décadanse paru en décembre 2025</li>
             <li>Corrections de quelques textes</li>
         </ul>
 
@@ -388,7 +388,7 @@ include("../_header.inc.php");
         <h3>Divers</h3>
 
         <ul>
-            <li><a href="/articles/apropos.php">À propos</a> : lien vers l'<a href="https://www.gbnews.ch/ladecadanse-ch-un-bouche-a-oreille-en-ligne/" rel="external" target="_blank">article GBNews.ch au sujet de La décadanse</a>
+            <li><a href="/articles/apropos.php">À propos</a> : lien vers l'<a href="https://www.gbnews.ch/ladecadanse-ch-un-bouche-a-oreille-en-ligne/" rel="external" target="_blank">article GBNews.ch au sujet de La&nbsp;décadanse</a>
             <li>améliorations du référencement
             <li>refactoring
         </ul>

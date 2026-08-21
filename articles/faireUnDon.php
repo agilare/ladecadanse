@@ -17,7 +17,7 @@ include("../_header.inc.php");
 
 <!--        <p>Vous pouvez contribuer (une seule fois ou de manière récurrente, selon vos possibilités) via :</p>-->
 
-        <p>Votre don aidera à financer le bon fonctionnement et l'évolution de La décadanse, et m'encouragera dans mon travail. Merci&nbsp;!</p>
+        <p>Votre don aidera à financer le bon fonctionnement et l'évolution de La&nbsp;décadanse, et m'encouragera dans mon travail. Merci&nbsp;!</p>
 
 <!--        <script src="https://wemakeit.com/static-assets/widgets/donation_box.js" async="async"></script>-->
 <!--        <wemakeit-donation-box color="blue" locale="fr" slug="soutenir-la-decadanse" type="card" nonce="<?php echo CSP_NONCE ?>" style="margin: 1em 1em 1em 1em"></wemakeit-donation-box>-->
@@ -52,7 +52,7 @@ include("../_header.inc.php");
         <br>
         <hr>
         <br>
-        <p>La décadanse est un site entièrement gratuit sur un code <a href="https://github.com/agilare/ladecadanse/" rel="external" target="_blank">open source</a>, que je développe et gère bénévolement depuis une vingtaine d'années, avec parfois l'aide d'autres personnes.</p>
+        <p>La&nbsp;décadanse est un site entièrement gratuit sur un code <a href="https://github.com/agilare/ladecadanse/" rel="external" target="_blank">open source</a>, que je développe et gère bénévolement depuis une vingtaine d'années, avec parfois l'aide d'autres personnes.</p>
         <p>À côté des frais courants (hébergement, contribution aux outils utilisés...), le site me demande un investissement significatif&nbsp;:</p>
         <ul style="margin-left:0.4em;list-style-type: none">
             <li>✅ <b>maintenance</b> : assurer sa disponibilité, sa sécurité ; garder à jour, chasser les bugs</li>
@@ -68,7 +68,7 @@ include("../_header.inc.php");
 
         <h2 style="margin-bottom:0.6em;">Soutiens</h2>
 
-        <p>Je remercie ces organisateurs pour leur soutien à La décadanse&nbsp;:</p>
+        <p>Je remercie ces organisateurs pour leur soutien à La&nbsp;décadanse&nbsp;:</p>
 
         <br>
 
