@@ -2233,8 +2233,13 @@ ul#menu_calendrier li form p
 #derniers_lieux td
 {
   padding: 0.4em;
-  vertical-align: top;
+  vertical-align: middle;
   border-top: 1px dotted #5C7378;
+}
+
+#derniers_lieux td img
+{
+    max-height: 60px;
 }
 
 #derniers_lieux h2
