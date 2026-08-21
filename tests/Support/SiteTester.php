@@ -32,11 +32,21 @@ class SiteTester extends \Codeception\Actor
      * (`form_token_user_login`) et par un honeypot `login_as` qui doit rester
      * vide : `submitForm()` renvoie les champs cachés tels quels et PhpBrowser
      * conserve les cookies, il n'y a donc rien de particulier à faire ici.
+     *
+     * `$memoriser` coche « Rester connecté-e », qui pose en plus le cookie de longue durée
+     * `ladecadanse_remember` : le seul moyen de tester ce que la déconnexion en fait.
      */
-    public function login(string $user, string $password): void
+    public function login(string $user, string $password, bool $memoriser = false): void
     {
+        $champs = ['pseudo' => $user, 'motdepasse' => $password];
+
+        if ($memoriser)
+        {
+            $champs['memoriser'] = '1';
+        }
+
         $this->amOnPage('/user/login.php');
-        $this->submitForm('#ajouter_editer', ['pseudo' => $user, 'motdepasse' => $password]);
+        $this->submitForm('#ajouter_editer', $champs);
 
         // succès = redirection vers / ; échec = /user/login.php?msg=faux.
         // On vérifie la session sur une page statique plutôt que sur la home,
@@ -53,11 +63,12 @@ class SiteTester extends \Codeception\Actor
         );
     }
 
-    public function loginAsActor(): void
+    public function loginAsActor(bool $memoriser = false): void
     {
         $this->login(
             TestEnv::get('LADECADANSE_SITE_ACTOR_USER'),
-            TestEnv::get('LADECADANSE_SITE_ACTOR_PASS')
+            TestEnv::get('LADECADANSE_SITE_ACTOR_PASS'),
+            $memoriser
         );
     }
 

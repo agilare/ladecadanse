@@ -397,7 +397,20 @@ class Sentry
         {
             unset($_COOKIE['ladecadanse_remember']);
 
-            setcookie('ladecadanse_remember', '', ['expires' => 1, 'secure' => true, 'httponly' => true]);
+            /*
+             * Le path doit reprendre celui d'updateCookie() : un cookie ne s'efface que par
+             * un Set-Cookie de mêmes nom, domaine et path. Sans path, PHP prend le
+             * répertoire du script appelant, et le navigateur garde intact le cookie posé
+             * sur '/'. L'oubli est resté invisible tant que la page de déconnexion était à
+             * la racine du site.
+             */
+            setcookie('ladecadanse_remember', '', [
+                'expires' => 1,
+                'path' => '/',
+                'secure' => true,
+                'httponly' => true,
+                'samesite' => 'Lax'
+            ]);
         }
 
         // used (only) to inform in _header.inc.php, one time, to Matomo that the users logged out
