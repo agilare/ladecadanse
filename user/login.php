@@ -66,7 +66,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
         }
         else if (mb_strlen($champs['pseudo']) < 2 || mb_strlen($champs['pseudo']) > 100)
         {
-            $verif->setErreur("pseudo", "Votre identifiant fait entre 2 et 100 caractères.");
+            $verif->setErreur("pseudo", "Votre identifiant doit faire entre 2 et 100 caractères.");
         }
 
         if ($motdepasse === "")
@@ -78,7 +78,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
         // des mots de passe que le site a lui-même acceptés
         else if (mb_strlen($motdepasse) < 4 || mb_strlen($motdepasse) > 100)
         {
-            $verif->setErreur("motdepasse", "Votre mot de passe fait entre 4 et 100 caractères.");
+            $verif->setErreur("motdepasse", "Votre mot de passe doit faire entre 4 et 100 caractères.");
         }
 
         if ($verif->nbErreurs() === 0)

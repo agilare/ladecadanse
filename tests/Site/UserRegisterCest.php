@@ -129,7 +129,7 @@ class UserRegisterCest
             'email' => 'zz-codeception-mdp@example.com',
         ]);
 
-        $I->see("Votre mot de passe fait entre");
+        $I->see("Votre mot de passe doit faire entre");
         $I->dontSee('Votre compte a été créé');
     }
 

@@ -86,7 +86,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
         }
         else if (mb_strlen($champs['login']) < 2 || mb_strlen($champs['login']) > 80)
         {
-            $verif->setErreur("login", "Votre login fait entre 2 et 80 caractères.");
+            $verif->setErreur("login", "Votre login doit faire entre 2 et 80 caractères.");
         }
         else if ($existeDeja('pseudo', $champs['login']))
         {
@@ -121,7 +121,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 
         if ($champs['affiliation'] !== '' && (mb_strlen($champs['affiliation']) < 2 || mb_strlen($champs['affiliation']) > 250))
         {
-            $verif->setErreur("affiliation", "Le nom de l'affiliation fait entre 2 et 250 caractères.");
+            $verif->setErreur("affiliation", "Le nom de l'affiliation doit faire entre 2 et 250 caractères.");
         }
 
         if ($verif->nbErreurs() === 0)

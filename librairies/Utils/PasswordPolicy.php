@@ -56,7 +56,7 @@ final class PasswordPolicy
         }
         else if (mb_strlen($motdepasse) < self::LONGUEUR_MIN || mb_strlen($motdepasse) > self::LONGUEUR_MAX)
         {
-            $erreurs['motdepasse'] = "Votre mot de passe fait entre " . self::LONGUEUR_MIN
+            $erreurs['motdepasse'] = "Votre mot de passe doit faire entre " . self::LONGUEUR_MIN
                 . " et " . self::LONGUEUR_MAX . " caractères.";
         }
         else if (!preg_match("/[0-9]/", $motdepasse))
