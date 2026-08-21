@@ -338,10 +338,14 @@ abbr.dtstart[title]
             display:inline;
         }
 
-        /* pas de height:1em comme sur les liens voisins : inerte sur la boîte inline d'un
-           lien, elle rognerait celle du bouton, que le navigateur sait dimensionner */
+        /* Le bouton forme une boîte inline-block là où les liens voisins restent inline :
+           son padding vertical hausse la ligne, donc le bandeau jaune du <li>, de 10 px.
+           Les marges négatives annulent cette poussée sans rien retirer à la surface
+           cliquable. Pas de height:1em non plus : inerte sur la boîte inline d'un lien,
+           elle rognerait celle du bouton, que le navigateur sait dimensionner. */
         #entete_haut #menu_pratique ul li form.deconnexion button
         {
+            margin:-0.4em 0;
             padding:0.4em 0.4em;
             border:0;
             background:none;
