@@ -1023,7 +1023,8 @@ if ($show_form)
         </div>
 
         <?php if (!$est_edition) { ?>
-            <p style="margin:1em;">
+            <?php // width:auto : les <p> du formulaire font 100% (formulaires.css), ce qui s'ajoutait ici aux marges et débordait du viewport ?>
+            <p style="margin:1em;width:auto">
                 Les événements annoncés sur La décadanse sont également visibles sur <a href="https://epic-magazine.ch/" target="_blank">EPIC-Magazine</a></p>
             <details style="margin-left:15px;margin-top:-11px">
             <summary>Détails</summary>

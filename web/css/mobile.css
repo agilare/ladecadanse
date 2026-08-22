@@ -713,11 +713,17 @@ ul#menu_descriptions li.ici a, ul#menu_descriptions li a
 
 /* formulaires */
 
-form#ajouter_editer textarea {
-
-
-    width: 320px;
-
+/*
+ * Champs de saisie longs : ils suivent la largeur du formulaire au lieu des 320px
+ * fixes d'avant, qui laissaient une bande vide à droite sur la plupart des
+ * téléphones. box-sizing: border-box pour que bordure et padding tiennent dans
+ * les 100 % — sans quoi le champ ressortirait de son fieldset, lequel s'élargit
+ * pour suivre (min-width: min-content sur les fieldsets) et déborde du viewport.
+ */
+form#ajouter_editer textarea
+{
+    box-sizing: border-box;
+    width: 100%;
 }
 
 
@@ -726,9 +732,25 @@ form#ajouter_editer select#idLieu
     width: 200px;
 }
 
-form#ajouter_editer #adresse, form#ajouter_editer #urlLieu, form#ajouter_editer  #horaire_complement,form#ajouter_editer  #prelocations, form#ajouter_editer #titre, form#ajouter_editer #ref
+/* #prix (size=45), #flyer_url et #image_url (size=50) n'avaient aucune largeur ici :
+   leur largeur intrinsèque débordait du viewport. */
+form#ajouter_editer #adresse, form#ajouter_editer #urlLieu, form#ajouter_editer  #horaire_complement,form#ajouter_editer  #prelocations, form#ajouter_editer #titre, form#ajouter_editer #ref, form#ajouter_editer #prix, form#ajouter_editer #flyer_url, form#ajouter_editer #image_url
 {
-    width: 320px;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+/*
+ * Select2 pose une largeur en style en ligne, recopiée de la largeur intrinsèque
+ * du <select> d'origine — soit celle de son option la plus longue : ~430px pour la
+ * liste des organisateurs. Seul !important passe devant un style en ligne.
+ * Ciblé sur le seul champ concerné : les autres listes Select2 ont déjà une
+ * largeur tenue par select#idLieu ci-dessus.
+ */
+form#ajouter_editer #organisateurs + .select2-container
+{
+    box-sizing: border-box;
+    width: 100% !important;
 }
 
 
