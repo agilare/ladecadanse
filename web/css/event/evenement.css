@@ -1,7 +1,7 @@
 #entete_contenu_titre
 {
     float:left;
-    width: 50%;
+    width: 80%;
     margin-top:0;
     margin-bottom:0em;
     font-size:1.2em;
@@ -9,7 +9,7 @@
 
 .entete_contenu_navigation
 {
-    max-width: 48%;
+    max-width: 18%;
     font-size:0.9em;
 }
 

@@ -190,13 +190,13 @@ include("../_header.inc.php");
         unset($_SESSION['evenement-edit_flash_msg']);
     endif; ?>
 
-    <header id="entete_contenu">
+    <header id="entete_contenu" style="margin-bottom:-0.8em">
 
         <div id="entete_contenu_titre" <?php if ($tab_even['e_dateEvenement'] < $glo_auj) { echo ' class="ancien"'; } ?>>
             <span class="category"><?= sanitizeForHtml($translator->get("event-category-".$tab_even['e_genre'])); ?></span>, <a href="/index.php?courant=<?= $tab_even['e_dateEvenement'] ?>"><abbr class="dtstart" title="<?= sanitizeForHtml(EvenementRenderer::dtstartIso($tab_even['e_dateEvenement'], $tab_even['e_horaire_debut'])) ?>"><?= DateHelper::isoToFr($tab_even['e_dateEvenement'], 'annee') ?></abbr></a>
         </div>
 
-        <?php if (!empty($events_siblings[0])) : ?>
+        <?php if (0) : // !empty($events_siblings[0]) ?>
             <div class="entete_contenu_navigation"><a href="/event/evenement.php?idE=<?= $events_siblings[0]['idEvenement'] ?>" rel="prev nofollow"><span class="event-navig-link"><span class="nav_titre"><?= sanitizeForHtml($events_siblings[0]['titre']) ?></span> - <?= sanitizeForHtml($events_siblings[0]['lieu_nom']) ?>&nbsp;<i class="fa fa-arrow-up"></i></span></a></div>
         <?php endif; ?>
         <div class="spacer"></div>

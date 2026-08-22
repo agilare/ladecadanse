@@ -482,13 +482,13 @@ ul.menu_actions_evenement li.format_imprimable, #entete_contenu ul li.format_imp
    deux listes alignées sur le même bord gauche. */
 ul.menu_actions_evenement
 {
-    text-align: left;
+/*    text-align: left;*/
 }
 
 ul.menu_actions_evenement li
 {
     display: inline-block;
-    margin: 0 1.2em 0 0;
+    margin: 0 0 0 1.2em;
     white-space: nowrap;
 }
 
