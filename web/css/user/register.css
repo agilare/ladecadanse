@@ -21,15 +21,13 @@
 
 #contenu.inscription #entete_contenu
 {
-	margin-top:0.3em;
-	margin-bottom:0;
+    margin: 0.3em 0.3em 0 0.3em;
 	padding:0.4em 0;
 }
 
 #contenu.inscription form#ajouter_editer
 {
-	margin-top:0;
-	margin-bottom:1em;
+    margin: 0.3em 0.3em 0 0.3em;
 	padding:0;
 	background:none;
 }
