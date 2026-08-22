@@ -113,8 +113,8 @@ else if (!empty($_GET['msg']) && QueryParamValidator::isAcceptedUrlQueryValue($_
 // =============================================================================
 
 $page_titre = "Connexion";
-// user/login.css est chargé automatiquement par _header.inc.php, d'après le nom de la page
-$extra_css = ["formulaires"];
+// compte.css sert les trois formulaires de compte : connexion, oubli et réinitialisation
+$extra_css = ["formulaires", "compte"];
 include("../_header.inc.php");
 
 // jeton renouvelé à chaque affichage du formulaire
@@ -123,7 +123,7 @@ $_SESSION[$formTokenName] = bin2hex(random_bytes(32));
 $erreurs = $verif->getErreurs();
 ?>
 
-<main id="contenu" class="colonne connexion">
+<main id="contenu" class="colonne compte">
 
     <header id="entete_contenu">
         <h1>Connexion</h1>

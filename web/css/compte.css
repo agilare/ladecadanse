@@ -1,4 +1,11 @@
-/* Page de connexion (user/login.php) */
+/*
+ * Formulaires de compte : connexion, mot de passe oublié, réinitialisation.
+ *
+ * Écrite pour user/login.php, la feuille était chargée d'après le nom de la page et donc
+ * invisible ailleurs. Elle est désormais déclarée en $extra_css par les pages concernées,
+ * qui portent la classe « compte » sur leur <main> : mêmes largeur, cadre et grille
+ * libellé/champ, plutôt que trois mises en page voisines à maintenir séparément.
+ */
 
 /*
  * Un seul bord gauche pour toute la page. L'en-tête (94 %, centré par ses marges auto) et
@@ -15,7 +22,7 @@
  * de mobile.css : à spécificité égale, cette feuille est chargée après celle-ci et le
  * plafond de largeur sautait sous 800px, laissant le formulaire pleine page sur tablette.
  */
-main#contenu.connexion
+main#contenu.compte
 {
 	box-sizing:border-box;
 	max-width:36em;
@@ -25,23 +32,23 @@ main#contenu.connexion
 	margin-right:auto;
 }
 
-#contenu.connexion #entete_contenu,
-#contenu.connexion .msg_erreur,
-#contenu.connexion form#ajouter_editer
+#contenu.compte #entete_contenu,
+#contenu.compte .msg_erreur,
+#contenu.compte form#ajouter_editer
 {
 	width:100%;
 	margin-left:0;
 	margin-right:0;
 }
 
-#contenu.connexion #entete_contenu
+#contenu.compte #entete_contenu
 {
 	margin-top:0.3em;
 	margin-bottom:0;
 	padding:0.4em 0;
 }
 
-#contenu.connexion form#ajouter_editer
+#contenu.compte form#ajouter_editer
 {
 	margin-top:0;
 	margin-bottom:1em;
@@ -50,7 +57,7 @@ main#contenu.connexion
 }
 
 /* le même arrondi léger que les autres cadres du site (boutons, champs, encarts) */
-#contenu.connexion form#ajouter_editer fieldset
+#contenu.compte form#ajouter_editer fieldset
 {
 	margin:0;
 	padding:1.2em 1.2em 0 1.2em;
@@ -64,7 +71,7 @@ main#contenu.connexion
  * padding-left choisis ligne par ligne (10em ici, 21em là), que le moindre changement de
  * texte désalignait. La grille aligne du même coup la case à cocher et les liens.
  */
-#contenu.connexion form#ajouter_editer p
+#contenu.compte form#ajouter_editer p
 {
 	display:grid;
 	grid-template-columns:9em 1fr;
@@ -74,7 +81,7 @@ main#contenu.connexion
 	margin:0 0 0.9em 0;
 }
 
-#contenu.connexion form#ajouter_editer label
+#contenu.compte form#ajouter_editer label
 {
 	width:auto;
 	margin:0;
@@ -82,22 +89,65 @@ main#contenu.connexion
 	text-align:right;
 }
 
+/*
+ * Variante pour les libellés que la colonne de 9em replierait sur trois lignes
+ * (« Confirmer le nouveau mot de passe ») : ils passent au-dessus de leur champ. Élargir
+ * la colonne à la place obligerait à la régler au caractère près à chaque changement de
+ * texte, ce que la grille était justement censée éviter.
+ */
+#contenu.compte.libelles_dessus form#ajouter_editer p
+{
+	grid-template-columns:1fr;
+}
+
+#contenu.compte.libelles_dessus form#ajouter_editer label
+{
+	text-align:left;
+}
+
+/*
+ * Les liens visent la colonne des champs (grid-column:2), qui n'existe pas ici : sans
+ * cette reprise, la grille en crée une implicite et pousse le lien contre le bord droit.
+ */
+#contenu.compte.libelles_dessus form#ajouter_editer p.liens_form a
+{
+	grid-column:1;
+}
+
+/*
+ * Consigne de saisie. Le padding-left de 120px hérité de formulaires.css calait le texte
+ * sous les libellés à largeur fixe d'autrefois : dans la grille, il le décale au milieu
+ * du cadre.
+ */
+#contenu.compte form#ajouter_editer .guideChamp
+{
+	margin:-0.4em 0 1.2em 0;
+	padding:0;
+	font-size:0.9em;
+}
+
+/* texte d'introduction, au-dessus du formulaire */
+#contenu.compte .intro_form
+{
+	margin:0 0 1em 0;
+}
+
 /* même longueur pour les deux champs, quel que soit leur attribut size */
-#contenu.connexion form#ajouter_editer input[type="text"],
-#contenu.connexion form#ajouter_editer input[type="password"]
+#contenu.compte form#ajouter_editer input[type="text"],
+#contenu.compte form#ajouter_editer input[type="password"]
 {
 	box-sizing:border-box;
 	width:100%;
 	max-width:18em;
 }
 
-#contenu.connexion form#ajouter_editer input[type="checkbox"]
+#contenu.compte form#ajouter_editer input[type="checkbox"]
 {
 	justify-self:start;
 }
 
 /* le champ fautif est signalé à sa place, en plus du récapitulatif en haut de page */
-#contenu.connexion form#ajouter_editer input.champ_errone
+#contenu.compte form#ajouter_editer input.champ_errone
 {
 	border-color:#c00;
 	background-color:#fff6f6;
@@ -107,7 +157,7 @@ main#contenu.connexion
  * Les liens secondaires se rangent dans la colonne des champs, l'un sous l'autre :
  * ils prolongent la saisie plutôt que de flotter à leur propre marge.
  */
-#contenu.connexion form#ajouter_editer p.liens_form
+#contenu.compte form#ajouter_editer p.liens_form
 {
 	gap:0.3em 0.8em;
 	margin-bottom:1.2em;
@@ -118,7 +168,7 @@ main#contenu.connexion
  * paragraphe, elle rétrécissait ses colonnes en em et décalait les liens vers la gauche
  * des champs, précisément ce qu'il s'agissait d'aligner.
  */
-#contenu.connexion form#ajouter_editer p.liens_form a
+#contenu.compte form#ajouter_editer p.liens_form a
 {
 	grid-column:2;
 	justify-self:start;
@@ -126,7 +176,7 @@ main#contenu.connexion
 }
 
 /* barre d'action : d'aplomb avec le cadre, dont elle épouse les coins bas */
-#contenu.connexion form#ajouter_editer p.piedForm
+#contenu.compte form#ajouter_editer p.piedForm
 {
 	display:block;
 	box-sizing:border-box;
@@ -141,7 +191,7 @@ main#contenu.connexion
  * Récapitulatif des erreurs. L'icône se cale sur la première ligne : centrée, elle se
  * retrouvait au milieu du vide dès que le bloc listait plusieurs erreurs.
  */
-#contenu.connexion .msg_erreur
+#contenu.compte .msg_erreur
 {
 	box-sizing:border-box;
 	margin:0.4em 0 1em 0;
@@ -150,19 +200,19 @@ main#contenu.connexion
 	border-radius:4px;
 }
 
-#contenu.connexion .msg_erreur .msg_erreur_titre
+#contenu.compte .msg_erreur .msg_erreur_titre
 {
 	margin:0 0 0.4em 0;
 	font-weight:bold;
 }
 
-#contenu.connexion .msg_erreur ul
+#contenu.compte .msg_erreur ul
 {
 	margin:0;
 	padding-left:1.2em;
 }
 
-#contenu.connexion .msg_erreur li
+#contenu.compte .msg_erreur li
 {
 	margin:0.2em 0;
 }
@@ -170,24 +220,24 @@ main#contenu.connexion
 /* trop étroit pour deux colonnes : le libellé passe au-dessus de son champ */
 @media screen and (max-width:29.99em)
 {
-	#contenu.connexion form#ajouter_editer p
+	#contenu.compte form#ajouter_editer p
 	{
 		grid-template-columns:1fr;
 	}
 
-	#contenu.connexion form#ajouter_editer label
+	#contenu.compte form#ajouter_editer label
 	{
 		text-align:left;
 	}
 
 	/* la case et son libellé forment une seule ligne : les empiler n'a pas de sens */
-	#contenu.connexion form#ajouter_editer p.memoriser
+	#contenu.compte form#ajouter_editer p.memoriser
 	{
 		grid-template-columns:auto auto;
 		justify-content:start;
 	}
 
-	#contenu.connexion form#ajouter_editer p.liens_form a
+	#contenu.compte form#ajouter_editer p.liens_form a
 	{
 		grid-column:1;
 	}
