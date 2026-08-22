@@ -8,6 +8,7 @@ use Ladecadanse\Utils\DbConnectorPdo;
 class SalleEdition extends Edition
 {
     private DbConnectorPdo $pdo;
+    private Validateur $verif;
     private int $idPersonne;
     private ?int $idSalle = null;
 

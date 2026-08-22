@@ -3,7 +3,7 @@
 namespace Ladecadanse;
 
 /**
- * Extended by Description, Evenement, Lieu, Organisateur
+ * Extended by Lieu, Organisateur
  */
 class Element
 {

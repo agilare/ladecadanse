@@ -3,7 +3,6 @@
 require_once("../app/bootstrap.php");
 
 use Ladecadanse\HtmlShrink;
-use Ladecadanse\OrganisateurCollection;
 use Ladecadanse\Organisateur;
 use Ladecadanse\Utils\ImageDriver2;
 use Ladecadanse\UserLevel;
@@ -33,10 +32,6 @@ if (isset($_GET['order']) && in_array($_GET['order'], $tab_order))
 }
 
 $get['page'] = QueryParamValidator::pageFromQuery($_GET['page'] ?? '');
-
-
-$col = new OrganisateurCollection();
-$col->loadFiches();
 
 $orgas_page_current = Organisateur::getOrganisateurs($filters, $_SESSION['user_prefs_orgas_order'], $get['page']);
 $orgas_page_all = Organisateur::getOrganisateurs($filters, $_SESSION['user_prefs_orgas_order'], null);

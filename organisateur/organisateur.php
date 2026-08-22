@@ -79,9 +79,6 @@ $get['page'] = QueryParamValidator::pageFromQuery($_GET['page'] ?? '', $default_
 $orga_lieux = Organisateur::getActivesLieux($get['idO']);
 $orga_personnes = Personne::getPersonnesOfOrganisateur($get['idO']);
 
-//$evenements = new EvenementCollection($connector);
-//$evenements->loadOrganisateur($get['idO'], $glo_auj_6h, "");
-
 $sql_select = "SELECT
     e.genre AS e_genre,
     e.idEvenement AS e_idEvenement,
