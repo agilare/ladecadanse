@@ -1155,6 +1155,16 @@ if ($show_form)
                     ?><div id="calendarDiv" style="position: relative; margin-top: 6px;"></div>
                     <?php } ?>
                 </div>
+            <?php if ($est_ajout) { ?>
+
+            <div class="guideChamp" style="margin-top:-0.2em">
+                <?php if ($est_connecte) { ?>Si l’événement se répète sur plusieurs dates, vous pouvez l’ajouter à d'autres dates avec le bouton <b>Copier</b>, à la page suivante
+                <?php } else { ?>
+                Si l’événement se répète sur plusieurs dates, merci de nous indiquer précisément les jours et horaires dans le <a href="#remarque">champ Remarque</a> ci-dessous.
+        <?php } ?>
+            </div>
+            <div class="spacer"></div>
+            <?php } ?>
             </div>
 
             <p style="margin:5px 0">
@@ -1173,16 +1183,7 @@ if ($show_form)
 
             <div class="guideChamp" style="margin-top:0">Mettez si possible l'heure de fin, pour un meilleur fonctionnement de l'agenda</div>
 
-            <?php if ($est_ajout) { ?>
 
-            <div class="guideChamp" style="margin-top:-0.2em">
-                <?php if ($est_connecte) { ?>Si l’événement se répète sur plusieurs dates, vous pouvez l’ajouter à d'autres dates avec le bouton <b>Copier</b>, à la page suivante
-                <?php } else { ?>
-                Si l’événement se répète sur plusieurs dates, merci de nous indiquer précisément les jours et horaires dans le <a href="#remarque">champ Remarque</a> ci-dessous.
-        <?php } ?>
-            </div>
-            <div class="spacer"></div>
-            <?php } ?>
 
             <div style="margin-top:1.3em">
                 <label for="horaire_complement">Complément d'horaire</label>
