@@ -1,6 +1,6 @@
 <?php
 
-require_once("app/bootstrap.php");
+require_once("../app/bootstrap.php");
 
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\Mailing;
@@ -8,12 +8,12 @@ use Ladecadanse\HtmlShrink;
 use Ladecadanse\UserLevel;
 
 if ($authorization->checkGroup(UserLevel::MEMBER)) {
-	header("Location: index.php"); die();
+	header("Location: /index.php"); die();
 }
 
 $page_titre = "Mot de passe oublié";
 $extra_css = ["formulaires"];
-include("_header.inc.php");
+include("../_header.inc.php");
 ?>
 
 <main id="contenu" class="colonne">
@@ -106,7 +106,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' && empty($_POST
                     $email_for_recipient,
                     "Votre demande pour un nouveau mot de passe sur La décadanse",
                     $tplEngine->render("user-reset-mail-body", [
-                        'reset_url' => $site_full_url . "user-reset2.php?token=" . $token,
+                        'reset_url' => $site_full_url . "user/reset2.php?token=" . $token,
                     ])
                 );
 
@@ -163,5 +163,5 @@ if (!$termine)
 </div>
 
 <?php
-include("_footer.inc.php");
+include("../_footer.inc.php");
 ?>

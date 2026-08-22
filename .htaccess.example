@@ -94,6 +94,10 @@ RewriteRule ^lieux.php /lieu/lieux.php [NC,R=301,L]
 # la query string est reportée d'office, la substitution n'en portant aucune (?idP= du profil)
 RewriteRule ^user-login\.php /user/login.php [NC,R=301,L]
 RewriteRule ^user-register\.php /user/register.php [NC,R=301,L]
+# le lien de réinitialisation reçu par mail reste valable 24 h : la redirection doit
+# survivre au déplacement, et elle reporte le ?token= d'office
+RewriteRule ^user-reset\.php /user/reset.php [NC,R=301,L]
+RewriteRule ^user-reset2\.php /user/reset2.php [NC,R=301,L]
 RewriteRule ^user\.php /user/dashboard.php [NC,R=301,L]
 
 # apart if file exists, accesses of files in years 2005 to 2023, directly under evenements/ are redirected to evenements/{year}/

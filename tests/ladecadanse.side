@@ -5390,7 +5390,7 @@
         ["css=.liens_form > a:nth-child(1)", "css:finder"],
         ["xpath=//a[contains(text(),'Mot de passe oublié ?')]", "xpath:link"],
         ["xpath=//form[@id='ajouter_editer']/fieldset/p[4]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/user-reset.php')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/user/reset.php')]", "xpath:href"],
         ["xpath=//p[4]/a", "xpath:position"],
         ["xpath=//a[contains(.,'Mot de passe oublié ?')]", "xpath:innerText"]
       ],

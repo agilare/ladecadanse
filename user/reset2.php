@@ -1,6 +1,6 @@
 <?php
 
-require_once("app/bootstrap.php");
+require_once("../app/bootstrap.php");
 
 use Ladecadanse\UserLevel;
 use Ladecadanse\Utils\Validateur;
@@ -9,13 +9,13 @@ use Ladecadanse\Utils\QueryParamValidator;
 use Ladecadanse\HtmlShrink;
 
 if ($authorization->checkGroup(UserLevel::MEMBER)) {
-	header("Location: index.php"); die();
+	header("Location: /index.php"); die();
 }
 
 $page_titre = "Réinitialisation du mot de passe";
 $page_description = "";
 $extra_css = ["formulaires"];
-include("_header.inc.php");
+include("../_header.inc.php");
 
 if (empty($_GET['token']))
 {
@@ -237,9 +237,9 @@ else
 </main>
 
 <div id="colonne_gauche" class="colonne">
-<?php include("event/_navigation_calendrier.inc.php"); ?>
+<?php include("../event/_navigation_calendrier.inc.php"); ?>
 </div>
 
 <?php
-include("_footer.inc.php");
+include("../_footer.inc.php");
 ?>

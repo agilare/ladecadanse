@@ -74,7 +74,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
             $verif->setErreur("motdepasse", "Veuillez saisir votre mot de passe.");
         }
         // borne haute alignée sur les formulaires qui fixent un mot de passe
-        // (user/register.php, user-reset2.php) : plus basse, elle rendrait inutilisables
+        // (user/register.php, user/reset2.php) : plus basse, elle rendrait inutilisables
         // des mots de passe que le site a lui-même acceptés
         else if (mb_strlen($motdepasse) < 4 || mb_strlen($motdepasse) > 100)
         {
@@ -166,7 +166,7 @@ $erreurs = $verif->getErreurs();
             </p>
 
             <p class="liens_form">
-                <a href="/user-reset.php">Mot de passe oublié ?</a>
+                <a href="/user/reset.php">Mot de passe oublié ?</a>
                 <a href="/user/register.php">Pas de compte ?</a>
             </p>
 

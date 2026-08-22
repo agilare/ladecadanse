@@ -69,8 +69,6 @@ parameters:
                 - lieu-text-edit.php
                 - organisateur-edit.php
                 - user-edit.php
-                - user-reset.php
-                - user-reset2.php
 includes:
     - vendor/phpstan/phpstan-deprecation-rules/rules.neon
     - vendor/spaze/phpstan-disallowed-calls/extension.neon
