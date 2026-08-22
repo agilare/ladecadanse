@@ -66,12 +66,18 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
             /**
              * Compte correspondant à une des deux colonnes d'identification.
              *
+             * Le filtre sur statut suit celui de Sentry, qui n'accepte au login que les
+             * comptes actifs : sans lui, un compte désactivé recevait un lien de
+             * réinitialisation qui ne pouvait mener nulle part, et la page 2 finissait en
+             * impasse faute de compte à proposer.
+             *
              * @param string $colonne Nom de colonne littéral (jamais une saisie)
              * @return array<string, mixed>|false
              */
             $chercherCompte = function (string $colonne, string $valeur) use ($connectorPdo): array|false
             {
-                $stmt = $connectorPdo->prepare("SELECT idPersonne, email FROM personne WHERE $colonne = :valeur");
+                $stmt = $connectorPdo->prepare("SELECT idPersonne, email FROM personne
+                    WHERE $colonne = :valeur AND statut = 'actif'");
                 $stmt->execute([':valeur' => $valeur]);
 
                 return $stmt->fetch();

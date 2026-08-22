@@ -64,7 +64,33 @@ if ($token !== '')
 
 if ($tab_temp !== false)
 {
-    if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
+    /*
+     * Comptes que cette demande permet de réinitialiser. La liste est établie une fois,
+     * avant le traitement, et sert aussi bien à l'affichage qu'au contrôle de ce qui est
+     * posté : les deux ne peuvent donc plus diverger, ce qui laissait auparavant exiger un
+     * choix de compte sans qu'aucun choix ne soit proposé.
+     *
+     * Le filtre sur statut suit celui de Sentry, qui n'accepte au login que les comptes
+     * actifs : changer le mot de passe d'un autre laisserait la personne bloquée ensuite.
+     */
+    if (!empty($tab_temp['idPersonne']))
+    {
+        // demande faite avec un pseudo, qui ne désigne qu'un compte
+        $stmt = $connectorPdo->prepare("SELECT idPersonne, pseudo FROM personne
+            WHERE idPersonne = :idPersonne AND statut = 'actif'");
+        $stmt->execute([':idPersonne' => (int) $tab_temp['idPersonne']]);
+        $tab_comptes = $stmt->fetchAll();
+    }
+    else if (!empty($tab_temp['email']))
+    {
+        // demande faite avec une adresse, que plusieurs comptes peuvent partager
+        $stmt = $connectorPdo->prepare("SELECT idPersonne, pseudo FROM personne
+            WHERE email = :email AND statut = 'actif'");
+        $stmt->execute([':email' => $tab_temp['email']]);
+        $tab_comptes = $stmt->fetchAll();
+    }
+
+    if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' && $tab_comptes !== [])
     {
         // honeypot : un champ masqué que seuls les robots remplissent
         if (!empty($_POST['as_nom']))
@@ -83,48 +109,33 @@ if ($tab_temp !== false)
                 }
             }
 
-            if (empty($tab_temp['idPersonne']) && empty($champs['idPersonne']))
+            /*
+             * Le compte à modifier se déduit de la demande, pas du formulaire : un candidat
+             * unique s'impose de lui-même, et il n'y a de choix à faire — donc d'erreur
+             * possible — que si plusieurs comptes partagent l'adresse fournie.
+             */
+            $idPersonne = null;
+
+            if (count($tab_comptes) === 1)
             {
-                $verif->setErreur("compte", "Veuillez choisir un compte.");
-            }
-
-            $tab_auth = null;
-
-            // si l'email avait été fourni, vérification qu'il correspond bien au compte choisi
-            if (!empty($tab_temp['email']) && !empty($champs['idPersonne']))
-            {
-                // retrouver user dans personne à partir de la demande ; si le demandeur a choisi un
-                // compte parmi plusieurs qui ont son email, l'id doit correspondre à cet email
-                $stmt = $connectorPdo->prepare("SELECT pseudo, idPersonne FROM personne
-                    WHERE email = :email AND idPersonne = :idPersonne");
-                $stmt->execute([':email' => $tab_temp['email'], ':idPersonne' => (int) $champs['idPersonne']]);
-                $comptes_auth = $stmt->fetchAll();
-
-                // on doit obtenir un seul compte
-                if (count($comptes_auth) !== 1)
-                {
-                    $verif->setErreur("auth", "Vous n'êtes pas autorisé à modifier ce compte.");
-                }
-                else
-                {
-                    // un seul row donc
-                    $tab_auth = $comptes_auth[0];
-                }
-            }
-
-            $idPersonne = '';
-
-            if (!empty($tab_temp['idPersonne']))
-            {
-                $idPersonne = $tab_temp['idPersonne'];
-            }
-            else if (!empty($tab_temp['email']))
-            {
-                $idPersonne = $tab_auth['idPersonne'] ?? '';
+                $idPersonne = (int) $tab_comptes[0]['idPersonne'];
             }
             else
             {
-                $verif->setErreur("utilisateur", "L'utilisateur n'a pu être retrouvé.");
+                foreach ($tab_comptes as $c)
+                {
+                    if ((string) $c['idPersonne'] === $champs['idPersonne'])
+                    {
+                        $idPersonne = (int) $c['idPersonne'];
+                    }
+                }
+
+                if ($idPersonne === null)
+                {
+                    $verif->setErreur("compte", $champs['idPersonne'] === ''
+                        ? "Veuillez choisir le compte dont vous voulez changer le mot de passe."
+                        : "Ce compte ne correspond pas à votre demande.");
+                }
             }
 
             foreach (PasswordPolicy::erreurs($champs['motdepasse'], $champs['motdepasse2']) as $champ => $message)
@@ -162,16 +173,6 @@ if ($tab_temp !== false)
                 }
             }
         }
-    }
-
-    // si l'email avait été fourni, retrouve le(s) compte(s) associé(s)
-    if (empty($tab_temp['idPersonne']) && !empty($tab_temp['email']))
-    {
-        // statut : 'actif' et non '!= inactif', puisque Sentry n'accepte au login que les comptes actifs
-        $stmt = $connectorPdo->prepare("SELECT idPersonne, pseudo FROM personne
-            WHERE email = :email AND statut = 'actif'");
-        $stmt->execute([':email' => $tab_temp['email']]);
-        $tab_comptes = $stmt->fetchAll();
     }
 }
 
@@ -224,6 +225,15 @@ $erreurs = $verif->getErreurs();
         <a href="/user/login.php">connecter</a> avec ce nouveau mot de passe
     </div>
 
+    <?php elseif ($tab_comptes === []) : ?>
+
+    <?php // le compte a été désactivé entre la demande et le clic : afficher le formulaire
+          // n'aurait mené qu'à une impasse, faute de compte à modifier ?>
+    <div class="msg_erreur" role="alert">
+        Aucun compte actif ne correspond à cette demande. Si votre compte a été désactivé,
+        écrivez-nous à <a href="mailto:info@ladecadanse.ch">info@ladecadanse.ch</a>.
+    </div>
+
     <?php else : ?>
 
     <form method="post" id="ajouter_editer" class="js-submit-freeze-wait" action="/user/reset2.php?token=<?= sanitizeForHtml($token) ?>">
@@ -232,6 +242,8 @@ $erreurs = $verif->getErreurs();
 
         <fieldset>
 
+            <?php // un compte unique n'est pas demandé au formulaire : le traitement le déduit
+                  // de la demande, un champ caché ne ferait qu'offrir prise à une modification ?>
             <?php if (count($tab_comptes) > 1) : ?>
             <p>
                 <label for="idPersonne">Lequel de vos comptes ?</label>
@@ -241,8 +253,6 @@ $erreurs = $verif->getErreurs();
                     <?php endforeach; ?>
                 </select>
             </p>
-            <?php elseif (count($tab_comptes) === 1) : ?>
-            <input type="hidden" name="idPersonne" value="<?= (int) $tab_comptes[0]['idPersonne'] ?>">
             <?php endif; ?>
 
             <p>
