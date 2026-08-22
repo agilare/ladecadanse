@@ -35,6 +35,12 @@ parameters:
 			path: evenement-edit.php
 
 		-
+			message: '#^If condition is always false\.$#'
+			identifier: if.alwaysFalse
+			count: 1
+			path: event/evenement.php
+
+		-
 			message: '#^Offset ''years'' on array\{mots\: mixed, tri\: mixed, periode\: mixed\} on left side of \?\?\= does not exist\.$#'
 			identifier: nullCoalesce.offset
 			count: 1
