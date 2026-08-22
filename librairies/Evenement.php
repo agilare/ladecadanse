@@ -25,6 +25,8 @@ class Evenement extends Element
     }
 
     /**
+     * TODO: mv to EvenementRenderer ?
+     *
      * Libellé d'affichage d'un genre
      *
      * Les genres sont stockés en varchar : d'anciens événements peuvent porter
@@ -39,9 +41,12 @@ class Evenement extends Element
     }
 
     /**
-     * Affichage du lieu selon son existence ou non dans la base
+     * Consolide un tableau des données du lieu, selon son existence dans la table lieu ou dans l'événement directement
+     * TODO: mv to EvenementRenderer ?
+     *
      * @param array $event
      * @return array
+     *
      */
     public static function getLieu(array $event): array
     {
@@ -79,6 +84,10 @@ class Evenement extends Element
             ];
     }
 
+    /**
+     * TODO: find a better name
+     * overrides HasDocuments method
+     */
     public static function getFilePath(string $fileName, string $fileNamePrefix = '', string $fileNameSuffix = ''): string
     {
         $filePath = $fileNamePrefix . $fileName . $fileNameSuffix;

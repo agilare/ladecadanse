@@ -10,9 +10,13 @@ class Lieu extends Element
 {
     use HasDocuments;
 
+    // TODO: rn to $documentsSystemDirPath ?
     public static $systemDirPath;
+    // TODO: rn to $documentsUrlDirPath ?
     public static $urlDirPath;
 
+    // TODO: explain better utility in var. name or context
+    // TODO: mv to a future LieuxRenderer class ?
     public const int LOW_ACTIVITY_MONTHS_NB = 6;
     public const int VERY_LOW_ACTIVITY_MONTHS_NB = 12;
     public const int RESULTS_PER_PAGE = 100;
@@ -23,6 +27,10 @@ class Lieu extends Element
         $this->table = "lieu";
     }
 
+    /**
+     * TODO: rn to getNamePrepositionForSentence
+     * in the future : no argument and usage of $this->preposition in body
+     */
     public static function prepositionToPutInSentence($preposition): string
     {
         $result = $preposition;
@@ -41,6 +49,10 @@ class Lieu extends Element
     }
 
     /**
+     * Used by all pages who need to target this lieu's page
+     *
+     * * TODO: find a better name
+     * TODO: mv to a LieuRenderer class
      * @param string $baseUrl préfixe sans slash final, à fournir hors du site lui-même (flux RSS,
      *                        courriels) où un href relatif ne se résout pas correctement
      */
@@ -60,6 +72,9 @@ class Lieu extends Element
         return $result;
     }
 
+    /**
+     * TODO: mv to a repository
+     */
     public static function getLieu(int $idLieu): array
     {
         global $connectorPdo;
@@ -81,6 +96,10 @@ class Lieu extends Element
         return $stmt->fetch(PDO::FETCH_ASSOC) ?: [];
     }
 
+    /**
+     * Only used for orgas table in organisateurs.php page
+     * mv to a LieuxRepository::getList or ::find
+    */
     public static function getLieux(array $filters, string $order = 'dateAjout', ?int $page = 1): array
     {
         global $connectorPdo;
@@ -155,20 +174,23 @@ class Lieu extends Element
      * reste, et à l'intérieur d'un canton les noms sans leur article initial, pour que « Le
      * Sagittario » se range à S. La colonne `canton` sert à construire les <optgroup>.
      *
-     * $exclureFrance reproduit le filtre que le formulaire d'ajout applique à la création : un lieu
+     * $exclureFribourg reproduit le filtre que le formulaire d'ajout applique à la création : un lieu
      * qu'on ne peut pas choisir en ajoutant un événement ne doit pas pouvoir être réglé comme lieu
      * par défaut.
      *
      * Contrairement au select de evenement-edit.php, les salles ne sont pas jointes : les valeurs
      * par défaut du profil se règlent au niveau du lieu.
      *
+     * Only used in user.php
+     * TODO: factorize to be used in other parts showing a html select; add a $withSalles option
+     *
      * @return list<array{idLieu: int, nom: string, canton: string}>
      */
-    public static function getActifsPourSelect(bool $exclureFrance = true): array
+    public static function getActifsPourSelect(bool $exclureFribourg = true): array
     {
         global $connectorPdo;
 
-        $where = $exclureFrance ? " AND lieu.region != 'fr' " : '';
+        $where = $exclureFribourg ? " AND lieu.region != 'fr' " : '';
 
         $stmt = $connectorPdo->prepare("SELECT lieu.idLieu, lieu.nom, COALESCE(localite.canton, '') AS canton
             FROM lieu
@@ -180,7 +202,9 @@ class Lieu extends Element
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-
+    /**
+     * mv to a LieuSalleRepository
+     */
     public static function getActivesSalles(int $idLieu): array
     {
         global $connectorPdo;
@@ -214,6 +238,9 @@ class Lieu extends Element
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    /**
+     * TODO: fix incoherence of names : images uploaded, documents, fichierrecu table name
+     */
     public static function getImagesUploaded(int $idLieu): array
     {
         global $connectorPdo;

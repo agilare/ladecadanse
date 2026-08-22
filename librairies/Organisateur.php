@@ -11,9 +11,13 @@ class Organisateur extends Element
 {
     use HasDocuments;
 
+    // TODO: rn to $documentsSystemDirPath ?
     public static $systemDirPath;
+    // TODO: rn to $documentsUrlDirPath ?
     public static $urlDirPath;
 
+    // TODO: explain better utility in var. name or context
+    // TODO: mv to a future OrganisateursRenderer class ?
     public const int LOW_ACTIVITY_MONTHS_NB = 6;
     public const int VERY_LOW_ACTIVITY_MONTHS_NB = 12;
     public const int RESULTS_PER_PAGE = 100;
@@ -24,7 +28,10 @@ class Organisateur extends Element
 		$this->table = "organisateur";
 	}
 
-
+    /**
+     * Used in various pages needing orgas lists of an event or an user : gererEvenement, users in admin and evenement, evenementRenderer, Organisateur, user dashboard
+     * TODO: mv to a LieuxRenderer class
+     */
     public static function getListLinkedHtml(array $organisateurs, bool $isWithOrganisateurUrl = true): string
     {
         ob_start();
@@ -44,6 +51,10 @@ class Organisateur extends Element
         return $result;
     }
 
+    /*
+     * lieux managed by the organisateur; only used in organisateur page
+     * mv to a LieuRepository::getActivesByOrganisateur
+     */
     public static function getActivesLieux(int $idOrga): array
     {
         global $connectorPdo;
@@ -56,7 +67,10 @@ class Organisateur extends Element
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-
+    /**
+     * Only used for orgas table in organisateurs.php page
+     * mv to a OrganisateurRepository::getList or ::find
+     */
     public static function getOrganisateurs(array $filters, string $order = 'date_ajout', ?int $page = 1): array
     {
         global $connectorPdo;
