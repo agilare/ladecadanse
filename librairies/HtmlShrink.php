@@ -6,6 +6,7 @@
 
 namespace Ladecadanse;
 
+use Ladecadanse\Stats\MonthlyAddedEvents;
 use Ladecadanse\Utils\DateHelper;
 
 class HtmlShrink
@@ -347,13 +348,17 @@ class HtmlShrink
     }
 
     /**
-     * Cellules mensuelles d'une ligne : le nombre d'événements ajoutés ce mois-là.
+     * Cellules mensuelles d'une ligne : le nombre d'événements ajoutés ce mois-là, et en dessous
+     * celui du même mois un an plus tôt.
      *
-     * Un mois sans ajout laisse la cellule vide plutôt que d'afficher « 0 » : dans une bande de
+     * Un mois sans ajout laisse sa place vide plutôt que d'afficher « 0 » : dans une bande de
      * douze colonnes, ce qu'on cherche est la silhouette de l'activité, que douze zéros brouillent.
+     * Le saut de ligne, lui, est écrit dans tous les cas : sans lui, les cellules sans rappel
+     * seraient plus courtes que les autres et la bande perdrait sa ligne de base.
      *
-     * @param array<string, int> $countsByMonth clés 'Y-m', mois sans ajout absents
-     * @param list<string>       $monthKeys
+     * @param array<string, int> $countsByMonth clés 'Y-m' couvrant les mois affichés *et* les
+     *                                          douze précédents, mois sans ajout absents
+     * @param list<string>       $monthKeys     mois affichés, du plus ancien au plus récent
      */
     public static function getMonthlyCountsCells(array $countsByMonth, array $monthKeys): string
     {
@@ -365,9 +370,15 @@ class HtmlShrink
             // les mois révolus sont atténués, comme les événements passés du tableau de bord :
             // le mois en cours est le seul encore susceptible de bouger
             $class = $monthKey === $currentMonthKey ? "mois" : "mois mois-passe";
-            $nb = $countsByMonth[$monthKey] ?? 0;
 
-            $cells .= '<td class="' . $class . '">' . ($nb > 0 ? (int) $nb : '') . '</td>';
+            $nb = $countsByMonth[$monthKey] ?? 0;
+            $nbPreviousYear = $countsByMonth[MonthlyAddedEvents::previousYearKey($monthKey)] ?? 0;
+
+            $rappel = $nbPreviousYear > 0
+                ? '<span class="mois-an-passe">' . (int) $nbPreviousYear . '</span>'
+                : '';
+
+            $cells .= '<td class="' . $class . '">' . ($nb > 0 ? (int) $nb : '') . '<br>' . $rappel . '</td>';
         }
 
         return $cells;

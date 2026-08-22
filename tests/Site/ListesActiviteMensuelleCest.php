@@ -50,4 +50,26 @@ class ListesActiviteMensuelleCest
             $I->seeElement('table#derniers_lieux thead th.mois[title="' . $moisCourant . '"]');
         }
     }
+
+    /**
+     * Le rappel de l'an passé occupe une deuxième ligne dans chaque cellule, y compris quand il
+     * est vide : sans ce saut de ligne inconditionnel, les cellules n'auraient pas toutes la même
+     * hauteur et les compteurs cesseraient de se lire sur une ligne de base commune.
+     */
+    public function chaqueCelluleMensuelleReserveLaLigneDuRappel(SiteTester $I)
+    {
+        $I->skipUnlessConfigured('LADECADANSE_SITE_ADMIN_USER', 'LADECADANSE_SITE_ADMIN_PASS');
+
+        $I->loginAsAdmin();
+
+        foreach (self::LISTINGS as $url)
+        {
+            $I->amOnPage($url);
+            $I->seeResponseCodeIs(HttpCode::OK);
+
+            $cellulesNb = count($I->grabMultiple('table#derniers_lieux tbody td.mois'));
+            $I->assertGreaterThan(0, $cellulesNb, "aucune cellule mensuelle sur $url");
+            $I->seeNumberOfElements('table#derniers_lieux tbody td.mois br', $cellulesNb);
+        }
+    }
 }

@@ -29,6 +29,12 @@ class MonthlyAddedEvents
     public const int MONTHS_NB = 12;
 
     /**
+     * @var int nombre de mois chargés : les douze colonnes, plus les douze mois qui les précèdent,
+     *          dont chaque cellule rappelle le compteur pour situer l'année en cours
+     */
+    public const int HISTORY_MONTHS_NB = self::MONTHS_NB * 2;
+
+    /**
      * Clés de mois, de la plus ancienne à la plus récente, la dernière étant le mois en cours.
      *
      * @return list<string> par exemple ['2025-09', …, '2026-08']
@@ -47,9 +53,19 @@ class MonthlyAddedEvents
     }
 
     /**
+     * Même mois, un an plus tôt : la référence à laquelle se lit un compteur.
+     *
+     * @param string $monthKey clé 'Y-m'
+     */
+    public static function previousYearKey(string $monthKey): string
+    {
+        return (new DateTimeImmutable($monthKey . '-01'))->modify('-1 year')->format('Y-m');
+    }
+
+    /**
      * @return array<int, array<string, int>> [idLieu => ['2026-08' => 3, …]], mois sans ajout absents
      */
-    public static function forLieux(int $monthsNb = self::MONTHS_NB): array
+    public static function forLieux(int $monthsNb = self::HISTORY_MONTHS_NB): array
     {
         return self::fetch("e.idLieu", "", $monthsNb);
     }
@@ -57,7 +73,7 @@ class MonthlyAddedEvents
     /**
      * @return array<int, array<string, int>> [idOrganisateur => ['2026-08' => 3, …]]
      */
-    public static function forOrganisateurs(int $monthsNb = self::MONTHS_NB): array
+    public static function forOrganisateurs(int $monthsNb = self::HISTORY_MONTHS_NB): array
     {
         return self::fetch(
             "eo.idOrganisateur",
