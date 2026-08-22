@@ -12,11 +12,9 @@ namespace Ladecadanse;
   */
   class Edition
   {
-    public $firstTime;
 	public $id;
     public $supprimer = [];
     public $erreurs = [];
-    public $verif;
 	public $action;
 
 	public $message;
@@ -112,17 +110,6 @@ namespace Ladecadanse;
     	$this->action = $action;
     }
 
-    function getAction(): ?string
-    {
-    	return $this->action;
-
-    }
-
-    function setMessage($message)
-    {
-    	$this->message = $message;
-    }
-
     function getMessage(): ?string
     {
     	return $this->message;
@@ -133,11 +120,6 @@ namespace Ladecadanse;
 	{
 		return $this->supprimer;
 	}
-
-    function setSupprimer($sup)
-    {
-    	$this->supprimer = $sup;
-    }
 
 	function getValeur($nom)
 	{
@@ -155,11 +137,6 @@ namespace Ladecadanse;
     {
     	$this->valeurs[$nom] = $val;
     }
-
-	function getValeurs()
-	{
-		return $this->valeurs;
-	}
 
     /**
      * Supprime un fichier image et sa miniature (préfixe "s_") de manière sécurisée.

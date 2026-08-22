@@ -55,11 +55,6 @@ class DbConnectorPdo
         return $this->pdo->prepare($sql);
     }
 
-    public function execute(array $params)
-    {
-        return $this->pdo->execute($params);
-    }
-
 //    public function fetchAll($sql, $params = [])
 //    {
 //        $stmt = $this->execute($sql, $params);

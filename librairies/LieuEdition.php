@@ -13,7 +13,6 @@ use Ladecadanse\HtmlShrink;
 class LieuEdition extends Edition
 {
 
-    public $firstTime;
     public $supprimer = [];
     public $supprimer_document = [];
     public $supprimer_galerie = [];
@@ -21,7 +20,6 @@ class LieuEdition extends Edition
     public $erreurs = [];
     public $organisateurs = [];
     public $message;
-    public $verif;
     public $action;
     public $connector;
 
@@ -85,11 +83,6 @@ class LieuEdition extends Edition
             $this->supprimer_galerie = $post['supprimer_galerie'];
         }
 
-//		echo "Réc:";
-//		printr($this->valeurs);
-        /* 		echo "réc.";
-          echo "fichiers:";
-          printr($this->fichiers); */
         if ($this->verification())
         {
             $this->enregistrer();
@@ -184,19 +177,6 @@ class LieuEdition extends Edition
         return str_replace(',', '.', trim((string) $valeur));
     }
 
-    function loadValeurs(int $id): void
-    {
-        $lieu = new Lieu();
-        $lieu->setId($id);
-        $lieu->load();
-        $this->id = $id;
-        $this->valeurs = $lieu->getValues();
-
-        $this->valeurs['categorie'] = explode(",", (string) $this->valeurs['categorie']);
-
-//		printr($this->valeurs);
-    }
-
     function enregistrer()
     {
         global $rep_uploads_lieux;
@@ -261,9 +241,6 @@ class LieuEdition extends Edition
             $lieu->setValue('categorie', implode(",", $this->valeurs['categorie']));
         }
 
-//		echo "enreg:";
-//		printr($lieu->getValues());
-
         if ($this->action == 'ajouter')
         {
 
@@ -298,13 +275,7 @@ class LieuEdition extends Edition
         else if ($this->action == 'editer')
         {
             $lieu->setValue('date_derniere_modif', date("Y-m-d H:i:s"));
-            //echo $this->id;
             $lieu->setId($this->id);
-
-            //echo "<p>supprimer :</p>";
-            //TEST
-            //printr($this->supprimer);
-            //
 
             if ($this->fichiers['logo']['name'] != '')
             {
@@ -376,11 +347,7 @@ class LieuEdition extends Edition
 
 
             $sql = "DELETE FROM lieu_organisateur WHERE idLieu=" . $lieu->getId();
-            //echo $sql;
             $req = $this->connector->query($sql);
-
-            /* echo "avant update:";
-              printr($lieu->getValues()); */
 
             if ($lieu->update())
             {
@@ -396,11 +363,8 @@ class LieuEdition extends Edition
         /*
          * TRAITEMENT DES FICHIERS UPLOADES
          */
-        //echo "f:";
-//		printr($this->fichiers);
         if (!empty($this->fichiers['logo']['name']))
         {
-            //echo "ok img";
             $imD2 = new ImageDriver2("lieux");
 
             if (!$imD2->processImage($this->fichiers['logo'], "s_" . $lieu->getValue('logo'), 200, 50, 'h', 0))
@@ -418,7 +382,6 @@ class LieuEdition extends Edition
 
         if (!empty($this->fichiers['photo1']['name']))
         {
-            //echo "ok img";
             $imD2 = new ImageDriver2("lieux");
 
             if (!$imD2->processImage($this->fichiers['photo1'], "s_" . $lieu->getValue('photo1'), 200, 300, 'w', 1))
@@ -445,29 +408,14 @@ class LieuEdition extends Edition
 			'image',
 			'" . $this->connector->sanitize(mb_substr($extension, 1)) . "', 'image', '" . date("Y-m-d H:i:s") . "')";
 
-            //TEST
-            //echo "<p> insert fichierrecu : ".$sql_insert."</p>";
-            //
-
-            if ($this->connector->query($sql_insert))
-            {
-
-            }
+            $this->connector->query($sql_insert);
 
             $id_nouveau_fichier = $this->connector->getInsertId();
 
             $sql_ins_ef = "INSERT INTO lieu_fichierrecu (idLieu, idFichierrecu)
 			VALUES ('" . $lieu->getId() . "', '" . $id_nouveau_fichier . "')";
-            //TEST
-            //echo "<p>insert lieu_fichierrecu : ".$sql_ins_ef."</p>";
-            //
 
-            if ($this->connector->query($sql_ins_ef))
-            {
-                //TEST
-                //echo "lieu_fichierrecu : ".$id_element." ".$id_nouveau_fichier;
-                //
-            }
+            $this->connector->query($sql_ins_ef);
 
             $nom_image_galerie = $id_nouveau_fichier . $extension;
             $imD = new ImageDriver2("lieux/galeries");
@@ -487,7 +435,6 @@ class LieuEdition extends Edition
             if ($idOrg > 0)
             {
                 $sql = "INSERT INTO lieu_organisateur (idLieu, idOrganisateur) VALUES (" . $lieu->getId() . ", " . $idOrg . ")";
-                //echo $sql;
                 $this->connector->query($sql);
             }
         }
@@ -501,8 +448,6 @@ class LieuEdition extends Edition
         $champs = $lieu->getValues();
 
         $champs['categorie'] = explode(',', (string) $champs['categorie']);
-
-//		printr($champs);
 
         $this->valeurs = $champs;
     }

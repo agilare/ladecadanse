@@ -16,13 +16,11 @@ use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
 class OrganisateurEdition extends Edition
 {
 
-    public $firstTime;
     public $supprimer = [];
     public $supprimer_document = [];
     public $supprimer_galerie = [];
     public $erreurs = [];
     public $message;
-    public $verif;
     public $action;
     public $connector;
     public $htmlSanitizer;
@@ -132,16 +130,6 @@ class OrganisateurEdition extends Edition
         return false;
     }
 
-    function loadValeurs(int $id): void
-    {
-        $organisateur = new Organisateur();
-        $organisateur->setId($id);
-        $organisateur->load();
-        $this->id = $id;
-        $this->valeurs = $organisateur->getValues();
-//		printr($this->valeurs);
-    }
-
     function enregistrer()
     {
         global $rep_uploads_organisateurs;
@@ -153,9 +141,6 @@ class OrganisateurEdition extends Edition
         $organisateur->setValue('idpersonne', $_SESSION['SidPersonne']);
         
         $organisateur->setValue('presentation', $this->htmlSanitizer->sanitize($organisateur->getValue('presentation')));
-
-//		echo "enreg:";
-//		printr($lieu->getValues());
 
         if ($this->action == 'ajouter')
         {
@@ -191,14 +176,7 @@ class OrganisateurEdition extends Edition
         else if ($this->action == 'editer')
         {
             $organisateur->setValue('date_derniere_modif', date("Y-m-d H:i:s"));
-            //echo $this->id;
             $organisateur->setId($this->id);
-
-            //echo "<p>supprimer :</p>";
-            //TEST
-            //printr($this->supprimer);
-            //
-            //echo 'logo value :'.$organisateur->getValue('logo');
 
             if ($this->fichiers['logo']['name'] != '')
             {
@@ -245,10 +223,6 @@ class OrganisateurEdition extends Edition
                 $organisateur->setValue('photo', '');
             }
 
-
-            /* echo "avant update:";
-              printr($organisateur->getValues()); */
-
             if ($organisateur->update())
             {
                 $this->message = 'Organisateur modifié';
@@ -262,11 +236,8 @@ class OrganisateurEdition extends Edition
         /*
          * TRAITEMENT DES FICHIERS UPLOADES
          */
-        //echo "f:";
-//		printr($this->fichiers);
         if (!empty($this->fichiers['logo']['name']))
         {
-            //echo "ok img";
             $imD2 = new ImageDriver2("organisateurs");
 
             if (!$imD2->processImage($this->fichiers['logo'], "s_" . $organisateur->getValue('logo'), 200, 100, 'h', 0))
@@ -284,7 +255,6 @@ class OrganisateurEdition extends Edition
 
         if (!empty($this->fichiers['photo']['name']))
         {
-            //echo "ok img";
             $imD2 = new ImageDriver2("organisateurs");
 
             if (!$imD2->processImage($this->fichiers['photo'], "s_" . $organisateur->getValue('photo'), 200, 400, 'w', 1))

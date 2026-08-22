@@ -3,10 +3,9 @@
 
 namespace Ladecadanse;
 
-use Ladecadanse\Element;
 use Ladecadanse\HasDocuments;
 
-class Evenement extends Element
+class Evenement
 {
     use HasDocuments;
 
@@ -17,12 +16,6 @@ class Evenement extends Element
     public const int AGENDA_START_YEAR = 2005;
     // evenement.genre default value in database
     public const string GENRE_DEFAULT = 'divers';
-
-    function __construct() {
-
-        parent::__construct();
-        $this->table = "evenement";
-    }
 
     /**
      * TODO: mv to EvenementRenderer ?

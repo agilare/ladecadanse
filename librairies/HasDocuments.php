@@ -14,15 +14,6 @@ namespace Ladecadanse;
  */
 trait HasDocuments
 {
-//    abstract protected function getSystemDirPath(): string;
-//    abstract protected function getBaseUrl(): string;
-//
-//    public function getWebPath(string $filename): string
-//    {
-//        return $this->getBaseUrl() . '/' . $filename;
-//    }
-
-
     public static function getSystemFilePath(string $filePath): string
     {
         return self::$systemDirPath . $filePath;
