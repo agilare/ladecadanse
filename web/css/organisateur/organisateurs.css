@@ -85,6 +85,16 @@ table#derniers_lieux td.mois-passe
 }
 
 /*
+ * Rappel du même mois un an plus tôt, sous le compteur : le bleu du site le distingue du chiffre
+ * de l'année en cours sans le pâlir davantage, l'atténuation des mois révolus venant déjà de la
+ * cellule.
+ */
+table#derniers_lieux td.mois .mois-an-passe
+{
+    color:#1569C7;
+}
+
+/*
  * Le suivi mensuel a besoin de la largeur : en desktop la colonne de gauche disparaît de ces
  * pages et le tableau occupe le conteneur. Le sélecteur passe par data-page pour l'emporter sur
  * desktop.css, chargé après cette feuille. En dessous, la colonne reprend sa place sous le
