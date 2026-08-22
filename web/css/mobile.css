@@ -432,7 +432,6 @@ body[data-page="index"] #colonne_gauche, body[data-page="index"] #colonne_droite
 #evenement #description
 {
     margin-left:120px;
-    font-size:0.9em;
 }
 
 /* Sous ~450px, la colonne de droite ne fait plus que ~260px : la description
