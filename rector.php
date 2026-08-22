@@ -2,52 +2,34 @@
 
 declare(strict_types=1);
 
-//use Rector\CodeQuality\Rector\Class_\InlineConstructorDefaultToPropertyRector;
 use Rector\Config\RectorConfig;
-//use Rector\Set\ValueObject\LevelSetList;
-use Rector\Set\ValueObject\SetList;
-// use Rector\Php53\Rector\FuncCall\DirNameFileConstantToDirConstantRector;
-// rector < 1
+
 /*
-  return static function (RectorConfig $rectorConfig): void {
-  $rectorConfig->paths([
-  __DIR__ . '/',
-  __DIR__ . '/tests/apiCest.php',
-  ]);
-  $rectorConfig->skip([
-  __DIR__ . '/docker',
-  __DIR__ . '/node_modules',
-  __DIR__ . '/resouces',
-  __DIR__ . '/var',
-  __DIR__ . '/vendor',
-  __DIR__ . '/web',
-  __DIR__ . '/tests',
-  ]);
-  // register a single rule
-  //$rectorConfig->rule(InlineConstructorDefaultToPropertyRector::class);
-  // define sets of rules
-  $rectorConfig->sets([
-  LevelSetList::UP_TO_PHP_53
-  ]);
-  //$rectorConfig->sets([SetList::PHP_52]);
-  };
+ * Pistes non activées, à monter d'un niveau à la fois si besoin :
+ * ->withDeadCodeLevel(15) et ->withCodeQualityLevel(15). Prévoir alors de
+ * skipper RecastingRemovalRector : il retire les (int) défensifs autour de
+ * $get['idE'] & co. en contexte SQL, à rebours de la convention du projet.
  */
 
-// rector 2
 return RectorConfig::configure()
-                ->withPaths([
-                    __DIR__ . '/',
-                    __DIR__ . '/tests/apiCest.php',
-                ])
-                ->withSkip([
-                    __DIR__ . '/docker',
-                    __DIR__ . '/node_modules',
-                    __DIR__ . '/resources',
-                    __DIR__ . '/var',
-                    __DIR__ . '/vendor',
-                    __DIR__ . '/tests',
-                    //DirNameFileConstantToDirConstantRector::class,
-                ])
-                ->withFileExtensions(['php'])
-                //->withSets([LevelSetList::UP_TO_PHP_53]);
-                ->withSets([SetList::PHP_84]); // PHP_52, etc. PHP_80
+    ->withPaths([
+        __DIR__ . '/',
+    ])
+    // même périmètre que phpstan.neon et psalm.xml ; .claude abrite les
+    // worktrees, soit autant de copies complètes du projet
+    ->withSkip([
+        __DIR__ . '/.claude',
+        __DIR__ . '/docker',
+        __DIR__ . '/node_modules',
+        __DIR__ . '/resources',
+        __DIR__ . '/tests',
+        __DIR__ . '/var',
+        __DIR__ . '/vendor',
+        __DIR__ . '/web',
+    ])
+    ->withFileExtensions(['php'])
+    // à côté du cache de PHPStan ; var/ est ignoré par git
+    ->withCache(__DIR__ . '/var/cache/rector')
+    // tous les sets jusqu'à la version PHP de composer.json (8.4 aujourd'hui) :
+    // contrairement à SetList::PHP_84, rien à retoucher au prochain palier
+    ->withPhpSets();
