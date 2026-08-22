@@ -187,7 +187,7 @@ include("../_header.inc.php");
 
         <div class="spacer"><!-- --></div>
 
-        <ul class="menu_actions_lieu desktop">
+        <ul class="menu_actions_lieu">
             <?php if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= UserLevel::ACTOR)) : ?>
                 <li class="action_ajouter"><a href="/evenement-edit.php?idL=<?= (int)$get['idL'] ?>">Ajouter un événement à ce lieu</a></li>
             <?php endif; ?>
