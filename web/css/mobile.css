@@ -783,6 +783,13 @@ form#ajouter_editer p.notif-apercu
     margin-left:0.4em;
 }
 
+/* dans les fieldsets Statut de l'événement et Catégorie, mettre les boutons radio l'un au dessus de l'autre, donc abandonner l'inline, sinon c'est confus */
+form#ajouter_editer ul.mobile-vertical li
+{
+    display: block;
+    list-style-type: none;
+}
+
 .signaler-erreur form#ajouter_editer ul.radio_vert
 {
     margin:0;

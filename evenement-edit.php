@@ -1067,7 +1067,7 @@ if ($show_form)
     <fieldset style="padding-top:0.1em">
 
         <legend>Statut de l’événement</legend>
-        <ul class="radio" style="display:inline-block;margin-left:0;margin-top:0.7em;margin-bottom:0.7em">
+        <ul class="radio mobile-vertical" style="display:inline-block;margin-left:0;margin-top:0.7em;margin-bottom:0.7em">
         <?php
         $statuts = ['propose' => '<strong>proposé</strong> (non visible)', 'actif' => '<strong>publié</strong>', 'complet' => '<strong>publié</strong> marqué <span class="even-statut-label statut-complet">COMPLET</span>', 'annule' => '<strong>publié</strong> marqué <span class="even-statut-label statut-annule">ANNULÉ</span>', 'inactif' => '<strong>dépublié</strong> (non visible)'];
         foreach ($statuts as $s => $n)
@@ -1108,7 +1108,7 @@ if ($show_form)
 
         <legend>Catégorie*</legend>
 
-        <ul class="radio" style="font-size: 1.15em;">
+        <ul class="radio mobile-vertical" style="font-size: 1.15em;">
         <?php
         foreach ($glo_tab_genre as $k => $v)
         {
