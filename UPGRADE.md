@@ -4,6 +4,34 @@ Ce fichier liste les opérations à effectuer lors du passage à une nouvelle ve
 
 Les versions sont listées de la plus récente à la plus ancienne.
 
+## 3.12.0
+
+### Base de données
+
+Aucune migration.
+
+### Redirections
+
+Trois pages de compte rejoignent `user/`, à côté de `login.php` et `dashboard.php`. Les redirections 301 sont dans [`.htaccess.example`](.htaccess.example) ; les reporter dans le `.htaccess` du serveur **au moment du déploiement** :
+
+| Ancienne URL | Nouvelle |
+| --- | --- |
+| `/user-register.php` | `/user/register.php` |
+| `/user-reset.php` | `/user/reset.php` |
+| `/user-reset2.php` | `/user/reset2.php` |
+
+Les liens de réinitialisation déjà envoyés par mail restent valables 24 h : sans la redirection, ils tombent en 404 pendant une journée. La query string `?token=` est reportée d'office, la substitution n'en portant aucune.
+
+### Effets de bord à connaître
+
+- **Déconnexion en POST** — `user-logout.php` disparaît sans redirection : une déconnexion en GET partait toute seule au moindre préchargement de lien. Un onglet resté ouvert sur une page rendue *avant* la mise à jour porte encore l'ancien lien et tombera en 404 ; il suffit de recharger la page. Signets et liens externes vers `/user-logout.php` cessent de fonctionner — voir [docs/comptes.md](docs/comptes.md)
+- **Mots de passe** — la liste des mots de passe refusés passe de 22 à 19 999 entrées. Les mots de passe existants ne sont pas vérifiés, rien n'est bloqué rétroactivement : la règle ne s'applique qu'au prochain changement. Les comptes non actifs (`statut` autre que `actif`) ne peuvent plus demander de réinitialisation, l'ancien filtre laissait passer les comptes en attente que la connexion refuse ensuite de toute façon
+- **`resources/`** — les corps de mail passent sous `resources/templates/`, les scripts sql sous `resources/database/`. Adapter tout montage ou script maison qui les référence (le `docker-compose.yml` du dépôt est à jour)
+
+### Développement
+
+- `composer rector:dry-run` fonctionne à nouveau : la configuration pointait sur un fichier de test déplacé, et le parcours partait de la racine, donc de `vendor/`
+
 ## 3.11.0
 
 ### Base de données

@@ -1,16 +1,50 @@
 # Changelog
 
-## [3.11.1] - 2026-08-18
+## [3.12.0] - 2026-08-23
+
+Upgrade steps (redirects, side effects) : [UPGRADE.md](UPGRADE.md).
+Feature documentation : [docs/](docs/).
+
+### Added
+- events : the calendar export leaves the home and the event page for every listing — search results, lieu and organisateur pages #150 (PR #173) ; the menu shows for all visitors but only on future events, while Éditer, Copier and Dépublier stay reserved to those allowed to edit
+- lieux, organisateurs : both listings get twelve columns counting the events added month by month, from AUTHOR up #178 — the date of the last event said neither the rhythm of a lieu nor the moment it stopped announcing ; only the additions made by members count, the team's (group ≤ AUTHOR) would measure the admins' work instead, and each cell recalls the same month a year earlier so a quiet July can be read against previous Julys — see [docs/lieux-organisateurs.md](docs/lieux-organisateurs.md)
+- events : the wide layout of the event page, given to admins in 3.11.0 while the idea was being tried out, is now served to every visitor — the frame, the illustrations, the description and the title take the right column, empty on that page
+- home : below 800px the partners and the latest added events line up with the gutter `<main>` already keeps ; the partners get the rounded grey background used elsewhere and their five logos become a centred flex row, instead of a baseline-aligned staircase over two uneven columns
+- tests : the `site` suite covers the register form, the logout (long-lived cookie and refusal of GET included), the monthly counters and the event edit form ; new unit suite for `PasswordPolicy`
 
 ### Changed
+- users : register, password reset and logout join `user/` next to login and dashboard, each page reworked as login was (#121, #123) — the whole processing runs before the first byte of HTML, the queries become prepared statements, the mail bodies become templates, the errors gather in a single summary at the top of the page with the faulty fields marked, and the three account pages share one stylesheet ; the old urls need a 301 — see [UPGRADE.md](UPGRADE.md) and [docs/comptes.md](docs/comptes.md)
+- users : the password rules move to the shared `PasswordPolicy` — the three forms that set a password each copied the same rules and re-read `resources/bad_p.txt` their own way, through a path relative to the script, which breaks as soon as a page changes directory ; the rejected list goes from 22 to 19 999 entries (tarraschk/richelieu, the commonest French passwords from public leaks, CC BY 4.0, plus the four of our own it lacked — the Swiss keyboard "qwertz" among them)
 - ui : the legacy 2000's PNG icons (famfamfam Silk) give way to Font Awesome and `web/interface/icons/` drops from 1469 files (~5 MB, only 49 of them referenced) to the 4 kept on purpose — `page_white_edit`, `page_white_copy`, `calendar_delete` and `map`, whose drawing has no Font Awesome equivalent we liked #151 ; the icon rules whose class is emitted nowhere (`.popup_gmaps`, `.icalendar`, `.probleme`, `.complete`, `.selection li.descendre`) are dropped rather than converted, the "événement copié" banner recovers the check mark its stylesheet had been pointing at a wrong path for years, the pagination arrows become `fa-long-arrow-*`, and in the action menus the icon becomes part of the link instead of sitting outside it
-- events : under 450px wide the description now wraps around the illustrations column instead of stopping beside it, so the lines below the flyer take the full width and the page gets noticeably shorter ; the fixed minimum heights of both blocks are dropped at that breakpoint, and an event without any illustration no longer reserves an empty 120px column — admins only for now, through the existing `.vevent-experimental` class
+- events : under 450px wide the description now wraps around the illustrations column instead of stopping beside it, so the lines below the flyer take the full width and the page gets noticeably shorter ; the fixed minimum heights of both blocks are dropped at that breakpoint, and an event without any illustration no longer reserves an empty 120px column
+- events edit : the four near-identical flyer/image blocks are reduced to one definition and its calls, dead code is dropped, and the salles of the select load in one query instead of one per lieu displayed
+- events : on the event page and the ics export, `idE` is validated before bootstrap — answering 400 to a malformed url no longer opens two MySQL connections, starts the session and mounts the log handlers, and bots produce these urls in bulk
+- librairies : the dead `Collection` hierarchy is removed #216 — a proto-repository never adopted, whose public API had no caller ; `Evenement` no longer extends `Element`, and the organisateurs listing loses one SQL query per page view
+- resources : the mail bodies rendered by `TemplateEngine` move to `resources/templates/`, the sql scripts (schema and migrations) to `resources/database/`
+- contact : drop the "nom" and "affiliation" fields, which served nothing
+- analyzers : repair the Rector configuration, which pointed at a test file moved long ago — `composer rector:dry-run` failed before analysing anything ; the PHP version is read from `composer.json`, the cache joins PHPStan's under `var/cache/`, and listing the code directories instead of walking from the root brings the run from over the 300 s composer timeout down to ~25 s for the same 38 files
+- ui : on mobile the fields of the event form take the full width, Statut and Catégorie stack, the "Plusieurs dates…" help text moves next to the date field, and the day navigation of the agenda shows text rather than the date, with arrows instead of chevrons
 
 ### Fixed
+- users : for anyone who had ticked "Rester connecté-e", clicking "Sortir" had no effect at all — `Sentry::logout()` cleared that cookie with a `setcookie()` whose `path` was omitted, so PHP fell back on the calling script's directory ; harmless while the page lived at the root, the deletion aimed at `/user` once the page moved there, and Sentry reopened the session on the next request
+- users : a reset request made for a deactivated account led to a form that could not be submitted #123 — `reset.php` looked the account up without checking `statut` and sent the link, while `reset2.php` only listed the active ones, so "Veuillez choisir un compte" fired again on every submit with no choice to make ; both pages now read one list, established before any processing
+- users : a reset link cut by a mail client threw in the middle of the page, that is a 500 in production ; a missing or malformed token now reads as an invalid request, like an expired one
+- users : an account with the "demande" status, which Sentry refuses at login, could have its password reset and stayed stuck at the login screen anyway
 - lieux, organisateurs, search, admin : a malformed `page` url parameter threw an uncaught exception — bots follow urls where the unescaped `&region` of `?page=3&region=vd` has been read as the `&reg` html entity, giving `?page=3®ion=vd` ; the 8 pages paginating now go through the new non-throwing `QueryParamValidator::pageFromQuery()`, which also rejects a page below 1 or passed as an array
 - events send : sharing or reporting an event whose lieu was deleted, or whose location was typed as free text, logged a warning ; the fallback returned by `Evenement::getLieu()` was missing the `determinant` key
 - lieux edit : saving the form as ACTOR or MEMBER logged a warning ; `image_galerie` is declared as a file field although its input is only rendered from AUTHOR up, so it never reaches `$_FILES` for those levels
+- events edit : the "Supprimer" checkbox of the image never got re-checked after a validation error, and the preview of the file already saved is now kept on the flyer and the image side alike even when the field is in error — without it the old file could no longer be deleted
+- edition : a stray character had slipped in front of the `<?php` of `librairies/Edition.php` — PHP echoed it as soon as the class was included, so text came before any header on the edit pages, and PHPStan refused to analyse the file, hence to finish its run
+- ui : the footer menu lit more than the current link — `$ici` was never emptied at the start of each turn and already arrived filled from the header, so the Organisateurs pages lit "Faire un don" and "Contact" in the footer
 - events : on mobile the action bar of an event scattered its labels across lines, the public actions and those reserved to logged-in users sharing a single right-aligned flow ; each group is now its own list, stacked and left-aligned, and the icons (16px images as well as Font Awesome glyphs) are centred on their label — "Envoyer à un ami" moves to a Font Awesome icon
+- ui : on mobile the actions menu of a lieu was hidden, the icon of the message banners overlapped the text, and the check mark of the "événement copié" banner did not sit on the first line
+- assets : the stylesheet of the page was loaded before the extra ones, which it could therefore not override
+- monitoring : `Sentry.init()` threw a `ReferenceError` in the console of visitors running an ad blocker, uBlock Origin returning the CDN bundle empty — which also fails the SRI check ; the call goes behind an existence test
+
+### Security
+- users : logging out was a GET, so any link prefetch (browser, antivirus, mail scanner) or any third-party site could close a member's session ; `user/logout.php` accepts POST only, protected by a token valid for the whole session — the "Sortir" button is rendered on every page, therefore in every open tab, and a single-use token would block the logout from a tab left in the background
+- events edit, admin : six queries concatenated values coming from `$_POST` without cast nor quotes, four of them written `WHERE id=" . $connector->sanitize(...)` where the escaping is inert — outside quotes `mysqli_real_escape_string` does not neutralise `1 OR ...`, only the `(int)` cast protects in a numeric context
+- db : the password of the `DbConnector` constructor is marked `#[\SensitiveParameter]`, which keeps it out of the stack traces
 
 ## [3.11.0] - 2026-08-18
 
