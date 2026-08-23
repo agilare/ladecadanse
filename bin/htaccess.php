@@ -13,13 +13,12 @@ declare(strict_types=1);
  *
  * Usage :
  *   php bin/htaccess.php [--ops-dir=CHEMIN] [--require-ops]
- *   php bin/htaccess.php --deploy [--scope=NOM]
+ *   php bin/htaccess.php --deploy --scope=NOM
  *
  * Voir docs/htaccess.md.
  */
 
 const OPS_DIR_DEFAUT = '../ladecadanse-docs/htaccess';
-const SCOPE_DEFAUT = 'prod';
 
 $racine = dirname(__DIR__);
 $options = getopt('', ['ops-dir::', 'require-ops', 'deploy', 'scope::', 'out::']);
@@ -90,7 +89,40 @@ if (!$deploiement) {
     exit(0);
 }
 
-$scope = $options['scope'] ?? getenv('LDD_FTP_SCOPE') ?: SCOPE_DEFAUT;
+// Le scope désigne le serveur de destination. Il n'a pas de valeur par défaut :
+// plusieurs peuvent être configurés côte à côte, et deviner lequel vise la
+// production reviendrait à parier sur la bonne machine.
+exec('git config --get-regexp "^git-ftp\..*\.url"', $lignes, $etat);
+$scopes = [];
+foreach ($lignes as $ligne) {
+    if (preg_match('/^git-ftp\.(.+)\.url\s+(\S+)/', $ligne, $trouve) === 1) {
+        $scopes[$trouve[1]] = $trouve[2];
+    }
+}
+
+$scope = $options['scope'] ?? getenv('LDD_FTP_SCOPE') ?: null;
+
+if ($scope === null && count($scopes) === 1) {
+    $scope = array_key_first($scopes);
+}
+
+if ($scope === null || ($scopes !== [] && !isset($scopes[$scope]))) {
+    fwrite(STDERR, sprintf(
+        "ERREUR : %s\n         Passer --scope=NOM, ou définir LDD_FTP_SCOPE.\n%s",
+        $scope === null
+            ? 'préciser le serveur de destination.'
+            : sprintf('scope git-ftp « %s » non configuré.', $scope),
+        $scopes === [] ? '' : "\n         Scopes configurés :\n" . implode('', array_map(
+            static fn (string $nom, string $url): string => sprintf("           %-10s %s\n", $nom, $url),
+            array_keys($scopes),
+            $scopes
+        ))
+    ));
+    exit(1);
+}
+
+printf("\nDestination : %s (%s)\n", $scope, $scopes[$scope] ?? 'url inconnue');
+
 $commande = 'git ftp push -s ' . escapeshellarg($scope);
 echo "\n> {$commande}\n";
 passthru($commande, $code);

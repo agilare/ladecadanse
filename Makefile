@@ -126,5 +126,5 @@ prod: start
 htaccess: ## Composer le .htaccess depuis ses fragments
 	php bin/htaccess.php
 
-deploy: ## Composer le .htaccess puis déployer par git-ftp
-	php bin/htaccess.php --deploy
+deploy: ## Composer le .htaccess puis déployer (usage : make deploy SCOPE=nom)
+	php bin/htaccess.php --deploy $(if $(SCOPE),--scope=$(SCOPE))

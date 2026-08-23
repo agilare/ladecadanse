@@ -104,3 +104,14 @@ Le `.user.ini` de production — réglages PHP sous FPM — n'est toujours versi
 nulle part : il n'existe que sur le serveur. Il relève du même raisonnement que
 les fragments d'exploitation et aurait sa place dans `ladecadanse-docs`, mais
 son contenu n'a pas été relevé ici.
+
+## Choisir le serveur
+
+`git ftp` travaille par *scope*, et le script n'en suppose aucun : quand plusieurs
+sont configurés, il les liste et s'arrête plutôt que de parier sur la bonne
+machine. S'il n'y en a qu'un, il est retenu sans rien préciser.
+
+```sh
+composer deploy -- --scope=nom
+make deploy SCOPE=nom
+```

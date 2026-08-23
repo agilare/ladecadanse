@@ -178,10 +178,14 @@ Un espace sur un serveur avec l'infrastructure prérequise, une timezone défini
 #### Pour mettre à jour avec les derniers commits
 
 ```sh
-$ composer deploy
+$ composer deploy -- --scope=prod
 ```
 
 `composer deploy` compose le `.htaccess` à partir de ses fragments, puis lance `git ftp push`.
+
+Le scope n'a pas de valeur par défaut : quand plusieurs serveurs sont configurés, choisir
+pour vous reviendrait à parier sur la bonne machine. Le script les liste et s'arrête. Si un
+seul est configuré, il est retenu sans rien préciser.
 
 L'enchaînement n'est pas cosmétique. Le `.htaccess` est ignoré par git — pour que les
 règles propres à l'exploitation (adresses bannies, robots) ne deviennent pas publiques —
@@ -189,12 +193,12 @@ mais git-ftp l'envoie quand même, grâce à `!.htaccess` dans `.git-ftp-include
 mécanisme envoie **le fichier présent sur le disque** : sans recomposition préalable, un
 essai local oublié partirait en production. Voir [docs/htaccess.md](docs/htaccess.md).
 
-Les fragments d'exploitation vivent dans le dépôt privé `ladecadanse-docs`. `composer deploy`
-refuse de partir s'il ne les trouve pas, plutôt que de déployer une production sans ses
-blocages. Le scope git-ftp et leur emplacement se surchargent au besoin :
+Les fragments d'exploitation vivent dans un dépôt privé annexe. `composer deploy` refuse de
+partir s'il ne les trouve pas, plutôt que de déployer une production sans ses blocages.
+Leur emplacement se surcharge au besoin :
 
 ```sh
-$ php bin/htaccess.php --deploy --scope=ik --ops-dir=/chemin/vers/ladecadanse-docs/htaccess
+$ composer deploy -- --scope=prod --ops-dir=/chemin/vers/htaccess
 ```
 
 Pour ne pousser que le code, sans toucher au `.htaccess` :
