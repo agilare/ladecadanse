@@ -1,7 +1,7 @@
 # Ladecadanse Docker Management Makefile
 # Usage: make [target] PROFILE=dev|prod
 
-.PHONY: help start stop build restart logs shell clean status install-deps composer-update composer-require
+.PHONY: help htaccess deploy start stop build restart logs shell clean status install-deps composer-update composer-require
 
 # Default profile
 PROFILE ?= dev
@@ -37,6 +37,8 @@ help: ## Show this help message
 	@echo "  install-deps     Install PHP dependencies"
 	@echo "  composer-update  Update Composer dependencies"
 	@echo "  composer-require Add a new Composer package (usage: make composer-require PACKAGE=package/name)"
+	@echo "  htaccess         Composer le .htaccess depuis ses fragments"
+	@echo "  deploy           Composer le .htaccess puis git ftp push"
 	@echo "  help             Show this help message"
 	@echo ""
 	@echo "Examples:"
@@ -113,3 +115,16 @@ dev: start
 
 prod: PROFILE=prod
 prod: start
+
+# ---------------------------------------------------------------------------
+# .htaccess : composition et déploiement — voir docs/htaccess.md
+# ---------------------------------------------------------------------------
+# La logique tient dans bin/htaccess.php : PHP est requis de toute façon, alors
+# que make n'est pas installé partout — sous Windows notamment. Ces deux cibles
+# ne sont qu'un raccourci pour qui a make.
+
+htaccess: ## Composer le .htaccess depuis ses fragments
+	php bin/htaccess.php
+
+deploy: ## Composer le .htaccess puis déployer par git-ftp
+	php bin/htaccess.php --deploy

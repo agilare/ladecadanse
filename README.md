@@ -50,7 +50,7 @@ Ces instructions vous permettront de mettre en place une copie du projet sur vot
         INSERT INTO `personne` (`idPersonne`, `pseudo`, `mot_de_passe`, `cookie`, `groupe`, `statut`, `affiliation`, `region`, `email`,  `signature`, `avec_affiliation`, `gds`, `actif`, `dateAjout`, `date_derniere_modif`) VALUES (NULL, 'admin', '$2y$10$34Z0QxaycAgPFQGtiVzPbeoZFN1kwLEdWDEBI1kEOJGK4A3xRJtMa', '', '1', 'actif', '', 'ge', 'test@ladecadanse.ch', 'pseudo', 'non', '', '1', '0000-00-00 00:00:00.000000', '0000-00-00 00:00:00.000000');
         ```
 1. créer vos fichiers de configuration en faisant `cp app/env_model.php app/env.php` ainsi que `cp app/db.config_model.php app/db.config.php` et y saisir les valeurs de votre environnement (davantage d'explications et exemples se trouvent dans les fichiers même), avec au minimum les informations de connexion à la base de données
-1. `cp .htaccess.example .htaccess` si vous voulez implémenter une configuration PHP et Apache de base pour le développement en local
+1. `composer htaccess` compose le `.htaccess` (configuration Apache et PHP pour le développement local) à partir des fragments de `htaccess/` — voir [docs/htaccess.md](docs/htaccess.md). Sans passer par Composer : `php bin/htaccess.php`
 
 ### Installation avec Docker
 
@@ -176,9 +176,43 @@ Un espace sur un serveur avec l'infrastructure prérequise, une timezone défini
 1. dans `app/env.php` [configurer le site  selon l'environnement](README.md#manuelle)
 
 #### Pour mettre à jour avec les derniers commits
+
+```sh
+$ composer deploy
+```
+
+`composer deploy` compose le `.htaccess` à partir de ses fragments, puis lance `git ftp push`.
+
+L'enchaînement n'est pas cosmétique. Le `.htaccess` est ignoré par git — pour que les
+règles propres à l'exploitation (adresses bannies, robots) ne deviennent pas publiques —
+mais git-ftp l'envoie quand même, grâce à `!.htaccess` dans `.git-ftp-include`. Ce
+mécanisme envoie **le fichier présent sur le disque** : sans recomposition préalable, un
+essai local oublié partirait en production. Voir [docs/htaccess.md](docs/htaccess.md).
+
+Les fragments d'exploitation vivent dans le dépôt privé `ladecadanse-docs`. `composer deploy`
+refuse de partir s'il ne les trouve pas, plutôt que de déployer une production sans ses
+blocages. Le scope git-ftp et leur emplacement se surchargent au besoin :
+
+```sh
+$ php bin/htaccess.php --deploy --scope=ik --ops-dir=/chemin/vers/ladecadanse-docs/htaccess
+```
+
+Pour ne pousser que le code, sans toucher au `.htaccess` :
+
 ```sh
 $ git ftp push -s prod
 ```
+
+#### Après le déploiement
+
+Une requête suffit à vérifier que le `.htaccess` est arrivé et qu'il est valide :
+
+```sh
+$ curl -I https://www.ladecadanse.ch/lausanne
+```
+
+Une 301 vers `/index.php?region=vd` : le compte est bon. Une 500 signale une directive
+refusée par le serveur ; une 404, que le fichier n'est pas arrivé.
 
 ## Analyse du code
 

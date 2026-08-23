@@ -63,7 +63,9 @@
         "psalm:taint": "vendor/bin/psalm --taint-analysis --ignore-baseline",
         "test": "vendor/bin/codecept run",
         "test:api": "vendor/bin/codecept run api",
-        "test:site": "vendor/bin/codecept run site"
+        "test:site": "vendor/bin/codecept run site",
+        "htaccess": " bin/htaccess.php",
+        "deploy": " bin/htaccess.php --deploy"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "^3.13",

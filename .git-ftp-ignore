@@ -31,7 +31,10 @@ phpstan-baseline.neon
 phpstan-constants.php
 /.phan
 .phan/*
-.htaccess.example
+/bin
+bin/*
+/htaccess
+htaccess/*
 psalm.xml
 psalm-baseline.xml
 Makefile

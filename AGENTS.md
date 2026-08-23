@@ -42,7 +42,7 @@ composer install
 npm install                             # ESLint + Vitest — required for `npm run lint` and `npm test`
 cp app/env_model.php app/env.php        # Configure DB, SMTP, API keys
 cp app/db.config_model.php app/db.config.php
-cp .htaccess.example .htaccess
+composer htaccess                           # Composes .htaccess from htaccess/ fragments
 ```
 
 `npm install` is only needed to lint and test: no JS build step exists, and the site runs without
@@ -99,3 +99,6 @@ Two connectors coexist:
 - **HTML output**: Use `sanitizeForHtml()` (from `librairies/Utils/utils_functions.php`) when echoing user data
 - **Legacy globals**: `$connector`, `$authorization`, `$videur`, `$logger` are available globally after bootstrap
 - **Config**: Feature flags and credentials live in `app/env.php` (not committed); see `app/env_model.php` for the full list
+- **URL routing**: old-to-new URL redirects live in `htaccess/50-routage.conf`, not in PHP. Moving or
+  renaming a page means adding its 301 there in the same commit. The root `.htaccess` is composed from
+  those fragments by `composer htaccess` and must never be edited directly; see `docs/htaccess.md`
