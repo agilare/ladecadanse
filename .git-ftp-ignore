@@ -35,6 +35,8 @@ phpstan-constants.php
 bin/*
 /htaccess
 htaccess/*
+/userini
+userini/*
 psalm.xml
 psalm-baseline.xml
 Makefile

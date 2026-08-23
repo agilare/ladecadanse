@@ -23,3 +23,4 @@
 # Les fragments composés en .htaccess doivent rester en LF : sur un Apache
 # Linux, un CRLF fait échouer certaines directives à arguments entre guillemets
 htaccess/*.conf text eol=lf
+userini/*.ini text eol=lf

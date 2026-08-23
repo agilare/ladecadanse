@@ -50,7 +50,7 @@ Ces instructions vous permettront de mettre en place une copie du projet sur vot
         INSERT INTO `personne` (`idPersonne`, `pseudo`, `mot_de_passe`, `cookie`, `groupe`, `statut`, `affiliation`, `region`, `email`,  `signature`, `avec_affiliation`, `gds`, `actif`, `dateAjout`, `date_derniere_modif`) VALUES (NULL, 'admin', '$2y$10$34Z0QxaycAgPFQGtiVzPbeoZFN1kwLEdWDEBI1kEOJGK4A3xRJtMa', '', '1', 'actif', '', 'ge', 'test@ladecadanse.ch', 'pseudo', 'non', '', '1', '0000-00-00 00:00:00.000000', '0000-00-00 00:00:00.000000');
         ```
 1. créer vos fichiers de configuration en faisant `cp app/env_model.php app/env.php` ainsi que `cp app/db.config_model.php app/db.config.php` et y saisir les valeurs de votre environnement (davantage d'explications et exemples se trouvent dans les fichiers même), avec au minimum les informations de connexion à la base de données
-1. `composer htaccess` compose le `.htaccess` (configuration Apache et PHP pour le développement local) à partir des fragments de `htaccess/` — voir [docs/htaccess.md](docs/htaccess.md). Sans passer par Composer : `php bin/htaccess.php`
+1. `composer config:build` compose le `.htaccess` et le `.user.ini` (configuration Apache et PHP) à partir des fragments de `htaccess/` et `userini/` — voir [docs/config-serveur.md](docs/config-serveur.md). Sans passer par Composer : `php bin/build-config.php`
 
 ### Installation avec Docker
 
@@ -191,7 +191,7 @@ L'enchaînement n'est pas cosmétique. Le `.htaccess` est ignoré par git — po
 règles propres à l'exploitation (adresses bannies, robots) ne deviennent pas publiques —
 mais git-ftp l'envoie quand même, grâce à `!.htaccess` dans `.git-ftp-include`. Ce
 mécanisme envoie **le fichier présent sur le disque** : sans recomposition préalable, un
-essai local oublié partirait en production. Voir [docs/htaccess.md](docs/htaccess.md).
+essai local oublié partirait en production. Voir [docs/config-serveur.md](docs/config-serveur.md).
 
 Les fragments d'exploitation vivent dans un dépôt privé annexe. `composer deploy` refuse de
 partir s'il ne les trouve pas, plutôt que de déployer une production sans ses blocages.

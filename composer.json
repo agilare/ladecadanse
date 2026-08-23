@@ -64,8 +64,8 @@
         "test": "vendor/bin/codecept run",
         "test:api": "vendor/bin/codecept run api",
         "test:site": "vendor/bin/codecept run site",
-        "htaccess": "@php bin/htaccess.php",
-        "deploy": "@php bin/htaccess.php --deploy"
+        "config:build": "@php bin/build-config.php",
+        "deploy": "@php bin/build-config.php --deploy"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "^3.13",

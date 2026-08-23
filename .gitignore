@@ -34,6 +34,7 @@ app/db.config.php
 !web/uploads/organisateurs/.gitkeep
 /.idea
 .htaccess
+.user.ini
 tests/.env
 /node_modules
 /.well-known
