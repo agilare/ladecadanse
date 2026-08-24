@@ -311,7 +311,7 @@ Pour passer à une nouvelle version (migrations de base de données, nouvelles c
 
 ## Documentation
 
-Le fonctionnement des parties du site qui demandent plus qu'une ligne de changelog est documenté dans [docs/](docs/) : [événements](docs/evenements.md), [flux RSS](docs/rss.md), [suivi des bots](docs/bots.md).
+Le fonctionnement des parties du site qui demandent plus qu'une ligne de changelog est documenté dans [docs/](docs/) : [événements](docs/evenements.md), [flux RSS](docs/rss.md), [suivi des bots](docs/bots.md), [configuration serveur](docs/config-serveur.md).
 
 ## Contribuer
 

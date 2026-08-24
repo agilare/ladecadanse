@@ -7,5 +7,6 @@ Notes de fonctionnement des parties du site qui demandent plus qu'une ligne de c
 - [Lieux et organisateurs](lieux-organisateurs.md) — colonnes d'activité mensuelle en vue d'administration
 - [Flux RSS](rss.md) — types de flux, cache, codes de statut, URL absolues
 - [Suivi des bots](bots.md) — activation et tableau de bord
+- [Configuration serveur](config-serveur.md) — `.htaccess` et `.user.ini` composés depuis des fragments, publics et privés, et déployés avec le code
 
 Les raccourcis clavier et le mode *mouseless* sont documentés dans le [README](../README.md#raccourcis-clavier).
