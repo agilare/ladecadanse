@@ -58,7 +58,7 @@
  */
 @media screen and (min-width: 800px)
 {
-    #agenda_filters
+    #agenda_filters.avec-filtre-genre
     {
         display: flex;
         flex-wrap: wrap;
@@ -75,7 +75,7 @@
         padding: 0.6em 0;
     }
 
-    #agenda_filters #genre_tab_navigation
+    #agenda_filters.avec-filtre-genre #genre_tab_navigation
     {
         position: static;
         background: none;
@@ -83,7 +83,7 @@
         padding: 0;
     }
 
-    #agenda_filters #genre_tab_navigation li
+    #agenda_filters.avec-filtre-genre #genre_tab_navigation li
     {
         padding-left: 0.1em;
         padding-right: 0.1em;
@@ -92,13 +92,13 @@
     /* margin-left auto plutôt que le seul justify-content : quand la ligne est trop
        étroite et que le menu de tri se replie sous le filtre, il reste aligné à
        droite, comme partout ailleurs sur le site */
-    #agenda_filters #order_navigation
+    #agenda_filters.avec-filtre-genre #order_navigation
     {
         margin: 0 0 0 auto;
     }
 
     /* dans le contexte flex, le flottant n'a plus rien à aligner et fausse la hauteur */
-    #agenda_filters #order_navigation ul
+    #agenda_filters.avec-filtre-genre #order_navigation ul
     {
         float: none;
         margin: 0;
