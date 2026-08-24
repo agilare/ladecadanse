@@ -246,28 +246,34 @@ include("_header.inc.php");
 
     <div id="prochains_evenements">
 
-        <div id="order_navigation">
-            <ul>
-                <li style="margin-right:5px"><i class="fa fa-sort-amount-asc" aria-hidden="true"></i></li><li style="margin-right:2px"><a href="index.php?tri_agenda=dateAjout<?= $url_courant_param ?>" class="<?php if ($_SESSION['user_prefs_agenda_order'] == 'dateAjout') : ?>selected<?php endif; ?>" rel="nofollow">Dernier ajouté</a></li><li><a href="index.php?tri_agenda=horaire_debut<?= $url_courant_param ?>" class="<?php if ($_SESSION['user_prefs_agenda_order'] == 'horaire_debut') : ?>selected<?php endif; ?>" rel="nofollow">Heure de début</a></li>
-            </ul>
-            <div class="spacer"></div>
-        </div>
+        <?php /* les deux menus partagent une ligne à partir de 800px, cf. #agenda_filters
+                 dans index.css ; l'ordre du DOM suit l'ordre visuel (filtrer, puis trier) */ ?>
+        <div id="agenda_filters">
 
-        <?php if ($count_events_today_in_region > 0) : ?>
-        <nav id="genre_tab_navigation" aria-label="Filtrer par genre">
-            <ul>
-                <li><i class="fa fa-filter" aria-hidden="true"></i></li>
-                <?php foreach ($glo_tab_genre as $key => $label) : ?>
-                    <?php if (!array_key_exists($key, $tab_events_today_in_region_by_category) && $current_genre_tab !== $key) : continue; endif; ?>
-                    <?php if ($current_genre_tab === $key) : ?>
-                        <li class="ici" aria-current="true"><a href="index.php?genre_tab=tous<?= $url_filter_params ?>" title="Retirer le filtre" aria-label="Retirer le filtre <?= ucfirst($label) ?>" rel="nofollow"><?= ucfirst($label) ?>&nbsp;<i class="fa fa-times" aria-hidden="true"></i></a></li>
-                    <?php else : ?>
-                        <li><a href="index.php?genre_tab=<?= urlencode($key) ?><?= $url_filter_params ?>" rel="nofollow"><?= ucfirst($label) ?></a></li>
-                    <?php endif; ?>
-                <?php endforeach; ?>
-            </ul>
-        </nav>
-        <?php endif; ?>
+            <?php if ($count_events_today_in_region > 0) : ?>
+            <nav id="genre_tab_navigation" aria-label="Filtrer par genre">
+                <ul>
+                    <li><i class="fa fa-filter" aria-hidden="true"></i></li>
+                    <?php foreach ($glo_tab_genre as $key => $label) : ?>
+                        <?php if (!array_key_exists($key, $tab_events_today_in_region_by_category) && $current_genre_tab !== $key) : continue; endif; ?>
+                        <?php if ($current_genre_tab === $key) : ?>
+                            <li class="ici" aria-current="true"><a href="index.php?genre_tab=tous<?= $url_filter_params ?>" title="Retirer le filtre" aria-label="Retirer le filtre <?= ucfirst($label) ?>" rel="nofollow"><?= ucfirst($label) ?>&nbsp;<i class="fa fa-times" aria-hidden="true"></i></a></li>
+                        <?php else : ?>
+                            <li><a href="index.php?genre_tab=<?= urlencode($key) ?><?= $url_filter_params ?>" rel="nofollow"><?= ucfirst($label) ?></a></li>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+                </ul>
+            </nav>
+            <?php endif; ?>
+
+            <div id="order_navigation">
+                <ul>
+                    <li style="margin-right:5px"><i class="fa fa-sort-amount-asc" aria-hidden="true"></i></li><li style="margin-right:2px"><a href="index.php?tri_agenda=dateAjout<?= $url_courant_param ?>" class="<?php if ($_SESSION['user_prefs_agenda_order'] == 'dateAjout') : ?>selected<?php endif; ?>" rel="nofollow">Dernier ajouté</a></li><li><a href="index.php?tri_agenda=horaire_debut<?= $url_courant_param ?>" class="<?php if ($_SESSION['user_prefs_agenda_order'] == 'horaire_debut') : ?>selected<?php endif; ?>" rel="nofollow">Heure de début</a></li>
+                </ul>
+                <div class="spacer"></div>
+            </div>
+
+        </div>
 
         <?php
         if ($count_events_today_in_region == 0)
