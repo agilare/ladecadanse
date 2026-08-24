@@ -76,6 +76,25 @@ Conséquence gênante : le pare-feu 8G renvoie 403 avant PHP sur l'User-Agent `c
 ou sur `<script>` en query string. Les tests doivent en tenir compte — voir le
 commentaire de `tests/Site/RssCest.php`.
 
+## Le déploiement écrase-t-il la configuration locale ?
+
+Non, parce qu'il n'existe plus de configuration locale séparée à écraser.
+`composer config:build` et `composer deploy` produisent le **même** fichier sur une
+machine qui a les fragments d'exploitation : le déploiement régénère, il ne
+remplace pas du développement par de la production.
+
+Le seul réglage vraiment propre au poste de travail — l'affichage des erreurs —
+est dans `htaccess/70-dev-php.conf`, donc *à l'intérieur* du fichier composé,
+neutralisé en production par `<IfModule php_module>`.
+
+Ce qui se perd, en revanche, c'est ce qu'on tape à la main dans un fichier
+composé : c'est le but. Un réglage local qui doit durer s'écrit dans un fragment,
+pas dans le fichier généré.
+
+Un garde-fou couvre le cas où le fichier n'a pas été composé par l'outil — un
+`.htaccess` maintenu à la main, que ne suit aucun dépôt : la composition refuse
+alors de l'écraser tant qu'on ne l'a pas mis de côté, ou passé `--force`.
+
 ## `.user.ini` : lu seulement là où PHP est en FastCGI
 
 Un fichier INI n'a pas de `<IfModule>` : il ne peut porter qu'un seul jeu de

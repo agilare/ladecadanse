@@ -13,7 +13,7 @@ declare(strict_types=1);
  * la cible, son préfixe numérique décide de l'ordre.
  *
  * Usage :
- *   php bin/build-config.php [--ops-dir=CHEMIN] [--only=htaccess|userini]
+ *   php bin/build-config.php [--ops-dir=CHEMIN] [--only=htaccess|userini] [--force]
  *   php bin/build-config.php --deploy --scope=NOM
  *
  * Voir docs/config-serveur.md.
@@ -32,7 +32,7 @@ const CIBLES = [
 ];
 
 $racine = dirname(__DIR__);
-$options = getopt('', ['ops-dir::', 'require-ops', 'deploy', 'scope::', 'only::', 'out-dir::']);
+$options = getopt('', ['ops-dir::', 'require-ops', 'deploy', 'scope::', 'only::', 'out-dir::', 'force']);
 
 $opsDir = $options['ops-dir'] ?? getenv('LDD_OPS_DIR') ?: OPS_DIR_DEFAUT;
 if (!str_starts_with($opsDir, '/') && !preg_match('#^[A-Za-z]:#', $opsDir)) {
@@ -42,6 +42,7 @@ $sortieDir = $options['out-dir'] ?? $racine;
 $deploiement = isset($options['deploy']);
 $opsObligatoires = $deploiement || isset($options['require-ops']);
 $seulement = $options['only'] ?? null;
+$force = isset($options['force']);
 
 $cibles = CIBLES;
 if ($seulement !== null) {
@@ -98,8 +99,26 @@ foreach ($cibles as $nom => $cible) {
         $contenu .= str_replace(["\r\n", "\r"], "\n", (string) file_get_contents($fragment));
     }
 
-    if (file_put_contents($sortieDir . '/' . $nom, $contenu) === false) {
-        fwrite(STDERR, "ERREUR : écriture impossible dans {$sortieDir}/{$nom}\n");
+    $cheminSortie = $sortieDir . '/' . $nom;
+
+    // Ne jamais écraser un fichier écrit à la main. Avant la composition, le
+    // .htaccess de développement n'était suivi par aucun dépôt : le remplacer
+    // sans prévenir le perdrait définitivement.
+    if (!$force && is_file($cheminSortie)) {
+        $debut = (string) file_get_contents($cheminSortie, false, null, 0, 200);
+        if (!str_contains($debut, 'Composé par')) {
+            fwrite(STDERR, <<<TXT
+                ERREUR : {$nom} existe et n'a pas été composé par cet outil.
+                         L'écraser perdrait un fichier qu'aucun dépôt ne suit.
+                         Le mettre de côté, puis relancer — ou --force pour passer outre.
+
+                TXT);
+            exit(1);
+        }
+    }
+
+    if (file_put_contents($cheminSortie, $contenu) === false) {
+        fwrite(STDERR, "ERREUR : écriture impossible dans {$cheminSortie}\n");
         exit(1);
     }
 
