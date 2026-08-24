@@ -170,9 +170,9 @@ class Lieu extends Element
     /**
      * Lieux actifs, prêts à peupler un <select> groupé par canton.
      *
-     * Reprend le tri du select de evenement-edit.php : cantons dans l'ordre ge, vd, fr puis le
-     * reste, et à l'intérieur d'un canton les noms sans leur article initial, pour que « Le
-     * Sagittario » se range à S. La colonne `canton` sert à construire les <optgroup>.
+     * Reprend le tri du select de evenement-edit.php : cantons dans l'ordre de
+     * Localite::CANTONS, et à l'intérieur d'un canton les noms sans leur article initial, pour
+     * que « Le Sagittario » se range à S. La colonne `canton` sert à construire les <optgroup>.
      *
      * $exclureFribourg reproduit le filtre que le formulaire d'ajout applique à la création : un lieu
      * qu'on ne peut pas choisir en ajoutant un événement ne doit pas pouvoir être réglé comme lieu
@@ -197,7 +197,7 @@ class Lieu extends Element
             LEFT JOIN localite ON lieu.localite_id = localite.id
             WHERE lieu.statut = 'actif' " . $where . "
             ORDER BY
-              CASE COALESCE(localite.canton, '') WHEN 'ge' THEN 0 WHEN 'vd' THEN 1 WHEN 'fr' THEN 2 ELSE 3 END,
+              " . Localite::sqlOrdreCantons("COALESCE(localite.canton, '')") . ",
               TRIM(LEADING 'L\'' FROM (TRIM(LEADING 'Les ' FROM (TRIM(LEADING 'La ' FROM (TRIM(LEADING 'Le ' FROM lieu.nom))))))) COLLATE utf8mb4_unicode_ci");
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);

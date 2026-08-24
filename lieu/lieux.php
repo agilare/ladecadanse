@@ -138,7 +138,7 @@ include("../_header.inc.php");
                             <option value="<?= $k ?>" <?php if ($_SESSION['user_prefs_lieux_categorie'] == $k) : ?>selected="selected"<?php endif; ?>><?= sanitizeForHtml($label) ?></option>
                         <?php endforeach; ?>
                     </select>
-                    <?= HtmlShrink::getLocalitesSelect($regions_localites, $glo_regions, $glo_tab_ailleurs, $lieux_region_localite_ids); ?>
+                    <?= HtmlShrink::getLocalitesSelect($regions_localites, $glo_regions, $lieux_region_localite_ids); ?>
                     <button type="submit" style="margin-top:2px">OK</button>
                 </form>
                 <ul class="menu_tab">

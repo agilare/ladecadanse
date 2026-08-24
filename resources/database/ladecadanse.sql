@@ -135,7 +135,7 @@ CREATE TABLE `localite` (
   `id` int(6) NOT NULL AUTO_INCREMENT,
   `localite` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `commune` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `npa` int(4) NOT NULL,
+  `npa` varchar(6) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `canton` varchar(2) COLLATE utf8mb4_unicode_ci NOT NULL,
   `regions_covered` set('ge','vd','rf','hs') DEFAULT NULL,
   PRIMARY KEY (`id`)
@@ -143,7 +143,7 @@ CREATE TABLE `localite` (
 
 
 INSERT INTO `localite` (`id`, `localite`, `commune`, `npa`, `canton`, `regions_covered`) VALUES
- (1, 'Autre', '', 0, '', NULL),
+ (1, 'Autre', '', '0', 'hs', NULL),
  (2, 'Aïre', 'Vernier', 1219, 'ge', NULL),
  (3, 'Aire-la-Ville', 'Aire-la-Ville', 1288, 'ge', NULL),
  (4, 'Anières', 'Anières', 1247, 'ge', NULL),
@@ -1205,6 +1205,11 @@ INSERT INTO `localite` (`id`, `localite`, `commune`, `npa`, `canton`, `regions_c
  (1062, 'Zollhaus', 'Plaffeien', 1716, 'fr', NULL),
  (1063, 'Zumholz', 'Alterswil', 1713, 'fr', NULL),
  (1064, 'Zumholz bei Plaffeien', 'Zumholz', 1719, 'fr', NULL);
+
+-- « autre localité en France » : les localités françaises s'ajoutent au fur et à mesure,
+-- celle-ci recueille les événements et les lieux dont la commune n'est pas encore listée
+INSERT INTO `localite` (`id`, `localite`, `commune`, `npa`, `canton`, `regions_covered`) VALUES
+ (1065, 'Autre', 'Autre', '0', 'rf', 'ge,rf');
 
 
 DROP TABLE IF EXISTS `organisateur`;

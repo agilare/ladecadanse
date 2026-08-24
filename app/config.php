@@ -130,7 +130,9 @@ $glo_tab_quartiers2 = [
 ];
 
 $glo_tab_quartiers_hors_geneve = ["Nyon", "Vaud", "France", "autre"];
-$glo_tab_ailleurs = ["rf" => "France", "hs" => "Autre"];
+// $glo_tab_ailleurs (France, Autre) a disparu : ces deux entrées, jusque-là greffées en dur
+// sur les <select> de localités, sont devenues des localités de la table `localite`
+// (cantons 'rf' et 'hs') — voir Ladecadanse\Localite::CANTONS.
 
 // DOMAIN END
 

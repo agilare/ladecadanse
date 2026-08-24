@@ -18,6 +18,7 @@ use Ladecadanse\Security\SecurityToken;
 use Ladecadanse\Security\Sentry;
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\Lieu;
+use Ladecadanse\Localite;
 use Ladecadanse\Personne;
 use Ladecadanse\UserSettings;
 
@@ -938,7 +939,6 @@ if ($get['action'] == "editer" || $get['action'] == "update")
             // Requête à part : $req_lieux, plus haut, a été consommé jusqu'au bout par le select
             // d'affiliation. Mêmes lieux et même tri que le formulaire d'ajout d'événement, sans
             // les salles (le réglage se fait au niveau du lieu).
-            $canton_labels = ['ge' => 'Genève', 'vd' => 'Vaud', 'fr' => 'Fribourg', '' => 'France'];
             $canton_courant = null;
 
             foreach (Lieu::getActifsPourSelect() as $lieu_defaut)
@@ -948,7 +948,7 @@ if ($get['action'] == "editer" || $get['action'] == "update")
                 if ($canton !== $canton_courant)
                 {
                     if ($canton_courant !== null) { echo '</optgroup>'; }
-                    echo '<optgroup label="' . ($canton_labels[$canton] ?? sanitizeForHtml($canton)) . '">';
+                    echo '<optgroup label="' . (Localite::CANTONS[$canton] ?? sanitizeForHtml($canton)) . '">';
                     $canton_courant = $canton;
                 }
 

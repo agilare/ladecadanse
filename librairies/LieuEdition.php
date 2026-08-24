@@ -211,24 +211,20 @@ class LieuEdition extends Edition
         {
             $lieu->setValue('quartier', '');
 
-            if ($this->valeurs['localite_id'] == 'rf' || $this->valeurs['localite_id'] == 'hs')
-            {
-                $lieu->setValue('region', $this->valeurs['localite_id']);
-                $lieu->setValue('localite_id', 1); // autre
-            }
-            elseif ($this->valeurs['localite_id'] == 529) // Nyon
+            if ($this->valeurs['localite_id'] == 529) // Nyon, vaudoise mais rattachée à Genève
             {
                 $lieu->setValue('region', 'ge');
                 $lieu->setValue('localite_id', 529);
             }
             else
             {
+                // La région suit le canton de la localité choisie — la France ('rf') et
+                // « Autre » ('hs') y comprises, depuis qu'elles sont des localités.
                 // hors quotes, sanitize() ne neutralise rien d'une charge utile numérique :
                 // c'est le cast qui protège, l'échappement ne faisait qu'entretenir l'illusion
                 $sql_lieu = "SELECT canton FROM localite WHERE id=" . (int) $this->valeurs['localite_id'];
                 $req_lieu = $this->connector->query($sql_lieu);
                 $tab_lieu = $this->connector->fetchArray($req_lieu);
-                $champs['region'] = $tab_lieu['canton'];
 
                 $lieu->setValue('region', $tab_lieu['canton']);
             }

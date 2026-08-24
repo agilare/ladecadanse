@@ -18,6 +18,7 @@ use Codeception\Util\HttpCode;
 class EvenementEditFormulaireCest
 {
     private const SELECT_LIEUX = '//select[@name="idLieu"]';
+    private const SELECT_LOCALITES = '//select[@name="localite_id"]';
 
     /**
      * Chaque salle active est proposée une fois et une seule, sous un lieu, au format
@@ -113,6 +114,61 @@ class EvenementEditFormulaireCest
             $xpath->query(self::SELECT_LIEUX . '/option')->item(0)?->getAttribute('value'),
             'La première option du select des lieux doit être vide et hors optgroup'
         );
+    }
+
+    /**
+     * Les localités sont groupées par canton sous un libellé lisible, et chaque option porte
+     * un id de localité — plus jamais un code de région.
+     *
+     * La France ('rf') et « Autre » ('hs') étaient greffées en dur sur ce select, avec leur
+     * code de région pour value ; ce sont maintenant des localités comme les autres. Une
+     * value non numérique signalerait le retour de cette exception, qu'un seul des trois
+     * formulaires partageant le select suffirait à réintroduire.
+     *
+     * Suppose la migration v3-12-0 passée sur l'instance testée : sans elle, la localité 1 a
+     * encore un canton vide, donc un optgroup sans libellé.
+     */
+    public function localitesSontGroupeesParCantonLisible(SiteTester $I)
+    {
+        $I->amOnPage('/evenement-edit.php?action=ajouter');
+        $I->seeResponseCodeIs(HttpCode::OK);
+
+        $xpath = new DOMXPath($this->chargerPage($I));
+
+        $groupes = $xpath->query(self::SELECT_LOCALITES . '/optgroup');
+        $I->assertGreaterThan(0, $groupes->length, 'Le select des localités ne rend aucun optgroup');
+
+        foreach ($groupes as $groupe)
+        {
+            $label = $groupe->getAttribute('label');
+
+            $I->assertNotSame('', trim($label), 'Un optgroup du select des localités a un label vide');
+            $I->assertNotContains(
+                $label,
+                ['ge', 'vd', 'fr', 'rf', 'hs'],
+                "L'optgroup affiche le code brut « $label » au lieu du nom du canton"
+            );
+            $I->assertGreaterThan(0, $xpath->query('option', $groupe)->length, "L'optgroup « $label » est vide");
+        }
+
+        $I->assertSame(
+            '',
+            $xpath->query(self::SELECT_LOCALITES . '/option')->item(0)?->getAttribute('value'),
+            'La première option du select des localités doit être vide et hors optgroup'
+        );
+
+        // « 44_Pâquis » pour un quartier de Genève, un id nu partout ailleurs : c'est ce que
+        // re-découpe le traitement du POST pour en tirer la localité, le quartier et la région
+        foreach ($xpath->query(self::SELECT_LOCALITES . '/optgroup/option') as $option)
+        {
+            $value = $option->getAttribute('value');
+
+            $I->assertMatchesRegularExpression(
+                '/^[0-9]+(_.+)?$/u',
+                $value,
+                "L'option « $value » du select des localités n'est pas un id de localité"
+            );
+        }
     }
 
     /**

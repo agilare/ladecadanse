@@ -8,6 +8,7 @@ use Ladecadanse\Utils\ImageDriver2; // files
 use Ladecadanse\Utils\ImageUrlFetcher; // url import
 use Ladecadanse\Security\SecurityToken;
 use Ladecadanse\Evenement; // domain
+use Ladecadanse\Localite; // domain
 use Ladecadanse\EvenementRenderer; // presentation
 use Ladecadanse\Utils\Mailing;
 use Ladecadanse\Utils\AuteurNotifier;
@@ -556,17 +557,15 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
             {
                 $champs['quartier'] = '';
 
-                if ($champs['localite_id'] == 'vd' || $champs['localite_id'] == 'rf' || $champs['localite_id'] == 'hs')
-                {
-                    $champs['region'] = $champs['localite_id'];
-                    $champs['localite_id'] = 1;
-                }
-                elseif ($champs['localite_id'] == 529 )
+                // Nyon est vaudoise, mais rattachée à l'agenda genevois
+                if ($champs['localite_id'] == 529 )
                 {
                     $champs['region'] = 'ge';
                 }
                 else
                 {
+                    // La région suit le canton de la localité choisie — la France ('rf') et
+                    // « Autre » ('hs') y comprises, depuis qu'elles sont des localités.
                     // cast et non sanitize() : hors quotes, l'échappement ne bloque pas « 1 OR … »
                     $sql_lieu = "SELECT canton FROM localite WHERE id=".(int) $champs['localite_id'];
                     $req_lieu = $connector->query($sql_lieu);
@@ -901,10 +900,10 @@ $est_ajout   = in_array($get['action'], ['ajouter', 'insert'], true);
 
 // Les lieux et localités fribourgeois ('fr' ; la France, elle, est codée 'rf' — cf. $glo_regions)
 // ne sont plus proposés à l'ajout, mais restent affichables en édition pour ne pas vider
-// le select d'un événement déjà rattaché à l'un d'eux.
-// Fragments littéraux, sans donnée saisie : ils sont concaténés dans les requêtes du formulaire.
-$sql_lieu_excl_fr     = $est_ajout ? " AND region != 'fr' " : '';
-$sql_localite_excl_fr = $est_ajout ? " AND canton != 'fr' " : '';
+// le select d'un événement déjà rattaché à l'un d'eux. Le select des localités applique le même
+// filtre, en passant $est_ajout à Localite::getOptionsHtml().
+// Fragment littéral, sans donnée saisie : il est concaténé dans la requête du formulaire.
+$sql_lieu_excl_fr = $est_ajout ? " AND region != 'fr' " : '';
 
 $page_titre = "Proposer un événement";
 $page_description = "Proposer un événement pour l'agenda";
@@ -1209,7 +1208,7 @@ if ($show_form)
                 LEFT JOIN localite ON lieu.localite_id = localite.id
                 WHERE lieu.statut='actif' " . $sql_lieu_excl_fr . "
                 ORDER BY
-                  CASE COALESCE(localite.canton, '') WHEN 'ge' THEN 0 WHEN 'vd' THEN 1 WHEN 'fr' THEN 2 ELSE 3 END,
+                  " . Localite::sqlOrdreCantons("COALESCE(localite.canton, '')") . ",
                   TRIM(LEADING 'L\'' FROM (TRIM(LEADING 'Les ' FROM (TRIM(LEADING 'La ' FROM (TRIM(LEADING 'Le ' FROM lieu.nom))))))) COLLATE utf8mb4_unicode_ci");
 
                 // Toutes les salles en une requête, indexées par lieu : la boucle ci-dessous
@@ -1221,14 +1220,13 @@ if ($show_form)
                     $salles_par_lieu[(int) $salle_trouvee['idLieu']][] = $salle_trouvee;
                 }
 
-                $canton_labels = ['ge' => 'Genève', 'vd' => 'Vaud', 'fr' => 'Fribourg', '' => 'France'];
                 $current_canton = null;
                 while ($lieuTrouve = $connector->fetchArray($req_lieux))
                 {
                     $canton = $lieuTrouve['canton'];
                     if ($canton !== $current_canton) {
                         if ($current_canton !== null) echo '</optgroup>';
-                        echo '<optgroup label="' . ($canton_labels[$canton] ?? sanitizeForHtml($canton)) . '">';
+                        echo '<optgroup label="' . (Localite::CANTONS[$canton] ?? sanitizeForHtml($canton)) . '">';
                         $current_canton = $canton;
                     }
 
@@ -1300,79 +1298,13 @@ if ($show_form)
             <p>
                 <label for="localite">Localité/quartier</label>&nbsp;<select name="localite_id" id="localite" class="js-select2-options-with-style" data-placeholder="" style="max-width:300px;">
                     <?php
-                echo "<option value=\"0\">&nbsp;</option>";
-                $req = $connector->query("
-                SELECT id, localite, canton FROM localite WHERE id!=1 $sql_localite_excl_fr ORDER BY canton, localite "
-                 );
-
-                $select_canton = '';
-                while ($tab = $connector->fetchArray($req))
-                {
-
-                    if ($tab['canton'] != $select_canton)
-                    {
-                        if (!empty($select_canton))
-                            echo "</optgroup>";
-
-                        echo "<optgroup label='" . mb_strtoupper((string) $tab['canton']) . "'>"; // ".$glo_regions[strtolower($tab['canton'])]."
-                    }
-                    echo "<option ";
-
-                    if (empty($champs['idLieu']) && ($champs['localite_id'] == $tab['id'] && empty($champs['quartier'])) || ((isset($_POST['localite_id']) && $tab['id'] == $_POST['localite_id'])))
-                    {
-                        echo 'selected="selected" ';
-                    }
-
-            echo "value=\"".(int)$tab['id']."\">".$tab['localite']."</option>";
-
-            // Genève quartiers
-            if ($tab['id'] == 44)
-            {
-                // si erreur formulaire
-                $champs_quartier = '';
-                $loc_qua = explode("_", (string) $champs['localite_id']);
-                if (!empty($loc_qua[1]))
-                   $champs_quartier = $loc_qua[1];
-
-                // si chargement even existant
-                if (!empty($champs['quartier']))
-                    $champs_quartier = $champs['quartier'];
-
-                foreach ($glo_tab_quartiers2['ge'] as $no => $quartier)
-               {
-                       echo "<option ";
-
-                       if (empty($champs['idLieu']) && $champs_quartier == $quartier)
-                       {
-                               echo 'selected="selected" ';
-                       }
-
-                       echo " value=\"44_".$quartier."\">Genève - ".$quartier."</option>";
-
-               }
-
-            }
-
-             $select_canton = $tab['canton'];
-        }
-        ?>
-            <optgroup label="Ailleurs">
-        <?php
-            foreach ($glo_tab_ailleurs as $id => $nom)
-           {
-                   echo "<option ";
-
-                   if (empty($champs['idLieu']) && ($champs['region'] == $id) || ((isset($_POST['localite_id']) && $id == $_POST['localite_id']))) // $form->getValeur('quartier')
-                   {
-                           echo ' selected="selected" ';
-                   }
-
-                   echo " value=\"".$id."\">".$nom."</option>";
-
-           }
-        ?>
-            </optgroup>
-        </select>
+                    // Le lieu choisi dans la liste porte déjà sa localité : comme le nom et
+                    // l'adresse saisis à la main, le select reste alors vide. Après une erreur
+                    // de saisie en revanche, on réaffiche le choix posté.
+                    $localite_selectionnee = (isset($_POST['localite_id']) || empty($champs['idLieu'])) ? $champs['localite_id'] : '';
+                    echo Localite::getOptionsHtml($localite_selectionnee, $champs['quartier'], $est_ajout);
+                    ?>
+                </select>
         <?php
         echo $verif->getHtmlErreur("localite_id");
         ?>

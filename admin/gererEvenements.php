@@ -1,6 +1,6 @@
 <?php
 
-global $connector, $glo_regions, $mimes_images_acceptes, $glo_tab_ailleurs, $glo_tab_quartiers2;
+global $connector, $glo_regions, $mimes_images_acceptes;
 require_once("../app/bootstrap.php");
 
 use Ladecadanse\Evenement;
@@ -13,6 +13,7 @@ use Ladecadanse\UserLevel;
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\EvenementRenderer;
 use Ladecadanse\Lieu;
+use Ladecadanse\Localite;
 use Ladecadanse\Organisateur;
 
 if (!$authorization->checkGroup(UserLevel::ADMIN))
@@ -314,19 +315,15 @@ elseif (!empty($_POST['formulaire']))
                     {
                         $champs['quartier'] = '';
 
-                        if ($champs['localite_id'] == 'vd' || $champs['localite_id'] == 'rf' || $champs['localite_id'] == 'hs')
-                        {
-                            $champs['region'] = $champs['localite_id'];
-                            $champs['localite_id'] = 1;
-                        }
-                        elseif ($champs['localite_id'] == 529 )
+                        // Nyon est vaudoise, mais rattachée à l'agenda genevois
+                        if ($champs['localite_id'] == 529 )
                         {
                             $champs['region'] = 'ge';
-
-
                         }
                         else
                         {
+                            // La région suit le canton de la localité choisie — la France ('rf')
+                            // et « Autre » ('hs') y comprises, depuis qu'elles sont des localités.
                             // cast et non sanitize() : hors quotes, l'échappement ne bloque pas « 1 OR … »
                             $sql_lieu = "SELECT canton FROM localite WHERE id=".(int) $champs['localite_id'];
                             $req_lieu = $connector->query($sql_lieu);
@@ -907,19 +904,18 @@ if ($verif->nbErreurs() > 0)
     LEFT JOIN localite ON lieu.localite_id = localite.id
     WHERE lieu.statut='actif'
     ORDER BY
-      CASE COALESCE(localite.canton, '') WHEN 'ge' THEN 0 WHEN 'vd' THEN 1 WHEN 'fr' THEN 2 ELSE 3 END,
+      " . Localite::sqlOrdreCantons("COALESCE(localite.canton, '')") . ",
       TRIM(LEADING 'L\'' FROM (TRIM(LEADING 'Les ' FROM (TRIM(LEADING 'La ' FROM (TRIM(LEADING 'Le ' FROM lieu.nom)))))))
       COLLATE utf8mb4_unicode_ci"
      );
 
-    $canton_labels = ['ge' => 'Genève', 'vd' => 'Vaud', 'fr' => 'Fribourg', '' => 'France'];
     $current_canton = null;
     while ($lieuTrouve = $connector->fetchArray($req_lieux))
     {
         $canton = $lieuTrouve['canton'];
         if ($canton !== $current_canton) {
             if ($current_canton !== null) echo '</optgroup>';
-            echo '<optgroup label="' . ($canton_labels[$canton] ?? sanitizeForHtml($canton)) . '">';
+            echo '<optgroup label="' . (Localite::CANTONS[$canton] ?? sanitizeForHtml($canton)) . '">';
             $current_canton = $canton;
         }
 
@@ -949,7 +945,6 @@ if ($verif->nbErreurs() > 0)
         }
     }
     if ($current_canton !== null) echo '</optgroup>';
-    ?>
     ?>
     </select>
     <?php
@@ -999,86 +994,13 @@ if ($verif->nbErreurs() > 0)
     <label for="localite">Localité/quartier</label>
     <select name="localite_id" id="localite" class="js-select2-options-with-style" data-placeholder="" style="max-width:300px;">
         <?php
-    echo "<option value=\"\">&nbsp;</option>";
-    $req = $connector->query("
-    SELECT id, localite, canton FROM localite WHERE id!=1 ORDER BY canton, localite "
-     );
-
-
-
-    $select_canton = '';
-    while ($tab = $connector->fetchArray($req))
-    {
-
-        if ($tab['canton'] != $select_canton)
-        {
-            if (!empty($select_canton))
-                echo "</optgroup>";
-
-            echo "<optgroup label=''>"; // ".$glo_regions[strtolower($tab['canton'])]."
-        }
-
-        echo "<option ";
-
-        if (empty($champs['idLieu']) && ($champs['localite_id'] == $tab['id'] && empty($champs['quartier'])) || ((isset($_POST['localite_id']) && $tab['id'] == $_POST['localite_id'])))
-        {
-            echo 'selected="selected" ';
-        }
-
-        echo "value=\"".(int)$tab['id']."\">".sanitizeForHtml($tab['localite'])."</option>";
-
-        // Genève quartiers
-        if ($tab['id'] == 44)
-        {
-
-            // si erreur formulaire
-            $champs_quartier = '';
-            $loc_qua = explode("_", (string) $champs['localite_id']);
-            if (!empty($loc_qua[1]))
-               $champs_quartier = $loc_qua[1];
-
-            // si chargement even existant
-            if (!empty($champs['quartier']))
-                $champs_quartier = $champs['quartier'];
-
-            foreach ($glo_tab_quartiers2['ge'] as $no => $quartier)
-            {
-                   echo "<option ";
-
-                   if (empty($champs['idLieu']) && $champs_quartier == $quartier)
-                   {
-                           echo 'selected="selected" ';
-                   }
-
-                   echo " value=\"44-".$quartier."\">Genève - ".$quartier."</option>";
-            }
-        }
-
-         $select_canton = $tab['canton'];
-    }
+    // Le lieu choisi dans la liste porte déjà sa localité : comme le nom et l'adresse saisis
+    // à la main, le select reste alors vide. Après une erreur de saisie, on réaffiche le
+    // choix posté. Les localités fribourgeoises restent proposées : l'administration édite
+    // aussi des événements qui y sont rattachés.
+    $localite_selectionnee = (isset($_POST['localite_id']) || empty($champs['idLieu'])) ? $champs['localite_id'] : '';
+    echo Localite::getOptionsHtml($localite_selectionnee, $champs['quartier'], exclureFribourg: false);
     ?>
-        <optgroup label="Ailleurs">
-
-        <?php
-        foreach ($glo_tab_ailleurs as $id => $nom)
-       {
-               echo "<option ";
-
-               if (empty($champs['idLieu']) && (($champs['region'] == $id) || ((isset($_POST['localite_id']) && $id == $_POST['localite_id'])))
-                      ) // $form->getValeur('quartier')
-               {
-                       echo ' selected="selected" ';
-               }
-
-               echo " value=\"" . (int)$id . "\">" . sanitizeForHtml($nom) . "</option>";
-        }
-        ?>
-
-
-
-        </optgroup>
-
-
     </select>
     <?php
     echo $verif->getHtmlErreur("localite_id");

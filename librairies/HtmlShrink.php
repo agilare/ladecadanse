@@ -147,7 +147,14 @@ class HtmlShrink
         return ob_get_contents();
     }
 
-    public static function getLocalitesSelect(array $regions_localites, array $glo_regions, array $glo_tab_ailleurs, array $localitesWithLieux = []): string
+    /**
+     * Filtre « Localité » de la liste des lieux.
+     *
+     * Les groupes viennent tous de la table `localite` : France et « Autre », greffées en dur
+     * ici tant qu'elles n'étaient que des régions, y sont désormais des localités à part
+     * entière (cantons 'rf' et 'hs').
+     */
+    public static function getLocalitesSelect(array $regions_localites, array $glo_regions, array $localitesWithLieux = []): string
     {
         ob_start();
         ?>
@@ -161,9 +168,6 @@ class HtmlShrink
                     <?php endforeach; ?>
                 </optgroup>
             <?php endforeach; ?>
-            <optgroup label="Ailleurs">
-                <option value="1" <?php if ($_SESSION['user_prefs_lieux_localite'] == 1) : ?>selected="selected"<?php endif; ?>><?= "France" ?></option>
-            </optgroup>
         </select>
         <?php
         $result = ob_get_contents();
