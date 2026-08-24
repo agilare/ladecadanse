@@ -3,7 +3,7 @@
     position: sticky;
     top: 0;
     z-index: 10;
-    background: #fff;
+    background: #fdfdfd; /* fond de #global, la barre collante doit s'y fondre */
     padding: 0.6em 0;
     margin-top: 0.8em;
     margin-bottom: 0.8em;
@@ -31,7 +31,7 @@
 
 #genre_tab_navigation li a:hover
 {
-    background: #d4d4d4
+    background: #d4d4d4;
 }
 
 #genre_tab_navigation li.ici a
