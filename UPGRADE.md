@@ -12,7 +12,7 @@ Aucune migration.
 
 ### Redirections
 
-Trois pages de compte rejoignent `user/`, à côté de `login.php` et `dashboard.php`. Les redirections 301 sont dans [`.htaccess.example`](.htaccess.example) ; les reporter dans le `.htaccess` du serveur **au moment du déploiement** :
+Trois pages de compte rejoignent `user/`, à côté de `login.php` et `dashboard.php`. Les redirections 301 sont dans [`htaccess/50-routage.conf`](htaccess/50-routage.conf) et partent avec le code : il n'y a plus rien à reporter à la main sur le serveur.
 
 | Ancienne URL | Nouvelle |
 | --- | --- |
@@ -31,6 +31,7 @@ Les liens de réinitialisation déjà envoyés par mail restent valables 24 h : 
 ### Développement
 
 - `composer rector:dry-run` fonctionne à nouveau : la configuration pointait sur un fichier de test déplacé, et le parcours partait de la racine, donc de `vendor/`
+- `.htaccess` et `.user.ini` sont composés depuis des fragments par `composer config:build` : `.htaccess.example` disparaît, et l'étape d'installation `cp .htaccess.example .htaccess` devient `composer config:build`. Un `.htaccess` écrit à la main n'étant suivi par aucun dépôt, le mettre de côté avant la première composition — l'outil refuse de l'écraser sans `--force`. Voir [docs/config-serveur.md](docs/config-serveur.md)
 
 ## 3.11.0
 
