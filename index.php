@@ -44,6 +44,28 @@ if (isset($_GET['tri_agenda']) && in_array($_GET['tri_agenda'], $tab_tri_agenda)
 {
    $_SESSION['user_prefs_agenda_order'] = $_GET['tri_agenda'];
 }
+
+/*
+ * Filtre par genre réservé aux admins, le temps de l'éprouver en prod sur une
+ * audience restreinte (#107). Pour l'ouvrir à tout le monde, révoquer ce commit :
+ * il suffit de retirer $genre_tabs_enabled de ces trois conditions et la classe
+ * avec-filtre-genre, que le CSS n'utilise que pour ne rien changer aux autres.
+ */
+$genre_tabs_enabled = $authorization->checkGroup(UserLevel::ADMIN);
+
+$valid_genre_tabs = array_merge(['tous'], array_keys($glo_tab_genre));
+if ($genre_tabs_enabled && isset($_GET['genre_tab']) && in_array($_GET['genre_tab'], $valid_genre_tabs, true)) {
+    $_SESSION['user_prefs_agenda_genre'] = $_GET['genre_tab'];
+}
+// hors admins, jamais de filtre : tout le reste de la page se comporte comme avant
+$current_genre_tab = $genre_tabs_enabled ? $_SESSION['user_prefs_agenda_genre'] : 'tous'; // initialisé dans bootstrap.php
+
+// determine wether adding to url query courant and order
+$default_tri_agenda = reset($tab_tri_agenda);
+$url_courant_param = (!$is_courant_today ? '&amp;courant=' . sanitizeForHtml($get['courant']) : '');
+$url_tri_param = ($_SESSION['user_prefs_agenda_order'] !== $default_tri_agenda ? '&amp;tri_agenda=' . sanitizeForHtml($_SESSION['user_prefs_agenda_order']) : '');
+$url_filter_params = $url_courant_param . $url_tri_param;
+
 // build SQL
 $is_chronological_order = ($_SESSION['user_prefs_agenda_order'] == "horaire_debut");
 $sql_user_prefs_agenda_order = "e." . $_SESSION['user_prefs_agenda_order'] . " DESC";
@@ -233,11 +255,38 @@ include("_header.inc.php");
 
     <div id="prochains_evenements">
 
-        <div id="order_navigation">
-            <ul>
-                <li style="margin-right:5px"><i class="fa fa-sort-amount-asc" aria-hidden="true"></i></li><li style="margin-right:2px"><a href="index.php?tri_agenda=dateAjout<?= (!$is_courant_today ? '&amp;courant=' . sanitizeForHtml($get['courant']) : '' ); ?>" class="<?php if ($_SESSION['user_prefs_agenda_order'] == 'dateAjout') : ?>selected<?php endif; ?>" rel="nofollow">Dernier ajouté</a></li><li><a href="index.php?tri_agenda=horaire_debut<?= (!$is_courant_today ? '&amp;courant=' . sanitizeForHtml($get['courant']) : '' ) ?>" class="<?php if ($_SESSION['user_prefs_agenda_order'] == 'horaire_debut') : ?>selected<?php endif; ?>" rel="nofollow">Heure de début</a></li>
-            </ul>
-            <div class="spacer"></div>
+        <?php
+        /* les deux menus partagent une ligne à partir de 800px, cf. #agenda_filters dans
+           index.css ; l'ordre du DOM suit l'ordre visuel (filtrer, puis trier). Sans le
+           filtre de genres, le conteneur reste en display:contents et le menu de tri
+           s'affiche exactement comme avant. */
+        $show_genre_tabs = $genre_tabs_enabled && $count_events_today_in_region > 0;
+        ?>
+        <div id="agenda_filters"<?= $show_genre_tabs ? ' class="avec-filtre-genre"' : '' ?>>
+
+            <?php if ($show_genre_tabs) : ?>
+            <nav id="genre_tab_navigation" aria-label="Filtrer par genre">
+                <ul>
+                    <li><i class="fa fa-filter" aria-hidden="true"></i></li>
+                    <?php foreach ($glo_tab_genre as $key => $label) : ?>
+                        <?php if (!array_key_exists($key, $tab_events_today_in_region_by_category) && $current_genre_tab !== $key) : continue; endif; ?>
+                        <?php if ($current_genre_tab === $key) : ?>
+                            <li class="ici" aria-current="true"><a href="index.php?genre_tab=tous<?= $url_filter_params ?>" title="Retirer le filtre" aria-label="Retirer le filtre <?= ucfirst($label) ?>" rel="nofollow"><?= ucfirst($label) ?>&nbsp;<i class="fa fa-times" aria-hidden="true"></i></a></li>
+                        <?php else : ?>
+                            <li><a href="index.php?genre_tab=<?= urlencode($key) ?><?= $url_filter_params ?>" rel="nofollow"><?= ucfirst($label) ?></a></li>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+                </ul>
+            </nav>
+            <?php endif; ?>
+
+            <div id="order_navigation">
+                <ul>
+                    <li style="margin-right:5px"><i class="fa fa-sort-amount-asc" aria-hidden="true"></i></li><li style="margin-right:2px"><a href="index.php?tri_agenda=dateAjout<?= $url_courant_param ?>" class="<?php if ($_SESSION['user_prefs_agenda_order'] == 'dateAjout') : ?>selected<?php endif; ?>" rel="nofollow">Dernier ajouté</a></li><li><a href="index.php?tri_agenda=horaire_debut<?= $url_courant_param ?>" class="<?php if ($_SESSION['user_prefs_agenda_order'] == 'horaire_debut') : ?>selected<?php endif; ?>" rel="nofollow">Heure de début</a></li>
+                </ul>
+                <div class="spacer"></div>
+            </div>
+
         </div>
 
         <?php
@@ -245,19 +294,27 @@ include("_header.inc.php");
         {
             HtmlShrink::msgInfo("Pas d’événement prévu ce jour");
         }
+        elseif ($current_genre_tab !== 'tous' && !array_key_exists($current_genre_tab, $tab_events_today_in_region_by_category))
+        {
+            HtmlShrink::msgInfo("Pas d’événement « " . ucfirst($glo_tab_genre[$current_genre_tab]) . " » prévu ce jour");
+        }
 
         $genres_today = array_keys($tab_events_today_in_region_by_category);
         foreach ($tab_events_today_in_region_by_category as $genre => $tab_genre_events)
         {
+            if ($current_genre_tab !== 'tous' && $genre !== $current_genre_tab) {
+                continue;
+            }
             ?>
                 <section class="genre">
 
                     <header class="genre-titre">
                         <h2 id="<?= Text::stripAccents(Evenement::genreLabel($genre)); ?>"><?= ucfirst(Evenement::genreLabel($genre)); ?></h2>
-                        <?php
-                        $genre_proch = next($genres_today);
-                        if (isset($tab_events_today_in_region_by_category[$genre_proch])) : ?>
-                            <a class="genre-jump" href="#<?= Text::stripAccents(Evenement::genreLabel($genre_proch)); ?>"><?= Evenement::genreLabel($genre_proch); ?>&nbsp;<i class="fa fa-long-arrow-down"></i></a>
+                        <?php if ($current_genre_tab === 'tous') : ?>
+                            <?php $genre_proch = next($genres_today); ?>
+                            <?php if (isset($tab_events_today_in_region_by_category[$genre_proch])) : ?>
+                                <a class="genre-jump" href="#<?= Text::stripAccents(Evenement::genreLabel($genre_proch)); ?>"><?= Evenement::genreLabel($genre_proch); ?>&nbsp;<i class="fa fa-long-arrow-down"></i></a>
+                            <?php endif; ?>
                         <?php endif; ?>
                         <div class="spacer"></div>
                     </header>
