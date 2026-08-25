@@ -1307,6 +1307,7 @@ if ($show_form)
                 </select>
         <?php
         echo $verif->getHtmlErreur("localite_id");
+        echo Localite::getAideChoixHtml();
         ?>
         </p>
 

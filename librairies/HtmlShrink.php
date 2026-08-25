@@ -67,8 +67,11 @@ class HtmlShrink
             $result .= " (" . $quartier . ")";
         }
 
-        // avoid unecessary "Autre" and redundancy of quartier "Genève" and localite "Genève"
-        if (!empty($localite) && $localite != 'Autre' && $quartier != $localite)
+        // Une localité fourre-tout (« Ailleurs en France », « Hors Genève, Vaud et France »)
+        // n'a de sens que dans le <select> qui la propose : elle n'apprendrait rien de plus que
+        // la région ajoutée juste après. Le quartier « Genève » et la localité « Genève » ne se
+        // répètent pas non plus.
+        if (!empty($localite) && !Localite::estFourreTout($localite) && $quartier != $localite)
         {
             $result .= " - " . $localite;
         }
@@ -153,6 +156,9 @@ class HtmlShrink
      * Les groupes viennent tous de la table `localite` : France et « Autre », greffées en dur
      * ici tant qu'elles n'étaient que des régions, y sont désormais des localités à part
      * entière (cantons 'rf' et 'hs').
+     *
+     * $localitesWithLieux ne retient que les localités où la région courante a effectivement un
+     * lieu : un canton qui n'en garde aucun n'ouvre pas de groupe vide.
      */
     public static function getLocalitesSelect(array $regions_localites, array $glo_regions, array $localitesWithLieux = []): string
     {
@@ -161,9 +167,15 @@ class HtmlShrink
         <select  name="localite" class="js-select2-options-with-style" data-placeholder="Localité" style="width:100px">
             <option value=""></option>
             <?php foreach ($regions_localites as $region => $localites) : ?>
+                <?php
+                if (!empty($localitesWithLieux))
+                {
+                    $localites = array_filter($localites, static fn (array $loc): bool => in_array($loc['id'], $localitesWithLieux));
+                }
+                ?>
+                <?php if (empty($localites)) { continue; } ?>
                 <optgroup label="<?= $glo_regions[$region] ?>">
                     <?php foreach ($localites as $loc) : ?>
-                        <?php if (!empty($localitesWithLieux) && !in_array($loc['id'], $localitesWithLieux)) { continue; }?>
                         <option value="<?= $loc['id'] ?>" <?php if ($_SESSION['user_prefs_lieux_localite'] == $loc['id']) : ?>selected="selected"<?php endif; ?>><?= $loc['localite'] ?></option>
                     <?php endforeach; ?>
                 </optgroup>

@@ -174,6 +174,7 @@ include("_header.inc.php");
     </select>
     <?php
     echo $form->getHtmlErreur("localite_id");
+    echo Localite::getAideChoixHtml();
     ?>
 </p>
 

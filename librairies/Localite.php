@@ -30,11 +30,38 @@ class Localite
     ];
 
     /**
-     * Tri des localités d'un même canton : « Autre » — la commune qui n'est pas encore listée —
-     * en fin de groupe, le reste par ordre alphabétique. Sans cette clause, l'« Autre » de
-     * France finirait rangée entre Annemasse et Bordeaux au fil des ajouts.
+     * Les deux localités « fourre-tout » de la table, telles qu'elles y sont écrites : elles ne
+     * nomment pas un lieu-dit mais l'absence de localité connue — une commune française pas
+     * encore listée, ou une adresse hors des trois régions couvertes.
+     *
+     * Leur libellé ne sert qu'aux formulaires : dans une adresse il n'apprendrait rien de plus
+     * que la région, déjà affichée. Les renommer en base suppose de les renommer ici avec.
      */
-    private const string SQL_ORDRE_LOCALITES = "localite = 'Autre', localite";
+    public const string LOCALITE_AILLEURS_FRANCE = 'Ailleurs en France';
+    public const string LOCALITE_HORS_ZONE = 'Hors Genève, Vaud et France';
+    public const array LOCALITES_FOURRE_TOUT = [self::LOCALITE_AILLEURS_FRANCE, self::LOCALITE_HORS_ZONE];
+
+    /**
+     * Une localité fourre-tout est-elle en cause ? Sert à l'écarter de l'affichage d'une adresse.
+     */
+    public static function estFourreTout(?string $localite): bool
+    {
+        return in_array(trim((string) $localite), self::LOCALITES_FOURRE_TOUT, true);
+    }
+
+    /**
+     * Tri des localités d'un même canton : les fourre-tout en fin de groupe, le reste par ordre
+     * alphabétique. Sans cette clause, « Ailleurs en France » ouvrirait le groupe France, à la
+     * lettre A, au lieu de fermer la liste des communes.
+     */
+    private static function sqlOrdreLocalites(): string
+    {
+        // Les libellés viennent d'une constante de classe, jamais d'une saisie ; l'apostrophe
+        // est doublée pour qu'un renommage malheureux ne casse pas la requête
+        $noms = array_map(static fn (string $nom): string => "'" . str_replace("'", "''", $nom) . "'", self::LOCALITES_FOURRE_TOUT);
+
+        return 'localite IN (' . implode(', ', $noms) . '), localite';
+    }
 
     /**
      * Localités groupées par canton, pour le filtre de la liste des lieux.
@@ -44,7 +71,7 @@ class Localite
     public static function getListByRegion(): array
     {
         global $connectorPdo;
-        $stmt = $connectorPdo->prepare("SELECT canton, id, localite FROM localite WHERE canton != 'fr' ORDER BY " . self::sqlOrdreCantons() . ", " . self::SQL_ORDRE_LOCALITES);
+        $stmt = $connectorPdo->prepare("SELECT canton, id, localite FROM localite WHERE canton != 'fr' ORDER BY " . self::sqlOrdreCantons() . ", " . self::sqlOrdreLocalites());
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_GROUP);
     }
@@ -66,7 +93,7 @@ class Localite
         // Fragment littéral, sans donnée saisie
         $where = $exclureFribourg ? " WHERE canton != 'fr' " : '';
 
-        $stmt = $connectorPdo->prepare("SELECT id, localite, canton FROM localite " . $where . " ORDER BY " . self::sqlOrdreCantons() . ", " . self::SQL_ORDRE_LOCALITES);
+        $stmt = $connectorPdo->prepare("SELECT id, localite, canton FROM localite " . $where . " ORDER BY " . self::sqlOrdreCantons() . ", " . self::sqlOrdreLocalites());
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -91,6 +118,15 @@ class Localite
             (string) $localiteId,
             (string) $quartier
         );
+    }
+
+    /**
+     * L'aide affichée sous le <select>, dans les mêmes trois formulaires : une adresse dont la
+     * commune n'est pas listée n'a pas de solution évidente sans elle.
+     */
+    public static function getAideChoixHtml(): string
+    {
+        return '<div class="guideChamp">Si vous ne trouvez pas la localité, veuillez sélectionner « ' . sanitizeForHtml(self::LOCALITE_HORS_ZONE) . ' »</div>';
     }
 
     /**

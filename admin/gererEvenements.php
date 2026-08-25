@@ -1004,7 +1004,7 @@ if ($verif->nbErreurs() > 0)
     </select>
     <?php
     echo $verif->getHtmlErreur("localite_id");
-
+    echo Localite::getAideChoixHtml();
     ?>
     </p>
 

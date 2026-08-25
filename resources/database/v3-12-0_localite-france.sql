@@ -14,9 +14,11 @@
 --    INT(4) n'était de toute façon qu'un affichage, jamais une limite de valeur.
 ALTER TABLE `localite` MODIFY `npa` VARCHAR(6) NOT NULL DEFAULT '';
 
--- 2. « Autre » localité française
+-- 2. La localité fourre-tout du canton 'rf' : une commune française pas encore listée.
+--    Son libellé n'est jamais affiché dans une adresse (cf. Localite::LOCALITES_FOURRE_TOUT) ;
+--    le renommer suppose de renommer la constante avec.
 INSERT INTO `localite` (`localite`, `commune`, `npa`, `canton`, `regions_covered`)
-VALUES ('Autre', 'Autre', '0', 'rf', 'ge,rf');
+VALUES ('Ailleurs en France', 'Autre', '0', 'rf', 'ge,rf');
 
 SET @id_autre_france = LAST_INSERT_ID();
 
@@ -24,6 +26,7 @@ SET @id_autre_france = LAST_INSERT_ID();
 UPDATE `evenement` SET `localite_id` = @id_autre_france WHERE `localite_id` = 1 AND `region` = 'rf';
 UPDATE `lieu`      SET `localite_id` = @id_autre_france WHERE `localite_id` = 1 AND `region` = 'rf';
 
--- 4. La localité 1 ne désigne plus que « ailleurs » : son canton vide devient 'hs',
---    ce qui la fait entrer dans les <optgroup> construits depuis la colonne `canton`
-UPDATE `localite` SET `canton` = 'hs' WHERE `id` = 1;
+-- 4. La localité 1 ne désigne plus que « ailleurs » : son canton vide devient 'hs', ce qui la
+--    fait entrer dans les <optgroup> construits depuis la colonne `canton`. Elle aussi est une
+--    localité fourre-tout, jamais affichée dans une adresse.
+UPDATE `localite` SET `localite` = 'Hors Genève, Vaud et France', `canton` = 'hs' WHERE `id` = 1;

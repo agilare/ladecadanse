@@ -12,7 +12,8 @@ use Ladecadanse\Localite;
  * d'édition d'événement, le formulaire de masse de l'administration et celui des lieux.
  *
  * Depuis la 3.12.0, la France n'est plus une entrée greffée en dur sur ce select : c'est un
- * canton ('rf') de la table `localite`, comme « Autre » ('hs').
+ * canton ('rf') de la table `localite`, comme « Autre » ('hs'). Chaque canton garde une
+ * localité fourre-tout, pour l'adresse dont la commune n'est pas listée.
  */
 final class LocaliteTest extends Unit
 {
@@ -20,8 +21,8 @@ final class LocaliteTest extends Unit
     private const array LOCALITES = [
         ['id' => 44, 'localite' => 'Genève', 'canton' => 'ge'],
         ['id' => 529, 'localite' => 'Nyon', 'canton' => 'vd'],
-        ['id' => 1065, 'localite' => 'Autre', 'canton' => 'rf'],
-        ['id' => 1, 'localite' => 'Autre', 'canton' => 'hs'],
+        ['id' => 1065, 'localite' => 'Ailleurs en France', 'canton' => 'rf'],
+        ['id' => 1, 'localite' => 'Hors Genève, Vaud et France', 'canton' => 'hs'],
     ];
 
     private const array QUARTIERS = ['Pâquis', 'Servette'];
@@ -38,16 +39,44 @@ final class LocaliteTest extends Unit
     }
 
     /**
-     * La localité française « Autre » est une option ordinaire, avec l'id de sa ligne :
-     * c'est ce qui permet d'ajouter des localités françaises au fur et à mesure.
+     * « Ailleurs en France » est une option ordinaire, avec l'id de sa ligne : c'est ce qui
+     * permet d'ajouter des localités françaises au fur et à mesure.
      */
     public function testLaFranceEstUneLocaliteCommeUneAutre(): void
     {
         $html = Localite::renderOptions(self::LOCALITES, self::QUARTIERS, '');
 
-        $this->assertStringContainsString('<optgroup label="France"><option value="1065">Autre</option>', $html);
+        $this->assertStringContainsString('<optgroup label="France"><option value="1065">Ailleurs en France</option>', $html);
         $this->assertStringNotContainsString('value="rf"', $html);
         $this->assertStringNotContainsString('value="hs"', $html);
+    }
+
+    /**
+     * Les deux libellés fourre-tout sont écrits à l'identique dans la migration et dans la
+     * classe : c'est sur cette égalité que repose leur effacement des adresses, et une
+     * migration renommée d'un côté seulement la romprait sans bruit.
+     */
+    public function testLesLibellesFourreToutSuiventLaMigration(): void
+    {
+        $migrations = glob(__DIR__ . '/../../resources/database/*_localite-france.sql');
+
+        $this->assertCount(1, (array) $migrations, "Une migration *_localite-france.sql et une seule est attendue");
+
+        $sql = (string) file_get_contents($migrations[0]);
+
+        foreach (Localite::LOCALITES_FOURRE_TOUT as $libelle)
+        {
+            $this->assertStringContainsString("'" . $libelle . "'", $sql, "La migration n'écrit pas la localité « $libelle »");
+        }
+    }
+
+    public function testUneLocaliteFourreToutEstReconnue(): void
+    {
+        $this->assertTrue(Localite::estFourreTout('Ailleurs en France'));
+        $this->assertTrue(Localite::estFourreTout('Hors Genève, Vaud et France'));
+        $this->assertFalse(Localite::estFourreTout('Annemasse'));
+        $this->assertFalse(Localite::estFourreTout(''));
+        $this->assertFalse(Localite::estFourreTout(null));
     }
 
     public function testGeneveEstSuivieDeSesQuartiers(): void
@@ -63,7 +92,7 @@ final class LocaliteTest extends Unit
     {
         $html = Localite::renderOptions(self::LOCALITES, self::QUARTIERS, '1065');
 
-        $this->assertStringContainsString('<option value="1065" selected="selected">Autre</option>', $html);
+        $this->assertStringContainsString('<option value="1065" selected="selected">Ailleurs en France</option>', $html);
         $this->assertSame(1, substr_count($html, 'selected="selected"'));
     }
 

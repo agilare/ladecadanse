@@ -143,7 +143,7 @@ CREATE TABLE `localite` (
 
 
 INSERT INTO `localite` (`id`, `localite`, `commune`, `npa`, `canton`, `regions_covered`) VALUES
- (1, 'Autre', '', '0', 'hs', NULL),
+ (1, 'Hors Genève, Vaud et France', '', '0', 'hs', NULL),
  (2, 'Aïre', 'Vernier', 1219, 'ge', NULL),
  (3, 'Aire-la-Ville', 'Aire-la-Ville', 1288, 'ge', NULL),
  (4, 'Anières', 'Anières', 1247, 'ge', NULL),
@@ -1206,10 +1206,12 @@ INSERT INTO `localite` (`id`, `localite`, `commune`, `npa`, `canton`, `regions_c
  (1063, 'Zumholz', 'Alterswil', 1713, 'fr', NULL),
  (1064, 'Zumholz bei Plaffeien', 'Zumholz', 1719, 'fr', NULL);
 
--- « autre localité en France » : les localités françaises s'ajoutent au fur et à mesure,
--- celle-ci recueille les événements et les lieux dont la commune n'est pas encore listée
+-- « Ailleurs en France » : les localités françaises s'ajoutent au fur et à mesure, celle-ci
+-- recueille les événements et les lieux dont la commune n'est pas encore listée. Comme la
+-- localité 1, c'est une localité fourre-tout : son libellé n'est jamais affiché dans une
+-- adresse (cf. Localite::LOCALITES_FOURRE_TOUT).
 INSERT INTO `localite` (`id`, `localite`, `commune`, `npa`, `canton`, `regions_covered`) VALUES
- (1065, 'Autre', 'Autre', '0', 'rf', 'ge,rf');
+ (1065, 'Ailleurs en France', 'Autre', '0', 'rf', 'ge,rf');
 
 
 DROP TABLE IF EXISTS `organisateur`;
