@@ -23,8 +23,16 @@ class TemplateEngine
             throw new \RuntimeException("Template non trouvé : $filepath");
         }
 
-        $template = file_get_contents($filepath);
+        return $this->renderString((string) file_get_contents($filepath), $vars);
+    }
 
+    /**
+     * Rend un template fourni sous forme de chaîne, pour un contenu qui ne provient pas
+     * d'un fichier de resources/templates/ (ex. corps de mail saisi dans un formulaire
+     * d'administration).
+     */
+    public function renderString(string $template, array $vars = []): string
+    {
         // Remplacer les %placeholders%
         foreach ($vars as $key => $value) {
             $template = str_replace("%$key%", $value, $template);

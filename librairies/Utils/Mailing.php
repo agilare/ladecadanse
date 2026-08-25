@@ -10,11 +10,14 @@ class Mailing
     private PHPMailer $mail;
     private string $errorMsg = "Message could not be sent. Mailer Error: ";
 
-    /** Longueur maximale autorisée pour le sujet */
-    private const MAX_SUBJECT_LENGTH = 255;
+    /** Autorise la copie à l'admin décrite par copyToAdmin(), voir disableAdminCopy() */
+    private bool $adminCopyEnabled = true;
 
-    /** Longueur maximale autorisée pour le corps du message */
-    private const MAX_BODY_LENGTH = 10000;
+    /** Longueur maximale autorisée pour le sujet. Publique pour qu'un appelant puisse prévenir avant troncature. */
+    public const MAX_SUBJECT_LENGTH = 255;
+
+    /** Longueur maximale autorisée pour le corps du message. Publique pour la même raison. */
+    public const MAX_BODY_LENGTH = 10000;
 
     /** Préfixe du sujet des copies envoyées à l'admin quand EMAIL_COPY_TO_ADMIN est actif */
     private const COPY_SUBJECT_PREFIX = '[COPY] ';
@@ -113,6 +116,18 @@ class Mailing
         return $sent;
     }
 
+    /**
+     * Désactive, pour cette instance, la copie à l'admin que déclenche EMAIL_COPY_TO_ADMIN.
+     * Destiné aux envois en nombre (admin/mailing.php), où la copie doublerait le volume expédié.
+     *
+     * Volontairement à sens unique : cette méthode ne peut pas activer une copie que la
+     * configuration n'a pas demandée.
+     */
+    public function disableAdminCopy(): void
+    {
+        $this->adminCopyEnabled = false;
+    }
+
     // -------------------------------------------------------------------------
     // Méthodes privées
     // -------------------------------------------------------------------------
@@ -121,6 +136,7 @@ class Mailing
      * Renvoie à EMAIL_ADMIN une copie du mail qui vient d'être adressé à un utilisateur,
      * avec un sujet préfixé COPY_SUBJECT_PREFIX. Activé par EMAIL_COPY_TO_ADMIN, destiné à
      * de courtes périodes de monitoring de la circulation des messages et de leur rendu.
+     * Un appelant peut y renoncer instance par instance, voir disableAdminCopy().
      *
      * Le corps n'est pas modifié pour que la copie rende exactement comme l'original ;
      * le destinataire d'origine est reporté dans l'en-tête X-Original-To.
@@ -134,6 +150,10 @@ class Mailing
      */
     private function copyToAdmin(string $to, array $replyTo = [], ?string $resolvedPath = null): void
     {
+        if (!$this->adminCopyEnabled) {
+            return;
+        }
+
         if (!defined('EMAIL_COPY_TO_ADMIN') || !EMAIL_COPY_TO_ADMIN) {
             return;
         }
