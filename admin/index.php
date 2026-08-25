@@ -136,6 +136,8 @@ require_once '../_header.inc.php';
 
     <div id="tableaux">
 
+        <p><a href="/admin/mailing.php">✉ Envoyer un mail à une sélection d'utilisateurs</a></p>
+
         <?php if ($_SESSION['Sgroupe'] < UserLevel::ADMIN) : ?>
 
         <h2 style="padding:0.4em 0">Inscriptions des 3 derniers jours</h2>
