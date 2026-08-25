@@ -8,7 +8,18 @@ Les versions sont listées de la plus récente à la plus ancienne.
 
 ### Base de données
 
-Aucune migration.
+Exécuter `resources/database/v3-12-0_localite-france.sql`, **d'une seule traite** : le fichier pose une variable de connexion (`LAST_INSERT_ID()`) que deux `UPDATE` relisent ensuite, et exécuter les instructions séparément la perdrait.
+
+Il fait quatre choses :
+
+1. passe `localite.npa` de `INT(4)` à `VARCHAR(6)` — un code postal français compte cinq chiffres, dont certains commencent par un zéro (01210 Ferney-Voltaire) qu'un entier perdrait. Les NPA suisses existants sont convertis tels quels
+2. ajoute la localité « Ailleurs en France », de canton `rf` : elle recueille les adresses françaises dont la commune n'est pas encore listée
+3. y déplace les événements et les lieux jusqu'ici rattachés à la localité 1 avec `region = 'rf'` (152 événements et 2 lieux sur la base de développement)
+4. renomme la localité 1 en « Hors Genève, Vaud et France » et lui donne le canton `hs`, qu'elle n'avait pas
+
+**À passer avec la mise en ligne du code, pas plus tard** : tant qu'elle ne l'est pas, la localité 1 garde un canton vide, les formulaires ouvrent donc un `<optgroup>` sans libellé, et la France n'est plus proposée du tout — son entrée codée en dur a disparu du code.
+
+Les deux libellés ci-dessus sont écrits à l'identique dans le fichier SQL et dans `Ladecadanse\Localite::LOCALITES_FOURRE_TOUT` ; c'est sur cette égalité que repose leur effacement de l'affichage des adresses. Les renommer suppose de le faire des deux côtés — un test unitaire relit le `.sql` pour le vérifier.
 
 ### Redirections
 
@@ -27,6 +38,7 @@ Les liens de réinitialisation déjà envoyés par mail restent valables 24 h : 
 - **Déconnexion en POST** — `user-logout.php` disparaît sans redirection : une déconnexion en GET partait toute seule au moindre préchargement de lien. Un onglet resté ouvert sur une page rendue *avant* la mise à jour porte encore l'ancien lien et tombera en 404 ; il suffit de recharger la page. Signets et liens externes vers `/user-logout.php` cessent de fonctionner — voir [docs/comptes.md](docs/comptes.md)
 - **Mots de passe** — la liste des mots de passe refusés passe de 22 à 19 999 entrées. Les mots de passe existants ne sont pas vérifiés, rien n'est bloqué rétroactivement : la règle ne s'applique qu'au prochain changement. Les comptes non actifs (`statut` autre que `actif`) ne peuvent plus demander de réinitialisation, l'ancien filtre laissait passer les comptes en attente que la connexion refuse ensuite de toute façon
 - **`resources/`** — les corps de mail passent sous `resources/templates/`, les scripts sql sous `resources/database/`. Adapter tout montage ou script maison qui les référence (le `docker-compose.yml` du dépôt est à jour)
+- **Localités françaises** — la France et « ailleurs » cessent d'être des entrées codées en dur dans les formulaires : ce sont des localités de la table `localite`, de cantons `rf` et `hs`. Ajouter une commune française ne demande donc plus de toucher au code, seulement un `INSERT INTO localite (localite, commune, npa, canton, regions_covered) VALUES ('Annemasse', 'Annemasse', '74100', 'rf', 'ge,rf')`. Les deux localités fourre-tout, elles, ne s'affichent jamais dans une adresse : seule la région apparaît, comme avant
 
 ### Développement
 
