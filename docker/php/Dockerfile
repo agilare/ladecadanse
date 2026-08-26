@@ -6,8 +6,10 @@ RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y --no-install-recommends \
         automake \
+        ghostscript \
         git \
         libjpeg-dev \
+        libmagickwand-dev \
         libpng-dev \
         libwebp-dev \
         libzip-dev \
@@ -24,6 +26,28 @@ RUN apt-get update && \
 # fait échouer l'enregistrement des flyers (voir ImageDriver2::redimensionner).
 RUN docker-php-ext-configure gd --with-jpeg --with-webp && \
     docker-php-ext-install pdo pdo_mysql mysqli gd zip
+
+# Imagick sert au seul rendu de la 1re page des PDF importés par URL
+# (librairies/Utils/PdfToImage.php, chemin réservé aux comptes connectés). Les
+# PDF envoyés par le champ fichier sont convertis par le navigateur et ne
+# dépendent de rien de tout ceci.
+#
+# Version épinglée : imagick 3.7.0, que pecl installe par défaut, ne compile pas
+# sur PHP 8.4. La ligne vide répond à la question du préfixe d'installation, que
+# pecl pose et qui bloquerait le build.
+RUN printf "\n" | pecl install imagick-3.8.0 && \
+    docker-php-ext-enable imagick
+
+# Debian interdit le coder PDF d'ImageMagick depuis CVE-2018-16509. Sans cette
+# autorisation, Imagick est bien présent mais toute lecture de PDF échoue sur
+# « not authorized » — exactement le piège qui rendrait la fonction verte en
+# production (dont la policy l'autorise) et morte en local.
+# Lecture seule, et pour le seul PDF : la politique n'est pas rouverte en grand.
+RUN for policy in /etc/ImageMagick-6/policy.xml /etc/ImageMagick-7/policy.xml; do \
+        if [ -f "$policy" ]; then \
+            sed -i 's|<policy domain="coder" rights="none" pattern="PDF"|<policy domain="coder" rights="read" pattern="PDF"|' "$policy"; \
+        fi; \
+    done
 
 # Configure PHP for better performance
 RUN { \

@@ -28,6 +28,8 @@ Ces instructions vous permettront de mettre en place une copie du projet sur vot
 - [Composer](https://getcomposer.org/)
 - MariaDB 10.11 (si possible avec `innodb_ft_min_token_size=3` et `ft_min_word_len=3`, pour de meilleurs résultats dans la recherche d'événements)
 
+Facultatif : `imagick` et Ghostscript, pour convertir en image les PDF **collés en URL** dans le formulaire d'événement. Sans eux le site fonctionne normalement, et les PDF **envoyés en fichier** sont convertis de toute façon — c'est le navigateur qui s'en charge. Voir [Convertir les PDF collés en URL](#convertir-les-pdf-collés-en-url).
+
 #### Étapes
 1. cloner la branche `master`
 1. `composer install`
@@ -129,6 +131,35 @@ make composer-require PACKAGE=...   # Ajouter un package Composer
 ```
 
 Le site ladecadanse est déployé sur localhost:7777 (dev) ou localhost:8080 (prod). Le mot de passe, par défaut, pour l'utilisateur `admin` est `admin_dev`.
+
+### Convertir les PDF collés en URL
+
+Le formulaire d'événement accepte les PDF de deux façons, dont une seule demande quelque chose au serveur :
+
+| Voie | Conversion | Dépendance |
+|---|---|---|
+| Bouton « Envoyer » (champ fichier) | le navigateur, avec pdf.js | aucune |
+| « ou coller une URL » | le serveur, avec Imagick | `imagick` + Ghostscript |
+
+Le second cas ne peut pas être confié au navigateur : il lui faudrait lire une URL d'un autre domaine, ce que CORS et la CSP du site interdisent. Sans `imagick`, le site marche normalement et l'utilisateur reçoit un message qui le renvoie vers le bouton « Envoyer » — rien n'est cassé, la fonction est simplement absente.
+
+Avec Docker, tout est déjà dans `docker/php/Dockerfile`, y compris l'autorisation du coder PDF d'ImageMagick.
+
+**Sur un poste Windows/Laragon**, trois pièces, à faire correspondre :
+
+1. **Ghostscript** — [téléchargement](https://www.ghostscript.com/releases/gsdnld.html), version 64 bits. C'est lui qui décode réellement le PDF ; Imagick ne fait que l'appeler. Vérifier ensuite que `gswin64c.exe` répond depuis un terminal (l'installateur ajoute normalement son `bin` au `PATH`).
+2. **ImageMagick** — l'archive *Windows binary release* correspondant à la version attendue par l'extension.
+3. **L'extension PHP** — `php_imagick.dll` doit correspondre **exactement** au PHP de Laragon : version (8.4), architecture (x64) et surtout *thread safety*. Laragon sous Apache utilise un PHP **TS** (`php -i | findstr "Thread"` renvoie `Thread Safety => enabled`) ; prendre la DLL `ts-vs17-x64`. Copier `php_imagick.dll` dans `php/ext/`, les `CORE_RL_*.dll` dans le répertoire de `php.exe`, puis ajouter `extension=imagick` au `php.ini` et redémarrer Apache.
+
+Contrôle, une fois le tout en place :
+
+```bash
+php -r "echo extension_loaded('imagick') ? implode(',', Imagick::queryFormats('PDF')) : 'absent', PHP_EOL;"
+```
+
+La réponse attendue est `PDF`. Un `absent` signale que la DLL ne correspond pas au PHP en service — c'est de loin la cause la plus fréquente, et elle est silencieuse : PHP ne charge simplement pas l'extension.
+
+Si `imagick` répond mais que la conversion échoue sur `not authorized`, c'est la `policy.xml` d'ImageMagick qui refuse le coder PDF (héritage de CVE-2018-16509) : y passer `<policy domain="coder" rights="none" pattern="PDF" />` en `rights="read"`.
 
 ### Usage
 Une fois le site fonctionnel, se connecter avec le login *admin* (créé ci-dessus) permet d'ajouter et modifier des événements, lieux, etc. (partie publique) et de les gérer (partie back-office)

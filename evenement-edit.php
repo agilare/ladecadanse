@@ -6,6 +6,7 @@ use Ladecadanse\Utils\Validateur; // forms
 use Ladecadanse\Utils\QueryParamValidator; // query string
 use Ladecadanse\Utils\ImageDriver2; // files
 use Ladecadanse\Utils\ImageUrlFetcher; // url import
+use Ladecadanse\Utils\PdfToImage; // url import
 use Ladecadanse\Security\SecurityToken;
 use Ladecadanse\Evenement; // domain
 use Ladecadanse\Lieu; // domain
@@ -409,7 +410,16 @@ if ($formulaire_poste)
      *
      * @param string $champ 'flyer' ou 'image' ; donne aussi la clé d'erreur « <champ>_url »
      */
-    $importerImageParUrl = function (string $champ, string $url) use ($verif, $fichiers, $glo_mimes_images_acceptees): ?array
+    // Le PDF n'est proposé par URL que si le serveur sait le rendre. Le champ
+    // fichier, lui, n'en dépend pas : c'est le navigateur qui convertit.
+    $mimes_acceptes_par_url = $glo_mimes_images_acceptees;
+
+    if (PdfToImage::estDisponible())
+    {
+        $mimes_acceptes_par_url[] = 'application/pdf';
+    }
+
+    $importerImageParUrl = function (string $champ, string $url) use ($verif, $fichiers, $mimes_acceptes_par_url): ?array
     {
         if (empty($url))
         {
@@ -428,13 +438,31 @@ if ($formulaire_poste)
             return null;
         }
 
-        $fetched = ImageUrlFetcher::fetch($url, $glo_mimes_images_acceptees);
+        $fetched = ImageUrlFetcher::fetch($url, $mimes_acceptes_par_url);
 
         if ($fetched['error'] !== null)
         {
             $verif->setErreur($champ . '_url', $fetched['error']);
 
             return null;
+        }
+
+        // Un PDF est rendu ici, et non plus loin : la suite du traitement ne
+        // manipule que des images, et le nom du fichier enregistré se déduit du
+        // type MIME — il doit déjà porter celui de l'image produite.
+        if ($fetched['mime'] === 'application/pdf')
+        {
+            try
+            {
+                $fetched['data'] = PdfToImage::convertirPremierePage((string) $fetched['data']);
+                $fetched['mime'] = 'image/webp';
+            }
+            catch (\RuntimeException $e)
+            {
+                $verif->setErreur($champ . '_url', $e->getMessage());
+
+                return null;
+            }
         }
 
         return $fetched;

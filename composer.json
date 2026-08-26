@@ -39,6 +39,9 @@
         "symfony/html-sanitizer": "^8.0",
         "monolog/monolog": "^3.10"
     },
+    "suggest": {
+        "ext-imagick": "Rend la 1re page des PDF collés en URL dans evenement-edit (Ghostscript requis pour le coder PDF). Volontairement hors de require : l'absence de l'extension ne doit pas casser composer install en local, le champ fichier convertissant de son côté dans le navigateur"
+    },
     "autoload": {
         "psr-4": {
             "Ladecadanse\\": "librairies"
