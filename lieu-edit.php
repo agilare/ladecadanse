@@ -60,7 +60,17 @@ $message_ok = '';
 $form = new LieuEdition('form', $champs, $fichiers);
 
 $form->setAction($get['action']);
-if (isset($_POST['formulaire']) && $_POST['formulaire'] == 'ok')
+
+/*
+* Témoin du formulaire, posté quoi qu'il arrive.
+*
+* Un champ vidé, lui, ne poste plus rien (case décochée, select multiple entièrement
+* désélectionné) : sur son seul $_POST, « vidé au ré-affichage » est indiscernable de
+* « premier affichage ». Ce témoin les sépare.
+*/
+$formulaire_poste = isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok';
+
+if ($formulaire_poste)
 {
     if (!SecurityToken::check($_POST['token'], $_SESSION['token']))
     {
@@ -281,8 +291,27 @@ echo $form->getHtmlErreur("quartier");
         </p>
 
     <?php
+    /*
+    * Organisateurs présélectionnés dans le select (et repostés en champs cachés plus bas,
+    * pour les niveaux qui n'ont pas le droit de les modifier).
+    *
+    * Au ré-affichage après une erreur, la sélection postée fait foi À ELLE SEULE : y ajouter
+    * les organisateurs relus en base ferait revenir coché celui que l'utilisateur vient de
+    * retirer, donc impossible à retirer tant qu'une autre erreur bloque l'enregistrement.
+    * C'est $formulaire_poste qui commande, et non isset($_POST['organisateurs']) : tout
+    * désélectionner ne poste aucune clé, et retomberait sinon sur la base.
+    *
+    * $form->organisateurs est la copie que LieuEdition a faite du POST : le formulaire montre
+    * ainsi exactement ce que enregistrer() aurait écrit.
+    */
     $lieu_organisateurs = [];
-    if ($get['action'] == "editer" || $get['action'] == "update")
+
+    if ($formulaire_poste)
+    {
+        // entiers : ces valeurs repartent telles quelles dans les champs cachés
+        $lieu_organisateurs = is_array($form->organisateurs) ? array_map('intval', $form->organisateurs) : [];
+    }
+    else if ($get['action'] == "editer" || $get['action'] == "update")
     {
 
         $sql = "SELECT organisateur.idOrganisateur, nom
@@ -327,7 +356,7 @@ echo $form->getHtmlErreur("quartier");
         {
             echo "<option ";
 
-            if ((isset($_POST['organisateurs']) && in_array($tab['idOrganisateur'], $_POST['organisateurs'])) || in_array($tab['idOrganisateur'], $lieu_organisateurs))
+            if (in_array($tab['idOrganisateur'], $lieu_organisateurs))
             {
                 echo 'selected="selected" ';
 

@@ -108,7 +108,16 @@ $erreurs_traitement = [];
 $message_succes = '';
 $idP_succes = 0;
 
-if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
+/*
+* Témoin du formulaire, posté quoi qu'il arrive.
+*
+* Un champ vidé, lui, ne poste plus rien (case décochée, select multiple entièrement
+* désélectionné) : sur son seul $_POST, « vidé au ré-affichage » est indiscernable de
+* « premier affichage ». Ce témoin les sépare.
+*/
+$formulaire_poste = isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok';
+
+if ($formulaire_poste)
 {
 	foreach ($champs as $c => $v)
 	{
@@ -659,12 +668,24 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= UserLevel::ACTOR)) {
     SELECT idLieu, nom FROM lieu WHERE actif=1 AND statut='actif' ORDER BY TRIM(LEADING 'L\'' FROM (TRIM(LEADING 'Les ' FROM (TRIM(LEADING 'La ' FROM (TRIM(LEADING 'Le ' FROM nom))))))) COLLATE utf8mb4_unicode_ci"
      );
 
-        $sql = "SELECT idOrganisateur
-    FROM personne_organisateur
-    WHERE personne_organisateur.idPersonne=" . (int) $get['idP'];
+    /*
+    * Organisateurs présélectionnés dans le select.
+    *
+    * Au ré-affichage après une erreur, la sélection postée fait foi À ELLE SEULE : y ajouter
+    * les organisateurs relus en base ferait revenir coché celui que l'utilisateur vient de
+    * retirer, donc impossible à retirer tant qu'une autre erreur bloque l'enregistrement.
+    * C'est $formulaire_poste qui commande, et non isset($_POST['organisateurs']) : tout
+    * désélectionner ne poste aucune clé, et retomberait sinon sur la base.
+    */
+    $tab_organisateurs_pers = [];
 
-        $tab_organisateurs_pers = [];
-    if ($get['action'] == "editer" || $get['action'] == "update")
+    if ($formulaire_poste)
+    {
+        // hors du chemin sans erreur, $champs['organisateurs'] n'est pas normalisé : il porte
+        // le POST brut, et vaut encore '' quand le select n'a rien posté
+        $tab_organisateurs_pers = is_array($champs['organisateurs']) ? $champs['organisateurs'] : [];
+    }
+    else if ($get['action'] == "editer" || $get['action'] == "update")
     {
 
         $sql = "SELECT idOrganisateur
@@ -733,7 +754,7 @@ if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= UserLevel::ACTOR)) {
     {
         echo "<option ";
 
-        if ((isset($_POST['organisateurs']) && in_array($tab['idOrganisateur'], $_POST['organisateurs'])) || in_array($tab['idOrganisateur'], $tab_organisateurs_pers))
+        if (in_array($tab['idOrganisateur'], $tab_organisateurs_pers))
         {
             echo 'selected="selected" ';
 
