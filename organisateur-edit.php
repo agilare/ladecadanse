@@ -173,7 +173,7 @@ include("_header.inc.php");
 
     <fieldset>
         <legend>Images</legend>
-        <input type="hidden" name="<?php echo UPLOAD_MAX_FILESIZE ?>" value="2097152" /> <!-- 2 Mo -->
+        <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo UPLOAD_MAX_FILESIZE ?>" />
         <div class="guideForm">Formats JPEG, PNG, GIF ou WebP, max. 2 Mo</div>
         <!-- Logo (file) -->
         <p>
