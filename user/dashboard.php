@@ -256,7 +256,7 @@ $est_editeur = $authorization->isPersonneEditor($_SESSION);
 $voit_le_groupe = $_SESSION['Sgroupe'] <= UserLevel::ADMIN;
 
 // Les actions des tableaux reprennent les icônes globales, celles-là mêmes qu'affichent les autres
-// écrans de gestion (admin/gererEvenements.php) : même geste, même image. Les onglets, eux, sont
+// écrans de gestion (admin/events.php) : même geste, même image. Les onglets, eux, sont
 // propres à la page et suivent le Font Awesome du reste du site.
 $icone_editer = $iconeEditer;
 $icone_depublier = $icone['depublier'];

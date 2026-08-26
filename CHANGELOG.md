@@ -1,5 +1,23 @@
 # Changelog
 
+## [Non publié]
+
+Upgrade steps (redirects, side effects) : [UPGRADE.md](UPGRADE.md).
+
+### Fixed
+- admin events : a bulk replace no longer wipes the organisateurs of the selected events #125 — the `evenement_organisateur` DELETE ran after every successful UPDATE while only the posted selection was re-inserted, so changing a statut on ten events cleared the organisateurs of all ten, against the page's own promise that only non-empty fields overwrite ; the DELETE/INSERT pair now runs only when the field was filled
+- admin events : the "delete the image" branch removed the file read by the flyer branch (`$affImg` for `$affimage`), the schedules were re-read from `$_POST` inside the loop — bypassing the trim and the validation, and dropping the seconds `evenement-edit.php` appends —, `$_FILES['flyer']` was read without a guard, the posted statut was not validated, and the bulk delete built error messages it never displayed
+- admin events : an event without a localité is listed again — the `JOIN localite` was an inner join, so such an event vanished from the very screen where it could be fixed
+- admin events : the bulk form carries a CSRF token, which it lacked although it deletes ; the number of rows is validated against a list instead of being any integer, so `LIMIT 0,999999` no longer passes
+- forms : the clear button of a search field empties that field alone — it emptied every `input[type=search]` of the form, which went unnoticed as long as no page carried more than one filter
+
+### Changed
+- admin : `admin/gererEvenements.php` becomes `admin/events.php` #125, with a 301 — the whole request is processed before the first byte of HTML, a replace or a delete redirects instead of leaving a F5 to replay it, and the listing moves to `EvenementCollection` as prepared statements, its WHERE built once for both the count and the page
+- admin events : filters, sort and rows-per-page are remembered in the session as in `admin/users.php` ; two filters are added, on the lieu name and on the author's pseudo or e-mail, the category filter menu goes, and 100 leaves the rows-per-page menu
+- admin events : the bulk form keeps visible only what bulk editing uses — statut, catégorie, lieu, horaires, organisateurs — and folds the rest into three `<details>` : a lieu typed by hand, the event content, the files ; the statut radios and the delete checkbox go horizontal, their labels lose the parenthesised explanations, the first "Remplacer" button goes, and the overwrite warning becomes a `confirm()` at submit time
+- events : the lieu and organisateur selects, the lieu resolution and the hh:mm to datetime conversion move to the domain classes, next to `Localite::getOptionsHtml()` — `evenement-edit.php` and the admin form each carried their own copy, but only the first had received the 3.12.0 fixes ; the admin page thereby gets its salles in one query instead of one per lieu displayed, and its images in 600×600 with unclamped thumbnails
+- tests : unit coverage for the lieu and organisateur options and for the 301 of every moved page ; the `site` suite covers the admin events screen — access, the three filters, their memory, the sort links, the CSRF token and the folded blocks
+
 ## [3.12.0] - 2026-08-23
 
 Upgrade steps (redirects, side effects) : [UPGRADE.md](UPGRADE.md).
