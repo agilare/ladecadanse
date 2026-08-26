@@ -9,6 +9,7 @@ Upgrade steps (redirects, side effects) : [UPGRADE.md](UPGRADE.md).
 - admin events : the "delete the image" branch removed the file read by the flyer branch (`$affImg` for `$affimage`), the schedules were re-read from `$_POST` inside the loop — bypassing the trim and the validation, and dropping the seconds `evenement-edit.php` appends —, `$_FILES['flyer']` was read without a guard, the posted statut was not validated, and the bulk delete built error messages it never displayed
 - admin events : an event without a localité is listed again — the `JOIN localite` was an inner join, so such an event vanished from the very screen where it could be fixed
 - admin events : the bulk form carries a CSRF token, which it lacked although it deletes ; the number of rows is validated against a list instead of being any integer, so `LIMIT 0,999999` no longer passes
+- forms : the clear button of a search field empties that field alone — it emptied every `input[type=search]` of the form, which went unnoticed as long as no page carried more than one filter
 
 ### Changed
 - admin : `admin/gererEvenements.php` becomes `admin/events.php` #125, with a 301 — the whole request is processed before the first byte of HTML, a replace or a delete redirects instead of leaving a F5 to replay it, and the listing moves to `EvenementCollection` as prepared statements, its WHERE built once for both the count and the page

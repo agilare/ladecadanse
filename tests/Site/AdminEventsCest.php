@@ -58,6 +58,28 @@ class AdminEventsCest
     }
 
     /**
+     * Chaque filtre a son propre `.search-field` autour de lui.
+     *
+     * Ce n'est pas cosmétique : c'est ce conteneur que le gestionnaire de `js-clear-search-field`
+     * remonte pour ne vider que le champ de la croix cliquée. Sans lui il retombe sur le
+     * formulaire entier et vide les trois filtres d'un coup.
+     */
+    public function eachFilterHasItsOwnClearButton(SiteTester $I)
+    {
+        $I->skipUnlessConfigured('LADECADANSE_SITE_ADMIN_USER', 'LADECADANSE_SITE_ADMIN_PASS');
+
+        $I->loginAsAdmin();
+        $I->amOnPage(self::URL);
+
+        foreach (['terme', 'lieu', 'personne'] as $filtre)
+        {
+            $I->seeElement('.search-field > input[name=' . $filtre . '] + button.js-clear-search-field');
+        }
+
+        $I->seeNumberOfElements('#events-filters .search-field', 3);
+    }
+
+    /**
      * Le menu de filtre par catégorie a disparu : c'est le tri et la recherche qui servent.
      */
     public function categoryFilterMenuIsGone(SiteTester $I)
@@ -124,6 +146,27 @@ class AdminEventsCest
 
         $I->amOnPage(self::URL . '?terme=');
         $I->seeElement('table#ajouts td a.titre');
+    }
+
+    /**
+     * Colonne « par » : le pseudo entier est porté par l'infobulle du lien, le texte visible
+     * étant coupé à dix caractères — un seul pseudo long élargissait toute la colonne.
+     *
+     * La coupe elle-même est couverte par `TextTruncateTest` ; ici on vérifie seulement que
+     * la page passe bien par elle et n'a pas perdu l'infobulle en chemin. Une assertion sur
+     * un pseudo réellement long dépendrait des données de l'instance testée.
+     */
+    public function theAuthorColumnKeepsTheFullPseudoInATooltip(SiteTester $I)
+    {
+        $I->skipUnlessConfigured('LADECADANSE_SITE_ADMIN_USER', 'LADECADANSE_SITE_ADMIN_PASS');
+
+        $I->loginAsAdmin();
+        $I->amOnPage(self::URL);
+
+        $pseudos = $I->grabMultiple('table#ajouts td a[href^="/user/dashboard.php?idP="]', 'title');
+
+        $I->assertNotEmpty($pseudos, 'la colonne « par » ne porte aucun lien de profil');
+        $I->assertNotContains('', $pseudos, 'un lien de profil sans infobulle : le pseudo entier est perdu');
     }
 
     /**

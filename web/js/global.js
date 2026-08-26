@@ -412,7 +412,13 @@ const Forms = {
         $('.js-clear-search-field').on('click', function clearAndSubmitSearchField()
         {
             const form = $(this).closest('form')[0];
-            $(form).find('input[type="search"]').val('');
+
+            // Ne vider que le champ de la croix cliquée : depuis que le back-office porte
+            // plusieurs filtres dans un même formulaire, vider tous les `input[type=search]`
+            // effaçait aussi ceux auxquels on ne touchait pas. Le repli sur le formulaire
+            // entier couvre un balisage sans `.search-field` autour du champ.
+            const champs = $(this).closest('.search-field').find('input[type="search"]');
+            (champs.length > 0 ? champs : $(form).find('input[type="search"]')).val('');
 
             // Un champ nommé « submit » masque form.submit() : le formulaire expose ses champs
             // comme propriétés, et jQuery, ne trouvant plus de fonction, n'envoyait rien. Passer

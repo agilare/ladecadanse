@@ -7,6 +7,7 @@ use Ladecadanse\Utils\DateHelper;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\QueryParamValidator;
 use Ladecadanse\Utils\ImageDriver2;
+use Ladecadanse\Utils\Text;
 use Ladecadanse\EvenementCollection;
 use Ladecadanse\UserLevel;
 use Ladecadanse\HtmlShrink;
@@ -87,6 +88,9 @@ if (!in_array((int) $_SESSION['user_prefs_even_nblignes'], $tab_nblignes_even, t
 $nblignes = (int) $_SESSION['user_prefs_even_nblignes'];
 
 $th_evenements = ["titre" => "Titre", "idLieu" => "Lieu", "dateEvenement" => "Date", "genre" => "Catég.", "horaire" => "Horaire", "organisateurs" => "Orga.", "statut" => "Statut", "dateAjout" => "Ajouté", "pseudo" => "par"];
+
+/** Au-delà, le pseudo de la colonne « par » est coupé : un seul pseudo long élargissait toute la colonne */
+const PSEUDO_MAX_CARACTERES = 10;
 
 
 /*
@@ -477,9 +481,15 @@ $erreurs = $verif->getErreurs();
                 <input type="search" name="personne" value="<?= sanitizeForHtml($filtres['personne']) ?>" placeholder="Pseudo ou email" size="16" />
                 <button type="button" class="js-clear-search-field" aria-label="Vider et relancer la recherche" title="Vider et relancer la recherche"></button>
             </span>
-            <input type="submit" name="submit" value="Filtrer" />
+            <input type="submit" name="submit" value="Filtrer" class="submit" />
 
         </form>
+
+    </div> <!-- #filters -->
+
+    <?php // filtres, tri et nombre de lignes sont en session : la pagination n'a que la page à porter ?>
+    <div class="events-barre-pagination">
+        <?= HtmlShrink::getPaginationString($tot_elements, $get['page'], $nblignes, 1, "", "?page=") ?>
 
         <ul class="menu_nb_res">
             <?php foreach ($tab_nblignes_even as $nbl) : ?>
@@ -488,11 +498,7 @@ $erreurs = $verif->getErreurs();
             </li>
             <?php endforeach; ?>
         </ul>
-
-    </div> <!-- #filters -->
-
-    <?php // filtres, tri et nombre de lignes sont en session : la pagination n'a que la page à porter ?>
-    <?= HtmlShrink::getPaginationString($tot_elements, $get['page'], $nblignes, 1, "", "?page=") ?>
+    </div>
 
     <?php // l'avertissement autrefois affiché en tête de formulaire est posé ici : il arrive
           // au moment où il compte, et ne pousse plus les champs vers le bas du reste du temps ?>
@@ -545,7 +551,8 @@ $erreurs = $verif->getErreurs();
                 </td>
                 <td><?= EvenementRenderer::$iconStatus[$tab_even['e_statut']] ?></td>
                 <td><?= $tab_datetime_dateajout[1]." ".substr($tab_datetime_dateajout[0], 0, -3) ?></td>
-                <td><a href="/user/dashboard.php?idP=<?= (int)$tab_even['idPersonne'] ?>"><?= sanitizeForHtml($tab_even['pseudo']) ?></a></td>
+                <?php // le pseudo entier reste lisible dans l'infobulle du lien ?>
+                <td><a href="/user/dashboard.php?idP=<?= (int)$tab_even['idPersonne'] ?>" title="<?= sanitizeForHtml((string) $tab_even['pseudo']) ?>"><?= Text::truncateCharsToHtml((string) $tab_even['pseudo'], PSEUDO_MAX_CARACTERES) ?></a></td>
                 <?php if ($_SESSION['Sgroupe'] <= UserLevel::ADMIN) : ?>
                     <td class="actions-even">
                         <?php if ($tab_even['e_statut'] != 'inactif') : ?>
@@ -762,7 +769,7 @@ $erreurs = $verif->getErreurs();
 
         <p>
         <label for="flyer">Flyer :</label>
-        <input type="file" name="flyer" id="flyer" class="js-file-upload-size-max fichier" size="25"
+        <input type="file" name="flyer" id="flyer" class="js-file-upload-size-max" size="25"
         accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif,image/webp" />
         </p>
         <?php
@@ -773,7 +780,7 @@ $erreurs = $verif->getErreurs();
 
         <p>
         <label for="image">Image :</label>
-        <input type="file" name="image" id="image" class="js-file-upload-size-max fichier" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif,image/webp" />
+        <input type="file" name="image" id="image" class="js-file-upload-size-max" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif,image/webp" />
         </p>
         <?php echo $verif->getHtmlErreur("image"); ?>
         <div class="guideChamp">Formats JPEG, PNG, GIF ou WebP; max. 2 Mo. La même image est posée sur tous les événements sélectionnés.</div>
@@ -786,7 +793,7 @@ $erreurs = $verif->getErreurs();
         <p class="piedForm">
             <input type="hidden" name="formulaire" value="ok" />
             <input type="hidden" name="token" value="<?= sanitizeForHtml(SecurityToken::getToken()) ?>" />
-            <input type="submit" value="Remplacer" tabindex="19" class="submit" />
+            <input type="submit" value="Remplacer" tabindex="19" class="submit submit-big" />
         </p>
     </div>
     </form>
