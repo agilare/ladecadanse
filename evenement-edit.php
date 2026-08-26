@@ -210,7 +210,16 @@ $formTokenName = 'form_token_evenement_edit';
 $verif = new Validateur();
 $fichiers = ['flyer' => ['name' => '', 'size' => 0], 'image' => ['name' => '', 'size' => 0]];
 
-if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
+/*
+* Témoin du formulaire, posté quoi qu'il arrive.
+*
+* Un champ vidé, lui, ne poste plus rien (case décochée, select multiple entièrement
+* désélectionné) : sur son seul $_POST, « vidé au ré-affichage » est indiscernable de
+* « premier affichage ». Ce témoin les sépare.
+*/
+$formulaire_poste = isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok';
+
+if ($formulaire_poste)
 {
     // fill default empty fields with received values
     foreach ($champs as $c => $v)
@@ -1353,35 +1362,57 @@ if ($show_form)
             <div class="spacer"></div>
 
         <?php
+        /*
+        * Organisateurs présélectionnés dans le select.
+        *
+        * Au ré-affichage après une erreur, la sélection postée fait foi À ELLE SEULE : y ajouter
+        * les organisateurs relus en base ferait revenir coché celui que l'utilisateur vient de
+        * retirer, donc impossible à retirer tant qu'une autre erreur bloque l'enregistrement.
+        * C'est $formulaire_poste qui commande, et non isset($_POST['organisateurs']) : tout
+        * désélectionner ne poste aucune clé, et retomberait sinon sur la base.
+        *
+        * Au premier affichage seulement, les trois sources d'origine, inchangées : les valeurs
+        * par défaut du profil à la création, les organisateurs de l'événement en édition, et le
+        * ?idO= d'un ajout lancé depuis une page organisateur, qui s'ajoute aux deux autres.
+        */
         $tab_organisateurs_even = [];
 
-        // À la création, les organisateurs par défaut du profil alimentent la même variable que les
-        // organisateurs d'un événement existant : la boucle d'options plus bas les sélectionne sans
-        // rien changer. ?idO= reste prioritaire.
-        if ($get['action'] == "ajouter" && empty($get['idO']))
+        if ($formulaire_poste)
         {
-            $tab_organisateurs_even = $ev_user_defaults['idOrganisateurs'];
+            // hors du chemin sans erreur, $champs['organisateurs'] n'est pas normalisé : il porte
+            // le POST brut, et vaut encore '' quand le select n'a rien posté
+            $tab_organisateurs_even = is_array($champs['organisateurs']) ? $champs['organisateurs'] : [];
         }
-
-        if ($est_edition)
+        else
         {
+            if ($get['action'] == "ajouter" && empty($get['idO']))
+            {
+                $tab_organisateurs_even = $ev_user_defaults['idOrganisateurs'];
+            }
 
-            $sql = "SELECT organisateur.idOrganisateur, nom
+            if ($est_edition)
+            {
+                $sql = "SELECT organisateur.idOrganisateur, nom
         FROM organisateur, evenement_organisateur
         WHERE evenement_organisateur.idEvenement=".(int)$get['idE']." AND
          organisateur.idOrganisateur=evenement_organisateur.idOrganisateur
          ORDER BY date_ajout DESC";
 
-         $req = $connector->query($sql);
+                $req = $connector->query($sql);
 
-            if ($connector->getNumRows($req))
-            {
-                while ($tab = $connector->fetchArray($req))
+                if ($connector->getNumRows($req))
                 {
-                    $tab_organisateurs_even[] = $tab['idOrganisateur'];
+                    while ($tab = $connector->fetchArray($req))
+                    {
+                        $tab_organisateurs_even[] = $tab['idOrganisateur'];
+                    }
                 }
             }
 
+            if (!empty($get['idO']))
+            {
+                $tab_organisateurs_even[] = $get['idO'];
+            }
         }
         ?><?php
         echo $verif->getHtmlErreur("doublon_organisateur");
@@ -1398,7 +1429,7 @@ if ($show_form)
         while ($tab = $connector->fetchArray($req))
         {
         ?><option data-nom="<?php echo sanitizeForHtml($tab['nom']); ?>" data-complement="<?php echo sanitizeForHtml($tab['URL']); ?>"
-        <?php if ((isset($_POST['organisateurs']) && in_array($tab['idOrganisateur'], $_POST['organisateurs'])) || in_array($tab['idOrganisateur'], $tab_organisateurs_even) || (!empty($get['idO']) && $get['idO'] == $tab['idOrganisateur']))
+        <?php if (in_array($tab['idOrganisateur'], $tab_organisateurs_even))
             {
                 echo 'selected="selected" ';
             }

@@ -13,12 +13,15 @@ use Codeception\Util\HttpCode;
  * chargées en une requête puis indexées par lieu, au lieu d'une requête par lieu),
  * et la bascule entre le formulaire public et le formulaire connecté.
  *
- * Suite read-only : ces tests ne font que des GET.
+ * Suite read-only : les POST de ce fichier vident tous le titre, donc la validation
+ * échoue et ni l'INSERT ni l'UPDATE ne sont atteints. Ne pas y soumettre de formulaire
+ * valide.
  */
 class EvenementEditFormulaireCest
 {
     private const SELECT_LIEUX = '//select[@name="idLieu"]';
     private const SELECT_LOCALITES = '//select[@name="localite_id"]';
+    private const OPTIONS_ORGANISATEURS_SELECTIONNEES = '#organisateurs option[selected]';
 
     /**
      * Chaque salle active est proposée une fois et une seule, sous un lieu, au format
@@ -219,6 +222,97 @@ class EvenementEditFormulaireCest
             $I->grabAttributeFrom('.supImg a.magnific-popup img', 'src'),
             'Le lien et la vignette de l’aperçu doivent viser la même image'
         );
+    }
+
+    /**
+     * Après une erreur de validation, le select des organisateurs rend la sélection postée,
+     * et elle seule.
+     *
+     * Le formulaire réunissait la saisie postée et les organisateurs relus en base : un
+     * organisateur que l'utilisateur venait de retirer revenait coché à chaque ré-affichage,
+     * donc impossible à retirer tant qu'une autre erreur bloquait l'enregistrement.
+     *
+     * Le titre est vidé pour garantir l'erreur : rien n'est écrit en base.
+     */
+    public function organisateurRetireNeRevientPasApresUneErreur(SiteTester $I)
+    {
+        $I->skipUnlessConfigured(
+            'LADECADANSE_SITE_ADMIN_USER',
+            'LADECADANSE_SITE_ADMIN_PASS',
+            'LADECADANSE_TEST_EVENT_ID_WITH_ORGANISATEURS'
+        );
+
+        $I->loginAsAdmin();
+        $I->amOnPage('/evenement-edit.php?action=editer&idE=' . TestEnv::getInt('LADECADANSE_TEST_EVENT_ID_WITH_ORGANISATEURS'));
+        $I->seeResponseCodeIs(HttpCode::OK);
+
+        $selectionnes = $I->grabMultiple(self::OPTIONS_ORGANISATEURS_SELECTIONNEES, 'value');
+
+        $I->assertGreaterThanOrEqual(
+            2,
+            count($selectionnes),
+            'LADECADANSE_TEST_EVENT_ID_WITH_ORGANISATEURS doit désigner un événement rattaché à au '
+            . "moins deux organisateurs actifs : sans organisateur à retirer, ce test ne vérifierait rien."
+        );
+
+        $garde = array_shift($selectionnes);
+
+        $I->submitForm('#ajouter_editer', [
+            'titre' => '', // titre est obligatoire : erreur garantie, rien n'est enregistré
+            'organisateurs' => [$garde],
+        ]);
+
+        // le formulaire est bien ré-affiché en erreur, et non enregistré puis redirigé
+        $I->seeElement('#ajouter_editer');
+        $I->seeElement('.msg_erreur');
+
+        $I->seeElement('#organisateurs option[value="' . $garde . '"][selected]');
+
+        foreach ($selectionnes as $idOrganisateur)
+        {
+            $I->dontSeeElement('#organisateurs option[value="' . $idOrganisateur . '"][selected]');
+        }
+
+        $I->seeNumberOfElements(self::OPTIONS_ORGANISATEURS_SELECTIONNEES, 1);
+    }
+
+    /**
+     * Cas limite du test précédent : un select multiple entièrement désélectionné ne poste
+     * aucune clé « organisateurs ». Côté serveur, « champ vidé » est alors indiscernable de
+     * « premier affichage » sur le seul $_POST['organisateurs'] — c'est le témoin
+     * « formulaire », posté dans tous les cas, qui les sépare.
+     *
+     * Sans lui, ce cas-ci retomberait sur les organisateurs de la base et resterait cassé
+     * alors même que le test précédent passerait.
+     */
+    public function organisateursTousRetiresNeReviennentPasApresUneErreur(SiteTester $I)
+    {
+        $I->skipUnlessConfigured(
+            'LADECADANSE_SITE_ADMIN_USER',
+            'LADECADANSE_SITE_ADMIN_PASS',
+            'LADECADANSE_TEST_EVENT_ID_WITH_ORGANISATEURS'
+        );
+
+        $I->loginAsAdmin();
+        $I->amOnPage('/evenement-edit.php?action=editer&idE=' . TestEnv::getInt('LADECADANSE_TEST_EVENT_ID_WITH_ORGANISATEURS'));
+        $I->seeResponseCodeIs(HttpCode::OK);
+
+        $I->assertNotEmpty(
+            $I->grabMultiple(self::OPTIONS_ORGANISATEURS_SELECTIONNEES, 'value'),
+            'LADECADANSE_TEST_EVENT_ID_WITH_ORGANISATEURS doit désigner un événement rattaché à au '
+            . "moins un organisateur actif : sans rien à désélectionner, ce test ne vérifierait rien."
+        );
+
+        $I->submitForm('#ajouter_editer', [
+            'titre' => '', // titre est obligatoire : erreur garantie, rien n'est enregistré
+            'organisateurs' => [],
+        ]);
+
+        $I->seeElement('#ajouter_editer');
+        $I->seeElement('.msg_erreur');
+
+        $I->seeElement('#organisateurs');
+        $I->dontSeeElement(self::OPTIONS_ORGANISATEURS_SELECTIONNEES);
     }
 
     /**
