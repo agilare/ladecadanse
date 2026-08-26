@@ -3,18 +3,24 @@
 // INFRA
 //// FILE MANAGEMENT
 
-define("UPLOAD_MAX_FILESIZE", 3145728); // 3 Mo
-define("POST_MAX_SIZE", 6291456); // 6 Mo
+// Limites annoncées à l'utilisateur et appliquées par Validateur. Les
+// directives PHP correspondantes vivent ailleurs — upload_max_filesize et
+// post_max_size sont PHP_INI_PERDIR, max_file_uploads PHP_INI_SYSTEM : un
+// ini_set() y est sans effet. Voir userini/00-commun.ini (production, lu en
+// FastCGI) et htaccess/70-dev-php.conf (poste de développement, mod_php).
+//
+// POST_MAX_SIZE est délibérément inférieur au post_max_size du serveur : au
+// delà de celui-ci PHP vide $_POST *et* $_FILES, le jeton CSRF avec, et plus
+// aucun message ne peut être affiché. Cette marge laisse le contrôle
+// applicatif se prononcer en premier.
+define("UPLOAD_MAX_FILESIZE", 5242880); // 5 Mo
+define("POST_MAX_SIZE", 12582912); // 12 Mo, pour 14 Mo côté serveur
 
 // Plafond sur les dimensions, et non sur le poids : GD décompresse à ~4 octets
 // par pixel, et un fichier léger peut couvrir énormément de pixels. 40 Mpx
 // représentent ~160 Mo en mémoire, sur les 640 Mo de l'hébergement, et couvrent
 // tout appareil photo actuel.
 define("UPLOAD_MAX_MEGAPIXELS", 40);
-
-ini_set('post_max_size', POST_MAX_SIZE);
-ini_set('upload_max_filesize', UPLOAD_MAX_FILESIZE);
-ini_set('max_file_uploads', 3);
 
 
 // DIR

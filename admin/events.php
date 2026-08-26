@@ -785,7 +785,7 @@ $erreurs = $verif->getErreurs();
         <input type="file" name="image" id="image" class="js-file-upload-size-max" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif,image/webp" />
         </p>
         <?php echo $verif->getHtmlErreur("image"); ?>
-        <div class="guideChamp">Formats JPEG, PNG, GIF ou WebP; max. 2 Mo. La même image est posée sur tous les événements sélectionnés.</div>
+        <div class="guideChamp">Formats JPEG, PNG, GIF ou WebP; max. 5 Mo. La même image est posée sur tous les événements sélectionnés.</div>
         </fieldset>
     </details>
 

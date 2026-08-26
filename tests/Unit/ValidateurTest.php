@@ -87,7 +87,7 @@ final class ValidateurTest extends Unit
         $file = ['name' => 'big.jpg', 'type' => 'image/jpeg', 'tmp_name' => '/none', 'error' => UPLOAD_ERR_INI_SIZE];
         $this->assertFalse($this->validateur->validerFichier($file, 'f', ['image/jpeg'], false));
         // le message annonce la limite en vigueur, et non une valeur écrite en dur
-        $this->assertStringContainsString('3 Mo', (string) $this->validateur->getErreur('f'));
+        $this->assertStringContainsString('5 Mo', (string) $this->validateur->getErreur('f'));
     }
 
     /**

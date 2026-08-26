@@ -12,7 +12,7 @@ declare(strict_types=1);
  */
 
 if (!defined('UPLOAD_MAX_FILESIZE')) {
-    define('UPLOAD_MAX_FILESIZE', 3145728); // 3 Mo
+    define('UPLOAD_MAX_FILESIZE', 5242880); // 5 Mo
 }
 
 if (!defined('UPLOAD_MAX_MEGAPIXELS')) {

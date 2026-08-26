@@ -222,6 +222,20 @@ $similarEvenements = [];
 */
 $formulaire_poste = isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok';
 
+/*
+ * Envoi trop lourd pour post_max_size : PHP vide $_POST *et* $_FILES avant même
+ * que ce script démarre. Le témoin « formulaire=ok » disparaît avec le reste,
+ * si bien qu'aucun des contrôles du bloc ci-dessous ne s'exécute — sans ce
+ * garde-fou, l'utilisateur récupérerait un formulaire vierge sans un mot
+ * d'explication, toute sa saisie perdue.
+ */
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($_POST) && ($_SERVER['CONTENT_LENGTH'] ?? 0) > 0)
+{
+    HtmlShrink::msgErreur("Le poids total de votre envoi dépasse la limite autorisée. "
+        . "Veuillez choisir des fichiers plus légers (5 Mo au maximum chacun), puis saisir le formulaire à nouveau.");
+    exit;
+}
+
 if ($formulaire_poste)
 {
     // fill default empty fields with received values
@@ -1419,13 +1433,13 @@ if ($show_form)
     <fieldset>
         <legend>Images</legend>
 
-        <div style="margin-left: 0.8em;margin-bottom:1.2em;">Formats JPEG, PNG, GIF ou WebP; max. 2 Mo</div>
+        <div style="margin-left: 0.8em;margin-bottom:1.2em;">Formats JPEG, PNG, GIF ou WebP; max. 5 Mo</div>
 
         <p style="margin-left: 0.8em;margin-bottom:1.2em;font-weight: bold">Affiche/flyer</p>
 
         <p>
             <label for="flyer">Envoyer</label>
-            <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo UPLOAD_MAX_FILESIZE ?>" /> <!-- 2 Mo -->
+            <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo UPLOAD_MAX_FILESIZE ?>" />
             <input type="file" name="flyer" id="flyer" class="js-file-upload-size-max" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif,image/webp" class="fichier" />
             <?php if ($formulaire_rejete && !empty($fichiers['flyer']['name'])): ?>
                 <div class="msg">Le fichier sélectionné a été retiré du formulaire par le navigateur (sécurité). Veuillez le sélectionner à nouveau.</div>
@@ -1466,7 +1480,7 @@ if ($show_form)
         <div class="guideChamp" style="padding-left:0.8em;margin-top:0">Photo des artistes, de leurs œuvres, du lieu, etc.<br>Visible sous le flyer dans la page Événement</div>
         <p>
             <label for="image">Envoyer</label>
-            <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo UPLOAD_MAX_FILESIZE ?>" /> <!-- 2 Mo -->
+            <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo UPLOAD_MAX_FILESIZE ?>" />
             <input type="file" name="image" id="image" class="js-file-upload-size-max" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif,image/webp" class="fichier" />
             <div class="spacer"></div>
             <?php if ($formulaire_rejete && !empty($fichiers['image']['name'])): ?>
