@@ -175,7 +175,7 @@ include("../_header.inc.php");
             </h1>
 
             <?php if ($lieu['logo']) : ?>
-                <a href="<?= $assets->get(Lieu::getAssetPath(Lieu::getFilePath($lieu['logo']))) ?>" class="magnific-popup"><img src="<?= $assets->get(Lieu::getAssetPath(Lieu::getFilePath($lieu['logo'], "s_"))) ?>" alt="Logo" class="logo" /></a>
+                <a href="<?= $assets->get(Lieu::getAssetPath(Lieu::getFilePath($lieu['logo']))) ?>" class="magnific-popup"><img src="<?= $assets->get(Lieu::getAssetPath(Lieu::getFilePath($lieu['logo'], "s_"))) ?>" width="100" alt="Logo" class="logo" /></a>
             <?php endif; ?>
 
             <?php if ($lieu['statut'] == 'ancien') : ?>
@@ -205,7 +205,7 @@ include("../_header.inc.php");
                 <figure id="photo">
 
                     <?php if ($lieu['photo1'] != '') { ?>
-                        <a href="<?= $assets->get(Lieu::getAssetPath(Lieu::getFilePath($lieu['photo1']))) ?>" class="gallery-item"><img src="<?= $assets->get(Lieu::getAssetPath(Lieu::getFilePath($lieu['photo1'], "s_"))) ?>" alt="Photo du lieu"></a>
+                        <a href="<?= $assets->get(Lieu::getAssetPath(Lieu::getFilePath($lieu['photo1']))) ?>" class="gallery-item"><img src="<?= $assets->get(Lieu::getAssetPath(Lieu::getFilePath($lieu['photo1'], "s_"))) ?>" width="250" alt="Photo du lieu"></a>
                     <?php } elseif (empty($_SESSION['Sgroupe'])) { ?>
                         <p style="background: #eaeaea;font-size:0.9em;padding:2em 0.5em;line-height:1.2em">Vous gérez ce lieu ? <a href="/user/register.php">Inscrivez-vous</a> pour pouvoir ajouter ou modifier les informations et des photos</p>
                     <?php } ?>

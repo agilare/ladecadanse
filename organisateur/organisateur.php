@@ -166,7 +166,7 @@ include("../_header.inc.php");
             <h1 class="fn org"><?= $organisateur->getHtmlValue('nom'); ?></h1>
 
             <?php if ($organisateur->getValue('logo') != '') : ?>
-            <a href="<?= $assets->get(Organisateur::getAssetPath(Organisateur::getFilePath($organisateur->getValue('logo')))) ?>" class="magnific-popup"><img src="<?= $assets->get(Organisateur::getAssetPath(Organisateur::getFilePath($organisateur->getValue('logo'), "s_"))) ?>" alt="Logo" class="logo" /></a>
+            <a href="<?= $assets->get(Organisateur::getAssetPath(Organisateur::getFilePath($organisateur->getValue('logo')))) ?>" class="magnific-popup"><img src="<?= $assets->get(Organisateur::getAssetPath(Organisateur::getFilePath($organisateur->getValue('logo'), "s_"))) ?>"  width="100" alt="Logo" class="logo" /></a>
             <?php endif ?>
             <div class="spacer"></div>
         </header>
@@ -188,7 +188,7 @@ include("../_header.inc.php");
                 <figure id="photo">
                     <?php if ($organisateur->getValue('photo') != '') : ?>
                         <a href="<?= $assets->get(Organisateur::getAssetPath(Organisateur::getFilePath($organisateur->getValue('photo')))) ?>" class="magnific-popup">
-                            <img src="<?= $assets->get(Organisateur::getAssetPath(Organisateur::getFilePath($organisateur->getValue('photo'), "s_"))) ?>" alt="Photo" />
+                            <img src="<?= $assets->get(Organisateur::getAssetPath(Organisateur::getFilePath($organisateur->getValue('photo'), "s_"))) ?>"  width="200" alt="Photo" />
                         </a>
                     <?php endif; ?>
                 </figure>

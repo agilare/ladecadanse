@@ -43,7 +43,7 @@ class OrganisateurEdition extends Edition
             // sans ceci le href serait supprimé
             ->allowRelativeLinks(true)
             ->allowLinkSchemes(['https', 'http', 'mailto'])
-            ->forceAttribute('a', 'rel', 'noopener noreferrer'));        
+            ->forceAttribute('a', 'rel', 'noopener noreferrer'));
 
     }
 
@@ -139,7 +139,7 @@ class OrganisateurEdition extends Edition
         $organisateur->setValues($this->valeurs);
 
         $organisateur->setValue('idpersonne', $_SESSION['SidPersonne']);
-        
+
         $organisateur->setValue('presentation', $this->htmlSanitizer->sanitize($organisateur->getValue('presentation')));
 
         if ($this->action == 'ajouter')
@@ -240,13 +240,13 @@ class OrganisateurEdition extends Edition
         {
             $imD2 = new ImageDriver2("organisateurs");
 
-            if (!$imD2->processImage($this->fichiers['logo'], "s_" . $organisateur->getValue('logo'), 200, 100, 'h', 0))
+            if (!$imD2->processImage($this->fichiers['logo'], "s_" . $organisateur->getValue('logo'), 200, 200, 'h', 0))
             {
                 trigger_error($imD2->getErreur());
                 exit;
             }
 
-            if (!$imD2->processImage($this->fichiers['logo'], $organisateur->getValue('logo'), 500, 500, '', 0))
+            if (!$imD2->processImage($this->fichiers['logo'], $organisateur->getValue('logo'), 600, 600, '', 0))
             {
                 trigger_error($imD2->getErreur());
                 exit;
@@ -257,7 +257,7 @@ class OrganisateurEdition extends Edition
         {
             $imD2 = new ImageDriver2("organisateurs");
 
-            if (!$imD2->processImage($this->fichiers['photo'], "s_" . $organisateur->getValue('photo'), 200, 400, 'w', 1))
+            if (!$imD2->processImage($this->fichiers['photo'], "s_" . $organisateur->getValue('photo'), 300, 300, 'w', 1))
             {
                 trigger_error($imD2->getErreur());
                 exit;

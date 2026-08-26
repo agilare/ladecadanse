@@ -105,12 +105,12 @@ class LieuEdition extends Edition
 
         $verif = new Validateur();
 
-        $verif->valider($this->valeurs['nom'], "nom", "texte", 1, 60, 1);
-        $verif->valider($this->valeurs['determinant'], "determinant", "texte", 1, 30, 0);
-        $verif->valider($this->valeurs['adresse'], "adresse", "texte", 1, 80, 1);
+        $verif->valider($this->valeurs['nom'], "nom", "texte", 1, 80, 1);
+        $verif->valider($this->valeurs['determinant'], "determinant", "texte", 1, 40, 0);
+        $verif->valider($this->valeurs['adresse'], "adresse", "texte", 1, 100, 1);
         $verif->valider($this->valeurs['localite_id'], "localite_id", "texte", 1, 80, 1);
-        $verif->valider($this->valeurs['horaire_general'], "horaire_general", "texte", 2, 200, 0);
-        $verif->valider($this->valeurs['URL'], "URL", "url", 2, 100, 0);
+        $verif->valider($this->valeurs['horaire_general'], "horaire_general", "texte", 2, 500, 0);
+        $verif->valider($this->valeurs['URL'], "URL", "url", 2, 250, 0);
         /*
          * Coordonnées (latitude, longitude) : facultatives, mais les deux ensemble,
          * le plan n'étant affiché que si les deux sont renseignées
@@ -284,8 +284,6 @@ class LieuEdition extends Edition
                 $lieu->setValue('logo', Document::getFilename($this->fichiers['logo']['name'], $lieu->getId(), 'logo', ''));
             }
 
-
-
             /*
              * Si on a seulement choisi de supprimer l'image existante
              */
@@ -363,7 +361,7 @@ class LieuEdition extends Edition
         {
             $imD2 = new ImageDriver2("lieux");
 
-            if (!$imD2->processImage($this->fichiers['logo'], "s_" . $lieu->getValue('logo'), 200, 50, 'h', 0))
+            if (!$imD2->processImage($this->fichiers['logo'], "s_" . $lieu->getValue('logo'), 200, 200, 'h', 0))
             {
                 trigger_error($imD2->getErreur());
                 exit;
@@ -380,7 +378,7 @@ class LieuEdition extends Edition
         {
             $imD2 = new ImageDriver2("lieux");
 
-            if (!$imD2->processImage($this->fichiers['photo1'], "s_" . $lieu->getValue('photo1'), 200, 300, 'w', 1))
+            if (!$imD2->processImage($this->fichiers['photo1'], "s_" . $lieu->getValue('photo1'), 300, 300, 'w', 1))
             {
                 trigger_error($imD2->getErreur());
                 exit;
@@ -416,7 +414,7 @@ class LieuEdition extends Edition
             $nom_image_galerie = $id_nouveau_fichier . $extension;
             $imD = new ImageDriver2("lieux/galeries");
 
-            $erreur_image[] = $imD->processImage($this->fichiers['image_galerie'], "s_" . $nom_image_galerie, 60, 60, '', 1);
+            $erreur_image[] = $imD->processImage($this->fichiers['image_galerie'], "s_" . $nom_image_galerie, 200, 200, '', 1);
             $erreur_image[] = $imD->processImage($this->fichiers['image_galerie'], $nom_image_galerie, 600, 600, '', 0);
 
             $champs['image_galerie'] = '';

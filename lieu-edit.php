@@ -90,9 +90,7 @@ else if ($get['action'] == 'editer')
 }
 
 
-
 $titre_form = "";
-
 
 //menu d'actions (activation et suppression)  pour l'auteur > 6 ou l'admin
 if (($get['action'] == 'editer' || $get['action'] == 'update'))
@@ -136,11 +134,12 @@ include("_header.inc.php");
     <form  method="post" enctype="multipart/form-data" id="ajouter_editer" class="js-submit-freeze-wait" action="<?php echo basename(__FILE__)."?action=".sanitizeForHtml($act); ?>">
 
     <p>* indique un champ obligatoire</p>
+
     <p>Si vous souhaitez modifier le nom du lieu, ses catégories, ses organisateurs ou les photos de la galerie, merci de nous <a href="/misc/contacteznous.php">contacter</a></p>
 
     <fieldset>
 
-    <legend>Infos pratiques</legend>
+        <legend>Infos pratiques</legend>
 
     <p>
         <label for="nom">Nom du lieu*</label>
@@ -171,106 +170,104 @@ include("_header.inc.php");
         ?>
     </p>
 
-<p>
-    <label for="localite">Localité/quartier*</label>&nbsp;
-    <select name="localite_id" id="localite" class="js-select2-options-with-style" style="max-width:300px;" required data-placeholder="Tapez le nom...">
-        <?php
-        // Les localités fribourgeoises ne sont plus proposées à l'ajout, mais restent
-        // affichables en édition pour ne pas vider le select d'un lieu déjà rattaché à l'une
-        // d'elles. France et « Autre » sont des localités comme les autres depuis la 3.12.0.
-        $est_ajout_lieu = ($get['action'] == 'ajouter' || $get['action'] == 'insert');
-        echo Localite::getOptionsHtml($form->getValeur('localite_id'), $form->getValeur('quartier'), $est_ajout_lieu);
-        ?>
-    </select>
-    <?php
-    echo $form->getHtmlErreur("localite_id");
-    echo Localite::getAideChoixHtml();
-    ?>
-</p>
-
-<?php
-/*
- * Coordonnées : 0 en base = pas de coordonnées, on affiche alors un champ vide.
- * Une saisie non numérique est réaffichée telle quelle, à côté de son message d'erreur.
- */
-$afficherCoordonnee = static function ($valeur): string
-{
-    $valeur = str_replace(',', '.', trim((string) $valeur));
-
-    if (!is_numeric($valeur))
-    {
-        return $valeur;
-    }
-
-    return ((float) $valeur == 0.0) ? '' : (string) (float) $valeur;
-};
-?>
-<p>
-    <label for="lat">Latitude</label>
-        <input type="text" name="lat" id="lat" size="14" maxlength="12" inputmode="decimal" placeholder="46.2043907" title="Latitude du lieu, en degrés décimaux" value="<?php echo sanitizeForHtml($afficherCoordonnee($form->getValeur('lat'))) ?>" />
-        <?php
-    echo $form->getHtmlErreur("lat");
-    ?>
-</p>
-
-<p>
-    <label for="lng">Longitude</label>
-        <input type="text" name="lng" id="lng" size="14" maxlength="12" inputmode="decimal" placeholder="6.1431577" title="Longitude du lieu, en degrés décimaux" value="<?php echo sanitizeForHtml($afficherCoordonnee($form->getValeur('lng'))) ?>" />
-        <?php
-    echo $form->getHtmlErreur("lng");
-    ?>
-    <div class="guideChamp">Coordonnées qui permettent d’afficher le plan du lieu. Pour les obtenir : sur <a href="https://www.openstreetmap.org" rel="external" target="_blank">openstreetmap.org</a>, faites un clic droit sur l’emplacement du lieu puis choisissez « Afficher l’adresse » ; les deux nombres apparaissent en haut à gauche. Laissez les deux champs vides si vous ne les connaissez pas.</div>
-</p>
-
-
-<?php if (0) { //$form->getValeur('region') == 'ge') { ?>
-<p>
-<label for="quartier">Quartier</label>
-        <select name="quartier" id="quartier" class="js-select2-options-with-style" style="max-width:300px;" required>
+    <p>
+        <label for="localite">Localité/quartier*</label>&nbsp;
+        <select name="localite_id" id="localite" class="js-select2-options-with-style" style="max-width:300px;" required data-placeholder="Tapez le nom...">
             <?php
-$m = 1;
-echo "<option></option><optgroup label=\"Genève\">";
-while ($glo_tab_quartiers[$m] != "communes")
-{
-    echo "<option ";
-	if ($glo_tab_quartiers[$m] == $form->getValeur('quartier')) { echo "selected=\"selected\"";}
-	echo " value=\"".$glo_tab_quartiers[$m]."\">".$glo_tab_quartiers[$m]."</option>";
-	$m++;
-}
-echo "</optgroup>
-<optgroup label=\"Communes\">";
-$m++;
-while ($glo_tab_quartiers[$m] != "ailleurs")
-{
-      echo "<option ";
-	  if ($glo_tab_quartiers[$m] == $form->getValeur('quartier')) { echo "selected=\"selected\""; }
-	  echo " value=\"".$glo_tab_quartiers[$m]."\">".$glo_tab_quartiers[$m]."</option>";
-	$m++;
-}
+            // Les localités fribourgeoises ne sont plus proposées à l'ajout, mais restent
+            // affichables en édition pour ne pas vider le select d'un lieu déjà rattaché à l'une
+            // d'elles. France et « Autre » sont des localités comme les autres depuis la 3.12.0.
+            $est_ajout_lieu = ($get['action'] == 'ajouter' || $get['action'] == 'insert');
+            echo Localite::getOptionsHtml($form->getValeur('localite_id'), $form->getValeur('quartier'), $est_ajout_lieu);
+            ?>
+        </select>
+        <?php
+        echo $form->getHtmlErreur("localite_id");
+        echo Localite::getAideChoixHtml();
+        ?>
+    </p>
 
-echo "</optgroup>
-<optgroup label=\"Ailleurs\">";
-$m++;
-while ($m < sizeof($glo_tab_quartiers))
-{
-      echo "<option ";
+    <?php
+    /*
+     * Coordonnées : 0 en base = pas de coordonnées, on affiche alors un champ vide.
+     * Une saisie non numérique est réaffichée telle quelle, à côté de son message d'erreur.
+     */
+    $afficherCoordonnee = static function ($valeur): string
+    {
+        $valeur = str_replace(',', '.', trim((string) $valeur));
 
-	  if ($glo_tab_quartiers[$m] == $form->getValeur('quartier'))
-	  {
-		echo "selected=\"selected\"";
-	  }
-	  echo " value=\"".$glo_tab_quartiers[$m]."\">".$glo_tab_quartiers[$m]."</option>";
-	$m++;
-}
-echo "</optgroup>";
+        if (!is_numeric($valeur))
+        {
+            return $valeur;
+        }
 
-?>
-</select>
-<?php
-echo $form->getHtmlErreur("quartier");
-?>
-</p>
-<?php } ?>
+        return ((float) $valeur == 0.0) ? '' : (string) (float) $valeur;
+    };
+    ?>
+    <p>
+        <label for="lat">Latitude</label>
+            <input type="text" name="lat" id="lat" size="14" maxlength="12" inputmode="decimal" placeholder="46.2043907" title="Latitude du lieu, en degrés décimaux" value="<?php echo sanitizeForHtml($afficherCoordonnee($form->getValeur('lat'))) ?>" />
+            <?php
+        echo $form->getHtmlErreur("lat");
+        ?>
+    </p>
+
+    <p>
+        <label for="lng">Longitude</label>
+            <input type="text" name="lng" id="lng" size="14" maxlength="12" inputmode="decimal" placeholder="6.1431577" title="Longitude du lieu, en degrés décimaux" value="<?php echo sanitizeForHtml($afficherCoordonnee($form->getValeur('lng'))) ?>" />
+            <?php
+        echo $form->getHtmlErreur("lng");
+        ?>
+        <div class="guideChamp">Coordonnées qui permettent d’afficher le plan du lieu. Pour les obtenir : sur <a href="https://www.openstreetmap.org" rel="external" target="_blank">openstreetmap.org</a>, faites un clic droit sur l’emplacement du lieu puis choisissez « Afficher l’adresse » ; les deux nombres apparaissent en haut à gauche. Laissez les deux champs vides si vous ne les connaissez pas.</div>
+    </p>
+
+
+    <?php if (0) { //$form->getValeur('region') == 'ge') { ?>
+    <p>
+    <label for="quartier">Quartier</label>
+            <select name="quartier" id="quartier" class="js-select2-options-with-style" style="max-width:300px;" required>
+                <?php
+            $m = 1;
+            echo "<option></option><optgroup label=\"Genève\">";
+            while ($glo_tab_quartiers[$m] != "communes")
+            {
+                echo "<option ";
+                if ($glo_tab_quartiers[$m] == $form->getValeur('quartier')) { echo "selected=\"selected\"";}
+                echo " value=\"".$glo_tab_quartiers[$m]."\">".$glo_tab_quartiers[$m]."</option>";
+                $m++;
+            }
+            echo "</optgroup>
+            <optgroup label=\"Communes\">";
+            $m++;
+            while ($glo_tab_quartiers[$m] != "ailleurs")
+            {
+                  echo "<option ";
+                  if ($glo_tab_quartiers[$m] == $form->getValeur('quartier')) { echo "selected=\"selected\""; }
+                  echo " value=\"".$glo_tab_quartiers[$m]."\">".$glo_tab_quartiers[$m]."</option>";
+                $m++;
+            }
+
+            echo "</optgroup>
+            <optgroup label=\"Ailleurs\">";
+            $m++;
+            while ($m < sizeof($glo_tab_quartiers))
+            {
+                  echo "<option ";
+
+                  if ($glo_tab_quartiers[$m] == $form->getValeur('quartier'))
+                  {
+                    echo "selected=\"selected\"";
+                  }
+                  echo " value=\"".$glo_tab_quartiers[$m]."\">".$glo_tab_quartiers[$m]."</option>";
+                $m++;
+            }
+            echo "</optgroup>";
+
+            ?>
+        </select>
+        <?php echo $form->getHtmlErreur("quartier"); ?>
+    </p>
+    <?php } ?>
     <p>
         <label for="horaire_general">Jours et heures d’ouverture habituels</label>
             <textarea name="horaire_general" id="horaire_general" cols="25" rows="3" tabindex="4" title="Quels sont les horaires typiques d'une soirée ?"><?php echo sanitizeForHtml($form->getValeur('horaire_general')) ?></textarea>
@@ -463,38 +460,35 @@ echo $form->getHtmlErreur("quartier");
 
         <!-- Photo1 (file) -->
         <p>
-        <label for="photo1">Photo</label>
-        <input type="file" name="photo1" id="photo1" class="js-file-upload-size-max" tabindex="16" title="Photo qui s'affichera en haut à droite" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif,image/webp" />
 
-
-        <?php
-        echo $form->getHtmlErreur("photo1");
-
-        //affichage de l'image existante
-        if (isset($get['idL']) && !empty($form->getValeur('photo1')) && $form->getErreur("logo") == '')
-        {
-            $imgInfo = getimagesize($rep_uploads_lieux . $form->getValeur('photo1'));
-        $checked = '';
-            $tab_sup = $form->getSupprimer();
-            if (in_array('photo1', $tab_sup) && $form->getNbErreurs() > 0)
-            {
-                $checked = ' checked="checked"';
-            }
-            ?>
-
-            <input type="hidden" name="photo1_existant" value="<?php echo $form->getValeur('photo1'); ?>" />
-            <div class="supImg">
-                        <?php echo "<img src=\"" . $assets->get(Lieu::getAssetPath(Lieu::getFilePath($form->getValeur('photo1')))) . "\" />"; ?>
-                        <div>
-                <label for="supprimer_photo1" class="continu">Supprimer</label>
-                <input type="checkbox" name="supprimer[]" id="supprimer_photo1" value="photo1" class="checkbox" <?php echo $checked; ?> />
-
-                </div>
-            </div>
+            <label for="photo1">Photo</label>
+            <input type="file" name="photo1" id="photo1" class="js-file-upload-size-max" tabindex="16" title="Photo qui s'affichera en haut à droite" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif,image/webp" />
 
             <?php
-        }
-        ?>
+            echo $form->getHtmlErreur("photo1");
+
+            //affichage de l'image existante
+            if (isset($get['idL']) && !empty($form->getValeur('photo1')) && $form->getErreur("logo") == '')
+            {
+                $imgInfo = getimagesize($rep_uploads_lieux . $form->getValeur('photo1'));
+            $checked = '';
+                $tab_sup = $form->getSupprimer();
+                if (in_array('photo1', $tab_sup) && $form->getNbErreurs() > 0)
+                {
+                    $checked = ' checked="checked"';
+                }
+                ?>
+                    <input type="hidden" name="photo1_existant" value="<?php echo $form->getValeur('photo1'); ?>" />
+                    <div class="supImg">
+                        <?php echo "<img src=\"" . $assets->get(Lieu::getAssetPath(Lieu::getFilePath($form->getValeur('photo1')))) . "\" />"; ?>
+                    <div>
+                        <label for="supprimer_photo1" class="continu">Supprimer</label>
+                        <input type="checkbox" name="supprimer[]" id="supprimer_photo1" value="photo1" class="checkbox" <?php echo $checked; ?> />
+                    </div>
+                </div>
+                <?php
+            }
+            ?>
         </p>
 
             <?php
@@ -505,6 +499,7 @@ echo $form->getHtmlErreur("quartier");
             <label for="image_galerie">Galerie</label>
             <input type="file" name="image_galerie" id="image_galerie" class="js-file-upload-size-max" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif,image/webp"  class="fichier" />
         </p>
+
         <div class="spacer"></div>
         <?php
         echo $form->getHtmlErreur("image_galerie");
@@ -513,9 +508,9 @@ echo $form->getHtmlErreur("quartier");
         {
 
             $sql_galerie = "SELECT fichierrecu.idFichierrecu AS idFichierrecu, description, mime, extension, dateAjout
-        FROM fichierrecu, lieu_fichierrecu
-        WHERE lieu_fichierrecu.idLieu=".(int)$get['idL']." AND type='image' AND fichierrecu.idFichierrecu=lieu_fichierrecu.idFichierrecu
-         ORDER BY dateAjout DESC";
+            FROM fichierrecu, lieu_fichierrecu
+            WHERE lieu_fichierrecu.idLieu=".(int)$get['idL']." AND type='image' AND fichierrecu.idFichierrecu=lieu_fichierrecu.idFichierrecu
+             ORDER BY dateAjout DESC";
 
             $req_galerie = $connector->query($sql_galerie);
 
@@ -531,7 +526,6 @@ echo $form->getHtmlErreur("quartier");
                 }
                 echo "</table>";
             }
-
         }
         ?>
         <?php } ?>
@@ -548,35 +542,34 @@ echo $form->getHtmlErreur("quartier");
     {
     ?>
 
+        <legend>Statut</legend>
 
-    <legend>Statut</legend>
-    <ul class="radio">
-    <?php
-    foreach ($statuts_lieu as $s)
-    {
-        $coche = '';
-        $statut = $form->getValeur('statut');
+        <ul class="radio">
+            <?php
+            foreach ($statuts_lieu as $s)
+            {
+                $coche = '';
+                $statut = $form->getValeur('statut');
 
-        if ($s == $statut)
-        {
-            $coche = 'checked="checked"';
-        }
-        echo '<li class="listehoriz"><input type="radio" name="statut" value="'.$s.'" '.$coche.' id="genre_'.$s.'" title="statut de l\'événement" class="radio_horiz" /><label class="continu" for="genre_'.$s.'">'.$s.'</label></li>';
-    }
-    ?>
-    </ul>
-    <?php
-    echo $form->getHtmlErreur("statut");
-    ?>
+                if ($s == $statut)
+                {
+                    $coche = 'checked="checked"';
+                }
+                echo '<li class="listehoriz"><input type="radio" name="statut" value="'.$s.'" '.$coche.' id="genre_'.$s.'" title="statut de l\'événement" class="radio_horiz" /><label class="continu" for="genre_'.$s.'">'.$s.'</label></li>';
+            }
+            ?>
+        </ul>
+
+        <?php
+        echo $form->getHtmlErreur("statut");
+        ?>
 
     <?php
     }
     else
     {
     ?>
-
-    <input type="hidden" name="statut" value="actif" id="statut_actif" title="statut" />
-
+        <input type="hidden" name="statut" value="actif" id="statut_actif" title="statut" />
     <?php
     }
     ?>
@@ -586,26 +579,23 @@ echo $form->getHtmlErreur("quartier");
     <input type="hidden" name="idPersonne" value="<?php  echo $form->getValeur('idpersonne') ?>" />
     <input type="hidden" name="idLieu" value="<?php echo (int) $get['idL'] ?>" />
 
-<p class="piedForm">
-    <input type="hidden" name="formulaire" value="ok" />
-    <input type="hidden" name="token" value="<?php echo SecurityToken::getToken(); ?>" />
-    <input type="submit" value="Enregistrer" tabindex="20" title="Enregistrer le lieu" class="submit submit-big" />
-</p>
+    <p class="piedForm">
+        <input type="hidden" name="formulaire" value="ok" />
+        <input type="hidden" name="token" value="<?php echo SecurityToken::getToken(); ?>" />
+        <input type="submit" value="Enregistrer" tabindex="20" title="Enregistrer le lieu" class="submit submit-big" />
+    </p>
+
 </form>
 
 <?php
 } // if action_terminee
 ?>
 
-
 </main>
-<!-- fin contenu  -->
 
 <div id="colonne_gauche" class="colonne">
-
-<?php include("event/_navigation_calendrier.inc.php"); ?>
+    <?php include("event/_navigation_calendrier.inc.php"); ?>
 </div>
-<!-- Fin Colonne gauche -->
 
 <div id="colonne_droite" class="colonne">
 </div>
