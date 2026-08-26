@@ -69,6 +69,31 @@ parameters:
                 - lieu-text-edit.php
                 - organisateur-edit.php
                 - user-edit.php
+    # Les chemins d'allowIn sont résolus depuis la racine du dépôt, quel que
+    # soit le répertoire courant au lancement (%rootDir% = vendor/phpstan/phpstan)
+    filesRootDir: %rootDir%/../../..
+    # Réautorise, dans le seul fichier concerné, deux appels interdits par
+    # disallowed-execution-calls.neon. bin/build-config.php est un outil de poste
+    # de développement : .git-ftp-ignore l'exclut du déploiement, il n'est donc
+    # jamais servi en HTTP, et ne reçoit d'entrée que la ligne de commande du
+    # développeur. Il pilote git, ce qu'aucune API PHP ne sait faire.
+    #   exec()     : lit les scopes git-ftp configurés (« git config
+    #                --get-regexp », commande littérale).
+    #   passthru() : lance « git ftp push », dont la sortie doit défiler en
+    #                direct pendant le transfert ; le seul fragment variable est
+    #                le nom du scope, vérifié contre les scopes lus juste avant
+    #                et passé par escapeshellarg().
+    # Le reste du répertoire bin/ demeure analysé : ce script compose le
+    # .htaccess et le .user.ini de production, une régression y est coûteuse.
+    disallowedFunctionCalls:
+        -
+            function: 'exec()'
+            allowIn:
+                - bin/build-config.php
+        -
+            function: 'passthru()'
+            allowIn:
+                - bin/build-config.php
 includes:
     - vendor/phpstan/phpstan-deprecation-rules/rules.neon
     - vendor/spaze/phpstan-disallowed-calls/extension.neon
