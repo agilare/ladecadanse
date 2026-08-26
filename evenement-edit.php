@@ -8,7 +8,9 @@ use Ladecadanse\Utils\ImageDriver2; // files
 use Ladecadanse\Utils\ImageUrlFetcher; // url import
 use Ladecadanse\Security\SecurityToken;
 use Ladecadanse\Evenement; // domain
+use Ladecadanse\Lieu; // domain
 use Ladecadanse\Localite; // domain
+use Ladecadanse\Organisateur; // domain
 use Ladecadanse\EvenementRenderer; // presentation
 use Ladecadanse\Utils\Mailing;
 use Ladecadanse\Utils\AuteurNotifier;
@@ -349,7 +351,6 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 			$verif->setErreur('dateEvenement', "La date n'est pas correcte");
 		}
 
-		$date_iso = DateHelper::appToIso($champs['dateEvenement']);
 	}
 
 	$verif->valider($champs['description'], "description", "texte", 4, 10000, 0);
@@ -479,49 +480,14 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 			$champs['urlLieu'] = "http://".$champs['urlLieu'];
 		}
 
-        // 23:59, 00:00, 06:00
-		// conversion de l'heure indiquée en datetime
-        $date_next_day = DateHelper::isoToNextDay($date_iso);
-        // les événements sans heure de début sont relegués au lendemain à 06:00:01 afin qu'ils soient affichés (artificiellement) en dernier dans l'agenda
-		if (!empty($champs['horaire_debut']))
-		{
-			$tab_horaire_debut = explode(":", (string) $champs['horaire_debut']);
-			$sec_horaire_debut = (int) $tab_horaire_debut[0] * 3600 + (int) $tab_horaire_debut[1] * 60;
-
-            // si nb de secondes après minuit < 6h augmenter la date au lendemain, sinon rester au jour indiqué
-            // entre 0h et 6h la date sera le lendemain, entre 6h et 23:59 ça reste à la date de dateEvenement
-			if ($sec_horaire_debut >= 0 && $sec_horaire_debut <= 21_600) // 6h
-			{
-				$champs['horaire_debut'] = $date_next_day." ".$champs['horaire_debut'].":00";
-			}
-			else
-			{
-				$champs['horaire_debut'] = $champs['dateEvenement']." ".$champs['horaire_debut'].":00";
-			}
-		}
-		else
-		{
-			$champs['horaire_debut'] = $date_next_day." 06:00:01";
-		}
-
-		if (!empty($champs['horaire_fin']))
-		{
-			$tab_horaire_fin = explode(":", (string) $champs['horaire_fin']);
-			$sec_horaire_fin = (int) $tab_horaire_fin[0] * 3600 + (int) $tab_horaire_fin[1] * 60;
-
-			if ($sec_horaire_fin >= 0 && $sec_horaire_fin <= 21_600) // TODO: || (!empty($champs['horaire_debut']) && date($champs['horaire_debut']) == $date_next_day)
-			{
-				$champs['horaire_fin'] = $date_next_day." ".$champs['horaire_fin'].":00";
-			}
-			else
-			{
-				$champs['horaire_fin'] = $champs['dateEvenement']." ".$champs['horaire_fin'].":00";
-			}
-		}
-		else
-		{
-			$champs['horaire_fin'] = $date_next_day." 06:00:01";
-		}
+        // conversion de l'heure indiquée en datetime ; les événements sans horaire sont relégués
+        // à la fin de leur journée d'agenda afin d'y être affichés (artificiellement) en dernier
+        foreach (['horaire_debut', 'horaire_fin'] as $champ_horaire)
+        {
+            $champs[$champ_horaire] = empty($champs[$champ_horaire])
+                ? Evenement::horaireAbsentDatetime($champs['dateEvenement'])
+                : Evenement::horaireToDatetime((string) $champs[$champ_horaire], $champs['dateEvenement']);
+        }
 
 		//dedoublonne la liste des orgas et nettoye avec string -> int
 		if (isset($_POST['organisateurs']) && is_array($_POST['organisateurs']) && count($champs['organisateurs']) > 0)
@@ -531,49 +497,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 
 
 		// pour remplir les champs nomLieu, adresse, etc. de la table evenement
-		if (!empty($champs['idLieu']))
-		{
-			// cast et non sanitize() : hors quotes, l'échappement ne bloque pas « 1 OR … »
-			$sql_lieu = "SELECT nom, adresse, quartier, localite_id, region, URL FROM lieu WHERE idLieu=".(int) $champs['idLieu'];
-			$req_lieu = $connector->query($sql_lieu);
-			$tab_lieu = $connector->fetchArray($req_lieu);
-			$champs['nomLieu'] = $tab_lieu['nom'];
-			$champs['adresse'] = $tab_lieu['adresse'];
-			$champs['quartier'] = $tab_lieu['quartier'];
-			$champs['localite_id'] = $tab_lieu['localite_id'];
-			$champs['region'] = $tab_lieu['region'];
-			$champs['urlLieu'] = $tab_lieu['URL'];
-		}
-        elseif (!empty($champs['localite_id']))
-        {
-            $loc_qua = explode("_", (string) $champs['localite_id']);
-            if (count($loc_qua) > 1)
-            {
-                $champs['localite_id'] =  $loc_qua[0];
-                $champs['quartier'] = $loc_qua[1];
-                $champs['region'] = 'ge';
-            }
-            else
-            {
-                $champs['quartier'] = '';
-
-                // Nyon est vaudoise, mais rattachée à l'agenda genevois
-                if ($champs['localite_id'] == 529 )
-                {
-                    $champs['region'] = 'ge';
-                }
-                else
-                {
-                    // La région suit le canton de la localité choisie — la France ('rf') et
-                    // « Autre » ('hs') y comprises, depuis qu'elles sont des localités.
-                    // cast et non sanitize() : hors quotes, l'échappement ne bloque pas « 1 OR … »
-                    $sql_lieu = "SELECT canton FROM localite WHERE id=".(int) $champs['localite_id'];
-                    $req_lieu = $connector->query($sql_lieu);
-                    $tab_lieu = $connector->fetchArray($req_lieu);
-                    $champs['region'] = $tab_lieu['canton'];
-                }
-            }
-        }
+		[$champs] = Evenement::resolveLieuFields($champs);
 
         if (!$est_connecte)
         {
@@ -900,10 +824,8 @@ $est_ajout   = in_array($get['action'], ['ajouter', 'insert'], true);
 
 // Les lieux et localités fribourgeois ('fr' ; la France, elle, est codée 'rf' — cf. $glo_regions)
 // ne sont plus proposés à l'ajout, mais restent affichables en édition pour ne pas vider
-// le select d'un événement déjà rattaché à l'un d'eux. Le select des localités applique le même
-// filtre, en passant $est_ajout à Localite::getOptionsHtml().
-// Fragment littéral, sans donnée saisie : il est concaténé dans la requête du formulaire.
-$sql_lieu_excl_fr = $est_ajout ? " AND region != 'fr' " : '';
+// le select d'un événement déjà rattaché à l'un d'eux : les deux selects reçoivent $est_ajout,
+// l'un via Lieu::getOptionsHtml(), l'autre via Localite::getOptionsHtml().
 
 $page_titre = "Proposer un événement";
 $page_description = "Proposer un événement pour l'agenda";
@@ -1200,58 +1122,12 @@ if ($show_form)
                 <label for="idLieu"><strong>Nom du lieu :</strong></label>
                 <select name="idLieu" id="idLieu" class="js-select2-options-with-style" title="Un lieu dans base de données de La décadanse" style="max-width:350px"  data-placeholder="">
                 <?php
-                //Menu des lieux actifs de la base
-                echo "<option value=\"\"></option>";
-                $req_lieux = $connector->query("
-                SELECT lieu.idLieu, lieu.nom, COALESCE(localite.canton, '') AS canton
-                FROM lieu
-                LEFT JOIN localite ON lieu.localite_id = localite.id
-                WHERE lieu.statut='actif' " . $sql_lieu_excl_fr . "
-                ORDER BY
-                  " . Localite::sqlOrdreCantons("COALESCE(localite.canton, '')") . ",
-                  TRIM(LEADING 'L\'' FROM (TRIM(LEADING 'Les ' FROM (TRIM(LEADING 'La ' FROM (TRIM(LEADING 'Le ' FROM lieu.nom))))))) COLLATE utf8mb4_unicode_ci");
-
-                // Toutes les salles en une requête, indexées par lieu : la boucle ci-dessous
-                // en lançait une par lieu affiché.
-                $salles_par_lieu = [];
-                $req_salles = $connector->query("SELECT idSalle, idLieu, nom FROM salle WHERE status='actif' ORDER BY idLieu, idSalle");
-                while ($salle_trouvee = $connector->fetchArray($req_salles))
-                {
-                    $salles_par_lieu[(int) $salle_trouvee['idLieu']][] = $salle_trouvee;
-                }
-
-                $current_canton = null;
-                while ($lieuTrouve = $connector->fetchArray($req_lieux))
-                {
-                    $canton = $lieuTrouve['canton'];
-                    if ($canton !== $current_canton) {
-                        if ($current_canton !== null) echo '</optgroup>';
-                        echo '<optgroup label="' . (Localite::CANTONS[$canton] ?? sanitizeForHtml($canton)) . '">';
-                        $current_canton = $canton;
-                    }
-
-                    $nom_lieu = $lieuTrouve['nom'];
-
-                    echo '<option  ';
-
-                    if ($lieuTrouve['idLieu'] == $champs['idLieu'] || (!empty($get['idL']) && $lieuTrouve['idLieu'] == $get['idL']))
-                    {
-                        echo "selected=\"selected\" ";
-                    }
-
-                    echo "value=\"" . (int)$lieuTrouve['idLieu'] . "\">" . sanitizeForHtml($nom_lieu) . "</option>";
-
-                    foreach ($salles_par_lieu[(int) $lieuTrouve['idLieu']] ?? [] as $tab_salle)
-                    {
-                        echo "<option ";
-                        if ($champs['idSalle'] != 0 && $tab_salle['idSalle'] == $champs['idSalle'])
-                        {
-                            echo "selected=\"selected\" ";
-                        }
-                        echo " style=\"font-style:italic;color:#444;\" value=" . (int)$lieuTrouve['idLieu'] . "_" . (int)$tab_salle['idSalle'] . ">" . sanitizeForHtml($nom_lieu) . "&nbsp;– " . sanitizeForHtml($tab_salle['nom']) . "</option>";
-                    }
-                }
-                if ($current_canton !== null) echo '</optgroup>';
+                // ?idL= n'est qu'un préremplissage : la valeur postée, elle, l'emporte toujours
+                echo Lieu::getOptionsHtml(
+                    $champs['idLieu'] ?: ($get['idL'] ?? ''),
+                    $champs['idSalle'],
+                    exclureFribourg: $est_ajout
+                );
                 ?>
                 </select>
                 <!--<div class="guideChamp" style="font-size:0.9em"><span style="background:yellow">Nouveau :</span> tapez le nom du lieu dans le champ libre et accédez y plus rapidement</div>-->
@@ -1390,23 +1266,16 @@ if ($show_form)
             <label for="organisateurs">Organisateur(s) de l’événement</label>
                 <select name="organisateurs[]" id="organisateurs" data-placeholder="Tapez les noms des organisateurs" class="js-select2-options-with-complement" multiple >
                     <?php
-                    //echo "<option value=\"\">&nbsp;</option>";
-                        $req = $connector->query("
-        SELECT idOrganisateur, nom, URL FROM organisateur WHERE statut='actif' ORDER BY TRIM(LEADING 'L\'' FROM (TRIM(LEADING 'Les ' FROM (TRIM(LEADING 'La ' FROM (TRIM(LEADING 'Le ' FROM nom))))))) COLLATE utf8mb4_unicode_ci"
-    );
-
-        while ($tab = $connector->fetchArray($req))
-        {
-        ?><option data-nom="<?php echo sanitizeForHtml($tab['nom']); ?>" data-complement="<?php echo sanitizeForHtml($tab['URL']); ?>"
-        <?php if ((isset($_POST['organisateurs']) && in_array($tab['idOrganisateur'], $_POST['organisateurs'])) || in_array($tab['idOrganisateur'], $tab_organisateurs_even) || (!empty($get['idO']) && $get['idO'] == $tab['idOrganisateur']))
-            {
-                echo 'selected="selected" ';
-            }
-            ?>
-            value="<?= (int) $tab['idOrganisateur'] ?>"><?= sanitizeForHtml($tab['nom']) ?></option>
-        <?php
-        }
-        ?>
+                    // Trois sources de présélection, réunies comme le faisait le OR d'origine :
+                    // la saisie postée, les organisateurs déjà liés (ou les valeurs par défaut
+                    // du profil), et le ?idO= d'un ajout lancé depuis une page organisateur.
+                    $organisateurs_selectionnes = array_merge($_POST['organisateurs'] ?? [], $tab_organisateurs_even);
+                    if (!empty($get['idO']))
+                    {
+                        $organisateurs_selectionnes[] = $get['idO'];
+                    }
+                    echo Organisateur::getOptionsHtml($organisateurs_selectionnes);
+                    ?>
         </select>
         <div class="guideChamp">L’événement figurera dans la page de ces <a href="/organisateur/organisateurs.php" target="_blank" rel="external">organisateurs</a>. <!--Si vous souhaitez que votre organisation soit listée, <a href="/misc/contacteznous.php?pre=req-orga" target='_blank' rel="external">demandez-nous</a> (avec des infos : texte, liens...)</div>-->
         </p>

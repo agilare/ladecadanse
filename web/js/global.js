@@ -370,8 +370,21 @@ const Forms = {
 
         const dirtyForms = new Set();
 
-        $('form.js-submit-freeze-wait').submit(function disableSubmit()
+        $('form.js-submit-freeze-wait').submit(function disableSubmit(e)
         {
+            // Confirmation portée par le balisage : `data-confirm` sur le formulaire, ou sur une
+            // case cochée quand elle demande mieux (une suppression n'est pas un écrasement).
+            // La confirmation vit dans ce même gestionnaire, et non dans un second : le nôtre
+            // gèle le bouton, et un `return false` venu d'ailleurs laisserait « Envoi... » figé.
+            const caseCochee = this.querySelector('input[type="checkbox"][data-confirm]:checked');
+            const confirmation = caseCochee ? caseCochee.dataset.confirm : this.dataset.confirm;
+
+            if (confirmation && !window.confirm(confirmation))
+            {
+                e.preventDefault();
+                return false;
+            }
+
             dirtyForms.delete(this);
             $('input[type="submit"]', this).val('Envoi...').attr('disabled', 'disabled');
             return true;
@@ -399,7 +412,13 @@ const Forms = {
         $('.js-clear-search-field').on('click', function clearAndSubmitSearchField()
         {
             const form = $(this).closest('form')[0];
-            $(form).find('input[type="search"]').val('');
+
+            // Ne vider que le champ de la croix cliquée : depuis que le back-office porte
+            // plusieurs filtres dans un même formulaire, vider tous les `input[type=search]`
+            // effaçait aussi ceux auxquels on ne touchait pas. Le repli sur le formulaire
+            // entier couvre un balisage sans `.search-field` autour du champ.
+            const champs = $(this).closest('.search-field').find('input[type="search"]');
+            (champs.length > 0 ? champs : $(form).find('input[type="search"]')).val('');
 
             // Un champ nommé « submit » masque form.submit() : le formulaire expose ses champs
             // comme propriétés, et jQuery, ne trouvant plus de fonction, n'envoyait rien. Passer

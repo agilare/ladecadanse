@@ -178,15 +178,13 @@ class Lieu extends Element
      * qu'on ne peut pas choisir en ajoutant un événement ne doit pas pouvoir être réglé comme lieu
      * par défaut.
      *
-     * Contrairement au select de evenement-edit.php, les salles ne sont pas jointes : les valeurs
-     * par défaut du profil se règlent au niveau du lieu.
+     * Les valeurs par défaut du profil (user-edit.php) se règlent au niveau du lieu et
+     * appellent donc sans salles ; les formulaires d'événement, qui laissent choisir une
+     * salle, passent $avecSalles.
      *
-     * Only used in user.php
-     * TODO: factorize to be used in other parts showing a html select; add a $withSalles option
-     *
-     * @return list<array{idLieu: int, nom: string, canton: string}>
+     * @return list<array{idLieu: int, nom: string, canton: string, salles?: list<array>}>
      */
-    public static function getActifsPourSelect(bool $exclureFribourg = true): array
+    public static function getActifsPourSelect(bool $exclureFribourg = true, bool $avecSalles = false): array
     {
         global $connectorPdo;
 
@@ -200,8 +198,118 @@ class Lieu extends Element
               " . Localite::sqlOrdreCantons("COALESCE(localite.canton, '')") . ",
               TRIM(LEADING 'L\'' FROM (TRIM(LEADING 'Les ' FROM (TRIM(LEADING 'La ' FROM (TRIM(LEADING 'Le ' FROM lieu.nom))))))) COLLATE utf8mb4_unicode_ci");
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $lieux = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        if (!$avecSalles)
+        {
+            return $lieux;
+        }
+
+        $salles_par_lieu = self::getSallesActivesParLieu();
+        foreach ($lieux as $rang => $lieu)
+        {
+            $lieux[$rang]['salles'] = $salles_par_lieu[(int) $lieu['idLieu']] ?? [];
+        }
+
+        return $lieux;
     }
+
+    /**
+     * Les <option> et <optgroup> du <select> « Lieu », partagés par les formulaires d'ajout et
+     * d'édition d'événement et par le formulaire d'édition groupée de l'administration. Le
+     * <select> lui-même reste dans chaque formulaire, dont il porte les attributs.
+     *
+     * $idLieu est la valeur à présélectionner : un id de lieu, ou « 12_3 » quand une salle a
+     * été choisie. $idSalle ne sert qu'au chargement d'une fiche existante, où lieu et salle
+     * arrivent dans deux colonnes distinctes.
+     */
+    public static function getOptionsHtml(string|int|null $idLieu, string|int|null $idSalle = 0, bool $exclureFribourg = true): string
+    {
+        return self::renderOptions(
+            self::getActifsPourSelect($exclureFribourg, avecSalles: true),
+            (string) $idLieu,
+            (string) $idSalle
+        );
+    }
+
+    /**
+     * Rendu pur des options, sans base de données ni globale : c'est ce que couvrent les tests.
+     *
+     * @param list<array{idLieu: int|string, nom: string, canton: string, salles?: list<array{idSalle: int|string, nom: string}>}> $lieux
+     */
+    public static function renderOptions(array $lieux, string $idLieu, string $idSalle = ''): string
+    {
+        // Après une erreur de saisie, le formulaire réaffiche la valeur postée telle quelle,
+        // salle comprise ; il n'y a alors qu'un champ à relire.
+        if (str_contains($idLieu, '_'))
+        {
+            [$idLieu, $idSalle] = explode('_', $idLieu, 2);
+        }
+
+        // « 0 » est le vide de la colonne evenement.idSalle, pas une salle sélectionnée
+        if ($idSalle === '0')
+        {
+            $idSalle = '';
+        }
+
+        $html = '<option value=""></option>';
+
+        $canton_courant = null;
+        foreach ($lieux as $lieu)
+        {
+            $canton = (string) $lieu['canton'];
+            if ($canton !== $canton_courant)
+            {
+                if ($canton_courant !== null)
+                {
+                    $html .= '</optgroup>';
+                }
+                $html .= '<optgroup label="' . sanitizeForHtml(Localite::CANTONS[$canton] ?? $canton) . '">';
+                $canton_courant = $canton;
+            }
+
+            $selection = ((string) $lieu['idLieu'] === $idLieu && $idSalle === '') ? ' selected="selected"' : '';
+            $html .= '<option value="' . (int) $lieu['idLieu'] . '"' . $selection . '>' . sanitizeForHtml($lieu['nom']) . '</option>';
+
+            // Les salles suivent leur lieu, sous la même valeur composée « idLieu_idSalle »
+            // que relisent les traitements de formulaire
+            foreach ($lieu['salles'] ?? [] as $salle)
+            {
+                $selection = ($idSalle !== '' && (string) $salle['idSalle'] === $idSalle) ? ' selected="selected"' : '';
+                $html .= '<option style="font-style:italic;color:#444;" value="' . (int) $lieu['idLieu'] . '_' . (int) $salle['idSalle'] . '"' . $selection . '>'
+                    . sanitizeForHtml($lieu['nom']) . '&nbsp;– ' . sanitizeForHtml($salle['nom']) . '</option>';
+            }
+        }
+
+        if ($canton_courant !== null)
+        {
+            $html .= '</optgroup>';
+        }
+
+        return $html;
+    }
+
+    /**
+     * Toutes les salles actives, indexées par lieu — en une requête plutôt qu'une par lieu affiché.
+     *
+     * @return array<int, list<array{idSalle: int, idLieu: int, nom: string}>>
+     */
+    public static function getSallesActivesParLieu(): array
+    {
+        global $connectorPdo;
+
+        $stmt = $connectorPdo->prepare("SELECT idSalle, idLieu, nom FROM salle WHERE status='actif' ORDER BY idLieu, idSalle");
+        $stmt->execute();
+
+        $salles_par_lieu = [];
+        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $salle)
+        {
+            $salles_par_lieu[(int) $salle['idLieu']][] = $salle;
+        }
+
+        return $salles_par_lieu;
+    }
+
     /**
      * mv to a LieuSalleRepository
      */

@@ -51,6 +51,58 @@ class Organisateur extends Element
         return $result;
     }
 
+    /**
+     * Organisateurs actifs, dans l'ordre alphabétique des noms sans leur article, tels que les
+     * proposent les <select> des formulaires d'événement.
+     *
+     * @return list<array{idOrganisateur: int, nom: string, URL: string}>
+     */
+    public static function getActifsPourSelect(): array
+    {
+        global $connectorPdo;
+
+        $stmt = $connectorPdo->prepare("SELECT idOrganisateur, nom, URL FROM organisateur WHERE statut='actif'
+            ORDER BY TRIM(LEADING 'L\'' FROM (TRIM(LEADING 'Les ' FROM (TRIM(LEADING 'La ' FROM (TRIM(LEADING 'Le ' FROM nom))))))) COLLATE utf8mb4_unicode_ci");
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Les <option> du <select> multiple « Organisateur(s) », partagées par les formulaires
+     * d'événement. `data-nom` et `data-complement` alimentent le select2 « with complement »,
+     * qui affiche l'URL de l'organisateur sous son nom.
+     *
+     * @param list<int|string> $idsSelectionnes
+     */
+    public static function getOptionsHtml(array $idsSelectionnes = []): string
+    {
+        return self::renderOptions(self::getActifsPourSelect(), $idsSelectionnes);
+    }
+
+    /**
+     * Rendu pur des options, sans base de données ni globale : c'est ce que couvrent les tests.
+     *
+     * @param list<array{idOrganisateur: int|string, nom: string, URL: string|null}> $organisateurs
+     * @param list<int|string> $idsSelectionnes
+     */
+    public static function renderOptions(array $organisateurs, array $idsSelectionnes = []): string
+    {
+        $selection = array_map('strval', $idsSelectionnes);
+
+        $html = '';
+        foreach ($organisateurs as $orga)
+        {
+            $coche = in_array((string) $orga['idOrganisateur'], $selection, true) ? ' selected="selected"' : '';
+            $html .= '<option data-nom="' . sanitizeForHtml($orga['nom']) . '"'
+                . ' data-complement="' . sanitizeForHtml((string) ($orga['URL'] ?? '')) . '"'
+                . ' value="' . (int) $orga['idOrganisateur'] . '"' . $coche . '>'
+                . sanitizeForHtml($orga['nom']) . '</option>';
+        }
+
+        return $html;
+    }
+
     /*
      * lieux managed by the organisateur; only used in organisateur page
      * mv to a LieuRepository::getActivesByOrganisateur

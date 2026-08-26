@@ -189,6 +189,25 @@ class Text
     }
 
     /**
+     * Étiquette courte -> HTML tronqué, prêt à être affiché.
+     *
+     * Coupe franche au nombre de caractères, sans reculer jusqu'au mot précédent et sans
+     * transformer les URL en liens : ce que shortenToHtml() fait pour un texte rédigé n'a
+     * pas de sens pour une étiquette de cellule. « Jean Pierre Dupont » doit rendre
+     * « Jean Pierr… » plutôt que « Jean… », et un pseudo qui ressemble à une adresse ne
+     * doit pas devenir un lien à l'intérieur du lien qui l'entoure déjà.
+     *
+     * Sert la colonne « par » de admin/events.php, qu'un seul pseudo long élargissait tout
+     * entière. Le texte complet a sa place dans un attribut title, à la charge de l'appelant.
+     */
+    public static function truncateCharsToHtml(string $text, int $maxChars): string
+    {
+        $html = sanitizeForHtml(mb_substr($text, 0, $maxChars));
+
+        return self::isCut($text, $maxChars) ? $html . '…' : $html;
+    }
+
+    /**
      * shortenToHtml() a-t-elle coupé ce texte ?
      *
      * Permet de rendre côté serveur un lien « lire la suite » sans avoir à

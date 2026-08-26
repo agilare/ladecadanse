@@ -16,7 +16,7 @@ use Codeception\Util\HttpCode;
  *
  * Sur la fiche événement le lien est réservé au SUPERADMIN, niveau qu'aucun
  * compte de `tests/.env` ne garantit : côté connecté on teste donc
- * `admin/gererEvenements.php`, ouvert à tout ADMIN.
+ * `admin/events.php`, ouvert à tout ADMIN.
  */
 class EvenementDepublierCest
 {
@@ -43,12 +43,12 @@ class EvenementDepublierCest
      * data-on-success pour la suite (ici `status`, le tableau listant aussi
      * les événements dépubliés).
      */
-    public function adminSeesUnpublishLinkOnGererEvenements(SiteTester $I)
+    public function adminSeesUnpublishLinkOnAdminEvents(SiteTester $I)
     {
         $I->skipUnlessConfigured('LADECADANSE_SITE_ADMIN_USER', 'LADECADANSE_SITE_ADMIN_PASS');
 
         $I->loginAsAdmin();
-        $I->amOnPage('/admin/gererEvenements.php');
+        $I->amOnPage('/admin/events.php');
 
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->seeElement('a.btn_event_unpublish[data-on-success=status]');

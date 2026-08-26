@@ -52,7 +52,7 @@ use Ladecadanse\UserLevel;
 
 
     <?php
-    $pages_formulaires = ["evenement-edit", "event/copy", "lieu-edit", "lieu/salle-edit", "user/register", "admin/gererEvenements", "user-edit", "lieu/lieux", "lieu-text-edit", "organisateur-edit"];
+    $pages_formulaires = ["evenement-edit", "event/copy", "lieu-edit", "lieu/salle-edit", "user/register", "admin/events", "user-edit", "lieu/lieux", "lieu-text-edit", "organisateur-edit"];
     $pages_tinymce = ["lieu-text-edit", "organisateur-edit"];
     $pages_lieumap = ["lieu/lieu", "event/evenement"];
     ?>
@@ -83,7 +83,7 @@ use Ladecadanse\UserLevel;
             <script src="<?= $assets->get("js/edition.js"); ?>"></script>
         <?php endif; ?>
 
-        <?php if ($nom_page == "admin/gererEvenements") : ?>
+        <?php if ($nom_page == "admin/events") : ?>
             <script src="/web/js/libs/jquery.checkboxes-1.2.2.min.js"></script>
             <script nonce="<?= CSP_NONCE ?>">
                 'use strict';

@@ -39,7 +39,7 @@ export const SHORTCUTS = [
     // Back-office : rien à filtrer par page ni par niveau, _header.inc.php ne rend ces liens
     // qu'aux administrateurs. Sans lien dans la page, activate() échoue et la touche garde son
     // comportement natif — le raccourci n'existe donc que là où la cible existe.
-    { key: 'b', label: 'B', action: 'activate', selectors: ['a[href="/admin/gererEvenements.php"]'] },
+    { key: 'b', label: 'B', action: 'activate', selectors: ['a[href="/admin/events.php"]'] },
     { key: 'u', label: 'U', action: 'activate', selectors: ['a[href="/admin/users.php"]'] },
 
     { key: 'l', label: 'L', action: 'activate', selectors: ['a[href^="/lieu/lieux.php"]'] },
@@ -75,14 +75,14 @@ export const SHORTCUTS = [
     {
         key: 'ArrowLeft',
         label: '←',
-        pages: ['event/search', 'lieu/lieux', 'organisateur/organisateurs', 'user/dashboard', 'admin/gererEvenements', 'admin/users'],
+        pages: ['event/search', 'lieu/lieux', 'organisateur/organisateurs', 'user/dashboard', 'admin/events', 'admin/users'],
         action: 'activate',
         selectors: ['.pagination a[rel~="prev"]']
     },
     {
         key: 'ArrowRight',
         label: '→',
-        pages: ['event/search', 'lieu/lieux', 'organisateur/organisateurs', 'user/dashboard', 'admin/gererEvenements', 'admin/users'],
+        pages: ['event/search', 'lieu/lieux', 'organisateur/organisateurs', 'user/dashboard', 'admin/events', 'admin/users'],
         action: 'activate',
         selectors: ['.pagination a[rel~="next"]']
     },
@@ -155,7 +155,7 @@ export const SHORTCUTS = [
         label: '/',
         // le back-office nomme « terme » son champ de filtre (titre d'événement ici, pseudo ou
         // e-mail là) : même balisage des deux côtés, une seule entrée suffit
-        pages: ['admin/gererEvenements', 'admin/users'],
+        pages: ['admin/events', 'admin/users'],
         action: 'focus',
         selectors: ['.search-field input[name="terme"]']
     }
@@ -229,7 +229,7 @@ export const LISTS = [
         link: 'td a'
     },
     {
-        pages: ['admin/gererEvenements'],
+        pages: ['admin/events'],
         items: '#ajouts tr',
         link: 'a.titre'
     },

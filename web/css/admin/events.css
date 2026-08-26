@@ -1,0 +1,314 @@
+/*
+ * admin/events.php — liste des événements et formulaire d'édition groupée.
+ *
+ * Chargée automatiquement d'après $nom_page (_header.inc.php), après admin/tables.css dont
+ * elle reprend les tableaux, et avant desktop.css / mobile.css : les règles qui doivent
+ * survivre à ces deux-là portent leur propre média.
+ *
+ * `formulaires.css` ne sert à rien ici : toutes ses règles sont préfixées `form#ajouter_editer`
+ * alors que sur cette page `#ajouter_editer` est un <div> — le <form> englobe déjà le tableau
+ * et ses cases à cocher, on ne peut pas en imbriquer un second. Les quelques traits qui font
+ * l'allure du formulaire d'événement sont donc redits ci-dessous, sur le sélecteur de la page.
+ */
+
+#ajouter_editer
+{
+    /* Largeur unique de la colonne des libellés, et gouttière qui l'en sépare. Les guides
+       sous les champs s'alignent sur la somme des deux : une seule valeur à changer pour
+       déplacer toute la colonne.
+
+       En `rem` et non en `em` : `em` se résout contre la taille de police de l'élément qui
+       porte la propriété, et `.guideChamp` est en 0.85em — la même valeur y donnait 15 % de
+       moins que sur le libellé, et le guide commençait avant son champ. */
+    --largeur-libelle: 12rem;
+    --gouttiere-libelle: 0.6rem;
+}
+
+/* ── Filtres et pagination ───────────────────────────────────────────────── */
+
+/* Filtres, pagination et tableau partagent le bord gauche : le tableau occupe toute la
+   largeur de la section, les blocs qui l'encadrent doivent en faire autant. */
+#filters,
+#contenu .events-barre-pagination
+{
+    width: 100%;
+    margin: 0 0 0.4em 0;
+}
+
+#filters
+{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5em;
+}
+
+#events-filters
+{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5em;
+    margin: 0;
+}
+
+/* Les champs de filtre tiennent leur allure de `#ajouter_editer input` dans admin/users.php,
+   dont le formulaire porte cet identifiant. Ici il est pris par le formulaire d'édition
+   groupée : les mêmes traits sont redits sur le sélecteur du formulaire de filtres. */
+#events-filters input[type="search"]
+{
+    border: 1px solid #aeaeae;
+    padding: 0.2em 0.3em;
+}
+
+#events-filters input[type="search"]:focus
+{
+    background-color: #ffc;
+}
+
+/* Le menu du nombre de lignes rejoint la ligne de la pagination, à l'autre bout. */
+#contenu .events-barre-pagination
+{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5em;
+}
+
+/* div.pagination porte une marge de 2 % (global.css) qui la décalait du tableau */
+#contenu .events-barre-pagination div.pagination,
+#contenu section#default > form > div.pagination
+{
+    margin: 0;
+}
+
+#contenu .events-barre-pagination ul.menu_nb_res
+{
+    /* le float et la largeur de 50 % d'admin/tables.css n'ont plus lieu d'être dans un flex */
+    float: none;
+    width: auto;
+    margin: 0;
+}
+
+/* la pagination sous le tableau reste seule sur sa ligne, sans le menu */
+#contenu section#default > form > div.pagination
+{
+    margin: 0.6em 0;
+}
+
+/* ── Tableau ─────────────────────────────────────────────────────────────── */
+
+/* Neuf colonnes ne tiennent pas sous ~900px : le tableau était coupé net, la colonne « par »
+   et la date d'ajout hors de vue et hors d'atteinte. Il est déjà en display:block pour son
+   ascenseur vertical, l'horizontal ne coûte donc rien de plus. */
+table#ajouts.table-hauteur-figee
+{
+    overflow-x: auto;
+}
+
+/* ── Formulaire d'édition groupée ────────────────────────────────────────── */
+
+/* Titre et formulaire à l'aplomb du tableau, comme les filtres au-dessus */
+#events-bulk-titre
+{
+    width: 100%;
+    margin: 1.2em 0 0.4em 0;
+    font-size: 1.3em;
+}
+
+#ajouter_editer
+{
+    width: 100%;
+    margin: 0;
+}
+
+/* Allure des fieldsets du formulaire d'événement (formulaires.css), que la page n'hérite pas */
+#ajouter_editer fieldset
+{
+    margin-left: 0;
+    border-radius: 3px;
+}
+
+#ajouter_editer fieldset legend
+{
+    font-size: 1.1em;
+}
+
+/* Un libellé reste inline par défaut : la largeur de 10em posée par admin/tables.css ne
+   s'appliquait donc pas, et chaque champ démarrait où finissait son libellé. */
+#ajouter_editer label:not(.continu)
+{
+    display: inline-block;
+    width: var(--largeur-libelle);
+    margin: 0.3em var(--gouttiere-libelle) 0 0;
+    padding: 0;
+    text-align: right;
+    vertical-align: top;
+}
+
+/* Le guide d'un champ commence là où commence le champ : même somme, une seule source.
+   Le quart de cadratin en plus n'est pas un tâtonnement : libellé et champ sont deux
+   éléments inline séparés par le retour à la ligne du gabarit, que le rendu compte comme
+   une espace. Sans lui le guide démarre juste avant son champ. */
+#ajouter_editer .guideChamp
+{
+    padding-left: calc(var(--largeur-libelle) + var(--gouttiere-libelle) + 0.25rem);
+}
+
+/* les fichiers ne portent pas de cadre dans le formulaire d'événement */
+#ajouter_editer input[type="file"]
+{
+    border: none;
+}
+
+/* Bouton d'envoi : celui du formulaire d'événement, dont la taille dit qu'il engage. */
+#contenu input.submit
+{
+    background-color: #f9f9f9;
+    font-weight: bold;
+    border: 1px solid black;
+    padding: 0.3em 0.5em;
+    /* hack pour Safari Mobile, repris de formulaires.css */
+    color: rgba(0, 0, 0, 1);
+    -webkit-text-fill-color: rgba(0, 0, 0, 1);
+}
+
+#contenu input.submit-big
+{
+    padding: 0.6em 0.8em;
+    font-size: 1.1em;
+}
+
+#ajouter_editer p.piedForm
+{
+    width: auto;
+    margin: 0.4em 0 0 0;
+}
+
+/* Les blocs repliés : lieu saisi à la main, contenu de l'événement, fichiers. Trois
+   sections que l'édition groupée touche rarement, et qui doublaient la hauteur du
+   formulaire en restant dépliées. */
+.events-bulk-repliable
+{
+    margin: 5px 0 0 0;
+    background-color: #f2f2f2;
+    border: 1px solid #dcdcdc;
+    border-radius: 3px;
+}
+
+.events-bulk-repliable > summary
+{
+    padding: 0.6em 0.8em;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.events-bulk-repliable > summary:hover
+{
+    background: #e8e8e8;
+}
+
+/* un <details> imbriqué dans un fieldset ne doit pas rouvrir un cadre par-dessus le sien */
+#ajouter_editer .events-bulk-repliable fieldset
+{
+    margin-top: 0;
+    border: none;
+}
+
+/* Dans le fieldset Lieu, le bloc « sinon » est déjà à l'intérieur d'un cadre. */
+#ajouter_editer fieldset > .events-bulk-repliable
+{
+    margin: 0.6em 0 0 0;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    border-top: 1px dotted #c8c8c8;
+}
+
+#ajouter_editer fieldset > .events-bulk-repliable > summary
+{
+    padding-left: 0;
+    font-weight: normal;
+}
+
+/* La case Supprimer partage la ligne des statuts, mais s'en détache : une coche par
+   inadvertance y est irréversible. */
+#ajouter_editer li.events-bulk-supprimer
+{
+    margin-left: 1.6em;
+    padding-left: 1.2em;
+    border-left: 1px solid #c8c8c8;
+}
+
+#ajouter_editer li.events-bulk-supprimer label
+{
+    color: #a02020;
+}
+
+/* ── Petits écrans ───────────────────────────────────────────────────────── */
+
+@media screen and (max-width: 799.98px)
+{
+    /* dans les fieldsets Statut et Catégorie, les boutons radio l'un au-dessus de l'autre :
+       en ligne, sur une colonne étroite, on ne sait plus quel libellé va avec quelle case */
+    #ajouter_editer ul.mobile-vertical li
+    {
+        display: block;
+        list-style-type: none;
+    }
+
+    /* La colonne de libellés de 12em ne laisse plus assez de place au champ : chaque libellé
+       prend sa ligne, le champ occupe la largeur restante, et les guides se réalignent sur
+       eux. `label.continu` reste en ligne : c'est lui qui garde « Début » et « Fin » sur un
+       même rang. */
+    #ajouter_editer label:not(.continu)
+    {
+        display: block;
+        width: auto;
+        text-align: left;
+        padding-left: 0.4em;
+    }
+
+    #ajouter_editer .guideChamp
+    {
+        padding-left: 0.4em;
+    }
+
+    /* `width` et non `max-width` : l'attribut `size` du HTML d'origine donne au champ une
+       largeur intrinsèque qui élargit son conteneur, si bien qu'un plafond de 100 % se
+       mesurait contre une boîte déjà trop large et ne bornait rien. Les deux champs
+       d'horaire gardent leur taille, sans quoi « Début » et « Fin » cessent de tenir sur
+       un même rang. */
+    #ajouter_editer input[type="text"]:not(#horaire_debut):not(#horaire_fin),
+    #ajouter_editer input[type="file"],
+    #ajouter_editer textarea,
+    #ajouter_editer select
+    {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    #ajouter_editer li.events-bulk-supprimer
+    {
+        margin-left: 0;
+        padding-left: 0;
+        padding-top: 0.6em;
+        border-left: none;
+        border-top: 1px solid #c8c8c8;
+    }
+
+    #filters,
+    #events-filters
+    {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    #events-filters input[type="search"],
+    #events-filters .search-field
+    {
+        width: 100%;
+        box-sizing: border-box;
+    }
+}
