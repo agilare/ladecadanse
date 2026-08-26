@@ -4,6 +4,39 @@ Ce fichier liste les opérations à effectuer lors du passage à une nouvelle ve
 
 Les versions sont listées de la plus récente à la plus ancienne.
 
+## Non publié
+
+### Redirections
+
+`admin/gererEvenements.php` devient `admin/events.php`. La redirection 301 est dans
+[`htaccess/50-routage.conf`](htaccess/50-routage.conf) et part avec le code : rien à reporter à la
+main sur le serveur, mais `composer config:build` doit être passé avant la mise en ligne, comme
+pour tout changement d'un fragment de configuration — voir [docs/config-serveur.md](docs/config-serveur.md).
+
+La page n'a ni lien entrant public ni référencement : la redirection est là pour les signets et
+l'historique des administrateurs.
+
+### Effets de bord à connaître
+
+- **Édition groupée et organisateurs** — un remplacement groupé effaçait jusqu'ici les
+  organisateurs de tous les événements sélectionnés, même quand le champ était laissé vide. Il ne
+  les touche plus que si le champ a été rempli, conformément à la règle annoncée par la page.
+  Conséquence : **il n'est plus possible de retirer les organisateurs en masse** en envoyant le
+  formulaire avec un champ vide. Rien ne le permettait vraiment — l'ancien comportement était un
+  effacement subi, pas une commande.
+- **Préférences de liste** — filtres, tri et nombre de lignes de `admin/events.php` sont désormais
+  mémorisés en session (`user_prefs_even_*`), comme ceux de `admin/users.php`. À la première visite
+  après la mise à jour, la liste repart donc sur ses valeurs par défaut. Les anciens paramètres
+  d'URL (`tri_gerer`, `ordre`, `filtre_genre`, `element`, `nblignes`) ne sont plus lus : un signet
+  qui en porterait ouvre la liste sans filtre plutôt qu'en erreur.
+- **Nombre de lignes** — le menu propose 50, 250 et 500 ; le 100 disparaît de cette page seulement,
+  `$tab_nblignes` reste inchangé pour `admin/users.php` et `admin/bots.php`.
+- **Images des envois groupés** — un flyer ou une image posé par édition groupée est désormais
+  redimensionné en 600×600 avec une miniature non rognée, comme dans `evenement-edit.php` (et non
+  plus 400×400 avec miniature rognée). Les images déjà en base ne sont pas retraitées.
+
+Aucune migration de base de données.
+
 ## 3.12.0
 
 ### Base de données
