@@ -119,6 +119,16 @@
     color: #a02020;
 }
 
+/* ── Tableau ─────────────────────────────────────────────────────────────── */
+
+/* Neuf colonnes ne tiennent pas sous ~900px : le tableau était coupé net, la colonne « par »
+   et la date d'ajout hors de vue et hors d'atteinte. Il est déjà en display:block pour son
+   ascenseur vertical, l'horizontal ne coûte donc rien de plus. */
+table#ajouts.table-hauteur-figee
+{
+    overflow-x: auto;
+}
+
 /* ── Petits écrans ───────────────────────────────────────────────────────── */
 
 @media screen and (max-width: 799.98px)
@@ -129,6 +139,42 @@
     {
         display: block;
         list-style-type: none;
+    }
+
+    /* Le libellé flottant de 10em (admin/tables.css) ne laissait au champ qu'une fraction de
+       la colonne, dont son `size` hérité du HTML d'origine le faisait déborder — et avec lui
+       tout le formulaire, d'où les guides tronqués à droite. Chaque libellé prend sa ligne,
+       le champ occupe la largeur restante. `label.continu` reste en ligne : c'est lui qui
+       tient les paires, « Début » et « Fin » sur un même rang. */
+    #ajouter_editer label:not(.continu)
+    {
+        display: block;
+        float: none;
+        width: auto;
+        text-align: left;
+        padding-left: 0.4em;
+    }
+
+    /* `width` et non `max-width` : l'attribut `size` du HTML d'origine donne au champ une
+       largeur intrinsèque qui élargit son conteneur, si bien qu'un plafond de 100 % se
+       mesurait contre une boîte déjà trop large et ne bornait rien. Les deux champs
+       d'horaire gardent leur taille, sans quoi « Début » et « Fin » cessent de tenir sur
+       un même rang. */
+    #ajouter_editer input[type="text"]:not(#horaire_debut):not(#horaire_fin),
+    #ajouter_editer input[type="search"],
+    #ajouter_editer input[type="file"],
+    #ajouter_editer textarea,
+    #ajouter_editer select
+    {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    /* l'indentation de 13em qui aligne les guides sous les champs en grand écran les
+       repoussait ici hors de la colonne */
+    #ajouter_editer .guideChamp
+    {
+        padding-left: 0.4em;
     }
 
     #ajouter_editer li.events-bulk-supprimer

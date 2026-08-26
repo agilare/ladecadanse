@@ -707,9 +707,10 @@ $erreurs = $verif->getErreurs();
     </fieldset>
 
     <fieldset>
-    <legend>Organisateur(s)</legend>
+    <legend>Organisateurs</legend>
     <p>
-        <label for="organisateurs">Organisateur(s)</label>
+        <?php // le libellé ne répète pas la légende : il porte l'alignement des champs ?>
+        <label for="organisateurs">Rattacher à :</label>
         <select name="organisateurs[]" id="organisateurs" class="js-select2-options-with-complement" multiple data-placeholder="Choisissez un ou plusieurs organisateurs" style="max-width:400px;">
         <?php echo Organisateur::getOptionsHtml($champs['organisateurs'] ?? []); ?>
         </select>
