@@ -80,6 +80,10 @@ export function nomImageConvertie(nomPdf, typeMime)
 {
     const base = String(nomPdf || '').replace(/\.pdf$/i, '');
     const assaini = base
+        // décompose puis retire les diacritiques : « été » devient « ete » et non
+        // « -t- », ce que donnerait le filtrage seul
+        .normalize('NFD')
+        .replace(/\p{Diacritic}/gu, '')
         .replace(/php/gi, '')
         .replace(/[^A-Za-z0-9._-]+/g, '-')
         .replace(/^[-._]+/, '')

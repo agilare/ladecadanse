@@ -42,7 +42,13 @@ describe('nomImageConvertie', () =>
     it('écarte les caractères susceptibles de poser problème en aval', () =>
     {
         expect(nomImageConvertie('../../etc/passwd.pdf', 'image/webp')).toBe('etc-passwd.webp');
-        expect(nomImageConvertie('affiche été 2026.pdf', 'image/webp')).toBe('affiche-t-2026.webp');
+    });
+
+    it('translittère les accents plutôt que de les remplacer par des tirets', () =>
+    {
+        // un simple filtrage ASCII donnait « programme-t-2026 » pour « programme été 2026 »
+        expect(nomImageConvertie('programme été 2026.pdf', 'image/webp')).toBe('programme-ete-2026.webp');
+        expect(nomImageConvertie('Zürich Nuït.pdf', 'image/webp')).toBe('Zurich-Nuit.webp');
     });
 
     it('garde un nom utilisable quand il ne reste rien', () =>
