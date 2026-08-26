@@ -159,6 +159,7 @@ if ($erreur === null)
         $stmt = $connectorPdo->prepare("SELECT
             e.idEvenement, e.idLieu, e.statut, e.titre, e.genre, e.dateEvenement,
             e.horaire_debut, e.horaire_fin, e.nomLieu, e.dateAjout,
+            e.flyer, e.image,
             l.nom AS lieu_nom
             FROM evenement e
             LEFT JOIN lieu l ON e.idLieu = l.idLieu
@@ -263,7 +264,7 @@ $icone_depublier = $icone['depublier'];
 $icones_onglets = ["evenement" => "fa-calendar-o", "description" => "fa-file-text-o"];
 
 $colonnes = $get['elements'] === "evenement"
-    ? ["titre" => "Titre", "idLieu" => "Lieu", "dateEvenement" => "Date", "genre" => "Catégorie", "horaire" => "Horaire", "dateAjout" => "Date d'ajout", "statut" => "Statut"]
+    ? ["flyer" => "Image", "titre" => "Titre", "idLieu" => "Lieu", "dateEvenement" => "Date", "genre" => "Catégorie", "horaire" => "Horaire", "dateAjout" => "Date d'ajout", "statut" => "Statut"]
     : ["idLieu" => "Lieu", "contenu" => "Contenu", "type" => "Type", "dateAjout" => "Date d'ajout"];
 
 // Fragment commun à tous les liens de la page : identité, onglet, pagination et
@@ -418,6 +419,8 @@ if ($erreur !== null)
 					$can_edit_even = !$is_even_ancien || $est_editeur;
 					?>
 				<tr<?= $is_even_ancien ? ' class="ancien"' : '' ?>>
+					<?php // vide quand l'événement n'a ni flyer ni illustration : la colonne garde sa largeur par le CSS ?>
+					<td class="flyer"><?= EvenementRenderer::mainFigureHtml((string) $tab_even['flyer'], (string) $tab_even['image'], (string) $tab_even['titre'], 30, 30) ?></td>
 					<td class="tdleft"><a href="/event/evenement.php?idE=<?= (int) $tab_even['idEvenement'] ?>" title="Voir la fiche de l'événement"><?= sanitizeForHtml($tab_even['titre']) ?></a></td>
 					<td>
 						<?php if ((int) $tab_even['idLieu'] !== 0 && $tab_even['lieu_nom'] !== null) : ?>

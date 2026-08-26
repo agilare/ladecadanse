@@ -192,7 +192,11 @@ class UserProfileCest
         }
 
         $entetes = array_map('trim', $I->grabMultiple('table#ajouts thead th'));
-        $I->assertSame(['Titre', 'Lieu', 'Date', 'Catégorie', 'Horaire'], array_slice($entetes, 0, 5));
+        $I->assertSame(['Image', 'Titre', 'Lieu', 'Date', 'Catégorie', 'Horaire'], array_slice($entetes, 0, 6));
+
+        // La vignette ouvre la colonne : c'est la cellule qui est vérifiée, pas l'image, parce
+        // qu'un événement sans flyer ni illustration laisse légitimement sa cellule vide.
+        $I->seeElement('table#ajouts tbody tr td:first-child.flyer');
 
         // les actions reprennent les icônes globales, partagées avec les autres écrans de gestion
         $I->seeElement('table#ajouts td.actions img');

@@ -95,6 +95,8 @@ class EvenementCollection
           e.region AS e_region,
           e.urlLieu AS e_urlLieu,
           e.dateAjout AS e_dateAjout,
+          e.flyer AS e_flyer,
+          e.image AS e_image,
 
           l.nom AS l_nom,
           l.adresse AS l_adresse,

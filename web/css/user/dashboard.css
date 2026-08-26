@@ -215,6 +215,41 @@ table#ajouts tr td
 	padding:0.55em 0.35em;
 }
 
+/*
+ * Colonne Image : un cadre carré que la vignette couvre entièrement. object-fit
+ * met le flyer à l'échelle sans le déformer, puis ce qui dépasse est rogné — le
+ * bas d'une affiche portrait, la droite d'une image paysage. L'ancrage en haut à
+ * gauche garde la partie de l'affiche qui porte le titre.
+ *
+ * Le cadre, lui, est centré verticalement dans la cellule par le
+ * vertical-align:middle posé plus haut sur tous les td.
+ */
+table#ajouts td.flyer
+{
+	width:30px;
+}
+
+/*
+ * line-height:0 pour que l'ancre n'ajoute pas l'interligne du texte autour de l'image,
+ * et vertical-align:middle parce qu'une boîte inline-block se pose par défaut sur la
+ * ligne de base : la place réservée au jambage la décalait de 1,3px vers le haut.
+ */
+table#ajouts td.flyer a
+{
+	display:inline-block;
+	line-height:0;
+	vertical-align:middle;
+}
+
+table#ajouts td.flyer img
+{
+	display:block;
+	width:30px;
+	height:30px;
+	object-fit:cover;
+	object-position:left top;
+}
+
 table#ajouts td.contenu
 {
 	width:45%;

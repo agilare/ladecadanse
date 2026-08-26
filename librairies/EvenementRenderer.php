@@ -205,7 +205,14 @@ class EvenementRenderer
         return $result;
     }
 
-    public static function mainFigureHtml(string $flyer, string $image, string $titre, ?int $smallWidth = null): string
+    /**
+     * La vignette d'un événement : le flyer s'il existe, l'illustration à défaut, rien sinon.
+     *
+     * $smallHeight n'est utile qu'aux cadres de dimensions figées — les colonnes « Image » des
+     * tableaux de gestion — où le CSS recadre ensuite l'image sur le cadre. Sans lui, la hauteur
+     * reste au navigateur, comme partout ailleurs.
+     */
+    public static function mainFigureHtml(string $flyer, string $image, string $titre, ?int $smallWidth = null, ?int $smallHeight = null): string
     {
         global $assets;
         ob_start();
@@ -224,7 +231,7 @@ class EvenementRenderer
             return '';
         }
 
-        $imgHeight = '';
+        $imgHeight = $smallHeight ?? '';
         if (!empty($flyer))
         {
             $href = $assets->get(Evenement::getAssetPath(Evenement::getFilePath($flyer)));
@@ -242,7 +249,9 @@ class EvenementRenderer
         ?>
 
         <a href="<?= $href ?>" class="magnific-popup">
-            <img src="<?= $imgSrc ?>" alt="<?= $imgAlt ?>" <?php if (!empty($smallWidth)) : ?> width="<?= $smallWidth ?>" height="<?= $imgHeight ?>" <?php endif; ?>>
+            <?php // chaque dimension est émise pour elle-même : la hauteur était jusqu'ici toujours
+                  // vide, et height="" n'est pas une valeur valide ?>
+            <img src="<?= $imgSrc ?>" alt="<?= $imgAlt ?>"<?php if (!empty($smallWidth)) : ?> width="<?= $smallWidth ?>"<?php endif; ?><?php if (!empty($imgHeight)) : ?> height="<?= $imgHeight ?>"<?php endif; ?>>
         </a>
 
         <?php
