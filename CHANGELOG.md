@@ -4,7 +4,11 @@
 
 Upgrade steps (redirects, side effects) : [UPGRADE.md](UPGRADE.md).
 
+### Added
+- admin events, user profile : an "Image" column opens the event tables, just before the title — 50×50 in admin, 30×30 on the profile ; recognising an event, or checking that a flyer did get uploaded, meant opening its page until now ; the thumbnail covers its square frame without distortion, cropped at the bottom for a portrait poster and on the right for a landscape one, and a click opens the full size ; an event with neither flyer nor illustration leaves its cell empty, as in the lieu and organisateur listings
+
 ### Fixed
+- search : the actions column no longer reserves its 80px for a visitor who is not logged in, where it holds the calendar export alone — Copier, Modifier and Dépublier being reserved to those allowed to edit, those pixels were taken from an already capped title column ; the width stays on the lieu and organisateur listings, which share the class
 - admin events : a bulk replace no longer wipes the organisateurs of the selected events #125 — the `evenement_organisateur` DELETE ran after every successful UPDATE while only the posted selection was re-inserted, so changing a statut on ten events cleared the organisateurs of all ten, against the page's own promise that only non-empty fields overwrite ; the DELETE/INSERT pair now runs only when the field was filled
 - admin events : the "delete the image" branch removed the file read by the flyer branch (`$affImg` for `$affimage`), the schedules were re-read from `$_POST` inside the loop — bypassing the trim and the validation, and dropping the seconds `evenement-edit.php` appends —, `$_FILES['flyer']` was read without a guard, the posted statut was not validated, and the bulk delete built error messages it never displayed
 - admin events : an event without a localité is listed again — the `JOIN localite` was an inner join, so such an event vanished from the very screen where it could be fixed

@@ -87,7 +87,7 @@ if (!in_array((int) $_SESSION['user_prefs_even_nblignes'], $tab_nblignes_even, t
 }
 $nblignes = (int) $_SESSION['user_prefs_even_nblignes'];
 
-$th_evenements = ["titre" => "Titre", "idLieu" => "Lieu", "dateEvenement" => "Date", "genre" => "Catég.", "horaire" => "Horaire", "organisateurs" => "Orga.", "statut" => "Statut", "dateAjout" => "Ajouté", "pseudo" => "par"];
+$th_evenements = ["flyer" => "Image", "titre" => "Titre", "idLieu" => "Lieu", "dateEvenement" => "Date", "genre" => "Catég.", "horaire" => "Horaire", "organisateurs" => "Orga.", "statut" => "Statut", "dateAjout" => "Ajouté", "pseudo" => "par"];
 
 /** Au-delà, le pseudo de la colonne « par » est coupé : un seul pseudo long élargissait toute la colonne */
 const PSEUDO_MAX_CARACTERES = 10;
@@ -531,6 +531,8 @@ $erreurs = $verif->getErreurs();
                 ?>
             <tr>
                 <td style="text-align:center"><input type="checkbox" name="evenements[]" value="<?= (int) $tab_even['e_idEvenement'] ?>" /></td>
+                <?php // vide quand l'événement n'a ni flyer ni illustration : la colonne garde sa largeur par le CSS ?>
+                <td class="flyer"><?= EvenementRenderer::mainFigureHtml((string) $tab_even['e_flyer'], (string) $tab_even['e_image'], (string) $tab_even['e_titre'], 50, 50) ?></td>
                 <td style="text-align:left"><a href="/event/evenement.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>" class='titre'><?= sanitizeForHtml($tab_even['e_titre']) ?></a></td>
                 <td><?= Lieu::getLinkNameHtml($even_lieu['nom'], $even_lieu['idLieu'], $even_lieu['salle']) ?><br><span style="color:lightsteelblue"><?= $even_lieu['localite'] ?></span></td>
                 <td><a href="/index.php?courant=<?= sanitizeForHtml($tab_even['e_dateEvenement']) ?>"><?= DateHelper::isoToApp($tab_even['e_dateEvenement']) ?></a></td>

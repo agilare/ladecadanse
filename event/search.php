@@ -259,6 +259,10 @@ $agenda_years = range((int)date("Y"), Evenement::AGENDA_START_YEAR);
             <table>
                 <tbody>
                     <?php
+                    // invariant de la boucle : la colonne d'actions n'a de raison d'être large
+                    // que pour qui peut y voir apparaître Copier, Modifier et Dépublier
+                    $est_connecte = isset($_SESSION['Sgroupe']);
+
                     foreach ($page_results as $tab_even) :
                         $even_periode = match (true) {
                             $tab_even['e_dateEvenement'] > $glo_auj_6h => "futur",
@@ -282,7 +286,7 @@ $agenda_years = range((int)date("Y"), Evenement::AGENDA_START_YEAR);
                             $isAllowedToEdit = $authorization->isPersonneAllowedToEditEvenement($_SESSION, $tab_even);
                             ?>
                             <?php if ($isFutureEvent || $isAllowedToEdit) : ?>
-                                <td class="lieu_actions_evenement">
+                                <td class="lieu_actions_evenement<?= $est_connecte ? '' : ' actions-compactes' ?>">
                                     <ul>
                                         <?php if ($isFutureEvent) : ?>
                                             <?= EvenementCalendarRenderer::renderMenuHtml($tab_even, $site_full_url, compact: true) ?>
