@@ -22,117 +22,76 @@ if (!$authorization->checkGroup(UserLevel::ADMIN))
     exit;
 }
 
-$page_titre = "Gérer les événements";
-$extra_css = ["formulaires", "admin/tables"];
-require_once '../_header.inc.php';
+$verif = new Validateur();
 
-$tab_listes = ["evenement" => "Événements", "lieu" => "Lieux", "description" => "Descriptions", "personne" => "Personnes"];
-
+/*
+ * FILTRES, TRI ET PAGINATION
+ *
+ * Mémorisés en session comme ceux de admin/users.php : revenir d'une fiche d'événement
+ * retrouve la liste telle qu'on l'avait laissée. Seule la page reste dans l'URL, pour que
+ * les liens de pagination fonctionnent.
+ */
 $get = [];
+$get['page'] = QueryParamValidator::pageFromQuery($_GET['page'] ?? '');
 
-$_SESSION['region_admin'] = '';
-if ($_SESSION['Sgroupe'] >= UserLevel::ADMIN && !empty($_SESSION['Sregion'])) {
-    $_SESSION['region_admin'] = $_SESSION['Sregion'];
+$filtres = [];
+foreach (['terme', 'lieu', 'personne'] as $champ_filtre)
+{
+    $_SESSION['user_prefs_even_' . $champ_filtre] ??= '';
+
+    if (isset($_GET[$champ_filtre]))
+    {
+        $_SESSION['user_prefs_even_' . $champ_filtre] = trim((string) $_GET[$champ_filtre]);
+    }
+
+    $filtres[$champ_filtre] = $_SESSION['user_prefs_even_' . $champ_filtre];
 }
 
-$get['element'] = "evenement";
+// Un administrateur régional ne voit que sa région ; le superadmin n'en a pas.
+$_SESSION['region_admin'] = '';
+if ($_SESSION['Sgroupe'] >= UserLevel::ADMIN && !empty($_SESSION['Sregion']))
+{
+    $_SESSION['region_admin'] = $_SESSION['Sregion'];
+}
+$filtres['region'] = $_SESSION['region_admin'];
+$titre_region = $filtres['region'] !== '' ? " - " . $glo_regions[$filtres['region']] : '';
 
-$get['page'] = QueryParamValidator::pageFromQuery($_GET['page'] ?? '');
+$_SESSION['user_prefs_even_order_by'] ??= 'dateAjout';
+if (isset($_GET['order_by']) && array_key_exists($_GET['order_by'], EvenementCollection::ADMIN_ORDER_COLUMNS))
+{
+    $_SESSION['user_prefs_even_order_by'] = $_GET['order_by'];
+}
+$order_by = $_SESSION['user_prefs_even_order_by'];
+
+$_SESSION['user_prefs_even_order_dir'] ??= 'desc';
+if (isset($_GET['order_dir']) && in_array($_GET['order_dir'], ['asc', 'desc'], true))
+{
+    $_SESSION['user_prefs_even_order_dir'] = $_GET['order_dir'];
+}
+$order_dir = $_SESSION['user_prefs_even_order_dir'];
+$order_dir_inverse = $order_dir === 'asc' ? 'desc' : 'asc';
+
+// Le 100 de $tab_nblignes n'apporte rien entre 50 et 250, et la liste d'administration est
+// lourde : chaque ligne porte son lieu, ses organisateurs et son auteur.
+$tab_nblignes_even = [50, 250, 500];
+$_SESSION['user_prefs_even_nblignes'] ??= $tab_nblignes_even[0];
+if (!empty($_GET['nblignes']) && in_array((int) $_GET['nblignes'], $tab_nblignes_even, true))
+{
+    $_SESSION['user_prefs_even_nblignes'] = (int) $_GET['nblignes'];
+}
+// une session ouverte avant le retrait du 100 en porterait encore la valeur
+if (!in_array((int) $_SESSION['user_prefs_even_nblignes'], $tab_nblignes_even, true))
+{
+    $_SESSION['user_prefs_even_nblignes'] = $tab_nblignes_even[0];
+}
+$nblignes = (int) $_SESSION['user_prefs_even_nblignes'];
 
 $th_evenements = ["titre" => "Titre", "idLieu" => "Lieu", "dateEvenement" => "Date", "genre" => "Catég.", "horaire" => "Horaire", "organisateurs" => "Orga.", "statut" => "Statut", "dateAjout" => "Ajouté", "pseudo" => "par"];
 
-$orderByColumns = [
-	"dateAjout"           => "e.dateAjout",
-	"date_derniere_modif" => "e.date_derniere_modif",
-	"statut"              => "e.statut",
-	"dateEvenement"       => "e.dateEvenement",
-	"titre"               => "e.titre",
-	"genre"               => "e.genre",
-];
 
-$get['tri_gerer'] = "dateAjout";
-if (isset($_GET['tri_gerer']) && array_key_exists($_GET['tri_gerer'], $orderByColumns))
-{
-	$get['tri_gerer'] = $_GET['tri_gerer'];
-}
-
-$orderDirections = ["asc" => "ASC", "desc" => "DESC"];
-$get['ordre'] = "desc";
-$ordre_inverse = "asc";
-if (isset($_GET['ordre']))
-{
-	$get['ordre'] = QueryParamValidator::validateUrlQueryValue($_GET['ordre'], "enum", 1, array_keys($orderDirections));
-	if ($get['ordre'] == "asc")
-	{
-		$ordre_inverse = "desc";
-	}
-	else if ($get['ordre'] == "desc")
-	{
-		$ordre_inverse = "asc";
-	}
-}
-
-$get['nblignes'] = $tab_nblignes[0];
-if (!empty($_GET['nblignes']))
-{
-	$get['nblignes'] = QueryParamValidator::validateUrlQueryValue($_GET['nblignes'], "int", 1);
-}
-
-
-$where = "";
-
-if  ((!empty($_GET['filtre_genre']) && $_GET['filtre_genre'] != 'tous') || !empty($_GET['terme']) || !empty($_SESSION['region_admin']))
-{
-	$where = " WHERE ";
-}
-
-$query_params = [];
-
-$get['terme'] = '';
-if (!empty($_GET['terme']))
-{
-	$get['terme'] = $_GET['terme'];
-	$where .= " ( LOWER(e.titre) LIKE LOWER(?)) ";
-    $query_params[] = "%".$get['terme']. "%";
-}
-
-$get['filtre_genre'] = "tous";
-if (isset($_GET['filtre_genre']) && $_GET['filtre_genre'] != 'tous')
-{
-	$get['filtre_genre'] = $_GET['filtre_genre'];
-
-	if (!empty($_GET['terme']))
-		$where .= " AND ";
-
-	$where .= " e.genre=? ";
-    $query_params[] = $_GET['filtre_genre'];
-}
-
-$verif = new Validateur();
-
-$sql_region = '';
-$titre_region = '';
-if (!empty($_SESSION['region_admin']))
-{
-    if ((!empty($_GET['filtre_genre']) && $_GET['filtre_genre'] != 'tous') || !empty($_GET['terme']))
-    {
-        $where .= " AND ";
-    }
-
-    $where .=  " e.region=? ";
-    $query_params[] = $_SESSION['region_admin'];
-    $titre_region = " - ".$glo_regions[$_SESSION['region_admin']];
-}
-?>
-
-<main id="contenu" class="colonne">
-
-	<header id="entete_contenu">
-		<h1>Gérer les événements <?= sanitizeForHtml($titre_region) ?></h1>
-        <div class="spacer"></div>
-	</header>
-
-<?php
+/*
+ * TRAITEMENT DU FORMULAIRE D'ÉDITION GROUPÉE
+ */
 $champs = ["genre" => "", "idLieu" => "", "idSalle" => "", "nomLieu" => "", "adresse" => "", "quartier" => "",  "localite_id" => "", "region" => "", "urlLieu" => "", "titre" => "", "description" => "", "ref" => "", "horaire_debut" => "", "horaire_fin" => "", "horaire_complement" => "", "prix" => "", "prelocations" => "", "statut" => ""];
 
 /*
@@ -179,15 +138,21 @@ if (!empty($_POST['formulaire']))
     {
         if ($verif->nbErreurs() === 0)
         {
+            $nb_supprimes = 0;
             foreach ($evenements as $idEven)
             {
-                EvenementCollection::deleteEvenement((int) $idEven);
+                $nb_supprimes += EvenementCollection::deleteEvenement((int) $idEven) ? 1 : 0;
             }
 
-            $logger->info('[admin/events] suppression groupée', ['nb' => count($evenements), 'idP' => (int) ($_SESSION['SidPersonne'] ?? 0)]);
+            $logger->info('[admin/events] suppression groupée', ['demandes' => count($evenements), 'supprimes' => $nb_supprimes, 'idP' => (int) ($_SESSION['SidPersonne'] ?? 0)]);
 
-            HtmlShrink::msgOk(count($evenements) . " événement(s) supprimé(s)");
-            $evenements = [];
+            // deleteEvenement() refuse à qui n'est ni auteur ni superadmin : le compte annoncé
+            // est celui des suppressions effectives, pas celui des cases cochées
+            $_SESSION['admin_events_flash_msg'] = $nb_supprimes . " événement(s) supprimé(s)"
+                . ($nb_supprimes < count($evenements) ? ", " . (count($evenements) - $nb_supprimes) . " refusé(s) faute de droits" : "");
+
+            header("Location: " . $_SERVER['PHP_SELF']);
+            exit;
         }
     }
     /*
@@ -318,6 +283,7 @@ if (!empty($_POST['formulaire']))
             // reçoivent une copie, pour ne pas retraiter le même fichier N fois
             $sources_copiees = ['flyer' => '', 'image' => ''];
             $compteur_evenements = 0;
+            $messages = [];
 
             foreach ($evenements as $idEven_courant)
             {
@@ -373,7 +339,7 @@ if (!empty($_POST['formulaire']))
 
                 if (!$connector->query($sql_update))
                 {
-                    HtmlShrink::msgErreur("La mise à jour de l'événement " . $idEven_courant . " a échoué");
+                    $messages[] = "La mise à jour de l'événement " . $idEven_courant . " a échoué";
                     continue;
                 }
 
@@ -416,186 +382,117 @@ if (!empty($_POST['formulaire']))
                     }
                 }
 
-                HtmlShrink::msgOk('Mise à jour de <a href="/event/evenement.php?idE='.$idEven_courant.'">'.sanitizeForHtml($tab_even['titre']).'</a> le <a href="/index.php?courant='.sanitizeForHtml($tab_even['dateEvenement']).'">'.DateHelper::isoToFr($tab_even['dateEvenement'], 'annee').'</a> réussie');
+                $messages[] = 'Mise à jour de <a href="/event/evenement.php?idE='.$idEven_courant.'">'.sanitizeForHtml($tab_even['titre']).'</a> le <a href="/index.php?courant='.sanitizeForHtml($tab_even['dateEvenement']).'">'.DateHelper::isoToFr($tab_even['dateEvenement'], 'annee').'</a> réussie';
 
                 $compteur_evenements++;
             } // foreach
 
             $logger->info('[admin/events] remplacement groupé', ['nb' => $compteur_evenements, 'statut' => $champs['statut'], 'genre' => $champs['genre'], 'idLieu' => (int) $champs['idLieu'], 'idP' => (int) ($_SESSION['SidPersonne'] ?? 0)]);
 
-            // le formulaire se réaffiche vide : les valeurs viennent d'être appliquées
-            $champs = array_fill_keys(array_keys($champs), '');
-            $evenements = [];
+            // redirection après traitement : un F5 ne rejoue plus le remplacement
+            $_SESSION['admin_events_flash_msg'] = implode('<br>', $messages);
+            header("Location: " . $_SERVER['PHP_SELF']);
+            exit;
         }
     }
 }
 
 
 /*
- * AFFICHAGE DE LA TABLE ET SON MENU DE NAVIGATION
+ * LECTURE DE LA LISTE
  */
-$sql_nbeven = "SELECT COUNT(*) AS nbeven FROM evenement e ".$where;
+$tot_elements = EvenementCollection::countForAdmin($filtres);
 
-$stmt = $connectorPdo->prepare($sql_nbeven);
-$stmt->execute($query_params);
-$tab_nbeven = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-//dump($tab_nbeven);
-//$req_nbeven = $connector->query($sql_nbeven);
-//$tab_nbeven = $connector->fetchArray($req_nbeven);
-$tot_elements = $tab_nbeven[0]['nbeven'];
-
-$total_page_max = ceil($tot_elements / $get['nblignes']);
-if ($get['page'] > $total_page_max)
-	$get['page'] = $total_page_max;
-
-$sql_page = $get['page'];
-if ($get['page'] < 1)
-    $sql_page = 1;
-
-$sql_evenement = "
-SELECT
-
-  e.genre AS e_genre,
-  e.idEvenement AS e_idEvenement,
-  e.titre AS e_titre,
-  e.statut AS e_statut,
-  e.idPersonne AS e_idPersonne,
-  e.dateEvenement AS e_dateEvenement,
-  e.ref AS e_ref,
-  e.flyer AS e_flyer,
-  e.image AS e_image,
-  e.description AS e_description,
-  e.horaire_debut AS e_horaire_debut,
-  e.horaire_fin AS e_horaire_fin,
-  e.horaire_complement AS e_horaire_complement,
-  e.prix AS e_prix,
-  e.prelocations AS e_prelocations,
-  e.idLieu AS e_idLieu,
-  e.idSalle AS e_idSalle,
-  e.nomLieu AS e_nomLieu,
-  e.adresse AS e_adresse,
-  e.quartier AS e_quartier,
-  loc.localite AS e_localite,
-  e.region AS e_region,
-  e.urlLieu AS e_urlLieu,
-  e.dateAjout AS e_dateAjout,
-
-  l.nom AS l_nom,
-  l.adresse AS l_adresse,
-  l.quartier AS l_quartier,
-  l.URL AS l_URL,
-  lloc.localite AS lloc_localite,
-  l.region AS l_region,
-  s.nom AS s_nom,
-
-  p.idPersonne AS idPersonne,
-  p.pseudo AS pseudo
-
-FROM evenement e
-JOIN localite loc ON e.localite_id = loc.id
-LEFT JOIN lieu l ON e.idLieu = l.idLieu
-LEFT JOIN localite lloc ON l.localite_id = lloc.id
-LEFT JOIN salle s ON e.idSalle = s.idSalle
-LEFT JOIN personne p ON e.idPersonne = p.idPersonne
- ".$where."
-ORDER BY ".$orderByColumns[$get['tri_gerer']]." ".($orderDirections[$get['ordre']] ?? 'DESC')." LIMIT ".(int)($sql_page - 1) * (int)$get['nblignes'].",".(int)$get['nblignes'];
-
-$stmt = $connectorPdo->prepare($sql_evenement);
-$stmt->execute($query_params);
-$tab_events = $stmt->fetchAll(PDO::FETCH_ASSOC);
-//  dump($tab_events);
-
-// from all events ids build an array of their organizers
-$events_ids = array_column($tab_events, 'e_idEvenement');
-$events_orgas = [];
-if (!empty($events_ids))
+$total_page_max = (int) ceil($tot_elements / $nblignes);
+if ($total_page_max > 0 && $get['page'] > $total_page_max)
 {
-    list($eventsIdsInClause, $eventsIdsParams) = $connectorPdo->buildInClause('eo.idEvenement', $events_ids);
-
-    $stmt = $connectorPdo->prepare("SELECT
-
-    eo.idEvenement AS idEvenement,
-    o.idOrganisateur AS o_idOrganisateur,
-    o.nom AS o_nom,
-    o.URL AS o_URL
-
-    FROM evenement_organisateur eo
-    JOIN organisateur o ON eo.idOrganisateur = o.idOrganisateur AND $eventsIdsInClause
-    ORDER BY nom DESC");
-
-    $stmt->execute($eventsIdsParams);
-
-    $tab_orgas = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    foreach ($tab_orgas AS $eo)
-    {
-        $events_orgas[$eo['idEvenement']][] = [
-            'idOrganisateur' => $eo['o_idOrganisateur'],
-            'nom' => $eo['o_nom'],
-            'url' => $eo['o_URL']
-        ];
-    }
+    $get['page'] = $total_page_max;
 }
+
+$tab_events = EvenementCollection::getForAdmin($filtres, $order_by, $order_dir, $get['page'], $nblignes);
+
+// les organisateurs de tous les événements de la page, en une requête
+$events_orgas = EvenementCollection::getOrganisateursParEvenement(array_column($tab_events, 'e_idEvenement'));
+
+
+/*
+ * RENDU
+ *
+ * Rien n'a été écrit jusqu'ici : c'est ce qui permet au traitement ci-dessus de rediriger
+ * après un remplacement, plutôt que de laisser un F5 le rejouer.
+ */
+$page_titre = "Gérer les événements";
+$extra_css = ["formulaires", "admin/tables"];
+require_once '../_header.inc.php';
+
+$erreurs = $verif->getErreurs();
 ?>
 
+<main id="contenu" class="colonne">
 
-<?php
-if ($verif->nbErreurs() > 0)
-{
-	HtmlShrink::msgErreur("Il y a ".$verif->nbErreurs()." erreur(s).");
-}
-?>
+	<header id="entete_contenu">
+		<h1>Gérer les événements <?= sanitizeForHtml($titre_region) ?></h1>
+        <div class="spacer"></div>
+	</header>
+
+    <?php if (!empty($_SESSION['admin_events_flash_msg'])) : ?>
+        <?php // rendu sans échappement : le message porte des liens vers les événements traités,
+              // dont les titres sont échappés à la construction ?>
+        <?php HtmlShrink::msgOk($_SESSION['admin_events_flash_msg']); ?>
+        <?php unset($_SESSION['admin_events_flash_msg']); ?>
+    <?php endif; ?>
+
+    <?php if ($erreurs !== []) : ?>
+    <?php // les messages sont écrits ici, jamais repris d'une saisie : ils peuvent porter du HTML ?>
+    <div class="msg_erreur" role="alert">
+        <?php if (count($erreurs) === 1) : ?>
+        <?= current($erreurs) ?>
+        <?php else : ?>
+        <p class="msg_erreur_titre"><?= $verif->getMsgNbErreurs() ?></p>
+        <ul>
+            <?php foreach ($erreurs as $message) : ?>
+            <li><?= $message ?></li>
+            <?php endforeach; ?>
+        </ul>
+        <?php endif; ?>
+    </div>
+    <?php endif; ?>
 
 <section id="default">
 
-    <div>
+    <div id="filters">
 
-        <form method="get" action="" id="ajouter_editer" style="float:left;width:35%;margin:0;">
-
-            <input type="hidden" name="filtre_genre" value="<?= sanitizeForHtml($get['filtre_genre']); ?>" />
-            <input type="hidden" name="nblignes" value="<?= (int)$get['nblignes']; ?>" />
-            <input type="hidden" name="tri_gerer" value="<?= sanitizeForHtml($get['tri_gerer']); ?>" />
-            <input type="hidden" name="element" value="<?= sanitizeForHtml($get['element']); ?>" />
-            <input type="hidden" name="ordre" value="<?= sanitizeForHtml($get['ordre']); ?>" />
+        <?php // les trois filtres se combinent : un même formulaire les poste ensemble ?>
+        <form method="get" action="" id="events-filters">
 
             <span class="search-field">
-                <input type="search" name="terme" value="<?= sanitizeForHtml($get['terme']); ?>" placeholder="Titre" size="24" />
+                <input type="search" name="terme" value="<?= sanitizeForHtml($filtres['terme']) ?>" placeholder="Titre" size="20" />
+                <button type="button" class="js-clear-search-field" aria-label="Vider et relancer la recherche" title="Vider et relancer la recherche"></button>
+            </span>
+            <span class="search-field">
+                <input type="search" name="lieu" value="<?= sanitizeForHtml($filtres['lieu']) ?>" placeholder="Lieu" size="16" />
+                <button type="button" class="js-clear-search-field" aria-label="Vider et relancer la recherche" title="Vider et relancer la recherche"></button>
+            </span>
+            <span class="search-field">
+                <input type="search" name="personne" value="<?= sanitizeForHtml($filtres['personne']) ?>" placeholder="Pseudo ou email" size="16" />
                 <button type="button" class="js-clear-search-field" aria-label="Vider et relancer la recherche" title="Vider et relancer la recherche"></button>
             </span>
             <input type="submit" name="submit" value="Filtrer" />
 
         </form>
 
-        <ul class="menu_filtre" style="float:left;width:50%;margin:0">
-            <li <?php if ($get['filtre_genre'] == 'tous') : ?>class="ici"<?php endif; ?>>
-                <a href="?<?= HtmlShrink::urlQueryArrayToString($get, ['filtre_genre', 'page'])?>&amp;filtre_genre=tous">Tous</a></li>
-            <?php foreach ($glo_tab_genre as $ng => $nl) : ?>
-                <li <?php if ($get['filtre_genre'] == $ng) : ?> class="ici"<?php endif; ?>>
-                    <a href="?<?= HtmlShrink::urlQueryArrayToString($get, ['filtre_genre', 'page']) ?>&amp;filtre_genre=<?= $ng ?>"><?= ucfirst($nl) ?></a>
-                </li>
-              <?php endforeach; ?>
+        <ul class="menu_nb_res">
+            <?php foreach ($tab_nblignes_even as $nbl) : ?>
+            <li <?php if ($nblignes === $nbl) : ?>class="ici"<?php endif; ?>>
+                <a href="?nblignes=<?= (int) $nbl ?>"><?= (int) $nbl ?></a>
+            </li>
+            <?php endforeach; ?>
         </ul>
 
-        <div class="spacer"></div>
+    </div> <!-- #filters -->
 
-
-        <div id="gerer-even-pagination">
-            <?= HtmlShrink::getPaginationString($tot_elements, $get['page'], $get['nblignes'], 1, "", "?element=" . $get['element'] . "&tri_gerer=" . $get['tri_gerer'] . "&ordre=" . $get['ordre'] . "&nblignes=" . $get['nblignes'] . "&filtre_genre=" . $get['filtre_genre'] . "&terme=" . $get['terme'] . "&page=") ?>
-
-                <ul class="menu_nb_res" style="float:right;margin: 1em auto 1.4em;width:35%;text-align:right">
-                <?php foreach ($tab_nblignes as $nbl) : ?>
-                <li <?php if ($get['nblignes'] == $nbl) { echo 'class="ici"'; } ?>>
-                    <a href="?<?= HtmlShrink::urlQueryArrayToString($get, "nblignes")?>&amp;nblignes=<?= (int)$nbl ?>"><?= (int)$nbl ?></a>
-                </li>
-            <?php endforeach; ?>
-            </ul>
-            <div class="spacer"></div>
-        </div>
-
-        <div class="spacer"></div>
-
-    </div>
+    <?php // filtres, tri et nombre de lignes sont en session : la pagination n'a que la page à porter ?>
+    <?= HtmlShrink::getPaginationString($tot_elements, $get['page'], $nblignes, 1, "", "?page=") ?>
 
     <form method="post" id="formGererEvenements" class='js-submit-freeze-wait' enctype="multipart/form-data" action="">
 
@@ -604,10 +501,11 @@ if ($verif->nbErreurs() > 0)
             <tr>
                 <th></th>
                 <?php foreach ($th_evenements as $field => $label) : ?>
-                <th <?php if ($field == $get['tri_gerer']) : ?>class="ici"<?php endif; ?> <?php if ($field == 'horaire') : ?>style="width:100px"<?php endif; ?>>
-                    <?php if (array_key_exists($field, $orderByColumns)) : ?>
-                        <a href="?<?= HtmlShrink::urlQueryArrayToString($get, ['tri_gerer', 'ordre'])."&amp;tri_gerer=".$field."&amp;ordre=".$ordre_inverse ?>"><?= sanitizeForHtml($label) ?></a>
-                        <?php if ($field == $get['tri_gerer']) : echo $icone[$get['ordre']]; endif; ?>
+                <th <?php if ($field === $order_by) : ?>class="ici"<?php endif; ?> <?php if ($field == 'horaire') : ?>style="width:100px"<?php endif; ?>>
+                    <?php if (array_key_exists($field, EvenementCollection::ADMIN_ORDER_COLUMNS)) : ?>
+                        <?php // cliquer sur la colonne déjà triée inverse le sens ?>
+                        <a href="?order_by=<?= $field ?>&amp;order_dir=<?= $field === $order_by ? $order_dir_inverse : $order_dir ?>"><?= sanitizeForHtml($label) ?></a>
+                        <?php if ($field === $order_by) : echo $icone[$order_dir]; endif; ?>
                     <?php else : ?>
                         <?= sanitizeForHtml($label) ?>
                     <?php endif; ?>
@@ -659,7 +557,7 @@ if ($verif->nbErreurs() > 0)
 
         </table>
 
-        <?= HtmlShrink::getPaginationString($tot_elements, $get['page'], $get['nblignes'], 1, "", "?element=" . $get['element'] . "&tri_gerer=" . $get['tri_gerer'] . "&ordre=" . $get['ordre'] . "&nblignes=" . $get['nblignes'] . "&filtre_genre=" . $get['filtre_genre'] . "&terme=" . $get['terme'] . "&page=") ?>
+        <?= HtmlShrink::getPaginationString($tot_elements, $get['page'], $nblignes, 1, "", "?page=") ?>
 
         <?= $verif->getHtmlErreur("evenements") ?>
 
