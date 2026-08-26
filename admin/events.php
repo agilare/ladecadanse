@@ -1,6 +1,5 @@
 <?php
 
-global $connector, $glo_regions, $mimes_images_acceptes;
 require_once("../app/bootstrap.php");
 
 use Ladecadanse\Evenement;
@@ -15,6 +14,7 @@ use Ladecadanse\EvenementRenderer;
 use Ladecadanse\Lieu;
 use Ladecadanse\Localite;
 use Ladecadanse\Organisateur;
+use Ladecadanse\Security\SecurityToken;
 
 if (!$authorization->checkGroup(UserLevel::ADMIN))
 {
@@ -133,444 +133,301 @@ if (!empty($_SESSION['region_admin']))
 	</header>
 
 <?php
-$evenements = [];
-
 $champs = ["genre" => "", "idLieu" => "", "idSalle" => "", "nomLieu" => "", "adresse" => "", "quartier" => "",  "localite_id" => "", "region" => "", "urlLieu" => "", "titre" => "", "description" => "", "ref" => "", "horaire_debut" => "", "horaire_fin" => "", "horaire_complement" => "", "prix" => "", "prelocations" => "", "statut" => ""];
 
-$fichiers = ['flyer' => '', 'image' => ''];
+/*
+ * Les colonnes du lieu s'écrivent même vides dès lors que le lieu a changé : passer d'un lieu
+ * de la liste à une adresse saisie à la main doit effacer l'idLieu précédent, qu'aucune valeur
+ * non vide ne viendrait remplacer.
+ */
+$champs_du_lieu = ["idLieu", "urlLieu", "quartier", "localite_id", "region"];
 
-$action_terminee = false;
+$evenements = [];
 
-if (!empty($_POST['formulaire']) && empty($_POST['evenements']))
+// un navigateur envoie toujours les champs fichier, même vides ; un client qui ne le fait pas
+// (tests fonctionnels, POST scripté) ne doit pas déclencher d'erreur
+$fichiers = ['flyer' => ['name' => '', 'size' => 0], 'image' => ['name' => '', 'size' => 0]];
+$nouveaux_fichiers = ['flyer' => '', 'image' => ''];
+
+if (!empty($_POST['formulaire']))
 {
-	$verif->setErreur('evenements', "Aucun événement sélectionné");
-}
-else if (!empty($_POST['formulaire']) && !empty($_POST['supprimerSerie']))
-{
+    if (!SecurityToken::check((string) ($_POST['token'] ?? ''), (string) ($_SESSION['token'] ?? '')))
+    {
+        $verif->setErreur("token", "Le système de sécurité du site n'a pu authentifier votre action. Veuillez réafficher ce formulaire et réessayer");
+    }
 
-	$supprimerSerie = $_POST['supprimerSerie'];
+    $evenements = (array) ($_POST['evenements'] ?? []);
 
-	$evenements = $_POST['evenements'];
+    if (count($evenements) === 0)
+    {
+        $verif->setErreur('evenements', "Aucun événement sélectionné");
+    }
 
-	$erreurs = [];
-
-	$totalEv = count($evenements);
-	for ($i = 0; $i < $totalEv; $i++)
-	{
-		if (!is_numeric($evenements[$i]))
-			$erreurs['typeEvenement'] = "Un des ID d'événements choisi n'est pas un nombre";
-
-	}
-
-	if (count($erreurs) === 0)
-	{
-		foreach($evenements as $even)
+    foreach ($evenements as $idEven)
+    {
+        if (!is_numeric($idEven))
         {
-            EvenementCollection::deleteEvenement($even);
-        }
-	}
-
-	unset($_POST);
-
-}
-elseif (!empty($_POST['formulaire']))
-{
-
-	foreach ($champs as $i => $v)
-	{
-        if (isset($_POST[$i]) && !in_array($i, ['flyer', 'image']))
-        {
-            $champs[$i] = trim((string) $_POST[$i]);
+            $verif->setErreur('evenements', "Un des ID d'événements choisi n'est pas un nombre");
+            break;
         }
     }
 
-	$evenements = $_POST['evenements'];
-
-
-	$champs['organisateurs'] = [];
-	if (isset($_POST['organisateurs']))
-		$champs['organisateurs'] = $_POST['organisateurs'];
-
-	$fichiers['flyer'] = $_FILES['flyer'];
-	$fichiers['image'] = $_FILES['image'];
-
-	/*
-	 * VERIFICATION DES CHAMPS ENVOYES par POST
-	 */
-	$totalEv = count($evenements);
-	foreach ($evenements as $idEv)
-	{
-		if (!is_numeric($idEv))
-		{
-			$verif->setErreur('evenements', "Un des ID d'événements choisi n'est pas un nombre");
-		}
-	}
-
-	$verif->valider($champs['genre'], "genre", "texte", 1, 200, 0);
-	if (!empty($champs['genre']) && !array_key_exists($champs['genre'], $glo_tab_genre))
-	{
-		$verif->setErreur("genres", "Cette catégorie n'est pas valable");
-	}
-
-	$verif->valider($champs['titre'], "titre", "texte", 1, 80, 0);
-
-	$verif->valider($champs['nomLieu'], "nomLieu", "texte", 1, 80, 0);
-
-
-	$verif->valider($champs['adresse'], "adresse", "texte", 2, 100, 0);
-	if (empty($champs['lien']) && !empty($champs['nomLieu']) && empty($champs['adresse']))
-	{
-		$verif->setErreur("adresse", "L'adresse est obligatoire");
-	}
-
-	if (empty($champs['lien']) && !empty($champs['nomLieu']) && empty($champs['localite_id']))
-	{
-		$verif->setErreur("localite_id", "La localité est obligatoire");
-	}
-
-	if (!empty($champs['idLieu']) && ($champs['nomLieu'] != "" || $champs['adresse'] != ""))
+    /*
+     * SUPPRESSION DE LA SÉRIE SÉLECTIONNÉE
+     */
+    if (!empty($_POST['supprimerSerie']))
     {
-		$verif->setErreur('doublonLieux', 'Vous ne pouvez pas choisir 2 lieux');
-	}
+        if ($verif->nbErreurs() === 0)
+        {
+            foreach ($evenements as $idEven)
+            {
+                EvenementCollection::deleteEvenement((int) $idEven);
+            }
 
-	if ($champs['idLieu'] != '' && preg_match("/^[0-9]+_[0-9]+$/", $champs['idLieu']))
-	{
+            $logger->info('[admin/events] suppression groupée', ['nb' => count($evenements), 'idP' => (int) ($_SESSION['SidPersonne'] ?? 0)]);
 
-		$tab_idLieu = explode("_", $champs['idLieu']);
-		$champs['idLieu'] = $tab_idLieu[0];
-		$champs['idSalle'] = $tab_idLieu[1];
-	}
-	else
-	{
-		$champs['idSalle'] = 0;
-	}
+            HtmlShrink::msgOk(count($evenements) . " événement(s) supprimé(s)");
+            $evenements = [];
+        }
+    }
+    /*
+     * REMPLACEMENT DES DONNÉES DE LA SÉRIE SÉLECTIONNÉE
+     *
+     * Seuls les champs non vides écrasent l'existant : c'est ce que la page annonce, et c'est
+     * pourquoi la validation ne rend aucun champ obligatoire.
+     */
+    else
+    {
+        foreach ($champs as $c => $v)
+        {
+            if (isset($_POST[$c]))
+            {
+                $champs[$c] = trim((string) $_POST[$c]);
+            }
+        }
 
-	$verif->valider($champs['description'], "description", "texte", 4, 10000, 0);
+        $champs['organisateurs'] = array_filter(array_map('intval', (array) ($_POST['organisateurs'] ?? [])));
 
-	$mimes_acceptes = ["image/jpeg", "image/pjpeg", "image/gif", "image/png", "image/x-png"];
+        $fichiers['flyer'] = $_FILES['flyer'] ?? $fichiers['flyer'];
+        $fichiers['image'] = $_FILES['image'] ?? $fichiers['image'];
 
-    $verif->validerFichier($fichiers['flyer'], "flyer", $mimes_images_acceptes, 0);
-	$verif->validerFichier($fichiers['image'], "image", $mimes_images_acceptes, 0);
+        /*
+         * VERIFICATION DES CHAMPS ENVOYES par POST
+         */
+        $verif->valider($champs['genre'], "genre", "texte", 1, 200, 0);
+        if (!empty($champs['genre']) && !array_key_exists($champs['genre'], $glo_tab_genre))
+        {
+            $verif->setErreur("genre", "Cette catégorie n'est pas valable");
+        }
 
-	$verif->valider($champs['horaire_debut'], "horaire_debut", "texte", 1, 100, 0);
-	if (!empty($champs['horaire_debut']) && !preg_match("/^[0-9]{1,2}:[0-9]{2}$/", $champs['horaire_debut']))
-	{
-		$verif->setErreur('horaire_debut', "Mauvais format");
-	}
+        if (!empty($champs['statut']) && !array_key_exists($champs['statut'], Evenement::$statuts_evenement))
+        {
+            $verif->setErreur("statut", "Ce statut n'est pas valable");
+        }
 
-	$verif->valider($champs['horaire_fin'], "horaire_fin", "texte", 1, 100, 0);
-	if (!empty($champs['horaire_fin']) && !preg_match("/^[0-9]{1,2}:[0-9]{2}$/", $champs['horaire_fin']))
-	{
-		$verif->setErreur('horaire_fin', "Mauvais format");
-	}
+        $verif->valider($champs['titre'], "titre", "texte", 1, 80, 0);
+        $verif->valider($champs['nomLieu'], "nomLieu", "texte", 1, 80, 0);
+        $verif->valider($champs['adresse'], "adresse", "texte", 2, 100, 0);
 
-	$verif->valider($champs['horaire_complement'], "horaire_complement", "texte", 1, 100, 0);
-	$verif->valider($champs['prix'], "prix", "texte", 1, 100, 0);
-	$verif->valider($champs['prelocations'], "prelocations", "texte", 1, 100, 0);
+        if (!empty($champs['nomLieu']) && empty($champs['adresse']))
+        {
+            $verif->setErreur("adresse", "L'adresse est obligatoire");
+        }
 
+        if (!empty($champs['nomLieu']) && empty($champs['localite_id']))
+        {
+            $verif->setErreur("localite_id", "La localité est obligatoire");
+        }
 
-	if ($verif->nbErreurs() === 0)
-	{
+        if (!empty($champs['idLieu']) && ($champs['nomLieu'] != "" || $champs['adresse'] != ""))
+        {
+            $verif->setErreur('doublonLieux', 'Vous ne pouvez pas choisir 2 lieux');
+        }
 
-		//creation/nettoyage des valeurs à insérer dans la table
-		$descriptionOrig = $champs['description'];
-		if ($champs['prix'] == "0")
-		{
-			$champs['prix'] = "entrée libre";
-		}
+        // le select des lieux poste « idLieu_idSalle » quand une salle a été choisie
+        if ($champs['idLieu'] != '' && preg_match("/^[0-9]+_[0-9]+$/", (string) $champs['idLieu']))
+        {
+            [$champs['idLieu'], $champs['idSalle']] = explode("_", (string) $champs['idLieu']);
+        }
+        else
+        {
+            $champs['idSalle'] = 0;
+        }
 
-		if ($champs['urlLieu'] != "" && !preg_match("/^https?:\/\//", $champs['urlLieu']))
-		{
-			$champs['urlLieu'] = "http://".$champs['urlLieu'];
-		}
+        $verif->valider($champs['description'], "description", "texte", 4, 10000, 0);
 
-		$lieu_modifie = false;
+        $verif->validerFichier($fichiers['flyer'], "flyer", $glo_mimes_images_acceptees, 0);
+        $verif->validerFichier($fichiers['image'], "image", $glo_mimes_images_acceptees, 0);
 
+        foreach (['horaire_debut', 'horaire_fin'] as $champ_horaire)
+        {
+            $verif->valider($champs[$champ_horaire], $champ_horaire, "texte", 1, 100, 0);
+            if (!empty($champs[$champ_horaire]) && !preg_match("/^[0-9]{1,2}:[0-9]{2}$/", (string) $champs[$champ_horaire]))
+            {
+                $verif->setErreur($champ_horaire, "Mauvais format");
+            }
+        }
 
-		// pour remplir les champs nomLieu, adresse, etc. de la table evenement
-		if (!empty($champs['idLieu']))
-		{
-			// cast et non sanitize() : hors quotes, l'échappement ne bloque pas « 1 OR … »
-			$sql_lieu = "SELECT nom, adresse, quartier, localite_id, region, URL FROM lieu WHERE idLieu=".(int) $champs['idLieu'];
-			$req_lieu = $connector->query($sql_lieu);
-			$tab_lieu = $connector->fetchArray($req_lieu);
-			$champs['nomLieu'] = $tab_lieu['nom'];
-			$champs['adresse'] = $tab_lieu['adresse'];
-			$champs['quartier'] = $tab_lieu['quartier'];
-			$champs['localite_id'] = $tab_lieu['localite_id'];
-			$champs['region'] = $tab_lieu['region'];
-			$champs['urlLieu'] = $tab_lieu['URL'];
-                        $lieu_modifie = true;
-		}
-                elseif (!empty($champs['localite_id']))
+        $verif->valider($champs['horaire_complement'], "horaire_complement", "texte", 1, 100, 0);
+        $verif->valider($champs['prix'], "prix", "texte", 1, 100, 0);
+        $verif->valider($champs['prelocations'], "prelocations", "texte", 1, 100, 0);
+
+        if ($verif->nbErreurs() === 0)
+        {
+            //creation/nettoyage des valeurs à insérer dans la table
+            if ($champs['prix'] == "0")
+            {
+                $champs['prix'] = "entrée libre";
+            }
+
+            if ($champs['urlLieu'] != "" && !preg_match("/^https?:\/\//", (string) $champs['urlLieu']))
+            {
+                $champs['urlLieu'] = "http://".$champs['urlLieu'];
+            }
+
+            [$champs, $lieu_modifie] = Evenement::resolveLieuFields($champs);
+
+            /**
+             * Efface du disque le fichier que l'UPDATE s'apprête à remplacer.
+             * À appeler tant que la base porte encore son nom, sinon il devient introuvable.
+             *
+             * @param string $colonne Nom de colonne littéral ('flyer' ou 'image'), jamais une saisie
+             */
+            $supprimerAncienFichier = function (string $colonne, int $idEvenement) use ($connector): void
+            {
+                $req = $connector->query("SELECT $colonne FROM evenement WHERE idEvenement=" . $idEvenement);
+
+                if (!$req)
                 {
-                    $loc_qua = explode("_", $champs['localite_id']);
-                    if (count($loc_qua) > 1)
+                    return;
+                }
+
+                $ancien = $connector->fetchArray($req);
+
+                if (!empty($ancien[$colonne]))
+                {
+                    Evenement::rmImageAndItsMiniature($ancien[$colonne]);
+                }
+            };
+
+            // les horaires saisis en hh:mm se rapportent à la date de chaque événement traité :
+            // ils sont reconvertis dans la boucle, à partir de la saisie conservée ici
+            $horaires_saisis = ['horaire_debut' => $champs['horaire_debut'], 'horaire_fin' => $champs['horaire_fin']];
+
+            // le premier événement traité porte les images redimensionnées ; les suivants en
+            // reçoivent une copie, pour ne pas retraiter le même fichier N fois
+            $sources_copiees = ['flyer' => '', 'image' => ''];
+            $compteur_evenements = 0;
+
+            foreach ($evenements as $idEven_courant)
+            {
+                $idEven_courant = (int) $idEven_courant;
+
+                $req_even = $connector->query("SELECT idEvenement, titre, dateEvenement FROM evenement WHERE idEvenement=" . $idEven_courant);
+                $tab_even = $connector->fetchArray($req_even);
+
+                if (empty($tab_even))
+                {
+                    continue;
+                }
+
+                foreach ($horaires_saisis as $champ_horaire => $horaire_saisi)
+                {
+                    $champs[$champ_horaire] = empty($horaire_saisi)
+                        ? ''
+                        : Evenement::horaireToDatetime((string) $horaire_saisi, $tab_even['dateEvenement']);
+                }
+
+                $sql_fichiers = "";
+                foreach (array_keys($nouveaux_fichiers) as $colonne)
+                {
+                    if (empty($fichiers[$colonne]['name']))
                     {
-                        $champs['localite_id'] =  $loc_qua[0];
-                        $champs['quartier'] = $loc_qua[1];
-                        $champs['region'] = 'ge';
+                        continue;
+                    }
+
+                    $suffixe = $colonne === 'image' ? "_img" : "";
+                    $nouveaux_fichiers[$colonne] = $idEven_courant . "_" . $tab_even['dateEvenement'] . $suffixe . strrchr((string) $fichiers[$colonne]['name'], '.');
+
+                    $supprimerAncienFichier($colonne, $idEven_courant);
+                    $sql_fichiers .= ", " . $colonne . "='" . $connector->sanitize($nouveaux_fichiers[$colonne]) . "'";
+                }
+
+                $sql_update = "UPDATE evenement SET ";
+
+                foreach ($champs as $c => $v)
+                {
+                    if ($c === "organisateurs")
+                    {
+                        continue;
+                    }
+
+                    if (!empty($v) || (in_array($c, $champs_du_lieu, true) && $lieu_modifie))
+                    {
+                        $sql_update .= $c."='".$connector->sanitize($v)."', ";
+                    }
+                }
+
+                $sql_update .= "date_derniere_modif='".date("Y-m-d H:i:s")."'";
+                $sql_update .= $sql_fichiers . " WHERE idEvenement=" . $idEven_courant;
+
+                if (!$connector->query($sql_update))
+                {
+                    HtmlShrink::msgErreur("La mise à jour de l'événement " . $idEven_courant . " a échoué");
+                    continue;
+                }
+
+                /*
+                 * Les organisateurs ne sont touchés que si le champ a été rempli : le vider
+                 * n'est pas une demande de les retirer, c'est l'absence de demande — comme
+                 * pour tous les autres champs de ce formulaire.
+                 */
+                if ($champs['organisateurs'] !== [])
+                {
+                    $connector->query("DELETE FROM evenement_organisateur WHERE idEvenement=" . $idEven_courant);
+
+                    foreach (array_unique($champs['organisateurs']) as $idOrg)
+                    {
+                        $connector->query("INSERT INTO evenement_organisateur (idEvenement, idOrganisateur) VALUES (" . $idEven_courant . ", " . (int) $idOrg . ")");
+                    }
+                }
+
+                /*
+                 * TRAITEMENT DES IMAGES UPLOADEES
+                 */
+                foreach ($nouveaux_fichiers as $colonne => $nom_fichier)
+                {
+                    if (empty($fichiers[$colonne]['name']))
+                    {
+                        continue;
+                    }
+
+                    if ($compteur_evenements === 0)
+                    {
+                        $imD2 = new ImageDriver2("evenement");
+                        $imD2->processImage($_FILES[$colonne], $nom_fichier, 600, 600);
+                        $imD2->processImage($_FILES[$colonne], "s_" . $nom_fichier, 120, 190, '', 0);
+
+                        $sources_copiees[$colonne] = $nom_fichier;
                     }
                     else
                     {
-                        $champs['quartier'] = '';
-
-                        // Nyon est vaudoise, mais rattachée à l'agenda genevois
-                        if ($champs['localite_id'] == 529 )
-                        {
-                            $champs['region'] = 'ge';
-                        }
-                        else
-                        {
-                            // La région suit le canton de la localité choisie — la France ('rf')
-                            // et « Autre » ('hs') y comprises, depuis qu'elles sont des localités.
-                            // cast et non sanitize() : hors quotes, l'échappement ne bloque pas « 1 OR … »
-                            $sql_lieu = "SELECT canton FROM localite WHERE id=".(int) $champs['localite_id'];
-                            $req_lieu = $connector->query($sql_lieu);
-                            $tab_lieu = $connector->fetchArray($req_lieu);
-                            $champs['region'] = $tab_lieu['canton'];
-                        }
+                        Evenement::safeCopyWithMiniature($sources_copiees[$colonne], $nom_fichier);
                     }
-
-                    $champs['idLieu'] = "0";
-                    $lieu_modifie = true;
                 }
 
-		//dedoublonne
-		if (count($champs['organisateurs']) > 0)
-		{
-			$champs['organisateurs'] = array_unique($champs['organisateurs']);
-		}
+                HtmlShrink::msgOk('Mise à jour de <a href="/event/evenement.php?idE='.$idEven_courant.'">'.sanitizeForHtml($tab_even['titre']).'</a> le <a href="/index.php?courant='.sanitizeForHtml($tab_even['dateEvenement']).'">'.DateHelper::isoToFr($tab_even['dateEvenement'], 'annee').'</a> réussie');
 
-		$compteur_evenements = 0;
-        $srcFlyer = '';
-        $src_image = '';
-		foreach ($evenements as $idEven_courant)
-		{
-			$modifFlyerSQL = ""; // champ SQL pour le flyer
+                $compteur_evenements++;
+            } // foreach
 
-			$req_even = $connector->query("SELECT * FROM evenement WHERE idEvenement =".(int) $idEven_courant);
+            $logger->info('[admin/events] remplacement groupé', ['nb' => $compteur_evenements, 'statut' => $champs['statut'], 'genre' => $champs['genre'], 'idLieu' => (int) $champs['idLieu'], 'idP' => (int) ($_SESSION['SidPersonne'] ?? 0)]);
 
-			$tab_even = $connector->fetchArray($req_even);
-
-			$nouv_genre = $tab_even['genre'];
-
-			$champs['horaire_debut'] = $_POST['horaire_debut'];
-
-			/*  Adaptation pour horaire_debut */
-			$lendemain_evenement = DateHelper::isoToNextDay($tab_even['dateEvenement']);
-
-			if (!empty($champs['horaire_debut']))
-			{
-				$tab_horaire_debut = explode(":", (string) $champs['horaire_debut']);
-
-				$sec_horaire_debut = (int) $tab_horaire_debut[0] * 3600 + (int) $tab_horaire_debut[1] * 60;
-                //echo "sec_H:".$sec_horaire_debut;
-
-				if ($sec_horaire_debut >= 0 && $sec_horaire_debut <= 21600)
-				{
-					$champs['horaire_debut'] = $lendemain_evenement." ".$champs['horaire_debut'];
-				}
-				else
-				{
-					$champs['horaire_debut'] = $tab_even['dateEvenement']." ".$champs['horaire_debut'];
-				}
-			}
-
-			$champs['horaire_fin'] = $_POST['horaire_fin'];
-
-			if (!empty($champs['horaire_fin']))
-			{
-				$tab_horaire_fin = explode(":", (string) $champs['horaire_fin']);
-
-				$sec_horaire_fin = (int) $tab_horaire_fin[0] * 3600 + (int) $tab_horaire_fin[1] * 60;
-                //echo "sec_H:".$sec_horaire_fin;
-
-				if ($sec_horaire_fin >= 0 && $sec_horaire_fin <= 21600)
-				{
-					$champs['horaire_fin'] = $lendemain_evenement." ".$champs['horaire_fin'];
-				}
-				else
-				{
-					$champs['horaire_fin'] = $tab_even['dateEvenement']." ".$champs['horaire_fin'];
-				}
-			}
-
-			if (!empty($erreursEv))
-			{
-				HtmlShrink::msgErreur($erreursEv);
-				continue;
-			}
-
-			if (!empty($fichiers['flyer']['name']))
-			{
-				$champs['flyer'] = $idEven_courant . "_" . $tab_even['dateEvenement'] . strrchr((string) $fichiers['flyer']['name'], '.');
-            }
-
-			if (!empty($fichiers['image']['name']))
-			{
-				$champs['image'] = $idEven_courant . "_" . $tab_even['dateEvenement'] . "_img" . strrchr((string) $fichiers['image']['name'], '.');
-            }
-
-
-			$sql_flyer = ""; // champ SQL pour le flyer
-
-			//si un nouveau flyer a été uploadé
-			if (!empty($champs['flyer']))
-			{
-
-				$sql_flyer = ", flyer='".$champs['flyer']."'";
-				$req_flyer = $connector->query("SELECT flyer FROM evenement WHERE idEvenement=".(int)$idEven_courant);
-
-				if ($req_flyer)
-				{
-					$affFly = $connector->fetchArray($req_flyer);
-
-					//si  un ancien flyer a été effectivement trouvé suppression des fichiers
-					if (!empty($affFly['flyer']))
-					{
-                        Evenement::rmImageAndItsMiniature($affFly['flyer']);
-					}
-				}
-                //si le champ "supprimer le flyer" est coché sans qu'un nouveau flyer soit remplacant
-			}
-
-			if (!empty($supprimer['flyer']))
-			{
-				$sql_flyer = ", flyer=''";
-				$req_flyer = $connector->query("SELECT flyer FROM evenement WHERE idEvenement=".(int)$idEven_courant);
-
-				//si  un ancien flyer a été effectivement trouvé suppression des fichiers
-				if ($req_flyer)
-				{
-					$affFly = $connector->fetchArray($req_flyer);
-
-					if (!empty($affFly['flyer']))
-					{
-                        Evenement::rmImageAndItsMiniature($affFly['flyer']);
-					}
-				}
-			} //elseif supprimer flyer
-
-			$sql_image = ""; // champ SQL pour l'image
-
-			//si un nouveau flyer
-			if (!empty($champs['image']))
-			{
-				$sql_image = ", image='".$champs['image']."'";
-				$req_image = $connector->query("SELECT image FROM evenement WHERE idEvenement=".(int)$idEven_courant);
-
-				if ($req_image)
-				{
-					$affImg = $connector->fetchArray($req_image);
-
-					//si  un ancien flyer a êµ© effectivement trouvé¡³uppression des fichiers
-					if (!empty($affImg['image']))
-					{
-                        Evenement::rmImageAndItsMiniature($affImg['image']);
-					}
-				}
-    			//si le champ "supprimer le flyer" est coché¡³ans qu'un nouveau flyer soit remplacant
-			}
-
-			if (!empty($supprimer['image']))
-			{
-				$sql_image = ", image=''";
-				$req_image = $connector->query("SELECT image FROM evenement WHERE idEvenement=".(int)$idEven_courant);
-
-				//si  un ancien flyer a êµ© effectivement trouvé¡³uppression des fichiers
-				if ($req_image)
-				{
-					$affimage= $connector->fetchArray($req_image);
-
-					if (!empty($affimage['image']))
-					{
-                        Evenement::rmImageAndItsMiniature($affImg['image']);
-					}
-				}
-			} //if supprimer image
-
-			$sql_update = "UPDATE evenement SET ";
-
-			foreach ($champs as $i => $v)
-			{
-                if ((!empty($v) && $i != "idPersonne" && $i != "organisateurs") || (($i == "idLieu" || $i == "urlLieu" || $i == "quartier" || $i == "localite_id" || $i == "region") && $lieu_modifie == true )
-                )
-                {
-                        $sql_update .= $i."='".$connector->sanitize($v)."', ";
-                }
-			}
-
-			$sql_update .= "date_derniere_modif='".date("Y-m-d H:i:s")."'";
-			$sql_update .= $sql_flyer.$sql_image."
-			WHERE idEvenement=".(int) $idEven_courant;
-
-			$req_update = $connector->query($sql_update);
-
-			/*
-			* MAJ réussie, message OK, et RAZ de l'action
-			*/
-			if ($req_update)
-			{
-				HtmlShrink::msgOk('Mise à jour de <a href="/event/evenement.php?idE='.(int)$idEven_courant.'">'.$tab_even['titre'].'</a> le <a href="/index.php?courant='.$tab_even['dateEvenement'].'">'.DateHelper::isoToFr($tab_even['dateEvenement'], 'annee').'</a> réussie');
-
-				$sql = "DELETE FROM evenement_organisateur WHERE idEvenement=".(int) $idEven_courant;
-				$req = $connector->query($sql);
-
-				$action_terminee = true;
-            }
-
-			/*
-			* TRAITEMENT DE L'IMAGE UPLOADEE
-			*/
-			if (!empty($fichiers['flyer']['name']) && $compteur_evenements == 0)
-			{
-				$imD2 = new ImageDriver2("evenement");
-				$erreur_image = [];
-				$erreur_image[] = $imD2->processImage($_FILES['flyer'], $champs['flyer'], 400, 400);
-				$erreur_image[] = $imD2->processImage($_FILES['flyer'], "s_" . $champs['flyer'], 120, 190, '', 1);
-
-				$srcFlyer = $champs['flyer'];
-			}
-			elseif (!empty($fichiers['flyer']['name']))
-			{
-                Evenement::safeCopyWithMiniature($srcFlyer, $champs['flyer']);
-            }
-
-            if (!empty($fichiers['image']['name']) && $compteur_evenements == 0)
-			{
-
-				$imD2 = new ImageDriver2("evenement");
-				$erreur_image = [];
-				$erreur_image[] = $imD2->processImage($_FILES['image'], $champs['image'], 400, 400);
-				$erreur_image[] = $imD2->processImage($_FILES['image'], "s_" . $champs['image'], 120, 190, '', 1);
-
-				$src_image = $champs['image'];
-			}
-			elseif (!empty($fichiers['image']['name']))
-			{
-                Evenement::safeCopyWithMiniature($src_image, $champs['image']);
-            }
-
-            foreach ($champs['organisateurs'] as $no => $idOrg)
-            {
-                if (!empty($idOrg))
-                {
-                    $sql = "INSERT INTO evenement_organisateur (idEvenement, idOrganisateur) VALUES (" . (int) $idEven_courant . ", " . (int) $idOrg . ")";
-                    $connector->query($sql);
-                }
-            }
-
-			$compteur_evenements++;
-		} // foreach
-
-		unset($_POST);
-		unset($_FILES);
-		foreach ($champs as $i => $v)
-		{
-			$champs[$i] = '';
-		}
-	}
+            // le formulaire se réaffiche vide : les valeurs viennent d'être appliquées
+            $champs = array_fill_keys(array_keys($champs), '');
+            $evenements = [];
+        }
+    }
 }
 
 
@@ -804,7 +661,7 @@ if ($verif->nbErreurs() > 0)
 
         <?= HtmlShrink::getPaginationString($tot_elements, $get['page'], $get['nblignes'], 1, "", "?element=" . $get['element'] . "&tri_gerer=" . $get['tri_gerer'] . "&ordre=" . $get['ordre'] . "&nblignes=" . $get['nblignes'] . "&filtre_genre=" . $get['filtre_genre'] . "&terme=" . $get['terme'] . "&page=") ?>
 
-        <?= $verif->getErreur("evenements") ?>
+        <?= $verif->getHtmlErreur("evenements") ?>
 
         <div style="margin: 0 auto;width: 94%;">
             <h2 style="font-size:1.3em;margin:10px 0;">Remplacer les données des événements sélectionnés ci-dessus par :</h2>
@@ -825,21 +682,6 @@ if ($verif->nbErreurs() > 0)
         <!-- DEB STATUT -->
         <fieldset>
             <legend>Statut</legend>
-            <!--
-            <ul class="radio">
-            <?php
-            foreach (Evenement::$statuts_evenement as $s => $v)
-            {
-                $coche = '';
-                if (strcmp((string) $s, $champs['statut']) == 0)
-                {
-                    $coche = 'checked="1"';
-                }
-                echo '<li class="listehoriz"><input type="radio" name="statut" value="'.sanitizeForHtml($s).'" '.$coche.' id="genre_'.sanitizeForHtml($s).'" class="radio_horiz" /><label class="continu" for="genre_'.sanitizeForHtml($s).'">'.sanitizeForHtml($v).'</label></li>';
-            }
-            ?>
-            </ul>
-            -->
             <ul class="radio">
                 <?php
 
@@ -859,7 +701,7 @@ if ($verif->nbErreurs() > 0)
             </ul>
 
             <?php
-            echo $verif->getErreur("statut");
+            echo $verif->getHtmlErreur("statut");
             ?>
 
             <p><input type="checkbox" name="supprimerSerie" value="ok" /><label><strong>Supprimer</strong></label></p>
@@ -873,7 +715,7 @@ if ($verif->nbErreurs() > 0)
             foreach ($glo_tab_genre as $na => $la)
             {
                 $coche = '';
-                if ($na == $get['filtre_genre'])
+                if ($na === $champs['genre'])
                 {
                     $coche = 'checked="1"';
                 }
@@ -885,7 +727,7 @@ if ($verif->nbErreurs() > 0)
             </ul>
 
             <?php
-            echo $verif->getErreur("genre");
+            echo $verif->getHtmlErreur("genre");
             ?>
         </fieldset>
 
@@ -896,60 +738,14 @@ if ($verif->nbErreurs() > 0)
 
     <select name="idLieu" id="idLieu" class="js-select2-options-with-style" data-placeholder=""  style="max-width:350px">
         <?php
-    //Menu des lieux actifs de la base
-    echo "<option value=\"\">&nbsp;</option>";
-    $req_lieux = $connector->query("
-    SELECT lieu.idLieu, lieu.nom, COALESCE(localite.canton, '') AS canton
-    FROM lieu
-    LEFT JOIN localite ON lieu.localite_id = localite.id
-    WHERE lieu.statut='actif'
-    ORDER BY
-      " . Localite::sqlOrdreCantons("COALESCE(localite.canton, '')") . ",
-      TRIM(LEADING 'L\'' FROM (TRIM(LEADING 'Les ' FROM (TRIM(LEADING 'La ' FROM (TRIM(LEADING 'Le ' FROM lieu.nom)))))))
-      COLLATE utf8mb4_unicode_ci"
-     );
-
-    $current_canton = null;
-    while ($lieuTrouve = $connector->fetchArray($req_lieux))
-    {
-        $canton = $lieuTrouve['canton'];
-        if ($canton !== $current_canton) {
-            if ($current_canton !== null) echo '</optgroup>';
-            echo '<optgroup label="' . (Localite::CANTONS[$canton] ?? sanitizeForHtml($canton)) . '">';
-            $current_canton = $canton;
-        }
-
-        echo "<option ";
-
-        $nom_lieu = $lieuTrouve['nom'];
-
-        if ($lieuTrouve['idLieu'] == $champs['idLieu'])
-        {
-            echo "selected=\"selected\" ";
-        }
-
-        echo "value=\"" . (int)$lieuTrouve['idLieu'] . "\">" . sanitizeForHtml($nom_lieu) . "</option>";
-
-        $sql_salle = "select * from salle where idLieu=".(int)$lieuTrouve['idLieu']. " AND salle.status='actif' ";
-        $req_salle = $connector->query($sql_salle);
-        while ($tab_salle = $connector->fetchArray($req_salle))
-
-        {
-            echo "<option ";
-            if ($champs['idSalle'] != 0 && $tab_salle['idSalle'] == $champs['idSalle'])
-            {
-                echo "selected=\"selected\" ";
-            }
-            echo " style=\"font-style:italic;color:#444;\" value=".(int)$lieuTrouve['idLieu']."_".(int)$tab_salle['idSalle'].">".sanitizeForHtml($nom_lieu)."&nbsp;– ".sanitizeForHtml($tab_salle['nom'])."</option>";
-
-        }
-    }
-    if ($current_canton !== null) echo '</optgroup>';
-    ?>
+        // Les lieux fribourgeois restent proposés : l'administration édite aussi des
+        // événements qui y sont rattachés.
+        echo Lieu::getOptionsHtml($champs['idLieu'], $champs['idSalle'], exclureFribourg: false);
+        ?>
     </select>
     <?php
-    echo $verif->getErreur("idLieu");
-    echo $verif->getErreur("dejaPresent");
+    echo $verif->getHtmlErreur("idLieu");
+    echo $verif->getHtmlErreur("dejaPresent");
     ?>
     </p>
 
@@ -960,7 +756,7 @@ if ($verif->nbErreurs() > 0)
     <?php
     $tab_nomLieu_label = ["for" => "nomLieu"];
     echo HtmlShrink::formLabel($tab_nomLieu_label, "Nom du lieu :");
-    echo $verif->getErreur("nomLieuIdentique");
+    echo $verif->getHtmlErreur("nomLieuIdentique");
 
     $tab_nomLieu = ["type" => "text", "name" => "nomLieu", "id" => "nomLieu", "size" => "40", "maxlength" => "80", "tabindex" => "9", "value" => ""];
         if (empty($champs['idLieu']))
@@ -968,14 +764,14 @@ if ($verif->nbErreurs() > 0)
         $tab_nomLieu['value'] = sanitizeForHtml($champs['nomLieu']);
     }
     echo HtmlShrink::formInput($tab_nomLieu);
-    echo $verif->getErreur("nomLieu");
+    echo $verif->getHtmlErreur("nomLieu");
     ?>
     </p>
 
     <p>
     <label for="adresse">Adresse</label>
     <?php
-    echo $verif->getErreur("adresseIdentique");
+    echo $verif->getHtmlErreur("adresseIdentique");
     ?>
 
     <input type="text" name="adresse" id="adresse" size="60" maxlength="100" title="rue, no" tabindex="10" value="
@@ -985,7 +781,7 @@ if ($verif->nbErreurs() > 0)
            } ?>" />
     <?php
     echo $verif->getHtmlErreur("adresse");
-    echo $verif->getErreur("doublonLieux");
+    echo $verif->getHtmlErreur("doublonLieux");
     ?>
     </p>
 
@@ -1018,7 +814,7 @@ if ($verif->nbErreurs() > 0)
                echo sanitizeForHtml($champs['urlLieu']);
            } ?>" />
     <?php
-    echo $verif->getErreur("urlLieu");
+    echo $verif->getHtmlErreur("urlLieu");
     ?>
     </p>
 
@@ -1036,7 +832,7 @@ if ($verif->nbErreurs() > 0)
     <label for="titre">Titre</label>
     <input type="text" name="titre" id="titre" size="60" maxlength="80" title="titre de l'événement" tabindex="11" value="<?php echo sanitizeForHtml($champs['titre']) ?>" />
     <?php
-    echo $verif->getErreur("titre");
+    echo $verif->getHtmlErreur("titre");
     ?>
     </p>
     <!-- DESCRIPTION -->
@@ -1061,28 +857,7 @@ if ($verif->nbErreurs() > 0)
     <p>
         <label for="organisateurs">Organisateur(s)</label>
         <select name="organisateurs[]" id="organisateurs" class="js-select2-options-with-complement" multiple data-placeholder="Choisissez un ou plusieurs organisateurs" style="max-width:400px;">
-        <?php
-
-        /*
-         * Si l'ajout d'événement se fait depuis une page 'lieu', le formulaire est
-         * pré-complété pour l'horaire et le prix
-         */
-
-            //Menu des lieux actifs de la base
-            echo "<option value=\"0\">&nbsp;</option>";
-            $req = $connector->query("
-            SELECT idOrganisateur, nom FROM organisateur WHERE statut='actif' ORDER BY TRIM(LEADING 'L\'' FROM (TRIM(LEADING 'Les ' FROM (TRIM(LEADING 'La ' FROM (TRIM(LEADING 'Le ' FROM nom))))))) COLLATE utf8mb4_unicode_ci"
-             );
-
-
-            while ($tab = $connector->fetchArray($req))
-            {
-
-                echo "<option ";
-
-                echo "value=\"" . (int)$tab['idOrganisateur'] . "\">" . sanitizeForHtml($tab['nom']) . "</option>";
-        }
-        ?>
+        <?php echo Organisateur::getOptionsHtml($champs['organisateurs'] ?? []); ?>
     </select>
 
     </p>
@@ -1151,57 +926,25 @@ if ($verif->nbErreurs() > 0)
 
     <p>
     <label for="flyer">Flyer :</label>
-    <input type="file" name="flyer" id="flyer" class="js-file-upload-size-max" size="25"
-    accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif,image/webp" tabindex="12" class="fichier" />
+    <input type="file" name="flyer" id="flyer" class="js-file-upload-size-max fichier" size="25"
+    accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif,image/webp" tabindex="12" />
     </p>
 
     <div class="spacer"></div>
     <?php
-    echo $verif->getErreur("flyer");
-
-
-    //affichage du flyer  et du bouton pour supprimer
-    if (isset($get_idE) && !empty($champs['flyer']) && !$verif->getErreur($champs['flyer']))
-    {
-        echo '<div class="supImg">';
-        $iconeImage = '<img src="' . $assets->get(Evenement::getAssetPath(Evenement::getFilePath($champs['flyer']))) . '" alt="Flyer" />';
-        ?>
-
-        <div><label for="sup_flyer" class="continu">Supprimer</label>
-        <input type="checkbox" name="sup_flyer" id="sup_flyer" value="flyer" class="checkbox" ";
-
-        <?php
-        if (!empty($supprimer['flyer']) && $verif->nbErreurs() > 0)
-        {
-            echo "checked ";
-        }
-        echo "/></div></div>";
-    }
+    // Aucun aperçu ni case « Supprimer » ici, contrairement à evenement-edit.php : le
+    // formulaire porte sur N événements, qui n'ont pas le même flyer à montrer.
+    echo $verif->getHtmlErreur("flyer");
     ?>
 
         <p>
         <label for="image">Image :</label>
-        <input type="file" name="image" id="flyer" class="js-file-upload-size-max" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif,image/webp" class="fichier" />
+        <input type="file" name="image" id="image" class="js-file-upload-size-max fichier" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif,image/webp" />
         </p>
-        <div class="guideChamp">Seul les formats JPEG, PNG et GIF sont acceptés.</div>
+        <div class="guideChamp">Formats JPEG, PNG, GIF ou WebP; max. 2 Mo</div>
     <div class="spacer"></div>
     <?php
-    echo $verif->getErreur("image");
-
-
-    //affichage du flyer, et du bouton pour supprimer
-    if (isset($get_idE) && !empty($champs['image']) && !$verif->getErreur('image'))
-    {
-        $iconeImage = "<img src=\"" . $assets->get(Evenement::getAssetPath(Evenement::getFilePath($champs['image']))) . "\"  alt=\"Photo\" />";
-
-        echo "<div><label for=\"sup_image\" class=\"continu\">Supprimer</label><input type=\"checkbox\" name=\"sup_image\" id=\"sup_image\" value=\"image\" class=\"checkbox\" ";
-
-        if (!empty($supprimer['image']) && $verif->nbErreurs() == 0)
-        {
-            echo "checked ";
-        }
-        echo "/></div></div>";
-    }
+    echo $verif->getHtmlErreur("image");
     ?>
     </fieldset>
 
@@ -1210,6 +953,7 @@ if ($verif->nbErreurs() > 0)
 
         <p class="piedForm">
             <input type="hidden" name="formulaire" value="ok" />
+            <input type="hidden" name="token" value="<?= sanitizeForHtml(SecurityToken::getToken()) ?>" />
             <input type="submit" value="Remplacer" tabindex="19" class="submit" />
         </p>
     </div>

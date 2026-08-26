@@ -1,14 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <files psalm-version="6.16.1@f1f5de594dc76faf8784e02d3dc4716c91c6f6ac">
-  <file src="admin/events.php">
-    <InvalidGlobal>
-      <code><![CDATA[global $connector, $glo_regions, $mimes_images_acceptes, $glo_tab_ailleurs, $glo_tab_quartiers2;]]></code>
-    </InvalidGlobal>
-    <NoValue>
-      <code><![CDATA[$champs['flyer']]]></code>
-      <code><![CDATA[$champs['image']]]></code>
-    </NoValue>
-  </file>
   <file src="admin/index.php">
     <InvalidGlobal>
       <code><![CDATA[global $connector;]]></code>
@@ -16,7 +7,6 @@
   </file>
   <file src="evenement-edit.php">
     <InsaneComparison>
-      <code><![CDATA[$champs['region'] == $id]]></code>
       <code><![CDATA[$champs['statut'] != 'propose']]></code>
     </InsaneComparison>
   </file>
