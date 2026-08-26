@@ -1,0 +1,149 @@
+/*
+ * admin/events.php — liste des événements et formulaire d'édition groupée.
+ *
+ * Chargée automatiquement d'après $nom_page (_header.inc.php), après admin/tables.css dont
+ * elle reprend les tableaux, et avant desktop.css / mobile.css : les règles qui doivent
+ * survivre à ces deux-là portent leur propre média.
+ */
+
+/* ── Filtres et pagination ───────────────────────────────────────────────── */
+
+/* Les trois champs de filtre, le bouton et le menu du nombre de lignes tenaient par des
+   float et des largeurs en pourcentage qui ne tombaient jamais juste. */
+#filters
+{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.6em 1em;
+    width: 96%;
+    margin: 0 auto 0.6em auto;
+}
+
+#events-filters
+{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5em;
+    margin: 0;
+}
+
+#filters ul.menu_nb_res
+{
+    /* le float et la largeur de 50% d'admin/tables.css n'ont plus lieu d'être dans un flex */
+    float: none;
+    width: auto;
+    margin: 0;
+}
+
+/* La pagination et le menu du nombre de lignes partagent la marge du tableau, pour que les
+   deux blocs commencent et finissent sur les mêmes verticales. */
+#contenu .pagination
+{
+    width: 96%;
+    margin: 0.6em auto;
+}
+
+/* ── Formulaire d'édition groupée ────────────────────────────────────────── */
+
+#events-bulk-titre
+{
+    width: 96%;
+    margin: 1.4em auto 0.4em auto;
+    font-size: 1.3em;
+}
+
+#ajouter_editer
+{
+    width: 96%;
+    margin: 0 auto;
+}
+
+/* Les blocs repliés : lieu saisi à la main, contenu de l'événement, fichiers. Trois
+   sections que l'édition groupée touche rarement, et qui doublaient la hauteur du
+   formulaire en restant dépliées. */
+.events-bulk-repliable
+{
+    margin: 5px 0.1em 0 0.1em;
+    background-color: #f2f2f2;
+    border: 1px solid #dcdcdc;
+}
+
+.events-bulk-repliable > summary
+{
+    padding: 0.6em 0.8em;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.events-bulk-repliable > summary:hover
+{
+    background: #e8e8e8;
+}
+
+/* un <details> imbriqué dans un fieldset ne doit pas rouvrir un cadre par-dessus le sien */
+#ajouter_editer .events-bulk-repliable fieldset
+{
+    margin-top: 0;
+    border: none;
+}
+
+/* Dans le fieldset Lieu, le bloc « sinon » est déjà à l'intérieur d'un cadre. */
+#ajouter_editer fieldset > .events-bulk-repliable
+{
+    margin: 0.6em 0 0 0;
+    background: transparent;
+    border: none;
+    border-top: 1px dotted #c8c8c8;
+}
+
+#ajouter_editer fieldset > .events-bulk-repliable > summary
+{
+    padding-left: 0;
+    font-weight: normal;
+}
+
+/* La case Supprimer partage la ligne des statuts, mais s'en détache : une coche par
+   inadvertance y est irréversible. */
+#ajouter_editer li.events-bulk-supprimer
+{
+    margin-left: 1.6em;
+    padding-left: 1.2em;
+    border-left: 1px solid #c8c8c8;
+}
+
+#ajouter_editer li.events-bulk-supprimer label
+{
+    color: #a02020;
+}
+
+/* ── Petits écrans ───────────────────────────────────────────────────────── */
+
+@media screen and (max-width: 799.98px)
+{
+    /* dans les fieldsets Statut et Catégorie, les boutons radio l'un au-dessus de l'autre :
+       en ligne, sur une colonne étroite, on ne sait plus quel libellé va avec quelle case */
+    #ajouter_editer ul.mobile-vertical li
+    {
+        display: block;
+        list-style-type: none;
+    }
+
+    #ajouter_editer li.events-bulk-supprimer
+    {
+        margin-left: 0;
+        padding-left: 0;
+        padding-top: 0.6em;
+        border-left: none;
+        border-top: 1px solid #c8c8c8;
+    }
+
+    #filters,
+    #events-filters
+    {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}

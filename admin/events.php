@@ -494,7 +494,10 @@ $erreurs = $verif->getErreurs();
     <?php // filtres, tri et nombre de lignes sont en session : la pagination n'a que la page à porter ?>
     <?= HtmlShrink::getPaginationString($tot_elements, $get['page'], $nblignes, 1, "", "?page=") ?>
 
-    <form method="post" id="formGererEvenements" class='js-submit-freeze-wait' enctype="multipart/form-data" action="">
+    <?php // l'avertissement autrefois affiché en tête de formulaire est posé ici : il arrive
+          // au moment où il compte, et ne pousse plus les champs vers le bas du reste du temps ?>
+    <form method="post" id="form-events-bulk" class="js-submit-freeze-wait" enctype="multipart/form-data" action=""
+          data-confirm="Attention : toutes les données existantes seront écrasées. Seuls les champs non vides écrasent les champs existants.">
 
         <table id="ajouts" class="jquery-checkboxes table-hauteur-figee">
 
@@ -561,78 +564,55 @@ $erreurs = $verif->getErreurs();
 
         <?= $verif->getHtmlErreur("evenements") ?>
 
-        <div style="margin: 0 auto;width: 94%;">
-            <h2 style="font-size:1.3em;margin:10px 0;">Remplacer les données des événements sélectionnés ci-dessus par :</h2>
-            <p><span style="background:yellow">Attention :</span><b>toutes</b> les données existantes seront écrasées</p>
-            <p>Seuls les champs non vides écrasent les champs existants</p>
-        </div>
-        <!--
-        <p class="piedForm">
-        <input type="submit" value="Remplacer" tabindex="19" class="submit" />
-        </p>
-        -->
-        <div id="ajouter_editer">
-            <p class="piedForm">
-                <input type="hidden" name="formulaire" value="ok" />
-                <input type="submit" value="Remplacer" tabindex="19" class="submit" />
-            </p>
+        <h2 id="events-bulk-titre">Remplacer les données des événements sélectionnés ci-dessus par :</h2>
 
-        <!-- DEB STATUT -->
+        <?php // l'avertissement d'écrasement n'est plus un pavé au-dessus du formulaire :
+              // il est rappelé au moment où il compte, dans le confirm posé par data-confirm ?>
+
+        <div id="ajouter_editer">
+
         <fieldset>
             <legend>Statut</legend>
-            <ul class="radio">
+            <ul class="radio mobile-vertical">
                 <?php
-
-                $statuts = ['actif' => '<strong>publié</strong> (visible sur le site)',  'complet' => '<strong>complet</strong> (visible sur le site mais marqué comme étant complet)', 'annule' => '<strong>annulé</strong> (visible sur le site mais marqué comme étant annulé)', 'inactif' => '<strong>dépublié</strong> (non visible sur le site)'];
+                $statuts = ['actif' => 'publié', 'complet' => 'complet', 'annule' => 'annulé', 'inactif' => 'dépublié'];
                 foreach ($statuts as $s => $n)
                 {
-                    $coche = '';
-                    if (strcmp($s, $champs['statut']) == 0)
-                    {
-                        $coche = 'checked="checked"';
-                    }
-                    echo '<li style="display:block">
-                    <input type="radio" name="statut" value="'.$s.'" '.$coche.' id="statut_'.$s.'" title="statut de l\'événement" class="radio_horiz" />
-                    <label class="continu" for="statut_'.$s.'">'.$n.'</label></li>';
+                    $coche = $s === $champs['statut'] ? ' checked="checked"' : '';
+                    echo '<li class="listehoriz">'
+                        . '<input type="radio" name="statut" value="' . $s . '"' . $coche . ' id="statut_' . $s . '" title="statut de l\'événement" class="radio_horiz" />'
+                        . '<label class="continu" for="statut_' . $s . '"><strong>' . $n . '</strong></label></li>';
                 }
                 ?>
+                <li class="listehoriz events-bulk-supprimer">
+                    <input type="checkbox" name="supprimerSerie" id="supprimerSerie" value="ok" class="checkbox"
+                           data-confirm="Supprimer définitivement les événements sélectionnés, avec leurs images ? Cette action est irréversible." />
+                    <label class="continu" for="supprimerSerie"><strong>Supprimer</strong></label>
+                </li>
             </ul>
-
-            <?php
-            echo $verif->getHtmlErreur("statut");
-            ?>
-
-            <p><input type="checkbox" name="supprimerSerie" value="ok" /><label><strong>Supprimer</strong></label></p>
-
+            <?= $verif->getHtmlErreur("statut") ?>
         </fieldset>
 
         <fieldset>
             <legend>Catégorie</legend>
-            <ul class="radio">
+            <ul class="radio mobile-vertical">
             <?php
             foreach ($glo_tab_genre as $na => $la)
             {
-                $coche = '';
-                if ($na === $champs['genre'])
-                {
-                    $coche = 'checked="1"';
-                }
-                echo '<li class="horiz">
-                <input type="radio" name="genre" value="'.$na.'" '.$coche.' id="genre_'.$na.'" title="" class="radio_horiz" />
-                <label class="continu" for="genre_'.$na.'">'.sanitizeForHtml($la).'</label></li>';
+                $coche = $na === $champs['genre'] ? ' checked="checked"' : '';
+                echo '<li class="listehoriz">'
+                    . '<input type="radio" name="genre" value="' . $na . '"' . $coche . ' id="genre_' . $na . '" class="radio_horiz" />'
+                    . '<label class="continu" for="genre_' . $na . '">' . sanitizeForHtml($la) . '</label></li>';
             }
             ?>
             </ul>
-
-            <?php
-            echo $verif->getHtmlErreur("genre");
-            ?>
+            <?= $verif->getHtmlErreur("genre") ?>
         </fieldset>
 
     <fieldset>
-    <legend>Lieu*</legend>
+    <legend>Lieu</legend>
     <p>
-    <label for="lieu">Dans la liste :</label>
+    <label for="idLieu">Dans la liste :</label>
 
     <select name="idLieu" id="idLieu" class="js-select2-options-with-style" data-placeholder=""  style="max-width:350px">
         <?php
@@ -647,204 +627,157 @@ $erreurs = $verif->getErreurs();
     ?>
     </p>
 
-    <p class="entreLabels"><strong>sinon</strong></p>
-    <div class="spacer"></div>
+    <?php // un lieu saisi à la main est l'exception : replié par défaut, déplié si la saisie
+          // précédente en portait un, pour que l'erreur reste visible ?>
+    <details class="events-bulk-repliable"<?= (!empty($champs['nomLieu']) || !empty($champs['adresse']) || !empty($champs['urlLieu'])) ? ' open' : '' ?>>
+        <summary><strong>sinon</strong>, saisir un lieu absent de la liste</summary>
 
-    <p>
-    <?php
-    $tab_nomLieu_label = ["for" => "nomLieu"];
-    echo HtmlShrink::formLabel($tab_nomLieu_label, "Nom du lieu :");
-    echo $verif->getHtmlErreur("nomLieuIdentique");
+        <p>
+        <?php
+        $tab_nomLieu_label = ["for" => "nomLieu"];
+        echo HtmlShrink::formLabel($tab_nomLieu_label, "Nom du lieu :");
+        echo $verif->getHtmlErreur("nomLieuIdentique");
 
-    $tab_nomLieu = ["type" => "text", "name" => "nomLieu", "id" => "nomLieu", "size" => "40", "maxlength" => "80", "tabindex" => "9", "value" => ""];
+        $tab_nomLieu = ["type" => "text", "name" => "nomLieu", "id" => "nomLieu", "size" => "40", "maxlength" => "80", "value" => ""];
         if (empty($champs['idLieu']))
-    {
-        $tab_nomLieu['value'] = sanitizeForHtml($champs['nomLieu']);
-    }
-    echo HtmlShrink::formInput($tab_nomLieu);
-    echo $verif->getHtmlErreur("nomLieu");
-    ?>
-    </p>
-
-    <p>
-    <label for="adresse">Adresse</label>
-    <?php
-    echo $verif->getHtmlErreur("adresseIdentique");
-    ?>
-
-    <input type="text" name="adresse" id="adresse" size="60" maxlength="100" title="rue, no" tabindex="10" value="
-           <?php if (empty($champs['idLieu']))
-           {
-               echo sanitizeForHtml($champs['adresse']);
-           } ?>" />
-    <?php
-    echo $verif->getHtmlErreur("adresse");
-    echo $verif->getHtmlErreur("doublonLieux");
-    ?>
-    </p>
-
-
-    <p>
-    <label for="localite">Localité/quartier</label>
-    <select name="localite_id" id="localite" class="js-select2-options-with-style" data-placeholder="" style="max-width:300px;">
-        <?php
-    // Le lieu choisi dans la liste porte déjà sa localité : comme le nom et l'adresse saisis
-    // à la main, le select reste alors vide. Après une erreur de saisie, on réaffiche le
-    // choix posté. Les localités fribourgeoises restent proposées : l'administration édite
-    // aussi des événements qui y sont rattachés.
-    $localite_selectionnee = (isset($_POST['localite_id']) || empty($champs['idLieu'])) ? $champs['localite_id'] : '';
-    echo Localite::getOptionsHtml($localite_selectionnee, $champs['quartier'], exclureFribourg: false);
-    ?>
-    </select>
-    <?php
-    echo $verif->getHtmlErreur("localite_id");
-    echo Localite::getAideChoixHtml();
-    ?>
-    </p>
-
-
-
-    <p>
-    <label for="urlLieu">URL</label>
-    <input type="text" name="urlLieu" id="urlLieu" size="60" maxlength="80" title="url du lieu" tabindex="9" value="
-           <?php if (empty($champs['idLieu']))
-           {
-               echo sanitizeForHtml($champs['urlLieu']);
-           } ?>" />
-    <?php
-    echo $verif->getHtmlErreur("urlLieu");
-    ?>
-    </p>
-
-    </fieldset>
-    <!-- FIN LIEU -->
-
-
-
-
-    <!-- DEB EVENEMENT -->
-    <fieldset>
-    <legend>L'événement</legend>
-
-    <p>
-    <label for="titre">Titre</label>
-    <input type="text" name="titre" id="titre" size="60" maxlength="80" title="titre de l'événement" tabindex="11" value="<?php echo sanitizeForHtml($champs['titre']) ?>" />
-    <?php
-    echo $verif->getHtmlErreur("titre");
-    ?>
-    </p>
-    <!-- DESCRIPTION -->
-
-    <p>
-        <label for="description">Description </label>
-        <textarea name="description" id="description" cols="50" rows="16" title="description de l'événement" tabindex="13">
-        <?php echo sanitizeForHtml($champs['description']) ?></textarea>
-
-        <?php
-        echo $verif->getHtmlErreur('description');
+        {
+            $tab_nomLieu['value'] = sanitizeForHtml($champs['nomLieu']);
+        }
+        echo HtmlShrink::formInput($tab_nomLieu);
+        echo $verif->getHtmlErreur("nomLieu");
         ?>
-    </p>
+        </p>
 
-    <p>
-        <label for="ref">Références</label>
-        <input type="text" name="ref" id="ref" size="60" maxlength="100" title="Organisateur, site web de l'Ã©vÃ©nement, contact..." tabindex="14" value="
-        <?php echo sanitizeForHtml($champs['ref']); ?>" />
-    </p>
-    <div class="guideChamp">Indiquez ici les sites web de l'événement ou des organisateurs.</div>
+        <p>
+        <label for="adresse">Adresse</label>
+        <?php echo $verif->getHtmlErreur("adresseIdentique"); ?>
+        <?php // pas de blanc entre l'attribut et la valeur : il repartirait dans la saisie ?>
+        <input type="text" name="adresse" id="adresse" size="60" maxlength="100" title="rue, no" value="<?php if (empty($champs['idLieu'])) { echo sanitizeForHtml($champs['adresse']); } ?>" />
+        <?php
+        echo $verif->getHtmlErreur("adresse");
+        echo $verif->getHtmlErreur("doublonLieux");
+        ?>
+        </p>
 
-    <p>
-        <label for="organisateurs">Organisateur(s)</label>
-        <select name="organisateurs[]" id="organisateurs" class="js-select2-options-with-complement" multiple data-placeholder="Choisissez un ou plusieurs organisateurs" style="max-width:400px;">
-        <?php echo Organisateur::getOptionsHtml($champs['organisateurs'] ?? []); ?>
-    </select>
+        <p>
+        <label for="localite">Localité/quartier</label>
+        <select name="localite_id" id="localite" class="js-select2-options-with-style" data-placeholder="" style="max-width:300px;">
+            <?php
+            // Le lieu choisi dans la liste porte déjà sa localité : comme le nom et l'adresse saisis
+            // à la main, le select reste alors vide. Après une erreur de saisie, on réaffiche le
+            // choix posté. Les localités fribourgeoises restent proposées : l'administration édite
+            // aussi des événements qui y sont rattachés.
+            $localite_selectionnee = (isset($_POST['localite_id']) || empty($champs['idLieu'])) ? $champs['localite_id'] : '';
+            echo Localite::getOptionsHtml($localite_selectionnee, $champs['quartier'], exclureFribourg: false);
+            ?>
+        </select>
+        <?php
+        echo $verif->getHtmlErreur("localite_id");
+        echo Localite::getAideChoixHtml();
+        ?>
+        </p>
 
-    </p>
+        <p>
+        <label for="urlLieu">URL</label>
+        <input type="text" name="urlLieu" id="urlLieu" size="60" maxlength="80" title="url du lieu" value="<?php if (empty($champs['idLieu'])) { echo sanitizeForHtml($champs['urlLieu']); } ?>" />
+        <?php echo $verif->getHtmlErreur("urlLieu"); ?>
+        </p>
 
-
+    </details>
     </fieldset>
-    <!-- FIN EVENEMENT -->
 
-    <div class="spacer"></div>
-
-
-    <!-- DEB HORAIRE -->
     <fieldset>
-    <legend>Horaire*</legend>
+    <legend>Horaire</legend>
     <p>
         <label for="horaire_debut">Début :</label>
-        <input type="text" name="horaire_debut" id="horaire_debut" size="6" maxlength="100" title="début" tabindex="16" value="<?php echo sanitizeForHtml($champs['horaire_debut']) ?>"  placeholder="hh:mm" />
-        <?php
-        echo $verif->getHtmlErreur('horaire_debut');
-        ?>
+        <input type="text" name="horaire_debut" id="horaire_debut" size="6" maxlength="100" title="début" value="<?php echo sanitizeForHtml($champs['horaire_debut']) ?>"  placeholder="hh:mm" />
+        <?php echo $verif->getHtmlErreur('horaire_debut'); ?>
         <label for="horaire_fin" class="continu">Fin :</label>
-        <input type="text" name="horaire_fin" id="horaire_fin" size="6" maxlength="100" title="fin" tabindex="16" value="<?php echo sanitizeForHtml($champs['horaire_fin']) ?>" placeholder="hh:mm" />
-        <?php
-        echo $verif->getHtmlErreur('horaire_fin');
-        ?>
+        <input type="text" name="horaire_fin" id="horaire_fin" size="6" maxlength="100" title="fin" value="<?php echo sanitizeForHtml($champs['horaire_fin']) ?>" placeholder="hh:mm" />
+        <?php echo $verif->getHtmlErreur('horaire_fin'); ?>
     </p>
 
     <p>
         <label for="horaire_complement">Complément :</label>
-        <input type="text" name="horaire_complement" id="horaire_complement" size="60" maxlength="100" title="PrÃ©cisions" tabindex="17" value="<?php echo sanitizeForHtml($champs['horaire_complement']) ?>" />
-        <?php
-        echo $verif->getHtmlErreur('horaire_complement');
-        ?>
+        <input type="text" name="horaire_complement" id="horaire_complement" size="60" maxlength="100" title="Précisions" value="<?php echo sanitizeForHtml($champs['horaire_complement']) ?>" />
+        <?php echo $verif->getHtmlErreur('horaire_complement'); ?>
     </p>
     <div class="guideChamp">hh:mm (jusqu'à 06:00, le début sera considéré faisant partie du jour de l'événement)</div>
 
     </fieldset>
-    <!-- FIN HORAIRE -->
 
-    <!-- DEB HORAIRE -->
     <fieldset>
-        <legend>Entrée</legend>
+    <legend>Organisateur(s)</legend>
+    <p>
+        <label for="organisateurs">Organisateur(s)</label>
+        <select name="organisateurs[]" id="organisateurs" class="js-select2-options-with-complement" multiple data-placeholder="Choisissez un ou plusieurs organisateurs" style="max-width:400px;">
+        <?php echo Organisateur::getOptionsHtml($champs['organisateurs'] ?? []); ?>
+        </select>
+    </p>
+    <div class="guideChamp">Laissé vide, ce champ ne touche pas aux organisateurs déjà rattachés.</div>
+    </fieldset>
+
+    <details class="events-bulk-repliable"<?= (!empty($champs['titre']) || !empty($champs['description']) || !empty($champs['ref']) || !empty($champs['prix']) || !empty($champs['prelocations'])) ? ' open' : '' ?>>
+        <summary>Contenu de l'événement</summary>
+        <fieldset>
+        <p>
+        <label for="titre">Titre</label>
+        <input type="text" name="titre" id="titre" size="60" maxlength="80" title="titre de l'événement" value="<?php echo sanitizeForHtml($champs['titre']) ?>" />
+        <?php echo $verif->getHtmlErreur("titre"); ?>
+        </p>
+
+        <p>
+            <label for="description">Description</label>
+            <?php // pas de saut de ligne entre la balise ouvrante et la valeur : un textarea rend son contenu littéralement ?>
+            <textarea name="description" id="description" cols="50" rows="8" title="description de l'événement"><?php echo sanitizeForHtml($champs['description']) ?></textarea>
+            <?php echo $verif->getHtmlErreur('description'); ?>
+        </p>
+
+        <p>
+            <label for="ref">Références</label>
+            <input type="text" name="ref" id="ref" size="60" maxlength="100" title="Organisateur, site web de l'événement, contact..." value="<?php echo sanitizeForHtml($champs['ref']); ?>" />
+        </p>
+        <div class="guideChamp">Indiquez ici les sites web de l'événement ou des organisateurs.</div>
+
         <p>
             <label for="prix">Prix :</label>
-            <input type="text" name="prix" id="prix" size="60" title="Tarifs d'entrÃ©e" tabindex="17" value="<?php echo sanitizeForHtml($champs['prix']) ?>" />
-            <?php
-            echo $verif->getHtmlErreur('prix');
-            ?>
-            <div class="guideChamp">Vous pouvez mettre <b>0</b> si l'entrée est libre.</div>
+            <input type="text" name="prix" id="prix" size="60" title="Tarifs d'entrée" value="<?php echo sanitizeForHtml($champs['prix']) ?>" />
+            <?php echo $verif->getHtmlErreur('prix'); ?>
         </p>
+        <div class="guideChamp">Vous pouvez mettre <b>0</b> si l'entrée est libre.</div>
+
         <p>
-            <label for="prelocations" class="continu">Prélocs :</label>
-            <input type="text" name="prelocations" id="prelocations" size="60" maxlength="100" title="OÃ¹ acheter les billets" tabindex="18" value="<?php echo sanitizeForHtml($champs['prelocations']) ?>" />
-
-            <?php
-            echo $verif->getHtmlErreur('prelocations');
-            ?>
+            <label for="prelocations">Prélocs :</label>
+            <input type="text" name="prelocations" id="prelocations" size="60" maxlength="100" title="Où acheter les billets" value="<?php echo sanitizeForHtml($champs['prelocations']) ?>" />
+            <?php echo $verif->getHtmlErreur('prelocations'); ?>
         </p>
-    </fieldset>
-    <!-- FIN HORAIRE -->
+        </fieldset>
+    </details>
 
-    <fieldset>
-    <legend>Fichiers</legend>
+    <details class="events-bulk-repliable">
+        <summary>Fichiers</summary>
+        <fieldset>
+        <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo UPLOAD_MAX_FILESIZE ?>" />
 
-    <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo UPLOAD_MAX_FILESIZE ?>" /> <!-- 2 Mo -->
-
-    <p>
-    <label for="flyer">Flyer :</label>
-    <input type="file" name="flyer" id="flyer" class="js-file-upload-size-max fichier" size="25"
-    accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif,image/webp" tabindex="12" />
-    </p>
-
-    <div class="spacer"></div>
-    <?php
-    // Aucun aperçu ni case « Supprimer » ici, contrairement à evenement-edit.php : le
-    // formulaire porte sur N événements, qui n'ont pas le même flyer à montrer.
-    echo $verif->getHtmlErreur("flyer");
-    ?>
+        <p>
+        <label for="flyer">Flyer :</label>
+        <input type="file" name="flyer" id="flyer" class="js-file-upload-size-max fichier" size="25"
+        accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif,image/webp" />
+        </p>
+        <?php
+        // Aucun aperçu ni case « Supprimer » ici, contrairement à evenement-edit.php : le
+        // formulaire porte sur N événements, qui n'ont pas le même flyer à montrer.
+        echo $verif->getHtmlErreur("flyer");
+        ?>
 
         <p>
         <label for="image">Image :</label>
         <input type="file" name="image" id="image" class="js-file-upload-size-max fichier" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif,image/webp" />
         </p>
-        <div class="guideChamp">Formats JPEG, PNG, GIF ou WebP; max. 2 Mo</div>
-    <div class="spacer"></div>
-    <?php
-    echo $verif->getHtmlErreur("image");
-    ?>
-    </fieldset>
+        <?php echo $verif->getHtmlErreur("image"); ?>
+        <div class="guideChamp">Formats JPEG, PNG, GIF ou WebP; max. 2 Mo. La même image est posée sur tous les événements sélectionnés.</div>
+        </fieldset>
+    </details>
 
 
 

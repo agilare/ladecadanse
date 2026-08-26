@@ -527,13 +527,3 @@ form .supImg img
     font-family:Georgia;
 }
 
-#gerer-even-pagination
-{
-    margin: 0 auto;
-    width: 96%;
-}
-
-#gerer-even-pagination .pagination
-{
-    float:left;
-}

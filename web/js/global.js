@@ -370,8 +370,21 @@ const Forms = {
 
         const dirtyForms = new Set();
 
-        $('form.js-submit-freeze-wait').submit(function disableSubmit()
+        $('form.js-submit-freeze-wait').submit(function disableSubmit(e)
         {
+            // Confirmation portée par le balisage : `data-confirm` sur le formulaire, ou sur une
+            // case cochée quand elle demande mieux (une suppression n'est pas un écrasement).
+            // La confirmation vit dans ce même gestionnaire, et non dans un second : le nôtre
+            // gèle le bouton, et un `return false` venu d'ailleurs laisserait « Envoi... » figé.
+            const caseCochee = this.querySelector('input[type="checkbox"][data-confirm]:checked');
+            const confirmation = caseCochee ? caseCochee.dataset.confirm : this.dataset.confirm;
+
+            if (confirmation && !window.confirm(confirmation))
+            {
+                e.preventDefault();
+                return false;
+            }
+
             dirtyForms.delete(this);
             $('input[type="submit"]', this).val('Envoi...').attr('disabled', 'disabled');
             return true;
