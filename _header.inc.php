@@ -256,7 +256,7 @@ $mouseless_allowed = isset($_SESSION['Sgroupe']) && (int) $_SESSION['Sgroupe'] <
 
                                     <?php if ($_SESSION['Sgroupe'] <= UserLevel::ADMIN) : ?>
                                         <a href="/admin/index.php" <?php if (strstr((string) $_SERVER['PHP_SELF'], "admin/index.php")) : ?>class="ici"<?php endif; ?>><i class="fa fa-tachometer" aria-hidden="true"></i></a>
-                                        <a href="/admin/gererEvenements.php" <?php if (strstr((string) $_SERVER['PHP_SELF'], "admin/gererEvenements.php")) : ?>class="ici"<?php endif; ?> ><i class="fa fa-calendar-o" aria-hidden="true"></i></a>
+                                        <a href="/admin/events.php" <?php if (strstr((string) $_SERVER['PHP_SELF'], "admin/events.php")) : ?>class="ici"<?php endif; ?> ><i class="fa fa-calendar-o" aria-hidden="true"></i></a>
                                         <a href="/admin/users.php" <?php if (strstr((string) $_SERVER['PHP_SELF'], "admin/users.php")) : ?>class="ici"<?php endif; ?>><i class="fa fa-users" aria-hidden="true"></i></a>
                                         <a href="/admin/bots.php" title="Monitoring des bots" <?php if (strstr((string) $_SERVER['PHP_SELF'], "admin/bots.php")) : ?>class="ici"<?php endif; ?>><i class="fa fa-bug" aria-hidden="true"></i></a>
                                     <?php endif; ?>

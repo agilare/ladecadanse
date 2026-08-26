@@ -271,7 +271,7 @@ describe('Shortcuts — pagination aux flèches', function ()
         'lieu/lieux',
         'organisateur/organisateurs',
         'user/dashboard',
-        'admin/gererEvenements',
+        'admin/events',
         'admin/users'
     ];
 
@@ -344,14 +344,14 @@ describe('Shortcuts — back-office', function ()
 {
     const MENU_ADMIN =
         '<a href="/admin/index.php">Tableau de bord</a>' +
-        '<a href="/admin/gererEvenements.php">Événements</a>' +
+        '<a href="/admin/events.php">Événements</a>' +
         '<a href="/admin/users.php">Comptes</a>';
 
     it('ouvre la gestion des événements avec « b » et les comptes avec « u »', function ()
     {
         document.body.dataset.page = 'index';
         document.body.innerHTML = MENU_ADMIN;
-        const evenements = spyOnClick('a[href="/admin/gererEvenements.php"]');
+        const evenements = spyOnClick('a[href="/admin/events.php"]');
         const comptes = spyOnClick('a[href="/admin/users.php"]');
 
         Shortcuts.handleKeydown(keydown('b'));
@@ -376,7 +376,7 @@ describe('Shortcuts — back-office', function ()
         });
     });
 
-    it.each(['admin/gererEvenements', 'admin/users'])(
+    it.each(['admin/events', 'admin/users'])(
         'focalise le filtre de %s avec « / »',
         function (page)
         {

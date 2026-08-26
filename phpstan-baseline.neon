@@ -14,13 +14,13 @@ parameters:
 			message: '#^Loose comparison using \!\= between ''adresse''\|''description''\|''flyer''\|''genre''\|''horaire_complement''\|''horaire_debut''\|''horaire_fin''\|''idLieu''\|''idSalle''\|''image''\|''localite_id''\|''nomLieu''\|''organisateurs''\|''prelocations''\|''prix''\|''quartier''\|''ref''\|''region''\|''statut''\|''titre''\|''urlLieu'' and ''idPersonne'' will always evaluate to true\.$#'
 			identifier: notEqual.alwaysTrue
 			count: 1
-			path: admin/gererEvenements.php
+			path: admin/events.php
 
 		-
 			message: '#^Offset ''lien'' on array\{genre\: string, idLieu\: string, idSalle\: string, nomLieu\: string, adresse\: string, quartier\: string, localite_id\: string, region\: string, \.\.\.\} in empty\(\) does not exist\.$#'
 			identifier: empty.offset
 			count: 2
-			path: admin/gererEvenements.php
+			path: admin/events.php
 
 		-
 			message: '#^If condition is always true\.$#'
