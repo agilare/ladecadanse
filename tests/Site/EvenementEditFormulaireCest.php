@@ -194,6 +194,44 @@ class EvenementEditFormulaireCest
     }
 
     /**
+     * Les champs d'image acceptent le PDF, et la limite annoncée au navigateur est
+     * bien celle de PHP.
+     *
+     * Ces trois éléments doivent rester solidaires : la classe qui branche la
+     * conversion (web/js/pdf-to-image.js), l'attribut accept qui laisse choisir un
+     * PDF, et le texte d'aide qui l'annonce. En perdre un seul donne un formulaire
+     * qui ment sur ce qu'il accepte, sans que rien ne casse par ailleurs.
+     *
+     * MAX_FILE_SIZE est lu par global.js pour son message : un champ vide ou mal
+     * nommé — deux bugs qu'a connus ce formulaire — le ferait retomber en silence
+     * sur sa valeur de repli.
+     */
+    public function champsImagesAcceptentLePdfEtAnnoncentLaBonneLimite(SiteTester $I)
+    {
+        $I->amOnPage('/evenement-edit.php');
+        $I->seeResponseCodeIs(HttpCode::OK);
+
+        foreach (['flyer', 'image'] as $champ)
+        {
+            $I->seeElement("input[type=file][name=$champ].js-pdf-to-image");
+
+            $I->assertStringContainsString(
+                'application/pdf',
+                (string) $I->grabAttributeFrom("input[type=file][name=$champ]", 'accept'),
+                "Le champ $champ doit laisser choisir un PDF"
+            );
+        }
+
+        $I->see('PDF (seule la 1re page sera gardée)');
+
+        $I->assertGreaterThan(
+            0,
+            (int) $I->grabAttributeFrom('input[name=MAX_FILE_SIZE]', 'value'),
+            'MAX_FILE_SIZE doit porter la limite de PHP, que le JS lit pour son message'
+        );
+    }
+
+    /**
      * En édition, l'aperçu du flyer déjà enregistré reste affiché avec sa case
      * « Supprimer » — y compris quand le champ est en erreur, sans quoi on ne pourrait
      * plus retirer l'ancien fichier tant que le nouveau est refusé.
