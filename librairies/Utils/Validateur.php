@@ -187,31 +187,135 @@ class Validateur
                 return true;
             }
 
-            switch ($fileinfo['error'])
-            {
-                case UPLOAD_ERR_INI_SIZE:
-                    $this->erreurs[$nom] = "Le fichier dépasse la taille autorisée (2 Mo)";
-                    return false;
-
-                case UPLOAD_ERR_FORM_SIZE:
-                    $this->erreurs[$nom] = "Le fichier dépasse la limite autorisée dans le formulaire HTML (2 Mo)";
-                    return false;
-
-                case UPLOAD_ERR_PARTIAL:
-                    $this->erreurs[$nom] = "L'envoi du fichier a été interrompu pendant le transfert";
-                    return false;
-
-                case UPLOAD_ERR_NO_FILE:
-                    $this->erreurs[$nom] = "Le fichier envoyé a une taille nulle";
-                    return false;
-
-                default:
-                    $this->erreurs[$nom] = "Il y a eu un problème de transfert.";
-                    return false;
-            }
+            return $this->erreurDeTransfert($fileinfo, $nom);
         }
 
         return true;
+    }
+
+    /**
+     * Valide un fichier image sur son contenu réel, et non sur ce que le
+     * navigateur en dit.
+     *
+     * validerFichier() se fie à $_FILES['…']['type'], que le client compose
+     * lui-même : il suffit de l'annoncer « image/jpeg » pour passer. Ici le
+     * fichier est ouvert, et c'est getimagesize() qui donne le format et les
+     * dimensions.
+     *
+     * Le plafond en mégapixels n'est pas une précaution théorique : GD
+     * décompresse à ~4 octets par pixel, si bien qu'un PNG de quelques
+     * centaines de kilo-octets — de grands aplats se compressent très bien —
+     * peut couvrir assez de pixels pour épuiser la mémoire du processus. Le
+     * fatal error qui s'ensuit ne laisse aucun message à l'utilisateur, là où
+     * ce refus lui explique quoi faire.
+     *
+     * @param mixed         $fileinfo       Entrée de $_FILES à vérifier
+     * @param array<string> $mimes_acceptes Types MIME autorisés
+     */
+    public function validerFichierImage(mixed $fileinfo, string $nom, array $mimes_acceptes, bool $obligatoire): bool
+    {
+        if ($obligatoire && empty($fileinfo['name']))
+        {
+            $this->erreurs[$nom] = "Ce champ est obligatoire";
+            return false;
+        }
+
+        if (empty($fileinfo['name']))
+        {
+            return true;
+        }
+
+        if (!empty($fileinfo['error']))
+        {
+            return $this->erreurDeTransfert($fileinfo, $nom);
+        }
+
+        if (strstr((string) $fileinfo['name'], "php"))
+        {
+            $this->erreurs[$nom] = "Veuillez ôter 'php' du nom de votre fichier";
+            return false;
+        }
+
+        // Le PDF passe avant tout le reste. Sans ce cas, l'utilisateur lirait
+        // « Ce format n'est pas accepté » alors que le formulaire annonce
+        // justement accepter les PDF : ils sont convertis par le navigateur
+        // (web/js/pdf-to-image.js) et n'arrivent jusqu'ici que lorsque
+        // JavaScript n'a pas pu faire son travail.
+        if (str_starts_with((string) @file_get_contents($fileinfo['tmp_name'], false, null, 0, 5), '%PDF-'))
+        {
+            $this->erreurs[$nom] = "Ce PDF n'a pas pu être converti en image par votre navigateur. "
+                . "Activez JavaScript, ou convertissez sa 1re page en JPEG ou PNG avant de l'envoyer.";
+            return false;
+        }
+
+        // Le seul contrôle de taille qui morde réellement : l'hébergement
+        // autorise des envois bien plus gros que les nôtres, aucun UPLOAD_ERR_*
+        // ne remonte donc à 5 Mo. Quant à MAX_FILE_SIZE, c'est un champ du
+        // formulaire, que rien n'oblige un client à respecter.
+        if (!empty($fileinfo['size']) && $fileinfo['size'] > UPLOAD_MAX_FILESIZE)
+        {
+            $this->erreurs[$nom] = "Le fichier dépasse la taille autorisée (" . self::formaterTaille(UPLOAD_MAX_FILESIZE) . ")";
+            return false;
+        }
+
+        $infos = @getimagesize((string) $fileinfo['tmp_name']);
+
+        if ($infos === false)
+        {
+            $this->erreurs[$nom] = "Ce fichier n'est pas une image exploitable";
+            return false;
+        }
+
+        if (!in_array($infos['mime'], $mimes_acceptes))
+        {
+            $this->erreurs[$nom] = "Ce format d'image (" . $infos['mime'] . ") n'est pas accepté";
+            return false;
+        }
+
+        if ($infos[0] * $infos[1] > UPLOAD_MAX_MEGAPIXELS * 1000000)
+        {
+            $this->erreurs[$nom] = "Cette image est trop grande (" . $infos[0] . " × " . $infos[1]
+                . " pixels, maximum " . UPLOAD_MAX_MEGAPIXELS . " mégapixels)";
+            return false;
+        }
+
+        // Dernier verrou : le fichier doit bien venir d'un envoi HTTP. En test
+        // unitaire is_uploaded_file() est toujours faux, d'où sa place ici,
+        // après les contrôles que l'on veut pouvoir couvrir.
+        if (!is_uploaded_file((string) $fileinfo['tmp_name']))
+        {
+            return $this->erreurDeTransfert($fileinfo, $nom);
+        }
+
+        return true;
+    }
+
+    /**
+     * Message correspondant au code d'erreur d'un envoi qui n'a pas abouti.
+     *
+     * @param mixed $fileinfo Entrée de $_FILES concernée
+     */
+    private function erreurDeTransfert(mixed $fileinfo, string $nom): bool
+    {
+        $taille = self::formaterTaille(UPLOAD_MAX_FILESIZE);
+
+        $this->erreurs[$nom] = match ($fileinfo['error'] ?? null) {
+            UPLOAD_ERR_INI_SIZE => "Le fichier dépasse la taille autorisée ($taille)",
+            UPLOAD_ERR_FORM_SIZE => "Le fichier dépasse la limite autorisée dans le formulaire HTML ($taille)",
+            UPLOAD_ERR_PARTIAL => "L'envoi du fichier a été interrompu pendant le transfert",
+            UPLOAD_ERR_NO_FILE => "Le fichier envoyé a une taille nulle",
+            default => "Il y a eu un problème de transfert.",
+        };
+
+        return false;
+    }
+
+    /**
+     * Formate un nombre d'octets pour un message destiné à l'utilisateur.
+     */
+    private static function formaterTaille(int $octets): string
+    {
+        return rtrim(rtrim(number_format($octets / 1048576, 1, ',', ''), '0'), ',') . " Mo";
     }
 
     public function nbErreurs(): int

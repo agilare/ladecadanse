@@ -384,8 +384,8 @@ if ($formulaire_poste)
     }
     else
     {
-        $verif->validerFichier($fichiers['flyer'], "flyer", $glo_mimes_images_acceptees, 0);
-        $verif->validerFichier($fichiers['image'], "image", $glo_mimes_images_acceptees, 0);
+        $verif->validerFichierImage($fichiers['flyer'], "flyer", $glo_mimes_images_acceptees, 0);
+        $verif->validerFichierImage($fichiers['image'], "image", $glo_mimes_images_acceptees, 0);
     }
 
     /**

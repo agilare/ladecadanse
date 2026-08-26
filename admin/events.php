@@ -225,8 +225,8 @@ if (!empty($_POST['formulaire']))
 
         $verif->valider($champs['description'], "description", "texte", 4, 10000, 0);
 
-        $verif->validerFichier($fichiers['flyer'], "flyer", $glo_mimes_images_acceptees, 0);
-        $verif->validerFichier($fichiers['image'], "image", $glo_mimes_images_acceptees, 0);
+        $verif->validerFichierImage($fichiers['flyer'], "flyer", $glo_mimes_images_acceptees, 0);
+        $verif->validerFichierImage($fichiers['image'], "image", $glo_mimes_images_acceptees, 0);
 
         foreach (['horaire_debut', 'horaire_fin'] as $champ_horaire)
         {

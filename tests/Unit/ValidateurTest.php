@@ -86,7 +86,99 @@ final class ValidateurTest extends Unit
     {
         $file = ['name' => 'big.jpg', 'type' => 'image/jpeg', 'tmp_name' => '/none', 'error' => UPLOAD_ERR_INI_SIZE];
         $this->assertFalse($this->validateur->validerFichier($file, 'f', ['image/jpeg'], false));
-        $this->assertStringContainsString('2 Mo', (string) $this->validateur->getErreur('f'));
+        // le message annonce la limite en vigueur, et non une valeur écrite en dur
+        $this->assertStringContainsString('3 Mo', (string) $this->validateur->getErreur('f'));
+    }
+
+    /**
+     * Écrit une image dans un fichier temporaire et renvoie l'entrée $_FILES
+     * correspondante. $type est le MIME *déclaré*, celui que le client choisit.
+     *
+     * @return array<string, mixed>
+     */
+    private function fichierImage(int $largeur, int $hauteur, string $nom = 'photo.png', string $type = 'image/png'): array
+    {
+        $chemin = tempnam(sys_get_temp_dir(), 'ldd_test_');
+        $image = imagecreatetruecolor($largeur, $hauteur);
+        imagepng($image, $chemin);
+
+        $this->fichiersTemporaires[] = $chemin;
+
+        return ['name' => $nom, 'type' => $type, 'tmp_name' => $chemin, 'error' => 0, 'size' => filesize($chemin)];
+    }
+
+    /** @var array<string> */
+    private array $fichiersTemporaires = [];
+
+    protected function _after(): void
+    {
+        foreach ($this->fichiersTemporaires as $chemin)
+        {
+            @unlink($chemin);
+        }
+
+        $this->fichiersTemporaires = [];
+    }
+
+    public function testFichierImageRejectsPdf(): void
+    {
+        $chemin = tempnam(sys_get_temp_dir(), 'ldd_test_');
+        file_put_contents($chemin, "%PDF-1.7\nreste du document");
+        $this->fichiersTemporaires[] = $chemin;
+
+        // le navigateur est censé l'avoir converti : s'il arrive ici, c'est que
+        // JavaScript n'a pas tourné, et le message doit le dire
+        $file = ['name' => 'flyer.pdf', 'type' => 'application/pdf', 'tmp_name' => $chemin, 'error' => 0, 'size' => filesize($chemin)];
+
+        $this->assertFalse($this->validateur->validerFichierImage($file, 'f', ['image/jpeg', 'image/png'], false));
+        $this->assertStringContainsString('navigateur', (string) $this->validateur->getErreur('f'));
+    }
+
+    public function testFichierImageRejectsOversizedDimensions(): void
+    {
+        // Un en-tête PNG suffit : getimagesize() ne lit rien d'autre, et
+        // fabriquer réellement l'image ferait exploser la mémoire du test — ce
+        // qui est précisément le risque que ce plafond écarte côté serveur.
+        $chemin = tempnam(sys_get_temp_dir(), 'ldd_test_');
+        file_put_contents(
+            $chemin,
+            "\x89PNG\r\n\x1a\n" . pack('N', 13) . 'IHDR' . pack('NN', 9000, 9000) . "\x08\x02\x00\x00\x00" . pack('N', 0)
+        );
+        $this->fichiersTemporaires[] = $chemin;
+
+        $file = ['name' => 'enorme.png', 'type' => 'image/png', 'tmp_name' => $chemin, 'error' => 0, 'size' => filesize($chemin)];
+
+        $this->assertFalse($this->validateur->validerFichierImage($file, 'f', ['image/png'], false));
+        $this->assertStringContainsString('mégapixels', (string) $this->validateur->getErreur('f'));
+    }
+
+    public function testFichierImageRejectsForgedMimeType(): void
+    {
+        // le trou que validerFichier() laissait ouvert : le type est déclaré par
+        // le client, il suffisait de l'annoncer « image/png » pour passer
+        $chemin = tempnam(sys_get_temp_dir(), 'ldd_test_');
+        file_put_contents($chemin, "ceci n'est pas une image");
+        $this->fichiersTemporaires[] = $chemin;
+
+        $file = ['name' => 'faux.png', 'type' => 'image/png', 'tmp_name' => $chemin, 'error' => 0, 'size' => filesize($chemin)];
+
+        $this->assertFalse($this->validateur->validerFichierImage($file, 'f', ['image/png'], false));
+        $this->assertStringContainsString('image', (string) $this->validateur->getErreur('f'));
+    }
+
+    public function testFichierImageRejectsRealMimeOutsideWhitelist(): void
+    {
+        // un vrai PNG, annoncé en JPEG : c'est le contenu qui décide
+        $file = $this->fichierImage(10, 10, 'photo.jpg', 'image/jpeg');
+
+        $this->assertFalse($this->validateur->validerFichierImage($file, 'f', ['image/jpeg'], false));
+        $this->assertStringContainsString('image/png', (string) $this->validateur->getErreur('f'));
+    }
+
+    public function testFichierImageAcceptsEmptyOptionalField(): void
+    {
+        $this->assertTrue($this->validateur->validerFichierImage(['name' => ''], 'f', ['image/png'], false));
+        $this->assertSame(0, $this->validateur->nbErreurs());
     }
 
     public function testLastErrorWorksWithStringKeys(): void

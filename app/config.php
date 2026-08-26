@@ -6,6 +6,12 @@
 define("UPLOAD_MAX_FILESIZE", 3145728); // 3 Mo
 define("POST_MAX_SIZE", 6291456); // 6 Mo
 
+// Plafond sur les dimensions, et non sur le poids : GD décompresse à ~4 octets
+// par pixel, et un fichier léger peut couvrir énormément de pixels. 40 Mpx
+// représentent ~160 Mo en mémoire, sur les 640 Mo de l'hébergement, et couvrent
+// tout appareil photo actuel.
+define("UPLOAD_MAX_MEGAPIXELS", 40);
+
 ini_set('post_max_size', POST_MAX_SIZE);
 ini_set('upload_max_filesize', UPLOAD_MAX_FILESIZE);
 ini_set('max_file_uploads', 3);

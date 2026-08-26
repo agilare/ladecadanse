@@ -153,6 +153,20 @@ class ImageDriver2 {
        }
        $cheminImage = $this->IMGracine.$this->IMGtype.$slash.$safeImageCreated;
        $mime_type = mime_content_type($imageSource['tmp_name']);
+
+       // Défense en profondeur : Validateur::validerFichierImage() a déjà écarté
+       // les images démesurées, mais processImage() est appelé depuis plusieurs
+       // endroits et ne doit jamais faire tomber le processus. Un décodage GD
+       // coûte ~4 octets par pixel, et le fatal error qui suit un dépassement de
+       // memory_limit ne laisse rien afficher à l'appelant.
+       $dimensions = @getimagesize($imageSource['tmp_name']);
+
+       if ($dimensions !== false && $dimensions[0] * $dimensions[1] > UPLOAD_MAX_MEGAPIXELS * 1000000)
+       {
+           $this->erreur = "L'image dépasse " . UPLOAD_MAX_MEGAPIXELS . " mégapixels";
+           return false;
+       }
+
         $originaltransparentcolor = -1;
 
         if ($mime_type == "image/jpeg")
