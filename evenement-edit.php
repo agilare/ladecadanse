@@ -567,8 +567,9 @@ if ($formulaire_poste)
 				$nouv_idE = $maxId['max_idE'] + 1;
 			}
 
-			// Extension d'une image récupérée par URL, d'après son type MIME : elle n'a pas
-			// de nom de fichier d'origine dont on pourrait la déduire.
+			// Extension déduite du type MIME. Indispensable pour une image récupérée par
+			// URL, qui n'a aucun nom d'origine, et plus sûr pour un fichier envoyé : le
+			// format que ImageDriver2 écrira est celui du contenu, pas celui du nom.
 			$extensionPourMime = fn (string $mime): string => match($mime) {
 				'image/png', 'image/x-png' => '.png',
 				'image/gif' => '.gif',
@@ -583,7 +584,12 @@ if ($formulaire_poste)
 
 				if (!empty($fichiers[$champ_img]['name']))
 				{
-					$champs[$champ_img] = $prefixe.mb_strrchr((string) $fichiers[$champ_img]['name'], '.');
+					// L'extension suit le format réel du fichier, pas celle de son
+					// nom d'origine : ImageDriver2 écrit d'après le contenu, si bien
+					// qu'un PNG envoyé sous le nom « affiche.jpg » produisait un
+					// fichier .jpg contenant du PNG. Le serveur le sert alors avec un
+					// type que le navigateur n'accepte plus.
+					$champs[$champ_img] = $prefixe.$extensionPourMime((string) mime_content_type($fichiers[$champ_img]['tmp_name']));
 				}
 				elseif ($fetched !== null)
 				{
@@ -1433,14 +1439,14 @@ if ($show_form)
     <fieldset>
         <legend>Images</legend>
 
-        <div style="margin-left: 0.8em;margin-bottom:1.2em;">Formats JPEG, PNG, GIF ou WebP; max. 5 Mo</div>
+        <div style="margin-left: 0.8em;margin-bottom:1.2em;">Formats JPEG, PNG, GIF, WebP ou PDF (seule la 1re page sera gardée); max. 5 Mo</div>
 
         <p style="margin-left: 0.8em;margin-bottom:1.2em;font-weight: bold">Affiche/flyer</p>
 
         <p>
             <label for="flyer">Envoyer</label>
             <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo UPLOAD_MAX_FILESIZE ?>" />
-            <input type="file" name="flyer" id="flyer" class="js-file-upload-size-max" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif,image/webp" class="fichier" />
+            <input type="file" name="flyer" id="flyer" class="js-file-upload-size-max js-pdf-to-image fichier" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif,image/webp,application/pdf,.pdf" />
             <?php if ($formulaire_rejete && !empty($fichiers['flyer']['name'])): ?>
                 <div class="msg">Le fichier sélectionné a été retiré du formulaire par le navigateur (sécurité). Veuillez le sélectionner à nouveau.</div>
             <?php endif; ?>
@@ -1481,7 +1487,7 @@ if ($show_form)
         <p>
             <label for="image">Envoyer</label>
             <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo UPLOAD_MAX_FILESIZE ?>" />
-            <input type="file" name="image" id="image" class="js-file-upload-size-max" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif,image/webp" class="fichier" />
+            <input type="file" name="image" id="image" class="js-file-upload-size-max js-pdf-to-image fichier" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif,image/webp,application/pdf,.pdf" />
             <div class="spacer"></div>
             <?php if ($formulaire_rejete && !empty($fichiers['image']['name'])): ?>
                 <div class="msg">Le fichier sélectionné a été retiré du formulaire par le navigateur (sécurité). Veuillez le sélectionner à nouveau</div>

@@ -771,8 +771,8 @@ $erreurs = $verif->getErreurs();
 
         <p>
         <label for="flyer">Flyer :</label>
-        <input type="file" name="flyer" id="flyer" class="js-file-upload-size-max" size="25"
-        accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif,image/webp" />
+        <input type="file" name="flyer" id="flyer" class="js-file-upload-size-max js-pdf-to-image" size="25"
+        accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif,image/webp,application/pdf,.pdf" />
         </p>
         <?php
         // Aucun aperçu ni case « Supprimer » ici, contrairement à evenement-edit.php : le
@@ -782,10 +782,10 @@ $erreurs = $verif->getErreurs();
 
         <p>
         <label for="image">Image :</label>
-        <input type="file" name="image" id="image" class="js-file-upload-size-max" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif,image/webp" />
+        <input type="file" name="image" id="image" class="js-file-upload-size-max js-pdf-to-image" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif,image/webp,application/pdf,.pdf" />
         </p>
         <?php echo $verif->getHtmlErreur("image"); ?>
-        <div class="guideChamp">Formats JPEG, PNG, GIF ou WebP; max. 5 Mo. La même image est posée sur tous les événements sélectionnés.</div>
+        <div class="guideChamp">Formats JPEG, PNG, GIF, WebP ou PDF (seule la 1re page sera gardée); max. 5 Mo. La même image est posée sur tous les événements sélectionnés.</div>
         </fieldset>
     </details>
 

@@ -1,6 +1,7 @@
 // 2 façons d'utiliser les modules, juste pour voir : par fonctions (browser.js) et par objet literal (global.js)
 import { responsiveSetup } from './browser.js';
 import { AppGlobal } from './global.js';
+import { PdfToImage } from './pdf-to-image.js';
 
 // used everywhere : home, events, lieux, user...
 $('.magnific-popup').magnificPopup({
@@ -106,3 +107,4 @@ function select2OptionWithComplement(item)
 
 responsiveSetup();
 AppGlobal.init();
+PdfToImage.init();
