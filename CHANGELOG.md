@@ -5,6 +5,7 @@
 Upgrade steps (redirects, side effects) : [UPGRADE.md](UPGRADE.md).
 
 ### Added
+- event edit, admin events : the flyer and image fields accept a PDF, of which only the first page is kept, converted to WebP — organisers are usually sent their poster as a PDF, and having to convert it themselves discouraged some and lost flyers. Off by default behind `PDF_CONVERSION_ENABLED` in `app/env.php` : while it is unset the fields neither announce nor accept PDFs and pdf.js is never loaded, so the form is exactly the one that came before. A file picked through the button is converted **in the browser** (pdf.js), so no PDF ever reaches the server and nothing has to be installed ; a URL pasted into the neighbouring field is converted server-side, which needs `imagick` and Ghostscript, and says so when they are absent instead of failing bluntly
 - admin events, user profile : an "Image" column opens the event tables, just before the title — 50×50 in admin, 30×30 on the profile ; recognising an event, or checking that a flyer did get uploaded, meant opening its page until now ; the thumbnail covers its square frame without distortion, cropped at the bottom for a portrait poster and on the right for a landscape one, and a click opens the full size ; an event with neither flyer nor illustration leaves its cell empty, as in the lieu and organisateur listings
 
 ### Fixed

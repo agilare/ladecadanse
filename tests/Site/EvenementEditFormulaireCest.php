@@ -194,13 +194,15 @@ class EvenementEditFormulaireCest
     }
 
     /**
-     * Les champs d'image acceptent le PDF, et la limite annoncée au navigateur est
-     * bien celle de PHP.
+     * L'acceptation du PDF est cohérente d'un bout à l'autre, et la limite
+     * annoncée au navigateur est bien celle de PHP.
      *
-     * Ces trois éléments doivent rester solidaires : la classe qui branche la
+     * Trois marqueurs doivent rester solidaires : la classe qui branche la
      * conversion (web/js/pdf-to-image.js), l'attribut accept qui laisse choisir un
      * PDF, et le texte d'aide qui l'annonce. En perdre un seul donne un formulaire
-     * qui ment sur ce qu'il accepte, sans que rien ne casse par ailleurs.
+     * qui ment sur ce qu'il accepte, sans que rien ne casse par ailleurs — et
+     * l'oubli est d'autant plus facile qu'ils sont désormais gouvernés par un
+     * drapeau (PDF_CONVERSION_ENABLED), donc rendus conditionnellement.
      *
      * MAX_FILE_SIZE est lu par global.js pour son message : un champ vide ou mal
      * nommé — deux bugs qu'a connus ce formulaire — le ferait retomber en silence
@@ -210,6 +212,28 @@ class EvenementEditFormulaireCest
     {
         $I->amOnPage('/evenement-edit.php');
         $I->seeResponseCodeIs(HttpCode::OK);
+
+        $I->assertGreaterThan(
+            0,
+            (int) $I->grabAttributeFrom('input[name=MAX_FILE_SIZE]', 'value'),
+            'MAX_FILE_SIZE doit porter la limite de PHP, que le JS lit pour son message'
+        );
+
+        // PDF_CONVERSION_ENABLED décide, et le test n'a pas à connaître la
+        // configuration du serveur qu'il interroge : c'est la cohérence des
+        // trois marqueurs qui est vérifiée, dans un sens comme dans l'autre.
+        $accepteLePdf = str_contains(
+            (string) $I->grabAttributeFrom('input[type=file][name=flyer]', 'accept'),
+            'application/pdf'
+        );
+
+        if (!$accepteLePdf)
+        {
+            $I->dontSeeElement('input[type=file][name=flyer].js-pdf-to-image');
+            $I->dontSee('PDF (seule la 1re page sera gardée)');
+
+            return;
+        }
 
         foreach (['flyer', 'image'] as $champ)
         {
@@ -223,12 +247,6 @@ class EvenementEditFormulaireCest
         }
 
         $I->see('PDF (seule la 1re page sera gardée)');
-
-        $I->assertGreaterThan(
-            0,
-            (int) $I->grabAttributeFrom('input[name=MAX_FILE_SIZE]', 'value'),
-            'MAX_FILE_SIZE doit porter la limite de PHP, que le JS lit pour son message'
-        );
     }
 
     /**

@@ -28,7 +28,7 @@ Ces instructions vous permettront de mettre en place une copie du projet sur vot
 - [Composer](https://getcomposer.org/)
 - MariaDB 10.11 (si possible avec `innodb_ft_min_token_size=3` et `ft_min_word_len=3`, pour de meilleurs résultats dans la recherche d'événements)
 
-Facultatif : `imagick` et Ghostscript, pour convertir en image les PDF **collés en URL** dans le formulaire d'événement. Sans eux le site fonctionne normalement, et les PDF **envoyés en fichier** sont convertis de toute façon — c'est le navigateur qui s'en charge. Voir [Convertir les PDF collés en URL](#convertir-les-pdf-collés-en-url).
+Facultatif : `imagick` et Ghostscript, pour convertir en image les PDF **collés en URL** dans le formulaire d'événement. Sans eux le site fonctionne normalement, et les PDF **envoyés en fichier** sont convertis de toute façon — c'est le navigateur qui s'en charge. L'ensemble est désactivé par défaut : voir [Accepter les PDF dans les champs image](#accepter-les-pdf-dans-les-champs-image).
 
 #### Étapes
 1. cloner la branche `master`
@@ -132,9 +132,17 @@ make composer-require PACKAGE=...   # Ajouter un package Composer
 
 Le site ladecadanse est déployé sur localhost:7777 (dev) ou localhost:8080 (prod). Le mot de passe, par défaut, pour l'utilisateur `admin` est `admin_dev`.
 
-### Convertir les PDF collés en URL
+### Accepter les PDF dans les champs image
 
-Le formulaire d'événement accepte les PDF de deux façons, dont une seule demande quelque chose au serveur :
+Désactivé par défaut. Pour l'activer, dans `app/env.php` :
+
+```php
+define("PDF_CONVERSION_ENABLED", true);
+```
+
+Tant que le drapeau est absent ou faux, les champs flyer et image n'annoncent pas le PDF, ne l'acceptent pas, et pdf.js n'est jamais chargé : le formulaire est exactement celui d'avant.
+
+Le formulaire d'événement accepte alors les PDF de deux façons, dont une seule demande quelque chose au serveur :
 
 | Voie | Conversion | Dépendance |
 |---|---|---|

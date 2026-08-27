@@ -76,7 +76,22 @@ final class PdfToImageTest extends Unit
             $this->markTestSkipped('Imagick ou son décodeur PDF est absent de cet environnement');
         }
 
-        $webp = PdfToImage::convertirPremierePage(self::pdfDeuxPagesRougePuisBleue());
+        try
+        {
+            $webp = PdfToImage::convertirPremierePage(self::pdfDeuxPagesRougePuisBleue());
+        }
+        catch (RuntimeException $e)
+        {
+            // estDisponible() est optimiste par construction : elle ne voit ni
+            // Ghostscript ni la policy.xml. Un poste où seule l'extension est
+            // installée arrive jusqu'ici et doit se sauter, pas rougir.
+            if (str_contains($e->getMessage(), "n'est pas disponible sur ce serveur"))
+            {
+                $this->markTestSkipped('Imagick est là, mais Ghostscript ou la policy PDF manque');
+            }
+
+            throw $e;
+        }
 
         $infos = getimagesizefromstring($webp);
 

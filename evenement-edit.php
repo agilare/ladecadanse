@@ -153,6 +153,21 @@ $can_notify_auteur =
 // donc indisponible sur le formulaire public "Proposer un événement"
 $can_import_image_url = $est_connecte;
 
+// Acceptation des PDF, désactivée tant qu'on ne l'a pas demandée (app/env.php).
+// Le champ fichier n'a besoin de rien d'autre, le navigateur convertissant
+// lui-même ; l'import par URL réclame en plus imagick et Ghostscript.
+$pdf_accepte = PdfToImage::estActive();
+$pdf_accepte_par_url = $pdf_accepte && PdfToImage::estDisponible();
+
+// Ce que le formulaire annonce doit suivre le drapeau : un accept qui laisse
+// choisir un PDF sans que rien ne le convertisse ne produirait qu'un refus.
+$accept_champ_image = "image/jpeg,image/pjpeg,image/png,image/x-png,image/gif,image/webp"
+    . ($pdf_accepte ? ',application/pdf,.pdf' : '');
+$classe_champ_image = 'js-file-upload-size-max fichier' . ($pdf_accepte ? ' js-pdf-to-image' : '');
+$aide_formats_image = $pdf_accepte
+    ? 'Formats JPEG, PNG, GIF, WebP ou PDF (seule la 1re page sera gardée); max. 5 Mo'
+    : 'Formats JPEG, PNG, GIF ou WebP; max. 5 Mo';
+
 // form values received
 $champs = ["statut" => "", "genre" => "", "titre" => "", "dateEvenement" => "", "idLieu" => 0, "idSalle" => 0,
     "nomLieu" => "", "adresse" => "", "quartier" => "",  "localite_id" => "", "region" => "", "urlLieu" => "",
@@ -410,11 +425,12 @@ if ($formulaire_poste)
      *
      * @param string $champ 'flyer' ou 'image' ; donne aussi la clé d'erreur « <champ>_url »
      */
-    // Le PDF n'est proposé par URL que si le serveur sait le rendre. Le champ
-    // fichier, lui, n'en dépend pas : c'est le navigateur qui convertit.
+    // Le PDF n'est proposé par URL que si la fonction est activée et que le
+    // serveur sait le rendre. Le champ fichier, lui, ne dépend que du premier :
+    // c'est le navigateur qui convertit.
     $mimes_acceptes_par_url = $glo_mimes_images_acceptees;
 
-    if (PdfToImage::estDisponible())
+    if ($pdf_accepte_par_url)
     {
         $mimes_acceptes_par_url[] = 'application/pdf';
     }
@@ -1467,14 +1483,14 @@ if ($show_form)
     <fieldset>
         <legend>Images</legend>
 
-        <div style="margin-left: 0.8em;margin-bottom:1.2em;">Formats JPEG, PNG, GIF, WebP ou PDF (seule la 1re page sera gardée); max. 5 Mo</div>
+        <div style="margin-left: 0.8em;margin-bottom:1.2em;"><?= $aide_formats_image ?></div>
 
         <p style="margin-left: 0.8em;margin-bottom:1.2em;font-weight: bold">Affiche/flyer</p>
 
         <p>
             <label for="flyer">Envoyer</label>
             <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo UPLOAD_MAX_FILESIZE ?>" />
-            <input type="file" name="flyer" id="flyer" class="js-file-upload-size-max js-pdf-to-image fichier" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif,image/webp,application/pdf,.pdf" />
+            <input type="file" name="flyer" id="flyer" class="<?= $classe_champ_image ?>" size="25" accept="<?= $accept_champ_image ?>" />
             <?php if ($formulaire_rejete && !empty($fichiers['flyer']['name'])): ?>
                 <div class="msg">Le fichier sélectionné a été retiré du formulaire par le navigateur (sécurité). Veuillez le sélectionner à nouveau.</div>
             <?php endif; ?>
@@ -1515,7 +1531,7 @@ if ($show_form)
         <p>
             <label for="image">Envoyer</label>
             <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo UPLOAD_MAX_FILESIZE ?>" />
-            <input type="file" name="image" id="image" class="js-file-upload-size-max js-pdf-to-image fichier" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif,image/webp,application/pdf,.pdf" />
+            <input type="file" name="image" id="image" class="<?= $classe_champ_image ?>" size="25" accept="<?= $accept_champ_image ?>" />
             <div class="spacer"></div>
             <?php if ($formulaire_rejete && !empty($fichiers['image']['name'])): ?>
                 <div class="msg">Le fichier sélectionné a été retiré du formulaire par le navigateur (sécurité). Veuillez le sélectionner à nouveau</div>

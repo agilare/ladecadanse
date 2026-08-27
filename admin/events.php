@@ -7,6 +7,7 @@ use Ladecadanse\Utils\DateHelper;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\QueryParamValidator;
 use Ladecadanse\Utils\ImageDriver2;
+use Ladecadanse\Utils\PdfToImage;
 use Ladecadanse\Utils\Text;
 use Ladecadanse\EvenementCollection;
 use Ladecadanse\UserLevel;
@@ -24,6 +25,16 @@ if (!$authorization->checkGroup(UserLevel::ADMIN))
 }
 
 $verif = new Validateur();
+
+// Acceptation des PDF, désactivée tant qu'on ne l'a pas demandée (app/env.php).
+// Ce formulaire n'a pas de champ URL : seule la voie navigateur le concerne.
+$pdf_accepte = PdfToImage::estActive();
+$accept_champ_image = "image/jpeg,image/pjpeg,image/png,image/x-png,image/gif,image/webp"
+    . ($pdf_accepte ? ',application/pdf,.pdf' : '');
+$classe_champ_image = 'js-file-upload-size-max' . ($pdf_accepte ? ' js-pdf-to-image' : '');
+$aide_formats_image = $pdf_accepte
+    ? 'Formats JPEG, PNG, GIF, WebP ou PDF (seule la 1re page sera gardée); max. 5 Mo.'
+    : 'Formats JPEG, PNG, GIF ou WebP; max. 5 Mo.';
 
 /*
  * FILTRES, TRI ET PAGINATION
@@ -771,8 +782,8 @@ $erreurs = $verif->getErreurs();
 
         <p>
         <label for="flyer">Flyer :</label>
-        <input type="file" name="flyer" id="flyer" class="js-file-upload-size-max js-pdf-to-image" size="25"
-        accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif,image/webp,application/pdf,.pdf" />
+        <input type="file" name="flyer" id="flyer" class="<?= $classe_champ_image ?>" size="25"
+        accept="<?= $accept_champ_image ?>" />
         </p>
         <?php
         // Aucun aperçu ni case « Supprimer » ici, contrairement à evenement-edit.php : le
@@ -782,10 +793,10 @@ $erreurs = $verif->getErreurs();
 
         <p>
         <label for="image">Image :</label>
-        <input type="file" name="image" id="image" class="js-file-upload-size-max js-pdf-to-image" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif,image/webp,application/pdf,.pdf" />
+        <input type="file" name="image" id="image" class="<?= $classe_champ_image ?>" size="25" accept="<?= $accept_champ_image ?>" />
         </p>
         <?php echo $verif->getHtmlErreur("image"); ?>
-        <div class="guideChamp">Formats JPEG, PNG, GIF, WebP ou PDF (seule la 1re page sera gardée); max. 5 Mo. La même image est posée sur tous les événements sélectionnés.</div>
+        <div class="guideChamp"><?= $aide_formats_image ?> La même image est posée sur tous les événements sélectionnés.</div>
         </fieldset>
     </details>
 

@@ -39,6 +39,32 @@ final class PdfToImage
     private const LIMITE_SECONDES = 20; // max_execution_time vaut 60 en production
 
     /**
+     * Ce que voit l'utilisateur quand le serveur ne sait pas rendre les PDF —
+     * extension absente, Ghostscript absent, ou politique ImageMagick qui le
+     * refuse. Trois causes distinctes, mais un seul remède de son côté : l'autre
+     * voie, qui ne dépend de rien.
+     */
+    private const MESSAGE_INDISPONIBLE = "La conversion des PDF par URL n'est pas disponible sur ce serveur. "
+        . "Envoyez le PDF avec le bouton « Envoyer », votre navigateur s'en chargera.";
+
+    /**
+     * L'acceptation des PDF est-elle demandée ? (PDF_CONVERSION_ENABLED)
+     *
+     * Passe par une méthode plutôt que par une lecture de la constante sur
+     * place : un seul endroit connaît son nom, alors que trois fichiers en
+     * dépendent, et le `defined()` qui la protège — la constante manque des
+     * app/env.php antérieurs à cette fonctionnalité — n'est écrit qu'une fois.
+     *
+     * Le drapeau figure aussi dans les `dynamicConstantNames` de phpstan.neon,
+     * sans quoi l'analyse fige la valeur du poste et tient pour mortes toutes
+     * les branches PDF.
+     */
+    public static function estActive(): bool
+    {
+        return defined('PDF_CONVERSION_ENABLED') && PDF_CONVERSION_ENABLED;
+    }
+
+    /**
      * Signature d'un PDF. Les octets font foi : ni l'extension, ni le type MIME
      * annoncé par un serveur distant ne sont vérifiables.
      */
@@ -48,12 +74,19 @@ final class PdfToImage
     }
 
     /**
-     * Imagick est-il là, avec un décodeur PDF ?
+     * Imagick est-il là, avec un décodeur PDF déclaré ?
      *
-     * queryFormats() ne dit pas si la policy.xml d'ImageMagick autorise le
-     * coder PDF — beaucoup de distributions le refusent depuis CVE-2018-16509.
-     * Seule une lecture réelle tranche, d'où le refus renvoyé à l'appelant par
-     * convertirPremierePage() plutôt qu'ici.
+     * Réponse optimiste, et volontairement : queryFormats() annonce PDF dès que
+     * le coder est compilé, sans rien savoir de ce qui le fait réellement
+     * marcher. Deux démentis possibles, tous deux constatés — Ghostscript
+     * absent, qu'Imagick appelle en sous-main (« FailedToExecuteCommand `gs` »,
+     * le cas d'un poste où l'on vient d'installer l'extension seule), et une
+     * policy.xml qui refuse le coder depuis CVE-2018-16509 (« not authorized »).
+     *
+     * Les vérifier ici coûterait une conversion à chaque affichage du
+     * formulaire. C'est donc convertirPremierePage() qui tranche, en rendant ces
+     * deux échecs au même message que celui d'une extension absente : de là où
+     * se tient l'utilisateur, c'est la même chose.
      */
     public static function estDisponible(): bool
     {
@@ -74,10 +107,7 @@ final class PdfToImage
 
         if (!self::estDisponible())
         {
-            throw new RuntimeException(
-                "La conversion des PDF par URL n'est pas disponible sur ce serveur. "
-                . "Envoyez le PDF avec le bouton « Envoyer », votre navigateur s'en chargera."
-            );
+            throw new RuntimeException(self::MESSAGE_INDISPONIBLE);
         }
 
         // Imagick lit une page précise depuis un chemin, jamais depuis un blob :
@@ -154,9 +184,17 @@ final class PdfToImage
         }
         catch (\ImagickException $e)
         {
-            // « not authorized » = la policy.xml refuse le coder PDF ;
-            // « FailedToExecuteCommand » = Ghostscript absent. Le détail va au
-            // journal, pas à l'utilisateur, à qui il ne dirait rien.
+            // Deux familles d'échec, que l'utilisateur ne doit surtout pas
+            // confondre : ce qui vient du serveur, sur quoi il ne peut rien, et
+            // ce qui vient de son fichier. Accuser le PDF alors que Ghostscript
+            // manque enverrait chercher un mot de passe inexistant.
+            $message = $e->getMessage();
+
+            if (str_contains($message, 'FailedToExecuteCommand') || str_contains($message, 'not authorized'))
+            {
+                throw new RuntimeException(self::MESSAGE_INDISPONIBLE, 0, $e);
+            }
+
             throw new RuntimeException(
                 "Ce PDF n'a pas pu être converti en image. Vérifiez qu'il n'est pas protégé par un mot de passe.",
                 0,
