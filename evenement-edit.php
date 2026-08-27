@@ -321,6 +321,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
             (string) $champs['nomLieu'],
             $date_iso,
         );
+
+        $logger->notice('[evenement-edit] duplicates found', ['action' => $get['action'], 'titre' => $champs['titre'], 'lieu' => $champs['nomLieu'], 'date' => $date_iso, 'similar_events_count' => count($similarEvenements)]);
     }
 
     if ($verif->nbErreurs() === 0 && empty($similarEvenements))
@@ -782,8 +784,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 			$evenement['flyer'] = $tab_fly['flyer'];
 		}
 
+        $logger->info('[evenement-edit]', ['action' => $get['action'], 'titre' => $champs['titre'], 'lieu' => $champs['nomLieu'], 'idE' => (int) $evenement['idEvenement'], 'confirm_duplicate' => $_POST['confirm_duplicate']]);
 		unset($_POST); // ?
-        $logger->info('[evenement-edit]', ['action' => $get['action'], 'titre' => $champs['titre'], 'lieu' => $champs['nomLieu'], 'idE' => (int) $evenement['idEvenement']]);
 
         if (isset($_SESSION['Sgroupe']))
         {
