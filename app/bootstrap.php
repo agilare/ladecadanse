@@ -129,6 +129,34 @@ $assets = new AssetManager(__ROOT__ . ASSETS_DIR, ASSETS_DIR, $logger);
 
 if (DARKVISITORS_ENABLED)
 {
+    if (!function_exists('getallheaders')) {
+        /**
+         * Polyfill : getallheaders() n'existe nativement que sur les SAPI apache2handler
+         * et fpm — absente en CLI et sous le serveur intégré (`php -S`) des tests locaux.
+         * Composer ne la fournit pas non plus en production : ralouphie/getallheaders
+         * n'arrive que par l'arbre require-dev (guzzlehttp/psr7 2.x, sous Codeception),
+         * et psr7 3.0 abandonne cette dépendance. Le suivi DarkVisitors ci-dessous est
+         * le seul appelant du projet.
+         *
+         * @return array<string, string> en-têtes de la requête, noms en Camel-Case
+         */
+        function getallheaders(): array
+        {
+            $headers = [];
+
+            foreach ($_SERVER as $name => $value) {
+                if (!is_string($value) || !str_starts_with((string) $name, 'HTTP_')) {
+                    continue;
+                }
+
+                $name = str_replace('_', ' ', strtolower(substr((string) $name, 5)));
+                $headers[str_replace(' ', '-', ucwords($name))] = $value;
+            }
+
+            return $headers;
+        }
+    }
+
     function trackVisitAsync(array $data, string $accessToken): void
     {
         $ch = curl_init('https://api.darkvisitors.com/visits');
