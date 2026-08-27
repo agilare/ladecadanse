@@ -151,10 +151,10 @@ class LieuEdition extends Edition
             $verif->setErreur('categorie', "Veuillez choisir au moins une catégorie");
         }
 
-        $verif->validerFichier($this->fichiers['logo'], "logo", $mimes_images_acceptes, 0);
-        $verif->validerFichier($this->fichiers['photo1'], "photo1", $mimes_images_acceptes, 0);
+        $verif->validerFichierImage($this->fichiers['logo'], "logo", $mimes_images_acceptes, 0);
+        $verif->validerFichierImage($this->fichiers['photo1'], "photo1", $mimes_images_acceptes, 0);
 
-        $verif->validerFichier($this->fichiers['image_galerie'], "image_galerie", $mimes_images_acceptes, 0);
+        $verif->validerFichierImage($this->fichiers['image_galerie'], "image_galerie", $mimes_images_acceptes, 0);
 
         $this->erreurs = array_merge($this->erreurs, $verif->getErreurs());
 

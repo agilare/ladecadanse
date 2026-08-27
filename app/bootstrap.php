@@ -211,7 +211,10 @@ $csp = implode('; ', [
     "media-src 'none'",
     "form-action 'self' https://www.paypal.com",
     "base-uri 'self'",
-    "worker-src 'none'",
+    // pdf.js décode les PDF déposés dans les formulaires d'édition, et le fait
+    // dans un worker. 'self' revient à la valeur qu'aurait donnée default-src :
+    // aucun domaine tiers n'est ouvert, le worker vient de nos propres fichiers.
+    "worker-src 'self'",
 ]);
 if (ENV !== 'dev') {
     header("Content-Security-Policy: $csp");

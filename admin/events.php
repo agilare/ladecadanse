@@ -7,6 +7,7 @@ use Ladecadanse\Utils\DateHelper;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\QueryParamValidator;
 use Ladecadanse\Utils\ImageDriver2;
+use Ladecadanse\Utils\PdfToImage;
 use Ladecadanse\Utils\Text;
 use Ladecadanse\EvenementCollection;
 use Ladecadanse\UserLevel;
@@ -24,6 +25,16 @@ if (!$authorization->checkGroup(UserLevel::ADMIN))
 }
 
 $verif = new Validateur();
+
+// Acceptation des PDF, désactivée tant qu'on ne l'a pas demandée (app/env.php).
+// Ce formulaire n'a pas de champ URL : seule la voie navigateur le concerne.
+$pdf_accepte = PdfToImage::estActive();
+$accept_champ_image = "image/jpeg,image/pjpeg,image/png,image/x-png,image/gif,image/webp"
+    . ($pdf_accepte ? ',application/pdf,.pdf' : '');
+$classe_champ_image = 'js-file-upload-size-max' . ($pdf_accepte ? ' js-pdf-to-image' : '');
+$aide_formats_image = $pdf_accepte
+    ? 'Formats JPEG, PNG, GIF, WebP ou PDF (seule la 1re page sera gardée); max. 5 Mo.'
+    : 'Formats JPEG, PNG, GIF ou WebP; max. 5 Mo.';
 
 /*
  * FILTRES, TRI ET PAGINATION
@@ -225,8 +236,8 @@ if (!empty($_POST['formulaire']))
 
         $verif->valider($champs['description'], "description", "texte", 4, 10000, 0);
 
-        $verif->validerFichier($fichiers['flyer'], "flyer", $glo_mimes_images_acceptees, 0);
-        $verif->validerFichier($fichiers['image'], "image", $glo_mimes_images_acceptees, 0);
+        $verif->validerFichierImage($fichiers['flyer'], "flyer", $glo_mimes_images_acceptees, 0);
+        $verif->validerFichierImage($fichiers['image'], "image", $glo_mimes_images_acceptees, 0);
 
         foreach (['horaire_debut', 'horaire_fin'] as $champ_horaire)
         {
@@ -317,7 +328,20 @@ if (!empty($_POST['formulaire']))
                     }
 
                     $suffixe = $colonne === 'image' ? "_img" : "";
-                    $nouveaux_fichiers[$colonne] = $idEven_courant . "_" . $tab_even['dateEvenement'] . $suffixe . strrchr((string) $fichiers[$colonne]['name'], '.');
+
+                    // L'extension suit le format réel du fichier, jamais celle de son
+                    // nom d'origine : ImageDriver2 écrit d'après le contenu, si bien
+                    // qu'un PNG envoyé sous le nom « affiche.jpg » donnait un .jpg
+                    // contenant du PNG, servi ensuite sous un type que le navigateur
+                    // refuse. Même correctif que dans evenement-edit.php.
+                    $extension = match ((string) mime_content_type($fichiers[$colonne]['tmp_name'])) {
+                        'image/png', 'image/x-png' => '.png',
+                        'image/gif' => '.gif',
+                        'image/webp' => '.webp',
+                        default => '.jpg',
+                    };
+
+                    $nouveaux_fichiers[$colonne] = $idEven_courant . "_" . $tab_even['dateEvenement'] . $suffixe . $extension;
 
                     $supprimerAncienFichier($colonne, $idEven_courant);
                     $sql_fichiers .= ", " . $colonne . "='" . $connector->sanitize($nouveaux_fichiers[$colonne]) . "'";
@@ -771,8 +795,8 @@ $erreurs = $verif->getErreurs();
 
         <p>
         <label for="flyer">Flyer :</label>
-        <input type="file" name="flyer" id="flyer" class="js-file-upload-size-max" size="25"
-        accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif,image/webp" />
+        <input type="file" name="flyer" id="flyer" class="<?= $classe_champ_image ?>" size="25"
+        accept="<?= $accept_champ_image ?>" />
         </p>
         <?php
         // Aucun aperçu ni case « Supprimer » ici, contrairement à evenement-edit.php : le
@@ -782,10 +806,10 @@ $erreurs = $verif->getErreurs();
 
         <p>
         <label for="image">Image :</label>
-        <input type="file" name="image" id="image" class="js-file-upload-size-max" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif,image/webp" />
+        <input type="file" name="image" id="image" class="<?= $classe_champ_image ?>" size="25" accept="<?= $accept_champ_image ?>" />
         </p>
         <?php echo $verif->getHtmlErreur("image"); ?>
-        <div class="guideChamp">Formats JPEG, PNG, GIF ou WebP; max. 2 Mo. La même image est posée sur tous les événements sélectionnés.</div>
+        <div class="guideChamp"><?= $aide_formats_image ?> La même image est posée sur tous les événements sélectionnés.</div>
         </fieldset>
     </details>
 

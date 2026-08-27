@@ -359,12 +359,28 @@ export const AppGlobal =
 const Forms = {
     init : function bindEventsOfForms()
     {
-        const MAX_UPLOAD_SIZE_IN_BYTES = 2097152;
+        // La limite vient du champ MAX_FILE_SIZE, qu'un formulaire d'envoi porte
+        // déjà et que PHP valorise depuis UPLOAD_MAX_FILESIZE. La recopier ici
+        // reviendrait à la voir diverger : c'est ce qui s'était produit, le JS
+        // en annonçant 2 Mo quand la constante en valait 3.
+        const DEFAUT_TAILLE_MAX_EN_OCTETS = 5242880;
+
+        function tailleMaxAutorisee(champ)
+        {
+            const champMax = champ.form && champ.form.querySelector('input[name="MAX_FILE_SIZE"]');
+            const valeur = champMax ? parseInt(champMax.value, 10) : NaN;
+
+            return Number.isFinite(valeur) && valeur > 0 ? valeur : DEFAUT_TAILLE_MAX_EN_OCTETS;
+        }
+
         $('.js-file-upload-size-max').on('change', function alertOnFilesizeUpload()
         {
-            if (this.files.length > 0 && this.files[0].size > MAX_UPLOAD_SIZE_IN_BYTES)
+            const tailleMax = tailleMaxAutorisee(this);
+
+            if (this.files.length > 0 && this.files[0].size > tailleMax)
             {
-                alert('La taille du fichier que vous avez sélectionné dépasse la limite autorisée (2 Mo), merci d’en choisir un plus léger');
+                const enMo = (tailleMax / 1048576).toFixed(1).replace(/[.,]0$/, '').replace('.', ',');
+                alert('La taille du fichier que vous avez sélectionné dépasse la limite autorisée (' + enMo + ' Mo), merci d’en choisir un plus léger');
             }
         });
 

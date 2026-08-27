@@ -6,6 +6,7 @@ use Ladecadanse\Utils\Validateur; // forms
 use Ladecadanse\Utils\QueryParamValidator; // query string
 use Ladecadanse\Utils\ImageDriver2; // files
 use Ladecadanse\Utils\ImageUrlFetcher; // url import
+use Ladecadanse\Utils\PdfToImage; // url import
 use Ladecadanse\Security\SecurityToken;
 use Ladecadanse\Evenement; // domain
 use Ladecadanse\Lieu; // domain
@@ -152,6 +153,21 @@ $can_notify_auteur =
 // donc indisponible sur le formulaire public "Proposer un événement"
 $can_import_image_url = $est_connecte;
 
+// Acceptation des PDF, désactivée tant qu'on ne l'a pas demandée (app/env.php).
+// Le champ fichier n'a besoin de rien d'autre, le navigateur convertissant
+// lui-même ; l'import par URL réclame en plus imagick et Ghostscript.
+$pdf_accepte = PdfToImage::estActive();
+$pdf_accepte_par_url = $pdf_accepte && PdfToImage::estDisponible();
+
+// Ce que le formulaire annonce doit suivre le drapeau : un accept qui laisse
+// choisir un PDF sans que rien ne le convertisse ne produirait qu'un refus.
+$accept_champ_image = "image/jpeg,image/pjpeg,image/png,image/x-png,image/gif,image/webp"
+    . ($pdf_accepte ? ',application/pdf,.pdf' : '');
+$classe_champ_image = 'js-file-upload-size-max fichier' . ($pdf_accepte ? ' js-pdf-to-image' : '');
+$aide_formats_image = $pdf_accepte
+    ? 'Formats JPEG, PNG, GIF, WebP ou PDF (seule la 1re page sera gardée); max. 5 Mo'
+    : 'Formats JPEG, PNG, GIF ou WebP; max. 5 Mo';
+
 // form values received
 $champs = ["statut" => "", "genre" => "", "titre" => "", "dateEvenement" => "", "idLieu" => 0, "idSalle" => 0,
     "nomLieu" => "", "adresse" => "", "quartier" => "",  "localite_id" => "", "region" => "", "urlLieu" => "",
@@ -221,6 +237,20 @@ $similarEvenements = [];
 * « premier affichage ». Ce témoin les sépare.
 */
 $formulaire_poste = isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok';
+
+/*
+ * Envoi trop lourd pour post_max_size : PHP vide $_POST *et* $_FILES avant même
+ * que ce script démarre. Le témoin « formulaire=ok » disparaît avec le reste,
+ * si bien qu'aucun des contrôles du bloc ci-dessous ne s'exécute — sans ce
+ * garde-fou, l'utilisateur récupérerait un formulaire vierge sans un mot
+ * d'explication, toute sa saisie perdue.
+ */
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($_POST) && ($_SERVER['CONTENT_LENGTH'] ?? 0) > 0)
+{
+    HtmlShrink::msgErreur("Le poids total de votre envoi dépasse la limite autorisée. "
+        . "Veuillez choisir des fichiers plus légers (5 Mo au maximum chacun), puis saisir le formulaire à nouveau.");
+    exit;
+}
 
 if ($formulaire_poste)
 {
@@ -384,8 +414,8 @@ if ($formulaire_poste)
     }
     else
     {
-        $verif->validerFichier($fichiers['flyer'], "flyer", $glo_mimes_images_acceptees, 0);
-        $verif->validerFichier($fichiers['image'], "image", $glo_mimes_images_acceptees, 0);
+        $verif->validerFichierImage($fichiers['flyer'], "flyer", $glo_mimes_images_acceptees, 0);
+        $verif->validerFichierImage($fichiers['image'], "image", $glo_mimes_images_acceptees, 0);
     }
 
     /**
@@ -395,7 +425,17 @@ if ($formulaire_poste)
      *
      * @param string $champ 'flyer' ou 'image' ; donne aussi la clé d'erreur « <champ>_url »
      */
-    $importerImageParUrl = function (string $champ, string $url) use ($verif, $fichiers, $glo_mimes_images_acceptees): ?array
+    // Le PDF n'est proposé par URL que si la fonction est activée et que le
+    // serveur sait le rendre. Le champ fichier, lui, ne dépend que du premier :
+    // c'est le navigateur qui convertit.
+    $mimes_acceptes_par_url = $glo_mimes_images_acceptees;
+
+    if ($pdf_accepte_par_url)
+    {
+        $mimes_acceptes_par_url[] = 'application/pdf';
+    }
+
+    $importerImageParUrl = function (string $champ, string $url) use ($verif, $fichiers, $mimes_acceptes_par_url): ?array
     {
         if (empty($url))
         {
@@ -414,13 +454,31 @@ if ($formulaire_poste)
             return null;
         }
 
-        $fetched = ImageUrlFetcher::fetch($url, $glo_mimes_images_acceptees);
+        $fetched = ImageUrlFetcher::fetch($url, $mimes_acceptes_par_url);
 
         if ($fetched['error'] !== null)
         {
             $verif->setErreur($champ . '_url', $fetched['error']);
 
             return null;
+        }
+
+        // Un PDF est rendu ici, et non plus loin : la suite du traitement ne
+        // manipule que des images, et le nom du fichier enregistré se déduit du
+        // type MIME — il doit déjà porter celui de l'image produite.
+        if ($fetched['mime'] === 'application/pdf')
+        {
+            try
+            {
+                $fetched['data'] = PdfToImage::convertirPremierePage((string) $fetched['data']);
+                $fetched['mime'] = 'image/webp';
+            }
+            catch (\RuntimeException $e)
+            {
+                $verif->setErreur($champ . '_url', $e->getMessage());
+
+                return null;
+            }
         }
 
         return $fetched;
@@ -537,45 +595,54 @@ if ($formulaire_poste)
 		 * Préparation du nom du flyer et de l'image, par ex 3047_2006-02-20.jpg
 		 * en cas d'ajout, obtention de l'ID du nouvel événement
 		 */
-		if (!empty($fichiers['flyer']['name']) || !empty($fichiers['image']['name']) || $fetched_flyer !== null || $fetched_image !== null)
+		$un_fichier_est_a_ecrire = !empty($fichiers['flyer']['name']) || !empty($fichiers['image']['name'])
+			|| $fetched_flyer !== null || $fetched_image !== null;
+
+		// Extension déduite du type MIME. Indispensable pour une image récupérée par
+		// URL, qui n'a aucun nom d'origine, et plus sûr pour un fichier envoyé : le
+		// format que ImageDriver2 écrira est celui du contenu, pas celui du nom.
+		$extensionPourMime = fn (string $mime): string => match($mime) {
+			'image/png', 'image/x-png' => '.png',
+			'image/gif' => '.gif',
+			'image/webp' => '.webp',
+			default => '.jpg',
+		};
+
+		/**
+		 * Donne aux champs flyer et image leur nom définitif : « {idE}_{date}[_img].{ext} ».
+		 *
+		 * Le nom encode l'identifiant de l'événement, si bien qu'il ne peut être arrêté
+		 * qu'une fois celui-ci connu — à l'ajout, seul l'AUTO_INCREMENT le décide, d'où
+		 * l'appel après l'INSERT.
+		 */
+		$nommerLesFichiers = function (int|string $idE) use (&$champs, $fichiers, $fetched_flyer, $fetched_image, $extensionPourMime): void
 		{
-
-			$nouv_idE = 0;
-
-			if (isset($get['idE']))
-			{
-				$nouv_idE = $get['idE'];
-			}
-			else
-			{
-				$req_maxId = $connector->query("SELECT MAX(idEvenement) AS max_idE FROM evenement");
-				$maxId = $connector->fetchArray($req_maxId);
-				$nouv_idE = $maxId['max_idE'] + 1;
-			}
-
-			// Extension d'une image récupérée par URL, d'après son type MIME : elle n'a pas
-			// de nom de fichier d'origine dont on pourrait la déduire.
-			$extensionPourMime = fn (string $mime): string => match($mime) {
-				'image/png', 'image/x-png' => '.png',
-				'image/gif' => '.gif',
-				'image/webp' => '.webp',
-				default => '.jpg',
-			};
-
 			// Même schéma de nom pour les deux, l'image intercalant « _img » avant l'extension
 			foreach (['flyer' => ['', $fetched_flyer], 'image' => ['_img', $fetched_image]] as $champ_img => [$suffixe, $fetched])
 			{
-				$prefixe = $nouv_idE."_".$champs['dateEvenement'].$suffixe;
+				$prefixe = $idE."_".$champs['dateEvenement'].$suffixe;
 
 				if (!empty($fichiers[$champ_img]['name']))
 				{
-					$champs[$champ_img] = $prefixe.mb_strrchr((string) $fichiers[$champ_img]['name'], '.');
+					// L'extension suit le format réel du fichier, pas celle de son
+					// nom d'origine : ImageDriver2 écrit d'après le contenu, si bien
+					// qu'un PNG envoyé sous le nom « affiche.jpg » produisait un
+					// fichier .jpg contenant du PNG. Le serveur le sert alors avec un
+					// type que le navigateur n'accepte plus.
+					$champs[$champ_img] = $prefixe.$extensionPourMime((string) mime_content_type($fichiers[$champ_img]['tmp_name']));
 				}
 				elseif ($fetched !== null)
 				{
 					$champs[$champ_img] = $prefixe.$extensionPourMime($fetched['mime']);
 				}
 			}
+		};
+
+		// En modification l'identifiant est celui de l'URL ; à l'ajout il faut attendre
+		// que la base l'ait attribué.
+		if ($un_fichier_est_a_ecrire && isset($get['idE']))
+		{
+			$nommerLesFichiers($get['idE']);
 		}
 
 		if ($get['action'] == 'insert')
@@ -600,6 +667,39 @@ if ($formulaire_poste)
 			if ($connector->query($sql_insert))
 			{
 				$req_id = $connector->getInsertId();
+
+				/*
+				 * Le nom des fichiers ne peut être arrêté qu'ici : il encode
+				 * l'identifiant, et seul l'AUTO_INCREMENT vient de l'attribuer. Le
+				 * déduire d'un « MAX(idEvenement) + 1 » lu avant l'INSERT, comme
+				 * auparavant, donnait un nom décalé dès qu'un événement avait été
+				 * supprimé — l'AUTO_INCREMENT, lui, ne redescend jamais — et deux
+				 * ajouts simultanés lisaient le même maximum, le second écrasant
+				 * l'image du premier.
+				 *
+				 * Les colonnes sont donc complétées par un UPDATE. L'écriture des
+				 * fichiers, plus bas, se fera sur ces mêmes noms.
+				 */
+				if ($un_fichier_est_a_ecrire)
+				{
+					$nommerLesFichiers($req_id);
+
+					$sql_fichiers = [];
+
+					foreach (['flyer', 'image'] as $colonne)
+					{
+						if (!empty($champs[$colonne]))
+						{
+							$sql_fichiers[] = $colonne . "='" . $connector->sanitize($champs[$colonne]) . "'";
+						}
+					}
+
+					if ($sql_fichiers !== []
+						&& !$connector->query("UPDATE evenement SET " . implode(', ', $sql_fichiers) . " WHERE idEvenement=" . (int) $req_id))
+					{
+						HtmlShrink::msgErreur("L'événement a été créé, mais le nom de son image n'a pas pu être enregistré");
+					}
+				}
 
 				$_SESSION['evenement-edit_flash_msg'] = "L'événement a été créé. <a href='/index.php?courant=".urlencode((string) $champs['dateEvenement'])."#event-".(int)$req_id."'>Voir dans l'agenda</a>";
 
@@ -1419,14 +1519,14 @@ if ($show_form)
     <fieldset>
         <legend>Images</legend>
 
-        <div style="margin-left: 0.8em;margin-bottom:1.2em;">Formats JPEG, PNG, GIF ou WebP; max. 2 Mo</div>
+        <div style="margin-left: 0.8em;margin-bottom:1.2em;"><?= $aide_formats_image ?></div>
 
         <p style="margin-left: 0.8em;margin-bottom:1.2em;font-weight: bold">Affiche/flyer</p>
 
         <p>
             <label for="flyer">Envoyer</label>
-            <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo UPLOAD_MAX_FILESIZE ?>" /> <!-- 2 Mo -->
-            <input type="file" name="flyer" id="flyer" class="js-file-upload-size-max" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif,image/webp" class="fichier" />
+            <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo UPLOAD_MAX_FILESIZE ?>" />
+            <input type="file" name="flyer" id="flyer" class="<?= $classe_champ_image ?>" size="25" accept="<?= $accept_champ_image ?>" />
             <?php if ($formulaire_rejete && !empty($fichiers['flyer']['name'])): ?>
                 <div class="msg">Le fichier sélectionné a été retiré du formulaire par le navigateur (sécurité). Veuillez le sélectionner à nouveau.</div>
             <?php endif; ?>
@@ -1466,8 +1566,8 @@ if ($show_form)
         <div class="guideChamp" style="padding-left:0.8em;margin-top:0">Photo des artistes, de leurs œuvres, du lieu, etc.<br>Visible sous le flyer dans la page Événement</div>
         <p>
             <label for="image">Envoyer</label>
-            <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo UPLOAD_MAX_FILESIZE ?>" /> <!-- 2 Mo -->
-            <input type="file" name="image" id="image" class="js-file-upload-size-max" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif,image/webp" class="fichier" />
+            <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo UPLOAD_MAX_FILESIZE ?>" />
+            <input type="file" name="image" id="image" class="<?= $classe_champ_image ?>" size="25" accept="<?= $accept_champ_image ?>" />
             <div class="spacer"></div>
             <?php if ($formulaire_rejete && !empty($fichiers['image']['name'])): ?>
                 <div class="msg">Le fichier sélectionné a été retiré du formulaire par le navigateur (sécurité). Veuillez le sélectionner à nouveau</div>

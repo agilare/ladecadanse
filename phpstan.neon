@@ -41,6 +41,7 @@ parameters:
         - HOME_TMP_BANNER_ENABLED
         - HOME_TMP_BACK_BANNER_ENABLED
         - PARTIAL_EDIT_MODE
+        - PDF_CONVERSION_ENABLED
     inferPrivatePropertyTypeFromConstructor: true
     checkMissingTypehints: true
     ignoreErrors:

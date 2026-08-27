@@ -56,6 +56,21 @@ define("DARKVISITORS_ACCESS_TOKEN", '');
 define("BOT_MONITORING_ENABLED", false);
 define("BOT_MONITORING_SUSPECT_THRESHOLD", 150); // seuil de hits pour "humains suspects" dans le dashboard
 
+// accepter les PDF dans les champs flyer et image d'un événement, dont seule la
+// 1re page est gardée, convertie en WebP (evenement-edit.php, admin/events.php)
+//
+// Deux voies, dont une seule demande quelque chose au serveur :
+//   - champ fichier : le navigateur convertit (web/js/pdf-to-image.js), rien à
+//     installer, mais ~3,4 Mo de pdf.js à télécharger au premier PDF déposé
+//   - « ou coller une URL » : le serveur convertit (Utils\PdfToImage), ce qui
+//     demande l'extension imagick ET Ghostscript. Sans eux cette voie refuse les
+//     PDF et renvoie vers le champ fichier, le reste continuant de fonctionner.
+//     Voir « Convertir les PDF collés en URL » dans le README.
+//
+// Désactivé tant qu'on ne l'a pas voulu : les champs n'annoncent alors pas le
+// PDF, ne l'acceptent pas, et pdf.js n'est jamais chargé.
+define("PDF_CONVERSION_ENABLED", false);
+
 define("PAYPAL_HOSTED_BUTTON_ID", "");
 
 // to allow access to events API (api.php)

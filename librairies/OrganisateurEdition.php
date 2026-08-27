@@ -99,8 +99,8 @@ class OrganisateurEdition extends Edition
         $verif->valider($this->valeurs['URL'], "URL", "url", 2, 100, 0);
         $verif->valider($this->valeurs['email'], "email", "email", 4, 100, 0);
         $verif->valider($this->valeurs['presentation'], "presentation", "texte", 20, 10000, 0);
-        $verif->validerFichier($this->fichiers['logo'], "logo", $mimes_images_acceptes, 0);
-        $verif->validerFichier($this->fichiers['photo'], "photo", $mimes_images_acceptes, 0);
+        $verif->validerFichierImage($this->fichiers['logo'], "logo", $mimes_images_acceptes, 0);
+        $verif->validerFichierImage($this->fichiers['photo'], "photo", $mimes_images_acceptes, 0);
 
         /*
          * En cas d'ajout vérification si le lieu n'existe pas déjà

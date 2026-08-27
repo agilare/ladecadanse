@@ -24,3 +24,7 @@
 # Linux, un CRLF fait échouer certaines directives à arguments entre guillemets
 htaccess/*.conf text eol=lf
 userini/*.ini text eol=lf
+
+# pdf.js est repris tel quel d'une release Mozilla : aucune normalisation, pour
+# que le contenu du dépôt reste comparable à l'archive d'origine
+web/js/libs/pdfjs/** -text

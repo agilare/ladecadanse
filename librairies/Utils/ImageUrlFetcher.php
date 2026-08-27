@@ -42,7 +42,7 @@ class ImageUrlFetcher
             CURLOPT_TIMEOUT        => self::TIMEOUT,
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_MAXREDIRS      => 3,
-            CURLOPT_HTTPHEADER     => ['Accept: image/*'],
+            CURLOPT_HTTPHEADER     => ['Accept: image/*,application/pdf'],
             CURLOPT_SSL_VERIFYPEER => true,
             CURLOPT_USERAGENT      => 'ladecadanse/1.0',
         ]);
@@ -79,6 +79,17 @@ class ImageUrlFetcher
             )
         ) {
             return ['data' => null, 'mime' => null, 'error' => "Cette URL n'est pas autorisée"];
+        }
+
+        // Le PDF se reconnaît à ses octets, getimagesizefromstring() n'en sachant
+        // rien. Il n'est accepté que si l'appelant l'a explicitement autorisé :
+        // sa conversion demande Imagick, absent de certains environnements.
+        if (PdfToImage::estUnPdf($body)) {
+            if (!in_array('application/pdf', $allowedMimes, true)) {
+                return ['data' => null, 'mime' => null, 'error' => "Les PDF ne sont pas acceptés ici"];
+            }
+
+            return ['data' => $body, 'mime' => 'application/pdf', 'error' => null];
         }
 
         $imgInfo = @getimagesizefromstring($body);
