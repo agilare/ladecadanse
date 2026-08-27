@@ -328,7 +328,20 @@ if (!empty($_POST['formulaire']))
                     }
 
                     $suffixe = $colonne === 'image' ? "_img" : "";
-                    $nouveaux_fichiers[$colonne] = $idEven_courant . "_" . $tab_even['dateEvenement'] . $suffixe . strrchr((string) $fichiers[$colonne]['name'], '.');
+
+                    // L'extension suit le format réel du fichier, jamais celle de son
+                    // nom d'origine : ImageDriver2 écrit d'après le contenu, si bien
+                    // qu'un PNG envoyé sous le nom « affiche.jpg » donnait un .jpg
+                    // contenant du PNG, servi ensuite sous un type que le navigateur
+                    // refuse. Même correctif que dans evenement-edit.php.
+                    $extension = match ((string) mime_content_type($fichiers[$colonne]['tmp_name'])) {
+                        'image/png', 'image/x-png' => '.png',
+                        'image/gif' => '.gif',
+                        'image/webp' => '.webp',
+                        default => '.jpg',
+                    };
+
+                    $nouveaux_fichiers[$colonne] = $idEven_courant . "_" . $tab_even['dateEvenement'] . $suffixe . $extension;
 
                     $supprimerAncienFichier($colonne, $idEven_courant);
                     $sql_fichiers .= ", " . $colonne . "='" . $connector->sanitize($nouveaux_fichiers[$colonne]) . "'";

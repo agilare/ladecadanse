@@ -595,36 +595,32 @@ if ($formulaire_poste)
 		 * Préparation du nom du flyer et de l'image, par ex 3047_2006-02-20.jpg
 		 * en cas d'ajout, obtention de l'ID du nouvel événement
 		 */
-		if (!empty($fichiers['flyer']['name']) || !empty($fichiers['image']['name']) || $fetched_flyer !== null || $fetched_image !== null)
+		$un_fichier_est_a_ecrire = !empty($fichiers['flyer']['name']) || !empty($fichiers['image']['name'])
+			|| $fetched_flyer !== null || $fetched_image !== null;
+
+		// Extension déduite du type MIME. Indispensable pour une image récupérée par
+		// URL, qui n'a aucun nom d'origine, et plus sûr pour un fichier envoyé : le
+		// format que ImageDriver2 écrira est celui du contenu, pas celui du nom.
+		$extensionPourMime = fn (string $mime): string => match($mime) {
+			'image/png', 'image/x-png' => '.png',
+			'image/gif' => '.gif',
+			'image/webp' => '.webp',
+			default => '.jpg',
+		};
+
+		/**
+		 * Donne aux champs flyer et image leur nom définitif : « {idE}_{date}[_img].{ext} ».
+		 *
+		 * Le nom encode l'identifiant de l'événement, si bien qu'il ne peut être arrêté
+		 * qu'une fois celui-ci connu — à l'ajout, seul l'AUTO_INCREMENT le décide, d'où
+		 * l'appel après l'INSERT.
+		 */
+		$nommerLesFichiers = function (int|string $idE) use (&$champs, $fichiers, $fetched_flyer, $fetched_image, $extensionPourMime): void
 		{
-
-			$nouv_idE = 0;
-
-			if (isset($get['idE']))
-			{
-				$nouv_idE = $get['idE'];
-			}
-			else
-			{
-				$req_maxId = $connector->query("SELECT MAX(idEvenement) AS max_idE FROM evenement");
-				$maxId = $connector->fetchArray($req_maxId);
-				$nouv_idE = $maxId['max_idE'] + 1;
-			}
-
-			// Extension déduite du type MIME. Indispensable pour une image récupérée par
-			// URL, qui n'a aucun nom d'origine, et plus sûr pour un fichier envoyé : le
-			// format que ImageDriver2 écrira est celui du contenu, pas celui du nom.
-			$extensionPourMime = fn (string $mime): string => match($mime) {
-				'image/png', 'image/x-png' => '.png',
-				'image/gif' => '.gif',
-				'image/webp' => '.webp',
-				default => '.jpg',
-			};
-
 			// Même schéma de nom pour les deux, l'image intercalant « _img » avant l'extension
 			foreach (['flyer' => ['', $fetched_flyer], 'image' => ['_img', $fetched_image]] as $champ_img => [$suffixe, $fetched])
 			{
-				$prefixe = $nouv_idE."_".$champs['dateEvenement'].$suffixe;
+				$prefixe = $idE."_".$champs['dateEvenement'].$suffixe;
 
 				if (!empty($fichiers[$champ_img]['name']))
 				{
@@ -640,6 +636,13 @@ if ($formulaire_poste)
 					$champs[$champ_img] = $prefixe.$extensionPourMime($fetched['mime']);
 				}
 			}
+		};
+
+		// En modification l'identifiant est celui de l'URL ; à l'ajout il faut attendre
+		// que la base l'ait attribué.
+		if ($un_fichier_est_a_ecrire && isset($get['idE']))
+		{
+			$nommerLesFichiers($get['idE']);
 		}
 
 		if ($get['action'] == 'insert')
@@ -664,6 +667,39 @@ if ($formulaire_poste)
 			if ($connector->query($sql_insert))
 			{
 				$req_id = $connector->getInsertId();
+
+				/*
+				 * Le nom des fichiers ne peut être arrêté qu'ici : il encode
+				 * l'identifiant, et seul l'AUTO_INCREMENT vient de l'attribuer. Le
+				 * déduire d'un « MAX(idEvenement) + 1 » lu avant l'INSERT, comme
+				 * auparavant, donnait un nom décalé dès qu'un événement avait été
+				 * supprimé — l'AUTO_INCREMENT, lui, ne redescend jamais — et deux
+				 * ajouts simultanés lisaient le même maximum, le second écrasant
+				 * l'image du premier.
+				 *
+				 * Les colonnes sont donc complétées par un UPDATE. L'écriture des
+				 * fichiers, plus bas, se fera sur ces mêmes noms.
+				 */
+				if ($un_fichier_est_a_ecrire)
+				{
+					$nommerLesFichiers($req_id);
+
+					$sql_fichiers = [];
+
+					foreach (['flyer', 'image'] as $colonne)
+					{
+						if (!empty($champs[$colonne]))
+						{
+							$sql_fichiers[] = $colonne . "='" . $connector->sanitize($champs[$colonne]) . "'";
+						}
+					}
+
+					if ($sql_fichiers !== []
+						&& !$connector->query("UPDATE evenement SET " . implode(', ', $sql_fichiers) . " WHERE idEvenement=" . (int) $req_id))
+					{
+						HtmlShrink::msgErreur("L'événement a été créé, mais le nom de son image n'a pas pu être enregistré");
+					}
+				}
 
 				$_SESSION['evenement-edit_flash_msg'] = "L'événement a été créé. <a href='/index.php?courant=".urlencode((string) $champs['dateEvenement'])."#event-".(int)$req_id."'>Voir dans l'agenda</a>";
 
