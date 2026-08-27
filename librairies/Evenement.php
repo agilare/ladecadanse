@@ -5,6 +5,7 @@ namespace Ladecadanse;
 
 use Ladecadanse\HasDocuments;
 use Ladecadanse\Utils\DateHelper;
+use Ladecadanse\Utils\Text;
 
 class Evenement
 {
@@ -79,6 +80,94 @@ class Evenement
                 'url' => $event['e_urlLieu'],
                 'salle' => ""
             ];
+    }
+
+    public static function normalizeTitre(string $titre): string
+    {
+        $stripped = Text::stripAccents($titre);
+        $lower = mb_strtolower($stripped, 'UTF-8');
+        $collapsed = preg_replace('/\s+/u', ' ', $lower);
+        return trim((string) $collapsed);
+    }
+
+    public static function findSimilarEvenements(
+        string $titre,
+        int $idLieu,
+        string $nomLieu,
+        string $dateEvenement,
+        int $excludeIdE = 0,
+        int $maxLevenshtein = 5,
+    ): array {
+        global $connectorPdo;
+
+        $normalizedTitre = self::normalizeTitre($titre);
+        if ($normalizedTitre === '')
+        {
+            return [];
+        }
+
+        $params = [
+            ':date' => $dateEvenement,
+            ':excludeIdE' => $excludeIdE,
+        ];
+
+        if ($idLieu <= 0 && $nomLieu === '')
+        {
+            return [];
+        }
+
+        if ($idLieu > 0)
+        {
+            $lieuClause = 'e.idLieu = :idLieu';
+            $params[':idLieu'] = $idLieu;
+        }
+        else
+        {
+            $lieuClause = 'e.idLieu = 0 AND LOWER(e.nomLieu) = :nomLieu';
+            $params[':nomLieu'] = mb_strtolower(trim($nomLieu), 'UTF-8');
+        }
+
+        $sql = "SELECT
+            e.idEvenement,
+            e.idLieu,
+            e.idPersonne,
+            e.titre,
+            e.dateEvenement,
+            e.horaire_debut,
+            e.horaire_fin,
+            e.statut,
+            e.nomLieu,
+            l.nom AS l_nom
+        FROM evenement e
+        LEFT JOIN lieu l ON e.idLieu = l.idLieu
+        WHERE e.dateEvenement = :date
+            AND e.statut NOT IN ('inactif', 'propose')
+            AND e.idEvenement <> :excludeIdE
+            AND $lieuClause";
+
+        $stmt = $connectorPdo->prepare($sql);
+        $stmt->execute($params);
+        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        $similar = [];
+        foreach ($rows as $row)
+        {
+            $candidateNorm = self::normalizeTitre((string) $row['titre']);
+            if ($candidateNorm === '')
+            {
+                continue;
+            }
+            if (abs(strlen($normalizedTitre) - strlen($candidateNorm)) > $maxLevenshtein)
+            {
+                continue;
+            }
+            if (levenshtein($normalizedTitre, $candidateNorm) <= $maxLevenshtein)
+            {
+                $similar[] = $row;
+            }
+        }
+
+        return $similar;
     }
 
     /**

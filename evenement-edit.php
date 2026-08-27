@@ -211,6 +211,7 @@ $show_form = true;
 $formTokenName = 'form_token_evenement_edit';
 $verif = new Validateur();
 $fichiers = ['flyer' => ['name' => '', 'size' => 0], 'image' => ['name' => '', 'size' => 0]];
+$similarEvenements = [];
 
 /*
 * Témoin du formulaire, posté quoi qu'il arrive.
@@ -470,8 +471,27 @@ if ($formulaire_poste)
         $verif->valider($champs['description'], "description", "texte", 4, 10000, 0);
     }
 
-    // valide : insert or update
-    if ($verif->nbErreurs() === 0)
+    if ($verif->nbErreurs() === 0
+        && empty($_POST['confirm_duplicate'])
+        && $get['action'] === 'insert'
+    )
+    {
+        // La date est encore au format app (jj.mm.aaaa) ici : sa conversion en ISO n'a lieu
+        // que dans le bloc d'enregistrement ci-dessous. Aucune erreur de validation à ce
+        // stade garantit qu'elle est bien formée.
+        $date_iso = DateHelper::appToIso((string) $champs['dateEvenement']);
+
+        $similarEvenements = Evenement::findSimilarEvenements(
+            (string) $champs['titre'],
+            (int) $champs['idLieu'],
+            (string) $champs['nomLieu'],
+            $date_iso,
+        );
+
+        $logger->notice('[evenement-edit] duplicates found', ['action' => $get['action'], 'titre' => $champs['titre'], 'lieu' => $champs['nomLieu'], 'date' => $date_iso, 'similar_events_count' => count($similarEvenements)]);
+    }
+
+    if ($verif->nbErreurs() === 0 && empty($similarEvenements))
 	{
 		//creation/nettoyage des valeurs à insérer dans la table
 
@@ -792,7 +812,7 @@ if ($formulaire_poste)
 		// $req_id porte l'id de l'événement traité dans les deux cas : celui que l'INSERT
 		// vient de créer, ou celui que l'UPDATE tenait de l'URL. C'est déjà lui qui sert
 		// à construire la redirection ci-dessous.
-        $logger->info('[evenement-edit]', ['action' => $get['action'], 'titre' => $champs['titre'], 'date' => $champs['dateEvenement'], 'genre' => $champs['genre'], 'idLieu' => (int) $champs['idLieu'], 'lieu' => $champs['nomLieu'], 'idE' => (int) $req_id, 'idP' => (int) ($_SESSION['SidPersonne'] ?? 0)]);
+        $logger->info('[evenement-edit]', ['action' => $get['action'], 'titre' => $champs['titre'], 'date' => $champs['dateEvenement'], 'genre' => $champs['genre'], 'idLieu' => (int) $champs['idLieu'], 'lieu' => $champs['nomLieu'], 'idE' => (int) $req_id, 'idP' => (int) ($_SESSION['SidPersonne'] ?? 0), 'confirm_duplicate' => (int) !empty($_POST['confirm_duplicate'])]);
 
         if ($est_connecte)
         {
@@ -914,6 +934,13 @@ if ($show_form)
     </header>
 
     <?php
+    /*
+    * Le navigateur vide les <input type="file"> à chaque ré-affichage du formulaire. Le rappel
+    * de resélectionner flyer et image vaut donc pour tout POST non enregistré : erreur de
+    * validation, mais aussi doublon possible, qui laisse nbErreurs() à 0.
+    */
+    $formulaire_rejete = $verif->nbErreurs() > 0 || !empty($similarEvenements);
+
     if ($verif->nbErreurs() > 0)
     {
         $msg_err = "<strong>Il y a ".$verif->nbErreurs()." erreur(s)</strong>";
@@ -933,6 +960,64 @@ if ($show_form)
 
         <input type="text" name="name_as" value="" class="name_as" /><?php echo $verif->getHtmlErreur('name_as'); ?>
         <input type="hidden" name="<?php echo $formTokenName; ?>" value="<?php echo sanitizeForHtml($_SESSION[$formTokenName]); ?>">
+
+        <?php if (!empty($similarEvenements)) :
+            $someSimilarEditable = false;
+            $someSimilarNotEditable = false; ?>
+        <aside class="duplicate-warning">
+            <h2>Cet événement existe peut&#8209;être déjà</h2>
+            <p>Un ou plusieurs événements similaires ont déjà été créés à ce lieu pour cette date&nbsp;:</p>
+            <ul class="duplicate-list">
+                <?php foreach ($similarEvenements as $similar) :
+                    $horaireSimilar = EvenementRenderer::schedulesToHhMm(
+                        $similar['horaire_debut'],
+                        $similar['horaire_fin'],
+                        $similar['dateEvenement']
+                    );
+                    $canEditSimilar = $authorization->isPersonneAllowedToEditEvenementNow($_SESSION, [
+                        'e_idEvenement' => $similar['idEvenement'],
+                        'e_idLieu' => $similar['idLieu'],
+                        'e_idPersonne' => $similar['idPersonne'],
+                        'e_dateEvenement' => $similar['dateEvenement'],
+                        'e_horaire_fin' => $similar['horaire_fin'],
+                    ]);
+                    if ($canEditSimilar) {
+                        $someSimilarEditable = true;
+                    } else {
+                        $someSimilarNotEditable = true;
+                    }
+                    ?>
+                    <li>
+                        <a href="/event/evenement.php?idE=<?= (int) $similar['idEvenement'] ?>" target="_blank">
+                            «&nbsp;<?= sanitizeForHtml($similar['titre']) ?>&nbsp;»
+                        </a>
+                        <?php if ($canEditSimilar) : ?>
+                            <a class="duplicate-edit" href="/evenement-edit.php?action=editer&amp;idE=<?= (int) $similar['idEvenement'] ?>" title="Éditer l’événement"><?= $iconeEditer ?></a>
+                        <?php endif; ?>
+                        <?php if (!empty($horaireSimilar)) : ?>
+                            <span class="horaire"><?= sanitizeForHtml($horaireSimilar) ?></span>
+                        <?php endif; ?>
+                        <?php if (!empty($similar['statut']) && $similar['statut'] !== 'actif') : ?>
+                            <span class="statut">[<?= sanitizeForHtml($similar['statut']) ?>]</span>
+                        <?php endif; ?>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+            <?php if ($someSimilarEditable) : ?>
+            <p>S’il s’agit d’un duplicat, <strong>modifiez l’événement existant</strong> à l’aide de l’icône d’édition à côté de son titre.</p>
+            <?php endif; ?>
+            <?php if ($someSimilarNotEditable) : ?>
+            <p>Vous n’avez pas les droits pour modifier certains de ces événements&nbsp;: contactez l’organisateur qui l’a ajouté, ou en dernier recours les webmasters de La décadanse.</p>
+            <?php endif; ?>
+            <div class="confirm-row">
+                <label class="confirm-label">
+                    <input type="checkbox" name="confirm_duplicate" value="1">
+                    <span>Il s’agit bien d’un autre événement, je confirme la création.</span>
+                </label>
+                <input type="submit" value="Confirmer" class="submit submit-big confirm-submit">
+            </div>
+        </aside>
+        <?php endif; ?>
 
         <?php if ($prefilled_from_user_defaults) { ?>
         <div class="guideForm">Certains champs sont préremplis depuis vos valeurs par défaut &middot; <a href="/user-edit.php?action=editer&amp;idP=<?php echo (int) $_SESSION['SidPersonne']; ?>">Modifier mes valeurs</a></div>
@@ -1342,7 +1427,7 @@ if ($show_form)
             <label for="flyer">Envoyer</label>
             <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo UPLOAD_MAX_FILESIZE ?>" /> <!-- 2 Mo -->
             <input type="file" name="flyer" id="flyer" class="js-file-upload-size-max" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif,image/webp" class="fichier" />
-            <?php if ($verif->nbErreurs() > 0 && !empty($fichiers['flyer']['name'])): ?>
+            <?php if ($formulaire_rejete && !empty($fichiers['flyer']['name'])): ?>
                 <div class="msg">Le fichier sélectionné a été retiré du formulaire par le navigateur (sécurité). Veuillez le sélectionner à nouveau.</div>
             <?php endif; ?>
 
@@ -1384,7 +1469,7 @@ if ($show_form)
             <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo UPLOAD_MAX_FILESIZE ?>" /> <!-- 2 Mo -->
             <input type="file" name="image" id="image" class="js-file-upload-size-max" size="25" accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif,image/webp" class="fichier" />
             <div class="spacer"></div>
-            <?php if ($verif->nbErreurs() > 0 && !empty($fichiers['image']['name'])): ?>
+            <?php if ($formulaire_rejete && !empty($fichiers['image']['name'])): ?>
                 <div class="msg">Le fichier sélectionné a été retiré du formulaire par le navigateur (sécurité). Veuillez le sélectionner à nouveau</div>
             <?php endif; ?>
 

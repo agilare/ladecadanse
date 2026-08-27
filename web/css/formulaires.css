@@ -467,3 +467,111 @@ font-family:Georgia;
     border: 1px solid #aaa;
     color: #555;
 }
+
+.duplicate-warning
+{
+    background: #fff4e5;
+    border-left: 4px solid #d97706;
+    color: #5b2a05;
+    padding: 1em 1.2em;
+    margin: 0 0 1.2em 0;
+    border-radius: 2px;
+}
+
+    .duplicate-warning h2
+    {
+        color: #7c2d12;
+        margin: 0 0 0.6em 0;
+        font-size: 1.25em;
+    }
+
+    .duplicate-warning p
+    {
+        margin: 0.5em 0;
+        line-height: 1.4em;
+    }
+
+    #contenu .duplicate-warning .duplicate-list
+    {
+        margin: 0.4em 0 0.8em 0;
+        padding: 0;
+        list-style: none;
+    }
+
+        #contenu .duplicate-warning .duplicate-list li
+        {
+            margin: 0.35em 0;
+        }
+
+        #contenu .duplicate-warning .duplicate-list a
+        {
+            color: #1b4f8a;
+        }
+
+        #contenu .duplicate-warning .duplicate-list .duplicate-edit
+        {
+            margin-left: 0.4em;
+        }
+
+            #contenu .duplicate-warning .duplicate-list .duplicate-edit img
+            {
+                vertical-align: middle;
+            }
+
+        #contenu .duplicate-warning .duplicate-list .horaire
+        {
+            color: #5b2a05;
+            margin-left: 0.4em;
+        }
+
+        #contenu .duplicate-warning .duplicate-list .statut
+        {
+            color: #856404;
+            margin-left: 0.4em;
+            text-transform: lowercase;
+        }
+
+    .duplicate-warning .confirm-row
+    {
+        margin: 1em 0 0 0;
+        padding-top: 0.8em;
+        border-top: 1px solid #f0c896;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 1em;
+    }
+
+    .duplicate-warning .confirm-submit
+    {
+        margin-left: auto;
+    }
+
+    form#ajouter_editer .submit:disabled
+    {
+        background-color: #ece4d7;
+        border-color: #b9a98f;
+        color: #9c8f78;
+        -webkit-text-fill-color: #9c8f78;
+        cursor: not-allowed;
+    }
+
+form#ajouter_editer .duplicate-warning .confirm-label
+{
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
+    width: auto;
+    text-align: left;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+    font-weight: bold;
+    color: #5b2a05;
+}
+
+    form#ajouter_editer .duplicate-warning .confirm-label input[type="checkbox"]
+    {
+        width: auto;
+        margin: 0;
+    }

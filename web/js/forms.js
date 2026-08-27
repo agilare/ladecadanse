@@ -65,3 +65,13 @@ $('input.datepicker_from').Zebra_DatePicker({...ZebraDatepickerBasicConfig, ...i
 const inputDatepickerToConfig = {direction: 1, readonly_element: false};
 $('input.datepicker_to').Zebra_DatePicker({...ZebraDatepickerBasicConfig, ...inputDatepickerToConfig});
 
+const confirmDuplicateCheckbox = document.querySelector('.duplicate-warning input[name="confirm_duplicate"]');
+if (confirmDuplicateCheckbox) {
+    const duplicateForm = confirmDuplicateCheckbox.closest('form');
+    const duplicateSubmits = duplicateForm.querySelectorAll('input[type="submit"], button[type="submit"]');
+    const syncDuplicateSubmits = () => {
+        duplicateSubmits.forEach(button => { button.disabled = !confirmDuplicateCheckbox.checked; });
+    };
+    syncDuplicateSubmits();
+    confirmDuplicateCheckbox.addEventListener('change', syncDuplicateSubmits);
+}

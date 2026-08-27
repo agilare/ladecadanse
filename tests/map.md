@@ -117,6 +117,9 @@ Evaluation of feature :
         - mail to author with motifs and message
     - keyboard shortcuts (b2) : must work on all European keyboard layouts
     - leaving the form with unsaved changes : confirmation
+    - duplicate detection on add (same date + same lieu + title within Levenshtein 5)
+        - warning block, list of similar events
+        - confirm checkbox + button to override
 
 - (u) delete (c2)
   - confirm js
