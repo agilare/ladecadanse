@@ -49,6 +49,11 @@ define("DARKVISITORS_ENABLED", false);
 define("DARKVISITORS_PROJECT_KEY", '');
 define("DARKVISITORS_ACCESS_TOKEN", '');
 
+// Acceptation des PDF dans les champs flyer et image (voir app/env_model.php).
+// L'image Docker installe imagick et Ghostscript : les deux voies de conversion
+// y fonctionnent, d'où l'activation par défaut en développement.
+define("PDF_CONVERSION_ENABLED", true);
+
 define("PAYPAL_HOSTED_BUTTON_ID", "");
 
 // to allow access to events API (api.php)
