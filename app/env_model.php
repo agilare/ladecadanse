@@ -92,6 +92,17 @@ define("PDF_CONVERSION_ENABLED", false);
 //   true        ouvert à tous
 define("DATEPICKER_ALWAYS_VISIBLE_ENABLED", false);
 
+// situer chaque événement de l'agenda (index.php) par rapport à l'heure de chargement
+// de la page : à venir, en cours, terminé.
+//
+// Trois états, comme tout drapeau passant par Ladecadanse\FeatureFlag :
+//   false       l'agenda est celui d'avant : aucun repère de temporalité
+//   'preview'   réservé aux administrateurs, le temps d'éprouver ce que ces repères
+//               apportent une fois posés sur de vrais horaires ; une mention en tête
+//               de liste rappelle qu'ils ne sont pas publics
+//   true        ouvert à tous
+define("EVENT_TIME_STATUS_ENABLED", false);
+
 define("PAYPAL_HOSTED_BUTTON_ID", "");
 
 // to allow access to events API (api.php)

@@ -43,6 +43,7 @@ parameters:
         - PARTIAL_EDIT_MODE
         - PDF_CONVERSION_ENABLED
         - DATEPICKER_ALWAYS_VISIBLE_ENABLED
+        - EVENT_TIME_STATUS_ENABLED
     inferPrivatePropertyTypeFromConstructor: true
     checkMissingTypehints: true
     ignoreErrors:

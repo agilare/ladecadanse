@@ -1276,6 +1276,49 @@ table .td-align-center
             text-align:right;
         }
 
+    /*
+     * Temporalité de l'événement par rapport au chargement de la page (#51), commandée par
+     * EVENT_TIME_STATUS_ENABLED. La colonne des horaires est étroite : le badge ne doit pas se
+     * couper entre son icône et son libellé.
+     */
+    .even-time-status
+    {
+        white-space:nowrap;
+    }
+
+    /* La mention qui rappelle que ces repères ne sont pas publics : présente, jamais criarde */
+    .even-time-preview
+    {
+        margin:0.4em 0 0.8em;
+        font-size:0.85em;
+        font-style:italic;
+        color:#777;
+    }
+
+@media (prefers-reduced-motion: reduce)
+{
+    .even-time-status .fa-spin
+    {
+        animation:none;
+    }
+}
+
+    /*
+     * Un événement terminé reste lisible et cliquable : la transparence le range au second plan
+     * sans le retirer. Elle est levée au survol et dès qu'un de ses liens prend le focus, sans
+     * quoi les actions d'édition seraient les plus pâles au moment où on s'en sert.
+     */
+    .evenement-short.even-time-past
+    {
+        opacity:0.6;
+    }
+
+    .evenement-short.even-time-past:hover,
+    .evenement-short.even-time-past:focus-within
+    {
+        opacity:1;
+    }
+
     .evenement-short .edition
     {
         height:1.6em;
