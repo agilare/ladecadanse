@@ -40,6 +40,21 @@ Règles d'application :
 
 Les préférences sont stockées dans la colonne `personne.settings`, un champ texte contenant du JSON, sous la clé `events` > `new_defaults`. Les préférences ajoutées ultérieurement iront dans le même champ, sans nouvelle migration de schéma.
 
+## Fichiers : flyer et illustration
+
+Le nom d'un fichier encode l'événement auquel il appartient : `{idEvenement}_{date}.{ext}` pour le flyer, `{idEvenement}_{date}_img.{ext}` pour l'illustration, et le même nom préfixé de `s_` pour la vignette.
+
+Deux règles gouvernent ce nom :
+
+- **l'identifiant vient de l'AUTO_INCREMENT**, jamais d'un `MAX(idEvenement) + 1` lu avant l'`INSERT`. Les deux divergent dès qu'un événement a été supprimé — l'AUTO_INCREMENT ne redescend jamais — et deux ajouts simultanés lisaient le même maximum, le second écrasant l'image du premier. À l'ajout, le nom ne peut donc être arrêté qu'après l'`INSERT` : les colonnes sont complétées par un `UPDATE` dans la foulée. En modification, l'identifiant est déjà connu ;
+- **l'extension suit le format réel du fichier**, pas celle de son nom d'origine. `ImageDriver2` écrit d'après le contenu : un PNG envoyé sous le nom `affiche.jpg` produisait un `.jpg` contenant du PNG, que le serveur annonçait ensuite sous un type que le navigateur refuse.
+
+### Archivage annuel
+
+Chaque début janvier, les images de l'année écoulée sont déplacées dans `web/uploads/evenements/<année>/`. C'est ce que reflète `Evenement::getFilePath()`, qui ne préfixe l'année qu'une fois celle-ci **révolue** : une image de l'année en cours vit encore à la racine.
+
+Les anciennes URL sont rattrapées par une redirection 301 dans [`htaccess/50-routage.conf`](../htaccess/50-routage.conf), **à étendre d'une année à chaque déplacement**. Elle couvre jpg, png, gif et webp — tout ce qu'`ImageDriver2` sait écrire ; le webp est devenu le format le plus fréquent depuis que les PDF sont convertis à l'envoi. Elle s'arrête délibérément à l'année précédente : inclure l'année en cours changerait les 404 de ses images en redirections vers un répertoire qui n'existe pas encore.
+
 ## Genres
 
 Un `genre` absent de la configuration s'affiche comme « divers » via `Evenement::genreLabel()`, au lieu de faire échouer la page d'accueil.
