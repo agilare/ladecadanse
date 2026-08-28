@@ -115,16 +115,28 @@ function messageDuChamp(champ)
     if (!message)
     {
         message = document.createElement('div');
-        message.className = 'msg js-pdf-message';
+        message.className = 'js-pdf-message';
         champ.parentNode.insertBefore(message, champ.nextSibling);
     }
 
     return message;
 }
 
-function afficherMessage(champ, texte)
+/**
+ * Affiche un message sous le champ, dans le ton de ce qu'il annonce.
+ *
+ * `msg` est le style d'erreur du formulaire — fond jaune : une conversion
+ * réussie ne doit pas s'y afficher, sous peine de ressembler à un incident.
+ *
+ * @param {'info'|'succes'|'erreur'} ton
+ */
+function afficherMessage(champ, texte, ton)
 {
-    messageDuChamp(champ).textContent = texte;
+    const classes = { info: 'alert-info', succes: 'alert-success', erreur: 'msg' };
+    const message = messageDuChamp(champ);
+
+    message.className = 'js-pdf-message ' + (classes[ton] || classes.info);
+    message.textContent = texte;
 }
 
 function effacerMessage(champ)
@@ -219,7 +231,7 @@ async function traiterChangement(champ)
     }
 
     conversionsEnCours += 1;
-    afficherMessage(champ, 'Conversion de la première page du PDF en cours…');
+    afficherMessage(champ, 'Conversion de la première page du PDF en cours…', 'info');
 
     try
     {
@@ -231,7 +243,7 @@ async function traiterChangement(champ)
         }
 
         remplacerFichier(champ, image);
-        afficherMessage(champ, 'Première page du PDF convertie en image (' + Math.round(image.size / 1024) + ' Ko).');
+        afficherMessage(champ, 'Première page du PDF convertie en image (' + Math.round(image.size / 1024) + ' Ko).', 'succes');
     }
     catch (erreur)
     {
@@ -244,7 +256,7 @@ async function traiterChangement(champ)
             : null;
 
         afficherMessage(champ, chiffre || 'Ce PDF n’a pas pu être converti. '
-            + 'Convertissez sa première page en JPEG ou PNG, puis envoyez-la.');
+            + 'Convertissez sa première page en JPEG ou PNG, puis envoyez-la.', 'erreur');
     }
     finally
     {
