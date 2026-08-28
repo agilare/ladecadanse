@@ -22,6 +22,53 @@ include("../_header.inc.php");
     <article class="rubrique">
 
         <header>
+            <h2>3.12.0</h2>
+            <br>
+            <p>23 août 2026</p>
+        </header>
+
+        <h3>Événements</h3>
+
+        <ul>
+            <li><strong>export vers un calendrier</strong> depuis toutes les listes : résultats de recherche, pages lieu et organisateur (jusqu'ici uniquement l'accueil et la page d'un événement)</li>
+            <li>page d'un événement : <strong>mise en page élargie</strong> pour tout le monde</li>
+            <li>formulaire d'édition : la case "Supprimer" de l'image et l'aperçu du fichier déjà enregistré sont conservés en cas d'erreur de saisie</li>
+        </ul>
+
+        <h3>Comptes</h3>
+
+        <ul>
+            <li><strong>inscription, mot de passe oublié et déconnexion</strong> rénovés à l'image de la page de connexion : erreurs regroupées en haut de page et champs fautifs signalés</li>
+            <li>correction : le bouton "Sortir" ne déconnectait pas les personnes ayant coché "Rester connecté-e"</li>
+            <li>correction : une demande de mot de passe oublié pour un compte désactivé menait à un formulaire impossible à valider</li>
+            <li>la liste des mots de passe refusés, trop courants, passe de 22 à près de 20 000 entrées</li>
+        </ul>
+
+        <h3>Interface</h3>
+
+        <ul>
+            <li>les <strong>icônes</strong> des années 2000 laissent place à un jeu moderne</li>
+            <li>page d'un événement : sur petit écran le texte passe sous l'affiche et occupe toute la largeur, la page est nettement plus courte</li>
+            <li>mobile : formulaire d'événement, barre d'actions, navigation par jour et bas de la page d'accueil revus</li>
+        </ul>
+
+        <h3>Divers</h3>
+
+        <ul>
+            <li><a href="/misc/contacteznous.php">Contact</a> : suppression des champs "nom" et "affiliation"</li>
+            <li>sécurité : la déconnexion n'est plus déclenchable par un simple lien, et plusieurs requêtes à la base de données ont été sécurisées</li>
+            <li>corrections de bugs et améliorations techniques (nettoyage du code, configuration du serveur versionnée, analyseurs)</li>
+        </ul>
+
+        <p><a href="https://github.com/agilare/ladecadanse/releases/tag/v3.12.0" rel="external" target="_blank">Détails</a></p>
+
+    </article>
+
+    <hr>
+
+    <article class="rubrique">
+
+        <header>
             <h2>3.11.0</h2>
             <br>
             <p>18 août 2026</p>
