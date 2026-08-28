@@ -79,6 +79,19 @@ define("BOT_MONITORING_SUSPECT_THRESHOLD", 150); // seuil de hits pour "humains 
 // app/bootstrap.php avant l'autoloader, aucune classe n'y est encore connue.
 define("PDF_CONVERSION_ENABLED", false);
 
+// afficher le calendrier du champ date d'un événement (evenement-edit.php) déployé
+// en permanence sous le champ, au lieu du calendrier surgissant au clic
+// (Zebra_DatePicker, mode always_visible).
+//
+// Trois états, comme tout drapeau passant par Ladecadanse\FeatureFlag :
+//   false       le champ date se comporte comme partout ailleurs sur le site :
+//               le calendrier ne s'ouvre qu'au clic
+//   'preview'   réservé aux administrateurs, le temps d'éprouver la mise en page
+//               que le calendrier impose au reste du formulaire ; une mention
+//               sous le calendrier rappelle qu'il n'est pas public
+//   true        ouvert à tous
+define("DATEPICKER_ALWAYS_VISIBLE_ENABLED", false);
+
 define("PAYPAL_HOSTED_BUTTON_ID", "");
 
 // to allow access to events API (api.php)

@@ -28,7 +28,9 @@ let ZebraDatepickerBasicConfig = {
 const inputDatepickerConfig = {direction: [eventEditStartDate, false], readonly_element: false};
 $('input.datepicker:not(.datepicker-always-visible)').Zebra_DatePicker({...ZebraDatepickerBasicConfig, ...inputDatepickerConfig});
 
-// POC (réservé aux SUPERADMIN) : calendrier "always visible" affiché en permanence sous le champ date
+// Calendrier "always visible" affiché en permanence sous le champ date, commandé côté serveur par le
+// drapeau DATEPICKER_ALWAYS_VISIBLE_ENABLED (evenement-edit.php) : sans la classe ni #calendarDiv,
+// rien ne s'initialise ici et le champ garde le calendrier surgissant du sélecteur ci-dessus.
 // cf. https://stefangabos.github.io/Zebra_Datepicker/#always-visible
 if ($('input.datepicker-always-visible').length && $('#calendarDiv').length) {
     const inputDatepickerAlwaysVisibleConfig = {direction: [eventEditStartDate, false], always_visible: $('#calendarDiv'), readonly_element: false};

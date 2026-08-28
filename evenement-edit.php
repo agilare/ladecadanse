@@ -2,6 +2,7 @@
 
 require_once("app/bootstrap.php");
 
+use Ladecadanse\FeatureFlag; // config
 use Ladecadanse\Utils\Validateur; // forms
 use Ladecadanse\Utils\QueryParamValidator; // query string
 use Ladecadanse\Utils\ImageDriver2; // files
@@ -1261,21 +1262,30 @@ if ($show_form)
         <legend>Date & horaire</legend>
 
             <?php
-            // POC : calendrier "always visible" (Zebra_DatePicker) sous le champ date, réservé au niveau SUPERADMIN
-            $poc_calendrier_toujours_visible = $est_connecte && (int) $_SESSION['Sgroupe'] === UserLevel::SUPERADMIN;
+            // Calendrier "always visible" (Zebra_DatePicker) déployé en permanence sous le champ date,
+            // au lieu du calendrier surgissant au clic. Commandé par un drapeau (app/env.php), dont
+            // l'état 'preview' le réserve aux administrateurs — sans quoi tout le monde voit le
+            // calendrier ordinaire.
+            $calendrier_toujours_visible = FeatureFlag::estActive('DATEPICKER_ALWAYS_VISIBLE_ENABLED');
             ?>
             <div style="display: flex; align-items: flex-start; gap: 6px; flex-wrap: wrap;">
                 <label for="dateEvenement" style="white-space: nowrap;">Date*</label>
                 <div style="display: flex; flex-direction: column; align-items: flex-start;">
-                    <input type="text" name="dateEvenement" id="dateEvenement" size="9" value="<?php echo sanitizeForHtml($champs['dateEvenement']); ?>" class="datepicker<?php echo $poc_calendrier_toujours_visible ? ' datepicker-always-visible' : ''; ?>" placeholder="jj.mm.aaaa" required />
+                    <input type="text" name="dateEvenement" id="dateEvenement" size="9" value="<?php echo sanitizeForHtml($champs['dateEvenement']); ?>" class="datepicker<?php echo $calendrier_toujours_visible ? ' datepicker-always-visible' : ''; ?>" placeholder="jj.mm.aaaa" required />
                     <?php
                     echo $verif->getHtmlErreur('dateEvenement');
-                    if ($poc_calendrier_toujours_visible) {
+                    if ($calendrier_toujours_visible) {
                     // le calendrier est positionné en absolu par la librairie ; on réserve sa place dans le flux
                     // (au lieu de recouvrir les champs suivants) via position:relative, la hauteur exacte étant
                     // ajustée dynamiquement en JS (forms.js) selon le nombre de semaines du mois et la largeur d'écran
                     ?><div id="calendarDiv" style="position: relative; margin-top: 6px;"></div>
-                    <?php } ?>
+                    <?php
+                        // Une préversion qui ne se signale pas se croit livrée : l'administrateur qui
+                        // l'éprouve doit voir qu'il est seul à disposer de ce calendrier.
+                        if (FeatureFlag::estEnPreview('DATEPICKER_ALWAYS_VISIBLE_ENABLED')) { ?>
+                            <div class="guideChamp"><em>Calendrier en préversion : vous seuls, administrateurs, le voyez</em></div>
+                    <?php }
+                    } ?>
                 </div>
             <?php if ($est_ajout) { ?>
 
