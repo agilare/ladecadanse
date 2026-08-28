@@ -67,8 +67,16 @@ define("BOT_MONITORING_SUSPECT_THRESHOLD", 150); // seuil de hits pour "humains 
 //     PDF et renvoie vers le champ fichier, le reste continuant de fonctionner.
 //     Voir « Convertir les PDF collés en URL » dans le README.
 //
-// Désactivé tant qu'on ne l'a pas voulu : les champs n'annoncent alors pas le
-// PDF, ne l'acceptent pas, et pdf.js n'est jamais chargé.
+// Trois états, comme tout drapeau passant par Ladecadanse\FeatureFlag :
+//   false       les champs n'annoncent pas le PDF, ne l'acceptent pas, et
+//               pdf.js n'est jamais chargé
+//   'preview'   réservé aux administrateurs, pour éprouver la fonctionnalité en
+//               ligne sans l'ouvrir au public ; le texte d'aide le signale, une
+//               préversion qui ne se voit pas se croit livrée
+//   true        ouvert à tous
+//
+// La chaîne littérale, et non FeatureFlag::PREVIEW : ce fichier est chargé par
+// app/bootstrap.php avant l'autoloader, aucune classe n'y est encore connue.
 define("PDF_CONVERSION_ENABLED", false);
 
 define("PAYPAL_HOSTED_BUTTON_ID", "");

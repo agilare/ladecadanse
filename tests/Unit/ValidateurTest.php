@@ -130,8 +130,23 @@ final class ValidateurTest extends Unit
         // JavaScript n'a pas tourné, et le message doit le dire
         $file = ['name' => 'flyer.pdf', 'type' => 'application/pdf', 'tmp_name' => $chemin, 'error' => 0, 'size' => filesize($chemin)];
 
-        $this->assertFalse($this->validateur->validerFichierImage($file, 'f', ['image/jpeg', 'image/png'], false));
+        $this->assertFalse($this->validateur->validerFichierImage($file, 'f', ['image/jpeg', 'image/png'], false, true));
         $this->assertStringContainsString('navigateur', (string) $this->validateur->getErreur('f'));
+    }
+
+    public function testFichierImageRejectsPdfSansParlerDuNavigateurQuandIlNestPasAnnonce(): void
+    {
+        $chemin = tempnam(sys_get_temp_dir(), 'ldd_test_');
+        file_put_contents($chemin, "%PDF-1.7\nreste du document");
+        $this->fichiersTemporaires[] = $chemin;
+
+        $file = ['name' => 'flyer.pdf', 'type' => 'application/pdf', 'tmp_name' => $chemin, 'error' => 0, 'size' => filesize($chemin)];
+
+        // drapeau baissé : parler d'une conversion navigateur enverrait chercher
+        // une fonctionnalité que ce site n'offre pas
+        $this->assertFalse($this->validateur->validerFichierImage($file, 'f', ['image/jpeg', 'image/png'], false));
+        $this->assertStringNotContainsString('navigateur', (string) $this->validateur->getErreur('f'));
+        $this->assertStringContainsString('pdf', (string) $this->validateur->getErreur('f'));
     }
 
     public function testFichierImageRejectsOversizedDimensions(): void

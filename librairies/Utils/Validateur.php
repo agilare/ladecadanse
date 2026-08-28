@@ -211,8 +211,13 @@ class Validateur
      *
      * @param mixed         $fileinfo       Entrée de $_FILES à vérifier
      * @param array<string> $mimes_acceptes Types MIME autorisés
+     * @param bool          $pdf_annonce    Le formulaire annonce-t-il accepter les PDF ?
+     *                                      Décide du message : un PDF reçu alors que le
+     *                                      formulaire les annonce signale que la conversion
+     *                                      navigateur n'a pas eu lieu ; sinon c'est un
+     *                                      format simplement refusé.
      */
-    public function validerFichierImage(mixed $fileinfo, string $nom, array $mimes_acceptes, bool $obligatoire): bool
+    public function validerFichierImage(mixed $fileinfo, string $nom, array $mimes_acceptes, bool $obligatoire, bool $pdf_annonce = false): bool
     {
         if ($obligatoire && empty($fileinfo['name']))
         {
@@ -243,8 +248,14 @@ class Validateur
         // JavaScript n'a pas pu faire son travail.
         if (str_starts_with((string) @file_get_contents($fileinfo['tmp_name'], false, null, 0, 5), '%PDF-'))
         {
-            $this->erreurs[$nom] = "Ce PDF n'a pas pu être converti en image par votre navigateur. "
-                . "Activez JavaScript, ou convertissez sa 1re page en JPEG ou PNG avant de l'envoyer.";
+            // Le message suit ce que le formulaire a promis. Là où les PDF ne sont pas
+            // proposés, parler d'une conversion navigateur enverrait chercher une
+            // fonctionnalité qui n'existe pas sur ce site.
+            $this->erreurs[$nom] = $pdf_annonce
+                ? "Ce PDF n'a pas pu être converti en image par votre navigateur. "
+                    . "Activez JavaScript, ou convertissez sa 1re page en JPEG ou PNG avant de l'envoyer."
+                : "Ce format de fichier (pdf) n'est pas accepté";
+
             return false;
         }
 

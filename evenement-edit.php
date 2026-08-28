@@ -168,6 +168,13 @@ $aide_formats_image = $pdf_accepte
     ? 'Formats JPEG, PNG, GIF, WebP ou PDF (seule la 1re page sera gardée); max. 5 Mo'
     : 'Formats JPEG, PNG, GIF ou WebP; max. 5 Mo';
 
+// Une préversion qui ne se signale pas se croit livrée : l'administrateur qui
+// l'éprouve doit voir qu'il est seul à en disposer.
+if (PdfToImage::estEnPreview())
+{
+    $aide_formats_image .= ' <em>(l\'envoi de PDF est en préversion : vous seuls, administrateurs, le voyez)</em>';
+}
+
 // form values received
 $champs = ["statut" => "", "genre" => "", "titre" => "", "dateEvenement" => "", "idLieu" => 0, "idSalle" => 0,
     "nomLieu" => "", "adresse" => "", "quartier" => "",  "localite_id" => "", "region" => "", "urlLieu" => "",
@@ -414,8 +421,8 @@ if ($formulaire_poste)
     }
     else
     {
-        $verif->validerFichierImage($fichiers['flyer'], "flyer", $glo_mimes_images_acceptees, 0);
-        $verif->validerFichierImage($fichiers['image'], "image", $glo_mimes_images_acceptees, 0);
+        $verif->validerFichierImage($fichiers['flyer'], "flyer", $glo_mimes_images_acceptees, 0, $pdf_accepte);
+        $verif->validerFichierImage($fichiers['image'], "image", $glo_mimes_images_acceptees, 0, $pdf_accepte);
     }
 
     /**

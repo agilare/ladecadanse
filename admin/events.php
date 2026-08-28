@@ -36,6 +36,11 @@ $aide_formats_image = $pdf_accepte
     ? 'Formats JPEG, PNG, GIF, WebP ou PDF (seule la 1re page sera gardée); max. 5 Mo.'
     : 'Formats JPEG, PNG, GIF ou WebP; max. 5 Mo.';
 
+if (PdfToImage::estEnPreview())
+{
+    $aide_formats_image .= ' <em>(envoi de PDF en préversion)</em>';
+}
+
 /*
  * FILTRES, TRI ET PAGINATION
  *
@@ -236,8 +241,8 @@ if (!empty($_POST['formulaire']))
 
         $verif->valider($champs['description'], "description", "texte", 4, 10000, 0);
 
-        $verif->validerFichierImage($fichiers['flyer'], "flyer", $glo_mimes_images_acceptees, 0);
-        $verif->validerFichierImage($fichiers['image'], "image", $glo_mimes_images_acceptees, 0);
+        $verif->validerFichierImage($fichiers['flyer'], "flyer", $glo_mimes_images_acceptees, 0, $pdf_accepte);
+        $verif->validerFichierImage($fichiers['image'], "image", $glo_mimes_images_acceptees, 0, $pdf_accepte);
 
         foreach (['horaire_debut', 'horaire_fin'] as $champ_horaire)
         {

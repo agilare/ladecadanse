@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Ladecadanse\Utils;
 
+use Ladecadanse\FeatureFlag;
 use RuntimeException;
 
 /**
@@ -47,21 +48,25 @@ final class PdfToImage
     private const MESSAGE_INDISPONIBLE = "La conversion des PDF par URL n'est pas disponible sur ce serveur. "
         . "Envoyez le PDF avec le bouton « Envoyer », votre navigateur s'en chargera.";
 
+    /** Nom du drapeau qui commande l'acceptation des PDF, dans app/env.php. */
+    public const DRAPEAU = 'PDF_CONVERSION_ENABLED';
+
     /**
-     * L'acceptation des PDF est-elle demandée ? (PDF_CONVERSION_ENABLED)
+     * L'acceptation des PDF est-elle ouverte à l'utilisateur courant ?
      *
-     * Passe par une méthode plutôt que par une lecture de la constante sur
-     * place : un seul endroit connaît son nom, alors que trois fichiers en
-     * dépendent, et le `defined()` qui la protège — la constante manque des
-     * app/env.php antérieurs à cette fonctionnalité — n'est écrit qu'une fois.
-     *
-     * Le drapeau figure aussi dans les `dynamicConstantNames` de phpstan.neon,
-     * sans quoi l'analyse fige la valeur du poste et tient pour mortes toutes
-     * les branches PDF.
+     * Un seul endroit connaît le nom du drapeau, alors que trois fichiers en
+     * dépendent. La valeur 'preview' le réserve aux administrateurs — voir
+     * FeatureFlag.
      */
     public static function estActive(): bool
     {
-        return defined('PDF_CONVERSION_ENABLED') && PDF_CONVERSION_ENABLED;
+        return FeatureFlag::estActive(self::DRAPEAU);
+    }
+
+    /** La fonctionnalité est-elle montrée en préversion, aux seuls administrateurs ? */
+    public static function estEnPreview(): bool
+    {
+        return FeatureFlag::estEnPreview(self::DRAPEAU);
     }
 
     /**

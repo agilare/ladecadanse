@@ -134,13 +134,19 @@ Le site ladecadanse est déployé sur localhost:7777 (dev) ou localhost:8080 (pr
 
 ### Accepter les PDF dans les champs image
 
-Désactivé par défaut. Pour l'activer, dans `app/env.php` :
+Désactivé par défaut. Le drapeau `PDF_CONVERSION_ENABLED` d'`app/env.php` prend trois valeurs :
 
 ```php
-define("PDF_CONVERSION_ENABLED", true);
+define("PDF_CONVERSION_ENABLED", false);       // personne
+define("PDF_CONVERSION_ENABLED", 'preview');   // administrateurs seulement
+define("PDF_CONVERSION_ENABLED", true);        // tout le monde
 ```
 
 Tant que le drapeau est absent ou faux, les champs flyer et image n'annoncent pas le PDF, ne l'acceptent pas, et pdf.js n'est jamais chargé : le formulaire est exactement celui d'avant.
+
+`'preview'` sert à éprouver une fonctionnalité conséquente sur le site en ligne sans l'exposer au public. Le texte d'aide signale alors qu'on est seul à la voir — sans quoi une préversion s'oublie et l'on croit la fonctionnalité livrée. Le mécanisme est générique (`Ladecadanse\FeatureFlag`) et se réutilise pour tout autre drapeau : voir la classe pour la marche à suivre, `dynamicConstantNames` de `phpstan.neon` compris.
+
+Noter la **chaîne littérale** plutôt que `FeatureFlag::PREVIEW` : `app/env.php` est chargé avant l'autoloader, aucune classe n'y est encore connue.
 
 Le formulaire d'événement accepte alors les PDF de deux façons, dont une seule demande quelque chose au serveur :
 
