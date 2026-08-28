@@ -777,6 +777,13 @@ form#ajouter_editer .supImg
     margin-left:1em;
 }
 
+/* les labels passent en display:block ici : le select #idLieu commence au bord de son <p>, dont
+   le bloc replié (drapeau LIEU_MANUAL_COLLAPSIBLE_ENABLED) reprend la marge (#contenu p) */
+details#evenement-lieu-pastrouve
+{
+    margin-left:0.1em;
+}
+
 form#ajouter_editer p.notif-apercu
 {
     margin-left:0.4em;

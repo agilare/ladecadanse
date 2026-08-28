@@ -43,6 +43,7 @@ parameters:
         - PARTIAL_EDIT_MODE
         - PDF_CONVERSION_ENABLED
         - DATEPICKER_ALWAYS_VISIBLE_ENABLED
+        - LIEU_MANUAL_COLLAPSIBLE_ENABLED
     inferPrivatePropertyTypeFromConstructor: true
     checkMissingTypehints: true
     ignoreErrors:

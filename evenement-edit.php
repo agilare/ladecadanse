@@ -1328,6 +1328,42 @@ if ($show_form)
 
         <fieldset>
 
+            <?php
+            /*
+             * Bloc de saisie manuelle du lieu, replié dans un <details> fermé par défaut.
+             * Commandé par un drapeau (app/env.php), dont l'état 'preview' le réserve aux
+             * administrateurs — sans quoi le bloc reste déplié comme avant, pour tout le monde.
+             *
+             * L'état d'ouverture est décidé ici, et non au chargement en JS : le bloc s'afficherait
+             * sinon fermé puis s'ouvrirait sous les yeux de l'utilisateur.
+             */
+            $lieu_manuel_repliable = FeatureFlag::estActive('LIEU_MANUAL_COLLAPSIBLE_ENABLED');
+
+            // Les champs manuels ne se réaffichent que si aucun lieu n'est choisi dans la liste
+            // (cf. les value= plus bas) : la même condition dit si le bloc a quelque chose à montrer.
+            $lieu_manuel_rempli = empty($champs['idLieu'])
+                && (!empty($champs['nomLieu']) || !empty($champs['adresse']) || !empty($champs['localite_id']) || !empty($champs['urlLieu']));
+
+            // Une erreur dans un bloc fermé est une erreur invisible : le formulaire refuserait de
+            // s'enregistrer sans que rien ne l'explique. Elle l'emporte donc sur le repli.
+            $lieu_manuel_en_erreur = false;
+            foreach (['nomLieu', 'nomLieuIdentique', 'adresse', 'adresseIdentique', 'doublonLieux', 'localite_id', 'urlLieu'] as $champ_lieu_manuel)
+            {
+                if ($verif->getErreur($champ_lieu_manuel) !== false)
+                {
+                    $lieu_manuel_en_erreur = true;
+                    break;
+                }
+            }
+
+            // En édition, un événement déjà rattaché à un lieu de la liste n'a rien à saisir à la
+            // main : le cookie des habitués de la saisie manuelle ne rouvre pas le bloc pour autant.
+            $lieu_manuel_cookie = ($_COOKIE['event_form_lieu_manual_open'] ?? '') === 'true'
+                && !($est_edition && !empty($champs['idLieu']));
+
+            $lieu_manuel_ouvert = $lieu_manuel_rempli || $lieu_manuel_en_erreur || $lieu_manuel_cookie;
+            ?>
+
             <legend>Lieu*</legend>
             <p>
                 <label for="idLieu"><strong>Nom du lieu :</strong></label>
@@ -1348,7 +1384,18 @@ if ($show_form)
                 ?>
             </p>
 
+            <?php if ($lieu_manuel_repliable) : ?>
+            <details id="evenement-lieu-pastrouve"<?php echo $lieu_manuel_ouvert ? ' open' : ''; ?>>
+                <summary>Pas dans la liste&nbsp;?</summary>
+                <?php
+                // Une préversion qui ne se signale pas se croit livrée : l'administrateur qui
+                // l'éprouve doit voir qu'il est seul à voir ce bloc replié.
+                if (FeatureFlag::estEnPreview('LIEU_MANUAL_COLLAPSIBLE_ENABLED')) { ?>
+                    <div class="guideChamp"><em>Repli en préversion : vous seuls, administrateurs, le voyez</em></div>
+                <?php } ?>
+            <?php else : ?>
             <div id="evenement-lieu-pastrouve">
+            <?php endif; ?>
 
                 <p style="width:auto;font-size: 1em;text-align: left;margin: 5px">Si et seulement si vous n'avez pas trouvé le lieu dans la liste ci-dessus, renseignez-le ici&nbsp;:</p>
                 <div class="spacer"></div>
@@ -1405,7 +1452,7 @@ if ($show_form)
         echo $verif->getHtmlErreur("urlLieu");
         ?>
         </p>
-        </div>
+        <?php echo $lieu_manuel_repliable ? '</details>' : '</div>'; ?>
     </fieldset>
 
     <fieldset>

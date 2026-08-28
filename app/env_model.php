@@ -92,6 +92,19 @@ define("PDF_CONVERSION_ENABLED", false);
 //   true        ouvert à tous
 define("DATEPICKER_ALWAYS_VISIBLE_ENABLED", false);
 
+// replier le bloc de saisie manuelle du lieu (evenement-edit.php, « Si et seulement si
+// vous n'avez pas trouvé le lieu dans la liste ») dans un <details> fermé par défaut.
+// Ce bloc occupe la moitié du fieldset Lieu alors que la plupart des personnes n'y
+// saisissent jamais rien ; celles qui s'en servent le retrouvent ouvert grâce au cookie
+// event_form_lieu_manual_open.
+//
+// Trois états, comme tout drapeau passant par Ladecadanse\FeatureFlag :
+//   false       le bloc reste déplié en permanence, comme avant
+//   'preview'   réservé aux administrateurs, le temps d'éprouver le repli ; une mention
+//               sous le résumé rappelle qu'il n'est pas public
+//   true        ouvert à tous
+define("LIEU_MANUAL_COLLAPSIBLE_ENABLED", false);
+
 define("PAYPAL_HOSTED_BUTTON_ID", "");
 
 // to allow access to events API (api.php)

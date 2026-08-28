@@ -77,3 +77,57 @@ if (confirmDuplicateCheckbox) {
     syncDuplicateSubmits();
     confirmDuplicateCheckbox.addEventListener('change', syncDuplicateSubmits);
 }
+
+/*
+ * Bloc de saisie manuelle du lieu replié (evenement-edit.php), commandé côté serveur par le
+ * drapeau LIEU_MANUAL_COLLAPSIBLE_ENABLED : sans lui le bloc reste un <div> déplié et rien
+ * de ce qui suit ne s'attache.
+ *
+ * L'état d'ouverture au chargement est décidé par le serveur ; ici on ne fait que le mémoriser
+ * dans un cookie et l'accorder avec la liste des lieux, les deux façons de désigner un lieu
+ * étant exclusives (erreur « doublonLieux » à l'enregistrement).
+ */
+const lieuManuelDetails = document.querySelector('details#evenement-lieu-pastrouve');
+if (lieuManuelDetails) {
+    const LIEU_MANUEL_COOKIE = 'event_form_lieu_manual_open';
+    // secure conditionnel : sur un poste de développement en http, un cookie 'secure' est rejeté
+    // sans un mot, et le bloc paraîtrait ne jamais retenir son état
+    const lieuManuelCookieOptions = '; path=/; samesite=lax' + (location.protocol === 'https:' ? '; secure' : '');
+    // les champs du bloc ; #localite est un Select2, d'où le passage par jQuery pour tous
+    const lieuManuelChamps = ['#nomLieu', '#adresse', '#localite', '#urlLieu'];
+    const estRempli = ($champ) => {
+        const valeur = $champ.val();
+
+        return valeur !== null && valeur !== undefined && valeur !== '';
+    };
+
+    // Le cookie suit l'état du bloc, qu'on l'ait ouvert à la main ou que la liste des lieux l'ait
+    // ouvert ou refermé : ce qu'il mémorise est « je saisis mes lieux à la main ».
+    lieuManuelDetails.addEventListener('toggle', function memoriserOuvertureLieuManuel() {
+        document.cookie = lieuManuelDetails.open
+            ? LIEU_MANUEL_COOKIE + '=true; max-age=' + (365 * 24 * 3600) + lieuManuelCookieOptions
+            : LIEU_MANUEL_COOKIE + '=; max-age=0' + lieuManuelCookieOptions;
+    });
+
+    // jQuery et non addEventListener : c'est Select2 qui émet ce change, par $().trigger(),
+    // lequel n'atteint que les gestionnaires jQuery
+    $('#idLieu').on('change', function accorderLieuManuelAvecListe() {
+        if (this.value === '') {
+            // plus de lieu dans la liste : il ne reste que la saisie à la main
+            lieuManuelDetails.open = true;
+
+            return;
+        }
+
+        // Le choix dans la liste, plus récent, l'emporte sur la saisie manuelle. Rien de rempli,
+        // rien à effacer — et pas de bloc qui se referme sous les doigts.
+        const champsRemplis = lieuManuelChamps.map(selecteur => $(selecteur)).filter(estRempli);
+        if (champsRemplis.length === 0) {
+
+            return;
+        }
+
+        champsRemplis.forEach($champ => $champ.val('').trigger('change'));
+        lieuManuelDetails.open = false;
+    });
+}
