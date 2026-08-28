@@ -109,7 +109,7 @@
 header#entete_contenu h1
 {
     float:left;
-    width:56%;
+    width:60%;
     margin: 0 0 0 0;
     font-size: 1.4em;
 }
@@ -137,10 +137,20 @@ header#entete_contenu h1 small
     color: #888;
 }
 
+/*header#entete_contenu h1 small span
+{
+    background: #ff6;
+    color: #5a7175;
+    font-weight: normal;
+    padding: 0.2em;
+    border-radius: 5px;
+}*/
+
+
 ul.entete_contenu_navigation
 {
     float:right;
-    width:43%;
+    width:35%;
     margin: 0;
     padding-left: 0;
     text-align:right;

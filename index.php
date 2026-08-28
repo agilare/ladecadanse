@@ -242,8 +242,8 @@ include("_header.inc.php");
         <hgroup>
             <h1 class="accueil"><?= ucfirst((string) DateHelper::isoToFr($get['courant'])); ?><sup style="font-size:0.7em;color:#999"><?= $count_events_today_in_region ?></sup>
                 <?php if ($courant_year !== date("Y")) { echo (int) $courant_year; } ?>
-                <?php if ($is_courant_today) : ?><br>
-                    <small>Aujourd’hui <a href="<?= SITE_CANONICAL_URL ?>/event/rss.php?type=evenements_auj" title="Flux RSS des événements du jour" class="desktop"><i class="fa fa-rss fa-lg"></i></a></small><?php endif; ?>
+                <?php if ($is_courant_today) : ?>
+                <small><span>Aujourd’hui</span>&nbsp;<a href="<?= SITE_CANONICAL_URL ?>/event/rss.php?type=evenements_auj" title="Flux RSS des événements du jour" class="desktop"><i class="fa fa-rss fa-lg"></i></a></small><?php endif; ?>
             </h1>
         </hgroup>
         <ul class="entete_contenu_navigation">
