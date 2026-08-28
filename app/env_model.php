@@ -93,7 +93,8 @@ define("PDF_CONVERSION_ENABLED", false);
 define("DATEPICKER_ALWAYS_VISIBLE_ENABLED", false);
 
 // situer chaque événement de l'agenda (index.php) par rapport à l'heure de chargement
-// de la page : à venir, en cours, terminé.
+// de la page : à venir, en cours, terminé. La journée du jour seulement, seule où la
+// comparaison apprend quelque chose.
 //
 // Trois états, comme tout drapeau passant par Ladecadanse\FeatureFlag :
 //   false       l'agenda est celui d'avant : aucun repère de temporalité
