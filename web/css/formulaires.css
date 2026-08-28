@@ -308,6 +308,16 @@ form#ajouter_editer .msg {
 	background:yellow;
 }
 
+/* Messages de la conversion des PDF (web/js/pdf-to-image.js). Alignés comme
+   .msg sur la colonne des champs, mais colorés selon ce qu'ils annoncent :
+   le jaune de .msg signale un problème, il ne doit pas accueillir un succès. */
+form#ajouter_editer .js-pdf-message {
+	font-size:0.95em;
+	margin-left: 11em;
+	padding:0.2em 0.5em;
+	display:inline-block;
+}
+
 	form#ajouter_editer .supImg
 	{
         font-size:0.8em;

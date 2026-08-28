@@ -1864,6 +1864,34 @@ input[type="search"]::-webkit-search-cancel-button
         color:#856404
     }
 
+.alert-success
+{
+    position:relative;
+    padding:0.7em 0.5em;
+    margin:0em 0;
+    background:#dff0d8;
+    color:#3c763d;
+}
+
+    .alert-success h2
+    {
+        padding:0;
+        margin:0.1em 0 0.4em 0em;
+        font-size:1.3em;
+        color:#3c763d;
+    }
+
+    .alert-success .close
+    {
+        position:absolute;
+        right:0;
+        top:0;
+        padding:6px;
+        font-size: 1rem;
+        font-weight: 700;
+        color:#3c763d;
+    }
+
 .alert-info
 {
     position:relative;
