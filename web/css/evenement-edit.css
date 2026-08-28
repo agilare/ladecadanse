@@ -1,3 +1,29 @@
+#entete_contenu {
+    width: 96%;
+	margin: 0em auto 0em auto;
+}
+
+.alert-warn
+{
+    padding-top: 0.7em;
+	padding-bottom: 0.1em;
+    border-radius: 3px;
+}
+
+form#ajouter_editer p.piedForm
+{
+	background-color:#dfdfdf;
+	border-radius: 3px;
+}
+
+form#ajouter_editer ul.radio li
+{
+	  margin: 0 0.5em 0.5em 0.5em;
+}
+
+form#ajouter_editer .submit-big {
+  padding: 0.8em 0.8em;
+}
 
 p.action_ajouter
 {
@@ -48,6 +74,26 @@ details#evenement-lieu-pastrouve
     {
         cursor:pointer;
     }
+
+#notif_motifs
+{
+    height: 150px;
+}
+
+details#email-to-author
+{
+    margin:10px 0;
+    padding: 5px;
+    background: #f2f2f2;
+    border-radius:3px;
+}
+
+details#email-to-author summary
+{
+    padding: 0.6em 0.8em;
+    font-weight: bold;
+    cursor: pointer;
+}
 
 /* Aperçu du texte fixe de l'e-mail à l'auteur, autour des champs Motif(s) et Message */
 form#ajouter_editer p.notif-apercu

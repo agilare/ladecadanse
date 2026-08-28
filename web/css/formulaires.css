@@ -12,7 +12,7 @@ form#ajouter_editer
 	{
 		margin-top:5px;
 		margin-left:0.1em;
-		padding:1em 0 1em 0.4em;
+		padding:0.6em 0 0.6em 0.4em;
         border-radius: 3px;
 		background-color:#f2f2f2;
 	}
@@ -63,15 +63,15 @@ form#ajouter_editer label.large {
 form#ajouter_editer input
 {
 	border:1px solid #aeaeae;
-	padding:0.3em 0.3em;
-	border-radius: 2px;
+	padding:0.4em 0.4em;
+	border-radius: 3px;
 }
 
 form#ajouter_editer textarea
 {
 	border:1px solid #aeaeae;
-	padding:0.3em 0.3em;
-	border-radius: 2px;
+	padding:0.4em;
+	border-radius: 3px;
 }
 
 form#ajouter_editer select
@@ -250,7 +250,7 @@ form#ajouter_editer .guideForm
 form#ajouter_editer .guideChamp
 {
 	font-style: italic;
-	margin:0.4em 0 0.8em 0;
+	margin:0.5em 0 0.8em 0;
     font-size:0.9em;
     padding:0em 0 0.2em 120px;
 	line-height:1.2em;
@@ -278,10 +278,16 @@ form#ajouter_editer input.submit
     background-color:#f9f9f9;
     font-weight:bold;
     border:1px solid black;
+    border-radius: 3px;
     /* hack for Safari Mobile : */
     color: rgba(0, 0, 0, 1);
     -webkit-text-fill-color: rgba(0, 0, 0, 1);
     -webkit-opacity: 1;
+}
+
+form#ajouter_editer input:hover
+{
+  background-color:#f4f4f4;
 }
 
 form#ajouter_editer .submit-big
@@ -320,8 +326,8 @@ form#ajouter_editer .js-pdf-message {
 
 	form#ajouter_editer .supImg
 	{
-        font-size:0.8em;
-        margin-top:5px;
+        font-size:0.9em;
+        margin-top: 20px;
         margin-left:115px;
 	}
 
@@ -485,7 +491,7 @@ font-family:Georgia;
     color: #5b2a05;
     padding: 1em 1.2em;
     margin: 0 0 1.2em 0;
-    border-radius: 2px;
+    border-radius: 3px;
 }
 
     .duplicate-warning h2

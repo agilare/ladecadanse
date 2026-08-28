@@ -116,6 +116,11 @@ class AuteurNotifier
         $subject = self::buildSubject($eventTitre, $eventDateEvenement);
         $corps = self::buildIntro($eventTitre, $eventUrl, $eventDateCreation);
 
+        if (count($motifLabels) > 0)
+        {
+            $corps .= "\n";
+        }
+
         foreach ($motifLabels as $label)
         {
             $corps .= "\n - {$label}";

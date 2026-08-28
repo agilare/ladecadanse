@@ -1032,7 +1032,7 @@ if ($show_form)
 
     if ($est_edition)
     {
-        $aff_titre = 'Modifier <a style="font-size:0.7em" href="/event/evenement.php?idE=' . (int) $get['idE'] . '">' . sanitizeForHtml($champs['titre']) . '</a>';
+        $aff_titre = 'Modifier <a style="font-size:0.8em" href="/event/evenement.php?idE=' . (int) $get['idE'] . '">' . sanitizeForHtml($champs['titre']) . '</a>';
         $act = "update&amp;idE=".(int)$get['idE'];
     }
     ?>
@@ -1171,8 +1171,6 @@ if ($show_form)
         </fieldset>
     <?php } ?>
 
-    <h2 style="margin:20px 0 5px 0;">L’événement</h2>
-
     <p style="margin:5px 0;">* indique un champ obligatoire</p>
 
     <?php if ($est_edition) {?>
@@ -1259,7 +1257,7 @@ if ($show_form)
     </fieldset>
 
     <fieldset>
-        <legend>Date & horaire</legend>
+        <legend>Date & horaire*</legend>
 
             <?php
             // Calendrier "always visible" (Zebra_DatePicker) déployé en permanence sous le champ date,
@@ -1269,7 +1267,7 @@ if ($show_form)
             $calendrier_toujours_visible = FeatureFlag::estActive('DATEPICKER_ALWAYS_VISIBLE_ENABLED');
             ?>
             <div style="display: flex; align-items: flex-start; gap: 6px; flex-wrap: wrap;">
-                <label for="dateEvenement" style="white-space: nowrap;">Date*</label>
+                <label for="dateEvenement" style="white-space: nowrap;margin-right: -1px;">Date*</label>
                 <div style="display: flex; flex-direction: column; align-items: flex-start;">
                     <input type="text" name="dateEvenement" id="dateEvenement" size="9" value="<?php echo sanitizeForHtml($champs['dateEvenement']); ?>" class="datepicker<?php echo $calendrier_toujours_visible ? ' datepicker-always-visible' : ''; ?>" placeholder="jj.mm.aaaa" required />
                     <?php
@@ -1287,40 +1285,35 @@ if ($show_form)
                     <?php }
                     } ?>
                 </div>
-            <?php if ($est_ajout) { ?>
-
-            <div class="guideChamp" style="margin-top:-0.2em">
-                <?php if ($est_connecte) { ?>Si l’événement se répète sur plusieurs dates, vous pouvez l’ajouter à d'autres dates avec le bouton <b>Copier</b>, à la page suivante
-                <?php } else { ?>
-                Si l’événement se répète sur plusieurs dates, merci de nous indiquer précisément les jours et horaires dans le <a href="#remarque">champ Remarque</a> ci-dessous.
-        <?php } ?>
-            </div>
-            <div class="spacer"></div>
-            <?php } ?>
+                <?php if ($est_ajout) { ?>
+                    <div class="guideChamp" style="margin-top:-0.2em">
+                        <?php if ($est_connecte) { ?>Si l’événement se répète sur plusieurs dates, vous pouvez l’ajouter à d'autres dates avec le bouton <b>Copier</b>, à la page suivante
+                        <?php } else { ?>
+                        Si l’événement se répète sur plusieurs dates, merci de nous indiquer précisément les jours et horaires dans le <a href="#remarque">champ Remarque</a> ci-dessous.
+                <?php } ?>
+                    </div>
+                    <div class="spacer"></div>
+                <?php } ?>
             </div>
 
             <p style="margin:5px 0">
                 <label for="horaire_debut" style="display:inline-block"><span class="tooltip">Début <i class="fa fa-info-circle" aria-hidden="true"></i>
     <span class="tooltiptext">Jusqu’à 06:00, le début sera considéré faisant partie du jour de l’événement</span></span> </label>
                 <input type="time" name="horaire_debut" id="horaire_debut" size="5" value="<?php echo sanitizeForHtml($champs['horaire_debut']) ?>" />
-
                 <label for="horaire_fin" class="continu">Fin</label>
                 <input type="time" name="horaire_fin" id="horaire_fin" size="5" value="<?php echo sanitizeForHtml($champs['horaire_fin']) ?>" />
-
                 <?php
                 echo $verif->getHtmlErreur('horaire_debut');
                 echo $verif->getHtmlErreur('horaire_fin');
                 ?>
+                <div class="guideChamp" style="margin-top:0">Mettez si possible l'heure de fin, pour un meilleur fonctionnement de l'agenda</div>
+
             </p>
-
-            <div class="guideChamp" style="margin-top:0">Mettez si possible l'heure de fin, pour un meilleur fonctionnement de l'agenda</div>
-
-
 
             <div style="margin-top:1.3em">
                 <label for="horaire_complement">Complément d'horaire</label>
-                <input type="text" name="horaire_complement" id="horaire_complement" size="60" maxlength="200" value="<?php echo sanitizeForHtml($champs['horaire_complement']) ?>" />
-            <?php echo $verif->getHtmlErreur('horaire_complement'); ?>
+                <input type="text" name="horaire_complement" id="horaire_complement" size="50" maxlength="200" value="<?php echo sanitizeForHtml($champs['horaire_complement']) ?>" />
+                <?php echo $verif->getHtmlErreur('horaire_complement'); ?>
             </div>
 
             <?php echo $verif->getHtmlErreur('horaire'); ?>
@@ -1367,7 +1360,7 @@ if ($show_form)
             <legend>Lieu*</legend>
             <p>
                 <label for="idLieu"><strong>Nom du lieu :</strong></label>
-                <select name="idLieu" id="idLieu" class="js-select2-options-with-style" title="Un lieu dans base de données de La décadanse" style="max-width:350px"  data-placeholder="">
+                <select name="idLieu" id="idLieu" class="js-select2-options-with-style" title="Un lieu dans base de données de La décadanse" style="max-width:300px" data-placeholder="">
                 <?php
                 // ?idL= n'est qu'un préremplissage : la valeur postée, elle, l'emporte toujours
                 echo Lieu::getOptionsHtml(
@@ -1439,19 +1432,19 @@ if ($show_form)
                     echo Localite::getOptionsHtml($localite_selectionnee, $champs['quartier'], $est_ajout);
                     ?>
                 </select>
-        <?php
-        echo $verif->getHtmlErreur("localite_id");
-        echo Localite::getAideChoixHtml();
-        ?>
-        </p>
+            <?php
+            echo $verif->getHtmlErreur("localite_id");
+            echo Localite::getAideChoixHtml();
+            ?>
+            </p>
 
-        <p>
-            <label for="urlLieu">Site web du lieu</label>
-            <input type="text" name="urlLieu" id="urlLieu" size="40" maxlength="80" title="URL du lieu" value="<?php if (empty($champs['idLieu'])) { echo sanitizeForHtml($champs['urlLieu']); } ?>" />
-        <?php
-        echo $verif->getHtmlErreur("urlLieu");
-        ?>
-        </p>
+            <p>
+                <label for="urlLieu">Site web du lieu</label>
+                <input type="text" name="urlLieu" id="urlLieu" size="40" maxlength="80" title="URL du lieu" value="<?php if (empty($champs['idLieu'])) { echo sanitizeForHtml($champs['urlLieu']); } ?>" />
+            <?php
+            echo $verif->getHtmlErreur("urlLieu");
+            ?>
+            </p>
         <?php echo $lieu_manuel_repliable ? '</details>' : '</div>'; ?>
     </fieldset>
 
@@ -1470,21 +1463,15 @@ if ($show_form)
             <textarea name="description" id="description" rows="20"><?php echo sanitizeForHtml($champs['description']) ?></textarea>
             <?php echo $verif->getHtmlErreur('description'); ?>
         </p>
-    </fieldset>
 
-    <fieldset id="references">
-
-        <legend>Références</legend>
         <p>
             <label for="ref">Sites web</label>
             <?php // pas de saut de ligne entre la balise ouvrante et la valeur : un textarea rend son contenu littéralement ?>
-            <textarea name="ref" id="ref" rows="3" maxlength="1000" placeholder="https://exemple.ch/concert&#10;https://facebook.com/events/123"><?php echo sanitizeForHtml(RefList::toTextarea($champs['ref'])); ?></textarea>
+            <textarea name="ref" id="ref" rows="3" maxlength="1000" placeholder="https://exemple.ch/concert&#10;https://facebook.com/events/123"><?= sanitizeForHtml(RefList::toTextarea($champs['ref'])); ?></textarea>
+            <div class="guideChamp" style="margin-top: -6px;">Site de l’événement, de l’organisateur (s’il n’est pas présent ci-dessous), de la page Facebook... Une URL par ligne.</div>
         </p>
-        <div class="guideChamp">Site de l’événement, de l’organisateur (s’il n’est pas présent ci-dessous), de la page Facebook... Une URL par ligne.</div>
-            <?php
-            echo $verif->getHtmlErreur('ref');
-            ?>
-            <div class="spacer"></div>
+        <?= $verif->getHtmlErreur('ref') ?>
+        <div class="spacer"></div>
 
         <?php
         /*
@@ -1542,42 +1529,37 @@ if ($show_form)
         ?><?php
         echo $verif->getHtmlErreur("doublon_organisateur");
         ?>
-        <p>
+        <div>
             <label for="organisateurs">Organisateur(s) de l’événement</label>
-                <select name="organisateurs[]" id="organisateurs" data-placeholder="Tapez les noms des organisateurs" class="js-select2-options-with-complement" multiple >
-                    <?php
-                    // $tab_organisateurs_even porte déjà la présélection, et elle seule : la
-                    // sélection postée au ré-affichage, sinon les trois sources du premier
-                    // affichage, ?idO= compris. Cf. le bloc qui le remplit, plus haut.
-                    echo Organisateur::getOptionsHtml($tab_organisateurs_even);
-                    ?>
-        </select>
-        <div class="guideChamp">L’événement figurera dans la page de ces <a href="/organisateur/organisateurs.php" target="_blank" rel="external">organisateurs</a>. <!--Si vous souhaitez que votre organisation soit listée, <a href="/misc/contacteznous.php?pre=req-orga" target='_blank' rel="external">demandez-nous</a> (avec des infos : texte, liens...)</div>-->
-        </p>
+            <select name="organisateurs[]" id="organisateurs" data-placeholder="Tapez les noms des organisateurs" class="js-select2-options-with-complement" multiple >
+                <?php
+                // $tab_organisateurs_even porte déjà la présélection, et elle seule : la
+                // sélection postée au ré-affichage, sinon les trois sources du premier
+                // affichage, ?idO= compris. Cf. le bloc qui le remplit, plus haut.
+                echo Organisateur::getOptionsHtml($tab_organisateurs_even);
+                ?>
+            </select>
+            <div class="guideChamp">L’événement figurera dans la page de ces <a href="/organisateur/organisateurs.php" target="_blank" rel="external">organisateurs</a>. <!--Si vous souhaitez que votre organisation soit listée, <a href="/misc/contacteznous.php?pre=req-orga" target='_blank' rel="external">demandez-nous</a> (avec des infos : texte, liens...)--></div>
+        </div>
     </fieldset>
 
     <fieldset>
             <legend>Entrée</legend>
 
             <div id="prix-precisions" style="display:block">
-                <p>
-                <label for="prix">Prix</label>
+                <div>
+                    <label for="prix">Prix</label>
                     <input type="text" name="prix" id="prix" size="45" maxlength="100" value="<?php echo sanitizeForHtml($champs['prix']) ?>" />
-                    <?php
-                echo $verif->getHtmlErreur('prix');
-                ?>
-            </p>
+                    <?= $verif->getHtmlErreur('prix') ?>
+                    <div class="guideChamp">Si vous mettez juste un <code>0</code> l'événement affichera <code>Entrée libre</code></div>
+                </div>
 
-            <div class="guideChamp">Vous pouvez mettre juste un <code>0</code> si l'entrée est libre.</div>
-
-                <p>
-                <label for="prelocations">Prélocations</label>
+                <div>
+                    <label for="prelocations">Prélocations</label>
                     <input type="text" name="prelocations" id="prelocations" size="70" maxlength="200" value="<?php echo sanitizeForHtml($champs['prelocations']) ?>" />
-                    <?php
-                echo $verif->getHtmlErreur('prelocations');
-                ?>
-            </p>
-        </div>
+                    <?= $verif->getHtmlErreur('prelocations') ?>
+                </div>
+            </div>
     </fieldset>
 
     <fieldset>
@@ -1590,7 +1572,7 @@ if ($show_form)
         <p>
             <label for="flyer">Envoyer</label>
             <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo UPLOAD_MAX_FILESIZE ?>" />
-            <input type="file" name="flyer" id="flyer" class="<?= $classe_champ_image ?>" size="25" accept="<?= $accept_champ_image ?>" />
+            <input type="file" name="flyer" id="flyer" class="<?= $classe_champ_image ?>" size="25" accept="<?= $accept_champ_image ?>" style="padding-left:0" />
             <?php if ($formulaire_rejete && !empty($fichiers['flyer']['name'])): ?>
                 <div class="msg">Le fichier sélectionné a été retiré du formulaire par le navigateur (sécurité). Veuillez le sélectionner à nouveau.</div>
             <?php endif; ?>
@@ -1631,7 +1613,7 @@ if ($show_form)
         <p>
             <label for="image">Envoyer</label>
             <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo UPLOAD_MAX_FILESIZE ?>" />
-            <input type="file" name="image" id="image" class="<?= $classe_champ_image ?>" size="25" accept="<?= $accept_champ_image ?>" />
+            <input type="file" name="image" id="image" class="<?= $classe_champ_image ?>" size="25" accept="<?= $accept_champ_image ?>"  style="padding-left:0" />
             <div class="spacer"></div>
             <?php if ($formulaire_rejete && !empty($fichiers['image']['name'])): ?>
                 <div class="msg">Le fichier sélectionné a été retiré du formulaire par le navigateur (sécurité). Veuillez le sélectionner à nouveau</div>
@@ -1688,39 +1670,41 @@ if ($show_form)
     $notif_debut = trim($notif_avant) . "\n\n" . $notif_intro;
     $notif_fin = trim($notif_apres);
 ?>
-<fieldset>
-    <legend>E-mail à l’auteur</legend>
-    <p>
-        <label>Pour</label>
-            <span style="display:inline-block;margin:0.3em 0 0em 0;">
-                <?php if (!empty($original_author_idPersonne)) { ?>
-                <a href="/user/dashboard.php?idP=<?php echo $original_author_idPersonne ?>"><?php echo sanitizeForHtml($original_author_name) ?></a> —
-                <?php } ?>
-                <a href="mailto:<?php echo sanitizeForHtml($original_author_email) ?>"><?php echo sanitizeForHtml($original_author_email) ?></a>
-            </span>
-    </p>
-    <p>
-        <label for="notif_objet">Objet</label>
-        <input type="text" id="notif_objet" value="<?php echo sanitizeForHtml($notif_objet) ?>" size="60" disabled class="readonly" />
-        <div class="guideChamp">Reprend le titre et la date enregistrés</div>
-    </p>
-    <p class="notif-apercu"><?php echo sanitizeForHtml($notif_debut) ?></p>
-    <p>
-        <label for="notif_motifs">Motif(s)</label>
-        <select name="notif_motifs[]" id="notif_motifs" multiple data-placeholder="Choisissez un ou plusieurs motifs (optionnel)">
-            <?php foreach ($glo_motifs_notification_auteur as $key => $label) { ?>
-            <option value="<?php echo sanitizeForHtml($key) ?>" <?php echo in_array($key, $notif_motifs, true) ? 'selected="selected"' : '' ?>><?php echo sanitizeForHtml($label) ?></option>
-            <?php } ?>
-        </select>
-        <?php echo $verif->getHtmlErreur('notif_motifs'); ?>
-    </p>
-    <p>
-        <label for="notif_message">Message</label>
-        <textarea name="notif_message" id="notif_message" cols="20" rows="6" maxlength="2000"><?php echo sanitizeForHtml($notif_message) ?></textarea>
-        <?php echo $verif->getHtmlErreur('notif_message'); ?>
-    </p>
-    <p class="notif-apercu"><?php echo sanitizeForHtml($notif_fin) ?></p>
-</fieldset>
+    <details id="email-to-author"><summary>E-mail à l’auteur&nbsp;<?= $icone['envoi_email'] ?></summary>
+        <fieldset>
+<!--            <legend>E-mail à l’auteur</legend>-->
+            <p>
+                <label>Pour</label>
+                    <span style="display:inline-block;margin:0.3em 0 0em 0;">
+                        <?php if (!empty($original_author_idPersonne)) { ?>
+                        <a href="/user/dashboard.php?idP=<?php echo $original_author_idPersonne ?>"><?php echo sanitizeForHtml($original_author_name) ?></a> —
+                        <?php } ?>
+                        <a href="mailto:<?php echo sanitizeForHtml($original_author_email) ?>"><?php echo sanitizeForHtml($original_author_email) ?></a>
+                    </span>
+            </p>
+            <p>
+                <label for="notif_objet">Objet</label>
+                <input type="text" id="notif_objet" value="<?php echo sanitizeForHtml($notif_objet) ?>" size="60" disabled class="readonly" />
+                <div class="guideChamp">Reprend le titre et la date enregistrés</div>
+            </p>
+            <p class="notif-apercu"><?php echo sanitizeForHtml($notif_debut) ?></p>
+            <p>
+                <label for="notif_motifs">Motif(s)</label>
+                <select name="notif_motifs[]" id="notif_motifs" multiple data-placeholder="Choisissez un ou plusieurs motifs (optionnel)">
+                    <?php foreach ($glo_motifs_notification_auteur as $key => $label) { ?>
+                    <option value="<?php echo sanitizeForHtml($key) ?>" <?php echo in_array($key, $notif_motifs, true) ? 'selected="selected"' : '' ?>><?php echo sanitizeForHtml($label) ?></option>
+                    <?php } ?>
+                </select>
+                <?php echo $verif->getHtmlErreur('notif_motifs'); ?>
+            </p>
+            <p>
+                <label for="notif_message">Message</label>
+                <textarea name="notif_message" id="notif_message" cols="20" rows="4" maxlength="2000"><?php echo sanitizeForHtml($notif_message) ?></textarea>
+                <?php echo $verif->getHtmlErreur('notif_message'); ?>
+            </p>
+            <p class="notif-apercu"><?php echo sanitizeForHtml($notif_fin) ?></p>
+        </fieldset>
+    </details>
 <?php endif; ?>
 
 <p class="piedForm">
