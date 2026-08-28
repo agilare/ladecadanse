@@ -144,7 +144,8 @@ class EvenementRenderer
      * Date seule quand l'événement n'a pas d'horaire (sentinelle 06:00:01), date et heure sinon.
      * La date vient de horaire_debut et non de dateEvenement : un événement qui commence après
      * minuit appartient à la journée d'agenda de la veille (borne des 6h, cf. datetimeToHhMm),
-     * son dtstart réel est donc le lendemain de dateEvenement.
+     * son dtstart réel est donc le lendemain de dateEvenement. Cette lecture d'un horaire, y
+     * compris la tolérance aux dates aberrantes, appartient à DateHelper::horaireInstant().
      *
      * @param string $date_evenement 2026-04-28
      * @param string|null $horaire_debut 2026-04-28 21:30:00
@@ -152,22 +153,14 @@ class EvenementRenderer
      */
     public static function dtstartIso(string $date_evenement, ?string $horaire_debut): string
     {
-        $date = mb_substr($date_evenement, 0, 10);
+        $instant = DateHelper::horaireInstant($date_evenement, $horaire_debut);
 
-        if (empty($horaire_debut) || mb_substr($horaire_debut, 0, 10) == "0000-00-00"
-            || mb_substr($horaire_debut, 11, 5) == "06:00") // sentinelle « sans horaire »
+        if ($instant === null)
         {
-            return $date;
+            return mb_substr($date_evenement, 0, 10);
         }
 
-        // une date d'horaire aberrante ne doit pas déplacer l'événement
-        $date_debut = mb_substr($horaire_debut, 0, 10);
-        if ($date_debut != $date && $date_debut != DateHelper::isoToNextDay($date))
-        {
-            $date_debut = $date;
-        }
-
-        return $date_debut . "T" . mb_substr($horaire_debut, 11, 5) . ":00";
+        return str_replace(' ', 'T', $instant);
     }
 
     public static function getRefListHtml(string $refCsv): string
@@ -261,14 +254,22 @@ class EvenementRenderer
     }
 
 
-    public static function eventShortArticleHtml(array $tab_even, array $tab_events_today_in_region_orgas = []): string
+    /**
+     * @param bool $withTimeStatus Situer l'événement par rapport à maintenant (#51). L'agenda le
+     *                             passe selon EVENT_TIME_STATUS_ENABLED ; les autres appelants ne
+     *                             le passent pas et rendent l'article inchangé.
+     */
+    public static function eventShortArticleHtml(array $tab_even, array $tab_events_today_in_region_orgas = [], bool $withTimeStatus = false): string
     {
         $even_lieu = Evenement::getLieu($tab_even);
+
+        $time_status = $withTimeStatus ? EvenementTimeStatus::fromEvent($tab_even) : null;
+        $article_class = 'evenement-short' . ($time_status?->state === EvenementTimeStatus::PAST ? ' even-time-past' : '');
 
         ob_start();
         ?>
 
-        <article id="event-<?= (int) $tab_even['e_idEvenement'] ?>" class="evenement-short">
+        <article id="event-<?= (int) $tab_even['e_idEvenement'] ?>" class="<?= $article_class ?>">
 
             <header class="titre">
                 <h3 class="left"><a href="/event/evenement.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>"><?= self::titreSelonStatutHtml(sanitizeForHtml($tab_even['e_titre']), $tab_even['e_statut']) ?></a></h3>
@@ -307,6 +308,7 @@ class EvenementRenderer
                         $horaire_complet .= " ".$tab_even['e_horaire_complement'];
                     }
                     echo sanitizeForHtml($horaire_complet);
+                    echo self::timeStatusHtml($time_status);
                     if (!empty($horaire_complet) && !empty($tab_even['e_prix']))
                     {
                         echo ", ";
@@ -322,6 +324,36 @@ class EvenementRenderer
         $result = ob_get_contents();
         ob_clean();
         return $result;
+    }
+
+
+    /**
+     * Le badge qui situe un événement par rapport à maintenant (#51), à poser après ses horaires.
+     *
+     * Rien à afficher quand les horaires ne permettent pas de le situer : le statut est alors null.
+     * L'icône est décorative — le libellé qui la suit porte l'information.
+     */
+    public static function timeStatusHtml(?EvenementTimeStatus $status): string
+    {
+        if ($status === null)
+        {
+            return '';
+        }
+
+        $icon = match ($status->state) {
+            EvenementTimeStatus::RUNNING => 'fa fa-circle-o-notch fa-spin',
+            EvenementTimeStatus::PAST => 'fa fa-check-square',
+            default => 'fa fa-clock-o',
+        };
+
+        $title = match ($status->state) {
+            EvenementTimeStatus::RUNNING => 'En cours, ' . $status->label . ' écoulés',
+            EvenementTimeStatus::PAST => 'Terminé',
+            default => 'Commence dans ' . ltrim($status->label, '-'),
+        };
+
+        return ' <span class="even-time-status even-time-status-' . $status->state . '" title="' . sanitizeForHtml($title) . '">'
+            . '(<i class="' . $icon . '" aria-hidden="true"></i>&nbsp;' . sanitizeForHtml($status->label) . ')</span>';
     }
 
 

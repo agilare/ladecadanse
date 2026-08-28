@@ -44,6 +44,7 @@ parameters:
         - PDF_CONVERSION_ENABLED
         - DATEPICKER_ALWAYS_VISIBLE_ENABLED
         - LIEU_MANUAL_COLLAPSIBLE_ENABLED
+        - EVENT_TIME_STATUS_ENABLED
     inferPrivatePropertyTypeFromConstructor: true
     checkMissingTypehints: true
     ignoreErrors:

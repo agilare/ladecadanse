@@ -10,6 +10,7 @@ global $connector;
 require_once("app/bootstrap.php");
 
 use Ladecadanse\Evenement;
+use Ladecadanse\FeatureFlag;
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\Lieu;
 use Ladecadanse\UserLevel;
@@ -59,6 +60,16 @@ if ($genre_tabs_enabled && isset($_GET['genre_tab']) && in_array($_GET['genre_ta
 }
 // hors admins, jamais de filtre : tout le reste de la page se comporte comme avant
 $current_genre_tab = $genre_tabs_enabled ? $_SESSION['user_prefs_agenda_genre'] : 'tous'; // initialisé dans bootstrap.php
+
+/*
+ * Repères de temporalité (#51) : où en est chaque événement par rapport à l'heure de chargement.
+ * La journée du jour seulement — sur une journée passée toutes les cartes diraient « terminé » et
+ * pâliraient d'un bloc, sur une journée à venir elles compteraient en jours. Commandé par un
+ * drapeau (app/env.php), dont l'état 'preview' le réserve aux administrateurs, et posé sur le
+ * seul agenda — les autres listes d'événements sont inchangées.
+ */
+$time_status_enabled = $is_courant_today && FeatureFlag::estActive('EVENT_TIME_STATUS_ENABLED');
+$time_status_preview = $is_courant_today && FeatureFlag::estEnPreview('EVENT_TIME_STATUS_ENABLED');
 
 // determine wether adding to url query courant and order
 $default_tri_agenda = reset($tab_tri_agenda);
@@ -256,6 +267,13 @@ include("_header.inc.php");
     <div id="prochains_evenements">
 
         <?php
+        // Une préversion qui ne se signale pas se croit livrée : l'administrateur qui l'éprouve
+        // doit voir qu'il est seul à disposer de ces repères, et à quelle heure ils sont figés.
+        if ($time_status_preview) : ?>
+            <p class="even-time-preview"><i class="fa fa-clock-o" aria-hidden="true"></i>&nbsp;Repères de temporalité en préversion : vous seuls, administrateurs, les voyez. Ils situent chaque événement par rapport à <?= date('H:i') ?>, l’heure de chargement de cette page.</p>
+        <?php endif; ?>
+
+        <?php
         /* les deux menus partagent une ligne à partir de 800px, cf. #agenda_filters dans
            index.css ; l'ordre du DOM suit l'ordre visuel (filtrer, puis trier). Sans le
            filtre de genres, le conteneur reste en display:contents et le menu de tri
@@ -332,7 +350,7 @@ include("_header.inc.php");
 
                         <?php
                         $tab_even = $event->getEvent();
-                        echo Ladecadanse\EvenementRenderer::eventShortArticleHtml($tab_even, $tab_events_today_in_region_orgas);
+                        echo Ladecadanse\EvenementRenderer::eventShortArticleHtml($tab_even, $tab_events_today_in_region_orgas, $time_status_enabled);
                         ?>
 
                             <footer class="edition">

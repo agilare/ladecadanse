@@ -23,6 +23,9 @@ class DateHelper
     /** Valeur d'horaire héritée signifiant « non renseigné » */
     private const string NO_TIME_VALUE = '0000-00-00 00:00:00';
 
+    /** Heure de la sentinelle « horaire non renseigné », quel que soit le jour porté */
+    private const string NO_TIME_HOUR = '06:00';
+
     // -------------------------------------------------------------------------
     // Component extraction
     // -------------------------------------------------------------------------
@@ -208,6 +211,40 @@ class DateHelper
     // -------------------------------------------------------------------------
     // Journée d'agenda
     // -------------------------------------------------------------------------
+
+    /**
+     * Instant réel d'un horaire d'événement, ou null quand l'horaire n'est pas renseigné.
+     *
+     * L'horaire porte sa propre date : une soirée qui commence à 02:00 appartient à la journée
+     * d'agenda de la veille (borne des 6h) mais son instant est bien le lendemain de
+     * dateEvenement. Une date d'horaire aberrante — d'anciennes lignes en portent — est ramenée
+     * au jour de l'événement plutôt que de le déplacer dans le temps.
+     *
+     * @param string      $dateEvenement ISO date (YYYY-MM-DD ou YYYY-MM-DD HH:MM:SS)
+     * @param string|null $horaire       ISO datetime, ou null/sentinelle si non renseigné
+     * @return string|null ISO datetime (YYYY-MM-DD HH:MM:00)
+     */
+    public static function horaireInstant(string $dateEvenement, ?string $horaire): ?string
+    {
+        $date = mb_substr($dateEvenement, 0, 10);
+        $heure = mb_substr((string) $horaire, 11, 5);
+
+        if (empty($horaire)
+            || mb_substr($horaire, 0, 10) === mb_substr(self::NO_TIME_VALUE, 0, 10)
+            || $heure === self::NO_TIME_HOUR
+            || preg_match('/^[0-9]{2}:[0-9]{2}$/', $heure) !== 1)
+        {
+            return null;
+        }
+
+        $dateHoraire = mb_substr($horaire, 0, 10);
+        if ($dateHoraire !== $date && $dateHoraire !== self::isoToNextDay($date))
+        {
+            $dateHoraire = $date;
+        }
+
+        return $dateHoraire . ' ' . $heure . ':00';
+    }
 
     /**
      * Fin réelle d'un événement, au sens de la journée décadanse.
