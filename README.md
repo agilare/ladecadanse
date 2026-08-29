@@ -150,6 +150,29 @@ Pour repartir d'une base neuve : `make clean`, qui supprime le volume, puis `mak
 
 Le site ladecadanse est déployé sur localhost:7777 (dev) ou localhost:8080 (prod). Le mot de passe, par défaut, pour l'utilisateur `admin` est `admin_dev`.
 
+### Peupler la base depuis la production
+
+Une base neuve est vide, et saisir à la main de quoi éprouver l'agenda est vite décourageant. `composer prod-copy` fabrique une copie locale **anonymisée** de la production, réduite aux derniers événements ajoutés et à tout ce qu'ils référencent, et télécharge les flyers et photos correspondants dans `web/uploads/`.
+
+```sh
+composer prod-copy -- --limit=1000
+```
+
+Prérequis : activer l'accès **MySQL distant** sur son adresse IP depuis le manager Infomaniak, puis renseigner les connexions `prod` et `prod_copy` dans `app/db.config.php` (modèle dans `app/db.config_model.php`). La production n'est lue qu'en lecture seule ; la base `ladecadanse_prod_copy` est créée par le script, il ne faut donc pas la créer soi-même.
+
+Comme le transfert des images prend le plus clair du temps, la commande se découpe :
+
+```sh
+composer prod-copy -- --limit=20 --only=db      # passe d'essai, quelques secondes
+composer prod-copy -- --only=files              # relançable, saute ce qui est déjà là
+```
+
+Options : `--limit` (nombre d'événements, 1000 par défaut), `--only=db|files`, `--password` (mot de passe commun des comptes copiés, `dev` par défaut), `--force` (supprimer et recréer une base existante), `--source` / `--dest` (autres entrées de `db.config.php`), `--base-url`, `--uploads-dir`.
+
+Une fois la copie faite, pointer dessus `DB_NAME` dans `app/env.php` et l'entrée `default` de `app/db.config.php`. Toutes les `personne` partagent alors le même mot de passe, leur pseudo devenant `user{id}` ; le script affiche en fin d'exécution un exemple d'identifiant par groupe.
+
+Ce que la copie ne contient pas : aucun mot de passe, e-mail, cookie ni note privée d'origine — ils sont remplacés à la volée, entre le `SELECT` et l'`INSERT`, si bien qu'aucun fichier intermédiaire n'en porte jamais. Les tables `bot_monitor` (adresses IP) et `user_reset_requests` (jetons) ne sont pas reprises du tout, `admin/bots.php` restera donc vide.
+
 ### Accepter les PDF dans les champs image
 
 Désactivé par défaut. Le drapeau `PDF_CONVERSION_ENABLED` d'`app/env.php` prend trois valeurs :
