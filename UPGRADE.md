@@ -37,6 +37,16 @@ l'historique des administrateurs.
 
 Aucune migration de base de données.
 
+### Développement
+
+`resources/database/ladecadanse.sql` est de nouveau le schéma courant : il avait quatre versions de
+retard, et une base créée à partir de lui n'avait ni les index de recherche de la 3.8 et de la 3.9, ni la
+table `bot_monitor`. Une installation neuve importe donc désormais le dump **seul**, sans rejouer aucune
+migration par-dessus.
+
+Les bases existantes ne sont pas concernées. Pour savoir ce qui manque à l'une d'elles, passer la requête
+de [resources/database/README.md](resources/database/README.md), qui répond fichier par fichier.
+
 ## 3.12.0
 
 ### Base de données

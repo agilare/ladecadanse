@@ -2,19 +2,18 @@
 
 Deux rôles cohabitent dans ce répertoire.
 
-`ladecadanse.sql` est le **schéma de référence** : c'est lui qu'on importe pour créer une base de zéro.
-Les fichiers `vX-Y-Z_*.sql` sont les **migrations** : elles font passer une base existante d'une version
-à la suivante.
+`ladecadanse.sql` est le **schéma de référence**, à jour de la 3.12.0 : c'est lui qu'on importe pour créer
+une base de zéro. Les fichiers `vX-Y-Z_*.sql` sont les **migrations** : elles font passer une base
+existante d'une version à la suivante.
 
 Le [changelog](../../CHANGELOG.md) dit ce qui a changé dans une version, [UPGRADE.md](../../UPGRADE.md)
 ce qu'il faut faire pour y passer, ce fichier-ci quel script correspond à quoi.
 
 ## Installation neuve
 
-Importer `ladecadanse.sql`, et **rien d'autre**. Ce dump a été régénéré plusieurs fois au cours du projet :
-il porte déjà l'effet d'une partie des migrations. Les rejouer par-dessus échoue sur
-« Duplicate column name » pour les `ALTER`, ou passe en faussant les données — `v3-12-0_localite-france.sql`
-rejouée ajoute une seconde localité « Ailleurs en France ».
+Importer `ladecadanse.sql`, et **rien d'autre**. Toutes les migrations y sont intégrées ; les rejouer
+par-dessus échoue sur « Duplicate column name » pour les `ALTER`, ou passe en faussant les données —
+`v3-12-0_localite-france.sql` rejouée ajoute une seconde localité « Ailleurs en France ».
 
 ## Base existante
 
@@ -24,20 +23,20 @@ passer d'une seule traite, une variable de connexion étant relue par ses `UPDAT
 
 ## Les migrations
 
-La colonne de droite dit si le dump porte déjà l'effet du script : c'est elle qui évite de le rejouer
-sur une installation neuve.
+La colonne de droite dit si le dump porte déjà l'effet du script. Elles sont toutes à « oui » : c'est
+l'invariant à tenir, une ligne à « non » signalant que le dump a pris du retard sur les migrations.
 
 | Fichier | Version | Ajouté le | Effet | Dans `ladecadanse.sql` |
 | --- | --- | --- | --- | --- |
 | `v3-6-3_localite-add-regions_covered.sql` | 3.7.0 | 2025-03-20 | colonne `localite.regions_covered`, et les communes du district de Nyon rattachées à `ge,vd` | oui |
 | `v3-6-3_personne-add-last_login.sql` | 3.7.0 | 2025-03-21 | colonne `personne.last_login` | oui |
-| `v3-8-0-evenement-add-index.sql` | 3.8.0 | 2025-06-28 | index composite `idx_ev_date_statut_genre_ajout` | **non** |
-| `v3-9-0-evenement-add-fulltext-index.sql` | 3.9.0 | 2025-07-26 | index FULLTEXT sur `evenement.titre`, `nomLieu`, `description` et sur `lieu.nom`, base de la recherche | **non** |
-| `v3-9-2-evenement-add-index.sql` | 3.9.2 | 2025-10-21 | index `idx_ev_idPersonne` | **non** |
+| `v3-8-0-evenement-add-index.sql` | 3.8.0 | 2025-06-28 | index composite `idx_ev_date_statut_genre_ajout` | oui |
+| `v3-9-0-evenement-add-fulltext-index.sql` | 3.9.0 | 2025-07-26 | index FULLTEXT sur `evenement.titre`, `nomLieu`, `description` et sur `lieu.nom`, base de la recherche | oui |
+| `v3-9-2-evenement-add-index.sql` | 3.9.2 | 2025-10-21 | index `idx_ev_idPersonne` | oui |
 | `v3-9-4-personne-mot-de-passe-255.sql.sql` | 3.9.4 | 2026-03-07 | `personne.mot_de_passe` en `VARCHAR(255)`, pour les empreintes bcrypt | oui |
 | `v3-11-0_personne-add-settings.sql` | 3.11.0 | 2026-08-08 | colonne `personne.settings` (préférences JSON) | oui |
 | `v3-11-0_lieu-lat-lng-decimal.sql` | 3.11.0 | 2026-08-01 | `lieu.lat` et `lieu.lng` de `FLOAT(10,6)` à `DECIMAL(10,7)` | oui |
-| `v3-11-0_bot_monitor-create-table.sql` | 3.11.0 | 2026-07-16 | table `bot_monitor` | **non** |
+| `v3-11-0_bot_monitor-create-table.sql` | 3.11.0 | 2026-07-16 | table `bot_monitor` | oui |
 | `v3-12-0_localite-france.sql` | 3.12.0 | 2026-08-25 | `localite.npa` en `VARCHAR(6)`, localité « Ailleurs en France », localité 1 renommée en canton `hs` | oui |
 
 Trois pièges de lecture :
@@ -99,14 +98,15 @@ Deux fichiers ne sont ni le schéma ni une migration, et n'ont rien à faire dan
 
 ## Docker
 
-L'environnement Docker crée sa base depuis `ladecadanse.sql`, complété des seules migrations que le dump
-ne porte pas encore — les trois index et `bot_monitor`, la colonne de droite du tableau. La liste est dans
-`docker-compose.yml` ; voir [Base de données](../../README.md#base-de-données) dans le README pour le
-fonctionnement et pour le cas d'une base déjà créée.
+L'environnement Docker crée sa base depuis `ladecadanse.sql` seul, puis charge les fixtures de
+`docker/env/` — le compte `admin` et un lieu de test. Aucune migration n'y est montée et il ne faut pas
+en ajouter : le dump les porte toutes. Voir [Base de données](../../README.md#base-de-données) dans le
+README, notamment pour le cas d'une base déjà créée.
 
 ## Ajouter une migration
 
 1. la nommer `vX-Y-Z_objet.sql`, avec la version qui la livrera ;
-2. l'ajouter à ce tableau, colonne « Dans `ladecadanse.sql` » à **non**, et à la requête de vérification ;
-3. la décrire dans [UPGRADE.md](../../UPGRADE.md), sous la version en préparation ;
-4. la monter dans `docker-compose.yml`, sans quoi les bases neuves ne l'auront jamais.
+2. **la reporter dans `ladecadanse.sql`**, pour que le dump reste le schéma courant. C'est l'étape qui a
+   manqué pendant quatre versions : les bases créées entre-temps ont tourné sans les index de recherche ;
+3. l'ajouter à ce tableau et à la requête ci-dessus ;
+4. la décrire dans [UPGRADE.md](../../UPGRADE.md), sous la version en préparation.

@@ -136,7 +136,7 @@ Le conteneur `composer-dev` reste un service à usage unique : il installe `vend
 
 #### Base de données
 
-La base est initialisée depuis `resources/database/ladecadanse.sql`, puis par les migrations que ce dump n'a pas encore intégrées — les index de la 3.8 et de la 3.9, la table `bot_monitor` — et enfin par les fixtures de `docker/env/` : le compte `admin` et un lieu de test. La liste et son ordre sont dans `docker-compose.yml`, commentés ; l'inventaire des scripts est dans [resources/database/README.md](resources/database/README.md).
+La base est initialisée depuis `resources/database/ladecadanse.sql`, qui porte le schéma courant, puis par les fixtures de `docker/env/` : le compte `admin` et un lieu de test. Aucune migration n'est rejouée par-dessus, elles sont toutes intégrées au dump — l'inventaire est dans [resources/database/README.md](resources/database/README.md).
 
 Ces scripts ne tournent qu'à la **création du volume**. Une base déjà créée ne verra jamais une migration ajoutée depuis, il faut la passer à la main :
 

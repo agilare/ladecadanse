@@ -1,3 +1,8 @@
+-- Schéma de référence de La décadanse, à jour de la version 3.12.0.
+--
+-- Ce fichier suffit à créer une base : ne rejouer par-dessus aucune migration
+-- v3-*.sql de ce répertoire, elles y sont toutes intégrées. Voir README.md.
+
 SET NAMES utf8;
 SET time_zone = '+00:00';
 SET foreign_key_checks = 0;
@@ -12,6 +17,22 @@ CREATE TABLE `affiliation` (
   `genre` set('lieu','association','groupe') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   PRIMARY KEY (`idPersonne`,`idAffiliation`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+DROP TABLE IF EXISTS `bot_monitor`;
+CREATE TABLE `bot_monitor` (
+  `ip` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `user_agent` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `bot_family` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `hit_count` int(10) unsigned NOT NULL DEFAULT 1,
+  `honeypot_triggered` tinyint(1) NOT NULL DEFAULT 0,
+  `is_crawler_detect` tinyint(1) NOT NULL DEFAULT 0,
+  `first_seen` datetime NOT NULL,
+  `last_seen` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`ip`),
+  KEY `idx_last_seen` (`last_seen`),
+  KEY `idx_family` (`is_crawler_detect`,`bot_family`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
 DROP TABLE IF EXISTS `descriptionlieu`;
@@ -60,7 +81,12 @@ CREATE TABLE `evenement` (
   PRIMARY KEY (`idevenement`),
   KEY `semaine` (`genre`,`dateEvenement`),
   KEY `dateajout` (`dateAjout`),
-  KEY `ev_idlieu_dateev` (`idLieu`,`dateEvenement`)
+  KEY `ev_idlieu_dateev` (`idLieu`,`dateEvenement`),
+  KEY `idx_ev_date_statut_genre_ajout` (`dateEvenement`,`statut`,`genre`,`dateAjout` DESC),
+  KEY `idx_ev_idPersonne` (`idPersonne`),
+  FULLTEXT KEY `ft_evenement_titre` (`titre`),
+  FULLTEXT KEY `ft_evenement_nomLieu` (`nomLieu`),
+  FULLTEXT KEY `ft_evenement_description` (`description`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
@@ -110,7 +136,8 @@ CREATE TABLE `lieu` (
   `date_derniere_modif` datetime NOT NULL,
   PRIMARY KEY (`idLieu`),
   KEY `nom` (`nom`),
-  KEY `lieu_dateajout` (`dateAjout`)
+  KEY `lieu_dateajout` (`dateAjout`),
+  FULLTEXT KEY `idx_lieu_fulltext` (`nom`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 

@@ -11,23 +11,14 @@ services:
     volumes:
       - ladecadanse_db_data:/var/lib/mysql
       - ./resources/database/ladecadanse.sql:/docker-entrypoint-initdb.d/001_ladecadanse.sql
-      # Les seules migrations que ladecadanse.sql n'a pas déjà intégrées : le
-      # dump porte le schéma courant (last_login, settings, regions_covered, npa
-      # en VARCHAR, lat/lng en DECIMAL) et les localités de la 3.12, mais aucun
-      # des index ajoutés après la 3.7, ni la table bot_monitor.
+      # Aucune migration à monter ici : ladecadanse.sql porte le schéma courant,
+      # elles y sont toutes intégrées et les rejouer casserait l'initialisation
+      # — voir resources/database/README.md.
       #
-      # Rejouer les autres casserait l'initialisation ou la fausserait :
-      # « Duplicate column name » pour les ALTER, un second « Ailleurs en
-      # France » pour v3-12-0_localite-france.sql.
-      #
-      # Ces scripts ne tournent que sur un volume vierge : une base déjà créée
-      # ne les verra jamais, il faut les passer à la main (voir le README).
-      - ./resources/database/v3-8-0-evenement-add-index.sql:/docker-entrypoint-initdb.d/010_v3-8-0-evenement-add-index.sql
-      - ./resources/database/v3-9-0-evenement-add-fulltext-index.sql:/docker-entrypoint-initdb.d/011_v3-9-0-evenement-add-fulltext-index.sql
-      - ./resources/database/v3-9-2-evenement-add-index.sql:/docker-entrypoint-initdb.d/012_v3-9-2-evenement-add-index.sql
-      - ./resources/database/v3-11-0_bot_monitor-create-table.sql:/docker-entrypoint-initdb.d/013_v3-11-0_bot_monitor-create-table.sql
-      - ./docker/env/create-admin.sql:/docker-entrypoint-initdb.d/020_create-admin.sql
-      - ./docker/env/create-lieux.sql:/docker-entrypoint-initdb.d/021_create-lieux.sql
+      # Ces scripts ne tournent qu'à la création du volume : une base déjà créée
+      # ne verra jamais une migration ajoutée depuis, il faut la passer à la main.
+      - ./docker/env/create-admin.sql:/docker-entrypoint-initdb.d/002_create-admin.sql
+      - ./docker/env/create-lieux.sql:/docker-entrypoint-initdb.d/003_create-lieux.sql
     ports:
       - "127.0.0.1:${DB_PORT:-9906}:3306"
     networks:
