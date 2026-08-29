@@ -130,6 +130,12 @@ make composer-update [PROFILE=...]  # Mettre à jour les dépendances Composer
 make composer-require PACKAGE=...   # Ajouter un package Composer
 ```
 
+#### Composer
+
+Composer est installé dans le conteneur web de développement : `make shell`, puis `composer phpstan`, `composer test:api`, `composer config:build`, etc. Ces scripts tournent ainsi sur le PHP 8.4 de l'application et ses extensions.
+
+Le conteneur `composer-dev` reste un service à usage unique : il installe `vendor/` avant qu'Apache ne démarre, et sert les cibles `make install-deps`, `make composer-update` et `make composer-require`. Son image embarque son propre PHP, sans les extensions de l'application, d'où le `--ignore-platform-reqs` qui accompagne ces cibles. Le voir `Exited` après `make start` est le fonctionnement normal, pas un échec.
+
 Le site ladecadanse est déployé sur localhost:7777 (dev) ou localhost:8080 (prod). Le mot de passe, par défaut, pour l'utilisateur `admin` est `admin_dev`.
 
 ### Accepter les PDF dans les champs image

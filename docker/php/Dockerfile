@@ -83,6 +83,22 @@ RUN pecl install xdebug-3.4.2 && \
     docker-php-ext-enable xdebug && \
     printf "xdebug.mode=debug\nxdebug.client_host=host.docker.internal\nxdebug.client_port=9000\n" > /usr/local/etc/php/conf.d/99-xdebug.ini
 
+# Composer, pour l'usage courant depuis `make shell`. Le service one-shot
+# composer-dev installe vendor/ avant qu'Apache démarre, mais son image embarque
+# son propre PHP, sans mysqli ni gd : les scripts du projet (`composer phpstan`,
+# `composer test:api`, `composer config:build`) attendent le PHP de l'application
+# et ses extensions, donc celui-ci. L'image php:apache ne fournit pas Composer ; le binaire est copié
+# depuis l'image officielle, à la version utilisée par le service composer-dev.
+#
+# 2.8 et pas 2.7 : sur PHP 8.4, Composer 2.7 ouvre chacune de ses commandes sur
+# « Deprecation Notice: Constant E_STRICT is deprecated ».
+COPY --from=composer:2.8 /usr/bin/composer /usr/local/bin/composer
+
+# Le shell du conteneur est root — Apache démarre en root avant de déprivilégier
+# ses workers. Sans cela, chaque commande s'ouvre sur « Do not run Composer as
+# root/super user ».
+ENV COMPOSER_ALLOW_SUPERUSER=1
+
 # Production stage
 FROM base AS production
 

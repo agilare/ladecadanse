@@ -23,7 +23,7 @@ services:
 
   # Composer services
   composer-dev:
-    image: composer:2.7
+    image: composer:2.8
     container_name: ladecadanse_composer_dev
     command: install --optimize-autoloader --ignore-platform-reqs
     environment:
@@ -38,7 +38,7 @@ services:
       - dev
 
   composer-prod:
-    image: composer:2.7
+    image: composer:2.8
     container_name: ladecadanse_composer_prod
     command: install --no-dev --optimize-autoloader --no-scripts --ignore-platform-reqs
     environment:
