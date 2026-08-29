@@ -165,9 +165,13 @@ composer prod-copy -- --limit=20 --only=db      # passe d'essai, quelques second
 composer prod-copy -- --only=files              # relançable, saute ce qui est déjà là
 ```
 
-Options : `--limit` (nombre d'événements, 1000 par défaut), `--only=db|files`, `--password` (mot de passe commun des comptes copiés, `dev` par défaut), `--force` (supprimer et recréer une base existante), `--source` / `--dest` (autres entrées de `db.config.php`), `--base-url`, `--uploads-dir`.
+Options : `--limit` (nombre d'événements, 1000 par défaut), `--only=db|files`, `--password` (mot de passe commun des comptes copiés, `decadanse1` par défaut), `--force` (supprimer et recréer une base existante), `--reset-uploads`, `--source` / `--dest` (autres entrées de `db.config.php`), `--base-url`, `--uploads-dir`.
 
-Une fois la copie faite, pointer dessus `DB_NAME` dans `app/env.php` et l'entrée `default` de `app/db.config.php`. Toutes les `personne` partagent alors le même mot de passe, leur pseudo devenant `user{id}` ; le script affiche en fin d'exécution un exemple d'identifiant par groupe.
+Une fois la copie faite, pointer dessus `DB_NAME` dans `app/env.php` et l'entrée `default` de `app/db.config.php`. Toutes les `personne` partagent alors le même mot de passe, leur pseudo devenant `user{id}` — `user1` pour le compte SUPERADMIN ; le script affiche en fin d'exécution un exemple d'identifiant par groupe.
+
+Si `web/uploads/` contient déjà les fichiers d'une instance antérieure, ils répondent à une autre base et resteront mêlés à ceux de la copie. Le script les compte et le signale ; `--reset-uploads` les déplace dans un `web/uploads-backup-<horodatage>/` avant de télécharger — rien n'est supprimé.
+
+La production limite le débit : au-delà de quelques milliers de requêtes rapprochées elle répond 429, et le téléchargement s'arrête là plutôt que d'insister. Relancer `--only=files` plus tard reprend où il en était, les fichiers déjà écrits étant sautés.
 
 Ce que la copie ne contient pas : aucun mot de passe, e-mail, cookie ni note privée d'origine — ils sont remplacés à la volée, entre le `SELECT` et l'`INSERT`, si bien qu'aucun fichier intermédiaire n'en porte jamais. Les tables `bot_monitor` (adresses IP) et `user_reset_requests` (jetons) ne sont pas reprises du tout, `admin/bots.php` restera donc vide.
 

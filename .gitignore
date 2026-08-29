@@ -12,6 +12,8 @@ app/db.config.php
 /var/sessions/*
 !var/sessions/.gitkeep
 /vendor
+# répertoires datés laissés par « composer prod-copy -- --reset-uploads »
+/web/uploads-backup-*
 !/web/uploads/
 /web/uploads/*
 !web/uploads/.gitkeep

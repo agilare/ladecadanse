@@ -19,7 +19,7 @@ declare(strict_types=1);
  * Usage :
  *   php bin/prod-copy.php [--limit=1000] [--source=prod] [--dest=prod_copy]
  *                         [--only=db|files] [--password=dev] [--force]
- *                         [--base-url=URL] [--uploads-dir=CHEMIN]
+ *                         [--base-url=URL] [--uploads-dir=CHEMIN] [--reset-uploads]
  *
  * Les connexions « prod » et « prod_copy » se déclarent dans app/db.config.php,
  * que .gitignore exclut du dépôt. Voir « Base de données » dans le README.
@@ -27,6 +27,7 @@ declare(strict_types=1);
 
 use Ladecadanse\UserLevel;
 use Ladecadanse\Utils\DbConnectorPdo;
+use Ladecadanse\Utils\PasswordPolicy;
 
 define('__ROOT__', dirname(__DIR__)); // DbConnectorPdo::getInstance() en a besoin
 
@@ -83,6 +84,13 @@ const TRANSFERTS_SIMULTANES = 5;
  * dans les DEFAULT des CREATE TABLE que dans les lignes copiées.
  */
 const SQL_MODE = 'IGNORE_SPACE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+
+/**
+ * Arborescence de web/uploads/, telle que git la suit par ses .gitkeep. Sert à la
+ * recréer après --reset-uploads : ces répertoires disparus, git status les
+ * signalerait comme des suppressions.
+ */
+const SQUELETTE_UPLOADS = ['', 'evenements', 'fichiers/lieux', 'lieux', 'lieux/galeries', 'organisateurs'];
 
 /**
  * Interrompt le script sur une erreur d'usage ou d'environnement.
@@ -251,6 +259,74 @@ function connecterDestination(array $config, bool $avecBase): PDO
 }
 
 /**
+ * Met de côté le contenu actuel des uploads et recrée l'arborescence vide.
+ *
+ * Le répertoire est déplacé, jamais vidé : les fichiers d'une instance précédente
+ * appartiennent à une autre base, mais ce sont les fichiers de quelqu'un. Le
+ * chemin de la sauvegarde est retourné pour être annoncé.
+ *
+ * Les .gitkeep sont repris de la sauvegarde plutôt que recréés vides : ils sont
+ * suivis par git, et un fichier vide là où git attend un saut de ligne
+ * apparaîtrait comme une modification.
+ */
+function mettreDeCoteLesUploads(string $repUploads): string
+{
+    $sauvegarde = $repUploads . '-backup-' . date('Ymd-His');
+
+    if (!rename($repUploads, $sauvegarde)) {
+        abandonner("déplacement de {$repUploads} vers {$sauvegarde} impossible.");
+    }
+
+    foreach (SQUELETTE_UPLOADS as $sousRep) {
+        $chemin = rtrim($repUploads . '/' . $sousRep, '/');
+
+        if (!is_dir($chemin) && !mkdir($chemin, 0775, true)) {
+            abandonner("création de {$chemin} impossible.");
+        }
+
+        $temoinOrigine = rtrim($sauvegarde . '/' . $sousRep, '/') . '/.gitkeep';
+        if (is_file($temoinOrigine)) {
+            copy($temoinOrigine, $chemin . '/.gitkeep');
+        }
+    }
+
+    return $sauvegarde;
+}
+
+/**
+ * Fichiers présents sous les uploads qu'aucune ligne de la copie ne référence.
+ *
+ * Presque toujours ceux d'une instance de développement antérieure : ils ne
+ * gênent pas, mais mêlent deux jeux de données sans que rien ne le dise.
+ *
+ * @param array<string, mixed> $attendus chemins attendus, en clés
+ */
+function compterOrphelins(string $repUploads, array $attendus): int
+{
+    if (!is_dir($repUploads)) {
+        return 0;
+    }
+
+    $orphelins = 0;
+    $parcours = new RecursiveIteratorIterator(
+        new RecursiveDirectoryIterator($repUploads, FilesystemIterator::SKIP_DOTS)
+    );
+
+    foreach ($parcours as $fichier) {
+        if (!$fichier->isFile() || $fichier->getFilename() === '.gitkeep') {
+            continue;
+        }
+
+        $chemin = str_replace(DIRECTORY_SEPARATOR, '/', $fichier->getPathname());
+        if (!isset($attendus[$chemin])) {
+            $orphelins++;
+        }
+    }
+
+    return $orphelins;
+}
+
+/**
  * Télécharge en parallèle ce qui n'est pas déjà sur le disque.
  *
  * @param list<array{url: string, chemin: string}> $taches
@@ -258,7 +334,10 @@ function connecterDestination(array $config, bool $avecBase): PDO
  */
 function telecharger(array $taches, int $simultanes): array
 {
-    $bilan = ['ecrits' => 0, 'presents' => 0, 'absents' => 0, 'refuses' => 0, 'echecs' => 0, 'octets' => 0];
+    $bilan = [
+        'ecrits' => 0, 'presents' => 0, 'absents' => 0, 'refuses' => 0,
+        'brides' => 0, 'non_tentes' => 0, 'echecs' => 0, 'octets' => 0,
+    ];
     $restants = [];
 
     foreach ($taches as $tache) {
@@ -278,8 +357,17 @@ function telecharger(array $taches, int $simultanes): array
     $enCours = [];
     $traites = 0;
 
-    while ($restants !== [] || $enCours !== []) {
-        while ($restants !== [] && count($enCours) < $simultanes) {
+    // Un 429 est la production qui demande d'arrêter. Continuer à lui envoyer des
+    // milliers de requêtes vouées au même sort n'obtiendrait rien et allongerait la
+    // sanction : on cesse d'en lancer de nouvelles et on laisse finir les en cours.
+    $bride = false;
+
+    // Codes inattendus, annoncés une fois chacun plutôt que fondus dans « échecs »,
+    // où un run bridé ressemblait à une panne de réseau.
+    $codesVus = [];
+
+    while ($enCours !== [] || ($restants !== [] && !$bride)) {
+        while ($restants !== [] && !$bride && count($enCours) < $simultanes) {
             $tache = array_shift($restants);
 
             $ch = curl_init($tache['url']);
@@ -322,6 +410,9 @@ function telecharger(array $taches, int $simultanes): array
                 $bilan['absents']++;
             } elseif ($code === 403) {
                 $bilan['refuses']++;
+            } elseif ($code === 429) {
+                $bilan['brides']++;
+                $bride = true;
             } elseif ($code === 200 && $corps !== '') {
                 $repertoire = dirname($chemin);
                 if (!is_dir($repertoire)) {
@@ -332,6 +423,10 @@ function telecharger(array $taches, int $simultanes): array
                 $bilan['octets'] += strlen($corps);
             } else {
                 $bilan['echecs']++;
+                if (!isset($codesVus[$code])) {
+                    $codesVus[$code] = true;
+                    printf("\n  réponse HTTP %d inattendue sur %s\n", $code, basename($chemin));
+                }
             }
 
             curl_multi_remove_handle($mh, $ch);
@@ -347,6 +442,8 @@ function telecharger(array $taches, int $simultanes): array
     curl_multi_close($mh);
     echo "\n";
 
+    $bilan['non_tentes'] = count($restants);
+
     return $bilan;
 }
 
@@ -355,16 +452,17 @@ function telecharger(array $taches, int $simultanes): array
 // Options et configuration
 // ---------------------------------------------------------------------------
 
-$options = getopt('', ['limit::', 'source::', 'dest::', 'only::', 'password::', 'base-url::', 'uploads-dir::', 'force']);
+$options = getopt('', ['limit::', 'source::', 'dest::', 'only::', 'password::', 'base-url::', 'uploads-dir::', 'force', 'reset-uploads']);
 
 $limite = (int) ($options['limit'] ?? 1000);
 $nomSource = (string) ($options['source'] ?? 'prod');
 $nomDest = (string) ($options['dest'] ?? 'prod_copy');
 $phase = (string) ($options['only'] ?? 'tout');
-$motDePasse = (string) ($options['password'] ?? 'dev');
+$motDePasse = (string) ($options['password'] ?? 'decadanse1');
 $baseUrl = rtrim((string) ($options['base-url'] ?? 'https://www.ladecadanse.ch'), '/');
 $repUploads = rtrim((string) ($options['uploads-dir'] ?? __ROOT__ . '/web/uploads'), "/\\");
 $force = isset($options['force']);
+$reinitialiserUploads = isset($options['reset-uploads']);
 
 if ($limite < 1) {
     abandonner('--limit attend un nombre d\'événements supérieur à 0.');
@@ -372,6 +470,17 @@ if ($limite < 1) {
 
 if (!in_array($phase, ['tout', 'db', 'files'], true)) {
     abandonner('--only accepte db ou files.');
+}
+
+// user/login.php refuse un mot de passe hors de ces bornes avant même de regarder
+// la base : un mot de passe plus court rendrait tous les comptes de la copie
+// inutilisables, sans que rien dans la sortie du script ne le laisse deviner.
+if (mb_strlen($motDePasse) < 4 || mb_strlen($motDePasse) > PasswordPolicy::LONGUEUR_MAX) {
+    abandonner(sprintf(
+        "--password doit faire entre 4 et %d caractères, sans quoi la page de connexion\n"
+        . "         le refuse (user/login.php).",
+        PasswordPolicy::LONGUEUR_MAX
+    ));
 }
 
 $cheminConfig = __ROOT__ . '/app/db.config.php';
@@ -707,6 +816,27 @@ if ($phase !== 'db') {
 
     printf("\nFichiers référencés : %d (miniatures comprises)\n", count($taches));
 
+    // Les fichiers d'une instance précédente répondent à une autre base. Ils ne
+    // seront pas écrasés — telecharger() saute ce qui est déjà là — mais ils
+    // resteront mêlés à ceux de la copie sans que rien ne l'indique.
+    if ($reinitialiserUploads) {
+        printf("  contenu précédent déplacé dans %s\n", basename(mettreDeCoteLesUploads($repUploads)));
+    } else {
+        $attendus = [];
+        foreach ($taches as $tache) {
+            $attendus[$tache['chemin']] = true;
+        }
+
+        $orphelins = compterOrphelins($repUploads, $attendus);
+        if ($orphelins > 0) {
+            printf(
+                "  %d fichier(s) déjà présent(s) qu'aucune ligne de la copie ne référence.\n"
+                . "  --reset-uploads les déplace dans un répertoire daté avant de télécharger.\n",
+                $orphelins
+            );
+        }
+    }
+
     $bilan = telecharger(array_values($taches), TRANSFERTS_SIMULTANES);
 
     printf(
@@ -723,6 +853,15 @@ if ($phase !== 'db') {
         echo "\nDes 403 : le pare-feu 8G a rejeté la requête. Il ne laisse servir depuis\n"
             . "/web/uploads/ que jpg, jpeg, png, gif et webp, et bloque tout User-Agent\n"
             . "contenant « curl » ou « scan ».\n";
+    }
+
+    if ($bilan['brides'] > 0) {
+        printf(
+            "\nLa production a répondu 429 (trop de requêtes) : le téléchargement s'est\n"
+            . "arrêté là, %d fichier(s) n'ont pas été tentés. Relancer --only=files plus\n"
+            . "tard reprendra où il en est, les fichiers déjà écrits étant sautés.\n",
+            $bilan['non_tentes']
+        );
     }
 }
 
