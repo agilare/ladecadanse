@@ -1,6 +1,6 @@
 # Mise à jour
 
-Ce fichier liste les opérations à effectuer lors du passage à une nouvelle version : migrations de base de données, nouvelles clés de configuration, effets de bord à connaître. Pour la liste des changements eux-mêmes, voir le [changelog](CHANGELOG.md) ; pour le fonctionnement des fonctionnalités, [docs/](docs/).
+Ce fichier liste les opérations à effectuer lors du passage à une nouvelle version : migrations de base de données, nouvelles clés de configuration, effets de bord à connaître. Pour la liste des changements eux-mêmes, voir le [changelog](CHANGELOG.md) ; pour le fonctionnement des fonctionnalités, [docs/](docs/) ; pour l'inventaire des scripts SQL, la version qui a livré chacun et une requête disant ce qui manque à une base, [resources/database/README.md](resources/database/README.md).
 
 Les versions sont listées de la plus récente à la plus ancienne.
 

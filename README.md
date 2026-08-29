@@ -44,9 +44,7 @@ Facultatif : `imagick` et Ghostscript, pour convertir en image les PDF **collés
         GRANT USAGE ON *.* TO 'ladecadanse'@'localhost';
         GRANT SELECT, INSERT, DELETE, UPDATE  ON `ladecadanse`.* TO 'ladecadanse'@'localhost';
         ```
-    1. dans la base de données, exécuter les fichiers sous `resources/database/` :
-        1. création de la structure et les données utiles pour la table `localite` avec `ladecadanse.sql`
-        1. mises à jour avec `v3-6-3_localite-add-regions_covered.sql`, etc.
+    1. dans la base de données, exécuter `resources/database/ladecadanse.sql`, qui crée la structure et remplit la table `localite`. **Sur une installation neuve, n'exécuter aucune migration `v3-*.sql` par-dessus** : ce dump en porte déjà une partie, et les rejouer échoue ou duplique des données — voir [resources/database/README.md](resources/database/README.md)
     1. ajouter un 1er utilisateur, l'*admin* (groupe 1) qui vous servira à gérer le site (mot de passe : `admin_dev`) :
         ```mysql
         INSERT INTO `personne` (`idPersonne`, `pseudo`, `mot_de_passe`, `cookie`, `groupe`, `statut`, `affiliation`, `region`, `email`,  `signature`, `avec_affiliation`, `gds`, `actif`, `dateAjout`, `date_derniere_modif`) VALUES (NULL, 'admin', '$2y$10$34Z0QxaycAgPFQGtiVzPbeoZFN1kwLEdWDEBI1kEOJGK4A3xRJtMa', '', '1', 'actif', '', 'ge', 'test@ladecadanse.ch', 'pseudo', 'non', '', '1', '0000-00-00 00:00:00.000000', '0000-00-00 00:00:00.000000');
@@ -138,7 +136,7 @@ Le conteneur `composer-dev` reste un service à usage unique : il installe `vend
 
 #### Base de données
 
-La base est initialisée depuis `resources/database/ladecadanse.sql`, puis par les migrations que ce dump n'a pas encore intégrées — les index de la 3.8 et de la 3.9, la table `bot_monitor` — et enfin par les fixtures de `docker/env/` : le compte `admin` et un lieu de test. La liste et son ordre sont dans `docker-compose.yml`, commentés.
+La base est initialisée depuis `resources/database/ladecadanse.sql`, puis par les migrations que ce dump n'a pas encore intégrées — les index de la 3.8 et de la 3.9, la table `bot_monitor` — et enfin par les fixtures de `docker/env/` : le compte `admin` et un lieu de test. La liste et son ordre sont dans `docker-compose.yml`, commentés ; l'inventaire des scripts est dans [resources/database/README.md](resources/database/README.md).
 
 Ces scripts ne tournent qu'à la **création du volume**. Une base déjà créée ne verra jamais une migration ajoutée depuis, il faut la passer à la main :
 
