@@ -24,6 +24,7 @@ Feature documentation : [docs/](docs/).
 - admin events : the bulk form carries a CSRF token, which it lacked although it deletes ; the number of rows is validated against a list instead of being any integer, so `LIMIT 0,999999` no longer passes
 - forms : the clear button of a search field empties that field alone — it emptied every `input[type=search]` of the form, which went unnoticed as long as no page carried more than one filter
 - events, lieux, users edit : deselecting an organisateur now sticks after a validation error — the multiple select merged the posted selection with the organisateurs read back from the database, so one just removed came back ticked ; the hidden `formulaire=ok` witness now decides alone, a fully deselected select posting no key at all
+- forms : clicking the × of a Select2 field deselects without unrolling the dropdown — the global × ended its work with an explicit toggle, and a tag's × let the click reach the container, which read it as a request to open
 
 ### Changed
 - admin : `admin/gererEvenements.php` becomes `admin/events.php` #125, with a 301 — the whole request is processed before the first byte of HTML, an action redirects instead of leaving a F5 to replay it, and the listing moves to `EvenementCollection` — see [docs/admin-evenements.md](docs/admin-evenements.md)

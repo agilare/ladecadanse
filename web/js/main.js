@@ -50,6 +50,41 @@ $('.js-select2-options-with-complement').select2(
     templateSelection: select2OptionWithComplement
 });
 
+select2PreventReopenOnDeselect($('.js-select2-options-with-style, .js-select2-options-with-complement'));
+
+/*
+ * Select2 rouvre la liste déroulante quand on désélectionne par la croix, pour deux
+ * raisons distinctes : la croix globale (allowClear) termine son traitement par un
+ * toggle explicite, et la croix d'une étiquette (multiple) laisse le clic remonter
+ * jusqu'au conteneur, qui l'interprète comme une demande d'ouverture.
+ *
+ * On marque donc la désélection en cours et on annule l'ouverture qui suit dans le
+ * même tick — select2:opening est annulable. Le drapeau est relâché en fin de tick :
+ * désélectionner depuis une liste déjà ouverte ne déclenche aucun select2:opening,
+ * et un drapeau resté armé bloquerait l'ouverture suivante, elle légitime.
+ */
+function select2PreventReopenOnDeselect($selects)
+{
+    let deselecting = false;
+
+    $selects.on('select2:clearing select2:unselecting', function ()
+    {
+        deselecting = true;
+        setTimeout(function ()
+        {
+            deselecting = false;
+        }, 0);
+    });
+
+    $selects.on('select2:opening', function (evt)
+    {
+        if (deselecting)
+        {
+            evt.preventDefault();
+        }
+    });
+}
+
 function select2ApplyOptionInlineStyle(item)
 {
     if (!item.id)
