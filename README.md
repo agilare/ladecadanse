@@ -136,6 +136,18 @@ Composer est installé dans le conteneur web de développement : `make shell`, p
 
 Le conteneur `composer-dev` reste un service à usage unique : il installe `vendor/` avant qu'Apache ne démarre, et sert les cibles `make install-deps`, `make composer-update` et `make composer-require`. Son image embarque son propre PHP, sans les extensions de l'application, d'où le `--ignore-platform-reqs` qui accompagne ces cibles. Le voir `Exited` après `make start` est le fonctionnement normal, pas un échec.
 
+#### Base de données
+
+La base est initialisée depuis `resources/database/ladecadanse.sql`, puis par les migrations que ce dump n'a pas encore intégrées — les index de la 3.8 et de la 3.9, la table `bot_monitor` — et enfin par les fixtures de `docker/env/` : le compte `admin` et un lieu de test. La liste et son ordre sont dans `docker-compose.yml`, commentés.
+
+Ces scripts ne tournent qu'à la **création du volume**. Une base déjà créée ne verra jamais une migration ajoutée depuis, il faut la passer à la main :
+
+```sh
+docker-compose --profile dev exec -T db sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" ladecadanse' < resources/database/v3-12-0_localite-france.sql
+```
+
+Pour repartir d'une base neuve : `make clean`, qui supprime le volume, puis `make start`.
+
 Le site ladecadanse est déployé sur localhost:7777 (dev) ou localhost:8080 (prod). Le mot de passe, par défaut, pour l'utilisateur `admin` est `admin_dev`.
 
 ### Accepter les PDF dans les champs image
