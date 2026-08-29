@@ -577,9 +577,11 @@ if ($phase !== 'files') {
 
     // --- Création de la base ----------------------------------------------
     //
-    // Le schéma vient de la production, pas de resources/database/ladecadanse.sql :
-    // ce fichier date du 2023-03-18 et ses migrations ultérieures s'appliquent à la
-    // main, si bien que le moindre décalage ferait échouer les INSERT.
+    // Le schéma est celui de la production, lu par SHOW CREATE TABLE, et non celui
+    // de resources/database/ladecadanse.sql. Ce dernier est tenu à jour à la main et
+    // ne fait autorité que sur une installation neuve ; ici les lignes viennent de la
+    // production, donc le schéma qui les accueille doit être le sien. Un écart d'une
+    // seule colonne ferait échouer les INSERT.
 
     printf("\nCréation de %s…\n", $baseDest);
 
