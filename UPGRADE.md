@@ -16,7 +16,22 @@ pour tout changement d'un fragment de configuration — voir [docs/config-serveu
 La page n'a ni lien entrant public ni référencement : la redirection est là pour les signets et
 l'historique des administrateurs.
 
+`organisateur-edit.php` devient `organisateur/edit.php`, avec sa 301 dans le même fragment. Le
+formulaire est réservé aux connectés, donc pas indexé, mais les organisateurs y arrivent par leurs
+signets, avec la query string (`?action=editer&idO=…`) que la redirection reporte d'office.
+
 ### Effets de bord à connaître
+
+- **Qui peut modifier une fiche d'organisateur** — le contrôle laissait passer tout compte de
+  niveau ACTOR, c'est-à-dire que chaque organisateur pouvait éditer la fiche de tous les autres.
+  Il pose maintenant la même question que le lien « Modifier cet organisateur » de la fiche : niveau
+  AUTHOR ou au-dessus, membre de l'organisateur, ou auteur de la fiche. Conséquence : **un
+  organisateur qui éditait jusqu'ici une fiche sans y être rattaché sera refusé**. Le rattachement
+  se fait dans `personne_organisateur`, depuis le profil de la personne.
+- **Statut d'un organisateur** — les libellés deviennent « Publié / Dépublié / Ancien » ; les
+  valeurs en base (`actif`, `inactif`, `ancien`) ne changent pas. Le formulaire ne poste plus de
+  statut pour qui n'a pas le droit d'en choisir un : une modification faite par un acteur laisse
+  désormais la fiche dans l'état où elle était, là où elle la republiait.
 
 - **Édition groupée et organisateurs** — un remplacement groupé effaçait jusqu'ici les
   organisateurs de tous les événements sélectionnés, même quand le champ était laissé vide. Il ne

@@ -1,0 +1,85 @@
+/*
+ * Formulaire d'ajout et de modification d'un organisateur.
+ *
+ * Chargée avant desktop.css et mobile.css (voir _header.inc.php) : les règles
+ * qui doivent passer devant les leurs sont donc dans leurs propres requêtes de
+ * média, et ciblées par identifiant pour l'emporter à égalité d'ordre.
+ */
+
+/* La colonne des champs, celle où commencent .msg et .guideChamp */
+form#ajouter_editer .guideForm
+{
+    margin-top: 0;
+    padding-left: 11em;
+}
+
+/* Les fieldsets se touchaient presque : 5px entre deux titres de section */
+form#ajouter_editer fieldset
+{
+    margin-top: 1em;
+}
+
+form#ajouter_editer fieldset legend
+{
+    padding-bottom: 0.3em;
+}
+
+@media screen and (min-width: 800px)
+{
+    /*
+     * TinyMCE remplace le <textarea> par un bloc .tox-tinymce large de 100 % de son
+     * conteneur, lequel passait donc sous le label flottant — d'où le <br><br> qui
+     * traînait dans le gabarit. L'éditeur tient maintenant dans la colonne des
+     * champs, à droite de « Texte : » comme les autres saisies.
+     */
+    form#ajouter_editer #presentation,
+    form#ajouter_editer .tox-tinymce
+    {
+        box-sizing: border-box;
+        width: calc(100% - 11em);
+        margin-left: 11em;
+    }
+
+    /* aligné sur la colonne des champs plutôt que sur des 115px qui ne correspondaient à rien */
+    form#ajouter_editer .supImg
+    {
+        margin-left: 11em;
+    }
+}
+
+@media screen and (max-width: 799.98px)
+{
+    /*
+     * Les labels passent en display:block sur petits écrans (mobile.css) : plus de
+     * colonne à réserver, et les champs prennent la largeur disponible.
+     *
+     * width et non max-width : c'est la largeur intrinsèque dictée par size="50"
+     * qui gonflait le fieldset (min-width: min-content), et un max-width relatif à
+     * ce fieldset élargi ne bornait donc rien. La page sortait de 82px du viewport
+     * d'un téléphone de 375px.
+     */
+    form#ajouter_editer .guideForm
+    {
+        padding-left: 0;
+    }
+
+    form#ajouter_editer #nom,
+    form#ajouter_editer #URL,
+    form#ajouter_editer #email,
+    form#ajouter_editer input[type="file"]
+    {
+        box-sizing: border-box;
+        width: 100%;
+    }
+
+    form#ajouter_editer .tox-tinymce
+    {
+        max-width: 100%;
+    }
+
+    /* l'aperçu suit la colonne, les 50px de mobile.css laissaient un décalage sans objet */
+    form#ajouter_editer .supImg
+    {
+        margin-left: 0;
+    }
+}

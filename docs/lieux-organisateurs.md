@@ -1,5 +1,47 @@
 # Lieux et organisateurs
 
+## Modifier une fiche d'organisateur
+
+`organisateur/edit.php` ajoute et modifie les fiches. Le traitement vit dans
+[`OrganisateurEdition`](../librairies/OrganisateurEdition.php), la page ne fait que décider des
+droits, appeler le traitement, puis afficher.
+
+### Qui peut modifier
+
+La même règle que le lien « Modifier cet organisateur » de la fiche publique :
+
+- niveau `AUTHOR` (6) ou au-dessus, sur n'importe quelle fiche ;
+- niveau `ACTOR` (8), sur les fiches dont la personne est membre (`personne_organisateur`) ;
+- l'auteur de la fiche (`organisateur.idPersonne`), quel que soit son niveau.
+
+`idPersonne` n'est écrit qu'à la création : il désigne l'auteur, dont dépend ce droit, et une
+modification ne le déplace pas vers celui qui l'a faite.
+
+### Statut
+
+Les trois valeurs de la colonne `statut` sont montrées sous les noms qu'elles décident réellement,
+listés une fois pour toutes dans `Organisateur::STATUTS` :
+
+| base      | affiché    |
+|-----------|------------|
+| `actif`   | Publié     |
+| `inactif` | Dépublié   |
+| `ancien`  | Ancien     |
+
+Le choix n'est proposé qu'à partir du niveau `ADMIN` (4). Pour les autres, la valeur postée est
+ignorée au profit de celle déjà en base — le formulaire portait un `statut=actif` caché, qui
+republiait une fiche dépubliée dès qu'un acteur la modifiait.
+
+### Logo et photo
+
+Le nom d'un fichier est `{idOrganisateur}_{champ}.{extension}` : `12_logo.png`, `12_photo.webp`.
+L'identifiant vient de l'AUTO_INCREMENT, donc n'est connu qu'après l'INSERT ; l'extension vient du
+type MIME réel du fichier, parce que c'est d'après son contenu qu'`ImageDriver2` l'écrit. Le cycle
+complet — nommage, remplacement, suppression, miniature `s_` — est partagé avec les fiches de lieu
+par le trait [`HandlesImageUploads`](../librairies/HandlesImageUploads.php).
+
+Le fichier déjà en place est relu en base, jamais repris d'un champ caché du formulaire.
+
 ## Activité mensuelle, en vue d'administration
 
 Les listes `lieu/lieux.php` et `organisateur/organisateurs.php` affichent, pour les éditeurs et au-dessus, **douze colonnes** — une par mois, la dernière étant le mois en cours. Chaque cellule porte le nombre d'événements ajoutés ce mois-là, et en dessous, en bleu, celui du même mois un an plus tôt.

@@ -4924,7 +4924,7 @@
         ["css=a:nth-child(2)", "css:finder"],
         ["xpath=//a[contains(text(),'Ajouter un organisateur')]", "xpath:link"],
         ["xpath=//div[@id='entete_contenu']/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/organisateur-edit.php?action=ajouter')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/organisateur/edit.php?action=ajouter')]", "xpath:href"],
         ["xpath=//div/div/a", "xpath:position"],
         ["xpath=//a[contains(.,' Ajouter un organisateur')]", "xpath:innerText"]
       ],

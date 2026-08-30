@@ -67,7 +67,7 @@ include("../_header.inc.php");
 
     <header id="entete_contenu" style="margin-bottom:1.5em">
         <h1 style="width: 35%;line-height: 1.2em;margin:0">Organisateurs</h1><?php if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 6)
-{ ?><a href="/organisateur-edit.php?action=ajouter" style="float: left;padding: 5px 1px;"><i class="fa fa-plus" aria-hidden="true"></i> Ajouter un organisateur</a><?php } ?>
+{ ?><a href="/organisateur/edit.php?action=ajouter" style="float: left;padding: 5px 1px;"><i class="fa fa-plus" aria-hidden="true"></i> Ajouter un organisateur</a><?php } ?>
         <div class="spacer"></div>
     </header>
 

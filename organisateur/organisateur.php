@@ -176,7 +176,7 @@ include("../_header.inc.php");
                 <li class="action_ajouter"><a href="/evenement-edit.php?idO=<?= (int)$get['idO'] ?>">Ajouter un événement de cet organisateur</a></li>
             <?php endif; ?>
             <?php if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= UserLevel::AUTHOR || (isset($_SESSION['SidPersonne']) && $authorization->isPersonneInOrganisateur($_SESSION['SidPersonne'], $get['idO']) && $_SESSION['Sgroupe'] <= UserLevel::ACTOR))) : ?>
-                <li class="action_editer"><a href="/organisateur-edit.php?action=editer&amp;idO=<?= (int) $get['idO'] ?>">Modifier cet organisateur</a></li>
+                <li class="action_editer"><a href="/organisateur/edit.php?action=editer&amp;idO=<?= (int) $get['idO'] ?>">Modifier cet organisateur</a></li>
             <?php endif; ?>
         </ul>
 

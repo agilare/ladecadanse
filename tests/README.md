@@ -101,6 +101,8 @@ In `tests/.env` (copied from `tests/.env_model`), fill in:
 - `LADECADANSE_TEST_LIEU_ID_WITH_PAST_EVENTS` — a lieu holding several past events, spread over several dates
 - `LADECADANSE_TEST_ORGA_ID_WITH_PAST_EVENTS` — an organisateur holding at least one past event
 - `LADECADANSE_TEST_LIEU_ID_WITH_LONG_TEXT` — a lieu whose description is long enough (over 550 characters) for the server to render it collapsed
+- `LADECADANSE_TEST_ORGA_ID_ACTOR_OWN` — an organisateur the actor account authored, or is a member of
+- `LADECADANSE_TEST_ORGA_ID_FOREIGN` — an organisateur the actor account may not edit
 
 A past event is a read-only archive for anyone below `groupe` 6, so the first three fixtures must
 point at **future** events — a past one would make the "can edit" tests fail for the wrong reason.
@@ -119,6 +121,7 @@ Tests whose variables are left empty are reported as **skipped**, not failed.
 - `EvenementsPassesTriCest` — the sort menu of the "Passés" tab on the lieu and organisateur pages: which tab offers it, that both directions actually reorder the query, that either one lands on the most recent past events, and that the choice is remembered in session across both pages
 - `UserRegisterCest` — public registration: the form's guards (CSRF token, single use, honeypot, both affiliation selects), the password rules, an already taken login, and two malformed POSTs that used to raise a PHP warning (missing `organisateurs[]`, scalar fields posted as arrays). The "email already taken" branch — which renders the success message without inserting anything, to avoid email enumeration — is knowingly left uncovered: it would need a fixture address really present in the database, and a stale one would turn the test into an account creation
 - `LieuTexteRepliableCest` — server-side contract of the collapsible descriptions: the text is served whole (never truncated in PHP), the toggle is a sibling of the capped block and wired to it by `aria-controls`, and the `js` marker that gates the whole collapse is in the `<head>`
+- `OrganisateurEditFormulaireCest` — the organisateur edit form (issue #115): the fields the JS and the processing depend on, the title that links back to the fiche, the "Publié / Dépublié" status labels, the fact that the status is offered to admins only, and that an actor may no longer edit someone else's fiche
 
 #### Running the tests on an instance
 

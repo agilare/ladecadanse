@@ -22,6 +22,19 @@ class Organisateur extends Element
     public const int VERY_LOW_ACTIVITY_MONTHS_NB = 12;
     public const int RESULTS_PER_PAGE = 100;
 
+    /**
+     * Valeurs de la colonne `statut` (ENUM), avec le libellé montré aux éditeurs.
+     *
+     * « Publié / Dépublié » plutôt que « Actif / Inactif » : c'est de la visibilité
+     * de la fiche qu'il s'agit, pas de l'activité de l'organisateur — que « Ancien »,
+     * lui, désigne bien.
+     */
+    public const array STATUTS = [
+        'actif' => 'Publié',
+        'inactif' => 'Dépublié',
+        'ancien' => 'Ancien',
+    ];
+
     function __construct()
 	{
         parent::__construct();
