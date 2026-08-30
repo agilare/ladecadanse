@@ -4,65 +4,7 @@ Ce fichier liste les opérations à effectuer lors du passage à une nouvelle ve
 
 Les versions sont listées de la plus récente à la plus ancienne.
 
-## Non publié
-
-### Redirections
-
-`admin/gererEvenements.php` devient `admin/events.php`. La redirection 301 est dans
-[`htaccess/50-routage.conf`](htaccess/50-routage.conf) et part avec le code : rien à reporter à la
-main sur le serveur, mais `composer config:build` doit être passé avant la mise en ligne, comme
-pour tout changement d'un fragment de configuration — voir [docs/config-serveur.md](docs/config-serveur.md).
-
-La page n'a ni lien entrant public ni référencement : la redirection est là pour les signets et
-l'historique des administrateurs.
-
-`organisateur-edit.php` devient `organisateur/edit.php`, avec sa 301 dans le même fragment. Le
-formulaire est réservé aux connectés, donc pas indexé, mais les organisateurs y arrivent par leurs
-signets, avec la query string (`?action=editer&idO=…`) que la redirection reporte d'office.
-
-### Effets de bord à connaître
-
-- **Qui peut modifier une fiche d'organisateur** — le contrôle laissait passer tout compte de
-  niveau ACTOR, c'est-à-dire que chaque organisateur pouvait éditer la fiche de tous les autres.
-  Il pose maintenant la même question que le lien « Modifier cet organisateur » de la fiche : niveau
-  AUTHOR ou au-dessus, membre de l'organisateur, ou auteur de la fiche. Conséquence : **un
-  organisateur qui éditait jusqu'ici une fiche sans y être rattaché sera refusé**. Le rattachement
-  se fait dans `personne_organisateur`, depuis le profil de la personne.
-- **Statut d'un organisateur** — les libellés deviennent « Publié / Dépublié / Ancien » ; les
-  valeurs en base (`actif`, `inactif`, `ancien`) ne changent pas. Le formulaire ne poste plus de
-  statut pour qui n'a pas le droit d'en choisir un : une modification faite par un acteur laisse
-  désormais la fiche dans l'état où elle était, là où elle la republiait.
-
-- **Édition groupée et organisateurs** — un remplacement groupé effaçait jusqu'ici les
-  organisateurs de tous les événements sélectionnés, même quand le champ était laissé vide. Il ne
-  les touche plus que si le champ a été rempli, conformément à la règle annoncée par la page.
-  Conséquence : **il n'est plus possible de retirer les organisateurs en masse** en envoyant le
-  formulaire avec un champ vide. Rien ne le permettait vraiment — l'ancien comportement était un
-  effacement subi, pas une commande.
-- **Préférences de liste** — filtres, tri et nombre de lignes de `admin/events.php` sont désormais
-  mémorisés en session (`user_prefs_even_*`), comme ceux de `admin/users.php`. À la première visite
-  après la mise à jour, la liste repart donc sur ses valeurs par défaut. Les anciens paramètres
-  d'URL (`tri_gerer`, `ordre`, `filtre_genre`, `element`, `nblignes`) ne sont plus lus : un signet
-  qui en porterait ouvre la liste sans filtre plutôt qu'en erreur.
-- **Nombre de lignes** — le menu propose 50, 250 et 500 ; le 100 disparaît de cette page seulement,
-  `$tab_nblignes` reste inchangé pour `admin/users.php` et `admin/bots.php`.
-- **Images des envois groupés** — un flyer ou une image posé par édition groupée est désormais
-  redimensionné en 600×600 avec une miniature non rognée, comme dans `evenement-edit.php` (et non
-  plus 400×400 avec miniature rognée). Les images déjà en base ne sont pas retraitées.
-
-Aucune migration de base de données.
-
-### Développement
-
-`resources/database/ladecadanse.sql` est de nouveau le schéma courant : il avait quatre versions de
-retard, et une base créée à partir de lui n'avait ni les index de recherche de la 3.8 et de la 3.9, ni la
-table `bot_monitor`. Une installation neuve importe donc désormais le dump **seul**, sans rejouer aucune
-migration par-dessus.
-
-Les bases existantes ne sont pas concernées. Pour savoir ce qui manque à l'une d'elles, passer la requête
-de [resources/database/README.md](resources/database/README.md), qui répond fichier par fichier.
-
-## 3.12.0
+## 3.12.0 (non publié)
 
 ### Base de données
 
@@ -81,25 +23,35 @@ Les deux libellés ci-dessus sont écrits à l'identique dans le fichier SQL et 
 
 ### Redirections
 
-Trois pages de compte rejoignent `user/`, à côté de `login.php` et `dashboard.php`. Les redirections 301 sont dans [`htaccess/50-routage.conf`](htaccess/50-routage.conf) et partent avec le code : il n'y a plus rien à reporter à la main sur le serveur.
+Cinq pages changent d'adresse : trois pages de compte rejoignent `user/`, à côté de `login.php` et `dashboard.php`, le formulaire d'organisateur passe sous `organisateur/` et l'écran d'administration des événements prend un nom lisible. Les redirections 301 sont dans [`htaccess/50-routage.conf`](htaccess/50-routage.conf) et partent avec le code : il n'y a plus rien à reporter à la main sur le serveur, mais `composer config:build` doit être passé avant la mise en ligne, comme pour tout changement d'un fragment de configuration — voir [docs/config-serveur.md](docs/config-serveur.md).
 
 | Ancienne URL | Nouvelle |
 | --- | --- |
 | `/user-register.php` | `/user/register.php` |
 | `/user-reset.php` | `/user/reset.php` |
 | `/user-reset2.php` | `/user/reset2.php` |
+| `/organisateur-edit.php` | `/organisateur/edit.php` |
+| `/admin/gererEvenements.php` | `/admin/events.php` |
 
-Les liens de réinitialisation déjà envoyés par mail restent valables 24 h : sans la redirection, ils tombent en 404 pendant une journée. La query string `?token=` est reportée d'office, la substitution n'en portant aucune.
+La query string est reportée d'office, aucune substitution n'en portant : les liens de réinitialisation déjà envoyés par mail (`?token=`) restent valables 24 h — sans la redirection ils tomberaient en 404 pendant une journée — et les signets des organisateurs (`?action=editer&idO=…`) arrivent au bon endroit.
+
+Aucune de ces pages n'est indexée : formulaires réservés aux connectés, écran d'administration sans lien entrant public. Les redirections sont là pour les signets, l'historique et les mails déjà partis.
 
 ### Effets de bord à connaître
 
+- **Qui peut modifier une fiche d'organisateur** — le contrôle laissait passer tout compte de niveau ACTOR, c'est-à-dire que chaque organisateur pouvait éditer la fiche de tous les autres. Il pose maintenant la même question que le lien « Modifier cet organisateur » de la fiche : niveau AUTHOR ou au-dessus, membre de l'organisateur, ou auteur de la fiche. Conséquence : **un organisateur qui éditait jusqu'ici une fiche sans y être rattaché sera refusé**. Le rattachement se fait dans `personne_organisateur`, depuis le profil de la personne
+- **Statut d'un organisateur** — les libellés deviennent « Publié / Dépublié / Ancien » ; les valeurs en base (`actif`, `inactif`, `ancien`) ne changent pas. Le formulaire ne poste plus de statut pour qui n'a pas le droit d'en choisir un : une modification faite par un acteur laisse désormais la fiche dans l'état où elle était, là où elle la republiait
 - **Déconnexion en POST** — `user-logout.php` disparaît sans redirection : une déconnexion en GET partait toute seule au moindre préchargement de lien. Un onglet resté ouvert sur une page rendue *avant* la mise à jour porte encore l'ancien lien et tombera en 404 ; il suffit de recharger la page. Signets et liens externes vers `/user-logout.php` cessent de fonctionner — voir [docs/comptes.md](docs/comptes.md)
 - **Mots de passe** — la liste des mots de passe refusés passe de 22 à 19 999 entrées. Les mots de passe existants ne sont pas vérifiés, rien n'est bloqué rétroactivement : la règle ne s'applique qu'au prochain changement. Les comptes non actifs (`statut` autre que `actif`) ne peuvent plus demander de réinitialisation, l'ancien filtre laissait passer les comptes en attente que la connexion refuse ensuite de toute façon
+- **Édition groupée et organisateurs** — un remplacement groupé effaçait jusqu'ici les organisateurs de tous les événements sélectionnés, même quand le champ était laissé vide. Il ne les touche plus que si le champ a été rempli, conformément à la règle annoncée par la page. Conséquence : **il n'est plus possible de retirer les organisateurs en masse** en envoyant le formulaire avec un champ vide. Rien ne le permettait vraiment — l'ancien comportement était un effacement subi, pas une commande
+- **Préférences de liste** — filtres, tri et nombre de lignes de `admin/events.php` sont désormais mémorisés en session (`user_prefs_even_*`), comme ceux de `admin/users.php`. À la première visite après la mise à jour, la liste repart donc sur ses valeurs par défaut, et les anciens paramètres d'URL (`tri_gerer`, `ordre`, `filtre_genre`, `element`, `nblignes`) ne sont plus lus : un signet qui en porterait ouvre la liste sans filtre plutôt qu'en erreur. Le menu de lignes propose 50, 250 et 500 ; le 100 disparaît de cette page seulement, `$tab_nblignes` restant inchangé pour `admin/users.php` et `admin/bots.php`
+- **Images des envois groupés** — un flyer ou une image posé par édition groupée est désormais redimensionné en 600×600 avec une miniature non rognée, comme dans `evenement-edit.php` (et non plus 400×400 avec miniature rognée). Les images déjà en base ne sont pas retraitées
 - **`resources/`** — les corps de mail passent sous `resources/templates/`, les scripts sql sous `resources/database/`. Adapter tout montage ou script maison qui les référence (le `docker-compose.yml` du dépôt est à jour)
 - **Localités françaises** — la France et « ailleurs » cessent d'être des entrées codées en dur dans les formulaires : ce sont des localités de la table `localite`, de cantons `rf` et `hs`. Ajouter une commune française ne demande donc plus de toucher au code, seulement un `INSERT INTO localite (localite, commune, npa, canton, regions_covered) VALUES ('Annemasse', 'Annemasse', '74100', 'rf', 'ge,rf')`. Les deux localités fourre-tout, elles, ne s'affichent jamais dans une adresse : seule la région apparaît, comme avant
 
 ### Développement
 
+- `resources/database/ladecadanse.sql` est de nouveau le schéma courant : il avait quatre versions de retard, et une base créée à partir de lui n'avait ni les index de recherche de la 3.8 et de la 3.9, ni la table `bot_monitor`. Une installation neuve importe donc désormais le dump **seul**, sans rejouer aucune migration par-dessus. Les bases existantes ne sont pas concernées ; pour savoir ce qui manque à l'une d'elles, passer la requête de [resources/database/README.md](resources/database/README.md), qui répond fichier par fichier
 - `composer rector:dry-run` fonctionne à nouveau : la configuration pointait sur un fichier de test déplacé, et le parcours partait de la racine, donc de `vendor/`
 - `.htaccess` et `.user.ini` sont composés depuis des fragments par `composer config:build` : `.htaccess.example` disparaît, et l'étape d'installation `cp .htaccess.example .htaccess` devient `composer config:build`. Un `.htaccess` écrit à la main n'étant suivi par aucun dépôt, le mettre de côté avant la première composition — l'outil refuse de l'écraser sans `--force`. Voir [docs/config-serveur.md](docs/config-serveur.md)
 

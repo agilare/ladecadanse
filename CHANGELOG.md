@@ -1,86 +1,59 @@
 # Changelog
 
-## [Non publié]
-
-Upgrade steps (redirects, side effects) : [UPGRADE.md](UPGRADE.md).
-Feature documentation : [docs/](docs/).
-
-### Added
-- agenda : on the day's own listing, each event card says where it stands against the moment the page was loaded #51 — a countdown, the share elapsed, `terminé` ; off by default behind `EVENT_TIME_STATUS_ENABLED` — see [docs/agenda.md](docs/agenda.md)
-- config : feature flags gain a third state through `Ladecadanse\FeatureFlag` — `false`, `'preview'` (administrators only), `true` — to try a substantial feature on the live site before opening it to everyone — see the [README](README.md#accepter-les-pdf-dans-les-champs-image)
-- event edit, admin events : the flyer and image fields accept a PDF, first page only, converted to WebP — organisers are usually sent their poster as a PDF ; off by default behind `PDF_CONVERSION_ENABLED` — see the [README](README.md#accepter-les-pdf-dans-les-champs-image)
-- admin events, user profile : an "Image" column opens the event tables, just before the title — recognising an event, or checking that a flyer did get uploaded, meant opening its page until now — see [docs/admin-evenements.md](docs/admin-evenements.md)
-- local development : `composer prod-copy` builds an anonymised local copy of the production database — the last N events added and their whole referential closure, images included, fetched over SSH ; no intermediate file ever holds real personal data — see [docs/prod-copy.md](docs/prod-copy.md)
-
-### Fixed
-- events, lieux, organisateurs : a flyer, logo or photo is named after the identifier the database actually assigned, not after `MAX(id) + 1` read before the INSERT, and its extension follows the file's real format — see [docs/evenements.md](docs/evenements.md) and [docs/lieux-organisateurs.md](docs/lieux-organisateurs.md)
-- event copy : each copy takes its flyer from the original event's file, where it copied the name left by the previous one
-- organisateur edit : modifying a fiche no longer makes the editor its author, nor republishes a dépubliée one behind an actor's back ; the duplicate-name check finally runs, the status radios are the organisateur's own and not the *lieu*'s, and the fieldsets are balanced — see [docs/lieux-organisateurs.md](docs/lieux-organisateurs.md)
-- lieux : the localité filter no longer takes the whole listing down when the `localite` table holds a canton the configuration does not name — `lieu/lieux.php` answered a fatal `Undefined array key ""` ; the code is now shown as the group's label
-- admin events : a bulk replace no longer wipes the organisateurs of the selected events #125 — the DELETE ran after every successful UPDATE, against the page's own promise that only non-empty fields overwrite — see [docs/admin-evenements.md](docs/admin-evenements.md)
-- admin events : an event without a localité is listed again, the `JOIN localite` being an inner join ; the bulk form carries a CSRF token although it deletes, validates its number of rows against a list, no longer re-reads the schedules from `$_POST` inside the loop, and no longer confuses the image to delete with the flyer
-- event edit : a PDF pasted into "ou coller une URL" is converted like one uploaded through the file field — only one of the two ways of providing an image took PDFs ; this path renders server-side with Imagick — see the [README](README.md#accepter-les-pdf-dans-les-champs-image)
-- server config : the yearly redirect of event images covers `.webp`, never listed alongside jpg, png and gif — a webp flyer moved by the January archiving answered 404 where the other formats got their 301 — see [docs/evenements.md](docs/evenements.md)
-- events, lieux, users edit : deselecting an organisateur now sticks after a validation error — the multiple select merged the posted selection with the organisateurs read back from the database, so one just removed came back ticked ; the hidden `formulaire=ok` witness now decides alone
-- forms : the clear button of a search field empties that field alone, where it emptied every `input[type=search]` of the form, and clicking the × of a Select2 field deselects without unrolling the dropdown
-- search : the actions column no longer reserves its 80px for a visitor who is not logged in, where it holds the calendar export alone
-
-### Changed
-- organisateurs : `organisateur-edit.php` becomes `organisateur/edit.php` #115, with a 301 — the form is processed before the first byte of HTML, `OrganisateurEdition` moves to PDO on the model of `SalleEdition`, and the page is reworked, mobile included — see [UPGRADE.md](UPGRADE.md) and [docs/lieux-organisateurs.md](docs/lieux-organisateurs.md)
-- admin : `admin/gererEvenements.php` becomes `admin/events.php` #125, with a 301 — the whole request is processed before the first byte of HTML, an action redirects instead of leaving a F5 to replay it, and the listing moves to `EvenementCollection` — see [docs/admin-evenements.md](docs/admin-evenements.md)
-- admin events : filters, sort and rows-per-page are remembered in the session as in `admin/users.php`, two filters are added — lieu name, author — and the bulk form keeps visible only what bulk editing uses, folding the rest into three `<details>` — see [docs/admin-evenements.md](docs/admin-evenements.md)
-- events : the lieu and organisateur selects, the lieu resolution and the hh:mm to datetime conversion move to the domain classes — `evenement-edit.php` and the admin form each carried their own copy, but only the first had received the 3.12.0 fixes
-- uploads : the image-field lifecycle — naming, replacement, deletion, thumbnail — is shared by `LieuEdition` and `OrganisateurEdition` through `HandlesImageUploads`, and `evenement-edit.php` takes its MIME-to-extension table from the same place
-- edition : TinyMCE speaks French, and pasted content is stripped of the styles, classes and wrapper tags the server discards anyway — the author saw a layout in the editor that vanished on save
-- database : `ladecadanse.sql` is the current schema again — it had fallen four versions behind, so every database created from it lacked the 3.8 and 3.9 indexes and the `bot_monitor` table ; a fresh install imports the dump alone — see [resources/database/README.md](resources/database/README.md)
-- docs : `resources/database/README.md` inventories every sql script — the version that shipped it, what it does, and whether `ladecadanse.sql` already carries it — with a query telling a database which migrations it is missing — see [UPGRADE.md](UPGRADE.md)
-- docker : the dev web image ships Composer, so `make shell` then `composer phpstan`, `composer test:api` or `composer config:build` run on the application's own PHP 8.4 and extensions ; Composer goes from 2.7 to 2.8 — see the [README](README.md#composer)
-- tests : unit coverage for the lieu and organisateur options and for the 301 of every moved page ; the `site` suite covers the admin events screen, the organisateurs preselection of the three edit forms, and the organisateur edit form
-
-### Security
-- organisateur edit : an organiser may no longer modify another organiser's fiche #115 — the check let through any account of level ACTOR, so every one of them could edit all 500 fiches ; the file already on the fiche and the accepted statuts are read from the database, not from the form — see [UPGRADE.md](UPGRADE.md)
-
-## [3.12.0] - 2026-08-23
+## [3.12.0] - Unreleased
 
 Upgrade steps (redirects, side effects) : [UPGRADE.md](UPGRADE.md).
 Feature documentation : [docs/](docs/).
 
 ### Added
 - events : the calendar export leaves the home and the event page for every listing — search results, lieu and organisateur pages #150 (PR #173) ; shown to all visitors but only on future events
+- agenda : on the day's own listing, each event card says where it stands against the moment the page was loaded #51 — a countdown, the share elapsed, `terminé` ; off by default behind `EVENT_TIME_STATUS_ENABLED` — see [docs/agenda.md](docs/agenda.md)
+- event edit, admin events : the flyer and image fields accept a PDF, first page only, converted to WebP — organisers are usually sent their poster as a PDF ; off by default behind `PDF_CONVERSION_ENABLED` — see the [README](README.md#accepter-les-pdf-dans-les-champs-image)
 - lieux, organisateurs : both listings get twelve columns counting the events added month by month by members, from AUTHOR up #178 — see [docs/lieux-organisateurs.md](docs/lieux-organisateurs.md)
-- events : the wide layout of the event page, given to admins in 3.11.0 while the idea was being tried out, is now served to every visitor — see [docs/interface.md](docs/interface.md)
-- home : below 800px the partners and the latest added events line up with the gutter `<main>` already keeps, and the partners' logos become a centred flex row — see [docs/interface.md](docs/interface.md)
-- tests : the `site` suite covers the register form, the logout, the monthly counters and the event edit form ; new unit suite for `PasswordPolicy`
+- admin events, user profile : an "Image" column opens the event tables, just before the title — recognising an event, or checking that a flyer did get uploaded, meant opening its page until now — see [docs/admin-evenements.md](docs/admin-evenements.md)
+- events, home : the wide layout of the event page is served to every visitor, and below 800px the partners and the latest added events line up with the gutter `<main>` already keeps — see [docs/interface.md](docs/interface.md)
+- config : feature flags gain a third state through `Ladecadanse\FeatureFlag` — `false`, `'preview'` (administrators only), `true` — to try a substantial feature on the live site before opening it to everyone — see the [README](README.md#accepter-les-pdf-dans-les-champs-image)
+- local development : `composer prod-copy` builds an anonymised local copy of the production database — the last N events added and their whole referential closure, images included, fetched over SSH ; no intermediate file ever holds real personal data — see [docs/prod-copy.md](docs/prod-copy.md)
+- tests : new unit suites for `PasswordPolicy`, for the lieu and organisateur options and for the 301 of every moved page ; the `site` suite covers the register form, the logout, the monthly counters, the admin events screen and the three edit forms
 
 ### Changed
-- users : register, password reset and logout join `user/` next to login and dashboard, each page reworked as login was (#121, #123) ; the old urls need a 301 — see [UPGRADE.md](UPGRADE.md) and [docs/comptes.md](docs/comptes.md)
+- pages moved, each with a 301 : register, password reset and logout join `user/` next to login and dashboard (#121, #123), `organisateur-edit.php` becomes `organisateur/edit.php` #115, `admin/gererEvenements.php` becomes `admin/events.php` #125 — each request is now processed before the first byte of HTML, `OrganisateurEdition` moves to PDO, the admin listing to `EvenementCollection` — see [UPGRADE.md](UPGRADE.md)
 - users : the password rules move to the shared `PasswordPolicy`, which the three forms setting a password each copied, and the rejected list goes from 22 to 19 999 entries — see [docs/comptes.md](docs/comptes.md)
+- admin events : filters, sort and rows-per-page are remembered in the session as in `admin/users.php`, two filters are added — lieu name, author — and the bulk form keeps visible only what bulk editing uses, folding the rest into three `<details>` — see [docs/admin-evenements.md](docs/admin-evenements.md)
 - ui : the legacy 2000's PNG icons (famfamfam Silk) give way to Font Awesome, and `web/interface/icons/` drops from 1469 files (~5 MB) to the 4 kept on purpose #151 — see [docs/interface.md](docs/interface.md)
-- events : under 450px wide the description wraps around the illustrations column instead of stopping beside it, which shortens the page noticeably — see [docs/interface.md](docs/interface.md)
-- ui : on mobile the fields of the event form take the full width and the day navigation of the agenda shows text rather than the date — see [docs/interface.md](docs/interface.md)
-- events edit : the four near-identical flyer/image blocks are reduced to one definition and its calls, dead code is dropped, and the salles of the select load in one query instead of one per lieu displayed
+- ui : under 450px the event description wraps around the illustrations column instead of stopping beside it, the fields of the event form take the full width, and the day navigation of the agenda shows text rather than the date — see [docs/interface.md](docs/interface.md)
+- events, lieux, organisateurs : the image-field lifecycle — naming, replacement, deletion, thumbnail — is shared through `HandlesImageUploads`, the four near-identical flyer/image blocks become one definition, and the selects, the lieu resolution and the hh:mm conversion move to the domain classes, where each form carried its own copy
+- edition : TinyMCE speaks French, and pasted content is stripped of the styles, classes and wrapper tags the server discards anyway — the author saw a layout in the editor that vanished on save
 - events : on the event page and the ics export, `idE` is validated before bootstrap — answering 400 no longer opens two MySQL connections, starts the session and mounts the log handlers, and bots produce these urls in bulk
 - librairies : the dead `Collection` hierarchy is removed #216 — a proto-repository never adopted, whose public API had no caller ; `Evenement` no longer extends `Element`, and the organisateurs listing loses one SQL query per page view
-- resources : the mail bodies rendered by `TemplateEngine` move to `resources/templates/`, the sql scripts (schema and migrations) to `resources/database/`
+- resources : the mail bodies rendered by `TemplateEngine` move to `resources/templates/`, the sql scripts to `resources/database/`, where a README inventories every one of them — the version that shipped it, what it does, whether `ladecadanse.sql` already carries it ; that dump is the current schema again, having fallen four versions behind — see [resources/database/README.md](resources/database/README.md)
 - contact : drop the "nom" and "affiliation" fields, which served nothing
-- analyzers : repair the Rector configuration, which pointed at a test file moved long ago — `composer rector:dry-run` failed before analysing anything, and now runs in ~25 s where it used to exceed the 300 s composer timeout
+- analyzers : repair the Rector configuration, which pointed at a test file moved long ago — `composer rector:dry-run` now runs in ~25 s where it used to exceed the 300 s composer timeout
 - deployment : `.htaccess` and `.user.ini` are composed from fragments by `composer config:build` and sent with the code, where they used to be edited by hand on the server — see [docs/config-serveur.md](docs/config-serveur.md)
+- docker : the dev web image ships Composer, so `make shell` then `composer phpstan`, `composer test:api` or `composer config:build` run on the application's own PHP 8.4 and extensions ; Composer goes from 2.7 to 2.8 — see the [README](README.md#composer)
 
 ### Fixed
 - users : for anyone who had ticked "Rester connecté-e", clicking "Sortir" had no effect at all — the cookie was cleared by a `setcookie()` whose `path` was omitted, so the deletion aimed at `/user` once the page moved there — see [docs/comptes.md](docs/comptes.md)
-- users : a reset request made for a deactivated account led to a form that could not be submitted #123, and an account with the "demande" status could have its password reset yet stay stuck at the login screen — see [docs/comptes.md](docs/comptes.md)
-- users : a reset link cut by a mail client threw in the middle of the page, that is a 500 in production ; a missing or malformed token now reads as an invalid request, like an expired one
-- lieux, organisateurs, search, admin : a malformed `page` url parameter threw an uncaught exception — bots follow urls where the `&region` of `?page=3&region=vd` has been read as the `&reg` html entity ; the 8 paginating pages go through the new non-throwing `QueryParamValidator::pageFromQuery()`
-- events send : sharing or reporting an event whose lieu was deleted, or whose location was typed as free text, logged a warning ; the fallback returned by `Evenement::getLieu()` was missing the `determinant` key
-- lieux edit : saving the form as ACTOR or MEMBER logged a warning ; `image_galerie` is declared as a file field although its input is only rendered from AUTHOR up
-- events edit : the "Supprimer" checkbox of the image never got re-checked after a validation error, and the preview of the saved file is now kept even when the field is in error — without it the old file could no longer be deleted
-- edition : a stray character had slipped in front of the `<?php` of `librairies/Edition.php` — PHP echoed it as soon as the class was included, so text came before any header on the edit pages, and PHPStan refused to finish its run
-- ui : the footer menu lit more than the current link — `$ici` was never emptied at the start of each turn and already arrived filled from the header
-- ui : on mobile the action bar of an event scattered its labels across lines, the actions menu of a lieu was hidden, and the icons of the message banners were misplaced — see [docs/interface.md](docs/interface.md)
+- users : a reset request made for a deactivated account led to a form that could not be submitted #123, an account with the "demande" status could have its password reset yet stay stuck at the login screen, and a link cut by a mail client threw in the middle of the page — a 500 in production — see [docs/comptes.md](docs/comptes.md)
+- lieux, organisateurs, search, admin : a malformed `page` url parameter threw an uncaught exception — bots follow urls where the `&region` of `?page=3&region=vd` has been read as the `&reg` html entity ; the 8 paginating pages go through `QueryParamValidator::pageFromQuery()`
+- events, lieux, organisateurs : a flyer, logo or photo is named after the identifier the database actually assigned, not after `MAX(id) + 1` read before the INSERT, its extension follows the file's real format, and each copy of an event takes its flyer from the original — see [docs/evenements.md](docs/evenements.md)
+- organisateur edit : modifying a fiche no longer makes the editor its author, nor republishes a dépubliée one behind an actor's back ; the duplicate-name check finally runs, and the status radios are the organisateur's own and not the *lieu*'s — see [docs/lieux-organisateurs.md](docs/lieux-organisateurs.md)
+- lieux : the localité filter no longer takes the whole listing down when the `localite` table holds a canton the configuration does not name — `lieu/lieux.php` answered a fatal `Undefined array key ""` ; the code is now shown as the group's label
+- admin events : a bulk replace no longer wipes the organisateurs of the selected events #125 — the DELETE ran after every successful UPDATE, against the page's own promise that only non-empty fields overwrite — see [docs/admin-evenements.md](docs/admin-evenements.md)
+- admin events : an event without a localité is listed again, the `JOIN localite` being an inner join ; the bulk form carries a CSRF token although it deletes, validates its number of rows against a list, no longer re-reads the schedules from `$_POST` inside the loop, and no longer confuses the image to delete with the flyer
+- event edit : a PDF pasted into "ou coller une URL" is converted like one uploaded through the file field — only one of the two ways of providing an image took PDFs ; this path renders server-side with Imagick — see the [README](README.md#accepter-les-pdf-dans-les-champs-image)
+- server config : the yearly redirect of event images covers `.webp`, never listed alongside jpg, png and gif — a webp flyer moved by the January archiving answered 404 where the other formats got their 301 — see [docs/evenements.md](docs/evenements.md)
+- events, lieux, users edit : a form redisplayed after a validation error keeps what was posted — deselecting an organisateur sticks, where the select merged the posted selection with the database's, and the "Supprimer" checkbox of the image gets re-checked ; the hidden `formulaire=ok` witness now decides alone
+- forms : the clear button of a search field empties that field alone, where it emptied every `input[type=search]` of the form, and clicking the × of a Select2 field deselects without unrolling the dropdown
+- events send, lieux edit : sharing an event whose lieu was deleted logged a warning, the fallback of `Evenement::getLieu()` missing its `determinant` key ; saving a lieu as ACTOR or MEMBER logged another, `image_galerie` being declared a file field though its input starts at AUTHOR
+- edition : a stray character in front of the `<?php` of `librairies/Edition.php` came out before any header on the edit pages, and stopped PHPStan finishing its run
+- ui : the footer menu lit more than the current link, `$ici` arriving already filled from the header ; on mobile the action bar of an event scattered its labels across lines, the actions menu of a lieu was hidden, and the icons of the message banners were misplaced — see [docs/interface.md](docs/interface.md)
 - assets : the stylesheet of the page was loaded before the extra ones, which it could therefore not override
-- monitoring : `Sentry.init()` threw a `ReferenceError` in the console of visitors running an ad blocker, uBlock Origin returning the CDN bundle empty — which also fails the SRI check ; the call goes behind an existence test
+- monitoring : `Sentry.init()` threw a `ReferenceError` for visitors running an ad blocker, uBlock Origin returning the CDN bundle empty ; the call goes behind an existence test
+- search : the actions column no longer reserves its 80px for a visitor who is not logged in, where it holds the calendar export alone
 
 ### Security
+- organisateur edit : an organiser may no longer modify another organiser's fiche #115 — the check let through any account of level ACTOR, so every one of them could edit all 500 fiches ; the file already on the fiche and the accepted statuts are read from the database, not from the form — see [UPGRADE.md](UPGRADE.md)
 - users : logging out was a GET, so any link prefetch (browser, antivirus, mail scanner) or any third-party site could close a member's session ; `user/logout.php` accepts POST only, protected by a token valid for the whole session — see [docs/comptes.md](docs/comptes.md)
 - events edit, admin : six queries concatenated values coming from `$_POST` without cast nor quotes, four of them written `WHERE id=" . $connector->sanitize(...)` where the escaping is inert — outside quotes, only the `(int)` cast protects in a numeric context
 - db : the password of the `DbConnector` constructor is marked `#[\SensitiveParameter]`, which keeps it out of the stack traces
