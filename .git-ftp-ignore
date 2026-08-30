@@ -4,6 +4,7 @@ docker/*
 .github/*
 app/env_model.php
 resources/*.sql
+resources/*.md
 tests*
 .editorconfig
 .gitattributes
