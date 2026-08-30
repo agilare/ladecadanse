@@ -156,30 +156,7 @@ Une base neuve est vide, et saisir à la main de quoi éprouver l'agenda est vit
 composer prod-copy -- --limit=1000
 ```
 
-Prérequis : un **accès SSH** au serveur, qui sert deux fois. L'offre Infomaniak n'ouvrant pas MySQL à l'extérieur — l'hôte du manager est une adresse privée — la base se lit à travers un tunnel, à ouvrir dans un terminal à part :
-
-```sh
-ssh -N -L 3307:XXXXXX.myd.infomaniak.com:3306 utilisateur@exemple.ch
-```
-
-Les connexions `prod` et `prod_copy` se déclarent ensuite dans `app/db.config.php` (modèle commenté dans `app/db.config_model.php`), l'entrée `prod` portant aussi l'accès SSH et le chemin distant de `web/uploads` pour la phase fichiers. La production n'est lue qu'en lecture seule ; la base locale est créée par le script, il ne faut donc pas la créer soi-même — mais son utilisateur MySQL a besoin du droit `CREATE` dessus.
-
-Les deux phases se découpent :
-
-```sh
-composer prod-copy -- --limit=20 --only=db      # passe d'essai, quelques secondes
-composer prod-copy -- --only=files              # rapatriement seul
-```
-
-Options : `--limit` (nombre d'événements, 1000 par défaut), `--only=db|files`, `--password` (mot de passe commun des comptes copiés, `decadanse1` par défaut), `--force` (supprimer et recréer une base existante), `--reset-uploads`, `--source` / `--dest` (autres entrées de `db.config.php`), `--ssh` / `--ssh-path`, `--uploads-dir`.
-
-Une fois la copie faite, pointer dessus `DB_NAME` dans `app/env.php` et l'entrée `default` de `app/db.config.php`. Toutes les `personne` partagent alors le même mot de passe, leur pseudo devenant `user{id}` — `user1` pour le compte SUPERADMIN ; le script affiche en fin d'exécution un exemple d'identifiant par groupe.
-
-Si `web/uploads/` contient déjà les fichiers d'une instance antérieure, ils répondent à une autre base et resteront mêlés à ceux de la copie. Le script les compte et le signale ; `--reset-uploads` les déplace dans un `web/uploads-backup-<horodatage>/` avant de rapatrier — rien n'est supprimé.
-
-Les fichiers descendent en **une seule connexion SSH**, `tar` n'emportant que les membres nommés sur son entrée standard : environ 2700 fichiers et 290 Mo en une minute. La voie HTTP qui précédait demandait autant de requêtes au serveur web, se faisait brider en 429 passé quelques milliers, et n'atteignait jamais ce que `htaccess/30-protections.conf` refuse de servir depuis `/web/uploads/` — une illustration nommée `.jfif`, par exemple.
-
-Ce que la copie ne contient pas : aucun mot de passe, e-mail, cookie ni note privée d'origine — ils sont remplacés à la volée, entre le `SELECT` et l'`INSERT`, si bien qu'aucun fichier intermédiaire n'en porte jamais. Les tables `bot_monitor` (adresses IP) et `user_reset_requests` (jetons) ne sont pas reprises du tout, `admin/bots.php` restera donc vide.
+Le prérequis est un **accès SSH** au serveur, qui sert deux fois : l'offre Infomaniak n'ouvrant pas MySQL à l'extérieur, la base se lit à travers un tunnel, et les quelque 2700 fichiers descendent par la même voie en une minute. La mise en place, la procédure d'essai, les vérifications et ce que l'anonymisation remplace exactement sont dans [docs/prod-copy.md](docs/prod-copy.md).
 
 ### Accepter les PDF dans les champs image
 

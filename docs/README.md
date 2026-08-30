@@ -11,5 +11,6 @@ Notes de fonctionnement des parties du site qui demandent plus qu'une ligne de c
 - [Flux RSS](rss.md) — types de flux, cache, codes de statut, URL absolues
 - [Suivi des bots](bots.md) — activation et tableau de bord
 - [Configuration serveur](config-serveur.md) — `.htaccess` et `.user.ini` composés depuis des fragments, publics et privés, et déployés avec le code
+- [Copie de la production](prod-copy.md) — peupler une base locale anonymisée et ses uploads depuis la production, par SSH
 
 Les raccourcis clavier et le mode *mouseless* sont documentés dans le [README](../README.md#raccourcis-clavier).
