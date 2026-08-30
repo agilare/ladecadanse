@@ -94,6 +94,16 @@ class OrganisateurEditFormulaireCest
         $I->amOnPage('/organisateur/edit.php?action=editer&idO=' . TestEnv::getInt('LADECADANSE_TEST_ORGA_ID_ACTOR_OWN'));
 
         $I->seeResponseCodeIs(HttpCode::OK);
+
+        // Sans ce garde, une fixture qui ne correspond plus au compte acteur ferait échouer
+        // le test sur un « #nom introuvable » qui n'oriente vers rien
+        $I->assertStringNotContainsString(
+            "Vous ne pouvez pas modifier cet organisateur",
+            $I->grabPageSource(),
+            "LADECADANSE_TEST_ORGA_ID_ACTOR_OWN doit désigner une fiche que LADECADANSE_SITE_ACTOR_USER "
+            . "peut modifier : dont il est l'auteur (organisateur.idPersonne) ou membre (personne_organisateur)."
+        );
+
         $I->seeElement('#nom');
         $I->dontSeeElement('input[name=statut]');
     }

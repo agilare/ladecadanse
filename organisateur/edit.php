@@ -160,7 +160,12 @@ include("../_header.inc.php");
 
         <p>
             <label for="presentation">Texte :</label>
-            <textarea name="presentation" id="presentation" class="tinymce" rows="12" cols="50"><?= sanitizeForHtml($form->getValeur('presentation')) ?></textarea>
+            <?php /* TinyMCE remplace le textarea par un bloc à lui, dont la police revient à 16px :
+                     une marge en em posée dessus ne vaudrait pas celle des autres champs. D'où ce
+                     conteneur, qui garde la taille de police du formulaire — voir edit.css */ ?>
+            <span class="champ-riche">
+                <textarea name="presentation" id="presentation" class="tinymce" rows="12" cols="50"><?= sanitizeForHtml($form->getValeur('presentation')) ?></textarea>
+            </span>
             <?= $form->getHtmlErreur("presentation") ?>
         </p>
     </fieldset>
