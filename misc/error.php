@@ -6,6 +6,7 @@ $page_description = "Erreur 404 - not found";
 include("../_header.inc.php");
 
 $statusErrors = [
+    403 => ['Accès interdit', "Vous n'avez pas l'autorisation pour accéder à cette ressource"],
     404 => ['Document introuvable', "Ce document n'existe pas ou plus"],
     429 => ['Trop de requêtes', "Le serveur reçoit trop de connexions, comme il n'arrive plus à suivre, il doit en refuser. Veuillez réessayer un peu plus tard"],
     500 => ["Erreur dans l'application ou le serveur", " "]
