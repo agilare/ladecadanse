@@ -444,7 +444,7 @@ if ($formulaire_poste)
         $mimes_acceptes_par_url[] = 'application/pdf';
     }
 
-    $importerImageParUrl = function (string $champ, string $url) use ($verif, $fichiers, $mimes_acceptes_par_url): ?array
+    $importerImageParUrl = function (string $champ, string $url) use ($verif, $fichiers, $mimes_acceptes_par_url, $logger): ?array
     {
         if (empty($url))
         {
@@ -477,6 +477,8 @@ if ($formulaire_poste)
         // type MIME — il doit déjà porter celui de l'image produite.
         if ($fetched['mime'] === 'application/pdf')
         {
+            $logger->info('[evenement-edit] pdf link sent', ['champ' => $fichiers[$champ]['name']]);
+
             try
             {
                 $fetched['data'] = PdfToImage::convertirPremierePage((string) $fetched['data']);
@@ -493,8 +495,8 @@ if ($formulaire_poste)
         return $fetched;
     };
 
-    $fetched_flyer = $importerImageParUrl('flyer', $url_flyer);
-    $fetched_image = $importerImageParUrl('image', $url_image);
+    $fetched_flyer = $importerImageParUrl('flyer', $url_flyer, $logger);
+    $fetched_image = $importerImageParUrl('image', $url_image, $logger);
 
     // at least debut or complement
     if (empty($champs['horaire_debut']) && empty($champs['horaire_complement']))
