@@ -174,7 +174,17 @@ class HtmlShrink
                 }
                 ?>
                 <?php if (empty($localites)) { continue; } ?>
-                <optgroup label="<?= $glo_regions[$region] ?>">
+                <?php
+                /*
+                 * Les cantons viennent de la table, les libellés de la configuration : rien ne
+                 * garantit que les deux s'accordent. Un canton inconnu — le canton vide de la
+                 * localité fourre-tout, tant que v3-12-0_localite-france.sql n'a pas tourné —
+                 * faisait tomber toute la page sur « Undefined array key ». Il est montré tel
+                 * quel, et échappé : ce libellé de repli sort de la base.
+                 */
+                $libelleRegion = $glo_regions[$region] ?? ($region === '' ? 'Sans région' : $region);
+                ?>
+                <optgroup label="<?= sanitizeForHtml($libelleRegion) ?>">
                     <?php foreach ($localites as $loc) : ?>
                         <option value="<?= $loc['id'] ?>" <?php if ($_SESSION['user_prefs_lieux_localite'] == $loc['id']) : ?>selected="selected"<?php endif; ?>><?= $loc['localite'] ?></option>
                     <?php endforeach; ?>
