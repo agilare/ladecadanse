@@ -3,6 +3,7 @@ require_once("../app/bootstrap.php");
 
 $page_titre = "404 - not found";
 $page_description = "Erreur 404 - not found";
+$page_url = null;
 include("../_header.inc.php");
 
 $statusErrors = [
