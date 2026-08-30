@@ -16,13 +16,20 @@ declare(strict_types=1);
  * des logos les encodent (« {idE}_{date}.jpg »), et toutes les tables de jonction
  * en dépendent.
  *
+ * Les fichiers sont rapatriés par une seule connexion SSH, tar n'emportant que les
+ * membres nommés sur son entrée standard. La voie HTTP qu'elle remplace demandait
+ * des milliers de requêtes au serveur web, se faisait brider passé quelques
+ * milliers, et n'atteignait jamais ce que .htaccess refuse de servir.
+ *
  * Usage :
  *   php bin/prod-copy.php [--limit=1000] [--source=prod] [--dest=prod_copy]
- *                         [--only=db|files] [--password=dev] [--force]
- *                         [--base-url=URL] [--uploads-dir=CHEMIN] [--reset-uploads]
+ *                         [--only=db|files] [--password=…] [--force]
+ *                         [--ssh=utilisateur@hote] [--ssh-path=CHEMIN]
+ *                         [--uploads-dir=CHEMIN] [--reset-uploads]
  *
  * Les connexions « prod » et « prod_copy » se déclarent dans app/db.config.php,
- * que .gitignore exclut du dépôt. Voir « Base de données » dans le README.
+ * que .gitignore exclut du dépôt, l'entrée « prod » portant aussi l'accès SSH.
+ * Voir « Base de données » dans le README.
  */
 
 use Ladecadanse\UserLevel;
@@ -65,18 +72,6 @@ const COLONNES_FICHIERS = [
     'organisateur' => ['repertoire' => 'organisateurs', 'colonnes' => ['logo', 'photo']],
 ];
 
-/**
- * Le pare-feu 8G renvoie 403 sur tout User-Agent contenant « curl », « scan »,
- * « archiver »… (htaccess/20-firewall-8g.conf). Un UA de navigateur est la
- * condition pour que la moindre image descende.
- */
-const UA_NAVIGATEUR = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
-
-/**
- * Transferts simultanés. Assez pour que les milliers de fichiers descendent en
- * quelques minutes, assez peu pour ne pas ressembler à un aspirateur de site.
- */
-const TRANSFERTS_SIMULTANES = 5;
 
 /**
  * sql_mode de l'application (cf. DbConnectorPdo) : sans lui, un MySQL 8 par
@@ -91,6 +86,11 @@ const SQL_MODE = 'IGNORE_SPACE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION
  * signalerait comme des suppressions.
  */
 const SQUELETTE_UPLOADS = ['', 'evenements', 'fichiers/lieux', 'lieux', 'lieux/galeries', 'organisateurs'];
+
+/**
+ * Emplacement de l'archive intermédiaire, supprimée en fin de rapatriement.
+ */
+const ARCHIVE_TEMPORAIRE = 'ladecadanse-uploads.tar';
 
 /**
  * Interrompt le script sur une erreur d'usage ou d'environnement.
@@ -327,139 +327,143 @@ function compterOrphelins(string $repUploads, array $attendus): int
 }
 
 /**
- * Télécharge en parallèle ce qui n'est pas déjà sur le disque.
+ * Lance un programme sans passer par un shell et retourne [code, sortie d'erreur].
  *
- * @param list<array{url: string, chemin: string}> $taches
- * @return array<string, int>
+ * La forme tableau de proc_open() épargne toute question de guillemets, ce qui
+ * compte sous Windows, et les redirections passent par les descripteurs plutôt que
+ * par une syntaxe de shell — « < » et « | » ne s'écrivent pas pareil selon qu'on
+ * est sous cmd.exe ou sous sh.
+ *
+ * @param list<string> $commande
+ * @param resource|null $entree
+ * @param resource|null $sortie
+ * @return array{int, string}
  */
-function telecharger(array $taches, int $simultanes): array
+function lancer(array $commande, $entree = null, $sortie = null): array
 {
-    $bilan = [
-        'ecrits' => 0, 'presents' => 0, 'absents' => 0, 'refuses' => 0,
-        'brides' => 0, 'non_tentes' => 0, 'echecs' => 0, 'octets' => 0,
+    $descripteurs = [
+        0 => $entree ?? ['pipe', 'r'],
+        1 => $sortie ?? ['pipe', 'w'],
+        2 => ['pipe', 'w'],
     ];
-    $restants = [];
 
-    foreach ($taches as $tache) {
-        if (is_file($tache['chemin'])) {
-            $bilan['presents']++;
-            continue;
-        }
-        $restants[] = $tache;
+    $processus = proc_open($commande, $descripteurs, $tuyaux);
+    if (!is_resource($processus)) {
+        abandonner('lancement impossible de : ' . implode(' ', $commande));
     }
 
-    $total = count($restants);
-    if ($total === 0) {
-        return $bilan;
-    }
-
-    $mh = curl_multi_init();
-    $enCours = [];
-    $traites = 0;
-
-    // Un 429 est la production qui demande d'arrêter. Continuer à lui envoyer des
-    // milliers de requêtes vouées au même sort n'obtiendrait rien et allongerait la
-    // sanction : on cesse d'en lancer de nouvelles et on laisse finir les en cours.
-    $bride = false;
-
-    // Codes inattendus, annoncés une fois chacun plutôt que fondus dans « échecs »,
-    // où un run bridé ressemblait à une panne de réseau.
-    $codesVus = [];
-
-    while ($enCours !== [] || ($restants !== [] && !$bride)) {
-        while ($restants !== [] && !$bride && count($enCours) < $simultanes) {
-            $tache = array_shift($restants);
-
-            $ch = curl_init($tache['url']);
-            if ($ch === false) {
-                $bilan['echecs']++;
-                continue;
-            }
-
-            curl_setopt_array($ch, [
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_FOLLOWLOCATION => true,
-                CURLOPT_MAXREDIRS      => 3,
-                CURLOPT_CONNECTTIMEOUT => 10,
-                CURLOPT_TIMEOUT        => 60,
-                CURLOPT_SSL_VERIFYPEER => true,
-                CURLOPT_USERAGENT      => UA_NAVIGATEUR,
-            ]);
-
-            curl_multi_add_handle($mh, $ch);
-            $enCours[spl_object_id($ch)] = ['handle' => $ch, 'chemin' => $tache['chemin']];
-        }
-
-        curl_multi_exec($mh, $actifs);
-        if ($actifs > 0) {
-            curl_multi_select($mh, 1.0);
-        }
-
-        while (($info = curl_multi_info_read($mh)) !== false) {
-            $ch = $info['handle'];
-            $cle = spl_object_id($ch);
-            $chemin = $enCours[$cle]['chemin'];
-            unset($enCours[$cle]);
-
-            $code = (int) curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
-            $corps = (string) curl_multi_getcontent($ch);
-
-            if ($info['result'] !== CURLE_OK) {
-                $bilan['echecs']++;
-            } elseif ($code === 404) {
-                $bilan['absents']++;
-            } elseif ($code === 403) {
-                $bilan['refuses']++;
-            } elseif ($code === 429) {
-                $bilan['brides']++;
-                $bride = true;
-            } elseif ($code === 200 && $corps !== '') {
-                $repertoire = dirname($chemin);
-                if (!is_dir($repertoire)) {
-                    mkdir($repertoire, 0775, true);
-                }
-                file_put_contents($chemin, $corps);
-                $bilan['ecrits']++;
-                $bilan['octets'] += strlen($corps);
-            } else {
-                $bilan['echecs']++;
-                if (!isset($codesVus[$code])) {
-                    $codesVus[$code] = true;
-                    printf("\n  réponse HTTP %d inattendue sur %s\n", $code, basename($chemin));
-                }
-            }
-
-            curl_multi_remove_handle($mh, $ch);
-            curl_close($ch);
-
-            $traites++;
-            if ($traites % 50 === 0 || $traites === $total) {
-                printf("\r  %d / %d", $traites, $total);
-            }
+    foreach ([0, 1] as $numero) {
+        if (isset($tuyaux[$numero])) {
+            fclose($tuyaux[$numero]);
         }
     }
 
-    curl_multi_close($mh);
-    echo "\n";
+    $erreurs = (string) stream_get_contents($tuyaux[2]);
+    fclose($tuyaux[2]);
 
-    $bilan['non_tentes'] = count($restants);
-
-    return $bilan;
+    return [proc_close($processus), $erreurs];
 }
 
+/**
+ * Rapatrie les fichiers demandés en une seule connexion SSH.
+ *
+ * tar n'emporte que les membres nommés sur son entrée standard (« -T - ») : c'est
+ * la liste qui décide, pas le contenu du répertoire distant. --ignore-failed-read
+ * ramène un fichier disparu à un avertissement au lieu d'interrompre l'archive.
+ *
+ * Une connexion au lieu de plusieurs milliers de requêtes HTTP : ni limitation de
+ * débit, ni pare-feu 8G, et les fichiers que le serveur web refuse de servir —
+ * extensions hors jpg/png/gif/webp, documents de uploads/fichiers/ — descendent
+ * comme les autres.
+ *
+ * @param list<string> $relatifs chemins relatifs à la racine des uploads
+ * @return array{recuperes: int, manquants: int, octets: int}
+ */
+function rapatrier(string $cible, string $cheminDistant, string $repUploads, array $relatifs): array
+{
+    $liste = tempnam(sys_get_temp_dir(), 'ldd_liste_');
+    $archive = sys_get_temp_dir() . DIRECTORY_SEPARATOR . ARCHIVE_TEMPORAIRE;
+
+    // Sauts de ligne Unix quoi qu'il arrive : le fichier est lu par le tar du
+    // serveur, où un \r final ferait partie du nom demandé.
+    file_put_contents($liste, implode("\n", $relatifs) . "\n");
+
+    $entree = fopen($liste, 'r');
+    $sortie = fopen($archive, 'w');
+    if ($entree === false || $sortie === false) {
+        abandonner('ouverture impossible des fichiers temporaires du rapatriement.');
+    }
+
+    printf("  connexion à %s…\n", $cible);
+
+    [$code, $erreurs] = lancer(
+        [
+            'ssh',
+            '-o', 'BatchMode=yes',
+            $cible,
+            'tar -C ' . escapeshellarg($cheminDistant) . ' -cf - -T - --ignore-failed-read',
+        ],
+        $entree,
+        $sortie
+    );
+
+    fclose($entree);
+    fclose($sortie);
+    unlink($liste);
+
+    // tar signale chaque fichier absent sur sa sortie d'erreur et rend malgré tout
+    // une archive exploitable ; le code de retour est alors 1, pas 0.
+    $manquants = substr_count($erreurs, 'Cannot stat');
+    $tailleArchive = (int) filesize($archive);
+
+    if ($tailleArchive === 0) {
+        $detail = trim($erreurs) === '' ? '' : "\n         " . trim($erreurs);
+        unlink($archive);
+        abandonner("le rapatriement n'a rien ramené (code {$code})." . $detail);
+    }
+
+    // L'archive arrive par l'entrée standard plutôt que par « -f chemin ». Deux
+    // pièges tombent d'un coup : GNU tar prend « C:/… » pour un hôte distant et
+    // exige --force-local, que le bsdtar livré avec Windows ne connaît pas — et
+    // c'est lui que PHP trouve en premier, quel que soit le PATH de Git Bash.
+    $archiveLue = fopen($archive, 'r');
+    if ($archiveLue === false) {
+        abandonner("relecture de l'archive impossible.");
+    }
+
+    [$codeExtraction, $erreursExtraction] = lancer(
+        ['tar', '-C', $repUploads, '-xf', '-'],
+        $archiveLue
+    );
+
+    fclose($archiveLue);
+    unlink($archive);
+
+    if ($codeExtraction !== 0) {
+        abandonner("extraction de l'archive impossible.\n         " . trim($erreursExtraction));
+    }
+
+    $recuperes = 0;
+    foreach ($relatifs as $relatif) {
+        if (is_file($repUploads . '/' . $relatif)) {
+            $recuperes++;
+        }
+    }
+
+    return ['recuperes' => $recuperes, 'manquants' => $manquants, 'octets' => $tailleArchive];
+}
 
 // ---------------------------------------------------------------------------
 // Options et configuration
 // ---------------------------------------------------------------------------
 
-$options = getopt('', ['limit::', 'source::', 'dest::', 'only::', 'password::', 'base-url::', 'uploads-dir::', 'force', 'reset-uploads']);
+$options = getopt('', ['limit::', 'source::', 'dest::', 'only::', 'password::', 'ssh::', 'ssh-path::', 'uploads-dir::', 'force', 'reset-uploads']);
 
 $limite = (int) ($options['limit'] ?? 1000);
 $nomSource = (string) ($options['source'] ?? 'prod');
 $nomDest = (string) ($options['dest'] ?? 'prod_copy');
 $phase = (string) ($options['only'] ?? 'tout');
 $motDePasse = (string) ($options['password'] ?? 'decadanse1');
-$baseUrl = rtrim((string) ($options['base-url'] ?? 'https://www.ladecadanse.ch'), '/');
 $repUploads = rtrim((string) ($options['uploads-dir'] ?? __ROOT__ . '/web/uploads'), "/\\");
 $force = isset($options['force']);
 $reinitialiserUploads = isset($options['reset-uploads']);
@@ -488,7 +492,12 @@ if (!is_file($cheminConfig)) {
     abandonner("app/db.config.php introuvable. Le copier depuis app/db.config_model.php.");
 }
 
-/** @var array<string, array{host: string, dbname: string, user: string, password: string}> $configs */
+/**
+ * Les clés « ssh » et « ssh_uploads » n'existent que sur l'entrée de production, et
+ * seule la phase fichiers les lit : elles sont donc facultatives.
+ *
+ * @var array<string, array{host: string, dbname: string, user: string, password: string, ssh?: string, ssh_uploads?: string}> $configs
+ */
 $configs = require $cheminConfig;
 
 // La source ne sert qu'à la phase base : --only=files doit pouvoir tourner sur
@@ -503,6 +512,12 @@ foreach ($connexionsRequises as $nom) {
         );
     }
 }
+
+// L'accès SSH à la production accompagne naturellement ses identifiants de base :
+// les deux servent à joindre la même machine, et db.config.php est déjà le fichier
+// gitignoré qui les porte. La ligne de commande garde le dernier mot.
+$sshCible = (string) ($options['ssh'] ?? $configs[$nomSource]['ssh'] ?? '');
+$sshChemin = rtrim((string) ($options['ssh-path'] ?? $configs[$nomSource]['ssh_uploads'] ?? ''), '/');
 
 $configDest = $configs[$nomDest];
 $baseDest = $configDest['dbname'];
@@ -751,33 +766,58 @@ if ($phase !== 'files') {
 // Phase fichiers
 // ---------------------------------------------------------------------------
 
+
 if ($phase !== 'db') {
     // La liste se lit sur la copie, jamais sur la production : --only=files se
-    // relance ainsi sans refaire la base, et ne télécharge que ce qui a été copié.
+    // relance ainsi sans refaire la base, et ne rapatrie que ce qui a été copié.
     try {
         $pdoDest = connecterDestination($configDest, true);
     } catch (PDOException $e) {
         abandonner("la base « {$baseDest} » n'est pas accessible. La construire d'abord, sans --only=files.");
     }
 
-    $taches = [];
+    if ($sshCible === '' || $sshChemin === '') {
+        abandonner(
+            "la phase fichiers a besoin de --ssh=utilisateur@hote et de --ssh-path=CHEMIN,\n"
+            . "         ou des clés « ssh » et « ssh_uploads » de l'entrée « {$nomSource} »\n"
+            . "         dans app/db.config.php. Voir app/db.config_model.php."
+        );
+    }
+
+    $relatifs = [];
 
     /**
-     * Une image et sa miniature. basename() écarte tout chemin qui traînerait dans
-     * la colonne : la valeur vient de la production, pas d'ici.
+     * Une image et sa miniature, en chemins relatifs à la racine des uploads.
+     *
+     * basename() écarte tout chemin qui traînerait dans la colonne : la valeur vient
+     * de la production, pas d'ici.
      */
-    $ajouter = static function (string $repertoire, string $nom) use (&$taches, $baseUrl, $repUploads): void {
+    $ajouter = static function (string $repertoire, string $nom) use (&$relatifs): void {
         $nom = basename($nom);
         if ($nom === '') {
             return;
         }
 
         foreach (['', 's_'] as $prefixe) {
-            $taches[$repertoire . '/' . $prefixe . $nom] = [
-                // ASSETS_DIR vaut « /web » : racine URL autant que suffixe système
-                'url' => $baseUrl . '/web/uploads/' . $repertoire . '/' . rawurlencode($prefixe . $nom),
-                'chemin' => $repUploads . '/' . $repertoire . '/' . $prefixe . $nom,
-            ];
+            $relatifs[$repertoire . '/' . $prefixe . $nom] = true;
+
+            if ($repertoire !== 'evenements') {
+                continue;
+            }
+
+            /*
+             * Les images d'événements des années révolues sont rangées dans un
+             * sous-répertoire par année, et htaccess/50-routage.conf redirige le
+             * chemin plat vers lui en 301. La voie HTTP suivait cette redirection
+             * sans le savoir — et écrivait le fichier au chemin plat, que le
+             * .htaccess local redirige à son tour vers un fichier absent. tar, lui,
+             * ne redirige rien : les deux emplacements sont demandés, celui qui
+             * n'existe pas ne coûte qu'un avertissement.
+             */
+            if (preg_match('/^(?:s_)?\d+_(\d{4})-\d{2}-\d{2}/', $nom, $trouve) === 1
+                && (int) $trouve[1] < (int) date('Y')) {
+                $relatifs[$repertoire . '/' . $trouve[1] . '/' . $prefixe . $nom] = true;
+            }
         }
     };
 
@@ -814,55 +854,37 @@ if ($phase !== 'db') {
         $ajouter('lieux/galeries', $ligne['idFichierrecu'] . '.' . $ligne['extension']);
     }
 
-    printf("\nFichiers référencés : %d (miniatures comprises)\n", count($taches));
+    printf("\nFichiers demandés : %d (miniatures et années d'archive comprises)\n", count($relatifs));
 
     // Les fichiers d'une instance précédente répondent à une autre base. Ils ne
-    // seront pas écrasés — telecharger() saute ce qui est déjà là — mais ils
-    // resteront mêlés à ceux de la copie sans que rien ne l'indique.
+    // seront pas écrasés, mais resteront mêlés à ceux de la copie sans que rien
+    // ne l'indique.
     if ($reinitialiserUploads) {
         printf("  contenu précédent déplacé dans %s\n", basename(mettreDeCoteLesUploads($repUploads)));
     } else {
         $attendus = [];
-        foreach ($taches as $tache) {
-            $attendus[$tache['chemin']] = true;
+        foreach (array_keys($relatifs) as $relatif) {
+            $attendus[$repUploads . '/' . $relatif] = true;
         }
 
         $orphelins = compterOrphelins($repUploads, $attendus);
         if ($orphelins > 0) {
             printf(
                 "  %d fichier(s) déjà présent(s) qu'aucune ligne de la copie ne référence.\n"
-                . "  --reset-uploads les déplace dans un répertoire daté avant de télécharger.\n",
+                . "  --reset-uploads les déplace dans un répertoire daté avant de rapatrier.\n",
                 $orphelins
             );
         }
     }
 
-    $bilan = telecharger(array_values($taches), TRANSFERTS_SIMULTANES);
+    $bilan = rapatrier($sshCible, $sshChemin, $repUploads, array_keys($relatifs));
 
     printf(
-        "  %d écrits (%.1f Mo), %d déjà là, %d absents en production, %d refusés, %d en échec\n",
-        $bilan['ecrits'],
+        "  %d fichier(s) en place (%.1f Mo transférés), %d introuvable(s) en production\n",
+        $bilan['recuperes'],
         $bilan['octets'] / 1048576,
-        $bilan['presents'],
-        $bilan['absents'],
-        $bilan['refuses'],
-        $bilan['echecs']
+        $bilan['manquants']
     );
-
-    if ($bilan['refuses'] > 0) {
-        echo "\nDes 403 : le pare-feu 8G a rejeté la requête. Il ne laisse servir depuis\n"
-            . "/web/uploads/ que jpg, jpeg, png, gif et webp, et bloque tout User-Agent\n"
-            . "contenant « curl » ou « scan ».\n";
-    }
-
-    if ($bilan['brides'] > 0) {
-        printf(
-            "\nLa production a répondu 429 (trop de requêtes) : le téléchargement s'est\n"
-            . "arrêté là, %d fichier(s) n'ont pas été tentés. Relancer --only=files plus\n"
-            . "tard reprendra où il en est, les fichiers déjà écrits étant sautés.\n",
-            $bilan['non_tentes']
-        );
-    }
 }
 
 echo "\nTerminé.\n";

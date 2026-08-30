@@ -150,28 +150,34 @@ Le site ladecadanse est déployé sur localhost:7777 (dev) ou localhost:8080 (pr
 
 ### Peupler la base depuis la production
 
-Une base neuve est vide, et saisir à la main de quoi éprouver l'agenda est vite décourageant. `composer prod-copy` fabrique une copie locale **anonymisée** de la production, réduite aux derniers événements ajoutés et à tout ce qu'ils référencent, et télécharge les flyers et photos correspondants dans `web/uploads/`.
+Une base neuve est vide, et saisir à la main de quoi éprouver l'agenda est vite décourageant. `composer prod-copy` fabrique une copie locale **anonymisée** de la production, réduite aux derniers événements ajoutés et à tout ce qu'ils référencent, et rapatrie les flyers et photos correspondants dans `web/uploads/`.
 
 ```sh
 composer prod-copy -- --limit=1000
 ```
 
-Prérequis : activer l'accès **MySQL distant** sur son adresse IP depuis le manager Infomaniak, puis renseigner les connexions `prod` et `prod_copy` dans `app/db.config.php` (modèle dans `app/db.config_model.php`). La production n'est lue qu'en lecture seule ; la base `ladecadanse_prod_copy` est créée par le script, il ne faut donc pas la créer soi-même.
+Prérequis : un **accès SSH** au serveur, qui sert deux fois. L'offre Infomaniak n'ouvrant pas MySQL à l'extérieur — l'hôte du manager est une adresse privée — la base se lit à travers un tunnel, à ouvrir dans un terminal à part :
 
-Comme le transfert des images prend le plus clair du temps, la commande se découpe :
+```sh
+ssh -N -L 3307:XXXXXX.myd.infomaniak.com:3306 utilisateur@exemple.ch
+```
+
+Les connexions `prod` et `prod_copy` se déclarent ensuite dans `app/db.config.php` (modèle commenté dans `app/db.config_model.php`), l'entrée `prod` portant aussi l'accès SSH et le chemin distant de `web/uploads` pour la phase fichiers. La production n'est lue qu'en lecture seule ; la base locale est créée par le script, il ne faut donc pas la créer soi-même — mais son utilisateur MySQL a besoin du droit `CREATE` dessus.
+
+Les deux phases se découpent :
 
 ```sh
 composer prod-copy -- --limit=20 --only=db      # passe d'essai, quelques secondes
-composer prod-copy -- --only=files              # relançable, saute ce qui est déjà là
+composer prod-copy -- --only=files              # rapatriement seul
 ```
 
-Options : `--limit` (nombre d'événements, 1000 par défaut), `--only=db|files`, `--password` (mot de passe commun des comptes copiés, `decadanse1` par défaut), `--force` (supprimer et recréer une base existante), `--reset-uploads`, `--source` / `--dest` (autres entrées de `db.config.php`), `--base-url`, `--uploads-dir`.
+Options : `--limit` (nombre d'événements, 1000 par défaut), `--only=db|files`, `--password` (mot de passe commun des comptes copiés, `decadanse1` par défaut), `--force` (supprimer et recréer une base existante), `--reset-uploads`, `--source` / `--dest` (autres entrées de `db.config.php`), `--ssh` / `--ssh-path`, `--uploads-dir`.
 
 Une fois la copie faite, pointer dessus `DB_NAME` dans `app/env.php` et l'entrée `default` de `app/db.config.php`. Toutes les `personne` partagent alors le même mot de passe, leur pseudo devenant `user{id}` — `user1` pour le compte SUPERADMIN ; le script affiche en fin d'exécution un exemple d'identifiant par groupe.
 
-Si `web/uploads/` contient déjà les fichiers d'une instance antérieure, ils répondent à une autre base et resteront mêlés à ceux de la copie. Le script les compte et le signale ; `--reset-uploads` les déplace dans un `web/uploads-backup-<horodatage>/` avant de télécharger — rien n'est supprimé.
+Si `web/uploads/` contient déjà les fichiers d'une instance antérieure, ils répondent à une autre base et resteront mêlés à ceux de la copie. Le script les compte et le signale ; `--reset-uploads` les déplace dans un `web/uploads-backup-<horodatage>/` avant de rapatrier — rien n'est supprimé.
 
-La production limite le débit : au-delà de quelques milliers de requêtes rapprochées elle répond 429, et le téléchargement s'arrête là plutôt que d'insister. Relancer `--only=files` plus tard reprend où il en était, les fichiers déjà écrits étant sautés.
+Les fichiers descendent en **une seule connexion SSH**, `tar` n'emportant que les membres nommés sur son entrée standard : environ 2700 fichiers et 290 Mo en une minute. La voie HTTP qui précédait demandait autant de requêtes au serveur web, se faisait brider en 429 passé quelques milliers, et n'atteignait jamais ce que `htaccess/30-protections.conf` refuse de servir depuis `/web/uploads/` — une illustration nommée `.jfif`, par exemple.
 
 Ce que la copie ne contient pas : aucun mot de passe, e-mail, cookie ni note privée d'origine — ils sont remplacés à la volée, entre le `SELECT` et l'`INSERT`, si bien qu'aucun fichier intermédiaire n'en porte jamais. Les tables `bot_monitor` (adresses IP) et `user_reset_requests` (jetons) ne sont pas reprises du tout, `admin/bots.php` restera donc vide.
 

@@ -97,6 +97,18 @@ parameters:
             function: 'passthru()'
             allowIn:
                 - bin/build-config.php
+        # Même raisonnement pour bin/prod-copy.php : outil de poste de
+        # développement, exclu du déploiement par .git-ftp-ignore, dont la seule
+        # entrée est la ligne de commande. Il rapatrie les uploads de production
+        # par « ssh … tar », que rien en PHP ne sait faire.
+        #   proc_open() : forme tableau, donc sans shell — les arguments ne sont
+        #                 jamais réinterprétés — et redirections par descripteurs,
+        #                 la syntaxe « < » et « | » n'étant pas la même sous
+        #                 cmd.exe et sous sh.
+        -
+            function: 'proc_open()'
+            allowIn:
+                - bin/prod-copy.php
 includes:
     - vendor/phpstan/phpstan-deprecation-rules/rules.neon
     - vendor/spaze/phpstan-disallowed-calls/extension.neon
