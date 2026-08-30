@@ -44,6 +44,7 @@ include("../_header.inc.php");
         <h3>Comptes</h3>
 
         <ul>
+            <li>page personnelle : affichage des images des événements</li>
             <li><strong>inscription, mot de passe oublié et déconnexion</strong> rénovés</li>
             <li>correction : une demande de mot de passe oublié pour un compte désactivé menait à un formulaire impossible à valider</li>
             <li>meilleure détection des mots de passe trop communs</li>
@@ -60,9 +61,10 @@ include("../_header.inc.php");
         <h3>Divers</h3>
 
         <ul>
+            <li>améliorations de l'ergonomie</li>
             <li><a href="/misc/contacteznous.php">Contact</a> : simplification, avec moins de champs</li>
             <li>sécurité : la déconnexion n'est plus déclenchable par un simple lien, et plusieurs requêtes à la base de données ont été sécurisées</li>
-            <li>corrections de bugs et améliorations techniques (nettoyage du code, configuration du serveur versionnée, analyseurs)</li>
+            <li>corrections de bugs et améliorations techniques (nettoyage du code, configuration du serveur versionnée, Docker, analyseurs)</li>
         </ul>
 
         <p><a href="https://github.com/agilare/ladecadanse/releases/tag/v3.12.0" rel="external" target="_blank">Détails</a></p>
