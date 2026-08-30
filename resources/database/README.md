@@ -89,12 +89,16 @@ l'ordre du tableau.
 
 ## Scripts hors migration
 
-Deux fichiers ne sont ni le schéma ni une migration, et n'ont rien à faire dans une installation :
+Trois fichiers ne sont ni le schéma ni une migration, et n'ont rien à faire dans une installation :
 
 - `evenement-fix-horaires.sql` — réparation ponctuelle des horaires faussés par le bug de copie corrigé
   en 3.5.0, passée en production le 26 juin 2023 ;
 - `test-separateurs-horaires.sql` — jeu d'événements de test pour les séparateurs horaires de l'agenda
   (#105). Il **écrit dans `evenement`** : à réserver à une base de développement.
+- `mailing-users-specialises.sql` — sélection des utilisateurs dont les ajouts se concentrent sur un
+  seul lieu, une seule catégorie ou les mêmes organisateurs, pour un mailing par `admin/mailing.php`.
+  Trois requêtes **en lecture seule**, passables telles quelles en production. Voir
+  [Événements](../../docs/evenements.md#reporter-les-valeurs-récurrentes-dans-les-réglages).
 
 ## Docker
 

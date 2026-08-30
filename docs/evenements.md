@@ -40,6 +40,20 @@ Règles d'application :
 
 Les préférences sont stockées dans la colonne `personne.settings`, un champ texte contenant du JSON, sous la clé `events` > `new_defaults`. Les préférences ajoutées ultérieurement iront dans le même champ, sans nouvelle migration de schéma.
 
+### Reporter les valeurs récurrentes dans les réglages
+
+`bin/user-settings-defaults.php` remplit ces réglages pour ceux qui ne les ont jamais ouverts, à partir de ce qu'ils saisissent déjà : la catégorie, le lieu et les organisateurs présents dans au moins 96 % de leurs ajouts, à partir de 50 ajouts et d'une connexion dans l'année. Simulation par défaut ; `--ecrire` applique, après avoir déposé un retour arrière dans `var/`.
+
+Le JSON sort de `UserSettings`, jamais construit à la main : même encodage et même fusion que `user-edit.php`, si bien qu'un réglage d'un autre domaine survit. Un champ déjà renseigné est laissé intact — le script complète, il ne corrige pas un choix délibéré.
+
+Trois écarts avec la sélection du mailing (`resources/database/mailing-users-specialises.sql`), qui ne cherche pas la même chose :
+
+- la requête retient une personne dès qu'un motif suffit, le script juge **chaque champ séparément** ;
+- `settings.idLieu` est un identifiant : un lieu dominant désigné par un nom libre (`evenement.nomLieu`, sans fiche) compte dans le pourcentage mais ne remplit rien ;
+- lieu et organisateurs doivent être `statut = 'actif'`, sinon le profil afficherait un réglage sans `<option>` correspondante, qu'un simple enregistrement effacerait.
+
+Pour la production, `bin/` n'étant pas déployé (`.git-ftp-ignore`), le script tourne sur une [copie locale](prod-copy.md) ou est envoyé ponctuellement par SFTP. `--sql=` produit alors les `UPDATE` au lieu de les exécuter, chacun gardé par la valeur lue au moment du calcul — un profil réglé entre-temps par son propriétaire n'est pas écrasé, et l'écart entre le nombre de lignes modifiées et celui annoncé en tête du fichier rend ces cas visibles. `--csv=` en donne les destinataires au format qu'attend `admin/mailing.php`, limités aux comptes **réellement** mis à jour.
+
 ## Fichiers : flyer et illustration
 
 Le nom d'un fichier encode l'événement auquel il appartient : `{idEvenement}_{date}.{ext}` pour le flyer, `{idEvenement}_{date}_img.{ext}` pour l'illustration, et le même nom préfixé de `s_` pour la vignette.
