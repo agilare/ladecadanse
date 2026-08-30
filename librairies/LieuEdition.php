@@ -7,11 +7,17 @@ use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Lieu;
 use Ladecadanse\Utils\ImageDriver2;
 use Ladecadanse\Utils\Text;
-use Ladecadanse\Document;
 use Ladecadanse\HtmlShrink;
 
 class LieuEdition extends Edition
 {
+    use HandlesImageUploads;
+
+    /** Champs image de la fiche, avec les dimensions de leur miniature « s_ ». */
+    private const array IMAGES = [
+        'logo'   => ['maxLargeur' => 200, 'maxHauteur' => 200, 'selon' => 'h', 'rognage' => 0],
+        'photo1' => ['maxLargeur' => 300, 'maxHauteur' => 300, 'selon' => 'w', 'rognage' => 1],
+    ];
 
     public $supprimer = [];
     public $supprimer_document = [];
@@ -239,18 +245,8 @@ class LieuEdition extends Edition
 
         if ($this->action == 'ajouter')
         {
-
-            $nouvel_id = $lieu->getMaxId() + 1;
-            if (!empty($this->fichiers['logo']['name']))
-            {
-                $lieu->setValue('logo', $nouvel_id . '_logo' . mb_strrchr((string) $this->fichiers['logo']['name'], '.'));
-            }
-
-            if (!empty($this->fichiers['photo1']['name']))
-            {
-                $lieu->setValue('photo1', $nouvel_id . '_photo1' . mb_strrchr((string) $this->fichiers['logo']['name'], '.'));
-            }
-
+            $lieu->setValue('logo', '');
+            $lieu->setValue('photo1', '');
             $lieu->setValue('dateAjout', date("Y-m-d H:i:s"));
             $lieu->setValue('date_derniere_modif', date("Y-m-d H:i:s"));
 
@@ -267,60 +263,21 @@ class LieuEdition extends Edition
                 HtmlShrink::msgErreur("Erreur lors de l'insertion dans la table");
                 return false;
             }
+
+            /*
+             * Le nom des images encode l'identifiant du lieu, que seul l'AUTO_INCREMENT
+             * décide : il n'est connu qu'ici. Il était deviné avant l'INSERT à partir de
+             * MAX(idLieu) + 1, qui diverge dès qu'un lieu a été supprimé.
+             */
+            $this->nommerLesImages($lieu);
+            $lieu->update();
         }
         else if ($this->action == 'editer')
         {
             $lieu->setValue('date_derniere_modif', date("Y-m-d H:i:s"));
             $lieu->setId($this->id);
 
-            if ($this->fichiers['logo']['name'] != '')
-            {
-                // suppression des fichiers de l'ancienne image
-                if (!empty($lieu->getValue('logo')))
-                {
-                    $this->safeUnlinkImageAndThumb($rep_uploads_lieux, $lieu->getValue('logo'));
-                }
-
-                $lieu->setValue('logo', Document::getFilename($this->fichiers['logo']['name'], $lieu->getId(), 'logo', ''));
-            }
-
-            /*
-             * Si on a seulement choisi de supprimer l'image existante
-             */
-            elseif (in_array('logo', $this->supprimer))
-            {
-                // suppression des fichiers de l'image, s'il elle est effectivement enregistrée
-                if (!empty($lieu->getValue('logo')))
-                {
-                    $this->safeUnlinkImageAndThumb($rep_uploads_lieux, $lieu->getValue('logo'));
-                }
-
-                $lieu->setValue('logo', '');
-            }
-
-            if ($this->fichiers['photo1']['name'] != '')
-            {
-                // suppression des fichiers de l'ancienne image
-                if ($lieu->getValue('photo1') != '')
-                {
-                    $this->safeUnlinkImageAndThumb($rep_uploads_lieux, $lieu->getValue('photo1'));
-                }
-
-                $lieu->setValue('photo1', Document::getFilename($this->fichiers['photo1']['name'], $lieu->getId(), 'photo1', ''));
-            }
-            /*
-             * Si on a seulement choisi de supprimer l'image existante
-             */
-            else if (in_array('photo1', $this->supprimer))
-            {
-                // suppression des fichiers de l'image, s'il elle est effectivement enregistrée
-                if ($lieu->getValue('photo1') != '')
-                {
-                    $this->safeUnlinkImageAndThumb($rep_uploads_lieux, $lieu->getValue('photo1'));
-                }
-
-                $lieu->setValue('photo1', '');
-            }
+            $this->nommerLesImages($lieu);
 
             foreach ($this->supprimer_galerie as $nom_fichier)
             {
@@ -357,38 +314,9 @@ class LieuEdition extends Edition
         /*
          * TRAITEMENT DES FICHIERS UPLOADES
          */
-        if (!empty($this->fichiers['logo']['name']))
+        foreach (self::IMAGES as $champ => $miniature)
         {
-            $imD2 = new ImageDriver2("lieux");
-
-            if (!$imD2->processImage($this->fichiers['logo'], "s_" . $lieu->getValue('logo'), 200, 200, 'h', 0))
-            {
-                trigger_error($imD2->getErreur());
-                exit;
-            }
-
-            if (!$imD2->processImage($this->fichiers['logo'], $lieu->getValue('logo'), 600, 600, '', 0))
-            {
-                trigger_error($imD2->getErreur());
-                exit;
-            }
-        }
-
-        if (!empty($this->fichiers['photo1']['name']))
-        {
-            $imD2 = new ImageDriver2("lieux");
-
-            if (!$imD2->processImage($this->fichiers['photo1'], "s_" . $lieu->getValue('photo1'), 300, 300, 'w', 1))
-            {
-                trigger_error($imD2->getErreur());
-                exit;
-            }
-
-            if (!$imD2->processImage($this->fichiers['photo1'], $lieu->getValue('photo1'), 600, 600, '', 0))
-            {
-                trigger_error($imD2->getErreur());
-                exit;
-            }
+            $this->ecrireImageEtMiniature($this->fichierEnvoye($champ), (string) $lieu->getValue($champ), "lieux", $miniature);
         }
 
         if (!empty($this->fichiers['image_galerie']['name']))
@@ -444,6 +372,28 @@ class LieuEdition extends Edition
         $champs['categorie'] = explode(',', (string) $champs['categorie']);
 
         $this->valeurs = $champs;
+    }
+
+    /**
+     * Donne aux colonnes logo et photo1 le nom que porteront leurs fichiers, une
+     * fois pris en compte l'envoi et la case « Supprimer ». Les deux champs
+     * répétaient le même bloc, la photo héritant au passage de l'extension du logo.
+     */
+    private function nommerLesImages(Lieu $lieu): void
+    {
+        global $rep_uploads_lieux;
+
+        foreach (array_keys(self::IMAGES) as $champ)
+        {
+            $lieu->setValue($champ, $this->nomImageApresEdition(
+                $champ,
+                $this->fichierEnvoye($champ),
+                (string) $lieu->getValue($champ),
+                in_array($champ, $this->supprimer, true),
+                $lieu->getId(),
+                $rep_uploads_lieux
+            ));
+        }
     }
 
 }

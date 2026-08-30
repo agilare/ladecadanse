@@ -5,17 +5,21 @@ namespace Ladecadanse;
 
 class Document
 {
-    public static function getFilename(string $nom_original, int $id, string $type = '', string $date_time = ''): string
+    /**
+     * Extension de fichier correspondant à un type MIME d'image.
+     *
+     * Le format écrit par ImageDriver2 est celui du contenu, jamais celui du nom
+     * fourni par le client : c'est donc du MIME que l'extension doit être
+     * déduite. Un JPEG est le repli, aucun autre format n'étant accepté à
+     * l'envoi (voir $mimes_images_acceptes dans app/config.php).
+     */
+    public static function extensionPourMime(string $mime): string
     {
-        $suffixe = mb_strrchr($nom_original, '.');
-
-        $date = '';
-        if ($date_time != '')
-        {
-            $dateAjoutTab = explode(" ", $date_time);
-            $date = $dateAjoutTab[0];
-        }
-
-        return $id . "_" . $type . $date . $suffixe;
+        return match ($mime) {
+            'image/png', 'image/x-png' => '.png',
+            'image/gif' => '.gif',
+            'image/webp' => '.webp',
+            default => '.jpg',
+        };
     }
 }

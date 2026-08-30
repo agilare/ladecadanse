@@ -6,6 +6,7 @@ use Ladecadanse\FeatureFlag; // config
 use Ladecadanse\Utils\Validateur; // forms
 use Ladecadanse\Utils\QueryParamValidator; // query string
 use Ladecadanse\Utils\ImageDriver2; // files
+use Ladecadanse\Document; // files
 use Ladecadanse\Utils\ImageUrlFetcher; // url import
 use Ladecadanse\Utils\PdfToImage; // url import
 use Ladecadanse\Security\SecurityToken;
@@ -609,12 +610,8 @@ if ($formulaire_poste)
 		// Extension déduite du type MIME. Indispensable pour une image récupérée par
 		// URL, qui n'a aucun nom d'origine, et plus sûr pour un fichier envoyé : le
 		// format que ImageDriver2 écrira est celui du contenu, pas celui du nom.
-		$extensionPourMime = fn (string $mime): string => match($mime) {
-			'image/png', 'image/x-png' => '.png',
-			'image/gif' => '.gif',
-			'image/webp' => '.webp',
-			default => '.jpg',
-		};
+		// Partagée avec les formulaires de lieu et d'organisateur (HandlesImageUploads).
+		$extensionPourMime = Document::extensionPourMime(...);
 
 		/**
 		 * Donne aux champs flyer et image leur nom définitif : « {idE}_{date}[_img].{ext} ».
