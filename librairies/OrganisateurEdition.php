@@ -17,8 +17,6 @@ class OrganisateurEdition extends Edition
 {
 
     public $supprimer = [];
-    public $supprimer_document = [];
-    public $supprimer_galerie = [];
     public $erreurs = [];
     public $message;
     public $action;
@@ -44,7 +42,16 @@ class OrganisateurEdition extends Edition
             ->allowRelativeLinks(true)
             ->allowLinkSchemes(['https', 'http', 'mailto'])
             ->forceAttribute('a', 'rel', 'noopener noreferrer'));
+    }
 
+    function loadValues($id)
+    {
+        $organisateur = new Organisateur();
+        $organisateur->setId($id);
+        $organisateur->load();
+        $champs = $organisateur->getValues();
+
+        $this->valeurs = $champs;
     }
 
     #[\Override]
@@ -89,7 +96,6 @@ class OrganisateurEdition extends Edition
     #[\Override]
     function verification(): bool
     {
-
         global $mimes_images_acceptes;
 
         $verif = new Validateur();
@@ -102,23 +108,19 @@ class OrganisateurEdition extends Edition
         $verif->validerFichierImage($this->fichiers['logo'], "logo", $mimes_images_acceptes, 0);
         $verif->validerFichierImage($this->fichiers['photo'], "photo", $mimes_images_acceptes, 0);
 
-        /*
-         * En cas d'ajout vérification si le lieu n'existe pas déjà
-         */
+        // si un autre enregistrement a déjà le même nom
         if ($this->action == 'insert')
         {
             $req = $this->connector->query("SELECT nom FROM organisateur WHERE statut='actif'");
 
             while ($tab = $this->connector->fetchArray($req))
             {
-                //si un lieu a déjà le même nom
                 if ($this->valeurs['nom'] != '' && $this->valeurs['nom'] == $tab['nom'])
                 {
-                    $verif->setErreur('nom_existant', "Le lieu s'appelant <em>" . $this->valeurs['nom'] . "</em> existe déjà.");
+                    $verif->setErreur('nom_existant', "Un organisateur avec le même nom existe déjà");
                 }
             }
-        } //if action==ajouter
-
+        }
 
         $this->erreurs = array_merge($this->erreurs, $verif->getErreurs());
 
@@ -134,17 +136,13 @@ class OrganisateurEdition extends Edition
     {
         global $rep_uploads_organisateurs;
 
-
         $organisateur = new Organisateur();
         $organisateur->setValues($this->valeurs);
-
         $organisateur->setValue('idpersonne', $_SESSION['SidPersonne']);
-
         $organisateur->setValue('presentation', $this->htmlSanitizer->sanitize($organisateur->getValue('presentation')));
 
         if ($this->action == 'ajouter')
         {
-
             $nouvel_id = $organisateur->getMaxId() + 1;
             if (!empty($this->fichiers['logo']['name']))
             {
@@ -270,15 +268,4 @@ class OrganisateurEdition extends Edition
             }
         }
     }
-
-    function loadValues($id)
-    {
-        $organisateur = new Organisateur();
-        $organisateur->setId($id);
-        $organisateur->load();
-        $champs = $organisateur->getValues();
-
-        $this->valeurs = $champs;
-    }
-
 }
