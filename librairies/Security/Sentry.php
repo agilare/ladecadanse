@@ -196,7 +196,7 @@ class Sentry
 
         if ($estEmail && count($comptes) > 1)
         {
-            $this->logger->warning('[Sentry] login failed, ambiguous email', ['email' => $user]);
+            $this->logger->notice('[Sentry] login failed, ambiguous email', ['email' => $user]);
             unset($this->userdata);
 
             if ($badRedirect)
@@ -210,7 +210,7 @@ class Sentry
         // pseudo est unique : plus d'une ligne ne peut venir que d'un e-mail, traité ci-dessus
         if (count($comptes) !== 1)
         {
-            $this->logger->warning('[Sentry] login failed, user not found', ['user' => $user]);
+            $this->logger->notice('[Sentry] login failed, user not found', ['user' => $user]);
             unset($this->userdata);
 
             if ($badRedirect)
@@ -228,7 +228,7 @@ class Sentry
 
         if (!$isPassCorrectOldMethod && !$isPassCorrectNewMethod)
         {
-            $this->logger->warning('[Sentry] login failed, wrong password', ['user' => $this->userdata['pseudo']]);
+            $this->logger->notice('[Sentry] login failed, wrong password', ['user' => $this->userdata['pseudo']]);
             unset($this->userdata);
 
             if ($badRedirect)
