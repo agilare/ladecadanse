@@ -184,12 +184,29 @@ class ImageDriver2 {
        elseif ($mime_type == "image/gif")
        {
            $img = ImageCreateFromGif($imageSource['tmp_name']);
-           $originaltransparentcolor = imagecolortransparent($img);
 
+           if ($img === false)
+           {
+               $this->erreur = "gif non créé";
+               return false;
+           }
+
+           $originaltransparentcolor = imagecolortransparent($img);
        }
        elseif ($mime_type == "image/png")
        {
-           $img = ImageCreateFrompng($imageSource['tmp_name']);
+           // Les PNG écrits par d'anciennes versions de Photoshop embarquent un
+           // profil ICC qui se déclare sRGB sans en avoir le checksum : libpng
+           // émet alors « iCCP: known incorrect sRGB profile ». Il ignore le
+           // profil et décode l'image normalement, seul le log de prod en pâtit.
+           // Le @ ne masque donc rien d'utile, à condition de tester l'échec.
+           $img = @ImageCreateFrompng($imageSource['tmp_name']);
+
+           if ($img === false)
+           {
+               $this->erreur = "png non créé";
+               return false;
+           }
        }
        elseif ($mime_type == "image/webp")
        {
