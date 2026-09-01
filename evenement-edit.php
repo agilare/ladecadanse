@@ -557,7 +557,10 @@ if ($formulaire_poste)
             $date_iso,
         );
 
-        $logger->notice('[evenement-edit] duplicates found', ['action' => $get['action'], 'titre' => $champs['titre'], 'lieu' => $champs['nomLieu'], 'date' => $date_iso, 'similar_events_count' => count($similarEvenements)]);
+        if (!empty($similarEvenements))
+        {
+            $logger->notice('[evenement-edit] add : duplicates found', ['action' => $get['action'], 'titre' => $champs['titre'], 'lieu' => $champs['nomLieu'], 'date' => $date_iso, 'similar_events_count' => count($similarEvenements)]);
+        }
     }
 
     if ($verif->nbErreurs() === 0 && empty($similarEvenements))
