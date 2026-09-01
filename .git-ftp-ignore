@@ -3,6 +3,7 @@ docker/*
 /.github
 .github/*
 app/env_model.php
+app/db.config_model.php
 resources/*.sql
 resources/*.md
 tests*
