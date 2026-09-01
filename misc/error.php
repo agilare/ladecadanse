@@ -16,13 +16,12 @@ $statusErrors = [
 <main id="contenu" class="colonne">
 
     <div class="rubrique" style="margin-left:20px">
-        <h1 style="margin:120px 0 20px 0;font-size:2.4em;color:#5C7378;">Erreur <?php echo $_SERVER["REDIRECT_STATUS"] ?></h1>
-        <h2><?php if (isset($statusErrors[$_SERVER["REDIRECT_STATUS"]][0])) { ?>
-                <?php echo $statusErrors[$_SERVER["REDIRECT_STATUS"]][0] ?>
-            <?php } ?>
-        </h2>
+        <h1 style="margin:120px 0 20px 0;font-size:2.4em;color:#5C7378;">Erreur <?php echo $_SERVER["REDIRECT_STATUS"] ?? '' ?></h1>
+        <?php if (isset($_SERVER["REDIRECT_STATUS"]) && isset($statusErrors[$_SERVER["REDIRECT_STATUS"]][0])) { ?>
+            <h2><?php echo $statusErrors[$_SERVER["REDIRECT_STATUS"]][0] ?></h2>
+        <?php } ?>
         <br>
-        <?php if (isset($statusErrors[$_SERVER["REDIRECT_STATUS"]][1])) { ?>
+        <?php if (isset($_SERVER["REDIRECT_STATUS"]) && isset($statusErrors[$_SERVER["REDIRECT_STATUS"]][1])) { ?>
             <p><?php echo $statusErrors[$_SERVER["REDIRECT_STATUS"]][1] ?></p>
         <?php } ?>
         <p>&nbsp;</p>
@@ -32,7 +31,6 @@ $statusErrors = [
     <!-- .rubrique -->
 
 </main>
-<!-- fin Contenu -->
 
 <?php
 include("../_footer.inc.php");
