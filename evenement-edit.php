@@ -495,8 +495,8 @@ if ($formulaire_poste)
         return $fetched;
     };
 
-    $fetched_flyer = $importerImageParUrl('flyer', $url_flyer, $logger);
-    $fetched_image = $importerImageParUrl('image', $url_image, $logger);
+    $fetched_flyer = $importerImageParUrl('flyer', $url_flyer);
+    $fetched_image = $importerImageParUrl('image', $url_image);
 
     // at least debut or complement
     if (empty($champs['horaire_debut']) && empty($champs['horaire_complement']))

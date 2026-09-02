@@ -149,12 +149,6 @@ parameters:
 			path: lieu/lieux.php
 
 		-
-			message: '#^Offset 1 on array\{''Document introuvable'', ''Ce document n…''\}\|array\{''Erreur dans l…'', '' ''\}\|array\{''Trop de requêtes'', ''Le serveur reçoit…''\} in isset\(\) always exists and is not nullable\.$#'
-			identifier: isset.offset
-			count: 1
-			path: misc/error.php
-
-		-
 			message: '#^Calling sha1\(\) is forbidden, use hash\(\) with at least SHA\-256 for secure hash, or password_hash\(\) for passwords\.$#'
 			identifier: disallowed.function
 			count: 2
