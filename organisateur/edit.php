@@ -16,6 +16,7 @@ if (!$authorization->checkGroup(UserLevel::ACTOR))
     die();
 }
 
+// 1sts : intention, 2nds : intention validated
 $tab_actions = ["ajouter", "insert", "editer", "update"];
 $get = [
     'action' => QueryParamValidator::validateUrlQueryValue($_GET['action'] ?? 'ajouter', "enum", 'ajouter', $tab_actions),
@@ -105,9 +106,9 @@ include("../_header.inc.php");
     </header>
 
     <?php if ($tokenError) : ?>
-        <?php HtmlShrink::msgErreur("Le système de sécurité du site n'a pu authentifier votre action. Veuillez réafficher ce formulaire et réessayer."); ?>
+        <?php HtmlShrink::msgErreur("Le système de sécurité du site n'a pu authentifier votre action. Veuillez réafficher ce formulaire et réessayer"); ?>
     <?php elseif ($form->hasErrors()) : ?>
-        <?php HtmlShrink::msgErreur("Il y a " . $form->getErrorCount() . " erreur(s)."); ?>
+        <?php HtmlShrink::msgErreur("Il y a " . $form->getErrorCount() . " erreur(s)"); ?>
     <?php endif; ?>
 
     <form method="post" enctype="multipart/form-data" id="ajouter_editer" class="js-submit-freeze-wait" action="<?= basename(__FILE__) ?>?action=<?= sanitizeForHtml($act) ?>">
@@ -120,7 +121,7 @@ include("../_header.inc.php");
         <input type="hidden" name="MAX_FILE_SIZE" value="<?= UPLOAD_MAX_FILESIZE ?>" />
 
         <p>
-            <label for="nom">Nom* :</label>
+            <label for="nom">Nom*</label>
             <input type="text" name="nom" id="nom" size="50" maxlength="80" value="<?= sanitizeForHtml($form->getValeur('nom')) ?>" required />
             <?= $form->getHtmlErreur("nom") ?>
         </p>
@@ -128,7 +129,7 @@ include("../_header.inc.php");
         <?php
         $champImage = 'logo';
         $libelleImage = 'Logo';
-        $titreImage = "Logo qui s'affichera à gauche du titre";
+        $titreImage = "Logo qui s'affichera à droite du titre";
         include("_champ_image.inc.php");
         ?>
     </fieldset>
@@ -137,19 +138,19 @@ include("../_header.inc.php");
         <legend>Infos pratiques</legend>
 
         <p>
-            <label for="adresse">Adresse :</label>
+            <label for="adresse">Adresse</label>
             <input type="text" name="adresse" id="adresse" size="50" maxlength="80" value="<?= sanitizeForHtml($form->getValeur('adresse')) ?>" />
             <?= $form->getHtmlErreur("adresse") ?>
         </p>
 
         <p>
-            <label for="URL">Site web :</label>
+            <label for="URL">Site web</label>
             <input type="url" name="URL" id="URL" size="50" maxlength="100" value="<?= sanitizeForHtml($form->getValeur('URL')) ?>" />
             <?= $form->getHtmlErreur("URL") ?>
         </p>
 
         <p>
-            <label for="email">Email :</label>
+            <label for="email">Email</label>
             <input type="email" name="email" id="email" size="40" maxlength="100" value="<?= sanitizeForHtml($form->getValeur('email')) ?>" />
             <?= $form->getHtmlErreur("email") ?>
         </p>
@@ -159,12 +160,12 @@ include("../_header.inc.php");
         <legend>Présentation</legend>
 
         <p>
-            <label for="presentation">Texte :</label>
+            <label for="presentation">Texte</label>
             <?php /* TinyMCE remplace le textarea par un bloc à lui, dont la police revient à 16px :
                      une marge en em posée dessus ne vaudrait pas celle des autres champs. D'où ce
                      conteneur, qui garde la taille de police du formulaire — voir edit.css */ ?>
             <span class="champ-riche">
-                <textarea name="presentation" id="presentation" class="tinymce" rows="12" cols="50"><?= sanitizeForHtml($form->getValeur('presentation')) ?></textarea>
+                <textarea name="presentation" id="presentation" class="tinymce" rows="10" cols="50"><?= sanitizeForHtml($form->getValeur('presentation')) ?></textarea>
             </span>
             <?= $form->getHtmlErreur("presentation") ?>
         </p>

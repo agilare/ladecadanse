@@ -21,7 +21,7 @@ $imageEnBase = $form->getImageEnBase($champImage);
 ?>
 
 <p>
-    <label for="<?= $champImage ?>"><?= $libelleImage ?> :</label>
+    <label for="<?= $champImage ?>"><?= $libelleImage ?></label>
     <input type="file" name="<?= $champImage ?>" id="<?= $champImage ?>" class="js-file-upload-size-max"
         title="<?= sanitizeForHtml($titreImage) ?>" size="25"
         accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif,image/webp" />
