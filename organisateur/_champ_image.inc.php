@@ -26,7 +26,7 @@ $max_file_size = Validateur::formaterTaille(UPLOAD_MAX_FILESIZE);
 ?>
 
 <p>
-    <label for="<?= $image_field ?>"><?= $image_label ?> :</label>
+    <label for="<?= $image_field ?>"><?= $image_label ?></label>
     <input type="file" name="<?= $image_field ?>" id="<?= $image_field ?>" class="js-file-upload-size-max"
         title="<?= sanitizeForHtml($image_title) ?>" size="25"
         accept="<?= sanitizeForHtml($accepted_mime_types) ?>" />
