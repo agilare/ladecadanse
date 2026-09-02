@@ -49,10 +49,16 @@ define("DARKVISITORS_ENABLED", false);
 define("DARKVISITORS_PROJECT_KEY", '');
 define("DARKVISITORS_ACCESS_TOKEN", '');
 
+define("BOT_MONITORING_ENABLED", false);
+define("BOT_MONITORING_SUSPECT_THRESHOLD", 150); // seuil de hits pour "humains suspects" dans le dashboard
+
 // Acceptation des PDF dans les champs flyer et image (voir app/env_model.php).
 // L'image Docker installe imagick et Ghostscript : les deux voies de conversion
 // y fonctionnent, d'où l'activation par défaut en développement.
-define("PDF_CONVERSION_ENABLED", true);
+define("PDF_CONVERSION_ENABLED", false);
+define("DATEPICKER_ALWAYS_VISIBLE_ENABLED", false);
+define("LIEU_MANUAL_COLLAPSIBLE_ENABLED", true);
+define("EVENT_TIME_STATUS_ENABLED", true);
 
 define("PAYPAL_HOSTED_BUTTON_ID", "");
 
