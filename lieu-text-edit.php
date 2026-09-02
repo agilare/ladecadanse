@@ -4,10 +4,8 @@ require_once("app/bootstrap.php");
 
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\QueryParamValidator;
+use Ladecadanse\Utils\UserHtmlSanitizer;
 use Ladecadanse\HtmlShrink;
-
-use Symfony\Component\HtmlSanitizer\HtmlSanitizer;
-use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
 
 if (!$authorization->checkGroup(8))
 {
@@ -134,18 +132,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
 		$pers = $_SESSION['SidPersonne'];
 		$champs['type'] = $get['type'];
 
-        $htmlSanitizer = new HtmlSanitizer((new HtmlSanitizerConfig())
-            ->allowSafeElements()
-            ->allowElement('h3')
-            ->allowElement('blockquote')
-            ->allowElement('a', ['href', 'title', 'target'])
-            // TinyMCE (remove_script_host) écrit les liens internes en relatif (/lieu/lieu.php?idL=1),
-            // sans ceci le href serait supprimé
-            ->allowRelativeLinks(true)
-            ->allowLinkSchemes(['https', 'http', 'mailto'])
-            ->forceAttribute('a', 'rel', 'noopener noreferrer'));
-
-		$champs['contenu'] = $htmlSanitizer->sanitize($champs['contenu']);
+		$champs['contenu'] = (new UserHtmlSanitizer())->sanitize($champs['contenu']);
 
 
 		if ($get['action'] == 'insert')

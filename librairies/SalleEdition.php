@@ -8,21 +8,28 @@ use Ladecadanse\Utils\DbConnectorPdo;
 class SalleEdition extends Edition
 {
     private DbConnectorPdo $pdo;
-    private Validateur $verif;
     private int $idPersonne;
     private ?int $idSalle = null;
 
-    public function __construct()
+    /**
+     * Les instances arrivent en paramètre pour que la classe soit exerçable hors
+     * requête HTTP ; les valeurs par défaut évitent d'imposer un conteneur à la page.
+     */
+    public function __construct(
+        ?DbConnectorPdo $pdo = null,
+        private readonly Validateur $verif = new Validateur(),
+    )
     {
-        $champs = [
+        $valeurs = [
             'idLieu' => '',
             'nom' => '',
             'emplacement' => '',
         ];
 
-        parent::__construct('salle', $champs, []);
-        $this->pdo = DbConnectorPdo::getInstance();
-        $this->verif = new Validateur();
+        parent::__construct('salle', $valeurs, []);
+
+        // Le connecteur est un singleton, qu'un défaut de paramètre ne sait pas appeler
+        $this->pdo = $pdo ?? DbConnectorPdo::getInstance();
     }
 
     public function setIdPersonne(int $idPersonne): void
@@ -64,8 +71,6 @@ class SalleEdition extends Edition
     #[\Override]
     public function verification(): bool
     {
-        $this->verif = new Validateur();
-
         $this->verif->valider($this->valeurs['idLieu'], "idLieu", "texte", 1, 60, 1);
         $this->verif->valider($this->valeurs['nom'], "nom", "texte", 2, 100, 1);
         $this->verif->valider($this->valeurs['emplacement'], "emplacement", "texte", 2, 100, 0);
@@ -83,20 +88,28 @@ class SalleEdition extends Edition
         return $this->verif->nbErreurs() === 0;
     }
 
+    /**
+     * @return bool false si la salle n'existe pas — à la page de répondre 404
+     */
     #[\Override]
-    public function loadValeurs(int $id): void
+    public function loadValeurs(int $id): bool
     {
         $stmt = $this->pdo->prepare("SELECT * FROM salle WHERE idSalle = :idSalle");
         $stmt->execute([':idSalle' => $id]);
 
-        if ($row = $stmt->fetch()) {
-            foreach ($row as $key => $value) {
-                if (array_key_exists($key, $this->valeurs)) {
-                    $this->valeurs[$key] = $value;
-                }
-            }
-            $this->id = $id;
+        $row = $stmt->fetch();
+        if ($row === false) {
+            return false;
         }
+
+        foreach ($row as $key => $value) {
+            if (array_key_exists($key, $this->valeurs)) {
+                $this->valeurs[$key] = $value;
+            }
+        }
+        $this->id = $id;
+
+        return true;
     }
 
     public function insert(int $idPersonne): ?int

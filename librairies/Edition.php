@@ -64,10 +64,15 @@ namespace Ladecadanse;
 
     }
 
-	function loadValeurs(int $id): void
+	/**
+	 * Charge l'enregistrement à modifier.
+	 *
+	 * @return bool false si l'identifiant ne désigne rien : à la page de répondre 404
+	 *              plutôt que d'afficher un formulaire vide.
+	 */
+	function loadValeurs(int $id): bool
     {
-
-
+		return false;
 	}
 
     function enregistrer()

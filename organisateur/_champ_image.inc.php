@@ -41,7 +41,7 @@ $max_file_size = Validateur::formaterTaille(UPLOAD_MAX_FILESIZE);
             alt="<?= sanitizeForHtml($image_label . " de " . $organisateur_form->getStoredName()) ?>" />
         <div>
             <input type="checkbox" name="supprimer[]" id="supprimer_<?= $image_field ?>" value="<?= $image_field ?>" class="checkbox"
-                <?= $organisateur_form->isMarkedForDeletion($image_field) ? 'checked="checked"' : '' ?> />
+                <?= $organisateur_form->isImageMarkedForDeletion($image_field) ? 'checked="checked"' : '' ?> />
             <label for="supprimer_<?= $image_field ?>" class="continu">Supprimer</label>
         </div>
     </div>

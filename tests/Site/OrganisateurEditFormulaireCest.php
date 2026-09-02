@@ -147,6 +147,21 @@ class OrganisateurEditFormulaireCest
     }
 
     /**
+     * Un identifiant qui ne désigne rien vaut 404 : la page rendait jusque-là un
+     * formulaire vide sous un titre sans nom, et l'enregistrement qui suivait ne
+     * touchait aucune ligne en annonçant une réussite.
+     */
+    public function modificationDuneFicheInexistanteEstUne404(SiteTester $I)
+    {
+        $I->loginAsAdmin();
+        $I->amOnPage('/organisateur/edit.php?action=editer&idO=999999');
+
+        $I->seeResponseCodeIs(HttpCode::NOT_FOUND);
+        $I->see("Cet organisateur n'existe pas ou plus");
+        $I->dontSeeElement('#ajouter_editer');
+    }
+
+    /**
      * Un nom vide est refusé côté serveur, et le formulaire est ré-affiché avec la
      * saisie plutôt que redirigé vers la fiche. C'est aussi ce qui garde ce test
      * read-only : la validation échoue avant tout enregistrement.

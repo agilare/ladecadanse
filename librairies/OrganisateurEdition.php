@@ -3,11 +3,9 @@
 namespace Ladecadanse;
 
 use Ladecadanse\Utils\DbConnectorPdo;
+use Ladecadanse\Utils\UserHtmlSanitizer;
 use Ladecadanse\Utils\Validateur;
 use PDO;
-
-use Symfony\Component\HtmlSanitizer\HtmlSanitizer;
-use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
 
 /**
  * Traitement du formulaire d'ajout et de modification d'un organisateur
@@ -16,6 +14,10 @@ use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
  * Passée sous PDO (issue #115) sur le modèle de SalleEdition : requêtes
  * préparées et colonnes nommées, à la place de l'Element générique qui
  * construisait son SET à partir des clés du tableau de valeurs.
+ *
+ * Ordre des membres : constantes, propriétés, constructeur, le cycle de vie du
+ * formulaire (charger, traiter, vérifier, enregistrer), les accesseurs que la vue
+ * appelle, puis les méthodes internes.
  */
 class OrganisateurEdition extends Edition
 {
@@ -28,105 +30,80 @@ class OrganisateurEdition extends Edition
     ];
 
     private DbConnectorPdo $pdo;
-    private Validateur $verif;
-    private HtmlSanitizer $htmlSanitizer;
     private string $repUploads;
 
+    /** Identifiant de la fiche en cours d'édition ; 0 tant qu'elle n'est pas enregistrée. */
+    private int $idOrganisateur = 0;
+
     /**
-     * Noms des images enregistrées en base. Ils sont lus là et nulle part
-     * ailleurs : le formulaire les postait dans des champs cachés, où n'importe
-     * quelle valeur pouvait être glissée.
+     * Champs image dont la case « Supprimer » a été cochée. Nommé ainsi parce que le
+     * `$supprimer` d'Edition laissait croire qu'on supprimait l'organisateur lui-même.
+     *
+     * @var list<string>
+     */
+    private array $imagesASupprimer = [];
+
+    /**
+     * Ce que la base dit déjà de la fiche, par opposition à $valeurs, qui porte la
+     * saisie en cours. Les deux sont nécessaires : c'est en les comparant qu'on sait
+     * quelle image remplacer, et qu'on retrouve le nom à afficher quand un envoi
+     * rejeté a laissé la saisie à moitié faite.
+     *
+     * Les noms de fichiers y figurent au même titre que les autres colonnes ; c'est
+     * dans $fichiers, hérité d'Edition, que vivent les entrées de $_FILES — des
+     * métadonnées d'envoi, pas des valeurs de colonne.
      *
      * @var array<string, string>
      */
-    private array $imagesEnBase = ['logo' => '', 'photo' => ''];
+    private array $valeursEnBase = ['nom' => '', 'statut' => 'actif', 'logo' => '', 'photo' => ''];
 
-    private string $nomEnBase = '';
-    private string $statutEnBase = 'actif';
-
-    /** Auteur de la fiche : la personne qui l'a créée, écrite à l'insertion seulement. */
+    /**
+     * Auteur à inscrire sur une fiche créée.
+     *
+     * Entier pour l'instant, faute de mieux : la colonne `idPersonne` vaut 0 pour les
+     * contenus sans auteur. Le jour où elle acceptera NULL — ce qui dirait « pas
+     * d'auteur » sans se confondre avec un identifiant —, ce type deviendra ?int et
+     * 0 cessera d'être une valeur possible.
+     */
     private int $authorId = 0;
 
     /**
-     * Le statut n'est proposé qu'aux administrateurs. Pour les autres, la valeur
-     * postée est ignorée au profit de celle déjà en base : le champ caché du
-     * formulaire annonçait « actif », si bien qu'un acteur modifiant une fiche
-     * dépubliée la republiait sans le savoir.
+     * Le statut n'est proposé qu'aux administrateurs : la page le dit ici, faute de
+     * quoi un POST forgé passerait la valeur de son choix. Voir statutAEcrire().
      */
     private bool $statusEditable = false;
 
-    public function __construct()
+    /**
+     * Les instances arrivent en paramètre pour que la classe soit exerçable hors
+     * requête HTTP ; les valeurs par défaut évitent d'imposer un conteneur aux pages,
+     * qui écrivent toutes `new OrganisateurEdition()`.
+     */
+    public function __construct(
+        ?DbConnectorPdo $pdo = null,
+        private readonly Validateur $verif = new Validateur(),
+        private readonly UserHtmlSanitizer $htmlSanitizer = new UserHtmlSanitizer(),
+    )
     {
         global $rep_uploads_organisateurs;
 
-        $champs = array_fill_keys(array_keys(Organisateur::FIELDS), '');
-        $champs['statut'] = 'actif';
+        $valeurs = array_fill_keys(array_keys(Organisateur::FIELDS), '');
+        $valeurs['statut'] = 'actif';
 
-        parent::__construct('organisateur', $champs, ['logo' => [], 'photo' => []]);
+        parent::__construct('organisateur', $valeurs, ['logo' => [], 'photo' => []]);
 
-        $this->pdo = DbConnectorPdo::getInstance();
-        $this->verif = new Validateur();
+        // Le connecteur est un singleton, qu'un défaut de paramètre ne sait pas appeler
+        $this->pdo = $pdo ?? DbConnectorPdo::getInstance();
         $this->repUploads = $rep_uploads_organisateurs;
-
-        $this->htmlSanitizer = new HtmlSanitizer((new HtmlSanitizerConfig())
-            ->allowSafeElements()
-            ->allowElement('h3')
-            ->allowElement('blockquote')
-            ->allowElement('a', ['href', 'title', 'target'])
-            // TinyMCE (remove_script_host) écrit les liens internes en relatif (/lieu/lieu.php?idL=1),
-            // sans ceci le href serait supprimé
-            ->allowRelativeLinks(true)
-            ->allowLinkSchemes(['https', 'http', 'mailto'])
-            ->forceAttribute('a', 'rel', 'noopener noreferrer'));
-    }
-
-    public function setId(int $id): void
-    {
-        $this->id = $id;
     }
 
     /**
-     * Auteur à inscrire sur une fiche créée : la personne qui la saisit. Une
-     * modification ne le déplace pas vers celui qui la fait — c'est de lui que
-     * dépend son droit de modifier la fiche.
+     * Charge la fiche à modifier.
+     *
+     * @return bool false si elle n'existe pas — à charge de l'appelant de répondre 404
+     *              plutôt que d'afficher un formulaire vide sous un titre sans nom
      */
-    public function setAuthorId(int $authorId): void
-    {
-        $this->authorId = $authorId;
-    }
-
-    public function setStatusEditable(bool $statusEditable): void
-    {
-        $this->statusEditable = $statusEditable;
-    }
-
-    /**
-     * Nom du fichier image enregistré en base, pour l'aperçu du formulaire.
-     */
-    public function getStoredImageName(string $champ): string
-    {
-        return $this->imagesEnBase[$champ] ?? '';
-    }
-
-    /**
-     * La case « Supprimer » de ce champ image a-t-elle été cochée ?
-     */
-    public function isMarkedForDeletion(string $champ): bool
-    {
-        return in_array($champ, $this->supprimer, true);
-    }
-
-    /**
-     * Nom tel qu'il est enregistré, pour le titre de la page : celui du
-     * formulaire est la saisie en cours, qu'un envoi rejeté laisse à moitié faite.
-     */
-    public function getStoredName(): string
-    {
-        return $this->nomEnBase;
-    }
-
     #[\Override]
-    public function loadValeurs(int $id): void
+    public function loadValeurs(int $id): bool
     {
         $stmt = $this->pdo->prepare("SELECT * FROM organisateur WHERE idOrganisateur = :id");
         $stmt->execute([':id' => $id]);
@@ -134,7 +111,7 @@ class OrganisateurEdition extends Edition
         $ligne = $stmt->fetch(PDO::FETCH_ASSOC);
         if ($ligne === false)
         {
-            return;
+            return false;
         }
 
         foreach (array_keys($this->valeurs) as $champ)
@@ -145,15 +122,11 @@ class OrganisateurEdition extends Edition
             }
         }
 
-        foreach (array_keys(self::IMAGES) as $champ)
-        {
-            $this->imagesEnBase[$champ] = (string) $ligne[$champ];
-        }
-
-        $this->nomEnBase = (string) $ligne['nom'];
-        $this->statutEnBase = (string) $ligne['statut'];
-        $this->id = $id;
+        $this->lireValeursEnBase($ligne);
+        $this->idOrganisateur = $id;
         $this->authorId = (int) $ligne['idPersonne'];
+
+        return true;
     }
 
     #[\Override]
@@ -174,19 +147,17 @@ class OrganisateurEdition extends Edition
             $this->fichiers[$champ] = $files[$champ] ?? ['name' => '', 'tmp_name' => '', 'size' => 0];
         }
 
-        $this->supprimer = (isset($post['supprimer']) && is_array($post['supprimer'])) ? $post['supprimer'] : [];
+        $this->imagesASupprimer = (isset($post['supprimer']) && is_array($post['supprimer'])) ? $post['supprimer'] : [];
 
-        // Les images à remplacer sont celles de la base, pas celles que le POST annonce
-        if ($this->action === 'update' && !$this->chargerEtatEnBase())
+        // L'image à remplacer et le statut à conserver sont ceux de la base, pas ceux
+        // que le POST annonce. La page a déjà répondu 404 si la fiche n'existe pas :
+        // ce retour ne couvre que la suppression concurrente d'une fiche en cours d'édition.
+        if ($this->action === 'update' && !$this->chargerValeursEnBase())
         {
-            $this->verif->setErreur("nom", "Cet organisateur n'existe pas");
             return false;
         }
 
-        if (!$this->statusEditable)
-        {
-            $this->valeurs['statut'] = $this->action === 'update' ? $this->statutEnBase : 'actif';
-        }
+        $this->valeurs['statut'] = $this->statutAEcrire();
 
         if (!$this->verification())
         {
@@ -200,8 +171,6 @@ class OrganisateurEdition extends Edition
     public function verification(): bool
     {
         global $mimes_images_acceptes;
-
-        $this->verif = new Validateur();
 
         // Longueurs et obligation viennent de Organisateur::FIELDS, dont le formulaire tire
         // aussi ses maxlength et son required : ce qu'il laisse saisir est ce qui est accepté ici
@@ -242,6 +211,74 @@ class OrganisateurEdition extends Edition
         };
     }
 
+    public function setIdOrganisateur(int $idOrganisateur): void
+    {
+        $this->idOrganisateur = $idOrganisateur;
+    }
+
+    public function getIdOrganisateur(): int
+    {
+        return $this->idOrganisateur;
+    }
+
+    /**
+     * La fiche désignée existe-t-elle ?
+     *
+     * À la soumission, la page a besoin de le savoir sans recharger le formulaire :
+     * loadValeurs() écraserait la saisie en cours.
+     */
+    public function ficheExiste(): bool
+    {
+        return $this->chargerValeursEnBase();
+    }
+
+    /**
+     * Auteur à inscrire sur une fiche créée : la personne qui la saisit. Une
+     * modification ne le déplace pas vers celui qui la fait — c'est de lui que
+     * dépend son droit de modifier la fiche.
+     */
+    public function setAuthorId(int $authorId): void
+    {
+        $this->authorId = $authorId;
+    }
+
+    public function setStatusEditable(bool $statusEditable): void
+    {
+        $this->statusEditable = $statusEditable;
+    }
+
+    /**
+     * Nom du fichier image enregistré en base, pour l'aperçu du formulaire.
+     */
+    public function getStoredImageName(string $champ): string
+    {
+        return $this->valeursEnBase[$champ] ?? '';
+    }
+
+    /**
+     * La case « Supprimer » de ce champ image a-t-elle été cochée ?
+     */
+    public function isImageMarkedForDeletion(string $champ): bool
+    {
+        return in_array($champ, $this->imagesASupprimer, true);
+    }
+
+    /**
+     * Nom tel qu'il est enregistré, pour le titre de la page : celui du
+     * formulaire est la saisie en cours, qu'un envoi rejeté laisse à moitié faite.
+     */
+    public function getStoredName(): string
+    {
+        return $this->valeursEnBase['nom'];
+    }
+
+    /*
+     * Les trois méthodes qui suivent ne font que passer la question au Validateur, qui
+     * porte seul la validation et ses messages. Elles restent ici parce que la vue parle
+     * au formulaire et non à ses rouages : lui faire appeler getValidateur()->… la
+     * coupleraient à un objet dont elle n'a que faire.
+     */
+
     public function hasErrors(): bool
     {
         return $this->verif->nbErreurs() > 0;
@@ -275,7 +312,7 @@ class OrganisateurEdition extends Edition
             return false;
         }
 
-        $this->id = (int) $this->pdo->lastInsertId();
+        $this->idOrganisateur = (int) $this->pdo->lastInsertId();
         $this->message = "Organisateur ajouté";
 
         $this->enregistrerLesImages();
@@ -295,7 +332,7 @@ class OrganisateurEdition extends Edition
         // l'enregistrement générique — dépossédait l'auteur au premier passage d'un admin.
         if (!$stmt->execute($this->parametresCommuns() + [
             ':dateModif' => date("Y-m-d H:i:s"),
-            ':id' => $this->id,
+            ':id' => $this->idOrganisateur,
         ]))
         {
             return false;
@@ -306,6 +343,24 @@ class OrganisateurEdition extends Edition
         $this->enregistrerLesImages();
 
         return true;
+    }
+
+    /**
+     * Statut à écrire : celui que le formulaire a posté quand l'utilisateur a le droit
+     * d'en changer, sinon celui que la fiche porte déjà — « actif » pour une création.
+     *
+     * Sans cela, le champ caché que le formulaire donnait aux non-administrateurs
+     * annonçait « actif » : un acteur qui modifiait une fiche dépubliée la republiait
+     * sans le savoir.
+     */
+    private function statutAEcrire(): string
+    {
+        if ($this->statusEditable)
+        {
+            return $this->valeurs['statut'];
+        }
+
+        return $this->action === 'update' ? $this->valeursEnBase['statut'] : 'actif';
     }
 
     /**
@@ -328,10 +383,10 @@ class OrganisateurEdition extends Edition
         $sql = "SELECT idOrganisateur FROM organisateur WHERE nom = :nom AND statut = 'actif'";
         $params = [':nom' => $this->valeurs['nom']];
 
-        if ((int) $this->id > 0)
+        if ($this->getIdOrganisateur() > 0)
         {
             $sql .= " AND idOrganisateur <> :id";
-            $params[':id'] = $this->id;
+            $params[':id'] = $this->idOrganisateur;
         }
 
         $stmt = $this->pdo->prepare($sql);
@@ -341,15 +396,15 @@ class OrganisateurEdition extends Edition
     }
 
     /**
-     * Ce que la base dit déjà de la fiche : ses images, son nom, son statut.
+     * Relit ce que la base dit de la fiche, sans toucher à la saisie en cours.
      *
      * @return bool false si la fiche n'existe pas — un UPDATE sur un identifiant
      *              inconnu ne touche aucune ligne et réussit en silence
      */
-    private function chargerEtatEnBase(): bool
+    private function chargerValeursEnBase(): bool
     {
         $stmt = $this->pdo->prepare("SELECT nom, statut, logo, photo FROM organisateur WHERE idOrganisateur = :id");
-        $stmt->execute([':id' => $this->id]);
+        $stmt->execute([':id' => $this->idOrganisateur]);
 
         $ligne = $stmt->fetch(PDO::FETCH_ASSOC);
         if ($ligne === false)
@@ -357,11 +412,20 @@ class OrganisateurEdition extends Edition
             return false;
         }
 
-        $this->imagesEnBase = ['logo' => (string) $ligne['logo'], 'photo' => (string) $ligne['photo']];
-        $this->nomEnBase = (string) $ligne['nom'];
-        $this->statutEnBase = (string) $ligne['statut'];
+        $this->lireValeursEnBase($ligne);
 
         return true;
+    }
+
+    /**
+     * @param array<string, mixed> $ligne
+     */
+    private function lireValeursEnBase(array $ligne): void
+    {
+        foreach (array_keys($this->valeursEnBase) as $colonne)
+        {
+            $this->valeursEnBase[$colonne] = (string) $ligne[$colonne];
+        }
     }
 
     /**
@@ -380,13 +444,13 @@ class OrganisateurEdition extends Edition
             $nom = $this->nomImageApresEdition(
                 $champ,
                 $this->fichiers[$champ],
-                $this->imagesEnBase[$champ],
-                in_array($champ, $this->supprimer, true),
-                (int) $this->id,
+                $this->valeursEnBase[$champ],
+                $this->isImageMarkedForDeletion($champ),
+                $this->getIdOrganisateur(),
                 $this->repUploads
             );
 
-            if ($nom === $this->imagesEnBase[$champ])
+            if ($nom === $this->valeursEnBase[$champ])
             {
                 continue;
             }
@@ -409,7 +473,7 @@ class OrganisateurEdition extends Edition
 
         // Les noms de colonnes viennent de self::IMAGES, jamais d'une saisie
         $affectations = [];
-        $params = [':id' => $this->id];
+        $params = [':id' => $this->idOrganisateur];
         foreach ($nomsFichiers as $champ => $nom)
         {
             $affectations[] = $champ . " = :" . $champ;
@@ -419,6 +483,6 @@ class OrganisateurEdition extends Edition
         $stmt = $this->pdo->prepare("UPDATE organisateur SET " . implode(', ', $affectations) . " WHERE idOrganisateur = :id");
         $stmt->execute($params);
 
-        $this->imagesEnBase = array_merge($this->imagesEnBase, $nomsFichiers);
+        $this->valeursEnBase = array_merge($this->valeursEnBase, $nomsFichiers);
     }
 }

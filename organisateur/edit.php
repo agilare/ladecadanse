@@ -41,6 +41,35 @@ elseif ($is_edit_mode && !$authorization->isPersonneAllowedToEditOrganisateur($_
     $http_error = [403, 'Forbidden', "Vous ne pouvez pas modifier cet organisateur"];
 }
 
+// Publier ou dépublier une fiche reste une décision de modération
+$can_change_status = $_SESSION['Sgroupe'] <= UserLevel::ADMIN;
+$is_form_submitted = isset($_POST['form_submitted']);
+
+$organisateur_form = new OrganisateurEdition();
+$organisateur_form->setAction($get['action']);
+$organisateur_form->setAuthorId((int) ($_SESSION['SidPersonne'] ?? 0));
+$organisateur_form->setStatusEditable($can_change_status);
+
+if ($http_error === null && $is_edit_mode)
+{
+    $organisateur_form->setIdOrganisateur($get['idO']);
+
+    /*
+     * À l'affichage la fiche remplit le formulaire ; à la soumission on vérifie seulement
+     * qu'elle existe encore, la recharger écraserait la saisie en cours. Sans ce contrôle,
+     * un identifiant inconnu rendait un formulaire vide sous un titre sans nom, et l'UPDATE
+     * qui suivait ne touchait aucune ligne en annonçant une réussite.
+     */
+    $fiche_existe = $is_form_submitted
+        ? $organisateur_form->ficheExiste()
+        : $organisateur_form->loadValeurs($get['idO']);
+
+    if (!$fiche_existe)
+    {
+        $http_error = [404, 'Not Found', "Cet organisateur n'existe pas ou plus"];
+    }
+}
+
 if ($http_error !== null)
 {
     [$status_code, $status_reason, $error_message] = $http_error;
@@ -53,21 +82,8 @@ if ($http_error !== null)
     exit;
 }
 
-// Publier ou dépublier une fiche reste une décision de modération
-$can_change_status = $_SESSION['Sgroupe'] <= UserLevel::ADMIN;
-
-$organisateur_form = new OrganisateurEdition();
-$organisateur_form->setAction($get['action']);
-$organisateur_form->setAuthorId((int) ($_SESSION['SidPersonne'] ?? 0));
-$organisateur_form->setStatusEditable($can_change_status);
-
-if ($is_edit_mode)
-{
-    $organisateur_form->setId($get['idO']);
-}
-
 $token_error = false;
-if (isset($_POST['form_submitted']))
+if ($is_form_submitted)
 {
     if (!SecurityToken::check($_POST['token'] ?? '', $_SESSION['token'] ?? ''))
     {
@@ -76,7 +92,7 @@ if (isset($_POST['form_submitted']))
     elseif ($organisateur_form->traitement($_POST, $_FILES))
     {
         $_SESSION['organisateur_flash_msg'] = $organisateur_form->getMessage();
-        header("Location: /organisateur/organisateur.php?idO=" . (int) $organisateur_form->id);
+        header("Location: /organisateur/organisateur.php?idO=" . $organisateur_form->getIdOrganisateur());
         die();
     }
     elseif (!$organisateur_form->hasErrors())
@@ -85,10 +101,6 @@ if (isset($_POST['form_submitted']))
         // hors d'état, ce dont l'auteur du formulaire ne peut rien faire.
         throw new RuntimeException("L'enregistrement de l'organisateur a échoué sans erreur de validation");
     }
-}
-elseif ($is_edit_mode)
-{
-    $organisateur_form->loadValeurs($get['idO']);
 }
 
 $form_url_parameters = $is_edit_mode ? "update&idO=" . $get['idO'] : "insert";
