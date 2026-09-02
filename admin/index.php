@@ -55,7 +55,7 @@ $page_results = $stmt->fetchAll(PDO::FETCH_GROUP);
 $sql_region = '';
 if (!empty($_SESSION['region_admin']))
 {
-    $sql_region = " AND region='" . $connector->sanitize($_SESSION['region_admin']) . "'";
+    $sql_region = " AND e.region='" . $connector->sanitize($_SESSION['region_admin']) . "'";
 }
 
 
