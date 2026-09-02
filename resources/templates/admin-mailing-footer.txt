@@ -1,3 +1,2 @@
 --
-Vous recevez ce message parce que vous avez un compte sur La décadanse : %site_url%
-Si vous ne souhaitez plus recevoir ce type de message, ou supprimer votre compte, écrivez-nous : %contact_url%
+Vous recevez ce message parce que vous avez un compte sur La décadanse. Si vous ne souhaitez plus recevoir ce type de message, écrivez-nous : %contact_url%
