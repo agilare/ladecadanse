@@ -767,7 +767,7 @@ form#ajouter_editer label.continu
 }
 
 
-form#ajouter_editer .supImg
+form#ajouter_editer .existing_img
 {
     margin-left: 50px;
 }

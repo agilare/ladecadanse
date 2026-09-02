@@ -324,14 +324,14 @@ form#ajouter_editer .js-pdf-message {
 	display:inline-block;
 }
 
-	form#ajouter_editer .supImg
+	form#ajouter_editer .existing_img
 	{
         font-size:0.9em;
         margin-top: 20px;
         margin-left:115px;
 	}
 
-		form .supImg img
+		form .existing_img img
 		{
 			border:1px solid gray;
             border-radius:3px;

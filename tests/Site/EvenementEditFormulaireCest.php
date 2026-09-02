@@ -269,13 +269,13 @@ class EvenementEditFormulaireCest
         $I->amOnPage('/evenement-edit.php?action=editer&idE=' . TestEnv::getInt('LADECADANSE_TEST_EVENT_ID_WITH_FLYER'));
         $I->seeResponseCodeIs(HttpCode::OK);
 
-        $I->seeElement('.supImg a.magnific-popup img');
-        $I->seeElement('.supImg input[type=checkbox][name=sup_flyer]');
-        $I->seeElement('.supImg label[for=sup_flyer]');
+        $I->seeElement('.existing_img a.magnific-popup img');
+        $I->seeElement('.existing_img input[type=checkbox][name=sup_flyer]');
+        $I->seeElement('.existing_img label[for=sup_flyer]');
 
         $I->assertSame(
-            $I->grabAttributeFrom('.supImg a.magnific-popup', 'href'),
-            $I->grabAttributeFrom('.supImg a.magnific-popup img', 'src'),
+            $I->grabAttributeFrom('.existing_img a.magnific-popup', 'href'),
+            $I->grabAttributeFrom('.existing_img a.magnific-popup img', 'src'),
             'Le lien et la vignette de l’aperçu doivent viser la même image'
         );
     }

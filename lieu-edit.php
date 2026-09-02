@@ -445,7 +445,7 @@ include("_header.inc.php");
                 ?>
 
                 <input type="hidden" name="logo_existant" value="<?php echo $form->getValeur('logo'); ?>" />
-                <div class="supImg">
+                <div class="existing_img">
                             <?php echo "<img src=\"" . $assets->get(Lieu::getAssetPath(Lieu::getFilePath($form->getValeur('logo')))) . "\" />"; ?>
                             <div>
                     <label for="supprimer_logo" class="continu">Supprimer</label>
@@ -479,7 +479,7 @@ include("_header.inc.php");
                 }
                 ?>
                     <input type="hidden" name="photo1_existant" value="<?php echo $form->getValeur('photo1'); ?>" />
-                    <div class="supImg">
+                    <div class="existing_img">
                         <?php echo "<img src=\"" . $assets->get(Lieu::getAssetPath(Lieu::getFilePath($form->getValeur('photo1')))) . "\" />"; ?>
                     <div>
                         <label for="supprimer_photo1" class="continu">Supprimer</label>

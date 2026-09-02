@@ -453,14 +453,14 @@ table#ajouts tr:nth-child(even) {
     background:yellow;
 }
 
-#ajouter_editer .supImg
+#ajouter_editer .existing_img
 {
     font-size:0.8em;
     margin-top:5px;
     margin-left:150px;
 }
 
-form .supImg img
+form .existing_img img
 {
     border:1px solid gray;
     /* aperçu de l'image existante : version normale (pas la miniature "s_"), bornée */

@@ -11,7 +11,7 @@ form#ajouter_editer
     /*
      * Où commence la colonne des champs : la largeur du label flottant, padding et
      * marge compris (8em + 0.4em + 0.3em, cf. formulaires.css). Tout ce qui doit
-     * s'aligner sur les saisies part de là — le 11em qu'employaient .msg et .supImg
+     * s'aligner sur les saisies part de là — le 11em qu'employaient .msg et .existing_img
      * les décalait d'une trentaine de pixels vers la droite, sans raison.
      */
     --colonne-champs: 8.7em;
@@ -67,7 +67,7 @@ form#ajouter_editer fieldset legend
     }
 
     /* aligné sur la colonne des champs plutôt que sur des 115px qui ne correspondaient à rien */
-    form#ajouter_editer .supImg
+    form#ajouter_editer .existing_img
     {
         /*
          * formulaires.css donne 0.9em à ce bloc, et une marge en em s'y calculerait
@@ -78,7 +78,7 @@ form#ajouter_editer fieldset legend
         margin-left: var(--colonne-champs);
     }
 
-    form#ajouter_editer .supImg > div
+    form#ajouter_editer .existing_img > div
     {
         font-size: 0.9em;
     }
@@ -95,7 +95,7 @@ form#ajouter_editer fieldset legend
      * ce fieldset élargi ne bornait donc rien. La page sortait de 82px du viewport
      * d'un téléphone de 375px.
      */
-    /* .supImg garde le retrait que mobile.css lui donne : sur cette largeur, il centre
+    /* .existing_img garde le retrait que mobile.css lui donne : sur cette largeur, il centre
        l'aperçu plutôt qu'il ne le décale */
     form#ajouter_editer .guideForm,
     form#ajouter_editer .msg

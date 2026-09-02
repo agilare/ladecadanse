@@ -1596,7 +1596,7 @@ if ($show_form)
             {
                 $apercu_flyer = sanitizeForHtml($assets->get(Evenement::getAssetPath(Evenement::getFilePath($champs['flyer']))));
             ?>
-                <div class="supImg">
+                <div class="existing_img">
                     <a href="<?= $apercu_flyer ?>" class="magnific-popup" target="_blank">
                         <img src="<?= $apercu_flyer ?>" alt="Flyer de cet événement" />
                     </a>
@@ -1638,7 +1638,7 @@ if ($show_form)
         {
             $apercu_image = sanitizeForHtml($assets->get(Evenement::getAssetPath(Evenement::getFilePath($champs['image']))));
         ?>
-            <div class="supImg">
+            <div class="existing_img">
                 <a href="<?= $apercu_image ?>" class="magnific-popup" target="_blank">
                     <img src="<?= $apercu_image ?>" alt="Photo" />
                 </a>
