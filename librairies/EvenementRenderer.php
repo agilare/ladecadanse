@@ -95,6 +95,29 @@ class EvenementRenderer
     }
 
     /**
+     * Colonne « par » des listes d'administration : le lien vers la fiche de l'auteur.
+     *
+     * Un événement peut n'avoir aucun auteur — le formulaire public accepte les propositions
+     * sans compte, et `idPersonne` vaut alors 0. Les deux listes rendaient quand même un lien,
+     * vers `/user/dashboard.php?idP=0` et sans libellé : rien à lire, rien à cliquer, et une
+     * infobulle vide.
+     *
+     * @param int $maxCaracteres Coupe le texte visible au-delà, le pseudo entier restant dans
+     *                           l'infobulle ; 0 pour ne pas couper
+     */
+    public static function authorLinkHtml(int $idPersonne, ?string $pseudo, int $maxCaracteres = 0): string
+    {
+        if ($idPersonne <= 0 || $pseudo === null || $pseudo === '')
+        {
+            return 'anonyme';
+        }
+
+        $texte = $maxCaracteres > 0 ? Text::truncateCharsToHtml($pseudo, $maxCaracteres) : sanitizeForHtml($pseudo);
+
+        return '<a href="/user/dashboard.php?idP=' . $idPersonne . '" title="' . sanitizeForHtml($pseudo) . '">' . $texte . '</a>';
+    }
+
+    /**
      * @param string $horaire_debut datetime
      * @param string $horaire_fin datetime
      * @param string $date_evenement date

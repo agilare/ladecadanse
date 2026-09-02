@@ -77,4 +77,50 @@ final class EvenementRendererTest extends Unit
         $this->assertInstanceOf(\DateTimeImmutable::class, \DateTimeImmutable::createFromFormat($format, $dtstart));
         $this->assertSame([], \DateTimeImmutable::getLastErrors() ?: []);
     }
+
+    /**
+     * Colonne « par » des listes d'administration.
+     */
+    public function testAuthorLinkHtmlRendLeLienVersLaFiche(): void
+    {
+        $this->assertSame(
+            '<a href="/user/dashboard.php?idP=42" title="michel">michel</a>',
+            EvenementRenderer::authorLinkHtml(42, 'michel')
+        );
+    }
+
+    /**
+     * Un événement proposé sans compte n'a pas d'auteur : la colonne rendait quand même
+     * un lien, vers `idP=0`, sans libellé ni infobulle.
+     */
+    public function testAuthorLinkHtmlSansAuteurNeRendAucunLien(): void
+    {
+        foreach ([[0, null], [0, ''], [0, 'restant'], [42, null], [42, '']] as [$idPersonne, $pseudo])
+        {
+            $html = EvenementRenderer::authorLinkHtml($idPersonne, $pseudo);
+
+            $this->assertSame('anonyme', $html);
+            $this->assertStringNotContainsString('<a', $html);
+        }
+    }
+
+    /**
+     * Le texte visible est coupé — un seul pseudo long élargissait toute la colonne —
+     * mais le pseudo entier reste dans l'infobulle.
+     */
+    public function testAuthorLinkHtmlCoupeLeTexteEtGardeLePseudoEnInfobulle(): void
+    {
+        $html = EvenementRenderer::authorLinkHtml(42, 'michelangelo', 10);
+
+        $this->assertStringContainsString('title="michelangelo"', $html);
+        $this->assertStringContainsString('>michelange…<', $html);
+    }
+
+    public function testAuthorLinkHtmlEchappeLePseudo(): void
+    {
+        $html = EvenementRenderer::authorLinkHtml(42, '<script>x</script>');
+
+        $this->assertStringNotContainsString('<script>', $html);
+        $this->assertStringContainsString('&lt;script&gt;', $html);
+    }
 }

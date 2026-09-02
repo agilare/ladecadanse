@@ -230,7 +230,7 @@ require_once '../_header.inc.php';
                         <td><?= ucfirst(Evenement::genreLabel($event['e_genre'])) ?></td>
                         <td><?= EvenementRenderer::schedulesToHhMm($event['e_horaire_debut'], $event['e_horaire_fin'], $event['e_dateEvenement']) ?></td>
                         <td style='text-align: center;'><?= EvenementRenderer::$iconStatus[$event['e_statut']] ?></td>
-                        <td><a href="/user/dashboard.php?idP=<?= (int)$event['idPersonne'] ?>"><?= sanitizeForHtml($event['pseudo']) ?></a></td>
+                        <td><?= EvenementRenderer::authorLinkHtml((int) $event['idPersonne'], $event['pseudo']) ?></td>
                         <td class="actions">
                             <?php if ($_SESSION['Sgroupe'] <= UserLevel::ADMIN) : ?>
                                 <a href="/evenement-edit.php?idE=<?= (int)$event['e_idEvenement'] ?>&amp;action=editer" title="Modifier cet événement" aria-label="Modifier cet événement"><?= $iconeEditer ?></a>

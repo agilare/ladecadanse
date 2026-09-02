@@ -8,7 +8,6 @@ use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\QueryParamValidator;
 use Ladecadanse\Utils\ImageDriver2;
 use Ladecadanse\Utils\PdfToImage;
-use Ladecadanse\Utils\Text;
 use Ladecadanse\EvenementCollection;
 use Ladecadanse\UserLevel;
 use Ladecadanse\HtmlShrink;
@@ -583,7 +582,7 @@ $erreurs = $verif->getErreurs();
                 <td><?= EvenementRenderer::$iconStatus[$tab_even['e_statut']] ?></td>
                 <td><?= $tab_datetime_dateajout[1]." ".substr($tab_datetime_dateajout[0], 0, -3) ?></td>
                 <?php // le pseudo entier reste lisible dans l'infobulle du lien ?>
-                <td><a href="/user/dashboard.php?idP=<?= (int)$tab_even['idPersonne'] ?>" title="<?= sanitizeForHtml((string) $tab_even['pseudo']) ?>"><?= Text::truncateCharsToHtml((string) $tab_even['pseudo'], PSEUDO_MAX_CARACTERES) ?></a></td>
+                <td><?= EvenementRenderer::authorLinkHtml((int) $tab_even['idPersonne'], $tab_even['pseudo'], PSEUDO_MAX_CARACTERES) ?></td>
                 <?php if ($_SESSION['Sgroupe'] <= UserLevel::ADMIN) : ?>
                     <td class="actions-even">
                         <?php if ($tab_even['e_statut'] != 'inactif') : ?>
