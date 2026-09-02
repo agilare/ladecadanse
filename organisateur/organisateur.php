@@ -175,7 +175,10 @@ include("../_header.inc.php");
             <?php if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= UserLevel::ACTOR) ) : ?>
                 <li class="action_ajouter"><a href="/evenement-edit.php?idO=<?= (int)$get['idO'] ?>">Ajouter un événement de cet organisateur</a></li>
             <?php endif; ?>
-            <?php if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= UserLevel::AUTHOR || (isset($_SESSION['SidPersonne']) && $authorization->isPersonneInOrganisateur($_SESSION['SidPersonne'], $get['idO']) && $_SESSION['Sgroupe'] <= UserLevel::ACTOR))) : ?>
+            <?php /* Même question que le formulaire d'édition, posée au même endroit : un lien
+                     proposé mais refusé à l'arrivée était le symptôme de deux conditions écrites
+                     séparément */ ?>
+            <?php if ($authorization->isPersonneAllowedToEditOrganisateur($_SESSION, $get['idO'])) : ?>
                 <li class="action_editer"><a href="/organisateur/edit.php?action=editer&amp;idO=<?= (int) $get['idO'] ?>">Modifier cet organisateur</a></li>
             <?php endif; ?>
         </ul>

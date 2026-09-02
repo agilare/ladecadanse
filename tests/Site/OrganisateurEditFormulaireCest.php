@@ -32,7 +32,7 @@ class OrganisateurEditFormulaireCest
 
     /**
      * Le formulaire d'ajout rend les champs dont dépendent le JS et le traitement :
-     * le témoin `formulaire=ok` (sans lui, js-submit-freeze-wait fait perdre la
+     * le témoin `form_submitted` (sans lui, js-submit-freeze-wait fait perdre la
      * soumission), le jeton CSRF, et les deux champs fichier.
      */
     public function formulaireAjoutRendSesChamps(SiteTester $I)
@@ -42,7 +42,7 @@ class OrganisateurEditFormulaireCest
 
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->see("Ajouter un organisateur", 'h1');
-        $I->seeElement('input[type=hidden][name=formulaire][value=ok]');
+        $I->seeElement('input[type=hidden][name=form_submitted]');
         $I->seeElement('input[type=hidden][name=token]');
         $I->seeElement('#nom');
         $I->seeElement('input[type=file]#logo');
@@ -124,7 +124,25 @@ class OrganisateurEditFormulaireCest
         $I->loginAsActor();
         $I->amOnPage('/organisateur/edit.php?action=editer&idO=' . TestEnv::getInt('LADECADANSE_TEST_ORGA_ID_FOREIGN'));
 
+        // Le refus est un 403, et il est rendu dans la page du site : un message HTML nu
+        // au-dessus d'une page vide ne disait rien au client ni ne ramenait nulle part
+        $I->seeResponseCodeIs(HttpCode::FORBIDDEN);
         $I->see("Vous ne pouvez pas modifier cet organisateur");
+        $I->seeElement('#menu_pratique');
+        $I->dontSeeElement('#ajouter_editer');
+    }
+
+    /**
+     * Une modification sans organisateur désigné est une requête malformée, pas un
+     * formulaire vide : elle vaut 400, dans la page du site elle aussi.
+     */
+    public function modificationSansIdentifiantEstUneRequeteMalformee(SiteTester $I)
+    {
+        $I->loginAsAdmin();
+        $I->amOnPage('/organisateur/edit.php?action=editer');
+
+        $I->seeResponseCodeIs(HttpCode::BAD_REQUEST);
+        $I->see("Aucun organisateur n'est désigné");
         $I->dontSeeElement('#ajouter_editer');
     }
 

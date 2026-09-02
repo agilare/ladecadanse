@@ -6,38 +6,43 @@
  * Logo et photo n'en différaient que par leurs libellés ; le bloc était recopié
  * deux fois, l'une des copies ayant gardé un getimagesize() sans emploi.
  *
- * Attend, définies par la page : $form (OrganisateurEdition), $champImage
- * ('logo' ou 'photo'), $libelleImage, $titreImage.
+ * Attend, définies par la page : $organisateur_form, $image_field ('logo' ou
+ * 'photo'), $image_label, $image_title.
  *
- * @var Ladecadanse\OrganisateurEdition $form
- * @var string $champImage
- * @var string $libelleImage
- * @var string $titreImage
+ * @var Ladecadanse\OrganisateurEdition $organisateur_form
+ * @var string $image_field
+ * @var string $image_label
+ * @var string $image_title
  */
 
 use Ladecadanse\Organisateur;
+use Ladecadanse\Utils\Validateur;
 
-$imageEnBase = $form->getImageEnBase($champImage);
+// Les formats proposés au navigateur sont ceux que la validation accepte (app/config.php),
+// et le poids annoncé est la limite qu'elle applique : les deux étaient recopiés en dur ici
+$stored_image = $organisateur_form->getStoredImageName($image_field);
+$accepted_mime_types = implode(',', $mimes_images_acceptes);
+$max_file_size = Validateur::formaterTaille(UPLOAD_MAX_FILESIZE);
 ?>
 
 <p>
-    <label for="<?= $champImage ?>"><?= $libelleImage ?></label>
-    <input type="file" name="<?= $champImage ?>" id="<?= $champImage ?>" class="js-file-upload-size-max"
-        title="<?= sanitizeForHtml($titreImage) ?>" size="25"
-        accept="image/jpeg,image/pjpeg,image/png,image/x-png,image/gif,image/webp" />
-    <?= $form->getHtmlErreur($champImage) ?>
+    <label for="<?= $image_field ?>"><?= $image_label ?> :</label>
+    <input type="file" name="<?= $image_field ?>" id="<?= $image_field ?>" class="js-file-upload-size-max"
+        title="<?= sanitizeForHtml($image_title) ?>" size="25"
+        accept="<?= sanitizeForHtml($accepted_mime_types) ?>" />
+    <?= $organisateur_form->getHtmlErreur($image_field) ?>
 </p>
 
-<div class="guideForm">Formats JPEG, PNG, GIF ou WebP, max. 5 Mo</div>
+<div class="guideForm">Formats JPEG, PNG, GIF ou WebP, max. <?= sanitizeForHtml($max_file_size) ?></div>
 
-<?php if ($imageEnBase !== '') : ?>
-    <div class="supImg">
-        <img src="<?= $assets->get(Organisateur::getAssetPath(Organisateur::getFilePath($imageEnBase))) ?>"
-            alt="<?= sanitizeForHtml($libelleImage . " de " . $form->getNomEnBase()) ?>" />
+<?php if ($stored_image !== '') : ?>
+    <div class="existing_img">
+        <img src="<?= $assets->get(Organisateur::getAssetPath(Organisateur::getFilePath($stored_image))) ?>"
+            alt="<?= sanitizeForHtml($image_label . " de " . $organisateur_form->getStoredName()) ?>" />
         <div>
-            <input type="checkbox" name="supprimer[]" id="supprimer_<?= $champImage ?>" value="<?= $champImage ?>" class="checkbox"
-                <?= in_array($champImage, $form->getSupprimer(), true) ? 'checked="checked"' : '' ?> />
-            <label for="supprimer_<?= $champImage ?>" class="continu">Supprimer</label>
+            <input type="checkbox" name="supprimer[]" id="supprimer_<?= $image_field ?>" value="<?= $image_field ?>" class="checkbox"
+                <?= $organisateur_form->isMarkedForDeletion($image_field) ? 'checked="checked"' : '' ?> />
+            <label for="supprimer_<?= $image_field ?>" class="continu">Supprimer</label>
         </div>
     </div>
 <?php endif; ?>

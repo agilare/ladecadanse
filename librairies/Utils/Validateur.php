@@ -323,8 +323,12 @@ class Validateur
 
     /**
      * Formate un nombre d'octets pour un message destiné à l'utilisateur.
+     *
+     * Publique parce que les formulaires annoncent eux-mêmes la limite qu'elle sert à
+     * refuser : la promesse faite au visiteur et le message d'erreur doivent sortir de
+     * la même constante, sans quoi ils divergent au premier changement de UPLOAD_MAX_FILESIZE.
      */
-    private static function formaterTaille(int $octets): string
+    public static function formaterTaille(int $octets): string
     {
         return rtrim(rtrim(number_format($octets / 1048576, 1, ',', ''), '0'), ',') . " Mo";
     }

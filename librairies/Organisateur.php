@@ -23,6 +23,26 @@ class Organisateur extends Element
     public const int RESULTS_PER_PAGE = 100;
 
     /**
+     * Contraintes de saisie des champs du formulaire d'édition.
+     *
+     * Partagées par la validation serveur (OrganisateurEdition::verification()) et par
+     * les attributs du formulaire (organisateur/edit.php) : chacun les déclarait de son
+     * côté, sans que rien ne garantisse qu'ils disent la même chose — le maxlength d'un
+     * champ pouvait laisser saisir ce que la validation refuserait ensuite.
+     *
+     * `type` est celui qu'attend Validateur::valider().
+     *
+     * @var array<string, array{type: string, min: int, max: int, required: bool}>
+     */
+    public const array FIELDS = [
+        'nom'          => ['type' => 'texte', 'min' => 1,  'max' => 80,    'required' => true],
+        'adresse'      => ['type' => 'texte', 'min' => 1,  'max' => 80,    'required' => false],
+        'URL'          => ['type' => 'url',   'min' => 2,  'max' => 100,   'required' => false],
+        'email'        => ['type' => 'email', 'min' => 4,  'max' => 100,   'required' => false],
+        'presentation' => ['type' => 'texte', 'min' => 20, 'max' => 10000, 'required' => false],
+    ];
+
+    /**
      * Valeurs de la colonne `statut` (ENUM), avec le libellé montré aux éditeurs.
      *
      * « Publié / Dépublié » plutôt que « Actif / Inactif » : c'est de la visibilité

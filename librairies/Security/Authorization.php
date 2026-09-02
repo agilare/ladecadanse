@@ -87,6 +87,30 @@ class Authorization
     }
 
     /**
+     * Qui peut modifier la fiche d'un organisateur :
+     * - EDITOR (AUTHOR) et au-dessus, sur n'importe laquelle ;
+     * - un ACTOR, sur celles dont il est membre (personne_organisateur) ;
+     * - l'auteur de la fiche (organisateur.idPersonne), quel que soit son niveau.
+     *
+     * Posée ici pour que la page d'édition et le lien « Modifier cet organisateur » de
+     * organisateur.php répondent à la même question : ils la posaient chacun à leur
+     * façon, et le formulaire, plus permissif, ouvrait toutes les fiches à tout ACTOR.
+     */
+    public function isPersonneAllowedToEditOrganisateur(array $sessionToReadonly, int $idOrganisateur): bool
+    {
+        if (!isset($sessionToReadonly['Sgroupe']))
+        {
+            return false;
+        }
+
+        $idPersonne = (int) ($sessionToReadonly['SidPersonne'] ?? 0);
+
+        return $this->isPersonneEditor($sessionToReadonly)
+            || ($sessionToReadonly['Sgroupe'] <= UserLevel::ACTOR && $this->isPersonneInOrganisateur($idPersonne, $idOrganisateur))
+            || $this->isAuthor("organisateur", $idPersonne, $idOrganisateur);
+    }
+
+    /**
      * Vérifie dans la base si une personne est bien l'auteur d'un événement, d'un lieu
      * ou d'un organisateur.
      *

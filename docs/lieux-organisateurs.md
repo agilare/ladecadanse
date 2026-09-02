@@ -8,7 +8,8 @@ droits, appeler le traitement, puis afficher.
 
 ### Qui peut modifier
 
-La même règle que le lien « Modifier cet organisateur » de la fiche publique :
+Une seule règle, dans `Authorization::isPersonneAllowedToEditOrganisateur()` — le formulaire et le
+lien « Modifier cet organisateur » de la fiche publique l'interrogent tous deux :
 
 - niveau `AUTHOR` (6) ou au-dessus, sur n'importe quelle fiche ;
 - niveau `ACTOR` (8), sur les fiches dont la personne est membre (`personne_organisateur`) ;
@@ -16,6 +17,15 @@ La même règle que le lien « Modifier cet organisateur » de la fiche publique
 
 `idPersonne` n'est écrit qu'à la création : il désigne l'auteur, dont dépend ce droit, et une
 modification ne le déplace pas vers celui qui l'a faite.
+
+Un refus répond **403**, et une modification sans organisateur désigné **400** ; les deux se
+rendent dans la page du site, avec son en-tête et son pied.
+
+### Longueurs des champs
+
+`Organisateur::FIELDS` porte, pour chaque champ, son type, ses bornes et son caractère
+obligatoire. Le formulaire en tire ses `maxlength` et son `required`, `OrganisateurEdition` sa
+validation : ce que la page laisse saisir est ce que le serveur accepte.
 
 ### Statut
 

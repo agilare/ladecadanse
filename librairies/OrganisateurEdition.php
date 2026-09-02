@@ -44,7 +44,8 @@ class OrganisateurEdition extends Edition
     private string $nomEnBase = '';
     private string $statutEnBase = 'actif';
 
-    private int $idPersonne = 0;
+    /** Auteur de la fiche : la personne qui l'a créée, écrite à l'insertion seulement. */
+    private int $authorId = 0;
 
     /**
      * Le statut n'est proposé qu'aux administrateurs. Pour les autres, la valeur
@@ -52,20 +53,14 @@ class OrganisateurEdition extends Edition
      * formulaire annonçait « actif », si bien qu'un acteur modifiant une fiche
      * dépubliée la republiait sans le savoir.
      */
-    private bool $statutModifiable = false;
+    private bool $statusEditable = false;
 
     public function __construct()
     {
         global $rep_uploads_organisateurs;
 
-        $champs = [
-            'nom' => '',
-            'adresse' => '',
-            'URL' => '',
-            'email' => '',
-            'presentation' => '',
-            'statut' => 'actif',
-        ];
+        $champs = array_fill_keys(array_keys(Organisateur::FIELDS), '');
+        $champs['statut'] = 'actif';
 
         parent::__construct('organisateur', $champs, ['logo' => [], 'photo' => []]);
 
@@ -90,29 +85,42 @@ class OrganisateurEdition extends Edition
         $this->id = $id;
     }
 
-    public function setIdPersonne(int $idPersonne): void
+    /**
+     * Auteur à inscrire sur une fiche créée : la personne qui la saisit. Une
+     * modification ne le déplace pas vers celui qui la fait — c'est de lui que
+     * dépend son droit de modifier la fiche.
+     */
+    public function setAuthorId(int $authorId): void
     {
-        $this->idPersonne = $idPersonne;
+        $this->authorId = $authorId;
     }
 
-    public function setStatutModifiable(bool $statutModifiable): void
+    public function setStatusEditable(bool $statusEditable): void
     {
-        $this->statutModifiable = $statutModifiable;
+        $this->statusEditable = $statusEditable;
     }
 
     /**
-     * Nom de l'image enregistrée en base, pour l'aperçu du formulaire.
+     * Nom du fichier image enregistré en base, pour l'aperçu du formulaire.
      */
-    public function getImageEnBase(string $champ): string
+    public function getStoredImageName(string $champ): string
     {
         return $this->imagesEnBase[$champ] ?? '';
+    }
+
+    /**
+     * La case « Supprimer » de ce champ image a-t-elle été cochée ?
+     */
+    public function isMarkedForDeletion(string $champ): bool
+    {
+        return in_array($champ, $this->supprimer, true);
     }
 
     /**
      * Nom tel qu'il est enregistré, pour le titre de la page : celui du
      * formulaire est la saisie en cours, qu'un envoi rejeté laisse à moitié faite.
      */
-    public function getNomEnBase(): string
+    public function getStoredName(): string
     {
         return $this->nomEnBase;
     }
@@ -145,7 +153,7 @@ class OrganisateurEdition extends Edition
         $this->nomEnBase = (string) $ligne['nom'];
         $this->statutEnBase = (string) $ligne['statut'];
         $this->id = $id;
-        $this->idPersonne = (int) $ligne['idPersonne'];
+        $this->authorId = (int) $ligne['idPersonne'];
     }
 
     #[\Override]
@@ -175,7 +183,7 @@ class OrganisateurEdition extends Edition
             return false;
         }
 
-        if (!$this->statutModifiable)
+        if (!$this->statusEditable)
         {
             $this->valeurs['statut'] = $this->action === 'update' ? $this->statutEnBase : 'actif';
         }
@@ -195,11 +203,13 @@ class OrganisateurEdition extends Edition
 
         $this->verif = new Validateur();
 
-        $this->verif->valider($this->valeurs['nom'], "nom", "texte", 1, 80, 1);
-        $this->verif->valider($this->valeurs['adresse'], "adresse", "texte", 1, 80, 0);
-        $this->verif->valider($this->valeurs['URL'], "URL", "url", 2, 100, 0);
-        $this->verif->valider($this->valeurs['email'], "email", "email", 4, 100, 0);
-        $this->verif->valider($this->valeurs['presentation'], "presentation", "texte", 20, 10000, 0);
+        // Longueurs et obligation viennent de Organisateur::FIELDS, dont le formulaire tire
+        // aussi ses maxlength et son required : ce qu'il laisse saisir est ce qui est accepté ici
+        foreach (Organisateur::FIELDS as $champ => $regle)
+        {
+            $this->verif->valider($this->valeurs[$champ], $champ, $regle['type'], $regle['min'], $regle['max'], $regle['required']);
+        }
+
         $this->verif->validerFichierImage($this->fichiers['logo'], "logo", $mimes_images_acceptes, 0);
         $this->verif->validerFichierImage($this->fichiers['photo'], "photo", $mimes_images_acceptes, 0);
 
@@ -257,7 +267,7 @@ class OrganisateurEdition extends Edition
             VALUES (:idPersonne, :nom, :adresse, :url, :email, :presentation, :statut, :dateAjout, :dateModif)");
 
         if (!$stmt->execute($this->parametresCommuns() + [
-            ':idPersonne' => $this->idPersonne,
+            ':idPersonne' => $this->authorId,
             ':dateAjout' => $maintenant,
             ':dateModif' => $maintenant,
         ]))

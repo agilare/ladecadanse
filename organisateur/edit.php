@@ -16,77 +16,83 @@ if (!$authorization->checkGroup(UserLevel::ACTOR))
     die();
 }
 
-// 1sts : intention, 2nds : intention validated
-$tab_actions = ["ajouter", "insert", "editer", "update"];
+$allowed_actions = ["ajouter", "insert", "editer", "update"];
 $get = [
-    'action' => QueryParamValidator::validateUrlQueryValue($_GET['action'] ?? 'ajouter', "enum", 'ajouter', $tab_actions),
+    'action' => QueryParamValidator::validateUrlQueryValue($_GET['action'] ?? 'ajouter', "enum", 'ajouter', $allowed_actions),
     'idO' => (int) ($_GET['idO'] ?? 0),
 ];
 
-$isEditMode = in_array($get['action'], ['editer', 'update'], true);
-
-if ($isEditMode && $get['idO'] <= 0)
-{
-    HtmlShrink::msgErreur("Aucun organisateur n'est désigné");
-    exit;
-}
+$is_edit_mode = in_array($get['action'], ['editer', 'update'], true);
 
 /*
- * Qui peut modifier la fiche : les mêmes que ceux à qui organisateur.php propose
- * le lien « Modifier cet organisateur », plus son auteur. Le contrôle admettait
- * jusqu'ici tout compte de niveau ACTOR, c'est-à-dire n'importe quel organisateur
- * sur la fiche de n'importe quel autre.
+ * Les deux refus se rendent dans la page du site, avec le statut HTTP qui va avec :
+ * un message HTML nu au-dessus d'une page vide n'offrait ni retour à l'accueil, ni
+ * au client le moyen de distinguer un refus d'une réponse normale.
  */
-$idPersonne = (int) ($_SESSION['SidPersonne'] ?? 0);
-$peutEditer = $_SESSION['Sgroupe'] <= UserLevel::AUTHOR
-    || ($_SESSION['Sgroupe'] <= UserLevel::ACTOR && $authorization->isPersonneInOrganisateur($idPersonne, $get['idO']))
-    || $authorization->isAuthor("organisateur", $idPersonne, $get['idO']);
+$http_error = null;
 
-if ($isEditMode && !$peutEditer)
+if ($is_edit_mode && $get['idO'] <= 0)
 {
-    HtmlShrink::msgErreur("Vous ne pouvez pas modifier cet organisateur");
+    $http_error = [400, 'Bad Request', "Aucun organisateur n'est désigné"];
+}
+elseif ($is_edit_mode && !$authorization->isPersonneAllowedToEditOrganisateur($_SESSION, $get['idO']))
+{
+    $http_error = [403, 'Forbidden', "Vous ne pouvez pas modifier cet organisateur"];
+}
+
+if ($http_error !== null)
+{
+    [$status_code, $status_reason, $error_message] = $http_error;
+
+    header($_SERVER["SERVER_PROTOCOL"] . " $status_code $status_reason");
+    $page_titre = "erreur $status_code";
+    include("../_header.inc.php");
+    HtmlShrink::msgErreur($error_message);
+    include("../_footer.inc.php");
     exit;
 }
 
 // Publier ou dépublier une fiche reste une décision de modération
-$peutChangerStatut = $_SESSION['Sgroupe'] <= UserLevel::ADMIN;
+$can_change_status = $_SESSION['Sgroupe'] <= UserLevel::ADMIN;
 
-$form = new OrganisateurEdition();
-$form->setAction($get['action']);
-$form->setIdPersonne($idPersonne);
-$form->setStatutModifiable($peutChangerStatut);
+$organisateur_form = new OrganisateurEdition();
+$organisateur_form->setAction($get['action']);
+$organisateur_form->setAuthorId((int) ($_SESSION['SidPersonne'] ?? 0));
+$organisateur_form->setStatusEditable($can_change_status);
 
-if ($isEditMode)
+if ($is_edit_mode)
 {
-    $form->setId($get['idO']);
+    $organisateur_form->setId($get['idO']);
 }
 
-$tokenError = false;
-if (($_POST['formulaire'] ?? '') === 'ok')
+$token_error = false;
+if (isset($_POST['form_submitted']))
 {
     if (!SecurityToken::check($_POST['token'] ?? '', $_SESSION['token'] ?? ''))
     {
-        $tokenError = true;
+        $token_error = true;
     }
-    elseif ($form->traitement($_POST, $_FILES))
+    elseif ($organisateur_form->traitement($_POST, $_FILES))
     {
-        $_SESSION['organisateur_flash_msg'] = $form->getMessage();
-        header("Location: /organisateur/organisateur.php?idO=" . (int) $form->id);
+        $_SESSION['organisateur_flash_msg'] = $organisateur_form->getMessage();
+        header("Location: /organisateur/organisateur.php?idO=" . (int) $organisateur_form->id);
         die();
     }
-    elseif (!$form->hasErrors())
+    elseif (!$organisateur_form->hasErrors())
     {
-        HtmlShrink::msgErreur("La requête a échoué");
+        // La saisie est valide et l'enregistrement a pourtant échoué : la base est
+        // hors d'état, ce dont l'auteur du formulaire ne peut rien faire.
+        throw new RuntimeException("L'enregistrement de l'organisateur a échoué sans erreur de validation");
     }
 }
-elseif ($isEditMode)
+elseif ($is_edit_mode)
 {
-    $form->loadValeurs($get['idO']);
+    $organisateur_form->loadValeurs($get['idO']);
 }
 
-$act = $isEditMode ? "update&idO=" . $get['idO'] : "insert";
+$form_url_parameters = $is_edit_mode ? "update&idO=" . $get['idO'] : "insert";
 
-$page_titre = $isEditMode ? "modifier un organisateur" : "ajouter un organisateur";
+$page_titre = $is_edit_mode ? "modifier un organisateur" : "ajouter un organisateur";
 $extra_css = ["formulaires"];
 include("../_header.inc.php");
 ?>
@@ -95,9 +101,9 @@ include("../_header.inc.php");
 
     <header id="entete_contenu">
         <h1>
-            <?php if ($isEditMode) : ?>
+            <?php if ($is_edit_mode) : ?>
                 Modifier l'organisateur
-                <a href="/organisateur/organisateur.php?idO=<?= $get['idO'] ?>"><?= sanitizeForHtml($form->getNomEnBase()) ?></a>
+                <a href="/organisateur/organisateur.php?idO=<?= $get['idO'] ?>"><?= sanitizeForHtml($organisateur_form->getStoredName()) ?></a>
             <?php else : ?>
                 Ajouter un organisateur
             <?php endif; ?>
@@ -105,13 +111,13 @@ include("../_header.inc.php");
         <div class="spacer"></div>
     </header>
 
-    <?php if ($tokenError) : ?>
-        <?php HtmlShrink::msgErreur("Le système de sécurité du site n'a pu authentifier votre action. Veuillez réafficher ce formulaire et réessayer"); ?>
-    <?php elseif ($form->hasErrors()) : ?>
-        <?php HtmlShrink::msgErreur("Il y a " . $form->getErrorCount() . " erreur(s)"); ?>
+    <?php if ($token_error) : ?>
+        <?php HtmlShrink::msgErreur("Le système de sécurité du site n'a pu authentifier votre action. Veuillez réafficher ce formulaire et réessayer."); ?>
+    <?php elseif ($organisateur_form->hasErrors()) : ?>
+        <?php HtmlShrink::msgErreur("Il y a " . $organisateur_form->getErrorCount() . " erreur(s)."); ?>
     <?php endif; ?>
 
-    <form method="post" enctype="multipart/form-data" id="ajouter_editer" class="js-submit-freeze-wait" action="<?= basename(__FILE__) ?>?action=<?= sanitizeForHtml($act) ?>">
+    <form method="post" enctype="multipart/form-data" id="ajouter_editer" class="js-submit-freeze-wait" action="<?= basename(__FILE__) ?>?action=<?= sanitizeForHtml($form_url_parameters) ?>">
 
     <p>* indique un champ obligatoire</p>
 
@@ -121,15 +127,15 @@ include("../_header.inc.php");
         <input type="hidden" name="MAX_FILE_SIZE" value="<?= UPLOAD_MAX_FILESIZE ?>" />
 
         <p>
-            <label for="nom">Nom*</label>
-            <input type="text" name="nom" id="nom" size="50" maxlength="80" value="<?= sanitizeForHtml($form->getValeur('nom')) ?>" required />
-            <?= $form->getHtmlErreur("nom") ?>
+            <label for="nom">Nom* :</label>
+            <input type="text" name="nom" id="nom" size="50" maxlength="<?= Organisateur::FIELDS['nom']['max'] ?>" value="<?= sanitizeForHtml($organisateur_form->getValeur('nom')) ?>" required />
+            <?= $organisateur_form->getHtmlErreur("nom") ?>
         </p>
 
         <?php
-        $champImage = 'logo';
-        $libelleImage = 'Logo';
-        $titreImage = "Logo qui s'affichera à droite du titre";
+        $image_field = 'logo';
+        $image_label = 'Logo';
+        $image_title = "Logo qui s'affichera à gauche du titre";
         include("_champ_image.inc.php");
         ?>
     </fieldset>
@@ -138,21 +144,21 @@ include("../_header.inc.php");
         <legend>Infos pratiques</legend>
 
         <p>
-            <label for="adresse">Adresse</label>
-            <input type="text" name="adresse" id="adresse" size="50" maxlength="80" value="<?= sanitizeForHtml($form->getValeur('adresse')) ?>" />
-            <?= $form->getHtmlErreur("adresse") ?>
+            <label for="adresse">Adresse :</label>
+            <input type="text" name="adresse" id="adresse" size="50" maxlength="<?= Organisateur::FIELDS['adresse']['max'] ?>" value="<?= sanitizeForHtml($organisateur_form->getValeur('adresse')) ?>" />
+            <?= $organisateur_form->getHtmlErreur("adresse") ?>
         </p>
 
         <p>
-            <label for="URL">Site web</label>
-            <input type="url" name="URL" id="URL" size="50" maxlength="100" value="<?= sanitizeForHtml($form->getValeur('URL')) ?>" />
-            <?= $form->getHtmlErreur("URL") ?>
+            <label for="URL">Site web :</label>
+            <input type="url" name="URL" id="URL" size="50" maxlength="<?= Organisateur::FIELDS['URL']['max'] ?>" value="<?= sanitizeForHtml($organisateur_form->getValeur('URL')) ?>" />
+            <?= $organisateur_form->getHtmlErreur("URL") ?>
         </p>
 
         <p>
-            <label for="email">Email</label>
-            <input type="email" name="email" id="email" size="40" maxlength="100" value="<?= sanitizeForHtml($form->getValeur('email')) ?>" />
-            <?= $form->getHtmlErreur("email") ?>
+            <label for="email">Email :</label>
+            <input type="email" name="email" id="email" size="40" maxlength="<?= Organisateur::FIELDS['email']['max'] ?>" value="<?= sanitizeForHtml($organisateur_form->getValeur('email')) ?>" />
+            <?= $organisateur_form->getHtmlErreur("email") ?>
         </p>
     </fieldset>
 
@@ -160,14 +166,17 @@ include("../_header.inc.php");
         <legend>Présentation</legend>
 
         <p>
-            <label for="presentation">Texte</label>
+            <label for="presentation">Texte :</label>
             <?php /* TinyMCE remplace le textarea par un bloc à lui, dont la police revient à 16px :
                      une marge en em posée dessus ne vaudrait pas celle des autres champs. D'où ce
                      conteneur, qui garde la taille de police du formulaire — voir edit.css */ ?>
+            <?php /* pas de maxlength ici : TinyMCE remplace le textarea, l'attribut ne
+                     s'appliquerait donc à rien, et le HTML qu'il produit n'a pas la longueur
+                     du texte saisi. Seule Organisateur::FIELDS['presentation'] tranche. */ ?>
             <span class="champ-riche">
-                <textarea name="presentation" id="presentation" class="tinymce" rows="10" cols="50"><?= sanitizeForHtml($form->getValeur('presentation')) ?></textarea>
+                <textarea name="presentation" id="presentation" class="tinymce" rows="12" cols="50"><?= sanitizeForHtml($organisateur_form->getValeur('presentation')) ?></textarea>
             </span>
-            <?= $form->getHtmlErreur("presentation") ?>
+            <?= $organisateur_form->getHtmlErreur("presentation") ?>
         </p>
     </fieldset>
 
@@ -175,32 +184,34 @@ include("../_header.inc.php");
         <legend>Photo</legend>
 
         <?php
-        $champImage = 'photo';
-        $libelleImage = 'Photo';
-        $titreImage = "Photo qui s'affichera en haut à droite";
+        $image_field = 'photo';
+        $image_label = 'Photo';
+        $image_title = "Photo qui s'affichera en haut à droite";
         include("_champ_image.inc.php");
         ?>
     </fieldset>
 
-    <?php if ($peutChangerStatut) : ?>
+    <?php if ($can_change_status) : ?>
     <fieldset>
         <legend>Statut</legend>
 
         <ul class="radio mobile-vertical">
-            <?php foreach (Organisateur::STATUTS as $valeur => $libelle) : ?>
+            <?php foreach (Organisateur::STATUTS as $status_value => $status_label) : ?>
                 <li class="listehoriz">
-                    <input type="radio" name="statut" value="<?= $valeur ?>" id="statut_<?= $valeur ?>" class="radio_horiz"
-                        <?= $form->getValeur('statut') === $valeur ? 'checked="checked"' : '' ?> />
-                    <label class="continu" for="statut_<?= $valeur ?>"><?= $libelle ?></label>
+                    <input type="radio" name="statut" value="<?= $status_value ?>" id="statut_<?= $status_value ?>" class="radio_horiz"
+                        <?= $organisateur_form->getValeur('statut') === $status_value ? 'checked="checked"' : '' ?> />
+                    <label class="continu" for="statut_<?= $status_value ?>"><?= $status_label ?></label>
                 </li>
             <?php endforeach; ?>
         </ul>
-        <?= $form->getHtmlErreur("statut") ?>
+        <?= $organisateur_form->getHtmlErreur("statut") ?>
     </fieldset>
     <?php endif; ?>
 
     <p class="piedForm">
-        <input type="hidden" name="formulaire" value="ok" />
+        <?php /* Témoin de soumission : le bouton est désactivé par js-submit-freeze-wait, son
+                 nom ne part donc pas. Les autres formulaires du site le nomment « formulaire ». */ ?>
+        <input type="hidden" name="form_submitted" value="1" />
         <input type="hidden" name="token" value="<?= SecurityToken::getToken() ?>" />
         <input type="submit" value="Enregistrer" class="submit submit-big" />
     </p>
