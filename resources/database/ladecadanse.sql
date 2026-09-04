@@ -1240,6 +1240,17 @@ INSERT INTO `localite` (`id`, `localite`, `commune`, `npa`, `canton`, `regions_c
 INSERT INTO `localite` (`id`, `localite`, `commune`, `npa`, `canton`, `regions_covered`) VALUES
  (1065, 'Ailleurs en France', 'Autre', '0', 'rf', 'ge,rf');
 
+INSERT INTO `localite` (`id`, `localite`, `commune`, `npa`, `canton`, `regions_covered`) VALUES
+(1076, 'Ornex', 'Ornex', '01210', 'rf', 'ge,rf'),
+(1075, 'Sergy', 'Sergy', '01630', 'rf', 'ge,rf'),
+(1074, 'Léaz', 'Léaz', '01200', 'rf', 'ge,rf'),
+(1073, 'Reignier-Ésery', 'Reignier-Ésery', '74930', 'rf', 'ge,rf'),
+(1072, 'Présilly', 'Présilly', '74160', 'rf', 'ge,rf'),
+(1071, 'Lucinges', 'Lucinges', '74380', 'rf', 'ge,rf'),
+(1070, 'Gex', 'Gex', '01170', 'rf', 'ge,rf'),
+(1069, 'Marcellaz', 'Marcellaz', '74250 ', 'rf', 'ge,rf'),
+(1068, 'Ferney-Voltaire', 'Ferney-Voltaire', '01210 ', 'rf', 'ge,rf'),
+(1067, 'Annemasse', 'Annemasse', '74100', 'rf', 'ge,rf');
 
 DROP TABLE IF EXISTS `organisateur`;
 CREATE TABLE `organisateur` (
