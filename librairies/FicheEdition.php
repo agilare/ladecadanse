@@ -137,6 +137,19 @@ abstract class FicheEdition extends Edition
     abstract protected function repertoireUploads(): string;
 
     /**
+     * Valeur à écrire dans une colonne image quand la fiche n'en porte pas.
+     *
+     * La chaîne vide par défaut, faute de mieux : `organisateur.logo` et `photo` sont
+     * NOT NULL. Une table dont les colonnes image acceptent NULL — c'est le cas de `lieu`
+     * depuis la 3.12.0 — redéfinit ceci, sans quoi elle porterait deux écritures pour la
+     * même absence : NULL sur les lignes migrées, '' sur celles dont on retire l'image.
+     */
+    protected function valeurImageAbsente(): ?string
+    {
+        return '';
+    }
+
+    /**
      * Charge la fiche à modifier.
      *
      * @return bool false si elle n'existe pas — à charge de l'appelant de répondre 404
@@ -455,7 +468,7 @@ abstract class FicheEdition extends Edition
         foreach ($nomsFichiers as $champ => $nom)
         {
             $affectations[] = $champ . " = :" . $champ;
-            $params[':' . $champ] = $nom;
+            $params[':' . $champ] = ($nom === '') ? $this->valeurImageAbsente() : $nom;
         }
 
         $stmt = $this->pdo->prepare(

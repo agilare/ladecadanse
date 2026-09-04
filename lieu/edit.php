@@ -194,7 +194,10 @@ include("../_header.inc.php");
 
         <p>
             <label for="categories">Catégorie(s)*</label>
-            <select name="categories[]" id="categories" class="js-select2-options-with-style" style="max-width:350px;" multiple
+            <?php /* la largeur des trois listes vient de web/css/lieu/edit.css, qui les aligne
+                     sur les champs longs ; elle était posée ici en style en ligne, que Select2
+                     recopie sur le conteneur qu'il substitue au <select> */ ?>
+            <select name="categories[]" id="categories" class="js-select2-options-with-style" multiple
                 data-placeholder="Choisissez une ou plusieurs catégories" <?= $can_edit_editor_fields ? '' : 'disabled' ?>>
                 <?= Lieu::getCategoriesOptionsHtml($lieu_form->getCategories()) ?>
             </select>
@@ -222,7 +225,7 @@ include("../_header.inc.php");
 
         <p>
             <label for="localite">Localité*</label>
-            <select name="localite_id" id="localite" class="js-select2-options-with-style" style="max-width:300px;" required data-placeholder="Tapez le nom...">
+            <select name="localite_id" id="localite" class="js-select2-options-with-style" required data-placeholder="Tapez le nom...">
                 <?php
                 // Les localités fribourgeoises ne sont plus proposées à l'ajout, mais restent
                 // affichables en édition pour ne pas vider le select d'un lieu déjà rattaché à l'une
@@ -269,7 +272,7 @@ include("../_header.inc.php");
                      formulaires d'événement : la requête et la boucle qui les construisaient
                      ici en étaient une copie, restée en arrière. */ ?>
             <select name="organisateurs[]" id="organisateurs" data-placeholder="Choisissez un ou plusieurs organisateurs"
-                class="js-select2-options-with-complement" style="max-width:350px;" multiple
+                class="js-select2-options-with-complement" multiple
                 title="Un organisateur dans la base de données de La décadanse" <?= $can_edit_editor_fields ? '' : 'disabled' ?>>
                 <?= Organisateur::getOptionsHtml($lieu_form->getOrganisateurs()) ?>
             </select>

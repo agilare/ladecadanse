@@ -226,6 +226,13 @@ class LieuEdition extends FicheEdition
         return 'lieux';
     }
 
+    /** `lieu.logo` et `lieu.photo1` acceptent NULL depuis la 3.12.0. */
+    #[\Override]
+    protected function valeurImageAbsente(): ?string
+    {
+        return null;
+    }
+
     /**
      * @param array<string, mixed> $ligne
      */

@@ -35,6 +35,12 @@ Tests have some name conventions :
 - "vars" : could need some adaptations in values filled by user
 - "r" : data is added, edited or deleted; restoration could be needed after the test
 
+> **À re-enregistrer** — la partie « lieu » du projet clique des cases `id=categorie_bistrot`,
+> `id=categorie_salle`… que le formulaire ne porte plus : les catégories sont depuis la 3.12.0 un
+> Select2 multiple `#categories` (#117). Le reste du scénario suit le déplacement de la page vers
+> `/lieu/edit.php` et le renommage de `determinant` en `preposition_nom`, mais ces clics-là ne
+> peuvent pas être transposés sans repasser par l'enregistreur.
+
 #### Running the tests on an instance
 
 1. in your browser, launch Selenium IDE and open project `tests/ladecadanse.side`
