@@ -54,7 +54,7 @@ $sql_event = "SELECT
   e.dateAjout AS e_dateAjout,
 
   l.nom AS l_nom,
-  l.determinant AS l_determinant,
+  l.preposition_nom AS l_preposition_nom,
   l.adresse AS l_adresse,
   l.quartier AS l_quartier,
   l.lat AS l_lat,
@@ -96,7 +96,7 @@ if (!$isPersonneAllowedToEdit && in_array($tab_even['e_statut'], ['propose', 'in
 
 // lieu, organisateurs and author details
 $even_lieu = Evenement::getLieu($tab_even);
-$preposition_lieu = Lieu::prepositionToPutInSentence($tab_even['l_determinant']);
+$preposition_lieu = Lieu::prepositionToPutInSentence($tab_even['l_preposition_nom']);
 
 $stmtOrgas = $connectorPdo->prepare("SELECT
 o.idOrganisateur AS o_idOrganisateur,

@@ -21,6 +21,60 @@ class Lieu extends Element
     public const int VERY_LOW_ACTIVITY_MONTHS_NB = 12;
     public const int RESULTS_PER_PAGE = 100;
 
+    /**
+     * Contraintes de saisie des champs du formulaire d'édition.
+     *
+     * Partagées par la validation serveur (LieuEdition::verification()) et par les
+     * attributs du formulaire (lieu/edit.php) : chacun les déclarait de son côté, et ils
+     * se contredisaient — `nom` s'arrêtait à 60 caractères dans le formulaire pour 80 en
+     * validation, `adresse` à 80 pour 100, `URL` à 80 pour 250, et `preposition_nom`
+     * laissait taper 60 caractères que la validation refusait à partir de 41.
+     *
+     * `type` est celui qu'attend Validateur::valider().
+     *
+     * @var array<string, array{type: string, min: int, max: int, required: bool}>
+     */
+    public const array FIELDS = [
+        'nom'             => ['type' => 'texte', 'min' => 1, 'max' => 80,  'required' => true],
+        'preposition_nom' => ['type' => 'texte', 'min' => 1, 'max' => 40,  'required' => false],
+        'adresse'         => ['type' => 'texte', 'min' => 1, 'max' => 255, 'required' => true],
+        'localite_id'     => ['type' => 'texte', 'min' => 1, 'max' => 80,  'required' => true],
+        'horaire_general' => ['type' => 'texte', 'min' => 2, 'max' => 500, 'required' => false],
+        'URL'             => ['type' => 'url',   'min' => 2, 'max' => 255, 'required' => false],
+    ];
+
+    /**
+     * Valeurs de la colonne `statut` (ENUM), avec le libellé montré aux éditeurs.
+     *
+     * « Publié / Dépublié » plutôt que « Actif / Inactif » : c'est de la visibilité de la
+     * fiche qu'il s'agit, pas de l'activité du lieu — que « Ancien », lui, désigne bien.
+     * Même vocabulaire que Organisateur::STATUTS, pour les mêmes raisons.
+     */
+    public const array STATUTS = [
+        'actif' => 'Publié',
+        'inactif' => 'Dépublié',
+        'ancien' => 'Ancien',
+    ];
+
+    /**
+     * Valeurs de la colonne `categories` (SET), avec leur libellé.
+     *
+     * Vient du global $glo_categories_lieux d'app/config.php : la liste appartient au
+     * lieu, et la garder en variable globale obligeait chaque appelant à la réclamer par
+     * un `global` avant de pouvoir traduire un code en libellé.
+     */
+    public const array CATEGORIES = [
+        'bistrot'    => 'bistrot',
+        'salle'      => 'salle',
+        'restaurant' => 'restaurant',
+        'cinema'     => 'cinéma',
+        'theatre'    => 'théâtre',
+        'galerie'    => 'galerie',
+        'boutique'   => 'boutique',
+        'musee'      => 'musée',
+        'autre'      => 'autre',
+    ];
+
     function __construct()
 	{
 		parent::__construct();
@@ -70,6 +124,39 @@ class Lieu extends Element
         }
 
         return $result;
+    }
+
+    /**
+     * Les catégories d'un lieu en toutes lettres, telles que la colonne `categories` les
+     * porte : une liste séparée par des virgules.
+     *
+     * Deux pages composaient chacune leur `implode(array_map(...))`, à un espace près.
+     * Une valeur absente de self::CATEGORIES est passée telle quelle plutôt que d'y
+     * provoquer une erreur d'index : une ligne écrite avant un renommage doit rester
+     * affichable.
+     */
+    public static function categoriesEnClair(?string $categories): string
+    {
+        $codes = array_filter(array_map('trim', explode(',', (string) $categories)));
+
+        return implode(", ", array_map(static fn (string $code): string => self::CATEGORIES[$code] ?? $code, $codes));
+    }
+
+    /**
+     * Les <option> du <select> multiple « Catégories » du formulaire d'édition.
+     *
+     * @param list<string> $selectionnees
+     */
+    public static function getCategoriesOptionsHtml(array $selectionnees): string
+    {
+        $html = '';
+        foreach (self::CATEGORIES as $code => $libelle)
+        {
+            $coche = in_array($code, $selectionnees, true) ? ' selected="selected"' : '';
+            $html .= '<option value="' . sanitizeForHtml($code) . '"' . $coche . '>' . sanitizeForHtml($libelle) . '</option>';
+        }
+
+        return $html;
     }
 
     /**
@@ -149,7 +236,7 @@ class Lieu extends Element
 
         if (!empty($filters['categorie']))
         {
-            $sql_event .= " AND FIND_IN_SET (:categorie, categorie)";
+            $sql_event .= " AND FIND_IN_SET (:categorie, categories)";
         }
 
         $sql_event .= " AND (l.region IN (:region, 'rf', 'hs')  )"; // OR FIND_IN_SET (:region, loc.regions_covered)

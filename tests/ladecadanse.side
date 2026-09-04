@@ -3760,7 +3760,7 @@
         ["css=a:nth-child(2)", "css:finder"],
         ["xpath=//a[contains(text(),'Ajouter un lieu')]", "xpath:link"],
         ["xpath=//div[@id='entete_contenu']/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/lieu-edit.php?action=ajouter')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/lieu/edit.php?action=ajouter')]", "xpath:href"],
         ["xpath=//div/div/a", "xpath:position"],
         ["xpath=//a[contains(.,' Ajouter un lieu')]", "xpath:innerText"]
       ],
@@ -4055,7 +4055,7 @@
         ["css=.action_editer > a", "css:finder"],
         ["xpath=//a[contains(text(),'Modifier ce lieu')]", "xpath:link"],
         ["xpath=//div[@id='contenu']/div/ul/li[2]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/lieu-edit.php?action=editer&idL=6')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/lieu/edit.php?action=editer&idL=6')]", "xpath:href"],
         ["xpath=//div/ul/li[2]/a", "xpath:position"],
         ["xpath=//a[contains(.,'Modifier ce lieu')]", "xpath:innerText"]
       ],

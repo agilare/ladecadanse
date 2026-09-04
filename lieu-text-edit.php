@@ -230,7 +230,7 @@ if (!$action_terminee)
     {
         $act = "update&type=".$get['type']."&idL=".(int)$get['idL'];
 
-        $req_lieu = $connector->query("SELECT nom, adresse, quartier, categorie, URL FROM lieu WHERE idLieu=".(int)$get['idL']);
+        $req_lieu = $connector->query("SELECT nom FROM lieu WHERE idLieu=".(int)$get['idL']);
         $detailsLieu = $connector->fetchArray($req_lieu);
 
         echo '<h1>Modifier la '.sanitizeForHtml($get['type']).' sur <a href="/lieu/lieu.php?idL='.(int)$get['idL'].'">'.sanitizeForHtml($detailsLieu['nom']).'</a></h1>';

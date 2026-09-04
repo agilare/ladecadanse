@@ -38,6 +38,7 @@ l'invariant à tenir, une ligne à « non » signalant que le dump a pris du ret
 | `v3-11-0_lieu-lat-lng-decimal.sql` | 3.11.0 | 2026-08-01 | `lieu.lat` et `lieu.lng` de `FLOAT(10,6)` à `DECIMAL(10,7)` | oui |
 | `v3-11-0_bot_monitor-create-table.sql` | 3.11.0 | 2026-07-16 | table `bot_monitor` | oui |
 | `v3-12-0_localite-france.sql` | 3.12.0 | 2026-08-25 | `localite.npa` en `VARCHAR(6)`, localité « Ailleurs en France », localité 1 renommée en canton `hs` | oui |
+| `v3-12-0_lieu-colonnes.sql` | 3.12.0 | 2026-09-05 | `lieu.determinant` → `preposition_nom`, `lieu.categorie` → `categories`, `adresse` en `VARCHAR(255)`, colonnes facultatives à `NULL`, `photo2` et `actif` supprimées | oui |
 
 Trois pièges de lecture :
 
@@ -81,10 +82,13 @@ UNION ALL SELECT 'v3-11-0_bot_monitor-create-table', IF(COUNT(*), 'ok', 'MANQUAN
  WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'bot_monitor'
 UNION ALL SELECT 'v3-12-0_localite-france', IF(COUNT(*), 'ok', 'MANQUANTE')
   FROM localite
- WHERE canton = 'rf' AND localite = 'Ailleurs en France';
+ WHERE canton = 'rf' AND localite = 'Ailleurs en France'
+UNION ALL SELECT 'v3-12-0_lieu-colonnes', IF(COUNT(*), 'ok', 'MANQUANTE')
+  FROM information_schema.COLUMNS
+ WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'lieu' AND COLUMN_NAME = 'preposition_nom';
 ```
 
-Une base à jour répond `ok` sur les dix lignes. Chaque `MANQUANTE` désigne le fichier à passer, dans
+Une base à jour répond `ok` sur les onze lignes. Chaque `MANQUANTE` désigne le fichier à passer, dans
 l'ordre du tableau.
 
 ## Scripts hors migration

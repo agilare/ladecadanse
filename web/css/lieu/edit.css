@@ -1,0 +1,149 @@
+/*
+ * Formulaire d'ajout et de modification d'un lieu.
+ *
+ * Chargée après formulaires.css mais avant desktop.css et mobile.css (voir
+ * _header.inc.php) : les règles qui doivent passer devant les leurs sont donc dans
+ * leurs propres requêtes de média, et ciblées par identifiant pour l'emporter à
+ * égalité d'ordre.
+ *
+ * Même structure que web/css/organisateur/edit.css, dont elle reprend la variable de
+ * colonne. Ce formulaire porte en revanche des libellés bien plus longs — « Jours et
+ * heures d'ouverture habituels » —, d'où une colonne de 12em au lieu de 8.
+ */
+
+form#ajouter_editer
+{
+    /*
+     * Où commence la colonne des champs : la largeur du label flottant, padding et
+     * marge compris (12em + 0.4em + 0.3em, cf. formulaires.css). Tout ce qui doit
+     * s'aligner sur les saisies part de là.
+     */
+    --colonne-champs: 12.7em;
+
+    /*
+     * Largeur commune aux trois champs longs — adresse, horaires, site web. Ils se
+     * réglaient chacun par un attribut `size` ou `cols`, dont la traduction en pixels
+     * dépend de la police : les trois se terminaient à trois abscisses différentes.
+     */
+    --champ-long: 26em;
+}
+
+/* Les fieldsets se touchaient presque : 5px entre deux titres de section */
+form#ajouter_editer fieldset
+{
+    margin-top: 1em;
+}
+
+form#ajouter_editer fieldset legend
+{
+    padding-bottom: 0.3em;
+}
+
+@media screen and (min-width: 800px)
+{
+    form#ajouter_editer label
+    {
+        width: 12em;
+    }
+
+    form#ajouter_editer #adresse,
+    form#ajouter_editer #URL,
+    form#ajouter_editer #horaire_general
+    {
+        box-sizing: border-box;
+        width: var(--champ-long);
+    }
+
+    /* « au », « chez », « à l’ » : trois caractères, pas les quarante que la colonne accepte */
+    form#ajouter_editer #preposition_nom
+    {
+        width: 8em;
+    }
+
+    /*
+     * Select2 recopie en style en ligne la largeur intrinsèque du <select> d'origine,
+     * soit celle de son option la plus longue ; seul !important passe devant. Les trois
+     * listes s'alignent ainsi sur les champs longs plutôt que sur leur propre contenu.
+     */
+    form#ajouter_editer #localite + .select2-container,
+    form#ajouter_editer #categories + .select2-container,
+    form#ajouter_editer #organisateurs + .select2-container
+    {
+        box-sizing: border-box;
+        width: var(--champ-long) !important;
+    }
+
+    /*
+     * Tout ce qui accompagne un champ commence là où le champ commence. Sans ces
+     * règles, l'aide, les messages d'erreur et les boutons radio repartaient chacun
+     * d'une marge fixe héritée d'un autre formulaire — 7em pour les radios, 2em de
+     * padding pour les aides.
+     */
+    form#ajouter_editer .guideForm,
+    form#ajouter_editer .guideChamp,
+    form#ajouter_editer .msg,
+    form#ajouter_editer ul.radio
+    {
+        margin-left: var(--colonne-champs);
+        padding-left: 0;
+    }
+
+    form#ajouter_editer .guideForm,
+    form#ajouter_editer .guideChamp
+    {
+        margin-top: 0;
+        max-width: var(--champ-long);
+    }
+
+    form#ajouter_editer .existing_img
+    {
+        /*
+         * formulaires.css donne 0.9em à ce bloc, et une marge en em s'y calculerait
+         * sur cette police réduite. La petite taille est donc rendue aux seuls textes,
+         * l'aperçu gardant celle du formulaire pour sa marge.
+         */
+        font-size: 1em;
+        margin-left: var(--colonne-champs);
+    }
+
+    form#ajouter_editer .existing_img > div
+    {
+        font-size: 0.9em;
+    }
+}
+
+@media screen and (max-width: 799.98px)
+{
+    /*
+     * Les labels passent en display:block sur petits écrans (mobile.css) : plus de
+     * colonne à réserver, et les champs prennent la largeur disponible.
+     *
+     * width et non max-width : c'est la largeur intrinsèque dictée par size="50" qui
+     * gonfle le fieldset (min-width: min-content), et un max-width relatif à ce
+     * fieldset élargi ne bornerait donc rien.
+     */
+    form#ajouter_editer .guideForm,
+    form#ajouter_editer .guideChamp,
+    form#ajouter_editer .msg,
+    form#ajouter_editer ul.radio
+    {
+        margin-left: 0;
+        padding-left: 0;
+    }
+
+    form#ajouter_editer #nom,
+    form#ajouter_editer #adresse,
+    form#ajouter_editer #URL,
+    form#ajouter_editer input[type="file"]
+    {
+        box-sizing: border-box;
+        width: 100%;
+    }
+
+    form#ajouter_editer #localite + .select2-container,
+    form#ajouter_editer #categories + .select2-container
+    {
+        box-sizing: border-box;
+        width: 100% !important;
+    }
+}

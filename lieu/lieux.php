@@ -118,7 +118,7 @@ include("../_header.inc.php");
 <main id="contenu" class="colonne">
 
     <header id="entete_contenu">
-        <h1 style="width: 17%;line-height: 1.2em;margin:0">Lieux</h1> <?php if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= UserLevel::AUTHOR) { ?><a href="/lieu-edit.php?action=ajouter" style="float: left;padding: 5px 1px;"><i class="fa fa-plus" aria-hidden="true"></i> Ajouter un lieu</a><?php } ?>
+        <h1 style="width: 17%;line-height: 1.2em;margin:0">Lieux</h1> <?php if ($authorization->isPersonneAllowedToAddLieu($_SESSION)) { ?><a href="/lieu/edit.php?action=ajouter" style="float: left;padding: 5px 1px;"><i class="fa fa-plus" aria-hidden="true"></i> Ajouter un lieu</a><?php } ?>
         <?php HtmlShrink::getMenuRegions($glo_regions, $get); ?>
         <div class="spacer"></div>
     </header>
@@ -134,7 +134,7 @@ include("../_header.inc.php");
                     </span>
                     <select name="categorie" class="js-select2-options-with-style" data-placeholder="Catégorie" style="width:80px">
                          <option value="" placeholder="type"></option>
-                        <?php foreach ($glo_categories_lieux as $k => $label) : ?>
+                        <?php foreach (Lieu::CATEGORIES as $k => $label) : ?>
                             <option value="<?= $k ?>" <?php if ($_SESSION['user_prefs_lieux_categorie'] == $k) : ?>selected="selected"<?php endif; ?>><?= sanitizeForHtml($label) ?></option>
                         <?php endforeach; ?>
                     </select>
@@ -198,7 +198,7 @@ include("../_header.inc.php");
                                     <br><?= sanitizeForHtml($s['nom']) ?>
                                 <?php endforeach; ?>
                             <?php endif; ?>
-                                <br><small><?= sanitizeForHtml(implode(", ", array_map(fn ($cat) : string => $glo_categories_lieux[$cat], explode(",", str_replace(" ", "", $lieu['categorie']))))) ?></small>
+                                <br><small><?= sanitizeForHtml(Lieu::categoriesEnClair($lieu['categories'])) ?></small>
                         </td>
 
                         <td>

@@ -52,7 +52,7 @@ use Ladecadanse\UserLevel;
 
 
     <?php
-    $pages_formulaires = ["evenement-edit", "event/copy", "lieu-edit", "lieu/salle-edit", "user/register", "admin/events", "user-edit", "lieu/lieux", "lieu-text-edit", "organisateur/edit"];
+    $pages_formulaires = ["evenement-edit", "event/copy", "lieu/edit", "lieu/salle-edit", "user/register", "admin/events", "user-edit", "lieu/lieux", "lieu-text-edit", "organisateur/edit"];
     $pages_tinymce = ["lieu-text-edit", "organisateur/edit"];
     $pages_lieumap = ["lieu/lieu", "event/evenement"];
     ?>

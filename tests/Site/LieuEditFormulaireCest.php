@@ -6,7 +6,7 @@ use Tests\Support\TestEnv;
 use Codeception\Util\HttpCode;
 
 /**
- * Formulaire d'édition d'un lieu (lieu-edit.php).
+ * Formulaire d'édition d'un lieu (lieu/edit.php).
  *
  * Verrouille la présélection du select des organisateurs au ré-affichage après une erreur de
  * validation. Elle réunissait par un OR la saisie postée et les organisateurs relus en base :
@@ -21,11 +21,11 @@ class LieuEditFormulaireCest
     private const OPTIONS_ORGANISATEURS_SELECTIONNEES = '#organisateurs option[selected]';
 
     /*
-     * lieu-edit.php n'a pas de bandeau global comme le .msg_erreur d'evenement-edit.php :
-     * l'erreur d'un champ est rendue par Edition::getHtmlErreur() dans un <div class="msg">,
-     * absent de la page tant que rien n'est en erreur.
+     * Bandeau global rendu par HtmlShrink::msgErreur() quand la validation a rejeté la saisie,
+     * comme sur organisateur/edit.php. Il est absent de la page tant que rien n'est en erreur,
+     * ce qui en fait le témoin de « le formulaire a été refusé, rien n'a été écrit ».
      */
-    private const ERREUR_DE_CHAMP = '#ajouter_editer .msg';
+    private const ERREUR_GLOBALE = '.msg_erreur';
 
     public function _before(SiteTester $I)
     {
@@ -66,7 +66,7 @@ class LieuEditFormulaireCest
 
         // le formulaire est bien ré-affiché en erreur, et non enregistré puis redirigé
         $I->seeElement('#ajouter_editer');
-        $I->seeElement(self::ERREUR_DE_CHAMP);
+        $I->seeElement(self::ERREUR_GLOBALE);
 
         $I->seeElement('#organisateurs option[value="' . $garde . '"][selected]');
 
@@ -81,10 +81,10 @@ class LieuEditFormulaireCest
     /**
      * Cas limite du test précédent : un select multiple entièrement désélectionné ne poste
      * aucune clé « organisateurs ». Côté serveur, « champ vidé » est alors indiscernable de
-     * « premier affichage » sur le seul $_POST['organisateurs'] — c'est le témoin
-     * « formulaire », posté dans tous les cas, qui les sépare.
+     * « premier affichage » si la lecture est conditionnée à isset($_POST[...]) — d'où la
+     * lecture inconditionnelle de LieuEdition::lireChampsPostes().
      *
-     * Sans lui, ce cas-ci retomberait sur les organisateurs de la base et resterait cassé
+     * Sans elle, ce cas-ci retomberait sur les organisateurs de la base et resterait cassé
      * alors même que le test précédent passerait.
      */
     public function organisateursTousRetiresNeReviennentPasApresUneErreur(SiteTester $I)
@@ -104,19 +104,32 @@ class LieuEditFormulaireCest
         ]);
 
         $I->seeElement('#ajouter_editer');
-        $I->seeElement(self::ERREUR_DE_CHAMP);
+        $I->seeElement(self::ERREUR_GLOBALE);
 
         $I->seeElement('#organisateurs');
         $I->dontSeeElement(self::OPTIONS_ORGANISATEURS_SELECTIONNEES);
     }
 
+    /**
+     * Un identifiant de lieu inconnu répond 404, au lieu d'un formulaire vide sous un titre
+     * sans nom, suivi d'un UPDATE qui ne touche aucune ligne et annonce une réussite.
+     */
+    public function unLieuInconnuRepond404(SiteTester $I)
+    {
+        $I->loginAsAdmin();
+
+        $I->amOnPage('/lieu/edit.php?action=editer&idL=99999999');
+        $I->seeResponseCodeIs(HttpCode::NOT_FOUND);
+        $I->dontSeeElement('#ajouter_editer');
+    }
+
     private function amOnLieuEdit(SiteTester $I): void
     {
-        $I->amOnPage('/lieu-edit.php?action=editer&idL=' . TestEnv::getInt('LADECADANSE_TEST_LIEU_ID_WITH_ORGANISATEURS'));
+        $I->amOnPage('/lieu/edit.php?action=editer&idL=' . TestEnv::getInt('LADECADANSE_TEST_LIEU_ID_WITH_ORGANISATEURS'));
         $I->seeResponseCodeIs(HttpCode::OK);
 
-        // le select n'est rendu qu'aux groupes <= 6 ; en dessous, les organisateurs repartent
-        // en champs cachés et il n'y a rien à désélectionner
+        // le select est désactivé hors des éditeurs ; le test se connecte en administrateur,
+        // il doit donc bien y avoir des organisateurs à désélectionner
         $I->seeElement('#organisateurs');
     }
 }

@@ -63,13 +63,13 @@ parameters:
                 - misc
                 - organisateur
                 - user
+                - _champ_image.inc.php
                 - _footer.inc.php
                 - _header.inc.php
                 - _texte_repliable.inc.php
                 - annuaire-membres.php
                 - evenement-edit.php
                 - index.php
-                - lieu-edit.php
                 - lieu-text-edit.php
                 - user-edit.php
     # Les chemins d'allowIn sont résolus depuis la racine du dépôt, quel que

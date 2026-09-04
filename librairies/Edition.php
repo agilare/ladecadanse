@@ -42,8 +42,8 @@ namespace Ladecadanse;
     	foreach ($this->fichiers as $nom => $val)
     	{
     		// un champ fichier peut ne pas figurer dans $_FILES : le formulaire ne
-    		// l'affiche pas pour tous les niveaux d'utilisateur (image_galerie sur
-    		// lieu-edit.php). On garde alors la valeur par défaut déclarée.
+    		// l'affiche pas pour tous les niveaux d'utilisateur. On garde alors la
+    		// valeur par défaut déclarée.
     		if (isset($files[$nom]))
     		{
     			$this->fichiers[$nom] = $files[$nom];

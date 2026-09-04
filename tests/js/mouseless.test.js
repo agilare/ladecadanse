@@ -174,7 +174,7 @@ describe('Mouseless — neutralisation du clic', function ()
 
     it('ne neutralise un raccourci de page que sur la page concernée', function ()
     {
-        document.body.innerHTML = '<div class="action_editer"><a href="/lieu-edit.php">Éditer</a></div>';
+        document.body.innerHTML = '<div class="action_editer"><a href="/lieu/edit.php">Éditer</a></div>';
         makeVisible(document.querySelector('.action_editer a'));
 
         document.body.dataset.page = 'index';

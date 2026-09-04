@@ -122,8 +122,9 @@ $glo_motifs_notification_auteur = [
 ];
 
 //// PLACES
-$statuts_lieu = ['actif', 'ancien', 'inactif'];
-$glo_categories_lieux = ['bistrot' => 'bistrot', 'salle' => 'salle', 'restaurant' => 'restaurant', 'cinema' => 'cinéma', 'theatre' => 'théâtre', 'galerie' => 'galerie', 'boutique' => 'boutique', 'musee' => 'musée', 'autre' => 'autre'];
+// Statuts et catégories des lieux vivent désormais dans Lieu::STATUTS et Lieu::CATEGORIES :
+// la liste appartient à l'entité, et la garder ici obligeait chaque appelant à la réclamer
+// par un `global` avant de pouvoir traduire un code en libellé.
 
 $glo_tab_quartiers = [
     "geneve",

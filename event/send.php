@@ -61,7 +61,7 @@ $sql_event = "SELECT
   e.dateAjout AS e_dateAjout,
 
   l.nom AS l_nom,
-  l.determinant AS l_determinant,
+  l.preposition_nom AS l_preposition_nom,
   l.adresse AS l_adresse,
   l.quartier AS l_quartier,
   l.lat AS l_lat,
@@ -140,7 +140,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
             $to = EMAIL_ADMIN;
 
             $even_lieu = Evenement::getLieu($tab_even);
-            $subject = $translator->get("event-send-{$get['action']}-mail-subject") . " {$tab_even['e_titre']} " . Lieu::prepositionToPutInSentence($even_lieu['determinant'])."{$even_lieu['nom']} {$even_lieu['localite']} le ".DateHelper::isoToFr($tab_even['e_dateEvenement'], 'annee', html: false);
+            $subject = $translator->get("event-send-{$get['action']}-mail-subject") . " {$tab_even['e_titre']} " . Lieu::prepositionToPutInSentence($even_lieu['preposition_nom'])."{$even_lieu['nom']} {$even_lieu['localite']} le ".DateHelper::isoToFr($tab_even['e_dateEvenement'], 'annee', html: false);
 
             $body_tpl_parameters = ['idE' => $get['idE'], 'url' => "{$site_full_url}event/evenement.php?idE={$get['idE']}", 'message' => $champs['message']];
 

@@ -58,7 +58,7 @@ $sql_event = "SELECT
   e.dateAjout AS e_dateAjout,
 
   l.nom AS l_nom,
-  l.determinant AS l_determinant,
+  l.preposition_nom AS l_preposition_nom,
   l.adresse AS l_adresse,
   l.quartier AS l_quartier,
   l.lat AS l_lat,

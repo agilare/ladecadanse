@@ -111,6 +111,44 @@ class Authorization
     }
 
     /**
+     * Qui peut modifier la fiche d'un lieu :
+     * - EDITOR (AUTHOR) et au-dessus, sur n'importe laquelle ;
+     * - une personne affiliée au lieu (table `affiliation`) ;
+     * - une personne membre d'un organisateur rattaché au lieu.
+     *
+     * L'auteur de la fiche n'y figure pas, contrairement à ce que fait
+     * isPersonneAllowedToEditOrganisateur() : c'est la règle qu'appliquait déjà
+     * lieu-edit.php, et l'ajouter ouvrirait des fiches à des comptes qui n'y ont pas
+     * accès aujourd'hui.
+     *
+     * Posée ici pour que le formulaire d'édition et le lien « Modifier ce lieu » de
+     * lieu.php répondent à la même question : le formulaire la posait deux fois, dans
+     * deux blocs qui se recopiaient.
+     */
+    public function isPersonneAllowedToEditLieu(array $sessionToReadonly, int $idLieu): bool
+    {
+        if (!isset($sessionToReadonly['Sgroupe']))
+        {
+            return false;
+        }
+
+        $idPersonne = (int) ($sessionToReadonly['SidPersonne'] ?? 0);
+
+        return $this->isPersonneEditor($sessionToReadonly)
+            || $this->isPersonneAffiliatedWithLieu($idPersonne, $idLieu)
+            || $this->isPersonneInLieuByOrganisateur($idPersonne, $idLieu);
+    }
+
+    /**
+     * Créer un lieu reste réservé aux éditeurs : une fiche de lieu est partagée par tous
+     * les événements qui s'y déroulent, un doublon se paie donc cher.
+     */
+    public function isPersonneAllowedToAddLieu(array $sessionToReadonly): bool
+    {
+        return $this->isPersonneEditor($sessionToReadonly);
+    }
+
+    /**
      * Vérifie dans la base si une personne est bien l'auteur d'un événement, d'un lieu
      * ou d'un organisateur.
      *

@@ -146,10 +146,12 @@ include("../_header.inc.php");
         </p>
 
         <?php
+        $image_form = $organisateur_form;
+        $image_entity = Organisateur::class;
         $image_field = 'logo';
         $image_label = 'Logo';
         $image_title = "Logo qui s'affichera à droite du titre";
-        include("_champ_image.inc.php");
+        include("../_champ_image.inc.php");
         ?>
     </fieldset>
 
@@ -197,10 +199,12 @@ include("../_header.inc.php");
         <legend>Photo</legend>
 
         <?php
+        $image_form = $organisateur_form;
+        $image_entity = Organisateur::class;
         $image_field = 'photo';
         $image_label = 'Photo';
         $image_title = "Photo qui s'affichera en haut à droite";
-        include("_champ_image.inc.php");
+        include("../_champ_image.inc.php");
         ?>
     </fieldset>
 

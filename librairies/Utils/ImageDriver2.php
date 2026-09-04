@@ -133,7 +133,7 @@ class ImageDriver2 {
       * @param int $maxHeigth Hauteur maximale voulue pour l'image réduite
       * @param string $selon ('', w, h) Pour imposer la largeur ou la hauteur de l'image réduite selon $maxWidth ou $maxHeigth
       * @return bool
-      * @see        evenement-edit.php, lieu-edit.php
+      * @see        evenement-edit.php, HandlesImageUploads::ecrireImageEtMiniature()
       */
    function processImage($imageSource, $imageCreated, $maxWidth = 0, $maxHeigth = 0, $selon = '', $rognage = 0)
    {

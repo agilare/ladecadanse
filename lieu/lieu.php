@@ -73,7 +73,7 @@ $all_results_nb = $stmtAll->fetchColumn();
 $default_page = ($get['periode'] == "ancien" && !$is_past_events_desc) ? (int) max(1, ceil($all_results_nb / $results_per_page)) : 1;
 $get['page'] = QueryParamValidator::pageFromQuery($_GET['page'] ?? '', $default_page);
 
-$categories_fr = implode(", ", array_map(fn ($cat) : string => $glo_categories_lieux[$cat], explode(",", str_replace(" ", "", $lieu['categorie']))));
+$categories_fr = Lieu::categoriesEnClair($lieu['categories']);
 $lieu_salles = Lieu::getActivesSalles((int) $get['idL']);
 $lieu_orgas = Lieu::getActivesOrganisateurs((int) $get['idL']);
 
@@ -191,8 +191,10 @@ include("../_header.inc.php");
             <?php if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= UserLevel::ACTOR)) : ?>
                 <li class="action_ajouter"><a href="/evenement-edit.php?idL=<?= (int)$get['idL'] ?>">Ajouter un événement à ce lieu</a></li>
             <?php endif; ?>
-            <?php if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= UserLevel::AUTHOR || $authorization->isPersonneAffiliatedWithLieu($_SESSION['SidPersonne'], $get['idL']) || $authorization->isPersonneInLieuByOrganisateur($_SESSION['SidPersonne'], $get['idL']))) : ?>
-                <li class="action_editer"><a href="/lieu-edit.php?action=editer&amp;idL=<?= (int)$get['idL'] ?>">Modifier ce lieu</a></li>
+            <?php /* même question que celle posée par le formulaire d'édition, et par la même
+                     méthode : les deux la posaient chacun à leur façon */ ?>
+            <?php if ($authorization->isPersonneAllowedToEditLieu($_SESSION, (int) $get['idL'])) : ?>
+                <li class="action_editer"><a href="/lieu/edit.php?action=editer&amp;idL=<?= (int)$get['idL'] ?>">Modifier ce lieu</a></li>
             <?php endif; ?>
         </ul>
 
@@ -437,7 +439,7 @@ include("../_header.inc.php");
         <?php
         if ($all_results_nb == 0) :  ?>
 
-        <p><?= sanitizeForHtml($translator->get("lieu-events-{$get['periode']}-none")) ?> <?= sanitizeForHtml(Lieu::prepositionToPutInSentence($lieu['determinant'])) ?> <strong><?= sanitizeForHtml($lieu['nom']) ?></strong></p>
+        <p><?= sanitizeForHtml($translator->get("lieu-events-{$get['periode']}-none")) ?> <?= sanitizeForHtml(Lieu::prepositionToPutInSentence($lieu['preposition_nom'])) ?> <strong><?= sanitizeForHtml($lieu['nom']) ?></strong></p>
 
         <?php else : ?>
 

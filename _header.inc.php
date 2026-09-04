@@ -341,7 +341,7 @@ $mouseless_allowed = isset($_SESSION['Sgroupe']) && (int) $_SESSION['Sgroupe'] <
         </header>
 
         <div id="conteneur" style="
-            <?php if (strstr(dirname((string) $_SERVER['PHP_SELF']), 'admin') || in_array($nom_page, ['evenement-edit', 'event/copy', 'event/send', 'event/search', 'lieu/lieux', 'lieu-edit', 'lieu-text-edit', 'organisateur/organisateurs', 'organisateur/edit', 'misc/contacteznous', 'user/login', 'user/dashboard', 'user-edit', 'user/register', 'user/reset', 'user/reset2'])) : ?>padding-right: 5px; <?php endif; ?>
+            <?php if (strstr(dirname((string) $_SERVER['PHP_SELF']), 'admin') || in_array($nom_page, ['evenement-edit', 'event/copy', 'event/send', 'event/search', 'lieu/lieux', 'lieu/edit', 'lieu-text-edit', 'organisateur/organisateurs', 'organisateur/edit', 'misc/contacteznous', 'user/login', 'user/dashboard', 'user-edit', 'user/register', 'user/reset', 'user/reset2'])) : ?>padding-right: 5px; <?php endif; ?>
             <?php if (strstr(dirname((string) $_SERVER['PHP_SELF']), 'admin') || in_array($nom_page, ['user/login', 'user/reset', 'user/reset2']) ) : ?>padding-left: 5px <?php endif; ?>
             ">
 

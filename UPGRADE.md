@@ -21,9 +21,19 @@ Il fait quatre choses :
 
 Les deux libellés ci-dessus sont écrits à l'identique dans le fichier SQL et dans `Ladecadanse\Localite::LOCALITES_FOURRE_TOUT` ; c'est sur cette égalité que repose leur effacement de l'affichage des adresses. Les renommer suppose de le faire des deux côtés — un test unitaire relit le `.sql` pour le vérifier.
 
+Exécuter aussi `resources/database/v3-12-0_lieu-colonnes.sql`, qui remanie les colonnes de la table `lieu` :
+
+1. `determinant` devient `preposition_nom` et passe après `nom` — « au », « chez », « à l' » sont des prépositions, pas des déterminants ;
+2. `categorie` devient `categories` et passe après `preposition_nom` — la colonne est un `SET`, un lieu en porte plusieurs ;
+3. `adresse` passe de `VARCHAR(100)` à `VARCHAR(255)` ;
+4. `lat`, `lng`, `horaire_general`, `URL`, `photo1` et `logo` acceptent `NULL`, et les lignes existantes y passent de `0` ou de la chaîne vide à `NULL` ; `logo` passe après `categories` ;
+5. `photo2` et `actif` sont supprimées — la seconde photo n'était proposée par aucun formulaire, et `actif` était un doublon inerte de `statut`, resté à 1 partout.
+
+**À passer avec la mise en ligne du code, pas plus tard** : les deux renommages sont lus par les pages d'événement (`l.preposition_nom`) et par la liste des lieux (`FIND_IN_SET(…, categories)`), qui répondraient sinon une erreur SQL.
+
 ### Redirections
 
-Cinq pages changent d'adresse : trois pages de compte rejoignent `user/`, à côté de `login.php` et `dashboard.php`, le formulaire d'organisateur passe sous `organisateur/` et l'écran d'administration des événements prend un nom lisible. Les redirections 301 sont dans [`htaccess/50-routage.conf`](htaccess/50-routage.conf) et partent avec le code : il n'y a plus rien à reporter à la main sur le serveur, mais `composer config:build` doit être passé avant la mise en ligne, comme pour tout changement d'un fragment de configuration — voir [docs/config-serveur.md](docs/config-serveur.md).
+Six pages changent d'adresse : trois pages de compte rejoignent `user/`, à côté de `login.php` et `dashboard.php`, les formulaires d'organisateur et de lieu passent sous leur répertoire, et l'écran d'administration des événements prend un nom lisible. Les redirections 301 sont dans [`htaccess/50-routage.conf`](htaccess/50-routage.conf) et partent avec le code : il n'y a plus rien à reporter à la main sur le serveur, mais `composer config:build` doit être passé avant la mise en ligne, comme pour tout changement d'un fragment de configuration — voir [docs/config-serveur.md](docs/config-serveur.md).
 
 | Ancienne URL | Nouvelle |
 | --- | --- |
@@ -31,6 +41,7 @@ Cinq pages changent d'adresse : trois pages de compte rejoignent `user/`, à cô
 | `/user-reset.php` | `/user/reset.php` |
 | `/user-reset2.php` | `/user/reset2.php` |
 | `/organisateur-edit.php` | `/organisateur/edit.php` |
+| `/lieu-edit.php` | `/lieu/edit.php` |
 | `/admin/gererEvenements.php` | `/admin/events.php` |
 
 La query string est reportée d'office, aucune substitution n'en portant : les liens de réinitialisation déjà envoyés par mail (`?token=`) restent valables 24 h — sans la redirection ils tomberaient en 404 pendant une journée — et les signets des organisateurs (`?action=editer&idO=…`) arrivent au bon endroit.
@@ -40,7 +51,9 @@ Aucune de ces pages n'est indexée : formulaires réservés aux connectés, écr
 ### Effets de bord à connaître
 
 - **Qui peut modifier une fiche d'organisateur** — le contrôle laissait passer tout compte de niveau ACTOR, c'est-à-dire que chaque organisateur pouvait éditer la fiche de tous les autres. Il pose maintenant la même question que le lien « Modifier cet organisateur » de la fiche : niveau AUTHOR ou au-dessus, membre de l'organisateur, ou auteur de la fiche. Conséquence : **un organisateur qui éditait jusqu'ici une fiche sans y être rattaché sera refusé**. Le rattachement se fait dans `personne_organisateur`, depuis le profil de la personne
-- **Statut d'un organisateur** — les libellés deviennent « Publié / Dépublié / Ancien » ; les valeurs en base (`actif`, `inactif`, `ancien`) ne changent pas. Le formulaire ne poste plus de statut pour qui n'a pas le droit d'en choisir un : une modification faite par un acteur laisse désormais la fiche dans l'état où elle était, là où elle la republiait
+- **Statut d'un organisateur, statut d'un lieu** — les libellés deviennent « Publié / Dépublié / Ancien » ; les valeurs en base (`actif`, `inactif`, `ancien`) ne changent pas. Le formulaire ne poste plus de statut pour qui n'a pas le droit d'en choisir un : une modification faite par un acteur laisse désormais la fiche dans l'état où elle était, là où elle la republiait
+- **Qui peut modifier une fiche de lieu** — la règle ne change pas (niveau AUTHOR ou au-dessus, personne affiliée au lieu, ou membre d'un organisateur rattaché), mais elle est posée une fois, dans `Authorization::isPersonneAllowedToEditLieu()`, par le formulaire et par le lien « Modifier ce lieu » de la fiche. Un refus répond 403, une requête sans identifiant 400, un identifiant inconnu 404 — le formulaire affichait jusqu'ici un message HTML nu au-dessus d'une page vide, avec un statut 200
+- **Champs réservés d'un lieu** — le nom, la préposition, les catégories et les organisateurs ne partaient plus en champs cachés à qui n'a pas le droit d'y toucher : le serveur reprend leur valeur enregistrée quel que soit le contenu du POST. Conséquence : **un POST forgé ne renomme plus un lieu ni ne le rattache à un organisateur**. La galerie d'images disparaît du formulaire — fonctionnalité abandonnée, les images se posent à la main
 - **Déconnexion en POST** — `user-logout.php` disparaît sans redirection : une déconnexion en GET partait toute seule au moindre préchargement de lien. Un onglet resté ouvert sur une page rendue *avant* la mise à jour porte encore l'ancien lien et tombera en 404 ; il suffit de recharger la page. Signets et liens externes vers `/user-logout.php` cessent de fonctionner — voir [docs/comptes.md](docs/comptes.md)
 - **Mots de passe** — la liste des mots de passe refusés passe de 22 à 19 999 entrées. Les mots de passe existants ne sont pas vérifiés, rien n'est bloqué rétroactivement : la règle ne s'applique qu'au prochain changement. Les comptes non actifs (`statut` autre que `actif`) ne peuvent plus demander de réinitialisation, l'ancien filtre laissait passer les comptes en attente que la connexion refuse ensuite de toute façon
 - **Édition groupée et organisateurs** — un remplacement groupé effaçait jusqu'ici les organisateurs de tous les événements sélectionnés, même quand le champ était laissé vide. Il ne les touche plus que si le champ a été rempli, conformément à la règle annoncée par la page. Conséquence : **il n'est plus possible de retirer les organisateurs en masse** en envoyant le formulaire avec un champ vide. Rien ne le permettait vraiment — l'ancien comportement était un effacement subi, pas une commande

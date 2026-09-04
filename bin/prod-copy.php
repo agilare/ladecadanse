@@ -68,7 +68,7 @@ const TABLES_COPIEES = [
  */
 const COLONNES_FICHIERS = [
     'evenement'    => ['repertoire' => 'evenements',    'colonnes' => ['flyer', 'image']],
-    'lieu'         => ['repertoire' => 'lieux',         'colonnes' => ['logo', 'photo1', 'photo2']],
+    'lieu'         => ['repertoire' => 'lieux',         'colonnes' => ['logo', 'photo1']],
     'organisateur' => ['repertoire' => 'organisateurs', 'colonnes' => ['logo', 'photo']],
 ];
 

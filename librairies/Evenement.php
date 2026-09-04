@@ -55,7 +55,7 @@ class Evenement
             return [
                 'idLieu' => $event['e_idLieu'],
                 'nom' => $event['l_nom'],
-                'determinant' => $event['l_determinant'] ?? "",
+                'preposition_nom' => $event['l_preposition_nom'] ?? "",
                 'adresse' => $event['l_adresse'],
                 'quartier' => $event['l_quartier'],
                 'lat' => $event['l_lat'] ?? "",
@@ -70,7 +70,7 @@ class Evenement
         return [
                 'idLieu' => null,
                 'nom' => $event['e_nomLieu'],
-                'determinant' => "",
+                'preposition_nom' => "",
                 'adresse' => $event['e_adresse'],
                 'quartier' => $event['e_quartier'],
                 'lat' => '',
