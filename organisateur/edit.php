@@ -18,8 +18,13 @@ if (!$authorization->checkGroup(UserLevel::ACTOR))
 
 // 1sts : intention, 2nds : intention validated
 $allowed_actions = ["ajouter", "insert", "editer", "update"];
+
+// null quand l'action n'existe pas : la page répond alors 400, là où l'exception levée
+// par validateUrlQueryValue() faisait un 500 d'une url abîmée ou d'un passage de bot
+$action_demandee = QueryParamValidator::enumFromQuery($_GET['action'] ?? null, $allowed_actions, 'ajouter');
+
 $get = [
-    'action' => QueryParamValidator::validateUrlQueryValue($_GET['action'] ?? 'ajouter', "enum", 'ajouter', $allowed_actions),
+    'action' => $action_demandee ?? 'ajouter',
     'idO' => (int) ($_GET['idO'] ?? 0),
 ];
 
@@ -32,7 +37,11 @@ $is_edit_mode = in_array($get['action'], ['editer', 'update'], true);
  */
 $http_error = null;
 
-if ($is_edit_mode && $get['idO'] <= 0)
+if ($action_demandee === null)
+{
+    $http_error = [400, 'Bad Request', "Cette action n'existe pas"];
+}
+elseif ($is_edit_mode && $get['idO'] <= 0)
 {
     $http_error = [400, 'Bad Request', "Aucun organisateur n'est désigné"];
 }

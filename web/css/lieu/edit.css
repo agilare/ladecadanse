@@ -74,25 +74,48 @@ form#ajouter_editer fieldset legend
     }
 
     /*
-     * Tout ce qui accompagne un champ commence là où le champ commence. Sans ces
-     * règles, l'aide, les messages d'erreur et les boutons radio repartaient chacun
-     * d'une marge fixe héritée d'un autre formulaire — 7em pour les radios, 2em de
-     * padding pour les aides.
+     * Tout ce qui accompagne un champ commence là où le champ commence, et ne le
+     * dépasse pas. Sans ces règles, l'aide, les messages d'erreur et les boutons radio
+     * repartaient chacun d'une marge héritée d'un autre formulaire — 120px de padding
+     * pour les aides, 11em pour les messages, 7em pour les radios.
+     *
+     * Le sélecteur part de `main` : desktop.css porte les mêmes règles à la même
+     * spécificité et se charge après cette feuille, il l'emporterait à égalité.
      */
-    form#ajouter_editer .guideForm,
-    form#ajouter_editer .guideChamp,
-    form#ajouter_editer .msg,
-    form#ajouter_editer ul.radio
+    main form#ajouter_editer .guideForm,
+    main form#ajouter_editer ul.radio
     {
         margin-left: var(--colonne-champs);
         padding-left: 0;
     }
 
-    form#ajouter_editer .guideForm,
-    form#ajouter_editer .guideChamp
+    main form#ajouter_editer .guideForm
     {
         margin-top: 0;
         max-width: var(--champ-long);
+    }
+
+    /*
+     * Ces deux blocs sont rendus dans une police réduite, et `em` se calcule sur la
+     * police de l'élément qui l'emploie : la colonne y valait 148px au lieu de 164, et
+     * l'aide se retrouvait décalée de 16px à gauche des champs qu'elle commente. D'où la
+     * taille figée ici, et les deux longueurs remises à l'échelle du formulaire.
+     */
+    main form#ajouter_editer .guideChamp
+    {
+        font-size: 0.9em;
+        margin-left: calc(var(--colonne-champs) / 0.9);
+        max-width: calc(var(--champ-long) / 0.9);
+        margin-top: 0;
+        padding-left: 0;
+    }
+
+    main form#ajouter_editer .msg
+    {
+        font-size: 0.95em;
+        margin-left: calc(var(--colonne-champs) / 0.95);
+        max-width: calc(var(--champ-long) / 0.95);
+        padding-left: 0;
     }
 
     form#ajouter_editer .existing_img
@@ -122,13 +145,14 @@ form#ajouter_editer fieldset legend
      * gonfle le fieldset (min-width: min-content), et un max-width relatif à ce
      * fieldset élargi ne bornerait donc rien.
      */
-    form#ajouter_editer .guideForm,
-    form#ajouter_editer .guideChamp,
-    form#ajouter_editer .msg,
-    form#ajouter_editer ul.radio
+    main form#ajouter_editer .guideForm,
+    main form#ajouter_editer .guideChamp,
+    main form#ajouter_editer .msg,
+    main form#ajouter_editer ul.radio
     {
         margin-left: 0;
         padding-left: 0;
+        max-width: 100%;
     }
 
     form#ajouter_editer #nom,

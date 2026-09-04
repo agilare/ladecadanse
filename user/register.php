@@ -311,7 +311,7 @@ $erreurs = $verif->getErreurs();
                     <option value=""></option>
                     <?php
                     $req_lieux = $connectorPdo->query("
-                        SELECT idLieu, nom FROM lieu WHERE actif=1 AND statut='actif' ORDER BY TRIM(LEADING 'L\'' FROM (TRIM(LEADING 'Les '
+                        SELECT idLieu, nom FROM lieu WHERE statut='actif' ORDER BY TRIM(LEADING 'L\'' FROM (TRIM(LEADING 'Les '
                         FROM (TRIM(LEADING 'La ' FROM (TRIM(LEADING 'Le ' FROM nom))))))) COLLATE utf8mb4_unicode_ci");
 
                     foreach ($req_lieux as $lieuTrouve)

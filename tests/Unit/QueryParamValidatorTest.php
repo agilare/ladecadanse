@@ -121,4 +121,42 @@ final class QueryParamValidatorTest extends Unit
         $this->assertSame(12, QueryParamValidator::pageFromQuery('abc', 12));
         $this->assertSame(2, QueryParamValidator::pageFromQuery('2', 12));
     }
+
+    /** @var list<string> */
+    private const array ACTIONS = ['ajouter', 'insert', 'editer', 'update'];
+
+    public function testEnumFromQueryAcceptsAListedValue(): void
+    {
+        $this->assertSame('editer', QueryParamValidator::enumFromQuery('editer', self::ACTIONS, 'ajouter'));
+        $this->assertSame('editer', QueryParamValidator::enumFromQuery(' editer ', self::ACTIONS, 'ajouter'));
+    }
+
+    /**
+     * Une url qui ne précise rien retombe sur le défaut ; une url qui précise n'importe
+     * quoi rend null, à l'appelant de répondre 400 plutôt que de laisser filer une
+     * exception en 500.
+     */
+    public function testEnumFromQuerySeparatesTheMissingFromTheUnknown(): void
+    {
+        $this->assertSame('ajouter', QueryParamValidator::enumFromQuery(null, self::ACTIONS, 'ajouter'));
+        $this->assertSame('ajouter', QueryParamValidator::enumFromQuery('', self::ACTIONS, 'ajouter'));
+        $this->assertSame('ajouter', QueryParamValidator::enumFromQuery('   ', self::ACTIONS, 'ajouter'));
+
+        $this->assertNull(QueryParamValidator::enumFromQuery('editerr', self::ACTIONS, 'ajouter'));
+        $this->assertNull(QueryParamValidator::enumFromQuery('DROP TABLE lieu', self::ACTIONS, 'ajouter'));
+    }
+
+    /** La comparaison est stricte : « 0 » ne vaut aucune des valeurs attendues. */
+    public function testEnumFromQueryComparesStrictly(): void
+    {
+        $this->assertNull(QueryParamValidator::enumFromQuery('0', self::ACTIONS, 'ajouter'));
+        $this->assertSame('EDITER', QueryParamValidator::enumFromQuery('EDITER', ['EDITER'], null));
+        $this->assertNull(QueryParamValidator::enumFromQuery('EDITER', self::ACTIONS, null));
+    }
+
+    /** « ?action[]=x » ne doit pas déclencher de conversion de tableau en chaîne. */
+    public function testEnumFromQueryIgnoresANonScalarValue(): void
+    {
+        $this->assertSame('ajouter', QueryParamValidator::enumFromQuery(['editer'], self::ACTIONS, 'ajouter'));
+    }
 }

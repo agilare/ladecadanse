@@ -36,6 +36,38 @@ final class QueryParamValidator
     }
 
     /**
+     * Valeur d'un paramètre d'énumération issue de la query string.
+     *
+     * Jamais bloquante, à la différence de validateUrlQueryValue() : une valeur inconnue
+     * vient d'une url abîmée, d'un signet périmé ou d'un bot, pas d'un incident serveur,
+     * et l'exception non rattrapée y répondait 500. L'appelant reçoit null et décide —
+     * les formulaires d'édition répondent 400.
+     *
+     * Le paramètre absent ou vide, lui, rend $defaut : c'est le cas d'une url qui ne
+     * précise rien, pas celui d'une url qui précise n'importe quoi.
+     *
+     * @param list<string> $acceptees
+     */
+    public static function enumFromQuery(mixed $get, array $acceptees, ?string $defaut = null): ?string
+    {
+        // is_scalar() écarte « ?action[]=x », qui déclencherait une conversion
+        // de tableau en chaîne
+        if (!is_scalar($get))
+        {
+            return $defaut;
+        }
+
+        $valeur = trim((string) $get);
+
+        if ($valeur === '')
+        {
+            return $defaut;
+        }
+
+        return in_array($valeur, $acceptees, true) ? $valeur : null;
+    }
+
+    /**
      * Numéro de page de pagination issu de la query string.
      *
      * Jamais bloquant : les bots suivent régulièrement des urls abîmées
