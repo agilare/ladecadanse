@@ -109,7 +109,14 @@ de chaque champ ; le formulaire en tire ses `maxlength`, `LieuEdition` sa valida
 `ancien` → Ancien), et le choix n'est proposé qu'à partir du niveau `ADMIN` (4). `Lieu::CATEGORIES`
 porte les neuf valeurs de la colonne `categories` (un `SET`), rendues par un Select2 multiple.
 
-### Localité et région
+### Localité, quartier et région
+
+Le `<select>` reste « Localité/quartier » : Genève est la seule localité à se subdiviser, et ses
+quartiers voyagent dans une valeur composée « 44_Pâquis » que `LieuEdition` redécoupe. Retirer la
+colonne `quartier`, envisagé par l'issue #117, supposait qu'elle ne serve plus — la base dit le
+contraire : **47 lieux sur 109 en portent un**, et 355 événements avec eux (mesuré sur une copie de
+production). Le quartier reste donc, et le libellé le nomme, comme dans les deux autres formulaires
+qui portent ce select.
 
 La région d'un lieu suit le canton de sa localité, et rien d'autre. Une exception codée en dur y
 rattachait la localité **529** à Genève, commentée « Nyon, vaudoise mais rattachée à Genève » :

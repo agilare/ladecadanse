@@ -224,7 +224,11 @@ include("../_header.inc.php");
         </p>
 
         <p>
-            <label for="localite">Localité*</label>
+            <?php /* « Localité » tout court attendait la disparition de la colonne `quartier`,
+                     que les données ne permettent pas : 47 lieux sur 109 en portent un, et 355
+                     événements avec eux. Le select propose donc toujours les quartiers de Genève,
+                     et le libellé le dit — comme dans les deux autres formulaires. */ ?>
+            <label for="localite">Localité/quartier*</label>
             <select name="localite_id" id="localite" class="js-select2-options-with-style" required data-placeholder="Tapez le nom...">
                 <?php
                 // Les localités fribourgeoises ne sont plus proposées à l'ajout, mais restent
