@@ -54,6 +54,19 @@ Trois écarts avec la sélection du mailing (`resources/database/mailing-users-s
 
 Pour la production, `bin/` n'étant pas déployé (`.git-ftp-ignore`), le script tourne sur une [copie locale](prod-copy.md) ou est envoyé ponctuellement par SFTP. `--sql=` produit alors les `UPDATE` au lieu de les exécuter, chacun gardé par la valeur lue au moment du calcul — un profil réglé entre-temps par son propriétaire n'est pas écrasé, et l'écart entre le nombre de lignes modifiées et celui annoncé en tête du fichier rend ces cas visibles. `--csv=` en donne les destinataires au format qu'attend `admin/mailing.php`, limités aux comptes **réellement** mis à jour.
 
+### Relancer sur une bande de taux plus basse
+
+Après un premier report, on peut vouloir écrire à ceux qui approchent le seuil sans l'atteindre, pour qu'ils règlent leur profil eux-mêmes plutôt que de leur imposer des valeurs. `--csv=` seul, sans `--ecrire` ni `--sql=`, produit la liste sans rien modifier en base.
+
+Deux options délimitent la bande, et il faut les deux :
+
+- `--seuil-max=` écarte la personne **entière** dès qu'un critère atteint cette part, et non le seul champ concerné. Qui a atteint le seuil précédent sur sa catégorie a déjà été traité, même si son lieu tombe dans la bande : le juger champ par champ le ferait reparaître, donc recevoir un second message ;
+- `--sans-reglages` ne garde que les comptes dont aucune valeur par défaut n'est posée. Il complète le précédent plutôt qu'il ne le double : un report antérieur a pu remplir une colonne sur un calcul différent — sans borne de date, par exemple — si bien que le taux recalculé retombe sous le plafond. La colonne, elle, dit sans ambiguïté que la personne a déjà ses réglages.
+
+`--ajouts-depuis=` borne enfin les événements comptés. Attention, la borne s'applique au total autant qu'au taux, donc au plancher `--min-evenements` : qui a 200 ajouts en tout mais 30 dans la fenêtre sort de la sélection.
+
+Un cas tombe entre deux envois et mérite d'être connu : celui dont le lieu dominant est un nom libre à un taux supérieur au plafond. Le premier report ne lui a rien écrit — `settings.idLieu` exige une fiche — donc il n'a pas été contacté, et `--seuil-max` l'écarte ensuite de la bande. Le compteur « exclu(s) : un critère atteint … » du rapport donne l'ordre de grandeur.
+
 ## Fichiers : flyer et illustration
 
 Le nom d'un fichier encode l'événement auquel il appartient : `{idEvenement}_{date}.{ext}` pour le flyer, `{idEvenement}_{date}_img.{ext}` pour l'illustration, et le même nom préfixé de `s_` pour la vignette.

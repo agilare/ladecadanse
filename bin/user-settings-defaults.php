@@ -41,7 +41,17 @@ declare(strict_types=1);
  *                                                           format d'admin/mailing.php ; se combine
  *                                                           avec --sql comme avec --ecrire
  *   php bin/user-settings-defaults.php --seuil=0.90         part minimale (0.96 par défaut)
+ *   php bin/user-settings-defaults.php --seuil-max=0.96     écarte la personne entière dès qu'un
+ *                                                           critère atteint cette part : compose
+ *                                                           une bande sans recouvrement avec un
+ *                                                           envoi précédent
+ *   php bin/user-settings-defaults.php --sans-reglages      ne garde que les comptes dont aucune
+ *                                                           valeur par défaut n'est déjà posée
  *   php bin/user-settings-defaults.php --min-evenements=25  plancher d'ajouts (50 par défaut)
+ *   php bin/user-settings-defaults.php --ajouts-depuis=3    ne compter que les ajouts des 3
+ *                                                           dernières années (sans borne par
+ *                                                           défaut) ; borne aussi le total, donc
+ *                                                           le plancher ci-dessus
  *   php bin/user-settings-defaults.php --depuis-login=0     sans condition de connexion récente
  *                                                           (1 an par défaut)
  *   php bin/user-settings-defaults.php --idp=12,34          se limiter à ces comptes
@@ -80,7 +90,7 @@ require_once $racine . '/app/env.php';
 require $racine . '/vendor/autoload.php';
 require_once $racine . '/app/config.php';
 
-$options = getopt('', ['ecrire', 'ecraser', 'sql::', 'csv::', 'seuil::', 'min-evenements::', 'depuis-login::', 'idp::', 'limite::', 'help']);
+$options = getopt('', ['ecrire', 'ecraser', 'sans-reglages', 'sql::', 'csv::', 'seuil::', 'seuil-max::', 'min-evenements::', 'depuis-login::', 'ajouts-depuis::', 'idp::', 'limite::', 'help']);
 
 if (isset($options['help']))
 {
@@ -90,9 +100,12 @@ if (isset($options['help']))
 
 $ecrire = isset($options['ecrire']);
 $ecraser = isset($options['ecraser']);
+$sansReglages = isset($options['sans-reglages']);
 $seuil = (float) ($options['seuil'] ?? 0.96);
+$seuilMax = isset($options['seuil-max']) ? (float) $options['seuil-max'] : null;
 $minEvenements = (int) ($options['min-evenements'] ?? 50);
 $anneesLogin = (int) ($options['depuis-login'] ?? 1);
+$anneesAjouts = (int) ($options['ajouts-depuis'] ?? 0);
 $limite = (int) ($options['limite'] ?? 0);
 
 $idpFiltre = [];
@@ -104,6 +117,18 @@ if (isset($options['idp']) && $options['idp'] !== '')
 if ($seuil <= 0 || $seuil > 1)
 {
     fwrite(STDERR, "ERREUR : --seuil attend une part entre 0 et 1 (0.96 par défaut)\n");
+    exit(1);
+}
+
+if ($seuilMax !== null && ($seuilMax <= 0 || $seuilMax > 1))
+{
+    fwrite(STDERR, "ERREUR : --seuil-max attend une part entre 0 et 1\n");
+    exit(1);
+}
+
+if ($seuilMax !== null && $seuilMax <= $seuil)
+{
+    fwrite(STDERR, "ERREUR : --seuil-max doit dépasser --seuil, sinon la bande est vide.\n");
     exit(1);
 }
 
@@ -171,6 +196,16 @@ $clauseIdp = $idpFiltre !== []
     ? "AND p.idPersonne IN (" . implode(',', $idpFiltre) . ")"
     : "";
 
+/*
+ * --ajouts-depuis borne les événements comptés, donc le taux — mais aussi le total, et par
+ * conséquent le plancher --min-evenements, qui s'applique alors au décompte de la fenêtre.
+ * Quelqu'un qui a 200 ajouts en tout mais 30 dans la fenêtre sort de la sélection.
+ * Les dateAjout à '0000-00-00 00:00:00' des vieilles lignes tombent d'eux-mêmes.
+ */
+$clauseAjouts = $anneesAjouts > 0
+    ? "WHERE e.dateAjout >= DATE_SUB(CURDATE(), INTERVAL " . $anneesAjouts . " YEAR)"
+    : "";
+
 $sql = "
 WITH
 candidats AS (
@@ -196,6 +231,7 @@ ajouts AS (
     FROM evenement e
     JOIN candidats c ON c.idPersonne = e.idPersonne
     LEFT JOIN lieu l ON l.idLieu = e.idLieu
+    $clauseAjouts
 ),
 totaux AS (
     SELECT idPersonne, COUNT(*) AS nb_total FROM ajouts GROUP BY idPersonne
@@ -251,6 +287,7 @@ $orgasActifs = array_flip(array_map('intval', $pdo->query("SELECT idOrganisateur
 
 $aEcrire = [];
 $ecartes = ['genre' => 0, 'lieu_nom_libre' => 0, 'lieu_inactif' => 0, 'orga_inactif' => 0, 'deja_regle' => 0];
+$exclus = ['seuil_max' => 0, 'sans_reglages' => 0];
 
 foreach ($lignes as $ligne)
 {
@@ -258,6 +295,57 @@ foreach ($lignes as $ligne)
     $plancher = $nbTotal * $seuil;
 
     $actuels = UserSettings::eventNewDefaults(is_string($ligne['settings']) ? $ligne['settings'] : null);
+
+    /*
+     * --seuil-max écarte la personne entière, pas le seul champ trop haut.
+     *
+     * Le but est de composer une bande sans recouvrement avec un envoi précédent : qui a atteint
+     * 0,96 sur sa catégorie a déjà été traité, même si son lieu, lui, tombe dans la bande.
+     * Le juger champ par champ le ferait reparaître pour ce lieu, donc recevoir un second message.
+     */
+    if ($seuilMax !== null)
+    {
+        $plafond = $nbTotal * $seuilMax;
+
+        $atteintLePlafond = ((int) ($ligne['genre_nb'] ?? 0) >= $plafond && $ligne['genre_dominant'] !== null)
+            || ((int) ($ligne['lieu_nb'] ?? 0) >= $plafond && $ligne['lieu_id'] !== null)
+            || ((int) ($ligne['organisateurs_nb'] ?? 0) >= $plafond && $ligne['organisateurs_ids'] !== null);
+
+        if ($atteintLePlafond)
+        {
+            $exclus['seuil_max']++;
+            continue;
+        }
+    }
+
+    /*
+     * --sans-reglages : ne retenir que les comptes dont aucune valeur par défaut n'est posée.
+     *
+     * Complète --seuil-max plutôt qu'il ne le double. Un envoi précédent a pu remplir une colonne
+     * sur un calcul différent — sans borne de date, par exemple — si bien que le taux recalculé
+     * aujourd'hui retombe sous le plafond. La colonne, elle, ne ment pas : elle dit que la
+     * personne a déjà ses réglages, qu'ils viennent d'un report ou de son propre formulaire.
+     */
+    if ($sansReglages)
+    {
+        $dejaQuelqueChose = false;
+
+        foreach ($actuels as $valeur)
+        {
+            if ($valeur !== '' && $valeur !== 0 && $valeur !== [])
+            {
+                $dejaQuelqueChose = true;
+                break;
+            }
+        }
+
+        if ($dejaQuelqueChose)
+        {
+            $exclus['sans_reglages']++;
+            continue;
+        }
+    }
+
     $calcules = [];
 
     // catégorie
@@ -371,11 +459,17 @@ foreach ($lignes as $ligne)
 // Rapport
 // -----------------------------------------------------------------------------
 
+$pourcent = static fn(float $part): string => rtrim(rtrim(number_format($part * 100, 2, ',', ''), '0'), ',');
+
 fwrite(STDOUT, sprintf(
-    "%d compte(s) examiné(s) (>= %d ajouts), seuil %s %%, %d à remplir\n\n",
+    "%d compte(s) examiné(s) (>= %d ajouts%s), seuil %s%s, %d à remplir\n\n",
     count($lignes),
     $minEvenements,
-    rtrim(rtrim(number_format($seuil * 100, 2, ',', ''), '0'), ','),
+    $anneesAjouts > 0 ? " sur " . $anneesAjouts . " an(s)" : "",
+    $seuilMax === null
+        ? $pourcent($seuil) . " %"
+        : "de " . $pourcent($seuil) . " % à " . $pourcent($seuilMax) . " % exclu",
+    $sansReglages ? ", sans réglages préalables" : "",
     count($aEcrire)
 ));
 
@@ -396,6 +490,14 @@ if ($aEcrire !== [])
     }
 
     fwrite(STDOUT, "\n");
+}
+
+foreach (array_filter($exclus) as $motif => $nb)
+{
+    fwrite(STDOUT, sprintf("  %d compte(s) exclu(s) : %s\n", $nb, match ($motif) {
+        'seuil_max' => "un critère atteint " . $pourcent($seuilMax ?? 0) . " % ou plus (--seuil-max)",
+        'sans_reglages' => "valeurs par défaut déjà posées (--sans-reglages)",
+    }));
 }
 
 foreach (array_filter($ecartes) as $motif => $nb)
