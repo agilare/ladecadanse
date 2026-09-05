@@ -1,0 +1,40 @@
+/*
+ * Formulaire d'ajout et de modification d'un texte de lieu (lieu-text-edit.php).
+ *
+ * Chargée après formulaires.css mais avant desktop.css et mobile.css (voir
+ * _header.inc.php) : les règles qui doivent passer devant les leurs sont donc dans
+ * leurs propres requêtes de média, et ciblées par identifiant pour l'emporter à
+ * égalité d'ordre.
+ *
+ * Le formulaire n'a qu'un champ, et un éditeur de texte se lit mal dans la colonne de
+ * 8em que formulaires.css réserve aux libellés : le libellé passe donc au-dessus du
+ * champ, et le champ prend la largeur de la colonne. C'est ce que faisaient trois
+ * styles en ligne posés sur le <label> et le <textarea>.
+ */
+
+@media screen and (min-width: 800px)
+{
+    form#ajouter_editer label[for="texte"]
+    {
+        display: block;
+        float: none;
+        text-align: left;
+        width: auto;
+        padding-left: 0.4em;
+    }
+
+    /* desktop.css donne 600px à tout textarea de formulaire ; la colonne centrale
+       est plus large que cela dès 960px de fenêtre */
+    form#ajouter_editer #texte
+    {
+        box-sizing: border-box;
+        width: 100%;
+    }
+
+    /* le guide s'aligne sur le champ, et non sur la colonne des libellés que ce
+       formulaire n'a pas */
+    form#ajouter_editer .guideChamp
+    {
+        padding-left: 0.4em;
+    }
+}

@@ -139,6 +139,64 @@ Une colonne à `NULL` (ou à `0`, comme avant la 3.13.0) se lit comme « pas de 
 un champ vide. Une saisie non numérique est réaffichée telle quelle à côté de son message, jamais
 écrite en base.
 
+## Descriptions et présentations d'un lieu
+
+`lieu-text-edit.php` écrit les textes que la fiche d'un lieu affiche sous les infos pratiques. La
+table `descriptionlieu` en porte deux sortes, séparées par sa colonne `type` :
+
+- **description** : un avis, signé du pseudo de son auteur ; un lieu peut en porter plusieurs ;
+- **présentation** : le lieu parlant en son nom ; une seule par lieu.
+
+Le paramètre `?type=` n'a donc pas de valeur par défaut — deviner l'un pour l'autre écrirait le
+texte au mauvais endroit, sous les mauvais droits. Son absence, comme une valeur inconnue, répond
+**400**.
+
+### Qui peut écrire
+
+Deux règles, dans `Authorization::isPersonneAllowedToAddTexteLieu()` et
+`isPersonneAllowedToEditTexteLieu()`, que la page et les liens de la fiche publique interrogent
+tous deux :
+
+| | Écrire | Reprendre un texte existant |
+| --- | --- | --- |
+| description | niveau `AUTHOR` (6) et au-dessus | son auteur, ou le niveau `ADMIN` (4) |
+| présentation | qui peut modifier la fiche du lieu | idem |
+
+Présenter un lieu et tenir sa fiche relèvent du même mandat : la présentation reprend donc
+`isPersonneAllowedToEditLieu()`, avec le niveau `ACTOR` (8) pour plancher. Une description, elle,
+est un avis : un autre éditeur ne la réécrit pas — le formulaire l'ouvrait à tout éditeur pour peu
+qu'il change l'`idP` de l'url.
+
+### Le lieu vient de l'url
+
+Le lieu écrit est celui que l'url désigne, dont le droit vient d'être vérifié. Il arrivait d'une
+liste déroulante, et le contrôle de droits, conditionné à un `idL` que l'url ne porte pas à
+l'ajout, ne s'exécutait alors pas du tout : tout acteur pouvait présenter n'importe quel lieu. La
+liste a disparu avec ce contrôle, et le titre nomme le lieu — « Ajouter une description au Chat
+Noir », la préposition étant celle de la fiche.
+
+Un refus répond **403**, une requête sans lieu, sans type ou sans auteur désigné **400**, un lieu
+ou un texte inconnu **404**.
+
+### Un texte par personne et par lieu
+
+La clé primaire de `descriptionlieu` est `(idLieu, idPersonne)`, sans le type : une personne ne
+porte qu'un texte par lieu, quelle qu'en soit la sorte. Le contrôle de doublon ne regardait que les
+lignes du même type, si bien qu'ajouter une présentation après une description partait en INSERT
+refusé par la clé — et la page redirigeait vers la fiche en annonçant une réussite.
+
+Le contenu passe par [`UserHtmlSanitizer`](../librairies/Utils/UserHtmlSanitizer.php) **avant**
+d'être validé : c'est le texte nettoyé qui sera enregistré, et lui seul dont la longueur veut dire
+quelque chose — quarante caractères de balises retirées passaient le minimum de 30 pour
+n'enregistrer rien.
+
+### À venir
+
+L'issue #235 propose de fondre `descriptionlieu` et les pages en dur d'`articles/` dans une table
+`article` générique, servie par `article/article.php` et `article/edit.php`. Ce formulaire-ci en
+est le point de départ ; il n'a délibérément pas de classe de traitement à lui, `FicheEdition`
+supposant un nom, un statut et des images qu'un texte n'a pas.
+
 ## Activité mensuelle, en vue d'administration
 
 Les listes `lieu/lieux.php` et `organisateur/organisateurs.php` affichent, pour les éditeurs et au-dessus, **douze colonnes** — une par mois, la dernière étant le mois en cours. Chaque cellule porte le nombre d'événements ajoutés ce mois-là, et en dessous, en bleu, celui du même mois un an plus tôt.

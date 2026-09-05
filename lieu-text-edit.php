@@ -2,361 +2,372 @@
 
 require_once("app/bootstrap.php");
 
-use Ladecadanse\Utils\Validateur;
+use Ladecadanse\HtmlShrink;
+use Ladecadanse\Lieu;
+use Ladecadanse\Security\SecurityToken;
+use Ladecadanse\UserLevel;
 use Ladecadanse\Utils\QueryParamValidator;
 use Ladecadanse\Utils\UserHtmlSanitizer;
-use Ladecadanse\HtmlShrink;
+use Ladecadanse\Utils\Validateur;
 
-if (!$authorization->checkGroup(8))
+if (!$authorization->checkGroup(UserLevel::ACTOR))
 {
     header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
-	header("Location: /user/login.php");
+    header("Location: /user/login.php");
     die();
 }
 
-$page_titre = "ajouter/modifier une description/présentation de lieu";
-$extra_css = ["formulaires"];
+// 1sts : intention, 2nds : intention validated
+$allowed_actions = ["ajouter", "insert", "editer", "update"];
 
 /*
-* action choisie, idL et idP si édition
-*/
-$tab_actions = ["ajouter", "insert", "editer", "update"];
-$get['action'] = "ajouter";
-if (isset($_GET['action']))
-{
-	$get['action'] = QueryParamValidator::validateUrlQueryValue($_GET['action'], "enum", 0, $tab_actions);
-}
-
-$tab_types = ["description", "presentation"];
-if (isset($_GET['type'])) {
-    $get['type'] = QueryParamValidator::validateUrlQueryValue($_GET['type'], "enum", 0, $tab_types);
-}
-else
-{
-	trigger_error("type obligatoire", E_USER_WARNING);
-	exit;
-}
-
-$get['idL'] = 0;
-if (isset($_GET['idL']))
-{
-	$get['idL'] = (int)$_GET['idL'];
-}
-
-if (isset($_GET['idP']))
-{
-	$get['idP'] = (int)$_GET['idP'];
-}
-elseif (isset($_SESSION['SidPersonne']))
-{
-	$get['idP'] = $_SESSION['SidPersonne'];
-}
-
-/* VERIFICATION POUR MODIFICATION
-* Si ce n'est pas un ajout et que la personne, n'est pas l'auteur de la desc ni admin -> exit
-*/
-
-if ($get['type'] == 'description' && $_SESSION['Sgroupe'] > 6)
-{
-	HtmlShrink::msgErreur("Vous n'avez pas les droits pour ajouter/éditer cette description");
-	exit;
-
-}
-else if ($get['type'] == 'presentation' && $_SESSION['Sgroupe'] > 8)
-{
-	HtmlShrink::msgErreur("Vous n'avez pas les droits pour ajouter/éditer cette présentation");
-	exit;
-
-}
-
-if ($get['type'] == 'presentation' && $_SESSION['Sgroupe'] == 8 && ($get['idL'] && !($authorization->isPersonneInLieuByOrganisateur($_SESSION['SidPersonne'], $get['idL']) || $authorization->isPersonneAffiliatedWithLieu($_SESSION['SidPersonne'], $get['idL']))))
-{
-	HtmlShrink::msgErreur("Vous n'avez pas les droits pour ajouter/éditer cette présentation");
-	exit;
-}
+ * Le type n'a pas de valeur par défaut : une description est un avis signé, une
+ * présentation est le lieu parlant en son nom. Ni les mêmes droits, ni la même place
+ * dans la fiche — deviner l'un pour l'autre écrirait le texte au mauvais endroit.
+ */
+$allowed_types = ["description", "presentation"];
 
 /*
-* TRAITEMENT DU FORMULAIRE (EDITION OU AJOUT)
-*/
+ * La colonne `type` est un ENUM sans accent, que la page rendait tel quel : « Ajouter une
+ * presentation », « Presentation ajoutée ».
+ */
+$type_libelles = ['description' => 'description', 'presentation' => 'présentation'];
+
+// null quand la valeur n'existe pas : la page répond alors 400, là où l'exception levée
+// par validateUrlQueryValue() faisait un 500 d'une url abîmée ou d'un passage de bot
+$action_demandee = QueryParamValidator::enumFromQuery($_GET['action'] ?? null, $allowed_actions, 'ajouter');
+$type_demande = QueryParamValidator::enumFromQuery($_GET['type'] ?? null, $allowed_types);
+
+$get = [
+    'action' => $action_demandee ?? 'ajouter',
+    'type' => $type_demande ?? 'description',
+    'idL' => (int) ($_GET['idL'] ?? 0),
+    'idP' => (int) ($_GET['idP'] ?? 0),
+];
+
+$type_libelle = $type_libelles[$get['type']];
+
+$is_edit_mode = in_array($get['action'], ['editer', 'update'], true);
+
+/*
+ * Le formulaire n'est traité que sous les actions qui écrivent. Un POST vers ?action=ajouter
+ * ré-affiche donc le formulaire au lieu de tomber dans une branche qui n'enregistre rien.
+ */
+$is_form_submitted = isset($_POST['form_submitted']) && in_array($get['action'], ['insert', 'update'], true);
+
+/*
+ * Auteur du texte : celui que l'url désigne en modification, la personne connectée à
+ * l'ajout. Il ne vient plus d'un champ caché du formulaire — c'est de lui que dépend le
+ * droit de modifier, et le POST décidait jusqu'ici de la ligne écrite.
+ */
+$id_auteur = $is_edit_mode ? $get['idP'] : (int) ($_SESSION['SidPersonne'] ?? 0);
+
+/*
+ * Bornes du texte, partagées par la validation serveur et le guide affiché sous le champ,
+ * qui ne les annonçait pas. Le minimum écarte les textes qui ne disent rien ; le maximum
+ * est celui d'un `mediumtext` raisonnable.
+ */
+$contenu_min = 30;
+$contenu_max = 100000;
+
+/*
+ * Les refus se rendent dans la page du site, avec le statut HTTP qui va avec : un message
+ * HTML nu au-dessus d'une page vide n'offrait ni retour à l'accueil, ni au client le
+ * moyen de distinguer un refus d'une réponse normale. Le type manquant, lui, finissait en
+ * page blanche (trigger_error puis exit).
+ */
+$http_error = null;
+
+if ($action_demandee === null)
+{
+    $http_error = [400, 'Bad Request', "Cette action n'existe pas"];
+}
+elseif ($type_demande === null)
+{
+    $http_error = [400, 'Bad Request', "Cette adresse ne dit pas quel texte rédiger"];
+}
+elseif ($get['idL'] <= 0)
+{
+    // le lieu vient de l'url dans les deux modes, la liste déroulante ayant disparu
+    $http_error = [400, 'Bad Request', "Aucun lieu n'est désigné"];
+}
+elseif ($id_auteur <= 0)
+{
+    $http_error = [400, 'Bad Request', "Aucun auteur n'est désigné"];
+}
+elseif (!$is_edit_mode && !$authorization->isPersonneAllowedToAddTexteLieu($_SESSION, $get['type'], $get['idL']))
+{
+    $http_error = [403, 'Forbidden', "Vous ne pouvez pas ajouter de " . $type_libelle . " à ce lieu"];
+}
+elseif ($is_edit_mode && !$authorization->isPersonneAllowedToEditTexteLieu($_SESSION, $get['type'], $get['idL'], $id_auteur))
+{
+    $http_error = [403, 'Forbidden', "Vous ne pouvez pas modifier cette " . $type_libelle];
+}
+
+$lieu = [];
+$champs = ['contenu' => ''];
+$auteur_pseudo = '';
+
+if ($http_error === null)
+{
+    $stmt = $connectorPdo->prepare("SELECT nom, preposition_nom FROM lieu WHERE idLieu = :idL");
+    $stmt->execute([':idL' => $get['idL']]);
+    $ligne_lieu = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($ligne_lieu === false)
+    {
+        $http_error = [404, 'Not Found', "Ce lieu n'existe pas ou plus"];
+    }
+    else
+    {
+        $lieu = $ligne_lieu;
+    }
+}
+
+if ($http_error === null && $is_edit_mode)
+{
+    /*
+     * Le texte est relu dans les deux cas, mais il ne remplit le champ qu'à l'affichage :
+     * à la soumission, il écraserait la saisie en cours. Sans ce contrôle, un `idP`
+     * inconnu rendait un champ vide sous un titre sans texte, et l'UPDATE qui suivait ne
+     * touchait aucune ligne en annonçant une réussite.
+     *
+     * Jointure externe : un texte dont l'auteur a été supprimé reste modifiable.
+     */
+    $stmt = $connectorPdo->prepare(
+        "SELECT dl.contenu, p.pseudo
+         FROM descriptionlieu dl
+         LEFT JOIN personne p ON dl.idPersonne = p.idPersonne
+         WHERE dl.idLieu = :idL AND dl.idPersonne = :idP AND dl.type = :type"
+    );
+    $stmt->execute([':idL' => $get['idL'], ':idP' => $id_auteur, ':type' => $get['type']]);
+    $texte_en_base = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($texte_en_base === false)
+    {
+        $http_error = [404, 'Not Found', "Ce texte n'existe pas ou plus"];
+    }
+    else
+    {
+        $champs['contenu'] = (string) $texte_en_base['contenu'];
+        $auteur_pseudo = (string) ($texte_en_base['pseudo'] ?? '');
+    }
+}
+
+if ($http_error !== null)
+{
+    [$status_code, $status_reason, $error_message] = $http_error;
+
+    header($_SERVER["SERVER_PROTOCOL"] . " $status_code $status_reason");
+    $page_titre = "erreur $status_code";
+    include("_header.inc.php");
+    HtmlShrink::msgErreur($error_message);
+    include("_footer.inc.php");
+    exit;
+}
 
 $verif = new Validateur();
+$token_error = false;
 
-$champs = ["idLieu" => '', "contenu" => ''];
-
-$action_terminee = false;
-
-if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok' )
+if ($is_form_submitted)
 {
-	foreach ($champs as $c => $v)
-	{
-			$champs[$c] = $_POST[$c];
-	}
+    /*
+     * Lecture inconditionnelle du champ : c'est le témoin de soumission qui commande, et
+     * non isset($_POST['contenu']) — un champ vidé ne se distinguerait pas d'un premier
+     * affichage. is_scalar() écarte un « contenu[]=x » forgé.
+     */
+    $champs['contenu'] = is_scalar($_POST['contenu'] ?? null) ? trim((string) $_POST['contenu']) : '';
 
-	if (isset($_POST['idP']))
-	{
-		$get['idP'] = $_POST['idP'];
-	}
+    if (!SecurityToken::check($_POST['token'] ?? '', $_SESSION['token'] ?? ''))
+    {
+        $token_error = true;
+    }
+    else
+    {
+        /*
+         * Nettoyage avant validation, et non l'inverse : c'est le texte nettoyé qui sera
+         * enregistré, et lui seul dont la longueur veut dire quelque chose. Quarante
+         * caractères de balises que le sanitizer retire passaient le minimum pour
+         * n'enregistrer rien.
+         */
+        $champs['contenu'] = (new UserHtmlSanitizer())->sanitize($champs['contenu']);
 
-	$verif->valider($champs['idLieu'], "idLieu", "texte", 1, 60, 1);
+        $verif->valider($champs['contenu'], "contenu", "texte", $contenu_min, $contenu_max, true);
 
-	$verif->valider($champs['contenu'], "contenu", "texte", 30, 100000, 1);
-	/*
-	 * Nom du lieu obligatoire et vê³©f si le lieu dê´©gné¡°ar idL existe bien dans la table lieu
-	 */
-	if ($connector->getNumRows($connector->query("SELECT idLieu FROM lieu WHERE idLieu=".(int)$champs['idLieu'])) < 1)
-	{
-			$verif->setErreur("idLieu", "Ce lieu n'est pas dans la liste");
-	}
+        if ($get['action'] === 'insert')
+        {
+            /*
+             * La clé primaire de `descriptionlieu` est (idLieu, idPersonne), sans le type :
+             * une personne ne porte qu'un texte par lieu. Le contrôle ne regardait que les
+             * lignes du même type, si bien qu'ajouter une présentation après une description
+             * partait en INSERT refusé par la clé — et la page redirigeait quand même.
+             */
+            $stmt = $connectorPdo->prepare("SELECT type FROM descriptionlieu WHERE idLieu = :idL AND idPersonne = :idP");
+            $stmt->execute([':idL' => $get['idL'], ':idP' => $id_auteur]);
+            $type_deja_ecrit = $stmt->fetchColumn();
 
-	/*
-	 * Si c'est un AJOUT, vérifie si la personne n'a pas déjà écrit une description
-	 * MAX 1 desc/pers
-	 */
-	if ($get['action'] == 'insert')
-	{
-		if ($connector->getNumRows($connector->query("SELECT * FROM descriptionlieu WHERE idPersonne=".(int)$_SESSION['SidPersonne']." AND idLieu=".(int)$champs['idLieu']." > 0 AND type='".$connector->sanitize($get['type'])."'") ))
-		{
-			$verif->setErreur('doublon', "Vous avez déjà écrit une <a href=\"".basename(__FILE__)."?action=editer&idL=".sanitizeForHtml($champs['idLieu'])."&idP=".$_SESSION['SidPersonne']."\"  title=\"Voir la description de ".$_SESSION['user']."\">description</a> pour ce lieu");
+            if ($type_deja_ecrit !== false)
+            {
+                $verif->setErreur('doublon', "Vous avez déjà écrit une <a href=\"" . basename(__FILE__)
+                    . "?action=editer&amp;type=" . sanitizeForHtml((string) $type_deja_ecrit)
+                    . "&amp;idL=" . $get['idL'] . "&amp;idP=" . $id_auteur . "\">"
+                    . sanitizeForHtml($type_libelles[$type_deja_ecrit] ?? (string) $type_deja_ecrit) . "</a> pour ce lieu");
+            }
+            elseif ($get['type'] === 'presentation')
+            {
+                // une seule présentation par lieu, quel qu'en soit l'auteur
+                $stmt = $connectorPdo->prepare("SELECT 1 FROM descriptionlieu WHERE idLieu = :idL AND type = 'presentation'");
+                $stmt->execute([':idL' => $get['idL']]);
 
-		}
-		else if ($get['type'] == 'presentation' && $connector->getNumRows($connector->query("SELECT * FROM descriptionlieu WHERE idLieu=".(int)$champs['idLieu']." > 0 AND type='presentation'") ))
-		{
-			$verif->setErreur('doublon', "Il y a déjà une présentation pour ce lieu.");
+                if ($stmt->fetchColumn() !== false)
+                {
+                    $verif->setErreur('doublon', "Il y a déjà une présentation pour ce lieu");
+                }
+            }
+        }
 
-		}
-	}
+        if ($verif->nbErreurs() === 0)
+        {
+            /*
+             * Deux marqueurs pour la même valeur : PDO tourne sans émulation des requêtes
+             * préparées, où un marqueur nommé réutilisé rend un HY093.
+             */
+            $maintenant = date("Y-m-d H:i:s");
 
-	if ($verif->nbErreurs() === 0)
-	{
-		//creation/nettoyage des valeurs à insérer dans la table
-		$pers = $_SESSION['SidPersonne'];
-		$champs['type'] = $get['type'];
+            if ($get['action'] === 'insert')
+            {
+                $stmt = $connectorPdo->prepare(
+                    "INSERT INTO descriptionlieu (idLieu, idPersonne, type, contenu, dateAjout, date_derniere_modif)
+                     VALUES (:idL, :idP, :type, :contenu, :date_ajout, :date_modif)"
+                );
+                $stmt->execute([
+                    ':idL' => $get['idL'],
+                    ':idP' => $id_auteur,
+                    ':type' => $get['type'],
+                    ':contenu' => $champs['contenu'],
+                    ':date_ajout' => $maintenant,
+                    ':date_modif' => $maintenant,
+                ]);
 
-		$champs['contenu'] = (new UserHtmlSanitizer())->sanitize($champs['contenu']);
+                $_SESSION['lieu_flash_msg'] = ucfirst($type_libelle) . " ajoutée";
+            }
+            else
+            {
+                $stmt = $connectorPdo->prepare(
+                    "UPDATE descriptionlieu SET contenu = :contenu, date_derniere_modif = :date_modif
+                     WHERE idLieu = :idL AND idPersonne = :idP AND type = :type"
+                );
+                $stmt->execute([
+                    ':contenu' => $champs['contenu'],
+                    ':date_modif' => $maintenant,
+                    ':idL' => $get['idL'],
+                    ':idP' => $id_auteur,
+                    ':type' => $get['type'],
+                ]);
 
+                $_SESSION['lieu_flash_msg'] = ucfirst($type_libelle) . " modifiée";
+            }
 
-		if ($get['action'] == 'insert')
-		{
+            $logger->info('[lieu-text-edit] ' . $get['action'], [
+                'type' => $get['type'],
+                'idL' => $get['idL'],
+                'idP' => $id_auteur,
+                'user' => $_SESSION['user'],
+            ]);
 
-			$sql_insert_attributs = "";
-			$sql_insert_valeurs = "";
+            header("Location: /lieu/lieu.php?idL=" . $get['idL']);
+            die();
+        }
+    }
+}
 
-			foreach ($champs as $c => $v)
-			{
-				$sql_insert_attributs .= $connector->sanitize($c).", ";
-				$sql_insert_valeurs .= "'".$connector->sanitize($v)."', ";
-			}
+$form_url_parameters = $is_edit_mode
+    ? "update&type=" . $get['type'] . "&idL=" . $get['idL'] . "&idP=" . $id_auteur
+    : "insert&type=" . $get['type'] . "&idL=" . $get['idL'];
 
-			$sql_insert_attributs .= "dateAjout, date_derniere_modif, idPersonne";
-			$sql_insert_valeurs .= "'".date("Y-m-d H:i:s")."', '".date("Y-m-d H:i:s")."', ".$pers;
+/*
+ * « Ajouter une description au Chat Noir », « Modifier la présentation à l'Usine » :
+ * prepositionToPutInSentence() rend l'espace de séparation quand la préposition ne colle
+ * pas au nom. sanitizeForHtml() la trime, elle est donc réémise à côté.
+ *
+ * Un lieu sans préposition prend « pour » : le tiret que rend la fonction par défaut est
+ * fait pour une étiquette de liste, pas pour une phrase.
+ */
+$preposition = trim((string) $lieu['preposition_nom']) === ''
+    ? 'pour '
+    : Lieu::prepositionToPutInSentence($lieu['preposition_nom']);
 
-			$sql_insert = "INSERT INTO descriptionlieu (".$sql_insert_attributs.") VALUES (".$sql_insert_valeurs.")";
-			$sql_insert = "INSERT INTO descriptionlieu (".$sql_insert_attributs.") VALUES (".$sql_insert_valeurs.")";
+$espace_avant_nom = str_ends_with($preposition, ' ') ? ' ' : '';
 
-			//TEST
-			//echo "<p>".$sql_insert."</p>";
-			//
-
-			//message résultat et réinit
-			if ($connector->query($sql_insert))
-			{
-
-                $_SESSION['lieu_flash_msg'] = ucfirst((string) $get['type'])." ajoutée";
-
-				$descriptionlieu = $champs;
-				$descriptionlieu['auteur'] = $get['idP'];
-				$descriptionlieu['date_derniere_modif'] = date("Y-m-d H:i:s");
-                $logger->info('[lieu-text-edit] insert', ['type' => $get['type'], 'idL' => (int)$get['idL'], 'user' => $_SESSION['user']]);
-
-                $action_terminee = true;
-			}
-			else
-			{
-				HtmlShrink::msgErreur("La requête INSERT dans descriptionlieu a échoué");
-			}
-		}
-		elseif ($get['action'] == 'update')
-		{
-			$champs['date_derniere_modif'] = date("Y-m-d H:i:s");
-
-			$sql_update = "UPDATE descriptionlieu SET
-			contenu='".$connector->sanitize($champs['contenu'])."', date_derniere_modif='".$connector->sanitize($champs['date_derniere_modif'])."'
-			WHERE idPersonne=".(int)$get['idP']." AND idLieu=".(int)$get['idL']." AND type='".$connector->sanitize($champs['type'])."'";
-
-			//TEST
-			//echo "<p>".$sql_update."</p>";
-			//
-
-			$req_update = $connector->query($sql_update);
-
-			//message résultat et réinit de l'action
-			if ($req_update)
-			{
-                $_SESSION['lieu_flash_msg'] = $get['type']." modifiée";
-				$descriptionlieu = $champs;
-				$descriptionlieu['auteur'] = $get['idP'];
-				$get['action'] = 'editer';
-                $logger->info('[lieu-text-edit] update', ['type' => $get['type'], 'idL' => (int)$get['idL'], 'user' => $_SESSION['user']]);
-                $action_terminee = true;
-			}
-			else
-			{
-				HtmlShrink::msgErreur("La requête UPDATE a échoué");
-			}
-
-		} //if action
-
-        header("Location: /lieu/lieu.php?idL=".(int)$champs['idLieu']); die();
-
-	} // if erreurs == 0
-} // if POST != ""
-
+$page_titre = ($is_edit_mode ? "modifier la " : "ajouter une ") . $type_libelle;
+$extra_css = ["formulaires"];
 include("_header.inc.php");
 ?>
 
 <main id="contenu" class="colonne">
 
-<?php
+    <header id="entete_contenu">
+        <h1><?= $is_edit_mode ? "Modifier la" : "Ajouter une" ?> <?= sanitizeForHtml($type_libelle) ?> <?= sanitizeForHtml($preposition) . $espace_avant_nom ?><a href="/lieu/lieu.php?idL=<?= $get['idL'] ?>"><?= sanitizeForHtml($lieu['nom']) ?></a></h1>
+        <div class="spacer"></div>
+    </header>
 
-if (!$action_terminee)
-{
-    echo '<header id="entete_contenu">';
+    <?php if ($token_error) : ?>
+        <?php HtmlShrink::msgErreur("Le système de sécurité du site n'a pu authentifier votre action. Veuillez réafficher ce formulaire et réessayer"); ?>
+    <?php elseif ($verif->nbErreurs() > 0) : ?>
+        <?php HtmlShrink::msgErreur("Il y a " . $verif->nbErreurs() . " erreur(s)"); ?>
+    <?php endif; ?>
 
-    /*
-     * PREPARATION DES URLS SELON LES ACTIONS,
-     * update et idB en cas d'édition, insert pour ajout
-     */
-    if ($get['action'] == 'editer' || $get['action'] == 'update')
-    {
-        $act = "update&type=".$get['type']."&idL=".(int)$get['idL'];
+    <form method="post" id="ajouter_editer" class="js-submit-freeze-wait" action="<?= basename(__FILE__) ?>?action=<?= sanitizeForHtml($form_url_parameters) ?>">
 
-        $req_lieu = $connector->query("SELECT nom FROM lieu WHERE idLieu=".(int)$get['idL']);
-        $detailsLieu = $connector->fetchArray($req_lieu);
+    <?php if ($get['type'] === 'presentation') : ?>
+        <p>Si vous vous occupez de ce lieu, vous pouvez ici le présenter en son nom. Ce texte s'affichera dans sa fiche.</p>
+    <?php else : ?>
+        <?php /* « signée de son auteur » et non « du vôtre » : la modération reprend aussi
+                 les descriptions des autres. */ ?>
+        <p>La description s'affiche dans la fiche du lieu, signée du pseudo de son auteur.</p>
+    <?php endif; ?>
 
-        echo '<h1>Modifier la '.sanitizeForHtml($get['type']).' sur <a href="/lieu/lieu.php?idL='.(int)$get['idL'].'">'.sanitizeForHtml($detailsLieu['nom']).'</a></h1>';
-    }
-    else
-    {
-        $act = "insert&type=".$get['type'];
-        echo "<h1>Ajouter une ".sanitizeForHtml($get['type'])."</h1>";
-    }
+    <?php /* Un administrateur peut reprendre la description d'un autre : autant qu'il sache
+             de qui est le texte qu'il ouvre. */ ?>
+    <?php if ($is_edit_mode && $auteur_pseudo !== '' && $id_auteur !== (int) ($_SESSION['SidPersonne'] ?? 0)) : ?>
+        <p>Texte écrit par <?= sanitizeForHtml($auteur_pseudo) ?></p>
+    <?php endif; ?>
 
-/*
-* POUR EDITER UNE DESCRIPTION, ALLER CHERCHER SES VALEURS DANS LA BASE
-* Accessible par son auteur ou un admin
-* Récupération des valeurs de la table et remplissage des champs pour le formulaire
-* Affichage d'un menu d'actions pour l'admin
-*/
-if ($get['action'] == 'editer' && isset($get['idL']) && isset($get['idP']))
-{
-    $sql = "SELECT idPersonne, idLieu, contenu, type, dateAjout
-    FROM descriptionlieu WHERE idLieu =".(int)$get['idL']." AND idPersonne=".(int)$get['idP']." AND type='".$connector->sanitize($get['type'])."'";
-    $req_desc = $connector->query($sql);
+    <p>* indique un champ obligatoire</p>
 
-    if ($tabDesc = $connector->fetchArray($req_desc))
-    {
-            foreach($tabDesc as $c => $v)
-            {
-                $champs[$c] = $v;
-            }
-    }
+    <fieldset>
 
-    @mysqli_free_result($req_desc);
-} // if GET action
+        <?= $verif->getHtmlErreur('doublon') ?>
 
-echo '<div class="spacer"></div></header>';
+        <p>
+            <?php /* id distinct du name : <main id="contenu"> porte déjà cet identifiant, et
+                     le $('#contenu') de web/js/browser.js visait le premier des deux. */ ?>
+            <label for="texte">Le texte*</label>
+            <textarea name="contenu" id="texte" class="tinymce" cols="45" rows="16"><?= sanitizeForHtml($champs['contenu']) ?></textarea>
+            <?= $verif->getHtmlErreur('contenu') ?>
+        </p>
 
-if ($verif->nbErreurs() > 0)
-{
-	HtmlShrink::msgErreur("Il y a ".$verif->nbErreurs()." erreur(s).");
-	//print_r($verif->getErreurs());
-}
-?>
+        <div class="guideChamp"><?= $contenu_min ?> caractères au minimum. Les mises en forme que l'éditeur ne propose pas — styles collés depuis un traitement de texte, balises exotiques — sont retirées à l'enregistrement.</div>
 
-<!-- FORMULAIRE POUR UNE DESCRIPTION -->
-    <form method="post" id="ajouter_editer" class="js-submit-freeze-wait" enctype="multipart/form-data" action="<?php echo basename(__FILE__) . "?action=" . sanitizeForHtml($act); ?>">
-        <?php
-if ($get['type'] == 'presentation')
-{
-?>
-	<p>Si vous vous occupez d'un lieu, vous pouvez ici le présenter en son nom. Ce texte s'affichera dans la fiche du lieu.</p>
-<?php
-}
-?>
-<p>* indique un champ obligatoire</p>
+    </fieldset>
 
-<fieldset>
-<!-- Select liste des lieux -->
+    <p class="piedForm">
+        <?php /* Témoin de soumission : le bouton est désactivé par js-submit-freeze-wait, son
+                 nom ne part donc pas. Même nom que dans les deux autres formulaires de fiche. */ ?>
+        <input type="hidden" name="form_submitted" value="1" />
+        <input type="hidden" name="token" value="<?= SecurityToken::getToken() ?>" />
+        <input type="submit" value="Enregistrer" class="submit submit-big" />
+    </p>
 
-<input type="hidden" name="type" value="<?= sanitizeForHtml($get['type']); ?>" />
-
-
-<?php
-if (($get['action'] == 'editer' || $get['action'] == 'update') && isset($get['idL']))
-{
-
-	echo "<input type=\"hidden\" name=\"idLieu\" value=\"".(int)$get['idL']."\" />
-	<input type=\"hidden\" name=\"idP\" value=\"".(int)$get['idP']."\" />";
-}
-    else
-{
-
-	echo "<p><label for=\"idLieu\" style=\"text-align:left;float:none;\">Lieu* :</label><select name=\"idLieu\" id=\"idLieu\" class=\"js-select2-options-with-style\" title=\"Choisissez le lieu que vous voulez décrire\" style=\"max-width:350px;\" data-placeholder=\"\">
-	<option value=\"\"></option>";
-	$req_lieux = $connector->query("SELECT idLieu, nom FROM lieu WHERE statut='actif' ORDER BY nom");
-
-	while ($lieuTrouve = $connector->fetchArray($req_lieux))
-	{
-	    echo "<option";
-		if ($lieuTrouve['idLieu'] == $champs['idLieu'] || $lieuTrouve['idLieu'] == $get['idL'])
-		{
-		  	echo " selected=\"selected\"";
-		}
-		echo " value=\"" . (int)$lieuTrouve['idLieu'] . "\">" . sanitizeForHtml($lieuTrouve['nom']) . "</option>";
-        }
-    ?>
-    </select></p>
-    <?php
-echo $verif->getErreur('idLieu');
-echo $verif->getHtmlErreur('doublon');
-echo $verif->getErreur('nom');
-
-}
-?>
-<!-- Description Texte -->
-<p>
-    <label for="contenu" style="display:block;text-align:left;float:none;">La description*&nbsp;:</label>
-        <textarea style="float:left" id="contenu" name="contenu" cols="45" rows="16" class="tinymce"><?= sanitizeForHtml($champs['contenu']) ?></textarea>
-<?php
-echo $verif->getHtmlErreur('contenu');
-?>
-</p>
-
-</fieldset>
-
-<p class="piedForm">
-<input type="hidden" name="formulaire" value="ok" />
-<input type="submit" value="Enregistrer" class="submit submit-big" />
-</p>
-
-
-</form>
-
-<?php
-} // if action_terminee
-?>
+    </form>
 
 </main>
-<!-- fin contenu  -->
 
 <div id="colonne_gauche" class="colonne">
-<?php include("event/_navigation_calendrier.inc.php"); ?>
 </div>
-<!-- Fin Colonne gauche -->
 
 <div id="colonne_droite" class="colonne">
 </div>
 
 <?php
 include("_footer.inc.php");
-?>

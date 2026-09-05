@@ -149,6 +149,63 @@ class Authorization
     }
 
     /**
+     * Qui peut écrire un texte sur un lieu — une description, qui est un avis signé de son
+     * auteur, ou la présentation, qui est le lieu parlant en son nom :
+     *
+     * - description : les éditeurs (AUTHOR et au-dessus), sur n'importe quel lieu ;
+     * - présentation : ceux qui peuvent modifier la fiche du lieu, présenter un lieu et
+     *   tenir sa fiche relevant du même mandat.
+     *
+     * Posée ici pour que le formulaire et les liens « Ajouter » de lieu.php répondent à la
+     * même question. Le formulaire, lui, ne la posait pas du tout sur le lieu écrit : il
+     * vérifiait l'`idL` de l'url, absent à l'ajout, puis enregistrait le lieu choisi dans
+     * une liste déroulante — n'importe lequel.
+     *
+     * @param array<string, mixed> $sessionToReadonly
+     */
+    public function isPersonneAllowedToAddTexteLieu(array $sessionToReadonly, string $type, int $idLieu): bool
+    {
+        // le plancher qu'applique déjà la page : isPersonneAllowedToEditLieu() ne regarde
+        // pas le niveau, et une affiliation suffirait sinon à ouvrir le formulaire à un MEMBER
+        if (($sessionToReadonly['Sgroupe'] ?? PHP_INT_MAX) > UserLevel::ACTOR)
+        {
+            return false;
+        }
+
+        return $type === 'presentation'
+            ? $this->isPersonneAllowedToEditLieu($sessionToReadonly, $idLieu)
+            : $this->isPersonneEditor($sessionToReadonly);
+    }
+
+    /**
+     * Qui peut modifier un texte déjà publié.
+     *
+     * Une présentation se reprend par quiconque pourrait l'écrire : elle parle du lieu et
+     * non de son auteur. Une description est un avis signé — seuls son auteur et la
+     * modération (ADMIN) y touchent, là où le formulaire l'ouvrait à tout éditeur pour peu
+     * qu'il change l'`idP` de l'url. C'est déjà la règle qu'appliquent les liens
+     * « Modifier » de lieu.php.
+     *
+     * @param array<string, mixed> $sessionToReadonly
+     * @param int $idAuteur auteur du texte, tel que la base le porte
+     */
+    public function isPersonneAllowedToEditTexteLieu(array $sessionToReadonly, string $type, int $idLieu, int $idAuteur): bool
+    {
+        if ($type === 'presentation')
+        {
+            return $this->isPersonneAllowedToAddTexteLieu($sessionToReadonly, $type, $idLieu);
+        }
+
+        if (!isset($sessionToReadonly['Sgroupe']))
+        {
+            return false;
+        }
+
+        return $sessionToReadonly['Sgroupe'] <= UserLevel::ADMIN
+            || ($this->isPersonneEditor($sessionToReadonly) && (int) ($sessionToReadonly['SidPersonne'] ?? 0) === $idAuteur);
+    }
+
+    /**
      * Vérifie dans la base si une personne est bien l'auteur d'un événement, d'un lieu
      * ou d'un organisateur.
      *

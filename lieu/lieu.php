@@ -365,13 +365,11 @@ include("../_header.inc.php");
                                         <span class="left">
                                             <?= ucfirst(DateHelper::isoToFr($des['dateAjout'], 'annee', showDayOfWeek: false)) ?><?php if ($des['date_derniere_modif'] != "0000-00-00 00:00:00" && $des['date_derniere_modif'] != $des['dateAjout']) : ?>, modifié le <?= DateHelper::isoToFr($des['date_derniere_modif'], 'annee', showDayOfWeek: false) ?><?php endif; ?>
                                         </span>
-                                        <?php if (isset($_SESSION['Sgroupe']) && (
-                                                    $_SESSION['Sgroupe'] <= UserLevel::ADMIN
-                                                    || ($type == 'description' && $_SESSION['Sgroupe'] <= UserLevel::AUTHOR && $_SESSION['SidPersonne'] == $des['idPersonne'])
-                                                    || ($type == 'presentation' &&
-                                                    ($_SESSION['Sgroupe'] <= UserLevel::AUTHOR)
-                                                        || ($_SESSION['Sgroupe'] <= UserLevel::ACTOR && ($authorization->isPersonneInLieuByOrganisateur($_SESSION['SidPersonne'], $get['idL']) || $authorization->isPersonneAffiliatedWithLieu($_SESSION['SidPersonne'], $get['idL']))))
-                                                )) : ?>
+                                        <?php /* La même question que se pose lieu-text-edit.php. Écrite ici à la main,
+                                                 elle refermait mal ses parenthèses : la dernière branche n'était pas
+                                                 rattachée au type, et un acteur affilié au lieu voyait « Modifier »
+                                                 sur les descriptions des autres — vers un refus. */ ?>
+                                        <?php if ($authorization->isPersonneAllowedToEditTexteLieu($_SESSION, (string) $type, (int) $get['idL'], (int) $des['idPersonne'])) : ?>
                                                 <span class="right">
                                                     <a href="/lieu-text-edit.php?action=editer&amp;type=<?= $type ?>&amp;idL=<?= (int)$get['idL'] ?>&amp;idP=<?= (int) $des['idPersonne'] ?>"><?= $iconeEditer ?> Modifier</a>
                                                 </span>
@@ -390,16 +388,14 @@ include("../_header.inc.php");
                 <?php
                 // add description :
                 // Description : un rédacteur qui n'en n'a pas déjà écrit une
-                if ($authorization->isPersonneEditor($_SESSION) && !in_array($_SESSION['SidPersonne'], $idPersonne_authors_of_desc)) : ?>
+                if ($authorization->isPersonneAllowedToAddTexteLieu($_SESSION, 'description', (int) $get['idL'])
+                    && !in_array($_SESSION['SidPersonne'], $idPersonne_authors_of_desc)) : ?>
                     <a href="/lieu-text-edit.php?idL=<?= (int)$get['idL'] ?>&amp;type=description"><?= $icone['ajouter_texte'] ?> Ajouter une description (avis)</a><br>
                 <?php endif; ?>
 
                 <?php
                 // Presentation : if no presentation yet, allow authorized users to add it
-                if ($presentations_nb == 0 && isset($_SESSION['Sgroupe']) &&
-                        ($_SESSION['Sgroupe'] <= UserLevel::AUTHOR ||
-                            ($_SESSION['Sgroupe'] == UserLevel::ACTOR && ($authorization->isPersonneAffiliatedWithLieu($_SESSION['SidPersonne'], $get['idL']) || $authorization->isPersonneInLieuByOrganisateur($_SESSION['SidPersonne'], $get['idL'])))
-                        )) : ?>
+                if ($presentations_nb == 0 && $authorization->isPersonneAllowedToAddTexteLieu($_SESSION, 'presentation', (int) $get['idL'])) : ?>
                     <a href="/lieu-text-edit.php?idL=<?= (int)$get['idL'] ?>&amp;type=presentation"><?= $icone['ajouter_texte'] ?> Ajouter une présentation</a>
                 <?php endif; ?>
 
