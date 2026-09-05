@@ -1,4 +1,4 @@
--- Schéma de référence de La décadanse, à jour de la version 3.12.0.
+-- Schéma de référence de La décadanse, à jour de la version 3.13.0.
 --
 -- Ce fichier suffit à créer une base : ne rejouer par-dessus aucune migration
 -- v3-*.sql de ce répertoire, elles y sont toutes intégrées. Voir README.md.

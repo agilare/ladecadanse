@@ -2,7 +2,7 @@
 
 Deux rôles cohabitent dans ce répertoire.
 
-`ladecadanse.sql` est le **schéma de référence**, à jour de la 3.12.0 : c'est lui qu'on importe pour créer
+`ladecadanse.sql` est le **schéma de référence**, à jour de la 3.13.0 : c'est lui qu'on importe pour créer
 une base de zéro. Les fichiers `vX-Y-Z_*.sql` sont les **migrations** : elles font passer une base
 existante d'une version à la suivante.
 
@@ -38,7 +38,7 @@ l'invariant à tenir, une ligne à « non » signalant que le dump a pris du ret
 | `v3-11-0_lieu-lat-lng-decimal.sql` | 3.11.0 | 2026-08-01 | `lieu.lat` et `lieu.lng` de `FLOAT(10,6)` à `DECIMAL(10,7)` | oui |
 | `v3-11-0_bot_monitor-create-table.sql` | 3.11.0 | 2026-07-16 | table `bot_monitor` | oui |
 | `v3-12-0_localite-france.sql` | 3.12.0 | 2026-08-25 | `localite.npa` en `VARCHAR(6)`, localité « Ailleurs en France », localité 1 renommée en canton `hs` | oui |
-| `v3-12-0_lieu-colonnes.sql` | 3.12.0 | 2026-09-05 | `lieu.determinant` → `preposition_nom`, `lieu.categorie` → `categories`, `adresse` en `VARCHAR(255)`, colonnes facultatives à `NULL`, `photo2` et `actif` supprimées | oui |
+| `v3-13-0_lieu-colonnes.sql` | 3.13.0 | 2026-09-05 | `lieu.determinant` → `preposition_nom`, `lieu.categorie` → `categories`, `adresse` en `VARCHAR(255)`, colonnes facultatives à `NULL`, `photo2` et `actif` supprimées | oui |
 
 Trois pièges de lecture :
 
@@ -83,7 +83,7 @@ UNION ALL SELECT 'v3-11-0_bot_monitor-create-table', IF(COUNT(*), 'ok', 'MANQUAN
 UNION ALL SELECT 'v3-12-0_localite-france', IF(COUNT(*), 'ok', 'MANQUANTE')
   FROM localite
  WHERE canton = 'rf' AND localite = 'Ailleurs en France'
-UNION ALL SELECT 'v3-12-0_lieu-colonnes', IF(COUNT(*), 'ok', 'MANQUANTE')
+UNION ALL SELECT 'v3-13-0_lieu-colonnes', IF(COUNT(*), 'ok', 'MANQUANTE')
   FROM information_schema.COLUMNS
  WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'lieu' AND COLUMN_NAME = 'preposition_nom';
 ```

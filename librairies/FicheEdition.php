@@ -141,7 +141,7 @@ abstract class FicheEdition extends Edition
      *
      * La chaîne vide par défaut, faute de mieux : `organisateur.logo` et `photo` sont
      * NOT NULL. Une table dont les colonnes image acceptent NULL — c'est le cas de `lieu`
-     * depuis la 3.12.0 — redéfinit ceci, sans quoi elle porterait deux écritures pour la
+     * depuis la 3.13.0 — redéfinit ceci, sans quoi elle porterait deux écritures pour la
      * même absence : NULL sur les lignes migrées, '' sur celles dont on retire l'image.
      */
     protected function valeurImageAbsente(): ?string

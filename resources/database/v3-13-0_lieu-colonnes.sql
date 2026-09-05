@@ -1,4 +1,4 @@
--- 3.12.0 — colonnes de la table `lieu` (issue #117)
+-- 3.13.0 — colonnes de la table `lieu` (issue #117)
 --
 -- Renommages, colonnes retirées et valeurs par défaut, dans le même geste que la
 -- réécriture de `lieu/edit.php` et de `LieuEdition`. À passer avec la mise en ligne du

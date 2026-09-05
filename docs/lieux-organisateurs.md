@@ -135,7 +135,7 @@ leurs trois règles : la virgule décimale des pavés numériques européens est
 globe sont vérifiées, et les deux vont ensemble ou pas du tout — le plan n'est affiché que si les
 deux sont connues.
 
-Une colonne à `NULL` (ou à `0`, comme avant la 3.12.0) se lit comme « pas de coordonnées » et rend
+Une colonne à `NULL` (ou à `0`, comme avant la 3.13.0) se lit comme « pas de coordonnées » et rend
 un champ vide. Une saisie non numérique est réaffichée telle quelle à côté de son message, jamais
 écrite en base.
 
