@@ -14,17 +14,35 @@ if (!$authorization->checkGroup(UserLevel::ACTOR)) {
     die();
 }
 
-$tab_actions = ["ajouter", "insert", "editer", "update"];
+$allowed_actions = ["ajouter", "insert", "editer", "update"];
+
+// null quand l'action n'existe pas : la page répond alors 400, là où l'exception levée
+// par validateUrlQueryValue() faisait un 500 d'une url abîmée ou d'un passage de bot
+$action_demandee = QueryParamValidator::enumFromQuery($_GET['action'] ?? null, $allowed_actions, 'ajouter');
+
 $get = [
-    'action' => QueryParamValidator::validateUrlQueryValue($_GET['action'] ?? 'ajouter', "enum", 'ajouter', $tab_actions),
+    'action' => $action_demandee ?? 'ajouter',
     'idS' => (int)($_GET['idS'] ?? 0),
     'idL' => (int)($_GET['idL'] ?? 0),
 ];
 
-$isEditMode = in_array($get['action'], ['editer', 'update']);
+$isEditMode = in_array($get['action'], ['editer', 'update'], true);
 
-if ($isEditMode && $_SESSION['Sgroupe'] > UserLevel::ADMIN) {
-    HtmlShrink::msgErreur("Vous n'avez pas les droits pour éditer cette salle");
+/*
+ * Chaque refus est rendu dans la page du site par _erreur_http.inc.php, comme sur les
+ * deux formulaires de fiche. Il sortait ici en message nu au-dessus d'une page vide, et
+ * avec un statut 200 qui annonçait au client une réponse normale.
+ */
+$http_error = null;
+
+if ($action_demandee === null) {
+    $http_error = [400, 'Bad Request', "Cette action n'existe pas"];
+} elseif ($isEditMode && $_SESSION['Sgroupe'] > UserLevel::ADMIN) {
+    $http_error = [403, 'Forbidden', "Vous n'avez pas les droits pour éditer cette salle"];
+}
+
+if ($http_error !== null) {
+    include("../_erreur_http.inc.php");
     exit;
 }
 
@@ -34,15 +52,26 @@ $salleForm->setIdPersonne($_SESSION['SidPersonne']);
 $salleForm->setIdSalle($get['idS'] ?: null);
 
 if ($get['action'] === 'editer' && $get['idS'] > 0) {
-    $salleForm->loadValues($get['idS']);
+    /*
+     * Le retour était ignoré : un identifiant inconnu rendait un formulaire vide sous le
+     * titre « Modifier une salle ». Seul l'affichage est couvert ici — à la soumission,
+     * relire écraserait la saisie en cours, et SalleEdition n'a pas l'équivalent du
+     * refreshStoredValues() des fiches. Un « update » sur un identifiant inconnu ne
+     * touche donc toujours aucune ligne en annonçant une réussite.
+     */
+    if (!$salleForm->loadValues($get['idS'])) {
+        $http_error = [404, 'Not Found', "Cette salle n'existe pas ou plus"];
+        include("../_erreur_http.inc.php");
+        exit;
+    }
 } elseif ($get['idL'] > 0) {
     $salleForm->setValeur('idLieu', $get['idL']);
 }
 
-$tokenError = false;
+$security_token_mismatch = false;
 if (($_POST['formulaire'] ?? '') === 'ok') {
     if (!SecurityToken::check($_POST['token'] ?? '', $_SESSION['token'] ?? '')) {
-        $tokenError = true;
+        $security_token_mismatch = true;
     } else {
         if ($salleForm->processSubmission($_POST, [])) {
             $_SESSION['lieu_flash_msg'] = $salleForm->getResultMessage();
@@ -51,7 +80,13 @@ if (($_POST['formulaire'] ?? '') === 'ok') {
         }
 
         if (!$salleForm->hasErrors()) {
-            HtmlShrink::msgErreur("La requête a échoué");
+            /*
+             * La saisie est valide et l'enregistrement a pourtant échoué : la base est
+             * hors d'état, ce dont l'auteur du formulaire ne peut rien faire. Le message
+             * qui sortait ici partait avant le doctype, l'en-tête n'étant inclus que
+             * plus bas — les deux formulaires de fiche lèvent la même exception.
+             */
+            throw new RuntimeException("L'enregistrement de la salle a échoué sans erreur de validation");
         }
     }
 }
@@ -72,7 +107,7 @@ include("../_header.inc.php");
     <div class="spacer"></div>
 </header>
 
-<?php if ($tokenError): ?>
+<?php if ($security_token_mismatch): ?>
     <?php HtmlShrink::msgErreur("Le système de sécurité du site n'a pu authentifier votre action. Veuillez réafficher ce formulaire et réessayer."); ?>
 <?php elseif ($salleForm->hasErrors()): ?>
     <?php HtmlShrink::msgErreur("Il y a " . $salleForm->getErrorCount() . " erreur(s)."); ?>
