@@ -77,8 +77,6 @@ class OrganisateurEdition extends FicheEdition
             $this->verif->setErreur("nom", "Un organisateur porte déjà ce nom");
         }
 
-        $this->erreurs = array_merge($this->erreurs, $this->verif->getErreurs());
-
         return $this->verif->nbErreurs() === 0;
     }
 

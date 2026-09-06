@@ -135,8 +135,6 @@ class LieuEdition extends FicheEdition
             $this->verif->validerFichierImage($this->fichiers[$field], $field, $mimes_images_acceptes, 0);
         }
 
-        $this->erreurs = array_merge($this->erreurs, $this->verif->getErreurs());
-
         return $this->verif->nbErreurs() === 0;
     }
 

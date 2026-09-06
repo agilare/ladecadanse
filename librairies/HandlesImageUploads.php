@@ -29,7 +29,7 @@ trait HandlesImageUploads
      * Entrée de $_FILES d'un champ image, ramenée à un tableau.
      *
      * Les formulaires déclarent leurs champs fichier avec une chaîne vide pour
-     * valeur par défaut, qu'Edition::processSubmission() ne remplace que si le client a
+     * valeur par défaut, que readPostedFiles() ne remplace que si le client a
      * envoyé quelque chose. Un champ laissé vide arrive donc ici en chaîne, sur
      * laquelle le code lisait ['name'] — un offset de chaîne, qui rendait ''
      * moyennant un avertissement.

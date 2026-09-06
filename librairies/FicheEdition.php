@@ -317,7 +317,6 @@ abstract class FicheEdition extends Edition
         return $this->verif->nbErreurs();
     }
 
-    #[\Override]
     public function getHtmlErreur(string $field): string
     {
         return $this->verif->getHtmlErreur($field);

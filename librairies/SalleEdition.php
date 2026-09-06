@@ -11,6 +11,9 @@ class SalleEdition extends Edition
     private int $idPersonne;
     private ?int $idSalle = null;
 
+    /** Salle chargée ou insérée ; la propriété vivait sur Edition, où elle ne servait qu'ici. */
+    private ?int $id = null;
+
     /**
      * Les instances arrivent en paramètre pour que la classe soit exerçable hors
      * requête HTTP ; les valeurs par défaut évitent d'imposer un conteneur à la page.
@@ -86,8 +89,6 @@ class SalleEdition extends Edition
                 $this->verif->setErreur("idLieu", "Ce lieu n'est pas dans la liste");
             }
         }
-
-        $this->erreurs = array_merge($this->erreurs, $this->verif->getErreurs());
 
         return $this->verif->nbErreurs() === 0;
     }
