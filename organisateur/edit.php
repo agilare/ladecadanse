@@ -50,57 +50,54 @@ elseif ($is_edit_mode && !$authorization->isPersonneAllowedToEditOrganisateur($_
     $http_error = [403, 'Forbidden', "Vous ne pouvez pas modifier cet organisateur"];
 }
 
+if ($http_error !== null)
+{
+    include("../_erreur_http.inc.php");
+    exit;
+}
+
 // Publier ou dépublier une fiche reste une décision de modération
 $can_change_status = $_SESSION['Sgroupe'] <= UserLevel::ADMIN;
-$is_form_submitted = isset($_POST['form_submitted']);
 
 $organisateur_form = new OrganisateurEdition();
 $organisateur_form->setAction($get['action']);
 $organisateur_form->setAuthorId((int) ($_SESSION['SidPersonne'] ?? 0));
 $organisateur_form->setStatusEditable($can_change_status);
 
-if ($http_error === null && $is_edit_mode)
+$is_form_submitted = isset($_POST['form_submitted']);
+
+if ($is_edit_mode)
 {
     $organisateur_form->setIdOrganisateur($get['idO']);
 
     /*
-     * À l'affichage la fiche remplit le formulaire ; à la soumission on vérifie seulement
-     * qu'elle existe encore, la recharger écraserait la saisie en cours. Sans ce contrôle,
-     * un identifiant inconnu rendait un formulaire vide sous un titre sans nom, et l'UPDATE
-     * qui suivait ne touchait aucune ligne en annonçant une réussite.
+     * Au premier affichage la fiche remplit le formulaire ; à la soumission on ne relit
+     * que l'état de référence, la recharger écraserait la saisie en cours. Sans ce
+     * contrôle, un identifiant inconnu rendait un formulaire vide sous un titre sans nom,
+     * et l'UPDATE qui suivait ne touchait aucune ligne en annonçant une réussite.
      */
-    $fiche_existe = $is_form_submitted
-        ? $organisateur_form->ficheExiste()
-        : $organisateur_form->loadValeurs($get['idO']);
+    $organisateur_exists = $is_form_submitted
+        ? $organisateur_form->refreshStoredValues()
+        : $organisateur_form->loadValues($get['idO']);
 
-    if (!$fiche_existe)
+    if (!$organisateur_exists)
     {
         $http_error = [404, 'Not Found', "Cet organisateur n'existe pas ou plus"];
+        include("../_erreur_http.inc.php");
+        exit;
     }
 }
 
-if ($http_error !== null)
-{
-    [$status_code, $status_reason, $error_message] = $http_error;
-
-    header($_SERVER["SERVER_PROTOCOL"] . " $status_code $status_reason");
-    $page_titre = "erreur $status_code";
-    include("../_header.inc.php");
-    HtmlShrink::msgErreur($error_message);
-    include("../_footer.inc.php");
-    exit;
-}
-
-$token_error = false;
+$security_token_mismatch = false;
 if ($is_form_submitted)
 {
     if (!SecurityToken::check($_POST['token'] ?? '', $_SESSION['token'] ?? ''))
     {
-        $token_error = true;
+        $security_token_mismatch = true;
     }
-    elseif ($organisateur_form->traitement($_POST, $_FILES))
+    elseif ($organisateur_form->processSubmission($_POST, $_FILES))
     {
-        $_SESSION['organisateur_flash_msg'] = $organisateur_form->getMessage();
+        $_SESSION['organisateur_flash_msg'] = $organisateur_form->getResultMessage();
         header("Location: /organisateur/organisateur.php?idO=" . $organisateur_form->getIdOrganisateur());
         die();
     }
@@ -111,8 +108,6 @@ if ($is_form_submitted)
         throw new RuntimeException("L'enregistrement de l'organisateur a échoué sans erreur de validation");
     }
 }
-
-$form_url_parameters = $is_edit_mode ? "update&idO=" . $get['idO'] : "insert";
 
 $page_titre = $is_edit_mode ? "modifier un organisateur" : "ajouter un organisateur";
 $extra_css = ["formulaires"];
@@ -133,13 +128,13 @@ include("../_header.inc.php");
         <div class="spacer"></div>
     </header>
 
-    <?php if ($token_error) : ?>
+    <?php if ($security_token_mismatch) : ?>
         <?php HtmlShrink::msgErreur("Le système de sécurité du site n'a pu authentifier votre action. Veuillez réafficher ce formulaire et réessayer"); ?>
     <?php elseif ($organisateur_form->hasErrors()) : ?>
         <?php HtmlShrink::msgErreur("Il y a " . $organisateur_form->getErrorCount() . " erreur(s)"); ?>
     <?php endif; ?>
 
-    <form method="post" enctype="multipart/form-data" id="ajouter_editer" class="js-submit-freeze-wait" action="<?= basename(__FILE__) ?>?action=<?= sanitizeForHtml($form_url_parameters) ?>">
+    <form method="post" enctype="multipart/form-data" id="ajouter_editer" class="js-submit-freeze-wait" action="<?= basename(__FILE__) ?>?action=<?= $is_edit_mode ? "update&amp;idO=" . (int) $get['idO'] : "insert" ?>">
 
     <p>* indique un champ obligatoire</p>
 

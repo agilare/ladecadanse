@@ -11,6 +11,8 @@ Feature documentation : [docs/](docs/).
 - lieu edit : latitude and longitude become `Coordinates`, which carries their three rules in one place — the decimal comma of European keypads, the globe's bounds, and "both or neither"
 - lieu text edit : `lieu-text-edit.php` follows the two other fiche forms — the request is decided before the first byte of HTML, the lieu dropdown gives way to the lieu the url names, and the title says which text of which lieu is being written ("Ajouter une description au Chat Noir") ; the calendar column and three inline styles go, the latter to `web/css/lieu-text-edit.css`
 - lieu, lieu text edit : who may write a description or a présentation, and who may take one back up, is asked once — in `Authorization::isPersonneAllowedToAddTexteLieu()` and `isPersonneAllowedToEditTexteLieu()` — where the page and the fiche each wrote the question by hand
+- edition : the methods of the fiche forms say in English what they do — `traitement()` becomes `processSubmission()`, `ficheExiste()` `refreshStoredValues()`, `getMessage()` `getResultMessage()`, `$valeursEnBase` `$storedValues` ; `Edition` loses the entity name nothing ever read, and `safeUnlinkImageAndThumb()` joins `HandlesImageUploads`, its only user
+- edition : an application refusal (400, 403, 404) is rendered by `_erreur_http.inc.php`, which both fiche forms carried by hand, and each refusal now leaves the page where it is decided — nothing changes in the browser, the two pages lose a duplicated block and a condition
 - tests : unit coverage for `Coordinates`, for the lieu categories and for `QueryParamValidator::enumFromQuery()` ; the Selenium lieu scenario needs re-recording, its category checkboxes having become a multiselect
 
 ### Fixed

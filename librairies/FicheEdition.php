@@ -45,17 +45,22 @@ abstract class FicheEdition extends Edition
 
     /**
      * Ce que la base dit déjà de la fiche, par opposition à $valeurs, qui porte la
-     * saisie en cours. Les deux sont nécessaires : c'est en les comparant qu'on sait
-     * quelle image remplacer, et qu'on retrouve le nom à afficher quand un envoi
-     * rejeté a laissé la saisie à moitié faite.
+     * saisie en cours. Sert à trois choses, d'où le nom générique :
      *
-     * Les noms de fichiers y figurent au même titre que les autres colonnes ; c'est
-     * dans $fichiers, hérité d'Edition, que vivent les entrées de $_FILES — des
-     * métadonnées d'envoi, pas des valeurs de colonne.
+     * - savoir quelle image remplacer ou effacer du disque ;
+     * - retrouver le nom à afficher quand un envoi rejeté a laissé la saisie à moitié
+     *   faite ;
+     * - rendre leur valeur aux champs que le niveau courant n'a pas le droit de modifier
+     *   (statusToWrite(), fillEditorsFieldsValuesIfNotAllowed()) — c'est la seule source
+     *   admise pour eux, un POST forgé n'ayant pas à décider.
+     *
+     * Les colonnes à y relire sont déclarées par storedColumns(). Les noms de fichiers y
+     * figurent au même titre que les autres ; c'est dans $fichiers, hérité d'Edition, que
+     * vivent les entrées de $_FILES — des métadonnées d'envoi, pas des valeurs de colonne.
      *
      * @var array<string, string>
      */
-    protected array $valeursEnBase = [];
+    protected array $storedValues = [];
 
     /**
      * Auteur à inscrire sur une fiche créée.
@@ -69,18 +74,16 @@ abstract class FicheEdition extends Edition
 
     /**
      * Le statut n'est proposé qu'aux modérateurs : la page le dit ici, faute de quoi un
-     * POST forgé passerait la valeur de son choix. Voir statutAEcrire().
+     * POST forgé passerait la valeur de son choix. Voir statusToWrite().
      */
     protected bool $statusEditable = false;
 
     /**
-     * @param array<string, mixed> $valeurs champs du formulaire, avec leur valeur initiale
+     * @param array<string, mixed> $initialValues champs du formulaire, avec leur valeur initiale
      * @param array<string, array<string, mixed>> $fichiers champs de type fichier
      * @param string $repUploads répertoire système des images de l'entité
-     * TODO: $nom seems unused here, could be marked Deprecated
      */
     public function __construct(
-        string $nom,
         array $initialValues,
         array $fichiers,
         string $repUploads,
@@ -90,14 +93,14 @@ abstract class FicheEdition extends Edition
     {
         $initialValues['statut'] = static::STATUT_INITIAL;
 
-        parent::__construct($nom, $initialValues, $fichiers);
+        parent::__construct($initialValues, $fichiers);
 
         // Le connecteur est un singleton, qu'un défaut de paramètre ne sait pas appeler
         $this->pdo = $pdo ?? DbConnectorPdo::getInstance();
         $this->repUploads = $repUploads;
 
-        $this->valeursEnBase = array_fill_keys($this->colonnesEnBase(), '');
-        $this->valeursEnBase['statut'] = static::STATUT_INITIAL;
+        $this->storedValues = array_fill_keys($this->storedColumns(), '');
+        $this->storedValues['statut'] = static::STATUT_INITIAL;
     }
 
     /*
@@ -125,7 +128,7 @@ abstract class FicheEdition extends Edition
      *
      * @return list<string>
      */
-    abstract protected function colonnesEnBase(): array;
+    abstract protected function storedColumns(): array;
 
     /**
      * Champs image du formulaire, avec les dimensions de leur miniature « s_ ».
@@ -151,13 +154,14 @@ abstract class FicheEdition extends Edition
     }
 
     /**
-     * Charge la fiche à modifier.
+     * Remplit le formulaire avec la fiche à modifier — donc écrase toute saisie en cours.
+     * À n'appeler qu'au premier affichage ; à la soumission, c'est refreshStoredValues().
      *
      * @return bool false si elle n'existe pas — à charge de l'appelant de répondre 404
      *              plutôt que d'afficher un formulaire vide sous un titre sans nom
      */
     #[\Override]
-    public function loadValeurs(int $id): bool
+    public function loadValues(int $id): bool
     {
         $stmt = $this->pdo->prepare("SELECT * FROM " . $this->table() . " WHERE " . $this->colonneId() . " = :id");
         $stmt->execute([':id' => $id]);
@@ -176,7 +180,7 @@ abstract class FicheEdition extends Edition
             }
         }
 
-        $this->lireValeursEnBase($ligne);
+        $this->fillStoredValues($ligne);
         $this->ficheId = $id;
         $this->authorId = (int) $ligne[$this->colonneAuteur()];
 
@@ -185,28 +189,30 @@ abstract class FicheEdition extends Edition
         return true;
     }
 
+    /**
+     * @param array<string, mixed> $postGlobal contenu de $_POST
+     * @param array<string, mixed> $filesGlobal contenu de $_FILES
+     */
     #[\Override]
-    // TODO: "traitement" is obscure, when possible rn to a more accurate "processSubmission"
-    // TODO: here and in other methods indicate in the variables names that their values expected are system globals ($_POST, $_FILES)
-    public function traitement(array $post, array $files): bool
+    public function processSubmission(array $postGlobal, array $filesGlobal): bool
     {
-        $this->lireChampsPostes($post);
-        $this->lireFichiersPostes($files);
-        $this->lireSuppressionsPostees($post);
+        $this->lireChampsPostes($postGlobal);
+        $this->lireFichiersPostes($filesGlobal);
+        $this->lireSuppressionsPostees($postGlobal);
 
-        // TODO: unclear reformulate :
-        // L'image à remplacer et le statut à conserver sont ceux de la base, pas ceux
-        // que le POST annonce.
-
-        // abort if meanwhile the entity has been deleted in another action
-        if ($this->action === 'update' && !$this->chargerValeursEnBase())
+        /*
+         * Relire la base avant d'écrire sert deux fois : les deux valeurs que le POST
+         * n'a pas le droit de décider — l'image déjà en place et le statut — se prennent
+         * ici (statusToWrite(), fillEditorsFieldsValuesIfNotAllowed()), et un faux dit
+         * que la fiche a disparu entre l'affichage du formulaire et son envoi.
+         */
+        if ($this->action === 'update' && !$this->readStoredValues())
         {
             return false;
         }
 
-        $this->valeurs['statut'] = $this->statutAEcrire();
-        // TODO: rn to fillEditorsFieldsValuesIfNotAllowed
-        $this->appliquerChampsReserves();
+        $this->valeurs['statut'] = $this->statusToWrite();
+        $this->fillEditorsFieldsValuesIfNotAllowed();
 
         if (!$this->verification())
         {
@@ -242,14 +248,16 @@ abstract class FicheEdition extends Edition
     }
 
     /**
-     * La fiche désignée existe-t-elle ?
+     * Relit les seules colonnes de $storedValues, sans toucher à la saisie en cours, et
+     * dit du même coup si la fiche existe encore.
      *
-     * À la soumission, la page a besoin de le savoir sans recharger le formulaire :
-     * loadValeurs() écraserait la saisie en cours.
+     * C'est ce que la page appelle à la soumission, là où loadValues() écraserait ce que
+     * l'utilisateur vient de taper. Les deux lisent la même ligne, mais l'une remplit le
+     * formulaire et l'autre l'état de référence contre lequel il sera écrit.
      */
-    public function ficheExiste(): bool
+    public function refreshStoredValues(): bool
     {
-        return $this->chargerValeursEnBase();
+        return $this->readStoredValues();
     }
 
     /**
@@ -272,7 +280,7 @@ abstract class FicheEdition extends Edition
      */
     public function getStoredImageName(string $champ): string
     {
-        return $this->valeursEnBase[$champ] ?? '';
+        return $this->storedValues[$champ] ?? '';
     }
 
     /**
@@ -289,7 +297,7 @@ abstract class FicheEdition extends Edition
      */
     public function getStoredName(): string
     {
-        return $this->valeursEnBase['nom'] ?? '';
+        return $this->storedValues['nom'] ?? '';
     }
 
     /*
@@ -327,12 +335,12 @@ abstract class FicheEdition extends Edition
 
     /**
      * Rend leur valeur enregistrée aux champs que le niveau courant n'a pas le droit de
-     * modifier, sur le modèle de statutAEcrire().
+     * modifier, sur le modèle de statusToWrite().
      *
      * Un formulaire qui n'affiche pas un champ le repostait en champ caché : la valeur
      * arrivait donc du client, et rien n'empêchait de la forger.
      */
-    protected function appliquerChampsReserves(): void
+    protected function fillEditorsFieldsValuesIfNotAllowed(): void
     {
     }
 
@@ -374,14 +382,14 @@ abstract class FicheEdition extends Edition
     /**
      * The value posted if the user has the authorization, otherwise the existing value in DB, otherwise default
      */
-    protected function statutAEcrire(): string
+    protected function statusToWrite(): string
     {
         if ($this->statusEditable)
         {
             return (string) $this->valeurs['statut'];
         }
 
-        return $this->action === 'update' ? $this->valeursEnBase['statut'] : static::STATUT_INITIAL;
+        return $this->action === 'update' ? $this->storedValues['statut'] : static::STATUT_INITIAL;
     }
 
     /**
@@ -390,10 +398,10 @@ abstract class FicheEdition extends Edition
      * @return bool false si la fiche n'existe pas — un UPDATE sur un identifiant
      *              inconnu ne touche aucune ligne et réussit en silence
      */
-    protected function chargerValeursEnBase(): bool
+    protected function readStoredValues(): bool
     {
         $stmt = $this->pdo->prepare(
-            "SELECT " . implode(', ', $this->colonnesEnBase())
+            "SELECT " . implode(', ', $this->storedColumns())
             . " FROM " . $this->table()
             . " WHERE " . $this->colonneId() . " = :id"
         );
@@ -405,7 +413,7 @@ abstract class FicheEdition extends Edition
             return false;
         }
 
-        $this->lireValeursEnBase($ligne);
+        $this->fillStoredValues($ligne);
 
         return true;
     }
@@ -413,11 +421,11 @@ abstract class FicheEdition extends Edition
     /**
      * @param array<string, mixed> $ligne
      */
-    protected function lireValeursEnBase(array $ligne): void
+    protected function fillStoredValues(array $ligne): void
     {
-        foreach (array_keys($this->valeursEnBase) as $colonne)
+        foreach (array_keys($this->storedValues) as $colonne)
         {
-            $this->valeursEnBase[$colonne] = (string) ($ligne[$colonne] ?? '');
+            $this->storedValues[$colonne] = (string) ($ligne[$colonne] ?? '');
         }
     }
 
@@ -434,21 +442,21 @@ abstract class FicheEdition extends Edition
 
         foreach ($this->champsImage() as $champ => $miniature)
         {
-            $nom = $this->nomImageApresEdition(
+            $nom = $this->imageNameAfterEdit(
                 $champ,
                 $this->fichierEnvoye($champ),
-                $this->valeursEnBase[$champ],
+                $this->storedValues[$champ],
                 $this->isImageMarkedForDeletion($champ),
                 $this->ficheId,
                 $this->repUploads
             );
 
-            if ($nom === $this->valeursEnBase[$champ])
+            if ($nom === $this->storedValues[$champ])
             {
                 continue;
             }
 
-            if (!$this->ecrireImageEtMiniature($this->fichierEnvoye($champ), $nom, $this->repertoireUploads(), $miniature))
+            if (!$this->writeImageFiles($this->fichierEnvoye($champ), $nom, $this->repertoireUploads(), $miniature))
             {
                 // L'ancienne image a déjà été effacée du disque : la colonne doit
                 // le refléter, sans quoi la fiche pointerait vers un fichier absent
@@ -479,6 +487,6 @@ abstract class FicheEdition extends Edition
         );
         $stmt->execute($params);
 
-        $this->valeursEnBase = array_merge($this->valeursEnBase, $nomsFichiers);
+        $this->storedValues = array_merge($this->storedValues, $nomsFichiers);
     }
 }

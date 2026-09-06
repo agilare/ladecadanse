@@ -26,7 +26,7 @@ class SalleEdition extends Edition
             'emplacement' => '',
         ];
 
-        parent::__construct('salle', $valeurs, []);
+        parent::__construct($valeurs, []);
 
         // Le connecteur est un singleton, qu'un défaut de paramètre ne sait pas appeler
         $this->pdo = $pdo ?? DbConnectorPdo::getInstance();
@@ -43,7 +43,7 @@ class SalleEdition extends Edition
     }
 
     #[\Override]
-    public function traitement(array $post, array $files): bool
+    public function processSubmission(array $post, array $files): bool
     {
         foreach ($this->valeurs as $nom => $val) {
             if (isset($post[$nom])) {
@@ -92,7 +92,7 @@ class SalleEdition extends Edition
      * @return bool false si la salle n'existe pas — à la page de répondre 404
      */
     #[\Override]
-    public function loadValeurs(int $id): bool
+    public function loadValues(int $id): bool
     {
         $stmt = $this->pdo->prepare("SELECT * FROM salle WHERE idSalle = :idSalle");
         $stmt->execute([':idSalle' => $id]);

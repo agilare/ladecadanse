@@ -63,7 +63,7 @@ class LieuEdition extends FicheEdition
      * Le nom, la préposition, les catégories et les organisateurs ne sont proposés
      * qu'aux éditeurs : un lieu est partagé par tous les événements qui s'y déroulent,
      * les renommer ou les recatégoriser se répercute donc partout. Voir
-     * appliquerChampsReserves().
+     * fillEditorsFieldsValuesIfNotAllowed().
      */
     private bool $editorFieldsEditable = false;
 
@@ -85,7 +85,6 @@ class LieuEdition extends FicheEdition
         $initialValues['quartier'] = '';
 
         parent::__construct(
-            'lieu',
             $initialValues,
             ['logo' => [], 'photo1' => []],
             $rep_uploads_lieux,
@@ -97,7 +96,8 @@ class LieuEdition extends FicheEdition
     }
 
     #[\Override]
-    // TODO: later rn to validateValuesAndGetErrorsNb
+    // TODO: later rn to validate() — la méthode rend un booléen, pas un nombre d'erreurs
+    // (getErrorCount() le donne) ; le renommage vaut pour Edition, SalleEdition et les deux fiches
     public function verification(): bool
     {
         global $mimes_images_acceptes;
@@ -157,7 +157,7 @@ class LieuEdition extends FicheEdition
      * organisateurs ? Réservé aux éditeurs ; les autres voient ces champs en lecture
      * seule et sont invités à passer par le formulaire de contact.
      */
-    public function setEditorFieldsEditable(bool $editable): void
+    public function setCanEditEditorFields(bool $editable): void
     {
         $this->editorFieldsEditable = $editable;
     }
@@ -207,11 +207,12 @@ class LieuEdition extends FicheEdition
         return 'idpersonne';
     }
 
-    #[\Override]
     /**
-     * TODO: replace by a class constant ?
+     * Méthode et non constante : PHP ne sait pas déclarer une constante abstraite sur une
+     * classe, la base ne pourrait donc pas exiger que chaque fiche la fournisse.
      */
-    protected function colonnesEnBase(): array
+    #[\Override]
+    protected function storedColumns(): array
     {
         // preposition_nom et categories s'y trouvent parce que les non-éditeurs ne les
         // postent pas : c'est de la base qu'il faut alors les reprendre
@@ -282,16 +283,16 @@ class LieuEdition extends FicheEdition
      * POST forgé. À l'ajout la question ne se pose pas, il est réservé aux éditeurs.
      */
     #[\Override]
-    protected function appliquerChampsReserves(): void
+    protected function fillEditorsFieldsValuesIfNotAllowed(): void
     {
         if ($this->editorFieldsEditable || $this->action !== 'update')
         {
             return;
         }
 
-        $this->valeurs['nom'] = $this->valeursEnBase['nom'];
-        $this->valeurs['preposition_nom'] = $this->valeursEnBase['preposition_nom'];
-        $this->categories = self::eclaterCategories($this->valeursEnBase['categories']);
+        $this->valeurs['nom'] = $this->storedValues['nom'];
+        $this->valeurs['preposition_nom'] = $this->storedValues['preposition_nom'];
+        $this->categories = self::eclaterCategories($this->storedValues['categories']);
         $this->organisateurs = $this->lireOrganisateursEnBase();
     }
 
@@ -299,7 +300,7 @@ class LieuEdition extends FicheEdition
     protected function insert(): bool
     {
         $maintenant = date("Y-m-d H:i:s");
-        [$localiteId, $quartier] = $this->localiteEtQuartier();
+        [$localiteId, $quartier] = $this->getLocaliteAndQuartierFromLocaliteId();
 
         $stmt = $this->pdo->prepare("INSERT INTO lieu
             (idpersonne, statut, nom, preposition_nom, categories, adresse, quartier, localite_id, region,
@@ -307,7 +308,7 @@ class LieuEdition extends FicheEdition
             VALUES (:idPersonne, :statut, :nom, :preposition, :categories, :adresse, :quartier, :localiteId, :region,
              :lat, :lng, :horaire, :url, :dateAjout, :dateModif)");
 
-        if (!$stmt->execute($this->parametresCommuns($localiteId, $quartier) + [
+        if (!$stmt->execute($this->getSqlCommonParameters($localiteId, $quartier) + [
             ':idPersonne' => $this->authorId,
             ':dateAjout' => $maintenant,
             ':dateModif' => $maintenant,
@@ -328,7 +329,7 @@ class LieuEdition extends FicheEdition
     #[\Override]
     protected function update(): bool
     {
-        [$localiteId, $quartier] = $this->localiteEtQuartier();
+        [$localiteId, $quartier] = $this->getLocaliteAndQuartierFromLocaliteId();
 
         $stmt = $this->pdo->prepare("UPDATE lieu SET
             statut = :statut, nom = :nom, preposition_nom = :preposition, categories = :categories,
@@ -339,7 +340,7 @@ class LieuEdition extends FicheEdition
         // idpersonne n'est pas touché : il désigne l'auteur de la fiche. L'écraser par
         // l'éditeur du moment — ce que faisait l'enregistrement générique — dépossédait
         // l'auteur au premier passage d'un administrateur.
-        if (!$stmt->execute($this->parametresCommuns($localiteId, $quartier) + [
+        if (!$stmt->execute($this->getSqlCommonParameters($localiteId, $quartier) + [
             ':dateModif' => date("Y-m-d H:i:s"),
             ':id' => $this->getFicheId(),
         ]))
@@ -356,10 +357,11 @@ class LieuEdition extends FicheEdition
     }
 
     /**
-     * TODO: rn to getSqlCommonParameters
+     * Marqueurs communs à l'INSERT et à l'UPDATE.
+     *
      * @return array<string, mixed>
      */
-    private function parametresCommuns(int $localiteId, string $quartier): array
+    private function getSqlCommonParameters(int $localiteId, string $quartier): array
     {
         return [
             ':statut' => $this->valeurs['statut'],
@@ -383,11 +385,9 @@ class LieuEdition extends FicheEdition
      * Genève est la seule localité à se subdiviser, et ses quartiers voyagent dans la
      * même valeur composée « 44_Pâquis » — voir Localite::renderOptions().
      *
-     * TODO: rn to getLocaliteAndQuartierFromLocaliteId
-     *
      * @return array{int, string}
      */
-    private function localiteEtQuartier(): array
+    private function getLocaliteAndQuartierFromLocaliteId(): array
     {
         $saisie = (string) $this->valeurs['localite_id'];
 

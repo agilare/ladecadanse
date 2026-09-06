@@ -69,6 +69,11 @@ et leur SQL d'écriture.
 Le champ image lui-même — l'envoi, l'aperçu, la case « Supprimer » — est un seul gabarit,
 [`_champ_image.inc.php`](../_champ_image.inc.php), inclus quatre fois entre les deux formulaires.
 
+Un refus applicatif passe de même par un seul gabarit,
+[`_erreur_http.inc.php`](../_erreur_http.inc.php) : statut HTTP, puis le message dans la page du
+site. À ne pas confondre avec `misc/error.php`, qui est l'`ErrorDocument` d'Apache et répond aux
+erreurs du serveur, pas à un refus que l'application vient de décider.
+
 ### Qui peut modifier
 
 Une seule règle, dans `Authorization::isPersonneAllowedToEditLieu()` — le formulaire et le lien

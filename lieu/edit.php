@@ -30,14 +30,11 @@ $get = [
     'idL' => (int) ($_GET['idL'] ?? 0),
 ];
 
-// TODO: this variable could be integrated into LieuEdition, but it would need to instanciate this class here
+// Reste dans la page : les refus ci-dessous s'en servent avant que LieuEdition n'existe,
+// et l'instancier plus tôt reviendrait à construire un formulaire pour le jeter aussitôt
 $is_edit_mode = in_array($get['action'], ['editer', 'update'], true);
 
-/*
- * Les refus se rendent dans la page du site, avec le statut HTTP qui va avec : un message
- * HTML nu au-dessus d'une page vide n'offrait ni retour à l'accueil, ni au client le
- * moyen de distinguer un refus d'une réponse normale.
- */
+// Chaque refus est rendu dans la page du site par _erreur_http.inc.php
 $http_error = null;
 
 if ($action_demandee === null)
@@ -57,6 +54,12 @@ elseif (!$is_edit_mode && !$authorization->isPersonneAllowedToAddLieu($_SESSION)
     $http_error = [403, 'Forbidden', "Vous ne pouvez pas ajouter de lieu"];
 }
 
+if ($http_error !== null)
+{
+    include("../_erreur_http.inc.php");
+    exit;
+}
+
 // Publier ou dépublier une fiche reste une décision de modération
 // TODO: domain, mv into LieuEdition ? looks like AuthorId; create a class for current person editing ? A LieuEdition->CurrentUserEditing->canChangeStatus is clearer than $can_change_status alone (would replace setStatusEditable)
 $can_change_status = $_SESSION['Sgroupe'] <= UserLevel::ADMIN;
@@ -69,80 +72,63 @@ $can_change_status = $_SESSION['Sgroupe'] <= UserLevel::ADMIN;
 // TODO: cf previous remark
 $can_edit_editor_fields = $authorization->isPersonneEditor($_SESSION);
 
-// TODO: mv just before next if ?
-$is_form_submitted = isset($_POST['form_submitted']);
-
 $lieu_form = new LieuEdition();
 $lieu_form->setAction($get['action']);
 $lieu_form->setAuthorId((int) ($_SESSION['SidPersonne'] ?? 0));
 $lieu_form->setStatusEditable($can_change_status);
-// rn method to setCanEditEditorFields
-$lieu_form->setEditorFieldsEditable($can_edit_editor_fields);
+$lieu_form->setCanEditEditorFields($can_edit_editor_fields);
 
-if ($http_error === null && $is_edit_mode)
+$is_form_submitted = isset($_POST['form_submitted']);
+
+if ($is_edit_mode)
 {
-    // set id from url parameter instead of input hidden which allows non authorized user to edit any lieu
+    // l'identifiant vient de l'url, dont le droit vient d'être vérifié ; il arrivait d'un
+    // champ caché, ce qui laissait modifier n'importe quel autre lieu
     $lieu_form->setIdLieu($get['idL']);
 
     /*
-     * À l'affichage la fiche remplit le formulaire ; à la soumission on vérifie seulement
-     * qu'elle existe encore, la recharger écraserait la saisie en cours. Sans ce contrôle,
-     * un identifiant inconnu rendait un formulaire vide sous un titre sans nom, et l'UPDATE
-     * qui suivait ne touchait aucune ligne en annonçant une réussite.
-     *
-     * TODO: ficheExiste is unclear, and both ficheExiste and loadValeurs seems to do the same operation
-     * TODO: find a name more explict about these fields editable only by Editors than fuzzy ValeursEnBase
+     * Au premier affichage la fiche remplit le formulaire ; à la soumission on ne relit
+     * que l'état de référence, la recharger écraserait la saisie en cours. Sans ce
+     * contrôle, un identifiant inconnu rendait un formulaire vide sous un titre sans nom,
+     * et l'UPDATE qui suivait ne touchait aucune ligne en annonçant une réussite.
      */
-    $fiche_existe = $is_form_submitted
-        ? $lieu_form->ficheExiste()
-        : $lieu_form->loadValeurs($get['idL']);
+    $lieu_exists = $is_form_submitted
+        ? $lieu_form->refreshStoredValues()
+        : $lieu_form->loadValues($get['idL']);
 
-    // TODO: is $fiche_existe variable useless ?
-    if (!$fiche_existe)
+    if (!$lieu_exists)
     {
         $http_error = [404, 'Not Found', "Ce lieu n'existe pas ou plus"];
+        include("../_erreur_http.inc.php");
+        exit;
     }
 }
 
-// TODO: could be just after l. 57 and l. 80 would not need $http_error === null condition ? But needs to add a query to check if lieu exists
-if ($http_error !== null)
-{
-    [$status_code, $status_reason, $error_message] = $http_error;
-
-    // TODO: could be a "template" shared by organisateur/edit.php and other future callers ? and maybe by misc/error.php (its $statusErrors looks like $http_error)
-    header($_SERVER["SERVER_PROTOCOL"] . " $status_code $status_reason");
-    $page_titre = "erreur $status_code";
-    include("../_header.inc.php");
-    HtmlShrink::msgErreur($error_message);
-    include("../_footer.inc.php");
-    exit;
-}
-
-// TODO: name more explicit like security_token_sent_not_match
-$token_error = false;
+$security_token_mismatch = false;
 if ($is_form_submitted)
 {
     if (!SecurityToken::check($_POST['token'] ?? '', $_SESSION['token'] ?? ''))
     {
-        $token_error = true;
+        $security_token_mismatch = true;
     }
-    elseif ($lieu_form->traitement($_POST, $_FILES))
+    elseif ($lieu_form->processSubmission($_POST, $_FILES))
     {
-        // TODO: getMessage -> getResultMessage
-        $_SESSION['lieu_flash_msg'] = $lieu_form->getMessage();
+        $_SESSION['lieu_flash_msg'] = $lieu_form->getResultMessage();
         header("Location: /lieu/lieu.php?idL=" . $lieu_form->getIdLieu());
         die();
     }
-    elseif (!$lieu_form->hasErrors()) // TODO: can be removed ? anterior errors should be triggered
+    elseif (!$lieu_form->hasErrors())
     {
-        // La saisie est valide et l'enregistrement a pourtant échoué : la base est
-        // hors d'état, ce dont l'auteur du formulaire ne peut rien faire.
+        /*
+         * Le seul cas restant : la saisie est valide et l'enregistrement a pourtant
+         * échoué, donc la base est hors d'état. Sans ce test, la page se contenterait de
+         * réafficher le formulaire sans un seul message — l'auteur croirait à une erreur
+         * de saisie qu'il ne trouverait nulle part.
+         */
         throw new RuntimeException("L'enregistrement du lieu a échoué sans erreur de validation");
     }
 }
 
-// TODO: variable could be removed (used once)
-$form_url_parameters = $is_edit_mode ? "update&idL=" . $get['idL'] : "insert";
 $coordonnees = $lieu_form->getCoordonnees();
 
 $page_titre = $is_edit_mode ? "modifier un lieu" : "ajouter un lieu";
@@ -164,14 +150,14 @@ include("../_header.inc.php");
         <div class="spacer"></div>
     </header>
 
-    <?php if ($token_error) : ?>
+    <?php if ($security_token_mismatch) : ?>
         <?php HtmlShrink::msgErreur("Le système de sécurité du site n'a pu authentifier votre action. Veuillez réafficher ce formulaire et réessayer"); ?>
     <?php elseif ($lieu_form->hasErrors()) : ?>
         <?php HtmlShrink::msgErreur("Il y a " . $lieu_form->getErrorCount() . " erreur(s)"); ?>
     <?php endif; ?>
 
     <!-- TODO: ajouter_editer -> app_form (or edit_form if there is a distinctiveness of edit forms) would be clearer but needs a big renaming accross files -->
-    <form method="post" enctype="multipart/form-data" id="ajouter_editer" class="js-submit-freeze-wait" action="<?= basename(__FILE__) ?>?action=<?= sanitizeForHtml($form_url_parameters) ?>">
+    <form method="post" enctype="multipart/form-data" id="ajouter_editer" class="js-submit-freeze-wait" action="<?= basename(__FILE__) ?>?action=<?= $is_edit_mode ? "update&amp;idL=" . (int) $get['idL'] : "insert" ?>">
 
 
     <?php if (!$can_edit_editor_fields) : ?>
@@ -331,10 +317,11 @@ include("../_header.inc.php");
     <?php endif; ?>
 
     <p class="piedForm">
-        <?php /* Témoin de soumission : le bouton est désactivé par js-submit-freeze-wait, son
-                 nom ne part donc pas. Les autres formulaires du site le nomment « formulaire ». */
-        // TODO: could be form_submitted deleted, replaced simply by usage of input submit detection ?
-        ?>
+        <?php /* Témoin de soumission, et non détection du bouton lui-même : js-submit-freeze-wait
+                 le désactive dès le premier clic, un contrôle désactivé ne poste pas son nom, et
+                 la page ne verrait donc jamais le formulaire arriver. Une soumission au clavier
+                 (Entrée dans un champ) ne poste pas non plus le bouton. Les autres formulaires du
+                 site nomment ce témoin « formulaire ». */ ?>
         <input type="hidden" name="form_submitted" value="1" />
         <input type="hidden" name="token" value="<?= SecurityToken::getToken() ?>" />
         <input type="submit" value="Enregistrer" title="Enregistrer le lieu" class="submit submit-big" />

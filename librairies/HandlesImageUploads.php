@@ -20,7 +20,8 @@ use Ladecadanse\Utils\ImageDriver2;
  * sur MAX(id) + 1 plutôt que sur l'id réellement inséré, et l'extension de la
  * seconde image était reprise de celle du logo.
  *
- * Réservé aux classes qui étendent Edition : safeUnlinkImageAndThumb() en vient.
+ * Autonome : safeUnlinkImageAndThumb() vivait sur Edition, dont seul ce trait se
+ * servait, et l'y remonter dispensait ses utilisateurs d'en hériter.
  */
 trait HandlesImageUploads
 {
@@ -28,7 +29,7 @@ trait HandlesImageUploads
      * Entrée de $_FILES d'un champ image, ramenée à un tableau.
      *
      * Les formulaires déclarent leurs champs fichier avec une chaîne vide pour
-     * valeur par défaut, qu'Edition::traitement() ne remplace que si le client a
+     * valeur par défaut, qu'Edition::processSubmission() ne remplace que si le client a
      * envoyé quelque chose. Un champ laissé vide arrive donc ici en chaîne, sur
      * laquelle le code lisait ['name'] — un offset de chaîne, qui rendait ''
      * moyennant un avertissement.
@@ -49,32 +50,32 @@ trait HandlesImageUploads
      * L'ancien fichier et sa miniature sont effacés du disque dès qu'ils sont
      * remplacés ou retirés.
      *
-     * @param array{name?: string, tmp_name?: string} $fichier Entrée de $_FILES pour ce champ
-     * @param string $nomActuel Nom enregistré en base, '' s'il n'y en a pas
-     * @return string Le nouveau nom, '' si l'image est retirée, $nomActuel si rien ne change
+     * @param array{name?: string, tmp_name?: string} $uploadedFile Entrée de $_FILES pour ce champ
+     * @param string $currentName Nom enregistré en base, '' s'il n'y en a pas
+     * @return string Le nouveau nom, '' si l'image est retirée, $currentName si rien ne change
      */
-    protected function nomImageApresEdition(
+    protected function imageNameAfterEdit(
         string $imageField,
-        array $fichier,
-        string $nomActuel,
+        array $uploadedFile,
+        string $currentName,
         bool $isImageMarkedForDeletion,
         int $entityId,
-        string $repUploads
+        string $uploadsDir
     ): string
     {
-        $envoi = !empty($fichier['name']);
+        $isUploaded = !empty($uploadedFile['name']);
 
-        if (!$envoi && !$isImageMarkedForDeletion)
+        if (!$isUploaded && !$isImageMarkedForDeletion)
         {
-            return $nomActuel;
+            return $currentName;
         }
 
-        if ($nomActuel !== '')
+        if ($currentName !== '')
         {
-            $this->safeUnlinkImageAndThumb($repUploads, $nomActuel);
+            $this->safeUnlinkImageAndThumb($uploadsDir, $currentName);
         }
 
-        if (!$envoi)
+        if (!$isUploaded)
         {
             return '';
         }
@@ -82,7 +83,7 @@ trait HandlesImageUploads
         // L'extension suit le format réel du fichier et non celle de son nom
         // d'origine : ImageDriver2 écrit d'après le contenu, si bien qu'un PNG
         // envoyé sous le nom « logo.jpg » produisait un .jpg contenant du PNG.
-        return $entityId . '_' . $imageField . Document::extensionPourMime((string) mime_content_type((string) $fichier['tmp_name']));
+        return $entityId . '_' . $imageField . Document::extensionPourMime((string) mime_content_type((string) $uploadedFile['tmp_name']));
     }
 
     /**
@@ -92,26 +93,24 @@ trait HandlesImageUploads
      * requête : l'enregistrement en base a déjà eu lieu, une sortie brutale ne
      * laisserait que la page blanche.
      *
-     * TODO: rn to writeImageFiles
-     *
-     * @param array{name?: string, tmp_name?: string, size?: int} $fichier
-     * @param string $typeUpload Sous-répertoire d'uploads, au sens d'ImageDriver2 ("organisateurs", "lieux")
+     * @param array{name?: string, tmp_name?: string, size?: int} $uploadedFile
+     * @param string $uploadsSubdir Sous-répertoire d'uploads, au sens d'ImageDriver2 ("organisateurs", "lieux")
      * @param array{maxLargeur: int, maxHauteur: int, selon: string, rognage: int} $miniature
      */
-    protected function ecrireImageEtMiniature(
-        array $fichier,
+    protected function writeImageFiles(
+        array $uploadedFile,
         string $nomFichier,
-        string $typeUpload,
+        string $uploadsSubdir,
         array $miniature,
         int $tailleMaxAffichee = 600
     ): bool
     {
-        if (empty($fichier['name']) || $nomFichier === '')
+        if (empty($uploadedFile['name']) || $nomFichier === '')
         {
             return true;
         }
 
-        $imageDriver = new ImageDriver2($typeUpload);
+        $imageDriver = new ImageDriver2($uploadsSubdir);
 
         $ecritures = [
             ["s_" . $nomFichier, $miniature['maxLargeur'], $miniature['maxHauteur'], $miniature['selon'], $miniature['rognage']],
@@ -120,7 +119,7 @@ trait HandlesImageUploads
 
         foreach ($ecritures as [$nom, $largeur, $hauteur, $selon, $rognage])
         {
-            if (!$imageDriver->processImage($fichier, $nom, $largeur, $hauteur, $selon, $rognage))
+            if (!$imageDriver->processImage($uploadedFile, $nom, $largeur, $hauteur, $selon, $rognage))
             {
                 trigger_error($imageDriver->getErreur(), E_USER_WARNING);
                 return false;
@@ -128,5 +127,30 @@ trait HandlesImageUploads
         }
 
         return true;
+    }
+
+    /**
+     * Supprime un fichier image et sa miniature (préfixe "s_") de manière sécurisée.
+     *
+     * Neutralise toute tentative de path traversal provenant d'une valeur issue de la BD :
+     * - basename() supprime les composants de répertoire du nom de fichier
+     * - realpath() + str_starts_with() garantit que le chemin résolu reste dans $dir
+     */
+    protected function safeUnlinkImageAndThumb(string $dir, string $filename): void
+    {
+        $safeName = basename($filename);
+        if ($safeName === '') {
+            return;
+        }
+        $safeDir = realpath($dir);
+        if ($safeDir === false) {
+            return;
+        }
+        foreach ([$safeName, 's_' . $safeName] as $name) {
+            $resolvedPath = realpath($safeDir . DIRECTORY_SEPARATOR . $name);
+            if ($resolvedPath !== false && str_starts_with($resolvedPath, $safeDir . DIRECTORY_SEPARATOR)) {
+                unlink($resolvedPath);
+            }
+        }
     }
 }

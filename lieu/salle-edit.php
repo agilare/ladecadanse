@@ -34,7 +34,7 @@ $salleForm->setIdPersonne($_SESSION['SidPersonne']);
 $salleForm->setIdSalle($get['idS'] ?: null);
 
 if ($get['action'] === 'editer' && $get['idS'] > 0) {
-    $salleForm->loadValeurs($get['idS']);
+    $salleForm->loadValues($get['idS']);
 } elseif ($get['idL'] > 0) {
     $salleForm->setValeur('idLieu', $get['idL']);
 }
@@ -44,8 +44,8 @@ if (($_POST['formulaire'] ?? '') === 'ok') {
     if (!SecurityToken::check($_POST['token'] ?? '', $_SESSION['token'] ?? '')) {
         $tokenError = true;
     } else {
-        if ($salleForm->traitement($_POST, [])) {
-            $_SESSION['lieu_flash_msg'] = $salleForm->getMessage();
+        if ($salleForm->processSubmission($_POST, [])) {
+            $_SESSION['lieu_flash_msg'] = $salleForm->getResultMessage();
             header("Location: /lieu/lieu.php?idL=" . (int)$salleForm->getValeur('idLieu'));
             die();
         }

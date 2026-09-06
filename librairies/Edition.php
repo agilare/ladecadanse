@@ -20,7 +20,13 @@ namespace Ladecadanse;
 	public $message;
     public $connector;
 
-    function __construct(public $nom, public $valeurs, public $fichiers)
+    /*
+     * Le nom de l'entité éditée ('lieu', 'organisateur', 'salle') était un quatrième
+     * paramètre, que rien ne lisait : les classes filles nomment leur table par leur
+     * propre contrat (FicheEdition::table()). Le marquer @deprecated n'était pas tenable,
+     * l'analyse signalant alors sa propre écriture ici.
+     */
+    function __construct(public $valeurs, public $fichiers)
     {
 		global $connector;
 
@@ -29,13 +35,22 @@ namespace Ladecadanse;
       	$this->erreurs = array_merge($this->valeurs, $this->fichiers);
     }
 
-    function traitement(array $post, array $files)
+    /**
+     * Traite un formulaire soumis.
+     *
+     * Les deux paramètres portent des superglobales : la page passe $_POST et $_FILES
+     * tels quels, aucune valeur n'y est encore validée.
+     *
+     * @param array<string, mixed> $postGlobal contenu de $_POST
+     * @param array<string, mixed> $filesGlobal contenu de $_FILES
+     */
+    function processSubmission(array $postGlobal, array $filesGlobal)
     {
         foreach ($this->valeurs as $nom => $val)
     	{
-    		if (isset($post[$nom]))
+    		if (isset($postGlobal[$nom]))
     		{
-                $this->valeurs[$nom] = $post[$nom];
+                $this->valeurs[$nom] = $postGlobal[$nom];
     		}
         }
 
@@ -44,15 +59,15 @@ namespace Ladecadanse;
     		// un champ fichier peut ne pas figurer dans $_FILES : le formulaire ne
     		// l'affiche pas pour tous les niveaux d'utilisateur. On garde alors la
     		// valeur par défaut déclarée.
-    		if (isset($files[$nom]))
+    		if (isset($filesGlobal[$nom]))
     		{
-    			$this->fichiers[$nom] = $files[$nom];
+    			$this->fichiers[$nom] = $filesGlobal[$nom];
     		}
     	}
 
-    	if (isset($post['supprimer']))
+    	if (isset($postGlobal['supprimer']))
     	{
-    			$this->supprimer[] = $post['supprimer'];
+    			$this->supprimer[] = $postGlobal['supprimer'];
     	}
     }
 
@@ -70,7 +85,7 @@ namespace Ladecadanse;
 	 * @return bool false si l'identifiant ne désigne rien : à la page de répondre 404
 	 *              plutôt que d'afficher un formulaire vide.
 	 */
-	function loadValeurs(int $id): bool
+	function loadValues(int $id): bool
     {
 		return false;
 	}
@@ -115,10 +130,10 @@ namespace Ladecadanse;
     	$this->action = $action;
     }
 
-    function getMessage(): ?string
+    /** Ce que l'enregistrement a produit, à afficher en message flash après redirection. */
+    function getResultMessage(): ?string
     {
     	return $this->message;
-
     }
 
 	function getSupprimer()
@@ -141,32 +156,6 @@ namespace Ladecadanse;
     function setValeur($nom, $val)
     {
     	$this->valeurs[$nom] = $val;
-    }
-
-    /**
-     * Supprime un fichier image et sa miniature (préfixe "s_") de manière sécurisée.
-     *
-     * Neutralise toute tentative de path traversal provenant d'une valeur issue de la BD :
-     * - basename() supprime les composants de répertoire du nom de fichier
-     * - realpath() + str_starts_with() garantit que le chemin résolu reste dans $dir
-     * TODO: can be moved in new HandlesImageUploads
-     */
-    protected function safeUnlinkImageAndThumb(string $dir, string $filename): void
-    {
-        $safeName = basename($filename);
-        if ($safeName === '') {
-            return;
-        }
-        $safeDir = realpath($dir);
-        if ($safeDir === false) {
-            return;
-        }
-        foreach ([$safeName, 's_' . $safeName] as $name) {
-            $resolvedPath = realpath($safeDir . DIRECTORY_SEPARATOR . $name);
-            if ($resolvedPath !== false && str_starts_with($resolvedPath, $safeDir . DIRECTORY_SEPARATOR)) {
-                unlink($resolvedPath);
-            }
-        }
     }
 
 }

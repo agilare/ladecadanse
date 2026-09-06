@@ -40,7 +40,6 @@ class OrganisateurEdition extends FicheEdition
         global $rep_uploads_organisateurs;
 
         parent::__construct(
-            'organisateur',
             array_fill_keys(array_keys(Organisateur::FIELDS), ''),
             ['logo' => [], 'photo' => []],
             $rep_uploads_organisateurs,
@@ -112,7 +111,7 @@ class OrganisateurEdition extends FicheEdition
     }
 
     #[\Override]
-    protected function colonnesEnBase(): array
+    protected function storedColumns(): array
     {
         return ['nom', 'statut', 'logo', 'photo'];
     }
@@ -138,7 +137,7 @@ class OrganisateurEdition extends FicheEdition
             (idPersonne, nom, adresse, URL, email, presentation, statut, date_ajout, date_derniere_modif)
             VALUES (:idPersonne, :nom, :adresse, :url, :email, :presentation, :statut, :dateAjout, :dateModif)");
 
-        if (!$stmt->execute($this->parametresCommuns() + [
+        if (!$stmt->execute($this->getSqlCommonParameters() + [
             ':idPersonne' => $this->authorId,
             ':dateAjout' => $maintenant,
             ':dateModif' => $maintenant,
@@ -166,7 +165,7 @@ class OrganisateurEdition extends FicheEdition
         // idPersonne n'est pas touché : il désigne l'auteur de la fiche, dont dépend
         // son droit de la modifier. L'écraser par l'éditeur du moment — ce que faisait
         // l'enregistrement générique — dépossédait l'auteur au premier passage d'un admin.
-        if (!$stmt->execute($this->parametresCommuns() + [
+        if (!$stmt->execute($this->getSqlCommonParameters() + [
             ':dateModif' => date("Y-m-d H:i:s"),
             ':id' => $this->getFicheId(),
         ]))
@@ -184,7 +183,7 @@ class OrganisateurEdition extends FicheEdition
     /**
      * @return array<string, string>
      */
-    private function parametresCommuns(): array
+    private function getSqlCommonParameters(): array
     {
         return [
             ':nom' => $this->valeurs['nom'],
