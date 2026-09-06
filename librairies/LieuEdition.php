@@ -162,11 +162,6 @@ class LieuEdition extends FicheEdition
         $this->editorFieldsEditable = $editable;
     }
 
-    public function canEditEditorFields(): bool
-    {
-        return $this->editorFieldsEditable;
-    }
-
     public function getCoordinates(): Coordinates
     {
         return $this->coordinates;
