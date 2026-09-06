@@ -77,19 +77,20 @@ abstract class FicheEdition extends Edition
      * @param array<string, mixed> $valeurs champs du formulaire, avec leur valeur initiale
      * @param array<string, array<string, mixed>> $fichiers champs de type fichier
      * @param string $repUploads répertoire système des images de l'entité
+     * TODO: $nom seems unused here, could be marked Deprecated
      */
     public function __construct(
         string $nom,
-        array $valeurs,
+        array $initialValues,
         array $fichiers,
         string $repUploads,
         ?DbConnectorPdo $pdo = null,
         protected readonly Validateur $verif = new Validateur(),
     )
     {
-        $valeurs['statut'] = static::STATUT_INITIAL;
+        $initialValues['statut'] = static::STATUT_INITIAL;
 
-        parent::__construct($nom, $valeurs, $fichiers);
+        parent::__construct($nom, $initialValues, $fichiers);
 
         // Le connecteur est un singleton, qu'un défaut de paramètre ne sait pas appeler
         $this->pdo = $pdo ?? DbConnectorPdo::getInstance();
@@ -185,21 +186,26 @@ abstract class FicheEdition extends Edition
     }
 
     #[\Override]
+    // TODO: "traitement" is obscure, when possible rn to a more accurate "processSubmission"
+    // TODO: here and in other methods indicate in the variables names that their values expected are system globals ($_POST, $_FILES)
     public function traitement(array $post, array $files): bool
     {
         $this->lireChampsPostes($post);
         $this->lireFichiersPostes($files);
         $this->lireSuppressionsPostees($post);
 
+        // TODO: unclear reformulate :
         // L'image à remplacer et le statut à conserver sont ceux de la base, pas ceux
-        // que le POST annonce. La page a déjà répondu 404 si la fiche n'existe pas :
-        // ce retour ne couvre que la suppression concurrente d'une fiche en cours d'édition.
+        // que le POST annonce.
+
+        // abort if meanwhile the entity has been deleted in another action
         if ($this->action === 'update' && !$this->chargerValeursEnBase())
         {
             return false;
         }
 
         $this->valeurs['statut'] = $this->statutAEcrire();
+        // TODO: rn to fillEditorsFieldsValuesIfNotAllowed
         $this->appliquerChampsReserves();
 
         if (!$this->verification())
@@ -211,6 +217,7 @@ abstract class FicheEdition extends Edition
     }
 
     #[\Override]
+    // TODO: later rn to upsert()
     public function enregistrer(): bool
     {
         return match ($this->action) {
@@ -365,12 +372,7 @@ abstract class FicheEdition extends Edition
     }
 
     /**
-     * Statut à écrire : celui que le formulaire a posté quand l'utilisateur a le droit
-     * d'en changer, sinon celui que la fiche porte déjà — le statut initial pour une
-     * création.
-     *
-     * Sans cela, le champ caché que le formulaire donnait aux autres niveaux annonçait
-     * « actif » : un acteur qui modifiait une fiche dépubliée la republiait sans le savoir.
+     * The value posted if the user has the authorization, otherwise the existing value in DB, otherwise default
      */
     protected function statutAEcrire(): string
     {

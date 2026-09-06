@@ -132,6 +132,8 @@ class Localite
     /**
      * Rendu pur des options, sans base de données ni globale : c'est ce que couvrent les tests.
      *
+     * Dans le futur, une table quartiers remplacera ici la table localites et il n'y aura plus besoin de valeur composée
+     *
      * @param list<array{id: int|string, localite: string, canton: string}> $localites
      * @param list<string> $quartiersGeneve
      */

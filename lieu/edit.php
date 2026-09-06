@@ -30,6 +30,7 @@ $get = [
     'idL' => (int) ($_GET['idL'] ?? 0),
 ];
 
+// TODO: this variable could be integrated into LieuEdition, but it would need to instanciate this class here
 $is_edit_mode = in_array($get['action'], ['editer', 'update'], true);
 
 /*
@@ -57,6 +58,7 @@ elseif (!$is_edit_mode && !$authorization->isPersonneAllowedToAddLieu($_SESSION)
 }
 
 // Publier ou dépublier une fiche reste une décision de modération
+// TODO: domain, mv into LieuEdition ? looks like AuthorId; create a class for current person editing ? A LieuEdition->CurrentUserEditing->canChangeStatus is clearer than $can_change_status alone (would replace setStatusEditable)
 $can_change_status = $_SESSION['Sgroupe'] <= UserLevel::ADMIN;
 
 /*
@@ -64,23 +66,22 @@ $can_change_status = $_SESSION['Sgroupe'] <= UserLevel::ADMIN;
  * événements qui se déroulent dans le lieu : les autres niveaux les voient sans pouvoir
  * y toucher, et LieuEdition reprend en base ce qu'ils n'ont pas le droit de poster.
  */
+// TODO: cf previous remark
 $can_edit_editor_fields = $authorization->isPersonneEditor($_SESSION);
 
+// TODO: mv just before next if ?
 $is_form_submitted = isset($_POST['form_submitted']);
 
 $lieu_form = new LieuEdition();
 $lieu_form->setAction($get['action']);
 $lieu_form->setAuthorId((int) ($_SESSION['SidPersonne'] ?? 0));
 $lieu_form->setStatusEditable($can_change_status);
+// rn method to setCanEditEditorFields
 $lieu_form->setEditorFieldsEditable($can_edit_editor_fields);
 
 if ($http_error === null && $is_edit_mode)
 {
-    /*
-     * L'identifiant vient de l'url, dont l'autorisation a déjà été vérifiée, et non plus
-     * d'un champ caché du formulaire : le POST décidait jusqu'ici du lieu à écrire, si
-     * bien qu'un utilisateur autorisé sur un lieu pouvait en modifier n'importe quel autre.
-     */
+    // set id from url parameter instead of input hidden which allows non authorized user to edit any lieu
     $lieu_form->setIdLieu($get['idL']);
 
     /*
@@ -88,21 +89,27 @@ if ($http_error === null && $is_edit_mode)
      * qu'elle existe encore, la recharger écraserait la saisie en cours. Sans ce contrôle,
      * un identifiant inconnu rendait un formulaire vide sous un titre sans nom, et l'UPDATE
      * qui suivait ne touchait aucune ligne en annonçant une réussite.
+     *
+     * TODO: ficheExiste is unclear, and both ficheExiste and loadValeurs seems to do the same operation
+     * TODO: find a name more explict about these fields editable only by Editors than fuzzy ValeursEnBase
      */
     $fiche_existe = $is_form_submitted
         ? $lieu_form->ficheExiste()
         : $lieu_form->loadValeurs($get['idL']);
 
+    // TODO: is $fiche_existe variable useless ?
     if (!$fiche_existe)
     {
         $http_error = [404, 'Not Found', "Ce lieu n'existe pas ou plus"];
     }
 }
 
+// TODO: could be just after l. 57 and l. 80 would not need $http_error === null condition ? But needs to add a query to check if lieu exists
 if ($http_error !== null)
 {
     [$status_code, $status_reason, $error_message] = $http_error;
 
+    // TODO: could be a "template" shared by organisateur/edit.php and other future callers ? and maybe by misc/error.php (its $statusErrors looks like $http_error)
     header($_SERVER["SERVER_PROTOCOL"] . " $status_code $status_reason");
     $page_titre = "erreur $status_code";
     include("../_header.inc.php");
@@ -111,6 +118,7 @@ if ($http_error !== null)
     exit;
 }
 
+// TODO: name more explicit like security_token_sent_not_match
 $token_error = false;
 if ($is_form_submitted)
 {
@@ -120,11 +128,12 @@ if ($is_form_submitted)
     }
     elseif ($lieu_form->traitement($_POST, $_FILES))
     {
+        // TODO: getMessage -> getResultMessage
         $_SESSION['lieu_flash_msg'] = $lieu_form->getMessage();
         header("Location: /lieu/lieu.php?idL=" . $lieu_form->getIdLieu());
         die();
     }
-    elseif (!$lieu_form->hasErrors())
+    elseif (!$lieu_form->hasErrors()) // TODO: can be removed ? anterior errors should be triggered
     {
         // La saisie est valide et l'enregistrement a pourtant échoué : la base est
         // hors d'état, ce dont l'auteur du formulaire ne peut rien faire.
@@ -132,6 +141,7 @@ if ($is_form_submitted)
     }
 }
 
+// TODO: variable could be removed (used once)
 $form_url_parameters = $is_edit_mode ? "update&idL=" . $get['idL'] : "insert";
 $coordonnees = $lieu_form->getCoordonnees();
 
@@ -160,17 +170,20 @@ include("../_header.inc.php");
         <?php HtmlShrink::msgErreur("Il y a " . $lieu_form->getErrorCount() . " erreur(s)"); ?>
     <?php endif; ?>
 
+    <!-- TODO: ajouter_editer -> app_form (or edit_form if there is a distinctiveness of edit forms) would be clearer but needs a big renaming accross files -->
     <form method="post" enctype="multipart/form-data" id="ajouter_editer" class="js-submit-freeze-wait" action="<?= basename(__FILE__) ?>?action=<?= sanitizeForHtml($form_url_parameters) ?>">
 
-    <p>* indique un champ obligatoire</p>
 
     <?php if (!$can_edit_editor_fields) : ?>
         <p>Si vous souhaitez modifier le nom du lieu, ses catégories ou ses organisateurs, merci de nous <a href="/misc/contacteznous.php">contacter</a></p>
     <?php endif; ?>
 
+    <p>* indique un champ obligatoire</p>
+
     <fieldset>
         <legend>Identité</legend>
 
+        <!-- TODO: UPLOAD_MAX_FILESIZE could be moved in a class related to files, uploads ? -->
         <input type="hidden" name="MAX_FILE_SIZE" value="<?= UPLOAD_MAX_FILESIZE ?>" />
 
         <?php /* Les champs réservés aux éditeurs sont rendus en lecture seule aux autres
@@ -199,12 +212,14 @@ include("../_header.inc.php");
                      recopie sur le conteneur qu'il substitue au <select> */ ?>
             <select name="categories[]" id="categories" class="js-select2-options-with-style" multiple
                 data-placeholder="Choisissez une ou plusieurs catégories" <?= $can_edit_editor_fields ? '' : 'disabled' ?>>
+                <!-- TODO: introduce a LieuRenderer -->
                 <?= Lieu::getCategoriesOptionsHtml($lieu_form->getCategories()) ?>
             </select>
             <?= $lieu_form->getHtmlErreur("categories") ?>
         </p>
 
         <?php
+        // TODO: introduce a "widget" or "component" ImageFormHtmlComponent or ImageHtmlComponent (belonging to FicheEdition) class ?
         $image_form = $lieu_form;
         $image_entity = Lieu::class;
         $image_field = 'logo';
@@ -256,13 +271,13 @@ include("../_header.inc.php");
 
         <p>
             <label for="horaire_general">Jours et heures d’ouverture habituels</label>
-            <textarea name="horaire_general" id="horaire_general" cols="50" rows="3" title="Quels sont les horaires typiques d'une soirée ?"><?= sanitizeForHtml($lieu_form->getValeur('horaire_general')) ?></textarea>
+            <textarea name="horaire_general" id="horaire_general" cols="50" rows="4"><?= sanitizeForHtml($lieu_form->getValeur('horaire_general')) ?></textarea>
             <?= $lieu_form->getHtmlErreur("horaire_general") ?>
         </p>
 
         <p>
             <label for="URL">Site web</label>
-            <input type="url" name="URL" id="URL" size="50" maxlength="<?= Lieu::FIELDS['URL']['max'] ?>" title="Page web du lieu" value="<?= sanitizeForHtml($lieu_form->getValeur('URL')) ?>" />
+            <input type="url" name="URL" id="URL" size="50" maxlength="<?= Lieu::FIELDS['URL']['max'] ?>" title="Page web principale" value="<?= sanitizeForHtml($lieu_form->getValeur('URL')) ?>" />
             <?= $lieu_form->getHtmlErreur("URL") ?>
         </p>
     </fieldset>
@@ -275,7 +290,7 @@ include("../_header.inc.php");
             <?php /* Les <option> viennent d'Organisateur::getOptionsHtml(), comme dans les
                      formulaires d'événement : la requête et la boucle qui les construisaient
                      ici en étaient une copie, restée en arrière. */ ?>
-            <select name="organisateurs[]" id="organisateurs" data-placeholder="Choisissez un ou plusieurs organisateurs"
+            <select name="organisateurs[]" id="organisateurs" data-placeholder="Tapez le nom de l'organisateur"
                 class="js-select2-options-with-complement" multiple
                 title="Un organisateur dans la base de données de La décadanse" <?= $can_edit_editor_fields ? '' : 'disabled' ?>>
                 <?= Organisateur::getOptionsHtml($lieu_form->getOrganisateurs()) ?>
@@ -288,6 +303,7 @@ include("../_header.inc.php");
         <legend>Photo</legend>
 
         <?php
+        // TODO: cf. remark for logo
         $image_form = $lieu_form;
         $image_entity = Lieu::class;
         $image_field = 'photo1';
@@ -316,7 +332,9 @@ include("../_header.inc.php");
 
     <p class="piedForm">
         <?php /* Témoin de soumission : le bouton est désactivé par js-submit-freeze-wait, son
-                 nom ne part donc pas. Les autres formulaires du site le nomment « formulaire ». */ ?>
+                 nom ne part donc pas. Les autres formulaires du site le nomment « formulaire ». */
+        // TODO: could be form_submitted deleted, replaced simply by usage of input submit detection ?
+        ?>
         <input type="hidden" name="form_submitted" value="1" />
         <input type="hidden" name="token" value="<?= SecurityToken::getToken() ?>" />
         <input type="submit" value="Enregistrer" title="Enregistrer le lieu" class="submit submit-big" />

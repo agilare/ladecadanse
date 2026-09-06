@@ -149,6 +149,7 @@ namespace Ladecadanse;
      * Neutralise toute tentative de path traversal provenant d'une valeur issue de la BD :
      * - basename() supprime les composants de répertoire du nom de fichier
      * - realpath() + str_starts_with() garantit que le chemin résolu reste dans $dir
+     * TODO: can be moved in new HandlesImageUploads
      */
     protected function safeUnlinkImageAndThumb(string $dir, string $filename): void
     {

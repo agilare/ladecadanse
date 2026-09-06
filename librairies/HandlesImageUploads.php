@@ -54,17 +54,17 @@ trait HandlesImageUploads
      * @return string Le nouveau nom, '' si l'image est retirée, $nomActuel si rien ne change
      */
     protected function nomImageApresEdition(
-        string $champ,
+        string $imageField,
         array $fichier,
         string $nomActuel,
-        bool $suppressionDemandee,
-        int $id,
+        bool $isImageMarkedForDeletion,
+        int $entityId,
         string $repUploads
     ): string
     {
         $envoi = !empty($fichier['name']);
 
-        if (!$envoi && !$suppressionDemandee)
+        if (!$envoi && !$isImageMarkedForDeletion)
         {
             return $nomActuel;
         }
@@ -82,7 +82,7 @@ trait HandlesImageUploads
         // L'extension suit le format réel du fichier et non celle de son nom
         // d'origine : ImageDriver2 écrit d'après le contenu, si bien qu'un PNG
         // envoyé sous le nom « logo.jpg » produisait un .jpg contenant du PNG.
-        return $id . '_' . $champ . Document::extensionPourMime((string) mime_content_type((string) $fichier['tmp_name']));
+        return $entityId . '_' . $imageField . Document::extensionPourMime((string) mime_content_type((string) $fichier['tmp_name']));
     }
 
     /**
@@ -91,6 +91,8 @@ trait HandlesImageUploads
      * Un échec est journalisé et signalé à l'appelant sans interrompre la
      * requête : l'enregistrement en base a déjà eu lieu, une sortie brutale ne
      * laisserait que la page blanche.
+     *
+     * TODO: rn to writeImageFiles
      *
      * @param array{name?: string, tmp_name?: string, size?: int} $fichier
      * @param string $typeUpload Sous-répertoire d'uploads, au sens d'ImageDriver2 ("organisateurs", "lieux")

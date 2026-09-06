@@ -79,14 +79,14 @@ class LieuEdition extends FicheEdition
     {
         global $rep_uploads_lieux;
 
-        $valeurs = array_fill_keys(array_keys(Lieu::FIELDS), '');
+        $initialValues = array_fill_keys(array_keys(Lieu::FIELDS), '');
         // Colonne dérivée de la localité choisie, jamais saisie directement ; elle sert
         // à représélectionner le bon <option> quand un quartier de Genève a été retenu.
-        $valeurs['quartier'] = '';
+        $initialValues['quartier'] = '';
 
         parent::__construct(
             'lieu',
-            $valeurs,
+            $initialValues,
             ['logo' => [], 'photo1' => []],
             $rep_uploads_lieux,
             $pdo,
@@ -97,6 +97,7 @@ class LieuEdition extends FicheEdition
     }
 
     #[\Override]
+    // TODO: later rn to validateValuesAndGetErrorsNb
     public function verification(): bool
     {
         global $mimes_images_acceptes;
@@ -207,6 +208,9 @@ class LieuEdition extends FicheEdition
     }
 
     #[\Override]
+    /**
+     * TODO: replace by a class constant ?
+     */
     protected function colonnesEnBase(): array
     {
         // preposition_nom et categories s'y trouvent parce que les non-éditeurs ne les
@@ -352,6 +356,7 @@ class LieuEdition extends FicheEdition
     }
 
     /**
+     * TODO: rn to getSqlCommonParameters
      * @return array<string, mixed>
      */
     private function parametresCommuns(int $localiteId, string $quartier): array
@@ -377,6 +382,8 @@ class LieuEdition extends FicheEdition
      *
      * Genève est la seule localité à se subdiviser, et ses quartiers voyagent dans la
      * même valeur composée « 44_Pâquis » — voir Localite::renderOptions().
+     *
+     * TODO: rn to getLocaliteAndQuartierFromLocaliteId
      *
      * @return array{int, string}
      */
