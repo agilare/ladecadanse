@@ -14,7 +14,7 @@ use Codeception\Util\HttpCode;
  * donc impossible à retirer tant qu'une autre erreur bloquait l'enregistrement.
  *
  * Suite read-only : les POST de ce fichier vident tous le nom du lieu, donc la validation
- * échoue et enregistrer() n'est jamais atteint. Ne pas y soumettre de formulaire valide.
+ * échoue et upsert() n'est jamais atteint. Ne pas y soumettre de formulaire valide.
  */
 class LieuEditFormulaireCest
 {

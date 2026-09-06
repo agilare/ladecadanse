@@ -71,7 +71,7 @@ namespace Ladecadanse;
     	}
     }
 
-    function verification()
+    function validate()
     {
 		/*
 		 * Les vérifications par les classes filles se font ici
@@ -90,7 +90,7 @@ namespace Ladecadanse;
 		return false;
 	}
 
-    function enregistrer()
+    function upsert()
     {
 
     }

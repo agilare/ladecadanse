@@ -14,7 +14,7 @@ use Codeception\Util\HttpCode;
  * à tout compte de niveau ACTOR.
  *
  * Suite read-only : les POST de ce fichier vident le nom, donc la validation échoue et
- * enregistrer() n'est jamais atteint. Ne pas y soumettre de formulaire valide.
+ * upsert() n'est jamais atteint. Ne pas y soumettre de formulaire valide.
  */
 class OrganisateurEditFormulaireCest
 {

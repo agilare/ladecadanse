@@ -8,7 +8,7 @@ namespace Ladecadanse\Utils;
  * Latitude et longitude d'un lieu, de la saisie du formulaire jusqu'à la colonne.
  *
  * Les règles qui les gouvernent vivaient en trois endroits : la virgule décimale était
- * retirée par LieuEdition, les bornes vérifiées par sa verification(), et le « 0 en base
+ * retirée par LieuEdition, les bornes vérifiées par sa validation, et le « 0 en base
  * veut dire pas de coordonnées » par une closure du gabarit. Le plan n'étant affiché que
  * si les deux sont connues, elles ne valent que par paire : d'où un seul objet plutôt que
  * deux chaînes voyageant côte à côte.

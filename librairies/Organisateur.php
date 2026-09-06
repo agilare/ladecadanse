@@ -25,7 +25,7 @@ class Organisateur extends Element
     /**
      * Contraintes de saisie des champs du formulaire d'édition.
      *
-     * Partagées par la validation serveur (OrganisateurEdition::verification()) et par
+     * Partagées par la validation serveur (OrganisateurEdition::validate()) et par
      * les attributs du formulaire (organisateur/edit.php) : chacun les déclarait de son
      * côté, sans que rien ne garantisse qu'ils disent la même chose — le maxlength d'un
      * champ pouvait laisser saisir ce que la validation refuserait ensuite.

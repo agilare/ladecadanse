@@ -214,17 +214,17 @@ abstract class FicheEdition extends Edition
         $this->valeurs['statut'] = $this->statusToWrite();
         $this->fillEditorsFieldsValuesIfNotAllowed();
 
-        if (!$this->verification())
+        if (!$this->validate())
         {
             return false;
         }
 
-        return $this->enregistrer();
+        return $this->upsert();
     }
 
+    /** Insère ou met à jour, selon l'intention que la page a passée à setAction(). */
     #[\Override]
-    // TODO: later rn to upsert()
-    public function enregistrer(): bool
+    public function upsert(): bool
     {
         return match ($this->action) {
             'insert' => $this->insert(),

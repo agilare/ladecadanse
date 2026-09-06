@@ -42,24 +42,28 @@ class SalleEdition extends Edition
         $this->idSalle = $idSalle;
     }
 
+    /**
+     * @param array<string, mixed> $postGlobal contenu de $_POST
+     * @param array<string, mixed> $filesGlobal contenu de $_FILES ; la salle n'a pas de champ fichier
+     */
     #[\Override]
-    public function processSubmission(array $post, array $files): bool
+    public function processSubmission(array $postGlobal, array $filesGlobal): bool
     {
         foreach ($this->valeurs as $nom => $val) {
-            if (isset($post[$nom])) {
-                $this->valeurs[$nom] = $post[$nom];
+            if (isset($postGlobal[$nom])) {
+                $this->valeurs[$nom] = $postGlobal[$nom];
             }
         }
 
-        if (!$this->verification()) {
+        if (!$this->validate()) {
             return false;
         }
 
-        return $this->enregistrer();
+        return $this->upsert();
     }
 
     #[\Override]
-    public function enregistrer(): bool
+    public function upsert(): bool
     {
         return match ($this->action) {
             'insert' => $this->insert($this->idPersonne) !== null,
@@ -69,7 +73,7 @@ class SalleEdition extends Edition
     }
 
     #[\Override]
-    public function verification(): bool
+    public function validate(): bool
     {
         $this->verif->valider($this->valeurs['idLieu'], "idLieu", "texte", 1, 60, 1);
         $this->verif->valider($this->valeurs['nom'], "nom", "texte", 2, 100, 1);

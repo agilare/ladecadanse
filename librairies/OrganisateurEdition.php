@@ -49,7 +49,7 @@ class OrganisateurEdition extends FicheEdition
     }
 
     #[\Override]
-    public function verification(): bool
+    public function validate(): bool
     {
         global $mimes_images_acceptes;
 

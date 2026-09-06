@@ -96,9 +96,7 @@ class LieuEdition extends FicheEdition
     }
 
     #[\Override]
-    // TODO: later rn to validate() — la méthode rend un booléen, pas un nombre d'erreurs
-    // (getErrorCount() le donne) ; le renommage vaut pour Edition, SalleEdition et les deux fiches
-    public function verification(): bool
+    public function validate(): bool
     {
         global $mimes_images_acceptes;
 

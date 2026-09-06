@@ -24,7 +24,7 @@ class Lieu extends Element
     /**
      * Contraintes de saisie des champs du formulaire d'édition.
      *
-     * Partagées par la validation serveur (LieuEdition::verification()) et par les
+     * Partagées par la validation serveur (LieuEdition::validate()) et par les
      * attributs du formulaire (lieu/edit.php) : chacun les déclarait de son côté, et ils
      * se contredisaient — `nom` s'arrêtait à 60 caractères dans le formulaire pour 80 en
      * validation, `adresse` à 80 pour 100, `URL` à 80 pour 250, et `preposition_nom`
