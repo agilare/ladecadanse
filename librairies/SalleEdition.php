@@ -15,6 +15,19 @@ class SalleEdition extends Edition
     private ?int $id = null;
 
     /**
+     * Ce que la base dit déjà de la salle, sur le modèle du $storedValues des fiches.
+     *
+     * `idLieu` seul pour l'instant : le <select> du formulaire le proposait en
+     * modification alors qu'update() ne l'écrit pas — déplacer une salle annonçait
+     * « Salle modifiée », redirigeait vers le lieu choisi, et ne déplaçait rien. Le lieu
+     * d'une salle est fixé à sa création, les événements qui la citent portant eux aussi
+     * l'idLieu ; c'est donc la base qui décide, pas le POST.
+     *
+     * @var array{idLieu: int}
+     */
+    private array $storedValues = ['idLieu' => 0];
+
+    /**
      * Les instances arrivent en paramètre pour que la classe soit exerçable hors
      * requête HTTP ; les valeurs par défaut évitent d'imposer un conteneur à la page.
      */
@@ -58,11 +71,42 @@ class SalleEdition extends Edition
             }
         }
 
+        // Le lieu n'est pas modifiable : la valeur postée est ignorée au profit de celle
+        // que refreshStoredValues() vient de relire
+        if ($this->action === 'update') {
+            $this->valeurs['idLieu'] = $this->storedValues['idLieu'];
+        }
+
         if (!$this->validate()) {
             return false;
         }
 
         return $this->upsert();
+    }
+
+    /**
+     * Relit ce que la base dit de la salle, sans toucher à la saisie en cours, et dit du
+     * même coup si elle existe encore.
+     *
+     * C'est ce que la page appelle à la soumission, là où loadValues() écraserait ce que
+     * l'utilisateur vient de taper.
+     *
+     * @return bool false si la salle n'existe plus — un UPDATE sur un identifiant inconnu
+     *              ne touche aucune ligne et réussit en silence
+     */
+    public function refreshStoredValues(): bool
+    {
+        $stmt = $this->pdo->prepare("SELECT idLieu FROM salle WHERE idSalle = :idSalle");
+        $stmt->execute([':idSalle' => $this->idSalle]);
+
+        $row = $stmt->fetch();
+        if ($row === false) {
+            return false;
+        }
+
+        $this->storedValues['idLieu'] = (int) $row['idLieu'];
+
+        return true;
     }
 
     #[\Override]

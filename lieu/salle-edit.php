@@ -37,6 +37,8 @@ $http_error = null;
 
 if ($action_demandee === null) {
     $http_error = [400, 'Bad Request', "Cette action n'existe pas"];
+} elseif ($isEditMode && $get['idS'] <= 0) {
+    $http_error = [400, 'Bad Request', "Aucune salle n'est désignée"];
 } elseif ($isEditMode && $_SESSION['Sgroupe'] > UserLevel::ADMIN) {
     $http_error = [403, 'Forbidden', "Vous n'avez pas les droits pour éditer cette salle"];
 }
@@ -51,15 +53,21 @@ $salleForm->setAction($get['action']);
 $salleForm->setIdPersonne($_SESSION['SidPersonne']);
 $salleForm->setIdSalle($get['idS'] ?: null);
 
-if ($get['action'] === 'editer' && $get['idS'] > 0) {
+$is_form_submitted = ($_POST['formulaire'] ?? '') === 'ok';
+
+if ($isEditMode) {
     /*
-     * Le retour était ignoré : un identifiant inconnu rendait un formulaire vide sous le
-     * titre « Modifier une salle ». Seul l'affichage est couvert ici — à la soumission,
-     * relire écraserait la saisie en cours, et SalleEdition n'a pas l'équivalent du
-     * refreshStoredValues() des fiches. Un « update » sur un identifiant inconnu ne
-     * touche donc toujours aucune ligne en annonçant une réussite.
+     * Au premier affichage la salle remplit le formulaire ; à la soumission on ne relit
+     * que l'état de référence, la recharger écraserait la saisie en cours. Le retour
+     * était ignoré des deux côtés : un identifiant inconnu rendait un formulaire vide
+     * sous le titre « Modifier une salle », et l'UPDATE qui suivait ne touchait aucune
+     * ligne en annonçant une réussite.
      */
-    if (!$salleForm->loadValues($get['idS'])) {
+    $salle_exists = $is_form_submitted
+        ? $salleForm->refreshStoredValues()
+        : $salleForm->loadValues($get['idS']);
+
+    if (!$salle_exists) {
         $http_error = [404, 'Not Found', "Cette salle n'existe pas ou plus"];
         include("../_erreur_http.inc.php");
         exit;
@@ -69,7 +77,7 @@ if ($get['action'] === 'editer' && $get['idS'] > 0) {
 }
 
 $security_token_mismatch = false;
-if (($_POST['formulaire'] ?? '') === 'ok') {
+if ($is_form_submitted) {
     if (!SecurityToken::check($_POST['token'] ?? '', $_SESSION['token'] ?? '')) {
         $security_token_mismatch = true;
     } else {
@@ -122,7 +130,10 @@ include("../_header.inc.php");
 
 <p>
     <label for="idLieu">Lieu* :</label>
-    <select name="idLieu" id="idLieu" class="js-select2-options-with-style" data-placeholder="">
+    <?php /* Le lieu se choisit à la création et ne bouge plus : update() ne l'a jamais écrit,
+             et le déplacer laisserait derrière lui les événements qui citent la salle avec
+             l'ancien idLieu. Le select se contentait de le laisser croire. */ ?>
+    <select name="idLieu" id="idLieu" class="js-select2-options-with-style" data-placeholder="" <?= $isEditMode ? 'disabled' : '' ?>>
         <option value=""></option>
         <?php foreach ($lieux as $lieu): ?>
             <option value="<?= $lieu['idLieu'] ?>"<?= $lieu['idLieu'] == $salleForm->getValeur('idLieu') ? ' selected' : '' ?>>
