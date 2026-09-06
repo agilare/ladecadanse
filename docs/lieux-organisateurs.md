@@ -74,6 +74,24 @@ Un refus applicatif passe de même par un seul gabarit,
 site. À ne pas confondre avec `misc/error.php`, qui est l'`ErrorDocument` d'Apache et répond aux
 erreurs du serveur, pas à un refus que l'application vient de décider.
 
+### Qui remplit le formulaire
+
+[`CurrentUserEditing`](../librairies/Security/CurrentUserEditing.php) porte la personne qui saisit
+et les deux droits que les formulaires consultent :
+
+| droit | seuil | ce qu'il gouverne |
+| --- | --- | --- |
+| `canChangeStatus` | `ADMIN` (4) | le fieldset « Statut », et le statut réellement écrit |
+| `canEditEditorFields` | `AUTHOR` (6) | sur un lieu : nom, préposition, catégories, organisateurs |
+
+Chaque page en construit un depuis la session (`CurrentUserEditing::fromSession()`) et le passe au
+formulaire, qui s'en sert pour ce qu'il accepte d'écrire pendant que la vue s'en sert pour ce
+qu'elle propose. Les deux pages calculaient le même `Sgroupe <= ADMIN` de leur côté, puis le
+passaient au formulaire par trois appels séparés dont l'oubli d'un seul se lisait comme un refus.
+
+L'objet est en lecture seule, et un formulaire qu'on n'a pas renseigné porte
+`CurrentUserEditing::withoutRights()` : le défaut refuse, il n'accorde pas.
+
 ### Qui peut modifier
 
 Une seule règle, dans `Authorization::isPersonneAllowedToEditLieu()` — le formulaire et le lien

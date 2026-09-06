@@ -103,12 +103,6 @@ class OrganisateurEdition extends FicheEdition
     }
 
     #[\Override]
-    protected function authorColumn(): string
-    {
-        return 'idPersonne';
-    }
-
-    #[\Override]
     protected function storedColumns(): array
     {
         return ['nom', 'statut', 'logo', 'photo'];
@@ -136,7 +130,7 @@ class OrganisateurEdition extends FicheEdition
             VALUES (:idPersonne, :nom, :adresse, :url, :email, :presentation, :statut, :dateAjout, :dateModif)");
 
         if (!$stmt->execute($this->getSqlCommonParameters() + [
-            ':idPersonne' => $this->authorId,
+            ':idPersonne' => $this->currentUser->idPersonne,
             ':dateAjout' => $now,
             ':dateModif' => $now,
         ]))

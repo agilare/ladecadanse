@@ -60,14 +60,6 @@ class LieuEdition extends FicheEdition
     private array $organisateurs = [];
 
     /**
-     * Le nom, la préposition, les catégories et les organisateurs ne sont proposés
-     * qu'aux éditeurs : un lieu est partagé par tous les événements qui s'y déroulent,
-     * les renommer ou les recatégoriser se répercute donc partout. Voir
-     * fillEditorsFieldsValuesIfNotAllowed().
-     */
-    private bool $editorFieldsEditable = false;
-
-    /**
      * Les instances arrivent en paramètre pour que la classe soit exerçable hors requête
      * HTTP ; les valeurs par défaut évitent d'imposer un conteneur aux pages, qui
      * écrivent toutes `new LieuEdition()`.
@@ -148,16 +140,6 @@ class LieuEdition extends FicheEdition
         return $this->getRecordId();
     }
 
-    /**
-     * Le niveau courant peut-il toucher au nom, à la préposition, aux catégories et aux
-     * organisateurs ? Réservé aux éditeurs ; les autres voient ces champs en lecture
-     * seule et sont invités à passer par le formulaire de contact.
-     */
-    public function setCanEditEditorFields(bool $editable): void
-    {
-        $this->editorFieldsEditable = $editable;
-    }
-
     public function getCoordinates(): Coordinates
     {
         return $this->coordinates;
@@ -189,13 +171,6 @@ class LieuEdition extends FicheEdition
     protected function idColumn(): string
     {
         return 'idLieu';
-    }
-
-    /** La colonne s'écrit tout en minuscules, contrairement à celle d'`organisateur`. */
-    #[\Override]
-    protected function authorColumn(): string
-    {
-        return 'idpersonne';
     }
 
     /**
@@ -276,7 +251,7 @@ class LieuEdition extends FicheEdition
     #[\Override]
     protected function fillEditorsFieldsValuesIfNotAllowed(): void
     {
-        if ($this->editorFieldsEditable || $this->action !== 'update')
+        if ($this->currentUser->canEditEditorFields || $this->action !== 'update')
         {
             return;
         }
@@ -300,7 +275,7 @@ class LieuEdition extends FicheEdition
              :lat, :lng, :horaire, :url, :dateAjout, :dateModif)");
 
         if (!$stmt->execute($this->getSqlCommonParameters($localiteId, $quartier) + [
-            ':idPersonne' => $this->authorId,
+            ':idPersonne' => $this->currentUser->idPersonne,
             ':dateAjout' => $now,
             ':dateModif' => $now,
         ]))

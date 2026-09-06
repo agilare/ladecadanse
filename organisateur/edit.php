@@ -5,6 +5,7 @@ require_once("../app/bootstrap.php");
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\Organisateur;
 use Ladecadanse\OrganisateurEdition;
+use Ladecadanse\Security\CurrentUserEditing;
 use Ladecadanse\Security\SecurityToken;
 use Ladecadanse\UserLevel;
 use Ladecadanse\Utils\QueryParamValidator;
@@ -56,13 +57,16 @@ if ($http_error !== null)
     exit;
 }
 
-// Publier ou dépublier une fiche reste une décision de modération
-$can_change_status = $_SESSION['Sgroupe'] <= UserLevel::ADMIN;
+/*
+ * Qui remplit le formulaire, et ce que son niveau l'autorise à y changer : publier ou
+ * dépublier une fiche reste une décision de modération. La vue s'en sert pour ce qu'elle
+ * propose, OrganisateurEdition pour ce qu'il accepte d'écrire.
+ */
+$current_user = CurrentUserEditing::fromSession($_SESSION, $authorization);
 
 $organisateur_form = new OrganisateurEdition();
 $organisateur_form->setAction($get['action']);
-$organisateur_form->setAuthorId((int) ($_SESSION['SidPersonne'] ?? 0));
-$organisateur_form->setStatusEditable($can_change_status);
+$organisateur_form->setCurrentUser($current_user);
 
 $is_form_submitted = isset($_POST['form_submitted']);
 
@@ -212,7 +216,7 @@ include("../_header.inc.php");
         ?>
     </fieldset>
 
-    <?php if ($can_change_status) : ?>
+    <?php if ($current_user->canChangeStatus) : ?>
     <fieldset>
         <legend>Statut</legend>
 

@@ -7,6 +7,7 @@ use Ladecadanse\Lieu;
 use Ladecadanse\LieuEdition;
 use Ladecadanse\Localite;
 use Ladecadanse\Organisateur;
+use Ladecadanse\Security\CurrentUserEditing;
 use Ladecadanse\Security\SecurityToken;
 use Ladecadanse\UserLevel;
 use Ladecadanse\Utils\QueryParamValidator;
@@ -60,23 +61,17 @@ if ($http_error !== null)
     exit;
 }
 
-// Publier ou dépublier une fiche reste une décision de modération
-// TODO: domain, mv into LieuEdition ? looks like AuthorId; create a class for current person editing ? A LieuEdition->CurrentUserEditing->canChangeStatus is clearer than $can_change_status alone (would replace setStatusEditable)
-$can_change_status = $_SESSION['Sgroupe'] <= UserLevel::ADMIN;
-
 /*
- * Le nom, la préposition, les catégories et les organisateurs engagent tous les
- * événements qui se déroulent dans le lieu : les autres niveaux les voient sans pouvoir
- * y toucher, et LieuEdition reprend en base ce qu'ils n'ont pas le droit de poster.
+ * Qui remplit le formulaire, et ce que son niveau l'autorise à y changer : publier ou
+ * dépublier reste une décision de modération, et le nom, la préposition, les catégories
+ * et les organisateurs engagent tous les événements qui se déroulent dans le lieu. La vue
+ * s'en sert pour ce qu'elle propose, LieuEdition pour ce qu'il accepte d'écrire.
  */
-// TODO: cf previous remark
-$can_edit_editor_fields = $authorization->isPersonneEditor($_SESSION);
+$current_user = CurrentUserEditing::fromSession($_SESSION, $authorization);
 
 $lieu_form = new LieuEdition();
 $lieu_form->setAction($get['action']);
-$lieu_form->setAuthorId((int) ($_SESSION['SidPersonne'] ?? 0));
-$lieu_form->setStatusEditable($can_change_status);
-$lieu_form->setCanEditEditorFields($can_edit_editor_fields);
+$lieu_form->setCurrentUser($current_user);
 
 $is_form_submitted = isset($_POST['form_submitted']);
 
@@ -160,7 +155,7 @@ include("../_header.inc.php");
     <form method="post" enctype="multipart/form-data" id="ajouter_editer" class="js-submit-freeze-wait" action="<?= basename(__FILE__) ?>?action=<?= $is_edit_mode ? "update&amp;idL=" . (int) $get['idL'] : "insert" ?>">
 
 
-    <?php if (!$can_edit_editor_fields) : ?>
+    <?php if (!$current_user->canEditEditorFields) : ?>
         <p>Si vous souhaitez modifier le nom du lieu, ses catégories ou ses organisateurs, merci de nous <a href="/misc/contacteznous.php">contacter</a></p>
     <?php endif; ?>
 
@@ -178,7 +173,7 @@ include("../_header.inc.php");
         <p>
             <label for="nom">Nom du lieu*</label>
             <input type="text" name="nom" id="nom" size="40" maxlength="<?= Lieu::FIELDS['nom']['max'] ?>" value="<?= sanitizeForHtml($lieu_form->getValeur('nom')) ?>" required
-                <?= $can_edit_editor_fields ? '' : 'readonly class="read-only"' ?> />
+                <?= $current_user->canEditEditorFields ? '' : 'readonly class="read-only"' ?> />
             <?= $lieu_form->getHtmlErreur("nom") ?>
         </p>
 
@@ -187,7 +182,7 @@ include("../_header.inc.php");
             <input type="text" name="preposition_nom" id="preposition_nom" size="12" maxlength="<?= Lieu::FIELDS['preposition_nom']['max'] ?>"
                 title="« au », « chez », « à l’ »… tel que le nom du lieu se dit dans une phrase"
                 value="<?= sanitizeForHtml($lieu_form->getValeur('preposition_nom')) ?>"
-                <?= $can_edit_editor_fields ? '' : 'readonly class="read-only"' ?> />
+                <?= $current_user->canEditEditorFields ? '' : 'readonly class="read-only"' ?> />
             <?= $lieu_form->getHtmlErreur("preposition_nom") ?>
         </p>
 
@@ -197,7 +192,7 @@ include("../_header.inc.php");
                      sur les champs longs ; elle était posée ici en style en ligne, que Select2
                      recopie sur le conteneur qu'il substitue au <select> */ ?>
             <select name="categories[]" id="categories" class="js-select2-options-with-style" multiple
-                data-placeholder="Choisissez une ou plusieurs catégories" <?= $can_edit_editor_fields ? '' : 'disabled' ?>>
+                data-placeholder="Choisissez une ou plusieurs catégories" <?= $current_user->canEditEditorFields ? '' : 'disabled' ?>>
                 <!-- TODO: introduce a LieuRenderer -->
                 <?= Lieu::getCategoriesOptionsHtml($lieu_form->getCategories()) ?>
             </select>
@@ -278,7 +273,7 @@ include("../_header.inc.php");
                      ici en étaient une copie, restée en arrière. */ ?>
             <select name="organisateurs[]" id="organisateurs" data-placeholder="Tapez le nom de l'organisateur"
                 class="js-select2-options-with-complement" multiple
-                title="Un organisateur dans la base de données de La décadanse" <?= $can_edit_editor_fields ? '' : 'disabled' ?>>
+                title="Un organisateur dans la base de données de La décadanse" <?= $current_user->canEditEditorFields ? '' : 'disabled' ?>>
                 <?= Organisateur::getOptionsHtml($lieu_form->getOrganisateurs()) ?>
             </select>
             <div class="guideChamp">Les personnes membres de ces organisateurs pourront modifier ce lieu ainsi que tous les événements s’y déroulant</div>
@@ -299,7 +294,7 @@ include("../_header.inc.php");
         ?>
     </fieldset>
 
-    <?php if ($can_change_status) : ?>
+    <?php if ($current_user->canChangeStatus) : ?>
     <fieldset>
         <legend>Statut</legend>
 

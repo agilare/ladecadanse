@@ -2,6 +2,7 @@
 
 namespace Ladecadanse;
 
+use Ladecadanse\Security\CurrentUserEditing;
 use Ladecadanse\Utils\DbConnectorPdo;
 use Ladecadanse\Utils\Validateur;
 use PDO;
@@ -63,20 +64,14 @@ abstract class FicheEdition extends Edition
     protected array $storedValues = [];
 
     /**
-     * Auteur à inscrire sur une fiche créée.
+     * Qui remplit le formulaire, et ce que son niveau l'autorise à y changer.
      *
-     * Entier pour l'instant, faute de mieux : la colonne vaut 0 pour les contenus sans
-     * auteur. Le jour où elle acceptera NULL — ce qui dirait « pas d'auteur » sans se
-     * confondre avec un identifiant —, ce type deviendra ?int et 0 cessera d'être une
-     * valeur possible.
+     * Sans droits tant que la page n'a rien dit : un formulaire ne doit pas être plus
+     * permissif faute d'avoir été renseigné. C'est la seule source admise pour les champs
+     * que le POST n'a pas le droit de décider — voir statusToWrite() et
+     * fillEditorsFieldsValuesIfNotAllowed().
      */
-    protected int $authorId = 0;
-
-    /**
-     * Le statut n'est proposé qu'aux modérateurs : la page le dit ici, faute de quoi un
-     * POST forgé passerait la valeur de son choix. Voir statusToWrite().
-     */
-    protected bool $statusEditable = false;
+    protected CurrentUserEditing $currentUser;
 
     /**
      * @param array<string, mixed> $initialValues champs du formulaire, avec leur valeur initiale
@@ -98,6 +93,7 @@ abstract class FicheEdition extends Edition
         // Le connecteur est un singleton, qu'un défaut de paramètre ne sait pas appeler
         $this->pdo = $pdo ?? DbConnectorPdo::getInstance();
         $this->uploadsDir = $uploadsDir;
+        $this->currentUser = CurrentUserEditing::withoutRights();
 
         $this->storedValues = array_fill_keys($this->storedColumns(), '');
         $this->storedValues['statut'] = static::INITIAL_STATUS;
@@ -114,13 +110,6 @@ abstract class FicheEdition extends Edition
 
     /** Colonne portant la clé primaire (idLieu, idOrganisateur). */
     abstract protected function idColumn(): string;
-
-    /**
-     * Colonne portant l'auteur de la fiche. `lieu` et `organisateur` ne l'écrivent pas
-     * de la même façon (`idpersonne` contre `idPersonne`), et les clés que rend un
-     * SELECT * suivent la déclaration de la table.
-     */
-    abstract protected function authorColumn(): string;
 
     /**
      * Colonnes relues pour connaître l'état enregistré de la fiche : au minimum `nom`,
@@ -182,8 +171,10 @@ abstract class FicheEdition extends Edition
 
         $this->fillStoredValues($row);
         $this->recordId = $id;
-        $this->authorId = (int) $row[$this->authorColumn()];
 
+        // L'auteur de la fiche n'est pas relu : seul un ajout en écrit un, et une
+        // modification ne le déplace pas vers celui qui la fait — c'est de lui que dépend
+        // son droit de modifier la fiche.
         $this->afterLoad($row);
 
         return true;
@@ -261,18 +252,17 @@ abstract class FicheEdition extends Edition
     }
 
     /**
-     * Auteur à inscrire sur une fiche créée : la personne qui la saisit. Une
-     * modification ne le déplace pas vers celui qui la fait — c'est de lui que
-     * dépend son droit de modifier la fiche.
+     * Qui remplit le formulaire. À appeler avant processSubmission() : sans cela le
+     * formulaire refuse tout ce qui demande un droit, et inscrirait 0 comme auteur.
      */
-    public function setAuthorId(int $authorId): void
+    public function setCurrentUser(CurrentUserEditing $currentUser): void
     {
-        $this->authorId = $authorId;
+        $this->currentUser = $currentUser;
     }
 
-    public function setStatusEditable(bool $statusEditable): void
+    public function getCurrentUser(): CurrentUserEditing
     {
-        $this->statusEditable = $statusEditable;
+        return $this->currentUser;
     }
 
     /**
@@ -383,7 +373,7 @@ abstract class FicheEdition extends Edition
      */
     protected function statusToWrite(): string
     {
-        if ($this->statusEditable)
+        if ($this->currentUser->canChangeStatus)
         {
             return (string) $this->valeurs['statut'];
         }
