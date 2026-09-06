@@ -25,15 +25,15 @@ abstract class FicheEdition extends Edition
     use HandlesImageUploads;
 
     /** Statut d'une fiche qui vient d'être créée. */
-    protected const string STATUT_INITIAL = 'actif';
+    protected const string INITIAL_STATUS = 'actif';
 
     protected DbConnectorPdo $pdo;
 
     /** Répertoire système des images de cette entité (app/config.php). */
-    protected string $repUploads;
+    protected string $uploadsDir;
 
     /** Identifiant de la fiche en cours d'édition ; 0 tant qu'elle n'est pas enregistrée. */
-    protected int $ficheId = 0;
+    protected int $recordId = 0;
 
     /**
      * Champs image dont la case « Supprimer » a été cochée. Nommé ainsi parce que le
@@ -41,7 +41,7 @@ abstract class FicheEdition extends Edition
      *
      * @var list<string>
      */
-    protected array $imagesASupprimer = [];
+    protected array $imagesMarkedForDeletion = [];
 
     /**
      * Ce que la base dit déjà de la fiche, par opposition à $valeurs, qui porte la
@@ -81,26 +81,26 @@ abstract class FicheEdition extends Edition
     /**
      * @param array<string, mixed> $initialValues champs du formulaire, avec leur valeur initiale
      * @param array<string, array<string, mixed>> $fichiers champs de type fichier
-     * @param string $repUploads répertoire système des images de l'entité
+     * @param string $uploadsDir répertoire système des images de l'entité
      */
     public function __construct(
         array $initialValues,
         array $fichiers,
-        string $repUploads,
+        string $uploadsDir,
         ?DbConnectorPdo $pdo = null,
         protected readonly Validateur $verif = new Validateur(),
     )
     {
-        $initialValues['statut'] = static::STATUT_INITIAL;
+        $initialValues['statut'] = static::INITIAL_STATUS;
 
         parent::__construct($initialValues, $fichiers);
 
         // Le connecteur est un singleton, qu'un défaut de paramètre ne sait pas appeler
         $this->pdo = $pdo ?? DbConnectorPdo::getInstance();
-        $this->repUploads = $repUploads;
+        $this->uploadsDir = $uploadsDir;
 
         $this->storedValues = array_fill_keys($this->storedColumns(), '');
-        $this->storedValues['statut'] = static::STATUT_INITIAL;
+        $this->storedValues['statut'] = static::INITIAL_STATUS;
     }
 
     /*
@@ -113,14 +113,14 @@ abstract class FicheEdition extends Edition
     abstract protected function table(): string;
 
     /** Colonne portant la clé primaire (idLieu, idOrganisateur). */
-    abstract protected function colonneId(): string;
+    abstract protected function idColumn(): string;
 
     /**
      * Colonne portant l'auteur de la fiche. `lieu` et `organisateur` ne l'écrivent pas
      * de la même façon (`idpersonne` contre `idPersonne`), et les clés que rend un
      * SELECT * suivent la déclaration de la table.
      */
-    abstract protected function colonneAuteur(): string;
+    abstract protected function authorColumn(): string;
 
     /**
      * Colonnes relues pour connaître l'état enregistré de la fiche : au minimum `nom`,
@@ -133,12 +133,12 @@ abstract class FicheEdition extends Edition
     /**
      * Champs image du formulaire, avec les dimensions de leur miniature « s_ ».
      *
-     * @return array<string, array{maxLargeur: int, maxHauteur: int, selon: string, rognage: int}>
+     * @return array<string, array{maxWidth: int, maxHeight: int, fitOn: string, crop: int}>
      */
-    abstract protected function champsImage(): array;
+    abstract protected function imageFields(): array;
 
     /** Sous-répertoire d'uploads au sens d'ImageDriver2 ("lieux", "organisateurs"). */
-    abstract protected function repertoireUploads(): string;
+    abstract protected function uploadsSubdir(): string;
 
     /**
      * Valeur à écrire dans une colonne image quand la fiche n'en porte pas.
@@ -148,7 +148,7 @@ abstract class FicheEdition extends Edition
      * depuis la 3.13.0 — redéfinit ceci, sans quoi elle porterait deux écritures pour la
      * même absence : NULL sur les lignes migrées, '' sur celles dont on retire l'image.
      */
-    protected function valeurImageAbsente(): ?string
+    protected function absentImageValue(): ?string
     {
         return '';
     }
@@ -163,28 +163,28 @@ abstract class FicheEdition extends Edition
     #[\Override]
     public function loadValues(int $id): bool
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM " . $this->table() . " WHERE " . $this->colonneId() . " = :id");
+        $stmt = $this->pdo->prepare("SELECT * FROM " . $this->table() . " WHERE " . $this->idColumn() . " = :id");
         $stmt->execute([':id' => $id]);
 
-        $ligne = $stmt->fetch(PDO::FETCH_ASSOC);
-        if ($ligne === false)
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($row === false)
         {
             return false;
         }
 
-        foreach (array_keys($this->valeurs) as $champ)
+        foreach (array_keys($this->valeurs) as $field)
         {
-            if (array_key_exists($champ, $ligne))
+            if (array_key_exists($field, $row))
             {
-                $this->valeurs[$champ] = $ligne[$champ];
+                $this->valeurs[$field] = $row[$field];
             }
         }
 
-        $this->fillStoredValues($ligne);
-        $this->ficheId = $id;
-        $this->authorId = (int) $ligne[$this->colonneAuteur()];
+        $this->fillStoredValues($row);
+        $this->recordId = $id;
+        $this->authorId = (int) $row[$this->authorColumn()];
 
-        $this->apresChargement($ligne);
+        $this->afterLoad($row);
 
         return true;
     }
@@ -196,9 +196,9 @@ abstract class FicheEdition extends Edition
     #[\Override]
     public function processSubmission(array $postGlobal, array $filesGlobal): bool
     {
-        $this->lireChampsPostes($postGlobal);
-        $this->lireFichiersPostes($filesGlobal);
-        $this->lireSuppressionsPostees($postGlobal);
+        $this->readPostedFields($postGlobal);
+        $this->readPostedFiles($filesGlobal);
+        $this->readPostedDeletions($postGlobal);
 
         /*
          * Relire la base avant d'écrire sert deux fois : les deux valeurs que le POST
@@ -237,14 +237,14 @@ abstract class FicheEdition extends Edition
 
     abstract protected function update(): bool;
 
-    public function setFicheId(int $id): void
+    public function setRecordId(int $id): void
     {
-        $this->ficheId = $id;
+        $this->recordId = $id;
     }
 
-    public function getFicheId(): int
+    public function getRecordId(): int
     {
-        return $this->ficheId;
+        return $this->recordId;
     }
 
     /**
@@ -278,17 +278,17 @@ abstract class FicheEdition extends Edition
     /**
      * Nom du fichier image enregistré en base, pour l'aperçu du formulaire.
      */
-    public function getStoredImageName(string $champ): string
+    public function getStoredImageName(string $field): string
     {
-        return $this->storedValues[$champ] ?? '';
+        return $this->storedValues[$field] ?? '';
     }
 
     /**
      * La case « Supprimer » de ce champ image a-t-elle été cochée ?
      */
-    public function isImageMarkedForDeletion(string $champ): bool
+    public function isImageMarkedForDeletion(string $field): bool
     {
-        return in_array($champ, $this->imagesASupprimer, true);
+        return in_array($field, $this->imagesMarkedForDeletion, true);
     }
 
     /**
@@ -318,18 +318,18 @@ abstract class FicheEdition extends Edition
     }
 
     #[\Override]
-    public function getHtmlErreur(string $champ): string
+    public function getHtmlErreur(string $field): string
     {
-        return $this->verif->getHtmlErreur($champ);
+        return $this->verif->getHtmlErreur($field);
     }
 
     /**
      * Champs supplémentaires à relire au chargement d'une fiche : ceux qui ne sont pas
      * une colonne de la table (catégories à éclater, entités liées).
      *
-     * @param array<string, mixed> $ligne
+     * @param array<string, mixed> $row
      */
-    protected function apresChargement(array $ligne): void
+    protected function afterLoad(array $row): void
     {
     }
 
@@ -345,38 +345,38 @@ abstract class FicheEdition extends Edition
     }
 
     /**
-     * @param array<string, mixed> $post
+     * @param array<string, mixed> $postGlobal
      */
-    protected function lireChampsPostes(array $post): void
+    protected function readPostedFields(array $postGlobal): void
     {
-        foreach (array_keys($this->valeurs) as $champ)
+        foreach (array_keys($this->valeurs) as $field)
         {
             // is_scalar() écarte un « nom[]=x » forgé, qui déclencherait sinon
             // une conversion de tableau en chaîne
-            if (isset($post[$champ]) && is_scalar($post[$champ]))
+            if (isset($postGlobal[$field]) && is_scalar($postGlobal[$field]))
             {
-                $this->valeurs[$champ] = trim((string) $post[$champ]);
+                $this->valeurs[$field] = trim((string) $postGlobal[$field]);
             }
         }
     }
 
     /**
-     * @param array<string, mixed> $files
+     * @param array<string, mixed> $filesGlobal
      */
-    protected function lireFichiersPostes(array $files): void
+    protected function readPostedFiles(array $filesGlobal): void
     {
-        foreach (array_keys($this->champsImage()) as $champ)
+        foreach (array_keys($this->imageFields()) as $field)
         {
-            $this->fichiers[$champ] = $files[$champ] ?? ['name' => '', 'tmp_name' => '', 'size' => 0];
+            $this->fichiers[$field] = $filesGlobal[$field] ?? ['name' => '', 'tmp_name' => '', 'size' => 0];
         }
     }
 
     /**
-     * @param array<string, mixed> $post
+     * @param array<string, mixed> $postGlobal
      */
-    protected function lireSuppressionsPostees(array $post): void
+    protected function readPostedDeletions(array $postGlobal): void
     {
-        $this->imagesASupprimer = (isset($post['supprimer']) && is_array($post['supprimer'])) ? $post['supprimer'] : [];
+        $this->imagesMarkedForDeletion = (isset($postGlobal['supprimer']) && is_array($postGlobal['supprimer'])) ? $postGlobal['supprimer'] : [];
     }
 
     /**
@@ -389,7 +389,7 @@ abstract class FicheEdition extends Edition
             return (string) $this->valeurs['statut'];
         }
 
-        return $this->action === 'update' ? $this->storedValues['statut'] : static::STATUT_INITIAL;
+        return $this->action === 'update' ? $this->storedValues['statut'] : static::INITIAL_STATUS;
     }
 
     /**
@@ -403,29 +403,29 @@ abstract class FicheEdition extends Edition
         $stmt = $this->pdo->prepare(
             "SELECT " . implode(', ', $this->storedColumns())
             . " FROM " . $this->table()
-            . " WHERE " . $this->colonneId() . " = :id"
+            . " WHERE " . $this->idColumn() . " = :id"
         );
-        $stmt->execute([':id' => $this->ficheId]);
+        $stmt->execute([':id' => $this->recordId]);
 
-        $ligne = $stmt->fetch(PDO::FETCH_ASSOC);
-        if ($ligne === false)
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($row === false)
         {
             return false;
         }
 
-        $this->fillStoredValues($ligne);
+        $this->fillStoredValues($row);
 
         return true;
     }
 
     /**
-     * @param array<string, mixed> $ligne
+     * @param array<string, mixed> $row
      */
-    protected function fillStoredValues(array $ligne): void
+    protected function fillStoredValues(array $row): void
     {
-        foreach (array_keys($this->storedValues) as $colonne)
+        foreach (array_keys($this->storedValues) as $column)
         {
-            $this->storedValues[$colonne] = (string) ($ligne[$colonne] ?? '');
+            $this->storedValues[$column] = (string) ($row[$column] ?? '');
         }
     }
 
@@ -436,57 +436,57 @@ abstract class FicheEdition extends Edition
      * qu'une fois l'INSERT fait : d'où ce second passage en base plutôt qu'un nom deviné
      * avant coup à partir de MAX(id) + 1.
      */
-    protected function enregistrerLesImages(): void
+    protected function saveImages(): void
     {
-        $nomsFichiers = [];
+        $fileNames = [];
 
-        foreach ($this->champsImage() as $champ => $miniature)
+        foreach ($this->imageFields() as $field => $thumbnail)
         {
-            $nom = $this->imageNameAfterEdit(
-                $champ,
-                $this->fichierEnvoye($champ),
-                $this->storedValues[$champ],
-                $this->isImageMarkedForDeletion($champ),
-                $this->ficheId,
-                $this->repUploads
+            $name = $this->imageNameAfterEdit(
+                $field,
+                $this->uploadedFileFor($field),
+                $this->storedValues[$field],
+                $this->isImageMarkedForDeletion($field),
+                $this->recordId,
+                $this->uploadsDir
             );
 
-            if ($nom === $this->storedValues[$champ])
+            if ($name === $this->storedValues[$field])
             {
                 continue;
             }
 
-            if (!$this->writeImageFiles($this->fichierEnvoye($champ), $nom, $this->repertoireUploads(), $miniature))
+            if (!$this->writeImageFiles($this->uploadedFileFor($field), $name, $this->uploadsSubdir(), $thumbnail))
             {
                 // L'ancienne image a déjà été effacée du disque : la colonne doit
                 // le refléter, sans quoi la fiche pointerait vers un fichier absent
                 $this->message .= ", mais l'image n'a pas pu être enregistrée";
-                $nom = '';
+                $name = '';
             }
 
-            $nomsFichiers[$champ] = $nom;
+            $fileNames[$field] = $name;
         }
 
-        if ($nomsFichiers === [])
+        if ($fileNames === [])
         {
             return;
         }
 
-        // Les noms de colonnes viennent de champsImage(), jamais d'une saisie
-        $affectations = [];
-        $params = [':id' => $this->ficheId];
-        foreach ($nomsFichiers as $champ => $nom)
+        // Les noms de colonnes viennent de imageFields(), jamais d'une saisie
+        $assignments = [];
+        $params = [':id' => $this->recordId];
+        foreach ($fileNames as $field => $name)
         {
-            $affectations[] = $champ . " = :" . $champ;
-            $params[':' . $champ] = ($nom === '') ? $this->valeurImageAbsente() : $nom;
+            $assignments[] = $field . " = :" . $field;
+            $params[':' . $field] = ($name === '') ? $this->absentImageValue() : $name;
         }
 
         $stmt = $this->pdo->prepare(
-            "UPDATE " . $this->table() . " SET " . implode(', ', $affectations)
-            . " WHERE " . $this->colonneId() . " = :id"
+            "UPDATE " . $this->table() . " SET " . implode(', ', $assignments)
+            . " WHERE " . $this->idColumn() . " = :id"
         );
         $stmt->execute($params);
 
-        $this->storedValues = array_merge($this->storedValues, $nomsFichiers);
+        $this->storedValues = array_merge($this->storedValues, $fileNames);
     }
 }

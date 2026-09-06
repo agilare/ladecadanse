@@ -22,8 +22,8 @@ class OrganisateurEdition extends FicheEdition
 {
     /** Champs image du formulaire, avec les dimensions de leur miniature « s_ ». */
     private const array IMAGES = [
-        'logo'  => ['maxLargeur' => 200, 'maxHauteur' => 200, 'selon' => 'h', 'rognage' => 0],
-        'photo' => ['maxLargeur' => 300, 'maxHauteur' => 300, 'selon' => 'w', 'rognage' => 1],
+        'logo'  => ['maxWidth' => 200, 'maxHeight' => 200, 'fitOn' => 'h', 'crop' => 0],
+        'photo' => ['maxWidth' => 300, 'maxHeight' => 300, 'fitOn' => 'w', 'crop' => 1],
     ];
 
     /**
@@ -55,9 +55,9 @@ class OrganisateurEdition extends FicheEdition
 
         // Longueurs et obligation viennent de Organisateur::FIELDS, dont le formulaire tire
         // aussi ses maxlength et son required : ce qu'il laisse saisir est ce qui est accepté ici
-        foreach (Organisateur::FIELDS as $champ => $regle)
+        foreach (Organisateur::FIELDS as $field => $rule)
         {
-            $this->verif->valider($this->valeurs[$champ], $champ, $regle['type'], $regle['min'], $regle['max'], $regle['required']);
+            $this->verif->valider($this->valeurs[$field], $field, $rule['type'], $rule['min'], $rule['max'], $rule['required']);
         }
 
         $this->verif->validerFichierImage($this->fichiers['logo'], "logo", $mimes_images_acceptes, 0);
@@ -72,7 +72,7 @@ class OrganisateurEdition extends FicheEdition
         // où deux fiches publiées homonymes sont indiscernables. Le contrôle existait
         // mais ne s'exécutait jamais : il attendait une action « insert » que la page
         // ne lui passait pas.
-        if ($this->verif->getErreur("nom") === false && $this->nomDejaPris())
+        if ($this->verif->getErreur("nom") === false && $this->isNameAlreadyTaken())
         {
             $this->verif->setErreur("nom", "Un organisateur porte déjà ce nom");
         }
@@ -84,12 +84,12 @@ class OrganisateurEdition extends FicheEdition
 
     public function setIdOrganisateur(int $idOrganisateur): void
     {
-        $this->setFicheId($idOrganisateur);
+        $this->setRecordId($idOrganisateur);
     }
 
     public function getIdOrganisateur(): int
     {
-        return $this->getFicheId();
+        return $this->getRecordId();
     }
 
     #[\Override]
@@ -99,13 +99,13 @@ class OrganisateurEdition extends FicheEdition
     }
 
     #[\Override]
-    protected function colonneId(): string
+    protected function idColumn(): string
     {
         return 'idOrganisateur';
     }
 
     #[\Override]
-    protected function colonneAuteur(): string
+    protected function authorColumn(): string
     {
         return 'idPersonne';
     }
@@ -117,13 +117,13 @@ class OrganisateurEdition extends FicheEdition
     }
 
     #[\Override]
-    protected function champsImage(): array
+    protected function imageFields(): array
     {
         return self::IMAGES;
     }
 
     #[\Override]
-    protected function repertoireUploads(): string
+    protected function uploadsSubdir(): string
     {
         return 'organisateurs';
     }
@@ -131,7 +131,7 @@ class OrganisateurEdition extends FicheEdition
     #[\Override]
     protected function insert(): bool
     {
-        $maintenant = date("Y-m-d H:i:s");
+        $now = date("Y-m-d H:i:s");
 
         $stmt = $this->pdo->prepare("INSERT INTO organisateur
             (idPersonne, nom, adresse, URL, email, presentation, statut, date_ajout, date_derniere_modif)
@@ -139,17 +139,17 @@ class OrganisateurEdition extends FicheEdition
 
         if (!$stmt->execute($this->getSqlCommonParameters() + [
             ':idPersonne' => $this->authorId,
-            ':dateAjout' => $maintenant,
-            ':dateModif' => $maintenant,
+            ':dateAjout' => $now,
+            ':dateModif' => $now,
         ]))
         {
             return false;
         }
 
-        $this->setFicheId((int) $this->pdo->lastInsertId());
+        $this->setRecordId((int) $this->pdo->lastInsertId());
         $this->message = "Organisateur ajouté";
 
-        $this->enregistrerLesImages();
+        $this->saveImages();
 
         return true;
     }
@@ -167,7 +167,7 @@ class OrganisateurEdition extends FicheEdition
         // l'enregistrement générique — dépossédait l'auteur au premier passage d'un admin.
         if (!$stmt->execute($this->getSqlCommonParameters() + [
             ':dateModif' => date("Y-m-d H:i:s"),
-            ':id' => $this->getFicheId(),
+            ':id' => $this->getRecordId(),
         ]))
         {
             return false;
@@ -175,7 +175,7 @@ class OrganisateurEdition extends FicheEdition
 
         $this->message = "Organisateur modifié";
 
-        $this->enregistrerLesImages();
+        $this->saveImages();
 
         return true;
     }
@@ -195,15 +195,15 @@ class OrganisateurEdition extends FicheEdition
         ];
     }
 
-    private function nomDejaPris(): bool
+    private function isNameAlreadyTaken(): bool
     {
         $sql = "SELECT idOrganisateur FROM organisateur WHERE nom = :nom AND statut = 'actif'";
         $params = [':nom' => $this->valeurs['nom']];
 
-        if ($this->getFicheId() > 0)
+        if ($this->getRecordId() > 0)
         {
             $sql .= " AND idOrganisateur <> :id";
-            $params[':id'] = $this->getFicheId();
+            $params[':id'] = $this->getRecordId();
         }
 
         $stmt = $this->pdo->prepare($sql);

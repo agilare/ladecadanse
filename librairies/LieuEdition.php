@@ -27,8 +27,8 @@ class LieuEdition extends FicheEdition
 {
     /** Champs image de la fiche, avec les dimensions de leur miniature « s_ ». */
     private const array IMAGES = [
-        'logo'   => ['maxLargeur' => 200, 'maxHauteur' => 200, 'selon' => 'h', 'rognage' => 0],
-        'photo1' => ['maxLargeur' => 300, 'maxHauteur' => 300, 'selon' => 'w', 'rognage' => 1],
+        'logo'   => ['maxWidth' => 200, 'maxHeight' => 200, 'fitOn' => 'h', 'crop' => 0],
+        'photo1' => ['maxWidth' => 300, 'maxHeight' => 300, 'fitOn' => 'w', 'crop' => 1],
     ];
 
     /**
@@ -36,7 +36,7 @@ class LieuEdition extends FicheEdition
      * le plan n'est affiché que si les deux sont connues —, d'où un objet plutôt que
      * deux entrées de $valeurs.
      */
-    private Coordinates $coordonnees;
+    private Coordinates $coordinates;
 
     /**
      * Catégories cochées, éclatées depuis la colonne `categories` (un SET) ou telles que
@@ -92,7 +92,7 @@ class LieuEdition extends FicheEdition
             $verif
         );
 
-        $this->coordonnees = Coordinates::fromInput('', '');
+        $this->coordinates = Coordinates::fromInput('', '');
     }
 
     #[\Override]
@@ -104,14 +104,14 @@ class LieuEdition extends FicheEdition
 
         // Longueurs et obligation viennent de Lieu::FIELDS, dont le formulaire tire aussi
         // ses maxlength et son required : ce qu'il laisse saisir est ce qui est accepté ici
-        foreach (Lieu::FIELDS as $champ => $regle)
+        foreach (Lieu::FIELDS as $field => $rule)
         {
-            $this->verif->valider($this->valeurs[$champ], $champ, $regle['type'], $regle['min'], $regle['max'], $regle['required']);
+            $this->verif->valider($this->valeurs[$field], $field, $rule['type'], $rule['min'], $rule['max'], $rule['required']);
         }
 
-        foreach ($this->coordonnees->erreurs() as $champ => $message)
+        foreach ($this->coordinates->errors() as $field => $message)
         {
-            $this->verif->setErreur($champ, $message);
+            $this->verif->setErreur($field, $message);
         }
 
         if ($this->categories === [])
@@ -119,11 +119,11 @@ class LieuEdition extends FicheEdition
             $this->verif->setErreur('categories', "Veuillez choisir au moins une catégorie");
         }
 
-        foreach ($this->categories as $categorie)
+        foreach ($this->categories as $category)
         {
-            if (!array_key_exists($categorie, Lieu::CATEGORIES))
+            if (!array_key_exists($category, Lieu::CATEGORIES))
             {
-                $this->verif->setErreur('categories', "La catégorie " . $categorie . " n'est pas valable");
+                $this->verif->setErreur('categories', "La catégorie " . $category . " n'est pas valable");
             }
         }
 
@@ -132,9 +132,9 @@ class LieuEdition extends FicheEdition
             $this->verif->setErreur("statut", "Ce statut n'existe pas");
         }
 
-        foreach (array_keys(self::IMAGES) as $champ)
+        foreach (array_keys(self::IMAGES) as $field)
         {
-            $this->verif->validerFichierImage($this->fichiers[$champ], $champ, $mimes_images_acceptes, 0);
+            $this->verif->validerFichierImage($this->fichiers[$field], $field, $mimes_images_acceptes, 0);
         }
 
         $this->erreurs = array_merge($this->erreurs, $this->verif->getErreurs());
@@ -144,12 +144,12 @@ class LieuEdition extends FicheEdition
 
     public function setIdLieu(int $idLieu): void
     {
-        $this->setFicheId($idLieu);
+        $this->setRecordId($idLieu);
     }
 
     public function getIdLieu(): int
     {
-        return $this->getFicheId();
+        return $this->getRecordId();
     }
 
     /**
@@ -162,14 +162,14 @@ class LieuEdition extends FicheEdition
         $this->editorFieldsEditable = $editable;
     }
 
-    public function isEditorFieldsEditable(): bool
+    public function canEditEditorFields(): bool
     {
         return $this->editorFieldsEditable;
     }
 
-    public function getCoordonnees(): Coordinates
+    public function getCoordinates(): Coordinates
     {
-        return $this->coordonnees;
+        return $this->coordinates;
     }
 
     /**
@@ -195,14 +195,14 @@ class LieuEdition extends FicheEdition
     }
 
     #[\Override]
-    protected function colonneId(): string
+    protected function idColumn(): string
     {
         return 'idLieu';
     }
 
     /** La colonne s'écrit tout en minuscules, contrairement à celle d'`organisateur`. */
     #[\Override]
-    protected function colonneAuteur(): string
+    protected function authorColumn(): string
     {
         return 'idpersonne';
     }
@@ -220,42 +220,42 @@ class LieuEdition extends FicheEdition
     }
 
     #[\Override]
-    protected function champsImage(): array
+    protected function imageFields(): array
     {
         return self::IMAGES;
     }
 
     #[\Override]
-    protected function repertoireUploads(): string
+    protected function uploadsSubdir(): string
     {
         return 'lieux';
     }
 
     /** `lieu.logo` et `lieu.photo1` acceptent NULL depuis la 3.13.0. */
     #[\Override]
-    protected function valeurImageAbsente(): ?string
+    protected function absentImageValue(): ?string
     {
         return null;
     }
 
     /**
-     * @param array<string, mixed> $ligne
+     * @param array<string, mixed> $row
      */
     #[\Override]
-    protected function apresChargement(array $ligne): void
+    protected function afterLoad(array $row): void
     {
-        $this->categories = self::eclaterCategories($ligne['categories'] ?? null);
-        $this->coordonnees = Coordinates::fromDatabase($ligne['lat'] ?? null, $ligne['lng'] ?? null);
-        $this->organisateurs = $this->lireOrganisateursEnBase();
+        $this->categories = self::splitCategories($row['categories'] ?? null);
+        $this->coordinates = Coordinates::fromDatabase($row['lat'] ?? null, $row['lng'] ?? null);
+        $this->organisateurs = $this->readStoredOrganisateurs();
     }
 
     /**
-     * @param array<string, mixed> $post
+     * @param array<string, mixed> $postGlobal
      */
     #[\Override]
-    protected function lireChampsPostes(array $post): void
+    protected function readPostedFields(array $postGlobal): void
     {
-        parent::lireChampsPostes($post);
+        parent::readPostedFields($postGlobal);
 
         /*
          * Les deux champs à valeurs multiples ne passent pas par la boucle héritée, qui
@@ -265,13 +265,13 @@ class LieuEdition extends FicheEdition
          * empêcherait de tout retirer.
          */
         $this->categories = array_values(array_filter(
-            is_array($post['categories'] ?? null) ? $post['categories'] : [],
+            is_array($postGlobal['categories'] ?? null) ? $postGlobal['categories'] : [],
             'is_string'
         ));
 
-        $this->organisateurs = self::identifiants($post['organisateurs'] ?? null);
+        $this->organisateurs = self::toPositiveIds($postGlobal['organisateurs'] ?? null);
 
-        $this->coordonnees = Coordinates::fromInput($post['lat'] ?? '', $post['lng'] ?? '');
+        $this->coordinates = Coordinates::fromInput($postGlobal['lat'] ?? '', $postGlobal['lng'] ?? '');
     }
 
     /**
@@ -292,14 +292,14 @@ class LieuEdition extends FicheEdition
 
         $this->valeurs['nom'] = $this->storedValues['nom'];
         $this->valeurs['preposition_nom'] = $this->storedValues['preposition_nom'];
-        $this->categories = self::eclaterCategories($this->storedValues['categories']);
-        $this->organisateurs = $this->lireOrganisateursEnBase();
+        $this->categories = self::splitCategories($this->storedValues['categories']);
+        $this->organisateurs = $this->readStoredOrganisateurs();
     }
 
     #[\Override]
     protected function insert(): bool
     {
-        $maintenant = date("Y-m-d H:i:s");
+        $now = date("Y-m-d H:i:s");
         [$localiteId, $quartier] = $this->getLocaliteAndQuartierFromLocaliteId();
 
         $stmt = $this->pdo->prepare("INSERT INTO lieu
@@ -310,18 +310,18 @@ class LieuEdition extends FicheEdition
 
         if (!$stmt->execute($this->getSqlCommonParameters($localiteId, $quartier) + [
             ':idPersonne' => $this->authorId,
-            ':dateAjout' => $maintenant,
-            ':dateModif' => $maintenant,
+            ':dateAjout' => $now,
+            ':dateModif' => $now,
         ]))
         {
             return false;
         }
 
-        $this->setFicheId((int) $this->pdo->lastInsertId());
+        $this->setRecordId((int) $this->pdo->lastInsertId());
         $this->message = 'Lieu ajouté';
 
-        $this->enregistrerLesOrganisateurs();
-        $this->enregistrerLesImages();
+        $this->saveOrganisateurs();
+        $this->saveImages();
 
         return true;
     }
@@ -342,7 +342,7 @@ class LieuEdition extends FicheEdition
         // l'auteur au premier passage d'un administrateur.
         if (!$stmt->execute($this->getSqlCommonParameters($localiteId, $quartier) + [
             ':dateModif' => date("Y-m-d H:i:s"),
-            ':id' => $this->getFicheId(),
+            ':id' => $this->getRecordId(),
         ]))
         {
             return false;
@@ -350,8 +350,8 @@ class LieuEdition extends FicheEdition
 
         $this->message = 'Lieu modifié';
 
-        $this->enregistrerLesOrganisateurs();
-        $this->enregistrerLesImages();
+        $this->saveOrganisateurs();
+        $this->saveImages();
 
         return true;
     }
@@ -371,9 +371,9 @@ class LieuEdition extends FicheEdition
             ':adresse' => $this->valeurs['adresse'],
             ':quartier' => $quartier,
             ':localiteId' => $localiteId,
-            ':region' => $this->regionDeLaLocalite($localiteId),
-            ':lat' => $this->coordonnees->latPourBase(),
-            ':lng' => $this->coordonnees->lngPourBase(),
+            ':region' => $this->regionOfLocalite($localiteId),
+            ':lat' => $this->coordinates->latForDatabase(),
+            ':lng' => $this->coordinates->lngForDatabase(),
             ':horaire' => $this->valeurs['horaire_general'] === '' ? null : $this->valeurs['horaire_general'],
             ':url' => $this->valeurs['URL'] === '' ? null : $this->valeurs['URL'],
         ];
@@ -389,16 +389,16 @@ class LieuEdition extends FicheEdition
      */
     private function getLocaliteAndQuartierFromLocaliteId(): array
     {
-        $saisie = (string) $this->valeurs['localite_id'];
+        $input = (string) $this->valeurs['localite_id'];
 
-        if (str_contains($saisie, '_'))
+        if (str_contains($input, '_'))
         {
-            [$id, $quartier] = explode('_', $saisie, 2);
+            [$id, $quartier] = explode('_', $input, 2);
 
             return [(int) $id, $quartier];
         }
 
-        return [(int) $saisie, ''];
+        return [(int) $input, ''];
     }
 
     /**
@@ -414,7 +414,7 @@ class LieuEdition extends FicheEdition
      * faudra s'appuyer le jour où les listes de lieux en tiendront compte — la clause
      * qui l'exploiterait est en commentaire dans Lieu::getLieux().
      */
-    private function regionDeLaLocalite(int $localiteId): string
+    private function regionOfLocalite(int $localiteId): string
     {
         $stmt = $this->pdo->prepare("SELECT canton FROM localite WHERE id = :id");
         $stmt->execute([':id' => $localiteId]);
@@ -428,26 +428,26 @@ class LieuEdition extends FicheEdition
      * Réécrit les liens vers les organisateurs : la table de liaison n'a pas de colonne
      * à mettre à jour, seulement des lignes à poser ou à retirer.
      */
-    private function enregistrerLesOrganisateurs(): void
+    private function saveOrganisateurs(): void
     {
-        $suppression = $this->pdo->prepare("DELETE FROM lieu_organisateur WHERE idLieu = :id");
-        $suppression->execute([':id' => $this->getFicheId()]);
+        $deleteLinks = $this->pdo->prepare("DELETE FROM lieu_organisateur WHERE idLieu = :id");
+        $deleteLinks->execute([':id' => $this->getRecordId()]);
 
-        $ajout = $this->pdo->prepare("INSERT INTO lieu_organisateur (idLieu, idOrganisateur) VALUES (:idLieu, :idOrganisateur)");
+        $insertLink = $this->pdo->prepare("INSERT INTO lieu_organisateur (idLieu, idOrganisateur) VALUES (:idLieu, :idOrganisateur)");
 
         foreach (array_unique($this->organisateurs) as $idOrganisateur)
         {
-            $ajout->execute([':idLieu' => $this->getFicheId(), ':idOrganisateur' => $idOrganisateur]);
+            $insertLink->execute([':idLieu' => $this->getRecordId(), ':idOrganisateur' => $idOrganisateur]);
         }
     }
 
     /**
      * @return list<int>
      */
-    private function lireOrganisateursEnBase(): array
+    private function readStoredOrganisateurs(): array
     {
         $stmt = $this->pdo->prepare("SELECT idOrganisateur FROM lieu_organisateur WHERE idLieu = :id");
-        $stmt->execute([':id' => $this->getFicheId()]);
+        $stmt->execute([':id' => $this->getRecordId()]);
 
         return array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
     }
@@ -458,9 +458,9 @@ class LieuEdition extends FicheEdition
      *
      * @return list<string>
      */
-    private static function eclaterCategories(mixed $colonne): array
+    private static function splitCategories(mixed $column): array
     {
-        return array_values(array_filter(array_map('trim', explode(',', (string) $colonne))));
+        return array_values(array_filter(array_map('trim', explode(',', (string) $column))));
     }
 
     /**
@@ -469,15 +469,15 @@ class LieuEdition extends FicheEdition
      *
      * @return list<int>
      */
-    private static function identifiants(mixed $poste): array
+    private static function toPositiveIds(mixed $posted): array
     {
-        if (!is_array($poste))
+        if (!is_array($posted))
         {
             return [];
         }
 
-        $identifiants = array_map(static fn (mixed $valeur): int => is_scalar($valeur) ? (int) $valeur : 0, $poste);
+        $ids = array_map(static fn (mixed $value): int => is_scalar($value) ? (int) $value : 0, $posted);
 
-        return array_values(array_filter($identifiants, static fn (int $id): bool => $id > 0));
+        return array_values(array_filter($ids, static fn (int $id): bool => $id > 0));
     }
 }

@@ -17,11 +17,11 @@ final class CoordinatesTest extends Unit
 {
     public function testLaVirguleDecimaleDesClaviersEuropeensEstAcceptee(): void
     {
-        $coordonnees = Coordinates::fromInput('46,2043907', ' 6,1431577 ');
+        $coordinates = Coordinates::fromInput('46,2043907', ' 6,1431577 ');
 
-        $this->assertSame('46.2043907', $coordonnees->latSaisie());
-        $this->assertSame('6.1431577', $coordonnees->lngSaisie());
-        $this->assertSame([], $coordonnees->erreurs());
+        $this->assertSame('46.2043907', $coordinates->latInput());
+        $this->assertSame('6.1431577', $coordinates->lngInput());
+        $this->assertSame([], $coordinates->errors());
     }
 
     /**
@@ -31,25 +31,25 @@ final class CoordinatesTest extends Unit
      */
     public function testUnZeroEnBaseSeLitCommeUneAbsenceDeCoordonnees(): void
     {
-        $coordonnees = Coordinates::fromDatabase('0.0000000', '0.0000000');
+        $coordinates = Coordinates::fromDatabase('0.0000000', '0.0000000');
 
-        $this->assertTrue($coordonnees->estVide());
-        $this->assertSame('', $coordonnees->latSaisie());
-        $this->assertSame('', $coordonnees->lngSaisie());
+        $this->assertTrue($coordinates->isEmpty());
+        $this->assertSame('', $coordinates->latInput());
+        $this->assertSame('', $coordinates->lngInput());
     }
 
     public function testUneColonneNulleSeLitAussiCommeUneAbsence(): void
     {
-        $this->assertTrue(Coordinates::fromDatabase(null, null)->estVide());
+        $this->assertTrue(Coordinates::fromDatabase(null, null)->isEmpty());
     }
 
     /** DECIMAL(10,7) rend « 46.2043900 » ; le champ montre la forme la plus courte. */
     public function testLesZerosDeQueueDeLaColonneNeRemontentPasDansLeChamp(): void
     {
-        $coordonnees = Coordinates::fromDatabase('46.2043900', '6.1431577');
+        $coordinates = Coordinates::fromDatabase('46.2043900', '6.1431577');
 
-        $this->assertSame('46.20439', $coordonnees->latSaisie());
-        $this->assertSame('6.1431577', $coordonnees->lngSaisie());
+        $this->assertSame('46.20439', $coordinates->latInput());
+        $this->assertSame('6.1431577', $coordinates->lngInput());
     }
 
     /**
@@ -58,43 +58,43 @@ final class CoordinatesTest extends Unit
      */
     public function testUneCoordonneeSeuleEstRefusee(): void
     {
-        $this->assertSame(['lng'], array_keys(Coordinates::fromInput('46.2043907', '')->erreurs()));
-        $this->assertSame(['lat'], array_keys(Coordinates::fromInput('', '6.1431577')->erreurs()));
+        $this->assertSame(['lng'], array_keys(Coordinates::fromInput('46.2043907', '')->errors()));
+        $this->assertSame(['lat'], array_keys(Coordinates::fromInput('', '6.1431577')->errors()));
     }
 
     public function testLesDeuxChampsVidesSontAcceptes(): void
     {
-        $coordonnees = Coordinates::fromInput('', '');
+        $coordinates = Coordinates::fromInput('', '');
 
-        $this->assertTrue($coordonnees->estVide());
-        $this->assertSame([], $coordonnees->erreurs());
-        $this->assertNull($coordonnees->latPourBase());
-        $this->assertNull($coordonnees->lngPourBase());
+        $this->assertTrue($coordinates->isEmpty());
+        $this->assertSame([], $coordinates->errors());
+        $this->assertNull($coordinates->latForDatabase());
+        $this->assertNull($coordinates->lngForDatabase());
     }
 
     public function testLesBornesDuGlobeSontVerifiees(): void
     {
-        $this->assertArrayHasKey('lat', Coordinates::fromInput('91', '6.14')->erreurs());
-        $this->assertArrayHasKey('lng', Coordinates::fromInput('46.20', '181')->erreurs());
-        $this->assertSame([], Coordinates::fromInput('-90', '180')->erreurs());
+        $this->assertArrayHasKey('lat', Coordinates::fromInput('91', '6.14')->errors());
+        $this->assertArrayHasKey('lng', Coordinates::fromInput('46.20', '181')->errors());
+        $this->assertSame([], Coordinates::fromInput('-90', '180')->errors());
     }
 
     public function testUneSaisieNonNumeriqueEstRefuseeEtReaffichee(): void
     {
-        $coordonnees = Coordinates::fromInput('quarante-six', '6.1431577');
+        $coordinates = Coordinates::fromInput('quarante-six', '6.1431577');
 
-        $this->assertArrayHasKey('lat', $coordonnees->erreurs());
+        $this->assertArrayHasKey('lat', $coordinates->errors());
         // ré-affichée telle quelle : l'auteur doit retrouver ce qu'il a tapé
-        $this->assertSame('quarante-six', $coordonnees->latSaisie());
+        $this->assertSame('quarante-six', $coordinates->latInput());
         // et surtout pas écrite en base comme un 0 qui se ferait passer pour un point réel
-        $this->assertNull($coordonnees->latPourBase());
+        $this->assertNull($coordinates->latForDatabase());
     }
 
     public function testLesValeursEcritesEnBaseSontDesNombres(): void
     {
-        $coordonnees = Coordinates::fromInput('46,2043907', '6.1431577');
+        $coordinates = Coordinates::fromInput('46,2043907', '6.1431577');
 
-        $this->assertSame(46.2043907, $coordonnees->latPourBase());
-        $this->assertSame(6.1431577, $coordonnees->lngPourBase());
+        $this->assertSame(46.2043907, $coordinates->latForDatabase());
+        $this->assertSame(6.1431577, $coordinates->lngForDatabase());
     }
 }

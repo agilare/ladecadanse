@@ -36,11 +36,11 @@ trait HandlesImageUploads
      *
      * @return array{name: string, tmp_name: string, size: int}|array<string, mixed>
      */
-    protected function fichierEnvoye(string $champ): array
+    protected function uploadedFileFor(string $imageField): array
     {
-        $fichier = $this->fichiers[$champ] ?? null;
+        $file = $this->fichiers[$imageField] ?? null;
 
-        return is_array($fichier) ? $fichier : ['name' => '', 'tmp_name' => '', 'size' => 0];
+        return is_array($file) ? $file : ['name' => '', 'tmp_name' => '', 'size' => 0];
     }
 
     /**
@@ -95,31 +95,31 @@ trait HandlesImageUploads
      *
      * @param array{name?: string, tmp_name?: string, size?: int} $uploadedFile
      * @param string $uploadsSubdir Sous-répertoire d'uploads, au sens d'ImageDriver2 ("organisateurs", "lieux")
-     * @param array{maxLargeur: int, maxHauteur: int, selon: string, rognage: int} $miniature
+     * @param array{maxWidth: int, maxHeight: int, fitOn: string, crop: int} $thumbnail
      */
     protected function writeImageFiles(
         array $uploadedFile,
-        string $nomFichier,
+        string $fileName,
         string $uploadsSubdir,
-        array $miniature,
-        int $tailleMaxAffichee = 600
+        array $thumbnail,
+        int $maxDisplayedSize = 600
     ): bool
     {
-        if (empty($uploadedFile['name']) || $nomFichier === '')
+        if (empty($uploadedFile['name']) || $fileName === '')
         {
             return true;
         }
 
         $imageDriver = new ImageDriver2($uploadsSubdir);
 
-        $ecritures = [
-            ["s_" . $nomFichier, $miniature['maxLargeur'], $miniature['maxHauteur'], $miniature['selon'], $miniature['rognage']],
-            [$nomFichier, $tailleMaxAffichee, $tailleMaxAffichee, '', 0],
+        $writes = [
+            ["s_" . $fileName, $thumbnail['maxWidth'], $thumbnail['maxHeight'], $thumbnail['fitOn'], $thumbnail['crop']],
+            [$fileName, $maxDisplayedSize, $maxDisplayedSize, '', 0],
         ];
 
-        foreach ($ecritures as [$nom, $largeur, $hauteur, $selon, $rognage])
+        foreach ($writes as [$name, $width, $height, $fitOn, $crop])
         {
-            if (!$imageDriver->processImage($uploadedFile, $nom, $largeur, $hauteur, $selon, $rognage))
+            if (!$imageDriver->processImage($uploadedFile, $name, $width, $height, $fitOn, $crop))
             {
                 trigger_error($imageDriver->getErreur(), E_USER_WARNING);
                 return false;

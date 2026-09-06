@@ -129,7 +129,7 @@ if ($is_form_submitted)
     }
 }
 
-$coordonnees = $lieu_form->getCoordonnees();
+$coordinates = $lieu_form->getCoordinates();
 
 $page_titre = $is_edit_mode ? "modifier un lieu" : "ajouter un lieu";
 $extra_css = ["formulaires"];
@@ -244,13 +244,13 @@ include("../_header.inc.php");
 
         <p>
             <label for="lat">Latitude</label>
-            <input type="text" name="lat" id="lat" size="14" maxlength="12" inputmode="decimal" placeholder="46.2043907" title="Latitude du lieu, en degrés décimaux" value="<?= sanitizeForHtml($coordonnees->latSaisie()) ?>" />
+            <input type="text" name="lat" id="lat" size="14" maxlength="12" inputmode="decimal" placeholder="46.2043907" title="Latitude du lieu, en degrés décimaux" value="<?= sanitizeForHtml($coordinates->latInput()) ?>" />
             <?= $lieu_form->getHtmlErreur("lat") ?>
         </p>
 
         <p>
             <label for="lng">Longitude</label>
-            <input type="text" name="lng" id="lng" size="14" maxlength="12" inputmode="decimal" placeholder="6.1431577" title="Longitude du lieu, en degrés décimaux" value="<?= sanitizeForHtml($coordonnees->lngSaisie()) ?>" />
+            <input type="text" name="lng" id="lng" size="14" maxlength="12" inputmode="decimal" placeholder="6.1431577" title="Longitude du lieu, en degrés décimaux" value="<?= sanitizeForHtml($coordinates->lngInput()) ?>" />
             <?= $lieu_form->getHtmlErreur("lng") ?>
         </p>
         <div class="guideChamp">Coordonnées qui permettent d’afficher le plan du lieu. Pour les obtenir : sur <a href="https://www.openstreetmap.org" rel="external" target="_blank">openstreetmap.org</a>, faites un clic droit sur l’emplacement du lieu puis choisissez « Afficher l’adresse » ; les deux nombres apparaissent en haut à gauche. Laissez les deux champs vides si vous ne les connaissez pas.</div>

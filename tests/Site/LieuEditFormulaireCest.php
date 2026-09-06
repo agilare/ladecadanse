@@ -82,7 +82,7 @@ class LieuEditFormulaireCest
      * Cas limite du test précédent : un select multiple entièrement désélectionné ne poste
      * aucune clé « organisateurs ». Côté serveur, « champ vidé » est alors indiscernable de
      * « premier affichage » si la lecture est conditionnée à isset($_POST[...]) — d'où la
-     * lecture inconditionnelle de LieuEdition::lireChampsPostes().
+     * lecture inconditionnelle de LieuEdition::readPostedFields().
      *
      * Sans elle, ce cas-ci retomberait sur les organisateurs de la base et resterait cassé
      * alors même que le test précédent passerait.

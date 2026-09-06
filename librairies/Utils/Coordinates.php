@@ -34,7 +34,7 @@ final class Coordinates
      */
     public static function fromInput(mixed $lat, mixed $lng): self
     {
-        return new self(self::normaliser($lat), self::normaliser($lng));
+        return new self(self::normalize($lat), self::normalize($lng));
     }
 
     /**
@@ -46,23 +46,23 @@ final class Coordinates
      */
     public static function fromDatabase(mixed $lat, mixed $lng): self
     {
-        return new self(self::depuisColonne($lat), self::depuisColonne($lng));
+        return new self(self::fromColumn($lat), self::fromColumn($lng));
     }
 
     /**
      * Valeur à réafficher dans le champ, y compris une saisie invalide.
      */
-    public function latSaisie(): string
+    public function latInput(): string
     {
         return $this->lat;
     }
 
-    public function lngSaisie(): string
+    public function lngInput(): string
     {
         return $this->lng;
     }
 
-    public function estVide(): bool
+    public function isEmpty(): bool
     {
         return $this->lat === '' && $this->lng === '';
     }
@@ -70,15 +70,15 @@ final class Coordinates
     /**
      * Valeur à écrire dans la colonne : NULL quand le lieu n'a pas de coordonnées.
      *
-     * N'a de sens qu'une fois erreurs() vide ; sur une saisie non numérique la méthode
+     * N'a de sens qu'une fois errors() vide ; sur une saisie non numérique la méthode
      * rend NULL plutôt que d'écrire un 0 qui se ferait passer pour un point réel.
      */
-    public function latPourBase(): ?float
+    public function latForDatabase(): ?float
     {
         return is_numeric($this->lat) ? (float) $this->lat : null;
     }
 
-    public function lngPourBase(): ?float
+    public function lngForDatabase(): ?float
     {
         return is_numeric($this->lng) ? (float) $this->lng : null;
     }
@@ -88,52 +88,52 @@ final class Coordinates
      *
      * @return array<string, string> clés 'lat' et/ou 'lng'
      */
-    public function erreurs(): array
+    public function errors(): array
     {
-        $erreurs = [];
+        $errors = [];
 
         // Les deux ensemble ou aucune des deux : le plan n'est affiché que si les deux
         // sont renseignées, une seule ne servirait donc à rien.
         if (($this->lat === '') !== ($this->lng === ''))
         {
-            $erreurs[$this->lat === '' ? 'lat' : 'lng'] = "Veuillez indiquer la latitude et la longitude, ou laisser les deux champs vides";
+            $errors[$this->lat === '' ? 'lat' : 'lng'] = "Veuillez indiquer la latitude et la longitude, ou laisser les deux champs vides";
         }
 
         if ($this->lat !== '' && (!is_numeric($this->lat) || abs((float) $this->lat) > self::LAT_MAX))
         {
-            $erreurs['lat'] = "La latitude doit être un nombre entre -90 et 90 (ex. 46.2043907)";
+            $errors['lat'] = "La latitude doit être un nombre entre -90 et 90 (ex. 46.2043907)";
         }
 
         if ($this->lng !== '' && (!is_numeric($this->lng) || abs((float) $this->lng) > self::LNG_MAX))
         {
-            $erreurs['lng'] = "La longitude doit être un nombre entre -180 et 180 (ex. 6.1431577)";
+            $errors['lng'] = "La longitude doit être un nombre entre -180 et 180 (ex. 6.1431577)";
         }
 
-        return $erreurs;
+        return $errors;
     }
 
     /**
      * Espaces superflus et virgule décimale, que produisent les pavés numériques de la
      * plupart des claviers européens.
      */
-    private static function normaliser(mixed $valeur): string
+    private static function normalize(mixed $value): string
     {
-        return str_replace(',', '.', trim(is_scalar($valeur) ? (string) $valeur : ''));
+        return str_replace(',', '.', trim(is_scalar($value) ? (string) $value : ''));
     }
 
     /**
      * Une colonne vide, nulle ou à zéro devient une chaîne vide ; le reste est ramené à
      * sa forme la plus courte — DECIMAL(10,7) rend « 46.2043907 » avec ses zéros de queue.
      */
-    private static function depuisColonne(mixed $valeur): string
+    private static function fromColumn(mixed $value): string
     {
-        $normalisee = self::normaliser($valeur);
+        $normalized = self::normalize($value);
 
-        if (!is_numeric($normalisee) || (float) $normalisee === 0.0)
+        if (!is_numeric($normalized) || (float) $normalized === 0.0)
         {
             return '';
         }
 
-        return (string) (float) $normalisee;
+        return (string) (float) $normalized;
     }
 }
