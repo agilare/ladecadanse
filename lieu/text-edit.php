@@ -1,6 +1,6 @@
 <?php
 
-require_once("app/bootstrap.php");
+require_once("../app/bootstrap.php");
 
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\Lieu;
@@ -71,10 +71,9 @@ $contenu_min = 30;
 $contenu_max = 100000;
 
 /*
- * Les refus se rendent dans la page du site, avec le statut HTTP qui va avec : un message
- * HTML nu au-dessus d'une page vide n'offrait ni retour à l'accueil, ni au client le
- * moyen de distinguer un refus d'une réponse normale. Le type manquant, lui, finissait en
- * page blanche (trigger_error puis exit).
+ * Chaque refus est rendu dans la page du site par _erreur_http.inc.php, comme sur les
+ * trois formulaires de fiche. Le type manquant, lui, finissait en page blanche
+ * (trigger_error puis exit).
  */
 $http_error = null;
 
@@ -104,27 +103,27 @@ elseif ($is_edit_mode && !$authorization->isPersonneAllowedToEditTexteLieu($_SES
     $http_error = [403, 'Forbidden', "Vous ne pouvez pas modifier cette " . $type_libelle];
 }
 
-$lieu = [];
+if ($http_error !== null)
+{
+    include("../_erreur_http.inc.php");
+    exit;
+}
+
 $champs = ['contenu' => ''];
 $auteur_pseudo = '';
 
-if ($http_error === null)
-{
-    $stmt = $connectorPdo->prepare("SELECT nom, preposition_nom FROM lieu WHERE idLieu = :idL");
-    $stmt->execute([':idL' => $get['idL']]);
-    $ligne_lieu = $stmt->fetch(PDO::FETCH_ASSOC);
+$stmt = $connectorPdo->prepare("SELECT nom, preposition_nom FROM lieu WHERE idLieu = :idL");
+$stmt->execute([':idL' => $get['idL']]);
+$lieu = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($ligne_lieu === false)
-    {
-        $http_error = [404, 'Not Found', "Ce lieu n'existe pas ou plus"];
-    }
-    else
-    {
-        $lieu = $ligne_lieu;
-    }
+if ($lieu === false)
+{
+    $http_error = [404, 'Not Found', "Ce lieu n'existe pas ou plus"];
+    include("../_erreur_http.inc.php");
+    exit;
 }
 
-if ($http_error === null && $is_edit_mode)
+if ($is_edit_mode)
 {
     /*
      * Le texte est relu dans les deux cas, mais il ne remplit le champ qu'à l'affichage :
@@ -146,28 +145,16 @@ if ($http_error === null && $is_edit_mode)
     if ($texte_en_base === false)
     {
         $http_error = [404, 'Not Found', "Ce texte n'existe pas ou plus"];
+        include("../_erreur_http.inc.php");
+        exit;
     }
-    else
-    {
-        $champs['contenu'] = (string) $texte_en_base['contenu'];
-        $auteur_pseudo = (string) ($texte_en_base['pseudo'] ?? '');
-    }
-}
 
-if ($http_error !== null)
-{
-    [$status_code, $status_reason, $error_message] = $http_error;
-
-    header($_SERVER["SERVER_PROTOCOL"] . " $status_code $status_reason");
-    $page_titre = "erreur $status_code";
-    include("_header.inc.php");
-    HtmlShrink::msgErreur($error_message);
-    include("_footer.inc.php");
-    exit;
+    $champs['contenu'] = (string) $texte_en_base['contenu'];
+    $auteur_pseudo = (string) ($texte_en_base['pseudo'] ?? '');
 }
 
 $verif = new Validateur();
-$token_error = false;
+$security_token_mismatch = false;
 
 if ($is_form_submitted)
 {
@@ -180,7 +167,7 @@ if ($is_form_submitted)
 
     if (!SecurityToken::check($_POST['token'] ?? '', $_SESSION['token'] ?? ''))
     {
-        $token_error = true;
+        $security_token_mismatch = true;
     }
     else
     {
@@ -268,7 +255,7 @@ if ($is_form_submitted)
                 $_SESSION['lieu_flash_msg'] = ucfirst($type_libelle) . " modifiée";
             }
 
-            $logger->info('[lieu-text-edit] ' . $get['action'], [
+            $logger->info('[lieu/text-edit] ' . $get['action'], [
                 'type' => $get['type'],
                 'idL' => $get['idL'],
                 'idP' => $id_auteur,
@@ -301,7 +288,7 @@ $espace_avant_nom = str_ends_with($preposition, ' ') ? ' ' : '';
 
 $page_titre = ($is_edit_mode ? "modifier la " : "ajouter une ") . $type_libelle;
 $extra_css = ["formulaires"];
-include("_header.inc.php");
+include("../_header.inc.php");
 ?>
 
 <main id="contenu" class="colonne">
@@ -311,7 +298,7 @@ include("_header.inc.php");
         <div class="spacer"></div>
     </header>
 
-    <?php if ($token_error) : ?>
+    <?php if ($security_token_mismatch) : ?>
         <?php HtmlShrink::msgErreur("Le système de sécurité du site n'a pu authentifier votre action. Veuillez réafficher ce formulaire et réessayer"); ?>
     <?php elseif ($verif->nbErreurs() > 0) : ?>
         <?php HtmlShrink::msgErreur("Il y a " . $verif->nbErreurs() . " erreur(s)"); ?>
@@ -370,4 +357,4 @@ include("_header.inc.php");
 </div>
 
 <?php
-include("_footer.inc.php");
+include("../_footer.inc.php");

@@ -13,7 +13,7 @@ use Ladecadanse\UserLevel;
  * Droits d'écriture sur les textes d'un lieu — `Authorization::isPersonneAllowedToAddTexteLieu()`
  * et `isPersonneAllowedToEditTexteLieu()`.
  *
- * Ces deux règles étaient écrites à la main dans `lieu-text-edit.php` et, une seconde fois et
+ * Ces deux règles étaient écrites à la main dans `lieu/text-edit.php` et, une seconde fois et
  * autrement, dans `lieu/lieu.php`, où les parenthèses se refermaient mal. La table de vérité
  * ci-dessous est ce que les deux versions étaient censées dire.
  *

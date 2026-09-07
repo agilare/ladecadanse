@@ -164,7 +164,7 @@ un champ vide. Une saisie non numérique est réaffichée telle quelle à côté
 
 ## Descriptions et présentations d'un lieu
 
-`lieu-text-edit.php` écrit les textes que la fiche d'un lieu affiche sous les infos pratiques. La
+`lieu/text-edit.php` écrit les textes que la fiche d'un lieu affiche sous les infos pratiques. La
 table `descriptionlieu` en porte deux sortes, séparées par sa colonne `type` :
 
 - **description** : un avis, signé du pseudo de son auteur ; un lieu peut en porter plusieurs ;
@@ -199,7 +199,8 @@ liste a disparu avec ce contrôle, et le titre nomme le lieu — « Ajouter une 
 Noir », la préposition étant celle de la fiche.
 
 Un refus répond **403**, une requête sans lieu, sans type ou sans auteur désigné **400**, un lieu
-ou un texte inconnu **404**.
+ou un texte inconnu **404** — rendus par [`_erreur_http.inc.php`](../_erreur_http.inc.php), comme
+sur les trois formulaires de fiche.
 
 ### Un texte par personne et par lieu
 

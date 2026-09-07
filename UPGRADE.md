@@ -20,7 +20,14 @@ Exécuter `resources/database/v3-13-0_lieu-colonnes.sql`, qui remanie les colonn
 
 ### Redirections
 
-`/lieu-edit.php` devient `/lieu/edit.php`. La redirection 301 est dans [`htaccess/50-routage.conf`](htaccess/50-routage.conf) et part avec le code, mais `composer config:build` doit être passé avant la mise en ligne, comme pour tout changement d'un fragment de configuration — voir [docs/config-serveur.md](docs/config-serveur.md). La query string est reportée d'office : les signets des éditeurs (`?action=editer&idL=…`) arrivent au bon endroit. La page n'est pas indexée, formulaire réservé aux connectés ; la redirection est là pour les signets et l'historique.
+Deux pages changent d'adresse :
+
+| ancienne | nouvelle |
+|---|---|
+| `/lieu-edit.php` | `/lieu/edit.php` |
+| `/lieu-text-edit.php` | `/lieu/text-edit.php` |
+
+Les redirections 301 sont dans [`htaccess/50-routage.conf`](htaccess/50-routage.conf) et partent avec le code, mais `composer config:build` doit être passé avant la mise en ligne, comme pour tout changement d'un fragment de configuration — voir [docs/config-serveur.md](docs/config-serveur.md). La query string est reportée d'office : les signets des éditeurs (`?action=editer&idL=…`, `?idL=…&type=presentation`) arrivent au bon endroit. Ni l'une ni l'autre n'est indexée, formulaires réservés aux connectés ; les redirections sont là pour les signets et l'historique.
 
 ### Effets de bord à connaître
 

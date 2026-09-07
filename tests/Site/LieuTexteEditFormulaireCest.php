@@ -6,7 +6,7 @@ use Tests\Support\TestEnv;
 use Codeception\Util\HttpCode;
 
 /**
- * Formulaire d'ajout et de modification d'un texte de lieu (lieu-text-edit.php).
+ * Formulaire d'ajout et de modification d'un texte de lieu (lieu/text-edit.php).
  *
  * Verrouille ce que la réécriture a rendu décidable avant le premier octet de HTML : les
  * statuts des refus, et la disparition de la liste déroulante des lieux — c'est elle qui
@@ -67,7 +67,7 @@ class LieuTexteEditFormulaireCest
 
         foreach (['', '&type=nimportequoi'] as $type)
         {
-            $I->amOnPage('/lieu-text-edit.php?action=ajouter&idL=' . $this->idLieu() . $type);
+            $I->amOnPage('/lieu/text-edit.php?action=ajouter&idL=' . $this->idLieu() . $type);
             $I->seeResponseCodeIs(HttpCode::BAD_REQUEST);
             $I->dontSeeElement('#ajouter_editer');
         }
@@ -80,7 +80,7 @@ class LieuTexteEditFormulaireCest
     {
         $I->loginAsAdmin();
 
-        $I->amOnPage('/lieu-text-edit.php?action=ajouter&type=description&idL=99999999');
+        $I->amOnPage('/lieu/text-edit.php?action=ajouter&type=description&idL=99999999');
         $I->seeResponseCodeIs(HttpCode::NOT_FOUND);
         $I->dontSeeElement('#ajouter_editer');
     }
@@ -93,7 +93,7 @@ class LieuTexteEditFormulaireCest
     {
         $I->loginAsAdmin();
 
-        $I->amOnPage('/lieu-text-edit.php?action=editer&type=presentation&idL=' . $this->idLieu() . '&idP=99999999');
+        $I->amOnPage('/lieu/text-edit.php?action=editer&type=presentation&idL=' . $this->idLieu() . '&idP=99999999');
         $I->seeResponseCodeIs(HttpCode::NOT_FOUND);
         $I->dontSeeElement('#ajouter_editer');
     }
@@ -105,6 +105,6 @@ class LieuTexteEditFormulaireCest
 
     private function urlAjout(string $type): string
     {
-        return '/lieu-text-edit.php?action=ajouter&type=' . $type . '&idL=' . $this->idLieu();
+        return '/lieu/text-edit.php?action=ajouter&type=' . $type . '&idL=' . $this->idLieu();
     }
 }

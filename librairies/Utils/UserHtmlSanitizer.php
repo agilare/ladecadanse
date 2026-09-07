@@ -25,7 +25,7 @@ use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
  * sera conservé ; c'est ici, et ici seulement, que la décision est prise.
  *
  * La configuration était recopiée à l'identique dans OrganisateurEdition et dans
- * lieu-text-edit.php : deux endroits où assouplir la règle, un seul où penser à la
+ * lieu/text-edit.php : deux endroits où assouplir la règle, un seul où penser à la
  * resserrer.
  */
 final class UserHtmlSanitizer

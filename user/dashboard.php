@@ -465,7 +465,7 @@ if ($erreur !== null)
 					<td><?= sanitizeForHtml($tab_desc['type']) ?></td>
 					<td><?= DateHelper::isoToApp(mb_substr((string) $tab_desc['dateAjout'], 0, 10)) ?></td>
 					<td class="actions">
-						<a href="/lieu-text-edit.php?action=editer&amp;idL=<?= (int) $tab_desc['idLieu'] ?>&amp;idP=<?= (int) $get['idP'] ?>&amp;type=<?= sanitizeForHtml($tab_desc['type']) ?>" title="Éditer le texte"><?= $icone_editer ?></a>
+						<a href="/lieu/text-edit.php?action=editer&amp;idL=<?= (int) $tab_desc['idLieu'] ?>&amp;idP=<?= (int) $get['idP'] ?>&amp;type=<?= sanitizeForHtml($tab_desc['type']) ?>" title="Éditer le texte"><?= $icone_editer ?></a>
 					</td>
 				</tr>
 				<?php endforeach; ?>

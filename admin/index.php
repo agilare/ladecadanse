@@ -268,7 +268,7 @@ require_once '../_header.inc.php';
                     <td class="tdleft small"><?= Text::shortenToHtml(strip_tags((string) $desc['contenu']), 100) ?></td>
                     <td><a href="/user/dashboard.php?idP=<?= (int) $desc['idPersonne'] ?>"><?= sanitizeForHtml($desc['pseudo']) ?></a></td>
                     <td><?= DateHelper::isoToFr($desc['dateAjout']) ?></td>
-                    <td class="actions"><a href="/lieu-text-edit.php?action=editer&amp;idL=<?= (int)$desc['idLieu'] ?>&amp;idP=<?= (int) $desc['idPersonne'] ?>&amp;type=<?= $desc['type'] ?>" title="Modifier ce texte" aria-label="Modifier ce texte"><?= $iconeEditer ?></a></td>
+                    <td class="actions"><a href="/lieu/text-edit.php?action=editer&amp;idL=<?= (int)$desc['idLieu'] ?>&amp;idP=<?= (int) $desc['idPersonne'] ?>&amp;type=<?= $desc['type'] ?>" title="Modifier ce texte" aria-label="Modifier ce texte"><?= $iconeEditer ?></a></td>
                </tr>
             <?php endforeach; ?>
     </table>

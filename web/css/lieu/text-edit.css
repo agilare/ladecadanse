@@ -1,5 +1,5 @@
 /*
- * Formulaire d'ajout et de modification d'un texte de lieu (lieu-text-edit.php).
+ * Formulaire d'ajout et de modification d'un texte de lieu (lieu/text-edit.php).
  *
  * Chargée après formulaires.css mais avant desktop.css et mobile.css (voir
  * _header.inc.php) : les règles qui doivent passer devant les leurs sont donc dans

@@ -70,7 +70,6 @@ parameters:
                 - annuaire-membres.php
                 - evenement-edit.php
                 - index.php
-                - lieu-text-edit.php
                 - user-edit.php
     # Les chemins d'allowIn sont résolus depuis la racine du dépôt, quel que
     # soit le répertoire courant au lancement (%rootDir% = vendor/phpstan/phpstan)

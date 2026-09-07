@@ -4536,7 +4536,7 @@
         ["css=#descriptions > a:nth-child(3)", "css:finder"],
         ["xpath=//a[contains(text(),'Ajouter une présentation')]", "xpath:link"],
         ["xpath=//div[@id='descriptions']/a[2]", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/lieu-text-edit.php?idL=1005&type=presentation')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/lieu/text-edit.php?idL=1005&type=presentation')]", "xpath:href"],
         ["xpath=//div[4]/a[2]", "xpath:position"],
         ["xpath=//a[contains(.,' Ajouter une présentation')]", "xpath:innerText"]
       ],
