@@ -355,7 +355,7 @@ class Sentry
         if ($sauvegarder)
         {
             $cookieOptions = [
-                'expires' => strtotime('+15 days'),
+                'expires' => strtotime('+30 days'),
                 'path' => '/',
                 //'domain' => '.example.com', // leading dot for compatibility or use subdomain
                 'secure' => true,
