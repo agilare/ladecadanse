@@ -46,20 +46,11 @@ if (isset($_GET['tri_agenda']) && in_array($_GET['tri_agenda'], $tab_tri_agenda)
    $_SESSION['user_prefs_agenda_order'] = $_GET['tri_agenda'];
 }
 
-/*
- * Filtre par genre réservé aux admins, le temps de l'éprouver en prod sur une
- * audience restreinte (#107). Pour l'ouvrir à tout le monde, révoquer ce commit :
- * il suffit de retirer $genre_tabs_enabled de ces trois conditions et la classe
- * avec-filtre-genre, que le CSS n'utilise que pour ne rien changer aux autres.
- */
-$genre_tabs_enabled = $authorization->checkGroup(UserLevel::ADMIN);
-
 $valid_genre_tabs = array_merge(['tous'], array_keys($glo_tab_genre));
-if ($genre_tabs_enabled && isset($_GET['genre_tab']) && in_array($_GET['genre_tab'], $valid_genre_tabs, true)) {
+if (isset($_GET['genre_tab']) && in_array($_GET['genre_tab'], $valid_genre_tabs, true)) {
     $_SESSION['user_prefs_agenda_genre'] = $_GET['genre_tab'];
 }
-// hors admins, jamais de filtre : tout le reste de la page se comporte comme avant
-$current_genre_tab = $genre_tabs_enabled ? $_SESSION['user_prefs_agenda_genre'] : 'tous'; // initialisé dans bootstrap.php
+$current_genre_tab = $_SESSION['user_prefs_agenda_genre']; // initialisé dans bootstrap.php
 
 /*
  * Repères de temporalité (#51) : où en est chaque événement par rapport à l'heure de chargement.
@@ -275,10 +266,10 @@ include("_header.inc.php");
 
         <?php
         /* les deux menus partagent une ligne à partir de 800px, cf. #agenda_filters dans
-           index.css ; l'ordre du DOM suit l'ordre visuel (filtrer, puis trier). Sans le
-           filtre de genres, le conteneur reste en display:contents et le menu de tri
-           s'affiche exactement comme avant. */
-        $show_genre_tabs = $genre_tabs_enabled && $count_events_today_in_region > 0;
+           index.css ; l'ordre du DOM suit l'ordre visuel (filtrer, puis trier). Les jours
+           sans événement, il n'y a rien à filtrer : sans la classe le conteneur reste en
+           display:contents et le menu de tri s'affiche seul, comme avant le filtre. */
+        $show_genre_tabs = $count_events_today_in_region > 0;
         ?>
         <div id="agenda_filters"<?= $show_genre_tabs ? ' class="avec-filtre-genre"' : '' ?>>
 
