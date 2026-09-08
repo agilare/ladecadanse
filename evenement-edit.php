@@ -188,6 +188,7 @@ $url_flyer = '';
 $url_image = '';
 $fetched_flyer = null;
 $fetched_image = null;
+$photo_ignoree_car_identique = false;
 $notif_motifs = [];
 $notif_message = '';
 
@@ -311,6 +312,38 @@ if ($formulaire_poste)
     if ($can_import_image_url) {
         $url_flyer = trim($_POST['flyer_url'] ?? '');
         $url_image = trim($_POST['image_url'] ?? '');
+    }
+
+    /*
+     * Même source dans le flyer et dans l'image complémentaire : cette dernière est abandonnée,
+     * le flyer suffit. La saisie est courante (le même fichier sélectionné deux fois, la même
+     * URL collée deux fois) et donnait deux fois la même image dans la page Événement.
+     *
+     * L'abandon est décidé ici, avant toute vérification : l'image en double n'est alors ni
+     * validée, ni téléchargée, ni écrite sur le disque, et sa colonne reste telle quelle.
+     *
+     * Un champ fichier n'expose que le nom de base, jamais le chemin complet du poste : le poids
+     * lui est adjoint pour ne pas confondre deux homonymes venus de répertoires différents.
+     */
+    $signatureImage = static function (array $fichier, string $url): string
+    {
+        if (!empty($fichier['name']))
+        {
+            return 'fichier:'.$fichier['name'].':'.($fichier['size'] ?? 0);
+        }
+
+        return $url === '' ? '' : 'url:'.$url;
+    };
+
+    $signature_flyer = $signatureImage($fichiers['flyer'], $url_flyer);
+
+    $photo_ignoree_car_identique = $signature_flyer !== ''
+        && $signature_flyer === $signatureImage($fichiers['image'], $url_image);
+
+    if ($photo_ignoree_car_identique)
+    {
+        $fichiers['image'] = ['name' => '', 'size' => 0];
+        $url_image = '';
     }
 
     // ?
@@ -655,6 +688,12 @@ if ($formulaire_poste)
 			$nommerLesFichiers($get['idE']);
 		}
 
+		// Ajouté aux messages de confirmation : sans un mot, l'image complémentaire manquante
+		// passerait pour un enregistrement raté.
+		$msg_photo_ignoree = $photo_ignoree_car_identique
+			? " Le fichier de la photo étant identique à celui du flyer, il n'a pas été enregistré."
+			: '';
+
 		if ($get['action'] == 'insert')
 		{
 
@@ -711,11 +750,11 @@ if ($formulaire_poste)
 					}
 				}
 
-				$_SESSION['evenement-edit_flash_msg'] = "L'événement a été créé. <a href='/index.php?courant=".urlencode((string) $champs['dateEvenement'])."#event-".(int)$req_id."'>Voir dans l'agenda</a>";
+				$_SESSION['evenement-edit_flash_msg'] = "L'événement a été créé.".$msg_photo_ignoree." <a href='/index.php?courant=".urlencode((string) $champs['dateEvenement'])."#event-".(int)$req_id."'>Voir dans l'agenda</a>";
 
                 if (!$est_connecte)
                 {
-                    $_SESSION['evenement-edit_flash_msg'] = "Merci pour votre proposition. Nous allons l'examiner et vous aurez une réponse dès qu'elle sera traitée (cela peut prendre quelques jours)";
+                    $_SESSION['evenement-edit_flash_msg'] = "Merci pour votre proposition. Nous allons l'examiner et vous aurez une réponse dès qu'elle sera traitée (cela peut prendre quelques jours)".$msg_photo_ignoree;
                     $subject = "Nouvelle proposition d'événement : \"".$champs['titre']."\" le ".DateHelper::isoToFr($champs['dateEvenement'], 'annee', html: false)." à ".$champs['nomLieu'];
                     $contenu_message = "Merci de vérifier cet événement et l'accepter (statut : publié) ou le refuser (status : dépublié) : ";
                     $contenu_message .= $site_full_url."event/evenement.php?idE=".(int)$req_id;
@@ -862,7 +901,7 @@ if ($formulaire_poste)
                     }
                 }
 
-                $_SESSION['evenement-edit_flash_msg'] = "L'événement a été modifié.$confirmation_flash_msg<br><a href='/index.php?courant=".urlencode((string) $champs['dateEvenement'])."#event-".(int) $req_id."'>Voir dans l'agenda</a>";
+                $_SESSION['evenement-edit_flash_msg'] = "L'événement a été modifié.$confirmation_flash_msg$msg_photo_ignoree<br><a href='/index.php?courant=".urlencode((string) $champs['dateEvenement'])."#event-".(int) $req_id."'>Voir dans l'agenda</a>";
 
 				$get['action'] = 'editer';
 
@@ -1610,8 +1649,8 @@ if ($show_form)
         </p>
             <div class="spacer"></div>
 
-        <p style="margin-left: 0.8em;margin-bottom:0.3em;font-weight: bold">Photo</p>
-        <div class="guideChamp" style="padding-left:0.8em;margin-top:0">Photo des artistes, de leurs œuvres, du lieu, etc.<br>Visible sous le flyer dans la page Événement</div>
+        <p style="margin-left: 0.8em;margin-bottom:0.3em;font-weight: bold">Image complémentaire (photo, verso du flyer, programme...)</p>
+        <div class="guideChamp" style="padding-left:0.8em;margin-top:0">Visible sous le flyer dans la page Événement</div>
         <p>
             <label for="image">Envoyer</label>
             <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo UPLOAD_MAX_FILESIZE ?>" />
