@@ -119,7 +119,7 @@ CREATE TABLE `lieu` (
   `statut` enum('actif','inactif','ancien') COLLATE utf8mb4_unicode_ci NOT NULL,
   `nom` varchar(80) COLLATE utf8mb4_unicode_ci NOT NULL,
   `preposition_nom` varchar(40) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `categories` set('bistrot','salle','restaurant','cinema','theatre','galerie','boutique','musee','autre') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `categories` set('bistrot','salle','restaurant','cinema','theatre','galerie','boutique','musee','autre','buvette','club','quartier','socioculturel','bibliotheque','ludotheque','ecole') COLLATE utf8mb4_unicode_ci NOT NULL,
   `logo` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `adresse` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `quartier` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,

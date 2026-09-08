@@ -55,7 +55,6 @@
 
         <!-- app/config.php : tableaux du domaine -->
         <var name="glo_regions" type="array&lt;string, string&gt;"/>
-        <var name="glo_categories_lieux" type="array&lt;string, string&gt;"/>
         <var name="glo_menu_pratique" type="array&lt;string, string&gt;"/>
         <var name="glo_tab_genre" type="array&lt;string, string&gt;"/>
         <var name="glo_tab_ailleurs" type="array&lt;string, string&gt;"/>

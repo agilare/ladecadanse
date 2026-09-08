@@ -18,6 +18,14 @@ Exécuter `resources/database/v3-13-0_lieu-colonnes.sql`, qui remanie les colonn
 
 **À passer avec la mise en ligne du code, pas plus tard** : les deux renommages sont lus par les pages d'événement (`l.preposition_nom`) et par la liste des lieux (`FIND_IN_SET(…, categories)`), qui répondraient sinon une erreur SQL.
 
+Exécuter ensuite `resources/database/v3-13-0_lieu-categories.sql`, **dans cet ordre** : il redéclare la colonne `categories` que le script précédent vient de créer. Il ajoute sept valeurs à la fin du `SET` — `buvette`, `club`, `quartier`, `socioculturel`, `bibliotheque`, `ludotheque`, `ecole` — sans en retirer ni en renommer aucune.
+
+Les sept valeurs sont **appendées après `autre`**, et l'ordre du `SET` n'est pas négociable : un `SET` MariaDB est un masque de bits dont les positions viennent de l'ordre de déclaration, si bien qu'une valeur glissée au milieu de la liste réinterpréterait silencieusement toutes les lignes existantes. L'ordre de `Ladecadanse\Lieu::CATEGORIES`, lui, sert l'affichage du formulaire et garde « autre » en dernier : les deux diffèrent volontairement, il ne faut pas « ranger » le `SET` pour le faire correspondre au PHP.
+
+La table `lieu` est en MyISAM : l'`ALTER` la reconstruit et pose un verrou d'écriture. Quelques centaines de lignes, donc l'affaire d'un instant, mais à passer hors des heures de saisie. Relever `SELECT categories, COUNT(*) AS nb FROM lieu GROUP BY categories ORDER BY categories;` avant et après, et comparer : les deux sorties doivent être rigoureusement identiques.
+
+**À passer avec la mise en ligne du code, pas plus tard**, mais pour une autre raison que le script précédent : aucune page ne tombe en erreur si la base a du retard, ce sont les sept nouvelles entrées du menu qui deviennent des pièges. Le formulaire les propose dès que le code est en ligne, et enregistrer un lieu ainsi typé écrit dans la colonne une valeur que le `SET` ne déclare pas — erreur ou troncature silencieuse selon le `sql_mode` du serveur, mais jamais la catégorie choisie.
+
 ### Redirections
 
 Deux pages changent d'adresse :

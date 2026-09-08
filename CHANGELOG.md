@@ -6,6 +6,7 @@ Upgrade steps (redirects, side effects) : [UPGRADE.md](UPGRADE.md).
 Feature documentation : [docs/](docs/).
 
 ### Added
+- lieu : seven categories join the nine a lieu can be filed under — buvette, club, maison/espace de quartier, centre socioculturel, bibliothèque, ludothèque, école/conservatoire, places the agenda has long welcomed without being able to name them. Nothing is renamed or removed, and no existing lieu is re-typed : the `SET` values are appended after `autre`, because their declaration order is what gives each one its bit — see [UPGRADE.md](UPGRADE.md)
 - agenda : the day's listing can be filtered by genre #107 (PR #144) — a sticky menu above the events, kept in the session and carried in the url, so that coming back from an event finds the chosen genre again ; only the genres of the day are offered, and from 800px the menu shares its line with the sort one. Shown to every visitor, where 3.12.0 had reserved it to admins the time to try it in production
 
 ### Changed

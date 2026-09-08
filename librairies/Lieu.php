@@ -62,17 +62,36 @@ class Lieu extends Element
      * Vient du global $glo_categories_lieux d'app/config.php : la liste appartient au
      * lieu, et la garder en variable globale obligeait chaque appelant à la réclamer par
      * un `global` avant de pouvoir traduire un code en libellé.
+     *
+     * L'ordre est celui de l'affichage — le <select> du formulaire, le filtre de la liste
+     * des lieux — et **ne suit pas celui du SET** : « autre » y reste en dernier alors que
+     * la colonne le porte au neuvième rang, avant les sept catégories ajoutées en 3.13.0.
+     * Un SET MariaDB est un masque de bits dont les positions viennent de l'ordre de
+     * déclaration : une valeur glissée au milieu réinterpréterait silencieusement toutes
+     * les lignes existantes, une catégorie nouvelle s'ajoute donc **à la fin** du SET.
+     * Ici, où l'ordre ne porte rien, elle s'ajoute où on veut. Voir
+     * resources/database/v3-13-0_lieu-categories.sql.
+     *
+     * Les libellés sont en minuscules : ils s'affichent aussi en énumération sous le nom
+     * du lieu (`categoriesEnClair()`), où une capitale au milieu d'une phrase détonne.
      */
     public const array CATEGORIES = [
-        'bistrot'    => 'bistrot',
-        'salle'      => 'salle',
-        'restaurant' => 'restaurant',
-        'cinema'     => 'cinéma',
-        'theatre'    => 'théâtre',
-        'galerie'    => 'galerie',
-        'boutique'   => 'boutique',
-        'musee'      => 'musée',
-        'autre'      => 'autre',
+        'bistrot'       => 'bistrot',
+        'buvette'       => 'buvette',
+        'club'          => 'club',
+        'salle'         => 'salle',
+        'restaurant'    => 'restaurant',
+        'cinema'        => 'cinéma',
+        'theatre'       => 'théâtre',
+        'galerie'       => 'galerie',
+        'boutique'      => 'boutique',
+        'musee'         => 'musée',
+        'bibliotheque'  => 'bibliothèque',
+        'ludotheque'    => 'ludothèque',
+        'quartier'      => 'maison/espace de quartier',
+        'socioculturel' => 'centre socioculturel',
+        'ecole'         => 'école/conservatoire',
+        'autre'         => 'autre',
     ];
 
     function __construct()
