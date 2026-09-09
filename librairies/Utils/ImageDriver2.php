@@ -360,7 +360,11 @@ class ImageDriver2 {
        {
            if (!imagepng($img2, $cheminImage))
            {
+               // Le return manquait, seul de toutes les branches : un PNG que GD ne
+               // parvenait pas à écrire était annoncé comme enregistré, et la fiche
+               // désignait ensuite le fichier vide laissé par le fopen() ci-dessus
                $this->erreur = "Erreur dans la création du fichier PNG";
+               return false;
            }
            return true;
        }

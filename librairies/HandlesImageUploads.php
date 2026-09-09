@@ -44,6 +44,20 @@ trait HandlesImageUploads
     }
 
     /**
+     * Ce champ image a-t-il quelque chose à enregistrer : un fichier envoyé, ou
+     * une suppression demandée ?
+     *
+     * C'est la seule question qui distingue un champ qui a bougé d'un champ
+     * laissé tel quel. Le nom de fichier, lui, ne dit rien : il est bâti sur
+     * {id}_{champ}.{extension}, donc identique quand une image est remplacée par
+     * une autre du même format.
+     */
+    protected function isImageFieldTouched(string $imageField, bool $isImageMarkedForDeletion): bool
+    {
+        return !empty($this->uploadedFileFor($imageField)['name']) || $isImageMarkedForDeletion;
+    }
+
+    /**
      * Nom de fichier à enregistrer pour un champ image, une fois pris en compte
      * le fichier envoyé et la case « Supprimer ».
      *

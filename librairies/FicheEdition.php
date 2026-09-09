@@ -431,6 +431,21 @@ abstract class FicheEdition extends Edition
 
         foreach ($this->imageFields() as $field => $thumbnail)
         {
+            /*
+             * Ni fichier envoyé ni suppression demandée : le champ n'a pas bougé, il n'y
+             * a rien à écrire. Ce passage comparait le nom calculé au nom enregistré, ce
+             * qui revenait à sauter le remplacement d'une image par une autre du même
+             * format : le nom, bâti sur {id}_{champ}.{extension}, est alors identique.
+             * imageNameAfterEdit() venait pourtant d'effacer l'ancien fichier et sa
+             * miniature, le nouveau n'était jamais écrit, et la colonne désignait un
+             * fichier absent — un logo remplacé par un autre PNG disparaissait ainsi de
+             * la fiche, sans le moindre message.
+             */
+            if (!$this->isImageFieldTouched($field, $this->isImageMarkedForDeletion($field)))
+            {
+                continue;
+            }
+
             $name = $this->imageNameAfterEdit(
                 $field,
                 $this->uploadedFileFor($field),
@@ -439,11 +454,6 @@ abstract class FicheEdition extends Edition
                 $this->recordId,
                 $this->uploadsDir
             );
-
-            if ($name === $this->storedValues[$field])
-            {
-                continue;
-            }
 
             if (!$this->writeImageFiles($this->uploadedFileFor($field), $name, $this->uploadsSubdir(), $thumbnail))
             {
