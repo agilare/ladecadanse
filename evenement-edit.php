@@ -1481,7 +1481,7 @@ if ($show_form)
 
             <p>
                 <label for="urlLieu">Site web du lieu</label>
-                <input type="text" name="urlLieu" id="urlLieu" size="40" maxlength="80" title="URL du lieu" value="<?php if (empty($champs['idLieu'])) { echo sanitizeForHtml($champs['urlLieu']); } ?>" />
+                <input type="url" name="urlLieu" id="urlLieu" size="40" maxlength="250" value="<?php if (empty($champs['idLieu'])) { echo sanitizeForHtml($champs['urlLieu']); } ?>" />
             <?php
             echo $verif->getHtmlErreur("urlLieu");
             ?>
