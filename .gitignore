@@ -41,3 +41,7 @@ tests/.env
 /node_modules
 /.well-known
 /.claude
+
+# progpilot (POC) : règles régénérées par .progpilot/build-namespaced-rules.php
+# à chaque changement de version du phar, qui vit lui-même dans var/
+.progpilot/generated/
