@@ -220,7 +220,12 @@ class Evenement
             $champs['quartier']    = $tab_lieu['quartier'];
             $champs['localite_id'] = $tab_lieu['localite_id'];
             $champs['region']      = $tab_lieu['region'];
-            $champs['urlLieu']     = $tab_lieu['URL'];
+
+            // Seule `lieu.URL` est nullable parmi les colonnes lues ici, et plusieurs lieux y
+            // portent NULL. La colonne `evenement.urlLieu` visée, elle, est NOT NULL DEFAULT '' :
+            // le repli produit la valeur attendue, là où le null traversait jusqu'à
+            // DbConnector::sanitize(), typé string — erreur fatale à l'enregistrement.
+            $champs['urlLieu']     = $tab_lieu['URL'] ?? '';
 
             return [$champs, true];
         }
