@@ -31,7 +31,8 @@
 #footer_navigation
 {
     width: 94%;
-    margin: 1em auto 0 auto;
+    margin: 1.8em auto 0 auto;
+    font-size: 1.1em;
 }
 
 .event-navig-link
@@ -39,7 +40,7 @@
     display:inline-block;
     text-overflow:ellipsis;
     overflow-x: hidden;
-    text-align: right;
+    text-align: left;
     /*    white-space: nowrap;*/
 }
 

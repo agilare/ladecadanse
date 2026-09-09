@@ -318,8 +318,8 @@ include("../_header.inc.php");
 
     <?php if (!empty($events_siblings[1])) : ?>
     <div id="footer_navigation">
-        <div class="entete_contenu_navigation">
-            <a href="/event/evenement.php?idE=<?= (int)$events_siblings[1]['idEvenement'] ?>" rel="next nofollow"><span class="event-navig-link"><?= sanitizeForHtml($events_siblings[1]['titre']) ?> - <?= sanitizeForHtml($events_siblings[1]['lieu_nom']) ?>&nbsp;<i class="fa fa-arrow-down"></i></span></a>
+        <div class="entete_contenu_navigation" style="float:left">
+            <a href="/event/evenement.php?idE=<?= (int)$events_siblings[1]['idEvenement'] ?>" rel="next nofollow"><span class="event-navig-link"><i class="fa fa-arrow-down" style="font-size: 1.2em;"></i>&nbsp;Événement suivant&nbsp;:&nbsp;<i><?= sanitizeForHtml($events_siblings[1]['titre']) ?></i></span></a>
         </div>
         <div class="spacer"><!-- --></div>
     </div>
