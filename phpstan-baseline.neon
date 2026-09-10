@@ -40,11 +40,6 @@ parameters:
 			count: 1
 			path: librairies/EvenementRenderer.php
 
-		-
-			message: '#^Variable \$smallWidth in empty\(\) always exists and is not falsy\.$#'
-			identifier: empty.variable
-			count: 1
-			path: librairies/EvenementRenderer.php
 
 		-
 			message: '#^Property Ladecadanse\\EvenementWithSeparatorCollection\:\:\$date_current is never read, only written\.$#'

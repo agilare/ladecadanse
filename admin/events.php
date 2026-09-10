@@ -404,7 +404,7 @@ if (!empty($_POST['formulaire']))
                     {
                         $imD2 = new ImageDriver2("evenement");
                         $imD2->processImage($_FILES[$colonne], $nom_fichier, 600, 600);
-                        $imD2->processImage($_FILES[$colonne], "s_" . $nom_fichier, 120, 190, '', 0);
+                        $imD2->processImage($_FILES[$colonne], Evenement::thumbFileName($nom_fichier), Evenement::THUMBNAIL_MAX_WIDTH, Evenement::THUMBNAIL_MAX_HEIGHT, '', 0, Evenement::THUMBNAIL_MIME);
 
                         $sources_copiees[$colonne] = $nom_fichier;
                     }

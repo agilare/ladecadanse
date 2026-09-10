@@ -132,10 +132,12 @@ class ImageDriver2 {
       * @param int $maxWidth Largeur maximale voulue pour l'image réduite
       * @param int $maxHeigth Hauteur maximale voulue pour l'image réduite
       * @param string $selon ('', w, h) Pour imposer la largeur ou la hauteur de l'image réduite selon $maxWidth ou $maxHeigth
+      * @param string|null $outputMimeType Type mime d'écriture ('image/webp'…). Par défaut celui
+      *        du fichier reçu, ce qui faisait d'un flyer PNG une miniature PNG.
       * @return bool
       * @see        evenement-edit.php, HandlesImageUploads::writeImageFiles()
       */
-   function processImage($imageSource, $imageCreated, $maxWidth = 0, $maxHeigth = 0, $selon = '', $rognage = 0)
+   function processImage($imageSource, $imageCreated, $maxWidth = 0, $maxHeigth = 0, $selon = '', $rognage = 0, ?string $outputMimeType = null)
    {
        if (empty($imageSource['tmp_name']) || $imageSource['size'] == 0)
        {
@@ -338,7 +340,11 @@ class ImageDriver2 {
 
        $messageErreur = "Échec dans la création des images";
 
-       if ($mime_type == "image/jpeg")
+       // Le format d'écriture est découplé de celui du fichier reçu : les miniatures
+       // d'événement sortent en WebP quel que soit l'original (voir Evenement::THUMBNAIL_MIME)
+       $writeMimeType = $outputMimeType ?? $mime_type;
+
+       if ($writeMimeType == "image/jpeg")
        {
            if (!imagejpeg($img2, $cheminImage, 80))
            {
@@ -347,7 +353,7 @@ class ImageDriver2 {
            }
            return true;
        }
-       elseif ($mime_type == "image/gif")
+       elseif ($writeMimeType == "image/gif")
        {
            if (!imagegif($img2, $cheminImage))
            {
@@ -356,7 +362,7 @@ class ImageDriver2 {
            }
            return true;
        }
-       elseif ($mime_type == "image/png")
+       elseif ($writeMimeType == "image/png")
        {
            if (!imagepng($img2, $cheminImage))
            {
@@ -368,9 +374,21 @@ class ImageDriver2 {
            }
            return true;
        }
-       elseif ($mime_type == "image/webp")
+       elseif ($writeMimeType == "image/webp")
        {
-           if (!imagewebp($img2, $cheminImage))
+           // imagewebp() refuse une image palettisée, et le redimensionnement en produit une
+           // pour les GIF — ImageCreate() plutôt qu'ImageCreateTrueColor(), afin de reporter
+           // la couleur transparente d'origine. Sans cette conversion, un GIF envoyé laissait
+           // le fichier vide créé par le fopen() ci-dessus, et personne ne lit l'erreur.
+           if (!imageistruecolor($img2))
+           {
+               imagepalettetotruecolor($img2);
+               imagealphablending($img2, false);
+               imagesavealpha($img2, true);
+           }
+
+           // 80 : qualité mesurée sur les flyers du site, cf. #170
+           if (!imagewebp($img2, $cheminImage, 80))
            {
                $this->erreur = "Erreur dans la création du fichier WebP";
                return false;
@@ -389,7 +407,7 @@ class ImageDriver2 {
      * Processes an image from a local file path (e.g. a temp file from a URL fetch).
      * Equivalent to processImage() but does not require a $_FILES array.
      */
-    public function processImageFromPath(string $filePath, string $imageCreated, int $maxWidth = 0, int $maxHeigth = 0, string $selon = '', int $rognage = 0): bool
+    public function processImageFromPath(string $filePath, string $imageCreated, int $maxWidth = 0, int $maxHeigth = 0, string $selon = '', int $rognage = 0, ?string $outputMimeType = null): bool
     {
         $imageSource = [
             'tmp_name' => $filePath,
@@ -398,7 +416,7 @@ class ImageDriver2 {
             'error'    => UPLOAD_ERR_OK,
             'name'     => basename($imageCreated),
         ];
-        return $this->processImage($imageSource, $imageCreated, $maxWidth, $maxHeigth, $selon, $rognage);
+        return $this->processImage($imageSource, $imageCreated, $maxWidth, $maxHeigth, $selon, $rognage, $outputMimeType);
     }
 
     function getErreur()
