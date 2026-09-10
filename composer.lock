@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "150c7f8e99edb10c1328a59e18efec18",
+    "content-hash": "47acac37cfc6503f1b97ad2d0977a91f",
     "packages": [
         {
             "name": "dimsemenov/magnific-popup",
@@ -8754,6 +8754,8 @@
         "php": "8.4.*",
         "ext-fileinfo": "*",
         "ext-mysqli": "*",
+        "ext-pdo": "*",
+        "ext-pdo_mysql": "*",
         "ext-mbstring": "*",
         "ext-gd": "*"
     },

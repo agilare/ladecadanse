@@ -197,6 +197,14 @@ class HtmlShrink
         return $result;
     }
 
+    /**
+     * @psalm-taint-specialize
+     *
+     * Sans cette annotation, la valeur de retour est un nœud unique dans le graphe de teinte
+     * de Psalm : l'appelant qui passe un $pagestring non fiable — admin/bots.php:206 concatène
+     * $_GET['view'] — teinte tous les autres appels de la méthode. 36 des 344 signalements de
+     * `composer psalm:taint` venaient de là. Voir .psalm/README.md.
+     */
     public static function getPaginationString($totalitems, int $page = 1, int $limit = 15, int $adjacents = 1, $targetpage = "/", $pagestring = "?page="): string
     {
         //defaults

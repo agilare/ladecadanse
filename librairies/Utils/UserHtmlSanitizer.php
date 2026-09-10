@@ -46,6 +46,16 @@ final class UserHtmlSanitizer
             ->forceAttribute('a', 'rel', 'noopener noreferrer'));
     }
 
+    /**
+     * Pas d'échappement `has_quotes` déclaré : le sanitizer retire les éléments et attributs
+     * dangereux, il ne transforme pas les guillemets. Le HTML qui en sort est sûr dans un
+     * corps de page, pas dans une valeur d'attribut.
+     *
+     * Rien ne doit suivre la ligne ci-dessous dans ce docblock — voir la note de
+     * Ladecadanse\Security\SecurityToken::getToken().
+     *
+     * @psalm-taint-escape html
+     */
     public function sanitize(string $html): string
     {
         return $this->sanitizer->sanitize($html);

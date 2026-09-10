@@ -1,24 +1,41 @@
 <?xml version="1.0"?>
+<!--
+    Configuration du banc de contrôle de la teinte — voir .psalm/README.md
+
+    Elle reprend celle de psalm.xml : même périmètre, mêmes plugins, mêmes extensions, mêmes
+    globales. Ce qui change tient en deux points.
+
+    1. .psalm/ n'est plus ignoré, pour que le banc soit analysé — mais .psalm/src reste dehors,
+       le plugin n'ayant pas à s'analyser lui-même.
+
+    2. <fileExtensions> ajoute .txt, le banc étant nommé .php.txt : cette extension le tient
+       hors de portée de PHPStan, Rector et phpcs, qui partent tous de la racine du dépôt.
+
+    Le périmètre est celui du dépôt entier, et non le banc seul, parce que Psalm ne relie un
+    appel à son sink que s'il a analysé tout le chemin. Réduit à librairies/ et app/, le banc
+    perdait le sink PDO : Psalm ne sait que $this->pdo porte un PDO qu'après avoir analysé le
+    constructeur de DbConnectorPdo, appelé par du code que ce périmètre ne contenait pas.
+    L'analyse dure une trentaine de secondes, contre une quinzaine pour le banc seul.
+
+    Toute modification de psalm.xml qui touche à la teinte est à reporter ici, sans quoi le
+    banc cesse de dire la vérité sur la configuration réelle.
+-->
 <psalm
     phpVersion="8.4"
     errorLevel="7"
-    resolveFromConfigFile="true"
+    resolveFromConfigFile="false"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns="https://getpsalm.org/schema/config"
     xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
-    findUnusedBaselineEntry="true"
     findUnusedCode="false"
     allConstantsGlobal="true"
     ensureOverrideAttribute="false"
-    errorBaseline="psalm-baseline.xml"
 >
     <projectFiles>
         <directory name="."/>
-        <!-- allowMissingFiles : node_modules/vendor n'existent pas dans un worktree frais -->
         <ignoreFiles allowMissingFiles="true">
             <directory name=".claude"/>
-            <!-- outillage d'analyse, pas code du site : le plugin de teinte s'analyserait lui-même -->
-            <directory name=".psalm"/>
+            <directory name=".psalm/src"/>
             <directory name="docker"/>
             <directory name="node_modules"/>
             <directory name="resources"/>
@@ -28,30 +45,17 @@
             <directory name="vendor"/>
         </ignoreFiles>
     </projectFiles>
-    <!--
-    Pas de <enableExtensions> ici : PDO::query(), prepare() et exec() ne sont des sinks SQL
-    que si Psalm charge stubs/extensions/pdo.phpstub, ce qu'il fait sur la foi du `ext-pdo`
-    de composer.json. Retirer cette ligne de composer.json rendrait muettes les 85 requêtes
-    du dépôt qui passent par $connectorPdo — `composer psalm:banc` le dirait aussitôt.
-    À savoir : Psalm ne reconnaît que la clé `pdo`, jamais `pdo_mysql`, qu'il range en
-    extension non supportée sans rien dire.
-    -->
+    <fileExtensions>
+        <extension name=".php"/>
+        <extension name=".txt"/>
+    </fileExtensions>
+    <!-- Pas de <enableExtensions> : pdo et mysqli viennent du `require` de composer.json,
+         que Psalm lit depuis le répertoire courant (resolveFromConfigFile="false"). -->
     <plugins>
-        <pluginClass class="Orklah\PsalmInsaneComparison\Plugin"/>
-        <!--
-        Teinte $_SESSION, que Psalm ignore par défaut. Sans effet hors `composer psalm:taint` :
-        le hook n'est consulté que lorsque le graphe de flux est un TaintFlowGraph.
-        Autoloadé par le mapping "Ladecadanse\Psalm\" d'autoload-dev — voir .psalm/README.md.
-        -->
         <pluginClass class="Ladecadanse\Psalm\SessionTaintPlugin"/>
     </plugins>
-    <!--
-    Globales du legacy : définies par app/config.php et app/bootstrap.php, puis
-    récupérées via `global $x;` dans les pages. Sans cette liste Psalm les voit
-    comme UndefinedGlobalVariable. Garder synchronisé avec ces deux fichiers.
-    -->
+    <!-- Mêmes globales que psalm.xml : le banc prend ses connecteurs en `global`, comme le site. -->
     <globals>
-        <!-- app/bootstrap.php : objets de service -->
         <var name="connector" type="Ladecadanse\Utils\DbConnector"/>
         <var name="connectorPdo" type="Ladecadanse\Utils\DbConnectorPdo"/>
         <var name="authorization" type="Ladecadanse\Security\Authorization"/>
@@ -63,13 +67,9 @@
         <var name="loggerApi" type="Monolog\Logger"/>
         <var name="site_full_url" type="string"/>
         <var name="nom_page" type="string"/>
-
-        <!-- app/config.php : dates -->
         <var name="auj" type="string"/>
         <var name="glo_auj" type="string"/>
         <var name="glo_auj_6h" type="string"/>
-
-        <!-- app/config.php : tableaux du domaine -->
         <var name="glo_regions" type="array&lt;string, string&gt;"/>
         <var name="glo_menu_pratique" type="array&lt;string, string&gt;"/>
         <var name="glo_tab_genre" type="array&lt;string, string&gt;"/>
@@ -78,15 +78,11 @@
         <var name="glo_tab_quartiers2" type="array&lt;string, list&lt;string&gt;&gt;"/>
         <var name="mimes_images_acceptes" type="list&lt;string&gt;"/>
         <var name="mimes_documents_acceptes" type="list&lt;string&gt;"/>
-
-        <!-- app/config.php : chemins d'upload -->
         <var name="rep_images_even" type="string"/>
         <var name="rep_uploads_lieux" type="string"/>
         <var name="rep_uploads_lieux_galeries" type="string"/>
         <var name="rep_uploads_organisateurs" type="string"/>
         <var name="rep_fichiers_lieu" type="string"/>
-
-        <!-- app/config.php : URLs et fragments d'interface -->
         <var name="url_images_interface_icons" type="string"/>
         <var name="url_query_region" type="string"/>
         <var name="url_query_region_et" type="string"/>
@@ -94,27 +90,8 @@
         <var name="icone" type="array&lt;string, string&gt;"/>
         <var name="iconeEditer" type="string"/>
         <var name="iconeCopier" type="string"/>
-
-        <!-- définies par les pages elles-mêmes avant inclusion de _header/_footer -->
         <var name="page_titre" type="string"/>
         <var name="evenement" type="array"/>
         <var name="calLinks" type="array"/>
     </globals>
 </psalm>
-<!--
-Level 1 is the most strict, level 8 is the most lenient.
-
-When no level is explicitly defined, psalm defaults to level 2.
-
-Some issues are always treated as errors. These are issues with a very low probability of false-positives.
-
-At level 1 all issues (except those emitted for opt-in features) that Psalm can find are treated as errors. Those issues include any situation where Psalm cannot infer the type of a given expression.
-
-At level 2 Psalm ignores those Mixed* issues, but treats most other issues as errors.
-
-At level 3 Psalm starts to be a little more lenient. For example Psalm allows missing param types, return types and property types.
-
-At level 4 Psalm ignores issues for possible problems. These are more likely to be false positives – where the application code may guarantee behaviour that Psalm isn't able to infer.
-
-Level 5 and above allows a more non-verifiable code, and higher levels are even more permissive.
--->

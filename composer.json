@@ -28,6 +28,8 @@
         "php": "8.4.*",
         "ext-fileinfo": "*",
         "ext-mysqli": "*",
+        "ext-pdo": "*",
+        "ext-pdo_mysql": "*",
         "ext-mbstring": "*",
         "ext-gd": "*",
         "dimsemenov/magnific-popup": "^1.2",
@@ -52,7 +54,8 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\": "tests/"
+            "Tests\\": "tests/",
+            "Ladecadanse\\Psalm\\": ".psalm/src/"
         }
     },
     "scripts": {
@@ -64,6 +67,7 @@
         "rector:dry-run": "vendor/bin/rector process --dry-run",
         "psalm": "vendor/bin/psalm",
         "psalm:taint": "vendor/bin/psalm --taint-analysis --ignore-baseline",
+        "psalm:banc": "@php .psalm/verifier-le-banc.php",
         "test": "vendor/bin/codecept run",
         "test:api": "vendor/bin/codecept run api",
         "test:site": "vendor/bin/codecept run site",
