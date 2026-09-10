@@ -19,6 +19,26 @@ class Evenement
     // evenement.genre default value in database
     public const string GENRE_DEFAULT = 'divers';
 
+    /**
+     * Boîte maximale des miniatures d'événement (#84).
+     *
+     * Les trois points d'écriture et le choix miniature/image de EvenementRenderer lisaient
+     * chacun leur propre 120 : la largeur d'affichage la plus grande est 100 px, mais un
+     * écran à densité 2x en demande le double pour rester net.
+     */
+    public const int THUMBNAIL_MAX_WIDTH = 150;
+    public const int THUMBNAIL_MAX_HEIGHT = 240;
+
+    /**
+     * Format d'écriture des miniatures, quel que soit le format de l'original (#170).
+     *
+     * ImageDriver2 écrivait la miniature dans le format du fichier reçu. Un flyer envoyé en
+     * PNG — un quart des envois — produisait une miniature de 76 Ko là où le même contenu en
+     * pèse 8 : à eux seuls ces PNG portaient 73 % du poids des miniatures du site.
+     */
+    public const string THUMBNAIL_MIME = 'image/webp';
+    public const string THUMBNAIL_EXTENSION = '.webp';
+
     /** 06:00 en secondes : borne haute de la journée d'agenda, qui court de 06:00:01 au lendemain 06:00:00 */
     public const int JOURNEE_AGENDA_FIN_EN_SECONDES = 21_600;
 
@@ -191,6 +211,53 @@ class Evenement
             $filePath = $eventYear . "/" . $filePath;
         }
 	    return $filePath;
+    }
+
+    /**
+     * Nom du fichier miniature à écrire pour une image d'événement.
+     *
+     * L'extension du format est ajoutée à celle du nom stocké en base plutôt que substituée :
+     * la base ne connaît qu'un nom par image, et `s_x.jpg.webp` dit de quel original la
+     * miniature sort tout en étant servi en image/webp — Apache ne retient que la dernière
+     * extension, et MultiViews est désactivé.
+     */
+    public static function thumbFileName(string $fileName): string
+    {
+        return 's_' . $fileName . self::THUMBNAIL_EXTENSION;
+    }
+
+    /**
+     * Chemin d'affichage de la miniature, avec repli sur les miniatures historiques.
+     *
+     * Les images antérieures au passage au WebP n'ont pas de `.webp` sur le disque et gardent
+     * la miniature écrite à l'époque. Ce repli rend la migration auto-portante : rien à
+     * convertir d'avance, les fiches rééditées basculent d'elles-mêmes, et un script de
+     * reprise reste possible quand ça arrange.
+     *
+     * Le test d'existence ne coûte rien de plus : AssetManager::get() ouvre déjà le fichier
+     * pour en calculer l'empreinte.
+     */
+    public static function getThumbFilePath(string $fileName): string
+    {
+        $webpPath = self::getFilePath(self::thumbFileName($fileName));
+
+        if (is_file(self::getSystemFilePath($webpPath)))
+        {
+            return $webpPath;
+        }
+
+        return self::getFilePath($fileName, 's_');
+    }
+
+    /**
+     * Copie et suppression suivent le même ordre que l'affichage : le WebP d'abord, la
+     * miniature historique ensuite.
+     *
+     * @return list<string>
+     */
+    protected static function thumbNameCandidates(string $fileName): array
+    {
+        return [self::thumbFileName($fileName), 's_' . $fileName];
     }
 
     /**

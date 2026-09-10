@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use Codeception\Test\Unit;
+use Ladecadanse\Evenement;
 use Ladecadanse\EvenementRenderer;
 
 /**
  * Couvre la valeur de la propriété hCalendar dtstart, que Google Search Console
- * signalait comme non conforme à la norme ISO 8601.
+ * signalait comme non conforme à la norme ISO 8601, ainsi que le chargement
+ * différé des vignettes (#84).
  */
 final class EvenementRendererTest extends Unit
 {
@@ -122,5 +124,111 @@ final class EvenementRendererTest extends Unit
 
         $this->assertStringNotContainsString('<script>', $html);
         $this->assertStringContainsString('&lt;script&gt;', $html);
+    }
+
+    /**
+     * mainFigureHtml() ne demande à son environnement que l'URL des fichiers : le préfixe
+     * d'URL de l'entité et le versionneur d'assets, tous deux posés au bootstrap en
+     * production.
+     */
+    private function prepareFigureContext(): void
+    {
+        Evenement::$urlDirPath = '/uploads/evenements/';
+        // getThumbFilePath() teste l'existence du .webp : sans répertoire, aucun n'existe et
+        // le repli historique s'applique, ce qui est le cas voulu ici.
+        Evenement::$systemDirPath = sys_get_temp_dir() . '/ldd_absent_' . uniqid() . '/';
+
+        $GLOBALS['assets'] = new class {
+            public function get(string $path): string
+            {
+                return $path . '?v=00000000';
+            }
+        };
+
+        EvenementRenderer::resetFiguresRendered();
+    }
+
+    /**
+     * Les premières vignettes occupent le premier écran : les différer retarderait leur
+     * affichage au lieu de l'avancer.
+     */
+    public function testMainFigureHtmlDoesNotDeferTheFirstFigures(): void
+    {
+        $this->prepareFigureContext();
+
+        for ($rank = 1; $rank <= EvenementRenderer::EAGER_FIGURES_PER_REQUEST; $rank++)
+        {
+            $html = EvenementRenderer::mainFigureHtml("flyer$rank.jpg", '', "Événement $rank", 100);
+
+            $this->assertStringNotContainsString('loading="lazy"', $html, "vignette $rank");
+        }
+    }
+
+    public function testMainFigureHtmlDefersTheFollowingFigures(): void
+    {
+        $this->prepareFigureContext();
+
+        $firstDeferredRank = EvenementRenderer::EAGER_FIGURES_PER_REQUEST + 1;
+        for ($rank = 1; $rank < $firstDeferredRank; $rank++)
+        {
+            EvenementRenderer::mainFigureHtml("flyer$rank.jpg", '', "Événement $rank", 100);
+        }
+
+        $html = EvenementRenderer::mainFigureHtml('flyer-suivant.jpg', '', 'Événement suivant', 100);
+
+        $this->assertStringContainsString('loading="lazy"', $html);
+        $this->assertStringContainsString('decoding="async"', $html);
+    }
+
+    /**
+     * Un événement sans flyer ni illustration ne rend aucune balise : il ne doit pas
+     * consommer le quota de vignettes immédiates, sans quoi une journée qui commence par
+     * des événements sans image ferait différer les premières vignettes visibles.
+     */
+    public function testMainFigureHtmlDoesNotCountEventsWithoutAnImage(): void
+    {
+        $this->prepareFigureContext();
+
+        for ($rank = 1; $rank <= EvenementRenderer::EAGER_FIGURES_PER_REQUEST; $rank++)
+        {
+            $this->assertSame('', EvenementRenderer::mainFigureHtml('', '', "Sans image $rank", 100));
+        }
+
+        $html = EvenementRenderer::mainFigureHtml('flyer.jpg', '', 'Premier avec image', 100);
+
+        $this->assertStringNotContainsString('loading="lazy"', $html);
+    }
+
+    public function testMainFigureHtmlHonoursAnExplicitLazyFlag(): void
+    {
+        $this->prepareFigureContext();
+
+        $forcedLazy = EvenementRenderer::mainFigureHtml('flyer.jpg', '', 'Forcée en différé', 100, null, true);
+        $this->assertStringContainsString('loading="lazy"', $forcedLazy);
+
+        EvenementRenderer::resetFiguresRendered();
+        for ($rank = 1; $rank <= EvenementRenderer::EAGER_FIGURES_PER_REQUEST + 3; $rank++)
+        {
+            EvenementRenderer::mainFigureHtml("flyer$rank.jpg", '', "Événement $rank", 100);
+        }
+
+        $forcedEager = EvenementRenderer::mainFigureHtml('flyer.jpg', '', 'Forcée en immédiat', 100, null, false);
+        $this->assertStringNotContainsString('loading="lazy"', $forcedEager);
+    }
+
+    /** Le compteur ne doit pas survivre d'une page rendue à la suivante. */
+    public function testResetFiguresRenderedRestartsTheCount(): void
+    {
+        $this->prepareFigureContext();
+
+        for ($rank = 1; $rank <= EvenementRenderer::EAGER_FIGURES_PER_REQUEST + 2; $rank++)
+        {
+            EvenementRenderer::mainFigureHtml("flyer$rank.jpg", '', "Événement $rank", 100);
+        }
+
+        EvenementRenderer::resetFiguresRendered();
+        $html = EvenementRenderer::mainFigureHtml('flyer.jpg', '', 'Nouvelle page', 100);
+
+        $this->assertStringNotContainsString('loading="lazy"', $html);
     }
 }

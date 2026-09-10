@@ -31,6 +31,25 @@ class EvenementRenderer
      */
     public const DESCRIPTION_MAX_CHARS = 60 * 6;
 
+    /**
+     * Nombre de vignettes servies en chargement immédiat avant de basculer en `loading="lazy"`.
+     *
+     * L'agenda d'une journée chargée rend jusqu'à 140 vignettes, toutes téléchargées d'emblée
+     * jusqu'ici. Les premières doivent le rester : `lazy` sur une image déjà visible retarde
+     * son affichage au lieu de l'avancer, le navigateur ne la demandant qu'une fois la mise en
+     * page calculée.
+     */
+    public const EAGER_FIGURES_PER_REQUEST = 6;
+
+    /**
+     * Vignettes déjà rendues dans cette requête, pour distinguer celles du premier écran.
+     *
+     * L'agenda groupe ses événements par genre, en deux boucles imbriquées : aucun indice de
+     * rang ne remonte jusqu'ici, d'où ce compteur plutôt qu'un paramètre à faire traverser
+     * index.php, lieu.php et organisateur.php.
+     */
+    private static int $figuresRendered = 0;
+
     /** Comportement du lien de dépublication après succès : masque la ligne de l'événement */
     public const UNPUBLISH_THEN_HIDE = 'hide';
     /** Comportement du lien de dépublication après succès : met à jour la pastille de statut de la ligne */
@@ -227,53 +246,66 @@ class EvenementRenderer
      * $smallHeight n'est utile qu'aux cadres de dimensions figées — les colonnes « Image » des
      * tableaux de gestion — où le CSS recadre ensuite l'image sur le cadre. Sans lui, la hauteur
      * reste au navigateur, comme partout ailleurs.
+     *
+     * $lazy laissé à null décide seul : chargement immédiat pour les EAGER_FIGURES_PER_REQUEST
+     * premières vignettes de la requête, différé pour les suivantes. Le passer explicitement
+     * n'a d'intérêt qu'à un appelant qui sait sa vignette hors du premier écran, ou dedans.
      */
-    public static function mainFigureHtml(string $flyer, string $image, string $titre, ?int $smallWidth = null, ?int $smallHeight = null): string
+    public static function mainFigureHtml(string $flyer, string $image, string $titre, ?int $smallWidth = null, ?int $smallHeight = null, ?bool $lazy = null): string
     {
         global $assets;
         ob_start();
 
-        // by default display small version
-        $imgSmallFilePathPrefix = "s_";
-        // 120 : max width when saving small version of uploaded flyers
-        // if container width exceeds width of small version, choose big version
-        if (empty($smallWidth) || (!empty($smallWidth) && $smallWidth > 120))
-        {
-            $imgSmallFilePathPrefix = '';
-        }
+        // Au-delà de la largeur de la miniature, c'est l'image de 600 px qu'il faut servir :
+        // étirée au-delà de sa taille, la miniature serait floue. Le seuil suit désormais
+        // la constante d'écriture au lieu d'un 120 recopié ici.
+        $useThumbnail = !empty($smallWidth) && $smallWidth <= Evenement::THUMBNAIL_MAX_WIDTH;
 
         if (empty($flyer) && empty($image))
         {
             return '';
         }
 
+        // Compté ici et non à l'entrée : un événement sans flyer n'occupe pas le premier écran
+        $isLazy = $lazy ?? (self::$figuresRendered >= self::EAGER_FIGURES_PER_REQUEST);
+        self::$figuresRendered++;
+
         $imgHeight = $smallHeight ?? '';
         if (!empty($flyer))
         {
             $href = $assets->get(Evenement::getAssetPath(Evenement::getFilePath($flyer)));
-            $imgSrc = $assets->get(Evenement::getAssetPath(Evenement::getFilePath($flyer, $imgSmallFilePathPrefix)));
+            $imgSrc = $assets->get(Evenement::getAssetPath($useThumbnail ? Evenement::getThumbFilePath($flyer) : Evenement::getFilePath($flyer)));
             $imgAlt = "Flyer de ". sanitizeForHtml($titre);
-            //$imgHeight = ImageDriver2::getProportionalHeightFromGivenWidth(self::getSystemFilePath(self::getFilePath($flyer, $imgSmallFilePathPrefix)), $smallWidth);
         }
         elseif (!empty($image))
         {
             $href = $assets->get(Evenement::getAssetPath(Evenement::getFilePath($image)));
-            $imgSrc = $assets->get(Evenement::getAssetPath(Evenement::getFilePath($image, $imgSmallFilePathPrefix)));
+            $imgSrc = $assets->get(Evenement::getAssetPath($useThumbnail ? Evenement::getThumbFilePath($image) : Evenement::getFilePath($image)));
             $imgAlt = "Illustration de ". sanitizeForHtml($titre);
-            //$imgHeight = ImageDriver2::getProportionalHeightFromGivenWidth(self::getSystemFilePath(self::getFilePath($image, $imgSmallFilePathPrefix)), $smallWidth);
         }
         ?>
 
         <a href="<?= $href ?>" class="magnific-popup">
             <?php // chaque dimension est émise pour elle-même : la hauteur était jusqu'ici toujours
                   // vide, et height="" n'est pas une valeur valide ?>
-            <img src="<?= $imgSrc ?>" alt="<?= $imgAlt ?>"<?php if (!empty($smallWidth)) : ?> width="<?= $smallWidth ?>"<?php endif; ?><?php if (!empty($imgHeight)) : ?> height="<?= $imgHeight ?>"<?php endif; ?>>
+            <img src="<?= $imgSrc ?>" alt="<?= $imgAlt ?>"<?php if (!empty($smallWidth)) : ?> width="<?= $smallWidth ?>"<?php endif; ?><?php if (!empty($imgHeight)) : ?> height="<?= $imgHeight ?>"<?php endif; ?><?php if ($isLazy) : ?> loading="lazy" decoding="async"<?php endif; ?>>
         </a>
 
         <?php
         $result = ob_get_contents();
         ob_clean();
         return $result;
+    }
+
+    /**
+     * Remet à zéro le compteur de vignettes de la requête.
+     *
+     * Une requête HTTP rend une page puis s'arrête : en production le compteur n'a rien à
+     * remettre à zéro. Les tests, eux, rendent plusieurs pages dans le même processus.
+     */
+    public static function resetFiguresRendered(): void
+    {
+        self::$figuresRendered = 0;
     }
 
 

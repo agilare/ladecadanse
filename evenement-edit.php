@@ -928,7 +928,7 @@ if ($formulaire_poste)
 			{
 				$imD2 = new ImageDriver2("evenement");
 				$imD2->processImage($_FILES[$champ_img], $champs[$champ_img], 600, 600);
-				$imD2->processImage($_FILES[$champ_img], "s_" . $champs[$champ_img], 120, 190, '', 0);
+				$imD2->processImage($_FILES[$champ_img], Evenement::thumbFileName($champs[$champ_img]), Evenement::THUMBNAIL_MAX_WIDTH, Evenement::THUMBNAIL_MAX_HEIGHT, '', 0, Evenement::THUMBNAIL_MIME);
 			}
 
 			// image récupérée par URL : ImageDriver2 travaille sur un chemin, pas sur des octets
@@ -939,7 +939,7 @@ if ($formulaire_poste)
 					file_put_contents($tmp, $fetched['data']);
 					$imD2 = new ImageDriver2("evenement");
 					$imD2->processImageFromPath($tmp, $champs[$champ_img], 600, 600);
-					$imD2->processImageFromPath($tmp, "s_" . $champs[$champ_img], 120, 190, '', 0);
+					$imD2->processImageFromPath($tmp, Evenement::thumbFileName($champs[$champ_img]), Evenement::THUMBNAIL_MAX_WIDTH, Evenement::THUMBNAIL_MAX_HEIGHT, '', 0, Evenement::THUMBNAIL_MIME);
 				} finally {
 					@unlink($tmp);
 				}
