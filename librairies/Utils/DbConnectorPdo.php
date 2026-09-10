@@ -10,7 +10,10 @@ use PDOStatement;
 class DbConnectorPdo
 {
     private static $instances = [];
-    private $pdo;
+    // typée pour l'analyse de teinte : sans ce type, $this->pdo est mixed pour Psalm,
+    // les appels de prepare()/query()/exec() ci-dessous ne sont plus reconnus comme des
+    // sinks SQL, et les 85 requêtes PDO du dépôt sortent du champ de `composer psalm:taint`
+    private PDO $pdo;
 
     private function __construct($config)
     {

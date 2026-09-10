@@ -33,6 +33,11 @@ phpstan-baseline.neon
 phpstan-constants.php
 /.phan
 .phan/*
+# outillage d'analyse de sécurité : configuration, bancs de contrôle et rapports
+/.psalm
+.psalm/*
+/.progpilot
+.progpilot/*
 /bin
 bin/*
 /htaccess
