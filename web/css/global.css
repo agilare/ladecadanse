@@ -1295,28 +1295,75 @@ table .td-align-center
         color:#777;
     }
 
-@media (prefers-reduced-motion: reduce)
-{
-    .even-time-status .fa-spin
+    /*
+     * La part écoulée d'un événement en cours, en barre plutôt qu'en pourcentage.
+     *
+     * appearance:none est ce qui autorise les pseudo-éléments de WebKit : sans lui le navigateur
+     * garde son rendu natif et les couleurs ci-dessous n'ont aucun effet. Le fond de .pratique
+     * étant clair, la piste doit être plus soutenue que lui pour rester visible.
+     */
+    .even-time-progress
     {
-        animation:none;
+        -webkit-appearance:none;
+        appearance:none;
+        width:70px;
+        height:0.7em;
+        vertical-align:middle;
+        border:none; /* Firefox dessine un cadre par défaut */
+        background:#C3D0E4;
     }
-}
+
+        .even-time-progress::-webkit-progress-bar
+        {
+            background:#C3D0E4;
+        }
+
+        .even-time-progress::-webkit-progress-value
+        {
+            background:#59787A;
+        }
+
+        .even-time-progress::-moz-progress-bar
+        {
+            background:#59787A;
+        }
+
+    /* Fin inconnue : la barre s'arrête à minuit faute de mieux, ce « ? » ne le laisse pas croire */
+    .even-time-estimated
+    {
+        padding-left:0.2em;
+        font-weight:bold;
+        cursor:help;
+    }
 
     /*
-     * Un événement terminé reste lisible et cliquable : la transparence le range au second plan
-     * sans le retirer. Elle est levée au survol et dès qu'un de ses liens prend le focus, sans
-     * quoi les actions d'édition seraient les plus pâles au moment où on s'en sert.
+     * Un événement hors d'atteinte — terminé, ou séance de ciné ou de théâtre commencée depuis
+     * plus d'une demi-heure — reste lisible et cliquable : la transparence le range au second
+     * plan sans le retirer. Elle est levée au survol et dès qu'un de ses liens prend le focus,
+     * sans quoi les actions d'édition seraient les plus pâles au moment où on s'en sert.
+     *
+     * L'opacité d'un parent ne se rattrape pas sur un enfant : elle est donc posée sur chaque
+     * bloc de la carte plutôt que sur la carte, pour épargner le badge qui explique la pâleur.
+     * La variable évite de répéter la liste de ces blocs une seconde fois au survol.
      */
-    .evenement-short.even-time-past
+    .evenement-short.even-time-dimmed
     {
-        opacity:0.6;
+        --even-time-fade:0.4;
     }
 
-    .evenement-short.even-time-past:hover,
-    .evenement-short.even-time-past:focus-within
+    .evenement-short.even-time-dimmed:hover,
+    .evenement-short.even-time-dimmed:focus-within
     {
-        opacity:1;
+        --even-time-fade:1;
+    }
+
+    .evenement-short.even-time-dimmed > .titre,
+    .evenement-short.even-time-dimmed > .event-media,
+    .evenement-short.even-time-dimmed > .edition,
+    .evenement-short.even-time-dimmed .pratique .left,
+    .evenement-short.even-time-dimmed .pratique .even-time-line
+    {
+        opacity:var(--even-time-fade);
     }
 
     .evenement-short .edition

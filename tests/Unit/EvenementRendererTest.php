@@ -7,11 +7,12 @@ namespace Tests\Unit;
 use Codeception\Test\Unit;
 use Ladecadanse\Evenement;
 use Ladecadanse\EvenementRenderer;
+use Ladecadanse\EvenementTimeStatus;
 
 /**
  * Couvre la valeur de la propriété hCalendar dtstart, que Google Search Console
- * signalait comme non conforme à la norme ISO 8601, ainsi que le chargement
- * différé des vignettes (#84).
+ * signalait comme non conforme à la norme ISO 8601, le chargement différé des
+ * vignettes (#84) et le rendu des repères de temporalité (#51).
  */
 final class EvenementRendererTest extends Unit
 {
@@ -230,5 +231,62 @@ final class EvenementRendererTest extends Unit
         $html = EvenementRenderer::mainFigureHtml('flyer.jpg', '', 'Nouvelle page', 100);
 
         $this->assertStringNotContainsString('loading="lazy"', $html);
+    }
+
+
+    public function testTimeStatusHtmlSansStatutNeRendRien(): void
+    {
+        $this->assertSame('', EvenementRenderer::timeStatusHtml(null));
+    }
+
+    /** Le compte à rebours prend sa propre ligne, sans les parenthèses qui l'isolaient de l'horaire. */
+    public function testTimeStatusHtmlDuCompteAReboursPrendUneLigne(): void
+    {
+        $status = EvenementTimeStatus::fromHoraires('2026-04-28', '2026-04-28 21:30:00', null, '2026-04-28 19:00:00');
+
+        $html = EvenementRenderer::timeStatusHtml($status);
+
+        $this->assertStringStartsWith('<br>', $html);
+        $this->assertStringContainsString('dans 2h30', $html);
+        $this->assertStringContainsString('title="Commence dans 2h30"', $html);
+        $this->assertStringNotContainsString('(', $html);
+    }
+
+    /** « terminé » qualifie l'horaire : il reste sur sa ligne, entre parenthèses. */
+    public function testTimeStatusHtmlDeLevenementTermineResteSurLaLigneDeLhoraire(): void
+    {
+        $status = EvenementTimeStatus::fromHoraires('2026-04-28', '2026-04-28 21:00:00', '2026-04-29 01:00:00', '2026-04-29 01:30:00');
+
+        $html = EvenementRenderer::timeStatusHtml($status);
+
+        $this->assertStringNotContainsString('<br>', $html);
+        $this->assertStringContainsString('(<i class="fa fa-check-square"', $html);
+        $this->assertStringContainsString('terminé)', $html);
+    }
+
+    /** La part écoulée passe en barre : le pourcentage n'est plus lu, il est nommé. */
+    public function testTimeStatusHtmlDeLevenementEnCoursRendUneBarre(): void
+    {
+        $status = EvenementTimeStatus::fromHoraires('2026-04-28', '2026-04-28 21:00:00', '2026-04-29 01:00:00', '2026-04-28 23:00:00');
+
+        $html = EvenementRenderer::timeStatusHtml($status);
+
+        $this->assertStringStartsWith('<br>', $html);
+        $this->assertStringContainsString('<progress class="even-time-progress" max="100" value="50"', $html);
+        $this->assertStringContainsString('aria-label="En cours, 50 % écoulés"', $html);
+        $this->assertStringNotContainsString('?', $html);
+    }
+
+    /** Fin inconnue : la barre est une estimation, et le « ? » qui la suit le dit. */
+    public function testTimeStatusHtmlSignaleUneFinEstimee(): void
+    {
+        $status = EvenementTimeStatus::fromHoraires('2026-04-28', '2026-04-28 21:00:00', null, '2026-04-28 22:00:00');
+
+        $html = EvenementRenderer::timeStatusHtml($status);
+
+        $this->assertStringContainsString('value="35"', $html);
+        $this->assertStringContainsString('<span class="even-time-estimated"', $html);
+        $this->assertStringContainsString('>?</span>', $html);
+        $this->assertStringContainsString('estimée jusqu&#039;à minuit', $html);
     }
 }
