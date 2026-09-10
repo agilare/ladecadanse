@@ -130,7 +130,7 @@ WHERE
     e.statut NOT IN ('inactif', 'propose') AND e.idLieu = ?";
 
 $sql_select .= " AND e.dateEvenement $sql_periode_operator ?";
-$sql_select .= " ORDER BY dateEvenement $sql_events_order_direction";
+$sql_select .= " ORDER BY dateEvenement $sql_events_order_direction , e_horaire_debut $sql_events_order_direction";
 $sql_select .= " LIMIT " . (int) (($get['page'] - 1) * $results_per_page) . ", " . (int) ($results_per_page); // ($get['page'] - 1) * $results_per_page +
 //echo $sql_select;
 $stmt = $connectorPdo->prepare($sql_select);
