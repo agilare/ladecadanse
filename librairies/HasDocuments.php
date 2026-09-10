@@ -39,6 +39,20 @@ trait HasDocuments
         return self::$urlDirPath . $filePath;
     }
 
+    /**
+     * Noms possibles de la miniature d'un fichier, du plus récent au plus ancien.
+     *
+     * Une entité qui change le format de ses miniatures redéfinit cette seule méthode : la
+     * copie et la suppression la suivent sans être retouchées, et un candidat absent du
+     * disque est simplement ignoré.
+     *
+     * @return list<string>
+     */
+    protected static function thumbNameCandidates(string $fileName): array
+    {
+        return ['s_' . $fileName];
+    }
+
     public static function safeCopyWithMiniature(string $srcFileName, string $destFileName): void
     {
         $safeDir = realpath(self::$systemDirPath);
@@ -52,13 +66,24 @@ trait HasDocuments
             return;
         }
 
-        foreach (['', 's_'] as $prefix) {
-            $srcFullPath = realpath($safeDir . DIRECTORY_SEPARATOR . static::getFilePath($safeSrc, $prefix));
+        // L'image elle-même, puis chaque forme de miniature. Les noms portent déjà leur
+        // préfixe : getFilePath() n'a plus qu'à préfixer l'année pour les fiches archivées.
+        $pairs = [[$safeSrc, $safeDest]];
+        $srcThumbs = static::thumbNameCandidates($safeSrc);
+        $destThumbs = static::thumbNameCandidates($safeDest);
+        foreach ($srcThumbs as $rank => $srcThumb) {
+            if (isset($destThumbs[$rank])) {
+                $pairs[] = [$srcThumb, $destThumbs[$rank]];
+            }
+        }
+
+        foreach ($pairs as [$srcName, $destName]) {
+            $srcFullPath = realpath($safeDir . DIRECTORY_SEPARATOR . static::getFilePath($srcName));
             if ($srcFullPath === false || !str_starts_with($srcFullPath, $safeDir . DIRECTORY_SEPARATOR)) {
                 continue;
             }
 
-            $destFilePath = static::getFilePath($safeDest, $prefix);
+            $destFilePath = static::getFilePath($destName);
             $destFullPath = $safeDir . DIRECTORY_SEPARATOR . $destFilePath;
             $destDirPath = realpath(dirname($destFullPath));
             if ($destDirPath === false || !str_starts_with($destDirPath . DIRECTORY_SEPARATOR, $safeDir . DIRECTORY_SEPARATOR)) {
@@ -79,7 +104,7 @@ trait HasDocuments
         if ($safeDir === false) {
             return;
         }
-        foreach ([$safeName, 's_' . $safeName] as $name) {
+        foreach ([$safeName, ...static::thumbNameCandidates($safeName)] as $name) {
             $resolvedPath = realpath($safeDir . DIRECTORY_SEPARATOR . $name);
             if ($resolvedPath !== false && str_starts_with($resolvedPath, $safeDir . DIRECTORY_SEPARATOR)) {
                 unlink($resolvedPath);

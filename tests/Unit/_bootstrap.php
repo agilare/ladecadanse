@@ -18,3 +18,8 @@ if (!defined('UPLOAD_MAX_FILESIZE')) {
 if (!defined('UPLOAD_MAX_MEGAPIXELS')) {
     define('UPLOAD_MAX_MEGAPIXELS', 40);
 }
+
+// Le constructeur d'ImageDriver2 la lit avant même de brancher sur le type d'entité.
+if (!defined('__ROOT__')) {
+    define('__ROOT__', sys_get_temp_dir());
+}
