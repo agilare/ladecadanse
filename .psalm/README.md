@@ -2,12 +2,16 @@
 
 Psalm sait suivre une valeur non fiable — `$_GET`, `$_POST`, une ligne de base — depuis
 son entrée jusqu'à un point dangereux — un `echo`, un `prepare()` — et signaler celles qui
-y arrivent sans être passées par un échappement. C'est la même famille d'analyse que
-[progpilot](../.progpilot/README.md), avec d'autres angles morts.
+y arrivent sans être passées par un échappement.
 
 Psalm était déjà installé dans le dépôt pour son analyse de types. Ce répertoire contient
 ce qu'il fallait ajouter pour que son **mode teinte** dise quelque chose de ce code-ci, et
 de quoi vérifier que cette configuration mord toujours.
+
+**Ce fichier documente l'outillage, pas ses résultats.** Le tri des signalements vit dans
+`rapport.md`, que `.gitignore` garde hors du dépôt : celui-ci est public, et un rapport de
+teinte nomme le fichier, la ligne et la nature de chaque défaut encore ouvert. Ce qui est
+corrigé se raconte dans le CHANGELOG, une fois refermé.
 
 ## Lancer
 
@@ -15,8 +19,7 @@ de quoi vérifier que cette configuration mord toujours.
 composer psalm:taint
 ```
 
-Une trentaine de secondes, 298 signalements aujourd'hui. Le tri, signalement par
-signalement, est dans [rapport.md](rapport.md) — le lire avant de lire la sortie brute.
+Une trentaine de secondes. Trier la sortie ailleurs que dans le dépôt.
 
 ```bash
 composer psalm:banc
@@ -34,10 +37,8 @@ modification de `psalm.xml`, et avant de conclure d'un rapport rassurant.
 | `banc-de-controle.php.txt` | code volontairement vulnérable, avec ses attendus |
 | `banc.xml` | configuration Psalm du banc |
 | `verifier-le-banc.php` | lance le banc et compare aux attendus |
-| `rapport.md` | les 298 signalements, triés |
 
-Le reste de la configuration vit dans `psalm.xml` et dans les docblocs du code — Psalm se
-configure là où progpilot se configure en JSON.
+Le reste de la configuration vit dans `psalm.xml` et dans les docblocs du code.
 
 ## Ce que l'adaptation a demandé
 
@@ -79,21 +80,18 @@ rien » — le rapport de teinte de ce jour-là n'avait tout simplement pas de s
 
 ### `$_SESSION` n'est pas une source pour Psalm
 
-Psalm teinte `$_GET`, `$_POST`, `$_COOKIE` et `$_REQUEST`, pas `$_SESSION`. Le POC
-progpilot l'avait mesuré et c'est ce qui lui avait permis de trouver deux `ORDER BY`
-interpolés que Psalm ne voyait pas.
+Psalm teinte `$_GET`, `$_POST`, `$_COOKIE` et `$_REQUEST`, pas `$_SESSION`. C'est un angle
+mort qui compte ici : le site range volontiers en session des valeurs venues de la requête —
+préférences d'affichage, identité du membre — avant de les rendre ou de les concaténer.
 
 `src/SessionTaintPlugin.php` comble l'écart, par le point d'extension `AddTaintsInterface`
 que Psalm prévoit pour cela : il ajoute à `$_SESSION` les mêmes teintes qu'à `$_GET`. Le
 plugin est autoloadé par le mapping `Ladecadanse\Psalm\` d'`autoload-dev` — après tout
 changement, `composer dump-autoload`, sinon Psalm démarre sans lui et sans le dire.
 
-Ce que ça a fait remonter : une injection SQL de second ordre dans `user-edit.php`, un
-troisième `ORDER BY` interpolé dans `Personne::getPersonnes()` que progpilot n'avait pas
-vu, et le pseudo rendu dans un `<script>`. Le détail est dans [rapport.md](rapport.md).
-
 Contrepartie : la session porte aussi les jetons CSRF, affichés dans chaque formulaire.
-Ces sites-là remontent désormais et sont classés faux positifs dans le rapport.
+Ces sites-là remontent désormais, et sont des faux positifs — hexadécimal issu de
+`random_bytes()`.
 
 ### Les points de convergence
 
@@ -101,14 +99,17 @@ Quand Psalm ne sait pas distinguer deux appels d'une même fonction, il fusionne
 un seul appelant fautif teinte alors tous les autres. Sur ce dépôt, deux endroits en
 faisaient l'essentiel du bruit.
 
-`HtmlShrink::getPaginationString()` : 36 signalements pour un seul appelant, `admin/bots.php`,
-qui lui passe `$_GET['view']`. `@psalm-taint-specialize` sur la méthode ramène le compte à 4.
+`HtmlShrink::getPaginationString()` : un seul appelant teintait les 36 sites de pagination.
+`@psalm-taint-specialize` sur la méthode ramène le compte à 4.
 
-`Validateur::$erreurs` : 222 signalements — 73 % du rapport — pour un seul flux, celui de
-`user-edit.php`. `@psalm-taint-specialize` n'y peut rien : la convergence se fait sur une
-propriété d'instance, et Psalm 6.16.1 en fait un nœud unique quelle que soit l'instance
-(vérifié, cas reproduit dans le banc). Rien dans la configuration ne corrige cela — et il
-se trouve que le signalement d'origine est fondé. Voir le rapport.
+`Validateur::$erreurs` : un seul flux teinte les 222 sites qui affichent un message
+d'erreur, soit près des trois quarts de la sortie. `@psalm-taint-specialize` n'y peut
+rien — la convergence se fait sur une propriété d'instance, et Psalm 6.16.1 en fait un
+nœud unique quelle que soit l'instance (vérifié, cas reproduit dans le banc). Rien dans la
+configuration ne corrige cela : c'est à la source du flux de se refermer.
+
+Conséquence pratique pour la lecture d'un rapport : un compte de signalements ne mesure
+pas un nombre de défauts. Quelques lignes peuvent en porter la majorité.
 
 ## Pièges à connaître
 
@@ -146,10 +147,13 @@ L'annotation posée sur cette méthode documente l'intention ; elle ne rattrape 
 
 ## Recoupement avec progpilot
 
-Les deux outils font du suivi de teinte et se recoupent peu — le POC progpilot mesurait
-139 sites côté Psalm, 11 côté progpilot, 3 en commun. La configuration décrite ici déplace
-cette ligne de partage : `$_SESSION` n'est plus l'angle mort de Psalm, et PDO n'est plus le
-sien non plus.
+progpilot, autre analyseur de teinte, a été évalué sur ce dépôt avant Psalm ; sa
+configuration n'est pas versionnée (voir `.gitignore`), et les renvois ci-dessus valent
+pour qui l'a encore sur son poste.
+
+Les deux outils se recoupent peu — le POC mesurait 139 sites côté Psalm, 11 côté
+progpilot, 3 en commun. La configuration décrite ici déplace cette ligne de partage :
+`$_SESSION` n'est plus l'angle mort de Psalm, et PDO n'est plus le sien non plus.
 
 Ce qui reste à progpilot : il se configure sans toucher au code, là où Psalm demande des
 annotations dans les fichiers. Ce qui reste à Psalm : il lit les types PHP, que progpilot

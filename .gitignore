@@ -42,6 +42,11 @@ tests/.env
 /.well-known
 /.claude
 
-# progpilot (POC) : règles régénérées par .progpilot/build-namespaced-rules.php
-# à chaque changement de version du phar, qui vit lui-même dans var/
-.progpilot/generated/
+# Analyse de sécurité : hors dépôt.
+#
+# Un rapport de teinte nomme le fichier, la ligne et la nature de chaque défaut
+# encore ouvert. Le dépôt étant public, le publier reviendrait à en distribuer la
+# carte. Ces fichiers restent sur le poste de développement ; ce qui est corrigé
+# se raconte dans le CHANGELOG, une fois refermé.
+/.progpilot
+/.psalm/rapport.md

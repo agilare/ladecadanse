@@ -27,11 +27,10 @@ use function is_string;
  * (Psalm\Internal\Analyzer\Statements\Expression\Fetch\VariableFetchAnalyzer::taintVariable).
  * $_SESSION est reconnue comme superglobale mais reçoit un tableau de teintes vide.
  *
- * Sur ce dépôt c'est un angle mort qui coûte : le site range des préférences d'affichage
- * en session — `user_prefs_agenda_order`, `user_prefs_lieux_order`, `user_prefs_lieux_statut` —
- * puis les concatène dans du SQL et du HTML. Le POC progpilot a trouvé là deux `ORDER BY`
- * interpolés que Psalm ne signalait pas (voir .progpilot/rapport-poc.md, signalements 1 et 2) ;
- * la cause mesurée était exactement celle-ci.
+ * Sur ce dépôt c'est un angle mort qui coûte : le site range en session des valeurs venues
+ * de la requête — préférences d'affichage, identité du membre — puis les rend ou les
+ * concatène ailleurs. Sans ce plugin, ces chemins-là n'existent pas pour Psalm, ce qu'un
+ * autre analyseur de teinte avait mesuré avant lui.
  *
  * Les teintes ajoutées sont les mêmes que celles de $_GET (TaintKindGroup::ALL_INPUT) : ce qui
  * transite par la session vient soit de la requête, soit de la base, et les deux méritent le
