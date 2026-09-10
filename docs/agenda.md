@@ -4,26 +4,49 @@
 
 Sur la liste du jour, chaque carte d'événement dit où il en est par rapport à **l'instant du chargement de la page** (#51) :
 
-| État | Libellé | Ce qu'il faut pour l'établir |
+| État | Repère | Ce qu'il faut pour l'établir |
 | --- | --- | --- |
-| à venir | compte à rebours — `-45min`, `-2h30`, `-3j` | un horaire de début |
-| en cours | part écoulée — `40 %` | le début **et** la fin |
-| terminé | `terminé` | un horaire de fin |
+| à venir | compte à rebours — `dans 40min`, `dans 2h30`, `dans 5h`, `dans 3j` | un horaire de début |
+| en cours | une barre `<progress>` de la part écoulée | un horaire de début |
+| terminé | `(terminé)` | un horaire de fin |
 
-Une carte « terminé » est en outre atténuée, et reprend sa pleine opacité au survol ou dès qu'un de ses liens prend le focus.
+Sans horaire de début exploitable, la carte n'affiche rien : tout est porté par [`Ladecadanse\EvenementTimeStatus`](../librairies/EvenementTimeStatus.php), dont la fabrique rend `null` dans ce cas.
 
-Hors de ces trois cas, la carte n'affiche rien. C'est notamment la situation d'un événement commencé dont on ignore la fin — et les horaires manquants sont fréquents (#65) : mieux vaut ne rien dire qu'inventer une fin de soirée. Tout est porté par [`Ladecadanse\EvenementTimeStatus`](../librairies/EvenementTimeStatus.php), dont la fabrique rend `null` dans ce cas.
+### Où cela s'affiche
 
-### Ce que les libellés arrondissent
+Dans la colonne de droite du bloc « pratique », qui se lit en lignes :
 
-- **Compte à rebours** — minutes arrondies vers le haut, pour ne jamais afficher `-0min` ; au-delà de l'heure, `-2h30` (les minutes rondes sont omises : `-2h`) ; au-delà de la journée, `-3j`.
-- **Part écoulée** — arrondie à 10 %, puis **bornée à [10 %, 90 %]** : `0 %` et `100 %` se liraient comme « pas commencé » et « terminé » alors que l'événement est justement en cours.
+```
+20:30 – 23:00 (terminé)
+[▓▓▓▓░░░░░]?
+15.- / 12.-
+```
+
+L'horaire d'abord ; « terminé » le qualifie et reste sur sa ligne, entre parenthèses ; le compte à rebours et la barre prennent la ligne suivante ; le prix vient en dernier, sur sa propre ligne — là où, sans les repères, il suit l'horaire après une virgule.
+
+### Ce que les repères arrondissent
+
+- **Compte à rebours** — pas de dix minutes, avec un plancher à `dans 10min` pour ne jamais afficher `dans 0min` ; **au-delà de trois heures**, pas d'une heure (`dans 5h`, plus de minutes) ; au-delà de la journée, `dans 3j`. Un compte à rebours de la forme `dans 3h10` n'est donc pas atteignable : au-delà de 3h le pas est l'heure. Le seuil est la constante `COUNTDOWN_HOUR_ROUNDING_FROM_MINUTES`.
+- **Part écoulée** — arrondie à 5 %, puis **bornée à [5 %, 95 %]** : `0 %` et `100 %` se liraient comme « pas commencé » et « terminé » alors que l'événement est justement en cours. Le pourcentage n'est plus écrit : il passe dans le nom accessible et l'infobulle de la barre, qui porte le rôle ARIA `progressbar`.
+
+### Fin inconnue : une barre estimée
+
+Les horaires de fin manquent souvent (#65). Plutôt que de ne rien dire, la barre d'un événement commencé court alors **jusqu'à minuit** — le premier minuit qui suit son début — et un `?` la suit pour que l'estimation ne passe pas pour une mesure. Minuit passé, la barre plafonne à 95 % : on ne sait toujours pas que c'est fini.
+
+### Hors d'atteinte
+
+Une carte hors d'atteinte est atténuée (opacité 0,4) et reprend sa pleine opacité au survol ou dès qu'un de ses liens prend le focus. Le repère qui explique cette pâleur, lui, reste net : l'opacité d'un parent ne se rattrapant pas sur un enfant, elle est posée bloc par bloc plutôt que sur la carte.
+
+Deux situations y mènent :
+
+- l'événement est **terminé** ;
+- c'est une séance de **ciné ou de théâtre commencée depuis plus de trente minutes** : la salle est noire, la porte fermée. Une soirée, elle, se rejoint à toute heure et ne pâlit jamais tant qu'elle dure. Les genres concernés et le délai sont les constantes `GENRES_SEANCE` et `TOO_LATE_AFTER_START_MINUTES`.
 
 ### Horaires douteux
 
 Deux garde-fous, parce que les horaires stockés ne sont pas tous cohérents :
 
-- une **fin antérieure au début** est ignorée, comme si la fin n'était pas renseignée : elle ne dit rien de la temporalité ;
+- une **fin antérieure au début** est ignorée, comme si la fin n'était pas renseignée : elle ne dit rien de la temporalité, et l'événement commencé bascule sur la barre estimée ;
 - la **date portée par un horaire**, si elle n'est ni celle de l'événement ni le lendemain, est ramenée au jour de l'événement plutôt que prise au mot ([`DateHelper::horaireInstant()`](../librairies/Utils/DateHelper.php)). Le lendemain est admis parce qu'une journée d'agenda va de `06:00:01` à `06:00:00` le jour suivant — une soirée qui finit à 02:00 appartient encore au jour de l'événement.
 
 La sentinelle qui marque « sans horaire » est traitée comme une absence d'horaire, au même titre qu'une valeur vide.

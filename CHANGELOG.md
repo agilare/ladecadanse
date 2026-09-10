@@ -42,7 +42,7 @@ Feature documentation : [docs/](docs/).
 
 ### Added
 - events : the calendar export leaves the home and the event page for every listing — search results, lieu and organisateur pages #150 (PR #173) ; shown to every visitor, on future events only
-- agenda : on the day's own listing, each event card says where it stands against the moment the page was loaded #51 — a countdown, the share elapsed, `terminé` ; off by default behind `EVENT_TIME_STATUS_ENABLED` — see [docs/agenda.md](docs/agenda.md)
+- agenda : on the day's own listing, each event card says where it stands against the moment the page was loaded #51 — a countdown (`dans 2h30`, rounded to ten minutes, to the hour past three hours), a `<progress>` bar of the share elapsed, `(terminé)` ; schedule, marker and price each take their own line, an event out of reach fades while its marker stays legible — a finished one, or a ciné or théâtre screening started more than thirty minutes ago —, and a running event whose end time is missing (#65) gets a bar estimated to midnight, followed by a `?` ; off by default behind `EVENT_TIME_STATUS_ENABLED` — see [docs/agenda.md](docs/agenda.md)
 - event edit, admin events : the flyer and image fields accept a PDF, first page only, converted to WebP ; off by default behind `PDF_CONVERSION_ENABLED` — see the [README](README.md#accepter-les-pdf-dans-les-champs-image)
 - config : feature flags gain a third state through `Ladecadanse\FeatureFlag` — `false`, `'preview'` (administrators only), `true` — to try a substantial feature on the live site before opening it to everyone
 - lieux, organisateurs : both listings get twelve columns counting the events added month by month, visible from AUTHOR up #178 — see [docs/lieux-organisateurs.md](docs/lieux-organisateurs.md)
