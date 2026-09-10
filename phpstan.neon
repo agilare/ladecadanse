@@ -17,7 +17,11 @@ parameters:
         - vendor
         - var
         - tests
-        - node_modules
+        # (?) = chemin facultatif : node_modules/ n'existe que là où `npm install` a tourné,
+        # et AGENTS.md ne l'exige que pour `npm run lint` et `npm test`. Sans ce marqueur,
+        # PHPStan refuse de démarrer dans tout worktree frais — il exige la présence du
+        # répertoire qu'on lui demande d'ignorer. Même raison que le allowMissingFiles de psalm.xml.
+        - node_modules (?)
     fileExtensions:
         - php
     tmpDir: var/cache/phpstan
