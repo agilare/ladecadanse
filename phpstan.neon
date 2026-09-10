@@ -17,7 +17,7 @@ parameters:
         - vendor
         - var
         - tests
-        - node_modules (?)
+        - node_modules
     fileExtensions:
         - php
     tmpDir: var/cache/phpstan
