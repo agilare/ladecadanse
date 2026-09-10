@@ -251,7 +251,6 @@ include("_header.inc.php");
         <ul class="entete_contenu_navigation">
             <li><a href="index.php?courant=<?= sanitizeForHtml($date_prev) ?>" rel="prev nofollow" title="Jour précédent" aria-label="Jour précédent"><?= $iconePrecedent ?></a></li><li><a href="index.php?courant=<?= sanitizeForHtml($date_next) ?>" rel="next nofollow"><?php if ($is_courant_today) : ?>Demain<?php else : ?>Lendemain<?php endif; ?> <?= $iconeSuivant ?></a></li>
         </ul>
-        <div class="spacer"></div>
     </header>
 
 

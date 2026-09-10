@@ -106,10 +106,32 @@
 }
 
 
+/*
+ * Titre à gauche, navigation de jour à droite, sur une même ligne. Auparavant deux
+ * flottants dimensionnés en pourcentage (60 % / 35 %) alors que les boutons de la
+ * navigation se mesurent en em : dès que la colonne d'agenda descendait sous ~440px
+ * (fenêtre étroite, police plus grande), les 35 % ne suffisaient plus et le second
+ * bouton passait à la ligne, désolidarisé du premier. En flex, la navigation garde
+ * sa largeur propre et c'est le titre qui cède la place.
+ */
+header#entete_contenu
+{
+    display: flex;
+    align-items: baseline;
+    column-gap: 0.5em;
+}
+
+/* le titre est enveloppé dans un hgroup : sans min-width, l'item flex refuse de
+   descendre sous la largeur de son contenu et repousse la navigation */
+header#entete_contenu hgroup
+{
+    min-width: 0;
+}
+
 header#entete_contenu h1
 {
-    float:left;
-    width:60%;
+    float:none;
+    width:auto;
     margin: 0 0 0 0;
     font-size: 1.4em;
 }
@@ -149,17 +171,21 @@ header#entete_contenu h1 small
 
 ul.entete_contenu_navigation
 {
-    float:right;
-    width:35%;
-    margin: 0;
+    display: flex;
+    /* les deux boutons restent solidaires : c'est le titre voisin qui se comprime */
+    flex: 0 0 auto;
+    /* l'exemplaire de bas de liste n'a pas de titre à côté de lui et occupe toute la
+       largeur : justify-content le ramène à droite, comme le flottant le faisait */
+    justify-content: flex-end;
+    float: none; /* annule le flottant de global.css */
+    margin: 0 0 0 auto;
     padding-left: 0;
-    text-align:right;
+    list-style: none;
 }
 
 ul.entete_contenu_navigation li
 {
-    display:inline;
-    vertical-align:bottom;
+    display: block;
 }
 
 ul.entete_contenu_navigation li a
@@ -236,6 +262,37 @@ ul.entete_contenu_navigation li:nth-child(2) a:hover
     {
         background:#d4d4d4;
     }
+
+/*
+ * Sous 800px, les deux menus sont empilés (cf. #agenda_filters en display:contents) :
+ * le tri collé à droite ne répondait à rien et se lisait mal sous le filtre de genres.
+ * Le padding gauche reprend celui des <li> du filtre pour que les deux icônes tombent
+ * sur la même verticale.
+ */
+@media screen and (max-width: 799.98px)
+{
+    #order_navigation ul
+    {
+        float: none;
+        padding-left: 0.2em;
+    }
+
+    /* le titre du jour est juste au-dessus : l'écart n'a pas à valoir celui qui sépare
+       les deux menus du premier genre */
+    #genre_tab_navigation
+    {
+        margin-top: 0.5em;
+    }
+
+    /* respiration sous le bloc de filtres, avant le premier genre. En padding et non en
+       marge : #agenda_filters est en display:contents et n'a donc pas de boîte à marger,
+       et une marge basse ici fusionnerait avec les 10px de .genre-titre — plus grands,
+       donc seuls retenus, l'ajout resterait invisible. */
+    #order_navigation
+    {
+        padding-bottom: 0.5em;
+    }
+}
 
 #prochains_evenements section.genre
 {
