@@ -18,16 +18,17 @@ use Ladecadanse\Utils\DateHelper;
 use Ladecadanse\Utils\Text;
 
 // used for meta tags, opengraph
-$page_titre = " agenda de sorties à Genève, Nyon, Lausanne, Pays de Gex, Annemasse...; prochains événements : concerts, soirées, films, théâtre, expos, bars, cinémas";
-$page_description = "Programme des prochains événements festifs et culturels à Genève, Nyon, Lausanne, Pays de Gex, Annemasse... : fêtes, concerts et soirées, cinéma, théâtre, expositions, vernissages, conférences, lieux culturels et alternatifs";
+$page_titre = "Agenda des sorties à Genève, Nyon et Lausanne";
+$page_description = "Agenda des sorties à Genève, Nyon, Lausanne et alentours : concerts, soirées, expos, théâtre, cinéma. Le programme du jour et des jours à venir.";
 
 // filter & overwrite date
 $get['courant'] = $glo_auj_6h;
 if (!empty($_GET['courant']) && preg_match("/^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}$/", trim((string) $_GET['courant'])))
 {
     $get['courant'] = $_GET['courant'];
-    $page_titre = "Agenda d'événements du " . DateHelper::isoToFr($get['courant'], 'annee', html: false) . " à Genève, Nyon, Lausanne, Pays de Gex, Annemasse...";
-    $page_description = "Événements culturels et festifs du " . DateHelper::isoToFr($get['courant'], 'annee', html: false). " à Genève, Nyon, Lausanne, Pays de Gex, Annemasse... : concerts, soirées, films, théâtre, expos... ";
+    $date_fr = DateHelper::isoToFr($get['courant'], 'annee', html: false);
+    $page_titre = "Sorties du " . $date_fr . " à Genève";
+    $page_description = "Le programme du " . $date_fr . " à Genève, Nyon, Lausanne et alentours : concerts, soirées, expos, théâtre, cinéma.";
 }
 
 $is_courant_today = (empty($get['courant']) || $get['courant'] == $glo_auj_6h);
