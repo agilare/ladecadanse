@@ -3,7 +3,7 @@
 namespace Ladecadanse;
 
 use Ladecadanse\Element;
-use Ladecadanse\Utils\Text;
+use Ladecadanse\Utils\WebLink;
 use PDO;
 use Ladecadanse\HasDocuments;
 
@@ -73,8 +73,8 @@ class Organisateur extends Element
             <?php foreach ($organisateurs as $eo) : ?>
                 <li>
                     <a href="/organisateur/organisateur.php?idO=<?= (int) $eo['idOrganisateur']; ?>"><?= sanitizeForHtml($eo['nom']); ?></a>
-                        <?php if ($isWithOrganisateurUrl && !empty($eo['url'])) { $organisateurUrl = Text::getUrlWithName($eo['url']); ?> -&nbsp;<a href="<?= sanitizeForHtml($organisateurUrl['url']); ?>" title="Site web de l'organisateur" rel="external" target="_blank"><?= sanitizeForHtml($organisateurUrl['urlName']); ?></a>
-                    <?php } ?>
+                        <?php if ($isWithOrganisateurUrl && !empty($eo['url'])) : ?> -&nbsp;<?= WebLink::html($eo['url'], iconeParDefaut: 'fa-globe') ?>
+                    <?php endif; ?>
                 </li>
             <?php endforeach; ?>
         </ul>

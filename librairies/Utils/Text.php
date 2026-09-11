@@ -81,24 +81,6 @@ class Text
         }, $input);
     }
 
-    /**
-     * Sépare une URL de son libellé d'affichage, en complétant le schéma si
-     * l'entrée n'en a pas.
-     *
-     * @param string $urlOrPath https://www.test.ch ou www.test.ch
-     * @return array{url: string, urlName: string} ['https://www.test.ch', 'www.test.ch']
-     */
-    public static function getUrlWithName(string $urlOrPath): array
-    {
-        $urlComplete = $urlOrPath;
-        if (!preg_match("/^https?:\/\//", $urlOrPath))
-        {
-            $urlComplete = 'http://' . $urlOrPath;
-        }
-
-        return ['url' => $urlComplete, 'urlName' => rtrim(preg_replace("(^https?://)", "", $urlOrPath), "/")];
-    }
-
 
 
     /**

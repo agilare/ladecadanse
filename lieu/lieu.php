@@ -8,6 +8,7 @@ use Ladecadanse\HtmlShrink;
 use Ladecadanse\Personne;
 use Ladecadanse\Utils\DateHelper;
 use Ladecadanse\Utils\Text;
+use Ladecadanse\Utils\WebLink;
 use Ladecadanse\Utils\QueryParamValidator;
 
 if (empty($_GET['idL']) || !is_numeric($_GET['idL']))
@@ -262,8 +263,8 @@ include("../_header.inc.php");
 
                     <li><?= Text::lnAndUrlToHtml($lieu['horaire_general']); ?></li>
 
-                    <?php if (!empty($lieu['URL'])) : $lieu_url = Text::getUrlWithName($lieu['URL']); ?>
-                        <li class="sitelieu"><a class="url" href="<?= sanitizeForHtml($lieu_url['url']) ?>" rel="external" target="_blank"><?= sanitizeForHtml($lieu_url['urlName']) ?></a>
+                    <?php if (!empty($lieu['URL'])) : ?>
+                        <li class="sitelieu"><?= WebLink::html($lieu['URL'], iconeParDefaut: 'fa-globe') ?>
                         <?php if ($get['idL'] == 13) : // exception pour idLieu=13 (Le Rez - Usine) ?>
                             <a href="https://rez-usine.ch" class="url" rel="external" target="_blank">rez-usine.ch</a><br>
                             <a href="http://www.ptrnet.ch" class="url" rel="external" target="_blank">ptrnet.ch</a>
@@ -462,9 +463,8 @@ include("../_header.inc.php");
 
         <?php endif; ?>
 
-        <?php if (!empty($lieu['URL'])) :
-            $url_with_name = Text::getUrlWithName($lieu['URL'])     ?>
-            <p><br>Pour des informations complémentaires veuillez consulter <a href="<?= $url_with_name['url'] ?>" target='_blank'><?= sanitizeForHtml($url_with_name['urlName']) ?></a></p>
+        <?php if (!empty($lieu['URL'])) : ?>
+            <p><br>Pour des informations complémentaires veuillez consulter <?= WebLink::html($lieu['URL'], iconeParDefaut: 'fa-globe') ?></p>
         <?php endif; ?>
 
     </section> <!-- #prochains_evenenents -->

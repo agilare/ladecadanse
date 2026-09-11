@@ -19,6 +19,7 @@ use Ladecadanse\Personne;
 use Ladecadanse\UserLevel;
 use Ladecadanse\Utils\DateHelper;
 use Ladecadanse\Utils\Text;
+use Ladecadanse\Utils\WebLink;
 use Ladecadanse\EvenementRenderer;
 
 $get['idE'] = (int) $_GET['idE'];
@@ -248,8 +249,8 @@ include("../_header.inc.php");
                             <a href="#" class="dropdown map-dropdown-link" data-target="plan"><?= $icone['plan'] ?>&nbsp;Voir sur le plan&nbsp;<i class="fa fa-caret-down fa-lg" aria-hidden="true"></i></a>
                         </li>
                     <?php endif; ?>
-                    <?php if (!empty($even_lieu['url'])) : $lieu_url = Text::getUrlWithName($even_lieu['url']); ?>
-                        <li><a class="url" href="<?= $lieu_url['url'] ?>" rel="external" target="_blank"><?= $lieu_url['urlName']?></a>
+                    <?php if (!empty($even_lieu['url'])) : ?>
+                        <li><?= WebLink::html($even_lieu['url'], iconeParDefaut: 'fa-globe') ?>
                         <?php if ($tab_even['e_idLieu'] == 13) : // exception pour idLieu=13 (Le Rez - Usine) ?>
                             <a href="https://rez-usine.ch" class="url" rel="external" target="_blank">rez-usine.ch</a><br>
                             <a href="http://www.ptrnet.ch" class="url" rel="external" target="_blank">ptrnet.ch</a>

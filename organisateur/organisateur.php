@@ -8,7 +8,7 @@ use Ladecadanse\Evenement;
 use Ladecadanse\Lieu;
 use Ladecadanse\Personne;
 use Ladecadanse\Utils\DateHelper;
-use Ladecadanse\Utils\Text;
+use Ladecadanse\Utils\WebLink;
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\Utils\QueryParamValidator;
 
@@ -200,9 +200,9 @@ include("../_header.inc.php");
 
             <div id="pratique">
                 <ul>
-                    <?php if (!empty($organisateur->getValue('URL'))) : $lieu_url = Text::getUrlWithName($organisateur->getValue('URL')); ?>
+                    <?php if (!empty($organisateur->getValue('URL'))) : ?>
                         <li class="sitelieu">
-                            <a class="url" href="<?= sanitizeForHtml($lieu_url['url']) ?>" rel="external" target="_blank"><?= sanitizeForHtml($lieu_url['urlName']) ?></a>
+                            <?= WebLink::html($organisateur->getValue('URL'), iconeParDefaut: 'fa-globe') ?>
                         </li>
                     <?php endif; ?>
                     <?php if (count($orga_lieux) > 0) : ?>
@@ -299,9 +299,8 @@ include("../_header.inc.php");
 
         <?php endif; // nb even ?>
 
-        <?php if (!empty($organisateur->getValue('URL'))) :
-            $url_with_name = Text::getUrlWithName($organisateur->getValue('URL'))     ?>
-            <p><br>Pour des informations complémentaires veuillez consulter <a href="<?= $url_with_name['url'] ?>" target='_blank'><?= sanitizeForHtml($url_with_name['urlName']) ?></a></p>
+        <?php if (!empty($organisateur->getValue('URL'))) : ?>
+            <p><br>Pour des informations complémentaires veuillez consulter <?= WebLink::html($organisateur->getValue('URL'), iconeParDefaut: 'fa-globe') ?></p>
         <?php endif; ?>
 
     </section> <!-- #prochains_evenements -->
