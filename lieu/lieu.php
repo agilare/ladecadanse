@@ -260,7 +260,7 @@ include("../_header.inc.php");
                     <?php } ?>
 
 
-                    <li><?= Text::lnAndUrlToHtml(sanitizeForHtml($lieu['horaire_general'])); ?></li>
+                    <li><?= Text::lnAndUrlToHtml($lieu['horaire_general']); ?></li>
 
                     <?php if (!empty($lieu['URL'])) : $lieu_url = Text::getUrlWithName($lieu['URL']); ?>
                         <li class="sitelieu"><a class="url" href="<?= sanitizeForHtml($lieu_url['url']) ?>" rel="external" target="_blank"><?= sanitizeForHtml($lieu_url['urlName']) ?></a>
@@ -345,7 +345,7 @@ include("../_header.inc.php");
                                     // HACK: before oct 2009 text "wiki" formated
                                     $des_contenu = $des['contenu'];
                                     if (new \DateTime($des['date_derniere_modif']) <= new \DateTime("2009-10-12")) :
-                                        $des_contenu = "<p>".Text::lnAndUrlToHtml(sanitizeForHtml($des['contenu']))."</p>";
+                                        $des_contenu = "<p>".Text::lnAndUrlToHtml($des['contenu'])."</p>";
                                     endif;
                                     ?>
 

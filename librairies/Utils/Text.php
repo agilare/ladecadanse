@@ -102,38 +102,69 @@ class Text
 
 
     /**
-     * Convertit en HTML les seules conventions de saisie encore reconnues :
-     * saut de ligne -> <br />, URL nue ou www. -> <a href>, et la forme
-     * [http://exemple.ch libellé] -> lien avec libellé.
+     * Convertit du texte saisi en HTML : saut de ligne -> <br />, URL nue ou
+     * www. -> lien, adresse e-mail -> mailto.
      *
-     * Le reste de l'ancienne syntaxe wiki (==titre==, '''gras''', ''italique'',
-     * ---- ) n'est plus interprété depuis longtemps.
+     * Attend du texte BRUT, non échappé, et l'échappe lui-même morceau par
+     * morceau. C'est l'inverse de la version précédente, et c'est ce qui
+     * corrige deux défauts : une URL suivie d'un guillemet ou d'une apostrophe
+     * n'avale plus l'entité (&quot;, &#039;) dans son href, et la ponctuation
+     * de fin de phrase (« voir www.exemple.ch. ») reste dans le texte au lieu
+     * de casser le lien.
      *
-     * Attend du texte DÉJÀ échappé : la méthode produit du HTML sans échapper
-     * son entrée.
+     * L'ancienne syntaxe wiki [http://exemple.ch libellé] n'est plus reconnue :
+     * elle n'apparaît dans aucune des 50 000 fiches des deux dernières années.
      *
-     * @param  string $temp Texte échappé
-     * @return string Texte avec balises HTML
+     * @param  string $texte Texte brut, tel qu'il sort de la base
+     * @return string HTML prêt à afficher
      */
-    public static function lnAndUrlToHtml(string $temp): string
+    public static function lnAndUrlToHtml(string $texte): string
     {
-        if (empty($temp))
+        $texte = trim($texte);
+
+        if ($texte === '')
         {
             return "";
         }
 
-        $temp = preg_replace("/([^*]{2}|)\n/", "\\1<br />", $temp);
+        // Une URL court jusqu'au premier blanc ou guillemet ; la ponctuation
+        // finale est rendue au texte par WebLink::trimPunctuation().
+        $motif = '~(?:https?://|www\d?\.)[^\s<>"«»]+|[\w.+%-]+@[\w-]+\.[a-z]{2,}~iu';
 
-        $temp = preg_replace("/(([^[]|^)(http)+(s)?:(\/\/)|([^\[\/]|^)(www\.))((\w|\.|\-|_)+)(\/)?(\S+)?/i",
-            "\\2\\6<a href=\"http\\4://\\7\\8\\10\\11\" title=\"\\0\">\\7\\8</a>", (string) $temp);
-        //[
-        $temp = preg_replace("/\[(http[s]?:\/\/)([-a-z0-9_]{2,}\.[-a-z0-9.]{2,}[-a-z0-9\/&\?=.;~_%]*) (.+?)\]/i",
-                "<a href=\"\\1\\2\" title=\"\\1\\2\">\\3</a>", (string) $temp);
+        preg_match_all($motif, $texte, $trouves, PREG_OFFSET_CAPTURE);
 
-        $temp = preg_replace("/\[www\.([-a-z0-9.]{2,}[-a-z0-9\/&\?=.~_%]*) (.+?)\]/i",
-                "<a href=\"http://www.\\1\" title=\"www.\\1\">\\2</a>", (string) $temp);
+        $html = '';
+        $curseur = 0;
 
-        return $temp;
+        foreach ($trouves[0] as [$trouve, $offset])
+        {
+            $html .= self::escapeWithBreaks(substr($texte, $curseur, $offset - $curseur));
+            $curseur = $offset + strlen($trouve);
+
+            if (!preg_match('~^(https?://|www)~i', $trouve))
+            {
+                $html .= '<a href="mailto:' . sanitizeForHtml($trouve) . '">' . sanitizeForHtml($trouve) . '</a>';
+                continue;
+            }
+
+            $url = WebLink::trimPunctuation($trouve);
+
+            $html .= WebLink::html($url);
+            $html .= self::escapeWithBreaks(substr($trouve, strlen($url)));
+        }
+
+        return $html . self::escapeWithBreaks(substr($texte, $curseur));
+    }
+
+    /**
+     * Échappe un fragment de texte et rend ses sauts de ligne.
+     *
+     * N'utilise pas sanitizeForHtml() : celle-ci taille les blancs de bord,
+     * ce qui collerait les mots au lien qui les précède.
+     */
+    private static function escapeWithBreaks(string $texte): string
+    {
+        return nl2br(htmlspecialchars($texte, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401, 'UTF-8'));
     }
 
     /**
@@ -183,7 +214,7 @@ class Text
     public static function shortenToHtml(string $text, int $maxChars): string
     {
         $truncated = self::truncateWords($text, $maxChars);
-        $html = self::lnAndUrlToHtml(sanitizeForHtml($truncated));
+        $html = self::lnAndUrlToHtml($truncated);
 
         return $truncated === $text ? $html : $html . '…';
     }

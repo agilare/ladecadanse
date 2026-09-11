@@ -17,6 +17,7 @@ use Ladecadanse\Security\Authorization;
 use Ladecadanse\Utils\DateHelper;
 use Ladecadanse\Utils\RefList;
 use Ladecadanse\Utils\Text;
+use Ladecadanse\Utils\WebLink;
 
 /**
  * Description of EvenementRenderer
@@ -186,6 +187,13 @@ class EvenementRenderer
         return str_replace(' ', 'T', $instant);
     }
 
+    /**
+     * La liste des références web d'un événement.
+     *
+     * Chaque URL est rendue par WebLink : libellé raccourci sur la partie
+     * lisible de l'adresse, et icône de la plateforme quand elle est reconnue.
+     * Les autres gardent la puce d'origine.
+     */
     public static function getRefListHtml(string $refCsv): string
     {
         ob_start();
@@ -193,20 +201,12 @@ class EvenementRenderer
         foreach ($tab_ref as $r)
         {
             $r = trim($r);
-            if (mb_substr($r, 0, 3) == "www")
-            {
-                $r = "http://".$r;
-            }
             ?>
             <li>
                 <?php
-                // it's an URL
-                if (preg_match('#^(https?\\:\\/\\/)[a-z0-9_-]+\.([a-z0-9_-]+\.)?[a-zA-Z]{2,3}#i', $r))
+                if (preg_match('#^(https?://|www\d?\.)[a-z0-9_-]+\.[a-z0-9_.-]*[a-z]{2,}#i', $r))
                 {
-                    $url_with_name = Text::getUrlWithName($r);
-                ?>
-                    <i class="fa fa-hand-o-right" aria-hidden="true"></i>&nbsp;<a href="<?= sanitizeForHtml($url_with_name['url']) ?>" rel="external" target='_blank'><?= sanitizeForHtml($url_with_name['urlName']) ?></a>
-                <?php
+                    echo WebLink::html($r, iconeParDefaut: 'fa-hand-o-right');
                 }
                 else
                 {
