@@ -461,7 +461,7 @@ if ($erreur !== null)
 					?>
 				<tr>
 					<td><a href="/lieu/lieu.php?idL=<?= (int) $tab_desc['idLieu'] ?>" title="Voir la fiche du lieu"><?= sanitizeForHtml((string) $tab_desc['lieu_nom']) ?></a></td>
-					<td class="tdleft contenu"><?= Text::lnAndUrlToHtml(sanitizeForHtml($contenu)) ?></td>
+					<td class="tdleft contenu"><?= Text::lnAndUrlToHtml($contenu) ?></td>
 					<td><?= sanitizeForHtml($tab_desc['type']) ?></td>
 					<td><?= DateHelper::isoToApp(mb_substr((string) $tab_desc['dateAjout'], 0, 10)) ?></td>
 					<td class="actions">
