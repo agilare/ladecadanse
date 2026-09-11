@@ -348,7 +348,7 @@ $erreurs = $verif->getErreurs();
             <div class="spacer"></div>
             <p>
                 <label for="affiliation" class="affil">Nom&nbsp;</label>
-                <input type="text" name="affiliation" id="affiliation" size="30" maxlength="250" value="<?= sanitizeForHtml($champs['affiliation']); ?>"<?= isset($erreurs['affiliation']) ? ' class="champ_errone" aria-invalid="true"' : '' ?>>
+                <input type="text" name="affiliation" id="affiliation" size="30" maxlength="250" value="<?= sanitizeForHtml($champs['affiliation']); ?>" autocomplete="organization"<?= isset($erreurs['affiliation']) ? ' class="champ_errone" aria-invalid="true"' : '' ?>>
             </p>
         </fieldset>
 

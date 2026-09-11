@@ -1107,7 +1107,7 @@ if ($show_form)
 
     <form method="post" id="ajouter_editer" class="js-submit-freeze-wait" enctype="multipart/form-data" action="<?php echo basename(__FILE__) . "?action=" . $act ?>">
 
-        <input type="text" name="name_as" value="" class="name_as" /><?php echo $verif->getHtmlErreur('name_as'); ?>
+        <input type="text" name="name_as" value="" class="name_as" tabindex="-1" autocomplete="off" aria-hidden="true" /><?php echo $verif->getHtmlErreur('name_as'); ?>
         <input type="hidden" name="<?php echo $formTokenName; ?>" value="<?php echo sanitizeForHtml($_SESSION[$formTokenName]); ?>">
 
         <?php if (!empty($similarEvenements)) :
@@ -1203,8 +1203,9 @@ if ($show_form)
         <fieldset>
             <p>
                 <label for="user_email">Votre email*</label>
+                <?php // autocomplete="email" sur le seul champ saisissable : en lecture seule, il affiche l'adresse de la personne qui a proposé l'événement, pas celle de l'utilisateur ?>
                 <input type="email" id="user_email" name="user_email" value="<?php echo sanitizeForHtml($champs['user_email']) ?>"
-                       required size="30" <?php echo ($est_connecte && !empty($champs['user_email'])) ? 'readonly class="readonly" ': ''; ?> maxlength="120">
+                       required size="30" <?php echo ($est_connecte && !empty($champs['user_email'])) ? 'readonly class="readonly" ': 'autocomplete="email" '; ?> maxlength="120">
             </p>
             <?php if (!$est_connecte) { ?>
             <p>Déjà un compte ? <a href="/user/login.php">Connectez-vous</a>, ajoutez votre événement et il sera immédiatement publié</p>
@@ -1310,7 +1311,8 @@ if ($show_form)
             <div style="display: flex; align-items: flex-start; gap: 6px; flex-wrap: wrap;">
                 <label for="dateEvenement" style="white-space: nowrap;margin-right: -1px;">Date*</label>
                 <div style="display: flex; flex-direction: column; align-items: flex-start;">
-                    <input type="text" name="dateEvenement" id="dateEvenement" size="9" value="<?php echo sanitizeForHtml($champs['dateEvenement']); ?>" class="datepicker<?php echo $calendrier_toujours_visible ? ' datepicker-always-visible' : ''; ?>" placeholder="jj.mm.aaaa" required />
+                    <?php // autocomplete="off" : les dates d'anciens événements, que le navigateur déroulerait sous le champ, n'y servent pas et recouvriraient le calendrier permanent ?>
+                    <input type="text" name="dateEvenement" id="dateEvenement" size="9" value="<?php echo sanitizeForHtml($champs['dateEvenement']); ?>" class="datepicker<?php echo $calendrier_toujours_visible ? ' datepicker-always-visible' : ''; ?>" placeholder="jj.mm.aaaa" autocomplete="off" required />
                     <?php
                     echo $verif->getHtmlErreur('dateEvenement');
                     if ($calendrier_toujours_visible) {
