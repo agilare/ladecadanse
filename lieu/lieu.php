@@ -261,7 +261,7 @@ include("../_header.inc.php");
                     <?php } ?>
 
 
-                    <li><?= Text::lnAndUrlToHtml($lieu['horaire_general']); ?></li>
+                    <li><?= Text::lnAndUrlToHtml($lieu['horaire_general'] ?? ''); ?></li>
 
                     <?php if (!empty($lieu['URL'])) : ?>
                         <li class="sitelieu"><?= WebLink::html($lieu['URL'], iconeParDefaut: 'fa-globe') ?>
