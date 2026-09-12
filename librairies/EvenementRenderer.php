@@ -526,7 +526,7 @@ class EvenementRenderer
                 <a class="url" href="/event/evenement.php?idE=<?= (int)$tab_even['e_idEvenement']?>">
                     <strong class="summary"><?= self::titreSelonStatutHtml(sanitizeForHtml($tab_even['e_titre']), $tab_even['e_statut']) ?></strong>
                 </a><br>
-                <span class="category"><?= Evenement::genreLabel($tab_even['e_genre']); ?></span>
+                <span class="category"><?= Evenement::categoryLabel($tab_even['e_genre']); ?></span>
             </td>
             <td class="location">
                 <?= $location ?>

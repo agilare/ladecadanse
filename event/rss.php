@@ -2,6 +2,7 @@
 
 use Ladecadanse\Evenement;
 use Ladecadanse\EvenementRenderer;
+use Ladecadanse\EventCategory;
 use Ladecadanse\Utils\DateHelper;
 use Ladecadanse\Utils\Text;
 use Ladecadanse\Lieu;
@@ -230,13 +231,11 @@ switch($get['type'])
 
         $where .= " AND dateEvenement=?";
         $params = [$glo_auj_6h];
-        $order_by = " ORDER BY CASE e.genre
-            WHEN 'fête' THEN 1
-            WHEN 'cinéma' THEN 2
-            WHEN 'théâtre' THEN 3
-            WHEN 'expos' THEN 4
-            WHEN 'divers' THEN 5
-          END, e.dateAjout DESC";
+        // isOpenToAll() et non isEnabled() : le flux est mis en cache dans un fichier servi
+        // à tout le monde (rssCheminCache()), si bien qu'une sortie qui dépendrait de la
+        // session de l'administrateur qui l'a régénéré serait ensuite servie au public.
+        $order_by = " ORDER BY " . EventCategory::sqlOrderByCategory('e.genre', EventCategory::isOpenToAll())
+            . ", e.dateAjout DESC";
 
         break;
 
@@ -342,7 +341,11 @@ foreach ($tab_events as $tab_even)
 
     $even_lieu = Evenement::getLieu($tab_even);
 
-    $item['title'] = ucfirst((string) DateHelper::isoToFr($tab_even['e_dateEvenement'], html: false))." - ".$tab_even['e_genre']." : ".$tab_even['e_titre'];
+    // La catégorie repliée, mais pas son libellé : passer par categoryLabel() ferait dire
+    // « fêtes » là où les titres archivés par les lecteurs disent « fête » depuis toujours.
+    $categorie_visible = EventCategory::visible($tab_even['e_genre'], EventCategory::isOpenToAll());
+
+    $item['title'] = ucfirst((string) DateHelper::isoToFr($tab_even['e_dateEvenement'], html: false))." - ".$categorie_visible." : ".$tab_even['e_titre'];
     $item['link'] = SITE_CANONICAL_URL."/event/evenement.php?idE=".(int)$tab_even['e_idEvenement'];
 
      // item > description

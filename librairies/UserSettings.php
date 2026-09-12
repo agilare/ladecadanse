@@ -123,7 +123,7 @@ class UserSettings
      * est vérifié séparément par estHoraireValide() afin que le formulaire puisse le signaler.
      *
      * @param array<string, mixed> $saisie          valeurs brutes issues de $_POST
-     * @param array<string, string> $genresAutorises $glo_tab_genre (app/config.php)
+     * @param array<string, string> $genresAutorises EventCategory::selectable()
      * @return array{genre: string, horaire_debut: string, horaire_fin: string, idLieu: int, idOrganisateurs: list<int>, prix: string}
      */
     public static function sanitizeEventNewDefaults(array $saisie, array $genresAutorises): array

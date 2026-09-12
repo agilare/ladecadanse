@@ -11,6 +11,7 @@ use Ladecadanse\Utils\ImageUrlFetcher; // url import
 use Ladecadanse\Utils\PdfToImage; // url import
 use Ladecadanse\Security\SecurityToken;
 use Ladecadanse\Evenement; // domain
+use Ladecadanse\EventCategory; // domain
 use Ladecadanse\Lieu; // domain
 use Ladecadanse\Localite; // domain
 use Ladecadanse\Organisateur; // domain
@@ -95,7 +96,11 @@ if ($get['action'] != "ajouter" && $get['action'] != "insert")
         exit;
     }
 
-    $res_even_lieu = $connector->query("SELECT idLieu, statut, idPersonne, user_email, dateAjout, dateEvenement, horaire_fin FROM evenement WHERE idEvenement=" . (int) $get['idE']);
+    // `genre` sert à conserver une catégorie en préversion que l'éditeur ne voit pas : la
+    // valeur de référence vient de la base, jamais du POST, sinon il suffirait de forger le
+    // champ pour contourner la préversion. Cette requête couvre « editer » comme « update »,
+    // donc l'affichage du formulaire et sa soumission.
+    $res_even_lieu = $connector->query("SELECT idLieu, statut, idPersonne, user_email, dateAjout, dateEvenement, horaire_fin, genre FROM evenement WHERE idEvenement=" . (int) $get['idE']);
     $tab_even_lieu = $connector->fetchArray($res_even_lieu);
 
     if (
@@ -176,6 +181,30 @@ if (PdfToImage::estEnPreview())
 {
     $aide_formats_image .= ' <em>(l\'envoi de PDF est en préversion : vous seuls, administrateurs, le voyez)</em>';
 }
+
+/*
+ * Catégories proposables, et textes d'aide qui vont avec.
+ *
+ * En modification, la liste part de la catégorie enregistrée : un événement classé
+ * « concerts » par la modération, rouvert par un auteur qui ne voit pas la préversion,
+ * garde un bouton « fêtes » qui poste « concerts ». Sans cela, aucun bouton ne serait coché,
+ * le `required` forcerait un choix, et la première correction de faute de frappe effacerait
+ * le classement — la perte serait certaine, pas seulement possible.
+ *
+ * La même liste sert au rendu et à la validation : elles ne peuvent donc pas diverger.
+ */
+$new_categories_enabled = EventCategory::isEnabled();
+$selectable_categories = EventCategory::selectableForEdit($tab_even_lieu['genre'] ?? null, $new_categories_enabled);
+
+// L'aide de « fêtes » renvoyait les concerts vers cette catégorie : elle cesse d'être vraie
+// dès que « concerts » est proposé.
+$aides_categories = $new_categories_enabled
+    ? [
+        'fête'     => "Soirées, bals, festivals — le festif, sans scène annoncée en tête d'affiche.",
+        'concerts' => "Une ou plusieurs scènes annoncées, quel que soit le style.",
+        'cours'    => "Cours, ateliers et stages, à condition qu'ils soient gratuits ou à prix modéré.",
+    ]
+    : ['fête' => "Inclut les soirées, les concerts, etc."];
 
 // form values received
 $champs = ["statut" => "", "genre" => "", "titre" => "", "dateEvenement" => "", "idLieu" => 0, "idSalle" => 0,
@@ -375,9 +404,13 @@ if ($formulaire_poste)
 	 */
 
 	$verif->valider($champs['genre'], "genre", "texte", 1, 200, 1);
-	if (!empty($champs['genre']) && !array_key_exists($champs['genre'], $glo_tab_genre))
+	// La liste du rendu, pas $glo_tab_genre : une catégorie en préversion postée par un
+	// formulaire forgé est refusée, et la valeur conservée d'un événement déjà classé passe.
+	// La clé est "genre", celle que lit getHtmlErreur() plus bas — sous "genres", le message
+	// bloquait l'enregistrement sans jamais s'afficher.
+	if (!empty($champs['genre']) && !array_key_exists($champs['genre'], $selectable_categories))
 	{
-		$verif->setErreur("genres", "Cette catégorie n'est pas valable");
+		$verif->setErreur("genre", "Cette catégorie n'est pas valable");
 	}
 
 	$verif->valider($champs['titre'], "titre", "texte", 1, 80, 1);
@@ -1273,28 +1306,40 @@ if ($show_form)
 
         <ul class="radio mobile-vertical" style="font-size: 1.15em;">
         <?php
-        foreach ($glo_tab_genre as $k => $v)
+        foreach ($selectable_categories as $k => $v)
         {
-            $coche = '';
-            if (strcmp((string) $k, (string) $champs['genre']) == 0)
+            $coche = strcmp((string) $k, (string) $champs['genre']) === 0 ? ' checked="checked"' : '';
+
+            // required sur chaque bouton du groupe, et non sur la seule clé « fête » : HTML5
+            // rend le groupe obligatoire dès qu'un bouton l'est, mais le câbler sur une clé
+            // particulière suppose qu'elle est toujours rendue — ce que la liste des
+            // catégories proposables ne garantit plus.
+            // L'aide suit la catégorie visible, pas la clé du bouton : celui qui conserve une
+            // catégorie de préversion porte le libellé de son repli, et doit porter son aide.
+            $aide_categorie = $aides_categories[EventCategory::visible($k, $new_categories_enabled)] ?? null;
+            $libelle = sanitizeForHtml($v);
+
+            if ($aide_categorie !== null)
             {
-                $coche = 'checked="checked"';
+                $libelle = '<span class="tooltip">' . sanitizeForHtml($v) . ' <i class="fa fa-info-circle" aria-hidden="true"></i>'
+                    . '<span class="tooltiptext">' . sanitizeForHtml($aide_categorie) . '</span></span>';
             }
 
-            $required = '';
-            if ($k === 'fête')
-            {
-                $required = ' required';
-                $v = '<span class="tooltip">fêtes <i class="fa fa-info-circle" aria-hidden="true"></i>
-<span class="tooltiptext">Inclut les soirées, les concerts, etc.</span></span>';
-            }
-            echo '<li class="listehoriz"><input type="radio" name="genre" value="'.$k.'" '.$coche.' id="genre_'.$k.'"  class="radio_horiz" '.$required.' /><label class="continu" for="genre_'.$k.'">'.$v.'</label></li>';
-
+            echo '<li class="listehoriz"><input type="radio" name="genre" value="' . sanitizeForHtml($k) . '"' . $coche
+                . ' id="genre_' . sanitizeForHtml($k) . '" class="radio_horiz" required /><label class="continu" for="genre_'
+                . sanitizeForHtml($k) . '">' . $libelle . '</label></li>';
         }
         ?>
         </ul>
         <div class="guideChamp" style="margin-top:1em">Merci de choisir la catégorie pertinente; si vous n'êtes pas sûr, vous pouvez <a href="/misc/contacteznous.php" target="_blank">nous demander</a>
         </div>
+        <?php
+        // Une préversion qui ne se signale pas se croit livrée. La seconde phrase est la plus
+        // utile : sans elle, un administrateur classe en « concerts » sans savoir que le
+        // public lit toujours « fêtes ».
+        if (EventCategory::isInPreview()) : ?>
+        <div class="guideChamp"><em>« Concerts » et « cours/ateliers/stages » sont en préversion : vous seuls, administrateurs, les voyez. Pour tous les autres, un concert reste rangé dans « fêtes » et un cours dans « divers ».</em></div>
+        <?php endif; ?>
         <?php echo $verif->getHtmlErreur("genre"); ?>
     </fieldset>
 

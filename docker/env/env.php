@@ -59,6 +59,7 @@ define("PDF_CONVERSION_ENABLED", false);
 define("DATEPICKER_ALWAYS_VISIBLE_ENABLED", false);
 define("LIEU_MANUAL_COLLAPSIBLE_ENABLED", true);
 define("EVENT_TIME_STATUS_ENABLED", true);
+define("EVENT_NEW_CATEGORIES_ENABLED", 'preview');
 
 define("PAYPAL_HOSTED_BUTTON_ID", "");
 

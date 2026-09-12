@@ -12,6 +12,7 @@ if (empty($_GET['idE']) || !is_numeric($_GET['idE']))
 require_once("../app/bootstrap.php");
 
 use Ladecadanse\Evenement;
+use Ladecadanse\EventCategory;
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\Lieu;
 use Ladecadanse\Organisateur;
@@ -141,6 +142,11 @@ if ($_SESSION['user_prefs_agenda_order'] == "horaire_debut")
 	$sql_user_prefs_agenda_order = "e.horaire_debut ASC";
 }
 
+// Cette liste ne sert qu'à la navigation entre événements du jour : l'ordre des catégories
+// n'y est pas visible, seule sa complétude compte — une catégorie absente du CASE rendrait
+// NULL, qui trie en premier.
+$sql_category_order = EventCategory::sqlOrderByCategory('e.genre', EventCategory::isEnabled());
+
 $sql_events_of_day = "
 SELECT
 idEvenement, titre, CASE WHEN (e.idLieu IS NULL OR e.idLieu = '') THEN e.nomLieu ELSE l.nom END AS lieu_nom
@@ -149,13 +155,7 @@ LEFT JOIN lieu l ON e.idLieu = l.idLieu
 WHERE
   e.dateEvenement = :date AND e.statut NOT IN ('inactif', 'propose')
 ORDER BY
-  CASE e.genre
-    WHEN 'fête' THEN 1
-    WHEN 'cinéma' THEN 2
-    WHEN 'théâtre' THEN 3
-    WHEN 'expos' THEN 4
-    WHEN 'divers' THEN 5
-  END,
+  $sql_category_order,
   $sql_user_prefs_agenda_order";
 
 $stmtDayEvents = $connectorPdo->prepare($sql_events_of_day);
@@ -194,7 +194,8 @@ include("../_header.inc.php");
     <header id="entete_contenu" style="margin-bottom:-0.8em">
 
         <div id="entete_contenu_titre" <?php if ($tab_even['e_dateEvenement'] < $glo_auj) { echo ' class="ancien"'; } ?>>
-            <span class="category"><?= sanitizeForHtml($translator->get("event-category-".$tab_even['e_genre'])); ?></span>, <a href="/index.php?courant=<?= $tab_even['e_dateEvenement'] ?>"><abbr class="dtstart" title="<?= sanitizeForHtml(EvenementRenderer::dtstartIso($tab_even['e_dateEvenement'], $tab_even['e_horaire_debut'])) ?>"><?= DateHelper::isoToFr($tab_even['e_dateEvenement'], 'annee') ?></abbr></a>
+            <?php // la catégorie visible, et non celle de la base : la fiche est publique ?>
+            <span class="category"><?= sanitizeForHtml($translator->get("event-category-" . EventCategory::visible($tab_even['e_genre'], EventCategory::isEnabled()))); ?></span>, <a href="/index.php?courant=<?= $tab_even['e_dateEvenement'] ?>"><abbr class="dtstart" title="<?= sanitizeForHtml(EvenementRenderer::dtstartIso($tab_even['e_dateEvenement'], $tab_even['e_horaire_debut'])) ?>"><?= DateHelper::isoToFr($tab_even['e_dateEvenement'], 'annee') ?></abbr></a>
         </div>
 
         <?php if (0) : // !empty($events_siblings[0]) ?>

@@ -3,6 +3,7 @@
 require_once '../app/bootstrap.php';
 
 use Ladecadanse\Evenement;
+use Ladecadanse\EventCategory;
 use Ladecadanse\Utils\QueryParamValidator;
 
 if (!LADECADANSE_API_ENABLED || empty($_SERVER['PHP_AUTH_USER']) || empty($_SERVER['PHP_AUTH_PW']) || !($_SERVER['PHP_AUTH_USER'] == LADECADANSE_API_USER && $_SERVER['PHP_AUTH_PW'] == LADECADANSE_API_KEY))
@@ -48,13 +49,9 @@ if (!preg_match('/^[0-9]{2}:[0-9]{2}:[0-9]{2}$/', trim((string) $_GET['endtime']
 
 $get['endtime'] = trim((string) $_GET['endtime']);
 
-    $eventCategories = [
-    'fête',
-    'cinéma',
-    'théâtre',
-    'expos',
-    'divers',
-];
+// L'API n'a pas de session : isOpenToAll(), donc les catégories en préversion ne sont ni
+// acceptées en paramètre, ni distinguées dans la réponse.
+$eventCategories = array_keys(EventCategory::selectable(EventCategory::isOpenToAll()));
 try
 {
     $get['category'] = QueryParamValidator::validateUrlQueryValue($_GET['category'], 'enum', 1, $eventCategories);
@@ -79,7 +76,7 @@ if ($get['entity'] == 'event')
      LEFT JOIN localite eloc ON e.localite_id = eloc.id
      LEFT JOIN lieu l ON e.idLieu = l.idLieu
      LEFT JOIN localite loc ON l.localite_id = loc.id
-	 WHERE dateEvenement = '" . $connector->sanitize($get['date']) . "' AND genre = '" . $connector->sanitize($get['category']) . "' AND e.statut NOT IN ('propose')
+	 WHERE dateEvenement = '" . $connector->sanitize($get['date']) . "' AND " . EventCategory::sqlVisibleCategory('e.genre', EventCategory::isOpenToAll()) . " = '" . $connector->sanitize($get['category']) . "' AND e.statut NOT IN ('propose')
 	 AND e.region IN ('" . $connector->sanitize($get['region']) . "')";
     // noctambus : don't covers 'rf', 'hs'
     // so, localite.regions_covered is not used

@@ -10,12 +10,12 @@ global $connector;
 require_once("app/bootstrap.php");
 
 use Ladecadanse\Evenement;
+use Ladecadanse\EventCategory;
 use Ladecadanse\FeatureFlag;
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\Lieu;
 use Ladecadanse\UserLevel;
 use Ladecadanse\Utils\DateHelper;
-use Ladecadanse\Utils\Text;
 
 // used for meta tags, opengraph
 $page_titre = " agenda de sorties à Genève, Nyon, Lausanne, Pays de Gex, Annemasse...; prochains événements : concerts, soirées, films, théâtre, expos, bars, cinémas";
@@ -46,11 +46,33 @@ if (isset($_GET['tri_agenda']) && in_array($_GET['tri_agenda'], $tab_tri_agenda)
    $_SESSION['user_prefs_agenda_order'] = $_GET['tri_agenda'];
 }
 
-$valid_genre_tabs = array_merge(['tous'], array_keys($glo_tab_genre));
+/*
+ * Deux catégories de plus — « concerts » et « cours » — en préversion réservée aux
+ * administrateurs (drapeau d'app/env.php). Pour tous les autres, un événement classé
+ * « concerts » se range et s'affiche en « fêtes », un « cours » en « divers » : le repli
+ * se joue en SQL (première colonne et rang de tri, plus bas), l'affichage des libellés
+ * dans Evenement::categoryLabel().
+ */
+$new_categories_enabled = EventCategory::isEnabled();
+$new_categories_preview = EventCategory::isInPreview();
+$selectable_categories = EventCategory::selectable($new_categories_enabled);
+
+$valid_genre_tabs = array_merge(['tous'], array_keys($selectable_categories));
 if (isset($_GET['genre_tab']) && in_array($_GET['genre_tab'], $valid_genre_tabs, true)) {
     $_SESSION['user_prefs_agenda_genre'] = $_GET['genre_tab'];
 }
 $current_genre_tab = $_SESSION['user_prefs_agenda_genre']; // initialisé dans bootstrap.php
+
+// Un filtre mémorisé que la liste ne propose plus — drapeau rétrogradé, ou session
+// d'administrateur survivant à sa déconnexion — bloquerait la page : son onglet n'étant
+// plus rendu, le lien « retirer le filtre » n'existe plus, et l'agenda ne dirait plus que
+// « Pas d'événement … prévu ce jour ». On revient à « tous » plutôt qu'au repli : personne
+// n'a demandé les fêtes.
+if (!in_array($current_genre_tab, $valid_genre_tabs, true))
+{
+    $current_genre_tab = 'tous';
+    $_SESSION['user_prefs_agenda_genre'] = 'tous';
+}
 
 /*
  * Repères de temporalité (#51) : où en est chaque événement par rapport à l'heure de chargement.
@@ -76,9 +98,24 @@ if ($is_chronological_order)
 	$sql_user_prefs_agenda_order = "e.horaire_debut ASC";
 }
 
+/*
+ * Le repli des catégories en préversion se joue ici, en deux endroits solidaires.
+ *
+ * La première colonne d'abord : PDO::FETCH_GROUP groupe dessus, si bien que les concerts
+ * tombent dans le groupe « fête » sans une ligne de PHP.
+ *
+ * Le rang de tri ensuite, et c'est lui qui fait tenir l'ensemble : hors préversion,
+ * « concerts » partage le rang de « fête ». Le tri secondaire — dernier ajouté, ou heure
+ * de début — porte donc sur les deux catégories ensemble. Avec deux rangs distincts, MySQL
+ * rendrait toutes les fêtes puis tous les concerts, et le groupe fusionné repartirait en
+ * arrière au milieu, séparateurs horaires compris.
+ */
+$sql_visible_category = EventCategory::sqlVisibleCategory('e.genre', $new_categories_enabled);
+$sql_category_order = EventCategory::sqlOrderByCategory('e.genre', $new_categories_enabled);
+
 $sql_events_today_in_region_order_by_category = "SELECT
 
-  e.genre AS e_genre,
+  $sql_visible_category AS e_genre,
   e.idEvenement AS e_idEvenement,
   e.titre AS e_titre,
   e.statut AS e_statut,
@@ -118,13 +155,7 @@ LEFT JOIN salle s ON e.idSalle = s.idSalle
 WHERE
   e.dateEvenement = :date AND $sql_even_in_status_and_region_clause
 ORDER BY
-  CASE e.genre
-    WHEN 'fête' THEN 1
-    WHEN 'cinéma' THEN 2
-    WHEN 'théâtre' THEN 3
-    WHEN 'expos' THEN 4
-    WHEN 'divers' THEN 5
-  END,
+  $sql_category_order,
   $sql_user_prefs_agenda_order  LIMIT 300";
 
 $stmt = $connectorPdo->prepare($sql_events_today_in_region_order_by_category);
@@ -264,6 +295,13 @@ include("_header.inc.php");
         <?php endif; ?>
 
         <?php
+        // Même raison : sans cette ligne, un administrateur classe en « concerts » sans
+        // savoir que le public lit toujours « fêtes ». La seconde phrase est la plus utile.
+        if ($new_categories_preview) : ?>
+            <p class="even-time-preview"><i class="fa fa-filter" aria-hidden="true"></i>&nbsp;« Concerts » et « cours/ateliers/stages » sont en préversion : vous seuls, administrateurs, les voyez. Pour tous les autres, un concert reste rangé dans « fêtes » et un cours dans « divers ».</p>
+        <?php endif; ?>
+
+        <?php
         /* les deux menus partagent une ligne à partir de 800px, cf. #agenda_filters dans
            index.css ; l'ordre du DOM suit l'ordre visuel (filtrer, puis trier). Les jours
            sans événement, il n'y a rien à filtrer : sans la classe le conteneur reste en
@@ -276,7 +314,7 @@ include("_header.inc.php");
             <nav id="genre_tab_navigation" aria-label="Filtrer par genre">
                 <ul>
                     <li><i class="fa fa-filter" aria-hidden="true"></i></li>
-                    <?php foreach ($glo_tab_genre as $key => $label) : ?>
+                    <?php foreach ($selectable_categories as $key => $label) : ?>
                         <?php if (!array_key_exists($key, $tab_events_today_in_region_by_category) && $current_genre_tab !== $key) : continue; endif; ?>
                         <?php if ($current_genre_tab === $key) : ?>
                             <li class="ici" aria-current="true"><a href="index.php?genre_tab=tous<?= $url_filter_params ?>" title="Retirer le filtre" aria-label="Retirer le filtre <?= ucfirst($label) ?>" rel="nofollow"><?= ucfirst($label) ?>&nbsp;<i class="fa fa-times" aria-hidden="true"></i></a></li>
@@ -304,7 +342,7 @@ include("_header.inc.php");
         }
         elseif ($current_genre_tab !== 'tous' && !array_key_exists($current_genre_tab, $tab_events_today_in_region_by_category))
         {
-            HtmlShrink::msgInfo("Pas d’événement « " . ucfirst($glo_tab_genre[$current_genre_tab]) . " » prévu ce jour");
+            HtmlShrink::msgInfo("Pas d’événement « " . ucfirst(Evenement::categoryLabel($current_genre_tab)) . " » prévu ce jour");
         }
 
         $genres_today = array_keys($tab_events_today_in_region_by_category);
@@ -317,11 +355,11 @@ include("_header.inc.php");
                 <section class="genre">
 
                     <header class="genre-titre">
-                        <h2 id="<?= Text::stripAccents(Evenement::genreLabel($genre)); ?>"><?= ucfirst(Evenement::genreLabel($genre)); ?></h2>
+                        <h2 id="<?= EventCategory::anchor(Evenement::categoryLabel($genre)); ?>"><?= ucfirst(Evenement::categoryLabel($genre)); ?></h2>
                         <?php if ($current_genre_tab === 'tous') : ?>
                             <?php $genre_proch = next($genres_today); ?>
                             <?php if (isset($tab_events_today_in_region_by_category[$genre_proch])) : ?>
-                                <a class="genre-jump" href="#<?= Text::stripAccents(Evenement::genreLabel($genre_proch)); ?>"><?= Evenement::genreLabel($genre_proch); ?>&nbsp;<i class="fa fa-long-arrow-down"></i></a>
+                                <a class="genre-jump" href="#<?= EventCategory::anchor(Evenement::categoryLabel($genre_proch)); ?>"><?= Evenement::categoryLabel($genre_proch); ?>&nbsp;<i class="fa fa-long-arrow-down"></i></a>
                             <?php endif; ?>
                         <?php endif; ?>
                         <div class="spacer"></div>
@@ -335,7 +373,7 @@ include("_header.inc.php");
                         ?>
 
                         <?php if ($separator = $event->getSeparator()) : ?>
-                            <p class="rappel_date"><?= $separator->getLabel($day_label, Evenement::genreLabel($genre)); ?></p>
+                            <p class="rappel_date"><?= $separator->getLabel($day_label, Evenement::categoryLabel($genre)); ?></p>
                         <?php endif; ?>
 
                         <?php

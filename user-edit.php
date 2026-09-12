@@ -10,6 +10,7 @@
 
 require_once("app/bootstrap.php");
 
+use Ladecadanse\EventCategory;
 use Ladecadanse\UserLevel;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\PasswordPolicy;
@@ -137,7 +138,7 @@ if ($formulaire_poste)
 		'idLieu' => $_POST['ev_defaults_idLieu'] ?? 0,
 		'idOrganisateurs' => $_POST['ev_defaults_organisateurs'] ?? [],
 		'prix' => $_POST['ev_defaults_prix'] ?? '',
-	], $glo_tab_genre);
+	], EventCategory::selectable(EventCategory::isEnabled()));
 
 	// Les selects et les <input type="time"> n'offrent que des valeurs valides : sanitize ci-dessus
 	// ramène silencieusement à vide ce qui ne l'est pas. Les horaires font exception et sont
@@ -920,7 +921,7 @@ if ($verif->nbErreurs() > 0)
             <label for="ev_defaults_genre">Catégorie</label>
             <select name="ev_defaults_genre" id="ev_defaults_genre" style="max-width:350px">
                 <option value=""></option>
-                <?php foreach ($glo_tab_genre as $genre_cle => $genre_label) : ?>
+                <?php foreach (EventCategory::selectable(EventCategory::isEnabled()) as $genre_cle => $genre_label) : ?>
                 <option value="<?= sanitizeForHtml($genre_cle) ?>" <?php if ((string) $genre_cle === $ev_defaults['genre']) { echo 'selected="selected"'; } ?>><?= sanitizeForHtml($genre_label) ?></option>
                 <?php endforeach ?>
             </select>

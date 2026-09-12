@@ -24,6 +24,23 @@ class Text
     }
 
     /**
+     * Dérive d'un libellé français un identifiant utilisable en id HTML et en
+     * fragment d'URL.
+     *
+     * stripAccents() ne retire que les diacritiques : un libellé qui porte une
+     * barre oblique ou une espace la garde, et se retrouve tel quel dans un
+     * `id` puis dans le `href="#…"` qui le vise. Les libellés d'un seul mot
+     * sans accent — la plupart — sont rendus inchangés.
+     */
+    public static function slug(string $str): string
+    {
+        $str = mb_strtolower(self::stripAccents($str), 'UTF-8');
+        $str = preg_replace('/[^a-z0-9]+/', '-', $str);
+
+        return trim((string) $str, '-');
+    }
+
+    /**
      * Convertit du texte saisi en HTML : saut de ligne -> <br />, URL nue ou
      * www. -> lien, adresse e-mail -> mailto.
      *

@@ -117,6 +117,22 @@ define("LIEU_MANUAL_COLLAPSIBLE_ENABLED", false);
 //   true        ouvert à tous
 define("EVENT_TIME_STATUS_ENABLED", false);
 
+// proposer deux catégories d'événement de plus — « concerts » et « cours/ateliers/stages » —
+// à la saisie, au filtrage de l'agenda et à l'affichage.
+//
+// Trois états, comme tout drapeau passant par Ladecadanse\FeatureFlag :
+//   false       les cinq catégories d'avant ; un événement déjà classé en « concerts »
+//               s'affiche et se range en « fêtes », un « cours » en « divers »
+//   'preview'   réservé aux administrateurs, le temps d'éprouver le classement sur de
+//               vrais événements ; pour tous les autres le repli s'applique, et une
+//               mention au-dessus de l'agenda comme sous le champ Catégorie le rappelle
+//   true        ouvert à tous
+//
+// Le repli n'efface rien : evenement.genre reste un varchar(20), et rétrograder le
+// drapeau ne perd aucune donnée — les événements reclassés retrouvent leur catégorie
+// dès qu'il remonte.
+define("EVENT_NEW_CATEGORIES_ENABLED", false);
+
 define("PAYPAL_HOSTED_BUTTON_ID", "");
 
 // to allow access to events API (api.php)

@@ -101,7 +101,14 @@ $glo_regions_coverage = ['ge' => ['ge', 'rf', 'hs'], 'vd' => ['vd', 'hs']];
 // DOMAIN
 
 //// EVENTS
-$glo_tab_genre = ["fête" => "fêtes", "cinéma" => "ciné", "théâtre" => "théâtre", "expos" => "expos", "divers" => "divers"];
+// La liste appartient désormais à Ladecadanse\EventCategory, qui porte aussi le repli des
+// catégories en préversion et leur rang de tri — comme les catégories de lieux ont rejoint
+// Lieu::CATEGORIES, et pour la même raison : une liste qui se lit sans session (flux RSS en
+// cache, API, script de maintenance) n'a rien à faire dans une globale. Celle-ci n'en est
+// plus que l'alias, sous lequel une dizaine de fichiers la lisent encore par `global`.
+// L'autoloader est chargé avant ce fichier (app/bootstrap.php:8), la constante est donc
+// résolue.
+$glo_tab_genre = Ladecadanse\EventCategory::ALL;
 $statuts_evenement = ['propose' => 'Proposé', 'actif' => 'Proposé', 'complet' => 'Complet', 'annule' => 'Annulé', 'inactif' => 'Dépublié'];
 $price_types = ['unknown' => 'inconnu', 'gratis' => 'entrée libre', 'asyouwish' => 'prix libre', 'chargeable' => 'payant'];
 $tab_tri_agenda = ["dateAjout", "horaire_debut"];

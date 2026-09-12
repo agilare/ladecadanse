@@ -5,7 +5,9 @@ event-send-share-success-msg : L'événement a été envoyé
 lieu-events-ancien-none: Pas d'événenment passés
 lieu-events-futur-none: Pas de prochains événements
 event-category-fête: Fêtes
+event-category-concerts: Concerts
 event-category-cinéma: Ciné
 event-category-théâtre: Théâtre
 event-category-expos: Expos
+event-category-cours: Cours/ateliers/stages
 event-category-divers: Divers
