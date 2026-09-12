@@ -14,17 +14,34 @@ $('.magnific-popup').magnificPopup({
 });
 
 // used in lieu
-$('.gallery-item').magnificPopup({
-    type: 'image',
-    tClose: 'Fermer (Esc)',
-    tLoading: 'Chargement...', // Text that is displayed during loading. Can contain %curr% and %total
-    gallery: {
-        enabled: true,
-        tPrev: 'Pr&eacute;c&eacute;dente (bouton gauche)',
-        tNext: 'Suivante (bouton droit)',
-        tCounter: '%curr% de %total%'
-    }
-});
+$('.gallery-item').magnificPopup(galleryOptions());
+
+// used in event : le flyer et l'illustration s'ouvrent l'un depuis l'autre, comme la galerie
+// d'un lieu. Ces deux liens sont déjà pris par l'initialisation .magnific-popup ci-dessus, qui
+// les ouvre seuls ; magnificPopup remplace le gestionnaire de clic des éléments qu'on lui
+// redonne, donc c'est bien la galerie qui gagne. Pas de condition sur le nombre d'images :
+// en dessous de deux, magnificPopup n'affiche ni flèches ni compteur.
+$('#illustrations a.magnific-popup').magnificPopup(galleryOptions());
+
+/*
+ * magnificPopup écrit dans l'objet d'options qu'on lui passe : il y range l'ensemble
+ * d'éléments visé. Partager une constante entre les deux appels ferait donc rouvrir au second
+ * la galerie du premier — d'où une fabrique.
+ */
+function galleryOptions()
+{
+    return {
+        type: 'image',
+        tClose: 'Fermer (Esc)',
+        tLoading: 'Chargement...', // Text that is displayed during loading. Can contain %curr% and %total
+        gallery: {
+            enabled: true,
+            tPrev: 'Pr&eacute;c&eacute;dente (bouton gauche)',
+            tNext: 'Suivante (bouton droit)',
+            tCounter: '%curr% de %total%'
+        }
+    };
+}
 
 $('.js-select2').select2(
 {
