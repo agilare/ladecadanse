@@ -208,7 +208,7 @@ if ($erreur === null)
 
     if ($defauts['genre'] !== '')
     {
-        $defauts_evenement['Catégorie'] = Evenement::genreLabel($defauts['genre']);
+        $defauts_evenement['Catégorie'] = Evenement::categoryLabel($defauts['genre']);
     }
 
     if ($defauts['horaire_debut'] !== '')
@@ -430,7 +430,7 @@ if ($erreur !== null)
 						<?php endif; ?>
 					</td>
 					<td><?= DateHelper::isoToApp($tab_even['dateEvenement']) ?></td>
-					<td><?= sanitizeForHtml(Evenement::genreLabel($tab_even['genre'])) ?></td>
+					<td><?= sanitizeForHtml(Evenement::categoryLabel($tab_even['genre'])) ?></td>
 					<td class="horaire"><?= EvenementRenderer::schedulesToHhMm((string) $tab_even['horaire_debut'], (string) $tab_even['horaire_fin'], (string) $tab_even['dateEvenement']) ?></td>
 					<td><?= DateHelper::isoToApp(mb_substr((string) $tab_even['dateAjout'], 0, 10)) ?></td>
 					<?php // nommée pour que le CSS puisse l'exclure de l'atténuation des lignes passées ?>

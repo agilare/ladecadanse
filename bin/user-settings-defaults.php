@@ -70,6 +70,7 @@ declare(strict_types=1);
  * Créé : 27 août 2026
  */
 
+use Ladecadanse\EventCategory;
 use Ladecadanse\UserSettings;
 use Ladecadanse\Utils\DbConnectorPdo;
 use PHPMailer\PHPMailer\PHPMailer;
@@ -166,16 +167,19 @@ if (isset($options['csv']))
 /*
  * La liste des catégories valides, référence de sanitizeEventNewDefaults().
  *
- * `$glo_tab_genre` vient de app/config.php, inclus plus haut par un chemin calculé que l'analyse
- * statique ne sait pas suivre. Le contrôle n'est pas une formalité : si la variable changeait de
- * nom, `array_key_exists()` refuserait silencieusement toutes les catégories et le script
- * s'achèverait sur un rapport vide, d'apparence normale.
+ * isOpenToAll() et non isEnabled() : ce script n'a pas de session, et « accessible à
+ * l'utilisateur courant » n'y veut rien dire. Tant que les nouvelles catégories sont en
+ * préversion, il ne les écrit dans les réglages de personne.
+ *
+ * La liste vient d'une constante de classe, qui ne peut plus disparaître en silence comme
+ * le pouvait la globale `$glo_tab_genre` — un renommage donnait alors un rapport vide,
+ * d'apparence normale. Le contrôle reste, il ne coûte rien.
  */
-$genresAutorises = $glo_tab_genre ?? null;
+$genresAutorises = EventCategory::selectable(EventCategory::isOpenToAll());
 
-if (!is_array($genresAutorises) || $genresAutorises === [])
+if ($genresAutorises === [])
 {
-    fwrite(STDERR, "ERREUR : \$glo_tab_genre est introuvable ou vide — app/config.php a-t-il changé ?\n");
+    fwrite(STDERR, "ERREUR : la liste des catégories est vide — Ladecadanse\\EventCategory a-t-elle changé ?\n");
     exit(1);
 }
 
@@ -503,7 +507,7 @@ foreach (array_filter($exclus) as $motif => $nb)
 foreach (array_filter($ecartes) as $motif => $nb)
 {
     fwrite(STDOUT, sprintf("  %d champ(s) écarté(s) : %s\n", $nb, match ($motif) {
-        'genre' => "genre absent de \$glo_tab_genre",
+        'genre' => "catégorie non proposée à la saisie",
         'lieu_nom_libre' => "lieu dominant saisi en nom libre, sans fiche",
         'lieu_inactif' => "lieu dominant non actif",
         'orga_inactif' => "au moins un organisateur non actif",

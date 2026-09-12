@@ -17,7 +17,7 @@ class Evenement
 
     public const int AGENDA_START_YEAR = 2005;
     // evenement.genre default value in database
-    public const string GENRE_DEFAULT = 'divers';
+    public const string CATEGORY_DEFAULT = 'divers';
 
     /**
      * Boîte maximale des miniatures d'événement (#84).
@@ -45,17 +45,24 @@ class Evenement
     /**
      * TODO: mv to EvenementRenderer ?
      *
-     * Libellé d'affichage d'un genre
+     * Libellé d'affichage d'une catégorie.
      *
-     * Les genres sont stockés en varchar : d'anciens événements peuvent porter
-     * un genre qui n'est plus dans $glo_tab_genre, on retombe alors sur "divers"
-     * plutôt que d'afficher (ou pire, de passer plus loin) une valeur nulle
+     * Le repli des catégories en préversion s'applique ici, et nulle part ailleurs : c'est
+     * le point de passage unique de tout affichage de catégorie — agenda, recherche, fiches
+     * lieu et organisateur, tableaux d'administration, tableau de bord. Sans lui, chacune
+     * de ces pages laisserait fuiter « concerts » à qui ne doit pas encore le voir.
+     *
+     * Les catégories sont stockées en varchar : d'anciens événements peuvent en porter une
+     * qui n'est plus dans la liste, on retombe alors sur "divers" plutôt que d'afficher (ou
+     * pire, de passer plus loin) une valeur nulle.
      */
-    public static function genreLabel(?string $genre): string
+    public static function categoryLabel(?string $category): string
     {
         global $glo_tab_genre;
 
-        return $glo_tab_genre[$genre] ?? $glo_tab_genre[self::GENRE_DEFAULT] ?? self::GENRE_DEFAULT;
+        $category = EventCategory::visible($category, EventCategory::isEnabled());
+
+        return $glo_tab_genre[$category] ?? $glo_tab_genre[self::CATEGORY_DEFAULT] ?? self::CATEGORY_DEFAULT;
     }
 
     /**

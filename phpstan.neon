@@ -49,6 +49,7 @@ parameters:
         - DATEPICKER_ALWAYS_VISIBLE_ENABLED
         - LIEU_MANUAL_COLLAPSIBLE_ENABLED
         - EVENT_TIME_STATUS_ENABLED
+        - EVENT_NEW_CATEGORIES_ENABLED
     inferPrivatePropertyTypeFromConstructor: true
     checkMissingTypehints: true
     ignoreErrors:

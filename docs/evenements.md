@@ -82,9 +82,51 @@ Chaque début janvier, les images de l'année écoulée sont déplacées dans `w
 
 Les anciennes URL sont rattrapées par une redirection 301 dans [`htaccess/50-routage.conf`](../htaccess/50-routage.conf), **à étendre d'une année à chaque déplacement**. Elle couvre jpg, png, gif et webp — tout ce qu'`ImageDriver2` sait écrire ; le webp est devenu le format le plus fréquent depuis que les PDF sont convertis à l'envoi. Elle s'arrête délibérément à l'année précédente : inclure l'année en cours changerait les 404 de ses images en redirections vers un répertoire qui n'existe pas encore.
 
-## Genres
+## Catégories
 
-Un `genre` absent de la configuration s'affiche comme « divers » via `Evenement::genreLabel()`, au lieu de faire échouer la page d'accueil.
+La liste vit dans [`Ladecadanse\EventCategory`](../librairies/EventCategory.php) — `ALL`, sept entrées, dans l'ordre qui commande à la fois les boutons radio des formulaires, les onglets de filtre de l'agenda et les sections de la liste du jour. `$glo_tab_genre` n'en est plus que l'alias, sous lequel une dizaine de fichiers la lisent encore par `global`.
+
+Les clés restent en français : ce sont les valeurs de la colonne `evenement.genre`, un `varchar(20)`.
+
+Une catégorie absente de la liste s'affiche comme « divers » via `Evenement::categoryLabel()`, au lieu de faire échouer la page d'accueil — d'anciens événements en portent qui n'y sont plus.
+
+### Concerts et cours : deux catégories en préversion
+
+`concerts` et `cours` ne sont pas montrées à tout le monde. Hors préversion, un événement classé `concerts` se range et s'affiche en **fêtes**, un `cours` en **divers** : ce n'est pas un masquage mais un rangement, la donnée reste juste en base, et rétrograder le drapeau ne perd aucun reclassement.
+
+Le repli se joue à trois endroits, et à trois seulement :
+
+| Où | Quoi |
+| --- | --- |
+| `Evenement::categoryLabel()` | tout affichage de libellé — agenda, recherche, fiches lieu et organisateur, tableaux d'administration, tableau de bord |
+| `EventCategory::sqlVisibleCategory()` | la première colonne de la requête de l'agenda, sur laquelle `PDO::FETCH_GROUP` groupe, et le `WHERE` de l'API |
+| `EventCategory::sqlOrderByCategory()` | le rang de tri, dans les trois requêtes qui ordonnent par catégorie |
+
+Le rang de tri est celui de la catégorie **visible** : hors préversion, `concerts` partage le rang de `fête`. C'est ce qui fait que le tri secondaire — dernier ajouté, ou heure de début — porte sur les deux catégories ensemble. Avec deux rangs distincts, MySQL rendrait toutes les fêtes puis tous les concerts, et le groupe fusionné repartirait en arrière au milieu, séparateurs horaires compris.
+
+### Qui décide de l'audience
+
+Trois méthodes, et le choix n'est pas indifférent :
+
+- `isEnabled()` — la question courante : ouvert à tous, ou administrateur en préversion ;
+- `isInPreview()` — pour la mention qui signale la préversion, au-dessus de l'agenda et sous le champ Catégorie ;
+- `isOpenToAll()` — **les surfaces sans utilisateur courant** : le flux RSS, mis en cache dans un fichier servi à tout le monde, si bien qu'une sortie dépendant de la session de l'administrateur qui l'a régénéré serait ensuite servie au public ; l'API, sans session ; le script `bin/user-settings-defaults.php`.
+
+Les méthodes de règle (`selectable()`, `visible()`, les deux fragments SQL) prennent l'audience en paramètre, sans valeur par défaut : l'oubli ne compile pas.
+
+### Le formulaire conserve ce qu'il ne montre pas
+
+Un événement classé `concerts` par la modération, rouvert par un auteur qui ne voit pas la préversion : `EventCategory::selectableForEdit()` remplace, à sa place dans la liste, la clé du repli par la catégorie enregistrée. Le bouton garde le libellé et le rang de « fêtes » mais poste `concerts`, et se coche. Qui ne touche pas au champ laisse la catégorie intacte ; qui choisit « ciné » applique « ciné ».
+
+La valeur de référence vient de la base — la colonne `genre` lue par la requête d'autorisation d'`evenement-edit.php` —, jamais du POST : sinon il suffirait de forger le champ pour contourner la préversion. La même liste sert au rendu et à la validation, elles ne peuvent donc pas diverger.
+
+### Activation
+
+Le drapeau `EVENT_NEW_CATEGORIES_ENABLED` d'`app/env.php` est à `false` par défaut. Il prend les trois états de [`Ladecadanse\FeatureFlag`](../librairies/FeatureFlag.php) — `false`, `'preview'` (administrateurs seulement), `true`.
+
+La [charte éditoriale](../articles/charte-editoriale.php) annonce cinq catégories et range explicitement le musical dans « Fêtes », les ateliers et cours dans « Divers ». Elle reste exacte pour le public tant que le drapeau n'est pas à `true` : **c'est au passage à `true` qu'elle se reprend**, avec les scénarios Selenium de `tests/ladecadanse.side`, dont les sélecteurs positionnels (`.genre:nth-child(N)`) se décalent dès qu'une section s'insère.
+
+## Lieu supprimé
 
 ## Lieu supprimé
 

@@ -3,6 +3,7 @@
 require_once("../app/bootstrap.php");
 
 use Ladecadanse\Evenement;
+use Ladecadanse\EventCategory;
 use Ladecadanse\Utils\DateHelper;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\QueryParamValidator;
@@ -199,7 +200,7 @@ if (!empty($_POST['formulaire']))
          * VERIFICATION DES CHAMPS ENVOYES par POST
          */
         $verif->valider($champs['genre'], "genre", "texte", 1, 200, 0);
-        if (!empty($champs['genre']) && !array_key_exists($champs['genre'], $glo_tab_genre))
+        if (!empty($champs['genre']) && !array_key_exists($champs['genre'], EventCategory::selectable(EventCategory::isEnabled())))
         {
             $verif->setErreur("genre", "Cette catégorie n'est pas valable");
         }
@@ -564,7 +565,7 @@ $erreurs = $verif->getErreurs();
                 <td style="text-align:left"><a href="/event/evenement.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>" class='titre'><?= sanitizeForHtml($tab_even['e_titre']) ?></a></td>
                 <td><?= Lieu::getLinkNameHtml($even_lieu['nom'], $even_lieu['idLieu'], $even_lieu['salle']) ?><br><span style="color:lightsteelblue"><?= $even_lieu['localite'] ?></span></td>
                 <td><a href="/index.php?courant=<?= sanitizeForHtml($tab_even['e_dateEvenement']) ?>"><?= DateHelper::isoToApp($tab_even['e_dateEvenement']) ?></a></td>
-                <td><?= ucfirst(Evenement::genreLabel($tab_even['e_genre'])) ?></td>
+                <td><?= ucfirst(Evenement::categoryLabel($tab_even['e_genre'])) ?></td>
                 <td>
                     <?= EvenementRenderer::schedulesToHhMm($tab_even['e_horaire_debut'], $tab_even['e_horaire_fin'], $tab_even['e_dateEvenement']) ?>
                     <?php
@@ -634,7 +635,10 @@ $erreurs = $verif->getErreurs();
             <legend>Catégorie</legend>
             <ul class="radio mobile-vertical">
             <?php
-            foreach ($glo_tab_genre as $na => $la)
+            // L'édition groupée ne touche que les champs non vides : aucune catégorie cochée
+            // veut dire « ne pas changer », donc rien à conserver ici comme dans
+            // evenement-edit.php.
+            foreach (EventCategory::selectable(EventCategory::isEnabled()) as $na => $la)
             {
                 $coche = $na === $champs['genre'] ? ' checked="checked"' : '';
                 echo '<li class="listehoriz">'

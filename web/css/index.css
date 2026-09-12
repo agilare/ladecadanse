@@ -21,18 +21,33 @@
     margin-bottom: 0.8em;
 }
 
+/*
+ * Sept catégories et l'entonnoir ne tiennent plus sur une ligne dans une colonne
+ * plafonnée à 564px. Le repli se faisait déjà tout seul (des inline-block), mais deux
+ * lignes collées se lisent comme un bloc : entre boîtes en ligne, ni margin ni padding
+ * ne produisent un écart vertical propre, d'où le passage en flex pour le row-gap.
+ *
+ * C'est le <ul> qui devient flex, pas le <nav> : le collant est porté par un ancêtre
+ * (#genre_tab_navigation en mobile, #agenda_filters en desktop) et le flex de la barre
+ * partagée a le <nav> pour enfant direct — aucun des deux n'est touché.
+ */
 #genre_tab_navigation ul
 {
     list-style: none;
     margin: 0;
     padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline; /* l'entonnoir reste sur la ligne de base du texte */
+    row-gap: 0.4em;
+    column-gap: 0.25em;
 }
 
 #genre_tab_navigation li
 {
-    display: inline-block;
-    padding-left:0.2em;
-    padding-right:0.2em;
+    /* l'écart horizontal est passé au column-gap : un padding latéral décalerait le
+       premier onglet de la seconde ligne */
+    padding: 0;
 }
 
 #genre_tab_navigation li a
@@ -83,10 +98,10 @@
         padding: 0;
     }
 
-    #agenda_filters.avec-filtre-genre #genre_tab_navigation li
+    /* la ligne est partagée avec le menu de tri : les onglets s'y resserrent */
+    #agenda_filters.avec-filtre-genre #genre_tab_navigation ul
     {
-        padding-left: 0.1em;
-        padding-right: 0.1em;
+        column-gap: 0.15em;
     }
 
     /* margin-left auto plutôt que le seul justify-content : quand la ligne est trop

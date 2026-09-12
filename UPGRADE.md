@@ -37,8 +37,20 @@ Deux pages changent d'adresse :
 
 Les redirections 301 sont dans [`htaccess/50-routage.conf`](htaccess/50-routage.conf) et partent avec le code, mais `composer config:build` doit être passé avant la mise en ligne, comme pour tout changement d'un fragment de configuration — voir [docs/config-serveur.md](docs/config-serveur.md). La query string est reportée d'office : les signets des éditeurs (`?action=editer&idL=…`, `?idL=…&type=presentation`) arrivent au bon endroit. Ni l'une ni l'autre n'est indexée, formulaires réservés aux connectés ; les redirections sont là pour les signets et l'historique.
 
+### app/env.php
+
+Une constante s'ajoute. Elle n'est pas obligatoire : absente, elle vaut `false`, et le site est celui d'avant. Le modèle commenté est dans [`app/env_model.php`](app/env_model.php).
+
+| Constante | Rôle |
+| --- | --- |
+| `EVENT_NEW_CATEGORIES_ENABLED` | Proposer les catégories d'événement « concerts » et « cours/ateliers/stages ». `false` par défaut ; `'preview'` les réserve aux administrateurs, `true` les ouvre à tous — voir [docs/evenements.md](docs/evenements.md#concerts-et-cours--deux-catégories-en-préversion) |
+
+Rien à passer en base : `evenement.genre` est un `varchar(20)`, il accueille les deux valeurs sans migration. Hors préversion, un événement classé `concerts` s'affiche et se range en « fêtes », un `cours` en « divers » : **rétrograder le drapeau ne perd aucun reclassement**, les événements retrouvent leur catégorie dès qu'il remonte.
+
 ### Effets de bord à connaître
 
+- **Ancres des sections de l'agenda** — elles passent par `Text::slug()`, qui met en minuscules et remplace tout caractère non alphanumérique par un tiret, là où `stripAccents()` ne retirait que les diacritiques. Les cinq ancres existantes (`#fetes`, `#cine`, `#theatre`, `#expos`, `#divers`) ne bougent pas ; seule la nouvelle catégorie en avait besoin, son libellé portant des barres obliques
+- **Charte éditoriale** — [`articles/charte-editoriale.php`](articles/charte-editoriale.php) annonce cinq catégories et range le musical dans « Fêtes », les ateliers et cours dans « Divers ». C'est exact tant que `EVENT_NEW_CATEGORIES_ENABLED` n'est pas à `true` ; **à reprendre au moment de passer à `true`**, avec les scénarios Selenium de `tests/ladecadanse.side`, dont les sélecteurs positionnels se décalent dès qu'une section de genre s'insère
 - **Qui peut modifier une fiche de lieu** — la règle ne change pas (niveau AUTHOR ou au-dessus, personne affiliée au lieu, ou membre d'un organisateur rattaché), mais elle est posée une fois, dans `Authorization::isPersonneAllowedToEditLieu()`, par le formulaire et par le lien « Modifier ce lieu » de la fiche. Un refus répond 403, une requête sans identifiant 400, un identifiant inconnu 404 — le formulaire affichait jusqu'ici un message HTML nu au-dessus d'une page vide, avec un statut 200
 - **Champs réservés d'un lieu** — le nom, la préposition, les catégories et les organisateurs ne partaient plus en champs cachés à qui n'a pas le droit d'y toucher : le serveur reprend leur valeur enregistrée quel que soit le contenu du POST. Conséquence : **un POST forgé ne renomme plus un lieu ni ne le rattache à un organisateur**. La galerie d'images disparaît du formulaire — fonctionnalité abandonnée, les images se posent à la main
 - **Statut d'un lieu** — les libellés deviennent « Publié / Dépublié / Ancien », comme sur la fiche d'organisateur ; les valeurs en base (`actif`, `inactif`, `ancien`) ne changent pas. Le formulaire ne poste plus de statut pour qui n'a pas le droit d'en choisir un : une modification faite par un acteur laisse désormais la fiche dans l'état où elle était, là où elle la republiait
