@@ -303,7 +303,7 @@ include("../_header.inc.php");
                     <th scope="row"><i class="fa fa-money fa-lg" aria-label="Prix"></i></th><td><?= sanitizeForHtml($tab_even['e_prix']) ?></td>
                 </tr>
                 <tr>
-                    <th scope="row"><i class="fa fa-ticket fa-lg" aria-label="Prélocations"></i></th><td><?= Text::linkify(sanitizeForHtml($tab_even['e_prelocations'])) ?></td>
+                    <th scope="row"><i class="fa fa-ticket fa-lg" aria-label="Prélocations"></i></th><td><?= Text::lnAndUrlToHtml($tab_even['e_prelocations']) ?></td>
                 </tr>
             </table>
             <div class="spacer"></div>

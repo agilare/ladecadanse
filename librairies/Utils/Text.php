@@ -24,66 +24,6 @@ class Text
     }
 
     /**
-     * Transforme URLs et adresses e-mail en liens, en laissant intactes les
-     * balises HTML déjà présentes.
-     *
-     * Uniquement utilisée par event/evenement.php pour les prélocations.
-     * Échappe elle-même les liens qu'elle produit via sanitizeForHtml().
-     */
-    public static function linkify(string $input): string
-    {
-        $re = <<<'REGEX'
-    !
-        (
-          <\w++
-          (?:
-            \s++
-          | [^"'<>]++
-          | "[^"]*+"
-          | '[^']*+'
-          )*+
-          >
-        )
-        |
-        (\b https?://[^\s"'<>]++ )
-        |
-        (\b www\d*+\.\w++[^\s"'<>]++ )
-        |
-        (\b [^\s"'<>,]+@[^\s"'<>,]+\.[^\s"'<>,]+ )
-    !xi
-    REGEX;
-
-        return preg_replace_callback($re, function ($m) {
-
-            if ($m[1])
-                return $m[1];
-
-            $url = '';
-            $text = "lien";
-
-            if ($m[2])
-            {
-                $url = $m[2];
-                $text = $m[2];
-            }
-            else if ($m[3])
-            {
-                $url = "http://$m[3]";
-                $text = $m[3];
-            }
-            else if ($m[4])
-            {
-                $url = "mailto:$m[4]";
-                $text = $m[4];
-            }
-
-            return "<a href='" . sanitizeForHtml($url) . "' rel='external'>" . sanitizeForHtml($text) . "</a>";
-        }, $input);
-    }
-
-
-
-    /**
      * Convertit du texte saisi en HTML : saut de ligne -> <br />, URL nue ou
      * www. -> lien, adresse e-mail -> mailto.
      *
