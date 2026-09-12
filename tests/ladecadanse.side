@@ -638,13 +638,6 @@
       "targets": [],
       "value": ""
     }, {
-      "id": "7a0edfcf-e787-460a-afab-c5320ce45adb",
-      "comment": "",
-      "command": "",
-      "target": "",
-      "targets": [],
-      "value": ""
-    }, {
       "id": "f15ca5b7-44b0-4674-bae2-6a3ce11f1f76",
       "comment": "",
       "command": "click",
@@ -3913,57 +3906,88 @@
       ],
       "value": "https://test.ch"
     }, {
-      "id": "0be71463-6710-4c14-8c5b-c8c4e6441839",
-      "comment": "",
+      "id": "0b9eb20c-92ea-4945-8953-c56296f96c00",
+      "comment": "Catégorie(s) est un Select2 multiple depuis 3.13.0 (#117) : ouvrir, choisir, se referme, répéter",
       "command": "click",
-      "target": "id=categorie_bistrot",
-      "targets": [
-        ["id=categorie_bistrot", "id"],
-        ["name=categorie[]", "name"],
-        ["css=#categorie_bistrot", "css:finder"],
-        ["xpath=//input[@id='categorie_bistrot']", "xpath:attributes"],
-        ["xpath=//form[@id='ajouter_editer']/fieldset[2]/ul/li/input", "xpath:idRelative"],
-        ["xpath=//fieldset[2]/ul/li/input", "xpath:position"]
-      ],
+      "target": "xpath=//select[@id='categories']/following-sibling::span//span[contains(@class,'select2-selection')]",
+      "targets": [],
       "value": ""
     }, {
-      "id": "c3009c4d-4252-4536-8aaf-4f1260092c39",
+      "id": "b3689e4f-b738-4527-936c-3afc5e375f0e",
+      "comment": "",
+      "command": "waitForElementVisible",
+      "target": "css=.select2-results__options",
+      "targets": [],
+      "value": "30000"
+    }, {
+      "id": "35e6d86a-3dbf-47ab-9efb-182fee585a82",
       "comment": "",
       "command": "click",
-      "target": "id=categorie_salle",
-      "targets": [
-        ["id=categorie_salle", "id"],
-        ["css=#categorie_salle", "css:finder"],
-        ["xpath=//input[@id='categorie_salle']", "xpath:attributes"],
-        ["xpath=//form[@id='ajouter_editer']/fieldset[2]/ul/li[2]/input", "xpath:idRelative"],
-        ["xpath=//li[2]/input", "xpath:position"]
-      ],
+      "target": "xpath=//li[contains(@class,'select2-results__option')][normalize-space(.)='bistrot']",
+      "targets": [],
       "value": ""
     }, {
-      "id": "c62895c3-6c91-4c00-9114-513adb6ee1c4",
+      "id": "453333a3-ccc6-4bd4-be30-72e6be7c6606",
       "comment": "",
       "command": "click",
-      "target": "id=categorie_theatre",
-      "targets": [
-        ["id=categorie_theatre", "id"],
-        ["css=#categorie_theatre", "css:finder"],
-        ["xpath=//input[@id='categorie_theatre']", "xpath:attributes"],
-        ["xpath=//form[@id='ajouter_editer']/fieldset[2]/ul/li[5]/input", "xpath:idRelative"],
-        ["xpath=//li[5]/input", "xpath:position"]
-      ],
+      "target": "xpath=//select[@id='categories']/following-sibling::span//span[contains(@class,'select2-selection')]",
+      "targets": [],
       "value": ""
     }, {
-      "id": "415ba32e-af8a-412b-a111-21a38433793e",
+      "id": "412d27c4-8c1d-4ea4-be80-8d44c244fd1b",
+      "comment": "",
+      "command": "waitForElementVisible",
+      "target": "css=.select2-results__options",
+      "targets": [],
+      "value": "30000"
+    }, {
+      "id": "48e3c864-fa92-4e13-916f-5c25a3ba50be",
       "comment": "",
       "command": "click",
-      "target": "id=categorie_autre",
-      "targets": [
-        ["id=categorie_autre", "id"],
-        ["css=#categorie_autre", "css:finder"],
-        ["xpath=//input[@id='categorie_autre']", "xpath:attributes"],
-        ["xpath=//form[@id='ajouter_editer']/fieldset[2]/ul/li[9]/input", "xpath:idRelative"],
-        ["xpath=//li[9]/input", "xpath:position"]
-      ],
+      "target": "xpath=//li[contains(@class,'select2-results__option')][normalize-space(.)='salle']",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "ef3683e4-cef7-498d-a4bb-2e3b6ded373a",
+      "comment": "",
+      "command": "click",
+      "target": "xpath=//select[@id='categories']/following-sibling::span//span[contains(@class,'select2-selection')]",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "ea850abf-8149-4cbb-9bd3-e0daa4c5b637",
+      "comment": "",
+      "command": "waitForElementVisible",
+      "target": "css=.select2-results__options",
+      "targets": [],
+      "value": "30000"
+    }, {
+      "id": "dbdb09b6-f2ab-4204-8fc8-244ddcdf2451",
+      "comment": "",
+      "command": "click",
+      "target": "xpath=//li[contains(@class,'select2-results__option')][normalize-space(.)='théâtre']",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "8d16a84f-e961-4112-a9f1-7bf6249b1a5e",
+      "comment": "",
+      "command": "click",
+      "target": "xpath=//select[@id='categories']/following-sibling::span//span[contains(@class,'select2-selection')]",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "c41ff4c4-f7f4-4971-b032-227e73c7b657",
+      "comment": "",
+      "command": "waitForElementVisible",
+      "target": "css=.select2-results__options",
+      "targets": [],
+      "value": "30000"
+    }, {
+      "id": "fb7ca59f-298c-48c6-820e-b35acb3e84c1",
+      "comment": "",
+      "command": "click",
+      "target": "xpath=//li[contains(@class,'select2-results__option')][normalize-space(.)='autre']",
+      "targets": [],
       "value": ""
     }, {
       "id": "bf69242c-eaaa-4b2d-87db-caabdd587783",
@@ -4004,10 +4028,6 @@
       ],
       "value": "test"
     }]
-  }, {
-    "id": "84ceac7a-1e51-4367-ba29-558ed8b5625e",
-    "name": "venue small",
-    "commands": []
   }, {
     "id": "7f6cb209-b243-4a0e-889f-097dd12be52d",
     "name": "user (admin) venue edit (r)",
@@ -4201,122 +4221,109 @@
       ],
       "value": "https://test2.ch"
     }, {
-      "id": "afe9c56c-7eb0-448c-9933-14ed354295e2",
-      "comment": "",
+      "id": "84b994c4-beee-480f-b19f-548f7c3a14eb",
+      "comment": "Catégorie(s) est un Select2 multiple depuis 3.13.0 (#117) ; bistrot/salle/théâtre/autre sont déjà cochées (posées par le test d'ajout) donc absentes de la liste déroulante, on ajoute seulement des catégories encore libres",
       "command": "click",
-      "target": "id=categorie_bistrot",
-      "targets": [
-        ["id=categorie_bistrot", "id"],
-        ["name=categorie[]", "name"],
-        ["css=#categorie_bistrot", "css:finder"],
-        ["xpath=//input[@id='categorie_bistrot']", "xpath:attributes"],
-        ["xpath=//form[@id='ajouter_editer']/fieldset[2]/ul/li/input", "xpath:idRelative"],
-        ["xpath=//fieldset[2]/ul/li/input", "xpath:position"]
-      ],
+      "target": "xpath=//select[@id='categories']/following-sibling::span//span[contains(@class,'select2-selection')]",
+      "targets": [],
       "value": ""
     }, {
-      "id": "8a293707-33db-4b73-9d12-cb7861ba7c41",
+      "id": "38a81e8f-d0bf-4056-8ec2-e123d026cd8b",
+      "comment": "",
+      "command": "waitForElementVisible",
+      "target": "css=.select2-results__options",
+      "targets": [],
+      "value": "30000"
+    }, {
+      "id": "f089e858-8ec7-445b-9faf-a9bc21000e3b",
       "comment": "",
       "command": "click",
-      "target": "id=categorie_salle",
-      "targets": [
-        ["id=categorie_salle", "id"],
-        ["css=#categorie_salle", "css:finder"],
-        ["xpath=//input[@id='categorie_salle']", "xpath:attributes"],
-        ["xpath=//form[@id='ajouter_editer']/fieldset[2]/ul/li[2]/input", "xpath:idRelative"],
-        ["xpath=//li[2]/input", "xpath:position"]
-      ],
+      "target": "xpath=//li[contains(@class,'select2-results__option')][normalize-space(.)='restaurant']",
+      "targets": [],
       "value": ""
     }, {
-      "id": "cc44c883-fc64-4ce9-9f27-825cb2ae8e9e",
+      "id": "bb6fbe30-bb05-40dd-a4c7-76e753b02d4b",
       "comment": "",
       "command": "click",
-      "target": "id=categorie_restaurant",
-      "targets": [
-        ["id=categorie_restaurant", "id"],
-        ["css=#categorie_restaurant", "css:finder"],
-        ["xpath=//input[@id='categorie_restaurant']", "xpath:attributes"],
-        ["xpath=//form[@id='ajouter_editer']/fieldset[2]/ul/li[3]/input", "xpath:idRelative"],
-        ["xpath=//li[3]/input", "xpath:position"]
-      ],
+      "target": "xpath=//select[@id='categories']/following-sibling::span//span[contains(@class,'select2-selection')]",
+      "targets": [],
       "value": ""
     }, {
-      "id": "788abaad-8c0f-482d-b43d-78cf3906aabb",
+      "id": "4863f7f9-7ef0-41ad-8e0a-4dcc191f4658",
+      "comment": "",
+      "command": "waitForElementVisible",
+      "target": "css=.select2-results__options",
+      "targets": [],
+      "value": "30000"
+    }, {
+      "id": "dad9e2da-a28d-4f4a-83ab-7b602a1a4414",
       "comment": "",
       "command": "click",
-      "target": "id=categorie_cinema",
-      "targets": [
-        ["id=categorie_cinema", "id"],
-        ["css=#categorie_cinema", "css:finder"],
-        ["xpath=//input[@id='categorie_cinema']", "xpath:attributes"],
-        ["xpath=//form[@id='ajouter_editer']/fieldset[2]/ul/li[4]/input", "xpath:idRelative"],
-        ["xpath=//li[4]/input", "xpath:position"]
-      ],
+      "target": "xpath=//li[contains(@class,'select2-results__option')][normalize-space(.)='cinéma']",
+      "targets": [],
       "value": ""
     }, {
-      "id": "1bea2620-ba67-46c1-aa76-b63109a48c6c",
+      "id": "c2838d0d-5533-4486-b2d0-b78e98513236",
       "comment": "",
       "command": "click",
-      "target": "id=categorie_theatre",
-      "targets": [
-        ["id=categorie_theatre", "id"],
-        ["css=#categorie_theatre", "css:finder"],
-        ["xpath=//input[@id='categorie_theatre']", "xpath:attributes"],
-        ["xpath=//form[@id='ajouter_editer']/fieldset[2]/ul/li[5]/input", "xpath:idRelative"],
-        ["xpath=//li[5]/input", "xpath:position"]
-      ],
+      "target": "xpath=//select[@id='categories']/following-sibling::span//span[contains(@class,'select2-selection')]",
+      "targets": [],
       "value": ""
     }, {
-      "id": "395ca708-2e07-4644-b0dc-f7d9ca4d469b",
+      "id": "ef1a509b-595d-4f86-b250-033f0232ac02",
+      "comment": "",
+      "command": "waitForElementVisible",
+      "target": "css=.select2-results__options",
+      "targets": [],
+      "value": "30000"
+    }, {
+      "id": "81debf00-9687-43ce-ad0b-582c9987c5a2",
       "comment": "",
       "command": "click",
-      "target": "id=categorie_galerie",
-      "targets": [
-        ["id=categorie_galerie", "id"],
-        ["css=#categorie_galerie", "css:finder"],
-        ["xpath=//input[@id='categorie_galerie']", "xpath:attributes"],
-        ["xpath=//form[@id='ajouter_editer']/fieldset[2]/ul/li[6]/input", "xpath:idRelative"],
-        ["xpath=//li[6]/input", "xpath:position"]
-      ],
+      "target": "xpath=//li[contains(@class,'select2-results__option')][normalize-space(.)='galerie']",
+      "targets": [],
       "value": ""
     }, {
-      "id": "739669e0-c829-4736-b0d4-8091a1d51d96",
+      "id": "0052b7b8-6d41-4399-87f4-f7eefac0bb15",
       "comment": "",
       "command": "click",
-      "target": "id=categorie_boutique",
-      "targets": [
-        ["id=categorie_boutique", "id"],
-        ["css=#categorie_boutique", "css:finder"],
-        ["xpath=//input[@id='categorie_boutique']", "xpath:attributes"],
-        ["xpath=//form[@id='ajouter_editer']/fieldset[2]/ul/li[7]/input", "xpath:idRelative"],
-        ["xpath=//li[7]/input", "xpath:position"]
-      ],
+      "target": "xpath=//select[@id='categories']/following-sibling::span//span[contains(@class,'select2-selection')]",
+      "targets": [],
       "value": ""
     }, {
-      "id": "6b35ad30-03b7-420c-9dc3-4208aa1c56f1",
+      "id": "9f497b05-b4be-4431-b04c-32bebe5bb12f",
+      "comment": "",
+      "command": "waitForElementVisible",
+      "target": "css=.select2-results__options",
+      "targets": [],
+      "value": "30000"
+    }, {
+      "id": "b5d1fb63-2bdc-4746-b5d4-62d47ddf6c00",
       "comment": "",
       "command": "click",
-      "target": "id=categorie_musee",
-      "targets": [
-        ["id=categorie_musee", "id"],
-        ["css=#categorie_musee", "css:finder"],
-        ["xpath=//input[@id='categorie_musee']", "xpath:attributes"],
-        ["xpath=//form[@id='ajouter_editer']/fieldset[2]/ul/li[8]/input", "xpath:idRelative"],
-        ["xpath=//li[8]/input", "xpath:position"]
-      ],
+      "target": "xpath=//li[contains(@class,'select2-results__option')][normalize-space(.)='boutique']",
+      "targets": [],
       "value": ""
     }, {
-      "id": "ab503732-835c-46f6-bf7a-8c9bf4e9639a",
+      "id": "d6a763a1-17f2-43e4-9989-38543d7715b4",
       "comment": "",
       "command": "click",
-      "target": "id=categorie_autre",
-      "targets": [
-        ["id=categorie_autre", "id"],
-        ["css=#categorie_autre", "css:finder"],
-        ["xpath=//input[@id='categorie_autre']", "xpath:attributes"],
-        ["xpath=//form[@id='ajouter_editer']/fieldset[2]/ul/li[9]/input", "xpath:idRelative"],
-        ["xpath=//li[9]/input", "xpath:position"]
-      ],
+      "target": "xpath=//select[@id='categories']/following-sibling::span//span[contains(@class,'select2-selection')]",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "e1714926-318f-4887-9aa3-30e4fa262b2a",
+      "comment": "",
+      "command": "waitForElementVisible",
+      "target": "css=.select2-results__options",
+      "targets": [],
+      "value": "30000"
+    }, {
+      "id": "3404a704-ef2b-4e21-9944-a6520ad77bd6",
+      "comment": "",
+      "command": "click",
+      "target": "xpath=//li[contains(@class,'select2-results__option')][normalize-space(.)='musée']",
+      "targets": [],
       "value": ""
     }, {
       "id": "cdb88596-55ed-4bf8-b881-830422613bb9",

@@ -35,11 +35,12 @@ Tests have some name conventions :
 - "vars" : could need some adaptations in values filled by user
 - "r" : data is added, edited or deleted; restoration could be needed after the test
 
-> **À re-enregistrer** — la partie « lieu » du projet clique des cases `id=categorie_bistrot`,
-> `id=categorie_salle`… que le formulaire ne porte plus : les catégories sont depuis la 3.13.0 un
-> Select2 multiple `#categories` (#117). Le reste du scénario suit le déplacement de la page vers
-> `/lieu/edit.php` et le renommage de `determinant` en `preposition_nom`, mais ces clics-là ne
-> peuvent pas être transposés sans repasser par l'enregistreur.
+> **À rejouer une fois pour confirmer** — les tests d'ajout/édition de lieu cliquaient des cases
+> `id=categorie_bistrot`, `id=categorie_salle`… que le formulaire ne porte plus depuis la 3.13.0
+> (#117), les catégories étant devenues un Select2 multiple `#categories`. Les clics ont été
+> transposés sur le motif ouverture/attente/choix déjà utilisé ailleurs dans ce fichier pour
+> `#organisateurs` (même widget, même structure de DOM), mais sans passage par l'enregistreur :
+> à confirmer par un premier run réel avant de faire confiance à ces deux tests.
 
 #### Running the tests on an instance
 
