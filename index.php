@@ -44,6 +44,13 @@ $sql_even_in_status_and_region_clause = " e.statut NOT IN ('inactif', 'propose')
 if (isset($_GET['tri_agenda']) && in_array($_GET['tri_agenda'], $tab_tri_agenda))
 {
    $_SESSION['user_prefs_agenda_order'] = $_GET['tri_agenda'];
+   setcookie("ladecadanse_tri_agenda", $_GET['tri_agenda'], [
+       'expires' => time() + 2_592_000, // 30 jours : préférence durable, pas liée à une visite comme ladecadanse_region
+       'path' => '/',
+       'secure' => true,
+       'httponly' => true,
+       'samesite' => 'Lax'
+   ]);
 }
 
 /*
