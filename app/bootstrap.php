@@ -96,6 +96,51 @@ $apiHandler->setFormatter($logFormatter);
 $loggerApi = new Logger('api');
 $loggerApi->pushHandler($apiHandler);
 
+// Base injoignable → 503 + Retry-After au lieu d'un 500. Les cinq familles
+// relevées dans le journal PHP du 15.08 au 12.09.2026 (2 709 échecs, dont deux
+// pannes de 65 et 95 minutes chez l'hébergeur). Se limiter à « Too many
+// connections » laisserait passer en 500 les 479 échecs DNS du 04.09 et les
+// 73 « Connection refused » du 11.09. Un 500 dit « le code est cassé », un 503
+// dit « reviens dans un instant » — ce que Google comprend sans désindexer.
+const DB_UNAVAILABLE_MESSAGES = [
+    'Too many connections',        // 1040 — serveur saturé
+    'max_user_connections',        // 1203 (quota global) ou 1226 (quota du compte) — notre quota
+    'Connection refused',          // serveur MySQL arrêté
+    'getaddrinfo',                 // panne DNS sur le nom de l'hôte MySQL
+    'MySQL server has gone away',  // 2006
+];
+
+// Gestionnaire global plutôt qu'un try/catch autour des deux connexions : les
+// deux connecteurs se connectent ici, mais une coupure peut aussi survenir à la
+// première requête, n'importe où dans le code. Toute autre exception est
+// rendue au gestionnaire précédent (Whoops en dev) ou relancée telle quelle,
+// donc rien ne change pour elle. La page est servie par readfile, sans
+// ErrorDocument ni aucun code applicatif : si la base est à terre, tout appel
+// PHP supplémentaire risque de relancer l'exception (boucle constatée le 12.09.2026
+// avec misc/error.php, cf. htaccess/00-core.conf).
+$previousExceptionHandler = null;
+$previousExceptionHandler = set_exception_handler(function (Throwable $e) use ($logger, &$previousExceptionHandler): void {
+    $message = $e->getMessage();
+    $dbUnavailable = array_any(DB_UNAVAILABLE_MESSAGES, fn (string $needle): bool => str_contains($message, $needle));
+
+    // headers_sent() : la coupure a eu lieu en cours de page, le 503 ne peut plus
+    // partir ; on garde alors le comportement actuel plutôt qu'un 200 mensonger
+    if (!$dbUnavailable || headers_sent()) {
+        if ($previousExceptionHandler !== null) {
+            ($previousExceptionHandler)($e);
+            return;
+        }
+        throw $e;
+    }
+
+    $logger->error('Database unavailable: ' . $message, ['uri' => $_SERVER['REQUEST_URI'] ?? '']);
+    http_response_code(503);
+    header('Retry-After: 120');
+    header('Content-Type: text/html; charset=utf-8');
+    readfile(__DIR__ . '/../misc/unavailable.html');
+    exit;
+});
+
 $connector = new DbConnector(DB_HOST, DB_NAME, DB_USERNAME, DB_PASSWORD);
 $connectorPdo = DbConnectorPdo::getInstance();
 
