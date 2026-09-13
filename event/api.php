@@ -49,8 +49,9 @@ if (!preg_match('/^[0-9]{2}:[0-9]{2}:[0-9]{2}$/', trim((string) $_GET['endtime']
 
 $get['endtime'] = trim((string) $_GET['endtime']);
 
-// L'API n'a pas de session : isOpenToAll(), donc les catégories en préversion ne sont ni
-// acceptées en paramètre, ni distinguées dans la réponse.
+// L'API n'a pas de session : isOpenToAll(). Une catégorie en préversion n'est donc pas
+// acceptée en paramètre, et ses événements sont renvoyés sous sa catégorie de repli — le
+// champ genre de la réponse, lu par e.*, garde en revanche la valeur enregistrée.
 $eventCategories = array_keys(EventCategory::selectable(EventCategory::isOpenToAll()));
 try
 {

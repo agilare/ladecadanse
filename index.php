@@ -54,11 +54,10 @@ if (isset($_GET['tri_agenda']) && in_array($_GET['tri_agenda'], $tab_tri_agenda)
 }
 
 /*
- * Deux catégories de plus — « concerts » et « cours » — en préversion réservée aux
- * administrateurs (drapeau d'app/env.php). Pour tous les autres, un événement classé
- * « concerts » se range et s'affiche en « fêtes », un « cours » en « divers » : le repli
- * se joue en SQL (première colonne et rang de tri, plus bas), l'affichage des libellés
- * dans Evenement::categoryLabel().
+ * La catégorie « cours » est en préversion réservée aux administrateurs (drapeau
+ * d'app/env.php). Pour tous les autres, un événement classé « cours » se range et
+ * s'affiche en « divers » : le repli se joue en SQL (première colonne et rang de tri, plus
+ * bas), l'affichage des libellés dans Evenement::categoryLabel().
  */
 $new_categories_enabled = EventCategory::isEnabled();
 $new_categories_preview = EventCategory::isInPreview();
@@ -74,7 +73,7 @@ $current_genre_tab = $_SESSION['user_prefs_agenda_genre']; // initialisé dans b
 // d'administrateur survivant à sa déconnexion — bloquerait la page : son onglet n'étant
 // plus rendu, le lien « retirer le filtre » n'existe plus, et l'agenda ne dirait plus que
 // « Pas d'événement … prévu ce jour ». On revient à « tous » plutôt qu'au repli : personne
-// n'a demandé les fêtes.
+// n'a demandé les divers.
 if (!in_array($current_genre_tab, $valid_genre_tabs, true))
 {
     $current_genre_tab = 'tous';
@@ -108,13 +107,13 @@ if ($is_chronological_order)
 /*
  * Le repli des catégories en préversion se joue ici, en deux endroits solidaires.
  *
- * La première colonne d'abord : PDO::FETCH_GROUP groupe dessus, si bien que les concerts
- * tombent dans le groupe « fête » sans une ligne de PHP.
+ * La première colonne d'abord : PDO::FETCH_GROUP groupe dessus, si bien que les cours
+ * tombent dans le groupe « divers » sans une ligne de PHP.
  *
  * Le rang de tri ensuite, et c'est lui qui fait tenir l'ensemble : hors préversion,
- * « concerts » partage le rang de « fête ». Le tri secondaire — dernier ajouté, ou heure
- * de début — porte donc sur les deux catégories ensemble. Avec deux rangs distincts, MySQL
- * rendrait toutes les fêtes puis tous les concerts, et le groupe fusionné repartirait en
+ * « cours » partage le rang de « divers ». Le tri secondaire — dernier ajouté, ou heure de
+ * début — porte donc sur les deux catégories ensemble. Avec deux rangs distincts, MySQL
+ * rendrait tous les divers puis tous les cours, et le groupe fusionné repartirait en
  * arrière au milieu, séparateurs horaires compris.
  */
 $sql_visible_category = EventCategory::sqlVisibleCategory('e.genre', $new_categories_enabled);
@@ -302,10 +301,10 @@ include("_header.inc.php");
         <?php endif; ?>
 
         <?php
-        // Même raison : sans cette ligne, un administrateur classe en « concerts » sans
-        // savoir que le public lit toujours « fêtes ». La seconde phrase est la plus utile.
+        // Même raison : sans cette ligne, un administrateur classe en « cours » sans savoir
+        // que le public lit toujours « divers ». La seconde phrase est la plus utile.
         if ($new_categories_preview) : ?>
-            <p class="even-time-preview"><i class="fa fa-filter" aria-hidden="true"></i>&nbsp;« Concerts » et « cours/ateliers/stages » sont en préversion : vous seuls, administrateurs, les voyez. Pour tous les autres, un concert reste rangé dans « fêtes » et un cours dans « divers ».</p>
+            <p class="even-time-preview"><i class="fa fa-filter" aria-hidden="true"></i>&nbsp;« Cours/ateliers/stages » est en préversion : vous seuls, administrateurs, voyez cette catégorie. Pour tous les autres, un cours reste rangé dans « divers ».</p>
         <?php endif; ?>
 
         <?php

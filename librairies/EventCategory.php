@@ -10,11 +10,11 @@ use InvalidArgumentException;
  * Les catégories d'événement : la liste, le repli des catégories en préversion, et les
  * fragments SQL qui les trient et les replient en base.
  *
- * Deux catégories — « concerts » et « cours » — sont livrées derrière un drapeau à trois
- * états. Hors préversion, un événement stocké en `concerts` se lit et se range comme une
- * « fête », un `cours` comme un « divers » : ce n'est pas un masquage mais un rangement,
- * la colonne evenement.genre reste un varchar(20), et rétrograder le drapeau ne perd
- * aucune donnée.
+ * Une catégorie peut être livrée derrière un drapeau à trois états, le temps d'éprouver le
+ * classement sur de vrais événements. Hors préversion, un événement stocké dans une telle
+ * catégorie se lit et se range sous une catégorie publique — un `cours` comme un « divers » :
+ * ce n'est pas un masquage mais un rangement, la colonne evenement.genre reste un
+ * varchar(20), et rétrograder le drapeau ne perd aucune donnée.
  *
  * Les méthodes de règle prennent $withPreview sans valeur par défaut, et les trois
  * méthodes de décision sont les seules à consulter le drapeau. C'est délibéré : le flux
@@ -52,13 +52,17 @@ final class EventCategory
      *
      * Ce tableau *est* la préversion : ses clés disent ce que le drapeau commande, ses
      * valeurs le repli qu'il impose. Ajouter une catégorie en préversion, c'est une
-     * entrée ici et une dans ALL, rien d'autre.
+     * entrée ici et une dans ALL ; l'ouvrir à tous, c'est retirer son entrée d'ici, rien
+     * d'autre — « concerts » a suivi ce chemin.
+     *
+     * « cours » y reste, fondue dans « divers » : elle est appelée à devenir une
+     * sous-catégorie ou une étiquette, à côté d'autres du même ordre (conférence/débat,
+     * sport/plein air, visite/patrimoine…), plutôt qu'une catégorie de premier rang.
      *
      * @var array<string, string>
      */
     public const array PREVIEW_FALLBACKS = [
-        "concerts" => "fête",
-        "cours"    => "divers",
+        "cours" => "divers",
     ];
 
     // --- Décision : qui consulte le drapeau ------------------------------------------
@@ -117,12 +121,12 @@ final class EventCategory
     /**
      * La liste à présenter au formulaire d'un événement déjà enregistré.
      *
-     * Un événement classé « concerts » que son auteur non administrateur vient modifier :
-     * sans rien, aucun bouton n'est coché, le `required` force un choix, et la première
+     * Un événement classé « cours » que son auteur non administrateur vient modifier : sans
+     * rien, aucun bouton n'est coché, le `required` force un choix, et la première
      * correction de faute de frappe efface le classement de la modération. La clé du
      * repli est donc remplacée, à sa place, par la catégorie stockée — le bouton garde le
-     * libellé et le rang de « fêtes » mais poste « concerts », et se coche. Qui ne touche
-     * pas au champ laisse la catégorie intacte ; qui choisit « ciné » applique « ciné ».
+     * libellé et le rang de « divers » mais poste « cours », et se coche. Qui ne touche pas
+     * au champ laisse la catégorie intacte ; qui choisit « expos » applique « expos ».
      *
      * @param string|null $storedCategory la valeur lue en base, jamais celle du POST
      * @return array<string, string>
@@ -134,7 +138,7 @@ final class EventCategory
 
         // Rien à conserver si la catégorie stockée est déjà proposée — c'est le cas en
         // préversion, où substituer écraserait l'entrée de son repli et ferait disparaître
-        // « fêtes » de la liste.
+        // « divers » de la liste.
         if ($fallback === null
             || array_key_exists((string) $storedCategory, $selectable)
             || !array_key_exists($fallback, $selectable))
@@ -178,11 +182,11 @@ final class EventCategory
     /**
      * L'expression SQL qui donne son rang de tri à chaque catégorie, replis compris.
      *
-     * Le rang est celui de la catégorie *visible* : hors préversion, « concerts » partage
-     * le rang de « fête » et « cours » celui de « divers ». C'est ce qui fait que le tri
-     * secondaire — dernier ajouté, ou heure de début — porte sur les deux catégories
-     * ensemble : sans ce partage, MySQL rendrait toutes les fêtes puis tous les concerts,
-     * et le groupe fusionné par PDO::FETCH_GROUP repartirait en arrière au milieu.
+     * Le rang est celui de la catégorie *visible* : hors préversion, « cours » partage le
+     * rang de « divers ». C'est ce qui fait que le tri secondaire — dernier ajouté, ou heure
+     * de début — porte sur les deux catégories ensemble : sans ce partage, MySQL rendrait
+     * tous les divers puis tous les cours, et le groupe fusionné par PDO::FETCH_GROUP
+     * repartirait en arrière au milieu.
      *
      * Une catégorie hors liste ne reçoit aucun rang, donc NULL, qui trie en premier en
      * ASC : c'est le comportement d'aujourd'hui, conservé délibérément.

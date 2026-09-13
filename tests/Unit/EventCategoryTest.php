@@ -20,9 +20,20 @@ final class EventCategoryTest extends Unit
     public function testLaListePubliqueEcarteLesCategoriesEnPreversion(): void
     {
         $this->assertSame(
-            ['fête', 'cinéma', 'théâtre', 'expos', 'divers'],
+            ['fête', 'concerts', 'cinéma', 'théâtre', 'expos', 'divers'],
             array_keys(EventCategory::selectable(false))
         );
+    }
+
+    /**
+     * « concerts » a quitté la préversion : proposée à tous, affichée pour ce qu'elle est,
+     * jamais rangée sous « fêtes ». La remettre dans PREVIEW_FALLBACKS la ferait disparaître
+     * en silence du formulaire public comme de l'agenda.
+     */
+    public function testConcertsEstOuverteATous(): void
+    {
+        $this->assertArrayHasKey('concerts', EventCategory::selectable(false));
+        $this->assertSame('concerts', EventCategory::visible('concerts', false));
     }
 
     public function testLaListeEnPreversionLesInsereALeurPlace(): void
@@ -33,15 +44,13 @@ final class EventCategoryTest extends Unit
         );
     }
 
-    public function testHorsPreversionChaqueCategorieSeRangeSousSonRepli(): void
+    public function testHorsPreversionUneCategorieSeRangeSousSonRepli(): void
     {
-        $this->assertSame('fête', EventCategory::visible('concerts', false));
         $this->assertSame('divers', EventCategory::visible('cours', false));
     }
 
-    public function testEnPreversionLaCategorieEstRenduTelleQuelle(): void
+    public function testEnPreversionLaCategorieEstRendueTelleQuelle(): void
     {
-        $this->assertSame('concerts', EventCategory::visible('concerts', true));
         $this->assertSame('cours', EventCategory::visible('cours', true));
     }
 
@@ -60,7 +69,7 @@ final class EventCategoryTest extends Unit
     /** Les appelants ne savent pas toujours si la valeur vient de la base ou d'un repli. */
     public function testLeRepliEstIdempotent(): void
     {
-        $uneFois = EventCategory::visible('concerts', false);
+        $uneFois = EventCategory::visible('cours', false);
 
         $this->assertSame($uneFois, EventCategory::visible($uneFois, false));
     }
@@ -76,15 +85,15 @@ final class EventCategoryTest extends Unit
 
     /**
      * La propriété dont dépend tout l'ordonnancement de l'agenda : hors préversion,
-     * « concerts » partage le rang de « fête » et « cours » celui de « divers ». Sans ce
-     * partage, MySQL rendrait toutes les fêtes puis tous les concerts, et le groupe
-     * fusionné par PDO::FETCH_GROUP repartirait en arrière au milieu.
+     * « cours » partage le rang de « divers ». Sans ce partage, MySQL rendrait tous les
+     * divers puis tous les cours, et le groupe fusionné par PDO::FETCH_GROUP repartirait
+     * en arrière au milieu. « concerts », ouverte à tous, a son rang propre.
      */
     public function testHorsPreversionUneCategorieRepliePartageLeRangDeSonRepli(): void
     {
         $this->assertSame(
-            "CASE e.genre WHEN 'fête' THEN 1 WHEN 'concerts' THEN 1 WHEN 'cinéma' THEN 2"
-                . " WHEN 'théâtre' THEN 3 WHEN 'expos' THEN 4 WHEN 'cours' THEN 5 WHEN 'divers' THEN 5 END",
+            "CASE e.genre WHEN 'fête' THEN 1 WHEN 'concerts' THEN 2 WHEN 'cinéma' THEN 3"
+                . " WHEN 'théâtre' THEN 4 WHEN 'expos' THEN 5 WHEN 'cours' THEN 6 WHEN 'divers' THEN 6 END",
             EventCategory::sqlOrderByCategory('e.genre', false)
         );
     }
@@ -107,7 +116,7 @@ final class EventCategoryTest extends Unit
     public function testHorsPreversionLaColonneEstReplieeEnSql(): void
     {
         $this->assertSame(
-            "CASE e.genre WHEN 'concerts' THEN 'fête' WHEN 'cours' THEN 'divers' ELSE e.genre END",
+            "CASE e.genre WHEN 'cours' THEN 'divers' ELSE e.genre END",
             EventCategory::sqlVisibleCategory('e.genre', false)
         );
     }
@@ -129,22 +138,22 @@ final class EventCategoryTest extends Unit
     }
 
     /**
-     * Un événement classé « concerts » que son auteur non administrateur vient modifier :
-     * le bouton « fêtes » garde son libellé et son rang, mais poste la valeur stockée.
+     * Un événement classé « cours » que son auteur non administrateur vient modifier : le
+     * bouton « divers » garde son libellé et son rang, mais poste la valeur stockée.
      */
     public function testLeFormulaireConserveLaCategorieStockeeALaPlaceDeSonRepli(): void
     {
-        $selectable = EventCategory::selectableForEdit('concerts', false);
+        $selectable = EventCategory::selectableForEdit('cours', false);
 
-        $this->assertSame(['concerts', 'cinéma', 'théâtre', 'expos', 'divers'], array_keys($selectable));
-        $this->assertSame('fêtes', $selectable['concerts']);
+        $this->assertSame(['fête', 'concerts', 'cinéma', 'théâtre', 'expos', 'cours'], array_keys($selectable));
+        $this->assertSame('divers', $selectable['cours']);
     }
 
     public function testLaSubstitutionNaPasLieuEnPreversion(): void
     {
         $this->assertSame(
             EventCategory::selectable(true),
-            EventCategory::selectableForEdit('concerts', true)
+            EventCategory::selectableForEdit('cours', true)
         );
     }
 
@@ -152,6 +161,7 @@ final class EventCategoryTest extends Unit
     {
         $publique = EventCategory::selectable(false);
 
+        $this->assertSame($publique, EventCategory::selectableForEdit('concerts', false));
         $this->assertSame($publique, EventCategory::selectableForEdit('cinéma', false));
         $this->assertSame($publique, EventCategory::selectableForEdit('soirée', false));
         $this->assertSame($publique, EventCategory::selectableForEdit(null, false));
@@ -159,8 +169,8 @@ final class EventCategoryTest extends Unit
 
     /**
      * Les cinq catégories historiques gardent l'ancre qu'elles avaient, dérivée du
-     * libellé par stripAccents() seul ; seule la nouvelle en avait besoin, son libellé
-     * portant des barres obliques.
+     * libellé par stripAccents() seul ; seule « cours/ateliers/stages » avait besoin
+     * d'autre chose, son libellé portant des barres obliques.
      */
     public function testLesAncresHistoriquesNeBougentPas(): void
     {

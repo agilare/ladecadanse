@@ -30,7 +30,7 @@ include("../_header.inc.php");
         <p>À l’heure actuelle, les zone couvertes par La&nbsp;décadanse sont les régions genevoises et lausannoises.</p>
 
         <h3>Catégories</h3>
-        <p>Les événements sont répartis en 5 catégories, dont voici des précisions pour 3 d’entre elles&nbsp;:</p>
+        <p>Les événements sont répartis en 6 catégories, dont voici des précisions pour 3 d’entre elles&nbsp;:</p>
         <h4><a id="Ftes_17"></a>Fêtes</h4>
         <p>Large rubrique où figurent les événements culturels, festifs avec très souvent une part musicale. Le volet culturel doit être prépondérant, les événements dont celui-ci est trop secondaire ne sont pas admis  (la catégorie "Divers" peut mieux convenir dans ce cas); par ex. un dîner-concert où un groupe ne joue que pour l’ambiance.</p>
         <h4><a id="Cin_20"></a>Ciné</h4>

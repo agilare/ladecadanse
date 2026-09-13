@@ -168,8 +168,8 @@ if (isset($options['csv']))
  * La liste des catégories valides, référence de sanitizeEventNewDefaults().
  *
  * isOpenToAll() et non isEnabled() : ce script n'a pas de session, et « accessible à
- * l'utilisateur courant » n'y veut rien dire. Tant que les nouvelles catégories sont en
- * préversion, il ne les écrit dans les réglages de personne.
+ * l'utilisateur courant » n'y veut rien dire. Tant qu'une catégorie est en préversion, il
+ * ne l'écrit dans les réglages de personne.
  *
  * La liste vient d'une constante de classe, qui ne peut plus disparaître en silence comme
  * le pouvait la globale `$glo_tab_genre` — un renommage donnait alors un rapport vide,

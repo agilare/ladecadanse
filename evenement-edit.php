@@ -185,26 +185,29 @@ if (PdfToImage::estEnPreview())
 /*
  * Catégories proposables, et textes d'aide qui vont avec.
  *
- * En modification, la liste part de la catégorie enregistrée : un événement classé
- * « concerts » par la modération, rouvert par un auteur qui ne voit pas la préversion,
- * garde un bouton « fêtes » qui poste « concerts ». Sans cela, aucun bouton ne serait coché,
- * le `required` forcerait un choix, et la première correction de faute de frappe effacerait
- * le classement — la perte serait certaine, pas seulement possible.
+ * En modification, la liste part de la catégorie enregistrée : un événement classé « cours »
+ * par la modération, rouvert par un auteur qui ne voit pas la préversion, garde un bouton
+ * « divers » qui poste « cours ». Sans cela, aucun bouton ne serait coché, le `required`
+ * forcerait un choix, et la première correction de faute de frappe effacerait le classement
+ * — la perte serait certaine, pas seulement possible.
  *
  * La même liste sert au rendu et à la validation : elles ne peuvent donc pas diverger.
  */
 $new_categories_enabled = EventCategory::isEnabled();
 $selectable_categories = EventCategory::selectableForEdit($tab_even_lieu['genre'] ?? null, $new_categories_enabled);
 
-// L'aide de « fêtes » renvoyait les concerts vers cette catégorie : elle cesse d'être vraie
-// dès que « concerts » est proposé.
-$aides_categories = $new_categories_enabled
-    ? [
-        'fête'     => "Soirées, bals, festivals — le festif, sans scène annoncée en tête d'affiche.",
-        'concerts' => "Une ou plusieurs scènes annoncées, quel que soit le style.",
-        'cours'    => "Cours, ateliers et stages, à condition qu'ils soient gratuits ou à prix modéré.",
-    ]
-    : ['fête' => "Inclut les soirées, les concerts, etc."];
+// Les aides de « fêtes » et de « concerts » disent où passe la frontière entre les deux.
+// L'ancienne aide de « fêtes » — « Inclut les soirées, les concerts, etc. » — a cessé d'être
+// vraie quand « concerts » s'est ouverte à tous.
+$aides_categories = [
+    'fête'     => "Soirées, bals, festivals — le festif, sans scène annoncée en tête d'affiche.",
+    'concerts' => "Une ou plusieurs scènes annoncées, quel que soit le style.",
+];
+
+if ($new_categories_enabled)
+{
+    $aides_categories['cours'] = "Cours, ateliers et stages, à condition qu'ils soient gratuits ou à prix modéré.";
+}
 
 // form values received
 $champs = ["statut" => "", "genre" => "", "titre" => "", "dateEvenement" => "", "idLieu" => 0, "idSalle" => 0,
@@ -1331,14 +1334,13 @@ if ($show_form)
         }
         ?>
         </ul>
-        <div class="guideChamp" style="margin-top:1em">Merci de choisir la catégorie pertinente; si vous n'êtes pas sûr, vous pouvez <a href="/misc/contacteznous.php" target="_blank">nous demander</a>
-        </div>
+        <div class="guideChamp" style="margin-top:1em">Si l'événement couvre plusieurs catégories, choisissez celle qui prédomine</div>
         <?php
         // Une préversion qui ne se signale pas se croit livrée. La seconde phrase est la plus
-        // utile : sans elle, un administrateur classe en « concerts » sans savoir que le
-        // public lit toujours « fêtes ».
+        // utile : sans elle, un administrateur classe en « cours » sans savoir que le public
+        // lit toujours « divers ».
         if (EventCategory::isInPreview()) : ?>
-        <div class="guideChamp"><em>« Concerts » et « cours/ateliers/stages » sont en préversion : vous seuls, administrateurs, les voyez. Pour tous les autres, un concert reste rangé dans « fêtes » et un cours dans « divers ».</em></div>
+        <div class="guideChamp"><em>« Cours/ateliers/stages » est en préversion : vous seuls, administrateurs, voyez cette catégorie. Pour tous les autres, un cours reste rangé dans « divers ».</em></div>
         <?php endif; ?>
         <?php echo $verif->getHtmlErreur("genre"); ?>
     </fieldset>

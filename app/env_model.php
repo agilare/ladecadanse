@@ -117,12 +117,13 @@ define("LIEU_MANUAL_COLLAPSIBLE_ENABLED", false);
 //   true        ouvert à tous
 define("EVENT_TIME_STATUS_ENABLED", false);
 
-// proposer deux catégories d'événement de plus — « concerts » et « cours/ateliers/stages » —
-// à la saisie, au filtrage de l'agenda et à l'affichage.
+// proposer les catégories d'événement encore en préversion — aujourd'hui la seule
+// « cours/ateliers/stages » — à la saisie, au filtrage de l'agenda et à l'affichage. La
+// liste est Ladecadanse\EventCategory::PREVIEW_FALLBACKS ; « concerts », passée par là,
+// est ouverte à tous et ne dépend plus de ce drapeau.
 //
 // Trois états, comme tout drapeau passant par Ladecadanse\FeatureFlag :
-//   false       les cinq catégories d'avant ; un événement déjà classé en « concerts »
-//               s'affiche et se range en « fêtes », un « cours » en « divers »
+//   false       un événement déjà classé en « cours » s'affiche et se range en « divers »
 //   'preview'   réservé aux administrateurs, le temps d'éprouver le classement sur de
 //               vrais événements ; pour tous les autres le repli s'applique, et une
 //               mention au-dessus de l'agenda comme sous le champ Catégorie le rappelle

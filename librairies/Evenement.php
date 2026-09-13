@@ -50,7 +50,7 @@ class Evenement
      * Le repli des catégories en préversion s'applique ici, et nulle part ailleurs : c'est
      * le point de passage unique de tout affichage de catégorie — agenda, recherche, fiches
      * lieu et organisateur, tableaux d'administration, tableau de bord. Sans lui, chacune
-     * de ces pages laisserait fuiter « concerts » à qui ne doit pas encore le voir.
+     * de ces pages laisserait fuiter « cours » à qui ne doit pas encore le voir.
      *
      * Les catégories sont stockées en varchar : d'anciens événements peuvent en porter une
      * qui n'est plus dans la liste, on retombe alors sur "divers" plutôt que d'afficher (ou
