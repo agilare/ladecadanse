@@ -15,6 +15,11 @@ class DbConnectorPdo
     // sinks SQL, et les 85 requêtes PDO du dépôt sortent du champ de `composer psalm:taint`
     private PDO $pdo;
 
+    // Nombre d'ouvertures tentées et pause entre deux, en microsecondes : au pire
+    // 400 ms cumulées, loin des 10 s de CPU PHP au-delà desquelles Infomaniak coupe
+    private const CONNECT_ATTEMPTS = 3;
+    private const CONNECT_RETRY_DELAY_US = 200_000;
+
     private function __construct($config)
     {
         $dsn = "mysql:host={$config['host']};dbname={$config['dbname']};charset=utf8mb4";
@@ -24,12 +29,27 @@ class DbConnectorPdo
             PDO::ATTR_EMULATE_PREPARES   => false,
         ];
 
-        try {
-            $this->pdo = new PDO($dsn, $config['user'], $config['password'], $options);
-            $this->pdo->exec("SET SESSION sql_mode = 'IGNORE_SPACE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION'");
-        } catch (PDOException $e) {
-            // Gérer proprement les erreurs
-            throw new Exception("Connection failed: " . $e->getMessage());
+        // Une saturation (1040 « Too many connections », 1203 ou 1226 « max_user_connections »)
+        // est transitoire — quelques centaines de millisecondes, le temps qu'une
+        // place se libère — et vaut donc un nouvel essai. Un mot de passe faux, un
+        // hôte introuvable ou un « Connection refused » sont définitifs à cette
+        // échelle : remonter tout de suite, la page 503 de app/bootstrap.php n'en
+        // partira que plus vite. Uniquement à l'ouverture : une requête déjà partie
+        // ne se rejoue jamais, un INSERT rejoué créerait un doublon.
+        $attempt = 0;
+        while (true) {
+            try {
+                $this->pdo = new PDO($dsn, $config['user'], $config['password'], $options);
+                $this->pdo->exec("SET SESSION sql_mode = 'IGNORE_SPACE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION'");
+                break;
+            } catch (PDOException $e) {
+                $saturated = str_contains($e->getMessage(), 'Too many connections')
+                    || str_contains($e->getMessage(), 'max_user_connections');
+                if (!$saturated || ++$attempt >= self::CONNECT_ATTEMPTS) {
+                    throw new Exception("Connection failed: " . $e->getMessage());
+                }
+                usleep(self::CONNECT_RETRY_DELAY_US);
+            }
         }
     }
 
