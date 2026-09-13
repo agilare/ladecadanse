@@ -300,12 +300,16 @@ include("../_header.inc.php");
                     <td><strong><?= EvenementRenderer::schedulesToHhMm($tab_even['e_horaire_debut'], $tab_even['e_horaire_fin'], $tab_even['e_dateEvenement']) ?></strong>
                         <br /><?= sanitizeForHtml($tab_even['e_horaire_complement']) ?></td>
                 </tr>
+                <?php if (!empty($tab_even['e_prix'])) : ?>
                 <tr>
                     <th scope="row"><i class="fa fa-money fa-lg" aria-label="Prix"></i></th><td><?= sanitizeForHtml($tab_even['e_prix']) ?></td>
                 </tr>
+                <?php endif; ?>
+                <?php if (!empty($tab_even['e_prelocations'])) : ?>
                 <tr>
-                    <th scope="row"><i class="fa fa-ticket fa-lg" aria-label="Prélocations"></i></th><td><?= Text::lnAndUrlToHtml($tab_even['e_prelocations']) ?></td>
+                    <th scope="row"><i class="fa fa-ticket fa-lg" aria-label="Billets"></i></th><td><?= Text::lnAndUrlToHtml($tab_even['e_prelocations']) ?></td>
                 </tr>
+                <?php endif; ?>
             </table>
             <div class="spacer"></div>
         </div>

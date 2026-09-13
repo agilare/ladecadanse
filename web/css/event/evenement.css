@@ -278,7 +278,7 @@ ul.menu_actions_evenement .calendar-export-trigger
 {
     font-size: 1em;
     color:#333;
-    min-height:6em;
+    /*min-height:6em;*/
     background: #efefef;
     line-height:1.35em;
     padding: 0.2em 0 0.4em;
