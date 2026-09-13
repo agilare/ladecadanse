@@ -459,14 +459,17 @@ const Forms = {
 //            }
 //        });
     // better than above
-        $('form#ajouter_editer #titre').on("input", function () {
-            const maxLength = this.maxLength; // Récupère la valeur de maxlength
+        function alertOnMaxLength()
+        {
+            const maxLength = this.maxLength;
             const currentLength = this.value.length;
 
             if (currentLength >= maxLength) {
                 alert(`Le texte dans ce champ ne peut dépasser la longueur maximale de ${maxLength} caractères`);
             }
-        });
+        }
+
+        $('form#ajouter_editer #titre, form#ajouter_editer #horaire_complement, form#ajouter_editer #prix, form#ajouter_editer #prelocations').on("input", alertOnMaxLength);
     }
 };
 
