@@ -43,7 +43,7 @@ final class EventCategory
         "cinéma"   => "ciné",
         "théâtre"  => "théâtre",
         "expos"    => "expos",
-        "cours"    => "cours/ateliers/stages",
+        "cours"    => "cours",
         "divers"   => "divers",
     ];
 
