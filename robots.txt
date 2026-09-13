@@ -11,16 +11,6 @@
 # ============================================================================
 User-agent: *
 
-# --- Répertoires techniques -------------------------------------------------
-Disallow: /admin/
-Disallow: /app/
-Disallow: /librairies/
-Disallow: /resources/
-Disallow: /var/
-Disallow: /vendor/
-Disallow: /.git-ftp.log
-Disallow: /*.inc.php
-
 # --- Piège à scrapers : les robots honnêtes ne doivent PAS y tomber ---------
 Disallow: /annuaire-membres.php
 
@@ -157,12 +147,6 @@ Disallow: /
 # bingbot a besoin de son propre groupe pour recevoir un Crawl-delay, donc
 # les règles générales sont recopiées ici : sans ça il les perdrait toutes.
 User-agent: bingbot
-Disallow: /admin/
-Disallow: /app/
-Disallow: /librairies/
-Disallow: /resources/
-Disallow: /var/
-Disallow: /vendor/
 Disallow: /.git-ftp.log
 Disallow: /*.inc.php
 Disallow: /annuaire-membres.php
