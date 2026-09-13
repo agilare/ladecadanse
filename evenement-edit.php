@@ -200,7 +200,7 @@ $selectable_categories = EventCategory::selectableForEdit($tab_even_lieu['genre'
 // L'ancienne aide de « fêtes » — « Inclut les soirées, les concerts, etc. » — a cessé d'être
 // vraie quand « concerts » s'est ouverte à tous.
 $aides_categories = [
-    'fête'     => "Soirées, bals, festivals — le festif, sans scène annoncée en tête d'affiche.",
+    'fête'     => "Soirées, bals — le festif, sans scène annoncée en tête d'affiche.",
     'concerts' => "Une ou plusieurs scènes annoncées, quel que soit le style.",
 ];
 

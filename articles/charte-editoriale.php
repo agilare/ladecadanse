@@ -30,9 +30,11 @@ include("../_header.inc.php");
         <p>À l’heure actuelle, les zone couvertes par La&nbsp;décadanse sont les régions genevoises et lausannoises.</p>
 
         <h3>Catégories</h3>
-        <p>Les événements sont répartis en 6 catégories, dont voici des précisions pour 3 d’entre elles&nbsp;:</p>
+        <p>Les événements sont répartis en 6 catégories, dont voici des précisions pour 4 d’entre elles&nbsp;:</p>
         <h4><a id="Ftes_17"></a>Fêtes</h4>
         <p>Large rubrique où figurent les événements culturels, festifs avec très souvent une part musicale. Le volet culturel doit être prépondérant, les événements dont celui-ci est trop secondaire ne sont pas admis  (la catégorie "Divers" peut mieux convenir dans ce cas); par ex. un dîner-concert où un groupe ne joue que pour l’ambiance.</p>
+        <h4><a id="Concerts"></a>Concerts</h4>
+        <p>Rubrique des prestations musicales en live, quel que soit le style&nbsp;: groupes, solistes, ensembles, récitals… L’événement se construit autour d’artistes annoncés, que le public vient écouter. Une soirée où la musique accompagne surtout la fête (DJ sets, soirées dansantes) trouve plutôt sa place dans "Fêtes"&nbsp;; quand un événement mêle les deux, par ex. un concert suivi d’un DJ set, c’est la part qui prédomine qui décide.</p>
         <h4><a id="Cin_20"></a>Ciné</h4>
         <p>Cette rubrique se concentre sur les projections des cinémas indépendants ou apparentés ; par conséquent les multiplexes (qui ont largement de quoi communiquer) n’y figurent pas. Il se peut que, ponctuellement, la qualité du film ou la particularité de l’événement prime sur cette règle.</p>
         <h4><a id="Divers_23"></a>Divers</h4>
@@ -69,7 +71,7 @@ include("../_header.inc.php");
         <h2><a id="LES_LIEUX_53"></a>Les lieux</h2>
         <p>Les lieux ayant une vocation commerciale trop prononcée ne sont pas souhaités (night-clubs, casinos, cabarets, multiplexes…). Pour pouvoir figurer dans la rubrique <a href="/lieu/lieux.php">Lieux</a>, des événements doivent être organisés régulièrement et ceux-ci doivent suivre les critères déjà présentés ci-dessus. Nous apprécions les lieux avec une programmation de qualité, un esprit désintéressé, se rapprochant de l’autogestion et avec un certain degré d’éthique.</p>
 
-        <p>Août 2016, mis à jour en mars 2025</p>
+        <p>Août 2016, mis à jour en septembre 2026</p>
 
     </article> <!-- .rubrique  -->
 
