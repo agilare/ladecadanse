@@ -1643,7 +1643,7 @@ if ($show_form)
                 </div>
 
                 <div>
-                    <label for="prelocations">Prélocations</label>
+                    <label for="prelocations">Billets</label>
                     <input type="text" name="prelocations" id="prelocations" size="70" maxlength="200" value="<?php echo sanitizeForHtml($champs['prelocations']) ?>" />
                     <?= $verif->getHtmlErreur('prelocations') ?>
                 </div>
