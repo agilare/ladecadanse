@@ -33,6 +33,18 @@ class EvenementRenderer
     public const DESCRIPTION_MAX_CHARS = 60 * 6;
 
     /**
+     * Longueur au-delà de laquelle le prix d'une carte est coupé, avec les repères de temporalité
+     * (#51) : rangé sous l'adresse, il doit y tenir sur une ligne.
+     */
+    public const PRICE_MAX_CHARS = 40;
+
+    /**
+     * Largeur d'une heure d'événement sur la barre de progression (#51), en pixels : la barre dit
+     * la durée par sa longueur avant de dire la part écoulée par son remplissage.
+     */
+    public const PROGRESS_PX_PER_HOUR = 20;
+
+    /**
      * Nombre de vignettes servies en chargement immédiat avant de basculer en `loading="lazy"`.
      *
      * L'agenda d'une journée chargée rend jusqu'à 140 vignettes, toutes téléchargées d'emblée
@@ -364,7 +376,16 @@ class EvenementRenderer
             <div class="spacer"></div>
 
             <div class="pratique">
-                <span class="left"><?= sanitizeForHtml(HtmlShrink::adresseCompacteSelonContexte($even_lieu['region'], $even_lieu['localite'], $even_lieu['quartier'], $even_lieu['adresse'])); ?></span>
+                <span class="left"><?php
+                    $adresse = sanitizeForHtml(HtmlShrink::adresseCompacteSelonContexte($even_lieu['region'], $even_lieu['localite'], $even_lieu['quartier'], $even_lieu['adresse']));
+                    echo $adresse;
+                    // avec les repères de temporalité (#51), le prix quitte la colonne des horaires,
+                    // que la barre de progression occupe désormais, pour se ranger sous l'adresse
+                    if ($withTimeStatus && !empty($tab_even['e_prix']))
+                    {
+                        echo ($adresse !== '' ? '<br>' : '') . self::priceShortHtml((string) $tab_even['e_prix']);
+                    }
+                ?></span>
                 <span class="right">
                     <?php
                     $horaire_complet = EvenementRenderer::schedulesToHhMm($tab_even['e_horaire_debut'], $tab_even['e_horaire_fin'], $tab_even['e_dateEvenement']);
@@ -376,21 +397,15 @@ class EvenementRenderer
                     if ($withTimeStatus)
                     {
                         /*
-                         * Avec les repères de temporalité (#51), la colonne se lit en lignes plutôt
-                         * qu'en énumération : l'horaire, le repère quand il en réclame une, puis le
-                         * prix. Horaire et prix sont enveloppés parce qu'eux seuls pâlissent quand
-                         * l'événement est hors d'atteinte — le repère qui l'explique reste net.
+                         * Avec les repères de temporalité (#51), la colonne se lit en lignes : l'horaire,
+                         * puis le repère quand il en réclame une. L'horaire est enveloppé parce qu'il
+                         * pâlit quand l'événement est hors d'atteinte — le repère qui l'explique reste net.
                          */
                         if (!empty($horaire_complet))
                         {
                             echo '<span class="even-time-line">' . sanitizeForHtml($horaire_complet) . '</span>';
                         }
                         echo self::timeStatusHtml($time_status);
-                        if (!empty($tab_even['e_prix']))
-                        {
-                            echo (!empty($horaire_complet) ? '<br>' : '')
-                                . '<span class="even-time-line">' . sanitizeForHtml($tab_even['e_prix']) . '</span>';
-                        }
                     }
                     else
                     {
@@ -421,8 +436,8 @@ class EvenementRenderer
      * L'icône est décorative — le libellé qui la suit porte l'information.
      *
      * « terminé » se lit à la suite de l'horaire, entre parenthèses, parce qu'il le qualifie ;
-     * le compte à rebours et la progression prennent leur propre ligne, où les parenthèses
-     * n'ont plus rien à isoler.
+     * le compte à rebours et la barre prennent la ligne suivante — la barre à la suite du compte
+     * à rebours tant que l'événement n'a pas commencé, seule ensuite.
      */
     public static function timeStatusHtml(?EvenementTimeStatus $status): string
     {
@@ -431,51 +446,94 @@ class EvenementRenderer
             return '';
         }
 
-        if ($status->state === EvenementTimeStatus::RUNNING)
-        {
-            return self::timeProgressHtml($status);
-        }
-
         if ($status->state === EvenementTimeStatus::PAST)
         {
             return ' <span class="even-time-status even-time-status-past" title="Terminé">'
                 . '(<i class="fa fa-check-square" aria-hidden="true"></i>&nbsp;' . sanitizeForHtml($status->label) . ')</span>';
         }
 
+        if ($status->state === EvenementTimeStatus::RUNNING)
+        {
+            return '<br>' . self::timeProgressHtml($status);
+        }
+
+        // l'espace qui sépare le compte à rebours de la barre est le seul point où la ligne peut
+        // se couper : une barre longue passe alors dessous plutôt que de déborder de la colonne
         return '<br><span class="even-time-status even-time-status-coming" title="' . sanitizeForHtml('Commence ' . $status->label) . '">'
-            . '<i class="fa fa-clock-o" aria-hidden="true"></i>&nbsp;' . sanitizeForHtml($status->label) . '</span>';
+            . '<i class="fa fa-clock-o" aria-hidden="true"></i>&nbsp;' . sanitizeForHtml($status->label) . '</span> '
+            . self::timeProgressHtml($status);
     }
 
 
     /**
-     * La part écoulée d'un événement en cours, en barre plutôt qu'en pourcentage.
+     * La barre de progression d'un événement : sa durée par la longueur, sa part écoulée par le
+     * remplissage et le pourcentage inscrit au milieu.
      *
-     * <progress> porte le rôle ARIA progressbar et sa valeur : un nom accessible suffit à le
-     * rendre exploitable, et son contenu textuel reste la valeur de repli. Le pourcentage n'est
-     * donc pas perdu, il passe dans l'infobulle et dans le nom.
+     * <progress> porte le rôle ARIA progressbar et sa valeur ; le pourcentage inscrit par-dessus
+     * et les rayures qui animent le remplissage sont des calques décoratifs, masqués aux
+     * technologies d'assistance. Les rayures ne sont pas dessinées par le pseudo-élément de
+     * remplissage, qui ne s'anime pas de façon fiable (Firefox l'ignore, cf. Bugzilla 812442) :
+     * un calque de même largeur, lui, s'anime partout.
      *
-     * Sans horaire de fin, la barre est une estimation jusqu'à minuit : le « ? » qui la suit le
-     * signale à l'œil, l'infobulle le dit en toutes lettres.
+     * Avant le début, la barre, vide, ne dit rien que le compte à rebours et l'horaire ne disent
+     * déjà : elle est masquée en bloc aux technologies d'assistance.
+     *
+     * Sans horaire de fin, la durée est estimée (cf. EvenementTimeStatus) : le « ? » qui suit la
+     * barre le signale à l'œil, l'infobulle dit à quelle heure la fin a été fixée.
      */
     private static function timeProgressHtml(EvenementTimeStatus $status): string
     {
+        $isRunning = $status->state === EvenementTimeStatus::RUNNING;
         $percent = (int) $status->percent;
+        $width = (int) round((int) $status->durationMinutes * self::PROGRESS_PX_PER_HOUR / 60);
+        $percentHtml = $percent . '&nbsp;%';
 
-        $title = $status->endEstimated
-            ? 'En cours, heure de fin inconnue : progression estimée jusqu\'à minuit'
-            : 'En cours, ' . $status->label . ' écoulés';
+        $estimation = $status->endEstimated
+            ? 'fin inconnue, estimée à ' . mb_substr((string) $status->end, 11, 5)
+            : null;
 
-        $html = '<br><span class="even-time-status even-time-status-running">'
-            . '<progress class="even-time-progress" max="100" value="' . $percent . '"'
-            . ' title="' . sanitizeForHtml($title) . '" aria-label="' . sanitizeForHtml($title) . '">'
-            . $percent . '&nbsp;%</progress>';
+        $title = $isRunning
+            ? 'En cours, ' . $status->label . ' écoulés' . ($estimation !== null ? ' — ' . $estimation : '')
+            : null;
 
-        if ($status->endEstimated)
+        $html = '<span class="even-time-status even-time-status-' . $status->state . '"' . ($isRunning ? '' : ' aria-hidden="true"') . '>'
+            . '<span class="even-time-bar" style="width:' . $width . 'px"' . ($title !== null ? ' title="' . sanitizeForHtml($title) . '"' : '') . '>'
+            . '<progress class="even-time-progress" max="100" value="' . $percent . '"' . ($title !== null ? ' aria-label="' . sanitizeForHtml($title) . '"' : '') . '>' . $percentHtml . '</progress>';
+
+        if ($percent > 0)
         {
-            $html .= '<span class="even-time-estimated" title="' . sanitizeForHtml($title) . '" aria-hidden="true">?</span>';
+            $html .= '<span class="even-time-bar-stripes" style="width:' . $percent . '%" aria-hidden="true"></span>';
+        }
+
+        $html .= '<span class="even-time-bar-label" aria-hidden="true">' . $percentHtml . '</span>'
+            . '</span>';
+
+        if ($estimation !== null)
+        {
+            $html .= '<span class="even-time-estimated" title="' . sanitizeForHtml(ucfirst($estimation)) . '" aria-hidden="true">?</span>';
         }
 
         return $html . '</span>';
+    }
+
+
+    /**
+     * Le prix d'une carte, rangé sous l'adresse avec les repères de temporalité (#51).
+     *
+     * Au-delà de PRICE_MAX_CHARS, il est coupé au mot près et suivi de « (...) » ; l'infobulle le
+     * rend entier, et la fiche de l'événement le donne de toute façon en entier.
+     */
+    public static function priceShortHtml(string $prix): string
+    {
+        $prix = trim($prix);
+
+        if (!Text::isCut($prix, self::PRICE_MAX_CHARS))
+        {
+            return '<span class="even-time-price">' . sanitizeForHtml($prix) . '</span>';
+        }
+
+        return '<span class="even-time-price" title="' . sanitizeForHtml($prix) . '">'
+            . sanitizeForHtml(Text::truncateWords($prix, self::PRICE_MAX_CHARS)) . ' (...)</span>';
     }
 
 

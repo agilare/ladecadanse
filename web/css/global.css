@@ -1296,22 +1296,42 @@ table .td-align-center
     }
 
     /*
-     * La part écoulée d'un événement en cours, en barre plutôt qu'en pourcentage.
+     * La barre de progression : sa longueur dit la durée (PROGRESS_PX_PER_HOUR, posée en style
+     * par EvenementRenderer), son remplissage la part écoulée, et le pourcentage s'inscrit au
+     * milieu.
      *
-     * appearance:none est ce qui autorise les pseudo-éléments de WebKit : sans lui le navigateur
-     * garde son rendu natif et les couleurs ci-dessous n'ont aucun effet. Le fond de .pratique
-     * étant clair, la piste doit être plus soutenue que lui pour rester visible.
+     * Le conteneur porte la forme — hauteur, arrondi, rognage — et empile trois couches : le
+     * <progress>, les rayures animées, le pourcentage. Sa largeur minimale laisse au pourcentage
+     * la place de s'inscrire sur les événements courts ; sa largeur maximale garde les longs dans
+     * la colonne, « ? » compris, au prix de la proportionnalité au-delà d'une dizaine d'heures.
      */
-    .even-time-progress
+    .even-time-bar
     {
-        -webkit-appearance:none;
-        appearance:none;
-        width:70px;
-        height:0.7em;
+        position:relative;
+        display:inline-block;
+        min-width:2.6em;
+        max-width:calc(100% - 1em);
+        height:0.8em;
+        border-radius:2px;
+        overflow:hidden;
         vertical-align:middle;
-        border:none; /* Firefox dessine un cadre par défaut */
-        background:#C3D0E4;
     }
+
+        /*
+         * appearance:none est ce qui autorise les pseudo-éléments de WebKit : sans lui le
+         * navigateur garde son rendu natif et les couleurs ci-dessous n'ont aucun effet. Le fond
+         * de .pratique étant clair, la piste doit être plus soutenue que lui pour rester visible.
+         */
+        .even-time-progress
+        {
+            -webkit-appearance:none;
+            appearance:none;
+            display:block;
+            width:100%;
+            height:100%;
+            border:none; /* Firefox dessine un cadre par défaut */
+            background:#C3D0E4;
+        }
 
         .even-time-progress::-webkit-progress-bar
         {
@@ -1320,15 +1340,68 @@ table .td-align-center
 
         .even-time-progress::-webkit-progress-value
         {
-            background:#59787A;
+            background:#FACA1A;
         }
 
         .even-time-progress::-moz-progress-bar
         {
-            background:#59787A;
+            background:#FACA1A;
         }
 
-    /* Fin inconnue : la barre s'arrête à minuit faute de mieux, ce « ? » ne le laisse pas croire */
+        /*
+         * Les rayures qui montrent que la barre progresse. Elles défilent quatre secondes au
+         * chargement puis s'immobilisent : un mouvement de plus de cinq secondes, lancé sans qu'on
+         * le demande et sans moyen de l'arrêter, enfreint le critère WCAG 2.2.2 — et une liste
+         * du soir en anime des dizaines à la fois.
+         */
+        .even-time-bar-stripes
+        {
+            position:absolute;
+            top:0;
+            bottom:0;
+            left:0;
+            background-image:linear-gradient(-45deg, rgba(255, 255, 255, 0.45) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.45) 50%, rgba(255, 255, 255, 0.45) 75%, transparent 75%, transparent);
+            background-size:0.8em 0.8em;
+            animation:even-time-stripes 1s linear 4;
+        }
+
+        .even-time-bar-label
+        {
+            position:absolute;
+            top:0;
+            right:0;
+            bottom:0;
+            left:0;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-size:0.8em;
+            line-height:1;
+            color:#333;
+        }
+
+@keyframes even-time-stripes
+{
+    from
+    {
+        background-position:0 0;
+    }
+
+    to
+    {
+        background-position:0.8em 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce)
+{
+    .even-time-bar-stripes
+    {
+        animation:none;
+    }
+}
+
+    /* Fin inconnue : la durée est estimée faute de mieux, ce « ? » ne le laisse pas croire */
     .even-time-estimated
     {
         padding-left:0.2em;
@@ -1338,8 +1411,8 @@ table .td-align-center
 
     /*
      * Un événement hors d'atteinte — terminé, ou séance de ciné ou de théâtre commencée depuis
-     * plus d'une demi-heure — reste lisible et cliquable : la transparence le range au second
-     * plan sans le retirer. Elle est levée au survol et dès qu'un de ses liens prend le focus,
+     * plus d'une heure — reste lisible et cliquable : la transparence le range au second plan
+     * sans le retirer. Elle est levée au survol et dès qu'un de ses liens prend le focus,
      * sans quoi les actions d'édition seraient les plus pâles au moment où on s'en sert.
      *
      * L'opacité d'un parent ne se rattrape pas sur un enfant : elle est donc posée sur chaque

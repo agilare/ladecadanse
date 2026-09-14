@@ -108,7 +108,10 @@ if ($is_chronological_order)
  * Le repli des catégories en préversion se joue ici, en deux endroits solidaires.
  *
  * La première colonne d'abord : PDO::FETCH_GROUP groupe dessus, si bien que les cours
- * tombent dans le groupe « divers » sans une ligne de PHP.
+ * tombent dans le groupe « divers » sans une ligne de PHP. FETCH_GROUP la consomme et la
+ * retire des lignes : la catégorie brute est donc lue une seconde fois, sous l'alias
+ * e_genre que les autres listes donnent aussi, pour les repères de temporalité (#51) qui
+ * traitent à part les séances de ciné et de théâtre.
  *
  * Le rang de tri ensuite, et c'est lui qui fait tenir l'ensemble : hors préversion,
  * « cours » partage le rang de « divers ». Le tri secondaire — dernier ajouté, ou heure de
@@ -121,7 +124,8 @@ $sql_category_order = EventCategory::sqlOrderByCategory('e.genre', $new_categori
 
 $sql_events_today_in_region_order_by_category = "SELECT
 
-  $sql_visible_category AS e_genre,
+  $sql_visible_category AS category_group,
+  e.genre AS e_genre,
   e.idEvenement AS e_idEvenement,
   e.titre AS e_titre,
   e.statut AS e_statut,

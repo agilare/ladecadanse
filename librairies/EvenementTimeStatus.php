@@ -17,9 +17,9 @@ use Ladecadanse\Utils\DateHelper;
  * toujours le cas (cf. #65) :
  *   - « terminé » demande un horaire de fin ;
  *   - le compte à rebours et la progression demandent un horaire de début.
- * Faute d'horaire de fin, la progression d'un événement commencé est estimée jusqu'à minuit
- * plutôt qu'abandonnée : la barre le dit alors d'un « ? » (endEstimated), ce qui vaut mieux
- * que ne rien afficher là où l'agenda a justement le plus besoin d'un repère.
+ * Faute d'horaire de fin, la durée d'un événement est estimée selon son genre plutôt
+ * qu'abandonnée : la barre le dit alors d'un « ? » (endEstimated), ce qui vaut mieux que ne
+ * rien afficher là où l'agenda a justement le plus besoin d'un repère.
  * Sans horaire de début exploitable, en revanche, la fabrique rend toujours null.
  */
 final class EvenementTimeStatus
@@ -48,19 +48,27 @@ final class EvenementTimeStatus
 
     /**
      * Genres où l'on ne rejoint pas une séance commencée : la salle est noire, la porte fermée.
-     * Passé TOO_LATE_AFTER_START_MINUTES, la carte pâlit comme celle d'un événement terminé.
+     * Passé TOO_LATE_AFTER_START_MINUTES, la carte pâlit ; faute d'horaire de fin, la séance
+     * dure SEANCE_ESTIMATED_DURATION_MINUTES.
      */
     private const array GENRES_SEANCE = ['cinéma', 'théâtre'];
 
     /** Retard au-delà duquel une séance est considérée hors d'atteinte, en minutes. */
-    private const int TOO_LATE_AFTER_START_MINUTES = 30;
+    private const int TOO_LATE_AFTER_START_MINUTES = 60;
+
+    /** Durée prêtée à une séance dont l'horaire de fin manque, en minutes. */
+    private const int SEANCE_ESTIMATED_DURATION_MINUTES = 120;
 
     private function __construct(
         public readonly string $state,
         public readonly string $label,
-        /** Part écoulée en pourcent pour RUNNING, null pour les autres états */
+        /** Part écoulée en pourcent : 0 avant le début, [5, 95] en cours, null une fois terminé */
         public readonly ?int $percent = null,
-        /** RUNNING sans horaire de fin : la progression est calculée jusqu'à minuit */
+        /** Durée de l'événement en minutes, fin estimée comprise ; null une fois terminé */
+        public readonly ?int $durationMinutes = null,
+        /** Fin de l'événement (ISO datetime), réelle ou estimée ; null une fois terminé */
+        public readonly ?string $end = null,
+        /** Faute d'horaire de fin, durée et part écoulée reposent sur une fin estimée */
         public readonly bool $endEstimated = false,
         /** Séance de ciné ou de théâtre commencée depuis trop longtemps pour qu'on l'y rejoigne */
         public readonly bool $tooLate = false,
@@ -87,7 +95,7 @@ final class EvenementTimeStatus
      * @param string|null $horaireDebut ISO datetime, ou null/sentinelle si non renseigné
      * @param string|null $horaireFin ISO datetime, ou null/sentinelle si non renseigné
      * @param string|null $now ISO datetime, injectable pour les tests ; défaut : maintenant
-     * @param string|null $genre clé de $glo_tab_genre, qui décide du sort des séances commencées
+     * @param string|null $genre clé d'EventCategory::ALL, qui décide du sort des séances
      */
     public static function fromHoraires(
         string $dateEvenement,
@@ -111,6 +119,7 @@ final class EvenementTimeStatus
             $fin = null;
         }
 
+        // seule une fin réelle dit « terminé » : une fin estimée dépassée ne prouve rien
         if ($fin !== null && $now > $fin)
         {
             return new self(self::PAST, 'terminé');
@@ -121,19 +130,30 @@ final class EvenementTimeStatus
             return null;
         }
 
+        $endEstimated = $fin === null;
+        $fin ??= self::estimatedEnd($dateEvenement, $debut, $genre);
+        $durationMinutes = intdiv(self::timestamp($fin) - self::timestamp($debut), 60);
+
         if ($now < $debut)
         {
-            return new self(self::COMING, self::countdownLabel($debut, $now));
+            return new self(
+                self::COMING,
+                self::countdownLabel($debut, $now),
+                0,
+                $durationMinutes,
+                $fin,
+                $endEstimated
+            );
         }
 
-        // commencé : sans horaire de fin, la progression court jusqu'à minuit, faute de mieux
-        $endEstimated = $fin === null;
-        $percent = self::progressPercent($debut, $fin ?? self::midnightAfter($debut), $now);
+        $percent = self::progressPercent($debut, $fin, $now);
 
         return new self(
             self::RUNNING,
             $percent . ' %',
             $percent,
+            $durationMinutes,
+            $fin,
             $endEstimated,
             self::isTooLateToJoin($debut, $now, $genre)
         );
@@ -179,8 +199,8 @@ final class EvenementTimeStatus
      *
      * Bornée à [5 %, 95 %] : « 0 % » et « 100 % » se liraient comme « pas commencé » et
      * « terminé », alors que l'événement est justement en cours. La borne haute sert aussi de
-     * garde-fou quand la fin est estimée : minuit passé, la barre reste presque pleine sans
-     * jamais prétendre que c'est fini.
+     * garde-fou quand la fin est estimée : l'estimation dépassée, la barre reste presque pleine
+     * sans jamais prétendre que c'est fini.
      */
     private static function progressPercent(string $debut, string $fin, string $now): int
     {
@@ -195,8 +215,8 @@ final class EvenementTimeStatus
     /**
      * Trop tard pour rejoindre une séance de ciné ou de théâtre ?
      *
-     * Une soirée se rejoint à toute heure, une projection non : passé le premier quart d'heure
-     * de retard, l'événement n'est plus une sortie possible mais une information d'archive.
+     * Une soirée se rejoint à toute heure, une projection non : passée la première heure,
+     * l'événement n'est plus une sortie possible mais une information d'archive.
      */
     private static function isTooLateToJoin(string $debut, string $now, ?string $genre): bool
     {
@@ -209,14 +229,40 @@ final class EvenementTimeStatus
     }
 
     /**
-     * Le premier minuit qui suit l'instant donné, borne haute des événements sans horaire de fin.
+     * La fin prêtée à un événement dont l'horaire de fin manque (#65).
      *
-     * « tomorrow midnight » est relatif au jour de $instant, et non au jour courant : une soirée
-     * commencée à 21:00 se voit donc estimée sur trois heures, et non sur le reste de la nuit.
+     * Une séance de ciné ou de théâtre dure deux heures. Tout le reste — fêtes, concerts, divers,
+     * et par défaut les genres sans règle propre — court jusqu'au minuit qui clôt la soirée de la
+     * journée d'agenda. Commencé après ce minuit (00:30, rattaché à la veille), un événement n'en
+     * a plus devant lui : il court alors jusqu'à la fin de la journée d'agenda, 06:00, plutôt que
+     * jusqu'au minuit suivant, près d'un jour plus tard. Un début plus tardif encore est un horaire
+     * aberrant ; il reçoit la durée d'une séance, ce qui garantit au moins une fin après le début.
+     *
+     * @return string ISO datetime, toujours postérieur à $debut
      */
-    private static function midnightAfter(string $instant): string
+    private static function estimatedEnd(string $dateEvenement, string $debut, ?string $genre): string
     {
-        return (new \DateTimeImmutable($instant))->modify('tomorrow midnight')->format('Y-m-d H:i:s');
+        if (in_array($genre, self::GENRES_SEANCE, true))
+        {
+            return self::addMinutes($debut, self::SEANCE_ESTIMATED_DURATION_MINUTES);
+        }
+
+        $lendemain = DateHelper::isoToNextDay(mb_substr($dateEvenement, 0, 10));
+
+        foreach ([$lendemain . ' 00:00:00', $lendemain . ' ' . DateHelper::AGENDA_DAY_END_TIME] as $borne)
+        {
+            if ($borne > $debut)
+            {
+                return $borne;
+            }
+        }
+
+        return self::addMinutes($debut, self::SEANCE_ESTIMATED_DURATION_MINUTES);
+    }
+
+    private static function addMinutes(string $isoDatetime, int $minutes): string
+    {
+        return (new \DateTimeImmutable($isoDatetime))->modify('+' . $minutes . ' minutes')->format('Y-m-d H:i:s');
     }
 
     private static function timestamp(string $isoDatetime): int
