@@ -12,8 +12,9 @@ form#ajouter_editer
 	{
 		margin-top:5px;
 		margin-left:0.1em;
+		padding:0.6em 0 0.6em 0.4em;
+        border-radius: 3px;
 		background-color:#f2f2f2;
-		padding:1em 0 1em 0.4em;
 	}
 
 		form#ajouter_editer fieldset legend
@@ -51,18 +52,26 @@ form#ajouter_editer label.large {
     width: 16em;
 }
 
+	/* libellé plus long que les autres (user-reset.php) ; ciblé par [for] et non par
+	   #login_pseudo, que la page de connexion utilise aussi. À spécificité égale,
+	   mobile.css passe après et ramène la largeur à 10em sous 800px. */
+	form#ajouter_editer label[for="login_ou_email"]
+	{
+		width: 19em;
+	}
+
 form#ajouter_editer input
 {
 	border:1px solid #aeaeae;
-	padding:0.3em 0.3em;
-	border-radius: 2px;
+	padding:0.4em 0.4em;
+	border-radius: 3px;
 }
 
 form#ajouter_editer textarea
 {
 	border:1px solid #aeaeae;
-	padding:0.3em 0.3em;
-	border-radius: 2px;
+	padding:0.4em;
+	border-radius: 3px;
 }
 
 form#ajouter_editer select
@@ -89,11 +98,16 @@ form#ajouter_editer select:focus
 }
 
 /* avoid deform unsightly original Select2 styling  */
-form#ajouter_editer input.select2-search__field
+form#ajouter_editer input.select2-search__field, form#ajouter_editer textarea.select2-search__field
 {
     border:none;
-    padding:0;
+/*    padding:0;*/
 }
+
+ form#ajouter_editer input[type="file"]
+ {
+     border:none;
+ }
 
 form#ajouter_editer ul
 {
@@ -236,7 +250,7 @@ form#ajouter_editer .guideForm
 form#ajouter_editer .guideChamp
 {
 	font-style: italic;
-	margin:0.4em 0 0.8em 0;
+	margin:0.5em 0 0.8em 0;
     font-size:0.9em;
     padding:0em 0 0.2em 120px;
 	line-height:1.2em;
@@ -264,10 +278,16 @@ form#ajouter_editer input.submit
     background-color:#f9f9f9;
     font-weight:bold;
     border:1px solid black;
+    border-radius: 3px;
     /* hack for Safari Mobile : */
     color: rgba(0, 0, 0, 1);
     -webkit-text-fill-color: rgba(0, 0, 0, 1);
     -webkit-opacity: 1;
+}
+
+form#ajouter_editer input:hover
+{
+  background-color:#f4f4f4;
 }
 
 form#ajouter_editer .submit-big
@@ -294,32 +314,33 @@ form#ajouter_editer .msg {
 	background:yellow;
 }
 
-form#ajouter_editer label.probleme
-{
-    text-align:right;
-    background-image: url(../web/interface/icons/exclamation.png);
-    background-repeat: no-repeat;
-    background-position: 3px 0px;
+/* Messages de la conversion des PDF (web/js/pdf-to-image.js). Alignés comme
+   .msg sur la colonne des champs, mais colorés selon ce qu'ils annoncent :
+   le jaune de .msg signale un problème, il ne doit pas accueillir un succès. */
+form#ajouter_editer .js-pdf-message {
+	font-size:0.95em;
+	margin-left: 11em;
+	padding:0.2em 0.5em;
+	display:inline-block;
 }
 
-form#ajouter_editer .complete
-{
-    background-image: url(../web/interface/icons/tick.png);
-    background-repeat: no-repeat;
-    background-position: 3px 0px;
-}
-
-	form#ajouter_editer .supImg
+	form#ajouter_editer .existing_img
 	{
-        font-size:0.8em;
-        margin-top:5px;
+        font-size:0.9em;
+        margin-top: 20px;
         margin-left:115px;
 	}
 
-		form .supImg img
+		form .existing_img img
 		{
 			border:1px solid gray;
             border-radius:3px;
+            /* aperçu de l'image existante : on affiche la version normale (pas la miniature "s_"),
+               bornée pour ne pas déformer le formulaire */
+            width:auto;
+            height:auto;
+            max-width:250px;
+            max-height:300px;
 		}
 
 /* Evenements */
@@ -367,6 +388,14 @@ padding:0.1em;
 border-top:dotted 1px #eaeaea;
 }
 
+form#ajouter_editer table.fichiers_associes img
+{
+    width:auto;
+    height:auto;
+    max-width:120px;
+    max-height:120px;
+}
+
 .menu_wikicode
 {
 padding-left:13em;
@@ -407,18 +436,45 @@ font-family:Georgia;
 }
 
 
+/*
+ * Le contenu commence par un <p> et se poursuit par un <table> : une coche
+ * en flux se serait mise sur sa propre ligne, au-dessus de la phrase. Elle est
+ * donc portée par la première ligne du <p> lui-même, et non calée en absolu sur
+ * le bandeau : partageant la boîte de ligne du texte, elle en partage la ligne
+ * de base. En absolu elle s'en écartait de ~3px, la fonte des icônes et celle
+ * du texte n'ayant pas les mêmes métriques verticales — écart qu'aucun réglage
+ * de `top` ne corrige durablement. Le retrait à gauche du bandeau aligne, lui,
+ * la phrase et le tableau sur la même verticale.
+ */
 .msg_ok_copy
 {
 	width:94%;
 	margin:2em auto;
-	padding:1em 1% 1em 1%;
+	padding:1em 1% 1em 2.6em;
 	border-top:1px solid green;
 	border-bottom:1px solid green;
 	background-color: #dbe1db;
-	background-image:url(../web/interface/icons/tick.png);
-	background-repeat:no-repeat;
-	background-position: 15px 17px;
 	line-height:1.5em;
+}
+
+.msg_ok_copy > p:first-child::before
+{
+	/* Largeur nulle : le glyphe déborde dans la gouttière sans décaler le texte,
+	   qui reste aligné sur le tableau. -1.4545em = les 1.6em séparant le bord du
+	   bandeau du début du texte (2.6em de padding moins la gouttière de 1em),
+	   rapportés au font-size du <p>, que copy.php fixe à 1.1em. */
+	position:relative;
+	left:-1.4545em;
+	display:inline-block;
+	width:0;
+	font-family:FontAwesome;
+	font-style:normal;
+	font-weight:normal;
+	text-rendering:auto;
+	-webkit-font-smoothing:antialiased;
+	-moz-osx-font-smoothing:grayscale;
+	content:"\f00c";
+	color:green;
 }
 
 .readonly
@@ -427,3 +483,111 @@ font-family:Georgia;
     border: 1px solid #aaa;
     color: #555;
 }
+
+.duplicate-warning
+{
+    background: #fff4e5;
+    border-left: 4px solid #d97706;
+    color: #5b2a05;
+    padding: 1em 1.2em;
+    margin: 0 0 1.2em 0;
+    border-radius: 3px;
+}
+
+    .duplicate-warning h2
+    {
+        color: #7c2d12;
+        margin: 0 0 0.6em 0;
+        font-size: 1.25em;
+    }
+
+    .duplicate-warning p
+    {
+        margin: 0.5em 0;
+        line-height: 1.4em;
+    }
+
+    #contenu .duplicate-warning .duplicate-list
+    {
+        margin: 0.4em 0 0.8em 0;
+        padding: 0;
+        list-style: none;
+    }
+
+        #contenu .duplicate-warning .duplicate-list li
+        {
+            margin: 0.35em 0;
+        }
+
+        #contenu .duplicate-warning .duplicate-list a
+        {
+            color: #1b4f8a;
+        }
+
+        #contenu .duplicate-warning .duplicate-list .duplicate-edit
+        {
+            margin-left: 0.4em;
+        }
+
+            #contenu .duplicate-warning .duplicate-list .duplicate-edit img
+            {
+                vertical-align: middle;
+            }
+
+        #contenu .duplicate-warning .duplicate-list .horaire
+        {
+            color: #5b2a05;
+            margin-left: 0.4em;
+        }
+
+        #contenu .duplicate-warning .duplicate-list .statut
+        {
+            color: #856404;
+            margin-left: 0.4em;
+            text-transform: lowercase;
+        }
+
+    .duplicate-warning .confirm-row
+    {
+        margin: 1em 0 0 0;
+        padding-top: 0.8em;
+        border-top: 1px solid #f0c896;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 1em;
+    }
+
+    .duplicate-warning .confirm-submit
+    {
+        margin-left: auto;
+    }
+
+    form#ajouter_editer .submit:disabled
+    {
+        background-color: #ece4d7;
+        border-color: #b9a98f;
+        color: #9c8f78;
+        -webkit-text-fill-color: #9c8f78;
+        cursor: not-allowed;
+    }
+
+form#ajouter_editer .duplicate-warning .confirm-label
+{
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
+    width: auto;
+    text-align: left;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+    font-weight: bold;
+    color: #5b2a05;
+}
+
+    form#ajouter_editer .duplicate-warning .confirm-label input[type="checkbox"]
+    {
+        width: auto;
+        margin: 0;
+    }

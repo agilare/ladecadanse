@@ -83,6 +83,13 @@ tr:nth-child(even) {
 	padding: 0.4em 0.2em;
 }
 
+/* colonne d'actions : à l'écart du bord droit du tableau */
+#tableaux table tr td.actions
+{
+    padding-right:1.4em;
+	white-space:nowrap;
+}
+
 
 #tableaux table.verticale
 {

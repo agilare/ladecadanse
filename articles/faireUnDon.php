@@ -17,7 +17,7 @@ include("../_header.inc.php");
 
 <!--        <p>Vous pouvez contribuer (une seule fois ou de manière récurrente, selon vos possibilités) via :</p>-->
 
-        <p>Votre don aidera à financer le bon fonctionnement et l'évolution de La décadanse, et m'encouragera dans mon travail. Merci&nbsp;!</p>
+        <p>Votre don aidera à financer le bon fonctionnement et l'évolution de La&nbsp;décadanse, et m'encouragera dans mon travail. Merci&nbsp;!</p>
 
 <!--        <script src="https://wemakeit.com/static-assets/widgets/donation_box.js" async="async"></script>-->
 <!--        <wemakeit-donation-box color="blue" locale="fr" slug="soutenir-la-decadanse" type="card" nonce="<?php echo CSP_NONCE ?>" style="margin: 1em 1em 1em 1em"></wemakeit-donation-box>-->
@@ -25,6 +25,7 @@ include("../_header.inc.php");
 <!--        <script src="https://donorbox.org/widget.js" paypalExpress="true"></script> <iframe src="https://donorbox.org/embed/la-decadanse?default_interval=o" name="donorbox" allowpaymentrequest="allowpaymentrequest" seamless="seamless" frameborder="0" scrolling="no" height="900px" width="100%" style="margin-left:3em;max-width: 500px; min-width: 250px; max-height:none!important" allow="payment"></iframe>-->
 
         <ul id="payment-modes">
+            <li><b>Twint, Postfinance</b> : envoyez-moi <a href="/misc/contacteznous.php">un message</a></li>
             <li>
                 <b style="vertical-align: top"><!--Carte de crédit, compte--> Paypal </b>
                 <div style="display:inline-block">
@@ -46,12 +47,12 @@ include("../_header.inc.php");
                 </div>
             </li>
             <li style="margin-top:-0.6em"><b>Liberapay</b> (compte requis, dons récurrents)<script src="https://liberapay.com/michelg/widgets/button.js"></script><noscript><a href="https://liberapay.com/michelg/donate"><img alt="Donate using Liberapay" src="https://liberapay.com/assets/widgets/donate.svg"></a></noscript></li>
-            <!--            <li><b>Twint, virement</b> (<a href="/misc/contacteznous.php">contactez-moi</a>)</li>-->
+
         </ul>
         <br>
         <hr>
         <br>
-        <p>La décadanse est un site entièrement gratuit sur un code <a href="https://github.com/agilare/ladecadanse/" rel="external" target="_blank">open source</a>, que je développe et gère bénévolement depuis une vingtaine d'années, avec parfois l'aide d'autres personnes.</p>
+        <p>La&nbsp;décadanse est un site entièrement gratuit sur un code <a href="https://github.com/agilare/ladecadanse/" rel="external" target="_blank">open source</a>, que je développe et gère bénévolement depuis une vingtaine d'années, avec parfois l'aide d'autres personnes.</p>
         <p>À côté des frais courants (hébergement, contribution aux outils utilisés...), le site me demande un investissement significatif&nbsp;:</p>
         <ul style="margin-left:0.4em;list-style-type: none">
             <li>✅ <b>maintenance</b> : assurer sa disponibilité, sa sécurité ; garder à jour, chasser les bugs</li>
@@ -67,7 +68,7 @@ include("../_header.inc.php");
 
         <h2 style="margin-bottom:0.6em;">Soutiens</h2>
 
-        <p>Je remercie ces organisateurs pour leur soutien à La décadanse&nbsp;:</p>
+        <p>Je remercie ces organisateurs pour leur soutien à La&nbsp;décadanse&nbsp;:</p>
 
         <br>
 
@@ -88,8 +89,8 @@ include("../_header.inc.php");
             <li><a href="/lieu/lieu.php?idL=130"><img src="/web/uploads/lieux/s_130_logo.jpg" alt="Centre photo Genève" width="170"></a></li>
             <li><a href="/organisateur/organisateur.php?idO=269"><img src="/web/uploads/organisateurs/269_logo.jpg?1768067036" alt="Les Créateliers" width="150"></a></li>
             <li><a href="/lieu/lieu.php?idL=120"><img src="/web/uploads/lieux/120_logo.gif" alt="L'épicentre" width="170"></a></li>
-            <li><a href="/organisateur/organisateur.php?idO=458"><img src="/web/uploads/organisateurs/458_logo.png" alt="La Puce nanoéditions" width="150"></a></li>
-
+            <li><a href="/organisateur/organisateur.php?idO=458"><img src="/web/uploads/organisateurs/458_logo.png" alt="La Puce nanoéditions" width="140"></a></li>
+            <li><a href="https://www.bernex.ch/"><img src="/web/content/bernex-logo-s.png" alt="Commune de Bernex" width="160"></a></li>
         </ul>
 
     </article>

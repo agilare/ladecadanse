@@ -7,18 +7,19 @@ use Ladecadanse\EvenementRenderer;
 use Ladecadanse\Security\SecurityToken;
 use Ladecadanse\Utils\DateHelper;
 use Ladecadanse\Utils\Validateur;
+use Ladecadanse\Utils\QueryParamValidator;
 
-if (!$videur->checkGroup(8))
+if (!$authorization->checkGroup(8))
 {
     header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
-    header("Location: /user-login.php"); die();
+    header("Location: /user/login.php"); die();
 }
 
 
 $get['action'] = "";
 if (isset($_GET['action']))
 {
-	$get['action'] = Validateur::validateUrlQueryValue($_GET['action'], "enum", 0, ["coller"]);
+	$get['action'] = QueryParamValidator::validateUrlQueryValue($_GET['action'], "enum", 0, ["coller"]);
 }
 
 if (empty($_GET['idE']) || !is_numeric($_GET['idE']))
@@ -57,7 +58,7 @@ $sql_event = "SELECT
   e.dateAjout AS e_dateAjout,
 
   l.nom AS l_nom,
-  l.determinant AS l_determinant,
+  l.preposition_nom AS l_preposition_nom,
   l.adresse AS l_adresse,
   l.quartier AS l_quartier,
   l.lat AS l_lat,
@@ -164,6 +165,16 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 
 		$tab_event_copied['idPersonne'] = $_SESSION['SidPersonne'];
         $flyer = "";
+
+		/*
+		 * Les fichiers de l'événement d'origine, mémorisés hors de la boucle : celle-ci
+		 * réécrit $tab_event_copied à chaque date, si bien que la deuxième copie partait
+		 * du nom de la première, et ainsi de suite.
+		 */
+		$flyer_original = (string) ($tab_event_copied['flyer'] ?? '');
+		$image_originale = (string) ($tab_event_copied['image'] ?? '');
+		$extension_flyer = $flyer_original !== '' ? (string) mb_strrchr($flyer_original, '.') : '';
+		$extension_image = $image_originale !== '' ? (string) mb_strrchr($image_originale, '.') : '';
 		// Initialisation de la date à incrémenter avec la date de début
 		$dateIncrUnix = $dateEUnix;
 		$dateIncrUnixOld = $dateIncrUnix;
@@ -181,23 +192,14 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
                 break;
             }
 			/*
-			 *S'il y a un flyer création du nom de sa copie avec
-			* l'ID du prochain événement inséré, la date courante et le suffixe
-			*/
-			$maxId = $connector->fetchArray($connector->query("SELECT MAX(idEvenement) AS max_id FROM evenement"));
-
-			if (!empty($tab_event_copied['flyer']))
-			{
-				$flyer_orig = $tab_event_copied['flyer'];
-				$tab_event_copied['flyer'] = ($maxId['max_id'] + 1) . "_" . date('Y-m-d', $dateIncrUnix) . mb_strrchr((string) $tab_event_copied['flyer'], '.');
-            }
-
-			if (!empty($tab_event_copied['image']))
-			{
-
-				$image_orig = $tab_event_copied['image'];
-				$tab_event_copied['image'] = ($maxId['max_id'] + 1) . "_" . date('Y-m-d', $dateIncrUnix) . "_img" . mb_strrchr((string) $tab_event_copied['image'], '.');
-            }
+			 * Le nom de la copie encode l'identifiant du nouvel événement, que seul
+			 * l'AUTO_INCREMENT attribue : les colonnes partent donc vides et sont
+			 * complétées après l'INSERT. Le « MAX(idEvenement) + 1 » lu ici donnait un
+			 * nom décalé dès qu'un événement avait été supprimé, l'AUTO_INCREMENT ne
+			 * redescendant jamais.
+			 */
+			$tab_event_copied['flyer'] = '';
+			$tab_event_copied['image'] = '';
 
 			$date_originale = $tab_event_copied['dateEvenement'];
 			$date_prec = date('Y-m-d', $dateIncrUnixOld);
@@ -258,6 +260,26 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 				$edition = "";
 				$nouv_id = $connector->getInsertId();
 
+				// Nom des copies, maintenant que la base a attribué l'identifiant
+				$sql_fichiers = [];
+
+				if ($flyer_original !== '')
+				{
+					$tab_event_copied['flyer'] = $nouv_id . "_" . date('Y-m-d', $dateIncrUnix) . $extension_flyer;
+					$sql_fichiers[] = "flyer='" . $connector->sanitize($tab_event_copied['flyer']) . "'";
+				}
+
+				if ($image_originale !== '')
+				{
+					$tab_event_copied['image'] = $nouv_id . "_" . date('Y-m-d', $dateIncrUnix) . "_img" . $extension_image;
+					$sql_fichiers[] = "image='" . $connector->sanitize($tab_event_copied['image']) . "'";
+				}
+
+				if ($sql_fichiers !== [])
+				{
+					$connector->query("UPDATE evenement SET " . implode(', ', $sql_fichiers) . " WHERE idEvenement=" . (int) $nouv_id);
+				}
+
 				$edition = " <a href=\"/evenement-edit.php?action=editer&idE=".(int)$nouv_id."\" title=\"Éditer l'événement\">".$iconeEditer."Modifier</a>";
 
                 $hor_compl = '';
@@ -272,13 +294,13 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 
                 if (!empty($tab_event_copied['flyer']))
 				{
-                    Evenement::safeCopyWithMiniature($flyer_orig, $tab_event_copied['flyer']);
+                    Evenement::safeCopyWithMiniature($flyer_original, $tab_event_copied['flyer']);
                     $flyer = '';
 		        }
 
 				if (!empty($tab_event_copied['image']))
 				{
-                    Evenement::safeCopyWithMiniature($image_orig, $tab_event_copied['image']);
+                    Evenement::safeCopyWithMiniature($image_originale, $tab_event_copied['image']);
                 }
 
                 $req_orga = $connector->query("SELECT idOrganisateur FROM evenement_organisateur WHERE idEvenement=".(int)$get['idE']);
@@ -301,7 +323,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
             $i++;
 		} //while date
 
-        $logger->info('[copierEvenement]', ['titre' => $tab_event_copied['titre'], 'from' => $tab_event_copied['dateEvenement'], 'to' => "$dateEvenement - $dateEvenement2"]);
+        $logger->info('[copierEvenement]', ['idE' => (int) $get['idE'], 'titre' => $tab_event_copied['titre'], 'from' => $tab_event_copied['dateEvenement'], 'to' => "$dateEvenement - $dateEvenement2", 'idP' => (int) ($_SESSION['SidPersonne'] ?? 0)]);
 
         header("Location: ?idE=".(int)$get['idE']); die();
 	} //if nberreur = 0

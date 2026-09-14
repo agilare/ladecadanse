@@ -1,3 +1,29 @@
+#entete_contenu {
+    width: 96%;
+	margin: 0em auto 0em auto;
+}
+
+.alert-warn
+{
+    padding-top: 0.7em;
+	padding-bottom: 0.1em;
+    border-radius: 3px;
+}
+
+form#ajouter_editer p.piedForm
+{
+	background-color:#dfdfdf;
+	border-radius: 3px;
+}
+
+form#ajouter_editer ul.radio li
+{
+	  margin: 0 0em 0.5em 0.5em;
+}
+
+form#ajouter_editer .submit-big {
+  padding: 0.8em 0.8em;
+}
 
 p.action_ajouter
 {
@@ -21,4 +47,62 @@ p.action_ajouter
     padding: 5px;
     background:#e1e1e1;
     max-width: 500px;
+}
+
+/*
+ * Variante repliée du bloc (drapeau LIEU_MANUAL_COLLAPSIBLE_ENABLED, evenement-edit.php).
+ * Ciblée sur le <details> : hors drapeau, le bloc reste un <div> et garde son rendu d'avant.
+ *
+ * margin-left aligne le bord gauche du bloc sur celui du select #idLieu : 0.1em de marge sur le
+ * <p> qui porte le select (#contenu p, global.css), puis un label flotté de 8em avec 0.4em de
+ * padding et 0.3em de marge (formulaires.css).
+ */
+details#evenement-lieu-pastrouve
+{
+    margin-left:8.8em;
+    border-radius:3px;
+}
+
+    /* refermé, le bloc n'a que son résumé à montrer : une bande grise de 500px de large
+       attirerait l'oeil sur ce qu'on cherche justement à effacer du formulaire */
+    details#evenement-lieu-pastrouve:not([open])
+    {
+        width:fit-content;
+    }
+
+    details#evenement-lieu-pastrouve > summary
+    {
+        cursor:pointer;
+    }
+
+#notif_motifs
+{
+    height: 150px;
+}
+
+details#email-to-author
+{
+    margin:10px 0;
+    padding: 5px;
+    background: #f2f2f2;
+    border-radius:3px;
+}
+
+details#email-to-author summary
+{
+    padding: 0.6em 0.8em;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* Aperçu du texte fixe de l'e-mail à l'auteur, autour des champs Motif(s) et Message */
+form#ajouter_editer p.notif-apercu
+{
+    margin-left:8em;
+    width:auto;
+    max-width: 600px;
+    padding: 0.2em 0 0.2em 0.6em;
+    border-left: 3px solid #d5d5d5;
+    color:#767676;
+    white-space: pre-line;
 }

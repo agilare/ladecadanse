@@ -1,7 +1,7 @@
 #entete_contenu_titre
 {
     float:left;
-    width: 50%;
+    width: 80%;
     margin-top:0;
     margin-bottom:0em;
     font-size:1.2em;
@@ -9,7 +9,7 @@
 
 .entete_contenu_navigation
 {
-    max-width: 48%;
+    max-width: 18%;
     font-size:0.9em;
 }
 
@@ -31,7 +31,8 @@
 #footer_navigation
 {
     width: 94%;
-    margin: 1em auto 0 auto;
+    margin: 1.8em auto 0 auto;
+    font-size: 1.1em;
 }
 
 .event-navig-link
@@ -39,7 +40,7 @@
     display:inline-block;
     text-overflow:ellipsis;
     overflow-x: hidden;
-    text-align: right;
+    text-align: left;
     /*    white-space: nowrap;*/
 }
 
@@ -59,26 +60,36 @@
     padding:0 0.2em;
 }
 
-ul.menu_actions_evenement
+/* Barre d'actions : la liste publique et celle réservée aux connectés sont
+   deux <ul> distincts, empilés par défaut. La largeur et les marges portent
+   sur le <nav> pour que les deux listes partagent le même bord gauche. */
+nav.menus_actions_evenement
 {
     margin:0.8em auto .6em auto;
     width:94%;
-    text-align:right;
     font-size: 0.95em;
+}
+
+ul.menu_actions_evenement
+{
+    margin:0;
     padding:0;
+    list-style: none;
+    text-align:right;
 }
 
 ul.menu_actions_evenement li
 {
     display:inline;
-    width:100px;
     margin:0 0.1em;
     line-height: 1.5em;
 }
 
-ul.menu_actions_evenement li img
+/* Icônes centrées sur le libellé : images héritées 16px comme glyphes Font Awesome */
+ul.menu_actions_evenement li img,
+ul.menu_actions_evenement li .fa
 {
-    vertical-align: bottom
+    vertical-align: middle;
 }
 
 ul.menu_actions_evenement .calendar-export-trigger
@@ -267,7 +278,7 @@ ul.menu_actions_evenement .calendar-export-trigger
 {
     font-size: 1em;
     color:#333;
-    min-height:6em;
+    /*min-height:6em;*/
     background: #efefef;
     line-height:1.35em;
     padding: 0.2em 0 0.4em;
@@ -380,14 +391,6 @@ ul#menu_actions
 .selection p
 {
     margin:0em 0.2em 0em 0.2em;
-}
-
-.selection ul li.descendre
-{
-    padding:0.1em 0em 0.1em 16px;
-    background-image:url(../web/interface/icons/bullet_arrow_bottom.png);
-    background-repeat:no-repeat;
-    background-position: 0% 30%;
 }
 
 ul.selection li.evenement_s

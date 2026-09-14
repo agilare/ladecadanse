@@ -2,15 +2,14 @@
 
 namespace Ladecadanse\Utils;
 
-use Ladecadanse\Utils\SystemComponent;
 use mysqli_result;
 
-class DbConnector extends SystemComponent
+class DbConnector
 {
     private string $sql;
     private $dbConnection;
 
-    public function __construct($host, $db, $user, $pass)
+    public function __construct($host, $db, $user, #[\SensitiveParameter] $pass)
     {
         $this->dbConnection = mysqli_connect($host, $user, $pass, $db);
 
@@ -80,6 +79,9 @@ class DbConnector extends SystemComponent
         return mysqli_affected_rows($this->dbConnection);
     }
 
+    /**
+     * @psalm-taint-escape sql
+     */
     public function sanitize(string $escapestr): string
     {
         return mysqli_real_escape_string ($this->dbConnection, $escapestr);

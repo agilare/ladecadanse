@@ -101,21 +101,44 @@
 {
     display:none;
     margin:0.6em;
-    font-size:0.9em;
+    overflow:hidden; /* contient les deux flottants ci-dessous */
 }
 
-/*.recherche_mobile .mots
+/* dans les résultats de recherche, le champ reste ouvert pour affiner la recherche */
+body[data-page="event/search"] .recherche_mobile
 {
-    border: solid 1px #888;
-    height:1.5em;
-}*/
+    display:block;
+}
+
+/* champ et bouton flottés plutôt qu'en flex : jQuery .toggle() pose un display:block
+   en ligne sur le formulaire à l'ouverture, qui écraserait un display:flex.
+   Largeurs complémentaires en rem plutôt que dimensionnement implicite par size="35",
+   qui débordait de l'écran en dessous de ~360px et laissait un grand vide au-delà. */
+.recherche_mobile .mots
+{
+    float:left;
+    box-sizing:border-box;
+    width:calc(100% - 3.4rem);
+    height:2.2rem;
+    padding:0 0.4em;
+    /* en dessous de 16px, iOS zoome la page à la mise au point du champ */
+    font-size:1rem;
+    line-height:normal;
+    border:solid 1px #888;
+}
 
 .recherche_mobile .submit
 {
-    padding:0.2em;
+    float:left;
+    box-sizing:border-box;
+    width:3.4rem;
+    height:2.2rem;
+    padding:0;
+    font-size:1rem;
+    line-height:normal;
     background:#aaa;
-    border: solid 1px #888;
-    height: 1.73em;
+    border:solid 1px #888;
+    border-left:none;
 }
 
 .rechercher #entete_contenu h2
@@ -177,10 +200,10 @@ table#calendrier tr#mois th a
 }
 
 
-.msg_ok, .msg_erreur, .msg_info, .msg_email {
-    background-position: 5px 50%;
-    padding: 1em 0 1em 2em;
-}
+/* Le retrait gauche des bandeaux de message est celui de global.css : réduit ici
+   à 2em, il passait sous l'icône (calée à 1em, large de ~0.9em), qui chevauchait
+   alors le texte. Le `background-position` qui l'accompagnait datait de l'époque
+   où l'icône était une image de fond, remplacée depuis par un pseudo-élément. */
 
 /****/
 #btn_menu_pratique
@@ -305,6 +328,85 @@ form#ajouter_editer
     font-size: 1em;
 }
 
+/* index : bas de page */
+
+/* Les deux blocs de bas de page (partenaires, derniers événements ajoutés) ne
+   sont plus des colonnes latérales : ils s'empilent sous la liste du jour.
+   Ils restent flottants — dé-flotter une seule des trois colonnes la ferait
+   passer sous #contenu, qui flotte et fait toute la hauteur de la liste — mais
+   prennent toute la largeur, et leur contenu reprend la gouttière de <main>
+   (#prochains_evenements : 96 % centrés). */
+body[data-page="index"] #colonne_gauche, body[data-page="index"] #colonne_droite
+{
+    width:100%;
+}
+
+#colonne_gauche .secondaire, #colonne_droite .secondaire
+{
+    box-sizing:border-box;
+    width:96%;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+/* partenaires */
+
+.partenaires
+{
+    padding:0.6em 0.5em 0.9em;
+    background:#efefef; /* le gris des pastilles d'organisateurs (global.css) */
+    border-radius:3px;
+}
+
+/* même taille que « Derniers événements ajoutés » : les deux titres sont des
+   .secondaire h2 dans un conteneur de même font-size, le même em suffit */
+.partenaires h2
+{
+    margin-left:0.2em;
+    font-size:1.3em;
+}
+
+/* Les logos étaient des inline-block : alignés sur la ligne de base, donc
+   décalés verticalement les uns par rapport aux autres, et ferrés à gauche sur
+   deux colonnes de largeurs inégales. En flex, chaque rangée est centrée et
+   alignée sur les milieux ; la base de 130px laisse deux logos par rangée dès
+   320px, et le max-width les empêche de dépasser leur taille d'origine. */
+.partenaires ul.autour
+{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    align-items:center;
+    gap:0.8em 1em;
+    margin:0;
+    padding:0;
+}
+
+.partenaires ul.autour li
+{
+    display:flex;
+    flex:1 1 130px;
+    max-width:150px;
+    align-items:center;
+    justify-content:center;
+    margin:0;
+}
+
+/* Le plafond de hauteur ramène des logos aux proportions très différentes (de
+   150x43 à 150x94) à un poids visuel comparable. object-fit plutôt que
+   width:auto : les 150px viennent de l'attribut width du HTML, donc sans lui
+   le max-height écraserait les logos les plus hauts ; et width:auto ferait
+   disparaître le SVG de Culture accessible, qui n'a qu'un viewBox et donc
+   aucune dimension intrinsèque. */
+.partenaires ul.autour li img
+{
+    display:block; /* sinon l'interligne ajoute 3px sous chaque logo */
+    max-width:100%;
+    height:auto;
+    max-height:60px;
+    object-fit:contain;
+}
+
 /* evenement*/
 
 .entete_contenu_navigation a .nav_titre
@@ -336,7 +438,43 @@ form#ajouter_editer
 #evenement #description
 {
     margin-left:120px;
-    font-size:0.9em;
+}
+
+/* Sous ~450px, la colonne de droite ne fait plus que ~260px : la description
+   s'y étire en lignes courtes pendant que l'espace sous l'image reste vide.
+   Le texte enveloppe donc le flottant, et les lignes passées sous l'image
+   reprennent toute la largeur. Piloté par .vevent-experimental, posée par
+   event/evenement.php. */
+@media screen and (max-width:449.98px)
+{
+    .vevent-experimental #evenement #description
+    {
+        margin-left:0;
+        min-height:0; /* le plancher de 17em annulerait le gain de hauteur */
+    }
+
+    .vevent-experimental #evenement #illustrations
+    {
+        /* sans illustration mainFigureHtml() ne rend rien : hauteur nulle, le
+           flottant cesse alors de décaler quoi que ce soit */
+        min-height:0;
+    }
+
+    /* Le flottant traverse désormais le fond clair de #description : il reprend
+       à son compte le gris du cadre pour que la zone de l'image reste
+       visuellement distincte du texte. Le padding tient lieu de gouttière — une
+       marge, elle, laisserait passer le fond de la description entre l'image et
+       le texte. À droite et en bas seulement : l'image reste ainsi collée au
+       bord gauche du cadre comme aujourd'hui, et les lignes placées à côté
+       d'elle gardent exactement la largeur qu'avait la colonne de description
+       (les rogner reprendrait d'une main la hauteur gagnée de l'autre).
+       :has(img) évite de peindre une pastille sur un <figure> vide. */
+    .vevent-experimental #evenement #illustrations:has(img)
+    {
+        box-sizing:content-box; /* le padding s'ajoute aux 120px de l'image */
+        padding:0 0.6em 0.6em 0;
+        background-color:#f4f4f4; /* = fond de #evenement (event/evenement.css) */
+    }
 }
 
 ul.menu_actions_evenement li.format_imprimable, #entete_contenu ul li.format_imprimable
@@ -344,8 +482,30 @@ ul.menu_actions_evenement li.format_imprimable, #entete_contenu ul li.format_imp
     display:none;
 }
 
-ul.menu_action li a,
+/* Faute de place, les libellés se mélangeaient sur plusieurs lignes ferrées à
+   droite : chaque liste occupe sa propre ligne, calée à gauche, et chaque
+   action reste insécable. Le padding vertical seul (pas horizontal) garde les
+   deux listes alignées sur le même bord gauche. */
+ul.menu_actions_evenement
+{
+/*    text-align: left;*/
+}
+
+ul.menu_actions_evenement li
+{
+    display: inline-block;
+    margin: 0 0 0 1.2em;
+    white-space: nowrap;
+}
+
+ul.menu_actions_evenement li a,
 ul.menu_actions_evenement .calendar-export-wrapper .calendar-export-trigger
+{
+    display: inline-block;
+    padding: 0.5em 0;
+}
+
+ul.menu_action li a
 {
     padding: 0.5em;
 }
@@ -439,7 +599,7 @@ form#ajouter_editer .guideChamp {
 }
 
 
-#prochains_evenements table tr td.dtstart {
+#prochains_evenements table tr td.date {
     text-overflow:ellipsis;
     width:1em;
 }
@@ -528,6 +688,12 @@ ul#menu_descriptions li.ici a, ul#menu_descriptions li a
     line-height:1.6em;
 }
 
+/* écran étroit : un repli plus court, la liste des événements doit rester atteignable */
+.texte-repliable
+{
+    --texte-repliable-hauteur:10em; /* ~7 lignes */
+}
+
 /* email_evenement */
 
 .email_evenement form#ajouter_editer label {
@@ -539,53 +705,30 @@ ul#menu_descriptions li.ici a, ul#menu_descriptions li a
     margin:0.6em 0 0 0.4em;
 }
 
-/* user-register */
-
-.user-register form#ajouter_editer label
-{
-    float: none;
-    display:block;
-    text-align:left;
-}
-
-.user-register form#ajouter_editer input
-{
-    margin:0 0 0 0.4em;
-}
-.user-register .guide_champ, .user-register .guide_groupe
-{
-    margin:0 0 0 0.4em;
-    font-style:italic;
-    font-size:0.9em;
-}
-
-.user-register .affiliation
-{
-    padding:2em;
-}
-
-.user-register form#ajouter_editer .entreLabels
-{
-    padding:0;
-}
-
-.user-register form#ajouter_editer select, .user-edit form#ajouter_editer select
+/*
+ * Les règles « .user-register » qui vivaient ici ne s'appliquaient plus : aucune balise
+ * ne porte cette classe (le <main> de la page d'inscription a « colonne inscription »).
+ * La mise en page de la page vit dans web/css/user/register.css, avec sa propre requête
+ * de média. Seule la largeur des listes de user-edit.php est conservée.
+ */
+.user-edit form#ajouter_editer select
 {
     width:200px;
 }
 
-
-.user-register form#ajouter_editer .msg {
-    margin-left:0;
-}
-
 /* formulaires */
 
-form#ajouter_editer textarea {
-
-
-    width: 320px;
-
+/*
+ * Champs de saisie longs : ils suivent la largeur du formulaire au lieu des 320px
+ * fixes d'avant, qui laissaient une bande vide à droite sur la plupart des
+ * téléphones. box-sizing: border-box pour que bordure et padding tiennent dans
+ * les 100 % — sans quoi le champ ressortirait de son fieldset, lequel s'élargit
+ * pour suivre (min-width: min-content sur les fieldsets) et déborde du viewport.
+ */
+form#ajouter_editer textarea
+{
+    box-sizing: border-box;
+    width: 100%;
 }
 
 
@@ -594,9 +737,25 @@ form#ajouter_editer select#idLieu
     width: 200px;
 }
 
-form#ajouter_editer #adresse, form#ajouter_editer #urlLieu, form#ajouter_editer  #horaire_complement,form#ajouter_editer  #prelocations, form#ajouter_editer #titre, form#ajouter_editer #ref
+/* #prix (size=45), #flyer_url et #image_url (size=50) n'avaient aucune largeur ici :
+   leur largeur intrinsèque débordait du viewport. */
+form#ajouter_editer #adresse, form#ajouter_editer #urlLieu, form#ajouter_editer  #horaire_complement,form#ajouter_editer  #prelocations, form#ajouter_editer #titre, form#ajouter_editer #ref, form#ajouter_editer #prix, form#ajouter_editer #flyer_url, form#ajouter_editer #image_url
 {
-    width: 320px;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+/*
+ * Select2 pose une largeur en style en ligne, recopiée de la largeur intrinsèque
+ * du <select> d'origine — soit celle de son option la plus longue : ~430px pour la
+ * liste des organisateurs. Seul !important passe devant un style en ligne.
+ * Ciblé sur le seul champ concerné : les autres listes Select2 ont déjà une
+ * largeur tenue par select#idLieu ci-dessus.
+ */
+form#ajouter_editer #organisateurs + .select2-container
+{
+    box-sizing: border-box;
+    width: 100% !important;
 }
 
 
@@ -614,7 +773,7 @@ form#ajouter_editer label.continu
 }
 
 
-form#ajouter_editer .supImg
+form#ajouter_editer .existing_img
 {
     margin-left: 50px;
 }
@@ -624,16 +783,23 @@ form#ajouter_editer .supImg
     margin-left:1em;
 }
 
-/* personne */
-
-.personne #actions
+/* les labels passent en display:block ici : le select #idLieu commence au bord de son <p>, dont
+   le bloc replié (drapeau LIEU_MANUAL_COLLAPSIBLE_ENABLED) reprend la marge (#contenu p) */
+details#evenement-lieu-pastrouve
 {
-    float:left;
+    margin-left:0.1em;
 }
 
+form#ajouter_editer p.notif-apercu
+{
+    margin-left:0.4em;
+}
 
-ul#menu_ajouts li {
+/* dans les fieldsets Statut de l'événement et Catégorie, mettre les boutons radio l'un au dessus de l'autre, donc abandonner l'inline, sinon c'est confus */
+form#ajouter_editer ul.mobile-vertical li
+{
     display: block;
+    list-style-type: none;
 }
 
 .signaler-erreur form#ajouter_editer ul.radio_vert
@@ -685,17 +851,6 @@ form#ajouter_editer p.memoriser label, form#ajouter_editer p.mdp_oublie
 
 #default #order_navigation {
   float: left;
-}
-
-#agenda_filters {
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  row-gap: 0.4em;
-}
-
-#agenda_filters #favoris_filter_navigation,
-#agenda_filters #order_navigation {
-  flex-shrink: 0;
 }
 
 #prochains_evenements > header h2 {

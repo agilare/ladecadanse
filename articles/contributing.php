@@ -9,7 +9,7 @@ include("../_header.inc.php");
 <main id="contenu" class="colonne">
 
     <header id="entete_contenu">
-        <h1>Participer à La décadanse</h1>
+        <h1>Participer à La&nbsp;décadanse</h1>
         <div class="spacer"></div>
     </header>
 

@@ -19,6 +19,7 @@ use Ladecadanse\UserLevel;
                         }
 
                         $highlightLink = '';
+                        $ici = '';
                         if (strstr((string) $_SERVER['PHP_SELF'], (string) $lien))
                         {
                             $ici = " class=\"ici\"";
@@ -36,6 +37,11 @@ use Ladecadanse\UserLevel;
                     <li><a href="/articles/liens.php">Liens</a></li>
                 </ul>
             </nav> <!-- Fin Pied -->
+
+            <?php if (defined('BOT_MONITORING_ENABLED') && BOT_MONITORING_ENABLED) : ?>
+                <?php /* piège à scrapers : lien invisible pour les humains (hors écran, ignoré des lecteurs d'écran et du clavier), interdit dans robots.txt */ ?>
+                <a href="/annuaire-membres.php" class="hp-link" aria-hidden="true" tabindex="-1" rel="nofollow">Annuaire des membres</a>
+            <?php endif; ?>
         </footer>
 
     <a id="back-to-top" href="#haut" aria-label="Retour en haut de page">
@@ -46,8 +52,8 @@ use Ladecadanse\UserLevel;
 
 
     <?php
-    $pages_formulaires = ["evenement-edit", "event/copy", "lieu-edit", "lieu/salle-edit", "user-register", "admin/gererEvenements", "user-edit", "lieu/lieux", "lieu-text-edit", "organisateur-edit"];
-    $pages_tinymce = ["lieu-text-edit", "organisateur-edit"];
+    $pages_formulaires = ["evenement-edit", "event/copy", "lieu/edit", "lieu/salle-edit", "user/register", "admin/events", "user-edit", "lieu/lieux", "lieu/text-edit", "organisateur/edit"];
+    $pages_tinymce = ["lieu/text-edit", "organisateur/edit"];
     $pages_lieumap = ["lieu/lieu", "event/evenement"];
     ?>
 
@@ -56,7 +62,6 @@ use Ladecadanse\UserLevel;
     <script src="/vendor/dimsemenov/magnific-popup/dist/jquery.magnific-popup.js"></script>
     <script src="/vendor/select2/select2/dist/js/select2.min.js"></script>
     <script src="/vendor/select2/select2/dist/js/i18n/fr.js"></script>
-    <script src="https://unpkg.com/read-smore@2.0.4/dist/index.umd.js"></script>
 
     <?php if (in_array($nom_page, $pages_lieumap)) { ?>
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -78,7 +83,7 @@ use Ladecadanse\UserLevel;
             <script src="<?= $assets->get("js/edition.js"); ?>"></script>
         <?php endif; ?>
 
-        <?php if ($nom_page == "admin/gererEvenements") : ?>
+        <?php if ($nom_page == "admin/events") : ?>
             <script src="/web/js/libs/jquery.checkboxes-1.2.2.min.js"></script>
             <script nonce="<?= CSP_NONCE ?>">
                 'use strict';
@@ -97,9 +102,9 @@ use Ladecadanse\UserLevel;
             document.getElementById("contacteznous-email-info").innerHTML = atob("<?= base64_encode(EMAIL_ADMIN); ?>");
         </script>
     <?php endif; ?>
-    <?= $assets->getImportMap(['js/browser.js', 'js/global.js']); ?>
+    <?= $assets->getImportMap(['js/browser.js', 'js/global.js', 'js/shortcuts.js', 'js/mouseless.js', 'js/pdf-to-image.js', 'js/favorites.js'], CSP_NONCE); ?>
     <?php
-    $ladecadanseJsConfig = ['isLoggedIn' => !empty($_SESSION['logged']), 'favoritesEnabled' => isFavoritesEnabled()];
+    $ladecadanseJsConfig = ['isLoggedIn' => !empty($_SESSION['logged']), 'favoritesEnabled' => Ladecadanse\Favorites::isEnabled()];
     if ($ladecadanseJsConfig['favoritesEnabled'] && $ladecadanseJsConfig['isLoggedIn'] && isset($connectorPdo))
     {
         $favoriteIdsStmt = $connectorPdo->prepare("SELECT idEvenement FROM personne_evenement WHERE idPersonne = ?");

@@ -3,12 +3,11 @@
 require_once("../app/bootstrap.php");
 
 use Ladecadanse\HtmlShrink;
-use Ladecadanse\OrganisateurCollection;
 use Ladecadanse\Organisateur;
-use Ladecadanse\Utils\Utils;
 use Ladecadanse\Utils\ImageDriver2;
 use Ladecadanse\UserLevel;
-use Ladecadanse\Utils\Validateur;
+use Ladecadanse\Utils\QueryParamValidator;
+use Ladecadanse\Stats\MonthlyAddedEvents;
 
 $_SESSION['user_prefs_orgas_nom'] ??= '';
 if (isset($_GET['nom']))
@@ -19,7 +18,7 @@ $filters['nom'] = $_SESSION['user_prefs_orgas_nom'];
 
 $_SESSION['user_prefs_orgas_statut'] ??= 'actif';
 $tab_statuts = ['actif' => 'Actifs', 'inactif' => 'Inactifs', 'ancien' => 'Anciens'];
-if (isset($_GET['statut']) && Validateur::validateUrlQueryValue($_GET['statut'], "enum", 1, array_keys($tab_statuts)))
+if (isset($_GET['statut']) && QueryParamValidator::isAcceptedUrlQueryValue($_GET['statut'], "enum", array_keys($tab_statuts)))
 {
    $_SESSION['user_prefs_orgas_statut'] = $_GET['statut'];
 }
@@ -32,11 +31,7 @@ if (isset($_GET['order']) && in_array($_GET['order'], $tab_order))
    $_SESSION['user_prefs_orgas_order'] = $_GET['order'];
 }
 
-$get['page'] = !empty($_GET['page']) ? Validateur::validateUrlQueryValue($_GET['page'], "int", 1) : 1;
-
-
-$col = new OrganisateurCollection();
-$col->loadFiches();
+$get['page'] = QueryParamValidator::pageFromQuery($_GET['page'] ?? '');
 
 $orgas_page_current = Organisateur::getOrganisateurs($filters, $_SESSION['user_prefs_orgas_order'], $get['page']);
 $orgas_page_all = Organisateur::getOrganisateurs($filters, $_SESSION['user_prefs_orgas_order'], null);
@@ -57,7 +52,12 @@ $stmt->execute([$glo_auj]);
 $orgas_even = $stmt->fetchAll(PDO::FETCH_GROUP);
 //dump($lieux_even);
 
-$page_titre = "Organisateurs d'événements culturels à Genève et Lausanne : associations, labels, collectifs";
+// suivi de l'activité : réservé aux administrateurs, seuls à relancer un organisateur qui a cessé d'annoncer
+$show_monthly_counts = $authorization->isPersonneEditor($_SESSION);
+$months_keys = $show_monthly_counts ? MonthlyAddedEvents::monthKeys() : [];
+$orgas_monthly_counts = $show_monthly_counts ? MonthlyAddedEvents::forOrganisateurs() : [];
+
+$page_titre = "Organisateurs d'événements culturels à Genève et Vaud : associations, labels, collectifs";
 $page_description = "";
 $extra_css = ["organisateur/organisateurs"];
 include("../_header.inc.php");
@@ -67,7 +67,7 @@ include("../_header.inc.php");
 
     <header id="entete_contenu" style="margin-bottom:1.5em">
         <h1 style="width: 35%;line-height: 1.2em;margin:0">Organisateurs</h1><?php if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= 6)
-{ ?><a href="/organisateur-edit.php?action=ajouter" style="float: left;padding: 5px 1px;"><img src="/web/interface/icons/add.png" alt="" style="vertical-align:bottom" /> Ajouter un organisateur</a><?php } ?>
+{ ?><a href="/organisateur/edit.php?action=ajouter" style="float: left;padding: 5px 1px;"><i class="fa fa-plus" aria-hidden="true"></i> Ajouter un organisateur</a><?php } ?>
         <div class="spacer"></div>
     </header>
 
@@ -76,15 +76,17 @@ include("../_header.inc.php");
         <div>
             <div class="table-filters">
                 <form action="" method="get">
-                    <input type="search" name="nom" value="<?= sanitizeForHtml($_SESSION['user_prefs_orgas_nom']) ?>" placeholder="Nom" aria-label="Nom">
-                    <button type="button" class="js-clear-search-field" aria-label="Vider et relancer la recherche" title="Vider et relancer la recherche">&times;</button>
+                    <span class="search-field">
+                        <input type="search" name="nom" value="<?= sanitizeForHtml($_SESSION['user_prefs_orgas_nom']) ?>" placeholder="Nom" aria-label="Nom">
+                        <button type="button" class="js-clear-search-field" aria-label="Vider et relancer la recherche" title="Vider et relancer la recherche"></button>
+                    </span>
                     <button type="submit" style="margin-top:2px">OK</button>
                 </form>
                 <ul class="menu_tab">
                     <?php foreach ($tab_statuts as $k => $label) : ?>
                         <?php if ($k == "inactif" && !$authorization->isPersonneEditor($_SESSION)) { continue; } ?>
                         <li class="<?= $k ?><?php if ($_SESSION['user_prefs_orgas_statut'] == $k) : ?> ici<?php endif; ?>">
-                            <a href="?<?= Utils::urlQueryArrayToString($get, ['statut', 'page']) ?>&amp;statut=<?= $k ?>"><?= $label ?></a>
+                            <a href="?<?= HtmlShrink::urlQueryArrayToString($get, ['statut', 'page']) ?>&amp;statut=<?= $k ?>"><?= $label ?></a>
                         </li>
                     <?php endforeach; ?>
                     <div class="spacer"></div>
@@ -107,14 +109,15 @@ include("../_header.inc.php");
             <p style="margin-top:2em;">Pas d'organisateur correspondant à ces critères</p>
         <?php else : ?>
 
-            <?= HtmlShrink::getPaginationString($all_results_nb, $get['page'], Organisateur::RESULTS_PER_PAGE, 1, basename(__FILE__), "?" . Utils::urlQueryArrayToString($get, "page") . "&amp;page=") ?>
+            <?= HtmlShrink::getPaginationString($all_results_nb, $get['page'], Organisateur::RESULTS_PER_PAGE, 1, basename(__FILE__), "?" . HtmlShrink::urlQueryArrayToString($get, "page") . "&amp;page=") ?>
 
             <table id="derniers_lieux">
 
                 <thead>
                     <tr>
                         <th colspan="2"></th>
-                        <th class="td-align-center"><img src="/web/interface/icons/calendar.png" alt="Nombre d'événements agendés" title="Nombre d'événements agendés" /></th>
+                        <?php if ($show_monthly_counts) : ?><?= HtmlShrink::getMonthlyCountsHeaderCells($months_keys) ?><?php endif; ?>
+                        <th class="td-align-center"><i class="fa fa-calendar-o" aria-label="Nombre d'événements agendés" title="Nombre d'événements agendés"></i></th>
                     </tr>
                 </thead>
 
@@ -134,6 +137,7 @@ include("../_header.inc.php");
                             <a href="/organisateur/organisateur.php?idO=<?= (int)$orga['idOrganisateur']; ?>"><strong><?= sanitizeForHtml($orga['nom']); ?></strong></a>
                         </td>
 
+                        <?php if ($show_monthly_counts) : ?><?= HtmlShrink::getMonthlyCountsCells($orgas_monthly_counts[$orga['idOrganisateur']] ?? [], $months_keys) ?><?php endif; ?>
                         <td class="td-align-center<?php if (!empty($orgas_even[$orga['idOrganisateur']][0]['has_today_event']) ) { echo " ici"; } ?>">
 
                             <?php if (!empty($orgas_even[$orga['idOrganisateur']][0]) ) : ?>
@@ -158,7 +162,7 @@ include("../_header.inc.php");
             </table>
 
             <?php if (count($orgas_page_current) > 8) : ?>
-                <?= HtmlShrink::getPaginationString($all_results_nb, $get['page'], Organisateur::RESULTS_PER_PAGE, 1, basename(__FILE__), "?" . Utils::urlQueryArrayToString($get, "page") . "&amp;page=") ?>
+                <?= HtmlShrink::getPaginationString($all_results_nb, $get['page'], Organisateur::RESULTS_PER_PAGE, 1, basename(__FILE__), "?" . HtmlShrink::urlQueryArrayToString($get, "page") . "&amp;page=") ?>
             <?php endif; ?>
 
         <?php endif; ?>

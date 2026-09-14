@@ -14,6 +14,18 @@ use DateTime;
  */
 class DateHelper
 {
+    /** Dernier instant d'une journée d'agenda : le jour D va de D 06:00:01 à D+1 06:00:00 inclus */
+    public const string AGENDA_DAY_END_TIME = '06:00:00';
+
+    /** Suffixe de la sentinelle « horaire non renseigné » : {lendemain} 06:00:01 */
+    private const string NO_TIME_SUFFIX = ' 06:00:01';
+
+    /** Valeur d'horaire héritée signifiant « non renseigné » */
+    private const string NO_TIME_VALUE = '0000-00-00 00:00:00';
+
+    /** Heure de la sentinelle « horaire non renseigné », quel que soit le jour porté */
+    private const string NO_TIME_HOUR = '06:00';
+
     // -------------------------------------------------------------------------
     // Component extraction
     // -------------------------------------------------------------------------
@@ -126,6 +138,21 @@ class DateHelper
     }
 
     /**
+     * Returns the abbreviated French month name from a month number.
+     *
+     * Fits a narrow table column, where the full name would not.
+     *
+     * @param int $month Month number (1–12)
+     * @return string e.g. 'avr'
+     */
+    public static function monthNameShort(int $month): string
+    {
+        static $names = ['', 'jan', 'fév', 'mar', 'avr', 'mai', 'juin',
+                         'juil', 'août', 'sep', 'oct', 'nov', 'déc'];
+        return $names[$month] ?? '';
+    }
+
+    /**
      * Converts an ISO date to a French long-form string.
      *
      * @param string $date          ISO date (YYYY-MM-DD or YYYY-MM-DD HH:MM:SS)
@@ -179,5 +206,92 @@ class DateHelper
     public static function isoToRfc2822(string $date): string
     {
         return (new DateTime($date))->format(DateTime::RFC2822);
+    }
+
+    // -------------------------------------------------------------------------
+    // Journée d'agenda
+    // -------------------------------------------------------------------------
+
+    /**
+     * Instant réel d'un horaire d'événement, ou null quand l'horaire n'est pas renseigné.
+     *
+     * L'horaire porte sa propre date : une soirée qui commence à 02:00 appartient à la journée
+     * d'agenda de la veille (borne des 6h) mais son instant est bien le lendemain de
+     * dateEvenement. Une date d'horaire aberrante — d'anciennes lignes en portent — est ramenée
+     * au jour de l'événement plutôt que de le déplacer dans le temps.
+     *
+     * @param string      $dateEvenement ISO date (YYYY-MM-DD ou YYYY-MM-DD HH:MM:SS)
+     * @param string|null $horaire       ISO datetime, ou null/sentinelle si non renseigné
+     * @return string|null ISO datetime (YYYY-MM-DD HH:MM:00)
+     */
+    public static function horaireInstant(string $dateEvenement, ?string $horaire): ?string
+    {
+        $date = mb_substr($dateEvenement, 0, 10);
+        $heure = mb_substr((string) $horaire, 11, 5);
+
+        if (empty($horaire)
+            || mb_substr($horaire, 0, 10) === mb_substr(self::NO_TIME_VALUE, 0, 10)
+            || $heure === self::NO_TIME_HOUR
+            || preg_match('/^[0-9]{2}:[0-9]{2}$/', $heure) !== 1)
+        {
+            return null;
+        }
+
+        $dateHoraire = mb_substr($horaire, 0, 10);
+        if ($dateHoraire !== $date && $dateHoraire !== self::isoToNextDay($date))
+        {
+            $dateHoraire = $date;
+        }
+
+        return $dateHoraire . ' ' . $heure . ':00';
+    }
+
+    /**
+     * Fin réelle d'un événement, au sens de la journée décadanse.
+     *
+     * Une journée d'agenda D va de D 06:00:01 à D+1 06:00:00 inclus : une soirée
+     * qui se termine à 02:00 appartient encore au jour de l'événement. C'est la
+     * règle qu'applique evenement-edit.php en stockant les horaires (une heure
+     * <= 06:00 est reportée au lendemain), et que reflète l'aide de saisie du
+     * formulaire : « jusqu'à 06:00, le début sera considéré faisant partie du
+     * jour de l'événement ».
+     *
+     * Sans horaire de fin renseigné, l'événement se termine donc à 06:00:00 le
+     * lendemain. Un horaire de fin ne peut jamais raccourcir la journée : il ne
+     * la prolonge que s'il la dépasse, ce que l'invariant de stockage interdit
+     * en principe mais que d'anciennes lignes pourraient violer.
+     *
+     * @param string      $dateEvenement ISO date (YYYY-MM-DD)
+     * @param string|null $horaireFin    ISO datetime, ou null/sentinelle si non renseigné
+     * @return string ISO datetime (YYYY-MM-DD HH:MM:SS)
+     */
+    public static function evenementEnd(string $dateEvenement, ?string $horaireFin = null): string
+    {
+        $nextDay = self::isoToNextDay($dateEvenement);
+        $dayEnd  = $nextDay . ' ' . self::AGENDA_DAY_END_TIME;
+
+        // sentinelle « horaire non renseigné » : la première seconde hors du jour de l'événement,
+        // choisie pour que ces événements trient en dernier (cf. evenement-edit.php)
+        if (empty($horaireFin)
+            || $horaireFin === $nextDay . self::NO_TIME_SUFFIX
+            || $horaireFin === self::NO_TIME_VALUE)
+        {
+            return $dayEnd;
+        }
+
+        return max($horaireFin, $dayEnd);
+    }
+
+    /**
+     * Un événement est « passé » quand sa fin est dépassée : c'est alors une
+     * archive, que seuls les éditeurs peuvent encore modifier.
+     *
+     * @param string      $dateEvenement ISO date (YYYY-MM-DD)
+     * @param string|null $horaireFin    ISO datetime, ou null/sentinelle si non renseigné
+     * @param string|null $now           ISO datetime, injectable pour les tests ; défaut : maintenant
+     */
+    public static function isEvenementPast(string $dateEvenement, ?string $horaireFin = null, ?string $now = null): bool
+    {
+        return ($now ?? date('Y-m-d H:i:s')) > self::evenementEnd($dateEvenement, $horaireFin);
     }
 }

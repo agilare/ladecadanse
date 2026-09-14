@@ -1,0 +1,1 @@
+ALTER TABLE personne ADD settings TEXT NULL DEFAULT NULL;

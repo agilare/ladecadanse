@@ -3,9 +3,9 @@ require_once("../app/bootstrap.php");
 
 use Ladecadanse\UserLevel;
 
-if (!$videur->checkGroup(UserLevel::ACTOR)) {
+if (!$authorization->checkGroup(UserLevel::ACTOR)) {
     header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
-	header("Location: /user-login.php"); die();
+	header("Location: /user/login.php"); die();
 }
 
 $page_titre = "Mises à jour";
@@ -19,6 +19,110 @@ include("../_header.inc.php");
         <h1>Mises à jour</h1>
         <div class="spacer"></div>
     </header>
+    <article class="rubrique">
+
+        <header>
+            <h2>3.12.0</h2>
+            <br>
+            <p>5 septembre 2026</p>
+        </header>
+
+        <h3>Événements</h3>
+
+        <ul>
+            <li><strong>export vers un calendrier</strong> depuis toutes les listes : résultats de recherche, pages lieu et organisateur (merci <a href="https://github.com/lambeletjp" rel="external" target="_blank">lambeletjp</a>)</li>
+            <li>page d'un événement : <strong>mise en page élargie</strong></li>
+             <li>formulaire d'édition : meilleure mise en page</li>
+            <li>correction - formulaire d'édition : la case "Supprimer" de l'image et l'aperçu du fichier déjà enregistré sont conservés en cas d'erreur de saisie</li>
+        </ul>
+        <h3>Organisateurs</h3>
+
+        <ul>
+            <li>formulaire d'édition : meilleure mise en page</li>
+        </ul>
+
+        <h3>Comptes</h3>
+
+        <ul>
+            <li>page personnelle : affichage des images des événements</li>
+            <li><strong>inscription, mot de passe oublié et déconnexion</strong> rénovés</li>
+            <li>correction : une demande de mot de passe oublié pour un compte désactivé menait à un formulaire impossible à valider</li>
+            <li>meilleure détection des mots de passe trop communs</li>
+        </ul>
+
+        <h3>Interface</h3>
+
+        <ul>
+            <li>page d'un événement : sur petit écran le texte passe sous l'affiche et occupe toute la largeur, la page est nettement plus courte</li>
+            <li>quelques <strong>icônes</strong> des années 2000 laissent place à un jeu moderne</li>
+            <li>mobile : formulaire d'événement, barre d'actions, navigation par jour et bas de la page d'accueil revus</li>
+        </ul>
+
+        <h3>Divers</h3>
+
+        <ul>
+            <li>améliorations de l'ergonomie</li>
+            <li><a href="/misc/contacteznous.php">Contact</a> : simplification, avec moins de champs</li>
+            <li>sécurité : la déconnexion n'est plus déclenchable par un simple lien, et plusieurs requêtes à la base de données ont été sécurisées</li>
+            <li>corrections de bugs et améliorations techniques (nettoyage du code, configuration du serveur versionnée, Docker, analyseurs)</li>
+        </ul>
+
+        <p><a href="https://github.com/agilare/ladecadanse/releases/tag/v3.12.0" rel="external" target="_blank">Détails</a></p>
+
+    </article>
+
+    <hr>
+
+    <article class="rubrique">
+
+        <header>
+            <h2>3.11.0</h2>
+            <br>
+            <p>18 août 2026</p>
+        </header>
+
+        <h3>Événements</h3>
+
+        <ul>
+            <li>agenda : en ordre chronologique <a href="https://github.com/agilare/ladecadanse/issues/105" rel="external" target="_blank">sépararateurs avec l'heure</a> "dès 19h, dès 20h..." (merci <a href="https://github.com/lambeletjp" rel="external" target="_blank">lambeletjp</a>)
+            <li>les événements passés deviennent des <strong>archives</strong> : ils ne peuvent plus être modifiés ni supprimés, afin qu'un ancien événement ne soit plus transformé par mégarde en un nouveau</li>
+            <li>formulaire d'édition : le <strong>flyer et la photo</strong> peuvent être ajoutés <a href="https://github.com/agilare/ladecadanse/issues/26" rel="external" target="_blank">en collant l'adresse d'une image trouvée sur le web</a>, sans passer par un téléchargement</li>
+            <li>formulaire d'édition : champs permettant à l'admin de <a href="https://github.com/agilare/ladecadanse/issues/149" rel="external" target="_blank">notifier par email l'auteur de l'événement</a> d'infos, changements...</li>
+        </ul>
+
+        <h3>Lieux et organisateurs</h3>
+
+        <ul>
+            <li>les <strong>textes longs</strong> de présentation s'affichent d'emblée repliés, avec un lien pour les déplier : ils ne s'affichent plus en entier avant de se replier sous les yeux</li>
+            <li>les <strong>coordonnées de la carte</strong> d'un lieu peuvent être saisies depuis le site</li>
+        </ul>
+
+        <h3>Interface</h3>
+
+        <ul>
+            <li><a href="https://github.com/agilare/ladecadanse/issues/112" rel="external" target="_blank"><strong>raccourcis clavier</strong></a> pour les actions courantes : <kbd>h</kbd> accueil, <kbd>s</kbd> recherche, <kbd>a</kbd> ajouter un événement, <kbd>l</kbd> lieux, <kbd>o</kbd> organisateurs, <kbd>e</kbd> éditer une fiche; mode <a href="index.php?mouseless=1">mouseless</a></li>
+            <li>diverses améliorations</li>
+        </ul>
+
+        <h3>Flux RSS</h3>
+
+        <ul>
+            <li>corrections et optimisations</li>
+        </ul>
+
+        <h3>Divers</h3>
+
+        <ul>
+            <li><a href="/articles/faireUnDon.php">Faire un don</a> : ajout de <strong>Postfinance et Twint</strong> comme moyens de paiement, et de Bernex dans les Soutiens</li>
+            <li>diverses corrections (sécurité, fonctionnalités, affichage)</li>
+        </ul>
+
+        <p><a href="https://github.com/agilare/ladecadanse/releases/tag/v3.11.0" rel="external" target="_blank">Détails</a></p>
+
+    </article>
+
+    <hr>
+
     <article class="rubrique">
 
         <header>
@@ -118,7 +222,7 @@ include("../_header.inc.php");
 
         <ul>
             <li><a href="/articles/faireUnDon.php">Faire un don</a> : section Soutiens avec les entités qui ont fait un don significatif</li>
-            <li><a href="/articles/apropos.php">À propos</a> : mention de l'<a href="https://www.tdg.ch/la-decadanse-le-site-genevois-recense-les-sorties-depuis-vingt-trois-ans-925206183034" rel="external" target="_blank">article de la Tribune de Genève</a> sur La décadanse paru en décembre 2025</li>
+            <li><a href="/articles/apropos.php">À propos</a> : mention de l'<a href="https://www.tdg.ch/la-decadanse-le-site-genevois-recense-les-sorties-depuis-vingt-trois-ans-925206183034" rel="external" target="_blank">article de la Tribune de Genève</a> sur La&nbsp;décadanse paru en décembre 2025</li>
             <li>Corrections de quelques textes</li>
         </ul>
 
@@ -338,7 +442,7 @@ include("../_header.inc.php");
         <h3>Divers</h3>
 
         <ul>
-            <li><a href="/articles/apropos.php">À propos</a> : lien vers l'<a href="https://www.gbnews.ch/ladecadanse-ch-un-bouche-a-oreille-en-ligne/" rel="external" target="_blank">article GBNews.ch au sujet de La décadanse</a>
+            <li><a href="/articles/apropos.php">À propos</a> : lien vers l'<a href="https://www.gbnews.ch/ladecadanse-ch-un-bouche-a-oreille-en-ligne/" rel="external" target="_blank">article GBNews.ch au sujet de La&nbsp;décadanse</a>
             <li>améliorations du référencement
             <li>refactoring
         </ul>

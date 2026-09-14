@@ -2,52 +2,38 @@
 
 declare(strict_types=1);
 
-//use Rector\CodeQuality\Rector\Class_\InlineConstructorDefaultToPropertyRector;
 use Rector\Config\RectorConfig;
-//use Rector\Set\ValueObject\LevelSetList;
-use Rector\Set\ValueObject\SetList;
-// use Rector\Php53\Rector\FuncCall\DirNameFileConstantToDirConstantRector;
-// rector < 1
+
 /*
-  return static function (RectorConfig $rectorConfig): void {
-  $rectorConfig->paths([
-  __DIR__ . '/',
-  __DIR__ . '/tests/apiCest.php',
-  ]);
-  $rectorConfig->skip([
-  __DIR__ . '/docker',
-  __DIR__ . '/node_modules',
-  __DIR__ . '/resouces',
-  __DIR__ . '/var',
-  __DIR__ . '/vendor',
-  __DIR__ . '/web',
-  __DIR__ . '/tests',
-  ]);
-  // register a single rule
-  //$rectorConfig->rule(InlineConstructorDefaultToPropertyRector::class);
-  // define sets of rules
-  $rectorConfig->sets([
-  LevelSetList::UP_TO_PHP_53
-  ]);
-  //$rectorConfig->sets([SetList::PHP_52]);
-  };
+ * Pistes non activées, à monter d'un niveau à la fois si besoin :
+ * ->withDeadCodeLevel(15) et ->withCodeQualityLevel(15). Prévoir alors de
+ * skipper RecastingRemovalRector : il retire les (int) défensifs autour de
+ * $get['idE'] & co. en contexte SQL, à rebours de la convention du projet.
  */
 
-// rector 2
 return RectorConfig::configure()
-                ->withPaths([
-                    __DIR__ . '/',
-                    __DIR__ . '/tests/apiCest.php',
-                ])
-                ->withSkip([
-                    __DIR__ . '/docker',
-                    __DIR__ . '/node_modules',
-                    __DIR__ . '/resources',
-                    __DIR__ . '/var',
-                    __DIR__ . '/vendor',
-                    __DIR__ . '/tests',
-                    //DirNameFileConstantToDirConstantRector::class,
-                ])
-                ->withFileExtensions(['php'])
-                //->withSets([LevelSetList::UP_TO_PHP_53]);
-                ->withSets([SetList::PHP_84]); // PHP_52, etc. PHP_80
+    // Répertoires listés un à un plutôt que la racine + withSkip() : le skip de
+    // Rector ne filtre qu'après le parcours, donc partir de la racine fait
+    // traverser vendor/ (13 000 fichiers PHP) et var/ pour finalement tout
+    // jeter — plus de 5 minutes, au-delà du timeout de composer. Y ajouter
+    // les nouveaux répertoires de code.
+    ->withPaths([
+        __DIR__ . '/admin',
+        __DIR__ . '/app',
+        __DIR__ . '/articles',
+        __DIR__ . '/event',
+        __DIR__ . '/librairies',
+        __DIR__ . '/lieu',
+        __DIR__ . '/misc',
+        __DIR__ . '/organisateur',
+        __DIR__ . '/user',
+    ])
+    // les pages restées à la racine : index.php, evenement-edit.php, _header.inc.php…
+    ->withRootFiles()
+    ->withFileExtensions(['php'])
+    // à côté du cache de PHPStan ; var/ est ignoré par git
+    ->withCache(__DIR__ . '/var/cache/rector')
+    // tous les sets jusqu'à la version PHP de composer.json (8.4 aujourd'hui) :
+    // contrairement à SetList::PHP_84, rien à retoucher au prochain palier.
+    // Comme withRootFiles(), suppose un lancement depuis la racine du projet
+    ->withPhpSets();

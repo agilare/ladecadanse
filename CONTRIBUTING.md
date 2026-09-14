@@ -52,7 +52,7 @@ Pour aborder le travail, vous pouvez d'abord chercher à connaître suffisamment
 - _[Fonctionnement](https://github.com/agilare/ladecadanse/wiki#fonctionnement-de-lapplication)_
 - _[Résumé conceptuel](https://github.com/agilare/ladecadanse/wiki#r%C3%A9sum%C3%A9-conceptuel)_
 
-Plus concrètement, vous pouvez aussi explorer le site actuel, voire [créer un compte](https://ladecadanse.ch/user-register.php) *Acteur culturel* qui vous montrera les fonctionnalités de back-office, utilisées quotidiennement par les organisateurs d'événements pour leur diffusion.
+Plus concrètement, vous pouvez aussi explorer le site actuel, voire [créer un compte](https://ladecadanse.ch/user/register.php) *Acteur culturel* qui vous montrera les fonctionnalités de back-office, utilisées quotidiennement par les organisateurs d'événements pour leur diffusion.
 
 Ensuite, si vous êtes intéressés au **travail sur une Issue**, je vous invite à la préciser si besoin (spécifications, conception... n'hésitez pas la commenter ou créer une [Discussion](https://github.com/agilare/ladecadanse/discussions)) puis la réaliser sous forme de [pull request](https://github.com/agilare/ladecadanse/pulls). Une fois acceptée, le changement sera intégrée dans une future release et déployé, selon mes disponibilités.
 Les modifications doivent suivre dans la mesure du possible les [Commits Conventionnels](https://www.conventionalcommits.org/fr/v1.0.0/)

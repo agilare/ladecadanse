@@ -314,7 +314,7 @@
         ["css=p:nth-child(2)", "css:finder"],
         ["xpath=//div[@id='contenu']/div[2]/p", "xpath:idRelative"],
         ["xpath=//p", "xpath:position"],
-        ["xpath=//p[contains(.,'La décadanse est un agenda culturel pour les régions de Genève et Lausanne composé d’une sélection d’événements. Ceux-ci, ainsi que les lieux et organisateurs publiés sur le site, doivent correspondre à certains critères qui définissent notre charte éditoriale.')]", "xpath:innerText"]
+        ["xpath=//p[contains(.,'La décadanse est un agenda culturel pour les régions de Genève et Vaud composé d’une sélection d’événements. Ceux-ci, ainsi que les lieux et organisateurs publiés sur le site, doivent correspondre à certains critères qui définissent cette charte éditoriale.')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
@@ -337,7 +337,7 @@
         ["linkText=Inscription", "linkText"],
         ["css=li:nth-child(7) > a", "css:finder"],
         ["xpath=//nav[@id='menu_pratique']/ul/li[7]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/user-register.php')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/user/register.php')]", "xpath:href"],
         ["xpath=//li[7]/a", "xpath:position"],
         ["xpath=//a[contains(.,'Inscription')]", "xpath:innerText"]
       ],
@@ -346,7 +346,7 @@
       "id": "82522d2c-a334-46ab-a563-9c6d83b9e578",
       "comment": "",
       "command": "assertElementPresent",
-      "target": "id=utilisateur",
+      "target": "id=login",
       "targets": [
         ["id=utilisateur", "id"],
         ["name=utilisateur", "name"],
@@ -388,7 +388,7 @@
         ["css=li:nth-child(8) > a", "css:finder"],
         ["xpath=//a[contains(text(),'Connexion')]", "xpath:link"],
         ["xpath=//nav[@id='menu_pratique']/ul/li[8]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/user-login.php')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/user/login.php')]", "xpath:href"],
         ["xpath=//li[8]/a", "xpath:position"],
         ["xpath=//a[contains(.,'Connexion')]", "xpath:innerText"]
       ],
@@ -638,22 +638,15 @@
       "targets": [],
       "value": ""
     }, {
-      "id": "7a0edfcf-e787-460a-afab-c5320ce45adb",
-      "comment": "",
-      "command": "",
-      "target": "",
-      "targets": [],
-      "value": ""
-    }, {
       "id": "f15ca5b7-44b0-4674-bae2-6a3ce11f1f76",
       "comment": "",
       "command": "click",
-      "target": "xpath=//div[@id='prochains_evenements']/section/article[3]/figure/a/img",
+      "target": "xpath=//figure/a/img",
       "targets": [
-        ["css=.genre:nth-child(2) > .evenement:nth-child(9) img", "css:finder"],
-        ["xpath=(//img[@alt='Flyer de NOCTAMBAR REOPENING w/ YÀNKOV & NILOU'])[2]", "xpath:img"],
-        ["xpath=//div[@id='prochains_evenements']/section/article[4]/figure/a/img", "xpath:idRelative"],
-        ["xpath=//article[4]/figure/a/img", "xpath:position"]
+        ["css=#event-4600 img", "css:finder"],
+        ["xpath=//img[@alt='Flyer de COEO · MIKE ARTHUR LE TRÈFLE B2B KEIKOWASGREAT']", "xpath:img"],
+        ["xpath=//article[@id='event-4600']/div/figure/a/img", "xpath:idRelative"],
+        ["xpath=//figure/a/img", "xpath:position"]
       ],
       "value": ""
     }, {
@@ -1369,32 +1362,6 @@
       ],
       "value": ""
     }, {
-      "id": "ebd7a1b7-d6df-44d8-84ed-7fb6fa82ae90",
-      "comment": "is event title present",
-      "command": "assertElementPresent",
-      "target": "css=.summary",
-      "targets": [
-        ["css=.summary", "css:finder"],
-        ["xpath=//div[@id='evenement']/div[2]/h3", "xpath:idRelative"],
-        ["xpath=//h3", "xpath:position"],
-        ["xpath=//h3[contains(.,'Fête de la bière et de la choucroute')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "fa0e30e4-b0c6-4457-9f05-e7113d9347cb",
-      "comment": "",
-      "command": "click",
-      "target": "css=.entete_contenu_navigation:nth-child(2) > a",
-      "targets": [
-        ["linkText=NOCTAMBAR REOPENING w/ YÀNKOV & NILOU - Bar à Gland", "linkText"],
-        ["css=.entete_contenu_navigation:nth-child(2) > a", "css:finder"],
-        ["xpath=//header[@id='entete_contenu']/div/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/event/evenement.php?idE=1997')]", "xpath:href"],
-        ["xpath=//main/header/div/a", "xpath:position"],
-        ["xpath=//a[contains(.,'NOCTAMBAR REOPENING w/ YÀNKOV & NILOU - Bar à Gland ')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
       "id": "8173979f-92bd-4859-b1c3-277285c550ee",
       "comment": "is event title present",
       "command": "assertElementPresent",
@@ -1429,122 +1396,6 @@
         ["xpath=//h3", "xpath:position"],
         ["xpath=//h3[contains(.,'Fête de la bière et de la choucroute')]", "xpath:innerText"]
       ],
-      "value": ""
-    }, {
-      "id": "a2a53982-c77f-4ab8-aad7-aa5332d6ec6a",
-      "comment": "",
-      "command": "executeScript",
-      "target": "return document.querySelector(\".entete_contenu_navigation:nth-child(2) > a:nth-child(2) > .event-navig-link\") !== null;",
-      "targets": [],
-      "value": "navigLinkFound"
-    }, {
-      "id": "ad72b24c-49a6-43f9-a18d-9bb6b2da9fdf",
-      "comment": "",
-      "command": "if",
-      "target": "${navigLinkFound}",
-      "targets": [],
-      "value": ""
-    }, {
-      "id": "9a72d289-f01e-46e0-8716-6f0f35f248be",
-      "comment": "",
-      "command": "click",
-      "target": "css=.entete_contenu_navigation:nth-child(2) > a:nth-child(2) > .event-navig-link",
-      "targets": [
-        ["css=.entete_contenu_navigation:nth-child(2) > a:nth-child(2) > .event-navig-link", "css:finder"],
-        ["xpath=//div[@id='entete_contenu']/div/a[2]/span", "xpath:idRelative"],
-        ["xpath=//a[2]/span", "xpath:position"],
-        ["xpath=//span[contains(.,'SANS FILTRE de Ruben Östlund')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "bb1e2bd3-8e49-4485-93c6-49fa5c5e5316",
-      "comment": "is event title present",
-      "command": "assertElementPresent",
-      "target": "css=.summary",
-      "targets": [
-        ["css=.summary", "css:finder"],
-        ["xpath=//div[@id='evenement']/div[2]/h3", "xpath:idRelative"],
-        ["xpath=//h3", "xpath:position"],
-        ["xpath=//h3[contains(.,'Fête de la bière et de la choucroute')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "f278b0d7-582f-4525-b37e-2d4190050f4a",
-      "comment": "",
-      "command": "click",
-      "target": "css=.entete_contenu_navigation:nth-child(2) > a:nth-child(1) > .event-navig-link",
-      "targets": [
-        ["css=.entete_contenu_navigation:nth-child(2) > a:nth-child(1) > .event-navig-link", "css:finder"],
-        ["xpath=//div[@id='entete_contenu']/div/a/span", "xpath:idRelative"],
-        ["xpath=//a/span", "xpath:position"],
-        ["xpath=//span[contains(.,'Fête de la bière et de la choucroute')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "7d54f1dd-5f40-430f-a0b4-388cfdad1ba1",
-      "comment": "is event title present",
-      "command": "assertElementPresent",
-      "target": "css=.summary",
-      "targets": [
-        ["css=.summary", "css:finder"],
-        ["xpath=//div[@id='evenement']/div[2]/h3", "xpath:idRelative"],
-        ["xpath=//h3", "xpath:position"],
-        ["xpath=//h3[contains(.,'Fête de la bière et de la choucroute')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "f5482f98-b487-4185-ab98-c3d7337be12b",
-      "comment": "",
-      "command": "click",
-      "target": "css=.only-mobile > a:nth-child(2)",
-      "targets": [
-        ["css=.only-mobile > a:nth-child(2)", "css:finder"],
-        ["xpath=//div[@id='contenu']/div[6]/div/a[2]", "xpath:idRelative"],
-        ["xpath=(//a[contains(@href, '/event/evenement.php?idE=276&tri=dateAjout')])[2]", "xpath:href"],
-        ["xpath=//div[6]/div/a[2]", "xpath:position"]
-      ],
-      "value": ""
-    }, {
-      "id": "bcc69226-dcc5-41c1-856c-8b42f252a099",
-      "comment": "is event title present",
-      "command": "assertElementPresent",
-      "target": "css=.summary",
-      "targets": [
-        ["css=.summary", "css:finder"],
-        ["xpath=//div[@id='evenement']/div[2]/h3", "xpath:idRelative"],
-        ["xpath=//h3", "xpath:position"],
-        ["xpath=//h3[contains(.,'Fête de la bière et de la choucroute')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "4974be62-7900-4830-b9d6-c1e5e7be0e73",
-      "comment": "",
-      "command": "click",
-      "target": "css=.only-mobile > a:nth-child(1) > .event-navig-link",
-      "targets": [
-        ["css=.only-mobile > a:nth-child(1) > .event-navig-link", "css:finder"],
-        ["xpath=//div[@id='contenu']/div[6]/div/a/span", "xpath:idRelative"],
-        ["xpath=//div[6]/div/a/span", "xpath:position"]
-      ],
-      "value": ""
-    }, {
-      "id": "9ce468ea-2c61-498d-8e13-33f13f64bfdb",
-      "comment": "is event title present",
-      "command": "assertElementPresent",
-      "target": "css=.summary",
-      "targets": [
-        ["css=.summary", "css:finder"],
-        ["xpath=//div[@id='evenement']/div[2]/h3", "xpath:idRelative"],
-        ["xpath=//h3", "xpath:position"],
-        ["xpath=//h3[contains(.,'Fête de la bière et de la choucroute')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "c1bfed25-d9e4-453c-94e9-18cf0bcf2284",
-      "comment": "",
-      "command": "end",
-      "target": "",
-      "targets": [],
       "value": ""
     }]
   }, {
@@ -2121,7 +1972,7 @@
       "id": "e14f3302-731a-49d5-9ac0-539807530655",
       "comment": "",
       "command": "pause",
-      "target": "2000",
+      "target": "3000",
       "targets": [],
       "value": ""
     }, {
@@ -2157,7 +2008,7 @@
       "id": "b64501a5-6b82-4dcc-9368-81bcf3897a42",
       "comment": "",
       "command": "assertElementNotPresent",
-      "target": "linkText=Sortir",
+      "target": "css=#menu_pratique form.deconnexion button",
       "targets": [],
       "value": ""
     }, {
@@ -2170,7 +2021,7 @@
         ["css=li:nth-child(8) > a", "css:finder"],
         ["xpath=//a[contains(text(),'Connexion')]", "xpath:link"],
         ["xpath=//nav[@id='menu_pratique']/ul/li[8]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/user-login.php')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/user/login.php')]", "xpath:href"],
         ["xpath=//li[8]/a", "xpath:position"],
         ["xpath=//a[contains(.,'Connexion')]", "xpath:innerText"]
       ],
@@ -2268,19 +2119,7 @@
         ["xpath=//form[@id='ajouter_editer']/fieldset/input", "xpath:idRelative"],
         ["xpath=//fieldset/input", "xpath:position"]
       ],
-      "value": "Yaq12wsx"
-    }, {
-      "id": "8a90fbbd-53bc-4f36-8d05-c71b1869a5f1",
-      "comment": "",
-      "command": "click",
-      "target": "css=.mdp_oublie:nth-child(8)",
-      "targets": [
-        ["css=.mdp_oublie:nth-child(8)", "css:finder"],
-        ["xpath=//form[@id='ajouter_editer']/fieldset/p[4]", "xpath:idRelative"],
-        ["xpath=//p[4]", "xpath:position"],
-        ["xpath=//p[contains(.,'Pas de compte ?')]", "xpath:innerText"]
-      ],
-      "value": ""
+      "value": "test7test7test7"
     }, {
       "id": "b8cd7b2b-25ea-4d22-9f01-12874722e338",
       "comment": "",
@@ -2319,16 +2158,8 @@
       "id": "881a0ad1-4b22-4d85-bf23-419fdb50e378",
       "comment": "",
       "command": "assertElementPresent",
-      "target": "linkText=Sortir",
-      "targets": [
-        ["linkText=Sortir", "linkText"],
-        ["css=li:nth-child(7) > a", "css:finder"],
-        ["xpath=//a[contains(text(),'Sortir')]", "xpath:link"],
-        ["xpath=//nav[@id='menu_pratique']/ul/li[7]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/user-logout.php')]", "xpath:href"],
-        ["xpath=//li[7]/a", "xpath:position"],
-        ["xpath=//a[contains(.,'Sortir')]", "xpath:innerText"]
-      ],
+      "target": "css=#menu_pratique form.deconnexion button",
+      "targets": [],
       "value": ""
     }]
   }, {
@@ -2366,7 +2197,7 @@
         ["css=li:nth-child(6) > a", "css:finder"],
         ["xpath=//a[contains(text(),'test')]", "xpath:link"],
         ["xpath=//nav[@id='menu_pratique']/ul/li[6]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/user.php?idP=2')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/user/dashboard.php?idP=2')]", "xpath:href"],
         ["xpath=//li[6]/a", "xpath:position"],
         ["xpath=//a[contains(.,'test')]", "xpath:innerText"]
       ],
@@ -3148,15 +2979,11 @@
       "id": "9e1622e0-3cd8-4800-afbf-45fc9095991c",
       "comment": "",
       "command": "click",
-      "target": "css=h1 > a",
+      "target": "xpath=//h3",
       "targets": [
-        ["linkText=SANS FILTRE de Ruben Östlund", "linkText"],
-        ["css=h2 > a", "css:finder"],
-        ["xpath=//a[contains(text(),'SANS FILTRE de Ruben Östlund')]", "xpath:link"],
-        ["xpath=//div[@id='entete_contenu']/h2/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/event/evenement.php?idE=278')]", "xpath:href"],
-        ["xpath=//h2/a", "xpath:position"],
-        ["xpath=//a[contains(.,'SANS FILTRE de Ruben Östlund')]", "xpath:innerText"]
+        ["css=.titre > .left", "css:finder"],
+        ["xpath=//article[@id='event-4381']/header/h3", "xpath:idRelative"],
+        ["xpath=//h3", "xpath:position"]
       ],
       "value": ""
     }, {
@@ -3201,27 +3028,15 @@
       "id": "3e374ddb-9cc1-41a5-8a8c-24ccc133416d",
       "comment": "",
       "command": "click",
-      "target": "css=.menu_actions_evenement > li:nth-child(3) > a",
+      "target": "linkText=Modifier",
       "targets": [
         ["linkText=Modifier", "linkText"],
         ["css=.menu_actions_evenement > li:nth-child(3) > a", "css:finder"],
         ["xpath=//a[contains(text(),'Modifier')]", "xpath:link"],
-        ["xpath=//div[@id='contenu']/ul/li[3]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/evenement-edit.php?action=editer&idE=35')]", "xpath:href"],
-        ["xpath=//div/ul/li[3]/a", "xpath:position"],
-        ["xpath=//a[contains(.,'Modifier')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "d0ebf96f-1a58-4567-9bbf-dafc20adb907",
-      "comment": "",
-      "command": "click",
-      "target": "css=.listehoriz:nth-child(2) > .continu",
-      "targets": [
-        ["css=.listehoriz:nth-child(2) > .continu", "css:finder"],
-        ["xpath=//form[@id='ajouter_editer']/fieldset/ul/li[2]/label", "xpath:idRelative"],
-        ["xpath=//li[2]/label", "xpath:position"],
-        ["xpath=//label[contains(.,'ciné')]", "xpath:innerText"]
+        ["xpath=//main[@id='contenu']/nav/ul[2]/li[3]/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '/evenement-edit.php?action=editer&idE=4528')]", "xpath:href"],
+        ["xpath=//ul[2]/li[3]/a", "xpath:position"],
+        ["xpath=//a[contains(.,' Modifier')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
@@ -3234,7 +3049,7 @@
     }, {
       "id": "65abf7ec-0c45-4310-9707-d8f09f8ca893",
       "comment": "",
-      "command": "sendKeys",
+      "command": "type",
       "target": "id=dateEvenement",
       "targets": [],
       "value": "${eventDate}"
@@ -3377,18 +3192,6 @@
       ],
       "value": "https://test.ch"
     }, {
-      "id": "d53012ec-8d07-4b56-b5d2-a456521e625c",
-      "comment": "",
-      "command": "click",
-      "target": "xpath=//form[@id='ajouter_editer']/fieldset[8]/ul/li[5]/label",
-      "targets": [
-        ["css=fieldset:nth-child(12) li:nth-child(5) > .continu", "css:finder"],
-        ["xpath=//form[@id='ajouter_editer']/fieldset[8]/ul/li[5]/label", "xpath:idRelative"],
-        ["xpath=//fieldset[8]/ul/li[5]/label", "xpath:position"],
-        ["xpath=//label[contains(.,'dépublié (non visible sur le site)')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
       "id": "4df2fa0c-d0fa-4ecf-94d9-cf10c86e4178",
       "comment": "",
       "command": "type",
@@ -3450,7 +3253,7 @@
         ["css=li:nth-child(6) > a", "css:finder"],
         ["xpath=//a[contains(text(),'test')]", "xpath:link"],
         ["xpath=//nav[@id='menu_pratique']/ul/li[6]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/user.php?idP=2')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/user/dashboard.php?idP=2')]", "xpath:href"],
         ["xpath=//li[6]/a", "xpath:position"],
         ["xpath=//a[contains(.,'test')]", "xpath:innerText"]
       ],
@@ -3661,12 +3464,15 @@
       "id": "db1d9e90-19e4-40f5-a94d-845fbf53df55",
       "comment": "",
       "command": "click",
-      "target": "xpath=//section[@id='prochains_evenements']/div/article/div[6]/ul[2]/li[3]/a",
+      "target": "xpath=(//a[contains(text(),'Dépublier')])[2]",
       "targets": [
-        ["css=.genre:nth-child(1) .action_editer", "css:finder"],
-        ["xpath=//section[@id='prochains_evenements']/div/article/div[6]/ul[2]/li[2]", "xpath:idRelative"],
-        ["xpath=//ul[2]/li[2]", "xpath:position"],
-        ["xpath=//li[contains(.,'Modifier')]", "xpath:innerText"]
+        ["id=btn_event_unpublish_4514", "id"],
+        ["css=#btn_event_unpublish_4514", "css:finder"],
+        ["xpath=(//a[contains(text(),'Dépublier')])[2]", "xpath:link"],
+        ["xpath=//a[@id='btn_event_unpublish_4514']", "xpath:attributes"],
+        ["xpath=//article[@id='event-4514']/footer/ul[2]/li[3]/a", "xpath:idRelative"],
+        ["xpath=(//a[contains(@href, '#')])[10]", "xpath:href"],
+        ["xpath=//article[2]/footer/ul[2]/li[3]/a", "xpath:position"]
       ],
       "value": ""
     }]
@@ -3725,15 +3531,15 @@
       "id": "e21aaf25-9f85-4a6e-99b3-efc5e8c42886",
       "comment": "",
       "command": "click",
-      "target": "linkText=Lausanne",
+      "target": "linkText=Vaud",
       "targets": [
-        ["linkText=Lausanne", "linkText"],
+        ["linkText=Vaud", "linkText"],
         ["css=.vd", "css:finder"],
-        ["xpath=//a[contains(text(),'Lausanne')]", "xpath:link"],
+        ["xpath=//a[contains(text(),'Vaud')]", "xpath:link"],
         ["xpath=//div[@id='entete_contenu']/ul/li[2]/a", "xpath:idRelative"],
         ["xpath=//a[contains(@href, '?region=vd&idL=')]", "xpath:href"],
         ["xpath=//div[2]/ul/li[2]/a", "xpath:position"],
-        ["xpath=//a[contains(.,'Lausanne ')]", "xpath:innerText"]
+        ["xpath=//a[contains(.,'Vaud ')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
@@ -3947,7 +3753,7 @@
         ["css=a:nth-child(2)", "css:finder"],
         ["xpath=//a[contains(text(),'Ajouter un lieu')]", "xpath:link"],
         ["xpath=//div[@id='entete_contenu']/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/lieu-edit.php?action=ajouter')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/lieu/edit.php?action=ajouter')]", "xpath:href"],
         ["xpath=//div/div/a", "xpath:position"],
         ["xpath=//a[contains(.,' Ajouter un lieu')]", "xpath:innerText"]
       ],
@@ -3984,12 +3790,12 @@
       "id": "c03e3997-0f68-4203-9b64-455969a5cbd8",
       "comment": "",
       "command": "click",
-      "target": "id=determinant",
+      "target": "id=preposition_nom",
       "targets": [
-        ["id=determinant", "id"],
-        ["name=determinant", "name"],
-        ["css=#determinant", "css:finder"],
-        ["xpath=//input[@id='determinant']", "xpath:attributes"],
+        ["id=preposition_nom", "id"],
+        ["name=preposition_nom", "name"],
+        ["css=#preposition_nom", "css:finder"],
+        ["xpath=//input[@id='preposition_nom']", "xpath:attributes"],
         ["xpath=//form[@id='ajouter_editer']/fieldset/p[2]/input", "xpath:idRelative"],
         ["xpath=//p[2]/input", "xpath:position"]
       ],
@@ -3998,12 +3804,12 @@
       "id": "33d57ab1-2d5b-4945-86a2-d294aa213b69",
       "comment": "",
       "command": "type",
-      "target": "id=determinant",
+      "target": "id=preposition_nom",
       "targets": [
-        ["id=determinant", "id"],
-        ["name=determinant", "name"],
-        ["css=#determinant", "css:finder"],
-        ["xpath=//input[@id='determinant']", "xpath:attributes"],
+        ["id=preposition_nom", "id"],
+        ["name=preposition_nom", "name"],
+        ["css=#preposition_nom", "css:finder"],
+        ["xpath=//input[@id='preposition_nom']", "xpath:attributes"],
         ["xpath=//form[@id='ajouter_editer']/fieldset/p[2]/input", "xpath:idRelative"],
         ["xpath=//p[2]/input", "xpath:position"]
       ],
@@ -4100,57 +3906,88 @@
       ],
       "value": "https://test.ch"
     }, {
-      "id": "0be71463-6710-4c14-8c5b-c8c4e6441839",
-      "comment": "",
+      "id": "0b9eb20c-92ea-4945-8953-c56296f96c00",
+      "comment": "Catégorie(s) est un Select2 multiple depuis 3.13.0 (#117) : ouvrir, choisir, se referme, répéter",
       "command": "click",
-      "target": "id=categorie_bistrot",
-      "targets": [
-        ["id=categorie_bistrot", "id"],
-        ["name=categorie[]", "name"],
-        ["css=#categorie_bistrot", "css:finder"],
-        ["xpath=//input[@id='categorie_bistrot']", "xpath:attributes"],
-        ["xpath=//form[@id='ajouter_editer']/fieldset[2]/ul/li/input", "xpath:idRelative"],
-        ["xpath=//fieldset[2]/ul/li/input", "xpath:position"]
-      ],
+      "target": "xpath=//select[@id='categories']/following-sibling::span//span[contains(@class,'select2-selection')]",
+      "targets": [],
       "value": ""
     }, {
-      "id": "c3009c4d-4252-4536-8aaf-4f1260092c39",
+      "id": "b3689e4f-b738-4527-936c-3afc5e375f0e",
+      "comment": "",
+      "command": "waitForElementVisible",
+      "target": "css=.select2-results__options",
+      "targets": [],
+      "value": "30000"
+    }, {
+      "id": "35e6d86a-3dbf-47ab-9efb-182fee585a82",
       "comment": "",
       "command": "click",
-      "target": "id=categorie_salle",
-      "targets": [
-        ["id=categorie_salle", "id"],
-        ["css=#categorie_salle", "css:finder"],
-        ["xpath=//input[@id='categorie_salle']", "xpath:attributes"],
-        ["xpath=//form[@id='ajouter_editer']/fieldset[2]/ul/li[2]/input", "xpath:idRelative"],
-        ["xpath=//li[2]/input", "xpath:position"]
-      ],
+      "target": "xpath=//li[contains(@class,'select2-results__option')][normalize-space(.)='bistrot']",
+      "targets": [],
       "value": ""
     }, {
-      "id": "c62895c3-6c91-4c00-9114-513adb6ee1c4",
+      "id": "453333a3-ccc6-4bd4-be30-72e6be7c6606",
       "comment": "",
       "command": "click",
-      "target": "id=categorie_theatre",
-      "targets": [
-        ["id=categorie_theatre", "id"],
-        ["css=#categorie_theatre", "css:finder"],
-        ["xpath=//input[@id='categorie_theatre']", "xpath:attributes"],
-        ["xpath=//form[@id='ajouter_editer']/fieldset[2]/ul/li[5]/input", "xpath:idRelative"],
-        ["xpath=//li[5]/input", "xpath:position"]
-      ],
+      "target": "xpath=//select[@id='categories']/following-sibling::span//span[contains(@class,'select2-selection')]",
+      "targets": [],
       "value": ""
     }, {
-      "id": "415ba32e-af8a-412b-a111-21a38433793e",
+      "id": "412d27c4-8c1d-4ea4-be80-8d44c244fd1b",
+      "comment": "",
+      "command": "waitForElementVisible",
+      "target": "css=.select2-results__options",
+      "targets": [],
+      "value": "30000"
+    }, {
+      "id": "48e3c864-fa92-4e13-916f-5c25a3ba50be",
       "comment": "",
       "command": "click",
-      "target": "id=categorie_autre",
-      "targets": [
-        ["id=categorie_autre", "id"],
-        ["css=#categorie_autre", "css:finder"],
-        ["xpath=//input[@id='categorie_autre']", "xpath:attributes"],
-        ["xpath=//form[@id='ajouter_editer']/fieldset[2]/ul/li[9]/input", "xpath:idRelative"],
-        ["xpath=//li[9]/input", "xpath:position"]
-      ],
+      "target": "xpath=//li[contains(@class,'select2-results__option')][normalize-space(.)='salle']",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "ef3683e4-cef7-498d-a4bb-2e3b6ded373a",
+      "comment": "",
+      "command": "click",
+      "target": "xpath=//select[@id='categories']/following-sibling::span//span[contains(@class,'select2-selection')]",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "ea850abf-8149-4cbb-9bd3-e0daa4c5b637",
+      "comment": "",
+      "command": "waitForElementVisible",
+      "target": "css=.select2-results__options",
+      "targets": [],
+      "value": "30000"
+    }, {
+      "id": "dbdb09b6-f2ab-4204-8fc8-244ddcdf2451",
+      "comment": "",
+      "command": "click",
+      "target": "xpath=//li[contains(@class,'select2-results__option')][normalize-space(.)='théâtre']",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "8d16a84f-e961-4112-a9f1-7bf6249b1a5e",
+      "comment": "",
+      "command": "click",
+      "target": "xpath=//select[@id='categories']/following-sibling::span//span[contains(@class,'select2-selection')]",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "c41ff4c4-f7f4-4971-b032-227e73c7b657",
+      "comment": "",
+      "command": "waitForElementVisible",
+      "target": "css=.select2-results__options",
+      "targets": [],
+      "value": "30000"
+    }, {
+      "id": "fb7ca59f-298c-48c6-820e-b35acb3e84c1",
+      "comment": "",
+      "command": "click",
+      "target": "xpath=//li[contains(@class,'select2-results__option')][normalize-space(.)='autre']",
+      "targets": [],
       "value": ""
     }, {
       "id": "bf69242c-eaaa-4b2d-87db-caabdd587783",
@@ -4163,6 +4000,13 @@
         ["xpath=//form[@id='ajouter_editer']/p[3]/input[3]", "xpath:idRelative"],
         ["xpath=//p[3]/input[3]", "xpath:position"]
       ],
+      "value": ""
+    }, {
+      "id": "a9977092-e428-4742-a3c5-2988a3b8de6c",
+      "comment": "",
+      "command": "pause",
+      "target": "2000",
+      "targets": [],
       "value": ""
     }, {
       "id": "61f3f0d6-d83a-48e9-946a-90e98b6d40de",
@@ -4184,10 +4028,6 @@
       ],
       "value": "test"
     }]
-  }, {
-    "id": "84ceac7a-1e51-4367-ba29-558ed8b5625e",
-    "name": "venue small",
-    "commands": []
   }, {
     "id": "7f6cb209-b243-4a0e-889f-097dd12be52d",
     "name": "user (admin) venue edit (r)",
@@ -4235,7 +4075,7 @@
         ["css=.action_editer > a", "css:finder"],
         ["xpath=//a[contains(text(),'Modifier ce lieu')]", "xpath:link"],
         ["xpath=//div[@id='contenu']/div/ul/li[2]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/lieu-edit.php?action=editer&idL=6')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/lieu/edit.php?action=editer&idL=6')]", "xpath:href"],
         ["xpath=//div/ul/li[2]/a", "xpath:position"],
         ["xpath=//a[contains(.,'Modifier ce lieu')]", "xpath:innerText"]
       ],
@@ -4272,12 +4112,12 @@
       "id": "de39f71b-0176-40f0-8d64-dfab51753d52",
       "comment": "",
       "command": "click",
-      "target": "id=determinant",
+      "target": "id=preposition_nom",
       "targets": [
-        ["id=determinant", "id"],
-        ["name=determinant", "name"],
-        ["css=#determinant", "css:finder"],
-        ["xpath=//input[@id='determinant']", "xpath:attributes"],
+        ["id=preposition_nom", "id"],
+        ["name=preposition_nom", "name"],
+        ["css=#preposition_nom", "css:finder"],
+        ["xpath=//input[@id='preposition_nom']", "xpath:attributes"],
         ["xpath=//form[@id='ajouter_editer']/fieldset/p[2]/input", "xpath:idRelative"],
         ["xpath=//p[2]/input", "xpath:position"]
       ],
@@ -4286,12 +4126,12 @@
       "id": "9ace5e2b-a2cb-45a9-919d-d3bcec969290",
       "comment": "",
       "command": "type",
-      "target": "id=determinant",
+      "target": "id=preposition_nom",
       "targets": [
-        ["id=determinant", "id"],
-        ["name=determinant", "name"],
-        ["css=#determinant", "css:finder"],
-        ["xpath=//input[@id='determinant']", "xpath:attributes"],
+        ["id=preposition_nom", "id"],
+        ["name=preposition_nom", "name"],
+        ["css=#preposition_nom", "css:finder"],
+        ["xpath=//input[@id='preposition_nom']", "xpath:attributes"],
         ["xpath=//form[@id='ajouter_editer']/fieldset/p[2]/input", "xpath:idRelative"],
         ["xpath=//p[2]/input", "xpath:position"]
       ],
@@ -4381,122 +4221,109 @@
       ],
       "value": "https://test2.ch"
     }, {
-      "id": "afe9c56c-7eb0-448c-9933-14ed354295e2",
-      "comment": "",
+      "id": "84b994c4-beee-480f-b19f-548f7c3a14eb",
+      "comment": "Catégorie(s) est un Select2 multiple depuis 3.13.0 (#117) ; bistrot/salle/théâtre/autre sont déjà cochées (posées par le test d'ajout) donc absentes de la liste déroulante, on ajoute seulement des catégories encore libres",
       "command": "click",
-      "target": "id=categorie_bistrot",
-      "targets": [
-        ["id=categorie_bistrot", "id"],
-        ["name=categorie[]", "name"],
-        ["css=#categorie_bistrot", "css:finder"],
-        ["xpath=//input[@id='categorie_bistrot']", "xpath:attributes"],
-        ["xpath=//form[@id='ajouter_editer']/fieldset[2]/ul/li/input", "xpath:idRelative"],
-        ["xpath=//fieldset[2]/ul/li/input", "xpath:position"]
-      ],
+      "target": "xpath=//select[@id='categories']/following-sibling::span//span[contains(@class,'select2-selection')]",
+      "targets": [],
       "value": ""
     }, {
-      "id": "8a293707-33db-4b73-9d12-cb7861ba7c41",
+      "id": "38a81e8f-d0bf-4056-8ec2-e123d026cd8b",
+      "comment": "",
+      "command": "waitForElementVisible",
+      "target": "css=.select2-results__options",
+      "targets": [],
+      "value": "30000"
+    }, {
+      "id": "f089e858-8ec7-445b-9faf-a9bc21000e3b",
       "comment": "",
       "command": "click",
-      "target": "id=categorie_salle",
-      "targets": [
-        ["id=categorie_salle", "id"],
-        ["css=#categorie_salle", "css:finder"],
-        ["xpath=//input[@id='categorie_salle']", "xpath:attributes"],
-        ["xpath=//form[@id='ajouter_editer']/fieldset[2]/ul/li[2]/input", "xpath:idRelative"],
-        ["xpath=//li[2]/input", "xpath:position"]
-      ],
+      "target": "xpath=//li[contains(@class,'select2-results__option')][normalize-space(.)='restaurant']",
+      "targets": [],
       "value": ""
     }, {
-      "id": "cc44c883-fc64-4ce9-9f27-825cb2ae8e9e",
+      "id": "bb6fbe30-bb05-40dd-a4c7-76e753b02d4b",
       "comment": "",
       "command": "click",
-      "target": "id=categorie_restaurant",
-      "targets": [
-        ["id=categorie_restaurant", "id"],
-        ["css=#categorie_restaurant", "css:finder"],
-        ["xpath=//input[@id='categorie_restaurant']", "xpath:attributes"],
-        ["xpath=//form[@id='ajouter_editer']/fieldset[2]/ul/li[3]/input", "xpath:idRelative"],
-        ["xpath=//li[3]/input", "xpath:position"]
-      ],
+      "target": "xpath=//select[@id='categories']/following-sibling::span//span[contains(@class,'select2-selection')]",
+      "targets": [],
       "value": ""
     }, {
-      "id": "788abaad-8c0f-482d-b43d-78cf3906aabb",
+      "id": "4863f7f9-7ef0-41ad-8e0a-4dcc191f4658",
+      "comment": "",
+      "command": "waitForElementVisible",
+      "target": "css=.select2-results__options",
+      "targets": [],
+      "value": "30000"
+    }, {
+      "id": "dad9e2da-a28d-4f4a-83ab-7b602a1a4414",
       "comment": "",
       "command": "click",
-      "target": "id=categorie_cinema",
-      "targets": [
-        ["id=categorie_cinema", "id"],
-        ["css=#categorie_cinema", "css:finder"],
-        ["xpath=//input[@id='categorie_cinema']", "xpath:attributes"],
-        ["xpath=//form[@id='ajouter_editer']/fieldset[2]/ul/li[4]/input", "xpath:idRelative"],
-        ["xpath=//li[4]/input", "xpath:position"]
-      ],
+      "target": "xpath=//li[contains(@class,'select2-results__option')][normalize-space(.)='cinéma']",
+      "targets": [],
       "value": ""
     }, {
-      "id": "1bea2620-ba67-46c1-aa76-b63109a48c6c",
+      "id": "c2838d0d-5533-4486-b2d0-b78e98513236",
       "comment": "",
       "command": "click",
-      "target": "id=categorie_theatre",
-      "targets": [
-        ["id=categorie_theatre", "id"],
-        ["css=#categorie_theatre", "css:finder"],
-        ["xpath=//input[@id='categorie_theatre']", "xpath:attributes"],
-        ["xpath=//form[@id='ajouter_editer']/fieldset[2]/ul/li[5]/input", "xpath:idRelative"],
-        ["xpath=//li[5]/input", "xpath:position"]
-      ],
+      "target": "xpath=//select[@id='categories']/following-sibling::span//span[contains(@class,'select2-selection')]",
+      "targets": [],
       "value": ""
     }, {
-      "id": "395ca708-2e07-4644-b0dc-f7d9ca4d469b",
+      "id": "ef1a509b-595d-4f86-b250-033f0232ac02",
+      "comment": "",
+      "command": "waitForElementVisible",
+      "target": "css=.select2-results__options",
+      "targets": [],
+      "value": "30000"
+    }, {
+      "id": "81debf00-9687-43ce-ad0b-582c9987c5a2",
       "comment": "",
       "command": "click",
-      "target": "id=categorie_galerie",
-      "targets": [
-        ["id=categorie_galerie", "id"],
-        ["css=#categorie_galerie", "css:finder"],
-        ["xpath=//input[@id='categorie_galerie']", "xpath:attributes"],
-        ["xpath=//form[@id='ajouter_editer']/fieldset[2]/ul/li[6]/input", "xpath:idRelative"],
-        ["xpath=//li[6]/input", "xpath:position"]
-      ],
+      "target": "xpath=//li[contains(@class,'select2-results__option')][normalize-space(.)='galerie']",
+      "targets": [],
       "value": ""
     }, {
-      "id": "739669e0-c829-4736-b0d4-8091a1d51d96",
+      "id": "0052b7b8-6d41-4399-87f4-f7eefac0bb15",
       "comment": "",
       "command": "click",
-      "target": "id=categorie_boutique",
-      "targets": [
-        ["id=categorie_boutique", "id"],
-        ["css=#categorie_boutique", "css:finder"],
-        ["xpath=//input[@id='categorie_boutique']", "xpath:attributes"],
-        ["xpath=//form[@id='ajouter_editer']/fieldset[2]/ul/li[7]/input", "xpath:idRelative"],
-        ["xpath=//li[7]/input", "xpath:position"]
-      ],
+      "target": "xpath=//select[@id='categories']/following-sibling::span//span[contains(@class,'select2-selection')]",
+      "targets": [],
       "value": ""
     }, {
-      "id": "6b35ad30-03b7-420c-9dc3-4208aa1c56f1",
+      "id": "9f497b05-b4be-4431-b04c-32bebe5bb12f",
+      "comment": "",
+      "command": "waitForElementVisible",
+      "target": "css=.select2-results__options",
+      "targets": [],
+      "value": "30000"
+    }, {
+      "id": "b5d1fb63-2bdc-4746-b5d4-62d47ddf6c00",
       "comment": "",
       "command": "click",
-      "target": "id=categorie_musee",
-      "targets": [
-        ["id=categorie_musee", "id"],
-        ["css=#categorie_musee", "css:finder"],
-        ["xpath=//input[@id='categorie_musee']", "xpath:attributes"],
-        ["xpath=//form[@id='ajouter_editer']/fieldset[2]/ul/li[8]/input", "xpath:idRelative"],
-        ["xpath=//li[8]/input", "xpath:position"]
-      ],
+      "target": "xpath=//li[contains(@class,'select2-results__option')][normalize-space(.)='boutique']",
+      "targets": [],
       "value": ""
     }, {
-      "id": "ab503732-835c-46f6-bf7a-8c9bf4e9639a",
+      "id": "d6a763a1-17f2-43e4-9989-38543d7715b4",
       "comment": "",
       "command": "click",
-      "target": "id=categorie_autre",
-      "targets": [
-        ["id=categorie_autre", "id"],
-        ["css=#categorie_autre", "css:finder"],
-        ["xpath=//input[@id='categorie_autre']", "xpath:attributes"],
-        ["xpath=//form[@id='ajouter_editer']/fieldset[2]/ul/li[9]/input", "xpath:idRelative"],
-        ["xpath=//li[9]/input", "xpath:position"]
-      ],
+      "target": "xpath=//select[@id='categories']/following-sibling::span//span[contains(@class,'select2-selection')]",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "e1714926-318f-4887-9aa3-30e4fa262b2a",
+      "comment": "",
+      "command": "waitForElementVisible",
+      "target": "css=.select2-results__options",
+      "targets": [],
+      "value": "30000"
+    }, {
+      "id": "3404a704-ef2b-4e21-9944-a6520ad77bd6",
+      "comment": "",
+      "command": "click",
+      "target": "xpath=//li[contains(@class,'select2-results__option')][normalize-space(.)='musée']",
+      "targets": [],
       "value": ""
     }, {
       "id": "cdb88596-55ed-4bf8-b881-830422613bb9",
@@ -4577,15 +4404,12 @@
       "id": "f2ed399f-de60-47c4-9a0d-38a247139c8a",
       "comment": "",
       "command": "click",
-      "target": "css=h3:nth-child(2) > a",
+      "target": "xpath=//table[@id='derniers_lieux']/tbody/tr[2]/td[2]/a/strong",
       "targets": [
-        ["linkText=Urgence Disk", "linkText"],
-        ["css=h3:nth-child(2) > a", "css:finder"],
-        ["xpath=//a[contains(text(),'Urgence Disk')]", "xpath:link"],
-        ["xpath=//div[@id='derniers_lieux']/h3/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/lieu/lieu.php?idL=6')]", "xpath:href"],
-        ["xpath=//h3/a", "xpath:position"],
-        ["xpath=//a[contains(.,'Urgence Disk')]", "xpath:innerText"]
+        ["css=tr:nth-child(2) a > strong", "css:finder"],
+        ["xpath=//table[@id='derniers_lieux']/tbody/tr[2]/td[2]/a/strong", "xpath:idRelative"],
+        ["xpath=//tr[2]/td[2]/a/strong", "xpath:position"],
+        ["xpath=//strong[contains(.,'Audio')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
@@ -4658,6 +4482,13 @@
       ],
       "value": ""
     }, {
+      "id": "ce8a594d-dd8d-4c52-94ed-c50f577c4af1",
+      "comment": "",
+      "command": "pause",
+      "target": "2000",
+      "targets": [],
+      "value": ""
+    }, {
       "id": "929a3e29-4d93-49b7-9459-20a5fe332dfe",
       "comment": "",
       "command": "assertElementPresent",
@@ -4706,15 +4537,15 @@
       "id": "87c81fa4-113c-4fce-86a4-0257b182f167",
       "comment": "",
       "command": "click",
-      "target": "xpath=(//a[contains(text(),'Modifier')])[2]",
+      "target": "linkText=Ajouter une présentation",
       "targets": [
-        ["linkText=Modifier", "linkText"],
-        ["css=.right > a", "css:finder"],
-        ["xpath=(//a[contains(text(),'Modifier')])[2]", "xpath:link"],
-        ["xpath=//div[@id='descriptions']/div/div/div[2]/span[2]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/lieu-text-edit.php?action=editer&type=description&idL=43&idP=1')]", "xpath:href"],
-        ["xpath=//span[2]/a", "xpath:position"],
-        ["xpath=//a[contains(.,' Modifier')]", "xpath:innerText"]
+        ["linkText=Ajouter une présentation", "linkText"],
+        ["css=#descriptions > a:nth-child(3)", "css:finder"],
+        ["xpath=//a[contains(text(),'Ajouter une présentation')]", "xpath:link"],
+        ["xpath=//div[@id='descriptions']/a[2]", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '/lieu/text-edit.php?idL=1005&type=presentation')]", "xpath:href"],
+        ["xpath=//div[4]/a[2]", "xpath:position"],
+        ["xpath=//a[contains(.,' Ajouter une présentation')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
@@ -4769,6 +4600,13 @@
         ["xpath=//form[@id='ajouter_editer']/p[2]/input[2]", "xpath:idRelative"],
         ["xpath=//p[2]/input[2]", "xpath:position"]
       ],
+      "value": ""
+    }, {
+      "id": "e65547c5-e2ba-4eb7-b449-5d746a83e6c5",
+      "comment": "",
+      "command": "pause",
+      "target": "2000",
+      "targets": [],
       "value": ""
     }, {
       "id": "77edea76-7e6c-4f73-9025-09f9dc9f395a",
@@ -5093,7 +4931,7 @@
         ["css=a:nth-child(2)", "css:finder"],
         ["xpath=//a[contains(text(),'Ajouter un organisateur')]", "xpath:link"],
         ["xpath=//div[@id='entete_contenu']/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/organisateur-edit.php?action=ajouter')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/organisateur/edit.php?action=ajouter')]", "xpath:href"],
         ["xpath=//div/div/a", "xpath:position"],
         ["xpath=//a[contains(.,' Ajouter un organisateur')]", "xpath:innerText"]
       ],
@@ -5226,7 +5064,7 @@
       "id": "4d9245e2-c8ef-4345-8495-d850da8cbddc",
       "comment": "",
       "command": "click",
-      "target": "id=utilisateur",
+      "target": "id=login",
       "targets": [
         ["id=utilisateur", "id"],
         ["name=utilisateur", "name"],
@@ -5247,7 +5085,7 @@
       "id": "d4258e0e-2492-4da7-8b2f-66ab01fb7510",
       "comment": "",
       "command": "type",
-      "target": "id=utilisateur",
+      "target": "id=login",
       "targets": [
         ["id=utilisateur", "id"],
         ["name=utilisateur", "name"],
@@ -5284,7 +5122,7 @@
         ["xpath=//form[@id='ajouter_editer']/fieldset/p[2]/input", "xpath:idRelative"],
         ["xpath=//p[2]/input", "xpath:position"]
       ],
-      "value": "Yaq12wsx"
+      "value": "Yaq12wsx9jh8"
     }, {
       "id": "5d721f85-7dcd-4c4d-95a3-94c963127888",
       "comment": "",
@@ -5312,7 +5150,7 @@
         ["xpath=//form[@id='ajouter_editer']/fieldset/p[3]/input", "xpath:idRelative"],
         ["xpath=//p[3]/input", "xpath:position"]
       ],
-      "value": "Yaq12wsx"
+      "value": "Yaq12wsx9jh8"
     }, {
       "id": "5cc6985b-1706-4fdb-be46-0c4ca38624e8",
       "comment": "",
@@ -5423,7 +5261,7 @@
         ["css=li:nth-child(8) > a", "css:finder"],
         ["xpath=//a[contains(text(),'Connexion')]", "xpath:link"],
         ["xpath=//nav[@id='menu_pratique']/ul/li[8]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/user-login.php')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/user/login.php')]", "xpath:href"],
         ["xpath=//li[8]/a", "xpath:position"],
         ["xpath=//a[contains(.,'Connexion')]", "xpath:innerText"]
       ],
@@ -5432,14 +5270,14 @@
       "id": "2b5edc73-ea80-40e2-9d43-446a61cbcd80",
       "comment": "",
       "command": "click",
-      "target": "xpath=//form[@id='ajouter_editer']/fieldset/p[3]/a",
+      "target": "xpath=//form[@id='ajouter_editer']/fieldset/p[4]/a",
       "targets": [
         ["linkText=Mot de passe oublié ?", "linkText"],
-        ["css=.mdp_oublie:nth-child(7) > a", "css:finder"],
+        ["css=.liens_form > a:nth-child(1)", "css:finder"],
         ["xpath=//a[contains(text(),'Mot de passe oublié ?')]", "xpath:link"],
-        ["xpath=//form[@id='ajouter_editer']/fieldset/p[3]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/user-reset.php')]", "xpath:href"],
-        ["xpath=//p[3]/a", "xpath:position"],
+        ["xpath=//form[@id='ajouter_editer']/fieldset/p[4]/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '/user/reset.php')]", "xpath:href"],
+        ["xpath=//p[4]/a", "xpath:position"],
         ["xpath=//a[contains(.,'Mot de passe oublié ?')]", "xpath:innerText"]
       ],
       "value": ""
@@ -5460,7 +5298,7 @@
       "id": "c4245b1e-3a81-4bff-a1ad-3016a4057761",
       "comment": "",
       "command": "click",
-      "target": "xpath=//input[@id='pseudo_email']",
+      "target": "xpath=//input[@id='login_ou_email']",
       "targets": [
         ["id=pseudo_email", "id"],
         ["name=pseudo_email", "name"],
@@ -5474,7 +5312,7 @@
       "id": "3e36e4fb-6246-4de3-827b-3f8b681a0448",
       "comment": "",
       "command": "type",
-      "target": "xpath=//input[@id='pseudo_email']",
+      "target": "xpath=//input[@id='login_ou_email']",
       "targets": [
         ["id=pseudo_email", "id"],
         ["name=pseudo_email", "name"],
@@ -5525,7 +5363,7 @@
         ["css=li:nth-child(6) > a", "css:finder"],
         ["xpath=//a[contains(text(),'test')]", "xpath:link"],
         ["xpath=//nav[@id='menu_pratique']/ul/li[6]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/user.php?idP=2')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/user/dashboard.php?idP=2')]", "xpath:href"],
         ["xpath=//li[6]/a", "xpath:position"],
         ["xpath=//a[contains(.,'test')]", "xpath:innerText"]
       ],
@@ -5534,15 +5372,14 @@
       "id": "aa61df0c-afeb-485a-be19-7b3fd156ef9f",
       "comment": "",
       "command": "assertElementPresent",
-      "target": "linkText=événements",
+      "target": "xpath=//main[@id='contenu']/nav/a",
       "targets": [
-        ["linkText=événements", "linkText"],
-        ["css=.ici:nth-child(1) > a:nth-child(2)", "css:finder"],
-        ["xpath=//a[contains(text(),'événements')]", "xpath:link"],
-        ["xpath=//ul[@id='menu_ajouts']/li/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/user.php?idP=11&nblignes=100&elements=evenement')]", "xpath:href"],
-        ["xpath=//ul[2]/li/a", "xpath:position"],
-        ["xpath=//a[contains(.,'événements')]", "xpath:innerText"]
+        ["linkText=Événements239", "linkText"],
+        ["css=.tabs > .ici", "css:finder"],
+        ["xpath=//main[@id='contenu']/nav/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '?idP=13&elements=evenement&tri=dateAjout&ordre=desc&nblignes=100')]", "xpath:href"],
+        ["xpath=//nav/a", "xpath:position"],
+        ["xpath=//a[contains(.,' Événements239')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
@@ -5575,15 +5412,14 @@
       "id": "4ddf14d3-4389-4ff2-a57b-08cf5c2e80f2",
       "comment": "",
       "command": "click",
-      "target": "linkText=textes",
+      "target": "xpath=//main[@id='contenu']/nav/a[2]",
       "targets": [
-        ["linkText=textes", "linkText"],
-        ["css=li:nth-child(2) > a:nth-child(2)", "css:finder"],
-        ["xpath=//a[contains(text(),'textes')]", "xpath:link"],
-        ["xpath=//ul[@id='menu_ajouts']/li[2]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/user.php?idP=2&nblignes=100&elements=description')]", "xpath:href"],
-        ["xpath=//ul[2]/li[2]/a", "xpath:position"],
-        ["xpath=//a[contains(.,'textes')]", "xpath:innerText"]
+        ["linkText=Descriptions0", "linkText"],
+        ["css=.tabs > a:nth-child(2)", "css:finder"],
+        ["xpath=//main[@id='contenu']/nav/a[2]", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '?idP=13&elements=description&tri=dateAjout&ordre=desc&nblignes=100')]", "xpath:href"],
+        ["xpath=//nav/a[2]", "xpath:position"],
+        ["xpath=//a[contains(.,' Descriptions0')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
@@ -5628,6 +5464,13 @@
       ],
       "value": ""
     }, {
+      "id": "569c0fa1-d1e1-4f01-8717-146821605698",
+      "comment": "",
+      "command": "pause",
+      "target": "2000",
+      "targets": [],
+      "value": ""
+    }, {
       "id": "74013dfc-bd42-4ac6-908b-7c41401eb9bc",
       "comment": "",
       "command": "assertElementPresent",
@@ -5670,14 +5513,14 @@
       "id": "04a5ca33-da21-455c-b766-9c5f71cc380f",
       "comment": "",
       "command": "click",
-      "target": "css=#menu_pratique li:nth-child(2) > a",
+      "target": "xpath=//a[contains(text(),'Contact')]",
       "targets": [
         ["linkText=Contact", "linkText"],
-        ["css=#menu_pratique li:nth-child(2) > a", "css:finder"],
+        ["css=#menu_pratique li:nth-child(4) > a", "css:finder"],
         ["xpath=//a[contains(text(),'Contact')]", "xpath:link"],
-        ["xpath=//nav[@id='menu_pratique']/ul/li[2]/a", "xpath:idRelative"],
+        ["xpath=//nav[@id='menu_pratique']/ul/li[4]/a", "xpath:idRelative"],
         ["xpath=//a[contains(@href, '/misc/contacteznous.php')]", "xpath:href"],
-        ["xpath=//li[2]/a", "xpath:position"],
+        ["xpath=//li[4]/a", "xpath:position"],
         ["xpath=//a[contains(.,'Contact')]", "xpath:innerText"]
       ],
       "value": ""
@@ -5721,55 +5564,6 @@
         ["xpath=//p/input", "xpath:position"]
       ],
       "value": "test@ladecadanse.ch"
-    }, {
-      "id": "3743bedc-31f6-43a5-8db8-9f26ea764307",
-      "comment": "",
-      "command": "click",
-      "target": "id=auteur",
-      "targets": [
-        ["id=auteur", "id"],
-        ["name=auteur", "name"],
-        ["css=#auteur", "css:finder"],
-        ["xpath=//input[@id='auteur']", "xpath:attributes"],
-        ["xpath=//form[@id='ajouter_editer']/fieldset/p[2]/input", "xpath:idRelative"],
-        ["xpath=//p[2]/input", "xpath:position"]
-      ],
-      "value": ""
-    }, {
-      "id": "6bad2fb1-8714-44b5-aadf-8aeeeaa4003e",
-      "comment": "",
-      "command": "type",
-      "target": "id=auteur",
-      "targets": [
-        ["id=auteur", "id"],
-        ["name=auteur", "name"],
-        ["css=#auteur", "css:finder"],
-        ["xpath=//input[@id='auteur']", "xpath:attributes"],
-        ["xpath=//form[@id='ajouter_editer']/fieldset/p[2]/input", "xpath:idRelative"],
-        ["xpath=//p[2]/input", "xpath:position"]
-      ],
-      "value": "Raoul Ménard"
-    }, {
-      "id": "1c9db4bf-45bc-4e5b-b49e-b6b7e785c31d",
-      "comment": "",
-      "command": "click",
-      "target": "id=affiliation",
-      "targets": [
-        ["id=affiliation", "id"],
-        ["name=affiliation", "name"],
-        ["css=#affiliation", "css:finder"],
-        ["xpath=//input[@id='affiliation']", "xpath:attributes"],
-        ["xpath=//form[@id='ajouter_editer']/fieldset/p[3]/input", "xpath:idRelative"],
-        ["xpath=//p[3]/input", "xpath:position"]
-      ],
-      "value": ""
-    }, {
-      "id": "b8de3d7e-bb73-4fc5-b8a2-3f9957796a9a",
-      "comment": "",
-      "command": "type",
-      "target": "id=affiliation",
-      "targets": [],
-      "value": "Café & restaurant \"L'Aviation\""
     }, {
       "id": "792a452a-e1d6-4f85-a7ff-0b44751e3a52",
       "comment": "",
@@ -5857,15 +5651,14 @@
       "id": "a75d553f-8669-4bf4-af60-313d13fbded6",
       "comment": "",
       "command": "assertElementPresent",
-      "target": "linkText=événements",
+      "target": "xpath=//main[@id='contenu']/nav/a",
       "targets": [
-        ["linkText=événements", "linkText"],
-        ["css=.ici:nth-child(1) > a:nth-child(2)", "css:finder"],
-        ["xpath=//a[contains(text(),'événements')]", "xpath:link"],
-        ["xpath=//ul[@id='menu_ajouts']/li/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/user.php?idP=11&nblignes=100&elements=evenement')]", "xpath:href"],
-        ["xpath=//ul[2]/li/a", "xpath:position"],
-        ["xpath=//a[contains(.,'événements')]", "xpath:innerText"]
+        ["linkText=Événements238", "linkText"],
+        ["css=.tabs > .ici", "css:finder"],
+        ["xpath=//main[@id='contenu']/nav/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '?idP=13&elements=evenement&tri=dateAjout&ordre=desc&nblignes=100')]", "xpath:href"],
+        ["xpath=//nav/a", "xpath:position"],
+        ["xpath=//a[contains(.,' Événements238')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
@@ -6054,7 +5847,7 @@
       "id": "3e1a6a87-1d60-43e5-84ce-d6b5658f59e8",
       "comment": "",
       "command": "assertElementNotPresent",
-      "target": "linkText=Sortir",
+      "target": "css=#menu_pratique form.deconnexion button",
       "targets": [],
       "value": ""
     }, {
@@ -6067,7 +5860,7 @@
         ["css=li:nth-child(8) > a", "css:finder"],
         ["xpath=//a[contains(text(),'Connexion')]", "xpath:link"],
         ["xpath=//nav[@id='menu_pratique']/ul/li[8]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/user-login.php')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/user/login.php')]", "xpath:href"],
         ["xpath=//li[8]/a", "xpath:position"],
         ["xpath=//a[contains(.,'Connexion')]", "xpath:innerText"]
       ],
@@ -6168,7 +5961,7 @@
       "id": "c34202c6-985f-4799-a35c-246294033dc6",
       "comment": "",
       "command": "assertElementPresent",
-      "target": "linkText=Sortir",
+      "target": "css=#menu_pratique form.deconnexion button",
       "targets": [],
       "value": ""
     }]
@@ -6227,7 +6020,7 @@
         ["css=table:nth-child(2) a", "css:finder"],
         ["xpath=//a[contains(text(),'eqfc251rszm')]", "xpath:link"],
         ["xpath=//div[@id='tableaux']/table/tbody/tr[2]/td[2]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/user.php?idP=67')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/user/dashboard.php?idP=67')]", "xpath:href"],
         ["xpath=//td[2]/a", "xpath:position"],
         ["xpath=//a[contains(.,'eqfc251rszm')]", "xpath:innerText"]
       ],
@@ -6731,16 +6524,8 @@
       "id": "209dd077-c148-4a08-bf2b-2fe9151d085e",
       "comment": "",
       "command": "click",
-      "target": "linkText=Sortir",
-      "targets": [
-        ["linkText=Sortir", "linkText"],
-        ["css=li:nth-child(7) > a", "css:finder"],
-        ["xpath=//a[contains(text(),'Sortir')]", "xpath:link"],
-        ["xpath=//nav[@id='menu_pratique']/ul/li[7]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/user-logout.php')]", "xpath:href"],
-        ["xpath=//li[7]/a", "xpath:position"],
-        ["xpath=//a[contains(.,'Sortir')]", "xpath:innerText"]
-      ],
+      "target": "css=#menu_pratique form.deconnexion button",
+      "targets": [],
       "value": ""
     }, {
       "id": "5a804ec2-8356-487d-9e4e-e862709a997d",
@@ -7378,8 +7163,13 @@
       "id": "c8b7ca23-e30e-4a2c-bb07-5ec09cd39030",
       "comment": "",
       "command": "click",
-      "target": "xpath=//div/div/main/div/table/tbody/tr[1]/td[5]/a",
-      "targets": [],
+      "target": "xpath=//div[@id='res_recherche']/table/tbody/tr[2]/td[5]/ul/li[3]/a/img",
+      "targets": [
+        ["css=.futur:nth-child(2) li:nth-child(3) img", "css:finder"],
+        ["xpath=(//img[@alt='Éditer'])[2]", "xpath:img"],
+        ["xpath=//div[@id='res_recherche']/table/tbody/tr[2]/td[5]/ul/li[3]/a/img", "xpath:idRelative"],
+        ["xpath=//tr[2]/td[5]/ul/li[3]/a/img", "xpath:position"]
+      ],
       "value": ""
     }, {
       "id": "28d318d5-0b27-4a90-b808-a0595c659c44",
@@ -7473,9 +7263,9 @@
       "value": ""
     }, {
       "id": "cmd-salle-000b",
-      "comment": "Navigate to logout page",
+      "comment": "Reload after clearing cookies, which already dropped the session",
       "command": "open",
-      "target": "/user-logout.php",
+      "target": "/",
       "targets": [],
       "value": ""
     }, {
@@ -7506,7 +7296,7 @@
       "target": "linkText=Connexion",
       "targets": [
         ["linkText=Connexion", "linkText"],
-        ["xpath=//a[contains(@href, '/user-login.php')]", "xpath:href"]
+        ["xpath=//a[contains(@href, '/user/login.php')]", "xpath:href"]
       ],
       "value": ""
     }, {
@@ -7793,7 +7583,7 @@
       "id": "f60f220f-03a6-4a59-8d15-d1687c5fd4aa",
       "comment": "",
       "command": "assertElementNotPresent",
-      "target": "linkText=Sortir",
+      "target": "css=#menu_pratique form.deconnexion button",
       "targets": [],
       "value": ""
     }, {
@@ -7806,7 +7596,7 @@
         ["css=li:nth-child(8) > a", "css:finder"],
         ["xpath=//a[contains(text(),'Connexion')]", "xpath:link"],
         ["xpath=//nav[@id='menu_pratique']/ul/li[8]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/user-login.php')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/user/login.php')]", "xpath:href"],
         ["xpath=//li[8]/a", "xpath:position"],
         ["xpath=//a[contains(.,'Connexion')]", "xpath:innerText"]
       ],
@@ -7914,14 +7704,14 @@
       "id": "976af46a-e954-47f7-94b8-a45afd798393",
       "comment": "",
       "command": "assertElementPresent",
-      "target": "linkText=Sortir",
+      "target": "css=#menu_pratique form.deconnexion button",
       "targets": [],
       "value": ""
     }, {
       "id": "eb4ebdd8-ef76-4ffa-b829-b4de70ff194a",
       "comment": "",
       "command": "click",
-      "target": "linkText=Sortir",
+      "target": "css=#menu_pratique form.deconnexion button",
       "targets": [],
       "value": ""
     }, {
@@ -7946,6 +7736,276 @@
       "targets": [],
       "value": ""
     }]
+  }, {
+    "id": "de2e2d23-e992-4f76-a3c0-663b485ed1f9",
+    "name": "user (admin) event add duplicate detection (r)",
+    "commands": [{
+      "id": "dfd7375f-c499-4528-8be9-120d34f63f2d",
+      "comment": "Start fresh at home",
+      "command": "open",
+      "target": "/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "de863460-cca6-4e17-bc86-085bb8aee197",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=Ajouter un événement",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "543271a2-df47-4b66-9227-6522e6997f48",
+      "comment": "Form loaded",
+      "command": "assertElementPresent",
+      "target": "id=ajouter_editer",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "76fc7f43-5323-4c5c-8db5-4fa89049157e",
+      "comment": "Today as DD.MM.YYYY",
+      "command": "executeScript",
+      "target": "return (new Date().getDate().toString().padStart(2, '0')) + \".\" + ((new Date().getMonth() + 1).toString().padStart(2, '0')) + \".\" + ((new Date()).getFullYear() )",
+      "targets": [],
+      "value": "eventDate"
+    }, {
+      "id": "0f69d033-1408-4fd3-9a1f-581b0fff3ae3",
+      "comment": "Create first event",
+      "command": "click",
+      "target": "id=genre_divers",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "e90fc050-b408-4242-b1a7-ae32234caa44",
+      "comment": "",
+      "command": "type",
+      "target": "id=titre",
+      "targets": [],
+      "value": "Selenium doublon detection"
+    }, {
+      "id": "46037b17-5c69-4ef3-a70c-55b53552e3a8",
+      "comment": "",
+      "command": "type",
+      "target": "id=dateEvenement",
+      "targets": [],
+      "value": "${eventDate}"
+    }, {
+      "id": "11eb1b11-5c6b-4abb-82f0-e33f9540fa02",
+      "comment": "",
+      "command": "type",
+      "target": "id=description",
+      "targets": [],
+      "value": "Test Selenium pour la detection de doublons."
+    }, {
+      "id": "7deb9517-7f47-4f1a-839c-8feaf1f0f679",
+      "comment": "",
+      "command": "type",
+      "target": "id=horaire_debut",
+      "targets": [],
+      "value": "20:00"
+    }, {
+      "id": "f2e46ccc-708b-48b1-a413-2ef602135ded",
+      "comment": "",
+      "command": "type",
+      "target": "id=horaire_fin",
+      "targets": [],
+      "value": "22:00"
+    }, {
+      "id": "71933457-e189-4aa2-ba80-f553f1633894",
+      "comment": "Select existing lieu (sets idLieu, avoids adresse/localite_id requirement)",
+      "command": "select",
+      "target": "id=idLieu",
+      "targets": [],
+      "value": "label=Lieu Test Selenium"
+    }, {
+      "id": "08748364-c233-433b-beed-1f3bb289cb37",
+      "comment": "",
+      "command": "type",
+      "target": "id=prix",
+      "targets": [],
+      "value": "Libre"
+    }, {
+      "id": "318d7332-e75b-4f3b-a0d5-933c3bc4b13f",
+      "comment": "",
+      "command": "click",
+      "target": "name=submit",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "d682babd-7e5b-4e64-9779-81215f731581",
+      "comment": "",
+      "command": "pause",
+      "target": "3000",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "5ccfbafd-cfb1-4ace-9385-df6ef7ca6c49",
+      "comment": "First event created",
+      "command": "assertElementPresent",
+      "target": "css=.msg_ok",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "25390779-5987-483b-b498-096812147ae3",
+      "comment": "Capture idE of first event for cleanup",
+      "command": "executeScript",
+      "target": "return new URLSearchParams(window.location.search).get('idE');",
+      "targets": [],
+      "value": "firstEventId"
+    }, {
+      "id": "f07878bb-9c66-4917-94b5-611a2b2ea308",
+      "comment": "Try to add a near-duplicate",
+      "command": "open",
+      "target": "/evenement-edit.php?action=ajouter",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "57416fa6-64b6-4b92-8f76-bb727eac2720",
+      "comment": "",
+      "command": "click",
+      "target": "id=genre_divers",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "dbb702a2-f26a-4600-ad42-51e920d3e721",
+      "comment": "Title with extra 's' (Levenshtein 1)",
+      "command": "type",
+      "target": "id=titre",
+      "targets": [],
+      "value": "Selenium doublon detections"
+    }, {
+      "id": "4e62b899-b8b0-43dd-86e5-72d4d4e0dbff",
+      "comment": "",
+      "command": "type",
+      "target": "id=dateEvenement",
+      "targets": [],
+      "value": "${eventDate}"
+    }, {
+      "id": "bc71a27f-0d0a-4db7-b345-39b67c084f2f",
+      "comment": "",
+      "command": "type",
+      "target": "id=description",
+      "targets": [],
+      "value": "Tentative de creation d'un doublon."
+    }, {
+      "id": "54b563ce-8b1f-4d2a-9c3e-5316ca9681e9",
+      "comment": "",
+      "command": "type",
+      "target": "id=horaire_debut",
+      "targets": [],
+      "value": "20:30"
+    }, {
+      "id": "ee709369-f5ef-4174-a20a-c8bc0b6ce3da",
+      "comment": "",
+      "command": "type",
+      "target": "id=horaire_fin",
+      "targets": [],
+      "value": "22:30"
+    }, {
+      "id": "6eb07bc7-e56b-4177-822f-1572fff5481d",
+      "comment": "Same lieu",
+      "command": "select",
+      "target": "id=idLieu",
+      "targets": [],
+      "value": "label=Lieu Test Selenium"
+    }, {
+      "id": "02d74738-301b-49fb-a5de-4909617f2680",
+      "comment": "",
+      "command": "type",
+      "target": "id=prix",
+      "targets": [],
+      "value": "Libre"
+    }, {
+      "id": "4d5d89fe-f5eb-4451-9bd7-e1580fca6fba",
+      "comment": "",
+      "command": "click",
+      "target": "name=submit",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "25813c70-8319-47c7-8d42-a496703ae57d",
+      "comment": "",
+      "command": "pause",
+      "target": "2000",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "41ee0983-392b-43da-80d9-1117565f1f42",
+      "comment": "Duplicate warning is shown",
+      "command": "assertElementPresent",
+      "target": "css=.duplicate-warning",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "5d5a02e9-bcfa-4b16-ab42-0fff074f21d1",
+      "comment": "Confirm checkbox is present",
+      "command": "assertElementPresent",
+      "target": "css=input[name='confirm_duplicate']",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "f732e510-bcad-4dc6-b4f0-1762dcaa5ec6",
+      "comment": "Confirm submit button is present",
+      "command": "assertElementPresent",
+      "target": "css=.confirm-submit",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "96485ebd-8bfa-46f3-92cc-d60347af0dad",
+      "comment": "Tick confirm checkbox",
+      "command": "click",
+      "target": "name=confirm_duplicate",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "0b46882a-9d3b-4684-9bce-f3eb882e1ea6",
+      "comment": "Submit via the warning's Confirmer button",
+      "command": "click",
+      "target": "css=.confirm-submit",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "84483d44-628a-421d-85e1-13a0befc02a0",
+      "comment": "",
+      "command": "pause",
+      "target": "3000",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "6ff13b4c-bd29-4974-b664-3aa3e44357e2",
+      "comment": "Second event created after confirmation",
+      "command": "assertElementPresent",
+      "target": "css=.msg_ok",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "f03c76b8-c9b7-4bd0-9f1e-957c071592af",
+      "comment": "Capture idE of second event for cleanup",
+      "command": "executeScript",
+      "target": "return new URLSearchParams(window.location.search).get('idE');",
+      "targets": [],
+      "value": "secondEventId"
+    }, {
+      "id": "f83d4225-fdd5-4077-88f5-5aadb894b54d",
+      "comment": "Cleanup: delete first event",
+      "command": "open",
+      "target": "/event/actions.php?action=delete&id=${firstEventId}",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "1c27bb80-1725-4cca-9cd0-4d13f528761c",
+      "comment": "Cleanup: delete second event",
+      "command": "open",
+      "target": "/event/actions.php?action=delete&id=${secondEventId}",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "68da1cef-9251-4df4-b768-d68c51836a41",
+      "comment": "Return to home page",
+      "command": "open",
+      "target": "/",
+      "targets": [],
+      "value": ""
+    }]
   }],
   "suites": [{
     "id": "e598238f-e9bc-40f6-9876-6274e4bf1e3f",
@@ -7967,7 +8027,7 @@
     "persistSession": false,
     "parallel": false,
     "timeout": 300,
-    "tests": ["fa4a12b8-1f55-4435-8fe1-3fe8294be63a", "d5d4f0bd-52d5-4cd9-8fd2-b38ee992812d", "5c790b97-c4b1-4056-a004-daa889c1a3ee", "2422f54c-2560-4fa2-ad65-b10fe0deba9e", "1e32da4f-4dcb-4195-8dee-81a2afc12a3f", "b4c14c81-4533-4742-8d96-526b91077359", "1e0fa7b9-f784-4860-a139-b7be9b393fc0", "8f01a9a0-9f4c-4f52-825e-a54eba6fcb27", "92d58e15-7bbd-49aa-8440-5c14b4554622", "7f6cb209-b243-4a0e-889f-097dd12be52d", "9c8c7ca0-0ac3-496e-b84b-bfedbc01230b", "602346d1-62ed-43a5-9bfd-b78a52eaaa59", "816a221b-9428-4767-9d1b-cf51dc2f8fb4", "1b3cabfb-9a16-44ae-b21b-2356228e88f1", "a1b2c3d4-5678-90ab-cdef-lieu-salle-01", "0ae3b38b-98d6-4dfd-92c9-d26b5a4b768e", "7cbaa9a9-70bf-4812-af0a-7935df36f2a0"]
+    "tests": ["fa4a12b8-1f55-4435-8fe1-3fe8294be63a", "d5d4f0bd-52d5-4cd9-8fd2-b38ee992812d", "5c790b97-c4b1-4056-a004-daa889c1a3ee", "2422f54c-2560-4fa2-ad65-b10fe0deba9e", "1e32da4f-4dcb-4195-8dee-81a2afc12a3f", "b4c14c81-4533-4742-8d96-526b91077359", "de2e2d23-e992-4f76-a3c0-663b485ed1f9", "1e0fa7b9-f784-4860-a139-b7be9b393fc0", "8f01a9a0-9f4c-4f52-825e-a54eba6fcb27", "92d58e15-7bbd-49aa-8440-5c14b4554622", "7f6cb209-b243-4a0e-889f-097dd12be52d", "9c8c7ca0-0ac3-496e-b84b-bfedbc01230b", "602346d1-62ed-43a5-9bfd-b78a52eaaa59", "816a221b-9428-4767-9d1b-cf51dc2f8fb4", "1b3cabfb-9a16-44ae-b21b-2356228e88f1", "a1b2c3d4-5678-90ab-cdef-lieu-salle-01", "0ae3b38b-98d6-4dfd-92c9-d26b5a4b768e", "7cbaa9a9-70bf-4812-af0a-7935df36f2a0"]
   }],
   "urls": ["https://ladecadanse.darksite.ch/", "http://ladecadanse.local/", "https://ladecadanse.local/"],
   "plugins": []

@@ -2,145 +2,70 @@
 namespace Ladecadanse;
 
 /**
-  * An abstract class implementing generic functionality for processing user's input
-  *
-  * This class encapsulates generic functions for working
-  * with data coming from user forms. Descendants must only override certain
-  * functions that perform context-specific tasks, like custom checking of
-  * data, storing correct data, etc.
+ * Contrat des classes qui traitent un formulaire d'édition.
+ *
+ * Ne porte que ce que toutes partagent : les valeurs saisies, les champs fichier,
+ * l'intention (« insert » ou « update »), le message à afficher après enregistrement —
+ * et les quatre temps du cycle de vie, déclarés sans corps parce qu'aucune fille n'a
+ * jamais réutilisé celui d'ici.
+ *
+ * Elle portait aussi, jusqu'à la 3.13.0, un connecteur mysqli pris dans une globale et
+ * jamais relu, un tableau d'erreurs que trois `validate()` remplissaient sans que
+ * personne le lise, et quatre implémentations par défaut dont deux rendaient
+ * silencieusement `false` ou `null` : une classe fille qui aurait oublié de les
+ * surcharger n'aurait rien chargé ni rien validé, sans un mot. D'où `abstract`.
+ *
+ * Implémentée par FicheEdition (lieu, organisateur) et SalleEdition.
+ */
+abstract class Edition
+{
+    /** « insert » ou « update », telle que la page l'a décidée. */
+    public ?string $action = null;
 
-  */
-  class Edition
-  {
-    public $firstTime;
-	public $id;
-    public $supprimer = [];
-    public $erreurs = [];
-    public $verif;
-	public $action;
+    /** Ce que l'enregistrement a produit, à afficher après la redirection. */
+    public ?string $message = null;
 
-	public $message;
-    public $connector;
-
-    function __construct(public $nom, public $valeurs, public $fichiers)
+    /**
+     * @param array<string, mixed> $valeurs champs du formulaire, avec leur valeur initiale
+     * @param array<string, mixed> $fichiers champs de type fichier
+     */
+    function __construct(public array $valeurs, public array $fichiers)
     {
-		global $connector;
-
-		$this->connector = $connector;
-
-      	$this->erreurs = array_merge($this->valeurs, $this->fichiers);
     }
 
-    function traitement(array $post, array $files)
-    {
-        foreach ($this->valeurs as $nom => $val)
-    	{
-    		if (isset($post[$nom]))
-    		{
-                $this->valeurs[$nom] = $post[$nom];
-    		}
-        }
+    /**
+     * Traite un formulaire soumis.
+     *
+     * Les deux paramètres portent des superglobales : la page passe $_POST et $_FILES
+     * tels quels, aucune valeur n'y est encore validée.
+     *
+     * @param array<string, mixed> $postGlobal contenu de $_POST
+     * @param array<string, mixed> $filesGlobal contenu de $_FILES
+     */
+    abstract public function processSubmission(array $postGlobal, array $filesGlobal): bool;
 
-    	foreach ($this->fichiers as $nom => $val)
-    	{
-    		$this->fichiers[$nom] = $files[$nom];
-    	}
+    /** @return bool false dès qu'un champ est en erreur ; les messages vont au Validateur. */
+    abstract public function validate(): bool;
 
-    	if (isset($post['supprimer']))
-    	{
-    			$this->supprimer[] = $post['supprimer'];
-    	}
-    }
+    /** Insère ou met à jour, selon l'intention passée à setAction(). */
+    abstract public function upsert(): bool;
 
-    function verification()
-    {
-		/*
-		 * Les vérifications par les classes filles se font ici
-		 */
+    /**
+     * Charge l'enregistrement à modifier.
+     *
+     * @return bool false si l'identifiant ne désigne rien : à la page de répondre 404
+     *              plutôt que d'afficher un formulaire vide.
+     */
+    abstract public function loadValues(int $id): bool;
 
-    }
-
-	function loadValeurs(int $id): void
-    {
-
-
-	}
-
-    function enregistrer()
-    {
-
-    }
-
-
-    function NextWizardPage() {}
-    //abstract
-
-    function Set($Name, $Value) {
-      $this->$Name = $Value;
-    }
-
-    function getErreur($champ)
-    {
-    	$erreur = $this->erreurs[$champ];
-    	return $erreur;
-
-    }
-
-    function getNbErreurs(): int
-    {
-
-    	return count($this->erreurs);
-
-    }
-    function getHtmlErreur($champ)
-    {
-    	if ($this->erreurs[$champ] != '')
-    	{
-    		return '<div class="msg">'.$this->erreurs[$champ].'</div>';
-    	}
-    }
-
-    function GetInitialValue($Name) {
-      if (isset($this->Values[$Name]))
-        return $this->Values[$Name];
-      else
-        return false;
-    }
-
-    function InitialValue($Name) {
-      echo $this->GetInitialValue($Name);
-    }
-
-    function setAction($action)
+    function setAction(?string $action): void
     {
     	$this->action = $action;
     }
 
-    function getAction()
-    {
-    	return $this->action;
-
-    }
-
-    function setMessage($message)
-    {
-    	$this->message = $message;
-    }
-
-    function getMessage()
+    function getResultMessage(): ?string
     {
     	return $this->message;
-
-    }
-
-	function getSupprimer()
-	{
-		return $this->supprimer;
-	}
-
-    function setSupprimer($sup)
-    {
-    	$this->supprimer = $sup;
     }
 
 	function getValeur($nom)
@@ -159,35 +84,4 @@ namespace Ladecadanse;
     {
     	$this->valeurs[$nom] = $val;
     }
-
-	function getValeurs()
-	{
-		return $this->valeurs;
-	}
-
-    /**
-     * Supprime un fichier image et sa miniature (préfixe "s_") de manière sécurisée.
-     *
-     * Neutralise toute tentative de path traversal provenant d'une valeur issue de la BD :
-     * - basename() supprime les composants de répertoire du nom de fichier
-     * - realpath() + str_starts_with() garantit que le chemin résolu reste dans $dir
-     */
-    protected function safeUnlinkImageAndThumb(string $dir, string $filename): void
-    {
-        $safeName = basename($filename);
-        if ($safeName === '') {
-            return;
-        }
-        $safeDir = realpath($dir);
-        if ($safeDir === false) {
-            return;
-        }
-        foreach ([$safeName, 's_' . $safeName] as $name) {
-            $resolvedPath = realpath($safeDir . DIRECTORY_SEPARATOR . $name);
-            if ($resolvedPath !== false && str_starts_with($resolvedPath, $safeDir . DIRECTORY_SEPARATOR)) {
-                unlink($resolvedPath);
-            }
-        }
-    }
-
 }

@@ -28,6 +28,8 @@
         "php": "8.4.*",
         "ext-fileinfo": "*",
         "ext-mysqli": "*",
+        "ext-pdo": "*",
+        "ext-pdo_mysql": "*",
         "ext-mbstring": "*",
         "ext-gd": "*",
         "dimsemenov/magnific-popup": "^1.2",
@@ -39,17 +41,21 @@
         "symfony/html-sanitizer": "^8.0",
         "monolog/monolog": "^3.10"
     },
+    "suggest": {
+        "ext-imagick": "Rend la 1re page des PDF collés en URL dans evenement-edit (Ghostscript requis pour le coder PDF). Volontairement hors de require : l'absence de l'extension ne doit pas casser composer install en local, le champ fichier convertissant de son côté dans le navigateur"
+    },
     "autoload": {
         "psr-4": {
             "Ladecadanse\\": "librairies"
         },
         "files": [
-            "librairies/Utils/utils_functions.php"
+            "librairies/Utils/html_functions.php"
         ]
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\": "tests/"
+            "Tests\\": "tests/",
+            "Ladecadanse\\Psalm\\": ".psalm/src/"
         }
     },
     "scripts": {
@@ -60,7 +66,14 @@
         "phpstan": "vendor/bin/phpstan analyse -c phpstan.neon --ansi",
         "rector:dry-run": "vendor/bin/rector process --dry-run",
         "psalm": "vendor/bin/psalm",
-        "test:api": "vendor/bin/codecept run"
+        "psalm:taint": "vendor/bin/psalm --taint-analysis --ignore-baseline",
+        "psalm:banc": "@php .psalm/verifier-le-banc.php",
+        "test": "vendor/bin/codecept run",
+        "test:api": "vendor/bin/codecept run api",
+        "test:site": "vendor/bin/codecept run site",
+        "config:build": "@php bin/build-config.php",
+        "deploy": "@php bin/build-config.php --deploy",
+        "prod-copy": "@php bin/prod-copy.php"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "^3.13",
@@ -76,7 +89,7 @@
         "spaze/phpstan-disallowed-calls": "^4.5",
         "rector/rector": "^2.0",
         "phan/phan": "^6.0",
-        "vimeo/psalm": "^6.7",
+        "vimeo/psalm": "^6.16",
         "orklah/psalm-insane-comparison": "^2.4",
         "rector/jack": "^1.1"
     },

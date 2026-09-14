@@ -4,6 +4,11 @@
 define("ENV", "dev"); // or "prod"
 define("MODE_DEBUG", true); // display errors
 
+// URL canonique du site, sans slash final. Décommenter en développement pour que les balises
+// d'autodiscovery RSS et les liens vers les flux pointent sur cet environnement plutôt que sur
+// la production. Laissée commentée, app/config.php retient https://www.ladecadanse.ch
+//define("SITE_CANONICAL_URL", 'http://localhost:7777');
+
 // database connection
 define("DB_HOST", '');
 define("DB_NAME", '');
@@ -26,6 +31,10 @@ define("EMAIL_SITE_NAME", 'La décadanse');
 define("EMAIL_ADMIN", ''); // recipient of site activity to watch, users requests (contact form, new event prop...) to process
 define("EMAIL_ADMIN_NAME", 'La décadanse');
 
+// envoie à EMAIL_ADMIN une copie de chaque mail adressé à un utilisateur, avec un sujet préfixé "[COPY]"
+// (destiné à de courtes périodes de monitoring : suivre la circulation des messages et leur rendu)
+define("EMAIL_COPY_TO_ADMIN", false);
+
 // external services
 define("TINYMCE_API_KEY", ''); // rich text editor for presentations of lieux and organisateurs
 
@@ -41,6 +50,89 @@ define("GLITCHTIP_DSN", "");
 define("DARKVISITORS_ENABLED", false);
 define("DARKVISITORS_PROJECT_KEY", '');
 define("DARKVISITORS_ACCESS_TOKEN", '');
+
+// suivi interne des bots et IP suspectes (table bot_monitor + admin/bots.php)
+// créer la table (resources/database/v3-11-0_bot_monitor-create-table.sql) avant d'activer
+define("BOT_MONITORING_ENABLED", false);
+define("BOT_MONITORING_SUSPECT_THRESHOLD", 150); // seuil de hits pour "humains suspects" dans le dashboard
+
+// accepter les PDF dans les champs flyer et image d'un événement, dont seule la
+// 1re page est gardée, convertie en WebP (evenement-edit.php, admin/events.php)
+//
+// Deux voies, dont une seule demande quelque chose au serveur :
+//   - champ fichier : le navigateur convertit (web/js/pdf-to-image.js), rien à
+//     installer, mais ~3,4 Mo de pdf.js à télécharger au premier PDF déposé
+//   - « ou coller une URL » : le serveur convertit (Utils\PdfToImage), ce qui
+//     demande l'extension imagick ET Ghostscript. Sans eux cette voie refuse les
+//     PDF et renvoie vers le champ fichier, le reste continuant de fonctionner.
+//     Voir « Convertir les PDF collés en URL » dans le README.
+//
+// Trois états, comme tout drapeau passant par Ladecadanse\FeatureFlag :
+//   false       les champs n'annoncent pas le PDF, ne l'acceptent pas, et
+//               pdf.js n'est jamais chargé
+//   'preview'   réservé aux administrateurs, pour éprouver la fonctionnalité en
+//               ligne sans l'ouvrir au public ; le texte d'aide le signale, une
+//               préversion qui ne se voit pas se croit livrée
+//   true        ouvert à tous
+//
+// La chaîne littérale, et non FeatureFlag::PREVIEW : ce fichier est chargé par
+// app/bootstrap.php avant l'autoloader, aucune classe n'y est encore connue.
+define("PDF_CONVERSION_ENABLED", false);
+
+// afficher le calendrier du champ date d'un événement (evenement-edit.php) déployé
+// en permanence sous le champ, au lieu du calendrier surgissant au clic
+// (Zebra_DatePicker, mode always_visible).
+//
+// Trois états, comme tout drapeau passant par Ladecadanse\FeatureFlag :
+//   false       le champ date se comporte comme partout ailleurs sur le site :
+//               le calendrier ne s'ouvre qu'au clic
+//   'preview'   réservé aux administrateurs, le temps d'éprouver la mise en page
+//               que le calendrier impose au reste du formulaire ; une mention
+//               sous le calendrier rappelle qu'il n'est pas public
+//   true        ouvert à tous
+define("DATEPICKER_ALWAYS_VISIBLE_ENABLED", false);
+
+// replier le bloc de saisie manuelle du lieu (evenement-edit.php, « Si et seulement si
+// vous n'avez pas trouvé le lieu dans la liste ») dans un <details> fermé par défaut.
+// Ce bloc occupe la moitié du fieldset Lieu alors que la plupart des personnes n'y
+// saisissent jamais rien ; celles qui s'en servent le retrouvent ouvert grâce au cookie
+// event_form_lieu_manual_open.
+//
+// Trois états, comme tout drapeau passant par Ladecadanse\FeatureFlag :
+//   false       le bloc reste déplié en permanence, comme avant
+//   'preview'   réservé aux administrateurs, le temps d'éprouver le repli ; une mention
+//               sous le résumé rappelle qu'il n'est pas public
+//   true        ouvert à tous
+define("LIEU_MANUAL_COLLAPSIBLE_ENABLED", false);
+
+// situer chaque événement de l'agenda (index.php) par rapport à l'heure de chargement
+// de la page : à venir, en cours, terminé. La journée du jour seulement, seule où la
+// comparaison apprend quelque chose.
+//
+// Trois états, comme tout drapeau passant par Ladecadanse\FeatureFlag :
+//   false       l'agenda est celui d'avant : aucun repère de temporalité
+//   'preview'   réservé aux administrateurs, le temps d'éprouver ce que ces repères
+//               apportent une fois posés sur de vrais horaires ; une mention en tête
+//               de liste rappelle qu'ils ne sont pas publics
+//   true        ouvert à tous
+define("EVENT_TIME_STATUS_ENABLED", false);
+
+// proposer les catégories d'événement encore en préversion — aujourd'hui la seule
+// « cours/ateliers/stages » — à la saisie, au filtrage de l'agenda et à l'affichage. La
+// liste est Ladecadanse\EventCategory::PREVIEW_FALLBACKS ; « concerts », passée par là,
+// est ouverte à tous et ne dépend plus de ce drapeau.
+//
+// Trois états, comme tout drapeau passant par Ladecadanse\FeatureFlag :
+//   false       un événement déjà classé en « cours » s'affiche et se range en « divers »
+//   'preview'   réservé aux administrateurs, le temps d'éprouver le classement sur de
+//               vrais événements ; pour tous les autres le repli s'applique, et une
+//               mention au-dessus de l'agenda comme sous le champ Catégorie le rappelle
+//   true        ouvert à tous
+//
+// Le repli n'efface rien : evenement.genre reste un varchar(20), et rétrograder le
+// drapeau ne perd aucune donnée — les événements reclassés retrouvent leur catégorie
+// dès qu'il remonte.
+define("EVENT_NEW_CATEGORIES_ENABLED", false);
 
 define("PAYPAL_HOSTED_BUTTON_ID", "");
 

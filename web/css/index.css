@@ -1,7 +1,152 @@
+/*
+ * Sous 800px (borne mobile/desktop du site), le conteneur ne génère aucune boîte :
+ * chaque menu retrouve exactement la disposition d'avant, l'un sous l'autre, et
+ * surtout le bloc englobant de la barre collante reste #prochains_evenements, donc
+ * elle suit toute la liste. Lui donner une vraie boîte ici la ferait décoller au
+ * bout de deux lignes.
+ */
+#agenda_filters
+{
+    display: contents;
+}
+
+#genre_tab_navigation
+{
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: #fdfdfd; /* fond de #global, la barre collante doit s'y fondre */
+    padding: 0.6em 0;
+    margin-top: 0.8em;
+    margin-bottom: 0.8em;
+}
+
+/*
+ * Sept catégories et l'entonnoir ne tiennent plus sur une ligne dans une colonne
+ * plafonnée à 564px. Le repli se faisait déjà tout seul (des inline-block), mais deux
+ * lignes collées se lisent comme un bloc : entre boîtes en ligne, ni margin ni padding
+ * ne produisent un écart vertical propre, d'où le passage en flex pour le row-gap.
+ *
+ * C'est le <ul> qui devient flex, pas le <nav> : le collant est porté par un ancêtre
+ * (#genre_tab_navigation en mobile, #agenda_filters en desktop) et le flex de la barre
+ * partagée a le <nav> pour enfant direct — aucun des deux n'est touché.
+ */
+#genre_tab_navigation ul
+{
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline; /* l'entonnoir reste sur la ligne de base du texte */
+    row-gap: 0.4em;
+    column-gap: 0.25em;
+}
+
+#genre_tab_navigation li
+{
+    /* l'écart horizontal est passé au column-gap : un padding latéral décalerait le
+       premier onglet de la seconde ligne */
+    padding: 0;
+}
+
+#genre_tab_navigation li a
+{
+    padding: 0.3em;
+    border-radius:3px;
+}
+
+#genre_tab_navigation li a:hover
+{
+    background: #d4d4d4;
+}
+
+#genre_tab_navigation li.ici a
+{
+    background: #eee;
+}
+
+/*
+ * À partir de 800px, filtre de genres et menu de tri tiennent sur une seule ligne.
+ * C'est le conteneur qui devient collant, pas le filtre : son bloc englobant reste
+ * #prochains_evenements, et les deux menus restent solidaires en défilant.
+ */
+@media screen and (min-width: 800px)
+{
+    #agenda_filters.avec-filtre-genre
+    {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        justify-content: space-between;
+        /* la colonne d'agenda plafonne à ~564px : les deux menus en réclament près
+           d'autant, d'où l'écart minimal et les paddings resserrés ci-dessous */
+        column-gap: 0.5em;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background: #fdfdfd;
+        margin: 0.8em 0;
+        padding: 0.6em 0;
+    }
+
+    #agenda_filters.avec-filtre-genre #genre_tab_navigation
+    {
+        position: static;
+        background: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* la ligne est partagée avec le menu de tri : les onglets s'y resserrent */
+    #agenda_filters.avec-filtre-genre #genre_tab_navigation ul
+    {
+        column-gap: 0.15em;
+    }
+
+    /* margin-left auto plutôt que le seul justify-content : quand la ligne est trop
+       étroite et que le menu de tri se replie sous le filtre, il reste aligné à
+       droite, comme partout ailleurs sur le site */
+    #agenda_filters.avec-filtre-genre #order_navigation
+    {
+        margin: 0 0 0 auto;
+    }
+
+    /* dans le contexte flex, le flottant n'a plus rien à aligner et fausse la hauteur */
+    #agenda_filters.avec-filtre-genre #order_navigation ul
+    {
+        float: none;
+        margin: 0;
+    }
+}
+
+
+/*
+ * Titre à gauche, navigation de jour à droite, sur une même ligne. Auparavant deux
+ * flottants dimensionnés en pourcentage (60 % / 35 %) alors que les boutons de la
+ * navigation se mesurent en em : dès que la colonne d'agenda descendait sous ~440px
+ * (fenêtre étroite, police plus grande), les 35 % ne suffisaient plus et le second
+ * bouton passait à la ligne, désolidarisé du premier. En flex, la navigation garde
+ * sa largeur propre et c'est le titre qui cède la place.
+ */
+header#entete_contenu
+{
+    display: flex;
+    align-items: baseline;
+    column-gap: 0.5em;
+}
+
+/* le titre est enveloppé dans un hgroup : sans min-width, l'item flex refuse de
+   descendre sous la largeur de son contenu et repousse la navigation */
+header#entete_contenu hgroup
+{
+    min-width: 0;
+}
+
 header#entete_contenu h1
 {
-    float:left;
-    width:56%;
+    float:none;
+    width:auto;
     margin: 0 0 0 0;
     font-size: 1.4em;
 }
@@ -29,24 +174,38 @@ header#entete_contenu h1 small
     color: #888;
 }
 
+/*header#entete_contenu h1 small span
+{
+    background: #ff6;
+    color: #5a7175;
+    font-weight: normal;
+    padding: 0.2em;
+    border-radius: 5px;
+}*/
+
+
 ul.entete_contenu_navigation
 {
-    float:right;
-    width:43%;
-    margin: 0;
+    display: flex;
+    /* les deux boutons restent solidaires : c'est le titre voisin qui se comprime */
+    flex: 0 0 auto;
+    /* l'exemplaire de bas de liste n'a pas de titre à côté de lui et occupe toute la
+       largeur : justify-content le ramène à droite, comme le flottant le faisait */
+    justify-content: flex-end;
+    float: none; /* annule le flottant de global.css */
+    margin: 0 0 0 auto;
     padding-left: 0;
-    text-align:right;
+    list-style: none;
 }
 
 ul.entete_contenu_navigation li
 {
-    display:inline;
-    vertical-align:bottom;
+    display: block;
 }
 
 ul.entete_contenu_navigation li a
 {
-    padding: 0.6em
+    padding: 0.6em 0.9em;
 }
 
 ul.entete_contenu_navigation li:nth-child(1) a
@@ -63,11 +222,6 @@ ul.entete_contenu_navigation li:nth-child(2) a
 ul.entete_contenu_navigation li:nth-child(2) a:hover
 {
     background:#d4d4d4;
-}
-
-ul.entete_contenu_navigation li img
-{
-    vertical-align:top;
 }
 
 
@@ -123,6 +277,37 @@ ul.entete_contenu_navigation li img
     {
         background:#d4d4d4;
     }
+
+/*
+ * Sous 800px, les deux menus sont empilés (cf. #agenda_filters en display:contents) :
+ * le tri collé à droite ne répondait à rien et se lisait mal sous le filtre de genres.
+ * Le padding gauche reprend celui des <li> du filtre pour que les deux icônes tombent
+ * sur la même verticale.
+ */
+@media screen and (max-width: 799.98px)
+{
+    #order_navigation ul
+    {
+        float: none;
+        padding-left: 0.2em;
+    }
+
+    /* le titre du jour est juste au-dessus : l'écart n'a pas à valoir celui qui sépare
+       les deux menus du premier genre */
+    #genre_tab_navigation
+    {
+        margin-top: 0.5em;
+    }
+
+    /* respiration sous le bloc de filtres, avant le premier genre. En padding et non en
+       marge : #agenda_filters est en display:contents et n'a donc pas de boîte à marger,
+       et une marge basse ici fusionnerait avec les 10px de .genre-titre — plus grands,
+       donc seuls retenus, l'ajout resterait invisible. */
+    #order_navigation
+    {
+        padding-bottom: 0.5em;
+    }
+}
 
 #prochains_evenements section.genre
 {
@@ -289,8 +474,15 @@ ul.entete_contenu_navigation li img
 
 }
 
+/* Rangée flex plutôt qu'un flottant suivi de blocs : quand le texte dépasse la
+   hauteur de la vignette — la règle en colonne étroite — ses lignes ne
+   repassent plus sous elle mais restent à son côté, et l'étirement
+   (align-items:stretch, la valeur par défaut) prolonge le fond gris de la
+   vignette jusqu'en bas de la rangée. Même dispositif que
+   .evenement-short .event-media (global.css). */
 .dernier_evenement
 {
+    display:flex;
     border-bottom:1px dotted gray;
     margin:0.5em 0;
     padding:0 0 0.4em 0;
@@ -299,12 +491,38 @@ ul.entete_contenu_navigation li img
 
     .dernier_evenement .flyer
     {
+        flex:0 0 60px;
         background:#f0f0f0;
-        float:left;
         width:60px;
-        height:80px;
+        min-height:80px; /* et non height : c'est ce qui autorise l'étirement */
         overflow:hidden;
         margin-right:3px;
+    }
+
+    /* Le rognage à 80px appartient au lien et non plus à la vignette : celle-ci
+       s'étire désormais sur toute la hauteur de la rangée, l'y laisser aurait
+       déplié les flyers portrait sur toute leur hauteur. */
+    .dernier_evenement .flyer a
+    {
+        display:block;
+        height:80px;
+        overflow:hidden;
+    }
+
+    .dernier_evenement .texte
+    {
+        flex:1 1 auto;
+        min-width:0; /* sans quoi un mot insécable empêcherait la colonne de rétrécir */
+    }
+
+    /* Ces <p> sont dans un <aside>, hors de #contenu : ils gardaient la marge
+       verticale de 1em du navigateur, qui détachait la date du lieu. 0.35em et
+       non les 0.4em du padding-bottom du h3 : la demi-interligne sous le lieu
+       compte déjà dans l'écart, les deux blancs se rejoignent ainsi à un demi
+       pixel près. */
+    .dernier_evenement .texte p
+    {
+        margin:0.35em 0 0 0;
     }
 
     .dernier_evenement h3

@@ -3,9 +3,31 @@
 namespace Ladecadanse\Security;
 
 use Ladecadanse\UserLevel;
+use Ladecadanse\Utils\DateHelper;
 
 class Authorization
 {
+
+    public function __construct(private readonly AuthorizationRepository $repository)
+    {
+    }
+
+    /**
+     * Le visiteur courant appartient-il à un groupe au moins aussi privilégié que $groupe ?
+     *
+     * Vient de Sentry, qui mêlait authentification et autorisation (#156). La requête est
+     * conservée telle quelle : elle revalide à chaque appel que le compte existe toujours
+     * et qu'il est actif, ce dont Sentry::checkSession() ne se charge pas (sa valeur de
+     * retour est ignorée par le constructeur).
+     */
+    public function checkGroup(int $groupe = UserLevel::MEMBER): bool
+    {
+        if (!isset($_SESSION['user'])) {
+            return false;
+        }
+
+        return $this->repository->personneExistsInGroup($_SESSION['user'], $groupe);
+    }
 
     public function isPersonneEditor(array $sessionToReadonly): bool
     {
@@ -33,104 +55,187 @@ class Authorization
             );
     }
 
+    /**
+     * Droit d'édition effectif : droit de principe, et événement pas encore archivé.
+     *
+     * Un événement passé est une archive : le rouvrir pour en changer la date reviendrait
+     * à écraser l'événement d'origine. Seuls les éditeurs (Sgroupe <= AUTHOR) peuvent
+     * encore le modifier ; les autres gardent Copier — le geste correct pour reprogrammer —
+     * et Dépublier.
+     *
+     * À ne pas confondre avec isPersonneAllowedToEditEvenement(), qui gouverne aussi la
+     * visibilité des événements 'propose'/'inactif' et l'accès à la copie : ces deux
+     * usages ne doivent PAS être restreints par la date.
+     *
+     * @param array $eventWidthIds en plus des clés attendues par isPersonneAllowedToEditEvenement() :
+     *                             e_dateEvenement, et e_horaire_fin si disponible
+     */
+    public function isPersonneAllowedToEditEvenementNow(array $sessionToReadonly, array $eventWidthIds): bool
+    {
+        if (!$this->isPersonneAllowedToEditEvenement($sessionToReadonly, $eventWidthIds))
+        {
+            return false;
+        }
+
+        return $this->isPersonneEditor($sessionToReadonly)
+            || !DateHelper::isEvenementPast($eventWidthIds['e_dateEvenement'], $eventWidthIds['e_horaire_fin'] ?? null);
+    }
+
     public function isPersonneAllowedToManageEvenement(array $sessionToReadonly, array $eventWidthIds): bool
     {
         return ($this->isPersonneEditor($sessionToReadonly) && !empty($eventWidthIds['e_idPersonne']));
     }
 
     /**
-     * Vérifie dans la base si une personne est bien l'auteur d'un événement,
-     * une brêve, une description
+     * Qui peut modifier la fiche d'un organisateur :
+     * - EDITOR (AUTHOR) et au-dessus, sur n'importe laquelle ;
+     * - un ACTOR, sur celles dont il est membre (personne_organisateur) ;
+     * - l'auteur de la fiche (organisateur.idPersonne), quel que soit son niveau.
      *
-     * @param string $table (evenement, descriptionlieu, lieu) vérifie si $idP est
-     * @param int $idP ID utilisateur à vérifier
-     * @param int $id ID entité dont l'auteur est à vérifier
-     * auteur de $id
-     * @return boolean Si $idP est auteur ou non
+     * Posée ici pour que la page d'édition et le lien « Modifier cet organisateur » de
+     * organisateur.php répondent à la même question : ils la posaient chacun à leur
+     * façon, et le formulaire, plus permissif, ouvrait toutes les fiches à tout ACTOR.
      */
-    function isAuthor(string $table, int $idP = 0, int $id = 0): bool
+    public function isPersonneAllowedToEditOrganisateur(array $sessionToReadonly, int $idOrganisateur): bool
     {
-        global $connector;
-
-        $tableSanitized = $connector->sanitize($table);
-
-        $sql_auteur = "SELECT idPersonne FROM " . $tableSanitized . " WHERE id" . ucfirst($tableSanitized) . "=" . (int) $id . " AND idPersonne=" . (int) $idP;
-
-        $getP = $connector->query($sql_auteur);
-
-        if ($connector->getNumRows($getP) > 0)
+        if (!isset($sessionToReadonly['Sgroupe']))
         {
-            return true;
+            return false;
         }
 
-        return false;
+        $idPersonne = (int) ($sessionToReadonly['SidPersonne'] ?? 0);
+
+        return $this->isPersonneEditor($sessionToReadonly)
+            || ($sessionToReadonly['Sgroupe'] <= UserLevel::ACTOR && $this->isPersonneInOrganisateur($idPersonne, $idOrganisateur))
+            || $this->isAuthor("organisateur", $idPersonne, $idOrganisateur);
+    }
+
+    /**
+     * Qui peut modifier la fiche d'un lieu :
+     * - EDITOR (AUTHOR) et au-dessus, sur n'importe laquelle ;
+     * - une personne affiliée au lieu (table `affiliation`) ;
+     * - une personne membre d'un organisateur rattaché au lieu.
+     *
+     * L'auteur de la fiche n'y figure pas, contrairement à ce que fait
+     * isPersonneAllowedToEditOrganisateur() : c'est la règle qu'appliquait déjà
+     * lieu-edit.php, et l'ajouter ouvrirait des fiches à des comptes qui n'y ont pas
+     * accès aujourd'hui.
+     *
+     * Posée ici pour que le formulaire d'édition et le lien « Modifier ce lieu » de
+     * lieu.php répondent à la même question : le formulaire la posait deux fois, dans
+     * deux blocs qui se recopiaient.
+     */
+    public function isPersonneAllowedToEditLieu(array $sessionToReadonly, int $idLieu): bool
+    {
+        if (!isset($sessionToReadonly['Sgroupe']))
+        {
+            return false;
+        }
+
+        $idPersonne = (int) ($sessionToReadonly['SidPersonne'] ?? 0);
+
+        return $this->isPersonneEditor($sessionToReadonly)
+            || $this->isPersonneAffiliatedWithLieu($idPersonne, $idLieu)
+            || $this->isPersonneInLieuByOrganisateur($idPersonne, $idLieu);
+    }
+
+    /**
+     * Créer un lieu reste réservé aux éditeurs : une fiche de lieu est partagée par tous
+     * les événements qui s'y déroulent, un doublon se paie donc cher.
+     */
+    public function isPersonneAllowedToAddLieu(array $sessionToReadonly): bool
+    {
+        return $this->isPersonneEditor($sessionToReadonly);
+    }
+
+    /**
+     * Qui peut écrire un texte sur un lieu — une description, qui est un avis signé de son
+     * auteur, ou la présentation, qui est le lieu parlant en son nom :
+     *
+     * - description : les éditeurs (AUTHOR et au-dessus), sur n'importe quel lieu ;
+     * - présentation : ceux qui peuvent modifier la fiche du lieu, présenter un lieu et
+     *   tenir sa fiche relevant du même mandat.
+     *
+     * Posée ici pour que le formulaire et les liens « Ajouter » de lieu.php répondent à la
+     * même question. Le formulaire, lui, ne la posait pas du tout sur le lieu écrit : il
+     * vérifiait l'`idL` de l'url, absent à l'ajout, puis enregistrait le lieu choisi dans
+     * une liste déroulante — n'importe lequel.
+     *
+     * @param array<string, mixed> $sessionToReadonly
+     */
+    public function isPersonneAllowedToAddTexteLieu(array $sessionToReadonly, string $type, int $idLieu): bool
+    {
+        // le plancher qu'applique déjà la page : isPersonneAllowedToEditLieu() ne regarde
+        // pas le niveau, et une affiliation suffirait sinon à ouvrir le formulaire à un MEMBER
+        if (($sessionToReadonly['Sgroupe'] ?? PHP_INT_MAX) > UserLevel::ACTOR)
+        {
+            return false;
+        }
+
+        return $type === 'presentation'
+            ? $this->isPersonneAllowedToEditLieu($sessionToReadonly, $idLieu)
+            : $this->isPersonneEditor($sessionToReadonly);
+    }
+
+    /**
+     * Qui peut modifier un texte déjà publié.
+     *
+     * Une présentation se reprend par quiconque pourrait l'écrire : elle parle du lieu et
+     * non de son auteur. Une description est un avis signé — seuls son auteur et la
+     * modération (ADMIN) y touchent, là où le formulaire l'ouvrait à tout éditeur pour peu
+     * qu'il change l'`idP` de l'url. C'est déjà la règle qu'appliquent les liens
+     * « Modifier » de lieu.php.
+     *
+     * @param array<string, mixed> $sessionToReadonly
+     * @param int $idAuteur auteur du texte, tel que la base le porte
+     */
+    public function isPersonneAllowedToEditTexteLieu(array $sessionToReadonly, string $type, int $idLieu, int $idAuteur): bool
+    {
+        if ($type === 'presentation')
+        {
+            return $this->isPersonneAllowedToAddTexteLieu($sessionToReadonly, $type, $idLieu);
+        }
+
+        if (!isset($sessionToReadonly['Sgroupe']))
+        {
+            return false;
+        }
+
+        return $sessionToReadonly['Sgroupe'] <= UserLevel::ADMIN
+            || ($this->isPersonneEditor($sessionToReadonly) && (int) ($sessionToReadonly['SidPersonne'] ?? 0) === $idAuteur);
+    }
+
+    /**
+     * Vérifie dans la base si une personne est bien l'auteur d'un événement, d'un lieu
+     * ou d'un organisateur.
+     *
+     * @param string $table (evenement, lieu, organisateur) ; toute autre valeur renvoie false
+     * @param int $idP ID utilisateur à vérifier
+     * @param int $id ID entité dont l'auteur est à vérifier
+     */
+    public function isAuthor(string $table, int $idP = 0, int $id = 0): bool
+    {
+        return $this->repository->isAuthor($table, $idP, $id);
     }
 
     public function isPersonneInOrganisateur(int $idP, int $idO): bool
     {
-        global $connector;
-
-        $sql = "SELECT idPersonne FROM personne_organisateur WHERE idOrganisateur=" . (int) $idO . " AND idPersonne=" . (int) $idP;
-
-        $getP = $connector->query($sql);
-
-        if ($connector->getNumRows($getP) > 0)
-        {
-            return true;
-        }
-
-        return false;
+        return $this->repository->isPersonneInOrganisateur($idP, $idO);
     }
 
-    function isPersonneInLieuByOrganisateur(int $idP, int $idL): bool
+    public function isPersonneInLieuByOrganisateur(int $idP, int $idL): bool
     {
-        global $connector;
-
-        $sql = "SELECT idPersonne FROM personne_organisateur, lieu_organisateur
-        WHERE personne_organisateur.idOrganisateur=lieu_organisateur.idOrganisateur AND
-        lieu_organisateur.idLieu=" . (int) $idL . " AND idPersonne=" . (int) $idP;
-
-        $getP = $connector->query($sql);
-
-        if ($connector->getNumRows($getP) > 0)
-        {
-            return true;
-        }
-
-        return false;
+        return $this->repository->isPersonneInLieuByOrganisateur($idP, $idL);
     }
 
     public function isPersonneInEvenementByOrganisateur(int $idP = 0, int $idE = 0): bool
     {
-        global $connector;
-
-        $sql = "SELECT idPersonne FROM personne_organisateur, evenement_organisateur
-        WHERE personne_organisateur.idOrganisateur=evenement_organisateur.idOrganisateur AND
-        evenement_organisateur.idEvenement=" . (int) $idE . " AND idPersonne=" . (int) $idP;
-
-        $getP = $connector->query($sql);
-
-        if ($connector->getNumRows($getP) > 0)
-        {
-            return true;
-        }
-
-        return false;
+        return $this->repository->isPersonneInEvenementByOrganisateur($idP, $idE);
     }
 
     public function isPersonneAffiliatedWithLieu(int $idP, int $idL): bool
     {
-        global $connector;
-
-        $req_affPers = $connector->query("SELECT lieu.idLieu, lieu.nom
-        FROM affiliation INNER JOIN lieu ON affiliation.idAffiliation=lieu.idLieu
-         WHERE affiliation.idPersonne=" . (int) $idP . " AND affiliation.genre='lieu' AND affiliation.idAffiliation=" . (int) $idL);
-
-        if ($connector->getNumRows($req_affPers) > 0)
-        {
-            return true;
-        }
-        return false;
+        return $this->repository->isPersonneAffiliatedWithLieu($idP, $idL);
     }
 
 }

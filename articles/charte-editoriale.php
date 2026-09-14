@@ -18,7 +18,7 @@ include("../_header.inc.php");
 
         <h2><a id="Gnralits_0"></a>Généralités</h2>
 
-        <p>La décadanse est un agenda culturel pour les régions de Genève et Lausanne composé d’une sélection d’événements. Ceux-ci, ainsi que les lieux et organisateurs publiés sur le site, doivent correspondre à certains critères qui définissent cette charte éditoriale.</p>
+        <p>La&nbsp;décadanse est un agenda culturel pour les régions de Genève et Vaud composé d’une sélection d’événements. Ceux-ci, ainsi que les lieux et organisateurs publiés sur le site, doivent correspondre à certains critères qui définissent cette charte éditoriale.</p>
         <p>Les contenus ajoutés par des tiers qui ne respectent pas cette charte sont corrigés ou dépubliés par un administrateur du site.</p>
 
         <p>Le souhait est de promouvoir en particulier les acteurs de la culture alternative, désintéressés, jouant un rôle social et culturel. En revanche le soin est laissé à d’autres agendas la diffusion les événements plus conventionnels et/ou à intention plus commerciale.</p>
@@ -27,12 +27,14 @@ include("../_header.inc.php");
         <h2>Les événements</h2>
 
         <h3>Situation</h3>
-        <p>À l’heure actuelle, les zone couvertes par La décadanse sont les régions genevoises et lausannoises.</p>
+        <p>À l’heure actuelle, les zone couvertes par La&nbsp;décadanse sont les régions genevoises et lausannoises.</p>
 
         <h3>Catégories</h3>
-        <p>Les événements sont répartis en 5 catégories, dont voici des précisions pour 3 d’entre elles&nbsp;:</p>
+        <p>Les événements sont répartis en 6 catégories, dont voici des précisions pour 4 d’entre elles&nbsp;:</p>
         <h4><a id="Ftes_17"></a>Fêtes</h4>
         <p>Large rubrique où figurent les événements culturels, festifs avec très souvent une part musicale. Le volet culturel doit être prépondérant, les événements dont celui-ci est trop secondaire ne sont pas admis  (la catégorie "Divers" peut mieux convenir dans ce cas); par ex. un dîner-concert où un groupe ne joue que pour l’ambiance.</p>
+        <h4><a id="Concerts"></a>Concerts</h4>
+        <p>Rubrique des prestations musicales en live, quel que soit le style&nbsp;: groupes, solistes, ensembles, récitals… L’événement se construit autour d’artistes annoncés, que le public vient écouter. Une soirée où la musique accompagne surtout la fête (DJ sets, soirées dansantes) trouve plutôt sa place dans "Fêtes"&nbsp;; quand un événement mêle les deux, par ex. un concert suivi d’un DJ set, c’est la part qui prédomine qui décide.</p>
         <h4><a id="Cin_20"></a>Ciné</h4>
         <p>Cette rubrique se concentre sur les projections des cinémas indépendants ou apparentés ; par conséquent les multiplexes (qui ont largement de quoi communiquer) n’y figurent pas. Il se peut que, ponctuellement, la qualité du film ou la particularité de l’événement prime sur cette règle.</p>
         <h4><a id="Divers_23"></a>Divers</h4>
@@ -57,11 +59,11 @@ include("../_header.inc.php");
         </ul>
 
         <h3><a id="Prix_38"></a>Prix</h3>
-        <p>La décadanse propose des événements la plupart du temps abordables financièrement que ce soit pour le prix d’entrée, les consommations ou d’autres dépenses.</p>
+        <p>La&nbsp;décadanse propose des événements la plupart du temps abordables financièrement que ce soit pour le prix d’entrée, les consommations ou d’autres dépenses.</p>
         <h4><a id="entre_41"></a>Entrée</h4>
         <p>Les tarifs peuvent beaucoup varier selon le type d’événement (soirée DJ, concerts, théâtre…) mais nous cherchons à ce qu’ils soient appropriés, et nous fixons une limite à 40.- CHF (à ce prix là, il s’agira plutôt d’une programmation vaste ou une tête d’affiche). Des exceptions peuvent se produire, dans le cas par exemple d’un artiste spécifique, un événement avec de nombreuses activités (sur plusieurs jours par exemple), une part de soutien…</p>
         <h4><a id="consommations_44"></a>Consommations</h4>
-        <p>Boissons, nourriture, locations, vestiaires doivent être à prix abordables. Au-delà de tels tarifs, on entre dans une catégorie différente des événements souhaités sur La décadanse (comme les boîtes de nuit par exemple). Toutefois, le prix n’est pas pris en compte unilatéralement, ainsi des tarifs un peu plus élevés peuvent être compensés par d’autres critères (qualitatifs, soutien, etc.).</p>
+        <p>Boissons, nourriture, locations, vestiaires doivent être à prix abordables. Au-delà de tels tarifs, on entre dans une catégorie différente des événements souhaités sur La&nbsp;décadanse (comme les boîtes de nuit par exemple). Toutefois, le prix n’est pas pris en compte unilatéralement, ainsi des tarifs un peu plus élevés peuvent être compensés par d’autres critères (qualitatifs, soutien, etc.).</p>
 
         <h3><a id="Accs_48"></a>Accès</h3>
         <p>Les lieux peuvent avoir différents niveaux de facilité d’accès, d’une entrée totalement libre à une entrée avec attente, fouille, exigence de tenue vestimentaire… Dans le même esprit que les autres critères, nous privilégions un accès aisé et un contrôle raisonnable, par contre ceux exigeant des critères stricts (tenue correcte, voire plus) ne sont pas publiés.</p>
@@ -69,7 +71,7 @@ include("../_header.inc.php");
         <h2><a id="LES_LIEUX_53"></a>Les lieux</h2>
         <p>Les lieux ayant une vocation commerciale trop prononcée ne sont pas souhaités (night-clubs, casinos, cabarets, multiplexes…). Pour pouvoir figurer dans la rubrique <a href="/lieu/lieux.php">Lieux</a>, des événements doivent être organisés régulièrement et ceux-ci doivent suivre les critères déjà présentés ci-dessus. Nous apprécions les lieux avec une programmation de qualité, un esprit désintéressé, se rapprochant de l’autogestion et avec un certain degré d’éthique.</p>
 
-        <p>Août 2016, mis à jour en mars 2025</p>
+        <p>Août 2016, mis à jour en septembre 2026</p>
 
     </article> <!-- .rubrique  -->
 

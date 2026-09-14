@@ -4,25 +4,32 @@ require_once("../app/bootstrap.php");
 
 use Ladecadanse\Evenement;
 use Ladecadanse\UserLevel;
+use Ladecadanse\Utils\DateHelper;
 
 header('X-Robots-Tag: noindex');
 
-if (!$videur->checkGroup(UserLevel::ACTOR)) {
+if (!$authorization->checkGroup(UserLevel::ACTOR)) {
 	header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
     die();
 }
 
 $get['id'] = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
-$get['action'] = strip_tags((string) $_GET['action']);
+$get['action'] = strip_tags((string) ($_GET['action'] ?? ''));
 
 if ($get['action'] == 'delete' && !empty($get['id']))
 {
-    $req_im = $connector->query("SELECT titre, flyer, image, idLieu, genre, dateEvenement, dateAjout
+    $req_im = $connector->query("SELECT titre, flyer, image, idLieu, genre, dateEvenement, horaire_fin, dateAjout
     FROM evenement WHERE idEvenement=" . (int) $get['id']);
 
     $val_even = $connector->fetchArray($req_im);
 
-    if (!empty($val_even) && (($authorization->isAuthor('evenement', $_SESSION['SidPersonne'], $get['id']) && $_SESSION['Sgroupe'] <= 8) || $_SESSION['Sgroupe'] < 2))
+    // Un événement passé est une archive : le supprimer détruit l'historique encore plus
+    // sûrement que le recycler. Même règle et même seuil que le verrou d'édition.
+    $is_even_editable = !empty($val_even)
+        && ($authorization->isPersonneEditor($_SESSION)
+            || !DateHelper::isEvenementPast($val_even['dateEvenement'], $val_even['horaire_fin']));
+
+    if ($is_even_editable && (($authorization->isAuthor('evenement', $_SESSION['SidPersonne'], $get['id']) && $_SESSION['Sgroupe'] <= 8) || $_SESSION['Sgroupe'] < 2))
     {
         if (!empty($val_even['flyer']))
         {

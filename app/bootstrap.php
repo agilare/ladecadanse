@@ -11,14 +11,14 @@ use Ladecadanse\Evenement;
 use Ladecadanse\Lieu;
 use Ladecadanse\Organisateur;
 use Ladecadanse\Security\Authorization;
+use Ladecadanse\Security\AuthorizationRepository;
 use Ladecadanse\Security\Sentry;
 use Ladecadanse\Utils\DbConnector;
 use Ladecadanse\Utils\DbConnectorPdo;
 use Monolog\Logger;
 use Monolog\Handler\RotatingFileHandler;
 use Monolog\Formatter\LineFormatter;
-use Ladecadanse\Utils\RegionConfig;
-use Ladecadanse\Utils\Utils;
+use Ladecadanse\RegionConfig;
 use Ladecadanse\TemplateEngine;
 use Ladecadanse\Translator;
 use Whoops\Handler\PrettyPageHandler;
@@ -73,9 +73,18 @@ session_start([
 
 
 $regionConfig = new RegionConfig($glo_regions);
+$regionConfig->setPersistentRegion($_COOKIE, $_GET);
 [$url_query_region, $url_query_region_et, $url_query_region_1er] = $regionConfig->getAppVars();
 
 $_SESSION['user_prefs_agenda_order'] = $_SESSION['user_prefs_agenda_order'] ?? 'dateAjout';
+if (!empty($_COOKIE['ladecadanse_tri_agenda']) && in_array($_COOKIE['ladecadanse_tri_agenda'], $tab_tri_agenda, true))
+{
+    $_SESSION['user_prefs_agenda_order'] = $_COOKIE['ladecadanse_tri_agenda'];
+}
+// filtre de genre de l'agenda, 'tous' = aucun filtre
+$_SESSION['user_prefs_agenda_genre'] ??= 'tous';
+// tri des événements passés sur les fiches lieu et organisateur, partagé par les deux pages
+$_SESSION['user_prefs_past_events_order'] ??= 'asc';
 
 $logFormatter = new LineFormatter(null, 'Y-m-d H:i:sP');
 
@@ -105,18 +114,64 @@ $apiHandler->setFormatter($logFormatter);
 $loggerApi = new Logger('api');
 $loggerApi->pushHandler($apiHandler);
 
+// Base injoignable → 503 + Retry-After au lieu d'un 500. Les cinq familles
+// relevées dans le journal PHP du 15.08 au 12.09.2026 (2 709 échecs, dont deux
+// pannes de 65 et 95 minutes chez l'hébergeur). Se limiter à « Too many
+// connections » laisserait passer en 500 les 479 échecs DNS du 04.09 et les
+// 73 « Connection refused » du 11.09. Un 500 dit « le code est cassé », un 503
+// dit « reviens dans un instant » — ce que Google comprend sans désindexer.
+const DB_UNAVAILABLE_MESSAGES = [
+    'Too many connections',        // 1040 — serveur saturé
+    'max_user_connections',        // 1203 (quota global) ou 1226 (quota du compte) — notre quota
+    'Connection refused',          // serveur MySQL arrêté
+    'getaddrinfo',                 // panne DNS sur le nom de l'hôte MySQL
+    'MySQL server has gone away',  // 2006
+];
+
+// Gestionnaire global plutôt qu'un try/catch autour des deux connexions : les
+// deux connecteurs se connectent ici, mais une coupure peut aussi survenir à la
+// première requête, n'importe où dans le code. Toute autre exception est
+// rendue au gestionnaire précédent (Whoops en dev) ou relancée telle quelle,
+// donc rien ne change pour elle. La page est servie par readfile, sans
+// ErrorDocument ni aucun code applicatif : si la base est à terre, tout appel
+// PHP supplémentaire risque de relancer l'exception (boucle constatée le 12.09.2026
+// avec misc/error.php, cf. htaccess/00-core.conf).
+$previousExceptionHandler = null;
+$previousExceptionHandler = set_exception_handler(function (Throwable $e) use ($logger, &$previousExceptionHandler): void {
+    $message = $e->getMessage();
+    $dbUnavailable = array_any(DB_UNAVAILABLE_MESSAGES, fn (string $needle): bool => str_contains($message, $needle));
+
+    // headers_sent() : la coupure a eu lieu en cours de page, le 503 ne peut plus
+    // partir ; on garde alors le comportement actuel plutôt qu'un 200 mensonger
+    if (!$dbUnavailable || headers_sent()) {
+        if ($previousExceptionHandler !== null) {
+            ($previousExceptionHandler)($e);
+            return;
+        }
+        throw $e;
+    }
+
+    $logger->error('Database unavailable: ' . $message, ['uri' => $_SERVER['REQUEST_URI'] ?? '']);
+    http_response_code(503);
+    header('Retry-After: 120');
+    header('Content-Type: text/html; charset=utf-8');
+    readfile(__DIR__ . '/../misc/unavailable.html');
+    exit;
+});
+
 $connector = new DbConnector(DB_HOST, DB_NAME, DB_USERNAME, DB_PASSWORD);
 $connectorPdo = DbConnectorPdo::getInstance();
 
-$authorization = new Authorization();
+$authorization = new Authorization(new AuthorizationRepository($connectorPdo->getPDO()));
 
-$videur = new Sentry();
+$videur = new Sentry($connectorPdo->getPDO(), $logger);
 
-$tplEngine = new TemplateEngine(__DIR__ . "/../resources/");
+$tplEngine = new TemplateEngine(__DIR__ . "/../resources/templates/");
 
 $translator = new Translator(__DIR__ . '/../resources/messages.yml');
 
-$site_full_url = Utils::getBaseUrl()."/";
+$site_scheme = (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] === "on") ? "https://" : "http://";
+$site_full_url = $site_scheme . $_SERVER["SERVER_NAME"] . "/";
 
 Evenement::$systemDirPath = $rep_images_even;
 Evenement::$urlDirPath = $url_uploads_events;
@@ -133,10 +188,38 @@ $nom_page = ltrim($pathinfo['dirname'] . '/' . $pathinfo['filename'], '\\/');
 //echo $_SERVER["SCRIPT_FILENAME"]."<br>";
 //echo $nom_page;
 
-$assets = new AssetManager(__ROOT__ . ASSETS_DIR, ASSETS_DIR);
+$assets = new AssetManager(__ROOT__ . ASSETS_DIR, ASSETS_DIR, $logger);
 
 if (DARKVISITORS_ENABLED)
 {
+    if (!function_exists('getallheaders')) {
+        /**
+         * Polyfill : getallheaders() n'existe nativement que sur les SAPI apache2handler
+         * et fpm — absente en CLI et sous le serveur intégré (`php -S`) des tests locaux.
+         * Composer ne la fournit pas non plus en production : ralouphie/getallheaders
+         * n'arrive que par l'arbre require-dev (guzzlehttp/psr7 2.x, sous Codeception),
+         * et psr7 3.0 abandonne cette dépendance. Le suivi DarkVisitors ci-dessous est
+         * le seul appelant du projet.
+         *
+         * @return array<string, string> en-têtes de la requête, noms en Camel-Case
+         */
+        function getallheaders(): array
+        {
+            $headers = [];
+
+            foreach ($_SERVER as $name => $value) {
+                if (!is_string($value) || !str_starts_with((string) $name, 'HTTP_')) {
+                    continue;
+                }
+
+                $name = str_replace('_', ' ', strtolower(substr((string) $name, 5)));
+                $headers[str_replace(' ', '-', ucwords($name))] = $value;
+            }
+
+            return $headers;
+        }
+    }
+
     function trackVisitAsync(array $data, string $accessToken): void
     {
         $ch = curl_init('https://api.darkvisitors.com/visits');
@@ -167,22 +250,34 @@ if (DARKVISITORS_ENABLED)
     });
 }
 
+// suivi léger des bots et IP suspectes (voir librairies/BotMonitor.php) ;
+// exécuté au shutdown pour ne pas ralentir le rendu ; utilisateurs connectés exclus ;
+// le garde defined() protège si le env.php de prod n'a pas encore la constante
+if (defined('BOT_MONITORING_ENABLED') && BOT_MONITORING_ENABLED && empty($_SESSION['logged'])) {
+    register_shutdown_function(function () use ($connectorPdo, $logger) {
+        (new \Ladecadanse\BotMonitor($connectorPdo->getPDO(), $logger))->track();
+    });
+}
+
 header('X-Content-Type-Options: nosniff');
 define("CSP_NONCE", bin2hex(openssl_random_pseudo_bytes(32)));
 $csp = implode('; ', [
     "default-src 'self'",
-    "script-src 'self' 'nonce-" . CSP_NONCE . "' https://unpkg.com https://tools.ladecadanse.ch/ https://code.jquery.com https://darkvisitors.com https://browser.sentry-cdn.com https://www.paypalobjects.com https://liberapay.com https://wemakeit.com https://assets.wemakeit.com https://cdn.tiny.cloud",
+    "script-src 'self' 'nonce-" . CSP_NONCE . "' https://unpkg.com https://tools.ladecadanse.ch/ https://code.jquery.com https://knownagents.com https://browser.sentry-cdn.com https://www.paypalobjects.com https://liberapay.com https://wemakeit.com https://assets.wemakeit.com https://cdn.tiny.cloud",
     "img-src 'self' https://tile.openstreetmap.org https://tools.ladecadanse.ch/ https://unpkg.com https://www.paypalobjects.com https://sp.tinymce.com data:",
     "style-src 'self' 'unsafe-inline' https://unpkg.com https://cdn.tiny.cloud https://www.tiny.cloud https://wemakeit.com https://assets.wemakeit.com/ https://fonts.googleapis.com",
     "font-src 'self' https://www.tiny.cloud https://assets.wemakeit.com https://fonts.gstatic.com",
-    "connect-src 'self' https://tools.ladecadanse.ch/ https://cdn.tiny.cloud https://unpkg.com https://wemakeit.com",
+    "connect-src 'self' https://tools.ladecadanse.ch/ https://cdn.tiny.cloud https://unpkg.com https://wemakeit.com https://knownagents.com https://app.glitchtip.com",
     "frame-ancestors 'self' https://epic-magazine.ch",
     "frame-src 'none'",
     "object-src 'none'",
     "media-src 'none'",
     "form-action 'self' https://www.paypal.com",
     "base-uri 'self'",
-    "worker-src 'none'",
+    // pdf.js décode les PDF déposés dans les formulaires d'édition, et le fait
+    // dans un worker. 'self' revient à la valeur qu'aurait donnée default-src :
+    // aucun domaine tiers n'est ouvert, le worker vient de nos propres fichiers.
+    "worker-src 'self'",
 ]);
 if (ENV !== 'dev') {
     header("Content-Security-Policy: $csp");

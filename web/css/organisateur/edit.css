@@ -1,0 +1,120 @@
+/*
+ * Formulaire d'ajout et de modification d'un organisateur.
+ *
+ * Chargée avant desktop.css et mobile.css (voir _header.inc.php) : les règles
+ * qui doivent passer devant les leurs sont donc dans leurs propres requêtes de
+ * média, et ciblées par identifiant pour l'emporter à égalité d'ordre.
+ */
+
+form#ajouter_editer
+{
+    /*
+     * Où commence la colonne des champs : la largeur du label flottant, padding et
+     * marge compris (8em + 0.4em + 0.3em, cf. formulaires.css). Tout ce qui doit
+     * s'aligner sur les saisies part de là — le 11em qu'employaient .msg et .existing_img
+     * les décalait d'une trentaine de pixels vers la droite, sans raison.
+     */
+    --colonne-champs: 8.7em;
+}
+
+form#ajouter_editer .guideForm,
+form#ajouter_editer .msg
+{
+    margin-left: var(--colonne-champs);
+    padding-left: 0;
+}
+
+form#ajouter_editer .guideForm
+{
+    margin-top: 0;
+}
+
+/* Les fieldsets se touchaient presque : 5px entre deux titres de section */
+form#ajouter_editer fieldset
+{
+    margin-top: 1em;
+}
+
+form#ajouter_editer fieldset legend
+{
+    padding-bottom: 0.3em;
+}
+
+@media screen and (min-width: 800px)
+{
+    /*
+     * TinyMCE remplace le <textarea> par un bloc large de 100 % de son conteneur,
+     * qui passait donc sous le label flottant — d'où le <br><br> qui traînait dans
+     * le gabarit. L'éditeur tient maintenant dans la colonne des champs, à droite
+     * de « Texte : » comme les autres saisies.
+     *
+     * La marge est portée par .champ-riche et non par .tox-tinymce : ce dernier
+     * revient à une police de 16px, où 8.7em vaudrait 139px au lieu des 112px de
+     * la colonne. Le conteneur, lui, garde la taille de police du formulaire.
+     */
+    form#ajouter_editer .champ-riche
+    {
+        box-sizing: border-box;
+        display: block;
+        width: calc(100% - var(--colonne-champs));
+        margin-left: var(--colonne-champs);
+    }
+
+    form#ajouter_editer #presentation
+    {
+        box-sizing: border-box;
+        width: 100%;
+    }
+
+    /* aligné sur la colonne des champs plutôt que sur des 115px qui ne correspondaient à rien */
+    form#ajouter_editer .existing_img
+    {
+        /*
+         * formulaires.css donne 0.9em à ce bloc, et une marge en em s'y calculerait
+         * sur cette police réduite — 101px au lieu de 112. La petite taille est donc
+         * rendue aux seuls textes, l'aperçu gardant celle du formulaire pour sa marge.
+         */
+        font-size: 1em;
+        margin-left: var(--colonne-champs);
+    }
+
+    form#ajouter_editer .existing_img > div
+    {
+        font-size: 0.9em;
+    }
+}
+
+@media screen and (max-width: 799.98px)
+{
+    /*
+     * Les labels passent en display:block sur petits écrans (mobile.css) : plus de
+     * colonne à réserver, et les champs prennent la largeur disponible.
+     *
+     * width et non max-width : c'est la largeur intrinsèque dictée par size="50"
+     * qui gonflait le fieldset (min-width: min-content), et un max-width relatif à
+     * ce fieldset élargi ne bornait donc rien. La page sortait de 82px du viewport
+     * d'un téléphone de 375px.
+     */
+    /* .existing_img garde le retrait que mobile.css lui donne : sur cette largeur, il centre
+       l'aperçu plutôt qu'il ne le décale */
+    form#ajouter_editer .guideForm,
+    form#ajouter_editer .msg
+    {
+        margin-left: 0;
+    }
+
+    form#ajouter_editer #nom,
+    form#ajouter_editer #URL,
+    form#ajouter_editer #email,
+    form#ajouter_editer input[type="file"]
+    {
+        box-sizing: border-box;
+        width: 100%;
+    }
+
+    form#ajouter_editer .champ-riche
+    {
+        display: block;
+        max-width: 100%;
+    }
+}

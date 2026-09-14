@@ -2,535 +2,448 @@
 
 namespace Ladecadanse;
 
-use Ladecadanse\Edition;
+use Ladecadanse\Utils\Coordinates;
+use Ladecadanse\Utils\DbConnectorPdo;
 use Ladecadanse\Utils\Validateur;
-use Ladecadanse\Lieu;
-use Ladecadanse\Utils\ImageDriver2;
-use Ladecadanse\Utils\Text;
-use Ladecadanse\Document;
-use Ladecadanse\HtmlShrink;
+use PDO;
 
-class LieuEdition extends Edition
+/**
+ * Traitement du formulaire d'ajout et de modification d'un lieu (lieu/edit.php).
+ *
+ * Passée sous PDO (issue #117) sur le modèle d'OrganisateurEdition : requêtes préparées
+ * et colonnes nommées, à la place de l'Element générique qui construisait son SET à
+ * partir des clés du tableau de valeurs — donc à partir de ce que le formulaire postait.
+ *
+ * Ce qu'elle partage avec le formulaire d'organisateur — relecture de l'état enregistré,
+ * garde-fous sur les champs réservés, cycle de vie des images, délégation des erreurs —
+ * vit dans FicheEdition. Ne reste ici que ce qui est propre au lieu : ses coordonnées,
+ * ses catégories, sa localité et les organisateurs qui lui sont rattachés.
+ *
+ * La galerie d'images et les documents ont disparu avec le formulaire qui les portait :
+ * ces deux fonctionnalités sont abandonnées, les images de galerie se posent désormais
+ * à la main.
+ */
+class LieuEdition extends FicheEdition
 {
+    /** Champs image de la fiche, avec les dimensions de leur miniature « s_ ». */
+    private const array IMAGES = [
+        'logo'   => ['maxWidth' => 200, 'maxHeight' => 200, 'fitOn' => 'h', 'crop' => 0],
+        'photo1' => ['maxWidth' => 300, 'maxHeight' => 300, 'fitOn' => 'w', 'crop' => 1],
+    ];
 
-    public $firstTime;
-    public $supprimer = [];
-    public $supprimer_document = [];
-    public $supprimer_galerie = [];
-    public $supprimer_organisateur = [];
-    public $erreurs = [];
-    public $organisateurs = [];
-    public $message;
-    public $verif;
-    public $action;
-    public $connector;
+    /**
+     * Latitude et longitude, saisie ou relue en base. Elles ne valent que par paire —
+     * le plan n'est affiché que si les deux sont connues —, d'où un objet plutôt que
+     * deux entrées de $valeurs.
+     */
+    private Coordinates $coordinates;
 
-    function __construct(public $nom, public $valeurs, public $fichiers)
-    {
-        global $connector;
+    /**
+     * Catégories cochées, éclatées depuis la colonne `categories` (un SET) ou telles que
+     * le formulaire les a postées.
+     *
+     * Propriété plutôt qu'entrée de $valeurs : la colonne porte une liste séparée par
+     * des virgules là où le formulaire manipule un tableau, et les faire cohabiter sous
+     * la même clé revenait à ne jamais savoir laquelle des deux formes on tenait.
+     *
+     * @var list<string>
+     */
+    private array $categories = [];
 
-        $this->connector = $connector;
-        $this->valeurs['categorie'] = [];
+    /**
+     * Organisateurs rattachés au lieu, tels que le formulaire les a postés ou tels que
+     * la base les porte. Ils vivent dans leur propre table (`lieu_organisateur`), pas
+     * dans une colonne de `lieu`.
+     *
+     * @var list<int>
+     */
+    private array $organisateurs = [];
 
-        $this->erreurs = array_merge($this->valeurs, $this->fichiers);
-        $this->erreurs['nom_existant'] = '';
-        $this->erreurs['doublon_organisateur'] = '';
-    }
-
-    #[\Override]
-    function traitement(array $post, array $files)
-    {
-        parent::traitement($post, $files);
-
-        unset($this->valeurs['organisateurs']);
-        $this->id = $post['idLieu'];
-
-        if (isset($post['organisateurs']))
-            $this->organisateurs = $post['organisateurs'];
-
-        if (!empty($post['categorie']))
-            $this->valeurs['categorie'] = $post['categorie'];
-
-        if (isset($post['logo_existant']))
-        {
-            $this->valeurs['logo'] = $post['logo_existant'];
-        }
-        else
-        {
-            $this->valeurs['logo'] = '';
-        }
-
-        if (isset($post['photo1_existant']))
-        {
-            $this->valeurs['photo1'] = $post['photo1_existant'];
-        }
-        else
-        {
-            $this->valeurs['photo1'] = '';
-        }
-
-        if (isset($post['supprimer']))
-        {
-            $this->supprimer = $post['supprimer'];
-        }
-
-
-        if (isset($post['supprimer_document']))
-        {
-            $this->supprimer_document = $post['supprimer_document'];
-        }
-
-        if (isset($post['supprimer_galerie']))
-        {
-            $this->supprimer_galerie = $post['supprimer_galerie'];
-        }
-
-//		echo "Réc:";
-//		printr($this->valeurs);
-        /* 		echo "réc.";
-          echo "fichiers:";
-          printr($this->fichiers); */
-        if ($this->verification())
-        {
-            $this->enregistrer();
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    #[\Override]
-    function verification(): bool
-    {
-        global $glo_tab_quartiers;
-        global $glo_regions;
-        global $glo_categories_lieux;
-        global $mimes_images_acceptes;
-        global $mimes_documents_acceptes;
-
-        $verif = new Validateur();
-
-        $verif->valider($this->valeurs['nom'], "nom", "texte", 1, 60, 1);
-        $verif->valider($this->valeurs['determinant'], "determinant", "texte", 1, 30, 0);
-        $verif->valider($this->valeurs['adresse'], "adresse", "texte", 1, 80, 1);
-        $verif->valider($this->valeurs['localite_id'], "localite_id", "texte", 1, 80, 1);
-        $verif->valider($this->valeurs['horaire_general'], "horaire_general", "texte", 2, 200, 0);
-        $verif->valider($this->valeurs['URL'], "URL", "url", 2, 100, 0);
-        /*
-         * Catégorie (salle, cinéma, bistrot, etc.)
-         */
-        if (!empty($this->valeurs['categorie']))
-        {
-            foreach ($this->valeurs['categorie'] as $cat)
-            {
-                if (!array_key_exists($cat, $glo_categories_lieux))
-                {
-                    $verif->setErreur('categorie', "La catégorie " . $cat . " n'est pas valable");
-                }
-            }
-        }
-        else
-        {
-            $verif->setErreur('categorie', "Veuillez choisir au moins une catégorie");
-        }
-
-        $verif->validerFichier($this->fichiers['logo'], "logo", $mimes_images_acceptes, 0);
-        $verif->validerFichier($this->fichiers['photo1'], "photo1", $mimes_images_acceptes, 0);
-
-        $verif->validerFichier($this->fichiers['image_galerie'], "image_galerie", $mimes_images_acceptes, 0);
-
-        $this->erreurs = array_merge($this->erreurs, $verif->getErreurs());
-
-        if ($verif->nbErreurs() == 0)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    function loadValeurs(int $id): void
-    {
-        $lieu = new Lieu();
-        $lieu->setId($id);
-        $lieu->load();
-        $this->id = $id;
-        $this->valeurs = $lieu->getValues();
-
-        $this->valeurs['categorie'] = explode(",", (string) $this->valeurs['categorie']);
-
-//		printr($this->valeurs);
-    }
-
-    function enregistrer()
+    /**
+     * Les instances arrivent en paramètre pour que la classe soit exerçable hors requête
+     * HTTP ; les valeurs par défaut évitent d'imposer un conteneur aux pages, qui
+     * écrivent toutes `new LieuEdition()`.
+     */
+    public function __construct(
+        ?DbConnectorPdo $pdo = null,
+        Validateur $verif = new Validateur(),
+    )
     {
         global $rep_uploads_lieux;
-        global $rep_templates;
-        global $rep_fichiers_lieu;
-        global $rep_uploads_lieux_galeries;
-        global $glo_tab_quartiers2;
 
-        $lieu = new Lieu();
-        $lieu->setValues($this->valeurs);
+        $initialValues = array_fill_keys(array_keys(Lieu::FIELDS), '');
+        // Colonne dérivée de la localité choisie, jamais saisie directement ; elle sert
+        // à représélectionner le bon <option> quand un quartier de Genève a été retenu.
+        $initialValues['quartier'] = '';
 
-        $lieu->setValue('idpersonne', $_SESSION['SidPersonne']);
+        parent::__construct(
+            $initialValues,
+            ['logo' => [], 'photo1' => []],
+            $rep_uploads_lieux,
+            $pdo,
+            $verif
+        );
 
-        $loc_qua = explode("_", (string) $this->valeurs['localite_id']);
+        $this->coordinates = Coordinates::fromInput('', '');
+    }
 
-        if (count($loc_qua) > 1)
+    #[\Override]
+    public function validate(): bool
+    {
+        global $mimes_images_acceptes;
+
+        // Longueurs et obligation viennent de Lieu::FIELDS, dont le formulaire tire aussi
+        // ses maxlength et son required : ce qu'il laisse saisir est ce qui est accepté ici
+        foreach (Lieu::FIELDS as $field => $rule)
         {
-            $lieu->setValue('localite_id', $loc_qua[0]);
-            $lieu->setValue('quartier', $loc_qua[1]);
-            $lieu->setValue('region', 'ge');
-        }
-        else
-        {
-            $lieu->setValue('quartier', '');
-
-            if ($this->valeurs['localite_id'] == 'rf' || $this->valeurs['localite_id'] == 'hs')
-            {
-                $lieu->setValue('region', $this->valeurs['localite_id']);
-                $lieu->setValue('localite_id', 1); // autre
-            }
-            elseif ($this->valeurs['localite_id'] == 529) // Nyon
-            {
-                $lieu->setValue('region', 'ge');
-                $lieu->setValue('localite_id', 529);
-            }
-            else
-            {
-                $sql_lieu = "SELECT canton FROM localite WHERE id=" . (int) $this->connector->sanitize($this->valeurs['localite_id']);
-                $req_lieu = $this->connector->query($sql_lieu);
-                $tab_lieu = $this->connector->fetchArray($req_lieu);
-                $champs['region'] = $tab_lieu['canton'];
-
-                $lieu->setValue('region', $tab_lieu['canton']);
-            }
+            $this->verif->valider($this->valeurs[$field], $field, $rule['type'], $rule['min'], $rule['max'], $rule['required']);
         }
 
-        $lieu->setValue('idpersonne', $_SESSION['SidPersonne']);
-
-        if (count($this->valeurs['categorie']) > 0)
+        foreach ($this->coordinates->errors() as $field => $message)
         {
-            $lieu->setValue('categorie', implode(",", $this->valeurs['categorie']));
+            $this->verif->setErreur($field, $message);
         }
 
-//		echo "enreg:";
-//		printr($lieu->getValues());
-
-        if ($this->action == 'ajouter')
+        if ($this->categories === [])
         {
+            $this->verif->setErreur('categories', "Veuillez choisir au moins une catégorie");
+        }
 
-            $nouvel_id = $lieu->getMaxId() + 1;
-            if (!empty($this->fichiers['logo']['name']))
+        foreach ($this->categories as $category)
+        {
+            if (!array_key_exists($category, Lieu::CATEGORIES))
             {
-                $lieu->setValue('logo', $nouvel_id . '_logo' . mb_strrchr((string) $this->fichiers['logo']['name'], '.'));
-            }
-
-            if (!empty($this->fichiers['photo1']['name']))
-            {
-                $lieu->setValue('photo1', $nouvel_id . '_photo1' . mb_strrchr((string) $this->fichiers['logo']['name'], '.'));
-            }
-
-            $lieu->setValue('dateAjout', date("Y-m-d H:i:s"));
-            $lieu->setValue('date_derniere_modif', date("Y-m-d H:i:s"));
-
-            /*
-             * Insertion réussie, message OK, aperçu, et RAZ des champs
-             */
-            if ($lieu->insert())
-            {
-                $this->id = $this->connector->getInsertId();
-                $this->message = 'Lieu ajouté';
-            }
-            else
-            {
-                HtmlShrink::msgErreur("Erreur lors de l'insertion dans la table");
-                return false;
+                $this->verif->setErreur('categories', "La catégorie " . $category . " n'est pas valable");
             }
         }
-        else if ($this->action == 'editer')
+
+        if (!array_key_exists($this->valeurs['statut'], Lieu::STATUTS))
         {
-            $lieu->setValue('date_derniere_modif', date("Y-m-d H:i:s"));
-            //echo $this->id;
-            $lieu->setId($this->id);
-
-            //echo "<p>supprimer :</p>";
-            //TEST
-            //printr($this->supprimer);
-            //
-
-            if ($this->fichiers['logo']['name'] != '')
-            {
-                // suppression des fichiers de l'ancienne image
-                if (!empty($lieu->getValue('logo')))
-                {
-                    $this->safeUnlinkImageAndThumb($rep_uploads_lieux, $lieu->getValue('logo'));
-                }
-
-                $lieu->setValue('logo', Document::getFilename($this->fichiers['logo']['name'], $lieu->getId(), 'logo', ''));
-            }
-
-
-
-            /*
-             * Si on a seulement choisi de supprimer l'image existante
-             */
-            elseif (in_array('logo', $this->supprimer))
-            {
-                // suppression des fichiers de l'image, s'il elle est effectivement enregistrée
-                if (!empty($lieu->getValue('logo')))
-                {
-                    $this->safeUnlinkImageAndThumb($rep_uploads_lieux, $lieu->getValue('logo'));
-                }
-
-                $lieu->setValue('logo', '');
-            }
-
-            if ($this->fichiers['photo1']['name'] != '')
-            {
-                // suppression des fichiers de l'ancienne image
-                if ($lieu->getValue('photo1') != '')
-                {
-                    $this->safeUnlinkImageAndThumb($rep_uploads_lieux, $lieu->getValue('photo1'));
-                }
-
-                $lieu->setValue('photo1', Document::getFilename($this->fichiers['photo1']['name'], $lieu->getId(), 'photo1', ''));
-            }
-            /*
-             * Si on a seulement choisi de supprimer l'image existante
-             */
-            else if (in_array('photo1', $this->supprimer))
-            {
-                // suppression des fichiers de l'image, s'il elle est effectivement enregistrée
-                if ($lieu->getValue('photo1') != '')
-                {
-                    $this->safeUnlinkImageAndThumb($rep_uploads_lieux, $lieu->getValue('photo1'));
-                }
-
-                $lieu->setValue('photo1', '');
-            }
-
-            foreach ($this->supprimer_galerie as $nom_fichier)
-            {
-                $idF = Text::reverseMbStrrchr($nom_fichier, '.');
-                //echo $idF;
-                $this->connector->query("DELETE FROM lieu_fichierrecu WHERE idLieu=" . $lieu->getId() . " AND idFichierrecu=" . $idF);
-                $this->connector->query("DELETE FROM fichierrecu WHERE idFichierrecu=" . $idF);
-                $this->safeUnlinkImageAndThumb($rep_uploads_lieux_galeries, $nom_fichier);
-            }
-
-
-            $sql = "DELETE FROM lieu_organisateur WHERE idLieu=" . $lieu->getId();
-            //echo $sql;
-            $req = $this->connector->query($sql);
-
-            /* echo "avant update:";
-              printr($lieu->getValues()); */
-
-            if ($lieu->update())
-            {
-                $this->message = 'Lieu modifié';
-                $action_terminee = true;
-            }
-            else
-            {
-                HtmlShrink::msgErreur("Erreur lors de la mise à jour de la table");
-            }
+            $this->verif->setErreur("statut", "Ce statut n'existe pas");
         }
+
+        foreach (array_keys(self::IMAGES) as $field)
+        {
+            $this->verif->validerFichierImage($this->fichiers[$field], $field, $mimes_images_acceptes, 0);
+        }
+
+        return $this->verif->nbErreurs() === 0;
+    }
+
+    public function setIdLieu(int $idLieu): void
+    {
+        $this->setRecordId($idLieu);
+    }
+
+    public function getIdLieu(): int
+    {
+        return $this->getRecordId();
+    }
+
+    public function getCoordinates(): Coordinates
+    {
+        return $this->coordinates;
+    }
+
+    /**
+     * @return list<int>
+     */
+    public function getOrganisateurs(): array
+    {
+        return $this->organisateurs;
+    }
+
+    /**
+     * @return list<string>
+     */
+    public function getCategories(): array
+    {
+        return $this->categories;
+    }
+
+    #[\Override]
+    protected function table(): string
+    {
+        return 'lieu';
+    }
+
+    #[\Override]
+    protected function idColumn(): string
+    {
+        return 'idLieu';
+    }
+
+    /**
+     * Méthode et non constante : PHP ne sait pas déclarer une constante abstraite sur une
+     * classe, la base ne pourrait donc pas exiger que chaque fiche la fournisse.
+     */
+    #[\Override]
+    protected function storedColumns(): array
+    {
+        // preposition_nom et categories s'y trouvent parce que les non-éditeurs ne les
+        // postent pas : c'est de la base qu'il faut alors les reprendre
+        return ['nom', 'statut', 'logo', 'photo1', 'preposition_nom', 'categories'];
+    }
+
+    #[\Override]
+    protected function imageFields(): array
+    {
+        return self::IMAGES;
+    }
+
+    #[\Override]
+    protected function uploadsSubdir(): string
+    {
+        return 'lieux';
+    }
+
+    /** `lieu.logo` et `lieu.photo1` acceptent NULL depuis la 3.13.0. */
+    #[\Override]
+    protected function absentImageValue(): ?string
+    {
+        return null;
+    }
+
+    /**
+     * @param array<string, mixed> $row
+     */
+    #[\Override]
+    protected function afterLoad(array $row): void
+    {
+        $this->categories = self::splitCategories($row['categories'] ?? null);
+        $this->coordinates = Coordinates::fromDatabase($row['lat'] ?? null, $row['lng'] ?? null);
+        $this->organisateurs = $this->readStoredOrganisateurs();
+    }
+
+    /**
+     * @param array<string, mixed> $postGlobal
+     */
+    #[\Override]
+    protected function readPostedFields(array $postGlobal): void
+    {
+        parent::readPostedFields($postGlobal);
 
         /*
-         * TRAITEMENT DES FICHIERS UPLOADES
+         * Les deux champs à valeurs multiples ne passent pas par la boucle héritée, qui
+         * n'accepte que des scalaires. Ils sont lus sans condition d'existence : un
+         * <select multiple> entièrement désélectionné et un groupe de cases toutes
+         * décochées ne postent aucune clé, et retomber sur la valeur précédente
+         * empêcherait de tout retirer.
          */
-        //echo "f:";
-//		printr($this->fichiers);
-        if (!empty($this->fichiers['logo']['name']))
-        {
-            //echo "ok img";
-            $imD2 = new ImageDriver2("lieux");
+        $this->categories = array_values(array_filter(
+            is_array($postGlobal['categories'] ?? null) ? $postGlobal['categories'] : [],
+            'is_string'
+        ));
 
-            if (!$imD2->processImage($this->fichiers['logo'], "s_" . $lieu->getValue('logo'), 200, 50, 'h', 0))
-            {
-                trigger_error($imD2->getErreur());
-                exit;
-            }
+        $this->organisateurs = self::toPositiveIds($postGlobal['organisateurs'] ?? null);
 
-            if (!$imD2->processImage($this->fichiers['logo'], $lieu->getValue('logo'), 600, 600, '', 0))
-            {
-                trigger_error($imD2->getErreur());
-                exit;
-            }
-        }
-
-        if (!empty($this->fichiers['photo1']['name']))
-        {
-            //echo "ok img";
-            $imD2 = new ImageDriver2("lieux");
-
-            if (!$imD2->processImage($this->fichiers['photo1'], "s_" . $lieu->getValue('photo1'), 200, 300, 'w', 1))
-            {
-                trigger_error($imD2->getErreur());
-                exit;
-            }
-
-            if (!$imD2->processImage($this->fichiers['photo1'], $lieu->getValue('photo1'), 600, 600, '', 0))
-            {
-                trigger_error($imD2->getErreur());
-                exit;
-            }
-        }
-
-        if (!empty($this->fichiers['image_galerie']['name']))
-        {
-
-            $extension = mb_strrchr((string) $this->fichiers['image_galerie']['name'], '.');
-
-            $sql_insert = "INSERT INTO fichierrecu (idElement, type_element, description, mime, extension, type, dateAjout)
-			VALUES ('" . $lieu->getId() . "', 'lieu',
-			'',
-			'image',
-			'" . $this->connector->sanitize(mb_substr($extension, 1)) . "', 'image', '" . date("Y-m-d H:i:s") . "')";
-
-            //TEST
-            //echo "<p> insert fichierrecu : ".$sql_insert."</p>";
-            //
-
-            if ($this->connector->query($sql_insert))
-            {
-
-            }
-
-            $id_nouveau_fichier = $this->connector->getInsertId();
-
-            $sql_ins_ef = "INSERT INTO lieu_fichierrecu (idLieu, idFichierrecu)
-			VALUES ('" . $lieu->getId() . "', '" . $id_nouveau_fichier . "')";
-            //TEST
-            //echo "<p>insert lieu_fichierrecu : ".$sql_ins_ef."</p>";
-            //
-
-            if ($this->connector->query($sql_ins_ef))
-            {
-                //TEST
-                //echo "lieu_fichierrecu : ".$id_element." ".$id_nouveau_fichier;
-                //
-            }
-
-            $nom_image_galerie = $id_nouveau_fichier . $extension;
-            $imD = new ImageDriver2("lieux/galeries");
-
-            $erreur_image[] = $imD->processImage($this->fichiers['image_galerie'], "s_" . $nom_image_galerie, 60, 60, '', 1);
-            $erreur_image[] = $imD->processImage($this->fichiers['image_galerie'], $nom_image_galerie, 600, 600, '', 0);
-
-            $champs['image_galerie'] = '';
-        }
-
-        foreach ($this->organisateurs as $idOrg)
-        {
-            if ($idOrg != 0)
-            {
-                $sql = "INSERT INTO lieu_organisateur (idLieu, idOrganisateur) VALUES (" . $lieu->getId() . ", " . $idOrg . ")";
-                //echo $sql;
-                $this->connector->query($sql);
-            }
-        }
+        $this->coordinates = Coordinates::fromInput($postGlobal['lat'] ?? '', $postGlobal['lng'] ?? '');
     }
 
-    function loadValues(int $id): void
+    /**
+     * Rend leur valeur enregistrée aux champs réservés aux éditeurs, quand le formulaire
+     * ne les a pas proposés.
+     *
+     * Ils partaient jusqu'ici en champs cachés, donc modifiables par n'importe quel
+     * client : renommer un lieu ou le rattacher à un organisateur ne demandait qu'un
+     * POST forgé. À l'ajout la question ne se pose pas, il est réservé aux éditeurs.
+     */
+    #[\Override]
+    protected function fillEditorsFieldsValuesIfNotAllowed(): void
     {
-        $lieu = new Lieu();
-        $lieu->setId($id);
-        $lieu->load();
-        $champs = $lieu->getValues();
+        if ($this->currentUser->canEditEditorFields || $this->action !== 'update')
+        {
+            return;
+        }
 
-        $champs['categorie'] = explode(',', (string) $champs['categorie']);
-
-//		printr($champs);
-
-        $this->valeurs = $champs;
+        $this->valeurs['nom'] = $this->storedValues['nom'];
+        $this->valeurs['preposition_nom'] = $this->storedValues['preposition_nom'];
+        $this->categories = self::splitCategories($this->storedValues['categories']);
+        $this->organisateurs = $this->readStoredOrganisateurs();
     }
 
     #[\Override]
-    function Set($Name, $Value): void
+    protected function insert(): bool
     {
-        $this->$Name = $Value;
-    }
+        $now = date("Y-m-d H:i:s");
+        [$localiteId, $quartier] = $this->getLocaliteAndQuartierFromLocaliteId();
 
-    #[\Override]
-    function getErreur($champ)
-    {
-        $erreur = $this->erreurs[$champ];
-        return $erreur;
-    }
+        $stmt = $this->pdo->prepare("INSERT INTO lieu
+            (idpersonne, statut, nom, preposition_nom, categories, adresse, quartier, localite_id, region,
+             lat, lng, horaire_general, URL, dateAjout, date_derniere_modif)
+            VALUES (:idPersonne, :statut, :nom, :preposition, :categories, :adresse, :quartier, :localiteId, :region,
+             :lat, :lng, :horaire, :url, :dateAjout, :dateModif)");
 
-    #[\Override]
-    function getNbErreurs(): int
-    {
-
-        return count($this->erreurs);
-    }
-
-    #[\Override]
-    function getHtmlErreur($champ)
-    {
-        if (!empty($this->erreurs[$champ]))
+        if (!$stmt->execute($this->getSqlCommonParameters($localiteId, $quartier) + [
+            ':idPersonne' => $this->currentUser->idPersonne,
+            ':dateAjout' => $now,
+            ':dateModif' => $now,
+        ]))
         {
-            return '<div class="msg">' . $this->erreurs[$champ] . '</div>';
-        }
-    }
-
-    #[\Override]
-    function GetInitialValue($Name)
-    {
-        if (isset($this->Values[$Name]))
-            return $this->Values[$Name];
-        else
             return false;
+        }
+
+        $this->setRecordId((int) $this->pdo->lastInsertId());
+        $this->message = 'Lieu ajouté';
+
+        $this->saveOrganisateurs();
+        $this->saveImages();
+
+        return true;
     }
 
     #[\Override]
-    function InitialValue($Name)
+    protected function update(): bool
     {
-        echo $this->GetInitialValue($Name);
+        [$localiteId, $quartier] = $this->getLocaliteAndQuartierFromLocaliteId();
+
+        $stmt = $this->pdo->prepare("UPDATE lieu SET
+            statut = :statut, nom = :nom, preposition_nom = :preposition, categories = :categories,
+            adresse = :adresse, quartier = :quartier, localite_id = :localiteId, region = :region,
+            lat = :lat, lng = :lng, horaire_general = :horaire, URL = :url, date_derniere_modif = :dateModif
+            WHERE idLieu = :id");
+
+        // idpersonne n'est pas touché : il désigne l'auteur de la fiche. L'écraser par
+        // l'éditeur du moment — ce que faisait l'enregistrement générique — dépossédait
+        // l'auteur au premier passage d'un administrateur.
+        if (!$stmt->execute($this->getSqlCommonParameters($localiteId, $quartier) + [
+            ':dateModif' => date("Y-m-d H:i:s"),
+            ':id' => $this->getRecordId(),
+        ]))
+        {
+            return false;
+        }
+
+        $this->message = 'Lieu modifié';
+
+        $this->saveOrganisateurs();
+        $this->saveImages();
+
+        return true;
     }
 
-    #[\Override]
-    function setAction($action)
+    /**
+     * Marqueurs communs à l'INSERT et à l'UPDATE.
+     *
+     * @return array<string, mixed>
+     */
+    private function getSqlCommonParameters(int $localiteId, string $quartier): array
     {
-        $this->action = $action;
+        return [
+            ':statut' => $this->valeurs['statut'],
+            ':nom' => $this->valeurs['nom'],
+            ':preposition' => $this->valeurs['preposition_nom'] === '' ? null : $this->valeurs['preposition_nom'],
+            ':categories' => implode(',', $this->categories),
+            ':adresse' => $this->valeurs['adresse'],
+            ':quartier' => $quartier,
+            ':localiteId' => $localiteId,
+            ':region' => $this->regionOfLocalite($localiteId),
+            ':lat' => $this->coordinates->latForDatabase(),
+            ':lng' => $this->coordinates->lngForDatabase(),
+            ':horaire' => $this->valeurs['horaire_general'] === '' ? null : $this->valeurs['horaire_general'],
+            ':url' => $this->valeurs['URL'] === '' ? null : $this->valeurs['URL'],
+        ];
     }
 
-    #[\Override]
-    function getAction()
+    /**
+     * Localité et quartier tels que le <select> les a postés.
+     *
+     * Genève est la seule localité à se subdiviser, et ses quartiers voyagent dans la
+     * même valeur composée « 44_Pâquis » — voir Localite::renderOptions().
+     *
+     * @return array{int, string}
+     */
+    private function getLocaliteAndQuartierFromLocaliteId(): array
     {
-        return $this->action;
+        $input = (string) $this->valeurs['localite_id'];
+
+        if (str_contains($input, '_'))
+        {
+            [$id, $quartier] = explode('_', $input, 2);
+
+            return [(int) $id, $quartier];
+        }
+
+        return [(int) $input, ''];
     }
 
-    #[\Override]
-    function setMessage($message)
+    /**
+     * Région du lieu : le canton de sa localité.
+     *
+     * Un cas particulier codé en dur y rattachait auparavant la localité 529 à Genève,
+     * « Nyon, vaudoise mais rattachée à Genève ». Nyon porte l'identifiant 513 ; 529 est
+     * Oulens-sur-Lucens, à soixante kilomètres de là. La règle ne s'appliquait donc pas
+     * là où elle était voulue, et s'appliquait là où elle n'a pas de sens.
+     *
+     * Ce que ce cas cherchait à dire est déjà en base : `localite.regions_covered` porte
+     * « ge,vd » pour tout le district de Nyon depuis la 3.6.3. C'est là-dessus qu'il
+     * faudra s'appuyer le jour où les listes de lieux en tiendront compte — la clause
+     * qui l'exploiterait est en commentaire dans Lieu::getLieux().
+     */
+    private function regionOfLocalite(int $localiteId): string
     {
-        $this->message = $message;
+        $stmt = $this->pdo->prepare("SELECT canton FROM localite WHERE id = :id");
+        $stmt->execute([':id' => $localiteId]);
+
+        $canton = $stmt->fetchColumn();
+
+        return $canton === false ? '' : (string) $canton;
     }
 
-    #[\Override]
-    function getMessage()
+    /**
+     * Réécrit les liens vers les organisateurs : la table de liaison n'a pas de colonne
+     * à mettre à jour, seulement des lignes à poser ou à retirer.
+     */
+    private function saveOrganisateurs(): void
     {
-        return $this->message;
+        $deleteLinks = $this->pdo->prepare("DELETE FROM lieu_organisateur WHERE idLieu = :id");
+        $deleteLinks->execute([':id' => $this->getRecordId()]);
+
+        $insertLink = $this->pdo->prepare("INSERT INTO lieu_organisateur (idLieu, idOrganisateur) VALUES (:idLieu, :idOrganisateur)");
+
+        foreach (array_unique($this->organisateurs) as $idOrganisateur)
+        {
+            $insertLink->execute([':idLieu' => $this->getRecordId(), ':idOrganisateur' => $idOrganisateur]);
+        }
     }
 
-    #[\Override]
-    function getSupprimer()
+    /**
+     * @return list<int>
+     */
+    private function readStoredOrganisateurs(): array
     {
-        return $this->supprimer;
+        $stmt = $this->pdo->prepare("SELECT idOrganisateur FROM lieu_organisateur WHERE idLieu = :id");
+        $stmt->execute([':id' => $this->getRecordId()]);
+
+        return array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
     }
 
-    #[\Override]
-    function setSupprimer($sup)
+    /**
+     * Codes de catégorie portés par la colonne `categories` (SET), qui les sépare par
+     * des virgules.
+     *
+     * @return list<string>
+     */
+    private static function splitCategories(mixed $column): array
     {
-        $this->supprimer = $sup;
+        return array_values(array_filter(array_map('trim', explode(',', (string) $column))));
     }
 
+    /**
+     * Identifiants postés par un <select multiple>, donc entièrement forgeables : tout
+     * ce qui n'est pas un entier positif est écarté avant d'atteindre la base.
+     *
+     * @return list<int>
+     */
+    private static function toPositiveIds(mixed $posted): array
+    {
+        if (!is_array($posted))
+        {
+            return [];
+        }
+
+        $ids = array_map(static fn (mixed $value): int => is_scalar($value) ? (int) $value : 0, $posted);
+
+        return array_values(array_filter($ids, static fn (int $id): bool => $id > 0));
+    }
 }

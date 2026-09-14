@@ -1,6 +1,12 @@
 <?php
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\UserLevel;
+
+// Mode « mouseless » (entraînement aux raccourcis clavier) : réservé aux administrateurs,
+// qui sont ceux qui enchaînent le plus d'actions sur le site. Le mode n'ayant aucun enjeu
+// de sécurité, le verrou est purement au rendu : sans le script d'amorçage ci-dessous,
+// mouseless.js ne s'active jamais.
+$mouseless_allowed = isset($_SESSION['Sgroupe']) && (int) $_SESSION['Sgroupe'] <= UserLevel::ADMIN;
 ?>
 
 <!doctype html>
@@ -42,10 +48,6 @@ use Ladecadanse\UserLevel;
     <link rel="stylesheet" type="text/css" href="/web/css/normalize.css">
     <link rel="stylesheet" type="text/css" href="<?= $assets->get("css/imprimer.css"); ?>" media="print">
     <link rel="stylesheet" type="text/css" href="<?= $assets->get('css/global.css') ?>">
-    <?php if (file_exists(__ROOT__ . "/web/css/{$nom_page}.css")) : ?>
-        <link rel="stylesheet" type="text/css" href="<?= $assets->get("css/{$nom_page}.css"); ?>" media="screen">
-    <?php endif; ?>
-    <link href="/vendor/select2/select2/dist/css/select2.min.css" rel="stylesheet">
     <?php
     if (isset($extra_css) && is_array($extra_css)) :
         foreach ($extra_css as $import) : ?>
@@ -54,9 +56,17 @@ use Ladecadanse\UserLevel;
         endforeach;
     endif;
     ?>
+    <?php if (file_exists(__ROOT__ . "/web/css/{$nom_page}.css")) : ?>
+        <link rel="stylesheet" type="text/css" href="<?= $assets->get("css/{$nom_page}.css"); ?>" media="screen">
+    <?php endif; ?>
+    <link href="/vendor/select2/select2/dist/css/select2.min.css" rel="stylesheet">
 
+
+    <?php /* les deux bornes ne doivent pas se recouvrir : à exactement 800px les deux feuilles
+             s'appliquaient, mobile.css masquait le formulaire de recherche et desktop.css sa
+             loupe de remplacement, ne laissant aucun moyen de chercher */ ?>
     <link rel="stylesheet" type="text/css" media="screen and (min-width:800px)"  href="<?= $assets->get("css/desktop.css"); ?>">
-    <link rel="stylesheet" type="text/css" media="screen and (max-width:800px)"  href="<?= $assets->get("css/mobile.css"); ?>">
+    <link rel="stylesheet" type="text/css" media="screen and (max-width:799.98px)"  href="<?= $assets->get("css/mobile.css"); ?>">
     <link rel="stylesheet" type="text/css" media="print" href="<?= $assets->get("css/imprimer.css"); ?>" title="Imprimer">
     <link rel="stylesheet" type="text/css" href="/vendor/fortawesome/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="/vendor/dimsemenov/magnific-popup/dist/magnific-popup.css">
@@ -71,12 +81,17 @@ use Ladecadanse\UserLevel;
     <link rel="apple-touch-icon" sizes="152x152" href="/web/interface/apple-icon-152x152.png">
 
     <?php if (GLITCHTIP_ENABLED) : ?>
-        <script src="https://browser.sentry-cdn.com/9.14.0/bundle.min.js" crossorigin="anonymous"></script>
+        <script src="https://browser.sentry-cdn.com/10.69.0/bundle.min.js"
+                integrity="sha384-3CEt/dsT99DjKC3MgiUAiordZm0hoZjYMn6ioBvRKm+9A98CLWAUsQsk5XaPpjfU"
+                crossorigin="anonymous"></script>
         <script nonce="<?= CSP_NONCE ?>">
+            // le bundle peut manquer (bloqueur de pub, CDN indisponible) : sans ce
+            // garde, la console de ces visiteurs affiche « Sentry is not defined »
+            if (window.Sentry) {
                 Sentry.init({
-              dsn: "<?= GLITCHTIP_DSN ?>",
-              tracesSampleRate: 0.01,
-        });
+                    dsn: "<?= GLITCHTIP_DSN ?>",
+                });
+            }
         </script>
     <?php endif; ?>
 
@@ -105,11 +120,45 @@ use Ladecadanse\UserLevel;
     <!-- End Matomo Code -->
     <?php endif; ?>
     <?php if (DARKVISITORS_ENABLED) : ?>
-        <script src="https://darkvisitors.com/tracker.js?project_key=<?= DARKVISITORS_PROJECT_KEY ?>"></script>
+        <?php // darkvisitors.com redirige (301) vers knownagents.com : on cible directement
+              // le nouveau domaine, sinon la CSP bloque le script après la redirection ?>
+        <script src="https://knownagents.com/tracker.js?project_key=<?= DARKVISITORS_PROJECT_KEY ?>"></script>
     <?php endif; ?>
+    <?php if ($mouseless_allowed) : ?>
+        <?php // Amorçage du mode mouseless. Inline et dans le <head> parce que main.js est un
+              // module ES, donc différé : sans cela les liens s'afficheraient une fraction de
+              // seconde en état normal avant d'être neutralisés. mouseless.js prend le relais. ?>
+        <script nonce="<?= CSP_NONCE ?>">
+            (function activateMouselessMode() {
+                try {
+                    const param = new URLSearchParams(location.search).get('mouseless');
+                    const active = param === null
+                        ? localStorage.getItem('ladecadanse.mouseless') === '1'
+                        : (param === '1' || param === 'on');
+                    if (param !== null) {
+                        localStorage.setItem('ladecadanse.mouseless', active ? '1' : '0');
+                    }
+                    if (active) {
+                        document.documentElement.classList.add('mouseless');
+                    }
+                } catch (e) {
+                    // navigation privée, stockage refusé : on se passe simplement du mode
+                }
+            })();
+        </script>
+    <?php endif; ?>
+
+    <?php // Marqueur « le JS est actif », lu par le CSS. Inline et dans le <head> pour la même
+          // raison que l'amorçage mouseless ci-dessus : main.js est un module ES, donc différé,
+          // et le repli des textes (.texte-repliable) doit être en place dès la première image
+          // peinte. Sans JS la classe est absente, et ces textes s'affichent en entier plutôt
+          // que tronqués sans moyen de les déplier. ?>
+    <script nonce="<?= CSP_NONCE ?>">
+        document.documentElement.classList.add('js');
+    </script>
 </head>
 
-<body>
+<body data-page="<?= sanitizeForHtml($nom_page) ?>">
     <a id="main-shortcut" href="#contenu" aria-label="Aller au contenu principal"></a>
     <div id="global">
 
@@ -178,19 +227,19 @@ use Ladecadanse\UserLevel;
                         {
                             $ici = '';
                             $ici_login = '';
-                            if (strstr((string) $_SERVER['PHP_SELF'], "user-login.php") )
+                            if (strstr((string) $_SERVER['PHP_SELF'], "user/login.php") )
                             {
                                 $ici_login = " class=\"ici\"";
                             }
 
-                            if ( strstr((string) $_SERVER['PHP_SELF'], "user-register.php"))
+                            if ( strstr((string) $_SERVER['PHP_SELF'], "user/register.php"))
                             {
                                 $ici = " class=\"ici\"";
                             }
                             ?>
 
-                            <li <?php echo $ici; ?>><a href="/user-register.php" title="Créer un compte"><strong>Inscription</strong></a></li>
-                            <li <?php echo $ici_login; ?> rel="nofollow"><a href="/user-login.php" title="Se connecter au site">Connexion</a></li>
+                            <li <?php echo $ici; ?>><a href="/user/register.php" title="Créer un compte"><strong>Inscription</strong></a></li>
+                            <li <?php echo $ici_login; ?> rel="nofollow"><a href="/user/login.php" title="Se connecter au site">Connexion</a></li>
 
                         <?php
                         }
@@ -207,15 +256,31 @@ use Ladecadanse\UserLevel;
 
                                     <?php if ($_SESSION['Sgroupe'] <= UserLevel::ADMIN) : ?>
                                         <a href="/admin/index.php" <?php if (strstr((string) $_SERVER['PHP_SELF'], "admin/index.php")) : ?>class="ici"<?php endif; ?>><i class="fa fa-tachometer" aria-hidden="true"></i></a>
-                                        <a href="/admin/gererEvenements.php" <?php if (strstr((string) $_SERVER['PHP_SELF'], "admin/gererEvenements.php")) : ?>class="ici"<?php endif; ?> ><i class="fa fa-calendar-o" aria-hidden="true"></i></a>
+                                        <a href="/admin/events.php" <?php if (strstr((string) $_SERVER['PHP_SELF'], "admin/events.php")) : ?>class="ici"<?php endif; ?> ><i class="fa fa-calendar-o" aria-hidden="true"></i></a>
                                         <a href="/admin/users.php" <?php if (strstr((string) $_SERVER['PHP_SELF'], "admin/users.php")) : ?>class="ici"<?php endif; ?>><i class="fa fa-users" aria-hidden="true"></i></a>
+                                        <a href="/admin/bots.php" title="Monitoring des bots" <?php if (strstr((string) $_SERVER['PHP_SELF'], "admin/bots.php")) : ?>class="ici"<?php endif; ?>><i class="fa fa-bug" aria-hidden="true"></i></a>
                                     <?php endif; ?>
 
-                                    <a href="/user.php?idP=<?= (int) $_SESSION['SidPersonne']; ?>" title="<?= sanitizeForHtml($_SESSION['user']); ?>" <?php if (strstr((string) $_SERVER['PHP_SELF'], "user.php")) : ?>class="ici"<?php endif; ?>>
+                                    <a href="/user/dashboard.php?idP=<?= (int) $_SESSION['SidPersonne']; ?>" title="<?= sanitizeForHtml($_SESSION['user']); ?>" <?php if (strstr((string) $_SERVER['PHP_SELF'], "user/dashboard.php")) : ?>class="ici"<?php endif; ?>>
                                         <i class="fa fa-user" aria-hidden="true"></i>
                                     </a>
 
-                                    <a href="/user-logout.php">Sortir</a>
+                                    <?php
+                                    /*
+                                     * Jeton valable toute la session, et non renouvelé à chaque formulaire comme
+                                     * dans user/login.php : le bouton est rendu sur toutes les pages, donc dans
+                                     * tous les onglets ouverts, et un jeton à usage unique rendrait la déconnexion
+                                     * impossible depuis un onglet resté en arrière-plan.
+                                     */
+                                    if (empty($_SESSION['form_token_user_logout']))
+                                    {
+                                        $_SESSION['form_token_user_logout'] = bin2hex(random_bytes(32));
+                                    }
+                                    ?>
+                                    <form action="/user/logout.php" method="post" class="deconnexion">
+                                        <input type="hidden" name="form_token_user_logout" value="<?= $_SESSION['form_token_user_logout'] ?>">
+                                        <button type="submit">Sortir</button>
+                                    </form>
                                 </li>
                         <?php } ?>
                     </ul>
@@ -230,7 +295,7 @@ use Ladecadanse\UserLevel;
 
                 <ul>
                     <?php
-                    $menu_principal = isFavoritesEnabled()
+                    $menu_principal = Ladecadanse\Favorites::isEnabled()
                         ? ["Agenda" => "index.php", "Favoris" => "favoris.php", "Lieux" => "lieu/lieux.php", "Organisateurs" => "organisateur/organisateurs.php"]
                         : ["Agenda" => "index.php", "Lieux" => "lieu/lieux.php", "Organisateurs" => "organisateur/organisateurs.php"];
                     foreach ($menu_principal as $nom => $lien) {
@@ -263,13 +328,13 @@ use Ladecadanse\UserLevel;
                     }
                     ?>
 
-                    <li class="form_recherche"><search><a href="#" id="btn_search" aria-label="Rechercher un événement"><i class="fa fa-search" aria-hidden="true"></i></a><form class="recherche" action="/event/search.php" method="get" enctype="application/x-www-form-urlencoded"><input type="search" class="mots" name="mots" size="22" maxlength="100" required placeholder="Rechercher un événement" aria-label="Rechercher un événement"><button type="submit" class="submit" name="formulaire" value=""><i class="fa fa-search" aria-hidden="true" style="color: #5C7378"></i></button><input type="text" name="name_as" value="" class="name_as"></form></search></li>
+                    <li class="form_recherche"><search><a href="#" id="btn_search" aria-label="Rechercher un événement"><i class="fa fa-search" aria-hidden="true"></i></a><form class="recherche" action="/event/search.php" method="get" enctype="application/x-www-form-urlencoded"><input type="search" class="mots" name="mots" size="22" maxlength="100" required placeholder="Rechercher un événement" aria-label="Rechercher un événement" value="<?= sanitizeForHtml($page_recherche_mots ?? '') ?>"><button type="submit" class="submit" name="formulaire" value=""><i class="fa fa-search" aria-hidden="true" style="color: #5C7378"></i></button><input type="text" name="name_as" value="" class="name_as"></form></search></li>
                 </ul>
 
                 <div class="clear_mobile"></div>
                 <search>
                     <form class="recherche_mobile" action="/event/search.php" method="get" enctype="application/x-www-form-urlencoded">
-                        <input type="search" class="mots" name="mots" size="35" required maxlength="100" placeholder="Rechercher un événement" aria-label="Rechercher un événement"><input type="submit" class="submit" name="formulaire" value="OK" aria-label="Lancer la recherche">
+                        <input type="search" class="mots" name="mots" size="35" required maxlength="100" placeholder="Rechercher un événement" aria-label="Rechercher un événement" value="<?= sanitizeForHtml($page_recherche_mots ?? '') ?>"><input type="submit" class="submit" name="formulaire" value="OK" aria-label="Lancer la recherche">
                         <input type="text" name="name_as" value="" class="name_as" >
                     </form>
                 </search>
@@ -278,7 +343,7 @@ use Ladecadanse\UserLevel;
         </header>
 
         <div id="conteneur" style="
-            <?php if (strstr(dirname((string) $_SERVER['PHP_SELF']), 'admin') || in_array($nom_page, ['evenement-edit', 'event/copy', 'event/send', 'event/search', 'lieu/lieux', 'lieu-edit', 'lieu-text-edit', 'organisateur/organisateurs', 'organisateur-edit', 'misc/contacteznous', 'user-login', 'user-edit', 'user-register'])) : ?>padding-right: 5px; <?php endif; ?>
-            <?php if (strstr(dirname((string) $_SERVER['PHP_SELF']), 'admin') || in_array($nom_page, ['user-login']) ) : ?>padding-left: 5px <?php endif; ?>
+            <?php if (strstr(dirname((string) $_SERVER['PHP_SELF']), 'admin') || in_array($nom_page, ['evenement-edit', 'event/copy', 'event/send', 'event/search', 'lieu/lieux', 'lieu/edit', 'lieu/text-edit', 'organisateur/organisateurs', 'organisateur/edit', 'misc/contacteznous', 'user/login', 'user/dashboard', 'user-edit', 'user/register', 'user/reset', 'user/reset2'])) : ?>padding-right: 5px; <?php endif; ?>
+            <?php if (strstr(dirname((string) $_SERVER['PHP_SELF']), 'admin') || in_array($nom_page, ['user/login', 'user/reset', 'user/reset2']) ) : ?>padding-left: 5px <?php endif; ?>
             ">
 

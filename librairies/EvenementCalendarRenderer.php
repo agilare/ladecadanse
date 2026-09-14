@@ -63,6 +63,20 @@ class EvenementCalendarRenderer
         ];
     }
 
+    /**
+     * @param array<string, mixed> $event Event row with at least `e_idEvenement`, `e_horaire_debut`, `e_horaire_fin`, `e_dateEvenement`, `e_titre`, `e_description`, `e_idLieu` and lieu fields from a JOIN
+     * @param bool $compact icon-only trigger with tooltip if true; full label otherwise
+     */
+    public static function renderMenuHtml(array $event, string $siteFullUrl, bool $compact = false): string
+    {
+        $calLinks = (new self($event, $siteFullUrl))->getLinks();
+        $calExportCompact = $compact;
+        $calExportId = (int) $event['e_idEvenement'];
+        ob_start();
+        include __DIR__ . "/../event/_calendar_export.inc.php";
+        return ob_get_clean();
+    }
+
     public function googleUrl(): string
     {
         $dates = $this->endCompact

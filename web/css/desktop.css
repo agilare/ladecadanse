@@ -53,7 +53,10 @@
 	#entete_haut #menu_pratique
 	{
 		float:right;
-		width:90%;
+		/* 100% et non 90% : le bloc flotte à droite, les 10% manquants n'étaient qu'un
+		   couloir vide à sa gauche. Les récupérer évite au menu d'un administrateur
+		   (dashboard + agenda + membres + bots + profil + Sortir) de passer sur deux lignes. */
+		width:100%;
 		height:1.4em;
 
 	}
@@ -62,6 +65,19 @@
 		{
 			text-align:center;
 		}
+
+	/* 19% = 182px pour un logo de 180px : le badge « H » du mode mouseless n'y tient pas et
+	   part à la ligne, hors de vue sous la barre de menu. On lui prend les deux points de
+	   pourcentage à #entete_haut, qui garde de la marge (menu le plus long mesuré : 704px). */
+	html.mouseless #entete #titre_site
+	{
+		width:21%;
+	}
+
+	html.mouseless #entete_haut
+	{
+		width:78%;
+	}
 
 	#entete_haut #menu_pratique2
 	{
@@ -91,6 +107,10 @@
 	#menu ul li.form_recherche
 	{
 		float:right;
+		/* même hauteur que la barre (#menu ci-dessus) : le champ y est alors centré
+		   verticalement au lieu de flotter en haut, comme les autres onglets */
+		min-height:2.6em;
+		margin-right:1em;
 	}
 
 	#menu ul li #btn_search
@@ -118,11 +138,6 @@
 	#menu ul li#bouton_agenda.ici a
 	{
 		background: none;
-	}
-
-	form.recherche
-	{
-		text-align:right;
 	}
 
 #navigation_calendrier
@@ -182,6 +197,16 @@ float: left;
 
 /* evenement */
 
+/* La place ne manque pas : les deux listes d'actions (publique et connectés)
+   restent côte à côte sur une seule ligne, calées à droite comme avant. */
+nav.menus_actions_evenement
+{
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-end;
+	column-gap: 1em;
+}
+
 #evenement .titre
 {
 	min-height: 6em;
@@ -205,6 +230,74 @@ float: left;
 #evenement #description
 {
 	margin-left: 160px;
+}
+
+/* ------------------------------------------------------------------ *
+ * Fiche événement élargie (desktop)
+ *
+ * Pilotée par la classe .vevent-experimental posée par event/evenement.php
+ * (d'abord pour les seuls administrateurs, désormais pour tous). But :
+ * occuper la colonne droite, vide sur cette page, pour agrandir
+ * illustrations, description et titres.
+ * ------------------------------------------------------------------ */
+
+/* Le cadre, le message flash et les blocs calés à droite (en-tête avec la
+   flèche « précédent », barre d'actions, navigation « suivant » du pied)
+   débordent ensemble dans la colonne droite jusqu'au bord droit du bouton
+   de recherche de l'en-tête, pour garder leurs bords droits alignés comme
+   dans la mise en page normale.
+   -166px = largeur de la colonne droite (padding-right 180px de #conteneur)
+   moins la gouttière de 1em (~14px) qui sépare ce bouton du bord de #global.
+   Le bord gauche reste à 3% (aligné sur le titre). */
+.vevent-experimental .msg_ok,
+.vevent-experimental #entete_contenu,
+.vevent-experimental nav.menus_actions_evenement,
+.vevent-experimental #evenement,
+.vevent-experimental #footer_navigation
+{
+	width: auto;
+	margin-left: 3%;
+	margin-right: -166px;
+}
+
+/* Colonne des illustrations et images élargies de 160 à 250px */
+.vevent-experimental #illustrations
+{
+	width: 250px;
+}
+
+.vevent-experimental #illustrations img
+{
+	width: auto; /* neutralise le width="160" de la 2e vignette */
+	max-width: 250px;
+}
+
+/* La description occupe le reste, ~500px : une douzaine de mots par ligne */
+.vevent-experimental #evenement #description
+{
+	margin-left: 250px;
+}
+
+/* Titre (catégorie + date) un peu plus grand ; width:auto pour qu'il ne
+   passe pas à la ligne à cette taille */
+.vevent-experimental #entete_contenu_titre
+{
+	width: auto;
+	font-size: 1.3em;
+}
+
+/* Bouton « événement précédent » réduit à sa seule flèche : le texte est
+   masqué (font-size:0) et l'icône rétablie. Ne vise que l'en-tête, pas la
+   navigation « suivant » du pied de page. Le libellé reste dans le DOM
+   pour les lecteurs d'écran. */
+.vevent-experimental #entete_contenu .entete_contenu_navigation .event-navig-link
+{
+	font-size: 0;
+}
+
+.vevent-experimental #entete_contenu .entete_contenu_navigation .event-navig-link .fa
+{
+	font-size: 1rem;
 }
 
 /* agenda */
@@ -386,16 +479,9 @@ form#ajouter_editer table.fichiers_associes {
 
 }
 
-form#ajouter_editer textarea, form#ajouter_editer #ref
+form#ajouter_editer textarea
 {
     width:600px;
-}
-
-/* personne */
-
-.personne #actions
-{
-	margin:4em 0 0 0;
 }
 
 .only-mobile
@@ -417,4 +503,11 @@ form#ajouter_editer textarea, form#ajouter_editer #ref
 {
    padding:0.2em 0.2em;
    font-size:0.8em
+}
+
+/* on garde le bouton dans le coin de #global (max-width 960px) et non dans celui
+   de l'écran, où son fond gris transparent se confond avec celui du body */
+#back-to-top
+{
+    right: max(1.5rem, calc(50% - 480px + 1.5rem));
 }

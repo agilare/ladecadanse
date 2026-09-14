@@ -10,9 +10,9 @@ use Ladecadanse\EvenementRenderer;
 use Ladecadanse\Evenement;
 use Ladecadanse\Lieu;
 
-if (!$videur->checkGroup(UserLevel::ADMIN)) {
+if (!$authorization->checkGroup(UserLevel::ADMIN)) {
     header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
-	header("Location: /user-login.php"); die();
+	header("Location: /user/login.php"); die();
 }
 
 $_SESSION['region_admin'] = '';
@@ -55,7 +55,7 @@ $page_results = $stmt->fetchAll(PDO::FETCH_GROUP);
 $sql_region = '';
 if (!empty($_SESSION['region_admin']))
 {
-    $sql_region = " AND region='" . $connector->sanitize($_SESSION['region_admin']) . "'";
+    $sql_region = " AND e.region='" . $connector->sanitize($_SESSION['region_admin']) . "'";
 }
 
 
@@ -136,6 +136,8 @@ require_once '../_header.inc.php';
 
     <div id="tableaux">
 
+        <p><a href="/admin/mailing.php">✉ Envoyer un mail à une sélection d'utilisateurs</a></p>
+
         <?php if ($_SESSION['Sgroupe'] < UserLevel::ADMIN) : ?>
 
         <h2 style="padding:0.4em 0">Inscriptions des 3 derniers jours</h2>
@@ -160,7 +162,7 @@ require_once '../_header.inc.php';
                             <tr>
                                 <td><?= (new DateTime($u['p_dateAjout']))->format("H:i")?></td>
                                 <td>
-                                    <a href="/user.php?idP=<?= (int)$u['idPersonne'] ?>"><?= sanitizeForHtml($u['pseudo']) ?></a>
+                                    <a href="/user/dashboard.php?idP=<?= (int)$u['idPersonne'] ?>"><?= sanitizeForHtml($u['pseudo']) ?></a>
                                     <?php if ($u['groupe'] != UserLevel::ACTOR) { echo "(".sanitizeForHtml($u['groupe']).")"; } ?>
                                     <br><small><?= $u['email'] ?></small>
                                 </td>
@@ -225,13 +227,13 @@ require_once '../_header.inc.php';
                         <td><a href="/event/evenement.php?idE=<?= (int)$event['e_idEvenement'] ?>" class='titre'><?= sanitizeForHtml($event['e_titre']) ?></a></td>
                         <td><?= Lieu::getLinkNameHtml($even_lieu['nom'], $even_lieu['idLieu'], $even_lieu['salle']) ?><br><span style="color:lightsteelblue"><?= $even_lieu['localite'] ?></span></td>
                         <td><a href="/index.php?courant=<?= sanitizeForHtml($event['e_dateEvenement']) ?>"><?= DateHelper::isoToApp($event['e_dateEvenement']) ?></a></td>
-                        <td><?= ucfirst($glo_tab_genre[$event['e_genre']]) ?></td>
+                        <td><?= ucfirst(Evenement::categoryLabel($event['e_genre'])) ?></td>
                         <td><?= EvenementRenderer::schedulesToHhMm($event['e_horaire_debut'], $event['e_horaire_fin'], $event['e_dateEvenement']) ?></td>
                         <td style='text-align: center;'><?= EvenementRenderer::$iconStatus[$event['e_statut']] ?></td>
-                        <td><a href="/user.php?idP=<?= (int)$event['idPersonne'] ?>"><?= sanitizeForHtml($event['pseudo']) ?></a></td>
-                        <td>
+                        <td><?= EvenementRenderer::authorLinkHtml((int) $event['idPersonne'], $event['pseudo']) ?></td>
+                        <td class="actions">
                             <?php if ($_SESSION['Sgroupe'] <= UserLevel::ADMIN) : ?>
-                                <a href="/evenement-edit.php?idE=<?= (int)$event['e_idEvenement'] ?>&amp;action=editer"><?= $iconeEditer ?></a>
+                                <a href="/evenement-edit.php?idE=<?= (int)$event['e_idEvenement'] ?>&amp;action=editer" title="Modifier cet événement" aria-label="Modifier cet événement"><?= $iconeEditer ?></a>
                             <?php endif; ?>
                         </td>
                     </tr>
@@ -256,20 +258,17 @@ require_once '../_header.inc.php';
                 <th>&nbsp;</th>
             </tr>
 
-            <?php foreach ($lieux_desc_latest as $desc) :
-                if (mb_strlen((string) $desc['contenu']) > 200)
-                {
-                    $desc['contenu'] = mb_substr((string) $desc['contenu'], 0, 200)." [...]";
-                }
-                ?>
+            <?php foreach ($lieux_desc_latest as $desc) : ?>
 
                 <tr>
                     <td><?= sanitizeForHtml($desc['type']) ?></td>
                     <td><a href="/lieu/lieu.php?idL=<?= (int)$desc['idLieu'] ?>"><?= sanitizeForHtml($desc['l_nom']) ?></a></td>
-                    <td class="tdleft small"><?= Text::texteHtmlReduit($desc['contenu'], 100) ?></td>
-                    <td><a href="/user.php?idP=<?= (int) $desc['idPersonne'] ?>"><?= sanitizeForHtml($desc['pseudo']) ?></a></td>
+                    <?php // aperçu : le contenu est du HTML de confiance (rendu tel quel sur lieu.php),
+                          // on le réduit à son texte pour une cellule de tableau ?>
+                    <td class="tdleft small"><?= Text::shortenToHtml(strip_tags((string) $desc['contenu']), 100) ?></td>
+                    <td><a href="/user/dashboard.php?idP=<?= (int) $desc['idPersonne'] ?>"><?= sanitizeForHtml($desc['pseudo']) ?></a></td>
                     <td><?= DateHelper::isoToFr($desc['dateAjout']) ?></td>
-                    <td><a href="/lieu-text-edit.php?action=editer&amp;idL=<?= (int)$desc['idLieu'] ?>&amp;idP=<?= (int) $desc['idPersonne'] ?>&amp;type=<?= $desc['type'] ?>"><?= $iconeEditer ?></a></td>
+                    <td class="actions"><a href="/lieu/text-edit.php?action=editer&amp;idL=<?= (int)$desc['idLieu'] ?>&amp;idP=<?= (int) $desc['idPersonne'] ?>&amp;type=<?= $desc['type'] ?>" title="Modifier ce texte" aria-label="Modifier ce texte"><?= $iconeEditer ?></a></td>
                </tr>
             <?php endforeach; ?>
     </table>

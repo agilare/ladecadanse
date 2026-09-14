@@ -139,6 +139,17 @@ ul#menu_tri li
         text-align: right;
     }
 
+    /*
+     * Hors connexion, cette colonne se réduit à l'export calendrier : les 80px que
+     * global.css impose à td.lieu_actions_evenement voleraient de la place au titre
+     * pour rien. La règle globale ne bouge pas — les agendas des fiches lieu et
+     * organisateur partagent la classe et gardent leur gouttière.
+     */
+    #res_recherche tr td.actions-compactes
+    {
+        width: auto;
+    }
+
     #res_recherche tr td h3
     {
         font-weight:bold;

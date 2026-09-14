@@ -5,10 +5,11 @@ require_once("../app/bootstrap.php");
 use Ladecadanse\UserLevel;
 use Ladecadanse\Lieu;
 use Ladecadanse\HtmlShrink;
+use Ladecadanse\Personne;
 use Ladecadanse\Utils\DateHelper;
 use Ladecadanse\Utils\Text;
-use Ladecadanse\Utils\Utils;
-use Ladecadanse\Utils\Validateur;
+use Ladecadanse\Utils\WebLink;
+use Ladecadanse\Utils\QueryParamValidator;
 
 if (empty($_GET['idL']) || !is_numeric($_GET['idL']))
 {
@@ -35,7 +36,7 @@ if ($lieu['statut'] == 'inactif' && !((isset($_SESSION['Sgroupe']) && $_SESSION[
 $tab_menu_periodes = ["ancien" => "Passés", "futur" => "Prochains"]; //, "tous" => "Tous"
 $get['periode'] = "futur";
 $sql_periode_operator = ">=";
-if (!empty($_GET['periode']) && Validateur::validateUrlQueryValue($_GET['periode'], "enum", 1, array_keys($tab_menu_periodes)))
+if (!empty($_GET['periode']) && QueryParamValidator::isAcceptedUrlQueryValue($_GET['periode'], "enum", array_keys($tab_menu_periodes)))
 {
     $get['periode'] = $_GET['periode'];
     if ($get['periode'] == "ancien")
@@ -43,6 +44,16 @@ if (!empty($_GET['periode']) && Validateur::validateUrlQueryValue($_GET['periode
         $sql_periode_operator = "<";
     }
 }
+
+// sens du tri des événements passés, mémorisé en session comme user_prefs_agenda_order l'est
+// entre l'accueil et la fiche événement (cf. event/_events_order_menu.inc.php)
+if (!empty($_GET['ordre']) && QueryParamValidator::isAcceptedUrlQueryValue($_GET['ordre'], "enum", array_keys($tab_ordre_evenements_passes)))
+{
+    $_SESSION['user_prefs_past_events_order'] = $_GET['ordre'];
+}
+// l'onglet « Prochains » reste chronologique : le menu de tri n'y est pas proposé
+$is_past_events_desc = ($get['periode'] == "ancien" && $_SESSION['user_prefs_past_events_order'] == "desc");
+$sql_events_order_direction = $is_past_events_desc ? "DESC" : "ASC";
 
 $results_per_page = 50;
 
@@ -58,10 +69,12 @@ $stmtAll = $connectorPdo->prepare($sql_select_all);
 $stmtAll->execute([$get['idL'], $glo_auj]);
 $all_results_nb = $stmtAll->fetchColumn();
 
-$default_page = $get['periode'] == "ancien" ? (int) max(1, ceil($all_results_nb / $results_per_page)) : 1;
-$get['page'] = !empty($_GET['page']) ? Validateur::validateUrlQueryValue($_GET['page'], "int", 1) : $default_page;
+// atterrir sur les événements passés les plus récents : ils sont en dernière page en tri
+// ascendant, en première page en tri descendant
+$default_page = ($get['periode'] == "ancien" && !$is_past_events_desc) ? (int) max(1, ceil($all_results_nb / $results_per_page)) : 1;
+$get['page'] = QueryParamValidator::pageFromQuery($_GET['page'] ?? '', $default_page);
 
-$categories_fr = implode(", ", array_map(fn ($cat) : string => $glo_categories_lieux[$cat], explode(",", str_replace(" ", "", $lieu['categorie']))));
+$categories_fr = Lieu::categoriesEnClair($lieu['categories']);
 $lieu_salles = Lieu::getActivesSalles((int) $get['idL']);
 $lieu_orgas = Lieu::getActivesOrganisateurs((int) $get['idL']);
 
@@ -101,15 +114,24 @@ $sql_select = "SELECT
   e.region AS e_region,
   e.urlLieu AS e_urlLieu,
 
+  l.nom AS l_nom,
+  l.adresse AS l_adresse,
+  l.quartier AS l_quartier,
+  l.URL AS l_URL,
+  l.region AS l_region,
+  lloc.localite AS lloc_localite,
+
   s.nom AS s_nom
 
 FROM evenement e
+LEFT JOIN lieu l ON e.idLieu = l.idLieu
+LEFT JOIN localite lloc ON l.localite_id = lloc.id
 LEFT JOIN salle s ON e.idSalle = s.idSalle
 WHERE
     e.statut NOT IN ('inactif', 'propose') AND e.idLieu = ?";
 
 $sql_select .= " AND e.dateEvenement $sql_periode_operator ?";
-$sql_select .= ' ORDER BY dateEvenement ASC';
+$sql_select .= " ORDER BY dateEvenement $sql_events_order_direction , e_horaire_debut $sql_events_order_direction";
 $sql_select .= " LIMIT " . (int) (($get['page'] - 1) * $results_per_page) . ", " . (int) ($results_per_page); // ($get['page'] - 1) * $results_per_page +
 //echo $sql_select;
 $stmt = $connectorPdo->prepare($sql_select);
@@ -154,7 +176,7 @@ include("../_header.inc.php");
             </h1>
 
             <?php if ($lieu['logo']) : ?>
-                <a href="<?= $assets->get(Lieu::getAssetPath(Lieu::getFilePath($lieu['logo']))) ?>" class="magnific-popup"><img src="<?= $assets->get(Lieu::getAssetPath(Lieu::getFilePath($lieu['logo'], "s_"))) ?>" alt="Logo" class="logo" /></a>
+                <a href="<?= $assets->get(Lieu::getAssetPath(Lieu::getFilePath($lieu['logo']))) ?>" class="magnific-popup"><img src="<?= $assets->get(Lieu::getAssetPath(Lieu::getFilePath($lieu['logo'], "s_"))) ?>" width="100" alt="Logo" class="logo" /></a>
             <?php endif; ?>
 
             <?php if ($lieu['statut'] == 'ancien') : ?>
@@ -166,12 +188,14 @@ include("../_header.inc.php");
 
         <div class="spacer"><!-- --></div>
 
-        <ul class="menu_actions_lieu desktop">
+        <ul class="menu_actions_lieu">
             <?php if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= UserLevel::ACTOR)) : ?>
                 <li class="action_ajouter"><a href="/evenement-edit.php?idL=<?= (int)$get['idL'] ?>">Ajouter un événement à ce lieu</a></li>
             <?php endif; ?>
-            <?php if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= UserLevel::AUTHOR || $authorization->isPersonneAffiliatedWithLieu($_SESSION['SidPersonne'], $get['idL']) || $authorization->isPersonneInLieuByOrganisateur($_SESSION['SidPersonne'], $get['idL']))) : ?>
-                <li class="action_editer"><a href="/lieu-edit.php?action=editer&amp;idL=<?= (int)$get['idL'] ?>">Modifier ce lieu</a></li>
+            <?php /* même question que celle posée par le formulaire d'édition, et par la même
+                     méthode : les deux la posaient chacun à leur façon */ ?>
+            <?php if ($authorization->isPersonneAllowedToEditLieu($_SESSION, (int) $get['idL'])) : ?>
+                <li class="action_editer"><a href="/lieu/edit.php?action=editer&amp;idL=<?= (int)$get['idL'] ?>">Modifier ce lieu</a></li>
             <?php endif; ?>
         </ul>
 
@@ -184,9 +208,9 @@ include("../_header.inc.php");
                 <figure id="photo">
 
                     <?php if ($lieu['photo1'] != '') { ?>
-                        <a href="<?= $assets->get(Lieu::getAssetPath(Lieu::getFilePath($lieu['photo1']))) ?>" class="gallery-item"><img src="<?= $assets->get(Lieu::getAssetPath(Lieu::getFilePath($lieu['photo1'], "s_"))) ?>" alt="Photo du lieu"></a>
+                        <a href="<?= $assets->get(Lieu::getAssetPath(Lieu::getFilePath($lieu['photo1']))) ?>" class="gallery-item"><img src="<?= $assets->get(Lieu::getAssetPath(Lieu::getFilePath($lieu['photo1'], "s_"))) ?>" width="200" alt="Photo du lieu"></a>
                     <?php } elseif (empty($_SESSION['Sgroupe'])) { ?>
-                        <p style="background: #eaeaea;font-size:0.9em;padding:2em 0.5em;line-height:1.2em">Vous gérez ce lieu ? <a href="/user-register.php">Inscrivez-vous</a> pour pouvoir ajouter ou modifier les informations et des photos</p>
+                        <p style="background: #eaeaea;font-size:0.9em;padding:2em 0.5em;line-height:1.2em">Vous gérez ce lieu ? <a href="/user/register.php">Inscrivez-vous</a> pour pouvoir ajouter ou modifier les informations et des photos</p>
                     <?php } ?>
                 </figure>
 
@@ -219,14 +243,14 @@ include("../_header.inc.php");
                         <li>Salles :
                             <ul class="salles">
                                 <?php foreach ($lieu_salles as $s) : ?>
-                                    <li><?= sanitizeForHtml($s['nom']) ?><?php if ($authorization->isPersonneEditor($_SESSION)) : ?><a href="/lieu/salle-edit.php?action=editer&amp;idS=<?= (int)$s['idSalle'] ?>"><?= $iconeEditer ?></a><?php endif ?></li>
+                                    <li><?= sanitizeForHtml($s['nom']) ?><?php if ($authorization->isPersonneEditor($_SESSION)) : ?>&nbsp;<a href="/lieu/salle-edit.php?action=editer&amp;idS=<?= (int)$s['idSalle'] ?>" title="Modifier cette salle" aria-label="Modifier cette salle"><?= $iconeEditer ?></a><?php endif ?></li>
                                 <?php endforeach; ?>
                             </ul>
                         </li>
                     <?php endif; ?>
 
                     <?php if ($authorization->isPersonneEditor($_SESSION)) : ?>
-                        <li><a href="/lieu/salle-edit.php?idL=<?= (int)$get['idL'] ?>"><?= $icone['ajouts'] ?>ajouter une salle</a></li>
+                        <li><a href="/lieu/salle-edit.php?idL=<?= (int)$get['idL'] ?>"><?= $icone['ajouts'] ?> ajouter une salle</a></li>
                     <?php endif; ?>
 
                     <?php
@@ -237,10 +261,10 @@ include("../_header.inc.php");
                     <?php } ?>
 
 
-                    <li><?= Text::lnAndUrlToHtml(sanitizeForHtml($lieu['horaire_general'])); ?></li>
+                    <li><?= Text::lnAndUrlToHtml($lieu['horaire_general'] ?? ''); ?></li>
 
-                    <?php if (!empty($lieu['URL'])) : $lieu_url = Text::getUrlWithName($lieu['URL']); ?>
-                        <li class="sitelieu"><a class="url" href="<?= sanitizeForHtml($lieu_url['url']) ?>" rel="external" target="_blank"><?= sanitizeForHtml($lieu_url['urlName']) ?></a>
+                    <?php if (!empty($lieu['URL'])) : ?>
+                        <li class="sitelieu"><?= WebLink::html($lieu['URL'], iconeParDefaut: 'fa-globe') ?>
                         <?php if ($get['idL'] == 13) : // exception pour idLieu=13 (Le Rez - Usine) ?>
                             <a href="https://rez-usine.ch" class="url" rel="external" target="_blank">rez-usine.ch</a><br>
                             <a href="http://www.ptrnet.ch" class="url" rel="external" target="_blank">ptrnet.ch</a>
@@ -265,7 +289,7 @@ include("../_header.inc.php");
                                 <ul>
                                 <?php foreach ($lieu_affiliates as $a) : ?>
                                     <li>
-                                        <a href="/user.php?idP=<?= (int)$a['idPersonne'] ?>"><?= sanitizeForHtml($a['pseudo']) ?></a>
+                                        <a href="/user/dashboard.php?idP=<?= (int)$a['idPersonne'] ?>"><?= sanitizeForHtml($a['pseudo']) ?></a>
                                         <small><?= sanitizeForHtml($a['email']) ?> <?= DateHelper::isoToApp($a['p_dateAjout']) ?></small>
                                     </li>
                                 <?php endforeach; ?>
@@ -322,31 +346,33 @@ include("../_header.inc.php");
                                     // HACK: before oct 2009 text "wiki" formated
                                     $des_contenu = $des['contenu'];
                                     if (new \DateTime($des['date_derniere_modif']) <= new \DateTime("2009-10-12")) :
-                                        $des_contenu = "<p>".Text::lnAndUrlToHtml(sanitizeForHtml($des['contenu']))."</p>";
+                                        $des_contenu = "<p>".Text::lnAndUrlToHtml($des['contenu'])."</p>";
                                     endif;
                                     ?>
 
-                                    <div class="js-read-smore" data-read-smore-words="50">
-                                        <?= $des_contenu ?>
-                                    </div>
+                                    <?php
+                                    $texteRepliableHtml = $des_contenu;
+                                    // une fiche peut porter plusieurs descriptions et une présentation :
+                                    // l'identifiant doit rester unique dans la page
+                                    $texteRepliableId = $type . '-' . (int) $des['idPersonne'];
+                                    include(__ROOT__ . "/_texte_repliable.inc.php");
+                                    ?>
 
                                     <?php if ($type == 'description') : ?>
-                                        <p><?= HtmlShrink::authorSignatureForHtml($des['idPersonne']) ?></p>
+                                        <p><?= Personne::getSignatureHtml((int) $des['idPersonne']) ?></p>
                                     <?php endif; ?>
 
                                     <div class="auteur">
                                         <span class="left">
                                             <?= ucfirst(DateHelper::isoToFr($des['dateAjout'], 'annee', showDayOfWeek: false)) ?><?php if ($des['date_derniere_modif'] != "0000-00-00 00:00:00" && $des['date_derniere_modif'] != $des['dateAjout']) : ?>, modifié le <?= DateHelper::isoToFr($des['date_derniere_modif'], 'annee', showDayOfWeek: false) ?><?php endif; ?>
                                         </span>
-                                        <?php if (isset($_SESSION['Sgroupe']) && (
-                                                    $_SESSION['Sgroupe'] <= UserLevel::ADMIN
-                                                    || ($type == 'description' && $_SESSION['Sgroupe'] <= UserLevel::AUTHOR && $_SESSION['SidPersonne'] == $des['idPersonne'])
-                                                    || ($type == 'presentation' &&
-                                                    ($_SESSION['Sgroupe'] <= UserLevel::AUTHOR)
-                                                        || ($_SESSION['Sgroupe'] <= UserLevel::ACTOR && ($authorization->isPersonneInLieuByOrganisateur($_SESSION['SidPersonne'], $get['idL']) || $authorization->isPersonneAffiliatedWithLieu($_SESSION['SidPersonne'], $get['idL']))))
-                                                )) : ?>
+                                        <?php /* La même question que se pose lieu/text-edit.php. Écrite ici à la main,
+                                                 elle refermait mal ses parenthèses : la dernière branche n'était pas
+                                                 rattachée au type, et un acteur affilié au lieu voyait « Modifier »
+                                                 sur les descriptions des autres — vers un refus. */ ?>
+                                        <?php if ($authorization->isPersonneAllowedToEditTexteLieu($_SESSION, (string) $type, (int) $get['idL'], (int) $des['idPersonne'])) : ?>
                                                 <span class="right">
-                                                    <a href="/lieu-text-edit.php?action=editer&amp;type=<?= $type ?>&amp;idL=<?= (int)$get['idL'] ?>&amp;idP=<?= (int) $des['idPersonne'] ?>"><?= $iconeEditer ?> Modifier</a>
+                                                    <a href="/lieu/text-edit.php?action=editer&amp;type=<?= $type ?>&amp;idL=<?= (int)$get['idL'] ?>&amp;idP=<?= (int) $des['idPersonne'] ?>"><?= $iconeEditer ?> Modifier</a>
                                                 </span>
                                         <?php endif; ?>
                                         <div class="spacer"><!-- --></div>
@@ -363,17 +389,15 @@ include("../_header.inc.php");
                 <?php
                 // add description :
                 // Description : un rédacteur qui n'en n'a pas déjà écrit une
-                if ($authorization->isPersonneEditor($_SESSION) && !in_array($_SESSION['SidPersonne'], $idPersonne_authors_of_desc)) : ?>
-                    <a href="/lieu-text-edit.php?idL=<?= (int)$get['idL'] ?>&amp;type=description"><?= $icone['ajouter_texte'] ?> Ajouter une description (avis)</a><br>
+                if ($authorization->isPersonneAllowedToAddTexteLieu($_SESSION, 'description', (int) $get['idL'])
+                    && !in_array($_SESSION['SidPersonne'], $idPersonne_authors_of_desc)) : ?>
+                    <a href="/lieu/text-edit.php?idL=<?= (int)$get['idL'] ?>&amp;type=description"><?= $icone['ajouter_texte'] ?> Ajouter une description (avis)</a><br>
                 <?php endif; ?>
 
                 <?php
                 // Presentation : if no presentation yet, allow authorized users to add it
-                if ($presentations_nb == 0 && isset($_SESSION['Sgroupe']) &&
-                        ($_SESSION['Sgroupe'] <= UserLevel::AUTHOR ||
-                            ($_SESSION['Sgroupe'] == UserLevel::ACTOR && ($authorization->isPersonneAffiliatedWithLieu($_SESSION['SidPersonne'], $get['idL']) || $authorization->isPersonneInLieuByOrganisateur($_SESSION['SidPersonne'], $get['idL'])))
-                        )) : ?>
-                    <a href="/lieu-text-edit.php?idL=<?= (int)$get['idL'] ?>&amp;type=presentation"><?= $icone['ajouter_texte'] ?> Ajouter une présentation</a>
+                if ($presentations_nb == 0 && $authorization->isPersonneAllowedToAddTexteLieu($_SESSION, 'presentation', (int) $get['idL'])) : ?>
+                    <a href="/lieu/text-edit.php?idL=<?= (int)$get['idL'] ?>&amp;type=presentation"><?= $icone['ajouter_texte'] ?> Ajouter une présentation</a>
                 <?php endif; ?>
 
             </div><!-- #descriptions -->
@@ -401,7 +425,7 @@ include("../_header.inc.php");
             <ul id="menu_periode" class="entete_contenu_navigation">
                 <?php foreach ($tab_menu_periodes as $k => $label) : ?>
                     <li class="<?= $k ?><?php if ($get['periode'] == $k) : ?> ici<?php endif; ?>">
-                        <a href="?<?= Utils::urlQueryArrayToString($get, ['periode', 'page']) ?>&amp;periode=<?= $k ?>"><?= $label ?></a>
+                        <a href="?<?= HtmlShrink::urlQueryArrayToString($get, ['periode', 'page']) ?>&amp;periode=<?= $k ?>"><?= $label ?></a>
                     </li>
                 <?php endforeach; ?>
                 <div class="spacer"></div>
@@ -414,11 +438,15 @@ include("../_header.inc.php");
         <?php
         if ($all_results_nb == 0) :  ?>
 
-        <p><?= sanitizeForHtml($translator->get("lieu-events-{$get['periode']}-none")) ?> <?= sanitizeForHtml(Lieu::prepositionToPutInSentence($lieu['determinant'])) ?><strong><?= sanitizeForHtml($lieu['nom']) ?></strong></p>
+        <p><?= sanitizeForHtml($translator->get("lieu-events-{$get['periode']}-none")) ?> <?= sanitizeForHtml(Lieu::prepositionToPutInSentence($lieu['preposition_nom'])) ?> <strong><?= sanitizeForHtml($lieu['nom']) ?></strong></p>
 
         <?php else : ?>
 
-            <?= HtmlShrink::getPaginationString($all_results_nb, $get['page'], $results_per_page, 1, basename(__FILE__), "?" . Utils::urlQueryArrayToString($get, "page") . "&amp;page=") ?>
+            <?php // pagination à gauche, menu de tri à droite ; le tri ne concerne que les événements passés ?>
+            <div class="liste-barre">
+                <?= HtmlShrink::getPaginationString($all_results_nb, $get['page'], $results_per_page, 1, basename(__FILE__), "?" . HtmlShrink::urlQueryArrayToString($get, "page") . "&amp;page=") ?>
+                <?php if ($get['periode'] == "ancien") : include(__ROOT__ . "/event/_events_order_menu.inc.php"); endif; ?>
+            </div>
             <table>
                 <?php foreach ($page_results_grouped_by_yearmonth as $yearmonth => $tab_month_events) : ?>
                     <tr>
@@ -427,19 +455,18 @@ include("../_header.inc.php");
                     </tr>
                     <?php
                     foreach ($tab_month_events as $tab_event) :
-                        echo Ladecadanse\EvenementRenderer::eventTableRowHtml($tab_event, $authorization, isWithLieu: false);
+                        echo Ladecadanse\EvenementRenderer::eventTableRowHtml($tab_event, $authorization, isWithLieu: false, lieuName: $lieu['nom']);
                     endforeach;
                     ?>
                 <?php endforeach; ?>
             </table>
 
-            <?= HtmlShrink::getPaginationString($all_results_nb, $get['page'], $results_per_page, 1, basename(__FILE__), "?" . Utils::urlQueryArrayToString($get, "page") . "&amp;page=") ?>
+            <?= HtmlShrink::getPaginationString($all_results_nb, $get['page'], $results_per_page, 1, basename(__FILE__), "?" . HtmlShrink::urlQueryArrayToString($get, "page") . "&amp;page=") ?>
 
         <?php endif; ?>
 
-        <?php if (!empty($lieu['URL'])) :
-            $url_with_name = Text::getUrlWithName($lieu['URL'])     ?>
-            <p><br>Pour des informations complémentaires veuillez consulter <a href="<?= $url_with_name['url'] ?>" target='_blank'><?= sanitizeForHtml($url_with_name['urlName']) ?></a></p>
+        <?php if (!empty($lieu['URL'])) : ?>
+            <p><br>Pour des informations complémentaires veuillez consulter <?= WebLink::html($lieu['URL'], iconeParDefaut: 'fa-globe') ?></p>
         <?php endif; ?>
 
     </section> <!-- #prochains_evenenents -->

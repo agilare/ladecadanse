@@ -1,0 +1,318 @@
+/* Page de profil (user/dashboard.php) */
+
+/*
+ * Un seul bord gauche et un seul bord droit pour toute la page. L'en-tête (94 %), la boîte de
+ * profil (96 %), les onglets (100 %) et la pagination (marges de 2 %) étaient chacun centrés sur
+ * une largeur différente : quatre décalages visibles les uns sous les autres.
+ */
+#contenu.user #entete_contenu,
+#contenu.user #profile,
+#contenu.user nav.tabs,
+#contenu.user form.filtre-liste,
+#contenu.user .liste-barre,
+#contenu.user table#ajouts,
+#contenu.user > p
+{
+	width:100%;
+	margin-left:0;
+	margin-right:0;
+}
+
+/*
+ * Les blocs occupant désormais toute la largeur, la gouttière que chacun s'offrait par ses 2 à 6 %
+ * revient au conteneur — sans quoi le contenu touche le bord gauche et frôle le bord droit.
+ * Les 2 % reprennent l'écart qu'avaient les blocs centrés à 96 %.
+ */
+#contenu.user
+{
+	box-sizing:border-box;
+	padding-left:2%;
+	padding-right:2%;
+}
+
+/* l'en-tête n'a ici ni sous-titre ni navigation à espacer : ses marges se resserrent */
+#contenu.user #entete_contenu
+{
+	margin-top:0.3em;
+	margin-bottom:0;
+	padding:0;
+}
+
+/*
+ * Le pseudo peut faire 80 caractères : le titre reste volontairement discret
+ * pour qu'un nom long ne casse pas l'en-tête.
+ */
+#entete_contenu h1
+{
+	font-size:1.3em;
+	line-height:1.3;
+	margin:0.2em 0;
+}
+
+#entete_contenu h1 em
+{
+	font-style:italic;
+	font-weight:bold;
+}
+
+.profil-groupe
+{
+	font-size:0.75em;
+	font-weight:normal;
+	color:#8a8a8a;
+	vertical-align:middle;
+}
+
+/* le badge de statut accompagne le titre, il ne le concurrence pas */
+#entete_contenu h1 .even-statut-label
+{
+	font-size:0.6em;
+	padding:0.15em 0.45em;
+	vertical-align:middle;
+}
+
+/* arrondi et fond repris de l'article de event/evenement.php, sans bordure ni filets de lignes */
+#profile
+{
+	margin-top:0.6em;
+	color:#5C7392;
+}
+
+#profile table
+{
+	width:100%;
+	font-size:0.9em;
+	background:#f0f0fa;
+	border:none;
+	border-radius:3px;
+	/* separate, et non collapse : sinon les bords fusionnés mangent les coins arrondis */
+	border-collapse:separate;
+	border-spacing:0;
+	overflow:hidden;
+}
+
+#profile th, #profile td
+{
+	padding:0.55em 0.9em;
+	text-align:left;
+	vertical-align:top;
+	border:none;
+}
+
+#profile th
+{
+	font-weight:bold;
+	width:12em;
+	padding:0.5em 0.9em;
+}
+
+/*
+ * Sans reset, le <ul> des organisateurs garde l'indentation par défaut du navigateur et la ligne
+ * Affiliations s'affiche en escalier : lieux à gauche, organisateurs 40 px plus loin.
+ */
+#profile .event_orga
+{
+	list-style-type:none;
+	margin:0.3em 0 0 0;
+	padding:0;
+}
+
+#profile .event_orga li
+{
+	margin:0 0.3em 0.2em 0;
+}
+
+.profil-modifier
+{
+	display:inline-block;
+	margin:0.7em 0 0 0;
+}
+
+/* respiration entre le bouton Modifier et la barre d'onglets */
+#contenu.user nav.tabs
+{
+	margin-top:1.8em;
+}
+
+/* le compteur de l'onglet, à la manière des exposants de l'accueil */
+#contenu.user nav.tabs sup
+{
+	margin-left:0.35em;
+	font-size:0.7em;
+	font-weight:normal;
+	color:#888;
+}
+
+/* le paragraphe d'état vide des listes ; borné à la page, la règle fuyait sur tous les <p> */
+#contenu.user > p
+{
+	margin-top:2em;
+}
+
+/*
+ * Hors de form#ajouter_editer, les champs n'héritent d'aucun style : le filtre s'affichait avec
+ * les bords natifs du navigateur, étrangers au reste du site.
+ */
+form.filtre-liste
+{
+	margin-bottom:0.5em;
+}
+
+form.filtre-liste input
+{
+	border:1px solid #aeaeae;
+	padding:0.3em;
+	border-radius:2px;
+}
+
+form.filtre-liste input:focus
+{
+	background-color:#ffc;
+}
+
+.filtre-resultat
+{
+	margin-left:0.6em;
+	font-size:0.9em;
+	color:#777;
+}
+
+/* la pagination du bas aussi : ses marges de 2 % la décalaient seule sous le tableau */
+#contenu.user div.pagination
+{
+	margin-left:0;
+	margin-right:0;
+}
+
+/* .liste-barre est dans global.css : les fiches lieu et organisateur s'en servent aussi */
+
+table#ajouts
+{
+	border-collapse:collapse;
+	border:1px solid #aeaeae;
+	background:#fefefe;
+}
+
+table#ajouts tr th
+{
+	text-align:center;
+	font-weight:bold;
+	background:#eaeaea;
+	padding:0.4em 0.2em;
+	font-size: 0.85em;
+}
+
+table#ajouts tr th.ici
+{
+	background:#fafafa;
+}
+
+table#ajouts tr td
+{
+	text-align:center;
+	vertical-align:middle;
+	font-size:0.85em;
+	padding:0.55em 0.35em;
+}
+
+/*
+ * Colonne Image : un cadre carré que la vignette couvre entièrement. object-fit
+ * met le flyer à l'échelle sans le déformer, puis ce qui dépasse est rogné — le
+ * bas d'une affiche portrait, la droite d'une image paysage. L'ancrage en haut à
+ * gauche garde la partie de l'affiche qui porte le titre.
+ *
+ * Le cadre, lui, est centré verticalement dans la cellule par le
+ * vertical-align:middle posé plus haut sur tous les td.
+ */
+table#ajouts td.flyer
+{
+	width:30px;
+}
+
+/*
+ * line-height:0 pour que l'ancre n'ajoute pas l'interligne du texte autour de l'image,
+ * et vertical-align:middle parce qu'une boîte inline-block se pose par défaut sur la
+ * ligne de base : la place réservée au jambage la décalait de 1,3px vers le haut.
+ */
+table#ajouts td.flyer a
+{
+	display:inline-block;
+	line-height:0;
+	vertical-align:middle;
+}
+
+table#ajouts td.flyer img
+{
+	display:block;
+	width:30px;
+	height:30px;
+	object-fit:cover;
+	object-position:left top;
+}
+
+table#ajouts td.contenu
+{
+	width:45%;
+}
+
+/* les horaires ne doivent pas se couper autour du tiret « 21:00 – 02:00 » */
+table#ajouts td.horaire
+{
+	white-space:nowrap;
+}
+
+/* zébrage : porté par le CSS depuis que le <tbody> existe, plus par un compteur PHP */
+table#ajouts tbody tr:nth-child(even)
+{
+	background-color:#f0f0ff;
+}
+
+/*
+ * nowrap : Dépublier et Modifier restent côte à côte, jamais l'une sous l'autre.
+ * Aligné à droite : les cellules à une seule icône restent dans l'axe des autres.
+ */
+table#ajouts td.actions
+{
+	white-space:nowrap;
+	text-align:right;
+}
+
+/* sans ça les icônes reposent sur la ligne de base du texte */
+table#ajouts td.actions img,
+table#ajouts td.actions .fa
+{
+	vertical-align:middle;
+}
+
+/*
+ * Événements passés : archives non modifiables, atténuées pour que l'absence
+ * du bouton Éditer se comprenne. L'opacité revient au survol (et au focus
+ * clavier) pour que l'information reste lisible à la demande.
+ *
+ * Elle porte sur les cellules et non sur la ligne : sur la ligne, elle crée un
+ * contexte d'empilement, et aucune cellule ne pourrait alors revenir à 1 —
+ * l'exception ci-dessous serait impossible à écrire.
+ */
+table#ajouts tr.ancien td
+{
+	opacity:0.6;
+	transition:opacity 0.15s ease-in-out;
+}
+
+/*
+ * Statut et Actions font exception : ce sont les seules cellules sur lesquelles
+ * on agit encore sur un événement passé. La pastille de statut garde sa couleur
+ * franche, Dépublier et Modifier restent des cibles nettes, sans avoir à
+ * survoler la ligne pour les distinguer.
+ */
+table#ajouts tr.ancien td.statut,
+table#ajouts tr.ancien td.actions
+{
+	opacity:1;
+}
+
+table#ajouts tr.ancien:hover td,
+table#ajouts tr.ancien:focus-within td
+{
+	opacity:1;
+}

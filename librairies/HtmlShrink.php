@@ -6,10 +6,53 @@
 
 namespace Ladecadanse;
 
-use Ladecadanse\Utils\Utils;
+use Ladecadanse\Stats\MonthlyAddedEvents;
+use Ladecadanse\Utils\DateHelper;
 
 class HtmlShrink
 {
+    /**
+     * Reconstruit une query string à partir de $_GET, en excluant un ou
+     * plusieurs paramètres. Utilisée pour les liens de pagination et de tri,
+     * qui doivent conserver les autres critères de la page courante.
+     *
+     * Le résultat est échappé pour le HTML : il est destiné à un attribut href.
+     *
+     * Asymétrie connue : la branche "string" ignore les valeurs de type array,
+     * la branche "array" non (elle émettrait "param=Array" + un warning). Aucun
+     * appelant ne passe aujourd'hui de valeur array dans $get.
+     *
+     * @param array<string, mixed> $get
+     * @param array<string>|string $sauf Nom(s) de paramètre(s) à exclure
+     */
+    public static function urlQueryArrayToString(array $get, array|string $sauf = ""): string
+    {
+        $afficher = "";
+
+        if (!is_array($sauf))
+        {
+            foreach ($get as $nom => $valeur)
+            {
+                if ($nom != $sauf && !is_array($valeur))
+                {
+                    $afficher .= $nom . "=" . $valeur . "&";
+                }
+            }
+        }
+        else
+        {
+            foreach ($get as $nom => $valeur)
+            {
+                if (!in_array($nom, $sauf))
+                {
+                    $afficher .= $nom . "=" . $valeur . "&";
+                }
+            }
+        }
+
+        // -5 et non -1 : sanitizeForHtml() a transformé le "&" final en "&amp;"
+        return mb_substr(sanitizeForHtml($afficher), 0, -5);
+    }
 
     /**
      * TODO: mv to a LieuRenderer
@@ -24,8 +67,11 @@ class HtmlShrink
             $result .= " (" . $quartier . ")";
         }
 
-        // avoid unecessary "Autre" and redundancy of quartier "Genève" and localite "Genève"
-        if (!empty($localite) && $localite != 'Autre' && $quartier != $localite)
+        // Une localité fourre-tout (« Ailleurs en France », « Hors Genève, Vaud et France »)
+        // n'a de sens que dans le <select> qui la propose : elle n'apprendrait rien de plus que
+        // la région ajoutée juste après. Le quartier « Genève » et la localité « Genève » ne se
+        // répètent pas non plus.
+        if (!empty($localite) && !Localite::estFourreTout($localite) && $quartier != $localite)
         {
             $result .= " - " . $localite;
         }
@@ -60,7 +106,7 @@ class HtmlShrink
             {
                 if ($n == 'vd')
                 {
-                    $v = 'Lausanne';
+                    $v = 'Vaud';
                     $class_region = 'vd';
                 }
 
@@ -93,7 +139,7 @@ class HtmlShrink
                 }
 
                 ?><li>
-            <a href="?region=<?php echo $n; ?>&<?php echo Utils::urlQueryArrayToString($get, $excludeFromQueryString); ?>" class="<?php echo $class_region; ?><?php echo $ici; ?>"><?php echo $v; ?>&nbsp;<?php
+            <a href="?region=<?php echo $n; ?>&<?php echo self::urlQueryArrayToString($get, $excludeFromQueryString); ?>" class="<?php echo $class_region; ?><?php echo $ici; ?>"><?php echo $v; ?>&nbsp;<?php
                 if (!empty($event_nb[$n]))
                 {
                     ?><span class="events-nb"><?php echo $event_nb[$n]; ?></span><?php } ?></a></li><?php
@@ -101,33 +147,62 @@ class HtmlShrink
         }
         ?></ul>
         <?php
-        return ob_get_contents();
+        return ob_get_clean();
     }
 
-    public static function getLocalitesSelect(array $regions_localites, array $glo_regions, array $glo_tab_ailleurs, array $localitesWithLieux = []): string
+    /**
+     * Filtre « Localité » de la liste des lieux.
+     *
+     * Les groupes viennent tous de la table `localite` : France et « Autre », greffées en dur
+     * ici tant qu'elles n'étaient que des régions, y sont désormais des localités à part
+     * entière (cantons 'rf' et 'hs').
+     *
+     * $localitesWithLieux ne retient que les localités où la région courante a effectivement un
+     * lieu : un canton qui n'en garde aucun n'ouvre pas de groupe vide.
+     */
+    public static function getLocalitesSelect(array $regions_localites, array $glo_regions, array $localitesWithLieux = []): string
     {
         ob_start();
         ?>
         <select  name="localite" class="js-select2-options-with-style" data-placeholder="Localité" style="width:100px">
             <option value=""></option>
             <?php foreach ($regions_localites as $region => $localites) : ?>
-                <optgroup label="<?= $glo_regions[$region] ?>">
+                <?php
+                if (!empty($localitesWithLieux))
+                {
+                    $localites = array_filter($localites, static fn (array $loc): bool => in_array($loc['id'], $localitesWithLieux));
+                }
+                ?>
+                <?php if (empty($localites)) { continue; } ?>
+                <?php
+                /*
+                 * Les cantons viennent de la table, les libellés de la configuration : rien ne
+                 * garantit que les deux s'accordent. Un canton inconnu — le canton vide de la
+                 * localité fourre-tout, tant que v3-12-0_localite-france.sql n'a pas tourné —
+                 * faisait tomber toute la page sur « Undefined array key ». Il est montré tel
+                 * quel, et échappé : ce libellé de repli sort de la base.
+                 */
+                $libelleRegion = $glo_regions[$region] ?? ($region === '' ? 'Sans région' : $region);
+                ?>
+                <optgroup label="<?= sanitizeForHtml($libelleRegion) ?>">
                     <?php foreach ($localites as $loc) : ?>
-                        <?php if (!empty($localitesWithLieux) && !in_array($loc['id'], $localitesWithLieux)) { continue; }?>
                         <option value="<?= $loc['id'] ?>" <?php if ($_SESSION['user_prefs_lieux_localite'] == $loc['id']) : ?>selected="selected"<?php endif; ?>><?= $loc['localite'] ?></option>
                     <?php endforeach; ?>
                 </optgroup>
             <?php endforeach; ?>
-            <optgroup label="Ailleurs">
-                <option value="1" <?php if ($_SESSION['user_prefs_lieux_localite'] == 1) : ?>selected="selected"<?php endif; ?>><?= "France" ?></option>
-            </optgroup>
         </select>
         <?php
-        $result = ob_get_contents();
-        ob_clean();
-        return $result;
+        return ob_get_clean();
     }
 
+    /**
+     * @psalm-taint-specialize
+     *
+     * Sans cette annotation, la valeur de retour est un nœud unique dans le graphe de teinte
+     * de Psalm : l'appelant qui passe un $pagestring non fiable — admin/bots.php:206 concatène
+     * $_GET['view'] — teinte tous les autres appels de la méthode. 36 des 344 signalements de
+     * `composer psalm:taint` venaient de là. Voir .psalm/README.md.
+     */
     public static function getPaginationString($totalitems, int $page = 1, int $limit = 15, int $adjacents = 1, $targetpage = "/", $pagestring = "?page="): string
     {
         //defaults
@@ -246,47 +321,6 @@ class HtmlShrink
     }
 
 
-    public static function authorSignatureForHtml(int $idPersonne): string
-    {
-
-        global $connector;
-
-        $signature_auteur = "";
-        $sql_auteur = "SELECT pseudo, affiliation, signature, avec_affiliation
-        FROM personne WHERE idPersonne=" . $idPersonne . "";
-
-        $req_auteur = $connector->query($sql_auteur);
-        $tab_auteur = $connector->fetchArray($req_auteur);
-
-        if ($tab_auteur['signature'] == 'pseudo')
-        {
-            $signature_auteur = "<strong>" . sanitizeForHtml($tab_auteur['pseudo']) . "</strong>";
-        }
-
-        if ($tab_auteur['avec_affiliation'] == 'oui')
-        {
-            $nom_affiliation = "";
-            $req_aff = $connector->query("
-            SELECT idAffiliation FROM affiliation
-            WHERE idPersonne=" . $idPersonne . " AND genre='lieu'");
-
-            if (!empty($tab_auteur['affiliation']))
-            {
-                $nom_affiliation = $tab_auteur['affiliation'];
-            }
-            else if ($tab_aff = $connector->fetchArray($req_aff))
-            {
-                $req_lieu_aff = $connector->query("SELECT nom FROM lieu WHERE idLieu=" . (int) $tab_aff['idAffiliation']);
-                $tab_lieu_aff = $connector->fetchArray($req_lieu_aff);
-                $nom_affiliation = $tab_lieu_aff['nom'];
-            }
-
-            $signature_auteur .= " (" . sanitizeForHtml($nom_affiliation) . ")";
-        }
-
-        return $signature_auteur;
-    }
-
     public static function formLabel(array $tab_att, string $nom): string
     {
         $aff = "<label ";
@@ -321,6 +355,67 @@ class HtmlShrink
         return $aff;
     }
 
+    /**
+     * En-têtes des colonnes mensuelles des listes d'administration : « jan », « fév »…
+     *
+     * L'année n'apparaît qu'en infobulle : la fenêtre de douze mois chevauche deux années, et
+     * l'écrire dans chaque colonne mangerait la place que ces colonnes étroites n'ont pas.
+     *
+     * @param list<string> $monthKeys clés 'Y-m', voir Stats\MonthlyAddedEvents::monthKeys()
+     */
+    public static function getMonthlyCountsHeaderCells(array $monthKeys): string
+    {
+        $cells = "";
+
+        foreach ($monthKeys as $monthKey)
+        {
+            $month = (int) substr($monthKey, 5, 2);
+            $title = DateHelper::monthName($month) . " " . substr($monthKey, 0, 4);
+
+            $cells .= '<th class="mois" title="' . sanitizeForHtml($title) . '">'
+                . sanitizeForHtml(DateHelper::monthNameShort($month)) . '</th>';
+        }
+
+        return $cells;
+    }
+
+    /**
+     * Cellules mensuelles d'une ligne : le nombre d'événements ajoutés ce mois-là, et en dessous
+     * celui du même mois un an plus tôt.
+     *
+     * Un mois sans ajout laisse sa place vide plutôt que d'afficher « 0 » : dans une bande de
+     * douze colonnes, ce qu'on cherche est la silhouette de l'activité, que douze zéros brouillent.
+     * Le saut de ligne, lui, est écrit dans tous les cas : sans lui, les cellules sans rappel
+     * seraient plus courtes que les autres et la bande perdrait sa ligne de base.
+     *
+     * @param array<string, int> $countsByMonth clés 'Y-m' couvrant les mois affichés *et* les
+     *                                          douze précédents, mois sans ajout absents
+     * @param list<string>       $monthKeys     mois affichés, du plus ancien au plus récent
+     */
+    public static function getMonthlyCountsCells(array $countsByMonth, array $monthKeys): string
+    {
+        $cells = "";
+        $currentMonthKey = end($monthKeys);
+
+        foreach ($monthKeys as $monthKey)
+        {
+            // les mois révolus sont atténués, comme les événements passés du tableau de bord :
+            // le mois en cours est le seul encore susceptible de bouger
+            $class = $monthKey === $currentMonthKey ? "mois" : "mois mois-passe";
+
+            $nb = $countsByMonth[$monthKey] ?? 0;
+            $nbPreviousYear = $countsByMonth[MonthlyAddedEvents::previousYearKey($monthKey)] ?? 0;
+
+            $rappel = $nbPreviousYear > 0
+                ? '<span class="mois-an-passe">' . (int) $nbPreviousYear . '</span>'
+                : '&nbsp;';
+
+            $cells .= '<td class="' . $class . '">' . ($nb > 0 ? (int) $nb : '') . '<br>' . $rappel . '</td>';
+        }
+
+        return $cells;
+    }
+
     public static function msgInfo(string $message): void
     {
         echo '<div class="msg_info">' . $message . '</div>';
@@ -341,15 +436,17 @@ class HtmlShrink
         if ($nom_page == "index")
         {
         ?>
-            <link rel="alternate" type="application/rss+xml" title="Événements du jour" href="/event/rss.php?type=evenements_auj">
-            <link rel="alternate" type="application/rss+xml" title="Derniers événements ajoutés" href="/event/rss.php?type=evenements_ajoutes">
+            <link rel="alternate" type="application/rss+xml" title="Événements du jour" href="<?= SITE_CANONICAL_URL ?>/event/rss.php?type=evenements_auj">
+            <link rel="alternate" type="application/rss+xml" title="Derniers événements ajoutés" href="<?= SITE_CANONICAL_URL ?>/event/rss.php?type=evenements_ajoutes">
         <?php
         }
 
-        if ($nom_page == "lieu")
+        // $nom_page vaut « dossier/fichier » (voir bootstrap.php) : la comparaison avec « lieu »
+        // n'a jamais été vraie, la balise du flux de lieu n'était donc pas émise
+        if ($nom_page == "lieu/lieu" && isset($_GET['idL']))
         {
         ?>
-            <link rel="alternate" type="application/rss+xml" title="Prochains événements dans ce lieu" href="/event/rss.php?type=lieu_evenements&amp;id=<?php echo intval($_GET['idL']) ?>">
+            <link rel="alternate" type="application/rss+xml" title="Prochains événements dans ce lieu" href="<?= SITE_CANONICAL_URL ?>/event/rss.php?type=lieu_evenements&amp;id=<?php echo intval($_GET['idL']) ?>">
         <?php
         }
     }

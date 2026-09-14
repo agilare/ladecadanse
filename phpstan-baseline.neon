@@ -1,16 +1,14 @@
 parameters:
 	ignoreErrors:
+		# getAppVars() est marqué @deprecated (#158) mais reste appelé ici : 8 usages
+		# dans les templates (_header.inc.php, _navigation_calendrier.inc.php) lisent
+		# encore les globales qu'il alimente. Appel intentionnel, migration suivie
+		# hors de #158 ; à retirer quand les liens seront composés depuis la région.
 		-
-			message: '#^Loose comparison using \!\= between ''adresse''\|''description''\|''flyer''\|''genre''\|''horaire_complement''\|''horaire_debut''\|''horaire_fin''\|''idLieu''\|''idSalle''\|''image''\|''localite_id''\|''nomLieu''\|''organisateurs''\|''prelocations''\|''prix''\|''quartier''\|''ref''\|''region''\|''statut''\|''titre''\|''urlLieu'' and ''idPersonne'' will always evaluate to true\.$#'
-			identifier: notEqual.alwaysTrue
+			message: '#^Call to deprecated method getAppVars\(\) of class Ladecadanse\\RegionConfig\:#'
+			identifier: method.deprecated
 			count: 1
-			path: admin/gererEvenements.php
-
-		-
-			message: '#^Offset ''lien'' on array\{genre\: string, idLieu\: string, idSalle\: string, nomLieu\: string, adresse\: string, quartier\: string, localite_id\: string, region\: string, \.\.\.\} in empty\(\) does not exist\.$#'
-			identifier: empty.offset
-			count: 2
-			path: admin/gererEvenements.php
+			path: app/bootstrap.php
 
 		-
 			message: '#^If condition is always true\.$#'
@@ -25,6 +23,12 @@ parameters:
 			path: evenement-edit.php
 
 		-
+			message: '#^If condition is always false\.$#'
+			identifier: if.alwaysFalse
+			count: 1
+			path: event/evenement.php
+
+		-
 			message: '#^Offset ''years'' on array\{mots\: mixed, tri\: mixed, periode\: mixed\} on left side of \?\?\= does not exist\.$#'
 			identifier: nullCoalesce.offset
 			count: 1
@@ -36,26 +40,6 @@ parameters:
 			count: 1
 			path: librairies/EvenementRenderer.php
 
-		-
-			message: '#^Variable \$smallWidth in empty\(\) always exists and is not falsy\.$#'
-			identifier: empty.variable
-			count: 1
-			path: librairies/EvenementRenderer.php
-
-		-
-			message: '''
-				#^Call to deprecated function dateIsoToNextDayDateIso\(\)\:
-				Use \\Ladecadanse\\Utils\\DateHelper\:\:isoToNextDay\(\) instead$#
-			'''
-			identifier: function.deprecated
-			count: 1
-			path: librairies/EvenementWithSeparatorCollection.php
-
-		-
-			message: '#^Class Ladecadanse\\EvenementWithSeparatorCollection implements generic interface IteratorAggregate but does not specify its types\: TKey, TValue$#'
-			identifier: missingType.generics
-			count: 1
-			path: librairies/EvenementWithSeparatorCollection.php
 
 		-
 			message: '#^Property Ladecadanse\\EvenementWithSeparatorCollection\:\:\$date_current is never read, only written\.$#'
@@ -94,12 +78,6 @@ parameters:
 			path: librairies/Organisateur.php
 
 		-
-			message: '#^Calling md5\(\) is forbidden, use hash\(\) with at least SHA\-256 for secure hash, or password_hash\(\) for passwords\.$#'
-			identifier: disallowed.function
-			count: 1
-			path: librairies/Security/Sentry.php
-
-		-
 			message: '#^Calling sha1\(\) is forbidden, use hash\(\) with at least SHA\-256 for secure hash, or password_hash\(\) for passwords\.$#'
 			identifier: disallowed.function
 			count: 2
@@ -108,12 +86,6 @@ parameters:
 		-
 			message: '#^Calling md5_file\(\) is forbidden, use hash_file\(\) with at least SHA\-256 for secure hash\.$#'
 			identifier: disallowed.function
-			count: 1
-			path: librairies/Utils/AssetManager.php
-
-		-
-			message: '#^PHPDoc tag @param for parameter \$relativePaths with type string is incompatible with native type array\.$#'
-			identifier: parameter.phpDocType
 			count: 1
 			path: librairies/Utils/AssetManager.php
 
@@ -142,88 +114,10 @@ parameters:
 			path: librairies/Utils/ImageUrlFetcher.php
 
 		-
-			message: '#^Call to function is_countable\(\) with string will always evaluate to false\.$#'
-			identifier: function.impossibleType
-			count: 1
-			path: librairies/Utils/Text.php
-
-		-
-			message: '#^Comparison operation "\<" between 0 and 0 is always false\.$#'
-			identifier: smaller.alwaysFalse
-			count: 1
-			path: librairies/Utils/Text.php
-
-		-
-			message: '#^If condition is always true\.$#'
-			identifier: if.alwaysTrue
-			count: 1
-			path: librairies/Utils/Text.php
-
-		-
-			message: '#^Offset \*NEVER\* on string in isset\(\) does not exist\.$#'
-			identifier: isset.offset
-			count: 1
-			path: librairies/Utils/Text.php
-
-		-
-			message: '#^Call to function is_string\(\) with string will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: librairies/Utils/Validateur.php
-
-		-
-			message: '#^Variable \$url in isset\(\) always exists and is not nullable\.$#'
-			identifier: isset.variable
-			count: 1
-			path: librairies/Utils/Validateur.php
-
-		-
-			message: '#^Expression "\\UPLOAD_MAX_FILESIZE" on a separate line does not do anything\.$#'
-			identifier: expr.resultUnused
-			count: 1
-			path: lieu-edit.php
-
-		-
-			message: '#^If condition is always false\.$#'
-			identifier: if.alwaysFalse
-			count: 1
-			path: lieu-edit.php
-
-		-
-			message: '#^If condition is always true\.$#'
-			identifier: if.alwaysTrue
-			count: 1
-			path: lieu-edit.php
-
-		-
-			message: '#^Negated boolean expression is always true\.$#'
-			identifier: booleanNot.alwaysTrue
-			count: 1
-			path: lieu-text-edit.php
-
-		-
 			message: '#^If condition is always false\.$#'
 			identifier: if.alwaysFalse
 			count: 1
 			path: lieu/lieux.php
-
-		-
-			message: '#^Offset 1 on array\{''Document introuvable'', ''Ce document n…''\}\|array\{''Erreur dans l…'', '' ''\}\|array\{''Trop de requêtes'', ''Le serveur reçoit…''\} in isset\(\) always exists and is not nullable\.$#'
-			identifier: isset.offset
-			count: 1
-			path: misc/error.php
-
-		-
-			message: '#^If condition is always true\.$#'
-			identifier: if.alwaysTrue
-			count: 1
-			path: organisateur-edit.php
-
-		-
-			message: '#^Variable \$organisateur in empty\(\) always exists and is not falsy\.$#'
-			identifier: empty.variable
-			count: 1
-			path: organisateur/organisateur.php
 
 		-
 			message: '#^Calling sha1\(\) is forbidden, use hash\(\) with at least SHA\-256 for secure hash, or password_hash\(\) for passwords\.$#'
@@ -236,27 +130,3 @@ parameters:
 			identifier: isset.offset
 			count: 1
 			path: user-edit.php
-
-		-
-			message: '#^Loose comparison using \=\= between ''categorie''\|''dateAjout''\|''description''\|''idLieu''\|''nom''\|''URL'' and ''adresse'' will always evaluate to false\.$#'
-			identifier: equal.alwaysFalse
-			count: 1
-			path: user.php
-
-		-
-			message: '#^Loose comparison using \=\= between ''contenu''\|''dateAjout''\|''type'' and ''idPersonne'' will always evaluate to false\.$#'
-			identifier: equal.alwaysFalse
-			count: 1
-			path: user.php
-
-		-
-			message: '#^Loose comparison using \=\= between ''dateAjout''\|''dateEvenement''\|''statut''\|''titre'' and ''flyer'' will always evaluate to false\.$#'
-			identifier: equal.alwaysFalse
-			count: 1
-			path: user.php
-
-		-
-			message: '#^Loose comparison using \=\= between ''dateAjout''\|''idOrganisateur''\|''nom'' and ''presentation'' will always evaluate to false\.$#'
-			identifier: equal.alwaysFalse
-			count: 1
-			path: user.php

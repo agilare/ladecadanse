@@ -95,6 +95,29 @@ table#ajouts
     line-height:1.2em;
 }
 
+/* hauteur figée + ascenseur, comme les tableaux du dashboard admin (css/admin/index.css) */
+table.table-hauteur-figee
+{
+    display:block;
+    width:100%;
+    max-height:70vh;
+    overflow-y:auto;
+}
+
+/* le tableau étant en display:block, les lignes ne s'étirent plus toutes seules */
+table.table-hauteur-figee tr
+{
+    width:100%;
+}
+
+/* en-têtes visibles pendant le défilement */
+table.table-hauteur-figee tr th
+{
+    position:sticky;
+    top:0;
+    z-index:1;
+}
+
 table#ajouts tr th
 {
     text-align:center;
@@ -124,6 +147,16 @@ table#ajouts tr td
 table#ajouts tr td:nth-child(1)
 {
     text-align:left;
+}
+
+/* colonne d'actions : icônes toujours côte à côte, alignées à droite pour que
+   les cellules à une seule icône restent dans l'axe, et à l'écart de
+   l'ascenseur de .table-hauteur-figee */
+table#ajouts tr td.actions-even
+{
+    text-align:right;
+    white-space:nowrap;
+    padding-right:1.4em;
 }
 
 
@@ -420,33 +453,21 @@ table#ajouts tr:nth-child(even) {
     background:yellow;
 }
 
-#ajouter_editer label.probleme
-{
-    text-align:right;
-    background-image: url(../web/interface/icons/exclamation.png);
-    background-repeat: no-repeat;
-    background-position: 3px 0px;
-
-}
-
-#ajouter_editer .complete
-{
-    background-image: url(../web/interface/icons/tick.png);
-    background-repeat: no-repeat;
-    background-position: 3px 0px;
-
-}
-
-#ajouter_editer .supImg
+#ajouter_editer .existing_img
 {
     font-size:0.8em;
     margin-top:5px;
     margin-left:150px;
 }
 
-form .supImg img
+form .existing_img img
 {
     border:1px solid gray;
+    /* aperçu de l'image existante : version normale (pas la miniature "s_"), bornée */
+    width:auto;
+    height:auto;
+    max-width:250px;
+    max-height:300px;
 }
 
 /* Evenements */
@@ -506,22 +527,3 @@ form .supImg img
     font-family:Georgia;
 }
 
-/* #ajouter_editer #bouton_ajouter_champ
-{
-text-align:right;
-background-image: url(../web/interface/icons/add.png);
-background-repeat: no-repeat;
-background-position: 52% 2px;
-
-} */
-
-#gerer-even-pagination
-{
-    margin: 0 auto;
-    width: 96%;
-}
-
-#gerer-even-pagination .pagination
-{
-    float:left;
-}

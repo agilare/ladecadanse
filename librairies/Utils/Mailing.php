@@ -10,11 +10,17 @@ class Mailing
     private PHPMailer $mail;
     private string $errorMsg = "Message could not be sent. Mailer Error: ";
 
-    /** Longueur maximale autorisée pour le sujet */
-    private const MAX_SUBJECT_LENGTH = 255;
+    /** Autorise la copie à l'admin décrite par copyToAdmin(), voir disableAdminCopy() */
+    private bool $adminCopyEnabled = true;
 
-    /** Longueur maximale autorisée pour le corps du message */
-    private const MAX_BODY_LENGTH = 10000;
+    /** Longueur maximale autorisée pour le sujet. Publique pour qu'un appelant puisse prévenir avant troncature. */
+    public const MAX_SUBJECT_LENGTH = 255;
+
+    /** Longueur maximale autorisée pour le corps du message. Publique pour la même raison. */
+    public const MAX_BODY_LENGTH = 10000;
+
+    /** Préfixe du sujet des copies envoyées à l'admin quand EMAIL_COPY_TO_ADMIN est actif */
+    private const COPY_SUBJECT_PREFIX = '[COPY] ';
 
     public function __construct()
     {
@@ -93,6 +99,7 @@ class Mailing
         $this->mail->IsHTML(false);
         $this->mail->AddAddress($to, "");
 
+        $resolvedPath = null;
         if (!empty($attachementPath)) {
             $resolvedPath = $this->resolveAttachmentPath($attachementPath);
             if ($resolvedPath === null) {
@@ -102,12 +109,76 @@ class Mailing
             $this->mail->addAttachment($resolvedPath);
         }
 
-        return $this->send();
+        $sent = $this->send();
+
+        $this->copyToAdmin($to, $replyTo, $resolvedPath);
+
+        return $sent;
+    }
+
+    /**
+     * Désactive, pour cette instance, la copie à l'admin que déclenche EMAIL_COPY_TO_ADMIN.
+     * Destiné aux envois en nombre (admin/mailing.php), où la copie doublerait le volume expédié.
+     *
+     * Volontairement à sens unique : cette méthode ne peut pas activer une copie que la
+     * configuration n'a pas demandée.
+     */
+    public function disableAdminCopy(): void
+    {
+        $this->adminCopyEnabled = false;
     }
 
     // -------------------------------------------------------------------------
     // Méthodes privées
     // -------------------------------------------------------------------------
+
+    /**
+     * Renvoie à EMAIL_ADMIN une copie du mail qui vient d'être adressé à un utilisateur,
+     * avec un sujet préfixé COPY_SUBJECT_PREFIX. Activé par EMAIL_COPY_TO_ADMIN, destiné à
+     * de courtes périodes de monitoring de la circulation des messages et de leur rendu.
+     * Un appelant peut y renoncer instance par instance, voir disableAdminCopy().
+     *
+     * Le corps n'est pas modifié pour que la copie rende exactement comme l'original ;
+     * le destinataire d'origine est reporté dans l'en-tête X-Original-To.
+     *
+     * Doit être appelée après send(), qui a déjà réinitialisé destinataires,
+     * reply-to et pièces jointes. L'échec d'une copie n'affecte pas l'envoi d'origine.
+     *
+     * @param string      $to           Destinataire du mail d'origine
+     * @param array       $replyTo      Reply-to du mail d'origine, déjà validé
+     * @param string|null $resolvedPath Pièce jointe du mail d'origine, chemin déjà résolu
+     */
+    private function copyToAdmin(string $to, array $replyTo = [], ?string $resolvedPath = null): void
+    {
+        if (!$this->adminCopyEnabled) {
+            return;
+        }
+
+        if (!defined('EMAIL_COPY_TO_ADMIN') || !EMAIL_COPY_TO_ADMIN) {
+            return;
+        }
+
+        // le mail était déjà adressé à l'admin (ex: signalement depuis event/send.php)
+        if (strcasecmp($to, EMAIL_ADMIN) === 0) {
+            return;
+        }
+
+        $this->mail->Subject = self::COPY_SUBJECT_PREFIX . $this->mail->Subject;
+        $this->mail->AddAddress(EMAIL_ADMIN, EMAIL_ADMIN_NAME);
+        $this->mail->addCustomHeader('X-Original-To', $this->sanitizeHeader($to));
+
+        if (!empty($replyTo)) {
+            $this->mail->addReplyTo($replyTo['email'], $this->sanitizeHeader($replyTo['name'] ?? ''));
+        }
+
+        if ($resolvedPath !== null) {
+            $this->mail->addAttachment($resolvedPath);
+        }
+
+        $this->send("Mailing::copyToAdmin — ");
+
+        $this->mail->clearCustomHeaders();
+    }
 
     /**
      * Nettoie une valeur destinée à un en-tête SMTP (Subject, nom…).
@@ -158,16 +229,19 @@ class Mailing
     /**
      * Centralise l'envoi et la gestion des erreurs.
      * Les erreurs sont loggées côté serveur, jamais exposées à l'utilisateur.
+     *
+     * @param string $context Préfixe de log, pour distinguer l'échec d'une copie de monitoring
+     *                        de celui du mail d'origine
      */
-    private function send(): bool
+    private function send(string $context = ''): bool
     {
         try {
             if (!$this->mail->send()) {
-                error_log($this->errorMsg . $this->mail->ErrorInfo);
+                error_log($context . $this->errorMsg . $this->mail->ErrorInfo);
                 return false;
             }
         } catch (Exception) {
-            error_log($this->errorMsg . $this->mail->ErrorInfo);
+            error_log($context . $this->errorMsg . $this->mail->ErrorInfo);
             return false;
         } finally {
             // Réinitialise les destinataires et pièces jointes pour une éventuelle

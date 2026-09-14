@@ -8,10 +8,9 @@ use Ladecadanse\Evenement;
 use Ladecadanse\Lieu;
 use Ladecadanse\Personne;
 use Ladecadanse\Utils\DateHelper;
-use Ladecadanse\Utils\Text;
+use Ladecadanse\Utils\WebLink;
 use Ladecadanse\HtmlShrink;
-use Ladecadanse\Utils\Utils;
-use Ladecadanse\Utils\Validateur;
+use Ladecadanse\Utils\QueryParamValidator;
 
 if (empty($_GET['idO']) || !is_numeric($_GET['idO']))
 {
@@ -24,7 +23,8 @@ $organisateur = new Organisateur();
 $organisateur->setId($get['idO']);
 $organisateur->load();
 
-if (empty($organisateur))
+// the object always exists, only its values tell whether the row was found
+if (empty($organisateur->getValues()))
 {
     header($_SERVER["SERVER_PROTOCOL"] . " 404 Not Found");
     exit;
@@ -39,7 +39,7 @@ if ($organisateur->getValue('statut') == 'inactif' && !((isset($_SESSION['Sgroup
 $tab_menu_periodes = ["ancien" => "Passés", "futur" => "Prochains"];
 $get['periode'] = "futur";
 $sql_periode_operator = ">=";
-if (!empty($_GET['periode']) && Validateur::validateUrlQueryValue($_GET['periode'], "enum", 1, array_keys($tab_menu_periodes)))
+if (!empty($_GET['periode']) && QueryParamValidator::isAcceptedUrlQueryValue($_GET['periode'], "enum", array_keys($tab_menu_periodes)))
 {
     $get['periode'] = $_GET['periode'];
     if ($get['periode'] == "ancien")
@@ -47,6 +47,16 @@ if (!empty($_GET['periode']) && Validateur::validateUrlQueryValue($_GET['periode
         $sql_periode_operator = "<";
     }
 }
+
+// sens du tri des événements passés, mémorisé en session comme user_prefs_agenda_order l'est
+// entre l'accueil et la fiche événement (cf. event/_events_order_menu.inc.php)
+if (!empty($_GET['ordre']) && QueryParamValidator::isAcceptedUrlQueryValue($_GET['ordre'], "enum", array_keys($tab_ordre_evenements_passes)))
+{
+    $_SESSION['user_prefs_past_events_order'] = $_GET['ordre'];
+}
+// l'onglet « Prochains » reste chronologique : le menu de tri n'y est pas proposé
+$is_past_events_desc = ($get['periode'] == "ancien" && $_SESSION['user_prefs_past_events_order'] == "desc");
+$sql_events_order_direction = $is_past_events_desc ? "DESC" : "ASC";
 
 $results_per_page = 50;
 
@@ -61,14 +71,13 @@ $stmtAll = $connectorPdo->prepare($sql_select_all);
 $stmtAll->execute([$get['idO'], $glo_auj]);
 $all_results_nb = $stmtAll->fetchColumn();
 
-$default_page = $get['periode'] == "ancien" ? (int) max(1, ceil($all_results_nb / $results_per_page)) : 1;
-$get['page'] = !empty($_GET['page']) ? Validateur::validateUrlQueryValue($_GET['page'], "int", 1) : $default_page;
+// atterrir sur les événements passés les plus récents : ils sont en dernière page en tri
+// ascendant, en première page en tri descendant
+$default_page = ($get['periode'] == "ancien" && !$is_past_events_desc) ? (int) max(1, ceil($all_results_nb / $results_per_page)) : 1;
+$get['page'] = QueryParamValidator::pageFromQuery($_GET['page'] ?? '', $default_page);
 
 $orga_lieux = Organisateur::getActivesLieux($get['idO']);
 $orga_personnes = Personne::getPersonnesOfOrganisateur($get['idO']);
-
-//$evenements = new EvenementCollection($connector);
-//$evenements->loadOrganisateur($get['idO'], $glo_auj_6h, "");
 
 $sql_select = "SELECT
     e.genre AS e_genre,
@@ -114,7 +123,7 @@ $sql_select = "SELECT
     e.statut NOT IN ('inactif', 'propose') AND eo.idOrganisateur = ?";
 
 $sql_select .= " AND e.dateEvenement $sql_periode_operator ?";
-$sql_select .= ' ORDER BY dateEvenement ASC';
+$sql_select .= " ORDER BY dateEvenement $sql_events_order_direction , e_horaire_debut $sql_events_order_direction";
 $sql_select .= " LIMIT " . (int) (($get['page'] - 1) * $results_per_page) . ", " . (int) ($results_per_page); // ($get['page'] - 1) * $results_per_page +
 //echo $sql_select;
 $stmt = $connectorPdo->prepare($sql_select);
@@ -157,7 +166,7 @@ include("../_header.inc.php");
             <h1 class="fn org"><?= $organisateur->getHtmlValue('nom'); ?></h1>
 
             <?php if ($organisateur->getValue('logo') != '') : ?>
-            <a href="<?= $assets->get(Organisateur::getAssetPath(Organisateur::getFilePath($organisateur->getValue('logo')))) ?>" class="magnific-popup"><img src="<?= $assets->get(Organisateur::getAssetPath(Organisateur::getFilePath($organisateur->getValue('logo'), "s_"))) ?>" alt="Logo" class="logo" /></a>
+            <a href="<?= $assets->get(Organisateur::getAssetPath(Organisateur::getFilePath($organisateur->getValue('logo')))) ?>" class="magnific-popup"><img src="<?= $assets->get(Organisateur::getAssetPath(Organisateur::getFilePath($organisateur->getValue('logo'), "s_"))) ?>"  width="100" alt="Logo" class="logo" /></a>
             <?php endif ?>
             <div class="spacer"></div>
         </header>
@@ -166,8 +175,11 @@ include("../_header.inc.php");
             <?php if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= UserLevel::ACTOR) ) : ?>
                 <li class="action_ajouter"><a href="/evenement-edit.php?idO=<?= (int)$get['idO'] ?>">Ajouter un événement de cet organisateur</a></li>
             <?php endif; ?>
-            <?php if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= UserLevel::AUTHOR || (isset($_SESSION['SidPersonne']) && $authorization->isPersonneInOrganisateur($_SESSION['SidPersonne'], $get['idO']) && $_SESSION['Sgroupe'] <= UserLevel::ACTOR))) : ?>
-                <li class="action_editer"><a href="/organisateur-edit.php?action=editer&amp;idO=<?= (int) $get['idO'] ?>">Modifier cet organisateur</a></li>
+            <?php /* Même question que le formulaire d'édition, posée au même endroit : un lien
+                     proposé mais refusé à l'arrivée était le symptôme de deux conditions écrites
+                     séparément */ ?>
+            <?php if ($authorization->isPersonneAllowedToEditOrganisateur($_SESSION, $get['idO'])) : ?>
+                <li class="action_editer"><a href="/organisateur/edit.php?action=editer&amp;idO=<?= (int) $get['idO'] ?>">Modifier cet organisateur</a></li>
             <?php endif; ?>
         </ul>
 
@@ -179,7 +191,7 @@ include("../_header.inc.php");
                 <figure id="photo">
                     <?php if ($organisateur->getValue('photo') != '') : ?>
                         <a href="<?= $assets->get(Organisateur::getAssetPath(Organisateur::getFilePath($organisateur->getValue('photo')))) ?>" class="magnific-popup">
-                            <img src="<?= $assets->get(Organisateur::getAssetPath(Organisateur::getFilePath($organisateur->getValue('photo'), "s_"))) ?>" alt="Photo" />
+                            <img src="<?= $assets->get(Organisateur::getAssetPath(Organisateur::getFilePath($organisateur->getValue('photo'), "s_"))) ?>"  width="200" alt="Photo" />
                         </a>
                     <?php endif; ?>
                 </figure>
@@ -188,9 +200,9 @@ include("../_header.inc.php");
 
             <div id="pratique">
                 <ul>
-                    <?php if (!empty($organisateur->getValue('URL'))) : $lieu_url = Text::getUrlWithName($organisateur->getValue('URL')); ?>
+                    <?php if (!empty($organisateur->getValue('URL'))) : ?>
                         <li class="sitelieu">
-                            <a class="url" href="<?= sanitizeForHtml($lieu_url['url']) ?>" rel="external" target="_blank"><?= sanitizeForHtml($lieu_url['urlName']) ?></a>
+                            <?= WebLink::html($organisateur->getValue('URL'), iconeParDefaut: 'fa-globe') ?>
                         </li>
                     <?php endif; ?>
                     <?php if (count($orga_lieux) > 0) : ?>
@@ -208,7 +220,7 @@ include("../_header.inc.php");
                                 <summary>Membres (<?= count($orga_personnes) ?>)&nbsp;:</summary>
                                 <ul>
                                     <?php foreach ($orga_personnes as $op) : ?>
-                                        <li><a href="/user.php?idP=<?= (int)$op['idPersonne'] ?>"><?= sanitizeForHtml($op['pseudo']) ?></a>&nbsp;<small><?= sanitizeForHtml($op['email']) ?></small></li>
+                                        <li><a href="/user/dashboard.php?idP=<?= (int)$op['idPersonne'] ?>"><?= sanitizeForHtml($op['pseudo']) ?></a>&nbsp;<small><?= sanitizeForHtml($op['email']) ?></small></li>
                                     <?php endforeach ?>
                                 </ul>
                             </details>
@@ -223,9 +235,11 @@ include("../_header.inc.php");
                         <li class="btn-description ici"><h2>L'organisateur se présente</h2></li>
                     </ul>
                     <div class="description">
-                        <div class="js-read-smore" data-read-smore-words="50">
-                        <?= $organisateur->getValue('presentation') ?>
-                        </div>
+                        <?php
+                        $texteRepliableHtml = $organisateur->getValue('presentation');
+                        $texteRepliableId = 'presentation';
+                        include(__ROOT__ . "/_texte_repliable.inc.php");
+                        ?>
                     </div>
                 <?php endif ?>
             </div>
@@ -242,12 +256,12 @@ include("../_header.inc.php");
     <section id="prochains_evenements">
 
         <header>
-            <h2>Événements <a href="/event/rss.php?type=organisateur_evenements&amp;id=<?= (int)$get['idO'] ?>" title="Flux RSS des prochains événements"><i class="fa fa-rss fa-lg" style="font-size:0.9em;color:#f5b045"></i></a></h2>
+            <h2>Événements <a href="<?= SITE_CANONICAL_URL ?>/event/rss.php?type=organisateur_evenements&amp;id=<?= (int)$get['idO'] ?>" title="Flux RSS des prochains événements"><i class="fa fa-rss fa-lg" style="font-size:0.9em;color:#f5b045"></i></a></h2>
             <?php include("../_favoris_filter_navigation.inc.php"); ?>
             <ul id="menu_periode" class="entete_contenu_navigation">
                 <?php foreach ($tab_menu_periodes as $k => $label) : ?>
                     <li class="<?= $k ?><?php if ($get['periode'] == $k) : ?> ici<?php endif; ?>">
-                        <a href="?<?= Utils::urlQueryArrayToString($get, ['periode', 'page']) ?>&amp;periode=<?= $k ?>"><?= $label ?></a>
+                        <a href="?<?= HtmlShrink::urlQueryArrayToString($get, ['periode', 'page']) ?>&amp;periode=<?= $k ?>"><?= $label ?></a>
                     </li>
                 <?php endforeach; ?>
                 <div class="spacer"></div>
@@ -261,7 +275,11 @@ include("../_header.inc.php");
 
         <?php else : ?>
 
-            <?= HtmlShrink::getPaginationString($all_results_nb, $get['page'], $results_per_page, 1, basename(__FILE__), "?" . Utils::urlQueryArrayToString($get, "page") . "&amp;page=") ?>
+            <?php // pagination à gauche, menu de tri à droite ; le tri ne concerne que les événements passés ?>
+            <div class="liste-barre">
+                <?= HtmlShrink::getPaginationString($all_results_nb, $get['page'], $results_per_page, 1, basename(__FILE__), "?" . HtmlShrink::urlQueryArrayToString($get, "page") . "&amp;page=") ?>
+                <?php if ($get['periode'] == "ancien") : include(__ROOT__ . "/event/_events_order_menu.inc.php"); endif; ?>
+            </div>
 
             <table>
                 <?php foreach ($page_results_grouped_by_yearmonth as $yearmonth => $tab_month_events) : ?>
@@ -278,13 +296,12 @@ include("../_header.inc.php");
                 <?php endforeach; ?>
             </table>
 
-            <?= HtmlShrink::getPaginationString($all_results_nb, $get['page'], $results_per_page, 1, basename(__FILE__), "?" . Utils::urlQueryArrayToString($get, "page") . "&amp;page=") ?>
+            <?= HtmlShrink::getPaginationString($all_results_nb, $get['page'], $results_per_page, 1, basename(__FILE__), "?" . HtmlShrink::urlQueryArrayToString($get, "page") . "&amp;page=") ?>
 
         <?php endif; // nb even ?>
 
-        <?php if (!empty($organisateur->getValue('URL'))) :
-            $url_with_name = Text::getUrlWithName($organisateur->getValue('URL'))     ?>
-            <p><br>Pour des informations complémentaires veuillez consulter <a href="<?= $url_with_name['url'] ?>" target='_blank'><?= sanitizeForHtml($url_with_name['urlName']) ?></a></p>
+        <?php if (!empty($organisateur->getValue('URL'))) : ?>
+            <p><br>Pour des informations complémentaires veuillez consulter <?= WebLink::html($organisateur->getValue('URL'), iconeParDefaut: 'fa-globe') ?></p>
         <?php endif; ?>
 
     </section> <!-- #prochains_evenements -->

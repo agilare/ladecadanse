@@ -17,6 +17,10 @@ parameters:
         - vendor
         - var
         - tests
+        # (?) = chemin facultatif : node_modules/ n'existe que là où `npm install` a tourné,
+        # et AGENTS.md ne l'exige que pour `npm run lint` et `npm test`. Sans ce marqueur,
+        # PHPStan refuse de démarrer dans tout worktree frais — il exige la présence du
+        # répertoire qu'on lui demande d'ignorer. Même raison que le allowMissingFiles de psalm.xml.
         - node_modules (?)
     fileExtensions:
         - php
@@ -32,13 +36,20 @@ parameters:
         - ENV
         - MODE_DEBUG
         - EMAIL_SMTPAUTH
+        - EMAIL_COPY_TO_ADMIN
         - MATOMO_ENABLED
         - GLITCHTIP_ENABLED
         - DARKVISITORS_ENABLED
         - LADECADANSE_API_ENABLED
+        - BOT_MONITORING_ENABLED
         - HOME_TMP_BANNER_ENABLED
         - HOME_TMP_BACK_BANNER_ENABLED
         - PARTIAL_EDIT_MODE
+        - PDF_CONVERSION_ENABLED
+        - DATEPICKER_ALWAYS_VISIBLE_ENABLED
+        - LIEU_MANUAL_COLLAPSIBLE_ENABLED
+        - EVENT_TIME_STATUS_ENABLED
+        - EVENT_NEW_CATEGORIES_ENABLED
     inferPrivatePropertyTypeFromConstructor: true
     checkMissingTypehints: true
     ignoreErrors:
@@ -56,20 +67,52 @@ parameters:
                 - lieu
                 - misc
                 - organisateur
+                - user
+                - _champ_image.inc.php
                 - _footer.inc.php
                 - _header.inc.php
+                - _texte_repliable.inc.php
+                - annuaire-membres.php
                 - evenement-edit.php
                 - index.php
-                - lieu-edit.php
-                - lieu-text-edit.php
-                - organisateur-edit.php
-                - user.php
                 - user-edit.php
-                - user-login.php
-                - user-logout.php
-                - user-register.php
-                - user-reset.php
-                - user-reset2.php
+    # Les chemins d'allowIn sont résolus depuis la racine du dépôt, quel que
+    # soit le répertoire courant au lancement (%rootDir% = vendor/phpstan/phpstan)
+    filesRootDir: %rootDir%/../../..
+    # Réautorise, dans le seul fichier concerné, deux appels interdits par
+    # disallowed-execution-calls.neon. bin/build-config.php est un outil de poste
+    # de développement : .git-ftp-ignore l'exclut du déploiement, il n'est donc
+    # jamais servi en HTTP, et ne reçoit d'entrée que la ligne de commande du
+    # développeur. Il pilote git, ce qu'aucune API PHP ne sait faire.
+    #   exec()     : lit les scopes git-ftp configurés (« git config
+    #                --get-regexp », commande littérale).
+    #   passthru() : lance « git ftp push », dont la sortie doit défiler en
+    #                direct pendant le transfert ; le seul fragment variable est
+    #                le nom du scope, vérifié contre les scopes lus juste avant
+    #                et passé par escapeshellarg().
+    # Le reste du répertoire bin/ demeure analysé : ce script compose le
+    # .htaccess et le .user.ini de production, une régression y est coûteuse.
+    disallowedFunctionCalls:
+        -
+            function: 'exec()'
+            allowIn:
+                - bin/build-config.php
+        -
+            function: 'passthru()'
+            allowIn:
+                - bin/build-config.php
+        # Même raisonnement pour bin/prod-copy.php : outil de poste de
+        # développement, exclu du déploiement par .git-ftp-ignore, dont la seule
+        # entrée est la ligne de commande. Il rapatrie les uploads de production
+        # par « ssh … tar », que rien en PHP ne sait faire.
+        #   proc_open() : forme tableau, donc sans shell — les arguments ne sont
+        #                 jamais réinterprétés — et redirections par descripteurs,
+        #                 la syntaxe « < » et « | » n'étant pas la même sous
+        #                 cmd.exe et sous sh.
+        -
+            function: 'proc_open()'
+            allowIn:
+                - bin/prod-copy.php
 includes:
     - vendor/phpstan/phpstan-deprecation-rules/rules.neon
     - vendor/spaze/phpstan-disallowed-calls/extension.neon

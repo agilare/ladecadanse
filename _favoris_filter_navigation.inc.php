@@ -1,4 +1,4 @@
-<?php if (!isFavoritesEnabled()) { return; } ?>
+<?php if (!Ladecadanse\Favorites::isEnabled()) { return; } ?>
 <div id="favoris_filter_navigation" hidden>
     <ul>
         <li><a href="#" class="js-favoris-filter" data-filter="tous">Tous</a></li>

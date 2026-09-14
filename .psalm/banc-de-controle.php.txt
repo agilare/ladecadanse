@@ -1,0 +1,167 @@
+<?php
+
+/*
+ * Banc de contrôle de la configuration de teinte — voir .psalm/README.md
+ *
+ * Ce fichier est volontairement vulnérable. Il ne s'exécute jamais : son extension
+ * .php.txt le tient hors de portée de PHPStan, Rector, phpcs et de `composer psalm`,
+ * et seul .psalm/banc.xml le déclare analysable.
+ *
+ * Chaque ligne à vérifier porte un marqueur de fin de ligne :
+ *
+ *     // @attendu: signale   — Psalm doit émettre au moins un Tainted* sur cette ligne
+ *     // @attendu: muet      — Psalm ne doit rien émettre sur cette ligne
+ *
+ * `composer psalm:banc` lit ces marqueurs, lance l'analyse et compare. Les lignes sans
+ * marqueur ne sont pas vérifiées : les échafaudages (« new PDO », « $verifA->setErreur »)
+ * n'ont pas d'attendu propre.
+ *
+ * Un « signale » devenu muet veut dire qu'une règle a cessé de mordre — annotation
+ * supprimée, plugin non chargé, mise à jour de Psalm. Un « muet » qui se met à parler
+ * veut dire que la configuration a perdu un échappement.
+ */
+
+use Ladecadanse\HtmlShrink;
+use Ladecadanse\Security\SecurityToken;
+use Ladecadanse\Utils\DbConnector;
+use Ladecadanse\Utils\DbConnectorPdo;
+use Ladecadanse\Utils\UserHtmlSanitizer;
+use Ladecadanse\Utils\Validateur;
+
+/** @var mysqli $mysqli */
+
+// -----------------------------------------------------------------------------
+// 1. Les sources : ce que Psalm tient pour non fiable
+// -----------------------------------------------------------------------------
+
+// Les superglobales que Psalm teinte lui-même. Témoins : si ces deux-là se taisent,
+// l'analyse de teinte ne tourne pas et le reste du banc ne prouve rien.
+echo $_GET['a'];                                                        // @attendu: signale
+echo $_POST['a'];                                                       // @attendu: signale
+
+// $_SESSION n'est PAS une source pour Psalm : c'est .psalm/src/SessionTaintPlugin.php
+// qui l'ajoute. Cette ligne muette veut dire que le plugin ne s'est pas chargé —
+// vérifier le mapping "Ladecadanse\Psalm\" d'autoload-dev, puis composer dump-autoload.
+echo $_SESSION['a'];                                                    // @attendu: signale
+
+// $_SERVER reste hors teinte, chez Psalm comme ici : rien ne l'y ajoute.
+echo $_SERVER['HTTP_USER_AGENT'];                                       // @attendu: muet
+
+// -----------------------------------------------------------------------------
+// 2. Les sinks SQL
+// -----------------------------------------------------------------------------
+
+// mysqli : couvert par le `ext-mysqli` de composer.json, qui charge le stub de Psalm.
+mysqli_query($mysqli, "SELECT " . $_GET['c']);                          // @attendu: signale
+
+// PDO : couvert par le `ext-pdo` du require de composer.json, et par rien d'autre — Psalm ne
+// charge stubs/extensions/pdo.phpstub que sur la foi de cette ligne, et ne reconnaît pas
+// `ext-pdo_mysql`. Sans elle, ces deux lignes sont muettes, c'est-à-dire que les 85 requêtes
+// PDO du dépôt ne sont surveillées par personne.
+//
+// PDO::prepare() est volontairement absent d'ici : Psalm ne rend qu'un chemin par sink, et un
+// appel direct depuis le banc prendrait la place du chemin qui passe par DbConnectorPdo —
+// celui que SINKS_ATTENDUS vérifie plus bas. Le banc s'aveuglerait lui-même.
+$pdo = new PDO('mysql:host=x', 'u', 'p');
+$pdo->query("SELECT " . $_GET['c']);                                    // @attendu: signale
+$pdo->exec("DELETE FROM x WHERE y = " . $_GET['c']);                    // @attendu: signale
+
+/**
+ * À travers les connecteurs du dépôt.
+ *
+ * Deux choses à savoir pour lire ce cas.
+ *
+ * Le `global` doit être dans une fonction : au niveau racine d'un fichier, Psalm le refuse
+ * (InvalidGlobal) et les variables restent sans type — les appels ci-dessous ne mènent alors
+ * plus nulle part. C'est aussi le motif réel du dépôt, où chaque méthode redéclare sa globale.
+ *
+ * Psalm ancre le signalement sur le sink — dans DbConnector.php et DbConnectorPdo.php — et
+ * non sur la ligne d'appel, qui n'apparaît que dans la trace. Ces deux lignes sont donc
+ * muettes à leur emplacement, et le banc vérifie à la place que les deux sinks ont parlé
+ * (constante SINKS_ATTENDUS de verifier-le-banc.php).
+ *
+ * La propagation côté PDO tient au type de la propriété $pdo de DbConnectorPdo. Sans
+ * `private PDO $pdo`, $this->pdo est mixed, l'appel n'est plus reconnu comme un sink, et le
+ * signalement disparaît sans que rien ne le dise.
+ */
+function bancRequetesParConnecteur(): void
+{
+    global $connector, $connectorPdo;
+
+    $connector->query("SELECT " . $_GET['c']);                          // @attendu: muet
+    $connectorPdo->prepare("SELECT " . $_GET['c']);                     // @attendu: muet
+}
+
+// -----------------------------------------------------------------------------
+// 3. Les échappements maison
+// -----------------------------------------------------------------------------
+
+echo sanitizeForHtml($_GET['d']);                                       // @attendu: muet
+echo "<a title=\"" . sanitizeForHtml($_GET['d']) . "\">";               // @attendu: muet
+
+function bancEchappementSql(): void
+{
+    global $connector;
+
+    $connector->query("SELECT * FROM x WHERE y = '" . $connector->sanitize($_GET['e']) . "'"); // @attendu: muet
+
+    // Rappel de ce que la configuration NE dit PAS : sanitize() hors quotes ne protège pas,
+    // et Psalm ne fait pas la différence. Cette ligne est une injection SQL, et elle est muette
+    // — pas plus que la précédente, alors que seule la précédente est sûre.
+    $connector->query("SELECT * FROM x WHERE id = " . $connector->sanitize($_GET['e']));       // @attendu: muet
+}
+
+// UserHtmlSanitizer::sanitize() porte @psalm-taint-escape html, mais ces deux lignes seraient
+// muettes même sans lui : la teinte s'arrête sur Symfony\HtmlSanitizer, que Psalm scanne sans
+// l'analyser puisque vendor/ est hors projectFiles. L'annotation dit pourquoi la sortie est
+// sûre ; elle ne rattrape rien que Psalm signalerait autrement. La seconde ligne le montre —
+// has_quotes n'est volontairement pas déclaré, et pourtant elle ne parle pas non plus.
+$sanitizer = new UserHtmlSanitizer();
+echo $sanitizer->sanitize($_GET['f']);                                  // @attendu: muet
+echo "<a title=\"" . $sanitizer->sanitize($_GET['f']) . "\">";          // @attendu: muet
+
+// Le jeton CSRF sort de bin2hex() : hexadécimal, donc sûr. Sans son annotation il
+// remonterait à chaque formulaire, depuis que $_SESSION est une source.
+echo '<input type="hidden" value="' . SecurityToken::getToken() . '">'; // @attendu: muet
+
+// -----------------------------------------------------------------------------
+// 4. La spécialisation des assembleurs de HTML
+// -----------------------------------------------------------------------------
+
+// getPaginationString() porte @psalm-taint-specialize. Sans elle, sa valeur de retour est
+// un nœud unique du graphe : le premier appel ci-dessous contaminerait le second, et tous
+// les autres appels du dépôt avec — 36 signalements pour un seul appelant fautif.
+echo HtmlShrink::getPaginationString(100, 1, 15, 1, "", "?v=" . $_GET['g']); // @attendu: signale
+echo HtmlShrink::getPaginationString(100, 1, 15, 1, "", "?page=");      // @attendu: muet
+
+// -----------------------------------------------------------------------------
+// 5. Ce que la configuration ne sait pas faire
+// -----------------------------------------------------------------------------
+
+// Convergence par propriété d'instance. $erreurs est un nœud unique du graphe, et
+// @psalm-taint-specialize n'y change rien (mesuré sur Psalm 6.16.1) : le message teinté
+// posé sur $verifA ressort par $verifB, qui n'a pourtant rien reçu de l'utilisateur.
+// C'est la cause des 222 signalements que `composer psalm:taint` porte aujourd'hui.
+$verifA = new Validateur();
+$verifA->setErreur('champ', "Le pseudo " . $_POST['pseudo'] . " existe déjà.");
+echo $verifA->getHtmlErreur('champ');                                   // @attendu: signale
+
+$verifB = new Validateur();
+echo $verifB->getHtmlErreur('autre');                                   // @attendu: signale
+
+/**
+ * Validation par liste blanche : Psalm ne la lit pas plus que progpilot. La valeur passée
+ * au SQL ne peut valoir que 'asc' ou 'desc', et le signalement tombe quand même — sur le
+ * sink, dans DbConnectorPdo.php, d'où le « muet » attendu ici.
+ */
+function bancListeBlanche(): void
+{
+    global $connectorPdo;
+
+    $tri = 'asc';
+    if (isset($_GET['tri']) && in_array($_GET['tri'], ['asc', 'desc'], true))
+    {
+        $tri = $_GET['tri'];
+    }
+    $connectorPdo->prepare("SELECT 1 ORDER BY x " . $tri);              // @attendu: muet
+}

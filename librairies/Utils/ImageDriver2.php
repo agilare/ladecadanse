@@ -2,15 +2,13 @@
 
 namespace Ladecadanse\Utils;
 
-use Ladecadanse\Utils\SystemComponent;
-
 /**
  * Traite des images envoyées par upload via un champ 'file' de formulaire et
  * les stocke dans images/
  * Ce sont des flyers, photos et logos envoyés par les membres pour illustrer
  * un événement, une brêve ou un lieu
  */
-class ImageDriver2 extends SystemComponent {
+class ImageDriver2 {
 
     /**
      * La liste des formats d'images acceptés
@@ -134,10 +132,12 @@ class ImageDriver2 extends SystemComponent {
       * @param int $maxWidth Largeur maximale voulue pour l'image réduite
       * @param int $maxHeigth Hauteur maximale voulue pour l'image réduite
       * @param string $selon ('', w, h) Pour imposer la largeur ou la hauteur de l'image réduite selon $maxWidth ou $maxHeigth
+      * @param string|null $outputMimeType Type mime d'écriture ('image/webp'…). Par défaut celui
+      *        du fichier reçu, ce qui faisait d'un flyer PNG une miniature PNG.
       * @return bool
-      * @see        evenement-edit.php, lieu-edit.php
+      * @see        evenement-edit.php, HandlesImageUploads::writeImageFiles()
       */
-   function processImage($imageSource, $imageCreated, $maxWidth = 0, $maxHeigth = 0, $selon = '', $rognage = 0)
+   function processImage($imageSource, $imageCreated, $maxWidth = 0, $maxHeigth = 0, $selon = '', $rognage = 0, ?string $outputMimeType = null)
    {
        if (empty($imageSource['tmp_name']) || $imageSource['size'] == 0)
        {
@@ -155,6 +155,20 @@ class ImageDriver2 extends SystemComponent {
        }
        $cheminImage = $this->IMGracine.$this->IMGtype.$slash.$safeImageCreated;
        $mime_type = mime_content_type($imageSource['tmp_name']);
+
+       // Défense en profondeur : Validateur::validerFichierImage() a déjà écarté
+       // les images démesurées, mais processImage() est appelé depuis plusieurs
+       // endroits et ne doit jamais faire tomber le processus. Un décodage GD
+       // coûte ~4 octets par pixel, et le fatal error qui suit un dépassement de
+       // memory_limit ne laisse rien afficher à l'appelant.
+       $dimensions = @getimagesize($imageSource['tmp_name']);
+
+       if ($dimensions !== false && $dimensions[0] * $dimensions[1] > UPLOAD_MAX_MEGAPIXELS * 1000000)
+       {
+           $this->erreur = "L'image dépasse " . UPLOAD_MAX_MEGAPIXELS . " mégapixels";
+           return false;
+       }
+
         $originaltransparentcolor = -1;
 
         if ($mime_type == "image/jpeg")
@@ -172,12 +186,29 @@ class ImageDriver2 extends SystemComponent {
        elseif ($mime_type == "image/gif")
        {
            $img = ImageCreateFromGif($imageSource['tmp_name']);
-           $originaltransparentcolor = imagecolortransparent($img);
 
+           if ($img === false)
+           {
+               $this->erreur = "gif non créé";
+               return false;
+           }
+
+           $originaltransparentcolor = imagecolortransparent($img);
        }
        elseif ($mime_type == "image/png")
        {
-           $img = ImageCreateFrompng($imageSource['tmp_name']);
+           // Les PNG écrits par d'anciennes versions de Photoshop embarquent un
+           // profil ICC qui se déclare sRGB sans en avoir le checksum : libpng
+           // émet alors « iCCP: known incorrect sRGB profile ». Il ignore le
+           // profil et décode l'image normalement, seul le log de prod en pâtit.
+           // Le @ ne masque donc rien d'utile, à condition de tester l'échec.
+           $img = @ImageCreateFrompng($imageSource['tmp_name']);
+
+           if ($img === false)
+           {
+               $this->erreur = "png non créé";
+               return false;
+           }
        }
        elseif ($mime_type == "image/webp")
        {
@@ -309,7 +340,11 @@ class ImageDriver2 extends SystemComponent {
 
        $messageErreur = "Échec dans la création des images";
 
-       if ($mime_type == "image/jpeg")
+       // Le format d'écriture est découplé de celui du fichier reçu : les miniatures
+       // d'événement sortent en WebP quel que soit l'original (voir Evenement::THUMBNAIL_MIME)
+       $writeMimeType = $outputMimeType ?? $mime_type;
+
+       if ($writeMimeType == "image/jpeg")
        {
            if (!imagejpeg($img2, $cheminImage, 80))
            {
@@ -318,7 +353,7 @@ class ImageDriver2 extends SystemComponent {
            }
            return true;
        }
-       elseif ($mime_type == "image/gif")
+       elseif ($writeMimeType == "image/gif")
        {
            if (!imagegif($img2, $cheminImage))
            {
@@ -327,17 +362,33 @@ class ImageDriver2 extends SystemComponent {
            }
            return true;
        }
-       elseif ($mime_type == "image/png")
+       elseif ($writeMimeType == "image/png")
        {
            if (!imagepng($img2, $cheminImage))
            {
+               // Le return manquait, seul de toutes les branches : un PNG que GD ne
+               // parvenait pas à écrire était annoncé comme enregistré, et la fiche
+               // désignait ensuite le fichier vide laissé par le fopen() ci-dessus
                $this->erreur = "Erreur dans la création du fichier PNG";
+               return false;
            }
            return true;
        }
-       elseif ($mime_type == "image/webp")
+       elseif ($writeMimeType == "image/webp")
        {
-           if (!imagewebp($img2, $cheminImage))
+           // imagewebp() refuse une image palettisée, et le redimensionnement en produit une
+           // pour les GIF — ImageCreate() plutôt qu'ImageCreateTrueColor(), afin de reporter
+           // la couleur transparente d'origine. Sans cette conversion, un GIF envoyé laissait
+           // le fichier vide créé par le fopen() ci-dessus, et personne ne lit l'erreur.
+           if (!imageistruecolor($img2))
+           {
+               imagepalettetotruecolor($img2);
+               imagealphablending($img2, false);
+               imagesavealpha($img2, true);
+           }
+
+           // 80 : qualité mesurée sur les flyers du site, cf. #170
+           if (!imagewebp($img2, $cheminImage, 80))
            {
                $this->erreur = "Erreur dans la création du fichier WebP";
                return false;
@@ -356,7 +407,7 @@ class ImageDriver2 extends SystemComponent {
      * Processes an image from a local file path (e.g. a temp file from a URL fetch).
      * Equivalent to processImage() but does not require a $_FILES array.
      */
-    public function processImageFromPath(string $filePath, string $imageCreated, int $maxWidth = 0, int $maxHeigth = 0, string $selon = '', int $rognage = 0): bool
+    public function processImageFromPath(string $filePath, string $imageCreated, int $maxWidth = 0, int $maxHeigth = 0, string $selon = '', int $rognage = 0, ?string $outputMimeType = null): bool
     {
         $imageSource = [
             'tmp_name' => $filePath,
@@ -365,7 +416,7 @@ class ImageDriver2 extends SystemComponent {
             'error'    => UPLOAD_ERR_OK,
             'name'     => basename($imageCreated),
         ];
-        return $this->processImage($imageSource, $imageCreated, $maxWidth, $maxHeigth, $selon, $rognage);
+        return $this->processImage($imageSource, $imageCreated, $maxWidth, $maxHeigth, $selon, $rognage, $outputMimeType);
     }
 
     function getErreur()

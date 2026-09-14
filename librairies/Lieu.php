@@ -10,12 +10,89 @@ class Lieu extends Element
 {
     use HasDocuments;
 
+    // TODO: rn to $documentsSystemDirPath ?
     public static $systemDirPath;
+    // TODO: rn to $documentsUrlDirPath ?
     public static $urlDirPath;
 
+    // TODO: explain better utility in var. name or context
+    // TODO: mv to a future LieuxRenderer class ?
     public const int LOW_ACTIVITY_MONTHS_NB = 6;
     public const int VERY_LOW_ACTIVITY_MONTHS_NB = 12;
     public const int RESULTS_PER_PAGE = 100;
+
+    /**
+     * Contraintes de saisie des champs du formulaire d'édition.
+     *
+     * Partagées par la validation serveur (LieuEdition::validate()) et par les
+     * attributs du formulaire (lieu/edit.php) : chacun les déclarait de son côté, et ils
+     * se contredisaient — `nom` s'arrêtait à 60 caractères dans le formulaire pour 80 en
+     * validation, `adresse` à 80 pour 100, `URL` à 80 pour 250, et `preposition_nom`
+     * laissait taper 60 caractères que la validation refusait à partir de 41.
+     *
+     * `type` est celui qu'attend Validateur::valider().
+     *
+     * @var array<string, array{type: string, min: int, max: int, required: bool}>
+     */
+    public const array FIELDS = [
+        'nom'             => ['type' => 'texte', 'min' => 1, 'max' => 80,  'required' => true],
+        'preposition_nom' => ['type' => 'texte', 'min' => 1, 'max' => 40,  'required' => false],
+        'adresse'         => ['type' => 'texte', 'min' => 1, 'max' => 255, 'required' => true],
+        'localite_id'     => ['type' => 'texte', 'min' => 1, 'max' => 80,  'required' => true],
+        'horaire_general' => ['type' => 'texte', 'min' => 2, 'max' => 500, 'required' => false],
+        'URL'             => ['type' => 'url',   'min' => 2, 'max' => 255, 'required' => false],
+    ];
+
+    /**
+     * Valeurs de la colonne `statut` (ENUM), avec le libellé montré aux éditeurs.
+     *
+     * « Publié / Dépublié » plutôt que « Actif / Inactif » : c'est de la visibilité de la
+     * fiche qu'il s'agit, pas de l'activité du lieu — que « Ancien », lui, désigne bien.
+     * Même vocabulaire que Organisateur::STATUTS, pour les mêmes raisons.
+     */
+    public const array STATUTS = [
+        'actif' => 'Publié',
+        'inactif' => 'Dépublié',
+        'ancien' => 'Ancien',
+    ];
+
+    /**
+     * Valeurs de la colonne `categories` (SET), avec leur libellé.
+     *
+     * Vient du global $glo_categories_lieux d'app/config.php : la liste appartient au
+     * lieu, et la garder en variable globale obligeait chaque appelant à la réclamer par
+     * un `global` avant de pouvoir traduire un code en libellé.
+     *
+     * L'ordre est celui de l'affichage — le <select> du formulaire, le filtre de la liste
+     * des lieux — et **ne suit pas celui du SET** : « autre » y reste en dernier alors que
+     * la colonne le porte au neuvième rang, avant les sept catégories ajoutées en 3.13.0.
+     * Un SET MariaDB est un masque de bits dont les positions viennent de l'ordre de
+     * déclaration : une valeur glissée au milieu réinterpréterait silencieusement toutes
+     * les lignes existantes, une catégorie nouvelle s'ajoute donc **à la fin** du SET.
+     * Ici, où l'ordre ne porte rien, elle s'ajoute où on veut. Voir
+     * resources/database/v3-13-0_lieu-categories.sql.
+     *
+     * Les libellés sont en minuscules : ils s'affichent aussi en énumération sous le nom
+     * du lieu (`categoriesEnClair()`), où une capitale au milieu d'une phrase détonne.
+     */
+    public const array CATEGORIES = [
+        'bistrot'       => 'bistrot',
+        'buvette'       => 'buvette',
+        'club'          => 'club',
+        'salle'         => 'salle',
+        'restaurant'    => 'restaurant',
+        'cinema'        => 'cinéma',
+        'theatre'       => 'théâtre',
+        'galerie'       => 'galerie',
+        'boutique'      => 'boutique',
+        'musee'         => 'musée',
+        'bibliotheque'  => 'bibliothèque',
+        'ludotheque'    => 'ludothèque',
+        'quartier'      => 'maison/espace de quartier',
+        'socioculturel' => 'centre socioculturel',
+        'ecole'         => 'école/conservatoire',
+        'autre'         => 'autre',
+    ];
 
     function __construct()
 	{
@@ -23,6 +100,10 @@ class Lieu extends Element
         $this->table = "lieu";
     }
 
+    /**
+     * TODO: rn to getNamePrepositionForSentence
+     * in the future : no argument and usage of $this->preposition in body
+     */
     public static function prepositionToPutInSentence($preposition): string
     {
         $result = $preposition;
@@ -40,13 +121,21 @@ class Lieu extends Element
         return $result;
     }
 
-    public static function getLinkNameHtml(string $nom, ?int $idLieu, ?string $salle = null): string
+    /**
+     * Used by all pages who need to target this lieu's page
+     *
+     * * TODO: find a better name
+     * TODO: mv to a LieuRenderer class
+     * @param string $baseUrl préfixe sans slash final, à fournir hors du site lui-même (flux RSS,
+     *                        courriels) où un href relatif ne se résout pas correctement
+     */
+    public static function getLinkNameHtml(string $nom, ?int $idLieu, ?string $salle = null, string $baseUrl = ''): string
     {
         $result = sanitizeForHtml($nom);
 
         if ($idLieu)
         {
-            $result = '<a href="/lieu/lieu.php?idL=' . (int) $idLieu . '">' . $result . '</a>';
+            $result = '<a href="' . $baseUrl . '/lieu/lieu.php?idL=' . (int) $idLieu . '">' . $result . '</a>';
             if ($salle)
             {
                 $result .= " - " . sanitizeForHtml($salle);
@@ -56,6 +145,42 @@ class Lieu extends Element
         return $result;
     }
 
+    /**
+     * Les catégories d'un lieu en toutes lettres, telles que la colonne `categories` les
+     * porte : une liste séparée par des virgules.
+     *
+     * Deux pages composaient chacune leur `implode(array_map(...))`, à un espace près.
+     * Une valeur absente de self::CATEGORIES est passée telle quelle plutôt que d'y
+     * provoquer une erreur d'index : une ligne écrite avant un renommage doit rester
+     * affichable.
+     */
+    public static function categoriesEnClair(?string $categories): string
+    {
+        $codes = array_filter(array_map('trim', explode(',', (string) $categories)));
+
+        return implode(", ", array_map(static fn (string $code): string => self::CATEGORIES[$code] ?? $code, $codes));
+    }
+
+    /**
+     * Les <option> du <select> multiple « Catégories » du formulaire d'édition.
+     *
+     * @param list<string> $selectionnees
+     */
+    public static function getCategoriesOptionsHtml(array $selectionnees): string
+    {
+        $html = '';
+        foreach (self::CATEGORIES as $code => $libelle)
+        {
+            $coche = in_array($code, $selectionnees, true) ? ' selected="selected"' : '';
+            $html .= '<option value="' . sanitizeForHtml($code) . '"' . $coche . '>' . sanitizeForHtml($libelle) . '</option>';
+        }
+
+        return $html;
+    }
+
+    /**
+     * TODO: mv to a repository
+     */
     public static function getLieu(int $idLieu): array
     {
         global $connectorPdo;
@@ -72,9 +197,15 @@ class Lieu extends Element
 
         $stmt = $connectorPdo->prepare($sql_event);
         $stmt->execute([$idLieu]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+
+        // fetch() returns false for an unknown id, callers expect an empty array
+        return $stmt->fetch(PDO::FETCH_ASSOC) ?: [];
     }
 
+    /**
+     * Only used for orgas table in organisateurs.php page
+     * mv to a LieuxRepository::getList or ::find
+    */
     public static function getLieux(array $filters, string $order = 'dateAjout', ?int $page = 1): array
     {
         global $connectorPdo;
@@ -124,7 +255,7 @@ class Lieu extends Element
 
         if (!empty($filters['categorie']))
         {
-            $sql_event .= " AND FIND_IN_SET (:categorie, categorie)";
+            $sql_event .= " AND FIND_IN_SET (:categorie, categories)";
         }
 
         $sql_event .= " AND (l.region IN (:region, 'rf', 'hs')  )"; // OR FIND_IN_SET (:region, loc.regions_covered)
@@ -142,6 +273,152 @@ class Lieu extends Element
     }
 
 
+    /**
+     * Lieux actifs, prêts à peupler un <select> groupé par canton.
+     *
+     * Reprend le tri du select de evenement-edit.php : cantons dans l'ordre de
+     * Localite::CANTONS, et à l'intérieur d'un canton les noms sans leur article initial, pour
+     * que « Le Sagittario » se range à S. La colonne `canton` sert à construire les <optgroup>.
+     *
+     * $exclureFribourg reproduit le filtre que le formulaire d'ajout applique à la création : un lieu
+     * qu'on ne peut pas choisir en ajoutant un événement ne doit pas pouvoir être réglé comme lieu
+     * par défaut.
+     *
+     * Les valeurs par défaut du profil (user-edit.php) se règlent au niveau du lieu et
+     * appellent donc sans salles ; les formulaires d'événement, qui laissent choisir une
+     * salle, passent $avecSalles.
+     *
+     * @return list<array{idLieu: int, nom: string, canton: string, salles?: list<array>}>
+     */
+    public static function getActifsPourSelect(bool $exclureFribourg = true, bool $avecSalles = false): array
+    {
+        global $connectorPdo;
+
+        $where = $exclureFribourg ? " AND lieu.region != 'fr' " : '';
+
+        $stmt = $connectorPdo->prepare("SELECT lieu.idLieu, lieu.nom, COALESCE(localite.canton, '') AS canton
+            FROM lieu
+            LEFT JOIN localite ON lieu.localite_id = localite.id
+            WHERE lieu.statut = 'actif' " . $where . "
+            ORDER BY
+              " . Localite::sqlOrdreCantons("COALESCE(localite.canton, '')") . ",
+              TRIM(LEADING 'L\'' FROM (TRIM(LEADING 'Les ' FROM (TRIM(LEADING 'La ' FROM (TRIM(LEADING 'Le ' FROM lieu.nom))))))) COLLATE utf8mb4_unicode_ci");
+        $stmt->execute();
+        $lieux = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        if (!$avecSalles)
+        {
+            return $lieux;
+        }
+
+        $salles_par_lieu = self::getSallesActivesParLieu();
+        foreach ($lieux as $rang => $lieu)
+        {
+            $lieux[$rang]['salles'] = $salles_par_lieu[(int) $lieu['idLieu']] ?? [];
+        }
+
+        return $lieux;
+    }
+
+    /**
+     * Les <option> et <optgroup> du <select> « Lieu », partagés par les formulaires d'ajout et
+     * d'édition d'événement et par le formulaire d'édition groupée de l'administration. Le
+     * <select> lui-même reste dans chaque formulaire, dont il porte les attributs.
+     *
+     * $idLieu est la valeur à présélectionner : un id de lieu, ou « 12_3 » quand une salle a
+     * été choisie. $idSalle ne sert qu'au chargement d'une fiche existante, où lieu et salle
+     * arrivent dans deux colonnes distinctes.
+     */
+    public static function getOptionsHtml(string|int|null $idLieu, string|int|null $idSalle = 0, bool $exclureFribourg = true): string
+    {
+        return self::renderOptions(
+            self::getActifsPourSelect($exclureFribourg, avecSalles: true),
+            (string) $idLieu,
+            (string) $idSalle
+        );
+    }
+
+    /**
+     * Rendu pur des options, sans base de données ni globale : c'est ce que couvrent les tests.
+     *
+     * @param list<array{idLieu: int|string, nom: string, canton: string, salles?: list<array{idSalle: int|string, nom: string}>}> $lieux
+     */
+    public static function renderOptions(array $lieux, string $idLieu, string $idSalle = ''): string
+    {
+        // Après une erreur de saisie, le formulaire réaffiche la valeur postée telle quelle,
+        // salle comprise ; il n'y a alors qu'un champ à relire.
+        if (str_contains($idLieu, '_'))
+        {
+            [$idLieu, $idSalle] = explode('_', $idLieu, 2);
+        }
+
+        // « 0 » est le vide de la colonne evenement.idSalle, pas une salle sélectionnée
+        if ($idSalle === '0')
+        {
+            $idSalle = '';
+        }
+
+        $html = '<option value=""></option>';
+
+        $canton_courant = null;
+        foreach ($lieux as $lieu)
+        {
+            $canton = (string) $lieu['canton'];
+            if ($canton !== $canton_courant)
+            {
+                if ($canton_courant !== null)
+                {
+                    $html .= '</optgroup>';
+                }
+                $html .= '<optgroup label="' . sanitizeForHtml(Localite::CANTONS[$canton] ?? $canton) . '">';
+                $canton_courant = $canton;
+            }
+
+            $selection = ((string) $lieu['idLieu'] === $idLieu && $idSalle === '') ? ' selected="selected"' : '';
+            $html .= '<option value="' . (int) $lieu['idLieu'] . '"' . $selection . '>' . sanitizeForHtml($lieu['nom']) . '</option>';
+
+            // Les salles suivent leur lieu, sous la même valeur composée « idLieu_idSalle »
+            // que relisent les traitements de formulaire
+            foreach ($lieu['salles'] ?? [] as $salle)
+            {
+                $selection = ($idSalle !== '' && (string) $salle['idSalle'] === $idSalle) ? ' selected="selected"' : '';
+                $html .= '<option style="font-style:italic;color:#444;" value="' . (int) $lieu['idLieu'] . '_' . (int) $salle['idSalle'] . '"' . $selection . '>'
+                    . sanitizeForHtml($lieu['nom']) . '&nbsp;– ' . sanitizeForHtml($salle['nom']) . '</option>';
+            }
+        }
+
+        if ($canton_courant !== null)
+        {
+            $html .= '</optgroup>';
+        }
+
+        return $html;
+    }
+
+    /**
+     * Toutes les salles actives, indexées par lieu — en une requête plutôt qu'une par lieu affiché.
+     *
+     * @return array<int, list<array{idSalle: int, idLieu: int, nom: string}>>
+     */
+    public static function getSallesActivesParLieu(): array
+    {
+        global $connectorPdo;
+
+        $stmt = $connectorPdo->prepare("SELECT idSalle, idLieu, nom FROM salle WHERE status='actif' ORDER BY idLieu, idSalle");
+        $stmt->execute();
+
+        $salles_par_lieu = [];
+        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $salle)
+        {
+            $salles_par_lieu[(int) $salle['idLieu']][] = $salle;
+        }
+
+        return $salles_par_lieu;
+    }
+
+    /**
+     * mv to a LieuSalleRepository
+     */
     public static function getActivesSalles(int $idLieu): array
     {
         global $connectorPdo;
@@ -175,6 +452,9 @@ class Lieu extends Element
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    /**
+     * TODO: fix incoherence of names : images uploaded, documents, fichierrecu table name
+     */
     public static function getImagesUploaded(int $idLieu): array
     {
         global $connectorPdo;

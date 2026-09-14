@@ -70,6 +70,13 @@ figure
     margin: 0;
 }
 
+/* les navigateurs antérieurs à fin 2023 ne connaissent pas <search> et le rendent
+   en inline : on impose le rendu bloc prévu par la spécification */
+search
+{
+    display: block;
+}
+
 hr
 {
     height: 0px;
@@ -81,6 +88,30 @@ hr
 .spacer
 {
     clear:both;
+}
+
+/* contenu retiré de la mise en page mais gardé pour les lecteurs d'écran et les
+   robots (valeur d'une propriété hCalendar que la page n'affiche pas) */
+.visually-hidden
+{
+    position:absolute;
+    width:1px;
+    height:1px;
+    margin:-1px;
+    padding:0;
+    overflow:hidden;
+    clip:rect(0 0 0 0);
+    white-space:nowrap;
+    border:0;
+}
+
+/* les abbr qui portent dtstart ne sont pas des abréviations : pas de soulignement
+   pointillé hérité de normalize.css */
+abbr.dtstart[title]
+{
+    text-decoration:none;
+    border-bottom:none;
+    cursor:inherit;
 }
 
 /*enveloppe header div#conteneur footer*/
@@ -300,6 +331,34 @@ hr
             color:#1784e8;
         }
 
+        /* « Sortir » déclenche un POST (cf. user/logout.php) : c'est donc un bouton dans un
+           formulaire, à qui l'on rend l'apparence des liens voisins du menu */
+        #entete_haut #menu_pratique ul li form.deconnexion
+        {
+            display:inline;
+        }
+
+        /* Le bouton forme une boîte inline-block là où les liens voisins restent inline :
+           son padding vertical hausse la ligne, donc le bandeau jaune du <li>, de 10 px.
+           Les marges négatives annulent cette poussée sans rien retirer à la surface
+           cliquable. Pas de height:1em non plus : inerte sur la boîte inline d'un lien,
+           elle rognerait celle du bouton, que le navigateur sait dimensionner. */
+        #entete_haut #menu_pratique ul li form.deconnexion button
+        {
+            margin:-0.4em 0;
+            padding:0.4em 0.4em;
+            border:0;
+            background:none;
+            font:inherit;
+            color:#1569C7;
+            cursor:pointer;
+        }
+
+        #entete_haut #menu_pratique ul li form.deconnexion button:hover
+        {
+            color:#1784e8;
+        }
+
 
         #entete_haut #menu_pratique ul li.ici a
         {
@@ -441,18 +500,41 @@ hr
                 #menu ul li.form_recherche
                 {
                     border:none;
-                    margin-right:2%;
+                    /* gouttière fixe : en % elle variait avec la largeur de l'écran et la loupe
+                       ne tombait jamais sous le bouton de menu de l'en-tête */
+                    margin-right:0.25em;
+                }
+
+                /* le li et le <search> qu'il contient centrent la loupe (mobile) ou le
+                   formulaire (bureau) dans la barre, quelle que soit leur hauteur propre */
+                #menu ul li.form_recherche,
+                #menu ul li.form_recherche > search
+                {
+                    display:flex;
+                    align-items:center;
                 }
 
             form.recherche
             {
-                padding:0.45em 0 0.45em 0;
+                /* le champ et le bouton sont posés en flex : hauteurs identiques par
+                   construction, sans dépendre de l'alignement sur la ligne de base ni des
+                   espaces entre balises, qui variaient d'un moteur de rendu à l'autre.
+                   (.recherche_mobile ne peut pas faire pareil, cf. mobile.css) */
+                display:flex;
+                align-items:stretch;
+                justify-content:flex-end;
             }
 
                 form.recherche input.mots
                 {
-                    width:14em;
-                    height:20px;
+                    /* box-sizing et height explicites : les feuilles de style par défaut
+                       des navigateurs ne s'accordent ni sur l'un ni sur l'autre */
+                    box-sizing:border-box;
+                    flex:0 1 15em; /* le libellé "Rechercher un événement" tient sans être rogné */
+                    min-width:0; /* le champ rétrécit au lieu de faire déborder le menu */
+                    height:1.8em;
+                    padding:0 0.4em;
+                    line-height:normal;
                     border:1px solid #8a8a8a;
                     color:#8a8a8a;
                     background-position: 0px 50%;
@@ -460,37 +542,16 @@ hr
 
                 form.recherche button.submit
                 {
+                    box-sizing:border-box;
+                    flex:0 0 auto; /* la hauteur suit celle du champ via align-items:stretch */
                     width:2em;
-                    border-top:1px solid #8a8a8a;
-                    border-bottom:1px solid #8a8a8a;
-                    border-right:1px solid #8a8a8a;
+                    padding:0;
+                    line-height:normal;
+                    border:1px solid #8a8a8a;
                     border-left:none;
                     background-color:#eaeaea;
-                /*    background-image:url(../interface/icons/search.png);*/
-                    background-repeat:no-repeat;
-                    background-position:2px;
 
                 }
-
-            @media screen and (-webkit-min-device-pixel-ratio:0) {
-
-                form.recherche input.mots
-                {
-                    height:22px;
-                }
-
-                form.recherche button.submit
-                {
-                    height:22px;
-                }
-            }
-
-            @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
-                form.recherche input.submit
-                {
-                    height:20px;
-                }
-            }
 
 /*header            */
 #entete_contenu
@@ -569,127 +630,221 @@ hr
 
 
 
+/* Icônes Font Awesome insérées en pseudo-éléments : FA 4.7 est une fonte et non
+   une image, le glyphe passe donc par content au lieu de background-image.
+   Les codes \fXXX ci-dessous devront être repris lors du passage à une version
+   maintenue de Font Awesome (issue #146). */
+.msg_erreur::before,
+.msg_info::before,
+.msg_ok::before,
+.msg_email::before,
+.info::before,
+.continuer::after,
+li.action_ajouter > a::before, a.action_ajouter::before,
+li.action_supprimer > a::before, a.action_supprimer::before
+{
+    display:inline-block;
+    font:normal normal normal 1em/1 FontAwesome;
+    text-rendering:auto;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+}
+
+/* Bandeaux de message : le glyphe est calé à gauche et centré verticalement,
+   comme l'était l'image de fond qu'il remplace. */
+.msg_erreur,
+.msg_info,
+.msg_ok,
+.msg_email
+{
+    position:relative;
+}
+
+.msg_erreur::before,
+.msg_info::before,
+.msg_ok::before,
+.msg_email::before
+{
+    /* calé sur la première ligne : centré, il tombait entre les deux lignes
+       des messages qui en comptent plusieurs.
+       Le retrait est exprimé en em, comme le padding gauche du bandeau : en px
+       face à un padding en %, le glyphe passait par-dessus le texte dès que le
+       bandeau était étroit (2.6em - 1em - ~0.9em de glyphe = ~0.7em de marge,
+       quelle que soit la largeur). */
+    position:absolute;
+    left:1em;
+    top:1em;
+    line-height:1.3em;
+}
+
 .msg_erreur
 {
     width:90%;
     margin:2em auto;
-    padding:1em 0% 1em 6%;
+    padding:1em 0% 1em 2.6em;
     border-top:1px solid red;
     border-bottom:1px solid red;
     background-color:#ffefef;
-    background-image:url(../interface/icons/error.png);
-    background-repeat:no-repeat;
-    background-position: 15px 50%;
     line-height:1.3em;
+}
+
+.msg_erreur::before
+{
+    content:"\f057";
+    color:red;
 }
 
 .msg_info
 {
     width:90%;
     margin:1em auto;
-    padding:1em 0% 1em 6%;
+    padding:1em 0% 1em 2.6em;
     border-top:1px solid blue;
     border-bottom:1px solid blue;
     background-color:#eaeaff;
-    background-image:url(../interface/icons/information.png);
-    background-repeat:no-repeat;
-    background-position: 15px 50%;
     line-height:1.3em;
+}
+
+.msg_info::before
+{
+    content:"\f05a";
+    color:blue;
 }
 
 .msg_ok
 {
     width:90%;
     margin:2em auto;
-    padding:1em 0% 1em 6%;
+    padding:1em 0% 1em 2.6em;
     border-top:1px solid green;
     border-bottom:1px solid green;
     background-color:#eaf0ea;
-    background-image:url(../interface/icons/tick.png);
-    background-repeat:no-repeat;
-    background-position: 15px 50%;
     line-height:1.3em;
+}
+
+.msg_ok::before
+{
+    content:"\f00c";
+    color:green;
 }
 
 .msg_email
 {
     width:90%;
     margin:1em auto;
-    padding:1em 0% 1em 6%;
+    padding:1em 0% 1em 2.6em;
     border-top:1px solid blue;
     border-bottom:1px solid blue;
     background-color:#eaeaff;
-    background-image:url(../interface/icons/email.png);
-    background-repeat:no-repeat;
-    background-position: 15px 50%;
     line-height:1.3em;
+}
+
+.msg_email::before
+{
+    content:"\f003";
+    color:blue;
 }
 
 .info
 {
-    padding:0 0em 0 16px;
-    background-image:url(../interface/icons/information.png);
-    background-repeat:no-repeat;
-    background-position: 0 50%;
+    padding:0;
     line-height:1.3em;
 }
 
+.info::before
+{
+    content:"\f05a";
+    width:16px;
+    color:blue;
+}
+
 /*liens & icones*/
-.continuer, .read-smore__link
+.continuer
 {
     text-align:right;
-    padding:0 15px 0 0;
-    background-image:url(../interface/icons/resultset_next.png);
-    background-repeat:no-repeat;
-    background-position: 100% 50%;
-    _background-image:none;
-    _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='images/interface/icons/resultset_next.png', sizingMethod='crop');
+    padding:0;
 }
 
-.read-smore__link[data-clicked="true"]
+.continuer::after
 {
-    background-image:url(../interface/icons/bullet_arrow_up.png);
+    content:"\f054";
+    margin-left:0.4em;
 }
 
-.action_ajouter
-{
-    padding:5px 0 5px 18px;
-    background-image:url(../interface/icons/page_white_add.png);
-    background-repeat:no-repeat;
-    background-position: 0 50%;
-}
-
-.action_supprimer
-{
-    padding:5px 0 5px 18px;
-    background-image:url(../interface/icons/delete.png);
-    background-repeat:no-repeat;
-    background-position: 0% 70%;
-}
-
-.action_depublier
-{
-    padding:5px 0 5px 18px;
-    background-image:url(../interface/icons/calendar_delete.png);
-    background-repeat:no-repeat;
-    background-position: 0% 30%;
-}
-
+/*
+ * L'icône appartient au lien, pas à la puce : posée sur le <li>, elle restait
+ * hors de la zone cliquable. Les deux formes coexistent — la classe est sur le
+ * <li> dans les menus d'actions, sur le <a> lui-même dans event/copy.php.
+ *
+ * Copier, Éditer et Dépublier gardent leur image famfamfam d'origine (#151) :
+ * en image de fond, elles n'ont pas de pseudo-élément et posent leur propre
+ * padding sur le lien. Ce lien doit faire au moins 16px de haut, sinon
+ * l'image, centrée verticalement, se retrouve rognée en haut et en bas.
+ *
+ * Les glyphes, eux, s'écartent du libellé par une marge et non par une
+ * largeur de boîte : ces menus héritent de text-align:right, qui plaquerait
+ * le glyphe contre le texte au lieu de le laisser à gauche de sa boîte.
+ */
+.action_ajouter,
+.action_supprimer,
+.action_depublier,
 .action_copier
 {
-    padding:5px 0 5px 18px;
-    background-image:url(../interface/icons/page_white_copy.png);
-    background-repeat:no-repeat;
-    background-position: 0% 30%;
+    padding:5px 0;
 }
 
 .action_editer
 {
-    padding:5px 0em 5px 18px;
-    background-image:url(../interface/icons/page_white_edit.png);
-    background-repeat:no-repeat;
-    background-position: 0% 30%;
+    padding:5px 0;
     height:2em;
+}
+
+li.action_ajouter > a::before,
+a.action_ajouter::before
+{
+    content:"\f067";
+    margin-right:0.5em;
+}
+
+li.action_supprimer > a::before,
+a.action_supprimer::before
+{
+    content:"\f014";
+    margin-right:0.5em;
+    color:#b3372c;
+}
+
+li.action_depublier > a,
+a.action_depublier,
+li.action_copier > a,
+a.action_copier,
+li.action_editer > a,
+a.action_editer
+{
+    display:inline-block;
+    min-height:16px;
+    line-height:16px;
+    padding-left:22px;
+    background-repeat:no-repeat;
+    background-position:0 50%;
+}
+
+li.action_depublier > a,
+a.action_depublier
+{
+    background-image:url(../interface/icons/calendar_delete.png);
+}
+
+li.action_copier > a,
+a.action_copier
+{
+    background-image:url(../interface/icons/page_white_copy.png);
+}
+
+li.action_editer > a,
+a.action_editer
+{
+    background-image:url(../interface/icons/page_white_edit.png);
 }
 
 .inscrivez
@@ -700,14 +855,7 @@ hr
     background-position: 50% 50%;
 }
 
-.popup_gmaps
-{
-    padding:0.1em 0em 0.1em 16px;
-    background-image:url(../interface/icons/map.png);
-    background-repeat:no-repeat;
-    background-position: 0% 30%;
-    height:2em;
-}
+
 
 .lien_ext, a[rel="external"]
 {
@@ -717,14 +865,6 @@ hr
     background-position: 100% 50%;
 }
 
-.icalendar
-{
-    background-image: url("../images/interface/icons/date_add.png");
-    background-position: 0% 50%;
-    background-repeat: no-repeat;
-    padding-left:20px;
-
-}
 
 
 
@@ -943,11 +1083,24 @@ table .td-align-center
     width:100%;
 }
 
+    /*
+     * Flyer et description forment une rangée flex plutôt qu'un float suivi
+     * d'un bloc. L'étirement (align-items:stretch, la valeur par défaut) donne
+     * à la colonne du flyer la hauteur de la plus haute des deux : son fond gris
+     * descend donc jusqu'à .pratique quand la description déborde, liens
+     * d'organisateurs compris. En float, il s'arrêtait à sa hauteur fixe et
+     * laissait un trou blanc pouvant atteindre une centaine de pixels.
+     */
+    .evenement-short .event-media
+    {
+        display:flex;
+    }
+
     .evenement-short .flyer
     {
-        float:left;
+        flex:0 0 100px;
         width:100px;
-        height:140px;
+        min-height:140px; /* et non height : c'est ce qui autorise l'étirement */
         background:#efefef;
         overflow:hidden;
         margin-top:6px;
@@ -1006,6 +1159,14 @@ table .td-align-center
 
     .evenement-short .description
     {
+        flex:1 1 auto;
+        min-width:0; /* sans quoi un mot insécable empêcherait la colonne de rétrécir */
+        /*
+         * Seul le flyer s'étire : sans ce flex-start, la description hériterait
+         * elle aussi de align-items:stretch et son fond clair remplirait toute
+         * la rangée, ce qui change l'aspect des cartes à description courte.
+         */
+        align-self:flex-start;
         min-height:72px;
         padding:0.4em 0 0.4em 0.5em;
         margin:0;
@@ -1019,6 +1180,45 @@ table .td-align-center
         .evenement-short .description p
         {
             margin:0;
+
+            /*
+             * Plafonne la description à 5 lignes. C'est ici, et non en PHP, que
+             * la hauteur se décide : seul le navigateur connaît les lignes
+             * réellement rendues, celles des sauts de ligne comme celles du
+             * retour à la ligne automatique. Le plafond PHP
+             * (EvenementRenderer::DESCRIPTION_MAX_CHARS) ne borne que la charge
+             * utile envoyée, et reste volontairement plus généreux.
+             *
+             * 5 et non 6 : à 6 lignes le bloc atteignait 138 px pour un flyer de
+             * 140, donc le moindre lien d'organisateur étirait la colonne du
+             * flyer. La ligne rendue sert de tampon avant les organisateurs.
+             */
+            display:-webkit-box;
+            -webkit-box-orient:vertical;
+            -webkit-line-clamp:5;
+            line-clamp:5;
+            overflow:hidden;
+        }
+
+        /*
+         * Posé par PHP quand le texte est tronqué, révélé par le JS quand c'est
+         * le clamp qui coupe.
+         *
+         * Le :not([hidden]) n'est pas décoratif : sans lui, ce `display:block`
+         * (spécificité 0,3,0) écrase le `[hidden] { display:none }` de
+         * normalize.css (0,1,0) et le lien s'affiche sur toutes les cartes,
+         * attribut hidden ou pas.
+         */
+        .evenement-short .description .continuer:not([hidden])
+        {
+            /*
+             * inline-block, et non block : la boîte épouse son contenu, donc elle
+             * se pose à gauche tandis que la flèche de fond (background-position
+             * 100% 50%) reste collée au texte. En block, le lien s'alignait à
+             * droite du bloc et la flèche partait à l'autre bout.
+             */
+            display:inline-block;
+            margin-top:0.3em;
         }
 
         .evenement-short .description .event_orga
@@ -1075,6 +1275,169 @@ table .td-align-center
             padding:0 0.2em 0 0;
             text-align:right;
         }
+
+    /*
+     * Temporalité de l'événement par rapport au chargement de la page (#51), commandée par
+     * EVENT_TIME_STATUS_ENABLED. La colonne des horaires est étroite : le badge ne doit pas se
+     * couper entre son icône et son libellé.
+     */
+    .even-time-status
+    {
+        white-space:nowrap;
+    }
+
+    /* La mention qui rappelle que ces repères ne sont pas publics : présente, jamais criarde */
+    .even-time-preview
+    {
+        margin:0.4em 0 0.8em;
+        font-size:0.85em;
+        font-style:italic;
+        color:#777;
+    }
+
+    /*
+     * La barre de progression : sa longueur dit la durée (PROGRESS_PX_PER_HOUR, posée en style
+     * par EvenementRenderer), son remplissage la part écoulée, et le pourcentage s'inscrit au
+     * milieu.
+     *
+     * Le conteneur porte la forme — hauteur, arrondi, rognage — et empile trois couches : le
+     * <progress>, les rayures animées, le pourcentage. Sa largeur minimale laisse au pourcentage
+     * la place de s'inscrire sur les événements courts ; sa largeur maximale garde les longs dans
+     * la colonne, « ? » compris, au prix de la proportionnalité au-delà d'une dizaine d'heures.
+     */
+    .even-time-bar
+    {
+        position:relative;
+        display:inline-block;
+        min-width:2.6em;
+        max-width:calc(100% - 1em);
+        height:0.8em;
+        border-radius:2px;
+        overflow:hidden;
+        vertical-align:middle;
+    }
+
+        /*
+         * appearance:none est ce qui autorise les pseudo-éléments de WebKit : sans lui le
+         * navigateur garde son rendu natif et les couleurs ci-dessous n'ont aucun effet. Le fond
+         * de .pratique étant clair, la piste doit être plus soutenue que lui pour rester visible.
+         */
+        .even-time-progress
+        {
+            -webkit-appearance:none;
+            appearance:none;
+            display:block;
+            width:100%;
+            height:100%;
+            border:none; /* Firefox dessine un cadre par défaut */
+            background:#C3D0E4;
+        }
+
+        .even-time-progress::-webkit-progress-bar
+        {
+            background:#C3D0E4;
+        }
+
+        .even-time-progress::-webkit-progress-value
+        {
+            background:#FACA1A;
+        }
+
+        .even-time-progress::-moz-progress-bar
+        {
+            background:#FACA1A;
+        }
+
+        /*
+         * Les rayures qui montrent que la barre progresse. Elles défilent quatre secondes au
+         * chargement puis s'immobilisent : un mouvement de plus de cinq secondes, lancé sans qu'on
+         * le demande et sans moyen de l'arrêter, enfreint le critère WCAG 2.2.2 — et une liste
+         * du soir en anime des dizaines à la fois.
+         */
+        .even-time-bar-stripes
+        {
+            position:absolute;
+            top:0;
+            bottom:0;
+            left:0;
+            background-image:linear-gradient(-45deg, rgba(255, 255, 255, 0.45) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.45) 50%, rgba(255, 255, 255, 0.45) 75%, transparent 75%, transparent);
+            background-size:0.8em 0.8em;
+            animation:even-time-stripes 1s linear 4;
+        }
+
+        .even-time-bar-label
+        {
+            position:absolute;
+            top:0;
+            right:0;
+            bottom:0;
+            left:0;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-size:0.8em;
+            line-height:1;
+            color:#333;
+        }
+
+@keyframes even-time-stripes
+{
+    from
+    {
+        background-position:0 0;
+    }
+
+    to
+    {
+        background-position:0.8em 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce)
+{
+    .even-time-bar-stripes
+    {
+        animation:none;
+    }
+}
+
+    /* Fin inconnue : la durée est estimée faute de mieux, ce « ? » ne le laisse pas croire */
+    .even-time-estimated
+    {
+        padding-left:0.2em;
+        font-weight:bold;
+        cursor:help;
+    }
+
+    /*
+     * Un événement hors d'atteinte — terminé, ou séance de ciné ou de théâtre commencée depuis
+     * plus d'une heure — reste lisible et cliquable : la transparence le range au second plan
+     * sans le retirer. Elle est levée au survol et dès qu'un de ses liens prend le focus,
+     * sans quoi les actions d'édition seraient les plus pâles au moment où on s'en sert.
+     *
+     * L'opacité d'un parent ne se rattrape pas sur un enfant : elle est donc posée sur chaque
+     * bloc de la carte plutôt que sur la carte, pour épargner le badge qui explique la pâleur.
+     * La variable évite de répéter la liste de ces blocs une seconde fois au survol.
+     */
+    .evenement-short.even-time-dimmed
+    {
+        --even-time-fade:0.4;
+    }
+
+    .evenement-short.even-time-dimmed:hover,
+    .evenement-short.even-time-dimmed:focus-within
+    {
+        --even-time-fade:1;
+    }
+
+    .evenement-short.even-time-dimmed > .titre,
+    .evenement-short.even-time-dimmed > .event-media,
+    .evenement-short.even-time-dimmed > .edition,
+    .evenement-short.even-time-dimmed .pratique .left,
+    .evenement-short.even-time-dimmed .pratique .even-time-line
+    {
+        opacity:var(--even-time-fade);
+    }
 
     .evenement-short .edition
     {
@@ -1297,13 +1660,6 @@ a.favorite-btn.is-favorite
         list-style-type: none;
     }
 
-#agenda_filters
-{
-    display: flex;
-    align-items: center;
-    margin-top: 0.6em;
-}
-
 #prochains_evenements > header
 {
     display: flex;
@@ -1331,7 +1687,6 @@ a.favorite-btn.is-favorite
         background: #e4e4e4;
     }
 
-section#prochains_evenements table td.lieu_actions_evenement,
 td.favori_action
 {
     width: 1%;
@@ -1344,18 +1699,11 @@ td.favori_action
         width: auto;
     }
 
+    /* #agenda_filters et le menu de tri sont mis en page par index.css */
     #agenda_filters #favoris_filter_navigation,
-    #agenda_filters #order_navigation,
-    #agenda_filters #favoris_filter_navigation ul,
-    #agenda_filters #order_navigation ul
+    #agenda_filters #favoris_filter_navigation ul
     {
-        float: none;
         margin: 0;
-    }
-
-    #agenda_filters #order_navigation
-    {
-        margin-left: auto;
     }
 
     #favoris_filter_navigation li
@@ -1384,6 +1732,171 @@ td.favori_action
     {
         background: #d4d4d4;
     }
+
+td.lieu_actions_evenement
+{
+    width: 80px;
+}
+
+td.lieu_actions_evenement ul
+{
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    white-space: nowrap;
+}
+
+/* les glyphes Font Awesome se touchaient : un peu d'air entre eux */
+td.lieu_actions_evenement li
+{
+    display: inline-block;
+    margin-left: 0.45em;
+    vertical-align: middle;
+}
+
+td.lieu_actions_evenement li:first-child
+{
+    margin-left: 0;
+}
+
+td.lieu_actions_evenement li img
+{
+    vertical-align: middle;
+}
+
+td.lieu_actions_evenement .calendar-export-trigger
+{
+    display: inline-block;
+    line-height: 1;
+    vertical-align: middle;
+    color: #a6a5a5;
+}
+
+td.lieu_actions_evenement .calendar-export-trigger i
+{
+    display: block;
+    font-size: 16px;
+    line-height: 1;
+}
+
+td.lieu_actions_evenement .calendar-export-trigger:hover,
+td.lieu_actions_evenement .calendar-export-trigger:active
+{
+    color: #1569C7;
+}
+
+/*
+ * Texte repliable des descriptions de lieu et d'organisateur (_texte_repliable.inc.php).
+ *
+ * Le plafond de hauteur est posé ici, et l'état replié est présent dès le HTML servi : le
+ * texte ne s'affiche jamais en entier avant de se raccourcir sous les yeux du visiteur.
+ * Même partage des rôles que le line-clamp des cartes d'événement, à ceci près qu'on plafonne
+ * une hauteur et non un nombre de lignes : le contenu est du HTML riche (titres, listes,
+ * citations) que line-clamp, limité à un seul bloc de texte, ne sait pas traiter.
+ *
+ * Tout le repli est conditionné à la classe .js posée dans le <head> : sans JS la bascule
+ * serait inerte, mieux vaut alors le texte entier qu'un texte tronqué sans recours.
+ */
+.texte-repliable
+{
+    --texte-repliable-hauteur:14em; /* ~10 lignes à line-height 1.4 */
+    --texte-repliable-fondu:3.2em;
+    --texte-repliable-fond:#F7F7F5; /* le fond de .description, pas du blanc */
+}
+
+:root.js .texte-repliable
+{
+    position:relative;
+    max-height:var(--texte-repliable-hauteur);
+    overflow:hidden;
+    transition:max-height 0.3s ease;
+}
+
+    /* le fondu annonce la suite du texte, là où une coupe franche ferait croire à une fin */
+    :root.js .texte-repliable::after
+    {
+        content:"";
+        position:absolute;
+        left:0;
+        right:0;
+        bottom:0;
+        height:var(--texte-repliable-fondu);
+        /* la couleur de départ doit rester celle de --texte-repliable-fond, en alpha 0 */
+        background:linear-gradient(to bottom, rgba(247, 247, 245, 0), var(--texte-repliable-fond));
+        pointer-events:none;
+        transition:opacity 0.25s ease;
+    }
+
+    /* déplié, ou finalement trop court pour être coupé : il n'y a plus de suite à annoncer */
+    :root.js .texte-repliable--deplie::after,
+    :root.js .texte-repliable--entier::after
+    {
+        opacity:0;
+    }
+
+/* même remise à zéro que .calendar-export-trigger, puis mise en forme propre à la bascule */
+.texte-repliable__bascule
+{
+    display:flex;
+    align-items:center;
+    gap:0.4em;
+    width:100%;
+    margin-top:0.2em;
+    padding:0.45em 0.2em;
+    border:none;
+    border-top:1px dotted #d4d4cd;
+    background:none;
+    font:inherit;
+    font-size:0.92em;
+    color:#5C7378;
+    text-align:left;
+    cursor:pointer;
+}
+
+/* sans JS le texte est déjà entier : la bascule n'a plus d'objet */
+:root:not(.js) .texte-repliable__bascule
+{
+    display:none;
+}
+
+    .texte-repliable__bascule:hover .texte-repliable__label,
+    .texte-repliable__bascule:focus-visible .texte-repliable__label
+    {
+        text-decoration:underline;
+    }
+
+    .texte-repliable__bascule .fa-chevron-down
+    {
+        transition:transform 0.25s ease;
+    }
+
+    .texte-repliable--deplie + .texte-repliable__bascule .fa-chevron-down
+    {
+        transform:rotate(180deg);
+    }
+
+    /*
+     * Le serveur a posé la bascule sur un texte que la mise en page ne coupe finalement pas ;
+     * global.js le constate une fois la page rendue et la retire.
+     *
+     * Une classe plutôt que l'attribut hidden : à spécificité égale, le display de la bascule
+     * l'emporterait sur le [hidden] de normalize.css, chargé avant - c'est le piège déjà
+     * rencontré sur .continuer dans les cartes d'événement.
+     */
+    .texte-repliable--entier + .texte-repliable__bascule
+    {
+        display:none;
+    }
+
+@media (prefers-reduced-motion: reduce)
+{
+    :root.js .texte-repliable,
+    :root.js .texte-repliable::after,
+    .texte-repliable__bascule .fa-chevron-down
+    {
+        transition:none;
+    }
+}
 
 ul.menu_edition
 {
@@ -1441,6 +1954,37 @@ ul.menu_tab
     }
 
 
+/*
+ * Onglets classiques : filet continu sous la rangée, onglet courant surélevé
+ * d'un pixel pour venir couvrir ce filet. Promu depuis admin/bots.css, où le
+ * motif était nommé .bots-tabs, pour servir aussi la page de profil.
+ */
+.tabs
+{
+    margin: 0 0 1em 0;
+    border-bottom: 1px solid #ccc;
+}
+
+.tabs a
+{
+    display: inline-block;
+    padding: 0.5em 1em;
+    text-decoration: none;
+    border: 1px solid transparent;
+    border-bottom: none;
+    border-radius: 3px 3px 0 0;
+}
+
+.tabs a.ici
+{
+    background: #fff;
+    border-color: #ccc;
+    font-weight: bold;
+    position: relative;
+    top: 1px;
+}
+
+
 ul#menu_periode
 {
     float: right;
@@ -1491,34 +2035,83 @@ ul#menu_periode
     display:none;
 }
 
-/* Bouton "vider + relancer la recherche" accolé à un champ input[type=search] */
-.js-clear-search-field
+/* Champ de recherche avec bouton "vider + relancer la recherche" intégré au champ */
+.search-field
 {
+    position:relative;
     display:inline-block;
+    vertical-align:middle;
+}
+
+.search-field input[type="search"]
+{
+    box-sizing:border-box;
+    padding-right:22px;
+}
+
+.search-field .js-clear-search-field
+{
+    position:absolute;
+    top:50%;
+    right:3px;
+    transform:translateY(-50%);
+    width:16px;
+    height:16px;
+    padding:0;
     border:1px solid #aaa;
     border-radius:50%;
     background:#f4f4f4;
     cursor:pointer;
-    width:20px;
-    height:20px;
-    line-height:18px;
-    font-size:0.9em;
-    color:#666;
-    padding:0;
-    margin-left:2px;
-    vertical-align:middle;
-    text-align:center;
+    color:transparent;
 }
 
-.js-clear-search-field:hover
+/* croix dessinée en CSS (2 barres croisées) plutôt qu'un glyphe de police,
+   pour un centrage pixel-perfect indépendant des métriques de la fonte */
+.search-field .js-clear-search-field::before,
+.search-field .js-clear-search-field::after
+{
+    content:"";
+    position:absolute;
+    top:50%;
+    left:50%;
+    width:8px;
+    height:1px;
+    background:#666;
+}
+
+.search-field .js-clear-search-field::before
+{
+    transform:translate(-50%, -50%) rotate(45deg);
+}
+
+.search-field .js-clear-search-field::after
+{
+    transform:translate(-50%, -50%) rotate(-45deg);
+}
+
+.search-field .js-clear-search-field:hover
 {
     background:#e4e4e4;
-    color:#333;
 }
 
-input[type="search"]:placeholder-shown + .js-clear-search-field
+.search-field .js-clear-search-field:hover::before,
+.search-field .js-clear-search-field:hover::after
+{
+    background:#333;
+}
+
+.search-field input[type="search"]:placeholder-shown + .js-clear-search-field
 {
     display:none;
+}
+
+/* sans ça Safari impose au champ de recherche sa hauteur, ses coins arrondis et son
+   propre modèle de boîte, et ignore les hauteurs posées plus haut */
+input[type="search"]
+{
+    -webkit-appearance:textfield;
+    appearance:textfield;
+    border-radius:0;
 }
 
 input[type="search"]::-webkit-search-cancel-button
@@ -1562,6 +2155,34 @@ input[type="search"]::-webkit-search-cancel-button
         font-size: 1rem;
         font-weight: 700;
         color:#856404
+    }
+
+.alert-success
+{
+    position:relative;
+    padding:0.7em 0.5em;
+    margin:0em 0;
+    background:#dff0d8;
+    color:#3c763d;
+}
+
+    .alert-success h2
+    {
+        padding:0;
+        margin:0.1em 0 0.4em 0em;
+        font-size:1.3em;
+        color:#3c763d;
+    }
+
+    .alert-success .close
+    {
+        position:absolute;
+        right:0;
+        top:0;
+        padding:6px;
+        font-size: 1rem;
+        font-weight: 700;
+        color:#3c763d;
     }
 
 .alert-info
@@ -1616,19 +2237,26 @@ div.pagination {
         color: #000;
     }
 
-    div.pagination #prec
+    div.pagination #prec::before,
+    div.pagination #suiv::after
     {
-        padding-left:16px;
-        background-image:url(../interface/icons/arrow_left.gif);
-        background-repeat:no-repeat;
-        background-position: 0 70%;
+        display:inline-block;
+        font:normal normal normal 1em/1 FontAwesome;
+        text-rendering:auto;
+        -webkit-font-smoothing:antialiased;
+        -moz-osx-font-smoothing:grayscale;
     }
 
-    div.pagination #suiv {
-        padding-right:16px;
-        background-image:url(../interface/icons/arrow_right.gif);
-        background-repeat:no-repeat;
-        background-position: 90% 70%;
+    div.pagination #prec::before
+    {
+        content:"\f177";
+        margin-right:0.4em;
+    }
+
+    div.pagination #suiv::after
+    {
+        content:"\f178";
+        margin-left:0.4em;
     }
 
     div.pagination span.current {
@@ -1930,8 +2558,13 @@ ul#menu_calendrier li form p
 #derniers_lieux td
 {
   padding: 0.4em;
-  vertical-align: top;
+  vertical-align: middle;
   border-top: 1px dotted #5C7378;
+}
+
+#derniers_lieux td img
+{
+    max-height: 60px;
 }
 
 #derniers_lieux h2
@@ -2013,6 +2646,55 @@ ul#menu_calendrier li form p
         background:#d4d4d4;
     }
 
+/*
+ * Pagination à gauche, second menu à droite (nombre de lignes sur le tableau de bord, sens du tri
+ * sur les fiches lieu et organisateur). En flex plutôt qu'en flottants : les deux menus n'ont ni la
+ * même hauteur de ligne ni les mêmes marges internes, et se retrouvaient décalés en hauteur.
+ * align-items les recentre l'un sur l'autre, margin-left:auto pousse le second à droite y compris
+ * quand la pagination manque — une seule page, et elle ne s'affiche pas.
+ */
+.liste-barre
+{
+    display:flex;
+    align-items:center;
+    flex-wrap:wrap;
+}
+
+/*
+ * Marges verticales symétriques de part et d'autre : align-items centre la boîte de marge, un
+ * 0.8em en haut contre 0.4em en bas descendait donc le menu de droite sous la pagination. La
+ * valeur, elle, n'a pas à concorder — les fiches lieu et organisateur donnent à leur pagination
+ * ses propres marges (#prochains_evenements .pagination), plus spécifiques que celles-ci.
+ */
+.liste-barre div.pagination
+{
+    float:none;
+    margin:0.6em 0;
+}
+
+.liste-barre #order_navigation
+{
+    margin:0.6em 0 0.6em auto;
+}
+
+.liste-barre #order_navigation ul
+{
+    float:none;
+    margin:0;
+}
+
+/* le lien porte un padding : en inline, la pastille de fond du bouton actif déborde de la ligne */
+.liste-barre #order_navigation li a
+{
+    display:inline-block;
+}
+
+/* boutons sans libellé : l'icône tient lieu de texte, à peine plus grande que lui */
+.liste-barre #order_navigation li a .fa
+{
+    font-size:1.15em;
+}
+
 #contenu .thumbnails
 {
     list-style-type:none;
@@ -2053,4 +2735,117 @@ ul#menu_calendrier li form p
 #back-to-top:focus {
     background: rgba(92, 115, 120, 0.85);
     outline: 2px solid #fff;
+}
+/* piège à scrapers (voir _footer.inc.php) : lien positionné hors écran
+   plutôt que display:none, que certains scrapers savent filtrer */
+.hp-link {
+    position: absolute;
+    left: -9999px;
+}
+
+/* ---- Mode mouseless : entraînement aux raccourcis clavier (voir web/js/mouseless.js) ---- */
+
+/* badge de la touche, inséré après le lien concerné */
+.mouseless-key {
+    display: inline-block;
+    margin-left: 0.25em;
+    padding: 0 0.35em;
+    border: 1px solid #5C7378;
+    border-radius: 3px;
+    background: #fff;
+    color: #5C7378;
+    font-family: inherit;
+    font-size: 0.75em;
+    line-height: 1.6;
+    vertical-align: middle;
+}
+
+/* le clic est neutralisé par JS : autant que le curseur l'annonce avant l'essai */
+html.mouseless [aria-keyshortcuts] {
+    cursor: not-allowed;
+}
+
+/* rappel de la touche attendue quand un clic vient d'être bloqué */
+.mouseless-flash {
+    animation: mouseless-flash 400ms ease-out;
+}
+
+@keyframes mouseless-flash {
+    from {
+        background: #ffc94d;
+        border-color: #d99b00;
+        color: #333;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .mouseless-flash {
+        animation: none;
+        outline: 2px solid #d99b00;
+    }
+}
+
+/* sortie toujours accessible : ce lien n'est pas neutralisé */
+#mouseless-banner {
+    position: fixed;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    padding: 0.4em 1em;
+    border-radius: 1em;
+    background: rgba(92, 115, 120, 0.9);
+    color: #fff;
+    font-size: 0.8rem;
+    white-space: nowrap;
+}
+
+#mouseless-banner kbd {
+    padding: 0 0.3em;
+    border: 1px solid #fff;
+    border-radius: 3px;
+    font-family: inherit;
+}
+
+#mouseless-banner a {
+    color: #fff;
+    text-decoration: underline;
+}
+
+/* ---- Navigation j/k dans les listes (voir LISTS dans web/js/shortcuts.js) ---- */
+
+/*
+ * :focus-within plutôt qu'une classe posée en JS : rien à retirer quand le focus s'en va,
+ * et le repère suit aussi bien la navigation Tab que j/k.
+ *
+ * Le fond va sur les td et non sur le tr : admin/tables.css pose déjà un fond sur les
+ * lignes paires, qu'un fond de tr ne recouvrirait pas.
+ */
+#derniers_lieux tbody tr:focus-within > td,
+table#ajouts tr:focus-within > td,
+#res_recherche tbody tr:focus-within > td,
+#prochains_evenements tr.evenement:focus-within > td,
+#tableaux tr:focus-within > td {
+    background: #eef4f5;
+}
+
+#contenu article.evenement-short:focus-within {
+    background: #eef4f5;
+}
+
+/*
+ * Liseré en box-shadow interne et non en border-left, qui décalerait la colonne.
+ *
+ * Sur l'agenda il se limite au titre : un article fait plusieurs centaines de pixels de
+ * haut (flyer, description, pied d'édition), et une barre sur toute cette hauteur pesait
+ * plus qu'elle ne repérait. Le poser sur la ligne du lien focalisé suffit à désigner
+ * l'événement courant.
+ */
+#derniers_lieux tbody tr:focus-within > td:first-child,
+table#ajouts tr:focus-within > td:first-child,
+#res_recherche tbody tr:focus-within > td:first-child,
+#prochains_evenements tr.evenement:focus-within > td:first-child,
+#tableaux tr:focus-within > td:first-child,
+#contenu article.evenement-short:focus-within > header.titre {
+    box-shadow: inset 3px 0 0 #5C7378;
 }

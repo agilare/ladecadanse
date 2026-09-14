@@ -11,9 +11,10 @@ require_once("app/bootstrap.php");
 
 use Ladecadanse\Evenement;
 use Ladecadanse\EvenementRenderer;
+use Ladecadanse\Favorites;
 use Ladecadanse\HtmlShrink;
 
-if (!isFavoritesEnabled())
+if (!Favorites::isEnabled())
 {
     header('Location: /');
     exit;
@@ -131,7 +132,7 @@ include("_header.inc.php");
     <?php else : ?>
 
         <div id="favorites_guest_banner" class="favorites-guest-banner">
-            <p>Vos favoris sont enregistrés uniquement sur cet appareil et peuvent être supprimés si vous videz les données de votre navigateur. Pour les conserver sur tous vos appareils, <a href="/user-login.php">connectez-vous</a>.
+            <p>Vos favoris sont enregistrés uniquement sur cet appareil et peuvent être supprimés si vous videz les données de votre navigateur. Pour les conserver sur tous vos appareils, <a href="/user/login.php">connectez-vous</a>.
             <a href="#" class="js-favorites-banner-dismiss" title="Fermer"><i class="fa fa-times"></i></a></p>
         </div>
 

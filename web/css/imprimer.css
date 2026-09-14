@@ -337,6 +337,24 @@ width:60%;
 text-decoration:underline;
 }
 
+/* sur le papier, rien à déplier : le texte doit s'imprimer en entier.
+   Les sélecteurs reprennent ceux de global.css : à spécificité égale, c'est cette
+   feuille-ci qui l'emporte, puisqu'elle est incluse après. */
+:root.js .texte-repliable
+{
+max-height:none;
+}
+
+:root.js .texte-repliable::after
+{
+display:none;
+}
+
+.texte-repliable__bascule
+{
+display:none;
+}
+
 #prochains_evenements .mois
 {
 font-size:12pt;

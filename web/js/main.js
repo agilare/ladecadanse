@@ -1,6 +1,7 @@
 // 2 façons d'utiliser les modules, juste pour voir : par fonctions (browser.js) et par objet literal (global.js)
 import { responsiveSetup } from './browser.js';
 import { AppGlobal } from './global.js';
+import { PdfToImage } from './pdf-to-image.js';
 import { Favorites } from './favorites.js';
 
 // used everywhere : home, events, lieux, user...
@@ -14,17 +15,34 @@ $('.magnific-popup').magnificPopup({
 });
 
 // used in lieu
-$('.gallery-item').magnificPopup({
-    type: 'image',
-    tClose: 'Fermer (Esc)',
-    tLoading: 'Chargement...', // Text that is displayed during loading. Can contain %curr% and %total
-    gallery: {
-        enabled: true,
-        tPrev: 'Pr&eacute;c&eacute;dente (bouton gauche)',
-        tNext: 'Suivante (bouton droit)',
-        tCounter: '%curr% de %total%'
-    }
-});
+$('.gallery-item').magnificPopup(galleryOptions());
+
+// used in event : le flyer et l'illustration s'ouvrent l'un depuis l'autre, comme la galerie
+// d'un lieu. Ces deux liens sont déjà pris par l'initialisation .magnific-popup ci-dessus, qui
+// les ouvre seuls ; magnificPopup remplace le gestionnaire de clic des éléments qu'on lui
+// redonne, donc c'est bien la galerie qui gagne. Pas de condition sur le nombre d'images :
+// en dessous de deux, magnificPopup n'affiche ni flèches ni compteur.
+$('#illustrations a.magnific-popup').magnificPopup(galleryOptions());
+
+/*
+ * magnificPopup écrit dans l'objet d'options qu'on lui passe : il y range l'ensemble
+ * d'éléments visé. Partager une constante entre les deux appels ferait donc rouvrir au second
+ * la galerie du premier — d'où une fabrique.
+ */
+function galleryOptions()
+{
+    return {
+        type: 'image',
+        tClose: 'Fermer (Esc)',
+        tLoading: 'Chargement...', // Text that is displayed during loading. Can contain %curr% and %total
+        gallery: {
+            enabled: true,
+            tPrev: 'Pr&eacute;c&eacute;dente (bouton gauche)',
+            tNext: 'Suivante (bouton droit)',
+            tCounter: '%curr% de %total%'
+        }
+    };
+}
 
 $('.js-select2').select2(
 {
@@ -49,6 +67,41 @@ $('.js-select2-options-with-complement').select2(
     templateResult: select2OptionWithComplement,
     templateSelection: select2OptionWithComplement
 });
+
+select2PreventReopenOnDeselect($('.js-select2-options-with-style, .js-select2-options-with-complement'));
+
+/*
+ * Select2 rouvre la liste déroulante quand on désélectionne par la croix, pour deux
+ * raisons distinctes : la croix globale (allowClear) termine son traitement par un
+ * toggle explicite, et la croix d'une étiquette (multiple) laisse le clic remonter
+ * jusqu'au conteneur, qui l'interprète comme une demande d'ouverture.
+ *
+ * On marque donc la désélection en cours et on annule l'ouverture qui suit dans le
+ * même tick — select2:opening est annulable. Le drapeau est relâché en fin de tick :
+ * désélectionner depuis une liste déjà ouverte ne déclenche aucun select2:opening,
+ * et un drapeau resté armé bloquerait l'ouverture suivante, elle légitime.
+ */
+function select2PreventReopenOnDeselect($selects)
+{
+    let deselecting = false;
+
+    $selects.on('select2:clearing select2:unselecting', function ()
+    {
+        deselecting = true;
+        setTimeout(function ()
+        {
+            deselecting = false;
+        }, 0);
+    });
+
+    $selects.on('select2:opening', function (evt)
+    {
+        if (deselecting)
+        {
+            evt.preventDefault();
+        }
+    });
+}
 
 function select2ApplyOptionInlineStyle(item)
 {
@@ -85,31 +138,27 @@ function select2OptionWithComplement(item)
     }
 
     // Nettoyer complement si c'est une URL (on enlève http:// ou https://)
-    let complementAffiche = complement ? complement.replace(/^https?:\/\//, '') : '';
+    let complementAffiche = complement ? String(complement).replace(/^https?:\/\//, '') : '';
 
-    let result = '<span>';
+    // .data() renvoie la valeur *décodée* de l'attribut data-* : l'interpoler dans une
+    // chaîne HTML fait exécuter le balisage venant de la base (XSS stocké — un nom
+    // d'organisateur contenant <script> se déclenchait à l'ouverture de la liste).
+    // On assemble donc des noeuds DOM avec .text().
+    const $result = $('<span>');
     if (nom)
     {
-        result += `<span>${nom}</span>`;
+        $result.append($('<span>').text(nom));
     }
     if (complementAffiche)
     {
-        result += ` <span style="font-size: 0.9em; color: #888;">${complementAffiche}</span>`;
+        $result.append(document.createTextNode(' '));
+        $result.append($('<span>').css({'font-size': '0.9em', 'color': '#888'}).text(complementAffiche));
     }
-    result += '</span>';
 
-    return $(result);
+    return $result;
 };
-
-// used in lieu, organisateur
-const ReadSmore = window.readSmore;
-const readMoreEls = document.querySelectorAll('.js-read-smore');
-ReadSmore(readMoreEls, {
-            moreText : "Lire la suite ",
-            lessText : "Réduire",
-            isInline : true
-        }).init();
 
 responsiveSetup();
 AppGlobal.init();
+PdfToImage.init();
 Favorites.init();

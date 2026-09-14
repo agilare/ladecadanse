@@ -6,9 +6,9 @@ use Ladecadanse\HtmlShrink;
 use Ladecadanse\Lieu;
 use Ladecadanse\Utils\ImageDriver2;
 use Ladecadanse\UserLevel;
-use Ladecadanse\Utils\Utils;
-use Ladecadanse\Utils\Validateur;
+use Ladecadanse\Utils\QueryParamValidator;
 use Ladecadanse\Localite;
+use Ladecadanse\Stats\MonthlyAddedEvents;
 
 $get = [];
 
@@ -42,7 +42,7 @@ $filters['localite'] = $_SESSION['user_prefs_lieux_localite'];
 
 $_SESSION['user_prefs_lieux_statut'] ??= 'actif';
 $tab_statuts = ['actif' => 'Actifs', 'inactif' => 'Inactifs', 'ancien' => 'Anciens'];
-if (isset($_GET['statut']) && Validateur::validateUrlQueryValue($_GET['statut'], "enum", 1, array_keys($tab_statuts)))
+if (isset($_GET['statut']) && QueryParamValidator::isAcceptedUrlQueryValue($_GET['statut'], "enum", array_keys($tab_statuts)))
 {
    $_SESSION['user_prefs_lieux_statut'] = $_GET['statut'];
 }
@@ -55,7 +55,7 @@ if (isset($_GET['order']) && in_array($_GET['order'], $tab_order))
    $_SESSION['user_prefs_lieux_order'] = $_GET['order'];
 }
 
-$get['page'] = !empty($_GET['page']) ? Validateur::validateUrlQueryValue($_GET['page'], "int", 1) : 1;
+$get['page'] = QueryParamValidator::pageFromQuery($_GET['page'] ?? '');
 
 // used to build localite filter Select (exclude localites without lieu)
 $lieux_region_localite_ids = array_values(array_unique(array_column(Lieu::getLieux(filters: ['region' => $filters['region'], 'statut' => $filters['statut']], page: null), 'localite_id')));
@@ -106,6 +106,11 @@ $stmt->execute([$glo_auj]);
 $lieux_even = $stmt->fetchAll(PDO::FETCH_GROUP);
 //dump($lieux_even);
 
+// suivi de l'activité : réservé aux administrateurs, seuls à relancer un lieu qui a cessé d'annoncer
+$show_monthly_counts = $authorization->isPersonneEditor($_SESSION);
+$months_keys = $show_monthly_counts ? MonthlyAddedEvents::monthKeys() : [];
+$lieux_monthly_counts = $show_monthly_counts ? MonthlyAddedEvents::forLieux() : [];
+
 $page_titre = "Lieux de sorties à ".$glo_regions[$_SESSION['region']]." : bistrots, salles, bars, restaurants, cinémas, théâtres, galeries, boutiques, musées...";
 include("../_header.inc.php");
 ?>
@@ -113,8 +118,8 @@ include("../_header.inc.php");
 <main id="contenu" class="colonne">
 
     <header id="entete_contenu">
-        <h1 style="width: 17%;line-height: 1.2em;margin:0">Lieux</h1> <?php if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= UserLevel::AUTHOR) { ?><a href="/lieu-edit.php?action=ajouter" style="float: left;padding: 5px 1px;"><img src="/web/interface/icons/building_add.png" alt=""  /> Ajouter un lieu</a><?php } ?>
-        <?php HtmlShrink::getMenuRegions($glo_regions, $get); ?>
+        <h1 style="width: 17%;line-height: 1.2em;margin:0">Lieux</h1> <?php if ($authorization->isPersonneAllowedToAddLieu($_SESSION)) { ?><a href="/lieu/edit.php?action=ajouter" style="float: left;padding: 5px 1px;"><i class="fa fa-plus" aria-hidden="true"></i> Ajouter un lieu</a><?php } ?>
+        <?= HtmlShrink::getMenuRegions($glo_regions, $get); ?>
         <div class="spacer"></div>
     </header>
 
@@ -123,22 +128,24 @@ include("../_header.inc.php");
         <div>
             <div class="table-filters">
                 <form action="" method="get">
-                    <input type="search" name="nom" value="<?= sanitizeForHtml($_SESSION['user_prefs_lieux_nom']) ?>" placeholder="Nom" aria-label="Nom">
-                    <button type="button" class="js-clear-search-field" aria-label="Vider et relancer la recherche" title="Vider et relancer la recherche">&times;</button>
+                    <span class="search-field">
+                        <input type="search" name="nom" value="<?= sanitizeForHtml($_SESSION['user_prefs_lieux_nom']) ?>" placeholder="Nom" aria-label="Nom">
+                        <button type="button" class="js-clear-search-field" aria-label="Vider et relancer la recherche" title="Vider et relancer la recherche"></button>
+                    </span>
                     <select name="categorie" class="js-select2-options-with-style" data-placeholder="Catégorie" style="width:80px">
                          <option value="" placeholder="type"></option>
-                        <?php foreach ($glo_categories_lieux as $k => $label) : ?>
+                        <?php foreach (Lieu::CATEGORIES as $k => $label) : ?>
                             <option value="<?= $k ?>" <?php if ($_SESSION['user_prefs_lieux_categorie'] == $k) : ?>selected="selected"<?php endif; ?>><?= sanitizeForHtml($label) ?></option>
                         <?php endforeach; ?>
                     </select>
-                    <?= HtmlShrink::getLocalitesSelect($regions_localites, $glo_regions, $glo_tab_ailleurs, $lieux_region_localite_ids); ?>
+                    <?= HtmlShrink::getLocalitesSelect($regions_localites, $glo_regions, $lieux_region_localite_ids); ?>
                     <button type="submit" style="margin-top:2px">OK</button>
                 </form>
                 <ul class="menu_tab">
                     <?php foreach ($tab_statuts as $k => $label) : ?>
                         <?php if ($k == "inactif" && !$authorization->isPersonneEditor($_SESSION)) { continue; } ?>
                         <li class="<?= $k ?><?php if ($_SESSION['user_prefs_lieux_statut'] == $k) : ?> ici<?php endif; ?>">
-                            <a href="?<?= Utils::urlQueryArrayToString($get, ['statut', 'page']) ?>&amp;statut=<?= $k ?>"><?= $label ?></a>
+                            <a href="?<?= HtmlShrink::urlQueryArrayToString($get, ['statut', 'page']) ?>&amp;statut=<?= $k ?>"><?= $label ?></a>
                         </li>
                     <?php endforeach; ?>
                     <div class="spacer"></div>
@@ -161,14 +168,15 @@ include("../_header.inc.php");
             <p style="margin-top:2em;">Pas de lieu correspondant à ces critères</p>
         <?php else : ?>
 
-            <?= HtmlShrink::getPaginationString($all_results_nb, $get['page'], Lieu::RESULTS_PER_PAGE, 1, basename(__FILE__), "?" . Utils::urlQueryArrayToString($get, "page") . "&amp;page=") ?>
+            <?= HtmlShrink::getPaginationString($all_results_nb, $get['page'], Lieu::RESULTS_PER_PAGE, 1, basename(__FILE__), "?" . HtmlShrink::urlQueryArrayToString($get, "page") . "&amp;page=") ?>
 
             <table id="derniers_lieux">
                 <thead>
                     <tr>
                         <th colspan="3"></th>
                         <th class="td-align-center"><i class="fa fa-comment-o" aria-hidden="true"></i></th>
-                        <th class="td-align-center"><img src="/web/interface/icons/calendar.png" alt="Nombre d'événements agendés" title="Nombre d'événements agendés" /></th>
+                        <?php if ($show_monthly_counts) : ?><?= HtmlShrink::getMonthlyCountsHeaderCells($months_keys) ?><?php endif; ?>
+                        <th class="td-align-center"><i class="fa fa-calendar-o" aria-label="Nombre d'événements agendés" title="Nombre d'événements agendés"></i></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -190,7 +198,7 @@ include("../_header.inc.php");
                                     <br><?= sanitizeForHtml($s['nom']) ?>
                                 <?php endforeach; ?>
                             <?php endif; ?>
-                                <br><small><?= sanitizeForHtml(implode(", ", array_map(fn ($cat) : string => $glo_categories_lieux[$cat], explode(",", str_replace(" ", "", $lieu['categorie']))))) ?></small>
+                                <br><small><?= sanitizeForHtml(Lieu::categoriesEnClair($lieu['categories'])) ?></small>
                         </td>
 
                         <td>
@@ -204,6 +212,7 @@ include("../_header.inc.php");
                                 <?= $lieux_desc[$lieu['idLieu']][0]['nb'] ?>
                             <?php endif; ?>
                         </td>
+                        <?php if ($show_monthly_counts) : ?><?= HtmlShrink::getMonthlyCountsCells($lieux_monthly_counts[$lieu['idLieu']] ?? [], $months_keys) ?><?php endif; ?>
                         <td class="td-align-center<?php if (!empty($lieux_even[$lieu['idLieu']][0]['has_today_event']) ) { echo " ici"; } ?>">
 
                             <?php if (!empty($lieux_even[$lieu['idLieu']][0]) ) : ?>
@@ -228,7 +237,7 @@ include("../_header.inc.php");
             </table>
 
             <?php if (count($lieux_page_current) > 8) : ?>
-                <?= HtmlShrink::getPaginationString($all_results_nb, $get['page'], Lieu::RESULTS_PER_PAGE, 1, basename(__FILE__), "?" . Utils::urlQueryArrayToString($get, "page") . "&amp;page=") ?>
+                <?= HtmlShrink::getPaginationString($all_results_nb, $get['page'], Lieu::RESULTS_PER_PAGE, 1, basename(__FILE__), "?" . HtmlShrink::urlQueryArrayToString($get, "page") . "&amp;page=") ?>
             <?php endif; ?>
 
         <?php endif; ?>

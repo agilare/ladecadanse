@@ -31,15 +31,18 @@ to set, including alarms, invitees, busy status, etc.
 https://www.ietf.org/rfc/rfc5545.txt
  */
 
-require_once("../app/bootstrap.php");
-
-use Ladecadanse\Evenement;
-
+// Validation de l'identifiant AVANT le chargement de l'application : bootstrap.php ouvre deux
+// connexions à la base, démarre la session et monte les gestionnaires de log, dont rien n'est
+// nécessaire pour répondre 400 à une url malformée. Voir event/rss.php, même motif.
 if (empty($_GET['idE']) || !is_numeric($_GET['idE']))
 {
     header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
     exit;
 }
+
+require_once("../app/bootstrap.php");
+
+use Ladecadanse\Evenement;
 
 $get['idE'] = (int) $_GET['idE'];
 
@@ -74,7 +77,7 @@ $sql_event = "SELECT
   e.dateAjout AS e_dateAjout,
 
   l.nom AS l_nom,
-  l.determinant AS l_determinant,
+  l.preposition_nom AS l_preposition_nom,
   l.adresse AS l_adresse,
   l.quartier AS l_quartier,
   l.lat AS l_lat,
@@ -95,6 +98,12 @@ WHERE e.idEvenement = :idE";
 $stmt = $connectorPdo->prepare($sql_event);
 $stmt->execute([':idE' => $get['idE']]);
 $tab_even = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (empty($tab_even))
+{
+    header($_SERVER["SERVER_PROTOCOL"] . " 404 Not Found");
+    exit;
+}
 
 if (!$authorization->isPersonneAllowedToEditEvenement($_SESSION, $tab_even) && in_array($tab_even['e_statut'], ['propose', 'inactif']))
 {

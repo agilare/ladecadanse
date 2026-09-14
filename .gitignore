@@ -2,6 +2,9 @@ app/env.php
 app/db.config.php
 /nbproject
 /var/*
+!/var/cache
+/var/cache/*
+!var/cache/.gitkeep
 !/var/logs
 /var/logs/*
 !var/logs/.gitkeep
@@ -9,12 +12,19 @@ app/db.config.php
 /var/sessions/*
 !var/sessions/.gitkeep
 /vendor
+# répertoires datés laissés par « composer prod-copy -- --reset-uploads »
+/web/uploads-backup-*
 !/web/uploads/
 /web/uploads/*
 !web/uploads/.gitkeep
 !/web/uploads/evenements/
 /web/uploads/evenements/*
 !web/uploads/evenements/.gitkeep
+!/web/uploads/fichiers/
+/web/uploads/fichiers/*
+!/web/uploads/fichiers/lieux/
+/web/uploads/fichiers/lieux/*
+!web/uploads/fichiers/lieux/.gitkeep
 !/web/uploads/lieux/
 /web/uploads/lieux/*
 !web/uploads/lieux/.gitkeep
@@ -26,6 +36,17 @@ app/db.config.php
 !web/uploads/organisateurs/.gitkeep
 /.idea
 .htaccess
+.user.ini
 tests/.env
 /node_modules
 /.well-known
+/.claude
+
+# Analyse de sécurité : hors dépôt.
+#
+# Un rapport de teinte nomme le fichier, la ligne et la nature de chaque défaut
+# encore ouvert. Le dépôt étant public, le publier reviendrait à en distribuer la
+# carte. Ces fichiers restent sur le poste de développement ; ce qui est corrigé
+# se raconte dans le CHANGELOG, une fois refermé.
+/.progpilot
+/.psalm/rapport.md

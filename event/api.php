@@ -3,7 +3,8 @@
 require_once '../app/bootstrap.php';
 
 use Ladecadanse\Evenement;
-use Ladecadanse\Utils\Validateur;
+use Ladecadanse\EventCategory;
+use Ladecadanse\Utils\QueryParamValidator;
 
 if (!LADECADANSE_API_ENABLED || empty($_SERVER['PHP_AUTH_USER']) || empty($_SERVER['PHP_AUTH_PW']) || !($_SERVER['PHP_AUTH_USER'] == LADECADANSE_API_USER && $_SERVER['PHP_AUTH_PW'] == LADECADANSE_API_KEY))
 {
@@ -15,7 +16,7 @@ if (!LADECADANSE_API_ENABLED || empty($_SERVER['PHP_AUTH_USER']) || empty($_SERV
 $tab_entity = ['event'];
 try
 {
-    $get['entity'] = Validateur::validateUrlQueryValue($_GET['entity'], 'enum', 1, $tab_entity);
+    $get['entity'] = QueryParamValidator::validateUrlQueryValue($_GET['entity'], 'enum', 1, $tab_entity);
 } catch (Exception)
 {
     header($_SERVER['SERVER_PROTOCOL'] . ' 400 Bad Request');
@@ -33,7 +34,7 @@ $get['region'] = trim((string) $_GET['region']);
 
 try
 {
-    $get['date'] = Validateur::validateUrlQueryValue(trim((string) $_GET['date']), 'date', 1);
+    $get['date'] = QueryParamValidator::validateUrlQueryValue(trim((string) $_GET['date']), 'date', 1);
 } catch (Exception)
 {
     header($_SERVER['SERVER_PROTOCOL'] . ' 400 Bad Request');
@@ -48,16 +49,13 @@ if (!preg_match('/^[0-9]{2}:[0-9]{2}:[0-9]{2}$/', trim((string) $_GET['endtime']
 
 $get['endtime'] = trim((string) $_GET['endtime']);
 
-    $eventCategories = [
-    'fête',
-    'cinéma',
-    'théâtre',
-    'expos',
-    'divers',
-];
+// L'API n'a pas de session : isOpenToAll(). Une catégorie en préversion n'est donc pas
+// acceptée en paramètre, et ses événements sont renvoyés sous sa catégorie de repli — le
+// champ genre de la réponse, lu par e.*, garde en revanche la valeur enregistrée.
+$eventCategories = array_keys(EventCategory::selectable(EventCategory::isOpenToAll()));
 try
 {
-    $get['category'] = Validateur::validateUrlQueryValue($_GET['category'], 'enum', 1, $eventCategories);
+    $get['category'] = QueryParamValidator::validateUrlQueryValue($_GET['category'], 'enum', 1, $eventCategories);
 } catch (Exception)
 {
     header($_SERVER['SERVER_PROTOCOL'] . ' 400 Bad Request');
@@ -79,7 +77,7 @@ if ($get['entity'] == 'event')
      LEFT JOIN localite eloc ON e.localite_id = eloc.id
      LEFT JOIN lieu l ON e.idLieu = l.idLieu
      LEFT JOIN localite loc ON l.localite_id = loc.id
-	 WHERE dateEvenement = '" . $connector->sanitize($get['date']) . "' AND genre = '" . $connector->sanitize($get['category']) . "' AND e.statut NOT IN ('propose')
+	 WHERE dateEvenement = '" . $connector->sanitize($get['date']) . "' AND " . EventCategory::sqlVisibleCategory('e.genre', EventCategory::isOpenToAll()) . " = '" . $connector->sanitize($get['category']) . "' AND e.statut NOT IN ('propose')
 	 AND e.region IN ('" . $connector->sanitize($get['region']) . "')";
     // noctambus : don't covers 'rf', 'hs'
     // so, localite.regions_covered is not used

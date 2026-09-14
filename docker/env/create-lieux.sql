@@ -1,5 +1,3 @@
 -- Fixtures pour les tests Selenium
-INSERT INTO `lieu` (`idpersonne`, `statut`, `nom`, `determinant`, `adresse`, `quartier`, `localite_id`, `region`, `lat`, `lng`, `categorie`, `horaire_general`, `photo1`, `photo2`, `logo`, `URL`, `actif`, `dateAjout`, `date_derniere_modif`) VALUES
-(1, 'actif', 'Lieu Test Selenium', 'au', 'Rue du Test 42', '', 86, 'ge', 0, 0, 'salle', 'Lun-Ven 9h-18h', '', '', '', 'https://test.local', 1, NOW(), NOW());
-
-
+INSERT INTO `lieu` (`idpersonne`, `statut`, `nom`, `preposition_nom`, `categories`, `adresse`, `quartier`, `localite_id`, `region`, `lat`, `lng`, `horaire_general`, `photo1`, `logo`, `URL`, `dateAjout`, `date_derniere_modif`) VALUES
+(1, 'actif', 'Lieu Test Selenium', 'au', 'salle', 'Rue du Test 42', '', 86, 'ge', NULL, NULL, 'Lun-Ven 9h-18h', NULL, NULL, 'https://test.local', NOW(), NOW());

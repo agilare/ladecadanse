@@ -4,12 +4,13 @@ require_once("../app/bootstrap.php");
 
 use Ladecadanse\Evenement;
 use Ladecadanse\EvenementRenderer;
+use Ladecadanse\Favorites;
 use Ladecadanse\HtmlShrink;
 
 header('X-Robots-Tag: noindex');
 header('Content-Type: application/json; charset=utf-8');
 
-if (!isFavoritesEnabled())
+if (!Favorites::isEnabled())
 {
     http_response_code(404);
     echo json_encode(['error' => 'not_found']);

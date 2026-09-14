@@ -29,6 +29,10 @@ define("EMAIL_SITE_NAME", 'La décadanse');
 define("EMAIL_ADMIN", ''); // recipient of site activity to watch, users requests (contact form, new event prop...) to process
 define("EMAIL_ADMIN_NAME", 'La décadanse');
 
+// envoie à EMAIL_ADMIN une copie de chaque mail adressé à un utilisateur, avec un sujet préfixé "[COPY]"
+// (destiné à de courtes périodes de monitoring : suivre la circulation des messages et leur rendu)
+define("EMAIL_COPY_TO_ADMIN", false);
+
 // external services
 define("TINYMCE_API_KEY", ''); // rich text editor for presentations of lieux and organisateurs
 
@@ -44,6 +48,18 @@ define("GLITCHTIP_DSN", "");
 define("DARKVISITORS_ENABLED", false);
 define("DARKVISITORS_PROJECT_KEY", '');
 define("DARKVISITORS_ACCESS_TOKEN", '');
+
+define("BOT_MONITORING_ENABLED", false);
+define("BOT_MONITORING_SUSPECT_THRESHOLD", 150); // seuil de hits pour "humains suspects" dans le dashboard
+
+// Acceptation des PDF dans les champs flyer et image (voir app/env_model.php).
+// L'image Docker installe imagick et Ghostscript : les deux voies de conversion
+// y fonctionnent, d'où l'activation par défaut en développement.
+define("PDF_CONVERSION_ENABLED", false);
+define("DATEPICKER_ALWAYS_VISIBLE_ENABLED", false);
+define("LIEU_MANUAL_COLLAPSIBLE_ENABLED", true);
+define("EVENT_TIME_STATUS_ENABLED", true);
+define("EVENT_NEW_CATEGORIES_ENABLED", 'preview');
 
 define("PAYPAL_HOSTED_BUTTON_ID", "");
 

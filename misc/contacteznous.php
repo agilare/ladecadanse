@@ -31,7 +31,7 @@ include("../_header.inc.php");
 
     $verif = new Validateur();
 
-    $champs = ["email" => "", "auteur" => "", "affiliation" => "", "sujet" => "", "contenu" => ""];
+    $champs = ["email" => "", "sujet" => "", "contenu" => ""];
 
     $action_terminee = false;
 
@@ -56,8 +56,6 @@ include("../_header.inc.php");
             $erreurs = [];
 
             $verif->valider($champs['email'], "email", "email", 4, 80, 1);
-            $verif->valider($champs['auteur'], "auteur", "texte", 2, 80, 1);
-            $verif->valider($champs['affiliation'], "affiliation", "texte", 2, 80, 0);
             $verif->valider($champs['sujet'], "sujet", "texte", 2, 80, 1);
             $verif->valider($champs['contenu'], "contenu", "texte", 8, 10000, 1);
 
@@ -69,9 +67,9 @@ include("../_header.inc.php");
             if ($verif->nbErreurs() == 0)
             {
                 $mailer = new Mailing();
-                if ($mailer->toAdmin($champs['sujet'], "Affiliation : " . $champs['affiliation'] . "\n\n" . $champs['contenu'], $champs['email']))
+                if ($mailer->toAdmin($champs['sujet'], $champs['contenu'], $champs['email']))
                 {
-                    HtmlShrink::msgOk('Merci, votre message a été envoyé. Je vous répondrai dans les prochains jours');
+                    HtmlShrink::msgOk('Merci, votre message a été envoyé. Je vous répondrai dès que possible (cela peut prendre plusieurs jours)');
                 }
                 $action_terminee = true;
                 unset($_POST);
@@ -92,16 +90,20 @@ include("../_header.inc.php");
 
             <p>Pour nous communiquer vos événements, merci de passer par la page <strong><a href="/articles/annoncerEvenement.php">Annoncer&nbsp;un&nbsp;événement</a></strong></p>
 
-            <h2 style="font-size:1.4em">E-mail</h2>
+            <h2>E-mail</h2>
 
-            <p id="email-info">
+            <p id="email-info" style="margin-top:1em">
                 <span id="contacteznous-email-info"><noscript>JS is required to view this address.</noscript></span>
             </p>
 
+            <h2>Formulaire</h2>
 
-        <h3 style="font-size:1.2em">Formulaire</h3>
         </div>
-        <form method="post" id="ajouter_editer" class="js-submit-freeze-wait" enctype="multipart/form-data" action="<?= basename(__FILE__) ?>">
+
+
+
+        <form method="post" id="ajouter_editer" class="js-submit-freeze-wait" enctype="multipart/form-data"
+              action="<?= basename(__FILE__) ?>" style="margin-top:1em;width:98%;margin: 0.2em auto 0 auto;">
 
             <p>* indique un champ obligatoire</p>
 
@@ -112,43 +114,24 @@ include("../_header.inc.php");
             </span>
 
             <fieldset>
-                <legend>Vos coordonnées</legend>
 
-                <!-- Email obligatoire (text) -->
                 <p>
                     <label for="email" id="label_email">E-mail* </label>
-                    <input name="email" id="email" type="text" size="40" title="email expéditeur" tabindex="1" value="<?= sanitizeForHtml($champs['email']) ?>" />
+                    <input type="email" name="email" id="email" size="40" tabindex="1" value="<?= sanitizeForHtml($champs['email']) ?>" required />
                     <?= $verif->getErreur("email"); ?>
                 </p>
+
                 <div class="guideChamp">Votre adresse e-mail restera confidentielle.</div>
-
-                <!-- Nom obligatoire (text) -->
-                <p>
-                    <label for="auteur" id="label_nom">Prénom/Nom* </label>
-                    <input name="auteur" id="auteur" type="text" size="30" title="auteur" tabindex="2" value="<?= sanitizeForHtml($champs['auteur']) ?>" />
-                    <?= $verif->getErreur("auteur"); ?>
-                </p>
-
-                <!-- Affiliation (text) -->
-                <p>
-                    <label for="affiliation" id="label_affiliation">Affiliation </label>
-                    <input name="affiliation" id="affiliation" type="text" size="30" tabindex="3" value="<?= sanitizeForHtml($champs['affiliation']) ?>" />
-                    <?= $verif->getErreur("affiliation"); ?>
-                </p>
-                <div class="guideChamp">Vous pouvez indiquer ici à quel groupe, assoc, etc. vous appartenez.</div>
-            </fieldset>
-
-            <fieldset>
-                <legend>Message</legend>
 
                 <p>
                     <label for="sujet" id="label_sujet">Sujet* </label>
-                    <input name="sujet" id="sujet" type="text" size="38" maxlength="120"  tabindex="4" value="<?= sanitizeForHtml($champs['sujet'] . $fields_prefilled['sujet']) ?>" />
+                    <input name="sujet" id="sujet" type="text" size="40" maxlength="120" tabindex="2" value="<?= sanitizeForHtml($champs['sujet'] . $fields_prefilled['sujet']) ?>" required />
                     <?= $verif->getErreur("sujet"); ?>
                 </p>
 
                 <p>
-                    <label for="contenu" id="label_contenu">Contenu* </label><textarea name="contenu" id="message" rows="14" tabindex="5"><?= sanitizeForHtml($champs['contenu'] . $fields_prefilled['contenu']) ?></textarea>
+                    <label for="contenu" id="label_contenu">Message* </label>
+                    <textarea name="contenu" id="message" rows="14" tabindex="3" required><?= sanitizeForHtml($champs['contenu'] . $fields_prefilled['contenu']) ?></textarea>
                     <?= $verif->getErreur("contenu"); ?>
                 </p>
 
@@ -169,7 +152,6 @@ include("../_header.inc.php");
 <!-- fin contenu -->
 
 <div id="colonne_gauche" class="colonne">
-    <?php include("../event/_navigation_calendrier.inc.php"); ?>
 </div>
 
 <div id="colonne_droite" class="colonne">

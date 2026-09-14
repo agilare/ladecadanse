@@ -1,13 +1,13 @@
 <?php
 
-global $connector, $glo_regions, $glo_auj, $iconeEditer, $glo_auj_6h;
+global $connector, $glo_regions, $glo_auj, $iconeCopier, $iconeEditer, $glo_auj_6h, $site_full_url;
 
 require_once("../app/bootstrap.php");
 
+use Ladecadanse\EvenementCalendarRenderer;
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\Utils\DateHelper;
-use Ladecadanse\Utils\Utils;
-use Ladecadanse\Utils\Validateur;
+use Ladecadanse\Utils\QueryParamValidator;
 use Ladecadanse\Evenement;
 use Ladecadanse\EvenementRenderer;
 use Ladecadanse\Lieu;
@@ -26,13 +26,13 @@ if (empty($_GET['mots']) || !empty($_GET['name_as']))
 $get['mots'] = $_GET['mots'];
 
 $get['tri'] = "pertinence";
-if (!empty($_GET['tri']) && Validateur::validateUrlQueryValue($_GET['tri'], "enum", 1, array_keys($tab_menu_tri)))
+if (!empty($_GET['tri']) && QueryParamValidator::isAcceptedUrlQueryValue($_GET['tri'], "enum", array_keys($tab_menu_tri)))
 {
     $get['tri'] = $_GET['tri'];
 }
 
 $get['periode'] = "futur";
-if (!empty($_GET['periode']) && Validateur::validateUrlQueryValue($_GET['periode'], "enum", 1, array_keys($tab_menu_periodes)))
+if (!empty($_GET['periode']) && QueryParamValidator::isAcceptedUrlQueryValue($_GET['periode'], "enum", array_keys($tab_menu_periodes)))
 {
     $get['periode'] = $_GET['periode'];
 }
@@ -44,7 +44,7 @@ if (isset($_GET['years']))
 }
 
 //dump($_GET);
-$get['page'] = !empty($_GET['page']) ? Validateur::validateUrlQueryValue($_GET['page'], "int", 1) : 1;
+$get['page'] = QueryParamValidator::pageFromQuery($_GET['page'] ?? '');
 $results_per_page = 20;
 
 
@@ -56,7 +56,7 @@ $mots = str_replace(",", " ", $mots);
 $mots = str_replace(":", " ", $mots);
 $tab_tous_mots = explode(" ", $mots);
 
-$mots_vides = Utils::listFileToArray(__ROOT__."/resources/stopwords_list.txt");
+$mots_vides = file(__ROOT__ . "/resources/stopwords_list.txt", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) ?: [];
 $tab_mots_sans_les_mots_vides = array_values(array_diff($tab_tous_mots, $mots_vides));
 $tab_mots_sans_les_mots_vides = array_filter($tab_mots_sans_les_mots_vides, function($v)
 {
@@ -188,6 +188,9 @@ $all_results_nb = $stmtAll->fetchColumn();
 
 $logger->info('[recherche]', ['mots' => $get['mots'], 'nb' => $all_results_nb, 'periode' => $get['periode'], 'years' => $get['years'], 'tri' => $get['tri'], 'page' => $get['page']]);
 
+// keep the search field filled with the submitted terms (see _header.inc.php)
+$page_recherche_mots = $get['mots'];
+
 // prepare mots to be transmitted in links (menus order, filters, pagination)
 $get['mots'] = urlencode($get['mots']);
 
@@ -201,13 +204,13 @@ $agenda_years = range((int)date("Y"), Evenement::AGENDA_START_YEAR);
 
 	<header id="entete_contenu">
         <h1>Rechercher des événements pour <em><?= sanitizeForHtml($mots) ?></em></h1>
-        <?php // HtmlShrink::getMenuRegions($glo_regions, $get); ?>
+        <?php // echo HtmlShrink::getMenuRegions($glo_regions, $get); ?>
 
         <!-- menu tous | futurs | anciens -->
         <ul id="menu_periode">
             <?php foreach ($tab_menu_periodes as $k => $label) : ?>
                 <li class="<?= $k ?><?php if ($get['periode'] == $k) : ?> ici<?php endif; ?>">
-                    <a href="?<?= Utils::urlQueryArrayToString($get, ['periode', 'page', 'years']) ?>&amp;periode=<?= $k ?>"><?= $label ?></a>
+                    <a href="?<?= HtmlShrink::urlQueryArrayToString($get, ['periode', 'page', 'years']) ?>&amp;periode=<?= $k ?>"><?= $label ?></a>
                 </li>
             <?php endforeach; ?>
             <div class="spacer"></div>
@@ -242,7 +245,7 @@ $agenda_years = range((int)date("Y"), Evenement::AGENDA_START_YEAR);
                     <li style="margin-right:5px"><i class="fa fa-sort-amount-asc" aria-hidden="true"></i></li>
                     <?php foreach ($tab_menu_tri as $k => $label) : ?>
                         <li class="<?= $k ?><?php if ($get['tri'] == $k) : ?> ici<?php endif; ?>">
-                            <a href="?<?= Utils::urlQueryArrayToString($get, ['tri', 'page']) ?>&amp;tri=<?= $k ?>"><?= $label ?></a>
+                            <a href="?<?= HtmlShrink::urlQueryArrayToString($get, ['tri', 'page']) ?>&amp;tri=<?= $k ?>"><?= $label ?></a>
                         </li>
                     <?php endforeach; ?>
                 </ul>
@@ -251,11 +254,15 @@ $agenda_years = range((int)date("Y"), Evenement::AGENDA_START_YEAR);
 
             <div class="spacer"></div>
 
-            <?= HtmlShrink::getPaginationString($all_results_nb, $get['page'], $results_per_page, 1, basename(__FILE__), "?" . Utils::urlQueryArrayToString($get, "page") . "&amp;page=") ?>
+            <?= HtmlShrink::getPaginationString($all_results_nb, $get['page'], $results_per_page, 1, basename(__FILE__), "?" . HtmlShrink::urlQueryArrayToString($get, "page") . "&amp;page=") ?>
 
             <table>
                 <tbody>
                     <?php
+                    // invariant de la boucle : la colonne d'actions n'a de raison d'être large
+                    // que pour qui peut y voir apparaître Copier, Modifier et Dépublier
+                    $est_connecte = isset($_SESSION['Sgroupe']);
+
                     foreach ($page_results as $tab_even) :
                         $even_periode = match (true) {
                             $tab_even['e_dateEvenement'] > $glo_auj_6h => "futur",
@@ -267,7 +274,7 @@ $agenda_years = range((int)date("Y"), Evenement::AGENDA_START_YEAR);
                         <tr class="<?= $even_periode ?>" data-event-id="<?= (int) $tab_even['e_idEvenement'] ?>">
                             <td class="desc_even">
                                 <h3><a href="evenement.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>"><?= sanitizeForHtml($tab_even['e_titre']) ?></a></h3>
-                                <p><?= $glo_tab_genre[$tab_even['e_genre']] ?></p>
+                                <p><?= Evenement::categoryLabel($tab_even['e_genre']) ?></p>
                             </td>
                             <td><?= Lieu::getLinkNameHtml($even_lieu['nom'], $even_lieu['idLieu'], $even_lieu['salle']) ?></td>
                             <td class="date"><a href="/index.php?courant=<?= sanitizeForHtml($tab_even['e_dateEvenement']); ?>"><?= DateHelper::isoToFr($tab_even['e_dateEvenement'], 'annee') ?></a></td>
@@ -275,15 +282,32 @@ $agenda_years = range((int)date("Y"), Evenement::AGENDA_START_YEAR);
                             <?php if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] == UserLevel::SUPERADMIN)) : ?>
                             <td><?= round($tab_even['score'], 5) ?></td>
                             <?php endif; ?>
-                            <?php if ($authorization->isPersonneAllowedToEditEvenement($_SESSION, $tab_even)) : ?>
-                                <td><a href="/evenement-edit.php?action=editer&amp;idE=<?= (int) $tab_even['e_idEvenement'] ?>"><?= $iconeEditer; ?></a></td>
+                            <?php
+                            $isFutureEvent = $even_periode !== 'ancien';
+                            $isAllowedToEdit = $authorization->isPersonneAllowedToEditEvenement($_SESSION, $tab_even);
+                            ?>
+                            <?php if ($isFutureEvent || $isAllowedToEdit) : ?>
+                                <td class="lieu_actions_evenement<?= $est_connecte ? '' : ' actions-compactes' ?>">
+                                    <ul>
+                                        <?php if ($isFutureEvent) : ?>
+                                            <?= EvenementCalendarRenderer::renderMenuHtml($tab_even, $site_full_url, compact: true) ?>
+                                        <?php endif; ?>
+                                        <?php if ($isAllowedToEdit) : ?>
+                                            <li><a href="/event/copy.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>" title="Copier cet événement"><?= $iconeCopier; ?></a></li>
+                                            <?php if ($authorization->isPersonneAllowedToEditEvenementNow($_SESSION, $tab_even)) : ?>
+                                            <li><a href="/evenement-edit.php?action=editer&amp;idE=<?= (int) $tab_even['e_idEvenement'] ?>" title="Modifier cet événement"><?= $iconeEditer; ?></a></li>
+                                            <?php endif; ?>
+                                            <li><?= EvenementRenderer::unpublishLinkHtml((int) $tab_even['e_idEvenement'], $icone['depublier']) ?></li>
+                                        <?php endif; ?>
+                                    </ul>
+                                </td>
                             <?php endif; ?>
                         </tr>
                     <?php endforeach; ?>
                     </tbody>
                 </table>
 
-                <?= HtmlShrink::getPaginationString($all_results_nb, $get['page'], $results_per_page, 1, basename(__FILE__), "?" . Utils::urlQueryArrayToString($get, "page") . "&amp;page="); ?>
+                <?= HtmlShrink::getPaginationString($all_results_nb, $get['page'], $results_per_page, 1, basename(__FILE__), "?" . HtmlShrink::urlQueryArrayToString($get, "page") . "&amp;page="); ?>
 
             <?php
             else:

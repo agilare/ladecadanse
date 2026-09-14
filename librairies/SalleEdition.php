@@ -11,17 +11,41 @@ class SalleEdition extends Edition
     private int $idPersonne;
     private ?int $idSalle = null;
 
-    public function __construct()
+    /** Salle chargée ou insérée ; la propriété vivait sur Edition, où elle ne servait qu'ici. */
+    private ?int $id = null;
+
+    /**
+     * Ce que la base dit déjà de la salle, sur le modèle du $storedValues des fiches.
+     *
+     * `idLieu` seul pour l'instant : le <select> du formulaire le proposait en
+     * modification alors qu'update() ne l'écrit pas — déplacer une salle annonçait
+     * « Salle modifiée », redirigeait vers le lieu choisi, et ne déplaçait rien. Le lieu
+     * d'une salle est fixé à sa création, les événements qui la citent portant eux aussi
+     * l'idLieu ; c'est donc la base qui décide, pas le POST.
+     *
+     * @var array{idLieu: int}
+     */
+    private array $storedValues = ['idLieu' => 0];
+
+    /**
+     * Les instances arrivent en paramètre pour que la classe soit exerçable hors
+     * requête HTTP ; les valeurs par défaut évitent d'imposer un conteneur à la page.
+     */
+    public function __construct(
+        ?DbConnectorPdo $pdo = null,
+        private readonly Validateur $verif = new Validateur(),
+    )
     {
-        $champs = [
+        $valeurs = [
             'idLieu' => '',
             'nom' => '',
             'emplacement' => '',
         ];
 
-        parent::__construct('salle', $champs, []);
-        $this->pdo = DbConnectorPdo::getInstance();
-        $this->verif = new Validateur();
+        parent::__construct($valeurs, []);
+
+        // Le connecteur est un singleton, qu'un défaut de paramètre ne sait pas appeler
+        $this->pdo = $pdo ?? DbConnectorPdo::getInstance();
     }
 
     public function setIdPersonne(int $idPersonne): void
@@ -34,24 +58,59 @@ class SalleEdition extends Edition
         $this->idSalle = $idSalle;
     }
 
+    /**
+     * @param array<string, mixed> $postGlobal contenu de $_POST
+     * @param array<string, mixed> $filesGlobal contenu de $_FILES ; la salle n'a pas de champ fichier
+     */
     #[\Override]
-    public function traitement(array $post, array $files): bool
+    public function processSubmission(array $postGlobal, array $filesGlobal): bool
     {
         foreach ($this->valeurs as $nom => $val) {
-            if (isset($post[$nom])) {
-                $this->valeurs[$nom] = $post[$nom];
+            if (isset($postGlobal[$nom])) {
+                $this->valeurs[$nom] = $postGlobal[$nom];
             }
         }
 
-        if (!$this->verification()) {
+        // Le lieu n'est pas modifiable : la valeur postée est ignorée au profit de celle
+        // que refreshStoredValues() vient de relire
+        if ($this->action === 'update') {
+            $this->valeurs['idLieu'] = $this->storedValues['idLieu'];
+        }
+
+        if (!$this->validate()) {
             return false;
         }
 
-        return $this->enregistrer();
+        return $this->upsert();
+    }
+
+    /**
+     * Relit ce que la base dit de la salle, sans toucher à la saisie en cours, et dit du
+     * même coup si elle existe encore.
+     *
+     * C'est ce que la page appelle à la soumission, là où loadValues() écraserait ce que
+     * l'utilisateur vient de taper.
+     *
+     * @return bool false si la salle n'existe plus — un UPDATE sur un identifiant inconnu
+     *              ne touche aucune ligne et réussit en silence
+     */
+    public function refreshStoredValues(): bool
+    {
+        $stmt = $this->pdo->prepare("SELECT idLieu FROM salle WHERE idSalle = :idSalle");
+        $stmt->execute([':idSalle' => $this->idSalle]);
+
+        $row = $stmt->fetch();
+        if ($row === false) {
+            return false;
+        }
+
+        $this->storedValues['idLieu'] = (int) $row['idLieu'];
+
+        return true;
     }
 
     #[\Override]
-    public function enregistrer(): bool
+    public function upsert(): bool
     {
         return match ($this->action) {
             'insert' => $this->insert($this->idPersonne) !== null,
@@ -61,10 +120,8 @@ class SalleEdition extends Edition
     }
 
     #[\Override]
-    public function verification(): bool
+    public function validate(): bool
     {
-        $this->verif = new Validateur();
-
         $this->verif->valider($this->valeurs['idLieu'], "idLieu", "texte", 1, 60, 1);
         $this->verif->valider($this->valeurs['nom'], "nom", "texte", 2, 100, 1);
         $this->verif->valider($this->valeurs['emplacement'], "emplacement", "texte", 2, 100, 0);
@@ -77,25 +134,31 @@ class SalleEdition extends Edition
             }
         }
 
-        $this->erreurs = array_merge($this->erreurs, $this->verif->getErreurs());
-
         return $this->verif->nbErreurs() === 0;
     }
 
+    /**
+     * @return bool false si la salle n'existe pas — à la page de répondre 404
+     */
     #[\Override]
-    public function loadValeurs(int $id): void
+    public function loadValues(int $id): bool
     {
         $stmt = $this->pdo->prepare("SELECT * FROM salle WHERE idSalle = :idSalle");
         $stmt->execute([':idSalle' => $id]);
 
-        if ($row = $stmt->fetch()) {
-            foreach ($row as $key => $value) {
-                if (array_key_exists($key, $this->valeurs)) {
-                    $this->valeurs[$key] = $value;
-                }
-            }
-            $this->id = $id;
+        $row = $stmt->fetch();
+        if ($row === false) {
+            return false;
         }
+
+        foreach ($row as $key => $value) {
+            if (array_key_exists($key, $this->valeurs)) {
+                $this->valeurs[$key] = $value;
+            }
+        }
+        $this->id = $id;
+
+        return true;
     }
 
     public function insert(int $idPersonne): ?int

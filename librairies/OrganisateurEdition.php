@@ -2,396 +2,205 @@
 
 namespace Ladecadanse;
 
-use Ladecadanse\Edition;
+use Ladecadanse\Utils\DbConnectorPdo;
+use Ladecadanse\Utils\UserHtmlSanitizer;
 use Ladecadanse\Utils\Validateur;
-use Ladecadanse\Organisateur;
-use Ladecadanse\Utils\ImageDriver2;
-use Ladecadanse\Document;
-use Ladecadanse\HtmlShrink;
 
-use Symfony\Component\HtmlSanitizer\HtmlSanitizer;
-use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
-
-
-class OrganisateurEdition extends Edition
+/**
+ * Traitement du formulaire d'ajout et de modification d'un organisateur
+ * (organisateur/edit.php).
+ *
+ * Passée sous PDO (issue #115) sur le modèle de SalleEdition : requêtes préparées et
+ * colonnes nommées, à la place de l'Element générique qui construisait son SET à partir
+ * des clés du tableau de valeurs.
+ *
+ * Ce qu'elle partage avec le formulaire de lieu — relecture de l'état enregistré,
+ * garde-fou sur le statut, cycle de vie des images, délégation des erreurs — vit dans
+ * FicheEdition (issue #117). Ne reste ici que ce qui est propre à l'organisateur.
+ */
+class OrganisateurEdition extends FicheEdition
 {
+    /** Champs image du formulaire, avec les dimensions de leur miniature « s_ ». */
+    private const array IMAGES = [
+        'logo'  => ['maxWidth' => 200, 'maxHeight' => 200, 'fitOn' => 'h', 'crop' => 0],
+        'photo' => ['maxWidth' => 300, 'maxHeight' => 300, 'fitOn' => 'w', 'crop' => 1],
+    ];
 
-    public $firstTime;
-    public $supprimer = [];
-    public $supprimer_document = [];
-    public $supprimer_galerie = [];
-    public $erreurs = [];
-    public $message;
-    public $verif;
-    public $action;
-    public $connector;
-    public $htmlSanitizer;
-
-    function __construct(public $nom, public $valeurs, public $fichiers)
-    {
-        global $connector;
-
-        $this->connector = $connector;
-
-        $this->erreurs = array_merge($this->valeurs, $this->fichiers);
-        $this->erreurs['nom_existant'] = '';
-
-        $this->htmlSanitizer = new HtmlSanitizer((new HtmlSanitizerConfig())
-            ->allowSafeElements()
-            ->allowElement('h3')
-            ->allowElement('blockquote')
-            ->allowElement('a', ['href', 'title', 'target'])
-            ->allowRelativeLinks(false)
-            ->allowLinkSchemes(['https', 'http', 'mailto'])
-            ->forceAttribute('a', 'rel', 'noopener noreferrer'));        
-
-    }
-
-    #[\Override]
-    function traitement(array $post, array $files): bool
-    {
-        parent::traitement($post, $files);
-
-        $this->id = $post['idOrganisateur'];
-
-        if (isset($post['logo_existant']))
-        {
-            $this->valeurs['logo'] = $post['logo_existant'];
-        }
-        else
-        {
-            $this->valeurs['logo'] = '';
-        }
-
-        if (isset($post['photo_existant']))
-        {
-            $this->valeurs['photo'] = $post['photo_existant'];
-        }
-        else
-        {
-            $this->valeurs['photo'] = '';
-        }
-
-        if (isset($post['supprimer']))
-        {
-            $this->supprimer = $post['supprimer'];
-        }
-
-        if ($this->verification())
-        {
-            $this->enregistrer();
-            return true;
-        }
-
-        return false;
-    }
-
-    #[\Override]
-    function verification(): bool
-    {
-
-        global $mimes_images_acceptes;
-
-        $verif = new Validateur();
-
-        $verif->valider($this->valeurs['nom'], "nom", "texte", 1, 80, 1);
-        $verif->valider($this->valeurs['adresse'], "adresse", "texte", 1, 80, 0);
-        $verif->valider($this->valeurs['URL'], "URL", "url", 2, 100, 0);
-        $verif->valider($this->valeurs['email'], "email", "email", 4, 100, 0);
-        $verif->valider($this->valeurs['presentation'], "presentation", "texte", 20, 10000, 0);
-        $verif->validerFichier($this->fichiers['logo'], "logo", $mimes_images_acceptes, 0);
-        $verif->validerFichier($this->fichiers['photo'], "photo", $mimes_images_acceptes, 0);
-
-        /*
-         * En cas d'ajout vérification si le lieu n'existe pas déjà
-         */
-        if ($this->action == 'insert')
-        {
-            $req = $this->connector->query("SELECT nom FROM organisateur WHERE statut='actif'");
-
-            while ($tab = $this->connector->fetchArray($req))
-            {
-                //si un lieu a déjà le même nom
-                if ($this->valeurs['nom'] != '' && $this->valeurs['nom'] == $tab['nom'])
-                {
-                    $verif->setErreur('nom_existant', "Le lieu s'appelant <em>" . $this->valeurs['nom'] . "</em> existe déjà.");
-                }
-            }
-        } //if action==ajouter
-
-
-        $this->erreurs = array_merge($this->erreurs, $verif->getErreurs());
-
-        if ($verif->nbErreurs() == 0)
-        {
-            return true;
-        }
-
-        return false;
-    }
-
-    function loadValeurs(int $id): void
-    {
-        $organisateur = new Organisateur();
-        $organisateur->setId($id);
-        $organisateur->load();
-        $this->id = $id;
-        $this->valeurs = $organisateur->getValues();
-//		printr($this->valeurs);
-    }
-
-    function enregistrer()
+    /**
+     * Les instances arrivent en paramètre pour que la classe soit exerçable hors
+     * requête HTTP ; les valeurs par défaut évitent d'imposer un conteneur aux pages,
+     * qui écrivent toutes `new OrganisateurEdition()`.
+     */
+    public function __construct(
+        ?DbConnectorPdo $pdo = null,
+        Validateur $verif = new Validateur(),
+        private readonly UserHtmlSanitizer $htmlSanitizer = new UserHtmlSanitizer(),
+    )
     {
         global $rep_uploads_organisateurs;
-        global $rep_templates;
 
-
-        $organisateur = new Organisateur();
-        $organisateur->setValues($this->valeurs);
-
-        $organisateur->setValue('idpersonne', $_SESSION['SidPersonne']);
-        
-        $organisateur->setValue('presentation', $this->htmlSanitizer->sanitize($organisateur->getValue('presentation')));
-
-//		echo "enreg:";
-//		printr($lieu->getValues());
-
-        if ($this->action == 'ajouter')
-        {
-
-            $nouvel_id = $organisateur->getMaxId() + 1;
-            if (!empty($this->fichiers['logo']['name']))
-            {
-                $organisateur->setValue('logo', $nouvel_id . '_logo' . strrchr((string) $this->fichiers['logo']['name'], '.'));
-            }
-
-            if (!empty($this->fichiers['photo']['name']))
-            {
-                $organisateur->setValue('photo', $nouvel_id . '_photo' . strrchr((string) $this->fichiers['logo']['name'], '.'));
-            }
-
-            $organisateur->setValue('date_ajout', date("Y-m-d H:i:s"));
-            $organisateur->setValue('date_derniere_modif', date("Y-m-d H:i:s"));
-
-            /*
-             * Insertion réussie, message OK, aperçu, et RAZ des champs
-             */
-            if ($organisateur->insert())
-            {
-                $this->id = $this->connector->getInsertId();
-                $this->message = 'Organisateur ajouté';
-            }
-            else
-            {
-                HtmlShrink::msgErreur("Erreur lors de l'insertion dans la table");
-                return false;
-            }
-        }
-        else if ($this->action == 'editer')
-        {
-            $organisateur->setValue('date_derniere_modif', date("Y-m-d H:i:s"));
-            //echo $this->id;
-            $organisateur->setId($this->id);
-
-            //echo "<p>supprimer :</p>";
-            //TEST
-            //printr($this->supprimer);
-            //
-            //echo 'logo value :'.$organisateur->getValue('logo');
-
-            if ($this->fichiers['logo']['name'] != '')
-            {
-                // suppression des fichiers de l'ancienne image
-                if ($organisateur->getValue('logo') != '')
-                {
-                    $this->safeUnlinkImageAndThumb($rep_uploads_organisateurs, $organisateur->getValue('logo'));
-                }
-
-                $organisateur->setValue('logo', Document::getFilename($this->fichiers['logo']['name'], $organisateur->getId(), 'logo', ''));
-            }
-            elseif (in_array('logo', $this->supprimer))
-            {
-                // suppression des fichiers de l'image, s'il elle est effectivement enregistrée
-                if ($organisateur->getValue('logo') != '')
-                {
-                    $this->safeUnlinkImageAndThumb($rep_uploads_organisateurs, $organisateur->getValue('logo'));
-                }
-
-                $organisateur->setValue('logo', '');
-            }
-
-            if ($this->fichiers['photo']['name'] != '')
-            {
-                // suppression des fichiers de l'ancienne image
-                if ($organisateur->getValue('photo') != '')
-                {
-                    $this->safeUnlinkImageAndThumb($rep_uploads_organisateurs, $organisateur->getValue('photo'));
-                }
-
-                $organisateur->setValue('photo', Document::getFilename($this->fichiers['photo']['name'], $organisateur->getId(), 'photo', ''));
-            }
-            /*
-             * Si on a seulement choisi de supprimer l'image existante
-             */
-            else if (in_array('photo', $this->supprimer))
-            {
-                // suppression des fichiers de l'image, s'il elle est effectivement enregistrée
-                if ($organisateur->getValue('photo') != '')
-                {
-                    $this->safeUnlinkImageAndThumb($rep_uploads_organisateurs, $organisateur->getValue('photo'));
-                }
-
-                $organisateur->setValue('photo', '');
-            }
-
-
-            /* echo "avant update:";
-              printr($organisateur->getValues()); */
-
-            if ($organisateur->update())
-            {
-                $this->message = 'Organisateur modifié';
-            }
-            else
-            {
-                HtmlShrink::msgErreur("Erreur lors de la mise à jour de la table");
-            }
-        }
-
-        /*
-         * TRAITEMENT DES FICHIERS UPLOADES
-         */
-        //echo "f:";
-//		printr($this->fichiers);
-        if (!empty($this->fichiers['logo']['name']))
-        {
-            //echo "ok img";
-            $imD2 = new ImageDriver2("organisateurs");
-
-            if (!$imD2->processImage($this->fichiers['logo'], "s_" . $organisateur->getValue('logo'), 200, 100, 'h', 0))
-            {
-                trigger_error($imD2->getErreur());
-                exit;
-            }
-
-            if (!$imD2->processImage($this->fichiers['logo'], $organisateur->getValue('logo'), 500, 500, '', 0))
-            {
-                trigger_error($imD2->getErreur());
-                exit;
-            }
-        }
-
-        if (!empty($this->fichiers['photo']['name']))
-        {
-            //echo "ok img";
-            $imD2 = new ImageDriver2("organisateurs");
-
-            if (!$imD2->processImage($this->fichiers['photo'], "s_" . $organisateur->getValue('photo'), 200, 400, 'w', 1))
-            {
-                trigger_error($imD2->getErreur());
-                exit;
-            }
-
-            if (!$imD2->processImage($this->fichiers['photo'], $organisateur->getValue('photo'), 600, 600, '', 0))
-            {
-                trigger_error($imD2->getErreur());
-                exit;
-            }
-        }
-    }
-
-    function loadValues($id)
-    {
-        $organisateur = new Organisateur();
-        $organisateur->setId($id);
-        $organisateur->load();
-        $champs = $organisateur->getValues();
-
-        $this->valeurs = $champs;
-    }
-
-    function NextWizardPage()
-    {
-
+        parent::__construct(
+            array_fill_keys(array_keys(Organisateur::FIELDS), ''),
+            ['logo' => [], 'photo' => []],
+            $rep_uploads_organisateurs,
+            $pdo,
+            $verif
+        );
     }
 
     #[\Override]
-    function Set($Name, $Value)
+    public function validate(): bool
     {
-        $this->$Name = $Value;
-    }
+        global $mimes_images_acceptes;
 
-    #[\Override]
-    function getErreur($champ)
-    {
-        $erreur = $this->erreurs[$champ];
-        return $erreur;
-    }
-
-    #[\Override]
-    function getNbErreurs(): int
-    {
-        return count($this->erreurs);
-    }
-
-    #[\Override]
-    function getHtmlErreur($champ)
-    {
-        if ($this->erreurs[$champ] != '')
+        // Longueurs et obligation viennent de Organisateur::FIELDS, dont le formulaire tire
+        // aussi ses maxlength et son required : ce qu'il laisse saisir est ce qui est accepté ici
+        foreach (Organisateur::FIELDS as $field => $rule)
         {
-            return '<div class="msg">' . $this->erreurs[$champ] . '</div>';
+            $this->verif->valider($this->valeurs[$field], $field, $rule['type'], $rule['min'], $rule['max'], $rule['required']);
         }
+
+        $this->verif->validerFichierImage($this->fichiers['logo'], "logo", $mimes_images_acceptes, 0);
+        $this->verif->validerFichierImage($this->fichiers['photo'], "photo", $mimes_images_acceptes, 0);
+
+        if (!array_key_exists($this->valeurs['statut'], Organisateur::STATUTS))
+        {
+            $this->verif->setErreur("statut", "Ce statut n'existe pas");
+        }
+
+        // Le nom identifie l'organisateur dans les listes des formulaires d'événement,
+        // où deux fiches publiées homonymes sont indiscernables. Le contrôle existait
+        // mais ne s'exécutait jamais : il attendait une action « insert » que la page
+        // ne lui passait pas.
+        if ($this->verif->getErreur("nom") === false && $this->isNameAlreadyTaken())
+        {
+            $this->verif->setErreur("nom", "Un organisateur porte déjà ce nom");
+        }
+
+        return $this->verif->nbErreurs() === 0;
+    }
+
+    public function setIdOrganisateur(int $idOrganisateur): void
+    {
+        $this->setRecordId($idOrganisateur);
+    }
+
+    public function getIdOrganisateur(): int
+    {
+        return $this->getRecordId();
     }
 
     #[\Override]
-    function GetInitialValue($Name)
+    protected function table(): string
     {
-        if (isset($this->Values[$Name]))
-            return $this->Values[$Name];
-        else
+        return 'organisateur';
+    }
+
+    #[\Override]
+    protected function idColumn(): string
+    {
+        return 'idOrganisateur';
+    }
+
+    #[\Override]
+    protected function storedColumns(): array
+    {
+        return ['nom', 'statut', 'logo', 'photo'];
+    }
+
+    #[\Override]
+    protected function imageFields(): array
+    {
+        return self::IMAGES;
+    }
+
+    #[\Override]
+    protected function uploadsSubdir(): string
+    {
+        return 'organisateurs';
+    }
+
+    #[\Override]
+    protected function insert(): bool
+    {
+        $now = date("Y-m-d H:i:s");
+
+        $stmt = $this->pdo->prepare("INSERT INTO organisateur
+            (idPersonne, nom, adresse, URL, email, presentation, statut, date_ajout, date_derniere_modif)
+            VALUES (:idPersonne, :nom, :adresse, :url, :email, :presentation, :statut, :dateAjout, :dateModif)");
+
+        if (!$stmt->execute($this->getSqlCommonParameters() + [
+            ':idPersonne' => $this->currentUser->idPersonne,
+            ':dateAjout' => $now,
+            ':dateModif' => $now,
+        ]))
+        {
             return false;
+        }
+
+        $this->setRecordId((int) $this->pdo->lastInsertId());
+        $this->message = "Organisateur ajouté";
+
+        $this->saveImages();
+
+        return true;
     }
 
     #[\Override]
-    function InitialValue($Name)
+    protected function update(): bool
     {
-        echo $this->GetInitialValue($Name);
+        $stmt = $this->pdo->prepare("UPDATE organisateur SET
+            nom = :nom, adresse = :adresse, URL = :url, email = :email,
+            presentation = :presentation, statut = :statut, date_derniere_modif = :dateModif
+            WHERE idOrganisateur = :id");
+
+        // idPersonne n'est pas touché : il désigne l'auteur de la fiche, dont dépend
+        // son droit de la modifier. L'écraser par l'éditeur du moment — ce que faisait
+        // l'enregistrement générique — dépossédait l'auteur au premier passage d'un admin.
+        if (!$stmt->execute($this->getSqlCommonParameters() + [
+            ':dateModif' => date("Y-m-d H:i:s"),
+            ':id' => $this->getRecordId(),
+        ]))
+        {
+            return false;
+        }
+
+        $this->message = "Organisateur modifié";
+
+        $this->saveImages();
+
+        return true;
     }
 
-    #[\Override]
-    function setAction($action)
+    /**
+     * @return array<string, string>
+     */
+    private function getSqlCommonParameters(): array
     {
-        $this->action = $action;
+        return [
+            ':nom' => $this->valeurs['nom'],
+            ':adresse' => $this->valeurs['adresse'],
+            ':url' => $this->valeurs['URL'],
+            ':email' => $this->valeurs['email'],
+            ':presentation' => $this->htmlSanitizer->sanitize($this->valeurs['presentation']),
+            ':statut' => $this->valeurs['statut'],
+        ];
     }
 
-    #[\Override]
-    function getAction()
+    private function isNameAlreadyTaken(): bool
     {
-        return $this->action;
-    }
+        $sql = "SELECT idOrganisateur FROM organisateur WHERE nom = :nom AND statut = 'actif'";
+        $params = [':nom' => $this->valeurs['nom']];
 
-    #[\Override]
-    function setMessage($message)
-    {
-        $this->message = $message;
-    }
+        if ($this->getRecordId() > 0)
+        {
+            $sql .= " AND idOrganisateur <> :id";
+            $params[':id'] = $this->getRecordId();
+        }
 
-    #[\Override]
-    function getMessage()
-    {
-        return $this->message;
-    }
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
 
-    #[\Override]
-    function getSupprimer()
-    {
-        return $this->supprimer;
+        return $stmt->fetch() !== false;
     }
-
-    #[\Override]
-    function setSupprimer($sup)
-    {
-        $this->supprimer = $sup;
-    }
-
 }

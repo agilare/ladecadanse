@@ -6,8 +6,12 @@ RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y --no-install-recommends \
         automake \
+        ghostscript \
         git \
+        libjpeg-dev \
+        libmagickwand-dev \
         libpng-dev \
+        libwebp-dev \
         libzip-dev \
         unzip \
         wget \
@@ -17,7 +21,33 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Install PHP extensions
-RUN docker-php-ext-install pdo pdo_mysql mysqli gd zip
+# GD doit être configuré explicitement pour JPEG et WebP : sans cela il ne gère
+# que PNG/GIF, et imagejpeg()/imagewebp() n'existent tout simplement pas, ce qui
+# fait échouer l'enregistrement des flyers (voir ImageDriver2::redimensionner).
+RUN docker-php-ext-configure gd --with-jpeg --with-webp && \
+    docker-php-ext-install pdo pdo_mysql mysqli gd zip
+
+# Imagick sert au seul rendu de la 1re page des PDF importés par URL
+# (librairies/Utils/PdfToImage.php, chemin réservé aux comptes connectés). Les
+# PDF envoyés par le champ fichier sont convertis par le navigateur et ne
+# dépendent de rien de tout ceci.
+#
+# Version épinglée : imagick 3.7.0, que pecl installe par défaut, ne compile pas
+# sur PHP 8.4. La ligne vide répond à la question du préfixe d'installation, que
+# pecl pose et qui bloquerait le build.
+RUN printf "\n" | pecl install imagick-3.8.0 && \
+    docker-php-ext-enable imagick
+
+# Debian interdit le coder PDF d'ImageMagick depuis CVE-2018-16509. Sans cette
+# autorisation, Imagick est bien présent mais toute lecture de PDF échoue sur
+# « not authorized » — exactement le piège qui rendrait la fonction verte en
+# production (dont la policy l'autorise) et morte en local.
+# Lecture seule, et pour le seul PDF : la politique n'est pas rouverte en grand.
+RUN for policy in /etc/ImageMagick-6/policy.xml /etc/ImageMagick-7/policy.xml; do \
+        if [ -f "$policy" ]; then \
+            sed -i 's|<policy domain="coder" rights="none" pattern="PDF"|<policy domain="coder" rights="read" pattern="PDF"|' "$policy"; \
+        fi; \
+    done
 
 # Configure PHP for better performance
 RUN { \
@@ -28,13 +58,46 @@ RUN { \
         echo 'date.timezone=UTC'; \
     } > /usr/local/etc/php/conf.d/99-custom.ini
 
+# Prépare les répertoires inscriptibles au démarrage (voir le script pour le détail)
+COPY ./docker/php/docker-entrypoint.sh /usr/local/bin/ladecadanse-entrypoint.sh
+RUN chmod +x /usr/local/bin/ladecadanse-entrypoint.sh
+ENTRYPOINT ["ladecadanse-entrypoint.sh"]
+CMD ["apache2-foreground"]
+
 # Development stage
 FROM base AS development
+
+# Aligne www-data sur l'utilisateur de l'hôte : le code est monté en bind mount et
+# les fichiers créés par Apache doivent rester exploitables côté hôte (et
+# inversement). Sans cela, sur un hôte Linux, www-data (uid 33) ne peut pas écrire
+# dans des répertoires possédés par l'utilisateur hôte (uid 1000 typiquement).
+# -o autorise un uid/gid déjà utilisé dans l'image, pour ne pas échouer au build.
+ARG UID=1000
+ARG GID=1000
+RUN if [ "$GID" != "$(id -g www-data)" ]; then groupmod -o -g "$GID" www-data; fi && \
+    if [ "$UID" != "$(id -u www-data)" ]; then usermod -o -u "$UID" www-data; fi && \
+    chown -R www-data:www-data /var/www
 
 # Install Xdebug for development
 RUN pecl install xdebug-3.4.2 && \
     docker-php-ext-enable xdebug && \
     printf "xdebug.mode=debug\nxdebug.client_host=host.docker.internal\nxdebug.client_port=9000\n" > /usr/local/etc/php/conf.d/99-xdebug.ini
+
+# Composer, pour l'usage courant depuis `make shell`. Le service one-shot
+# composer-dev installe vendor/ avant qu'Apache démarre, mais son image embarque
+# son propre PHP, sans mysqli ni gd : les scripts du projet (`composer phpstan`,
+# `composer test:api`, `composer config:build`) attendent le PHP de l'application
+# et ses extensions, donc celui-ci. L'image php:apache ne fournit pas Composer ; le binaire est copié
+# depuis l'image officielle, à la version utilisée par le service composer-dev.
+#
+# 2.8 et pas 2.7 : sur PHP 8.4, Composer 2.7 ouvre chacune de ses commandes sur
+# « Deprecation Notice: Constant E_STRICT is deprecated ».
+COPY --from=composer:2.8 /usr/bin/composer /usr/local/bin/composer
+
+# Le shell du conteneur est root — Apache démarre en root avant de déprivilégier
+# ses workers. Sans cela, chaque commande s'ouvre sur « Do not run Composer as
+# root/super user ».
+ENV COMPOSER_ALLOW_SUPERUSER=1
 
 # Production stage
 FROM base AS production
@@ -43,24 +106,24 @@ FROM base AS production
 RUN a2enmod rewrite headers deflate
 
 # Set production environment
-ENV APACHE_DOCUMENT_ROOT /var/www/html
-ENV APACHE_RUN_USER www-data
-ENV APACHE_RUN_GROUP www-data
+ENV APACHE_DOCUMENT_ROOT=/var/www/html
+ENV APACHE_RUN_USER=www-data
+ENV APACHE_RUN_GROUP=www-data
 
 # Copy Apache configuration
 COPY ./docker/apache/ladecadanse.conf /etc/apache2/sites-available/000-default.conf
 RUN a2ensite 000-default.conf
 
-# Create non-root user for security
-RUN groupadd -r appuser && useradd -r -g appuser appuser
+# Apache démarre en root (bind sur le port 80, écriture du pid et des logs dans
+# /var/run/apache2 et /var/log/apache2) puis déprivilégie lui-même ses workers vers
+# APACHE_RUN_USER. Il ne faut donc pas basculer le conteneur sur un compte non
+# privilégié, sous peine d'empêcher son démarrage.
+#
+# Un chown du code au build serait par ailleurs sans effet : /var/www/html est
+# recouvert par le bind mount au runtime. C'est l'entrypoint qui s'en charge.
 
-# Set proper permissions
-RUN chown -R appuser:appuser /var/www/html && \
-    chmod -R 755 /var/www/html
-
-# Switch to non-root user
-USER appuser
-
-# Health check
+# Health check — wget est fourni par le stage de base, contrairement à curl.
+# 127.0.0.1 plutôt que localhost : Apache n'écoute qu'en IPv4, et localhost fait
+# d'abord échouer une tentative sur ::1 à chaque sonde.
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost/ || exit 1
+    CMD wget --no-verbose --tries=1 --spider http://127.0.0.1/ || exit 1

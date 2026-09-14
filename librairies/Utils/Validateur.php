@@ -1,24 +1,33 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ladecadanse\Utils;
 
 /**
- * Donne diverses méthodes de vérification pour des données entrées par un formulaire
+ * Validation des données saisies dans un formulaire.
+ *
+ * Valideur à état : les échecs sont accumulés dans $erreurs, indexés par nom
+ * de champ, et récupérés via getErreur()/getHtmlErreur()/nbErreurs()… La
+ * validation des paramètres d'URL (query string) a été extraite dans
+ * QueryParamValidator (issue #153).
  */
 class Validateur
 {
+    /**
+     * Erreurs rencontrées durant la vie de l'objet, indexées par nom de champ.
+     *
+     * @var array<string, string>
+     */
+    public array $erreurs = [];
 
     /**
-     * Liste des erreurs rencontrées durant la vie de l'objet
+     * Valide un champ : obligation, longueur, puis format selon $type_champ.
      *
-     * @var array string
+     * @param mixed $valeur_champ Valeur saisie (peut être null)
      */
-    public $erreurs = [];
-    public $types = ['texte', 'email', 'nombre', 'date', 'url', 'fichier', 'image'];
-
-    function valider($valeur_champ, $nom_champ, $type_champ, $longueur_min, $longueur_max, $obligatoire)
+    public function valider(mixed $valeur_champ, string $nom_champ, string $type_champ, int $longueur_min, int $longueur_max, bool $obligatoire): bool
     {
-
         if ($obligatoire && !$this->notEmpty($valeur_champ, $nom_champ))
         {
             return false;
@@ -26,7 +35,6 @@ class Validateur
 
         if ($valeur_champ != "")
         {
-
             if (!$this->validerLongueurTexte($nom_champ, $valeur_champ, $longueur_min, $longueur_max))
             {
                 return false;
@@ -36,15 +44,7 @@ class Validateur
             {
                 return false;
             }
-            else if ($type_champ == "telephone" && !$this->validerTelephone($nom_champ, $valeur_champ))
-            {
-                return false;
-            }
             else if ($type_champ == "nombre" && !$this->validerNombre($nom_champ, $valeur_champ))
-            {
-                return false;
-            }
-            else if ($type_champ == "date" && !$this->validerDateApp($nom_champ, $valeur_champ))
             {
                 return false;
             }
@@ -57,106 +57,28 @@ class Validateur
         return true;
     }
 
-    function notEmpty($theInput, $nom)
+    /**
+     * Vérifie que le champ n'est pas vide.
+     *
+     * @param mixed $theInput Valeur à vérifier
+     */
+    public function notEmpty(mixed $theInput, string $nom): bool
     {
         if (!empty($theInput))
         {
-
             return true;
         }
-        else
-        {
 
-            $this->erreurs[$nom] = "<span style=\"background:yellow\">Ce champ est obligatoire</span>";
-            return false;
-        }
+        $this->erreurs[$nom] = "<span style=\"background:yellow\">Ce champ est obligatoire</span>";
+        return false;
     }
 
     /**
-     * Vérifie qu'une chaine soit uniquement composée de texte, de chiffres et d'espaces (sans accents)
-
-     * @param string $nom Nom du champ
-     * @param string $theInput Texte à vérifier
-     * @param string $description Message d'erreur à afficher en cas d'échec
-     * @return boolean Validation réussie ou non
-     * @access public
+     * Vérifie qu'un texte a une longueur comprise entre $min et $max.
+     *
+     * @param mixed $theInput Texte à vérifier
      */
-    function validerTexte($nom, $theInput, $description = '')
-    {
-
-        $result = preg_match("/^[A-Za-z0-9\ ]+$/", (string) $theInput);
-        if ($result)
-        {
-            return true;
-        }
-        else
-        {
-
-            $this->erreurs[$nom] = $description;
-            return false;
-        }
-    }
-
-    /**
-     * Vérifie qu'une chaine soit uniquement composée de texte, de chiffres et d'espaces (sans accents)
-
-     * @param string $nom Nom du champ
-     * @param string $theInput Texte à vérifier
-     * @param string $description Message d'erreur à afficher en cas d'échec
-     * @return boolean Validation réussie ou non
-     * @access public
-     */
-    function validerAlpha($nom, $theInput, $description = '')
-    {
-
-        $result = preg_match("/^[A-Za-z0-9\ ]+$/", (string) $theInput);
-        if ($result)
-        {
-            return true;
-        }
-        else
-        {
-
-            $this->erreurs[$nom] = $description;
-            return false;
-        }
-    }
-
-    /**
-     * Vérifie qu'une chaine soit uniquement composée de texte, de chiffres et d'espaces (sans accents)
-
-     * @param string $nom Nom du champ
-     * @param string $theInput Texte à vérifier
-     * @param string $description Message d'erreur à afficher en cas d'échec
-     * @return boolean Validation réussie ou non
-     * @access public
-     */
-    function validerAlpha2($nom, $theInput, $description = '')
-    {
-
-        $result = preg_match("/^[A-Za-z0-9]+$/", (string) $theInput);
-        if ($result)
-        {
-            return true;
-        }
-        else
-        {
-
-            $this->erreurs[$nom] = $description;
-            return false;
-        }
-    }
-
-    /**
-     * Vérifie qu'un texte ne dépasse pas un max et soit d'au moins de taille min
-
-     * @param string $nom Nom du champ
-     * @param string $theInput Texte à vérifier
-     * @param int $min Taille minimale que le texte doit avoir
-     * @param int $max Taille maximale que le texte doit avoir
-     * @access public
-     */
-    function validerLongueurTexte($nom, $theInput, $min = 0, $max = 20): bool
+    public function validerLongueurTexte(string $nom, mixed $theInput, int $min = 0, int $max = 20): bool
     {
         $theInput = trim((string) $theInput);
 
@@ -179,133 +101,68 @@ class Validateur
     }
 
     /**
-     * Vérifie qu'une adresse email soit au bon format
+     * Vérifie qu'une adresse email est au bon format.
      *
-     * @param string $nom Nom du champ
-     * @param string $theInput Adresse à vérifier
-     * @return boolean Validation réussie ou non
-     * @access public
+     * @param mixed $theInput Adresse à vérifier
      */
-    function validerEmail($nom, $theInput)
+    public function validerEmail(string $nom, mixed $theInput): bool
     {
-        $result = preg_match("/^[^@ ]+@[^@ ]+\.[^@ \.]+$/", (string) $theInput);
-        if ($result)
+        if (filter_var((string) $theInput, FILTER_VALIDATE_EMAIL) !== false)
         {
             return true;
         }
-        else
-        {
-            $this->erreurs[$nom] = "Le format de l'email n'est pas correct";
-            return false;
-        }
+
+        $this->erreurs[$nom] = "Le format de l'email n'est pas correct";
+        return false;
     }
 
     /**
-     * Vérifie qu'une valeur soit un nombre
+     * Vérifie qu'une valeur est un nombre.
      *
-     * @param string $nom Nom du champ
-     * @param string|int|float $theInput Valeur à vérifier
-     * @return boolean Validation réussie ou non
-     * @access public
+     * @param mixed $theInput Valeur à vérifier
      */
-    function validerNombre($nom, $theInput)
+    public function validerNombre(string $nom, mixed $theInput): bool
     {
-
-
         if (is_numeric($theInput))
         {
             return true;
         }
-        else
-        {
 
-            $this->erreurs[$nom] = "Ce n'est pas un nombre";
-            return false;
-        }
+        $this->erreurs[$nom] = "Ce n'est pas un nombre";
+        return false;
     }
 
     /**
-     * Vérifie qu'une date est valable, au format américain
+     * Vérifie qu'une URL est au bon format (préfixe http:// ajouté si absent).
      *
-     * @param string $nom Nom du champ
-     * @param string $date Date à vérifier
-     * @return boolean Validation réussie ou non
-     * @access public
+     * @param mixed $url Adresse à vérifier
      */
-    function validerDateApp($nom, $date)
+    public function validerURL(string $nom, mixed $url): bool
     {
+        $url = (string) $url;
 
-        // if (!preg_match("", $date))
-        // {
-        // $this->erreurs[$nom] = "Format incorrect";
-        // return false;
-        // }
-        // else
-        // {
-        $tab_date = explode(".", (string) $date);
-
-        if (mb_strlen($tab_date[2]) > 4)
+        if ($url !== "" && !preg_match("/^https?:\/\//i", $url))
         {
-            $this->erreurs[$nom] = "Format incorrect : jourr";
-            return false;
-        }
-        else if ($tab_date[1] < 1 || $tab_date[1] > 12)
-        {
-            $this->erreurs[$nom] = "Format incorrect : mois";
-            return false;
-        }
-        else if ($tab_date[0] < 1 || $tab_date[0] > 31)
-        {
-            $this->erreurs[$nom] = "Format incorrect : année";
-            return false;
-        }
-
-
-        //}
-
-        return true;
-    }
-
-    /**
-     * Vérifie qu'une URL est au bon format, accepte les URL complexes
-     *
-     * @param string $nom Nom du champ
-     * @param string $url Adresse à vérifier
-     * @return boolean Validation réussie ou non
-     * @access public
-     */
-    function validerURL($nom, $url)
-    {
-
-        if (isset($url) && !preg_match("/^(https?:\/\/)/i", $url))
             $url = "http://" . $url;
+        }
 
-        $result = preg_match('#^https?\\:\\/\\/[a-z0-9_-]+\.([a-z0-9_-]+\.)?[a-zA-Z]{2,3}#i', (string) $url);
-
-        if ($result)
+        if (filter_var($url, FILTER_VALIDATE_URL) !== false)
         {
             return true;
         }
-        else
-        {
-            $this->erreurs[$nom] = "Ce format d'URL n'est pas correct";
-            return false;
-        }
 
-        //^(ht|f)tp(s?)\:\/\/[a-zA-Z0-9\-\._]+(\.[a-zA-Z0-9\-\._]+){2,}(\/?)([a-zA-Z0-9\-\.\?\,\'\/\\\+&%\$#_]*)?$
-        //'^(http|https)\://([[:alnum:]_.]+\.)?[a-zA-Z]{2,3}(:[a-zA-Z0-9]*)?/?([a-zA-Z0-9\-\._\?\,\'/\\\+&%\$#\=~])*[^\.\,\)\(\s]$'
+        $this->erreurs[$nom] = "Ce format d'URL n'est pas correct";
+        return false;
     }
 
     /**
-     * Vérifie qu'un fichier uploadé ne soit pas d'un type dangereux et qu'il a bien été
-     * reçu sur le serveur. Si ce n'est pas le cas détecte l'erreur qui a été engendrée
+     * Vérifie qu'un fichier uploadé est d'un type autorisé et bien reçu.
+     * Ne déplace pas le fichier : détecte seulement les erreurs de transfert.
      *
-     * @param array $fileinfo Fichier à vérifier (entrée de $_FILES)
-     * @param string $nom Nom du champ
-     * @return boolean Validation réussie ou non
-     * @access public
+     * @param mixed         $fileinfo       Entrée de $_FILES à vérifier
+     * @param array<string> $mimes_acceptes Types MIME autorisés
      */
-    function validerFichier($fileinfo, $nom, $mimes_acceptes, $obligatoire)
+    public function validerFichier(mixed $fileinfo, string $nom, array $mimes_acceptes, bool $obligatoire): bool
     {
         if ($obligatoire && empty($fileinfo['name']))
         {
@@ -320,292 +177,230 @@ class Validateur
             }
 
             if (strstr((string) $fileinfo['name'], "php"))
+            {
                 $this->erreurs[$nom] = "Veuillez ôter 'php' du nom de votre fichier";
-
+                return false;
+            }
 
             if (is_uploaded_file($fileinfo['tmp_name']))
             {
                 return true;
             }
-            else
-            {
-                switch ($fileinfo['error'])
-                {
 
-                    case 1: // UPLOAD_ERR_INI_SIZE
-                        $this->erreurs[$nom] = "Le fichier dépasse la taille autorisée (2 Mo)";
-                        return false;
-
-                    case 2: // UPLOAD_ERR_FORM_SIZE
-                        $this->erreurs[$nom] = "Le fichier dépasse la limite autorisée dans le formulaire HTML (2 Mo)";
-                        return false;
-
-                    case 3: // UPLOAD_ERR_PARTIAL
-                        $this->erreurs[$nom] = "L\'envoi du fichier a été interrompu pendant le transfert";
-                        return false;
-
-                    case 4: // UPLOAD_ERR_NO_FILE
-                        $this->erreurs[$nom] = "Le fichier envoyé a une taille nulle";
-                        return false;
-
-                    default:
-                        $this->erreurs[$nom] = "Il y a eu un problème de transfert.";
-                        return false;
-                }
-            }
+            return $this->erreurDeTransfert($fileinfo, $nom);
         }
 
         return true;
     }
 
     /**
-     * Vérifie qu'une image uploadée soit d'un type de fichier autorisé
+     * Valide un fichier image sur son contenu réel, et non sur ce que le
+     * navigateur en dit.
      *
-     * @param array $imageSource Fichier à vérifier (entrée de $_FILES)
-     * @param string $description Message d'erreur à afficher en cas d'échec
-     * @return boolean Validation réussie ou non
-     * @access public
+     * validerFichier() se fie à $_FILES['…']['type'], que le client compose
+     * lui-même : il suffit de l'annoncer « image/jpeg » pour passer. Ici le
+     * fichier est ouvert, et c'est getimagesize() qui donne le format et les
+     * dimensions.
+     *
+     * Le plafond en mégapixels n'est pas une précaution théorique : GD
+     * décompresse à ~4 octets par pixel, si bien qu'un PNG de quelques
+     * centaines de kilo-octets — de grands aplats se compressent très bien —
+     * peut couvrir assez de pixels pour épuiser la mémoire du processus. Le
+     * fatal error qui s'ensuit ne laisse aucun message à l'utilisateur, là où
+     * ce refus lui explique quoi faire.
+     *
+     * @param mixed         $fileinfo       Entrée de $_FILES à vérifier
+     * @param array<string> $mimes_acceptes Types MIME autorisés
+     * @param bool          $pdf_annonce    Le formulaire annonce-t-il accepter les PDF ?
+     *                                      Décide du message : un PDF reçu alors que le
+     *                                      formulaire les annonce signale que la conversion
+     *                                      navigateur n'a pas eu lieu ; sinon c'est un
+     *                                      format simplement refusé.
      */
-    function validerImage($imageSource, $description = '')
+    public function validerFichierImage(mixed $fileinfo, string $nom, array $mimes_acceptes, bool $obligatoire, bool $pdf_annonce = false): bool
     {
-        $allowedmime = ["image/jpeg", "image/pjpeg", "image/gif", "image/png", "image/x-png", "image/webp"];
+        if ($obligatoire && empty($fileinfo['name']))
+        {
+            $this->erreurs[$nom] = "Ce champ est obligatoire";
+            return false;
+        }
 
-        if (in_array($imageSource['type'], $allowedmime))
+        if (empty($fileinfo['name']))
         {
             return true;
         }
-        else
+
+        if (!empty($fileinfo['error']))
         {
-            $this->erreurs[] = $description;
+            return $this->erreurDeTransfert($fileinfo, $nom);
+        }
+
+        if (strstr((string) $fileinfo['name'], "php"))
+        {
+            $this->erreurs[$nom] = "Veuillez ôter 'php' du nom de votre fichier";
             return false;
         }
+
+        // Le PDF passe avant tout le reste. Sans ce cas, l'utilisateur lirait
+        // « Ce format n'est pas accepté » alors que le formulaire annonce
+        // justement accepter les PDF : ils sont convertis par le navigateur
+        // (web/js/pdf-to-image.js) et n'arrivent jusqu'ici que lorsque
+        // JavaScript n'a pas pu faire son travail.
+        if (str_starts_with((string) @file_get_contents($fileinfo['tmp_name'], false, null, 0, 5), '%PDF-'))
+        {
+            // Le message suit ce que le formulaire a promis. Là où les PDF ne sont pas
+            // proposés, parler d'une conversion navigateur enverrait chercher une
+            // fonctionnalité qui n'existe pas sur ce site.
+            $this->erreurs[$nom] = $pdf_annonce
+                ? "Ce PDF n'a pas pu être converti en image par votre navigateur. "
+                    . "Activez JavaScript, ou convertissez sa 1re page en JPEG ou PNG avant de l'envoyer."
+                : "Ce format de fichier (pdf) n'est pas accepté";
+
+            return false;
+        }
+
+        // Le seul contrôle de taille qui morde réellement : l'hébergement
+        // autorise des envois bien plus gros que les nôtres, aucun UPLOAD_ERR_*
+        // ne remonte donc à 5 Mo. Quant à MAX_FILE_SIZE, c'est un champ du
+        // formulaire, que rien n'oblige un client à respecter.
+        if (!empty($fileinfo['size']) && $fileinfo['size'] > UPLOAD_MAX_FILESIZE)
+        {
+            $this->erreurs[$nom] = "Le fichier dépasse la taille autorisée (" . self::formaterTaille(UPLOAD_MAX_FILESIZE) . ")";
+            return false;
+        }
+
+        $infos = @getimagesize((string) $fileinfo['tmp_name']);
+
+        if ($infos === false)
+        {
+            $this->erreurs[$nom] = "Ce fichier n'est pas une image exploitable";
+            return false;
+        }
+
+        if (!in_array($infos['mime'], $mimes_acceptes))
+        {
+            $this->erreurs[$nom] = "Ce format d'image (" . $infos['mime'] . ") n'est pas accepté";
+            return false;
+        }
+
+        if ($infos[0] * $infos[1] > UPLOAD_MAX_MEGAPIXELS * 1000000)
+        {
+            $this->erreurs[$nom] = "Cette image est trop grande (" . $infos[0] . " × " . $infos[1]
+                . " pixels, maximum " . UPLOAD_MAX_MEGAPIXELS . " mégapixels)";
+            return false;
+        }
+
+        // Dernier verrou : le fichier doit bien venir d'un envoi HTTP. En test
+        // unitaire is_uploaded_file() est toujours faux, d'où sa place ici,
+        // après les contrôles que l'on veut pouvoir couvrir.
+        if (!is_uploaded_file((string) $fileinfo['tmp_name']))
+        {
+            return $this->erreurDeTransfert($fileinfo, $nom);
+        }
+
+        return true;
     }
 
     /**
-     * Vérifie qu'une chaine correspond à un no de téléphone valable, c-à-d est composée
-     * seulement de nombres et soit de max 8 car.
+     * Message correspondant au code d'erreur d'un envoi qui n'a pas abouti.
      *
-     * @param string $nom Nom du champ
-     * @param string $str No à vérifier
-     * @return boolean Validation réussie ou non
-     * @access public
+     * @param mixed $fileinfo Entrée de $_FILES concernée
      */
-    function validerTelephone($nom, $str)
+    private function erreurDeTransfert(mixed $fileinfo, string $nom): bool
     {
-        //returns 1 if valid phone number (only numeric string), 0 if not
+        $taille = self::formaterTaille(UPLOAD_MAX_FILESIZE);
 
-        $new_str = str_replace(" ", "", $str);
+        $this->erreurs[$nom] = match ($fileinfo['error'] ?? null) {
+            UPLOAD_ERR_INI_SIZE => "Le fichier dépasse la taille autorisée ($taille)",
+            UPLOAD_ERR_FORM_SIZE => "Le fichier dépasse la limite autorisée dans le formulaire HTML ($taille)",
+            UPLOAD_ERR_PARTIAL => "L'envoi du fichier a été interrompu pendant le transfert",
+            UPLOAD_ERR_NO_FILE => "Le fichier envoyé a une taille nulle",
+            default => "Il y a eu un problème de transfert.",
+        };
 
-        if (is_numeric($new_str) && mb_strlen($new_str) > 4)
-        {
-            return true;
-        }
-        else
-        {
-            $this->erreurs[$nom] = "Ce format de numéro de téléphone n'est pas correct";
-            return false;
-        }
-        //mb_ereg('^[0-9[:space:]]{9,}$', $str)
+        return false;
     }
 
-    /*
-      function validateDate($date) {
-
-      list($d, $m, $y) = mb_split('[/.-]', $date);
-      $bidon = date("d/m/Y", mktime(0,0,0,$m,$d,$y));
-      $date = mb_ereg_replace('-', '/', $date);
-
-      if ($bidon != $date) {
-
-      return false;
-
-      } else {
-
-      return true;
-
-      }
-
-
-      }
+    /**
+     * Formate un nombre d'octets pour un message destiné à l'utilisateur.
+     *
+     * Publique parce que les formulaires annoncent eux-mêmes la limite qu'elle sert à
+     * refuser : la promesse faite au visiteur et le message d'erreur doivent sortir de
+     * la même constante, sans quoi ils divergent au premier changement de UPLOAD_MAX_FILESIZE.
      */
+    public static function formaterTaille(int $octets): string
+    {
+        return rtrim(rtrim(number_format($octets / 1048576, 1, ',', ''), '0'), ',') . " Mo";
+    }
 
-    function nbErreurs()
+    public function nbErreurs(): int
     {
         return count($this->erreurs);
     }
 
-    function getMsgNbErreurs()
+    public function getMsgNbErreurs(): ?string
     {
-        if ($this->nbErreurs() == 0)
+        $nb = $this->nbErreurs();
+
+        if ($nb === 0)
         {
-            return;
+            return null;
         }
-        else if ($this->nbErreurs() == 1)
+
+        if ($nb === 1)
         {
             return "Il y a une erreur";
         }
-        else if ($this->nbErreurs() > 1)
+
+        return "Il y a " . $nb . " erreurs";
+    }
+
+    /**
+     * Renvoie la dernière erreur ajoutée (compatible avec les clés textuelles).
+     */
+    public function lastError(): ?string
+    {
+        if ($this->erreurs === [])
         {
-            return "Il y a " . $this->nbErreurs() . " erreurs";
+            return null;
         }
+
+        return $this->erreurs[array_key_last($this->erreurs)];
     }
 
     /**
-     * Réunis les valeurs du tableau erreurs en une chaine de car., séparées par un delim
-     *
-     * @param string $delim Séparateur texte pour les valeurs du tableau
-     * @access public
+     * @return string|false Le message d'erreur du champ, ou false si aucun
      */
-    function listErreurs($delim = ' ')
-    {
-        return implode($delim, $this->erreurs);
-    }
-
-    /**
-     * Renvoie la dernière valeur qui a été ajoutée au tableau des erreurs
-     *
-     * @return string Erreur au sommet de la pile
-     * @access public
-     */
-    function lastError()
-    {
-        return $this->erreurs[count($this->erreurs) - 1];
-    }
-
-    function getErreur($champ)
+    public function getErreur(string $champ): string|false
     {
         if (array_key_exists($champ, $this->erreurs))
         {
             return $this->erreurs[$champ];
         }
-        else
-        {
-            return false;
-        }
+
+        return false;
     }
 
-    function setErreur($nom_champ, $description)
+    public function setErreur(string $nom_champ, string $description): void
     {
         $this->erreurs[$nom_champ] = $description;
     }
 
-    function getErreurs()
+    /**
+     * @return array<string, string>
+     */
+    public function getErreurs(): array
     {
         return $this->erreurs;
     }
 
-    function getHtmlErreur($champ)
+    public function getHtmlErreur(string $champ): string
     {
         if (array_key_exists($champ, $this->erreurs))
         {
             return '<div class="msg">' . $this->erreurs[$champ] . '</div>';
         }
-        else
-        {
-            return '';
-        }
+
+        return '';
     }
-
-    function getHtmlTotalErreurs()
-    {
-        if ($this->nbErreurs() == 1)
-        {
-            return '<div class="msg_erreur">Il y a une erreur</div>';
-        }
-        else if ($this->nbErreurs() > 1)
-        {
-            return '<div class="msg_erreur">Il y a ' . $this->nbErreurs() . ' erreurs</div>';
-        }
-        else
-        {
-            return;
-        }
-    }
-
-    public static function validateUrlQueryValue($get, string $type, $statut, $tab = '')
-    {
-        $erreur = "";
-
-        if ($get == '')
-        {
-            if ($statut == 1)
-            {
-                $erreur = "Ce paramètre est obligatoire";
-            }
-            else if ($statut != 0)
-            {
-                return $statut;
-            }
-            else
-            {
-                return;
-            }
-        }
-        else
-        {
-            $get = trim((string) $get);
-
-            if ($type == "int")
-            {
-                if (is_numeric($get))
-                {
-                    return $get;
-                }
-                else
-                {
-                    $erreur = $get." n'est pas un numeric";
-                }
-            }
-            else if ($type == "string")
-            {
-                if (is_string($get))
-                {
-                    return $get;
-                }
-                else
-                {
-                    $erreur = $get." n'est pas une chaine";
-                }
-            }
-            else if ($type == "date")
-            {
-
-                if (preg_match("/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/", $get))
-                {
-                    return $get;
-                }
-                else
-                {
-                    $erreur = $get." n'est pas une date";
-                }
-            }
-            else if ($type == "enum")
-            {
-                if (in_array($get, $tab))
-                {
-                    return $get;
-                }
-                else
-                {
-                    $erreur = $get." n'est pas une valeur acceptée";
-                }
-            }
-            else if ($type == "alpha_numeric")
-            {
-                if (preg_match("/^\w+$/i", $get) )
-                {
-                    return $get;
-                }
-                else
-                {
-                    $erreur = $get." n'est pas un alpha_numeric";
-                }
-            }
-        }
-
-        throw new \Exception($erreur);
-    }
-
 }
-
-//class
