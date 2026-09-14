@@ -204,7 +204,7 @@ $agenda_years = range((int)date("Y"), Evenement::AGENDA_START_YEAR);
 
 	<header id="entete_contenu">
         <h1>Rechercher des événements pour <em><?= sanitizeForHtml($mots) ?></em></h1>
-        <?php // HtmlShrink::getMenuRegions($glo_regions, $get); ?>
+        <?php // echo HtmlShrink::getMenuRegions($glo_regions, $get); ?>
 
         <!-- menu tous | futurs | anciens -->
         <ul id="menu_periode">

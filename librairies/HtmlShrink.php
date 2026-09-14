@@ -147,7 +147,7 @@ class HtmlShrink
         }
         ?></ul>
         <?php
-        return ob_get_contents();
+        return ob_get_clean();
     }
 
     /**

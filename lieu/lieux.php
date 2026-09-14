@@ -119,7 +119,7 @@ include("../_header.inc.php");
 
     <header id="entete_contenu">
         <h1 style="width: 17%;line-height: 1.2em;margin:0">Lieux</h1> <?php if ($authorization->isPersonneAllowedToAddLieu($_SESSION)) { ?><a href="/lieu/edit.php?action=ajouter" style="float: left;padding: 5px 1px;"><i class="fa fa-plus" aria-hidden="true"></i> Ajouter un lieu</a><?php } ?>
-        <?php HtmlShrink::getMenuRegions($glo_regions, $get); ?>
+        <?= HtmlShrink::getMenuRegions($glo_regions, $get); ?>
         <div class="spacer"></div>
     </header>
 
