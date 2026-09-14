@@ -79,9 +79,7 @@ class Organisateur extends Element
             <?php endforeach; ?>
         </ul>
         <?php
-        $result = ob_get_contents();
-        ob_clean();
-        return $result;
+        return ob_get_clean();
     }
 
     /**

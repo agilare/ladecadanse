@@ -240,9 +240,7 @@ class EvenementRenderer
             </li>
             <?php
         }
-        $result = ob_get_contents();
-        ob_clean();
-        return $result;
+        return ob_get_clean();
     }
 
     /**
@@ -259,7 +257,6 @@ class EvenementRenderer
     public static function mainFigureHtml(string $flyer, string $image, string $titre, ?int $smallWidth = null, ?int $smallHeight = null, ?bool $lazy = null): string
     {
         global $assets;
-        ob_start();
 
         // Au-delà de la largeur de la miniature, c'est l'image de 600 px qu'il faut servir :
         // étirée au-delà de sa taille, la miniature serait floue. Le seuil suit désormais
@@ -288,6 +285,10 @@ class EvenementRenderer
             $imgSrc = $assets->get(Evenement::getAssetPath($useThumbnail ? Evenement::getThumbFilePath($image) : Evenement::getFilePath($image)));
             $imgAlt = "Illustration de ". sanitizeForHtml($titre);
         }
+
+        // ouvert après le retour anticipé : un tampon abandonné capterait la suite du gabarit
+        // appelant, celui d'eventShortArticleHtml() par exemple
+        ob_start();
         ?>
 
         <a href="<?= $href ?>" class="magnific-popup">
@@ -297,9 +298,7 @@ class EvenementRenderer
         </a>
 
         <?php
-        $result = ob_get_contents();
-        ob_clean();
-        return $result;
+        return ob_get_clean();
     }
 
     /**
@@ -408,9 +407,7 @@ class EvenementRenderer
 
 
         <?php
-        $result = ob_get_contents();
-        ob_clean();
-        return $result;
+        return ob_get_clean();
     }
 
 
@@ -557,9 +554,7 @@ class EvenementRenderer
         </tr>
 
         <?php
-        $result = ob_get_contents();
-        ob_clean();
-        return $result;
+        return ob_get_clean();
     }
 
     /**

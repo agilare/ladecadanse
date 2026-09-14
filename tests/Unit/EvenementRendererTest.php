@@ -255,6 +255,59 @@ final class EvenementRendererTest extends Unit
         $this->assertStringNotContainsString('loading="lazy"', $html);
     }
 
+    /**
+     * @return array<string, array{0: string}>
+     */
+    public static function flyersProvider(): array
+    {
+        return [
+            // la vignette ouvre son tampon au milieu de celui de l'article
+            'avec flyer' => ['flyer.jpg'],
+            // sans image, mainFigureHtml() ressort sans rien rendre
+            'sans image' => [''],
+        ];
+    }
+
+    /**
+     * Un tampon de sortie laissé ouvert par la vignette — ob_clean() le vide sans le fermer —
+     * recevait la suite du gabarit : l'article retourné commençait après <figure class="flyer">.
+     * L'agenda n'en voyait rien, PHP vidant les tampons orphelins dans l'ordre en fin de script ;
+     * un appelant qui garde la chaîne au lieu de l'émettre perdait le début du HTML.
+     *
+     * @dataProvider flyersProvider
+     */
+    public function testEventShortArticleHtmlRetourneLarticleEntierEtFermeSesTampons(string $flyer): void
+    {
+        $this->prepareFigureContext();
+
+        $tab_even = [
+            'e_idEvenement' => 12,
+            'e_titre' => 'Bal',
+            'e_statut' => 'actif',
+            'e_dateEvenement' => '2026-04-28',
+            'e_horaire_debut' => '2026-04-29 06:00:01',
+            'e_horaire_fin' => '2026-04-29 06:00:01',
+            'e_horaire_complement' => 'dès 20h',
+            'e_flyer' => $flyer,
+            'e_image' => '',
+            'e_description' => 'Un bal.',
+            'e_prix' => '15.- / 12.-',
+            'e_idLieu' => 0,
+            'e_nomLieu' => 'Cave du coin',
+            'e_adresse' => 'rue de la Chapelle 12',
+            'e_quartier' => 'Jonction',
+            'e_localite' => 'Genève',
+            'e_region' => 'ge',
+            'e_urlLieu' => '',
+        ];
+
+        $level = ob_get_level();
+        $html = EvenementRenderer::eventShortArticleHtml($tab_even);
+
+        $this->assertStringStartsWith('<article id="event-12"', ltrim($html));
+        $this->assertSame($level, ob_get_level(), 'tampon de sortie laissé ouvert');
+    }
+
 
     public function testTimeStatusHtmlSansStatutNeRendRien(): void
     {
