@@ -69,8 +69,13 @@ class EvenementRenderer
     ];
 
 
-    public static function titreSelonStatutHtml(string $titreHtml, string $statut, bool $isPersonneAllowedToEdit = false): string
+    public static function titreSelonStatutHtml(string $titre, string $statut, bool $isPersonneAllowedToEdit = false): string
     {
+        // Le titre est du texte brut : on l'échappe ici, au plus près du rendu, plutôt que chez
+        // chaque appelant (l'un d'eux l'avait oublié, d'où une XSS stockée sur les titres proposés
+        // par le formulaire public, lus par les éditeurs). Les balises de statut ajoutées ensuite
+        // sont les nôtres et restent intactes.
+        $titreHtml = sanitizeForHtml($titre);
         $result = $titreHtml;
 
         $badge = '';
@@ -332,7 +337,7 @@ class EvenementRenderer
         <article id="event-<?= (int) $tab_even['e_idEvenement'] ?>" class="<?= $article_class ?>">
 
             <header class="titre">
-                <h3 class="left"><a href="/event/evenement.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>"><?= self::titreSelonStatutHtml(sanitizeForHtml($tab_even['e_titre']), $tab_even['e_statut']) ?></a></h3>
+                <h3 class="left"><a href="/event/evenement.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>"><?= self::titreSelonStatutHtml($tab_even['e_titre'], $tab_even['e_statut']) ?></a></h3>
                 <span class="right"><?= Lieu::getLinkNameHtml($even_lieu['nom'], $even_lieu['idLieu'], $even_lieu['salle']) ?></span>
                 <div class="spacer"></div>
             </header>
@@ -524,7 +529,7 @@ class EvenementRenderer
             </td>
             <td>
                 <a class="url" href="/event/evenement.php?idE=<?= (int)$tab_even['e_idEvenement']?>">
-                    <strong class="summary"><?= self::titreSelonStatutHtml(sanitizeForHtml($tab_even['e_titre']), $tab_even['e_statut']) ?></strong>
+                    <strong class="summary"><?= self::titreSelonStatutHtml($tab_even['e_titre'], $tab_even['e_statut']) ?></strong>
                 </a><br>
                 <span class="category"><?= Evenement::categoryLabel($tab_even['e_genre']); ?></span>
             </td>

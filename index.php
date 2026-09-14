@@ -491,7 +491,7 @@ include("_header.inc.php");
                         <figure class="flyer"><?= Ladecadanse\EvenementRenderer::mainFigureHtml($tab_even['e_flyer'], $tab_even['e_image'], $tab_even['e_titre'], 60) ?></figure>
 
                         <div class="texte">
-                            <h3><a href="/event/evenement.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>"><?= Ladecadanse\EvenementRenderer::titreSelonStatutHtml(sanitizeForHtml($tab_even['e_titre']), $tab_even['e_statut']) ?></a></h3>
+                            <h3><a href="/event/evenement.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>"><?= Ladecadanse\EvenementRenderer::titreSelonStatutHtml($tab_even['e_titre'], $tab_even['e_statut']) ?></a></h3>
                             <span><?= Lieu::getLinkNameHtml($even_lieu['nom'], $even_lieu['idLieu'], $even_lieu['salle']) ?></span>
 
                             <p>le&nbsp;<a href="index.php?courant=<?= urlencode($tab_even['e_dateEvenement']) ?>"><?= DateHelper::isoToFr($tab_even['e_dateEvenement']) ?></a></p>

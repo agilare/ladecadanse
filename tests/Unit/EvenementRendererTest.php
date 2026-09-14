@@ -128,6 +128,28 @@ final class EvenementRendererTest extends Unit
     }
 
     /**
+     * Le titre arrive brut de la base et l'échappement est centralisé ici : un titre proposé par
+     * le formulaire public, lu par les éditeurs, ne doit pas s'exécuter (XSS stockée).
+     */
+    public function testTitreSelonStatutHtmlEchappeLeTitre(): void
+    {
+        $html = EvenementRenderer::titreSelonStatutHtml('<img src=x onerror=alert(1)>', 'actif');
+
+        $this->assertStringNotContainsString('<img', $html);
+        $this->assertStringContainsString('&lt;img', $html);
+    }
+
+    /** L'habillage de statut est fait de nos propres balises : elles survivent à l'échappement du titre. */
+    public function testTitreSelonStatutHtmlEchappeSousUnStatutHabille(): void
+    {
+        $html = EvenementRenderer::titreSelonStatutHtml('<b>x</b>', 'annule');
+
+        $this->assertStringContainsString('<strike>', $html);
+        $this->assertStringNotContainsString('<b>', $html);
+        $this->assertStringContainsString('&lt;b&gt;', $html);
+    }
+
+    /**
      * mainFigureHtml() ne demande à son environnement que l'URL des fichiers : le préfixe
      * d'URL de l'entité et le versionneur d'assets, tous deux posés au bootstrap en
      * production.
