@@ -339,7 +339,10 @@ final class EvenementRendererTest extends Unit
         $this->assertStringContainsString('terminé)', $html);
     }
 
-    /** La part écoulée passe en barre : le pourcentage n'est plus lu, il est nommé. */
+    /**
+     * La part écoulée passe en barre, longue de 20px par heure, rayée sur sa part remplie et
+     * portant son pourcentage au milieu ; pour les aides techniques, c'est le nom qui le dit.
+     */
     public function testTimeStatusHtmlDeLevenementEnCoursRendUneBarre(): void
     {
         $status = EvenementTimeStatus::fromHoraires('2026-04-28', '2026-04-28 21:00:00', '2026-04-29 01:00:00', '2026-04-28 23:00:00');
@@ -347,12 +350,29 @@ final class EvenementRendererTest extends Unit
         $html = EvenementRenderer::timeStatusHtml($status);
 
         $this->assertStringStartsWith('<br>', $html);
+        $this->assertStringContainsString('<span class="even-time-bar" style="width:80px"', $html);
         $this->assertStringContainsString('<progress class="even-time-progress" max="100" value="50"', $html);
         $this->assertStringContainsString('aria-label="En cours, 50 % écoulés"', $html);
+        $this->assertStringContainsString('<span class="even-time-bar-stripes" style="width:50%" aria-hidden="true"></span>', $html);
+        $this->assertStringContainsString('<span class="even-time-bar-label" aria-hidden="true">50&nbsp;%</span>', $html);
         $this->assertStringNotContainsString('?', $html);
     }
 
-    /** Fin inconnue : la barre est une estimation, et le « ? » qui la suit le dit. */
+    /** Avant le début, la barre suit le compte à rebours, vide, et n'est pas lue : elle n'ajoute rien. */
+    public function testTimeStatusHtmlDuCompteAReboursEstSuiviDuneBarreVide(): void
+    {
+        $status = EvenementTimeStatus::fromHoraires('2026-04-28', '2026-04-28 21:30:00', '2026-04-28 23:30:00', '2026-04-28 19:00:00');
+
+        $html = EvenementRenderer::timeStatusHtml($status);
+
+        $this->assertMatchesRegularExpression('#dans 2h30</span> <span class="even-time-status even-time-status-coming" aria-hidden="true"><span class="even-time-bar" style="width:40px">#', $html);
+        $this->assertStringContainsString('value="0"', $html);
+        $this->assertStringContainsString('>0&nbsp;%</span>', $html);
+        $this->assertStringNotContainsString('even-time-bar-stripes', $html);
+        $this->assertStringNotContainsString('aria-label', $html);
+    }
+
+    /** Fin inconnue : la barre est une estimation, et le « ? » qui la suit dit où la fin a été fixée. */
     public function testTimeStatusHtmlSignaleUneFinEstimee(): void
     {
         $status = EvenementTimeStatus::fromHoraires('2026-04-28', '2026-04-28 21:00:00', null, '2026-04-28 22:00:00');
@@ -360,8 +380,74 @@ final class EvenementRendererTest extends Unit
         $html = EvenementRenderer::timeStatusHtml($status);
 
         $this->assertStringContainsString('value="35"', $html);
-        $this->assertStringContainsString('<span class="even-time-estimated"', $html);
-        $this->assertStringContainsString('>?</span>', $html);
-        $this->assertStringContainsString('estimée jusqu&#039;à minuit', $html);
+        $this->assertStringContainsString('aria-label="En cours, 35 % écoulés — fin inconnue, estimée à 00:00"', $html);
+        $this->assertStringContainsString('<span class="even-time-estimated" title="Fin inconnue, estimée à 00:00" aria-hidden="true">?</span>', $html);
+    }
+
+    /** L'exemple de #51 : coupé au mot près sous 40 caractères, entier dans l'infobulle. */
+    public function testPriceShortHtmlCoupeUnPrixTropLong(): void
+    {
+        $prix = '30.- les soirée ; 50.- journée complète du samedi- gratuit pour les enfants';
+
+        $html = EvenementRenderer::priceShortHtml($prix);
+
+        $this->assertSame(
+            '<span class="even-time-price" title="' . $prix . '">30.- les soirée ; 50.- journée complète (...)</span>',
+            $html
+        );
+    }
+
+    public function testPriceShortHtmlLaisseUnPrixCourtIntact(): void
+    {
+        $this->assertSame('<span class="even-time-price">15.- / 12.-</span>', EvenementRenderer::priceShortHtml('15.- / 12.-'));
+    }
+
+    public function testPriceShortHtmlEchappeLePrix(): void
+    {
+        $html = EvenementRenderer::priceShortHtml('<b>gratuit</b> & "prix libre" pour les membres du collectif');
+
+        $this->assertStringNotContainsString('<b>', $html);
+        $this->assertStringContainsString('&lt;b&gt;gratuit&lt;/b&gt; &amp;', $html);
+        $this->assertStringContainsString('title="&lt;b&gt;gratuit&lt;/b&gt; &amp; &quot;prix libre&quot;', $html);
+    }
+
+    /**
+     * Avec les repères, le prix quitte la colonne des horaires pour se ranger sous l'adresse ;
+     * sans eux, la carte est celle d'avant. Horaires absents : le test ne dépend pas de l'heure.
+     */
+    public function testEventShortArticleHtmlRangeLePrixSousLadresseAvecLesReperes(): void
+    {
+        $this->prepareFigureContext();
+
+        $tab_even = [
+            'e_idEvenement' => 12,
+            'e_titre' => 'Bal',
+            'e_statut' => 'actif',
+            'e_genre' => 'fête',
+            'e_dateEvenement' => '2026-04-28',
+            'e_horaire_debut' => '2026-04-29 06:00:01',
+            'e_horaire_fin' => '2026-04-29 06:00:01',
+            'e_horaire_complement' => 'dès 20h',
+            'e_flyer' => '',
+            'e_image' => '',
+            'e_description' => 'Un bal.',
+            'e_prix' => '15.- / 12.-',
+            'e_idLieu' => 0,
+            'e_idSalle' => 0,
+            'e_nomLieu' => 'Cave du coin',
+            'e_adresse' => 'rue de la Chapelle 12',
+            'e_quartier' => 'Jonction',
+            'e_localite' => 'Genève',
+            'e_region' => 'ge',
+            'e_urlLieu' => '',
+        ];
+
+        $withMarkers = EvenementRenderer::eventShortArticleHtml($tab_even, [], true);
+        $this->assertMatchesRegularExpression('#<span class="left">[^<]*rue de la Chapelle 12[^<]*<br><span class="even-time-price">15\.- / 12\.-</span></span>#', $withMarkers);
+        $this->assertMatchesRegularExpression('#<span class="right">\s*<span class="even-time-line">dès 20h</span>\s*</span>#', $withMarkers);
+
+        $without = EvenementRenderer::eventShortArticleHtml($tab_even, [], false);
+        $this->assertStringNotContainsString('even-time-price', $without);
+        $this->assertMatchesRegularExpression('#<span class="right">\s*dès 20h, 15\.- / 12\.-\s*</span>#', $without);
     }
 }

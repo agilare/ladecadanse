@@ -91,6 +91,7 @@ final class EvenementTimeStatusTest extends Unit
         $this->assertSame(EvenementTimeStatus::RUNNING, $status->state);
         $this->assertSame('35 %', $status->label);
         $this->assertSame(35, $status->percent);
+        $this->assertSame(240, $status->durationMinutes);
         $this->assertFalse($status->endEstimated);
     }
 
@@ -144,8 +145,73 @@ final class EvenementTimeStatusTest extends Unit
         $this->assertNotNull($status);
         $this->assertSame(EvenementTimeStatus::RUNNING, $status->state);
         $this->assertTrue($status->endEstimated);
+        $this->assertSame('2026-04-29 00:00:00', $status->end);
+        $this->assertSame(180, $status->durationMinutes);
         // une heure écoulée sur les trois qui séparent le début de minuit
         $this->assertSame(35, $status->percent);
+    }
+
+    /** Les concerts suivent la règle des fêtes et du divers : sans fin, ils courent jusqu'à minuit. */
+    public function testConcertSansHoraireDeFinCourtJusquaMinuit(): void
+    {
+        $status = EvenementTimeStatus::fromHoraires('2026-04-28', '2026-04-28 20:00:00', null, '2026-04-28 19:00:00', 'concerts');
+
+        $this->assertSame('2026-04-29 00:00:00', $status?->end);
+        $this->assertSame(240, $status->durationMinutes);
+    }
+
+    /** Une séance de ciné ou de théâtre sans horaire de fin est estimée à deux heures, pas à minuit. */
+    public function testSeanceSansHoraireDeFinDureDeuxHeures(): void
+    {
+        $status = EvenementTimeStatus::fromHoraires('2026-04-28', '2026-04-28 21:00:00', null, '2026-04-28 21:30:00', 'cinéma');
+
+        $this->assertSame(EvenementTimeStatus::RUNNING, $status?->state);
+        $this->assertTrue($status->endEstimated);
+        $this->assertSame('2026-04-28 23:00:00', $status->end);
+        $this->assertSame(120, $status->durationMinutes);
+        $this->assertSame(25, $status->percent);
+    }
+
+    /**
+     * Commencé après minuit, un événement n'a plus de minuit devant lui : il court jusqu'à la fin
+     * de la journée d'agenda, et non jusqu'au minuit suivant.
+     */
+    public function testCommenceApresMinuitSansHoraireDeFinCourtJusquaSixHeures(): void
+    {
+        $status = EvenementTimeStatus::fromHoraires('2026-04-28', '2026-04-29 01:00:00', null, '2026-04-29 02:00:00', 'fête');
+
+        $this->assertSame('2026-04-29 06:00:00', $status?->end);
+        $this->assertSame(300, $status->durationMinutes);
+        $this->assertSame(20, $status->percent);
+    }
+
+    /** Un début aberrant, postérieur à la journée d'agenda, garde une fin après son début. */
+    public function testDebutApresLaJourneeDagendaGardeUneDureePositive(): void
+    {
+        $status = EvenementTimeStatus::fromHoraires('2026-04-28', '2026-04-29 14:00:00', null, '2026-04-28 20:00:00', 'fête');
+
+        $this->assertSame(EvenementTimeStatus::COMING, $status?->state);
+        $this->assertSame(120, $status->durationMinutes);
+    }
+
+    /** Avant le début, la barre est vide et sa longueur dit déjà la durée. */
+    public function testAvantLeDebutLaBarreEstVideEtPorteLaDuree(): void
+    {
+        $status = EvenementTimeStatus::fromHoraires('2026-04-28', '2026-04-28 21:30:00', '2026-04-28 23:30:00', '2026-04-28 19:00:00');
+
+        $this->assertSame(EvenementTimeStatus::COMING, $status?->state);
+        $this->assertSame(0, $status->percent);
+        $this->assertSame(120, $status->durationMinutes);
+        $this->assertFalse($status->endEstimated);
+    }
+
+    public function testAvantLeDebutSansHoraireDeFinLaDureeEstEstimee(): void
+    {
+        $status = EvenementTimeStatus::fromHoraires('2026-04-28', '2026-04-28 20:00:00', null, '2026-04-28 19:00:00', 'théâtre');
+
+        $this->assertSame(EvenementTimeStatus::COMING, $status?->state);
+        $this->assertTrue($status->endEstimated);
+        $this->assertSame(120, $status->durationMinutes);
     }
 
     /** Minuit passé, la fin restant inconnue, la barre plafonne sans jamais dire « terminé ». */
@@ -182,20 +248,34 @@ final class EvenementTimeStatusTest extends Unit
         $this->assertSame('dans 2h', $status->label);
     }
 
-    /** Une séance de ciné commencée depuis plus d'une demi-heure ne se rattrape plus. */
-    public function testSeanceCommenceeDepuisPlusDeTrenteMinutesEstTropTard(): void
+    /** Une séance de ciné commencée depuis plus d'une heure ne se rattrape plus. */
+    public function testSeanceCommenceeDepuisPlusDuneHeureEstTropTard(): void
     {
-        $status = EvenementTimeStatus::fromHoraires('2026-04-28', '2026-04-28 21:00:00', '2026-04-28 23:00:00', '2026-04-28 21:45:00', 'cinéma');
+        $status = EvenementTimeStatus::fromHoraires('2026-04-28', '2026-04-28 21:00:00', '2026-04-28 23:00:00', '2026-04-28 22:01:00', 'cinéma');
 
         $this->assertSame(EvenementTimeStatus::RUNNING, $status?->state);
         $this->assertTrue($status->tooLate);
     }
 
-    public function testSeanceCommenceeDepuisMoinsDeTrenteMinutesResteAtteignable(): void
+    /** Trois quarts d'heure de retard, qui suffisaient avant, ne suffisent plus. */
+    public function testSeanceCommenceeDepuisMoinsDuneHeureResteAtteignable(): void
     {
-        $status = EvenementTimeStatus::fromHoraires('2026-04-28', '2026-04-28 21:00:00', '2026-04-28 23:00:00', '2026-04-28 21:20:00', 'théâtre');
+        $status = EvenementTimeStatus::fromHoraires('2026-04-28', '2026-04-28 21:00:00', '2026-04-28 23:00:00', '2026-04-28 21:45:00', 'théâtre');
 
         $this->assertFalse($status?->tooLate);
+    }
+
+    /**
+     * Trop tard n'est pas terminé : l'estimation de deux heures dépassée, la séance garde sa barre,
+     * plafonnée, et ne dit jamais « terminé ».
+     */
+    public function testSeanceTropTardGardeSaBarreSansDireTermine(): void
+    {
+        $status = EvenementTimeStatus::fromHoraires('2026-04-28', '2026-04-28 21:00:00', null, '2026-04-28 23:30:00', 'théâtre');
+
+        $this->assertSame(EvenementTimeStatus::RUNNING, $status?->state);
+        $this->assertTrue($status->tooLate);
+        $this->assertSame(95, $status->percent);
     }
 
     /** Une soirée se rejoint à toute heure : le retard ne la met pas hors d'atteinte. */
