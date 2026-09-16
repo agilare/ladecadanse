@@ -33,6 +33,21 @@ class Authorization
     {
         return (isset($sessionToReadonly['Sgroupe']) && $sessionToReadonly['Sgroupe'] <= UserLevel::AUTHOR);
     }
+
+    /**
+     * Niveau ADMIN (4) ou au-dessus : la modération.
+     *
+     * Seuil de ce que les fiches réservent à l'équipe du site : les personnes affiliées à
+     * un lieu ou membres d'un organisateur, avec leur e-mail. Ni un auteur, ni l'auteur de
+     * la fiche, ni un membre de l'organisateur n'a à voir qui d'autre y est rattaché.
+     *
+     * @param array<string, mixed> $sessionToReadonly
+     */
+    public function isPersonneAdmin(array $sessionToReadonly): bool
+    {
+        return isset($sessionToReadonly['Sgroupe']) && $sessionToReadonly['Sgroupe'] <= UserLevel::ADMIN;
+    }
+
     /**
      * is
      * EDITOR (AUTHOR)

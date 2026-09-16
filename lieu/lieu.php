@@ -78,8 +78,10 @@ $categories_fr = Lieu::categoriesEnClair($lieu['categories']);
 $lieu_salles = Lieu::getActivesSalles((int) $get['idL']);
 $lieu_orgas = Lieu::getActivesOrganisateurs((int) $get['idL']);
 
+// pseudos et e-mails des personnes affiliées : réservés aux administrateurs, un auteur les
+// voyait aussi
 $lieu_affiliates = [];
-if ($authorization->isPersonneEditor($_SESSION))
+if ($authorization->isPersonneAdmin($_SESSION))
 {
     $lieu_affiliates = Lieu::getActivesAffiliates((int) $get['idL']);
 }
@@ -282,7 +284,7 @@ include("../_header.inc.php");
                         </li>
                     <?php endif; ?>
 
-                    <?php if ($authorization->isPersonneEditor($_SESSION) && count($lieu_affiliates) > 0) : ?>
+                    <?php if ($authorization->isPersonneAdmin($_SESSION) && count($lieu_affiliates) > 0) : ?>
                         <li>
                             <details>
                                 <summary>Affiliés (<?= count($lieu_affiliates) ?>)&nbsp;:</summary>

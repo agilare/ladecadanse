@@ -77,7 +77,14 @@ $default_page = ($get['periode'] == "ancien" && !$is_past_events_desc) ? (int) m
 $get['page'] = QueryParamValidator::pageFromQuery($_GET['page'] ?? '', $default_page);
 
 $orga_lieux = Organisateur::getActivesLieux($get['idO']);
-$orga_personnes = Personne::getPersonnesOfOrganisateur($get['idO']);
+
+// pseudos et e-mails des membres : réservés aux administrateurs, alors que l'auteur de la
+// fiche et chacun des membres voyaient jusqu'ici tous les autres
+$orga_personnes = [];
+if ($authorization->isPersonneAdmin($_SESSION))
+{
+    $orga_personnes = Personne::getPersonnesOfOrganisateur($get['idO']);
+}
 
 $sql_select = "SELECT
     e.genre AS e_genre,
@@ -214,7 +221,7 @@ include("../_header.inc.php");
                             </ul>
                         </li>
                     <?php endif; ?>
-                    <?php if (isset($_SESSION['SidPersonne']) && ($authorization->isAuthor("organisateur", $_SESSION['SidPersonne'], $get['idO']) || $authorization->isPersonneInOrganisateur($_SESSION['SidPersonne'], $get['idO'])) && count($orga_personnes) > 0) : ?>
+                    <?php if ($authorization->isPersonneAdmin($_SESSION) && count($orga_personnes) > 0) : ?>
                         <li>
                             <details>
                                 <summary>Membres (<?= count($orga_personnes) ?>)&nbsp;:</summary>

@@ -57,6 +57,7 @@ Rien à passer en base : `evenement.genre` est un `varchar(20)`, il accueille le
 - **Champs réservés d'un lieu** — le nom, la préposition, les catégories et les organisateurs ne partaient plus en champs cachés à qui n'a pas le droit d'y toucher : le serveur reprend leur valeur enregistrée quel que soit le contenu du POST. Conséquence : **un POST forgé ne renomme plus un lieu ni ne le rattache à un organisateur**. La galerie d'images disparaît du formulaire — fonctionnalité abandonnée, les images se posent à la main
 - **Statut d'un lieu** — les libellés deviennent « Publié / Dépublié / Ancien », comme sur la fiche d'organisateur ; les valeurs en base (`actif`, `inactif`, `ancien`) ne changent pas. Le formulaire ne poste plus de statut pour qui n'a pas le droit d'en choisir un : une modification faite par un acteur laisse désormais la fiche dans l'état où elle était, là où elle la republiait
 - **Sélection des lieux actifs** — les trois selects de lieux (inscription, profil, texte d'un lieu) filtraient sur `actif=1`, colonne que la migration supprime ; c'est `statut` qui fait foi. Le code et la base partent donc ensemble : l'ancien code sur une base migrée répondrait une erreur SQL sur ces trois pages
+- **Affiliés et membres d'une fiche** — les personnes affiliées à un lieu et les membres d'un organisateur, avec leur e-mail, ne sont plus listés qu'aux administrateurs (niveau ADMIN). Un auteur ne voit plus les affiliés d'un lieu, et ni l'auteur d'une fiche d'organisateur ni ses membres ne voient plus la liste des membres
 
 ## 3.12.0
 
