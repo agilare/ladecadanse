@@ -26,6 +26,10 @@ La table `lieu` est en MyISAM : l'`ALTER` la reconstruit et pose un verrou d'éc
 
 **À passer avec la mise en ligne du code, pas plus tard**, mais pour une autre raison que le script précédent : aucune page ne tombe en erreur si la base a du retard, ce sont les sept nouvelles entrées du menu qui deviennent des pièges. Le formulaire les propose dès que le code est en ligne, et enregistrer un lieu ainsi typé écrit dans la colonne une valeur que le `SET` ne déclare pas — erreur ou troncature silencieuse selon le `sql_mode` du serveur, mais jamais la catégorie choisie.
 
+Exécuter enfin `resources/database/v3-13-0_lieu-organisateur-add-admin_note.sql`, indépendant des deux précédents. Il ajoute à `lieu` (après `URL`) et à `organisateur` (après `statut`) une colonne `admin_note` en `TEXT NULL`, la note d'administration que seuls les administrateurs lisent et écrivent.
+
+**À passer avant la mise en ligne du code, ou avec elle** : la colonne accepte `NULL`, l'ancien code l'ignore donc sans dommage, et le script peut précéder le déploiement. Le nouveau code l'écrit à chaque enregistrement d'une fiche de lieu ou d'organisateur, qui répondrait sinon une erreur SQL. Les deux tables sont en MyISAM : même verrou d'écriture, aussi bref, que pour les scripts précédents.
+
 ### Redirections
 
 Deux pages changent d'adresse :

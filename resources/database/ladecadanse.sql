@@ -130,6 +130,7 @@ CREATE TABLE `lieu` (
   `horaire_general` mediumtext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `photo1` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `URL` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `admin_note` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `dateAjout` datetime DEFAULT NULL,
   `date_derniere_modif` datetime NOT NULL,
   PRIMARY KEY (`idLieu`),
@@ -1263,6 +1264,7 @@ CREATE TABLE `organisateur` (
   `photo` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `presentation` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
   `statut` enum('actif','inactif','ancien') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'actif',
+  `admin_note` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `date_ajout` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `date_derniere_modif` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`idOrganisateur`)
