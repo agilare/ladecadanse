@@ -7,6 +7,8 @@ use Ladecadanse\UserLevel;
 // de sécurité, le verrou est purement au rendu : sans le script d'amorçage ci-dessous,
 // mouseless.js ne s'active jamais.
 $mouseless_allowed = isset($_SESSION['Sgroupe']) && (int) $_SESSION['Sgroupe'] <= UserLevel::ADMIN;
+
+$page_titre_complet = sanitizeForHtml($page_titre) . " — La décadanse";
 ?>
 
 <!doctype html>
@@ -25,7 +27,7 @@ $mouseless_allowed = isset($_SESSION['Sgroupe']) && (int) $_SESSION['Sgroupe'] <
         <meta name="robots" content="noindex, nofollow">
     <?php endif; ?>
 
-	<title><?= (ENV !== 'prod') ? '['.ENV.'] ' : '' ?><?= ($nom_page == 'index' && !isset($_GET['courant']) ? "La décadanse — " : "") . sanitizeForHtml($page_titre) . (!($nom_page === 'index' && isset($_GET['courant'])) ? " — La décadanse" : ""); ?></title>
+	<title><?= (ENV !== 'prod') ? '['.ENV.'] ' : '' ?><?= $page_titre_complet ?></title>
 
     <meta name="description" content="<?= sanitizeForHtml(($page_description ?? '')) ?>">
 
@@ -33,7 +35,7 @@ $mouseless_allowed = isset($_SESSION['Sgroupe']) && (int) $_SESSION['Sgroupe'] <
     <meta property="og:logo" content="/web/interface/apple-icon-152x152.png">
     <meta property="og:type" content="article">
     <meta property="og:locale" content="fr">
-    <meta property="og:title" content="<?= sanitizeForHtml($page_titre) . " — La décadanse"; ?>">
+    <meta property="og:title" content="<?= $page_titre_complet ?>">
     <meta property="og:description" content="<?= sanitizeForHtml(($page_description ?? '')) ?>">
     <?php if (isset($page_url)) : ?>
         <meta property="og:url" content="<?= $site_full_url . $page_url; ?>">
