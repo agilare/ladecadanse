@@ -113,7 +113,9 @@ class LieuEdition extends FicheEdition
         {
             if (!array_key_exists($category, Lieu::CATEGORIES))
             {
-                $this->verif->setErreur('categories', "La catégorie " . $category . " n'est pas valable");
+                // getHtmlErreur() rend le message tel quel, certains portant du balisage
+                // voulu : la valeur postée, elle, s'échappe ici
+                $this->verif->setErreur('categories', "La catégorie " . sanitizeForHtml($category) . " n'est pas valable");
             }
         }
 

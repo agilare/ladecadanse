@@ -13,6 +13,8 @@ use Codeception\Util\HttpCode;
  * un organisateur que l'utilisateur venait de retirer revenait coché à chaque ré-affichage,
  * donc impossible à retirer tant qu'une autre erreur bloquait l'enregistrement.
  *
+ * Verrouille aussi l'échappement d'une catégorie forgée dans le message qui la refuse.
+ *
  * Suite read-only : les POST de ce fichier vident tous le nom du lieu, donc la validation
  * échoue et upsert() n'est jamais atteint. Ne pas y soumettre de formulaire valide.
  */
@@ -155,6 +157,29 @@ class LieuEditFormulaireCest
         $I->amOnPage('/lieu/edit.php?action=editer&idL=99999999');
         $I->seeResponseCodeIs(HttpCode::NOT_FOUND);
         $I->dontSeeElement('#ajouter_editer');
+    }
+
+    /**
+     * Une catégorie forgée est citée en texte dans le message qui la refuse.
+     *
+     * Validateur::getHtmlErreur() rend ses messages tels quels, certains portant du balisage
+     * voulu : la valeur postée revenait donc en HTML à l'éditeur qui l'avait envoyée.
+     */
+    public function categorieForgeeEstEchappeeDansLeMessage(SiteTester $I)
+    {
+        $I->loginAsAdmin();
+        $this->amOnLieuEdit($I);
+
+        $I->submitForm('#ajouter_editer', [
+            'nom' => '', // le nom est obligatoire : erreur garantie, rien n'est enregistré
+            'categories' => ['<i id="categorie-forgee">x</i>'],
+        ]);
+
+        $I->seeElement(self::ERREUR_GLOBALE);
+
+        // le message cite la valeur, sans qu'elle devienne un élément de la page
+        $I->see('La catégorie <i id="categorie-forgee">x</i> n\'est pas valable');
+        $I->dontSeeElement('#categorie-forgee');
     }
 
     private function amOnLieuEdit(SiteTester $I): void

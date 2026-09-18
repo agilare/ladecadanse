@@ -102,11 +102,13 @@ faisaient l'essentiel du bruit.
 `HtmlShrink::getPaginationString()` : un seul appelant teintait les 36 sites de pagination.
 `@psalm-taint-specialize` sur la méthode ramène le compte à 4.
 
-`Validateur::$erreurs` : un seul flux teinte les 222 sites qui affichent un message
+`Validateur::$erreurs` : un seul flux teintait les 222 sites qui affichent un message
 d'erreur, soit près des trois quarts de la sortie. `@psalm-taint-specialize` n'y peut
 rien — la convergence se fait sur une propriété d'instance, et Psalm 6.16.1 en fait un
 nœud unique quelle que soit l'instance (vérifié, cas reproduit dans le banc). Rien dans la
-configuration ne corrige cela : c'est à la source du flux de se refermer.
+configuration ne corrige cela : c'est à la source du flux de se refermer, ce qu'elle a fait
+depuis. L'inverse vaut aussi : une seule concaténation brute d'une saisie que Psalm suit,
+dans n'importe quel `setErreur()`, les rallumerait tous d'un coup.
 
 Conséquence pratique pour la lecture d'un rapport : un compte de signalements ne mesure
 pas un nombre de défauts. Quelques lignes peuvent en porter la majorité.

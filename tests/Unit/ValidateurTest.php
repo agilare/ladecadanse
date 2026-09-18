@@ -90,6 +90,15 @@ final class ValidateurTest extends Unit
         $this->assertStringContainsString('5 Mo', (string) $this->validateur->getErreur('f'));
     }
 
+    public function testFichierEscapesExtensionInMessage(): void
+    {
+        // le nom du fichier vient du client, et getHtmlErreur() rend le message tel quel
+        $file = ['name' => 'photo.<img src=x onerror=alert(1)>', 'type' => 'text/html', 'tmp_name' => '/none', 'error' => 0];
+
+        $this->assertFalse($this->validateur->validerFichier($file, 'f', ['image/jpeg'], false));
+        $this->assertStringContainsString('(&lt;img src=x onerror=alert(1)&gt;)', $this->validateur->getHtmlErreur('f'));
+    }
+
     /**
      * Écrit une image dans un fichier temporaire et renvoie l'entrée $_FILES
      * correspondante. $type est le MIME *déclaré*, celui que le client choisit.
