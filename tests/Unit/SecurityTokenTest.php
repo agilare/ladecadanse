@@ -11,9 +11,9 @@ use Ladecadanse\Security\SecurityToken;
  * Jeton CSRF des formulaires d'édition réservés aux personnes connectées : lieu, salle et
  * texte d'un lieu, organisateur, événement, copie d'événement, profil, édition groupée.
  *
- * Le jeton de session n'existe qu'une fois qu'un de ces formulaires a été rendu, puisque
- * c'est getToken() qui le crée. Avant cela, un envoi sans jeton comparait deux chaînes
- * vides, et passait le contrôle.
+ * Le jeton de session n'existe qu'une fois qu'un de ces formulaires, ou un lien « Dépublier »,
+ * a été rendu, puisque c'est getToken() qui le crée. Avant cela, un envoi sans jeton comparait
+ * deux chaînes vides, et passait le contrôle.
  */
 final class SecurityTokenTest extends Unit
 {

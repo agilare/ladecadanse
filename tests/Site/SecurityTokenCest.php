@@ -9,9 +9,9 @@ use Codeception\Util\HttpCode;
  * (Ladecadanse\Security\SecurityToken), éprouvé sur lieu/edit.php : les huit pages qui
  * s'en servent passent au contrôle les mêmes valeurs.
  *
- * Le jeton de session n'est créé qu'au rendu d'un de ces formulaires. Une session qui vient
- * de s'ouvrir n'en a donc pas, et un envoi sans jeton y comparait deux chaînes vides : il
- * passait le contrôle.
+ * Le jeton de session n'est créé qu'au rendu d'une page qui en a besoin : un de ces
+ * formulaires, ou un lien « Dépublier ». Une session qui vient de s'ouvrir n'en a donc pas,
+ * et un envoi sans jeton y comparait deux chaînes vides : il passait le contrôle.
  *
  * Suite read-only : l'envoi vide le nom du lieu et porte une catégorie inconnue. Même un
  * jeton accepté à tort ne mènerait qu'à des erreurs de validation, jamais à l'INSERT.
@@ -37,12 +37,17 @@ class SecurityTokenCest
     }
 
     /**
-     * La connexion ne passe par aucun des formulaires qui créent le jeton : juste après,
-     * la session n'en a pas.
+     * Juste après la connexion, la session n'a pas de jeton, pourvu qu'aucune page n'en ait
+     * créé un entre-temps. La redirection qui conclut la connexion n'est donc pas suivie : pour
+     * tout compte non superadmin, elle mène à l'accueil, dont les liens « Dépublier » créent le
+     * jeton, et le test passerait alors même contre un contrôle qui accepte une session sans
+     * jeton. login() vérifie ensuite la session sur une page qui n'en crée pas.
      */
     public function unEnvoiSansJetonEstRefuseAvantToutFormulaire(SiteTester $I)
     {
+        $I->stopFollowingRedirects();
         $I->loginAsAdmin();
+        $I->startFollowingRedirects();
 
         $I->sendAjaxPostRequest(self::URL_ENVOI, self::envoiInvalide());
 

@@ -9,8 +9,9 @@ class SecurityToken
      * paramètre string ferait d'un « token[]=x » forgé une TypeError, donc une page 500, au
      * lieu d'un refus.
      *
-     * Le jeton de session n'existe qu'une fois qu'un formulaire l'a rendu (getToken()) : vide
-     * ou absent, il ne doit rien valider, sans quoi un envoi sans jeton passerait.
+     * Le jeton de session n'existe qu'une fois qu'une page l'a rendu (getToken(), dans un
+     * formulaire ou un lien « Dépublier ») : vide ou absent, il ne doit rien valider, sans quoi
+     * un envoi sans jeton passerait.
      */
     public static function check(mixed $received, mixed $session): bool
     {
