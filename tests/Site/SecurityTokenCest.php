@@ -13,8 +13,12 @@ use Codeception\Util\HttpCode;
  * formulaires, ou un lien « Dépublier ». Une session qui vient de s'ouvrir n'en a donc pas,
  * et un envoi sans jeton y comparait deux chaînes vides : il passait le contrôle.
  *
- * Suite read-only : l'envoi vide le nom du lieu et porte une catégorie inconnue. Même un
- * jeton accepté à tort ne mènerait qu'à des erreurs de validation, jamais à l'INSERT.
+ * L'affichage du refus dépend de chaque page : il est vérifié là où il manquait, sur le
+ * formulaire d'événement et sur le profil d'un compte qui n'est pas superadmin.
+ *
+ * Suite read-only : chaque envoi porte une erreur de validation garantie (nom du lieu et
+ * catégorie inconnue, titre de l'événement, e-mail du profil). Même un jeton accepté à tort ne
+ * mènerait qu'à des erreurs de validation, jamais à une écriture.
  */
 class SecurityTokenCest
 {
@@ -76,6 +80,57 @@ class SecurityTokenCest
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->dontSee(self::REFUS_DU_JETON);
         $I->see(self::ERREUR_DE_VALIDATION);
+    }
+
+    /**
+     * Le formulaire d'événement rangeait son refus sous la clé « genres », qu'aucun champ ne
+     * lit : on voyait le décompte des erreurs, jamais leur cause.
+     */
+    public function leRefusSAfficheSurLeFormulaireDEvenement(SiteTester $I)
+    {
+        $I->loginAsAdmin();
+        $I->amOnPage('/evenement-edit.php?action=ajouter');
+        $I->seeElement('#ajouter_editer input[name=token]');
+
+        $I->submitForm('#ajouter_editer', [
+            'titre' => '', // obligatoire : erreur garantie, rien n'est enregistré
+            'token' => '',
+        ]);
+
+        $I->seeResponseCodeIs(HttpCode::OK);
+        $I->see(self::REFUS_DU_JETON);
+    }
+
+    /**
+     * Le profil rangeait son refus avec les erreurs du login, que seuls les superadmins voient :
+     * il faut un compte d'un autre niveau pour le voir manquer.
+     */
+    public function leRefusSAfficheSurLeProfilDUnActeur(SiteTester $I)
+    {
+        $I->skipUnlessConfigured('LADECADANSE_SITE_ACTOR_USER', 'LADECADANSE_SITE_ACTOR_PASS');
+
+        $I->loginAsActor();
+        $this->amOnMyProfileEdit($I);
+
+        $I->submitForm('#ajouter_editer', [
+            'email' => '', // obligatoire : erreur garantie, rien n'est enregistré
+            'token' => '',
+        ]);
+
+        $I->seeResponseCodeIs(HttpCode::OK);
+        $I->see(self::REFUS_DU_JETON);
+    }
+
+    /**
+     * Par navigation plutôt que par une URL construite, comme dans UserEventDefaultsCest :
+     * l'identifiant du compte dépend de l'instance testée.
+     */
+    private function amOnMyProfileEdit(SiteTester $I): void
+    {
+        $I->amOnPage('/articles/apropos.php');
+        $I->click('a[href^="/user/dashboard.php?idP="]');
+        $I->click('a[href*="/user-edit.php"]');
+        $I->seeElement('#ajouter_editer input[name=token]');
     }
 
     /**
