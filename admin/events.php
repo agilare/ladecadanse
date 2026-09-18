@@ -130,7 +130,7 @@ $nouveaux_fichiers = ['flyer' => '', 'image' => ''];
 
 if (!empty($_POST['formulaire']))
 {
-    if (!SecurityToken::check((string) ($_POST['token'] ?? ''), (string) ($_SESSION['token'] ?? '')))
+    if (!SecurityToken::check($_POST['token'] ?? '', $_SESSION['token'] ?? ''))
     {
         $verif->setErreur("token", "Le système de sécurité du site n'a pu authentifier votre action. Veuillez réafficher ce formulaire et réessayer");
     }

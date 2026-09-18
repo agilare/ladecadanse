@@ -262,7 +262,7 @@ if ($formulaire_poste)
 		}
 	}
 
-    if (!SecurityToken::check($_POST['token'], $_SESSION['token']))
+    if (!SecurityToken::check($_POST['token'] ?? '', $_SESSION['token'] ?? ''))
     {
         $verif->setErreur("pseudo", "Le système de sécurité du site n'a pu authentifier votre action. Veuillez réafficher ce formulaire et réessayer");
     }

@@ -4,12 +4,20 @@ namespace Ladecadanse\Security;
 
 class SecurityToken
 {
-    public static function check($received, $session): bool
+    /**
+     * Les deux valeurs arrivent telles quelles de $_POST et de $_SESSION, d'où mixed : un
+     * paramètre string ferait d'un « token[]=x » forgé une TypeError, donc une page 500, au
+     * lieu d'un refus.
+     *
+     * Le jeton de session n'existe qu'une fois qu'un formulaire l'a rendu (getToken()) : vide
+     * ou absent, il ne doit rien valider, sans quoi un envoi sans jeton passerait.
+     */
+    public static function check(mixed $received, mixed $session): bool
     {
-        if (hash_equals($received, $session) === false){
-            return false;
-        }
-        return true;
+        return is_string($session)
+            && $session !== ''
+            && is_string($received)
+            && hash_equals($session, $received);
     }
 
     /**
