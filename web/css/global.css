@@ -1639,6 +1639,85 @@ ul.menu_action
     background: #f0f0f0;
 }
 
+.lieu-info-wrapper
+{
+    position: relative;
+    display: inline-block;
+}
+
+.lieu-info-trigger
+{
+    background: none;
+    border: none;
+    padding: 0;
+    margin-left: 0.3em;
+    cursor: pointer;
+    font: inherit;
+    color: inherit;
+    vertical-align: middle;
+}
+
+.lieu-info-popover
+{
+    display: none; /* hidden by default; browsers without Popover API and without JS must not show this */
+    position: fixed;
+    inset: unset;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    box-shadow: 0 4px 12px rgba(0,0,0,.15);
+    padding: 0.8em 1em;
+    margin: 0;
+    box-sizing: border-box;
+    width: max-content;
+    max-width: 22em;
+    overflow: visible; /* la feuille UA de [popover] pose overflow:auto par défaut, d'où une
+                           barre de défilement même sans dépassement réel du contenu */
+    text-align: left;
+    font-size: 0.95em;
+    line-height: 1.4;
+}
+
+.lieu-info-popover p
+{
+    margin: 0 0 0.5em;
+}
+
+.lieu-info-popover p:last-child
+{
+    margin-bottom: 0;
+}
+
+/* Override the display: none above when the popover is open (ignored by browsers that don't support :popover-open) */
+.lieu-info-popover:popover-open
+{
+    display: block;
+}
+
+/*
+ * Fallback for browsers without the Popover API (Safari < 17, etc.).
+ * JS adds --fallback on init; --open is toggled on hover/focus of the trigger.
+ * position: absolute within .lieu-info-wrapper (position: relative)
+ * avoids any JS-based coordinate calculation.
+ */
+.lieu-info-popover--fallback
+{
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    z-index: 999;
+}
+
+.lieu-info-popover--fallback.lieu-info-popover--open
+{
+    display: block;
+}
+
+.lieu-info-popover__erreur
+{
+    color: #a00;
+}
+
 td.lieu_actions_evenement
 {
     width: 80px;

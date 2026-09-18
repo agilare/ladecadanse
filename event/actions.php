@@ -13,11 +13,73 @@
 require_once("../app/bootstrap.php");
 
 use Ladecadanse\Evenement;
+use Ladecadanse\HtmlShrink;
+use Ladecadanse\Lieu;
 use Ladecadanse\Security\SecurityToken;
 use Ladecadanse\UserLevel;
 use Ladecadanse\Utils\DateHelper;
+use Ladecadanse\Utils\QueryParamValidator;
+use Ladecadanse\Utils\Text;
+use Ladecadanse\Utils\WebLink;
 
 header('X-Robots-Tag: noindex');
+
+// Lu par evenement-edit.php (LieuInfo dans web/js/global.js) pour afficher le popover d'un
+// lieu sélectionné : accessible sans connexion, comme ce formulaire lui-même l'est pour
+// « Proposer un événement ». GET, et non POST, car sans effet de bord — pas de jeton CSRF à
+// exiger ; l'en-tête X-Requested-With écarte au moins la navigation directe.
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && ($_GET['action'] ?? '') === 'lieu-for-event')
+{
+    if (empty($_SERVER['HTTP_X_REQUESTED_WITH']))
+    {
+        header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
+        die();
+    }
+
+    try
+    {
+        $idLieu = (int) QueryParamValidator::validateUrlQueryValue($_GET['idL'] ?? '', "int", 1);
+    }
+    catch (Exception)
+    {
+        header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
+        die();
+    }
+
+    $lieu = Lieu::getLieu($idLieu);
+
+    if (empty($lieu))
+    {
+        header($_SERVER["SERVER_PROTOCOL"] . " 404 Not Found");
+        die();
+    }
+
+    // Même règle que lieu/lieu.php : un lieu dépublié ne reste visible qu'à ses éditeurs,
+    // même si le <select> de ce formulaire ne propose que des lieux publiés.
+    if ($lieu['statut'] === 'inactif' && !(isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= UserLevel::AUTHOR))
+    {
+        header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
+        die();
+    }
+
+    $adresse = HtmlShrink::adresseCompacteSelonContexte($lieu['loc_canton'], $lieu['loc_localite'], $lieu['quartier'], $lieu['adresse']);
+    $horaire = trim((string) ($lieu['horaire_general'] ?? ''));
+
+    echo '<p class="lieu-info-popover__nom"><a href="/lieu/lieu.php?idL=' . $idLieu . '" target="_blank" rel="noopener">' . sanitizeForHtml($lieu['nom']) . '</a></p>';
+    echo '<p class="lieu-info-popover__adresse">' . sanitizeForHtml($adresse) . '</p>';
+
+    if (!empty($lieu['URL']))
+    {
+        echo '<p class="lieu-info-popover__url">' . WebLink::html($lieu['URL'], iconeParDefaut: 'fa-globe') . '</p>';
+    }
+
+    if ($horaire !== '')
+    {
+        echo '<p class="lieu-info-popover__horaire">' . Text::lnAndUrlToHtml($horaire) . '</p>';
+    }
+
+    die();
+}
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST')
 {
