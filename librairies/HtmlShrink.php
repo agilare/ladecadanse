@@ -374,14 +374,26 @@ class HtmlShrink
     public static function getMonthlyCountsHeaderCells(array $monthKeys): string
     {
         $cells = "";
+        $currentMonthKey = end($monthKeys);
 
         foreach ($monthKeys as $monthKey)
         {
             $month = (int) substr($monthKey, 5, 2);
             $title = DateHelper::monthName($month) . " " . substr($monthKey, 0, 4);
+            $isCurrent = $monthKey === $currentMonthKey;
+            $class = $isCurrent ? "mois" : "mois mois-passe";
 
-            $cells .= '<th class="mois" title="' . sanitizeForHtml($title) . '">'
-                . sanitizeForHtml(DateHelper::monthNameShort($month)) . '</th>';
+            $cells .= '<th class="' . $class . '" title="' . sanitizeForHtml($title) . '">'
+                . sanitizeForHtml(DateHelper::monthNameShort($month));
+
+            // seul le mois en cours reste visible d'entrée : les onze précédents s'ouvrent
+            // depuis ce lien, à la manière du retrait de filtre du menu de catégories
+            if ($isCurrent)
+            {
+                $cells .= '<br><a href="#" class="js-toggle-mois-passes" aria-expanded="false" title="Afficher les mois précédents" aria-label="Afficher les onze mois précédents" rel="nofollow">Passés</a>';
+            }
+
+            $cells .= '</th>';
         }
 
         return $cells;

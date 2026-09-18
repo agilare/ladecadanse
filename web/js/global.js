@@ -442,6 +442,22 @@ const Forms = {
             HTMLFormElement.prototype.requestSubmit.call(form);
         });
 
+        // Listes lieux/organisateurs : le lien « Passés » du mois en cours ouvre ou referme les
+        // onze colonnes mensuelles révolues (table#derniers_lieux.mois-passes-ouvert, voir
+        // web/css/lieu/lieux.css et web/css/organisateur/organisateurs.css).
+        $('.js-toggle-mois-passes').on('click', function toggleMoisPasses(e)
+        {
+            e.preventDefault();
+
+            const $lien = $(this);
+            const ouvert = $lien.closest('table').toggleClass('mois-passes-ouvert').hasClass('mois-passes-ouvert');
+
+            $lien.attr('aria-expanded', ouvert ? 'true' : 'false');
+            $lien.attr('title', ouvert ? 'Masquer les mois précédents' : 'Afficher les mois précédents');
+            $lien.attr('aria-label', ouvert ? 'Masquer les onze mois précédents' : 'Afficher les onze mois précédents');
+            $lien.html(ouvert ? 'Passés&nbsp;<i class="fa fa-times" aria-hidden="true"></i>' : 'Passés');
+        });
+
 //        $('form#ajouter_editer #titre').on('paste', function(e)
 //        {
 //            // Récupère le texte collé
