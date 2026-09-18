@@ -242,7 +242,7 @@ Les administrateurs seuls (niveau `ADMIN`, 4) : `Authorization::isPersonneAdmin(
 ### Où
 
 - **formulaires** — le fieldset « Admin » réunit le statut et la note. Le statut y a son propre fieldset « Statut », qui donne aux radios leur libellé de groupe. La note est un textarea de texte brut, 2 000 caractères au plus (`Lieu::FIELDS`, `Organisateur::FIELDS`), sans `maxlength` : le navigateur compte un saut de ligne pour un caractère, le serveur pour deux ;
-- **listes** — une colonne « Note » juste avant les colonnes mensuelles, en desktop seulement : comme elles, elle est masquée sous 800 px. La note y est écrite en petit italique, ses 200 premiers caractères d'emblée (`HtmlShrink::ADMIN_NOTE_EXCERPT_LENGTH`) et la suite repliée dans un `<details>` « Suite ». La coupure recule jusqu'au dernier mot entier ;
+- **listes** — une colonne « Note » juste avant les colonnes mensuelles. En desktop, la note y est écrite en petit italique, ses 200 premiers caractères d'emblée (`HtmlShrink::ADMIN_NOTE_EXCERPT_LENGTH`) et la suite repliée dans un `<details>` « Suite » ; la coupure recule jusqu'au dernier mot entier. Sous 800 px, où les colonnes mensuelles sont masquées faute de place, une icône remplace le texte : son infobulle porte la note entière et s'ouvre au survol comme au focus, pour le toucher et le clavier ;
 - **fiches** — le `<details>` des affiliés d'un lieu ou des membres d'un organisateur s'intitule « Affiliés (3), note », « Membres (3), note », ou « Note » seul. La note suit la liste, sauts de ligne rendus et liens cliquables.
 
 Ce `<details>` est tout entier réservé aux administrateurs. Les pseudos et les e-mails qu'il replie s'affichaient à tout auteur pour les affiliés, et à l'auteur de la fiche comme à chacun des membres pour un organisateur.

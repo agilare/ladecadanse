@@ -428,10 +428,15 @@ class HtmlShrink
      * Cellule « Note » des listes d'administration : la note d'administration du lieu ou de
      * l'organisateur, et rien quand il n'y en a pas.
      *
-     * Ses ADMIN_NOTE_EXCERPT_LENGTH premiers caractères s'affichent, la suite se replie dans
-     * un <details>. La coupure recule jusqu'au dernier mot entier (Text::truncateWords()), et
-     * la partie affichée ne dépasse donc jamais la longueur annoncée. Le texte, brut, est rendu
-     * comme sur la fiche : échappé, sauts de ligne et liens compris.
+     * Deux rendus, dont la feuille de chaque liste ne montre qu'un selon la largeur :
+     *
+     * - en desktop, le texte. Ses ADMIN_NOTE_EXCERPT_LENGTH premiers caractères s'affichent,
+     *   la suite se replie dans un <details> ; la coupure recule jusqu'au dernier mot entier
+     *   (Text::truncateWords()), la partie affichée ne dépasse donc jamais la longueur
+     *   annoncée. Rendu comme sur la fiche : échappé, sauts de ligne et liens compris ;
+     * - sur mobile, où une colonne de texte ne tient pas, une icône dont l'infobulle porte la
+     *   note entière. Elle s'ouvre aussi au focus (tabindex) : au toucher, où le survol ne se
+     *   déclenche pas toujours, et au clavier.
      */
     public static function getAdminNoteCell(?string $note): string
     {
@@ -447,14 +452,19 @@ class HtmlShrink
         // l'extrait est un début de la note, blancs finaux en moins : la suite reprend là
         $suite = ltrim(mb_substr($note, mb_strlen($extrait)));
 
-        $html = '<td class="admin-note">' . Text::lnAndUrlToHtml($extrait);
+        $texte = Text::lnAndUrlToHtml($extrait);
 
         if ($suite !== '')
         {
-            $html .= '<details><summary>Suite</summary>' . Text::lnAndUrlToHtml($suite) . '</details>';
+            $texte .= '<details><summary>Suite</summary>' . Text::lnAndUrlToHtml($suite) . '</details>';
         }
 
-        return $html . '</td>';
+        return '<td class="admin-note">'
+            . '<div class="admin-note-texte">' . $texte . '</div>'
+            . '<span class="tooltip tooltip-texte" tabindex="0">'
+            . '<i class="fa fa-info-circle" aria-hidden="true"></i>'
+            . '<span class="tooltiptext">' . nl2br(sanitizeForHtml($note)) . '</span>'
+            . '</span></td>';
     }
 
     public static function msgInfo(string $message): void

@@ -98,14 +98,16 @@ final class HtmlShrinkTest extends Unit
 
     /**
      * La note est du texte brut saisi dans un formulaire : ce qui ressemble à du HTML s'affiche
-     * tel quel, et les sauts de ligne sont rendus.
+     * tel quel, et les sauts de ligne sont rendus — dans le texte du desktop comme dans
+     * l'infobulle du mobile.
      */
     public function testUneNoteEstEchappeeEtGardeSesSautsDeLigne(): void
     {
         $html = HtmlShrink::getAdminNoteCell("Relancé le 12.03\r\n<script>alert(1)</script> & co");
+        $echappee = "Relancé le 12.03<br />\r\n&lt;script&gt;alert(1)&lt;/script&gt; &amp; co";
 
-        $this->assertStringStartsWith('<td class="admin-note">Relancé le 12.03<br />', $html);
-        $this->assertStringEndsWith('&lt;script&gt;alert(1)&lt;/script&gt; &amp; co</td>', $html);
+        $this->assertStringContainsString('<div class="admin-note-texte">' . $echappee . '</div>', $html);
+        $this->assertStringContainsString('<span class="tooltiptext">' . $echappee . '</span>', $html);
         $this->assertStringNotContainsString('<script>', $html);
     }
 
@@ -117,21 +119,28 @@ final class HtmlShrinkTest extends Unit
     {
         $note = str_repeat('é', HtmlShrink::ADMIN_NOTE_EXCERPT_LENGTH);
 
-        $this->assertSame('<td class="admin-note">' . $note . '</td>', HtmlShrink::getAdminNoteCell($note));
+        $html = HtmlShrink::getAdminNoteCell($note);
+
+        $this->assertStringContainsString('<div class="admin-note-texte">' . $note . '</div>', $html);
+        $this->assertStringNotContainsString('<details>', $html);
     }
 
     /**
      * Au-delà, la suite se replie. La coupure tombe au milieu de « coupure » : le mot passe
-     * entier dans la suite plutôt que d'être tranché entre les deux.
+     * entier dans la suite plutôt que d'être tranché entre les deux. L'infobulle du mobile,
+     * elle, porte la note entière.
      */
     public function testUneNoteLongueReplieSaSuiteSansCouperDeMot(): void
     {
         $debut = str_repeat('a', HtmlShrink::ADMIN_NOTE_EXCERPT_LENGTH - 5);
 
-        $this->assertSame(
-            '<td class="admin-note">' . $debut . '<details><summary>Suite</summary>coupure en fin</details></td>',
-            HtmlShrink::getAdminNoteCell($debut . ' coupure en fin')
+        $html = HtmlShrink::getAdminNoteCell($debut . ' coupure en fin');
+
+        $this->assertStringContainsString(
+            '<div class="admin-note-texte">' . $debut . '<details><summary>Suite</summary>coupure en fin</details></div>',
+            $html
         );
+        $this->assertStringContainsString('<span class="tooltiptext">' . $debut . ' coupure en fin</span>', $html);
     }
 
     /** Un mot plus long que l'extrait ne laisse aucun blanc où reculer : il est coupé net. */
@@ -139,7 +148,22 @@ final class HtmlShrinkTest extends Unit
     {
         $html = HtmlShrink::getAdminNoteCell(str_repeat('x', HtmlShrink::ADMIN_NOTE_EXCERPT_LENGTH + 10));
 
-        $this->assertStringStartsWith('<td class="admin-note">' . str_repeat('x', HtmlShrink::ADMIN_NOTE_EXCERPT_LENGTH) . '<details>', $html);
-        $this->assertStringEndsWith('<summary>Suite</summary>' . str_repeat('x', 10) . '</details></td>', $html);
+        $this->assertStringContainsString(
+            '<div class="admin-note-texte">' . str_repeat('x', HtmlShrink::ADMIN_NOTE_EXCERPT_LENGTH)
+            . '<details><summary>Suite</summary>' . str_repeat('x', 10) . '</details></div>',
+            $html
+        );
+    }
+
+    /**
+     * Sur mobile, l'icône et son infobulle remplacent le texte. Sans tabindex, l'infobulle ne
+     * s'ouvrirait qu'au survol : ni au toucher, ni au clavier.
+     */
+    public function testLInfobulleDuMobileSOuvreAuFocus(): void
+    {
+        $this->assertStringContainsString(
+            '<span class="tooltip tooltip-texte" tabindex="0"><i class="fa fa-info-circle" aria-hidden="true"></i>',
+            HtmlShrink::getAdminNoteCell('Contact : la programmatrice')
+        );
     }
 }
