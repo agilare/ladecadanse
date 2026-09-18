@@ -325,9 +325,11 @@ if ($formulaire_poste)
     }
     else // ?
     {
+        // La clé est "global", rendue sous le décompte des erreurs — sous "genres", que rien ne
+        // lit, le refus bloquait l'envoi sans jamais s'afficher.
         if (!SecurityToken::check($_POST['token'] ?? '', $_SESSION['token'] ?? ''))
         {
-            $verif->setErreur("genres", "Le système de sécurité du site n'a pu authentifier votre action. Veuillez réafficher ce formulaire et réessayer");
+            $verif->setErreur("global", "Le système de sécurité du site n'a pu authentifier votre action. Veuillez réafficher ce formulaire et réessayer");
         }
     }
 
