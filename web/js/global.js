@@ -14,6 +14,7 @@ export const AppGlobal =
         Forms.init();
         Events.init();
         Lieux.init();
+        LieuInfo.init();
         HomePage.init();
         Calendar.init();
         Shortcuts.init();
@@ -519,6 +520,163 @@ const Lieux = {
 };
 
 
+
+/**
+ * Popover d'info-lieu du <select> « Nom du lieu » (evenement-edit.php) : icône visible
+ * seulement quand un lieu est sélectionné, popover chargé par fetch au survol/focus de
+ * l'icône, fermé au clic extérieur (API Popover native — repli par classes CSS sur les
+ * navigateurs qui ne la supportent pas encore, Safari < 17 notamment).
+ *
+ * @returns {undefined}
+ */
+const LieuInfo = {
+    init : function bindLieuInfoPopover()
+    {
+        const $select = $('#idLieu');
+        const trigger = document.getElementById('lieu-info-trigger');
+        const popover = document.getElementById('lieu-info-popover');
+
+        if ($select.length === 0 || !trigger || !popover)
+        {
+            return;
+        }
+
+        const supportsPopoverApi = 'showPopover' in HTMLElement.prototype;
+
+        if (!supportsPopoverApi)
+        {
+            popover.classList.add('lieu-info-popover--fallback');
+        }
+
+        let idLieuCharge = null;
+        let requeteEnCours = 0;
+
+        function idLieuSelectionne()
+        {
+            // la valeur peut être « idLieu_idSalle » : seul idLieu nous intéresse ici
+            const valeur = String($select.val() || '').split('_')[0];
+            return /^[0-9]+$/.test(valeur) ? valeur : null;
+        }
+
+        function positionner()
+        {
+            const rect = trigger.getBoundingClientRect();
+            popover.style.top = (rect.bottom + 4) + 'px';
+            popover.style.left = rect.left + 'px';
+        }
+
+        function fermerPopover()
+        {
+            if (supportsPopoverApi)
+            {
+                popover.hidePopover();
+            }
+            else
+            {
+                popover.classList.remove('lieu-info-popover--open');
+            }
+        }
+
+        function chargerContenu(idLieu)
+        {
+            idLieuCharge = idLieu;
+            popover.innerHTML = '<p class="lieu-info-popover__loading">Chargement…</p>';
+
+            const requeteCourante = ++requeteEnCours;
+
+            fetch(`/event/actions.php?action=lieu-for-event&idL=${encodeURIComponent(idLieu)}`, {
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                })
+                .then(function checkResponse(response)
+                {
+                    if (!response.ok)
+                    {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.text();
+                })
+                .then(function afficher(html)
+                {
+                    // une ouverture plus récente (autre lieu) a pu prendre le relais entretemps
+                    if (requeteCourante === requeteEnCours)
+                    {
+                        popover.innerHTML = html;
+                    }
+                })
+                .catch(function afficherErreur()
+                {
+                    if (requeteCourante === requeteEnCours)
+                    {
+                        popover.innerHTML = '<p class="lieu-info-popover__erreur">Impossible de charger les informations du lieu</p>';
+                    }
+                });
+        }
+
+        function ouvrirPopover(idLieu)
+        {
+            positionner();
+
+            if (supportsPopoverApi)
+            {
+                popover.showPopover();
+            }
+            else
+            {
+                popover.classList.add('lieu-info-popover--open');
+            }
+
+            if (idLieuCharge !== idLieu)
+            {
+                chargerContenu(idLieu);
+            }
+        }
+
+        trigger.addEventListener('mouseenter', function ouvrirAuSurvol()
+        {
+            const idLieu = idLieuSelectionne();
+            if (idLieu !== null)
+            {
+                ouvrirPopover(idLieu);
+            }
+        });
+
+        trigger.addEventListener('focus', function ouvrirAuFocus()
+        {
+            const idLieu = idLieuSelectionne();
+            if (idLieu !== null)
+            {
+                ouvrirPopover(idLieu);
+            }
+        });
+
+        if (!supportsPopoverApi)
+        {
+            document.addEventListener('click', function fermerSiClicExterieur(e)
+            {
+                if (popover.classList.contains('lieu-info-popover--open')
+                    && !popover.contains(e.target) && !trigger.contains(e.target))
+                {
+                    fermerPopover();
+                }
+            });
+        }
+
+        $select.on('change', function actualiserIcone()
+        {
+            const idLieu = idLieuSelectionne();
+
+            trigger.hidden = (idLieu === null);
+
+            if (idLieu === null)
+            {
+                idLieuCharge = null;
+                fermerPopover();
+            }
+        });
+
+        trigger.hidden = (idLieuSelectionne() === null);
+    }
+};
 
 const EVENT_ACTION_LABELS = { delete: 'suppression', unpublish: 'dépublication' };
 
