@@ -39,9 +39,10 @@ class EvenementDepublierCest
 
     /**
      * Un admin dispose du lien dans le tableau de gestion, avec les attributs
-     * attendus par le handler de web/js/global.js : data-id pour l'appel,
-     * data-on-success pour la suite (ici `status`, le tableau listant aussi
-     * les événements dépubliés).
+     * attendus par le handler de web/js/global.js : data-id et data-token pour
+     * l'appel, data-on-success pour la suite (ici `status`, le tableau listant
+     * aussi les événements dépubliés). EvenementActionsCest vérifie que ce jeton
+     * est bien celui qu'event/actions.php attend.
      */
     public function adminSeesUnpublishLinkOnAdminEvents(SiteTester $I)
     {
@@ -51,7 +52,7 @@ class EvenementDepublierCest
         $I->amOnPage('/admin/events.php');
 
         $I->seeResponseCodeIs(HttpCode::OK);
-        $I->seeElement('a.btn_event_unpublish[data-on-success=status]');
+        $I->seeElement('a.btn_event_unpublish[data-id][data-token][data-on-success=status]');
     }
 
     private function evenementUrl(int $idEvenement): string

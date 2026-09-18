@@ -14,6 +14,7 @@ use Ladecadanse\HtmlShrink;
 use Ladecadanse\Lieu;
 use Ladecadanse\Organisateur;
 use Ladecadanse\Security\Authorization;
+use Ladecadanse\Security\SecurityToken;
 use Ladecadanse\Utils\DateHelper;
 use Ladecadanse\Utils\RefList;
 use Ladecadanse\Utils\Text;
@@ -120,6 +121,10 @@ class EvenementRenderer
      * L'appelant est responsable du contrôle des droits d'édition ;
      * event/actions.php les revérifie de son côté.
      *
+     * Le lien porte le jeton CSRF de la session, sans lequel event/actions.php refuse la
+     * dépublication. getToken() le crée au besoin : une page qui rend ce lien n'a rien
+     * d'autre à faire pour que le jeton existe en session.
+     *
      * @param int $idEvenement
      * @param string $labelHtml contenu du lien : icône et/ou texte
      * @param string $onSuccess une des constantes self::UNPUBLISH_THEN_*
@@ -127,7 +132,8 @@ class EvenementRenderer
     public static function unpublishLinkHtml(int $idEvenement, string $labelHtml, string $onSuccess = self::UNPUBLISH_THEN_HIDE): string
     {
         return '<a href="#" id="btn_event_unpublish_' . $idEvenement . '" class="btn_event_unpublish"'
-            . ' data-id="' . $idEvenement . '" data-on-success="' . sanitizeForHtml($onSuccess) . '"'
+            . ' data-id="' . $idEvenement . '" data-token="' . SecurityToken::getToken() . '"'
+            . ' data-on-success="' . sanitizeForHtml($onSuccess) . '"'
             . ' title="Dépublier cet événement">' . $labelHtml . '</a>';
     }
 

@@ -7985,19 +7985,26 @@
       "targets": [],
       "value": "secondEventId"
     }, {
-      "id": "f83d4225-fdd5-4077-88f5-5aadb894b54d",
-      "comment": "Cleanup: delete first event",
+      "id": "b79620a1-ea9c-4507-899c-09379532246d",
+      "comment": "Cleanup: open a page carrying the session CSRF token (copy form, no unsaved-changes guard)",
       "command": "open",
-      "target": "/event/actions.php?action=delete&id=${firstEventId}",
+      "target": "/event/copy.php?idE=${firstEventId}",
       "targets": [],
       "value": ""
     }, {
-      "id": "1c27bb80-1725-4cca-9cd0-4d13f528761c",
-      "comment": "Cleanup: delete second event",
-      "command": "open",
-      "target": "/event/actions.php?action=delete&id=${secondEventId}",
+      "id": "af4d2aac-0e3a-4ae0-9c47-5184dc320dc9",
+      "comment": "Cleanup: delete both events, event/actions.php accepting POST with the token only",
+      "command": "executeAsyncScript",
+      "target": "const token = document.querySelector('input[name=token]').value; return Promise.all([${firstEventId}, ${secondEventId}].map(id => fetch('/event/actions.php', { method: 'POST', body: new URLSearchParams({ action: 'delete', id: id, token: token }) }))).then(responses => responses.map(r => r.status).join(','));",
       "targets": [],
-      "value": ""
+      "value": "cleanupStatuses"
+    }, {
+      "id": "f46c9206-556e-40f9-8be1-9bb387ec5ba7",
+      "comment": "Both events deleted",
+      "command": "assert",
+      "target": "cleanupStatuses",
+      "targets": [],
+      "value": "200,200"
     }, {
       "id": "68da1cef-9251-4df4-b768-d68c51836a41",
       "comment": "Return to home page",

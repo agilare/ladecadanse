@@ -122,6 +122,7 @@ Tests whose variables are left empty are reported as **skipped**, not failed.
 - `EvenementNotifierAuteurCest` — "E-mail à l'auteur" (issue #149): who sees the fieldset, the fact that motif and message are both optional, and that forged motif keys are never echoed back
 - `EvenementEditPermissionsCest` — who may edit an event (anonymous, actor, admin), and when: a past event is a read-only archive below `groupe` 6, though Copier and Dépublier stay available
 - `EvenementStatutCest` — which status radios are rendered, and to whom
+- `EvenementActionsCest` — `event/actions.php`, behind the "Supprimer" and "Dépublier" links: a GET is refused (405), so is a POST without the session's CSRF token or with another one (400), and the token the "Dépublier" link carries gets through to the permission check. Every request names an event id that cannot exist, so even one wrongly accepted finds nothing to delete or unpublish
 - `AdminBotsCest` — the three views of the bot dashboard and its access control
 - `FormulairesRegressionCest` — server-side contract of the recent JS: `body[data-page]`, the `formulaire=ok` hidden field of `event/copy.php`, the clear-search button
 - `BotMonitoringCest` — honeypot (204, footer link, robots.txt)

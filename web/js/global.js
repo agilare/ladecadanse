@@ -520,12 +520,14 @@ const Lieux = {
 
 
 
+const EVENT_ACTION_LABELS = { delete: 'suppression', unpublish: 'dépublication' };
+
 /**
  * used in pages evenement-agenda, index, lieu, organisateur
  *
  * @returns {undefined}
  */
-const Events = {
+export const Events = {
     init : function bindEventsEvents ()
     {
         const $content = $('#contenu');
@@ -538,10 +540,10 @@ const Events = {
         $content.on('click', '.btn_event_del', function requestEventDel(e)
         {
             e.preventDefault();
-            const event_id = $(this).data('id');
-            fetch(`/event/actions.php?action=delete&id=${event_id}`)
-                .then(response => $(`#btn_event_del_${event_id}`).closest('tr').fadeOut('fast'))
-                .catch(error => alert('Erreur : ' + error));
+            const $btn = $(this);
+            Events.requestAction('delete', $btn.data('id'), $btn.attr('data-token'))
+                .then(() => $btn.closest('tr').fadeOut('fast'))
+                .catch(error => alert(`Erreur : ${error.message}`));
         });
 
         // data-on-success sur le lien décide de ce qu'on fait de l'événement dépublié :
@@ -551,15 +553,9 @@ const Events = {
         {
             e.preventDefault();
             const $btn = $(this);
-            const event_id = $btn.data('id');
-            fetch(`/event/actions.php?action=unpublish&id=${event_id}`)
-                .then(function unpublishDone(response)
+            Events.requestAction('unpublish', $btn.data('id'), $btn.attr('data-token'))
+                .then(function unpublishDone()
                 {
-                    if (!response.ok)
-                    {
-                        throw new Error(`dépublication refusée (${response.status})`);
-                    }
-
                     const onSuccess = $btn.attr('data-on-success');
 
                     if (onSuccess === 'reload')
@@ -579,13 +575,45 @@ const Events = {
                         $btn.closest('tr, article.evenement-short').fadeOut('fast');
                     }
                 })
-                .catch(error => alert('Erreur : ' + error));
+                .catch(error => alert(`Erreur : ${error.message}`));
         });
 
         $content.on('click', '#js-event-delete-btn', function confirmEventDel()
         {
             return confirm('Voulez-vous vraiment supprimer cet événement ?');
         });
+    },
+
+    /**
+     * Demande l'action à event/actions.php, qui n'accepte que POST avec le jeton CSRF de la
+     * session : les liens le portent dans data-token. Tout part dans le corps, rien dans l'url.
+     *
+     * @param {string} action 'delete' ou 'unpublish'
+     * @param {number} eventId
+     * @param {string|undefined} token absent d'une page rendue avant que les liens le portent
+     * @returns {Promise<Response>} rejetée, avec un message à montrer, si le serveur refuse
+     */
+    requestAction : function requestEventAction(action, eventId, token)
+    {
+        return fetch('/event/actions.php', {
+            method: 'POST',
+            body: new URLSearchParams({ action: action, id: eventId, token: token ?? '' })
+        })
+            .then(function checkEventActionResponse(response)
+            {
+                // jeton refusé : la page vient d'une session qui n'a plus cours
+                if (response.status === 400)
+                {
+                    throw new Error('le système de sécurité du site n\'a pu authentifier votre action. Veuillez recharger la page et réessayer');
+                }
+
+                if (!response.ok)
+                {
+                    throw new Error(`${EVENT_ACTION_LABELS[action]} refusée (${response.status})`);
+                }
+
+                return response;
+            });
     }
 };
 
