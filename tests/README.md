@@ -130,6 +130,7 @@ Tests whose variables are left empty are reported as **skipped**, not failed.
 - `LieuTexteRepliableCest` — server-side contract of the collapsible descriptions: the text is served whole (never truncated in PHP), the toggle is a sibling of the capped block and wired to it by `aria-controls`, and the `js` marker that gates the whole collapse is in the `<head>`
 - `OrganisateurEditFormulaireCest` — the organisateur edit form (issue #115): the fields the JS and the processing depend on, the title that links back to the fiche, the "Publié / Dépublié" status labels, the fact that the status is offered to admins only, and that an actor may no longer edit someone else's fiche
 - `ReserveAuxAdminsCest` — what the fiches and the listings reserve to admins (`groupe` <= 4): the "Note" column of both listings, right before the first month, and the members of an organisateur, with their email, no longer listed to its own members. It needs `LADECADANSE_TEST_ORGA_ID_ACTOR_OWN` to have members, the admin test failing otherwise — which is what keeps the actor test from passing on an empty `<details>`
+- `SecurityTokenCest` — the CSRF token of the edit forms reserved to logged-in users, tried on `lieu/edit.php`: a submission without it is refused, right after logging in as well — before any form has put a token in the session — and the form's own token reaches the validation
 
 #### Running the tests on an instance
 

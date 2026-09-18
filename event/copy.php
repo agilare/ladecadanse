@@ -154,7 +154,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 		$verif->setErreur("dateEvenement", "La date de fin doit être dans le futur");
 	}
 
-    if (!SecurityToken::check($_POST['token'], $_SESSION['token']))
+    if (!SecurityToken::check($_POST['token'] ?? '', $_SESSION['token'] ?? ''))
     {
         $verif->setErreur("dateEvenement", "Le système de sécurité du site n'a pu authentifier votre action. Veuillez réafficher ce formulaire et réessayer");
     }

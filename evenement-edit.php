@@ -325,7 +325,7 @@ if ($formulaire_poste)
     }
     else // ?
     {
-        if (!SecurityToken::check($_POST['token'], $_SESSION['token']))
+        if (!SecurityToken::check($_POST['token'] ?? '', $_SESSION['token'] ?? ''))
         {
             $verif->setErreur("genres", "Le système de sécurité du site n'a pu authentifier votre action. Veuillez réafficher ce formulaire et réessayer");
         }
