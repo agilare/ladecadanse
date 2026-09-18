@@ -238,8 +238,9 @@ if ($formulaire_poste)
 
 		if ($connector->getNumRows($req_existance) > 0)
 		{
-			$verif->setErreur("pseudoIdentique", "Un membre ".$champs['pseudo']." existe déjà dans la base.");
-			$verif->setErreur("emailIdentique", "Un membre ".$champs['email']." existe déjà dans la base.");
+			// messages rendus tels quels par getHtmlErreur() et getErreur() : la saisie s'y échappe
+			$verif->setErreur("pseudoIdentique", "Un membre ".sanitizeForHtml($champs['pseudo'])." existe déjà dans la base.");
+			$verif->setErreur("emailIdentique", "Un membre ".sanitizeForHtml($champs['email'])." existe déjà dans la base.");
 		}
 
 	/*
