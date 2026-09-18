@@ -11,7 +11,8 @@ use Ladecadanse\HtmlShrink;
  * Couvre l'adresse compacte, affichée sur la fiche d'un événement et d'un lieu, dans les
  * listes, dans les titres de page et dans l'export ics — huit appels pour une seule méthode.
  *
- * Couvre aussi le menu des régions de la liste des lieux.
+ * Couvre aussi le menu des régions de la liste des lieux, et la cellule « Note » des listes de
+ * lieux et d'organisateurs.
  */
 final class HtmlShrinkTest extends Unit
 {
@@ -74,5 +75,71 @@ final class HtmlShrinkTest extends Unit
 
         $this->assertStringStartsWith('<ul class="menu_region">', ltrim($html));
         $this->assertSame($level, ob_get_level(), 'tampon de sortie laissé ouvert');
+    }
+
+    /**
+     * Une fiche sans note garde sa cellule, vide : sans elle, la ligne aurait une colonne de
+     * moins que l'en-tête et les compteurs mensuels se décaleraient.
+     *
+     * @dataProvider fournirNotesVides
+     */
+    public function testUneNoteAbsenteLaisseLaCelluleVide(?string $note): void
+    {
+        $this->assertSame('<td class="admin-note"></td>', HtmlShrink::getAdminNoteCell($note));
+    }
+
+    /** @return iterable<string, array{?string}> */
+    public static function fournirNotesVides(): iterable
+    {
+        yield 'NULL en base' => [null];
+        yield 'chaîne vide' => [''];
+        yield 'blancs seuls' => ["  \r\n "];
+    }
+
+    /**
+     * La note est du texte brut saisi dans un formulaire : ce qui ressemble à du HTML s'affiche
+     * tel quel, et les sauts de ligne sont rendus.
+     */
+    public function testUneNoteEstEchappeeEtGardeSesSautsDeLigne(): void
+    {
+        $html = HtmlShrink::getAdminNoteCell("Relancé le 12.03\r\n<script>alert(1)</script> & co");
+
+        $this->assertStringStartsWith('<td class="admin-note">Relancé le 12.03<br />', $html);
+        $this->assertStringEndsWith('&lt;script&gt;alert(1)&lt;/script&gt; &amp; co</td>', $html);
+        $this->assertStringNotContainsString('<script>', $html);
+    }
+
+    /**
+     * La longueur se compte en caractères et non en octets : deux cents lettres accentuées,
+     * quatre cents octets en UTF-8, tiennent encore dans l'extrait.
+     */
+    public function testUneNoteDeLaLongueurDeLExtraitNeReplieRien(): void
+    {
+        $note = str_repeat('é', HtmlShrink::ADMIN_NOTE_EXCERPT_LENGTH);
+
+        $this->assertSame('<td class="admin-note">' . $note . '</td>', HtmlShrink::getAdminNoteCell($note));
+    }
+
+    /**
+     * Au-delà, la suite se replie. La coupure tombe au milieu de « coupure » : le mot passe
+     * entier dans la suite plutôt que d'être tranché entre les deux.
+     */
+    public function testUneNoteLongueReplieSaSuiteSansCouperDeMot(): void
+    {
+        $debut = str_repeat('a', HtmlShrink::ADMIN_NOTE_EXCERPT_LENGTH - 5);
+
+        $this->assertSame(
+            '<td class="admin-note">' . $debut . '<details><summary>Suite</summary>coupure en fin</details></td>',
+            HtmlShrink::getAdminNoteCell($debut . ' coupure en fin')
+        );
+    }
+
+    /** Un mot plus long que l'extrait ne laisse aucun blanc où reculer : il est coupé net. */
+    public function testUnMotPlusLongQueLExtraitEstCoupeNet(): void
+    {
+        $html = HtmlShrink::getAdminNoteCell(str_repeat('x', HtmlShrink::ADMIN_NOTE_EXCERPT_LENGTH + 10));
+
+        $this->assertStringStartsWith('<td class="admin-note">' . str_repeat('x', HtmlShrink::ADMIN_NOTE_EXCERPT_LENGTH) . '<details>', $html);
+        $this->assertStringEndsWith('<summary>Suite</summary>' . str_repeat('x', 10) . '</details></td>', $html);
     }
 }

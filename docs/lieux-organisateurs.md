@@ -81,7 +81,7 @@ et les deux droits que les formulaires consultent :
 
 | droit | seuil | ce qu'il gouverne |
 | --- | --- | --- |
-| `canChangeStatus` | `ADMIN` (4) | le fieldset « Statut », et le statut réellement écrit |
+| `canEditAdminFields` | `ADMIN` (4) | le fieldset « Admin » — statut et [note d'administration](#note-dadministration) —, et les valeurs réellement écrites |
 | `canEditEditorFields` | `AUTHOR` (6) | sur un lieu : nom, préposition, catégories, organisateurs |
 
 Chaque page en construit un depuis la session (`CurrentUserEditing::fromSession()`) et le passe au
@@ -230,6 +230,28 @@ L'issue #235 propose de fondre `descriptionlieu` et les pages en dur d'`articles
 `article` générique, servie par `article/article.php` et `article/edit.php`. Ce formulaire-ci en
 est le point de départ ; il n'a délibérément pas de classe de traitement à lui, `FicheEdition`
 supposant un nom, un statut et des images qu'un texte n'a pas.
+
+## Note d'administration
+
+Une fiche de lieu ou d'organisateur porte une note interne à la modération : un contact, une relance, un doublon soupçonné. Elle vit dans la colonne `admin_note` des tables `lieu` et `organisateur`, en `TEXT`, et vaut `NULL` quand il n'y en a pas, jamais la chaîne vide.
+
+### Qui la lit, qui l'écrit
+
+Les administrateurs seuls (niveau `ADMIN`, 4) : `Authorization::isPersonneAdmin()` pour les listes et les fiches, `CurrentUserEditing::canEditAdminFields` pour les formulaires. En dessous de ce niveau, elle n'est rendue nulle part, pas même en lecture seule.
+
+### Où
+
+- **formulaires** — le fieldset « Admin » réunit le statut et la note. Le statut y a son propre fieldset « Statut », qui donne aux radios leur libellé de groupe. La note est un textarea de texte brut, 2 000 caractères au plus (`Lieu::FIELDS`, `Organisateur::FIELDS`), sans `maxlength` : le navigateur compte un saut de ligne pour un caractère, le serveur pour deux ;
+- **listes** — une colonne « Note » juste avant les colonnes mensuelles, en desktop seulement : comme elles, elle est masquée sous 800 px. La note y est écrite en petit italique, ses 200 premiers caractères d'emblée (`HtmlShrink::ADMIN_NOTE_EXCERPT_LENGTH`) et la suite repliée dans un `<details>` « Suite ». La coupure recule jusqu'au dernier mot entier ;
+- **fiches** — le `<details>` des affiliés d'un lieu ou des membres d'un organisateur s'intitule « Affiliés (3), note », « Membres (3), note », ou « Note » seul. La note suit la liste, sauts de ligne rendus et liens cliquables.
+
+Ce `<details>` est tout entier réservé aux administrateurs. Les pseudos et les e-mails qu'il replie s'affichaient à tout auteur pour les affiliés, et à l'auteur de la fiche comme à chacun des membres pour un organisateur.
+
+### À l'enregistrement
+
+Le champ n'étant pas rendu sous le niveau `ADMIN`, un auteur ou un acteur qui modifie une fiche ne poste aucune note. `FicheEdition::adminNoteToWrite()` reprend alors celle de la base, comme `statusToWrite()` le fait du statut : sans cela, le premier enregistrement d'un non-administrateur l'effacerait. Une note forgée dans le POST est ignorée pour la même raison.
+
+`composer prod-copy` la vide et garde `NULL` — voir [la copie de la production](prod-copy.md).
 
 ## Activité mensuelle, en vue d'administration
 

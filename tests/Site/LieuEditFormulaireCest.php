@@ -111,6 +111,40 @@ class LieuEditFormulaireCest
     }
 
     /**
+     * Le fieldset « Admin » réunit le statut et la note d'administration. Les radios gardent
+     * un libellé de groupe, « Statut », dans un fieldset à elles : c'était la légende du
+     * fieldset extérieur, qui dit désormais « Admin ».
+     */
+    public function leFieldsetAdminReunitStatutEtNote(SiteTester $I)
+    {
+        $I->loginAsAdmin();
+        $this->amOnLieuEdit($I);
+
+        $I->see('Admin', '#ajouter_editer fieldset > legend');
+        $I->see('Statut', 'fieldset.groupe-radios > legend');
+        $I->seeElement('fieldset.groupe-radios input[type=radio][name=statut]');
+        $I->seeElement('textarea#admin_note[name=admin_note]');
+    }
+
+    /**
+     * Une note saisie survit au ré-affichage du formulaire après une erreur : le nom vidé
+     * garantit l'erreur, rien n'est écrit.
+     */
+    public function laNoteSaisieSurvitAuReaffichageApresUneErreur(SiteTester $I)
+    {
+        $I->loginAsAdmin();
+        $this->amOnLieuEdit($I);
+
+        $I->submitForm('#ajouter_editer', [
+            'nom' => '', // le nom est obligatoire : erreur garantie, rien n'est enregistré
+            'admin_note' => "Contact : la programmation\nRelancé en septembre",
+        ]);
+
+        $I->seeElement(self::ERREUR_GLOBALE);
+        $I->seeInField('#admin_note', "Contact : la programmation\nRelancé en septembre");
+    }
+
+    /**
      * Un identifiant de lieu inconnu répond 404, au lieu d'un formulaire vide sous un titre
      * sans nom, suivi d'un UPDATE qui ne touche aucune ligne et annonce une réussite.
      */

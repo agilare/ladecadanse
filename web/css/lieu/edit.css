@@ -41,14 +41,17 @@ form#ajouter_editer fieldset legend
 
 @media screen and (min-width: 800px)
 {
-    form#ajouter_editer label
+    /* la légende du groupe de radios du statut tient la place d'un libellé (formulaires.css) */
+    form#ajouter_editer label,
+    form#ajouter_editer fieldset.groupe-radios > legend
     {
         width: 12em;
     }
 
     form#ajouter_editer #adresse,
     form#ajouter_editer #URL,
-    form#ajouter_editer #horaire_general
+    form#ajouter_editer #horaire_general,
+    form#ajouter_editer #admin_note
     {
         box-sizing: border-box;
         width: var(--champ-long);

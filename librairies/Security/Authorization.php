@@ -38,8 +38,10 @@ class Authorization
      * Niveau ADMIN (4) ou au-dessus : la modération.
      *
      * Seuil de ce que les fiches réservent à l'équipe du site : les personnes affiliées à
-     * un lieu ou membres d'un organisateur, avec leur e-mail. Ni un auteur, ni l'auteur de
-     * la fiche, ni un membre de l'organisateur n'a à voir qui d'autre y est rattaché.
+     * un lieu ou membres d'un organisateur, avec leur e-mail — ni un auteur, ni l'auteur de
+     * la fiche, ni un membre de l'organisateur n'a à voir qui d'autre y est rattaché —, et
+     * la note d'administration, dans les listes et sur les fiches. Les formulaires
+     * consultent le même seuil par CurrentUserEditing::$canEditAdminFields.
      *
      * @param array<string, mixed> $sessionToReadonly
      */

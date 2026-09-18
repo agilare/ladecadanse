@@ -181,8 +181,9 @@ class LieuEdition extends FicheEdition
     protected function storedColumns(): array
     {
         // preposition_nom et categories s'y trouvent parce que les non-éditeurs ne les
-        // postent pas : c'est de la base qu'il faut alors les reprendre
-        return ['nom', 'statut', 'logo', 'photo1', 'preposition_nom', 'categories'];
+        // postent pas, admin_note parce que les non-administrateurs ne la postent pas :
+        // c'est de la base qu'il faut alors les reprendre
+        return ['nom', 'statut', 'logo', 'photo1', 'preposition_nom', 'categories', 'admin_note'];
     }
 
     #[\Override]
@@ -270,9 +271,9 @@ class LieuEdition extends FicheEdition
 
         $stmt = $this->pdo->prepare("INSERT INTO lieu
             (idpersonne, statut, nom, preposition_nom, categories, adresse, quartier, localite_id, region,
-             lat, lng, horaire_general, URL, dateAjout, date_derniere_modif)
+             lat, lng, horaire_general, URL, admin_note, dateAjout, date_derniere_modif)
             VALUES (:idPersonne, :statut, :nom, :preposition, :categories, :adresse, :quartier, :localiteId, :region,
-             :lat, :lng, :horaire, :url, :dateAjout, :dateModif)");
+             :lat, :lng, :horaire, :url, :adminNote, :dateAjout, :dateModif)");
 
         if (!$stmt->execute($this->getSqlCommonParameters($localiteId, $quartier) + [
             ':idPersonne' => $this->currentUser->idPersonne,
@@ -300,7 +301,8 @@ class LieuEdition extends FicheEdition
         $stmt = $this->pdo->prepare("UPDATE lieu SET
             statut = :statut, nom = :nom, preposition_nom = :preposition, categories = :categories,
             adresse = :adresse, quartier = :quartier, localite_id = :localiteId, region = :region,
-            lat = :lat, lng = :lng, horaire_general = :horaire, URL = :url, date_derniere_modif = :dateModif
+            lat = :lat, lng = :lng, horaire_general = :horaire, URL = :url, admin_note = :adminNote,
+            date_derniere_modif = :dateModif
             WHERE idLieu = :id");
 
         // idpersonne n'est pas touché : il désigne l'auteur de la fiche. L'écraser par
@@ -342,6 +344,7 @@ class LieuEdition extends FicheEdition
             ':lng' => $this->coordinates->lngForDatabase(),
             ':horaire' => $this->valeurs['horaire_general'] === '' ? null : $this->valeurs['horaire_general'],
             ':url' => $this->valeurs['URL'] === '' ? null : $this->valeurs['URL'],
+            ':adminNote' => $this->valeurs['admin_note'] === '' ? null : $this->valeurs['admin_note'],
         ];
     }
 

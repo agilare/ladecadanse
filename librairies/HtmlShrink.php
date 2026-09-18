@@ -8,9 +8,17 @@ namespace Ladecadanse;
 
 use Ladecadanse\Stats\MonthlyAddedEvents;
 use Ladecadanse\Utils\DateHelper;
+use Ladecadanse\Utils\Text;
 
 class HtmlShrink
 {
+    /**
+     * Longueur de la note d'administration affichée d'emblée dans les listes : au-delà, la
+     * suite se replie dans un <details>, pour qu'une note longue n'étire pas sa ligne sur
+     * toute la hauteur de l'écran.
+     */
+    public const int ADMIN_NOTE_EXCERPT_LENGTH = 200;
+
     /**
      * Reconstruit une query string à partir de $_GET, en excluant un ou
      * plusieurs paramètres. Utilisée pour les liens de pagination et de tri,
@@ -414,6 +422,39 @@ class HtmlShrink
         }
 
         return $cells;
+    }
+
+    /**
+     * Cellule « Note » des listes d'administration : la note d'administration du lieu ou de
+     * l'organisateur, et rien quand il n'y en a pas.
+     *
+     * Ses ADMIN_NOTE_EXCERPT_LENGTH premiers caractères s'affichent, la suite se replie dans
+     * un <details>. La coupure recule jusqu'au dernier mot entier (Text::truncateWords()), et
+     * la partie affichée ne dépasse donc jamais la longueur annoncée. Le texte, brut, est rendu
+     * comme sur la fiche : échappé, sauts de ligne et liens compris.
+     */
+    public static function getAdminNoteCell(?string $note): string
+    {
+        $note = trim((string) $note);
+
+        if ($note === '')
+        {
+            return '<td class="admin-note"></td>';
+        }
+
+        $extrait = Text::truncateWords($note, self::ADMIN_NOTE_EXCERPT_LENGTH);
+
+        // l'extrait est un début de la note, blancs finaux en moins : la suite reprend là
+        $suite = ltrim(mb_substr($note, mb_strlen($extrait)));
+
+        $html = '<td class="admin-note">' . Text::lnAndUrlToHtml($extrait);
+
+        if ($suite !== '')
+        {
+            $html .= '<details><summary>Suite</summary>' . Text::lnAndUrlToHtml($suite) . '</details>';
+        }
+
+        return $html . '</td>';
     }
 
     public static function msgInfo(string $message): void

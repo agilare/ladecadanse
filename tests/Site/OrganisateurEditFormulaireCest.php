@@ -83,8 +83,26 @@ class OrganisateurEditFormulaireCest
     }
 
     /**
+     * Le fieldset « Admin » réunit le statut et la note d'administration. Les radios gardent
+     * un libellé de groupe, « Statut », dans un fieldset à elles : c'était la légende du
+     * fieldset extérieur, qui dit désormais « Admin ».
+     */
+    public function leFieldsetAdminReunitStatutEtNote(SiteTester $I)
+    {
+        $I->loginAsAdmin();
+        $I->amOnPage('/organisateur/edit.php?action=editer&idO=' . TestEnv::getInt('LADECADANSE_TEST_ORGA_ID_ACTOR_OWN'));
+
+        $I->seeResponseCodeIs(HttpCode::OK);
+        $I->see('Admin', '#ajouter_editer fieldset > legend');
+        $I->see('Statut', 'fieldset.groupe-radios > legend');
+        $I->seeElement('fieldset.groupe-radios input[type=radio][name=statut]');
+        $I->seeElement('textarea#admin_note[name=admin_note]');
+    }
+
+    /**
      * Publier ou dépublier reste une décision de modération : le fieldset n'est pas
-     * rendu pour un acteur, et la page n'accepte plus de statut posté de sa part.
+     * rendu pour un acteur, et la page n'accepte plus de statut posté de sa part. La note
+     * d'administration, dans le même fieldset, ne lui est pas davantage montrée.
      */
     public function acteurNeSeVoitPasProposerLeStatut(SiteTester $I)
     {
@@ -106,6 +124,7 @@ class OrganisateurEditFormulaireCest
 
         $I->seeElement('#nom');
         $I->dontSeeElement('input[name=statut]');
+        $I->dontSeeElement('textarea[name=admin_note]');
     }
 
     /**
