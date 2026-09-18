@@ -1028,6 +1028,43 @@ table .td-align-center
         opacity: 1;
     }
 
+    /* Ouverte aussi au focus, quand le déclencheur porte un tabindex : au toucher, où le
+       survol ne se déclenche pas toujours, et au clavier */
+    .tooltip:focus .tooltiptext {
+        visibility: visible;
+        opacity: 1;
+    }
+
+/*
+ * Variante pour un texte libre, sur plusieurs lignes au besoin — la note d'administration des
+ * listes de lieux et d'organisateurs, sur mobile (HtmlShrink::getAdminNoteCell()). Plus large,
+ * alignée à gauche, et ancrée sur le bord droit de l'icône : elle s'ouvre vers la gauche, ce
+ * qui la garde dans l'écran, sa colonne étant près du bord droit une fois les colonnes
+ * mensuelles masquées.
+ */
+.tooltip.tooltip-texte {
+    border-bottom: none;
+    cursor: help;
+}
+
+    .tooltip.tooltip-texte .tooltiptext {
+        width: max-content;
+        max-width: 20em;
+        padding: 0.4em 0.6em;
+        text-align: left;
+        line-height: 1.35em;
+        left: auto;
+        right: -0.6em;
+        margin-left: 0;
+    }
+
+    /* la flèche revient sous l'icône, que le bord droit de la bulle dépasse de 0.6em */
+    .tooltip.tooltip-texte .tooltiptext::after {
+        left: auto;
+        right: calc(0.6em + 0.43em - 5px);
+        margin-left: 0;
+    }
+
 
 
 .even-statut-label

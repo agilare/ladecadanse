@@ -8,6 +8,7 @@ use Ladecadanse\Evenement;
 use Ladecadanse\Lieu;
 use Ladecadanse\Personne;
 use Ladecadanse\Utils\DateHelper;
+use Ladecadanse\Utils\Text;
 use Ladecadanse\Utils\WebLink;
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\Utils\QueryParamValidator;
@@ -77,7 +78,23 @@ $default_page = ($get['periode'] == "ancien" && !$is_past_events_desc) ? (int) m
 $get['page'] = QueryParamValidator::pageFromQuery($_GET['page'] ?? '', $default_page);
 
 $orga_lieux = Organisateur::getActivesLieux($get['idO']);
-$orga_personnes = Personne::getPersonnesOfOrganisateur($get['idO']);
+
+// pseudos et e-mails des membres : réservés aux administrateurs, alors que l'auteur de la
+// fiche et chacun des membres voyaient jusqu'ici tous les autres
+$orga_personnes = [];
+if ($authorization->isPersonneAdmin($_SESSION))
+{
+    $orga_personnes = Personne::getPersonnesOfOrganisateur($get['idO']);
+}
+
+// note d'administration, sous la même garde que les membres, dont elle partage le <details>
+$orga_admin_note = $authorization->isPersonneAdmin($_SESSION) ? trim((string) $organisateur->getValue('admin_note')) : '';
+
+// « Membres (3), note », « Membres (3) » ou « Note » : le <summary> dit ce que le <details> replie
+$orga_details_admin = array_filter([
+    count($orga_personnes) > 0 ? "Membres (" . count($orga_personnes) . ")" : '',
+    $orga_admin_note !== '' ? "note" : '',
+]);
 
 $sql_select = "SELECT
     e.genre AS e_genre,
@@ -214,15 +231,21 @@ include("../_header.inc.php");
                             </ul>
                         </li>
                     <?php endif; ?>
-                    <?php if (isset($_SESSION['SidPersonne']) && ($authorization->isAuthor("organisateur", $_SESSION['SidPersonne'], $get['idO']) || $authorization->isPersonneInOrganisateur($_SESSION['SidPersonne'], $get['idO'])) && count($orga_personnes) > 0) : ?>
+                    <?php if ($authorization->isPersonneAdmin($_SESSION) && $orga_details_admin !== []) : ?>
                         <li>
                             <details>
-                                <summary>Membres (<?= count($orga_personnes) ?>)&nbsp;:</summary>
+                                <summary><?= sanitizeForHtml(ucfirst(implode(", ", $orga_details_admin))) ?>&nbsp;:</summary>
+                                <?php if (count($orga_personnes) > 0) : ?>
                                 <ul>
                                     <?php foreach ($orga_personnes as $op) : ?>
                                         <li><a href="/user/dashboard.php?idP=<?= (int)$op['idPersonne'] ?>"><?= sanitizeForHtml($op['pseudo']) ?></a>&nbsp;<small><?= sanitizeForHtml($op['email']) ?></small></li>
                                     <?php endforeach ?>
                                 </ul>
+                                <?php endif; ?>
+                                <?php if ($orga_admin_note !== '') : ?>
+                                    <?php /* texte brut : échappé, sauts de ligne rendus, liens cliquables */ ?>
+                                    <div class="admin-note"><?= Text::lnAndUrlToHtml($orga_admin_note) ?></div>
+                                <?php endif; ?>
                             </details>
                         </li>
                     <?php endif; ?>

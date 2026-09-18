@@ -106,6 +106,9 @@ $stmt->execute([$glo_auj]);
 $lieux_even = $stmt->fetchAll(PDO::FETCH_GROUP);
 //dump($lieux_even);
 
+// note d'administration : lue par les seuls administrateurs, qui seuls l'écrivent
+$show_admin_notes = $authorization->isPersonneAdmin($_SESSION);
+
 // suivi de l'activité : réservé aux administrateurs, seuls à relancer un lieu qui a cessé d'annoncer
 $show_monthly_counts = $authorization->isPersonneEditor($_SESSION);
 $months_keys = $show_monthly_counts ? MonthlyAddedEvents::monthKeys() : [];
@@ -175,6 +178,7 @@ include("../_header.inc.php");
                     <tr>
                         <th colspan="3"></th>
                         <th class="td-align-center"><i class="fa fa-comment-o" aria-hidden="true"></i></th>
+                        <?php if ($show_admin_notes) : ?><th class="admin-note">Note</th><?php endif; ?>
                         <?php if ($show_monthly_counts) : ?><?= HtmlShrink::getMonthlyCountsHeaderCells($months_keys) ?><?php endif; ?>
                         <th class="td-align-center"><i class="fa fa-calendar-o" aria-label="Nombre d'événements agendés" title="Nombre d'événements agendés"></i></th>
                     </tr>
@@ -212,6 +216,7 @@ include("../_header.inc.php");
                                 <?= $lieux_desc[$lieu['idLieu']][0]['nb'] ?>
                             <?php endif; ?>
                         </td>
+                        <?php if ($show_admin_notes) : ?><?= HtmlShrink::getAdminNoteCell($lieu['admin_note'] ?? null) ?><?php endif; ?>
                         <?php if ($show_monthly_counts) : ?><?= HtmlShrink::getMonthlyCountsCells($lieux_monthly_counts[$lieu['idLieu']] ?? [], $months_keys) ?><?php endif; ?>
                         <td class="td-align-center<?php if (!empty($lieux_even[$lieu['idLieu']][0]['has_today_event']) ) { echo " ici"; } ?>">
 

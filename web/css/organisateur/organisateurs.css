@@ -63,6 +63,64 @@ div.pagination
 }
 
 /*
+ * Note d'administration (niveau ADMIN) — voir HtmlShrink::getAdminNoteCell(), qui rend les deux
+ * formes. En desktop, son texte en petit italique, le début d'emblée et la suite repliée ; sous
+ * 800px, où une colonne de texte ne tient pas, une icône dont l'infobulle porte la note entière
+ * (.tooltip-texte dans global.css).
+ */
+@media screen and (min-width:800px)
+{
+    table#derniers_lieux th.admin-note,
+    table#derniers_lieux td.admin-note
+    {
+        width:18em;
+        font-size:0.8em;
+        text-align:left;
+    }
+
+    table#derniers_lieux td.admin-note
+    {
+        font-style:italic;
+        line-height:1.3em;
+        overflow-wrap:anywhere;
+    }
+
+    table#derniers_lieux td.admin-note summary
+    {
+        cursor:pointer;
+        font-style:normal;
+    }
+
+    table#derniers_lieux td.admin-note .tooltip
+    {
+        display:none;
+    }
+}
+
+@media screen and (max-width:799.98px)
+{
+    table#derniers_lieux th.admin-note,
+    table#derniers_lieux td.admin-note
+    {
+        width:2.6em;
+        padding:0 2px;
+        text-align:center;
+        font-size:0.85em;
+    }
+
+    table#derniers_lieux td.admin-note .admin-note-texte
+    {
+        display:none;
+    }
+
+    table#derniers_lieux td.admin-note .fa
+    {
+        font-size:1.3em;
+        color:#5C7378;
+    }
+}
+
+/*
  * Colonnes mensuelles (vue administrateur) : douze colonnes étroites, une par mois, qui donnent
  * la silhouette de l'activité de l'organisateur.
  */

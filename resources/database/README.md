@@ -40,9 +40,10 @@ l'invariant à tenir, une ligne à « non » signalant que le dump a pris du ret
 | `v3-12-0_localite-france.sql` | 3.12.0 | 2026-08-25 | `localite.npa` en `VARCHAR(6)`, localité « Ailleurs en France », localité 1 renommée en canton `hs` | oui |
 | `v3-13-0_lieu-colonnes.sql` | 3.13.0 | 2026-09-05 | `lieu.determinant` → `preposition_nom`, `lieu.categorie` → `categories`, `adresse` en `VARCHAR(255)`, colonnes facultatives à `NULL`, `photo2` et `actif` supprimées | oui |
 | `v3-13-0_lieu-categories.sql` | 3.13.0 | 2026-09-08 | sept valeurs ajoutées à la fin du `SET` `lieu.categories` : `buvette`, `club`, `quartier`, `socioculturel`, `bibliotheque`, `ludotheque`, `ecole` | oui |
+| `v3-13-0_lieu-organisateur-add-admin_note.sql` | 3.13.0 | 2026-09-16 | colonnes `lieu.admin_note` et `organisateur.admin_note`, note d'administration en `TEXT NULL` | oui |
 
-Les deux migrations `v3-13-0_*` sont à passer **dans l'ordre du tableau** : la seconde redéclare la
-colonne `categories` que la première crée en renommant `categorie`.
+Les deux premières migrations `v3-13-0_*` sont à passer **dans l'ordre du tableau** : la seconde redéclare la
+colonne `categories` que la première crée en renommant `categorie`. La troisième ne dépend d'aucune des deux.
 
 Trois pièges de lecture :
 
@@ -93,10 +94,13 @@ UNION ALL SELECT 'v3-13-0_lieu-colonnes', IF(COUNT(*), 'ok', 'MANQUANTE')
 UNION ALL SELECT 'v3-13-0_lieu-categories', IF(COUNT(*), 'ok', 'MANQUANTE')
   FROM information_schema.COLUMNS
  WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'lieu' AND COLUMN_NAME = 'categories'
-   AND COLUMN_TYPE LIKE '%ecole%';
+   AND COLUMN_TYPE LIKE '%ecole%'
+UNION ALL SELECT 'v3-13-0_lieu-organisateur-add-admin_note', IF(COUNT(*) = 2, 'ok', 'MANQUANTE')
+  FROM information_schema.COLUMNS
+ WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME IN ('lieu', 'organisateur') AND COLUMN_NAME = 'admin_note';
 ```
 
-Une base à jour répond `ok` sur les douze lignes. Chaque `MANQUANTE` désigne le fichier à passer, dans
+Une base à jour répond `ok` sur les treize lignes. Chaque `MANQUANTE` désigne le fichier à passer, dans
 l'ordre du tableau.
 
 ## Scripts hors migration

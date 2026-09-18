@@ -106,7 +106,7 @@ fin d'exécution.
 
 ## Vérifier
 
-Les trois requêtes doivent renvoyer 0.
+Les quatre requêtes doivent renvoyer 0.
 
 ```sql
 SELECT COUNT(*) FROM personne
@@ -116,10 +116,17 @@ SELECT COUNT(*) FROM evenement
  WHERE (remarque IS NOT NULL AND remarque <> '')
     OR (user_email IS NOT NULL AND user_email <> '' AND user_email NOT LIKE '%@example.test');
 
+SELECT (SELECT COUNT(*) FROM lieu WHERE admin_note <> '')
+     + (SELECT COUNT(*) FROM organisateur WHERE admin_note <> '');
+
 SELECT COUNT(*) FROM evenement e
   LEFT JOIN lieu l ON e.idLieu = l.idLieu
  WHERE e.idLieu <> 0 AND l.idLieu IS NULL;
 ```
+
+La troisième répond « Unknown column » tant que la production n'a pas reçu
+`v3-13-0_lieu-organisateur-add-admin_note.sql` : la copie reprend son schéma, et il n'y a alors
+aucune note à vérifier. Repasser la migration sur la copie avant d'y faire tourner le code.
 
 Puis parcourir l'agenda, une fiche d'événement avec flyer, une fiche de lieu avec galerie, et
 `admin/index.php` après connexion.
@@ -155,7 +162,9 @@ de donnée personnelle réelle, et le gigaoctet de la production ne circule pas.
 | `personne.affiliation` | vidée |
 | `evenement.user_email` | `visiteur{id}@example.test` |
 | `evenement.remarque` | vidée — note privée à l'administrateur |
+| `lieu.admin_note` | vidée — note d'administration |
 | `organisateur.email` | `orga{id}@example.test` |
+| `organisateur.admin_note` | vidée — note d'administration |
 
 `statut`, `groupe` et `last_login` sont conservés : c'est ce qui rend la copie utile pour éprouver
 les permissions.

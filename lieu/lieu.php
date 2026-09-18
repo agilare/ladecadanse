@@ -78,11 +78,22 @@ $categories_fr = Lieu::categoriesEnClair($lieu['categories']);
 $lieu_salles = Lieu::getActivesSalles((int) $get['idL']);
 $lieu_orgas = Lieu::getActivesOrganisateurs((int) $get['idL']);
 
+// pseudos et e-mails des personnes affiliées : réservés aux administrateurs, un auteur les
+// voyait aussi
 $lieu_affiliates = [];
-if ($authorization->isPersonneEditor($_SESSION))
+if ($authorization->isPersonneAdmin($_SESSION))
 {
     $lieu_affiliates = Lieu::getActivesAffiliates((int) $get['idL']);
 }
+
+// note d'administration, sous la même garde que les affiliés, dont elle partage le <details>
+$lieu_admin_note = $authorization->isPersonneAdmin($_SESSION) ? trim((string) ($lieu['admin_note'] ?? '')) : '';
+
+// « Affiliés (3), note », « Affiliés (3) » ou « Note » : le <summary> dit ce que le <details> replie
+$lieu_details_admin = array_filter([
+    count($lieu_affiliates) > 0 ? "Affiliés (" . count($lieu_affiliates) . ")" : '',
+    $lieu_admin_note !== '' ? "note" : '',
+]);
 
 
 $lieu_images = Lieu::getImagesUploaded((int) $get['idL']);
@@ -282,10 +293,11 @@ include("../_header.inc.php");
                         </li>
                     <?php endif; ?>
 
-                    <?php if ($authorization->isPersonneEditor($_SESSION) && count($lieu_affiliates) > 0) : ?>
+                    <?php if ($authorization->isPersonneAdmin($_SESSION) && $lieu_details_admin !== []) : ?>
                         <li>
                             <details>
-                                <summary>Affiliés (<?= count($lieu_affiliates) ?>)&nbsp;:</summary>
+                                <summary><?= sanitizeForHtml(ucfirst(implode(", ", $lieu_details_admin))) ?>&nbsp;:</summary>
+                                <?php if (count($lieu_affiliates) > 0) : ?>
                                 <ul>
                                 <?php foreach ($lieu_affiliates as $a) : ?>
                                     <li>
@@ -294,6 +306,11 @@ include("../_header.inc.php");
                                     </li>
                                 <?php endforeach; ?>
                                 </ul>
+                                <?php endif; ?>
+                                <?php if ($lieu_admin_note !== '') : ?>
+                                    <?php /* texte brut : échappé, sauts de ligne rendus, liens cliquables */ ?>
+                                    <div class="admin-note"><?= Text::lnAndUrlToHtml($lieu_admin_note) ?></div>
+                                <?php endif; ?>
                             </details>
                         </li>
                     <?php endif; ?>

@@ -66,6 +66,24 @@ form#ajouter_editer fieldset legend
         width: 100%;
     }
 
+    /*
+     * desktop.css donne 600px à tous les textarea, qui ne tiennent pas à droite de la
+     * colonne des libellés et passaient dessous. Rendue à ses cols="50", la note s'arrête
+     * à quelques pixels près là où les champs de la page s'arrêtent avec leur size="50".
+     */
+    form#ajouter_editer #admin_note
+    {
+        width: auto;
+    }
+
+    /* l'aide est rendue en 0.9em : la colonne, en em, y serait plus étroite que celle des champs */
+    main form#ajouter_editer .guideChamp
+    {
+        margin-left: calc(var(--colonne-champs) / 0.9);
+        margin-top: 0;
+        padding-left: 0;
+    }
+
     /* aligné sur la colonne des champs plutôt que sur des 115px qui ne correspondaient à rien */
     form#ajouter_editer .existing_img
     {
@@ -101,6 +119,13 @@ form#ajouter_editer fieldset legend
     form#ajouter_editer .msg
     {
         margin-left: 0;
+    }
+
+    /* `main` pour passer devant le padding de 2em que mobile.css, chargée après, lui donne */
+    main form#ajouter_editer .guideChamp
+    {
+        margin-left: 0;
+        padding-left: 0;
     }
 
     form#ajouter_editer #nom,

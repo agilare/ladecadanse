@@ -52,8 +52,8 @@ abstract class FicheEdition extends Edition
      * - retrouver le nom à afficher quand un envoi rejeté a laissé la saisie à moitié
      *   faite ;
      * - rendre leur valeur aux champs que le niveau courant n'a pas le droit de modifier
-     *   (statusToWrite(), fillEditorsFieldsValuesIfNotAllowed()) — c'est la seule source
-     *   admise pour eux, un POST forgé n'ayant pas à décider.
+     *   (statusToWrite(), adminNoteToWrite(), fillEditorsFieldsValuesIfNotAllowed()) — c'est
+     *   la seule source admise pour eux, un POST forgé n'ayant pas à décider.
      *
      * Les colonnes à y relire sont déclarées par storedColumns(). Les noms de fichiers y
      * figurent au même titre que les autres ; c'est dans $fichiers, hérité d'Edition, que
@@ -113,7 +113,7 @@ abstract class FicheEdition extends Edition
 
     /**
      * Colonnes relues pour connaître l'état enregistré de la fiche : au minimum `nom`,
-     * `statut` et les champs image.
+     * `statut`, `admin_note` et les champs image.
      *
      * @return list<string>
      */
@@ -192,10 +192,11 @@ abstract class FicheEdition extends Edition
         $this->readPostedDeletions($postGlobal);
 
         /*
-         * Relire la base avant d'écrire sert deux fois : les deux valeurs que le POST
-         * n'a pas le droit de décider — l'image déjà en place et le statut — se prennent
-         * ici (statusToWrite(), fillEditorsFieldsValuesIfNotAllowed()), et un faux dit
-         * que la fiche a disparu entre l'affichage du formulaire et son envoi.
+         * Relire la base avant d'écrire sert deux fois : les valeurs que le POST n'a pas
+         * le droit de décider — l'image déjà en place, le statut, la note d'administration —
+         * se prennent ici (statusToWrite(), adminNoteToWrite(),
+         * fillEditorsFieldsValuesIfNotAllowed()), et un faux dit que la fiche a disparu
+         * entre l'affichage du formulaire et son envoi.
          */
         if ($this->action === 'update' && !$this->readStoredValues())
         {
@@ -203,6 +204,7 @@ abstract class FicheEdition extends Edition
         }
 
         $this->valeurs['statut'] = $this->statusToWrite();
+        $this->valeurs['admin_note'] = $this->adminNoteToWrite();
         $this->fillEditorsFieldsValuesIfNotAllowed();
 
         if (!$this->validate())
@@ -373,12 +375,31 @@ abstract class FicheEdition extends Edition
      */
     protected function statusToWrite(): string
     {
-        if ($this->currentUser->canChangeStatus)
+        if ($this->currentUser->canEditAdminFields)
         {
             return (string) $this->valeurs['statut'];
         }
 
         return $this->action === 'update' ? $this->storedValues['statut'] : static::INITIAL_STATUS;
+    }
+
+    /**
+     * La note postée si la personne a le droit de l'écrire, sinon celle déjà en base,
+     * sinon aucune.
+     *
+     * Le formulaire ne rend pas le champ sous le niveau ADMIN : rien n'est donc posté, et
+     * écrire la valeur initiale du formulaire effacerait la note au premier enregistrement
+     * d'un acteur ou d'un auteur, sans qu'il l'ait jamais vue. Une note forgée dans le POST
+     * est ignorée pour la même raison que le statut.
+     */
+    protected function adminNoteToWrite(): string
+    {
+        if ($this->currentUser->canEditAdminFields)
+        {
+            return (string) ($this->valeurs['admin_note'] ?? '');
+        }
+
+        return $this->action === 'update' ? ($this->storedValues['admin_note'] ?? '') : '';
     }
 
     /**

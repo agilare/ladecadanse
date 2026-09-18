@@ -294,20 +294,36 @@ include("../_header.inc.php");
         ?>
     </fieldset>
 
-    <?php if ($current_user->canChangeStatus) : ?>
+    <?php if ($current_user->canEditAdminFields) : ?>
     <fieldset>
-        <legend>Statut</legend>
+        <legend>Admin</legend>
 
-        <ul class="radio mobile-vertical">
-            <?php foreach (Lieu::STATUTS as $status_value => $status_label) : ?>
-                <li class="listehoriz">
-                    <input type="radio" name="statut" value="<?= $status_value ?>" id="statut_<?= $status_value ?>" class="radio_horiz"
-                        <?= $lieu_form->getValeur('statut') === $status_value ? 'checked="checked"' : '' ?> />
-                    <label class="continu" for="statut_<?= $status_value ?>"><?= $status_label ?></label>
-                </li>
-            <?php endforeach; ?>
-        </ul>
-        <?= $lieu_form->getHtmlErreur("statut") ?>
+        <?php /* Un groupe de radios a besoin de son propre libellé : la légende du fieldset
+                 le lui donnait tant qu'elle disait « Statut ». */ ?>
+        <fieldset class="groupe-radios">
+            <legend>Statut</legend>
+
+            <ul class="radio mobile-vertical">
+                <?php foreach (Lieu::STATUTS as $status_value => $status_label) : ?>
+                    <li class="listehoriz">
+                        <input type="radio" name="statut" value="<?= $status_value ?>" id="statut_<?= $status_value ?>" class="radio_horiz"
+                            <?= $lieu_form->getValeur('statut') === $status_value ? 'checked="checked"' : '' ?> />
+                        <label class="continu" for="statut_<?= $status_value ?>"><?= $status_label ?></label>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+            <?= $lieu_form->getHtmlErreur("statut") ?>
+        </fieldset>
+
+        <p>
+            <label for="admin_note">Note</label>
+            <?php /* Pas de maxlength : le navigateur compte un saut de ligne pour un caractère,
+                     le serveur pour deux (CRLF), et laisserait saisir ce que
+                     Lieu::FIELDS['admin_note'] refuse ensuite. */ ?>
+            <textarea name="admin_note" id="admin_note" cols="50" rows="4"><?= sanitizeForHtml($lieu_form->getValeur('admin_note')) ?></textarea>
+            <?= $lieu_form->getHtmlErreur("admin_note") ?>
+        </p>
+        <div class="guideChamp">Texte brut, que seuls les administrateurs voient : dans la liste des lieux et sur la fiche</div>
     </fieldset>
     <?php endif; ?>
 

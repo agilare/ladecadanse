@@ -27,16 +27,16 @@ final class CurrentUserEditingTest extends Unit
     }
 
     /**
-     * Les seuils sont distincts : publier relève de la modération (ADMIN), toucher au nom
-     * ou aux catégories d'un lieu relève de l'édition (AUTHOR).
+     * Les seuils sont distincts : publier et annoter une fiche relèvent de la modération
+     * (ADMIN), toucher au nom ou aux catégories d'un lieu relève de l'édition (AUTHOR).
      *
      * @dataProvider fournirNiveaux
      */
-    public function testChaqueNiveauRecoitSesDeuxDroits(int $groupe, bool $statut, bool $champsReserves): void
+    public function testChaqueNiveauRecoitSesDeuxDroits(int $groupe, bool $champsAdmin, bool $champsReserves): void
     {
         $user = $this->fromGroupe($groupe);
 
-        $this->assertSame($statut, $user->canChangeStatus, "statut, groupe $groupe");
+        $this->assertSame($champsAdmin, $user->canEditAdminFields, "statut et note, groupe $groupe");
         $this->assertSame($champsReserves, $user->canEditEditorFields, "champs réservés, groupe $groupe");
     }
 
@@ -67,7 +67,7 @@ final class CurrentUserEditingTest extends Unit
         );
 
         $this->assertSame(0, $user->idPersonne);
-        $this->assertFalse($user->canChangeStatus);
+        $this->assertFalse($user->canEditAdminFields);
         $this->assertFalse($user->canEditEditorFields);
     }
 
@@ -77,7 +77,7 @@ final class CurrentUserEditingTest extends Unit
         $user = CurrentUserEditing::withoutRights();
 
         $this->assertSame(0, $user->idPersonne);
-        $this->assertFalse($user->canChangeStatus);
+        $this->assertFalse($user->canEditAdminFields);
         $this->assertFalse($user->canEditEditorFields);
     }
 }

@@ -32,6 +32,9 @@ class Organisateur extends Element
      *
      * `type` est celui qu'attend Validateur::valider().
      *
+     * `admin_note` n'est proposé et écrit qu'aux administrateurs : voir
+     * FicheEdition::adminNoteToWrite().
+     *
      * @var array<string, array{type: string, min: int, max: int, required: bool}>
      */
     public const array FIELDS = [
@@ -40,6 +43,7 @@ class Organisateur extends Element
         'URL'          => ['type' => 'url',   'min' => 2,  'max' => 100,   'required' => false],
         'email'        => ['type' => 'email', 'min' => 4,  'max' => 100,   'required' => false],
         'presentation' => ['type' => 'texte', 'min' => 20, 'max' => 10000, 'required' => false],
+        'admin_note'   => ['type' => 'texte', 'min' => 1,  'max' => 2000,  'required' => false],
     ];
 
     /**
