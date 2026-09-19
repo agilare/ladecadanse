@@ -14,6 +14,7 @@ export const AppGlobal =
         Forms.init();
         Events.init();
         Lieux.init();
+        LieuInfo.init();
         HomePage.init();
         Calendar.init();
         Shortcuts.init();
@@ -442,6 +443,22 @@ const Forms = {
             HTMLFormElement.prototype.requestSubmit.call(form);
         });
 
+        // Listes lieux/organisateurs : le lien « Passés » du mois en cours ouvre ou referme les
+        // onze colonnes mensuelles révolues (table#derniers_lieux.mois-passes-ouvert, voir
+        // web/css/lieu/lieux.css et web/css/organisateur/organisateurs.css).
+        $('.js-toggle-mois-passes').on('click', function toggleMoisPasses(e)
+        {
+            e.preventDefault();
+
+            const $lien = $(this);
+            const ouvert = $lien.closest('table').toggleClass('mois-passes-ouvert').hasClass('mois-passes-ouvert');
+
+            $lien.attr('aria-expanded', ouvert ? 'true' : 'false');
+            $lien.attr('title', ouvert ? 'Masquer les mois précédents' : 'Afficher les mois précédents');
+            $lien.attr('aria-label', ouvert ? 'Masquer les onze mois précédents' : 'Afficher les onze mois précédents');
+            $lien.html(ouvert ? 'Passés&nbsp;<i class="fa fa-times" aria-hidden="true"></i>' : 'Passés');
+        });
+
 //        $('form#ajouter_editer #titre').on('paste', function(e)
 //        {
 //            // Récupère le texte collé
@@ -505,11 +522,170 @@ const Lieux = {
 
 
 /**
+ * Popover d'info-lieu du <select> « Nom du lieu » (evenement-edit.php) : icône visible
+ * seulement quand un lieu est sélectionné, popover chargé par fetch au survol/focus de
+ * l'icône, fermé au clic extérieur (API Popover native — repli par classes CSS sur les
+ * navigateurs qui ne la supportent pas encore, Safari < 17 notamment).
+ *
+ * @returns {undefined}
+ */
+const LieuInfo = {
+    init : function bindLieuInfoPopover()
+    {
+        const $select = $('#idLieu');
+        const trigger = document.getElementById('lieu-info-trigger');
+        const popover = document.getElementById('lieu-info-popover');
+
+        if ($select.length === 0 || !trigger || !popover)
+        {
+            return;
+        }
+
+        const supportsPopoverApi = 'showPopover' in HTMLElement.prototype;
+
+        if (!supportsPopoverApi)
+        {
+            popover.classList.add('lieu-info-popover--fallback');
+        }
+
+        let idLieuCharge = null;
+        let requeteEnCours = 0;
+
+        function idLieuSelectionne()
+        {
+            // la valeur peut être « idLieu_idSalle » : seul idLieu nous intéresse ici
+            const valeur = String($select.val() || '').split('_')[0];
+            return /^[0-9]+$/.test(valeur) ? valeur : null;
+        }
+
+        function positionner()
+        {
+            const rect = trigger.getBoundingClientRect();
+            popover.style.top = (rect.bottom + 4) + 'px';
+            popover.style.left = rect.left + 'px';
+        }
+
+        function fermerPopover()
+        {
+            if (supportsPopoverApi)
+            {
+                popover.hidePopover();
+            }
+            else
+            {
+                popover.classList.remove('lieu-info-popover--open');
+            }
+        }
+
+        function chargerContenu(idLieu)
+        {
+            idLieuCharge = idLieu;
+            popover.innerHTML = '<p class="lieu-info-popover__loading">Chargement…</p>';
+
+            const requeteCourante = ++requeteEnCours;
+
+            fetch(`/event/actions.php?action=lieu-for-event&idL=${encodeURIComponent(idLieu)}`, {
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                })
+                .then(function checkResponse(response)
+                {
+                    if (!response.ok)
+                    {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.text();
+                })
+                .then(function afficher(html)
+                {
+                    // une ouverture plus récente (autre lieu) a pu prendre le relais entretemps
+                    if (requeteCourante === requeteEnCours)
+                    {
+                        popover.innerHTML = html;
+                    }
+                })
+                .catch(function afficherErreur()
+                {
+                    if (requeteCourante === requeteEnCours)
+                    {
+                        popover.innerHTML = '<p class="lieu-info-popover__erreur">Impossible de charger les informations du lieu</p>';
+                    }
+                });
+        }
+
+        function ouvrirPopover(idLieu)
+        {
+            positionner();
+
+            if (supportsPopoverApi)
+            {
+                popover.showPopover();
+            }
+            else
+            {
+                popover.classList.add('lieu-info-popover--open');
+            }
+
+            if (idLieuCharge !== idLieu)
+            {
+                chargerContenu(idLieu);
+            }
+        }
+
+        trigger.addEventListener('mouseenter', function ouvrirAuSurvol()
+        {
+            const idLieu = idLieuSelectionne();
+            if (idLieu !== null)
+            {
+                ouvrirPopover(idLieu);
+            }
+        });
+
+        trigger.addEventListener('focus', function ouvrirAuFocus()
+        {
+            const idLieu = idLieuSelectionne();
+            if (idLieu !== null)
+            {
+                ouvrirPopover(idLieu);
+            }
+        });
+
+        if (!supportsPopoverApi)
+        {
+            document.addEventListener('click', function fermerSiClicExterieur(e)
+            {
+                if (popover.classList.contains('lieu-info-popover--open')
+                    && !popover.contains(e.target) && !trigger.contains(e.target))
+                {
+                    fermerPopover();
+                }
+            });
+        }
+
+        $select.on('change', function actualiserIcone()
+        {
+            const idLieu = idLieuSelectionne();
+
+            trigger.hidden = (idLieu === null);
+
+            if (idLieu === null)
+            {
+                idLieuCharge = null;
+                fermerPopover();
+            }
+        });
+
+        trigger.hidden = (idLieuSelectionne() === null);
+    }
+};
+
+const EVENT_ACTION_LABELS = { delete: 'suppression', unpublish: 'dépublication' };
+
+/**
  * used in pages evenement-agenda, index, lieu, organisateur
  *
  * @returns {undefined}
  */
-const Events = {
+export const Events = {
     init : function bindEventsEvents ()
     {
         const $content = $('#contenu');
@@ -522,10 +698,10 @@ const Events = {
         $content.on('click', '.btn_event_del', function requestEventDel(e)
         {
             e.preventDefault();
-            const event_id = $(this).data('id');
-            fetch(`/event/actions.php?action=delete&id=${event_id}`)
-                .then(response => $(`#btn_event_del_${event_id}`).closest('tr').fadeOut('fast'))
-                .catch(error => alert('Erreur : ' + error));
+            const $btn = $(this);
+            Events.requestAction('delete', $btn.data('id'), $btn.attr('data-token'))
+                .then(() => $btn.closest('tr').fadeOut('fast'))
+                .catch(error => alert(`Erreur : ${error.message}`));
         });
 
         // data-on-success sur le lien décide de ce qu'on fait de l'événement dépublié :
@@ -535,15 +711,9 @@ const Events = {
         {
             e.preventDefault();
             const $btn = $(this);
-            const event_id = $btn.data('id');
-            fetch(`/event/actions.php?action=unpublish&id=${event_id}`)
-                .then(function unpublishDone(response)
+            Events.requestAction('unpublish', $btn.data('id'), $btn.attr('data-token'))
+                .then(function unpublishDone()
                 {
-                    if (!response.ok)
-                    {
-                        throw new Error(`dépublication refusée (${response.status})`);
-                    }
-
                     const onSuccess = $btn.attr('data-on-success');
 
                     if (onSuccess === 'reload')
@@ -563,13 +733,45 @@ const Events = {
                         $btn.closest('tr, article.evenement-short').fadeOut('fast');
                     }
                 })
-                .catch(error => alert('Erreur : ' + error));
+                .catch(error => alert(`Erreur : ${error.message}`));
         });
 
         $content.on('click', '#js-event-delete-btn', function confirmEventDel()
         {
             return confirm('Voulez-vous vraiment supprimer cet événement ?');
         });
+    },
+
+    /**
+     * Demande l'action à event/actions.php, qui n'accepte que POST avec le jeton CSRF de la
+     * session : les liens le portent dans data-token. Tout part dans le corps, rien dans l'url.
+     *
+     * @param {string} action 'delete' ou 'unpublish'
+     * @param {number} eventId
+     * @param {string|undefined} token absent d'une page rendue avant que les liens le portent
+     * @returns {Promise<Response>} rejetée, avec un message à montrer, si le serveur refuse
+     */
+    requestAction : function requestEventAction(action, eventId, token)
+    {
+        return fetch('/event/actions.php', {
+            method: 'POST',
+            body: new URLSearchParams({ action: action, id: eventId, token: token ?? '' })
+        })
+            .then(function checkEventActionResponse(response)
+            {
+                // jeton refusé : la page vient d'une session qui n'a plus cours
+                if (response.status === 400)
+                {
+                    throw new Error('le système de sécurité du site n\'a pu authentifier votre action. Veuillez recharger la page et réessayer');
+                }
+
+                if (!response.ok)
+                {
+                    throw new Error(`${EVENT_ACTION_LABELS[action]} refusée (${response.status})`);
+                }
+
+                return response;
+            });
     }
 };
 

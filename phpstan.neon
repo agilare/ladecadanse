@@ -12,15 +12,20 @@ parameters:
     paths:
         - .
     excludePaths:
-        - .claude
         - web
         - vendor
         - var
         - tests
-        # (?) = chemin facultatif : node_modules/ n'existe que là où `npm install` a tourné,
-        # et AGENTS.md ne l'exige que pour `npm run lint` et `npm test`. Sans ce marqueur,
-        # PHPStan refuse de démarrer dans tout worktree frais — il exige la présence du
-        # répertoire qu'on lui demande d'ignorer. Même raison que le allowMissingFiles de psalm.xml.
+        # (?) = chemin facultatif. Sans ce marqueur, PHPStan exige la présence du répertoire
+        # qu'on lui demande d'ignorer, et refuse de démarrer là où il manque. Les deux suivants
+        # existent dans le checkout principal, où le défaut est donc invisible, mais peuvent
+        # manquer dans un worktree :
+        # - .claude/ n'est pas suivi par git, et `git worktree add` n'en crée pas (les worktrees
+        #   ouverts par l'application Claude en ont souvent un, ce qui masque aussi le défaut) ;
+        # - node_modules/ n'existe que là où `npm install` a tourné, et AGENTS.md ne l'exige
+        #   que pour `npm run lint` et `npm test`.
+        # Même raison que le allowMissingFiles de psalm.xml.
+        - .claude (?)
         - node_modules (?)
     fileExtensions:
         - php

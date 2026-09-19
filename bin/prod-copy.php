@@ -677,9 +677,20 @@ if ($phase !== 'files') {
 
             return remplacer($o, [
                 'email' => $courriel === '' ? $o['email'] : 'orga' . (int) $o['idOrganisateur'] . '@example.test',
+                // note d'administration, comme evenement.remarque : un contact, une relance
+                'admin_note' => ($o['admin_note'] ?? null) === null ? null : '',
             ]);
         },
         $organisateurs
+    );
+
+    // `?? null` : une production que la migration v3-13-0 n'a pas encore touchée n'a pas la
+    // colonne, que remplacer() laisse alors de côté
+    $lieux = array_map(
+        static fn (array $l): array => remplacer($l, [
+            'admin_note' => ($l['admin_note'] ?? null) === null ? null : '',
+        ]),
+        $lieux
     );
 
     /** @var array<string, list<array<string, mixed>>> $copie */

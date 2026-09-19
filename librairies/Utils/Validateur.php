@@ -172,7 +172,8 @@ class Validateur
         {
             if (!empty($fileinfo['type']) && !in_array($fileinfo['type'], $mimes_acceptes))
             {
-                $this->erreurs[$nom] = "Ce format de fichier (" . pathinfo((string) $fileinfo['name'], PATHINFO_EXTENSION) . ") n'est pas accepté";
+                // le nom du fichier vient du client, et getHtmlErreur() rend le message tel quel
+                $this->erreurs[$nom] = "Ce format de fichier (" . sanitizeForHtml(pathinfo((string) $fileinfo['name'], PATHINFO_EXTENSION)) . ") n'est pas accepté";
                 return false;
             }
 

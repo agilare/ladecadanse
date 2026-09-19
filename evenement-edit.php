@@ -325,9 +325,11 @@ if ($formulaire_poste)
     }
     else // ?
     {
-        if (!SecurityToken::check($_POST['token'], $_SESSION['token']))
+        // La clé est "global", rendue sous le décompte des erreurs — sous "genres", que rien ne
+        // lit, le refus bloquait l'envoi sans jamais s'afficher.
+        if (!SecurityToken::check($_POST['token'] ?? '', $_SESSION['token'] ?? ''))
         {
-            $verif->setErreur("genres", "Le système de sécurité du site n'a pu authentifier votre action. Veuillez réafficher ce formulaire et réessayer");
+            $verif->setErreur("global", "Le système de sécurité du site n'a pu authentifier votre action. Veuillez réafficher ce formulaire et réessayer");
         }
     }
 
@@ -1460,6 +1462,10 @@ if ($show_form)
                 );
                 ?>
                 </select>
+                <span class="lieu-info-wrapper">
+                    <button type="button" class="lieu-info-trigger" id="lieu-info-trigger" title="Infos sur ce lieu" aria-label="Infos sur ce lieu" hidden><i class="fa fa-info-circle" aria-hidden="true"></i></button>
+                    <div id="lieu-info-popover" class="lieu-info-popover" popover></div>
+                </span>
                 <!--<div class="guideChamp" style="font-size:0.9em"><span style="background:yellow">Nouveau :</span> tapez le nom du lieu dans le champ libre et accédez y plus rapidement</div>-->
                 <?php
                 echo $verif->getHtmlErreur("idLieu");

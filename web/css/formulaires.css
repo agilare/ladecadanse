@@ -24,6 +24,60 @@ form#ajouter_editer
             padding-left:0.8em;
 		}
 
+	/*
+	 * Groupe de radios à l'intérieur d'une section — le statut, dans le fieldset « Admin »
+	 * des fiches de lieu et d'organisateur. Il ne rouvre pas de cadre dans celui qui le
+	 * contient, et sa légende se présente comme le libellé d'un champ : dans la colonne des
+	 * libellés en desktop, au-dessus des radios en mobile. La largeur de cette colonne est
+	 * celle de chaque formulaire (8em ici, 12em dans web/css/lieu/edit.css).
+	 */
+	/* la marge basse est celle d'un paragraphe de champ : sans elle, le padding des radios,
+	   qui déborde de leur ligne, touchait le champ suivant */
+	form#ajouter_editer fieldset.groupe-radios
+	{
+		margin:0 0 1em 0;
+		padding:0;
+		background:none;
+		border-radius:0;
+	}
+
+		form#ajouter_editer fieldset.groupe-radios > legend
+		{
+			font-weight:normal;
+			font-size:1em;
+			padding:0 0 0 0.4em;
+		}
+
+	@media screen and (min-width: 800px)
+	{
+		/* content-box : normalize.css passe les légendes en border-box, et le padding
+		   rognerait alors la colonne que les libellés, eux, prennent en entier */
+		form#ajouter_editer fieldset.groupe-radios > legend
+		{
+			float:left;
+			box-sizing:content-box;
+			width:8em;
+			margin:0.3em 0.3em 0 0;
+			text-align:right;
+		}
+
+		/* la légende occupe déjà la colonne : la marge qui aligne ul.radio sur les champs
+		   quand rien ne le précède le repousserait d'autant */
+		form#ajouter_editer fieldset.groupe-radios ul.radio
+		{
+			margin-left:0;
+		}
+	}
+
+	@media screen and (max-width: 799.98px)
+	{
+		form#ajouter_editer fieldset.groupe-radios > legend
+		{
+			margin:0 0.2em 0.2em 0;
+			padding:0;
+		}
+	}
+
 	form#ajouter_editer p
 	{
 		width:100%;

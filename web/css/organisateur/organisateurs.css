@@ -63,6 +63,64 @@ div.pagination
 }
 
 /*
+ * Note d'administration (niveau ADMIN) — voir HtmlShrink::getAdminNoteCell(), qui rend les deux
+ * formes. En desktop, son texte en petit italique, le début d'emblée et la suite repliée ; sous
+ * 800px, où une colonne de texte ne tient pas, une icône dont l'infobulle porte la note entière
+ * (.tooltip-texte dans global.css).
+ */
+@media screen and (min-width:800px)
+{
+    table#derniers_lieux th.admin-note,
+    table#derniers_lieux td.admin-note
+    {
+        width:18em;
+        font-size:0.8em;
+        text-align:left;
+    }
+
+    table#derniers_lieux td.admin-note
+    {
+        font-style:italic;
+        line-height:1.3em;
+        overflow-wrap:anywhere;
+    }
+
+    table#derniers_lieux td.admin-note summary
+    {
+        cursor:pointer;
+        font-style:normal;
+    }
+
+    table#derniers_lieux td.admin-note .tooltip
+    {
+        display:none;
+    }
+}
+
+@media screen and (max-width:799.98px)
+{
+    table#derniers_lieux th.admin-note,
+    table#derniers_lieux td.admin-note
+    {
+        width:2.6em;
+        padding:0 2px;
+        text-align:center;
+        font-size:0.85em;
+    }
+
+    table#derniers_lieux td.admin-note .admin-note-texte
+    {
+        display:none;
+    }
+
+    table#derniers_lieux td.admin-note .fa
+    {
+        font-size:1.3em;
+        color:#5C7378;
+    }
+}
+
+/*
  * Colonnes mensuelles (vue administrateur) : douze colonnes étroites, une par mois, qui donnent
  * la silhouette de l'activité de l'organisateur.
  */
@@ -76,12 +134,47 @@ table#derniers_lieux td.mois
     font-weight:bold;
 }
 
+table#derniers_lieux td.mois
+{
+    border:1px dotted #5C7378;
+}
+
 /* le mois en cours est le seul qui puisse encore bouger : les mois révolus s'effacent derrière lui,
    comme les événements passés du tableau de bord (user/dashboard.css) */
 table#derniers_lieux td.mois-passe
 {
     font-weight:normal;
     opacity:0.6;
+}
+
+/* le mois en cours n'a plus de raison de trancher sur les onze précédents : lui seul restait gras */
+table#derniers_lieux td.mois:not(.mois-passe)
+{
+    font-weight:normal;
+}
+
+/*
+ * Les onze colonnes des mois révolus restent repliées derrière le lien « Passés » du mois en
+ * cours, et ne s'ouvrent qu'à sa demande (table#derniers_lieux.mois-passes-ouvert, voir global.js).
+ */
+table#derniers_lieux th.mois-passe,
+table#derniers_lieux td.mois-passe
+{
+    display:none;
+}
+
+table#derniers_lieux.mois-passes-ouvert th.mois-passe,
+table#derniers_lieux.mois-passes-ouvert td.mois-passe
+{
+    display:table-cell;
+}
+
+table#derniers_lieux th.mois .js-toggle-mois-passes
+{
+    display:inline-block;
+    font-size:0.9em;
+    font-weight:normal;
+    white-space:nowrap;
 }
 
 /*

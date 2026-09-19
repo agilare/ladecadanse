@@ -26,6 +26,10 @@ La table `lieu` est en MyISAM : l'`ALTER` la reconstruit et pose un verrou d'éc
 
 **À passer avec la mise en ligne du code, pas plus tard**, mais pour une autre raison que le script précédent : aucune page ne tombe en erreur si la base a du retard, ce sont les sept nouvelles entrées du menu qui deviennent des pièges. Le formulaire les propose dès que le code est en ligne, et enregistrer un lieu ainsi typé écrit dans la colonne une valeur que le `SET` ne déclare pas — erreur ou troncature silencieuse selon le `sql_mode` du serveur, mais jamais la catégorie choisie.
 
+Exécuter enfin `resources/database/v3-13-0_lieu-organisateur-add-admin_note.sql`, indépendant des deux précédents. Il ajoute à `lieu` (après `URL`) et à `organisateur` (après `statut`) une colonne `admin_note` en `TEXT NULL`, la note d'administration que seuls les administrateurs lisent et écrivent.
+
+**À passer avant la mise en ligne du code, ou avec elle** : la colonne accepte `NULL`, l'ancien code l'ignore donc sans dommage, et le script peut précéder le déploiement. Le nouveau code l'écrit à chaque enregistrement d'une fiche de lieu ou d'organisateur, qui répondrait sinon une erreur SQL. Les deux tables sont en MyISAM : même verrou d'écriture, aussi bref, que pour les scripts précédents.
+
 ### Redirections
 
 Deux pages changent d'adresse :
@@ -57,6 +61,7 @@ Rien à passer en base : `evenement.genre` est un `varchar(20)`, il accueille le
 - **Champs réservés d'un lieu** — le nom, la préposition, les catégories et les organisateurs ne partaient plus en champs cachés à qui n'a pas le droit d'y toucher : le serveur reprend leur valeur enregistrée quel que soit le contenu du POST. Conséquence : **un POST forgé ne renomme plus un lieu ni ne le rattache à un organisateur**. La galerie d'images disparaît du formulaire — fonctionnalité abandonnée, les images se posent à la main
 - **Statut d'un lieu** — les libellés deviennent « Publié / Dépublié / Ancien », comme sur la fiche d'organisateur ; les valeurs en base (`actif`, `inactif`, `ancien`) ne changent pas. Le formulaire ne poste plus de statut pour qui n'a pas le droit d'en choisir un : une modification faite par un acteur laisse désormais la fiche dans l'état où elle était, là où elle la republiait
 - **Sélection des lieux actifs** — les trois selects de lieux (inscription, profil, texte d'un lieu) filtraient sur `actif=1`, colonne que la migration supprime ; c'est `statut` qui fait foi. Le code et la base partent donc ensemble : l'ancien code sur une base migrée répondrait une erreur SQL sur ces trois pages
+- **Affiliés et membres d'une fiche** — les personnes affiliées à un lieu et les membres d'un organisateur, avec leur e-mail, ne sont plus listés qu'aux administrateurs (niveau ADMIN). Un auteur ne voit plus les affiliés d'un lieu, et ni l'auteur d'une fiche d'organisateur ni ses membres ne voient plus la liste des membres
 
 ## 3.12.0
 

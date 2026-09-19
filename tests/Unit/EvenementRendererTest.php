@@ -150,6 +150,29 @@ final class EvenementRendererTest extends Unit
     }
 
     /**
+     * Le lien « Dépublier » porte le jeton CSRF qu'event/actions.php exige, et le crée en
+     * session s'il n'existe pas encore : une page qui rend ce lien n'a rien d'autre à faire.
+     * Le jeton ne change pas d'un lien à l'autre.
+     */
+    public function testUnpublishLinkHtmlCreeEtPorteLeJetonDeLaSession(): void
+    {
+        unset($_SESSION['token']);
+
+        try
+        {
+            $html = EvenementRenderer::unpublishLinkHtml(42, 'Dépublier');
+
+            $this->assertMatchesRegularExpression('/^[0-9a-f]{64}$/', $_SESSION['token'] ?? '');
+            $this->assertStringContainsString('data-token="' . $_SESSION['token'] . '"', $html);
+            $this->assertSame($html, EvenementRenderer::unpublishLinkHtml(42, 'Dépublier'));
+        }
+        finally
+        {
+            unset($_SESSION['token']);
+        }
+    }
+
+    /**
      * mainFigureHtml() ne demande à son environnement que l'URL des fichiers : le préfixe
      * d'URL de l'entité et le versionneur d'assets, tous deux posés au bootstrap en
      * production.

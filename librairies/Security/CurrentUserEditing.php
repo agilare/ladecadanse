@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Ladecadanse\Security;
 
-use Ladecadanse\UserLevel;
-
 /**
  * La personne qui remplit un formulaire d'édition, et ce que son niveau l'autorise à y
  * changer.
@@ -17,15 +15,19 @@ use Ladecadanse\UserLevel;
  *
  * En lecture seule : un formulaire ne redéfinit pas les droits de qui le remplit, il les
  * consulte. C'est ce qui permet à FicheEdition de reprendre en base ce que le POST n'a
- * pas le droit de décider (statusToWrite(), fillEditorsFieldsValuesIfNotAllowed()).
+ * pas le droit de décider (statusToWrite(), adminNoteToWrite(),
+ * fillEditorsFieldsValuesIfNotAllowed()).
  */
 final class CurrentUserEditing
 {
     private function __construct(
         /** 0 pour un contenu sans auteur — voir FicheEdition::insert(). */
         public readonly int $idPersonne,
-        /** Publier ou dépublier une fiche reste une décision de modération. */
-        public readonly bool $canChangeStatus,
+        /**
+         * Le fieldset « Admin » : publier ou dépublier une fiche reste une décision de
+         * modération, et la note d'administration ne se lit ni ne s'écrit en dehors d'elle.
+         */
+        public readonly bool $canEditAdminFields,
         /**
          * Le nom, la préposition, les catégories et les organisateurs d'un lieu engagent
          * tous les événements qui s'y déroulent : réservés aux éditeurs.
@@ -42,7 +44,7 @@ final class CurrentUserEditing
     {
         return new self(
             (int) ($session['SidPersonne'] ?? 0),
-            isset($session['Sgroupe']) && $session['Sgroupe'] <= UserLevel::ADMIN,
+            $authorization->isPersonneAdmin($session),
             $authorization->isPersonneEditor($session),
         );
     }

@@ -52,6 +52,9 @@ $stmt->execute([$glo_auj]);
 $orgas_even = $stmt->fetchAll(PDO::FETCH_GROUP);
 //dump($lieux_even);
 
+// note d'administration : lue par les seuls administrateurs, qui seuls l'écrivent
+$show_admin_notes = $authorization->isPersonneAdmin($_SESSION);
+
 // suivi de l'activité : réservé aux administrateurs, seuls à relancer un organisateur qui a cessé d'annoncer
 $show_monthly_counts = $authorization->isPersonneEditor($_SESSION);
 $months_keys = $show_monthly_counts ? MonthlyAddedEvents::monthKeys() : [];
@@ -116,6 +119,7 @@ include("../_header.inc.php");
                 <thead>
                     <tr>
                         <th colspan="2"></th>
+                        <?php if ($show_admin_notes) : ?><th class="admin-note">Note</th><?php endif; ?>
                         <?php if ($show_monthly_counts) : ?><?= HtmlShrink::getMonthlyCountsHeaderCells($months_keys) ?><?php endif; ?>
                         <th class="td-align-center"><i class="fa fa-calendar-o" aria-label="Nombre d'événements agendés" title="Nombre d'événements agendés"></i></th>
                     </tr>
@@ -137,6 +141,7 @@ include("../_header.inc.php");
                             <a href="/organisateur/organisateur.php?idO=<?= (int)$orga['idOrganisateur']; ?>"><strong><?= sanitizeForHtml($orga['nom']); ?></strong></a>
                         </td>
 
+                        <?php if ($show_admin_notes) : ?><?= HtmlShrink::getAdminNoteCell($orga['admin_note'] ?? null) ?><?php endif; ?>
                         <?php if ($show_monthly_counts) : ?><?= HtmlShrink::getMonthlyCountsCells($orgas_monthly_counts[$orga['idOrganisateur']] ?? [], $months_keys) ?><?php endif; ?>
                         <td class="td-align-center<?php if (!empty($orgas_even[$orga['idOrganisateur']][0]['has_today_event']) ) { echo " ici"; } ?>">
 

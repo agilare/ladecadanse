@@ -238,8 +238,9 @@ if ($formulaire_poste)
 
 		if ($connector->getNumRows($req_existance) > 0)
 		{
-			$verif->setErreur("pseudoIdentique", "Un membre ".$champs['pseudo']." existe déjà dans la base.");
-			$verif->setErreur("emailIdentique", "Un membre ".$champs['email']." existe déjà dans la base.");
+			// messages rendus tels quels par getHtmlErreur() et getErreur() : la saisie s'y échappe
+			$verif->setErreur("pseudoIdentique", "Un membre ".sanitizeForHtml($champs['pseudo'])." existe déjà dans la base.");
+			$verif->setErreur("emailIdentique", "Un membre ".sanitizeForHtml($champs['email'])." existe déjà dans la base.");
 		}
 
 	/*
@@ -261,9 +262,11 @@ if ($formulaire_poste)
 		}
 	}
 
-    if (!SecurityToken::check($_POST['token'], $_SESSION['token']))
+    // La clé est "global", rendue sous le décompte des erreurs pour tous les niveaux — sous
+    // "pseudo", le refus ne s'affichait qu'aux superadmins, seuls à voir les erreurs du login.
+    if (!SecurityToken::check($_POST['token'] ?? '', $_SESSION['token'] ?? ''))
     {
-        $verif->setErreur("pseudo", "Le système de sécurité du site n'a pu authentifier votre action. Veuillez réafficher ce formulaire et réessayer");
+        $verif->setErreur("global", "Le système de sécurité du site n'a pu authentifier votre action. Veuillez réafficher ce formulaire et réessayer");
     }
 
 	if ($verif->nbErreurs() === 0)
@@ -541,6 +544,8 @@ echo '<div class="spacer"></div></header>';
 if ($verif->nbErreurs() > 0)
 {
 	HtmlShrink::msgErreur("Il y a ".$verif->nbErreurs()." erreur(s).");
+	// les erreurs qu'aucun champ ne porte, comme le refus du jeton CSRF
+	echo $verif->getHtmlErreur("global");
 }
 ?>
 

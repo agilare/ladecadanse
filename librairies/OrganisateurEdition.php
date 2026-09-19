@@ -105,7 +105,9 @@ class OrganisateurEdition extends FicheEdition
     #[\Override]
     protected function storedColumns(): array
     {
-        return ['nom', 'statut', 'logo', 'photo'];
+        // admin_note parce que les non-administrateurs ne la postent pas : c'est de la base
+        // qu'il faut alors la reprendre
+        return ['nom', 'statut', 'logo', 'photo', 'admin_note'];
     }
 
     #[\Override]
@@ -126,8 +128,8 @@ class OrganisateurEdition extends FicheEdition
         $now = date("Y-m-d H:i:s");
 
         $stmt = $this->pdo->prepare("INSERT INTO organisateur
-            (idPersonne, nom, adresse, URL, email, presentation, statut, date_ajout, date_derniere_modif)
-            VALUES (:idPersonne, :nom, :adresse, :url, :email, :presentation, :statut, :dateAjout, :dateModif)");
+            (idPersonne, nom, adresse, URL, email, presentation, statut, admin_note, date_ajout, date_derniere_modif)
+            VALUES (:idPersonne, :nom, :adresse, :url, :email, :presentation, :statut, :adminNote, :dateAjout, :dateModif)");
 
         if (!$stmt->execute($this->getSqlCommonParameters() + [
             ':idPersonne' => $this->currentUser->idPersonne,
@@ -151,7 +153,8 @@ class OrganisateurEdition extends FicheEdition
     {
         $stmt = $this->pdo->prepare("UPDATE organisateur SET
             nom = :nom, adresse = :adresse, URL = :url, email = :email,
-            presentation = :presentation, statut = :statut, date_derniere_modif = :dateModif
+            presentation = :presentation, statut = :statut, admin_note = :adminNote,
+            date_derniere_modif = :dateModif
             WHERE idOrganisateur = :id");
 
         // idPersonne n'est pas touché : il désigne l'auteur de la fiche, dont dépend
@@ -173,7 +176,7 @@ class OrganisateurEdition extends FicheEdition
     }
 
     /**
-     * @return array<string, string>
+     * @return array<string, ?string>
      */
     private function getSqlCommonParameters(): array
     {
@@ -184,6 +187,9 @@ class OrganisateurEdition extends FicheEdition
             ':email' => $this->valeurs['email'],
             ':presentation' => $this->htmlSanitizer->sanitize($this->valeurs['presentation']),
             ':statut' => $this->valeurs['statut'],
+            // texte brut, échappé à l'affichage : le sanitizer HTML de la présentation n'a
+            // rien à y faire. NULL dit « pas de note », les autres colonnes étant NOT NULL
+            ':adminNote' => $this->valeurs['admin_note'] === '' ? null : $this->valeurs['admin_note'],
         ];
     }
 

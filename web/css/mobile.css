@@ -835,10 +835,40 @@ form#ajouter_editer p.memoriser label, form#ajouter_editer p.mdp_oublie
 }
 
 
-/* lieux.php */
+/* lieux.php, organisateurs.php */
+
+/*
+ * La barre de filtres a une largeur fixe (550px) pensée pour le bureau, qui débordait de l'écran.
+ * max-width plutôt que width:auto : là où les 550px tiennent, la barre garde sa largeur et le tri
+ * reste à sa droite quand il reste la place.
+ */
+.table-filters
+{
+    max-width:100%;
+}
+
+/*
+ * Le champ Nom cède ce qui manque pour que les deux listes et OK tiennent sur sa ligne : la rangée
+ * de lieux.php mesure 354px, pour 348px de colonne à 375px. Plus étroit encore, OK passe à la
+ * ligne plutôt que le champ ne descende sous 100px.
+ */
 .table-filters form
 {
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:4px;
+}
 
+.table-filters .search-field
+{
+    flex:1 1 100px;
+    max-width:130px;
+}
+
+.table-filters form input[name="nom"]
+{
+    width:100%;
 }
 
 .table-filters .menu_tab {

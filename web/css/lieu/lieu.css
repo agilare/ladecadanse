@@ -118,6 +118,19 @@ ul.menu_actions_lieu li
 			background: #F9F9F9;
 		}
 
+		/* note d'administration, repliée avec les affiliés : un bloc à part, qu'une longue
+		   url ne fait pas déborder de la colonne */
+		#fiche #pratique .admin-note
+		{
+			margin:0.4em 0.2em 0.2em 0.2em;
+			padding:0.4em 0.5em;
+			background:#FBE7A1;
+			border-radius:3px;
+			font-size:0.9em;
+			line-height:1.35em;
+			overflow-wrap:anywhere;
+		}
+
 			#fiche #pratique ul li ul.salles
 			{
 				display:inline;

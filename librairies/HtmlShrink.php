@@ -8,9 +8,17 @@ namespace Ladecadanse;
 
 use Ladecadanse\Stats\MonthlyAddedEvents;
 use Ladecadanse\Utils\DateHelper;
+use Ladecadanse\Utils\Text;
 
 class HtmlShrink
 {
+    /**
+     * Longueur de la note d'administration affichée d'emblée dans les listes : au-delà, la
+     * suite se replie dans un <details>, pour qu'une note longue n'étire pas sa ligne sur
+     * toute la hauteur de l'écran.
+     */
+    public const int ADMIN_NOTE_EXCERPT_LENGTH = 200;
+
     /**
      * Reconstruit une query string à partir de $_GET, en excluant un ou
      * plusieurs paramètres. Utilisée pour les liens de pagination et de tri,
@@ -366,14 +374,26 @@ class HtmlShrink
     public static function getMonthlyCountsHeaderCells(array $monthKeys): string
     {
         $cells = "";
+        $currentMonthKey = end($monthKeys);
 
         foreach ($monthKeys as $monthKey)
         {
             $month = (int) substr($monthKey, 5, 2);
             $title = DateHelper::monthName($month) . " " . substr($monthKey, 0, 4);
+            $isCurrent = $monthKey === $currentMonthKey;
+            $class = $isCurrent ? "mois" : "mois mois-passe";
 
-            $cells .= '<th class="mois" title="' . sanitizeForHtml($title) . '">'
-                . sanitizeForHtml(DateHelper::monthNameShort($month)) . '</th>';
+            $cells .= '<th class="' . $class . '" title="' . sanitizeForHtml($title) . '">'
+                . sanitizeForHtml(DateHelper::monthNameShort($month));
+
+            // seul le mois en cours reste visible d'entrée : les onze précédents s'ouvrent
+            // depuis ce lien, à la manière du retrait de filtre du menu de catégories
+            if ($isCurrent)
+            {
+                $cells .= '<br><a href="#" class="js-toggle-mois-passes" aria-expanded="false" title="Afficher les mois précédents" aria-label="Afficher les onze mois précédents" rel="nofollow">Passés</a>';
+            }
+
+            $cells .= '</th>';
         }
 
         return $cells;
@@ -414,6 +434,49 @@ class HtmlShrink
         }
 
         return $cells;
+    }
+
+    /**
+     * Cellule « Note » des listes d'administration : la note d'administration du lieu ou de
+     * l'organisateur, et rien quand il n'y en a pas.
+     *
+     * Deux rendus, dont la feuille de chaque liste ne montre qu'un selon la largeur :
+     *
+     * - en desktop, le texte. Ses ADMIN_NOTE_EXCERPT_LENGTH premiers caractères s'affichent,
+     *   la suite se replie dans un <details> ; la coupure recule jusqu'au dernier mot entier
+     *   (Text::truncateWords()), la partie affichée ne dépasse donc jamais la longueur
+     *   annoncée. Rendu comme sur la fiche : échappé, sauts de ligne et liens compris ;
+     * - sur mobile, où une colonne de texte ne tient pas, une icône dont l'infobulle porte la
+     *   note entière. Elle s'ouvre aussi au focus (tabindex) : au toucher, où le survol ne se
+     *   déclenche pas toujours, et au clavier.
+     */
+    public static function getAdminNoteCell(?string $note): string
+    {
+        $note = trim((string) $note);
+
+        if ($note === '')
+        {
+            return '<td class="admin-note"></td>';
+        }
+
+        $extrait = Text::truncateWords($note, self::ADMIN_NOTE_EXCERPT_LENGTH);
+
+        // l'extrait est un début de la note, blancs finaux en moins : la suite reprend là
+        $suite = ltrim(mb_substr($note, mb_strlen($extrait)));
+
+        $texte = Text::lnAndUrlToHtml($extrait);
+
+        if ($suite !== '')
+        {
+            $texte .= '<details><summary>Suite</summary>' . Text::lnAndUrlToHtml($suite) . '</details>';
+        }
+
+        return '<td class="admin-note">'
+            . '<div class="admin-note-texte">' . $texte . '</div>'
+            . '<span class="tooltip tooltip-texte" tabindex="0">'
+            . '<i class="fa fa-info-circle" aria-hidden="true"></i>'
+            . '<span class="tooltiptext">' . nl2br(sanitizeForHtml($note)) . '</span>'
+            . '</span></td>';
     }
 
     public static function msgInfo(string $message): void

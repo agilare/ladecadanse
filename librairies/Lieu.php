@@ -32,15 +32,19 @@ class Lieu extends Element
      *
      * `type` est celui qu'attend Validateur::valider().
      *
+     * `admin_note` n'est proposé et écrit qu'aux administrateurs : voir
+     * FicheEdition::adminNoteToWrite().
+     *
      * @var array<string, array{type: string, min: int, max: int, required: bool}>
      */
     public const array FIELDS = [
-        'nom'             => ['type' => 'texte', 'min' => 1, 'max' => 80,  'required' => true],
-        'preposition_nom' => ['type' => 'texte', 'min' => 1, 'max' => 40,  'required' => false],
-        'adresse'         => ['type' => 'texte', 'min' => 1, 'max' => 255, 'required' => true],
-        'localite_id'     => ['type' => 'texte', 'min' => 1, 'max' => 80,  'required' => true],
-        'horaire_general' => ['type' => 'texte', 'min' => 2, 'max' => 500, 'required' => false],
-        'URL'             => ['type' => 'url',   'min' => 2, 'max' => 255, 'required' => false],
+        'nom'             => ['type' => 'texte', 'min' => 1, 'max' => 80,   'required' => true],
+        'preposition_nom' => ['type' => 'texte', 'min' => 1, 'max' => 40,   'required' => false],
+        'adresse'         => ['type' => 'texte', 'min' => 1, 'max' => 255,  'required' => true],
+        'localite_id'     => ['type' => 'texte', 'min' => 1, 'max' => 80,   'required' => true],
+        'horaire_general' => ['type' => 'texte', 'min' => 2, 'max' => 500,  'required' => false],
+        'URL'             => ['type' => 'url',   'min' => 2, 'max' => 255,  'required' => false],
+        'admin_note'      => ['type' => 'texte', 'min' => 1, 'max' => 2000, 'required' => false],
     ];
 
     /**

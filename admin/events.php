@@ -130,7 +130,7 @@ $nouveaux_fichiers = ['flyer' => '', 'image' => ''];
 
 if (!empty($_POST['formulaire']))
 {
-    if (!SecurityToken::check((string) ($_POST['token'] ?? ''), (string) ($_SESSION['token'] ?? '')))
+    if (!SecurityToken::check($_POST['token'] ?? '', $_SESSION['token'] ?? ''))
     {
         $verif->setErreur("token", "Le système de sécurité du site n'a pu authentifier votre action. Veuillez réafficher ce formulaire et réessayer");
     }
@@ -171,7 +171,7 @@ if (!empty($_POST['formulaire']))
             $_SESSION['admin_events_flash_msg'] = $nb_supprimes . " événement(s) supprimé(s)"
                 . ($nb_supprimes < count($evenements) ? ", " . (count($evenements) - $nb_supprimes) . " refusé(s) faute de droits" : "");
 
-            header("Location: " . $_SERVER['PHP_SELF']);
+            header("Location: /admin/events.php");
             exit;
         }
     }
@@ -424,7 +424,7 @@ if (!empty($_POST['formulaire']))
 
             // redirection après traitement : un F5 ne rejoue plus le remplacement
             $_SESSION['admin_events_flash_msg'] = implode('<br>', $messages);
-            header("Location: " . $_SERVER['PHP_SELF']);
+            header("Location: /admin/events.php");
             exit;
         }
     }
