@@ -280,7 +280,7 @@ export const Favorites =
         }
         html += '</ul>';
 
-        $nav.html(html);
+        $nav.html(html).removeAttr('hidden');
     },
 
     _loadGuestFavorisPage: async function loadGuestFavorisPage()

@@ -165,7 +165,14 @@ include("_header.inc.php");
 </main>
 
 <aside id="colonne_gauche" class="colonne">
-    <nav class="favoris-sidebar">
+    <?php
+    /*
+     * Sans mois à lister, le bloc ne montrerait que son fond gris arrondi : il reste masqué.
+     * Pour un visiteur, la liste vient de l'API et c'est favorites.js qui le remplit, donc qui
+     * le découvre.
+     */
+    ?>
+    <nav class="favoris-sidebar"<?= empty($sidebarMonths) ? ' hidden' : '' ?>>
         <?php if (!empty($sidebarMonths)) : ?>
             <div class="favoris-sidebar-header"><i class="fa fa-calendar-o"></i> Mois</div>
             <ul>
