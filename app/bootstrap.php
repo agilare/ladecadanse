@@ -228,11 +228,19 @@ if (DARKVISITORS_ENABLED)
 
     // will only run at the end of the script, i.e. after your page has been generated. This will avoid slowing down the page rendering for the user, especially if you limit the timeout in cURL
     register_shutdown_function(function () {
+        // jamais au tiers : Cookie porte PHPSESSID. Noms comparés en minuscules, car Apache
+        // les rend tels que reçus (minuscules sous HTTP/2) et le polyfill en Camel-Case.
+        $headers = array_filter(
+            getallheaders(),
+            fn ($name): bool => !in_array(strtolower((string) $name), ['cookie', 'authorization', 'proxy-authorization'], true),
+            ARRAY_FILTER_USE_KEY
+        );
+
         trackVisitAsync([
             'request_path' => $_SERVER['REQUEST_URI'],
             'request_method' => $_SERVER['REQUEST_METHOD'],
-            'request_headers' => getallheaders(),
-                ], DARKVISITORS_ACCESS_TOKEN);
+            'request_headers' => $headers,
+        ], DARKVISITORS_ACCESS_TOKEN);
     });
 }
 
