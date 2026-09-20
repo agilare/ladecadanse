@@ -461,6 +461,8 @@ $erreurs = $verif->getErreurs();
 
         </fieldset>
 
+        <p class="guideChamp">Ce que devient votre adresse&nbsp;: <a href="/articles/confidentialite.php">notre page sur la confidentialité</a>.</p>
+
         <p class="piedForm">
             <input type="hidden" name="formulaire" value="ok" />
             <input type="submit" value="S'inscrire" class="submit submit-big" />

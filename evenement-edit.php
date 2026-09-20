@@ -1267,6 +1267,7 @@ if ($show_form)
             </p>
             <?php if (!$est_connecte && !$isMemberOnly) { ?>
             <p>Déjà un compte ? <a href="/user/login.php">Connectez-vous</a>, ajoutez votre événement et il sera immédiatement publié</p>
+            <p class="guideChamp">Votre adresse sert à vérifier l’annonce et à vous répondre&nbsp;; elle n’est jamais publiée. <a href="/articles/confidentialite.php">En savoir plus</a>.</p>
             <?php } ?>
         </fieldset>
     <?php } ?>

@@ -137,6 +137,8 @@ include("../_header.inc.php");
 
             </fieldset>
 
+            <p class="guideChamp">Votre message n’est pas enregistré sur le site&nbsp;: il part par courriel. <a href="/articles/confidentialite.php">En savoir plus</a>.</p>
+
             <p class="piedForm">
                 <input type="hidden" name="formulaire" value="ok" />
                 <input type="text" name="name_as" value="" class="name_as"  />
