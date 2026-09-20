@@ -44,15 +44,33 @@
     font-size: 1.03em; /* iphone <5 */
 }
 
+/*
+ * Les sept onglets réclamaient 414px pour les 375 d'un téléphone courant : « Organisateurs »
+ * et la loupe tombaient sur une seconde ligne. Les trois boutons-icônes partagent désormais
+ * le padding du calendrier, et « Agenda » resserre le sien — la hauteur, donc la cible
+ * tactile, ne change pas.
+ */
 #menu ul li#bouton_agenda a
 {
-    padding: 0.5em 0.7em;
+    padding: 0.5em 0.55em;
 }
 
 #menu ul li#bouton_calendrier a,
-#menu ul li#bouton_latests_events a
+#menu ul li#bouton_latests_events a,
+#menu ul li#bouton_favoris a
 {
-    padding: 0.5em 0.9em;
+    padding: 0.5em 10px;
+}
+
+/* en mobile, le cœur remplace le libellé : l'onglet se lit comme le calendrier et la cloche */
+#menu ul li#bouton_favoris .fa-heart
+{
+    display:inline-block;
+}
+
+#menu ul li#bouton_favoris .menu_libelle
+{
+    display:none;
 }
 
 #entete_haut #menu_pratique {
