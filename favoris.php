@@ -39,10 +39,22 @@ include("_header.inc.php");
 <main id="contenu" class="colonne">
 
     <header id="entete_contenu">
+        <?php
+        /*
+         * Le menu des deux vues partage la ligne du titre, comme celui des périodes sur la
+         * recherche et les fiches lieu. « Événements » n'est pas un lien mais le préfixe des
+         * deux : il évite de le répéter dans chaque libellé.
+         */
+        ?>
         <hgroup>
             <h1><i class="fa fa-heart" style="color:#e74c3c"></i> Favoris</h1>
         </hgroup>
-        <div class="spacer"></div>
+
+        <ul id="menu_periode">
+            <li class="menu_periode_prefixe">Événements</li>
+            <li class="<?= $view === 'passes' ? 'ici' : '' ?>"><a href="/favoris.php?view=passes">Passés</a></li>
+            <li class="<?= $view === 'avenir' ? 'ici' : '' ?>"><a href="/favoris.php">Prochains</a></li>
+        </ul>
     </header>
 
     <?php
@@ -56,14 +68,6 @@ include("_header.inc.php");
     <nav id="favoris_mois_mobile" class="favoris-mois-mobile" aria-label="Aller à un mois" hidden>
         <ul></ul>
     </nav>
-
-    <div id="order_navigation">
-        <ul>
-            <li><a href="/favoris.php" class="<?= $view === 'avenir' ? 'selected' : '' ?>">Événements à venir</a></li>
-            <li><a href="/favoris.php?view=passes" class="<?= $view === 'passes' ? 'selected' : '' ?>">Événements passés</a></li>
-        </ul>
-        <div class="spacer"></div>
-    </div>
 
     <?php $sidebarMonths = []; ?>
 

@@ -4,15 +4,43 @@
     margin: 0.2em auto 0 auto;
 }
 
-#order_navigation
+/*
+ * Titre et menu des vues partagent la ligne. En flex plutôt qu'en flottants : les flottants
+ * s'alignent par le haut de leur boîte, alors que « Événements » doit reposer sur la même
+ * ligne de base que « Favoris », dont le corps est bien plus grand.
+ */
+#entete_contenu
 {
-    margin-bottom: 0.5em;
+    display: flex;
+    align-items: baseline;
+    column-gap: 0.5em;
 }
 
-    #order_navigation ul
-    {
-        float: right;
-    }
+#entete_contenu h1
+{
+    float: none;
+    width: auto;
+}
+
+ul#menu_periode
+{
+    float: none;
+    width: auto;
+    margin-left: auto; /* ferré à droite, quelle que soit la longueur du titre */
+}
+
+/* Les libellés s'alignent sur leur base, non sur le bas de leur boîte : le padding des liens
+   faisait alors flotter « Passés » et « Prochains » au-dessus du préfixe. */
+ul#menu_periode li
+{
+    vertical-align: baseline;
+}
+
+/* « Événements » préfixe les deux vues : il se lit comme une étiquette, pas comme un lien */
+#menu_periode .menu_periode_prefixe
+{
+    color: #5E5E5F;
+}
 
 .favoris-sidebar
 {
