@@ -161,5 +161,10 @@ include("_header.inc.php");
     </nav>
 </aside>
 
+<?php // vide, comme sur les fiches lieu et la recherche : la colonne tient la gouttière de droite ?>
+<aside id="colonne_droite" class="colonne"></aside>
+
+<div class="spacer"><!-- --></div>
+
 <?php
 include("_footer.inc.php");
