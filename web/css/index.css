@@ -104,12 +104,13 @@
         column-gap: 0.15em;
     }
 
-    /* margin-left auto plutôt que le seul justify-content : quand la ligne est trop
-       étroite et que le menu de tri se replie sous le filtre, il reste aligné à
-       droite, comme partout ailleurs sur le site */
+    /* Replié sous les filtres, le menu de tri se cale à gauche, sous l'entonnoir : il y
+       commence la ligne plutôt que de la finir, et l'œil retrouve les deux menus au même
+       bord. Il perd l'alignement à droite qu'il garde ailleurs sur le site, où rien ne le
+       précède dans sa boîte. */
     #agenda_filters.avec-filtre-genre #order_navigation
     {
-        margin: 0 0 0 auto;
+        margin: 0.8em 0 0 0;
     }
 
     /* dans le contexte flex, le flottant n'a plus rien à aligner et fausse la hauteur */
@@ -235,7 +236,7 @@ ul.entete_contenu_navigation li:nth-child(2) a:hover
 #prochains_evenements
 {
     width:94%;
-    margin: 0.2em auto 0 auto;
+    margin: 0 auto 0 auto;
 }
 
 #order_navigation
@@ -297,6 +298,28 @@ ul.entete_contenu_navigation li:nth-child(2) a:hover
     #genre_tab_navigation
     {
         margin-top: 0.5em;
+    }
+
+    /*
+     * Le filtre des favoris est un menu à part, qui tombe sous celui des genres : sa ligne se
+     * décale de l'entonnoir et de l'écart qui le suit, pour que « Favoris » commence à la
+     * verticale du premier genre. Les deux menus partagent la même police réduite, d'où un
+     * décalage exprimé dans cette unité — 0,79em de glyphe et 0,25em d'écart — et non en
+     * pixels : la largeur du glyphe suit la taille de police, l'alignement la suit aussi.
+     */
+    #agenda_filters #favoris_filter_navigation
+    {
+        margin-left: 1.04em;
+        /* il prolonge le menu des genres et se colle à lui : la marge basse que celui-ci
+           ménageait sous lui est reprise ici, et rendue au menu de tri ci-dessous */
+        margin-top: -0.8em;
+    }
+
+    /* l'écart repris plus haut : le tri s'éloigne des deux menus de filtre, auxquels il ne
+       se mélange pas. Sans filtre des favoris affiché, la page garde l'écart d'origine. */
+    #favoris_filter_navigation:not([hidden]) + #order_navigation
+    {
+        margin-top: 1.07em;
     }
 
     /* respiration sous le bloc de filtres, avant le premier genre. En padding et non en

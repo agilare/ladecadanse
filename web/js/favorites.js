@@ -184,10 +184,12 @@ export const Favorites =
             self._renderFilter();
         });
 
+        // un seul onglet, qui bascule : actif, un clic dessus (ou sur sa croix) retire le filtre,
+        // comme la croix d'un onglet de genre
         $content.on('click', '.js-favoris-filter', function (e)
         {
             e.preventDefault();
-            self._setFilter($(this).data('filter'));
+            self._setFilter(self._displayFilter === 'favoris' ? 'tous' : 'favoris');
             self._applyFavorisFilter();
         });
 
@@ -318,10 +320,17 @@ export const Favorites =
 
     _markActiveTab: function markActiveTab(filter)
     {
-        $('#favoris_filter_navigation .js-favoris-filter').each(function ()
-        {
-            $(this).closest('li').toggleClass('ici', $(this).data('filter') === filter);
-        });
+        const actif = filter === 'favoris';
+
+        $('.js-favoris-filter-item')
+            .toggleClass('ici', actif)
+            .attr('aria-current', actif ? 'true' : null);
+
+        // même annonce que les onglets de genre une fois le filtre posé : le lien ne sert plus
+        // qu'à le retirer
+        $('.js-favoris-filter')
+            .attr('title', actif ? 'Retirer le filtre' : null)
+            .attr('aria-label', actif ? 'Retirer le filtre Favoris' : null);
     },
 
     _renderFilter: function renderFilter()
@@ -357,7 +366,6 @@ export const Favorites =
         }
 
         $nav.removeAttr('hidden');
-        $nav.find('.js-favoris-count').text('(' + favInList + ')');
         this._markActiveTab(this._displayFilter);
         this._syncGroupHeaders(favorisMode);
     },

@@ -1744,7 +1744,8 @@ td.favori_action
         width: auto;
     }
 
-    /* #agenda_filters et le menu de tri sont mis en page par index.css */
+    /* dans la barre de l'agenda, la mise en page vient d'index.css : cette marge y décalerait
+       l'onglet par rapport aux genres, avec lesquels il partage la ligne */
     #agenda_filters #favoris_filter_navigation,
     #agenda_filters #favoris_filter_navigation ul
     {
@@ -1763,11 +1764,6 @@ td.favori_action
         border-radius: 3px;
     }
 
-    #favoris_filter_navigation li a .fa-heart
-    {
-        color: #e74c3c;
-    }
-
     #favoris_filter_navigation li.ici a
     {
         background: #eee;
@@ -1777,6 +1773,21 @@ td.favori_action
     {
         background: #d4d4d4;
     }
+
+/*
+ * L'onglet « Favoris » reprend le comportement d'un onglet de genre : le fond de .ici et la
+ * croix qui retire le filtre. Seuls le cœur et cette croix lui sont propres.
+ */
+.favoris-filtre .fa-heart
+{
+    color: #e74c3c;
+}
+
+/* la croix ne s'offre qu'une fois le filtre posé, comme sur un onglet de genre actif */
+.favoris-filtre-item:not(.ici) .favoris-filtre-retirer
+{
+    display: none;
+}
 
 .lieu-info-wrapper
 {
