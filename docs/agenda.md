@@ -6,29 +6,34 @@ Sur la liste du jour, chaque carte d'événement dit où il en est par rapport �
 
 | État | Repère | Ce qu'il faut pour l'établir |
 | --- | --- | --- |
-| à venir | compte à rebours — `dans 40min`, `dans 2h30`, `dans 5h`, `dans 3j` —, suivi d'une barre vide | un horaire de début |
+| à venir, dans quatre heures ou moins | compte à rebours — `dans 40min`, `dans 2h30`, `dans 4h` —, suivi d'une barre vide | un horaire de début |
+| à venir, plus tard | rien : l'horaire suffit | — |
 | en cours | une barre de la part écoulée, pourcentage inscrit au milieu | un horaire de début |
 | terminé | `(terminé)` | un horaire de fin |
 
 Sans horaire de début exploitable, la carte n'affiche rien : tout est porté par [`Ladecadanse\EvenementTimeStatus`](../librairies/EvenementTimeStatus.php), dont la fabrique rend `null` dans ce cas.
+
+L'**horizon** du compte à rebours est `EvenementRenderer::COUNTDOWN_VISIBLE_WITHIN_MINUTES`, quatre heures : au-delà, savoir qu'un concert est « dans 7h » n'aide personne à décider, et une liste du soir s'encombre d'autant de repères qu'elle porte d'événements. En deçà de `COUNTDOWN_URGENT_UNDER_MINUTES`, une demi-heure, le compte à rebours passe **en gras** — c'est le moment de partir. Ces deux seuils se lisent sur `EvenementTimeStatus::$minutesUntilStart`, le temps restant non arrondi que la classe porte à côté du libellé, qui l'est.
 
 ### Où cela s'affiche
 
 Dans le bloc « pratique », qui se lit en lignes des deux côtés :
 
 ```
-rue de la Chapelle 12 - Genève                  20:30 – 23:00
-15.- / 12.-                     dans 2h [      0 %      ]
+➤ rue de la Chapelle 12 - Genève                20:30 – 23:00
+▤ 15.- / 12.-                   dans 2h [      0 %      ] ?
 ```
 
 À droite, l'horaire d'abord ; « terminé » le qualifie et reste sur sa ligne, entre parenthèses ; le compte à rebours et la barre prennent la ligne suivante — la barre à la suite du compte à rebours, et dessous quand la colonne est trop étroite pour les deux.
 
 À gauche, **le prix passe sous l'adresse**, là où, sans les repères, il suit l'horaire après une virgule. Au-delà de **40 caractères**, il est coupé au mot près et suivi de `(...)` — `30.- les soirée ; 50.- journée complète (...)` —, et rendu entier dans l'infobulle ; la constante est `EvenementRenderer::PRICE_MAX_CHARS`.
 
+Chacune des deux lignes est précédée de son icône, `fa-location-arrow` et `fa-money`. Ce sont quatre cellules d'une grille à deux colonnes (`.even-time-pratique`) : les icônes s'alignent entre elles, les textes aussi, et une adresse qui passe à la ligne reste dans sa colonne plutôt que de revenir sous l'icône.
+
 ### La barre
 
 - **Sa longueur dit la durée** : 20 px par heure (`EvenementRenderer::PROGRESS_PX_PER_HOUR`), fin estimée comprise. Deux bornes : une largeur minimale qui laisse au pourcentage la place de s'inscrire — en deçà d'environ 1h20, la barre est donc un peu plus longue que la durée —, et la largeur de la colonne, qu'elle ne dépasse pas : au-delà de huit à dix heures sur ordinateur selon la largeur d'écran, de six sur téléphone, elle cesse d'être proportionnelle.
-- **Son remplissage dit la part écoulée**, en `#FACA1A`, sur une piste plus soutenue que le fond du bloc ; hauteur `0.8em`, arrondi de 2 px. Le pourcentage est inscrit au milieu.
+- **Son remplissage dit la part écoulée**, en `#FACA1A`, sur une piste plus soutenue que le fond du bloc ; hauteur `1.2em`, arrondi de 2 px. Le pourcentage est inscrit au milieu.
 - **Elle s'anime** : des rayures défilent sur la part remplie **pendant quatre secondes**, puis s'immobilisent. Un mouvement de plus de cinq secondes, lancé sans qu'on le demande et sans moyen de l'arrêter, enfreindrait le critère WCAG 2.2.2 — et une liste du soir en porte des dizaines. L'animation est supprimée sous `prefers-reduced-motion`. Avant le début, rien n'est rempli, donc rien ne bouge.
 
 Le `<progress>` porte le rôle ARIA `progressbar` et un nom accessible — « En cours, 35 % écoulés » ; le pourcentage inscrit et les rayures sont des calques décoratifs posés par-dessus. Les rayures ne sont pas dessinées par le pseudo-élément de remplissage, dont l'animation n'est pas fiable (Firefox l'ignore, [Bugzilla 812442](https://bugzilla.mozilla.org/show_bug.cgi?id=812442)). La barre d'un événement à venir, vide, n'apprend rien que le compte à rebours et l'horaire ne disent déjà : elle est masquée aux technologies d'assistance.
@@ -40,12 +45,20 @@ Le `<progress>` porte le rôle ARIA `progressbar` et un nom accessible — « En
 
 ### Fin inconnue : une durée estimée
 
-Les horaires de fin manquent souvent (#65). Plutôt que de ne rien dire, la durée est alors estimée selon la catégorie, et un `?` suit la barre pour que l'estimation ne passe pas pour une mesure — son infobulle dit à quelle heure la fin a été fixée :
+Les horaires de fin manquent souvent (#65). Plutôt que de ne rien dire, la durée est alors estimée selon la catégorie, et un bouton `?` (`fa-question-circle`) suit la barre pour que l'estimation ne passe pas pour une mesure :
 
 - **ciné, théâtre** : deux heures après le début (`SEANCE_ESTIMATED_DURATION_MINUTES`) ;
 - **fêtes, concerts, divers** — et, faute de règle propre, expos et cours : **jusqu'à minuit**, celui qui clôt la soirée de la journée d'agenda. Commencé après ce minuit, un événement court jusqu'à la fin de la journée d'agenda, 06:00, plutôt que jusqu'au minuit suivant.
 
 L'estimation dépassée, la barre plafonne à 95 % : seule une fin réelle dit « terminé ».
+
+Le bouton ouvre une bulle — « Fin inconnue, estimée à 00:00 » — au survol, au focus et à la touche, là où une infobulle native (`title`) ne s'ouvre pas au doigt. Une seule bulle sert toute la liste : `index.php` la pose une fois, le texte voyage dans le `data-estimate` de chaque bouton, et `TimeEstimate` (dans [`web/js/global.js`](../web/js/global.js)) la remplit et la place sous le bouton à chaque ouverture. Quelques points méritent d'être connus :
+
+- **bouton, pas lien** : il n'emmène nulle part, et une infobulle native ne suffisait pas. Son `aria-label` porte le même texte que la bulle, si bien qu'aucune information ne dépend de son ouverture ;
+- **le survol n'est branché que là où l'on pointe** (`matchMedia('(hover: hover)')`) : sur un écran tactile, le survol émulé ouvrirait la bulle juste avant que le clic émulé ne la referme ;
+- **la bulle se recale dans la fenêtre** : le bouton est collé au bord droit de la colonne. Elle porte aussi `width:max-content`, sans quoi sa largeur se recalculerait sur la place restant à sa droite et la tasserait en colonne ;
+- **API Popover native**, avec le même repli par classes CSS que le popover d'info-lieu (Safari < 17) ; le repli refait à la main la fermeture au clic extérieur et à Échap ;
+- **la zone tactile fait 24 px de côté** (WCAG 2.5.8) par un `::after` invisible : l'icône, elle, ne mesure que 9 px dans cette colonne, et rien autour d'elle n'est poussé.
 
 ### Hors d'atteinte
 
