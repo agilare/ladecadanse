@@ -100,6 +100,35 @@
     padding-right:10px;
 }
 
+/*
+ * Sous 420px, les sept onglets réclament encore 367px là où un Android courant n'en offre que
+ * 360 : les paddings horizontaux se resserrent une seconde fois. Placé après les règles
+ * ci-dessus, dont celle du calendrier, pour les emporter. Les écrans plus larges gardent la
+ * respiration précédente, et la hauteur des boutons — la cible tactile — ne bouge pas.
+ */
+@media screen and (max-width: 420px)
+{
+    #menu ul li a
+    {
+        padding-left:0.25em;
+        padding-right:0.25em;
+    }
+
+    #menu ul li#bouton_agenda a
+    {
+        padding-left:0.4em;
+        padding-right:0.4em;
+    }
+
+    #menu ul li#bouton_calendrier a,
+    #menu ul li#bouton_latests_events a,
+    #menu ul li#bouton_favoris a
+    {
+        padding-left:8px;
+        padding-right:8px;
+    }
+}
+
 #menu ul li.btn_recherche {
 
 }
