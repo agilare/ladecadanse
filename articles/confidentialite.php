@@ -27,7 +27,7 @@ include("../_header.inc.php");
 
         <h2>Si vous consultez simplement l’agenda</h2>
 
-        <p>Vous n’avez rien à fournir&nbsp;: la consultation ne demande ni compte, ni inscription, ni acceptation de quoi que ce soit. Trois choses sont néanmoins enregistrées.</p>
+        <p>Vous n’avez rien à fournir&nbsp;: la consultation ne demande ni compte, ni inscription, ni acceptation de quoi que ce soit. Quelques traces subsistent néanmoins.</p>
 
         <h3>La mesure d’audience</h3>
 
@@ -41,14 +41,16 @@ include("../_header.inc.php");
 
         <p>Ces lignes sont effacées automatiquement après 90&nbsp;jours, ou après une année pour les adresses surprises à ignorer délibérément nos règles d’accès. Elles ne servent qu’à cela et ne sont communiquées à personne.</p>
 
-        <h3>Deux services extérieurs</h3>
+        <h3>Ce que voient des serveurs extérieurs</h3>
 
-        <p>Deux outils reçoivent, du fait de leur fonctionnement, votre adresse&nbsp;IP&nbsp;:</p>
+        <p>Afficher une page suppose d’aller chercher quelques fichiers ailleurs que chez nous, et tout serveur sollicité voit l’adresse&nbsp;IP qui le sollicite. Sur La&nbsp;décadanse, cela concerne&nbsp;:</p>
 
         <ul>
-            <li><b>Known Agents</b> (États-Unis) aide à repérer quels robots d’intelligence artificielle parcourent le site. Son script relève aussi quelques caractéristiques de votre navigateur (plateforme, taille de fenêtre, extensions installées). Nous cherchons à nous en passer et à ne garder que la mesure décrite plus haut, faite sur nos serveurs.</li>
-            <li><b>GlitchTip</b> signale les erreurs d’affichage pour qu’elles soient corrigées. Il reçoit le message d’erreur, l’adresse de la page et votre navigateur.</li>
+            <li><b>GlitchTip</b>, qui nous signale les erreurs d’affichage pour qu’elles soient corrigées&nbsp;; il reçoit le message d’erreur, l’adresse de la page et le nom de votre navigateur&nbsp;;</li>
+            <li>les <b>bibliothèques jQuery et Leaflet</b>, servies par des répertoires publics de code (jquery.com, unpkg.com), que nous prévoyons d’héberger nous-mêmes.</li>
         </ul>
+
+        <p>Un outil de détection des robots d’intelligence artificielle, <b>Known Agents</b>, a été en service jusqu’en septembre 2026. Il transmettait davantage&nbsp;: en plus de l’adresse&nbsp;IP, quelques caractéristiques du navigateur. Il est désactivé, et le suivi décrit plus haut, tenu sur nos propres serveurs, le remplace.</p>
 
         <p>Sur les fiches de lieu, les cartes proviennent d’<a href="https://www.openstreetmap.org" rel="external" target="_blank">OpenStreetMap</a> (fondation britannique)&nbsp;: afficher une carte suppose de demander ses images, qui voit alors votre adresse&nbsp;IP. Les fiches sans coordonnées n’appellent aucune carte.</p>
 
