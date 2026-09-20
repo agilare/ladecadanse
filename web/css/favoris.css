@@ -108,6 +108,10 @@ ul#menu_periode li
     display: none;
 }
 
+#contenu .evenement-short {
+  margin-bottom: 2em;
+}
+
 @media screen and (max-width: 800px)
 {
     .favoris-sidebar
