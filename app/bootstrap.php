@@ -310,7 +310,7 @@ header("Permissions-Policy: $permissions");
 
 //header("Access-Control-Allow-Origin: *");
 //header('X-Frame-Options:    SAMEORIGIN');
-header('Referrer-Policy: no-referrer-when-downgrade'); // This sends complete URL information to a potentially trustworthy URL from modern HTTPS State or from not modern HTTPS state to any origin . Information is sent for HTTPS -> HTTPS and HTTP -> HTTPS transition . This is the default Referrer-Policy
+header('Referrer-Policy: strict-origin-when-cross-origin'); // with `strict-origin-when-cross-origin` third-party resources and outbound links no longer receive the full URL, which included the password reset token on `user/reset2.php`
 
 header("Cache-Control: no-store, no-cache, must-revalidate");
 header("Cache-Control: post-check=0, pre-check=0", false);
