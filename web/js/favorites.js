@@ -147,8 +147,52 @@ export const Favorites =
         await FavoritesStore.init(!!config.isLoggedIn, config.favoriteIds);
 
         this._hydrateButtons();
+        this._construireBarreMois();
         this._loadGuestFavorisPage();
         this._applyFavorisFilter();
+    },
+
+    /*
+     * POC : la barre des mois affichée en tête de la page Favoris sur un téléphone, où la
+     * colonne des mois est masquée. Elle se déduit des en-têtes de mois déjà rendus — par le
+     * serveur pour un membre connecté, par l'API pour un visiteur —, donc sans donnée ni
+     * requête supplémentaire. L'année est laissée de côté : la barre tient sur une ligne.
+     */
+    /** Clé du mois en cours, au format des ancres de la liste (2026-09) */
+    _moisCourant: function moisCourant()
+    {
+        const maintenant = new Date();
+
+        return maintenant.getFullYear() + '-' + String(maintenant.getMonth() + 1).padStart(2, '0');
+    },
+
+    _construireBarreMois: function construireBarreMois()
+    {
+        const $barre = $('#favoris_mois_mobile');
+        if ($barre.length === 0)
+        {
+            return;
+        }
+
+        const moisCourant = this._moisCourant();
+        const $liste = $barre.find('ul').empty();
+
+        $('#contenu header.genre-titre[id^="favoris-mois-"]').each(function ()
+        {
+            const cle = this.id.slice('favoris-mois-'.length);
+            const $item = $('<li>').append($('<a>').attr('href', '#' + this.id).text($(this).text().trim().replace(/\s+\d{4}$/, '')));
+
+            // le mois en cours n'est pas une teinte de plus mais le marquage de départ : un clic
+            // le déplace, et la barre ne montre jamais deux mois actifs
+            if (cle === moisCourant)
+            {
+                $item.addClass('ici');
+            }
+
+            $liste.append($item);
+        });
+
+        $barre.prop('hidden', $liste.children().length === 0);
     },
 
     _setButtonState: function setButtonState($btn, isFavorite)
@@ -193,6 +237,13 @@ export const Favorites =
             self._applyFavorisFilter();
         });
 
+        // barre des mois : l'ancre cliquée reste marquée, comme un onglet de genre actif
+        $content.on('click', '#favoris_mois_mobile a', function ()
+        {
+            $('#favoris_mois_mobile li').removeClass('ici');
+            $(this).closest('li').addClass('ici');
+        });
+
         if (localStorage.getItem(DISMISS_KEY) === '1')
         {
             $('#favorites_guest_banner').hide();
@@ -223,7 +274,9 @@ export const Favorites =
         let html = '<div class="favoris-sidebar-header"><i class="fa fa-calendar-o"></i> Mois</div><ul>';
         for (const month of months)
         {
-            html += '<li><a href="#favoris-mois-' + month.key + '">' + month.label + '</a></li>';
+            // le mois en cours se distingue ici comme dans la colonne rendue par le serveur
+            const classe = month.key === this._moisCourant() ? ' class="favoris-mois-courant"' : '';
+            html += '<li' + classe + '><a href="#favoris-mois-' + month.key + '">' + month.label + '</a></li>';
         }
         html += '</ul>';
 
@@ -274,6 +327,7 @@ export const Favorites =
             {
                 $content.html(data.html);
                 this._buildGuestSidebar(data.months || []);
+                this._construireBarreMois();
 
                 if (view === 'passes')
                 {

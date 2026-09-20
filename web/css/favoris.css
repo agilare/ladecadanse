@@ -34,37 +34,34 @@
         margin: 0 auto 0 auto;
     }
 
+    /* les mois se lisent comme les liens du site, sur le fond du bloc : ni pavé plus clair
+       derrière la liste, ni filets entre les lignes */
     .favoris-sidebar ul
     {
         list-style: none;
         margin: 0;
         padding: 0;
-        background: #fafafa;
-    }
-
-    .favoris-sidebar li
-    {
-        border-bottom: 1px solid #e0e0e0;
-    }
-
-    .favoris-sidebar li:last-child
-    {
-        border-bottom: none;
     }
 
     .favoris-sidebar li a
     {
         display: block;
-        padding: 0.5em 0.6em;
+        padding: 0.45em 0.75em;
         font-size: 0.85em;
-        color: #5C7378;
+        color: #1569C7;
         text-decoration: none;
     }
 
     .favoris-sidebar li a:hover
     {
-        background: #eaeaea;
+        background: #dcdcdc;
         color: #e74c3c;
+    }
+
+    /* le mois en cours se détache de son fond : clair sur la liste grise de la colonne */
+    .favoris-sidebar .favoris-mois-courant a
+    {
+        background: #fdfdfd;
     }
 
 .genre-titre
@@ -73,10 +70,81 @@
     margin: 10px 0;
 }
 
+/*
+ * POC : sur un téléphone, la colonne des mois laisse la place à une barre horizontale en tête
+ * de liste, remplie par favorites.js. Elle n'existe que là : au-dessus de 800px, la colonne
+ * reprend son rôle.
+ */
+.favoris-mois-mobile
+{
+    display: none;
+}
+
 @media screen and (max-width: 800px)
 {
     .favoris-sidebar
     {
         display: none;
+    }
+
+    /* sans mois à lister, le script repose l'attribut : à spécificité égale, le display
+       ci-dessous l'emporterait sur le [hidden] de normalize.css, chargé avant */
+    .favoris-mois-mobile[hidden]
+    {
+        display: none;
+    }
+
+    .favoris-mois-mobile
+    {
+        display: block;
+        /* elle suit la liste : on saute d'un mois à l'autre sans remonter */
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background: #fdfdfd; /* fond de #global, la barre collante doit s'y fondre */
+        padding: 0.4em 0;
+    }
+
+    .favoris-mois-mobile ul
+    {
+        display: flex;
+        flex-wrap: wrap;
+        row-gap: 0.3em;
+        column-gap: 0.25em;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .favoris-mois-mobile li
+    {
+        list-style-type: none;
+    }
+
+    .favoris-mois-mobile li a
+    {
+        display: inline-block;
+        padding: 0.3em;
+        border-radius: 3px;
+        color: #1569C7;
+        text-decoration: none;
+    }
+
+    .favoris-mois-mobile li a:hover
+    {
+        background: #d4d4d4;
+    }
+
+    /* Le mois marqué, comme un onglet de genre actif. Au chargement c'est le mois en cours ;
+       un clic déplace la marque, de sorte qu'un seul mois paraisse actif à la fois. */
+    .favoris-mois-mobile li.ici a
+    {
+        background: #eee;
+    }
+
+    /* la barre collante ne doit pas recouvrir le mois qu'on vient d'atteindre */
+    #contenu header.genre-titre
+    {
+        scroll-margin-top: 2.6em;
     }
 }

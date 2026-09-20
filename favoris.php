@@ -45,6 +45,18 @@ include("_header.inc.php");
         <div class="spacer"></div>
     </header>
 
+    <?php
+    /*
+     * POC : la colonne des mois n'a pas sa place sur un téléphone, où elle est masquée. Cette
+     * barre horizontale la remplace, en tête de liste et collante au défilement. Elle est
+     * remplie par favorites.js à partir des en-têtes de mois rendus plus bas — les mêmes pour
+     * un visiteur, dont la liste arrive par l'API, que pour un membre connecté.
+     */
+    ?>
+    <nav id="favoris_mois_mobile" class="favoris-mois-mobile" aria-label="Aller à un mois" hidden>
+        <ul></ul>
+    </nav>
+
     <div id="order_navigation">
         <ul>
             <li><a href="/favoris.php" class="<?= $view === 'avenir' ? 'selected' : '' ?>">Événements à venir</a></li>
@@ -153,8 +165,9 @@ include("_header.inc.php");
         <?php if (!empty($sidebarMonths)) : ?>
             <div class="favoris-sidebar-header"><i class="fa fa-calendar-o"></i> Mois</div>
             <ul>
+                <?php $moisCourant = date('Y-m'); ?>
                 <?php foreach ($sidebarMonths as $key => $label) : ?>
-                    <li><a href="#favoris-mois-<?= $key ?>"><?= $label ?></a></li>
+                    <li<?= $key === $moisCourant ? ' class="favoris-mois-courant"' : '' ?>><a href="#favoris-mois-<?= $key ?>"><?= $label ?></a></li>
                 <?php endforeach; ?>
             </ul>
         <?php endif; ?>
