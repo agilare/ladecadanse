@@ -88,7 +88,7 @@ include("../_header.inc.php");
             <dt>Suivi des robots</dt>
             <dd>90 jours, ou un an après un accès abusif</dd>
             <dt>Mesure d’audience</dt>
-            <dd>cookie 13 mois&nbsp;; statistiques détaillées 25 mois</dd>
+            <dd>cookie et données détaillées de visite&nbsp;: treize mois&nbsp;; au-delà, seules les statistiques agrégées subsistent</dd>
             <dt>Journaux techniques</dt>
             <dd>selon les réglages du serveur et de l’application</dd>
         </dl>
@@ -126,7 +126,7 @@ include("../_header.inc.php");
 
         <h2>Modifications</h2>
 
-        <p>Cette page peut évoluer avec le site. Sa dernière mise à jour date du <time datetime="2026-08-30">30 août 2026</time>.</p>
+        <p>Cette page peut évoluer avec le site. Sa dernière mise à jour date du <time datetime="2026-09-20">20 septembre 2026</time>.</p>
 
     </article>
 
