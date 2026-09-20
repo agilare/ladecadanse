@@ -46,6 +46,18 @@ class EvenementRenderer
     public const PROGRESS_PX_PER_HOUR = 20;
 
     /**
+     * Horizon du compte à rebours (#51), en minutes.
+     *
+     * Au-delà, la carte ne montre ni compte à rebours ni barre : sur une liste du soir, savoir
+     * qu'un concert est « dans 7h » n'aide personne à décider, et la colonne s'encombre d'autant
+     * de repères qu'il y a d'événements. L'horaire, lui, reste affiché.
+     */
+    public const COUNTDOWN_VISIBLE_WITHIN_MINUTES = 4 * 60;
+
+    /** En deçà, le compte à rebours passe en gras : il est temps de partir. */
+    public const COUNTDOWN_URGENT_UNDER_MINUTES = 30;
+
+    /**
      * Nombre de vignettes servies en chargement immédiat avant de basculer en `loading="lazy"`.
      *
      * L'agenda d'une journée chargée rend jusqu'à 140 vignettes, toutes téléchargées d'emblée
@@ -381,14 +393,30 @@ class EvenementRenderer
             <div class="spacer"></div>
 
             <div class="pratique">
-                <span class="left"><?php
+                <span class="left<?= $withTimeStatus ? ' even-time-pratique' : '' ?>"><?php
                     $adresse = sanitizeForHtml(HtmlShrink::adresseCompacteSelonContexte($even_lieu['region'], $even_lieu['localite'], $even_lieu['quartier'], $even_lieu['adresse']));
-                    echo $adresse;
-                    // avec les repères de temporalité (#51), le prix quitte la colonne des horaires,
-                    // que la barre de progression occupe désormais, pour se ranger sous l'adresse
-                    if ($withTimeStatus && !empty($tab_even['e_prix']))
+
+                    /*
+                     * Avec les repères de temporalité (#51), le prix quitte la colonne des horaires,
+                     * que la barre de progression occupe désormais, pour se ranger sous l'adresse.
+                     * Icônes et textes sont des cellules d'une grille à deux colonnes : les deux
+                     * icônes s'alignent, les deux textes aussi, et une adresse qui passe à la ligne
+                     * reste dans sa colonne.
+                     */
+                    if ($withTimeStatus)
                     {
-                        echo ($adresse !== '' ? '<br>' : '') . self::priceShortHtml((string) $tab_even['e_prix']);
+                        if ($adresse !== '')
+                        {
+                            echo '<i class="fa fa-location-arrow fa-fw" aria-hidden="true"></i><span>' . $adresse . '</span>';
+                        }
+                        if (!empty($tab_even['e_prix']))
+                        {
+                            echo self::priceShortHtml((string) $tab_even['e_prix']);
+                        }
+                    }
+                    else
+                    {
+                        echo $adresse;
                     }
                 ?></span>
                 <span class="right">
@@ -441,6 +469,9 @@ class EvenementRenderer
      * « terminé » se lit à la suite de l'horaire, entre parenthèses, parce qu'il le qualifie ;
      * le compte à rebours et la barre prennent la ligne suivante — la barre à la suite du compte
      * à rebours tant que l'événement n'a pas commencé, seule ensuite.
+     *
+     * Un événement qui commence dans plus de COUNTDOWN_VISIBLE_WITHIN_MINUTES n'a aucun repère :
+     * son horaire suffit, et la liste reste lisible.
      */
     public static function timeStatusHtml(?EvenementTimeStatus $status): string
     {
@@ -460,9 +491,18 @@ class EvenementRenderer
             return '<br>' . self::timeProgressHtml($status);
         }
 
+        $minutesUntilStart = (int) $status->minutesUntilStart;
+
+        if ($minutesUntilStart > self::COUNTDOWN_VISIBLE_WITHIN_MINUTES)
+        {
+            return '';
+        }
+
+        $urgent = $minutesUntilStart < self::COUNTDOWN_URGENT_UNDER_MINUTES ? ' even-time-urgent' : '';
+
         // l'espace qui sépare le compte à rebours de la barre est le seul point où la ligne peut
         // se couper : une barre longue passe alors dessous plutôt que de déborder de la colonne
-        return '<br><span class="even-time-status even-time-status-coming" title="' . sanitizeForHtml('Commence ' . $status->label) . '">'
+        return '<br><span class="even-time-status even-time-status-coming' . $urgent . '" title="' . sanitizeForHtml('Commence ' . $status->label) . '">'
             . '<i class="fa fa-clock-o" aria-hidden="true"></i>&nbsp;' . sanitizeForHtml($status->label) . '</span> '
             . self::timeProgressHtml($status);
     }
@@ -479,10 +519,12 @@ class EvenementRenderer
      * un calque de même largeur, lui, s'anime partout.
      *
      * Avant le début, la barre, vide, ne dit rien que le compte à rebours et l'horaire ne disent
-     * déjà : elle est masquée en bloc aux technologies d'assistance.
+     * déjà : elle seule est masquée aux technologies d'assistance — pas ce qui l'entoure, qui
+     * porte un bouton.
      *
-     * Sans horaire de fin, la durée est estimée (cf. EvenementTimeStatus) : le « ? » qui suit la
-     * barre le signale à l'œil, l'infobulle dit à quelle heure la fin a été fixée.
+     * Sans horaire de fin, la durée est estimée (cf. EvenementTimeStatus) : un bouton « ? » suit
+     * la barre et ouvre une bulle disant à quelle heure la fin a été fixée. Une infobulle native
+     * (title) ne s'ouvre pas au doigt, et l'agenda se lit beaucoup sur téléphone.
      */
     private static function timeProgressHtml(EvenementTimeStatus $status): string
     {
@@ -499,8 +541,8 @@ class EvenementRenderer
             ? 'En cours, ' . $status->label . ' écoulés' . ($estimation !== null ? ' — ' . $estimation : '')
             : null;
 
-        $html = '<span class="even-time-status even-time-status-' . $status->state . '"' . ($isRunning ? '' : ' aria-hidden="true"') . '>'
-            . '<span class="even-time-bar" style="width:' . $width . 'px"' . ($title !== null ? ' title="' . sanitizeForHtml($title) . '"' : '') . '>'
+        $html = '<span class="even-time-status even-time-status-' . $status->state . '">'
+            . '<span class="even-time-bar" style="width:' . $width . 'px"' . ($title !== null ? ' title="' . sanitizeForHtml($title) . '"' : ' aria-hidden="true"') . '>'
             . '<progress class="even-time-progress" max="100" value="' . $percent . '"' . ($title !== null ? ' aria-label="' . sanitizeForHtml($title) . '"' : '') . '>' . $percentHtml . '</progress>';
 
         if ($percent > 0)
@@ -513,7 +555,7 @@ class EvenementRenderer
 
         if ($estimation !== null)
         {
-            $html .= '<span class="even-time-estimated" title="' . sanitizeForHtml(ucfirst($estimation)) . '" aria-hidden="true">?</span>';
+            $html .= self::estimateButtonHtml(ucfirst($estimation));
         }
 
         return $html . '</span>';
@@ -521,21 +563,40 @@ class EvenementRenderer
 
 
     /**
+     * Le bouton « ? » qui explique une durée estimée (#51).
+     *
+     * Le texte voyage dans data-estimate : une seule bulle sert toute la page, que global.js
+     * remplit et place au survol, au focus ou à la touche du bouton. Le même texte est le nom
+     * accessible du bouton, si bien que rien ne dépend de l'ouverture de la bulle.
+     */
+    private static function estimateButtonHtml(string $texte): string
+    {
+        return '<button type="button" class="even-time-estimated js-even-time-estimate"'
+            . ' data-estimate="' . sanitizeForHtml($texte) . '" aria-label="' . sanitizeForHtml($texte) . '">'
+            . '<i class="fa fa-question-circle" aria-hidden="true"></i></button>';
+    }
+
+
+    /**
      * Le prix d'une carte, rangé sous l'adresse avec les repères de temporalité (#51).
      *
-     * Au-delà de PRICE_MAX_CHARS, il est coupé au mot près et suivi de « (...) » ; l'infobulle le
-     * rend entier, et la fiche de l'événement le donne de toute façon en entier.
+     * L'icône précède le texte sans l'envelopper : les deux sont des cellules de la grille de
+     * .even-time-pratique, ce qui aligne le prix sur l'adresse.
+     *
+     * Au-delà de PRICE_MAX_CHARS, le prix est coupé au mot près et suivi de « (...) » ; l'infobulle
+     * le rend entier, et la fiche de l'événement le donne de toute façon en entier.
      */
     public static function priceShortHtml(string $prix): string
     {
         $prix = trim($prix);
+        $icone = '<i class="fa fa-money fa-fw" aria-hidden="true"></i>';
 
         if (!Text::isCut($prix, self::PRICE_MAX_CHARS))
         {
-            return '<span class="even-time-price">' . sanitizeForHtml($prix) . '</span>';
+            return $icone . '<span class="even-time-price">' . sanitizeForHtml($prix) . '</span>';
         }
 
-        return '<span class="even-time-price" title="' . sanitizeForHtml($prix) . '">'
+        return $icone . '<span class="even-time-price" title="' . sanitizeForHtml($prix) . '">'
             . sanitizeForHtml(Text::truncateWords($prix, self::PRICE_MAX_CHARS)) . ' (...)</span>';
     }
 

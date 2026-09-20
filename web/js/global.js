@@ -15,6 +15,7 @@ export const AppGlobal =
         Events.init();
         Lieux.init();
         LieuInfo.init();
+        TimeEstimate.init();
         HomePage.init();
         Calendar.init();
         Shortcuts.init();
@@ -675,6 +676,146 @@ const LieuInfo = {
         });
 
         trigger.hidden = (idLieuSelectionne() === null);
+    }
+};
+
+/**
+ * Bulle du bouton « ? » des repères de temporalité de l'agenda (#51), qui dit à quelle heure la
+ * fin d'un événement a été estimée. Une seule bulle sert toute la liste : elle est remplie depuis
+ * data-estimate et placée sous le bouton à chaque ouverture.
+ *
+ * Survol et focus là où l'on pointe, touche partout — une infobulle native (title) ne s'ouvre pas
+ * au doigt, et l'agenda se lit beaucoup sur téléphone. API Popover native, avec un repli par
+ * classes CSS sur les navigateurs qui ne la supportent pas encore (Safari < 17 notamment).
+ *
+ * @returns {undefined}
+ */
+const TimeEstimate = {
+    init : function bindTimeEstimatePopover()
+    {
+        const popover = document.getElementById('even-time-estimate-popover');
+        const boutons = document.querySelectorAll('.js-even-time-estimate');
+
+        if (!popover || boutons.length === 0)
+        {
+            return;
+        }
+
+        const supportsPopoverApi = 'showPopover' in HTMLElement.prototype;
+        // sans survol (téléphone, tablette), l'ouverture au survol se déclencherait à la touche
+        // puis serait défaite par le clic émulé qui suit
+        const peutSurvoler = window.matchMedia('(hover: hover)').matches;
+        const MARGE_PX = 4;
+
+        if (!supportsPopoverApi)
+        {
+            popover.classList.add('even-time-estimate-popover--fallback');
+        }
+
+        function estOuverte()
+        {
+            return supportsPopoverApi
+                ? popover.matches(':popover-open')
+                : popover.classList.contains('even-time-estimate-popover--open');
+        }
+
+        function placer(bouton)
+        {
+            const rect = bouton.getBoundingClientRect();
+            const largeur = popover.getBoundingClientRect().width;
+            const gaucheMax = document.documentElement.clientWidth - largeur - MARGE_PX;
+
+            popover.style.top = (rect.bottom + MARGE_PX) + 'px';
+            // le bouton est collé au bord droit de la colonne : sans ce rattrapage, la bulle
+            // déborderait de la fenêtre sur les petits écrans
+            popover.style.left = Math.max(MARGE_PX, Math.min(rect.left, gaucheMax)) + 'px';
+        }
+
+        function ouvrir(bouton)
+        {
+            popover.textContent = bouton.dataset.estimate || '';
+
+            if (supportsPopoverApi)
+            {
+                if (!estOuverte())
+                {
+                    popover.showPopover();
+                }
+            }
+            else
+            {
+                popover.classList.add('even-time-estimate-popover--open');
+            }
+
+            // après l'ouverture seulement : une bulle masquée n'a pas de largeur, donc pas de
+            // rattrapage possible. Le navigateur ne peint qu'une fois le gestionnaire terminé,
+            // le déplacement ne se voit pas.
+            placer(bouton);
+        }
+
+        function fermer()
+        {
+            if (!estOuverte())
+            {
+                return;
+            }
+
+            if (supportsPopoverApi)
+            {
+                popover.hidePopover();
+            }
+            else
+            {
+                popover.classList.remove('even-time-estimate-popover--open');
+            }
+        }
+
+        boutons.forEach(function brancherBouton(bouton)
+        {
+            // le clic ouvre plutôt qu'il ne bascule : au doigt, on referme en touchant ailleurs,
+            // et au survol la bulle est déjà ouverte quand le clic arrive
+            bouton.addEventListener('click', function ouvrirAuClic()
+            {
+                ouvrir(bouton);
+            });
+
+            bouton.addEventListener('focus', function ouvrirAuFocus()
+            {
+                ouvrir(bouton);
+            });
+
+            bouton.addEventListener('blur', fermer);
+
+            if (peutSurvoler)
+            {
+                bouton.addEventListener('mouseenter', function ouvrirAuSurvol()
+                {
+                    ouvrir(bouton);
+                });
+
+                bouton.addEventListener('mouseleave', fermer);
+            }
+        });
+
+        // l'API Popover ferme d'elle-même au clic extérieur et à Échap ; le repli, non
+        if (!supportsPopoverApi)
+        {
+            document.addEventListener('click', function fermerSiClicExterieur(e)
+            {
+                if (!popover.contains(e.target) && !e.target.closest('.js-even-time-estimate'))
+                {
+                    fermer();
+                }
+            });
+
+            document.addEventListener('keydown', function fermerAEchap(e)
+            {
+                if (e.key === 'Escape')
+                {
+                    fermer();
+                }
+            });
+        }
     }
 };
 

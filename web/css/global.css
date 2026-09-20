@@ -1347,8 +1347,8 @@ table .td-align-center
         position:relative;
         display:inline-block;
         min-width:2.6em;
-        max-width:calc(100% - 1em);
-        height:0.8em;
+        max-width:calc(100% - 1.4em);
+        height:1.2em;
         border-radius:2px;
         overflow:hidden;
         vertical-align:middle;
@@ -1398,7 +1398,9 @@ table .td-align-center
             bottom:0;
             left:0;
             background-image:linear-gradient(-45deg, rgba(255, 255, 255, 0.45) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.45) 50%, rgba(255, 255, 255, 0.45) 75%, transparent 75%, transparent);
-            background-size:0.8em 0.8em;
+            /* une tuile aussi haute que la barre : les rayures la traversent d'un bord à l'autre,
+               et le décalage d'une tuile par seconde de l'animation reste sans couture */
+            background-size:1.2em 1.2em;
             animation:even-time-stripes 1s linear 4;
         }
 
@@ -1426,7 +1428,7 @@ table .td-align-center
 
     to
     {
-        background-position:0.8em 0;
+        background-position:1.2em 0;
     }
 }
 
@@ -1438,12 +1440,97 @@ table .td-align-center
     }
 }
 
-    /* Fin inconnue : la durée est estimée faute de mieux, ce « ? » ne le laisse pas croire */
+    /* Moins d'une demi-heure avant le début : le compte à rebours se fait remarquer */
+    .even-time-status-coming.even-time-urgent
+    {
+        font-weight:bold;
+    }
+
+    /*
+     * Fin inconnue : la durée est estimée faute de mieux, et ce bouton « ? » ne le laisse pas
+     * croire. Bouton et non lien : il n'emmène nulle part, il ouvre une bulle — et au doigt,
+     * une infobulle native ne s'ouvrirait pas. Même remise à zéro que .lieu-info-trigger.
+     */
     .even-time-estimated
     {
-        padding-left:0.2em;
-        font-weight:bold;
+        position:relative;
+        margin-left:0.2em;
+        padding:0;
+        border:none;
+        background:none;
+        font:inherit;
+        color:inherit;
+        vertical-align:middle;
         cursor:help;
+    }
+
+        /*
+         * L'icône fait 9 px dans une colonne où la place manque : cette zone invisible lui donne
+         * les 24 px de côté qu'un doigt réclame (WCAG 2.5.8), sans rien pousser autour d'elle.
+         */
+        .even-time-estimated::after
+        {
+            content:"";
+            position:absolute;
+            top:50%;
+            left:50%;
+            width:24px;
+            height:24px;
+            transform:translate(-50%, -50%);
+        }
+
+    /*
+     * La bulle, unique pour toute la liste : global.js y écrit le texte du bouton ouvert et la
+     * place en coordonnées fixes. L'API Popover la dessine dans la couche supérieure et la ferme
+     * au clic extérieur comme à Échap ; sans elle, --fallback rend les deux classes utiles.
+     */
+    .even-time-estimate-popover
+    {
+        display:none;
+        position:fixed;
+        inset:unset;
+        /* sans width:max-content, la largeur d'une boîte positionnée se calcule sur la place
+           restant à sa droite : posée près du bord, la bulle se tasserait en colonne */
+        width:max-content;
+        max-width:18em;
+        margin:0;
+        padding:0.5em 0.7em;
+        border:1px solid #ccc;
+        border-radius:3px;
+        background:#fff;
+        box-shadow:0 4px 12px rgba(0, 0, 0, 0.15);
+        font-size:0.8em;
+        line-height:1.4;
+        text-align:left;
+        color:#59787A;
+    }
+
+    .even-time-estimate-popover:popover-open
+    {
+        display:block;
+    }
+
+    .even-time-estimate-popover--fallback
+    {
+        z-index:999;
+    }
+
+    .even-time-estimate-popover--fallback.even-time-estimate-popover--open
+    {
+        display:block;
+    }
+
+    /*
+     * L'adresse et le prix, chacun précédé de son icône : une grille à deux colonnes aligne les
+     * icônes entre elles et les textes entre eux, et une adresse qui passe à la ligne reste dans
+     * sa colonne plutôt que de revenir sous l'icône.
+     */
+    .evenement-short .pratique .left.even-time-pratique
+    {
+        display:grid;
+        grid-template-columns:auto 1fr;
+        gap:0.15em 0.3em;
+        align-items:baseline;
     }
 
     /*

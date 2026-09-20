@@ -304,6 +304,11 @@ include("_header.inc.php");
             <p class="even-time-preview"><i class="fa fa-clock-o" aria-hidden="true"></i>&nbsp;Repères de temporalité en préversion : vous seuls, administrateurs, les voyez. Ils situent chaque événement par rapport à <?= date('H:i') ?>, l’heure de chargement de cette page.</p>
         <?php endif; ?>
 
+        <?php // une seule bulle pour tous les boutons « ? » de la liste : global.js la remplit et la place
+        if ($time_status_enabled) : ?>
+            <div id="even-time-estimate-popover" class="even-time-estimate-popover" popover></div>
+        <?php endif; ?>
+
         <?php
         // Même raison : sans cette ligne, un administrateur classe en « cours » sans savoir
         // que le public lit toujours « divers ». La seconde phrase est la plus utile.

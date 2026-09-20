@@ -205,6 +205,26 @@ final class EvenementTimeStatusTest extends Unit
         $this->assertFalse($status->endEstimated);
     }
 
+    /**
+     * Le temps restant voyage non arrondi à côté du libellé, qui l'est : c'est lui que l'affichage
+     * interroge pour décider s'il montre un repère, et s'il presse.
+     */
+    public function testAvantLeDebutLeTempsRestantEstPorteSansArrondi(): void
+    {
+        $status = EvenementTimeStatus::fromHoraires('2026-04-28', '2026-04-28 21:00:00', '2026-04-28 23:00:00', '2026-04-28 20:33:00');
+
+        $this->assertSame('dans 30min', $status?->label);
+        $this->assertSame(27, $status->minutesUntilStart);
+    }
+
+    public function testUneFoisCommenceLeTempsRestantNaPlusDeSens(): void
+    {
+        $status = EvenementTimeStatus::fromHoraires('2026-04-28', '2026-04-28 21:00:00', '2026-04-28 23:00:00', '2026-04-28 21:30:00');
+
+        $this->assertSame(EvenementTimeStatus::RUNNING, $status?->state);
+        $this->assertNull($status->minutesUntilStart);
+    }
+
     public function testAvantLeDebutSansHoraireDeFinLaDureeEstEstimee(): void
     {
         $status = EvenementTimeStatus::fromHoraires('2026-04-28', '2026-04-28 20:00:00', null, '2026-04-28 19:00:00', 'théâtre');
