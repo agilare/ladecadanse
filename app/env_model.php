@@ -47,6 +47,43 @@ define("GLITCHTIP_ENABLED", false);
 define("GLITCHTIP_DSN", "");
 
 // service to monitor and moderate bots (AI, crawlers, etc.)
+//
+// SUSPENDU le 2026-09-20 dans le cadre de la conformité nLPD/RGPD (issue #93), au profit
+// du suivi interne ci-dessous (BOT_MONITORING_ENABLED). À ne réactiver qu'à titre
+// exceptionnel, et pas avant d'avoir lu ce qui suit.
+//
+// Le service s'appelle désormais Known Agents (darkvisitors.com redirige vers
+// knownagents.com) ; les constantes ont gardé l'ancien nom. La CSP de app/bootstrap.php
+// autorise déjà knownagents.com.
+//
+// Ce que l'activation déclenche, pour TOUS les visiteurs, personnes connectées comprises :
+//   - app/bootstrap.php envoie au tiers, à chaque page vue, l'URI demandée et les en-têtes
+//     de la requête. Cookie, Authorization et Proxy-Authorization en sont retirés (ne pas
+//     défaire ce filtre), mais il reste à faire avant de réactiver :
+//       · n'envoyer que le chemin : REQUEST_URI part avec sa query string, donc avec le
+//         jeton de user/reset2.php?token=… ; l'en-tête Referer, transmis lui aussi, porte
+//         l'URL complète de la page précédente et demande le même traitement
+//       · exclure les sessions connectées, comme le fait le suivi interne
+//         (empty($_SESSION['logged']))
+//   - cet envoi se fait au shutdown, timeout de 200 ms : le visiteur n'attend pas, mais
+//     chaque page vue retient son processus PHP le temps de l'appel, ce qui aggrave une
+//     surcharge au lieu d'aider à la diagnostiquer
+//   - _header.inc.php charge knownagents.com/tracker.js sur toutes les pages : le tiers
+//     reçoit l'adresse IP et le User-Agent de chaque visiteur. Le script (relevé le
+//     2026-09-20, il peut changer sans préavis) poste en plus le chemin AVEC sa query
+//     string, le referrer et une empreinte du navigateur (écran, navigator.*) pour les
+//     navigateurs d'allure automatisée et pour les personnes arrivant d'un chat IA
+//     (chatgpt.com, claude.ai, perplexity.ai…). C'est un script tiers exécuté jusque sur
+//     les pages de connexion et de réinitialisation : ne pas l'y charger
+//
+// Côté conformité : c'est une transmission de données personnelles à un tiers, dont le
+// service tournait le 2026-09-20 sur Google Cloud Run us-central1 (États-Unis). L'inscrire
+// à l'inventaire de l'issue #93 et à la politique de confidentialité.
+//
+// Ce qu'il apporte réellement : un annuaire tenu à jour d'agents DÉCLARÉS (reconnus par
+// leur User-Agent), des séries temporelles, la détection d'un faux Googlebot. Il ne voit
+// pas mieux que le suivi interne les bots à faux User-Agent ni les sondeurs de failles :
+// pour ceux-là, l'access log de l'hébergeur reste l'outil.
 define("DARKVISITORS_ENABLED", false);
 define("DARKVISITORS_PROJECT_KEY", '');
 define("DARKVISITORS_ACCESS_TOKEN", '');
