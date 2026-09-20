@@ -1668,29 +1668,62 @@ a.favorite-btn.is-favorite
     clear: both;
 }
 
+/*
+ * Le bandeau du visiteur garde son cadre propre, plus discret que les .msg_info du site.
+ * La croix se loge dans le coin haut droit — d'où le position: relative et la réserve de
+ * place à droite — et le texte reste à la taille du contenu, là où un 0.85em le rendait
+ * plus petit que tout ce qui l'entoure.
+ */
 .favorites-guest-banner
 {
+    position: relative;
     clear: both;
+    /* la page dimensionne ses blocs en pourcentage : sans cela, le padding s'y ajoute et le
+       bandeau dépasse la colonne */
+    box-sizing: border-box;
     background: #f0f4f8;
     border: 1px solid #d0d8e0;
     border-radius: 3px;
-    padding: 0.5em 0.8em;
-    margin: 0.4em 0;
-    font-size: 0.85em;
+    padding: 0.7em 2.2em 0.2em 0.8em;
+    /* marges verticales seules : la page centre ses blocs par un margin horizontal auto, qu'un
+       raccourci écraserait — le bandeau sortirait alors du cadre des autres */
+    margin-top: 0.4em;
+    margin-bottom: 0.4em;
     color: #555;
+    line-height:1.4em;
 }
+
+    .favorites-guest-banner p
+    {
+        margin: 0;
+    }
 
     .favorites-guest-banner a
     {
         color: #1569C7;
     }
 
-    .favorites-guest-banner .js-favorites-banner-dismiss
+    /* sélecteur tenu à deux classes : la couleur des liens du bandeau l'emporterait sinon,
+       et la croix virerait au bleu */
+    .favorites-guest-banner .favoris-bandeau-fermer
     {
-        float: right;
-        color: #999;
-        margin-left: 0.5em;
+        position: absolute;
+        top: 0.5em;
+        right: 0.7em;
+        color: #777;
     }
+
+    .favorites-guest-banner .favoris-bandeau-fermer:hover
+    {
+        color: #333;
+    }
+
+/* Le message d'une liste vide ne se colle pas au bandeau qui le précède. Sélecteur porté par
+   #contenu : le margin de « #contenu p » l'emporterait sur une simple classe. */
+#contenu .favoris-vide
+{
+    margin-top: 1.5em;
+}
 
 #favoris_filter_navigation
 {

@@ -127,9 +127,9 @@ include("_header.inc.php");
 
         <?php if ($count === 0) : ?>
             <?php if ($view === 'passes') : ?>
-                <div><p>Aucun événement passé dans vos favoris.</p></div>
+                <p class="favoris-vide">Aucun événement passé dans vos favoris.</p>
             <?php else : ?>
-                <div><p>Vous n'avez pas encore de favoris à venir. Cliquez sur <i class="fa fa-heart-o" style="color:#e74c3c"></i> à côté d'un événement pour l'ajouter.</p></div>
+                <p class="favoris-vide">Vous n'avez pas encore de favoris à venir. Cliquez sur <i class="fa fa-heart-o" style="color:#e74c3c"></i> à côté d'un événement pour l'ajouter.</p>
             <?php endif; ?>
         <?php else : ?>
             <div><p><?= $view === 'passes' ? $totalCount : $count ?> événement<?= ($view === 'passes' ? $totalCount : $count) > 1 ? 's' : '' ?></p></div>
@@ -148,13 +148,13 @@ include("_header.inc.php");
     <?php else : ?>
 
         <div id="favorites_guest_banner" class="favorites-guest-banner">
-            <p>Vos favoris sont enregistrés uniquement sur cet appareil et peuvent être supprimés si vous videz les données de votre navigateur. Pour les conserver sur tous vos appareils, <a href="/user/login.php">connectez-vous</a>.
-            <a href="#" class="js-favorites-banner-dismiss" title="Fermer"><i class="fa fa-times"></i></a></p>
+            <a href="#" class="js-favorites-banner-dismiss favoris-bandeau-fermer" title="Fermer" aria-label="Fermer ce message"><i class="fa fa-times" aria-hidden="true"></i></a>
+            <p>Ces favoris sont enregistrés uniquement sur <strong>cet</strong> appareil et seront supprimés si vous videz les données de votre navigateur. Pour les conserver sur tous vos appareils, <a href="/user/login.php">connectez-vous</a></p>
         </div>
 
         <div id="favorites-guest-list">
-            <p class="js-favorites-loading">Chargement de vos favoris...</p>
-            <p class="js-favorites-empty" style="display:none">Vous n'avez pas encore de favoris. Cliquez sur <i class="fa fa-heart-o" style="color:#e74c3c"></i> à côté d'un événement pour l'ajouter.</p>
+            <p class="js-favorites-loading favoris-vide">Chargement de vos favoris...</p>
+            <p class="js-favorites-empty favoris-vide" style="display:none">Vous n'avez pas encore de favoris. Cliquez sur <i class="fa fa-heart-o" style="color:#e74c3c"></i> à côté d'un événement pour l'ajouter.</p>
             <div class="js-favorites-pagination-top"></div>
             <div class="js-favorites-content"></div>
             <div class="js-favorites-pagination"></div>
