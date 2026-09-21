@@ -131,11 +131,25 @@ $tot_elements = 0;
  */
 $showsContributions = false;
 
+/*
+ * Affiliations, signature des événements ajoutés, valeurs par défaut du formulaire d'ajout :
+ * trois lignes de la fiche qui, comme les fieldsets du même nom dans user-edit.php, ne parlent
+ * qu'aux comptes qui ajoutent des événements. Un MEMBER ne peut ni les régler ni s'en servir —
+ * un compte rétrogradé lirait sinon des réglages qu'aucun formulaire ne lui laisse modifier.
+ * Niveau de la fiche là encore, pour la même raison que ci-dessus.
+ */
+$showsContributorRows = false;
+
 if ($erreur === null)
 {
-    $affiliations_lieux = Personne::getAffiliationsLieux($get['idP']);
-    $organisateurs = Personne::getOrganisateurs($get['idP']);
-    $signature = Personne::getSignatureHtml($get['idP']);
+    $showsContributorRows = (int) $profil['groupe'] <= UserLevel::ACTOR;
+
+    if ($showsContributorRows)
+    {
+        $affiliations_lieux = Personne::getAffiliationsLieux($get['idP']);
+        $organisateurs = Personne::getOrganisateurs($get['idP']);
+        $signature = Personne::getSignatureHtml($get['idP']);
+    }
 
     $stmt = $connectorPdo->prepare("SELECT COUNT(*) FROM evenement WHERE idPersonne = :idP");
     $stmt->execute([':idP' => $get['idP']]);
@@ -217,7 +231,7 @@ if ($erreur === null)
 // d'organisateurs deviennent des noms.
 $defauts_evenement = [];
 
-if ($erreur === null)
+if ($erreur === null && $showsContributorRows)
 {
     $defauts = UserSettings::eventNewDefaults($profil['settings']);
 
@@ -329,6 +343,7 @@ if ($erreur !== null)
 		<table>
 			<tr><th>Identifiant</th><td><?= sanitizeForHtml($profil['pseudo']) ?></td></tr>
 			<tr><th>E-mail</th><td><?= sanitizeForHtml($profil['email']) ?></td></tr>
+			<?php if ($showsContributorRows) : ?>
 			<tr><th>Affiliations</th><td>
 				<?php foreach ($affiliations_lieux as $lieu_affilie) : ?>
 					<a href="/lieu/lieu.php?idL=<?= (int) $lieu_affilie['idLieu'] ?>" title="Voir la fiche du lieu : <?= sanitizeForHtml($lieu_affilie['nom']) ?>"><?= sanitizeForHtml($lieu_affilie['nom']) ?></a><br />
@@ -347,6 +362,7 @@ if ($erreur !== null)
 				<?php $paires = []; foreach ($defauts_evenement as $intitule => $valeur) { $paires[] = $intitule . ' : ' . sanitizeForHtml($valeur); } ?>
 				<?= implode(', ', $paires) ?>
 			</td></tr>
+			<?php endif; ?>
 			<?php endif; ?>
 			<tr><th>Inscription</th><td><?= DateHelper::isoToFr(mb_substr((string) $profil['dateAjout'], 0, 10), 'annee', showDayOfWeek: false) ?></td></tr>
 		</table>
