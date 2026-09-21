@@ -245,9 +245,15 @@ $mouseless_allowed = isset($_SESSION['Sgroupe']) && (int) $_SESSION['Sgroupe'] <
                         }
                         else
                         {
-                            if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= UserLevel::ACTOR)) { ?>
+                            // MEMBER (12) compris : evenement-edit.php lui sert le formulaire public, et son
+                            // événement part en modération. Sans ce lien, connecté, il n'avait plus aucune
+                            // entrée vers le formulaire — « Annoncer un événement » ne s'adresse qu'aux visiteurs.
+                            //
+                            // Le libellé suit le titre de la page d'arrivée, donc le même seuil que
+                            // $est_connecte dans evenement-edit.php : sous ACTOR on propose, on n'ajoute pas.
+                            if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= UserLevel::MEMBER)) { ?>
                                 <li <?php if (strstr((string) $_SERVER['PHP_SELF'], "evenement-edit.php")) : ?>class="ici"<?php endif; ?>>
-                                    <a href="/evenement-edit.php?action=ajouter">Ajouter un événement</a>
+                                    <a href="/evenement-edit.php?action=ajouter"><?= $_SESSION['Sgroupe'] <= UserLevel::ACTOR ? 'Ajouter' : 'Proposer' ?> un événement</a>
                                 </li>
                             <?php } ?>
 
