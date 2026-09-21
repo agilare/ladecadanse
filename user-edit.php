@@ -23,11 +23,25 @@ use Ladecadanse\Localite;
 use Ladecadanse\Personne;
 use Ladecadanse\UserSettings;
 
-if (!$authorization->checkGroup(UserLevel::ACTOR)) {
+// Tout compte modifie le sien, MEMBER (12) compris : sans quoi il n'aurait aucun moyen de
+// changer son mot de passe ni son e-mail, et le lien « Modifier » de sa fiche menait à un 403.
+if (!$authorization->checkGroup(UserLevel::MEMBER)) {
     header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
     header("Location: /user/login.php");
     die();
 }
+
+/*
+* Ce que le formulaire expose au-delà du compte lui-même — affiliations, signature des
+* événements ajoutés, valeurs par défaut du formulaire d'ajout — ne parle qu'aux comptes qui
+* ajoutent des événements. Un MEMBER n'en ajoute pas : il ne voit que son identification, son
+* mot de passe et son e-mail.
+*
+* Le même drapeau commande le traitement : ces champs n'étant plus postés, la boucle de
+* l'UPDATE écrirait sinon leur valeur par défaut sur ce que porte la base, et les tables
+* affiliation et personne_organisateur seraient vidées de leurs lignes.
+*/
+$showsContributorFields = isset($_SESSION['Sgroupe']) && (int) $_SESSION['Sgroupe'] <= UserLevel::ACTOR;
 
 $get['action'] = "ajouter";
 
@@ -282,11 +296,33 @@ if ($formulaire_poste)
 			$champs['pseudo'] = $_SESSION['user'];
 		}
 
-		// Le fieldset « Événements » n'est rendu qu'en édition : on ne touche à la colonne que là.
+		/*
+		 * Colonnes que le formulaire n'a pas montrées : la base fait foi.
+		 *
+		 * Un champ absent du formulaire ne poste rien, et la boucle de l'UPDATE écrit une colonne
+		 * par clé de $champs — l'affiliation et la signature d'un compte rétrogradé auraient été
+		 * remises à leur valeur par défaut au premier enregistrement, sans un mot.
+		 */
+		if (!$showsContributorFields && $get['action'] == 'update' && isset($get['idP']))
+		{
+			$stmt = $connectorPdo->prepare("SELECT affiliation, signature, avec_affiliation FROM personne WHERE idPersonne = ?");
+			$stmt->execute([(int) $get['idP']]);
+			$storedValues = $stmt->fetch(PDO::FETCH_ASSOC);
+
+			if ($storedValues !== false)
+			{
+				$champs['affiliation'] = $storedValues['affiliation'];
+				$champs['signature'] = $storedValues['signature'];
+				$champs['avec_affiliation'] = $storedValues['avec_affiliation'];
+			}
+		}
+
+		// Le fieldset « Événements » n'est rendu qu'en édition, et qu'aux comptes qui ajoutent des
+		// événements : on ne touche à la colonne que là.
 		// Comme pour mot_de_passe et gds juste au-dessus, ajouter la clé à $champs suffit à ce que
 		// la boucle de génération de l'UPDATE écrive la colonne du même nom. La relecture préalable
 		// préserve les réglages d'un autre domaine que ce formulaire n'expose pas.
-		if ($get['action'] == 'update' && isset($get['idP']))
+		if ($showsContributorFields && $get['action'] == 'update' && isset($get['idP']))
 		{
 			$champs['settings'] = UserSettings::withEventNewDefaults(
 				Personne::getSettingsJson((int) $get['idP']),
@@ -366,7 +402,9 @@ if ($formulaire_poste)
 			$connector->query("SELECT idPersonne FROM affiliation WHERE idPersonne=" . (int) $get['idP']);
 
             //si la nouvelle affiliation est un lieu, update s'il en a déjà une, insert sinon
-			if (!empty($champs['lieu']))
+            // le fieldset Affiliation(s) n'a pas été rendu : le select des lieux n'a rien posté,
+            // et l'affiliation en base n'est pas à reprendre sur ce silence
+			if ($showsContributorFields && !empty($champs['lieu']))
             {
 				if ($connector->getAffectedRows() > 0)
 				{
@@ -389,7 +427,7 @@ if ($formulaire_poste)
 			}
 			else
 			{
-				if ($connector->getAffectedRows() > 0)
+				if ($showsContributorFields && $connector->getAffectedRows() > 0)
 				{
 					$connector->query("DELETE FROM affiliation WHERE idPersonne=" . (int) $get['idP'] . " AND genre='lieu'");
                 }
@@ -430,8 +468,13 @@ if ($formulaire_poste)
 
                 $logger->info('[user-edit] user updated', ['pseudo' => $champs['pseudo'], 'by' => $_SESSION["user"]]);
 
-                $sqld = "DELETE FROM personne_organisateur WHERE idPersonne=" . (int) $get['idP'];
-                $connector->query($sqld);
+                // Le couple efface-puis-réinsère ne vaut que si le select des organisateurs a
+                // été rendu : sans lui, le POST n'en porte aucun et l'effacement serait sec.
+                if ($showsContributorFields)
+                {
+                    $sqld = "DELETE FROM personne_organisateur WHERE idPersonne=" . (int) $get['idP'];
+                    $connector->query($sqld);
+                }
 				$req_id = $get['idP'];
 				$idP_succes = (int) $get['idP'];
 			}
@@ -651,7 +694,9 @@ if ($verif->nbErreurs() > 0)
     </fieldset>
 
     <?php
-    if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= UserLevel::ACTOR)) {
+    // Affiliations et signature des événements ajoutés : deux fieldsets qui ne parlent qu'aux
+    // comptes qui en ajoutent.
+    if ($showsContributorFields) {
     ?>
 
     <fieldset id="references">
@@ -830,10 +875,6 @@ if ($verif->nbErreurs() > 0)
         <?= $verif->getHtmlErreur("doublon_organisateur"); ?>
     </fieldset>
 
-    <?php
-    }
-    ?>
-
     <fieldset>
 
         <legend>Votre signature</legend>
@@ -902,20 +943,21 @@ if ($verif->nbErreurs() > 0)
 
     </fieldset>
 
-
     <?php
+    }
+
     /*
     * Réglages du formulaire d'ajout d'événement.
     *
     * Rendu en édition seulement : à la création d'un compte par un admin ces réglages n'ont pas de sens,
-    * et cela évite deux requêtes inutiles. Aucune condition de groupe : la page est déjà réservée à
-    * UserLevel::ACTOR, et tout utilisateur connecté peut ajouter un événement — contrairement au
-    * fieldset Affiliation ci-dessus, réservé lui à UserLevel::AUTHOR.
+    * et cela évite deux requêtes inutiles. Et aux seuls comptes qui ajoutent des événements : un MEMBER
+    * (12) n'en ajoute pas, comme le fieldset Affiliation ci-dessus, dont les champs sont eux réservés
+    * à UserLevel::AUTHOR.
     *
     * Tous les champs sont préfixés ev_defaults_ : le fieldset Affiliation occupe déjà les noms « lieu »
     * et « organisateurs[] », et les clés de $champs sont autant de colonnes de la table personne.
     */
-    if ($get['action'] == "editer" || $get['action'] == "update")
+    if ($showsContributorFields && ($get['action'] == "editer" || $get['action'] == "update"))
     {
     ?>
     <fieldset>

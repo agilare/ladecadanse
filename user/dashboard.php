@@ -120,6 +120,17 @@ $tab_descs = [];
 $totaux = ["evenement" => 0, "description" => 0];
 $tot_elements = 0;
 
+/*
+ * Le bloc des contenus ajoutés — onglets, filtre par titre, tableau — n'a de sens que pour un
+ * compte qui en ajoute. Un MEMBER (12) n'écrit ni événement ni description : la page lui
+ * annonçait un « Aucun événement ajouté pour le moment » qui n'attend rien. Le bloc reparaît
+ * s'il en porte malgré tout, cas improbable d'un compte rétrogradé.
+ *
+ * Le niveau lu est celui de la fiche et non celui du visiteur : c'est ce compte-là que la page
+ * décrit, et un administrateur n'a pas plus à lire le vide d'un membre que le membre lui-même.
+ */
+$showsContributions = false;
+
 if ($erreur === null)
 {
     $affiliations_lieux = Personne::getAffiliationsLieux($get['idP']);
@@ -135,6 +146,10 @@ if ($erreur === null)
     $totaux['description'] = (int) $stmt->fetchColumn();
 
     $tot_elements = $totaux[$get['elements']];
+
+    $showsContributions = (int) $profil['groupe'] <= UserLevel::ACTOR
+        || $totaux['evenement'] > 0
+        || $totaux['description'] > 0;
 
     $offset = ($get['page'] - 1) * $get['nblignes'];
     // valeurs issues de la liste blanche $tab_tri, jamais de la requête
@@ -340,13 +355,12 @@ if ($erreur !== null)
 		<?php endif; ?>
 	</div>
 
-	<?php if ($_SESSION['Sgroupe'] <= UserLevel::ACTOR) : ?>
+	<?php if ($showsContributions) : ?>
 	<nav class="tabs" aria-label="Contenus ajoutés">
 		<?php foreach ($tab_elements as $cle_element => $libelle_element) : ?>
 		<a href="?idP=<?= (int) $get['idP'] ?>&amp;elements=<?= $cle_element ?>&amp;tri=<?= $get['tri'] ?>&amp;ordre=<?= $get['ordre'] ?>&amp;nblignes=<?= $get['nblignes'] ?>"<?= $get['elements'] === $cle_element ? ' class="ici"' : '' ?>><i class="fa <?= $icones_onglets[$cle_element] ?>" aria-hidden="true"></i>&nbsp;<?= $libelle_element ?><sup><?= $totaux[$cle_element] ?></sup></a>
 		<?php endforeach; ?>
 	</nav>
-	<?php endif; ?>
 
 	<?php if ($get['elements'] === "evenement") : ?>
 
@@ -478,6 +492,8 @@ if ($erreur !== null)
 	<?php endif; ?>
 
 	<?= HtmlShrink::getPaginationString($tot_elements, $get['page'], $get['nblignes'], 1, "", $url_pagination) ?>
+
+	<?php endif; // $showsContributions ?>
 
 </main>
 

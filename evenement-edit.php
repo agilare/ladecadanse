@@ -27,8 +27,16 @@ use Ladecadanse\UserSettings;
 
 // Un visiteur non connecté utilise le formulaire public « Proposer un événement » :
 // pas de fieldset Statut, email obligatoire, événement créé en « proposé ».
+//
+// Le seuil est ACTOR et non la seule présence d'une session : un compte MEMBER (12) n'ajoute
+// pas d'événement, il emprunte le formulaire public. Sans cela il obtenait le formulaire
+// d'auteur, dont le champ caché statut=actif publie l'événement sans passer par la modération.
 // Aucun code de cette page ne touche à $_SESSION['Sgroupe'], la valeur reste vraie jusqu'au pied de page.
-$est_connecte = isset($_SESSION['Sgroupe']);
+$est_connecte = isset($_SESSION['Sgroupe']) && (int) $_SESSION['Sgroupe'] <= UserLevel::ACTOR;
+
+// Connecté, mais sur le formulaire public : l'invitation à se connecter n'a plus lieu d'être,
+// et son adresse est déjà connue.
+$isMemberOnly = isset($_SESSION['Sgroupe']) && !$est_connecte;
 
 // ...template
 // Request query : action, idE, idL, idO
@@ -263,6 +271,16 @@ if ($get['action'] === 'ajouter' && !empty($_SESSION['SidPersonne']))
     {
         $prefilled_from_user_defaults = true;
     }
+}
+
+/*
+* Le formulaire public exige une adresse — c'est elle qui reçoit la réponse de la modération.
+* Celle d'un membre est déjà en session : la lui redemander n'apprendrait rien au site. Hors de
+* $prefilled_from_user_defaults, qui annonce les valeurs par défaut du profil, que le membre n'a pas.
+*/
+if ($get['action'] === 'ajouter' && $isMemberOnly && !empty($_SESSION['Semail']))
+{
+    $champs['user_email'] = $_SESSION['Semail'];
 }
 
 $show_form = true;
@@ -1216,7 +1234,9 @@ if ($show_form)
             <h2>Avant de commencer :</h2>
             <?php } ?>
 
-            <?php if (!$est_connecte) { ?>
+            <?php if ($isMemberOnly) { ?>
+                <p style="line-height: 1.6em;">Votre compte ne permet pas de publier directement : l'événement sera publié (ou pas) après une validation de notre part dans les prochains jours.</p>
+            <?php } elseif (!$est_connecte) { ?>
                 <p style="line-height: 1.6em;">Utilisez ce formulaire <strong>si vous n'avez pas déjà un compte sur La décadanse</strong>. L'événement sera publié (ou pas) après une validation de notre part dans les prochains jours.<br>Sinon, veuillez <a href="/user/login.php">vous connecter</a> pour ajouter votre événement.</p>
             <?php } ?>
 
@@ -1245,7 +1265,7 @@ if ($show_form)
                 <input type="email" id="user_email" name="user_email" value="<?php echo sanitizeForHtml($champs['user_email']) ?>"
                        required size="30" <?php echo ($est_connecte && !empty($champs['user_email'])) ? 'readonly class="readonly" ': 'autocomplete="email" '; ?> maxlength="120">
             </p>
-            <?php if (!$est_connecte) { ?>
+            <?php if (!$est_connecte && !$isMemberOnly) { ?>
             <p>Déjà un compte ? <a href="/user/login.php">Connectez-vous</a>, ajoutez votre événement et il sera immédiatement publié</p>
             <?php } ?>
         </fieldset>
