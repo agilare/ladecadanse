@@ -323,7 +323,7 @@ include("_header.inc.php");
             <?php if ($show_genre_tabs) : ?>
             <nav id="genre_tab_navigation" aria-label="Filtrer par genre">
                 <ul>
-                    <li><i class="fa fa-filter" aria-hidden="true"></i></li>
+                    <li><i class="fa fa-filter fa-lg" aria-hidden="true"></i></li>
                     <?php foreach ($selectable_categories as $key => $label) : ?>
                         <?php if (!array_key_exists($key, $tab_events_today_in_region_by_category) && $current_genre_tab !== $key) : continue; endif; ?>
                         <?php if ($current_genre_tab === $key) : ?>
@@ -402,17 +402,21 @@ include("_header.inc.php");
                                 </ul>
 
                                 <?php if ($authorization->isPersonneAllowedToEditEvenement($_SESSION, $tab_even)) : ?>
+                                <?php /* Icônes seules, comme dans les listes de lieu, d'organisateur et de
+                                          recherche : le libellé passe dans l'infobulle et dans l'alt de l'image.
+                                          Les classes action_* sont donc retirées — elles portaient la même
+                                          icône en fond, qui ferait doublon avec celle-ci. */ ?>
                                 <ul class="menu_edition">
-                                    <li class="action_copier">
-                                        <a href="/event/copy.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>" title="Copier l'événement">Copier vers d'autres dates</a>
+                                    <li>
+                                        <a href="/event/copy.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>" title="Copier vers d'autres dates"><?= $iconeCopier ?></a>
                                     </li>
                                     <?php if ($authorization->isPersonneAllowedToEditEvenementNow($_SESSION, $tab_even)) : ?>
-                                    <li class="action_editer">
-                                        <a href="/evenement-edit.php?action=editer&amp;idE=<?= (int) $tab_even['e_idEvenement'] ?>" title="Modifier l'événement">Modifier</a>
+                                    <li>
+                                        <a href="/evenement-edit.php?action=editer&amp;idE=<?= (int) $tab_even['e_idEvenement'] ?>" title="Modifier l'événement"><?= $iconeEditer ?></a>
                                     </li>
                                     <?php endif; ?>
-                                    <li class="action_depublier">
-                                        <?= Ladecadanse\EvenementRenderer::unpublishLinkHtml((int) $tab_even['e_idEvenement'], 'Dépublier') ?>
+                                    <li>
+                                        <?= Ladecadanse\EvenementRenderer::unpublishLinkHtml((int) $tab_even['e_idEvenement'], $icone['depublier']) ?>
                                     </li>
                                     <?php if ($authorization->isPersonneAllowedToManageEvenement($_SESSION, $tab_even)) : ?>
                                     <li>

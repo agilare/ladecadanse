@@ -104,6 +104,17 @@
         column-gap: 0.15em;
     }
 
+    /*
+     * « Favoris » reste collé aux genres : le space-between de la barre le renvoyait à l'autre
+     * bord de la ligne, où il se lisait comme un lien vers la page Favoris plutôt que comme un
+     * filtre de plus. L'espace libre passe à sa droite, si bien que le menu de tri garde son
+     * bord droit quand il tient sur la même ligne.
+     */
+    #agenda_filters.avec-filtre-genre #favoris_filter_navigation
+    {
+        margin-right: auto;
+    }
+
     /* Replié sous les filtres, le menu de tri se cale à gauche, sous l'entonnoir : il y
        commence la ligne plutôt que de la finir, et l'œil retrouve les deux menus au même
        bord. Il perd l'alignement à droite qu'il garde ailleurs sur le site, où rien ne le

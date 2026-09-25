@@ -930,19 +930,25 @@ form#ajouter_editer p.memoriser label, form#ajouter_editer p.mdp_oublie
   float: left;
 }
 
+/*
+ * Deux lignes : le titre et le menu des périodes se partagent la première, le menu collé à
+ * droite ; le filtre des favoris prend la seconde, au bord gauche.
+ *
+ * Il passe après le menu par `order` alors que le HTML le place avant : « Passés Prochains »
+ * doit rester à la hauteur du titre, et le filtre — qui n'apparaît que s'il y a un favori
+ * dans la liste — ne doit pas venir les séparer. Le flex-basis de 100% est ce qui le renvoie
+ * seul sur sa ligne.
+ */
 #prochains_evenements > header h2 {
-  flex-basis: 100%;
   margin-right: 0;
 }
 
-#prochains_evenements > header #favoris_filter_navigation {
-  margin: 0 0.25em 0 auto;
-}
-
 #prochains_evenements > header ul#menu_periode {
-  margin: 0;
+  margin: 0 0 0 auto;
 }
 
-#prochains_evenements > header #favoris_filter_navigation[hidden] + ul#menu_periode {
-  margin-left: auto;
+#prochains_evenements > header #favoris_filter_navigation {
+  order: 1;
+  flex-basis: 100%;
+  margin: 0;
 }
