@@ -443,6 +443,51 @@ const Forms = {
             HTMLFormElement.prototype.requestSubmit.call(form);
         });
 
+        // Fieldset conditionnel, commandé par une case à cocher (inscription : les champs
+        // du contributeur). La feuille de la page le masque déjà en CSS seule, par :has() ;
+        // ce gestionnaire couvre les navigateurs qui ne connaissent pas encore ce sélecteur,
+        // et `trigger` pose l'état initial — la case peut arriver cochée.
+        $('.js-toggle-fieldset').on('change', function toggleConditionalFieldset()
+        {
+            const fieldset = document.getElementById(this.dataset.target);
+
+            if (fieldset)
+            {
+                fieldset.hidden = !this.checked;
+            }
+        }).trigger('change');
+
+        // Bouton « œil » d'un champ de mot de passe. Les formulaires qui en fixent un
+        // (inscription, réinitialisation) n'ont plus de champ de confirmation : c'est en
+        // relisant sa saisie qu'on vérifie ce qu'on a tapé. `data-target` porte l'id du
+        // champ ; l'icône étant muette pour les technologies d'assistance, le nom du bouton
+        // vit dans aria-label, et son état dans aria-pressed.
+        $('.js-toggle-password').on('click', function togglePasswordVisibility()
+        {
+            const field = document.getElementById(this.dataset.target);
+
+            if (!field)
+            {
+                return;
+            }
+
+            const willShow = field.type === 'password';
+            const label = willShow ? 'Masquer le mot de passe' : 'Afficher le mot de passe';
+            const icon = this.querySelector('i');
+
+            field.type = willShow ? 'text' : 'password';
+            this.setAttribute('aria-pressed', willShow ? 'true' : 'false');
+            this.setAttribute('aria-label', label);
+            this.setAttribute('title', label);
+
+            if (icon)
+            {
+                icon.className = willShow ? 'fa fa-eye-slash' : 'fa fa-eye';
+            }
+
+            field.focus();
+        });
+
         // Listes lieux/organisateurs : le lien « Passés » du mois en cours ouvre ou referme les
         // onze colonnes mensuelles révolues (table#derniers_lieux.mois-passes-ouvert, voir
         // web/css/lieu/lieux.css et web/css/organisateur/organisateurs.css).

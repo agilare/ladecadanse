@@ -1,0 +1,12 @@
+Bonjour,
+
+Votre compte sur La décadanse est désormais rattaché à : %affiliations%
+
+Vous pouvez à présent modifier cette fiche — informations pratiques, images, présentation —
+ainsi que les événements qui s'y rattachent.
+
+Votre profil : %dashboard_url%
+
+Bonne visite
+
+La décadanse

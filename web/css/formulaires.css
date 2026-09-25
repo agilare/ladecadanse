@@ -645,3 +645,34 @@ form#ajouter_editer .duplicate-warning .confirm-label
         width: auto;
         margin: 0;
     }
+
+/*
+ * Champ de mot de passe et son bouton « Afficher ».
+ *
+ * Les deux tiennent dans une même case de grille : posés côte à côte dans le paragraphe,
+ * ils occupaient deux lignes de la grille de compte.css, le bouton se retrouvant sous le
+ * libellé. Le bouton remplace le champ de confirmation, retiré des formulaires.
+ */
+form#ajouter_editer .password-field
+{
+    display: flex;
+    /* stretch : le bouton prend la hauteur du champ, qui la fixe */
+    align-items: stretch;
+    gap: 0.4em;
+}
+
+form#ajouter_editer .js-toggle-password
+{
+    flex: none;
+    padding: 0 0.7em;
+    background-color: #f9f9f9;
+    border: 1px solid gray;
+    border-radius: 3px;
+    cursor: pointer;
+    color: #444;
+}
+
+form#ajouter_editer .js-toggle-password:hover
+{
+    background-color: #f4f4f4;
+}

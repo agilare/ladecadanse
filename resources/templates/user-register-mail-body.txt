@@ -2,9 +2,12 @@ Bonjour,
 
 Merci de vous être inscrit-e sur %site_url%
 
-Pour vous connecter : %login_url%
+Vous vous connectez avec votre adresse e-mail : %login_url%
 
-Vous pouvez consulter votre profil et modifier vos données (affiliations, signature, valeurs par défaut d'un événement...) sur %dashboard_url%
+Vos favoris vous suivent maintenant d'un appareil à l'autre : %favorites_url%
+
+Si vous souhaitez plus tard annoncer vos propres événements, écrivez-nous et nous ouvrirons
+votre compte à cet usage.
 
 Bonne visite
 

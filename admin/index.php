@@ -9,6 +9,7 @@ use Ladecadanse\UserLevel;
 use Ladecadanse\EvenementRenderer;
 use Ladecadanse\Evenement;
 use Ladecadanse\Lieu;
+use Ladecadanse\Personne;
 
 if (!$authorization->checkGroup(UserLevel::ADMIN)) {
     header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
@@ -112,7 +113,8 @@ if ($_SESSION['Sgroupe'] < UserLevel::ADMIN) {
         contenu,
         type,
         l.nom AS l_nom,
-        p.pseudo AS pseudo
+        p.pseudo AS pseudo,
+        p.email AS email
         FROM descriptionlieu dl
         JOIN lieu l ON dl.idLieu = l.idLieu
         JOIN personne p ON dl.idPersonne = p.idPersonne
@@ -162,7 +164,8 @@ require_once '../_header.inc.php';
                             <tr>
                                 <td><?= (new DateTime($u['p_dateAjout']))->format("H:i")?></td>
                                 <td>
-                                    <a href="/user/dashboard.php?idP=<?= (int)$u['idPersonne'] ?>"><?= sanitizeForHtml($u['pseudo']) ?></a>
+                                    <?php // un compte sans nom d'utilisateur se désigne par son adresse : le lien serait sinon vide ?>
+                                    <a href="/user/dashboard.php?idP=<?= (int)$u['idPersonne'] ?>"><?= sanitizeForHtml(Personne::displayName($u['pseudo'], $u['email'])) ?></a>
                                     <?php if ($u['groupe'] != UserLevel::ACTOR) { echo "(".sanitizeForHtml($u['groupe']).")"; } ?>
                                     <br><small><?= $u['email'] ?></small>
                                 </td>
@@ -266,7 +269,7 @@ require_once '../_header.inc.php';
                     <?php // aperçu : le contenu est du HTML de confiance (rendu tel quel sur lieu.php),
                           // on le réduit à son texte pour une cellule de tableau ?>
                     <td class="tdleft small"><?= Text::shortenToHtml(strip_tags((string) $desc['contenu']), 100) ?></td>
-                    <td><a href="/user/dashboard.php?idP=<?= (int) $desc['idPersonne'] ?>"><?= sanitizeForHtml($desc['pseudo']) ?></a></td>
+                    <td><a href="/user/dashboard.php?idP=<?= (int) $desc['idPersonne'] ?>"><?= sanitizeForHtml(Personne::displayName($desc['pseudo'], $desc['email'])) ?></a></td>
                     <td><?= DateHelper::isoToFr($desc['dateAjout']) ?></td>
                     <td class="actions"><a href="/lieu/text-edit.php?action=editer&amp;idL=<?= (int)$desc['idLieu'] ?>&amp;idP=<?= (int) $desc['idPersonne'] ?>&amp;type=<?= $desc['type'] ?>" title="Modifier ce texte" aria-label="Modifier ce texte"><?= $iconeEditer ?></a></td>
                </tr>

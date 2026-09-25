@@ -644,7 +644,10 @@ if ($phase !== 'files') {
             $id = (int) $p['idPersonne'];
 
             return remplacer($p, [
-                'pseudo' => 'user' . $id,
+                // Un pseudo vide le reste : le nom d'utilisateur est facultatif depuis
+                // l'inscription simplifiée, et lui en donner un dans la copie masquerait en
+                // développement tout ce qui suppose encore qu'il existe.
+                'pseudo' => trim((string) $p['pseudo']) === '' ? '' : 'user' . $id,
                 'mot_de_passe' => $hash,
                 'email' => 'user' . $id . '@example.test',
                 'cookie' => '',

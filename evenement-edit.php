@@ -1793,7 +1793,8 @@ if ($show_form)
                 <label>Pour</label>
                     <span style="display:inline-block;margin:0.3em 0 0em 0;">
                         <?php if (!empty($original_author_idPersonne)) { ?>
-                        <a href="/user/dashboard.php?idP=<?php echo $original_author_idPersonne ?>"><?php echo sanitizeForHtml($original_author_name) ?></a> —
+                        <?php // un compte sans nom d'utilisateur se désigne par son adresse : le lien serait sinon vide ?>
+                        <a href="/user/dashboard.php?idP=<?php echo $original_author_idPersonne ?>"><?php echo sanitizeForHtml(Personne::displayName($original_author_name, $original_author_email)) ?></a> —
                         <?php } ?>
                         <a href="mailto:<?php echo sanitizeForHtml($original_author_email) ?>"><?php echo sanitizeForHtml($original_author_email) ?></a>
                     </span>

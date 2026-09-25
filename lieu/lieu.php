@@ -221,7 +221,7 @@ include("../_header.inc.php");
                     <?php if ($lieu['photo1'] != '') { ?>
                         <a href="<?= $assets->get(Lieu::getAssetPath(Lieu::getFilePath($lieu['photo1']))) ?>" class="gallery-item"><img src="<?= $assets->get(Lieu::getAssetPath(Lieu::getFilePath($lieu['photo1'], "s_"))) ?>" width="200" alt="Photo du lieu"></a>
                     <?php } elseif (empty($_SESSION['Sgroupe'])) { ?>
-                        <p style="background: #eaeaea;font-size:0.9em;padding:2em 0.5em;line-height:1.2em">Vous gérez ce lieu ? <a href="/user/register.php">Inscrivez-vous</a> pour pouvoir ajouter ou modifier les informations et des photos</p>
+                        <p style="background: #eaeaea;font-size:0.9em;padding:2em 0.5em;line-height:1.2em">Vous gérez ce lieu ? <a href="/user/register.php?contributor=1">Inscrivez-vous</a> : après vérification, nous rattacherons votre compte à ce lieu et vous pourrez en modifier les informations et les photos</p>
                     <?php } ?>
                 </figure>
 
@@ -301,7 +301,7 @@ include("../_header.inc.php");
                                 <ul>
                                 <?php foreach ($lieu_affiliates as $a) : ?>
                                     <li>
-                                        <a href="/user/dashboard.php?idP=<?= (int)$a['idPersonne'] ?>"><?= sanitizeForHtml($a['pseudo']) ?></a>
+                                        <a href="/user/dashboard.php?idP=<?= (int)$a['idPersonne'] ?>"><?= sanitizeForHtml(Personne::displayName($a['pseudo'], $a['email'])) ?></a>
                                         <small><?= sanitizeForHtml($a['email']) ?> <?= DateHelper::isoToApp($a['p_dateAjout']) ?></small>
                                     </li>
                                 <?php endforeach; ?>

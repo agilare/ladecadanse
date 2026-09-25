@@ -8,6 +8,7 @@ use Ladecadanse\HtmlShrink;
 use Ladecadanse\Evenement;
 use Ladecadanse\EvenementRenderer;
 use Ladecadanse\Lieu;
+use Ladecadanse\Personne;
 
 if (empty($_GET['idE']) || !is_numeric($_GET['idE']))
 {
@@ -154,9 +155,18 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
                     $horaire_complet .= " ".$tab_even['e_horaire_complement'];
                 }
 
+                // Le nom d'utilisateur est facultatif : sans repli, le message annonçait
+                // « envoyé par  (adresse) ». Les deux ne sont plus donnés séparément au
+                // gabarit, qui ne saurait pas quoi faire d'un nom vide.
+                $expediteur = Personne::displayName($_SESSION['user'] ?? '', $_SESSION['Semail'] ?? '');
+
+                if ($expediteur !== '' && $expediteur !== ($_SESSION['Semail'] ?? ''))
+                {
+                    $expediteur .= ' (' . $_SESSION['Semail'] . ')';
+                }
+
                 $body_tpl_parameters = [
-                    'username' => $_SESSION['user'],
-                    'user_email' => $_SESSION['Semail'],
+                    'sender' => $expediteur,
                     'message' => $champs['message'],
                     'titre_complet' => $subject,
                     'description' => $tab_even['e_description'],

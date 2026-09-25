@@ -56,7 +56,7 @@
 #contenu.inscription form#ajouter_editer p
 {
 	display:grid;
-	grid-template-columns:12em 1fr;
+	grid-template-columns:17em 1fr;
 	gap:0.3em 0.8em;
 	align-items:center;
 	width:100%;
@@ -105,44 +105,76 @@
 #contenu.inscription form#ajouter_editer .guide_champ
 {
 	grid-column:2;
+	/* une ligne d'aide qui court sur toute la largeur de l'écran se lit mal : la colonne
+	   des champs, elle, n'a pas de plafond propre */
+	max-width:34em;
 	margin:0.1em 0 0 0;
 	padding:0;
 	font-size:0.85em;
 	line-height:1.35em;
 }
 
-/* celle de l'affiliation introduit tout le cadre : elle en prend la largeur */
-#contenu.inscription form#ajouter_editer .guide_affiliation
+/*
+ * Celle du contributeur introduit tout le cadre : elle en prend la largeur, et son bord
+ * gauche suit celui de la légende — décalée, elle, par son propre padding (0.8em à 1.1em,
+ * soit 0.88em du cadre ; 0.98em dans le corps réduit de ce bloc).
+ */
+#contenu.inscription form#ajouter_editer .guide_contributor
 {
+	/* le texte s'arrête où s'arrêtent les aides de champ, plafonnées à 34em dans un corps
+	   plus petit : mesuré à l'écran plutôt que recomposé de la colonne des libellés, de la
+	   gouttière et de ce plafond, trois valeurs dont aucune n'est exprimée dans ce corps-ci */
+	max-width:50.9em;
 	margin:0 0 1.2em 0;
-	padding:0;
+	padding:0 0 0 0.98em;
 	font-size:0.9em;
 	line-height:1.45em;
 }
 
-/* le cadre d'affiliation n'a plus de décalage propre : la grille s'en charge */
-#contenu.inscription form#ajouter_editer .affiliation
+/*
+ * Les paragraphes de ce texte d'introduction ne sont pas des lignes de la grille
+ * libellé/champ : la règle qui la pose vise tous les `p` du formulaire, et leur texte se
+ * retrouvait plié dans la colonne des libellés, large de 17em.
+ */
+#contenu.inscription form#ajouter_editer .guide_contributor p
+{
+	display:block;
+	margin:0.6em 0 0 0;
+}
+
+/* le cadre du contributeur n'a pas de décalage propre : la grille s'en charge */
+#contenu.inscription form#ajouter_editer .contributor-fields
 {
 	padding:1.2em 1.2em 0 1.2em;
 }
 
-#contenu.inscription form#ajouter_editer .affiliation label.affil
+#contenu.inscription form#ajouter_editer .contributor-fields label.affil
 {
 	height:auto;
 	padding:0;
 }
 
-/* « sinon » sépare les deux façons de nommer son affiliation : dans la colonne des champs */
-#contenu.inscription form#ajouter_editer p.entreLabels
+/*
+ * Le cadre du contributeur n'apparaît que si la case est cochée.
+ *
+ * En CSS seule, et non en JS : un champ `required` dans un bloc masqué bloque l'envoi sans
+ * message lisible, c'est donc le traitement qui exige ces champs, et le dépliage n'a aucune
+ * raison de dépendre d'un script. global.js double la règle par l'attribut `hidden`, pour
+ * les navigateurs qui ne connaissent pas encore :has().
+ */
+#contenu.inscription form#ajouter_editer:has(#contributor:not(:checked)) .contributor-fields
 {
-	grid-template-columns:12em 1fr;
-	margin:0 0 0.6em 0;
-	padding:0;
+	display:none;
 }
 
-#contenu.inscription form#ajouter_editer p.entreLabels strong
+/*
+ * La case ferme le cadre du compte, sur le patron du « Resté connecté-e » de la page de
+ * connexion : le libellé dans sa colonne, la case au début de celle des champs plutôt
+ * qu'étirée sur toute sa largeur.
+ */
+#contenu.inscription form#ajouter_editer p.contributor-choice input
 {
-	grid-column:2;
+	width:auto;
 	justify-self:start;
 }
 
@@ -222,8 +254,7 @@
 /* trop étroit pour deux colonnes : le libellé passe au-dessus de son champ */
 @media screen and (max-width:34.99em)
 {
-	#contenu.inscription form#ajouter_editer p,
-	#contenu.inscription form#ajouter_editer p.entreLabels
+	#contenu.inscription form#ajouter_editer p
 	{
 		grid-template-columns:1fr;
 	}
@@ -233,18 +264,13 @@
 		text-align:left;
 	}
 
-	#contenu.inscription form#ajouter_editer p.entreLabels strong
-	{
-		grid-column:1;
-	}
-
 	/* une seule colonne : sans cela, grid-column:2 en créerait une deuxième, implicite */
 	#contenu.inscription form#ajouter_editer .guide_champ
 	{
 		grid-column:1;
 	}
 
-	#contenu.inscription form#ajouter_editer .guide_affiliation
+	#contenu.inscription form#ajouter_editer .guide_contributor
 	{
 		margin-left:0;
 	}

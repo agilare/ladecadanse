@@ -45,6 +45,68 @@ class Personne
 
 
     /**
+     * Nom sous lequel désigner un compte là où seuls son titulaire et les administrateurs
+     * lisent : son nom d'utilisateur, ou à défaut son adresse, qui est alors son seul
+     * identifiant.
+     *
+     * Le nom d'utilisateur est facultatif depuis l'inscription simplifiée. Sans ce repli,
+     * les listes d'administration et la fiche de profil rendaient un lien au texte vide,
+     * invisible et incliquable. En public, rien ne remplace un nom absent : voir
+     * getSignatureHtml(), qui ne signe alors pas.
+     */
+    public static function displayName(?string $pseudo, ?string $email = null): string
+    {
+        $pseudo = trim((string) $pseudo);
+
+        return $pseudo !== '' ? $pseudo : trim((string) $email);
+    }
+
+
+    /**
+     * Cette adresse est-elle déjà celle d'un compte ?
+     *
+     * Unicité tenue par l'application, faute d'index UNIQUE : la production porte des
+     * centaines d'adresses partagées, héritées. Le contrôle arrête donc leur nombre sans
+     * rien exiger de l'existant, et il reste une fenêtre de course entre lui et l'écriture.
+     *
+     * $exceptIdPersonne écarte le compte en cours de modification, sans quoi enregistrer
+     * son profil sans toucher à l'adresse se refuserait tout seul.
+     *
+     * La comparaison est celle de la base : la collation utf8mb4_unicode_ci ignore la casse
+     * et les espaces finales, un LOWER() n'ajouterait rien.
+     */
+    public static function emailExists(string $email, int $exceptIdPersonne = 0): bool
+    {
+        global $connectorPdo;
+
+        $stmt = $connectorPdo->prepare("SELECT 1 FROM personne
+            WHERE email = :email AND idPersonne <> :idP LIMIT 1");
+        $stmt->execute([':email' => $email, ':idP' => $exceptIdPersonne]);
+
+        return $stmt->fetchColumn() !== false;
+    }
+
+
+    /**
+     * Ce nom d'utilisateur est-il déjà pris ?
+     *
+     * Appelé seulement sur un pseudo non vide : celui-ci est facultatif depuis
+     * l'inscription simplifiée, et la chaîne vide est partagée par tous les comptes qui
+     * n'en ont pas.
+     */
+    public static function pseudoExists(string $pseudo, int $exceptIdPersonne = 0): bool
+    {
+        global $connectorPdo;
+
+        $stmt = $connectorPdo->prepare("SELECT 1 FROM personne
+            WHERE pseudo = :pseudo AND idPersonne <> :idP LIMIT 1");
+        $stmt->execute([':pseudo' => $pseudo, ':idP' => $exceptIdPersonne]);
+
+        return $stmt->fetchColumn() !== false;
+    }
+
+
+    /**
      * Réglages personnels bruts (JSON), à passer à UserSettings.
      *
      * Lecture ciblée plutôt que mise en session : Sentry ne place en session que des scalaires, et
@@ -152,7 +214,11 @@ class Personne
 
         $signature = "";
 
-        if ($auteur['signature'] === 'pseudo')
+        // Un compte sans nom d'utilisateur ne signe pas. Sans ce contrôle la méthode rendait
+        // « <strong></strong> », qui n'est pas une chaîne vide : les pages qui testent la
+        // signature écrivaient « Ajouté par  le 3 mars », et la fiche de profil affichait du
+        // vide là où elle annonce « aucune ».
+        if ($auteur['signature'] === 'pseudo' && trim((string) $auteur['pseudo']) !== '')
         {
             $signature = "<strong>" . sanitizeForHtml($auteur['pseudo']) . "</strong>";
         }

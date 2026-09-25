@@ -33,17 +33,23 @@ class AuthorizationRepository
     }
 
     /**
-     * Existe-t-il un compte actif de pseudo $pseudo dans un groupe au moins aussi
-     * privilégié que $maxGroupe ?
+     * Le compte $idPersonne est-il actif, et dans un groupe au moins aussi privilégié
+     * que $maxGroupe ?
+     *
+     * Identifie par la clé primaire, et non par le pseudo comme le faisait
+     * personneExistsInGroup() : le pseudo devient facultatif à l'inscription, et
+     * plusieurs comptes peuvent alors porter la même chaîne vide. La question posée
+     * serait devenue « existe-t-il un compte sans pseudo à ce niveau », à laquelle un
+     * autre compte que celui du visiteur peut répondre oui.
      */
-    public function personneExistsInGroup(string $pseudo, int $maxGroupe): bool
+    public function isPersonneActiveInGroup(int $idPersonne, int $maxGroupe): bool
     {
         $stmt = $this->pdo->prepare(
             "SELECT 1 FROM personne
-             WHERE pseudo = :pseudo AND groupe <= :groupe AND statut = 'actif'
+             WHERE idPersonne = :idP AND groupe <= :groupe AND statut = 'actif'
              LIMIT 1"
         );
-        $stmt->execute([':pseudo' => $pseudo, ':groupe' => $maxGroupe]);
+        $stmt->execute([':idP' => $idPersonne, ':groupe' => $maxGroupe]);
 
         return $stmt->fetchColumn() !== false;
     }

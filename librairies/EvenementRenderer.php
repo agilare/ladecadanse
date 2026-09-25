@@ -145,19 +145,28 @@ class EvenementRenderer
      * vers `/user/dashboard.php?idP=0` et sans libellé : rien à lire, rien à cliquer, et une
      * infobulle vide.
      *
-     * @param int $maxCaracteres Coupe le texte visible au-delà, le pseudo entier restant dans
+     * Un compte sans nom d'utilisateur, lui, reste un compte : le nom est facultatif depuis
+     * l'inscription simplifiée, et le lien mène à sa fiche, où l'administrateur lit son
+     * adresse. D'où la distinction entre `null` — la jointure n'a trouvé aucune personne,
+     * l'auteur a disparu — et la chaîne vide, qui est un compte sans nom.
+     *
+     * @param int $maxCaracteres Coupe le texte visible au-delà, le texte entier restant dans
      *                           l'infobulle ; 0 pour ne pas couper
      */
     public static function authorLinkHtml(int $idPersonne, ?string $pseudo, int $maxCaracteres = 0): string
     {
-        if ($idPersonne <= 0 || $pseudo === null || $pseudo === '')
+        if ($idPersonne <= 0 || $pseudo === null)
         {
             return 'anonyme';
         }
 
-        $texte = $maxCaracteres > 0 ? Text::truncateCharsToHtml($pseudo, $maxCaracteres) : sanitizeForHtml($pseudo);
+        // « #42 » plutôt que le numéro en toutes lettres : la colonne est étroite, et le
+        // texte visible y est coupé au-delà de dix caractères
+        $libelle = trim($pseudo) !== '' ? $pseudo : '#' . $idPersonne;
 
-        return '<a href="/user/dashboard.php?idP=' . $idPersonne . '" title="' . sanitizeForHtml($pseudo) . '">' . $texte . '</a>';
+        $texte = $maxCaracteres > 0 ? Text::truncateCharsToHtml($libelle, $maxCaracteres) : sanitizeForHtml($libelle);
+
+        return '<a href="/user/dashboard.php?idP=' . $idPersonne . '" title="' . sanitizeForHtml($libelle) . '">' . $texte . '</a>';
     }
 
     /**

@@ -13,6 +13,7 @@ require_once("app/bootstrap.php");
 use Ladecadanse\EventCategory;
 use Ladecadanse\UserLevel;
 use Ladecadanse\Utils\Validateur;
+use Ladecadanse\Utils\Mailing;
 use Ladecadanse\Utils\PasswordPolicy;
 use Ladecadanse\Utils\QueryParamValidator;
 use Ladecadanse\Security\SecurityToken;
@@ -209,13 +210,10 @@ if ($formulaire_poste)
 		}
 		else
 		{
+            // La règle « au moins 1 chiffre » a été retirée ici comme dans PasswordPolicy,
+            // dont cette page recopie les contrôles avec ses propres bornes (8/30).
             $verif->valider($champs['newPass'], "newPass", "texte", 8, 30, 1);
             $verif->valider($champs['newPass2'], "newPass2", "texte", 8, 30, 1);
-
-            if (!preg_match("/[0-9]/", (string) $champs['newPass']) || !preg_match("/[0-9]/", (string) $champs['newPass2']))
-			{
-				$verif->setErreur("nouveaux_pass", 'Le nouveau mot de passe doit comporter au moins 1 chiffre.');
-			}
 		}
 	}
 
@@ -244,17 +242,33 @@ if ($formulaire_poste)
 	 */
 	if ($get['action'] == 'insert')
 	{
-		$sql_existance = "SELECT pseudo FROM personne
-		WHERE pseudo='".$connector->sanitize($champs['pseudo'])."'
-		OR email='".$connector->sanitize($champs['email'])."'";
-
-		$req_existance = $connector->query($sql_existance);
-
-		if ($connector->getNumRows($req_existance) > 0)
+		/*
+		 * Deux contrôles distincts : une seule requête cherchait le pseudo OU l'adresse, et
+		 * posait les deux messages ensemble — celui du pseudo s'affichait donc pour une
+		 * adresse déjà prise. Le pseudo, devenu facultatif, n'est contrôlé que s'il est
+		 * renseigné : vide, il est partagé par tous les comptes qui n'en ont pas.
+		 */
+		if ($champs['pseudo'] !== '' && Personne::pseudoExists((string) $champs['pseudo']))
 		{
 			// messages rendus tels quels par getHtmlErreur() et getErreur() : la saisie s'y échappe
 			$verif->setErreur("pseudoIdentique", "Un membre ".sanitizeForHtml($champs['pseudo'])." existe déjà dans la base.");
-			$verif->setErreur("emailIdentique", "Un membre ".sanitizeForHtml($champs['email'])." existe déjà dans la base.");
+		}
+
+		/*
+		 * Un nom d'utilisateur en forme d'adresse rendrait ambiguë la saisie de connexion :
+		 * Sentry::checkLogin() cherche alors « pseudo OU email », et deux comptes peuvent
+		 * répondre — dont un sans pseudo, qui n'a plus alors aucun moyen de se connecter.
+		 * Contrôlé à la création seulement : des comptes anciens portent de tels pseudos, et
+		 * les refuser en modification les empêcherait d'enregistrer quoi que ce soit.
+		 */
+		if ($champs['pseudo'] !== '' && filter_var((string) $champs['pseudo'], FILTER_VALIDATE_EMAIL) !== false)
+		{
+			$verif->setErreur("pseudo", "Le nom d'utilisateur ne peut pas être une adresse e-mail.");
+		}
+
+		if (Personne::emailExists((string) $champs['email']))
+		{
+			$verif->setErreur("emailIdentique", "L'adresse ".sanitizeForHtml($champs['email'])." est déjà celle d'un compte.");
 		}
 
 	/*
@@ -263,16 +277,41 @@ if ($formulaire_poste)
 	}
 	elseif ($get['action'] == "update" && !empty($champs['motdepasse']) && empty($erreurs['motdepasse']))
 	{
-		$getUser = $connector->query("SELECT mot_de_passe, gds
-		FROM personne
-		WHERE pseudo = '".$_SESSION['user']."'");
+		/*
+		 * Le compte est désigné par son idPersonne. La requête cherchait le pseudo porté par
+		 * la session : il devient facultatif, et deux comptes sans pseudo auraient fait
+		 * vérifier le mot de passe du premier venu. Concaténé tel quel, il laissait de plus
+		 * un pseudo bien choisi réécrire la requête.
+		 */
+		$stmt = $connectorPdo->prepare("SELECT mot_de_passe, gds FROM personne WHERE idPersonne = ?");
+		$stmt->execute([(int) $_SESSION['SidPersonne']]);
+		$tab_user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-		$tab_user = $connector->fetchArray($getUser);
-
-		//Si au moins un enregistrement de personne est trouvé
-        if ((sha1($tab_user['gds'] . sha1($champs['motdepasse'])) != $tab_user['mot_de_passe']) && !password_verify($champs['motdepasse'], $tab_user['mot_de_passe']))
+		if ($tab_user === false
+			|| (!hash_equals((string) $tab_user['mot_de_passe'], sha1($tab_user['gds'] . sha1((string) $champs['motdepasse'])))
+				&& !password_verify((string) $champs['motdepasse'], (string) $tab_user['mot_de_passe'])))
 		{
 			$verif->setErreur("motdepasse", "Faux mot de passe");
+		}
+	}
+
+	/*
+	 * Unicité de l'adresse en modification. Hors du if/elseif ci-dessus, dont la branche
+	 * « update » est occupée par le contrôle du mot de passe, alors que l'adresse est à
+	 * vérifier dans tous les cas. Seulement si elle change : un compte dont l'adresse est
+	 * déjà partagée — il en reste des centaines en production — ne pourrait sinon plus rien
+	 * enregistrer, pas même son mot de passe.
+	 */
+	if ($get['action'] == "update" && isset($get['idP']))
+	{
+		$stmt = $connectorPdo->prepare("SELECT email FROM personne WHERE idPersonne = ?");
+		$stmt->execute([(int) $get['idP']]);
+		$email_en_base = (string) $stmt->fetchColumn();
+
+		if (mb_strtolower(trim((string) $champs['email'])) !== mb_strtolower($email_en_base)
+			&& Personne::emailExists((string) $champs['email'], (int) $get['idP']))
+		{
+			$verif->setErreur("emailIdentique", "Cette adresse e-mail est déjà celle d'un autre compte.");
 		}
 	}
 
@@ -285,6 +324,36 @@ if ($formulaire_poste)
 
 	if ($verif->nbErreurs() === 0)
 	{
+		/**
+		 * Rattachements d'un compte : son lieu (table affiliation) et ses organisateurs.
+		 *
+		 * Relus avant puis après l'enregistrement. C'est leur différence qui décide d'un
+		 * e-mail d'information, et non la seule case cochée — enregistrer une autre partie
+		 * du formulaire n'a pas à prévenir de rattachements inchangés. Le couple
+		 * DELETE/INSERT de personne_organisateur, plus bas, efface l'état antérieur : il
+		 * faut donc le lire avant.
+		 *
+		 * @return array{lieu: int, organisateurs: int[]}
+		 */
+		$lireAffiliations = function (int $idP) use ($connectorPdo): array
+		{
+			$stmt = $connectorPdo->prepare("SELECT idAffiliation FROM affiliation WHERE idPersonne = ? AND genre = 'lieu'");
+			$stmt->execute([$idP]);
+			$lieu = (int) $stmt->fetchColumn();
+
+			$stmt = $connectorPdo->prepare("SELECT idOrganisateur FROM personne_organisateur WHERE idPersonne = ? ORDER BY idOrganisateur");
+			$stmt->execute([$idP]);
+
+			return ['lieu' => $lieu, 'organisateurs' => array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN))];
+		};
+
+		$affiliations_avant = ['lieu' => 0, 'organisateurs' => []];
+
+		if ($get['action'] == 'update' && isset($get['idP']))
+		{
+			$affiliations_avant = $lireAffiliations((int) $get['idP']);
+		}
+
 		if (!empty($champs['newPass']))
 		{
 			$champs['gds'] = '';
@@ -466,7 +535,7 @@ if ($formulaire_poste)
 					$message_succes = "Le profil a été modifié";
                 }
 
-                $logger->info('[user-edit] user updated', ['pseudo' => $champs['pseudo'], 'by' => $_SESSION["user"]]);
+                $logger->info('[user-edit] user updated', ['pseudo' => $champs['pseudo'], 'idP' => (int) $get['idP'], 'by' => (int) $_SESSION['SidPersonne']]);
 
                 // Le couple efface-puis-réinsère ne vaut que si le select des organisateurs a
                 // été rendu : sans lui, le POST n'en porte aucun et l'effacement serait sec.
@@ -494,8 +563,64 @@ if ($formulaire_poste)
                     $connector->query($sql);
 				}
 			}
-            $logger->info('[user-edit] organisateurs updated', ['pseudo' => $champs['pseudo'], 'idOrganisateurs' => $champs['organisateurs']]);
+            $logger->info('[user-edit] organisateurs updated', ['idP' => (int) $req_id, 'idOrganisateurs' => $champs['organisateurs']]);
         }
+
+		/*
+		 * Information du rattachement.
+		 *
+		 * L'inscription ne rattache plus personne à un lieu ou à un organisateur : elle
+		 * enregistre une déclaration, que l'équipe vérifie, et c'est ici que le compte gagne
+		 * ces droits. La personne ne l'apprendrait pas autrement.
+		 *
+		 * La case dit l'intention, la comparaison décide : elle n'est volontairement pas une
+		 * clé de $champs, dont la boucle de l'UPDATE écrit une colonne par clé.
+		 */
+		if ($get['action'] == 'update' && isset($get['idP']) && !empty($_POST['notify_affiliation']) && $erreurs_traitement === [])
+		{
+			$affiliations_apres = $lireAffiliations((int) $get['idP']);
+
+			if ($affiliations_apres !== $affiliations_avant)
+			{
+				$noms = [];
+
+				if ($affiliations_apres['lieu'] > 0)
+				{
+					$stmt = $connectorPdo->prepare("SELECT nom FROM lieu WHERE idLieu = ?");
+					$stmt->execute([$affiliations_apres['lieu']]);
+					$nom_lieu = $stmt->fetchColumn();
+
+					if ($nom_lieu !== false)
+					{
+						$noms[] = (string) $nom_lieu;
+					}
+				}
+
+				if ($affiliations_apres['organisateurs'] !== [])
+				{
+					list($orgas_clause, $orgas_params) = $connectorPdo->buildInClause('idOrganisateur', $affiliations_apres['organisateurs']);
+					$stmt = $connectorPdo->prepare("SELECT nom FROM organisateur WHERE $orgas_clause ORDER BY nom");
+					$stmt->execute($orgas_params);
+					$noms = array_merge($noms, $stmt->fetchAll(PDO::FETCH_COLUMN));
+				}
+
+				$mailer = new Mailing();
+				$envoye = $mailer->toUser(
+					(string) $champs['email'],
+					"Votre compte sur La décadanse",
+					$tplEngine->render('user-affiliation-mail-body', [
+						'affiliations' => $noms === [] ? '' : implode(', ', $noms),
+						'dashboard_url' => $site_full_url . "user/dashboard.php?idP=" . (int) $get['idP'],
+					])
+				);
+
+				$message_succes .= $envoye
+					? " La personne en a été informée par e-mail."
+					: " L'e-mail d'information n'a pas pu être envoyé.";
+
+				$logger->info('[user-edit] affiliation notified', ['idP' => (int) $get['idP'], 'envoye' => $envoye]);
+			}
+		}
 
 		/*
 		* Enregistrement terminé : le message part en session et l'utilisateur rejoint sa fiche.
@@ -602,24 +727,22 @@ if ($verif->nbErreurs() > 0)
         <legend>Identification</legend>
 
         <p>
-            <label for="pseudo">Login*</label>
-                <?php if ($_SESSION['Sgroupe'] == UserLevel::SUPERADMIN) { ?>
-                    <input type="text" name="pseudo" id="pseudo" size="30" maxlength="80" value="<?= sanitizeForHtml($champs['pseudo']) ?>" required />
-                <?php
-            echo $verif->getHtmlErreur('pseudo');
-            echo $verif->getHtmlErreur("pseudoIdentique");
-            ?>
+            <label for="pseudo">Nom d'utilisateur</label>
+            <?php if ($_SESSION['Sgroupe'] == UserLevel::SUPERADMIN) : ?>
+                <?php /* Sans `required` : le nom d'utilisateur est facultatif depuis
+                         l'inscription simplifiée, et l'attribut interdisait d'enregistrer le
+                         compte de quelqu'un qui n'en a pas — il fallait lui en inventer un. */ ?>
+                <input type="text" name="pseudo" id="pseudo" size="30" maxlength="80" value="<?= sanitizeForHtml($champs['pseudo']) ?>" />
+                <?= $verif->getHtmlErreur('pseudo') ?>
+                <?= $verif->getHtmlErreur("pseudoIdentique") ?>
+            <?php elseif (trim((string) $champs['pseudo']) !== '') : ?>
+                <input type="text" name="pseudo" id="pseudo" size="30" maxlength="80" value="<?= sanitizeForHtml($champs['pseudo']) ?>" readonly style="background:#f4f4f4" />
+            <?php else : ?>
+                <?php /* Ni champ ni valeur : ce compte n'a pas de nom d'utilisateur, et le
+                         champ en lecture seule n'offrait qu'un rectangle vide. */ ?>
+                <span class="guideChamp">aucun&nbsp;: c'est votre e-mail qui vous identifie</span>
+            <?php endif; ?>
         </p>
-
-        <?php
-        }
-        else
-        {
-        ?>
-            <input type="text" name="pseudo" id="pseudo" size="30" maxlength="80" value="<?= sanitizeForHtml($champs['pseudo']) ?>" readonly style="background:#f4f4f4" />
-        <?php
-        }
-        ?>
 
         <?php
         if ($_SESSION['Sgroupe'] == UserLevel::SUPERADMIN) {
@@ -805,6 +928,23 @@ if ($verif->nbErreurs() > 0)
         </select>
 
         </p>
+
+        <?php
+        /*
+         * L'inscription n'écrit plus de rattachement : elle enregistre une déclaration, que
+         * l'équipe vérifie avant de lier le compte ici. La personne ne l'apprendrait pas
+         * autrement — d'où cette case, qui n'a de sens que pour qui modifie le compte d'un
+         * autre. Rien ne part si les rattachements n'ont pas changé.
+         */
+        if ((int) ($_SESSION['SidPersonne'] ?? 0) !== (int) ($get['idP'] ?? 0)) :
+        ?>
+        <p>
+            <label for="notify_affiliation">Informer</label>
+            <input type="checkbox" name="notify_affiliation" id="notify_affiliation" value="1" class="checkbox" />
+            <label class="continu" for="notify_affiliation">Prévenir par e-mail du rattachement</label>
+        </p>
+        <?php endif; ?>
+
         <?php
         }
         else
@@ -883,7 +1023,11 @@ if ($verif->nbErreurs() > 0)
         <label style="display:block;float:none;width:8em" >Afficher :</label>
         <ul class="radio" style="display:block">
             <?php
-            $signatures = ["pseudo" => "L'identifiant", "aucune" => "Aucune signature"];
+            // Un compte sans nom d'utilisateur n'a rien à signer : l'option n'affichait
+            // qu'un libellé suivi de rien.
+            $signatures = trim((string) $champs['pseudo']) !== ''
+                ? ["pseudo" => "Le nom d'utilisateur", "aucune" => "Aucune signature"]
+                : ["aucune" => "Aucune signature"];
             foreach ($signatures as $s => $label)
             {
                 $coche = '';

@@ -3,6 +3,7 @@
 require_once("../app/bootstrap.php");
 
 use Ladecadanse\UserLevel;
+use Ladecadanse\Utils\DateHelper;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\PasswordPolicy;
 use Ladecadanse\Utils\QueryParamValidator;
@@ -24,7 +25,6 @@ if ($authorization->checkGroup(UserLevel::MEMBER))
 $champs = [
     "idPersonne" => '',
     "motdepasse" => '',
-    "motdepasse2" => '',
 ];
 
 $action_terminee = false;
@@ -76,7 +76,7 @@ if ($tab_temp !== false)
     if (!empty($tab_temp['idPersonne']))
     {
         // demande faite avec un pseudo, qui ne désigne qu'un compte
-        $stmt = $connectorPdo->prepare("SELECT idPersonne, pseudo FROM personne
+        $stmt = $connectorPdo->prepare("SELECT idPersonne, pseudo, DATE(dateAjout) AS dateAjout FROM personne
             WHERE idPersonne = :idPersonne AND statut = 'actif'");
         $stmt->execute([':idPersonne' => (int) $tab_temp['idPersonne']]);
         $tab_comptes = $stmt->fetchAll();
@@ -84,7 +84,7 @@ if ($tab_temp !== false)
     else if (!empty($tab_temp['email']))
     {
         // demande faite avec une adresse, que plusieurs comptes peuvent partager
-        $stmt = $connectorPdo->prepare("SELECT idPersonne, pseudo FROM personne
+        $stmt = $connectorPdo->prepare("SELECT idPersonne, pseudo, DATE(dateAjout) AS dateAjout FROM personne
             WHERE email = :email AND statut = 'actif'");
         $stmt->execute([':email' => $tab_temp['email']]);
         $tab_comptes = $stmt->fetchAll();
@@ -138,7 +138,9 @@ if ($tab_temp !== false)
                 }
             }
 
-            foreach (PasswordPolicy::erreurs($champs['motdepasse'], $champs['motdepasse2']) as $champ => $message)
+            // un seul champ, donc rien à confronter : le bouton « afficher » remplace la
+            // confirmation, que la saisie en aveugle rendait nécessaire
+            foreach (PasswordPolicy::erreurs($champs['motdepasse']) as $champ => $message)
             {
                 $verif->setErreur($champ, $message);
             }
@@ -248,24 +250,27 @@ $erreurs = $verif->getErreurs();
             <p>
                 <label for="idPersonne">Lequel de vos comptes ?</label>
                 <select name="idPersonne" id="idPersonne">
+                    <?php /* Tous ces comptes partagent l'adresse saisie : leur nom d'utilisateur
+                             est ce qui les distingue, et sa date d'inscription quand il n'en a
+                             pas — le nom est facultatif, l'option restait alors vide. */ ?>
                     <?php foreach ($tab_comptes as $c) : ?>
-                    <option value="<?= (int) $c['idPersonne'] ?>"<?= isset($_POST['idPersonne']) && $c['idPersonne'] == $_POST['idPersonne'] ? ' selected' : '' ?>><?= sanitizeForHtml($c['pseudo']) ?></option>
+                    <option value="<?= (int) $c['idPersonne'] ?>"<?= isset($_POST['idPersonne']) && $c['idPersonne'] == $_POST['idPersonne'] ? ' selected' : '' ?>><?= trim((string) $c['pseudo']) !== '' ? sanitizeForHtml($c['pseudo']) : 'compte créé le ' . DateHelper::isoToFr($c['dateAjout'], 'annee', html: false, showDayOfWeek: false) ?></option>
                     <?php endforeach; ?>
                 </select>
             </p>
             <?php endif; ?>
 
+            <?php /* Un seul champ, avec de quoi relire sa saisie : la confirmation ne
+                     protégeait que de la frappe en aveugle, et doublait l'effort. */ ?>
             <p>
                 <label for="motdepasse">Nouveau mot de passe</label>
-                <input type="password" name="motdepasse" id="motdepasse" size="20" minlength="<?= PasswordPolicy::LONGUEUR_MIN ?>" maxlength="<?= PasswordPolicy::LONGUEUR_MAX ?>" value="" autocomplete="new-password" required<?= isset($erreurs['motdepasse']) ? ' class="champ_errone" aria-invalid="true"' : '' ?>>
+                <span class="password-field">
+                    <input type="password" name="motdepasse" id="motdepasse" size="20" minlength="<?= PasswordPolicy::LONGUEUR_MIN ?>" maxlength="<?= PasswordPolicy::LONGUEUR_MAX ?>" value="" autocomplete="new-password" required<?= isset($erreurs['motdepasse']) ? ' class="champ_errone" aria-invalid="true"' : '' ?>>
+                    <button type="button" class="js-toggle-password" data-target="motdepasse" aria-pressed="false" aria-label="Afficher le mot de passe" title="Afficher le mot de passe"><i class="fa fa-eye" aria-hidden="true"></i></button>
+                </span>
             </p>
 
-            <p>
-                <label for="motdepasse2">Confirmer le nouveau mot de passe</label>
-                <input type="password" name="motdepasse2" id="motdepasse2" size="20" minlength="<?= PasswordPolicy::LONGUEUR_MIN ?>" maxlength="<?= PasswordPolicy::LONGUEUR_MAX ?>" value="" autocomplete="new-password" required<?= isset($erreurs['motdepasse_inegaux']) ? ' class="champ_errone" aria-invalid="true"' : '' ?>>
-            </p>
-
-            <div class="guideChamp">Le mot de passe doit faire au minimum <?= PasswordPolicy::LONGUEUR_MIN ?> caractères et comporter au moins un chiffre</div>
+            <div class="guideChamp">Le mot de passe doit faire au minimum <?= PasswordPolicy::LONGUEUR_MIN ?> caractères</div>
 
             <p class="piedForm">
                 <input type="hidden" name="formulaire" value="ok">

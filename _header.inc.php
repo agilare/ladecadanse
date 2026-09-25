@@ -1,5 +1,6 @@
 <?php
 use Ladecadanse\HtmlShrink;
+use Ladecadanse\Personne;
 use Ladecadanse\UserLevel;
 
 // Mode « mouseless » (entraînement aux raccourcis clavier) : réservé aux administrateurs,
@@ -100,7 +101,10 @@ $mouseless_allowed = isset($_SESSION['Sgroupe']) && (int) $_SESSION['Sgroupe'] <
             'use strict';
             var _paq = window._paq = window._paq || [];
               <?php if (isset($_SESSION['SidPersonne'])) : ?>
-                  _paq.push(['setUserId', <?= json_encode($_SESSION['user']) ?>]);
+                  <?php /* Le nom d'utilisateur est facultatif : un identifiant vide rangerait
+                           tous ces comptes sous la même clé. Le numéro de compte prend alors
+                           le relais, préfixé pour ne pas se confondre avec un nom. */ ?>
+                  _paq.push(['setUserId', <?= json_encode(trim((string) ($_SESSION['user'] ?? '')) !== '' ? $_SESSION['user'] : '#' . (int) $_SESSION['SidPersonne']) ?>]);
               <?php endif; ?>
               <?php if (!isset($_SESSION['SidPersonne']) && !empty($_COOKIE['just_logged_out'])) : ?>
                   _paq.push(['resetUserId']);
@@ -267,7 +271,10 @@ $mouseless_allowed = isset($_SESSION['Sgroupe']) && (int) $_SESSION['Sgroupe'] <
                                         <a href="/admin/bots.php" title="Monitoring des bots" <?php if (strstr((string) $_SERVER['PHP_SELF'], "admin/bots.php")) : ?>class="ici"<?php endif; ?>><i class="fa fa-bug" aria-hidden="true"></i></a>
                                     <?php endif; ?>
 
-                                    <a href="/user/dashboard.php?idP=<?= (int) $_SESSION['SidPersonne']; ?>" title="<?= sanitizeForHtml($_SESSION['user']); ?>" <?php if (strstr((string) $_SERVER['PHP_SELF'], "user/dashboard.php")) : ?>class="ici"<?php endif; ?>>
+                                    <?php /* L'icône est aria-hidden : sans nom accessible, le lien
+                                             n'était annoncé que par son url, et le title venait du
+                                             nom d'utilisateur — vide pour qui n'en a pas. */ ?>
+                                    <a href="/user/dashboard.php?idP=<?= (int) $_SESSION['SidPersonne']; ?>" aria-label="Mon compte" title="<?= sanitizeForHtml(Personne::displayName($_SESSION['user'] ?? '', $_SESSION['Semail'] ?? '')); ?>" <?php if (strstr((string) $_SERVER['PHP_SELF'], "user/dashboard.php")) : ?>class="ici"<?php endif; ?>>
                                         <i class="fa fa-user" aria-hidden="true"></i>
                                     </a>
 

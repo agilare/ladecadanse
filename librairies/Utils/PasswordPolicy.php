@@ -40,13 +40,21 @@ final class PasswordPolicy
     private static ?array $refuses = null;
 
     /**
-     * Vérifie un mot de passe et sa confirmation.
+     * Vérifie un mot de passe, et sa confirmation quand le formulaire en demande une.
      *
+     * La règle « au moins un chiffre » a été retirée : le SP 800-63B-4 du NIST proscrit les
+     * règles de composition, qui mènent surtout à des mots de passe courts et prévisibles,
+     * et s'en remet à la longueur et au filtrage des mots de passe déjà fuités — ce que
+     * cette classe fait déjà avec bad_p.txt.
+     *
+     * @param string|null $confirmation null quand le formulaire n'a qu'un champ, ce qui est
+     *                                  désormais le cas de l'inscription et de la
+     *                                  réinitialisation
      * @return array<string, string> erreurs indexées par nom de champ, vide si tout va bien.
      *                               Les clés sont celles attendues par les formulaires
      *                               (`motdepasse`, `motdepasse_inegaux`).
      */
-    public static function erreurs(string $motdepasse, string $confirmation): array
+    public static function erreurs(string $motdepasse, ?string $confirmation = null): array
     {
         $erreurs = [];
 
@@ -59,18 +67,14 @@ final class PasswordPolicy
             $erreurs['motdepasse'] = "Votre mot de passe doit faire entre " . self::LONGUEUR_MIN
                 . " et " . self::LONGUEUR_MAX . " caractères.";
         }
-        else if (!preg_match("/[0-9]/", $motdepasse))
-        {
-            $erreurs['motdepasse'] = "Le mot de passe doit comporter au moins 1 chiffre.";
-        }
-        // la liste ne dit rien de plus que les règles ci-dessus tant qu'elles ne sont pas
-        // satisfaites : inutile de la charger pour un mot de passe déjà refusé
+        // la liste ne dit rien de plus que la règle ci-dessus tant qu'elle n'est pas
+        // satisfaite : inutile de la charger pour un mot de passe déjà refusé
         else if (self::estRefuse($motdepasse))
         {
             $erreurs['motdepasse'] = "Ce mot de passe est trop courant, veuillez en choisir un autre.";
         }
 
-        if ($confirmation !== $motdepasse)
+        if ($confirmation !== null && $confirmation !== $motdepasse)
         {
             $erreurs['motdepasse_inegaux'] = "Les 2 mots de passe doivent être identiques.";
         }

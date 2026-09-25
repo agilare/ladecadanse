@@ -238,7 +238,7 @@ include("../_header.inc.php");
                                 <?php if (count($orga_personnes) > 0) : ?>
                                 <ul>
                                     <?php foreach ($orga_personnes as $op) : ?>
-                                        <li><a href="/user/dashboard.php?idP=<?= (int)$op['idPersonne'] ?>"><?= sanitizeForHtml($op['pseudo']) ?></a>&nbsp;<small><?= sanitizeForHtml($op['email']) ?></small></li>
+                                        <li><a href="/user/dashboard.php?idP=<?= (int)$op['idPersonne'] ?>"><?= sanitizeForHtml(Personne::displayName($op['pseudo'], $op['email'])) ?></a>&nbsp;<small><?= sanitizeForHtml($op['email']) ?></small></li>
                                     <?php endforeach ?>
                                 </ul>
                                 <?php endif; ?>

@@ -334,14 +334,15 @@ if ($erreur !== null)
 	<?php endif; ?>
 
 	<header id="entete_contenu">
-		<h1>Compte de <em><?= sanitizeForHtml($profil['pseudo']) ?></em><?php if ($voit_le_groupe) : ?> <span class="profil-groupe">[<?= sanitizeForHtml(UserLevel::getName((int) $profil['groupe'])) ?>]</span><?php endif; ?><?php if ($profil['statut'] !== 'actif') : ?> <span class="even-statut-label statut-<?= sanitizeForHtml($profil['statut']) ?>"><?= mb_strtoupper(sanitizeForHtml($profil['statut'])) ?></span><?php endif; ?></h1>
+		<?php // sans nom d'utilisateur — il est facultatif —, c'est l'adresse qui désigne le compte ?>
+		<h1>Compte de <em><?= sanitizeForHtml(Personne::displayName($profil['pseudo'], $profil['email'])) ?></em><?php if ($voit_le_groupe) : ?> <span class="profil-groupe">[<?= sanitizeForHtml(UserLevel::getName((int) $profil['groupe'])) ?>]</span><?php endif; ?><?php if ($profil['statut'] !== 'actif') : ?> <span class="even-statut-label statut-<?= sanitizeForHtml($profil['statut']) ?>"><?= mb_strtoupper(sanitizeForHtml($profil['statut'])) ?></span><?php endif; ?></h1>
 		<div class="spacer"></div>
 	</header>
 
 	<div id="profile">
 
 		<table>
-			<tr><th>Identifiant</th><td><?= sanitizeForHtml($profil['pseudo']) ?></td></tr>
+			<tr><th>Nom d'utilisateur</th><td><?= trim((string) $profil['pseudo']) !== '' ? sanitizeForHtml($profil['pseudo']) : '<em>aucun : c\'est votre e-mail qui vous identifie</em>' ?></td></tr>
 			<tr><th>E-mail</th><td><?= sanitizeForHtml($profil['email']) ?></td></tr>
 			<?php if ($showsContributorRows) : ?>
 			<tr><th>Affiliations</th><td>

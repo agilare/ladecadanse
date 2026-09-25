@@ -260,6 +260,8 @@ if ($is_form_submitted)
                 'idL' => $get['idL'],
                 'idP' => $id_auteur,
                 'user' => $_SESSION['user'],
+                // le nom d'utilisateur est facultatif : le numéro dit toujours qui a agi
+                'by' => (int) $_SESSION['SidPersonne'],
             ]);
 
             header("Location: /lieu/lieu.php?idL=" . $get['idL']);
