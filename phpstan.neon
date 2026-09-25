@@ -79,6 +79,7 @@ parameters:
                 - _texte_repliable.inc.php
                 - annuaire-membres.php
                 - evenement-edit.php
+                - favoris.php
                 - index.php
                 - user-edit.php
     # Les chemins d'allowIn sont résolus depuis la racine du dépôt, quel que
