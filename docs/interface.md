@@ -4,7 +4,7 @@ Notes sur l'habillage du site : feuilles de style, icônes, et les mises en page
 
 ## Feuilles de style
 
-`_header.inc.php` charge, dans cet ordre : `normalize.css`, `imprimer.css` (en `media="print"`), `global.css`, les feuilles annoncées par `$extra_css`, puis celle qui porte le nom de la page (`web/css/{$nom_page}.css`) si elle existe.
+`_header.inc.php` charge, dans cet ordre : `normalize.css` (`web/libs/normalize/`, voir [bibliothèques front-end](../README.md#bibliothèques-front-end)), `imprimer.css` (en `media="print"`), `global.css`, les feuilles annoncées par `$extra_css`, puis celle qui porte le nom de la page (`web/css/{$nom_page}.css`) si elle existe.
 
 L'ordre compte : la feuille de la page arrive en dernier, elle peut donc redéfinir ce que les précédentes posent. Jusqu'en 3.12.0 elle passait avant les supplémentaires, et ses règles restaient sans effet.
 
@@ -21,7 +21,7 @@ Un seul palier interne subsiste, à 450 px, pour la fiche d'un événement (voir
 
 ## Icônes
 
-Les icônes du site étaient des PNG de 16 px du jeu **famfamfam Silk**, des années 2000. Elles sont passées en glyphes **Font Awesome 4.7** (`vendor/fortawesome/font-awesome`, chargé par `_header.inc.php`) #151, et `web/interface/icons/` est tombé de 1469 fichiers — ~5 Mo, dont 49 seulement étaient référencés — à quatre, gardés parce que leur dessin n'a pas d'équivalent Font Awesome qui nous ait convaincus : `page_white_edit.png` (Éditer), `page_white_copy.png` (Copier), `calendar_delete.png` (Dépublier) et `map.png` (Plan).
+Les icônes du site étaient des PNG de 16 px du jeu **famfamfam Silk**, des années 2000. Elles sont passées en glyphes **Font Awesome 4.7** (`web/libs/font-awesome/`, chargé par `_header.inc.php`) #151, et `web/interface/icons/` est tombé de 1469 fichiers — ~5 Mo, dont 49 seulement étaient référencés — à quatre, gardés parce que leur dessin n'a pas d'équivalent Font Awesome qui nous ait convaincus : `page_white_edit.png` (Éditer), `page_white_copy.png` (Copier), `calendar_delete.png` (Dépublier) et `map.png` (Plan).
 
 Contrepartie assumée : ces quatre-là restent des bitmaps de 16 px, ils ne suivent donc pas la taille du texte.
 

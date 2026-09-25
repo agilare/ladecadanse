@@ -175,6 +175,19 @@ if ($scope === null || ($scopes !== [] && !isset($scopes[$scope]))) {
 
 printf("\nDestination : %s (%s)\n", $scope, $scopes[$scope] ?? 'url inconnue');
 
+// web/libs/ n'est pas versionné : git-ftp envoie ce qui est sur le disque
+// (.git-ftp-include), comme pour le .htaccess. On le reconstruit d'après
+// package-lock.json — le postinstall de npm s'en charge — pour qu'un poste
+// resté sur d'anciennes versions après un git pull ne les publie pas.
+$commande = 'npm ci --no-audit --no-fund';
+echo "\n> {$commande}\n";
+passthru($commande, $code);
+
+if ($code !== 0) {
+    fwrite(STDERR, "\nERREUR : npm ci a échoué, web/libs/ n'est pas fiable. Rien n'est déployé.\n");
+    exit($code);
+}
+
 $commande = 'git ftp push -s ' . escapeshellarg($scope);
 echo "\n> {$commande}\n";
 passthru($commande, $code);

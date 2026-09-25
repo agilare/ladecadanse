@@ -26,6 +26,7 @@ Ces instructions vous permettront de mettre en place une copie du projet sur vot
 - Apache 2.4
 - PHP 8.4 (avec les extensions `fileinfo`, `mysqli`, `mbstring`, `gd`)
 - [Composer](https://getcomposer.org/)
+- [Node.js](https://nodejs.org/) 20.19+, 22.13+ ou 24+, avec npm — pour les [bibliothèques front-end](#bibliothèques-front-end), le lint et les tests JavaScript
 - MariaDB 10.11 (si possible avec `innodb_ft_min_token_size=3` et `ft_min_word_len=3`, pour de meilleurs résultats dans la recherche d'événements)
 
 Facultatif : `imagick` et Ghostscript, pour convertir en image les PDF **collés en URL** dans le formulaire d'événement. Sans eux le site fonctionne normalement, et les PDF **envoyés en fichier** sont convertis de toute façon — c'est le navigateur qui s'en charge. L'ensemble est désactivé par défaut : voir [Accepter les PDF dans les champs image](#accepter-les-pdf-dans-les-champs-image).
@@ -33,6 +34,7 @@ Facultatif : `imagick` et Ghostscript, pour convertir en image les PDF **collés
 #### Étapes
 1. cloner la branche `master`
 1. `composer install`
+1. `npm ci`, qui installe les bibliothèques front-end et les copie dans `web/libs/` — voir [Bibliothèques front-end](#bibliothèques-front-end)
 1. base de données
     1. créer une base de données avec `COLLATE 'utf8mb4_unicode_ci'` par ex.
         ```mysql
@@ -57,6 +59,8 @@ Facultatif : `imagick` et Ghostscript, pour convertir en image les PDF **collés
 Une configuration Docker est fournie pour exécuter le site en environnement local ou en production.
 
 L'utilisation de Make simplifie la gestion des conteneurs. Les principales actions (build, start, stop, logs, etc.) sont accessibles via des cibles prédéfinies dans le Makefile.
+
+Aucun conteneur n'installe encore les [bibliothèques front-end](#bibliothèques-front-end) : lancer `npm ci` sur l'hôte, le code source étant monté tel quel dans le conteneur. Sans cela, `web/libs/` manque et les pages s'affichent sans icônes, sélecteur de date ni listes select2.
 
 #### Configuration des environnements
 
@@ -148,6 +152,23 @@ Pour repartir d'une base neuve : `make clean`, qui supprime le volume, puis `mak
 
 Le site ladecadanse est déployé sur localhost:7777 (dev) ou localhost:8080 (prod). Le mot de passe, par défaut, pour l'utilisateur `admin` est `admin_dev`.
 
+### Bibliothèques front-end
+
+Les bibliothèques servies au navigateur depuis le site même — Font Awesome, Magnific Popup, select2, Zebra_Datepicker, checkboxes.js, normalize.css, pdf.js — sont déclarées dans les `dependencies` de `package.json`, à version exacte. Elles ne sont pas versionnées : `npm ci` les télécharge dans `node_modules/`, puis son hook `postinstall` lance `bin/libs-sync.mjs`, qui copie dans `web/libs/` les seuls fichiers que les pages chargent. Aucune étape de build : ce sont les fichiers publiés par chaque projet, tels quels.
+
+jQuery, Leaflet, TinyMCE et le SDK Sentry restent chargés depuis leur CDN.
+
+Mettre à jour une bibliothèque :
+
+```sh
+npm outdated                                # ce qui a du retard
+npm install --save-exact select2@4.1.1      # met à jour package.json, package-lock.json et web/libs/
+```
+
+Si la nouvelle version déplace ou renomme un fichier, `npm install` échoue en nommant la source introuvable : corriger la liste de `bin/libs-sync.mjs`, puis `npm run libs:sync`. Même chose pour ajouter une bibliothèque — une entrée dans `dependencies`, une ligne par fichier dans le script, et la balise dans `_header.inc.php` ou `_footer.inc.php`.
+
+`web/libs/` part en production avec le code, sans Node sur le serveur — voir [Déploiement](#pour-mettre-à-jour-avec-les-derniers-commits).
+
 ### Peupler la base depuis la production
 
 Une base neuve est vide, et saisir à la main de quoi éprouver l'agenda est vite décourageant. `composer prod-copy` fabrique une copie locale **anonymisée** de la production, réduite aux derniers événements ajoutés et à tout ce qu'ils référencent, et rapatrie les flyers et photos correspondants dans `web/uploads/`.
@@ -228,6 +249,7 @@ Un espace sur un serveur avec l'infrastructure prérequise, une timezone défini
 ### Avec Git-ftp
 
 #### Prérequis
+1. sur le poste qui déploie, l'[installation locale](#installation-sans-docker) complète, Node et npm compris : c'est lui qui prépare `web/libs/`. Le serveur, lui, n'a besoin ni de Node ni de npm
 1. installer [git-ftp](https://github.com/git-ftp/git-ftp/blob/master/INSTALL.md)
 1. dans le répertoire du projet, configurer les données de connexion (ici avec un scope pour le site de production : `prod`) :
     ```sh
@@ -252,7 +274,9 @@ Un espace sur un serveur avec l'infrastructure prérequise, une timezone défini
 $ composer deploy -- --scope=prod
 ```
 
-`composer deploy` compose le `.htaccess` à partir de ses fragments, puis lance `git ftp push`.
+`composer deploy` compose le `.htaccess` à partir de ses fragments, reconstruit `web/libs/` par `npm ci`, puis lance `git ftp push`.
+
+`web/libs/` n'est pas versionné mais git-ftp l'envoie quand même, en entier, chaque fois que `package-lock.json` ou `bin/libs-sync.mjs` a changé depuis le dernier déploiement (`.git-ftp-include`) ; les autres déploiements ne le renvoient pas. `composer install`, à passer par SSH sur le serveur quand `composer.lock` a changé, ne concerne que les dépendances PHP.
 
 Le scope n'a pas de valeur par défaut : quand plusieurs serveurs sont configurés, choisir
 pour vous reviendrait à parier sur la bonne machine. Le script les liste et s'arrête. Si un

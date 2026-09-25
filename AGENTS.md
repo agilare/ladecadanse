@@ -39,16 +39,22 @@ E2E tests use Selenium IDE — open `tests/ladecadanse.side` in the browser exte
 
 ```sh
 composer install
-npm install                             # ESLint + Vitest — required for `npm run lint` and `npm test`
+npm ci                                  # front-end libraries into web/libs/, plus ESLint + Vitest
 cp app/env_model.php app/env.php        # Configure DB, SMTP, API keys
 cp app/db.config_model.php app/db.config.php
 composer config:build                           # Composes .htaccess and .user.ini from their fragments
 ```
 
-`npm install` is only needed to lint and test: no JS build step exists, and the site runs without
-`node_modules` (assets are served as-is via `<script type="module">` and an import map). Requires
-Node 20.19+, 22.13+ or 24+ — declared as `engines` in `package.json`, so npm warns on an unsupported
-version. The binding constraint is jsdom; odd-numbered (non-LTS) Node lines are excluded.
+`npm ci` is required to run the site: the front-end libraries (Font Awesome, Magnific Popup, select2,
+Zebra_Datepicker, checkboxes.js, normalize.css, pdf.js) are exact-pinned npm `dependencies`, and the
+`postinstall` hook runs `bin/libs-sync.mjs`, which copies the files the pages load into `web/libs/`.
+That directory is gitignored — never commit it, and never reference `node_modules/` or `vendor/` from
+a page. To add or move a library file, edit the list in `bin/libs-sync.mjs`, then `npm run libs:sync`.
+There is still no JS build step: our own code in `web/js/` is served as-is via `<script type="module">`
+and an import map. `composer deploy` runs `npm ci` itself and git-ftp uploads `web/libs/` whenever
+`package-lock.json` or `bin/libs-sync.mjs` changed (`.git-ftp-include`); the server needs no Node.
+Requires Node 20.19+, 22.13+ or 24+ — declared as `engines` in `package.json`, so npm warns on an
+unsupported version. The binding constraint is jsdom; odd-numbered (non-LTS) Node lines are excluded.
 
 ## Architecture
 

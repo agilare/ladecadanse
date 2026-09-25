@@ -59,9 +59,9 @@ use Ladecadanse\UserLevel;
 
     <!-- used by ZebraDatepicker, MagnificPopup, checkboxes, custom in _footer.inc.php, browser.js, global.js -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-    <script src="/vendor/dimsemenov/magnific-popup/dist/jquery.magnific-popup.js"></script>
-    <script src="/vendor/select2/select2/dist/js/select2.min.js"></script>
-    <script src="/vendor/select2/select2/dist/js/i18n/fr.js"></script>
+    <script src="/web/libs/magnific-popup/jquery.magnific-popup.js"></script>
+    <script src="/web/libs/select2/js/select2.min.js"></script>
+    <script src="/web/libs/select2/js/i18n/fr.js"></script>
 
     <?php if (in_array($nom_page, $pages_lieumap)) { ?>
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -75,7 +75,7 @@ use Ladecadanse\UserLevel;
 
     <?php if (in_array($nom_page, $pages_formulaires)) : ?>
 
-        <script src="/web/js/libs/Zebra_datepicker/zebra_datepicker.min.js"></script>
+        <script src="/web/libs/zebra-datepicker/zebra_datepicker.min.js"></script>
         <script src="<?= $assets->get("js/forms.js"); ?>"></script>
 
         <?php if (in_array($nom_page, $pages_tinymce)) : ?>
@@ -84,7 +84,7 @@ use Ladecadanse\UserLevel;
         <?php endif; ?>
 
         <?php if ($nom_page == "admin/events") : ?>
-            <script src="/web/js/libs/jquery.checkboxes-1.2.2.min.js"></script>
+            <script src="/web/libs/checkboxes/jquery.checkboxes-1.2.2.min.js"></script>
             <script nonce="<?= CSP_NONCE ?>">
                 'use strict';
                 jQuery(function ($)

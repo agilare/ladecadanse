@@ -45,7 +45,7 @@ $mouseless_allowed = isset($_SESSION['Sgroupe']) && (int) $_SESSION['Sgroupe'] <
 
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 
-    <link rel="stylesheet" type="text/css" href="/web/css/normalize.css">
+    <link rel="stylesheet" type="text/css" href="/web/libs/normalize/normalize.css">
     <link rel="stylesheet" type="text/css" href="<?= $assets->get("css/imprimer.css"); ?>" media="print">
     <link rel="stylesheet" type="text/css" href="<?= $assets->get('css/global.css') ?>">
     <?php
@@ -59,7 +59,7 @@ $mouseless_allowed = isset($_SESSION['Sgroupe']) && (int) $_SESSION['Sgroupe'] <
     <?php if (file_exists(__ROOT__ . "/web/css/{$nom_page}.css")) : ?>
         <link rel="stylesheet" type="text/css" href="<?= $assets->get("css/{$nom_page}.css"); ?>" media="screen">
     <?php endif; ?>
-    <link href="/vendor/select2/select2/dist/css/select2.min.css" rel="stylesheet">
+    <link href="/web/libs/select2/css/select2.min.css" rel="stylesheet">
 
 
     <?php /* les deux bornes ne doivent pas se recouvrir : à exactement 800px les deux feuilles
@@ -68,9 +68,9 @@ $mouseless_allowed = isset($_SESSION['Sgroupe']) && (int) $_SESSION['Sgroupe'] <
     <link rel="stylesheet" type="text/css" media="screen and (min-width:800px)"  href="<?= $assets->get("css/desktop.css"); ?>">
     <link rel="stylesheet" type="text/css" media="screen and (max-width:799.98px)"  href="<?= $assets->get("css/mobile.css"); ?>">
     <link rel="stylesheet" type="text/css" media="print" href="<?= $assets->get("css/imprimer.css"); ?>" title="Imprimer">
-    <link rel="stylesheet" type="text/css" href="/vendor/fortawesome/font-awesome/css/font-awesome.min.css">
-    <link rel="stylesheet" type="text/css" href="/vendor/dimsemenov/magnific-popup/dist/magnific-popup.css">
-    <link rel="stylesheet" type="text/css" href="/web/js/libs/Zebra_datepicker/css/default/zebra_datepicker.min.css">
+    <link rel="stylesheet" type="text/css" href="/web/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="/web/libs/magnific-popup/magnific-popup.css">
+    <link rel="stylesheet" type="text/css" href="/web/libs/zebra-datepicker/css/default/zebra_datepicker.min.css">
 
     <?php HtmlShrink::showLinkRss($nom_page); ?>
 

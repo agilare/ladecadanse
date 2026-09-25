@@ -63,6 +63,14 @@ Rien à passer en base : `evenement.genre` est un `varchar(20)`, il accueille le
 - **Sélection des lieux actifs** — les trois selects de lieux (inscription, profil, texte d'un lieu) filtraient sur `actif=1`, colonne que la migration supprime ; c'est `statut` qui fait foi. Le code et la base partent donc ensemble : l'ancien code sur une base migrée répondrait une erreur SQL sur ces trois pages
 - **Affiliés et membres d'une fiche** — les personnes affiliées à un lieu et les membres d'un organisateur, avec leur e-mail, ne sont plus listés qu'aux administrateurs (niveau ADMIN). Un auteur ne voit plus les affiliés d'un lieu, et ni l'auteur d'une fiche d'organisateur ni ses membres ne voient plus la liste des membres
 
+### Bibliothèques front-end
+
+Font Awesome, Magnific Popup, select2, Zebra_Datepicker, checkboxes.js, normalize.css et pdf.js sont désormais servis depuis `web/libs/`, que npm remplit et que le dépôt ne contient pas — voir [README](README.md#bibliothèques-front-end). Aucune version ne change.
+
+- **Développement** — lancer `npm ci` après le `git pull` : sans lui, `web/libs/` n'existe pas et les pages perdent leurs icônes, le sélecteur de date et les listes select2. Node et npm deviennent un prérequis pour faire tourner le site, et plus seulement pour le lint et les tests. `composer install` retire de `vendor/` les trois paquets front-end qu'il portait
+- **Production, dans cet ordre** — d'abord `composer deploy`, qui lance `npm ci` et envoie `web/libs/` avec le code ; ensuite seulement `composer install` par SSH. L'ordre inverse retirerait `vendor/select2`, `vendor/fortawesome` et `vendor/dimsemenov` pendant que les pages en ligne y pointent encore. `git ftp push -s prod --dry-run` doit annoncer « Including all files in web/libs/ for upload. »
+- **Fichiers laissés sur le serveur** — git-ftp supprime ce que le dépôt ne porte plus : `web/js/libs/` et `web/css/normalize.css` disparaissent de la production au premier déploiement, sans rien à faire
+
 ## 3.12.0
 
 ### Base de données
