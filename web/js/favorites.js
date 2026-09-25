@@ -198,7 +198,7 @@ export const Favorites =
     _setButtonState: function setButtonState($btn, isFavorite)
     {
         $btn.toggleClass('is-favorite', isFavorite);
-        $btn.find('i.fa').toggleClass('fa-heart', isFavorite).toggleClass('fa-heart-o', !isFavorite);
+        $btn.find('i.fa').toggleClass('fa-bookmark', isFavorite).toggleClass('fa-bookmark-o', !isFavorite);
     },
 
     _hydrateButtons: function hydrateButtons()

@@ -47,7 +47,7 @@ include("_header.inc.php");
          */
         ?>
         <hgroup>
-            <h1><i class="fa fa-heart" style="color:#e74c3c"></i> Favoris</h1>
+            <h1><i class="fa fa-bookmark" style="color:#e74c3c"></i> Favoris</h1>
         </hgroup>
 
         <ul id="menu_periode">
@@ -129,7 +129,7 @@ include("_header.inc.php");
             <?php if ($view === 'passes') : ?>
                 <p class="favoris-vide">Aucun événement passé dans vos favoris.</p>
             <?php else : ?>
-                <p class="favoris-vide">Vous n'avez pas encore de favoris à venir. Cliquez sur <i class="fa fa-heart-o" style="color:#e74c3c"></i> à côté d'un événement pour l'ajouter.</p>
+                <p class="favoris-vide">Vous n'avez pas encore de favoris à venir. Cliquez sur <i class="fa fa-bookmark-o" style="color:#e74c3c"></i> à côté d'un événement pour l'ajouter.</p>
             <?php endif; ?>
         <?php else : ?>
             <div><p><?= $view === 'passes' ? $totalCount : $count ?> événement<?= ($view === 'passes' ? $totalCount : $count) > 1 ? 's' : '' ?></p></div>
@@ -154,7 +154,7 @@ include("_header.inc.php");
 
         <div id="favorites-guest-list">
             <p class="js-favorites-loading favoris-vide">Chargement de vos favoris...</p>
-            <p class="js-favorites-empty favoris-vide" style="display:none">Vous n'avez pas encore de favoris. Cliquez sur <i class="fa fa-heart-o" style="color:#e74c3c"></i> à côté d'un événement pour l'ajouter.</p>
+            <p class="js-favorites-empty favoris-vide" style="display:none">Vous n'avez pas encore de favoris. Cliquez sur <i class="fa fa-bookmark-o" style="color:#e74c3c"></i> à côté d'un événement pour l'ajouter.</p>
             <div class="js-favorites-pagination-top"></div>
             <div class="js-favorites-content"></div>
             <div class="js-favorites-pagination"></div>

@@ -339,7 +339,7 @@ $mouseless_allowed = isset($_SESSION['Sgroupe']) && (int) $_SESSION['Sgroupe'] <
                             <?php // en mobile, le cœur remplace le libellé et l'onglet se range avec les
                                   // deux boutons-icônes voisins (cf. mobile.css) ; l'aria-label garde son
                                   // nom accessible une fois le texte masqué ?>
-                            <a href="/<?= $lien."?".$url_query_region; ?>" aria-label="Favoris"><i class="fa fa-heart" aria-hidden="true"></i><span class="menu_libelle"><?= $nom; ?></span></a></li>
+                            <a href="/<?= $lien."?".$url_query_region; ?>" aria-label="Favoris"><i class="fa fa-bookmark" aria-hidden="true"></i><span class="menu_libelle"><?= $nom; ?></span></a></li>
                         <?php } else { ?>
                             ><a href="/<?= $lien."?".$url_query_region; ?>"><?= $nom; ?></a></li>
                         <?php

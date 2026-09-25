@@ -62,8 +62,8 @@
     padding: 0.5em 10px;
 }
 
-/* en mobile, le cœur remplace le libellé : l'onglet se lit comme le calendrier et la cloche */
-#menu ul li#bouton_favoris .fa-heart
+/* en mobile, le marque-page remplace le libellé : l'onglet se lit comme le calendrier et la cloche */
+#menu ul li#bouton_favoris .fa-bookmark
 {
     display:inline-block;
 }

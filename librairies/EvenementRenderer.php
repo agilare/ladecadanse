@@ -446,7 +446,7 @@ class EvenementRenderer
         {
             return '';
         }
-        $icon = $isFavorite ? 'fa-heart' : 'fa-heart-o';
+        $icon = $isFavorite ? 'fa-bookmark' : 'fa-bookmark-o';
         $title = $isFavorite ? 'Retirer des favoris' : 'Favori';
         $labelHtml = $label !== '' ? '&nbsp;' . $label : '';
         return '<a href="#" class="js-favorite-toggle favorite-btn' . ($isFavorite ? ' is-favorite' : '') . '" data-event-id="' . $idEvenement . '" title="' . $title . '"><i class="fa ' . $icon . ' fa-lg"></i>' . $labelHtml . '</a>';

@@ -11,6 +11,6 @@
 ?>
 <div id="favoris_filter_navigation" hidden>
     <ul>
-        <li class="js-favoris-filter-item favoris-filtre-item"><a href="#" class="js-favoris-filter favoris-filtre" rel="nofollow">Favoris&nbsp;<i class="fa fa-heart" aria-hidden="true"></i><span class="favoris-filtre-retirer">&nbsp;<i class="fa fa-times" aria-hidden="true"></i></span></a></li>
+        <li class="js-favoris-filter-item favoris-filtre-item"><a href="#" class="js-favoris-filter favoris-filtre" rel="nofollow">Favoris&nbsp;<i class="fa fa-bookmark" aria-hidden="true"></i><span class="favoris-filtre-retirer">&nbsp;<i class="fa fa-times" aria-hidden="true"></i></span></a></li>
     </ul>
 </div>
