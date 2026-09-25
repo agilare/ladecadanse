@@ -64,20 +64,25 @@ class UserEventDefaultsCest
     }
 
     /**
-     * Le fieldset Affiliation, plus haut dans la même page, occupe déjà les noms « lieu » et
-     * « organisateurs[] » : les réglages doivent rester des champs distincts. Deux <select> de même
-     * name dans un seul formulaire feraient gagner le dernier, et enregistrer les valeurs par
-     * défaut écraserait l'affiliation.
+     * Le fieldset Affiliation, plus haut dans la même page, occupe déjà le nom
+     * « affiliations[] » — une seule liste pour les lieux et les organisateurs depuis #102 :
+     * les réglages doivent rester des champs distincts. Deux <select> de même name dans un
+     * seul formulaire feraient gagner le dernier, et enregistrer les valeurs par défaut
+     * écraserait l'affiliation.
      */
     public function eventDefaultsDoNotCollideWithAffiliationFields(SiteTester $I)
     {
         $I->loginAsAdmin();
         $this->amOnMyProfileEdit($I);
 
-        $I->seeElement('#lieu');
+        $I->seeElement('select[name="affiliations[]"][multiple]#affiliations');
         $I->seeElement('#ev_defaults_idLieu');
-        $I->seeElement('select[name="organisateurs[]"]#organisateurs');
         $I->seeElement('select[name="ev_defaults_organisateurs[]"]#ev_defaults_organisateurs');
+
+        // les anciens noms ne doivent plus réapparaître : ils reviendraient dans le POST des
+        // réglages, que le traitement ne lit plus
+        $I->dontSeeElement('select[name=lieu]');
+        $I->dontSeeElement('select[name="organisateurs[]"]');
     }
 
     /**
