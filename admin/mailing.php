@@ -18,7 +18,7 @@ if (!$authorization->checkGroup(UserLevel::ADMIN))
  * SMTP à chaque message, soit 1 à 3 secondes par destinataire : un lot de 25 demande donc
  * environ 75 secondes. À baisser si l'hébergeur coupe la requête avant la fin d'un lot.
  */
-const MAILING_LOT = 25;
+const MAILING_LOT = 50;
 
 /** Clé de session où le mailing en cours patiente entre deux lots */
 const MAILING_SESSION_KEY = 'admin_mailing';
