@@ -926,7 +926,7 @@ if ($verif->nbErreurs() > 0)
                      propres identifiants, qui se recouvrent. Un seul lieu peut être retenu, autant
                      d'organisateurs qu'on veut : un select multiple ne sait pas l'exprimer, c'est
                      le traitement qui le vérifie. */ ?>
-            <select name="affiliations[]" id="affiliations" multiple class="js-select2-options-with-style" data-placeholder="Tapez un nom de lieu ou d'organisateur..." style="max-width:350px;">
+            <select name="affiliations[]" id="affiliations" multiple class="js-select2-affiliations" data-placeholder="Tapez un nom de lieu ou d'organisateur..." style="max-width:350px;">
                 <optgroup label="Lieux">
                 <?php
                 $tri_nom = "TRIM(LEADING 'L\'' FROM (TRIM(LEADING 'Les '

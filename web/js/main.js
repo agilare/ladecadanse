@@ -68,7 +68,15 @@ $('.js-select2-options-with-complement').select2(
     templateSelection: select2OptionWithComplement
 });
 
-select2PreventReopenOnDeselect($('.js-select2-options-with-style, .js-select2-options-with-complement'));
+// used for the merged lieux/organisateurs list (user-edit.php, user/register.php)
+$('.js-select2-affiliations').select2(
+{
+    language: "fr",
+    allowClear: true,
+    templateSelection: select2AffiliationWithKind
+});
+
+select2PreventReopenOnDeselect($('.js-select2-options-with-style, .js-select2-options-with-complement, .js-select2-affiliations'));
 
 /*
  * Select2 rouvre la liste déroulante quand on désélectionne par la croix, pour deux
@@ -119,6 +127,27 @@ function select2ApplyOptionInlineStyle(item)
 
     return $result;
 };
+
+/*
+ * Étiquette d'un rattachement, préfixée de sa nature : « Lieu : Bateau Genève ».
+ *
+ * La liste fusionne deux tables (#102), et un nom seul ne dit plus laquelle : « Le Zoo » peut
+ * être l'un ou l'autre, et des homonymes existent d'une table à l'autre. La nature se lit dans
+ * la valeur, qui porte déjà son type. La liste déroulante, elle, le dit par ses <optgroup> :
+ * inutile d'y répéter le mot, d'où un templateSelection sans templateResult.
+ */
+function select2AffiliationWithKind(item)
+{
+    if (!item.id)
+    {
+        return item.text; // placeholder ou élément vide
+    }
+
+    const natures = { lieu: 'Lieu', orga: 'Organisateur' };
+    const nature = natures[String(item.id).split(':')[0]];
+
+    return nature ? $('<span>').text(nature + ' : ' + item.text) : item.text;
+}
 
 function select2OptionWithComplement(item)
 {

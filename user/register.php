@@ -419,7 +419,7 @@ $erreurs = $verif->getErreurs();
                 <?php /* Une seule liste pour les deux, parce que la distinction n'est pas celle
                          de la personne qui s'inscrit. La valeur porte son type : les deux tables
                          ont leurs propres identifiants, qui se recouvrent. */ ?>
-                <select name="affiliation_selected" id="affiliation_selected" class="js-select2-options-with-style" data-placeholder="Tapez le nom..." style="max-width:350px"<?= isset($erreurs['affiliation']) ? ' aria-invalid="true"' : '' ?>>
+                <select name="affiliation_selected" id="affiliation_selected" class="js-select2-affiliations" data-placeholder="Tapez le nom..." style="max-width:350px"<?= isset($erreurs['affiliation']) ? ' aria-invalid="true"' : '' ?>>
                     <option value=""></option>
                     <optgroup label="Lieux">
                     <?php
