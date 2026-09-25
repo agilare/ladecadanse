@@ -62,6 +62,23 @@ const TABLES_COPIEES = [
 ];
 
 /**
+ * Tables dont la copie reprend la structure, mais aucune ligne.
+ *
+ * Leurs lignes n'ont rien à faire sur un poste de développement : `user_reset_requests`
+ * ne porte que des demandes de réinitialisation en cours — des jetons vivants, rattachés à
+ * des comptes de production —, et `bot_monitor` les adresses IP des visiteurs.
+ *
+ * Sans la table, en revanche, ce qui la lit tombe : `user/reset.php` lève une exception PDO
+ * dès la première demande, et `admin/bots.php` sur sa première requête. L'écriture, elle,
+ * se tait — `BotMonitor` avale ses propres erreurs —, si bien que l'absence ne se découvre
+ * qu'en ouvrant la page.
+ */
+const TABLES_STRUCTURE_SEULE = [
+    'user_reset_requests',
+    'bot_monitor',
+];
+
+/**
  * Colonnes portant un nom de fichier, et sous-répertoire de web/uploads/ où le
  * fichier est écrit. Chacune a sa miniature préfixée « s_ », produite à l'upload
  * par ImageDriver2 et attendue par toutes les pages de liste.
@@ -728,7 +745,7 @@ if ($phase !== 'files') {
 
     $pdoDest = connecterDestination($configDest, true);
 
-    foreach (TABLES_COPIEES as $table) {
+    foreach (array_merge(TABLES_COPIEES, TABLES_STRUCTURE_SEULE) as $table) {
         $stmt = $pdoSource->query("SHOW CREATE TABLE `{$table}`");
         if ($stmt === false) {
             abandonner("table « {$table} » absente de la source.");
@@ -754,6 +771,12 @@ if ($phase !== 'files') {
 
     foreach ($copie as $table => $lignes) {
         printf("  %-24s %6d\n", $table, ecrire($pdoDest, $table, $lignes));
+    }
+
+    // Les tables sans lignes sont annoncées elles aussi : absentes du décompte, on les
+    // chercherait dans la copie avant de comprendre qu'elles y sont bien, mais vides.
+    foreach (TABLES_STRUCTURE_SEULE as $table) {
+        printf("  %-24s %6s\n", $table, 'vide');
     }
 
     // Sous quel compte se connecter : le mot de passe est le même partout, seul
