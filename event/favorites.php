@@ -6,6 +6,7 @@ use Ladecadanse\Evenement;
 use Ladecadanse\EvenementRenderer;
 use Ladecadanse\Favorites;
 use Ladecadanse\HtmlShrink;
+use Ladecadanse\Security\SecurityToken;
 
 header('X-Robots-Tag: noindex');
 header('Content-Type: application/json; charset=utf-8');
@@ -96,6 +97,20 @@ if (empty($_SESSION['logged']))
 }
 
 $idPersonne = (int) $_SESSION['SidPersonne'];
+
+/*
+ * Les deux actions qui écrivent exigent le jeton de session, comme les liens « Dépublier » et
+ * « Supprimer » depuis c16a243. Il voyage en en-tête et non dans le corps : celui-ci est du JSON,
+ * et un en-tête ajouté par un script est hors de portée d'un envoi inter-site, le préalable CORS
+ * n'étant pas accordé. « list » et « events » ne lisent que.
+ */
+if (in_array($get['action'], ['toggle', 'sync'], true)
+    && !SecurityToken::check($_SERVER['HTTP_X_CSRF_TOKEN'] ?? '', $_SESSION['token'] ?? ''))
+{
+    http_response_code(400);
+    echo json_encode(['error' => 'invalid_token']);
+    exit;
+}
 
 if ($get['action'] === 'toggle' && $_SERVER['REQUEST_METHOD'] === 'POST')
 {

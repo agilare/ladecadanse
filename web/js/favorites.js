@@ -4,11 +4,15 @@ const DISMISS_KEY = 'ladecadanse_favorites_banner_dismissed';
 const FavoritesStore =
 {
     isLoggedIn: false,
+    csrfToken: '',
     _cache: new Set(),
 
-    init: async function initStore(isLoggedIn, inlineIds)
+    init: async function initStore(isLoggedIn, inlineIds, csrfToken)
     {
         this.isLoggedIn = isLoggedIn;
+        // avant le premier appel : _apiSync part dès cette méthode, pour un compte qui se
+        // connecte avec des favoris posés en visiteur
+        this.csrfToken = csrfToken || '';
 
         if (!this.isLoggedIn)
         {
@@ -92,7 +96,7 @@ const FavoritesStore =
     {
         const response = await fetch('/event/favorites.php?action=toggle', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': this.csrfToken },
             body: JSON.stringify({ idE: eventId })
         });
         if (!response.ok)
@@ -117,7 +121,7 @@ const FavoritesStore =
     {
         const response = await fetch('/event/favorites.php?action=sync', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': this.csrfToken },
             body: JSON.stringify({ ids: ids })
         });
         if (!response.ok)
@@ -144,7 +148,7 @@ export const Favorites =
         }
 
         this._bindEvents();
-        await FavoritesStore.init(!!config.isLoggedIn, config.favoriteIds);
+        await FavoritesStore.init(!!config.isLoggedIn, config.favoriteIds, config.csrfToken);
 
         this._hydrateButtons();
         this._construireBarreMois();

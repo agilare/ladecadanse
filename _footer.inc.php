@@ -106,6 +106,11 @@ use Ladecadanse\UserLevel;
         $favoriteIdsStmt = $connectorPdo->prepare("SELECT idEvenement FROM personne_evenement WHERE idPersonne = ?");
         $favoriteIdsStmt->execute([(int) $_SESSION['SidPersonne']]);
         $ladecadanseJsConfig['favoriteIds'] = array_map('intval', $favoriteIdsStmt->fetchAll(PDO::FETCH_COLUMN));
+
+        // Jeton des deux appels qui écrivent (toggle, sync), renvoyé par le script en en-tête.
+        // Rendu aux seuls comptes connectés, les seuls à pouvoir les appeler ; getToken() le crée
+        // au besoin, comme le fait déjà un lien « Dépublier ».
+        $ladecadanseJsConfig['csrfToken'] = Ladecadanse\Security\SecurityToken::getToken();
     }
     ?>
     <script nonce="<?= CSP_NONCE ?>">window.__LADECADANSE = <?= json_encode($ladecadanseJsConfig) ?>;</script>
