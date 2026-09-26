@@ -4,84 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "47acac37cfc6503f1b97ad2d0977a91f",
+    "content-hash": "fd4b4f441c98f806a593ff0741815303",
     "packages": [
-        {
-            "name": "dimsemenov/magnific-popup",
-            "version": "1.2.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/dimsemenov/Magnific-Popup.git",
-                "reference": "45dd72ccd1a18f0626fb958f7c49e6313556d31f"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/dimsemenov/Magnific-Popup/zipball/45dd72ccd1a18f0626fb958f7c49e6313556d31f",
-                "reference": "45dd72ccd1a18f0626fb958f7c49e6313556d31f",
-                "shasum": ""
-            },
-            "type": "library",
-            "notification-url": "https://packagist.org/downloads/",
-            "description": "Light and responsive lightbox script with focus on performance.",
-            "homepage": "http://dimsemenov.com/plugins/magnific-popup/",
-            "support": {
-                "issues": "https://github.com/dimsemenov/Magnific-Popup/issues",
-                "source": "https://github.com/dimsemenov/Magnific-Popup/tree/1.2.0"
-            },
-            "time": "2024-06-08T08:02:31+00:00"
-        },
-        {
-            "name": "fortawesome/font-awesome",
-            "version": "v4.7.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/FortAwesome/Font-Awesome.git",
-                "reference": "a8386aae19e200ddb0f6845b5feeee5eb7013687"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/FortAwesome/Font-Awesome/zipball/a8386aae19e200ddb0f6845b5feeee5eb7013687",
-                "reference": "a8386aae19e200ddb0f6845b5feeee5eb7013687",
-                "shasum": ""
-            },
-            "require-dev": {
-                "jekyll": "1.0.2",
-                "lessc": "1.4.2"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "4.6.x-dev"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "OFL-1.1",
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Dave Gandy",
-                    "email": "dave@fontawesome.io",
-                    "homepage": "http://twitter.com/davegandy",
-                    "role": "Developer"
-                }
-            ],
-            "description": "The iconic font and CSS framework",
-            "homepage": "http://fontawesome.io/",
-            "keywords": [
-                "FontAwesome",
-                "awesome",
-                "bootstrap",
-                "font",
-                "icon"
-            ],
-            "support": {
-                "issues": "https://github.com/FortAwesome/Font-Awesome/issues",
-                "source": "https://github.com/FortAwesome/Font-Awesome/tree/v4.7.0"
-            },
-            "time": "2016-10-24T15:52:54+00:00"
-        },
         {
             "name": "graham-campbell/result-type",
             "version": "v1.1.4",
@@ -743,58 +667,6 @@
                 "source": "https://github.com/php-fig/log/tree/3.0.2"
             },
             "time": "2024-09-11T13:17:53+00:00"
-        },
-        {
-            "name": "select2/select2",
-            "version": "4.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/select2/select2.git",
-                "reference": "13bad6eb9b212e8566dc467fb8b20c6d72f4bfa3"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/select2/select2/zipball/13bad6eb9b212e8566dc467fb8b20c6d72f4bfa3",
-                "reference": "13bad6eb9b212e8566dc467fb8b20c6d72f4bfa3",
-                "shasum": ""
-            },
-            "type": "component",
-            "extra": {
-                "component": {
-                    "files": [
-                        "dist/js/select2.js",
-                        "dist/js/i18n/*.js",
-                        "dist/css/select2.css"
-                    ],
-                    "styles": [
-                        "dist/css/select2.css"
-                    ],
-                    "scripts": [
-                        "dist/js/select2.js"
-                    ]
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "Select2 is a jQuery based replacement for select boxes.",
-            "homepage": "https://select2.org/",
-            "support": {
-                "issues": "https://github.com/select2/select2/issues",
-                "source": "https://github.com/select2/select2/tree/4.1.0"
-            },
-            "funding": [
-                {
-                    "url": "https://github.com/kevin-brown",
-                    "type": "github"
-                },
-                {
-                    "url": "https://opencollective.com/select2",
-                    "type": "open_collective"
-                }
-            ],
-            "time": "2026-05-26T20:03:12+00:00"
         },
         {
             "name": "symfony/html-sanitizer",
