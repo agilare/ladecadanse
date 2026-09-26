@@ -133,6 +133,15 @@ Le `!` signifie « à chaque push, sans condition » : git-ftp envoie **les fich
 présents sur le disque**. C'est pourquoi `deploy` les recompose d'abord — sans
 cela, un essai local oublié partirait en production.
 
+`web/libs/`, les bibliothèques front-end copiées depuis `node_modules`, suit le
+même principe sous une autre forme : `web/libs/:package-lock.json` envoie tout le
+répertoire, mais seulement quand le lockfile a changé depuis le dernier
+déploiement (idem pour `bin/libs-sync.mjs`, la liste des fichiers copiés).
+`deploy` lance donc `npm ci` avant `git ftp push`, pour que ce qui part
+corresponde au lockfile et non à l'état du poste. git-ftp ne supprime pas à
+distance un fichier retiré d'un répertoire non versionné : après l'abandon d'une
+bibliothèque, ses fichiers restent sur le serveur jusqu'à un `rm` par SSH.
+
 Après un déploiement, une requête suffit à prouver que le `.htaccess` a été pris
 et qu'il est valide :
 

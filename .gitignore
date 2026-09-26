@@ -39,6 +39,8 @@ app/db.config.php
 .user.ini
 tests/.env
 /node_modules
+# bibliothèques front-end, copiées depuis node_modules par « npm ci » (bin/libs-sync.mjs)
+/web/libs
 /.well-known
 /.claude
 

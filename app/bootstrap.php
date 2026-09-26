@@ -242,11 +242,19 @@ if (DARKVISITORS_ENABLED)
 
     // will only run at the end of the script, i.e. after your page has been generated. This will avoid slowing down the page rendering for the user, especially if you limit the timeout in cURL
     register_shutdown_function(function () {
+        // jamais au tiers : Cookie porte PHPSESSID. Noms comparés en minuscules, car Apache
+        // les rend tels que reçus (minuscules sous HTTP/2) et le polyfill en Camel-Case.
+        $headers = array_filter(
+            getallheaders(),
+            fn ($name): bool => !in_array(strtolower((string) $name), ['cookie', 'authorization', 'proxy-authorization'], true),
+            ARRAY_FILTER_USE_KEY
+        );
+
         trackVisitAsync([
             'request_path' => $_SERVER['REQUEST_URI'],
             'request_method' => $_SERVER['REQUEST_METHOD'],
-            'request_headers' => getallheaders(),
-                ], DARKVISITORS_ACCESS_TOKEN);
+            'request_headers' => $headers,
+        ], DARKVISITORS_ACCESS_TOKEN);
     });
 }
 
@@ -263,11 +271,11 @@ header('X-Content-Type-Options: nosniff');
 define("CSP_NONCE", bin2hex(openssl_random_pseudo_bytes(32)));
 $csp = implode('; ', [
     "default-src 'self'",
-    "script-src 'self' 'nonce-" . CSP_NONCE . "' https://unpkg.com https://tools.ladecadanse.ch/ https://code.jquery.com https://knownagents.com https://browser.sentry-cdn.com https://www.paypalobjects.com https://liberapay.com https://wemakeit.com https://assets.wemakeit.com https://cdn.tiny.cloud",
-    "img-src 'self' https://tile.openstreetmap.org https://tools.ladecadanse.ch/ https://unpkg.com https://www.paypalobjects.com https://sp.tinymce.com data:",
-    "style-src 'self' 'unsafe-inline' https://unpkg.com https://cdn.tiny.cloud https://www.tiny.cloud https://wemakeit.com https://assets.wemakeit.com/ https://fonts.googleapis.com",
+    "script-src 'self' 'nonce-" . CSP_NONCE . "' https://tools.ladecadanse.ch/ https://knownagents.com https://browser.sentry-cdn.com https://www.paypalobjects.com https://liberapay.com https://wemakeit.com https://assets.wemakeit.com https://cdn.tiny.cloud",
+    "img-src 'self' https://tile.openstreetmap.org https://tools.ladecadanse.ch/ https://www.paypalobjects.com https://sp.tinymce.com data:",
+    "style-src 'self' 'unsafe-inline' https://cdn.tiny.cloud https://www.tiny.cloud https://wemakeit.com https://assets.wemakeit.com/ https://fonts.googleapis.com",
     "font-src 'self' https://www.tiny.cloud https://assets.wemakeit.com https://fonts.gstatic.com",
-    "connect-src 'self' https://tools.ladecadanse.ch/ https://cdn.tiny.cloud https://unpkg.com https://wemakeit.com https://knownagents.com https://app.glitchtip.com",
+    "connect-src 'self' https://tools.ladecadanse.ch/ https://cdn.tiny.cloud https://wemakeit.com https://knownagents.com https://app.glitchtip.com",
     "frame-ancestors 'self' https://epic-magazine.ch",
     "frame-src 'none'",
     "object-src 'none'",
@@ -316,7 +324,7 @@ header("Permissions-Policy: $permissions");
 
 //header("Access-Control-Allow-Origin: *");
 //header('X-Frame-Options:    SAMEORIGIN');
-header('Referrer-Policy: no-referrer-when-downgrade'); // This sends complete URL information to a potentially trustworthy URL from modern HTTPS State or from not modern HTTPS state to any origin . Information is sent for HTTPS -> HTTPS and HTTP -> HTTPS transition . This is the default Referrer-Policy
+header('Referrer-Policy: strict-origin-when-cross-origin'); // with `strict-origin-when-cross-origin` third-party resources and outbound links no longer receive the full URL, which included the password reset token on `user/reset2.php`
 
 header("Cache-Control: no-store, no-cache, must-revalidate");
 header("Cache-Control: post-check=0, pre-check=0", false);

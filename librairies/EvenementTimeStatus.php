@@ -72,6 +72,14 @@ final class EvenementTimeStatus
         public readonly bool $endEstimated = false,
         /** Séance de ciné ou de théâtre commencée depuis trop longtemps pour qu'on l'y rejoigne */
         public readonly bool $tooLate = false,
+        /**
+         * Minutes restantes avant le début, non arrondies ; null dès que l'événement a commencé.
+         *
+         * Le libellé, lui, est arrondi : c'est cette valeur brute que l'affichage interroge pour
+         * décider ce qu'il montre — la barre au-delà d'un certain horizon, l'urgence du compte à
+         * rebours —, sans avoir à défaire l'arrondi.
+         */
+        public readonly ?int $minutesUntilStart = null,
     ) {
     }
 
@@ -136,13 +144,16 @@ final class EvenementTimeStatus
 
         if ($now < $debut)
         {
+            $minutesUntilStart = (int) ceil((self::timestamp($debut) - self::timestamp($now)) / 60);
+
             return new self(
                 self::COMING,
-                self::countdownLabel($debut, $now),
+                self::countdownLabel($minutesUntilStart),
                 0,
                 $durationMinutes,
                 $fin,
-                $endEstimated
+                $endEstimated,
+                minutesUntilStart: $minutesUntilStart
             );
         }
 
@@ -166,11 +177,11 @@ final class EvenementTimeStatus
      * Le pas est de dix minutes, puis d'une heure au-delà de trois heures. Le plancher de dix
      * minutes évite un « dans 0min » qui se lirait comme « c'est commencé » : quand la dernière
      * demi-dizaine de minutes s'égrène, l'horaire affiché juste au-dessus reste la référence.
+     *
+     * @param int $minutes minutes restantes avant le début, non arrondies
      */
-    private static function countdownLabel(string $debut, string $now): string
+    private static function countdownLabel(int $minutes): string
     {
-        $minutes = (int) ceil((self::timestamp($debut) - self::timestamp($now)) / 60);
-
         if ($minutes > self::COUNTDOWN_HOUR_ROUNDING_FROM_MINUTES)
         {
             $heures = (int) round($minutes / 60);

@@ -4,7 +4,9 @@
     "scripts": {
         "lint": "eslint ./web/js/",
         "test": "vitest run",
-        "test:watch": "vitest"
+        "test:watch": "vitest",
+        "libs:sync": "node bin/libs-sync.mjs",
+        "postinstall": "node bin/libs-sync.mjs"
     },
     "devDependencies": {
         "eslint": "^8.56.0",
@@ -13,5 +15,16 @@
     },
     "engines": {
         "node": "^20.19.0 || ^22.13.0 || >=24.0.0"
+    },
+    "dependencies": {
+        "checkboxes.js": "1.2.2",
+        "font-awesome": "4.7.0",
+        "jquery": "3.7.1",
+        "leaflet": "1.9.4",
+        "magnific-popup": "1.2.0",
+        "normalize.css": "8.0.1",
+        "pdfjs-dist": "6.2.108",
+        "select2": "4.1.0",
+        "zebra_datepicker": "2.2.0"
     }
 }

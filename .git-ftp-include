@@ -1,3 +1,8 @@
 !.well-known/
 !.htaccess
 !.user.ini
+# Bibliothèques front-end : absentes du dépôt, reconstruites par npm (bin/libs-sync.mjs).
+# Tout le répertoire part quand l'une des deux sources a changé depuis le dernier
+# déploiement — une version ou la liste des fichiers copiés.
+web/libs/:package-lock.json
+web/libs/:bin/libs-sync.mjs

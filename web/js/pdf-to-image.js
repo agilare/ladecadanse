@@ -28,8 +28,8 @@ const QUALITE_WEBP = 0.85;
 // fournissent pas de version minifiée ; deflate, actif dans le .htaccess, s'en
 // charge. Le chargement reste paresseux — rien n'est téléchargé tant que
 // personne ne dépose un PDF.
-const CHEMIN_PDFJS = '/web/js/libs/pdfjs/pdf.mjs';
-const CHEMIN_WORKER_PDFJS = '/web/js/libs/pdfjs/pdf.worker.mjs';
+const CHEMIN_PDFJS = '/web/libs/pdfjs/pdf.mjs';
+const CHEMIN_WORKER_PDFJS = '/web/libs/pdfjs/pdf.worker.mjs';
 
 /**
  * Échelle de rendu de la page, d'après la largeur de son viewport à l'échelle 1.
