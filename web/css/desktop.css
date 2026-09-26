@@ -102,6 +102,18 @@
 	{
 		width:140px; /* 140 */
 		height:1.15em;
+        padding: 0.6em 10px;
+	}
+
+	#menu ul li#bouton_agenda a, #menu ul li#bouton_favoris a
+	{
+		width:70px; /* 140 */
+		height:1.15em;
+	}
+
+    #menu ul li#bouton_favoris a
+	{
+        font-weight: normal;
 	}
 
 	#menu ul li.form_recherche
@@ -128,11 +140,11 @@
     width:65%;
 }
 
-	#menu ul li#bouton_agenda a
+/*	#menu ul li#bouton_agenda a
 	{
 		width:180px;
 
-	}
+	}*/
 
 	/* pas joli le fond blanc à cet endroit */
 	#menu ul li#bouton_agenda.ici a
@@ -147,10 +159,10 @@
 }
 
 
-table#calendrier tr#mois th
+table#calendrier tr#mois th a:first-of-type, table#calendrier tr#mois th a:last-of-type
 {
 	font-size: 0.9em;
-    padding: 0.4em 0.2em;
+    padding: 0.4em 0.6em;
 }
 
 table#calendrier tr#jours th {

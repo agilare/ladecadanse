@@ -2565,8 +2565,8 @@ div.pagination {
 
 table#calendrier tr#mois th#mois_courant
 {
-    font-size: 1em;
-    padding: 0.6em;
+    font-size: 0.9em;
+    padding: 0.6em 0.2em;
     color: #333;
 }
 
