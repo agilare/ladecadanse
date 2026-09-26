@@ -301,7 +301,7 @@ include("_header.inc.php");
         // Une préversion qui ne se signale pas se croit livrée : l'administrateur qui l'éprouve
         // doit voir qu'il est seul à disposer de ces repères, et à quelle heure ils sont figés.
         if ($time_status_preview) : ?>
-            <p class="even-time-preview"><i class="fa fa-clock-o" aria-hidden="true"></i>&nbsp;Repères de temporalité en préversion : vous seuls, administrateurs, les voyez. Ils situent chaque événement par rapport à <?= date('H:i') ?>, l’heure de chargement de cette page.</p>
+            <p class="even-time-preview"><i class="fa fa-clock-o" aria-hidden="true"></i>&nbsp;Repères de temporalité en préversion : vous seuls, administrateurs, les voyez</p>
         <?php endif; ?>
 
         <?php // une seule bulle pour tous les boutons « ? » de la liste : global.js la remplit et la place
