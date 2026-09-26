@@ -154,9 +154,11 @@ Le site ladecadanse est déployé sur localhost:7777 (dev) ou localhost:8080 (pr
 
 ### Bibliothèques front-end
 
-Les bibliothèques servies au navigateur depuis le site même — Font Awesome, Magnific Popup, select2, Zebra_Datepicker, checkboxes.js, normalize.css, pdf.js — sont déclarées dans les `dependencies` de `package.json`, à version exacte. Elles ne sont pas versionnées : `npm ci` les télécharge dans `node_modules/`, puis son hook `postinstall` lance `bin/libs-sync.mjs`, qui copie dans `web/libs/` les seuls fichiers que les pages chargent. Aucune étape de build : ce sont les fichiers publiés par chaque projet, tels quels.
+Les bibliothèques servies au navigateur depuis le site même — jQuery, Leaflet, Font Awesome, Magnific Popup, select2, Zebra_Datepicker, checkboxes.js, normalize.css, pdf.js — sont déclarées dans les `dependencies` de `package.json`, à version exacte. Elles ne sont pas versionnées : `npm ci` les télécharge dans `node_modules/`, puis son hook `postinstall` lance `bin/libs-sync.mjs`, qui copie dans `web/libs/` les seuls fichiers que les pages chargent. Aucune étape de build : ce sont les fichiers publiés par chaque projet, tels quels.
 
-jQuery, Leaflet, TinyMCE et le SDK Sentry restent chargés depuis leur CDN.
+TinyMCE et le SDK Sentry restent chargés depuis leur CDN : tous deux sont liés à un service (clé d'API, DSN), pas à un fichier qu'on pourrait figer. Les tuiles de la carte viennent d'OpenStreetMap pour la même raison.
+
+`npm ci` avertit `EBADENGINE` sous Node 22 : select2 4.1.0 déclare exiger Node 24 pour ses propres outils de build, dont rien ne sert ici puisque seuls ses fichiers publiés sont copiés. L'avertissement est sans conséquence.
 
 Mettre à jour une bibliothèque :
 

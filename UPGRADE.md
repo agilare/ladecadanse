@@ -65,11 +65,12 @@ Rien à passer en base : `evenement.genre` est un `varchar(20)`, il accueille le
 
 ### Bibliothèques front-end
 
-Font Awesome, Magnific Popup, select2, Zebra_Datepicker, checkboxes.js, normalize.css et pdf.js sont désormais servis depuis `web/libs/`, que npm remplit et que le dépôt ne contient pas — voir [README](README.md#bibliothèques-front-end). Aucune version ne change.
+jQuery, Leaflet, Font Awesome, Magnific Popup, select2, Zebra_Datepicker, checkboxes.js, normalize.css et pdf.js sont désormais servis depuis `web/libs/`, que npm remplit et que le dépôt ne contient pas — voir [README](README.md#bibliothèques-front-end). Aucune version ne change : les fichiers de jQuery et de Leaflet sont ceux des CDN à l'octet près, leurs empreintes SRI concordent.
 
-- **Développement** — lancer `npm ci` après le `git pull` : sans lui, `web/libs/` n'existe pas et les pages perdent leurs icônes, le sélecteur de date et les listes select2. Node et npm deviennent un prérequis pour faire tourner le site, et plus seulement pour le lint et les tests. `composer install` retire de `vendor/` les trois paquets front-end qu'il portait
+- **Développement** — lancer `npm ci` après le `git pull` : sans lui, `web/libs/` n'existe pas, et sans jQuery c'est tout le JavaScript du site qui tombe — icônes, sélecteur de date, listes select2, cartes. Node et npm deviennent un prérequis pour faire tourner le site, et plus seulement pour le lint et les tests. `composer install` retire de `vendor/` les trois paquets front-end qu'il portait
 - **Production, dans cet ordre** — d'abord `composer deploy`, qui lance `npm ci` et envoie `web/libs/` avec le code ; ensuite seulement `composer install` par SSH. L'ordre inverse retirerait `vendor/select2`, `vendor/fortawesome` et `vendor/dimsemenov` pendant que les pages en ligne y pointent encore. `git ftp push -s prod --dry-run` doit annoncer « Including all files in web/libs/ for upload. »
 - **Fichiers laissés sur le serveur** — git-ftp supprime ce que le dépôt ne porte plus : `web/js/libs/` et `web/css/normalize.css` disparaissent de la production au premier déploiement, sans rien à faire
+- **CSP** — `https://code.jquery.com` et `https://unpkg.com` en sortent (`app/bootstrap.php`) : le déploiement de `web/libs/` et celui du code doivent donc partir ensemble, ce que fait `composer deploy`. Un `git ftp push` seul, sans `npm ci` préalable sur un poste à jour, laisserait les pages sans jQuery
 
 ## 3.12.0
 

@@ -28,8 +28,11 @@ const DESTINATION = join(RACINE, 'web', 'libs');
 /**
  * Source dans node_modules → répertoire de destination dans web/libs.
  *
- * Quatre contraintes de chemins relatifs à respecter :
+ * Cinq contraintes de chemins relatifs à respecter :
  * - la CSS de Font Awesome cherche ses polices en ../fonts/ ;
+ * - Leaflet déduit le répertoire de ses marqueurs du background-image de
+ *   .leaflet-default-icon-path, url(images/marker-icon.png) relatif à leaflet.css :
+ *   images/ doit rester à côté, sans quoi seul le marqueur disparaît, sans erreur ;
  * - celle de Zebra_Datepicker cherche icons.png dans son propre répertoire ;
  * - pdf.js veut pdf.mjs et pdf.worker.mjs côte à côte (web/js/pdf-to-image.js) ;
  * - le fr.js de select2 a sa propre balise <script>, son chemin n'a qu'à la suivre.
@@ -42,6 +45,14 @@ const FICHIERS = [
     ['font-awesome/fonts/fontawesome-webfont.ttf', 'font-awesome/fonts'],
     ['font-awesome/fonts/fontawesome-webfont.woff', 'font-awesome/fonts'],
     ['font-awesome/fonts/fontawesome-webfont.woff2', 'font-awesome/fonts'],
+    ['jquery/dist/jquery.min.js', 'jquery'],
+    ['leaflet/dist/leaflet.js', 'leaflet'],
+    ['leaflet/dist/leaflet.css', 'leaflet'],
+    ['leaflet/dist/images/layers.png', 'leaflet/images'],
+    ['leaflet/dist/images/layers-2x.png', 'leaflet/images'],
+    ['leaflet/dist/images/marker-icon.png', 'leaflet/images'],
+    ['leaflet/dist/images/marker-icon-2x.png', 'leaflet/images'],
+    ['leaflet/dist/images/marker-shadow.png', 'leaflet/images'],
     ['magnific-popup/dist/magnific-popup.css', 'magnific-popup'],
     ['magnific-popup/dist/jquery.magnific-popup.js', 'magnific-popup'],
     ['select2/dist/css/select2.min.css', 'select2/css'],

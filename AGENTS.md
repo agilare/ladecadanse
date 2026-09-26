@@ -45,7 +45,7 @@ cp app/db.config_model.php app/db.config.php
 composer config:build                           # Composes .htaccess and .user.ini from their fragments
 ```
 
-`npm ci` is required to run the site: the front-end libraries (Font Awesome, Magnific Popup, select2,
+`npm ci` is required to run the site: the front-end libraries (jQuery, Leaflet, Font Awesome, Magnific Popup, select2,
 Zebra_Datepicker, checkboxes.js, normalize.css, pdf.js) are exact-pinned npm `dependencies`, and the
 `postinstall` hook runs `bin/libs-sync.mjs`, which copies the files the pages load into `web/libs/`.
 That directory is gitignored — never commit it, and never reference `node_modules/` or `vendor/` from
