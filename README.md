@@ -24,7 +24,7 @@ Ces instructions vous permettront de mettre en place une copie du projet sur vot
 
 #### Prérequis
 - Apache 2.4
-- PHP 8.4 (avec les extensions `fileinfo`, `mysqli`, `mbstring`, `gd`)
+- PHP 8.4, avec les extensions exigées par `composer.json` et ses dépendances : `composer check-platform-reqs` les liste et signale celles qui manquent (`--no-dev` pour s'en tenir à ce que le site demande en production). `composer install` refuse de toute façon de s'exécuter tant qu'il en manque une
 - [Composer](https://getcomposer.org/)
 - [Node.js](https://nodejs.org/) 20.19+, 22.13+ ou 24+, avec npm — pour les [bibliothèques front-end](#bibliothèques-front-end), le lint et les tests JavaScript
 - MariaDB 10.11 (si possible avec `innodb_ft_min_token_size=3` et `ft_min_word_len=3`, pour de meilleurs résultats dans la recherche d'événements)
