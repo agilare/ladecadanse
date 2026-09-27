@@ -3,6 +3,7 @@
 require_once("../app/bootstrap.php");
 
 use Ladecadanse\HtmlShrink;
+use Ladecadanse\Personne;
 use Ladecadanse\UserLevel;
 use Ladecadanse\Utils\Mailing;
 use PHPMailer\PHPMailer\PHPMailer;
@@ -78,11 +79,9 @@ function parserCsvDestinataires(string $csv): array
             continue;
         }
 
-        if ($pseudo === '')
-        {
-            $rejets[] = ['ligne' => $numero, 'motif' => "pseudo vide", 'extrait' => $extrait];
-            continue;
-        }
+        // Un pseudo vide n'est plus un motif de rejet : le nom d'utilisateur est facultatif
+        // depuis l'inscription simplifiée, et ces comptes seraient sortis des mailings sans
+        // qu'on s'en aperçoive. %pseudo% retombe alors sur l'adresse, voir plus bas.
 
         // la validation qu'appliquera Mailing::toUser() : ce que l'aperçu annonce est ce qui partira
         if (!PHPMailer::validateAddress($email))
@@ -220,7 +219,7 @@ if (isset($_POST['formulaire']))
                 {
                     set_time_limit(30); // réarmé à chaque mail, un envoi SMTP prend 1 à 3 secondes
 
-                    $vars = ['pseudo' => $d['pseudo'], 'idPersonne' => (string) $d['idPersonne']];
+                    $vars = ['pseudo' => Personne::displayName($d['pseudo'], $d['email']), 'idPersonne' => (string) $d['idPersonne']];
                     $envoye = $mailer->toUser(
                         $d['email'],
                         $tplEngine->renderString($mailing['objet'], $vars),
@@ -261,7 +260,9 @@ if (isset($_POST['formulaire']))
 if ($etape === 'apercu')
 {
     $premier = $mailing['destinataires'][0];
-    $vars = ['pseudo' => $premier['pseudo'], 'idPersonne' => (string) $premier['idPersonne']];
+    // %pseudo% retombe sur l'adresse quand le compte n'a pas de nom d'utilisateur : « Bonjour , »
+    // est pire qu'une adresse, et l'aperçu doit montrer ce qui partira
+    $vars = ['pseudo' => Personne::displayName($premier['pseudo'], $premier['email']), 'idPersonne' => (string) $premier['idPersonne']];
 
     $pied = $tplEngine->render('admin-mailing-footer', [
         'site_url' => SITE_CANONICAL_URL,
@@ -350,7 +351,8 @@ require_once '../_header.inc.php';
 
             <p>Dans l'objet comme dans le corps, <code>%pseudo%</code> et <code>%idPersonne%</code> sont remplacés
                 par les valeurs de chaque ligne. Une variable mal orthographiée apparaît en clair dans l'aperçu
-                sous la forme <code>[non défini: %…%]</code>.</p>
+                sous la forme <code>[non défini: %…%]</code>. Le nom d'utilisateur étant facultatif,
+                <code>%pseudo%</code> rend l'adresse pour les comptes qui n'en ont pas.</p>
 
             <p>Le message part en texte brut, signé
                 <strong><?= sanitizeForHtml(EMAIL_SITE_NAME) ?> &lt;<?= sanitizeForHtml(EMAIL_SITE) ?>&gt;</strong>,
@@ -426,11 +428,11 @@ require_once '../_header.inc.php';
             <h3>Premières adresses</h3>
             <ul>
                 <?php foreach (array_slice($mailing['destinataires'], 0, 3) as $d) : ?>
-                    <li><?= sanitizeForHtml($d['email']) ?> (<?= sanitizeForHtml($d['pseudo']) ?>)</li>
+                    <li><?= sanitizeForHtml($d['email']) ?><?= trim((string) $d['pseudo']) !== '' ? ' (' . sanitizeForHtml($d['pseudo']) . ')' : '' ?></li>
                 <?php endforeach; ?>
             </ul>
 
-            <h3>Le mail tel que le recevra <?= sanitizeForHtml($apercu['destinataire']['pseudo']) ?></h3>
+            <h3>Le mail tel que le recevra <?= sanitizeForHtml(Personne::displayName($apercu['destinataire']['pseudo'], $apercu['destinataire']['email'])) ?></h3>
             <table id="ajouts">
                 <tr><th>De</th><td><?= sanitizeForHtml(EMAIL_SITE_NAME) ?> &lt;<?= sanitizeForHtml(EMAIL_SITE) ?>&gt;</td></tr>
                 <tr><th>Pour</th><td><?= sanitizeForHtml($apercu['destinataire']['email']) ?></td></tr>

@@ -68,7 +68,9 @@ class UserProfileCest
         $this->grabMyProfileId($I);
 
         $I->see('Compte de', 'h1');
-        $I->see('Identifiant');
+        // « Nom d'utilisateur » depuis qu'il est facultatif : la ligne dit alors que c'est
+        // l'adresse qui identifie le compte
+        $I->see("Nom d'utilisateur");
         $I->see('E-mail');
         $I->see('Affiliations');
         $I->seeElement('a[href*="/user-edit.php"]');

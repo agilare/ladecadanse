@@ -28,6 +28,20 @@ require_once __DIR__ . '/config.php';
 
 date_default_timezone_set(DATE_DEFAULT_TIMEZONE);
 
+if (isset($_GET['favoris_beta']))
+{
+    if ($_GET['favoris_beta'] === FAVORITES_BETA_SECRET)
+    {
+        setcookie('favoris_beta', '1', ['expires' => time() + 31536000, 'path' => '/', 'samesite' => 'Lax']);
+        $_COOKIE['favoris_beta'] = '1';
+    }
+    elseif ($_GET['favoris_beta'] === 'off')
+    {
+        setcookie('favoris_beta', '', ['expires' => time() - 3600, 'path' => '/']);
+        unset($_COOKIE['favoris_beta']);
+    }
+}
+
 if (ENV === 'dev') {
     $whoops = new \Whoops\Run;
     $whoopsHandler = new PrettyPageHandler();

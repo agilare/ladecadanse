@@ -15,18 +15,21 @@ class Authorization
     /**
      * Le visiteur courant appartient-il à un groupe au moins aussi privilégié que $groupe ?
      *
-     * Vient de Sentry, qui mêlait authentification et autorisation (#156). La requête est
-     * conservée telle quelle : elle revalide à chaque appel que le compte existe toujours
-     * et qu'il est actif, ce dont Sentry::checkSession() ne se charge pas (sa valeur de
-     * retour est ignorée par le constructeur).
+     * Vient de Sentry, qui mêlait authentification et autorisation (#156). La requête
+     * revalide à chaque appel que le compte existe toujours et qu'il est actif, ce dont
+     * Sentry::checkSession() ne se charge pas (sa valeur de retour est ignorée par le
+     * constructeur).
+     *
+     * Le compte est désigné par son idPersonne : le pseudo, qui servait ici, devient
+     * facultatif à l'inscription et ne désigne plus personne quand il est vide.
      */
     public function checkGroup(int $groupe = UserLevel::MEMBER): bool
     {
-        if (!isset($_SESSION['user'])) {
+        if (empty($_SESSION['SidPersonne'])) {
             return false;
         }
 
-        return $this->repository->personneExistsInGroup($_SESSION['user'], $groupe);
+        return $this->repository->isPersonneActiveInGroup((int) $_SESSION['SidPersonne'], $groupe);
     }
 
     public function isPersonneEditor(array $sessionToReadonly): bool

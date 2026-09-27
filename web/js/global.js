@@ -1,4 +1,3 @@
-import { SetCookie } from './browser.js';
 import { Shortcuts } from './shortcuts.js';
 import { Mouseless } from './mouseless.js';
 
@@ -442,6 +441,51 @@ const Forms = {
             // comme propriétés, et jQuery, ne trouvant plus de fonction, n'envoyait rien. Passer
             // par le prototype contourne cet écrasement.
             HTMLFormElement.prototype.requestSubmit.call(form);
+        });
+
+        // Fieldset conditionnel, commandé par une case à cocher (inscription : les champs
+        // du contributeur). La feuille de la page le masque déjà en CSS seule, par :has() ;
+        // ce gestionnaire couvre les navigateurs qui ne connaissent pas encore ce sélecteur,
+        // et `trigger` pose l'état initial — la case peut arriver cochée.
+        $('.js-toggle-fieldset').on('change', function toggleConditionalFieldset()
+        {
+            const fieldset = document.getElementById(this.dataset.target);
+
+            if (fieldset)
+            {
+                fieldset.hidden = !this.checked;
+            }
+        }).trigger('change');
+
+        // Bouton « œil » d'un champ de mot de passe. Les formulaires qui en fixent un
+        // (inscription, réinitialisation) n'ont plus de champ de confirmation : c'est en
+        // relisant sa saisie qu'on vérifie ce qu'on a tapé. `data-target` porte l'id du
+        // champ ; l'icône étant muette pour les technologies d'assistance, le nom du bouton
+        // vit dans aria-label, et son état dans aria-pressed.
+        $('.js-toggle-password').on('click', function togglePasswordVisibility()
+        {
+            const field = document.getElementById(this.dataset.target);
+
+            if (!field)
+            {
+                return;
+            }
+
+            const willShow = field.type === 'password';
+            const label = willShow ? 'Masquer le mot de passe' : 'Afficher le mot de passe';
+            const icon = this.querySelector('i');
+
+            field.type = willShow ? 'text' : 'password';
+            this.setAttribute('aria-pressed', willShow ? 'true' : 'false');
+            this.setAttribute('aria-label', label);
+            this.setAttribute('title', label);
+
+            if (icon)
+            {
+                icon.className = willShow ? 'fa fa-eye-slash' : 'fa fa-eye';
+            }
+
+            field.focus();
         });
 
         // Listes lieux/organisateurs : le lien « Passés » du mois en cours ouvre ou referme les
@@ -928,12 +972,16 @@ const HomePage =
             return;
         }
 
-        // browser.js
-        $('.js-alert-close-btn').on('click', function hideTmpBannerAndSetCookie()
+        // la fermeture est mémorisée sous la clé propre à l'annonce, cf. index.php
+        $('.js-alert-close-btn').on('click', function hideHomeBannerAndRemember()
         {
-            const HOME_TMP_BANNER_COOKIE_DURATION_IN_DAYS = 180;
-            SetCookie(this.parentNode.id, 1, HOME_TMP_BANNER_COOKIE_DURATION_IN_DAYS);
-            this.parentNode.style.display = 'none';
+            const banner = this.parentNode;
+            banner.hidden = true;
+            try {
+                localStorage.setItem(banner.dataset.bannerKey, '1');
+            } catch (e) {
+                // stockage indisponible (navigation privée, bloqué) : fermée pour cette page seulement
+            }
             return false;
         });
     }

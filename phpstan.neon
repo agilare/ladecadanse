@@ -47,8 +47,7 @@ parameters:
         - DARKVISITORS_ENABLED
         - LADECADANSE_API_ENABLED
         - BOT_MONITORING_ENABLED
-        - HOME_TMP_BANNER_ENABLED
-        - HOME_TMP_BACK_BANNER_ENABLED
+        - HOME_BANNERS
         - PARTIAL_EDIT_MODE
         - PDF_CONVERSION_ENABLED
         - DATEPICKER_ALWAYS_VISIBLE_ENABLED
@@ -79,6 +78,7 @@ parameters:
                 - _texte_repliable.inc.php
                 - annuaire-membres.php
                 - evenement-edit.php
+                - favoris.php
                 - index.php
                 - user-edit.php
     # Les chemins d'allowIn sont résolus depuis la racine du dépôt, quel que

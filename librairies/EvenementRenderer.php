@@ -157,19 +157,28 @@ class EvenementRenderer
      * vers `/user/dashboard.php?idP=0` et sans libellé : rien à lire, rien à cliquer, et une
      * infobulle vide.
      *
-     * @param int $maxCaracteres Coupe le texte visible au-delà, le pseudo entier restant dans
+     * Un compte sans nom d'utilisateur, lui, reste un compte : le nom est facultatif depuis
+     * l'inscription simplifiée, et le lien mène à sa fiche, où l'administrateur lit son
+     * adresse. D'où la distinction entre `null` — la jointure n'a trouvé aucune personne,
+     * l'auteur a disparu — et la chaîne vide, qui est un compte sans nom.
+     *
+     * @param int $maxCaracteres Coupe le texte visible au-delà, le texte entier restant dans
      *                           l'infobulle ; 0 pour ne pas couper
      */
     public static function authorLinkHtml(int $idPersonne, ?string $pseudo, int $maxCaracteres = 0): string
     {
-        if ($idPersonne <= 0 || $pseudo === null || $pseudo === '')
+        if ($idPersonne <= 0 || $pseudo === null)
         {
             return 'anonyme';
         }
 
-        $texte = $maxCaracteres > 0 ? Text::truncateCharsToHtml($pseudo, $maxCaracteres) : sanitizeForHtml($pseudo);
+        // « #42 » plutôt que le numéro en toutes lettres : la colonne est étroite, et le
+        // texte visible y est coupé au-delà de dix caractères
+        $libelle = trim($pseudo) !== '' ? $pseudo : '#' . $idPersonne;
 
-        return '<a href="/user/dashboard.php?idP=' . $idPersonne . '" title="' . sanitizeForHtml($pseudo) . '">' . $texte . '</a>';
+        $texte = $maxCaracteres > 0 ? Text::truncateCharsToHtml($libelle, $maxCaracteres) : sanitizeForHtml($libelle);
+
+        return '<a href="/user/dashboard.php?idP=' . $idPersonne . '" title="' . sanitizeForHtml($libelle) . '">' . $texte . '</a>';
     }
 
     /**
@@ -363,7 +372,7 @@ class EvenementRenderer
         ob_start();
         ?>
 
-        <article id="event-<?= (int) $tab_even['e_idEvenement'] ?>" class="<?= $article_class ?>">
+        <article id="event-<?= (int) $tab_even['e_idEvenement'] ?>" class="<?= $article_class ?>" data-event-id="<?= (int) $tab_even['e_idEvenement'] ?>">
 
             <header class="titre">
                 <h3 class="left"><a href="/event/evenement.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>"><?= self::titreSelonStatutHtml($tab_even['e_titre'], $tab_even['e_statut']) ?></a></h3>
@@ -459,6 +468,56 @@ class EvenementRenderer
         return ob_get_clean();
     }
 
+    public static function favoriteButtonHtml(int $idEvenement, bool $isFavorite = false, string $label = ''): string
+    {
+        if (!Favorites::isEnabled())
+        {
+            return '';
+        }
+        $icon = $isFavorite ? 'fa-bookmark' : 'fa-bookmark-o';
+        $title = $isFavorite ? 'Retirer des favoris' : 'Favori';
+        $labelHtml = $label !== '' ? '&nbsp;' . $label : '';
+        return '<a href="#" class="js-favorite-toggle favorite-btn' . ($isFavorite ? ' is-favorite' : '') . '" data-event-id="' . $idEvenement . '" title="' . $title . '"><i class="fa ' . $icon . ' fa-lg"></i>' . $labelHtml . '</a>';
+    }
+
+    /**
+     * @param array<array<string, string>> $events
+     * @return array{html: string, months: array<array{key: string, label: string}>}
+     */
+    public static function favoritesListHtml(array $events): array
+    {
+        $html = '';
+        $months = [];
+        $lastDate = null;
+        $lastMonth = null;
+
+        foreach ($events as $tab_even)
+        {
+            $date = $tab_even['e_dateEvenement'];
+            $monthKey = substr($date, 0, 7);
+            if ($monthKey !== $lastMonth)
+            {
+                $lastMonth = $monthKey;
+                $label = ucfirst(DateHelper::monthName((int) substr($date, 5, 2))) . ' ' . substr($date, 0, 4);
+                $months[] = ['key' => $monthKey, 'label' => $label];
+                $html .= '<header class="genre-titre" id="favoris-mois-' . $monthKey . '"><h2>' . $label . '</h2><div class="spacer"></div></header>';
+            }
+            if ($date !== $lastDate)
+            {
+                $lastDate = $date;
+                $html .= '<div><p class="rappel_date">' . ucfirst(DateHelper::isoToFr($date)) . '</p></div>';
+            }
+
+            $html .= self::eventShortArticleHtml($tab_even);
+            $html .= '<footer class="edition"><ul class="menu_action">'
+                . '<li><a href="/event/send.php?action=report&idE=' . (int) $tab_even['e_idEvenement'] . '" class="signaler" title="Signaler une erreur"><i class="fa fa-flag-o fa-lg"></i></a></li>'
+                . '<li><a href="/event/to-ics.php?idE=' . (int) $tab_even['e_idEvenement'] . '" class="ical" title="Exporter au format iCalendar dans votre agenda"><i class="fa fa-calendar-plus-o fa-lg"></i></a></li>'
+                . '<li>' . self::favoriteButtonHtml((int) $tab_even['e_idEvenement'], true) . '</li>'
+                . '</ul><div class="spacer"></div></footer></article>';
+        }
+
+        return ['html' => $html, 'months' => $months];
+    }
 
     /**
      * Le badge qui situe un événement par rapport à maintenant (#51), à poser après ses horaires.
@@ -613,6 +672,7 @@ class EvenementRenderer
 
         $isFutureEvent = $tab_even['e_dateEvenement'] >= $glo_auj_6h;
         $isAllowedToEdit = $authorization->isPersonneAllowedToEditEvenement($_SESSION, $tab_even);
+        $isFavoritesEnabled = Favorites::isEnabled();
 
         $dtstart_iso = self::dtstartIso($tab_even['e_dateEvenement'], $tab_even['e_horaire_debut']);
 
@@ -634,7 +694,7 @@ class EvenementRenderer
         ob_start();
         ?>
 
-        <tr class="<?php if ($glo_auj_6h == $tab_even['e_dateEvenement']) { echo "ici"; } ?> vevent evenement">
+        <tr class="<?php if ($glo_auj_6h == $tab_even['e_dateEvenement']) { echo "ici"; } ?> vevent evenement" data-event-id="<?= (int) $tab_even['e_idEvenement'] ?>">
 
             <?php
             // hCalendar : la date lisible ne peut pas porter dtstart elle-même, d'où le abbr.
@@ -659,11 +719,14 @@ class EvenementRenderer
                 <?= $location ?>
                 <?php if ($location_masquee !== '') : ?><span class="visually-hidden"><?= sanitizeForHtml($location_masquee) ?></span><?php endif; ?>
             </td>
-            <?php if ($isFutureEvent || $isAllowedToEdit) : ?>
+            <?php if ($isFutureEvent || $isFavoritesEnabled || $isAllowedToEdit) : ?>
             <td class="lieu_actions_evenement">
                 <ul>
                     <?php if ($isFutureEvent) : ?>
                         <?= EvenementCalendarRenderer::renderMenuHtml($tab_even, $site_full_url, compact: true) ?>
+                    <?php endif; ?>
+                    <?php if ($isFavoritesEnabled) : ?>
+                        <li><?= self::favoriteButtonHtml((int) $tab_even['e_idEvenement']) ?></li>
                     <?php endif; ?>
                     <?php if ($isAllowedToEdit) : ?>
                         <li><a href="/event/copy.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>" title="Copier cet événement"><?= $iconeCopier ?></a></li>

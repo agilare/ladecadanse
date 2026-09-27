@@ -8,10 +8,13 @@ use Codeception\Util\HttpCode;
 /**
  * Formulaire d'édition d'un compte (user-edit.php), fieldset « Affiliation ».
  *
- * Verrouille la présélection du select des organisateurs au ré-affichage après une erreur de
- * validation. Elle réunissait par un OR la saisie postée et les organisateurs relus en base :
- * un organisateur que l'utilisateur venait de retirer revenait coché à chaque ré-affichage,
- * donc impossible à retirer tant qu'une autre erreur bloquait l'enregistrement.
+ * Verrouille la présélection de la liste des rattachements au ré-affichage après une erreur de
+ * validation. Elle réunissait par un OR la saisie postée et ce que portait la base : un
+ * rattachement que l'utilisateur venait de retirer revenait coché à chaque ré-affichage, donc
+ * impossible à retirer tant qu'une autre erreur bloquait l'enregistrement.
+ *
+ * Depuis #102, lieux et organisateurs partagent une seule liste, `affiliations[]`, dont les
+ * valeurs portent leur type (`lieu:42`, `orga:17`).
  *
  * Le fieldset « Événements » de la même page a ses propres tests : cf. UserEventDefaultsCest.
  *
@@ -20,7 +23,7 @@ use Codeception\Util\HttpCode;
  */
 class UserEditFormulaireCest
 {
-    private const OPTIONS_ORGANISATEURS_SELECTIONNEES = '#organisateurs option[selected]';
+    private const OPTIONS_SELECTIONNEES = '#affiliations option[selected]';
 
     public function _before(SiteTester $I)
     {
@@ -32,8 +35,7 @@ class UserEditFormulaireCest
     }
 
     /**
-     * Après une erreur de validation, le select des organisateurs rend la sélection postée,
-     * et elle seule.
+     * Après une erreur de validation, la liste rend la sélection postée, et elle seule.
      *
      * L'e-mail est vidé pour garantir l'erreur : rien n'est écrit en base, et le formulaire est
      * ré-affiché au lieu de rediriger vers le tableau de bord.
@@ -43,44 +45,45 @@ class UserEditFormulaireCest
         $I->loginAsAdmin();
         $this->amOnUserEdit($I);
 
-        $selectionnes = $I->grabMultiple(self::OPTIONS_ORGANISATEURS_SELECTIONNEES, 'value');
+        $selectionnes = $I->grabMultiple(self::OPTIONS_SELECTIONNEES, 'value');
 
         $I->assertGreaterThanOrEqual(
             2,
             count($selectionnes),
             'LADECADANSE_TEST_USER_ID_WITH_ORGANISATEURS doit désigner un compte rattaché à au moins '
-            . "deux organisateurs actifs : sans organisateur à retirer, ce test ne vérifierait rien."
+            . "deux fiches actives — lieu ou organisateurs, la liste les réunit : sans rattachement "
+            . "à retirer, ce test ne vérifierait rien."
         );
 
         $garde = array_shift($selectionnes);
 
         $I->submitForm('#ajouter_editer', [
             'email' => '', // l'e-mail est obligatoire : erreur garantie, rien n'est enregistré
-            'organisateurs' => [$garde],
+            'affiliations' => [$garde],
         ]);
 
         // le formulaire est bien ré-affiché en erreur, et non enregistré puis redirigé
         $I->seeElement('#ajouter_editer');
         $I->seeElement('.msg_erreur');
 
-        $I->seeElement('#organisateurs option[value="' . $garde . '"][selected]');
+        $I->seeElement('#affiliations option[value="' . $garde . '"][selected]');
 
-        foreach ($selectionnes as $idOrganisateur)
+        foreach ($selectionnes as $valeur)
         {
-            $I->dontSeeElement('#organisateurs option[value="' . $idOrganisateur . '"][selected]');
+            $I->dontSeeElement('#affiliations option[value="' . $valeur . '"][selected]');
         }
 
-        $I->seeNumberOfElements(self::OPTIONS_ORGANISATEURS_SELECTIONNEES, 1);
+        $I->seeNumberOfElements(self::OPTIONS_SELECTIONNEES, 1);
     }
 
     /**
-     * Cas limite du test précédent : un select multiple entièrement désélectionné ne poste
-     * aucune clé « organisateurs ». Côté serveur, « champ vidé » est alors indiscernable de
-     * « premier affichage » sur le seul $_POST['organisateurs'] — c'est le témoin
+     * Cas limite du test précédent : une liste multiple entièrement désélectionnée ne poste
+     * aucune clé « affiliations ». Côté serveur, « champ vidé » est alors indiscernable de
+     * « premier affichage » sur le seul $_POST['affiliations'] — c'est le témoin
      * « formulaire », posté dans tous les cas, qui les sépare.
      *
-     * Sans lui, ce cas-ci retomberait sur les organisateurs de la base et resterait cassé
-     * alors même que le test précédent passerait.
+     * Sans lui, ce cas-ci retomberait sur les rattachements de la base et resterait cassé alors
+     * même que le test précédent passerait.
      */
     public function organisateursTousRetiresNeReviennentPasApresUneErreur(SiteTester $I)
     {
@@ -88,21 +91,21 @@ class UserEditFormulaireCest
         $this->amOnUserEdit($I);
 
         $I->assertNotEmpty(
-            $I->grabMultiple(self::OPTIONS_ORGANISATEURS_SELECTIONNEES, 'value'),
+            $I->grabMultiple(self::OPTIONS_SELECTIONNEES, 'value'),
             'LADECADANSE_TEST_USER_ID_WITH_ORGANISATEURS doit désigner un compte rattaché à au moins '
-            . "un organisateur actif : sans rien à désélectionner, ce test ne vérifierait rien."
+            . "une fiche active : sans rien à désélectionner, ce test ne vérifierait rien."
         );
 
         $I->submitForm('#ajouter_editer', [
             'email' => '', // l'e-mail est obligatoire : erreur garantie, rien n'est enregistré
-            'organisateurs' => [],
+            'affiliations' => [],
         ]);
 
         $I->seeElement('#ajouter_editer');
         $I->seeElement('.msg_erreur');
 
-        $I->seeElement('#organisateurs');
-        $I->dontSeeElement(self::OPTIONS_ORGANISATEURS_SELECTIONNEES);
+        $I->seeElement('#affiliations');
+        $I->dontSeeElement(self::OPTIONS_SELECTIONNEES);
     }
 
     private function amOnUserEdit(SiteTester $I): void
@@ -110,7 +113,7 @@ class UserEditFormulaireCest
         $I->amOnPage('/user-edit.php?action=editer&idP=' . TestEnv::getInt('LADECADANSE_TEST_USER_ID_WITH_ORGANISATEURS'));
         $I->seeResponseCodeIs(HttpCode::OK);
 
-        // le select n'est rendu qu'aux groupes <= 6, et le compte visé doit être modifiable
-        $I->seeElement('#organisateurs');
+        // la liste n'est rendue qu'aux groupes <= 6, et le compte visé doit être modifiable
+        $I->seeElement('#affiliations');
     }
 }

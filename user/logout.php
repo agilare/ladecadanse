@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST'
     exit();
 }
 
-$logger->info('Logout', ['user' => $_SESSION['user'] ?? 'undefined']);
+$logger->info('Logout', ['user' => $_SESSION['user'] ?? 'undefined', 'idP' => (int) ($_SESSION['SidPersonne'] ?? 0)]);
 
 $videur->logout(); // destruction des caractéristiques de la session en cours
 

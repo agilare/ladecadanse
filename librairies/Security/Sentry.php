@@ -154,10 +154,12 @@ class Sentry
     {
         // Bornes de sûreté : la validation fine des saisies revient au formulaire, ici on
         // écarte seulement ce qui n'a aucune chance de correspondre à un compte. La borne
-        // haute du mot de passe doit rester >= à celle des formulaires qui en fixent un
-        // (user/register.php, user/reset2.php : 100), sinon on crée des comptes dont le
-        // mot de passe est refusé ici avant même d'être vérifié.
-        if (mb_strlen($user) < 2 || mb_strlen($user) > 80 || mb_strlen($pass) < 4 || mb_strlen($pass) > 100)
+        // haute de l'identifiant suit la colonne email (100) et non pseudo (80) : l'adresse
+        // est le seul identifiant d'un compte sans pseudo, et une adresse de plus de 80
+        // caractères rendait ce compte inaccessible. Celle du mot de passe doit rester >= à
+        // celle des formulaires qui en fixent un (user/register.php, user/reset2.php : 100),
+        // sinon on crée des comptes dont le mot de passe est refusé ici avant d'être vérifié.
+        if (mb_strlen($user) < 2 || mb_strlen($user) > 100 || mb_strlen($pass) < 4 || mb_strlen($pass) > 100)
         {
             unset($this->userdata);
 
@@ -228,7 +230,9 @@ class Sentry
 
         if (!$isPassCorrectOldMethod && !$isPassCorrectNewMethod)
         {
-            $this->logger->notice('[Sentry] login failed, wrong password', ['user' => $this->userdata['pseudo']]);
+            // le numéro de compte accompagne le nom d'utilisateur, qui est facultatif : sans
+            // lui, une ligne de journal ne dit plus de qui elle parle
+            $this->logger->notice('[Sentry] login failed, wrong password', ['user' => $this->userdata['pseudo'], 'idP' => (int) $this->userdata['idPersonne']]);
             unset($this->userdata);
 
             if ($badRedirect)
@@ -259,7 +263,7 @@ class Sentry
 
         session_regenerate_id(true); // to avoid session fixation attack
         $this->initSession($memoriser);
-        $this->logger->info('[Sentry] login', ['user' => $_SESSION["user"]]);
+        $this->logger->info('[Sentry] login', ['user' => $_SESSION["user"], 'idP' => (int) $_SESSION['SidPersonne']]);
 
         // exception pour admin ; chemin absolu, sinon la destination dépend du dossier
         // de la page de connexion (« user/admin/index.php » depuis user/login.php)
@@ -297,7 +301,7 @@ class Sentry
         $this->userdata = $userdata;
         session_regenerate_id(true); // to avoid session fixation attack
         $this->initSession(true, true);
-        $this->logger->info('[Sentry] remembered access', ['user' => $_SESSION["user"], 'email' => $_SESSION['Semail']]);
+        $this->logger->info('[Sentry] remembered access', ['user' => $_SESSION["user"], 'idP' => (int) $_SESSION['SidPersonne'], 'email' => $_SESSION['Semail']]);
 
         return true;
     }

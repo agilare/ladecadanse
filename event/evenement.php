@@ -211,6 +211,7 @@ include("../_header.inc.php");
     <nav class="menus_actions_evenement">
         <ul class="menu_actions_evenement menu_actions_evenement--public">
             <?= Ladecadanse\EvenementCalendarRenderer::renderMenuHtml($tab_even, $site_full_url) ?>
+            <li><?= Ladecadanse\EvenementRenderer::favoriteButtonHtml((int) $get['idE'], label: 'Favori') ?></li>
         </ul>
 
         <?php if ($isMembreConnecte || $isPersonneAllowedToEdit) : ?>

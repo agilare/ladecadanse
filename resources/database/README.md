@@ -41,6 +41,7 @@ l'invariant à tenir, une ligne à « non » signalant que le dump a pris du ret
 | `v3-13-0_lieu-colonnes.sql` | 3.13.0 | 2026-09-05 | `lieu.determinant` → `preposition_nom`, `lieu.categorie` → `categories`, `adresse` en `VARCHAR(255)`, colonnes facultatives à `NULL`, `photo2` et `actif` supprimées | oui |
 | `v3-13-0_lieu-categories.sql` | 3.13.0 | 2026-09-08 | sept valeurs ajoutées à la fin du `SET` `lieu.categories` : `buvette`, `club`, `quartier`, `socioculturel`, `bibliotheque`, `ludotheque`, `ecole` | oui |
 | `v3-13-0_lieu-organisateur-add-admin_note.sql` | 3.13.0 | 2026-09-16 | colonnes `lieu.admin_note` et `organisateur.admin_note`, note d'administration en `TEXT NULL` | oui |
+| `v3-13-0_personne-evenement-create-table.sql` | 3.13.0 | 2026-09-26 | table `personne_evenement`, les favoris personnels (#98) | oui |
 
 Les deux premières migrations `v3-13-0_*` sont à passer **dans l'ordre du tableau** : la seconde redéclare la
 colonne `categories` que la première crée en renommant `categorie`. La troisième ne dépend d'aucune des deux.

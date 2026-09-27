@@ -125,8 +125,3 @@ parameters:
 			count: 2
 			path: user-edit.php
 
-		-
-			message: '#^Offset ''Sgroupe'' on non\-empty\-array\<mixed\> in isset\(\) always exists and is not nullable\.$#'
-			identifier: isset.offset
-			count: 1
-			path: user-edit.php

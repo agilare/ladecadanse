@@ -1,5 +1,6 @@
 <?php
 use Ladecadanse\HtmlShrink;
+use Ladecadanse\Personne;
 use Ladecadanse\UserLevel;
 
 // Mode « mouseless » (entraînement aux raccourcis clavier) : réservé aux administrateurs,
@@ -100,7 +101,10 @@ $mouseless_allowed = isset($_SESSION['Sgroupe']) && (int) $_SESSION['Sgroupe'] <
             'use strict';
             var _paq = window._paq = window._paq || [];
               <?php if (isset($_SESSION['SidPersonne'])) : ?>
-                  _paq.push(['setUserId', <?= json_encode($_SESSION['user']) ?>]);
+                  <?php /* Le nom d'utilisateur est facultatif : un identifiant vide rangerait
+                           tous ces comptes sous la même clé. Le numéro de compte prend alors
+                           le relais, préfixé pour ne pas se confondre avec un nom. */ ?>
+                  _paq.push(['setUserId', <?= json_encode(trim((string) ($_SESSION['user'] ?? '')) !== '' ? $_SESSION['user'] : '#' . (int) $_SESSION['SidPersonne']) ?>]);
               <?php endif; ?>
               <?php if (!isset($_SESSION['SidPersonne']) && !empty($_COOKIE['just_logged_out'])) : ?>
                   _paq.push(['resetUserId']);
@@ -245,9 +249,15 @@ $mouseless_allowed = isset($_SESSION['Sgroupe']) && (int) $_SESSION['Sgroupe'] <
                         }
                         else
                         {
-                            if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= UserLevel::ACTOR)) { ?>
+                            // MEMBER (12) compris : evenement-edit.php lui sert le formulaire public, et son
+                            // événement part en modération. Sans ce lien, connecté, il n'avait plus aucune
+                            // entrée vers le formulaire — « Annoncer un événement » ne s'adresse qu'aux visiteurs.
+                            //
+                            // Le libellé suit le titre de la page d'arrivée, donc le même seuil que
+                            // $est_connecte dans evenement-edit.php : sous ACTOR on propose, on n'ajoute pas.
+                            if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= UserLevel::MEMBER)) { ?>
                                 <li <?php if (strstr((string) $_SERVER['PHP_SELF'], "evenement-edit.php")) : ?>class="ici"<?php endif; ?>>
-                                    <a href="/evenement-edit.php?action=ajouter">Ajouter un événement</a>
+                                    <a href="/evenement-edit.php?action=ajouter"><?= $_SESSION['Sgroupe'] <= UserLevel::ACTOR ? 'Ajouter' : 'Proposer' ?> un événement</a>
                                 </li>
                             <?php } ?>
 
@@ -261,7 +271,10 @@ $mouseless_allowed = isset($_SESSION['Sgroupe']) && (int) $_SESSION['Sgroupe'] <
                                         <a href="/admin/bots.php" title="Monitoring des bots" <?php if (strstr((string) $_SERVER['PHP_SELF'], "admin/bots.php")) : ?>class="ici"<?php endif; ?>><i class="fa fa-bug" aria-hidden="true"></i></a>
                                     <?php endif; ?>
 
-                                    <a href="/user/dashboard.php?idP=<?= (int) $_SESSION['SidPersonne']; ?>" title="<?= sanitizeForHtml($_SESSION['user']); ?>" <?php if (strstr((string) $_SERVER['PHP_SELF'], "user/dashboard.php")) : ?>class="ici"<?php endif; ?>>
+                                    <?php /* L'icône est aria-hidden : sans nom accessible, le lien
+                                             n'était annoncé que par son url, et le title venait du
+                                             nom d'utilisateur — vide pour qui n'en a pas. */ ?>
+                                    <a href="/user/dashboard.php?idP=<?= (int) $_SESSION['SidPersonne']; ?>" aria-label="Mon compte" title="<?= sanitizeForHtml(Personne::displayName($_SESSION['user'] ?? '', $_SESSION['Semail'] ?? '')); ?>" <?php if (strstr((string) $_SERVER['PHP_SELF'], "user/dashboard.php")) : ?>class="ici"<?php endif; ?>>
                                         <i class="fa fa-user" aria-hidden="true"></i>
                                     </a>
 
@@ -295,7 +308,9 @@ $mouseless_allowed = isset($_SESSION['Sgroupe']) && (int) $_SESSION['Sgroupe'] <
 
                 <ul>
                     <?php
-                    $menu_principal = ["Agenda" => "index.php", "Lieux" => "lieu/lieux.php", "Organisateurs" => "organisateur/organisateurs.php"];
+                    $menu_principal = Ladecadanse\Favorites::isEnabled()
+                        ? ["Agenda" => "index.php", "Favoris" => "favoris.php", "Lieux" => "lieu/lieux.php", "Organisateurs" => "organisateur/organisateurs.php"]
+                        : ["Agenda" => "index.php", "Lieux" => "lieu/lieux.php", "Organisateurs" => "organisateur/organisateurs.php"];
                     foreach ($menu_principal as $nom => $lien) {
                         $ici = '';
                         if (strstr((string) $_SERVER['PHP_SELF'], $lien)
@@ -319,6 +334,12 @@ $mouseless_allowed = isset($_SESSION['Sgroupe']) && (int) $_SESSION['Sgroupe'] <
                             <li id="bouton_latests_events">
                                 <a href="/index.php#latests_events"><i class="fa fa-bell" aria-hidden="true"></i></a>
                             </li>
+                        <?php } elseif ($nom == "Favoris") { ?>
+                            id="bouton_favoris">
+                            <?php // en mobile, le cœur remplace le libellé et l'onglet se range avec les
+                                  // deux boutons-icônes voisins (cf. mobile.css) ; l'aria-label garde son
+                                  // nom accessible une fois le texte masqué ?>
+                            <a href="/<?= $lien."?".$url_query_region; ?>" aria-label="Favoris"><i class="fa fa-bookmark" aria-hidden="true"></i><span class="menu_libelle"><?= $nom; ?></span></a></li>
                         <?php } else { ?>
                             ><a href="/<?= $lien."?".$url_query_region; ?>"><?= $nom; ?></a></li>
                         <?php

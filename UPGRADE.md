@@ -30,6 +30,10 @@ Exécuter enfin `resources/database/v3-13-0_lieu-organisateur-add-admin_note.sql
 
 **À passer avant la mise en ligne du code, ou avec elle** : la colonne accepte `NULL`, l'ancien code l'ignore donc sans dommage, et le script peut précéder le déploiement. Le nouveau code l'écrit à chaque enregistrement d'une fiche de lieu ou d'organisateur, qui répondrait sinon une erreur SQL. Les deux tables sont en MyISAM : même verrou d'écriture, aussi bref, que pour les scripts précédents.
 
+Exécuter enfin `resources/database/v3-13-0_personne-evenement-create-table.sql`, indépendant lui aussi. Il crée la table `personne_evenement` des favoris : une ligne par couple (personne, événement), clé primaire composite — c'est elle qui rend l'ajout idempotent, l'`INSERT IGNORE` de `event/favorites.php` s'appuyant dessus — et un index sur `idEvenement` pour le sens inverse.
+
+**À passer avant la mise en ligne du code, ou avec elle** : création d'une table vide, ni verrou ni durée à prévoir, et l'ancien code ne la connaît pas. Une base en retard ne se voit pas tout de suite, les favoris n'étant ouverts qu'aux porteurs du cookie de la bêta : le premier lien secret distribué serait le premier à tomber sur une erreur SQL.
+
 ### Redirections
 
 Deux pages changent d'adresse :
@@ -43,11 +47,14 @@ Les redirections 301 sont dans [`htaccess/50-routage.conf`](htaccess/50-routage.
 
 ### app/env.php
 
-Une constante s'ajoute. Elle n'est pas obligatoire : absente, elle vaut `false`, et le site est celui d'avant. Le modèle commenté est dans [`app/env_model.php`](app/env_model.php).
+Deux constantes s'ajoutent. Aucune n'est obligatoire : absente, la première vaut `false` et la seconde une liste vide, et aucune page ne tombe en erreur. Le modèle commenté est dans [`app/env_model.php`](app/env_model.php).
 
 | Constante | Rôle |
 | --- | --- |
 | `EVENT_NEW_CATEGORIES_ENABLED` | Proposer les catégories d'événement encore en préversion — aujourd'hui « cours/ateliers/stages » seule. `false` par défaut ; `'preview'` la réserve aux administrateurs, `true` l'ouvre à tous. « concerts » ne dépend d'aucun drapeau — voir [docs/evenements.md](docs/evenements.md#catégories-en-préversion) |
+| `HOME_BANNERS` | Annonces affichées au-dessus de l'agenda, une entrée par annonce : `date`, `type` (`info`, `warn`, `danger`), `audience` (`tous`, ou `contributeurs` pour le niveau ACTOR et au-dessus), `titre` et `contenu`, écrits tels quels en HTML. La date identifie l'annonce : la changer la fait réapparaître chez ceux qui l'avaient fermée. `[]` = aucune annonce |
+
+`HOME_BANNERS` remplace les six constantes `HOME_TMP_BANNER_*` et `HOME_TMP_BACK_BANNER_*`, que plus rien ne lit : **une annonce active en production disparaît à la mise en ligne tant qu'elle n'est pas reportée** dans la nouvelle liste — l'ancienne bannière publique avec `'audience' => 'tous'` et le type `warn`, celle des connectés avec `'contributeurs'` et `info`. Les anciennes lignes peuvent ensuite être retirées, sans urgence.
 
 Rien à passer en base : `evenement.genre` est un `varchar(20)`, il accueille les deux valeurs sans migration. Hors préversion, un événement classé `cours` s'affiche et se range en « divers » : **rétrograder le drapeau ne perd aucun reclassement**, les événements retrouvent leur catégorie dès qu'il remonte.
 
@@ -62,6 +69,8 @@ Rien à passer en base : `evenement.genre` est un `varchar(20)`, il accueille le
 - **Statut d'un lieu** — les libellés deviennent « Publié / Dépublié / Ancien », comme sur la fiche d'organisateur ; les valeurs en base (`actif`, `inactif`, `ancien`) ne changent pas. Le formulaire ne poste plus de statut pour qui n'a pas le droit d'en choisir un : une modification faite par un acteur laisse désormais la fiche dans l'état où elle était, là où elle la republiait
 - **Sélection des lieux actifs** — les trois selects de lieux (inscription, profil, texte d'un lieu) filtraient sur `actif=1`, colonne que la migration supprime ; c'est `statut` qui fait foi. Le code et la base partent donc ensemble : l'ancien code sur une base migrée répondrait une erreur SQL sur ces trois pages
 - **Affiliés et membres d'une fiche** — les personnes affiliées à un lieu et les membres d'un organisateur, avec leur e-mail, ne sont plus listés qu'aux administrateurs (niveau ADMIN). Un auteur ne voit plus les affiliés d'un lieu, et ni l'auteur d'une fiche d'organisateur ni ses membres ne voient plus la liste des membres
+- **Annonces déjà fermées** — la fermeture d'une annonce n'est plus lue dans les cookies `home_tmp_banner` et `home_tmp_back_banner` mais dans le stockage local du navigateur : une annonce reportée telle quelle réapparaît une fois chez ceux qui l'avaient fermée. Les deux cookies ne sont plus posés et expirent d'eux-mêmes
+- **Favoris réservés à un panel** — rien n'en paraît tant qu'on ne détient pas le cookie posé par `?favoris_beta=<secret>`, `FAVORITES_BETA_SECRET` dans [`app/config.php`](app/config.php) ; `?favoris_beta=off` le retire, et il vaut un an. Distribuer le lien, c'est ouvrir la fonctionnalité à qui le reçoit, y compris sans compte : le secret est dans un dépôt public, il ne protège de rien, il met simplement à l'écart. Les favoris d'un visiteur non connecté vivent dans le stockage local de son navigateur, sur cet appareil seulement — vider les données du site les efface —, et sa première connexion les verse au compte
 
 ### Bibliothèques front-end
 

@@ -208,6 +208,7 @@ abbr.dtstart[title]
     #contenu p
     {
         margin:0em 1em 1em 0.1em;
+        line-height: 1.4em;
     }
 
     #contenu ul
@@ -460,6 +461,14 @@ abbr.dtstart[title]
             #menu ul li.ici a
             {
                 background-color:#FEFEFE;
+            }
+
+            /* Le marque-page des favoris ne sert qu'en mobile, où il remplace le libellé pour
+               que la barre tienne sur une ligne (cf. mobile.css). Ailleurs, l'onglet reste un
+               mot, comme Agenda, Lieux et Organisateurs. */
+            #menu ul li#bouton_favoris .fa-bookmark
+            {
+                display:none;
             }
 
     #menu ul#menu_agenda
@@ -1726,6 +1735,181 @@ ul.menu_action
     background: #f0f0f0;
 }
 
+/* Favorites */
+a.favorite-btn
+{
+    color: #a6a5a5;
+}
+
+a.favorite-btn:hover,
+a.favorite-btn:active,
+a.favorite-btn.is-favorite
+{
+    color: #e74c3c;
+}
+
+.rappel_date
+{
+    margin: .2em 0 1.2em;
+    color: #888;
+    font-size: 1em;
+    clear: both;
+}
+
+/*
+ * Le bandeau du visiteur garde son cadre propre, plus discret que les .msg_info du site.
+ * La croix se loge dans le coin haut droit — d'où le position: relative et la réserve de
+ * place à droite — et le texte reste à la taille du contenu, là où un 0.85em le rendait
+ * plus petit que tout ce qui l'entoure.
+ */
+.favorites-guest-banner
+{
+    position: relative;
+    clear: both;
+    /* la page dimensionne ses blocs en pourcentage : sans cela, le padding s'y ajoute et le
+       bandeau dépasse la colonne */
+    box-sizing: border-box;
+    background: #f0f4f8;
+    border: 1px solid #d0d8e0;
+    border-radius: 3px;
+    padding: 0.7em 2.2em 0.2em 0.8em;
+    /* marges verticales seules : la page centre ses blocs par un margin horizontal auto, qu'un
+       raccourci écraserait — le bandeau sortirait alors du cadre des autres */
+    margin-top: 0.4em;
+    margin-bottom: 0.4em;
+    color: #555;
+    line-height:1.4em;
+}
+
+    .favorites-guest-banner p
+    {
+        margin: 0;
+    }
+
+    .favorites-guest-banner a
+    {
+        color: #1569C7;
+    }
+
+    /* sélecteur tenu à deux classes : la couleur des liens du bandeau l'emporterait sinon,
+       et la croix virerait au bleu */
+    .favorites-guest-banner .favoris-bandeau-fermer
+    {
+        position: absolute;
+        top: 0.5em;
+        right: 0.7em;
+        color: #777;
+    }
+
+    .favorites-guest-banner .favoris-bandeau-fermer:hover
+    {
+        color: #333;
+    }
+
+/* Le message d'une liste vide ne se colle pas au bandeau qui le précède. Sélecteur porté par
+   #contenu : le margin de « #contenu p » l'emporterait sur une simple classe. */
+#contenu .favoris-vide
+{
+    margin-top: 1.5em;
+}
+
+#favoris_filter_navigation
+{
+    margin-top: 0.6em;
+}
+
+    #favoris_filter_navigation ul
+    {
+        display: inline-block;
+        margin: 0.2em 0;
+        padding: 0;
+        list-style-type: none;
+    }
+
+#prochains_evenements > header
+{
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+    section#prochains_evenements > header h2
+    {
+        margin-right: auto;
+    }
+
+    #prochains_evenements > header #favoris_filter_navigation
+    {
+        margin: 0 0.25em 0 0;
+    }
+
+    #prochains_evenements > header #favoris_filter_navigation li a
+    {
+        padding: 0.6em;
+    }
+
+    #prochains_evenements > header #favoris_filter_navigation li.ici a
+    {
+        background: #e4e4e4;
+    }
+
+td.favori_action
+{
+    width: 1%;
+    white-space: nowrap;
+}
+
+    #prochains_evenements > header ul#menu_periode
+    {
+        float: none;
+        width: auto;
+    }
+
+    /* dans la barre de l'agenda, la mise en page vient d'index.css : cette marge y décalerait
+       l'onglet par rapport aux genres, avec lesquels il partage la ligne */
+    #agenda_filters #favoris_filter_navigation,
+    #agenda_filters #favoris_filter_navigation ul
+    {
+        margin: 0;
+    }
+
+    #favoris_filter_navigation li
+    {
+        display: inline-block;
+    }
+
+    #favoris_filter_navigation li a
+    {
+        display: inline-block;
+        padding: 0.3em;
+        border-radius: 3px;
+    }
+
+    #favoris_filter_navigation li.ici a
+    {
+        background: #eee;
+    }
+
+    #favoris_filter_navigation li a:hover
+    {
+        background: #d4d4d4;
+    }
+
+/*
+ * L'onglet « Favoris » reprend le comportement d'un onglet de genre : le fond de .ici et la
+ * croix qui retire le filtre. Seuls le marque-page et cette croix lui sont propres.
+ */
+.favoris-filtre .fa-bookmark
+{
+    color: #e74c3c;
+}
+
+/* la croix ne s'offre qu'une fois le filtre posé, comme sur un onglet de genre actif */
+.favoris-filtre-item:not(.ici) .favoris-filtre-retirer
+{
+    display: none;
+}
+
 .lieu-info-wrapper
 {
     position: relative;
@@ -1969,7 +2153,6 @@ td.lieu_actions_evenement .calendar-export-trigger:active
         transition:none;
     }
 }
-
 
 ul.menu_edition
 {
@@ -2258,6 +2441,34 @@ input[type="search"]::-webkit-search-cancel-button
         color:#3c763d;
     }
 
+.alert-danger
+{
+    position:relative;
+    padding:0.7em 0.5em;
+    margin:0em 0;
+    background:#f8d7da;
+    color:#721c24;
+}
+
+    .alert-danger h2
+    {
+        padding:0;
+        margin:0.1em 0 0.4em 0em;
+        font-size:1.3em;
+        color:#721c24;
+    }
+
+    .alert-danger .close
+    {
+        position:absolute;
+        right:0;
+        top:0;
+        padding:6px;
+        font-size: 1rem;
+        font-weight: 700;
+        color:#721c24;
+    }
+
 .alert-info
 {
     position:relative;
@@ -2383,8 +2594,8 @@ div.pagination {
 
 table#calendrier tr#mois th#mois_courant
 {
-    font-size: 1em;
-    padding: 0.6em;
+    font-size: 0.9em;
+    padding: 0.6em 0.2em;
     color: #333;
 }
 

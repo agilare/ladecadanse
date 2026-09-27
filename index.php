@@ -259,21 +259,33 @@ include("_header.inc.php");
     <?php
     // header banners & flash messages
 
-    // public banner enabled (by admin) and not yet closed (by user)
-    if (HOME_TMP_BANNER_ENABLED && !isset($_COOKIE['home_tmp_banner'])) : ?>
-        <div id="home_tmp_banner" class="alert-warn">
-            <h2><?= HOME_TMP_BANNER_TITLE; ?></h2><a href="#" class="js-alert-close-btn close">&times;</a>
-            <p><?= HOME_TMP_BANNER_CONTENT; ?></p>
+    // announcements set by the admin in app/env.php; repli sur [] tant que la constante
+    // n'y a pas été ajoutée (fichier hors dépôt, non déployé)
+    $home_banners = defined('HOME_BANNERS') ? HOME_BANNERS : [];
+    foreach ($home_banners as $banner) :
+        if (($banner['audience'] ?? 'tous') === 'contributeurs' && !$authorization->checkGroup(UserLevel::ACTOR)) {
+            continue;
+        }
+        $banner_type = in_array($banner['type'] ?? '', ['info', 'warn', 'danger'], true) ? $banner['type'] : 'info';
+        // la date identifie l'annonce : la changer fait réapparaître la bannière chez ceux qui l'avaient fermée
+        $banner_key = 'home_banner_' . ($banner['date'] ?? '');
+        ?>
+        <div class="alert-<?= $banner_type ?> js-home-banner" data-banner-key="<?= sanitizeForHtml($banner_key) ?>">
+            <h2><?= $banner['titre'] ?? '' ?></h2><a href="#" class="js-alert-close-btn close" aria-label="Fermer">&times;</a>
+            <p><?= $banner['contenu'] ?? '' ?></p>
         </div>
-    <?php endif; ?>
-
-    <?php
-    // private banner enabled (by admin) and not yet closed (by user)
-    if ($authorization->checkGroup(UserLevel::ACTOR) && HOME_TMP_BACK_BANNER_ENABLED && !isset($_COOKIE['home_tmp_back_banner'])) : ?>
-        <div id="home_tmp_back_banner" class="alert-info">
-            <h2><?= HOME_TMP_BACK_BANNER_TITLE; ?></h2><a href="#" class="js-alert-close-btn close">&times;</a>
-            <p><?= HOME_TMP_BACK_BANNER_CONTENT; ?></p>
-        </div>
+    <?php endforeach; ?>
+    <?php if (!empty($home_banners)) : ?>
+        <?php // exécuté avant l'affichage : une bannière déjà fermée ne clignote pas ; sans JS elle reste visible ?>
+        <script nonce="<?= CSP_NONCE ?>">
+            document.querySelectorAll('.js-home-banner').forEach(function (banner) {
+                try {
+                    if (localStorage.getItem(banner.dataset.bannerKey) !== null) {
+                        banner.hidden = true;
+                    }
+                } catch (e) {}
+            });
+        </script>
     <?php endif; ?>
 
     <?php if (!empty($_SESSION['evenement-edit_flash_msg'])) :
@@ -328,7 +340,7 @@ include("_header.inc.php");
             <?php if ($show_genre_tabs) : ?>
             <nav id="genre_tab_navigation" aria-label="Filtrer par genre">
                 <ul>
-                    <li><i class="fa fa-filter" aria-hidden="true"></i></li>
+                    <li><i class="fa fa-filter fa-lg" aria-hidden="true"></i></li>
                     <?php foreach ($selectable_categories as $key => $label) : ?>
                         <?php if (!array_key_exists($key, $tab_events_today_in_region_by_category) && $current_genre_tab !== $key) : continue; endif; ?>
                         <?php if ($current_genre_tab === $key) : ?>
@@ -340,6 +352,8 @@ include("_header.inc.php");
                 </ul>
             </nav>
             <?php endif; ?>
+
+            <?php include("_favoris_filter_navigation.inc.php"); ?>
 
             <div id="order_navigation">
                 <ul>
@@ -401,20 +415,25 @@ include("_header.inc.php");
                                 <ul class="menu_action">
                                     <li><a href="/event/send.php?action=report&idE=<?= (int) $tab_even['e_idEvenement']; ?>" class="signaler" title="Signaler une erreur"><i class="fa fa-flag-o fa-lg"></i></a></li>
                                     <?= Ladecadanse\EvenementCalendarRenderer::renderMenuHtml($tab_even, $site_full_url, compact: true) ?>
+                                    <li><?= Ladecadanse\EvenementRenderer::favoriteButtonHtml((int) $tab_even['e_idEvenement']) ?></li>
                                 </ul>
 
                                 <?php if ($authorization->isPersonneAllowedToEditEvenement($_SESSION, $tab_even)) : ?>
+                                <?php /* Icônes seules, comme dans les listes de lieu, d'organisateur et de
+                                          recherche : le libellé passe dans l'infobulle et dans l'alt de l'image.
+                                          Les classes action_* sont donc retirées — elles portaient la même
+                                          icône en fond, qui ferait doublon avec celle-ci. */ ?>
                                 <ul class="menu_edition">
-                                    <li class="action_copier">
-                                        <a href="/event/copy.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>" title="Copier l'événement">Copier vers d'autres dates</a>
+                                    <li>
+                                        <a href="/event/copy.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>" title="Copier vers d'autres dates"><?= $iconeCopier ?></a>
                                     </li>
                                     <?php if ($authorization->isPersonneAllowedToEditEvenementNow($_SESSION, $tab_even)) : ?>
-                                    <li class="action_editer">
-                                        <a href="/evenement-edit.php?action=editer&amp;idE=<?= (int) $tab_even['e_idEvenement'] ?>" title="Modifier l'événement">Modifier</a>
+                                    <li>
+                                        <a href="/evenement-edit.php?action=editer&amp;idE=<?= (int) $tab_even['e_idEvenement'] ?>" title="Modifier l'événement"><?= $iconeEditer ?></a>
                                     </li>
                                     <?php endif; ?>
-                                    <li class="action_depublier">
-                                        <?= Ladecadanse\EvenementRenderer::unpublishLinkHtml((int) $tab_even['e_idEvenement'], 'Dépublier') ?>
+                                    <li>
+                                        <?= Ladecadanse\EvenementRenderer::unpublishLinkHtml((int) $tab_even['e_idEvenement'], $icone['depublier']) ?>
                                     </li>
                                     <?php if ($authorization->isPersonneAllowedToManageEvenement($_SESSION, $tab_even)) : ?>
                                     <li>

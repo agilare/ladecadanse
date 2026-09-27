@@ -1295,6 +1295,16 @@ CREATE TABLE `personne` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
+DROP TABLE IF EXISTS `personne_evenement`;
+CREATE TABLE `personne_evenement` (
+  `idPersonne` smallint(5) unsigned NOT NULL,
+  `idEvenement` mediumint(8) unsigned NOT NULL,
+  `dateAjout` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`idPersonne`,`idEvenement`),
+  KEY `pe_idEvenement` (`idEvenement`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
 DROP TABLE IF EXISTS `personne_organisateur`;
 CREATE TABLE `personne_organisateur` (
   `idOrganisateur` mediumint(9) NOT NULL DEFAULT 0,

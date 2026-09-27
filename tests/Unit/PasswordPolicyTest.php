@@ -15,8 +15,7 @@ final class PasswordPolicyTest extends Unit
 {
     public function testUnMotDePasseTropCourantEstRefuse(): void
     {
-        // « marseille13 » passe la longueur et la règle du chiffre : sans la liste,
-        // le site l'accepterait
+        // « marseille13 » passe la longueur : sans la liste, le site l'accepterait
         $this->assertTrue(PasswordPolicy::estRefuse('marseille13'));
         $this->assertArrayHasKey('motdepasse', PasswordPolicy::erreurs('marseille13', 'marseille13'));
     }
@@ -51,9 +50,13 @@ final class PasswordPolicyTest extends Unit
         );
     }
 
-    public function testChiffreObligatoire(): void
+    /**
+     * La règle « au moins 1 chiffre » a été retirée : une phrase longue vaut mieux qu'un
+     * mot court suivi d'un 1, et c'est la liste des mots de passe fuités qui filtre.
+     */
+    public function testUnePhraseSansChiffreEstAcceptee(): void
     {
-        $this->assertArrayHasKey('motdepasse', PasswordPolicy::erreurs('brouettenuage', 'brouettenuage'));
+        $this->assertSame([], PasswordPolicy::erreurs('brouettenuage', 'brouettenuage'));
     }
 
     public function testConfirmationDifferente(): void
@@ -62,6 +65,16 @@ final class PasswordPolicyTest extends Unit
 
         $this->assertArrayHasKey('motdepasse_inegaux', $erreurs);
         $this->assertArrayNotHasKey('motdepasse', $erreurs);
+    }
+
+    /**
+     * Les formulaires n'ont plus qu'un champ : sans confirmation, il n'y a rien à comparer,
+     * et surtout pas la chaîne vide.
+     */
+    public function testSansConfirmationAucuneComparaison(): void
+    {
+        $this->assertSame([], PasswordPolicy::erreurs('Kf7-brouette-nuage'));
+        $this->assertArrayNotHasKey('motdepasse_inegaux', PasswordPolicy::erreurs('court1'));
     }
 
     public function testUnMotDePasseValideNeProduitAucuneErreur(): void

@@ -98,13 +98,27 @@ final class EvenementRendererTest extends Unit
      */
     public function testAuthorLinkHtmlSansAuteurNeRendAucunLien(): void
     {
-        foreach ([[0, null], [0, ''], [0, 'restant'], [42, null], [42, '']] as [$idPersonne, $pseudo])
+        foreach ([[0, null], [0, ''], [0, 'restant'], [42, null]] as [$idPersonne, $pseudo])
         {
             $html = EvenementRenderer::authorLinkHtml($idPersonne, $pseudo);
 
             $this->assertSame('anonyme', $html);
             $this->assertStringNotContainsString('<a', $html);
         }
+    }
+
+    /**
+     * Le nom d'utilisateur est facultatif depuis l'inscription simplifiée : un compte qui
+     * n'en a pas reste un compte, et son lien doit mener à sa fiche. La chaîne vide dit
+     * « compte sans nom », null dit « aucun compte » — le second seul rend « anonyme ».
+     */
+    public function testAuthorLinkHtmlSansPseudoRendUnLienVersLaFiche(): void
+    {
+        $html = EvenementRenderer::authorLinkHtml(42, '');
+
+        $this->assertStringContainsString('href="/user/dashboard.php?idP=42"', $html);
+        $this->assertStringContainsString('>#42<', $html);
+        $this->assertStringContainsString('title="#42"', $html);
     }
 
     /**

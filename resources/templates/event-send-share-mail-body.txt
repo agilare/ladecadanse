@@ -1,4 +1,4 @@
-Message envoyé depuis www.ladecadanse.ch par %username% (%user_email%) :
+Message envoyé depuis www.ladecadanse.ch par %sender% :
 
 %message%
 

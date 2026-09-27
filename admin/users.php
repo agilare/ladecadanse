@@ -234,7 +234,8 @@ require_once '../_header.inc.php';
                 <?php $ue = isset($users_even[$u['idPersonne']]) ? $users_even[$u['idPersonne']][0] : null; ?>
                 <tr>
                     <td style="width:20%">
-                        <a href="/user/dashboard.php?idP=<?= (int)$u['idPersonne'] ?>" style="font-size:1.1em"><?= sanitizeForHtml($u['pseudo']) ?></a>
+                        <?php // un compte sans nom d'utilisateur se désigne par son adresse : le lien serait sinon vide ?>
+                        <a href="/user/dashboard.php?idP=<?= (int)$u['idPersonne'] ?>" style="font-size:1.1em"><?= sanitizeForHtml(Personne::displayName($u['pseudo'], $u['email'])) ?></a>
                         <br><a href="mailto:<?= sanitizeForHtml($u['email']) ?>"><?= sanitizeForHtml($u['email']) ?></a>
                     </td>
                     <td><?= (int)$u['groupe'] ?></td>

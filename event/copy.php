@@ -188,7 +188,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 		{
             if ($i > 100)
             {
-                $_SESSION['copierEvenement_flash_msg']['msg'] .= "<p><strong>La copie a été stoppée à 100 dates (afin de ménager les ressources du systmème), veuillez répéter l'opération pour les dates suivantes</strong></p>";
+                $_SESSION['copierEvenement_flash_msg']['msg'] .= "<p><strong>La copie a été stoppée à 100 dates (afin de ménager les ressources du système), veuillez répéter l'opération pour les dates suivantes</strong></p>";
                 break;
             }
 			/*

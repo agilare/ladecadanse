@@ -98,7 +98,22 @@ use Ladecadanse\UserLevel;
             document.getElementById("contacteznous-email-info").innerHTML = atob("<?= base64_encode(EMAIL_ADMIN); ?>");
         </script>
     <?php endif; ?>
-    <?= $assets->getImportMap(['js/browser.js', 'js/global.js', 'js/shortcuts.js', 'js/mouseless.js', 'js/pdf-to-image.js'], CSP_NONCE); ?>
+    <?= $assets->getImportMap(['js/browser.js', 'js/global.js', 'js/shortcuts.js', 'js/mouseless.js', 'js/pdf-to-image.js', 'js/favorites.js'], CSP_NONCE); ?>
+    <?php
+    $ladecadanseJsConfig = ['isLoggedIn' => !empty($_SESSION['logged']), 'favoritesEnabled' => Ladecadanse\Favorites::isEnabled()];
+    if ($ladecadanseJsConfig['favoritesEnabled'] && $ladecadanseJsConfig['isLoggedIn'] && isset($connectorPdo))
+    {
+        $favoriteIdsStmt = $connectorPdo->prepare("SELECT idEvenement FROM personne_evenement WHERE idPersonne = ?");
+        $favoriteIdsStmt->execute([(int) $_SESSION['SidPersonne']]);
+        $ladecadanseJsConfig['favoriteIds'] = array_map('intval', $favoriteIdsStmt->fetchAll(PDO::FETCH_COLUMN));
+
+        // Jeton des deux appels qui écrivent (toggle, sync), renvoyé par le script en en-tête.
+        // Rendu aux seuls comptes connectés, les seuls à pouvoir les appeler ; getToken() le crée
+        // au besoin, comme le fait déjà un lien « Dépublier ».
+        $ladecadanseJsConfig['csrfToken'] = Ladecadanse\Security\SecurityToken::getToken();
+    }
+    ?>
+    <script nonce="<?= CSP_NONCE ?>">window.__LADECADANSE = <?= json_encode($ladecadanseJsConfig) ?>;</script>
     <script type="module" src="<?= $assets->get("js/main.js"); ?>"></script>
 
 </body>

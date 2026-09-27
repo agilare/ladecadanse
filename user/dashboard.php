@@ -120,11 +120,36 @@ $tab_descs = [];
 $totaux = ["evenement" => 0, "description" => 0];
 $tot_elements = 0;
 
+/*
+ * Le bloc des contenus ajoutés — onglets, filtre par titre, tableau — n'a de sens que pour un
+ * compte qui en ajoute. Un MEMBER (12) n'écrit ni événement ni description : la page lui
+ * annonçait un « Aucun événement ajouté pour le moment » qui n'attend rien. Le bloc reparaît
+ * s'il en porte malgré tout, cas improbable d'un compte rétrogradé.
+ *
+ * Le niveau lu est celui de la fiche et non celui du visiteur : c'est ce compte-là que la page
+ * décrit, et un administrateur n'a pas plus à lire le vide d'un membre que le membre lui-même.
+ */
+$showsContributions = false;
+
+/*
+ * Affiliations, signature des événements ajoutés, valeurs par défaut du formulaire d'ajout :
+ * trois lignes de la fiche qui, comme les fieldsets du même nom dans user-edit.php, ne parlent
+ * qu'aux comptes qui ajoutent des événements. Un MEMBER ne peut ni les régler ni s'en servir —
+ * un compte rétrogradé lirait sinon des réglages qu'aucun formulaire ne lui laisse modifier.
+ * Niveau de la fiche là encore, pour la même raison que ci-dessus.
+ */
+$showsContributorRows = false;
+
 if ($erreur === null)
 {
-    $affiliations_lieux = Personne::getAffiliationsLieux($get['idP']);
-    $organisateurs = Personne::getOrganisateurs($get['idP']);
-    $signature = Personne::getSignatureHtml($get['idP']);
+    $showsContributorRows = (int) $profil['groupe'] <= UserLevel::ACTOR;
+
+    if ($showsContributorRows)
+    {
+        $affiliations_lieux = Personne::getAffiliationsLieux($get['idP']);
+        $organisateurs = Personne::getOrganisateurs($get['idP']);
+        $signature = Personne::getSignatureHtml($get['idP']);
+    }
 
     $stmt = $connectorPdo->prepare("SELECT COUNT(*) FROM evenement WHERE idPersonne = :idP");
     $stmt->execute([':idP' => $get['idP']]);
@@ -135,6 +160,10 @@ if ($erreur === null)
     $totaux['description'] = (int) $stmt->fetchColumn();
 
     $tot_elements = $totaux[$get['elements']];
+
+    $showsContributions = (int) $profil['groupe'] <= UserLevel::ACTOR
+        || $totaux['evenement'] > 0
+        || $totaux['description'] > 0;
 
     $offset = ($get['page'] - 1) * $get['nblignes'];
     // valeurs issues de la liste blanche $tab_tri, jamais de la requête
@@ -202,7 +231,7 @@ if ($erreur === null)
 // d'organisateurs deviennent des noms.
 $defauts_evenement = [];
 
-if ($erreur === null)
+if ($erreur === null && $showsContributorRows)
 {
     $defauts = UserSettings::eventNewDefaults($profil['settings']);
 
@@ -305,15 +334,17 @@ if ($erreur !== null)
 	<?php endif; ?>
 
 	<header id="entete_contenu">
-		<h1>Compte de <em><?= sanitizeForHtml($profil['pseudo']) ?></em><?php if ($voit_le_groupe) : ?> <span class="profil-groupe">[<?= sanitizeForHtml(UserLevel::getName((int) $profil['groupe'])) ?>]</span><?php endif; ?><?php if ($profil['statut'] !== 'actif') : ?> <span class="even-statut-label statut-<?= sanitizeForHtml($profil['statut']) ?>"><?= mb_strtoupper(sanitizeForHtml($profil['statut'])) ?></span><?php endif; ?></h1>
+		<?php // sans nom d'utilisateur — il est facultatif —, c'est l'adresse qui désigne le compte ?>
+		<h1>Compte de <em><?= sanitizeForHtml(Personne::displayName($profil['pseudo'], $profil['email'])) ?></em><?php if ($voit_le_groupe) : ?> <span class="profil-groupe">[<?= sanitizeForHtml(UserLevel::getName((int) $profil['groupe'])) ?>]</span><?php endif; ?><?php if ($profil['statut'] !== 'actif') : ?> <span class="even-statut-label statut-<?= sanitizeForHtml($profil['statut']) ?>"><?= mb_strtoupper(sanitizeForHtml($profil['statut'])) ?></span><?php endif; ?></h1>
 		<div class="spacer"></div>
 	</header>
 
 	<div id="profile">
 
 		<table>
-			<tr><th>Identifiant</th><td><?= sanitizeForHtml($profil['pseudo']) ?></td></tr>
+			<tr><th>Nom d'utilisateur</th><td><?= trim((string) $profil['pseudo']) !== '' ? sanitizeForHtml($profil['pseudo']) : '<em>aucun : c\'est votre e-mail qui vous identifie</em>' ?></td></tr>
 			<tr><th>E-mail</th><td><?= sanitizeForHtml($profil['email']) ?></td></tr>
+			<?php if ($showsContributorRows) : ?>
 			<tr><th>Affiliations</th><td>
 				<?php foreach ($affiliations_lieux as $lieu_affilie) : ?>
 					<a href="/lieu/lieu.php?idL=<?= (int) $lieu_affilie['idLieu'] ?>" title="Voir la fiche du lieu : <?= sanitizeForHtml($lieu_affilie['nom']) ?>"><?= sanitizeForHtml($lieu_affilie['nom']) ?></a><br />
@@ -333,6 +364,7 @@ if ($erreur !== null)
 				<?= implode(', ', $paires) ?>
 			</td></tr>
 			<?php endif; ?>
+			<?php endif; ?>
 			<tr><th>Inscription</th><td><?= DateHelper::isoToFr(mb_substr((string) $profil['dateAjout'], 0, 10), 'annee', showDayOfWeek: false) ?></td></tr>
 		</table>
 		<?php if ($peut_gerer) : ?>
@@ -340,13 +372,12 @@ if ($erreur !== null)
 		<?php endif; ?>
 	</div>
 
-	<?php if ($_SESSION['Sgroupe'] <= UserLevel::ACTOR) : ?>
+	<?php if ($showsContributions) : ?>
 	<nav class="tabs" aria-label="Contenus ajoutés">
 		<?php foreach ($tab_elements as $cle_element => $libelle_element) : ?>
 		<a href="?idP=<?= (int) $get['idP'] ?>&amp;elements=<?= $cle_element ?>&amp;tri=<?= $get['tri'] ?>&amp;ordre=<?= $get['ordre'] ?>&amp;nblignes=<?= $get['nblignes'] ?>"<?= $get['elements'] === $cle_element ? ' class="ici"' : '' ?>><i class="fa <?= $icones_onglets[$cle_element] ?>" aria-hidden="true"></i>&nbsp;<?= $libelle_element ?><sup><?= $totaux[$cle_element] ?></sup></a>
 		<?php endforeach; ?>
 	</nav>
-	<?php endif; ?>
 
 	<?php if ($get['elements'] === "evenement") : ?>
 
@@ -478,6 +509,8 @@ if ($erreur !== null)
 	<?php endif; ?>
 
 	<?= HtmlShrink::getPaginationString($tot_elements, $get['page'], $get['nblignes'], 1, "", $url_pagination) ?>
+
+	<?php endif; // $showsContributions ?>
 
 </main>
 

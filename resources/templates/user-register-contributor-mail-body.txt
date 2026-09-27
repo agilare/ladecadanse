@@ -1,0 +1,18 @@
+Bonjour,
+
+Merci de vous être inscrit-e sur %site_url%
+
+Pour vous connecter : %login_url%
+Vous pouvez y saisir votre nom d'utilisateur (%login%) ou votre adresse e-mail.
+
+Vos événements seront publiés sans délai de modération. Vous pouvez consulter votre profil
+et modifier vos données (signature, valeurs par défaut d'un événement...) sur %dashboard_url%
+
+Vous nous avez indiqué être lié-e à : %affiliation%
+Nous vérifions cette information, puis nous rattacherons votre compte. Vous pourrez alors
+modifier la fiche de ce lieu ou de cet organisateur, ainsi que les événements qui s'y
+rattachent.
+
+Bonne visite
+
+La décadanse

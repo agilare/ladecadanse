@@ -135,7 +135,8 @@ Puis parcourir l'agenda, une fiche d'événement avec flyer, une fiche de lieu a
 
 Treize tables : `affiliation`, `descriptionlieu`, `evenement`, `evenement_organisateur`,
 `fichierrecu`, `lieu`, `lieu_fichierrecu`, `lieu_organisateur`, `localite`, `organisateur`,
-`personne`, `personne_organisateur`, `salle`.
+`personne`, `personne_organisateur`, `salle`. Deux autres, `user_reset_requests` et
+`bot_monitor`, sont créées vides : voir plus bas.
 
 `localite` est reprise en entier : elle ne porte aucune donnée d'événement, mais
 `evenement.localite_id` et `lieu.localite_id` y renvoient et aucune adresse ne s'affiche sans elle.
@@ -169,8 +170,11 @@ de donnée personnelle réelle, et le gigaoctet de la production ne circule pas.
 `statut`, `groupe` et `last_login` sont conservés : c'est ce qui rend la copie utile pour éprouver
 les permissions.
 
-Les tables `bot_monitor` (adresses IP) et `user_reset_requests` (e-mails et jetons) ne sont pas
-reprises du tout — `admin/bots.php` restera donc vide.
+`user_reset_requests` et `bot_monitor` sont créées vides. Leurs lignes n'ont rien à faire sur un
+poste de développement — des jetons de réinitialisation vivants pour la première, des adresses IP
+de visiteurs pour la seconde — mais sans la table, ce qui la lit tombe : `user/reset.php` lève une
+exception PDO dès la première demande, `admin/bots.php` sur sa première requête. `admin/bots.php`
+restera donc vide, et le parcours « mot de passe oublié » s'éprouve en local.
 
 ## Options
 

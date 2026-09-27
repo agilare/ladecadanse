@@ -24,6 +24,12 @@
     max-width: 100%;
 }
 
+#conteneur main.colonne
+{
+    float: none;
+    width: auto;
+}
+
 #menu ul li
 {
     float:left;
@@ -38,15 +44,33 @@
     font-size: 1.03em; /* iphone <5 */
 }
 
+/*
+ * Les sept onglets réclamaient 414px pour les 375 d'un téléphone courant : « Organisateurs »
+ * et la loupe tombaient sur une seconde ligne. Les trois boutons-icônes partagent désormais
+ * le padding du calendrier, et « Agenda » resserre le sien — la hauteur, donc la cible
+ * tactile, ne change pas.
+ */
 #menu ul li#bouton_agenda a
 {
-    padding: 0.5em 0.7em;
+    padding: 0.5em 0.55em;
 }
 
 #menu ul li#bouton_calendrier a,
-#menu ul li#bouton_latests_events a
+#menu ul li#bouton_latests_events a,
+#menu ul li#bouton_favoris a
 {
-    padding: 0.5em 0.9em;
+    padding: 0.5em 10px;
+}
+
+/* en mobile, le marque-page remplace le libellé : l'onglet se lit comme le calendrier et la cloche */
+#menu ul li#bouton_favoris .fa-bookmark
+{
+    display:inline-block;
+}
+
+#menu ul li#bouton_favoris .menu_libelle
+{
+    display:none;
 }
 
 #entete_haut #menu_pratique {
@@ -74,6 +98,35 @@
 {
     padding-left:10px;
     padding-right:10px;
+}
+
+/*
+ * Sous 420px, les sept onglets réclament encore 367px là où un Android courant n'en offre que
+ * 360 : les paddings horizontaux se resserrent une seconde fois. Placé après les règles
+ * ci-dessus, dont celle du calendrier, pour les emporter. Les écrans plus larges gardent la
+ * respiration précédente, et la hauteur des boutons — la cible tactile — ne bouge pas.
+ */
+@media screen and (max-width: 420px)
+{
+    #menu ul li a
+    {
+        padding-left:0.25em;
+        padding-right:0.25em;
+    }
+
+    #menu ul li#bouton_agenda a
+    {
+        padding-left:0.4em;
+        padding-right:0.4em;
+    }
+
+    #menu ul li#bouton_calendrier a,
+    #menu ul li#bouton_latests_events a,
+    #menu ul li#bouton_favoris a
+    {
+        padding-left:8px;
+        padding-right:8px;
+    }
 }
 
 #menu ul li.btn_recherche {
@@ -875,4 +928,27 @@ form#ajouter_editer p.memoriser label, form#ajouter_editer p.mdp_oublie
 
 #default #order_navigation {
   float: left;
+}
+
+/*
+ * Deux lignes : le titre et le menu des périodes se partagent la première, le menu collé à
+ * droite ; le filtre des favoris prend la seconde, au bord gauche.
+ *
+ * Il passe après le menu par `order` alors que le HTML le place avant : « Passés Prochains »
+ * doit rester à la hauteur du titre, et le filtre — qui n'apparaît que s'il y a un favori
+ * dans la liste — ne doit pas venir les séparer. Le flex-basis de 100% est ce qui le renvoie
+ * seul sur sa ligne.
+ */
+#prochains_evenements > header h2 {
+  margin-right: 0;
+}
+
+#prochains_evenements > header ul#menu_periode {
+  margin: 0 0 0 auto;
+}
+
+#prochains_evenements > header #favoris_filter_navigation {
+  order: 1;
+  flex-basis: 100%;
+  margin: 0;
 }
