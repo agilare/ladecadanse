@@ -249,14 +249,15 @@ if ($formulaire_poste)
 	}
 	elseif ($get['action'] == "update" && !empty($champs['motdepasse']) && empty($erreurs['motdepasse']))
 	{
-		$getUser = $connector->query("SELECT mot_de_passe, gds
-		FROM personne
-		WHERE pseudo = '".$_SESSION['user']."'");
+		// par l'id de session et non le pseudo : celui-ci n'est validé qu'en longueur
+		$stmt = $connectorPdo->prepare("SELECT mot_de_passe, gds FROM personne WHERE idPersonne = :idP");
+		$stmt->execute([':idP' => (int) $_SESSION['SidPersonne']]);
+		$tab_user = $stmt->fetch();
 
-		$tab_user = $connector->fetchArray($getUser);
-
-		//Si au moins un enregistrement de personne est trouvé
-        if ((sha1($tab_user['gds'] . sha1($champs['motdepasse'])) != $tab_user['mot_de_passe']) && !password_verify($champs['motdepasse'], $tab_user['mot_de_passe']))
+		// même double vérification que Sentry::checkLogin() : sha1 salé historique, puis password_hash()
+		if ($tab_user === false
+			|| (!hash_equals((string) $tab_user['mot_de_passe'], sha1($tab_user['gds'] . sha1($champs['motdepasse'])))
+				&& !password_verify($champs['motdepasse'], (string) $tab_user['mot_de_passe'])))
 		{
 			$verif->setErreur("motdepasse", "Faux mot de passe");
 		}
