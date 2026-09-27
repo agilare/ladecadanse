@@ -1,0 +1,43 @@
+# Mots propres au site et à sa région, refusés comme mot de passe avec leurs dérivés
+# (casse, accents, leet, chiffres et symboles autour, deux mots accolés) :
+# « Servette1890 », « p@quis2024! », « GeneveCarouge ».
+#
+# Orthographe naturelle : chaque ligne est normalisée au chargement (minuscules, sans
+# accents, lettres seules), « Jet d'eau » vaut « jetdeau ». Une racine de moins de
+# 3 lettres une fois normalisée est ignorée.
+#
+# Les lignes vides et celles commençant par # sont ignorées
+# (Ladecadanse\Utils\PasswordPolicy).
+#
+# Amorce écrite à la main ; à compléter par les lieux et localités de la base et par
+# les communes romandes et de France voisine.
+
+# Le site
+ladecadanse
+decadanse
+la decadanse
+
+# Genève
+geneve
+genf
+geneva
+ginevra
+carouge
+plainpalais
+paquis
+jonction
+eaux-vives
+servette
+champel
+lancy
+meyrin
+onex
+vernier
+jet d'eau
+escalade
+leman
+saleve
+
+# Clubs
+servettefc
+gshc

@@ -18,9 +18,12 @@ Les règles sont portées par [`Ladecadanse\Utils\PasswordPolicy`](../librairies
 - de **10 à 100 caractères** ;
 - **au moins un chiffre** ;
 - les deux saisies identiques ;
-- absent de la liste des mots de passe refusés.
+- absent de la liste des mots de passe refusés ;
+- pas un simple dérivé d'un mot du contexte du site.
 
 La liste est `resources/bad_p.txt` : 19 999 entrées venant de [tarraschk/richelieu](https://github.com/tarraschk/richelieu) (mots de passe français les plus courants, issus de fuites publiques, CC BY 4.0), plus les quelques entrées propres au site qui n'y figuraient pas — dont les « qwertz » du clavier suisse. Elle n'est chargée qu'une fois par requête, et seulement si les règles précédentes sont satisfaites : elle ne dirait rien de plus sur un mot de passe déjà refusé. Si le fichier est illisible, les autres règles s'appliquent quand même et l'incident part dans le log — une inscription ne doit pas échouer là-dessus.
+
+Aucune fuite générale ne contient les mots propres au site et à sa région — « ladecadanse », « servette », « pâquis » — que des membres genevois, vaudois ou de France voisine sont susceptibles de choisir. Ils vivent dans `resources/bad_p_context.txt`, en orthographe naturelle. La comparaison exacte ne servirait à rien ici : ces mots font souvent moins de 10 caractères, et ce sont leurs dérivés que l'on choisit (`Servette1890!`, `p@quis2024`, `GeneveCarouge`). Le mot de passe est donc normalisé : minuscules, accents retirés, leet courant défait (`@`/`4` → a, `3` → e, `0` → o, `1`/`!` → i ou l…), chiffres et symboles écartés. Il est refusé si ce qui reste est une racine, ou deux racines accolées. On ne cherche pas une racine *contenue* dans le mot de passe, sinon une phrase comme `automne-a-geneve-sous-la-pluie` serait refusée. Les racines de moins de 3 lettres une fois normalisées sont ignorées : elles produiraient surtout des faux positifs par concaténation.
 
 **Le profil fait exception** : `user-edit.php` ne reprend que la consultation de la liste. Ses bornes (8/30) et ses clés d'erreur diffèrent de celles de l'inscription et de la réinitialisation ; les aligner serait un changement de règle, à traiter à part.
 

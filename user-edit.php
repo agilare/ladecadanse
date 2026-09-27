@@ -212,7 +212,7 @@ if ($formulaire_poste)
      */
     if (!empty($champs['newPass']) && PasswordPolicy::estRefuse((string) $champs['newPass']))
     {
-        $verif->setErreur("nouveaux_pass", "Ce mot de passe est trop courant, veuillez en choisir un autre.");
+        $verif->setErreur("nouveaux_pass", "Ce mot de passe est trop courant ou trop facile à deviner, veuillez en choisir un autre.");
     }
 
 	$verif->valider($champs['email'], "email", "email", 4, 250, 1);
