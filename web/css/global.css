@@ -2441,6 +2441,34 @@ input[type="search"]::-webkit-search-cancel-button
         color:#3c763d;
     }
 
+.alert-danger
+{
+    position:relative;
+    padding:0.7em 0.5em;
+    margin:0em 0;
+    background:#f8d7da;
+    color:#721c24;
+}
+
+    .alert-danger h2
+    {
+        padding:0;
+        margin:0.1em 0 0.4em 0em;
+        font-size:1.3em;
+        color:#721c24;
+    }
+
+    .alert-danger .close
+    {
+        position:absolute;
+        right:0;
+        top:0;
+        padding:6px;
+        font-size: 1rem;
+        font-weight: 700;
+        color:#721c24;
+    }
+
 .alert-info
 {
     position:relative;

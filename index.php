@@ -259,21 +259,33 @@ include("_header.inc.php");
     <?php
     // header banners & flash messages
 
-    // public banner enabled (by admin) and not yet closed (by user)
-    if (HOME_TMP_BANNER_ENABLED && !isset($_COOKIE['home_tmp_banner'])) : ?>
-        <div id="home_tmp_banner" class="alert-warn">
-            <h2><?= HOME_TMP_BANNER_TITLE; ?></h2><a href="#" class="js-alert-close-btn close">&times;</a>
-            <p><?= HOME_TMP_BANNER_CONTENT; ?></p>
+    // announcements set by the admin in app/env.php; repli sur [] tant que la constante
+    // n'y a pas été ajoutée (fichier hors dépôt, non déployé)
+    $home_banners = defined('HOME_BANNERS') ? HOME_BANNERS : [];
+    foreach ($home_banners as $banner) :
+        if (($banner['audience'] ?? 'tous') === 'contributeurs' && !$authorization->checkGroup(UserLevel::ACTOR)) {
+            continue;
+        }
+        $banner_type = in_array($banner['type'] ?? '', ['info', 'warn', 'danger'], true) ? $banner['type'] : 'info';
+        // la date identifie l'annonce : la changer fait réapparaître la bannière chez ceux qui l'avaient fermée
+        $banner_key = 'home_banner_' . ($banner['date'] ?? '');
+        ?>
+        <div class="alert-<?= $banner_type ?> js-home-banner" data-banner-key="<?= sanitizeForHtml($banner_key) ?>">
+            <h2><?= $banner['titre'] ?? '' ?></h2><a href="#" class="js-alert-close-btn close" aria-label="Fermer">&times;</a>
+            <p><?= $banner['contenu'] ?? '' ?></p>
         </div>
-    <?php endif; ?>
-
-    <?php
-    // private banner enabled (by admin) and not yet closed (by user)
-    if ($authorization->checkGroup(UserLevel::ACTOR) && HOME_TMP_BACK_BANNER_ENABLED && !isset($_COOKIE['home_tmp_back_banner'])) : ?>
-        <div id="home_tmp_back_banner" class="alert-info">
-            <h2><?= HOME_TMP_BACK_BANNER_TITLE; ?></h2><a href="#" class="js-alert-close-btn close">&times;</a>
-            <p><?= HOME_TMP_BACK_BANNER_CONTENT; ?></p>
-        </div>
+    <?php endforeach; ?>
+    <?php if (!empty($home_banners)) : ?>
+        <?php // exécuté avant l'affichage : une bannière déjà fermée ne clignote pas ; sans JS elle reste visible ?>
+        <script nonce="<?= CSP_NONCE ?>">
+            document.querySelectorAll('.js-home-banner').forEach(function (banner) {
+                try {
+                    if (localStorage.getItem(banner.dataset.bannerKey) !== null) {
+                        banner.hidden = true;
+                    }
+                } catch (e) {}
+            });
+        </script>
     <?php endif; ?>
 
     <?php if (!empty($_SESSION['evenement-edit_flash_msg'])) :

@@ -1,4 +1,3 @@
-import { SetCookie } from './browser.js';
 import { Shortcuts } from './shortcuts.js';
 import { Mouseless } from './mouseless.js';
 
@@ -973,12 +972,16 @@ const HomePage =
             return;
         }
 
-        // browser.js
-        $('.js-alert-close-btn').on('click', function hideTmpBannerAndSetCookie()
+        // la fermeture est mémorisée sous la clé propre à l'annonce, cf. index.php
+        $('.js-alert-close-btn').on('click', function hideHomeBannerAndRemember()
         {
-            const HOME_TMP_BANNER_COOKIE_DURATION_IN_DAYS = 180;
-            SetCookie(this.parentNode.id, 1, HOME_TMP_BANNER_COOKIE_DURATION_IN_DAYS);
-            this.parentNode.style.display = 'none';
+            const banner = this.parentNode;
+            banner.hidden = true;
+            try {
+                localStorage.setItem(banner.dataset.bannerKey, '1');
+            } catch (e) {
+                // stockage indisponible (navigation privée, bloqué) : fermée pour cette page seulement
+            }
             return false;
         });
     }

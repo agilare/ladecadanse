@@ -180,15 +180,19 @@ define("LADECADANSE_API_KEY", '');
 
 // small modules
 
-// in homepage, closable warn alert for announcements by site admin
-define("HOME_TMP_BANNER_ENABLED", false);
-define("HOME_TMP_BANNER_TITLE", "Title of my announcement");
-define("HOME_TMP_BANNER_CONTENT", "My announcement...");
-
-// in homepage, closable info alert for announcements by site admin to actors
-define("HOME_TMP_BACK_BANNER_ENABLED", false);
-define("HOME_TMP_BACK_BANNER_TITLE", "Title of my announcement");
-define("HOME_TMP_BACK_BANNER_CONTENT", "My announcement...");
+// in homepage, closable announcements by site admin; [] = none
+// 'date' identifies the announcement: changing it shows the banner again to those who closed it
+// 'type': info | warn | danger ; 'audience': tous | contributeurs (ACTOR level and above)
+// 'titre' and 'contenu' are output as HTML
+define("HOME_BANNERS", [
+    // [
+    //     'date' => '2026-09-27 14:00',
+    //     'type' => 'warn',
+    //     'audience' => 'tous',
+    //     'titre' => "Title of my announcement",
+    //     'contenu' => "My announcement...",
+    // ],
+]);
 
 // after crash of 22.10.2024 and then existence of 2 database versions, allow restart of application with limited edition on current db version to avoid conflict qui backed up db
 // removed its usage in code the 15.02.2025
