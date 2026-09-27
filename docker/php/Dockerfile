@@ -58,6 +58,12 @@ RUN { \
         echo 'date.timezone=UTC'; \
     } > /usr/local/etc/php/conf.d/99-custom.ini
 
+# Modules requis par le .htaccess que compose `composer config:build` : sa
+# directive RewriteEngine et l'un de ses Header ne sont pas gardés par un
+# <IfModule>, et sans ces modules chaque URL répond 500 (« Invalid command
+# 'RewriteEngine' »). Commun aux deux stages, le dev servant le même .htaccess.
+RUN a2enmod rewrite headers deflate
+
 # Prépare les répertoires inscriptibles au démarrage (voir le script pour le détail)
 COPY ./docker/php/docker-entrypoint.sh /usr/local/bin/ladecadanse-entrypoint.sh
 RUN chmod +x /usr/local/bin/ladecadanse-entrypoint.sh
@@ -101,9 +107,6 @@ ENV COMPOSER_ALLOW_SUPERUSER=1
 
 # Production stage
 FROM base AS production
-
-# Enable Apache mod_rewrite and other modules
-RUN a2enmod rewrite headers deflate
 
 # Set production environment
 ENV APACHE_DOCUMENT_ROOT=/var/www/html

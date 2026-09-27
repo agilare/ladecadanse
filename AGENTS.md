@@ -23,7 +23,7 @@ La décadanse is a PHP 8.4 cultural events agenda for Geneva and surroundings. I
 
 ## Commands
 
-Static analysis and test commands are defined as `composer` scripts (see `composer.json`); Docker targets are in the `Makefile` (`make help` lists them).
+Static analysis and test commands are defined as `composer` scripts (see `composer.json`); the Docker environment runs with `docker compose --profile dev up -d --build` (localhost:7777, see README "Installation avec Docker"); the `Makefile` wraps the same commands where `make` exists, which is not the case on Windows.
 
 Use Eslint to check JS code (`npm run lint`).
 

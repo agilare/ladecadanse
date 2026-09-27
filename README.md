@@ -58,9 +58,12 @@ Facultatif : `imagick` et Ghostscript, pour convertir en image les PDF **collés
 
 Une configuration Docker est fournie pour exécuter le site en environnement local ou en production.
 
-L'utilisation de Make simplifie la gestion des conteneurs. Les principales actions (build, start, stop, logs, etc.) sont accessibles via des cibles prédéfinies dans le Makefile.
+Seul Docker est requis sur l'hôte, avec Compose v2 (`docker compose`) : ni PHP, ni Composer, ni Node. À chaque démarrage, deux conteneurs à usage unique préparent le code monté avant qu'Apache ne démarre :
 
-Aucun conteneur n'installe encore les [bibliothèques front-end](#bibliothèques-front-end) : lancer `npm ci` sur l'hôte, le code source étant monté tel quel dans le conteneur. Sans cela, `web/libs/` manque et les pages s'affichent sans icônes, sélecteur de date ni listes select2.
+- `composer-dev` (ou `composer-prod`) installe `vendor/` ;
+- `npm` lance `npm ci`, qui installe les [bibliothèques front-end](#bibliothèques-front-end) et les copie dans `web/libs/`. Son `node_modules/` vit dans un volume Docker, pas dans celui de l'hôte, qui reste libre pour `npm run lint` et `npm test`.
+
+Les voir `Exited` après le démarrage est le fonctionnement normal, pas un échec.
 
 #### Configuration des environnements
 
@@ -83,7 +86,7 @@ Créez un fichier `.env` à la racine du projet, lu automatiquement par Docker C
 printf 'UID=%s\nGID=%s\n' "$(id -u)" "$(id -g)" > .env
 ```
 
-Puis reconstruisez l'image : `make build`.
+Puis reconstruisez l'image : `docker compose --profile dev build --no-cache`.
 
 Sous Docker Desktop (Windows et macOS) cette étape est inutile : les montages sont déjà permissifs et les valeurs par défaut conviennent.
 
@@ -91,35 +94,32 @@ Dans tous les cas, l'entrypoint du conteneur (`docker/php/docker-entrypoint.sh`)
 
 #### Utilisation
 
-Toutes les commandes acceptent le paramètre `PROFILE=dev` ou `PROFILE=prod` (par défaut : `dev`).
+Les commandes passent par `docker compose` avec un profil, `dev` ou `prod`, depuis la racine du projet :
 
-**Développement** (utilise le profil par défaut) :
 ```sh
-make start                  # Démarrer l'environnement de développement
-make logs                   # Voir les logs
-make shell                  # Ouvrir un shell dans le conteneur
-make stop                   # Arrêter les services
+docker compose --profile dev up -d --build     # Construire si besoin et démarrer (localhost:7777)
+docker compose --profile dev ps -a             # Statut des services, conteneurs à usage unique compris
+docker compose --profile dev logs -f web-dev   # Logs d'Apache et de PHP
+docker compose --profile dev exec web-dev bash # Shell dans le conteneur web
+docker compose --profile dev down              # Arrêter
 ```
 
-**Production** (spécifier `PROFILE=prod`) :
+Pour la production, remplacer `dev` par `prod` et `web-dev` par `web-prod` (localhost:8080).
+
+Réinstaller les dépendances sans redémarrer, après un `git pull` qui touche `composer.lock` ou `package-lock.json` :
+
 ```sh
-make start PROFILE=prod     # Démarrer l'environnement de production
-make logs PROFILE=prod      # Voir les logs
-make shell PROFILE=prod     # Ouvrir un shell dans le conteneur
-make stop PROFILE=prod      # Arrêter les services
+docker compose --profile dev run --rm composer-dev   # vendor/
+docker compose --profile dev run --rm npm            # web/libs/
 ```
 
-**Raccourcis pratiques** :
-```sh
-make dev                    # Équivalent à : make start
-make prod                   # Équivalent à : make start PROFILE=prod
-```
+#### Avec Make
 
-#### Commandes disponibles
+Le `Makefile` enveloppe ces mêmes commandes, pour qui a `make` (Linux, macOS, WSL ; il n'est pas fourni sous Windows). Toutes les cibles acceptent `PROFILE=dev` ou `PROFILE=prod`, `dev` par défaut :
 
 ```sh
 make help                   # Afficher toutes les commandes disponibles
-make build [PROFILE=...]    # Construire les images Docker
+make build [PROFILE=...]    # Construire les images Docker, sans cache
 make start [PROFILE=...]    # Démarrer les services
 make stop [PROFILE=...]     # Arrêter les services
 make restart [PROFILE=...]  # Redémarrer les services
@@ -127,16 +127,18 @@ make logs [PROFILE=...]     # Afficher les logs (mode suivi)
 make shell [PROFILE=...]    # Ouvrir un shell dans le conteneur web
 make status [PROFILE=...]   # Afficher le statut des services
 make clean [PROFILE=...]    # Nettoyer l'environnement (conteneurs, images, volumes)
-make install-deps [PROFILE=...]     # Installer les dépendances PHP
+make install-deps [PROFILE=...]     # Installer les dépendances PHP et les bibliothèques front-end
 make composer-update [PROFILE=...]  # Mettre à jour les dépendances Composer
 make composer-require PACKAGE=...   # Ajouter un package Composer
 ```
 
-#### Composer
+#### Composer et configuration Apache
 
-Composer est installé dans le conteneur web de développement : `make shell`, puis `composer phpstan`, `composer test:api`, `composer config:build`, etc. Ces scripts tournent ainsi sur le PHP 8.4 de l'application et ses extensions.
+Composer est installé dans le conteneur web de développement : `docker compose --profile dev exec web-dev bash`, puis `composer phpstan`, `composer test:api`, `composer config:build`, etc. Ces scripts tournent ainsi sur le PHP 8.4 de l'application et ses extensions.
 
-Le conteneur `composer-dev` reste un service à usage unique : il installe `vendor/` avant qu'Apache ne démarre, et sert les cibles `make install-deps`, `make composer-update` et `make composer-require`. Son image embarque son propre PHP, sans les extensions de l'application, d'où le `--ignore-platform-reqs` qui accompagne ces cibles. Le voir `Exited` après `make start` est le fonctionnement normal, pas un échec.
+Le service `composer-dev`, lui, a son propre PHP, sans les extensions de l'application, d'où son `--ignore-platform-reqs`.
+
+Sans `.htaccess`, le site répond déjà, mais sans ses redirections ni ses règles de sécurité. `composer config:build`, lancé dans le conteneur, le compose comme en production — voir [docs/config-serveur.md](docs/config-serveur.md) ; l'image active pour cela `mod_rewrite` et `mod_headers`.
 
 #### Base de données
 
@@ -145,10 +147,10 @@ La base est initialisée depuis `resources/database/ladecadanse.sql`, qui porte 
 Ces scripts ne tournent qu'à la **création du volume**. Une base déjà créée ne verra jamais une migration ajoutée depuis, il faut la passer à la main :
 
 ```sh
-docker-compose --profile dev exec -T db sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" ladecadanse' < resources/database/v3-12-0_localite-france.sql
+docker compose --profile dev exec -T db sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" ladecadanse' < resources/database/v3-12-0_localite-france.sql
 ```
 
-Pour repartir d'une base neuve : `make clean`, qui supprime le volume, puis `make start`.
+Pour repartir d'une base neuve : `docker compose --profile dev down -v`, qui supprime les volumes, puis `docker compose --profile dev up -d`.
 
 Le site ladecadanse est déployé sur localhost:7777 (dev) ou localhost:8080 (prod). Le mot de passe, par défaut, pour l'utilisateur `admin` est `admin_dev`.
 

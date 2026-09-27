@@ -6,8 +6,9 @@
 # Default profile
 PROFILE ?= dev
 
-# Docker Compose command with profile
-DC = docker-compose --profile $(PROFILE)
+# Docker Compose command with profile — the v2 plugin, as the standalone
+# docker-compose binary is deprecated and missing from recent Docker installs
+DC = docker compose --profile $(PROFILE)
 
 # Container names based on profile
 WEB_CONTAINER = web-$(PROFILE)
@@ -34,7 +35,7 @@ help: ## Show this help message
 	@echo "  shell            Open shell in web container"
 	@echo "  clean            Clean environment (containers, images, volumes)"
 	@echo "  status           Show service status"
-	@echo "  install-deps     Install PHP dependencies"
+	@echo "  install-deps     Install PHP dependencies and front-end libraries"
 	@echo "  composer-update  Update Composer dependencies"
 	@echo "  composer-require Add a new Composer package (usage: make composer-require PACKAGE=package/name)"
 	@echo "  config-build     Composer .htaccess et .user.ini"
@@ -90,9 +91,11 @@ status: ## Show service status
 	@echo "$(GREEN)[INFO]$(NC) $(PROFILE) environment status:"
 	$(DC) ps
 
-install-deps: ## Install PHP dependencies
+install-deps: ## Install PHP dependencies and front-end libraries
 	@echo "$(GREEN)[INFO]$(NC) Installing PHP dependencies for $(PROFILE)..."
 	$(DC) run --rm $(COMPOSER_CONTAINER)
+	@echo "$(GREEN)[INFO]$(NC) Installing front-end libraries into web/libs/..."
+	$(DC) run --rm npm
 	@echo "$(GREEN)[INFO]$(NC) Dependencies installed!"
 
 composer-update: ## Update Composer dependencies

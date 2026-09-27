@@ -55,6 +55,37 @@ services:
     profiles:
       - prod
 
+  # Bibliothèques front-end : `npm ci` les télécharge, puis son hook postinstall
+  # (bin/libs-sync.mjs) les copie dans web/libs/, sur le bind mount. Commun aux
+  # deux profils, la commande étant la même.
+  #
+  # Node 24 : compris dans les `engines` de package.json, et le seul à satisfaire
+  # aussi ceux de select2 4.1.0 (node >= 24), qui ferait sinon avertir `npm ci`.
+  npm:
+    image: node:24-alpine
+    container_name: ladecadanse_npm
+    # --omit=dev : seules les `dependencies` alimentent web/libs/ ; eslint et
+    # vitest restent l'affaire de l'hôte.
+    # Le chown rend web/libs/ à l'utilisateur de l'hôte Linux, pour qu'un
+    # `npm ci` lancé ensuite hors Docker puisse le vider ; sous Docker Desktop
+    # c'est un no-op.
+    command: sh -c 'npm ci --omit=dev --no-audit --no-fund && chown -R "$${HOST_UID}:$${HOST_GID}" web/libs'
+    environment:
+      HOST_UID: ${UID:-1000}
+      HOST_GID: ${GID:-1000}
+      NPM_CONFIG_UPDATE_NOTIFIER: "false"
+    volumes:
+      - .:/app
+      # node_modules dans un volume nommé, pas sur le bind mount : celui de
+      # l'hôte (eslint, vitest et leurs binaires natifs propres à la
+      # plateforme) reste intact, et l'extraction ne souffre pas de la lenteur
+      # du montage sous Docker Desktop.
+      - ladecadanse_node_modules:/app/node_modules
+    working_dir: /app
+    profiles:
+      - dev
+      - prod
+
   web-dev:
     build:
       context: .
@@ -71,6 +102,8 @@ services:
       db:
         condition: service_started
       composer-dev:
+        condition: service_completed_successfully
+      npm:
         condition: service_completed_successfully
     environment:
       - APP_ENV=dev
@@ -103,6 +136,8 @@ services:
         condition: service_started
       composer-prod:
         condition: service_completed_successfully
+      npm:
+        condition: service_completed_successfully
     environment:
       - APP_ENV=prod
       - APP_DEBUG=false
@@ -123,3 +158,4 @@ networks:
 
 volumes:
   ladecadanse_db_data:
+  ladecadanse_node_modules:
