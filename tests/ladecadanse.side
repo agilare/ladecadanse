@@ -2066,7 +2066,7 @@
         ["xpath=//form[@id='ajouter_editer']/fieldset/p/input", "xpath:idRelative"],
         ["xpath=//p/input", "xpath:position"]
       ],
-      "value": "test7"
+      "value": "user3681"
     }, {
       "id": "a8042cca-1bcc-480f-bbf1-681873410cc4",
       "comment": "",
@@ -2119,7 +2119,7 @@
         ["xpath=//form[@id='ajouter_editer']/fieldset/input", "xpath:idRelative"],
         ["xpath=//fieldset/input", "xpath:position"]
       ],
-      "value": "test7test7test7"
+      "value": "decadanse1"
     }, {
       "id": "b8cd7b2b-25ea-4d22-9f01-12874722e338",
       "comment": "",
@@ -2773,7 +2773,7 @@
     }, {
       "id": "ce6fa0dd-be1b-4b09-95c1-ae93f9542d37",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "id=coller",
       "targets": [
         ["id=coller", "id"],
@@ -2783,7 +2783,7 @@
         ["xpath=//form[@id='ajouter_editer']/input", "xpath:idRelative"],
         ["xpath=//div/form/input", "xpath:position"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "4006b1a4-744b-45c3-9b8f-9a6b1c2b1c8f",
       "comment": "",
@@ -2814,7 +2814,7 @@
     }, {
       "id": "af97f2a8-a4dd-4470-8c8b-89bd05882c11",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "name=submit",
       "targets": [
         ["name=submit", "name"],
@@ -2823,7 +2823,7 @@
         ["xpath=//form[@id='ajouter_editer']/p[3]/input[5]", "xpath:idRelative"],
         ["xpath=//input[5]", "xpath:position"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "e6a7c254-5b59-497c-b142-2750c7dc63b7",
       "comment": "",
@@ -2854,7 +2854,7 @@
     }, {
       "id": "048b692d-31e8-4ac6-b657-575585eba8b5",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "css=.summary",
       "targets": [
         ["css=.summary", "css:finder"],
@@ -2862,12 +2862,12 @@
         ["xpath=//h3", "xpath:position"],
         ["xpath=//h3[contains(.,'test')]", "xpath:innerText"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "bfb8e302-be54-4f62-8ee1-5fcb1cdec554",
       "comment": "",
       "command": "click",
-      "target": "css=.menu_actions_evenement > li:nth-child(1) > a",
+      "target": "css=.menu_actions_evenement--connecte > li:nth-child(1) > a",
       "targets": [
         ["linkText=Envoyer à un ami", "linkText"],
         ["css=.menu_actions_evenement > li:nth-child(1) > a", "css:finder"],
@@ -2881,7 +2881,7 @@
     }, {
       "id": "08d0c9ff-78c0-4012-87af-d0ec7df7f61a",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "css=.submit-big",
       "targets": [
         ["css=.submit-big", "css:finder"],
@@ -2889,7 +2889,7 @@
         ["xpath=//form[@id='ajouter_editer']/fieldset/p[3]/input[2]", "xpath:idRelative"],
         ["xpath=//p[3]/input[2]", "xpath:position"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "da4ebf92-2e20-4ba3-baeb-af8134913ae0",
       "comment": "",
@@ -2909,7 +2909,7 @@
       "id": "7391c04a-ad16-4dec-97de-f59f665d744e",
       "comment": "",
       "command": "click",
-      "target": "css=.menu_actions_evenement > li:nth-child(2) > a",
+      "target": "css=.menu_actions_evenement--connecte > li:nth-child(2) > a",
       "targets": [
         ["linkText=Copier vers d'autres dates", "linkText"],
         ["css=.menu_actions_evenement > li:nth-child(2) > a", "css:finder"],
@@ -2921,7 +2921,7 @@
     }, {
       "id": "c9220ad7-ae12-4d33-a290-412594d8cded",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "id=coller",
       "targets": [
         ["id=coller", "id"],
@@ -2931,7 +2931,7 @@
         ["xpath=//form[@id='ajouter_editer']/input", "xpath:idRelative"],
         ["xpath=//div/form/input", "xpath:position"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "6aaf8adf-80a7-4997-b98c-bafdff1a8e73",
       "comment": "",
@@ -2951,7 +2951,7 @@
       "id": "6e2134aa-ff67-4e17-9f2a-832c9692383f",
       "comment": "",
       "command": "click",
-      "target": "css=.menu_actions_evenement > li:nth-child(3) > a",
+      "target": "css=.menu_actions_evenement--connecte > li:nth-child(3) > a",
       "targets": [
         ["linkText=Modifier", "linkText"],
         ["css=.menu_actions_evenement > li:nth-child(3) > a", "css:finder"],
@@ -2965,7 +2965,7 @@
     }, {
       "id": "d332ebd6-e3e8-489d-9d09-1ea471b71396",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "name=submit",
       "targets": [
         ["name=submit", "name"],
@@ -2974,7 +2974,7 @@
         ["xpath=//form[@id='ajouter_editer']/p[3]/input[5]", "xpath:idRelative"],
         ["xpath=//input[5]", "xpath:position"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "9e1622e0-3cd8-4800-afbf-45fc9095991c",
       "comment": "",
@@ -3262,7 +3262,7 @@
       "id": "29537188-c6c7-4463-8509-8511100af012",
       "comment": "",
       "command": "click",
-      "target": "css=tr:nth-child(2) > td:nth-child(3) > a",
+      "target": "css=#ajouts > tbody > tr:nth-child(2) > td:nth-child(2) > a",
       "targets": [
         ["linkText=mardi au vendredi de 14h à 19h et samedi de 13h à 17hmardi au vendredi de 14h à", "linkText"],
         ["css=tr:nth-child(2) > td:nth-child(3) > a", "css:finder"],
@@ -3277,7 +3277,7 @@
       "id": "e7925d3c-5a7f-4a33-b5a5-8c58c9b0ba08",
       "comment": "",
       "command": "click",
-      "target": "css=.menu_actions_evenement > li:nth-child(2) > a",
+      "target": "css=.menu_actions_evenement--connecte > li:nth-child(2) > a",
       "targets": [
         ["linkText=Copier vers d'autres dates", "linkText"],
         ["css=.menu_actions_evenement > li:nth-child(2) > a", "css:finder"],
@@ -3356,7 +3356,7 @@
       "id": "7657b5ad-ab3e-4149-8ff1-ced1326d7192",
       "comment": "",
       "command": "click",
-      "target": "xpath=//main[@id='contenu']/nav/ul/li/a",
+      "target": "xpath=//a[contains(@href,'action=share')]",
       "targets": [
         ["linkText=Envoyer à un ami", "linkText"],
         ["css=.menu_actions_evenement > li:nth-child(1) > a", "css:finder"],
@@ -3464,7 +3464,7 @@
       "id": "db1d9e90-19e4-40f5-a94d-845fbf53df55",
       "comment": "",
       "command": "click",
-      "target": "xpath=(//a[contains(text(),'Dépublier')])[2]",
+      "target": "xpath=(//a[contains(@class,'btn_event_unpublish')])[2]",
       "targets": [
         ["id=btn_event_unpublish_4514", "id"],
         ["css=#btn_event_unpublish_4514", "css:finder"],
@@ -4363,10 +4363,10 @@
     }, {
       "id": "b4f1ad1d-5a1b-4c3f-930c-3adc432bd6cb",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "css=.msg_ok",
       "targets": [],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "22008313-ee47-4cfe-8e3c-e2e812d11b6a",
       "comment": "",
@@ -4611,10 +4611,10 @@
     }, {
       "id": "77edea76-7e6c-4f73-9025-09f9dc9f395a",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "css=.msg_ok",
       "targets": [],
-      "value": ""
+      "value": "5000"
     }]
   }, {
     "id": "d279109f-52b6-4b17-aa36-5704240df41e",
@@ -5014,10 +5014,10 @@
     }, {
       "id": "67955f93-4969-4d1b-87bc-fd8a5b5b513a",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "css=.msg_ok",
       "targets": [],
-      "value": ""
+      "value": "5000"
     }]
   }, {
     "id": "82a5cf0c-2c0b-4baf-8545-45193e3ca01e",
@@ -5064,14 +5064,11 @@
       "id": "4d9245e2-c8ef-4345-8495-d850da8cbddc",
       "comment": "",
       "command": "click",
-      "target": "id=login",
+      "target": "id=contributor",
       "targets": [
-        ["id=utilisateur", "id"],
-        ["name=utilisateur", "name"],
-        ["css=#utilisateur", "css:finder"],
-        ["xpath=//input[@id='utilisateur']", "xpath:attributes"],
-        ["xpath=//form[@id='ajouter_editer']/fieldset/p/input", "xpath:idRelative"],
-        ["xpath=//p/input", "xpath:position"]
+        ["id=contributor", "id"],
+        ["name=contributor", "name"],
+        ["css=#contributor", "css:finder"]
       ],
       "value": ""
     }, {
@@ -5121,34 +5118,6 @@
         ["xpath=//input[@id='motdepasse']", "xpath:attributes"],
         ["xpath=//form[@id='ajouter_editer']/fieldset/p[2]/input", "xpath:idRelative"],
         ["xpath=//p[2]/input", "xpath:position"]
-      ],
-      "value": "Yaq12wsx9jh8"
-    }, {
-      "id": "5d721f85-7dcd-4c4d-95a3-94c963127888",
-      "comment": "",
-      "command": "click",
-      "target": "id=motdepasse2",
-      "targets": [
-        ["id=motdepasse2", "id"],
-        ["name=motdepasse2", "name"],
-        ["css=#motdepasse2", "css:finder"],
-        ["xpath=//input[@id='motdepasse2']", "xpath:attributes"],
-        ["xpath=//form[@id='ajouter_editer']/fieldset/p[3]/input", "xpath:idRelative"],
-        ["xpath=//p[3]/input", "xpath:position"]
-      ],
-      "value": ""
-    }, {
-      "id": "f5559e25-a8a4-4d4a-b265-97fb0351f80e",
-      "comment": "",
-      "command": "type",
-      "target": "id=motdepasse2",
-      "targets": [
-        ["id=motdepasse2", "id"],
-        ["name=motdepasse2", "name"],
-        ["css=#motdepasse2", "css:finder"],
-        ["xpath=//input[@id='motdepasse2']", "xpath:attributes"],
-        ["xpath=//form[@id='ajouter_editer']/fieldset/p[3]/input", "xpath:idRelative"],
-        ["xpath=//p[3]/input", "xpath:position"]
       ],
       "value": "Yaq12wsx9jh8"
     }, {
@@ -5386,7 +5355,7 @@
       "id": "aac443da-de33-4d03-9f96-26a3ecafda0f",
       "comment": "",
       "command": "click",
-      "target": "css=tr:nth-child(2) > td:nth-child(3) > a",
+      "target": "css=#ajouts > tbody > tr:nth-child(2) > td:nth-child(2) > a",
       "targets": [
         ["linkText=mardi au vendredi de 14h à 19h et samedi de 13h à 17hmardi au vendredi de 14h à", "linkText"],
         ["css=tr:nth-child(2) > td:nth-child(3) > a", "css:finder"],
@@ -5899,7 +5868,7 @@
         ["xpath=//form[@id='ajouter_editer']/fieldset/p/input", "xpath:idRelative"],
         ["xpath=//p/input", "xpath:position"]
       ],
-      "value": "admin"
+      "value": "user1"
     }, {
       "id": "bf70931d-e3e8-4ca8-a8d2-8e5739c7031b",
       "comment": "",
@@ -5913,7 +5882,7 @@
         ["xpath=//form[@id='ajouter_editer']/fieldset/input", "xpath:idRelative"],
         ["xpath=//fieldset/input", "xpath:position"]
       ],
-      "value": "Yaq12wsx"
+      "value": "decadanse1"
     }, {
       "id": "32bd03ab-b8c8-45c7-ab73-03d325852344",
       "comment": "",
@@ -5979,7 +5948,7 @@
       "id": "b9c3eb8c-5760-4ad6-a9a0-7e3cf00d1277",
       "comment": "",
       "command": "assertElementPresent",
-      "target": "css=table:nth-child(2) th:nth-child(1)",
+      "target": "xpath=//div[@id='tableaux']/table[1]/thead/tr/th[1]",
       "targets": [
         ["css=table:nth-child(2) th:nth-child(1)", "css:finder"],
         ["xpath=//div[@id='tableaux']/table/thead/tr/th", "xpath:idRelative"],
@@ -6098,7 +6067,7 @@
       "id": "e64f1659-38d3-41d1-ad24-73ffe163e05c",
       "comment": "",
       "command": "click",
-      "target": "xpath=//table[@id='derniers_evenements_ajoutes']/tbody/tr[2]/td[9]/a/img",
+      "target": "xpath=//table[@id='derniers_evenements_ajoutes']/tbody/tr[2]/td[@class='actions']/a/img",
       "targets": [
         ["css=tr:nth-child(2) > td:nth-child(9) img", "css:finder"],
         ["xpath=//img[@alt='Éditer']", "xpath:img"],
@@ -6141,186 +6110,6 @@
       ],
       "value": ""
     }, {
-      "id": "ffe92652-3e67-4ee6-b9e4-a83b48237740",
-      "comment": "",
-      "command": "click",
-      "target": "linkText=Fêtes",
-      "targets": [
-        ["linkText=Fêtes", "linkText"],
-        ["css=.menu_filtre > li:nth-child(2) > a", "css:finder"],
-        ["xpath=//a[contains(text(),'Fêtes')]", "xpath:link"],
-        ["xpath=//section[@id='default']/div/ul/li[2]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '?element=evenement&tri_gerer=dateAjout&ordre=desc&nblignes=50&terme=&filtre_genre=fête')]", "xpath:href"],
-        ["xpath=//div/ul/li[2]/a", "xpath:position"],
-        ["xpath=//a[contains(.,'Fêtes')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "7d7dea20-8a3e-42d1-b5e4-879a7e9e8015",
-      "comment": "",
-      "command": "assertElementPresent",
-      "target": "xpath=//table[@id='ajouts']/tbody/tr[2]/td/a",
-      "targets": [
-        ["linkText=Watoo festival BD", "linkText"],
-        ["css=tr:nth-child(2) .titre", "css:finder"],
-        ["xpath=//a[contains(text(),'Watoo festival BD')]", "xpath:link"],
-        ["xpath=//table[@id='ajouts']/tbody/tr[2]/td/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/event/evenement.php?idE=3045')]", "xpath:href"],
-        ["xpath=//td/a", "xpath:position"],
-        ["xpath=//a[contains(.,'Watoo festival BD')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "96e96019-1f1d-42a9-bf2c-42ff109b0ade",
-      "comment": "",
-      "command": "click",
-      "target": "linkText=Ciné",
-      "targets": [
-        ["linkText=Ciné", "linkText"],
-        ["css=.menu_filtre > li:nth-child(3) > a", "css:finder"],
-        ["xpath=//a[contains(text(),'Ciné')]", "xpath:link"],
-        ["xpath=//div[@id='contenu']/div[2]/ul/li[3]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '?element=evenement&page=1&tri_gerer=dateAjout&ordre=desc&nblignes=100&terme=&filtre_genre=cinéma')]", "xpath:href"],
-        ["xpath=//div[2]/ul/li[3]/a", "xpath:position"],
-        ["xpath=//a[contains(.,'Ciné')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "214f0b23-827f-4b82-a914-509f0261bb7a",
-      "comment": "",
-      "command": "assertElementPresent",
-      "target": "xpath=//table[@id='ajouts']/tbody/tr[2]/td/a",
-      "targets": [
-        ["linkText=Watoo festival BD", "linkText"],
-        ["css=tr:nth-child(2) .titre", "css:finder"],
-        ["xpath=//a[contains(text(),'Watoo festival BD')]", "xpath:link"],
-        ["xpath=//table[@id='ajouts']/tbody/tr[2]/td/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/event/evenement.php?idE=3045')]", "xpath:href"],
-        ["xpath=//td/a", "xpath:position"],
-        ["xpath=//a[contains(.,'Watoo festival BD')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "fe5c870b-b049-4077-b748-cf195b070377",
-      "comment": "",
-      "command": "click",
-      "target": "linkText=Théâtre",
-      "targets": [
-        ["linkText=Théâtre", "linkText"],
-        ["css=.menu_filtre > li:nth-child(4) > a", "css:finder"],
-        ["xpath=//a[contains(text(),'Théâtre')]", "xpath:link"],
-        ["xpath=//div[@id='contenu']/div[2]/ul/li[4]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '?element=evenement&page=1&tri_gerer=dateAjout&ordre=desc&nblignes=100&terme=&filtre_genre=théâtre')]", "xpath:href"],
-        ["xpath=//div[2]/ul/li[4]/a", "xpath:position"],
-        ["xpath=//a[contains(.,'Théâtre')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "ac275452-5044-4f82-8fb9-3ca4d0a3ec49",
-      "comment": "",
-      "command": "assertElementPresent",
-      "target": "xpath=//table[@id='ajouts']/tbody/tr[2]/td/a",
-      "targets": [
-        ["linkText=Watoo festival BD", "linkText"],
-        ["css=tr:nth-child(2) .titre", "css:finder"],
-        ["xpath=//a[contains(text(),'Watoo festival BD')]", "xpath:link"],
-        ["xpath=//table[@id='ajouts']/tbody/tr[2]/td/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/event/evenement.php?idE=3045')]", "xpath:href"],
-        ["xpath=//td/a", "xpath:position"],
-        ["xpath=//a[contains(.,'Watoo festival BD')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "e600a1fa-7253-4c06-bba8-2ef7106d37a1",
-      "comment": "",
-      "command": "click",
-      "target": "linkText=Expos",
-      "targets": [
-        ["linkText=Expos", "linkText"],
-        ["css=.menu_filtre > li:nth-child(5) > a", "css:finder"],
-        ["xpath=//a[contains(text(),'Expos')]", "xpath:link"],
-        ["xpath=//div[@id='contenu']/div[2]/ul/li[5]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '?element=evenement&page=1&tri_gerer=dateAjout&ordre=desc&nblignes=100&terme=&filtre_genre=expos')]", "xpath:href"],
-        ["xpath=//div[2]/ul/li[5]/a", "xpath:position"],
-        ["xpath=//a[contains(.,'Expos')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "19e56498-5638-41bb-8bc6-a76d3611d7bf",
-      "comment": "",
-      "command": "assertElementPresent",
-      "target": "xpath=//table[@id='ajouts']/tbody/tr[2]/td/a",
-      "targets": [
-        ["linkText=Watoo festival BD", "linkText"],
-        ["css=tr:nth-child(2) .titre", "css:finder"],
-        ["xpath=//a[contains(text(),'Watoo festival BD')]", "xpath:link"],
-        ["xpath=//table[@id='ajouts']/tbody/tr[2]/td/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/event/evenement.php?idE=3045')]", "xpath:href"],
-        ["xpath=//td/a", "xpath:position"],
-        ["xpath=//a[contains(.,'Watoo festival BD')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "ba956733-7aaa-469a-b1fa-1fc8505d3937",
-      "comment": "",
-      "command": "click",
-      "target": "linkText=Divers",
-      "targets": [
-        ["linkText=Divers", "linkText"],
-        ["css=.menu_filtre > li:nth-child(6) > a", "css:finder"],
-        ["xpath=//a[contains(text(),'Divers')]", "xpath:link"],
-        ["xpath=//div[@id='contenu']/div[2]/ul/li[6]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '?element=evenement&page=0&tri_gerer=dateAjout&ordre=desc&nblignes=100&terme=&filtre_genre=divers')]", "xpath:href"],
-        ["xpath=//div[2]/ul/li[6]/a", "xpath:position"],
-        ["xpath=//a[contains(.,'Divers')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "c8d5e83c-a92b-4bef-a605-ae1d54832e5d",
-      "comment": "",
-      "command": "assertElementPresent",
-      "target": "xpath=//table[@id='ajouts']/tbody/tr[2]/td/a",
-      "targets": [
-        ["linkText=Watoo festival BD", "linkText"],
-        ["css=tr:nth-child(2) .titre", "css:finder"],
-        ["xpath=//a[contains(text(),'Watoo festival BD')]", "xpath:link"],
-        ["xpath=//table[@id='ajouts']/tbody/tr[2]/td/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/event/evenement.php?idE=3045')]", "xpath:href"],
-        ["xpath=//td/a", "xpath:position"],
-        ["xpath=//a[contains(.,'Watoo festival BD')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "da334595-edf7-4577-bd38-449b3e8711d7",
-      "comment": "",
-      "command": "click",
-      "target": "linkText=Tous",
-      "targets": [
-        ["linkText=Tous", "linkText"],
-        ["css=.menu_filtre > li:nth-child(1) > a", "css:finder"],
-        ["xpath=//a[contains(text(),'Tous')]", "xpath:link"],
-        ["xpath=//div[@id='contenu']/div[2]/ul/li/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '?element=evenement&page=0&tri_gerer=dateAjout&ordre=desc&nblignes=100&terme=&filtre_genre=tous')]", "xpath:href"],
-        ["xpath=//div[2]/ul/li/a", "xpath:position"],
-        ["xpath=//a[contains(.,'Tous')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "af3fe9ce-923b-4369-8a3a-ed1b24dffe86",
-      "comment": "",
-      "command": "assertElementPresent",
-      "target": "xpath=//table[@id='ajouts']/tbody/tr[2]/td/a",
-      "targets": [
-        ["linkText=Watoo festival BD", "linkText"],
-        ["css=tr:nth-child(2) .titre", "css:finder"],
-        ["xpath=//a[contains(text(),'Watoo festival BD')]", "xpath:link"],
-        ["xpath=//table[@id='ajouts']/tbody/tr[2]/td/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/event/evenement.php?idE=3045')]", "xpath:href"],
-        ["xpath=//td/a", "xpath:position"],
-        ["xpath=//a[contains(.,'Watoo festival BD')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
       "id": "736fc86b-03fb-4ed8-aebb-7933e6e1da32",
       "comment": "",
       "command": "click",
@@ -6350,7 +6139,7 @@
       "id": "beeeb5cd-2ce6-425a-9cfb-ab2e3bd8461c",
       "comment": "",
       "command": "submit",
-      "target": "xpath=//form[@id='ajouter_editer']",
+      "target": "xpath=//form[@id='events-filters']",
       "targets": [
         ["id=ajouter_editer", "id"],
         ["css=div > #ajouter_editer", "css:finder"],
@@ -6391,7 +6180,7 @@
       "id": "db79734b-fd9f-49cd-ab96-6f76e03d738b",
       "comment": "",
       "command": "submit",
-      "target": "xpath=//form[@id='ajouter_editer']",
+      "target": "xpath=//form[@id='events-filters']",
       "targets": [
         ["id=ajouter_editer", "id"],
         ["css=div > #ajouter_editer", "css:finder"],
@@ -6451,7 +6240,7 @@
       "id": "7359b48a-b2f6-4d85-a440-6c29eb795b9b",
       "comment": "",
       "command": "click",
-      "target": "xpath=//div[@id='gerer-even-pagination']/ul/li[2]/a",
+      "target": "xpath=//ul[@class='menu_nb_res']/li[2]/a",
       "targets": [
         ["linkText=100", "linkText"],
         ["css=.menu_nb_res > li:nth-child(2) > a", "css:finder"],
@@ -6481,7 +6270,7 @@
       "id": "8cc7121c-8ac3-46d0-9ed1-a881143804cf",
       "comment": "",
       "command": "click",
-      "target": "xpath=//div[@id='gerer-even-pagination']/div/a",
+      "target": "xpath=(//div[@class='pagination'])[1]/a[1]",
       "targets": [
         ["id=prec", "id"],
         ["linkText=préc", "linkText"],
@@ -7163,7 +6952,7 @@
       "id": "c8b7ca23-e30e-4a2c-bb07-5ec09cd39030",
       "comment": "",
       "command": "click",
-      "target": "xpath=//div[@id='res_recherche']/table/tbody/tr[2]/td[5]/ul/li[3]/a/img",
+      "target": "xpath=//div[@id='res_recherche']/table/tbody/tr[2]//a[contains(@href,'action=editer')]/img",
       "targets": [
         ["css=.futur:nth-child(2) li:nth-child(3) img", "css:finder"],
         ["xpath=(//img[@alt='Éditer'])[2]", "xpath:img"],
@@ -7174,10 +6963,10 @@
     }, {
       "id": "28d318d5-0b27-4a90-b808-a0595c659c44",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "css=#ajouter_editer",
       "targets": [],
-      "value": ""
+      "value": "5000"
     }]
   }, {
     "id": "9c8c7ca0-0ac3-496e-b84b-bfedbc01230b",
@@ -7242,7 +7031,7 @@
       "id": "c4f348ff-ec48-4ce0-882b-8ebfd7b0d92b",
       "comment": "",
       "command": "click",
-      "target": "xpath=//section[@id='prochains_evenements']/table/tbody/tr[3]/td[5]/ul/li[3]/a",
+      "target": "xpath=//section[@id='prochains_evenements']/table/tbody/tr[3]//a[contains(@class,'btn_event_unpublish')]",
       "targets": [
         ["css=#btn_event_unpublish_2912 > img", "css:finder"],
         ["xpath=(//img[@alt='Dépublier'])[2]", "xpath:img"],
@@ -7308,7 +7097,7 @@
         ["id=pseudo", "id"],
         ["name=pseudo", "name"]
       ],
-      "value": "admin"
+      "value": "user1"
     }, {
       "id": "cmd-salle-005",
       "comment": "Enter admin password",
@@ -7318,7 +7107,7 @@
         ["id=motdepasse", "id"],
         ["name=motdepasse", "name"]
       ],
-      "value": "admin_dev"
+      "value": "decadanse1"
     }, {
       "id": "cmd-salle-006",
       "comment": "Submit login form",
@@ -7642,7 +7431,7 @@
         ["xpath=//form[@id='ajouter_editer']/fieldset/p/input", "xpath:idRelative"],
         ["xpath=//p/input", "xpath:position"]
       ],
-      "value": "test@ladecadanse.ch"
+      "value": "user1"
     }, {
       "id": "2b3f1711-0a78-4a8d-9500-cdef3e9e383f",
       "comment": "",
@@ -7656,7 +7445,7 @@
         ["xpath=//form[@id='ajouter_editer']/fieldset/input", "xpath:idRelative"],
         ["xpath=//fieldset/input", "xpath:position"]
       ],
-      "value": "Yaq12wsx"
+      "value": "decadanse1"
     }, {
       "id": "b4f65876-ec11-45b1-9575-49a3ad4ca139",
       "comment": "",
@@ -7815,7 +7604,7 @@
       "command": "select",
       "target": "id=idLieu",
       "targets": [],
-      "value": "label=Lieu Test Selenium"
+      "value": "index=1"
     }, {
       "id": "08748364-c233-433b-beed-1f3bb289cb37",
       "comment": "",
@@ -7906,7 +7695,7 @@
       "command": "select",
       "target": "id=idLieu",
       "targets": [],
-      "value": "label=Lieu Test Selenium"
+      "value": "index=1"
     }, {
       "id": "02d74738-301b-49fb-a5de-4909617f2680",
       "comment": "",
