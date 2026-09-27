@@ -8,7 +8,9 @@ use Ladecadanse\Utils\Text;
 use Ladecadanse\UserLevel;
 use Ladecadanse\EvenementRenderer;
 use Ladecadanse\Evenement;
+use Ladecadanse\EvenementCollection;
 use Ladecadanse\Lieu;
+use Ladecadanse\Organisateur;
 
 if (!$authorization->checkGroup(UserLevel::ADMIN)) {
     header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
@@ -100,6 +102,9 @@ WHERE e.dateAjout >= DATE_SUB(CURDATE(), INTERVAL 2 DAY) ".$sql_region." ORDER B
 
 $stmt->execute();
 $tab_latest_events = $stmt->fetchAll(PDO::FETCH_GROUP);
+
+// les organisateurs de tous les événements listés, en une requête
+$latest_events_orgas = EvenementCollection::getOrganisateursParEvenement(array_merge(...array_map(fn(array $events): array => array_column($events, 'e_idEvenement'), array_values($tab_latest_events))));
 
 
 $lieux_desc_latest = [];
@@ -204,8 +209,9 @@ require_once '../_header.inc.php';
                     <th>Titre</th>
                     <th>Lieu</th>
                     <th>Date</th>
-                    <th>Catégorie</th>
+                    <th>Catég.</th>
                     <th style="width:100px">Horaire</th>
+                    <th>Orga.</th>
                     <th>Statut</th>
                     <th>par</th>
                     <th>&nbsp;</th>
@@ -229,6 +235,11 @@ require_once '../_header.inc.php';
                         <td><a href="/index.php?courant=<?= sanitizeForHtml($event['e_dateEvenement']) ?>"><?= DateHelper::isoToApp($event['e_dateEvenement']) ?></a></td>
                         <td><?= ucfirst(Evenement::categoryLabel($event['e_genre'])) ?></td>
                         <td><?= EvenementRenderer::schedulesToHhMm($event['e_horaire_debut'], $event['e_horaire_fin'], $event['e_dateEvenement']) ?></td>
+                        <td>
+                            <?php if (!empty($latest_events_orgas[$event['e_idEvenement']])): ?>
+                                <?= Organisateur::getListLinkedHtml($latest_events_orgas[$event['e_idEvenement']], isWithOrganisateurUrl: false) ?>
+                            <?php endif; ?>
+                        </td>
                         <td style='text-align: center;'><?= EvenementRenderer::$iconStatus[$event['e_statut']] ?></td>
                         <td><?= EvenementRenderer::authorLinkHtml((int) $event['idPersonne'], $event['pseudo']) ?></td>
                         <td class="actions">
