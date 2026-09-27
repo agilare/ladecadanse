@@ -429,7 +429,7 @@ if ($erreur !== null)
 						<?= sanitizeForHtml($tab_even['nomLieu']) ?>
 						<?php endif; ?>
 					</td>
-					<td><?= DateHelper::isoToApp($tab_even['dateEvenement']) ?></td>
+					<td><a href="/index.php?courant=<?= sanitizeForHtml($tab_even['dateEvenement']) ?>" title="Voir l'agenda de ce jour"><?= DateHelper::isoToApp($tab_even['dateEvenement']) ?></a></td>
 					<td><?= sanitizeForHtml(Evenement::categoryLabel($tab_even['genre'])) ?></td>
 					<td class="horaire"><?= EvenementRenderer::schedulesToHhMm((string) $tab_even['horaire_debut'], (string) $tab_even['horaire_fin'], (string) $tab_even['dateEvenement']) ?></td>
 					<td><?= DateHelper::isoToApp(mb_substr((string) $tab_even['dateAjout'], 0, 10)) ?></td>
