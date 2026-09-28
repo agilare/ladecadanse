@@ -1412,8 +1412,9 @@ if ($show_form)
                 <label for="horaire_debut" style="display:inline-block"><span class="tooltip">Début <i class="fa fa-info-circle" aria-hidden="true"></i>
     <span class="tooltiptext">Jusqu’à 06:00, le début sera considéré faisant partie du jour de l’événement</span></span> </label>
                 <input type="time" name="horaire_debut" id="horaire_debut" size="5" value="<?php echo sanitizeForHtml($champs['horaire_debut']) ?>" />
-                <label for="horaire_fin" class="continu">Fin</label>
-                <input type="time" name="horaire_fin" id="horaire_fin" size="5" value="<?php echo sanitizeForHtml($champs['horaire_fin']) ?>" />
+                <?php // insécable : sans quoi, sur un écran un peu plus large, le champ Fin passait seul à la ligne, loin de son libellé ?>
+                <span style="white-space:nowrap"><label for="horaire_fin" class="continu">Fin</label>
+                <input type="time" name="horaire_fin" id="horaire_fin" size="5" value="<?php echo sanitizeForHtml($champs['horaire_fin']) ?>" /></span>
                 <?php
                 echo $verif->getHtmlErreur('horaire_debut');
                 echo $verif->getHtmlErreur('horaire_fin');
@@ -1685,7 +1686,7 @@ if ($show_form)
 
         <p style="margin-left: 0.8em;margin-bottom:1.2em;font-weight: bold">Affiche/flyer</p>
 
-        <p>
+        <p class="image-upload">
             <label for="flyer">Envoyer</label>
             <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo UPLOAD_MAX_FILESIZE ?>" />
             <input type="file" name="flyer" id="flyer" class="<?= $classe_champ_image ?>" size="25" accept="<?= $accept_champ_image ?>" style="padding-left:0" />
@@ -1726,7 +1727,7 @@ if ($show_form)
 
         <p style="margin-left: 0.8em;margin-bottom:0.3em;font-weight: bold">Image complémentaire (photo, verso du flyer, programme...)</p>
         <div class="guideChamp" style="padding-left:0.8em;margin-top:0">Visible sous le flyer dans la page Événement</div>
-        <p>
+        <p class="image-upload">
             <label for="image">Envoyer</label>
             <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo UPLOAD_MAX_FILESIZE ?>" />
             <input type="file" name="image" id="image" class="<?= $classe_champ_image ?>" size="25" accept="<?= $accept_champ_image ?>"  style="padding-left:0" />

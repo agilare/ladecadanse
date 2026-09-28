@@ -784,6 +784,36 @@ form#ajouter_editer select#idLieu
     width: 200px;
 }
 
+/* size=9 ne suffit pas sur iOS (Verdana absente) : l'icône du calendrier, posée
+   par-dessus le champ, rognait la date */
+form#ajouter_editer #dateEvenement
+{
+    box-sizing: border-box;
+    width: 11.5em;
+}
+
+/*
+ * iOS rend les champs time avec son apparence native : fond gris, largeur réduite à
+ * rien quand ils sont vides. @supports (-webkit-touch-callout) ne vise que WebKit iOS,
+ * où Chrome est aussi WebKit ; ailleurs le rendu reste inchangé.
+ */
+@supports (-webkit-touch-callout: none)
+{
+    form#ajouter_editer input[type="time"]
+    {
+        -webkit-appearance: none;
+        appearance: none;
+        background-color: #fff;
+        min-width: 6em;
+        min-height: 2.2em;
+    }
+
+    form#ajouter_editer input[type="time"]::-webkit-date-and-time-value
+    {
+        text-align: left;
+    }
+}
+
 /* #prix (size=45), #flyer_url et #image_url (size=50) n'avaient aucune largeur ici :
    leur largeur intrinsèque débordait du viewport. */
 form#ajouter_editer #adresse, form#ajouter_editer #urlLieu, form#ajouter_editer  #horaire_complement,form#ajouter_editer  #prelocations, form#ajouter_editer #titre, form#ajouter_editer #ref, form#ajouter_editer #prix, form#ajouter_editer #flyer_url, form#ajouter_editer #image_url
@@ -796,13 +826,27 @@ form#ajouter_editer #adresse, form#ajouter_editer #urlLieu, form#ajouter_editer 
  * Select2 pose une largeur en style en ligne, recopiée de la largeur intrinsèque
  * du <select> d'origine — soit celle de son option la plus longue : ~430px pour la
  * liste des organisateurs. Seul !important passe devant un style en ligne.
- * Ciblé sur le seul champ concerné : les autres listes Select2 ont déjà une
- * largeur tenue par select#idLieu ci-dessus.
+ * Même chose pour le lieu et la localité : iOS dimensionne un <select> d'après l'option
+ * choisie, non la plus longue, et la localité, vide au départ, sortait minuscule. Le
+ * lieu laisse la place du bouton d'infos qui le suit.
  */
-form#ajouter_editer #organisateurs + .select2-container
+form#ajouter_editer #organisateurs + .select2-container,
+form#ajouter_editer #localite + .select2-container
 {
     box-sizing: border-box;
     width: 100% !important;
+}
+
+form#ajouter_editer #idLieu + .select2-container
+{
+    width: calc(100% - 2em) !important;
+}
+
+/* retrait des champs de fichier, alignés sur les intitulés « Affiche/flyer »... */
+form#ajouter_editer p.image-upload
+{
+    width: auto;
+    margin-left: 0.8em;
 }
 
 

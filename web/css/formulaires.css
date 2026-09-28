@@ -155,7 +155,13 @@ form#ajouter_editer select:focus
 form#ajouter_editer input.select2-search__field, form#ajouter_editer textarea.select2-search__field
 {
     border:none;
-/*    padding:0;*/
+}
+
+/* le padding de « form#ajouter_editer textarea » repoussait le texte indicatif de la
+   liste des organisateurs vers le bas, plus encore sur iOS */
+form#ajouter_editer textarea.select2-search__field
+{
+    padding:0;
 }
 
  form#ajouter_editer input[type="file"]
