@@ -78,7 +78,7 @@
     }, {
       "id": "9f7132bd-4b1e-4d9d-ba99-89aa176eff89",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "id=email",
       "targets": [
         ["id=email", "id"],
@@ -88,7 +88,7 @@
         ["xpath=//form[@id='ajouter_editer']/fieldset/p/input", "xpath:idRelative"],
         ["xpath=//p/input", "xpath:position"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "a93a3f39-8d0e-407f-8861-ddb9206e1cb5",
       "comment": "",
@@ -154,14 +154,14 @@
     }, {
       "id": "7591e2d7-e5de-47b6-82f1-e30ebd587fcb",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "css=p:nth-child(2)",
       "targets": [
         ["css=p:nth-child(2)", "css:finder"],
         ["xpath=//div[@id='contenu']/div[2]/p", "xpath:idRelative"],
         ["xpath=//p", "xpath:position"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "b061d2ec-42c3-4cf5-8d05-a6002b00a515",
       "comment": "",
@@ -205,14 +205,14 @@
     }, {
       "id": "bc6ddfcc-996a-44c3-a6b2-bfaa04c6ec83",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "css=.rubrique",
       "targets": [
         ["css=.rubrique", "css:finder"],
         ["xpath=//div[@id='contenu']/div[2]", "xpath:idRelative"],
         ["xpath=//div[2]/div/div[2]", "xpath:position"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "8d83e3be-8edc-4069-baae-2fa33682bccc",
       "comment": "",
@@ -270,7 +270,7 @@
     }, {
       "id": "4c31c9c8-2539-4456-b0f7-f74fa2d7d2f2",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "css=li:nth-child(1) > h2",
       "targets": [
         ["css=li:nth-child(1) > h2", "css:finder"],
@@ -278,7 +278,7 @@
         ["xpath=//h2", "xpath:position"],
         ["xpath=//h2[contains(.,'vous avez des événements à ajouter régulièrement, inscrivez-vous (ou connectez-vous si vous avez déjà un compte)')]", "xpath:innerText"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "3ec727af-86bf-4365-b0ee-0083c5a2afee",
       "comment": "",
@@ -308,7 +308,7 @@
     }, {
       "id": "cfacff96-f2cb-4122-9157-150148e61531",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "css=p:nth-child(2)",
       "targets": [
         ["css=p:nth-child(2)", "css:finder"],
@@ -316,7 +316,7 @@
         ["xpath=//p", "xpath:position"],
         ["xpath=//p[contains(.,'La décadanse est un agenda culturel pour les régions de Genève et Vaud composé d’une sélection d’événements. Ceux-ci, ainsi que les lieux et organisateurs publiés sur le site, doivent correspondre à certains critères qui définissent cette charte éditoriale.')]", "xpath:innerText"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "86bde7cb-4bf5-4dfe-8c4d-9e004d78b720",
       "comment": "",
@@ -345,7 +345,7 @@
     }, {
       "id": "82522d2c-a334-46ab-a563-9c6d83b9e578",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "id=login",
       "targets": [
         ["id=utilisateur", "id"],
@@ -355,7 +355,7 @@
         ["xpath=//form[@id='ajouter_editer']/fieldset/p/input", "xpath:idRelative"],
         ["xpath=//p/input", "xpath:position"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "6b09eadc-4b86-4fe9-b923-76c7e405c1eb",
       "comment": "",
@@ -396,7 +396,7 @@
     }, {
       "id": "ef45320a-c747-4868-91f0-bde0d30ee226",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "id=pseudo",
       "targets": [
         ["id=pseudo", "id"],
@@ -406,7 +406,7 @@
         ["xpath=//form[@id='ajouter_editer']/fieldset/p/input", "xpath:idRelative"],
         ["xpath=//p/input", "xpath:position"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "72ba9d1f-fe1f-45b0-99a9-3c1b3e8097e7",
       "comment": "",
@@ -425,7 +425,7 @@
     }, {
       "id": "76e47de9-38f6-4913-a47f-e72e0382808c",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "css=h3",
       "targets": [
         ["css=h3", "css:finder"],
@@ -433,7 +433,7 @@
         ["xpath=//h3", "xpath:position"],
         ["xpath=//h3[contains(.,'Samedi 29 avril 2023')]", "xpath:innerText"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "0552d514-ca0f-445d-9116-e76672b84908",
       "comment": "page Lieux ",
@@ -459,7 +459,7 @@
     }, {
       "id": "79b58e69-f61f-45fe-8117-5253be931f2c",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "css=table#derniers_lieux",
       "targets": [
         ["id=contenu", "id"],
@@ -468,7 +468,7 @@
         ["xpath=//div[@id='conteneur']/main", "xpath:idRelative"],
         ["xpath=//main", "xpath:position"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "3f29fca5-3dc7-47db-a7d0-c265fe35eb7c",
       "comment": "page Organisateurs",
@@ -494,14 +494,14 @@
     }, {
       "id": "95c45f15-639f-4672-8544-1c3998527769",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "css=table#derniers_lieux",
       "targets": [
         ["css=#derniers_lieux th:nth-child(1)", "css:finder"],
         ["xpath=//table[@id='derniers_lieux']/thead/tr/th", "xpath:idRelative"],
         ["xpath=//section/table/thead/tr/th", "xpath:position"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "91799569-81cf-439d-b453-b6d6882a5e02",
       "comment": "",
@@ -552,10 +552,10 @@
     }, {
       "id": "7f1c76eb-8ebe-40e8-ab25-aaca9cda1984",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "css=.summary",
       "targets": [],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "08c7b8a2-83f8-4c3c-b6cb-919a0627e268",
       "comment": "",
@@ -621,7 +621,7 @@
     }, {
       "id": "260a7886-1285-4b15-9e60-2a67d9cb9f56",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "css=.fn",
       "targets": [
         ["css=.fn", "css:finder"],
@@ -629,7 +629,7 @@
         ["xpath=//h2", "xpath:position"],
         ["xpath=//h2[contains(.,'Le Sagittario')]", "xpath:innerText"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "4bd66a85-44e0-4091-9e2f-69f952352e22",
       "comment": "",
@@ -675,7 +675,7 @@
     }, {
       "id": "c0c02892-f4d6-4358-a793-b5e20f93785f",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "xpath=//a[contains(text(),'Google Calendar')]",
       "targets": [
         ["linkText=Google Calendar", "linkText"],
@@ -686,7 +686,7 @@
         ["xpath=//li[2]/ul/li/a", "xpath:position"],
         ["xpath=//a[contains(.,' Google Calendar')]", "xpath:innerText"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "5e2afd96-318f-424f-ab21-08bfb49c21c3",
       "comment": "Signaler link of first event",
@@ -701,7 +701,7 @@
     }, {
       "id": "7bd6a606-b442-45b7-b6e3-de0c30a9da22",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "css=.submit-big",
       "targets": [
         ["css=.submit-big", "css:finder"],
@@ -709,7 +709,7 @@
         ["xpath=//form[@id='ajouter_editer']/p[3]/input[2]", "xpath:idRelative"],
         ["xpath=//p[3]/input[2]", "xpath:position"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "1b152948-e598-40f4-9035-033243daa5e4",
       "comment": "",
@@ -770,7 +770,7 @@
     }, {
       "id": "ab698987-7277-4abe-aeb0-38f4a989b39b",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "xpath=//div[@id='prochains_evenements']/section/article/header/h3",
       "targets": [
         ["css=.genre:nth-child(2) > .evenement:nth-child(2) > .titre > .left", "css:finder"],
@@ -778,7 +778,7 @@
         ["xpath=//h3", "xpath:position"],
         ["xpath=//h3[contains(.,'NOCTAMBAR REOPENING w/ YÀNKOV & NILOU')]", "xpath:innerText"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "09e1a62d-ac62-4707-b1eb-71b2bb49d2c3",
       "comment": "",
@@ -797,7 +797,7 @@
     }, {
       "id": "54863d6e-57f2-4e19-9345-c4c659c7f3c7",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "xpath=//div[@id='prochains_evenements']/section/article/header/h3",
       "targets": [
         ["css=.genre:nth-child(2) > .evenement:nth-child(2) > .titre > .left", "css:finder"],
@@ -805,7 +805,7 @@
         ["xpath=//h3", "xpath:position"],
         ["xpath=//h3[contains(.,'NOCTAMBAR REOPENING w/ YÀNKOV & NILOU')]", "xpath:innerText"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "9c3c3022-004c-423e-a391-d723b3a2d06f",
       "comment": "",
@@ -828,7 +828,7 @@
     }, {
       "id": "fb41d212-079a-4b2a-8595-ca06ac8c7e30",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "xpath=//div[@id='prochains_evenements']/section/article/header/h3",
       "targets": [
         ["css=.genre:nth-child(2) > .evenement:nth-child(2) > .titre > .left", "css:finder"],
@@ -836,7 +836,7 @@
         ["xpath=//h3", "xpath:position"],
         ["xpath=//h3[contains(.,'NOCTAMBAR REOPENING w/ YÀNKOV & NILOU')]", "xpath:innerText"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "f0efaf24-b872-484f-be81-c001926483f5",
       "comment": "",
@@ -867,7 +867,7 @@
     }, {
       "id": "8ebb0355-c53c-49d5-a431-f0a4d636eb1c",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "xpath=//div[@id='prochains_evenements']/section/article/header/h3",
       "targets": [
         ["css=.genre:nth-child(2) > .evenement:nth-child(2) > .titre > .left", "css:finder"],
@@ -875,7 +875,7 @@
         ["xpath=//h3", "xpath:position"],
         ["xpath=//h3[contains(.,'NOCTAMBAR REOPENING w/ YÀNKOV & NILOU')]", "xpath:innerText"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "6f2ba983-ee6b-4704-8899-6e2a3f7f7d82",
       "comment": "",
@@ -925,14 +925,14 @@
     }, {
       "id": "2dba9f06-28fd-4344-ba52-a26f04ed7da1",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "xpath=//header[@id='entete_contenu']/hgroup/h1",
       "targets": [
         ["css=.accueil", "css:finder"],
         ["xpath=//header[@id='entete_contenu']/hgroup/h1", "xpath:idRelative"],
         ["xpath=//h1", "xpath:position"]
       ],
-      "value": ""
+      "value": "5000"
     }]
   }, {
     "id": "ef663861-84a7-4224-83ef-4ae3c2041edf",
@@ -965,7 +965,7 @@
     }, {
       "id": "077dc6ef-3057-41d8-8808-1538fe81fc3a",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "css=.recherche_mobile > .mots",
       "targets": [
         ["css=.recherche_mobile > .mots", "css:finder"],
@@ -973,7 +973,7 @@
         ["xpath=//nav[@id='menu']/form/input", "xpath:idRelative"],
         ["xpath=//nav/form/input", "xpath:position"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "f662f254-89a0-4d58-8533-66d65ad2d878",
       "comment": "",
@@ -1020,10 +1020,10 @@
     }, {
       "id": "b6f2dc69-a9a8-4e6b-9201-be8790f5d811",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "css=#res_recherche",
       "targets": [],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "195ede52-b3ac-4e6f-aa31-74588688a58d",
       "comment": "",
@@ -1049,10 +1049,10 @@
     }, {
       "id": "475e3cb0-3347-4fc8-8ef9-fc768ca2774a",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "css=#res_recherche",
       "targets": [],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "ee857932-4277-4556-b0e8-d458111607f7",
       "comment": "",
@@ -1071,10 +1071,10 @@
     }, {
       "id": "9e5b3843-c7ea-484c-b780-74376db4f7d5",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "css=#res_recherche",
       "targets": [],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "c597f137-2861-4a19-af11-1e3bf0916c6c",
       "comment": "",
@@ -1093,10 +1093,10 @@
     }, {
       "id": "14dd6ec9-f842-4ab2-8cd6-c10c7a401507",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "css=#res_recherche",
       "targets": [],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "68b99f16-41fd-4128-91c7-40b9ec5183f2",
       "comment": "",
@@ -1113,10 +1113,10 @@
     }, {
       "id": "dcc6a2a1-ff1c-4b1b-bbc2-3e2f48c49119",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "css=#res_recherche",
       "targets": [],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "f98b54e4-9072-4341-b9c4-d3ef804399ec",
       "comment": "",
@@ -1135,10 +1135,10 @@
     }, {
       "id": "4e639ce5-306d-4d44-8b25-d81579036f52",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "css=#res_recherche",
       "targets": [],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "802a8f6a-b4e1-434b-b593-59eb4a9adda0",
       "comment": "",
@@ -1163,10 +1163,10 @@
     }, {
       "id": "e7df2f00-9d55-445f-8dac-1f931ca88cf5",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "css=#res_recherche",
       "targets": [],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "c1f0ac87-a18b-4fb5-a01a-f8b9b0071522",
       "comment": "",
@@ -1187,10 +1187,10 @@
     }, {
       "id": "a887aed8-d80b-4da1-8cf4-1713df216028",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "css=#res_recherche",
       "targets": [],
-      "value": ""
+      "value": "5000"
     }]
   }, {
     "id": "fcd88d4b-aaaf-4bab-9cb8-bc1bcaceae08",
@@ -1227,7 +1227,7 @@
     }, {
       "id": "4dbba89b-652b-4c8d-a8ea-cb93e70ae56b",
       "comment": "is event title present",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "css=.summary",
       "targets": [
         ["css=.summary", "css:finder"],
@@ -1235,7 +1235,7 @@
         ["xpath=//h3", "xpath:position"],
         ["xpath=//h3[contains(.,'Fête de la bière et de la choucroute')]", "xpath:innerText"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "d62a0fc1-659a-4b24-9a16-385cabe781ae",
       "comment": "",
@@ -1268,10 +1268,10 @@
     }, {
       "id": "621dff15-6732-48ac-9490-ce616ea1a802",
       "comment": "is Leaflet Map present",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "css=.leaflet-container",
       "targets": [],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "ea1a00c1-eccf-4206-b7b3-5548d081050f",
       "comment": "",
@@ -1337,7 +1337,7 @@
     }, {
       "id": "904a5dae-f89b-41fe-807c-d658d89c5215",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "css=.submit-big",
       "targets": [
         ["css=.submit-big", "css:finder"],
@@ -1345,7 +1345,7 @@
         ["xpath=//form[@id='ajouter_editer']/p[3]/input[2]", "xpath:idRelative"],
         ["xpath=//p[3]/input[2]", "xpath:position"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "b588fe09-35df-47b2-a9f6-196922000240",
       "comment": "",
@@ -1364,7 +1364,7 @@
     }, {
       "id": "8173979f-92bd-4859-b1c3-277285c550ee",
       "comment": "is event title present",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "css=.summary",
       "targets": [
         ["css=.summary", "css:finder"],
@@ -1372,7 +1372,7 @@
         ["xpath=//h3", "xpath:position"],
         ["xpath=//h3[contains(.,'Fête de la bière et de la choucroute')]", "xpath:innerText"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "72273e82-5ecc-4cbd-9b28-67a47a364b36",
       "comment": "",
@@ -1388,7 +1388,7 @@
     }, {
       "id": "fa4d2cf1-61f3-4d2b-bbb7-7eecafda636e",
       "comment": "is event title present",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "css=.summary",
       "targets": [
         ["css=.summary", "css:finder"],
@@ -1396,7 +1396,7 @@
         ["xpath=//h3", "xpath:position"],
         ["xpath=//h3[contains(.,'Fête de la bière et de la choucroute')]", "xpath:innerText"]
       ],
-      "value": ""
+      "value": "5000"
     }]
   }, {
     "id": "6785a2a4-47e6-4ae8-809e-4b01fd72e204",
@@ -1440,7 +1440,7 @@
     }, {
       "id": "40409de1-a563-453b-a201-2b877d111eda",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "linkText=Envoyez nous les infos via ce formulaire",
       "targets": [
         ["linkText=Envoyez nous les infos via ce formulaire", "linkText"],
@@ -1451,7 +1451,7 @@
         ["xpath=//p/a", "xpath:position"],
         ["xpath=//a[contains(.,'Envoyez nous les infos via ce formulaire')]", "xpath:innerText"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "718feaf4-622f-4844-b041-8b0fab157d7a",
       "comment": "",
@@ -1978,14 +1978,14 @@
     }, {
       "id": "208dd356-3948-4e61-8993-bb39bb0c0485",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "css=.msg_ok",
       "targets": [
         ["css=.msg_ok", "css:finder"],
         ["xpath=//div[@id='contenu']/div[2]", "xpath:idRelative"],
         ["xpath=//div[2]/div/div[2]", "xpath:position"]
       ],
-      "value": ""
+      "value": "5000"
     }]
   }, {
     "id": "a54ef26c-624f-4400-98e0-ad747f718ec3",
@@ -2029,7 +2029,7 @@
     }, {
       "id": "af94ace7-5268-4b6e-8c4b-c0266c70d1c4",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "name=Submit",
       "targets": [
         ["name=Submit", "name"],
@@ -2038,7 +2038,7 @@
         ["xpath=//form[@id='ajouter_editer']/fieldset/p[5]/input[4]", "xpath:idRelative"],
         ["xpath=//input[4]", "xpath:position"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "89012901-c4f7-4ca9-b53c-ae250d454afa",
       "comment": "",
@@ -2157,10 +2157,10 @@
     }, {
       "id": "881a0ad1-4b22-4d85-bf23-419fdb50e378",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "css=#menu_pratique form.deconnexion button",
       "targets": [],
-      "value": ""
+      "value": "5000"
     }]
   }, {
     "id": "9046ab6b-67f8-48f0-9dde-4b5d348e7f6e",
@@ -2231,7 +2231,7 @@
     }, {
       "id": "96dcb060-ea7a-4afb-9ebe-f504f27a9ffc",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "name=submit",
       "targets": [
         ["name=submit", "name"],
@@ -2240,7 +2240,7 @@
         ["xpath=//form[@id='ajouter_editer']/p[3]/input[3]", "xpath:idRelative"],
         ["xpath=//p[3]/input[3]", "xpath:position"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "78e00ab9-bf6d-4536-bb63-03734961bb63",
       "comment": "",
@@ -2710,14 +2710,14 @@
     }, {
       "id": "b4ea0934-d3d4-4906-b819-806f25e861a5",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "css=.msg_ok",
       "targets": [
         ["css=.msg_ok", "css:finder"],
         ["xpath=//div[@id='contenu']/div", "xpath:idRelative"],
         ["xpath=//div[2]/div/div", "xpath:position"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "2f95bfb8-b8ee-4f0f-a121-7c984c7ba89c",
       "comment": "",
@@ -2734,7 +2734,7 @@
     }, {
       "id": "e26e3155-5d97-4359-95a2-c68084b1d5d5",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "css=.evenement-short",
       "targets": [
         ["linkText=Le Mai 68 genevois et le mouvement de libération des Femmes", "linkText"],
@@ -2745,7 +2745,7 @@
         ["xpath=//span/a", "xpath:position"],
         ["xpath=//a[contains(.,'Le Mai 68 genevois et le mouvement de libération des Femmes')]", "xpath:innerText"]
       ],
-      "value": ""
+      "value": "5000"
     }]
   }, {
     "id": "d5d4f0bd-52d5-4cd9-8fd2-b38ee992812d",
@@ -2976,17 +2976,6 @@
       ],
       "value": "5000"
     }, {
-      "id": "9e1622e0-3cd8-4800-afbf-45fc9095991c",
-      "comment": "",
-      "command": "click",
-      "target": "xpath=//h3",
-      "targets": [
-        ["css=.titre > .left", "css:finder"],
-        ["xpath=//article[@id='event-4381']/header/h3", "xpath:idRelative"],
-        ["xpath=//h3", "xpath:position"]
-      ],
-      "value": ""
-    }, {
       "id": "23d56412-f8e3-4cc3-baf4-ea50cf055272",
       "comment": "",
       "command": "click",
@@ -3039,6 +3028,13 @@
         ["xpath=//a[contains(.,' Modifier')]", "xpath:innerText"]
       ],
       "value": ""
+    }, {
+      "id": "52853a59-41fb-4ae7-9aee-1e0edd186ca9",
+      "comment": "wait for the new page (Selenium IDE loses the tab on bfcache)",
+      "command": "waitForElementPresent",
+      "target": "id=dateEvenement",
+      "targets": [],
+      "value": "5000"
     }, {
       "id": "72885ca5-e807-4239-91b7-1ffa45b2c245",
       "comment": "",
@@ -3228,10 +3224,10 @@
     }, {
       "id": "c48a56ef-edb8-4532-b9d4-c1a99d58e989",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "css=.msg_ok",
       "targets": [],
-      "value": ""
+      "value": "5000"
     }]
   }, {
     "id": "3903cc42-f8aa-4e10-927b-8edbca982554",
@@ -3308,6 +3304,13 @@
       ],
       "value": ""
     }, {
+      "id": "2a47a03e-a0b2-4d3c-8d87-51c6d4cb4d06",
+      "comment": "wait for the new page (Selenium IDE loses the tab on bfcache)",
+      "command": "waitForElementPresent",
+      "target": "css=.msg",
+      "targets": [],
+      "value": "5000"
+    }, {
       "id": "bf8d8d32-1ecd-4cc8-85f9-07bed70138f3",
       "comment": "",
       "command": "assertText",
@@ -3343,7 +3346,7 @@
     }, {
       "id": "fdf9f625-209d-463c-9c43-11c0d6c8bfe2",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "css=.summary",
       "targets": [
         ["css=.summary", "css:finder"],
@@ -3351,7 +3354,7 @@
         ["xpath=//h3", "xpath:position"],
         ["xpath=//h3[contains(.,'test')]", "xpath:innerText"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "7657b5ad-ab3e-4149-8ff1-ced1326d7192",
       "comment": "",
@@ -3445,10 +3448,10 @@
     }, {
       "id": "c372a1b9-0da8-4301-b711-0cda74009142",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "css=.msg_ok",
       "targets": [],
-      "value": ""
+      "value": "5000"
     }]
   }, {
     "id": "2422f54c-2560-4fa2-ad65-b10fe0deba9e",
@@ -3518,7 +3521,7 @@
     }, {
       "id": "c3036573-dff0-43f7-b7e7-dd40845f64fe",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "css=#derniers_lieux > tbody",
       "targets": [
         ["css=#derniers_lieux > h2", "css:finder"],
@@ -3526,7 +3529,7 @@
         ["xpath=//div[5]/h2", "xpath:position"],
         ["xpath=//h2[contains(.,'Derniers lieux ajoutés')]", "xpath:innerText"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "e21aaf25-9f85-4a6e-99b3-efc5e8c42886",
       "comment": "",
@@ -3545,14 +3548,14 @@
     }, {
       "id": "8ed7a4f5-2323-454c-b83f-cc15db7a03a9",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "css=#derniers_lieux > tbody",
       "targets": [
         ["css=#derniers_lieux tr:nth-child(1) > td:nth-child(1)", "css:finder"],
         ["xpath=//table[@id='derniers_lieux']/tbody/tr/td", "xpath:idRelative"],
         ["xpath=//section/table/tbody/tr/td", "xpath:position"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "e2f284e8-8e9b-4286-884f-d2e0cc6884cc",
       "comment": "",
@@ -3571,7 +3574,7 @@
     }, {
       "id": "6e00c913-5ef7-481a-a35b-f786b709a610",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "css=#derniers_lieux > tbody",
       "targets": [
         ["css=#derniers_lieux > h2", "css:finder"],
@@ -3579,7 +3582,7 @@
         ["xpath=//div[5]/h2", "xpath:position"],
         ["xpath=//h2[contains(.,'Derniers lieux ajoutés')]", "xpath:innerText"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "9392546c-e9e2-4acb-bcb4-2fc4697b7392",
       "comment": "",
@@ -3617,7 +3620,7 @@
     }, {
       "id": "b7f70a46-1d31-4c36-90aa-90389568f35d",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "xpath=//table[@id='derniers_lieux']/tbody/tr/td[2]",
       "targets": [
         ["css=#derniers_lieux tr:nth-child(1) > td:nth-child(2)", "css:finder"],
@@ -3625,7 +3628,7 @@
         ["xpath=//section/table/tbody/tr/td[2]", "xpath:position"],
         ["xpath=//td[contains(.,'Martoni')]", "xpath:innerText"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "25400390-a2a3-405b-9143-53ac687b7060",
       "comment": "",
@@ -3681,7 +3684,7 @@
     }, {
       "id": "471efa18-c9ed-474b-a4b0-71fd869c55aa",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "xpath=//table[@id='derniers_lieux']/tbody/tr/td[2]",
       "targets": [
         ["css=#derniers_lieux tr:nth-child(1) > td:nth-child(2)", "css:finder"],
@@ -3689,7 +3692,7 @@
         ["xpath=//section/table/tbody/tr/td[2]", "xpath:position"],
         ["xpath=//td[contains(.,'Martoni')]", "xpath:innerText"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "4e546dfa-8382-433e-a8aa-ee31ffd37e67",
       "comment": "",
@@ -3708,7 +3711,7 @@
     }, {
       "id": "3f99f162-48fa-4de6-a05b-d93d340170e5",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "xpath=//table[@id='derniers_lieux']/tbody/tr/td[2]",
       "targets": [
         ["css=#derniers_lieux tr:nth-child(1) > td:nth-child(2)", "css:finder"],
@@ -3716,7 +3719,7 @@
         ["xpath=//section/table/tbody/tr/td[2]", "xpath:position"],
         ["xpath=//td[contains(.,'Martoni')]", "xpath:innerText"]
       ],
-      "value": ""
+      "value": "5000"
     }]
   }, {
     "id": "8f01a9a0-9f4c-4f52-825e-a54eba6fcb27",
@@ -4011,10 +4014,10 @@
     }, {
       "id": "61f3f0d6-d83a-48e9-946a-90e98b6d40de",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "css=.msg_ok",
       "targets": [],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "b7576a4d-e5ff-4ee6-a4db-2fab119c6ab9",
       "comment": "",
@@ -4491,10 +4494,10 @@
     }, {
       "id": "929a3e29-4d93-49b7-9459-20a5fe332dfe",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "css=.msg_ok",
       "targets": [],
-      "value": ""
+      "value": "5000"
     }]
   }, {
     "id": "92d58e15-7bbd-49aa-8440-5c14b4554622",
@@ -4658,7 +4661,7 @@
     }, {
       "id": "7f3c9689-5e6c-496e-8e14-6085cd618261",
       "comment": "orgas table is present",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "xpath=//table[@id='derniers_lieux']",
       "targets": [
         ["css=#derniers_lieux > h2", "css:finder"],
@@ -4666,7 +4669,7 @@
         ["xpath=//div[4]/h2", "xpath:position"],
         ["xpath=//h2[contains(.,'Derniers organisateurs ajoutés')]", "xpath:innerText"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "a9028ca0-c072-497b-8ce2-ae92525a441a",
       "comment": "click first orga",
@@ -4682,7 +4685,7 @@
     }, {
       "id": "ab27941f-5c47-458b-b332-44008843f7a8",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "xpath=//h1",
       "targets": [
         ["css=h2", "css:finder"],
@@ -4690,7 +4693,7 @@
         ["xpath=//h2", "xpath:position"],
         ["xpath=//h2[contains(.,'test')]", "xpath:innerText"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "37d41854-6f79-4736-be01-365b7b465d2e",
       "comment": "",
@@ -4708,7 +4711,7 @@
     }, {
       "id": "fef35290-f2de-4117-8230-76e38306392f",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "xpath=//section[@id='prochains_evenements']/table/tbody/tr[2]/td[3]/a/strong",
       "targets": [
         ["css=.ici .summary", "css:finder"],
@@ -4716,7 +4719,7 @@
         ["xpath=//td[3]/a/strong", "xpath:position"],
         ["xpath=//strong[contains(.,'Aubes Musicales 2025 - The Woodgies – Indie folk pop')]", "xpath:innerText"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "59116685-fcb2-42d6-bce7-f246243aba1a",
       "comment": "",
@@ -4735,14 +4738,14 @@
     }, {
       "id": "2c021668-867c-493b-81fa-e11a822e7cdb",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "xpath=//article/header",
       "targets": [
         ["css=#event-2955 > .titre", "css:finder"],
         ["xpath=//article[@id='event-2955']/header", "xpath:idRelative"],
         ["xpath=//article/header", "xpath:position"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "4b41313f-82ca-4e68-9468-153f1d789d88",
       "comment": "",
@@ -4765,7 +4768,7 @@
     }, {
       "id": "08a1a57c-9cd5-4907-85c8-8a4e545ef2aa",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "xpath=//article[@id='evenement']/header/h1",
       "targets": [
         ["css=.summary", "css:finder"],
@@ -4773,7 +4776,7 @@
         ["xpath=//h1", "xpath:position"],
         ["xpath=//h1[contains(.,'Sissi and the Three Old Men')]", "xpath:innerText"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "ecf1e585-0fb0-41f1-b5ba-8a324f7735ed",
       "comment": "",
@@ -4821,7 +4824,7 @@
     }, {
       "id": "a82f5a8e-a0a6-4f41-9b11-838c8b9ca1e3",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "xpath=//table[@id='derniers_lieux']",
       "targets": [
         ["css=#derniers_lieux > h2", "css:finder"],
@@ -4829,7 +4832,7 @@
         ["xpath=//div[4]/h2", "xpath:position"],
         ["xpath=//h2[contains(.,'Derniers organisateurs ajoutés')]", "xpath:innerText"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "b8c8b4ad-1f02-4688-a66d-9ae49e34b153",
       "comment": "click sort by Dernier ajouté",
@@ -4848,7 +4851,7 @@
     }, {
       "id": "bf68fab3-92fb-4da0-b7aa-47f853b0a9b7",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "xpath=//table[@id='derniers_lieux']",
       "targets": [
         ["css=#derniers_lieux > h2", "css:finder"],
@@ -4856,7 +4859,7 @@
         ["xpath=//div[4]/h2", "xpath:position"],
         ["xpath=//h2[contains(.,'Derniers organisateurs ajoutés')]", "xpath:innerText"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "9e9b42ad-4cf2-443f-a114-88004b939057",
       "comment": "type \"asso\" in search",
@@ -4886,7 +4889,7 @@
     }, {
       "id": "d8707d38-451e-4757-b54e-98d5839b2d16",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "xpath=//table[@id='derniers_lieux']/tbody/tr/td[2]/a",
       "targets": [
         ["css=tr:nth-child(1) strong", "css:finder"],
@@ -4894,7 +4897,7 @@
         ["xpath=//td[2]/a/strong", "xpath:position"],
         ["xpath=//strong[contains(.,'Musée international de la Croix-Rouge et du Croissant-Rouge')]", "xpath:innerText"]
       ],
-      "value": ""
+      "value": "5000"
     }]
   }, {
     "id": "b4c14c81-4533-4742-8d96-526b91077359",
@@ -4951,6 +4954,13 @@
       ],
       "value": ""
     }, {
+      "id": "82a32555-df14-464c-bc7a-da43af008930",
+      "comment": "",
+      "command": "executeScript",
+      "target": "return Math.random().toString(36).substring(2,16)",
+      "targets": [],
+      "value": "myname"
+    }, {
       "id": "a4445284-a58c-47f0-86e4-40c0025da469",
       "comment": "",
       "command": "type",
@@ -4963,7 +4973,7 @@
         ["xpath=//form[@id='ajouter_editer']/fieldset/p/input", "xpath:idRelative"],
         ["xpath=//p/input", "xpath:position"]
       ],
-      "value": "test "
+      "value": "test ${myname}"
     }, {
       "id": "6c4a0280-3304-4000-976d-676102c67faa",
       "comment": "",
@@ -5051,7 +5061,7 @@
     }, {
       "id": "f1f5c2ae-83cb-47cd-ae54-e89c2e2ade39",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "css=.submit-big",
       "targets": [
         ["css=.submit-big", "css:finder"],
@@ -5059,7 +5069,7 @@
         ["xpath=//form[@id='ajouter_editer']/p[3]/input[3]", "xpath:idRelative"],
         ["xpath=//p[3]/input[3]", "xpath:position"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "4d9245e2-c8ef-4345-8495-d850da8cbddc",
       "comment": "",
@@ -5198,10 +5208,10 @@
     }, {
       "id": "0eb939c5-440a-44f2-ac5b-57c5357f3086",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "css=.msg_ok",
       "targets": [],
-      "value": ""
+      "value": "5000"
     }]
   }, {
     "id": "1936c9ce-4dcc-4002-b874-9230988f6c99",
@@ -5253,7 +5263,7 @@
     }, {
       "id": "529636bf-651a-4731-8c37-81d78ac498d4",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "name=Submit",
       "targets": [
         ["name=Submit", "name"],
@@ -5262,7 +5272,7 @@
         ["xpath=//form[@id='ajouter_editer']/p[2]/input[2]", "xpath:idRelative"],
         ["xpath=//p[2]/input[2]", "xpath:position"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "c4245b1e-3a81-4bff-a1ad-3016a4057761",
       "comment": "",
@@ -5307,10 +5317,10 @@
     }, {
       "id": "8c1f3c26-2771-4d01-b706-30834b052304",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "css=.msg_ok",
       "targets": [],
-      "value": ""
+      "value": "5000"
     }]
   }, {
     "id": "4e570d46-e2cd-4ad1-91d7-fed74be93607",
@@ -5340,7 +5350,7 @@
     }, {
       "id": "aa61df0c-afeb-485a-be19-7b3fd156ef9f",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "xpath=//main[@id='contenu']/nav/a",
       "targets": [
         ["linkText=Événements239", "linkText"],
@@ -5350,7 +5360,7 @@
         ["xpath=//nav/a", "xpath:position"],
         ["xpath=//a[contains(.,' Événements239')]", "xpath:innerText"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "aac443da-de33-4d03-9f96-26a3ecafda0f",
       "comment": "",
@@ -5442,10 +5452,10 @@
     }, {
       "id": "74013dfc-bd42-4ac6-908b-7c41401eb9bc",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "css=.msg_ok",
       "targets": [],
-      "value": ""
+      "value": "5000"
     }]
   }, {
     "id": "3ebd99c9-ee10-47ff-b262-faa2f02ad87d",
@@ -5496,7 +5506,7 @@
     }, {
       "id": "b65a61dc-bf57-4310-ba7a-7a34e0f9fa64",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "css=.submit-big",
       "targets": [
         ["css=.submit-big", "css:finder"],
@@ -5504,7 +5514,7 @@
         ["xpath=//form[@id='ajouter_editer']/p[2]/input[3]", "xpath:idRelative"],
         ["xpath=//p[2]/input[3]", "xpath:position"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "b1a7c726-c343-4bc3-8a4b-7a528bfdb947",
       "comment": "",
@@ -5590,10 +5600,10 @@
     }, {
       "id": "22b33d44-9ed4-4db2-877d-bc7eb6d6c07c",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "css=.msg_ok",
       "targets": [],
-      "value": ""
+      "value": "5000"
     }]
   }, {
     "id": "d7da26ab-7b0b-4969-8469-1f4a8137a946",
@@ -5619,7 +5629,7 @@
     }, {
       "id": "a75d553f-8669-4bf4-af60-313d13fbded6",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "xpath=//main[@id='contenu']/nav/a",
       "targets": [
         ["linkText=Événements238", "linkText"],
@@ -5629,7 +5639,7 @@
         ["xpath=//nav/a", "xpath:position"],
         ["xpath=//a[contains(.,' Événements238')]", "xpath:innerText"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "cd501739-22dd-4be5-90f6-70d1df450e98",
       "comment": "",
@@ -5648,7 +5658,7 @@
     }, {
       "id": "c983fa94-b317-4b46-bd25-3f73e271c0f9",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "css=.summary",
       "targets": [
         ["css=.summary", "css:finder"],
@@ -5656,7 +5666,7 @@
         ["xpath=//h3", "xpath:position"],
         ["xpath=//h3[contains(.,'21e édition du FIFDH')]", "xpath:innerText"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "2502638a-f189-4563-99f2-b86854dc2c1e",
       "comment": "",
@@ -5677,6 +5687,13 @@
       "target": "css=.dp_hover",
       "targets": [],
       "value": ""
+    }, {
+      "id": "fc8fe0aa-931e-4c76-a5e1-16da08406abf",
+      "comment": "wait for the new page (Selenium IDE loses the tab on bfcache)",
+      "command": "waitForElementPresent",
+      "target": "css=#date-from",
+      "targets": [],
+      "value": "5000"
     }, {
       "id": "6ff533f1-c1d6-47f6-8794-c068aedff425",
       "comment": "",
@@ -5708,7 +5725,7 @@
     }, {
       "id": "b37c31f6-7d08-4324-a357-c8de4f685332",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "id=coller",
       "targets": [
         ["id=coller", "id"],
@@ -5718,7 +5735,7 @@
         ["xpath=//form[@id='ajouter_editer']/input", "xpath:idRelative"],
         ["xpath=//div/form/input", "xpath:position"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "34fdfa42-0e27-4bf5-b355-ffe922870a01",
       "comment": "",
@@ -5736,10 +5753,10 @@
     }, {
       "id": "62af8430-15fa-4974-91d0-3e06f987a651",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "css=.msg_ok_copy",
       "targets": [],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "e48d845c-01ab-4759-91ec-16ddbd5537c0",
       "comment": "click Supprimer 2e evenement",
@@ -5784,7 +5801,7 @@
     }, {
       "id": "442e74f5-104e-41ee-95aa-d650442ec1b5",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "xpath=//form[@id='ajouter_editer']",
       "targets": [
         ["id=ajouter_editer", "id"],
@@ -5793,7 +5810,7 @@
         ["xpath=//main[@id='contenu']/form", "xpath:idRelative"],
         ["xpath=//main/form", "xpath:position"]
       ],
-      "value": ""
+      "value": "5000"
     }]
   }, {
     "id": "fa4a12b8-1f55-4435-8fe1-3fe8294be63a",
@@ -5837,10 +5854,10 @@
     }, {
       "id": "60ed3867-90ca-4ec6-8d13-f9694a0b5518",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "name=Submit",
       "targets": [],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "7455c6c1-b811-4edd-81e1-649c4fcdbc87",
       "comment": "",
@@ -5929,10 +5946,10 @@
     }, {
       "id": "c34202c6-985f-4799-a35c-246294033dc6",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "css=#menu_pratique form.deconnexion button",
       "targets": [],
-      "value": ""
+      "value": "5000"
     }]
   }, {
     "id": "602346d1-62ed-43a5-9bfd-b78a52eaaa59",
@@ -5947,7 +5964,7 @@
     }, {
       "id": "b9c3eb8c-5760-4ad6-a9a0-7e3cf00d1277",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "xpath=//div[@id='tableaux']/table[1]/thead/tr/th[1]",
       "targets": [
         ["css=table:nth-child(2) th:nth-child(1)", "css:finder"],
@@ -5955,22 +5972,22 @@
         ["xpath=//th", "xpath:position"],
         ["xpath=//th[contains(.,'Heure')]", "xpath:innerText"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "d95f6bdb-9896-4dd7-9a58-adda58c8d307",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "css=#derniers_evenements_ajoutes th:nth-child(1)",
       "targets": [
         ["css=#derniers_evenements_ajoutes th:nth-child(1)", "css:finder"],
         ["xpath=//table[@id='derniers_evenements_ajoutes']/thead/tr/th", "xpath:idRelative"],
         ["xpath=//table[2]/thead/tr/th", "xpath:position"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "94efb50d-09fa-456a-8332-47de10af94f5",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "xpath=//div[@id='tableaux']/table[3]/tbody/tr/th",
       "targets": [
         ["css=tbody th:nth-child(1)", "css:finder"],
@@ -5978,7 +5995,7 @@
         ["xpath=//tbody/tr/th", "xpath:position"],
         ["xpath=//th[contains(.,'Type')]", "xpath:innerText"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "3011f5d2-407d-45d3-83c4-74ee0e0399bb",
       "comment": "click link Identifiant under \"Inscriptions de ces 3 derniers jours\"",
@@ -5997,7 +6014,7 @@
     }, {
       "id": "f3c14700-61d4-4a9d-bd24-aca7e07f3ad7",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "xpath=//div[@id='profile']/table/tbody/tr/td",
       "targets": [
         ["css=tbody:nth-child(1) > tr:nth-child(1) > td", "css:finder"],
@@ -6005,7 +6022,7 @@
         ["xpath=//div[2]/table/tbody/tr/td", "xpath:position"],
         ["xpath=//td[contains(.,'eqfc251rszm')]", "xpath:innerText"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "f186bde0-d680-46c2-adf1-81d8c78bf53f",
       "comment": "",
@@ -6039,7 +6056,7 @@
     }, {
       "id": "9b12b680-2203-4b1e-89cb-39d3f0ecbd34",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "xpath=//article[@id='evenement']/header/h1",
       "targets": [
         ["css=.summary", "css:finder"],
@@ -6047,7 +6064,7 @@
         ["xpath=//h1", "xpath:position"],
         ["xpath=//h1[contains(.,'Watoo festival BD')]", "xpath:innerText"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "b684bb6f-ea4c-4b46-b60d-c3d740b283e2",
       "comment": "",
@@ -6078,7 +6095,7 @@
     }, {
       "id": "01f09fe9-40ed-4dc0-b5a4-54ba6454f7f7",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "xpath=//input[@value='Enregistrer']",
       "targets": [
         ["css=.submit-big:nth-child(2)", "css:finder"],
@@ -6086,7 +6103,7 @@
         ["xpath=//form[@id='ajouter_editer']/p[3]/input[2]", "xpath:idRelative"],
         ["xpath=//p[3]/input[2]", "xpath:position"]
       ],
-      "value": ""
+      "value": "5000"
     }]
   }, {
     "id": "816a221b-9428-4767-9d1b-cf51dc2f8fb4",
@@ -6151,7 +6168,7 @@
     }, {
       "id": "1d62b380-7b0a-4aa5-bde9-4e9fce02d85e",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "xpath=//table[@id='ajouts']/tbody/tr[2]/td/a",
       "targets": [
         ["linkText=Watoo festival BD", "linkText"],
@@ -6162,7 +6179,7 @@
         ["xpath=//td/a", "xpath:position"],
         ["xpath=//a[contains(.,'Watoo festival BD')]", "xpath:innerText"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "68dc731e-8db1-4ae9-b7f3-706d7dec0049",
       "comment": "",
@@ -6192,7 +6209,7 @@
     }, {
       "id": "9f93fb01-e93b-4cf7-80d8-86545be5ecec",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "xpath=//table[@id='ajouts']/tbody/tr[2]/td/a",
       "targets": [
         ["linkText=Watoo festival BD", "linkText"],
@@ -6203,7 +6220,7 @@
         ["xpath=//td/a", "xpath:position"],
         ["xpath=//a[contains(.,'Watoo festival BD')]", "xpath:innerText"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "ea24fbce-12b5-4c3f-a8dc-4279c431e8d7",
       "comment": "",
@@ -6224,7 +6241,7 @@
     }, {
       "id": "588d71d6-ecf3-454f-9c0f-edf90847786c",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "xpath=//table[@id='ajouts']/tbody/tr[2]/td/a",
       "targets": [
         ["linkText=Watoo festival BD", "linkText"],
@@ -6235,7 +6252,7 @@
         ["xpath=//td/a", "xpath:position"],
         ["xpath=//a[contains(.,'Watoo festival BD')]", "xpath:innerText"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "7359b48a-b2f6-4d85-a440-6c29eb795b9b",
       "comment": "",
@@ -6254,7 +6271,7 @@
     }, {
       "id": "82480c85-325f-4321-9acf-c8f91d1bbbba",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "xpath=//table[@id='ajouts']/tbody/tr[2]/td/a",
       "targets": [
         ["linkText=Watoo festival BD", "linkText"],
@@ -6265,7 +6282,7 @@
         ["xpath=//td/a", "xpath:position"],
         ["xpath=//a[contains(.,'Watoo festival BD')]", "xpath:innerText"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "8cc7121c-8ac3-46d0-9ed1-a881143804cf",
       "comment": "",
@@ -6286,7 +6303,7 @@
     }, {
       "id": "a32b1701-f379-48c6-8196-79c797866351",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "xpath=//table[@id='ajouts']/tbody/tr[2]/td/a",
       "targets": [
         ["linkText=Watoo festival BD", "linkText"],
@@ -6297,7 +6314,7 @@
         ["xpath=//td/a", "xpath:position"],
         ["xpath=//a[contains(.,'Watoo festival BD')]", "xpath:innerText"]
       ],
-      "value": ""
+      "value": "5000"
     }]
   }, {
     "id": "1b3cabfb-9a16-44ae-b21b-2356228e88f1",
@@ -6326,10 +6343,10 @@
     }, {
       "id": "64b18ab8-5b92-4cce-9e8b-f0fbdcbe0e6d",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "linkText=Connexion",
       "targets": [],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "8d899a51-c02c-4a57-8b85-3969a104b1f2",
       "comment": "",
@@ -6366,7 +6383,7 @@
     }, {
       "id": "725173c5-7868-4015-bc7c-936a6f11d970",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "name=submit",
       "targets": [
         ["name=submit", "name"],
@@ -6375,7 +6392,7 @@
         ["xpath=//form[@id='ajouter_editer']/p[2]/input[5]", "xpath:idRelative"],
         ["xpath=//input[5]", "xpath:position"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "106847c6-5740-4119-8612-ecf9e6d858f7",
       "comment": "",
@@ -6781,14 +6798,14 @@
     }, {
       "id": "e35d0ad9-3a04-4689-904f-bdd91d821b42",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "css=.msg_ok",
       "targets": [
         ["css=.msg_ok", "css:finder"],
         ["xpath=//div[@id='contenu']/div", "xpath:idRelative"],
         ["xpath=//div[2]/div/div", "xpath:position"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "c1c436bd-16c8-4ffb-b40d-33e5a4dedd6c",
       "comment": "",
@@ -6805,10 +6822,10 @@
     }, {
       "id": "63b99552-3079-4bff-bbb2-aa8369a64cc7",
       "comment": "",
-      "command": "verifyElementPresent",
+      "command": "waitForElementPresent",
       "target": "xpath=//a[text()='evenementfugace']",
       "targets": [],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "c33f0d30-341a-4c0f-9112-a9dbb916ad95",
       "comment": "click on unpublish",
@@ -6878,6 +6895,13 @@
       ],
       "value": ""
     }, {
+      "id": "4b750c48-1216-4ca1-bda5-3443d31f450b",
+      "comment": "wait for the new page (Selenium IDE loses the tab on bfcache)",
+      "command": "waitForElementPresent",
+      "target": "linkText=open source",
+      "targets": [],
+      "value": "5000"
+    }, {
       "id": "de6ad849-cafe-4f85-99e9-574496d60be1",
       "comment": "",
       "command": "runScript",
@@ -6944,10 +6968,10 @@
     }, {
       "id": "0c893c84-8089-46ab-82ae-893d0be66e23",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "css=#res_recherche",
       "targets": [],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "c8b7ca23-e30e-4a2c-bb07-5ec09cd39030",
       "comment": "",
@@ -7135,13 +7159,13 @@
     }, {
       "id": "cmd-salle-009",
       "comment": "Verify form is displayed",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "id=idLieu",
       "targets": [
         ["id=idLieu", "id"],
         ["name=idLieu", "name"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "cmd-salle-009b",
       "comment": "Select first available lieu from dropdown",
@@ -7192,13 +7216,13 @@
     }, {
       "id": "cmd-salle-015",
       "comment": "Verify success - salle appears in lieu page",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "xpath=//ul[@class='salles']//li[contains(text(), 'Salle Test Selenium')]",
       "targets": [
         ["xpath=//ul[@class='salles']//li[contains(text(), 'Salle Test Selenium')]", "xpath:innerText"],
         ["css=.salles li", "css:finder"]
       ],
-      "value": ""
+      "value": "5000"
     }]
   }, {
     "id": "0ae3b38b-98d6-4dfd-92c9-d26b5a4b768e",
@@ -7220,12 +7244,12 @@
     }, {
       "id": "c9adbfb3-b9c5-46e1-abbf-2cce4267c21e",
       "comment": "calendar should be visible on desktop",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "id=navigation_calendrier",
       "targets": [
         ["id=navigation_calendrier", "id"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "a63d5b97-0839-4749-877d-a0bb7f77b714",
       "comment": "store current month text",
@@ -7282,21 +7306,21 @@
     }, {
       "id": "d023a5e2-d072-40bd-9159-7a9c5d5b7011",
       "comment": "calendar table should still be present",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "id=calendrier",
       "targets": [
         ["id=calendrier", "id"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "fc75c2c0-8564-409e-82e4-73d41433fa33",
       "comment": "prev month arrow should be present",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "css=#mois a.js-calendar-nav[rel='prev']",
       "targets": [
         ["css=#mois a.js-calendar-nav[rel='prev']", "css:finder"]
       ],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "792a23ed-f6c0-49ba-b95b-07a0ca93acef",
       "comment": "click prev month arrow (AJAX) to go back",
@@ -7344,12 +7368,12 @@
     }, {
       "id": "46fad71b-2fa4-49c6-8840-f3712657f276",
       "comment": "full page should load with events",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "id=prochains_evenements",
       "targets": [
         ["id=prochains_evenements", "id"]
       ],
-      "value": ""
+      "value": "5000"
     }]
   }, {
     "id": "7cbaa9a9-70bf-4812-af0a-7935df36f2a0",
@@ -7400,10 +7424,10 @@
     }, {
       "id": "cbec5292-ebe0-40c8-a965-85a42a686aaa",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "name=Submit",
       "targets": [],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "dfee1d73-7f46-4bf0-b908-c0653973c8ba",
       "comment": "",
@@ -7492,10 +7516,10 @@
     }, {
       "id": "976af46a-e954-47f7-94b8-a45afd798393",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "css=#menu_pratique form.deconnexion button",
       "targets": [],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "eb4ebdd8-ef76-4ffa-b829-b4de70ff194a",
       "comment": "",
@@ -7513,10 +7537,10 @@
     }, {
       "id": "fa060962-3eaf-43be-8b2a-a766a6d8a1c9",
       "comment": "",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "linkText=Connexion",
       "targets": [],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "85b9ed0c-0cc5-433f-a6e6-619c1287e051",
       "comment": "",
@@ -7545,10 +7569,10 @@
     }, {
       "id": "543271a2-df47-4b66-9227-6522e6997f48",
       "comment": "Form loaded",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "id=ajouter_editer",
       "targets": [],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "76fc7f43-5323-4c5c-8db5-4fa89049157e",
       "comment": "Today as DD.MM.YYYY",
@@ -7629,10 +7653,10 @@
     }, {
       "id": "5ccfbafd-cfb1-4ace-9385-df6ef7ca6c49",
       "comment": "First event created",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "css=.msg_ok",
       "targets": [],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "25390779-5987-483b-b498-096812147ae3",
       "comment": "Capture idE of first event for cleanup",
@@ -7720,24 +7744,24 @@
     }, {
       "id": "41ee0983-392b-43da-80d9-1117565f1f42",
       "comment": "Duplicate warning is shown",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "css=.duplicate-warning",
       "targets": [],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "5d5a02e9-bcfa-4b16-ab42-0fff074f21d1",
       "comment": "Confirm checkbox is present",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "css=input[name='confirm_duplicate']",
       "targets": [],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "f732e510-bcad-4dc6-b4f0-1762dcaa5ec6",
       "comment": "Confirm submit button is present",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "css=.confirm-submit",
       "targets": [],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "96485ebd-8bfa-46f3-92cc-d60347af0dad",
       "comment": "Tick confirm checkbox",
@@ -7762,10 +7786,10 @@
     }, {
       "id": "6ff13b4c-bd29-4974-b664-3aa3e44357e2",
       "comment": "Second event created after confirmation",
-      "command": "assertElementPresent",
+      "command": "waitForElementPresent",
       "target": "css=.msg_ok",
       "targets": [],
-      "value": ""
+      "value": "5000"
     }, {
       "id": "f03c76b8-c9b7-4bd0-9f1e-957c071592af",
       "comment": "Capture idE of second event for cleanup",
