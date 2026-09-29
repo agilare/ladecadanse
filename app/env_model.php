@@ -43,7 +43,29 @@ define("MATOMO_URL", '');
 define("MATOMO_SITE_ID", '');
 
 // front-end errors logger
+//
+// SUSPENDU le 2026-09-29 dans le cadre de la conformité nLPD/RGPD (issue #93). À
+// réactiver ponctuellement, le temps d'un diagnostic, plutôt qu'en permanence.
+//
+// Avant de le rallumer : basculer le DSN sur l'instance européenne (voir ci-dessous).
+// Ajuster aussi les domaines de la CSP dans app/bootstrap.php (script-src, connect-src).
+//
+// Ce que l'activation déclenche, pour TOUS les visiteurs : _footer.inc.php charge le
+// bundle Sentry depuis browser.sentry-cdn.com, et chaque erreur JavaScript part chez le
+// tiers avec l'URL de la page, la pile d'appels et le User-Agent. L'adresse IP est vue
+// par le serveur qui reçoit l'envoi. Vérifier que l'URL transmise ne peut pas porter de
+// jeton (user/reset2.php) avant de laisser tourner sur l'ensemble du site.
 define("GLITCHTIP_ENABLED", false);
+
+// Le service propose deux hébergements : app.glitchtip.com (DigitalOcean New York) et
+// eu.glitchtip.com (Francfort). C'est le premier qui était en place jusqu'au 2026-09-29 ;
+// prendre le second, qui évite un transfert hors d'Europe. Il faut y recréer le projet,
+// le DSN étant propre à l'instance — la clé de l'ancien n'y vaut rien.
+//
+//   define("GLITCHTIP_DSN", "https://<cle-publique>@eu.glitchtip.com/<id-projet>");
+//
+// La clé publique fait 32 caractères hexadécimaux, l'identifiant de projet est un nombre ;
+// GlitchTip donne le DSN complet à la création du projet.
 define("GLITCHTIP_DSN", "");
 
 // service to monitor and moderate bots (AI, crawlers, etc.)
