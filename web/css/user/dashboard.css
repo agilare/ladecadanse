@@ -122,10 +122,48 @@
 	margin:0 0.3em 0.2em 0;
 }
 
+/* Modifier à gauche, Effacer tout à droite. Le conteneur porte la marge haute que
+   .profil-modifier portait seul, sinon les deux ne s'alignent pas sur la même ligne. */
+.profile-actions
+{
+	display:flex;
+	align-items:center;
+	justify-content:space-between;
+	margin:0.7em 0 0 0;
+}
+
 .profil-modifier
 {
 	display:inline-block;
-	margin:0.7em 0 0 0;
+}
+
+/* le formulaire ne sert qu'à porter le POST et son jeton : il ne doit rien occuper */
+.profile-erase-form
+{
+	margin:0;
+	/* sans cela le conteneur flex laisse « Effacer » au milieu quand « Modifier » est
+	   absent — le cas d'un SUPERADMIN qui regarde une fiche qu'il ne gère pas */
+	margin-left:auto;
+}
+
+/* Discret : le contour suffit à dire ce que c'est, l'aplat rouge est réservé au survol.
+   Une action irréversible se signale, elle ne s'offre pas. */
+.profile-erase
+{
+	padding:0.15em 0.7em;
+	border:1px solid #c0392b;
+	border-radius:3px;
+	background:none;
+	color:#c0392b;
+	font-size:0.85em;
+	cursor:pointer;
+}
+
+.profile-erase:hover,
+.profile-erase:focus
+{
+	background:#c0392b;
+	color:#fff;
 }
 
 /* respiration entre le bouton Modifier et la barre d'onglets */

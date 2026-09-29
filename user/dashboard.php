@@ -9,6 +9,7 @@ use Ladecadanse\Organisateur;
 use Ladecadanse\Evenement;
 use Ladecadanse\EvenementRenderer;
 use Ladecadanse\Lieu;
+use Ladecadanse\Security\SecurityToken;
 use Ladecadanse\UserSettings;
 use Ladecadanse\Utils\DateHelper;
 use Ladecadanse\Utils\Text;
@@ -107,6 +108,48 @@ else
     {
         header($_SERVER["SERVER_PROTOCOL"] . " 404 Not Found");
         $erreur = "Cette personne n'existe pas.";
+    }
+}
+
+/*
+ * Anonymisation du compte, en réponse à une demande d'effacement (LPD art. 32 al. 2,
+ * RGPD art. 17). Voir Personne::anonymize() pour ce qu'elle vide et pourquoi.
+ *
+ * Réservée au SUPERADMIN, et non aux administrateurs : l'action est irréversible et
+ * aucun écran ne la défait.
+ *
+ * En POST avec jeton, jamais par un lien : un GET suffirait à un préchargement de
+ * navigateur, à un scanner ou à un robot qui suit les liens pour vider un compte. Le
+ * confirm() du navigateur est un confort, il ne protège de rien côté serveur.
+ */
+$canErase = ($_SESSION['Sgroupe'] ?? UserLevel::MEMBER) <= UserLevel::SUPERADMIN;
+
+if ($erreur === null && isset($_POST['erase_account']))
+{
+    if (!$canErase)
+    {
+        header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
+        $erreur = "Vous ne pouvez pas effacer ce compte.";
+    }
+    else if (!SecurityToken::check($_POST['token'] ?? '', $_SESSION['token'] ?? ''))
+    {
+        $erreur = "Le formulaire a expiré, veuillez recharger la page.";
+    }
+    else if (Personne::anonymize($get['idP']))
+    {
+        // Ni nom ni adresse dans cette entrée : le journal les garderait jusqu'à sa
+        // rotation, refaisant le lien que l'anonymisation vient de couper.
+        $logger->info('[user-anonymize]', ['idP' => $get['idP'], 'by' => (int) ($_SESSION['SidPersonne'] ?? 0)]);
+
+        // Redirection plutôt qu'un rendu direct : la page affiche $profil, lu avant
+        // l'anonymisation, et montrerait les anciennes valeurs.
+        $_SESSION['user_flash_msg'] = "Le compte a été anonymisé. Les événements et descriptions qu'il a ajoutés restent publiés, sans lui être rattachés.";
+        header("Location: /user/dashboard.php?idP=" . $get['idP']);
+        exit;
+    }
+    else
+    {
+        $erreur = "L'anonymisation de ce compte a échoué.";
     }
 }
 
@@ -367,8 +410,21 @@ if ($erreur !== null)
 			<?php endif; ?>
 			<tr><th>Inscription</th><td><?= DateHelper::isoToFr(mb_substr((string) $profil['dateAjout'], 0, 10), 'annee', showDayOfWeek: false) ?></td></tr>
 		</table>
-		<?php if ($peut_gerer) : ?>
-		<a class="profil-modifier" href="/user-edit.php?idP=<?= (int) $get['idP'] ?>&amp;action=editer"><i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;Modifier</a>
+		<?php if ($peut_gerer || $canErase) : ?>
+		<div class="profile-actions">
+			<?php if ($peut_gerer) : ?>
+			<a class="profil-modifier" href="/user-edit.php?idP=<?= (int) $get['idP'] ?>&amp;action=editer"><i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;Modifier</a>
+			<?php endif; ?>
+			<?php if ($canErase) : ?>
+			<?php // data-confirm sur le formulaire : global.js le lit à la soumission. Un onclick
+			      // inline serait refusé par la CSP, qui n'autorise les scripts que par nonce. ?>
+			<form method="post" action="?idP=<?= (int) $get['idP'] ?>" class="js-submit-freeze-wait profile-erase-form"
+			      data-confirm="Anonymiser définitivement ce compte ? Nom d'utilisateur, adresse et rattachements seront effacés, sans retour possible. Les événements et descriptions ajoutés restent publiés.">
+				<input type="hidden" name="token" value="<?= sanitizeForHtml(SecurityToken::getToken()) ?>" />
+				<button type="submit" name="erase_account" value="1" class="profile-erase" title="Anonymiser ce compte, sans retour possible">Effacer</button>
+			</form>
+			<?php endif; ?>
+		</div>
 		<?php endif; ?>
 	</div>
 

@@ -277,4 +277,84 @@ class Personne
         $stmt->execute($params);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    /**
+     * Anonymise un compte, en réponse à une demande d'effacement.
+     *
+     * La LPD (art. 6 al. 4) et le RGPD (considérant 26) admettent l'anonymisation en lieu
+     * et place de la suppression : des données qui ne se rapportent plus à une personne
+     * identifiable sortent du champ des deux textes. Le choix se justifie surtout ici par
+     * ce qu'il évite — la ligne survit, donc aucun `evenement.idPersonne` ni
+     * `descriptionlieu.idPersonne` ne se retrouve orphelin, et les annonces publiées
+     * gardent leur place dans l'agenda sans garder leur auteur.
+     *
+     * Ce qui est vidé va au-delà des deux colonnes évidentes :
+     *   - `pseudo` : getSignatureHtml() ne signe pas un compte sans nom, la signature
+     *     publique des événements disparaît donc d'elle-même
+     *   - `email` : remplacé plutôt que vidé, displayName() y retombe quand le nom manque
+     *     et rendrait sinon un lien au texte vide dans les écrans d'administration. Le TLD
+     *     `.invalid` est réservé par la RFC 2606, aucune adresse réelle ne peut le porter
+     *   - `settings` : il porte le lieu et les organisateurs par défaut du formulaire
+     *     d'ajout, qui désignent une personne aussi sûrement qu'un nom
+     *   - `affiliation` : texte libre, le plus souvent le nom d'un lieu
+     * et les lignes d'`affiliation`, de `personne_organisateur` et de
+     * `user_reset_requests` partent pour la même raison : elles rattachent le compte à une
+     * structure nommée, la dernière portant en outre l'adresse en clair.
+     *
+     * Irréversible, et voulu tel : une anonymisation qui se défait n'anonymise rien.
+     *
+     * Les tables liées d'abord : ces tables sont en MyISAM, donc sans transaction. Si
+     * l'opération s'interrompt en chemin, la ligne `personne` porte encore ses valeurs et
+     * un second appel reprend le travail — l'inverse laisserait des rattachements
+     * pointant sur un compte déjà vidé, sans moyen de les retrouver.
+     *
+     * Ne traite pas les journaux applicatifs (var/logs/), qui gardent nom et adresse
+     * jusqu'à leur rotation.
+     */
+    public static function anonymize(int $idPersonne): bool
+    {
+        global $connectorPdo;
+
+        $stmt = $connectorPdo->prepare("SELECT email FROM personne WHERE idPersonne = :idP");
+        $stmt->execute([':idP' => $idPersonne]);
+        $currentEmail = $stmt->fetchColumn();
+
+        if ($currentEmail === false)
+        {
+            return false;
+        }
+
+        foreach (['affiliation', 'personne_organisateur'] as $table)
+        {
+            // noms de tables littéraux, jamais une valeur reçue
+            $stmt = $connectorPdo->prepare("DELETE FROM $table WHERE idPersonne = :idP");
+            $stmt->execute([':idP' => $idPersonne]);
+        }
+
+        // idPersonne y est nullable : une demande de réinitialisation retrouvée par la
+        // seule adresse survivrait à une suppression qui ne viserait que l'identifiant
+        $stmt = $connectorPdo->prepare("DELETE FROM user_reset_requests WHERE idPersonne = :idP OR email = :email");
+        $stmt->execute([':idP' => $idPersonne, ':email' => $currentEmail]);
+
+        $stmt = $connectorPdo->prepare("UPDATE personne SET
+            pseudo = '',
+            email = :email,
+            mot_de_passe = '',
+            cookie = '',
+            gds = '',
+            affiliation = '',
+            settings = NULL,
+            signature = 'aucune',
+            avec_affiliation = 'non',
+            statut = 'inactif',
+            actif = 0,
+            last_login = NULL,
+            date_derniere_modif = NOW()
+            WHERE idPersonne = :idP");
+
+        return $stmt->execute([
+            ':email' => 'anonyme-' . $idPersonne . '@supprime.invalid',
+            ':idP' => $idPersonne,
+        ]);
+    }
 }
