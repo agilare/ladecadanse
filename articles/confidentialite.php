@@ -43,16 +43,9 @@ include("../_header.inc.php");
 
         <h3>Ce que voient des serveurs extérieurs</h3>
 
-        <p>Afficher une page suppose d’aller chercher quelques fichiers ailleurs que chez nous, et tout serveur sollicité voit l’adresse&nbsp;IP qui le sollicite. Sur La&nbsp;décadanse, cela concerne&nbsp;:</p>
+        <p>Afficher une page suppose parfois d’aller chercher un fichier ailleurs que chez nous, et tout serveur sollicité voit l’adresse&nbsp;IP qui le sollicite. Sur La&nbsp;décadanse, il n’en reste qu’un&nbsp;: sur les fiches de lieu, les cartes proviennent d’<a href="https://www.openstreetmap.org" rel="external" target="_blank">OpenStreetMap</a>, fondation britannique. Afficher une carte suppose de lui demander ses images, et elle voit alors votre adresse&nbsp;IP. Les fiches sans coordonnées n’appellent aucune carte.</p>
 
-        <ul>
-            <li><b>GlitchTip</b>, qui nous signale les erreurs d’affichage pour qu’elles soient corrigées&nbsp;; il reçoit le message d’erreur, l’adresse de la page et le nom de votre navigateur&nbsp;;</li>
-            <li>les <b>bibliothèques jQuery et Leaflet</b>, servies par des répertoires publics de code (jquery.com, unpkg.com), que nous prévoyons d’héberger nous-mêmes.</li>
-        </ul>
-
-        <p>Un outil de détection des robots d’intelligence artificielle, <b>Known Agents</b>, a été en service jusqu’en septembre 2026. Il transmettait davantage&nbsp;: en plus de l’adresse&nbsp;IP, quelques caractéristiques du navigateur. Il est désactivé, et le suivi décrit plus haut, tenu sur nos propres serveurs, le remplace.</p>
-
-        <p>Sur les fiches de lieu, les cartes proviennent d’<a href="https://www.openstreetmap.org" rel="external" target="_blank">OpenStreetMap</a> (fondation britannique)&nbsp;: afficher une carte suppose de demander ses images, qui voit alors votre adresse&nbsp;IP. Les fiches sans coordonnées n’appellent aucune carte.</p>
+        <p>Tout le reste est servi depuis nos propres machines, y compris la mesure d’audience décrite plus haut. Deux outils extérieurs ont été en service jusqu’en septembre 2026 et ne le sont plus&nbsp;: <b>Known Agents</b>, qui détectait les robots d’intelligence artificielle et transmettait, outre l’adresse&nbsp;IP, quelques caractéristiques du navigateur&nbsp;; et <b>GlitchTip</b>, qui signalait les erreurs d’affichage. Les bibliothèques de code que nous chargions depuis des répertoires publics sont désormais hébergées ici.</p>
 
         <h3>Les journaux de l’hébergeur</h3>
 
