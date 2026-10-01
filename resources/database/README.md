@@ -24,7 +24,8 @@ passer d'une seule traite, une variable de connexion étant relue par ses `UPDAT
 ## Les migrations
 
 La colonne de droite dit si le dump porte déjà l'effet du script. Elles sont toutes à « oui » : c'est
-l'invariant à tenir, une ligne à « non » signalant que le dump a pris du retard sur les migrations.
+l'invariant à tenir, une ligne à « non » signalant que le dump a pris du retard sur les migrations. Seule
+exception, « sans objet » : un script qui ne touche que des données, que le dump ne contient pas.
 
 | Fichier | Version | Ajouté le | Effet | Dans `ladecadanse.sql` |
 | --- | --- | --- | --- | --- |
@@ -42,6 +43,7 @@ l'invariant à tenir, une ligne à « non » signalant que le dump a pris du ret
 | `v3-13-0_lieu-categories.sql` | 3.13.0 | 2026-09-08 | sept valeurs ajoutées à la fin du `SET` `lieu.categories` : `buvette`, `club`, `quartier`, `socioculturel`, `bibliotheque`, `ludotheque`, `ecole` | oui |
 | `v3-13-0_lieu-organisateur-add-admin_note.sql` | 3.13.0 | 2026-09-16 | colonnes `lieu.admin_note` et `organisateur.admin_note`, note d'administration en `TEXT NULL` | oui |
 | `v3-13-0_personne-evenement-create-table.sql` | 3.13.0 | 2026-09-26 | table `personne_evenement`, les favoris personnels (#98) | oui |
+| `v3-13-0_evenement-purge-contact.sql` | 3.13.0 | 2026-09-30 | `evenement.user_email` et `remarque` effacés sur les événements de plus de deux ans — données seules, le schéma ne change pas | sans objet |
 
 Les deux premières migrations `v3-13-0_*` sont à passer **dans l'ordre du tableau** : la seconde redéclare la
 colonne `categories` que la première crée en renommant `categorie`. La troisième ne dépend d'aucune des deux.
@@ -98,10 +100,14 @@ UNION ALL SELECT 'v3-13-0_lieu-categories', IF(COUNT(*), 'ok', 'MANQUANTE')
    AND COLUMN_TYPE LIKE '%ecole%'
 UNION ALL SELECT 'v3-13-0_lieu-organisateur-add-admin_note', IF(COUNT(*) = 2, 'ok', 'MANQUANTE')
   FROM information_schema.COLUMNS
- WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME IN ('lieu', 'organisateur') AND COLUMN_NAME = 'admin_note';
+ WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME IN ('lieu', 'organisateur') AND COLUMN_NAME = 'admin_note'
+UNION ALL SELECT 'v3-13-0_evenement-purge-contact', IF(COUNT(*) = 0, 'ok', 'MANQUANTE')
+  FROM evenement
+ WHERE dateEvenement < DATE_SUB(CURDATE(), INTERVAL 2 YEAR)
+   AND (user_email IS NOT NULL OR remarque IS NOT NULL);
 ```
 
-Une base à jour répond `ok` sur les treize lignes. Chaque `MANQUANTE` désigne le fichier à passer, dans
+Une base à jour répond `ok` sur les quatorze lignes. Chaque `MANQUANTE` désigne le fichier à passer, dans
 l'ordre du tableau.
 
 ## Scripts hors migration

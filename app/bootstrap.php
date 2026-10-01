@@ -267,6 +267,12 @@ if (defined('BOT_MONITORING_ENABLED') && BOT_MONITORING_ENABLED && empty($_SESSI
     });
 }
 
+// durée de conservation des coordonnées des propositions anonymes (voir librairies/EventContactRetention.php) ;
+// sans drapeau : une durée de conservation ne se désactive pas
+register_shutdown_function(function () use ($connectorPdo, $logger) {
+    (new \Ladecadanse\EventContactRetention($connectorPdo->getPDO(), $logger))->maybePurge();
+});
+
 header('X-Content-Type-Options: nosniff');
 define("CSP_NONCE", bin2hex(openssl_random_pseudo_bytes(32)));
 $csp = implode('; ', [

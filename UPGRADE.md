@@ -34,6 +34,10 @@ Exécuter enfin `resources/database/v3-13-0_personne-evenement-create-table.sql`
 
 **À passer avant la mise en ligne du code, ou avec elle** : création d'une table vide, ni verrou ni durée à prévoir, et l'ancien code ne la connaît pas. Une base en retard ne se voit pas tout de suite, les favoris n'étant ouverts qu'aux porteurs du cookie de la bêta : le premier lien secret distribué serait le premier à tomber sur une erreur SQL.
 
+Exécuter enfin `resources/database/v3-13-0_evenement-purge-contact.sql`, indépendant des précédents. Il efface l'adresse (`user_email`) et la remarque des propositions anonymes d'événement datées de plus de deux ans — la durée de conservation retenue. La suite est tenue par l'application, qui purge au fil des pages vues les événements franchissant le seuil (`Ladecadanse\EventContactRetention`) ; mais elle ne regarde qu'une fenêtre de 90 jours avant le seuil, si bien que **sans ce script l'arriéré reste en base**.
+
+**À passer quand on veut, une fois** : le code n'en dépend pas. `evenement` est en MyISAM, l'`UPDATE` pose un verrou d'écriture le temps de parcourir les événements de plus de deux ans : à passer hors des heures de saisie. Le relancer plus tard ne fait rien de plus que la purge automatique.
+
 ### Redirections
 
 Deux pages changent d'adresse :
@@ -71,6 +75,7 @@ Rien à passer en base : `evenement.genre` est un `varchar(20)`, il accueille le
 - **Affiliés et membres d'une fiche** — les personnes affiliées à un lieu et les membres d'un organisateur, avec leur e-mail, ne sont plus listés qu'aux administrateurs (niveau ADMIN). Un auteur ne voit plus les affiliés d'un lieu, et ni l'auteur d'une fiche d'organisateur ni ses membres ne voient plus la liste des membres
 - **Annonces déjà fermées** — la fermeture d'une annonce n'est plus lue dans les cookies `home_tmp_banner` et `home_tmp_back_banner` mais dans le stockage local du navigateur : une annonce reportée telle quelle réapparaît une fois chez ceux qui l'avaient fermée. Les deux cookies ne sont plus posés et expirent d'eux-mêmes
 - **Favoris réservés à un panel** — rien n'en paraît tant qu'on ne détient pas le cookie posé par `?favoris_beta=<secret>`, `FAVORITES_BETA_SECRET` dans [`app/config.php`](app/config.php) ; `?favoris_beta=off` le retire, et il vaut un an. Distribuer le lien, c'est ouvrir la fonctionnalité à qui le reçoit, y compris sans compte : le secret est dans un dépôt public, il ne protège de rien, il met simplement à l'écart. Les favoris d'un visiteur non connecté vivent dans le stockage local de son navigateur, sur cet appareil seulement — vider les données du site les efface —, et sa première connexion les verse au compte
+- **Propositions anonymes de plus de deux ans** — un administrateur qui rouvre un tel événement n'y voit plus ni l'adresse ni la remarque du visiteur, et ne peut plus lui notifier une modification : l'une et l'autre ont été purgées
 
 ### Bibliothèques front-end
 
