@@ -49,7 +49,7 @@ include("../_header.inc.php");
 
         <h3>Les journaux de l’hébergeur</h3>
 
-        <p>Le site est hébergé par <a href="https://www.infomaniak.com" rel="external" target="_blank">Infomaniak</a>, en Suisse. Comme tout serveur web, le sien conserve un journal des requêtes avec l’adresse&nbsp;IP et la page demandée, pour des raisons techniques et de sécurité.</p>
+        <p>Le site est hébergé par <a href="https://www.infomaniak.com" rel="external" target="_blank">Infomaniak</a>, en Suisse. Comme tout serveur web, le sien conserve un journal des requêtes avec l’adresse&nbsp;IP et la page demandée, pour des raisons techniques et de sécurité. Ces journaux ne vivent que quelques jours, et nous n’en gardons pas de copie.</p>
 
         <h2>Si vous nous écrivez</h2>
 
@@ -87,7 +87,7 @@ include("../_header.inc.php");
             <dt>Mesure d’audience</dt>
             <dd>cookie et données détaillées de visite&nbsp;: treize mois&nbsp;; au-delà, seules les statistiques agrégées subsistent</dd>
             <dt>Journaux techniques</dt>
-            <dd>selon les réglages du serveur et de l’application</dd>
+            <dd>quelques jours chez l’hébergeur&nbsp;; quatorze mois pour ceux du site, qui ne retiennent pas d’adresse&nbsp;IP</dd>
         </dl>
 
         <h2>Vos droits</h2>
