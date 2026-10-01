@@ -3,6 +3,7 @@
 require_once("../app/bootstrap.php");
 
 use Ladecadanse\Utils\Validateur;
+use Ladecadanse\Utils\LogSafe;
 use Ladecadanse\Utils\Mailing;
 use Ladecadanse\UserLevel;
 
@@ -135,11 +136,11 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
                     ])
                 );
 
-                $logger->info('[user-reset] request', ['email' => $email_destinataire, 'idP' => $idPersonne]);
+                $logger->info('[user-reset] request', ['domaine' => LogSafe::email($email_destinataire), 'idP' => $idPersonne]);
             }
             else
             {
-                $logger->warning('[user-reset] request failed, user not found', ['login_ou_email' => $champs['login_ou_email']]);
+                $logger->warning('[user-reset] request failed, user not found', ['login_ou_email' => LogSafe::email($champs['login_ou_email'])]);
             }
 
             // le message ne dit pas si le compte existe : il serait sinon un oracle

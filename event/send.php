@@ -3,6 +3,7 @@ require_once("../app/bootstrap.php");
 
 use Ladecadanse\Utils\DateHelper;
 use Ladecadanse\Utils\Validateur;
+use Ladecadanse\Utils\LogSafe;
 use Ladecadanse\Utils\Mailing;
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\Evenement;
@@ -182,7 +183,10 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
             if ($mailer->toUser($to, $subject, $body, ['email' => $champs['email'], 'name' => $_SESSION['user'] ?? '']))
             {
 				$_SESSION['evenement-edit_flash_msg'] = $translator->get("event-send-{$get['action']}-success-msg");
-                $logger->info('[event-send]', ['action' => $get['action'], 'from' => $champs['email'], 'to' => $to, 'idE' => (int) $get['idE']]);
+                // L'adresse du destinataire est celle d'un tiers, qui n'a rien demandé au
+                // site : elle ne doit pas se retrouver dans un journal qui vit des mois.
+                // Les domaines suffisent à repérer un usage abusif du formulaire.
+                $logger->info('[event-send]', ['action' => $get['action'], 'from' => LogSafe::email($champs['email']), 'to' => LogSafe::email($to), 'idE' => (int) $get['idE']]);
                 header("Location: /event/evenement.php?idE=" . (int) $get['idE']);
             }
         }

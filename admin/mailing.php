@@ -5,6 +5,7 @@ require_once("../app/bootstrap.php");
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\Personne;
 use Ladecadanse\UserLevel;
+use Ladecadanse\Utils\LogSafe;
 use Ladecadanse\Utils\Mailing;
 use PHPMailer\PHPMailer\PHPMailer;
 
@@ -236,7 +237,7 @@ if (isset($_POST['formulaire']))
                     }
 
                     $rapport[] = $d + ['envoye' => $envoye];
-                    $logger->info('[admin-mailing]', ['idP' => $d['idPersonne'], 'email' => $d['email'], 'envoye' => $envoye]);
+                    $logger->info('[admin-mailing]', ['idP' => $d['idPersonne'], 'pseudo' => $d['pseudo'], 'domaine' => LogSafe::email($d['email']), 'envoye' => $envoye]);
                 }
 
                 $mailing['index'] += count($lot);

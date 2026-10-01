@@ -88,9 +88,17 @@ $_SESSION['user_prefs_past_events_order'] ??= 'asc';
 
 $logFormatter = new LineFormatter(null, 'Y-m-d H:i:sP');
 
+/*
+ * Rotation mensuelle, 14 fichiers conservés — quatorze mois, contre trente-six
+ * auparavant. Ces journaux portent des noms d'utilisateur (les adresses, elles, n'y
+ * entrent plus qu'en domaine, voir Utils\LogSafe), et rien ne les efface quand un compte
+ * est anonymisé : leur durée est la fenêtre pendant laquelle un effacement reste
+ * incomplet. Quatorze mois laissent une année pleine de diagnostic et referment cette
+ * fenêtre dans l'année.
+ */
 $activityHandler = new RotatingFileHandler(
     __DIR__ . '/../var/logs/activity.log',
-    36,
+    14,
     \Monolog\Level::Debug,
     true,
     null,
@@ -103,7 +111,7 @@ $logger->pushHandler($activityHandler);
 
 $apiHandler = new RotatingFileHandler(
     __DIR__ . '/../var/logs/api.log',
-    36,
+    14,
     \Monolog\Level::Debug,
     true,
     null,

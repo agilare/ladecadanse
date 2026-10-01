@@ -3,6 +3,7 @@
 namespace Ladecadanse\Security;
 
 use Ladecadanse\UserLevel;
+use Ladecadanse\Utils\LogSafe;
 use PDO;
 use Psr\Log\LoggerInterface;
 
@@ -198,7 +199,9 @@ class Sentry
 
         if ($estEmail && count($comptes) > 1)
         {
-            $this->logger->notice('[Sentry] login failed, ambiguous email', ['email' => $user]);
+            // Le nombre de comptes dit l'ampleur de l'ambiguïté, le domaine dit où
+            // chercher : ensemble ils suffisent au diagnostic sans porter l'adresse.
+            $this->logger->notice('[Sentry] login failed, ambiguous email', ['domaine' => LogSafe::email($user), 'comptes' => count($comptes)]);
             unset($this->userdata);
 
             if ($badRedirect)
@@ -212,7 +215,10 @@ class Sentry
         // pseudo est unique : plus d'une ligne ne peut venir que d'un e-mail, traité ci-dessus
         if (count($comptes) !== 1)
         {
-            $this->logger->notice('[Sentry] login failed, user not found', ['user' => $user]);
+            // La saisie peut être un nom d'utilisateur comme une adresse : LogSafe ne
+            // touche que la seconde. Garder la saisie a une valeur de sécurité — repérer
+            // un bourrage d'identifiants — que le seul domaine conserve.
+            $this->logger->notice('[Sentry] login failed, user not found', ['user' => LogSafe::email($user)]);
             unset($this->userdata);
 
             if ($badRedirect)
@@ -301,7 +307,8 @@ class Sentry
         $this->userdata = $userdata;
         session_regenerate_id(true); // to avoid session fixation attack
         $this->initSession(true, true);
-        $this->logger->info('[Sentry] remembered access', ['user' => $_SESSION["user"], 'idP' => (int) $_SESSION['SidPersonne'], 'email' => $_SESSION['Semail']]);
+        // l'adresse n'apportait rien que l'identifiant ne dise déjà
+        $this->logger->info('[Sentry] remembered access', ['user' => $_SESSION["user"], 'idP' => (int) $_SESSION['SidPersonne']]);
 
         return true;
     }

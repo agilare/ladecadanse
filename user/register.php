@@ -6,6 +6,7 @@ use Ladecadanse\Personne;
 use Ladecadanse\UserLevel;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\PasswordPolicy;
+use Ladecadanse\Utils\LogSafe;
 use Ladecadanse\Utils\Mailing;
 
 // =============================================================================
@@ -275,7 +276,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
                     );
                 }
 
-                $logger->info('[user-register]', ['pseudo' => $champs['login'], 'email' => $champs['email'], 'groupe' => $groupe, 'idP' => $new_user_id]);
+                $logger->info('[user-register]', ['pseudo' => $champs['login'], 'domaine' => LogSafe::email($champs['email']), 'groupe' => $groupe, 'idP' => $new_user_id]);
             }
 
             $action_terminee = true;
