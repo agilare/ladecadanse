@@ -1,0 +1,16 @@
+Bonjour,
+
+Votre compte sur La décadanse n'a plus servi depuis %derniere_activite%. Nous ne gardons pas les comptes dont personne ne se sert : passé un mois, celui-ci sera anonymisé, c'est-à-dire que votre nom d'utilisateur et votre adresse en seront effacés, sans retour possible.
+
+Pour le garder, il suffit de vous connecter une fois :
+
+%login_url%
+
+Les événements que vous avez annoncés resteront dans l'agenda dans tous les cas : seul le lien avec votre compte disparaîtrait.
+
+Si vous préfériez que ce compte s'efface, vous n'avez rien à faire.
+
+Une question ? Écrivez-nous à info@ladecadanse.ch
+
+La décadanse
+www.ladecadanse.ch

@@ -276,6 +276,7 @@ $mouseless_allowed = isset($_SESSION['Sgroupe']) && (int) $_SESSION['Sgroupe'] <
                                         <a href="/admin/events.php" <?php if (strstr((string) $_SERVER['PHP_SELF'], "admin/events.php")) : ?>class="ici"<?php endif; ?> ><i class="fa fa-calendar-o" aria-hidden="true"></i></a>
                                         <a href="/admin/users.php" <?php if (strstr((string) $_SERVER['PHP_SELF'], "admin/users.php")) : ?>class="ici"<?php endif; ?>><i class="fa fa-users" aria-hidden="true"></i></a>
                                         <a href="/admin/bots.php" title="Monitoring des bots" <?php if (strstr((string) $_SERVER['PHP_SELF'], "admin/bots.php")) : ?>class="ici"<?php endif; ?>><i class="fa fa-bug" aria-hidden="true"></i></a>
+                                        <a href="/admin/inactive-accounts.php" title="Comptes inactifs" <?php if (strstr((string) $_SERVER['PHP_SELF'], "admin/inactive-accounts.php")) : ?>class="ici"<?php endif; ?>><i class="fa fa-hourglass-end" aria-hidden="true"></i></a>
                                     <?php endif; ?>
 
                                     <?php /* L'icône est aria-hidden : sans nom accessible, le lien
