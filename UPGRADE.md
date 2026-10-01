@@ -1,6 +1,6 @@
 # Mise à jour
 
-Ce fichier liste les opérations à effectuer lors du passage à une nouvelle version : migrations de base de données, nouvelles clés de configuration, effets de bord à connaître. Pour la liste des changements eux-mêmes, voir le [changelog](CHANGELOG.md) ; pour le fonctionnement des fonctionnalités, [docs/](docs/) ; pour l'inventaire des scripts SQL, la version qui a livré chacun et une requête disant ce qui manque à une base, [resources/database/README.md](resources/database/README.md).
+Ce fichier liste les opérations à effectuer lors du passage à une nouvelle version : migrations de base de données, nouvelles clés de configuration, effets de bord à connaître. Pour la liste des changements eux-mêmes, voir le [changelog](CHANGELOG.md) ; pour le fonctionnement des fonctionnalités, [docs/](docs/) ; pour les migrations de base de données et la façon de les passer, [resources/database/README.md](resources/database/README.md).
 
 Les versions sont listées de la plus récente à la plus ancienne.
 
@@ -8,35 +8,38 @@ Les versions sont listées de la plus récente à la plus ancienne.
 
 ### Base de données
 
-Exécuter `resources/database/v3-13-0_lieu-colonnes.sql`, qui remanie les colonnes de la table `lieu` :
+**Les migrations passent désormais par [Doctrine Migrations](https://www.doctrine-project.org/projects/migrations.html)** (#231). Les scripts `resources/database/vX-Y-Z_*.sql` sont devenus des classes de `resources/database/migrations/`, et chaque base tient dans sa table `doctrine_migration_versions` la liste de ce qui lui a été appliqué. Rien n'est à déployer pour autant : ni `vendor/` ni les migrations ne partent sur le serveur, elles se passent depuis le poste de développement.
 
-1. `determinant` devient `preposition_nom` et passe après `nom` — « au », « chez », « à l' » sont des prépositions, pas des déterminants ;
-2. `categorie` devient `categories` et passe après `preposition_nom` — la colonne est un `SET`, un lieu en porte plusieurs ;
-3. `adresse` passe de `VARCHAR(100)` à `VARCHAR(255)` ;
-4. `lat`, `lng`, `horaire_general`, `URL`, `photo1` et `logo` acceptent `NULL`, et les lignes existantes y passent de `0` ou de la chaîne vide à `NULL` ; `logo` passe après `categories` ;
-5. `photo2` et `actif` sont supprimées — la seconde photo n'était proposée par aucun formulaire, et `actif` était un doublon inerte de `statut`, resté à 1 partout.
+Une fois pour toutes, sur le poste : `composer install`, qui installe `doctrine/migrations` (dépendance de développement). Puis, pour la production, ouvrir le tunnel SSH décrit dans [docs/prod-copy.md](docs/prod-copy.md), faire un `mysqldump` de la base, et :
 
-**À passer avec la mise en ligne du code, pas plus tard** : les deux renommages sont lus par les pages d'événement (`l.preposition_nom`) et par la liste des lieux (`FIND_IN_SET(…, categories)`), qui répondraient sinon une erreur SQL.
+```sh
+LADECADANSE_DB=prod composer db:status    # ce qui est appliqué, ce qui manque
+LADECADANSE_DB=prod composer db:migrate   # demande confirmation avant d'écrire
+```
 
-Exécuter ensuite `resources/database/v3-13-0_lieu-categories.sql`, **dans cet ordre** : il redéclare la colonne `categories` que le script précédent vient de créer. Il ajoute sept valeurs à la fin du `SET` — `buvette`, `club`, `quartier`, `socioculturel`, `bibliotheque`, `ludotheque`, `ecole` — sans en retirer ni en renommer aucune.
+Sous PowerShell : `$env:LADECADANSE_DB='prod'; composer db:migrate`. L'entrée `prod` de `app/db.config.php` sert telle quelle ; son compte doit avoir les droits `ALTER`, `CREATE`, `INDEX` et `DROP`, sinon lui substituer `migration_user` et `migration_password` (voir `app/db.config_model.php`).
 
-Les sept valeurs sont **appendées après `autre`**, et l'ordre du `SET` n'est pas négociable : un `SET` MariaDB est un masque de bits dont les positions viennent de l'ordre de déclaration, si bien qu'une valeur glissée au milieu de la liste réinterpréterait silencieusement toutes les lignes existantes. L'ordre de `Ladecadanse\Lieu::CATEGORIES`, lui, sert l'affichage du formulaire et garde « autre » en dernier : les deux diffèrent volontairement, il ne faut pas « ranger » le `SET` pour le faire correspondre au PHP.
+Le premier passage **adopte la base** : chaque migration antérieure à Doctrine vérifie d'abord si son effet est déjà en place — la colonne, l'index, la table ou la ligne qu'elle crée — et, le cas échéant, s'enregistre sans rien exécuter. Doctrine l'accompagne d'un avertissement « did not result in any SQL statements », attendu. Une production en 3.12.0 voit ainsi les dix migrations jusqu'à la 3.12.0 enregistrées à vide, et les cinq de la 3.13.0 réellement passées, dans l'ordre :
 
-La table `lieu` est en MyISAM : l'`ALTER` la reconstruit et pose un verrou d'écriture. Quelques centaines de lignes, donc l'affaire d'un instant, mais à passer hors des heures de saisie. Relever `SELECT categories, COUNT(*) AS nb FROM lieu GROUP BY categories ORDER BY categories;` avant et après, et comparer : les deux sorties doivent être rigoureusement identiques.
+1. `Version20260905000000` (ancien `v3-13-0_lieu-colonnes.sql`) remanie les colonnes de la table `lieu` :
+    1. `determinant` devient `preposition_nom` et passe après `nom` — « au », « chez », « à l' » sont des prépositions, pas des déterminants ;
+    1. `categorie` devient `categories` et passe après `preposition_nom` — la colonne est un `SET`, un lieu en porte plusieurs ;
+    1. `adresse` passe de `VARCHAR(100)` à `VARCHAR(255)` ;
+    1. `lat`, `lng`, `horaire_general`, `URL`, `photo1` et `logo` acceptent `NULL`, et les lignes existantes y passent de `0` ou de la chaîne vide à `NULL` ; `logo` passe après `categories` ;
+    1. `photo2` et `actif` sont supprimées — la seconde photo n'était proposée par aucun formulaire, et `actif` était un doublon inerte de `statut`, resté à 1 partout.
+2. `Version20260908000000` (ancien `v3-13-0_lieu-categories.sql`) ajoute sept valeurs à la fin du `SET` `categories` que la précédente vient de créer — `buvette`, `club`, `quartier`, `socioculturel`, `bibliotheque`, `ludotheque`, `ecole` — sans en retirer ni en renommer aucune. Les sept valeurs sont **appendées après `autre`**, et l'ordre du `SET` n'est pas négociable : un `SET` MariaDB est un masque de bits dont les positions viennent de l'ordre de déclaration, si bien qu'une valeur glissée au milieu de la liste réinterpréterait silencieusement toutes les lignes existantes. L'ordre de `Ladecadanse\Lieu::CATEGORIES`, lui, sert l'affichage du formulaire et garde « autre » en dernier : les deux diffèrent volontairement, il ne faut pas « ranger » le `SET` pour le faire correspondre au PHP.
+3. `Version20260916000000` (ancien `v3-13-0_lieu-organisateur-add-admin_note.sql`) ajoute à `lieu` (après `URL`) et à `organisateur` (après `statut`) une colonne `admin_note` en `TEXT NULL`, la note d'administration que seuls les administrateurs lisent et écrivent.
+4. `Version20260926000000` (ancien `v3-13-0_personne-evenement-create-table.sql`) crée la table `personne_evenement` des favoris : une ligne par couple (personne, événement), clé primaire composite — c'est elle qui rend l'ajout idempotent, l'`INSERT IGNORE` de `event/favorites.php` s'appuyant dessus — et un index sur `idEvenement` pour le sens inverse.
 
-**À passer avec la mise en ligne du code, pas plus tard**, mais pour une autre raison que le script précédent : aucune page ne tombe en erreur si la base a du retard, ce sont les sept nouvelles entrées du menu qui deviennent des pièges. Le formulaire les propose dès que le code est en ligne, et enregistrer un lieu ainsi typé écrit dans la colonne une valeur que le `SET` ne déclare pas — erreur ou troncature silencieuse selon le `sql_mode` du serveur, mais jamais la catégorie choisie.
+**À passer avec la mise en ligne du code, pas plus tard** : les deux renommages de la première sont lus par les pages d'événement (`l.preposition_nom`) et par la liste des lieux (`FIND_IN_SET(…, categories)`), qui répondraient sinon une erreur SQL. Les trois autres pourraient précéder le code — l'ancien code ignore une colonne qui accepte `NULL` et une table qu'il ne connaît pas —, mais pas le suivre : le formulaire proposerait sept catégories que le `SET` ne déclare pas (erreur ou troncature silencieuse selon le `sql_mode`, jamais la catégorie choisie), l'enregistrement d'une fiche écrirait une colonne `admin_note` absente, et le premier lien secret des favoris tomberait sur une erreur SQL.
 
-Exécuter enfin `resources/database/v3-13-0_lieu-organisateur-add-admin_note.sql`, indépendant des deux précédents. Il ajoute à `lieu` (après `URL`) et à `organisateur` (après `statut`) une colonne `admin_note` en `TEXT NULL`, la note d'administration que seuls les administrateurs lisent et écrivent.
+Les tables `lieu` et `organisateur` sont en MyISAM : chaque `ALTER` les reconstruit et pose un verrou d'écriture. Quelques centaines de lignes, donc l'affaire d'un instant, mais à passer hors des heures de saisie. Relever `SELECT categories, COUNT(*) AS nb FROM lieu GROUP BY categories ORDER BY categories;` avant la deuxième migration et après, et comparer : les deux sorties doivent être rigoureusement identiques. Pour s'arrêter entre deux migrations, `composer db:migrate -- 'Ladecadanse\Migrations\Version20260905000000'` ne va que jusqu'à celle-là.
 
-**À passer avant la mise en ligne du code, ou avec elle** : la colonne accepte `NULL`, l'ancien code l'ignore donc sans dommage, et le script peut précéder le déploiement. Le nouveau code l'écrit à chaque enregistrement d'une fiche de lieu ou d'organisateur, qui répondrait sinon une erreur SQL. Les deux tables sont en MyISAM : même verrou d'écriture, aussi bref, que pour les scripts précédents.
+Aucune transaction ne protège le passage : sur MariaDB, chaque instruction DDL valide implicitement la transaction en cours, et une migration interrompue laisse en place ce qui a déjà tourné. D'où le `mysqldump` préalable.
 
-Exécuter enfin `resources/database/v3-13-0_personne-evenement-create-table.sql`, indépendant lui aussi. Il crée la table `personne_evenement` des favoris : une ligne par couple (personne, événement), clé primaire composite — c'est elle qui rend l'ajout idempotent, l'`INSERT IGNORE` de `event/favorites.php` s'appuyant dessus — et un index sur `idEvenement` pour le sens inverse.
+La cinquième, `Version20260930000000` (ancien `v3-13-0_evenement-purge-contact.sql`), est indépendante des précédentes. Elle efface l'adresse (`user_email`) et la remarque des propositions anonymes d'événement datées de plus de deux ans — la durée de conservation retenue. La suite est tenue par l'application, qui purge au fil des pages vues les événements franchissant le seuil (`Ladecadanse\EventContactRetention`) ; mais elle ne regarde qu'une fenêtre de 90 jours avant le seuil, si bien que **sans cette migration l'arriéré reste en base**.
 
-**À passer avant la mise en ligne du code, ou avec elle** : création d'une table vide, ni verrou ni durée à prévoir, et l'ancien code ne la connaît pas. Une base en retard ne se voit pas tout de suite, les favoris n'étant ouverts qu'aux porteurs du cookie de la bêta : le premier lien secret distribué serait le premier à tomber sur une erreur SQL.
-
-Exécuter enfin `resources/database/v3-13-0_evenement-purge-contact.sql`, indépendant des précédents. Il efface l'adresse (`user_email`) et la remarque des propositions anonymes d'événement datées de plus de deux ans — la durée de conservation retenue. La suite est tenue par l'application, qui purge au fil des pages vues les événements franchissant le seuil (`Ladecadanse\EventContactRetention`) ; mais elle ne regarde qu'une fenêtre de 90 jours avant le seuil, si bien que **sans ce script l'arriéré reste en base**.
-
-**À passer quand on veut, une fois** : le code n'en dépend pas. `evenement` est en MyISAM, l'`UPDATE` pose un verrou d'écriture le temps de parcourir les événements de plus de deux ans : à passer hors des heures de saisie. Le relancer plus tard ne fait rien de plus que la purge automatique.
+**Indifférente au moment de la mise en ligne** : le code n'en dépend pas. `evenement` est en MyISAM, l'`UPDATE` pose un verrou d'écriture le temps de parcourir les événements de plus de deux ans : à passer hors des heures de saisie. Elle n'efface rien de plus si l'ancien script a déjà tourné : l'`UPDATE` ne porte que sur les lignes encore renseignées, et la migration ne cherche donc pas à détecter un passage antérieur.
 
 ### Redirections
 
@@ -85,6 +88,12 @@ jQuery, Leaflet, Font Awesome, Magnific Popup, select2, Zebra_Datepicker, checkb
 - **Production, dans cet ordre** — d'abord `composer deploy`, qui lance `npm ci` et envoie `web/libs/` avec le code ; ensuite seulement `composer install` par SSH. L'ordre inverse retirerait `vendor/select2`, `vendor/fortawesome` et `vendor/dimsemenov` pendant que les pages en ligne y pointent encore. `git ftp push -s prod --dry-run` doit annoncer « Including all files in web/libs/ for upload. »
 - **Fichiers laissés sur le serveur** — git-ftp supprime ce que le dépôt ne porte plus : `web/js/libs/` et `web/css/normalize.css` disparaissent de la production au premier déploiement, sans rien à faire
 - **CSP** — `https://code.jquery.com` et `https://unpkg.com` en sortent (`app/bootstrap.php`) : le déploiement de `web/libs/` et celui du code doivent donc partir ensemble, ce que fait `composer deploy`. Un `git ftp push` seul, sans `npm ci` préalable sur un poste à jour, laisserait les pages sans jQuery
+
+### Développement
+
+- **Migrations** — un changement de schéma s'écrit en classe : `composer db:generate`, le SQL dans `up()`, et c'est tout. `ladecadanse.sql` est figé au schéma de la 3.13.0 et ne se retouche plus : une installation neuve l'importe puis lance `composer db:migrate`. Une base de développement s'adopte par le même `composer db:migrate`, à n'importe quelle version. Voir [resources/database/README.md](resources/database/README.md)
+- **Anciens scripts `.sql`** — les sections ci-dessous citent des fichiers `vX-Y-Z_*.sql` qui n'existent plus : le [tableau de correspondance](resources/database/README.md#les-migrations-davant-doctrine) donne la classe qui porte chacun. Une branche en cours qui ajoutait un tel fichier le convertit en classe avant de fusionner
+- **`prod-copy`** — la copie reprend le registre `doctrine_migration_versions` de la production, et la structure vide de `personne_evenement` : il n'y a plus à recréer la table des favoris à la main après une copie
 
 ## 3.12.0
 

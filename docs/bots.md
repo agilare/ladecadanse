@@ -4,7 +4,7 @@ Suivi interne du trafic automatisé, destiné à repérer les robots qui surchar
 
 ## Activation
 
-1. créer la table avec `resources/database/v3-11-0_bot_monitor-create-table.sql` ;
+1. créer la table par `composer db:migrate` (migration `Version20260716000000`, voir [resources/database/README.md](../resources/database/README.md)) ;
 2. passer `BOT_MONITORING_ENABLED` à `true` dans `app/env.php`.
 
 Les autres réglages sont commentés dans [`app/env_model.php`](../app/env_model.php).

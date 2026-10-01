@@ -1,7 +1,9 @@
--- Schéma de référence de La décadanse, à jour de la version 3.13.0.
+-- Point de départ d'une base de La décadanse : le schéma de la version 3.13.0.
 --
--- Ce fichier suffit à créer une base : ne rejouer par-dessus aucune migration
--- v3-*.sql de ce répertoire, elles y sont toutes intégrées. Voir README.md.
+-- Figé : ne plus le modifier. Les changements de schéma postérieurs sont des
+-- migrations Doctrine (migrations/) ; après l'import, lancer `composer db:migrate`,
+-- qui enregistre celles que ce fichier porte déjà et passe les suivantes.
+-- Voir README.md.
 
 SET NAMES utf8;
 SET time_zone = '+00:00';

@@ -1,1 +1,0 @@
-ALTER TABLE personne ADD last_login DATETIME DEFAULT NULL NULL;

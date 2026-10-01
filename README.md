@@ -46,12 +46,13 @@ Facultatif : `imagick` et Ghostscript, pour convertir en image les PDF **collés
         GRANT USAGE ON *.* TO 'ladecadanse'@'localhost';
         GRANT SELECT, INSERT, DELETE, UPDATE  ON `ladecadanse`.* TO 'ladecadanse'@'localhost';
         ```
-    1. dans la base de données, exécuter `resources/database/ladecadanse.sql`, qui crée la structure et remplit la table `localite`. **Sur une installation neuve, n'exécuter aucune migration `v3-*.sql` par-dessus** : ce dump en porte déjà une partie, et les rejouer échoue ou duplique des données — voir [resources/database/README.md](resources/database/README.md)
+    1. dans la base de données, exécuter `resources/database/ladecadanse.sql`, qui crée la structure et remplit la table `localite`. Ce dump est figé à la 3.13.0 : les changements de schéma postérieurs s'appliquent à l'étape `composer db:migrate` ci-dessous
     1. ajouter un 1er utilisateur, l'*admin* (groupe 1) qui vous servira à gérer le site (mot de passe : `admin_dev`) :
         ```mysql
         INSERT INTO `personne` (`idPersonne`, `pseudo`, `mot_de_passe`, `cookie`, `groupe`, `statut`, `affiliation`, `region`, `email`,  `signature`, `avec_affiliation`, `gds`, `actif`, `dateAjout`, `date_derniere_modif`) VALUES (NULL, 'admin', '$2y$10$34Z0QxaycAgPFQGtiVzPbeoZFN1kwLEdWDEBI1kEOJGK4A3xRJtMa', '', '1', 'actif', '', 'ge', 'test@ladecadanse.ch', 'pseudo', 'non', '', '1', '0000-00-00 00:00:00.000000', '0000-00-00 00:00:00.000000');
         ```
 1. créer vos fichiers de configuration en faisant `cp app/env_model.php app/env.php` ainsi que `cp app/db.config_model.php app/db.config.php` et y saisir les valeurs de votre environnement (davantage d'explications et exemples se trouvent dans les fichiers même), avec au minimum les informations de connexion à la base de données
+1. `composer db:migrate` applique à la base les migrations que le dump ne porte pas encore, et enregistre les autres — voir [resources/database/README.md](resources/database/README.md). Il se connecte avec l'entrée `default` de `app/db.config.php` ; si son compte n'a pas les droits `ALTER`, `CREATE`, `INDEX` et `DROP`, lui en substituer un autre par `migration_user` et `migration_password`
 1. `composer config:build` compose le `.htaccess` et le `.user.ini` (configuration Apache et PHP) à partir des fragments de `htaccess/` et `userini/` — voir [docs/config-serveur.md](docs/config-serveur.md). Sans passer par Composer : `php bin/build-config.php`
 
 ### Installation avec Docker
@@ -142,13 +143,15 @@ Sans `.htaccess`, le site répond déjà, mais sans ses redirections ni ses règ
 
 #### Base de données
 
-La base est initialisée depuis `resources/database/ladecadanse.sql`, qui porte le schéma courant, puis par les fixtures de `docker/env/` : le compte `admin` et un lieu de test. Aucune migration n'est rejouée par-dessus, elles sont toutes intégrées au dump — l'inventaire est dans [resources/database/README.md](resources/database/README.md).
+La base est initialisée depuis `resources/database/ladecadanse.sql`, puis par les fixtures de `docker/env/` : le compte `admin` et un lieu de test. Ces scripts ne tournent qu'à la **création du volume**.
 
-Ces scripts ne tournent qu'à la **création du volume**. Une base déjà créée ne verra jamais une migration ajoutée depuis, il faut la passer à la main :
+Les migrations se passent ensuite depuis l'hôte, que la base soit neuve ou déjà créée : le conteneur `composer-dev` n'a pas les extensions de l'application, et le service `db` expose MariaDB sur le port 9906. Ajouter à `app/db.config.php` une entrée qui le vise, par exemple `'docker' => ['host' => '127.0.0.1;port=9906', 'dbname' => 'ladecadanse', 'user' => 'root', 'password' => 'dev']`, puis :
 
 ```sh
-docker compose --profile dev exec -T db sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" ladecadanse' < resources/database/v3-12-0_localite-france.sql
+LADECADANSE_DB=docker composer db:migrate
 ```
+
+Voir [resources/database/README.md](resources/database/README.md).
 
 Pour repartir d'une base neuve : `docker compose --profile dev down -v`, qui supprime les volumes, puis `docker compose --profile dev up -d`.
 

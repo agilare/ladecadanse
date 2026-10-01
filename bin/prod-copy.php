@@ -72,11 +72,23 @@ const TABLES_COPIEES = [
  * dès la première demande, et `admin/bots.php` sur sa première requête. L'écriture, elle,
  * se tait — `BotMonitor` avale ses propres erreurs —, si bien que l'absence ne se découvre
  * qu'en ouvrant la page.
+ *
+ * `personne_evenement` porte les favoris de comptes réels. La copie reprenant le registre de
+ * Doctrine Migrations, une table que la production a et que la copie n'aurait pas y passerait
+ * pour créée : `db:migrate` ne la rattraperait plus. Absente de la source, elle est sautée —
+ * le registre de la production ne l'a alors pas non plus, et `db:migrate` la créera.
  */
 const TABLES_STRUCTURE_SEULE = [
     'user_reset_requests',
     'bot_monitor',
+    'personne_evenement',
 ];
+
+/**
+ * Registre de Doctrine Migrations (cf. migrations.php), repris tel quel : il ne porte que des
+ * noms de classes et des dates d'exécution.
+ */
+const TABLE_MIGRATIONS = 'doctrine_migration_versions';
 
 /**
  * Colonnes portant un nom de fichier, et sous-répertoire de web/uploads/ où le
@@ -733,8 +745,8 @@ if ($phase !== 'files') {
     // --- Création de la base ----------------------------------------------
     //
     // Le schéma est celui de la production, lu par SHOW CREATE TABLE, et non celui
-    // de resources/database/ladecadanse.sql. Ce dernier est tenu à jour à la main et
-    // ne fait autorité que sur une installation neuve ; ici les lignes viennent de la
+    // de resources/database/ladecadanse.sql. Ce dernier est figé à la 3.13.0 et ne sert
+    // qu'à une installation neuve, que `composer db:migrate` complète ; ici les lignes viennent de la
     // production, donc le schéma qui les accueille doit être le sien. Un écart d'une
     // seule colonne ferait échouer les INSERT.
 
@@ -745,7 +757,17 @@ if ($phase !== 'files') {
 
     $pdoDest = connecterDestination($configDest, true);
 
+    $absentes = [];
+
     foreach (array_merge(TABLES_COPIEES, TABLES_STRUCTURE_SEULE) as $table) {
+        if (in_array($table, TABLES_STRUCTURE_SEULE, true)) {
+            $stmt = $pdoSource->query("SHOW TABLES LIKE '{$table}'");
+            if ($stmt === false || $stmt->fetchColumn() === false) {
+                $absentes[] = $table;
+                continue;
+            }
+        }
+
         $stmt = $pdoSource->query("SHOW CREATE TABLE `{$table}`");
         if ($stmt === false) {
             abandonner("table « {$table} » absente de la source.");
@@ -770,13 +792,32 @@ if ($phase !== 'files') {
     echo "\nCopie :\n";
 
     foreach ($copie as $table => $lignes) {
-        printf("  %-24s %6d\n", $table, ecrire($pdoDest, $table, $lignes));
+        printf("  %-28s %6d\n", $table, ecrire($pdoDest, $table, $lignes));
     }
 
     // Les tables sans lignes sont annoncées elles aussi : absentes du décompte, on les
     // chercherait dans la copie avant de comprendre qu'elles y sont bien, mais vides.
     foreach (TABLES_STRUCTURE_SEULE as $table) {
-        printf("  %-24s %6s\n", $table, 'vide');
+        printf(
+            "  %-28s %6s\n",
+            $table,
+            in_array($table, $absentes, true) ? 'absente de la source, à créer par composer db:migrate' : 'vide'
+        );
+    }
+
+    // Le registre de Doctrine Migrations suit le schéma, qui est celui de la production :
+    // sans lui, `composer db:migrate` rejouerait sur la copie une migration déjà passée.
+    // Facultatif, une production que `db:migrate` n'a encore jamais touchée ne l'ayant pas.
+    $stmt = $pdoSource->query("SHOW TABLES LIKE '" . TABLE_MIGRATIONS . "'");
+    if ($stmt !== false && $stmt->fetchColumn() !== false) {
+        $creation = $pdoSource->query('SHOW CREATE TABLE `' . TABLE_MIGRATIONS . '`');
+        $versions = $pdoSource->query('SELECT * FROM `' . TABLE_MIGRATIONS . '`');
+        if ($creation === false || $versions === false) {
+            abandonner('lecture de la table ' . TABLE_MIGRATIONS . ' impossible.');
+        }
+
+        $pdoDest->exec((string) $creation->fetch()['Create Table']);
+        printf("  %-28s %6d\n", TABLE_MIGRATIONS, ecrire($pdoDest, TABLE_MIGRATIONS, $versions->fetchAll()));
     }
 
     // Sous quel compte se connecter : le mot de passe est le même partout, seul

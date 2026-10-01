@@ -186,7 +186,7 @@ class HtmlShrink
                 /*
                  * Les cantons viennent de la table, les libellés de la configuration : rien ne
                  * garantit que les deux s'accordent. Un canton inconnu — le canton vide de la
-                 * localité fourre-tout, tant que v3-12-0_localite-france.sql n'a pas tourné —
+                 * localité fourre-tout, tant que la migration de la 3.12.0 n'a pas tourné —
                  * faisait tomber toute la page sur « Undefined array key ». Il est montré tel
                  * quel, et échappé : ce libellé de repli sort de la base.
                  */

@@ -76,4 +76,4 @@ Le secret est dans `app/config.php`, suivi par git, dans un dépôt public : **i
 
 Un index sur `idEvenement` sert le sens inverse, compter ou lister qui a mis un événement en favori. Rien n'efface les lignes d'un événement supprimé : elles ne remontent simplement plus, la jointure ne trouvant pas l'événement.
 
-La migration est `resources/database/v3-13-0_personne-evenement-create-table.sql` — voir [UPGRADE.md](../UPGRADE.md).
+La migration est `resources/database/migrations/Version20260926000000.php`, passée par `composer db:migrate` — voir [UPGRADE.md](../UPGRADE.md).

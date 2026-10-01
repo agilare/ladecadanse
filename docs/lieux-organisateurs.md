@@ -139,7 +139,7 @@ portent la même liste. Le `SET` est un masque de bits dont les positions vienne
 déclaration : une valeur nouvelle s'y ajoute **à la fin**, sans quoi les lignes déjà écrites
 changeraient de sens. La constante, elle, sert l'affichage et garde « autre » en dernier. Ajouter une
 catégorie, c'est donc : une entrée dans `Lieu::CATEGORIES`, une valeur appendée au `SET` par une
-migration, le report dans `resources/database/ladecadanse.sql`. Rien d'autre — aucune icône, aucune
+migration (voir [resources/database/README.md](../resources/database/README.md)). Rien d'autre — aucune icône, aucune
 classe CSS ni aucun slug ne dépend du code de catégorie.
 
 ### Localité, quartier et région

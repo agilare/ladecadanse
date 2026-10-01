@@ -4,8 +4,11 @@ docker/*
 .github/*
 app/env_model.php
 app/db.config_model.php
-resources/*.sql
-resources/*.md
+# schéma de référence et migrations : passés depuis le poste de développement, jamais par le site
+/resources/database
+resources/database/*
+migrations.php
+migrations-db.php
 tests*
 .editorconfig
 .gitattributes

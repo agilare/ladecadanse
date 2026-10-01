@@ -19,7 +19,7 @@ use PDO;
  * La purge ne parcourt qu'une fenêtre de WINDOW_DAYS jours avant le seuil : `evenement` est en
  * MyISAM, et un UPDATE sur tous les événements de plus de deux ans — l'essentiel de la table —
  * la verrouillerait à chaque passage pour n'y trouver presque rien. Ce qui précède la fenêtre
- * relève du rattrapage `resources/database/v3-13-0_evenement-purge-contact.sql`.
+ * relève du rattrapage, la migration `resources/database/migrations/Version20260930000000.php`.
  */
 class EventContactRetention
 {
