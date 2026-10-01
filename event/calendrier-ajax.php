@@ -6,6 +6,8 @@
 
 require_once("../app/bootstrap.php");
 
+use Ladecadanse\Utils\QueryParamValidator;
+
 if (empty($_SERVER['HTTP_X_REQUESTED_WITH']))
 {
     http_response_code(403);
@@ -14,20 +16,11 @@ if (empty($_SERVER['HTTP_X_REQUESTED_WITH']))
 
 header('X-Robots-Tag: noindex');
 
-$get['courant'] = $glo_auj_6h;
-$courant_input = trim((string) ($_GET['courant'] ?? ''));
-if (!empty($courant_input) && preg_match("/^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}$/", $courant_input))
-{
-    $get['courant'] = $courant_input;
-}
+$get['courant'] = QueryParamValidator::jourFromQuery($_GET['courant'] ?? '', $glo_auj_6h);
 
 // Allow highlighting the page's current date when it falls in the displayed month
-$page_courant_input = trim((string) ($_GET['page_courant'] ?? ''));
-if (!empty($page_courant_input) && preg_match("/^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}$/", $page_courant_input))
-{
-    $calendar_page_courant = $page_courant_input;
-}
-else
+$calendar_page_courant = QueryParamValidator::jourFromQuery($_GET['page_courant'] ?? '', '');
+if ($calendar_page_courant === '')
 {
     $calendar_no_selection = true;
 }

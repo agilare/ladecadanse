@@ -159,4 +159,27 @@ final class QueryParamValidatorTest extends Unit
     {
         $this->assertSame('ajouter', QueryParamValidator::enumFromQuery(['editer'], self::ACTIONS, 'ajouter'));
     }
+
+    public function testJourFromQueryKeepsAValidDay(): void
+    {
+        $this->assertSame('2030-12-25', QueryParamValidator::jourFromQuery(' 2030-12-25 ', 'defaut'));
+    }
+
+    public function testJourFromQueryAddsLeadingZeros(): void
+    {
+        $this->assertSame('2030-01-05', QueryParamValidator::jourFromQuery('2030-1-5', 'defaut'));
+    }
+
+    public function testJourFromQueryFallsBackOnAnImpossibleDay(): void
+    {
+        $this->assertSame('defaut', QueryParamValidator::jourFromQuery('2030-2-30', 'defaut'));
+        $this->assertSame('defaut', QueryParamValidator::jourFromQuery('2030-13-45', 'defaut'));
+    }
+
+    public function testJourFromQueryFallsBackOnGarbage(): void
+    {
+        $this->assertSame('defaut', QueryParamValidator::jourFromQuery('', 'defaut'));
+        $this->assertSame('defaut', QueryParamValidator::jourFromQuery('demain', 'defaut'));
+        $this->assertSame('defaut', QueryParamValidator::jourFromQuery(['2030-12-25'], 'defaut'));
+    }
 }
