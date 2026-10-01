@@ -21,7 +21,7 @@ Disallow: /annuaire-membres.php
 # On borne donc la fenêtre : année en cours + suivante ouvertes, le reste
 # fermé. Ferme à la fois l'archive et la fuite en avant (courant=2099-...).
 #
-# >>> UNE LIGNE À AJOUTER CHAQUE 1er JANVIER <<<
+# Années réécrites à chaque requête par misc/robots.php : rien à changer au 1er janvier.
 Disallow: /*?*courant=
 Allow: /index.php?courant=2026-
 Allow: /index.php?courant=2027-
