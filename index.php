@@ -32,6 +32,8 @@ if (!empty($_GET['courant']) && preg_match("/^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}$/",
 
 $is_courant_today = (empty($get['courant']) || $get['courant'] == $glo_auj_6h);
 
+$page_url = $is_courant_today ? "" : HtmlShrink::urlCanonique($page_url, ['courant' => $get['courant']]);
+
 $day_label = !$is_courant_today ? DateHelper::isoToFr($get['courant']) : "aujourd'hui";
 
 $courant_year = (new DateTime($get['courant']))->format("Y");

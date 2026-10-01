@@ -8,6 +8,8 @@ use Ladecadanse\UserLevel;
 // de sécurité, le verrou est purement au rendu : sans le script d'amorçage ci-dessous,
 // mouseless.js ne s'active jamais.
 $mouseless_allowed = isset($_SESSION['Sgroupe']) && (int) $_SESSION['Sgroupe'] <= UserLevel::ADMIN;
+
+$page_url_absolue = isset($page_url) ? sanitizeForHtml(SITE_CANONICAL_URL . '/' . $page_url) : null;
 ?>
 
 <!doctype html>
@@ -36,8 +38,9 @@ $mouseless_allowed = isset($_SESSION['Sgroupe']) && (int) $_SESSION['Sgroupe'] <
     <meta property="og:locale" content="fr">
     <meta property="og:title" content="<?= sanitizeForHtml($page_titre) . " — La décadanse"; ?>">
     <meta property="og:description" content="<?= sanitizeForHtml(($page_description ?? '')) ?>">
-    <?php if (isset($page_url)) : ?>
-        <meta property="og:url" content="<?= $site_full_url . $page_url; ?>">
+    <?php if ($page_url_absolue !== null) : ?>
+        <link rel="canonical" href="<?= $page_url_absolue ?>">
+        <meta property="og:url" content="<?= $page_url_absolue ?>">
     <?php endif; ?>
     <?php if (!empty($page_image)) : ?>
         <meta property="og:image" content="<?= $site_full_url . $page_image ?>">
