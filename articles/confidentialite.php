@@ -61,6 +61,8 @@ include("../_header.inc.php");
 
         <p>Le formulaire demande votre adresse électronique&nbsp;: elle est nécessaire pour vérifier l’annonce et vous répondre. Elle est enregistrée avec l’événement et n’est jamais publiée. La remarque libre adressée à l’administrateur ne l’est pas davantage.</p>
 
+        <p>Deux ans après la date de l’événement, votre adresse et votre remarque sont effacées automatiquement&nbsp;: passé ce délai, plus rien ne relie l’annonce à vous. L’annonce elle-même, en revanche, reste dans l’agenda, qui fait archive.</p>
+
         <h2>Si vous avez un compte</h2>
 
         <p>Un compte retient votre identifiant, votre adresse électronique, votre mot de passe sous forme chiffrée, votre région, votre affiliation éventuelle à un lieu ou à un organisateur, ainsi que les dates de création, de modification et de dernière connexion. Ces informations servent à publier vos annonces sous votre nom et à vous joindre à leur sujet.</p>
@@ -77,7 +79,7 @@ include("../_header.inc.php");
             <dt>Compte</dt>
             <dd>tant qu’il existe&nbsp;; supprimé sur demande</dd>
             <dt>Événements publiés</dt>
-            <dd>conservés, l’agenda faisant archive&nbsp;; l’adresse de l’auteur en est détachée sur demande</dd>
+            <dd>conservés, l’agenda faisant archive&nbsp;; les coordonnées d’une annonce faite sans compte sont effacées deux ans après la date de l’événement, et celles d’un compte le sont sur demande</dd>
             <dt>Messages reçus</dt>
             <dd>deux ans après le dernier échange</dd>
             <dt>Suivi des robots</dt>
