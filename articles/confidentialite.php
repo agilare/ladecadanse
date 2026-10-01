@@ -73,11 +73,13 @@ include("../_header.inc.php");
 
         <p>Un message peut vous être adressé lorsqu’une évolution du site vous concerne. Ce ne sera jamais de la publicité, ni pour nous ni pour un tiers, et chaque message rappelle comment demander à ne plus en recevoir.</p>
 
+        <p>Nous ne gardons pas les comptes dont personne ne se sert. Après trois ans sans connexion, un message vous prévient&nbsp;; un mois plus tard, faute de retour, le compte est anonymisé — votre identifiant et votre adresse en sont effacés, sans retour possible. Une seule connexion suffit à repartir pour trois ans. Les événements que vous avez annoncés, eux, restent dans l’agenda&nbsp;: seul le lien avec votre compte disparaît.</p>
+
         <h2>Combien de temps</h2>
 
         <dl>
             <dt>Compte</dt>
-            <dd>tant qu’il existe&nbsp;; supprimé sur demande</dd>
+            <dd>trois ans après votre dernière connexion&nbsp;; effacé plus tôt sur demande</dd>
             <dt>Événements publiés</dt>
             <dd>conservés, l’agenda faisant archive&nbsp;; les coordonnées d’une annonce faite sans compte sont effacées deux ans après la date de l’événement, et celles d’un compte le sont sur demande</dd>
             <dt>Messages reçus</dt>
