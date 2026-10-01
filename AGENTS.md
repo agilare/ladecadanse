@@ -43,6 +43,7 @@ npm ci                                  # front-end libraries into web/libs/, pl
 cp app/env_model.php app/env.php        # Configure DB, SMTP, API keys
 cp app/db.config_model.php app/db.config.php
 composer config:build                           # Composes .htaccess and .user.ini from their fragments
+composer db:migrate                             # Applies the missing migrations (LADECADANSE_DB picks the db.config.php entry)
 ```
 
 `npm ci` is required to run the site: the front-end libraries (jQuery, Leaflet, Font Awesome, Magnific Popup, select2,
@@ -102,6 +103,10 @@ Two connectors coexist:
   templates too, which Eslint never sees. The `var` still found in `web/js/browser.js` and
   `web/js/map.js` predates the rule; modernize such a file when you touch it, don't leave new `var` behind
 - **SQL**: Use `(int)` cast for integer IDs and `$connector->sanitize()` for strings in any raw query
+- **Schema changes**: every change goes through a Doctrine Migrations class — `composer db:generate`,
+  hand-written SQL in `up()`, a `down()` or an explicit irreversible exception. `resources/database/ladecadanse.sql`
+  is frozen at 3.13.0: never edit it. Run `composer db:migrate` after `composer install` to bring a
+  database up to date; see `resources/database/README.md`
 - **HTML output**: Use `sanitizeForHtml()` (from `librairies/Utils/utils_functions.php`) when echoing user data
 - **Legacy globals**: `$connector`, `$authorization`, `$videur`, `$logger` are available globally after bootstrap
 - **Config**: Feature flags and credentials live in `app/env.php` (not committed); see `app/env_model.php` for the full list

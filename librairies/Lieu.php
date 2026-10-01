@@ -74,7 +74,7 @@ class Lieu extends Element
      * déclaration : une valeur glissée au milieu réinterpréterait silencieusement toutes
      * les lignes existantes, une catégorie nouvelle s'ajoute donc **à la fin** du SET.
      * Ici, où l'ordre ne porte rien, elle s'ajoute où on veut. Voir
-     * resources/database/v3-13-0_lieu-categories.sql.
+     * resources/database/migrations/Version20260908000000.php.
      *
      * Les libellés sont en minuscules : ils s'affichent aussi en énumération sous le nom
      * du lieu (`categoriesEnClair()`), où une capitale au milieu d'une phrase détonne.

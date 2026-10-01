@@ -58,11 +58,12 @@ final class LocaliteTest extends Unit
      */
     public function testLesLibellesFourreToutSuiventLaMigration(): void
     {
-        $migrations = glob(__DIR__ . '/../../resources/database/*_localite-france.sql');
+        // l'ancien script v3-12-0_localite-france.sql, devenu une classe Doctrine Migrations
+        $migration = __DIR__ . '/../../resources/database/migrations/Version20260825000000.php';
 
-        $this->assertCount(1, (array) $migrations, "Une migration *_localite-france.sql et une seule est attendue");
+        $this->assertFileExists($migration);
 
-        $sql = (string) file_get_contents($migrations[0]);
+        $sql = (string) file_get_contents($migration);
 
         foreach (Localite::LOCALITES_FOURRE_TOUT as $libelle)
         {

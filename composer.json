@@ -52,7 +52,8 @@
     "autoload-dev": {
         "psr-4": {
             "Tests\\": "tests/",
-            "Ladecadanse\\Psalm\\": ".psalm/src/"
+            "Ladecadanse\\Psalm\\": ".psalm/src/",
+            "Ladecadanse\\Migrations\\": "resources/database/migrations/"
         }
     },
     "scripts": {
@@ -70,7 +71,13 @@
         "test:site": "vendor/bin/codecept run site",
         "config:build": "@php bin/build-config.php",
         "deploy": "@php bin/build-config.php --deploy",
-        "prod-copy": "@php bin/prod-copy.php"
+        "prod-copy": "@php bin/prod-copy.php",
+        "db:status": "@php vendor/bin/doctrine-migrations status",
+        "db:migrate": [
+            "Composer\\Config::disableProcessTimeout",
+            "@php vendor/bin/doctrine-migrations migrate"
+        ],
+        "db:generate": "@php vendor/bin/doctrine-migrations generate"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "^3.13",
@@ -88,7 +95,8 @@
         "phan/phan": "^6.0",
         "vimeo/psalm": "^6.16",
         "orklah/psalm-insane-comparison": "^2.4",
-        "rector/jack": "^1.1"
+        "rector/jack": "^1.1",
+        "doctrine/migrations": "^3.9"
     },
     "config": {
         "allow-plugins": {

@@ -1,5 +1,12 @@
 <?php
 // same values as DB_HOST, etc. constants in env.php
+//
+// `composer db:migrate` (migrations-db.php) lit aussi ce fichier, l'entrée choisie par la
+// variable d'environnement LADECADANSE_DB, 'default' à défaut. Une migration a besoin des
+// droits ALTER, CREATE, INDEX et DROP, que le compte du site n'a pas forcément : les clés
+// facultatives 'migration_user' et 'migration_password' lui en substituent un autre, par ex.
+//   'migration_user' => 'root',
+//   'migration_password' => '',
 return [
     'default' => [
         'host' => 'localhost',
@@ -12,7 +19,8 @@ return [
     // fabrique une copie locale anonymisée de la production. Inutiles tant qu'on
     // ne s'en sert pas : le reste du site n'ouvre que 'default'.
     //
-    // 'prod' est lue en lecture seule. L'offre Infomaniak n'ouvrant pas MySQL à
+    // 'prod' est lue en lecture seule par prod-copy ; `LADECADANSE_DB=prod composer
+    // db:migrate` y écrit, lui, par le même tunnel. L'offre Infomaniak n'ouvrant pas MySQL à
     // l'extérieur, « host » vise un tunnel SSH ouvert à part, le port se glissant
     // dans la valeur — DbConnectorPdo la concatène telle quelle dans le DSN :
     //

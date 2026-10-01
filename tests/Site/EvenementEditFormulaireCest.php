@@ -128,7 +128,7 @@ class EvenementEditFormulaireCest
      * value non numérique signalerait le retour de cette exception, qu'un seul des trois
      * formulaires partageant le select suffirait à réintroduire.
      *
-     * Suppose la migration v3-12-0 passée sur l'instance testée : sans elle, la localité 1 a
+     * Suppose la migration Version20260825000000 (3.12.0) passée sur l'instance testée : sans elle, la localité 1 a
      * encore un canton vide, donc un optgroup sans libellé.
      */
     public function localitesSontGroupeesParCantonLisible(SiteTester $I)

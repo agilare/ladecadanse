@@ -1,1 +1,0 @@
-ALTER TABLE evenement ADD INDEX idx_ev_idPersonne (idPersonne);

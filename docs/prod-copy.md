@@ -124,9 +124,10 @@ SELECT COUNT(*) FROM evenement e
  WHERE e.idLieu <> 0 AND l.idLieu IS NULL;
 ```
 
-La troisième répond « Unknown column » tant que la production n'a pas reçu
-`v3-13-0_lieu-organisateur-add-admin_note.sql` : la copie reprend son schéma, et il n'y a alors
-aucune note à vérifier. Repasser la migration sur la copie avant d'y faire tourner le code.
+La troisième répond « Unknown column » tant que la production n'a pas reçu la migration
+`Version20260916000000` (`admin_note`) : la copie reprend son schéma, et il n'y a alors aucune note
+à vérifier. `LADECADANSE_DB=prod_copy composer db:migrate` met la copie à niveau avant d'y faire
+tourner le code.
 
 Puis parcourir l'agenda, une fiche d'événement avec flyer, une fiche de lieu avec galerie, et
 `admin/index.php` après connexion.
@@ -135,8 +136,9 @@ Puis parcourir l'agenda, une fiche d'événement avec flyer, une fiche de lieu a
 
 Treize tables : `affiliation`, `descriptionlieu`, `evenement`, `evenement_organisateur`,
 `fichierrecu`, `lieu`, `lieu_fichierrecu`, `lieu_organisateur`, `localite`, `organisateur`,
-`personne`, `personne_organisateur`, `salle`. Deux autres, `user_reset_requests` et
-`bot_monitor`, sont créées vides : voir plus bas.
+`personne`, `personne_organisateur`, `salle`. Trois autres, `user_reset_requests`, `bot_monitor`
+et `personne_evenement`, sont créées vides : voir plus bas. Le registre des migrations,
+`doctrine_migration_versions`, est repris tel quel quand la production en a un.
 
 `localite` est reprise en entier : elle ne porte aucune donnée d'événement, mais
 `evenement.localite_id` et `lieu.localite_id` y renvoient et aucune adresse ne s'affiche sans elle.
@@ -176,6 +178,12 @@ de visiteurs pour la seconde — mais sans la table, ce qui la lit tombe : `user
 exception PDO dès la première demande, `admin/bots.php` sur sa première requête. `admin/bots.php`
 restera donc vide, et le parcours « mot de passe oublié » s'éprouve en local.
 
+`personne_evenement` porte les favoris de comptes réels : vide elle aussi. Elle est surtout
+indispensable parce que la copie reprend le registre des migrations de la production — une table
+que le registre dit créée et que la copie n'aurait pas, `composer db:migrate` ne la rattraperait
+jamais. Une production qui ne l'a pas encore n'a pas non plus la migration dans son registre : la
+table est alors sautée, et `LADECADANSE_DB=prod_copy composer db:migrate` la crée.
+
 ## Options
 
 | Option | Effet |
@@ -207,8 +215,8 @@ emplacements et laisse `--ignore-failed-read` écarter celui qui n'existe pas.
 copie partielle, que le `--force` de la suivante rattrape.
 
 **Le schéma est celui de la production**, lu par `SHOW CREATE TABLE`, et non celui de
-`resources/database/ladecadanse.sql`. Ce dernier est tenu à jour à la main et fait autorité sur une
-installation neuve ; ici les lignes viennent de la production, donc le schéma qui les accueille doit
+`resources/database/ladecadanse.sql`. Ce dernier est figé à la 3.13.0 et ne sert qu'à une
+installation neuve, que `composer db:migrate` complète ; ici les lignes viennent de la production, donc le schéma qui les accueille doit
 être le sien.
 
 **`tar` sous Windows.** GNU tar prend `C:/…` pour un hôte distant et réclame `--force-local`, que le
