@@ -256,14 +256,16 @@ class Sentry
             $this->userdata['mot_de_passe'] = password_hash($pass, PASSWORD_DEFAULT);
 
             $stmt = $this->pdo->prepare(
-                "UPDATE personne SET last_login = NOW(), mot_de_passe = :hash, gds = ''
+                "UPDATE personne SET last_login = NOW(), inactivity_notified_at = NULL, mot_de_passe = :hash, gds = ''
                  WHERE idPersonne = :idP"
             );
             $stmt->execute([':hash' => $this->userdata['mot_de_passe'], ':idP' => (int) $this->userdata['idPersonne']]);
         }
         else
         {
-            $stmt = $this->pdo->prepare("UPDATE personne SET last_login = NOW() WHERE idPersonne = :idP");
+            // inactivity_notified_at repart à NULL : qui revient après un avertissement
+            // d'inactivité retrouve son délai complet (voir InactiveAccountRetention)
+            $stmt = $this->pdo->prepare("UPDATE personne SET last_login = NOW(), inactivity_notified_at = NULL WHERE idPersonne = :idP");
             $stmt->execute([':idP' => (int) $this->userdata['idPersonne']]);
         }
 
@@ -305,6 +307,17 @@ class Sentry
         }
 
         $this->userdata = $userdata;
+
+        /*
+         * Un retour par le cookie est une connexion : sans cette mise à jour, `last_login`
+         * restait figé à la dernière saisie du mot de passe. Le cookie vivant quinze jours,
+         * quelqu'un qui repasse à ce rythme sans jamais se déconnecter paraissait inactif
+         * depuis des années — et la durée de conservation des comptes
+         * (Ladecadanse\InactiveAccountRetention) l'aurait anonymisé alors qu'il contribue.
+         */
+        $stmt = $this->pdo->prepare("UPDATE personne SET last_login = NOW(), inactivity_notified_at = NULL WHERE idPersonne = :idP");
+        $stmt->execute([':idP' => (int) $userdata['idPersonne']]);
+
         session_regenerate_id(true); // to avoid session fixation attack
         $this->initSession(true, true);
         // l'adresse n'apportait rien que l'identifiant ne dise déjà
