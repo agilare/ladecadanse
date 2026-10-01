@@ -67,7 +67,7 @@ include("../_header.inc.php");
 
         <p>Un compte retient votre identifiant, votre adresse électronique, votre mot de passe sous forme chiffrée, votre région, votre affiliation éventuelle à un lieu ou à un organisateur, ainsi que les dates de création, de modification et de dernière connexion. Ces informations servent à publier vos annonces sous votre nom et à vous joindre à leur sujet.</p>
 
-        <p>Votre adresse électronique n’est pas publique. Elle est visible des administrateurs du site, et des autres personnes rattachées au même organisateur ou au même lieu que vous&nbsp;: les membres d’une même structure ont besoin de pouvoir se joindre.</p>
+        <p>Votre adresse électronique n’est pas publique&nbsp;: seuls les administrateurs du site la voient.</p>
 
         <p>Les cookies déposés pour un compte sont ceux de la session, celui de l’option «&nbsp;rester connecté-e&nbsp;» (quinze jours, si vous la cochez) et celui qui retient la région choisie. Tous sont techniques.</p>
 
