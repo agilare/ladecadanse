@@ -117,6 +117,22 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
                 // Create the unique user password reset key
                 $token = hash('sha256', $salt . random_int(0, 1000) . $graine_du_jeton);
 
+                /*
+                 * Les demandes périmées partent d'abord. reset2.php ne retient qu'un jeton
+                 * encore valide, donc une ligne expirée n'ouvre rien — mais elle garde une
+                 * adresse en base, et rien ne l'effaçait : seule une demande menée à son terme
+                 * supprimait la sienne. La table accumulait donc les adresses de toutes les
+                 * demandes abandonnées, sans limite de temps (voir 40_Donnees_personnelles.md
+                 * dans ladecadanse-docs, traitement T5).
+                 *
+                 * Ici plutôt qu'au shutdown comme les autres durées de conservation : la table
+                 * ne grossit qu'à cet endroit, et une poignée de lignes ne vaut pas un balayage
+                 * à part. Le revers est qu'une longue période sans aucune demande laisse les
+                 * dernières lignes en place ; elles ne contiennent qu'une adresse et un jeton
+                 * mort.
+                 */
+                $connectorPdo->prepare("DELETE FROM user_reset_requests WHERE expiration < NOW()")->execute();
+
                 // création de demande avec nouveau token
                 $stmt = $connectorPdo->prepare("
                     INSERT INTO user_reset_requests (idPersonne, email, token, expiration)
