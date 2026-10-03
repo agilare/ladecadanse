@@ -2,6 +2,7 @@
 
 require_once("../app/bootstrap.php");
 
+use Ladecadanse\HtmlShrink;
 use Ladecadanse\InactiveAccountRetention;
 use Ladecadanse\Personne;
 use Ladecadanse\UserLevel;
@@ -27,6 +28,13 @@ if (!$authorization->checkGroup(UserLevel::ADMIN))
 
 $comptes = (new InactiveAccountRetention($connectorPdo->getPDO(), $logger))->pending();
 
+/*
+ * L'écran liste les comptes dus même quand le canal est à l'arrêt — c'est justement là qu'il
+ * sert, pendant la mise en route. Mais sans le dire, « Anonymisation prévue » annoncerait ce
+ * qui n'arrivera pas : d'où le bandeau, qui rend l'oubli du drapeau visible ici.
+ */
+$canal_actif = defined('ACCOUNT_RETENTION_ENABLED') && ACCOUNT_RETENTION_ENABLED;
+
 // deux groupes dans la même liste : ceux qui attendent leur avertissement, ceux qui attendent
 // leur anonymisation. pending() les rend déjà dans cet ordre.
 $attendent_avertissement = array_filter($comptes, static fn (array $c): bool => $c['inactivity_notified_at'] === null);
@@ -45,6 +53,17 @@ require_once '../_header.inc.php';
     </header>
 
     <section id="default">
+
+        <?php
+        // littéral du script, sans donnée utilisateur : msgInfo n'échappe pas et le balisage est voulu
+        if (!$canal_actif)
+        {
+            HtmlShrink::msgInfo("<strong>Le traitement automatique est à l’arrêt.</strong> Les comptes listés ci-dessous "
+                . "ne reçoivent aucun avertissement et ne sont pas anonymisés. Pour le mettre en route&nbsp;: "
+                . "<code>define(\"ACCOUNT_RETENTION_ENABLED\", true);</code> dans <code>app/env.php</code>, "
+                . "une fois l’arriéré averti à la main (voir <code>UPGRADE.md</code>).");
+        }
+        ?>
 
         <p>Un compte sans connexion depuis <?= InactiveAccountRetention::RETENTION_YEARS ?>&nbsp;ans reçoit un avertissement, puis est anonymisé <?= InactiveAccountRetention::NOTICE_DAYS ?>&nbsp;jours plus tard s’il n’est pas revenu entre-temps. Les administrateurs sont hors de ce décompte. Cette page ne déclenche rien&nbsp;: elle montre ce qui va se passer.</p>
 

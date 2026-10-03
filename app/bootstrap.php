@@ -281,13 +281,21 @@ register_shutdown_function(function () use ($connectorPdo, $logger) {
     (new \Ladecadanse\EventContactRetention($connectorPdo->getPDO(), $logger))->maybePurge();
 });
 
-// durée de conservation des comptes sans connexion (voir librairies/InactiveAccountRetention.php) ;
-// sans drapeau non plus. Le Mailing passe par une fabrique : il n'est construit que la fois
-// sur mille où le tirage réussit et où un avertissement part.
-register_shutdown_function(function () use ($connectorPdo, $logger, $tplEngine) {
-    (new \Ladecadanse\InactiveAccountRetention($connectorPdo->getPDO(), $logger))
-        ->maybeRun(static fn (): \Ladecadanse\Utils\Mailing => new \Ladecadanse\Utils\Mailing(), $tplEngine);
-});
+// durée de conservation des comptes sans connexion (voir librairies/InactiveAccountRetention.php).
+//
+// Un drapeau ici, contrairement à la purge ci-dessus, et pour une raison de mise en route et
+// non de principe : l'arriéré des comptes déjà au-dessus du seuil s'avertit à la main, et le
+// canal automatique ne doit pas partir avant (voir UPGRADE.md). Constante absente = à l'arrêt,
+// ce que l'écran admin/inactive-accounts.php affiche.
+//
+// Le Mailing passe par une fabrique : il n'est construit que la fois sur mille où le tirage
+// réussit et où un avertissement part.
+if (defined('ACCOUNT_RETENTION_ENABLED') && ACCOUNT_RETENTION_ENABLED) {
+    register_shutdown_function(function () use ($connectorPdo, $logger, $tplEngine) {
+        (new \Ladecadanse\InactiveAccountRetention($connectorPdo->getPDO(), $logger))
+            ->maybeRun(static fn (): \Ladecadanse\Utils\Mailing => new \Ladecadanse\Utils\Mailing(), $tplEngine);
+    });
+}
 
 header('X-Content-Type-Options: nosniff');
 define("CSP_NONCE", bin2hex(openssl_random_pseudo_bytes(32)));

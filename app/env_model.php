@@ -115,6 +115,22 @@ define("DARKVISITORS_ACCESS_TOKEN", '');
 define("BOT_MONITORING_ENABLED", false);
 define("BOT_MONITORING_SUSPECT_THRESHOLD", 150); // seuil de hits pour "humains suspects" dans le dashboard
 
+// avertissement puis anonymisation des comptes sans connexion depuis trois ans
+// (librairies/InactiveAccountRetention.php + admin/inactive-accounts.php)
+//
+// La colonne personne.inactivity_notified_at est posée par `composer db:migrate`
+// (migration Version20261001000000), à passer avant d'activer.
+//
+// Ce drapeau sert à la mise en route, et non à laisser le traitement à l'arrêt : l'arriéré
+// des comptes déjà au-dessus du seuil s'avertit à la main par admin/mailing.php, le canal
+// automatique ne prenant la suite qu'ensuite. Au 01.10.2026 il représentait 5 464 comptes,
+// soit 55 jours d'envois au rythme d'un avertissement par passage, aux dépens de la
+// réputation d'expéditeur du domaine. Marche à suivre dans UPGRADE.md.
+//
+// Une durée de conservation ne se désactive pas durablement (LPD art. 6 al. 4) : à false,
+// l'écran d'administration affiche l'arrêt plutôt que de le taire.
+define("ACCOUNT_RETENTION_ENABLED", false);
+
 // accepter les PDF dans les champs flyer et image d'un événement, dont seule la
 // 1re page est gardée, convertie en WebP (evenement-edit.php, admin/events.php)
 //

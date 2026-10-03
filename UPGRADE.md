@@ -43,11 +43,15 @@ La cinquième, `Version20260930000000` (ancien `v3-13-0_evenement-purge-contact.
 
 La sixième, `Version20261001000000`, ajoute `personne.inactivity_notified_at`, qui retient la date de l'avertissement envoyé à un compte inactif. **À passer avant la mise en ligne** : le code lit et écrit cette colonne à chaque connexion, et une base qui ne l'a pas répondrait par une erreur SQL. L'`ALTER` reconstruit la table `personne`, qui tient dans quelques centaines de lignes.
 
-**Avant de déployer le code, traiter l'arriéré à la main.** Au 01.10.2026, la production comptait 5 464 comptes au-dessus du seuil. Laissés au canal automatique, qui n'envoie qu'un avertissement par passage — soit une centaine par jour pour 107 500 pages servies —, ils demanderaient **55 jours d'envois continus vers des adresses vieilles de trois à vingt ans**. Le volume de rebonds abîmerait la réputation d'expéditeur du domaine, et avec elle la délivrabilité des messages qui comptent : réinitialisation de mot de passe, confirmation d'annonce.
+**Le code se déploie à l'arrêt, et l'arriéré s'avertit à la main avant la mise en route.** Au 01.10.2026, la production comptait 5 464 comptes au-dessus du seuil. Laissés au canal automatique, qui n'envoie qu'un avertissement par passage — soit une centaine par jour pour 107 500 pages servies —, ils demanderaient **55 jours d'envois continus vers des adresses vieilles de trois à vingt ans**. Le volume de rebonds abîmerait la réputation d'expéditeur du domaine, et avec elle la délivrabilité des messages qui comptent : réinitialisation de mot de passe, confirmation d'annonce.
+
+C'est à quoi sert `ACCOUNT_RETENTION_ENABLED` (voir [app/env.php](#appenvphp) plus bas) : tant qu'elle vaut `false` ou qu'elle manque, rien ne part et rien n'est anonymisé. Le reste du code se déploie donc sans attendre, et l'écran d'administration rappelle l'arrêt en tête de liste.
 
 La marche à suivre, une fois :
 
-1. **Exporter les candidats** depuis phpMyAdmin, au format qu'attend [admin/mailing.php](admin/mailing.php) :
+1. **Déployer**, `ACCOUNT_RETENTION_ENABLED` absente ou à `false`, la migration passée.
+
+2. **Exporter les candidats** depuis phpMyAdmin, au format qu'attend [admin/mailing.php](admin/mailing.php) :
 
     ```sql
     SELECT idPersonne, pseudo, email FROM personne
@@ -57,19 +61,19 @@ La marche à suivre, une fois :
       AND NOT EXISTS (SELECT 1 FROM descriptionlieu d WHERE d.idPersonne = personne.idPersonne AND d.dateAjout > DATE_SUB(CURDATE(), INTERVAL 3 YEAR));
     ```
 
-2. **Envoyer par `admin/mailing.php`**, par lots de 50. Le message doit porter la mention de l'anonymisation à venir : il tient alors lieu d'avertissement, et il n'y en aura pas d'autre. Compter une à deux minutes par lot, et 110 lots. Reprendre une séance interrompue dans l'heure : la session expire au-delà et le mailing en cours est perdu.
+3. **Envoyer par `admin/mailing.php`**, par lots de 50. Le message doit porter la mention de l'anonymisation à venir : il tient alors lieu d'avertissement, et il n'y en aura pas d'autre. Compter une à deux minutes par lot, et 110 lots. Reprendre une séance interrompue dans l'heure : la session expire au-delà et le mailing en cours est perdu.
 
-3. **Marquer les comptes servis**, avec exactement le même `WHERE` que l'export :
+4. **Marquer les comptes servis**, avec exactement le même `WHERE` que l'export :
 
     ```sql
     UPDATE personne SET inactivity_notified_at = NOW() WHERE … /* le WHERE ci-dessus */;
     ```
 
-    Sans cette étape, le code déployé réavertirait ces 5 464 comptes par le canal automatique.
+    Sans cette étape, le canal automatique réavertirait ces 5 464 comptes une fois mis en route.
 
-4. **Déployer.** Il ne reste alors qu'à anonymiser — du SQL seul, vingt comptes par passage, soit environ trois jours.
+5. **Mettre le canal en route** : `define("ACCOUNT_RETENTION_ENABLED", true);` dans `app/env.php` sur le serveur, sans redéploiement. Les comptes marqués à l'étape 4 deviennent anonymisables trente jours après leur marquage ; il ne reste alors que du SQL, vingt comptes par passage, soit environ trois jours.
 
-L'écran [admin/inactive-accounts.php](admin/inactive-accounts.php) donne la liste à tout moment, sans rien déclencher.
+L'écran [admin/inactive-accounts.php](admin/inactive-accounts.php) donne la liste à tout moment, sans rien déclencher, et dit si le canal tourne.
 
 ### Redirections
 
@@ -84,10 +88,11 @@ Les redirections 301 sont dans [`htaccess/50-routage.conf`](htaccess/50-routage.
 
 ### app/env.php
 
-Deux constantes s'ajoutent. Aucune n'est obligatoire : absente, la première vaut `false` et la seconde une liste vide, et aucune page ne tombe en erreur. Le modèle commenté est dans [`app/env_model.php`](app/env_model.php).
+Trois constantes s'ajoutent. Aucune n'est obligatoire : absentes, les deux premières valent `false` et la troisième une liste vide, et aucune page ne tombe en erreur. Le modèle commenté est dans [`app/env_model.php`](app/env_model.php).
 
 | Constante | Rôle |
 | --- | --- |
+| `ACCOUNT_RETENTION_ENABLED` | Mettre en route le traitement des comptes inactifs : avertissement, puis anonymisation trente jours plus tard. `false` par défaut, le temps d'avertir l'arriéré à la main — voir [Base de données](#base-de-données) plus haut. À ne pas laisser à `false` passé cette mise en route : c'est une durée de conservation, pas une option |
 | `EVENT_NEW_CATEGORIES_ENABLED` | Proposer les catégories d'événement encore en préversion — aujourd'hui « cours/ateliers/stages » seule. `false` par défaut ; `'preview'` la réserve aux administrateurs, `true` l'ouvre à tous. « concerts » ne dépend d'aucun drapeau — voir [docs/evenements.md](docs/evenements.md#catégories-en-préversion) |
 | `HOME_BANNERS` | Annonces affichées au-dessus de l'agenda, une entrée par annonce : `date`, `type` (`info`, `warn`, `danger`), `audience` (`tous`, ou `contributeurs` pour le niveau ACTOR et au-dessus), `titre` et `contenu`, écrits tels quels en HTML. La date identifie l'annonce : la changer la fait réapparaître chez ceux qui l'avaient fermée. `[]` = aucune annonce |
 
@@ -97,7 +102,7 @@ Rien à passer en base : `evenement.genre` est un `varchar(20)`, il accueille le
 
 ### Effets de bord à connaître
 
-- **Comptes sans connexion depuis trois ans** — ils reçoivent un avertissement, puis sont anonymisés un mois plus tard : nom d'utilisateur, adresse, affiliation et préférences effacés, rattachements aux lieux et organisateurs supprimés, sans retour possible. Leurs événements et descriptions restent publiés, détachés de leur auteur. Les administrateurs sont hors du décompte, et une connexion — y compris par le cookie « rester connecté-e » — rend son délai complet au compte. Un avertissement qui rebondit sur une adresse morte n'empêche pas l'anonymisation
+- **Comptes sans connexion depuis trois ans**, une fois `ACCOUNT_RETENTION_ENABLED` posée — ils reçoivent un avertissement, puis sont anonymisés un mois plus tard : nom d'utilisateur, adresse, affiliation et préférences effacés, rattachements aux lieux et organisateurs supprimés, sans retour possible. Leurs événements et descriptions restent publiés, détachés de leur auteur. Les administrateurs sont hors du décompte, et une connexion — y compris par le cookie « rester connecté-e » — rend son délai complet au compte. Un avertissement qui rebondit sur une adresse morte n'empêche pas l'anonymisation
 - **« Concerts » ouverte à tous dès la mise en ligne**, sans rien régler. Un événement classé `concerts` pendant la préversion apparaît sous « Concerts » pour tout le monde ; le titre de ses articles RSS dit « concerts » là où il disait « fête », et l'API ne le renvoie plus pour `category=fête` mais pour `category=concerts`
 - **Ancres des sections de l'agenda** — elles passent par `Text::slug()`, qui met en minuscules et remplace tout caractère non alphanumérique par un tiret, là où `stripAccents()` ne retirait que les diacritiques. Les cinq ancres existantes (`#fetes`, `#cine`, `#theatre`, `#expos`, `#divers`) ne bougent pas ; seule « cours/ateliers/stages » en avait besoin, son libellé portant des barres obliques
 - **Charte éditoriale** — [`articles/charte-editoriale.php`](articles/charte-editoriale.php) annonce désormais six catégories et décrit « Concerts » : les prestations musicales en live, construites autour d'artistes annoncés que le public vient écouter. Une soirée où la musique accompagne surtout la fête (DJ sets, soirées dansantes) reste dans « Fêtes », et un événement qui mêle les deux va à la part qui prédomine — la règle que rappelle le texte d'aide du champ Catégorie
