@@ -28,6 +28,28 @@ class BotMonitor
     public const USER_AGENT_MAX_LENGTH = 1024;
 
     /**
+     * @var int durée (minutes) de la fenêtre fixe de comptage des rafales. La saturation d'un
+     * hébergement mutualisé se joue en minutes, et un humain ne dépasse pas quelques dizaines
+     * de pages dans ce laps. La changer rend les pics déjà stockés incomparables aux nouveaux.
+     */
+    public const WINDOW_MINUTES = 10;
+
+    /** @var int seuil par défaut de la vue "rafales" : pages vues dans la plus forte fenêtre */
+    public const BURST_THRESHOLD = 100;
+
+    /** @var int seuil par défaut de la vue "sondeurs" : requêtes terminées en erreur 4xx */
+    public const ERROR_THRESHOLD = 10;
+
+    /** @var int longueur max. du chemin en erreur stocké (colonne last_error_path) */
+    public const ERROR_PATH_MAX_LENGTH = 255;
+
+    /**
+     * Fichiers statiques : leur 404 passe lui aussi par misc/error.php, mais une image ou une
+     * feuille de style manquante dit quelque chose du site, pas du visiteur.
+     */
+    private const STATIC_ASSET_PATTERN = '~\.(?:jpe?g|png|gif|webp|avif|svg|ico|css|m?js|map|woff2?|ttf)$~i';
+
+    /**
      * Familles de bots connues : motif regex (sur User-Agent en minuscules) => famille.
      * Évaluées dans l'ordre, avant le motif générique.
      */
@@ -104,6 +126,39 @@ class BotMonitor
     }
 
     /**
+     * Chemin demandé, sans sa query string : elle peut porter un jeton
+     * (user/reset2.php?token=…) ou une saisie de recherche, qui n'ont rien à faire ici.
+     * Sous un ErrorDocument d'Apache, REQUEST_URI reste l'URI d'origine, pas misc/error.php.
+     */
+    public static function getRequestPath(): string
+    {
+        $path = explode('?', (string) ($_SERVER['REQUEST_URI'] ?? ''), 2)[0];
+
+        return mb_substr(mb_scrub($path), 0, self::ERROR_PATH_MAX_LENGTH);
+    }
+
+    /**
+     * Statut de la réponse : le plus élevé de celui que l'application a posé
+     * (_erreur_http.inc.php) et de celui qu'Apache transmet à son ErrorDocument
+     * (misc/error.php), où PHP se croit en 200. REDIRECT_STATUS se lit par sa valeur,
+     * jamais par sa présence : certaines SAPI le posent à 200 sur toute requête.
+     */
+    public static function getResponseStatus(): int
+    {
+        return max((int) http_response_code(), (int) ($_SERVER['REDIRECT_STATUS'] ?? 0));
+    }
+
+    /**
+     * Requête à compter comme erreur du visiteur : un 4xx (les 5xx sont nos fautes, pas
+     * les siennes) sur autre chose qu'un fichier statique. C'est ce que produit un sondeur
+     * de failles (/wp-login.php, /.env) ou un scraper qui itère sur des identifiants.
+     */
+    public static function isErrorHit(int $status, string $path): bool
+    {
+        return $status >= 400 && $status < 500 && !preg_match(self::STATIC_ASSET_PATTERN, $path);
+    }
+
+    /**
      * Enregistre la page vue courante : un seul upsert par requête.
      * Aucune exception ne doit remonter : un échec DB ne casse jamais la page.
      */
@@ -118,22 +173,43 @@ class BotMonitor
             $userAgent = mb_substr((string) ($_SERVER['HTTP_USER_AGENT'] ?? ''), 0, self::USER_AGENT_MAX_LENGTH);
             $family = self::detectBotFamily($userAgent);
 
+            $path = self::getRequestPath();
+            $isError = self::isErrorHit(self::getResponseStatus(), $path);
+
+            // constante entière interpolée : la durée sert deux fois, et un marqueur nommé
+            // ne se réutilise pas en prepares natifs (HY093)
+            $windowIsOver = sprintf('window_start IS NULL OR window_start <= NOW() - INTERVAL %d MINUTE', self::WINDOW_MINUTES);
+
             // VALUES() est déprécié sur MySQL >= 8.0.20 (OK sur MariaDB/Infomaniak) ;
             // syntaxe de remplacement le moment venu : INSERT ... AS new ON DUPLICATE KEY UPDATE hit_count = new.hit_count + 1 ...
+            //
+            // Les affectations s'évaluent de gauche à droite, chacune voyant le résultat des
+            // précédentes, et l'ordre des quatre lignes de fenêtre fait partie de la logique :
+            // window_hits lit l'ancien window_start, peak_start compare le nouveau window_hits
+            // à l'ancien peak_hits. Les réordonner fausse les pics sans lever d'erreur.
             $stmt = $this->pdo->prepare(
-                "INSERT INTO bot_monitor (ip, user_agent, bot_family, hit_count, is_crawler_detect, first_seen)
-                VALUES (:ip, :ua, :family, 1, :is_bot, NOW())
+                "INSERT INTO bot_monitor (ip, user_agent, bot_family, hit_count, is_crawler_detect, first_seen,
+                    window_start, window_hits, peak_hits, peak_start, error_hits, last_error_path)
+                VALUES (:ip, :ua, :family, 1, :is_bot, NOW(), NOW(), 1, 1, NOW(), :is_error, :error_path)
                 ON DUPLICATE KEY UPDATE
                     hit_count = hit_count + 1,
                     user_agent = VALUES(user_agent),
                     bot_family = COALESCE(VALUES(bot_family), bot_family),
-                    is_crawler_detect = GREATEST(is_crawler_detect, VALUES(is_crawler_detect))"
+                    is_crawler_detect = GREATEST(is_crawler_detect, VALUES(is_crawler_detect)),
+                    window_hits = IF($windowIsOver, 1, window_hits + 1),
+                    window_start = IF($windowIsOver, NOW(), window_start),
+                    peak_start = IF(window_hits > peak_hits, window_start, peak_start),
+                    peak_hits = GREATEST(peak_hits, window_hits),
+                    error_hits = error_hits + VALUES(error_hits),
+                    last_error_path = COALESCE(VALUES(last_error_path), last_error_path)"
             );
             $stmt->execute([
                 ':ip' => $ip,
                 ':ua' => $userAgent,
                 ':family' => $family,
                 ':is_bot' => $family !== null ? 1 : 0,
+                ':is_error' => $isError ? 1 : 0,
+                ':error_path' => $isError ? $path : null,
             ]);
 
             $this->maybePurge();

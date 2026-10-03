@@ -19,7 +19,7 @@ LADECADANSE_DB=prod composer db:migrate   # demande confirmation avant d'écrire
 
 Sous PowerShell : `$env:LADECADANSE_DB='prod'; composer db:migrate`. L'entrée `prod` de `app/db.config.php` sert telle quelle ; son compte doit avoir les droits `ALTER`, `CREATE`, `INDEX` et `DROP`, sinon lui substituer `migration_user` et `migration_password` (voir `app/db.config_model.php`).
 
-Le premier passage **adopte la base** : chaque migration antérieure à Doctrine vérifie d'abord si son effet est déjà en place — la colonne, l'index, la table ou la ligne qu'elle crée — et, le cas échéant, s'enregistre sans rien exécuter. Doctrine l'accompagne d'un avertissement « did not result in any SQL statements », attendu. Une production en 3.12.0 voit ainsi les dix migrations jusqu'à la 3.12.0 enregistrées à vide, et les cinq de la 3.13.0 réellement passées, dans l'ordre :
+Le premier passage **adopte la base** : chaque migration antérieure à Doctrine vérifie d'abord si son effet est déjà en place — la colonne, l'index, la table ou la ligne qu'elle crée — et, le cas échéant, s'enregistre sans rien exécuter. Doctrine l'accompagne d'un avertissement « did not result in any SQL statements », attendu. Une production en 3.12.0 voit ainsi les dix migrations jusqu'à la 3.12.0 enregistrées à vide, et les sept de la 3.13.0 réellement passées, dans l'ordre :
 
 1. `Version20260905000000` (ancien `v3-13-0_lieu-colonnes.sql`) remanie les colonnes de la table `lieu` :
     1. `determinant` devient `preposition_nom` et passe après `nom` — « au », « chez », « à l' » sont des prépositions, pas des déterminants ;
@@ -74,6 +74,10 @@ La marche à suivre, une fois :
 5. **Mettre le canal en route** : `define("ACCOUNT_RETENTION_ENABLED", true);` dans `app/env.php` sur le serveur, sans redéploiement. Les comptes marqués à l'étape 4 deviennent anonymisables trente jours après leur marquage ; il ne reste alors que du SQL, vingt comptes par passage, soit environ trois jours.
 
 L'écran [admin/inactive-accounts.php](admin/inactive-accounts.php) donne la liste à tout moment, sans rien déclencher, et dit si le canal tourne.
+
+La septième, `Version20261003000000`, ajoute six colonnes à `bot_monitor`, la table du suivi des bots (voir [docs/bots.md](docs/bots.md)) : la fenêtre de comptage en cours (`window_start`, `window_hits`), le plus fort pic de l'IP (`peak_hits`, `peak_start`), et ses requêtes terminées en erreur (`error_hits`, `last_error_path`). Elle suppose la table créée par `Version20260716000000`, que `db:migrate` passe avant elle — une production sans la table reçoit les deux d'un coup.
+
+**À passer avant la mise en ligne du code**, que le suivi soit activé ou non au moment de la mise à jour : les six colonnes ont un défaut, l'ancien code les ignore donc sans dommage. L'inverse ne vaut pas. Avec `BOT_MONITORING_ENABLED` à `true` et la base en retard, aucune page ne tombe — l'échec est rattrapé — mais plus aucune visite n'est comptée, et **chaque page vue écrit un warning dans le log**. Les lignes existantes gardent leurs compteurs de fenêtre à zéro jusqu'à la prochaine visite de leur IP ; rien n'est recalculé. `bot_monitor` est en InnoDB : pas de verrou d'écriture, l'`ALTER` est l'affaire d'un instant.
 
 ### Redirections
 

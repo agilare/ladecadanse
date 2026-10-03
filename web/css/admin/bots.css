@@ -38,7 +38,56 @@
     white-space: nowrap;
 }
 
+/* largeur minimale : sur petit écran la table défile dans son conteneur, et sans elle
+   la colonne s'écrasait à trois caractères par ligne */
 .bots-ua {
     word-break: break-all;
+    min-width: 14em;
     max-width: 30em;
+}
+
+/* chemin demandé par un sondeur : long, sans espace, et choisi par lui. La largeur
+   minimale le garde lisible sur petit écran, où la table défile dans son conteneur */
+.bots-path {
+    font-family: monospace;
+    word-break: break-all;
+    min-width: 14em;
+    max-width: 24em;
+}
+
+.bots-titre {
+    margin: 1.2em 0 0.5em 0;
+    font-size: 1.1em;
+}
+
+/* second tableau de la vue « rafales » : même allure que table#ajouts (admin/tables.css),
+   qui ne peut pas servir deux fois sur une page */
+table.bots-now {
+    border-collapse: collapse;
+    border: 1px solid #aeaeae;
+    background: #fefefe;
+    line-height: 1.2em;
+}
+
+table.bots-now th {
+    text-align: center;
+    font-weight: bold;
+    background: #eaeaea;
+    padding: 0.4em 0.2em;
+}
+
+table.bots-now td {
+    text-align: center;
+    vertical-align: middle;
+    font-size: 0.85em;
+    padding: 0.4em 0.2em;
+}
+
+table.bots-now th:nth-child(1),
+table.bots-now td:nth-child(1) {
+    text-align: left;
+}
+
+table.bots-now tr:nth-child(even) {
+    background-color: #f2f2fe;
 }

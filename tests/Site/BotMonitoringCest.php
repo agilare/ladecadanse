@@ -44,4 +44,66 @@ class BotMonitoringCest
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->seeInSource('Disallow: ' . $this->honeypotPath);
     }
+
+    /**
+     * Une page vue anonyme ouvre (ou prolonge) la fenêtre de comptage de son IP : la vue
+     * « rafales » la montre parmi les fenêtres en cours, puis parmi les pics.
+     */
+    public function anonymousPageViewShowsUpInRafalesView(SiteTester $I)
+    {
+        $I->skipUnlessConfigured('LADECADANSE_SITE_ADMIN_USER', 'LADECADANSE_SITE_ADMIN_PASS');
+
+        $I->amOnPage('/articles/apropos.php');
+
+        $I->loginAsAdmin();
+        $I->amOnPage('/admin/bots.php?view=rafales&seuil=1');
+
+        $I->seeResponseCodeIs(HttpCode::OK);
+        $I->seeElement('table.bots-now td.bots-ip');
+        $I->seeElement('table#ajouts td.bots-ip');
+    }
+
+    /**
+     * Une requête terminée en 4xx remonte dans la vue « sondeurs » avec son chemin, sans sa
+     * query string — elle porte ailleurs un jeton de réinitialisation de mot de passe.
+     *
+     * Le chemin est rendu unique par un path info : sans cela, le chemin laissé par un passage
+     * précédent ferait passer le test même si plus rien n'était enregistré. Un 404 décidé par
+     * l'application plutôt qu'une page inexistante, pour que le test vaille aussi sous
+     * `php -S`, qui ignore l'ErrorDocument d'Apache.
+     */
+    public function failedRequestShowsUpInSondeursViewWithoutItsQueryString(SiteTester $I)
+    {
+        $I->skipUnlessConfigured('LADECADANSE_SITE_ADMIN_USER', 'LADECADANSE_SITE_ADMIN_PASS');
+
+        $path = '/event/evenement.php/sonde-' . uniqid();
+
+        $I->amOnPage($path . '?idE=999999999&token=secretdetest');
+        $I->seeResponseCodeIs(HttpCode::NOT_FOUND);
+
+        $I->loginAsAdmin();
+        $I->amOnPage('/admin/bots.php?view=sondeurs&seuil=1');
+
+        $I->see($path, 'td.bots-path');
+        $I->dontSee('secretdetest', 'td.bots-path');
+    }
+
+    /**
+     * Un fichier statique manquant dit quelque chose du site, pas du visiteur : son 404
+     * n'est pas compté comme une erreur.
+     */
+    public function missingStaticFileIsNotCountedAsAnError(SiteTester $I)
+    {
+        $I->skipUnlessConfigured('LADECADANSE_SITE_ADMIN_USER', 'LADECADANSE_SITE_ADMIN_PASS');
+
+        $path = '/event/evenement.php/sonde-' . uniqid() . '.jpg';
+
+        $I->amOnPage($path . '?idE=999999999');
+        $I->seeResponseCodeIs(HttpCode::NOT_FOUND);
+
+        $I->loginAsAdmin();
+        $I->amOnPage('/admin/bots.php?view=sondeurs&seuil=1');
+
+        $I->dontSee($path, 'td.bots-path');
+    }
 }
