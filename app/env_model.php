@@ -111,7 +111,8 @@ define("DARKVISITORS_PROJECT_KEY", '');
 define("DARKVISITORS_ACCESS_TOKEN", '');
 
 // suivi interne des bots et IP suspectes (table bot_monitor + admin/bots.php)
-// la table est créée par `composer db:migrate` (migration Version20260716000000), à passer avant d'activer
+// la table est créée et complétée par `composer db:migrate` (migrations Version20260716000000
+// et Version20261003000000), à passer avant d'activer
 define("BOT_MONITORING_ENABLED", false);
 define("BOT_MONITORING_SUSPECT_THRESHOLD", 150); // seuil de hits pour "humains suspects" dans le dashboard
 

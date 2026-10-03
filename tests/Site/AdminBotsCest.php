@@ -11,7 +11,10 @@ use Codeception\Util\HttpCode;
  */
 class AdminBotsCest
 {
-    private const VIEWS = ['scrapers', 'suspects', 'officiels'];
+    private const VIEWS = ['scrapers', 'suspects', 'rafales', 'sondeurs', 'officiels'];
+
+    /** vues filtrées par un seuil ; les autres n'en ont pas */
+    private const THRESHOLD_VIEWS = ['suspects', 'rafales', 'sondeurs'];
 
     /**
      * La page est fermée aux non-admins.
@@ -33,9 +36,9 @@ class AdminBotsCest
     }
 
     /**
-     * Les trois vues répondent et marquent leur onglet comme actif.
+     * Toutes les vues répondent et marquent leur onglet comme actif.
      */
-    public function adminSeesTheThreeViews(SiteTester $I)
+    public function adminSeesAllTheViews(SiteTester $I)
     {
         $I->skipUnlessConfigured('LADECADANSE_SITE_ADMIN_USER', 'LADECADANSE_SITE_ADMIN_PASS');
 
@@ -51,19 +54,29 @@ class AdminBotsCest
     }
 
     /**
-     * Seule la vue « suspects » propose le filtre de seuil.
+     * Les vues à seuil proposent le filtre, qui renvoie sur la vue d'où il part ;
+     * les autres ne l'affichent pas.
      */
-    public function suspectsViewOffersThresholdFilter(SiteTester $I)
+    public function thresholdViewsOfferTheirFilter(SiteTester $I)
     {
         $I->skipUnlessConfigured('LADECADANSE_SITE_ADMIN_USER', 'LADECADANSE_SITE_ADMIN_PASS');
 
         $I->loginAsAdmin();
 
-        $I->amOnPage('/admin/bots.php?view=suspects');
-        $I->seeElement('#filters input#seuil[name=seuil]');
+        foreach (self::VIEWS as $view)
+        {
+            $I->amOnPage('/admin/bots.php?view=' . $view);
 
-        $I->amOnPage('/admin/bots.php?view=scrapers');
-        $I->dontSeeElement('#filters input#seuil');
+            if (in_array($view, self::THRESHOLD_VIEWS, true))
+            {
+                $I->seeElement('#filters input#seuil[name=seuil]');
+                $I->seeElement('#filters input[type=hidden][name=view][value=' . $view . ']');
+            }
+            else
+            {
+                $I->dontSeeElement('#filters input#seuil');
+            }
+        }
     }
 
     /**
