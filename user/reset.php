@@ -93,13 +93,11 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
             $idPersonne = null;
             $user_email = null;
             $email_destinataire = '';
-            $graine_du_jeton = '';
 
             if (($compte = $chercherCompte('pseudo', $champs['login_ou_email'])) !== false)
             {
                 $idPersonne = (int) $compte['idPersonne'];
                 $email_destinataire = $compte['email'];
-                $graine_du_jeton = (string) $compte['idPersonne'];
             }
 
             if (($compte = $chercherCompte('email', $champs['login_ou_email'])) !== false)
@@ -107,15 +105,24 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
                 $idPersonne = null;
                 $user_email = $champs['login_ou_email'];
                 $email_destinataire = $compte['email'];
-                $graine_du_jeton = $champs['login_ou_email'];
             }
 
             if ($email_destinataire !== '')
             {
-                $salt = "ciek48";
-
-                // Create the unique user password reset key
-                $token = hash('sha256', $salt . random_int(0, 1000) . $graine_du_jeton);
+                /*
+                 * 256 bits tirés du générateur cryptographique, comme SecurityToken::getToken().
+                 *
+                 * La fabrication précédente était devinable : un sel en dur dans un dépôt public,
+                 * une graine que l'attaquant connaît — l'adresse ou l'identifiant de sa cible —,
+                 * et pour tout aléa un random_int(0, 1000). Mille et une valeurs à essayer
+                 * pendant les 24 h de validité du jeton suffisaient donc à prendre le compte de
+                 * qui que ce soit dont on connaissait l'adresse. Aucune limitation de tentatives
+                 * ne couvrait reset2.php.
+                 *
+                 * Les jetons déjà en base restent valides jusqu'à leur expiration, au plus un
+                 * jour après la mise en ligne : rien à migrer.
+                 */
+                $token = bin2hex(random_bytes(32));
 
                 /*
                  * Les demandes périmées partent d'abord. reset2.php ne retient qu'un jeton
