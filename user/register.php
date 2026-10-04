@@ -368,6 +368,9 @@ $erreurs = $verif->getErreurs();
             <p>
                 <label for="email">E-mail*</label>
                 <input type="email" name="email" id="email" size="35" maxlength="100" value="<?= sanitizeForHtml($champs['email']) ?>" autocomplete="email" required<?= isset($erreurs['email']) ? ' class="champ_errone" aria-invalid="true"' : '' ?>>
+                <?php /* Au point de collecte, comme le demande le RGPD : le lien du pied de page
+                         est un item de navigation parmi six, que rien ne rattache à ce champ. */ ?>
+                <span class="guide_champ">Jamais publiée. <a href="/articles/confidentialite.php">Ce que nous faisons de vos données</a>.</span>
             </p>
 
             <?php /* Un seul champ, avec de quoi relire sa saisie : la confirmation ne

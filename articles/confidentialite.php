@@ -1,0 +1,137 @@
+<?php
+
+require_once("../app/bootstrap.php");
+
+$page_titre = "Confidentialité";
+$page_description = "Quelles données personnelles La décadanse collecte, pourquoi, combien de temps, et comment exercer vos droits";
+include("../_header.inc.php");
+?>
+
+<main id="contenu" class="colonne">
+
+    <header id="entete_contenu">
+        <h1>Confidentialité</h1>
+        <div class="spacer"></div>
+    </header>
+
+    <article class="rubrique">
+
+        <p>La&nbsp;décadanse est un agenda culturel indépendant, tenu par une personne, sans but commercial. Aucune donnée n’y est vendue, louée, échangée ni utilisée à des fins publicitaires. Cette page décrit ce qui est collecté malgré tout, pourquoi, et ce que vous pouvez demander.</p>
+
+        <p>Elle est écrite au regard de la loi fédérale sur la protection des données (LPD) et du règlement européen (RGPD), ce dernier parce que le site publie aussi des événements en France voisine.</p>
+
+        <h2>Qui est responsable</h2>
+
+        <p>Michel&nbsp;Gaudry, Genève, Suisse.<br />
+        Pour toute question ou demande&nbsp;: <a href="/misc/contacteznous.php">la page de contact</a>, qui donne aussi l’adresse électronique.</p>
+
+        <h2>Si vous consultez simplement l’agenda</h2>
+
+        <p>Vous n’avez rien à fournir&nbsp;: la consultation ne demande ni compte, ni inscription, ni acceptation de quoi que ce soit. Quelques traces subsistent néanmoins.</p>
+
+        <h3>La mesure d’audience</h3>
+
+        <p>Pour savoir quelles rubriques servent, le site compte ses visites avec <a href="https://matomo.org" rel="external" target="_blank">Matomo</a>, un logiciel de statistiques de fréquentation installé sur nos propres serveurs en Suisse. Rien ne part chez un tiers.</p>
+
+        <p>Deux cookies (<code>_pk_id</code> et <code>_pk_ses</code>) distinguent les visites, et sont retenus les pages vues, la page d’où vous venez, votre navigateur et la taille de votre écran. Aucun profil individuel n’est constitué, aucune donnée n’est recoupée avec autre chose. Votre adresse&nbsp;IP est amputée de ses deux derniers nombres avant d’être enregistrée, y compris avant d’en déduire votre pays&nbsp;: nous savons d’où vous venez à l’échelle du pays, jamais de la ville.</p>
+
+        <p><a href="https://tools.ladecadanse.ch/matomo/index.php?module=CoreAdminHome&amp;action=optOut&amp;language=fr&amp;backgroundColor=ffffff&amp;fontColor=333333&amp;fontSize=13px&amp;fontFamily=Verdana%2CArial" rel="external" target="_blank">Vous pouvez refuser ce comptage</a>&nbsp;: la case à cocher de cette page dépose un marqueur qui exclut vos visites. Il vit dans votre navigateur, et disparaît donc si vous effacez vos cookies ou changez d’appareil. Le signal <em>Do Not Track</em>, lorsqu’un navigateur l’envoie encore, est respecté lui aussi.</p>
+
+        <h3>Le suivi des robots</h3>
+
+        <p>Des robots d’indexation et d’aspiration visitent le site en nombre, et pèsent lourd sur un hébergement modeste. Pour les freiner, chaque visite non identifiée est enregistrée avec son adresse&nbsp;IP, le nom du navigateur et le nombre de pages vues&nbsp;; les visiteurs humains sont compris, les deux ne se distinguant pas d’avance. Ces lignes s’effacent après 90&nbsp;jours, un an pour les adresses qui ignorent délibérément nos règles d’accès, et ne sont communiquées à personne.</p>
+
+        <h3>Ce que voient des serveurs extérieurs</h3>
+
+        <p>Tout serveur sollicité voit l’adresse&nbsp;IP qui le sollicite, et le site n’en sollicite qu’un&nbsp;: sur les fiches de lieu qui ont des coordonnées, la carte est faite d’images demandées à <a href="https://www.openstreetmap.org" rel="external" target="_blank">OpenStreetMap</a>, fondation britannique. Les fiches sans coordonnées n’appellent aucune carte, et tout le reste est servi depuis nos propres machines.</p>
+
+        <h3>Les journaux de l’hébergeur</h3>
+
+        <p>Le site est hébergé par <a href="https://www.infomaniak.com" rel="external" target="_blank">Infomaniak</a>, en Suisse. Comme tout serveur web, le sien conserve un journal des requêtes avec l’adresse&nbsp;IP et la page demandée, pour des raisons techniques et de sécurité. Ces journaux ne vivent que quelques jours, et nous n’en gardons pas de copie.</p>
+
+        <h2>Si vous nous écrivez</h2>
+
+        <p>Le <a href="/misc/contacteznous.php">formulaire de contact</a> transmet votre adresse, votre sujet et votre message par courriel, sans rien enregistrer dans le site&nbsp;; le message vit dans une boîte mail, supprimé au plus tard deux ans après le dernier échange. La fonction «&nbsp;envoyer à quelqu’un&nbsp;» d’un événement, elle, expédie un courriel une fois à l’adresse que vous indiquez, sans la conserver ni l’inscrire sur aucune liste.</p>
+
+        <h2>Si vous annoncez un événement sans compte</h2>
+
+        <p>Le formulaire demande votre adresse électronique, nécessaire pour vérifier l’annonce et vous répondre. Ni elle ni la remarque adressée à l’administrateur ne sont publiées, et toutes deux s’effacent deux ans après la date de l’événement&nbsp;: plus rien ne relie alors l’annonce à vous. L’annonce, elle, reste dans l’agenda, qui fait archive.</p>
+
+        <h2>Si vous avez un compte</h2>
+
+        <p>Un compte retient votre adresse électronique, votre mot de passe sous forme chiffrée, un nom d’utilisateur si vous en choisissez un, votre région, votre affiliation éventuelle à un lieu ou à un organisateur, ainsi que les dates de création, de modification et de dernière connexion. Ces informations servent à rattacher vos annonces à votre compte et à vous joindre à leur sujet.</p>
+
+        <p>Le champ «&nbsp;adresse électronique&nbsp;» n’est jamais publié&nbsp;: seuls les administrateurs du site le voient. Votre nom d’utilisateur, en revanche, signe par défaut les événements que vous annoncez — le «&nbsp;Ajouté par…&nbsp;» au bas de la fiche —, et il est donc public&nbsp;: <strong>n’y mettez pas votre adresse électronique</strong>. Votre profil permet de ne plus signer du tout&nbsp;; pour changer le nom lui-même, écrivez-nous.</p>
+
+        <p>Les cookies déposés pour un compte sont ceux de la session, celui de l’option «&nbsp;rester connecté-e&nbsp;» (trente jours, si vous la cochez) et celui qui retient la région choisie. Tous sont techniques.</p>
+
+        <p>Un message peut vous être adressé lorsqu’une évolution du site vous concerne. Ce ne sera jamais de la publicité, ni pour nous ni pour un tiers, et chaque message rappelle comment demander à ne plus en recevoir.</p>
+
+        <p>Un compte sans connexion depuis trois ans reçoit un avertissement, puis est anonymisé un mois plus tard&nbsp;: adresse et identifiant effacés, sans retour possible. Une seule connexion suffit à repartir pour trois ans, et les événements annoncés restent dans l’agenda, détachés du compte.</p>
+
+        <h2>Combien de temps</h2>
+
+        <dl>
+            <dt>Compte</dt>
+            <dd>trois ans après votre dernière connexion&nbsp;; effacé plus tôt sur demande</dd>
+            <dt>Événements publiés</dt>
+            <dd>conservés, l’agenda faisant archive&nbsp;; les coordonnées d’une annonce faite sans compte sont effacées deux ans après la date de l’événement, et celles d’un compte le sont sur demande</dd>
+            <dt>Messages reçus</dt>
+            <dd>deux ans après le dernier échange</dd>
+            <dt>Suivi des robots</dt>
+            <dd>90 jours, ou un an après un accès abusif</dd>
+            <dt>Mesure d’audience</dt>
+            <dd>cookie et données détaillées de visite&nbsp;: treize mois&nbsp;; au-delà, seules les statistiques agrégées subsistent</dd>
+            <dt>Journaux techniques</dt>
+            <dd>quelques jours chez l’hébergeur&nbsp;; quatorze mois pour ceux du site, qui ne retiennent pas d’adresse&nbsp;IP</dd>
+        </dl>
+
+        <h2>Vos droits</h2>
+
+        <p>Vous pouvez demander&nbsp;:</p>
+
+        <ul>
+            <li>à savoir quelles données vous concernant sont détenues, et en obtenir une copie&nbsp;;</li>
+            <li>la correction de ce qui est inexact&nbsp;;</li>
+            <li>la suppression de votre compte et des données qui s’y rattachent&nbsp;;</li>
+            <li>de vous opposer à la mesure d’audience ou au suivi décrits plus haut — pour la mesure d’audience, le lien donné plus haut suffit, sans rien demander à personne.</li>
+        </ul>
+
+        <p>Passez par <a href="/misc/contacteznous.php">la page de contact</a>. La réponse vous parviendra dans les trente jours, gratuitement.</p>
+
+        <p>Les événements déjà publiés ne sont pas effacés lorsqu’un compte l’est&nbsp;: ce sont des annonces publiques que l’agenda conserve comme archive. Le lien entre l’événement et vous, lui, est supprimé.</p>
+
+        <p>Si une réponse ne vous satisfait pas, vous pouvez saisir le <a href="https://www.edoeb.admin.ch" rel="external" target="_blank">Préposé fédéral à la protection des données et à la transparence</a> en Suisse, ou l’autorité de protection des données de votre pays si vous résidez dans l’Union européenne.</p>
+
+        <h2>Ce que le site ne fait pas</h2>
+
+        <ul>
+            <li>aucune revente, location ou cession de données&nbsp;;</li>
+            <li>aucune publicité, aucun traceur publicitaire, aucun bouton de réseau social&nbsp;;</li>
+            <li>aucune décision automatisée vous concernant&nbsp;;</li>
+            <li>aucune collecte de données sensibles (santé, opinions, convictions, orientation)&nbsp;;</li>
+            <li>aucun service destiné aux enfants.</li>
+        </ul>
+
+        <h2>Sécurité</h2>
+
+        <p>Le site est servi exclusivement en HTTPS. Les mots de passe sont stockés hachés, jamais en clair. L’accès à l’administration est restreint et journalisé, et l’hébergeur assure les sauvegardes. En cas de fuite de données présentant un risque élevé, les personnes concernées et l’autorité compétente seront prévenues.</p>
+
+        <h2>Modifications</h2>
+
+        <p>Cette page peut évoluer avec le site. Sa dernière mise à jour date du <time datetime="2026-10-04">4 octobre 2026</time>.</p>
+
+    </article>
+
+</main>
+
+<div id="colonne_gauche" class="colonne">
+    <?php include("../event/_navigation_calendrier.inc.php"); ?>
+</div>
+
+<div id="colonne_droite" class="colonne">
+</div>
+
+<?php
+include("../_footer.inc.php");
+?>
