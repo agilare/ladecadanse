@@ -130,14 +130,16 @@ include("../_header.inc.php");
                 </p>
 
                 <p>
-                    <label for="contenu" id="label_contenu">Message* </label>
+                    <?php // for="message" et non "contenu" : c'est l'id du textarea, et « contenu »
+                          // est celui du <main> de la page — le label y pointait, donc nulle part ?>
+                    <label for="message" id="label_contenu">Message* </label>
                     <textarea name="contenu" id="message" rows="14" tabindex="3" required><?= sanitizeForHtml($champs['contenu'] . $fields_prefilled['contenu']) ?></textarea>
                     <?= $verif->getErreur("contenu"); ?>
                 </p>
 
-            </fieldset>
+                <div class="guideChamp">Votre message n’est pas enregistré sur le site&nbsp;: il part par courriel. <a href="/articles/confidentialite.php">En savoir plus</a></div>
 
-            <p class="guideChamp">Votre message n’est pas enregistré sur le site&nbsp;: il part par courriel. <a href="/articles/confidentialite.php">En savoir plus</a>.</p>
+            </fieldset>
 
             <p class="piedForm">
                 <input type="hidden" name="formulaire" value="ok" />
