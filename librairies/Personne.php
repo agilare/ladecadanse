@@ -218,7 +218,15 @@ class Personne
         // « <strong></strong> », qui n'est pas une chaîne vide : les pages qui testent la
         // signature écrivaient « Ajouté par  le 3 mars », et la fiche de profil affichait du
         // vide là où elle annonce « aucune ».
-        if ($auteur['signature'] === 'pseudo' && trim((string) $auteur['pseudo']) !== '')
+        //
+        // Un nom d'utilisateur qui est une adresse électronique ne signe pas non plus : la
+        // signature est le seul endroit public où ce champ paraisse, et des comptes y ont mis
+        // leur adresse — publiée telle quelle sous chacune de leurs annonces, à portée des
+        // moissonneurs. Le champ étant en lecture seule hors SUPERADMIN (user-edit.php), ces
+        // personnes ne pouvaient pas le corriger elles-mêmes.
+        if ($auteur['signature'] === 'pseudo'
+            && trim((string) $auteur['pseudo']) !== ''
+            && !self::looksLikeEmail((string) $auteur['pseudo']))
         {
             $signature = "<strong>" . sanitizeForHtml($auteur['pseudo']) . "</strong>";
         }
@@ -234,6 +242,21 @@ class Personne
         }
 
         return $signature;
+    }
+
+    /**
+     * Cette valeur ressemble-t-elle à une adresse électronique ?
+     *
+     * Volontairement plus large que `FILTER_VALIDATE_EMAIL` : il s'agit d'écarter ce qui se lit
+     * comme une adresse, pas de valider une adresse. Une saisie mal formée — espace manquant,
+     * domaine incomplet — reste lisible par un moissonneur, et doit donc être écartée aussi.
+     *
+     * Un point est exigé après l'arobase : sans lui, un pseudo de la forme « @dj_machin »
+     * perdrait sa signature alors qu'il ne porte aucune adresse.
+     */
+    public static function looksLikeEmail(string $value): bool
+    {
+        return (bool) preg_match('/\S+@\S+\.\S+/', trim($value));
     }
 
 
