@@ -316,6 +316,21 @@ form#ajouter_editer .guideChamp
 	line-height:1.2em;
 }
 
+/*
+ * Une note sous un champ qui appelle une action plutôt qu'elle n'explique : elle prend
+ * l'indentation de .guideChamp — celle de la colonne des champs, y compris sa valeur
+ * réduite en vue étroite — mais garde le corps et le droit du texte courant, l'italique
+ * de l'aide affaiblissant un lien sur lequel on veut cliquer.
+ *
+ * Trois classes : plus spécifique que la règle de mobile.css, donc valable aux deux
+ * largeurs sans avoir à s'y répéter.
+ */
+form#ajouter_editer .guideChamp.action
+{
+	font-style: normal;
+	font-size: 1em;
+}
+
 form#ajouter_editer  p.enteteForm
 {
 	width:5em;

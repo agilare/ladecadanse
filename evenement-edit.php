@@ -1266,8 +1266,8 @@ if ($show_form)
                        required size="30" <?php echo ($est_connecte && !empty($champs['user_email'])) ? 'readonly class="readonly" ': 'autocomplete="email" '; ?> maxlength="120">
             </p>
             <?php if (!$est_connecte && !$isMemberOnly) { ?>
-            <p>Déjà un compte ? <a href="/user/login.php">Connectez-vous</a>, ajoutez votre événement et il sera immédiatement publié</p>
-            <p class="guideChamp">Votre adresse sert à vérifier l’annonce et à vous répondre&nbsp;; elle n’est jamais publiée. <a href="/articles/confidentialite.php">En savoir plus</a>.</p>
+            <p class="guideChamp action">Déjà un compte ? <a href="/user/login.php">Connectez-vous</a>, ajoutez votre événement et il sera immédiatement publié</p>
+            <p class="guideChamp">Votre adresse email sert à vérifier l’annonce et à vous répondre&nbsp;; elle n’est jamais publiée. <a href="/articles/confidentialite.php">Plus d’infos</a></p>
             <?php } ?>
         </fieldset>
     <?php } ?>
