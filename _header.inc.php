@@ -100,22 +100,13 @@ $mouseless_allowed = isset($_SESSION['Sgroupe']) && (int) $_SESSION['Sgroupe'] <
         <script nonce="<?= CSP_NONCE ?>">
             'use strict';
             var _paq = window._paq = window._paq || [];
-              <?php // L'identifiant numérique, jamais le pseudo : celui-ci est l'identité
-                    // publique du site, affichée à côté de chaque événement, et le voir dans
-                    // Matomo revenait à relier un parcours de navigation à une personne nommée.
-                    // Le pseudo étant devenu facultatif, l'identifiant de compte servait déjà
-                    // de repli ; il devient la seule valeur envoyée, ce qui supprime du même
-                    // coup le besoin de distinguer les deux cas.
-                    // Mesure transitoire : ce setUserId est destiné à disparaître, un
-                    // identifiant de compte persistant faisant de toute façon sortir la mesure
-                    // d'audience de l'exemption de consentement (voir 40_Donnees_personnelles.md
-                    // dans ladecadanse-docs). Le cast garde une chaîne, ce qu'attend Matomo. ?>
-              <?php if (isset($_SESSION['SidPersonne'])) : ?>
-                  _paq.push(['setUserId', <?= json_encode((string) $_SESSION['SidPersonne']) ?>]);
-              <?php endif; ?>
-              <?php if (!isset($_SESSION['SidPersonne']) && !empty($_COOKIE['just_logged_out'])) : ?>
-                  _paq.push(['resetUserId']);
-              <?php endif; ?>
+              <?php // Aucun setUserId, volontairement : un identifiant de compte persistant
+                    // laisse reconstituer le parcours d'une personne à travers ses sessions et
+                    // ses appareils, ce qui n'est plus de la statistique et fait sortir la
+                    // mesure d'audience de l'exemption de consentement. C'est l'usage même d'un
+                    // User ID qui pose problème, pas la lisibilité de sa valeur : le
+                    // pseudonymiser n'y changerait rien. Les conditions d'une réactivation
+                    // ponctuelle sont dans 40_Donnees_personnelles.md (ladecadanse-docs, T6). ?>
             /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
             _paq.push(['trackPageView']);
             _paq.push(['enableLinkTracking']);
