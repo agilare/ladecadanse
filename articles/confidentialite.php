@@ -67,7 +67,7 @@ include("../_header.inc.php");
 
         <p>Un message peut vous être adressé lorsqu’une évolution du site vous concerne. Ce ne sera jamais de la publicité, ni pour nous ni pour un tiers, et chaque message rappelle comment demander à ne plus en recevoir.</p>
 
-        <p>Un compte sans connexion depuis trois ans reçoit un avertissement, puis est anonymisé un mois plus tard&nbsp;: adresse et identifiant effacés, sans retour possible. Une seule connexion suffit à repartir pour trois ans, et les événements annoncés restent dans l’agenda, détachés du compte.</p>
+        <p>La durée de conservation d’un compte est de trois ans sans connexion. Au terme de ce délai, un avertissement est envoyé, puis le compte anonymisé un mois plus tard&nbsp;: adresse et identifiant effacés, sans retour possible. Ce nettoyage est en cours de mise en route. Une seule connexion suffit à repartir pour trois ans, et les événements annoncés restent dans l’agenda, détachés du compte.</p>
 
         <h2>Combien de temps</h2>
 
