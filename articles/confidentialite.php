@@ -33,7 +33,9 @@ include("../_header.inc.php");
 
         <p>Le site utilise <a href="https://matomo.org" rel="external" target="_blank">Matomo</a>, installé sur nos propres serveurs en Suisse. Aucune donnée de fréquentation ne part chez un tiers, et il n’y a ni Google Analytics, ni bouton de réseau social, ni régie publicitaire.</p>
 
-        <p>Matomo dépose deux cookies (<code>_pk_id</code> et <code>_pk_ses</code>) pour distinguer les visites, et retient les pages vues, la page d’où vous venez, votre navigateur et la taille de votre écran. Le but est de savoir quelles rubriques servent, rien de plus&nbsp;: aucun profil individuel n’est constitué, aucune donnée n’est recoupée avec autre chose. Si votre navigateur envoie le signal <em>Do Not Track</em>, il est respecté.</p>
+        <p>Matomo dépose deux cookies (<code>_pk_id</code> et <code>_pk_ses</code>) pour distinguer les visites, et retient les pages vues, la page d’où vous venez, votre navigateur et la taille de votre écran. Le but est de savoir quelles rubriques servent, rien de plus&nbsp;: aucun profil individuel n’est constitué, aucune donnée n’est recoupée avec autre chose. Votre adresse&nbsp;IP est amputée de ses deux derniers nombres avant d’être enregistrée, y compris avant d’en déduire votre pays&nbsp;: nous savons d’où vous venez à l’échelle du pays, jamais de la ville.</p>
+
+        <p><a href="https://tools.ladecadanse.ch/matomo/index.php?module=CoreAdminHome&amp;action=optOut&amp;language=fr" rel="external" target="_blank">Vous pouvez refuser cette mesure</a>&nbsp;: la case à cocher de cette page dépose un marqueur qui exclut vos visites. Il vit dans votre navigateur, et disparaît donc si vous effacez vos cookies ou changez d’appareil. Le signal <em>Do Not Track</em>, lorsqu’un navigateur l’envoie encore, est respecté lui aussi.</p>
 
         <h3>Le suivi des robots</h3>
 
@@ -100,7 +102,7 @@ include("../_header.inc.php");
             <li>à savoir quelles données vous concernant sont détenues, et en obtenir une copie&nbsp;;</li>
             <li>la correction de ce qui est inexact&nbsp;;</li>
             <li>la suppression de votre compte et des données qui s’y rattachent&nbsp;;</li>
-            <li>de vous opposer à la mesure d’audience ou au suivi décrits plus haut.</li>
+            <li>de vous opposer à la mesure d’audience ou au suivi décrits plus haut — pour la mesure d’audience, le lien donné plus haut suffit, sans rien demander à personne.</li>
         </ul>
 
         <p>Écrivez à <a href="mailto:info@ladecadanse.ch">info@ladecadanse.ch</a> ou passez par <a href="/misc/contacteznous.php">le formulaire</a>. La réponse vous parviendra dans les trente jours, gratuitement.</p>
