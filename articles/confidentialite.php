@@ -23,7 +23,7 @@ include("../_header.inc.php");
         <h2>Qui est responsable</h2>
 
         <p>Michel&nbsp;Gaudry, Genève, Suisse.<br />
-        Pour toute question ou demande&nbsp;: <a href="/misc/contacteznous.php">le formulaire de contact</a> ou <a href="mailto:info@ladecadanse.ch">info@ladecadanse.ch</a>.</p>
+        Pour toute question ou demande&nbsp;: <a href="/misc/contacteznous.php">la page de contact</a>, qui donne aussi l’adresse électronique.</p>
 
         <h2>Si vous consultez simplement l’agenda</h2>
 
@@ -31,23 +31,19 @@ include("../_header.inc.php");
 
         <h3>La mesure d’audience</h3>
 
-        <p>Le site utilise <a href="https://matomo.org" rel="external" target="_blank">Matomo</a>, installé sur nos propres serveurs en Suisse. Aucune donnée de fréquentation ne part chez un tiers, et il n’y a ni Google Analytics, ni bouton de réseau social, ni régie publicitaire.</p>
+        <p>Pour savoir quelles rubriques servent, le site compte ses visites avec <a href="https://matomo.org" rel="external" target="_blank">Matomo</a>, un logiciel de statistiques de fréquentation installé sur nos propres serveurs en Suisse. Rien ne part chez un tiers.</p>
 
-        <p>Matomo dépose deux cookies (<code>_pk_id</code> et <code>_pk_ses</code>) pour distinguer les visites, et retient les pages vues, la page d’où vous venez, votre navigateur et la taille de votre écran. Le but est de savoir quelles rubriques servent, rien de plus&nbsp;: aucun profil individuel n’est constitué, aucune donnée n’est recoupée avec autre chose. Votre adresse&nbsp;IP est amputée de ses deux derniers nombres avant d’être enregistrée, y compris avant d’en déduire votre pays&nbsp;: nous savons d’où vous venez à l’échelle du pays, jamais de la ville.</p>
+        <p>Deux cookies (<code>_pk_id</code> et <code>_pk_ses</code>) distinguent les visites, et sont retenus les pages vues, la page d’où vous venez, votre navigateur et la taille de votre écran. Aucun profil individuel n’est constitué, aucune donnée n’est recoupée avec autre chose. Votre adresse&nbsp;IP est amputée de ses deux derniers nombres avant d’être enregistrée, y compris avant d’en déduire votre pays&nbsp;: nous savons d’où vous venez à l’échelle du pays, jamais de la ville.</p>
 
-        <p><a href="https://tools.ladecadanse.ch/matomo/index.php?module=CoreAdminHome&amp;action=optOut&amp;language=fr" rel="external" target="_blank">Vous pouvez refuser cette mesure</a>&nbsp;: la case à cocher de cette page dépose un marqueur qui exclut vos visites. Il vit dans votre navigateur, et disparaît donc si vous effacez vos cookies ou changez d’appareil. Le signal <em>Do Not Track</em>, lorsqu’un navigateur l’envoie encore, est respecté lui aussi.</p>
+        <p><a href="https://tools.ladecadanse.ch/matomo/index.php?module=CoreAdminHome&amp;action=optOut&amp;language=fr&amp;backgroundColor=ffffff&amp;fontColor=333333&amp;fontSize=13px&amp;fontFamily=Verdana%2CArial" rel="external" target="_blank">Vous pouvez refuser ce comptage</a>&nbsp;: la case à cocher de cette page dépose un marqueur qui exclut vos visites. Il vit dans votre navigateur, et disparaît donc si vous effacez vos cookies ou changez d’appareil. Le signal <em>Do Not Track</em>, lorsqu’un navigateur l’envoie encore, est respecté lui aussi.</p>
 
         <h3>Le suivi des robots</h3>
 
-        <p>Le site est très fréquenté par des robots d’indexation et d’aspiration, qui pèsent lourd sur un hébergement modeste. Pour les mesurer et les freiner, chaque visite non identifiée est enregistrée dans une table qui retient l’adresse&nbsp;IP, le nom du navigateur (ou du robot) et le nombre de pages vues. Cela concerne aussi les visiteurs humains&nbsp;: on ne peut pas distinguer les deux avant d’avoir regardé.</p>
-
-        <p>Ces lignes sont effacées automatiquement après 90&nbsp;jours, ou après une année pour les adresses surprises à ignorer délibérément nos règles d’accès. Elles ne servent qu’à cela et ne sont communiquées à personne.</p>
+        <p>Des robots d’indexation et d’aspiration visitent le site en nombre, et pèsent lourd sur un hébergement modeste. Pour les freiner, chaque visite non identifiée est enregistrée avec son adresse&nbsp;IP, le nom du navigateur et le nombre de pages vues&nbsp;; les visiteurs humains sont compris, les deux ne se distinguant pas d’avance. Ces lignes s’effacent après 90&nbsp;jours, un an pour les adresses qui ignorent délibérément nos règles d’accès, et ne sont communiquées à personne.</p>
 
         <h3>Ce que voient des serveurs extérieurs</h3>
 
-        <p>Afficher une page suppose parfois d’aller chercher un fichier ailleurs que chez nous, et tout serveur sollicité voit l’adresse&nbsp;IP qui le sollicite. Sur La&nbsp;décadanse, il n’en reste qu’un&nbsp;: sur les fiches de lieu, les cartes proviennent d’<a href="https://www.openstreetmap.org" rel="external" target="_blank">OpenStreetMap</a>, fondation britannique. Afficher une carte suppose de lui demander ses images, et elle voit alors votre adresse&nbsp;IP. Les fiches sans coordonnées n’appellent aucune carte.</p>
-
-        <p>Tout le reste est servi depuis nos propres machines, y compris la mesure d’audience décrite plus haut. Deux outils extérieurs ont été en service jusqu’en septembre 2026 et ne le sont plus&nbsp;: <b>Known Agents</b>, qui détectait les robots d’intelligence artificielle et transmettait, outre l’adresse&nbsp;IP, quelques caractéristiques du navigateur&nbsp;; et <b>GlitchTip</b>, qui signalait les erreurs d’affichage. Les bibliothèques de code que nous chargions depuis des répertoires publics sont désormais hébergées ici.</p>
+        <p>Tout serveur sollicité voit l’adresse&nbsp;IP qui le sollicite, et le site n’en sollicite qu’un&nbsp;: sur les fiches de lieu qui ont des coordonnées, la carte est faite d’images demandées à <a href="https://www.openstreetmap.org" rel="external" target="_blank">OpenStreetMap</a>, fondation britannique. Les fiches sans coordonnées n’appellent aucune carte, et tout le reste est servi depuis nos propres machines.</p>
 
         <h3>Les journaux de l’hébergeur</h3>
 
@@ -55,27 +51,23 @@ include("../_header.inc.php");
 
         <h2>Si vous nous écrivez</h2>
 
-        <p>Le <a href="/misc/contacteznous.php">formulaire de contact</a> transmet votre adresse, votre sujet et votre message directement par courriel. Rien n’est enregistré dans le site&nbsp;; le message vit dans une boîte mail, et y est supprimé au plus tard deux ans après le dernier échange.</p>
-
-        <p>La fonction «&nbsp;envoyer à quelqu’un&nbsp;» d’un événement expédie un courriel à l’adresse que vous indiquez, une fois. Cette adresse n’est pas conservée, ne rejoint aucune liste et ne recevra aucun autre envoi de notre part.</p>
+        <p>Le <a href="/misc/contacteznous.php">formulaire de contact</a> transmet votre adresse, votre sujet et votre message par courriel, sans rien enregistrer dans le site&nbsp;; le message vit dans une boîte mail, supprimé au plus tard deux ans après le dernier échange. La fonction «&nbsp;envoyer à quelqu’un&nbsp;» d’un événement, elle, expédie un courriel une fois à l’adresse que vous indiquez, sans la conserver ni l’inscrire sur aucune liste.</p>
 
         <h2>Si vous annoncez un événement sans compte</h2>
 
-        <p>Le formulaire demande votre adresse électronique&nbsp;: elle est nécessaire pour vérifier l’annonce et vous répondre. Elle est enregistrée avec l’événement et n’est jamais publiée. La remarque libre adressée à l’administrateur ne l’est pas davantage.</p>
-
-        <p>Deux ans après la date de l’événement, votre adresse et votre remarque sont effacées automatiquement&nbsp;: passé ce délai, plus rien ne relie l’annonce à vous. L’annonce elle-même, en revanche, reste dans l’agenda, qui fait archive.</p>
+        <p>Le formulaire demande votre adresse électronique, nécessaire pour vérifier l’annonce et vous répondre. Ni elle ni la remarque adressée à l’administrateur ne sont publiées, et toutes deux s’effacent deux ans après la date de l’événement&nbsp;: plus rien ne relie alors l’annonce à vous. L’annonce, elle, reste dans l’agenda, qui fait archive.</p>
 
         <h2>Si vous avez un compte</h2>
 
-        <p>Un compte retient votre identifiant, votre adresse électronique, votre mot de passe sous forme chiffrée, votre région, votre affiliation éventuelle à un lieu ou à un organisateur, ainsi que les dates de création, de modification et de dernière connexion. Ces informations servent à publier vos annonces sous votre nom et à vous joindre à leur sujet.</p>
+        <p>Un compte retient votre adresse électronique, votre mot de passe sous forme chiffrée, un nom d’utilisateur si vous en choisissez un, votre région, votre affiliation éventuelle à un lieu ou à un organisateur, ainsi que les dates de création, de modification et de dernière connexion. Ces informations servent à rattacher vos annonces à votre compte et à vous joindre à leur sujet.</p>
 
-        <p>Votre adresse électronique n’est pas publique&nbsp;: seuls les administrateurs du site la voient.</p>
+        <p>Le champ «&nbsp;adresse électronique&nbsp;» n’est jamais publié&nbsp;: seuls les administrateurs du site le voient. Votre nom d’utilisateur, en revanche, signe par défaut les événements que vous annoncez — le «&nbsp;Ajouté par…&nbsp;» au bas de la fiche —, et il est donc public&nbsp;: <strong>n’y mettez pas votre adresse électronique</strong>. Votre profil permet de ne plus signer du tout&nbsp;; pour changer le nom lui-même, écrivez-nous.</p>
 
-        <p>Les cookies déposés pour un compte sont ceux de la session, celui de l’option «&nbsp;rester connecté-e&nbsp;» (quinze jours, si vous la cochez) et celui qui retient la région choisie. Tous sont techniques.</p>
+        <p>Les cookies déposés pour un compte sont ceux de la session, celui de l’option «&nbsp;rester connecté-e&nbsp;» (trente jours, si vous la cochez) et celui qui retient la région choisie. Tous sont techniques.</p>
 
         <p>Un message peut vous être adressé lorsqu’une évolution du site vous concerne. Ce ne sera jamais de la publicité, ni pour nous ni pour un tiers, et chaque message rappelle comment demander à ne plus en recevoir.</p>
 
-        <p>Nous ne gardons pas les comptes dont personne ne se sert. Après trois ans sans connexion, un message vous prévient&nbsp;; un mois plus tard, faute de retour, le compte est anonymisé — votre identifiant et votre adresse en sont effacés, sans retour possible. Une seule connexion suffit à repartir pour trois ans. Les événements que vous avez annoncés, eux, restent dans l’agenda&nbsp;: seul le lien avec votre compte disparaît.</p>
+        <p>Un compte sans connexion depuis trois ans reçoit un avertissement, puis est anonymisé un mois plus tard&nbsp;: adresse et identifiant effacés, sans retour possible. Une seule connexion suffit à repartir pour trois ans, et les événements annoncés restent dans l’agenda, détachés du compte.</p>
 
         <h2>Combien de temps</h2>
 
@@ -105,7 +97,7 @@ include("../_header.inc.php");
             <li>de vous opposer à la mesure d’audience ou au suivi décrits plus haut — pour la mesure d’audience, le lien donné plus haut suffit, sans rien demander à personne.</li>
         </ul>
 
-        <p>Écrivez à <a href="mailto:info@ladecadanse.ch">info@ladecadanse.ch</a> ou passez par <a href="/misc/contacteznous.php">le formulaire</a>. La réponse vous parviendra dans les trente jours, gratuitement.</p>
+        <p>Passez par <a href="/misc/contacteznous.php">la page de contact</a>. La réponse vous parviendra dans les trente jours, gratuitement.</p>
 
         <p>Les événements déjà publiés ne sont pas effacés lorsqu’un compte l’est&nbsp;: ce sont des annonces publiques que l’agenda conserve comme archive. Le lien entre l’événement et vous, lui, est supprimé.</p>
 
@@ -127,7 +119,7 @@ include("../_header.inc.php");
 
         <h2>Modifications</h2>
 
-        <p>Cette page peut évoluer avec le site. Sa dernière mise à jour date du <time datetime="2026-09-20">20 septembre 2026</time>.</p>
+        <p>Cette page peut évoluer avec le site. Sa dernière mise à jour date du <time datetime="2026-10-04">4 octobre 2026</time>.</p>
 
     </article>
 
