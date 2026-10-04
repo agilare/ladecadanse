@@ -299,13 +299,34 @@ if (defined('ACCOUNT_RETENTION_ENABLED') && ACCOUNT_RETENTION_ENABLED) {
 
 header('X-Content-Type-Options: nosniff');
 define("CSP_NONCE", bin2hex(openssl_random_pseudo_bytes(32)));
+
+/*
+ * Known Agents et GlitchTip sont à l'arrêt, mais leur code dort dans _header.inc.php :
+ * leurs domaines suivent le drapeau plutôt que d'être retirés en dur. Une CSP nettoyée
+ * à la main ferait que rallumer la fonctionnalité ne suffirait plus — le script serait
+ * bloqué, et rien dans l'administration ne le dirait.
+ *
+ * Le domaine de GlitchTip se lit dans son DSN plutôt qu'en dur : il doit passer sur
+ * l'instance européenne avant toute réactivation (voir app/env_model.php), et une CSP
+ * restée sur l'ancien hôte avalerait les envois en silence.
+ */
+$cspKnownAgents = DARKVISITORS_ENABLED ? ' https://knownagents.com' : '';
+$cspGlitchtipScript = GLITCHTIP_ENABLED ? ' https://browser.sentry-cdn.com' : '';
+$cspGlitchtipIngest = '';
+
+if (GLITCHTIP_ENABLED)
+{
+    $glitchtipHost = parse_url(GLITCHTIP_DSN, PHP_URL_HOST);
+    $cspGlitchtipIngest = is_string($glitchtipHost) && $glitchtipHost !== '' ? ' https://' . $glitchtipHost : '';
+}
+
 $csp = implode('; ', [
     "default-src 'self'",
-    "script-src 'self' 'nonce-" . CSP_NONCE . "' https://tools.ladecadanse.ch/ https://knownagents.com https://browser.sentry-cdn.com https://www.paypalobjects.com https://liberapay.com https://wemakeit.com https://assets.wemakeit.com https://cdn.tiny.cloud",
+    "script-src 'self' 'nonce-" . CSP_NONCE . "' https://tools.ladecadanse.ch/" . $cspKnownAgents . $cspGlitchtipScript . " https://www.paypalobjects.com https://liberapay.com https://wemakeit.com https://assets.wemakeit.com https://cdn.tiny.cloud",
     "img-src 'self' https://tile.openstreetmap.org https://tools.ladecadanse.ch/ https://www.paypalobjects.com https://sp.tinymce.com data:",
     "style-src 'self' 'unsafe-inline' https://cdn.tiny.cloud https://www.tiny.cloud https://wemakeit.com https://assets.wemakeit.com/ https://fonts.googleapis.com",
     "font-src 'self' https://www.tiny.cloud https://assets.wemakeit.com https://fonts.gstatic.com",
-    "connect-src 'self' https://tools.ladecadanse.ch/ https://cdn.tiny.cloud https://wemakeit.com https://knownagents.com https://app.glitchtip.com",
+    "connect-src 'self' https://tools.ladecadanse.ch/ https://cdn.tiny.cloud https://wemakeit.com" . $cspKnownAgents . $cspGlitchtipIngest,
     "frame-ancestors 'self' https://epic-magazine.ch",
     "frame-src 'none'",
     "object-src 'none'",
