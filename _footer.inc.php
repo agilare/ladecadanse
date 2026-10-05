@@ -34,7 +34,7 @@ use Ladecadanse\UserLevel;
                     <?php } ?>
 
                     <li><a href="/articles/charte-editoriale.php">Charte éditoriale</a></li>
-                    <li><a href="/articles/confidentialite.php">Confidentialité</a></li>
+                    <li><a href="/articles/confidentialite.php">Protection des données</a></li>
                     <li><a href="/articles/liens.php">Liens</a></li>
                 </ul>
             </nav> <!-- Fin Pied -->

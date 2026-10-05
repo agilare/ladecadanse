@@ -2,7 +2,11 @@
 
 require_once("../app/bootstrap.php");
 
-$page_titre = "Confidentialité";
+// « Protection des données » plutôt que « Confidentialité » : c'est le terme du droit
+// suisse — la LPD est la loi sur la protection des données, et l'autorité de recours que
+// la page cite est le Préposé fédéral à la protection des données. Le nom du fichier ne
+// suit pas : l'URL n'apprend rien au lecteur, et la changer imposerait une redirection.
+$page_titre = "Protection des données";
 $page_description = "Quelles données personnelles La décadanse collecte, pourquoi, combien de temps, et comment exercer vos droits";
 include("../_header.inc.php");
 ?>
@@ -10,7 +14,7 @@ include("../_header.inc.php");
 <main id="contenu" class="colonne">
 
     <header id="entete_contenu">
-        <h1>Confidentialité</h1>
+        <h1>Protection des données</h1>
         <div class="spacer"></div>
     </header>
 
@@ -35,12 +39,12 @@ include("../_header.inc.php");
 
         <p>Deux cookies (<code>_pk_id</code> et <code>_pk_ses</code>) distinguent les visites, et sont retenus les pages vues, la page d’où vous venez, votre navigateur et la taille de votre écran. Aucun profil individuel n’est constitué, aucune donnée n’est recoupée avec autre chose. Votre adresse&nbsp;IP est amputée de ses deux derniers nombres avant d’être enregistrée, y compris avant d’en déduire votre pays&nbsp;: nous savons d’où vous venez à l’échelle du pays, jamais de la ville.</p>
 
-<!--        <p><a href="https://tools.ladecadanse.ch/matomo/index.php?module=CoreAdminHome&amp;action=optOut&amp;language=fr&amp;backgroundColor=ffffff&amp;fontColor=333333&amp;fontSize=13px&amp;fontFamily=Verdana%2CArial" rel="external" target="_blank">Vous pouvez refuser ce comptage</a>&nbsp;: la case à cocher de cette page dépose un marqueur qui exclut vos visites. Il vit dans votre navigateur, et disparaît donc si vous effacez vos cookies ou changez d’appareil. Le signal <em>Do Not Track</em>, lorsqu’un navigateur l’envoie encore, est respecté lui aussi.</p>-->
-
-        <p>
-            <div id="matomo-opt-out"></div>
-            <script src="https://tools.ladecadanse.ch/matomo/index.php?module=CoreAdminHome&action=optOutJS&divId=matomo-opt-out&language=auto&backgroundColor=fdfdfd&fontColor=5e5e5f&fontSize=13px&fontFamily=Verdana&showIntro=1"></script>
-        </p>
+        <?php /* Le div est hors de tout <p> : un bloc dans un paragraphe en ferme la balise
+                 d'office, ce qui laissait deux paragraphes vides dans l'article. Matomo remplit
+                 ce div, le script lui passant son id. En HTTP il affiche en rouge qu'il ne
+                 répond de rien, ce qui ne concerne que le poste de développement. */ ?>
+        <div id="matomo-opt-out"></div>
+        <script src="https://tools.ladecadanse.ch/matomo/index.php?module=CoreAdminHome&amp;action=optOutJS&amp;divId=matomo-opt-out&amp;language=auto&amp;backgroundColor=fdfdfd&amp;fontColor=5e5e5f&amp;fontSize=13px&amp;fontFamily=Verdana&amp;showIntro=1"></script>
         <p>La case à cocher ci-dessus dépose un marqueur qui exclut vos visites. Il vit dans votre navigateur, et disparaît donc si vous effacez vos cookies ou changez d’appareil. Le signal <em>Do Not Track</em>, lorsqu’un navigateur l’envoie encore, est respecté lui aussi.</p>
         <h3>Le suivi des robots</h3>
 
@@ -115,7 +119,7 @@ include("../_header.inc.php");
             <li>aucune publicité, aucun traceur publicitaire, aucun bouton de réseau social&nbsp;;</li>
             <li>aucune décision automatisée vous concernant&nbsp;;</li>
             <li>aucune collecte de données sensibles (santé, opinions, convictions, orientation)&nbsp;;</li>
-            <li>aucun service destiné aux enfants.</li>
+            <li>aucun compte ni formulaire destiné aux enfants — l’agenda annonce des événements pour le jeune public, mais ce sont des adultes qui les y inscrivent.</li>
         </ul>
 
         <h2>Sécurité</h2>
@@ -130,8 +134,10 @@ include("../_header.inc.php");
 
 </main>
 
+<?php /* Sans le calendrier des autres pages d'articles : une page qu'on lit d'un bout à
+         l'autre n'appelle pas à sauter à une date. La colonne reste, vide, pour que le
+         texte garde sa place et sa largeur. */ ?>
 <div id="colonne_gauche" class="colonne">
-    <?php include("../event/_navigation_calendrier.inc.php"); ?>
 </div>
 
 <div id="colonne_droite" class="colonne">
