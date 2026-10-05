@@ -194,7 +194,14 @@
 {
 	display:block;
 	box-sizing:border-box;
-	width:100%;
+	/*
+	 * width:auto et non 100% : un bloc sans largeur déclarée se rétracte de ses marges,
+	 * exactement comme les fieldsets au-dessus, alors que 100% se calcule sur le
+	 * conteneur et laisse la marge droite déborder d'autant. Les deux largeurs suivent
+	 * ainsi la même règle quelle que soit la marge qu'on leur donne.
+	 * (form#ajouter_editer p de formulaires.css impose width:100%, d'où l'annulation.)
+	 */
+	width:auto;
     margin:0 1em 1em 0;
 	padding:0.7em 1.2em;
 	border-left:none;
