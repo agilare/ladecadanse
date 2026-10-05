@@ -42,10 +42,19 @@ include("../_header.inc.php");
         <?php /* Le div est hors de tout <p> : un bloc dans un paragraphe en ferme la balise
                  d'office, ce qui laissait deux paragraphes vides dans l'article. Matomo remplit
                  ce div, le script lui passant son id. En HTTP il affiche en rouge qu'il ne
-                 répond de rien, ce qui ne concerne que le poste de développement. */ ?>
-        <div id="matomo-opt-out"></div>
+                 répond de rien, ce qui ne concerne que le poste de développement.
+
+                 Le texte qu'il contient est un repli : le script l'écrase par `innerHTML`, donc
+                 il ne se voit que s'il n'a pas tourné. `tools.ladecadanse.ch` est un domaine
+                 distinct de `www.ladecadanse.ch`, donc un tiers pour le navigateur, et un
+                 fichier nommé `matomo.js` figure dans les listes de blocage courantes — la
+                 protection renforcée de Firefox suffit à couper les deux scripts. Sans ce
+                 repli, ces personnes lisaient « la case ci-dessus » devant un trou. */ ?>
+        <div id="matomo-opt-out">
+            <p>La case de refus ne s’est pas affichée&nbsp;: votre navigateur bloque les scripts de mesure d’audience, dont le nôtre. Vos visites ne sont donc déjà pas comptées.</p>
+        </div>
         <script src="https://tools.ladecadanse.ch/matomo/index.php?module=CoreAdminHome&amp;action=optOutJS&amp;divId=matomo-opt-out&amp;language=auto&amp;backgroundColor=fdfdfd&amp;fontColor=5e5e5f&amp;fontSize=13px&amp;fontFamily=Verdana&amp;showIntro=1"></script>
-        <p>La case à cocher ci-dessus dépose un marqueur qui exclut vos visites. Il vit dans votre navigateur, et disparaît donc si vous effacez vos cookies ou changez d’appareil. Le signal <em>Do Not Track</em>, lorsqu’un navigateur l’envoie encore, est respecté lui aussi.</p>
+        <p>Cocher cette case dépose un marqueur qui exclut vos visites. Il vit dans votre navigateur, et disparaît donc si vous effacez vos cookies ou changez d’appareil. Le signal <em>Do Not Track</em>, lorsqu’un navigateur l’envoie encore, est respecté lui aussi.</p>
         <h3>Le suivi des robots</h3>
 
         <p>Des robots d’indexation et d’aspiration visitent le site souvent, et peuvent peser lourd sur un hébergement modeste. Pour les gérer, chaque visite non identifiée est enregistrée avec son adresse&nbsp;IP, le nom du navigateur et le nombre de pages vues&nbsp;; les visiteurs humains sont compris, les deux ne se distinguant pas d’avance. Ces lignes s’effacent après 90&nbsp;jours, un an pour les adresses qui ignorent délibérément nos règles d’accès, et ne sont communiquées à personne.</p>
