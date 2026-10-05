@@ -137,7 +137,7 @@ include("../_header.inc.php");
                     <?= $verif->getErreur("contenu"); ?>
                 </p>
 
-                <div class="guideChamp">Votre message n’est pas enregistré sur le site&nbsp;: il part par courriel. <a href="/articles/confidentialite.php">En savoir plus</a></div>
+                <div class="guideChamp">Votre message n’est pas enregistré sur le site, il est envoyé par e-mail <a href="/articles/confidentialite.php">En savoir plus</a></div>
 
             </fieldset>
 

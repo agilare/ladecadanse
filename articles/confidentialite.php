@@ -35,11 +35,16 @@ include("../_header.inc.php");
 
         <p>Deux cookies (<code>_pk_id</code> et <code>_pk_ses</code>) distinguent les visites, et sont retenus les pages vues, la page d’où vous venez, votre navigateur et la taille de votre écran. Aucun profil individuel n’est constitué, aucune donnée n’est recoupée avec autre chose. Votre adresse&nbsp;IP est amputée de ses deux derniers nombres avant d’être enregistrée, y compris avant d’en déduire votre pays&nbsp;: nous savons d’où vous venez à l’échelle du pays, jamais de la ville.</p>
 
-        <p><a href="https://tools.ladecadanse.ch/matomo/index.php?module=CoreAdminHome&amp;action=optOut&amp;language=fr&amp;backgroundColor=ffffff&amp;fontColor=333333&amp;fontSize=13px&amp;fontFamily=Verdana%2CArial" rel="external" target="_blank">Vous pouvez refuser ce comptage</a>&nbsp;: la case à cocher de cette page dépose un marqueur qui exclut vos visites. Il vit dans votre navigateur, et disparaît donc si vous effacez vos cookies ou changez d’appareil. Le signal <em>Do Not Track</em>, lorsqu’un navigateur l’envoie encore, est respecté lui aussi.</p>
+<!--        <p><a href="https://tools.ladecadanse.ch/matomo/index.php?module=CoreAdminHome&amp;action=optOut&amp;language=fr&amp;backgroundColor=ffffff&amp;fontColor=333333&amp;fontSize=13px&amp;fontFamily=Verdana%2CArial" rel="external" target="_blank">Vous pouvez refuser ce comptage</a>&nbsp;: la case à cocher de cette page dépose un marqueur qui exclut vos visites. Il vit dans votre navigateur, et disparaît donc si vous effacez vos cookies ou changez d’appareil. Le signal <em>Do Not Track</em>, lorsqu’un navigateur l’envoie encore, est respecté lui aussi.</p>-->
 
+        <p>
+            <div id="matomo-opt-out"></div>
+            <script src="https://tools.ladecadanse.ch/matomo/index.php?module=CoreAdminHome&action=optOutJS&divId=matomo-opt-out&language=auto&backgroundColor=fdfdfd&fontColor=5e5e5f&fontSize=13px&fontFamily=Verdana&showIntro=1"></script>
+        </p>
+        <p>La case à cocher ci-dessus dépose un marqueur qui exclut vos visites. Il vit dans votre navigateur, et disparaît donc si vous effacez vos cookies ou changez d’appareil. Le signal <em>Do Not Track</em>, lorsqu’un navigateur l’envoie encore, est respecté lui aussi.</p>
         <h3>Le suivi des robots</h3>
 
-        <p>Des robots d’indexation et d’aspiration visitent le site en nombre, et pèsent lourd sur un hébergement modeste. Pour les freiner, chaque visite non identifiée est enregistrée avec son adresse&nbsp;IP, le nom du navigateur et le nombre de pages vues&nbsp;; les visiteurs humains sont compris, les deux ne se distinguant pas d’avance. Ces lignes s’effacent après 90&nbsp;jours, un an pour les adresses qui ignorent délibérément nos règles d’accès, et ne sont communiquées à personne.</p>
+        <p>Des robots d’indexation et d’aspiration visitent le site souvent, et peuvent peser lourd sur un hébergement modeste. Pour les gérer, chaque visite non identifiée est enregistrée avec son adresse&nbsp;IP, le nom du navigateur et le nombre de pages vues&nbsp;; les visiteurs humains sont compris, les deux ne se distinguant pas d’avance. Ces lignes s’effacent après 90&nbsp;jours, un an pour les adresses qui ignorent délibérément nos règles d’accès, et ne sont communiquées à personne.</p>
 
         <h3>Ce que voient des serveurs extérieurs</h3>
 
