@@ -444,6 +444,7 @@ export const Favorites =
             $genres.show();
             $monthRows.show();
             $genres.find('p.rappel_date').show();
+            this._syncGenreJumps(false);
             return;
         }
 
@@ -451,6 +452,8 @@ export const Favorites =
         {
             $(this).toggle($(this).find('article.evenement-short:visible').length > 0);
         });
+
+        this._syncGenreJumps(true);
 
         // Les rappels de date (ou d'heure) d'une section se suivaient une fois les événements
         // masqués. Seul le dernier avant un événement visible reste — en ordre chronologique,
@@ -496,6 +499,45 @@ export const Favorites =
                 $row = $row.next();
             }
             $(this).toggle(hasVisible);
+        });
+    },
+
+    /*
+     * Le lien « genre suivant » de l'agenda visait une section que le filtre a pu masquer : il
+     * pointe sur la prochaine section visible, ou disparaît s'il n'y en a plus. La cible et le
+     * libellé d'origine sont gardés pour être rendus quand le filtre est retiré.
+     */
+    _syncGenreJumps: function syncGenreJumps(favorisMode)
+    {
+        $('#prochains_evenements section.genre a.genre-jump').each(function ()
+        {
+            const $link = $(this);
+            const labelNode = this.firstChild;
+
+            if ($link.data('original-href') === undefined)
+            {
+                $link.data('original-href', $link.attr('href'));
+                $link.data('original-label', labelNode.nodeValue);
+            }
+
+            if (!favorisMode)
+            {
+                $link.attr('href', $link.data('original-href')).show();
+                labelNode.nodeValue = $link.data('original-label');
+                return;
+            }
+
+            const $nextTitle = $link.closest('section.genre').nextAll('section.genre:visible').first().find('h2');
+            if ($nextTitle.length === 0)
+            {
+                $link.hide();
+                return;
+            }
+
+            // le titre porte le libellé avec majuscule initiale, le lien sans
+            const title = $nextTitle.text();
+            $link.attr('href', '#' + $nextTitle.attr('id')).show();
+            labelNode.nodeValue = title.charAt(0).toLowerCase() + title.slice(1) + ' ';
         });
     }
 };
