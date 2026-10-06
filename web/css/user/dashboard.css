@@ -166,6 +166,30 @@
 	color:#fff;
 }
 
+/* sous le nombre d'appareils, dans sa cellule */
+.profile-sessions-form
+{
+	margin:0.3em 0 0 0;
+}
+
+.profile-sessions
+{
+	padding:0.15em 0.7em;
+	border:1px solid #888;
+	border-radius:3px;
+	background:none;
+	color:inherit;
+	font-size:0.85em;
+	cursor:pointer;
+}
+
+.profile-sessions:hover,
+.profile-sessions:focus
+{
+	border-color:#333;
+	background:#eee;
+}
+
 /* respiration entre le bouton Modifier et la barre d'onglets */
 #contenu.user nav.tabs
 {

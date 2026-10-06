@@ -9,6 +9,7 @@ use Ladecadanse\Organisateur;
 use Ladecadanse\Evenement;
 use Ladecadanse\EvenementRenderer;
 use Ladecadanse\Lieu;
+use Ladecadanse\Security\RememberTokens;
 use Ladecadanse\Security\SecurityToken;
 use Ladecadanse\UserSettings;
 use Ladecadanse\Utils\DateHelper;
@@ -152,6 +153,34 @@ if ($erreur === null && isset($_POST['erase_account']))
         $erreur = "L'anonymisation de ce compte a échoué.";
     }
 }
+
+/*
+ * « Se déconnecter des autres appareils » : ferme les sessions ouvertes ailleurs et oublie les
+ * appareils mémorisés, voir Sentry::logoutOtherDevices(). Ouvert à qui gère la fiche, donc à un
+ * administrateur devant un compte compromis. En POST avec jeton, comme l'effacement.
+ */
+$estSoiMeme = (int) $_SESSION['SidPersonne'] === $get['idP'];
+
+if ($erreur === null && isset($_POST['logout_other_devices']))
+{
+    if (!SecurityToken::check($_POST['token'] ?? '', $_SESSION['token'] ?? ''))
+    {
+        $erreur = "Le formulaire a expiré, veuillez recharger la page.";
+    }
+    else
+    {
+        $videur->logoutOtherDevices($get['idP']);
+        $logger->info('[user-logout-other-devices]', ['idP' => $get['idP'], 'by' => (int) $_SESSION['SidPersonne']]);
+
+        $_SESSION['user_flash_msg'] = $estSoiMeme
+            ? "Vos autres appareils sont déconnectés."
+            : "Ce compte est déconnecté de tous ses appareils.";
+        header("Location: /user/dashboard.php?idP=" . $get['idP']);
+        exit;
+    }
+}
+
+$appareils_memorises = $erreur === null ? (new RememberTokens($connectorPdo->getPDO()))->countActive($get['idP']) : 0;
 
 $affiliations_lieux = [];
 $organisateurs = [];
@@ -409,6 +438,19 @@ if ($erreur !== null)
 			<?php endif; ?>
 			<?php endif; ?>
 			<tr><th>Inscription</th><td><?= DateHelper::isoToFr(mb_substr((string) $profil['dateAjout'], 0, 10), 'annee', showDayOfWeek: false) ?></td></tr>
+			<tr><th>Appareils</th><td>
+				<?php if ($appareils_memorises === 0) : ?>
+				<em>aucune connexion mémorisée</em>
+				<?php else : ?>
+				Connexion mémorisée sur <?= $appareils_memorises ?> appareil<?= $appareils_memorises > 1 ? 's' : '' ?>
+				<?php endif; ?>
+				<?php // affiché même sans connexion mémorisée : une session ouverte ailleurs suffit à le justifier ?>
+				<form method="post" action="?idP=<?= (int) $get['idP'] ?>" class="js-submit-freeze-wait profile-sessions-form"
+				      data-confirm="<?= $estSoiMeme ? 'Se déconnecter de tous les autres appareils ? Cet appareil-ci reste connecté.' : 'Déconnecter ce compte de tous ses appareils ?' ?>">
+					<input type="hidden" name="token" value="<?= sanitizeForHtml(SecurityToken::getToken()) ?>" />
+					<button type="submit" name="logout_other_devices" value="1" class="profile-sessions"><?= $estSoiMeme ? 'Se déconnecter des autres appareils' : 'Déconnecter de tous ses appareils' ?></button>
+				</form>
+			</td></tr>
 		</table>
 		<?php if ($peut_gerer || $canErase) : ?>
 		<div class="profile-actions">

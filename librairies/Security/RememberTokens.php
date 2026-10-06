@@ -106,6 +106,17 @@ class RememberTokens
     }
 
     /**
+     * Nombre d'appareils sur lesquels le compte reste connecté.
+     */
+    public function countActive(int $userId): int
+    {
+        $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM remember_token WHERE user_id = :userId AND expires > NOW()");
+        $stmt->execute([':userId' => $userId]);
+
+        return (int) $stmt->fetchColumn();
+    }
+
+    /**
      * Oublie tous les appareils du compte.
      */
     public function revokeAll(int $userId): void

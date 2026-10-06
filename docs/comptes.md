@@ -53,7 +53,14 @@ Un jeton disparaît :
 - à la déconnexion, pour l'appareil qui se déconnecte seulement ;
 - au changement de mot de passe, par le profil ou par une réinitialisation, pour **tous** les appareils du compte (`Sentry::revokeRememberedDevices()`). L'appareil depuis lequel la personne change le sien reçoit un jeton neuf ;
 - à l'anonymisation du compte ;
-- à son expiration, au fil des connexions suivantes.
+- à son expiration, au fil des connexions suivantes ;
+- par « Se déconnecter des autres appareils », voir ci-dessous.
+
+## Se déconnecter des autres appareils
+
+Le profil (`user/dashboard.php`) dit sur combien d'appareils la connexion est mémorisée, et propose de fermer toutes les autres (`Sentry::logoutOtherDevices()`). Supprimer les jetons ne suffit pas : une session déjà ouverte sur un autre appareil survivrait jusqu'à une heure d'inactivité, et indéfiniment tant qu'on y navigue. Le compteur `personne.session_epoch`, copié en session à la connexion, est donc incrémenté ; `checkSession()` ferme toute session dont la copie ne correspond plus.
+
+L'appareil qui le demande reste connecté, avec un jeton neuf s'il était mémorisé. Un administrateur qui gère la fiche peut faire de même pour un compte compromis : le compte est alors déconnecté de tous ses appareils, sans que la session de l'administrateur soit touchée.
 
 ## Déconnexion
 

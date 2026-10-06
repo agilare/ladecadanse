@@ -20,7 +20,7 @@ class Sentry
      * points d'entrée (session, formulaire, cookie) doivent remplir le même tableau,
      * puisque tous trois débouchent sur initSession().
      */
-    private const USER_COLUMNS = 'idPersonne, pseudo, mot_de_passe, groupe, region, email, gds';
+    private const USER_COLUMNS = 'idPersonne, pseudo, mot_de_passe, groupe, region, email, gds, session_epoch';
 
     private const REMEMBER_COOKIE = 'ladecadanse_remember';
 
@@ -108,6 +108,15 @@ class Sentry
             return false;
         }
 
+        // « Se déconnecter des autres appareils » a incrémenté le compteur depuis l'ouverture
+        // de cette session ; une session antérieure à la colonne n'a pas la clé, lue comme 0
+        if ((int) ($_SESSION['session_epoch'] ?? 0) !== (int) $userdata['session_epoch'])
+        {
+            unset($this->userdata);
+
+            return false;
+        }
+
         $this->userdata = $userdata;
 
         /*
@@ -131,6 +140,7 @@ class Sentry
             $_SESSION['SidPersonne'],
             $_SESSION['user'],
             $_SESSION['pass_fingerprint'],
+            $_SESSION['session_epoch'],
             $_SESSION['Sgroupe'],
             $_SESSION['Semail'],
             $_SESSION['Sregion'],
@@ -369,6 +379,7 @@ class Sentry
         $_SESSION["SidPersonne"] = $this->userdata["idPersonne"];
         $_SESSION["user"] = $this->userdata["pseudo"];
         $_SESSION['pass_fingerprint'] = self::passFingerprint($this->userdata['mot_de_passe']);
+        $_SESSION['session_epoch'] = (int) $this->userdata['session_epoch'];
         $_SESSION["logged"] = true;
 
         $_SESSION["Sgroupe"] = $this->userdata["groupe"];
@@ -393,6 +404,29 @@ class Sentry
         {
             $this->setRememberCookie($this->rememberTokens->issue($idPersonne));
         }
+    }
+
+    /**
+     * Ferme les sessions ouvertes du compte et oublie ses appareils mémorisés.
+     *
+     * Les jetons seuls ne suffisent pas : une session déjà ouverte sur un autre appareil
+     * survivrait jusqu'à une heure d'inactivité, et indéfiniment tant qu'on y navigue. Le
+     * compteur `session_epoch` la ferme à sa requête suivante (checkSession()). Si c'est la
+     * personne connectée qui le demande, sa propre session et son appareil restent ouverts.
+     */
+    public function logoutOtherDevices(int $idPersonne): void
+    {
+        $stmt = $this->pdo->prepare("UPDATE personne SET session_epoch = session_epoch + 1 WHERE idPersonne = :idP");
+        $stmt->execute([':idP' => $idPersonne]);
+
+        if (!empty($_SESSION['logged']) && (int) ($_SESSION['SidPersonne'] ?? 0) === $idPersonne)
+        {
+            $stmt = $this->pdo->prepare("SELECT session_epoch FROM personne WHERE idPersonne = :idP");
+            $stmt->execute([':idP' => $idPersonne]);
+            $_SESSION['session_epoch'] = (int) $stmt->fetchColumn();
+        }
+
+        $this->revokeRememberedDevices($idPersonne);
     }
 
     private function setRememberCookie(string $cookie): void

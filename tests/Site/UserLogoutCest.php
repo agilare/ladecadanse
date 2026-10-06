@@ -87,6 +87,38 @@ class UserLogoutCest
     }
 
     /**
+     * « Se déconnecter des autres appareils » (user/dashboard.php) ferme la session ouverte
+     * ailleurs et oublie son cookie, et laisse connecté l'appareil qui le demande.
+     */
+    public function logoutOtherDevicesClosesTheirSessions(SiteTester $I)
+    {
+        $I->loginAsActor(true);
+        $autreSession = $I->grabCookie('PHPSESSID');
+        $autreCookie = $I->grabCookie(self::COOKIE_MEMORISER);
+        $I->resetCookie('PHPSESSID');
+        $I->resetCookie(self::COOKIE_MEMORISER);
+
+        $I->loginAsActor(true);
+        $I->click('a[href^="/user/dashboard.php?idP="]');
+        $I->click('button[name="logout_other_devices"]');
+        $I->see('Vos autres appareils sont déconnectés');
+
+        $I->amOnPage('/articles/apropos.php');
+        $I->seeElement(self::BOUTON_SORTIR);
+        $ceCookie = $I->grabCookie(self::COOKIE_MEMORISER);
+        $I->logout();
+
+        // l'autre appareil revient avec sa session et son cookie : ni l'une ni l'autre ne vaut plus
+        $I->setCookie('PHPSESSID', $autreSession);
+        $I->setCookie(self::COOKIE_MEMORISER, $autreCookie);
+        $I->amOnPage('/articles/apropos.php');
+        $I->dontSeeElement(self::BOUTON_SORTIR);
+
+        // et cet appareil avait reçu un jeton neuf, que la déconnexion a effacé à son tour
+        $I->assertNotEquals($autreCookie, $ceCookie);
+    }
+
+    /**
      * Un GET ne déconnecte pas : c'est tout l'objet du passage en POST, qui met la
      * déconnexion hors de portée des préchargements de lien et des sites tiers.
      */

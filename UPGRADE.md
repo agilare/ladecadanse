@@ -19,7 +19,7 @@ LADECADANSE_DB=prod composer db:migrate   # demande confirmation avant d'écrire
 
 Sous PowerShell : `$env:LADECADANSE_DB='prod'; composer db:migrate`. L'entrée `prod` de `app/db.config.php` sert telle quelle ; son compte doit avoir les droits `ALTER`, `CREATE`, `INDEX` et `DROP`, sinon lui substituer `migration_user` et `migration_password` (voir `app/db.config_model.php`).
 
-Le premier passage **adopte la base** : chaque migration antérieure à Doctrine vérifie d'abord si son effet est déjà en place — la colonne, l'index, la table ou la ligne qu'elle crée — et, le cas échéant, s'enregistre sans rien exécuter. Doctrine l'accompagne d'un avertissement « did not result in any SQL statements », attendu. Une production en 3.12.0 voit ainsi les dix migrations jusqu'à la 3.12.0 enregistrées à vide, et les huit de la 3.13.0 réellement passées, dans l'ordre :
+Le premier passage **adopte la base** : chaque migration antérieure à Doctrine vérifie d'abord si son effet est déjà en place — la colonne, l'index, la table ou la ligne qu'elle crée — et, le cas échéant, s'enregistre sans rien exécuter. Doctrine l'accompagne d'un avertissement « did not result in any SQL statements », attendu. Une production en 3.12.0 voit ainsi les dix migrations jusqu'à la 3.12.0 enregistrées à vide, et les neuf de la 3.13.0 réellement passées, dans l'ordre :
 
 1. `Version20260905000000` (ancien `v3-13-0_lieu-colonnes.sql`) remanie les colonnes de la table `lieu` :
     1. `determinant` devient `preposition_nom` et passe après `nom` — « au », « chez », « à l' » sont des prépositions, pas des déterminants ;
@@ -80,6 +80,8 @@ La septième, `Version20261003000000`, ajoute six colonnes à `bot_monitor`, la 
 **À passer avant la mise en ligne du code**, que le suivi soit activé ou non au moment de la mise à jour : les six colonnes ont un défaut, l'ancien code les ignore donc sans dommage. L'inverse ne vaut pas. Avec `BOT_MONITORING_ENABLED` à `true` et la base en retard, aucune page ne tombe — l'échec est rattrapé — mais plus aucune visite n'est comptée, et **chaque page vue écrit un warning dans le log**. Les lignes existantes gardent leurs compteurs de fenêtre à zéro jusqu'à la prochaine visite de leur IP ; rien n'est recalculé. `bot_monitor` est en InnoDB : pas de verrou d'écriture, l'`ALTER` est l'affaire d'un instant.
 
 La huitième, `Version20261006000000`, crée la table `remember_token` : un jeton « Rester connecté-e » par appareil, là où `personne.cookie` n'en gardait qu'un par compte (voir [docs/comptes.md](docs/comptes.md#rester-connecté-e)). **À passer avant la mise en ligne du code** : l'ancien code ignore la table, le nouveau la lit à chaque retour par le cookie et répondrait sinon par une erreur SQL. `personne.cookie` reste en place, inerte, jusqu'à une migration ultérieure.
+
+La neuvième, `Version20261006120000`, ajoute `personne.session_epoch`, le compteur qui permet à « Se déconnecter des autres appareils » de fermer les sessions ouvertes ailleurs. **À passer avant la mise en ligne du code**, qui lit la colonne à chaque page vue d'une personne connectée. Les sessions ouvertes avant la mise à jour survivent : elles n'ont pas la valeur en session, lue comme 0, le défaut. L'`ALTER` reconstruit `personne` (MyISAM), quelques centaines de lignes.
 
 ### Redirections
 
