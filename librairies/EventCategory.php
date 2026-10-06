@@ -29,6 +29,9 @@ final class EventCategory
     /** Nom du drapeau qui commande les catégories en préversion, dans app/env.php. */
     public const string FLAG = 'EVENT_NEW_CATEGORIES_ENABLED';
 
+    /** Onglet de l'agenda qui ne filtre aucune catégorie. */
+    public const string TAB_ALL = 'tous';
+
     /**
      * Toutes les catégories : clé stockée en base => libellé affiché.
      *
