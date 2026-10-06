@@ -443,12 +443,43 @@ export const Favorites =
         {
             $genres.show();
             $monthRows.show();
+            $genres.find('p.rappel_date').show();
             return;
         }
 
         $genres.each(function ()
         {
             $(this).toggle($(this).find('article.evenement-short:visible').length > 0);
+        });
+
+        // Les rappels de date (ou d'heure) d'une section se suivaient une fois les événements
+        // masqués. Seul le dernier avant un événement visible reste — en ordre chronologique,
+        // c'est celui qui porte la bonne heure —, et aucun avant le premier ni après le dernier.
+        $genres.each(function ()
+        {
+            let seenVisibleEvent = false;
+            let $pending = $();
+
+            $(this).find('p.rappel_date, article.evenement-short').each(function ()
+            {
+                const $el = $(this);
+                if ($el.is('p.rappel_date'))
+                {
+                    $el.hide();
+                    $pending = $el;
+                    return;
+                }
+
+                if ($el.is(':visible'))
+                {
+                    if (seenVisibleEvent)
+                    {
+                        $pending.show();
+                    }
+                    seenVisibleEvent = true;
+                    $pending = $();
+                }
+            });
         });
 
         $monthRows.each(function ()
