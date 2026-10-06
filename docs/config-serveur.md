@@ -34,7 +34,7 @@ L'extension du fragment décide de la cible, son préfixe numérique décide de 
 | `ops/05-hote.conf` | privé | compression, domaine canonique |
 | `ops/10-blocages.conf` | privé | adresses bannies, robots, mode maintenance |
 | `htaccess/20-firewall-8g.conf` | public | pare-feu 8G (composant tiers) |
-| `htaccess/30-protections.conf` | public | `FilesMatch`, `app/ var/ librairies/ resources/ bin/`, `uploads/` |
+| `htaccess/30-protections.conf` | public | `FilesMatch`, `app/ var/ librairies/ resources/ templates/ bin/`, `uploads/` |
 | `htaccess/40-entetes.conf` | public | CORS, en-têtes de politique |
 | `htaccess/50-routage.conf` | public | **suit le code** : redirections, images, SEO |
 | `htaccess/60-erreurs.conf` | public | `ErrorDocument` |
