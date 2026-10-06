@@ -414,18 +414,83 @@ export const Favorites =
             $(this).toggle(!favorisMode || isFav);
         });
 
+        const previousCount = this._favCount;
+        this._favCount = favInList;
+
+        // un favori remis pendant que l'onglet se rétracte : il reste affiché
+        clearTimeout(this._hideTimer);
+        $('.js-favoris-filter-item').removeClass('plop-inverse');
+
         if (favInList === 0)
         {
-            $nav.attr('hidden', 'hidden');
             this._displayFilter = 'tous';
             $events.show();
             this._syncGroupHeaders(false);
+
+            if (previousCount > 0 && this._animate())
+            {
+                $('.js-favoris-filter-item').addClass('plop-inverse');
+                this._hideTimer = setTimeout(() =>
+                {
+                    $nav.attr('hidden', 'hidden');
+                    $('.js-favoris-filter-item').removeClass('plop-inverse');
+                }, 250);
+                return;
+            }
+
+            $nav.attr('hidden', 'hidden');
             return;
         }
 
         $nav.removeAttr('hidden');
+        this._renderCount(previousCount, favInList);
         this._markActiveTab(this._displayFilter);
         this._syncGroupHeaders(favorisMode);
+    },
+
+    // nombre de favoris de la liste affichée ; null tant que la page n'a pas été rendue une fois
+    _favCount: null,
+
+    _hideTimer: null,
+
+    _animate: function animate()
+    {
+        return !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    },
+
+    /*
+     * Au chargement, le compteur s'affiche sans effet. Ensuite, l'onglet qui apparaît avec le
+     * premier favori rebondit, et à chaque changement le nouveau nombre remplace l'ancien en
+     * fondu. Les durées des minuteries sont celles des animations de global.css.
+     */
+    _renderCount: function renderCount(previous, count)
+    {
+        const $counter = $('.js-favoris-count');
+        const animate = previous !== null && this._animate();
+
+        if (!animate || previous === 0)
+        {
+            $counter.empty().append($('<span>').text(count));
+            if (animate)
+            {
+                const $item = $('.js-favoris-filter-item').addClass('plop');
+                setTimeout(() => $item.removeClass('plop'), 400);
+            }
+            return;
+        }
+
+        if (previous === count)
+        {
+            return;
+        }
+
+        // un clic rapide peut trouver un chiffre encore en train de sortir : il part tout de suite
+        $counter.children('.sort').remove();
+        // retrait à la durée de l'animation (global.css) plutôt qu'à animationend : un onglet
+        // en arrière-plan ne l'émet pas, et l'ancien chiffre resterait sous le nouveau
+        const $old = $counter.children().removeClass('entre').addClass('sort');
+        setTimeout(() => $old.remove(), 300);
+        $counter.append($('<span class="entre">').text(count));
     },
 
     _applyFavorisFilter: function applyFavorisFilter()

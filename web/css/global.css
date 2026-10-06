@@ -1897,11 +1897,93 @@ td.favori_action
 
 /*
  * L'onglet « Favoris » reprend le comportement d'un onglet de genre : le fond de .ici et la
- * croix qui retire le filtre. Seuls le marque-page et cette croix lui sont propres.
+ * croix qui retire le filtre. Seuls le compteur et cette croix lui sont propres.
+ *
+ * Le compteur est une pastille surélevée, à la manière d'une notification. Ses chiffres sont
+ * empilés dans une même cellule de grille : quand le nombre change, le nouveau apparaît en
+ * fondu pendant que l'ancien s'efface (favorites.js pose les classes d'animation).
  */
-.favoris-filtre .fa-bookmark
+.favoris-filtre-compteur
 {
-    color: #e74c3c;
+    display: inline-grid;
+    place-items: center;
+    overflow: hidden;
+    min-width: 1.6em;
+    height: 1.6em;
+    padding: 0 0.35em;
+    box-sizing: border-box;
+    border-radius: 0.8em;
+    background: #e74c3c;
+    color: #fff;
+    font-size: 0.75em;
+    font-weight: bold;
+    line-height: 1;
+    vertical-align: 0.5em;
+    /* surélevée, elle agrandissait la ligne qui la porte : ces marges négatives la retirent
+       du calcul de hauteur, et la ligne ne bouge plus quand l'onglet apparaît */
+    margin: -1em 0;
+}
+
+    .favoris-filtre-compteur > span
+    {
+        grid-area: 1 / 1;
+    }
+
+    .favoris-filtre-compteur .entre
+    {
+        animation: favoris-compteur-entre 0.3s ease-out;
+    }
+
+    .favoris-filtre-compteur .sort
+    {
+        animation: favoris-compteur-sort 0.3s ease-out forwards;
+    }
+
+/* premier favori de la liste : l'onglet apparaît d'un coup de rebond ; au dernier retiré, il
+   se rétracte avant d'être masqué */
+.favoris-filtre-item.plop
+{
+    animation: favoris-filtre-plop 0.4s cubic-bezier(0.3, 1.6, 0.6, 1);
+}
+
+.favoris-filtre-item.plop-inverse
+{
+    animation: favoris-filtre-plop-inverse 0.25s ease-in forwards;
+}
+
+@keyframes favoris-compteur-entre
+{
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+@keyframes favoris-compteur-sort
+{
+    from { opacity: 1; }
+    to   { opacity: 0; }
+}
+
+@keyframes favoris-filtre-plop
+{
+    from { transform: scale(0.3); opacity: 0; }
+    to   { transform: scale(1); opacity: 1; }
+}
+
+@keyframes favoris-filtre-plop-inverse
+{
+    from { transform: scale(1); opacity: 1; }
+    to   { transform: scale(0.3); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce)
+{
+    .favoris-filtre-compteur .entre,
+    .favoris-filtre-compteur .sort,
+    .favoris-filtre-item.plop,
+    .favoris-filtre-item.plop-inverse
+    {
+        animation: none;
+    }
 }
 
 /* la croix ne s'offre qu'une fois le filtre posé, comme sur un onglet de genre actif */

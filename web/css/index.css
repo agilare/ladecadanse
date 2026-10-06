@@ -256,6 +256,13 @@ ul.entete_contenu_navigation li:nth-child(2) a:hover
     {
         margin: 0 0 0 0.5em;
     }
+
+    /* en ligne comme les onglets de genre : en inline-block, son padding haussait la ligne
+       partagée, qui sautait à l'apparition de l'onglet */
+    #agenda_filters #favoris_filter_navigation li a
+    {
+        display: inline;
+    }
 }
 
 #prochains_evenements section.genre
