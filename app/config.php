@@ -115,7 +115,7 @@ $glo_regions_coverage = ['ge' => ['ge', 'rf', 'hs'], 'vd' => ['vd', 'hs']];
 $glo_tab_genre = Ladecadanse\EventCategory::ALL;
 $statuts_evenement = ['propose' => 'Proposé', 'actif' => 'Proposé', 'complet' => 'Complet', 'annule' => 'Annulé', 'inactif' => 'Dépublié'];
 $price_types = ['unknown' => 'inconnu', 'gratis' => 'entrée libre', 'asyouwish' => 'prix libre', 'chargeable' => 'payant'];
-$tab_tri_agenda = ["dateAjout", "horaire_debut"];
+$tab_tri_agenda = ["dateAjout" => "Dernier ajouté", "horaire_debut" => "Heure de début"];
 // lieu/lieu.php et organisateur/organisateur.php, onglet « Passés » : sens du tri par date.
 // Les libellés ne sont pas affichés (les boutons sont des icônes) mais servent de title et d'aria-label.
 $tab_ordre_evenements_passes = [
