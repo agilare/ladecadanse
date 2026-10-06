@@ -558,6 +558,11 @@ if ($formulaire_poste)
 			*/
 			if ($req_update)
 			{
+				if (!empty($champs['mot_de_passe']))
+				{
+					$videur->revokeRememberedDevices((int) $get['idP']);
+				}
+
 				if ($_SESSION['SidPersonne'] == $get['idP'])
 				{
 

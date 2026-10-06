@@ -359,6 +359,10 @@ class Personne
         $stmt = $connectorPdo->prepare("DELETE FROM user_reset_requests WHERE idPersonne = :idP OR email = :email");
         $stmt->execute([':idP' => $idPersonne, ':email' => $currentEmail]);
 
+        // le statut inactif suffit à les refuser, mais rien ne justifie de les garder
+        $stmt = $connectorPdo->prepare("DELETE FROM remember_token WHERE user_id = :idP");
+        $stmt->execute([':idP' => $idPersonne]);
+
         $stmt = $connectorPdo->prepare("UPDATE personne SET
             pseudo = '',
             email = :email,

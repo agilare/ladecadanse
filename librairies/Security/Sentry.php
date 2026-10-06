@@ -20,7 +20,9 @@ class Sentry
      * points d'entrée (session, formulaire, cookie) doivent remplir le même tableau,
      * puisque tous trois débouchent sur initSession().
      */
-    private const USER_COLUMNS = 'idPersonne, pseudo, mot_de_passe, cookie, groupe, region, email, gds';
+    private const USER_COLUMNS = 'idPersonne, pseudo, mot_de_passe, groupe, region, email, gds';
+
+    private const REMEMBER_COOKIE = 'ladecadanse_remember';
 
     /**
      * Tableau contenant idPersonne, pseudo, mot_de_passe, groupe, email
@@ -30,8 +32,12 @@ class Sentry
      */
     private array $userdata;
 
+    private readonly RememberTokens $rememberTokens;
+
     public function __construct(private readonly PDO $pdo, private readonly LoggerInterface $logger)
     {
+        $this->rememberTokens = new RememberTokens($pdo);
+
         if (!isset($_SESSION['logged']))
         {
             $this->sessionDefaults();
@@ -49,9 +55,9 @@ class Sentry
                 $this->clearUserSession();
             }
         }
-        else if (!empty($_COOKIE['ladecadanse_remember']))
+        else if (!empty($_COOKIE[self::REMEMBER_COOKIE]) && is_string($_COOKIE[self::REMEMBER_COOKIE]))
         {
-            $this->checkRemembered($_COOKIE['ladecadanse_remember']);
+            $this->checkRemembered($_COOKIE[self::REMEMBER_COOKIE]);
         }
     }
 
@@ -108,7 +114,7 @@ class Sentry
          * Rafraîchit groupe, e-mail, région et affiliation : un changement fait par
          * un administrateur prend effet à la requête suivante.
          */
-        $this->initSession(false, false);
+        $this->initSession();
 
         return true;
     }
@@ -270,7 +276,14 @@ class Sentry
         }
 
         session_regenerate_id(true); // to avoid session fixation attack
-        $this->initSession($memoriser);
+        $this->initSession();
+
+        // un nouveau jeton par appareil : ceux des autres appareils restent valides
+        if ($memoriser)
+        {
+            $this->setRememberCookie($this->rememberTokens->issue((int) $this->userdata['idPersonne']));
+        }
+
         $this->logger->info('[Sentry] login', ['user' => $_SESSION["user"], 'idP' => (int) $_SESSION['SidPersonne']]);
 
         // exception pour admin ; chemin absolu, sinon la destination dépend du dossier
@@ -291,17 +304,31 @@ class Sentry
 
     public function checkRemembered(string $cookie): bool
     {
-        $stmt = $this->pdo->prepare(
-            "SELECT " . self::USER_COLUMNS . "
-             FROM personne
-             WHERE cookie = :cookie AND statut = 'actif'"
-        );
-        $stmt->execute([':cookie' => $cookie]);
-        $userdata = $stmt->fetch(PDO::FETCH_ASSOC);
+        $token = $this->rememberTokens->consume($cookie);
+        $userdata = false;
 
-        if ($userdata === false)
+        if ($token !== null)
+        {
+            $stmt = $this->pdo->prepare(
+                "SELECT " . self::USER_COLUMNS . "
+                 FROM personne
+                 WHERE idPersonne = :idP AND statut = 'actif'"
+            );
+            $stmt->execute([':idP' => $token['user_id']]);
+            $userdata = $stmt->fetch(PDO::FETCH_ASSOC);
+        }
+
+        if ($token === null || $userdata === false)
         {
             unset($this->userdata);
+
+            if ($token !== null)
+            {
+                $this->rememberTokens->revoke($token['cookie']);
+            }
+
+            // un cookie qui ne mène plus à rien coûterait sinon une requête à chaque page
+            $this->forgetRememberCookie();
 
             return false;
         }
@@ -319,7 +346,8 @@ class Sentry
         $stmt->execute([':idP' => (int) $userdata['idPersonne']]);
 
         session_regenerate_id(true); // to avoid session fixation attack
-        $this->initSession(true, true);
+        $this->initSession();
+        $this->setRememberCookie($token['cookie']);
         // l'adresse n'apportait rien que l'identifiant ne dise déjà
         $this->logger->info('[Sentry] remembered access', ['user' => $_SESSION["user"], 'idP' => (int) $_SESSION['SidPersonne']]);
 
@@ -328,11 +356,8 @@ class Sentry
 
     /**
      * Remplit les variables de session à partir de $this->userdata.
-     *
-     * @param bool $memoriser pose le cookie « rester connecté-e »
-     * @param bool $init      renouvelle le jeton opaque stocké en base
      */
-    public function initSession(bool $memoriser, bool $init = true): void
+    public function initSession(): void
     {
         $stmt = $this->pdo->prepare(
             "SELECT idAffiliation FROM affiliation WHERE idPersonne = :idP AND genre = 'lieu'"
@@ -344,67 +369,68 @@ class Sentry
         $_SESSION["SidPersonne"] = $this->userdata["idPersonne"];
         $_SESSION["user"] = $this->userdata["pseudo"];
         $_SESSION['pass_fingerprint'] = self::passFingerprint($this->userdata['mot_de_passe']);
-        $_SESSION["cookie"] = $this->userdata["cookie"];
         $_SESSION["logged"] = true;
 
         $_SESSION["Sgroupe"] = $this->userdata["groupe"];
         $_SESSION['Semail'] = $this->userdata['email'];
         $_SESSION['Sregion'] = $this->userdata['region'];
         $_SESSION['Saffiliation_lieu'] = $idAffiliation === false ? 0 : $idAffiliation;
+    }
 
-        // un simple rafraîchissement de session ne renouvelle rien : inutile de tirer un jeton
-        if (!$memoriser && !$init)
+    /**
+     * Oublie tous les appareils mémorisés d'un compte dont le mot de passe vient de changer.
+     *
+     * Qui change son mot de passe parce qu'il le croit compromis doit pouvoir compter que les
+     * autres appareils sont déconnectés : la session ouverte ailleurs l'est déjà par
+     * l'empreinte (checkSession()), le cookie ne l'était pas. Si c'est la personne connectée qui
+     * change le sien depuis un appareil mémorisé, celui-ci reçoit un jeton neuf et le reste.
+     */
+    public function revokeRememberedDevices(int $idPersonne): void
+    {
+        $this->rememberTokens->revokeAll($idPersonne);
+
+        if (!empty($_SESSION['logged']) && (int) ($_SESSION['SidPersonne'] ?? 0) === $idPersonne && !empty($_COOKIE[self::REMEMBER_COOKIE]))
         {
-            return;
-        }
-
-        $cookie = $this->token();
-
-        if ($memoriser)
-        {
-            $this->updateCookie($cookie, true);
-        }
-
-        if ($init)
-        {
-            $stmt = $this->pdo->prepare("UPDATE personne SET cookie = :cookie WHERE idPersonne = :idP");
-            $stmt->execute([':cookie' => $cookie, ':idP' => (int) $this->userdata['idPersonne']]);
+            $this->setRememberCookie($this->rememberTokens->issue($idPersonne));
         }
     }
 
-    public function updateCookie(string $cookie, bool $sauvegarder): void
+    private function setRememberCookie(string $cookie): void
     {
-        $_SESSION['cookie'] = $cookie;
+        setcookie(self::REMEMBER_COOKIE, $cookie, [
+            'expires' => strtotime('+' . RememberTokens::LIFETIME_DAYS . ' days'),
+            'path' => '/',
+            'secure' => true,
+            'httponly' => true,
+            'samesite' => 'Lax'
+        ]);
+    }
 
-        if ($sauvegarder)
-        {
-            $cookieOptions = [
-                'expires' => strtotime('+30 days'),
-                'path' => '/',
-                //'domain' => '.example.com', // leading dot for compatibility or use subdomain
-                'secure' => true,
-                'httponly' => true,
-                'samesite' => 'Lax'
-            ];
+    private function forgetRememberCookie(): void
+    {
+        unset($_COOKIE[self::REMEMBER_COOKIE]);
 
-            setcookie('ladecadanse_remember', $cookie, $cookieOptions);
-        }
+        /*
+         * Le path doit reprendre celui de setRememberCookie() : un cookie ne s'efface que par
+         * un Set-Cookie de mêmes nom, domaine et path. Sans path, PHP prend le
+         * répertoire du script appelant, et le navigateur garde intact le cookie posé
+         * sur '/'. L'oubli est resté invisible tant que la page de déconnexion était à
+         * la racine du site.
+         */
+        setcookie(self::REMEMBER_COOKIE, '', [
+            'expires' => 1,
+            'path' => '/',
+            'secure' => true,
+            'httponly' => true,
+            'samesite' => 'Lax'
+        ]);
     }
 
     public function sessionDefaults(): void
     {
         $_SESSION['logged'] = false;
         $_SESSION["memoriser"] = false;
-        $_SESSION["cookie"] = 0;
         $_SESSION["groupe"] = 20;
-    }
-
-    /**
-     * Jeton opaque de 32 caractères hexadécimaux, à la mesure de personne.cookie
-     */
-    public function token(): string
-    {
-        return bin2hex(random_bytes(16));
     }
 
     /**
@@ -417,24 +443,15 @@ class Sentry
         session_destroy();
         unset($_SESSION);
 
-        if (isset($_COOKIE['ladecadanse_remember']))
+        if (isset($_COOKIE[self::REMEMBER_COOKIE]))
         {
-            unset($_COOKIE['ladecadanse_remember']);
+            // cet appareil seulement : les autres restent connectés
+            if (is_string($_COOKIE[self::REMEMBER_COOKIE]))
+            {
+                $this->rememberTokens->revoke($_COOKIE[self::REMEMBER_COOKIE]);
+            }
 
-            /*
-             * Le path doit reprendre celui d'updateCookie() : un cookie ne s'efface que par
-             * un Set-Cookie de mêmes nom, domaine et path. Sans path, PHP prend le
-             * répertoire du script appelant, et le navigateur garde intact le cookie posé
-             * sur '/'. L'oubli est resté invisible tant que la page de déconnexion était à
-             * la racine du site.
-             */
-            setcookie('ladecadanse_remember', '', [
-                'expires' => 1,
-                'path' => '/',
-                'secure' => true,
-                'httponly' => true,
-                'samesite' => 'Lax'
-            ]);
+            $this->forgetRememberCookie();
         }
     }
 }

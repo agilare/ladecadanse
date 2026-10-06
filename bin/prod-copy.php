@@ -77,11 +77,16 @@ const TABLES_COPIEES = [
  * Doctrine Migrations, une table que la production a et que la copie n'aurait pas y passerait
  * pour créée : `db:migrate` ne la rattraperait plus. Absente de la source, elle est sautée —
  * le registre de la production ne l'a alors pas non plus, et `db:migrate` la créera.
+ *
+ * `remember_token` porte les jetons « Rester connecté-e » des comptes réels, pour la même
+ * raison que `user_reset_requests` ; sans la table, une connexion avec la case cochée lève une
+ * exception PDO.
  */
 const TABLES_STRUCTURE_SEULE = [
     'user_reset_requests',
     'bot_monitor',
     'personne_evenement',
+    'remember_token',
 ];
 
 /**

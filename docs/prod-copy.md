@@ -136,8 +136,8 @@ Puis parcourir l'agenda, une fiche d'événement avec flyer, une fiche de lieu a
 
 Treize tables : `affiliation`, `descriptionlieu`, `evenement`, `evenement_organisateur`,
 `fichierrecu`, `lieu`, `lieu_fichierrecu`, `lieu_organisateur`, `localite`, `organisateur`,
-`personne`, `personne_organisateur`, `salle`. Trois autres, `user_reset_requests`, `bot_monitor`
-et `personne_evenement`, sont créées vides : voir plus bas. Le registre des migrations,
+`personne`, `personne_organisateur`, `salle`. Quatre autres, `user_reset_requests`, `bot_monitor`,
+`personne_evenement` et `remember_token`, sont créées vides : voir plus bas. Le registre des migrations,
 `doctrine_migration_versions`, est repris tel quel quand la production en a un.
 
 `localite` est reprise en entier : elle ne porte aucune donnée d'événement, mais
@@ -177,6 +177,9 @@ poste de développement — des jetons de réinitialisation vivants pour la prem
 de visiteurs pour la seconde — mais sans la table, ce qui la lit tombe : `user/reset.php` lève une
 exception PDO dès la première demande, `admin/bots.php` sur sa première requête. `admin/bots.php`
 restera donc vide, et le parcours « mot de passe oublié » s'éprouve en local.
+
+`remember_token` porte les jetons « Rester connecté-e » de comptes réels : vide, comme
+`user_reset_requests`. Sans elle, une connexion avec la case cochée lèverait une exception PDO.
 
 `personne_evenement` porte les favoris de comptes réels : vide elle aussi. Elle est surtout
 indispensable parce que la copie reprend le registre des migrations de la production — une table

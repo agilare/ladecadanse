@@ -161,6 +161,8 @@ if ($tab_temp !== false)
                     $stmt = $connectorPdo->prepare("DELETE FROM user_reset_requests WHERE token = :token");
                     $stmt->execute([':token' => $token]);
 
+                    $videur->revokeRememberedDevices((int) $idPersonne);
+
                     $action_terminee = true;
 
                     $logger->info('[user-reset2] password reset success', ['idP' => $idPersonne]);

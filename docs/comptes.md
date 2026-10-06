@@ -42,6 +42,19 @@ Le lien reçu vaut **24 h**. Sur `user/reset2.php` :
 - liste vide (compte désactivé entre la demande et le clic) : message explicite, pas de formulaire ;
 - jeton absent, mal formé (lien coupé par un client de messagerie) ou expiré : « demande invalide ». Ces trois cas se valent, et aucun ne lève d'erreur.
 
+## Rester connecté-e
+
+La case du formulaire de connexion pose le cookie `ladecadanse_remember`, valable **30 jours** et prolongé à chaque retour. Chaque appareil a son jeton, une ligne de la table `remember_token` (`Ladecadanse\Security\RememberTokens`) : se connecter sur le téléphone ne déconnecte plus l'ordinateur, ce que faisait l'ancienne colonne unique `personne.cookie`.
+
+Le cookie porte `selector:validator`. Le selector retrouve la ligne ; du validator, la table ne garde que l'empreinte SHA-256, si bien qu'une fuite de la base ne livre aucun jeton utilisable. Le validator est renouvelé à chaque retour par le cookie.
+
+Un jeton disparaît :
+
+- à la déconnexion, pour l'appareil qui se déconnecte seulement ;
+- au changement de mot de passe, par le profil ou par une réinitialisation, pour **tous** les appareils du compte (`Sentry::revokeRememberedDevices()`). L'appareil depuis lequel la personne change le sien reçoit un jeton neuf ;
+- à l'anonymisation du compte ;
+- à son expiration, au fil des connexions suivantes.
+
 ## Déconnexion
 
 `user/logout.php` n'accepte que **POST**, avec un jeton. Toute autre requête repart en `303` vers l'accueil sans rien détruire, et sans dire si une session était ouverte.
@@ -50,4 +63,4 @@ Le point d'entrée reste nécessaire — la session est côté serveur, le cooki
 
 Le jeton `form_token_user_logout` est déposé en session par `_header.inc.php` et vaut **pour toute la session**, et non par affichage comme sur `user/login.php` : le bouton « Sortir » est rendu sur toutes les pages, donc dans tous les onglets ouverts, et un jeton à usage unique bloquerait la déconnexion depuis un onglet resté en arrière-plan.
 
-`Sentry::logout()` efface aussi le cookie « Rester connecté-e ». Son `setcookie()` doit porter le `path` explicitement : sans lui, PHP retombe sur le répertoire du script appelant, donc `/user`, et le cookie posé sur `/` survit — Sentry rouvre alors une session à la requête suivante. Trois cas sont verrouillés dans `tests/Site/UserLogoutCest.php`, dont celui-là.
+`Sentry::logout()` efface aussi le cookie « Rester connecté-e » et le jeton de cet appareil. Son `setcookie()` doit porter le `path` explicitement : sans lui, PHP retombe sur le répertoire du script appelant, donc `/user`, et le cookie posé sur `/` survit — Sentry rouvre alors une session à la requête suivante. Trois cas sont verrouillés dans `tests/Site/UserLogoutCest.php`, dont celui-là.
