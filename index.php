@@ -329,15 +329,14 @@ include("_header.inc.php");
         <?php endif; ?>
 
         <?php
-        /* les deux menus partagent une ligne à partir de 800px, cf. #agenda_filters dans
-           index.css ; l'ordre du DOM suit l'ordre visuel (filtrer, puis trier). Les jours
-           sans événement, il n'y a rien à filtrer : sans la classe le conteneur reste en
-           display:contents et le menu de tri s'affiche seul, comme avant le filtre. */
+        /* les deux menus de filtre (genres, favoris) forment la barre collante, cf.
+           #agenda_filters dans index.css ; le menu de tri suit, hors de la barre. Les jours
+           sans événement, il n'y a rien à filtrer : le menu de tri s'affiche seul. */
         $show_genre_tabs = $count_events_today_in_region > 0;
         ?>
-        <div id="agenda_filters"<?= $show_genre_tabs ? ' class="avec-filtre-genre"' : '' ?>>
+        <?php if ($show_genre_tabs) : ?>
+        <div id="agenda_filters">
 
-            <?php if ($show_genre_tabs) : ?>
             <nav id="genre_tab_navigation" aria-label="Filtrer par genre">
                 <ul>
                     <li><i class="fa fa-filter fa-lg" aria-hidden="true"></i></li>
@@ -351,17 +350,17 @@ include("_header.inc.php");
                     <?php endforeach; ?>
                 </ul>
             </nav>
-            <?php endif; ?>
 
             <?php include("_favoris_filter_navigation.inc.php"); ?>
 
-            <div id="order_navigation">
-                <ul>
-                    <li style="margin-right:5px"><i class="fa fa-sort-amount-asc" aria-hidden="true"></i></li><li style="margin-right:2px"><a href="index.php?tri_agenda=dateAjout<?= $url_courant_param ?>" class="<?php if ($_SESSION['user_prefs_agenda_order'] == 'dateAjout') : ?>selected<?php endif; ?>" rel="nofollow">Dernier ajouté</a></li><li><a href="index.php?tri_agenda=horaire_debut<?= $url_courant_param ?>" class="<?php if ($_SESSION['user_prefs_agenda_order'] == 'horaire_debut') : ?>selected<?php endif; ?>" rel="nofollow">Heure de début</a></li>
-                </ul>
-                <div class="spacer"></div>
-            </div>
+        </div>
+        <?php endif; ?>
 
+        <div id="order_navigation">
+            <ul>
+                <li style="margin-right:5px"><i class="fa fa-sort-amount-asc" aria-hidden="true"></i></li><li style="margin-right:2px"><a href="index.php?tri_agenda=dateAjout<?= $url_courant_param ?>" class="<?php if ($_SESSION['user_prefs_agenda_order'] == 'dateAjout') : ?>selected<?php endif; ?>" rel="nofollow">Dernier ajouté</a></li><li><a href="index.php?tri_agenda=horaire_debut<?= $url_courant_param ?>" class="<?php if ($_SESSION['user_prefs_agenda_order'] == 'horaire_debut') : ?>selected<?php endif; ?>" rel="nofollow">Heure de début</a></li>
+            </ul>
+            <div class="spacer"></div>
         </div>
 
         <?php

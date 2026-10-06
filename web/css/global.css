@@ -1866,7 +1866,7 @@ td.favori_action
     }
 
     /* dans la barre de l'agenda, la mise en page vient d'index.css : cette marge y décalerait
-       l'onglet par rapport aux genres, avec lesquels il partage la ligne */
+       l'onglet par rapport aux genres, sous lesquels il s'aligne */
     #agenda_filters #favoris_filter_navigation,
     #agenda_filters #favoris_filter_navigation ul
     {

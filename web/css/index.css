@@ -1,24 +1,18 @@
 /*
- * Sous 800px (borne mobile/desktop du site), le conteneur ne génère aucune boîte :
- * chaque menu retrouve exactement la disposition d'avant, l'un sous l'autre, et
- * surtout le bloc englobant de la barre collante reste #prochains_evenements, donc
- * elle suit toute la liste. Lui donner une vraie boîte ici la ferait décoller au
- * bout de deux lignes.
+ * La barre collante porte les deux menus de filtre, genres et favoris, à toutes les
+ * largeurs ; le menu de tri vient dessous, hors de la barre. Son bloc englobant est
+ * #prochains_evenements : elle suit toute la liste.
  */
 #agenda_filters
-{
-    display: contents;
-}
-
-#genre_tab_navigation
 {
     position: sticky;
     top: 0;
     z-index: 10;
     background: #fdfdfd; /* fond de #global, la barre collante doit s'y fondre */
     padding: 0.6em 0;
-    margin-top: 0.8em;
-    margin-bottom: 0.8em;
+    /* le titre du jour est juste au-dessus : l'écart n'a pas à valoir celui qui sépare
+       les menus du premier genre */
+    margin: 0.5em 0 0.8em 0;
 }
 
 /*
@@ -27,9 +21,6 @@
  * lignes collées se lisent comme un bloc : entre boîtes en ligne, ni margin ni padding
  * ne produisent un écart vertical propre, d'où le passage en flex pour le row-gap.
  *
- * C'est le <ul> qui devient flex, pas le <nav> : le collant est porté par un ancêtre
- * (#genre_tab_navigation en mobile, #agenda_filters en desktop) et le flex de la barre
- * partagée a le <nav> pour enfant direct — aucun des deux n'est touché.
  */
 #genre_tab_navigation ul
 {
@@ -66,71 +57,6 @@
     background: #eee;
 }
 
-/*
- * À partir de 800px, filtre de genres et menu de tri tiennent sur une seule ligne.
- * C'est le conteneur qui devient collant, pas le filtre : son bloc englobant reste
- * #prochains_evenements, et les deux menus restent solidaires en défilant.
- */
-@media screen and (min-width: 800px)
-{
-    #agenda_filters.avec-filtre-genre
-    {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: baseline;
-        justify-content: space-between;
-        /* la colonne d'agenda plafonne à ~564px : les deux menus en réclament près
-           d'autant, d'où l'écart minimal et les paddings resserrés ci-dessous */
-        column-gap: 0.5em;
-        position: sticky;
-        top: 0;
-        z-index: 10;
-        background: #fdfdfd;
-        margin: 0.8em 0;
-        padding: 0.6em 0;
-    }
-
-    #agenda_filters.avec-filtre-genre #genre_tab_navigation
-    {
-        position: static;
-        background: none;
-        margin: 0;
-        padding: 0;
-    }
-
-    /* la ligne est partagée avec le menu de tri : les onglets s'y resserrent */
-    #agenda_filters.avec-filtre-genre #genre_tab_navigation ul
-    {
-        column-gap: 0.15em;
-    }
-
-    /*
-     * « Favoris » reste collé aux genres : le space-between de la barre le renvoyait à l'autre
-     * bord de la ligne, où il se lisait comme un lien vers la page Favoris plutôt que comme un
-     * filtre de plus. L'espace libre passe à sa droite, si bien que le menu de tri garde son
-     * bord droit quand il tient sur la même ligne.
-     */
-    #agenda_filters.avec-filtre-genre #favoris_filter_navigation
-    {
-        margin-right: auto;
-    }
-
-    /* Replié sous les filtres, le menu de tri se cale à gauche, sous l'entonnoir : il y
-       commence la ligne plutôt que de la finir, et l'œil retrouve les deux menus au même
-       bord. Il perd l'alignement à droite qu'il garde ailleurs sur le site, où rien ne le
-       précède dans sa boîte. */
-    #agenda_filters.avec-filtre-genre #order_navigation
-    {
-        margin: 0.8em 0 0 0;
-    }
-
-    /* dans le contexte flex, le flottant n'a plus rien à aligner et fausse la hauteur */
-    #agenda_filters.avec-filtre-genre #order_navigation ul
-    {
-        float: none;
-        margin: 0;
-    }
-}
 
 
 /*
@@ -250,14 +176,23 @@ ul.entete_contenu_navigation li:nth-child(2) a:hover
     margin: 0 auto 0 auto;
 }
 
+/*
+ * Le menu de tri vient sous la barre des filtres, calé à gauche : collé à droite, il ne
+ * répondait à rien et se lisait mal. Sans padding gauche, son icône tombe à la verticale
+ * de l'entonnoir.
+ */
 #order_navigation
 {
     margin-top: 0.6em;
+    /* respiration avant le premier genre. En padding et non en marge : une marge basse
+       fusionnerait avec les 10px de .genre-titre — plus grands, donc seuls retenus,
+       l'ajout resterait invisible. */
+    padding-bottom: 0.5em;
 }
 
     #order_navigation ul
     {
-        float: right;
+        float: none; /* annule celui de global.css */
         display:inline-block;
         margin:0.2em 0;
         padding:0;
@@ -291,55 +226,35 @@ ul.entete_contenu_navigation li:nth-child(2) a:hover
     }
 
 /*
- * Sous 800px, les deux menus sont empilés (cf. #agenda_filters en display:contents) :
- * le tri collé à droite ne répondait à rien et se lisait mal sous le filtre de genres.
- * Le padding gauche reprend celui des <li> du filtre pour que les deux icônes tombent
- * sur la même verticale.
+ * Le filtre des favoris est un menu à part, qui tombe sous celui des genres : sa ligne se
+ * décale de l'entonnoir et de l'écart qui le suit, pour que « Favoris » commence à la
+ * verticale du premier genre. Les deux menus partagent la même police réduite, d'où un
+ * décalage exprimé dans cette unité, et non en pixels : l'entonnoir en fa-lg (4/3 de la
+ * police) fait 1,05em, le column-gap des genres 0,25em.
  */
-@media screen and (max-width: 799.98px)
+#agenda_filters #favoris_filter_navigation
 {
-    #order_navigation ul
+    margin: 0.4em 0 0 1.3em; /* en haut, le row-gap des genres : il prolonge leur menu */
+}
+
+/*
+ * À partir de 800px, « Favoris » reprend place sur la ligne des genres, comme un filtre
+ * de plus. L'écart qui le précède double le column-gap des genres : assez pour le
+ * distinguer d'eux, pas assez pour l'en détacher.
+ */
+@media screen and (min-width: 800px)
+{
+    #agenda_filters
     {
-        float: none;
-        padding-left: 0.2em;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        margin-top: 0;
     }
 
-    /* le titre du jour est juste au-dessus : l'écart n'a pas à valoir celui qui sépare
-       les deux menus du premier genre */
-    #genre_tab_navigation
-    {
-        margin-top: 0.5em;
-    }
-
-    /*
-     * Le filtre des favoris est un menu à part, qui tombe sous celui des genres : sa ligne se
-     * décale de l'entonnoir et de l'écart qui le suit, pour que « Favoris » commence à la
-     * verticale du premier genre. Les deux menus partagent la même police réduite, d'où un
-     * décalage exprimé dans cette unité — 0,79em de glyphe et 0,25em d'écart — et non en
-     * pixels : la largeur du glyphe suit la taille de police, l'alignement la suit aussi.
-     */
     #agenda_filters #favoris_filter_navigation
     {
-        margin-left: 1.04em;
-        /* il prolonge le menu des genres et se colle à lui : la marge basse que celui-ci
-           ménageait sous lui est reprise ici, et rendue au menu de tri ci-dessous */
-        margin-top: -0.8em;
-    }
-
-    /* l'écart repris plus haut : le tri s'éloigne des deux menus de filtre, auxquels il ne
-       se mélange pas. Sans filtre des favoris affiché, la page garde l'écart d'origine. */
-    #favoris_filter_navigation:not([hidden]) + #order_navigation
-    {
-        margin-top: 1.07em;
-    }
-
-    /* respiration sous le bloc de filtres, avant le premier genre. En padding et non en
-       marge : #agenda_filters est en display:contents et n'a donc pas de boîte à marger,
-       et une marge basse ici fusionnerait avec les 10px de .genre-titre — plus grands,
-       donc seuls retenus, l'ajout resterait invisible. */
-    #order_navigation
-    {
-        padding-bottom: 0.5em;
+        margin: 0 0 0 0.5em;
     }
 }
 
