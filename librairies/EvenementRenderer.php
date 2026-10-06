@@ -27,6 +27,9 @@ use Ladecadanse\Utils\WebLink;
  */
 class EvenementRenderer
 {
+    /** Largeur des vignettes des listes compactes : derniers ajoutés, tableaux de lieu et d'organisateur. */
+    public const int SMALL_FIGURE_WIDTH = 60;
+
     /**
      * Plafond de charge utile de la description d'une carte d'événement.
      * La hauteur du bloc, elle, est plafonnée par le line-clamp de global.css.
@@ -707,7 +710,7 @@ class EvenementRenderer
                 <span class="pratique"><?= self::schedulesToHhMm($tab_even['e_horaire_debut'], $tab_even['e_horaire_fin'], $tab_even['e_dateEvenement']) ?></span>
             </td>
             <td class="flyer photo">
-                <?= self::mainFigureHtml($tab_even['e_flyer'], $tab_even['e_image'], $tab_even['e_titre'], 60) ?>
+                <?= self::mainFigureHtml($tab_even['e_flyer'], $tab_even['e_image'], $tab_even['e_titre'], self::SMALL_FIGURE_WIDTH) ?>
             </td>
             <td>
                 <a class="url" href="/event/evenement.php?idE=<?= (int)$tab_even['e_idEvenement']?>">
