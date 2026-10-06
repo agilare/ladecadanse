@@ -479,14 +479,24 @@ class HtmlShrink
             . '</span></td>';
     }
 
+    public static function msgInfoHtml(string $message): string
+    {
+        return '<div class="msg_info">' . $message . '</div>';
+    }
+
     public static function msgInfo(string $message): void
     {
-        echo '<div class="msg_info">' . $message . '</div>';
+        echo self::msgInfoHtml($message);
+    }
+
+    public static function msgOkHtml(string $message): string
+    {
+        return '<div class="msg_ok">' . $message . '</div>';
     }
 
     public static function msgOk(string $message): void
     {
-        echo '<div class="msg_ok">' . $message . '</div>';
+        echo self::msgOkHtml($message);
     }
 
     public static function msgErreur(string $message): void
