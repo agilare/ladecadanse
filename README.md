@@ -11,10 +11,10 @@ La décadanse est un site web qui présente aux visiteurs une sélection d'évé
 Les organisateurs d'événements ont la possibilité de s'inscrire puis annoncer leurs événements et enfin se présenter.
 
 Les principales sections du site sont :
-- un **agenda d'événements**, chacun de ceux-ci ayant sa fiche détaillée accompagnée de quelques petits services (signaler une erreur, partager...)
-- un répertoire des **Lieux** où se déroulent des événements, avec détails, présentation, photos
-- un répertoire des **Organisateurs d'événements**, similaire aux Lieux
-- un **back-office** permettant de gérer les diverses entités du site : utilisateurs, événements, lieux, organisateurs, etc.
+- 📅 un **agenda d'événements**, chacun de ceux-ci ayant sa fiche détaillée accompagnée de quelques petits services (signaler une erreur, partager...)
+- 📍 un répertoire des **Lieux** où se déroulent des événements, avec détails, présentation, photos
+- 🎤 un répertoire des **Organisateurs d'événements**, similaire aux Lieux
+- 🛠️ un **back-office** permettant de gérer les diverses entités du site : utilisateurs, événements, lieux, organisateurs, etc.
 
 ## Installation locale
 
@@ -29,7 +29,8 @@ Ces instructions vous permettront de mettre en place une copie du projet sur vot
 - [Node.js](https://nodejs.org/) 20.19+, 22.13+ ou 24+, avec npm — pour les [bibliothèques front-end](#bibliothèques-front-end), le lint et les tests JavaScript
 - MariaDB 10.11 (si possible avec `innodb_ft_min_token_size=3` et `ft_min_word_len=3`, pour de meilleurs résultats dans la recherche d'événements)
 
-Facultatif : `imagick` et Ghostscript, pour convertir en image les PDF **collés en URL** dans le formulaire d'événement. Sans eux le site fonctionne normalement, et les PDF **envoyés en fichier** sont convertis de toute façon — c'est le navigateur qui s'en charge. L'ensemble est désactivé par défaut : voir [Accepter les PDF dans les champs image](#accepter-les-pdf-dans-les-champs-image).
+> [!NOTE]
+> **Facultatif** : `imagick` et Ghostscript, pour convertir en image les PDF **collés en URL** dans le formulaire d'événement. Sans eux le site fonctionne normalement, et les PDF **envoyés en fichier** sont convertis de toute façon — c'est le navigateur qui s'en charge. L'ensemble est désactivé par défaut : voir [Accepter les PDF dans les champs image](#accepter-les-pdf-dans-les-champs-image).
 
 #### Étapes
 1. cloner la branche `master`
@@ -64,7 +65,8 @@ Seul Docker est requis sur l'hôte, avec Compose v2 (`docker compose`) : ni PHP,
 - `composer-dev` (ou `composer-prod`) installe `vendor/` ;
 - `npm` lance `npm ci`, qui installe les [bibliothèques front-end](#bibliothèques-front-end) et les copie dans `web/libs/`. Son `node_modules/` vit dans un volume Docker, pas dans celui de l'hôte, qui reste libre pour `npm run lint` et `npm test`.
 
-Les voir `Exited` après le démarrage est le fonctionnement normal, pas un échec.
+> [!NOTE]
+> Les voir `Exited` après le démarrage est le fonctionnement normal, pas un échec.
 
 #### Configuration des environnements
 
@@ -75,7 +77,8 @@ Le projet utilise un fichier unique `docker/env/env.php` pour tous les environne
 
 Ces variables sont automatiquement configurées dans `docker-compose.yml` selon le profil Docker utilisé.
 
-**Important** : Avant de déployer en production, assurez-vous de configurer les valeurs sensibles dans `docker/env/env.php` (clés API, identifiants SMTP, etc.).
+> [!IMPORTANT]
+> Avant de déployer en production, assurez-vous de configurer les valeurs sensibles dans `docker/env/env.php` (clés API, identifiants SMTP, etc.).
 
 #### Permissions sur les répertoires inscriptibles (hôtes Linux)
 
@@ -89,7 +92,8 @@ printf 'UID=%s\nGID=%s\n' "$(id -u)" "$(id -g)" > .env
 
 Puis reconstruisez l'image : `docker compose --profile dev build --no-cache`.
 
-Sous Docker Desktop (Windows et macOS) cette étape est inutile : les montages sont déjà permissifs et les valeurs par défaut conviennent.
+> [!TIP]
+> Sous Docker Desktop (Windows et macOS) cette étape est inutile : les montages sont déjà permissifs et les valeurs par défaut conviennent.
 
 Dans tous les cas, l'entrypoint du conteneur (`docker/php/docker-entrypoint.sh`) crée au démarrage les répertoires inscriptibles manquants et corrige leurs permissions si nécessaire.
 
@@ -163,7 +167,8 @@ Les bibliothèques servies au navigateur depuis le site même — jQuery, Leafle
 
 TinyMCE et le SDK Sentry restent chargés depuis leur CDN : tous deux sont liés à un service (clé d'API, DSN), pas à un fichier qu'on pourrait figer. Les tuiles de la carte viennent d'OpenStreetMap pour la même raison.
 
-`npm ci` avertit `EBADENGINE` sous Node 22 : select2 4.1.0 déclare exiger Node 24 pour ses propres outils de build, dont rien ne sert ici puisque seuls ses fichiers publiés sont copiés. L'avertissement est sans conséquence.
+> [!NOTE]
+> `npm ci` avertit `EBADENGINE` sous Node 22 : select2 4.1.0 déclare exiger Node 24 pour ses propres outils de build, dont rien ne sert ici puisque seuls ses fichiers publiés sont copiés. L'avertissement est sans conséquence.
 
 Mettre à jour une bibliothèque :
 
@@ -184,7 +189,8 @@ Une base neuve est vide, et saisir à la main de quoi éprouver l'agenda est vit
 composer prod-copy -- --limit=1000
 ```
 
-Le prérequis est un **accès SSH** au serveur, qui sert deux fois : l'offre Infomaniak n'ouvrant pas MySQL à l'extérieur, la base se lit à travers un tunnel, et les quelque 2700 fichiers descendent par la même voie en une minute. La mise en place, la procédure d'essai, les vérifications et ce que l'anonymisation remplace exactement sont dans [docs/prod-copy.md](docs/prod-copy.md).
+> [!NOTE]
+> Le prérequis est un **accès SSH** au serveur, qui sert deux fois : l'offre Infomaniak n'ouvrant pas MySQL à l'extérieur, la base se lit à travers un tunnel, et les quelque 2700 fichiers descendent par la même voie en une minute. La mise en place, la procédure d'essai, les vérifications et ce que l'anonymisation remplace exactement sont dans [docs/prod-copy.md](docs/prod-copy.md).
 
 ### Accepter les PDF dans les champs image
 
@@ -200,7 +206,8 @@ Tant que le drapeau est absent ou faux, les champs flyer et image n'annoncent pa
 
 `'preview'` sert à éprouver une fonctionnalité conséquente sur le site en ligne sans l'exposer au public. Le texte d'aide signale alors qu'on est seul à la voir — sans quoi une préversion s'oublie et l'on croit la fonctionnalité livrée. Le mécanisme est générique (`Ladecadanse\FeatureFlag`) et se réutilise pour tout autre drapeau : voir la classe pour la marche à suivre, `dynamicConstantNames` de `phpstan.neon` compris.
 
-Noter la **chaîne littérale** plutôt que `FeatureFlag::PREVIEW` : `app/env.php` est chargé avant l'autoloader, aucune classe n'y est encore connue.
+> [!NOTE]
+> Noter la **chaîne littérale** plutôt que `FeatureFlag::PREVIEW` : `app/env.php` est chargé avant l'autoloader, aucune classe n'y est encore connue.
 
 Le formulaire d'événement accepte alors les PDF de deux façons, dont une seule demande quelque chose au serveur :
 
@@ -225,9 +232,11 @@ Contrôle, une fois le tout en place :
 php -r "echo extension_loaded('imagick') ? implode(',', Imagick::queryFormats('PDF')) : 'absent', PHP_EOL;"
 ```
 
-La réponse attendue est `PDF`. Un `absent` signale que la DLL ne correspond pas au PHP en service — c'est de loin la cause la plus fréquente, et elle est silencieuse : PHP ne charge simplement pas l'extension.
+> [!TIP]
+> La réponse attendue est `PDF`. Un `absent` signale que la DLL ne correspond pas au PHP en service — c'est de loin la cause la plus fréquente, et elle est silencieuse : PHP ne charge simplement pas l'extension.
 
-Si `imagick` répond mais que la conversion échoue sur `not authorized`, c'est la `policy.xml` d'ImageMagick qui refuse le coder PDF (héritage de CVE-2018-16509) : y passer `<policy domain="coder" rights="none" pattern="PDF" />` en `rights="read"`.
+> [!TIP]
+> Si `imagick` répond mais que la conversion échoue sur `not authorized`, c'est la `policy.xml` d'ImageMagick qui refuse le coder PDF (héritage de CVE-2018-16509) : y passer `<policy domain="coder" rights="none" pattern="PDF" />` en `rights="read"`.
 
 ### Usage
 Une fois le site fonctionnel, se connecter avec le login *admin* (créé ci-dessus) permet d'ajouter et modifier des événements, lieux, etc. (partie publique) et de les gérer (partie back-office)
@@ -269,7 +278,8 @@ Un espace sur un serveur avec l'infrastructure prérequise, une timezone défini
 
 #### Pour mettre à jour avec les derniers commits
 
-Avant de lancer la commande ci-dessous, il peut falloir migrer la base de données de production : `composer deploy` ne s'en charge pas (voir plus bas).
+> [!IMPORTANT]
+> Avant de lancer la commande ci-dessous, il peut falloir migrer la base de données de production : `composer deploy` ne s'en charge pas : voir [Migrer la base de données de production](#migrer-la-base-de-données-de-production).
 
 ```sh
 $ composer deploy -- --scope=prod
@@ -279,25 +289,16 @@ $ composer deploy -- --scope=prod
 
 `web/libs/` n'est pas versionné mais git-ftp l'envoie quand même, en entier, chaque fois que `package-lock.json` ou `bin/libs-sync.mjs` a changé depuis le dernier déploiement (`.git-ftp-include`) ; les autres déploiements ne le renvoient pas. `composer install`, à passer par SSH sur le serveur quand `composer.lock` a changé, ne concerne que les dépendances PHP.
 
-**La base de données ne se met pas à jour par `composer deploy`** : les migrations ne partent pas sur le serveur, elles se passent depuis le poste, par le tunnel SSH de [docs/prod-copy.md](docs/prod-copy.md), quand `resources/database/migrations/` a de nouvelles classes depuis le dernier déploiement :
-
-```sh
-$ LADECADANSE_DB=prod composer db:status    # ce qui manque en production
-$ mysqldump …                               # sauvegarde : aucune transaction ne protège un échec en cours de route
-$ LADECADANSE_DB=prod composer db:migrate   # demande confirmation avant d'écrire
-```
-
-Sous PowerShell : `$env:LADECADANSE_DB='prod'; composer db:migrate`. Quant au moment, la règle par défaut est **avant** `composer deploy`, car une colonne ou une table en plus ne gêne pas l'ancien code, alors que le nouveau code sur une base non migrée répond une erreur SQL. L'exception est une migration qui supprime ou renomme ce que l'ancien code lit encore : elle se passe juste **après**, l'intervalle étant le plus court possible. [UPGRADE.md](UPGRADE.md) indique l'ordre et les verrous à prévoir (tables MyISAM : hors des heures de saisie) pour chaque migration ; voir aussi [resources/database/README.md](resources/database/README.md).
-
 Le scope n'a pas de valeur par défaut : quand plusieurs serveurs sont configurés, choisir
 pour vous reviendrait à parier sur la bonne machine. Le script les liste et s'arrête. Si un
 seul est configuré, il est retenu sans rien préciser.
 
-L'enchaînement n'est pas cosmétique. Le `.htaccess` est ignoré par git — pour que les
-règles propres à l'exploitation (adresses bannies, robots) ne deviennent pas publiques —
-mais git-ftp l'envoie quand même, grâce à `!.htaccess` dans `.git-ftp-include`. Ce
-mécanisme envoie **le fichier présent sur le disque** : sans recomposition préalable, un
-essai local oublié partirait en production. Voir [docs/config-serveur.md](docs/config-serveur.md).
+> [!WARNING]
+> L'enchaînement n'est pas cosmétique. Le `.htaccess` est ignoré par git — pour que les
+> règles propres à l'exploitation (adresses bannies, robots) ne deviennent pas publiques —
+> mais git-ftp l'envoie quand même, grâce à `!.htaccess` dans `.git-ftp-include`. Ce
+> mécanisme envoie **le fichier présent sur le disque** : sans recomposition préalable, un
+> essai local oublié partirait en production. Voir [docs/config-serveur.md](docs/config-serveur.md).
 
 Les fragments d'exploitation vivent dans un dépôt privé annexe. `composer deploy` refuse de
 partir s'il ne les trouve pas, plutôt que de déployer une production sans ses blocages.
@@ -313,6 +314,23 @@ Pour ne pousser que le code, sans toucher au `.htaccess` :
 $ git ftp push -s prod
 ```
 
+#### Migrer la base de données de production
+
+🗄️ **La base de données ne se met pas à jour par `composer deploy`** : les migrations ne partent pas sur le serveur, elles se passent depuis le poste, par le tunnel SSH de [docs/prod-copy.md](docs/prod-copy.md), quand `resources/database/migrations/` a de nouvelles classes depuis le dernier déploiement :
+
+```sh
+$ LADECADANSE_DB=prod composer db:status    # ce qui manque en production
+$ mysqldump …                               # sauvegarde : aucune transaction ne protège un échec en cours de route
+$ LADECADANSE_DB=prod composer db:migrate   # demande confirmation avant d'écrire
+```
+
+Sous PowerShell : `$env:LADECADANSE_DB='prod'; composer db:migrate`.
+
+> [!TIP]
+> **Quand migrer ?** Par défaut **avant** `composer deploy`, car une colonne ou une table en plus ne gêne pas l'ancien code, alors que le nouveau code sur une base non migrée répond une erreur SQL. L'exception est une migration qui supprime ou renomme ce que l'ancien code lit encore : elle se passe juste **après**, l'intervalle étant le plus court possible.
+
+[UPGRADE.md](UPGRADE.md) indique l'ordre et les verrous à prévoir (tables MyISAM : hors des heures de saisie) pour chaque migration ; voir aussi [resources/database/README.md](resources/database/README.md).
+
 #### Après le déploiement
 
 Une requête suffit à vérifier que le `.htaccess` est arrivé et qu'il est valide :
@@ -321,8 +339,9 @@ Une requête suffit à vérifier que le `.htaccess` est arrivé et qu'il est val
 $ curl -I https://www.ladecadanse.ch/lausanne
 ```
 
-Une 301 vers `/index.php?region=vd` : le compte est bon. Une 500 signale une directive
-refusée par le serveur ; une 404, que le fichier n'est pas arrivé.
+- ✅ **301** vers `/index.php?region=vd` : le compte est bon
+- ❌ **500** : une directive est refusée par le serveur
+- ❌ **404** : le fichier n'est pas arrivé
 
 ## Analyse du code
 
@@ -345,7 +364,15 @@ Pour passer à une nouvelle version (migrations de base de données, nouvelles c
 
 ## Documentation
 
-Le fonctionnement des parties du site qui demandent plus qu'une ligne de changelog est documenté dans [docs/](docs/) : [agenda](docs/agenda.md), [événements](docs/evenements.md), [administration des événements](docs/admin-evenements.md), [interface](docs/interface.md), [flux RSS](docs/rss.md), [suivi des bots](docs/bots.md), [configuration serveur](docs/config-serveur.md), [analyse statique](docs/analyse-statique.md).
+Le fonctionnement des parties du site qui demandent plus qu'une ligne de changelog est documenté dans [docs/](docs/) :
+
+- [agenda](docs/agenda.md)
+- [événements](docs/evenements.md) et leur [administration](docs/admin-evenements.md)
+- [interface](docs/interface.md), raccourcis clavier compris
+- [flux RSS](docs/rss.md)
+- [suivi des bots](docs/bots.md)
+- [configuration serveur](docs/config-serveur.md)
+- [analyse statique](docs/analyse-statique.md)
 
 ## Contribuer
 
@@ -353,7 +380,7 @@ Le projet accepte volontiers de l'aide ; il y a diverses manières de contribu
 Les [lignes directrices pour les contributions](CONTRIBUTING.md) décrivent en détail l'état actuel du projet, les possibilités d'aide et comment le faire.
 
 ## Contact
-Michel Gaudry - michel@ladecadanse.ch
+Michel Gaudry - ✉️ michel@ladecadanse.ch
 
 [GitHub La décadanse](https://github.com/agilare/ladecadanse)
 
