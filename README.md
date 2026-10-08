@@ -334,89 +334,17 @@ refusée par le serveur ; une 404, que le fichier n'est pas arrivé.
 
 ## Analyse du code
 
-Cinq analyseurs de code PHP sont disponibles et peuvent être exécutés via Composer.
-
-- ils sont configurés pour la version de PHP [requise](#Prerequis)
-- le niveau d'analyse est réglé aussi haut que possible, mais pas trop pour ne pas relever les erreurs dûes à l'ancienneté du code (par ailleurs certaines erreurs peu ou pas pertinentes sont ignorées) et ciblé plutôt pour la version de PHP requise
-- les répertoires vendor, var, etc. sont ignorés
-
-### phpstan
+Des analyseurs de code PHP, configurés pour la version de PHP requise, s'exécutent via Composer :
 
 ```sh
-$ composer phpstan
+$ composer phpstan          # analyse statique
+$ composer psalm            # idem, doit rester vert
+$ composer psalm:taint      # données utilisateur atteignant un point sensible (SQL, include, en-têtes…)
+$ composer rector:dry-run   # aperçu des modernisations possibles, sans modifier les fichiers
+$ composer sniffer:php84    # compatibilité avec PHP 8.4 (PHPCompatibility)
 ```
 
-Erreurs nombreuses et peu importantes ignorées stockées dans `phpstan-baseline.neon`
-
-### Rector
-
-Exécuter sans modifier directement les fichiers (aperçu) :
-```sh
-$ composer rector:dry-run
-```
-
-### Rector Jack
-
-Aide à repérer et mettre à jour les dépendances Composer obsolètes (`rector/jack`, séparé de Rector) :
-```sh
-$ ./vendor/bin/jack list
-```
-
-Commandes utiles : `breakpoint` (échoue si trop de paquets majeurs sont en retard, utile en CI), `open-versions` (assouplit les contraintes de version vers la version suivante), `raise-to-installed` (aligne `composer.json` sur les versions installées).
-
-### Psalm
-
-```sh
-$ composer psalm
-```
-
-Doit rester vert : les problèmes connus sont dans `psalm-baseline.xml`, à régénérer avec
-`./vendor/bin/psalm --set-baseline=psalm-baseline.xml` après une montée de version.
-
-Les globales du legacy (`$connector`, `$glo_*`, `$rep_*`…) sont déclarées dans la section
-`<globals>` de `psalm.xml` ; l'ajouter d'une nouvelle globale dans `app/config.php` ou
-`app/bootstrap.php` implique de l'y déclarer aussi.
-
-Analyse de teinte (recherche de données utilisateur atteignant un point sensible : SQL,
-`include`, en-têtes, requêtes réseau…). Complémentaire de PHPStan, qui ne fait pas ce type
-d'analyse :
-```sh
-$ composer psalm:taint
-```
-
-Attention au bruit : l'essentiel des résultats est du `TaintedHtml`/`TaintedTextWithQuotes`
-sur le vieux code d'affichage. Les catégories à regarder en priorité sont `TaintedSql`,
-`TaintedFile`, `TaintedSSRF`, `TaintedHeader` et `TaintedCookie`.
-
-L'unique `TaintedSql` restant (rapporté sur `DbConnector::query()`, tracé jusqu'à
-`user-edit.php`) est un faux positif documenté dans le code : Psalm teinte les *clés* de
-`$champs` alors que seules les valeurs viennent de `$_POST`. Il n'est pas supprimable via
-`@psalm-suppress` puisque l'erreur est ancrée sur le sink et non sur le site d'appel.
-
-### Phan
-
-```sh
-./vendor/bin/phan --progress-bar -o phan.txt
-```
-
-puis éventuellement, pour abréger le rapport :
-
-```sh
-cat phan80.txt | cut -d ' ' -f2 | sort | uniq -c | sort -n -r
-```
-
-### PHPCompatibility
-
-Dispo de PHP 8.0 à 8.4
-
-Pour 8.4 :
-
-```sh
-$ composer sniffer:php84
-```
-
-> [!NOTE]
-> `squizlabs/php_codesniffer` reste volontairement sur la branche `^3.13` : la version 4.0 n'est pour l'instant supportée que par une version alpha de `phpcompatibility/php-compatibility` (`10.0.0-alpha2`). À réévaluer quand une version stable sortira.
+S'y ajoutent Phan (`./vendor/bin/phan`) et Rector Jack (`./vendor/bin/jack list`, dépendances Composer obsolètes). Les baselines, le bruit attendu de l'analyse de teinte et les autres détails sont dans [docs/analyse-statique.md](docs/analyse-statique.md).
 
 ## Changelog
 Voir le [changelog](CHANGELOG.md) et les [releases sur GitHub](https://github.com/agilare/ladecadanse/releases)
@@ -425,7 +353,7 @@ Pour passer à une nouvelle version (migrations de base de données, nouvelles c
 
 ## Documentation
 
-Le fonctionnement des parties du site qui demandent plus qu'une ligne de changelog est documenté dans [docs/](docs/) : [agenda](docs/agenda.md), [événements](docs/evenements.md), [administration des événements](docs/admin-evenements.md), [interface](docs/interface.md), [flux RSS](docs/rss.md), [suivi des bots](docs/bots.md), [configuration serveur](docs/config-serveur.md).
+Le fonctionnement des parties du site qui demandent plus qu'une ligne de changelog est documenté dans [docs/](docs/) : [agenda](docs/agenda.md), [événements](docs/evenements.md), [administration des événements](docs/admin-evenements.md), [interface](docs/interface.md), [flux RSS](docs/rss.md), [suivi des bots](docs/bots.md), [configuration serveur](docs/config-serveur.md), [analyse statique](docs/analyse-statique.md).
 
 ## Contribuer
 
