@@ -1,6 +1,6 @@
 # Interface
 
-Notes sur l'habillage du site : feuilles de style, icônes, et les mises en page qui demandent plus qu'une ligne de changelog. Les raccourcis clavier et le mode *mouseless* sont documentés dans le [README](../README.md#raccourcis-clavier).
+Notes sur l'habillage du site : feuilles de style, icônes, et les mises en page qui demandent plus qu'une ligne de changelog. Y figurent aussi les [raccourcis clavier](#raccourcis-clavier) et le mode *mouseless*.
 
 ## Feuilles de style
 
@@ -59,3 +59,21 @@ Les partenaires reçoivent le fond gris arrondi utilisé ailleurs sur le site, e
 - **Barre d'actions d'un événement** — les libellés se répartissaient sur plusieurs lignes ferrées à droite, actions publiques et actions réservées aux personnes connectées partageant un même flux. Chaque groupe forme désormais sa propre liste, empilée et calée à gauche, et les icônes — images de 16 px comme glyphes Font Awesome — sont centrées sur leur libellé. « Envoyer à un ami » y prend un glyphe Font Awesome.
 - **Menu d'actions d'un lieu** — il était simplement masqué.
 - **Bandeaux de message** — l'icône chevauchait le texte, et la coche de « événement copié » ne se posait pas sur la première ligne.
+
+## Raccourcis clavier
+
+Sur tout le site : `h` accueil, `s` recherche, `a` ajouter un événement, `l` lieux, `o` organisateurs, `d` dashboard admin. Pour les admins, `b` gérer les événements et `u` utilisateurs : ces deux touches visent les liens du menu d'en-tête, que `_header.inc.php` ne rend que pour eux, si bien que pour tout autre visiteur la touche garde son comportement natif. Sur une fiche : `e` éditer, et sur un événement `f` flyer, `c` copier. Sur l'agenda : flèches gauche/droite pour changer de jour. `/` place le curseur dans le champ de filtre des listes qui en ont un : lieux, organisateurs, gérer les événements, utilisateurs.
+
+Les flèches gauche/droite servent aussi de pagination sur les listes qui portent un bloc de pagination — recherche, lieux, organisateurs, profil utilisateur, gérer les événements, utilisateurs. À la première ou à la dernière page le lien est un `<span class="disabled">`, et la flèche retrouve son rôle de défilement.
+
+### Parcourir une liste
+
+Dans les listes d'entités — agenda, résultats de recherche, événements d'un lieu ou d'un organisateur, les trois tables du dashboard admin à la suite, lieux, organisateurs, gérer les événements, utilisateurs — `j` passe à l'entité suivante et `k` à la précédente, à la manière de vi, plutôt que de tabuler à travers chaque lien secondaire d'une ligne. Le focus va sur le lien principal de la ligne : Entrée ouvre la fiche, les lecteurs d'écran l'annoncent et Tab reprend de là ; la ligne courante est mise en évidence via `:focus-within`. Le parcours s'arrête aux extrémités et ne change pas de page. Sur une fiche d'événement, où il n'y a pas de liste à parcourir, `j` et `k` suivent les liens vers l'événement suivant et précédent du même jour, de sorte que le parcours commencé sur l'agenda se poursuit à l'intérieur de l'événement. Les flèches gauche/droite, elles, gardent partout un seul sens : changer de jour ou de page, jamais d'élément.
+
+### Registre
+
+Chaque liste est décrite pour sa page dans le registre `LISTS`, à côté de celui des raccourcis. Les raccourcis sont résolus sur `event.key`, jamais `event.code`, pour rester utilisables quel que soit le layout clavier du visiteur (AZERTY, QWERTZ, QWERTY...). Le registre est unique, dans `web/js/shortcuts.js`, et partagé par les deux fonctionnalités pour qu'elles ne puissent pas diverger.
+
+### Mode mouseless
+
+Réservé aux ADMIN et SUPERADMIN : `?mouseless=1` sur n'importe quelle page neutralise le clic de souris sur les éléments couverts par un raccourci et affiche la touche de chacun dans un badge `<kbd>` — dans le placeholder pour les champs texte — de quoi les faire entrer dans les doigts. Un clic bloqué fait clignoter le badge. La navigation au clavier n'est pas touchée : Tab + Entrée suit toujours un lien. Le mode suit la navigation (`localStorage`) et se quitte par une double frappe d'Échap — la touche sert à trop de choses par ailleurs (fermer la fenêtre du flyer, annuler une saisie) pour qu'un appui isolé suffise, et le premier appui fait clignoter le rappel du bandeau —, par le lien du bandeau ou par `?mouseless=0`. Dans les listes, les liens de ligne restent cliquables et sans badge — en badger cinquante noierait la page —, le bandeau annonçant `j` et `k` à la place. Le mode est ignoré sur les pointeurs grossiers, où il n'y a pas de clavier physique.
