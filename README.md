@@ -277,6 +277,8 @@ Un espace sur un serveur avec l'infrastructure prérequise, une timezone défini
 
 #### Pour mettre à jour avec les derniers commits
 
+Avant de lancer la commande ci-dessous, il peut falloir migrer la base de données de production : `composer deploy` ne s'en charge pas (voir plus bas).
+
 ```sh
 $ composer deploy -- --scope=prod
 ```
@@ -284,6 +286,16 @@ $ composer deploy -- --scope=prod
 `composer deploy` compose le `.htaccess` à partir de ses fragments, reconstruit `web/libs/` par `npm ci`, puis lance `git ftp push`.
 
 `web/libs/` n'est pas versionné mais git-ftp l'envoie quand même, en entier, chaque fois que `package-lock.json` ou `bin/libs-sync.mjs` a changé depuis le dernier déploiement (`.git-ftp-include`) ; les autres déploiements ne le renvoient pas. `composer install`, à passer par SSH sur le serveur quand `composer.lock` a changé, ne concerne que les dépendances PHP.
+
+**La base de données ne se met pas à jour par `composer deploy`** : les migrations ne partent pas sur le serveur, elles se passent depuis le poste, par le tunnel SSH de [docs/prod-copy.md](docs/prod-copy.md), quand `resources/database/migrations/` a de nouvelles classes depuis le dernier déploiement :
+
+```sh
+$ LADECADANSE_DB=prod composer db:status    # ce qui manque en production
+$ mysqldump …                               # sauvegarde : aucune transaction ne protège un échec en cours de route
+$ LADECADANSE_DB=prod composer db:migrate   # demande confirmation avant d'écrire
+```
+
+Sous PowerShell : `$env:LADECADANSE_DB='prod'; composer db:migrate`. Quant au moment, la règle par défaut est **avant** `composer deploy`, car une colonne ou une table en plus ne gêne pas l'ancien code, alors que le nouveau code sur une base non migrée répond une erreur SQL. L'exception est une migration qui supprime ou renomme ce que l'ancien code lit encore : elle se passe juste **après**, l'intervalle étant le plus court possible. [UPGRADE.md](UPGRADE.md) indique l'ordre et les verrous à prévoir (tables MyISAM : hors des heures de saisie) pour chaque migration ; voir aussi [resources/database/README.md](resources/database/README.md).
 
 Le scope n'a pas de valeur par défaut : quand plusieurs serveurs sont configurés, choisir
 pour vous reviendrait à parier sur la bonne machine. Le script les liste et s'arrête. Si un
