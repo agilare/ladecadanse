@@ -129,7 +129,9 @@ Le drapeau `EVENT_NEW_CATEGORIES_ENABLED` d'`app/env.php` commande les catégori
 
 Ouvrir une catégorie à tous ne passe pas par le drapeau, qui les ouvrirait toutes : on retire son entrée de `PREVIEW_FALLBACKS`. Deux choses sont alors à revoir hors du code : la [charte éditoriale](../articles/charte-editoriale.php), qui annonce le nombre de catégories et en décrit certaines ; les scénarios Selenium de `tests/ladecadanse.side`, dont les sélecteurs positionnels (`.genre:nth-child(N)`) désignent une section par son rang et changent de cible dès qu'une section s'insère.
 
-## Lieu supprimé
+## Supprimer, dépublier
+
+`event/actions.php` supprime et dépublie un événement **en POST seulement**, avec le jeton CSRF de la session, que les liens portent dans `data-token` : une autre méthode répond 405, un jeton périmé 400. C'était un GET sans jeton : un lien depuis n'importe quel site tiers suffisait à supprimer ou dépublier un événement au nom d'un éditeur connecté, le cookie de session `SameSite=Lax` accompagnant les navigations de premier niveau.
 
 ## Lieu supprimé
 

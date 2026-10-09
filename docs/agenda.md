@@ -1,5 +1,13 @@
 # Agenda
 
+## Filtre par catégorie
+
+Au-dessus de la liste du jour, un menu collant (`#genre_tab_navigation`) filtre les événements par catégorie (#107, PR #144). Il n'offre que les catégories qui ont des événements ce jour-là dans la région, et n'apparaît pas quand la journée est vide. Le choix passe dans l'url (`?genre_tab=`) et se retient en session (`user_prefs_agenda_genre`) : revenir d'une fiche d'événement retrouve la catégorie choisie. L'onglet actif sert à retirer le filtre.
+
+Un filtre retenu que la liste ne propose plus — drapeau de préversion rétrogradé, session d'administrateur survivant à sa déconnexion — retombe sur « tous » : son onglet n'étant plus rendu, rien ne permettrait de le retirer.
+
+Réservé aux administrateurs en 3.12.0, le filtre est servi à tous depuis la 3.13.0.
+
 ## Repères de temporalité
 
 Sur la liste du jour, chaque carte d'événement dit où il en est par rapport à **l'instant du chargement de la page** (#51) :

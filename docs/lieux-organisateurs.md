@@ -52,6 +52,8 @@ par le trait [`HandlesImageUploads`](../librairies/HandlesImageUploads.php).
 
 Le fichier déjà en place est relu en base, jamais repris d'un champ caché du formulaire.
 
+Le nom étant déterministe, il ne dit pas si le fichier a changé : un PNG remplacé par un PNG garde le même. L'écriture se décide donc d'après le champ d'envoi lui-même (`$_FILES`), jamais d'après une comparaison avec le nom enregistré — qui supprimait l'ancien fichier sans écrire le nouveau.
+
 ## Modifier une fiche de lieu
 
 `lieu/edit.php` ajoute et modifie les fiches. Le traitement vit dans
@@ -171,6 +173,17 @@ deux sont connues.
 Une colonne à `NULL` (ou à `0`, comme avant la 3.13.0) se lit comme « pas de coordonnées » et rend
 un champ vide. Une saisie non numérique est réaffichée telle quelle à côté de son message, jamais
 écrite en base.
+
+## Salles d'un lieu
+
+`lieu/salle-edit.php` ajoute et modifie les salles. Ses refus passent par
+[`_erreur_http.inc.php`](../_erreur_http.inc.php), comme ceux des fiches : **400** pour une action
+inconnue ou une modification sans salle désignée, **403** pour un refus, **404** pour un `idS`
+inconnu.
+
+Le lieu d'une salle se fixe à la création. En modification, le `<select>` est en lecture seule :
+il proposait d'en changer alors que l'enregistrement n'écrivait jamais `idLieu`, et les événements
+qui citent la salle portent ce même `idLieu`.
 
 ## Descriptions et présentations d'un lieu
 

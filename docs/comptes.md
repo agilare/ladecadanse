@@ -1,6 +1,6 @@
 # Comptes
 
-Les quatre pages de compte — connexion, inscription, réinitialisation du mot de passe, déconnexion — vivent sous `user/`, avec le profil (`user/dashboard.php`). Elles partagent la même mécanique : traitement complet avant la première ligne de HTML, jeton de formulaire comparé par `hash_equals()`, pot de miel, erreurs rassemblées dans un récapitulatif en haut de page et champs fautifs marqués `champ_errone` / `aria-invalid`. La feuille `web/css/compte.css` leur donne largeur, centrage et grille libellé/champ communes.
+Les quatre pages de compte — connexion, inscription, réinitialisation du mot de passe, déconnexion — vivent sous `user/`, avec le profil (`user/dashboard.php`). Elles partagent la même mécanique : traitement complet avant la première ligne de HTML, jeton de formulaire comparé par `hash_equals()` — une soumission sans jeton est refusée même quand la session n'en porte pas encore, deux chaînes vides n'étant plus tenues pour égales (`SecurityToken::check()`) —, pot de miel, erreurs rassemblées dans un récapitulatif en haut de page et champs fautifs marqués `champ_errone` / `aria-invalid`. La feuille `web/css/compte.css` leur donne largeur, centrage et grille libellé/champ communes.
 
 | Page | Fichier |
 | --- | --- |
@@ -35,7 +35,9 @@ Une demande (`user/reset.php`) n'aboutit que pour un compte **actif**, c'est-à-
 
 Le message affiché est le même dans tous les cas — compte trouvé ou non, actif ou non. La page ne dit jamais si un compte existe.
 
-Le lien reçu vaut **24 h**. Sur `user/reset2.php` :
+Le lien reçu vaut **24 h**. Son jeton vient de `random_bytes(32)`. Jusqu'à la 3.13.0, c'était un sha256 calculé sur un sel écrit en dur dans ce dépôt public, une graine que l'attaquant connaît — l'adresse ou le nom d'utilisateur visé — et `random_int(0, 1000)` pour tout aléa : un millier de valeurs à essayer en 24 h, sans limitation sur `reset2.php`, suffisait à prendre un compte dont on connaissait l'adresse.
+
+Sur `user/reset2.php` :
 
 - la liste des comptes réinitialisables est établie une fois, avant le traitement, pour les deux formes de demande (par identifiant ou par email) ; affichage et contrôle du POST lisent la même liste et ne peuvent pas diverger ;
 - un candidat unique s'impose de lui-même, sans champ caché à falsifier. Le choix n'est demandé — donc l'erreur possible — que si plusieurs comptes actifs partagent l'adresse ;
@@ -46,7 +48,7 @@ Le lien reçu vaut **24 h**. Sur `user/reset2.php` :
 
 La case du formulaire de connexion pose le cookie `ladecadanse_remember`, valable **30 jours** et prolongé à chaque retour. Chaque appareil a son jeton, une ligne de la table `remember_token` (`Ladecadanse\Security\RememberTokens`) : se connecter sur le téléphone ne déconnecte plus l'ordinateur, ce que faisait l'ancienne colonne unique `personne.cookie`.
 
-Le cookie porte `selector:validator`. Le selector retrouve la ligne ; du validator, la table ne garde que l'empreinte SHA-256, si bien qu'une fuite de la base ne livre aucun jeton utilisable. Le validator est renouvelé à chaque retour par le cookie.
+Le cookie porte `selector:validator`. Le selector retrouve la ligne ; du validator, la table ne garde que l'empreinte SHA-256, si bien qu'une fuite de la base ne livre aucun jeton utilisable. Le validator est renouvelé à chaque retour par le cookie, qui met aussi `last_login` à jour : c'est sur cette date que se mesure l'[inactivité d'un compte](vie-privee.md#comptes-inactifs).
 
 Un jeton disparaît :
 

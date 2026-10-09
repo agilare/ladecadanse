@@ -46,6 +46,14 @@ La fiche occupe la colonne de droite, vide sur cette page. Largeur du cadre, des
 
 Le palier est en fin de section « evenement » dans `mobile.css`, sous la même classe `.vevent-experimental`.
 
+## Annonces de l'accueil
+
+Les annonces au-dessus de l'agenda sont une liste, la constante `HOME_BANNERS` d'`app/env.php`, modifiable sur le serveur sans déploiement. Chaque entrée porte une `date`, un `type` (`info`, `warn` ou `danger`), une `audience` (`tous`, ou `contributeurs` pour le niveau ACTOR et au-dessus), un `titre` et un `contenu`, écrits tels quels en HTML. Une seule boucle d'`index.php` les rend ; le format détaillé est commenté dans [`app/env_model.php`](../app/env_model.php).
+
+**La date identifie l'annonce.** Sa fermeture est retenue dans le `localStorage` sous la clé `home_banner_<date>` : changer la date fait réapparaître l'annonce chez qui l'avait fermée. Un script en ligne, exécuté avant le premier affichage, masque les annonces déjà fermées, qui ne clignotent donc pas ; sans JavaScript, elles restent visibles.
+
+Jusqu'à la 3.13.0, six constantes décrivaient deux bannières fixes, et leur fermeture était retenue dans un cookie nommé d'après l'`id` de la bannière : qui en avait fermé une ne voyait plus aucune des suivantes pendant 180 jours.
+
 ## Accueil sous 800 px
 
 Les deux blocs de bas de page — partenaires, derniers événements ajoutés — cessent d'être des colonnes latérales et s'empilent sous la liste du jour, en reprenant la gouttière que `<main>` tient déjà. Ils restent flottants : dé-flotter une seule des trois colonnes la ferait passer sous `#contenu`, qui flotte et fait toute la hauteur de la liste.
