@@ -40,7 +40,7 @@
 #menu ul li a
 {
     height:1.2em;
-    padding: 0.5em 0.3em;
+    padding: 0.7em 0.3em; /* le padding vertical est repris par les onglets ci-dessous */
     font-size: 1.03em; /* iphone <5 */
 }
 
@@ -52,14 +52,14 @@
  */
 #menu ul li#bouton_agenda a
 {
-    padding: 0.5em 0.55em;
+    padding: 0.7em 0.55em;
 }
 
 #menu ul li#bouton_calendrier a,
 #menu ul li#bouton_latests_events a,
 #menu ul li#bouton_favoris a
 {
-    padding: 0.5em 10px;
+    padding: 0.7em 10px;
 }
 
 /* en mobile, le marque-page remplace le libellé : l'onglet se lit comme le calendrier et la cloche */
