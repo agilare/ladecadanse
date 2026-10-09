@@ -142,5 +142,5 @@ L'environnement Docker crée sa base depuis `ladecadanse.sql`, puis charge les f
 `docker/env/` — le compte `admin` et un lieu de test. Ces scripts ne tournent qu'à la création du
 volume ; les migrations se passent ensuite depuis l'hôte, avec une entrée de `app/db.config.php` visant
 le port exposé par le service `db` (`'host' => '127.0.0.1;port=9906'`) — le conteneur `composer-dev`
-n'a pas les extensions de l'application. Voir [Base de données](../../README.md#base-de-données) dans
-le README.
+n'a pas les extensions de l'application. Voir [Base de données](../../docs/docker.md#base-de-données) dans
+docs/docker.md.

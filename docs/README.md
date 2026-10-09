@@ -13,5 +13,10 @@ Notes de fonctionnement des parties du site qui demandent plus qu'une ligne de c
 - [Suivi des bots](bots.md) — activation et tableau de bord
 - [Configuration serveur](config-serveur.md) — `.htaccess` et `.user.ini` composés depuis des fragments, publics et privés, et déployés avec le code
 - [Copie de la production](prod-copy.md) — peupler une base locale anonymisée et ses uploads depuis la production, par SSH
+- [Docker](docker.md) — environnements, permissions sous Linux, Make, base de données et migrations
+- [Bibliothèques front-end](bibliotheques-front-end.md) — `npm ci`, `web/libs/`, mise à jour et ajout d'une bibliothèque
+- [Conversion des PDF](conversion-pdf.md) — drapeau `PDF_CONVERSION_ENABLED`, pdf.js et Imagick
+- [Déploiement](deploiement.md) — `composer deploy`, `.htaccess`, migration de la base de production
+- [Analyse statique](analyse-statique.md) — PHPStan, Psalm, Rector, Phan, PHPCompatibility
 
 Les raccourcis clavier et le mode *mouseless* sont documentés dans [Interface](interface.md#raccourcis-clavier).
