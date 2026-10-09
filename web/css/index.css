@@ -9,7 +9,7 @@
     top: 0;
     z-index: 10;
     background: #fdfdfd; /* fond de #global, la barre collante doit s'y fondre */
-    padding: 0.6em 0;
+    padding: 0.2em 0 0.6em 0;
     /* le titre du jour est juste au-dessus : l'écart n'a pas à valoir celui qui sépare
        les menus du premier genre */
     margin: 0.5em 0 0.8em 0;
