@@ -180,3 +180,13 @@ ul#menu_periode li
         scroll-margin-top: 2.6em;
     }
 }
+
+/* le calendrier n'est là que pour le bouton du menu mobile : en desktop, la colonne de gauche
+   reste aux mois */
+@media screen and (min-width: 800px)
+{
+    #navigation_calendrier
+    {
+        display: none;
+    }
+}

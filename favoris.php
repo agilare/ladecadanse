@@ -165,6 +165,9 @@ include("_header.inc.php");
 </main>
 
 <aside id="colonne_gauche" class="colonne">
+    <?php // le bouton calendrier du menu mobile l'affiche ; sans lui, il ne faisait rien ?>
+    <?php include("event/_navigation_calendrier.inc.php"); ?>
+
     <?php
     /*
      * Sans mois à lister, le bloc ne montrerait que son fond gris arrondi : il reste masqué.
