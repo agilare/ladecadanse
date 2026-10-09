@@ -2076,8 +2076,14 @@ td.lieu_actions_evenement
     width: 80px;
 }
 
-td.lieu_actions_evenement ul
+/* calées à droite : en flex et non par text-align, que les feuilles des fiches lieu et
+   organisateur imposent à gauche sur toutes les cellules du tableau. Enfant direct : la
+   liste du menu calendrier, plus bas, doit garder son display:none de popover fermé. */
+td.lieu_actions_evenement > ul
 {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
     list-style: none;
     margin: 0;
     padding: 0;

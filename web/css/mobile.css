@@ -571,6 +571,34 @@ ul.menu_edition li a
     padding: 0.5em;
 }
 
+/* même raison dans la colonne d'actions des agendas de lieu et d'organisateur : le padding
+   agrandit la zone de tap et écarte les icônes, la marge entre elles est réduite d'autant.
+   Les cinq icônes d'un compte qui peut éditer ne tiennent plus sur une ligne sans faire
+   déborder le tableau : elles passent à la ligne, trois puis deux, dans une colonne de
+   largeur fixe. */
+td.lieu_actions_evenement
+{
+    width: 86px;
+}
+
+td.lieu_actions_evenement > ul
+{
+    flex-wrap: wrap;
+}
+
+/* enfants directs : les entrées du menu calendrier gardent leur propre mise en forme */
+td.lieu_actions_evenement > ul > li
+{
+    margin-left: 0.2em;
+}
+
+td.lieu_actions_evenement > ul > li > a,
+td.lieu_actions_evenement .calendar-export-trigger
+{
+    display: inline-block;
+    padding: 0.4em;
+}
+
 .calendar-export-menu li a
 {
     padding: 0.6em 1em;
