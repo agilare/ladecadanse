@@ -130,8 +130,8 @@
     #menu ul li#bouton_latests_events a,
     #menu ul li#bouton_favoris a
     {
-        padding-left:8px;
-        padding-right:8px;
+        padding-left:9px; /* 10px font passer la loupe à la ligne en 360px */
+        padding-right:9px;
     }
 }
 
