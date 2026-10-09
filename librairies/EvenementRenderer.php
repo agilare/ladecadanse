@@ -486,6 +486,8 @@ class EvenementRenderer
      */
     public static function favoritesListHtml(array $events): array
     {
+        global $site_full_url;
+
         $html = '';
         $months = [];
         $lastDate = null;
@@ -511,7 +513,9 @@ class EvenementRenderer
             $html .= self::eventShortArticleHtml($tab_even);
             $html .= '<footer class="edition"><ul class="menu_action">'
                 . '<li><a href="/event/send.php?action=report&idE=' . (int) $tab_even['e_idEvenement'] . '" class="signaler" title="Signaler une erreur"><i class="fa fa-flag-o fa-lg"></i></a></li>'
-                . '<li><a href="/event/to-ics.php?idE=' . (int) $tab_even['e_idEvenement'] . '" class="ical" title="Exporter au format iCalendar dans votre agenda"><i class="fa fa-calendar-plus-o fa-lg"></i></a></li>'
+                // le même menu que dans l'agenda : un simple lien vers le .ics ne faisait rien de
+                // visible sur un téléphone
+                . EvenementCalendarRenderer::renderMenuHtml($tab_even, $site_full_url, compact: true)
                 . '<li>' . self::favoriteButtonHtml((int) $tab_even['e_idEvenement'], true) . '</li>'
                 . '</ul><div class="spacer"></div></footer></article>';
         }

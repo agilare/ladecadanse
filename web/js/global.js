@@ -32,8 +32,13 @@ export const AppGlobal =
             // Browsers with Popover API support (Safari 17+, Chrome 114+, Firefox 125+).
             // Position each popover below its trigger; re-run on scroll so it tracks
             // the button, and clean up the scroll listener when the popover closes.
-            document.querySelectorAll('.calendar-export-menu').forEach(function(menu)
+            // Listened on document (toggle does not bubble, hence the capture phase): menus
+            // inserted after load, such as a guest's favorites list, are covered too.
+            document.addEventListener('toggle', function(e)
             {
+                const menu = e.target;
+                if (!(menu instanceof Element) || !menu.matches('.calendar-export-menu')) return;
+
                 const trigger = document.querySelector('[popovertarget="' + menu.id + '"]');
                 if (!trigger) return;
 
@@ -44,54 +49,45 @@ export const AppGlobal =
                     menu.style.left = rect.left + 'px';
                 }
 
-                menu.addEventListener('toggle', function(e)
-                {
-                    // e.newState may be absent in early Safari; fall back to :popover-open check.
-                    const isOpen = e.newState === 'open' || (e.newState === undefined && menu.matches(':popover-open'));
-                    if (isOpen) {
-                        setPos();
-                        // Store the reference so we can pass the exact same function to removeEventListener.
-                        menu._scrollHandler = setPos;
-                        window.addEventListener('scroll', setPos, { passive: true });
-                    } else if (menu._scrollHandler) {
-                        window.removeEventListener('scroll', menu._scrollHandler);
-                        delete menu._scrollHandler;
-                    }
-                });
-            });
+                // e.newState may be absent in early Safari; fall back to :popover-open check.
+                const isOpen = e.newState === 'open' || (e.newState === undefined && menu.matches(':popover-open'));
+                if (isOpen) {
+                    setPos();
+                    // Store the reference so we can pass the exact same function to removeEventListener.
+                    menu._scrollHandler = setPos;
+                    window.addEventListener('scroll', setPos, { passive: true });
+                } else if (menu._scrollHandler) {
+                    window.removeEventListener('scroll', menu._scrollHandler);
+                    delete menu._scrollHandler;
+                }
+            }, true);
         } else {
             // Fallback for browsers without the Popover API (Safari < 17, etc.).
             // The <ul> renders as a normal visible element without support; we hide it
             // with --fallback and toggle --open on click. Position is handled by CSS
             // (position: absolute within the position: relative wrapper) — no JS coords needed.
+            // A single delegated listener, so that menus inserted after load work too.
             document.querySelectorAll('.calendar-export-menu').forEach(function(menu)
             {
                 menu.classList.add('calendar-export-menu--fallback');
-                const trigger = document.querySelector('[popovertarget="' + menu.id + '"]');
-                if (!trigger) return;
-
-                trigger.addEventListener('click', function(e)
-                {
-                    e.stopPropagation();
-                    const wasOpen = menu.classList.contains('calendar-export-menu--open');
-                    // Close any other open menu first.
-                    document.querySelectorAll('.calendar-export-menu--open').forEach(function(other)
-                    {
-                        other.classList.remove('calendar-export-menu--open');
-                    });
-                    if (!wasOpen) {
-                        menu.classList.add('calendar-export-menu--open');
-                    }
-                });
             });
 
-            // Close the open menu when clicking anywhere outside it.
-            document.addEventListener('click', function()
+            document.addEventListener('click', function(e)
             {
-                document.querySelectorAll('.calendar-export-menu--open').forEach(function(menu)
+                const trigger = e.target instanceof Element ? e.target.closest('[popovertarget]') : null;
+                const menu = trigger ? document.getElementById(trigger.getAttribute('popovertarget')) : null;
+                const isCalendarTrigger = menu !== null && menu.matches('.calendar-export-menu');
+                const wasOpen = isCalendarTrigger && menu.classList.contains('calendar-export-menu--open');
+
+                // Close the open menu when clicking anywhere, its own trigger included.
+                document.querySelectorAll('.calendar-export-menu--open').forEach(function(other)
                 {
-                    menu.classList.remove('calendar-export-menu--open');
+                    other.classList.remove('calendar-export-menu--open');
                 });
+
+                if (isCalendarTrigger && !wasOpen) {
+                    menu.classList.add('calendar-export-menu--fallback', 'calendar-export-menu--open');
+                }
             });
         }
 
