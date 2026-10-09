@@ -557,6 +557,20 @@ ul.menu_action li a
     padding: 0.5em;
 }
 
+/* les actions d'édition (copier, modifier, dépublier, auteur) prennent le même espacement
+   que celles de gauche : collées à 16px l'une de l'autre, elles étaient difficiles à taper.
+   La marge est réglée pour que l'écart entre icônes égale celui de gauche (~17px), l'espace
+   entre les <li> en ligne compris. */
+ul.menu_edition li
+{
+    margin: 0 0.05em;
+}
+
+ul.menu_edition li a
+{
+    padding: 0.5em;
+}
+
 .calendar-export-menu li a
 {
     padding: 0.6em 1em;
