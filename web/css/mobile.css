@@ -114,6 +114,12 @@
         padding-right:0.25em;
     }
 
+    #menu ul li search a
+    {
+        padding-left:0.5em;
+        padding-right:0.25em;
+    }
+
     #menu ul li#bouton_agenda a
     {
         padding-left:0.4em;
