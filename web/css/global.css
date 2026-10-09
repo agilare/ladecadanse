@@ -466,7 +466,7 @@ abbr.dtstart[title]
             /* Le marque-page des favoris ne sert qu'en mobile, où il remplace le libellé pour
                que la barre tienne sur une ligne (cf. mobile.css). Ailleurs, l'onglet reste un
                mot, comme Agenda, Lieux et Organisateurs. */
-            #menu ul li#bouton_favoris .fa-bookmark
+            #menu ul li#bouton_favoris .fa
             {
                 display:none;
             }

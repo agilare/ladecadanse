@@ -63,7 +63,8 @@
 }
 
 /* en mobile, le marque-page remplace le libellé : l'onglet se lit comme le calendrier et la cloche */
-#menu ul li#bouton_favoris .fa-bookmark
+/* .fa et non .fa-bookmark : favorites.js passe l'icône en fa-bookmark-o sans favori */
+#menu ul li#bouton_favoris .fa
 {
     display:inline-block;
 }

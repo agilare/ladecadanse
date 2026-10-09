@@ -151,6 +151,7 @@ export const Favorites =
         await FavoritesStore.init(!!config.isLoggedIn, config.favoriteIds, config.csrfToken);
 
         this._hydrateButtons();
+        this._syncMenuIcon();
         this._construireBarreMois();
         this._loadGuestFavorisPage();
         this._applyFavorisFilter();
@@ -205,6 +206,15 @@ export const Favorites =
         $btn.find('i.fa').toggleClass('fa-bookmark', isFavorite).toggleClass('fa-bookmark-o', !isFavorite);
     },
 
+    // le marque-page du menu (visible en mobile) est vide tant qu'aucun favori n'est posé
+    _syncMenuIcon: function syncMenuIcon()
+    {
+        const hasAny = FavoritesStore.getAll().length > 0;
+        $('#bouton_favoris i.fa')
+            .toggleClass('fa-bookmark', hasAny)
+            .toggleClass('fa-bookmark-o', !hasAny);
+    },
+
     _hydrateButtons: function hydrateButtons()
     {
         const self = this;
@@ -229,6 +239,7 @@ export const Favorites =
             const eventId = $btn.data('event-id');
             const isNowFavorite = await FavoritesStore.toggle(eventId);
             self._setButtonState($btn, isNowFavorite);
+            self._syncMenuIcon();
             self._renderFilter();
         });
 
