@@ -337,11 +337,22 @@ export const AppGlobal =
             }
         });
 
+        // Sur une page sans calendrier, le lien suit son cours vers celui de l'agenda, qui
+        // s'ouvre à l'arrivée grâce à l'ancre.
         $('#btn_calendrier').click(function toggleCalendrier()
         {
+            if ($('#navigation_calendrier').length === 0)
+            {
+                return true;
+            }
             $('#navigation_calendrier').toggle();
             return false;
         });
+
+        if (window.location.hash === '#ouvrir-calendrier')
+        {
+            $('#navigation_calendrier').show();
+        }
 
         $('#btn_search').on('click', function toggleSearchField()
         {
