@@ -78,10 +78,6 @@ $mimes_documents_acceptes = [
 //// FILE MANAGEMENT END
 
 
-//// FEATURE FLAGS
-
-define("FAVORITES_BETA_SECRET", 'panel-favoris-2026');
-
 //// TIME & REGIONS
 
 define("DATE_DEFAULT_TIMEZONE", 'Europe/Zurich');

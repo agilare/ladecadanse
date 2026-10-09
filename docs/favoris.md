@@ -1,12 +1,12 @@
 # Favoris
 
-Marquer un événement pour le retrouver, avec ou sans compte (#98, PR #143). Réservé pour l'instant à un panel — voir [La bêta](#la-bêta).
+Marquer un événement pour le retrouver, avec ou sans compte (#98, PR #143).
 
 ## Le marque-page
 
 Un lien `fa-bookmark-o` (à marquer) / `fa-bookmark` (marqué), rendu par [`EvenementRenderer::favoriteButtonHtml()`](../librairies/EvenementRenderer.php), posé sur l'agenda, la fiche d'un événement, les listes d'une fiche de lieu, d'une fiche d'organisateur et de la recherche, et sur la page Favoris elle-même. Un clic bascule l'état sans recharger la page.
 
-Quand la bêta est ouverte, un onglet **Favoris** s'ajoute au menu principal, entre Agenda et Lieux — l'icône seule en dessous de 800 px, pour que la barre tienne sur une ligne.
+Un onglet **Favoris** figure dans le menu principal, entre Agenda et Lieux — l'icône seule en dessous de 800 px, pour que la barre tienne sur une ligne.
 
 ## Où vivent les favoris
 
@@ -46,7 +46,7 @@ Un visiteur obtient la même page : le script envoie les identifiants de son nav
 
 ## L'API `event/favorites.php`
 
-Quatre actions, toutes en JSON. La page répond **404** quand la bêta n'est pas ouverte.
+Quatre actions, toutes en JSON.
 
 | Action | Méthode | Qui | Jeton |
 | --- | --- | --- | --- |
@@ -56,14 +56,6 @@ Quatre actions, toutes en JSON. La page répond **404** quand la bêta n'est pas
 | `sync` | POST | connecté | **oui** |
 
 Les deux actions qui écrivent exigent le jeton de session, comme les liens « Dépublier » et « Supprimer » d'un événement. Il est rendu dans `window.__LADECADANSE.csrfToken` et renvoyé en en-tête `X-CSRF-Token` — et non dans le corps, qui est du JSON : un formulaire ne sait pas poster `application/json`, et un en-tête ajouté par un script est hors de portée d'une requête inter-site, le préalable CORS n'étant pas accordé. Sans jeton, ou avec un jeton périmé, la réponse est **400** `invalid_token` ; sans session, **401**.
-
-## La bêta
-
-La fonctionnalité n'apparaît qu'aux porteurs d'un cookie, posé pour un an par le lien `?favoris_beta=<FAVORITES_BETA_SECRET>` et retiré par `?favoris_beta=off` (traités dans [`app/bootstrap.php`](../app/bootstrap.php)). Sans lui, ni onglet, ni marque-page, ni page Favoris.
-
-Ce n'est pas un [drapeau de fonctionnalité](../app/env_model.php) : l'état `'preview'` de `FeatureFlag` est réservé aux administrateurs, alors que ce panel compte des visiteurs sans compte.
-
-Le secret est dans `app/config.php`, suivi par git, dans un dépôt public : **il met la fonctionnalité à l'écart, il ne la protège pas**. C'est assumé — il faut le chercher pour le trouver, rien derrière le cookie ne peut nuire, et la fonctionnalité a vocation à devenir publique.
 
 ## Base de données
 

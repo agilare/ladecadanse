@@ -4,19 +4,11 @@ require_once("../app/bootstrap.php");
 
 use Ladecadanse\Evenement;
 use Ladecadanse\EvenementRenderer;
-use Ladecadanse\Favorites;
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\Security\SecurityToken;
 
 header('X-Robots-Tag: noindex');
 header('Content-Type: application/json; charset=utf-8');
-
-if (!Favorites::isEnabled())
-{
-    http_response_code(404);
-    echo json_encode(['error' => 'not_found']);
-    exit;
-}
 
 $get['action'] = strip_tags((string) ($_GET['action'] ?? ''));
 

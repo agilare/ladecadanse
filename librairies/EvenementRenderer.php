@@ -470,11 +470,7 @@ class EvenementRenderer
 
     public static function favoriteButtonHtml(int $idEvenement, bool $isFavorite = false, string $label = ''): string
     {
-        if (!Favorites::isEnabled())
-        {
-            return '';
-        }
-        $icon = $isFavorite ? 'fa-bookmark' : 'fa-bookmark-o';
+        $icon =$isFavorite ? 'fa-bookmark' : 'fa-bookmark-o';
         $title = $isFavorite ? 'Retirer des favoris' : 'Favori';
         $labelHtml = $label !== '' ? '&nbsp;' . $label : '';
         return '<a href="#" class="js-favorite-toggle favorite-btn' . ($isFavorite ? ' is-favorite' : '') . '" data-event-id="' . $idEvenement . '" title="' . $title . '"><i class="fa ' . $icon . ' fa-lg"></i>' . $labelHtml . '</a>';
@@ -676,7 +672,6 @@ class EvenementRenderer
 
         $isFutureEvent = $tab_even['e_dateEvenement'] >= $glo_auj_6h;
         $isAllowedToEdit = $authorization->isPersonneAllowedToEditEvenement($_SESSION, $tab_even);
-        $isFavoritesEnabled = Favorites::isEnabled();
 
         $dtstart_iso = self::dtstartIso($tab_even['e_dateEvenement'], $tab_even['e_horaire_debut']);
 
@@ -723,15 +718,12 @@ class EvenementRenderer
                 <?= $location ?>
                 <?php if ($location_masquee !== '') : ?><span class="visually-hidden"><?= sanitizeForHtml($location_masquee) ?></span><?php endif; ?>
             </td>
-            <?php if ($isFutureEvent || $isFavoritesEnabled || $isAllowedToEdit) : ?>
             <td class="lieu_actions_evenement">
                 <ul>
                     <?php if ($isFutureEvent) : ?>
                         <?= EvenementCalendarRenderer::renderMenuHtml($tab_even, $site_full_url, compact: true) ?>
                     <?php endif; ?>
-                    <?php if ($isFavoritesEnabled) : ?>
-                        <li><?= self::favoriteButtonHtml((int) $tab_even['e_idEvenement']) ?></li>
-                    <?php endif; ?>
+                    <li><?= self::favoriteButtonHtml((int) $tab_even['e_idEvenement']) ?></li>
                     <?php if ($isAllowedToEdit) : ?>
                         <li><a href="/event/copy.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>" title="Copier cet événement"><?= $iconeCopier ?></a></li>
                         <?php if ($authorization->isPersonneAllowedToEditEvenementNow($_SESSION, $tab_even)) : ?>
@@ -742,7 +734,6 @@ class EvenementRenderer
                 </ul>
 
             </td>
-            <?php endif; ?>
         </tr>
 
         <?php

@@ -142,10 +142,6 @@ export const Favorites =
         }
 
         const config = window.__LADECADANSE || {};
-        if (!config.favoritesEnabled)
-        {
-            return;
-        }
 
         this._bindEvents();
         await FavoritesStore.init(!!config.isLoggedIn, config.favoriteIds, config.csrfToken);

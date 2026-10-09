@@ -307,9 +307,7 @@ $mouseless_allowed = isset($_SESSION['Sgroupe']) && (int) $_SESSION['Sgroupe'] <
 
                 <ul>
                     <?php
-                    $menu_principal = Ladecadanse\Favorites::isEnabled()
-                        ? ["Agenda" => "index.php", "Favoris" => "favoris.php", "Lieux" => "lieu/lieux.php", "Organisateurs" => "organisateur/organisateurs.php"]
-                        : ["Agenda" => "index.php", "Lieux" => "lieu/lieux.php", "Organisateurs" => "organisateur/organisateurs.php"];
+                    $menu_principal = ["Agenda" => "index.php", "Favoris" => "favoris.php", "Lieux" => "lieu/lieux.php", "Organisateurs" => "organisateur/organisateurs.php"];
                     foreach ($menu_principal as $nom => $lien) {
                         $ici = '';
                         if (strstr((string) $_SERVER['PHP_SELF'], $lien)

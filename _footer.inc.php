@@ -101,8 +101,8 @@ use Ladecadanse\UserLevel;
     <?php endif; ?>
     <?= $assets->getImportMap(['js/browser.js', 'js/global.js', 'js/shortcuts.js', 'js/mouseless.js', 'js/pdf-to-image.js', 'js/favorites.js'], CSP_NONCE); ?>
     <?php
-    $ladecadanseJsConfig = ['isLoggedIn' => !empty($_SESSION['logged']), 'favoritesEnabled' => Ladecadanse\Favorites::isEnabled()];
-    if ($ladecadanseJsConfig['favoritesEnabled'] && $ladecadanseJsConfig['isLoggedIn'] && isset($connectorPdo))
+    $ladecadanseJsConfig = ['isLoggedIn' => !empty($_SESSION['logged'])];
+    if ($ladecadanseJsConfig['isLoggedIn'] && isset($connectorPdo))
     {
         $favoriteIdsStmt = $connectorPdo->prepare("SELECT idEvenement FROM personne_evenement WHERE idPersonne = ?");
         $favoriteIdsStmt->execute([(int) $_SESSION['SidPersonne']]);

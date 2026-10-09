@@ -11,14 +11,7 @@ require_once("app/bootstrap.php");
 
 use Ladecadanse\Evenement;
 use Ladecadanse\EvenementRenderer;
-use Ladecadanse\Favorites;
 use Ladecadanse\HtmlShrink;
-
-if (!Favorites::isEnabled())
-{
-    header('Location: /');
-    exit;
-}
 
 $page_titre = "Favoris";
 $page_description = "Mes événements favoris";

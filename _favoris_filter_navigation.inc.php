@@ -1,4 +1,3 @@
-<?php if (!Ladecadanse\Favorites::isEnabled()) { return; } ?>
 <?php
 /*
  * Le filtre « Favoris » des listes d'événements, calqué sur les onglets de genre de l'agenda :
