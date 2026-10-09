@@ -4,6 +4,14 @@
     margin: 0.2em auto 0 auto;
 }
 
+/* en mobile, browser.js déplace le calendrier en tête de #contenu : il y reste collé aux
+   bords, comme sur les autres pages, avec la marge basse de mobile.css */
+#contenu > #navigation_calendrier
+{
+    width: auto;
+    margin: 0 0 20px 0;
+}
+
 /*
  * Titre et menu des vues partagent la ligne. En flex plutôt qu'en flottants : les flottants
  * s'alignent par le haut de leur boîte, alors que « Événements » doit reposer sur la même
