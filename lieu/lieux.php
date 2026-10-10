@@ -8,6 +8,7 @@ use Ladecadanse\Utils\ImageDriver2;
 use Ladecadanse\UserLevel;
 use Ladecadanse\Utils\QueryParamValidator;
 use Ladecadanse\Localite;
+use Ladecadanse\RegionConfig;
 use Ladecadanse\Stats\MonthlyAddedEvents;
 
 $get = [];
@@ -56,6 +57,11 @@ if (isset($_GET['order']) && in_array($_GET['order'], $tab_order))
 }
 
 $get['page'] = QueryParamValidator::pageFromQuery($_GET['page'] ?? '');
+
+$page_url = HtmlShrink::urlCanonique($page_url, [
+    'region' => $filters['region'] !== RegionConfig::DEFAULT ? $filters['region'] : null,
+    'page' => $get['page'] > 1 ? $get['page'] : null,
+]);
 
 // used to build localite filter Select (exclude localites without lieu)
 $lieux_region_localite_ids = array_values(array_unique(array_column(Lieu::getLieux(filters: ['region' => $filters['region'], 'statut' => $filters['statut']], page: null), 'localite_id')));

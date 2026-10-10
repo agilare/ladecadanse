@@ -63,6 +63,16 @@ class HtmlShrink
     }
 
     /**
+     * @param array<string, string|int|null> $params les paramètres à null sont omis
+     */
+    public static function urlCanonique(string $script, array $params = []): string
+    {
+        $params = array_filter($params, fn ($valeur) => $valeur !== null);
+
+        return $params === [] ? $script : $script . '?' . http_build_query($params);
+    }
+
+    /**
      * TODO: mv to a LieuRenderer
      */
     public static function adresseCompacteSelonContexte(?string $region, string $localite, string $quartier, string $adresse): string
