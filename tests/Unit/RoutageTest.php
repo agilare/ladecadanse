@@ -62,6 +62,12 @@ final class RoutageTest extends Unit
         }
     }
 
+    public function testRobotsTxtPasseParLeScriptQuiCalculeLesAnnees(): void
+    {
+        $this->assertStringContainsString('RewriteRule ^robots\.txt$ /misc/robots.php [L]', $this->routage());
+        $this->assertFileExists(__DIR__ . '/../../misc/robots.php');
+    }
+
     /**
      * Les cibles des redirections doivent exister : une 301 vers une page absente vaut un 404,
      * en pire — le navigateur mémorise la redirection.
