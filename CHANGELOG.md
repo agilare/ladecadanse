@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.14.0] - Unreleased
+
+Upgrade steps (migrations, side effects) : [UPGRADE.md](UPGRADE.md).
+
+### Fixed
+- search : the title prefix match received the exact terms — the twelve placeholders were filled with five exact strings and seven prefix strings instead of four and eight, so a title matched on its prefix weighed nothing
+
 ## [3.13.0] - Unreleased
 
 Upgrade steps (redirects, side effects) : [UPGRADE.md](UPGRADE.md).

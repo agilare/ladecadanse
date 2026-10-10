@@ -133,7 +133,7 @@ WHERE
 $search_exact = implode(' ', array_map(fn($t) => "+" . $t, $tab_mots_sans_les_mots_vides));
 $search_prefix = implode(' ', array_map(fn($t) => $t . '*', $tab_mots_sans_les_mots_vides));
 
-$sql_params = [...array_fill(0, 5, $search_exact), ...array_fill(0, 7, $search_prefix)];
+$sql_params = [...array_fill(0, 4, $search_exact), ...array_fill(0, 8, $search_prefix)];
 
 
 $sql_periode_operator = ">=";
