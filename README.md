@@ -27,7 +27,7 @@ Ces instructions vous permettront de mettre en place une copie du projet sur vot
 - PHP 8.4, avec les extensions exigées par `composer.json` et ses dépendances : `composer check-platform-reqs` les liste et signale celles qui manquent (`--no-dev` pour s'en tenir à ce que le site demande en production). `composer install` refuse de toute façon de s'exécuter tant qu'il en manque une
 - [Composer](https://getcomposer.org/)
 - [Node.js](https://nodejs.org/) 20.19+, 22.13+ ou 24+, avec npm — pour les [bibliothèques front-end](#bibliothèques-front-end), le lint et les tests JavaScript
-- MariaDB 10.11 (si possible avec `innodb_ft_min_token_size=3` et `ft_min_word_len=3`, pour de meilleurs résultats dans la recherche d'événements)
+- MariaDB 10.11, avec `innodb_ft_min_token_size` à sa valeur par défaut, 3 : la recherche d'événements trouve ainsi les mots de trois lettres
 
 > [!NOTE]
 > **Facultatif** : `imagick` et Ghostscript, pour convertir en image les PDF **collés en URL** dans le formulaire d'événement. Sans eux le site fonctionne normalement, et les PDF **envoyés en fichier** sont convertis de toute façon — c'est le navigateur qui s'en charge. L'ensemble est désactivé par défaut : voir [Accepter les PDF dans les champs image](#accepter-les-pdf-dans-les-champs-image).

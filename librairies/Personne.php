@@ -326,7 +326,7 @@ class Personne
      *
      * Irréversible, et voulu tel : une anonymisation qui se défait n'anonymise rien.
      *
-     * Les tables liées d'abord : ces tables sont en MyISAM, donc sans transaction. Si
+     * Les tables liées d'abord : aucune transaction n'enveloppe ces écritures (#161). Si
      * l'opération s'interrompt en chemin, la ligne `personne` porte encore ses valeurs et
      * un second appel reprend le travail — l'inverse laisserait des rattachements
      * pointant sur un compte déjà vidé, sans moyen de les retrouver.

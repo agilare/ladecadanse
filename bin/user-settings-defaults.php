@@ -660,7 +660,7 @@ if ($aEcrire === [])
 // -----------------------------------------------------------------------------
 // Écriture, précédée du fichier de retour arrière
 //
-// `personne` est en MyISAM : aucune transaction ne protège ce lot. Les anciennes valeurs sont
+// Aucune transaction ne protège ce lot — le script n'en ouvre pas. Les anciennes valeurs sont
 // donc déposées sur disque avant la première écriture, sous forme d'UPDATE prêts à rejouer.
 // -----------------------------------------------------------------------------
 

@@ -16,9 +16,9 @@ use PDO;
  * register_shutdown_function, aucun échec ne remonte à la page. `bin/` n'est pas déployé et
  * l'hébergement n'a pas de crontab gérée par le dépôt.
  *
- * La purge ne parcourt qu'une fenêtre de WINDOW_DAYS jours avant le seuil : `evenement` est en
- * MyISAM, et un UPDATE sur tous les événements de plus de deux ans — l'essentiel de la table —
- * la verrouillerait à chaque passage pour n'y trouver presque rien. Ce qui précède la fenêtre
+ * La purge ne parcourt qu'une fenêtre de WINDOW_DAYS jours avant le seuil : un UPDATE sur tous
+ * les événements de plus de deux ans — l'essentiel de la table — parcourrait `evenement` à
+ * chaque passage pour n'y trouver presque rien. Ce qui précède la fenêtre
  * relève du rattrapage, la migration `resources/database/migrations/Version20260930000000.php`.
  */
 class EventContactRetention

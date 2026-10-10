@@ -4,6 +4,9 @@
 
 Upgrade steps (migrations, side effects) : [UPGRADE.md](UPGRADE.md).
 
+### Changed
+- database : the twelve MyISAM tables move to InnoDB #228 — row locking, crash recovery, and the ground for transactions and foreign keys ; the search ranking changes with the engine — see [UPGRADE.md](UPGRADE.md)
+
 ### Fixed
 - search : the title prefix match received the exact terms — the twelve placeholders were filled with five exact strings and seven prefix strings instead of four and eight, so a title matched on its prefix weighed nothing
 
