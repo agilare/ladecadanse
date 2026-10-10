@@ -16,6 +16,7 @@ use Ladecadanse\HtmlShrink;
 use Ladecadanse\Lieu;
 use Ladecadanse\UserLevel;
 use Ladecadanse\Utils\DateHelper;
+use Ladecadanse\Utils\QueryParamValidator;
 
 // used for meta tags, opengraph
 $page_titre = " agenda de sorties à Genève, Nyon, Lausanne, Pays de Gex, Annemasse...; prochains événements : concerts, soirées, films, théâtre, expos, bars, cinémas";
@@ -23,9 +24,10 @@ $page_description = "Programme des prochains événements festifs et culturels �
 
 // filter & overwrite date
 $get['courant'] = $glo_auj_6h;
-if (!empty($_GET['courant']) && preg_match("/^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}$/", trim((string) $_GET['courant'])))
+$courant_demande = QueryParamValidator::jourFromQuery($_GET['courant'] ?? '', '');
+if ($courant_demande !== '')
 {
-    $get['courant'] = $_GET['courant'];
+    $get['courant'] = $courant_demande;
     $page_titre = "Agenda d'événements du " . DateHelper::isoToFr($get['courant'], 'annee', html: false) . " à Genève, Nyon, Lausanne, Pays de Gex, Annemasse...";
     $page_description = "Événements culturels et festifs du " . DateHelper::isoToFr($get['courant'], 'annee', html: false). " à Genève, Nyon, Lausanne, Pays de Gex, Annemasse... : concerts, soirées, films, théâtre, expos... ";
 }

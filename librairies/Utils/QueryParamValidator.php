@@ -87,6 +87,23 @@ final class QueryParamValidator
     }
 
     /**
+     * Jour normalisé en AAAA-MM-JJ, ou $defaut si la date n'existe pas (30 février).
+     */
+    public static function jourFromQuery(mixed $get, string $defaut): string
+    {
+        if (
+            !is_scalar($get)
+            || !preg_match("/^([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})$/", trim((string) $get), $jour)
+            || !checkdate((int) $jour[2], (int) $jour[3], (int) $jour[1])
+        )
+        {
+            return $defaut;
+        }
+
+        return sprintf("%04d-%02d-%02d", $jour[1], $jour[2], $jour[3]);
+    }
+
+    /**
      * Valide une valeur de query string selon le type attendu.
      *
      * @param mixed  $get    Valeur brute issue de $_GET
