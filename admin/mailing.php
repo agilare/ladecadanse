@@ -16,11 +16,12 @@ if (!$authorization->checkGroup(UserLevel::ADMIN))
 }
 
 /*
- * Nombre de mails expédiés par soumission du formulaire. PHPMailer rouvre une connexion
- * SMTP à chaque message, soit 1 à 3 secondes par destinataire : un lot de 25 demande donc
- * environ 75 secondes. À baisser si l'hébergeur coupe la requête avant la fin d'un lot.
+ * Nombre de mails expédiés par soumission du formulaire. La connexion SMTP reste ouverte le
+ * temps du lot (Mailing::enableKeepAlive()) : connexion, TLS et authentification, qui
+ * coûtaient 1 à 3 secondes par destinataire, ne se paient qu'une fois. À baisser si
+ * l'hébergeur coupe la requête avant la fin d'un lot.
  */
-const MAILING_LOT = 50;
+const MAILING_LOT = 100;
 
 /** Clé de session où le mailing en cours patiente entre deux lots */
 const MAILING_SESSION_KEY = 'admin_mailing';
@@ -207,6 +208,7 @@ if (isset($_POST['formulaire']))
                 $mailer = new Mailing();
                 // sur un envoi en nombre, la copie de monitoring doublerait le volume expédié
                 $mailer->disableAdminCopy();
+                $mailer->enableKeepAlive();
 
                 // ne dépend d'aucun destinataire : rendu une seule fois, hors de la boucle
                 $pied = $tplEngine->render('admin-mailing-footer', [
@@ -239,6 +241,8 @@ if (isset($_POST['formulaire']))
                     $rapport[] = $d + ['envoye' => $envoye];
                     $logger->info('[admin-mailing]', ['idP' => $d['idPersonne'], 'pseudo' => $d['pseudo'], 'domaine' => LogSafe::email($d['email']), 'envoye' => $envoye]);
                 }
+
+                $mailer->closeConnection();
 
                 $mailing['index'] += count($lot);
                 $restants = count($mailing['destinataires']) - $mailing['index'];

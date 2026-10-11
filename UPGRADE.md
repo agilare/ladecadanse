@@ -61,13 +61,15 @@ La marche à suivre, une fois :
       AND NOT EXISTS (SELECT 1 FROM descriptionlieu d WHERE d.idPersonne = personne.idPersonne AND d.dateAjout > DATE_SUB(CURDATE(), INTERVAL 3 YEAR));
     ```
 
-3. **Envoyer par `admin/mailing.php`**, par lots de 50. Le message doit porter la mention de l'anonymisation à venir : il tient alors lieu d'avertissement, et il n'y en aura pas d'autre. Compter une à deux minutes par lot, et 110 lots. Reprendre une séance interrompue dans l'heure : la session expire au-delà et le mailing en cours est perdu.
+3. **Envoyer par `admin/mailing.php`**, par lots de 100, sur plusieurs jours. Le message doit porter la mention de l'anonymisation à venir : il tient alors lieu d'avertissement, et il n'y en aura pas d'autre. La connexion SMTP reste ouverte le temps d'un lot ; chronométrer le premier, et baisser `MAILING_LOT` si l'hébergeur coupe la requête. Reprendre une séance interrompue dans l'heure : la session expire au-delà et le mailing en cours est perdu. Prévenir Infomaniak de ce volume ponctuel.
 
-4. **Marquer les comptes servis**, avec exactement le même `WHERE` que l'export :
+4. **Marquer les comptes servis**, par la liste des `idPersonne` de l'export, **pas en rejouant son `WHERE`** :
 
     ```sql
-    UPDATE personne SET inactivity_notified_at = NOW() WHERE … /* le WHERE ci-dessus */;
+    UPDATE personne SET inactivity_notified_at = NOW() WHERE idPersonne IN (/* les id de l'export */);
     ```
+
+    Le `WHERE` dépend de `CURDATE()` : rejoué des jours après l'export, il attraperait les comptes qui ont franchi les trois ans entretemps. Ils seraient marqués sans avoir rien reçu, puis anonymisés trente jours plus tard sans avertissement. Un mailing abandonné en route ne marque que les comptes effectivement traités : chaque envoi est journalisé avec son identifiant (`[admin-mailing]`, clé `idP`). Un envoi en échec compte comme servi, comme pour le canal automatique. Le même `UPDATE … IN` vaut si l'envoi passe par un autre outil que `admin/mailing.php`.
 
     Sans cette étape, le canal automatique réavertirait ces 5 464 comptes une fois mis en route.
 

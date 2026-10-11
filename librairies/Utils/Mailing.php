@@ -128,6 +128,21 @@ class Mailing
         $this->adminCopyEnabled = false;
     }
 
+    /**
+     * Garde la connexion SMTP ouverte d'un message à l'autre, pour les envois en nombre.
+     * Sans cela PHPMailer refait connexion, TLS et authentification à chaque destinataire.
+     * L'appelant ferme la connexion par closeConnection() une fois le lot expédié.
+     */
+    public function enableKeepAlive(): void
+    {
+        $this->mail->SMTPKeepAlive = true;
+    }
+
+    public function closeConnection(): void
+    {
+        $this->mail->smtpClose();
+    }
+
     // -------------------------------------------------------------------------
     // Méthodes privées
     // -------------------------------------------------------------------------
@@ -238,10 +253,12 @@ class Mailing
         try {
             if (!$this->mail->send()) {
                 error_log($context . $this->errorMsg . $this->mail->ErrorInfo);
+                $this->dropKeptConnection();
                 return false;
             }
         } catch (Exception) {
             error_log($context . $this->errorMsg . $this->mail->ErrorInfo);
+            $this->dropKeptConnection();
             return false;
         } finally {
             // Réinitialise les destinataires et pièces jointes pour une éventuelle
@@ -252,5 +269,17 @@ class Mailing
         }
 
         return true;
+    }
+
+    /**
+     * Après un échec, une connexion gardée ouverte peut être coupée par le serveur ou laissée
+     * au milieu d'une transaction : on la ferme pour que le message suivant reparte d'une
+     * connexion neuve plutôt que d'échouer à son tour.
+     */
+    private function dropKeptConnection(): void
+    {
+        if ($this->mail->SMTPKeepAlive) {
+            $this->mail->smtpClose();
+        }
     }
 }
