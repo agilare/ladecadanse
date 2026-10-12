@@ -92,7 +92,6 @@
         "phpstan/phpstan-deprecation-rules": "^2.0",
         "spaze/phpstan-disallowed-calls": "^4.5",
         "rector/rector": "^2.0",
-        "phan/phan": "^6.0",
         "vimeo/psalm": "^6.16",
         "orklah/psalm-insane-comparison": "^2.4",
         "rector/jack": "^1.1",
