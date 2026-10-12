@@ -19,6 +19,55 @@ include("../_header.inc.php");
         <h1>Mises à jour</h1>
         <div class="spacer"></div>
     </header>
+
+    <article class="rubrique">
+
+        <header>
+            <h2>3.13.0</h2>
+            <br>
+            <p>14 octobre 2026</p>
+        </header>
+
+        <h3>Événements</h3>
+
+        <ul>
+            <li><strong>favoris</strong> : chaque utilisateur peut enregistrer ses événements et les retrouver dans la page idoine (merci <a href="https://github.com/lambeletjp" rel="external" target="_blank">lambeletjp</a>)</li>
+            <li>agenda : les événements peuvent être <strong>filtrés par catégorie</strong> (merci&nbsp;<a href="https://github.com/lambeletjp" rel="external" target="_blank">lambeletjp</a>)</li>
+            <li>sixième catégorie <strong>Concerts</strong></li>
+        </ul>
+
+        <h3>Lieux</h3>
+
+        <ul>
+            <li>sept nouvelles <strong>catégories</strong> : buvette, club, bibliothèque, maison/espace de quartier...</li>
+        </ul>
+
+        <h3>Comptes</h3>
+
+        <ul>
+            <li>la <a href="/user/register.php" target="_blank">création d'un compte</a> est devenue plus simple et est ouverte aux personnes qui n'organisent pas d'événements</li>
+            <li>option "Rester connecté-e" : fonctionne maintenant sur plusieurs appareils et nouveau bouton "Se déconnecter des autres appareils"</li>
+        </ul>
+
+        <h3>Interface</h3>
+
+        <ul>
+            <li>diverses améliorations de l'ergonomie</li>
+        </ul>
+
+        <h3>Divers</h3>
+
+        <ul>
+            <li>application de la <abbr title="Loi sur la protection des données">LPD</abbr> et du <abbr title="Règlement général sur la protection des données">RGPD</abbr>, page <a href="/articles/confidentialite.php">Protection des données</a></li>
+            <li>corrections de bugs, de vulnérabilités et améliorations techniques (nettoyage du code, gestion, fiabilité, Docker)</li>
+        </ul>
+
+        <p><a href="https://github.com/agilare/ladecadanse/releases/tag/v3.13.0" rel="external" target="_blank">Détails</a></p>
+
+    </article>
+
+    <hr>
+
     <article class="rubrique">
 
         <header>
