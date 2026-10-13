@@ -132,7 +132,7 @@ elseif (!empty($tab_even['e_image']))
 {
     $page_image = $assets->get(Evenement::getAssetPath(Evenement::getFilePath($tab_even['e_image'])));
 }
-$page_url = "event/evenement.php?idE=" .  $get['idE'];
+$page_url = HtmlShrink::urlCanonique($page_url, ['idE' => $get['idE']]);
 // END HEAD metas
 
 // build SQL

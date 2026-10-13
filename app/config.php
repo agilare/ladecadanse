@@ -57,7 +57,7 @@ $url_images_interface_icons = "/web/interface/icons/";
 
 // default Open Graph tags values, overrided in some pages
 $page_image = 'web/interface/ladecadanse-695x672.jpeg';
-$page_url = ltrim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
+$page_url = ltrim($_SERVER['SCRIPT_NAME'], '/');
 
 $glo_mimes_documents_acceptes = [
     "image/jpeg", "image/pjpeg", "image/gif", "image/png", "image/x-png", "image/webp",

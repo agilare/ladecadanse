@@ -195,6 +195,7 @@ $page_recherche_mots = $get['mots'];
 $get['mots'] = urlencode($get['mots']);
 
 $page_titre = "Rechercher des événements " . strtolower($tab_menu_periodes[$get['periode']]) . " par " . strtolower($tab_menu_tri[$get['tri']]);
+$page_url = null;
 include("../_header.inc.php");
 
 $agenda_years = range((int)date("Y"), Evenement::AGENDA_START_YEAR);

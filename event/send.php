@@ -195,6 +195,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 
 $_SESSION[$formTokenName] = bin2hex(random_bytes(32));
 
+$page_url = null;
 include("../_header.inc.php");
 ?>
 

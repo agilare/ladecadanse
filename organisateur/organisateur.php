@@ -162,7 +162,11 @@ if ($organisateur->getValue('logo'))
     $page_image = $assets->get(Organisateur::getAssetPath(Organisateur::getFilePath($organisateur->getValue('logo'))));
 }
 
-$page_url = "organisateur/organisateur.php?idO=" .  $get['idO'];
+$page_url = HtmlShrink::urlCanonique($page_url, [
+    'idO' => $get['idO'],
+    'periode' => $get['periode'] !== "futur" ? $get['periode'] : null,
+    'page' => $get['page'] > 1 ? $get['page'] : null,
+]);
 include("../_header.inc.php");
 ?>
 

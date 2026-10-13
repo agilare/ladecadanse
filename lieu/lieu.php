@@ -163,7 +163,11 @@ if ($lieu['logo'])
 {
     $page_image = $assets->get(Lieu::getAssetPath(Lieu::getFilePath($lieu['logo'])));
 }
-$page_url = "lieu/lieu.php?idL=" .  $get['idL'];
+$page_url = HtmlShrink::urlCanonique($page_url, [
+    'idL' => $get['idL'],
+    'periode' => $get['periode'] !== "futur" ? $get['periode'] : null,
+    'page' => $get['page'] > 1 ? $get['page'] : null,
+]);
 
 include("../_header.inc.php");
 ?>
