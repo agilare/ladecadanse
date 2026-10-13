@@ -1072,7 +1072,7 @@ if ($est_connecte)
 
 $extra_css = ["formulaires"];
 
-include("_header.inc.php");
+include("pages/_header.inc.php");
 ?>
 
 <main id="contenu" class="colonne evenement-edit">
@@ -1841,12 +1841,12 @@ if ($show_form)
 </main>
 
 <div id="colonne_gauche" class="colonne">
-    <?php include("event/_navigation_calendrier.inc.php"); ?>
+    <?php include("pages/event/_navigation_calendrier.inc.php"); ?>
 </div>
 
 <div id="colonne_droite" class="colonne">
 </div>
 
 <?php
-include("_footer.inc.php");
+include("pages/_footer.inc.php");
 ?>

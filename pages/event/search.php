@@ -1,0 +1,324 @@
+<?php
+
+global $connector, $glo_regions, $glo_auj, $iconeCopier, $iconeEditer, $glo_auj_6h, $site_full_url;
+
+require_once("../../app/bootstrap.php");
+
+use Ladecadanse\EvenementCalendarRenderer;
+use Ladecadanse\HtmlShrink;
+use Ladecadanse\Utils\DateHelper;
+use Ladecadanse\Utils\QueryParamValidator;
+use Ladecadanse\Evenement;
+use Ladecadanse\EvenementRenderer;
+use Ladecadanse\Lieu;
+use Ladecadanse\UserLevel;
+
+
+$tab_menu_tri = ["pertinence" => "Pertinence", "dateEvenement" => "Date", "dateAjout" => "Date d'ajout"];
+$tab_menu_periodes = ["ancien" => "Passés", "futur" => "Prochains"]; //, "tous" => "Tous"
+
+$get = [];
+
+if (empty($_GET['mots']) || !empty($_GET['name_as']))
+{
+    header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); echo "Veuillez saisir un texte à rechercher"; exit;
+}
+$get['mots'] = $_GET['mots'];
+
+$get['tri'] = "pertinence";
+if (!empty($_GET['tri']) && QueryParamValidator::isAcceptedUrlQueryValue($_GET['tri'], "enum", array_keys($tab_menu_tri)))
+{
+    $get['tri'] = $_GET['tri'];
+}
+
+$get['periode'] = "futur";
+if (!empty($_GET['periode']) && QueryParamValidator::isAcceptedUrlQueryValue($_GET['periode'], "enum", array_keys($tab_menu_periodes)))
+{
+    $get['periode'] = $_GET['periode'];
+}
+
+$get['years'] = filter_var(is_scalar($_GET['years'] ?? null) ? $_GET['years'] : null, FILTER_VALIDATE_INT, [
+    'options' => ['min_range' => Evenement::AGENDA_START_YEAR, 'max_range' => (int) date('Y'), 'default' => (int) date('Y')],
+]);
+
+//dump($_GET);
+$get['page'] = QueryParamValidator::pageFromQuery($_GET['page'] ?? '');
+$results_per_page = 20;
+
+
+$mots = trim($get['mots']);
+$mots = mb_strtolower($mots);
+// FULLTEXT boolean operators (and "%") make InnoDB reject the whole query with a syntax error
+$mots = str_replace(["+", "-", "<", ">", "(", ")", "~", "*", "@", "\"", "%", ",", ":"], " ", $mots);
+$tab_tous_mots = explode(" ", $mots);
+
+$mots_vides = file(__ROOT__ . "/resources/stopwords_list.txt", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) ?: [];
+$tab_mots_sans_les_mots_vides = array_values(array_diff($tab_tous_mots, $mots_vides));
+$tab_mots_sans_les_mots_vides = array_filter($tab_mots_sans_les_mots_vides, function($v)
+{
+    return (mb_strlen($v) > 1);
+});
+
+$nb_mots_sans_les_mots_vides = count($tab_mots_sans_les_mots_vides);
+
+if ($nb_mots_sans_les_mots_vides === 0)
+{
+    header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request"); echo "Veuillez saisir un texte pertinent à rechercher"; exit;
+}
+
+$sql_select = "SELECT
+
+  e.genre AS e_genre,
+  e.idEvenement AS e_idEvenement,
+  e.titre AS e_titre,
+  e.statut AS e_statut,
+  e.idPersonne AS e_idPersonne,
+  e.dateEvenement AS e_dateEvenement,
+  e.ref AS e_ref,
+  e.flyer AS e_flyer,
+  e.image AS e_image,
+  e.description AS e_description,
+  e.horaire_debut AS e_horaire_debut,
+  e.horaire_fin AS e_horaire_fin,
+  e.horaire_complement AS e_horaire_complement,
+  e.prix AS e_prix,
+  e.prelocations AS e_prelocations,
+  e.idLieu AS e_idLieu,
+  e.idSalle AS e_idSalle,
+  e.nomLieu AS e_nomLieu,
+  e.adresse AS e_adresse,
+  e.quartier AS e_quartier,
+  loc.localite AS e_localite,
+  e.region AS e_region,
+  e.urlLieu AS e_urlLieu,
+
+  l.nom AS l_nom,
+  l.adresse AS l_adresse,
+  l.quartier AS l_quartier,
+  l.URL AS l_URL    ,
+  lloc.localite AS lloc_localite,
+  l.region AS l_region,
+  s.nom AS s_nom,
+    (
+      ## search exact : +disco
+      MATCH(e.titre) AGAINST(? IN BOOLEAN MODE) * 3 +
+      MATCH(e.nomLieu) AGAINST(? IN BOOLEAN MODE) * 2 +
+      MATCH(l.nom) AGAINST(? IN BOOLEAN MODE) * 2 +
+      MATCH(e.description) AGAINST(? IN BOOLEAN MODE) * 2 +
+
+      # search prefix : disco*
+      MATCH(e.titre) AGAINST(? IN BOOLEAN MODE) * 2 +
+      MATCH(e.nomLieu) AGAINST(? IN BOOLEAN MODE) * 1 +
+      MATCH(l.nom) AGAINST(? IN BOOLEAN MODE) * 1 +
+      MATCH(e.description) AGAINST(? IN BOOLEAN MODE) * 1
+
+    ) AS score
+
+FROM evenement e
+JOIN localite loc ON e.localite_id = loc.id
+LEFT JOIN lieu l ON e.idLieu = l.idLieu
+LEFT JOIN localite lloc ON l.localite_id = lloc.id
+LEFT JOIN salle s ON e.idSalle = s.idSalle
+WHERE
+    e.statut NOT IN ('inactif', 'propose') AND (
+    MATCH(e.titre) AGAINST(? IN BOOLEAN MODE) OR MATCH(e.nomLieu) AGAINST(? IN BOOLEAN MODE) OR MATCH(e.description) AGAINST(? IN BOOLEAN MODE) OR MATCH(l.nom) AGAINST(? IN BOOLEAN MODE) )";
+
+// v1 only search prefix
+//$sql_params = array_fill(0, 8, implode(' ', array_map(fn($t) => $t . '*', $tab_mots_sans_les_mots_vides)));
+
+$search_exact = implode(' ', array_map(fn($t) => "+" . $t, $tab_mots_sans_les_mots_vides));
+$search_prefix = implode(' ', array_map(fn($t) => $t . '*', $tab_mots_sans_les_mots_vides));
+
+$sql_params = [...array_fill(0, 4, $search_exact), ...array_fill(0, 8, $search_prefix)];
+
+
+$sql_periode_operator = ">=";
+if ($get['periode'] == "ancien")
+{
+    $sql_periode_operator = "<";
+}
+$sql_select .= " AND e.dateEvenement $sql_periode_operator '" . $glo_auj . "'";
+
+if (!empty($get['years']))
+{
+    $sql_select .= " AND YEAR(e.dateEvenement) = ? ";
+    $sql_params[] = $get['years'];
+}
+
+$triToColumn = ["pertinence" => "score", "dateEvenement" => "e.dateEvenement", "dateAjout" => "e.dateAjout"];
+$sql_select .= ' ORDER BY ' . ($triToColumn[$get['tri']] ?? 'score') . ' DESC' . ($get['tri'] != "dateEvenement" ? ", e.dateEvenement DESC" : '');
+$sql_select .= " LIMIT " . (int) (($get['page'] - 1) * $results_per_page) . ", " . (int) $results_per_page;
+//dump($sql_params);
+$stmt = $connectorPdo->prepare($sql_select);
+$stmt->execute($sql_params);
+$page_results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+
+$sql_params_all = array_fill(0, 4, $search_prefix);
+$sql_select_all =
+    "SELECT count(*) AS nb
+FROM evenement e
+LEFT JOIN lieu l ON e.idLieu = l.idLieu
+WHERE
+    e.statut NOT IN ('inactif', 'propose') AND (
+    MATCH(e.titre) AGAINST(? IN BOOLEAN MODE) OR MATCH(e.nomLieu) AGAINST(? IN BOOLEAN MODE) OR MATCH(e.description) AGAINST(? IN BOOLEAN MODE) OR MATCH(l.nom) AGAINST(? IN BOOLEAN MODE) )";
+
+$sql_periode_operator = ">=";
+if ($get['periode'] == "ancien")
+{
+    $sql_periode_operator = "<";
+}
+$sql_select_all .= " AND e.dateEvenement $sql_periode_operator '" . $glo_auj . "'";
+
+if (!empty($get['years']))
+{
+    $sql_select_all .= " AND YEAR(e.dateEvenement) = ? ";
+    $sql_params_all[] = $get['years'];
+}
+
+//echo $sql_select_all;
+
+$stmtAll = $connectorPdo->prepare($sql_select_all);
+$stmtAll->execute($sql_params_all);
+$all_results_nb = $stmtAll->fetchColumn();
+
+$logger->info('[recherche]', ['mots' => $get['mots'], 'nb' => $all_results_nb, 'periode' => $get['periode'], 'years' => $get['years'], 'tri' => $get['tri'], 'page' => $get['page']]);
+
+// keep the search field filled with the submitted terms (see _header.inc.php)
+$page_recherche_mots = $get['mots'];
+
+
+$page_titre = "Rechercher des événements " . strtolower($tab_menu_periodes[$get['periode']]) . " par " . strtolower($tab_menu_tri[$get['tri']]);
+$page_url = null;
+include("../_header.inc.php");
+
+$agenda_years = range((int)date("Y"), Evenement::AGENDA_START_YEAR);
+?>
+
+<main id="contenu" class="colonne rechercher">
+
+	<header id="entete_contenu">
+        <h1>Rechercher des événements pour <em><?= sanitizeForHtml($mots) ?></em></h1>
+        <?php // echo HtmlShrink::getMenuRegions($glo_regions, $get); ?>
+
+        <!-- menu tous | futurs | anciens -->
+        <ul id="menu_periode">
+            <?php foreach ($tab_menu_periodes as $k => $label) : ?>
+                <li class="<?= $k ?><?php if ($get['periode'] == $k) : ?> ici<?php endif; ?>">
+                    <a href="?<?= HtmlShrink::urlQueryArrayToString($get, ['periode', 'page', 'years']) ?>&amp;periode=<?= $k ?>"><?= $label ?></a>
+                </li>
+            <?php endforeach; ?>
+            <div class="spacer"></div>
+        </ul>
+		<div class="spacer"></div>
+	</header>
+
+    <div id="res_recherche">
+
+        <?php if ($get['periode'] == 'ancien') : ?>
+            <form id="years-select" action="" method="get">
+                <input type="hidden" name="mots" value="<?= sanitizeForHtml($get['mots']) ?>">
+                <input type="hidden" name="periode" value="<?= sanitizeForHtml($get['periode']) ?>">
+                <input type="hidden" name="tri" value="<?= sanitizeForHtml($get['tri']) ?>">
+                <label for="years">Année</label>
+                <select name="years" id="years" class="js-select2 js-auto-submiter" style="min-width:100px">
+                    <?php foreach ($agenda_years as $year): ?>
+                        <option value="<?= $year ?>" <?php if ($year == $get['years']) : ?>selected<?php endif; ?>><?= $year ?></option>
+                    <?php endforeach; ?>
+                </select>
+<!--                <button type="submit" style="margin-top:2px">OK</button>-->
+            </form>
+        <?php endif; ?>
+
+        <?php if ($all_results_nb > 0) : ?>
+
+            <h2 class="res"><strong><?= (int)$all_results_nb ?></strong> événement<?= $all_results_nb > 1 ? "s" : "" ?> trouvé<?= $all_results_nb > 1 ? "s" : "" ?></h2>
+
+            <div>
+                <!-- menu tri pertinence | date ajout | début -->
+                <ul id="menu_tri">
+                    <li style="margin-right:5px"><i class="fa fa-sort-amount-asc" aria-hidden="true"></i></li>
+                    <?php foreach ($tab_menu_tri as $k => $label) : ?>
+                        <li class="<?= $k ?><?php if ($get['tri'] == $k) : ?> ici<?php endif; ?>">
+                            <a href="?<?= HtmlShrink::urlQueryArrayToString($get, ['tri', 'page']) ?>&amp;tri=<?= $k ?>"><?= $label ?></a>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+                <div class="spacer"><!-- --></div>
+            </div>
+
+            <div class="spacer"></div>
+
+            <?= HtmlShrink::getPaginationString($all_results_nb, $get['page'], $results_per_page, 1, basename(__FILE__), "?" . HtmlShrink::urlQueryArrayToString($get, "page") . "&amp;page=") ?>
+
+            <table>
+                <tbody>
+                    <?php
+                    // invariant de la boucle : la colonne d'actions n'a de raison d'être large
+                    // que pour qui peut y voir apparaître Copier, Modifier et Dépublier
+                    $est_connecte = isset($_SESSION['Sgroupe']);
+
+                    foreach ($page_results as $tab_even) :
+                        $even_periode = match (true) {
+                            $tab_even['e_dateEvenement'] > $glo_auj_6h => "futur",
+                            $tab_even['e_dateEvenement'] == $glo_auj_6h => "auj",
+                            default => 'ancien',
+                        };
+                        $even_lieu = Evenement::getLieu($tab_even);
+                        ?>
+                        <tr class="<?= $even_periode ?>" data-event-id="<?= (int) $tab_even['e_idEvenement'] ?>">
+                            <td class="desc_even">
+                                <h3><a href="evenement.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>"><?= sanitizeForHtml($tab_even['e_titre']) ?></a></h3>
+                                <p><?= Evenement::categoryLabel($tab_even['e_genre']) ?></p>
+                            </td>
+                            <td><?= Lieu::getLinkNameHtml($even_lieu['nom'], $even_lieu['idLieu'], $even_lieu['salle']) ?></td>
+                            <td class="date"><a href="/index.php?courant=<?= sanitizeForHtml($tab_even['e_dateEvenement']); ?>"><?= DateHelper::isoToFr($tab_even['e_dateEvenement'], 'annee') ?></a></td>
+                            <td class="favori_action"><?= EvenementRenderer::favoriteButtonHtml((int) $tab_even['e_idEvenement']) ?></td>
+                            <?php if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] == UserLevel::SUPERADMIN)) : ?>
+                            <td><?= round($tab_even['score'], 5) ?></td>
+                            <?php endif; ?>
+                            <?php
+                            $isFutureEvent = $even_periode !== 'ancien';
+                            $isAllowedToEdit = $authorization->isPersonneAllowedToEditEvenement($_SESSION, $tab_even);
+                            ?>
+                            <?php if ($isFutureEvent || $isAllowedToEdit) : ?>
+                                <td class="lieu_actions_evenement<?= $est_connecte ? '' : ' actions-compactes' ?>">
+                                    <ul>
+                                        <?php if ($isFutureEvent) : ?>
+                                            <?= EvenementCalendarRenderer::renderMenuHtml($tab_even, $site_full_url, compact: true) ?>
+                                        <?php endif; ?>
+                                        <?php if ($isAllowedToEdit) : ?>
+                                            <li><a href="/event/copy.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>" title="Copier cet événement"><?= $iconeCopier; ?></a></li>
+                                            <?php if ($authorization->isPersonneAllowedToEditEvenementNow($_SESSION, $tab_even)) : ?>
+                                            <li><a href="/evenement-edit.php?action=editer&amp;idE=<?= (int) $tab_even['e_idEvenement'] ?>" title="Modifier cet événement"><?= $iconeEditer; ?></a></li>
+                                            <?php endif; ?>
+                                            <li><?= EvenementRenderer::unpublishLinkHtml((int) $tab_even['e_idEvenement'], $icone['depublier']) ?></li>
+                                        <?php endif; ?>
+                                    </ul>
+                                </td>
+                            <?php endif; ?>
+                        </tr>
+                    <?php endforeach; ?>
+                    </tbody>
+                </table>
+
+                <?= HtmlShrink::getPaginationString($all_results_nb, $get['page'], $results_per_page, 1, basename(__FILE__), "?" . HtmlShrink::urlQueryArrayToString($get, "page") . "&amp;page="); ?>
+
+            <?php
+            else:
+
+                HtmlShrink::msgInfo("Pas d'événement trouvé pour <em>".sanitizeForHtml($mots)."</em>");
+
+            endif;
+            ?>
+    </div> <!-- #res_recherche -->
+
+</main>
+
+<div id="colonne_gauche" class="colonne">
+    <?php include("../event/_navigation_calendrier.inc.php"); ?>
+</div>
+
+<div id="colonne_droite" class="colonne"></div>
+
+<?php include("../_footer.inc.php"); ?>
