@@ -19,7 +19,7 @@ Un bandeau le dit au visiteur sur la page Favoris, avec un lien vers la connexio
 
 **La première connexion verse les favoris du navigateur dans le compte** : `FavoritesStore.init()` les envoie à `sync`, dont l'`INSERT IGNORE` les fusionne avec ceux déjà en base sans créer de doublon, puis vide le stockage local et relit la liste du compte.
 
-Pour un membre connecté, les identifiants de ses favoris sont **rendus avec la page**, dans `window.__LADECADANSE.favoriteIds` ([`_footer.inc.php`](../../_footer.inc.php)) : aucune requête n'est nécessaire au chargement pour savoir quels marque-pages allumer. L'action `list` ne sert que de secours.
+Pour un membre connecté, les identifiants de ses favoris sont **rendus avec la page**, dans `window.__LADECADANSE.favoriteIds` ([`_footer.inc.php`](../../pages/_footer.inc.php)) : aucune requête n'est nécessaire au chargement pour savoir quels marque-pages allumer. L'action `list` ne sert que de secours.
 
 ## Le filtre des listes
 

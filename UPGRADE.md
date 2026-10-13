@@ -29,15 +29,21 @@ Avant, par le tunnel SSH ([docs/exploitation/prod-copy.md](docs/exploitation/pro
 
 Après : le même relevé — douze tables en `InnoDB`, `AUTO_INCREMENT` d'`evenement` inchangé (la reconstruction le préserve, vérifié sur 10.11.15 ; le compteur InnoDB est persistant depuis MariaDB 10.2.4), `SHOW INDEX FROM evenement WHERE Index_type = 'FULLTEXT'` en rend trois et `lieu` un — puis une recherche sur le site.
 
-Ce qui change pour les visiteurs : le classement des résultats de recherche, InnoDB calculant la pertinence autrement (BM25). Le nombre de résultats reste le même, à la liste de mots vides du serveur près — InnoDB en ignore 36, MyISAM en ignorait quelque 540, en anglais. Côté administration, le total en tête de [admin/events.php](admin/events.php) parcourt désormais un index au lieu de lire un compteur de lignes.
+Ce qui change pour les visiteurs : le classement des résultats de recherche, InnoDB calculant la pertinence autrement (BM25). Le nombre de résultats reste le même, à la liste de mots vides du serveur près — InnoDB en ignore 36, MyISAM en ignorait quelque 540, en anglais. Côté administration, le total en tête de [admin/events.php](pages/admin/events.php) parcourt désormais un index au lieu de lire un compteur de lignes.
 
 `prod-copy` ramènera InnoDB au prochain passage : la copie reprend les moteurs de la production.
 
-**`Version20261031000000` ajoute `personne.mailing_opted_out_at`**, la date d'une demande de désinscription des mailings. **À passer avant la mise en ligne** : [admin/mailing.php](admin/mailing.php) lit la colonne à chaque aperçu. Pour noter une demande :
+**`Version20261031000000` ajoute `personne.mailing_opted_out_at`**, la date d'une demande de désinscription des mailings. **À passer avant la mise en ligne** : [admin/mailing.php](pages/admin/mailing.php) lit la colonne à chaque aperçu. Pour noter une demande :
 
 ```sql
 UPDATE personne SET mailing_opted_out_at = NOW() WHERE email = '…';
 ```
+
+### Pages sous `pages/`
+
+Les pages passent sous `pages/` (#247) **sans changer d'adresse** : une réécriture interne de [`htaccess/50-routage.conf`](htaccess/50-routage.conf) sert `/lieu/lieux.php` depuis `pages/lieu/lieux.php`, et les `ErrorDocument` visent `/pages/misc/error.php`. Le `.htaccess` recomposé (`composer config:build`) et le code partent donc ensemble. Tant qu'un ancien fichier reste à la racine, il est servi ; la seule fenêtre à risque est celle où git-ftp a supprimé l'ancien sans avoir encore envoyé le nouveau, d'où un déploiement hors des heures de pointe, suivi d'un passage sur l'accueil, une fiche d'événement, `/lieu/lieux.php` et une URL inexistante (404 du site, pas d'Apache).
+
+- **Développement** — une URL ne mène plus directement à son fichier : `/event/evenement.php` est `pages/event/evenement.php`. `php -S` ignorant le `.htaccess`, un worktree se sert désormais avec `php -S localhost:8000 -t . bin/router.php` ; sans le routeur, toutes les pages répondent 404
 
 ## 3.13.0 (non publié)
 
@@ -86,7 +92,7 @@ La marche à suivre, une fois :
 
 1. **Déployer**, `ACCOUNT_RETENTION_ENABLED` absente ou à `false`, la migration passée.
 
-2. **Exporter les candidats** depuis phpMyAdmin, au format qu'attend [admin/mailing.php](admin/mailing.php) :
+2. **Exporter les candidats** depuis phpMyAdmin, au format qu'attend [admin/mailing.php](pages/admin/mailing.php) :
 
     ```sql
     SELECT idPersonne, pseudo, email FROM personne
@@ -110,7 +116,7 @@ La marche à suivre, une fois :
 
 5. **Mettre le canal en route** : `define("ACCOUNT_RETENTION_ENABLED", true);` dans `app/env.php` sur le serveur, sans redéploiement. Les comptes marqués à l'étape 4 deviennent anonymisables trente jours après leur marquage ; il ne reste alors que du SQL, vingt comptes par passage, soit environ trois jours.
 
-L'écran [admin/inactive-accounts.php](admin/inactive-accounts.php) donne la liste à tout moment, sans rien déclencher, et dit si le canal tourne.
+L'écran [admin/inactive-accounts.php](pages/admin/inactive-accounts.php) donne la liste à tout moment, sans rien déclencher, et dit si le canal tourne.
 
 La septième, `Version20261003000000`, ajoute six colonnes à `bot_monitor`, la table du suivi des bots (voir [docs/exploitation/bots.md](docs/exploitation/bots.md)) : la fenêtre de comptage en cours (`window_start`, `window_hits`), le plus fort pic de l'IP (`peak_hits`, `peak_start`), et ses requêtes terminées en erreur (`error_hits`, `last_error_path`). Elle suppose la table créée par `Version20260716000000`, que `db:migrate` passe avant elle — une production sans la table reçoit les deux d'un coup.
 
@@ -151,7 +157,7 @@ Rien à passer en base : `evenement.genre` est un `varchar(20)`, il accueille le
 - **Comptes sans connexion depuis trois ans**, une fois `ACCOUNT_RETENTION_ENABLED` posée — ils reçoivent un avertissement, puis sont anonymisés un mois plus tard : nom d'utilisateur, adresse, affiliation et préférences effacés, rattachements aux lieux et organisateurs supprimés, sans retour possible. Leurs événements et descriptions restent publiés, détachés de leur auteur. Les administrateurs sont hors du décompte, et une connexion — y compris par le cookie « rester connecté-e » — rend son délai complet au compte. Un avertissement qui rebondit sur une adresse morte n'empêche pas l'anonymisation
 - **« Concerts » ouverte à tous dès la mise en ligne**, sans rien régler. Un événement classé `concerts` pendant la préversion apparaît sous « Concerts » pour tout le monde ; le titre de ses articles RSS dit « concerts » là où il disait « fête », et l'API ne le renvoie plus pour `category=fête` mais pour `category=concerts`
 - **Ancres des sections de l'agenda** — elles passent par `Text::slug()`, qui met en minuscules et remplace tout caractère non alphanumérique par un tiret, là où `stripAccents()` ne retirait que les diacritiques. Les cinq ancres existantes (`#fetes`, `#cine`, `#theatre`, `#expos`, `#divers`) ne bougent pas ; seule « cours/ateliers/stages » en avait besoin, son libellé portant des barres obliques
-- **Charte éditoriale** — [`articles/charte-editoriale.php`](articles/charte-editoriale.php) annonce désormais six catégories et décrit « Concerts » : les prestations musicales en live, construites autour d'artistes annoncés que le public vient écouter. Une soirée où la musique accompagne surtout la fête (DJ sets, soirées dansantes) reste dans « Fêtes », et un événement qui mêle les deux va à la part qui prédomine — la règle que rappelle le texte d'aide du champ Catégorie
+- **Charte éditoriale** — [`articles/charte-editoriale.php`](pages/articles/charte-editoriale.php) annonce désormais six catégories et décrit « Concerts » : les prestations musicales en live, construites autour d'artistes annoncés que le public vient écouter. Une soirée où la musique accompagne surtout la fête (DJ sets, soirées dansantes) reste dans « Fêtes », et un événement qui mêle les deux va à la part qui prédomine — la règle que rappelle le texte d'aide du champ Catégorie
 - **Scénarios Selenium** — `tests/ladecadanse.side` désigne les sections de l'agenda par leur rang : sur une journée qui a des concerts, `.genre:nth-child(2)` vise « Concerts » et non plus la section qui suivait « Fêtes »
 - **Qui peut modifier une fiche de lieu** — la règle ne change pas (niveau AUTHOR ou au-dessus, personne affiliée au lieu, ou membre d'un organisateur rattaché), mais elle est posée une fois, dans `Authorization::isPersonneAllowedToEditLieu()`, par le formulaire et par le lien « Modifier ce lieu » de la fiche. Un refus répond 403, une requête sans identifiant 400, un identifiant inconnu 404 — le formulaire affichait jusqu'ici un message HTML nu au-dessus d'une page vide, avec un statut 200
 - **Champs réservés d'un lieu** — le nom, la préposition, les catégories et les organisateurs ne partaient plus en champs cachés à qui n'a pas le droit d'y toucher : le serveur reprend leur valeur enregistrée quel que soit le contenu du POST. Conséquence : **un POST forgé ne renomme plus un lieu ni ne le rattache à un organisateur**. La galerie d'images disparaît du formulaire — fonctionnalité abandonnée, les images se posent à la main

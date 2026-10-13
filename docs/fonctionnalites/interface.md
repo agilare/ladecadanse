@@ -38,7 +38,7 @@ Le reste de la conversion :
 
 ### Mise en page élargie
 
-La fiche occupe la colonne de droite, vide sur cette page. Largeur du cadre, des illustrations et de la description, taille du titre et du nom du lieu, bouton « précédent » : tout est piloté par la classe `.vevent-experimental`, posée par [`event/evenement.php`](../../event/evenement.php) et définie dans `desktop.css` — revenir en arrière tient donc au retrait d'une classe. Réservée aux administrateurs en 3.11.0, le temps de valider l'essai, elle est servie à tous les visiteurs depuis la 3.12.0.
+La fiche occupe la colonne de droite, vide sur cette page. Largeur du cadre, des illustrations et de la description, taille du titre et du nom du lieu, bouton « précédent » : tout est piloté par la classe `.vevent-experimental`, posée par [`event/evenement.php`](../../pages/event/evenement.php) et définie dans `desktop.css` — revenir en arrière tient donc au retrait d'une classe. Réservée aux administrateurs en 3.11.0, le temps de valider l'essai, elle est servie à tous les visiteurs depuis la 3.12.0.
 
 ### Sous 450 px, la description enveloppe les illustrations
 

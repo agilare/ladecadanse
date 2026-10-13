@@ -9,6 +9,7 @@ Upgrade steps (migrations, side effects) : [UPGRADE.md](UPGRADE.md).
 - mailing : people who asked to stop receiving mailings (`personne.mailing_opted_out_at`) are left out, even when present in the CSV
 
 ### Changed
+- pages : page files move under `pages/` #247, served at unchanged URLs by an internal rewrite ; `bin/router.php` serves them under `php -S` — see [UPGRADE.md](UPGRADE.md) and [docs/exploitation/config-serveur.md](docs/exploitation/config-serveur.md)
 - accounts : the password is changed on its own page `user/pwd-edit.php`, under the same rules as registration, and the profile shows when it was last changed #249 — see [UPGRADE.md](UPGRADE.md)
 - accounts : `user-edit.php` becomes `user/edit.php`, reorganized, and no longer creates accounts #120 ; affiliations, signature and event defaults move to `user/contributor-edit.php`, shown disabled to those who cannot change the affiliations #288
 - database : the twelve MyISAM tables move to InnoDB #228 — row locking, crash recovery, and the ground for transactions and foreign keys ; the search ranking changes with the engine — see [UPGRADE.md](UPGRADE.md)
