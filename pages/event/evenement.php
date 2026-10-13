@@ -1,0 +1,354 @@
+<?php
+
+// Validation de l'identifiant AVANT le chargement de l'application : bootstrap.php ouvre deux
+// connexions à la base, démarre la session et monte les gestionnaires de log, dont rien n'est
+// nécessaire pour répondre 400 à une url malformée. Voir event/rss.php, même motif.
+if (empty($_GET['idE']) || !is_numeric($_GET['idE']))
+{
+    header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
+    exit;
+}
+
+require_once("../../app/bootstrap.php");
+
+use Ladecadanse\Evenement;
+use Ladecadanse\EventCategory;
+use Ladecadanse\HtmlShrink;
+use Ladecadanse\Lieu;
+use Ladecadanse\Organisateur;
+use Ladecadanse\Personne;
+use Ladecadanse\UserLevel;
+use Ladecadanse\Utils\DateHelper;
+use Ladecadanse\Utils\Text;
+use Ladecadanse\Utils\WebLink;
+use Ladecadanse\EvenementRenderer;
+
+$get['idE'] = (int) $_GET['idE'];
+
+
+// EVENT AND APPENDIXES
+$sql_event = "SELECT
+
+  e.genre AS e_genre,
+  e.idEvenement AS e_idEvenement,
+  e.titre AS e_titre,
+  e.statut AS e_statut,
+  e.idPersonne AS e_idPersonne,
+  e.dateEvenement AS e_dateEvenement,
+  e.ref AS e_ref,
+  e.flyer AS e_flyer,
+  e.image AS e_image,
+  e.description AS e_description,
+  e.ref AS e_ref,
+  e.horaire_debut AS e_horaire_debut,
+  e.horaire_fin AS e_horaire_fin,
+  e.horaire_complement AS e_horaire_complement,
+  e.prix AS e_prix,
+  e.prelocations AS e_prelocations,
+  e.idLieu AS e_idLieu,
+  e.idSalle AS e_idSalle,
+  e.nomLieu AS e_nomLieu,
+  e.adresse AS e_adresse,
+  e.quartier AS e_quartier,
+  loc.localite AS e_localite,
+  e.region AS e_region,
+  e.urlLieu AS e_urlLieu,
+  e.dateAjout AS e_dateAjout,
+
+  l.nom AS l_nom,
+  l.preposition_nom AS l_preposition_nom,
+  l.adresse AS l_adresse,
+  l.quartier AS l_quartier,
+  l.lat AS l_lat,
+  l.lng AS l_lng,
+  l.URL AS l_URL,
+  lloc.localite AS lloc_localite,
+  l.region AS l_region,
+
+  s.nom AS s_nom
+
+FROM evenement e
+JOIN localite loc ON e.localite_id = loc.id
+LEFT JOIN lieu l ON e.idLieu = l.idLieu
+LEFT JOIN localite lloc ON l.localite_id = lloc.id
+LEFT JOIN salle s ON e.idSalle = s.idSalle
+WHERE e.idEvenement = :idE";
+
+$stmt = $connectorPdo->prepare($sql_event);
+$stmt->execute([':idE' => $get['idE']]);
+$tab_even = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (empty($tab_even))
+{
+    header($_SERVER["SERVER_PROTOCOL"] . " 404 Not Found");
+    exit;
+}
+
+$isPersonneAllowedToEdit = $authorization->isPersonneAllowedToEditEvenement($_SESSION, $tab_even);
+// distinct de $isPersonneAllowedToEdit, qui gouverne aussi la visibilité des événements
+// 'propose'/'inactif' et l'accès à la copie : un événement passé reste visible et copiable
+$canEditEvenement = $authorization->isPersonneAllowedToEditEvenementNow($_SESSION, $tab_even);
+$isMembreConnecte = isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= UserLevel::MEMBER;
+
+if (!$isPersonneAllowedToEdit && in_array($tab_even['e_statut'], ['propose', 'inactif']))
+{
+    header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
+    exit;
+}
+
+// lieu, organisateurs and author details
+$even_lieu = Evenement::getLieu($tab_even);
+$preposition_lieu = Lieu::prepositionToPutInSentence($tab_even['l_preposition_nom']);
+
+$stmtOrgas = $connectorPdo->prepare("SELECT
+o.idOrganisateur AS o_idOrganisateur,
+o.nom AS o_nom,
+o.URL AS o_URL
+FROM evenement_organisateur eo
+JOIN organisateur o ON eo.idOrganisateur = o.idOrganisateur AND eo.idEvenement = :idE
+ORDER BY nom DESC");
+$stmtOrgas->execute([':idE' => $get['idE']]);
+$res_even_orgas = $stmtOrgas->fetchAll(PDO::FETCH_ASSOC);
+foreach ($res_even_orgas AS $o)
+{
+    $tab_even_orgas[] = [
+        'idOrganisateur' => $o['o_idOrganisateur'],
+        'nom' => $o['o_nom'],
+        'url' => $o['o_URL']
+    ];
+}
+
+$signature_auteur = empty($tab_even['e_idPersonne']) ? "" : Personne::getSignatureHtml((int) $tab_even['e_idPersonne']);
+// END EVENT AND APPENDIXES
+
+// HEAD metas
+$page_titre = $tab_even['e_titre'] . " " . $preposition_lieu . $even_lieu['nom'] . HtmlShrink::adresseCompacteSelonContexte($even_lieu['region'], $even_lieu['localite'], $even_lieu['quartier'], "") . ", le " . DateHelper::isoToFr($tab_even['e_dateEvenement'], 'annee', html: false);
+$page_description = "Événement \"" . $tab_even['e_titre'] . "\" " . $preposition_lieu . $even_lieu['nom'] . " " . $even_lieu['salle'] . ", " . HtmlShrink::adresseCompacteSelonContexte($even_lieu['region'], $even_lieu['localite'], $even_lieu['quartier'], $even_lieu['adresse']).", le " . DateHelper::isoToFr($tab_even['e_dateEvenement'], 'annee', html: false) . " - " . EvenementRenderer::schedulesToHhMm($tab_even['e_horaire_debut'], $tab_even['e_horaire_fin'], $tab_even['e_dateEvenement']). " " . sanitizeForHtml($tab_even['e_horaire_complement']);
+if (!empty($tab_even['e_flyer']))
+{
+    $page_image = $assets->get(Evenement::getAssetPath(Evenement::getFilePath($tab_even['e_flyer'])));
+}
+elseif (!empty($tab_even['e_image']))
+{
+    $page_image = $assets->get(Evenement::getAssetPath(Evenement::getFilePath($tab_even['e_image'])));
+}
+$page_url = HtmlShrink::urlCanonique($page_url, ['idE' => $get['idE']]);
+// END HEAD metas
+
+// build SQL
+$sql_user_prefs_agenda_order = "e." . $_SESSION['user_prefs_agenda_order'] . " DESC";
+if ($_SESSION['user_prefs_agenda_order'] == "horaire_debut")
+{
+	$sql_user_prefs_agenda_order = "e.horaire_debut ASC";
+}
+
+// Cette liste ne sert qu'à la navigation entre événements du jour : l'ordre des catégories
+// n'y est pas visible, seule sa complétude compte — une catégorie absente du CASE rendrait
+// NULL, qui trie en premier.
+$sql_category_order = EventCategory::sqlOrderByCategory('e.genre', EventCategory::isEnabled());
+
+$sql_events_of_day = "
+SELECT
+idEvenement, titre, CASE WHEN (e.idLieu IS NULL OR e.idLieu = '') THEN e.nomLieu ELSE l.nom END AS lieu_nom
+FROM evenement e
+LEFT JOIN lieu l ON e.idLieu = l.idLieu
+WHERE
+  e.dateEvenement = :date AND e.statut NOT IN ('inactif', 'propose')
+ORDER BY
+  $sql_category_order,
+  $sql_user_prefs_agenda_order";
+
+$stmtDayEvents = $connectorPdo->prepare($sql_events_of_day);
+$stmtDayEvents->execute([':date' => $tab_even['e_dateEvenement']]);
+$events_of_day = $stmtDayEvents->fetchAll(PDO::FETCH_ASSOC);
+
+$index = 1;
+foreach ($events_of_day as $i => $e) {
+    if ($e['idEvenement'] == $get['idE']) {
+        $index = $i;
+        break;
+    }
+}
+
+$events_siblings = [$events_of_day[$index - 1] ?? null, $events_of_day[$index + 1] ?? null];
+// END PREV-NEXT NAVIGATION
+
+// Mise en page élargie de la fiche en desktop : elle occupe la colonne droite, vide sur
+// cette page. Tout (largeur du cadre, des illustrations, de la description, taille du
+// titre et du nom du lieu, bouton « précédent ») est piloté par la classe
+// .vevent-experimental dans desktop.css, donc trivialement réversible : d'abord réservée
+// aux administrateurs le temps de valider l'essai, elle est désormais posée pour tous.
+// La même classe pilote aussi, sous 450px, l'habillage de la description autour de la
+// colonne des images (palier en fin de section « evenement » dans mobile.css).
+
+include("../_header.inc.php");
+?>
+
+<main id="contenu" class="colonne vevent vevent-experimental">
+
+    <?php if (!empty($_SESSION['evenement-edit_flash_msg'])) :
+        HtmlShrink::msgOk($_SESSION['evenement-edit_flash_msg']);
+        unset($_SESSION['evenement-edit_flash_msg']);
+    endif; ?>
+
+    <header id="entete_contenu" style="margin-bottom:-0.8em">
+
+        <div id="entete_contenu_titre" <?php if ($tab_even['e_dateEvenement'] < $glo_auj) { echo ' class="ancien"'; } ?>>
+            <?php // la catégorie visible, et non celle de la base : la fiche est publique ?>
+            <span class="category"><?= sanitizeForHtml($translator->get("event-category-" . EventCategory::visible($tab_even['e_genre'], EventCategory::isEnabled()))); ?></span>, <a href="/index.php?courant=<?= $tab_even['e_dateEvenement'] ?>"><abbr class="dtstart" title="<?= sanitizeForHtml(EvenementRenderer::dtstartIso($tab_even['e_dateEvenement'], $tab_even['e_horaire_debut'])) ?>"><?= DateHelper::isoToFr($tab_even['e_dateEvenement'], 'annee') ?></abbr></a>
+        </div>
+
+        <?php if (0) : // !empty($events_siblings[0]) ?>
+            <div class="entete_contenu_navigation"><a href="/event/evenement.php?idE=<?= $events_siblings[0]['idEvenement'] ?>" rel="prev nofollow"><span class="event-navig-link"><span class="nav_titre"><?= sanitizeForHtml($events_siblings[0]['titre']) ?></span> - <?= sanitizeForHtml($events_siblings[0]['lieu_nom']) ?>&nbsp;<i class="fa fa-arrow-up"></i></span></a></div>
+        <?php endif; ?>
+        <div class="spacer"></div>
+
+    </header>
+
+
+    <?php // Deux listes distinctes : les actions ouvertes à tous, puis celles réservées aux
+          // connectés. Empilées en mobile, remises sur une seule ligne en desktop. ?>
+    <nav class="menus_actions_evenement">
+        <ul class="menu_actions_evenement menu_actions_evenement--public">
+            <?= Ladecadanse\EvenementCalendarRenderer::renderMenuHtml($tab_even, $site_full_url) ?>
+            <li><?= Ladecadanse\EvenementRenderer::favoriteButtonHtml((int) $get['idE'], label: 'Favori') ?></li>
+        </ul>
+
+        <?php if ($isMembreConnecte || $isPersonneAllowedToEdit) : ?>
+            <ul class="menu_actions_evenement menu_actions_evenement--connecte">
+                <?php if ($isMembreConnecte) : ?>
+                    <li><a href="/event/send.php?action=share&idE=<?= (int) $get['idE'] ?>"><?= $icone['envoi_email'] ?>&nbsp;Envoyer à un ami</a></li>
+                <?php endif; ?>
+                <?php if ($isPersonneAllowedToEdit) : ?>
+                    <li><a href="/event/copy.php?idE=<?= (int) $get['idE'] ?>"><?= $iconeCopier ?>&nbsp;Copier vers d'autres dates</a></li>
+                    <?php if ($canEditEvenement) : ?>
+                        <li><a href="/evenement-edit.php?action=editer&amp;idE=<?= (int) $get['idE'] ?>"><?= $iconeEditer ?>&nbsp;Modifier</a></li>
+                    <?php endif; ?>
+                    <?php if ($tab_even['e_statut'] != 'inactif' && isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= UserLevel::SUPERADMIN) : ?>
+                        <li><?= EvenementRenderer::unpublishLinkHtml((int) $get['idE'], $icone['depublier'] . '&nbsp;Dépublier', EvenementRenderer::UNPUBLISH_THEN_RELOAD) ?></li>
+                    <?php endif; ?>
+                <?php endif; ?>
+            </ul>
+        <?php endif; ?>
+    </nav>
+
+    <article id="evenement">
+
+        <header class="titre">
+
+            <h1 class="left summary"><?= Ladecadanse\EvenementRenderer::titreSelonStatutHtml($tab_even['e_titre'], $tab_even['e_statut'], $isPersonneAllowedToEdit) ?></h1>
+
+            <div class="right location vcard">
+
+                <div class="fn org"><?= Lieu::getLinkNameHtml($even_lieu['nom'], $even_lieu['idLieu'], $even_lieu['salle']) ?></div>
+
+                <ul style="list-style-type: none;">
+                    <li class="adr">
+                        <?= sanitizeForHtml(HtmlShrink::adresseCompacteSelonContexte($even_lieu['region'], $even_lieu['localite'], $even_lieu['quartier'], $even_lieu['adresse'])); ?>
+                    </li>
+                    <?php if (!empty((float) $even_lieu['lat']) && !empty((float) $even_lieu['lng'])) : ?>
+                        <li>
+                            <a href="#" class="dropdown map-dropdown-link" data-target="plan"><?= $icone['plan'] ?>&nbsp;Voir sur le plan&nbsp;<i class="fa fa-caret-down fa-lg" aria-hidden="true"></i></a>
+                        </li>
+                    <?php endif; ?>
+                    <?php if (!empty($even_lieu['url'])) : ?>
+                        <li><?= WebLink::html($even_lieu['url'], iconeParDefaut: 'fa-globe') ?>
+                        <?php if ($tab_even['e_idLieu'] == 13) : // exception pour idLieu=13 (Le Rez - Usine) ?>
+                            <a href="https://rez-usine.ch" class="url" rel="external" target="_blank">rez-usine.ch</a><br>
+                            <a href="http://www.ptrnet.ch" class="url" rel="external" target="_blank">ptrnet.ch</a>
+                        <?php endif; ?>
+                        </li>
+                    <?php endif; ?>
+                </ul>
+            </div>
+            <div class="spacer"></div>
+
+            <?php if (!empty((float) $even_lieu['lat']) && !empty((float) $even_lieu['lng'])) : ?>
+                <div id="plan" style="display:none">
+                    <div id="lieu-map-infowindow" style="display:none"><?= sanitizeForHtml($even_lieu['nom']) ?></div>
+                    <div id="lieu-map" data-lat="<?= $even_lieu['lat'] ?>" data-lng="<?= $even_lieu['lng'] ?>"></div>
+                </div>
+            <?php endif; ?>
+        </header>
+
+        <figure id="illustrations">
+            <?= Ladecadanse\EvenementRenderer::mainFigureHtml($tab_even['e_flyer'], $tab_even['e_image'], $tab_even['e_titre']) ?>
+                <?php if ($tab_even['e_flyer'] != '' && $tab_even['e_image'] != '' ) : ?>
+                <br><br>
+                <a href="<?= $assets->get(Evenement::getAssetPath(Evenement::getFilePath($tab_even['e_image']))) ?>" class="magnific-popup"><img src="<?= $assets->get(Evenement::getAssetPath(Evenement::getFilePath($tab_even['e_image']))) ?>" alt="Illustration pour cet événement" width="160" /></a>
+                <?php endif; ?>
+        </figure>
+
+        <div id="description">
+            <p class="description"><?= Text::lnAndUrlToHtml($tab_even['e_description']) ?></p>
+            <?php if (!empty($tab_even['e_ref'])) : ?>
+                <?php if (!empty($tab_even['e_description'])) : ?><hr><?php endif; ?>
+                <ul class="references left" style="margin:10px 0">
+                    <?= Ladecadanse\EvenementRenderer::getRefListHtml($tab_even['e_ref']) ?>
+                </ul>
+             <?php endif; ?>
+
+            <?php if (!empty($tab_even_orgas)): ?>
+                <?= Organisateur::getListLinkedHtml($tab_even_orgas) ?>
+            <?php endif; ?>
+            <div class="spacer"></div>
+        </div>
+
+        <div id="pratique">
+            <table class="left" >
+                <tr>
+                    <th scope="row"><i class="fa fa-clock-o fa-lg" aria-label="Horaires"></i></th>
+                    <td><?php
+                        // le repère de temporalité à la suite de l'horaire, le jour de l'événement
+                        $even_time_status = EvenementRenderer::timeStatusOfTheDay($tab_even);
+                        echo '<strong>' . EvenementRenderer::scheduleHtml(EvenementRenderer::schedulesToHhMm($tab_even['e_horaire_debut'], $tab_even['e_horaire_fin'], $tab_even['e_dateEvenement']), $even_time_status) . '</strong>';
+                        echo EvenementRenderer::timeStatusHtml($even_time_status, onItsOwnLine: false);
+                        ?>
+                        <br /><?= sanitizeForHtml($tab_even['e_horaire_complement']) ?></td>
+                </tr>
+                <?php if (!empty($tab_even['e_prix'])) : ?>
+                <tr>
+                    <th scope="row"><i class="fa fa-money fa-lg" aria-label="Prix"></i></th><td><?= sanitizeForHtml($tab_even['e_prix']) ?></td>
+                </tr>
+                <?php endif; ?>
+                <?php if (!empty($tab_even['e_prelocations'])) : ?>
+                <tr>
+                    <th scope="row"><i class="fa fa-ticket fa-lg" aria-label="Billets"></i></th><td><?= Text::lnAndUrlToHtml($tab_even['e_prelocations']) ?></td>
+                </tr>
+                <?php endif; ?>
+            </table>
+            <div class="spacer"></div>
+        </div>
+        <!-- Fin pratique -->
+
+        <footer id="auteur">
+            <a class="signaler" href="/event/send.php?action=report&idE=<?= (int) $get['idE'] ?>"><i class="fa fa-flag-o fa-lg"></i>&nbsp;Signaler une erreur</a> Ajouté <?php echo ((!empty($signature_auteur)) ? "par&nbsp;" : "") . $signature_auteur ?> le&nbsp;<?= DateHelper::isoToFr($tab_even['e_dateAjout'], 'annee', showDayOfWeek: false) ?>
+            <?php if (isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= UserLevel::ADMIN && !empty($tab_even['e_idPersonne'])) : ?><a href="/user/dashboard.php?idP=<?= (int) $tab_even['e_idPersonne'] ?>" title="Fiche de l'auteur" aria-label="Fiche de l'auteur"><?= $icone['personne'] ?></a><?php endif; ?>
+        </footer> <!-- auteur -->
+
+    </article>
+
+    <?php if (!empty($events_siblings[1])) : ?>
+    <div id="footer_navigation">
+        <div class="entete_contenu_navigation" style="float:left">
+            <a href="/event/evenement.php?idE=<?= (int)$events_siblings[1]['idEvenement'] ?>" rel="next nofollow"><span class="event-navig-link"><i class="fa fa-arrow-down" style="font-size: 1.2em;"></i>&nbsp;Événement suivant&nbsp;:&nbsp;<i><?= sanitizeForHtml($events_siblings[1]['titre']) ?></i></span></a>
+        </div>
+        <div class="spacer"><!-- --></div>
+    </div>
+    <?php endif; ?>
+
+    <div class="spacer"><!-- --></div>
+</main>
+
+<div id="colonne_gauche" class="colonne">
+    <?php
+    $get['courant'] = $tab_even['e_dateEvenement'];
+    include("../event/_navigation_calendrier.inc.php");
+    ?>
+</div>
+
+<div class="spacer"><!-- --></div>
+
+<?php
+include("../_footer.inc.php");
+?>

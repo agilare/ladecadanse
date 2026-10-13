@@ -1,0 +1,548 @@
+<?php
+// declare(strict_types=1);
+/*
+ * @package ladecadanse
+ * @copyright  Copyright (c) 2007 - 2025 Michel Gaudry <michel@ladecadanse.ch>
+ * @license    AGPL License; see LICENSE file for details.
+ */
+
+global $connector;
+require_once("../app/bootstrap.php");
+
+use Ladecadanse\Evenement;
+use Ladecadanse\EventCategory;
+use Ladecadanse\FeatureFlag;
+use Ladecadanse\HtmlShrink;
+use Ladecadanse\Lieu;
+use Ladecadanse\UserLevel;
+use Ladecadanse\Utils\DateHelper;
+use Ladecadanse\Utils\QueryParamValidator;
+
+// used for meta tags, opengraph
+$page_titre = "Agenda de sorties à Genève, Nyon et alentours";
+$page_description = "Agenda des événements culturels à Genève, Nyon et France voisine : concerts, soirées, expos, théâtre, cinéma. Le programme du jour et des jours à venir";
+
+// filter & overwrite date
+$get['courant'] = $glo_auj_6h;
+$courant_demande = QueryParamValidator::jourFromQuery($_GET['courant'] ?? '', '');
+if ($courant_demande !== '')
+{
+    $get['courant'] = $courant_demande;
+    $date_fr = DateHelper::isoToFr($get['courant'], 'annee', html: false);
+    $page_titre = "Sorties du " . $date_fr . " à Genève et alentours";
+    $page_description = "Le programme des événements culturels du " . $date_fr . " à Genève, Nyon et France voisine : concerts, soirées, expos, théâtre, cinéma";
+}
+
+$is_courant_today = (empty($get['courant']) || $get['courant'] == $glo_auj_6h);
+
+$page_url = $is_courant_today ? "" : HtmlShrink::urlCanonique($page_url, ['courant' => $get['courant']]);
+
+$day_label = !$is_courant_today ? DateHelper::isoToFr($get['courant']) : "aujourd'hui";
+
+$courant_year = (new DateTime($get['courant']))->format("Y");
+
+// USELESS REGION FILTERING DISABLED: list($regionInClause, $regionInParams) = $connectorPdo->buildInClause('e.region', $glo_regions_coverage[$_SESSION['region']]);
+
+$sql_even_in_status_and_region_clause = " e.statut NOT IN ('inactif', 'propose') "; // USELESS REGION FILTERING DISABLED: AND ($regionInClause OR FIND_IN_SET (:region, loc.regions_covered)) ";
+// USELESS REGION FILTERING DISABLED: $sql_even_in_status_and_region_params = array_merge([':region' => $_SESSION['region']], $regionInParams);
+
+if (isset($_GET['tri_agenda']) && in_array($_GET['tri_agenda'], $tab_tri_agenda))
+{
+   $_SESSION['user_prefs_agenda_order'] = $_GET['tri_agenda'];
+   setcookie("ladecadanse_tri_agenda", $_GET['tri_agenda'], [
+       'expires' => time() + 2_592_000, // 30 jours : préférence durable, pas liée à une visite comme ladecadanse_region
+       'path' => '/',
+       'secure' => true,
+       'httponly' => true,
+       'samesite' => 'Lax'
+   ]);
+}
+
+/*
+ * La catégorie « cours » est en préversion réservée aux administrateurs (drapeau
+ * d'app/env.php). Pour tous les autres, un événement classé « cours » se range et
+ * s'affiche en « divers » : le repli se joue en SQL (première colonne et rang de tri, plus
+ * bas), l'affichage des libellés dans Evenement::categoryLabel().
+ */
+$new_categories_enabled = EventCategory::isEnabled();
+$new_categories_preview = EventCategory::isInPreview();
+$selectable_categories = EventCategory::selectable($new_categories_enabled);
+
+$valid_genre_tabs = array_merge(['tous'], array_keys($selectable_categories));
+if (isset($_GET['genre_tab']) && in_array($_GET['genre_tab'], $valid_genre_tabs, true)) {
+    $_SESSION['user_prefs_agenda_genre'] = $_GET['genre_tab'];
+}
+$current_genre_tab = $_SESSION['user_prefs_agenda_genre']; // initialisé dans bootstrap.php
+
+// Un filtre mémorisé que la liste ne propose plus — drapeau rétrogradé, ou session
+// d'administrateur survivant à sa déconnexion — bloquerait la page : son onglet n'étant
+// plus rendu, le lien « retirer le filtre » n'existe plus, et l'agenda ne dirait plus que
+// « Pas d'événement … prévu ce jour ». On revient à « tous » plutôt qu'au repli : personne
+// n'a demandé les divers.
+if (!in_array($current_genre_tab, $valid_genre_tabs, true))
+{
+    $current_genre_tab = 'tous';
+    $_SESSION['user_prefs_agenda_genre'] = 'tous';
+}
+
+/*
+ * Repères de temporalité (#51) : où en est chaque événement par rapport à l'heure de chargement.
+ * La journée du jour seulement — sur une journée passée toutes les cartes diraient « terminé »,
+ * sur une journée à venir elles compteraient en jours. Commandé par un drapeau (app/env.php),
+ * dont l'état 'preview' le réservait aux administrateurs, et posé sur le seul agenda — les autres
+ * listes d'événements n'affichent pas de repère. La mise en page du bloc « pratique », elle, est
+ * celle de toutes les cartes du site, quelle que soit la date.
+ */
+$time_status_enabled = $is_courant_today && FeatureFlag::estActive('EVENT_TIME_STATUS_ENABLED');
+$time_status_preview = $is_courant_today && FeatureFlag::estEnPreview('EVENT_TIME_STATUS_ENABLED');
+
+// determine wether adding to url query courant and order
+$default_tri_agenda = reset($tab_tri_agenda);
+$url_courant_param = (!$is_courant_today ? '&amp;courant=' . sanitizeForHtml($get['courant']) : '');
+$url_tri_param = ($_SESSION['user_prefs_agenda_order'] !== $default_tri_agenda ? '&amp;tri_agenda=' . sanitizeForHtml($_SESSION['user_prefs_agenda_order']) : '');
+$url_filter_params = $url_courant_param . $url_tri_param;
+
+// build SQL
+$is_chronological_order = ($_SESSION['user_prefs_agenda_order'] == "horaire_debut");
+$sql_user_prefs_agenda_order = "e." . $_SESSION['user_prefs_agenda_order'] . " DESC";
+if ($is_chronological_order)
+{
+	$sql_user_prefs_agenda_order = "e.horaire_debut ASC";
+}
+
+/*
+ * Le repli des catégories en préversion se joue ici, en deux endroits solidaires.
+ *
+ * La première colonne d'abord : PDO::FETCH_GROUP groupe dessus, si bien que les cours
+ * tombent dans le groupe « divers » sans une ligne de PHP. FETCH_GROUP la consomme et la
+ * retire des lignes : la catégorie brute est donc lue une seconde fois, sous l'alias
+ * e_genre que les autres listes donnent aussi, pour les repères de temporalité (#51) qui
+ * traitent à part les séances de ciné et de théâtre.
+ *
+ * Le rang de tri ensuite, et c'est lui qui fait tenir l'ensemble : hors préversion,
+ * « cours » partage le rang de « divers ». Le tri secondaire — dernier ajouté, ou heure de
+ * début — porte donc sur les deux catégories ensemble. Avec deux rangs distincts, MySQL
+ * rendrait tous les divers puis tous les cours, et le groupe fusionné repartirait en
+ * arrière au milieu, séparateurs horaires compris.
+ */
+$sql_visible_category = EventCategory::sqlVisibleCategory('e.genre', $new_categories_enabled);
+$sql_category_order = EventCategory::sqlOrderByCategory('e.genre', $new_categories_enabled);
+
+$sql_events_today_in_region_order_by_category = "SELECT
+
+  $sql_visible_category AS category_group,
+  e.genre AS e_genre,
+  e.idEvenement AS e_idEvenement,
+  e.titre AS e_titre,
+  e.statut AS e_statut,
+  e.idPersonne AS e_idPersonne,
+  e.dateEvenement AS e_dateEvenement,
+  e.ref AS e_ref,
+  e.flyer AS e_flyer,
+  e.image AS e_image,
+  e.description AS e_description,
+  e.horaire_debut AS e_horaire_debut,
+  e.horaire_fin AS e_horaire_fin,
+  e.horaire_complement AS e_horaire_complement,
+  e.prix AS e_prix,
+  e.prelocations AS e_prelocations,
+  e.idLieu AS e_idLieu,
+  e.idSalle AS e_idSalle,
+  e.nomLieu AS e_nomLieu,
+  e.adresse AS e_adresse,
+  e.quartier AS e_quartier,
+  loc.localite AS e_localite,
+  e.region AS e_region,
+  e.urlLieu AS e_urlLieu,
+
+  l.nom AS l_nom,
+  l.adresse AS l_adresse,
+  l.quartier AS l_quartier,
+  l.URL AS l_URL,
+  lloc.localite AS lloc_localite,
+  l.region AS l_region,
+  s.nom AS s_nom
+
+FROM evenement e
+JOIN localite loc ON e.localite_id = loc.id
+LEFT JOIN lieu l ON e.idLieu = l.idLieu
+LEFT JOIN localite lloc ON l.localite_id = lloc.id
+LEFT JOIN salle s ON e.idSalle = s.idSalle
+WHERE
+  e.dateEvenement = :date AND $sql_even_in_status_and_region_clause
+ORDER BY
+  $sql_category_order,
+  $sql_user_prefs_agenda_order  LIMIT 300";
+
+$stmt = $connectorPdo->prepare($sql_events_today_in_region_order_by_category);
+$stmt->execute(array_merge([':date' => $get['courant']])); // USELESS REGION FILTERING DISABLED: , $sql_even_in_status_and_region_params
+$tab_events_today_in_region_by_category = $stmt->fetchAll(PDO::FETCH_GROUP);
+$count_events_today_in_region = $stmt->rowCount();
+
+// from all events ids build an array of their organizers
+$tab_events_today_ids = [];
+foreach ($tab_events_today_in_region_by_category as $g => $events) {
+    $tab_events_today_ids = [...$tab_events_today_ids, ...array_column($events, 'e_idEvenement')];
+}
+
+$tab_events_today_in_region_orgas = [];
+if (!empty($tab_events_today_ids))
+{
+    list($eventsTodayIdsInClause, $eventsTodayIdsParams) = $connectorPdo->buildInClause('eo.idEvenement', $tab_events_today_ids);
+
+    $stmt = $connectorPdo->prepare("SELECT
+
+    eo.idEvenement AS idEvenement,
+    o.idOrganisateur AS o_idOrganisateur,
+    o.nom AS o_nom,
+    o.URL AS o_URL
+
+    FROM evenement_organisateur eo
+    JOIN organisateur o ON eo.idOrganisateur = o.idOrganisateur AND $eventsTodayIdsInClause
+    ORDER BY nom DESC");
+
+    $stmt->execute($eventsTodayIdsParams);
+
+    $tab_orgas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    foreach ($tab_orgas AS $eo)
+    {
+        $tab_events_today_in_region_orgas[$eo['idEvenement']][] = [
+            'idOrganisateur' => $eo['o_idOrganisateur'],
+            'nom' => $eo['o_nom'],
+            'url' => $eo['o_URL']
+        ];
+    }
+}
+
+// ten latest events added
+$stmt = $connectorPdo->prepare("SELECT
+
+  e.idEvenement as e_idEvenement,
+  e.titre as e_titre,
+  e.dateEvenement as e_dateEvenement,
+  e.dateAjout as e_dateAjout,
+  e.idLieu AS e_idLieu,
+  e.idSalle AS e_idSalle,
+  e.nomLieu AS e_nomLieu,
+  e.adresse AS e_adresse,
+  e.quartier AS e_quartier,
+  loc.localite AS e_localite,
+  e.urlLieu AS e_urlLieu,
+  e.flyer e_flyer,
+  e.image e_image,
+  e.statut e_statut,
+
+  l.nom AS l_nom,
+  l.adresse AS l_adresse,
+  l.quartier AS l_quartier,
+  l.URL AS l_URL    ,
+  lloc.localite AS lloc_localite,
+
+  s.nom AS s_nom
+
+FROM evenement e
+LEFT JOIN lieu l ON e.idLieu = l.idLieu
+LEFT JOIN localite lloc ON l.localite_id = lloc.id
+LEFT JOIN salle s ON e.idSalle = s.idSalle
+JOIN localite loc on e.localite_id = loc.id
+WHERE $sql_even_in_status_and_region_clause ORDER BY e.dateAjout DESC LIMIT 0, 12");
+
+$stmt->execute(); // $sql_even_in_status_and_region_params
+
+$tab_ten_latest_events_in_region = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+$stmt = null;
+
+$date_prev = (new DateTime($get['courant']))->modify('-1 day')->format("Y-m-d");
+$date_next = (new DateTime($get['courant']))->modify('+1 day')->format("Y-m-d");
+
+include("_header.inc.php");
+?>
+
+<main id="contenu" class="colonne">
+
+    <?php
+    // header banners & flash messages
+
+    // announcements set by the admin in app/env.php; repli sur [] tant que la constante
+    // n'y a pas été ajoutée (fichier hors dépôt, non déployé)
+    $home_banners = defined('HOME_BANNERS') ? HOME_BANNERS : [];
+    foreach ($home_banners as $banner) :
+        if (($banner['audience'] ?? 'tous') === 'contributeurs' && !$authorization->checkGroup(UserLevel::ACTOR)) {
+            continue;
+        }
+        $banner_type = in_array($banner['type'] ?? '', ['info', 'warn', 'danger'], true) ? $banner['type'] : 'info';
+        // la date identifie l'annonce : la changer fait réapparaître la bannière chez ceux qui l'avaient fermée
+        $banner_key = 'home_banner_' . ($banner['date'] ?? '');
+        ?>
+        <div class="alert-<?= $banner_type ?> js-home-banner" data-banner-key="<?= sanitizeForHtml($banner_key) ?>">
+            <h2><?= $banner['titre'] ?? '' ?></h2><a href="#" class="js-alert-close-btn close" aria-label="Fermer">&times;</a>
+            <p><?= $banner['contenu'] ?? '' ?></p>
+        </div>
+    <?php endforeach; ?>
+    <?php if (!empty($home_banners)) : ?>
+        <?php // exécuté avant l'affichage : une bannière déjà fermée ne clignote pas ; sans JS elle reste visible ?>
+        <script nonce="<?= CSP_NONCE ?>">
+            document.querySelectorAll('.js-home-banner').forEach(function (banner) {
+                try {
+                    if (localStorage.getItem(banner.dataset.bannerKey) !== null) {
+                        banner.hidden = true;
+                    }
+                } catch (e) {}
+            });
+        </script>
+    <?php endif; ?>
+
+    <?php if (!empty($_SESSION['evenement-edit_flash_msg'])) :
+        HtmlShrink::msgOk($_SESSION['evenement-edit_flash_msg']);
+        unset($_SESSION['evenement-edit_flash_msg']);
+    endif; ?>
+
+    <header id="entete_contenu">
+        <hgroup>
+            <h1 class="accueil"><?= ucfirst((string) DateHelper::isoToFr($get['courant'])); ?><sup style="font-size:0.7em;color:#999"><?= $count_events_today_in_region ?></sup>
+                <?php if ($courant_year !== date("Y")) { echo (int) $courant_year; } ?>
+                <?php if ($is_courant_today) : ?>
+                <small><span>Aujourd’hui</span>&nbsp;<a href="<?= SITE_CANONICAL_URL ?>/event/rss.php?type=evenements_auj" title="Flux RSS des événements du jour" class="desktop"><i class="fa fa-rss fa-lg"></i></a></small><?php endif; ?>
+            </h1>
+        </hgroup>
+        <ul class="entete_contenu_navigation">
+            <li><a href="index.php?courant=<?= sanitizeForHtml($date_prev) ?>" rel="prev nofollow" title="Jour précédent" aria-label="Jour précédent"><?= $iconePrecedent ?></a></li><li><a href="index.php?courant=<?= sanitizeForHtml($date_next) ?>" rel="next nofollow"><?php if ($is_courant_today) : ?>Demain<?php else : ?>Lendemain<?php endif; ?> <?= $iconeSuivant ?></a></li>
+        </ul>
+    </header>
+
+
+    <div id="prochains_evenements">
+
+        <?php
+        // Une préversion qui ne se signale pas se croit livrée : l'administrateur qui l'éprouve
+        // doit voir qu'il est seul à disposer de ces repères, et à quelle heure ils sont figés.
+        if ($time_status_preview) : ?>
+            <p class="even-time-preview"><i class="fa fa-clock-o" aria-hidden="true"></i>&nbsp;Repères de temporalité en préversion : vous seuls, administrateurs, les voyez</p>
+        <?php endif; ?>
+
+
+        <?php
+        // Même raison : sans cette ligne, un administrateur classe en « cours » sans savoir
+        // que le public lit toujours « divers ». La seconde phrase est la plus utile.
+        if ($new_categories_preview) : ?>
+            <p class="even-time-preview"><i class="fa fa-filter" aria-hidden="true"></i>&nbsp;« Cours/ateliers/stages » est en préversion : vous seuls, administrateurs, voyez cette catégorie. Pour tous les autres, un cours reste rangé dans « divers ».</p>
+        <?php endif; ?>
+
+        <?php
+        /* les deux menus de filtre (genres, favoris) forment la barre collante, cf.
+           #agenda_filters dans index.css ; le menu de tri suit, hors de la barre. Les jours
+           sans événement, il n'y a rien à filtrer : le menu de tri s'affiche seul. */
+        $show_genre_tabs = $count_events_today_in_region > 0;
+        ?>
+        <?php if ($show_genre_tabs) : ?>
+        <div id="agenda_filters">
+
+            <nav id="genre_tab_navigation" aria-label="Filtrer par genre">
+                <ul>
+                    <li><i class="fa fa-filter fa-lg" aria-hidden="true"></i></li>
+                    <?php foreach ($selectable_categories as $key => $label) : ?>
+                        <?php if (!array_key_exists($key, $tab_events_today_in_region_by_category) && $current_genre_tab !== $key) : continue; endif; ?>
+                        <?php if ($current_genre_tab === $key) : ?>
+                            <li class="ici" aria-current="true"><a href="index.php?genre_tab=tous<?= $url_filter_params ?>" title="Retirer le filtre" aria-label="Retirer le filtre <?= ucfirst($label) ?>" rel="nofollow"><?= ucfirst($label) ?>&nbsp;<i class="fa fa-times" aria-hidden="true"></i></a></li>
+                        <?php else : ?>
+                            <li><a href="index.php?genre_tab=<?= urlencode($key) ?><?= $url_filter_params ?>" rel="nofollow"><?= ucfirst($label) ?></a></li>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+                </ul>
+            </nav>
+
+            <?php include("_favoris_filter_navigation.inc.php"); ?>
+
+        </div>
+        <?php endif; ?>
+
+        <div id="order_navigation">
+            <ul>
+                <li style="margin-right:5px"><i class="fa fa-sort-amount-asc" aria-hidden="true"></i></li><li style="margin-right:2px"><a href="index.php?tri_agenda=dateAjout<?= $url_courant_param ?>" class="<?php if ($_SESSION['user_prefs_agenda_order'] == 'dateAjout') : ?>selected<?php endif; ?>" rel="nofollow">Dernier ajouté</a></li><li><a href="index.php?tri_agenda=horaire_debut<?= $url_courant_param ?>" class="<?php if ($_SESSION['user_prefs_agenda_order'] == 'horaire_debut') : ?>selected<?php endif; ?>" rel="nofollow">Heure de début</a></li>
+            </ul>
+            <div class="spacer"></div>
+        </div>
+
+        <?php
+        if ($count_events_today_in_region == 0)
+        {
+            HtmlShrink::msgInfo("Pas d’événement prévu ce jour");
+        }
+        elseif ($current_genre_tab !== 'tous' && !array_key_exists($current_genre_tab, $tab_events_today_in_region_by_category))
+        {
+            HtmlShrink::msgInfo("Pas d’événement « " . ucfirst(Evenement::categoryLabel($current_genre_tab)) . " » prévu ce jour");
+        }
+
+        $genres_today = array_keys($tab_events_today_in_region_by_category);
+        foreach ($tab_events_today_in_region_by_category as $genre => $tab_genre_events)
+        {
+            if ($current_genre_tab !== 'tous' && $genre !== $current_genre_tab) {
+                continue;
+            }
+            ?>
+                <section class="genre">
+
+                    <header class="genre-titre">
+                        <h2 id="<?= EventCategory::anchor(Evenement::categoryLabel($genre)); ?>"><?= ucfirst(Evenement::categoryLabel($genre)); ?></h2>
+                        <?php if ($current_genre_tab === 'tous') : ?>
+                            <?php $genre_proch = next($genres_today); ?>
+                            <?php if (isset($tab_events_today_in_region_by_category[$genre_proch])) : ?>
+                                <a class="genre-jump" href="#<?= EventCategory::anchor(Evenement::categoryLabel($genre_proch)); ?>"><?= Evenement::categoryLabel($genre_proch); ?>&nbsp;<i class="fa fa-long-arrow-down"></i></a>
+                            <?php endif; ?>
+                        <?php endif; ?>
+                        <div class="spacer"></div>
+                    </header>
+
+                    <?php
+                    $events_collection = new Ladecadanse\EvenementWithSeparatorCollection($tab_genre_events, $is_chronological_order, $get['courant']);
+
+                    foreach ($events_collection as $event)
+                    {
+                        ?>
+
+                        <?php if ($separator = $event->getSeparator()) : ?>
+                            <p class="rappel_date"><?= $separator->getLabel($day_label, Evenement::categoryLabel($genre)); ?></p>
+                        <?php endif; ?>
+
+                        <?php
+                        $tab_even = $event->getEvent();
+                        echo Ladecadanse\EvenementRenderer::eventShortArticleHtml($tab_even, $tab_events_today_in_region_orgas, $time_status_enabled);
+                        ?>
+
+                            <footer class="edition">
+
+                                <ul class="menu_action">
+                                    <li><a href="/event/send.php?action=report&idE=<?= (int) $tab_even['e_idEvenement']; ?>" class="signaler" title="Signaler une erreur"><i class="fa fa-flag-o fa-lg"></i></a></li>
+                                    <?= Ladecadanse\EvenementCalendarRenderer::renderMenuHtml($tab_even, $site_full_url, compact: true) ?>
+                                    <li><?= Ladecadanse\EvenementRenderer::favoriteButtonHtml((int) $tab_even['e_idEvenement']) ?></li>
+                                </ul>
+
+                                <?php if ($authorization->isPersonneAllowedToEditEvenement($_SESSION, $tab_even)) : ?>
+                                <?php /* Icônes seules, comme dans les listes de lieu, d'organisateur et de
+                                          recherche : le libellé passe dans l'infobulle et dans l'alt de l'image.
+                                          Les classes action_* sont donc retirées — elles portaient la même
+                                          icône en fond, qui ferait doublon avec celle-ci. */ ?>
+                                <ul class="menu_edition">
+                                    <li>
+                                        <a href="/event/copy.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>" title="Copier vers d'autres dates"><?= $iconeCopier ?></a>
+                                    </li>
+                                    <?php if ($authorization->isPersonneAllowedToEditEvenementNow($_SESSION, $tab_even)) : ?>
+                                    <li>
+                                        <a href="/evenement-edit.php?action=editer&amp;idE=<?= (int) $tab_even['e_idEvenement'] ?>" title="Modifier l'événement"><?= $iconeEditer ?></a>
+                                    </li>
+                                    <?php endif; ?>
+                                    <li>
+                                        <?= Ladecadanse\EvenementRenderer::unpublishLinkHtml((int) $tab_even['e_idEvenement'], $icone['depublier']) ?>
+                                    </li>
+                                    <?php if ($authorization->isPersonneAllowedToManageEvenement($_SESSION, $tab_even)) : ?>
+                                    <li>
+                                        <a href="/user/dashboard.php?idP=<?= (int) $tab_even['e_idPersonne'] ?>" title="Fiche de l'auteur" aria-label="Fiche de l'auteur"><?= $icone['personne'] ?></a>
+                                    </li>
+                                    <?php endif; ?>
+                                </ul>
+                                <?php endif; ?>
+
+                            </footer> <!-- fin edition -->
+
+                            <div class="spacer"></div>
+
+                        </article> <!-- evenement -->
+
+                    <div class="spacer"></div>
+
+                <?php } // foreach events ?>
+
+            </section>
+
+       <?php } // foreach ?>
+
+        <ul class="entete_contenu_navigation">
+            <li><a href="index.php?courant=<?= sanitizeForHtml($date_prev) ?>" rel="prev nofollow" title="Jour précédent" aria-label="Jour précédent"><?= $iconePrecedent ?></a></li><li><a href="index.php?courant=<?= sanitizeForHtml($date_next) ?>" rel="next nofollow"><?= ucfirst(DateHelper::isoToFr($date_next, 'tout', false)).$iconeSuivant ?></a></li>
+        </ul>
+
+
+    </div> <!-- prochains_evenements -->
+
+</main>
+
+
+<aside id="colonne_gauche" class="colonne">
+
+    <?php include("event/_navigation_calendrier.inc.php"); ?>
+    <?php if ($is_courant_today) : ?>
+        <div class="secondaire">
+
+            <ul class="autour">
+                <li><a href="https://www.facebook.com/ladecadanse" aria-label="Page Facebook" style="font-size:1em" target="_blank"><i class="fa fa-facebook fa-2x" aria-hidden="true"></i></a></li>
+                <li style="margin-left:10px;font-size:1em"><a href="https://github.com/agilare/ladecadanse/" aria-label="Watch agilare/ladecadanse on GitHub" target="_blank"><i class="fa fa-github fa-2x" aria-hidden="true"></i></a>
+                </li>
+                <li id="faireundon_btn" class="clear_mobile_important"><a href="/articles/faireUnDon.php">Faire un don</a>
+                </li>
+            </ul>
+
+            <section class="partenaires">
+                <h2>Partenaires</h2>
+                <ul class="autour">
+                    <li><a href="https://olivedks.ch/" target="_blank"><img src="/web/content/debout-les-braves-s.jpg" alt="Debout les braves - Visions de la scène genevoise et d'ailleurs" title="Debout les braves - Visions de la scène genevoise et d'ailleurs" width="150" height="63"></a></li>
+                    <li><a href="https://culture-accessible.ch/" target="_blank"><img src="/web/content/culture-accessible-geneve.svg" alt="Culture accessible Genève" width="150" height="46"></a></li>
+                    <li><a href="https://epic-magazine.ch/" target="_blank"><img src="/web/content/EPIC_noir.png" alt="EPIC Magazine" width="150" height="94"></a></li>
+                    <li><a href="https://www.radiovostok.ch/" target="_blank"><img src="/web/content/radio-vostok.png" alt="Radio Vostok" width="150" height="90"></a></li>
+                    <li><a href="https://www.darksite.ch/" target="_blank"><img src="/web/content/darksite.png" alt="Darksite" width="150" height="43"></a></li>
+                </ul>
+            </section>
+        </div>
+    <?php endif; ?>
+</aside>
+<!-- Fin Colonnegauche -->
+
+
+<aside id="colonne_droite" class="colonne">
+
+    <?php if ($is_courant_today) : ?>
+
+        <section id="latests_events" class="secondaire">
+
+            <span class="lien_rss"><a href="<?= SITE_CANONICAL_URL ?>/event/rss.php?type=evenements_ajoutes" aria-label="Flux RSS des derniers événements"><i class="fa fa-rss fa-lg"></i></a></span>
+
+            <h2>Derniers événements ajoutés</h2>
+
+            <div id="derniers_evenements">
+
+                <?php
+                foreach ($tab_ten_latest_events_in_region as $tab_even)
+                {
+                    $even_lieu = Evenement::getLieu($tab_even);
+                    ?>
+                    <div class="dernier_evenement">
+
+                        <figure class="flyer"><?= Ladecadanse\EvenementRenderer::mainFigureHtml($tab_even['e_flyer'], $tab_even['e_image'], $tab_even['e_titre'], 60) ?></figure>
+
+                        <div class="texte">
+                            <h3><a href="/event/evenement.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>"><?= Ladecadanse\EvenementRenderer::titreSelonStatutHtml($tab_even['e_titre'], $tab_even['e_statut']) ?></a></h3>
+                            <span><?= Lieu::getLinkNameHtml($even_lieu['nom'], $even_lieu['idLieu'], $even_lieu['salle']) ?></span>
+
+                            <p>le&nbsp;<a href="index.php?courant=<?= urlencode($tab_even['e_dateEvenement']) ?>"><?= DateHelper::isoToFr($tab_even['e_dateEvenement']) ?></a></p>
+                        </div>
+                    </div> <!-- dernier_evenement -->
+
+                    <div class="spacer"><!-- --></div>
+
+                <?php
+                }
+                ?>
+
+            </div> <!-- Fin derniers_evenements -->
+
+        </section> <!-- fin dernieres -->
+
+    <?php endif; ?>
+
+</aside> <!-- Fin colonne_droite -->
+
+<div class="spacer"><!-- --></div>
+
+<?php
+include("_footer.inc.php");
+?>
