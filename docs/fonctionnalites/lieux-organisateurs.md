@@ -69,10 +69,10 @@ image et leurs colonnes à relire, puis n'écrivent plus que ce qui leur est pro
 et leur SQL d'écriture.
 
 Le champ image lui-même — l'envoi, l'aperçu, la case « Supprimer » — est un seul gabarit,
-[`_champ_image.inc.php`](../../_champ_image.inc.php), inclus quatre fois entre les deux formulaires.
+[`_champ_image.inc.php`](../../pages/_champ_image.inc.php), inclus quatre fois entre les deux formulaires.
 
 Un refus applicatif passe de même par un seul gabarit,
-[`_erreur_http.inc.php`](../../_erreur_http.inc.php) : statut HTTP, puis le message dans la page du
+[`_erreur_http.inc.php`](../../pages/_erreur_http.inc.php) : statut HTTP, puis le message dans la page du
 site. À ne pas confondre avec `misc/error.php`, qui est l'`ErrorDocument` d'Apache et répond aux
 erreurs du serveur, pas à un refus que l'application vient de décider.
 
@@ -177,7 +177,7 @@ un champ vide. Une saisie non numérique est réaffichée telle quelle à côté
 ## Salles d'un lieu
 
 `lieu/salle-edit.php` ajoute et modifie les salles. Ses refus passent par
-[`_erreur_http.inc.php`](../../_erreur_http.inc.php), comme ceux des fiches : **400** pour une action
+[`_erreur_http.inc.php`](../../pages/_erreur_http.inc.php), comme ceux des fiches : **400** pour une action
 inconnue ou une modification sans salle désignée, **403** pour un refus, **404** pour un `idS`
 inconnu.
 
@@ -222,7 +222,7 @@ liste a disparu avec ce contrôle, et le titre nomme le lieu — « Ajouter une 
 Noir », la préposition étant celle de la fiche.
 
 Un refus répond **403**, une requête sans lieu, sans type ou sans auteur désigné **400**, un lieu
-ou un texte inconnu **404** — rendus par [`_erreur_http.inc.php`](../../_erreur_http.inc.php), comme
+ou un texte inconnu **404** — rendus par [`_erreur_http.inc.php`](../../pages/_erreur_http.inc.php), comme
 sur les trois formulaires de fiche.
 
 ### Un texte par personne et par lieu
