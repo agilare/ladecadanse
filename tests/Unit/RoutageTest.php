@@ -66,7 +66,40 @@ final class RoutageTest extends Unit
     public function testRobotsTxtPasseParLeScriptQuiCalculeLesAnnees(): void
     {
         $this->assertStringContainsString('RewriteRule ^robots\.txt$ /misc/robots.php [L]', $this->routage());
-        $this->assertFileExists(__DIR__ . '/../../misc/robots.php');
+        $this->assertFileExists(__DIR__ . '/../../pages/misc/robots.php');
+    }
+
+    /**
+     * Les pages vivent sous `pages/` mais leurs URL n'en portent pas la trace : trois règles
+     * font la jonction. Qu'une seule disparaisse et tout le site répond 404 — sans que rien
+     * ne le signale à qui teste sous `php -S`, qui ignore le `.htaccess`.
+     */
+    public function testLesPagesSontServiesDepuisPages(): void
+    {
+        $routage = str_replace("\r\n", "\n", $this->routage());
+
+        $this->assertStringContainsString(
+            "RewriteCond %{THE_REQUEST} ^\\S+\\s/pages/ [NC]\nRewriteRule ^pages/(.*)$ /$1 [R=301,L]",
+            $routage,
+            "La 301 de /pages/… vers l'URL propre manque : chaque page aurait deux adresses"
+        );
+        $this->assertStringContainsString('RewriteRule ^$ pages/index.php [L]', $routage, "L'accueil n'est plus servi");
+        $this->assertStringContainsString(
+            "RewriteCond $1 !^pages/\nRewriteCond %{REQUEST_FILENAME} !-f\nRewriteRule ^(.+?\\.php)(/.*)?$ pages/$1$2 [L]",
+            $routage,
+            'La réécriture vers pages/ manque : toutes les pages répondraient 404'
+        );
+        $this->assertFileExists(__DIR__ . '/../../pages/index.php');
+    }
+
+    /** Une cible d'ErrorDocument absente ne lève rien : Apache sert sa propre page */
+    public function testLesErrorDocumentVisentLeFichierSousPages(): void
+    {
+        $erreurs = (string) file_get_contents(__DIR__ . '/../../htaccess/60-erreurs.conf');
+
+        $this->assertSame(4, substr_count($erreurs, 'ErrorDocument'));
+        $this->assertSame(4, substr_count($erreurs, ' /pages/misc/error.php'));
+        $this->assertFileExists(__DIR__ . '/../../pages/misc/error.php');
     }
 
     /**
@@ -78,7 +111,7 @@ final class RoutageTest extends Unit
         foreach (self::REDIRECTIONS as $nouvelle)
         {
             $this->assertFileExists(
-                __DIR__ . '/../..' . $nouvelle,
+                __DIR__ . '/../../pages' . $nouvelle,
                 "La cible $nouvelle d'une redirection 301 n'existe pas"
             );
         }

@@ -66,22 +66,10 @@ parameters:
             identifier: variable.undefined
             reportUnmatched: false
             paths:
-                - admin
                 - app
-                - articles
-                - event
-                - lieu
-                - misc
-                - organisateur
-                - user
-                - _champ_image.inc.php
-                - _footer.inc.php
-                - _header.inc.php
-                - _texte_repliable.inc.php
+                - pages
                 - annuaire-membres.php
                 - evenement-edit.php
-                - favoris.php
-                - index.php
     # Les chemins d'allowIn sont résolus depuis la racine du dépôt, quel que
     # soit le répertoire courant au lancement (%rootDir% = vendor/phpstan/phpstan)
     filesRootDir: %rootDir%/../../..
