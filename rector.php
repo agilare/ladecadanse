@@ -18,17 +18,11 @@ return RectorConfig::configure()
     // jeter — plus de 5 minutes, au-delà du timeout de composer. Y ajouter
     // les nouveaux répertoires de code.
     ->withPaths([
-        __DIR__ . '/admin',
         __DIR__ . '/app',
-        __DIR__ . '/articles',
-        __DIR__ . '/event',
         __DIR__ . '/librairies',
-        __DIR__ . '/lieu',
-        __DIR__ . '/misc',
-        __DIR__ . '/organisateur',
-        __DIR__ . '/user',
+        __DIR__ . '/pages',
     ])
-    // les pages restées à la racine : index.php, evenement-edit.php, _header.inc.php…
+    // les pages restées à la racine : evenement-edit.php, annuaire-membres.php
     ->withRootFiles()
     ->withFileExtensions(['php'])
     // à côté du cache de PHPStan ; var/ est ignoré par git

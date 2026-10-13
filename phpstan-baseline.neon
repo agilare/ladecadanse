@@ -26,7 +26,7 @@ parameters:
 			message: '#^If condition is always false\.$#'
 			identifier: if.alwaysFalse
 			count: 1
-			path: event/evenement.php
+			path: pages/event/evenement.php
 
 		-
 			message: '#^Variable \$image in empty\(\) always exists and is not falsy\.$#'
@@ -111,11 +111,11 @@ parameters:
 			message: '#^If condition is always false\.$#'
 			identifier: if.alwaysFalse
 			count: 1
-			path: lieu/lieux.php
+			path: pages/lieu/lieux.php
 
 		-
 			message: '#^Calling sha1\(\) is forbidden, use hash\(\) with at least SHA\-256 for secure hash, or password_hash\(\) for passwords\.$#'
 			identifier: disallowed.function
 			count: 2
-			path: user/pwd-edit.php
+			path: pages/user/pwd-edit.php
 
