@@ -10,7 +10,7 @@ use Ladecadanse\UserLevel;
 $mouseless_allowed = isset($_SESSION['Sgroupe']) && (int) $_SESSION['Sgroupe'] <= UserLevel::ADMIN;
 
 $page_url_absolue = isset($page_url) ? sanitizeForHtml(SITE_CANONICAL_URL . '/' . $page_url) : null;
-$page_titre_complet = sanitizeForHtml($page_titre) . " — La décadanse";
+$page_titre_complet = sanitizeForHtml($page_titre) . " - La décadanse";
 ?>
 
 <!doctype html>
