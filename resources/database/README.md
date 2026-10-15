@@ -67,7 +67,8 @@ avertissement « did not result in any SQL statements », attendu. Les suivantes
   efface des données — le dit par `throwIrreversibleMigrationException()`, plutôt que par un inverse
   approximatif ;
 - `getDescription()` en une ligne, et en tête de classe ce qu'il faut savoir avant de la passer en
-  production : verrou sur une table MyISAM, ordre par rapport à la mise en ligne du code ;
+  production : durée et verrou d'un `ALTER` qui reconstruit une grande table, ordre par rapport à la
+  mise en ligne du code ;
 - la décrire dans [UPGRADE.md](../../UPGRADE.md), sous la version en préparation.
 
 Rien d'autre : ni report dans `ladecadanse.sql`, ni ligne à ajouter à un tableau.
@@ -82,9 +83,8 @@ nouvelle n'en a pas besoin — le registre suffit.
 
 ### Pas de transaction
 
-Sur MariaDB, chaque instruction DDL (`ALTER`, `CREATE`…) valide implicitement la transaction en cours,
-et la plupart des tables sont en MyISAM, qui n'en connaît pas. Une migration de trois `ALTER` dont le
-troisième échoue laisse les deux premiers en place. Depuis la 10.6, un `ALTER` interrompu est annulé en
+Sur MariaDB, chaque instruction DDL (`ALTER`, `CREATE`…) valide implicitement la transaction en cours.
+Une migration de trois `ALTER` dont le troisième échoue laisse les deux premiers en place. Depuis la 10.6, un `ALTER` interrompu est annulé en
 entier (DDL atomique), mais rien au-delà. D'où des migrations courtes, et un `mysqldump` avant la
 production.
 

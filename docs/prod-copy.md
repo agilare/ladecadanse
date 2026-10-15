@@ -214,8 +214,8 @@ déplace dans un `web/uploads-backup-<horodatage>/`, sans rien supprimer.
 `htaccess/50-routage.conf` redirigeant le chemin plat vers elles en 301. Le script demande les deux
 emplacements et laisse `--ignore-failed-read` écarter celui qui n'existe pas.
 
-**Pas de transaction** : les tables visées sont en MyISAM. Une exécution interrompue laisse une
-copie partielle, que le `--force` de la suivante rattrape.
+**Pas de transaction** : le script n'en ouvre pas. Une exécution interrompue laisse une copie
+partielle, que le `--force` de la suivante rattrape.
 
 **Le schéma est celui de la production**, lu par `SHOW CREATE TABLE`, et non celui de
 `resources/database/ladecadanse.sql`. Ce dernier est figé à la 3.13.0 et ne sert qu'à une

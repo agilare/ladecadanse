@@ -9,7 +9,7 @@ use Doctrine\Migrations\AbstractMigration;
 
 /**
  * À décrire : ce qui change, pourquoi, et ce qu'il faut savoir avant de la passer en production
- * (verrou sur une table MyISAM, dépendance au code livré avec…).
+ * (durée et verrou d'un ALTER sur une grande table, dépendance au code livré avec…).
  */
 final class <className> extends AbstractMigration
 {

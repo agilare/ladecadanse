@@ -577,8 +577,8 @@ if ($phase !== 'files') {
     if ($stmt !== false && $stmt->fetchColumn() !== false && !$force) {
         abandonner(
             "la base « {$baseDest} » existe déjà.\n"
-            . "         --force la supprime et la recrée ; sans transaction possible sur\n"
-            . "         du MyISAM, c'est aussi ce qui rattrape une exécution interrompue."
+            . "         --force la supprime et la recrée ; la copie n'étant pas transactionnelle,\n"
+            . "         c'est aussi ce qui rattrape une exécution interrompue."
         );
     }
 

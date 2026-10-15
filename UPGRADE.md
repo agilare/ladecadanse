@@ -4,6 +4,34 @@ Ce fichier liste les opérations à effectuer lors du passage à une nouvelle ve
 
 Les versions sont listées de la plus récente à la plus ancienne.
 
+## 3.14.0 (non publié)
+
+### Base de données
+
+**Les douze tables encore en MyISAM passent en InnoDB** (#228) : `affiliation`, `descriptionlieu`, `evenement`, `evenement_organisateur`, `lieu`, `lieu_organisateur`, `organisateur`, `personne`, `personne_evenement`, `personne_organisateur`, `salle` et `user_reset_requests`, par la migration `Version20261009201202`. Verrouillage par ligne au lieu de la table entière, tables qui se réparent seules après une coupure, `mysqldump --single-transaction` possible, et le préalable des transactions (#161) et des clés étrangères (#164), qui ne sont pas posées ici. Les index FULLTEXT d'`evenement` et de `lieu` suivent dans la conversion.
+
+**Indépendante du code, mais à passer dans une fenêtre de maintenance** (mode maintenance : voir [docs/config-serveur.md](docs/config-serveur.md)) : un changement de moteur reconstruit chaque table par copie, verrouillée en écriture pendant ce temps, et `evenement` en représente l'essentiel — 322 000 lignes en production au 10.10.2026, contre 53 000 pour `evenement_organisateur`, 7 700 pour `personne` et 760 pour `lieu`. Sur une copie locale de 5 000 événements, `evenement` s'est convertie en une seconde et chaque autre table en un dixième ; pour la production, compter d'une à quelques minutes, le temps de reconstruire les trois index FULLTEXT, celui de `description` surtout. La migration ne convertit que les tables encore en MyISAM, les plus petites d'abord : interrompue sur `evenement`, elle n'est pas enregistrée et le passage suivant ne reprend que celle-là. Rien n'est à redéployer.
+
+Avant, par le tunnel SSH ([docs/prod-copy.md](docs/prod-copy.md)) :
+
+1. `mysqldump` complet de la base ;
+2. un relevé, pour la place et pour la comparaison d'après. InnoDB n'occupe pas forcément davantage : les petites tables grossissent (16 Ko par index au minimum), mais la reconstruction compacte une table MyISAM fragmentée par des années d'écritures — sur une copie locale de 5 000 événements, les douze tables sont passées de 16 à 10 Mo :
+
+    ```sql
+    SELECT TABLE_NAME, ENGINE, TABLE_ROWS, ROUND((DATA_LENGTH + INDEX_LENGTH) / 1048576) AS mb, AUTO_INCREMENT
+      FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() ORDER BY TABLE_NAME;
+    SHOW VARIABLES WHERE Variable_name IN ('ft_min_word_len', 'innodb_ft_min_token_size', 'max_statement_time');
+    ```
+
+    `max_statement_time` doit valoir 0, sans quoi le serveur tuerait un `ALTER` trop long. Les deux variables FULLTEXT valent 3 en production : la longueur minimale des mots cherchables ne change pas avec le moteur ;
+3. `LADECADANSE_DB=prod composer db:migrate -- --dry-run` montre les `ALTER` qui vont passer, puis `LADECADANSE_DB=prod composer db:migrate`. Ouvrir le tunnel avec `-o ServerAliveInterval=30` pour qu'il tienne le temps de la copie d'`evenement`. Si la connexion tombe malgré tout, l'`ALTER` en cours peut aller à son terme côté serveur sans que Doctrine l'apprenne : attendre qu'il disparaisse de `SHOW PROCESSLIST`, puis relancer `db:migrate`, qui ne reprend que les tables encore en MyISAM.
+
+Après : le même relevé — douze tables en `InnoDB`, `AUTO_INCREMENT` d'`evenement` inchangé (la reconstruction le préserve, vérifié sur 10.11.15 ; le compteur InnoDB est persistant depuis MariaDB 10.2.4), `SHOW INDEX FROM evenement WHERE Index_type = 'FULLTEXT'` en rend trois et `lieu` un — puis une recherche sur le site.
+
+Ce qui change pour les visiteurs : le classement des résultats de recherche, InnoDB calculant la pertinence autrement (BM25). Le nombre de résultats reste le même, à la liste de mots vides du serveur près — InnoDB en ignore 36, MyISAM en ignorait quelque 540, en anglais. Côté administration, le total en tête de [admin/events.php](admin/events.php) parcourt désormais un index au lieu de lire un compteur de lignes.
+
+`prod-copy` ramènera InnoDB au prochain passage : la copie reprend les moteurs de la production.
+
 ## 3.13.0 (non publié)
 
 ### Base de données

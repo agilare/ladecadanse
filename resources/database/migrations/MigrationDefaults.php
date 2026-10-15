@@ -13,9 +13,9 @@ namespace Ladecadanse\Migrations;
 trait MigrationDefaults
 {
     /**
-     * Sur MariaDB, chaque instruction DDL valide implicitement la transaction, et la plupart des
-     * tables sont en MyISAM : une transaction ne défait rien. Doctrine, s'il en ouvrait une, se
-     * plaindrait en fin de migration de ne plus la trouver.
+     * Sur MariaDB, chaque instruction DDL valide implicitement la transaction : une transaction
+     * ne défait rien. Doctrine, s'il en ouvrait une, se plaindrait en fin de migration de ne plus
+     * la trouver.
      */
     public function isTransactional(): bool
     {
