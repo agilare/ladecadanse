@@ -1,6 +1,6 @@
 # Changelog
 
-## [3.13.0] - Unreleased
+## [3.13.0] - 2026-10-15
 
 Upgrade steps (redirects, side effects) : [UPGRADE.md](UPGRADE.md).
 Feature documentation : [docs/](docs/).
