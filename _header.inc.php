@@ -10,6 +10,7 @@ use Ladecadanse\UserLevel;
 $mouseless_allowed = isset($_SESSION['Sgroupe']) && (int) $_SESSION['Sgroupe'] <= UserLevel::ADMIN;
 
 $page_url_absolue = isset($page_url) ? sanitizeForHtml(SITE_CANONICAL_URL . '/' . $page_url) : null;
+$page_titre_complet = sanitizeForHtml($page_titre) . " - La décadanse";
 ?>
 
 <!doctype html>
@@ -28,7 +29,7 @@ $page_url_absolue = isset($page_url) ? sanitizeForHtml(SITE_CANONICAL_URL . '/' 
         <meta name="robots" content="noindex, nofollow">
     <?php endif; ?>
 
-	<title><?= (ENV !== 'prod') ? '['.ENV.'] ' : '' ?><?= ($nom_page == 'index' && !isset($_GET['courant']) ? "La décadanse — " : "") . sanitizeForHtml($page_titre) . (!($nom_page === 'index' && isset($_GET['courant'])) ? " — La décadanse" : ""); ?></title>
+	<title><?= (ENV !== 'prod') ? '['.ENV.'] ' : '' ?><?= $page_titre_complet ?></title>
 
     <meta name="description" content="<?= sanitizeForHtml(($page_description ?? '')) ?>">
 
@@ -36,7 +37,7 @@ $page_url_absolue = isset($page_url) ? sanitizeForHtml(SITE_CANONICAL_URL . '/' 
     <meta property="og:logo" content="/web/interface/apple-icon-152x152.png">
     <meta property="og:type" content="article">
     <meta property="og:locale" content="fr">
-    <meta property="og:title" content="<?= sanitizeForHtml($page_titre) . " — La décadanse"; ?>">
+    <meta property="og:title" content="<?= $page_titre_complet ?>">
     <meta property="og:description" content="<?= sanitizeForHtml(($page_description ?? '')) ?>">
     <?php if ($page_url_absolue !== null) : ?>
         <link rel="canonical" href="<?= $page_url_absolue ?>">
