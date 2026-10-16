@@ -44,6 +44,15 @@ if (!$authorization->checkGroup(UserLevel::MEMBER)) {
 */
 $showsContributorFields = isset($_SESSION['Sgroupe']) && (int) $_SESSION['Sgroupe'] <= UserLevel::ACTOR;
 
+/*
+* Rattachements à un lieu ou à un organisateur : ils donnent le droit de modifier ses fiches et
+* ses événements. Un ACTOR les voit, en lecture seule, mais ne les choisit pas — sans quoi il
+* se rattacherait à n'importe quelle fiche en postant « affiliations[]=orga:123 ». Hors de ce
+* drapeau, $_POST['affiliations'] est ignoré et rien n'est écrit dans affiliation ni
+* personne_organisateur.
+*/
+$canEditAffiliations = isset($_SESSION['Sgroupe']) && (int) $_SESSION['Sgroupe'] <= UserLevel::AUTHOR;
+
 $get['action'] = "ajouter";
 
 /*
@@ -133,6 +142,29 @@ $idP_succes = 0;
 */
 $formulaire_poste = isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok';
 
+/**
+ * Rattachements d'un compte : son lieu (table affiliation) et ses organisateurs.
+ *
+ * Relus avant puis après l'enregistrement. C'est leur différence qui décide d'un
+ * e-mail d'information, et non la seule case cochée — enregistrer une autre partie
+ * du formulaire n'a pas à prévenir de rattachements inchangés. Le couple
+ * DELETE/INSERT de personne_organisateur, plus bas, efface l'état antérieur : il
+ * faut donc le lire avant. Relus aussi à la place du POST pour qui ne peut pas les choisir.
+ *
+ * @return array{lieu: int, organisateurs: int[]}
+ */
+$lireAffiliations = function (int $idP) use ($connectorPdo): array
+{
+	$stmt = $connectorPdo->prepare("SELECT idAffiliation FROM affiliation WHERE idPersonne = ? AND genre = 'lieu'");
+	$stmt->execute([$idP]);
+	$lieu = (int) $stmt->fetchColumn();
+
+	$stmt = $connectorPdo->prepare("SELECT idOrganisateur FROM personne_organisateur WHERE idPersonne = ? ORDER BY idOrganisateur");
+	$stmt->execute([$idP]);
+
+	return ['lieu' => $lieu, 'organisateurs' => array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN))];
+};
+
 if ($formulaire_poste)
 {
 	foreach ($champs as $c => $v)
@@ -158,7 +190,15 @@ if ($formulaire_poste)
 	$champs['organisateurs'] = [];
 	$lieux_postes = 0;
 
-	foreach ((array) ($_POST['affiliations'] ?? []) as $valeur)
+	// Les rattachements en base, pour le ré-affichage en lecture seule ; ils ne sont pas réécrits.
+	if (!$canEditAffiliations && isset($get['idP']))
+	{
+		$affiliations_stockees = $lireAffiliations((int) $get['idP']);
+		$champs['lieu'] = $affiliations_stockees['lieu'] > 0 ? $affiliations_stockees['lieu'] : '';
+		$champs['organisateurs'] = $affiliations_stockees['organisateurs'];
+	}
+
+	foreach ($canEditAffiliations ? (array) ($_POST['affiliations'] ?? []) : [] as $valeur)
 	{
 		if (!is_scalar($valeur))
 		{
@@ -375,29 +415,6 @@ if ($formulaire_poste)
 
 	if ($verif->nbErreurs() === 0)
 	{
-		/**
-		 * Rattachements d'un compte : son lieu (table affiliation) et ses organisateurs.
-		 *
-		 * Relus avant puis après l'enregistrement. C'est leur différence qui décide d'un
-		 * e-mail d'information, et non la seule case cochée — enregistrer une autre partie
-		 * du formulaire n'a pas à prévenir de rattachements inchangés. Le couple
-		 * DELETE/INSERT de personne_organisateur, plus bas, efface l'état antérieur : il
-		 * faut donc le lire avant.
-		 *
-		 * @return array{lieu: int, organisateurs: int[]}
-		 */
-		$lireAffiliations = function (int $idP) use ($connectorPdo): array
-		{
-			$stmt = $connectorPdo->prepare("SELECT idAffiliation FROM affiliation WHERE idPersonne = ? AND genre = 'lieu'");
-			$stmt->execute([$idP]);
-			$lieu = (int) $stmt->fetchColumn();
-
-			$stmt = $connectorPdo->prepare("SELECT idOrganisateur FROM personne_organisateur WHERE idPersonne = ? ORDER BY idOrganisateur");
-			$stmt->execute([$idP]);
-
-			return ['lieu' => $lieu, 'organisateurs' => array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN))];
-		};
-
 		$affiliations_avant = ['lieu' => 0, 'organisateurs' => []];
 
 		if ($get['action'] == 'update' && isset($get['idP']))
@@ -522,9 +539,8 @@ if ($formulaire_poste)
 			$connector->query("SELECT idPersonne FROM affiliation WHERE idPersonne=" . (int) $get['idP']);
 
             //si la nouvelle affiliation est un lieu, update s'il en a déjà une, insert sinon
-            // le fieldset Affiliation(s) n'a pas été rendu : le select des lieux n'a rien posté,
-            // et l'affiliation en base n'est pas à reprendre sur ce silence
-			if ($showsContributorFields && !empty($champs['lieu']))
+            // sans droit sur les rattachements, $champs['lieu'] est celui de la base : rien à réécrire
+			if ($canEditAffiliations && !empty($champs['lieu']))
             {
 				if ($connector->getAffectedRows() > 0)
 				{
@@ -547,7 +563,7 @@ if ($formulaire_poste)
 			}
 			else
 			{
-				if ($showsContributorFields && $connector->getAffectedRows() > 0)
+				if ($canEditAffiliations && $connector->getAffectedRows() > 0)
 				{
 					$connector->query("DELETE FROM affiliation WHERE idPersonne=" . (int) $get['idP'] . " AND genre='lieu'");
                 }
@@ -595,7 +611,7 @@ if ($formulaire_poste)
 
                 // Le couple efface-puis-réinsère ne vaut que si le select des organisateurs a
                 // été rendu : sans lui, le POST n'en porte aucun et l'effacement serait sec.
-                if ($showsContributorFields)
+                if ($canEditAffiliations)
                 {
                     $sqld = "DELETE FROM personne_organisateur WHERE idPersonne=" . (int) $get['idP'];
                     $connector->query($sqld);
@@ -613,9 +629,10 @@ if ($formulaire_poste)
 		 * Les deux gardes d'autrefois — un tableau, des valeurs non vides — n'ont plus d'objet :
 		 * l'analyse du POST ne retient que des entiers positifs préfixés « orga: ». Le tableau
 		 * peut en revanche être vide, tout désélectionner ne postant rien, et le DELETE qui
-		 * précède a alors suffi.
+		 * précède a alors suffi. Sans droit sur les rattachements, le tableau vient de la base
+		 * et rien n'a été effacé : le réinsérer doublerait les lignes.
 		 */
-		if ($champs['organisateurs'] !== [])
+		if ($canEditAffiliations && $champs['organisateurs'] !== [])
 		{
 			foreach ($champs['organisateurs'] as $idOrg)
 			{
@@ -924,7 +941,7 @@ if ($verif->nbErreurs() > 0)
             }
         }
 
-        if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= UserLevel::AUTHOR)) {
+        if ($canEditAffiliations) {
         ?>
         <p>
             <label for="affiliations">Lieu et organisateurs</label>
@@ -1013,10 +1030,6 @@ if ($verif->nbErreurs() > 0)
                     <ul style="float:left;margin:0;padding-left:1em;">
                         <li>
                             <a href="/lieu/lieu.php?idL=<?= (int)$champs['lieu']; ?>"><?= sanitizeForHtml($lieuTrouve['nom']); ?></a>
-                            <?php /* Le rattachement se reposte tel quel, sous la forme qu'attend le
-                                     traitement : cette personne ne peut pas le changer, mais son
-                                     enregistrement effacerait les lignes qu'aucun champ ne porte. */ ?>
-                            <input type="hidden" name="affiliations[]" value="lieu:<?= (int) $champs['lieu'] ?>">
                         </li>
                     </ul><div class="spacer"><!-- --></div>
                 </p>
@@ -1043,7 +1056,6 @@ if ($verif->nbErreurs() > 0)
                     {
                         ?>
                     <li><a href="/organisateur/organisateur.php?idO=<?= (int)$tab['idOrganisateur']; ?>"><?= sanitizeForHtml($tab['nom']); ?></a>
-                                            <input type="hidden" name="affiliations[]" value="orga:<?= (int) $tab['idOrganisateur'] ?>">
                         </li>
                         <?php
                     }
