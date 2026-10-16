@@ -166,4 +166,24 @@ final class HtmlShrinkTest extends Unit
             HtmlShrink::getAdminNoteCell('Contact : la programmatrice')
         );
     }
+
+    /**
+     * Une valeur de la query string ne doit ni ajouter de paramètre ni sortir de l'attribut href.
+     */
+    public function testQueryStringEncodesValuesForUrlAndHtml(): void
+    {
+        $this->assertSame(
+            'mots=a%26tri%3Dx%22%3E%3Cb%3E%20y&amp;periode=ancien',
+            HtmlShrink::urlQueryArrayToString(['mots' => 'a&tri=x"><b> y', 'periode' => 'ancien', 'page' => 2], 'page')
+        );
+    }
+
+    public function testQueryStringSkipsExcludedAndNonScalarValues(): void
+    {
+        $this->assertSame(
+            'tri=date',
+            HtmlShrink::urlQueryArrayToString(['tri' => 'date', 'page' => 2, 'years' => 2020, 'x' => ['a']], ['page', 'years'])
+        );
+        $this->assertSame('', HtmlShrink::urlQueryArrayToString(['page' => 2], 'page'));
+    }
 }

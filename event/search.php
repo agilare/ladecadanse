@@ -37,11 +37,9 @@ if (!empty($_GET['periode']) && QueryParamValidator::isAcceptedUrlQueryValue($_G
     $get['periode'] = $_GET['periode'];
 }
 
-$get['years'] ??= date('Y');
-if (isset($_GET['years']))
-{
-   $get['years'] = $_GET['years'];
-}
+$get['years'] = filter_var(is_scalar($_GET['years'] ?? null) ? $_GET['years'] : null, FILTER_VALIDATE_INT, [
+    'options' => ['min_range' => Evenement::AGENDA_START_YEAR, 'max_range' => (int) date('Y'), 'default' => (int) date('Y')],
+]);
 
 //dump($_GET);
 $get['page'] = QueryParamValidator::pageFromQuery($_GET['page'] ?? '');
@@ -191,8 +189,6 @@ $logger->info('[recherche]', ['mots' => $get['mots'], 'nb' => $all_results_nb, '
 // keep the search field filled with the submitted terms (see _header.inc.php)
 $page_recherche_mots = $get['mots'];
 
-// prepare mots to be transmitted in links (menus order, filters, pagination)
-$get['mots'] = urlencode($get['mots']);
 
 $page_titre = "Rechercher des événements " . strtolower($tab_menu_periodes[$get['periode']]) . " par " . strtolower($tab_menu_tri[$get['tri']]);
 $page_url = null;
@@ -223,7 +219,7 @@ $agenda_years = range((int)date("Y"), Evenement::AGENDA_START_YEAR);
 
         <?php if ($get['periode'] == 'ancien') : ?>
             <form id="years-select" action="" method="get">
-                <input type="hidden" name="mots" value="<?= sanitizeForHtml(urldecode($get['mots'])) ?>">
+                <input type="hidden" name="mots" value="<?= sanitizeForHtml($get['mots']) ?>">
                 <input type="hidden" name="periode" value="<?= sanitizeForHtml($get['periode']) ?>">
                 <input type="hidden" name="tri" value="<?= sanitizeForHtml($get['tri']) ?>">
                 <label for="years">Année</label>
