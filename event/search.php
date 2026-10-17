@@ -50,10 +50,8 @@ $results_per_page = 20;
 
 $mots = trim($get['mots']);
 $mots = mb_strtolower($mots);
-$mots = str_replace("+", " ", $mots);
-$mots = str_replace("\"", " ",$mots);
-$mots = str_replace(",", " ", $mots);
-$mots = str_replace(":", " ", $mots);
+// FULLTEXT boolean operators (and "%") make InnoDB reject the whole query with a syntax error
+$mots = str_replace(["+", "-", "<", ">", "(", ")", "~", "*", "@", "\"", "%", ",", ":"], " ", $mots);
 $tab_tous_mots = explode(" ", $mots);
 
 $mots_vides = file(__ROOT__ . "/resources/stopwords_list.txt", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) ?: [];
