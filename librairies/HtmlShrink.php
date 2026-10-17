@@ -24,42 +24,27 @@ class HtmlShrink
      * plusieurs paramètres. Utilisée pour les liens de pagination et de tri,
      * qui doivent conserver les autres critères de la page courante.
      *
-     * Le résultat est échappé pour le HTML : il est destiné à un attribut href.
+     * Les valeurs sont encodées pour l'url (une valeur contenant "&" ou "=" ne
+     * peut pas injecter de paramètre), puis le tout est échappé pour le HTML :
+     * le résultat est destiné à un attribut href, paramètres séparés par "&amp;".
+     * Les valeurs doivent donc être passées brutes, pas déjà urlencodées.
      *
-     * Asymétrie connue : la branche "string" ignore les valeurs de type array,
-     * la branche "array" non (elle émettrait "param=Array" + un warning). Aucun
-     * appelant ne passe aujourd'hui de valeur array dans $get.
+     * Les valeurs non scalaires (tableaux, null) sont ignorées.
      *
      * @param array<string, mixed> $get
      * @param array<string>|string $sauf Nom(s) de paramètre(s) à exclure
      */
     public static function urlQueryArrayToString(array $get, array|string $sauf = ""): string
     {
-        $afficher = "";
+        $sauf = (array) $sauf;
 
-        if (!is_array($sauf))
-        {
-            foreach ($get as $nom => $valeur)
-            {
-                if ($nom != $sauf && !is_array($valeur))
-                {
-                    $afficher .= $nom . "=" . $valeur . "&";
-                }
-            }
-        }
-        else
-        {
-            foreach ($get as $nom => $valeur)
-            {
-                if (!in_array($nom, $sauf))
-                {
-                    $afficher .= $nom . "=" . $valeur . "&";
-                }
-            }
-        }
+        $params = array_filter(
+            $get,
+            fn ($valeur, $nom) => is_scalar($valeur) && !in_array($nom, $sauf, true),
+            ARRAY_FILTER_USE_BOTH
+        );
 
-        // -5 et non -1 : sanitizeForHtml() a transformé le "&" final en "&amp;"
-        return mb_substr(sanitizeForHtml($afficher), 0, -5);
+        return sanitizeForHtml(http_build_query($params, '', '&', PHP_QUERY_RFC3986));
     }
 
     /**

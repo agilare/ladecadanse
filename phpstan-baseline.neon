@@ -29,12 +29,6 @@ parameters:
 			path: event/evenement.php
 
 		-
-			message: '#^Offset ''years'' on array\{mots\: mixed, tri\: mixed, periode\: mixed\} on left side of \?\?\= does not exist\.$#'
-			identifier: nullCoalesce.offset
-			count: 1
-			path: event/search.php
-
-		-
 			message: '#^Variable \$image in empty\(\) always exists and is not falsy\.$#'
 			identifier: empty.variable
 			count: 1
