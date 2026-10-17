@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
+require_once __DIR__ . '/../app/env.php';
 require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../app/config.php';
 
 use Ladecadanse\Utils\RobotsTxt;
 
@@ -15,4 +17,4 @@ if ($robotsTxt === false)
 
 header('Content-Type: text/plain; charset=utf-8');
 
-echo RobotsTxt::withCourantWindow($robotsTxt, (int) date('Y'));
+echo RobotsTxt::withSitemap(RobotsTxt::withCourantWindow($robotsTxt, (int) date('Y')), SITE_CANONICAL_URL);
