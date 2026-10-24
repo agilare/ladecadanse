@@ -1,13 +1,4 @@
 <?php
-/**
- * Permet d'ajouter une personne ou de la modifier
- * Un admin peut tout modifier, un membre seulement son profile
- *
- * @category   modification d'une table de la base
- * @see personne.php, user/login.php
- * @author     Michel Gaudry <michel@ladecadanse.ch>
- */
-
 require_once("app/bootstrap.php");
 
 use Ladecadanse\EventCategory;
@@ -24,68 +15,71 @@ use Ladecadanse\Localite;
 use Ladecadanse\Personne;
 use Ladecadanse\UserSettings;
 
-// Tout compte modifie le sien, MEMBER (12) compris : sans quoi il n'aurait aucun moyen de
-// changer son mot de passe ni son e-mail, et le lien « Modifier » de sa fiche menait à un 403.
+// Tout compte modifie le sien, MEMBER (12) compris
 if (!$authorization->checkGroup(UserLevel::MEMBER)) {
     header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
     header("Location: /user/login.php");
     die();
 }
 
-/*
-* Ce que le formulaire expose au-delà du compte lui-même — affiliations, signature des
-* événements ajoutés, valeurs par défaut du formulaire d'ajout — ne parle qu'aux comptes qui
-* ajoutent des événements. Un MEMBER n'en ajoute pas : il ne voit que son identification, son
-* mot de passe et son e-mail.
-*
-* Le même drapeau commande le traitement : ces champs n'étant plus postés, la boucle de
-* l'UPDATE écrirait sinon leur valeur par défaut sur ce que porte la base, et les tables
-* affiliation et personne_organisateur seraient vidées de leurs lignes.
-*/
-$showsContributorFields = isset($_SESSION['Sgroupe']) && (int) $_SESSION['Sgroupe'] <= UserLevel::ACTOR;
+$get['action'] = QueryParamValidator::validateUrlQueryValue($_GET['action'] ?? 'ajouter', "enum", 1, $actions);
+$is_edit_mode = in_array($get['action'], ['editer', 'update'], true);
 
-/*
-* Rattachements à un lieu ou à un organisateur : ils donnent le droit de modifier ses fiches et
-* ses événements. Un ACTOR les voit, en lecture seule, mais ne les choisit pas — sans quoi il
-* se rattacherait à n'importe quelle fiche en postant « affiliations[]=orga:123 ». Hors de ce
-* drapeau, $_POST['affiliations'] est ignoré et rien n'est écrit dans affiliation ni
-* personne_organisateur.
-*/
-$canEditAffiliations = isset($_SESSION['Sgroupe']) && (int) $_SESSION['Sgroupe'] <= UserLevel::AUTHOR;
+$is_superadmin  = $_SESSION['Sgroupe'] == UserLevel::SUPERADMIN;
 
-$get['action'] = "ajouter";
-
-/*
-* Vérification et attribution des variables d'URL GET
-*/
 if (isset($_GET['idP']))
 {
-
 	$get['idP'] = QueryParamValidator::validateUrlQueryValue($_GET['idP'], "int", 1);
 }
 
-if (isset($_GET['action']))
+if (!$is_superadmin && (!$is_edit_mode || $_SESSION['SidPersonne'] != $get['idP']))
 {
-	$get['action'] = QueryParamValidator::validateUrlQueryValue($_GET['action'], "enum", 1, $actions);
-
-	if (($_GET['action'] == "ajouter" || $_GET['action'] == 'insert') && $_SESSION['Sgroupe'] > UserLevel::SUPERADMIN) {
-		HtmlShrink::msgErreur("Vous n'avez pas le droit d'ajouter une personne");
-		exit;
-	}
-	elseif (($get['action'] == "update" || $get['action'] == "editer") && $_SESSION['SidPersonne'] != $get['idP'] && $_SESSION['Sgroupe'] > UserLevel::SUPERADMIN) {
-		HtmlShrink::msgErreur("Vous n'avez pas le droit de modifier cette personne");
-		exit;
-	}
-
-}
-else
-{
-	echo "Vous devez faire une action";
-	exit;
+    $http_error = [403, 'Forbidden', "Vous n'avez pas les droit pour effectuer cette action"];
+    include(__DIR__ . "/_erreur_http.inc.php");
+    exit;
 }
 
-$page_titre = $get['action'] . " une personne";
-$extra_css = ["formulaires"];
+/*
+* flag pour l'affichage des champs et aussi leur traitement
+* MEMBER et + : identification, mot de passe, e-mail
+* ORGA et + : affiliations, signature des événements ajoutés, valeurs par défaut du formulaire d'ajout
+*/
+$areContributorFieldsEnabled = isset($_SESSION['Sgroupe']) && (int) $_SESSION['Sgroupe'] <= UserLevel::ACTOR;
+
+/**
+ * Rattachements d'un compte : son lieu (table affiliation) et ses organisateurs.
+ *
+ * Relus avant puis après l'enregistrement. C'est leur différence qui décide d'un
+ * e-mail d'information, et non la seule case cochée — enregistrer une autre partie
+ * du formulaire n'a pas à prévenir de rattachements inchangés. Le couple
+ * DELETE/INSERT de personne_organisateur, plus bas, efface l'état antérieur : il
+ * faut donc le lire avant. Relus aussi à la place du POST pour qui ne peut pas les choisir.
+ *
+ * @return array{lieu: int, organisateurs: int[]}
+ */
+$getUserAffiliationsIds = function (int $idP) use ($connectorPdo): array
+{
+	$stmt = $connectorPdo->prepare("SELECT idAffiliation FROM affiliation WHERE idPersonne = ? AND genre = 'lieu'");
+	$stmt->execute([$idP]);
+	$lieuId = (int) $stmt->fetchColumn();
+
+	$stmt = $connectorPdo->prepare("SELECT idOrganisateur FROM personne_organisateur WHERE idPersonne = ? ORDER BY idOrganisateur");
+	$stmt->execute([$idP]);
+
+	return ['lieu' => $lieuId, 'organisateurs' => array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN))];
+};
+
+/*
+* ACTOR and MEMBER : readonly (cannot select affiliations i.e. modify it), only AUTHORS can attach/remove affiliation
+*/
+$canEditAffiliations = isset($_SESSION['Sgroupe']) && (int) $_SESSION['Sgroupe'] <= UserLevel::AUTHOR;
+
+/*
+* Valeurs par défaut à l'ajout d'un événement (fieldset « Événements »).
+* La colonne n'est renseignée qu'en fin de validation, à partir de ces valeurs normalisées.
+*/
+$ev_defaults = UserSettings::eventNewDefaults(null);
+
 
 // =============================================================================
 // Traitement
@@ -113,59 +107,19 @@ $champs = [
 ];
 
 /*
-* Valeurs par défaut à l'ajout d'un événement (fieldset « Événements »).
-*
-* Volontairement tenues hors de $champs : les boucles qui construisent l'INSERT et l'UPDATE plus bas
-* écrivent une colonne par clé de $champs, et la boucle d'hydratation y recopie $_POST tel quel. Une
-* clé "settings" dans $champs reviendrait donc à écrire en base le JSON brut envoyé par le client.
-* La colonne n'est renseignée qu'en fin de validation, à partir de ces valeurs normalisées.
-*/
-$ev_defaults = UserSettings::eventNewDefaults(null);
-
-/*
 * Sorties du traitement, rendues plus bas une fois l'en-tête inclus.
 *
-* Les requêtes en échec ne peuvent plus s'annoncer au fil de l'eau : elles s'accumulent ici.
-* Le succès, lui, voyage en session jusqu'à user/dashboard.php — sauf si une de ces erreurs est survenue
-* en chemin, auquel cas la page reste affichée pour ne pas escamoter l'erreur.
+* Les requêtes en échec s'accumulent ici. Le succès, lui, voyage en session jusqu'à user/dashboard.php — sauf si
+* une de ces erreurs est survenue en chemin, auquel cas la page reste affichée
 */
 $erreurs_traitement = [];
 $message_succes = '';
 $idP_succes = 0;
 
-/*
-* Témoin du formulaire, posté quoi qu'il arrive.
-*
-* Un champ vidé, lui, ne poste plus rien (case décochée, select multiple entièrement
-* désélectionné) : sur son seul $_POST, « vidé au ré-affichage » est indiscernable de
-* « premier affichage ». Ce témoin les sépare.
-*/
-$formulaire_poste = isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok';
+$is_form_submitted = isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok';
 
-/**
- * Rattachements d'un compte : son lieu (table affiliation) et ses organisateurs.
- *
- * Relus avant puis après l'enregistrement. C'est leur différence qui décide d'un
- * e-mail d'information, et non la seule case cochée — enregistrer une autre partie
- * du formulaire n'a pas à prévenir de rattachements inchangés. Le couple
- * DELETE/INSERT de personne_organisateur, plus bas, efface l'état antérieur : il
- * faut donc le lire avant. Relus aussi à la place du POST pour qui ne peut pas les choisir.
- *
- * @return array{lieu: int, organisateurs: int[]}
- */
-$lireAffiliations = function (int $idP) use ($connectorPdo): array
-{
-	$stmt = $connectorPdo->prepare("SELECT idAffiliation FROM affiliation WHERE idPersonne = ? AND genre = 'lieu'");
-	$stmt->execute([$idP]);
-	$lieu = (int) $stmt->fetchColumn();
 
-	$stmt = $connectorPdo->prepare("SELECT idOrganisateur FROM personne_organisateur WHERE idPersonne = ? ORDER BY idOrganisateur");
-	$stmt->execute([$idP]);
-
-	return ['lieu' => $lieu, 'organisateurs' => array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN))];
-};
-
-if ($formulaire_poste)
+if ($is_form_submitted)
 {
 	foreach ($champs as $c => $v)
 	{
@@ -193,7 +147,7 @@ if ($formulaire_poste)
 	// Les rattachements en base, pour le ré-affichage en lecture seule ; ils ne sont pas réécrits.
 	if (!$canEditAffiliations && isset($get['idP']))
 	{
-		$affiliations_stockees = $lireAffiliations((int) $get['idP']);
+		$affiliations_stockees = $getUserAffiliationsIds((int) $get['idP']);
 		$champs['lieu'] = $affiliations_stockees['lieu'] > 0 ? $affiliations_stockees['lieu'] : '';
 		$champs['organisateurs'] = $affiliations_stockees['organisateurs'];
 	}
@@ -419,7 +373,7 @@ if ($formulaire_poste)
 
 		if ($get['action'] == 'update' && isset($get['idP']))
 		{
-			$affiliations_avant = $lireAffiliations((int) $get['idP']);
+			$affiliations_avant = $getUserAffiliationsIds((int) $get['idP']);
 		}
 
 		if (!empty($champs['newPass']))
@@ -440,7 +394,7 @@ if ($formulaire_poste)
 		 * par clé de $champs — l'affiliation et la signature d'un compte rétrogradé auraient été
 		 * remises à leur valeur par défaut au premier enregistrement, sans un mot.
 		 */
-		if (!$showsContributorFields && $get['action'] == 'update' && isset($get['idP']))
+		if (!$areContributorFieldsEnabled && $get['action'] == 'update' && isset($get['idP']))
 		{
 			$stmt = $connectorPdo->prepare("SELECT affiliation, signature, avec_affiliation FROM personne WHERE idPersonne = ?");
 			$stmt->execute([(int) $get['idP']]);
@@ -459,7 +413,7 @@ if ($formulaire_poste)
 		// Comme pour mot_de_passe et gds juste au-dessus, ajouter la clé à $champs suffit à ce que
 		// la boucle de génération de l'UPDATE écrive la colonne du même nom. La relecture préalable
 		// préserve les réglages d'un autre domaine que ce formulaire n'expose pas.
-		if ($showsContributorFields && $get['action'] == 'update' && isset($get['idP']))
+		if ($areContributorFieldsEnabled && $get['action'] == 'update' && isset($get['idP']))
 		{
 			$champs['settings'] = UserSettings::withEventNewDefaults(
 				Personne::getSettingsJson((int) $get['idP']),
@@ -655,7 +609,7 @@ if ($formulaire_poste)
 		 */
 		if ($get['action'] == 'update' && isset($get['idP']) && !empty($_POST['notify_affiliation']) && $erreurs_traitement === [])
 		{
-			$affiliations_apres = $lireAffiliations((int) $get['idP']);
+			$affiliations_apres = $getUserAffiliationsIds((int) $get['idP']);
 
 			if ($affiliations_apres !== $affiliations_avant)
 			{
@@ -713,570 +667,523 @@ if ($formulaire_poste)
 	} // if erreurs == 0
 } // if POST != ""
 
-// =============================================================================
-// Rendu
-// =============================================================================
-
-include("_header.inc.php");
-?>
-
-<main id="contenu" class="colonne user-edit">
-
-<?php
-foreach ($erreurs_traitement as $erreur_traitement)
-{
-	HtmlShrink::msgErreur($erreur_traitement);
-}
-
-// n'arrive que si une erreur ci-dessus a retenu la redirection
-if ($message_succes !== '')
-{
-	HtmlShrink::msgOk($message_succes);
-}
-
-echo '<header id="entete_contenu">';
-
+// fill user $champs, $ev_defaults
 if ($get['action'] == 'editer' && isset($get['idP']))
 {
-	$req_pers = $connector->query("SELECT * FROM personne WHERE idPersonne =" . (int) $get['idP']);
-
-        if ($tab_pers = $connector->fetchArray($req_pers))
+	$req_pers = $connector->query("SELECT * FROM personne WHERE idPersonne = " . (int) $get['idP']);
+    if ($tab_pers = $connector->fetchArray($req_pers))
 	{
 		foreach ($tab_pers as $n => $v)
 		{
 			$champs[$n] = $v;
 		}
-		//printr($champs);
 	}
 	else
-	{
-		HtmlShrink::msgErreur("La personne ". (int)$get['idP']." n'existe pas");
-		exit;
+    {
+        $http_error = [404, 'Not Found', "Cet utilisateur n'existe pas ou plus"];
+        include(__DIR__ . "/_erreur_http.inc.php");
+        exit;
 	}
 
 	// $champs vient de recevoir toutes les colonnes de personne, dont settings.
 	$ev_defaults = UserSettings::eventNewDefaults(is_string($champs['settings'] ?? null) ? $champs['settings'] : null);
 
-	$req_aff = $connector->query("SELECT idAffiliation FROM affiliation WHERE
-	 idPersonne=" . (int) $get['idP'] . " AND genre='lieu'");
-
-        if ($tab_aff = $connector->fetchArray($req_aff))
+	$req_aff = $connector->query("SELECT idAffiliation FROM affiliation WHERE idPersonne=" . (int) $get['idP'] . " AND genre='lieu'");
+    if ($tab_aff = $connector->fetchArray($req_aff))
 	{
 		$champs['lieu'] = $tab_aff['idAffiliation'];
 	}
 
-} // if GET action
-
-
-    /*
- * PREPARATION DES URLS SELON LES ACTIONS,
- * update et idE en cas d'édition, insert pour ajout
- */
-if ($get['action'] == 'editer' || $get['action'] == 'update')
-{
-	$act = "update&amp;idP=".(int)$get['idP'];
-	echo "<h1>Modification du compte</h1>";
-}
-else
-{
-	$act = 'insert';
-	echo '
-	<h1>Ajouter une personne</h1>';
 }
 
-echo '<div class="spacer"></div></header>';
+$user_levels = UserLevel::getConstants();
 
-if ($verif->nbErreurs() > 0)
+
+/*
+* Rattachements présélectionnés, sous la forme que poste la liste : « lieu:42 », « orga:17 »
+* $champs['lieu'] porte déjà le bon identifiant dans les deux cas : le POST analysé plus haut
+* ou la table affiliation relue à l'ouverture du formulaire
+*/
+if ($areContributorFieldsEnabled)
 {
-	HtmlShrink::msgErreur("Il y a ".$verif->nbErreurs()." erreur(s).");
-	// les erreurs qu'aucun champ ne porte, comme le refus du jeton CSRF
-	echo $verif->getHtmlErreur("global");
+    $affiliations_pers = [];
+
+    if (!empty($champs['lieu']))
+    {
+        $affiliations_pers[] = 'lieu:' . (int) $champs['lieu'];
+    }
+
+    // au ré-affichage après une erreur, la sélection postée fait foi À ELLE SEULE
+    if ($is_form_submitted)
+    {
+        foreach ((array) $champs['organisateurs'] as $idOrg)
+        {
+            $affiliations_pers[] = 'orga:' . (int) $idOrg;
+        }
+    }
+    elseif ($is_edit_mode)
+    {
+        $req = $connector->query("SELECT idOrganisateur FROM personne_organisateur
+            WHERE idPersonne=" . (int) $get['idP']);
+
+        while ($tab = $connector->fetchArray($req))
+        {
+            $affiliations_pers[] = 'orga:' . (int) $tab['idOrganisateur'];
+        }
+    }
+
+    $tri_nom = "TRIM(LEADING 'L\'' FROM (TRIM(LEADING 'Les '
+                            FROM (TRIM(LEADING 'La ' FROM (TRIM(LEADING 'Le ' FROM nom))))))) COLLATE utf8mb4_unicode_ci";
+    $req_lieux_select = $connector->query("SELECT idLieu, nom FROM lieu WHERE statut='actif' ORDER BY " . $tri_nom);
+    $req_orgas_select = $connector->query("SELECT idOrganisateur, nom FROM organisateur WHERE statut='actif' ORDER BY " . $tri_nom);
+
 }
+
+// =============================================================================
+// Rendu
+// =============================================================================
+
+$page_titre = $get['action'] . " un compte";
+$extra_css = ["formulaires"];
+include("_header.inc.php");
 ?>
 
-
-<form method="post" id="ajouter_editer" enctype="multipart/form-data" class="js-submit-freeze-wait" action="<?= basename(__FILE__)."?action=".$act; ?>" >
-
-    <p>* indique un champ obligatoire</p>
-
-    <fieldset>
-
-        <legend>Identification</legend>
-
-        <p>
-            <label for="pseudo">Nom d'utilisateur</label>
-            <?php if ($_SESSION['Sgroupe'] == UserLevel::SUPERADMIN) : ?>
-                <?php /* Sans `required` : le nom d'utilisateur est facultatif depuis
-                         l'inscription simplifiée, et l'attribut interdisait d'enregistrer le
-                         compte de quelqu'un qui n'en a pas — il fallait lui en inventer un. */ ?>
-                <input type="text" name="pseudo" id="pseudo" size="30" maxlength="80" value="<?= sanitizeForHtml($champs['pseudo']) ?>" />
-                <?= $verif->getHtmlErreur('pseudo') ?>
-                <?= $verif->getHtmlErreur("pseudoIdentique") ?>
-            <?php elseif (trim((string) $champs['pseudo']) !== '') : ?>
-                <input type="text" name="pseudo" id="pseudo" size="30" maxlength="80" value="<?= sanitizeForHtml($champs['pseudo']) ?>" readonly style="background:#f4f4f4" />
-            <?php else : ?>
-                <?php /* Ni champ ni valeur : ce compte n'a pas de nom d'utilisateur, et le
-                         champ en lecture seule n'offrait qu'un rectangle vide. */ ?>
-                <span class="guideChamp">aucun&nbsp;: c'est votre e-mail qui vous identifie</span>
-            <?php endif; ?>
-        </p>
-
-        <?php
-        if ($_SESSION['Sgroupe'] == UserLevel::SUPERADMIN) {
-
-            echo "<p>
-            <label for=\"groupe\">Groupe* :</label>
-            <select name=\"groupe\" id=\"groupe\">";
-
-            $groupes = UserLevel::getConstants();
-
-            foreach ($groupes as $nom => $id)
-            {
-                  echo "<option ";
-                    //en cas d'update groupe de la personne sélectionnée
-                    if ($id == $champs['groupe']) {
-                        echo "selected=\"selected\"";
-                }
-                    elseif (($get['action'] == 'ajouter' || $get['action'] == 'insert') && $id == UserLevel::ACTOR) {
-                    echo "selected=\"selected\"";
-                    }
-                    echo " value=\"" .(int) $id . "\">" .(int) $id . " : " . sanitizeForHtml($nom) . "</option>";
-            }
-            echo "</select>";
-            echo $verif->getHtmlErreur("groupe");
-            echo "</p>";
-        }
-        ?>
-    </fieldset>
-
-    <fieldset>
-        <legend>Mot de passe</legend>
-
-            <?php
-            if ($_SESSION['Sgroupe'] > UserLevel::SUPERADMIN && ($get['action'] == 'editer' || $get['action'] == 'update')) {
-        ?>
-            <div class="guideForm">À remplir si vous souhaitez modifier votre mot de passe actuel</div>
-            <p>
-                <label for="motdepasse">Actuel</label>
-                <input type="password" name="motdepasse" id="motdepasse" size="30" value="" autocomplete="off" />
-            <?php echo $verif->getHtmlErreur("motdepasse"); ?>
-            </p>
-
-        <?php
-        }
-        ?>
-
-        <!-- Nouveau mot de passe* en cas de mise à jour -->
-        <p>
-            <label for="newPass">Nouveau<?php if ($get['action'] != 'editer' || $get['action'] != 'update') { echo "*"; } ?></label>
-            <input type="password" name="newPass" id="newPass" size="30" value="" autocomplete="new-password"  />
-            <?= $verif->getHtmlErreur("newPass");?>
-        </p>
-
-        <!-- Nouveau mot de passe* à confirmation en cas de mise à jour -->
-        <p>
-            <label for="newPass2">Confirmer le nouveau<?php if ($get['action'] != 'editer' || $get['action'] != 'update') { echo "*"; } ?></label>
-            <input type="password" name="newPass2" id="newPass2" size="30" value="" autocomplete="new-password" />
-            <?= $verif->getHtmlErreur("newPass2");?>
-        </p>
-        <?= $verif->getHtmlErreur("nouveaux_pass");?>
-    </fieldset>
-
-
-    <fieldset>
-        <legend>Informations</legend>
-        <p>
-            <label for="email">E-mail*</label>
-            <input type="email" name="email" id="email" size="40" maxlength="80" value="<?= sanitizeForHtml(stripslashes((string) $champs['email'])) ?>" required />
-            <?= $verif->getHtmlErreur("email"); ?>
-            <?= $verif->getErreur("emailIdentique");?>
-        </p>
-    </fieldset>
+<main id="contenu" class="colonne user-edit">
 
     <?php
-    // Affiliations et signature des événements ajoutés : deux fieldsets qui ne parlent qu'aux
-    // comptes qui en ajoutent.
-    if ($showsContributorFields) {
+    $h1 = "Ajouter une personne";
+    $act = 'insert';
+    if ($get['action'] == 'editer' || $get['action'] == 'update')
+    {
+        $act = "update&amp;idP=". (int) ($get['idP'] ?? 0);
+        $h1 = "Modification du compte";
+    }
     ?>
 
-    <fieldset id="references">
-        <legend>Affiliation(s)</legend>
-        <div class="guideForm">Si vous souhaitez modifier ces informations merci de nous <a href="/misc/contacteznous.php">contacter</a></div>
+    <header id="entete_contenu">
+        <h1><?= $h1 ?></h1>
+        <div class="spacer"></div>
+    </header>
 
-        <?php
-        /*
-        * Rattachements présélectionnés, sous la forme que poste la liste : « lieu:42 », « orga:17 ».
-        *
-        * Au ré-affichage après une erreur, la sélection postée fait foi À ELLE SEULE : y ajouter
-        * ce que porte la base ferait revenir ce que l'utilisateur vient de retirer, donc
-        * impossible à retirer tant qu'une autre erreur bloque l'enregistrement. C'est
-        * $formulaire_poste qui commande, et non isset($_POST['affiliations']) : tout
-        * désélectionner ne poste aucune clé, et retomberait sinon sur la base.
-        *
-        * $champs['lieu'] porte déjà le bon identifiant dans les deux cas : le POST analysé plus
-        * haut, ou la table affiliation relue à l'ouverture du formulaire.
-        */
-        $affiliations_pers = [];
+    <?php
+    if ($verif->nbErreurs() > 0)
+    {
+        HtmlShrink::msgErreur("Il y a ".$verif->nbErreurs()." erreur(s)");
+        // les erreurs qu'aucun champ ne porte, comme le refus du jeton CSRF
+        echo $verif->getHtmlErreur("global");
+    }
 
-        if (!empty($champs['lieu']))
-        {
-            $affiliations_pers[] = 'lieu:' . (int) $champs['lieu'];
-        }
+    foreach ($erreurs_traitement as $erreur_traitement)
+    {
+        HtmlShrink::msgErreur($erreur_traitement);
+    }
 
-        if ($formulaire_poste)
-        {
-            foreach ((array) $champs['organisateurs'] as $idOrg)
-            {
-                $affiliations_pers[] = 'orga:' . (int) $idOrg;
-            }
-        }
-        else if ($get['action'] == "editer" || $get['action'] == "update")
-        {
-            $req = $connector->query("SELECT idOrganisateur FROM personne_organisateur
-                WHERE idPersonne=" . (int) $get['idP']);
+    // n'arrive que si une erreur ci-dessus a retenu la redirection
+    if ($message_succes !== '')
+    {
+        HtmlShrink::msgOk($message_succes);
+    }
+    ?>
 
-            while ($tab = $connector->fetchArray($req))
-            {
-                $affiliations_pers[] = 'orga:' . (int) $tab['idOrganisateur'];
-            }
-        }
 
-        if ($canEditAffiliations) {
-        ?>
-        <p>
-            <label for="affiliations">Lieu et organisateurs</label>
-            <?php /* Une seule liste pour les deux (#102) : la distinction n'est pas celle de qui
-                     remplit le formulaire. La valeur porte son type, les deux tables ayant leurs
-                     propres identifiants, qui se recouvrent. Un seul lieu peut être retenu, autant
-                     d'organisateurs qu'on veut : un select multiple ne sait pas l'exprimer, c'est
-                     le traitement qui le vérifie. */ ?>
-            <select name="affiliations[]" id="affiliations" multiple class="js-select2-affiliations" data-placeholder="Tapez un nom de lieu ou d'organisateur..." style="max-width:350px;">
-                <optgroup label="Lieux">
-                <?php
-                $tri_nom = "TRIM(LEADING 'L\'' FROM (TRIM(LEADING 'Les '
-                    FROM (TRIM(LEADING 'La ' FROM (TRIM(LEADING 'Le ' FROM nom))))))) COLLATE utf8mb4_unicode_ci";
+    <form method="post" id="ajouter_editer" enctype="multipart/form-data" class="js-submit-freeze-wait"
+          action="<?= basename(__FILE__)."?action=".$act; ?>" >
 
-                $req_lieux = $connector->query("SELECT idLieu, nom FROM lieu WHERE statut='actif' ORDER BY " . $tri_nom);
+        <p>* indique un champ obligatoire</p>
 
-                while ($lieuTrouve = $connector->fetchArray($req_lieux))
-                {
-                    $valeur = 'lieu:' . (int) $lieuTrouve['idLieu'];
-                    echo '<option value="' . $valeur . '"' . (in_array($valeur, $affiliations_pers, true) ? ' selected="selected"' : '') . '>'
-                        . sanitizeForHtml($lieuTrouve['nom']) . '</option>';
-                }
-                ?>
-                </optgroup>
-                <optgroup label="Organisateurs">
-                <?php
-                $req_orgas = $connector->query("SELECT idOrganisateur, nom FROM organisateur WHERE statut='actif' ORDER BY " . $tri_nom);
+        <?php if ($is_superadmin && $is_edit_mode && isset($get['idP'])) : ?>
 
-                while ($tab = $connector->fetchArray($req_orgas))
-                {
-                    $valeur = 'orga:' . (int) $tab['idOrganisateur'];
-                    echo '<option value="' . $valeur . '"' . (in_array($valeur, $affiliations_pers, true) ? ' selected="selected"' : '') . '>'
-                        . sanitizeForHtml($tab['nom']) . '</option>';
-                }
-                ?>
-                </optgroup>
-            </select>
-            <?= $verif->getHtmlErreur("affiliations"); ?>
-        </p>
-        <div class="guideChamp" style='padding: 0em 0 0.2em 175px;'>Un seul lieu, autant d'organisateurs que nécessaire. Le compte pourra modifier ces fiches et les événements qui s'y rattachent.</div>
+            <fieldset>
+                <legend>Statut</legend>
+                <ul class="radio">
+                <?php foreach (Personne::$statuts as $s) : ?>
+                    <li class="listehoriz">
+                        <input type="radio" name="statut" value="<?= sanitizeForHtml($s) ?>"
+                            <?php if ($s == $champs['statut']) : ?> checked="checked" <?php endif; ?>
+                            id="statut_<?= sanitizeForHtml($s) ?>" class="radio_horiz" />
+                        <label for="statut_<?= sanitizeForHtml($s) ?>" class="continu"><?= sanitizeForHtml($s) ?></label>
+                    </li>
+                <?php endforeach ?>
+                </ul>
+                <?= $verif->getHtmlErreur("statut") ?>
+            </fieldset>
 
-        <p>
-            <label for="affiliation">Nom</label>
-            <input type="text" name="affiliation" id="affiliation" size="30" maxlength="250" value="<?= sanitizeForHtml($champs['affiliation']); ?>" />
-            <?= $verif->getHtmlErreur("affiliation"); ?>
-        </p>
-        <div class="guideChamp" style='padding: 0em 0 0.2em 175px;'>Texte libre. L'inscription y dépose le lieu ou l'organisateur déclaré, tant que le compte n'y est pas rattaché ; il signe aussi les événements quand la signature le demande.</div>
-
-        <?php
-        /*
-         * L'inscription n'écrit plus de rattachement : elle enregistre une déclaration, que
-         * l'équipe vérifie avant de lier le compte ici. La personne ne l'apprendrait pas
-         * autrement — d'où cette case, qui n'a de sens que pour qui modifie le compte d'un
-         * autre. Rien ne part si les rattachements n'ont pas changé.
-         */
-        if ((int) ($_SESSION['SidPersonne'] ?? 0) !== (int) ($get['idP'] ?? 0)) :
-        ?>
-        <p>
-            <label for="notify_affiliation">Informer</label>
-            <input type="checkbox" name="notify_affiliation" id="notify_affiliation" value="1" class="checkbox" />
-            <label class="continu" for="notify_affiliation">Prévenir par e-mail du rattachement</label>
-        </p>
+        <?php else : ?>
+            <input type="hidden" name="statut" value="actif" id="statut_actif" title="statut" />
         <?php endif; ?>
 
-        <?php
-        }
-        else
-        {
-            if (!empty($champs['affiliation']))
-            {
-            ?>
+        <fieldset>
+
+            <legend>Compte</legend>
             <p>
-                <label></label><input name="affiliation" type="text" readonly value="<?= sanitizeForHtml($champs['affiliation']); ?>" >
+                <label for="pseudo">Nom d'utilisateur</label>
+                <?php if ($is_superadmin) : ?>
+                    <input type="text" name="pseudo" id="pseudo" size="30" maxlength="80" value="<?= sanitizeForHtml($champs['pseudo']) ?>" />
+                    <?= $verif->getHtmlErreur('pseudo') ?>
+                    <?= $verif->getHtmlErreur("pseudoIdentique") ?>
+                <?php elseif (trim((string) $champs['pseudo']) !== '') : ?>
+                    <input type="text" name="pseudo" id="pseudo" size="30" maxlength="80" value="<?= sanitizeForHtml($champs['pseudo']) ?>" readonly style="background:#f4f4f4" />
+                <?php else : ?>
+                    <?php /* Ni champ ni valeur : ce compte n'a pas de nom d'utilisateur */ ?>
+                    <span class="guideChamp">aucun&nbsp;: c'est votre e-mail qui vous identifie</span>
+                <?php endif; ?>
             </p>
 
-            <?php
-            }
+            <p>
+                <label for="email">E-mail*</label>
+                <input type="email" name="email" id="email" size="40" maxlength="100" value="<?= sanitizeForHtml(stripslashes((string) $champs['email'])) ?>" required />
+                <?= $verif->getHtmlErreur("email") ?>
+                <?= $verif->getErreur("emailIdentique") ?>
+            </p>
 
-            if (!empty($champs['lieu']))
-            {
-                $req_lieux = $connector->query("SELECT nom FROM lieu WHERE idLieu=".(int)$champs['lieu']);
-                $lieuTrouve = $connector->fetchArray($req_lieux);
-                ?>
-                    <p>
-                    <label>Lieu</label>
-                    <ul style="float:left;margin:0;padding-left:1em;">
-                        <li>
-                            <a href="/lieu/lieu.php?idL=<?= (int)$champs['lieu']; ?>"><?= sanitizeForHtml($lieuTrouve['nom']); ?></a>
-                        </li>
-                    </ul><div class="spacer"><!-- --></div>
-                </p>
-            <div class="guideChamp" style='padding: 0em 0 0.2em 175px;'>Vous pouvez modifier les informations de ce lieu et tous les événements qui s'y déroulent</div>
-            <?php
-            }
-
-            $sql = "SELECT organisateur.idOrganisateur, nom
-        FROM organisateur, personne_organisateur
-        WHERE personne_organisateur.idPersonne=" . (int) $get['idP'] . " AND
-         organisateur.idOrganisateur=personne_organisateur.idOrganisateur
-         ORDER BY date_ajout DESC";
-
-         $req = $connector->query($sql);
-
-            if ($connector->getNumRows($req))
-            {
-                 ?>
+            <?php if ($is_superadmin) : ?>
                 <p>
-                    <label>Organisateur(s)</label>
-                <ul style="float:left;margin:0;padding-left:1em;">
-                    <?php
-                    while ($tab = $connector->fetchArray($req))
-                    {
-                        ?>
-                    <li><a href="/organisateur/organisateur.php?idO=<?= (int)$tab['idOrganisateur']; ?>"><?= sanitizeForHtml($tab['nom']); ?></a>
-                        </li>
-                        <?php
-                    }
-               ?>
-                </ul><div class="spacer"><!-- --></div>
-
+                    <label for="groupe">Groupe* :</label>
+                    <select name="groupe" id="groupe">
+                        <?php foreach ($user_levels as $nom => $id) : ?>
+                            <?php /* à l'ajout, sans quoi le navigateur retient la première option : SUPERADMIN */ ?>
+                            <option <?php if ($id == $champs['groupe'] || (!$is_edit_mode && $champs['groupe'] == '' && $id == UserLevel::ACTOR)) : ?>selected="selected"<?php endif ?> value="<?= (int) $id ?>">
+                                <?= (int) $id ?> : <?= sanitizeForHtml($nom) ?>
+                            </option>
+                        <?php endforeach ?>
+                    </select>
+                    <?= $verif->getHtmlErreur("groupe") ?>
                 </p>
-            <div class="guideChamp" style='padding: 0em 0 0.2em 175px;'>Vous pouvez modifier ces organisateurs, tous les événements qui y sont associés ainsi que les lieux associés à ces organisateurs</div>
+            <?php endif; ?>
+        </fieldset>
 
+        <fieldset>
+            <legend>Mot de passe</legend>
+
+                <?php if (!$is_superadmin && $is_edit_mode) : ?>
+
+                    <div class="guideForm">À remplir si vous souhaitez modifier votre mot de passe actuel</div>
+                    <p>
+                        <label for="motdepasse">Actuel</label>
+                        <input type="password" name="motdepasse" id="motdepasse" size="30" value="" autocomplete="off" />
+                        <?php echo $verif->getHtmlErreur("motdepasse"); ?>
+                    </p>
+
+                <?php endif ?>
+
+                <!-- Nouveau mot de passe et confirmation en cas de mise à jour -->
+                <p>
+                    <label for="newPass">Nouveau<?php if (!$is_edit_mode) { echo "*"; } ?></label>
+                    <input type="password" name="newPass" id="newPass" size="30" value="" autocomplete="new-password"  />
+                    <?= $verif->getHtmlErreur("newPass");?>
+                </p>
+                <p>
+                    <label for="newPass2">Confirmer le nouveau<?php if (!$is_edit_mode) { echo "*"; } ?></label>
+                    <input type="password" name="newPass2" id="newPass2" size="30" value="" autocomplete="new-password" />
+                    <?= $verif->getHtmlErreur("newPass2");?>
+                </p>
+                <?= $verif->getHtmlErreur("nouveaux_pass");?>
+            </fieldset>
 
             <?php
-            }
-        }
-        ?>
-        <?= $verif->getHtmlErreur("affiliation"); ?>
-        <?= $verif->getHtmlErreur("doublon_organisateur"); ?>
-    </fieldset>
-
-    <fieldset>
-
-        <legend>Votre signature</legend>
-
-        <div class="guideForm">Apparait sous les événements que vous avez ajoutés</div>
-        <label style="display:block;float:none;width:8em" >Afficher :</label>
-        <ul class="radio" style="display:block">
-            <?php
-            // Un compte sans nom d'utilisateur n'a rien à signer : l'option n'affichait
-            // qu'un libellé suivi de rien.
-            $signatures = trim((string) $champs['pseudo']) !== ''
-                ? ["pseudo" => "Le nom d'utilisateur", "aucune" => "Aucune signature"]
-                : ["aucune" => "Aucune signature"];
-            foreach ($signatures as $s => $label)
-            {
-                $coche = '';
-                if ($s == $champs['signature'])
-                {
-                    $coche = 'checked="checked"';
-                }
-                echo '<li style="display:block" >
-                <input type="radio" name="signature" value="'.$s.'" '.$coche.' id="signature_'.$s.'" />
-                <label class="continu" for="signature_'.$s.'">'.$label.' ';
-
-                if ($s == 'aucune') {
-                    echo "";
-                }
-                else
-                {
-                    echo ": <b>" . sanitizeForHtml($champs[$s]) . "</b>";
-                }
-                echo '</label>
-                </li>';
-            }
+            // Affiliations et signature des événements ajoutés : deux fieldsets qui ne parlent qu'aux comptes qui en ajoutent
+            if ($areContributorFieldsEnabled) {
             ?>
-        </ul>
+
+                <fieldset id="references">
+
+                    <legend>Affiliation(s)</legend>
+
+                    <?php if ($canEditAffiliations) : ?>
+                    <p>
+                        <label for="affiliations">Lieu et organisateurs</label>
+                        <?php /* Un seul lieu peut être retenu, autant d'organisateurs qu'on veut; vérifié au traitement */ ?>
+                        <select name="affiliations[]" id="affiliations" multiple class="js-select2-affiliations"
+                                data-placeholder="Tapez un nom de lieu ou d'organisateur..." style="max-width:350px;">
+                            <optgroup label="Lieux">
+                            <?php
+                            while ($lieuTrouve = $connector->fetchArray($req_lieux_select))
+                            {
+                                $valeur = 'lieu:' . (int) $lieuTrouve['idLieu'];
+                                echo '<option value="' . $valeur . '"' . (in_array($valeur, $affiliations_pers, true) ? ' selected="selected"' : '') . '>'
+                                    . sanitizeForHtml($lieuTrouve['nom']) . '</option>';
+                            }
+                            ?>
+                            </optgroup>
+                            <optgroup label="Organisateurs">
+                            <?php
+                            while ($tab = $connector->fetchArray($req_orgas_select))
+                            {
+                                $valeur = 'orga:' . (int) $tab['idOrganisateur'];
+                                echo '<option value="' . $valeur . '"' . (in_array($valeur, $affiliations_pers, true) ? ' selected="selected"' : '') . '>'
+                                    . sanitizeForHtml($tab['nom']) . '</option>';
+                            }
+                            ?>
+                            </optgroup>
+                        </select>
+                        <?= $verif->getHtmlErreur("affiliations"); ?>
+                    </p>
+
+                    <div class="guideChamp" style='padding: 0em 0 0.2em 175px;'>
+                        Plusieurs organisateurs, un seul lieu possibles.<br>Le compte pourra modifier leurs fiches et les événements qui s'y rattachent
+                    </div>
+
+                    <p>
+                        <label for="affiliation">Si pas dans la liste</label>
+                        <input type="text" name="affiliation" id="affiliation" size="30" maxlength="250" value="<?= sanitizeForHtml($champs['affiliation']); ?>" />
+                        <?= $verif->getHtmlErreur("affiliation"); ?>
+                    </p>
+
+                    <div class="guideChamp" style="padding: 0em 0 0.2em 175px;">Signe aussi les événements quand la signature (voir ci-dessous) le demande</div>
+
+                    <?php
+                    /*
+                     * L'inscription de l'utilisateur enregistre une déclaration, puis l'équipe la vérifie
+                     * et peut ici lier le compte et enfin notifier l'utilisateur
+                     */
+                    if ((int) ($_SESSION['SidPersonne'] ?? 0) !== (int) ($get['idP'] ?? 0)) :
+                    ?>
+                    <p>
+                        <label for="notify_affiliation">Prévenir par e-mail du rattachement</label>
+                        <input type="checkbox" name="notify_affiliation" id="notify_affiliation" value="1" class="checkbox" />
+                    </p>
+                    <?php endif; ?>
+
+                <?php else : ?>
+
+                    <div class="guideForm">Si vous souhaitez modifier ces informations merci de nous <a href="/misc/contacteznous.php">contacter</a></div>
+
+                    <?php if (!empty($champs['affiliation'])) : ?>
+                        <p>
+                            <label></label><input name="affiliation" type="text" readonly value="<?= sanitizeForHtml($champs['affiliation']); ?>" >
+                        </p>
+                    <?php endif ?>
+
+                    <?php
+                    if (!empty($champs['lieu']))
+                    {
+                        $req_lieux = $connector->query("SELECT nom FROM lieu WHERE idLieu=".(int)$champs['lieu']);
+                        $lieuTrouve = $connector->fetchArray($req_lieux);
+                        ?>
+                            <p>
+                            <label>Lieu</label>
+                            <ul style="float:left;margin:0;padding-left:1em;">
+                                <li>
+                                    <a href="/lieu/lieu.php?idL=<?= (int)$champs['lieu']; ?>"><?= sanitizeForHtml($lieuTrouve['nom']); ?></a>
+                                </li>
+                            </ul><div class="spacer"><!-- --></div>
+                        </p>
+                        <div class="guideChamp" style='padding: 0em 0 0.2em 175px;'>Vous pouvez modifier les informations de ce lieu et tous les événements qui s'y déroulent</div>
+                    <?php
+                    }
+
+                    $sql = "SELECT organisateur.idOrganisateur, nom
+                        FROM organisateur, personne_organisateur
+                        WHERE personne_organisateur.idPersonne=" . (int) $get['idP'] . " AND
+                         organisateur.idOrganisateur=personne_organisateur.idOrganisateur
+                         ORDER BY date_ajout DESC";
+
+                    $req = $connector->query($sql);
+
+                    if ($connector->getNumRows($req))
+                    {
+                         ?>
+                        <p>
+                            <label>Organisateur(s)</label>
+                            <ul style="float:left;margin:0;padding-left:1em;">
+                                <?php
+                                while ($tab = $connector->fetchArray($req))
+                                {
+                                    ?>
+                                <li><a href="/organisateur/organisateur.php?idO=<?= (int)$tab['idOrganisateur']; ?>"><?= sanitizeForHtml($tab['nom']); ?></a>
+                                    </li>
+                                    <?php
+                                }
+                           ?>
+                            </ul>
+                            <div class="spacer"><!-- --></div>
+                        </p>
+                        <div class="guideChamp" style='padding: 0em 0 0.2em 175px;'>
+                            Vous pouvez modifier la fiche de ces organisateurs, tous les événements qui y sont associés ainsi que les lieux associés à ces organisateurs
+                        </div>
+
+                    <?php
+                    }
+                    ?>
+
+                <?php endif ?>
+                <?= $verif->getHtmlErreur("affiliation"); ?>
+                <?= $verif->getHtmlErreur("doublon_organisateur"); ?>
+            </fieldset>
+
+
+
+        <fieldset>
+
+            <legend>Votre signature</legend>
+
+            <div class="guideForm">Apparait sous les événements que vous avez ajoutés</div>
+            <label style="display:block;float:none;width:8em" >Afficher :</label>
+            <ul class="radio" style="display:block">
+                <?php
+                // Un compte sans nom d'utilisateur n'a rien à signer : l'option n'affichait
+                // qu'un libellé suivi de rien.
+                $signatures = trim((string) $champs['pseudo']) !== ''
+                    ? ["pseudo" => "Le nom d'utilisateur", "aucune" => "Aucune signature"]
+                    : ["aucune" => "Aucune signature"];
+                foreach ($signatures as $s => $label)
+                {
+                    $coche = '';
+                    if ($s == $champs['signature'])
+                    {
+                        $coche = 'checked="checked"';
+                    }
+                    echo '<li style="display:block" >
+                    <input type="radio" name="signature" value="'.$s.'" '.$coche.' id="signature_'.$s.'" />
+                    <label class="continu" for="signature_'.$s.'">'.$label.' ';
+
+                    if ($s == 'aucune') {
+                        echo "";
+                    }
+                    else
+                    {
+                        echo ": <b>" . sanitizeForHtml($champs[$s]) . "</b>";
+                    }
+                    echo '</label>
+                    </li>';
+                }
+                ?>
+            </ul>
+
+            <?php
+            echo $verif->getHtmlErreur("signature");
+            ?>
+
+            <label style="display:block;float:none">avec l'affiliation :</label>
+
+            <ul class="radio" style="display:block;">
+
+                <li style="display:block" >
+                    <input type="radio" id="avec_affiliation_oui" name="avec_affiliation" value="oui" class="radio_horiz"
+                    <?php
+                    if ($champs['avec_affiliation'] == "oui")
+                    {
+                        echo  ' checked="checked"';
+                    }
+                    echo "/>";
+                    ?>
+                    <label class="continu" for="avec_affiliation_oui">oui</label>
+                </li>
+                <li style="display:block" ><input type="radio" id="avec_affiliation_non" name="avec_affiliation" value="non" class="radio_horiz"
+                    <?php
+                    if ($champs['avec_affiliation'] == "non")
+                    {
+                        echo  ' checked="checked"';
+                    }
+                    echo "/>";
+                    ?>
+                    <label class="continu" for="avec_affiliation_non">non</label>
+                </li>
+            </ul>
+
+            <?= $verif->getHtmlErreur('avec_affiliation') ?>
+
+        </fieldset>
 
         <?php
-        echo $verif->getHtmlErreur("signature");
+        } // areContributorFieldsEnabled
+
+
+        // Réglages du formulaire d'ajout d'événement.
+        if ($areContributorFieldsEnabled && $is_edit_mode)
+        {
         ?>
+        <fieldset>
+            <legend>Événements</legend>
 
-        <label style="display:block;float:none">avec l'affiliation :</label>
+            <div class="guideForm">Valeurs par défaut à l'ajout d'un événement</div>
+            <p>
+                <label for="ev_defaults_genre">Catégorie</label>
+                <select name="ev_defaults_genre" id="ev_defaults_genre" style="max-width:350px">
+                    <option value=""></option>
+                    <?php foreach (EventCategory::selectable(EventCategory::isEnabled()) as $genre_cle => $genre_label) : ?>
+                    <option value="<?= sanitizeForHtml($genre_cle) ?>" <?php if ((string) $genre_cle === $ev_defaults['genre']) { echo 'selected="selected"'; } ?>><?= sanitizeForHtml($genre_label) ?></option>
+                    <?php endforeach ?>
+                </select>
+                <?= $verif->getHtmlErreur("ev_defaults_genre"); ?>
+            </p>
 
-        <ul class="radio" style="display:block;">
+            <p>
+                <label for="ev_defaults_horaire_debut">Début</label>
+                <input type="time" name="ev_defaults_horaire_debut" id="ev_defaults_horaire_debut" size="5" value="<?= sanitizeForHtml($ev_defaults['horaire_debut']); ?>" />
+                <?= $verif->getHtmlErreur("ev_defaults_horaire_debut"); ?>
+            </p>
 
-            <li style="display:block" >
-                <input type="radio" id="avec_affiliation_oui" name="avec_affiliation" value="oui" class="radio_horiz"
-                <?php
-                if ($champs['avec_affiliation'] == "oui")
-                {
-                    echo  ' checked="checked"';
-                }
-                echo "/>";
-                ?>
-                <label class="continu" for="avec_affiliation_oui">oui</label>
-            </li>
-            <li style="display:block" ><input type="radio" id="avec_affiliation_non" name="avec_affiliation" value="non" class="radio_horiz"
-                <?php
-                if ($champs['avec_affiliation'] == "non")
-                {
-                    echo  ' checked="checked"';
-                }
-                echo "/>";
-                ?>
-                <label class="continu" for="avec_affiliation_non">non</label>
-            </li>
-        </ul>
+            <p>
+                <label for="ev_defaults_horaire_fin">Fin</label>
+                <input type="time" name="ev_defaults_horaire_fin" id="ev_defaults_horaire_fin" size="5" value="<?= sanitizeForHtml($ev_defaults['horaire_fin']); ?>" />
+                <?= $verif->getHtmlErreur("ev_defaults_horaire_fin"); ?>
+            </p>
 
-        <?= $verif->getHtmlErreur('avec_affiliation') ?>
+            <p>
+                <label for="ev_defaults_idLieu">Lieu</label>
+                <select name="ev_defaults_idLieu" id="ev_defaults_idLieu" class="js-select2-options-with-style" style="max-width:350px" data-placeholder="">
+                    <option value=""></option>
+                    <?php
+                    // Requête à part : $req_lieux, plus haut, a été consommé jusqu'au bout par le select
+                    // d'affiliation. Mêmes lieux et même tri que le formulaire d'ajout d'événement, sans
+                    // les salles (le réglage se fait au niveau du lieu).
+                    $canton_courant = null;
 
-    </fieldset>
-
-    <?php
-    }
-
-    /*
-    * Réglages du formulaire d'ajout d'événement.
-    *
-    * Rendu en édition seulement : à la création d'un compte par un admin ces réglages n'ont pas de sens,
-    * et cela évite deux requêtes inutiles. Et aux seuls comptes qui ajoutent des événements : un MEMBER
-    * (12) n'en ajoute pas, comme le fieldset Affiliation ci-dessus, dont les champs sont eux réservés
-    * à UserLevel::AUTHOR.
-    *
-    * Tous les champs sont préfixés ev_defaults_ : le fieldset Affiliation occupe déjà le nom
-    * « affiliations[] », et les clés de $champs sont autant de colonnes de la table personne.
-    */
-    if ($showsContributorFields && ($get['action'] == "editer" || $get['action'] == "update"))
-    {
-    ?>
-    <fieldset>
-        <legend>Événements</legend>
-
-        <div class="guideForm">Valeurs par défaut à l'ajout d'un événement</div>
-        <p>
-            <label for="ev_defaults_genre">Catégorie</label>
-            <select name="ev_defaults_genre" id="ev_defaults_genre" style="max-width:350px">
-                <option value=""></option>
-                <?php foreach (EventCategory::selectable(EventCategory::isEnabled()) as $genre_cle => $genre_label) : ?>
-                <option value="<?= sanitizeForHtml($genre_cle) ?>" <?php if ((string) $genre_cle === $ev_defaults['genre']) { echo 'selected="selected"'; } ?>><?= sanitizeForHtml($genre_label) ?></option>
-                <?php endforeach ?>
-            </select>
-            <?= $verif->getHtmlErreur("ev_defaults_genre"); ?>
-        </p>
-
-        <p>
-            <label for="ev_defaults_horaire_debut">Début</label>
-            <input type="time" name="ev_defaults_horaire_debut" id="ev_defaults_horaire_debut" size="5" value="<?= sanitizeForHtml($ev_defaults['horaire_debut']); ?>" />
-            <?= $verif->getHtmlErreur("ev_defaults_horaire_debut"); ?>
-        </p>
-
-        <p>
-            <label for="ev_defaults_horaire_fin">Fin</label>
-            <input type="time" name="ev_defaults_horaire_fin" id="ev_defaults_horaire_fin" size="5" value="<?= sanitizeForHtml($ev_defaults['horaire_fin']); ?>" />
-            <?= $verif->getHtmlErreur("ev_defaults_horaire_fin"); ?>
-        </p>
-
-        <p>
-            <label for="ev_defaults_idLieu">Lieu</label>
-            <select name="ev_defaults_idLieu" id="ev_defaults_idLieu" class="js-select2-options-with-style" style="max-width:350px" data-placeholder="">
-                <option value=""></option>
-                <?php
-                // Requête à part : $req_lieux, plus haut, a été consommé jusqu'au bout par le select
-                // d'affiliation. Mêmes lieux et même tri que le formulaire d'ajout d'événement, sans
-                // les salles (le réglage se fait au niveau du lieu).
-                $canton_courant = null;
-
-                foreach (Lieu::getActifsPourSelect() as $lieu_defaut)
-                {
-                    $canton = (string) $lieu_defaut['canton'];
-
-                    if ($canton !== $canton_courant)
+                    foreach (Lieu::getActifsPourSelect() as $lieu_defaut)
                     {
-                        if ($canton_courant !== null) { echo '</optgroup>'; }
-                        echo '<optgroup label="' . (Localite::CANTONS[$canton] ?? sanitizeForHtml($canton)) . '">';
-                        $canton_courant = $canton;
+                        $canton = (string) $lieu_defaut['canton'];
+
+                        if ($canton !== $canton_courant)
+                        {
+                            if ($canton_courant !== null) { echo '</optgroup>'; }
+                            echo '<optgroup label="' . (Localite::CANTONS[$canton] ?? sanitizeForHtml($canton)) . '">';
+                            $canton_courant = $canton;
+                        }
+
+                        $selectionne = ((int) $lieu_defaut['idLieu'] === $ev_defaults['idLieu']) ? ' selected="selected"' : '';
+                        echo '<option value="' . (int) $lieu_defaut['idLieu'] . '"' . $selectionne . '>' . sanitizeForHtml($lieu_defaut['nom']) . '</option>';
                     }
 
-                    $selectionne = ((int) $lieu_defaut['idLieu'] === $ev_defaults['idLieu']) ? ' selected="selected"' : '';
-                    echo '<option value="' . (int) $lieu_defaut['idLieu'] . '"' . $selectionne . '>' . sanitizeForHtml($lieu_defaut['nom']) . '</option>';
-                }
+                    if ($canton_courant !== null) { echo '</optgroup>'; }
+                    ?>
+                </select>
+                <?= $verif->getHtmlErreur("ev_defaults_idLieu"); ?>
+            </p>
 
-                if ($canton_courant !== null) { echo '</optgroup>'; }
-                ?>
-            </select>
-            <?= $verif->getHtmlErreur("ev_defaults_idLieu"); ?>
+            <p>
+                <label for="ev_defaults_organisateurs">Organisateur(s)</label>
+                <select name="ev_defaults_organisateurs[]" id="ev_defaults_organisateurs" class="js-select2-options-with-style" multiple data-placeholder="Tapez les noms des organisateurs" style="max-width:350px;">
+                    <?php
+                    $req_orgas_defaut = $connector->query("
+                    SELECT idOrganisateur, nom FROM organisateur WHERE statut='actif' ORDER BY TRIM(LEADING 'L\'' FROM (TRIM(LEADING 'Les ' FROM (TRIM(LEADING 'La ' FROM (TRIM(LEADING 'Le ' FROM nom))))))) COLLATE utf8mb4_unicode_ci"
+                    );
+
+                    while ($orga_defaut = $connector->fetchArray($req_orgas_defaut))
+                    {
+                        $selectionne = in_array((int) $orga_defaut['idOrganisateur'], $ev_defaults['idOrganisateurs'], true) ? ' selected="selected"' : '';
+                        echo '<option value="' . (int) $orga_defaut['idOrganisateur'] . '"' . $selectionne . '>' . sanitizeForHtml($orga_defaut['nom']) . '</option>';
+                    }
+                    ?>
+                </select>
+                <?= $verif->getHtmlErreur("ev_defaults_organisateurs"); ?>
+            </p>
+
+            <p>
+                <label for="ev_defaults_prix">Prix</label>
+                <input type="text" name="ev_defaults_prix" id="ev_defaults_prix" size="45" maxlength="100" value="<?= sanitizeForHtml($ev_defaults['prix']); ?>" />
+                <?= $verif->getHtmlErreur("ev_defaults_prix"); ?>
+            </p>
+        </fieldset>
+        <?php
+        }
+        ?>
+
+        <p class="piedForm">
+            <input type="hidden" name="formulaire" value="ok" />
+            <input type="hidden" name="token" value="<?= SecurityToken::getToken(); ?>" />
+            <input type="submit" value="Enregistrer" class="submit submit-big" />
         </p>
-
-        <p>
-            <label for="ev_defaults_organisateurs">Organisateur(s)</label>
-            <select name="ev_defaults_organisateurs[]" id="ev_defaults_organisateurs" class="js-select2-options-with-style" multiple data-placeholder="Tapez les noms des organisateurs" style="max-width:350px;">
-                <?php
-                $req_orgas_defaut = $connector->query("
-                SELECT idOrganisateur, nom FROM organisateur WHERE statut='actif' ORDER BY TRIM(LEADING 'L\'' FROM (TRIM(LEADING 'Les ' FROM (TRIM(LEADING 'La ' FROM (TRIM(LEADING 'Le ' FROM nom))))))) COLLATE utf8mb4_unicode_ci"
-                );
-
-                while ($orga_defaut = $connector->fetchArray($req_orgas_defaut))
-                {
-                    $selectionne = in_array((int) $orga_defaut['idOrganisateur'], $ev_defaults['idOrganisateurs'], true) ? ' selected="selected"' : '';
-                    echo '<option value="' . (int) $orga_defaut['idOrganisateur'] . '"' . $selectionne . '>' . sanitizeForHtml($orga_defaut['nom']) . '</option>';
-                }
-                ?>
-            </select>
-            <?= $verif->getHtmlErreur("ev_defaults_organisateurs"); ?>
-        </p>
-
-        <p>
-            <label for="ev_defaults_prix">Prix</label>
-            <input type="text" name="ev_defaults_prix" id="ev_defaults_prix" size="45" maxlength="100" value="<?= sanitizeForHtml($ev_defaults['prix']); ?>" />
-            <?= $verif->getHtmlErreur("ev_defaults_prix"); ?>
-        </p>
-    </fieldset>
-    <?php
-    }
-    ?>
-
-
-    <?php if ($_SESSION['Sgroupe'] == UserLevel::SUPERADMIN && ($get['action'] == "editer" || $get['action'] == "update") && isset($get['idP'])) { ?>
-    <fieldset>
-        <legend>Statut</legend>
-        <ul class="radio">
-        <?php foreach (Personne::$statuts as $s) : ?>
-            <li class="listehoriz">
-                <input type="radio" name="statut" value="<?= sanitizeForHtml($s) ?>" <?php if ($s == $champs['statut']) { ?> checked="checked" <?php } ?> id="statut_<?= sanitizeForHtml($s) ?>" class="radio_horiz" />
-                <label class="continu" for="statut_<?= sanitizeForHtml($s) ?>"><?= sanitizeForHtml($s) ?></label></li>
-        <?php endforeach ?>
-        </ul>
-        <?= $verif->getHtmlErreur("statut") ?>
-    </fieldset>
-    <?php
-    }
-    else
-    {
-    ?>
-        <input type="hidden" name="statut" value="actif" id="statut_actif" title="statut" />
-    <?php
-    }
-    ?>
-
-    <p class="piedForm">
-        <input type="hidden" name="formulaire" value="ok" />
-        <input type="hidden" name="token" value="<?= SecurityToken::getToken(); ?>" />
-        <input type="submit" value="Enregistrer" class="submit submit-big" />
-    </p>
 
     </form>
 
