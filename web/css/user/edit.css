@@ -1,0 +1,21 @@
+/* Modification d'un compte (user/edit.php) */
+
+/*
+ * « Organisateur d'événements » regroupe trois fieldsets : sa légende passe au-dessus des
+ * leurs, et eux se détachent de son fond plutôt que de se confondre avec lui.
+ */
+form#ajouter_editer fieldset#organisateur-evenements > legend
+{
+	font-size:1.25em;
+}
+
+	form#ajouter_editer fieldset#organisateur-evenements > fieldset
+	{
+		margin:0.6em 0.4em 0 0;
+		background-color:#fafafa;
+	}
+
+		form#ajouter_editer fieldset#organisateur-evenements > fieldset > legend
+		{
+			font-size:1em;
+		}

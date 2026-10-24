@@ -907,9 +907,14 @@ include("../_header.inc.php");
             </fieldset>
 
             <?php
-            // Affiliations et signature des événements ajoutés : deux fieldsets qui ne parlent qu'aux comptes qui en ajoutent
+            // Affiliations, signature et valeurs par défaut des événements ajoutés : ne parlent qu'aux
+            // comptes qui en ajoutent (ACTOR et +)
             if ($areContributorFieldsEnabled) {
             ?>
+
+            <fieldset id="organisateur-evenements">
+
+                <legend>Organisateur d'événements</legend>
 
                 <fieldset id="references">
 
@@ -1078,14 +1083,8 @@ include("../_header.inc.php");
 
         </fieldset>
 
-        <?php
-        } // areContributorFieldsEnabled
-
-
-        // Réglages du formulaire d'ajout d'événement.
-        if ($areContributorFieldsEnabled && $is_edit_mode)
-        {
-        ?>
+        <?php // Réglages du formulaire d'ajout d'événement : sans objet à la création d'un compte ?>
+        <?php if ($is_edit_mode) : ?>
         <fieldset>
             <legend>Événements</legend>
 
@@ -1161,8 +1160,12 @@ include("../_header.inc.php");
                 <?= $verif->getHtmlErreur("ev_defaults_prix"); ?>
             </p>
         </fieldset>
+        <?php endif; ?>
+
+            </fieldset>
+
         <?php
-        }
+        } // areContributorFieldsEnabled
         ?>
 
         <p class="piedForm">
