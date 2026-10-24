@@ -129,7 +129,7 @@ class SecurityTokenCest
     {
         $I->amOnPage('/articles/apropos.php');
         $I->click('a[href^="/user/dashboard.php?idP="]');
-        $I->click('a[href*="/user-edit.php"]');
+        $I->click('a[href*="/user/edit.php"]');
         $I->seeElement('#ajouter_editer input[name=token]');
     }
 

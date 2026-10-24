@@ -69,7 +69,7 @@ class Sentry
      * une attaque hors ligne si le stockage des sessions venait à fuir.
      *
      * Publique : une page qui change le mot de passe de la personne connectée doit
-     * rafraîchir l'empreinte, sans quoi elle se déconnecterait elle-même (user-edit.php).
+     * rafraîchir l'empreinte, sans quoi elle se déconnecterait elle-même (user/edit.php).
      */
     public static function passFingerprint(string $motDePasse): string
     {

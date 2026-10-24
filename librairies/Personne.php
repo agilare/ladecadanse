@@ -222,7 +222,7 @@ class Personne
         // Un nom d'utilisateur qui est une adresse électronique ne signe pas non plus : la
         // signature est le seul endroit public où ce champ paraisse, et des comptes y ont mis
         // leur adresse — publiée telle quelle sous chacune de leurs annonces, à portée des
-        // moissonneurs. Le champ étant en lecture seule hors SUPERADMIN (user-edit.php), ces
+        // moissonneurs. Le champ étant en lecture seule hors SUPERADMIN (user/edit.php), ces
         // personnes ne pouvaient pas le corriger elles-mêmes.
         if ($auteur['signature'] === 'pseudo'
             && trim((string) $auteur['pseudo']) !== ''

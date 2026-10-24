@@ -5,7 +5,7 @@ use Tests\Support\SiteTester;
 use Codeception\Util\HttpCode;
 
 /**
- * Fieldset « Événements » du profil (user-edit.php) et champs qu'il préremplit (evenement-edit.php).
+ * Fieldset « Événements » du profil (user/edit.php) et champs qu'il préremplit (evenement-edit.php).
  *
  * La suite `site` est en lecture seule : on ne peut donc pas enregistrer des valeurs par défaut puis
  * vérifier qu'elles ressortent dans le formulaire d'ajout. Ce qui est verrouillé ici est la moitié
@@ -14,7 +14,7 @@ use Codeception\Util\HttpCode;
  * $tab_organisateurs_even ; renommer un de ces champs ne produit aucune erreur, seulement un
  * formulaire qui cesse d'être prérempli.
  *
- * user-edit.php n'avait jusqu'ici aucun test.
+ * user/edit.php n'avait jusqu'ici aucun test.
  */
 class UserEventDefaultsCest
 {
@@ -39,7 +39,7 @@ class UserEventDefaultsCest
         $I->click('a[href^="/user/dashboard.php?idP="]');
         $I->seeResponseCodeIs(HttpCode::OK);
 
-        $I->click('a[href*="/user-edit.php"]');
+        $I->click('a[href*="/user/edit.php"]');
         $I->seeResponseCodeIs(HttpCode::OK);
     }
 

@@ -29,7 +29,7 @@ if (!$authorization->checkGroup(UserLevel::MEMBER))
     die();
 }
 
-// Message déposé par user-edit.php avant sa redirection. Lu et effacé dès le
+// Message déposé par user/edit.php avant sa redirection. Lu et effacé dès le
 // traitement : une sortie en erreur plus bas ne doit pas le laisser en session,
 // où il resurgirait à la visite suivante.
 $flash_msg = (string) ($_SESSION['user_flash_msg'] ?? "");
@@ -205,7 +205,7 @@ $showsContributions = false;
 
 /*
  * Affiliations, signature des événements ajoutés, valeurs par défaut du formulaire d'ajout :
- * trois lignes de la fiche qui, comme les fieldsets du même nom dans user-edit.php, ne parlent
+ * trois lignes de la fiche qui, comme les fieldsets du même nom dans user/edit.php, ne parlent
  * qu'aux comptes qui ajoutent des événements. Un MEMBER ne peut ni les régler ni s'en servir —
  * un compte rétrogradé lirait sinon des réglages qu'aucun formulaire ne lui laisse modifier.
  * Niveau de la fiche là encore, pour la même raison que ci-dessus.
@@ -455,7 +455,7 @@ if ($erreur !== null)
 		<?php if ($peut_gerer || $canErase) : ?>
 		<div class="profile-actions">
 			<?php if ($peut_gerer) : ?>
-			<a class="profil-modifier" href="/user-edit.php?idP=<?= (int) $get['idP'] ?>&amp;action=editer"><i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;Modifier</a>
+			<a class="profil-modifier" href="/user/edit.php?idP=<?= (int) $get['idP'] ?>&amp;action=editer"><i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;Modifier</a>
 			<?php endif; ?>
 			<?php if ($canErase) : ?>
 			<?php // data-confirm sur le formulaire : global.js le lit à la soumission. Un onclick

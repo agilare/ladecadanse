@@ -68,7 +68,7 @@ $('.js-select2-options-with-complement').select2(
     templateSelection: select2OptionWithComplement
 });
 
-// used for the merged lieux/organisateurs list (user-edit.php, user/register.php)
+// used for the merged lieux/organisateurs list (user/edit.php, user/register.php)
 $('.js-select2-affiliations').select2(
 {
     language: "fr",

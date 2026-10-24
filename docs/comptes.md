@@ -25,7 +25,7 @@ La liste est `resources/bad_p.txt` : 19 999 entrées venant de [tarraschk/richel
 
 Aucune fuite générale ne contient les mots propres au site et à sa région — « ladecadanse », « servette », « pâquis » — que des membres genevois, vaudois ou de France voisine sont susceptibles de choisir. Ils vivent dans `resources/bad_p_context.txt`, en orthographe naturelle. La comparaison exacte ne servirait à rien ici : ces mots font souvent moins de 10 caractères, et ce sont leurs dérivés que l'on choisit (`Servette1890!`, `p@quis2024`, `GeneveCarouge`). Le mot de passe est donc normalisé : minuscules, accents retirés, leet courant défait (`@`/`4` → a, `3` → e, `0` → o, `1`/`!` → i ou l…), chiffres et symboles écartés. Il est refusé si ce qui reste est une racine, ou deux racines accolées. On ne cherche pas une racine *contenue* dans le mot de passe, sinon une phrase comme `automne-a-geneve-sous-la-pluie` serait refusée. Les racines de moins de 3 lettres une fois normalisées sont ignorées : elles produiraient surtout des faux positifs par concaténation.
 
-**Le profil fait exception** : `user-edit.php` ne reprend que la consultation de la liste. Ses bornes (8/30) et ses clés d'erreur diffèrent de celles de l'inscription et de la réinitialisation ; les aligner serait un changement de règle, à traiter à part.
+**Le profil fait exception** : `user/edit.php` ne reprend que la consultation de la liste. Ses bornes (8/30) et ses clés d'erreur diffèrent de celles de l'inscription et de la réinitialisation ; les aligner serait un changement de règle, à traiter à part.
 
 Rien n'est vérifié rétroactivement : un mot de passe existant qui ne satisferait plus les règles reste valable jusqu'à son prochain changement.
 

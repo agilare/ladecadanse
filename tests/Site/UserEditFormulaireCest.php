@@ -6,7 +6,7 @@ use Tests\Support\TestEnv;
 use Codeception\Util\HttpCode;
 
 /**
- * Formulaire d'édition d'un compte (user-edit.php), fieldset « Affiliation ».
+ * Formulaire d'édition d'un compte (user/edit.php), fieldset « Affiliation ».
  *
  * Verrouille la présélection de la liste des rattachements au ré-affichage après une erreur de
  * validation. Elle réunissait par un OR la saisie postée et ce que portait la base : un
@@ -110,7 +110,7 @@ class UserEditFormulaireCest
 
     private function amOnUserEdit(SiteTester $I): void
     {
-        $I->amOnPage('/user-edit.php?action=editer&idP=' . TestEnv::getInt('LADECADANSE_TEST_USER_ID_WITH_ORGANISATEURS'));
+        $I->amOnPage('/user/edit.php?action=editer&idP=' . TestEnv::getInt('LADECADANSE_TEST_USER_ID_WITH_ORGANISATEURS'));
         $I->seeResponseCodeIs(HttpCode::OK);
 
         // la liste n'est rendue qu'aux groupes <= 6, et le compte visé doit être modifiable

@@ -54,7 +54,7 @@ $ composer psalm:taint
 
 Attention au bruit : l'essentiel des résultats est du `TaintedHtml`/`TaintedTextWithQuotes` sur le vieux code d'affichage. Les catégories à regarder en priorité sont `TaintedSql`, `TaintedFile`, `TaintedSSRF`, `TaintedHeader` et `TaintedCookie`.
 
-L'unique `TaintedSql` restant (rapporté sur `DbConnector::query()`, tracé jusqu'à `user-edit.php`) est un faux positif documenté dans le code : Psalm teinte les *clés* de `$champs` alors que seules les valeurs viennent de `$_POST`. Il n'est pas supprimable via `@psalm-suppress`, l'erreur étant ancrée sur le sink et non sur le site d'appel.
+L'unique `TaintedSql` restant (rapporté sur `DbConnector::query()`, tracé jusqu'à `user/edit.php`) est un faux positif documenté dans le code : Psalm teinte les *clés* de `$champs` alors que seules les valeurs viennent de `$_POST`. Il n'est pas supprimable via `@psalm-suppress`, l'erreur étant ancrée sur le sink et non sur le site d'appel.
 
 ## Phan
 

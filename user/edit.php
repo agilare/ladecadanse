@@ -1,5 +1,5 @@
 <?php
-require_once("app/bootstrap.php");
+require_once("../app/bootstrap.php");
 
 use Ladecadanse\EventCategory;
 use Ladecadanse\UserLevel;
@@ -35,7 +35,7 @@ if (isset($_GET['idP']))
 if (!$is_superadmin && (!$is_edit_mode || $_SESSION['SidPersonne'] != $get['idP']))
 {
     $http_error = [403, 'Forbidden', "Vous n'avez pas les droit pour effectuer cette action"];
-    include(__DIR__ . "/_erreur_http.inc.php");
+    include("../_erreur_http.inc.php");
     exit;
 }
 
@@ -681,7 +681,7 @@ if ($get['action'] == 'editer' && isset($get['idP']))
 	else
     {
         $http_error = [404, 'Not Found', "Cet utilisateur n'existe pas ou plus"];
-        include(__DIR__ . "/_erreur_http.inc.php");
+        include("../_erreur_http.inc.php");
         exit;
 	}
 
@@ -745,7 +745,7 @@ if ($areContributorFieldsEnabled)
 
 $page_titre = $get['action'] . " un compte";
 $extra_css = ["formulaires"];
-include("_header.inc.php");
+include("../_header.inc.php");
 ?>
 
 <main id="contenu" class="colonne user-edit">
@@ -1192,5 +1192,5 @@ include("_header.inc.php");
 <div id="colonne_gauche" class="colonne"></div>
 
 <?php
-include("_footer.inc.php");
+include("../_footer.inc.php");
 ?>

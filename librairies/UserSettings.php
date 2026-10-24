@@ -17,7 +17,7 @@ namespace Ladecadanse;
  *
  * Le premier (et pour l'instant unique) domaine est `events > new_defaults` : les valeurs dont le
  * formulaire d'ajout d'événement est prérempli (evenement-edit.php, action « ajouter »), réglées
- * depuis le profil (user-edit.php, fieldset « Événements »).
+ * depuis le profil (user/edit.php, fieldset « Événements »).
  *
  * Cette classe ne touche pas à la base : elle ne fait qu'encoder, décoder et normaliser. Les
  * identifiants de lieu et d'organisateur ne sont donc pas vérifiés en base — c'est délibéré, voir

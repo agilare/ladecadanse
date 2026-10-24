@@ -44,7 +44,7 @@ Les préférences sont stockées dans la colonne `personne.settings`, un champ t
 
 `bin/user-settings-defaults.php` remplit ces réglages pour ceux qui ne les ont jamais ouverts, à partir de ce qu'ils saisissent déjà : la catégorie, le lieu et les organisateurs présents dans au moins 96 % de leurs ajouts, à partir de 50 ajouts et d'une connexion dans l'année. Simulation par défaut ; `--ecrire` applique, après avoir déposé un retour arrière dans `var/`.
 
-Le JSON sort de `UserSettings`, jamais construit à la main : même encodage et même fusion que `user-edit.php`, si bien qu'un réglage d'un autre domaine survit. Un champ déjà renseigné est laissé intact — le script complète, il ne corrige pas un choix délibéré.
+Le JSON sort de `UserSettings`, jamais construit à la main : même encodage et même fusion que `user/edit.php`, si bien qu'un réglage d'un autre domaine survit. Un champ déjà renseigné est laissé intact — le script complète, il ne corrige pas un choix délibéré.
 
 Trois écarts avec la sélection du mailing (`resources/database/mailing-users-specialises.sql`), qui ne cherche pas la même chose :
 

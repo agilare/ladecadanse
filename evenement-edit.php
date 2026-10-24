@@ -233,7 +233,7 @@ $notif_motifs = [];
 $notif_message = '';
 
 /*
-* Préremplissage depuis les valeurs par défaut du profil (user-edit.php, fieldset « Événements »).
+* Préremplissage depuis les valeurs par défaut du profil (user/edit.php, fieldset « Événements »).
 *
 * Uniquement à l'ouverture du formulaire d'ajout : le formulaire poste vers ?action=insert, si bien
 * que le ré-affichage après une erreur de validation ne repasse jamais par « ajouter » — une saisie
@@ -1225,7 +1225,7 @@ if ($show_form)
         <?php endif; ?>
 
         <?php if ($prefilled_from_user_defaults) { ?>
-        <div class="guideForm">Certains champs sont préremplis depuis vos valeurs par défaut &middot; <a href="/user-edit.php?action=editer&amp;idP=<?php echo (int) $_SESSION['SidPersonne']; ?>">Modifier mes valeurs</a></div>
+        <div class="guideForm">Certains champs sont préremplis depuis vos valeurs par défaut &middot; <a href="/user/edit.php?action=editer&amp;idP=<?php echo (int) $_SESSION['SidPersonne']; ?>">Modifier mes valeurs</a></div>
         <?php } ?>
 
         <div class="alert-warn">

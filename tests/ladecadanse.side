@@ -5411,7 +5411,7 @@
         ["css=#profile > a", "css:finder"],
         ["xpath=//a[contains(text(),'Modifier')]", "xpath:link"],
         ["xpath=//div[@id='profile']/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/user-edit.php?idP=2&action=editer')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/user/edit.php?idP=2&action=editer')]", "xpath:href"],
         ["xpath=//div[3]/a", "xpath:position"],
         ["xpath=//a[contains(.,'Modifier')]", "xpath:innerText"]
       ],

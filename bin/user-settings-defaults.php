@@ -9,7 +9,7 @@ declare(strict_types=1);
  * non administrateur et **d'au moins 50 ajouts**, la catégorie, le lieu et les organisateurs
  * présents dans au moins 96 % de ses ajouts d'événements. Ce qui atteint le seuil devient une
  * valeur par défaut du formulaire d'ajout — le même réglage que le fieldset « Événements » du
- * profil (user-edit.php).
+ * profil (user/edit.php).
  *
  * Le plancher de 50 est ce qui rend le seuil opérant : à 96 %, il faut 25 ajouts pour s'autoriser
  * un seul écart, si bien qu'en dessous « 96 % » voudrait dire « aucune exception ». Au plancher,
@@ -25,7 +25,7 @@ declare(strict_types=1);
  *  - lieu et organisateurs doivent être `statut = 'actif'`, sinon le profil afficherait un
  *    réglage sans <option> correspondante, qu'un simple enregistrement effacerait.
  *
- * Le JSON n'est jamais construit ici : il sort de `UserSettings`, comme dans user-edit.php.
+ * Le JSON n'est jamais construit ici : il sort de `UserSettings`, comme dans user/edit.php.
  * La colonne est relue puis fusionnée, de sorte qu'un réglage d'un autre domaine survive.
  * `date_derniere_modif` n'est pas touchée : ce n'est pas la personne qui a modifié son profil.
  *

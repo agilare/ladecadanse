@@ -242,7 +242,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 
                 /*
                  * Aucune ligne dans `affiliation` ni `personne_organisateur` : elles sont
-                 * écrites par l'équipe, depuis user-edit.php, une fois la déclaration
+                 * écrites par l'équipe, depuis user/edit.php, une fois la déclaration
                  * vérifiée. Les poser ici donnait sur simple déclaration le droit de
                  * modifier la fiche du lieu et tous les événements qui s'y déroulent.
                  */

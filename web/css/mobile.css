@@ -805,7 +805,7 @@ ul#menu_descriptions li.ici a, ul#menu_descriptions li a
  * Les règles « .user-register » qui vivaient ici ne s'appliquaient plus : aucune balise
  * ne porte cette classe (le <main> de la page d'inscription a « colonne inscription »).
  * La mise en page de la page vit dans web/css/user/register.css, avec sa propre requête
- * de média. Seule la largeur des listes de user-edit.php est conservée.
+ * de média. Seule la largeur des listes de user/edit.php est conservée.
  */
 .user-edit form#ajouter_editer select
 {
