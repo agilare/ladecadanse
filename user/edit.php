@@ -184,6 +184,27 @@ if ($is_form_submitted)
     }
 
     /*
+     * Signature : deux cases à cocher, dont une décochée ne poste rien. La case du nom
+     * d'utilisateur n'est rendue qu'aux comptes qui en ont un, ce que dit le témoin
+     * signature_shown ; sans elle, la signature en base reste telle quelle (le défaut de
+     * $champs à la création). Les valeurs anciennes « prenom » et « nomcomplet », sans effet,
+     * deviennent « aucune » au premier enregistrement.
+     */
+    if ($areContributorFieldsEnabled)
+    {
+        $champs['avec_affiliation'] = !empty($_POST['avec_affiliation']) ? 'oui' : 'non';
+
+        if (!empty($_POST['signature_shown']))
+        {
+            $champs['signature'] = !empty($_POST['signature']) ? 'pseudo' : 'aucune';
+        }
+        elseif ($is_edit_mode)
+        {
+            $champs['signature'] = $stored_personne['signature'];
+        }
+    }
+
+    /*
      * Rattachements : une seule liste déroulante pour les lieux et les organisateurs (#102).
      *
      * Les valeurs postées portent leur type — « lieu:42 », « orga:17 » — parce que les deux
@@ -758,17 +779,36 @@ if ($areContributorFieldsEnabled)
     }
     else
     {
-        // Rattachements en lecture seule, avec leurs noms
-        $lieu_rattache = null;
-
-        if (!empty($champs['lieu']))
-        {
-            $stmt = $connectorPdo->prepare("SELECT idLieu, nom FROM lieu WHERE idLieu = ?");
-            $stmt->execute([(int) $champs['lieu']]);
-            $lieu_rattache = $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
-        }
-
+        // Organisateurs en lecture seule, avec leurs noms
         $organisateurs_rattaches = Personne::getOrganisateurs($get['idP']);
+    }
+
+    // Le lieu rattaché, lu même inactif : affiché en lecture seule, et nommé par la signature
+    $lieu_rattache = null;
+
+    if (!empty($champs['lieu']))
+    {
+        $stmt = $connectorPdo->prepare("SELECT idLieu, nom FROM lieu WHERE idLieu = ?");
+        $stmt->execute([(int) $champs['lieu']]);
+        $lieu_rattache = $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
+    }
+
+    /*
+     * Aperçu de la signature, selon les règles de Personne::getSignatureHtml() : un nom
+     * d'utilisateur en forme d'adresse ne signe pas, et le nom du lieu l'emporte sur le texte
+     * libre. Rendu ici pour le premier affichage ; web/js/forms.js le tient à jour pendant la saisie.
+     */
+    $signature_pseudo = trim((string) $champs['pseudo']);
+    $signature_signable_pseudo = Personne::looksLikeEmail($signature_pseudo) ? '' : $signature_pseudo;
+    $signature_affiliation = $lieu_rattache['nom'] ?? trim((string) $champs['affiliation']);
+
+    $signature_preview_html = $champs['signature'] === 'pseudo' && $signature_signable_pseudo !== ''
+        ? '<strong>' . sanitizeForHtml($signature_signable_pseudo) . '</strong>'
+        : '';
+
+    if ($champs['avec_affiliation'] === 'oui' && $signature_affiliation !== '')
+    {
+        $signature_preview_html .= ($signature_preview_html === '' ? '' : ' ') . '(' . sanitizeForHtml($signature_affiliation) . ')';
     }
 
     // Mêmes organisateurs et même tri pour la liste des rattachements et pour les valeurs par défaut
@@ -1011,75 +1051,39 @@ include("../_header.inc.php");
 
 
 
-        <fieldset>
+        <fieldset id="signature">
 
-            <legend>Votre signature</legend>
+            <legend>Votre signature (en bas de la page d'un événement que vous avez ajouté)</legend>
 
-            <div class="guideForm">Apparait sous les événements que vous avez ajoutés</div>
-            <label style="display:block;float:none;width:8em" >Afficher :</label>
-            <ul class="radio" style="display:block">
-                <?php
-                // Un compte sans nom d'utilisateur n'a rien à signer : l'option n'affichait
-                // qu'un libellé suivi de rien.
-                $signatures = trim((string) $champs['pseudo']) !== ''
-                    ? ["pseudo" => "Le nom d'utilisateur", "aucune" => "Aucune signature"]
-                    : ["aucune" => "Aucune signature"];
-                foreach ($signatures as $s => $label)
-                {
-                    $coche = '';
-                    if ($s == $champs['signature'])
-                    {
-                        $coche = 'checked="checked"';
-                    }
-                    echo '<li style="display:block" >
-                    <input type="radio" name="signature" value="'.$s.'" '.$coche.' id="signature_'.$s.'" />
-                    <label class="continu" for="signature_'.$s.'">'.$label.' ';
-
-                    if ($s == 'aucune') {
-                        echo "";
-                    }
-                    else
-                    {
-                        echo ": <b>" . sanitizeForHtml($champs[$s]) . "</b>";
-                    }
-                    echo '</label>
-                    </li>';
-                }
-                ?>
-            </ul>
-
-            <?php
-            echo $verif->getHtmlErreur("signature");
-            ?>
-
-            <label style="display:block;float:none">avec l'affiliation :</label>
-
-            <ul class="radio" style="display:block;">
-
-                <li style="display:block" >
-                    <input type="radio" id="avec_affiliation_oui" name="avec_affiliation" value="oui" class="radio_horiz"
+            <fieldset class="groupe-radios">
+                <legend>Afficher</legend>
+                <ul class="radio">
                     <?php
-                    if ($champs['avec_affiliation'] == "oui")
-                    {
-                        echo  ' checked="checked"';
-                    }
-                    echo "/>";
-                    ?>
-                    <label class="continu" for="avec_affiliation_oui">oui</label>
-                </li>
-                <li style="display:block" ><input type="radio" id="avec_affiliation_non" name="avec_affiliation" value="non" class="radio_horiz"
-                    <?php
-                    if ($champs['avec_affiliation'] == "non")
-                    {
-                        echo  ' checked="checked"';
-                    }
-                    echo "/>";
-                    ?>
-                    <label class="continu" for="avec_affiliation_non">non</label>
-                </li>
-            </ul>
+                    /* Un compte sans nom d'utilisateur n'a rien à signer : pas de case, et sa
+                       signature en base reste telle quelle. Le témoin dit au traitement que la
+                       case a été rendue, une case décochée ne postant rien. */
+                    if ($signature_pseudo !== '') : ?>
+                    <li>
+                        <input type="hidden" name="signature_shown" value="1" />
+                        <input type="checkbox" name="signature" value="pseudo" id="signature_pseudo" class="checkbox"
+                            <?php if ($champs['signature'] === 'pseudo') : ?> checked="checked" <?php endif; ?> />
+                        <label class="continu" for="signature_pseudo">votre identifiant « <b><?= sanitizeForHtml($signature_pseudo) ?></b> »</label>
+                    </li>
+                    <?php endif; ?>
+                    <li>
+                        <input type="checkbox" name="avec_affiliation" value="oui" id="avec_affiliation" class="checkbox"
+                            <?php if ($champs['avec_affiliation'] === 'oui') : ?> checked="checked" <?php endif; ?> />
+                        <label class="continu" for="avec_affiliation">avec votre affiliation (ci-dessus)</label>
+                    </li>
+                </ul>
+            </fieldset>
 
-            <?= $verif->getHtmlErreur('avec_affiliation') ?>
+            <p class="signature-apercu">
+                <label>Aperçu</label>
+                <output id="signature-preview" for="signature_pseudo avec_affiliation affiliations affiliation" aria-live="polite"
+                    data-pseudo="<?= sanitizeForHtml($signature_signable_pseudo) ?>"
+                    data-lieu="<?= sanitizeForHtml($canEditAffiliations ? '' : (string) ($lieu_rattache['nom'] ?? '')) ?>"><?= $signature_preview_html === '' ? '<i>aucune signature</i>' : $signature_preview_html ?></output>
+            </p>
 
         </fieldset>
 
