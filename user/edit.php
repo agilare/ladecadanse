@@ -164,6 +164,11 @@ $champs = [
  */
 $personne_columns = ['pseudo', 'affiliation', 'email', 'groupe', 'signature', 'avec_affiliation', 'statut', 'gds', 'mot_de_passe', 'settings'];
 
+$user_levels = UserLevel::getConstants();
+
+// AUTHOR ne s'attribue plus depuis ce formulaire ; les comptes qui le portent le gardent
+$assignable_levels = array_values(array_diff($user_levels, [UserLevel::AUTHOR]));
+
 $is_form_submitted = isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok';
 
 
@@ -257,10 +262,36 @@ if ($is_form_submitted)
     $verif->valider($champs['pseudo'], "pseudo", "texte", 2, 50, 0);
 
     /*
-     * Les non admin ne peuvent rendre admin quelqu'un
+     * Groupe et statut ne se choisissent qu'en superadmin ; pour les autres, ils restent ceux de
+     * la session et de la base, quoi que porte le POST.
+     *
+     * Une valeur verrouillée (AUTHOR, ou une valeur héritée hors de la liste comme le groupe 10 ou le
+     * statut « demande ») est rendue cochée mais désactivée : le navigateur ne la poste pas. Rien de
+     * posté vaut donc « inchangé ». Seule la valeur déjà en base échappe à la liste des choix permis.
      */
-    if (!empty($champs['groupe']) && !$is_superadmin && $champs['groupe'] == UserLevel::SUPERADMIN) {
-        $verif->setErreur("groupe", "Vous ne pouvez pas attribuer ce groupe");
+    $stored_groupe = $is_edit_mode ? (int) $stored_personne['groupe'] : null;
+    $stored_statut = $is_edit_mode ? (string) $stored_personne['statut'] : 'actif';
+
+    if (!$is_superadmin)
+    {
+        $champs['groupe'] = (int) $_SESSION['Sgroupe'];
+    }
+    elseif ($champs['groupe'] === '' && $stored_groupe !== null)
+    {
+        $champs['groupe'] = $stored_groupe;
+    }
+    elseif (!in_array((string) $champs['groupe'], array_map('strval', array_merge($assignable_levels, $stored_groupe !== null ? [$stored_groupe] : [])), true))
+    {
+        $verif->setErreur("groupe", "Choisissez un groupe parmi ceux proposés");
+    }
+
+    if (!$is_superadmin || !$is_edit_mode || $champs['statut'] === '')
+    {
+        $champs['statut'] = $stored_statut;
+    }
+    elseif (!in_array($champs['statut'], array_merge(Personne::$statuts, [$stored_statut]), true))
+    {
+        $verif->setErreur("statut", "Choisissez un statut parmi ceux proposés");
     }
 
     /*
@@ -408,7 +439,6 @@ if ($is_form_submitted)
         }
 
         if (!$is_superadmin) {
-            $champs['groupe'] = $_SESSION['Sgroupe'];
             $champs['pseudo'] = $_SESSION['user'];
         }
 
@@ -666,7 +696,34 @@ if ($get['action'] == 'editer')
     $champs['organisateurs'] = $affiliations_stockees['organisateurs'];
 }
 
-$user_levels = UserLevel::getConstants();
+// Premier affichage de l'ajout : ACTOR coché par défaut
+if ($get['action'] == 'ajouter')
+{
+    $champs['groupe'] = UserLevel::ACTOR;
+}
+
+/*
+ * Choix rendus en boutons radio : les valeurs permises, plus celle du compte si elle n'en fait pas
+ * partie (AUTHOR, groupe 10 hérité, statut « demande »), cochée et désactivée.
+ */
+$groupe_choices = [];
+
+foreach ($user_levels as $nom => $id)
+{
+    $groupe_choices[(int) $id] = ['label' => $id . ' : ' . $nom, 'locked' => !in_array($id, $assignable_levels, true)];
+}
+
+if ($is_edit_mode && !isset($groupe_choices[(int) $stored_personne['groupe']]))
+{
+    $groupe_choices[(int) $stored_personne['groupe']] = ['label' => $stored_personne['groupe'] . ' : ancien niveau', 'locked' => true];
+}
+
+$statut_choices = Personne::$statuts;
+
+if ($is_edit_mode && !in_array($stored_personne['statut'], $statut_choices, true))
+{
+    $statut_choices[] = (string) $stored_personne['statut'];
+}
 
 if ($areContributorFieldsEnabled)
 {
@@ -763,10 +820,11 @@ include("../_header.inc.php");
             <fieldset>
                 <legend>Statut</legend>
                 <ul class="radio">
-                <?php foreach (Personne::$statuts as $s) : ?>
+                <?php foreach ($statut_choices as $s) : ?>
                     <li class="listehoriz">
                         <input type="radio" name="statut" value="<?= sanitizeForHtml($s) ?>"
                             <?php if ($s == $champs['statut']) : ?> checked="checked" <?php endif; ?>
+                            <?php if (!in_array($s, Personne::$statuts, true)) : ?> disabled="disabled" <?php endif; ?>
                             id="statut_<?= sanitizeForHtml($s) ?>" class="radio_horiz" />
                         <label for="statut_<?= sanitizeForHtml($s) ?>" class="continu"><?= sanitizeForHtml($s) ?></label>
                     </li>
@@ -775,8 +833,6 @@ include("../_header.inc.php");
                 <?= $verif->getHtmlErreur("statut") ?>
             </fieldset>
 
-        <?php else : ?>
-            <input type="hidden" name="statut" value="actif" id="statut_actif" title="statut" />
         <?php endif; ?>
 
         <fieldset>
@@ -804,18 +860,21 @@ include("../_header.inc.php");
             </p>
 
             <?php if ($is_superadmin) : ?>
-                <p>
-                    <label for="groupe">Groupe* :</label>
-                    <select name="groupe" id="groupe">
-                        <?php foreach ($user_levels as $nom => $id) : ?>
-                            <?php /* à l'ajout, sans quoi le navigateur retient la première option : SUPERADMIN */ ?>
-                            <option <?php if ($id == $champs['groupe'] || (!$is_edit_mode && $champs['groupe'] == '' && $id == UserLevel::ACTOR)) : ?>selected="selected"<?php endif ?> value="<?= (int) $id ?>">
-                                <?= (int) $id ?> : <?= sanitizeForHtml($nom) ?>
-                            </option>
-                        <?php endforeach ?>
-                    </select>
+                <?php /* div et non p : un <ul> fermerait le paragraphe */ ?>
+                <div>
+                    <label>Groupe*</label>
+                    <ul class="radio">
+                    <?php foreach ($groupe_choices as $id => $choice) : ?>
+                        <li class="listehoriz">
+                            <input type="radio" name="groupe" value="<?= $id ?>" id="groupe_<?= $id ?>" class="radio_horiz"
+                                <?php if ($id == $champs['groupe']) : ?> checked="checked" <?php endif; ?>
+                                <?php if ($choice['locked']) : ?> disabled="disabled" <?php endif; ?> />
+                            <label for="groupe_<?= $id ?>" class="continu"><?= sanitizeForHtml($choice['label']) ?></label>
+                        </li>
+                    <?php endforeach ?>
+                    </ul>
                     <?= $verif->getHtmlErreur("groupe") ?>
-                </p>
+                </div>
             <?php endif; ?>
         </fieldset>
 

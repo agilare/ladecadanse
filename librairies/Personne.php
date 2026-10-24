@@ -15,7 +15,8 @@ use PDO;
  */
 class Personne
 {
-    public static $statuts = ['demande', 'actif', 'inactif'];
+    // Statuts qu'un compte peut recevoir ; l'enum de la colonne garde « demande » pour les comptes anciens
+    public static $statuts = ['actif', 'inactif'];
 
     public const int LOW_ACTIVITY_MONTHS_NB = 12;
     public const int VERY_LOW_ACTIVITY_MONTHS_NB = 24;
