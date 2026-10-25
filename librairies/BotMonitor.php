@@ -49,6 +49,12 @@ class BotMonitor
      */
     private const STATIC_ASSET_PATTERN = '~\.(?:jpe?g|png|gif|webp|avif|svg|ico|css|m?js|map|woff2?|ttf)$~i';
 
+    /** @var string famille enregistrée pour un User-Agent qui se dit robot sans qu'on le connaisse */
+    public const FAMILY_OTHER_BOT = 'Autre bot';
+
+    /** @var string famille enregistrée pour un User-Agent sans signature de navigateur : node, curl, agrégateurs… */
+    public const FAMILY_SCRIPT = 'Script';
+
     /**
      * Familles de bots connues : motif regex (sur User-Agent en minuscules) => famille.
      * Évaluées dans l'ordre, avant le motif générique.
@@ -60,7 +66,10 @@ class BotMonitor
         '~gptbot|oai-searchbot|chatgpt~' => 'OpenAI',
         '~claudebot|anthropic~' => 'Anthropic',
         '~perplexitybot|perplexity~' => 'Perplexity',
-        '~meta-externalagent|facebookexternalhit|facebookbot~' => 'Meta',
+        '~meta-externalagent|facebookbot~' => 'Meta',
+        // les aperçus de liens de Facebook, WhatsApp et Instagram, pas la collecte pour l'IA :
+        // famille à part, pour ne pas lire un partage comme un entraînement
+        '~facebookexternalhit~' => 'Facebook (aperçus)',
         '~applebot~' => 'Apple',
         '~duckduckbot~' => 'DuckDuckGo',
         '~yandex~' => 'Yandex',
@@ -82,6 +91,65 @@ class BotMonitor
     private const BOT_GENERIC_PATTERN =
         '~(bot|crawl|spider|scrap|slurp|curl|wget|python-requests|python-urllib|go-http-client|java/|libwww|httpclient|headless)~';
 
+    /**
+     * Signature d'un navigateur : tous commencent par « Mozilla/ » depuis vingt ans, Opera
+     * excepté dans ses vieilles versions. Un User-Agent qui ne commence pas ainsi est un
+     * programme, quoi qu'il dise d'autre.
+     */
+    private const BROWSER_PATTERN = '~^(mozilla|opera)/~';
+
+    // Genres de visiteur, calculés à l'affichage d'après ce que la ligne a enregistré : ce que
+    // l'adresse annonce (famille, signature de navigateur) et ce qu'elle a fait (piège, volume).
+    public const KIND_SCRAPER = 'scraper';
+    public const KIND_SEARCH = 'search';
+    public const KIND_AI = 'ai';
+    public const KIND_SEO = 'seo';
+    public const KIND_BOT = 'bot';
+    public const KIND_SCRIPT = 'script';
+    public const KIND_SUSPECT = 'suspect';
+    public const KIND_HUMAN = 'human';
+
+    /** @var array<string, string> famille déclarée => genre ; une famille absente d'ici est un robot « autre » */
+    private const FAMILY_KINDS = [
+        'Google' => self::KIND_SEARCH,
+        'Bing' => self::KIND_SEARCH,
+        'Apple' => self::KIND_SEARCH,
+        'DuckDuckGo' => self::KIND_SEARCH,
+        'Yandex' => self::KIND_SEARCH,
+        'Baidu' => self::KIND_SEARCH,
+        'Huawei' => self::KIND_SEARCH,
+        'OpenAI' => self::KIND_AI,
+        'Anthropic' => self::KIND_AI,
+        'Perplexity' => self::KIND_AI,
+        'Meta' => self::KIND_AI,
+        'Amazon' => self::KIND_AI,
+        'ByteDance' => self::KIND_AI,
+        'CommonCrawl' => self::KIND_AI,
+        'Ahrefs' => self::KIND_SEO,
+        'Semrush' => self::KIND_SEO,
+        'Majestic' => self::KIND_SEO,
+        'Moz' => self::KIND_SEO,
+        'Babbar' => self::KIND_SEO,
+        'Scrapy' => self::KIND_SCRIPT,
+        self::FAMILY_SCRIPT => self::KIND_SCRIPT,
+    ];
+
+    /**
+     * Libellé et explication de chaque genre, pour le tableau de bord.
+     *
+     * @var array<string, array{0: string, 1: string}>
+     */
+    public const KIND_LABELS = [
+        self::KIND_SCRAPER => ['Scraper', "A suivi le lien piège du pied de page, interdit par robots.txt : aspire le site sans en respecter les règles, quel que soit le navigateur qu'il annonce."],
+        self::KIND_SEARCH => ['Moteur de recherche', "Robot déclaré d'un moteur de recherche : indexe pour amener des visiteurs, et respecte robots.txt. La famille se lit dans le User-Agent, qui peut être usurpé."],
+        self::KIND_AI => ['Robot IA', "Robot déclaré d'un service d'IA : collecte des pages pour entraîner un modèle ou répondre à ses utilisateurs, sans guère renvoyer de visiteurs. Se pilote par robots.txt quand il le respecte."],
+        self::KIND_SEO => ['Outil SEO', "Explore le site pour vendre des données aux référenceurs : aucun visiteur en retour."],
+        self::KIND_BOT => ['Autre robot', "Se présente comme un robot (bot, crawler, spider…) d'une famille que le site ne connaît pas."],
+        self::KIND_SCRIPT => ['Script', "User-Agent sans signature de navigateur (node, curl, n8n, agrégateurs…) : un programme qui ne se cache pas, mais ne dit pas ce qu'il fait."],
+        self::KIND_SUSPECT => ['Navigateur suspect', "Se présente comme un navigateur, sans marque de robot ni passage par le piège, mais avec un volume ou un rythme que peu de visiteurs atteignent. Peut aussi être une adresse partagée : réseau mobile, école, entreprise."],
+        self::KIND_HUMAN => ['Navigateur', "Se présente comme un navigateur et n'a rien fait d'anormal : un visiteur, jusqu'à preuve du contraire."],
+    ];
+
     public function __construct(
         private readonly PDO $pdo,
         private readonly ?Logger $logger = null
@@ -101,15 +169,12 @@ class BotMonitor
     }
 
     /**
-     * Famille de bot d'après le User-Agent : nom connu (Google, OpenAI...),
-     * "Autre bot" si seul le motif générique correspond, null si probable humain.
+     * Famille de bot d'après le User-Agent : nom connu (Google, OpenAI...), FAMILY_OTHER_BOT si
+     * seul le motif générique correspond, FAMILY_SCRIPT s'il n'a pas la signature d'un
+     * navigateur (vide compris), null si probable humain.
      */
     public static function detectBotFamily(string $userAgent): ?string
     {
-        if ($userAgent === '') {
-            return null;
-        }
-
         $ua = mb_strtolower($userAgent);
 
         foreach (self::BOT_FAMILIES as $pattern => $family) {
@@ -119,10 +184,70 @@ class BotMonitor
         }
 
         if (preg_match(self::BOT_GENERIC_PATTERN, $ua)) {
-            return 'Autre bot';
+            return self::FAMILY_OTHER_BOT;
+        }
+
+        if (!preg_match(self::BROWSER_PATTERN, $ua)) {
+            return self::FAMILY_SCRIPT;
         }
 
         return null;
+    }
+
+    /**
+     * Genre d'une ligne de bot_monitor, pour le tableau de bord : le piège l'emporte sur tout,
+     * puis ce que le User-Agent déclare, puis le volume. Un robot déclaré n'est jamais
+     * « suspect » sur son volume : visiter beaucoup est son métier.
+     *
+     * @param array<string, mixed> $row ligne avec honeypot_triggered, bot_family, is_crawler_detect, hit_count, peak_hits
+     * @param int $suspectThreshold pages vues au-delà desquelles un navigateur devient suspect
+     */
+    public static function classify(array $row, int $suspectThreshold): string
+    {
+        if (!empty($row['honeypot_triggered'])) {
+            return self::KIND_SCRAPER;
+        }
+
+        $family = $row['bot_family'] ?? null;
+        if ($family !== null) {
+            return self::familyKind((string) $family);
+        }
+
+        // marquée robot sans famille : une ligne d'avant l'enregistrement de la famille
+        if (!empty($row['is_crawler_detect'])) {
+            return self::KIND_BOT;
+        }
+
+        if ((int) ($row['hit_count'] ?? 0) > $suspectThreshold || (int) ($row['peak_hits'] ?? 0) >= self::BURST_THRESHOLD) {
+            return self::KIND_SUSPECT;
+        }
+
+        return self::KIND_HUMAN;
+    }
+
+    /**
+     * Genre d'une famille déclarée, pour les statistiques par famille.
+     */
+    public static function familyKind(?string $family): string
+    {
+        if ($family === null) {
+            return self::KIND_BOT;
+        }
+
+        return self::FAMILY_KINDS[$family] ?? self::KIND_BOT;
+    }
+
+    /**
+     * Ce qu'une adresse annonce par son User-Agent : sa famille de robot, « navigateur » ou
+     * « script ». Complète le genre d'un scraper, qui se déguise ou non.
+     */
+    public static function declaredIdentity(?string $family, string $userAgent): string
+    {
+        if ($family !== null && $family !== self::FAMILY_SCRIPT) {
+            return $family;
+        }
+
+        return preg_match(self::BROWSER_PATTERN, mb_strtolower($userAgent)) ? 'navigateur' : 'script';
     }
 
     /**

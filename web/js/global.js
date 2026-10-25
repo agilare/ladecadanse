@@ -14,6 +14,7 @@ export const AppGlobal =
         Events.init();
         Lieux.init();
         LieuInfo.init();
+        HelpPopover.init();
         TimeEstimate.init();
         HomePage.init();
         Calendar.init();
@@ -727,6 +728,88 @@ const LieuInfo = {
         });
 
         trigger.hidden = (idLieuSelectionne() === null);
+    }
+};
+
+/**
+ * Bulles d'explication génériques (HtmlShrink::helpPopover()) : un bouton « i » par bulle, qui
+ * l'ouvre au clic ou au clavier par son attribut popovertarget, sans script. Le script ne fait
+ * que placer la bulle sous son bouton — l'API la centrerait dans la fenêtre — et tenir le repli
+ * des navigateurs sans l'API (Safari < 17), par classes, comme LieuInfo.
+ *
+ * @returns {undefined}
+ */
+const HelpPopover = {
+    init : function bindHelpPopovers()
+    {
+        const popovers = document.querySelectorAll('.help-popover');
+
+        if (popovers.length === 0)
+        {
+            return;
+        }
+
+        const supportsPopoverApi = 'showPopover' in HTMLElement.prototype;
+
+        function triggerOf(popover)
+        {
+            return document.querySelector('[popovertarget="' + popover.id + '"]');
+        }
+
+        popovers.forEach(function bindOne(popover)
+        {
+            const trigger = triggerOf(popover);
+
+            if (!trigger)
+            {
+                return;
+            }
+
+            function positionner()
+            {
+                const rect = trigger.getBoundingClientRect();
+                // alignée sur le bouton, ramenée dans la fenêtre si elle en déborderait à droite
+                const left = Math.max(8, Math.min(rect.left, window.innerWidth - popover.offsetWidth - 8));
+                popover.style.top = (rect.bottom + 4) + 'px';
+                popover.style.left = left + 'px';
+            }
+
+            if (supportsPopoverApi)
+            {
+                popover.addEventListener('toggle', function placerALOuverture(e)
+                {
+                    if (e.newState === 'open')
+                    {
+                        positionner();
+                    }
+                });
+                return;
+            }
+
+            popover.classList.add('help-popover--fallback');
+
+            trigger.addEventListener('click', function basculer(e)
+            {
+                e.preventDefault();
+                popover.classList.toggle('help-popover--open');
+            });
+        });
+
+        if (!supportsPopoverApi)
+        {
+            document.addEventListener('click', function fermerSiClicExterieur(e)
+            {
+                document.querySelectorAll('.help-popover--open').forEach(function fermer(popover)
+                {
+                    const trigger = triggerOf(popover);
+
+                    if (!popover.contains(e.target) && !(trigger && trigger.contains(e.target)))
+                    {
+                        popover.classList.remove('help-popover--open');
+                    }
+                });
+            });
+        }
     }
 };
 

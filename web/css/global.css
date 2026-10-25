@@ -2071,6 +2071,68 @@ td.favori_action
     color: #a00;
 }
 
+/*
+ * Bulle d'explication générique (HtmlShrink::helpPopover()) : un bouton « i » et sa bulle,
+ * même mécanique et même repli que lieu-info. Dans un en-tête de tableau, la bulle doit sortir
+ * du conteneur qui défile : d'où l'API Popover plutôt que .tooltip, que l'overflow rognerait.
+ */
+.help-wrapper
+{
+    position: relative;
+    display: inline-block;
+}
+
+.help-trigger
+{
+    background: none;
+    border: none;
+    padding: 0;
+    margin-left: 0.3em;
+    cursor: help;
+    font: inherit;
+    color: #5C7378;
+    vertical-align: middle;
+}
+
+.help-popover
+{
+    display: none;
+    position: fixed;
+    inset: unset;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    box-shadow: 0 4px 12px rgba(0,0,0,.15);
+    padding: 0.6em 0.8em;
+    margin: 0;
+    box-sizing: border-box;
+    width: max-content;
+    max-width: min(24em, calc(100vw - 2em));
+    overflow: visible;
+    text-align: left; /* la bulle d'un en-tête de colonne hériterait de son centrage */
+    font-size: 0.9em;
+    font-weight: normal; /* et de sa graisse */
+    line-height: 1.4;
+}
+
+.help-popover:popover-open
+{
+    display: block;
+}
+
+.help-popover--fallback
+{
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    z-index: 999;
+}
+
+.help-popover--fallback.help-popover--open
+{
+    display: block;
+}
+
 td.lieu_actions_evenement
 {
     width: 80px;
