@@ -50,7 +50,29 @@ class AdminBotsCest
             $I->seeResponseCodeIs(HttpCode::OK);
             $I->seeElement('nav.tabs a.ici[href="?view=' . $view . '"]');
             $I->seeElement('ul.bots-totaux');
+            // l'aide de la page, puis celle de l'onglet : une phrase visible, le détail replié
+            $I->seeElement('details.bots-help--global > summary');
+            $I->seeElement('details.bots-help:not(.bots-help--global) > summary');
         }
+    }
+
+    /**
+     * Les en-têtes qui demandent une explication portent un bouton qui vise une bulle du même
+     * identifiant, et chaque ligne porte son type.
+     */
+    public function columnsCarryTheirHelpAndRowsTheirKind(SiteTester $I)
+    {
+        $I->skipUnlessConfigured('LADECADANSE_SITE_ADMIN_USER', 'LADECADANSE_SITE_ADMIN_PASS');
+
+        // la visite anonyme garantit au moins une ligne dans « Plus forts pics » au seuil 1
+        $I->amOnPage('/articles/apropos.php');
+
+        $I->loginAsAdmin();
+        $I->amOnPage('/admin/bots.php?view=rafales&seuil=1');
+
+        $I->seeElement('th button.help-trigger[popovertarget="help-peak"]');
+        $I->seeElement('#help-peak.help-popover[popover]');
+        $I->seeElement('table#ajouts td.bots-kind .bots-kind-badge');
     }
 
     /**

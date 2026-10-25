@@ -4,6 +4,9 @@
 
 Upgrade steps (migrations, side effects) : [UPGRADE.md](UPGRADE.md).
 
+### Added
+- bots : the dashboard explains itself — a one-line summary with folded details on each tab, an `i` button on the column headers, and a "Type" column (scraper, search engine, AI bot, SEO tool, script, suspect or plain browser) ; a User-Agent without a browser signature now counts as a bot, not as a suspect human
+
 ### Changed
 - database : the twelve MyISAM tables move to InnoDB #228 — row locking, crash recovery, and the ground for transactions and foreign keys ; the search ranking changes with the engine — see [UPGRADE.md](UPGRADE.md)
 

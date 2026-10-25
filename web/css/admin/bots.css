@@ -19,13 +19,74 @@
 
 /* les onglets de cette page utilisent .tabs, promu dans global.css */
 
-.bots-avertissement {
-    color: #856404;
-    background: #fff3cd;
-    border: 1px solid #ffeeba;
+/* aide repliée en tête de la page et de chaque onglet : une phrase toujours visible, le détail au clic */
+.bots-help {
+    margin: 0 0 1em 0;
+    max-width: 52em;
+    background: #f7f7f7;
+    border: 1px solid #ddd;
     border-radius: 3px;
+}
+
+.bots-help > summary {
     padding: 0.5em 0.8em;
-    max-width: 45em;
+    cursor: pointer;
+}
+
+.bots-help > summary:hover {
+    background: #ececec;
+}
+
+.bots-help-body {
+    padding: 0 0.8em 0.6em 0.8em;
+    font-size: 0.95em;
+}
+
+#conteneur .bots-help-body p {
+    margin: 0.5em 0;
+}
+
+/* légende des types : un badge, sa définition */
+.bots-legend {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 0.3em 0.8em;
+    margin: 0.6em 0;
+}
+
+.bots-legend dt,
+.bots-legend dd {
+    margin: 0;
+}
+
+/* type d'une ligne : un badge par genre, la précision (famille, déguisement) en dessous */
+.bots-kind {
+    white-space: nowrap;
+}
+
+.bots-kind-badge {
+    display: inline-block;
+    padding: 0.1em 0.5em;
+    border-radius: 0.8em;
+    font-size: 0.9em;
+    background: #e5e5e5;
+    color: #333;
+    cursor: help;
+}
+
+.bots-kind-badge--scraper { background: #f8d7da; color: #721c24; }
+.bots-kind-badge--suspect { background: #fff3cd; color: #856404; }
+.bots-kind-badge--search  { background: #d4edda; color: #155724; }
+.bots-kind-badge--ai      { background: #e2d9f3; color: #432874; }
+.bots-kind-badge--seo     { background: #ffe5d0; color: #7a3e00; }
+.bots-kind-badge--bot     { background: #d6e4f0; color: #1b4f72; }
+.bots-kind-badge--human   { background: transparent; border: 1px solid #ccc; color: #555; }
+
+.bots-kind-detail {
+    display: block;
+    margin-top: 0.15em;
+    font-size: 0.85em;
+    color: #666;
 }
 
 /* la table défile dans son conteneur plutôt que d'élargir la page */

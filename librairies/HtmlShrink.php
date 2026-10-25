@@ -474,6 +474,29 @@ class HtmlShrink
             . '</span></td>';
     }
 
+    /**
+     * Bouton « i » qui ouvre une bulle d'explication au clic ou au clavier, pour un en-tête de
+     * colonne ou un libellé. API Popover native : la bulle s'affiche au-dessus de tout, y compris
+     * d'un tableau qui défile dans son conteneur, là où une infobulle CSS (.tooltip) serait
+     * rognée. HelpPopover (global.js) la place sous son bouton et tient le repli des navigateurs
+     * sans l'API ; sans JavaScript, le title du bouton porte le même texte.
+     *
+     * @param string $id    unique dans la page ; l'identifiant de la bulle est « help-$id »
+     * @param string $label ce que la bulle explique, pour le lecteur d'écran
+     * @param string $html  contenu de la bulle : du HTML de confiance, écrit dans le code
+     */
+    public static function helpPopover(string $id, string $label, string $html): string
+    {
+        $id = 'help-' . $id;
+
+        return '<span class="help-wrapper">'
+            . '<button type="button" class="help-trigger" popovertarget="' . $id . '"'
+            . ' aria-label="Explication : ' . sanitizeForHtml($label) . '" title="' . sanitizeForHtml(strip_tags($html)) . '">'
+            . '<i class="fa fa-info-circle" aria-hidden="true"></i></button>'
+            . '<div id="' . $id . '" class="help-popover" popover>' . $html . '</div>'
+            . '</span>';
+    }
+
     public static function msgInfo(string $message): void
     {
         echo '<div class="msg_info">' . $message . '</div>';
