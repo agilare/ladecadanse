@@ -18,13 +18,12 @@ Avant, par le tunnel SSH ([docs/prod-copy.md](docs/prod-copy.md)) :
 2. un relevé, pour la place et pour la comparaison d'après. InnoDB n'occupe pas forcément davantage : les petites tables grossissent (16 Ko par index au minimum), mais la reconstruction compacte une table MyISAM fragmentée par des années d'écritures — sur une copie locale de 5 000 événements, les douze tables sont passées de 16 à 10 Mo :
 
     ```sql
-    SELECT TABLE_NAME, ENGINE, TABLE_ROWS, ROUND((DATA_LENGTH + INDEX_LENGTH) / 1048576) AS mb, AUTO_INCREMENT
-      FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() ORDER BY TABLE_NAME;
+    SHOW TABLE STATUS FROM `nom_de_la_base`;
     SHOW VARIABLES WHERE Variable_name IN ('ft_min_word_len', 'innodb_ft_min_token_size', 'max_statement_time');
     ```
 
-    `max_statement_time` doit valoir 0, sans quoi le serveur tuerait un `ALTER` trop long. Les deux variables FULLTEXT valent 3 en production : la longueur minimale des mots cherchables ne change pas avec le moteur ;
-3. `LADECADANSE_DB=prod composer db:migrate -- --dry-run` montre les `ALTER` qui vont passer, puis `LADECADANSE_DB=prod composer db:migrate`. Ouvrir le tunnel avec `-o ServerAliveInterval=30` pour qu'il tienne le temps de la copie d'`evenement`. Si la connexion tombe malgré tout, l'`ALTER` en cours peut aller à son terme côté serveur sans que Doctrine l'apprenne : attendre qu'il disparaisse de `SHOW PROCESSLIST`, puis relancer `db:migrate`, qui ne reprend que les tables encore en MyISAM.
+    Nommer la base plutôt que `DATABASE()` : phpMyAdmin exécute une requête sur `information_schema.TABLES` dans `information_schema` même, et `DATABASE()` y vaut `information_schema` — le relevé liste alors les tables système au lieu de celles du site. Juste après la conversion, `Data_length` et `Index_length` des tables InnoDB peuvent rester à quelques kilo-octets tant que leurs statistiques ne sont pas recalculées ; `ANALYZE TABLE` les rafraîchit. `max_statement_time` doit valoir 0, sans quoi le serveur tuerait un `ALTER` trop long. Les deux variables FULLTEXT valent 3 en production : la longueur minimale des mots cherchables ne change pas avec le moteur ;
+3. `LADECADANSE_DB=prod composer db:migrate -- --dry-run` montre les `ALTER` qui vont passer, puis `LADECADANSE_DB=prod composer db:migrate`. Ouvrir le tunnel avec `-o ServerAliveInterval=30` pour qu'il tienne le temps de la copie d'`evenement` — l'option se place avant `-L`, qui doit être suivi de son port : `ssh -N -o ServerAliveInterval=30 -L 3307:XXXXXX.myd.infomaniak.com:3306 utilisateur@exemple.ch`. Si la connexion tombe malgré tout, l'`ALTER` en cours peut aller à son terme côté serveur sans que Doctrine l'apprenne : attendre qu'il disparaisse de `SHOW PROCESSLIST`, puis relancer `db:migrate`, qui ne reprend que les tables encore en MyISAM.
 
 Après : le même relevé — douze tables en `InnoDB`, `AUTO_INCREMENT` d'`evenement` inchangé (la reconstruction le préserve, vérifié sur 10.11.15 ; le compteur InnoDB est persistant depuis MariaDB 10.2.4), `SHOW INDEX FROM evenement WHERE Index_type = 'FULLTEXT'` en rend trois et `lieu` un — puis une recherche sur le site.
 
