@@ -885,12 +885,19 @@ include("../_header.inc.php");
                     <?= $verif->getHtmlErreur('pseudo') ?>
                     <?= $verif->getHtmlErreur("pseudoIdentique") ?>
                 <?php elseif (trim((string) $champs['pseudo']) !== '') : ?>
-                    <input type="text" name="pseudo" id="pseudo" size="30" maxlength="80" value="<?= sanitizeForHtml($champs['pseudo']) ?>" readonly style="background:#f4f4f4" />
+                    <input type="text" name="pseudo" id="pseudo" size="30" maxlength="80" value="<?= sanitizeForHtml($champs['pseudo']) ?>" readonly />
                 <?php else : ?>
                     <?php /* Ni champ ni valeur : ce compte n'a pas de nom d'utilisateur */ ?>
-                    <span class="guideChamp">aucun&nbsp;: c'est votre e-mail qui vous identifie</span>
+                    <span class="sans-valeur">aucun</span>
                 <?php endif; ?>
             </p>
+            <div class="guideChamp">
+                <?php if (trim((string) $champs['pseudo']) !== '' || $is_superadmin) : ?>
+                    Permet de se connecter, comme l'e-mail, et peut signer les événements ajoutés
+                <?php else : ?>
+                    C'est votre e-mail qui vous identifie
+                <?php endif; ?>
+            </div>
 
             <p>
                 <label for="email">E-mail*</label>
@@ -898,12 +905,13 @@ include("../_header.inc.php");
                 <?= $verif->getHtmlErreur("email") ?>
                 <?= $verif->getErreur("emailIdentique") ?>
             </p>
+            <div class="guideChamp">Pour se connecter et recevoir un lien en cas de mot de passe oublié</div>
 
             <?php if ($is_superadmin) : ?>
-                <?php /* div et non p : un <ul> fermerait le paragraphe */ ?>
-                <div>
-                    <label>Groupe*</label>
-                    <ul class="radio">
+                <?php /* sa légende tient la place d'un libellé, comme « Afficher » plus bas */ ?>
+                <fieldset class="groupe-radios">
+                    <legend>Groupe*</legend>
+                    <ul class="radio mobile-vertical">
                     <?php foreach ($groupe_choices as $id => $choice) : ?>
                         <li class="listehoriz">
                             <input type="radio" name="groupe" value="<?= $id ?>" id="groupe_<?= $id ?>" class="radio_horiz"
@@ -914,7 +922,7 @@ include("../_header.inc.php");
                     <?php endforeach ?>
                     </ul>
                     <?= $verif->getHtmlErreur("groupe") ?>
-                </div>
+                </fieldset>
             <?php endif; ?>
         </fieldset>
 
@@ -965,7 +973,7 @@ include("../_header.inc.php");
                         <label for="affiliations">Lieu et organisateurs</label>
                         <?php /* Un seul lieu peut être retenu, autant d'organisateurs qu'on veut; vérifié au traitement */ ?>
                         <select name="affiliations[]" id="affiliations" multiple class="js-select2-affiliations"
-                                data-placeholder="Tapez un nom de lieu ou d'organisateur..." style="max-width:350px;">
+                                data-placeholder="Tapez un nom de lieu ou d'organisateur...">
                             <optgroup label="Lieux">
                             <?php foreach ($lieux_affiliables as $lieu_affiliable) : ?>
                                 <?php $valeur = 'lieu:' . (int) $lieu_affiliable['idLieu']; ?>
@@ -982,8 +990,8 @@ include("../_header.inc.php");
                         <?= $verif->getHtmlErreur("affiliations"); ?>
                     </p>
 
-                    <div class="guideChamp" style='padding: 0em 0 0.2em 175px;'>
-                        Plusieurs organisateurs, un seul lieu possibles.<br>Le compte pourra modifier leurs fiches et les événements qui s'y rattachent
+                    <div class="guideChamp">
+                        Un seul lieu, autant d'organisateurs que nécessaire. Le compte pourra modifier leurs fiches et les événements qui s'y rattachent
                     </div>
 
                     <p>
@@ -992,18 +1000,19 @@ include("../_header.inc.php");
                         <?= $verif->getHtmlErreur("affiliation"); ?>
                     </p>
 
-                    <div class="guideChamp" style="padding: 0em 0 0.2em 175px;">Signe aussi les événements quand la signature (voir ci-dessous) le demande</div>
+                    <div class="guideChamp">Nom du lieu ou de l'organisateur représenté, en texte libre ; repris par la signature si aucun lieu n'est choisi</div>
 
                     <?php
                     /*
                      * L'inscription de l'utilisateur enregistre une déclaration, puis l'équipe la vérifie
-                     * et peut ici lier le compte et enfin notifier l'utilisateur
+                     * et peut ici lier le compte et enfin notifier l'utilisateur. Case dans la colonne des
+                     * champs, libellé après elle : le texte est trop long pour la colonne des libellés.
                      */
                     if ((int) $_SESSION['SidPersonne'] !== $get['idP']) :
                     ?>
-                    <p>
-                        <label for="notify_affiliation">Prévenir par e-mail du rattachement</label>
+                    <p class="case-seule">
                         <input type="checkbox" name="notify_affiliation" id="notify_affiliation" value="1" class="checkbox" />
+                        <label for="notify_affiliation" class="continu">Prévenir par e-mail du rattachement</label>
                     </p>
                     <?php endif; ?>
 
@@ -1013,33 +1022,34 @@ include("../_header.inc.php");
 
                     <?php if (!empty($champs['affiliation'])) : ?>
                         <p>
-                            <label></label><input name="affiliation" type="text" readonly value="<?= sanitizeForHtml($champs['affiliation']); ?>" >
+                            <label for="affiliation">Affiliation</label>
+                            <input name="affiliation" id="affiliation" type="text" readonly value="<?= sanitizeForHtml($champs['affiliation']); ?>" >
                         </p>
                     <?php endif ?>
 
+                    <?php /* div et non p : un <ul> fermerait le paragraphe */ ?>
                     <?php if ($lieu_rattache !== null) : ?>
-                        <p>
+                        <div class="rattachements">
                             <label>Lieu</label>
-                            <ul style="float:left;margin:0;padding-left:1em;">
+                            <ul>
                                 <li>
                                     <a href="/lieu/lieu.php?idL=<?= (int) $lieu_rattache['idLieu'] ?>"><?= sanitizeForHtml($lieu_rattache['nom']) ?></a>
                                 </li>
-                            </ul><div class="spacer"><!-- --></div>
-                        </p>
-                        <div class="guideChamp" style='padding: 0em 0 0.2em 175px;'>Vous pouvez modifier les informations de ce lieu et tous les événements qui s'y déroulent</div>
+                            </ul>
+                        </div>
+                        <div class="guideChamp">Vous pouvez modifier les informations de ce lieu et tous les événements qui s'y déroulent</div>
                     <?php endif ?>
 
                     <?php if ($organisateurs_rattaches !== []) : ?>
-                        <p>
+                        <div class="rattachements">
                             <label>Organisateur(s)</label>
-                            <ul style="float:left;margin:0;padding-left:1em;">
+                            <ul>
                                 <?php foreach ($organisateurs_rattaches as $organisateur_rattache) : ?>
                                     <li><a href="/organisateur/organisateur.php?idO=<?= (int) $organisateur_rattache['idOrganisateur'] ?>"><?= sanitizeForHtml($organisateur_rattache['nom']) ?></a></li>
                                 <?php endforeach ?>
                             </ul>
-                            <div class="spacer"><!-- --></div>
-                        </p>
-                        <div class="guideChamp" style='padding: 0em 0 0.2em 175px;'>
+                        </div>
+                        <div class="guideChamp">
                             Vous pouvez modifier la fiche de ces organisateurs, tous les événements qui y sont associés ainsi que les lieux associés à ces organisateurs
                         </div>
                     <?php endif ?>
@@ -1057,7 +1067,7 @@ include("../_header.inc.php");
 
             <fieldset class="groupe-radios">
                 <legend>Afficher</legend>
-                <ul class="radio">
+                <ul class="radio mobile-vertical">
                     <?php
                     /* Un compte sans nom d'utilisateur n'a rien à signer : pas de case, et sa
                        signature en base reste telle quelle. Le témoin dit au traitement que la
@@ -1092,10 +1102,12 @@ include("../_header.inc.php");
         <fieldset>
             <legend>Événements</legend>
 
-            <div class="guideForm">Valeurs par défaut à l'ajout d'un événement</div>
+            <div class="guideForm">
+                Valeurs par défaut dans le formulaire « Ajouter un événement ». Vous n'aurez plus besoin de saisir ces valeurs à chaque nouvel événement
+            </div>
             <p>
                 <label for="ev_defaults_genre">Catégorie</label>
-                <select name="ev_defaults_genre" id="ev_defaults_genre" style="max-width:350px">
+                <select name="ev_defaults_genre" id="ev_defaults_genre">
                     <option value=""></option>
                     <?php foreach (EventCategory::selectable(EventCategory::isEnabled()) as $genre_cle => $genre_label) : ?>
                     <option value="<?= sanitizeForHtml($genre_cle) ?>" <?php if ((string) $genre_cle === $ev_defaults['genre']) { echo 'selected="selected"'; } ?>><?= sanitizeForHtml($genre_label) ?></option>
@@ -1118,7 +1130,7 @@ include("../_header.inc.php");
 
             <p>
                 <label for="ev_defaults_idLieu">Lieu</label>
-                <select name="ev_defaults_idLieu" id="ev_defaults_idLieu" class="js-select2-options-with-style" style="max-width:350px" data-placeholder="">
+                <select name="ev_defaults_idLieu" id="ev_defaults_idLieu" class="js-select2-options-with-style" data-placeholder="">
                     <option value=""></option>
                     <?php
                     $canton_courant = null;
@@ -1146,7 +1158,7 @@ include("../_header.inc.php");
 
             <p>
                 <label for="ev_defaults_organisateurs">Organisateur(s)</label>
-                <select name="ev_defaults_organisateurs[]" id="ev_defaults_organisateurs" class="js-select2-options-with-style" multiple data-placeholder="Tapez les noms des organisateurs" style="max-width:350px;">
+                <select name="ev_defaults_organisateurs[]" id="ev_defaults_organisateurs" class="js-select2-options-with-style" multiple data-placeholder="Tapez les noms des organisateurs">
                     <?php
                     foreach ($organisateurs_actifs as $orga_defaut)
                     {

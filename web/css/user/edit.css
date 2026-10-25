@@ -1,4 +1,35 @@
-/* Modification d'un compte (user/edit.php) */
+/*
+ * Modification d'un compte (user/edit.php).
+ *
+ * Chargée d'après le nom de la page, après formulaires.css mais avant desktop.css et
+ * mobile.css (voir _header.inc.php) : les règles qui doivent passer devant les leurs sont
+ * dans leurs propres requêtes de média, et partent de `main` pour l'emporter à égalité
+ * d'ordre. Même structure que web/css/lieu/edit.css.
+ */
+
+form#ajouter_editer
+{
+	/*
+	 * Où commence la colonne des champs : la largeur du label flottant, padding et marge
+	 * compris (11em + 0.4em + 0.3em, cf. formulaires.css). Les 8em communs repliaient
+	 * « Lieu et organisateurs » ou « Confirmer le nouveau » sur deux lignes.
+	 */
+	--colonne-champs: 11.7em;
+
+	/* largeur commune des champs longs et des listes Select2 */
+	--champ-long: 24em;
+}
+
+/* Les fieldsets se touchaient presque : 5px entre deux titres de section */
+form#ajouter_editer fieldset
+{
+	margin-top: 1em;
+}
+
+form#ajouter_editer fieldset legend
+{
+	padding-bottom: 0.3em;
+}
 
 /*
  * « Organisateur d'événements » regroupe trois fieldsets : sa légende passe au-dessus des
@@ -6,16 +37,189 @@
  */
 form#ajouter_editer fieldset#organisateur-evenements > legend
 {
-	font-size:1.25em;
+	font-size: 1.25em;
 }
 
 	form#ajouter_editer fieldset#organisateur-evenements > fieldset
 	{
-		margin:0.6em 0.4em 0 0;
-		background-color:#fafafa;
+		margin: 0.6em 0.4em 0 0;
+		background-color: #fafafa;
 	}
 
 		form#ajouter_editer fieldset#organisateur-evenements > fieldset > legend
 		{
-			font-size:1em;
+			font-size: 1em;
 		}
+
+/* un champ en lecture seule se distingue d'un champ à remplir */
+form#ajouter_editer input[readonly]
+{
+	background-color: #f4f4f4;
+	color: #6a6a6a;
+}
+
+form#ajouter_editer .sans-valeur
+{
+	display: inline-block;
+	margin-top: 0.3em;
+	font-style: italic;
+}
+
+/* lieu et organisateurs d'un compte qui ne les choisit pas : une liste de liens, sans puces */
+form#ajouter_editer .rattachements
+{
+	display: flow-root;
+	margin-bottom: 0.5em;
+}
+
+	form#ajouter_editer .rattachements ul
+	{
+		list-style: none;
+		padding: 0;
+	}
+
+		form#ajouter_editer .rattachements li
+		{
+			margin: 0.3em 0 0.2em 0;
+		}
+
+/* un choix ne se coupe pas entre sa case et son libellé, ni au milieu de « 12 : MEMBER » */
+form#ajouter_editer fieldset.groupe-radios ul.radio li
+{
+	display: inline-block;
+	white-space: nowrap;
+}
+
+form#ajouter_editer #signature-preview
+{
+	display: inline-block;
+	margin-top: 0.3em;
+}
+
+@media screen and (min-width: 800px)
+{
+	/* la légende du groupe de cases « Afficher » tient la place d'un libellé (formulaires.css) */
+	form#ajouter_editer label,
+	form#ajouter_editer fieldset.groupe-radios > legend
+	{
+		width: 11em;
+	}
+
+	form#ajouter_editer #pseudo,
+	form#ajouter_editer #email,
+	form#ajouter_editer #affiliation,
+	form#ajouter_editer #ev_defaults_prix
+	{
+		box-sizing: border-box;
+		width: var(--champ-long);
+	}
+
+	/*
+	 * Select2 recopie en style en ligne la largeur intrinsèque du <select> d'origine ; seul
+	 * !important passe devant. Les listes s'alignent ainsi sur les champs longs.
+	 */
+	form#ajouter_editer #affiliations + .select2-container,
+	form#ajouter_editer #ev_defaults_idLieu + .select2-container,
+	form#ajouter_editer #ev_defaults_organisateurs + .select2-container
+	{
+		box-sizing: border-box;
+		width: var(--champ-long) !important;
+	}
+
+	/*
+	 * Tout ce qui accompagne un champ commence là où le champ commence, et ne le dépasse pas :
+	 * les aides partaient de 120px (formulaires.css), les radios de 7em (desktop.css), et les
+	 * messages d'erreur de leur propre marge.
+	 */
+	main form#ajouter_editer .guideForm,
+	main form#ajouter_editer ul.radio,
+	main form#ajouter_editer p.case-seule,
+	main form#ajouter_editer .rattachements ul
+	{
+		margin-left: var(--colonne-champs);
+		padding-left: 0;
+	}
+
+	main form#ajouter_editer .guideForm
+	{
+		margin-top: 0;
+		max-width: var(--champ-long);
+	}
+
+	/* `em` se calcule sur la police réduite de ces blocs : la colonne est remise à l'échelle */
+	main form#ajouter_editer .guideChamp
+	{
+		font-size: 0.9em;
+		margin-left: calc(var(--colonne-champs) / 0.9);
+		max-width: calc(var(--champ-long) / 0.9);
+		margin-top: 0;
+		padding-left: 0;
+	}
+
+	main form#ajouter_editer .msg
+	{
+		font-size: 0.95em;
+		margin-left: calc(var(--colonne-champs) / 0.95);
+		max-width: calc(var(--champ-long) / 0.95);
+		padding-left: 0;
+	}
+
+	/*
+	 * La légende occupe déjà la colonne des libellés. flow-root : une liste en ligne qui passe
+	 * à la ligne repartirait sous la légende flottante, et non dans la colonne des champs.
+	 */
+	main form#ajouter_editer fieldset.groupe-radios ul.radio
+	{
+		display: flow-root;
+		margin-left: 0;
+	}
+}
+
+@media screen and (max-width: 799.98px)
+{
+	/*
+	 * Les labels passent en display:block sur petits écrans (mobile.css) : plus de colonne à
+	 * réserver, et les champs prennent la largeur disponible.
+	 *
+	 * Un fieldset ne descend pas sous la largeur de son contenu (min-width: min-content) : un
+	 * seul bloc trop large, et toute la page débordait de l'écran.
+	 */
+	form#ajouter_editer fieldset
+	{
+		min-width: 0;
+	}
+
+	main form#ajouter_editer .guideForm,
+	main form#ajouter_editer .guideChamp,
+	main form#ajouter_editer .msg,
+	main form#ajouter_editer ul.radio
+	{
+		margin-left: 0;
+		padding-left: 0;
+		max-width: 100%;
+	}
+
+	/* l'aide collait au libellé du champ suivant (marge nulle dans mobile.css) */
+	main form#ajouter_editer .guideChamp
+	{
+		margin-bottom: 0.8em;
+	}
+
+	form#ajouter_editer #pseudo,
+	form#ajouter_editer #email,
+	form#ajouter_editer #affiliation,
+	form#ajouter_editer #ev_defaults_prix,
+	form#ajouter_editer input[type="password"]
+	{
+		box-sizing: border-box;
+		width: 100%;
+	}
+
+	form#ajouter_editer #affiliations + .select2-container,
+	form#ajouter_editer #ev_defaults_idLieu + .select2-container,
+	form#ajouter_editer #ev_defaults_organisateurs + .select2-container
+	{
+		box-sizing: border-box;
+		width: 100% !important;
+	}
+}

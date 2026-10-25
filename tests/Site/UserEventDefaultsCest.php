@@ -53,7 +53,7 @@ class UserEventDefaultsCest
         $I->loginAsAdmin();
         $this->amOnMyProfileEdit($I);
 
-        $I->see('Valeurs par défaut à l\'ajout d\'un événement');
+        $I->see('Valeurs par défaut dans le formulaire « Ajouter un événement »');
 
         $I->seeElement('select[name=ev_defaults_genre]#ev_defaults_genre');
         $I->seeElement('input[type=time][name=ev_defaults_horaire_debut]#ev_defaults_horaire_debut');
