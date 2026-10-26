@@ -93,7 +93,9 @@ Two connectors coexist:
 
 ### Template engine
 
-`TemplateEngine` renders `resources/templates/*.txt` files replacing `%placeholder%` tokens. Used for email bodies. Not used for HTML pages, which mix PHP and HTML directly.
+`TemplateEngine` renders `resources/templates/*.txt` files replacing `%placeholder%` tokens. Used for email bodies.
+
+HTML pages mostly mix PHP and HTML directly. The homepage is the first rendered with Twig: `index.php` prepares the data and renders `templates/home/index.html.twig` through `Ladecadanse\Twig\TwigFactory`. `LadecadanseExtension` exposes the existing HTML helpers as Twig functions marked safe, and the authorization checks as `can_edit_event()`, `can_edit_event_now()` and `can_manage_event()`, so templates never receive the session. Compiled templates are cached in `var/cache/twig`, which must be writable; `auto_reload` stays on because git-ftp deploys never clear that cache. `templates/` is denied over HTTP.
 
 ## Key conventions
 
