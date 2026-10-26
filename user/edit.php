@@ -1,7 +1,6 @@
 <?php
 require_once("../app/bootstrap.php");
 
-use Ladecadanse\Edition;
 use Ladecadanse\EventCategory;
 use Ladecadanse\UserLevel;
 use Ladecadanse\Utils\Validateur;
@@ -31,24 +30,24 @@ if (!$authorization->checkGroup(UserLevel::MEMBER)) {
     die();
 }
 
+/*
+ * La page ne modifie qu'un compte existant : les comptes se créent par user/register.php. Le
+ * paramètre `action` des liens existants (« editer ») n'a plus de rôle, il est simplement ignoré.
+ */
 $get = [
-    // null quand l'action n'existe pas : la page répond alors 400, là où l'exception levée
-    // par validateUrlQueryValue() faisait un 500 d'une url abîmée
-    'action' => QueryParamValidator::enumFromQuery($_GET['action'] ?? null, Edition::ACTIONS, 'ajouter'),
     'idP' => (int) ($_GET['idP'] ?? 0),
 ];
 
-$is_edit_mode = in_array($get['action'], ['editer', 'update'], true);
 $is_superadmin = (int) $_SESSION['Sgroupe'] === UserLevel::SUPERADMIN;
 
 // Chaque refus est rendu dans la page du site par _erreur_http.inc.php
 $http_error = null;
 
-if ($get['action'] === null || ($is_edit_mode && $get['idP'] <= 0))
+if ($get['idP'] <= 0)
 {
-    $http_error = [400, 'Bad Request', "L'adresse de cette page est incomplète ou erronée"];
+    $http_error = [400, 'Bad Request', "Aucun compte n'est désigné"];
 }
-elseif (!$is_superadmin && (!$is_edit_mode || (int) $_SESSION['SidPersonne'] !== $get['idP']))
+elseif (!$is_superadmin && (int) $_SESSION['SidPersonne'] !== $get['idP'])
 {
     $http_error = [403, 'Forbidden', "Vous n'avez pas les droit pour effectuer cette action"];
 }
@@ -66,20 +65,15 @@ if ($http_error !== null)
  * inexistant. Il fournit aussi l'adresse, les réglages et les colonnes que le formulaire
  * ne montre pas à tous.
  */
-$stored_personne = null;
+$stmt = $connectorPdo->prepare("SELECT * FROM personne WHERE idPersonne = ?");
+$stmt->execute([$get['idP']]);
+$stored_personne = $stmt->fetch(PDO::FETCH_ASSOC);
 
-if ($is_edit_mode)
+if ($stored_personne === false)
 {
-    $stmt = $connectorPdo->prepare("SELECT * FROM personne WHERE idPersonne = ?");
-    $stmt->execute([$get['idP']]);
-    $stored_personne = $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
-
-    if ($stored_personne === null)
-    {
-        $http_error = [404, 'Not Found', "Cet utilisateur n'existe pas ou plus"];
-        include("../_erreur_http.inc.php");
-        exit;
-    }
+    $http_error = [404, 'Not Found', "Cet utilisateur n'existe pas ou plus"];
+    include("../_erreur_http.inc.php");
+    exit;
 }
 
 /*
@@ -193,19 +187,19 @@ if ($is_form_submitted)
      * Une valeur héritée hors de la liste (le groupe 10, le statut « demande ») est rendue cochée
      * mais désactivée : le navigateur ne la poste pas. Rien de posté vaut donc « inchangé ».
      */
-    $stored_groupe = $is_edit_mode ? (int) $stored_personne['groupe'] : null;
-    $stored_statut = $is_edit_mode ? (string) $stored_personne['statut'] : 'actif';
+    $stored_groupe = (int) $stored_personne['groupe'];
+    $stored_statut = (string) $stored_personne['statut'];
 
     if (!$is_superadmin)
     {
         $champs['groupe'] = (int) $_SESSION['Sgroupe'];
     }
-    elseif ($champs['groupe'] === '' && $stored_groupe !== null)
+    elseif ($champs['groupe'] === '')
     {
         $champs['groupe'] = $stored_groupe;
     }
 
-    if (!$is_superadmin || !$is_edit_mode || $champs['statut'] === '')
+    if (!$is_superadmin || $champs['statut'] === '')
     {
         $champs['statut'] = $stored_statut;
     }
@@ -217,7 +211,7 @@ if ($is_form_submitted)
      * dans $champs — l'affiliation et la signature d'un compte rétrogradé auraient été
      * remises à leur valeur par défaut au premier enregistrement, sans un mot.
      */
-    if (!$areContributorFieldsEnabled && $is_edit_mode)
+    if (!$areContributorFieldsEnabled)
     {
         $champs['affiliation'] = $stored_personne['affiliation'];
         $champs['signature'] = $stored_personne['signature'];
@@ -227,9 +221,9 @@ if ($is_form_submitted)
     /*
      * Signature : deux cases à cocher, dont une décochée ne poste rien. La case du nom
      * d'utilisateur n'est rendue qu'aux comptes qui en ont un, ce que dit le témoin
-     * signature_shown ; sans elle, la signature en base reste telle quelle (le défaut de
-     * $champs à la création). Les valeurs anciennes « prenom » et « nomcomplet », sans effet,
-     * deviennent « aucune » au premier enregistrement.
+     * signature_shown ; sans elle, la signature en base reste telle quelle. Les valeurs
+     * anciennes « prenom » et « nomcomplet », sans effet, deviennent « aucune » au premier
+     * enregistrement.
      */
     if ($areContributorFieldsEnabled)
     {
@@ -239,7 +233,7 @@ if ($is_form_submitted)
         {
             $champs['signature'] = !empty($_POST['signature']) ? 'pseudo' : 'aucune';
         }
-        elseif ($is_edit_mode)
+        else
         {
             $champs['signature'] = $stored_personne['signature'];
         }
@@ -277,7 +271,7 @@ if ($is_form_submitted)
             }
         }
     }
-    elseif ($is_edit_mode)
+    else
     {
         // Les rattachements en base, pour le ré-affichage en lecture seule ; ils ne sont pas réécrits.
         $affiliations_stockees = $getUserAffiliationsIds($get['idP']);
@@ -305,7 +299,7 @@ if ($is_form_submitted)
     }
 
     // Seule la valeur déjà en base échappe à la liste des choix permis
-    if ($is_superadmin && !in_array((string) $champs['groupe'], array_map('strval', array_merge(array_values($user_levels), $stored_groupe !== null ? [$stored_groupe] : [])), true))
+    if ($is_superadmin && !in_array((string) $champs['groupe'], array_map('strval', array_merge(array_values($user_levels), [$stored_groupe])), true))
     {
         $verif->setErreur("groupe", "Choisissez un groupe parmi ceux proposés");
     }
@@ -343,27 +337,26 @@ if ($is_form_submitted)
      * Le mot de passe ancien doit être tapé
      */
     if (!$is_superadmin) {
-        if ($get['action'] == "update" && (!empty($champs['newPass']) || !empty($champs['newPass2'])))
+        if (!empty($champs['newPass']) || !empty($champs['newPass2']))
         {
             $verif->valider($champs['motdepasse'], "motdepasse", "texte", 6, 30, 1);
         }
 
-        if ($get['action'] == "update" && !empty($champs['motdepasse']) && (empty($champs['newPass']) || empty($champs['newPass2'])))
+        if (!empty($champs['motdepasse']) && (empty($champs['newPass']) || empty($champs['newPass2'])))
         {
             $verif->setErreur("nouveaux_pass", "Vous devez écrire le nouveau mot de passe et le confirmer");
         }
 
-        if ($get['action'] == "update" && empty($champs['motdepasse']) && (!empty($champs['newPass']) || !empty($champs['newPass2'])))
+        if (empty($champs['motdepasse']) && (!empty($champs['newPass']) || !empty($champs['newPass2'])))
         {
             $verif->setErreur("motdepasse", "Vous devez entrer le mot de passe actuel");
         }
     }
 
     /*
-     * Pour un nouveau membre ou si un nouveau mot de passe a été tapé en update
-     * Vérification des 2 mots de passe, existants, min 4 car. et valables
+     * Si un nouveau mot de passe a été tapé : vérification des 2 mots de passe, identiques et valables
      */
-    if ($get['action'] == "insert" || (!empty($champs['newPass']) || !empty($champs['newPass2'])) )
+    if (!empty($champs['newPass']) || !empty($champs['newPass2']))
     {
         if (strcmp((string) $champs['newPass'], (string) $champs['newPass2']) != 0)
         {
@@ -389,17 +382,14 @@ if ($is_form_submitted)
     }
 
     /*
-     * En cas d'ajout, vérification si le profil n'existe pas déjà
+     * Nom d'utilisateur changé par le superadmin : contrôlé seulement s'il change. Des comptes
+     * anciens portent un nom partagé ou en forme d'adresse, et les refuser tels quels les
+     * empêcherait d'enregistrer quoi que ce soit.
      */
-    if ($get['action'] == 'insert')
+    if ($champs['pseudo'] !== '' && $champs['pseudo'] !== (string) $stored_personne['pseudo'])
     {
-        /*
-         * Deux contrôles distincts : une seule requête cherchait le pseudo OU l'adresse, et
-         * posait les deux messages ensemble — celui du pseudo s'affichait donc pour une
-         * adresse déjà prise. Le pseudo, devenu facultatif, n'est contrôlé que s'il est
-         * renseigné : vide, il est partagé par tous les comptes qui n'en ont pas.
-         */
-        if ($champs['pseudo'] !== '' && Personne::pseudoExists((string) $champs['pseudo']))
+        // vide, il est partagé par tous les comptes qui n'en ont pas : seul un nom renseigné est unique
+        if (Personne::pseudoExists((string) $champs['pseudo'], $get['idP']))
         {
             // messages rendus tels quels par getHtmlErreur() et getErreur() : la saisie s'y échappe
             $verif->setErreur("pseudoIdentique", "Un membre ".sanitizeForHtml($champs['pseudo'])." existe déjà dans la base.");
@@ -409,23 +399,17 @@ if ($is_form_submitted)
          * Un nom d'utilisateur en forme d'adresse rendrait ambiguë la saisie de connexion :
          * Sentry::checkLogin() cherche alors « pseudo OU email », et deux comptes peuvent
          * répondre — dont un sans pseudo, qui n'a plus alors aucun moyen de se connecter.
-         * Contrôlé à la création seulement : des comptes anciens portent de tels pseudos, et
-         * les refuser en modification les empêcherait d'enregistrer quoi que ce soit.
          */
-        if ($champs['pseudo'] !== '' && filter_var((string) $champs['pseudo'], FILTER_VALIDATE_EMAIL) !== false)
+        if (filter_var((string) $champs['pseudo'], FILTER_VALIDATE_EMAIL) !== false)
         {
             $verif->setErreur("pseudo", "Le nom d'utilisateur ne peut pas être une adresse e-mail.");
         }
-
-        if (Personne::emailExists((string) $champs['email']))
-        {
-            $verif->setErreur("emailIdentique", "L'adresse ".sanitizeForHtml($champs['email'])." est déjà celle d'un compte.");
-        }
     }
+
     /*
-     * En cas de mise à jour, vérification du mot de passe actuel, si son format a passé
+     * Vérification du mot de passe actuel, si son format a passé
      */
-    elseif ($get['action'] == "update" && !empty($champs['motdepasse']) && $verif->getErreur('motdepasse') === false)
+    if (!empty($champs['motdepasse']) && $verif->getErreur('motdepasse') === false)
     {
         /*
          * Le compte est désigné par son idPersonne. La requête cherchait le pseudo porté par
@@ -451,8 +435,7 @@ if ($is_form_submitted)
      * est déjà partagée — il en reste des centaines en production — ne pourrait sinon plus rien
      * enregistrer, pas même son mot de passe.
      */
-    if ($get['action'] == "update"
-        && mb_strtolower(trim((string) $champs['email'])) !== mb_strtolower((string) $stored_personne['email'])
+    if (mb_strtolower(trim((string) $champs['email'])) !== mb_strtolower((string) $stored_personne['email'])
         && Personne::emailExists((string) $champs['email'], $get['idP']))
     {
         $verif->setErreur("emailIdentique", "Cette adresse e-mail est déjà celle d'un autre compte.");
@@ -471,9 +454,7 @@ if ($is_form_submitted)
 
     if ($verif->nbErreurs() === 0)
     {
-        $affiliations_avant = $get['action'] == 'update'
-            ? $getUserAffiliationsIds($get['idP'])
-            : ['lieu' => 0, 'organisateurs' => []];
+        $affiliations_avant = $getUserAffiliationsIds($get['idP']);
 
         if (!empty($champs['newPass']))
         {
@@ -481,10 +462,10 @@ if ($is_form_submitted)
             $champs['mot_de_passe'] = password_hash($champs['newPass'], PASSWORD_DEFAULT);
         }
 
-        // Le fieldset « Événements » n'est rendu qu'en édition, et qu'aux comptes qui ajoutent des
-        // événements : on ne touche à la colonne que là. Partir des réglages en base préserve
-        // ceux d'un autre domaine, que ce formulaire n'expose pas.
-        if ($areContributorFieldsEnabled && $get['action'] == 'update')
+        // Le fieldset « Événements » n'est rendu qu'aux comptes qui ajoutent des événements : on
+        // ne touche à la colonne que là. Partir des réglages en base préserve ceux d'un autre
+        // domaine, que ce formulaire n'expose pas.
+        if ($areContributorFieldsEnabled)
         {
             $champs['settings'] = UserSettings::withEventNewDefaults(
                 is_string($stored_personne['settings']) ? $stored_personne['settings'] : null,
@@ -509,51 +490,33 @@ if ($is_form_submitted)
 
         try
         {
-            if ($get['action'] == 'insert')
+            $idP_saved = $get['idP'];
+
+            $stmt = $connectorPdo->prepare("UPDATE personne SET "
+                . implode(', ', array_map(fn (string $c): string => $c . ' = :' . $c, array_keys($personne_values)))
+                . ", date_derniere_modif = :date_derniere_modif WHERE idPersonne = :idPersonne");
+            $stmt->execute($personne_values + ['date_derniere_modif' => $now, 'idPersonne' => $idP_saved]);
+
+            // sans droit sur les rattachements, $champs['lieu'] est celui de la base : rien à réécrire
+            if ($canEditAffiliations)
             {
-                $stmt = $connectorPdo->prepare("INSERT INTO personne ("
-                    . implode(', ', array_keys($personne_values)) . ", dateAjout, date_derniere_modif) VALUES ("
-                    . implode(', ', array_map(fn (string $c): string => ':' . $c, array_keys($personne_values))) . ", :dateAjout, :date_derniere_modif)");
-                $stmt->execute($personne_values + ['dateAjout' => $now, 'date_derniere_modif' => $now]);
-
-                $idP_saved = (int) $connectorPdo->lastInsertId();
-
                 if (!empty($champs['lieu']))
                 {
-                    $stmt = $connectorPdo->prepare("INSERT INTO affiliation (idPersonne, idAffiliation, genre) VALUES (?, ?, 'lieu')");
-                    $stmt->execute([$idP_saved, (int) $champs['lieu']]);
+                    $stmt = $connectorPdo->prepare($affiliations_avant['lieu'] > 0
+                        ? "UPDATE affiliation SET idAffiliation = :lieu WHERE idPersonne = :idP AND genre = 'lieu'"
+                        : "INSERT INTO affiliation (idPersonne, idAffiliation, genre) VALUES (:idP, :lieu, 'lieu')");
+                    $stmt->execute(['lieu' => (int) $champs['lieu'], 'idP' => $idP_saved]);
                 }
-            }
-            else
-            {
-                $idP_saved = $get['idP'];
-
-                $stmt = $connectorPdo->prepare("UPDATE personne SET "
-                    . implode(', ', array_map(fn (string $c): string => $c . ' = :' . $c, array_keys($personne_values)))
-                    . ", date_derniere_modif = :date_derniere_modif WHERE idPersonne = :idPersonne");
-                $stmt->execute($personne_values + ['date_derniere_modif' => $now, 'idPersonne' => $idP_saved]);
-
-                // sans droit sur les rattachements, $champs['lieu'] est celui de la base : rien à réécrire
-                if ($canEditAffiliations)
+                elseif ($affiliations_avant['lieu'] > 0)
                 {
-                    if (!empty($champs['lieu']))
-                    {
-                        $stmt = $connectorPdo->prepare($affiliations_avant['lieu'] > 0
-                            ? "UPDATE affiliation SET idAffiliation = :lieu WHERE idPersonne = :idP AND genre = 'lieu'"
-                            : "INSERT INTO affiliation (idPersonne, idAffiliation, genre) VALUES (:idP, :lieu, 'lieu')");
-                        $stmt->execute(['lieu' => (int) $champs['lieu'], 'idP' => $idP_saved]);
-                    }
-                    elseif ($affiliations_avant['lieu'] > 0)
-                    {
-                        $stmt = $connectorPdo->prepare("DELETE FROM affiliation WHERE idPersonne = ? AND genre = 'lieu'");
-                        $stmt->execute([$idP_saved]);
-                    }
-
-                    // Le couple efface-puis-réinsère ne vaut que si le select des organisateurs a
-                    // été rendu : sans lui, le POST n'en porte aucun et l'effacement serait sec.
-                    $stmt = $connectorPdo->prepare("DELETE FROM personne_organisateur WHERE idPersonne = ?");
+                    $stmt = $connectorPdo->prepare("DELETE FROM affiliation WHERE idPersonne = ? AND genre = 'lieu'");
                     $stmt->execute([$idP_saved]);
                 }
+
+                // Le couple efface-puis-réinsère ne vaut que si le select des organisateurs a
+                // été rendu : sans lui, le POST n'en porte aucun et l'effacement serait sec.
+                $stmt = $connectorPdo->prepare("DELETE FROM personne_organisateur WHERE idPersonne = ?");
+                $stmt->execute([$idP_saved]);
             }
 
             /*
@@ -579,51 +542,44 @@ if ($is_form_submitted)
             throw $e;
         }
 
-        if ($get['action'] == 'insert')
+        if (!empty($champs['mot_de_passe']))
         {
-            $message_succes = "Personne ajoutée dans le groupe " . sanitizeForHtml($champs['groupe']);
+            $videur->revokeRememberedDevices($idP_saved);
+        }
+
+        /*
+         * MAJ des infos perso de session si la personne s'autoédite
+         */
+        if ((int) $_SESSION['SidPersonne'] === $idP_saved)
+        {
+            $_SESSION["user"] = $champs['pseudo'];
+
+            if (!empty($champs['mot_de_passe']))
+            {
+                // sans quoi checkSession() invaliderait la session à la requête suivante
+                $_SESSION['pass_fingerprint'] = Sentry::passFingerprint($champs['mot_de_passe']);
+            }
+
+            if (!empty($champs['groupe']))
+            {
+                $_SESSION['Sgroupe'] = $champs['groupe'];
+            }
+
+            // 0 comme Sentry quand le compte n'a pas de lieu : un lieu retiré cesse aussitôt de
+            // donner ses droits, au lieu de les garder jusqu'à la prochaine connexion
+            if ($canEditAffiliations)
+            {
+                $_SESSION["Saffiliation_lieu"] = (int) $champs['lieu'];
+            }
+
+            $message_succes = "Votre profil a été modifié";
         }
         else
         {
-            if (!empty($champs['mot_de_passe']))
-            {
-                $videur->revokeRememberedDevices($idP_saved);
-            }
-
-            /*
-             * MAJ des infos perso de session si la personne s'autoédite
-             */
-            if ((int) $_SESSION['SidPersonne'] === $idP_saved)
-            {
-                $_SESSION["user"] = $champs['pseudo'];
-
-                if (!empty($champs['mot_de_passe']))
-                {
-                    // sans quoi checkSession() invaliderait la session à la requête suivante
-                    $_SESSION['pass_fingerprint'] = Sentry::passFingerprint($champs['mot_de_passe']);
-                }
-
-                if (!empty($champs['groupe']))
-                {
-                    $_SESSION['Sgroupe'] = $champs['groupe'];
-                }
-
-                // 0 comme Sentry quand le compte n'a pas de lieu : un lieu retiré cesse aussitôt de
-                // donner ses droits, au lieu de les garder jusqu'à la prochaine connexion
-                if ($canEditAffiliations)
-                {
-                    $_SESSION["Saffiliation_lieu"] = (int) $champs['lieu'];
-                }
-
-                $message_succes = "Votre profil a été modifié";
-            }
-            else
-            {
-                $message_succes = "Le profil a été modifié";
-            }
-
-            $logger->info('[user-edit] user updated', ['pseudo' => $champs['pseudo'], 'idP' => $idP_saved, 'by' => (int) $_SESSION['SidPersonne']]);
+            $message_succes = "Le profil a été modifié";
         }
+
+        $logger->info('[user-edit] user updated', ['pseudo' => $champs['pseudo'], 'idP' => $idP_saved, 'by' => (int) $_SESSION['SidPersonne']]);
 
         if ($canEditAffiliations && $champs['organisateurs'] !== [])
         {
@@ -640,7 +596,7 @@ if ($is_form_submitted)
          * La case dit l'intention, la comparaison décide : elle n'est volontairement pas une
          * clé de $champs, dont l'UPDATE écrit les colonnes.
          */
-        if ($get['action'] == 'update' && !empty($_POST['notify_affiliation']))
+        if (!empty($_POST['notify_affiliation']))
         {
             $affiliations_apres = $getUserAffiliationsIds($idP_saved);
 
@@ -703,8 +659,8 @@ if ($is_form_submitted)
 // Préparation du rendu : toutes les lectures en base se font ici, avant l'en-tête
 // =============================================================================
 
-// Premier affichage d'un compte existant : la base remplit le formulaire
-if ($get['action'] == 'editer')
+// Premier affichage : la base remplit le formulaire
+if (!$is_form_submitted)
 {
     foreach (array_keys($champs) as $n)
     {
@@ -721,12 +677,6 @@ if ($get['action'] == 'editer')
     $champs['organisateurs'] = $affiliations_stockees['organisateurs'];
 }
 
-// Premier affichage de l'ajout : ACTOR coché par défaut
-if ($get['action'] == 'ajouter')
-{
-    $champs['groupe'] = UserLevel::ACTOR;
-}
-
 /*
  * Choix rendus en boutons radio : les valeurs permises, plus celle du compte si elle n'en fait pas
  * partie (groupe 10 hérité, statut « demande »), cochée et désactivée.
@@ -738,14 +688,14 @@ foreach ($user_levels as $nom => $id)
     $groupe_choices[(int) $id] = ['label' => $id . ' : ' . $nom, 'locked' => false];
 }
 
-if ($is_edit_mode && !isset($groupe_choices[(int) $stored_personne['groupe']]))
+if (!isset($groupe_choices[(int) $stored_personne['groupe']]))
 {
     $groupe_choices[(int) $stored_personne['groupe']] = ['label' => $stored_personne['groupe'] . ' : ancien niveau', 'locked' => true];
 }
 
 $statut_choices = Personne::$statuts;
 
-if ($is_edit_mode && !in_array($stored_personne['statut'], $statut_choices, true))
+if (!in_array($stored_personne['statut'], $statut_choices, true))
 {
     $statut_choices[] = (string) $stored_personne['statut'];
 }
@@ -818,29 +768,24 @@ if ($areContributorFieldsEnabled)
     // Mêmes organisateurs et même tri pour la liste des rattachements et pour les valeurs par défaut
     $organisateurs_actifs = Organisateur::getActifsPourSelect();
 
-    if ($is_edit_mode)
-    {
-        // Mêmes lieux et même tri que le formulaire d'ajout d'événement, sans les salles (le
-        // réglage se fait au niveau du lieu)
-        $lieux_defaut = Lieu::getActifsPourSelect();
-    }
+    // Mêmes lieux et même tri que le formulaire d'ajout d'événement, sans les salles (le
+    // réglage se fait au niveau du lieu)
+    $lieux_defaut = Lieu::getActifsPourSelect();
 }
 
 // =============================================================================
 // Rendu
 // =============================================================================
 
-$page_titre = $get['action'] . " un compte";
+$page_titre = "modifier un compte";
 $extra_css = ["formulaires"];
 include("../_header.inc.php");
 ?>
 
 <main id="contenu" class="colonne user-edit">
 
-    <?php $act = $is_edit_mode ? "update&amp;idP=" . $get['idP'] : 'insert'; ?>
-
     <header id="entete_contenu">
-        <h1><?= $is_edit_mode ? "Modification du compte" : "Ajouter une personne" ?></h1>
+        <h1>Modification du compte</h1>
         <div class="spacer"></div>
     </header>
 
@@ -855,11 +800,11 @@ include("../_header.inc.php");
 
 
     <form method="post" id="ajouter_editer" enctype="multipart/form-data" class="js-submit-freeze-wait"
-          action="<?= basename(__FILE__)."?action=".$act; ?>" >
+          action="<?= basename(__FILE__) . "?idP=" . $get['idP'] ?>" >
 
         <p>* indique un champ obligatoire</p>
 
-        <?php if ($is_superadmin && $is_edit_mode) : ?>
+        <?php if ($is_superadmin) : ?>
 
             <fieldset>
                 <legend>Statut</legend>
@@ -933,7 +878,7 @@ include("../_header.inc.php");
         <fieldset>
             <legend>Mot de passe</legend>
 
-                <?php if (!$is_superadmin && $is_edit_mode) : ?>
+                <?php if (!$is_superadmin) : ?>
 
                     <div class="guideForm">À remplir si vous souhaitez modifier votre mot de passe actuel</div>
                     <p>
@@ -946,12 +891,12 @@ include("../_header.inc.php");
 
                 <!-- Nouveau mot de passe et confirmation en cas de mise à jour -->
                 <p>
-                    <label for="newPass">Nouveau<?php if (!$is_edit_mode) { echo "*"; } ?></label>
+                    <label for="newPass">Nouveau</label>
                     <input type="password" name="newPass" id="newPass" size="30" value="" autocomplete="new-password"  />
                     <?= $verif->getHtmlErreur("newPass");?>
                 </p>
                 <p>
-                    <label for="newPass2">Confirmer le nouveau<?php if (!$is_edit_mode) { echo "*"; } ?></label>
+                    <label for="newPass2">Confirmer le nouveau</label>
                     <input type="password" name="newPass2" id="newPass2" size="30" value="" autocomplete="new-password" />
                     <?= $verif->getHtmlErreur("newPass2");?>
                 </p>
@@ -1101,8 +1046,7 @@ include("../_header.inc.php");
 
         </fieldset>
 
-        <?php // Réglages du formulaire d'ajout d'événement : sans objet à la création d'un compte ?>
-        <?php if ($is_edit_mode) : ?>
+        <?php // Réglages du formulaire d'ajout d'événement ?>
         <fieldset>
             <legend>Événements</legend>
 
@@ -1180,7 +1124,6 @@ include("../_header.inc.php");
                 <?= $verif->getHtmlErreur("ev_defaults_prix"); ?>
             </p>
         </fieldset>
-        <?php endif; ?>
 
             </fieldset>
 
