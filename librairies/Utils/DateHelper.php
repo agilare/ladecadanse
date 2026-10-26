@@ -294,4 +294,23 @@ class DateHelper
     {
         return ($now ?? date('Y-m-d H:i:s')) > self::evenementEnd($dateEvenement, $horaireFin);
     }
+
+    /**
+     * Temps écoulé depuis une date, arrondi à l'année entière inférieure : « il y a moins
+     * d'1 an », « il y a plus d'1 an », « il y a plus de 3 ans ». Assez précis pour dire
+     * l'âge d'un mot de passe sans faire croire à une échéance.
+     *
+     * @param string      $date ISO date ou datetime
+     * @param string|null $now  ISO datetime, injectable pour les tests ; défaut : maintenant
+     */
+    public static function elapsedYearsFr(string $date, ?string $now = null): string
+    {
+        $years = (new DateTime($date))->diff(new DateTime($now ?? 'now'))->y;
+
+        return match (true) {
+            $years < 1 => "il y a moins d'1 an",
+            $years === 1 => "il y a plus d'1 an",
+            default => "il y a plus de " . $years . " ans",
+        };
+    }
 }

@@ -416,6 +416,19 @@ if ($erreur !== null)
 		<table>
 			<tr><th>Nom d'utilisateur</th><td><?= trim((string) $profil['pseudo']) !== '' ? sanitizeForHtml($profil['pseudo']) : '<em>aucun : c\'est votre e-mail qui vous identifie</em>' ?></td></tr>
 			<tr><th>E-mail</th><td><?= sanitizeForHtml($profil['email']) ?></td></tr>
+			<?php /* La date seule, sans alerte « mot de passe ancien » : la rotation forcée est
+			         déconseillée (NIST SP 800-63B). Elle permet aussi de remarquer un changement
+			         qu'on n'a pas fait. NULL pour les comptes d'avant la 3.14.0. Le lien suit la
+			         règle de user/pwd-edit.php : son propre compte, ou le superadmin. */ ?>
+			<tr><th>Mot de passe</th><td>
+				<?php if (!empty($profil['password_updated'])) : ?>
+				modifié le <?= DateHelper::isoToFr(mb_substr((string) $profil['password_updated'], 0, 10), 'annee', showDayOfWeek: false) ?>
+				(<?= DateHelper::elapsedYearsFr((string) $profil['password_updated']) ?>)
+				<?php endif; ?>
+				<?php if ($estSoiMeme || (int) $_SESSION['Sgroupe'] === UserLevel::SUPERADMIN) : ?>
+				<?= !empty($profil['password_updated']) ? '&middot; ' : '' ?><a class="profil-mot-de-passe" href="/user/pwd-edit.php?idP=<?= (int) $get['idP'] ?>">Modifier</a>
+				<?php endif; ?>
+			</td></tr>
 			<?php if ($showsContributorRows) : ?>
 			<tr><th>Affiliations</th><td>
 				<?php foreach ($affiliations_lieux as $lieu_affilie) : ?>

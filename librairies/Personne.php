@@ -173,7 +173,7 @@ class Personne
     {
         global $connectorPdo;
 
-        $stmt = $connectorPdo->prepare("SELECT idPersonne, pseudo, email, affiliation, groupe, statut, dateAjout, settings
+        $stmt = $connectorPdo->prepare("SELECT idPersonne, pseudo, email, affiliation, groupe, statut, dateAjout, password_updated, settings
             FROM personne WHERE idPersonne = ?");
         $stmt->execute([$idPersonne]);
         $profil = $stmt->fetch(PDO::FETCH_ASSOC);

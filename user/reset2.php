@@ -151,7 +151,7 @@ if ($tab_temp !== false)
                 {
                     // gds : sel du stockage historique (sha1), vidé partout où le mot de passe change
                     $stmt = $connectorPdo->prepare("UPDATE personne
-                        SET mot_de_passe = :hash, gds = '', date_derniere_modif = NOW()
+                        SET mot_de_passe = :hash, gds = '', password_updated = NOW(), date_derniere_modif = NOW()
                         WHERE idPersonne = :idPersonne");
                     $stmt->execute([
                         ':hash' => password_hash($champs['motdepasse'], PASSWORD_DEFAULT),

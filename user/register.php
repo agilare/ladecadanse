@@ -222,11 +222,13 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
                  * les événements qu'il ajouterait après une promotion.
                  */
                 $stmt = $connectorPdo->prepare("
-                    INSERT INTO personne (pseudo, mot_de_passe, email, groupe, affiliation, signature, region, cookie, statut, dateAjout, date_derniere_modif)
-                    VALUES (:pseudo, :mot_de_passe, :email, :groupe, :affiliation, :signature, '', '', 'actif', :dateAjout, :dateModif)");
+                    INSERT INTO personne (pseudo, mot_de_passe, password_updated, email, groupe, affiliation, signature, region, cookie, statut, dateAjout, date_derniere_modif)
+                    VALUES (:pseudo, :mot_de_passe, :passwordUpdated, :email, :groupe, :affiliation, :signature, '', '', 'actif', :dateAjout, :dateModif)");
                 $stmt->execute([
                     ':pseudo' => $champs['contributor'] ? $champs['login'] : '',
                     ':mot_de_passe' => password_hash($champs['motdepasse'], PASSWORD_DEFAULT),
+                    // la date de création est bien celle du mot de passe (#249)
+                    ':passwordUpdated' => $maintenant,
                     ':email' => $champs['email'],
                     ':groupe' => $groupe,
                     ':affiliation' => $affiliation_nom,

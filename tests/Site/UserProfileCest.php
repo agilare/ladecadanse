@@ -74,6 +74,9 @@ class UserProfileCest
         $I->see('E-mail');
         $I->see('Affiliations');
         $I->seeElement('a[href*="/user/edit.php"]');
+        // la date du dernier changement, ou rien pour un compte d'avant la 3.14.0, et le lien (#249)
+        $I->see('Mot de passe', '#profile th');
+        $I->seeElement('a[href^="/user/pwd-edit.php?idP="]');
     }
 
     /**

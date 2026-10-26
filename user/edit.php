@@ -5,10 +5,7 @@ use Ladecadanse\EventCategory;
 use Ladecadanse\UserLevel;
 use Ladecadanse\Utils\Validateur;
 use Ladecadanse\Utils\Mailing;
-use Ladecadanse\Utils\PasswordPolicy;
-use Ladecadanse\Utils\QueryParamValidator;
 use Ladecadanse\Security\SecurityToken;
-use Ladecadanse\Security\Sentry;
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\Lieu;
 use Ladecadanse\Localite;
@@ -130,9 +127,6 @@ $champs = [
     "pseudo" => '',
     "email" => '',
     "groupe" => '',
-    "motdepasse" => '',
-    "newPass" => '',
-    "newPass2" => '',
     'lieu' => '',
     'organisateurs' => '',
     "affiliation" => '',
@@ -142,10 +136,10 @@ $champs = [
 
 /*
  * Les seules colonnes de `personne` que ce formulaire écrit, dans une liste littérale : les noms
- * de colonnes de l'INSERT et de l'UPDATE n'en sortent jamais. gds, mot_de_passe et settings ne
- * rejoignent $champs qu'une fois la saisie validée.
+ * de colonnes de l'UPDATE n'en sortent jamais. settings ne rejoint $champs qu'une fois la saisie
+ * validée. Le mot de passe se change dans user/pwd-edit.php (#249).
  */
-$personne_columns = ['pseudo', 'affiliation', 'email', 'groupe', 'signature', 'avec_affiliation', 'statut', 'gds', 'mot_de_passe', 'settings'];
+$personne_columns = ['pseudo', 'affiliation', 'email', 'groupe', 'signature', 'avec_affiliation', 'statut', 'settings'];
 
 $user_levels = UserLevel::getConstants();
 
@@ -333,55 +327,6 @@ if ($is_form_submitted)
     }
 
     /*
-     * Modification du mot de passe
-     * Le mot de passe ancien doit être tapé
-     */
-    if (!$is_superadmin) {
-        if (!empty($champs['newPass']) || !empty($champs['newPass2']))
-        {
-            $verif->valider($champs['motdepasse'], "motdepasse", "texte", 6, 30, 1);
-        }
-
-        if (!empty($champs['motdepasse']) && (empty($champs['newPass']) || empty($champs['newPass2'])))
-        {
-            $verif->setErreur("nouveaux_pass", "Vous devez écrire le nouveau mot de passe et le confirmer");
-        }
-
-        if (empty($champs['motdepasse']) && (!empty($champs['newPass']) || !empty($champs['newPass2'])))
-        {
-            $verif->setErreur("motdepasse", "Vous devez entrer le mot de passe actuel");
-        }
-    }
-
-    /*
-     * Si un nouveau mot de passe a été tapé : vérification des 2 mots de passe, identiques et valables
-     */
-    if (!empty($champs['newPass']) || !empty($champs['newPass2']))
-    {
-        if (strcmp((string) $champs['newPass'], (string) $champs['newPass2']) != 0)
-        {
-            $verif->setErreur("nouveaux_pass", 'Les 2 mots de passe doivent être identiques.');
-        }
-        else
-        {
-            // La règle « au moins 1 chiffre » a été retirée ici comme dans PasswordPolicy,
-            // dont cette page recopie les contrôles avec ses propres bornes (8/30).
-            $verif->valider($champs['newPass'], "newPass", "texte", 8, 30, 1);
-            $verif->valider($champs['newPass2'], "newPass2", "texte", 8, 30, 1);
-        }
-    }
-
-    /*
-     * Liste des mots de passe les plus courants (resources/bad_p.txt). Cette page garde
-     * ses propres bornes de longueur (8/30, contre 10/100 à l'inscription et à la
-     * réinitialisation) : les aligner est un changement de règle à traiter à part.
-     */
-    if (!empty($champs['newPass']) && PasswordPolicy::estRefuse((string) $champs['newPass']))
-    {
-        $verif->setErreur("nouveaux_pass", "Ce mot de passe est trop courant ou trop facile à deviner, veuillez en choisir un autre.");
-    }
-
-    /*
      * Nom d'utilisateur changé par le superadmin : contrôlé seulement s'il change. Des comptes
      * anciens portent un nom partagé ou en forme d'adresse, et les refuser tels quels les
      * empêcherait d'enregistrer quoi que ce soit.
@@ -407,33 +352,9 @@ if ($is_form_submitted)
     }
 
     /*
-     * Vérification du mot de passe actuel, si son format a passé
-     */
-    if (!empty($champs['motdepasse']) && $verif->getErreur('motdepasse') === false)
-    {
-        /*
-         * Le compte est désigné par son idPersonne. La requête cherchait le pseudo porté par
-         * la session : il devient facultatif, et deux comptes sans pseudo auraient fait
-         * vérifier le mot de passe du premier venu.
-         *
-         * Double vérification, comme Sentry::checkLogin() : sha1 salé historique, puis password_hash().
-         */
-        $stmt = $connectorPdo->prepare("SELECT mot_de_passe, gds FROM personne WHERE idPersonne = ?");
-        $stmt->execute([(int) $_SESSION['SidPersonne']]);
-        $tab_user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if ($tab_user === false
-            || (!hash_equals((string) $tab_user['mot_de_passe'], sha1($tab_user['gds'] . sha1((string) $champs['motdepasse'])))
-                && !password_verify((string) $champs['motdepasse'], (string) $tab_user['mot_de_passe'])))
-        {
-            $verif->setErreur("motdepasse", "Faux mot de passe");
-        }
-    }
-
-    /*
-     * Unicité de l'adresse en modification, seulement si elle change : un compte dont l'adresse
-     * est déjà partagée — il en reste des centaines en production — ne pourrait sinon plus rien
-     * enregistrer, pas même son mot de passe.
+     * Unicité de l'adresse, seulement si elle change : un compte dont l'adresse est déjà
+     * partagée — il en reste des centaines en production — ne pourrait sinon plus rien
+     * enregistrer.
      */
     if (mb_strtolower(trim((string) $champs['email'])) !== mb_strtolower((string) $stored_personne['email'])
         && Personne::emailExists((string) $champs['email'], $get['idP']))
@@ -455,12 +376,6 @@ if ($is_form_submitted)
     if ($verif->nbErreurs() === 0)
     {
         $affiliations_avant = $getUserAffiliationsIds($get['idP']);
-
-        if (!empty($champs['newPass']))
-        {
-            $champs['gds'] = '';
-            $champs['mot_de_passe'] = password_hash($champs['newPass'], PASSWORD_DEFAULT);
-        }
 
         // Le fieldset « Événements » n'est rendu qu'aux comptes qui ajoutent des événements : on
         // ne touche à la colonne que là. Partir des réglages en base préserve ceux d'un autre
@@ -542,23 +457,12 @@ if ($is_form_submitted)
             throw $e;
         }
 
-        if (!empty($champs['mot_de_passe']))
-        {
-            $videur->revokeRememberedDevices($idP_saved);
-        }
-
         /*
          * MAJ des infos perso de session si la personne s'autoédite
          */
         if ((int) $_SESSION['SidPersonne'] === $idP_saved)
         {
             $_SESSION["user"] = $champs['pseudo'];
-
-            if (!empty($champs['mot_de_passe']))
-            {
-                // sans quoi checkSession() invaliderait la session à la requête suivante
-                $_SESSION['pass_fingerprint'] = Sentry::passFingerprint($champs['mot_de_passe']);
-            }
 
             if (!empty($champs['groupe']))
             {
@@ -874,34 +778,6 @@ include("../_header.inc.php");
                 </fieldset>
             <?php endif; ?>
         </fieldset>
-
-        <fieldset>
-            <legend>Mot de passe</legend>
-
-                <?php if (!$is_superadmin) : ?>
-
-                    <div class="guideForm">À remplir si vous souhaitez modifier votre mot de passe actuel</div>
-                    <p>
-                        <label for="motdepasse">Actuel</label>
-                        <input type="password" name="motdepasse" id="motdepasse" size="30" value="" autocomplete="off" />
-                        <?php echo $verif->getHtmlErreur("motdepasse"); ?>
-                    </p>
-
-                <?php endif ?>
-
-                <!-- Nouveau mot de passe et confirmation en cas de mise à jour -->
-                <p>
-                    <label for="newPass">Nouveau</label>
-                    <input type="password" name="newPass" id="newPass" size="30" value="" autocomplete="new-password"  />
-                    <?= $verif->getHtmlErreur("newPass");?>
-                </p>
-                <p>
-                    <label for="newPass2">Confirmer le nouveau</label>
-                    <input type="password" name="newPass2" id="newPass2" size="30" value="" autocomplete="new-password" />
-                    <?= $verif->getHtmlErreur("newPass2");?>
-                </p>
-                <?= $verif->getHtmlErreur("nouveaux_pass");?>
-            </fieldset>
 
             <?php
             // Affiliations, signature et valeurs par défaut des événements ajoutés : ne parlent qu'aux
