@@ -98,22 +98,20 @@
 		float:left;
 	}
 
+	/* chaque onglet prend la largeur de son libellé, avec la même marge : la barre se lit
+	   comme une seule rangée, sans trou entre Favoris et Lieux */
 	#menu ul li a
 	{
-		width:140px; /* 140 */
 		height:1.15em;
-        padding: 0.6em 10px;
+        padding: 0.6em 1.2em;
 	}
 
-	#menu ul li#bouton_agenda a, #menu ul li#bouton_favoris a
+	/* Agenda coiffe la colonne du calendrier (#colonne_gauche), de la même largeur */
+	#menu ul li#bouton_agenda a
 	{
-		width:70px; /* 140 */
-		height:1.15em;
-	}
-
-    #menu ul li#bouton_favoris a
-	{
-        font-weight: normal;
+		width:180px;
+		padding-left:0;
+		padding-right:0;
 	}
 
 	#menu ul li.form_recherche
@@ -139,18 +137,6 @@
 {
     width:65%;
 }
-
-/*	#menu ul li#bouton_agenda a
-	{
-		width:180px;
-
-	}*/
-
-	/* pas joli le fond blanc à cet endroit */
-	#menu ul li#bouton_agenda.ici a
-	{
-		background: none;
-	}
 
 #navigation_calendrier
 {
