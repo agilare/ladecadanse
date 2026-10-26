@@ -42,4 +42,12 @@ final class RobotsTxtTest extends Unit
         $this->assertSame(2, substr_count($robots, "Allow: /index.php?courant=2031-\r\nAllow: /index.php?courant=2032-\r\n"));
         $this->assertStringNotContainsString("\r\r", $robots);
     }
+
+    public function testLeSitemapEstAnnonceSurLHoteCanonique(): void
+    {
+        $robots = RobotsTxt::withSitemap($this->robotsTxt(), 'https://staging.ladecadanse.ch');
+
+        $this->assertStringContainsString("Sitemap: https://staging.ladecadanse.ch/sitemap.xml", $robots);
+        $this->assertSame(1, substr_count($robots, 'Sitemap: '));
+    }
 }
