@@ -334,7 +334,7 @@ $page_titre_complet = sanitizeForHtml($page_titre) . " - La décadanse";
                                 <a href="/index.php?<?= $url_query_region_et ?>#ouvrir-calendrier" id="btn_calendrier" class="mobile" aria-label="Calendrier"><i class="fa fa-calendar" aria-hidden="true"></i></a>
                             </li>
                             <li id="bouton_latests_events">
-                                <a href="/index.php#latests_events"><i class="fa fa-bell" aria-hidden="true"></i></a>
+                                <a href="/index.php#latests_events" aria-label="Derniers événements ajoutés"><i class="fa fa-bell" aria-hidden="true"></i></a>
                             </li>
                         <?php } elseif ($nom == "Favoris") { ?>
                             id="bouton_favoris">
