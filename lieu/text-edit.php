@@ -2,6 +2,7 @@
 
 require_once("../app/bootstrap.php");
 
+use Ladecadanse\Edition;
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\Lieu;
 use Ladecadanse\Security\SecurityToken;
@@ -16,9 +17,6 @@ if (!$authorization->checkGroup(UserLevel::ACTOR))
     header("Location: /user/login.php");
     die();
 }
-
-// 1sts : intention, 2nds : intention validated
-$allowed_actions = ["ajouter", "insert", "editer", "update"];
 
 /*
  * Le type n'a pas de valeur par défaut : une description est un avis signé, une
@@ -35,7 +33,7 @@ $type_libelles = ['description' => 'description', 'presentation' => 'présentati
 
 // null quand la valeur n'existe pas : la page répond alors 400, là où l'exception levée
 // par validateUrlQueryValue() faisait un 500 d'une url abîmée ou d'un passage de bot
-$action_demandee = QueryParamValidator::enumFromQuery($_GET['action'] ?? null, $allowed_actions, 'ajouter');
+$action_demandee = QueryParamValidator::enumFromQuery($_GET['action'] ?? null, Edition::ACTIONS, 'ajouter');
 $type_demande = QueryParamValidator::enumFromQuery($_GET['type'] ?? null, $allowed_types);
 
 $get = [

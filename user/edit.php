@@ -1,6 +1,7 @@
 <?php
 require_once("../app/bootstrap.php");
 
+use Ladecadanse\Edition;
 use Ladecadanse\EventCategory;
 use Ladecadanse\UserLevel;
 use Ladecadanse\Utils\Validateur;
@@ -16,22 +17,24 @@ use Ladecadanse\Organisateur;
 use Ladecadanse\Personne;
 use Ladecadanse\UserSettings;
 
-// Tout compte modifie le sien, MEMBER (12) compris
+// =============================================================================
+// Accès
+// =============================================================================
+
+/*
+ * Tout compte modifie le sien, MEMBER (12) compris. Sans session, direction la page de
+ * connexion : un 403 envoyé avant n'y changeait rien, l'en-tête Location le remplaçant
+ * d'office par un 302.
+ */
 if (!$authorization->checkGroup(UserLevel::MEMBER)) {
-    header($_SERVER["SERVER_PROTOCOL"] . " 403 Forbidden");
     header("Location: /user/login.php");
     die();
 }
 
-// 1sts : intention, 2nds : intention validated
-$allowed_actions = ["ajouter", "insert", "editer", "update"];
-
-// null quand l'action n'existe pas : la page répond alors 400, là où l'exception levée
-// par validateUrlQueryValue() faisait un 500 d'une url abîmée
-$action_demandee = QueryParamValidator::enumFromQuery($_GET['action'] ?? null, $allowed_actions, 'ajouter');
-
 $get = [
-    'action' => $action_demandee ?? 'ajouter',
+    // null quand l'action n'existe pas : la page répond alors 400, là où l'exception levée
+    // par validateUrlQueryValue() faisait un 500 d'une url abîmée
+    'action' => QueryParamValidator::enumFromQuery($_GET['action'] ?? null, Edition::ACTIONS, 'ajouter'),
     'idP' => (int) ($_GET['idP'] ?? 0),
 ];
 
@@ -41,13 +44,9 @@ $is_superadmin = (int) $_SESSION['Sgroupe'] === UserLevel::SUPERADMIN;
 // Chaque refus est rendu dans la page du site par _erreur_http.inc.php
 $http_error = null;
 
-if ($action_demandee === null)
+if ($get['action'] === null || ($is_edit_mode && $get['idP'] <= 0))
 {
-    $http_error = [400, 'Bad Request', "Cette action n'existe pas"];
-}
-elseif ($is_edit_mode && $get['idP'] <= 0)
-{
-    $http_error = [400, 'Bad Request', "Aucun compte n'est désigné"];
+    $http_error = [400, 'Bad Request', "L'adresse de cette page est incomplète ou erronée"];
 }
 elseif (!$is_superadmin && (!$is_edit_mode || (int) $_SESSION['SidPersonne'] !== $get['idP']))
 {
@@ -125,36 +124,26 @@ $getUserAffiliationsIds = function (int $idP) use ($connectorPdo): array
 /*
 * Valeurs par défaut à l'ajout d'un événement (fieldset « Événements »).
 *
-* Volontairement tenues hors de $champs, dont la boucle d'hydratation recopie $_POST : une clé
+* Volontairement tenues hors de $champs, dont l'hydratation recopie $_POST : une clé
 * "settings" y reviendrait à écrire en base le JSON brut envoyé par le client. La colonne n'est
 * renseignée qu'en fin de validation, à partir de ces valeurs normalisées.
 */
 $ev_defaults = UserSettings::eventNewDefaults(null);
 
-
-// =============================================================================
-// Traitement
-//
-// Tout se joue avant l'inclusion de _header.inc.php : un enregistrement réussi
-// se termine par une redirection vers la fiche du profil (POST/Redirect/GET),
-// qui suppose que rien n'a encore été envoyé au navigateur.
-// =============================================================================
-
-$verif = new Validateur();
-
+// Dans l'ordre du formulaire
 $champs = [
+    "statut" => '',
     "pseudo" => '',
+    "email" => '',
+    "groupe" => '',
     "motdepasse" => '',
     "newPass" => '',
     "newPass2" => '',
-    "affiliation" => '',
     'lieu' => '',
     'organisateurs' => '',
-    "email" => '',
-    "groupe" => '',
+    "affiliation" => '',
     "signature" => 'pseudo',
     "avec_affiliation" => 'non',
-    "statut" => '',
 ];
 
 /*
@@ -166,21 +155,73 @@ $personne_columns = ['pseudo', 'affiliation', 'email', 'groupe', 'signature', 'a
 
 $user_levels = UserLevel::getConstants();
 
-// AUTHOR ne s'attribue plus depuis ce formulaire ; les comptes qui le portent le gardent
-$assignable_levels = array_values(array_diff($user_levels, [UserLevel::AUTHOR]));
+$verif = new Validateur();
 
 $is_form_submitted = isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok';
 
 
+// =============================================================================
+// Traitement
+//
+// Trois temps : lire la saisie et la normaliser, la valider, puis l'enregistrer. Tout se
+// joue avant l'inclusion de _header.inc.php : un enregistrement réussi se termine par une
+// redirection vers la fiche du profil (POST/Redirect/GET), qui suppose que rien n'a encore
+// été envoyé au navigateur.
+// =============================================================================
+
 if ($is_form_submitted)
 {
-    foreach ($champs as $c => $v)
+    // -------------------------------------------------------------------------
+    // 1. Lecture de la saisie
+    //
+    // Ce que le compte ne peut pas changer reprend ici sa valeur en base ou de session :
+    // la validation et l'enregistrement ne voient plus que ce qui doit être écrit.
+    // -------------------------------------------------------------------------
+
+    // Les champs attendus seulement ; is_scalar écarte « pseudo[]=x », qu'aucun champ ne poste
+    $champs = array_merge($champs, array_filter(array_intersect_key($_POST, $champs), 'is_scalar'));
+
+    if (!$is_superadmin)
     {
-        // is_scalar() écarte « pseudo[]=x », qu'aucun champ du formulaire ne poste
-        if (isset($_POST[$c]) && is_scalar($_POST[$c]))
-        {
-            $champs[$c] = $_POST[$c];
-        }
+        $champs['pseudo'] = $_SESSION['user'];
+    }
+
+    /*
+     * Groupe et statut ne se choisissent qu'en superadmin ; pour les autres, ils restent ceux de
+     * la session et de la base, quoi que porte le POST.
+     *
+     * Une valeur héritée hors de la liste (le groupe 10, le statut « demande ») est rendue cochée
+     * mais désactivée : le navigateur ne la poste pas. Rien de posté vaut donc « inchangé ».
+     */
+    $stored_groupe = $is_edit_mode ? (int) $stored_personne['groupe'] : null;
+    $stored_statut = $is_edit_mode ? (string) $stored_personne['statut'] : 'actif';
+
+    if (!$is_superadmin)
+    {
+        $champs['groupe'] = (int) $_SESSION['Sgroupe'];
+    }
+    elseif ($champs['groupe'] === '' && $stored_groupe !== null)
+    {
+        $champs['groupe'] = $stored_groupe;
+    }
+
+    if (!$is_superadmin || !$is_edit_mode || $champs['statut'] === '')
+    {
+        $champs['statut'] = $stored_statut;
+    }
+
+    /*
+     * Colonnes que le formulaire n'a pas montrées : la base fait foi.
+     *
+     * Un champ absent du formulaire ne poste rien, et l'UPDATE écrit chaque colonne présente
+     * dans $champs — l'affiliation et la signature d'un compte rétrogradé auraient été
+     * remises à leur valeur par défaut au premier enregistrement, sans un mot.
+     */
+    if (!$areContributorFieldsEnabled && $is_edit_mode)
+    {
+        $champs['affiliation'] = $stored_personne['affiliation'];
+        $champs['signature'] = $stored_personne['signature'];
+        $champs['avec_affiliation'] = $stored_personne['avec_affiliation'];
     }
 
     /*
@@ -205,47 +246,73 @@ if ($is_form_submitted)
     }
 
     /*
-     * Rattachements : une seule liste déroulante pour les lieux et les organisateurs (#102).
-     *
-     * Les valeurs postées portent leur type — « lieu:42 », « orga:17 » — parce que les deux
-     * tables ont chacune leurs identifiants, qui se recouvrent : c'est le type, comparé ici à
-     * deux noms littéraux, qui décide de la table, jamais la saisie.
+     * Rattachements : une seule liste déroulante pour les lieux et les organisateurs (#102),
+     * dont chaque valeur porte son type (Personne::parseAffiliationOption()). Le reste du
+     * traitement raisonne sur $champs['lieu'] et $champs['organisateurs'] : ce sont deux tables
+     * distinctes à écrire.
      */
     $champs['lieu'] = '';
     $champs['organisateurs'] = [];
     $lieux_postes = 0;
 
-    // Les rattachements en base, pour le ré-affichage en lecture seule ; ils ne sont pas réécrits.
-    if (!$canEditAffiliations && $is_edit_mode)
+    if ($canEditAffiliations)
     {
+        foreach ((array) ($_POST['affiliations'] ?? []) as $valeur)
+        {
+            $option = Personne::parseAffiliationOption($valeur);
+
+            if ($option === null)
+            {
+                continue;
+            }
+
+            if ($option['type'] === 'lieu')
+            {
+                $lieux_postes++;
+                $champs['lieu'] = $option['id'];
+            }
+            else
+            {
+                $champs['organisateurs'][] = $option['id'];
+            }
+        }
+    }
+    elseif ($is_edit_mode)
+    {
+        // Les rattachements en base, pour le ré-affichage en lecture seule ; ils ne sont pas réécrits.
         $affiliations_stockees = $getUserAffiliationsIds($get['idP']);
         $champs['lieu'] = $affiliations_stockees['lieu'] > 0 ? $affiliations_stockees['lieu'] : '';
         $champs['organisateurs'] = $affiliations_stockees['organisateurs'];
     }
 
-    foreach ($canEditAffiliations ? (array) ($_POST['affiliations'] ?? []) : [] as $valeur)
+    $ev_defaults = UserSettings::sanitizeEventNewDefaults( saisie: [
+        'genre' => $_POST['ev_defaults_genre'] ?? '',
+        'horaire_debut' => $_POST['ev_defaults_horaire_debut'] ?? '',
+        'horaire_fin' => $_POST['ev_defaults_horaire_fin'] ?? '',
+        'idLieu' => $_POST['ev_defaults_idLieu'] ?? 0,
+        'idOrganisateurs' => $_POST['ev_defaults_organisateurs'] ?? [],
+        'prix' => $_POST['ev_defaults_prix'] ?? '',
+    ], genresAutorises: EventCategory::selectable(EventCategory::isEnabled()));
+
+    // -------------------------------------------------------------------------
+    // 2. Validation
+    // -------------------------------------------------------------------------
+
+    // Longueurs et obligation viennent de Personne::FIELDS, dont le formulaire tire aussi ses maxlength
+    foreach (Personne::FIELDS as $field => $rule)
     {
-        if (!is_scalar($valeur))
-        {
-            continue;
-        }
+        $verif->valider($champs[$field], $field, $rule['type'], $rule['min'], $rule['max'], $rule['required']);
+    }
 
-        [$type, $id] = array_pad(explode(':', (string) $valeur, 2), 2, '');
+    // Seule la valeur déjà en base échappe à la liste des choix permis
+    if ($is_superadmin && !in_array((string) $champs['groupe'], array_map('strval', array_merge(array_values($user_levels), $stored_groupe !== null ? [$stored_groupe] : [])), true))
+    {
+        $verif->setErreur("groupe", "Choisissez un groupe parmi ceux proposés");
+    }
 
-        if ((int) $id <= 0)
-        {
-            continue;
-        }
-
-        if ($type === 'lieu')
-        {
-            $lieux_postes++;
-            $champs['lieu'] = (int) $id;
-        }
-        else if ($type === 'orga')
-        {
-            $champs['organisateurs'][] = (int) $id;
-        }
+    if (!in_array($champs['statut'], array_merge(Personne::$statuts, [$stored_statut]), true))
+    {
+        $verif->setErreur("statut", "Choisissez un statut parmi ceux proposés");
     }
 
     /*
@@ -258,15 +325,6 @@ if ($is_form_submitted)
         $verif->setErreur("affiliations", "Vous ne pouvez rattacher le compte qu'à un seul lieu ; les organisateurs, eux, peuvent être plusieurs.");
     }
 
-    $ev_defaults = UserSettings::sanitizeEventNewDefaults([
-        'genre' => $_POST['ev_defaults_genre'] ?? '',
-        'horaire_debut' => $_POST['ev_defaults_horaire_debut'] ?? '',
-        'horaire_fin' => $_POST['ev_defaults_horaire_fin'] ?? '',
-        'idLieu' => $_POST['ev_defaults_idLieu'] ?? 0,
-        'idOrganisateurs' => $_POST['ev_defaults_organisateurs'] ?? [],
-        'prix' => $_POST['ev_defaults_prix'] ?? '',
-    ], EventCategory::selectable(EventCategory::isEnabled()));
-
     // Les selects et les <input type="time"> n'offrent que des valeurs valides : sanitize ci-dessus
     // ramène silencieusement à vide ce qui ne l'est pas. Les horaires font exception et sont
     // signalés, parce qu'un navigateur sans support de type="time" laisse saisir n'importe quoi.
@@ -278,41 +336,6 @@ if ($is_form_submitted)
         {
             $verif->setErreur('ev_defaults_' . $cle, "L'horaire " . $libelle . " par défaut doit être au format hh:mm");
         }
-    }
-
-    $verif->valider($champs['pseudo'], "pseudo", "texte", 2, 50, 0);
-
-    /*
-     * Groupe et statut ne se choisissent qu'en superadmin ; pour les autres, ils restent ceux de
-     * la session et de la base, quoi que porte le POST.
-     *
-     * Une valeur verrouillée (AUTHOR, ou une valeur héritée hors de la liste comme le groupe 10 ou le
-     * statut « demande ») est rendue cochée mais désactivée : le navigateur ne la poste pas. Rien de
-     * posté vaut donc « inchangé ». Seule la valeur déjà en base échappe à la liste des choix permis.
-     */
-    $stored_groupe = $is_edit_mode ? (int) $stored_personne['groupe'] : null;
-    $stored_statut = $is_edit_mode ? (string) $stored_personne['statut'] : 'actif';
-
-    if (!$is_superadmin)
-    {
-        $champs['groupe'] = (int) $_SESSION['Sgroupe'];
-    }
-    elseif ($champs['groupe'] === '' && $stored_groupe !== null)
-    {
-        $champs['groupe'] = $stored_groupe;
-    }
-    elseif (!in_array((string) $champs['groupe'], array_map('strval', array_merge($assignable_levels, $stored_groupe !== null ? [$stored_groupe] : [])), true))
-    {
-        $verif->setErreur("groupe", "Choisissez un groupe parmi ceux proposés");
-    }
-
-    if (!$is_superadmin || !$is_edit_mode || $champs['statut'] === '')
-    {
-        $champs['statut'] = $stored_statut;
-    }
-    elseif (!in_array($champs['statut'], array_merge(Personne::$statuts, [$stored_statut]), true))
-    {
-        $verif->setErreur("statut", "Choisissez un statut parmi ceux proposés");
     }
 
     /*
@@ -364,11 +387,6 @@ if ($is_form_submitted)
     {
         $verif->setErreur("nouveaux_pass", "Ce mot de passe est trop courant ou trop facile à deviner, veuillez en choisir un autre.");
     }
-
-    $verif->valider($champs['email'], "email", "email", 4, 250, 1);
-    // 250 comme la colonne, et comme l'inscription qui y dépose la déclaration : à 60, une
-    // déclaration un peu longue passait à l'inscription puis bloquait toute modification du profil
-    $verif->valider($champs['affiliation'], "affiliation", "texte", 2, 250, 0);
 
     /*
      * En cas d'ajout, vérification si le profil n'existe pas déjà
@@ -447,6 +465,10 @@ if ($is_form_submitted)
         $verif->setErreur("global", "Le système de sécurité du site n'a pu authentifier votre action. Veuillez réafficher ce formulaire et réessayer");
     }
 
+    // -------------------------------------------------------------------------
+    // 3. Enregistrement, si la saisie est valide
+    // -------------------------------------------------------------------------
+
     if ($verif->nbErreurs() === 0)
     {
         $affiliations_avant = $get['action'] == 'update'
@@ -457,24 +479,6 @@ if ($is_form_submitted)
         {
             $champs['gds'] = '';
             $champs['mot_de_passe'] = password_hash($champs['newPass'], PASSWORD_DEFAULT);
-        }
-
-        if (!$is_superadmin) {
-            $champs['pseudo'] = $_SESSION['user'];
-        }
-
-        /*
-         * Colonnes que le formulaire n'a pas montrées : la base fait foi.
-         *
-         * Un champ absent du formulaire ne poste rien, et l'UPDATE écrit chaque colonne présente
-         * dans $champs — l'affiliation et la signature d'un compte rétrogradé auraient été
-         * remises à leur valeur par défaut au premier enregistrement, sans un mot.
-         */
-        if (!$areContributorFieldsEnabled && $get['action'] == 'update')
-        {
-            $champs['affiliation'] = $stored_personne['affiliation'];
-            $champs['signature'] = $stored_personne['signature'];
-            $champs['avec_affiliation'] = $stored_personne['avec_affiliation'];
         }
 
         // Le fieldset « Événements » n'est rendu qu'en édition, et qu'aux comptes qui ajoutent des
@@ -725,13 +729,13 @@ if ($get['action'] == 'ajouter')
 
 /*
  * Choix rendus en boutons radio : les valeurs permises, plus celle du compte si elle n'en fait pas
- * partie (AUTHOR, groupe 10 hérité, statut « demande »), cochée et désactivée.
+ * partie (groupe 10 hérité, statut « demande »), cochée et désactivée.
  */
 $groupe_choices = [];
 
 foreach ($user_levels as $nom => $id)
 {
-    $groupe_choices[(int) $id] = ['label' => $id . ' : ' . $nom, 'locked' => !in_array($id, $assignable_levels, true)];
+    $groupe_choices[(int) $id] = ['label' => $id . ' : ' . $nom, 'locked' => false];
 }
 
 if ($is_edit_mode && !isset($groupe_choices[(int) $stored_personne['groupe']]))
@@ -881,11 +885,11 @@ include("../_header.inc.php");
             <p>
                 <label for="pseudo">Nom d'utilisateur</label>
                 <?php if ($is_superadmin) : ?>
-                    <input type="text" name="pseudo" id="pseudo" size="30" maxlength="80" value="<?= sanitizeForHtml($champs['pseudo']) ?>" />
+                    <input type="text" name="pseudo" id="pseudo" size="30" maxlength="<?= Personne::FIELDS['pseudo']['max'] ?>" value="<?= sanitizeForHtml($champs['pseudo']) ?>" />
                     <?= $verif->getHtmlErreur('pseudo') ?>
                     <?= $verif->getHtmlErreur("pseudoIdentique") ?>
                 <?php elseif (trim((string) $champs['pseudo']) !== '') : ?>
-                    <input type="text" name="pseudo" id="pseudo" size="30" maxlength="80" value="<?= sanitizeForHtml($champs['pseudo']) ?>" readonly />
+                    <input type="text" name="pseudo" id="pseudo" size="30" maxlength="<?= Personne::FIELDS['pseudo']['max'] ?>" value="<?= sanitizeForHtml($champs['pseudo']) ?>" readonly />
                 <?php else : ?>
                     <?php /* Ni champ ni valeur : ce compte n'a pas de nom d'utilisateur */ ?>
                     <span class="sans-valeur">aucun</span>
@@ -901,7 +905,7 @@ include("../_header.inc.php");
 
             <p>
                 <label for="email">E-mail*</label>
-                <input type="email" name="email" id="email" size="40" maxlength="100" value="<?= sanitizeForHtml(stripslashes((string) $champs['email'])) ?>" required />
+                <input type="email" name="email" id="email" size="40" maxlength="<?= Personne::FIELDS['email']['max'] ?>" value="<?= sanitizeForHtml(stripslashes((string) $champs['email'])) ?>" required />
                 <?= $verif->getHtmlErreur("email") ?>
                 <?= $verif->getErreur("emailIdentique") ?>
             </p>
@@ -996,7 +1000,7 @@ include("../_header.inc.php");
 
                     <p>
                         <label for="affiliation">Si pas dans la liste</label>
-                        <input type="text" name="affiliation" id="affiliation" size="30" maxlength="250" value="<?= sanitizeForHtml($champs['affiliation']); ?>" />
+                        <input type="text" name="affiliation" id="affiliation" size="30" maxlength="<?= Personne::FIELDS['affiliation']['max'] ?>" value="<?= sanitizeForHtml($champs['affiliation']); ?>" />
                         <?= $verif->getHtmlErreur("affiliation"); ?>
                     </p>
 

@@ -21,6 +21,46 @@ class Personne
     public const int LOW_ACTIVITY_MONTHS_NB = 12;
     public const int VERY_LOW_ACTIVITY_MONTHS_NB = 24;
 
+    /**
+     * Champs texte du formulaire de compte (user/edit.php) et leurs règles de saisie.
+     *
+     * Les bornes hautes sont celles des colonnes, dont le formulaire tire aussi ses maxlength :
+     * l'adresse se validait jusqu'à 250 caractères pour une colonne de 100, et MariaDB, hors
+     * mode strict, tronquait l'excédent sans rien dire.
+     */
+    public const array FIELDS = [
+        'pseudo'      => ['type' => 'texte', 'min' => 2, 'max' => 80,  'required' => false],
+        'email'       => ['type' => 'email', 'min' => 4, 'max' => 100, 'required' => true],
+        'affiliation' => ['type' => 'texte', 'min' => 2, 'max' => 255, 'required' => false],
+    ];
+
+    /**
+     * Une valeur de la liste fusionnée des rattachements (#102) : « lieu:42 » ou « orga:17 ».
+     *
+     * Les tables lieu et organisateur ont chacune leurs identifiants, qui se recouvrent : la
+     * valeur porte donc son type, comparé à une liste blanche. C'est lui qui décide de la
+     * table, jamais la saisie.
+     *
+     * @return array{type: 'lieu'|'orga', id: int}|null null si la valeur ne désigne rien
+     */
+    public static function parseAffiliationOption(mixed $value): ?array
+    {
+        // is_scalar() écarte « affiliations[][]=x »
+        if (!is_scalar($value))
+        {
+            return null;
+        }
+
+        [$type, $id] = array_pad(explode(':', (string) $value, 2), 2, '');
+
+        if (($type !== 'lieu' && $type !== 'orga') || (int) $id <= 0)
+        {
+            return null;
+        }
+
+        return ['type' => $type, 'id' => (int) $id];
+    }
+
     public static function getPersonnesOfOrganisateur(int $idOrga): array
     {
         global $connectorPdo;

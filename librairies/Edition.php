@@ -19,6 +19,12 @@ namespace Ladecadanse;
  */
 abstract class Edition
 {
+    /**
+     * Valeurs du paramètre d'url `action` des formulaires d'édition : les premières de chaque
+     * paire disent l'intention (afficher le formulaire), les secondes l'envoi à enregistrer.
+     */
+    public const array ACTIONS = ["ajouter", "insert", "editer", "update"];
+
     /** « insert » ou « update », telle que la page l'a décidée. */
     public ?string $action = null;
 
