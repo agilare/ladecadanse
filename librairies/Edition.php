@@ -15,7 +15,8 @@ namespace Ladecadanse;
  * silencieusement `false` ou `null` : une classe fille qui aurait oublié de les
  * surcharger n'aurait rien chargé ni rien validé, sans un mot. D'où `abstract`.
  *
- * Implémentée par FicheEdition (lieu, organisateur) et SalleEdition.
+ * Implémentée par FicheEdition (lieu, organisateur), SalleEdition, et pour le compte par UserEdition
+ * et ContributorEdition.
  */
 abstract class Edition
 {
