@@ -92,6 +92,23 @@ form#ajouter_editer fieldset.groupe-radios ul.radio li
 	white-space: nowrap;
 }
 
+/* Groupe : un niveau par ligne, et sous son libellé ce qu'il permet */
+form#ajouter_editer fieldset.groupe-radios ul.radio.vertical li
+{
+	display: block;
+	white-space: normal;
+	margin: 0 0 0.3em 0;
+}
+
+	form#ajouter_editer ul.radio.vertical .aide-choix
+	{
+		margin: 0.1em 0 0 1.7em;
+		font-size: 0.9em;
+		font-style: italic;
+		color: #6a6a6a;
+		line-height: 1.25em;
+	}
+
 form#ajouter_editer #signature-preview
 {
 	display: inline-block;

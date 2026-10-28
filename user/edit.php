@@ -234,12 +234,15 @@ $groupe_choices = [];
 
 foreach ($user_levels as $nom => $id)
 {
-    $groupe_choices[(int) $id] = ['label' => $id . ' : ' . $nom, 'locked' => false];
+    $groupe_choices[(int) $id] = ['label' => $id . ' : ' . $nom, 'description' => UserLevel::getDescription((int) $id), 'locked' => false];
 }
 
 if (!isset($groupe_choices[(int) $stored_personne['groupe']]))
 {
-    $groupe_choices[(int) $stored_personne['groupe']] = ['label' => $stored_personne['groupe'] . ' : ancien niveau', 'locked' => true];
+    // hors barème, il a les droits du premier niveau qu'il atteint : MEMBER pour le groupe 10
+    $groupe_choices[(int) $stored_personne['groupe']] = ['label' => $stored_personne['groupe'] . ' : ancien niveau', 'description' => "Ne s'attribue plus", 'locked' => true];
+    // à sa place dans l'ordre des niveaux, et non en fin de liste
+    ksort($groupe_choices);
 }
 
 $statut_choices = Personne::$statuts;
@@ -284,29 +287,9 @@ include("../_header.inc.php");
 
         <p>* indique un champ obligatoire</p>
 
-        <?php if ($is_superadmin) : ?>
-
-            <fieldset>
-                <legend>Statut</legend>
-                <ul class="radio">
-                <?php foreach ($statut_choices as $s) : ?>
-                    <li class="listehoriz">
-                        <input type="radio" name="statut" value="<?= sanitizeForHtml($s) ?>"
-                            <?php if ($s == $champs['statut']) : ?> checked="checked" <?php endif; ?>
-                            <?php if (!in_array($s, Personne::$statuts, true)) : ?> disabled="disabled" <?php endif; ?>
-                            id="statut_<?= sanitizeForHtml($s) ?>" class="radio_horiz" />
-                        <label for="statut_<?= sanitizeForHtml($s) ?>" class="continu"><?= sanitizeForHtml($s) ?></label>
-                    </li>
-                <?php endforeach ?>
-                </ul>
-                <?= $verif->getHtmlErreur("statut") ?>
-            </fieldset>
-
-        <?php endif; ?>
-
+        <?php // un seul groupe de champs : la page n'a plus que le compte, le titre suffit à le nommer ?>
         <fieldset>
 
-            <legend>Compte</legend>
             <p>
                 <label for="pseudo">Nom d'utilisateur</label>
                 <?php if ($is_superadmin) : ?>
@@ -337,20 +320,38 @@ include("../_header.inc.php");
             <div class="guideChamp">Pour se connecter et recevoir un lien en cas de mot de passe oublié</div>
 
             <?php if ($is_superadmin) : ?>
-                <?php /* sa légende tient la place d'un libellé */ ?>
+                <?php /* sa légende tient la place d'un libellé ; un niveau par ligne, chacun avec
+                         ce qu'il permet, pour décider en connaissance de cause */ ?>
                 <fieldset class="groupe-radios">
                     <legend>Groupe*</legend>
-                    <ul class="radio mobile-vertical">
+                    <ul class="radio vertical">
                     <?php foreach ($groupe_choices as $id => $choice) : ?>
-                        <li class="listehoriz">
-                            <input type="radio" name="groupe" value="<?= $id ?>" id="groupe_<?= $id ?>" class="radio_horiz"
+                        <li>
+                            <input type="radio" name="groupe" value="<?= $id ?>" id="groupe_<?= $id ?>" class="radio_horiz" aria-describedby="groupe_<?= $id ?>_aide"
                                 <?php if ($id == $champs['groupe']) : ?> checked="checked" <?php endif; ?>
                                 <?php if ($choice['locked']) : ?> disabled="disabled" <?php endif; ?> />
                             <label for="groupe_<?= $id ?>" class="continu"><?= sanitizeForHtml($choice['label']) ?></label>
+                            <div class="aide-choix" id="groupe_<?= $id ?>_aide"><?= sanitizeForHtml($choice['description']) ?></div>
                         </li>
                     <?php endforeach ?>
                     </ul>
                     <?= $verif->getHtmlErreur("groupe") ?>
+                </fieldset>
+
+                <fieldset class="groupe-radios">
+                    <legend>Statut</legend>
+                    <ul class="radio">
+                    <?php foreach ($statut_choices as $s) : ?>
+                        <li>
+                            <input type="radio" name="statut" value="<?= sanitizeForHtml($s) ?>"
+                                <?php if ($s == $champs['statut']) : ?> checked="checked" <?php endif; ?>
+                                <?php if (!in_array($s, Personne::$statuts, true)) : ?> disabled="disabled" <?php endif; ?>
+                                id="statut_<?= sanitizeForHtml($s) ?>" class="radio_horiz" />
+                            <label for="statut_<?= sanitizeForHtml($s) ?>" class="continu"><?= sanitizeForHtml($s) ?></label>
+                        </li>
+                    <?php endforeach ?>
+                    </ul>
+                    <?= $verif->getHtmlErreur("statut") ?>
                 </fieldset>
             <?php endif; ?>
 

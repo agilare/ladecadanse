@@ -26,7 +26,28 @@ class UserLevel
     static function getConstants()
     {
         $oClass = new \ReflectionClass(self::class);
-        return $oClass->getConstants();
+        // les seuls niveaux : DESCRIPTIONS, privée, n'en est pas un
+        return $oClass->getConstants(\ReflectionClassConstant::IS_PUBLIC);
+    }
+
+    /**
+     * Ce que permet chaque niveau, en une ligne, pour qui attribue les groupes (user/edit.php).
+     * Un niveau permet aussi tout ce que permettent les niveaux de nombre plus élevé.
+     */
+    private const DESCRIPTIONS = [
+        self::SUPERADMIN => "Tous les droits, dont l'attribution des groupes, la modification et l'effacement des comptes",
+        self::ADMIN => "Administration : gestion des événements, des comptes en lecture, envois groupés, suivi des robots",
+        self::AUTHOR => "Modifie tous les événements, lieux et organisateurs, et rattache les comptes à leurs fiches",
+        self::ACTOR => "Ajoute des événements sans modération ; modifie les siens et les fiches de son lieu et de ses organisateurs",
+        self::MEMBER => "Favoris ; n'ajoute pas d'événements",
+    ];
+
+    /**
+     * Description du niveau, ou chaîne vide pour une valeur hors barème (le groupe 10 hérité).
+     */
+    public static function getDescription(int $groupe): string
+    {
+        return self::DESCRIPTIONS[$groupe] ?? '';
     }
 
     /**
