@@ -411,7 +411,9 @@ if ($erreur !== null)
 		<div class="spacer"></div>
 	</header>
 
-	<div id="profile">
+	<?php /* Deux blocs, comme les formulaires : le compte (user/edit.php, user/pwd-edit.php) et le
+	         profil d'organisateur d'événements (user/contributor-edit.php), chacun avec son lien. */ ?>
+	<div id="profile" class="profile-box">
 
 		<table>
 			<tr><th>Nom d'utilisateur</th><td><?= trim((string) $profil['pseudo']) !== '' ? sanitizeForHtml($profil['pseudo']) : '<em>aucun : c\'est votre e-mail qui vous identifie</em>' ?></td></tr>
@@ -429,27 +431,6 @@ if ($erreur !== null)
 				<?= !empty($profil['password_updated']) ? '&middot; ' : '' ?><a class="profil-mot-de-passe" href="/user/pwd-edit.php?idP=<?= (int) $get['idP'] ?>">Modifier</a>
 				<?php endif; ?>
 			</td></tr>
-			<?php if ($showsContributorRows) : ?>
-			<tr><th>Affiliations</th><td>
-				<?php foreach ($affiliations_lieux as $lieu_affilie) : ?>
-					<a href="/lieu/lieu.php?idL=<?= (int) $lieu_affilie['idLieu'] ?>" title="Voir la fiche du lieu : <?= sanitizeForHtml($lieu_affilie['nom']) ?>"><?= sanitizeForHtml($lieu_affilie['nom']) ?></a><br />
-				<?php endforeach; ?>
-				<?php // le texte libre s'ajoute au lieu, il ne s'y substitue plus ?>
-				<?php if (!empty($profil['affiliation'])) : ?>
-					<?= sanitizeForHtml($profil['affiliation']) ?><br />
-				<?php endif; ?>
-				<?php if ($organisateurs !== []) : ?>
-					<?= Organisateur::getListLinkedHtml($organisateurs, isWithOrganisateurUrl: false) ?>
-				<?php endif; ?>
-			</td></tr>
-			<tr><th>Votre signature des événements ajoutés</th><td><?= $signature ?: '<em>aucune</em>' ?></td></tr>
-			<?php if ($defauts_evenement !== []) : ?>
-			<tr><th>Événements, valeurs par défaut</th><td>
-				<?php $paires = []; foreach ($defauts_evenement as $intitule => $valeur) { $paires[] = $intitule . ' : ' . sanitizeForHtml($valeur); } ?>
-				<?= implode(', ', $paires) ?>
-			</td></tr>
-			<?php endif; ?>
-			<?php endif; ?>
 			<tr><th>Inscription</th><td><?= DateHelper::isoToFr(mb_substr((string) $profil['dateAjout'], 0, 10), 'annee', showDayOfWeek: false) ?></td></tr>
 			<tr><th>Appareils</th><td>
 				<?php if ($appareils_memorises === 0) : ?>
@@ -470,10 +451,6 @@ if ($erreur !== null)
 			<?php if ($peut_gerer) : ?>
 			<a class="profil-modifier" href="/user/edit.php?idP=<?= (int) $get['idP'] ?>"><i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;Modifier</a>
 			<?php endif; ?>
-			<?php // règle d'accès de user/contributor-edit.php : son propre compte, ou le superadmin ?>
-			<?php if ($showsContributorRows && ($estSoiMeme || (int) $_SESSION['Sgroupe'] === UserLevel::SUPERADMIN)) : ?>
-			<a class="profil-modifier" href="/user/contributor-edit.php?idP=<?= (int) $get['idP'] ?>"><i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;Organisateur d'événements</a>
-			<?php endif; ?>
 			<?php if ($canErase) : ?>
 			<?php // data-confirm sur le formulaire : global.js le lit à la soumission. Un onclick
 			      // inline serait refusé par la CSP, qui n'autorise les scripts que par nonce. ?>
@@ -486,6 +463,42 @@ if ($erreur !== null)
 		</div>
 		<?php endif; ?>
 	</div>
+
+	<?php if ($showsContributorRows) : ?>
+	<section id="profile-contributor" class="profile-box" aria-labelledby="profile-contributor-titre">
+
+		<h2 id="profile-contributor-titre">Organisateur d'événements</h2>
+
+		<table>
+			<tr><th>Affiliations</th><td>
+				<?php foreach ($affiliations_lieux as $lieu_affilie) : ?>
+					<a href="/lieu/lieu.php?idL=<?= (int) $lieu_affilie['idLieu'] ?>" title="Voir la fiche du lieu : <?= sanitizeForHtml($lieu_affilie['nom']) ?>"><?= sanitizeForHtml($lieu_affilie['nom']) ?></a><br />
+				<?php endforeach; ?>
+				<?php // le texte libre s'ajoute au lieu, il ne s'y substitue plus ?>
+				<?php if (!empty($profil['affiliation'])) : ?>
+					<?= sanitizeForHtml($profil['affiliation']) ?><br />
+				<?php endif; ?>
+				<?php if ($organisateurs !== []) : ?>
+					<?= Organisateur::getListLinkedHtml($organisateurs, isWithOrganisateurUrl: false) ?>
+				<?php endif; ?>
+			</td></tr>
+			<tr><th>Votre signature</th><td><?= $signature ?: '<em>aucune</em>' ?></td></tr>
+			<?php if ($defauts_evenement !== []) : ?>
+			<tr><th>Événements, valeurs par défaut</th><td>
+				<?php $paires = []; foreach ($defauts_evenement as $intitule => $valeur) { $paires[] = $intitule . ' : ' . sanitizeForHtml($valeur); } ?>
+				<?= implode(', ', $paires) ?>
+			</td></tr>
+			<?php endif; ?>
+		</table>
+
+		<?php // règle d'accès de user/contributor-edit.php : son propre compte, ou le superadmin ?>
+		<?php if ($estSoiMeme || (int) $_SESSION['Sgroupe'] === UserLevel::SUPERADMIN) : ?>
+		<div class="profile-actions">
+			<a class="profil-modifier" href="/user/contributor-edit.php?idP=<?= (int) $get['idP'] ?>"><i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;Modifier</a>
+		</div>
+		<?php endif; ?>
+	</section>
+	<?php endif; ?>
 
 	<?php if ($showsContributions) : ?>
 	<nav class="tabs" aria-label="Contenus ajoutés">

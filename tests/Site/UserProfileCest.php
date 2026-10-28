@@ -75,8 +75,11 @@ class UserProfileCest
         $I->see("Nom d'utilisateur");
         $I->see('E-mail');
         $I->see('Affiliations');
-        $I->seeElement('a[href*="/user/edit.php"]');
-        $I->seeElement('a[href*="/user/contributor-edit.php"]');
+        // deux blocs, chacun avec son lien : le compte, puis le profil d'organisateur d'événements
+        $I->seeElement('#profile a[href*="/user/edit.php"]');
+        $I->see("Organisateur d'événements", '#profile-contributor h2');
+        $I->see('Affiliations', '#profile-contributor th');
+        $I->seeElement('#profile-contributor a[href*="/user/contributor-edit.php"]');
         // la date du dernier changement, ou rien pour un compte d'avant la 3.14.0, et le lien (#249)
         $I->see('Mot de passe', '#profile th');
         $I->seeElement('a[href^="/user/pwd-edit.php?idP="]');
@@ -91,8 +94,9 @@ class UserProfileCest
         $I->loginAsActor();
         $this->grabMyProfileId($I);
 
-        $I->see('Votre signature des événements ajoutés');
-        $I->see('Inscription');
+        // chacune dans son bloc : la signature avec le profil d'organisateur, l'inscription avec le compte
+        $I->see('Votre signature', '#profile-contributor th');
+        $I->see('Inscription', '#profile th');
     }
 
     /**
