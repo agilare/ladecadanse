@@ -133,7 +133,7 @@ if (lieuManuelDetails) {
 }
 
 /*
- * Aperçu de la signature (user/edit.php), selon les règles de Personne::getSignatureHtml() :
+ * Aperçu de la signature (user/contributor-edit.php), selon les règles de Personne::getSignatureHtml() :
  * le nom d'utilisateur s'il est coché, puis, entre parenthèses, le lieu rattaché ou à défaut le
  * texte libre de l'affiliation. data-pseudo est vide quand le nom ne signe pas (adresse e-mail) ;
  * data-lieu porte le lieu des comptes qui ne le choisissent pas dans la liste. Construit par

@@ -7,6 +7,7 @@ use Ladecadanse\Security\SecurityToken;
 use Ladecadanse\Security\Sentry;
 use Ladecadanse\UserLevel;
 use Ladecadanse\Utils\PasswordPolicy;
+use Ladecadanse\Utils\PostedFields;
 use Ladecadanse\Utils\Validateur;
 
 /*
@@ -68,8 +69,9 @@ $verif = new Validateur();
 if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 {
     // le mot de passe n'est pas trimé : une espace initiale ou finale en fait partie
-    $actuel = isset($_POST['motdepasse_actuel']) && is_scalar($_POST['motdepasse_actuel']) ? (string) $_POST['motdepasse_actuel'] : '';
-    $nouveau = isset($_POST['motdepasse']) && is_scalar($_POST['motdepasse']) ? (string) $_POST['motdepasse'] : '';
+    $saisie = PostedFields::scalars($_POST, ['motdepasse_actuel', 'motdepasse']);
+    $actuel = $saisie['motdepasse_actuel'] ?? '';
+    $nouveau = $saisie['motdepasse'] ?? '';
 
     if (!SecurityToken::check($_POST['token'] ?? '', $_SESSION['token'] ?? ''))
     {

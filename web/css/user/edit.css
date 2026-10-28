@@ -1,10 +1,10 @@
 /*
- * Modification d'un compte (user/edit.php).
+ * Formulaires du compte : user/edit.php, qui la charge d'après son nom, et
+ * user/contributor-edit.php, qui la déclare en $extra_css.
  *
- * Chargée d'après le nom de la page, après formulaires.css mais avant desktop.css et
- * mobile.css (voir _header.inc.php) : les règles qui doivent passer devant les leurs sont
- * dans leurs propres requêtes de média, et partent de `main` pour l'emporter à égalité
- * d'ordre. Même structure que web/css/lieu/edit.css.
+ * Chargée après formulaires.css mais avant desktop.css et mobile.css (voir _header.inc.php) :
+ * les règles qui doivent passer devant les leurs sont dans leurs propres requêtes de média, et
+ * partent de `main` pour l'emporter à égalité d'ordre. Même structure que web/css/lieu/edit.css.
  */
 
 form#ajouter_editer
@@ -32,31 +32,51 @@ form#ajouter_editer fieldset legend
 }
 
 /*
- * « Organisateur d'événements » regroupe trois fieldsets : sa légende passe au-dessus des
- * leurs, et eux se détachent de son fond plutôt que de se confondre avec lui.
+ * « Vos événements » regroupe la signature et les champs préremplis (user/contributor-edit.php) :
+ * sa légende passe au-dessus des leurs, et eux se détachent de son fond.
  */
-form#ajouter_editer fieldset#organisateur-evenements > legend
+form#ajouter_editer fieldset#vos-evenements > legend
 {
 	font-size: 1.25em;
 }
 
-	form#ajouter_editer fieldset#organisateur-evenements > fieldset
+	form#ajouter_editer fieldset#vos-evenements > fieldset
 	{
 		margin: 0.6em 0.4em 0 0;
 		background-color: #fafafa;
 	}
 
-		form#ajouter_editer fieldset#organisateur-evenements > fieldset > legend
+		form#ajouter_editer fieldset#vos-evenements > fieldset > legend
 		{
 			font-size: 1em;
 		}
 
-/* un champ en lecture seule se distingue d'un champ à remplir */
-form#ajouter_editer input[readonly]
+/* un champ en lecture seule ou désactivé se distingue d'un champ à remplir */
+form#ajouter_editer input[readonly],
+form#ajouter_editer input:disabled
 {
 	background-color: #f4f4f4;
 	color: #6a6a6a;
 }
+
+/* liste désactivée : Select2 y laissait la croix « tout effacer », qui promettait une action impossible */
+form#ajouter_editer .select2-container--disabled .select2-selection__clear
+{
+	display: none;
+}
+
+/* les liens vers les deux autres formulaires du compte, sous ses champs */
+form#ajouter_editer ul.pages-voisines
+{
+	list-style: none;
+	padding: 0;
+	margin-top: 1em;
+}
+
+	form#ajouter_editer ul.pages-voisines li
+	{
+		margin: 0.3em 0;
+	}
 
 form#ajouter_editer .sans-valeur
 {
@@ -64,24 +84,6 @@ form#ajouter_editer .sans-valeur
 	margin-top: 0.3em;
 	font-style: italic;
 }
-
-/* lieu et organisateurs d'un compte qui ne les choisit pas : une liste de liens, sans puces */
-form#ajouter_editer .rattachements
-{
-	display: flow-root;
-	margin-bottom: 0.5em;
-}
-
-	form#ajouter_editer .rattachements ul
-	{
-		list-style: none;
-		padding: 0;
-	}
-
-		form#ajouter_editer .rattachements li
-		{
-			margin: 0.3em 0 0.2em 0;
-		}
 
 /* un choix ne se coupe pas entre sa case et son libellé, ni au milieu de « 12 : MEMBER » */
 form#ajouter_editer fieldset.groupe-radios ul.radio li
@@ -134,7 +136,7 @@ form#ajouter_editer #signature-preview
 	main form#ajouter_editer .guideForm,
 	main form#ajouter_editer ul.radio,
 	main form#ajouter_editer p.case-seule,
-	main form#ajouter_editer .rattachements ul
+	main form#ajouter_editer ul.pages-voisines
 	{
 		margin-left: var(--colonne-champs);
 		padding-left: 0;

@@ -13,8 +13,10 @@ use Codeception\Util\HttpCode;
  *
  * Deux d'entre eux méritent une explication :
  *
- * - le lien « Modifier » : UserEventDefaultsCest y navigue par un clic sur a[href*="/user/edit.php"].
- *   Le dupliquer ou le renommer casserait cette suite-là, pas celle-ci — d'où l'assertion explicite.
+ * - les liens « Modifier » et « Organisateur d'événements » : SecurityTokenCest et
+ *   UserEventDefaultsCest y naviguent par un clic sur a[href*="/user/edit.php"] et
+ *   a[href*="/user/contributor-edit.php"]. Les dupliquer ou les renommer casserait ces suites-là,
+ *   pas celle-ci — d'où les assertions explicites.
  * - la page complète en cas d'erreur : _header.inc.php était inclus avant toute validation, si bien
  *   qu'un identifiant manquant renvoyait un document tronqué, sans </main> ni pied de page.
  *
@@ -74,6 +76,7 @@ class UserProfileCest
         $I->see('E-mail');
         $I->see('Affiliations');
         $I->seeElement('a[href*="/user/edit.php"]');
+        $I->seeElement('a[href*="/user/contributor-edit.php"]');
         // la date du dernier changement, ou rien pour un compte d'avant la 3.14.0, et le lien (#249)
         $I->see('Mot de passe', '#profile th');
         $I->seeElement('a[href^="/user/pwd-edit.php?idP="]');
