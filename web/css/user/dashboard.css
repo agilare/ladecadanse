@@ -6,7 +6,7 @@
  * une largeur différente : quatre décalages visibles les uns sous les autres.
  */
 #contenu.user #entete_contenu,
-#contenu.user #profile,
+#contenu.user .profile-box,
 #contenu.user nav.tabs,
 #contenu.user form.filtre-liste,
 #contenu.user .liste-barre,
@@ -71,14 +71,31 @@
 	vertical-align:middle;
 }
 
-/* arrondi et fond repris de l'article de event/evenement.php, sans bordure ni filets de lignes */
-#profile
+/*
+ * Deux blocs : le compte, puis le profil d'organisateur d'événements, qui reprend sous son <h2>
+ * la même table et le même lien Modifier.
+ *
+ * Arrondi et fond repris de l'article de event/evenement.php, sans bordure ni filets de lignes.
+ */
+.profile-box
 {
 	margin-top:0.6em;
 	color:#5C7392;
 }
 
-#profile table
+/* écart d'un bloc à l'autre, et titre plus discret que le h1 du compte */
+#profile-contributor
+{
+	margin-top:1.6em;
+}
+
+	#profile-contributor h2
+	{
+		font-size:1.1em;
+		margin:0 0 0.4em 0;
+	}
+
+.profile-box table
 {
 	width:100%;
 	font-size:0.9em;
@@ -91,7 +108,7 @@
 	overflow:hidden;
 }
 
-#profile th, #profile td
+.profile-box th, .profile-box td
 {
 	padding:0.55em 0.9em;
 	text-align:left;
@@ -99,7 +116,7 @@
 	border:none;
 }
 
-#profile th
+.profile-box th
 {
 	font-weight:bold;
 	width:12em;
@@ -110,14 +127,14 @@
  * Sans reset, le <ul> des organisateurs garde l'indentation par défaut du navigateur et la ligne
  * Affiliations s'affiche en escalier : lieux à gauche, organisateurs 40 px plus loin.
  */
-#profile .event_orga
+.profile-box .event_orga
 {
 	list-style-type:none;
 	margin:0.3em 0 0 0;
 	padding:0;
 }
 
-#profile .event_orga li
+.profile-box .event_orga li
 {
 	margin:0 0.3em 0.2em 0;
 }

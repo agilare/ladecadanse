@@ -6,7 +6,7 @@ use Tests\Support\TestEnv;
 use Codeception\Util\HttpCode;
 
 /**
- * Formulaire d'édition d'un compte (user-edit.php), fieldset « Affiliation ».
+ * Profil d'organisateur d'événements (user/contributor-edit.php), fieldset « Affiliation(s) ».
  *
  * Verrouille la présélection de la liste des rattachements au ré-affichage après une erreur de
  * validation. Elle réunissait par un OR la saisie postée et ce que portait la base : un
@@ -18,10 +18,10 @@ use Codeception\Util\HttpCode;
  *
  * Le fieldset « Événements » de la même page a ses propres tests : cf. UserEventDefaultsCest.
  *
- * Suite read-only : les POST de ce fichier vident tous l'adresse e-mail, donc la validation
- * échoue et ni l'INSERT ni l'UPDATE ne sont atteints. Ne pas y soumettre de formulaire valide.
+ * Suite read-only : les POST de ce fichier portent tous un horaire par défaut invalide, donc la
+ * validation échoue et l'UPDATE n'est pas atteint. Ne pas y soumettre de formulaire valide.
  */
-class UserEditFormulaireCest
+class ContributorEditFormulaireCest
 {
     private const OPTIONS_SELECTIONNEES = '#affiliations option[selected]';
 
@@ -37,7 +37,7 @@ class UserEditFormulaireCest
     /**
      * Après une erreur de validation, la liste rend la sélection postée, et elle seule.
      *
-     * L'e-mail est vidé pour garantir l'erreur : rien n'est écrit en base, et le formulaire est
+     * Un horaire invalide garantit l'erreur : rien n'est écrit en base, et le formulaire est
      * ré-affiché au lieu de rediriger vers le tableau de bord.
      */
     public function organisateurRetireNeRevientPasApresUneErreur(SiteTester $I)
@@ -58,7 +58,7 @@ class UserEditFormulaireCest
         $garde = array_shift($selectionnes);
 
         $I->submitForm('#ajouter_editer', [
-            'email' => '', // l'e-mail est obligatoire : erreur garantie, rien n'est enregistré
+            'ev_defaults_horaire_debut' => 'pas une heure', // erreur garantie, rien n'est enregistré
             'affiliations' => [$garde],
         ]);
 
@@ -97,7 +97,7 @@ class UserEditFormulaireCest
         );
 
         $I->submitForm('#ajouter_editer', [
-            'email' => '', // l'e-mail est obligatoire : erreur garantie, rien n'est enregistré
+            'ev_defaults_horaire_debut' => 'pas une heure', // erreur garantie, rien n'est enregistré
             'affiliations' => [],
         ]);
 
@@ -110,7 +110,7 @@ class UserEditFormulaireCest
 
     private function amOnUserEdit(SiteTester $I): void
     {
-        $I->amOnPage('/user-edit.php?action=editer&idP=' . TestEnv::getInt('LADECADANSE_TEST_USER_ID_WITH_ORGANISATEURS'));
+        $I->amOnPage('/user/contributor-edit.php?idP=' . TestEnv::getInt('LADECADANSE_TEST_USER_ID_WITH_ORGANISATEURS'));
         $I->seeResponseCodeIs(HttpCode::OK);
 
         // la liste n'est rendue qu'aux groupes <= 6, et le compte visé doit être modifiable

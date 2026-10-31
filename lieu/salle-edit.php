@@ -2,6 +2,7 @@
 
 require_once("../app/bootstrap.php");
 
+use Ladecadanse\Edition;
 use Ladecadanse\Security\SecurityToken;
 use Ladecadanse\SalleEdition;
 use Ladecadanse\Utils\QueryParamValidator;
@@ -14,11 +15,9 @@ if (!$authorization->checkGroup(UserLevel::ACTOR)) {
     die();
 }
 
-$allowed_actions = ["ajouter", "insert", "editer", "update"];
-
 // null quand l'action n'existe pas : la page répond alors 400, là où l'exception levée
 // par validateUrlQueryValue() faisait un 500 d'une url abîmée ou d'un passage de bot
-$action_demandee = QueryParamValidator::enumFromQuery($_GET['action'] ?? null, $allowed_actions, 'ajouter');
+$action_demandee = QueryParamValidator::enumFromQuery($_GET['action'] ?? null, Edition::ACTIONS, 'ajouter');
 
 $get = [
     'action' => $action_demandee ?? 'ajouter',

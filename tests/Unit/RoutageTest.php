@@ -33,6 +33,7 @@ final class RoutageTest extends Unit
         'organisateur-edit\.php'         => '/organisateur/edit.php',
         'lieu-edit\.php'                 => '/lieu/edit.php',
         'lieu-text-edit\.php'            => '/lieu/text-edit.php',
+        'user-edit\.php'                 => '/user/edit.php',
         'admin/gererEvenements\.php'     => '/admin/events.php',
     ];
 

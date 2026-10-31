@@ -15,10 +15,17 @@ namespace Ladecadanse;
  * silencieusement `false` ou `null` : une classe fille qui aurait oublié de les
  * surcharger n'aurait rien chargé ni rien validé, sans un mot. D'où `abstract`.
  *
- * Implémentée par FicheEdition (lieu, organisateur) et SalleEdition.
+ * Implémentée par FicheEdition (lieu, organisateur), SalleEdition, et pour le compte par UserEdition
+ * et ContributorEdition.
  */
 abstract class Edition
 {
+    /**
+     * Valeurs du paramètre d'url `action` des formulaires d'édition : les premières de chaque
+     * paire disent l'intention (afficher le formulaire), les secondes l'envoi à enregistrer.
+     */
+    public const array ACTIONS = ["ajouter", "insert", "editer", "update"];
+
     /** « insert » ou « update », telle que la page l'a décidée. */
     public ?string $action = null;
 

@@ -288,7 +288,7 @@ class Lieu extends Element
      * qu'on ne peut pas choisir en ajoutant un événement ne doit pas pouvoir être réglé comme lieu
      * par défaut.
      *
-     * Les valeurs par défaut du profil (user-edit.php) se règlent au niveau du lieu et
+     * Les valeurs par défaut du profil (user/contributor-edit.php) se règlent au niveau du lieu et
      * appellent donc sans salles ; les formulaires d'événement, qui laissent choisir une
      * salle, passent $avecSalles.
      *

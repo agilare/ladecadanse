@@ -91,11 +91,8 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
         $champs['contributor'] = !empty($_POST['contributor']);
 
         /**
-         * Nom du lieu ou de l'organisateur choisi dans la liste.
-         *
-         * La valeur postée porte son type — « lieu:42 », « orga:17 » — parce que les deux
-         * tables ont chacune leurs identifiants, qui se recouvrent. Le type est comparé à
-         * une liste blanche : il décide de la table, jamais la saisie.
+         * Nom du lieu ou de l'organisateur choisi dans la liste, dont la valeur porte son
+         * type (Personne::parseAffiliationOption()).
          *
          * @return string|false le nom, ou false si la valeur ne désigne aucune fiche active
          */
@@ -106,17 +103,17 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
                 'orga' => ['table' => 'organisateur', 'id' => 'idOrganisateur'],
             ];
 
-            [$type, $id] = array_pad(explode(':', $valeur, 2), 2, '');
+            $option = Personne::parseAffiliationOption($valeur);
 
-            if (!isset($cibles[$type]) || (int) $id <= 0)
+            if ($option === null)
             {
                 return false;
             }
 
-            $cible = $cibles[$type];
+            $cible = $cibles[$option['type']];
             $stmt = $connectorPdo->prepare("SELECT nom FROM {$cible['table']}
                 WHERE {$cible['id']} = :id AND statut = 'actif'");
-            $stmt->execute([':id' => (int) $id]);
+            $stmt->execute([':id' => $option['id']]);
             $nom = $stmt->fetchColumn();
 
             return $nom === false ? false : (string) $nom;
@@ -225,11 +222,13 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
                  * les événements qu'il ajouterait après une promotion.
                  */
                 $stmt = $connectorPdo->prepare("
-                    INSERT INTO personne (pseudo, mot_de_passe, email, groupe, affiliation, signature, region, cookie, statut, dateAjout, date_derniere_modif)
-                    VALUES (:pseudo, :mot_de_passe, :email, :groupe, :affiliation, :signature, '', '', 'actif', :dateAjout, :dateModif)");
+                    INSERT INTO personne (pseudo, mot_de_passe, password_updated, email, groupe, affiliation, signature, region, cookie, statut, dateAjout, date_derniere_modif)
+                    VALUES (:pseudo, :mot_de_passe, :passwordUpdated, :email, :groupe, :affiliation, :signature, '', '', 'actif', :dateAjout, :dateModif)");
                 $stmt->execute([
                     ':pseudo' => $champs['contributor'] ? $champs['login'] : '',
                     ':mot_de_passe' => password_hash($champs['motdepasse'], PASSWORD_DEFAULT),
+                    // la date de création est bien celle du mot de passe (#249)
+                    ':passwordUpdated' => $maintenant,
                     ':email' => $champs['email'],
                     ':groupe' => $groupe,
                     ':affiliation' => $affiliation_nom,
@@ -242,7 +241,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 
                 /*
                  * Aucune ligne dans `affiliation` ni `personne_organisateur` : elles sont
-                 * écrites par l'équipe, depuis user-edit.php, une fois la déclaration
+                 * écrites par l'équipe, depuis user/contributor-edit.php, une fois la déclaration
                  * vérifiée. Les poser ici donnait sur simple déclaration le droit de
                  * modifier la fiche du lieu et tous les événements qui s'y déroulent.
                  */

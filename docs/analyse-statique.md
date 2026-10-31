@@ -54,7 +54,12 @@ $ composer psalm:taint
 
 Attention au bruit : l'essentiel des résultats est du `TaintedHtml`/`TaintedTextWithQuotes` sur le vieux code d'affichage. Les catégories à regarder en priorité sont `TaintedSql`, `TaintedFile`, `TaintedSSRF`, `TaintedHeader` et `TaintedCookie`.
 
-L'unique `TaintedSql` restant (rapporté sur `DbConnector::query()`, tracé jusqu'à `user-edit.php`) est un faux positif documenté dans le code : Psalm teinte les *clés* de `$champs` alors que seules les valeurs viennent de `$_POST`. Il n'est pas supprimable via `@psalm-suppress`, l'erreur étant ancrée sur le sink et non sur le site d'appel.
+Deux `TaintedSql` restent, ancrés sur le sink et donc non supprimables via `@psalm-suppress` (constaté le 26.10.2026) :
+
+- sur `DbConnector::query()`, tracé jusqu'au nom d'image concaténé par `evenement-edit.php` : ce nom est relu en base, pas saisi ;
+- sur `DbConnectorPdo::prepare()`, tracé jusqu'au sens du tri d'`admin/users.php`, passé à `Personne::getPersonnes()` : la valeur n'est filtrée que comme alphanumérique, ce qui exclut espaces et guillemets mais pas une valeur absurde, qui ferait échouer la requête. Une liste blanche `asc` / `desc` le ferait taire.
+
+Celui de `user/edit.php`, faux positif sur les *clés* de `$champs`, a disparu avec la réécriture de la page en PDO à colonnes littérales (#120).
 
 ## Phan
 

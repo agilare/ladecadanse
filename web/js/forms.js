@@ -131,3 +131,42 @@ if (lieuManuelDetails) {
         lieuManuelDetails.open = false;
     });
 }
+
+/*
+ * Aperçu de la signature (user/contributor-edit.php), selon les règles de Personne::getSignatureHtml() :
+ * le nom d'utilisateur s'il est coché, puis, entre parenthèses, le lieu rattaché ou à défaut le
+ * texte libre de l'affiliation. data-pseudo est vide quand le nom ne signe pas (adresse e-mail) ;
+ * data-lieu porte le lieu des comptes qui ne le choisissent pas dans la liste. Construit par
+ * textContent : ces valeurs viennent de la saisie.
+ */
+const signaturePreview = document.getElementById('signature-preview');
+if (signaturePreview) {
+    const majSignaturePreview = function () {
+        const pseudoCoche = document.getElementById('signature_pseudo')?.checked ?? false;
+        const avecAffiliation = document.getElementById('avec_affiliation').checked;
+        const lieuChoisi = $('#affiliations option[value^="lieu:"]:selected').first().text();
+        const affiliation = (lieuChoisi || signaturePreview.dataset.lieu || $('input[name="affiliation"]').val() || '').trim();
+
+        signaturePreview.replaceChildren();
+
+        if (pseudoCoche && signaturePreview.dataset.pseudo !== '') {
+            const nom = document.createElement('strong');
+            nom.textContent = signaturePreview.dataset.pseudo;
+            signaturePreview.append(nom);
+        }
+
+        if (avecAffiliation && affiliation !== '') {
+            signaturePreview.append((signaturePreview.childNodes.length ? ' ' : '') + '(' + affiliation + ')');
+        }
+
+        if (!signaturePreview.childNodes.length) {
+            const aucune = document.createElement('i');
+            aucune.textContent = 'aucune signature';
+            signaturePreview.append(aucune);
+        }
+    };
+
+    // jQuery et non addEventListener : la liste des rattachements est un Select2, dont le change
+    // n'atteint que les gestionnaires jQuery
+    $(document).on('change input', '#signature_pseudo, #avec_affiliation, #affiliations, #affiliation', majSignaturePreview);
+}
