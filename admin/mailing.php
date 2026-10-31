@@ -32,10 +32,12 @@ const MAILING_SESSION_KEY = 'admin_mailing';
  * Format attendu, une ligne par destinataire : idPersonne, pseudo, email
  * La ligne d'en-tête est facultative. Les adresses en double ne sont retenues qu'une fois.
  *
+ * @param array{ids: array<int, true>, emails: array<string, true>} $optedOut comptes désinscrits
+ *        des mailings, par id et par adresse en minuscules : le CSV peut dater d'avant la demande
  * @return array{0: array<int, array{idPersonne: int, pseudo: string, email: string}>, 1: array<int, array{ligne: int, motif: string, extrait: string}>}
  *         les destinataires retenus, puis les lignes écartées avec leur motif
  */
-function parserCsvDestinataires(string $csv): array
+function parserCsvDestinataires(string $csv, array $optedOut): array
 {
     $destinataires = [];
     $rejets = [];
@@ -89,6 +91,12 @@ function parserCsvDestinataires(string $csv): array
         if (!PHPMailer::validateAddress($email))
         {
             $rejets[] = ['ligne' => $numero, 'motif' => "adresse e-mail invalide", 'extrait' => $extrait];
+            continue;
+        }
+
+        if (isset($optedOut['ids'][(int) $idPersonne]) || isset($optedOut['emails'][mb_strtolower($email)]))
+        {
+            $rejets[] = ['ligne' => $numero, 'motif' => "a demandé à ne plus recevoir de mailing", 'extrait' => $extrait];
             continue;
         }
 
@@ -163,7 +171,20 @@ if (isset($_POST['formulaire']))
                 $champs[$c] = isset($_POST[$c]) && is_scalar($_POST[$c]) ? trim((string) $_POST[$c]) : '';
             }
 
-            [$destinataires, $rejets] = parserCsvDestinataires($champs['csv']);
+            // quelques lignes au plus : lues en entier plutôt que croisées avec le CSV en SQL
+            $optedOut = ['ids' => [], 'emails' => []];
+            $stmt = $connectorPdo->prepare("SELECT idPersonne, email FROM personne WHERE mailing_opted_out_at IS NOT NULL");
+            $stmt->execute();
+            foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $p)
+            {
+                $optedOut['ids'][(int) $p['idPersonne']] = true;
+                if ((string) $p['email'] !== '')
+                {
+                    $optedOut['emails'][mb_strtolower((string) $p['email'])] = true;
+                }
+            }
+
+            [$destinataires, $rejets] = parserCsvDestinataires($champs['csv'], $optedOut);
 
             if ($champs['objet'] === '')
             {
@@ -361,8 +382,9 @@ require_once '../_header.inc.php';
 
             <p>Le message part en texte brut, signé
                 <strong><?= sanitizeForHtml(EMAIL_SITE_NAME) ?> &lt;<?= sanitizeForHtml(EMAIL_SITE) ?>&gt;</strong>,
-                suivi d'une mention de désinscription ajoutée automatiquement. Rien ne s'envoie à cette étape :
-                l'aperçu vient d'abord.</p>
+                suivi d'une mention de désinscription ajoutée automatiquement. Les comptes dont
+                <code>personne.mailing_opted_out_at</code> a une valeur sont écartés, même présents dans le CSV.
+                Rien ne s'envoie à cette étape : l'aperçu vient d'abord.</p>
 
             <form method="post" id="ajouter_editer" class="js-submit-freeze-wait" action="mailing.php">
 

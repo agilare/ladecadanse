@@ -31,6 +31,12 @@ Ce qui change pour les visiteurs : le classement des résultats de recherche, In
 
 `prod-copy` ramènera InnoDB au prochain passage : la copie reprend les moteurs de la production.
 
+**`Version20261031000000` ajoute `personne.mailing_opted_out_at`**, la date d'une demande de désinscription des mailings. **À passer avant la mise en ligne** : [admin/mailing.php](admin/mailing.php) lit la colonne à chaque aperçu. Pour noter une demande :
+
+```sql
+UPDATE personne SET mailing_opted_out_at = NOW() WHERE email = '…';
+```
+
 ## 3.13.0 (non publié)
 
 ### Base de données

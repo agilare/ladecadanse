@@ -59,6 +59,7 @@ candidats AS (
     CROSS JOIN params
     WHERE p.groupe > 4              -- ni SUPERADMIN (1) ni ADMIN (4) ; > 6 écarterait aussi les AUTHOR
       AND p.statut = 'actif'
+      AND p.mailing_opted_out_at IS NULL  -- désinscrit-e des mailings
       AND p.email <> ''
       AND p.last_login >= params.depuis_login
 ),
@@ -199,6 +200,7 @@ candidats AS (
     CROSS JOIN params
     WHERE p.groupe > 4
       AND p.statut = 'actif'
+      AND p.mailing_opted_out_at IS NULL  -- désinscrit-e des mailings
       AND p.email <> ''
       AND p.last_login >= params.depuis_login
 ),
@@ -284,6 +286,7 @@ comptes AS (
     CROSS JOIN params
     WHERE p.groupe > 4
       AND p.statut = 'actif'
+      AND p.mailing_opted_out_at IS NULL  -- désinscrit-e des mailings
       AND p.email <> ''
       AND p.last_login >= params.depuis_login
 ),
