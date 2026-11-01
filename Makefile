@@ -120,9 +120,9 @@ prod: PROFILE=prod
 prod: start
 
 # ---------------------------------------------------------------------------
-# .htaccess : composition et déploiement — voir docs/htaccess.md
+# .htaccess : composition et déploiement — voir docs/exploitation/config-serveur.md
 # ---------------------------------------------------------------------------
-# La logique tient dans bin/htaccess.php : PHP est requis de toute façon, alors
+# La logique tient dans bin/build-config.php : PHP est requis de toute façon, alors
 # que make n'est pas installé partout — sous Windows notamment. Ces deux cibles
 # ne sont qu'un raccourci pour qui a make.
 

@@ -19,7 +19,7 @@ Sur la liste du jour, chaque carte d'événement dit où il en est par rapport �
 | en cours | une barre de la part écoulée, pourcentage inscrit au milieu | un horaire de début |
 | terminé | `(terminé)` | un horaire de fin |
 
-Sans horaire de début exploitable, la carte n'affiche rien : tout est porté par [`Ladecadanse\EvenementTimeStatus`](../librairies/EvenementTimeStatus.php), dont la fabrique rend `null` dans ce cas.
+Sans horaire de début exploitable, la carte n'affiche rien : tout est porté par [`Ladecadanse\EvenementTimeStatus`](../../librairies/EvenementTimeStatus.php), dont la fabrique rend `null` dans ce cas.
 
 L'**horizon** du compte à rebours est `EvenementRenderer::COUNTDOWN_VISIBLE_WITHIN_MINUTES`, quatre heures : au-delà, savoir qu'un concert est « dans 7h » n'aide personne à décider, et une liste du soir s'encombre d'autant de repères qu'elle porte d'événements. En deçà de `COUNTDOWN_URGENT_UNDER_MINUTES`, une demi-heure, le compte à rebours passe **en gras** — c'est le moment de partir. Ces deux seuils se lisent sur `EvenementTimeStatus::$minutesUntilStart`, le temps restant non arrondi que la classe porte à côté du libellé, qui l'est.
 
@@ -60,7 +60,7 @@ Les horaires de fin manquent souvent (#65). Plutôt que de ne rien dire, la dur�
 
 L'estimation dépassée, la barre plafonne à 95 % : seule une fin réelle dit « terminé ».
 
-Le bouton ouvre une bulle — « Fin inconnue, estimée à 00:00 » — au survol, au focus et à la touche, là où une infobulle native (`title`) ne s'ouvre pas au doigt. Une seule bulle sert toute la liste : `index.php` la pose une fois, le texte voyage dans le `data-estimate` de chaque bouton, et `TimeEstimate` (dans [`web/js/global.js`](../web/js/global.js)) la remplit et la place sous le bouton à chaque ouverture. Quelques points méritent d'être connus :
+Le bouton ouvre une bulle — « Fin inconnue, estimée à 00:00 » — au survol, au focus et à la touche, là où une infobulle native (`title`) ne s'ouvre pas au doigt. Une seule bulle sert toute la liste : `index.php` la pose une fois, le texte voyage dans le `data-estimate` de chaque bouton, et `TimeEstimate` (dans [`web/js/global.js`](../../web/js/global.js)) la remplit et la place sous le bouton à chaque ouverture. Quelques points méritent d'être connus :
 
 - **bouton, pas lien** : il n'emmène nulle part, et une infobulle native ne suffisait pas. Son `aria-label` porte le même texte que la bulle, si bien qu'aucune information ne dépend de son ouverture ;
 - **le survol n'est branché que là où l'on pointe** (`matchMedia('(hover: hover)')`) : sur un écran tactile, le survol émulé ouvrirait la bulle juste avant que le clic émulé ne la referme ;
@@ -84,7 +84,7 @@ La catégorie est lue dans la colonne `e_genre` des lignes de l'agenda, que `ind
 Deux garde-fous, parce que les horaires stockés ne sont pas tous cohérents :
 
 - une **fin antérieure au début** est ignorée, comme si la fin n'était pas renseignée : elle ne dit rien de la temporalité, et l'événement commencé bascule sur la barre estimée ;
-- la **date portée par un horaire**, si elle n'est ni celle de l'événement ni le lendemain, est ramenée au jour de l'événement plutôt que prise au mot ([`DateHelper::horaireInstant()`](../librairies/Utils/DateHelper.php)). Le lendemain est admis parce qu'une journée d'agenda va de `06:00:01` à `06:00:00` le jour suivant — une soirée qui finit à 02:00 appartient encore au jour de l'événement.
+- la **date portée par un horaire**, si elle n'est ni celle de l'événement ni le lendemain, est ramenée au jour de l'événement plutôt que prise au mot ([`DateHelper::horaireInstant()`](../../librairies/Utils/DateHelper.php)). Le lendemain est admis parce qu'une journée d'agenda va de `06:00:01` à `06:00:00` le jour suivant — une soirée qui finit à 02:00 appartient encore au jour de l'événement.
 
 La sentinelle qui marque « sans horaire » est traitée comme une absence d'horaire, au même titre qu'une valeur vide.
 
@@ -96,6 +96,6 @@ La sentinelle qui marque « sans horaire » est traitée comme une absence d'hor
 
 ### Activation
 
-Le drapeau `EVENT_TIME_STATUS_ENABLED` d'`app/env.php` est à `false` par défaut. Il prend les trois états de [`Ladecadanse\FeatureFlag`](../librairies/FeatureFlag.php) — `false`, `'preview'` (administrateurs seulement), `true`. En préversion, une ligne au-dessus de la liste le signale et rappelle l'heure à laquelle tout est mesuré : sans quoi une préversion s'oublie, et l'on croit la fonctionnalité livrée.
+Le drapeau `EVENT_TIME_STATUS_ENABLED` d'`app/env.php` est à `false` par défaut. Il prend les trois états de [`Ladecadanse\FeatureFlag`](../../librairies/FeatureFlag.php) — `false`, `'preview'` (administrateurs seulement), `true`. En préversion, une ligne au-dessus de la liste le signale et rappelle l'heure à laquelle tout est mesuré : sans quoi une préversion s'oublie, et l'on croit la fonctionnalité livrée.
 
-Le mécanisme des drapeaux à trois états est décrit dans le [README](../README.md#accepter-les-pdf-dans-les-champs-image), à propos du premier d'entre eux.
+Le mécanisme des drapeaux à trois états est décrit dans la [conversion des PDF](../exploitation/conversion-pdf.md#le-drapeau), à propos du premier d'entre eux.

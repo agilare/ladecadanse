@@ -112,4 +112,4 @@ Two connectors coexist:
 - **Config**: Feature flags and credentials live in `app/env.php` (not committed); see `app/env_model.php` for the full list
 - **URL routing**: old-to-new URL redirects live in `htaccess/50-routage.conf`, not in PHP. Moving or
   renaming a page means adding its 301 there in the same commit. The root `.htaccess` is composed from
-  those fragments by `composer config:build` and must never be edited directly; see `docs/config-serveur.md`
+  those fragments by `composer config:build` and must never be edited directly; see `docs/exploitation/config-serveur.md`

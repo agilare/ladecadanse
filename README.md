@@ -6,7 +6,7 @@
 
 La décadanse est un site web qui présente aux visiteurs une sélection d'événements culturels locaux et accessibles. Il est actuellement [déployé pour Genève et les environs](https://www.ladecadanse.ch/)
 
-![La décadanse - page d'accueil](./web/interface/ladecadanse-home-example.png)
+![La décadanse - page d'accueil](web/interface/ladecadanse-home-example.png)
 
 Les organisateurs d'événements ont la possibilité de s'inscrire puis annoncer leurs événements et enfin se présenter.
 
@@ -54,7 +54,7 @@ Ces instructions vous permettront de mettre en place une copie du projet sur vot
         ```
 1. créer vos fichiers de configuration en faisant `cp app/env_model.php app/env.php` ainsi que `cp app/db.config_model.php app/db.config.php` et y saisir les valeurs de votre environnement (davantage d'explications et exemples se trouvent dans les fichiers même), avec au minimum les informations de connexion à la base de données
 1. `composer db:migrate` applique à la base les migrations que le dump ne porte pas encore, et enregistre les autres — voir [resources/database/README.md](resources/database/README.md). Il se connecte avec l'entrée `default` de `app/db.config.php` ; si son compte n'a pas les droits `ALTER`, `CREATE`, `INDEX` et `DROP`, lui en substituer un autre par `migration_user` et `migration_password`
-1. `composer config:build` compose le `.htaccess` et le `.user.ini` (configuration Apache et PHP) à partir des fragments de `htaccess/` et `userini/` — voir [docs/config-serveur.md](docs/config-serveur.md). Sans passer par Composer : `php bin/build-config.php`
+1. `composer config:build` compose le `.htaccess` et le `.user.ini` (configuration Apache et PHP) à partir des fragments de `htaccess/` et `userini/` — voir [docs/exploitation/config-serveur.md](docs/exploitation/config-serveur.md). Sans passer par Composer : `php bin/build-config.php`
 
 ### Installation avec Docker
 
@@ -74,9 +74,9 @@ Pour la production, remplacer `dev` par `prod` et `web-dev` par `web-prod` (loca
 > [!IMPORTANT]
 > Avant de déployer en production, configurer les valeurs sensibles dans `docker/env/env.php` (clés API, identifiants SMTP, etc.).
 
-La base est initialisée depuis `resources/database/ladecadanse.sql` et les fixtures de `docker/env/`, à la **création du volume** seulement. Les migrations se passent ensuite depuis l'hôte, avec `composer db:migrate` (voir [docs/docker.md](docs/docker.md#base-de-données)).
+La base est initialisée depuis `resources/database/ladecadanse.sql` et les fixtures de `docker/env/`, à la **création du volume** seulement. Les migrations se passent ensuite depuis l'hôte, avec `composer db:migrate` (voir [docs/developpement/docker.md](docs/developpement/docker.md#base-de-données)).
 
-Le reste est dans [docs/docker.md](docs/docker.md) : variables d'environnement, permissions sur un hôte Linux, commandes Make, Composer et configuration Apache dans le conteneur.
+Le reste est dans [docs/developpement/docker.md](docs/developpement/docker.md) : variables d'environnement, permissions sur un hôte Linux, commandes Make, Composer et configuration Apache dans le conteneur.
 
 ### Bibliothèques front-end
 
@@ -92,7 +92,7 @@ npm install --save-exact select2@4.1.1      # met à jour package.json, package-
 > [!NOTE]
 > `npm ci` avertit `EBADENGINE` sous Node 22 (select2) : sans conséquence.
 
-Ajouter une bibliothèque, ou suivre le déplacement d'un fichier par une nouvelle version : [docs/bibliotheques-front-end.md](docs/bibliotheques-front-end.md).
+Ajouter une bibliothèque, ou suivre le déplacement d'un fichier par une nouvelle version : [docs/developpement/bibliotheques-front-end.md](docs/developpement/bibliotheques-front-end.md).
 
 ### Peupler la base depuis la production
 
@@ -103,7 +103,7 @@ composer prod-copy -- --limit=1000
 ```
 
 > [!NOTE]
-> Le prérequis est un **accès SSH** au serveur, qui sert deux fois : l'offre Infomaniak n'ouvrant pas MySQL à l'extérieur, la base se lit à travers un tunnel, et les quelque 2700 fichiers descendent par la même voie en une minute. La mise en place, la procédure d'essai, les vérifications et ce que l'anonymisation remplace exactement sont dans [docs/prod-copy.md](docs/prod-copy.md).
+> Le prérequis est un **accès SSH** au serveur, qui sert deux fois : l'offre Infomaniak n'ouvrant pas MySQL à l'extérieur, la base se lit à travers un tunnel, et les quelque 2700 fichiers descendent par la même voie en une minute. La mise en place, la procédure d'essai, les vérifications et ce que l'anonymisation remplace exactement sont dans [docs/exploitation/prod-copy.md](docs/exploitation/prod-copy.md).
 
 ### Accepter les PDF dans les champs image
 
@@ -115,14 +115,14 @@ define("PDF_CONVERSION_ENABLED", 'preview');   // administrateurs seulement
 define("PDF_CONVERSION_ENABLED", true);        // tout le monde
 ```
 
-Les PDF **envoyés en fichier** sont convertis par le navigateur (pdf.js), ceux **collés en URL** par le serveur, avec `imagick` et Ghostscript (déjà dans l'image Docker). Sans eux le site fonctionne normalement. Mécanisme, installation sous Windows/Laragon et dépannage : [docs/conversion-pdf.md](docs/conversion-pdf.md).
+Les PDF **envoyés en fichier** sont convertis par le navigateur (pdf.js), ceux **collés en URL** par le serveur, avec `imagick` et Ghostscript (déjà dans l'image Docker). Sans eux le site fonctionne normalement. Mécanisme, installation sous Windows/Laragon et dépannage : [docs/exploitation/conversion-pdf.md](docs/exploitation/conversion-pdf.md).
 
 ### Usage
 Une fois le site fonctionnel, se connecter avec le login *admin* (créé ci-dessus) permet d'ajouter et modifier des événements, lieux, etc. (partie publique) et de les gérer (partie back-office)
 
 ### Raccourcis clavier
 
-Le site se parcourt au clavier : `h` accueil, `s` recherche, `a` ajouter un événement, `l` lieux, `o` organisateurs, `d` dashboard admin ; flèches gauche/droite pour changer de jour ou de page, `j`/`k` pour passer d'une entité à l'autre dans une liste, `/` pour filtrer. Les admins disposent en plus d'un mode *mouseless* (`?mouseless=1`) pour apprendre ces touches. Le détail est dans [docs/interface.md](docs/interface.md#raccourcis-clavier).
+Le site se parcourt au clavier : `h` accueil, `s` recherche, `a` ajouter un événement, `l` lieux, `o` organisateurs, `d` dashboard admin ; flèches gauche/droite pour changer de jour ou de page, `j`/`k` pour passer d'une entité à l'autre dans une liste, `/` pour filtrer. Les admins disposent en plus d'un mode *mouseless* (`?mouseless=1`) pour apprendre ces touches. Le détail est dans [docs/fonctionnalites/interface.md](docs/fonctionnalites/interface.md#raccourcis-clavier).
 
 ## Tests
 
@@ -167,11 +167,11 @@ $ composer deploy -- --scope=prod
 `composer deploy` compose le `.htaccess` à partir de ses fragments, reconstruit `web/libs/` par `npm ci`, puis lance `git ftp push`. Le scope est obligatoire : s'il manque, le script liste ceux qui sont configurés.
 
 > [!WARNING]
-> Le `.htaccess` est envoyé tel qu'il est sur le disque : c'est pourquoi `composer deploy` le recompose d'abord. Pour cela, et pour les fragments d'exploitation (dépôt privé, `--ops-dir`), `web/libs/` et `git ftp push` seul, voir [docs/deploiement.md](docs/deploiement.md).
+> Le `.htaccess` est envoyé tel qu'il est sur le disque : c'est pourquoi `composer deploy` le recompose d'abord. Pour cela, et pour les fragments d'exploitation (dépôt privé, `--ops-dir`), `web/libs/` et `git ftp push` seul, voir [docs/exploitation/deploiement.md](docs/exploitation/deploiement.md).
 
 #### Migrer la base de données de production
 
-🗄️ `composer deploy` ne met pas la base à jour : les migrations se passent depuis le poste, par le tunnel SSH de [docs/prod-copy.md](docs/prod-copy.md), quand `resources/database/migrations/` a de nouvelles classes depuis le dernier déploiement :
+🗄️ `composer deploy` ne met pas la base à jour : les migrations se passent depuis le poste, par le tunnel SSH de [docs/exploitation/prod-copy.md](docs/exploitation/prod-copy.md), quand `resources/database/migrations/` a de nouvelles classes depuis le dernier déploiement :
 
 ```sh
 $ LADECADANSE_DB=prod composer db:status    # ce qui manque en production
@@ -180,7 +180,7 @@ $ LADECADANSE_DB=prod composer db:migrate   # demande confirmation avant d'écri
 ```
 
 > [!TIP]
-> **Quand migrer ?** Par défaut **avant** `composer deploy` : une colonne ou une table en plus ne gêne pas l'ancien code, alors que le nouveau code sur une base non migrée répond une erreur SQL. Exception : une migration qui supprime ou renomme ce que l'ancien code lit encore se passe juste **après**. [UPGRADE.md](UPGRADE.md) indique l'ordre pour chaque version ; détails dans [docs/deploiement.md](docs/deploiement.md#migrer-la-base-de-données-de-production).
+> **Quand migrer ?** Par défaut **avant** `composer deploy` : une colonne ou une table en plus ne gêne pas l'ancien code, alors que le nouveau code sur une base non migrée répond une erreur SQL. Exception : une migration qui supprime ou renomme ce que l'ancien code lit encore se passe juste **après**. [UPGRADE.md](UPGRADE.md) indique l'ordre pour chaque version ; détails dans [docs/exploitation/deploiement.md](docs/exploitation/deploiement.md#migrer-la-base-de-données-de-production).
 
 #### Après le déploiement
 
@@ -206,7 +206,7 @@ $ composer rector:dry-run   # aperçu des modernisations possibles, sans modifie
 $ composer sniffer:php84    # compatibilité avec PHP 8.4 (PHPCompatibility)
 ```
 
-S'y ajoutent Phan (`./vendor/bin/phan`) et Rector Jack (`./vendor/bin/jack list`, dépendances Composer obsolètes). Les baselines, le bruit attendu de l'analyse de teinte et les autres détails sont dans [docs/analyse-statique.md](docs/analyse-statique.md).
+S'y ajoute Rector Jack (`./vendor/bin/jack list`, dépendances Composer obsolètes). Les baselines, le bruit attendu de l'analyse de teinte et les autres détails sont dans [docs/developpement/analyse-statique.md](docs/developpement/analyse-statique.md).
 
 ## Changelog
 Voir le [changelog](CHANGELOG.md) et les [releases sur GitHub](https://github.com/agilare/ladecadanse/releases)
@@ -215,18 +215,11 @@ Pour passer à une nouvelle version (migrations de base de données, nouvelles c
 
 ## Documentation
 
-Le fonctionnement des parties du site qui demandent plus qu'une ligne de changelog est documenté dans [docs/](docs/) :
+Le fonctionnement des parties du site qui demandent plus qu'une ligne de changelog est documenté dans [docs/](docs/README.md), en trois dossiers :
 
-- [agenda](docs/agenda.md)
-- [événements](docs/evenements.md) et leur [administration](docs/admin-evenements.md)
-- [interface](docs/interface.md), raccourcis clavier compris
-- [flux RSS](docs/rss.md)
-- [suivi des bots](docs/bots.md)
-- [configuration serveur](docs/config-serveur.md) et [déploiement](docs/deploiement.md)
-- [Docker](docs/docker.md)
-- [bibliothèques front-end](docs/bibliotheques-front-end.md)
-- [conversion des PDF](docs/conversion-pdf.md)
-- [analyse statique](docs/analyse-statique.md)
+- `fonctionnalites/` : [agenda](docs/fonctionnalites/agenda.md), [favoris](docs/fonctionnalites/favoris.md), [événements](docs/fonctionnalites/evenements.md) et leur [administration](docs/fonctionnalites/admin-evenements.md), [comptes](docs/fonctionnalites/comptes.md), [lieux et organisateurs](docs/fonctionnalites/lieux-organisateurs.md), [interface](docs/fonctionnalites/interface.md) (raccourcis clavier compris), [flux RSS](docs/fonctionnalites/rss.md), [vie privée](docs/fonctionnalites/vie-privee.md)
+- `exploitation/` : [configuration serveur](docs/exploitation/config-serveur.md), [déploiement](docs/exploitation/deploiement.md), [copie de la production](docs/exploitation/prod-copy.md), [conversion des PDF](docs/exploitation/conversion-pdf.md), [suivi des bots](docs/exploitation/bots.md)
+- `developpement/` : [Docker](docs/developpement/docker.md), [bibliothèques front-end](docs/developpement/bibliotheques-front-end.md), [analyse statique](docs/developpement/analyse-statique.md)
 
 ## Contribuer
 

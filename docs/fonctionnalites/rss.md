@@ -35,7 +35,7 @@ Les réponses sont mises en cache dans `var/cache/rss/` pendant `RSS_CACHE_TTL` 
 
 ## URL absolues
 
-Les balises d'autodiscovery, les liens vers les flux, les liens à l'intérieur des descriptions d'items et le `rel="self"` sont **absolus**, construits sur la constante `SITE_CANONICAL_URL` (voir [UPGRADE.md](../UPGRADE.md#appenvphp)).
+Les balises d'autodiscovery, les liens vers les flux, les liens à l'intérieur des descriptions d'items et le `rel="self"` sont **absolus**, construits sur la constante `SITE_CANONICAL_URL` (voir [UPGRADE.md](../../UPGRADE.md#appenvphp)).
 
 Auparavant ces `href` étaient relatifs et donc résolus contre la page courante : un visiteur arrivé en `http://` enregistrait son abonnement en `http://` et payait une redirection 301 à chaque relève — 39,7 % des requêtes de flux. Le `rel="self"` est reconstruit à partir des paramètres validés et non de `REQUEST_URI`, qui donnait un self-link différent par variante d'URL.
 

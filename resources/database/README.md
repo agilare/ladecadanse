@@ -37,7 +37,7 @@ forcément. Les clés facultatives `migration_user` et `migration_password` d'un
 un autre compte, pour les seules migrations — `root` en local, par exemple.
 
 La production n'ouvre pas MySQL à l'extérieur : on l'atteint par le tunnel SSH décrit dans
-[docs/prod-copy.md](../../docs/prod-copy.md), l'entrée `prod` visant `127.0.0.1;port=3307`. Faire un
+[docs/exploitation/prod-copy.md](../../docs/exploitation/prod-copy.md), l'entrée `prod` visant `127.0.0.1;port=3307`. Faire un
 `mysqldump` avant tout `db:migrate` sur la production (voir plus bas, « Pas de transaction »).
 
 ## Installation neuve
@@ -134,7 +134,7 @@ Trois fichiers ne sont ni le schéma ni une migration, et n'ont rien à faire da
 - `mailing-users-specialises.sql` — sélection des utilisateurs dont les ajouts se concentrent sur un
   seul lieu, une seule catégorie ou les mêmes organisateurs, pour un mailing par `admin/mailing.php`.
   Trois requêtes **en lecture seule**, passables telles quelles en production. Voir
-  [Événements](../../docs/evenements.md#reporter-les-valeurs-récurrentes-dans-les-réglages).
+  [Événements](../../docs/fonctionnalites/evenements.md#reporter-les-valeurs-récurrentes-dans-les-réglages).
 
 ## Docker
 
@@ -142,5 +142,5 @@ L'environnement Docker crée sa base depuis `ladecadanse.sql`, puis charge les f
 `docker/env/` — le compte `admin` et un lieu de test. Ces scripts ne tournent qu'à la création du
 volume ; les migrations se passent ensuite depuis l'hôte, avec une entrée de `app/db.config.php` visant
 le port exposé par le service `db` (`'host' => '127.0.0.1;port=9906'`) — le conteneur `composer-dev`
-n'a pas les extensions de l'application. Voir [Base de données](../../docs/docker.md#base-de-données) dans
-docs/docker.md.
+n'a pas les extensions de l'application. Voir [Base de données](../../docs/developpement/docker.md#base-de-données) dans
+docs/developpement/docker.md.

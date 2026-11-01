@@ -22,4 +22,4 @@ Une entrée dans `dependencies`, une ligne par fichier dans `bin/libs-sync.mjs`,
 
 ## En production
 
-`web/libs/` part en production avec le code, sans Node sur le serveur : voir [Déploiement](../README.md#pour-mettre-à-jour-avec-les-derniers-commits).
+`web/libs/` part en production avec le code, sans Node sur le serveur : voir [Déploiement](../exploitation/deploiement.md).

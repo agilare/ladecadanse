@@ -44,7 +44,7 @@ Les préférences sont stockées dans la colonne `personne.settings`, un champ t
 
 `bin/user-settings-defaults.php` remplit ces réglages pour ceux qui ne les ont jamais ouverts, à partir de ce qu'ils saisissent déjà : la catégorie, le lieu et les organisateurs présents dans au moins 96 % de leurs ajouts, à partir de 50 ajouts et d'une connexion dans l'année. Simulation par défaut ; `--ecrire` applique, après avoir déposé un retour arrière dans `var/`.
 
-Le JSON sort de `UserSettings`, jamais construit à la main : même encodage et même fusion que `user/edit.php`, si bien qu'un réglage d'un autre domaine survit. Un champ déjà renseigné est laissé intact — le script complète, il ne corrige pas un choix délibéré.
+Le JSON sort de `UserSettings`, jamais construit à la main : même encodage et même fusion que `user/contributor-edit.php`, si bien qu'un réglage d'un autre domaine survit. Un champ déjà renseigné est laissé intact — le script complète, il ne corrige pas un choix délibéré.
 
 Trois écarts avec la sélection du mailing (`resources/database/mailing-users-specialises.sql`), qui ne cherche pas la même chose :
 
@@ -52,7 +52,7 @@ Trois écarts avec la sélection du mailing (`resources/database/mailing-users-s
 - `settings.idLieu` est un identifiant : un lieu dominant désigné par un nom libre (`evenement.nomLieu`, sans fiche) compte dans le pourcentage mais ne remplit rien ;
 - lieu et organisateurs doivent être `statut = 'actif'`, sinon le profil afficherait un réglage sans `<option>` correspondante, qu'un simple enregistrement effacerait.
 
-Pour la production, `bin/` n'étant pas déployé (`.git-ftp-ignore`), le script tourne sur une [copie locale](prod-copy.md) ou est envoyé ponctuellement par SFTP. `--sql=` produit alors les `UPDATE` au lieu de les exécuter, chacun gardé par la valeur lue au moment du calcul — un profil réglé entre-temps par son propriétaire n'est pas écrasé, et l'écart entre le nombre de lignes modifiées et celui annoncé en tête du fichier rend ces cas visibles. `--csv=` en donne les destinataires au format qu'attend `admin/mailing.php`, limités aux comptes **réellement** mis à jour.
+Pour la production, `bin/` n'étant pas déployé (`.git-ftp-ignore`), le script tourne sur une [copie locale](../exploitation/prod-copy.md) ou est envoyé ponctuellement par SFTP. `--sql=` produit alors les `UPDATE` au lieu de les exécuter, chacun gardé par la valeur lue au moment du calcul — un profil réglé entre-temps par son propriétaire n'est pas écrasé, et l'écart entre le nombre de lignes modifiées et celui annoncé en tête du fichier rend ces cas visibles. `--csv=` en donne les destinataires au format qu'attend `admin/mailing.php`, limités aux comptes **réellement** mis à jour.
 
 ### Relancer sur une bande de taux plus basse
 
@@ -80,11 +80,11 @@ Deux règles gouvernent ce nom :
 
 Chaque début janvier, les images de l'année écoulée sont déplacées dans `web/uploads/evenements/<année>/`. C'est ce que reflète `Evenement::getFilePath()`, qui ne préfixe l'année qu'une fois celle-ci **révolue** : une image de l'année en cours vit encore à la racine.
 
-Les anciennes URL sont rattrapées par une redirection 301 dans [`htaccess/50-routage.conf`](../htaccess/50-routage.conf), **à étendre d'une année à chaque déplacement**. Elle couvre jpg, png, gif et webp — tout ce qu'`ImageDriver2` sait écrire ; le webp est devenu le format le plus fréquent depuis que les PDF sont convertis à l'envoi. Elle s'arrête délibérément à l'année précédente : inclure l'année en cours changerait les 404 de ses images en redirections vers un répertoire qui n'existe pas encore.
+Les anciennes URL sont rattrapées par une redirection 301 dans [`htaccess/50-routage.conf`](../../htaccess/50-routage.conf), **à étendre d'une année à chaque déplacement**. Elle couvre jpg, png, gif et webp — tout ce qu'`ImageDriver2` sait écrire ; le webp est devenu le format le plus fréquent depuis que les PDF sont convertis à l'envoi. Elle s'arrête délibérément à l'année précédente : inclure l'année en cours changerait les 404 de ses images en redirections vers un répertoire qui n'existe pas encore.
 
 ## Catégories
 
-La liste vit dans [`Ladecadanse\EventCategory`](../librairies/EventCategory.php) — `ALL`, sept entrées, dans l'ordre qui commande à la fois les boutons radio des formulaires, les onglets de filtre de l'agenda et les sections de la liste du jour. `$glo_tab_genre` n'en est plus que l'alias, sous lequel une dizaine de fichiers la lisent encore par `global`.
+La liste vit dans [`Ladecadanse\EventCategory`](../../librairies/EventCategory.php) — `ALL`, sept entrées, dans l'ordre qui commande à la fois les boutons radio des formulaires, les onglets de filtre de l'agenda et les sections de la liste du jour. `$glo_tab_genre` n'en est plus que l'alias, sous lequel une dizaine de fichiers la lisent encore par `global`.
 
 Les clés restent en français : ce sont les valeurs de la colonne `evenement.genre`, un `varchar(20)`.
 
@@ -125,9 +125,9 @@ La valeur de référence vient de la base — la colonne `genre` lue par la requ
 
 ### Activation
 
-Le drapeau `EVENT_NEW_CATEGORIES_ENABLED` d'`app/env.php` commande les catégories de `PREVIEW_FALLBACKS` — aujourd'hui `cours` seule. Il est à `false` par défaut et prend les trois états de [`Ladecadanse\FeatureFlag`](../librairies/FeatureFlag.php) — `false`, `'preview'` (administrateurs seulement), `true`. Son nom est resté celui de la préversion à deux catégories : le renommer aurait éteint `cours` pour les administrateurs de tout site dont l'`app/env.php` porte déjà la constante.
+Le drapeau `EVENT_NEW_CATEGORIES_ENABLED` d'`app/env.php` commande les catégories de `PREVIEW_FALLBACKS` — aujourd'hui `cours` seule. Il est à `false` par défaut et prend les trois états de [`Ladecadanse\FeatureFlag`](../../librairies/FeatureFlag.php) — `false`, `'preview'` (administrateurs seulement), `true`. Son nom est resté celui de la préversion à deux catégories : le renommer aurait éteint `cours` pour les administrateurs de tout site dont l'`app/env.php` porte déjà la constante.
 
-Ouvrir une catégorie à tous ne passe pas par le drapeau, qui les ouvrirait toutes : on retire son entrée de `PREVIEW_FALLBACKS`. Deux choses sont alors à revoir hors du code : la [charte éditoriale](../articles/charte-editoriale.php), qui annonce le nombre de catégories et en décrit certaines ; les scénarios Selenium de `tests/ladecadanse.side`, dont les sélecteurs positionnels (`.genre:nth-child(N)`) désignent une section par son rang et changent de cible dès qu'une section s'insère.
+Ouvrir une catégorie à tous ne passe pas par le drapeau, qui les ouvrirait toutes : on retire son entrée de `PREVIEW_FALLBACKS`. Deux choses sont alors à revoir hors du code : la [charte éditoriale](../../articles/charte-editoriale.php), qui annonce le nombre de catégories et en décrit certaines ; les scénarios Selenium de `tests/ladecadanse.side`, dont les sélecteurs positionnels (`.genre:nth-child(N)`) désignent une section par son rang et changent de cible dès qu'une section s'insère.
 
 ## Supprimer, dépublier
 

@@ -1,6 +1,6 @@
 # Analyse statique du code
 
-Les analyseurs de code PHP se lancent par Composer. Le [README](../README.md#analyse-du-code) en donne la liste et les commandes ; ce fichier-ci dit comment les lire.
+Les analyseurs de code PHP se lancent par Composer. Le [README](../../README.md#analyse-du-code) en donne la liste et les commandes ; ce fichier-ci dit comment les lire.
 
 Points communs :
 
@@ -60,18 +60,6 @@ Deux `TaintedSql` restent, ancrés sur le sink et donc non supprimables via `@ps
 - sur `DbConnectorPdo::prepare()`, tracé jusqu'au sens du tri d'`admin/users.php`, passé à `Personne::getPersonnes()` : la valeur n'est filtrée que comme alphanumérique, ce qui exclut espaces et guillemets mais pas une valeur absurde, qui ferait échouer la requête. Une liste blanche `asc` / `desc` le ferait taire.
 
 Celui de `user/edit.php`, faux positif sur les *clés* de `$champs`, a disparu avec la réécriture de la page en PDO à colonnes littérales (#120).
-
-## Phan
-
-```sh
-./vendor/bin/phan --progress-bar -o phan.txt
-```
-
-Puis éventuellement, pour abréger le rapport :
-
-```sh
-cat phan.txt | cut -d ' ' -f2 | sort | uniq -c | sort -n -r
-```
 
 ## PHPCompatibility
 

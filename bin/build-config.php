@@ -16,7 +16,7 @@ declare(strict_types=1);
  *   php bin/build-config.php [--ops-dir=CHEMIN] [--only=htaccess|userini] [--force]
  *   php bin/build-config.php --deploy --scope=NOM
  *
- * Voir docs/config-serveur.md.
+ * Voir docs/exploitation/config-serveur.md.
  */
 
 const OPS_DIR_DEFAUT = '../ladecadanse-docs/config-serveur';

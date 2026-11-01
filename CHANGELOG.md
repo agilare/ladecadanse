@@ -22,47 +22,47 @@ Upgrade steps (redirects, side effects) : [UPGRADE.md](UPGRADE.md).
 Feature documentation : [docs/](docs/).
 
 ### Added
-- favorites : an event can be bookmarked and found again on a new "Favoris" page #98 (PR #143) (thanks to @lambeletjp) — without an account they live in the browser, logging in moves them to the account — see [docs/favoris.md](docs/favoris.md) and [UPGRADE.md](UPGRADE.md)
-- agenda : the day's listing can be filtered by category #107 (PR #144), the choice kept in the session ; shown to every visitor, where 3.12.0 reserved it to admins — see [docs/agenda.md](docs/agenda.md#filtre-par-catégorie)
-- events : two categories — `concerts`, open to everyone, and `cours`, in preview behind `EVENT_NEW_CATEGORIES_ENABLED` ; the list moves to `Ladecadanse\EventCategory` — see [docs/evenements.md](docs/evenements.md#catégories)
+- favorites : an event can be bookmarked and found again on a new "Favoris" page #98 (PR #143) (thanks to @lambeletjp) — without an account they live in the browser, logging in moves them to the account — see [docs/fonctionnalites/favoris.md](docs/fonctionnalites/favoris.md) and [UPGRADE.md](UPGRADE.md)
+- agenda : the day's listing can be filtered by category #107 (PR #144), the choice kept in the session ; shown to every visitor, where 3.12.0 reserved it to admins — see [docs/fonctionnalites/agenda.md](docs/fonctionnalites/agenda.md#filtre-par-catégorie)
+- events : two categories — `concerts`, open to everyone, and `cours`, in preview behind `EVENT_NEW_CATEGORIES_ENABLED` ; the list moves to `Ladecadanse\EventCategory` — see [docs/fonctionnalites/evenements.md](docs/fonctionnalites/evenements.md#catégories)
 - lieu : seven categories, from buvette to école/conservatoire, without re-typing any existing lieu — see [UPGRADE.md](UPGRADE.md)
-- lieu, organisateur : an admin note, read and written by admins only, on the edit forms, the listings and the fiche — see [docs/lieux-organisateurs.md](docs/lieux-organisateurs.md#note-dadministration)
-- accounts : "Se déconnecter des autres appareils" on the profile, which an admin can also trigger on an account they manage — see [docs/comptes.md](docs/comptes.md#se-déconnecter-des-autres-appareils)
-- privacy : the email and note of an anonymous event proposal are erased two years after the event ; an account left without a login for three years is warned, then anonymized a month later, behind `ACCOUNT_RETENTION_ENABLED` — see [docs/vie-privee.md](docs/vie-privee.md) and [UPGRADE.md](UPGRADE.md)
-- bots : two tabs in the internal monitoring, "Rafales" for who overloads the site and "Sondeurs" for who probes it — see [docs/bots.md](docs/bots.md) and [UPGRADE.md](UPGRADE.md)
+- lieu, organisateur : an admin note, read and written by admins only, on the edit forms, the listings and the fiche — see [docs/fonctionnalites/lieux-organisateurs.md](docs/fonctionnalites/lieux-organisateurs.md#note-dadministration)
+- accounts : "Se déconnecter des autres appareils" on the profile, which an admin can also trigger on an account they manage — see [docs/fonctionnalites/comptes.md](docs/fonctionnalites/comptes.md#se-déconnecter-des-autres-appareils)
+- privacy : the email and note of an anonymous event proposal are erased two years after the event ; an account left without a login for three years is warned, then anonymized a month later, behind `ACCOUNT_RETENTION_ENABLED` — see [docs/fonctionnalites/vie-privee.md](docs/fonctionnalites/vie-privee.md) and [UPGRADE.md](UPGRADE.md)
+- bots : two tabs in the internal monitoring, "Rafales" for who overloads the site and "Sondeurs" for who probes it — see [docs/exploitation/bots.md](docs/exploitation/bots.md) and [UPGRADE.md](UPGRADE.md)
 
 ### Changed
-- agenda : the time markers of 3.12.0 #51 are reworked, still behind `EVENT_TIME_STATUS_ENABLED` — a countdown within four hours, an estimated duration when the end time is missing (#65), a fade on what is out of reach — see [docs/agenda.md](docs/agenda.md#repères-de-temporalité)
-- lieu edit : `lieu-edit.php` becomes `lieu/edit.php` #117 and `lieu-text-edit.php` `lieu/text-edit.php`, each with a 301 ; the form is rewritten on the organisateur one, its permissions are asked once in `Authorization`, and the gallery is dropped — see [UPGRADE.md](UPGRADE.md) and [docs/lieux-organisateurs.md](docs/lieux-organisateurs.md)
+- agenda : the time markers of 3.12.0 #51 are reworked, still behind `EVENT_TIME_STATUS_ENABLED` — a countdown within four hours, an estimated duration when the end time is missing (#65), a fade on what is out of reach — see [docs/fonctionnalites/agenda.md](docs/fonctionnalites/agenda.md#repères-de-temporalité)
+- lieu edit : `lieu-edit.php` becomes `lieu/edit.php` #117 and `lieu-text-edit.php` `lieu/text-edit.php`, each with a 301 ; the form is rewritten on the organisateur one, its permissions are asked once in `Authorization`, and the gallery is dropped — see [UPGRADE.md](UPGRADE.md) and [docs/fonctionnalites/lieux-organisateurs.md](docs/fonctionnalites/lieux-organisateurs.md)
 - lieu : `determinant` becomes `preposition_nom`, `categorie` `categories`, `photo2` and `actif` are dropped ; statuts, categories and field lengths move to `Lieu`, coordinates to `Coordinates` — see [UPGRADE.md](UPGRADE.md)
-- edition : the fiche forms share `FicheEdition`, `CurrentUserEditing` and `_erreur_http.inc.php`, `Edition` becomes abstract, and their code is named in English — `category` replacing `genre` wherever nothing in circulation depends on the word — see [docs/lieux-organisateurs.md](docs/lieux-organisateurs.md#ce-que-les-deux-formulaires-partagent)
-- home : the announcements above the agenda become a list, `HOME_BANNERS` in `app/env.php`, with a type and an audience each — see [docs/interface.md](docs/interface.md#annonces-de-laccueil) and [UPGRADE.md](UPGRADE.md)
+- edition : the fiche forms share `FicheEdition`, `CurrentUserEditing` and `_erreur_http.inc.php`, `Edition` becomes abstract, and their code is named in English — `category` replacing `genre` wherever nothing in circulation depends on the word — see [docs/fonctionnalites/lieux-organisateurs.md](docs/fonctionnalites/lieux-organisateurs.md#ce-que-les-deux-formulaires-partagent)
+- home : the announcements above the agenda become a list, `HOME_BANNERS` in `app/env.php`, with a type and an audience each — see [docs/fonctionnalites/interface.md](docs/fonctionnalites/interface.md#annonces-de-laccueil) and [UPGRADE.md](UPGRADE.md)
 - database : migrations go through Doctrine Migrations #231, each database recording what it has received ; the first `composer db:migrate` adopts a database at any version — see [UPGRADE.md](UPGRADE.md) and [resources/database/README.md](resources/database/README.md)
-- front-end libraries : npm is their single source of truth #233, jQuery and Leaflet included rather than loaded from a CDN #234 ; Node becomes a prerequisite to run the site locally — see [docs/bibliotheques-front-end.md](docs/bibliotheques-front-end.md)
-- statistics : Matomo no longer receives a user id #93 — see [docs/vie-privee.md](docs/vie-privee.md#mesure-daudience)
+- front-end libraries : npm is their single source of truth #233, jQuery and Leaflet included rather than loaded from a CDN #234 ; Node becomes a prerequisite to run the site locally — see [docs/developpement/bibliotheques-front-end.md](docs/developpement/bibliotheques-front-end.md)
+- statistics : Matomo no longer receives a user id #93 — see [docs/fonctionnalites/vie-privee.md](docs/fonctionnalites/vie-privee.md#mesure-daudience)
 - tests : unit coverage for `Coordinates`, the lieu categories and `QueryParamValidator::enumFromQuery()` ; the Selenium lieu scenario needs re-recording
 
 ### Fixed
-- accounts : "Rester connecté-e" holds on every device, where logging in anywhere logged the previous device out, and coming back through it updates `last_login` — see [docs/comptes.md](docs/comptes.md#rester-connecté-e) and [UPGRADE.md](UPGRADE.md)
-- events : a username that is an email address no longer signs an announcement — see [docs/vie-privee.md](docs/vie-privee.md#signature-des-annonces)
-- docker : the dev environment answers again on localhost:7777, and a one-shot `npm` service fills `web/libs/` — see [docs/docker.md](docs/docker.md)
+- accounts : "Rester connecté-e" holds on every device, where logging in anywhere logged the previous device out, and coming back through it updates `last_login` — see [docs/fonctionnalites/comptes.md](docs/fonctionnalites/comptes.md#rester-connecté-e) and [UPGRADE.md](UPGRADE.md)
+- events : a username that is an email address no longer signs an announcement — see [docs/fonctionnalites/vie-privee.md](docs/fonctionnalites/vie-privee.md#signature-des-annonces)
+- docker : the dev environment answers again on localhost:7777, and a one-shot `npm` service fills `web/libs/` — see [docs/developpement/docker.md](docs/developpement/docker.md)
 - home : closing an announcement no longer hides the next ones
 - event edit : "Cette catégorie n'est pas valable" is finally shown, where a rejected category blocked the save without saying why
-- lieu edit : a lieu in Oulens-sur-Lucens is no longer filed under the Geneva region, modifying a fiche no longer makes the editor its author, an unknown `idL` answers 404 — see [docs/lieux-organisateurs.md](docs/lieux-organisateurs.md#localité-quartier-et-région)
-- lieu edit, organisateur edit : replacing a logo or a photo by an image of the same format no longer empties it, and an unknown `?action=` answers 400 instead of 500 — see [docs/lieux-organisateurs.md](docs/lieux-organisateurs.md#logo-et-photo)
-- salle edit : refusals answer 400, 403 or 404 like the fiche forms, and the lieu of a salle, which saving never wrote, is read-only on edit — see [docs/lieux-organisateurs.md](docs/lieux-organisateurs.md#salles-dun-lieu)
-- lieu text edit : a refused INSERT no longer announces a success, and an unknown lieu or text answers 404 — see [docs/lieux-organisateurs.md](docs/lieux-organisateurs.md#un-texte-par-personne-et-par-lieu)
+- lieu edit : a lieu in Oulens-sur-Lucens is no longer filed under the Geneva region, modifying a fiche no longer makes the editor its author, an unknown `idL` answers 404 — see [docs/fonctionnalites/lieux-organisateurs.md](docs/fonctionnalites/lieux-organisateurs.md#localité-quartier-et-région)
+- lieu edit, organisateur edit : replacing a logo or a photo by an image of the same format no longer empties it, and an unknown `?action=` answers 400 instead of 500 — see [docs/fonctionnalites/lieux-organisateurs.md](docs/fonctionnalites/lieux-organisateurs.md#logo-et-photo)
+- salle edit : refusals answer 400, 403 or 404 like the fiche forms, and the lieu of a salle, which saving never wrote, is read-only on edit — see [docs/fonctionnalites/lieux-organisateurs.md](docs/fonctionnalites/lieux-organisateurs.md#salles-dun-lieu)
+- lieu text edit : a refused INSERT no longer announces a success, and an unknown lieu or text answers 404 — see [docs/fonctionnalites/lieux-organisateurs.md](docs/fonctionnalites/lieux-organisateurs.md#un-texte-par-personne-et-par-lieu)
 
 ### Security
-- users : a password derived from a word of the site or its region is refused — `Servette1890!`, `p@quis2024` — see [docs/comptes.md](docs/comptes.md#mot-de-passe)
-- password reset : the token comes from `random_bytes(32)`, where a thousand guesses were enough to take over an account whose address was known — see [docs/comptes.md](docs/comptes.md#réinitialisation)
+- users : a password derived from a word of the site or its region is refused — `Servette1890!`, `p@quis2024` — see [docs/fonctionnalites/comptes.md](docs/fonctionnalites/comptes.md#mot-de-passe)
+- password reset : the token comes from `random_bytes(32)`, where a thousand guesses were enough to take over an account whose address was known — see [docs/fonctionnalites/comptes.md](docs/fonctionnalites/comptes.md#réinitialisation)
 - forms : a submission carrying no CSRF token is refused even when the session holds none yet
-- events : deleting and unpublishing an event require POST and the CSRF token — see [docs/evenements.md](docs/evenements.md#supprimer-dépublier)
-- lieu edit, lieu text edit : the lieu written is the one the url names, whose permission was checked, and no longer one named by a form field #117 ; the fields reserved to editors are read back from the database — see [docs/lieux-organisateurs.md](docs/lieux-organisateurs.md#qui-peut-modifier-1)
+- events : deleting and unpublishing an event require POST and the CSRF token — see [docs/fonctionnalites/evenements.md](docs/fonctionnalites/evenements.md#supprimer-dépublier)
+- lieu edit, lieu text edit : the lieu written is the one the url names, whose permission was checked, and no longer one named by a form field #117 ; the fields reserved to editors are read back from the database — see [docs/fonctionnalites/lieux-organisateurs.md](docs/fonctionnalites/lieux-organisateurs.md#qui-peut-modifier-1)
 - lieu, organisateur : the people attached to a fiche, with their email, are listed to admins only
 - event page, lieu edit, user edit : a proposed event's title and the posted values quoted in an error message are escaped
 - admin events : the redirect after a bulk action names `/admin/events.php` instead of echoing `$_SERVER['PHP_SELF']`, reported by Snyk
-- headers : `Referrer-Policy` becomes `strict-origin-when-cross-origin`, and the CSP opens the Known Agents and GlitchTip hosts only when their flag is on — see [docs/vie-privee.md](docs/vie-privee.md#tiers)
+- headers : `Referrer-Policy` becomes `strict-origin-when-cross-origin`, and the CSP opens the Known Agents and GlitchTip hosts only when their flag is on — see [docs/fonctionnalites/vie-privee.md](docs/fonctionnalites/vie-privee.md#tiers)
 
 ## [3.12.0] - 2026-09-05
 
@@ -71,50 +71,50 @@ Feature documentation : [docs/](docs/).
 
 ### Added
 - events : the calendar export leaves the home and the event page for every listing — search results, lieu and organisateur pages #150 (PR #173) ; shown to every visitor, on future events only
-- agenda : on the day's own listing, each event card says where it stands against the moment the page was loaded #51 — a countdown, the share elapsed, `terminé` ; off by default behind `EVENT_TIME_STATUS_ENABLED` — see [docs/agenda.md](docs/agenda.md)
+- agenda : on the day's own listing, each event card says where it stands against the moment the page was loaded #51 — a countdown, the share elapsed, `terminé` ; off by default behind `EVENT_TIME_STATUS_ENABLED` — see [docs/fonctionnalites/agenda.md](docs/fonctionnalites/agenda.md)
 - event edit, admin events : the flyer and image fields accept a PDF, first page only, converted to WebP ; off by default behind `PDF_CONVERSION_ENABLED` — see the [README](README.md#accepter-les-pdf-dans-les-champs-image)
 - config : feature flags gain a third state through `Ladecadanse\FeatureFlag` — `false`, `'preview'` (administrators only), `true` — to try a substantial feature on the live site before opening it to everyone
-- lieux, organisateurs : both listings get twelve columns counting the events added month by month, visible from AUTHOR up #178 — see [docs/lieux-organisateurs.md](docs/lieux-organisateurs.md)
-- admin events, user profile : an "Image" column opens the event tables, just before the title — see [docs/admin-evenements.md](docs/admin-evenements.md)
-- events, home : the wide layout of the event page is served to every visitor, and below 800px the partners and the latest added events line up with the gutter `<main>` already keeps — see [docs/interface.md](docs/interface.md)
-- local development : `composer prod-copy` builds an anonymised local copy of the production database — the last N events added and their whole referential closure, images included, fetched over SSH — see [docs/prod-copy.md](docs/prod-copy.md)
+- lieux, organisateurs : both listings get twelve columns counting the events added month by month, visible from AUTHOR up #178 — see [docs/fonctionnalites/lieux-organisateurs.md](docs/fonctionnalites/lieux-organisateurs.md)
+- admin events, user profile : an "Image" column opens the event tables, just before the title — see [docs/fonctionnalites/admin-evenements.md](docs/fonctionnalites/admin-evenements.md)
+- events, home : the wide layout of the event page is served to every visitor, and below 800px the partners and the latest added events line up with the gutter `<main>` already keeps — see [docs/fonctionnalites/interface.md](docs/fonctionnalites/interface.md)
+- local development : `composer prod-copy` builds an anonymised local copy of the production database — the last N events added and their whole referential closure, images included, fetched over SSH — see [docs/exploitation/prod-copy.md](docs/exploitation/prod-copy.md)
 - tests : new unit suites for `PasswordPolicy`, for the lieu and organisateur options and for the 301 of every moved page ; the `site` suite covers the register form, the logout, the monthly counters, the admin events screen and the three edit forms
 
 ### Changed
 - pages moved, each with a 301 : register, password reset and logout join `user/` (#121, #123), `organisateur-edit.php` becomes `organisateur/edit.php` #115 and `admin/gererEvenements.php` becomes `admin/events.php` #125 — each request is processed before the first byte of HTML, `OrganisateurEdition` moves to PDO and the admin listing to `EvenementCollection` — see [UPGRADE.md](UPGRADE.md)
-- organisateur edit : who may edit a fiche is asked once, in `Authorization::isPersonneAllowedToEditOrganisateur()`, and field lengths live in `Organisateur::FIELDS` ; a refusal answers 403, a request naming no organisateur 400, an unknown fiche 404 — see [docs/lieux-organisateurs.md](docs/lieux-organisateurs.md)
-- users : the password rules move to the shared `PasswordPolicy`, which the three forms setting a password each copied, and the rejected list goes from 22 to 19 999 entries — see [docs/comptes.md](docs/comptes.md)
-- admin events : filters, sort and rows-per-page are remembered in the session as in `admin/users.php`, two filters are added — lieu name, author — and the bulk form folds into three `<details>` what bulk editing does not use — see [docs/admin-evenements.md](docs/admin-evenements.md)
+- organisateur edit : who may edit a fiche is asked once, in `Authorization::isPersonneAllowedToEditOrganisateur()`, and field lengths live in `Organisateur::FIELDS` ; a refusal answers 403, a request naming no organisateur 400, an unknown fiche 404 — see [docs/fonctionnalites/lieux-organisateurs.md](docs/fonctionnalites/lieux-organisateurs.md)
+- users : the password rules move to the shared `PasswordPolicy`, which the three forms setting a password each copied, and the rejected list goes from 22 to 19 999 entries — see [docs/fonctionnalites/comptes.md](docs/fonctionnalites/comptes.md)
+- admin events : filters, sort and rows-per-page are remembered in the session as in `admin/users.php`, two filters are added — lieu name, author — and the bulk form folds into three `<details>` what bulk editing does not use — see [docs/fonctionnalites/admin-evenements.md](docs/fonctionnalites/admin-evenements.md)
 - events, lieux, organisateurs : the image-field lifecycle — naming, replacement, deletion, thumbnail — is shared through `HandlesImageUploads`, the four flyer/image blocks become one partial, and the selects, the lieu resolution and the hh:mm conversion move to the domain classes
 - edition : TinyMCE speaks French and strips from pasted content the styles, classes and wrapper tags the server discards anyway ; the sanitizer applied to texts written outside the site becomes `UserHtmlSanitizer`, where two pages each carried the same configuration
 - events : on the event page and the ics export, `idE` is validated before bootstrap — answering 400 no longer opens two MySQL connections, starts the session and mounts the log handlers, and bots produce these urls in bulk
 - librairies : the dead `Collection` hierarchy is removed #216 — a proto-repository never adopted, whose public API had no caller ; `Evenement` no longer extends `Element`
-- ui : the legacy 2000's PNG icons (famfamfam Silk) give way to Font Awesome, `web/interface/icons/` dropping from 1469 files to 4 #151 ; under 450px the event description wraps around the illustrations column, the event form takes the full width and the day navigation shows text rather than the date — see [docs/interface.md](docs/interface.md)
+- ui : the legacy 2000's PNG icons (famfamfam Silk) give way to Font Awesome, `web/interface/icons/` dropping from 1469 files to 4 #151 ; under 450px the event description wraps around the illustrations column, the event form takes the full width and the day navigation shows text rather than the date — see [docs/fonctionnalites/interface.md](docs/fonctionnalites/interface.md)
 - resources : the mail bodies move to `resources/templates/`, the sql scripts to `resources/database/`, where a README inventories every one of them ; `ladecadanse.sql` is the current schema again, having fallen four versions behind — see [resources/database/README.md](resources/database/README.md)
 - contact : drop the "nom" and "affiliation" fields, which served nothing
-- deployment : `.htaccess` and `.user.ini` are composed from fragments by `composer config:build` and sent with the code, where they used to be edited by hand on the server — see [docs/config-serveur.md](docs/config-serveur.md)
+- deployment : `.htaccess` and `.user.ini` are composed from fragments by `composer config:build` and sent with the code, where they used to be edited by hand on the server — see [docs/exploitation/config-serveur.md](docs/exploitation/config-serveur.md)
 - analyzers, docker : the Rector configuration pointed at a test file moved long ago, so `composer rector:dry-run` runs in ~25 s instead of exceeding the 300 s timeout ; the dev web image ships Composer, 2.8 instead of 2.7 — see the [README](README.md#composer)
 
 ### Fixed
-- users : clicking "Sortir" had no effect for anyone who had ticked "Rester connecté-e" — the cookie was cleared by a `setcookie()` whose `path` was omitted, so the deletion aimed at `/user` once the page moved there ; a reset request for a deactivated account led to a form that could not be submitted #123, and a link cut by a mail client threw a 500 — see [docs/comptes.md](docs/comptes.md)
+- users : clicking "Sortir" had no effect for anyone who had ticked "Rester connecté-e" — the cookie was cleared by a `setcookie()` whose `path` was omitted, so the deletion aimed at `/user` once the page moved there ; a reset request for a deactivated account led to a form that could not be submitted #123, and a link cut by a mail client threw a 500 — see [docs/fonctionnalites/comptes.md](docs/fonctionnalites/comptes.md)
 - lieux, organisateurs, search, admin : a malformed `page` url parameter threw an uncaught exception — bots follow urls where the `&region` of `?page=3&region=vd` has been read as the `&reg` html entity ; the 8 paginating pages go through `QueryParamValidator::pageFromQuery()`
-- events, lieux, organisateurs : a flyer, logo or photo is named after the identifier the database actually assigned, not after `MAX(id) + 1` read before the INSERT, its extension follows the file's real format, and each copy of an event takes its flyer from the original — see [docs/evenements.md](docs/evenements.md)
-- organisateur edit : modifying a fiche no longer makes the editor its author, nor republishes a dépubliée one behind an actor's back ; the duplicate-name check finally runs, and the status radios are the organisateur's own and not the *lieu*'s — see [docs/lieux-organisateurs.md](docs/lieux-organisateurs.md)
+- events, lieux, organisateurs : a flyer, logo or photo is named after the identifier the database actually assigned, not after `MAX(id) + 1` read before the INSERT, its extension follows the file's real format, and each copy of an event takes its flyer from the original — see [docs/fonctionnalites/evenements.md](docs/fonctionnalites/evenements.md)
+- organisateur edit : modifying a fiche no longer makes the editor its author, nor republishes a dépubliée one behind an actor's back ; the duplicate-name check finally runs, and the status radios are the organisateur's own and not the *lieu*'s — see [docs/fonctionnalites/lieux-organisateurs.md](docs/fonctionnalites/lieux-organisateurs.md)
 - lieux : the localité filter no longer takes the whole listing down when the `localite` table holds a canton the configuration does not name — `lieu/lieux.php` answered a fatal `Undefined array key ""`
-- admin events : a bulk replace no longer wipes the organisateurs of the selected events #125 — the DELETE ran after every successful UPDATE, against the page's own promise that only non-empty fields overwrite — see [docs/admin-evenements.md](docs/admin-evenements.md)
+- admin events : a bulk replace no longer wipes the organisateurs of the selected events #125 — the DELETE ran after every successful UPDATE, against the page's own promise that only non-empty fields overwrite — see [docs/fonctionnalites/admin-evenements.md](docs/fonctionnalites/admin-evenements.md)
 - admin events : an event without a localité is listed again, the `JOIN localite` being an inner join ; the bulk form carries a CSRF token although it deletes, validates its number of rows against a list, no longer re-reads the schedules from `$_POST` inside the loop, and no longer confuses the image to delete with the flyer
 - admin, admin events : the "par" column reads `anonyme` for an event submitted without an account, where both listings rendered a link to `/user/dashboard.php?idP=0` with neither label nor tooltip
 - event edit : a PDF pasted into "ou coller une URL" is converted like one uploaded through the file field — this path renders server-side with Imagick — see the [README](README.md#accepter-les-pdf-dans-les-champs-image)
-- server config : the yearly redirect of event images covers `.webp`, never listed alongside jpg, png and gif — a webp flyer moved by the January archiving answered 404 — see [docs/evenements.md](docs/evenements.md)
+- server config : the yearly redirect of event images covers `.webp`, never listed alongside jpg, png and gif — a webp flyer moved by the January archiving answered 404 — see [docs/fonctionnalites/evenements.md](docs/fonctionnalites/evenements.md)
 - forms : a form redisplayed after a validation error keeps what was posted — deselecting an organisateur sticks and the "Supprimer" checkbox of the image gets re-checked, the hidden `formulaire=ok` witness now deciding alone ; the clear button of a search field empties that field alone, and the × of a Select2 field deselects without unrolling the dropdown
-- ui : the footer menu lit more than the current link, `$ici` arriving already filled from the header ; on mobile the action bar of an event scattered its labels across lines, the actions menu of a lieu was hidden, and the icons of the message banners were misplaced — see [docs/interface.md](docs/interface.md)
+- ui : the footer menu lit more than the current link, `$ici` arriving already filled from the header ; on mobile the action bar of an event scattered its labels across lines, the actions menu of a lieu was hidden, and the icons of the message banners were misplaced — see [docs/fonctionnalites/interface.md](docs/fonctionnalites/interface.md)
 - assets : the stylesheet of the page was loaded before the extra ones, which it could therefore not override ; `Sentry.init()` threw a `ReferenceError` for visitors running an ad blocker, uBlock Origin returning the CDN bundle empty
 - events send, lieux edit : sharing an event whose lieu was deleted logged a warning, the fallback of `Evenement::getLieu()` missing its `determinant` key ; saving a lieu as ACTOR or MEMBER logged another, `image_galerie` being declared a file field though its input starts at AUTHOR
 - search : the actions column no longer reserves its 80px for a visitor who is not logged in, where it holds the calendar export alone
 
 ### Security
 - organisateur edit : an organiser may no longer modify another organiser's fiche #115 — the check let through any account of level ACTOR, so every one of them could edit all 500 fiches ; the file already on the fiche and the accepted statuts are read from the database, not from the form — see [UPGRADE.md](UPGRADE.md)
-- users : logging out was a GET, so any link prefetch (browser, antivirus, mail scanner) or any third-party site could close a member's session ; `user/logout.php` accepts POST only, protected by a token valid for the whole session — see [docs/comptes.md](docs/comptes.md)
+- users : logging out was a GET, so any link prefetch (browser, antivirus, mail scanner) or any third-party site could close a member's session ; `user/logout.php` accepts POST only, protected by a token valid for the whole session — see [docs/fonctionnalites/comptes.md](docs/fonctionnalites/comptes.md)
 - events edit, admin : six queries concatenated values coming from `$_POST` without cast nor quotes, four of them written `WHERE id=" . $connector->sanitize(...)` where the escaping is inert — outside quotes, only the `(int)` cast protects in a numeric context
 - db : the password of the `DbConnector` constructor is marked `#[\SensitiveParameter]`, which keeps it out of the stack traces
 
@@ -124,8 +124,8 @@ Upgrade steps (database, `app/env.php`, side effects) : [UPGRADE.md](UPGRADE.md)
 Feature documentation : [docs/](docs/).
 
 ### Added
-- events : a past event becomes a read-only archive — no edit form and no deletion, so it can no longer be recycled into a new one ; Copier and Dépublier stay available and editors keep full access — see [docs/evenements.md](docs/evenements.md)
-- users, events edit : personal default values for adding an event (category, start and end time, lieu, organisateur(s), price), set in the profile and applied at creation only ; stored in the new `personne.settings` column — see [docs/evenements.md](docs/evenements.md)
+- events : a past event becomes a read-only archive — no edit form and no deletion, so it can no longer be recycled into a new one ; Copier and Dépublier stay available and editors keep full access — see [docs/fonctionnalites/evenements.md](docs/fonctionnalites/evenements.md)
+- users, events edit : personal default values for adding an event (category, start and end time, lieu, organisateur(s), price), set in the profile and applied at creation only ; stored in the new `personne.settings` column — see [docs/fonctionnalites/evenements.md](docs/fonctionnalites/evenements.md)
 - events : admins can notify the event author by email of the changes made, picking pre-written motifs and/or writing a free-text message #149
 - events : the ajax "Dépublier" button, so far limited to the home, lieu and organisateur listings, is now also on the event page, the user profile, gererEvenements and the search results (SUPERADMIN only)
 - events edit : the flyer and the photo can be added by pasting an image URL, now open to every logged-in user (was admins only), not on the public "Proposer un événement" form
@@ -136,13 +136,13 @@ Feature documentation : [docs/](docs/).
 - ui : keyboard shortcuts for the most common actions #112 — pages, edition, flyer, copy, day navigation, pagination, `/` to focus a filter field, `j`/`k` to walk listings and events one by one — see [README](README.md#raccourcis-clavier)
 - ui : "mouseless" mode to learn those shortcuts, for ADMIN and SUPERADMIN only — `?mouseless=1` neutralises the mouse on the elements a shortcut can reach and badges each one with its key — see [README](README.md#raccourcis-clavier)
 - mailing : optional copy to the admin of the messages sent to users, for short monitoring periods, off by default (see `app/env_model.php`)
-- bots : internal monitoring of automated traffic, with an admin dashboard, off by default — see [docs/bots.md](docs/bots.md)
+- bots : internal monitoring of automated traffic, with an admin dashboard, off by default — see [docs/exploitation/bots.md](docs/exploitation/bots.md)
 - don : add Postfinance and Twint payment methods, add Bernex to "Soutiens"
 - tests : new Codeception `site` suite (PhpBrowser) covering the author notification, permissions, statuses, the bots dashboard, the rss feeds and the collapsible texts ; set `LADECADANSE_SITE_URL` in `tests/.env`
 - tests : Vitest setup and first JS unit tests (`npm test`)
 
 ### Changed
-- rss : feeds are cached 900 s and answer `304` through `ETag`/`Last-Modified`, the `400`/`410` status contract is settled before bootstrap without session nor database, and the `<style>` block is dropped from item descriptions — see [docs/rss.md](docs/rss.md)
+- rss : feeds are cached 900 s and answer `304` through `ETag`/`Last-Modified`, the `400`/`410` status contract is settled before bootstrap without session nor database, and the `<style>` block is dropped from item descriptions — see [docs/fonctionnalites/rss.md](docs/fonctionnalites/rss.md)
 - lieux, organisateurs : long descriptions and presentations are rendered already folded by the server instead of being collapsed by read-smore after the render, so they no longer flash at full length and stay readable without JS ; the read-smore CDN script is dropped, whose failure used to break `main.js`
 - assets : a missing file is now reported as a warning in `var/logs/activity.log` instead of the PHP error log, which it was filling one line per page view
 - admin : in gererEvenements, the events list gets a fixed height (70vh) with its own scrollbar and sticky column headers ; checkboxes column moved first
@@ -156,7 +156,7 @@ Feature documentation : [docs/](docs/).
 - docs : move the upgrade steps to UPGRADE.md and the feature details to `docs/`, so this changelog stays scannable
 
 ### Fixed
-- rss : wrong channel `pubDate`, illustrations leaking from one item to the next, missing lieu autodiscovery tag, relative feed URLs — now absolute through the new `SITE_CANONICAL_URL` — and a warning on a call without `type` — see [docs/rss.md](docs/rss.md)
+- rss : wrong channel `pubDate`, illustrations leaking from one item to the next, missing lieu autodiscovery tag, relative feed URLs — now absolute through the new `SITE_CANONICAL_URL` — and a warning on a call without `type` — see [docs/fonctionnalites/rss.md](docs/fonctionnalites/rss.md)
 - lieux, organisateurs, events : an unknown id returned an empty 200 or a fatal error instead of the 404 the pages already had ready ; `evenement-edit.php` without `idE` now answers 400
 - search, lieux, organisateurs, admin, events : an unexpected value in an optional url parameter threw an uncaught exception or logged a warning instead of falling back on the default ; guards now use the new non-throwing `QueryParamValidator::isAcceptedUrlQueryValue()`
 - edition : in TinyMCE texts, links to the site itself lost their `href` (relative URLs rejected by the sanitizer) ; texts saved before this fix must be edited again — see [UPGRADE.md](UPGRADE.md)

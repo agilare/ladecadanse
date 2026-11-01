@@ -1,6 +1,6 @@
 # Docker
 
-Une configuration Docker est fournie pour exécuter le site en environnement local ou en production. Le [README](../README.md#installation-avec-docker) donne le démarrage rapide ; ce fichier-ci détaille le reste.
+Une configuration Docker est fournie pour exécuter le site en environnement local ou en production. Le [README](../../README.md#installation-avec-docker) donne le démarrage rapide ; ce fichier-ci détaille le reste.
 
 Seul Docker est requis sur l'hôte, avec Compose v2 (`docker compose`) : ni PHP, ni Composer, ni Node. À chaque démarrage, deux conteneurs à usage unique préparent le code monté avant qu'Apache ne démarre :
 
@@ -85,7 +85,7 @@ Composer est installé dans le conteneur web de développement : `docker compose
 
 Le service `composer-dev`, lui, a son propre PHP, sans les extensions de l'application, d'où son `--ignore-platform-reqs`.
 
-Sans `.htaccess`, le site répond déjà, mais sans ses redirections ni ses règles de sécurité. `composer config:build`, lancé dans le conteneur, le compose comme en production — voir [config-serveur.md](config-serveur.md) ; l'image active pour cela `mod_rewrite` et `mod_headers`.
+Sans `.htaccess`, le site répond déjà, mais sans ses redirections ni ses règles de sécurité. `composer config:build`, lancé dans le conteneur, le compose comme en production — voir [config-serveur.md](../exploitation/config-serveur.md) ; l'image active pour cela `mod_rewrite` et `mod_headers`.
 
 ## Base de données
 
@@ -97,7 +97,7 @@ Les migrations se passent ensuite depuis l'hôte, que la base soit neuve ou déj
 LADECADANSE_DB=docker composer db:migrate
 ```
 
-Voir [resources/database/README.md](../resources/database/README.md).
+Voir [resources/database/README.md](../../resources/database/README.md).
 
 Pour repartir d'une base neuve : `docker compose --profile dev down -v`, qui supprime les volumes, puis `docker compose --profile dev up -d`.
 

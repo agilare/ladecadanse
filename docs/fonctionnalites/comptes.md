@@ -13,7 +13,7 @@ Les quatre pages de compte — connexion, inscription, réinitialisation du mot 
 
 ## Mot de passe
 
-Les règles sont portées par [`Ladecadanse\Utils\PasswordPolicy`](../librairies/Utils/PasswordPolicy.php) :
+Les règles sont portées par [`Ladecadanse\Utils\PasswordPolicy`](../../librairies/Utils/PasswordPolicy.php) :
 
 - de **10 à 100 caractères** ;
 - **au moins un chiffre** ;

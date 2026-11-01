@@ -4,7 +4,7 @@ Marquer un événement pour le retrouver, avec ou sans compte (#98, PR #143).
 
 ## Le marque-page
 
-Un lien `fa-bookmark-o` (à marquer) / `fa-bookmark` (marqué), rendu par [`EvenementRenderer::favoriteButtonHtml()`](../librairies/EvenementRenderer.php), posé sur l'agenda, la fiche d'un événement, les listes d'une fiche de lieu, d'une fiche d'organisateur et de la recherche, et sur la page Favoris elle-même. Un clic bascule l'état sans recharger la page.
+Un lien `fa-bookmark-o` (à marquer) / `fa-bookmark` (marqué), rendu par [`EvenementRenderer::favoriteButtonHtml()`](../../librairies/EvenementRenderer.php), posé sur l'agenda, la fiche d'un événement, les listes d'une fiche de lieu, d'une fiche d'organisateur et de la recherche, et sur la page Favoris elle-même. Un clic bascule l'état sans recharger la page.
 
 Un onglet **Favoris** figure dans le menu principal, entre Agenda et Lieux — l'icône seule en dessous de 800 px, pour que la barre tienne sur une ligne.
 
@@ -19,7 +19,7 @@ Un bandeau le dit au visiteur sur la page Favoris, avec un lien vers la connexio
 
 **La première connexion verse les favoris du navigateur dans le compte** : `FavoritesStore.init()` les envoie à `sync`, dont l'`INSERT IGNORE` les fusionne avec ceux déjà en base sans créer de doublon, puis vide le stockage local et relit la liste du compte.
 
-Pour un membre connecté, les identifiants de ses favoris sont **rendus avec la page**, dans `window.__LADECADANSE.favoriteIds` ([`_footer.inc.php`](../_footer.inc.php)) : aucune requête n'est nécessaire au chargement pour savoir quels marque-pages allumer. L'action `list` ne sert que de secours.
+Pour un membre connecté, les identifiants de ses favoris sont **rendus avec la page**, dans `window.__LADECADANSE.favoriteIds` ([`_footer.inc.php`](../../_footer.inc.php)) : aucune requête n'est nécessaire au chargement pour savoir quels marque-pages allumer. L'action `list` ne sert que de secours.
 
 ## Le filtre des listes
 
@@ -68,4 +68,4 @@ Les deux actions qui écrivent exigent le jeton de session, comme les liens « D
 
 Un index sur `idEvenement` sert le sens inverse, compter ou lister qui a mis un événement en favori. Rien n'efface les lignes d'un événement supprimé : elles ne remontent simplement plus, la jointure ne trouvant pas l'événement.
 
-La migration est `resources/database/migrations/Version20260926000000.php`, passée par `composer db:migrate` — voir [UPGRADE.md](../UPGRADE.md).
+La migration est `resources/database/migrations/Version20260926000000.php`, passée par `composer db:migrate` — voir [UPGRADE.md](../../UPGRADE.md).

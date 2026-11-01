@@ -3,7 +3,7 @@
 ## Modifier une fiche d'organisateur
 
 `organisateur/edit.php` ajoute et modifie les fiches. Le traitement vit dans
-[`OrganisateurEdition`](../librairies/OrganisateurEdition.php), la page ne fait que décider des
+[`OrganisateurEdition`](../../librairies/OrganisateurEdition.php), la page ne fait que décider des
 droits, appeler le traitement, puis afficher.
 
 ### Qui peut modifier
@@ -48,7 +48,7 @@ Le nom d'un fichier est `{idOrganisateur}_{champ}.{extension}` : `12_logo.png`, 
 L'identifiant vient de l'AUTO_INCREMENT, donc n'est connu qu'après l'INSERT ; l'extension vient du
 type MIME réel du fichier, parce que c'est d'après son contenu qu'`ImageDriver2` l'écrit. Le cycle
 complet — nommage, remplacement, suppression, miniature `s_` — est partagé avec les fiches de lieu
-par le trait [`HandlesImageUploads`](../librairies/HandlesImageUploads.php).
+par le trait [`HandlesImageUploads`](../../librairies/HandlesImageUploads.php).
 
 Le fichier déjà en place est relu en base, jamais repris d'un champ caché du formulaire.
 
@@ -57,28 +57,28 @@ Le nom étant déterministe, il ne dit pas si le fichier a changé : un PNG remp
 ## Modifier une fiche de lieu
 
 `lieu/edit.php` ajoute et modifie les fiches. Le traitement vit dans
-[`LieuEdition`](../librairies/LieuEdition.php) ; comme pour l'organisateur, la page ne fait que
+[`LieuEdition`](../../librairies/LieuEdition.php) ; comme pour l'organisateur, la page ne fait que
 décider des droits, appeler le traitement, puis afficher.
 
 ### Ce que les deux formulaires partagent
 
-[`FicheEdition`](../librairies/FicheEdition.php) est le socle commun aux deux : relecture de l'état
+[`FicheEdition`](../../librairies/FicheEdition.php) est le socle commun aux deux : relecture de l'état
 enregistré, garde-fous sur les champs réservés, cycle de vie des images, délégation des erreurs au
 `Validateur`. Ses classes filles déclarent leur table, leur colonne d'identifiant, leurs champs
 image et leurs colonnes à relire, puis n'écrivent plus que ce qui leur est propre — leur validation
 et leur SQL d'écriture.
 
 Le champ image lui-même — l'envoi, l'aperçu, la case « Supprimer » — est un seul gabarit,
-[`_champ_image.inc.php`](../_champ_image.inc.php), inclus quatre fois entre les deux formulaires.
+[`_champ_image.inc.php`](../../_champ_image.inc.php), inclus quatre fois entre les deux formulaires.
 
 Un refus applicatif passe de même par un seul gabarit,
-[`_erreur_http.inc.php`](../_erreur_http.inc.php) : statut HTTP, puis le message dans la page du
+[`_erreur_http.inc.php`](../../_erreur_http.inc.php) : statut HTTP, puis le message dans la page du
 site. À ne pas confondre avec `misc/error.php`, qui est l'`ErrorDocument` d'Apache et répond aux
 erreurs du serveur, pas à un refus que l'application vient de décider.
 
 ### Qui remplit le formulaire
 
-[`CurrentUserEditing`](../librairies/Security/CurrentUserEditing.php) porte la personne qui saisit
+[`CurrentUserEditing`](../../librairies/Security/CurrentUserEditing.php) porte la personne qui saisit
 et les deux droits que les formulaires consultent :
 
 | droit | seuil | ce qu'il gouverne |
@@ -141,7 +141,7 @@ portent la même liste. Le `SET` est un masque de bits dont les positions vienne
 déclaration : une valeur nouvelle s'y ajoute **à la fin**, sans quoi les lignes déjà écrites
 changeraient de sens. La constante, elle, sert l'affichage et garde « autre » en dernier. Ajouter une
 catégorie, c'est donc : une entrée dans `Lieu::CATEGORIES`, une valeur appendée au `SET` par une
-migration (voir [resources/database/README.md](../resources/database/README.md)). Rien d'autre — aucune icône, aucune
+migration (voir [resources/database/README.md](../../resources/database/README.md)). Rien d'autre — aucune icône, aucune
 classe CSS ni aucun slug ne dépend du code de catégorie.
 
 ### Localité, quartier et région
@@ -165,7 +165,7 @@ de lieux en tiendront compte — la clause qui l'exploiterait est en commentaire
 
 ### Coordonnées
 
-Latitude et longitude passent par [`Coordinates`](../librairies/Utils/Coordinates.php), qui porte
+Latitude et longitude passent par [`Coordinates`](../../librairies/Utils/Coordinates.php), qui porte
 leurs trois règles : la virgule décimale des pavés numériques européens est acceptée, les bornes du
 globe sont vérifiées, et les deux vont ensemble ou pas du tout — le plan n'est affiché que si les
 deux sont connues.
@@ -177,7 +177,7 @@ un champ vide. Une saisie non numérique est réaffichée telle quelle à côté
 ## Salles d'un lieu
 
 `lieu/salle-edit.php` ajoute et modifie les salles. Ses refus passent par
-[`_erreur_http.inc.php`](../_erreur_http.inc.php), comme ceux des fiches : **400** pour une action
+[`_erreur_http.inc.php`](../../_erreur_http.inc.php), comme ceux des fiches : **400** pour une action
 inconnue ou une modification sans salle désignée, **403** pour un refus, **404** pour un `idS`
 inconnu.
 
@@ -222,7 +222,7 @@ liste a disparu avec ce contrôle, et le titre nomme le lieu — « Ajouter une 
 Noir », la préposition étant celle de la fiche.
 
 Un refus répond **403**, une requête sans lieu, sans type ou sans auteur désigné **400**, un lieu
-ou un texte inconnu **404** — rendus par [`_erreur_http.inc.php`](../_erreur_http.inc.php), comme
+ou un texte inconnu **404** — rendus par [`_erreur_http.inc.php`](../../_erreur_http.inc.php), comme
 sur les trois formulaires de fiche.
 
 ### Un texte par personne et par lieu
@@ -232,7 +232,7 @@ porte qu'un texte par lieu, quelle qu'en soit la sorte. Le contrôle de doublon 
 lignes du même type, si bien qu'ajouter une présentation après une description partait en INSERT
 refusé par la clé — et la page redirigeait vers la fiche en annonçant une réussite.
 
-Le contenu passe par [`UserHtmlSanitizer`](../librairies/Utils/UserHtmlSanitizer.php) **avant**
+Le contenu passe par [`UserHtmlSanitizer`](../../librairies/Utils/UserHtmlSanitizer.php) **avant**
 d'être validé : c'est le texte nettoyé qui sera enregistré, et lui seul dont la longueur veut dire
 quelque chose — quarante caractères de balises retirées passaient le minimum de 30 pour
 n'enregistrer rien.
@@ -264,7 +264,7 @@ Ce `<details>` est tout entier réservé aux administrateurs. Les pseudos et les
 
 Le champ n'étant pas rendu sous le niveau `ADMIN`, un auteur ou un acteur qui modifie une fiche ne poste aucune note. `FicheEdition::adminNoteToWrite()` reprend alors celle de la base, comme `statusToWrite()` le fait du statut : sans cela, le premier enregistrement d'un non-administrateur l'effacerait. Une note forgée dans le POST est ignorée pour la même raison.
 
-`composer prod-copy` la vide et garde `NULL` — voir [la copie de la production](prod-copy.md).
+`composer prod-copy` la vide et garde `NULL` — voir [la copie de la production](../exploitation/prod-copy.md).
 
 ## Activité mensuelle, en vue d'administration
 
@@ -288,6 +288,6 @@ La date du dernier événement ne dit ni le rythme d'un lieu ni le moment où il
 
 ### Portée
 
-Une seule requête par page ([`Stats\MonthlyAddedEvents`](../librairies/Stats/MonthlyAddedEvents.php)), qui couvre vingt-quatre mois pour que chaque colonne affichée trouve son antécédent — les douze colonnes, elles, ne bougent pas. Le rendu des cellules est isolé dans `HtmlShrink`.
+Une seule requête par page ([`Stats\MonthlyAddedEvents`](../../librairies/Stats/MonthlyAddedEvents.php)), qui couvre vingt-quatre mois pour que chaque colonne affichée trouve son antécédent — les douze colonnes, elles, ne bougent pas. Le rendu des cellules est isolé dans `HtmlShrink`.
 
 Les deux pages passent en pleine largeur en desktop, la colonne de gauche disparaissant. Les colonnes mensuelles sont masquées sous 800 px.

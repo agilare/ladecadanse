@@ -4,7 +4,7 @@ Notes sur l'habillage du site : feuilles de style, icônes, et les mises en page
 
 ## Feuilles de style
 
-`_header.inc.php` charge, dans cet ordre : `normalize.css` (`web/libs/normalize/`, voir [bibliothèques front-end](../README.md#bibliothèques-front-end)), `imprimer.css` (en `media="print"`), `global.css`, les feuilles annoncées par `$extra_css`, puis celle qui porte le nom de la page (`web/css/{$nom_page}.css`) si elle existe.
+`_header.inc.php` charge, dans cet ordre : `normalize.css` (`web/libs/normalize/`, voir [bibliothèques front-end](../developpement/bibliotheques-front-end.md)), `imprimer.css` (en `media="print"`), `global.css`, les feuilles annoncées par `$extra_css`, puis celle qui porte le nom de la page (`web/css/{$nom_page}.css`) si elle existe.
 
 L'ordre compte : la feuille de la page arrive en dernier, elle peut donc redéfinir ce que les précédentes posent. Jusqu'en 3.12.0 elle passait avant les supplémentaires, et ses règles restaient sans effet.
 
@@ -25,7 +25,7 @@ Les icônes du site étaient des PNG de 16 px du jeu **famfamfam Silk**, des ann
 
 Contrepartie assumée : ces quatre-là restent des bitmaps de 16 px, ils ne suivent donc pas la taille du texte.
 
-Les icônes réutilisées d'une page à l'autre sont déclarées en un seul endroit, dans [`app/config.php`](../app/config.php) : `$iconeEditer`, `$iconeCopier`, `$iconeSupprimer`, `$iconePrecedent`, `$iconeSuivant` et le tableau `$icone`. Ce sont des fragments HTML échoés tels quels, et **une icône seule ne porte pas de nom accessible** : le lien qui la contient doit fournir un `title` ou un `aria-label` quand aucun texte ne l'accompagne.
+Les icônes réutilisées d'une page à l'autre sont déclarées en un seul endroit, dans [`app/config.php`](../../app/config.php) : `$iconeEditer`, `$iconeCopier`, `$iconeSupprimer`, `$iconePrecedent`, `$iconeSuivant` et le tableau `$icone`. Ce sont des fragments HTML échoés tels quels, et **une icône seule ne porte pas de nom accessible** : le lien qui la contient doit fournir un `title` ou un `aria-label` quand aucun texte ne l'accompagne.
 
 Le reste de la conversion :
 
@@ -38,7 +38,7 @@ Le reste de la conversion :
 
 ### Mise en page élargie
 
-La fiche occupe la colonne de droite, vide sur cette page. Largeur du cadre, des illustrations et de la description, taille du titre et du nom du lieu, bouton « précédent » : tout est piloté par la classe `.vevent-experimental`, posée par [`event/evenement.php`](../event/evenement.php) et définie dans `desktop.css` — revenir en arrière tient donc au retrait d'une classe. Réservée aux administrateurs en 3.11.0, le temps de valider l'essai, elle est servie à tous les visiteurs depuis la 3.12.0.
+La fiche occupe la colonne de droite, vide sur cette page. Largeur du cadre, des illustrations et de la description, taille du titre et du nom du lieu, bouton « précédent » : tout est piloté par la classe `.vevent-experimental`, posée par [`event/evenement.php`](../../event/evenement.php) et définie dans `desktop.css` — revenir en arrière tient donc au retrait d'une classe. Réservée aux administrateurs en 3.11.0, le temps de valider l'essai, elle est servie à tous les visiteurs depuis la 3.12.0.
 
 ### Sous 450 px, la description enveloppe les illustrations
 
@@ -48,7 +48,7 @@ Le palier est en fin de section « evenement » dans `mobile.css`, sous la même
 
 ## Annonces de l'accueil
 
-Les annonces au-dessus de l'agenda sont une liste, la constante `HOME_BANNERS` d'`app/env.php`, modifiable sur le serveur sans déploiement. Chaque entrée porte une `date`, un `type` (`info`, `warn` ou `danger`), une `audience` (`tous`, ou `contributeurs` pour le niveau ACTOR et au-dessus), un `titre` et un `contenu`, écrits tels quels en HTML. Une seule boucle d'`index.php` les rend ; le format détaillé est commenté dans [`app/env_model.php`](../app/env_model.php).
+Les annonces au-dessus de l'agenda sont une liste, la constante `HOME_BANNERS` d'`app/env.php`, modifiable sur le serveur sans déploiement. Chaque entrée porte une `date`, un `type` (`info`, `warn` ou `danger`), une `audience` (`tous`, ou `contributeurs` pour le niveau ACTOR et au-dessus), un `titre` et un `contenu`, écrits tels quels en HTML. Une seule boucle d'`index.php` les rend ; le format détaillé est commenté dans [`app/env_model.php`](../../app/env_model.php).
 
 **La date identifie l'annonce.** Sa fermeture est retenue dans le `localStorage` sous la clé `home_banner_<date>` : changer la date fait réapparaître l'annonce chez qui l'avait fermée. Un script en ligne, exécuté avant le premier affichage, masque les annonces déjà fermées, qui ne clignotent donc pas ; sans JavaScript, elles restent visibles.
 
