@@ -1152,6 +1152,14 @@ table .td-align-center
         margin-top:6px;
     }
 
+    /* le fond du flyer s'étire, pas l'image : un flyer très haut est coupé à 140px */
+    .evenement-short .flyer a
+    {
+        display:block;
+        max-height:140px;
+        overflow:hidden;
+    }
+
     .evenement-short .titre
     {
         padding: 0.4em 0 0.1em;
