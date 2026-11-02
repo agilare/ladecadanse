@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <title>Accès refusé — La décadanse</title>
+    <meta name="robots" content="noindex">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--
+        Page d'erreur 403 d'Apache (htaccess/60-erreurs.conf), statique à dessein : les 403 sont
+        pour l'essentiel des robots refusés par le pare-feu ou par les blocages de User-Agent,
+        à plusieurs requêtes par seconde. Leur servir misc/error.php coûtait un bootstrap PHP et
+        une connexion MySQL par requête, et les comptait dans le suivi des bots.
+        Même gabarit que too-many-requests.html et server-error.html.
+    -->
+    <style>
+        body { margin: 0; font-family: Verdana, Arial, sans-serif; color: #4c4c4c; background: #fff; }
+        header { background: #f5b335; }
+        header img { display: block; }
+        main { max-width: 36em; margin: 4em auto; padding: 0 1.2em; }
+        h1 { font-size: 2.2em; color: #5C7378; margin: 0 0 0.3em; }
+        a { color: #105199; }
+    </style>
+</head>
+<body>
+    <header><a href="/"><img src="/web/interface/logo_titre.jpg" alt="La décadanse" width="180" height="35"></a></header>
+    <main>
+        <h1>Erreur 403</h1>
+        <h2>Accès refusé</h2>
+        <p>Vous n'avez pas l'autorisation d'accéder à cette ressource.</p>
+        <p>En cas de besoin, vous pouvez <a href="/misc/contacteznous.php">me contacter</a>.</p>
+        <p><a href="/">Revenir à l'accueil de La décadanse</a></p>
+    </main>
+</body>
+</html>

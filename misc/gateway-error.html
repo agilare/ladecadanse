@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <title>Service indisponible — La décadanse</title>
+    <meta name="robots" content="noindex">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="refresh" content="120">
+    <!--
+        Page d'erreur 502, 503 et 504 d'Apache (htaccess/60-erreurs.conf), statique à dessein :
+        ces trois codes disent que PHP ne répond pas ou plus — arrêté, saturé, trop lent —, et
+        une page qui en dépendrait manquerait avec lui. Une seule page pour les trois, qui ne
+        peut donc pas afficher le code. À ne pas confondre avec unavailable.html, que
+        app/bootstrap.php sert lui-même quand c'est la base de données qui manque.
+        Même gabarit que forbidden.html, too-many-requests.html et server-error.html.
+    -->
+    <style>
+        body { margin: 0; font-family: Verdana, Arial, sans-serif; color: #4c4c4c; background: #fff; }
+        header { background: #f5b335; }
+        header img { display: block; }
+        main { max-width: 36em; margin: 4em auto; padding: 0 1.2em; }
+        h1 { font-size: 2.2em; color: #5C7378; margin: 0 0 0.3em; }
+        a { color: #105199; }
+    </style>
+</head>
+<body>
+    <header><a href="/"><img src="/web/interface/logo_titre.jpg" alt="La décadanse" width="180" height="35"></a></header>
+    <main>
+        <h1>Service indisponible</h1>
+        <p>Le site ne répond pas pour le moment. Veuillez réessayer dans quelques instants ; cette page se rechargera d'elle-même.</p>
+        <p>En cas de besoin, vous pouvez <a href="mailto:info@ladecadanse.ch">me contacter</a>.</p>
+        <p><a href="/">Revenir à l'accueil de La décadanse</a></p>
+    </main>
+</body>
+</html>

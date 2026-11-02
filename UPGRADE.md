@@ -39,6 +39,10 @@ Ce qui change pour les visiteurs : le classement des résultats de recherche, In
 UPDATE personne SET mailing_opted_out_at = NOW() WHERE email = '…';
 ```
 
+### Configuration serveur
+
+**Les pages d'erreur 403, 429, 500, 502, 503 et 504 deviennent statiques** (`misc/forbidden.html`, `misc/too-many-requests.html`, `misc/server-error.html`, `misc/gateway-error.html` pour les trois dernières, fragment `htaccess/60-erreurs.conf`) : Apache les sert sans PHP, là où `misc/error.php` coûtait un bootstrap et une connexion MySQL à chaque requête refusée — des robots à plusieurs requêtes par seconde, pour l'essentiel — et ne pouvait rien afficher quand le serveur lui-même était en défaut. `misc/error.php` ne garde que le 404, dans l'habillage du site. `composer deploy` recompose le `.htaccess` et envoie les quatre pages, rien d'autre à faire. Deux effets : un visiteur refusé par le pare-feu 8G voit une page réduite au logo et au message ; et les adresses bloquées disparaissent de `admin/bots.php`, qui ne compte plus que ce que PHP sert — leurs anciens pics y restent jusqu'à la purge, et l'onglet Sondeurs cesse de les voir.
+
 ## 3.13.0 (non publié)
 
 ### Base de données

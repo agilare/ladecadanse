@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <title>Erreur du serveur — La décadanse</title>
+    <meta name="robots" content="noindex">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--
+        Page d'erreur 500 d'Apache (htaccess/60-erreurs.conf), statique à dessein : quand le
+        serveur est en défaut, une page d'erreur qui dépend de PHP et de MySQL est la première à
+        manquer, et Apache n'affiche plus que sa page par défaut. Même gabarit que forbidden.html
+        et too-many-requests.html.
+    -->
+    <style>
+        body { margin: 0; font-family: Verdana, Arial, sans-serif; color: #4c4c4c; background: #fff; }
+        header { background: #f5b335; }
+        header img { display: block; }
+        main { max-width: 36em; margin: 4em auto; padding: 0 1.2em; }
+        h1 { font-size: 2.2em; color: #5C7378; margin: 0 0 0.3em; }
+        a { color: #105199; }
+    </style>
+</head>
+<body>
+    <header><a href="/"><img src="/web/interface/logo_titre.jpg" alt="La décadanse" width="180" height="35"></a></header>
+    <main>
+        <h1>Erreur 500</h1>
+        <h2>Erreur du serveur</h2>
+        <p>Le serveur n'a pas pu traiter la demande. Veuillez réessayer dans quelques instants.</p>
+        <p>En cas de besoin, vous pouvez <a href="mailto:info@ladecadanse.ch">me contacter</a>.</p>
+        <p><a href="/">Revenir à l'accueil de La décadanse</a></p>
+    </main>
+</body>
+</html>

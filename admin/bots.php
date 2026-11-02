@@ -78,9 +78,10 @@ $help = [
         <p><strong>Limites</strong> : fenêtres fixes, donc une rafale à cheval sur deux fenêtres est sous-estimée jusqu'à moitié ; un seul pic gardé par adresse ; un opérateur à plusieurs adresses est divisé d'autant ; une adresse partagée additionne.</p>"
     ],
     'sondeurs' => [
-        "Adresses dont les requêtes finissent en erreur 4xx — page inexistante, accès refusé, identifiant inconnu : sondeurs de failles, scrapers qui itèrent sur des identifiants, ou robots déjà bloqués.",
+        "Adresses dont les requêtes finissent en erreur 4xx — page inexistante, accès refusé, identifiant inconnu : sondeurs de failles, ou scrapers qui itèrent sur des identifiants.",
         "<p><strong>Comptées</strong> : les erreurs 4xx hors fichiers statiques — une image manquante dit quelque chose du site, pas du visiteur.</p>
-        <p><strong>Lire le dernier chemin</strong> : <code>/wp-login.php</code>, <code>/.env</code>, <code>/xmlrpc.php</code>, quelqu'un cherche un WordPress ou des secrets, sans objet ici ; <code>/event/evenement.php</code>, une itération sur des identifiants ; un chemin ordinaire avec une part proche de 100 %, une adresse ou un User-Agent que le serveur refuse, la page d'erreur étant comptée.</p>
+        <p><strong>Lire le dernier chemin</strong> : <code>/wp-login.php</code>, <code>/.env</code>, <code>/xmlrpc.php</code>, quelqu'un cherche un WordPress ou des secrets, sans objet ici ; <code>/event/evenement.php</code>, une itération sur des identifiants.</p>
+        <p>Les refus du serveur — pare-feu, blocages de User-Agent — ne sont pas comptés : leur page 403 est servie sans PHP. Une part proche de 100 % vient donc de l'application, identifiants inconnus ou accès refusés à répétition.</p>
         <p>Un visiteur égaré en produit quelques-unes : c'est le volume et le chemin qui font le sondeur.</p>"
     ],
     'officiels' => [
@@ -128,7 +129,7 @@ function botTh(string $label, string $id, string $help): string
 // textes des bulles communs à plusieurs tableaux
 $help_ua = "Signature envoyée par le client, coupée à 90 caractères : survoler la cellule pour la lire en entier. Elle se choisit librement, un robot peut copier celle d'un navigateur.";
 $help_kind = "Ce que l'adresse annonce (User-Agent) combiné à ce qu'elle a fait (piège, volume). Survoler le libellé pour sa définition ; la légende complète est sous « Comment lire ce tableau de bord ».";
-$help_hits = "Requêtes servies par PHP sur la période de conservation, pages d'erreur comprises : une adresse refusée par le serveur continue d'être comptée.";
+$help_hits = "Requêtes servies par PHP sur la période de conservation, pages d'erreur comprises. Un refus du serveur (403) n'en fait pas partie : sa page est servie sans PHP.";
 $help_peak = "Plus forte fenêtre de $window minutes de cette adresse sur la période.";
 
 // compteurs globaux (une seule requête agrégée)
@@ -290,8 +291,8 @@ require_once '../_header.inc.php';
                         <dd><?= sanitizeForHtml($hint) ?></dd>
                     <?php endforeach; ?>
                 </dl>
-                <p>Les pages vues comptent les requêtes servies par PHP, pages d'erreur comprises ; les images et feuilles de style
-                    ne comptent pas. Une adresse sans visite depuis <?= BotMonitor::RETENTION_DAYS ?> jours est purgée,
+                <p>Les pages vues comptent les requêtes servies par PHP, pages d'erreur comprises ; les images, les feuilles de style
+                    et les refus du serveur (403, servis sans PHP) ne comptent pas. Une adresse sans visite depuis <?= BotMonitor::RETENTION_DAYS ?> jours est purgée,
                     <?= BotMonitor::RETENTION_DAYS_HONEYPOT ?> pour une adresse piégée.</p>
             </div>
         </details>
