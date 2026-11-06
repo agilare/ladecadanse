@@ -11,10 +11,10 @@ use Codeception\Util\HttpCode;
  */
 class AdminBotsCest
 {
-    private const VIEWS = ['scrapers', 'suspects', 'rafales', 'sondeurs', 'officiels'];
+    private const VIEWS = ['scrapers', 'suspects', 'rafales', 'sondeurs', 'cumuls', 'officiels'];
 
     /** vues filtrées par un seuil ; les autres n'en ont pas */
-    private const THRESHOLD_VIEWS = ['suspects', 'rafales', 'sondeurs'];
+    private const THRESHOLD_VIEWS = ['suspects', 'rafales', 'sondeurs', 'cumuls'];
 
     /**
      * La page est fermée aux non-admins.
@@ -98,6 +98,24 @@ class AdminBotsCest
             {
                 $I->dontSeeElement('#filters input#seuil');
             }
+        }
+    }
+
+    /**
+     * La vue « cumuls » regroupe par adresse ou par User-Agent, et le regroupement choisi
+     * reste sélectionné ; une valeur inconnue retombe sur l'adresse.
+     */
+    public function cumulsKeepsItsGrouping(SiteTester $I)
+    {
+        $I->skipUnlessConfigured('LADECADANSE_SITE_ADMIN_USER', 'LADECADANSE_SITE_ADMIN_PASS');
+
+        $I->loginAsAdmin();
+
+        foreach (['ip' => 'ip', 'ua' => 'ua', 'valeur_invalide' => 'ip'] as $par => $expected)
+        {
+            $I->amOnPage('/admin/bots.php?view=cumuls&seuil=1&par=' . $par);
+            $I->seeResponseCodeIs(HttpCode::OK);
+            $I->seeElement('#filters select#par option[value=' . $expected . '][selected]');
         }
     }
 

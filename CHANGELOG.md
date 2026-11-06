@@ -6,6 +6,7 @@ Upgrade steps (migrations, side effects) : [UPGRADE.md](UPGRADE.md).
 
 ### Added
 - bots : the dashboard explains itself — a one-line summary with folded details on each tab, an `i` button on the column headers, and a "Type" column (scraper, search engine, AI bot, SEO tool, script, suspect or plain browser) ; a User-Agent without a browser signature now counts as a bot, not as a suspect human
+- bots : a "Cumuls" tab lists the clients that combine several behaviours (trap, volume, burst, errors), by IP address or by User-Agent
 - mailing : people who asked to stop receiving mailings (`personne.mailing_opted_out_at`) are left out, even when present in the CSV
 
 ### Changed

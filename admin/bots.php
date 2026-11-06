@@ -20,6 +20,7 @@ $views = [
     'suspects' => "Humains suspects",
     'rafales' => "Rafales",
     'sondeurs' => "Sondeurs",
+    'cumuls' => "Cumuls",
     'officiels' => "Statistiques des bots"
 ];
 $view = isset($_GET['view']) && isset($views[$_GET['view']]) ? $_GET['view'] : 'scrapers';
@@ -32,8 +33,16 @@ $threshold_views = [
     'suspects' => ["Seuil de pages vues", $suspect_default],
     'rafales' => ["Pic minimal (pages vues en $window min)", BotMonitor::BURST_THRESHOLD],
     'sondeurs' => ["Erreurs minimales", BotMonitor::ERROR_THRESHOLD],
+    'cumuls' => ["Comportements minimaux", 2],
 ];
 [$threshold_label, $threshold] = $threshold_views[$view] ?? ['', 0];
+
+// regroupements de la vue « cumuls » : une campagne change d'adresse en gardant son User-Agent
+$groupings = [
+    'ip' => "Adresse IP",
+    'ua' => "User-Agent",
+];
+$grouping = isset($_GET['par']) && isset($groupings[$_GET['par']]) ? $_GET['par'] : 'ip';
 
 // le seuil choisi suit la pagination, sans quoi la page 2 retombait sur le seuil par défaut
 $pagination_url = "?view=" . $view;
@@ -41,6 +50,10 @@ if (isset($threshold_views[$view]) && !empty($_GET['seuil']) && QueryParamValida
 {
     $threshold = (int) $_GET['seuil'];
     $pagination_url .= "&seuil=" . $threshold;
+}
+if ($view == 'cumuls')
+{
+    $pagination_url .= "&par=" . $grouping;
 }
 $pagination_url .= "&page=";
 
@@ -83,6 +96,12 @@ $help = [
         <p><strong>Lire le dernier chemin</strong> : <code>/wp-login.php</code>, <code>/.env</code>, <code>/xmlrpc.php</code>, quelqu'un cherche un WordPress ou des secrets, sans objet ici ; <code>/event/evenement.php</code>, une itération sur des identifiants.</p>
         <p>Les refus du serveur — pare-feu, blocages de User-Agent — ne sont pas comptés : leur page 403 est servie sans PHP. Une part proche de 100 % vient donc de l'application, identifiants inconnus ou accès refusés à répétition.</p>
         <p>Un visiteur égaré en produit quelques-unes : c'est le volume et le chemin qui font le sondeur.</p>"
+    ],
+    'cumuls' => [
+        "Clients qui cumulent au moins $threshold des comportements relevés par les autres onglets : piège, volume, rafale, erreurs.",
+        "<p><strong>Comportements</strong>, aux seuils par défaut des autres onglets : <em>Piège</em>, le lien du pied de page suivi ; <em>Volume</em>, plus de $suspect_default pages pour un client qui ne se déclare pas robot ; <em>Rafale</em>, au moins " . BotMonitor::BURST_THRESHOLD . " pages en $window minutes ; <em>Erreurs</em>, au moins " . BotMonitor::ERROR_THRESHOLD . " erreurs 4xx.</p>
+        <p><strong>Par User-Agent</strong> : les adresses qui partagent une même signature sont réunies, et chaque comportement indique combien d'entre elles le portent. Une campagne répartie sur plusieurs adresses apparaît d'un bloc. Un User-Agent de navigateur courant réunit aussi de vrais visiteurs : c'est le nombre d'adresses porteuses, pas le total des pages, qui le distingue.</p>
+        <p><strong>Périodes</strong> : la table ne garde par adresse que la première et la dernière visite, et la date du pic. Deux comportements d'une même ligne se sont produits entre ces deux dates, pas forcément au même moment.</p>"
     ],
     'officiels' => [
         "Les robots qui se déclarent dans leur User-Agent, regroupés par famille : moteurs de recherche, IA, outils SEO, scripts et autres.",
@@ -240,6 +259,56 @@ elseif ($view == 'sondeurs')
     $stmt->execute();
     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
+elseif ($view == 'cumuls')
+{
+    // un client par adresse, ou par User-Agent (haché : pas de GROUP BY sur le TEXT).
+    // Chaque comportement compte les adresses qui le portent ; les colonnes du type
+    // reprennent leur nom pour que botKindCell() lise la ligne agrégée comme une autre
+    $group_by = $grouping == 'ua' ? 'MD5(user_agent)' : 'ip';
+    $marks = [
+        'n_trap' => ["Piège", "A suivi le lien piège du pied de page."],
+        'n_volume' => ["Volume", "Plus de $suspect_default pages vues sans se déclarer robot."],
+        'n_burst' => ["Rafale", "Au moins " . BotMonitor::BURST_THRESHOLD . " pages en $window minutes."],
+        'n_errors' => ["Erreurs", "Au moins " . BotMonitor::ERROR_THRESHOLD . " erreurs 4xx."],
+    ];
+    $cumuls_query = sprintf(
+        "SELECT clients.*, (n_trap > 0) + (n_volume > 0) + (n_burst > 0) + (n_errors > 0) AS nb_marks
+        FROM (
+            SELECT MIN(ip) AS ip, MIN(user_agent) AS user_agent, COUNT(*) AS nb_ips,
+                SUM(honeypot_triggered) AS n_trap,
+                SUM(is_crawler_detect = 0 AND hit_count > %d) AS n_volume,
+                SUM(peak_hits >= %d) AS n_burst,
+                SUM(error_hits >= %d) AS n_errors,
+                SUM(hit_count) AS total_hits, SUM(error_hits) AS total_errors,
+                MAX(peak_start) AS peak_start, MIN(first_seen) AS first_seen, MAX(last_seen) AS last_seen,
+                MAX(honeypot_triggered) AS honeypot_triggered, MAX(is_crawler_detect) AS is_crawler_detect,
+                MIN(bot_family) AS bot_family, MAX(hit_count) AS hit_count, MAX(peak_hits) AS peak_hits
+            FROM bot_monitor
+            GROUP BY %s
+        ) AS clients
+        HAVING nb_marks >= :threshold",
+        $suspect_default,
+        BotMonitor::BURST_THRESHOLD,
+        BotMonitor::ERROR_THRESHOLD,
+        $group_by
+    );
+
+    $stmt = $connectorPdo->prepare("SELECT COUNT(*) FROM ($cumuls_query) AS cumuls");
+    $stmt->bindValue(':threshold', $threshold, PDO::PARAM_INT);
+    $stmt->execute();
+    $all_results_nb = (int) $stmt->fetchColumn();
+
+    $stmt = $connectorPdo->prepare(
+        "$cumuls_query
+        ORDER BY nb_marks DESC, nb_ips DESC, total_hits DESC
+        LIMIT :limit OFFSET :offset"
+    );
+    $stmt->bindValue(':threshold', $threshold, PDO::PARAM_INT);
+    $stmt->bindValue(':limit', $nblignes, PDO::PARAM_INT);
+    $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+    $stmt->execute();
+    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 else // officiels
 {
     // agrégat par famille normalisée (couvert par idx_family), tient sur une page
@@ -314,6 +383,14 @@ require_once '../_header.inc.php';
                     <input type="hidden" name="view" value="<?= $view ?>" />
                     <label for="seuil"><?= sanitizeForHtml($threshold_label) ?> :</label>
                     <input type="number" id="seuil" name="seuil" value="<?= (int) $threshold ?>" min="1" size="6" />
+                    <?php if ($view == 'cumuls') : ?>
+                        <label for="par">Regrouper par :</label>
+                        <select id="par" name="par">
+                            <?php foreach ($groupings as $grouping_key => $grouping_label) : ?>
+                                <option value="<?= $grouping_key ?>" <?php if ($grouping_key == $grouping) : ?>selected<?php endif; ?>><?= sanitizeForHtml($grouping_label) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    <?php endif; ?>
                     <input type="submit" value="Filtrer" />
                 </form>
             </div>
@@ -383,6 +460,61 @@ require_once '../_header.inc.php';
                 <?php endforeach; ?>
             </table>
             </div>
+
+        <?php elseif ($view == 'cumuls') : ?>
+
+            <?= HtmlShrink::getPaginationString($all_results_nb, $get['page'], $nblignes, 1, "", $pagination_url) ?>
+
+            <div class="bots-table-wrapper">
+            <table id="ajouts">
+                <tr>
+                    <?php if ($grouping == 'ua') : ?>
+                        <?= botTh("Adresses", 'adresses', "Adresses IP qui partagent ce User-Agent ; une seule est affichée, la plus petite.") ?>
+                    <?php else : ?>
+                        <th>IP</th>
+                    <?php endif; ?>
+                    <?= botTh("User-Agent", 'ua', $help_ua) ?>
+                    <?= botTh("Type", 'kind', $help_kind) ?>
+                    <?= botTh("Comportements", 'marks', "Comportements à charge relevés, aux seuils par défaut des autres onglets. Par User-Agent, le nombre indique combien d'adresses portent chacun.") ?>
+                    <?= botTh("Pages vues", 'hits', $help_hits) ?>
+                    <?= botTh("Pic ($window min)", 'peak', $help_peak) ?>
+                    <?php if ($grouping == 'ip') : ?>
+                        <?= botTh("Date du pic", 'peak-date', "Début de la fenêtre du pic.") ?>
+                    <?php endif; ?>
+                    <?= botTh("Erreurs", 'errors', "Requêtes terminées en erreur 4xx, fichiers statiques exclus.") ?>
+                    <th>Première visite</th>
+                    <th>Dernière visite</th>
+                </tr>
+                <?php foreach ($rows as $r) : ?>
+                    <tr>
+                        <?php if ($grouping == 'ua') : ?>
+                            <td class="bots-ip"><?= (int) $r['nb_ips'] ?><span class="bots-kind-detail"><?= sanitizeForHtml($r['ip']) ?></span></td>
+                        <?php else : ?>
+                            <td class="bots-ip"><?= sanitizeForHtml($r['ip']) ?></td>
+                        <?php endif; ?>
+                        <td class="bots-ua" title="<?= sanitizeForHtml((string) $r['user_agent']) ?>"><?= sanitizeForHtml(mb_substr((string) $r['user_agent'], 0, 90)) ?></td>
+                        <?= botKindCell($r, $suspect_default) ?>
+                        <td class="bots-marks">
+                            <?php foreach ($marks as $mark_column => [$mark_label, $mark_hint]) : ?>
+                                <?php if ((int) $r[$mark_column] > 0) : ?>
+                                    <span class="bots-mark" title="<?= sanitizeForHtml($mark_hint) ?>"><?= sanitizeForHtml($mark_label) ?><?php if ($grouping == 'ua') : ?>&nbsp;×<?= (int) $r[$mark_column] ?><?php endif; ?></span>
+                                <?php endif; ?>
+                            <?php endforeach; ?>
+                        </td>
+                        <td><?= (int) $r['total_hits'] ?></td>
+                        <td><?= (int) $r['peak_hits'] ?></td>
+                        <?php if ($grouping == 'ip') : ?>
+                            <td><?= DateHelper::isoToApp($r['peak_start']) ?></td>
+                        <?php endif; ?>
+                        <td><?= (int) $r['total_errors'] ?></td>
+                        <td><?= DateHelper::isoToApp($r['first_seen']) ?></td>
+                        <td><?= DateHelper::isoToApp($r['last_seen']) ?></td>
+                    </tr>
+                <?php endforeach; ?>
+            </table>
+            </div>
+
+            <?= HtmlShrink::getPaginationString($all_results_nb, $get['page'], $nblignes, 1, "", $pagination_url) ?>
 
         <?php else : ?>
 
