@@ -160,6 +160,7 @@ class DateHelper
      * @param bool   $showMonth     Include the French month name (default true)
      * @param bool   $showDayOfWeek Include the French day-of-week name (default true)
      * @param bool   $html          Use &nbsp; and <sup>er</sup> instead of plain text (default true)
+     * @param bool   $shortMonth    Abbreviated month name, 'nov.' for 'novembre' (default false)
      * @return string e.g. 'jeudi 23&nbsp;avril' or '23 avril 2026'
      */
     public static function isoToFr(
@@ -167,11 +168,16 @@ class DateHelper
         string $format = '',
         bool $showMonth = true,
         bool $showDayOfWeek = true,
-        bool $html = true
+        bool $html = true,
+        bool $shortMonth = false
     ): string {
         static $dayNames   = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
-        static $monthNames = ['', 'janvier', 'février', 'mars', 'avril', 'mai', 'juin',
+        static $longMonthNames = ['', 'janvier', 'février', 'mars', 'avril', 'mai', 'juin',
                               'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+        // abréviations usuelles : les mois de quatre lettres ou moins restent entiers
+        static $shortMonthNames = ['', 'janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin',
+                              'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
+        $monthNames = $shortMonth ? $shortMonthNames : $longMonthNames;
 
         $dt      = new DateTime($date);
         $hasTime = strlen($date) > 10;

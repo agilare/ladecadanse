@@ -5,7 +5,6 @@ require_once("../app/bootstrap.php");
 use Ladecadanse\UserLevel;
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\Personne;
-use Ladecadanse\Organisateur;
 use Ladecadanse\Evenement;
 use Ladecadanse\EvenementRenderer;
 use Ladecadanse\Lieu;
@@ -407,14 +406,23 @@ if ($erreur !== null)
 
 	<header id="entete_contenu">
 		<?php // sans nom d'utilisateur — il est facultatif —, c'est l'adresse qui désigne le compte ?>
-		<h1>Compte de <em><?= sanitizeForHtml(Personne::displayName($profil['pseudo'], $profil['email'])) ?></em><?php if ($voit_le_groupe) : ?> <span class="profil-groupe">[<?= sanitizeForHtml(UserLevel::getName((int) $profil['groupe'])) ?>]</span><?php endif; ?><?php if ($profil['statut'] !== 'actif') : ?> <span class="even-statut-label statut-<?= sanitizeForHtml($profil['statut']) ?>"><?= mb_strtoupper(sanitizeForHtml($profil['statut'])) ?></span><?php endif; ?></h1>
+		<h1>Compte de <em><?= sanitizeForHtml(Personne::displayName($profil['pseudo'], $profil['email'])) ?></em><?php if ($voit_le_groupe) : ?> <span class="profil-groupe"><?= (int) $profil['groupe'] ?><?= UserLevel::getLabel((int) $profil['groupe']) !== '' ? ' &middot; ' . sanitizeForHtml(UserLevel::getLabel((int) $profil['groupe'])) : '' ?></span><?php endif; ?><?php if ($profil['statut'] !== 'actif') : ?> <span class="even-statut-label statut-<?= sanitizeForHtml($profil['statut']) ?>"><?= mb_strtoupper(sanitizeForHtml($profil['statut'])) ?></span><?php endif; ?></h1>
 		<div class="spacer"></div>
 	</header>
 
 	<?php /* Deux blocs, comme les formulaires : le compte (user/edit.php, user/pwd-edit.php) et le
-	         profil d'organisateur d'événements (user/contributor-edit.php), chacun avec son lien. */ ?>
+	         profil d'organisateur d'événements (user/contributor-edit.php), chacun avec son lien.
+	         Côte à côte quand le second existe, d'où le titre du premier, inutile seul. */ ?>
+	<?php if ($showsContributorRows) : ?>
+	<div class="profile-panels">
+	<?php endif; ?>
 	<div id="profile" class="profile-box">
 
+		<?php if ($showsContributorRows) : ?>
+		<h2>Utilisateur</h2>
+		<?php endif; ?>
+
+		<div class="profile-card">
 		<table>
 			<tr><th>Nom d'utilisateur</th><td><?= trim((string) $profil['pseudo']) !== '' ? sanitizeForHtml($profil['pseudo']) : '<em>aucun : c\'est votre e-mail qui vous identifie</em>' ?></td></tr>
 			<tr><th>E-mail</th><td><?= sanitizeForHtml($profil['email']) ?></td></tr>
@@ -424,14 +432,18 @@ if ($erreur !== null)
 			         règle de user/pwd-edit.php : son propre compte, ou le superadmin. */ ?>
 			<tr><th>Mot de passe</th><td>
 				<?php if (!empty($profil['password_updated'])) : ?>
-				modifié le <?= DateHelper::isoToFr(mb_substr((string) $profil['password_updated'], 0, 10), 'annee', showDayOfWeek: false) ?>
+				<?php // register.php écrit la même valeur dans les deux colonnes : jamais changé depuis ?>
+				<?= $profil['password_updated'] === $profil['dateAjout'] ? 'créé' : 'modifié' ?> le <?= DateHelper::isoToFr(mb_substr((string) $profil['password_updated'], 0, 10), 'annee', showDayOfWeek: false, shortMonth: true) ?>
+				<?php // l'ancienneté ne se signale qu'une fois passée l'année ?>
+				<?php if ((new DateTime((string) $profil['password_updated']))->diff(new DateTime())->y >= 1) : ?>
 				(<?= DateHelper::elapsedYearsFr((string) $profil['password_updated']) ?>)
+				<?php endif; ?>
 				<?php endif; ?>
 				<?php if ($estSoiMeme || (int) $_SESSION['Sgroupe'] === UserLevel::SUPERADMIN) : ?>
 				<?= !empty($profil['password_updated']) ? '&middot; ' : '' ?><a class="profil-mot-de-passe" href="/user/pwd-edit.php?idP=<?= (int) $get['idP'] ?>">Modifier</a>
 				<?php endif; ?>
 			</td></tr>
-			<tr><th>Inscription</th><td><?= DateHelper::isoToFr(mb_substr((string) $profil['dateAjout'], 0, 10), 'annee', showDayOfWeek: false) ?></td></tr>
+			<tr><th>Inscription</th><td><?= DateHelper::isoToFr(mb_substr((string) $profil['dateAjout'], 0, 10), 'annee', showDayOfWeek: false, shortMonth: true) ?></td></tr>
 			<tr><th>Appareils</th><td>
 				<?php if ($appareils_memorises === 0) : ?>
 				<em>aucune connexion mémorisée</em>
@@ -446,6 +458,7 @@ if ($erreur !== null)
 				</form>
 			</td></tr>
 		</table>
+		</div>
 		<?php if ($peut_gerer || $canErase) : ?>
 		<div class="profile-actions">
 			<?php if ($peut_gerer) : ?>
@@ -469,18 +482,20 @@ if ($erreur !== null)
 
 		<h2 id="profile-contributor-titre">Organisateur d'événements</h2>
 
+		<div class="profile-card">
 		<table>
 			<tr><th>Affiliations</th><td>
+				<?php // une icône distingue lieux et organisateurs, qu'un intitulé ferait déborder ?>
 				<?php foreach ($affiliations_lieux as $lieu_affilie) : ?>
-					<a href="/lieu/lieu.php?idL=<?= (int) $lieu_affilie['idLieu'] ?>" title="Voir la fiche du lieu : <?= sanitizeForHtml($lieu_affilie['nom']) ?>"><?= sanitizeForHtml($lieu_affilie['nom']) ?></a><br />
+					<span class="profile-affiliation"><i class="fa fa-fw fa-map-marker" aria-hidden="true" title="Lieu"></i><span class="visually-hidden">Lieu : </span><a href="/lieu/lieu.php?idL=<?= (int) $lieu_affilie['idLieu'] ?>" title="Voir la fiche du lieu : <?= sanitizeForHtml($lieu_affilie['nom']) ?>"><?= sanitizeForHtml($lieu_affilie['nom']) ?></a></span><br />
 				<?php endforeach; ?>
 				<?php // le texte libre s'ajoute au lieu, il ne s'y substitue plus ?>
 				<?php if (!empty($profil['affiliation'])) : ?>
 					<?= sanitizeForHtml($profil['affiliation']) ?><br />
 				<?php endif; ?>
-				<?php if ($organisateurs !== []) : ?>
-					<?= Organisateur::getListLinkedHtml($organisateurs, isWithOrganisateurUrl: false) ?>
-				<?php endif; ?>
+				<?php foreach ($organisateurs as $organisateur) : ?>
+					<span class="profile-affiliation"><i class="fa fa-fw fa-users" aria-hidden="true" title="Organisateur"></i><span class="visually-hidden">Organisateur : </span><a href="/organisateur/organisateur.php?idO=<?= (int) $organisateur['idOrganisateur'] ?>" title="Voir la fiche de l'organisateur : <?= sanitizeForHtml($organisateur['nom']) ?>"><?= sanitizeForHtml($organisateur['nom']) ?></a></span><br />
+				<?php endforeach; ?>
 			</td></tr>
 			<tr><th>Votre signature</th><td><?= $signature ?: '<em>aucune</em>' ?></td></tr>
 			<?php if ($defauts_evenement !== []) : ?>
@@ -490,6 +505,7 @@ if ($erreur !== null)
 			</td></tr>
 			<?php endif; ?>
 		</table>
+		</div>
 
 		<?php // règle d'accès de user/contributor-edit.php : son propre compte, ou le superadmin ?>
 		<?php if ($estSoiMeme || (int) $_SESSION['Sgroupe'] === UserLevel::SUPERADMIN) : ?>
@@ -498,6 +514,7 @@ if ($erreur !== null)
 		</div>
 		<?php endif; ?>
 	</section>
+	</div><?php // .profile-panels ?>
 	<?php endif; ?>
 
 	<?php if ($showsContributions) : ?>

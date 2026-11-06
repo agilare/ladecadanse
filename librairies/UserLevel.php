@@ -51,6 +51,25 @@ class UserLevel
     }
 
     /**
+     * Libellé lisible du niveau, pour les écrans qui le montrent (user/dashboard.php).
+     */
+    private const LABELS = [
+        self::SUPERADMIN => "Super-administrateur",
+        self::ADMIN => "Administrateur",
+        self::AUTHOR => "Éditeur",
+        self::ACTOR => "Contributeur",
+        self::MEMBER => "Membre",
+    ];
+
+    /**
+     * Libellé du niveau, ou chaîne vide pour une valeur hors barème (le groupe 10 hérité).
+     */
+    public static function getLabel(int $groupe): string
+    {
+        return self::LABELS[$groupe] ?? '';
+    }
+
+    /**
      * Nom du niveau, tel qu'affiché aux administrateurs : « ACTOR », « ADMIN »…
      *
      * Une valeur hors barème est rendue telle quelle plutôt que masquée : un groupe inattendu en
