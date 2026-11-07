@@ -2,6 +2,7 @@
 
 namespace Ladecadanse;
 
+use Ladecadanse\Utils\DateHelper;
 use Ladecadanse\Utils\LogSafe;
 use Ladecadanse\Utils\Mailing;
 use Monolog\Logger;
@@ -107,8 +108,8 @@ class InactiveAccountRetention
     public function notify(Mailing $mailer, TemplateEngine $templates): int
     {
         $stmt = $this->pdo->prepare(
-            "SELECT idPersonne, email,
-                    DATE_FORMAT(COALESCE(last_login, date_derniere_modif, dateAjout), '%m.%Y') AS derniere_activite
+            "SELECT idPersonne, email, pseudo,
+                    DATE_ADD(CURDATE(), INTERVAL " . self::NOTICE_DAYS . " DAY) AS date_effacement
              FROM personne
              WHERE " . $this->inactiveCondition() . "
                AND inactivity_notified_at IS NULL
@@ -122,7 +123,8 @@ class InactiveAccountRetention
         foreach ($comptes as $compte)
         {
             $corps = $templates->render('user-inactivity-notice-mail-body', [
-                'derniere_activite' => (string) $compte['derniere_activite'],
+                'pseudo' => (string) $compte['pseudo'],
+                'date' => $this->formatLongDate((string) $compte['date_effacement']),
                 'login_url' => SITE_CANONICAL_URL . '/user/login.php',
             ]);
 
@@ -138,6 +140,19 @@ class InactiveAccountRetention
         }
 
         return count($comptes);
+    }
+
+    /**
+     * @param string $isoDate YYYY-MM-DD
+     * @return string e.g. '7 décembre 2026', '1er décembre 2026'
+     */
+    private function formatLongDate(string $isoDate): string
+    {
+        $day = (int) substr($isoDate, 8, 2);
+
+        return ($day === 1 ? '1er' : (string) $day)
+            . ' ' . DateHelper::monthName((int) substr($isoDate, 5, 2))
+            . ' ' . substr($isoDate, 0, 4);
     }
 
     /**

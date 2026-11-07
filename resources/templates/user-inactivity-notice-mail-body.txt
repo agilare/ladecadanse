@@ -1,16 +1,13 @@
 Bonjour,
 
-Votre compte sur La décadanse n'a plus servi depuis %derniere_activite%. Nous ne gardons pas les comptes dont personne ne se sert : passé un mois, celui-ci sera anonymisé, c'est-à-dire que votre nom d'utilisateur et votre adresse en seront effacés, sans retour possible.
+Il y a longtemps vous aviez créé sur https://www.ladecadanse.ch (agenda de sorties à Genève) le compte %pseudo% avec l’adresse email à laquelle je vous écris et vous ne l’avez plus utilisé.
 
-Pour le garder, il suffit de vous connecter une fois :
+Le site est toujours assez visité, et depuis octobre 2026, un compte permet entre autres de profiter d’une nouvelle fonctionnalité : la possibilité de conserver des événements en favoris de manière permanente.
 
-%login_url%
+Pour maintenir votre compte, il suffit de vous connecter à https://www.ladecadanse.ch/user/login.php (vous pouvez régénérer un mot de passe si vous l’avez perdu).
+À défaut, le compte sera effacé dans un délai d’un mois, le %date%.
 
-Les événements que vous avez annoncés resteront dans l'agenda dans tous les cas : seul le lien avec votre compte disparaîtrait.
-
-Si vous préfériez que ce compte s'efface, vous n'avez rien à faire.
-
-Une question ? Écrivez-nous à info@ladecadanse.ch
+Meilleures salutations
 
 La décadanse
 www.ladecadanse.ch
