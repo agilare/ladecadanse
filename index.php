@@ -87,10 +87,11 @@ if (!in_array($current_genre_tab, $valid_genre_tabs, true))
 
 /*
  * Repères de temporalité (#51) : où en est chaque événement par rapport à l'heure de chargement.
- * La journée du jour seulement — sur une journée passée toutes les cartes diraient « terminé » et
- * pâliraient d'un bloc, sur une journée à venir elles compteraient en jours. Commandé par un
- * drapeau (app/env.php), dont l'état 'preview' le réserve aux administrateurs, et posé sur le
- * seul agenda — les autres listes d'événements sont inchangées.
+ * La journée du jour seulement — sur une journée passée toutes les cartes diraient « terminé »,
+ * sur une journée à venir elles compteraient en jours. Commandé par un drapeau (app/env.php),
+ * dont l'état 'preview' le réservait aux administrateurs, et posé sur le seul agenda — les autres
+ * listes d'événements n'affichent pas de repère. La mise en page du bloc « pratique », elle, est
+ * celle de toutes les cartes du site, quelle que soit la date.
  */
 $time_status_enabled = $is_courant_today && FeatureFlag::estActive('EVENT_TIME_STATUS_ENABLED');
 $time_status_preview = $is_courant_today && FeatureFlag::estEnPreview('EVENT_TIME_STATUS_ENABLED');

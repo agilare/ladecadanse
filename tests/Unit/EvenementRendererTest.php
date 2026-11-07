@@ -351,34 +351,87 @@ final class EvenementRendererTest extends Unit
         $this->assertSame('', EvenementRenderer::timeStatusHtml(null));
     }
 
-    /** Le compte à rebours prend sa propre ligne, sans les parenthèses qui l'isolaient de l'horaire. */
+    /** Le compte à rebours prend sa propre ligne, sous l'horaire. */
     public function testTimeStatusHtmlDuCompteAReboursPrendUneLigne(): void
     {
-        $status = EvenementTimeStatus::fromHoraires('2026-04-28', '2026-04-28 21:30:00', null, '2026-04-28 19:00:00');
+        $status = EvenementTimeStatus::fromHoraires('2026-04-28', '2026-04-28 21:30:00', null, '2026-04-28 20:00:00');
 
         $html = EvenementRenderer::timeStatusHtml($status);
 
         $this->assertStringStartsWith('<br>', $html);
-        $this->assertStringContainsString('dans 2h30', $html);
-        $this->assertStringContainsString('title="Commence dans 2h30"', $html);
-        $this->assertStringNotContainsString('(', $html);
+        $this->assertStringContainsString('dans 1h30', $html);
+        // avant le début, le compte à rebours est seul : une barre vide n'apprendrait rien de plus
+        $this->assertStringNotContainsString('even-time-bar', $html);
     }
 
-    /** « terminé » qualifie l'horaire : il reste sur sa ligne, entre parenthèses. */
-    public function testTimeStatusHtmlDeLevenementTermineResteSurLaLigneDeLhoraire(): void
+    /** Terminé : la barre, pleine et terne, porte « Terminé » à la place de la part écoulée. */
+    public function testTimeStatusHtmlDeLevenementTermineRendUneBarrePleine(): void
     {
         $status = EvenementTimeStatus::fromHoraires('2026-04-28', '2026-04-28 21:00:00', '2026-04-29 01:00:00', '2026-04-29 01:30:00');
 
         $html = EvenementRenderer::timeStatusHtml($status);
 
-        $this->assertStringNotContainsString('<br>', $html);
-        $this->assertStringContainsString('(<i class="fa fa-check-square"', $html);
-        $this->assertStringContainsString('terminé)', $html);
+        $this->assertStringStartsWith('<br>', $html);
+        $this->assertStringContainsString('<span class="even-time-bar even-time-bar-over" style="width:80px" title="Terminé">', $html);
+        $this->assertStringContainsString('<progress class="even-time-progress" max="100" value="100" aria-label="Terminé">Terminé</progress>', $html);
+        $this->assertStringContainsString('<span class="even-time-bar-label" aria-hidden="true">Terminé</span>', $html);
     }
 
     /**
-     * La part écoulée passe en barre, longue de 20px par heure, rayée sur sa part remplie et
-     * portant son pourcentage au milieu ; pour les aides techniques, c'est le nom qui le dit.
+     * Une séance commencée depuis trop longtemps ne dit pas « Terminé » : la projection dure
+     * encore, elle garde sa part écoulée. C'est son horaire qui pâlit, par la classe de la carte.
+     */
+    public function testTimeStatusHtmlDeLaSeanceTropTardGardeSaPartEcoulee(): void
+    {
+        $status = EvenementTimeStatus::fromHoraires('2026-04-28', '2026-04-28 21:00:00', '2026-04-28 23:30:00', '2026-04-28 22:15:00', 'cinéma');
+
+        $html = EvenementRenderer::timeStatusHtml($status);
+
+        $this->assertTrue($status?->tooLate);
+        $this->assertStringContainsString('<span class="even-time-bar" style="width:50px"', $html);
+        $this->assertStringContainsString('value="50"', $html);
+        $this->assertStringNotContainsString('Terminé', $html);
+        $this->assertStringNotContainsString('even-time-bar-over', $html);
+    }
+
+    /** Hors d'atteinte, terminé ou séance commencée de trop : la carte porte la classe qui pâlit son horaire. */
+    public function testEventShortArticleHtmlPalitLhoraireDuneSeanceTropTard(): void
+    {
+        $this->prepareFigureContext();
+
+        $tab_even = [
+            'e_idEvenement' => 7,
+            'e_titre' => 'Projection',
+            'e_statut' => 'actif',
+            'e_genre' => 'cinéma',
+            'e_dateEvenement' => date('Y-m-d', strtotime('-3 hours')),
+            'e_horaire_debut' => date('Y-m-d H:i:00', strtotime('-2 hours')),
+            'e_horaire_fin' => date('Y-m-d H:i:00', strtotime('+1 hour')),
+            'e_horaire_complement' => '',
+            'e_flyer' => '',
+            'e_image' => '',
+            'e_description' => 'Un film.',
+            'e_prix' => '10.-',
+            'e_idLieu' => 0,
+            'e_idSalle' => 0,
+            'e_nomLieu' => 'Cinéma du coin',
+            'e_adresse' => 'rue de la Chapelle 12',
+            'e_quartier' => 'Jonction',
+            'e_localite' => 'Genève',
+            'e_region' => 'ge',
+            'e_urlLieu' => '',
+        ];
+
+        $html = EvenementRenderer::eventShortArticleHtml($tab_even, [], true);
+
+        $this->assertStringContainsString('class="evenement-short even-time-dimmed"', $html);
+        $this->assertStringContainsString('<span class="even-time-line">', $html);
+        $this->assertStringNotContainsString('Terminé', $html);
+    }
+
+    /**
+     * La part écoulée passe en barre, longue de 20px par heure, portant son pourcentage au
+     * milieu ; pour les aides techniques, c'est le nom de la barre qui le dit.
      */
     public function testTimeStatusHtmlDeLevenementEnCoursRendUneBarre(): void
     {
@@ -390,43 +443,26 @@ final class EvenementRendererTest extends Unit
         $this->assertStringContainsString('<span class="even-time-bar" style="width:80px"', $html);
         $this->assertStringContainsString('<progress class="even-time-progress" max="100" value="50"', $html);
         $this->assertStringContainsString('aria-label="En cours, 50 % écoulés"', $html);
-        $this->assertStringContainsString('<span class="even-time-bar-stripes" style="width:50%" aria-hidden="true"></span>', $html);
         $this->assertStringContainsString('<span class="even-time-bar-label" aria-hidden="true">50&nbsp;%</span>', $html);
+        $this->assertStringNotContainsString('even-time-bar-over', $html);
         $this->assertStringNotContainsString('?', $html);
     }
 
-    /** Avant le début, la barre suit le compte à rebours, vide, et n'est pas lue : elle n'ajoute rien. */
-    public function testTimeStatusHtmlDuCompteAReboursEstSuiviDuneBarreVide(): void
+    /** Au-delà de deux heures, l'horaire suffit : aucun repère. */
+    public function testTimeStatusHtmlSansRepereAuDelaDeDeuxHeures(): void
     {
-        $status = EvenementTimeStatus::fromHoraires('2026-04-28', '2026-04-28 21:30:00', '2026-04-28 23:30:00', '2026-04-28 19:00:00');
-
-        $html = EvenementRenderer::timeStatusHtml($status);
-
-        $this->assertMatchesRegularExpression('#dans 2h30</span> <span class="even-time-status even-time-status-coming"><span class="even-time-bar" style="width:40px" aria-hidden="true">#', $html);
-        $this->assertStringContainsString('value="0"', $html);
-        $this->assertStringContainsString('>0&nbsp;%</span>', $html);
-        $this->assertStringNotContainsString('even-time-bar-stripes', $html);
-        $this->assertStringNotContainsString('aria-label', $html);
-    }
-
-    /** Au-delà de quatre heures, l'horaire suffit : ni compte à rebours ni barre. */
-    public function testTimeStatusHtmlSansRepereAuDelaDeQuatreHeures(): void
-    {
-        $status = EvenementTimeStatus::fromHoraires('2026-04-28', '2026-04-28 21:00:00', '2026-04-29 01:00:00', '2026-04-28 16:45:00');
+        $status = EvenementTimeStatus::fromHoraires('2026-04-28', '2026-04-28 21:00:00', '2026-04-29 01:00:00', '2026-04-28 18:45:00');
 
         $this->assertSame(EvenementTimeStatus::COMING, $status?->state);
         $this->assertSame('', EvenementRenderer::timeStatusHtml($status));
     }
 
-    /** Quatre heures pile restent dans l'horizon. */
-    public function testTimeStatusHtmlGardeLeRepereAQuatreHeuresPile(): void
+    /** Deux heures pile restent dans l'horizon. */
+    public function testTimeStatusHtmlGardeLeRepereADeuxHeuresPile(): void
     {
-        $status = EvenementTimeStatus::fromHoraires('2026-04-28', '2026-04-28 21:00:00', '2026-04-29 01:00:00', '2026-04-28 17:00:00');
+        $status = EvenementTimeStatus::fromHoraires('2026-04-28', '2026-04-28 21:00:00', '2026-04-29 01:00:00', '2026-04-28 19:00:00');
 
-        $html = EvenementRenderer::timeStatusHtml($status);
-
-        $this->assertStringContainsString('dans 4h', $html);
-        $this->assertStringContainsString('even-time-bar', $html);
+        $this->assertStringContainsString('dans 2h', EvenementRenderer::timeStatusHtml($status));
     }
 
     /** Moins d'une demi-heure avant le début, le compte à rebours passe en gras. */
@@ -466,7 +502,7 @@ final class EvenementRendererTest extends Unit
 
         $this->assertSame(
             '<i class="fa fa-money fa-fw" aria-hidden="true"></i>'
-                . '<span class="even-time-price" title="' . $prix . '">30.- les soirée ; 50.- journée complète (...)</span>',
+                . '<span class="pratique-price" title="' . $prix . '">30.- les soirée ; 50.- journée complète (...)</span>',
             $html
         );
     }
@@ -474,7 +510,7 @@ final class EvenementRendererTest extends Unit
     public function testPriceShortHtmlLaisseUnPrixCourtIntact(): void
     {
         $this->assertSame(
-            '<i class="fa fa-money fa-fw" aria-hidden="true"></i><span class="even-time-price">15.- / 12.-</span>',
+            '<i class="fa fa-money fa-fw" aria-hidden="true"></i><span class="pratique-price">15.- / 12.-</span>',
             EvenementRenderer::priceShortHtml('15.- / 12.-')
         );
     }
@@ -489,11 +525,11 @@ final class EvenementRendererTest extends Unit
     }
 
     /**
-     * Avec les repères, le prix quitte la colonne des horaires pour se ranger sous l'adresse,
-     * chacun précédé de son icône ; sans eux, la carte est celle d'avant. Horaires absents : le
-     * test ne dépend pas de l'heure.
+     * Le prix se range sous l'adresse, chacun précédé de son icône, que la carte porte ou non les
+     * repères de temporalité : la mise en page du bloc « pratique » ne dépend pas de la date.
+     * Horaires absents : le test ne dépend pas de l'heure.
      */
-    public function testEventShortArticleHtmlRangeLePrixSousLadresseAvecLesReperes(): void
+    public function testEventShortArticleHtmlRangeLePrixSousLadresse(): void
     {
         $this->prepareFigureContext();
 
@@ -520,20 +556,18 @@ final class EvenementRendererTest extends Unit
             'e_urlLieu' => '',
         ];
 
+        $colonneGauche = '#<span class="left">'
+            . '<i class="fa fa-location-arrow fa-fw" aria-hidden="true"></i><span>[^<]*rue de la Chapelle 12[^<]*</span>'
+            . '<i class="fa fa-money fa-fw" aria-hidden="true"></i><span class="pratique-price">15\.- / 12\.-</span>'
+            . '</span>#';
+
         $withMarkers = EvenementRenderer::eventShortArticleHtml($tab_even, [], true);
-        $this->assertMatchesRegularExpression(
-            '#<span class="left even-time-pratique">'
-                . '<i class="fa fa-location-arrow fa-fw" aria-hidden="true"></i><span>[^<]*rue de la Chapelle 12[^<]*</span>'
-                . '<i class="fa fa-money fa-fw" aria-hidden="true"></i><span class="even-time-price">15\.- / 12\.-</span>'
-                . '</span>#',
-            $withMarkers
-        );
+        $this->assertMatchesRegularExpression($colonneGauche, $withMarkers);
         $this->assertMatchesRegularExpression('#<span class="right">\s*<span class="even-time-line">dès 20h</span>\s*</span>#', $withMarkers);
 
         $without = EvenementRenderer::eventShortArticleHtml($tab_even, [], false);
-        $this->assertStringNotContainsString('even-time-price', $without);
-        $this->assertStringNotContainsString('fa-location-arrow', $without);
-        $this->assertMatchesRegularExpression('#<span class="left">[^<]*rue de la Chapelle 12[^<]*</span>#', $without);
-        $this->assertMatchesRegularExpression('#<span class="right">\s*dès 20h, 15\.- / 12\.-\s*</span>#', $without);
+        $this->assertMatchesRegularExpression($colonneGauche, $without);
+        // sans repère, l'horaire n'a pas à être enveloppé : rien ne le fera pâlir
+        $this->assertMatchesRegularExpression('#<span class="right">\s*dès 20h\s*</span>#', $without);
     }
 }

@@ -235,12 +235,18 @@ final class EvenementTimeStatusTest extends Unit
     }
 
     /** Minuit passé, la fin restant inconnue, la barre plafonne sans jamais dire « terminé ». */
-    public function testEstimationApresMinuitPlafonneSansDireTermine(): void
+    /**
+     * Une fin estimée dépassée dit « terminé » au même titre qu'une fin annoncée : sans cela, une
+     * soirée sans horaire de fin, lue à 3h du matin, restait « en cours » indéfiniment.
+     */
+    public function testEstimationDepasseeDitTermine(): void
     {
         $status = EvenementTimeStatus::fromHoraires('2026-04-28', '2026-04-28 21:00:00', null, '2026-04-29 03:00:00');
 
-        $this->assertSame(EvenementTimeStatus::RUNNING, $status?->state);
-        $this->assertSame(95, $status->percent);
+        $this->assertSame(EvenementTimeStatus::PAST, $status?->state);
+        $this->assertSame(100, $status->percent);
+        $this->assertTrue($status->endEstimated);
+        $this->assertSame('2026-04-29 00:00:00', $status->end);
     }
 
     public function testSansHoraireDeDebutRienNestSituable(): void
@@ -285,17 +291,13 @@ final class EvenementTimeStatusTest extends Unit
         $this->assertFalse($status?->tooLate);
     }
 
-    /**
-     * Trop tard n'est pas terminé : l'estimation de deux heures dépassée, la séance garde sa barre,
-     * plafonnée, et ne dit jamais « terminé ».
-     */
-    public function testSeanceTropTardGardeSaBarreSansDireTermine(): void
+    /** Les deux heures prêtées à une séance écoulées, elle est terminée comme une autre. */
+    public function testSeanceAuDelaDeSonEstimationEstTerminee(): void
     {
         $status = EvenementTimeStatus::fromHoraires('2026-04-28', '2026-04-28 21:00:00', null, '2026-04-28 23:30:00', 'théâtre');
 
-        $this->assertSame(EvenementTimeStatus::RUNNING, $status?->state);
-        $this->assertTrue($status->tooLate);
-        $this->assertSame(95, $status->percent);
+        $this->assertSame(EvenementTimeStatus::PAST, $status?->state);
+        $this->assertSame(120, $status->durationMinutes);
     }
 
     /** Une soirée se rejoint à toute heure : le retard ne la met pas hors d'atteinte. */
