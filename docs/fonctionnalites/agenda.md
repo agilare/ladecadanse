@@ -43,7 +43,7 @@ Au-delà de **40 caractères**, le prix est coupé au mot près et suivi de `(..
 ### La barre
 
 - **Sa longueur dit la durée** : 20 px par heure (`EvenementRenderer::PROGRESS_PX_PER_HOUR`), fin estimée comprise. Deux bornes : une largeur minimale qui laisse au texte la place de s'inscrire — en deçà d'environ 1h20, la barre est donc un peu plus longue que la durée, et « Terminé », plus long qu'un pourcentage, en demande davantage encore (`.even-time-bar-over`) —, et la largeur de la colonne, qu'elle ne dépasse pas : au-delà de huit à dix heures sur ordinateur selon la largeur d'écran, de six sur téléphone, elle cesse d'être proportionnelle.
-- **Son remplissage dit la part écoulée**, en `#FACA1A`, sur une piste plus soutenue que le fond du bloc ; hauteur `1em`, arrondi de 3 px. Le pourcentage est inscrit au milieu.
+- **Son remplissage dit la part écoulée**, en `#93AEB0` — le bleu-vert de la carte (`#59787A`) éclairci, et non le jaune de la charte : des dizaines de barres vives sur une liste du soir tiraient l'œil plus que les événements —, sur une piste bleutée plus soutenue que le fond du bloc ; hauteur `1em`, arrondi de 3 px. Le pourcentage est inscrit au milieu, en `#333`, qui garde 5,4:1 de contraste sur le remplissage et 8:1 sur la piste.
 - **Elle ne s'anime pas.** Les rayures mobiles des itérations précédentes ont été retirées : une liste du soir en portait des dizaines à la fois.
 
 Le `<progress>` porte le rôle ARIA `progressbar` et un nom accessible — « En cours, 35 % écoulés » ; le texte inscrit au milieu est un calque décoratif posé par-dessus, que ce nom répète.
