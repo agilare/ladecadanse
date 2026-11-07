@@ -8,7 +8,7 @@ use Ladecadanse\UserEdition;
 use Ladecadanse\UserLevel;
 
 /*
- * Le compte lui-même : adresse, et pour le superadmin nom d'utilisateur, groupe et statut. Le
+ * Le compte lui-même : adresse email, et pour le superadmin nom d'utilisateur, groupe et statut. Le
  * traitement vit dans UserEdition (#289) ; le mot de passe se change dans user/pwd-edit.php (#249),
  * le profil d'organisateur d'événements dans user/contributor-edit.php (#288) ; les comptes se
  * créent par user/register.php.
@@ -18,17 +18,11 @@ use Ladecadanse\UserLevel;
 // Accès
 // =============================================================================
 
-/*
- * Tout compte modifie le sien, MEMBER (12) compris. Sans session, direction la page de
- * connexion : un 403 envoyé avant n'y changeait rien, l'en-tête Location le remplaçant
- * d'office par un 302.
- */
 if (!$authorization->checkGroup(UserLevel::MEMBER)) {
     header("Location: /user/login.php");
     die();
 }
 
-// Le paramètre `action` des liens existants (« editer ») n'a plus de rôle, il est simplement ignoré
 $idP = (int) ($_GET['idP'] ?? 0);
 $is_superadmin = (int) $_SESSION['Sgroupe'] === UserLevel::SUPERADMIN;
 $is_own_account = (int) $_SESSION['SidPersonne'] === $idP;
@@ -95,7 +89,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 
 $pseudo = (string) $user_form->getValeur('pseudo');
 
-// les pages voisines, selon la règle d'accès de chacune
+// afficher les liens vers les pages voisines (pwd-edit.php, contributor-edit.php) ? selon la règle d'accès de chacune
 $can_edit_password = $is_superadmin || $is_own_account;
 $is_contributor_account = $user_form->getStored()['groupe'] <= UserLevel::ACTOR;
 
@@ -126,21 +120,22 @@ include("../_header.inc.php");
 
 
     <form method="post" id="ajouter_editer" class="js-submit-freeze-wait"
-          action="<?= basename(__FILE__) . "?idP=" . $idP ?>" >
+  action="<?= basename(__FILE__) . "?idP=" . $idP ?>" >
 
         <p>* indique un champ obligatoire</p>
 
-        <?php // un seul groupe de champs : la page n'a plus que le compte, le titre suffit à le nommer ?>
         <fieldset>
 
             <p>
                 <label for="pseudo">Nom d'utilisateur</label>
                 <?php if ($is_superadmin) : ?>
-                    <input type="text" name="pseudo" id="pseudo" size="30" maxlength="<?= Personne::FIELDS['pseudo']['max'] ?>" value="<?= sanitizeForHtml($pseudo) ?>" />
+                    <input type="text" name="pseudo" id="pseudo" size="30" maxlength="<?= Personne::FIELDS['pseudo']['max'] ?>"
+                           value="<?= sanitizeForHtml($pseudo) ?>" />
                     <?= $user_form->getHtmlErreur('pseudo') ?>
                     <?= $user_form->getHtmlErreur("pseudoIdentique") ?>
                 <?php elseif (trim($pseudo) !== '') : ?>
-                    <input type="text" name="pseudo" id="pseudo" size="30" maxlength="<?= Personne::FIELDS['pseudo']['max'] ?>" value="<?= sanitizeForHtml($pseudo) ?>" readonly />
+                    <input type="text" name="pseudo" id="pseudo" size="30" maxlength="<?= Personne::FIELDS['pseudo']['max'] ?>"
+                           value="<?= sanitizeForHtml($pseudo) ?>" readonly />
                 <?php else : ?>
                     <?php /* Ni champ ni valeur : ce compte n'a pas de nom d'utilisateur */ ?>
                     <span class="sans-valeur">aucun</span>
@@ -156,7 +151,8 @@ include("../_header.inc.php");
 
             <p>
                 <label for="email">E-mail*</label>
-                <input type="email" name="email" id="email" size="40" maxlength="<?= Personne::FIELDS['email']['max'] ?>" value="<?= sanitizeForHtml(stripslashes((string) $user_form->getValeur('email'))) ?>" required />
+                <input type="email" name="email" id="email" size="40" maxlength="<?= Personne::FIELDS['email']['max'] ?>"
+                       value="<?= sanitizeForHtml(stripslashes((string) $user_form->getValeur('email'))) ?>" required />
                 <?= $user_form->getHtmlErreur("email") ?>
                 <?= $user_form->getErreur("emailIdentique") ?>
             </p>
@@ -170,7 +166,8 @@ include("../_header.inc.php");
                     <ul class="radio vertical">
                     <?php foreach ($user_form->getGroupChoices() as $id => $choice) : ?>
                         <li>
-                            <input type="radio" name="groupe" value="<?= $id ?>" id="groupe_<?= $id ?>" class="radio_horiz" aria-describedby="groupe_<?= $id ?>_aide"
+                            <input type="radio" name="groupe" value="<?= $id ?>" id="groupe_<?= $id ?>"
+                                   class="radio_horiz" aria-describedby="groupe_<?= $id ?>_aide"
                                 <?php if ($id == $user_form->getValeur('groupe')) : ?> checked="checked" <?php endif; ?>
                                 <?php if ($choice['locked']) : ?> disabled="disabled" <?php endif; ?> />
                             <label for="groupe_<?= $id ?>" class="continu"><?= sanitizeForHtml($choice['label']) ?></label>

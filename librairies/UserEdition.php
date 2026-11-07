@@ -8,9 +8,10 @@ use Ladecadanse\Utils\Validateur;
 use PDO;
 
 /**
- * Le compte lui-même (user/edit.php, #289) : adresse pour tous, et pour le superadmin nom
- * d'utilisateur, groupe et statut. Le mot de passe se change dans user/pwd-edit.php, le profil
- * d'organisateur d'événements dans ContributorEdition ; les comptes se créent par user/register.php.
+ * Le compte lui-même (user/edit.php, #289) : adresse email pour tous, et pour le superadmin nom
+ * d'utilisateur, groupe et statut.
+ * Le mot de passe se change dans user/pwd-edit.php
+ * Le profil d'organisateur d'événements dans ContributorEdition ; les comptes se créent par user/register.php
  *
  * Ce que le compte ne peut pas changer garde sa valeur en base quoi que porte le POST : la
  * validation et l'enregistrement ne voient que ce qui doit être écrit.
@@ -24,8 +25,8 @@ class UserEdition extends Edition
     private bool $isSuperadmin = false;
 
     /**
-     * Le compte tel qu'en base : la référence de ce qui change, et les valeurs héritées hors
-     * barème (groupe 10, statut « demande ») qui n'y échappent qu'à condition d'être déjà là.
+     * Le compte tel qu'en BD : la référence de ce qui change; d
+     * des valeurs héritées hors barème (groupe 10, statut « demande ») n'échappent à la modification qu'à condition d'être déjà en BD
      *
      * @var array{idPersonne: int, pseudo: string, email: string, groupe: int, statut: string}
      */
@@ -99,7 +100,7 @@ class UserEdition extends Edition
     public function processSubmission(array $postGlobal, array $filesGlobal): bool
     {
         /*
-         * L'adresse pour tous ; nom, groupe et statut pour le superadmin seul. Un champ absent ou
+         * L'adresse email pour tous ; nom, groupe et statut pour le superadmin seul. Un champ absent ou
          * forgé en tableau garde sa valeur en base — c'est le cas d'une valeur héritée hors de la
          * liste, rendue cochée mais désactivée, que le navigateur ne poste pas.
          */
@@ -118,7 +119,7 @@ class UserEdition extends Edition
     public function validate(): bool
     {
         // Longueurs et obligation viennent de Personne::FIELDS, dont le formulaire tire aussi ses
-        // maxlength. Le pseudo seulement s'il change : un pseudo ancien hors des règles bloquerait
+        // maxlength. Le pseudo est validé seulement s'il change : un pseudo ancien hors des règles bloquerait
         // sinon l'enregistrement de l'adresse.
         foreach (['pseudo', 'email'] as $field)
         {
