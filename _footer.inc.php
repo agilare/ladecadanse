@@ -51,6 +51,10 @@ use Ladecadanse\UserLevel;
 
     </div> <!-- Fin Global -->
 
+    <?php /* Une seule bulle pour tous les boutons « ? » des repères de temporalité (#51), que
+             global.js remplit et place. Ici plutôt que sur l'agenda seul : ces repères se posent
+             maintenant sur les fiches lieu, organisateur et événement, et sur la recherche. */ ?>
+    <div id="even-time-estimate-popover" class="even-time-estimate-popover" popover></div>
 
     <?php
     $pages_formulaires = ["evenement-edit", "event/copy", "lieu/edit", "lieu/salle-edit", "user/register", "admin/events", "user/edit", "user/contributor-edit","lieu/lieux", "lieu/text-edit", "organisateur/edit"];

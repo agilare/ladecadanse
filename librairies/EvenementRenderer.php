@@ -57,6 +57,21 @@ class EvenementRenderer
     /** En deçà, le compte à rebours passe en gras : il est temps de partir. */
     public const COUNTDOWN_URGENT_UNDER_MINUTES = 30;
 
+    /** Barre dimensionnée par la durée de l'événement, à PROGRESS_PX_PER_HOUR près (#51). */
+    public const BAR_BY_DURATION = 'duration';
+
+    /**
+     * Barre occupant la largeur disponible : dans la colonne étroite d'un tableau, une largeur
+     * proportionnelle serait tantôt minuscule, tantôt plafonnée — autant la remplir.
+     */
+    public const BAR_FULL_WIDTH = 'full';
+
+    /** Pas de barre : « Terminé » ou « En cours » en toutes lettres, là où la place manque. */
+    public const BAR_NONE = 'none';
+
+    /** La coche qui précède « Terminé », dans la barre comme en toutes lettres. */
+    private const string TERMINE_ICONE = '<i class="fa fa-check-square" aria-hidden="true"></i>';
+
     /**
      * Nombre de vignettes servies en chargement immédiat avant de basculer en `loading="lazy"`.
      *
@@ -363,17 +378,10 @@ class EvenementRenderer
 
         $time_status = $withTimeStatus ? EvenementTimeStatus::fromEvent($tab_even) : null;
 
-        // Terminé, ou séance commencée depuis trop longtemps : deux façons d'être hors d'atteinte,
-        // une seule classe. Seul l'horaire y pâlit — la carte, elle, reste franche : ses affiches
-        // et ses titres sont ce qui fait la page.
-        $is_dimmed = $time_status !== null
-            && ($time_status->state === EvenementTimeStatus::PAST || $time_status->tooLate);
-        $article_class = 'evenement-short' . ($is_dimmed ? ' even-time-dimmed' : '');
-
         ob_start();
         ?>
 
-        <article id="event-<?= (int) $tab_even['e_idEvenement'] ?>" class="<?= $article_class ?>" data-event-id="<?= (int) $tab_even['e_idEvenement'] ?>">
+        <article id="event-<?= (int) $tab_even['e_idEvenement'] ?>" class="evenement-short" data-event-id="<?= (int) $tab_even['e_idEvenement'] ?>">
 
             <header class="titre">
                 <h3 class="left"><a href="/event/evenement.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>"><?= self::titreSelonStatutHtml($tab_even['e_titre'], $tab_even['e_statut']) ?></a></h3>
@@ -433,16 +441,14 @@ class EvenementRenderer
 
                     /*
                      * Avec les repères de temporalité (#51), la colonne se lit en lignes : l'horaire,
-                     * puis le repère quand il en réclame un. L'horaire est enveloppé parce que lui seul
-                     * pâlit quand l'événement est hors d'atteinte — le repère qui l'explique reste net.
+                     * puis le repère quand il en réclame un. L'horaire pâlit si l'événement est hors
+                     * d'atteinte — le repère qui l'explique, lui, reste net.
                      */
                     if (!empty($horaire_complet))
                     {
-                        echo $withTimeStatus
-                            ? '<span class="even-time-line">' . sanitizeForHtml($horaire_complet) . '</span>'
-                            : sanitizeForHtml($horaire_complet);
+                        echo self::scheduleHtml(sanitizeForHtml($horaire_complet), $time_status);
                     }
-                    echo self::timeStatusHtml($withTimeStatus ? $time_status : null);
+                    echo self::timeStatusHtml($time_status);
                     ?>
                 </span>
                 <div class="spacer"></div>
@@ -510,18 +516,28 @@ class EvenementRenderer
      * Rien à afficher quand les horaires ne permettent pas de le situer : le statut est alors null.
      * L'icône est décorative — le libellé qui la suit porte l'information.
      *
-     * Deux repères, jamais les deux à la fois, toujours sur la ligne qui suit l'horaire :
+     * Deux repères, jamais les deux à la fois :
      *   - avant le début, le compte à rebours seul. Une barre vide n'apprendrait rien de plus,
      *     et l'événement commence dans moins de COUNTDOWN_VISIBLE_WITHIN_MINUTES, sans quoi la
      *     carte ne montre rien du tout : son horaire suffit, et la liste reste lisible ;
-     *   - une fois commencé, la barre seule, qui porte la part écoulée ou « Terminé ».
+     *   - une fois commencé, la barre, qui porte la part écoulée ou « Terminé ».
+     *
+     * @param string $bar     BAR_BY_DURATION, BAR_FULL_WIDTH ou BAR_NONE, selon la place dont
+     *                        dispose la page ; sans barre, l'état s'écrit en toutes lettres
+     * @param bool $onItsOwnLine Le repère passe à la ligne, sous l'horaire ou sous la date. À false,
+     *                           il suit sur la même ligne, séparé par une espace.
      */
-    public static function timeStatusHtml(?EvenementTimeStatus $status): string
-    {
+    public static function timeStatusHtml(
+        ?EvenementTimeStatus $status,
+        string $bar = self::BAR_BY_DURATION,
+        bool $onItsOwnLine = true
+    ): string {
         if ($status === null)
         {
             return '';
         }
+
+        $prefixe = $onItsOwnLine ? '<br>' : ' ';
 
         if ($status->state === EvenementTimeStatus::COMING)
         {
@@ -534,11 +550,72 @@ class EvenementRenderer
 
             $urgent = $minutesUntilStart < self::COUNTDOWN_URGENT_UNDER_MINUTES ? ' even-time-urgent' : '';
 
-            return '<br><span class="even-time-status even-time-status-coming' . $urgent . '">'
-                . '<i class="fa fa-clock-o" aria-hidden="true"></i>&nbsp;' . sanitizeForHtml($status->label) . '</span>';
+            // sablier plein plutôt que l'horloge de FontAwesome, qui préfixe déjà les horaires
+            // sur la fiche d'un événement : deux fois la même icône sur une ligne ne dit rien
+            return $prefixe . '<span class="even-time-status even-time-status-coming' . $urgent . '">'
+                . '<i class="fa fa-hourglass-start" aria-hidden="true"></i>&nbsp;' . sanitizeForHtml($status->label) . '</span>';
         }
 
-        return '<br>' . self::timeProgressHtml($status);
+        return $prefixe . ($bar === self::BAR_NONE
+            ? self::timeStateLabelHtml($status)
+            : self::timeProgressHtml($status, $bar));
+    }
+
+
+    /**
+     * Le repère de temporalité d'un événement, s'il en mérite un.
+     *
+     * La journée du jour seulement : ailleurs, la date dit déjà tout — une liste d'événements
+     * passés répéterait « Terminé » sur chaque ligne, et un événement de la semaine prochaine
+     * n'aurait de toute façon pas de compte à rebours. Le drapeau est consulté ici plutôt que par
+     * chaque page, pour que rétrograder le ferme partout à la fois.
+     *
+     * @param array<string, mixed> $tab_even ligne d'événement préfixée e_
+     */
+    public static function timeStatusOfTheDay(array $tab_even): ?EvenementTimeStatus
+    {
+        global $glo_auj_6h;
+
+        if (($tab_even['e_dateEvenement'] ?? '') !== $glo_auj_6h
+            || !FeatureFlag::estActive('EVENT_TIME_STATUS_ENABLED'))
+        {
+            return null;
+        }
+
+        return EvenementTimeStatus::fromEvent($tab_even);
+    }
+
+
+    /**
+     * L'horaire d'un événement, pâli quand celui-ci est hors d'atteinte — terminé, ou séance de
+     * ciné ou de théâtre commencée depuis trop longtemps : le temps qu'il annonce n'a plus cours.
+     *
+     * Le même rendu partout, de la carte d'agenda à la colonne de date d'une fiche lieu : sans
+     * cela, une séance qu'on ne peut plus rejoindre ressemblerait à une séance en cours.
+     *
+     * @param string $horaireHtml l'horaire, déjà échappé
+     */
+    public static function scheduleHtml(string $horaireHtml, ?EvenementTimeStatus $status): string
+    {
+        $horsAtteinte = $status !== null
+            && ($status->state === EvenementTimeStatus::PAST || $status->tooLate);
+
+        return $horsAtteinte ? '<span class="even-time-line-over">' . $horaireHtml . '</span>' : $horaireHtml;
+    }
+
+
+    /**
+     * L'état d'un événement commencé, en toutes lettres, pour les listes où la barre n'a pas sa
+     * place — les résultats de recherche, dont la colonne de date est étroite.
+     */
+    private static function timeStateLabelHtml(EvenementTimeStatus $status): string
+    {
+        $termine = $status->state === EvenementTimeStatus::PAST;
+        $title = $termine ? 'Terminé' : 'En cours, ' . $status->label . ' écoulés';
+
+        return '<span class="even-time-status even-time-status-' . $status->state . '" title="' . sanitizeForHtml($title) . '">'
+            . ($termine ? self::TERMINE_ICONE : '<i class="fa fa-hourglass-half" aria-hidden="true"></i>')
+            . '&nbsp;' . ($termine ? 'Terminé' : 'En cours') . '</span>';
     }
 
 
@@ -558,17 +635,22 @@ class EvenementRenderer
      * Sans horaire de fin, la durée est estimée (cf. EvenementTimeStatus) : un bouton « ? » suit
      * la barre et ouvre une bulle disant à quelle heure la fin a été fixée. Une infobulle native
      * (title) ne s'ouvre pas au doigt, et l'agenda se lit beaucoup sur téléphone.
+     *
+     * @param string $bar BAR_BY_DURATION ou BAR_FULL_WIDTH
      */
-    private static function timeProgressHtml(EvenementTimeStatus $status): string
+    private static function timeProgressHtml(EvenementTimeStatus $status, string $bar = self::BAR_BY_DURATION): string
     {
         $termine = $status->state === EvenementTimeStatus::PAST;
         $percent = $termine ? 100 : (int) $status->percent;
-        $label = $termine ? 'Terminé' : $percent . '&nbsp;%';
+        // le texte nu est le repli du <progress> ; l'inscription par-dessus porte la coche
+        $texte = $termine ? 'Terminé' : $percent . '&nbsp;%';
+        $label = $termine ? self::TERMINE_ICONE . '&nbsp;Terminé' : $texte;
 
         // la durée manque quand seul l'horaire de fin est renseigné : la largeur minimale du CSS
         // laisse alors à « Terminé » la place de s'inscrire
         $width = (int) round((int) $status->durationMinutes * self::PROGRESS_PX_PER_HOUR / 60);
-        $style = $width > 0 ? ' style="width:' . $width . 'px"' : '';
+        $style = $bar === self::BAR_FULL_WIDTH || $width === 0 ? '' : ' style="width:' . $width . 'px"';
+        $classeLargeur = $bar === self::BAR_FULL_WIDTH ? ' even-time-bar-full' : '';
 
         $estimation = $status->endEstimated
             ? 'fin inconnue, estimée à ' . mb_substr((string) $status->end, 11, 5)
@@ -578,8 +660,8 @@ class EvenementRenderer
             . ($estimation !== null ? ' — ' . $estimation : '');
 
         $html = '<span class="even-time-status even-time-status-' . $status->state . '">'
-            . '<span class="even-time-bar' . ($termine ? ' even-time-bar-over' : '') . '"' . $style . ' title="' . sanitizeForHtml($title) . '">'
-            . '<progress class="even-time-progress" max="100" value="' . $percent . '" aria-label="' . sanitizeForHtml($title) . '">' . $label . '</progress>'
+            . '<span class="even-time-bar' . ($termine ? ' even-time-bar-over' : '') . $classeLargeur . '"' . $style . ' title="' . sanitizeForHtml($title) . '">'
+            . '<progress class="even-time-progress" max="100" value="' . $percent . '" aria-label="' . sanitizeForHtml($title) . '">' . $texte . '</progress>'
             . '<span class="even-time-bar-label" aria-hidden="true">' . $label . '</span>'
             . '</span>';
 
@@ -674,7 +756,13 @@ class EvenementRenderer
             ?>
             <td class="date">
                 <a href="/index.php?courant=<?= sanitizeForHtml($tab_even['e_dateEvenement']) ?>"><abbr class="dtstart" title="<?= sanitizeForHtml($dtstart_iso) ?>"><?= DateHelper::isoToDayName($tab_even['e_dateEvenement']); ?>&nbsp;<?= (new \DateTime($tab_even['e_dateEvenement']))->format('j') ?></abbr></a><br>
-                <span class="pratique"><?= self::schedulesToHhMm($tab_even['e_horaire_debut'], $tab_even['e_horaire_fin'], $tab_even['e_dateEvenement']) ?></span>
+                <span class="pratique"><?php
+                    // le repère sous l'horaire ; la barre prend la largeur de la colonne plutôt
+                    // que celle de la durée, qui n'y tiendrait pas
+                    $time_status = self::timeStatusOfTheDay($tab_even);
+                    echo self::scheduleHtml(self::schedulesToHhMm($tab_even['e_horaire_debut'], $tab_even['e_horaire_fin'], $tab_even['e_dateEvenement']), $time_status);
+                    echo self::timeStatusHtml($time_status, self::BAR_FULL_WIDTH);
+                ?></span>
             </td>
             <td class="flyer photo">
                 <?= self::mainFigureHtml($tab_even['e_flyer'], $tab_even['e_image'], $tab_even['e_titre'], 60) ?>

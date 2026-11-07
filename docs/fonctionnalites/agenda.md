@@ -17,7 +17,7 @@ Sur la liste du jour, chaque carte d'événement dit où il en est par rapport �
 | à venir, dans deux heures ou moins | compte à rebours seul — `dans 40min`, `dans 1h30`, `dans 2h` | un horaire de début |
 | à venir, plus tard | rien : l'horaire suffit | — |
 | en cours | une barre de la part écoulée, pourcentage inscrit au milieu | un horaire de début |
-| terminé | la même barre, pleine et grise, portant « Terminé » | un horaire de début, ou une fin annoncée |
+| terminé | la même barre, pleine et grise, portant « ✓ Terminé » | un horaire de début, ou une fin annoncée |
 
 Sans horaire exploitable — ni début, ni fin —, la carte n'affiche rien : tout est porté par [`Ladecadanse\EvenementTimeStatus`](../../librairies/EvenementTimeStatus.php), dont la fabrique rend `null` dans ce cas.
 
@@ -62,7 +62,7 @@ Les horaires de fin manquent souvent (#65). Plutôt que de ne rien dire, la dur�
 
 **Cette fin estimée dépassée, l'événement est dit terminé**, au même titre qu'une fin annoncée. Les itérations précédentes s'y refusaient — une estimation ne prouve rien —, mais le résultat était pire : une soirée sans horaire de fin, lue à 2h du matin, restait « en cours » indéfiniment. Le `?` reste affiché, qui dit sur quoi repose la conclusion.
 
-Le bouton ouvre une bulle — « Fin inconnue, estimée à 00:00 » — au survol, au focus et à la touche, là où une infobulle native (`title`) ne s'ouvre pas au doigt. Une seule bulle sert toute la liste : `index.php` la pose une fois, le texte voyage dans le `data-estimate` de chaque bouton, et `TimeEstimate` (dans [`web/js/global.js`](../../web/js/global.js)) la remplit et la place sous le bouton à chaque ouverture. Quelques points méritent d'être connus :
+Le bouton ouvre une bulle — « Fin inconnue, estimée à 00:00 » — au survol, au focus et à la touche, là où une infobulle native (`title`) ne s'ouvre pas au doigt. Une seule bulle sert toute la page : [`_footer.inc.php`](../../_footer.inc.php) la pose une fois, le texte voyage dans le `data-estimate` de chaque bouton, et `TimeEstimate` (dans [`web/js/global.js`](../../web/js/global.js)) la remplit et la place sous le bouton à chaque ouverture. Elle est dans le pied de page commun, et non sur l'agenda seul, parce que les repères se posent aussi sur les fiches et la recherche. Quelques points méritent d'être connus :
 
 - **bouton, pas lien** : il n'emmène nulle part, et une infobulle native ne suffisait pas. Son `aria-label` porte le même texte que la bulle, si bien qu'aucune information ne dépend de son ouverture ;
 - **le survol n'est branché que là où l'on pointe** (`matchMedia('(hover: hover)')`) : sur un écran tactile, le survol émulé ouvrirait la bulle juste avant que le clic émulé ne la referme ;
@@ -77,11 +77,11 @@ Deux situations y mènent :
 - l'événement est **terminé** ;
 - c'est une séance de **ciné ou de théâtre commencée depuis plus d'une heure** : la salle est noire, la porte fermée. Une soirée, elle, se rejoint à toute heure et ne sort jamais d'atteinte tant qu'elle dure. Les genres concernés et le délai sont les constantes `GENRES_SEANCE` et `TOO_LATE_AFTER_START_MINUTES`.
 
-Les deux font pâlir **l'horaire, et lui seul** (opacité 0,4) : le temps qu'il annonçait n'a plus cours. La carte, elle, reste franche — son affiche et son titre font la page.
+Les deux font pâlir **l'horaire, et lui seul** (opacité 0,4, classe `.even-time-line-over`) : le temps qu'il annonçait n'a plus cours. La carte, elle, reste franche — son affiche et son titre font la page.
 
 La barre, en revanche, distingue les deux cas :
 
-- **terminé** : elle est **pleine et grise**, et porte « Terminé » à la place de la part écoulée — le temps alloué à l'événement est consommé ;
+- **terminé** : elle est **pleine et grise**, et porte « ✓ Terminé » à la place de la part écoulée — le temps alloué à l'événement est consommé ;
 - **séance commencée de trop** : elle garde sa part écoulée et sa couleur. La projection dure encore ; dire « Terminé » serait faux. C'est l'horaire pâli qui signale qu'on n'y entre plus.
 
 La catégorie est lue dans la colonne `e_genre` des lignes de l'agenda, que `index.php` sélectionne deux fois : `PDO::FETCH_GROUP` consomme la première colonne pour grouper la liste par catégorie, et la retire des lignes. Sans la seconde, `e_genre` vaut `null` sans la moindre erreur, et les deux règles propres aux séances — durée estimée et pâleur — s'éteignent en silence.
@@ -97,9 +97,22 @@ La sentinelle qui marque « sans horaire » est traitée comme une absence d'hor
 
 ### Portée
 
-**La journée du jour seulement.** Sur une journée passée, toutes les cartes diraient « Terminé » ; sur une journée à venir, aucune n'aurait de repère, le compte à rebours s'arrêtant à deux heures.
+**La journée du jour seulement**, partout. Sur une journée passée, chaque ligne dirait « Terminé » sans rien apprendre que la date ne dise déjà ; sur une journée à venir, aucune n'aurait de repère, le compte à rebours s'arrêtant à deux heures. `EvenementRenderer::timeStatusOfTheDay()` pose cette condition — et consulte le drapeau — pour toutes les pages à la fois ; l'agenda, dont la liste entière porte une seule date, la pose au niveau de la page.
 
-**L'agenda seulement** : la recherche, les pages lieu et organisateur et les tableaux d'administration n'affichent pas de repère. La mise en page du bloc « pratique », elle, est partout la même.
+Cinq surfaces affichent les repères, chacune selon la place dont elle dispose :
+
+| Page | Où | Barre |
+| --- | --- | --- |
+| agenda (`index.php`) | sous l'horaire | longueur selon la durée |
+| fiche lieu, fiche organisateur | sous l'horaire, dans la colonne de date | `BAR_FULL_WIDTH` : la largeur de la colonne. À 20 px par heure, elle y serait tantôt minuscule, tantôt plafonnée |
+| recherche (`event/search.php`) | sous la date | `BAR_NONE` : la colonne est trop étroite, l'état s'écrit — « En cours », « Terminé » |
+| fiche événement (`event/evenement.php`) | à la suite de l'horaire, même ligne | longueur selon la durée |
+
+Les tableaux d'administration n'en affichent pas. La mise en page du bloc « pratique » des cartes, elle, est partout la même, quelle que soit la date.
+
+La pâleur de l'horaire suit le repère sur ces cinq surfaces : `EvenementRenderer::scheduleHtml()` enveloppe l'horaire d'un `.even-time-line-over` dès que l'événement est hors d'atteinte, de la carte d'agenda à la colonne de date d'une fiche lieu.
+
+Trois icônes, que rien d'autre n'utilise à côté d'un horaire : `fa-hourglass-start` pour le compte à rebours — l'horloge `fa-clock-o` préfixe déjà les horaires sur la fiche d'un événement —, `fa-hourglass-half` pour « En cours » et `fa-check-square` devant « Terminé », dans la barre comme en toutes lettres.
 
 ### Activation
 

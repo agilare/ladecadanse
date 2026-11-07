@@ -272,7 +272,8 @@ $agenda_years = range((int)date("Y"), Evenement::AGENDA_START_YEAR);
                                 <p><?= Evenement::categoryLabel($tab_even['e_genre']) ?></p>
                             </td>
                             <td><?= Lieu::getLinkNameHtml($even_lieu['nom'], $even_lieu['idLieu'], $even_lieu['salle']) ?></td>
-                            <td class="date"><a href="/index.php?courant=<?= sanitizeForHtml($tab_even['e_dateEvenement']); ?>"><?= DateHelper::isoToFr($tab_even['e_dateEvenement'], 'annee') ?></a></td>
+                            <?php // le repère de temporalité sous la date ; sans barre, la colonne est trop étroite ?>
+                            <td class="date"><a href="/index.php?courant=<?= sanitizeForHtml($tab_even['e_dateEvenement']); ?>"><?= DateHelper::isoToFr($tab_even['e_dateEvenement'], 'annee') ?></a><?= EvenementRenderer::timeStatusHtml(EvenementRenderer::timeStatusOfTheDay($tab_even), EvenementRenderer::BAR_NONE) ?></td>
                             <td class="favori_action"><?= EvenementRenderer::favoriteButtonHtml((int) $tab_even['e_idEvenement']) ?></td>
                             <?php if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] == UserLevel::SUPERADMIN)) : ?>
                             <td><?= round($tab_even['score'], 5) ?></td>

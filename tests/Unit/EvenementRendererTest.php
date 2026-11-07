@@ -374,7 +374,10 @@ final class EvenementRendererTest extends Unit
         $this->assertStringStartsWith('<br>', $html);
         $this->assertStringContainsString('<span class="even-time-bar even-time-bar-over" style="width:80px" title="Terminé">', $html);
         $this->assertStringContainsString('<progress class="even-time-progress" max="100" value="100" aria-label="Terminé">Terminé</progress>', $html);
-        $this->assertStringContainsString('<span class="even-time-bar-label" aria-hidden="true">Terminé</span>', $html);
+        $this->assertStringContainsString(
+            '<span class="even-time-bar-label" aria-hidden="true"><i class="fa fa-check-square" aria-hidden="true"></i>&nbsp;Terminé</span>',
+            $html
+        );
     }
 
     /**
@@ -424,8 +427,7 @@ final class EvenementRendererTest extends Unit
 
         $html = EvenementRenderer::eventShortArticleHtml($tab_even, [], true);
 
-        $this->assertStringContainsString('class="evenement-short even-time-dimmed"', $html);
-        $this->assertStringContainsString('<span class="even-time-line">', $html);
+        $this->assertStringContainsString('<span class="even-time-line-over">', $html);
         $this->assertStringNotContainsString('Terminé', $html);
     }
 
@@ -491,6 +493,68 @@ final class EvenementRendererTest extends Unit
             $html
         );
         $this->assertStringNotContainsString('title="Fin inconnue', $html);
+    }
+
+    /**
+     * Dans la colonne d'un tableau, la barre prend la largeur disponible : aucune largeur en
+     * ligne, une classe qui la pousse à 100 %.
+     */
+    public function testTimeStatusHtmlDeLaBarrePleineLargeur(): void
+    {
+        $status = EvenementTimeStatus::fromHoraires('2026-04-28', '2026-04-28 21:00:00', '2026-04-29 01:00:00', '2026-04-28 23:00:00');
+
+        $html = EvenementRenderer::timeStatusHtml($status, EvenementRenderer::BAR_FULL_WIDTH);
+
+        $this->assertStringContainsString('<span class="even-time-bar even-time-bar-full"', $html);
+        $this->assertStringNotContainsString('style="width:', $html);
+    }
+
+    /** Sans barre, l'état s'écrit en toutes lettres : la colonne de date de la recherche est étroite. */
+    public function testTimeStatusHtmlSansBarreEcritLetat(): void
+    {
+        $termine = EvenementTimeStatus::fromHoraires('2026-04-28', '2026-04-28 21:00:00', '2026-04-28 23:00:00', '2026-04-28 23:30:00');
+        $html = EvenementRenderer::timeStatusHtml($termine, EvenementRenderer::BAR_NONE);
+
+        $this->assertStringNotContainsString('even-time-bar', $html);
+        $this->assertStringContainsString('fa-check-square', $html);
+        $this->assertStringContainsString('&nbsp;Terminé</span>', $html);
+
+        $enCours = EvenementTimeStatus::fromHoraires('2026-04-28', '2026-04-28 21:00:00', '2026-04-29 01:00:00', '2026-04-28 23:00:00');
+        $html = EvenementRenderer::timeStatusHtml($enCours, EvenementRenderer::BAR_NONE);
+
+        $this->assertStringContainsString('&nbsp;En cours</span>', $html);
+        $this->assertStringContainsString('title="En cours, 50 % écoulés"', $html);
+    }
+
+    /** Sur la fiche d'un événement, le repère suit l'horaire sur la même ligne. */
+    public function testTimeStatusHtmlPeutSuivreSurLaMemeLigne(): void
+    {
+        $status = EvenementTimeStatus::fromHoraires('2026-04-28', '2026-04-28 21:30:00', null, '2026-04-28 20:00:00');
+
+        $html = EvenementRenderer::timeStatusHtml($status, onItsOwnLine: false);
+
+        $this->assertStringStartsWith(' <span', $html);
+        $this->assertStringNotContainsString('<br>', $html);
+    }
+
+    /** Un repère ne se pose que sur la journée du jour : ailleurs, la date dit déjà tout. */
+    public function testTimeStatusOfTheDayNeSituerQueLesEvenementsDuJour(): void
+    {
+        $GLOBALS['glo_auj_6h'] = '2026-04-28';
+
+        $this->assertNotNull(EvenementRenderer::timeStatusOfTheDay([
+            'e_dateEvenement' => '2026-04-28',
+            'e_horaire_debut' => '2026-04-28 21:00:00',
+            'e_horaire_fin' => '2026-04-29 01:00:00',
+        ]));
+
+        $this->assertNull(EvenementRenderer::timeStatusOfTheDay([
+            'e_dateEvenement' => '2026-04-27',
+            'e_horaire_debut' => '2026-04-27 21:00:00',
+            'e_horaire_fin' => '2026-04-28 01:00:00',
+        ]));
+
+        $this->assertNull(EvenementRenderer::timeStatusOfTheDay([]));
     }
 
     /** L'exemple de #51 : coupé au mot près sous 40 caractères, entier dans l'infobulle. */
@@ -563,11 +627,11 @@ final class EvenementRendererTest extends Unit
 
         $withMarkers = EvenementRenderer::eventShortArticleHtml($tab_even, [], true);
         $this->assertMatchesRegularExpression($colonneGauche, $withMarkers);
-        $this->assertMatchesRegularExpression('#<span class="right">\s*<span class="even-time-line">dès 20h</span>\s*</span>#', $withMarkers);
+        // un horaire qu'aucun repère ne qualifie n'est pas enveloppé : rien ne le fera pâlir
+        $this->assertMatchesRegularExpression('#<span class="right">\s*dès 20h\s*</span>#', $withMarkers);
 
         $without = EvenementRenderer::eventShortArticleHtml($tab_even, [], false);
         $this->assertMatchesRegularExpression($colonneGauche, $without);
-        // sans repère, l'horaire n'a pas à être enveloppé : rien ne le fera pâlir
         $this->assertMatchesRegularExpression('#<span class="right">\s*dès 20h\s*</span>#', $without);
     }
 }

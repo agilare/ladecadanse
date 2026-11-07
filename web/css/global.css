@@ -1383,10 +1383,21 @@ table .td-align-center
         vertical-align:middle;
     }
 
-        /* « Terminé » est plus long qu'un pourcentage : la barre s'élargit de ce qu'il lui faut */
+        /* La coche et « Terminé » sont plus longs qu'un pourcentage : la barre s'élargit d'autant */
         .even-time-bar-over
         {
-            min-width:4.2em;
+            min-width:5.6em;
+        }
+
+        /*
+         * Dans la colonne étroite d'un tableau (fiches lieu, organisateur), la barre prend la
+         * largeur disponible : à 20 px par heure, elle serait tantôt minuscule, tantôt plafonnée.
+         * Le pourcentage de width se résout sur la cellule, le conteneur bloc le plus proche ;
+         * la max-width héritée réserve la place du bouton « ? ».
+         */
+        .even-time-bar-full
+        {
+            width:100%;
         }
 
         /*
@@ -1532,10 +1543,10 @@ table .td-align-center
     /*
      * Un événement hors d'atteinte — terminé, ou séance de ciné ou de théâtre commencée depuis
      * plus d'une heure — garde une carte franche : son affiche et son titre font la page, et la
-     * barre pleine et terne dit déjà que c'est passé. Seul l'horaire pâlit, le temps qu'il
-     * annonçait n'ayant plus cours.
+     * barre dit déjà que c'est passé. Seul l'horaire pâlit, le temps qu'il annonçait n'ayant plus
+     * cours ; la règle vaut partout, carte d'agenda comme colonne de date d'une fiche lieu.
      */
-    .evenement-short.even-time-dimmed .pratique .even-time-line
+    .even-time-line-over
     {
         opacity:0.4;
     }
