@@ -23,3 +23,9 @@ if (!defined('UPLOAD_MAX_MEGAPIXELS')) {
 if (!defined('__ROOT__')) {
     define('__ROOT__', sys_get_temp_dir());
 }
+
+// Drapeau des repères de temporalité (#51), ouvert à tous depuis la 3.14.0 : EvenementRenderer
+// le consulte pour décider si un événement du jour en reçoit un.
+if (!defined('EVENT_TIME_STATUS_ENABLED')) {
+    define('EVENT_TIME_STATUS_ENABLED', true);
+}

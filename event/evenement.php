@@ -298,7 +298,12 @@ include("../_header.inc.php");
             <table class="left" >
                 <tr>
                     <th scope="row"><i class="fa fa-clock-o fa-lg" aria-label="Horaires"></i></th>
-                    <td><strong><?= EvenementRenderer::schedulesToHhMm($tab_even['e_horaire_debut'], $tab_even['e_horaire_fin'], $tab_even['e_dateEvenement']) ?></strong>
+                    <td><?php
+                        // le repère de temporalité à la suite de l'horaire, le jour de l'événement
+                        $even_time_status = EvenementRenderer::timeStatusOfTheDay($tab_even);
+                        echo '<strong>' . EvenementRenderer::scheduleHtml(EvenementRenderer::schedulesToHhMm($tab_even['e_horaire_debut'], $tab_even['e_horaire_fin'], $tab_even['e_dateEvenement']), $even_time_status) . '</strong>';
+                        echo EvenementRenderer::timeStatusHtml($even_time_status, onItsOwnLine: false);
+                        ?>
                         <br /><?= sanitizeForHtml($tab_even['e_horaire_complement']) ?></td>
                 </tr>
                 <?php if (!empty($tab_even['e_prix'])) : ?>
