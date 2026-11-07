@@ -14,7 +14,7 @@
  * DELETE, quand une migration a besoin d'ALTER, de CREATE, d'INDEX et de DROP.
  */
 
-$configFile = __DIR__ . '/app/db.config.php';
+$configFile = __DIR__ . '/../../app/db.config.php';
 
 if (!is_file($configFile)) {
     throw new RuntimeException('app/db.config.php est introuvable : le créer à partir de app/db.config_model.php.');

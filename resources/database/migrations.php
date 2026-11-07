@@ -1,13 +1,13 @@
 <?php
 
 /**
- * Configuration de Doctrine Migrations, lue par vendor/bin/doctrine-migrations depuis la racine
- * du dépôt. La connexion est dans migrations-db.php. Voir resources/database/README.md.
+ * Configuration de Doctrine Migrations, passée à vendor/bin/doctrine-migrations par les scripts
+ * `db:*` de composer.json (--configuration). La connexion est dans migrations-db.php. Voir README.md.
  */
 
 return [
     'migrations_paths' => [
-        'Ladecadanse\Migrations' => __DIR__ . '/resources/database/migrations',
+        'Ladecadanse\Migrations' => __DIR__ . '/migrations',
     ],
     'table_storage' => [
         'table_name' => 'doctrine_migration_versions',
@@ -20,5 +20,5 @@ return [
     'transactional' => false,
     // une seule plateforme, MariaDB : le garde-fou généré dans chaque classe n'apporterait rien
     'check_database_platform' => false,
-    'custom_template' => __DIR__ . '/resources/database/migration.tpl',
+    'custom_template' => __DIR__ . '/migration.tpl',
 ];

@@ -7,8 +7,6 @@ app/db.config_model.php
 # schéma de référence et migrations : passés depuis le poste de développement, jamais par le site
 /resources/database
 resources/database/*
-migrations.php
-migrations-db.php
 tests*
 .editorconfig
 .gitattributes

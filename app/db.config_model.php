@@ -1,7 +1,7 @@
 <?php
 // same values as DB_HOST, etc. constants in env.php
 //
-// `composer db:migrate` (migrations-db.php) lit aussi ce fichier, l'entrée choisie par la
+// `composer db:migrate` (resources/database/migrations-db.php) lit aussi ce fichier, l'entrée choisie par la
 // variable d'environnement LADECADANSE_DB, 'default' à défaut. Une migration a besoin des
 // droits ALTER, CREATE, INDEX et DROP, que le compte du site n'a pas forcément : les clés
 // facultatives 'migration_user' et 'migration_password' lui en substituent un autre, par ex.
