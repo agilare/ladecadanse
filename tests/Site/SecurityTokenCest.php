@@ -89,7 +89,7 @@ class SecurityTokenCest
     public function leRefusSAfficheSurLeFormulaireDEvenement(SiteTester $I)
     {
         $I->loginAsAdmin();
-        $I->amOnPage('/evenement-edit.php?action=ajouter');
+        $I->amOnPage('/event/edit.php?action=ajouter');
         $I->seeElement('#ajouter_editer input[name=token]');
 
         $I->submitForm('#ajouter_editer', [

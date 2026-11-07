@@ -90,7 +90,7 @@ const TABLES_STRUCTURE_SEULE = [
 ];
 
 /**
- * Registre de Doctrine Migrations (cf. migrations.php), repris tel quel : il ne porte que des
+ * Registre de Doctrine Migrations (cf. resources/database/migrations.php), repris tel quel : il ne porte que des
  * noms de classes et des dates d'exécution.
  */
 const TABLE_MIGRATIONS = 'doctrine_migration_versions';

@@ -33,7 +33,7 @@ Le formulaire ne montre que ce que l'édition groupée utilise — statut, caté
 
 Les horaires sont saisis en `hh:mm` et **reconvertis pour chaque événement traité**, à partir de sa propre date : la conversion se fait dans la boucle, sur la saisie validée une fois pour toutes en amont.
 
-L'extension d'un fichier envoyé suit son **format réel**, jamais celle de son nom d'origine — un PNG envoyé sous `affiche.jpg` produisait un `.jpg` contenant du PNG, servi ensuite sous un type que le navigateur refuse. Le premier événement traité porte les images redimensionnées, les suivants en reçoivent une copie, pour ne pas retraiter N fois le même fichier. Les images sont en 600×600 avec miniature non rognée, comme dans `evenement-edit.php` — c'était 400×400 avec miniature rognée avant ; les images déjà en base ne sont pas retraitées.
+L'extension d'un fichier envoyé suit son **format réel**, jamais celle de son nom d'origine — un PNG envoyé sous `affiche.jpg` produisait un `.jpg` contenant du PNG, servi ensuite sous un type que le navigateur refuse. Le premier événement traité porte les images redimensionnées, les suivants en reçoivent une copie, pour ne pas retraiter N fois le même fichier. Les images sont en 600×600 avec miniature non rognée, comme dans `event/edit.php` — c'était 400×400 avec miniature rognée avant ; les images déjà en base ne sont pas retraitées.
 
 Le champ fichier accepte les PDF quand le drapeau `PDF_CONVERSION_ENABLED` est levé — voir la [conversion des PDF](../exploitation/conversion-pdf.md#le-drapeau). Ce formulaire n'a pas de champ URL : seule la conversion côté navigateur le concerne.
 

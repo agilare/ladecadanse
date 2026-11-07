@@ -280,7 +280,7 @@ class Lieu extends Element
     /**
      * Lieux actifs, prêts à peupler un <select> groupé par canton.
      *
-     * Reprend le tri du select de evenement-edit.php : cantons dans l'ordre de
+     * Reprend le tri du select de event/edit.php : cantons dans l'ordre de
      * Localite::CANTONS, et à l'intérieur d'un canton les noms sans leur article initial, pour
      * que « Le Sagittario » se range à S. La colonne `canton` sert à construire les <optgroup>.
      *

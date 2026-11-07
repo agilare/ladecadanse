@@ -24,12 +24,12 @@ let ZebraDatepickerBasicConfig = {
 // readonly_element: false => le champ reste saisissable au clavier, le calendrier Zebra n'étant pas
 // navigable au clavier (pas de tabindex ni de gestion des flèches dans la lib).
 // Pas de `strict` : il viderait le champ à l'init pour un événement passé (date désactivée par
-// `direction`) ; la validation de la date est faite côté serveur (evenement-edit.php)
+// `direction`) ; la validation de la date est faite côté serveur (event/edit.php)
 const inputDatepickerConfig = {direction: [eventEditStartDate, false], readonly_element: false};
 $('input.datepicker:not(.datepicker-always-visible)').Zebra_DatePicker({...ZebraDatepickerBasicConfig, ...inputDatepickerConfig});
 
 // Calendrier "always visible" affiché en permanence sous le champ date, commandé côté serveur par le
-// drapeau DATEPICKER_ALWAYS_VISIBLE_ENABLED (evenement-edit.php) : sans la classe ni #calendarDiv,
+// drapeau DATEPICKER_ALWAYS_VISIBLE_ENABLED (event/edit.php) : sans la classe ni #calendarDiv,
 // rien ne s'initialise ici et le champ garde le calendrier surgissant du sélecteur ci-dessus.
 // cf. https://stefangabos.github.io/Zebra_Datepicker/#always-visible
 if ($('input.datepicker-always-visible').length && $('#calendarDiv').length) {
@@ -79,7 +79,7 @@ if (confirmDuplicateCheckbox) {
 }
 
 /*
- * Bloc de saisie manuelle du lieu replié (evenement-edit.php), commandé côté serveur par le
+ * Bloc de saisie manuelle du lieu replié (event/edit.php), commandé côté serveur par le
  * drapeau LIEU_MANUAL_COLLAPSIBLE_ENABLED : sans lui le bloc reste un <div> déplié et rien
  * de ce qui suit ne s'attache.
  *

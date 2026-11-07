@@ -16,7 +16,7 @@ namespace Ladecadanse;
  * pas de migration.
  *
  * Le premier (et pour l'instant unique) domaine est `events > new_defaults` : les valeurs dont le
- * formulaire d'ajout d'événement est prérempli (evenement-edit.php, action « ajouter »), réglées
+ * formulaire d'ajout d'événement est prérempli (event/edit.php, action « ajouter »), réglées
  * depuis le profil d'organisateur d'événements (user/contributor-edit.php, fieldset « Événements »).
  *
  * Cette classe ne touche pas à la base : elle ne fait qu'encoder, décoder et normaliser. Les
@@ -41,7 +41,7 @@ class UserSettings
     ];
 
     /**
-     * Longueur maximale du prix, alignée sur la validation du champ `prix` de evenement-edit.php
+     * Longueur maximale du prix, alignée sur la validation du champ `prix` de event/edit.php
      * (et sur la colonne `evenement.prix`, varchar(100)).
      */
     private const int PRIX_LONGUEUR_MAX = 100;
@@ -224,7 +224,7 @@ class UserSettings
     /**
      * « 9:5 » ou « 21:00 » => « 09:05 » / « 21:00 » ; tout le reste => ''.
      *
-     * Le format accepté en entrée est celui de evenement-edit.php (regex identique), pour qu'un
+     * Le format accepté en entrée est celui de event/edit.php (regex identique), pour qu'un
      * horaire réglable comme défaut soit toujours un horaire saisissable dans le formulaire.
      */
     private static function normaliserHoraire(string $horaire): string

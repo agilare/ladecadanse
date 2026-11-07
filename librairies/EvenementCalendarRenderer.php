@@ -73,7 +73,7 @@ class EvenementCalendarRenderer
         $calExportCompact = $compact;
         $calExportId = (int) $event['e_idEvenement'];
         ob_start();
-        include __DIR__ . "/../event/_calendar_export.inc.php";
+        include __DIR__ . "/../pages/event/_calendar_export.inc.php";
         return ob_get_clean();
     }
 

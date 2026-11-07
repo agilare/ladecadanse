@@ -6,7 +6,7 @@ use Tests\Support\TestEnv;
 use Codeception\Util\HttpCode;
 
 /**
- * Fieldset « E-mail à l'auteur » de evenement-edit.php (issue #149) :
+ * Fieldset « E-mail à l'auteur » de event/edit.php (issue #149) :
  * qui le voit, et quelles règles de validation le serveur impose.
  *
  * Aucun cas n'écrit en base ni n'envoie de mail : chaque POST vide le titre,
@@ -86,12 +86,12 @@ class EvenementNotifierAuteurCest
 
     /**
      * En création, il n'y a pas d'auteur à prévenir : le fieldset ne doit pas
-     * apparaître ($can_notify_auteur exige action=editer|update, evenement-edit.php:133).
+     * apparaître ($can_notify_auteur exige action=editer|update, event/edit.php:133).
      */
     public function fieldsetHiddenOnAjouter(SiteTester $I)
     {
         $I->loginAsAdmin();
-        $I->amOnPage('/evenement-edit.php?action=ajouter');
+        $I->amOnPage('/event/edit.php?action=ajouter');
 
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->seeElement('#ajouter_editer');
@@ -122,7 +122,7 @@ class EvenementNotifierAuteurCest
 
     /**
      * Notifier l'auteur est facultatif : l'admin peut enregistrer sans cocher de
-     * motif ni écrire de message (evenement-edit.php:367, obligatoire = 0).
+     * motif ni écrire de message (event/edit.php:367, obligatoire = 0).
      * Une version antérieure rendait le message obligatoire quand aucun motif
      * n'était coché ; ce test verrouille l'abandon de cette règle.
      *
@@ -136,7 +136,7 @@ class EvenementNotifierAuteurCest
         $I->seeElement('#notif_message');
 
         $I->submitForm('#ajouter_editer', [
-            'titre' => '', // titre est obligatoire (evenement-edit.php:247) : erreur garantie
+            'titre' => '', // titre est obligatoire (event/edit.php:247) : erreur garantie
             'notif_message' => '',
         ]);
 
@@ -157,7 +157,7 @@ class EvenementNotifierAuteurCest
      * Le motif valide soumis en même temps prouve que le <select> se repeuple
      * bien, donc que l'absence de la clé forgée est significative.
      *
-     * Portée : ce test ne couvre PAS l'array_intersect d'evenement-edit.php:362.
+     * Portée : ce test ne couvre PAS l'array_intersect d'event/edit.php:362.
      * Vérifié par mutation le 2026-08-07 — retirer ce filtre ne change rien à la
      * réponse HTTP : les motifs retenus ne servent qu'à composer le mail, envoyé
      * seulement sur un enregistrement valide, hors de portée d'une suite en
@@ -171,7 +171,7 @@ class EvenementNotifierAuteurCest
         $I->seeElement('#notif_message');
 
         $I->submitForm('#ajouter_editer', [
-            'titre' => '', // titre est obligatoire (evenement-edit.php:247) : erreur garantie
+            'titre' => '', // titre est obligatoire (event/edit.php:247) : erreur garantie
             'notif_motifs' => ['erreurs_corrigees', 'cle_forgee'],
             'notif_message' => '',
         ]);
@@ -200,7 +200,7 @@ class EvenementNotifierAuteurCest
         $I->seeElement('#notif_message');
 
         $I->submitForm('#ajouter_editer', [
-            'titre' => '', // titre est obligatoire (evenement-edit.php:247) : erreur garantie
+            'titre' => '', // titre est obligatoire (event/edit.php:247) : erreur garantie
             'notif_motifs' => ['erreurs_corrigees'],
             'notif_message' => $message,
         ]);
@@ -212,7 +212,7 @@ class EvenementNotifierAuteurCest
 
     private function editUrl(int $idEvenement): string
     {
-        return '/evenement-edit.php?action=editer&idE=' . $idEvenement;
+        return '/event/edit.php?action=editer&idE=' . $idEvenement;
     }
 
     /**

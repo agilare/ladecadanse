@@ -6,7 +6,7 @@ use Tests\Support\TestEnv;
 use Codeception\Util\HttpCode;
 
 /**
- * Bloc d'autorisation d'édition d'un événement (evenement-edit.php, en tête de fichier).
+ * Bloc d'autorisation d'édition d'un événement (event/edit.php, en tête de fichier).
  *
  * Son SELECT a été étendu par l'issue #149 (idPersonne, user_email, dateAjout) puis par le
  * verrouillage des événements passés (dateEvenement, horaire_fin) : une régression y serait
@@ -151,11 +151,11 @@ class EvenementEditPermissionsCest
 
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->seeElement('a[href="/event/copy.php?idE=' . $idEvenement . '"]');
-        $I->dontSeeElement('a[href*="evenement-edit.php?action=editer"]');
+        $I->dontSeeElement('a[href*="event/edit.php?action=editer"]');
     }
 
     private function editUrl(int $idEvenement): string
     {
-        return '/evenement-edit.php?action=editer&idE=' . $idEvenement;
+        return '/event/edit.php?action=editer&idE=' . $idEvenement;
     }
 }

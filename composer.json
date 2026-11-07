@@ -39,7 +39,7 @@
         "monolog/monolog": "^3.10"
     },
     "suggest": {
-        "ext-imagick": "Rend la 1re page des PDF collés en URL dans evenement-edit (Ghostscript requis pour le coder PDF). Volontairement hors de require : l'absence de l'extension ne doit pas casser composer install en local, le champ fichier convertissant de son côté dans le navigateur"
+        "ext-imagick": "Rend la 1re page des PDF collés en URL dans event/edit.php (Ghostscript requis pour le coder PDF). Volontairement hors de require : l'absence de l'extension ne doit pas casser composer install en local, le champ fichier convertissant de son côté dans le navigateur"
     },
     "autoload": {
         "psr-4": {
@@ -72,12 +72,13 @@
         "config:build": "@php bin/build-config.php",
         "deploy": "@php bin/build-config.php --deploy",
         "prod-copy": "@php bin/prod-copy.php",
-        "db:status": "@php vendor/bin/doctrine-migrations status",
+        "db": "@php vendor/bin/doctrine-migrations --configuration=resources/database/migrations.php --db-configuration=resources/database/migrations-db.php",
+        "db:status": "@php vendor/bin/doctrine-migrations status --configuration=resources/database/migrations.php --db-configuration=resources/database/migrations-db.php",
         "db:migrate": [
             "Composer\\Config::disableProcessTimeout",
-            "@php vendor/bin/doctrine-migrations migrate"
+            "@php vendor/bin/doctrine-migrations migrate --configuration=resources/database/migrations.php --db-configuration=resources/database/migrations-db.php"
         ],
-        "db:generate": "@php vendor/bin/doctrine-migrations generate"
+        "db:generate": "@php vendor/bin/doctrine-migrations generate --configuration=resources/database/migrations.php --db-configuration=resources/database/migrations-db.php"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "^3.13",

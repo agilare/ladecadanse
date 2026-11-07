@@ -149,7 +149,7 @@ $previousExceptionHandler = set_exception_handler(function (Throwable $e) use ($
     http_response_code(503);
     header('Retry-After: 120');
     header('Content-Type: text/html; charset=utf-8');
-    readfile(__DIR__ . '/../misc/unavailable.html');
+    readfile(__DIR__ . '/../pages/misc/unavailable.html');
     exit;
 });
 
@@ -178,7 +178,10 @@ Organisateur::$urlDirPath = $url_uploads_organisateurs;
 $pathinfo = pathinfo($_SERVER['SCRIPT_NAME']);
 //dump($pathinfo);
 //( strlen($pathinfo['dirname']) > 1 ? $pathinfo['dirname'] . '/' : "/")
-$nom_page = ltrim($pathinfo['dirname'] . '/' . $pathinfo['filename'], '\\/');
+// Les pages vivent sous pages/ mais sont servies sans ce préfixe (htaccess/50-routage.conf) :
+// $nom_page reste « dossier/fichier » tel que l'URL le montre, ce qu'attendent web/css/,
+// body[data-page] et les listes de scripts de _footer.inc.php.
+$nom_page = (string) preg_replace('#^pages/#', '', ltrim($pathinfo['dirname'] . '/' . $pathinfo['filename'], '\\/'));
 //echo $_SERVER["SCRIPT_FILENAME"]."<br>";
 //echo $nom_page;
 

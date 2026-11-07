@@ -56,7 +56,7 @@ Attention au bruit : l'essentiel des résultats est du `TaintedHtml`/`TaintedTex
 
 Deux `TaintedSql` restent, ancrés sur le sink et donc non supprimables via `@psalm-suppress` (constaté le 26.10.2026) :
 
-- sur `DbConnector::query()`, tracé jusqu'au nom d'image concaténé par `evenement-edit.php` : ce nom est relu en base, pas saisi ;
+- sur `DbConnector::query()`, tracé jusqu'au nom d'image concaténé par `event/edit.php` : ce nom est relu en base, pas saisi ;
 - sur `DbConnectorPdo::prepare()`, tracé jusqu'au sens du tri d'`admin/users.php`, passé à `Personne::getPersonnes()` : la valeur n'est filtrée que comme alphanumérique, ce qui exclut espaces et guillemets mais pas une valeur absurde, qui ferait échouer la requête. Une liste blanche `asc` / `desc` le ferait taire.
 
 Celui de `user/edit.php`, faux positif sur les *clés* de `$champs`, a disparu avec la réécriture de la page en PDO à colonnes littérales (#120).

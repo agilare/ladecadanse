@@ -121,13 +121,13 @@ Les méthodes de règle (`selectable()`, `visible()`, les deux fragments SQL) pr
 
 Un événement classé `cours` par la modération, rouvert par un auteur qui ne voit pas la préversion : `EventCategory::selectableForEdit()` remplace, à sa place dans la liste, la clé du repli par la catégorie enregistrée. Le bouton garde le libellé et le rang de « divers » mais poste `cours`, et se coche. Qui ne touche pas au champ laisse la catégorie intacte ; qui choisit « expos » applique « expos ».
 
-La valeur de référence vient de la base — la colonne `genre` lue par la requête d'autorisation d'`evenement-edit.php` —, jamais du POST : sinon il suffirait de forger le champ pour contourner la préversion. La même liste sert au rendu et à la validation, elles ne peuvent donc pas diverger.
+La valeur de référence vient de la base — la colonne `genre` lue par la requête d'autorisation d'`event/edit.php` —, jamais du POST : sinon il suffirait de forger le champ pour contourner la préversion. La même liste sert au rendu et à la validation, elles ne peuvent donc pas diverger.
 
 ### Activation
 
 Le drapeau `EVENT_NEW_CATEGORIES_ENABLED` d'`app/env.php` commande les catégories de `PREVIEW_FALLBACKS` — aujourd'hui `cours` seule. Il est à `false` par défaut et prend les trois états de [`Ladecadanse\FeatureFlag`](../../librairies/FeatureFlag.php) — `false`, `'preview'` (administrateurs seulement), `true`. Son nom est resté celui de la préversion à deux catégories : le renommer aurait éteint `cours` pour les administrateurs de tout site dont l'`app/env.php` porte déjà la constante.
 
-Ouvrir une catégorie à tous ne passe pas par le drapeau, qui les ouvrirait toutes : on retire son entrée de `PREVIEW_FALLBACKS`. Deux choses sont alors à revoir hors du code : la [charte éditoriale](../../articles/charte-editoriale.php), qui annonce le nombre de catégories et en décrit certaines ; les scénarios Selenium de `tests/ladecadanse.side`, dont les sélecteurs positionnels (`.genre:nth-child(N)`) désignent une section par son rang et changent de cible dès qu'une section s'insère.
+Ouvrir une catégorie à tous ne passe pas par le drapeau, qui les ouvrirait toutes : on retire son entrée de `PREVIEW_FALLBACKS`. Deux choses sont alors à revoir hors du code : la [charte éditoriale](../../pages/articles/charte-editoriale.php), qui annonce le nombre de catégories et en décrit certaines ; les scénarios Selenium de `tests/ladecadanse.side`, dont les sélecteurs positionnels (`.genre:nth-child(N)`) désignent une section par son rang et changent de cible dès qu'une section s'insère.
 
 ## Supprimer, dépublier
 

@@ -1,0 +1,128 @@
+<?php
+use Ladecadanse\UserLevel;
+?>
+
+</div> <!-- fin conteneur -->
+
+        <footer id="pied-wrapper">
+            <nav id="pied">
+
+                <ul class="menu_pied">
+                    <li><a href="/articles/apropos.php">À propos</a></li>
+                    <li><a href="/articles/contributing.php" <?php if (strstr((string) $_SERVER['PHP_SELF'], "/articles/contributing.php") ) : ?>class="ici"<?php endif; ?>>Participer</a></li>
+                    <?php
+                    foreach ($glo_menu_pratique as $nom => $lien)
+                    {
+                        if ($lien == "/articles/mises-a-jour.php" && !(isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= UserLevel::AUTHOR))
+                        {
+                            continue;
+                        }
+
+                        $highlightLink = '';
+                        $ici = '';
+                        if (strstr((string) $_SERVER['PHP_SELF'], (string) $lien))
+                        {
+                            $ici = " class=\"ici\"";
+                        }
+
+                        if ($nom == "Faire un don") {
+                            $highlightLink = ' style="background: #ffe771;border-radius: 0 0 3px 4px;padding: 5px 4px;" ';
+                        }
+                        ?>
+
+                    <li <?= $highlightLink; ?>><a href="<?= $lien; ?>" title="<?= $nom; ?>" <?= $ici; ?>><?= $nom; ?></a></li>
+                    <?php } ?>
+
+                    <li><a href="/articles/charte-editoriale.php">Charte éditoriale</a></li>
+                    <li><a href="/articles/confidentialite.php">Protection des données</a></li>
+                    <li><a href="/articles/liens.php">Liens</a></li>
+                </ul>
+            </nav> <!-- Fin Pied -->
+
+            <?php if (defined('BOT_MONITORING_ENABLED') && BOT_MONITORING_ENABLED) : ?>
+                <?php /* piège à scrapers : lien invisible pour les humains (hors écran, ignoré des lecteurs d'écran et du clavier), interdit dans robots.txt */ ?>
+                <a href="/annuaire-membres.php" class="hp-link" aria-hidden="true" tabindex="-1" rel="nofollow">Annuaire des membres</a>
+            <?php endif; ?>
+        </footer>
+
+    <a id="back-to-top" href="#haut" aria-label="Retour en haut de page">
+        <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    </a>
+
+    </div> <!-- Fin Global -->
+
+    <?php /* Une seule bulle pour tous les boutons « ? » des repères de temporalité (#51), que
+             global.js remplit et place. Ici plutôt que sur l'agenda seul : ces repères se posent
+             maintenant sur les fiches lieu, organisateur et événement, et sur la recherche. */ ?>
+    <div id="even-time-estimate-popover" class="even-time-estimate-popover" popover></div>
+
+    <?php
+    $pages_formulaires = ["event/edit", "event/copy", "lieu/edit", "lieu/salle-edit", "user/register", "admin/events", "user/edit", "user/contributor-edit","lieu/lieux", "lieu/text-edit", "organisateur/edit"];
+    $pages_tinymce = ["lieu/text-edit", "organisateur/edit"];
+    $pages_lieumap = ["lieu/lieu", "event/evenement"];
+    ?>
+
+    <!-- used by ZebraDatepicker, MagnificPopup, checkboxes, custom in _footer.inc.php, browser.js, global.js -->
+    <script src="/web/libs/jquery/jquery.min.js"></script>
+    <script src="/web/libs/magnific-popup/jquery.magnific-popup.js"></script>
+    <script src="/web/libs/select2/js/select2.min.js"></script>
+    <script src="/web/libs/select2/js/i18n/fr.js"></script>
+
+    <?php if (in_array($nom_page, $pages_lieumap)) { ?>
+        <link rel="stylesheet" href="/web/libs/leaflet/leaflet.css">
+        <script src="/web/libs/leaflet/leaflet.js"></script>
+        <script src="<?= $assets->get("js/map.js"); ?>"></script>
+    <?php } ?>
+
+    <?php if (in_array($nom_page, $pages_formulaires)) : ?>
+
+        <script src="/web/libs/zebra-datepicker/zebra_datepicker.min.js"></script>
+        <script src="<?= $assets->get("js/forms.js"); ?>"></script>
+
+        <?php if (in_array($nom_page, $pages_tinymce)) : ?>
+            <script src="https://cdn.tiny.cloud/1/<?= TINYMCE_API_KEY; ?>/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>;
+            <script src="<?= $assets->get("js/edition.js"); ?>"></script>
+        <?php endif; ?>
+
+        <?php if ($nom_page == "admin/events") : ?>
+            <script src="/web/libs/checkboxes/jquery.checkboxes-1.2.2.min.js"></script>
+            <script nonce="<?= CSP_NONCE ?>">
+                'use strict';
+                jQuery(function ($)
+                {
+                    $('.jquery-checkboxes').checkboxes('range', true);
+                });
+            </script>
+        <?php endif; ?>
+
+    <?php endif; ?>
+
+    <?php if ($nom_page == "misc/contacteznous"): ?>
+        <script nonce="<?= CSP_NONCE ?>">
+            'use strict';
+            document.getElementById("contacteznous-email-info").innerHTML = atob("<?= base64_encode(EMAIL_ADMIN); ?>");
+        </script>
+    <?php endif; ?>
+    <?= $assets->getImportMap(['js/browser.js', 'js/global.js', 'js/shortcuts.js', 'js/mouseless.js', 'js/pdf-to-image.js', 'js/favorites.js'], CSP_NONCE); ?>
+    <?php
+    $ladecadanseJsConfig = ['isLoggedIn' => !empty($_SESSION['logged'])];
+    if ($ladecadanseJsConfig['isLoggedIn'] && isset($connectorPdo))
+    {
+        $favoriteIdsStmt = $connectorPdo->prepare("SELECT idEvenement FROM personne_evenement WHERE idPersonne = ?");
+        $favoriteIdsStmt->execute([(int) $_SESSION['SidPersonne']]);
+        $ladecadanseJsConfig['favoriteIds'] = array_map('intval', $favoriteIdsStmt->fetchAll(PDO::FETCH_COLUMN));
+
+        // Jeton des deux appels qui écrivent (toggle, sync), renvoyé par le script en en-tête.
+        // Rendu aux seuls comptes connectés, les seuls à pouvoir les appeler ; getToken() le crée
+        // au besoin, comme le fait déjà un lien « Dépublier ».
+        $ladecadanseJsConfig['csrfToken'] = Ladecadanse\Security\SecurityToken::getToken();
+    }
+    ?>
+    <script nonce="<?= CSP_NONCE ?>">window.__LADECADANSE = <?= json_encode($ladecadanseJsConfig) ?>;</script>
+    <script type="module" src="<?= $assets->get("js/main.js"); ?>"></script>
+
+</body>
+
+</html>
+
+

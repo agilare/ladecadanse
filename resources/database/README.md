@@ -21,10 +21,10 @@ composer db:generate                      # créer une classe vide à remplir
 ```
 
 `composer db:migrate -- --dry-run` affiche le SQL sans l'exécuter. Pour le détail migration par
-migration : `php vendor/bin/doctrine-migrations list`.
+migration : `composer db -- migrations:list`.
 
 La connexion vient de `app/db.config.php`, comme pour le site et `bin/prod-copy.php` (voir
-`migrations-db.php`). L'entrée se choisit par la variable d'environnement `LADECADANSE_DB`, `default`
+`migrations-db.php`, dans ce répertoire). L'entrée se choisit par la variable d'environnement `LADECADANSE_DB`, `default`
 à défaut :
 
 ```sh
@@ -75,7 +75,7 @@ Rien d'autre : ni report dans `ladecadanse.sql`, ni ligne à ajouter à un table
 
 Le garde-fou existe parce qu'une classe encore vide passée par `db:migrate` serait enregistrée comme
 appliquée, et le SQL écrit ensuite ne tournerait jamais. Si c'est arrivé :
-`php vendor/bin/doctrine-migrations version 'Ladecadanse\Migrations\VersionAAAAMMJJHHMMSS' --delete`.
+`composer db -- version 'Ladecadanse\Migrations\VersionAAAAMMJJHHMMSS' --delete`.
 
 Toutes les classes utilisent le trait `MigrationDefaults` : il désactive la transaction (voir
 ci-dessous) et fournit `alreadyApplied()`, réservé aux migrations d'avant Doctrine. Une migration

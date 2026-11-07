@@ -10,7 +10,7 @@
  * Le PDF ne quitte jamais le poste : pdf.js le rend sur un canvas, et c'est
  * l'image qui part dans le formulaire. Le serveur n'en reçoit donc aucun, et
  * n'a aucun décodeur PDF à exposer — la production en a pourtant un
- * (Imagick + Ghostscript, vérifié), mais evenement-edit.php est ouvert aux
+ * (Imagick + Ghostscript, vérifié), mais event/edit.php est ouvert aux
  * visiteurs non connectés, et Ghostscript est la principale source historique
  * d'exécution de code à distance de cet écosystème.
  *

@@ -135,7 +135,7 @@ class ImageDriver2 {
       * @param string|null $outputMimeType Type mime d'écriture ('image/webp'…). Par défaut celui
       *        du fichier reçu, ce qui faisait d'un flyer PNG une miniature PNG.
       * @return bool
-      * @see        evenement-edit.php, HandlesImageUploads::writeImageFiles()
+      * @see        event/edit.php, HandlesImageUploads::writeImageFiles()
       */
    function processImage($imageSource, $imageCreated, $maxWidth = 0, $maxHeigth = 0, $selon = '', $rognage = 0, ?string $outputMimeType = null)
    {

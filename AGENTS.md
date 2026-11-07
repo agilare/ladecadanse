@@ -61,7 +61,14 @@ unsupported version. The binding constraint is jsdom; odd-numbered (non-LTS) Nod
 
 ### Request lifecycle
 
-Every public-facing PHP file starts with `require_once("app/bootstrap.php")`, which:
+Pages live under `pages/` (`pages/index.php`, `pages/event/evenement.php`…) but are served without
+that prefix: `/event/evenement.php` is rewritten to `pages/event/evenement.php` by
+`htaccess/50-routage.conf`, so grep an URL with `pages/` in front to find its file. No page is left at
+the root. Under `php -S`,
+which ignores `.htaccess`, serve with the router: `php -S localhost:8000 -t . bin/router.php`.
+
+Every public-facing PHP file starts by requiring `app/bootstrap.php` (`../../app/bootstrap.php` from
+`pages/<dir>/`), which:
 1. Loads `app/env.php` (environment constants: `ENV`, `DB_*`, `EMAIL_*`, feature flags)
 2. Loads `app/config.php` (global constants, region/category arrays, icon HTML strings)
 3. Starts the session
@@ -111,5 +118,7 @@ Two connectors coexist:
 - **Legacy globals**: `$connector`, `$authorization`, `$videur`, `$logger` are available globally after bootstrap
 - **Config**: Feature flags and credentials live in `app/env.php` (not committed); see `app/env_model.php` for the full list
 - **URL routing**: old-to-new URL redirects live in `htaccess/50-routage.conf`, not in PHP. Moving or
-  renaming a page means adding its 301 there in the same commit. The root `.htaccess` is composed from
+  renaming a page *within* `pages/` changes its URL and means adding its 301 there in the same commit;
+  moving a page into or out of `pages/` changes no URL and needs none. `$nom_page` (bootstrap) is
+  derived from the URL, without the `pages/` prefix. The root `.htaccess` is composed from
   those fragments by `composer config:build` and must never be edited directly; see `docs/exploitation/config-serveur.md`
