@@ -14,13 +14,14 @@ use Ladecadanse\Utils\DateHelper;
  * Position d'un événement dans le temps par rapport à l'instant du chargement de la page (#51).
  *
  * Un événement ne peut être situé que si ses horaires le permettent, ce qui est loin d'être
- * toujours le cas (cf. #65) :
- *   - « terminé » demande un horaire de fin ;
- *   - le compte à rebours et la progression demandent un horaire de début.
- * Faute d'horaire de fin, la durée d'un événement est estimée selon son genre plutôt
- * qu'abandonnée : la barre le dit alors d'un « ? » (endEstimated), ce qui vaut mieux que ne
- * rien afficher là où l'agenda a justement le plus besoin d'un repère.
- * Sans horaire de début exploitable, en revanche, la fabrique rend toujours null.
+ * toujours le cas (cf. #65) : sans horaire de début ni horaire de fin exploitables, la fabrique
+ * rend null et la carte n'affiche aucun repère.
+ *
+ * Faute d'horaire de fin, la durée est estimée selon le genre plutôt qu'abandonnée : la carte le
+ * dit alors d'un « ? » (endEstimated), ce qui vaut mieux que ne rien afficher là où l'agenda a
+ * justement le plus besoin d'un repère. Cette fin estimée dépassée, l'événement est dit terminé
+ * comme s'il s'agissait d'une fin annoncée : une soirée sans horaire de fin, lue à 2h du matin,
+ * disait « en cours » indéfiniment.
  */
 final class EvenementTimeStatus
 {
@@ -62,11 +63,11 @@ final class EvenementTimeStatus
     private function __construct(
         public readonly string $state,
         public readonly string $label,
-        /** Part écoulée en pourcent : 0 avant le début, [5, 95] en cours, null une fois terminé */
+        /** Part écoulée en pourcent : 0 avant le début, [5, 95] en cours, 100 une fois terminé */
         public readonly ?int $percent = null,
-        /** Durée de l'événement en minutes, fin estimée comprise ; null une fois terminé */
+        /** Durée de l'événement en minutes, fin estimée comprise ; null faute d'horaire de début */
         public readonly ?int $durationMinutes = null,
-        /** Fin de l'événement (ISO datetime), réelle ou estimée ; null une fois terminé */
+        /** Fin de l'événement (ISO datetime), réelle ou estimée ; null faute d'horaire de début */
         public readonly ?string $end = null,
         /** Faute d'horaire de fin, durée et part écoulée reposent sur une fin estimée */
         public readonly bool $endEstimated = false,
@@ -127,20 +128,20 @@ final class EvenementTimeStatus
             $fin = null;
         }
 
-        // seule une fin réelle dit « terminé » : une fin estimée dépassée ne prouve rien
-        if ($fin !== null && $now > $fin)
-        {
-            return new self(self::PAST, 'terminé');
-        }
-
+        // sans horaire de début, seule une fin annoncée et dépassée apprend quelque chose
         if ($debut === null)
         {
-            return null;
+            return $fin !== null && $now > $fin ? new self(self::PAST, 'terminé', 100) : null;
         }
 
         $endEstimated = $fin === null;
         $fin ??= self::estimatedEnd($dateEvenement, $debut, $genre);
         $durationMinutes = intdiv(self::timestamp($fin) - self::timestamp($debut), 60);
+
+        if ($now > $fin)
+        {
+            return new self(self::PAST, 'terminé', 100, $durationMinutes, $fin, $endEstimated);
+        }
 
         if ($now < $debut)
         {
@@ -209,9 +210,7 @@ final class EvenementTimeStatus
      * Part écoulée de l'événement, arrondie à 5 %.
      *
      * Bornée à [5 %, 95 %] : « 0 % » et « 100 % » se liraient comme « pas commencé » et
-     * « terminé », alors que l'événement est justement en cours. La borne haute sert aussi de
-     * garde-fou quand la fin est estimée : l'estimation dépassée, la barre reste presque pleine
-     * sans jamais prétendre que c'est fini.
+     * « terminé », alors que l'événement est justement en cours.
      */
     private static function progressPercent(string $debut, string $fin, string $now): int
     {

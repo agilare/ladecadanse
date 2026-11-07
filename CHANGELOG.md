@@ -10,12 +10,14 @@ Upgrade steps (migrations, side effects) : [UPGRADE.md](UPGRADE.md).
 - mailing : people who asked to stop receiving mailings (`personne.mailing_opted_out_at`) are left out, even when present in the CSV
 
 ### Changed
+- agenda : the time markers #51 are shown to everyone — a countdown within two hours, a progress bar once started, a grey full bar reading `Terminé` once it is over ; what is out of reach fades on its schedule only. The address and the price sit on the left under their own icon, on every event card and every date — see [docs/fonctionnalites/agenda.md](docs/fonctionnalites/agenda.md#repères-de-temporalité)
 - errors : the 403, 429, 500, 502, 503 and 504 pages are static files served by Apache without PHP — an address refused by the firewall or a User-Agent block no longer costs a bootstrap and a database connection per request, and no longer counts in the bots dashboard ; `misc/error.php` keeps the 404 only, with a title and description that follow the status
 - accounts : the password is changed on its own page `user/pwd-edit.php`, under the same rules as registration, and the profile shows when it was last changed #249 — see [UPGRADE.md](UPGRADE.md)
 - accounts : `user-edit.php` becomes `user/edit.php`, reorganized, and no longer creates accounts #120 ; affiliations, signature and event defaults move to `user/contributor-edit.php`, shown disabled to those who cannot change the affiliations #288
 - database : the twelve MyISAM tables move to InnoDB #228 — row locking, crash recovery, and the ground for transactions and foreign keys ; the search ranking changes with the engine — see [UPGRADE.md](UPGRADE.md)
 
 ### Fixed
+- agenda : an event whose end time is missing is no longer « en cours » indefinitely — the estimated end now marks it as over, like an announced one #51
 - search : the title prefix match received the exact terms — the twelve placeholders were filled with five exact strings and seven prefix strings instead of four and eight, so a title matched on its prefix weighed nothing
 
 ## [3.13.0] - 2026-10-15

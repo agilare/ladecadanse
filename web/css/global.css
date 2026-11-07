@@ -1314,18 +1314,30 @@ table .td-align-center
         line-height: 1.3em;
     }
 
+        /*
+         * Les deux colonnes se partagent la largeur à parts égales : à gauche le lieu et le prix,
+         * à droite l'horaire et le repère de temporalité, dont la barre a besoin de place.
+         *
+         * À gauche, icônes et textes sont les cellules d'une grille à deux colonnes : les icônes
+         * s'alignent entre elles et les textes entre eux, et une adresse qui passe à la ligne
+         * reste dans sa colonne plutôt que de revenir sous l'icône.
+         */
         .evenement-short .pratique .left
         {
             float:left;
+            display:grid;
+            grid-template-columns:auto 1fr;
+            gap:0.15em 0.3em;
+            align-items:baseline;
             padding:0 0 0 0.2em;
-            width:59%;
+            width:49%;
             text-align:left;
         }
 
         .evenement-short .pratique .right
         {
             float:right;
-            width:39%;
+            width:49%;
             padding:0 0.2em 0 0;
             text-align:right;
         }
@@ -1354,10 +1366,10 @@ table .td-align-center
      * par EvenementRenderer), son remplissage la part écoulée, et le pourcentage s'inscrit au
      * milieu.
      *
-     * Le conteneur porte la forme — hauteur, arrondi, rognage — et empile trois couches : le
-     * <progress>, les rayures animées, le pourcentage. Sa largeur minimale laisse au pourcentage
-     * la place de s'inscrire sur les événements courts ; sa largeur maximale garde les longs dans
-     * la colonne, « ? » compris, au prix de la proportionnalité au-delà d'une dizaine d'heures.
+     * Le conteneur porte la forme — hauteur, arrondi, rognage — et empile deux couches : le
+     * <progress> et le texte inscrit au milieu. Sa largeur minimale laisse au pourcentage la place
+     * de s'inscrire sur les événements courts ; sa largeur maximale garde les longs dans la
+     * colonne, « ? » compris, au prix de la proportionnalité au-delà d'une dizaine d'heures.
      */
     .even-time-bar
     {
@@ -1365,11 +1377,17 @@ table .td-align-center
         display:inline-block;
         min-width:2.6em;
         max-width:calc(100% - 1.4em);
-        height:1.2em;
-        border-radius:2px;
+        height:1em;
+        border-radius:3px;
         overflow:hidden;
         vertical-align:middle;
     }
+
+        /* « Terminé » est plus long qu'un pourcentage : la barre s'élargit de ce qu'il lui faut */
+        .even-time-bar-over
+        {
+            min-width:4.2em;
+        }
 
         /*
          * appearance:none est ce qui autorise les pseudo-éléments de WebKit : sans lui le
@@ -1403,22 +1421,17 @@ table .td-align-center
         }
 
         /*
-         * Les rayures qui montrent que la barre progresse. Elles défilent quatre secondes au
-         * chargement puis s'immobilisent : un mouvement de plus de cinq secondes, lancé sans qu'on
-         * le demande et sans moyen de l'arrêter, enfreint le critère WCAG 2.2.2 — et une liste
-         * du soir en anime des dizaines à la fois.
+         * Hors d'atteinte : le temps alloué est consommé, la barre est pleine et terne. Le gris
+         * reste assez clair pour que « Terminé », écrit en #333 par-dessus, s'y lise.
          */
-        .even-time-bar-stripes
+        .even-time-bar-over .even-time-progress::-webkit-progress-value
         {
-            position:absolute;
-            top:0;
-            bottom:0;
-            left:0;
-            background-image:linear-gradient(-45deg, rgba(255, 255, 255, 0.45) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.45) 50%, rgba(255, 255, 255, 0.45) 75%, transparent 75%, transparent);
-            /* une tuile aussi haute que la barre : les rayures la traversent d'un bord à l'autre,
-               et le décalage d'une tuile par seconde de l'animation reste sans couture */
-            background-size:1.2em 1.2em;
-            animation:even-time-stripes 1s linear 4;
+            background:#BCC3C0;
+        }
+
+        .even-time-bar-over .even-time-progress::-moz-progress-bar
+        {
+            background:#BCC3C0;
         }
 
         .even-time-bar-label
@@ -1435,27 +1448,6 @@ table .td-align-center
             line-height:1;
             color:#333;
         }
-
-@keyframes even-time-stripes
-{
-    from
-    {
-        background-position:0 0;
-    }
-
-    to
-    {
-        background-position:1.2em 0;
-    }
-}
-
-@media (prefers-reduced-motion: reduce)
-{
-    .even-time-bar-stripes
-    {
-        animation:none;
-    }
-}
 
     /* Moins d'une demi-heure avant le début : le compte à rebours se fait remarquer */
     .even-time-status-coming.even-time-urgent
@@ -1538,46 +1530,14 @@ table .td-align-center
     }
 
     /*
-     * L'adresse et le prix, chacun précédé de son icône : une grille à deux colonnes aligne les
-     * icônes entre elles et les textes entre eux, et une adresse qui passe à la ligne reste dans
-     * sa colonne plutôt que de revenir sous l'icône.
-     */
-    .evenement-short .pratique .left.even-time-pratique
-    {
-        display:grid;
-        grid-template-columns:auto 1fr;
-        gap:0.15em 0.3em;
-        align-items:baseline;
-    }
-
-    /*
      * Un événement hors d'atteinte — terminé, ou séance de ciné ou de théâtre commencée depuis
-     * plus d'une heure — reste lisible et cliquable : la transparence le range au second plan
-     * sans le retirer. Elle est levée au survol et dès qu'un de ses liens prend le focus,
-     * sans quoi les actions d'édition seraient les plus pâles au moment où on s'en sert.
-     *
-     * L'opacité d'un parent ne se rattrape pas sur un enfant : elle est donc posée sur chaque
-     * bloc de la carte plutôt que sur la carte, pour épargner le badge qui explique la pâleur.
-     * La variable évite de répéter la liste de ces blocs une seconde fois au survol.
+     * plus d'une heure — garde une carte franche : son affiche et son titre font la page, et la
+     * barre pleine et terne dit déjà que c'est passé. Seul l'horaire pâlit, le temps qu'il
+     * annonçait n'ayant plus cours.
      */
-    .evenement-short.even-time-dimmed
-    {
-        --even-time-fade:0.4;
-    }
-
-    .evenement-short.even-time-dimmed:hover,
-    .evenement-short.even-time-dimmed:focus-within
-    {
-        --even-time-fade:1;
-    }
-
-    .evenement-short.even-time-dimmed > .titre,
-    .evenement-short.even-time-dimmed > .event-media,
-    .evenement-short.even-time-dimmed > .edition,
-    .evenement-short.even-time-dimmed .pratique .left,
     .evenement-short.even-time-dimmed .pratique .even-time-line
     {
-        opacity:var(--even-time-fade);
+        opacity:0.4;
     }
 
     .evenement-short .edition

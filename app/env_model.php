@@ -191,7 +191,7 @@ define("LIEU_MANUAL_COLLAPSIBLE_ENABLED", false);
 //               apportent une fois posés sur de vrais horaires ; une mention en tête
 //               de liste rappelle qu'ils ne sont pas publics
 //   true        ouvert à tous
-define("EVENT_TIME_STATUS_ENABLED", false);
+define("EVENT_TIME_STATUS_ENABLED", true);
 
 // proposer les catégories d'événement encore en préversion — aujourd'hui la seule
 // « cours/ateliers/stages » — à la saisie, au filtrage de l'agenda et à l'affichage. La
