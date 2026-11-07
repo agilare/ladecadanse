@@ -1447,7 +1447,7 @@
         ["css=p > a:nth-child(1)", "css:finder"],
         ["xpath=//a[contains(text(),'Envoyez nous les infos via ce formulaire')]", "xpath:link"],
         ["xpath=//div[@id='contenu']/div[3]/ul/li[2]/p/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/evenement-edit.php')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/event/edit.php')]", "xpath:href"],
         ["xpath=//p/a", "xpath:position"],
         ["xpath=//a[contains(.,'Envoyez nous les infos via ce formulaire')]", "xpath:innerText"]
       ],
@@ -1462,7 +1462,7 @@
         ["css=p > a:nth-child(1)", "css:finder"],
         ["xpath=//a[contains(text(),'Envoyez nous les infos via ce formulaire')]", "xpath:link"],
         ["xpath=//div[@id='contenu']/div[3]/ul/li[2]/p/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/evenement-edit.php')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/event/edit.php')]", "xpath:href"],
         ["xpath=//p/a", "xpath:position"],
         ["xpath=//a[contains(.,'Envoyez nous les infos via ce formulaire')]", "xpath:innerText"]
       ],
@@ -2182,7 +2182,7 @@
         ["css=#menu_pratique li:nth-child(5) > a", "css:finder"],
         ["xpath=//a[contains(text(),'Ajouter un événement')]", "xpath:link"],
         ["xpath=//nav[@id='menu_pratique']/ul/li[5]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/evenement-edit.php?action=ajouter')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/event/edit.php?action=ajouter')]", "xpath:href"],
         ["xpath=//li[5]/a", "xpath:position"],
         ["xpath=//a[contains(.,'Ajouter un événement')]", "xpath:innerText"]
       ],
@@ -2223,7 +2223,7 @@
         ["css=li:nth-child(6) > a", "css:finder"],
         ["xpath=//a[contains(text(),'Ajouter un événement')]", "xpath:link"],
         ["xpath=//nav[@id='menu_pratique']/ul/li[6]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/evenement-edit.php?action=ajouter')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/event/edit.php?action=ajouter')]", "xpath:href"],
         ["xpath=//li[6]/a", "xpath:position"],
         ["xpath=//a[contains(.,'Ajouter un événement')]", "xpath:innerText"]
       ],
@@ -2806,7 +2806,7 @@
         ["css=.genre:nth-child(2) > .evenement-short:nth-child(2) .action_editer > a", "css:finder"],
         ["xpath=//a[contains(text(),'Modifier')]", "xpath:link"],
         ["xpath=//div[@id='prochains_evenements']/section/article/footer/ul[2]/li[2]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/evenement-edit.php?action=editer&idE=2498')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/event/edit.php?action=editer&idE=2498')]", "xpath:href"],
         ["xpath=//ul[2]/li[2]/a", "xpath:position"],
         ["xpath=//a[contains(.,'Modifier')]", "xpath:innerText"]
       ],
@@ -2957,7 +2957,7 @@
         ["css=.menu_actions_evenement > li:nth-child(3) > a", "css:finder"],
         ["xpath=//a[contains(text(),'Modifier')]", "xpath:link"],
         ["xpath=//div[@id='contenu']/ul/li[3]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/evenement-edit.php?action=editer&idE=278')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/event/edit.php?action=editer&idE=278')]", "xpath:href"],
         ["xpath=//div/ul/li[3]/a", "xpath:position"],
         ["xpath=//a[contains(.,'Modifier')]", "xpath:innerText"]
       ],
@@ -3023,7 +3023,7 @@
         ["css=.menu_actions_evenement > li:nth-child(3) > a", "css:finder"],
         ["xpath=//a[contains(text(),'Modifier')]", "xpath:link"],
         ["xpath=//main[@id='contenu']/nav/ul[2]/li[3]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/evenement-edit.php?action=editer&idE=4528')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/event/edit.php?action=editer&idE=4528')]", "xpath:href"],
         ["xpath=//ul[2]/li[3]/a", "xpath:position"],
         ["xpath=//a[contains(.,' Modifier')]", "xpath:innerText"]
       ],
@@ -5793,7 +5793,7 @@
         ["css=.table tr:nth-child(1) a:nth-child(1)", "css:finder"],
         ["xpath=//a[contains(text(),'Modifier')]", "xpath:link"],
         ["xpath=//main[@id='contenu']/div/table/tbody/tr/td[4]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/evenement-edit.php?action=editer&idE=2868')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/event/edit.php?action=editer&idE=2868')]", "xpath:href"],
         ["xpath=//td[4]/a", "xpath:position"],
         ["xpath=//a[contains(.,'Modifier')]", "xpath:innerText"]
       ],
@@ -6375,7 +6375,7 @@
         ["css=#menu_pratique li:nth-child(5) > a", "css:finder"],
         ["xpath=//a[contains(text(),'Ajouter un événement')]", "xpath:link"],
         ["xpath=//nav[@id='menu_pratique']/ul/li[5]/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/evenement-edit.php?action=ajouter')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/event/edit.php?action=ajouter')]", "xpath:href"],
         ["xpath=//li[5]/a", "xpath:position"],
         ["xpath=//a[contains(.,'Ajouter un événement')]", "xpath:innerText"]
       ],
@@ -7668,7 +7668,7 @@
       "id": "f07878bb-9c66-4917-94b5-611a2b2ea308",
       "comment": "Try to add a near-duplicate",
       "command": "open",
-      "target": "/evenement-edit.php?action=ajouter",
+      "target": "/event/edit.php?action=ajouter",
       "targets": [],
       "value": ""
     }, {

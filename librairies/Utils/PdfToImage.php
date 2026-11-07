@@ -10,7 +10,7 @@ use RuntimeException;
 /**
  * Rend la première page d'un PDF en WebP, côté serveur, avec Imagick.
  *
- * Ce chemin ne sert qu'à l'import par URL d'evenement-edit.php, **réservé aux
+ * Ce chemin ne sert qu'à l'import par URL d'event/edit.php, **réservé aux
  * comptes connectés**. Les PDF déposés par le champ fichier, lui ouvert aux
  * visiteurs anonymes, sont convertis par le navigateur
  * (web/js/pdf-to-image.js) et n'arrivent jamais ici : le décodage PDF

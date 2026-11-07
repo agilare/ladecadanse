@@ -9,7 +9,7 @@ use Ladecadanse\Evenement;
 
 /**
  * Couvre la recopie des champs de lieu dans un événement, faite à l'enregistrement des
- * formulaires d'événement (evenement-edit.php) et de la modification en lot (admin/events.php).
+ * formulaires d'événement (event/edit.php) et de la modification en lot (admin/events.php).
  *
  * `lieu.URL` est la seule colonne nullable parmi celles que la méthode lit : sa valeur nulle
  * atteignait DbConnector::sanitize(), dont le paramètre est typé string, et faisait échouer

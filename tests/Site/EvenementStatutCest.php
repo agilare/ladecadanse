@@ -6,7 +6,7 @@ use Tests\Support\TestEnv;
 use Codeception\Util\HttpCode;
 
 /**
- * Fieldset « Statut de l'événement » (evenement-edit.php:1004-1038).
+ * Fieldset « Statut de l'événement » (event/edit.php:1004-1038).
  *
  * Sept commits consécutifs de mise en page l'ont remanié sans aucun test :
  * on verrouille ici sa structure (les radios rendues et à qui) plutôt que son style.
@@ -33,7 +33,7 @@ class EvenementStatutCest
     public function statutRadiosVisibleForAdminOnEditer(SiteTester $I)
     {
         $I->loginAsAdmin();
-        $I->amOnPage('/evenement-edit.php?action=editer&idE=' . TestEnv::getInt('LADECADANSE_TEST_EVENT_ID_AUTEUR'));
+        $I->amOnPage('/event/edit.php?action=editer&idE=' . TestEnv::getInt('LADECADANSE_TEST_EVENT_ID_AUTEUR'));
 
         $I->seeResponseCodeIs(HttpCode::OK);
 
@@ -54,7 +54,7 @@ class EvenementStatutCest
     public function statutIsHiddenAndActifOnAjouter(SiteTester $I)
     {
         $I->loginAsAdmin();
-        $I->amOnPage('/evenement-edit.php?action=ajouter');
+        $I->amOnPage('/event/edit.php?action=ajouter');
 
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->seeElement('input[type=hidden][name=statut][value=actif]');
@@ -74,7 +74,7 @@ class EvenementStatutCest
         );
 
         $I->loginAsActor();
-        $I->amOnPage('/evenement-edit.php?action=editer&idE=' . TestEnv::getInt('LADECADANSE_TEST_EVENT_ID_ACTOR_OWN'));
+        $I->amOnPage('/event/edit.php?action=editer&idE=' . TestEnv::getInt('LADECADANSE_TEST_EVENT_ID_ACTOR_OWN'));
 
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->seeElement('input[type=radio][name=statut][value=actif]');

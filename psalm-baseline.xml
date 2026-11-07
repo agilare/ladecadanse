@@ -5,7 +5,7 @@
       <code><![CDATA[global $connector;]]></code>
     </InvalidGlobal>
   </file>
-  <file src="evenement-edit.php">
+  <file src="pages/event/edit.php">
     <InsaneComparison>
       <code><![CDATA[$champs['statut'] != 'propose']]></code>
     </InsaneComparison>

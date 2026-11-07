@@ -7,7 +7,7 @@ namespace Ladecadanse\Utils;
  *
  * Le champ `evenement.ref` stocke plusieurs URL dans une seule colonne, séparées par des
  * points-virgules. Ce format reste le format canonique : il est exposé tel quel par l'API
- * (event/api.php). La saisie, elle, se fait à raison d'une URL par ligne (evenement-edit.php) ;
+ * (event/api.php). La saisie, elle, se fait à raison d'une URL par ligne (event/edit.php) ;
  * cette classe assure la conversion entre les deux, dans les deux sens.
  */
 class RefList

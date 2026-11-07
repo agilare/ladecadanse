@@ -1,6 +1,6 @@
 <?php
 
-require_once("app/bootstrap.php");
+require_once("../../app/bootstrap.php");
 
 use Ladecadanse\FeatureFlag; // config
 use Ladecadanse\Utils\Validateur; // forms
@@ -1026,7 +1026,7 @@ if ($formulaire_poste)
         }
         else
         {
-            header("Location: index.php"); die();
+            header("Location: /index.php"); die();
         }
 
 	/*
@@ -1072,7 +1072,7 @@ if ($est_connecte)
 
 $extra_css = ["formulaires"];
 
-include("pages/_header.inc.php");
+include("../_header.inc.php");
 ?>
 
 <main id="contenu" class="colonne evenement-edit">
@@ -1197,7 +1197,7 @@ if ($show_form)
                             «&nbsp;<?= sanitizeForHtml($similar['titre']) ?>&nbsp;»
                         </a>
                         <?php if ($canEditSimilar) : ?>
-                            <a class="duplicate-edit" href="/evenement-edit.php?action=editer&amp;idE=<?= (int) $similar['idEvenement'] ?>" title="Éditer l’événement"><?= $iconeEditer ?></a>
+                            <a class="duplicate-edit" href="/event/edit.php?action=editer&amp;idE=<?= (int) $similar['idEvenement'] ?>" title="Éditer l’événement"><?= $iconeEditer ?></a>
                         <?php endif; ?>
                         <?php if (!empty($horaireSimilar)) : ?>
                             <span class="horaire"><?= sanitizeForHtml($horaireSimilar) ?></span>
@@ -1841,12 +1841,12 @@ if ($show_form)
 </main>
 
 <div id="colonne_gauche" class="colonne">
-    <?php include("pages/event/_navigation_calendrier.inc.php"); ?>
+    <?php include("_navigation_calendrier.inc.php"); ?>
 </div>
 
 <div id="colonne_droite" class="colonne">
 </div>
 
 <?php
-include("pages/_footer.inc.php");
+include("../_footer.inc.php");
 ?>

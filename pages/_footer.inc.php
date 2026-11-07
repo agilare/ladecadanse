@@ -57,7 +57,7 @@ use Ladecadanse\UserLevel;
     <div id="even-time-estimate-popover" class="even-time-estimate-popover" popover></div>
 
     <?php
-    $pages_formulaires = ["evenement-edit", "event/copy", "lieu/edit", "lieu/salle-edit", "user/register", "admin/events", "user/edit", "user/contributor-edit","lieu/lieux", "lieu/text-edit", "organisateur/edit"];
+    $pages_formulaires = ["event/edit", "event/copy", "lieu/edit", "lieu/salle-edit", "user/register", "admin/events", "user/edit", "user/contributor-edit","lieu/lieux", "lieu/text-edit", "organisateur/edit"];
     $pages_tinymce = ["lieu/text-edit", "organisateur/edit"];
     $pages_lieumap = ["lieu/lieu", "event/evenement"];
     ?>

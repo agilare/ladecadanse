@@ -33,7 +33,7 @@ export const SHORTCUTS = [
         // focusSearch() choisit dynamiquement parmi ces trois cibles selon celle qui est visible
         selectors: ['form.recherche_mobile input.mots', '#btn_search', 'form.recherche input.mots']
     },
-    { key: 'a', label: 'A', action: 'activate', selectors: ['a[href^="/evenement-edit.php?action=ajouter"]'] },
+    { key: 'a', label: 'A', action: 'activate', selectors: ['a[href^="/event/edit.php?action=ajouter"]'] },
     { key: 'd', label: 'D', action: 'activate', selectors: ['a[href="/admin/index.php"]'] },
 
     // Back-office : rien à filtrer par page ni par niveau, _header.inc.php ne rend ces liens
@@ -98,7 +98,7 @@ export const SHORTCUTS = [
         label: 'E',
         pages: ['event/evenement'],
         action: 'activate',
-        selectors: ['a[href*="evenement-edit.php?action=editer"]']
+        selectors: ['a[href*="event/edit.php?action=editer"]']
     },
     {
         key: 'c',

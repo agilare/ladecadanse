@@ -14,13 +14,13 @@ parameters:
 			message: '#^If condition is always true\.$#'
 			identifier: if.alwaysTrue
 			count: 1
-			path: evenement-edit.php
+			path: pages/event/edit.php
 
 		-
 			message: '#^Offset ''lien'' on array\{statut\: mixed, genre\: mixed, titre\: mixed, dateEvenement\: mixed, idLieu\: mixed, idSalle\: mixed, nomLieu\: mixed, adresse\: mixed, \.\.\.\} in empty\(\) does not exist\.$#'
 			identifier: empty.offset
 			count: 2
-			path: evenement-edit.php
+			path: pages/event/edit.php
 
 		-
 			message: '#^If condition is always false\.$#'

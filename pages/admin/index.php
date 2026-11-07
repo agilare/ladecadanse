@@ -247,7 +247,7 @@ require_once '../_header.inc.php';
                         <td><?= EvenementRenderer::authorLinkHtml((int) $event['idPersonne'], $event['pseudo']) ?></td>
                         <td class="actions">
                             <?php if ($_SESSION['Sgroupe'] <= UserLevel::ADMIN) : ?>
-                                <a href="/evenement-edit.php?idE=<?= (int)$event['e_idEvenement'] ?>&amp;action=editer" title="Modifier cet événement" aria-label="Modifier cet événement"><?= $iconeEditer ?></a>
+                                <a href="/event/edit.php?idE=<?= (int)$event['e_idEvenement'] ?>&amp;action=editer" title="Modifier cet événement" aria-label="Modifier cet événement"><?= $iconeEditer ?></a>
                             <?php endif; ?>
                         </td>
                     </tr>

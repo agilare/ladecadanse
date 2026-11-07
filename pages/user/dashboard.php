@@ -616,7 +616,7 @@ if ($erreur !== null)
 						<?= EvenementRenderer::unpublishLinkHtml((int) $tab_even['idEvenement'], $icone_depublier, EvenementRenderer::UNPUBLISH_THEN_STATUS) ?>&nbsp;
 						<?php endif; ?>
 						<?php if ($can_edit_even) : ?>
-						<a href="/evenement-edit.php?action=editer&amp;idE=<?= (int) $tab_even['idEvenement'] ?>" title="Éditer l'événement"><?= $icone_editer ?></a>
+						<a href="/event/edit.php?action=editer&amp;idE=<?= (int) $tab_even['idEvenement'] ?>" title="Éditer l'événement"><?= $icone_editer ?></a>
 						<?php endif; ?>
 					</td>
 				</tr>

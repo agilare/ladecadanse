@@ -33,6 +33,7 @@ final class RoutageTest extends Unit
         'organisateur-edit\.php'         => '/organisateur/edit.php',
         'lieu-edit\.php'                 => '/lieu/edit.php',
         'lieu-text-edit\.php'            => '/lieu/text-edit.php',
+        'evenement-edit\.php'            => '/event/edit.php',
         'user-edit\.php'                 => '/user/edit.php',
         'admin/gererEvenements\.php'     => '/admin/events.php',
     ];
@@ -97,9 +98,13 @@ final class RoutageTest extends Unit
     {
         $erreurs = (string) file_get_contents(__DIR__ . '/../../htaccess/60-erreurs.conf');
 
-        $this->assertSame(4, substr_count($erreurs, 'ErrorDocument'));
-        $this->assertSame(4, substr_count($erreurs, ' /pages/misc/error.php'));
-        $this->assertFileExists(__DIR__ . '/../../pages/misc/error.php');
+        preg_match_all('#^ErrorDocument \d+ (\S+)#m', $erreurs, $cibles);
+        $this->assertNotEmpty($cibles[1]);
+        foreach ($cibles[1] as $cible)
+        {
+            $this->assertStringStartsWith('/pages/', $cible);
+            $this->assertFileExists(__DIR__ . '/../..' . $cible, "La cible $cible d'un ErrorDocument n'existe pas");
+        }
     }
 
     /**

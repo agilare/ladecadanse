@@ -6,7 +6,7 @@ use Codeception\Util\HttpCode;
 
 /**
  * Fieldset « Événements » du profil d'organisateur (user/contributor-edit.php) et champs qu'il
- * préremplit (evenement-edit.php).
+ * préremplit (event/edit.php).
  *
  * La suite `site` est en lecture seule : on ne peut donc pas enregistrer des valeurs par défaut puis
  * vérifier qu'elles ressortent dans le formulaire d'ajout. Ce qui est verrouillé ici est la moitié
@@ -94,7 +94,7 @@ class UserEventDefaultsCest
     public function prefilledFieldsExistOnEventAddForm(SiteTester $I)
     {
         $I->loginAsAdmin();
-        $I->amOnPage('/evenement-edit.php?action=ajouter');
+        $I->amOnPage('/event/edit.php?action=ajouter');
 
         $I->seeResponseCodeIs(HttpCode::OK);
 

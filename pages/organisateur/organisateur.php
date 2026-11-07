@@ -194,7 +194,7 @@ include("../_header.inc.php");
 
         <ul class="menu_actions_lieu">
             <?php if (isset($_SESSION['Sgroupe']) && ($_SESSION['Sgroupe'] <= UserLevel::ACTOR) ) : ?>
-                <li class="action_ajouter"><a href="/evenement-edit.php?idO=<?= (int)$get['idO'] ?>">Ajouter un événement de cet organisateur</a></li>
+                <li class="action_ajouter"><a href="/event/edit.php?idO=<?= (int)$get['idO'] ?>">Ajouter un événement de cet organisateur</a></li>
             <?php endif; ?>
             <?php /* Même question que le formulaire d'édition, posée au même endroit : un lien
                      proposé mais refusé à l'arrivée était le symptôme de deux conditions écrites

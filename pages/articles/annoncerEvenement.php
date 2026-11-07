@@ -26,7 +26,7 @@ include("../_header.inc.php");
             </li>
             <li>
                 <h2 style="font-size:1.2em">vous voulez annoncer un&nbsp;événement une seule fois, sans compte</h2>
-                <p><a href="/evenement-edit.php">Envoyez nous les infos via ce formulaire</a>, l'événement sera validé par nous dans les prochains jours.<br>
+                <p><a href="/event/edit.php">Envoyez nous les infos via ce formulaire</a>, l'événement sera validé par nous dans les prochains jours.<br>
                 Veuillez vérifier svp au préalable que l'événement n'est pas déjà présent dans l'<a href="/index.php">agenda</a>
                 </p>
             </li>

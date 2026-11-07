@@ -430,7 +430,7 @@ include("_header.inc.php");
                                     </li>
                                     <?php if ($authorization->isPersonneAllowedToEditEvenementNow($_SESSION, $tab_even)) : ?>
                                     <li>
-                                        <a href="/evenement-edit.php?action=editer&amp;idE=<?= (int) $tab_even['e_idEvenement'] ?>" title="Modifier l'événement"><?= $iconeEditer ?></a>
+                                        <a href="/event/edit.php?action=editer&amp;idE=<?= (int) $tab_even['e_idEvenement'] ?>" title="Modifier l'événement"><?= $iconeEditer ?></a>
                                     </li>
                                     <?php endif; ?>
                                     <li>

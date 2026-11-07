@@ -786,7 +786,7 @@ class EvenementRenderer
                     <?php if ($isAllowedToEdit) : ?>
                         <li><a href="/event/copy.php?idE=<?= (int) $tab_even['e_idEvenement'] ?>" title="Copier cet événement"><?= $iconeCopier ?></a></li>
                         <?php if ($authorization->isPersonneAllowedToEditEvenementNow($_SESSION, $tab_even)) : ?>
-                        <li><a href="/evenement-edit.php?action=editer&amp;idE=<?= (int) $tab_even['e_idEvenement'] ?>" title="Modifier cet événement"><?= $iconeEditer ?></a></li>
+                        <li><a href="/event/edit.php?action=editer&amp;idE=<?= (int) $tab_even['e_idEvenement'] ?>" title="Modifier cet événement"><?= $iconeEditer ?></a></li>
                         <?php endif; ?>
                         <li class=""><?= self::unpublishLinkHtml((int) $tab_even['e_idEvenement'], $icone['depublier']) ?></li>
                     <?php endif; ?>

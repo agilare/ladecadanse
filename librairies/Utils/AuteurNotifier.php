@@ -17,7 +17,7 @@ use Ladecadanse\TemplateEngine;
  * target author differently.
  *
  * Les morceaux de texte fixes (objet, phrase d'introduction, formules du
- * template) sont exposés séparément pour que evenement-edit.php puisse en
+ * template) sont exposés séparément pour que event/edit.php puisse en
  * afficher un aperçu sans risquer de diverger du mail réellement envoyé.
  *
  * @author Michel Gaudry <michel@ladecadanse.ch>

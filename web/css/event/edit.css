@@ -50,7 +50,7 @@ p.action_ajouter
 }
 
 /*
- * Variante repliée du bloc (drapeau LIEU_MANUAL_COLLAPSIBLE_ENABLED, evenement-edit.php).
+ * Variante repliée du bloc (drapeau LIEU_MANUAL_COLLAPSIBLE_ENABLED, event/edit.php).
  * Ciblée sur le <details> : hors drapeau, le bloc reste un <div> et garde son rendu d'avant.
  *
  * margin-left aligne le bord gauche du bloc sur celui du select #idLieu : 0.1em de marge sur le

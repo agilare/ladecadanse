@@ -63,8 +63,8 @@ unsupported version. The binding constraint is jsdom; odd-numbered (non-LTS) Nod
 
 Pages live under `pages/` (`pages/index.php`, `pages/event/evenement.php`…) but are served without
 that prefix: `/event/evenement.php` is rewritten to `pages/event/evenement.php` by
-`htaccess/50-routage.conf`, so grep an URL with `pages/` in front to find its file. Two legacy
-pages stay at the root (`evenement-edit.php`, `annuaire-membres.php`). Under `php -S`,
+`htaccess/50-routage.conf`, so grep an URL with `pages/` in front to find its file. Only
+`annuaire-membres.php` stays at the root. Under `php -S`,
 which ignores `.htaccess`, serve with the router: `php -S localhost:8000 -t . bin/router.php`.
 
 Every public-facing PHP file starts by requiring `app/bootstrap.php` (`../../app/bootstrap.php` from

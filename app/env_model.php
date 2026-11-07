@@ -133,7 +133,7 @@ define("BOT_MONITORING_SUSPECT_THRESHOLD", 150); // seuil de hits pour "humains 
 define("ACCOUNT_RETENTION_ENABLED", false);
 
 // accepter les PDF dans les champs flyer et image d'un événement, dont seule la
-// 1re page est gardée, convertie en WebP (evenement-edit.php, admin/events.php)
+// 1re page est gardée, convertie en WebP (event/edit.php, admin/events.php)
 //
 // Deux voies, dont une seule demande quelque chose au serveur :
 //   - champ fichier : le navigateur convertit (web/js/pdf-to-image.js), rien à
@@ -155,7 +155,7 @@ define("ACCOUNT_RETENTION_ENABLED", false);
 // app/bootstrap.php avant l'autoloader, aucune classe n'y est encore connue.
 define("PDF_CONVERSION_ENABLED", false);
 
-// afficher le calendrier du champ date d'un événement (evenement-edit.php) déployé
+// afficher le calendrier du champ date d'un événement (event/edit.php) déployé
 // en permanence sous le champ, au lieu du calendrier surgissant au clic
 // (Zebra_DatePicker, mode always_visible).
 //
@@ -168,7 +168,7 @@ define("PDF_CONVERSION_ENABLED", false);
 //   true        ouvert à tous
 define("DATEPICKER_ALWAYS_VISIBLE_ENABLED", false);
 
-// replier le bloc de saisie manuelle du lieu (evenement-edit.php, « Si et seulement si
+// replier le bloc de saisie manuelle du lieu (event/edit.php, « Si et seulement si
 // vous n'avez pas trouvé le lieu dans la liste ») dans un <details> fermé par défaut.
 // Ce bloc occupe la moitié du fieldset Lieu alors que la plupart des personnes n'y
 // saisissent jamais rien ; celles qui s'en servent le retrouvent ouvert grâce au cookie

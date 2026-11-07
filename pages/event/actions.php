@@ -24,7 +24,7 @@ use Ladecadanse\Utils\WebLink;
 
 header('X-Robots-Tag: noindex');
 
-// Lu par evenement-edit.php (LieuInfo dans web/js/global.js) pour afficher le popover d'un
+// Lu par event/edit.php (LieuInfo dans web/js/global.js) pour afficher le popover d'un
 // lieu sélectionné : accessible sans connexion, comme ce formulaire lui-même l'est pour
 // « Proposer un événement ». GET, et non POST, car sans effet de bord — pas de jeton CSRF à
 // exiger ; l'en-tête X-Requested-With écarte au moins la navigation directe.

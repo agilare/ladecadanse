@@ -9,7 +9,7 @@ use Ladecadanse\Utils\PdfToImage;
 use RuntimeException;
 
 /**
- * Rendu serveur de la 1re page d'un PDF (import par URL d'evenement-edit).
+ * Rendu serveur de la 1re page d'un PDF (import par URL de event/edit.php).
  *
  * Le rendu lui-même demande Imagick et Ghostscript, absents du poste de
  * développement : les tests qui en dépendent se sautent d'eux-mêmes plutôt que

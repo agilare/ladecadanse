@@ -51,8 +51,8 @@ describe('Shortcuts — indépendance du layout clavier', function ()
 {
     it('résout le raccourci sur event.key, en ignorant event.code', function ()
     {
-        document.body.innerHTML = '<a href="/evenement-edit.php?action=ajouter">Ajouter</a>';
-        const clicked = spyOnClick('a[href^="/evenement-edit.php?action=ajouter"]');
+        document.body.innerHTML = '<a href="/event/edit.php?action=ajouter">Ajouter</a>';
+        const clicked = spyOnClick('a[href^="/event/edit.php?action=ajouter"]');
 
         // sur AZERTY, la touche qui produit « a » porte le code « KeyQ »
         Shortcuts.handleKeydown(keydown('a', { code: 'KeyQ' }));
@@ -237,8 +237,8 @@ describe('Shortcuts — raccourcis propres à une page', function ()
     it('n’ouvre l’édition avec « e » que sur une fiche', function ()
     {
         document.body.innerHTML =
-            '<a href="/evenement-edit.php?action=editer&id=1">Éditer</a>';
-        const clicked = spyOnClick('a[href*="evenement-edit.php?action=editer"]');
+            '<a href="/event/edit.php?action=editer&id=1">Éditer</a>';
+        const clicked = spyOnClick('a[href*="event/edit.php?action=editer"]');
 
         document.body.dataset.page = 'index';
         Shortcuts.handleKeydown(keydown('e'));

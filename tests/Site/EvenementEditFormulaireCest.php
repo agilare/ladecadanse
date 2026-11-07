@@ -6,7 +6,7 @@ use Tests\Support\TestEnv;
 use Codeception\Util\HttpCode;
 
 /**
- * Formulaire d'ajout/édition d'un événement (evenement-edit.php).
+ * Formulaire d'ajout/édition d'un événement (event/edit.php).
  *
  * Verrouille ce que le refactoring du fichier peut casser sans que rien ne le signale :
  * le rattachement des salles à leur lieu dans le select (les salles sont désormais
@@ -38,7 +38,7 @@ class EvenementEditFormulaireCest
      */
     public function chaqueSalleEstProposeeUneSeuleFois(SiteTester $I)
     {
-        $I->amOnPage('/evenement-edit.php?action=ajouter');
+        $I->amOnPage('/event/edit.php?action=ajouter');
         $I->seeResponseCodeIs(HttpCode::OK);
 
         $idSallesVues = [];
@@ -89,7 +89,7 @@ class EvenementEditFormulaireCest
      */
     public function lieuxSontGroupesParCantonLisible(SiteTester $I)
     {
-        $I->amOnPage('/evenement-edit.php?action=ajouter');
+        $I->amOnPage('/event/edit.php?action=ajouter');
         $I->seeResponseCodeIs(HttpCode::OK);
 
         $document = $this->chargerPage($I);
@@ -133,7 +133,7 @@ class EvenementEditFormulaireCest
      */
     public function localitesSontGroupeesParCantonLisible(SiteTester $I)
     {
-        $I->amOnPage('/evenement-edit.php?action=ajouter');
+        $I->amOnPage('/event/edit.php?action=ajouter');
         $I->seeResponseCodeIs(HttpCode::OK);
 
         $xpath = new DOMXPath($this->chargerPage($I));
@@ -184,7 +184,7 @@ class EvenementEditFormulaireCest
      */
     public function formulairePublicDemandeEmailEtNOffrePasLeStatut(SiteTester $I)
     {
-        $I->amOnPage('/evenement-edit.php?action=ajouter');
+        $I->amOnPage('/event/edit.php?action=ajouter');
         $I->seeResponseCodeIs(HttpCode::OK);
 
         $I->seeElement('input[type=email][name=user_email][required]');
@@ -210,7 +210,7 @@ class EvenementEditFormulaireCest
      */
     public function champsImagesAcceptentLePdfEtAnnoncentLaBonneLimite(SiteTester $I)
     {
-        $I->amOnPage('/evenement-edit.php');
+        $I->amOnPage('/event/edit.php');
         $I->seeResponseCodeIs(HttpCode::OK);
 
         $I->assertGreaterThan(
@@ -266,7 +266,7 @@ class EvenementEditFormulaireCest
         );
 
         $I->loginAsAdmin();
-        $I->amOnPage('/evenement-edit.php?action=editer&idE=' . TestEnv::getInt('LADECADANSE_TEST_EVENT_ID_WITH_FLYER'));
+        $I->amOnPage('/event/edit.php?action=editer&idE=' . TestEnv::getInt('LADECADANSE_TEST_EVENT_ID_WITH_FLYER'));
         $I->seeResponseCodeIs(HttpCode::OK);
 
         $I->seeElement('.existing_img a.magnific-popup img');
@@ -299,7 +299,7 @@ class EvenementEditFormulaireCest
         );
 
         $I->loginAsAdmin();
-        $I->amOnPage('/evenement-edit.php?action=editer&idE=' . TestEnv::getInt('LADECADANSE_TEST_EVENT_ID_WITH_ORGANISATEURS'));
+        $I->amOnPage('/event/edit.php?action=editer&idE=' . TestEnv::getInt('LADECADANSE_TEST_EVENT_ID_WITH_ORGANISATEURS'));
         $I->seeResponseCodeIs(HttpCode::OK);
 
         $selectionnes = $I->grabMultiple(self::OPTIONS_ORGANISATEURS_SELECTIONNEES, 'value');
@@ -350,7 +350,7 @@ class EvenementEditFormulaireCest
         );
 
         $I->loginAsAdmin();
-        $I->amOnPage('/evenement-edit.php?action=editer&idE=' . TestEnv::getInt('LADECADANSE_TEST_EVENT_ID_WITH_ORGANISATEURS'));
+        $I->amOnPage('/event/edit.php?action=editer&idE=' . TestEnv::getInt('LADECADANSE_TEST_EVENT_ID_WITH_ORGANISATEURS'));
         $I->seeResponseCodeIs(HttpCode::OK);
 
         $I->assertNotEmpty(

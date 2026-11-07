@@ -257,7 +257,7 @@ class DateHelper
      *
      * Une journée d'agenda D va de D 06:00:01 à D+1 06:00:00 inclus : une soirée
      * qui se termine à 02:00 appartient encore au jour de l'événement. C'est la
-     * règle qu'applique evenement-edit.php en stockant les horaires (une heure
+     * règle qu'applique event/edit.php en stockant les horaires (une heure
      * <= 06:00 est reportée au lendemain), et que reflète l'aide de saisie du
      * formulaire : « jusqu'à 06:00, le début sera considéré faisant partie du
      * jour de l'événement ».
@@ -277,7 +277,7 @@ class DateHelper
         $dayEnd  = $nextDay . ' ' . self::AGENDA_DAY_END_TIME;
 
         // sentinelle « horaire non renseigné » : la première seconde hors du jour de l'événement,
-        // choisie pour que ces événements trient en dernier (cf. evenement-edit.php)
+        // choisie pour que ces événements trient en dernier (cf. event/edit.php)
         if (empty($horaireFin)
             || $horaireFin === $nextDay . self::NO_TIME_SUFFIX
             || $horaireFin === self::NO_TIME_VALUE)

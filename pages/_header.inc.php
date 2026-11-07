@@ -251,15 +251,15 @@ $page_titre_complet = sanitizeForHtml($page_titre) . " - La décadanse";
                         }
                         else
                         {
-                            // MEMBER (12) compris : evenement-edit.php lui sert le formulaire public, et son
+                            // MEMBER (12) compris : event/edit.php lui sert le formulaire public, et son
                             // événement part en modération. Sans ce lien, connecté, il n'avait plus aucune
                             // entrée vers le formulaire — « Annoncer un événement » ne s'adresse qu'aux visiteurs.
                             //
                             // Le libellé suit le titre de la page d'arrivée, donc le même seuil que
-                            // $est_connecte dans evenement-edit.php : sous ACTOR on propose, on n'ajoute pas.
+                            // $est_connecte dans event/edit.php : sous ACTOR on propose, on n'ajoute pas.
                             if ((isset($_SESSION['Sgroupe']) && $_SESSION['Sgroupe'] <= UserLevel::MEMBER)) { ?>
-                                <li <?php if (strstr((string) $_SERVER['PHP_SELF'], "evenement-edit.php")) : ?>class="ici"<?php endif; ?>>
-                                    <a href="/evenement-edit.php?action=ajouter"><?= $_SESSION['Sgroupe'] <= UserLevel::ACTOR ? 'Ajouter' : 'Proposer' ?> un événement</a>
+                                <li <?php if (strstr((string) $_SERVER['PHP_SELF'], "event/edit.php")) : ?>class="ici"<?php endif; ?>>
+                                    <a href="/event/edit.php?action=ajouter"><?= $_SESSION['Sgroupe'] <= UserLevel::ACTOR ? 'Ajouter' : 'Proposer' ?> un événement</a>
                                 </li>
                             <?php } ?>
 
@@ -364,7 +364,7 @@ $page_titre_complet = sanitizeForHtml($page_titre) . " - La décadanse";
         </header>
 
         <div id="conteneur" style="
-            <?php if (strstr(dirname((string) $_SERVER['PHP_SELF']), 'admin') || in_array($nom_page, ['evenement-edit', 'event/copy', 'event/send', 'event/search', 'lieu/lieux', 'lieu/edit', 'lieu/text-edit', 'organisateur/organisateurs', 'organisateur/edit', 'misc/contacteznous', 'user/login', 'user/dashboard', 'user/edit', 'user/contributor-edit', 'user/register', 'user/reset', 'user/reset2', 'user/pwd-edit'])) : ?>padding-right: 5px; <?php endif; ?>
+            <?php if (strstr(dirname((string) $_SERVER['PHP_SELF']), 'admin') || in_array($nom_page, ['event/edit', 'event/copy', 'event/send', 'event/search', 'lieu/lieux', 'lieu/edit', 'lieu/text-edit', 'organisateur/organisateurs', 'organisateur/edit', 'misc/contacteznous', 'user/login', 'user/dashboard', 'user/edit', 'user/contributor-edit', 'user/register', 'user/reset', 'user/reset2', 'user/pwd-edit'])) : ?>padding-right: 5px; <?php endif; ?>
             <?php if (strstr(dirname((string) $_SERVER['PHP_SELF']), 'admin') || in_array($nom_page, ['user/login', 'user/reset', 'user/reset2', 'user/pwd-edit']) ) : ?>padding-left: 5px <?php endif; ?>
             ">
 

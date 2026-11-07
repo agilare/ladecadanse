@@ -415,8 +415,8 @@ const Forms = {
             return true;
         });
 
-        // 1re itération : limité au formulaire d'édition d'événement (evenement-edit.php)
-        if (document.body.dataset.page === 'evenement-edit')
+        // 1re itération : limité au formulaire d'édition d'événement (event/edit.php)
+        if (document.body.dataset.page === 'event/edit')
         {
             $('form.js-submit-freeze-wait').on('input change', function markFormDirty()
             {
@@ -575,7 +575,7 @@ const Lieux = {
 
 
 /**
- * Popover d'info-lieu du <select> « Nom du lieu » (evenement-edit.php) : icône visible
+ * Popover d'info-lieu du <select> « Nom du lieu » (event/edit.php) : icône visible
  * seulement quand un lieu est sélectionné, popover chargé par fetch au survol/focus de
  * l'icône, fermé au clic extérieur (API Popover native — repli par classes CSS sur les
  * navigateurs qui ne la supportent pas encore, Safari < 17 notamment).

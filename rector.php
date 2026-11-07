@@ -22,7 +22,7 @@ return RectorConfig::configure()
         __DIR__ . '/librairies',
         __DIR__ . '/pages',
     ])
-    // les pages restées à la racine : evenement-edit.php, annuaire-membres.php
+    // la page restée à la racine : annuaire-membres.php
     ->withRootFiles()
     ->withFileExtensions(['php'])
     // à côté du cache de PHPStan ; var/ est ignoré par git

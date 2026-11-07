@@ -338,7 +338,7 @@ if (!empty($_POST['formulaire']))
                     // nom d'origine : ImageDriver2 écrit d'après le contenu, si bien
                     // qu'un PNG envoyé sous le nom « affiche.jpg » donnait un .jpg
                     // contenant du PNG, servi ensuite sous un type que le navigateur
-                    // refuse. Même correctif que dans evenement-edit.php.
+                    // refuse. Même correctif que dans event/edit.php.
                     $extension = match ((string) mime_content_type($fichiers[$colonne]['tmp_name'])) {
                         'image/png', 'image/x-png' => '.png',
                         'image/gif' => '.gif',
@@ -589,7 +589,7 @@ $erreurs = $verif->getErreurs();
                         <?php if ($tab_even['e_statut'] != 'inactif') : ?>
                             <?= EvenementRenderer::unpublishLinkHtml((int) $tab_even['e_idEvenement'], $icone['depublier'], EvenementRenderer::UNPUBLISH_THEN_STATUS) ?>
                         <?php endif; ?>
-                        <a href="/evenement-edit.php?action=editer&idE=<?= (int) $tab_even['e_idEvenement'] ?>" title="Modifier cet événement" aria-label="Modifier cet événement"><?= $iconeEditer ?></a>
+                        <a href="/event/edit.php?action=editer&idE=<?= (int) $tab_even['e_idEvenement'] ?>" title="Modifier cet événement" aria-label="Modifier cet événement"><?= $iconeEditer ?></a>
                     </td>
                 <?php endif; ?>
             </tr>
@@ -637,7 +637,7 @@ $erreurs = $verif->getErreurs();
             <?php
             // L'édition groupée ne touche que les champs non vides : aucune catégorie cochée
             // veut dire « ne pas changer », donc rien à conserver ici comme dans
-            // evenement-edit.php.
+            // event/edit.php.
             foreach (EventCategory::selectable(EventCategory::isEnabled()) as $na => $la)
             {
                 $coche = $na === $champs['genre'] ? ' checked="checked"' : '';
@@ -807,7 +807,7 @@ $erreurs = $verif->getErreurs();
         accept="<?= $accept_champ_image ?>" />
         </p>
         <?php
-        // Aucun aperçu ni case « Supprimer » ici, contrairement à evenement-edit.php : le
+        // Aucun aperçu ni case « Supprimer » ici, contrairement à event/edit.php : le
         // formulaire porte sur N événements, qui n'ont pas le même flyer à montrer.
         echo $verif->getHtmlErreur("flyer");
         ?>

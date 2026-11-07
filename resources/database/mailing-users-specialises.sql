@@ -70,7 +70,7 @@ ajouts AS (
         e.idLieu,
         /*
          * Un événement peut désigner son lieu par une fiche (idLieu) ou par un simple nom
-         * saisi à la main (nomLieu) : `evenement-edit.php` accepte l'un ou l'autre, et près
+         * saisi à la main (nomLieu) : `event/edit.php` accepte l'un ou l'autre, et près
          * d'un ajout sur six n'a pas de fiche. D'où une clé commune aux deux formes.
          * Le troisième cas — ni fiche ni nom — reçoit une clé unique par événement : ces
          * ajouts pèsent dans le total sans jamais pouvoir former un « lieu dominant ».

@@ -45,7 +45,7 @@ class FormulairesRegressionCest
     public function dataPageAttributeIsRendered(SiteTester $I)
     {
         $pages = [
-            '/evenement-edit.php?action=ajouter' => 'evenement-edit',
+            '/event/edit.php?action=ajouter' => 'event/edit',
             '/lieu/lieux.php' => 'lieu/lieux',
             '/articles/apropos.php' => 'articles/apropos',
         ];
