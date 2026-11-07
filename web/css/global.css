@@ -1421,14 +1421,21 @@ table .td-align-center
             background:#C3D0E4;
         }
 
+        /*
+         * Le bleu-vert de la carte (#59787A, sa couleur de texte), éclairci de ce qu'il faut pour
+         * que le pourcentage s'y lise — plutôt que le jaune de la charte, dont des dizaines de
+         * barres sur une liste du soir tiraient l'œil plus que les événements eux-mêmes. Plus
+         * sombre et moins bleu que la piste, donc le remplissage se voit ; le pourcentage, en
+         * #333, garde 5,4:1 de contraste dessus.
+         */
         .even-time-progress::-webkit-progress-value
         {
-            background:#FACA1A;
+            background:#93AEB0;
         }
 
         .even-time-progress::-moz-progress-bar
         {
-            background:#FACA1A;
+            background:#93AEB0;
         }
 
         /*
