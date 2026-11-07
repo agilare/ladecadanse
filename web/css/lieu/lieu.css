@@ -473,6 +473,14 @@ ul#menu_complement
                 overflow:hidden;
             }
 
+            /* la hauteur d'une cellule est un minimum : c'est le lien qui coupe un flyer très haut */
+            #prochains_evenements table td.flyer a
+            {
+                display:block;
+                max-height:80px;
+                overflow:hidden;
+            }
+
             /*
             #prochains_evenements table tr.ici td p.pratique
             {
