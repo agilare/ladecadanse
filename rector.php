@@ -22,7 +22,7 @@ return RectorConfig::configure()
         __DIR__ . '/librairies',
         __DIR__ . '/pages',
     ])
-    // la page restée à la racine : annuaire-membres.php
+    // les scripts de configuration de la racine : migrations.php, rector.php…
     ->withRootFiles()
     ->withFileExtensions(['php'])
     // à côté du cache de PHPStan ; var/ est ignoré par git

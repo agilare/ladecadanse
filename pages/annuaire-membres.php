@@ -9,7 +9,7 @@
  * dans bot_monitor. Réponse 204 sans contenu pour ne pas éveiller les soupçons.
  */
 
-require_once __DIR__ . '/app/bootstrap.php';
+require_once __DIR__ . '/../app/bootstrap.php';
 
 use Ladecadanse\BotMonitor;
 
