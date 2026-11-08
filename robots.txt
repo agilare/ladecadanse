@@ -174,4 +174,4 @@ Crawl-delay: 20
 # Google ignore Crawl-delay ; sa fréquence se règle dans la Search Console,
 # et surtout par le noindex sur les événements passés.
 
-# Sitemap: https://www.ladecadanse.ch/sitemap.xml
+Sitemap: https://www.ladecadanse.ch/sitemap.xml

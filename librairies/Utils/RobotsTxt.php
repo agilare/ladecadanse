@@ -15,4 +15,9 @@ class RobotsTxt
 
         return preg_replace(self::FENETRE, $fenetre, $robotsTxt) ?? $robotsTxt;
     }
+
+    public static function withSitemap(string $robotsTxt, string $baseUrl): string
+    {
+        return preg_replace('/^Sitemap: .*$/m', 'Sitemap: ' . $baseUrl . '/sitemap.xml', $robotsTxt) ?? $robotsTxt;
+    }
 }
