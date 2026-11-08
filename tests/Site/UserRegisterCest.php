@@ -212,11 +212,11 @@ class UserRegisterCest
     }
 
     /**
-     * Case cochée, cadre vide : les champs du contributeur sont exigés par le
+     * Case cochée, cadre vide : le nom d'utilisateur est exigé par le
      * traitement, seul juge — leur cadre est masqué en CSS, et un navigateur ne
      * validerait rien de ce qu'il ne montre pas.
      */
-    public function caseContributeurCocheeExigeNomEtAffiliation(SiteTester $I)
+    public function caseContributeurCocheeExigeNom(SiteTester $I)
     {
         $I->amOnPage(self::URL);
         $jeton = $I->grabValueFrom('input[name=form_token_user_register]');
@@ -231,7 +231,8 @@ class UserRegisterCest
 
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->see("Veuillez choisir un nom d'utilisateur");
-        $I->see("Veuillez choisir votre lieu ou organisateur");
+        // l'affiliation est facultative
+        $I->dontSee("lieu ou organisateur doit");
         $I->dontSee('Votre compte a été créé');
     }
 
@@ -255,9 +256,9 @@ class UserRegisterCest
         ]);
 
         // adresse, nom d'utilisateur et affiliation retombent à leur valeur vide :
-        // trois champs obligatoires en défaut
+        // deux champs obligatoires en défaut, l'affiliation étant facultative
         $I->seeResponseCodeIs(HttpCode::OK);
-        $I->see("Il y a 3 erreurs");
+        $I->see("Il y a 2 erreurs");
         $I->dontSee('Votre compte a été créé');
     }
 }

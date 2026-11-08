@@ -53,6 +53,7 @@ if (!empty($_GET['contributor']))
 
 $action_terminee = false;
 $action_contributor = false;
+$action_affiliation = false;
 
 if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 {
@@ -187,17 +188,17 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
                     $affiliation_nom = $nom_trouve;
                 }
             }
-            else if ($champs['affiliation'] === '')
+            // facultative : un compte contributeur peut ne se rattacher à rien
+            else if ($champs['affiliation'] !== '')
             {
-                $verif->setErreur("affiliation", "Veuillez choisir votre lieu ou organisateur dans la liste, ou saisir son nom.");
-            }
-            else if (mb_strlen($champs['affiliation']) < 2 || mb_strlen($champs['affiliation']) > 250)
-            {
-                $verif->setErreur("affiliation", "Le nom de votre lieu ou organisateur doit faire entre 2 et 250 caractères.");
-            }
-            else
-            {
-                $affiliation_nom = $champs['affiliation'];
+                if (mb_strlen($champs['affiliation']) < 2 || mb_strlen($champs['affiliation']) > 250)
+                {
+                    $verif->setErreur("affiliation", "Le nom de votre lieu ou organisateur doit faire entre 2 et 250 caractères.");
+                }
+                else
+                {
+                    $affiliation_nom = $champs['affiliation'];
+                }
             }
         }
 
@@ -280,6 +281,7 @@ if (isset($_POST['formulaire']) && $_POST['formulaire'] === 'ok')
 
             $action_terminee = true;
             $action_contributor = $champs['contributor'];
+            $action_affiliation = $affiliation_nom !== '';
 
         } // if erreurs == 0
     }
@@ -320,8 +322,10 @@ $erreurs = $verif->getErreurs();
         <?php if ($action_contributor) : ?>
         <p>Vous pouvez maintenant vous <a href="/user/login.php">connecter</a> avec votre nom
             d'utilisateur ou votre adresse e-mail.</p>
+        <?php if ($action_affiliation) : ?>
         <p>Le lieu ou l'organisateur que vous avez indiqué sera rattaché à votre compte après
             vérification par notre équipe.</p>
+        <?php endif; ?>
         <?php else : ?>
         <p>Vous pouvez maintenant vous <a href="/user/login.php">connecter</a> avec votre
             adresse e-mail et le mot de passe que vous venez de saisir.</p>
@@ -403,22 +407,18 @@ $erreurs = $verif->getErreurs();
 
             <div class="guide_contributor">Avant de continuer, vérifiez svp&nbsp;:
                 <ul>
-                    <li>à ce que les événements que vous souhaitez ajouter respectent notre <b><a href="/articles/charte-editoriale.php">charte&nbsp;éditoriale</a></b> (les événements ne sont pas tous publiés)</li>
-                    <li>si votre organisation n'a pas déjà un compte La décadanse</li>
+                    <li>à ce que les événements que vous souhaitez ajouter respectent notre <b><a href="/articles/charte-editoriale.php">charte&nbsp;éditoriale</a></b> (pas tous les événements sont publiés)</li>
+                    <li>si votre organisation n'a pas déjà un compte sur La décadanse</li>
                 </ul>
-                <p>Les événements annoncés sur La décadanse sont également visibles sur
-                    <a href="https://epic-magazine.ch/" target="_blank">EPIC-Magazine</a>, webmagazine
-                    qui met en avant la culture locale et émergente à Genève et dans ses environs.</p>
             </div>
 
             <p>
                 <label for="login">Nom d'utilisateur*</label>
                 <input type="text" name="login" id="login" size="40" minlength="2" maxlength="80" value="<?= sanitizeForHtml($champs['login']) ?>" autocomplete="username"<?= isset($erreurs['login']) || isset($erreurs['login_existant']) ? ' class="champ_errone" aria-invalid="true"' : '' ?>>
-                <span class="guide_champ">Il signe les événements que vous ajoutez (désactivable), et vous pourrez vous en servir pour vous connecter, comme de votre e-mail.</span>
             </p>
 
             <p>
-                <label for="affiliation_selected" class="affil">Lieu ou organisateur*</label>
+                <label for="affiliation_selected" class="affil">Lieu ou organisateur</label>
                 <?php /* Une seule liste pour les deux, parce que la distinction n'est pas celle
                          de la personne qui s'inscrit. La valeur porte son type : les deux tables
                          ont leurs propres identifiants, qui se recouvrent. */ ?>
@@ -456,7 +456,7 @@ $erreurs = $verif->getErreurs();
 
             <p>
                 <?php // trait d'union insécable : « ci-dessus » coupé en fin de ligne se lisait mal ?>
-                <label for="affiliation" class="affil">Son nom, si pas dans la liste ci&#8209;dessus</label>
+                <label for="affiliation" class="affil">Son nom, si pas présent dans la liste ci&#8209;dessus</label>
                 <input type="text" name="affiliation" id="affiliation" size="30" maxlength="250" value="<?= sanitizeForHtml($champs['affiliation']); ?>" autocomplete="organization"<?= isset($erreurs['affiliation']) ? ' class="champ_errone" aria-invalid="true"' : '' ?>>
                 <span class="guide_champ">Si nous en créons un <a href="/lieu/lieux.php" target="_blank">lieu</a> ou un <a href="/organisateur/organisateurs.php" target="_blank">organisateur</a>, nous y rattacherons votre compte.</span>
             </p>
