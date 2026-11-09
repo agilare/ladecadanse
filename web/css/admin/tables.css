@@ -90,6 +90,168 @@ table#ajouts .profil-groupe
     border:1px solid #d3dbe6;
 }
 
+/* admin/users.php : bloc de statistiques repliable au-dessus de la liste */
+details.users-stats
+{
+    margin:0 0 1.2em 0;
+    padding:0.5em 0.8em;
+    border:1px solid #d3dbe6;
+    border-radius:4px;
+    background:#f7f9fc;
+    font-size:1.1em;
+}
+
+details.users-stats summary
+{
+    cursor:pointer;
+    font-weight:bold;
+    color:#4a5d78;
+}
+
+details.users-stats section
+{
+    margin:1em 0 0.4em 0;
+}
+
+/* #contenu : sans lui, le #contenu h2 de global.css (1.4em) l'emporte */
+#contenu details.users-stats h2
+{
+    font-size:1.1em;
+    line-height:1.4em;
+    margin:0 0 0.2em 0;
+}
+
+#contenu details.users-stats h3
+{
+    font-size:0.95em;
+    margin:0 0 0.4em 0;
+}
+
+.users-stats-note
+{
+    font-size:0.85em;
+    color:#777;
+    margin:0 0 0.6em 0;
+}
+
+.users-stats-count
+{
+    font-weight:normal;
+    color:#8a8a8a;
+}
+
+/* barres verticales : la hauteur de chaque barre est posée en % par la page */
+ol.users-stats-chart
+{
+    display:flex;
+    align-items:flex-end;
+    gap:4px;
+    height:9em;
+    margin:0;
+    padding:0;
+    list-style:none;
+}
+
+ol.users-stats-chart li
+{
+    flex:1 1 0;
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-end;
+    align-items:center;
+    height:100%;
+    font-size:0.8em;
+}
+
+/* zone de tracé : le padding haut garde la place du chiffre posé sur la plus haute barre,
+   et le % de chaque barre se rapporte à la seule hauteur restante */
+ol.users-stats-chart .users-stats-plot
+{
+    flex:1 1 auto;
+    display:flex;
+    align-items:flex-end;
+    width:100%;
+    padding-top:1.3em;
+    box-sizing:border-box;
+}
+
+ol.users-stats-chart .users-stats-bar
+{
+    position:relative;
+    width:100%;
+    min-height:1px;
+    background:#8fa3bf;
+    border-radius:2px 2px 0 0;
+}
+
+ol.users-stats-chart .users-stats-value
+{
+    position:absolute;
+    bottom:100%;
+    left:0;
+    right:0;
+    text-align:center;
+    color:#4a5d78;
+}
+
+/* hauteur fixe, que l'année y figure ou non : les barres partent toutes du même socle */
+ol.users-stats-chart .users-stats-month
+{
+    flex:none;
+    height:2.4em;
+    margin-top:0.2em;
+    color:#777;
+    text-align:center;
+    line-height:1.2em;
+}
+
+table.users-stats-table
+{
+    border-collapse:collapse;
+    font-size:0.85em;
+}
+
+table.users-stats-table th,
+table.users-stats-table td
+{
+    padding:0.2em 0.8em 0.2em 0;
+    text-align:left;
+}
+
+table.users-stats-table td:nth-child(2)
+{
+    text-align:right;
+}
+
+.users-stats-columns
+{
+    display:flex;
+    flex-wrap:wrap;
+    gap:1.5em;
+}
+
+.users-stats-columns > div
+{
+    flex:1 1 14em;
+}
+
+.users-stats-columns ul
+{
+    margin:0;
+    padding:0;
+    list-style:none;
+    font-size:0.85em;
+    line-height:1.5em;
+}
+
+/* la puce de global.css doublait l'icône */
+.users-stats-columns ul li
+{
+    list-style:none;
+    margin:0;
+    padding:0;
+}
+
 ul.menu_filtre
 {
     font-size:1.1em;

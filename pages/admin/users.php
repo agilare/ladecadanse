@@ -8,6 +8,7 @@ use Ladecadanse\Utils\QueryParamValidator;
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\Personne;
 use Ladecadanse\EvenementRenderer;
+use Ladecadanse\UserStats;
 
 if (!$authorization->checkGroup(UserLevel::ADMIN))
 {
@@ -168,6 +169,15 @@ if (!empty($page_users_ids))
 
 //dump($users_orgas);
 
+// reporting block: independent of filters and pagination, it describes the whole base
+$stats_months = UserStats::monthlyContributors(12);
+$stats_bar_max = max(1, ...array_column($stats_months, 'contributors'));
+$stats_lapsed = UserStats::lapsedContributors(minEvents: 10, silentMonths: 6, windowMonths: 12);
+$stats_venues = UserStats::venuesWithoutAccount(12);
+$stats_organizers = UserStats::organizersWithoutAccount(12);
+// the lists are long-tailed: the first ones say who to invite, the total says how many
+$stats_list_max = 15;
+
 $col_fields = [
     "pseudo" => "Pseudo",
     "groupe" => "Groupe",
@@ -190,8 +200,73 @@ require_once '../_header.inc.php';
         <div class="spacer"></div>
 	</header>
 
-    <!-- filtres, pagination, tableau de données -->
+    <!-- statistiques, filtres, pagination, tableau de données -->
     <section id="default">
+
+    <?php // replié par défaut : la liste reste l'usage courant de la page ; dans section#default pour en prendre les marges ?>
+    <details class="users-stats">
+        <summary>Statistiques</summary>
+
+        <section>
+            <h2>Contributeurs actifs par mois</h2>
+            <p class="users-stats-note">Comptes ayant saisi au moins un événement dans le mois (date de saisie).</p>
+            <ol class="users-stats-chart">
+                <?php foreach ($stats_months as $i => $m) : ?>
+                <?php [$annee, $mois] = array_map('intval', explode('-', $m['month'])); ?>
+                <li title="<?= $m['contributors'] ?> contributeurs, <?= $m['events'] ?> événements saisis">
+                    <span class="users-stats-plot"><span class="users-stats-bar" style="height:<?= round(100 * $m['contributors'] / $stats_bar_max) ?>%"><span class="users-stats-value"><?= $m['contributors'] ?></span></span></span>
+                    <span class="users-stats-month"><?= DateHelper::monthNameShort($mois) ?><?php if ($i === 0 || $mois === 1) : ?><br><?= $annee ?><?php endif; ?></span>
+                </li>
+                <?php endforeach; ?>
+            </ol>
+        </section>
+
+        <section>
+            <h2>Contributeurs qui décrochent</h2>
+            <p class="users-stats-note">Au moins 10 événements saisis sur les 12 mois précédents, plus rien depuis 6 mois.</p>
+            <?php if ($stats_lapsed === []) : ?>
+            <p><em>Aucun</em></p>
+            <?php else : ?>
+            <table class="users-stats-table">
+                <tr><th>Compte</th><th>Événements</th><th>Dernière saisie</th></tr>
+                <?php foreach ($stats_lapsed as $l) : ?>
+                <tr>
+                    <td><a href="/user/dashboard.php?idP=<?= (int) $l['idPersonne'] ?>"><?= sanitizeForHtml(Personne::displayName($l['pseudo'], $l['email'])) ?></a></td>
+                    <td><?= (int) $l['events_nb'] ?></td>
+                    <td><?= DateHelper::isoToMonthYearFr($l['last_added']) ?></td>
+                </tr>
+                <?php endforeach; ?>
+            </table>
+            <?php endif; ?>
+        </section>
+
+        <section>
+            <h2>Lieux et organisateurs sans compte</h2>
+            <p class="users-stats-note">Actifs, avec des événements depuis 12 mois (à venir compris), mais sans compte actif rattaché.</p>
+            <div class="users-stats-columns">
+                <?php foreach ([
+                    ['Lieux', $stats_venues, 'fa-map-marker', '/lieu/lieu.php?idL=', 'idLieu'],
+                    ['Organisateurs', $stats_organizers, 'fa-users', '/organisateur/organisateur.php?idO=', 'idOrganisateur'],
+                ] as [$titre, $liste, $icone_fa, $url, $cle]) : ?>
+                <div>
+                    <h3><?= $titre ?> <span class="users-stats-count"><?= count($liste) ?></span></h3>
+                    <?php if ($liste === []) : ?>
+                    <p><em>Aucun</em></p>
+                    <?php else : ?>
+                    <ul>
+                        <?php foreach (array_slice($liste, 0, $stats_list_max) as $item) : ?>
+                        <li class="profile-affiliation"><i class="fa fa-fw <?= $icone_fa ?>" aria-hidden="true"></i><a href="<?= $url . (int) $item[$cle] ?>"><?= sanitizeForHtml($item['nom']) ?></a> <span class="users-stats-count"><?= (int) $item['events_nb'] ?></span></li>
+                        <?php endforeach; ?>
+                    </ul>
+                    <?php if (count($liste) > $stats_list_max) : ?>
+                    <p class="users-stats-note">et <?= count($liste) - $stats_list_max ?> autres</p>
+                    <?php endif; ?>
+                    <?php endif; ?>
+                </div>
+                <?php endforeach; ?>
+            </div>
+        </section>
+    </details>
 
         <div id="filters">
 
