@@ -66,6 +66,30 @@ ul.menu_nb_res
                 background:#d4d4d4;
             }
 
+/* dans la barre de pagination (.liste-barre, global.css), le menu se cale à droite sans float */
+.liste-barre ul.menu_nb_res
+{
+    float:none;
+    width:auto;
+    margin:0.6em 0 0.6em auto;
+}
+
+/* admin/users.php : lieu, texte libre et organisateurs les uns sous les autres, alignés à gauche */
+table#ajouts tr td.affiliations
+{
+    text-align:left;
+}
+
+/* variante claire : répétée sur chaque ligne, l'aplat sombre du titre de user/dashboard.php écrasait le tableau */
+table#ajouts .profil-groupe
+{
+    font-size:1em;
+    font-weight:normal;
+    background:#eef1f6;
+    color:#4a5d78;
+    border:1px solid #d3dbe6;
+}
+
 ul.menu_filtre
 {
     font-size:1.1em;

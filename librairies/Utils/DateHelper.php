@@ -153,6 +153,32 @@ class DateHelper
     }
 
     /**
+     * Usual French month abbreviations: months of four letters or fewer stay whole.
+     */
+    private const SHORT_MONTH_NAMES_FR = ['', 'janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin',
+                                          'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
+
+    /**
+     * Converts an ISO date to its abbreviated French month and year.
+     *
+     * Empty for a missing or zero date ('0000-00-00'), which legacy rows still carry.
+     *
+     * @param string|null $date ISO date (YYYY-MM-DD or YYYY-MM-DD HH:MM:SS)
+     * @return string e.g. 'nov. 2023'
+     */
+    public static function isoToMonthYearFr(?string $date): string
+    {
+        if ($date === null || $date === '' || str_starts_with($date, '0000-00-00'))
+        {
+            return '';
+        }
+
+        $dt = new DateTime($date);
+
+        return self::SHORT_MONTH_NAMES_FR[(int) $dt->format('n')] . ' ' . $dt->format('Y');
+    }
+
+    /**
      * Converts an ISO date to a French long-form string.
      *
      * @param string $date          ISO date (YYYY-MM-DD or YYYY-MM-DD HH:MM:SS)
@@ -174,10 +200,7 @@ class DateHelper
         static $dayNames   = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
         static $longMonthNames = ['', 'janvier', 'février', 'mars', 'avril', 'mai', 'juin',
                               'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
-        // abréviations usuelles : les mois de quatre lettres ou moins restent entiers
-        static $shortMonthNames = ['', 'janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin',
-                              'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
-        $monthNames = $shortMonth ? $shortMonthNames : $longMonthNames;
+        $monthNames = $shortMonth ? self::SHORT_MONTH_NAMES_FR : $longMonthNames;
 
         $dt      = new DateTime($date);
         $hasTime = strlen($date) > 10;

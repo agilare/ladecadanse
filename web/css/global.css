@@ -3115,6 +3115,56 @@ ul#menu_calendrier li form p
     font-size:1.15em;
 }
 
+/* étiquette du groupe d'un compte (user/dashboard.php, admin/users.php), à la manière des labels
+   de Bootstrap : aplat, coins arrondis, texte blanc */
+.profil-groupe
+{
+    display:inline-block;
+    padding:0.25em 0.6em;
+    border-radius:0.25em;
+    background:#5C7392;
+    color:#fff;
+    font-weight:bold;
+    font-style:normal;
+    line-height:1;
+    white-space:nowrap;
+    vertical-align:middle;
+}
+
+/*
+ * Icône de lieu ou d'organisateur devant chaque affiliation (user/dashboard.php, admin/users.php).
+ * fa-fw centre chaque glyphe dans une même boîte : le marqueur, étroit, et le groupe, large,
+ * occupent alors la même place, et les noms démarrent tous au même bord. Taille et couleur
+ * fixées ici pour que les deux icônes pèsent pareil sous la ligne.
+ */
+.profile-affiliation .fa
+{
+    width:1.3em;
+    margin-right:0.35em;
+    line-height:1;
+    text-align:center;
+    vertical-align:-0.05em;
+    color:#8a8a8a;
+}
+
+/*
+ * Corrections optiques : le marqueur, fin, paraît plus petit que le groupe, massif. Largeur et
+ * marge divisées d'autant, pour garder la boîte commune de 1.3em + 0.35em du texte alentour.
+ */
+.profile-affiliation .fa-map-marker
+{
+    font-size:1.15em;
+    width:calc(1.3em / 1.15);
+    margin-right:calc(0.35em / 1.15);
+}
+
+.profile-affiliation .fa-users
+{
+    font-size:0.9em;
+    width:calc(1.3em / 0.9);
+    margin-right:calc(0.35em / 0.9);
+}
+
 #contenu .thumbnails
 {
     list-style-type:none;

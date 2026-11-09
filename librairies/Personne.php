@@ -305,16 +305,24 @@ class Personne
     {
         global $connectorPdo;
 
-        // TODO: $params = [':statut' => $filters['statut']];
         $params = [];
+        $conditions = [];
 
-        $where = '';
         if (!empty($filters['terme']))
         {
-            $where = " WHERE (p.pseudo LIKE :terme OR p.email LIKE :terme2)";
+            $conditions[] = "(p.pseudo LIKE :terme OR p.email LIKE :terme2)";
             $params[':terme'] = "%" . $filters['terme'] . "%";
             $params[':terme2'] = "%" . $filters['terme'] . "%";
         }
+
+        // vide : tous les statuts
+        if (!empty($filters['statut']))
+        {
+            $conditions[] = "p.statut = :statut";
+            $params[':statut'] = $filters['statut'];
+        }
+
+        $where = $conditions === [] ? '' : " WHERE " . implode(" AND ", $conditions);
 
         $limit = '';
         if (!empty($page))

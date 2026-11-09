@@ -8,7 +8,6 @@ use Ladecadanse\Utils\QueryParamValidator;
 use Ladecadanse\HtmlShrink;
 use Ladecadanse\Personne;
 use Ladecadanse\EvenementRenderer;
-use Ladecadanse\Organisateur;
 
 if (!$authorization->checkGroup(UserLevel::ADMIN))
 {
@@ -39,6 +38,15 @@ if (isset($_GET['terme']))
    $_SESSION['user_prefs_users_terme'] = $_GET['terme'];
 }
 $filters['terme'] = $_SESSION['user_prefs_users_terme'];
+
+// status, active by default; '' = all (values of the personne.statut enum)
+$tab_statuts = ['actif' => 'Actifs', 'inactif' => 'Inactifs', 'demande' => 'Demandes', '' => 'Tous'];
+$_SESSION['user_prefs_users_statut'] ??= 'actif';
+if (isset($_GET['statut']) && array_key_exists($_GET['statut'], $tab_statuts))
+{
+   $_SESSION['user_prefs_users_statut'] = $_GET['statut'];
+}
+$filters['statut'] = $_SESSION['user_prefs_users_statut'];
 
 // order
 $_SESSION['user_prefs_users_order_by'] ??= 'dateAjout';
@@ -187,35 +195,42 @@ require_once '../_header.inc.php';
 
         <div id="filters">
 
-            <form method="get" action="" id="ajouter_editer" style="float:left;width:40%;">
+            <form method="get" action="" id="ajouter_editer" style="float:left;">
                 <span class="search-field">
                     <input type="search" name="terme" value="<?= sanitizeForHtml($filters['terme']) ?>" placeholder="pseudo ou email" size="24" />
                     <button type="button" class="js-clear-search-field" aria-label="Vider et relancer la recherche" title="Vider et relancer la recherche"></button>
                 </span>
+                <select name="statut" aria-label="Statut">
+                    <?php foreach ($tab_statuts as $statut => $libelle) : ?>
+                    <option value="<?= $statut ?>"<?php if ($statut === $filters['statut']) : ?> selected="selected"<?php endif; ?>><?= $libelle ?></option>
+                    <?php endforeach; ?>
+                </select>
                 <input type="submit" name="submit" value="Filtrer" />
             </form>
+            <div class="spacer"></div>
+        </div> <!-- #filters -->
+
+        <?php // le menu du nombre de lignes rejoint la ligne de la pagination, à l'autre bout ?>
+        <div class="liste-barre">
+            <?= HtmlShrink::getPaginationString(
+                $all_results_nb, $get['page'],
+                $_SESSION['user_prefs_users_nblignes'],
+                1,
+                "",
+                "?page=") ?>
 
             <ul class="menu_nb_res">
                 <?php foreach ($tab_nblignes as $nb) : ?>
                     <li <?php if ($nb == $_SESSION['user_prefs_users_nblignes']) : ?>class="ici"<?php endif; ?>><a href="?<?= HtmlShrink::urlQueryArrayToString($get, ['nblignes', 'page']) ?>&amp;nblignes=<?= (int)$nb ?>"><?= (int)$nb ?></a></li>
                 <?php endforeach; ?>
-
             </ul>
-            <div class="spacer"></div>
-        </div> <!-- #filters -->
-
-        <?= HtmlShrink::getPaginationString(
-            $all_results_nb, $get['page'],
-            $_SESSION['user_prefs_users_nblignes'],
-            1,
-            "",
-            "?page=") ?>
+        </div>
 
         <table id="ajouts">
             <tr>
                 <?php foreach ($col_fields as $field => $label) : ?>
 
-                    <th <?php if ($field == $_SESSION['user_prefs_users_order_by']) : ?>class="ici"<?php endif; ?>  <?php if ($field == 'affiliations'): ?>colspan="3"<?php endif; ?>>
+                    <th <?php if ($field == $_SESSION['user_prefs_users_order_by']) : ?>class="ici"<?php endif; ?>>
                         <?php if (in_array($field, $fields_to_order_by)) : ?>
                             <a href="?order_by=<?= $field ?>&amp;page=<?= (int) $get['page'] ?>"><?= sanitizeForHtml($label) ?></a>
                             <?php if ($field == $_SESSION['user_prefs_users_order_by']) : ?>
@@ -238,30 +253,32 @@ require_once '../_header.inc.php';
                         <a href="/user/dashboard.php?idP=<?= (int)$u['idPersonne'] ?>" style="font-size:1.1em"><?= sanitizeForHtml(Personne::displayName($u['pseudo'], $u['email'])) ?></a>
                         <br><a href="mailto:<?= sanitizeForHtml($u['email']) ?>"><?= sanitizeForHtml($u['email']) ?></a>
                     </td>
-                    <td><?= (int)$u['groupe'] ?></td>
-                    <td><?= sanitizeForHtml($u['affiliation']) ?></td>
-                    <td>
+                    <td><span class="profil-groupe"><?= (int) $u['groupe'] ?><?= UserLevel::getLabel((int) $u['groupe']) !== '' ? ' &middot; ' . sanitizeForHtml(UserLevel::getLabel((int) $u['groupe'])) : '' ?></span></td>
+                    <?php // lieu, texte libre puis organisateurs, dans l'ordre et avec les icônes de user/dashboard.php ?>
+                    <td class="affiliations">
                         <?php if ($u['idLieu']) : ?>
-                            <a href="/lieu/lieu.php?idL=<?= (int) $u['idLieu'] ?>"><?= sanitizeForHtml($u['l_nom']) ?></a>
+                            <span class="profile-affiliation"><i class="fa fa-fw fa-map-marker" aria-hidden="true" title="Lieu"></i><span class="visually-hidden">Lieu : </span><a href="/lieu/lieu.php?idL=<?= (int) $u['idLieu'] ?>"><?= sanitizeForHtml($u['l_nom']) ?></a></span><br />
                         <?php endif; ?>
-                    </td>
-                    <td>
-                        <?php if (!empty($users_orgas[$u['idPersonne']])): ?>
-                            <?= Organisateur::getListLinkedHtml($users_orgas[$u['idPersonne']], isWithOrganisateurUrl: false) ?>
+                        <?php if (!empty($u['affiliation'])) : ?>
+                            <?= sanitizeForHtml($u['affiliation']) ?><br />
                         <?php endif; ?>
+                        <?php foreach ($users_orgas[$u['idPersonne']] ?? [] as $orga) : ?>
+                            <span class="profile-affiliation"><i class="fa fa-fw fa-users" aria-hidden="true" title="Organisateur"></i><span class="visually-hidden">Organisateur : </span><a href="/organisateur/organisateur.php?idO=<?= (int) $orga['idOrganisateur'] ?>"><?= sanitizeForHtml($orga['nom']) ?></a></span><br />
+                        <?php endforeach; ?>
                     </td>
                     <td><?php if ($ue != null) : ?><?= (int)$ue['nb_even'] ?><br><span style="color:lightsteelblue">(<?= sanitizeForHtml($ue['events_annual_avg']) ?>/an)</span><?php endif; ?></td>
                     <td><?php if ($ue != null) : ?>
                         <?php if ($ue['latest_event_months_nb'] > Personne::LOW_ACTIVITY_MONTHS_NB) : ?>
-                            <span style="<?php if ($ue['latest_event_months_nb'] > Personne::VERY_LOW_ACTIVITY_MONTHS_NB) : ?>color:red;<?php else : ?>color:orange;<?php endif ?>"><?= sanitizeForHtml((new DateTime($ue['latest_event_date']))->format('m.Y')) ?></span>
+                            <span style="<?php if ($ue['latest_event_months_nb'] > Personne::VERY_LOW_ACTIVITY_MONTHS_NB) : ?>color:red;<?php else : ?>color:orange;<?php endif ?>"><?= DateHelper::isoToMonthYearFr($ue['latest_event_date']) ?></span>
                             <?php else : ?>
-                            <span style="color:lightsteelblue"><?= sanitizeForHtml((new DateTime($ue['latest_event_date']))->format('m.Y')) ?></span>
+                            <span style="color:lightsteelblue"><?= DateHelper::isoToMonthYearFr($ue['latest_event_date']) ?></span>
                             <?php endif; ?>
                         <?php endif; ?>
                     </td>
                     <td><?= EvenementRenderer::$iconStatus[$u['statut']] ?></td>
-                    <td><?= DateHelper::isoToApp($u['dateAjout']) ?></td>
-                    <td><?= DateHelper::isoToApp($u['last_login']) ?></td>
+                    <td><?= DateHelper::isoToMonthYearFr($u['dateAjout']) ?></td>
+                    <?php // jamais connecté : NULL, que DateTime lirait comme aujourd'hui ; date nulle des comptes anciens ?>
+                    <td><?= !empty($u['last_login']) && !str_starts_with($u['last_login'], '0000') ?DateHelper::isoToFr($u['last_login'], 'annee', showDayOfWeek: false, shortMonth: true) : '' ?></td>
                     <td><a href="/user/edit.php?idP=<?= (int)$u['idPersonne'] ?>" title="Modifier ce compte" aria-label="Modifier ce compte"><?= $iconeEditer ?></a></td>
                 </tr>
             <?php endforeach; ?>
