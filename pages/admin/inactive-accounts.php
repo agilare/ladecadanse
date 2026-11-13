@@ -65,7 +65,7 @@ require_once '../_header.inc.php';
         }
         ?>
 
-        <p>Un compte sans connexion depuis <?= InactiveAccountRetention::RETENTION_YEARS ?>&nbsp;ans reçoit un avertissement, puis est anonymisé <?= InactiveAccountRetention::NOTICE_DAYS ?>&nbsp;jours plus tard s’il n’est pas revenu entre-temps. Les administrateurs sont hors de ce décompte. Cette page ne déclenche rien&nbsp;: elle montre ce qui va se passer.</p>
+        <p>Un compte sans connexion depuis <?= InactiveAccountRetention::RETENTION_YEARS ?>&nbsp;ans reçoit un avertissement, puis est anonymisé <?= InactiveAccountRetention::NOTICE_DAYS ?>&nbsp;jours plus tard s’il n’est pas revenu entre-temps. Les comptes de l’équipe (niveau auteur et au-dessus) sont hors de ce décompte. Cette page ne déclenche rien&nbsp;: elle montre ce qui va se passer.</p>
 
         <p>La dernière activité est la date de dernière connexion&nbsp;; pour les comptes antérieurs à l’enregistrement des connexions, celle de la dernière modification du profil, à défaut celle de l’inscription.</p>
 

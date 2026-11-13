@@ -18,7 +18,7 @@ Un compte sans connexion depuis **trois ans** reçoit un avertissement par e-mai
 - **L'inactivité** se lit sur `last_login`, à défaut sur la dernière modification du profil, puis sur l'inscription — `last_login` n'existe que depuis la 3.6.3. Un compte qui a ajouté un événement ou une description dans les trois ans n'est jamais retenu, quelle que soit sa date de connexion.
 - **Une connexion rend son délai complet au compte** : elle remet `personne.inactivity_notified_at` à `NULL`. Le retour par le cookie « Rester connecté-e » compte comme une connexion et met `last_login` à jour, ce qu'il ne faisait pas avant la 3.13.0 : un contributeur revenant ainsi gardait la date de sa dernière saisie de mot de passe, et pouvait paraître dormant depuis des années.
 - **Un avertissement qui échoue** — adresse morte, probable après trois ans — marque quand même la date : l'obligation est de prévenir, et sans cette marque le compte serait retenté à chaque passage.
-- **Les administrateurs** (niveau `ADMIN` et au-dessus) sont hors du décompte.
+- **L'équipe** (niveau `AUTHOR` et au-dessus) est hors du décompte : ses comptes dormants se traitent à la main, une fois l'an.
 
 Un seul avertissement part par passage, l'envoi SMTP retenant le processus PHP une à trois secondes ; l'anonymisation traite vingt comptes par passage.
 

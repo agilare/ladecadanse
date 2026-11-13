@@ -62,8 +62,8 @@ class InactiveAccountRetention
      * sur la date d'inscription — sans lui, ces comptes seraient soit intouchables, soit
      * anonymisés en bloc.
      *
-     * Les administrateurs (groupe <= ADMIN) sont hors du balayage : leur compte est un outil de
-     * service, dont l'inactivité ne dit rien.
+     * L'équipe (groupe <= AUTHOR : administrateurs et auteurs) est hors du balayage : ce sont des
+     * personnes connues, dont les comptes dormants se traitent à la main, une fois l'an.
      *
      * `mot_de_passe <> ''` écarte les comptes déjà anonymisés, qu'Personne::anonymize() laisse
      * avec un mot de passe vide : sans ce critère, ils reviendraient à chaque passage.
@@ -83,7 +83,7 @@ class InactiveAccountRetention
     {
         $seuil = "DATE_SUB(CURDATE(), INTERVAL " . self::RETENTION_YEARS . " YEAR)";
 
-        return "groupe > " . UserLevel::ADMIN . "
+        return "groupe > " . UserLevel::AUTHOR . "
                 AND mot_de_passe <> ''
                 AND COALESCE(last_login, date_derniere_modif, dateAjout) < $seuil
                 AND NOT EXISTS (
