@@ -354,12 +354,12 @@ final class EvenementRendererTest extends Unit
     /** Le compte à rebours prend sa propre ligne, sous l'horaire. */
     public function testTimeStatusHtmlDuCompteAReboursPrendUneLigne(): void
     {
-        $status = EvenementTimeStatus::fromHoraires('2026-04-28', '2026-04-28 21:30:00', null, '2026-04-28 20:00:00');
+        $status = EvenementTimeStatus::fromHoraires('2026-04-28', '2026-04-28 21:30:00', null, '2026-04-28 20:50:00');
 
         $html = EvenementRenderer::timeStatusHtml($status);
 
         $this->assertStringStartsWith('<br>', $html);
-        $this->assertStringContainsString('dans 1h30', $html);
+        $this->assertStringContainsString('dans 40min', $html);
         // avant le début, le compte à rebours est seul : une barre vide n'apprendrait rien de plus
         $this->assertStringNotContainsString('even-time-bar', $html);
     }
@@ -450,21 +450,21 @@ final class EvenementRendererTest extends Unit
         $this->assertStringNotContainsString('?', $html);
     }
 
-    /** Au-delà de deux heures, l'horaire suffit : aucun repère. */
-    public function testTimeStatusHtmlSansRepereAuDelaDeDeuxHeures(): void
+    /** Au-delà d'une heure, l'horaire suffit : aucun repère. */
+    public function testTimeStatusHtmlSansRepereAuDelaDUneHeure(): void
     {
-        $status = EvenementTimeStatus::fromHoraires('2026-04-28', '2026-04-28 21:00:00', '2026-04-29 01:00:00', '2026-04-28 18:45:00');
+        $status = EvenementTimeStatus::fromHoraires('2026-04-28', '2026-04-28 21:00:00', '2026-04-29 01:00:00', '2026-04-28 19:55:00');
 
         $this->assertSame(EvenementTimeStatus::COMING, $status?->state);
         $this->assertSame('', EvenementRenderer::timeStatusHtml($status));
     }
 
-    /** Deux heures pile restent dans l'horizon. */
-    public function testTimeStatusHtmlGardeLeRepereADeuxHeuresPile(): void
+    /** Une heure pile reste dans l'horizon. */
+    public function testTimeStatusHtmlGardeLeRepereAUneHeurePile(): void
     {
-        $status = EvenementTimeStatus::fromHoraires('2026-04-28', '2026-04-28 21:00:00', '2026-04-29 01:00:00', '2026-04-28 19:00:00');
+        $status = EvenementTimeStatus::fromHoraires('2026-04-28', '2026-04-28 21:00:00', '2026-04-29 01:00:00', '2026-04-28 20:00:00');
 
-        $this->assertStringContainsString('dans 2h', EvenementRenderer::timeStatusHtml($status));
+        $this->assertStringContainsString('dans 1h', EvenementRenderer::timeStatusHtml($status));
     }
 
     /** Moins d'une demi-heure avant le début, le compte à rebours passe en gras. */
@@ -529,7 +529,7 @@ final class EvenementRendererTest extends Unit
     /** Sur la fiche d'un événement, le repère suit l'horaire sur la même ligne. */
     public function testTimeStatusHtmlPeutSuivreSurLaMemeLigne(): void
     {
-        $status = EvenementTimeStatus::fromHoraires('2026-04-28', '2026-04-28 21:30:00', null, '2026-04-28 20:00:00');
+        $status = EvenementTimeStatus::fromHoraires('2026-04-28', '2026-04-28 21:30:00', null, '2026-04-28 20:50:00');
 
         $html = EvenementRenderer::timeStatusHtml($status, onItsOwnLine: false);
 

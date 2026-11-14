@@ -52,7 +52,7 @@ class EvenementRenderer
      * « dans 7h » n'aide personne à décider, et la colonne s'encombre d'autant de repères qu'il y
      * a d'événements. L'horaire, lui, reste affiché.
      */
-    public const COUNTDOWN_VISIBLE_WITHIN_MINUTES = 2 * 60;
+    public const COUNTDOWN_VISIBLE_WITHIN_MINUTES = 60;
 
     /** En deçà, le compte à rebours passe en gras : il est temps de partir. */
     public const COUNTDOWN_URGENT_UNDER_MINUTES = 30;

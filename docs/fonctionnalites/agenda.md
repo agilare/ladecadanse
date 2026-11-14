@@ -14,7 +14,7 @@ Sur la liste du jour, chaque carte d'événement dit où il en est par rapport �
 
 | État | Repère | Ce qu'il faut pour l'établir |
 | --- | --- | --- |
-| à venir, dans deux heures ou moins | compte à rebours seul — `dans 40min`, `dans 1h30`, `dans 2h` | un horaire de début |
+| à venir, dans une heure ou moins | compte à rebours seul — `dans 10min`, `dans 40min`, `dans 1h` | un horaire de début |
 | à venir, plus tard | rien : l'horaire suffit | — |
 | en cours | une barre de la part écoulée, pourcentage inscrit au milieu | un horaire de début |
 | terminé | la même barre, pleine et grise, portant « ✓ Terminé » | un horaire de début, ou une fin annoncée |
@@ -23,7 +23,7 @@ Sans horaire exploitable — ni début, ni fin —, la carte n'affiche rien : to
 
 Les deux repères ne cohabitent jamais : avant le début, le compte à rebours seul, une barre vide n'apprenant rien de plus ; une fois l'événement commencé, la barre seule.
 
-L'**horizon** du compte à rebours est `EvenementRenderer::COUNTDOWN_VISIBLE_WITHIN_MINUTES`, deux heures : au-delà, savoir qu'un concert est « dans 7h » n'aide personne à décider, et une liste du soir s'encombre d'autant de repères qu'elle porte d'événements. En deçà de `COUNTDOWN_URGENT_UNDER_MINUTES`, une demi-heure, le compte à rebours passe **en gras** — c'est le moment de partir. Ces deux seuils se lisent sur `EvenementTimeStatus::$minutesUntilStart`, le temps restant non arrondi que la classe porte à côté du libellé, qui l'est.
+L'**horizon** du compte à rebours est `EvenementRenderer::COUNTDOWN_VISIBLE_WITHIN_MINUTES`, une heure : au-delà, savoir qu'un concert est « dans 7h » n'aide personne à décider, et une liste du soir s'encombre d'autant de repères qu'elle porte d'événements. En deçà de `COUNTDOWN_URGENT_UNDER_MINUTES`, une demi-heure, le compte à rebours passe **en gras** — c'est le moment de partir. Ces deux seuils se lisent sur `EvenementTimeStatus::$minutesUntilStart`, le temps restant non arrondi que la classe porte à côté du libellé, qui l'est.
 
 ### Où cela s'affiche
 
@@ -50,7 +50,7 @@ Le `<progress>` porte le rôle ARIA `progressbar` et un nom accessible — « En
 
 ### Ce que les repères arrondissent
 
-- **Compte à rebours** — pas de dix minutes, avec un plancher à `dans 10min` pour ne jamais afficher `dans 0min` ; **au-delà de trois heures**, pas d'une heure. Ce dernier palier ne se voit plus guère depuis que l'horizon est passé à deux heures : il ne sert que la zone entre 2h et 3h, où le pas de dix minutes s'applique encore. Le seuil est la constante `COUNTDOWN_HOUR_ROUNDING_FROM_MINUTES`.
+- **Compte à rebours** — pas de dix minutes, avec un plancher à `dans 10min` pour ne jamais afficher `dans 0min` ; **au-delà de trois heures**, pas d'une heure. Ce dernier palier ne se voit plus sur les cartes depuis que l'horizon est passé à une heure, où le pas de dix minutes s'applique seul. Le seuil est la constante `COUNTDOWN_HOUR_ROUNDING_FROM_MINUTES`.
 - **Part écoulée** — arrondie à 5 %, puis **bornée à [5 %, 95 %]** tant que l'événement est en cours : `0 %` et `100 %` se liraient comme « pas commencé » et « terminé ». Une fois terminé, la barre affiche justement 100 %.
 
 ### Fin inconnue : une durée estimée
@@ -97,7 +97,7 @@ La sentinelle qui marque « sans horaire » est traitée comme une absence d'hor
 
 ### Portée
 
-**La journée du jour seulement**, partout. Sur une journée passée, chaque ligne dirait « Terminé » sans rien apprendre que la date ne dise déjà ; sur une journée à venir, aucune n'aurait de repère, le compte à rebours s'arrêtant à deux heures. `EvenementRenderer::timeStatusOfTheDay()` pose cette condition — et consulte le drapeau — pour toutes les pages à la fois ; l'agenda, dont la liste entière porte une seule date, la pose au niveau de la page.
+**La journée du jour seulement**, partout. Sur une journée passée, chaque ligne dirait « Terminé » sans rien apprendre que la date ne dise déjà ; sur une journée à venir, aucune n'aurait de repère, le compte à rebours s'arrêtant à une heure. `EvenementRenderer::timeStatusOfTheDay()` pose cette condition — et consulte le drapeau — pour toutes les pages à la fois ; l'agenda, dont la liste entière porte une seule date, la pose au niveau de la page.
 
 Cinq surfaces affichent les repères, chacune selon la place dont elle dispose :
 
