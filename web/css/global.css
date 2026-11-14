@@ -1389,6 +1389,12 @@ table .td-align-center
             min-width:5.6em;
         }
 
+        /* « −40min » est plus large que « 25 % » : sans ce plancher, une heure de 20 px le rognerait */
+        .even-time-bar-remaining
+        {
+            min-width:4.2em;
+        }
+
         /*
          * Dans la colonne étroite d'un tableau (fiches lieu, organisateur), la barre prend la
          * largeur disponible : à 20 px par heure, elle serait tantôt minuscule, tantôt plafonnée.

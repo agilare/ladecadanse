@@ -81,6 +81,11 @@ final class EvenementTimeStatus
          * rebours —, sans avoir à défaire l'arrondi.
          */
         public readonly ?int $minutesUntilStart = null,
+        /**
+         * Temps restant avant la fin d'un événement en cours, arrondi comme le compte à rebours
+         * mais sans préfixe : « 1h30 », « 40min » ; null hors de l'état en cours.
+         */
+        public readonly ?string $remainingLabel = null,
     ) {
     }
 
@@ -167,7 +172,8 @@ final class EvenementTimeStatus
             $durationMinutes,
             $fin,
             $endEstimated,
-            self::isTooLateToJoin($debut, $now, $genre)
+            self::isTooLateToJoin($debut, $now, $genre),
+            remainingLabel: self::durationLabel((int) ceil((self::timestamp($fin) - self::timestamp($now)) / 60))
         );
     }
 
@@ -183,13 +189,26 @@ final class EvenementTimeStatus
      */
     private static function countdownLabel(int $minutes): string
     {
+        return 'dans ' . self::durationLabel($minutes);
+    }
+
+    /**
+     * Une durée selon les pas du compte à rebours, sans préfixe : « 40min », « 2h30 », « 5h », « 3j ».
+     *
+     * Sert aussi au temps restant d'un événement en cours, que le même arrondi rend lisible d'un
+     * coup d'œil.
+     *
+     * @param int $minutes durée en minutes, non arrondie
+     */
+    private static function durationLabel(int $minutes): string
+    {
         if ($minutes > self::COUNTDOWN_HOUR_ROUNDING_FROM_MINUTES)
         {
             $heures = (int) round($minutes / 60);
 
             return $heures >= 24
-                ? 'dans ' . intdiv($heures, 24) . 'j'
-                : 'dans ' . $heures . 'h';
+                ? intdiv($heures, 24) . 'j'
+                : $heures . 'h';
         }
 
         $minutes = max(
@@ -200,10 +219,10 @@ final class EvenementTimeStatus
         if ($minutes >= 60)
         {
             $reste = $minutes % 60;
-            return 'dans ' . intdiv($minutes, 60) . 'h' . ($reste > 0 ? sprintf('%02d', $reste) : '');
+            return intdiv($minutes, 60) . 'h' . ($reste > 0 ? sprintf('%02d', $reste) : '');
         }
 
-        return 'dans ' . $minutes . 'min';
+        return $minutes . 'min';
     }
 
     /**

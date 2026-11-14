@@ -93,6 +93,21 @@ final class EvenementTimeStatusTest extends Unit
         $this->assertSame(35, $status->percent);
         $this->assertSame(240, $status->durationMinutes);
         $this->assertFalse($status->endEstimated);
+        // 2h36 avant la fin, au pas de dix minutes
+        $this->assertSame('2h40', $status->remainingLabel);
+    }
+
+    /** Le temps restant suit les pas du compte à rebours, plancher de dix minutes compris. */
+    public function testTempsRestantArrondiCommeLeCompteARebours(): void
+    {
+        $presqueFini = EvenementTimeStatus::fromHoraires('2026-04-28', '2026-04-28 21:00:00', '2026-04-28 23:00:00', '2026-04-28 22:57:00');
+        $this->assertSame('10min', $presqueFini?->remainingLabel);
+
+        $longue = EvenementTimeStatus::fromHoraires('2026-04-28', '2026-04-28 21:00:00', '2026-04-29 05:00:00', '2026-04-28 21:30:00');
+        $this->assertSame('8h', $longue?->remainingLabel);
+
+        $aVenir = EvenementTimeStatus::fromHoraires('2026-04-28', '2026-04-28 21:00:00', '2026-04-28 23:00:00', '2026-04-28 20:00:00');
+        $this->assertNull($aVenir?->remainingLabel);
     }
 
     /** Le pas est de 5 % : 12,5 % de la soirée écoulés se disent « 15 % », et non « 10 % ». */

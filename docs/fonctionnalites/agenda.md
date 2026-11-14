@@ -118,6 +118,8 @@ Trois icônes, que rien d'autre n'utilise à côté d'un horaire : `fa-hourglass
 
 Le drapeau `EVENT_TIME_STATUS_ENABLED` d'`app/env.php` est à `true` : les repères sont **publics** depuis la 3.14.0, après deux versions de préversion. Il prend les trois états de [`Ladecadanse\FeatureFlag`](../../librairies/FeatureFlag.php) — `false`, `'preview'` (administrateurs seulement), `true` —, et reste en place pour pouvoir rétrograder sans déployer. En préversion, une ligne au-dessus de la liste le signale et rappelle l'heure à laquelle tout est mesuré.
 
+Le drapeau `EVENT_TIME_REMAINING_ENABLED`, en `'preview'`, remplace dans la barre d'un événement en cours la part écoulée (`30 %`) par le temps restant (`−1h30`), arrondi aux pas du compte à rebours (`EvenementTimeStatus::$remainingLabel`). La barre prend alors un plancher plus large (`.even-time-bar-remaining`), sans quoi `−40min` serait rogné sur un événement d'une heure.
+
 `app/env.php` n'étant pas versionné, la valeur de production se change à la main sur le serveur.
 
 Le mécanisme des drapeaux à trois états est décrit dans la [conversion des PDF](../exploitation/conversion-pdf.md#le-drapeau), à propos du premier d'entre eux.

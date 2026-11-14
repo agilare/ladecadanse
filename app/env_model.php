@@ -193,6 +193,10 @@ define("LIEU_MANUAL_COLLAPSIBLE_ENABLED", false);
 //   true        ouvert à tous
 define("EVENT_TIME_STATUS_ENABLED", true);
 
+// dans la barre d'un événement en cours, le temps restant (« -1h30 ») à la place de la
+// part écoulée (« 30 % ») ; même trois états que ci-dessus
+define("EVENT_TIME_REMAINING_ENABLED", 'preview');
+
 // proposer les catégories d'événement encore en préversion — aujourd'hui la seule
 // « cours/ateliers/stages » — à la saisie, au filtrage de l'agenda et à l'affichage. La
 // liste est Ladecadanse\EventCategory::PREVIEW_FALLBACKS ; « concerts », passée par là,

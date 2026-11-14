@@ -642,8 +642,14 @@ class EvenementRenderer
     {
         $termine = $status->state === EvenementTimeStatus::PAST;
         $percent = $termine ? 100 : (int) $status->percent;
+
+        // en préversion : le temps restant, signé comme un décompte, plutôt que la part écoulée
+        $restant = !$termine && $status->remainingLabel !== null && FeatureFlag::estActive('EVENT_TIME_REMAINING_ENABLED')
+            ? $status->remainingLabel
+            : null;
+
         // le texte nu est le repli du <progress> ; l'inscription par-dessus porte la coche
-        $texte = $termine ? 'Terminé' : $percent . '&nbsp;%';
+        $texte = $termine ? 'Terminé' : ($restant !== null ? '−' . sanitizeForHtml($restant) : $percent . '&nbsp;%');
         $label = $termine ? self::TERMINE_ICONE . '&nbsp;Terminé' : $texte;
 
         // la durée manque quand seul l'horaire de fin est renseigné : la largeur minimale du CSS
@@ -651,12 +657,16 @@ class EvenementRenderer
         $width = (int) round((int) $status->durationMinutes * self::PROGRESS_PX_PER_HOUR / 60);
         $style = $bar === self::BAR_FULL_WIDTH || $width === 0 ? '' : ' style="width:' . $width . 'px"';
         $classeLargeur = $bar === self::BAR_FULL_WIDTH ? ' even-time-bar-full' : '';
+        if ($restant !== null)
+        {
+            $classeLargeur .= ' even-time-bar-remaining';
+        }
 
         $estimation = $status->endEstimated
             ? 'fin inconnue, estimée à ' . mb_substr((string) $status->end, 11, 5)
             : null;
 
-        $title = ($termine ? 'Terminé' : 'En cours, ' . $status->label . ' écoulés')
+        $title = ($termine ? 'Terminé' : ($restant !== null ? 'En cours, fin dans ' . $restant : 'En cours, ' . $status->label . ' écoulés'))
             . ($estimation !== null ? ' — ' . $estimation : '');
 
         $html = '<span class="even-time-status even-time-status-' . $status->state . '">'
