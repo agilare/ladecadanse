@@ -433,11 +433,11 @@ class EvenementRenderer
                 ?></span>
                 <span class="right">
                     <?php
-                    $horaire_complet = EvenementRenderer::schedulesToHhMm($tab_even['e_horaire_debut'], $tab_even['e_horaire_fin'], $tab_even['e_dateEvenement']);
-                    if (!empty($tab_even['e_horaire_complement']))
-                    {
-                        $horaire_complet .= " ".$tab_even['e_horaire_complement'];
-                    }
+                    // le complément passe à la ligne sous l'horaire, ou le remplace s'il n'y en a pas
+                    $horaire_complet = implode('<br>', array_filter([
+                        sanitizeForHtml(EvenementRenderer::schedulesToHhMm($tab_even['e_horaire_debut'], $tab_even['e_horaire_fin'], $tab_even['e_dateEvenement'])),
+                        sanitizeForHtml((string) ($tab_even['e_horaire_complement'] ?? '')),
+                    ], static fn (string $part): bool => $part !== ''));
 
                     /*
                      * Avec les repères de temporalité (#51), la colonne se lit en lignes : l'horaire,
@@ -446,7 +446,7 @@ class EvenementRenderer
                      */
                     if (!empty($horaire_complet))
                     {
-                        echo self::scheduleHtml(sanitizeForHtml($horaire_complet), $time_status);
+                        echo self::scheduleHtml($horaire_complet, $time_status);
                     }
                     echo self::timeStatusHtml($time_status);
                     ?>
