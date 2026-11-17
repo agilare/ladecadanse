@@ -1,8 +1,8 @@
 # La décadanse
 📅 Agenda culturel local
 
-> [!WARNING]
-> En raison d'une grande partie de code legacy, et pour des raisons de sécurité, ne déployez pas cette application sur des serveurs publics. La [modernisation est en cours](https://github.com/users/agilare/projects/4/views/1), vous pouvez [contribuer](README.md#contribuer)
+> [!NOTE]
+> Une partie du code est encore legacy : la [modernisation est en cours](https://github.com/users/agilare/projects/4/views/1), vous pouvez [contribuer](README.md#contribuer). Pour signaler une faille, voir [SECURITY.md](SECURITY.md)
 
 La décadanse est un site web qui présente aux visiteurs une sélection d'événements culturels locaux et accessibles. Il est actuellement [déployé pour Genève et les environs](https://www.ladecadanse.ch/)
 
