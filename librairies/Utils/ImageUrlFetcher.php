@@ -12,8 +12,7 @@ class ImageUrlFetcher
     private const MAX_REDIRECTS = 3;
 
     /**
-     * Checks one URL of the chain and returns the curl "host:port:address" entry that pins
-     * the connection to the address checked here.
+     * Checks one URL of the chain and returns the address the connection must be pinned to.
      *
      * @return array{pin: string, error: string|null}
      */
@@ -23,9 +22,11 @@ class ImageUrlFetcher
             return ['pin' => '', 'error' => "L'URL doit commencer par http:// ou https://"];
         }
 
+        // parse_url() and curl do not read every URL alike: userinfo, backslashes, spaces and
+        // control characters are where they disagree on the host, so none is accepted
         $parts = parse_url($url);
         $host = is_array($parts) ? (string) ($parts['host'] ?? '') : '';
-        if ($host === '') {
+        if ($host === '' || isset($parts['user']) || isset($parts['pass']) || preg_match('/[\\\\\s\x00-\x1f\x7f]/', $url)) {
             return ['pin' => '', 'error' => "L'URL n'est pas valide"];
         }
 
@@ -39,9 +40,7 @@ class ImageUrlFetcher
             return ['pin' => '', 'error' => "Cette URL n'est pas autorisée"];
         }
 
-        $port = (int) ($parts['port'] ?? (strtolower((string) ($parts['scheme'] ?? '')) === 'https' ? 443 : 80));
-
-        return ['pin' => $host . ':' . $port . ':' . $ip, 'error' => null];
+        return ['pin' => $ip, 'error' => null];
     }
 
     /**
@@ -71,7 +70,9 @@ class ImageUrlFetcher
                 CURLOPT_TIMEOUT        => max(1, (int) ceil($deadline - microtime(true))),
                 CURLOPT_FOLLOWLOCATION => false,
                 CURLOPT_PROTOCOLS      => CURLPROTO_HTTP | CURLPROTO_HTTPS,
-                CURLOPT_RESOLVE        => [$target['pin']],
+                // "any host, any port -> this address, same port": the connection goes to the
+                // checked address whatever host curl itself reads in the URL
+                CURLOPT_CONNECT_TO     => ['::' . $target['pin'] . ':'],
                 CURLOPT_HTTPHEADER     => ['Accept: image/*,application/pdf'],
                 CURLOPT_SSL_VERIFYPEER => true,
                 CURLOPT_USERAGENT      => 'ladecadanse/1.0',
@@ -91,7 +92,13 @@ class ImageUrlFetcher
             $errno       = curl_errno($ch);
             $status      = (int) curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
             $redirectUrl = (string) curl_getinfo($ch, CURLINFO_REDIRECT_URL);
+            $primaryIp   = (string) curl_getinfo($ch, CURLINFO_PRIMARY_IP);
             curl_close($ch);
+
+            // belt and braces: nothing is kept from a connection made anywhere else
+            if ($primaryIp !== '' && $primaryIp !== $target['pin']) {
+                return ['data' => null, 'mime' => null, 'error' => "Cette URL n'est pas autorisée"];
+            }
 
             if ($abortedTooBig) {
                 return ['data' => null, 'mime' => null, 'error' => "L'image est trop grande (max 10 Mo)"];
