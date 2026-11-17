@@ -172,7 +172,19 @@ $can_import_image_url = $est_connecte;
 // Le champ fichier n'a besoin de rien d'autre, le navigateur convertissant
 // lui-même ; l'import par URL réclame en plus imagick et Ghostscript.
 $pdf_accepte = PdfToImage::estActive();
-$pdf_accepte_par_url = $pdf_accepte && PdfToImage::estDisponible();
+//
+// Par URL, le PDF est réservé à l'équipe (groupe <= AUTHOR) : c'est le serveur qui le
+// décode, par Ghostscript, et l'inscription étant ouverte, « compte connecté » ne dit
+// rien de qui envoie le fichier. Les autres comptes gardent le champ fichier.
+$pdf_accepte_par_url = $pdf_accepte
+    && $est_connecte && (int) $_SESSION['Sgroupe'] <= UserLevel::AUTHOR
+    && PdfToImage::estDisponible();
+
+// Là où le champ fichier annonce le PDF et où l'URL le refuse, le libellé le dit :
+// sans cela, le refus ne s'apprendrait qu'après l'envoi du formulaire.
+$libelle_champ_url = $pdf_accepte && !$pdf_accepte_par_url
+    ? "ou coller l'URL d'une image (pas de PDF)"
+    : 'ou coller une URL';
 
 // Ce que le formulaire annonce doit suivre le drapeau : un accept qui laisse
 // choisir un PDF sans que rien ne le convertisse ne produirait qu'un refus.
@@ -1697,7 +1709,7 @@ if ($show_form)
 
             <?php if ($can_import_image_url): ?>
                 <div class="clear"></div>
-                <label for="flyer_url" class="ou-separateur">ou coller une URL</label>
+                <label for="flyer_url" class="ou-separateur"><?= $libelle_champ_url ?></label>
                 <input type="url" name="flyer_url" id="flyer_url" value="<?= sanitizeForHtml($url_flyer) ?>" placeholder="https://…" maxlength="2000" size="50">
                 <?php echo $verif->getHtmlErreur('flyer_url'); ?>
             <?php endif; ?>
@@ -1739,7 +1751,7 @@ if ($show_form)
 
             <?php if ($can_import_image_url): ?>
                 <div class="clear"></div>
-                <label for="image_url" class="ou-separateur">ou coller une URL</label>
+                <label for="image_url" class="ou-separateur"><?= $libelle_champ_url ?></label>
                 <input type="url" name="image_url" id="image_url" value="<?= sanitizeForHtml($url_image) ?>" placeholder="https://…" maxlength="2000" size="50">
                 <?php echo $verif->getHtmlErreur('image_url'); ?>
             <?php endif; ?>

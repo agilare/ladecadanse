@@ -119,7 +119,7 @@ class ImageUrlFetcher
         // sa conversion demande Imagick, absent de certains environnements.
         if (PdfToImage::estUnPdf($body)) {
             if (!in_array('application/pdf', $allowedMimes, true)) {
-                return ['data' => null, 'mime' => null, 'error' => "Les PDF ne sont pas acceptés ici"];
+                return ['data' => null, 'mime' => null, 'error' => "Les PDF ne sont pas acceptés par URL. Envoyez le fichier avec le bouton « Envoyer »."];
             }
 
             return ['data' => $body, 'mime' => 'application/pdf', 'error' => null];
