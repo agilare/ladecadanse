@@ -301,7 +301,10 @@ class Personne
     }
 
 
-    public static function getPersonnes(array $filters, string $orderBy = 'dateAjout', string $orderDir = 'DESC', ?int $page = null, ?int $nbLignes = null): array
+    /** Colonnes de tri acceptées par getPersonnes() ; toute autre valeur retombe sur dateAjout. */
+    public const SORTABLE_COLUMNS = ['pseudo', 'groupe', 'statut', 'dateAjout', 'date_derniere_modif', 'last_login'];
+
+    public static function getPersonnes(array $filters,string $orderBy = 'dateAjout', string $orderDir = 'DESC', ?int $page = null, ?int $nbLignes = null): array
     {
         global $connectorPdo;
 
@@ -330,7 +333,14 @@ class Personne
             $limit = " LIMIT " . (int) (($page - 1) * (int) $nbLignes) . ", " . (int) $nbLignes;
         }
 
-        // TODO: sanitize $orderBy $orderDir
+        // ORDER BY ne se paramètre pas : les deux valeurs sont interpolées, donc bornées ici
+        // plutôt que par un contrat implicite avec l'appelant
+        if (!in_array($orderBy, self::SORTABLE_COLUMNS, true))
+        {
+            $orderBy = 'dateAjout';
+        }
+        $orderDir = strtolower($orderDir) === 'asc' ? 'ASC' : 'DESC';
+
         // FIXME: replace left join with affiliation and lieu temp; create a separate query
         $sql_event = "SELECT
           p.*,

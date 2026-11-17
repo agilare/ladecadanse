@@ -232,11 +232,8 @@ class Lieu extends Element
         }
 
         // build SQL
-        $sql_order = "l." . $order . " DESC";
-        if ($order == "nom")
-        {
-            $sql_order = "l.nom ASC";
-        }
+        // ORDER BY ne se paramètre pas : seules deux valeurs littérales peuvent sortir d'ici
+        $sql_order = $order === "nom" ? "l.nom ASC" : "l.dateAjout DESC";
 
         $sql_event = "SELECT
           l.*,

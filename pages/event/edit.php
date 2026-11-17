@@ -859,7 +859,7 @@ if ($formulaire_poste)
 			//si un nouveau flyer a été uploadé, suppression de l'ancien fichier
 			if (!empty($champs['flyer']))
 			{
-				$sql_flyer = ", flyer='".$champs['flyer']."'";
+				$sql_flyer = ", flyer='".$connector->sanitize($champs['flyer'])."'";
 				$supprimerAncienFichier('flyer');
 			}
 
@@ -875,7 +875,7 @@ if ($formulaire_poste)
 			//si une nouvelle image a été uploadée, suppression de l'ancien fichier
 			if (!empty($champs['image']))
 			{
-				$sql_image = ", image='".$champs['image']."'";
+				$sql_image = ", image='".$connector->sanitize($champs['image'])."'";
 				$supprimerAncienFichier('image');
 			}
 

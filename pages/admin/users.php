@@ -51,14 +51,14 @@ $filters['statut'] = $_SESSION['user_prefs_users_statut'];
 
 // order
 $_SESSION['user_prefs_users_order_by'] ??= 'dateAjout';
-$fields_to_order_by = ["pseudo", "groupe", "statut", "dateAjout", "date_derniere_modif", "last_login"];
-if (isset($_GET['order_by']) && in_array($_GET['order_by'], $fields_to_order_by))
+$fields_to_order_by = Personne::SORTABLE_COLUMNS;
+if (isset($_GET['order_by']) && in_array($_GET['order_by'], $fields_to_order_by, true))
 {
    $_SESSION['user_prefs_users_order_by'] = $_GET['order_by'];
 }
 
 $_SESSION['user_prefs_users_order_dir'] ??= 'desc';
-if (!empty($_GET['order_dir']) && QueryParamValidator::isAcceptedUrlQueryValue($_GET['order_dir'], "alpha_numeric"))
+if (isset($_GET['order_dir']) && in_array($_GET['order_dir'], ['asc', 'desc'], true))
 {
    $_SESSION['user_prefs_users_order_dir'] = $_GET['order_dir'];
 }

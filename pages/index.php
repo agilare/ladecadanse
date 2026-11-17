@@ -104,11 +104,8 @@ $url_filter_params = $url_courant_param . $url_tri_param;
 
 // build SQL
 $is_chronological_order = ($_SESSION['user_prefs_agenda_order'] == "horaire_debut");
-$sql_user_prefs_agenda_order = "e." . $_SESSION['user_prefs_agenda_order'] . " DESC";
-if ($is_chronological_order)
-{
-	$sql_user_prefs_agenda_order = "e.horaire_debut ASC";
-}
+// ORDER BY ne se paramètre pas : seules deux valeurs littérales peuvent sortir d'ici
+$sql_user_prefs_agenda_order = $is_chronological_order ? "e.horaire_debut ASC" : "e.dateAjout DESC";
 
 /*
  * Le repli des catégories en préversion se joue ici, en deux endroits solidaires.
