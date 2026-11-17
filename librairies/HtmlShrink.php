@@ -113,13 +113,6 @@ class HtmlShrink
                     $class_region = 'vd';
                 }
 
-                if ($n == 'fr')
-                {
-
-                    $v = 'Fribourg';
-                    $class_region = 'fr';
-                }
-
                 $ici = '';
                 if ($n == $_SESSION['region'])
                     $ici = ' ici';

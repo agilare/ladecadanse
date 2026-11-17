@@ -23,6 +23,10 @@ Upgrade steps (migrations, side effects) : [UPGRADE.md](UPGRADE.md).
 - agenda : an event whose end time is missing is no longer « en cours » indefinitely — the estimated end now marks it as over, like an announced one #51
 - search : the title prefix match received the exact terms — the twelve placeholders were filled with five exact strings and seven prefix strings instead of four and eight, so a title matched on its prefix weighed nothing
 
+### Security
+- deps : bump symfony/html-sanitizer, symfony/yaml and symfony/filesystem to 8.1.11 to fix 5 known security advisories (sanitizer bypasses, YAML parse-time DoS, path escape) ; phpmailer, monolog, phpdotenv, pdfjs-dist and zebra_datepicker follow
+- deps-dev : bump the analysis and test tools within their current major ; cross-spawn and ajv fix 2 advisories, reachable only through the dev tree
+
 ## [3.13.0] - 2026-10-15
 
 Upgrade steps (redirects, side effects) : [UPGRADE.md](UPGRADE.md).

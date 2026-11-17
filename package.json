@@ -23,8 +23,8 @@
         "leaflet": "1.9.4",
         "magnific-popup": "1.2.0",
         "normalize.css": "8.0.1",
-        "pdfjs-dist": "6.2.108",
+        "pdfjs-dist": "6.5.438",
         "select2": "4.1.0",
-        "zebra_datepicker": "2.2.0"
+        "zebra_datepicker": "2.2.2"
     }
 }
