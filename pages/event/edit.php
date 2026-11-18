@@ -1738,7 +1738,7 @@ if ($show_form)
         </p>
             <div class="spacer"></div>
 
-        <p style="margin-left: 0.8em;margin-bottom:0.3em;font-weight: bold">Image complémentaire (photo, verso du flyer, programme...)</p>
+        <p style="margin-top: 1.4em;margin-left: 0.8em;margin-bottom:0.3em;font-weight: bold">Image complémentaire (photo, verso du flyer, programme...)</p>
         <div class="guideChamp" style="padding-left:0.8em;margin-top:0">Visible sous le flyer dans la page Événement</div>
         <p class="image-upload">
             <label for="image">Envoyer</label>
