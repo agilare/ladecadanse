@@ -102,37 +102,67 @@
 }
 
 /*
- * Sous 420px, les sept onglets réclament encore 367px là où un Android courant n'en offre que
- * 360 : les paddings horizontaux se resserrent une seconde fois. Placé après les règles
- * ci-dessus, dont celle du calendrier, pour les emporter. Les écrans plus larges gardent la
- * respiration précédente, et la hauteur des boutons — la cible tactile — ne bouge pas.
+ * Les sept onglets réclament 367px sur une ligne : en 320px, ou sur un téléphone zoomé,
+ * « Organisateurs » et la loupe tombaient à la ligne. Sous 25em, la barre passe sur deux
+ * rangées voulues : les sections en haut, les quatre outils en dessous, à parts égales.
+ * `order` regroupe les <li> sans toucher au balisage, et le ::before, d'une rangée de large,
+ * force le passage à la ligne entre les deux groupes. Les cibles gardent 44px de haut.
  */
-@media screen and (max-width: 420px)
+@media screen and (max-width: 25em)
 {
-    #menu ul li a
+    #menu > ul
     {
-        padding-left:0.25em;
-        padding-right:0.25em;
+        display:flex;
+        flex-wrap:wrap;
+        margin-bottom:0;
     }
 
-    #menu ul li search a
+    #menu > ul::before
     {
-        padding-left:0.5em;
-        padding-right:0.25em;
+        content:'';
+        order:2;
+        flex-basis:100%;
     }
 
-    #menu ul li#bouton_agenda a
+    #menu > ul > li#bouton_agenda,
+    #menu > ul > li:not([id]):not(.form_recherche)
     {
-        padding-left:0.4em;
-        padding-right:0.4em;
+        order:1;
+        flex:1 1 auto;
     }
 
-    #menu ul li#bouton_calendrier a,
-    #menu ul li#bouton_latests_events a,
-    #menu ul li#bouton_favoris a
+    #menu > ul > li#bouton_calendrier,
+    #menu > ul > li#bouton_latests_events,
+    #menu > ul > li#bouton_favoris,
+    #menu > ul > li.form_recherche
     {
-        padding-left:9px; /* 10px font passer la loupe à la ligne en 360px */
-        padding-right:9px;
+        order:3;
+        flex:1 1 0;
+        margin:0;
+        border-top:1px solid rgba(69, 40, 23, 0.2);
+    }
+
+    /* le <li> et le <search> sont déjà en flex (global.css) : la loupe s'étire comme ses voisines */
+    #menu > ul > li.form_recherche > search,
+    #menu > ul > li.form_recherche > search > a
+    {
+        flex:1;
+    }
+
+    #menu > ul > li > a,
+    #menu > ul > li > search > a
+    {
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        box-sizing:border-box;
+        height:44px;
+    }
+
+    #menu > ul > li > a > .fa,
+    #menu > ul > li > search > a > .fa
+    {
+        font-size:1.35em;
     }
 }
 
