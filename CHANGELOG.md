@@ -8,6 +8,8 @@ Upgrade steps (migrations, side effects) : [UPGRADE.md](UPGRADE.md).
 - bots : the dashboard explains itself — a one-line summary with folded details on each tab, an `i` button on the column headers, and a "Type" column (scraper, search engine, AI bot, SEO tool, script, suspect or plain browser) ; a User-Agent without a browser signature now counts as a bot, not as a suspect human
 - bots : a "Cumuls" tab lists the clients that combine several behaviours (trap, volume, burst, errors), by IP address or by User-Agent
 - mailing : people who asked to stop receiving mailings (`personne.mailing_opted_out_at`) are left out, even when present in the CSV
+- agenda : the progress bar of a started event can show the remaining time (`-1h30`) instead of the share elapsed, in preview behind `EVENT_TIME_REMAINING_ENABLED` — see [docs/fonctionnalites/agenda.md](docs/fonctionnalites/agenda.md#repères-de-temporalité)
+- admin users : a status filter, compact columns and contributor statistics
 
 ### Changed
 - agenda : the time markers #51 are shown to everyone — a countdown within one hour, a progress bar once started, a grey full bar reading `Terminé` once it is over ; what is out of reach fades on its schedule only. The address and the price sit on the left under their own icon, on every event card and every date. The markers also reach the lieu, organisateur and event pages and the search results, on today's events only — see [docs/fonctionnalites/agenda.md](docs/fonctionnalites/agenda.md#repères-de-temporalité)
@@ -16,14 +18,23 @@ Upgrade steps (migrations, side effects) : [UPGRADE.md](UPGRADE.md).
 - pages : page files move under `pages/` #247, served at unchanged URLs by an internal rewrite, except `evenement-edit.php`, which becomes `event/edit.php` with a 301 ; `bin/router.php` serves them under `php -S` — see [UPGRADE.md](UPGRADE.md) and [docs/exploitation/config-serveur.md](docs/exploitation/config-serveur.md)
 - accounts : the password is changed on its own page `user/pwd-edit.php`, under the same rules as registration, and the profile shows when it was last changed #249 — see [UPGRADE.md](UPGRADE.md)
 - accounts : `user-edit.php` becomes `user/edit.php`, reorganized, and no longer creates accounts #120 ; affiliations, signature and event defaults move to `user/contributor-edit.php`, shown disabled to those who cannot change the affiliations #288
-- accounts : the inactive account retention now leaves out the team (level 6 or below), not only the administrators
+- accounts : the inactive account retention now leaves out the team (level 6 or below), not only the administrators ; its notice names the pseudo and the deletion date
+- accounts : the affiliation becomes optional on registration
+- accounts : the profile reads the user level in plain words, its panels side by side
+- database : the Doctrine Migrations config moves to `resources/database/` — see [UPGRADE.md](UPGRADE.md)
 - database : the twelve MyISAM tables move to InnoDB #228 — row locking, crash recovery, and the ground for transactions and foreign keys ; the search ranking changes with the engine — see [UPGRADE.md](UPGRADE.md)
 
 ### Fixed
 - agenda : an event whose end time is missing is no longer « en cours » indefinitely — the estimated end now marks it as over, like an announced one #51
 - search : the title prefix match received the exact terms — the twelve placeholders were filled with five exact strings and seven prefix strings instead of four and eight, so a title matched on its prefix weighed nothing
+- search : `years` is validated against the agenda's range, and the links of the results page url-encode their query string
+- home, lieu, organisateur : a very tall flyer is cut at 140px on the home and 80px in the event lists, instead of stretching its row
 
 ### Security
+- event edit : importing an image by URL fetches the address that was checked, where a second DNS resolution could point the request elsewhere ; a PDF by URL is reserved to the team (level 6 or below)
+- accounts : an ACTOR could attach their account to any lieu or organisateur by posting `affiliations[]` ; the field is ignored below AUTHOR
+- server config : `vendor/` is denied over HTTP — its scripts ran on request, and `composer/installed.json` gave the exact version of every library
+- sql : the `ORDER BY` of the home, the lieux and the users listing only takes listed values, and the flyer and image file names are escaped in `event/edit.php`
 - deps : bump symfony/html-sanitizer, symfony/yaml and symfony/filesystem to 8.1.11 to fix 5 known security advisories (sanitizer bypasses, YAML parse-time DoS, path escape) ; phpmailer, monolog, phpdotenv, pdfjs-dist and zebra_datepicker follow
 - deps-dev : bump the analysis and test tools within their current major ; cross-spawn and ajv fix 2 advisories, reachable only through the dev tree
 
